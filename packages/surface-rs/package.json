@@ -36,5 +36,11 @@
     "typescript": "^5.3.0"
   },
   "description": "wasm-backed drop-in for @flighthq/surface: identical API, bulk pixel ops run in Rust",
-  "sideEffects": false
+  "sideEffects": false,
+  "flightRsSubstitute": {
+    "authoritativePackage": "@flighthq/surface",
+    "crate": "flighthq-surface",
+    "kind": "rust-wasm",
+    "rustBacked": true
+  }
 }
