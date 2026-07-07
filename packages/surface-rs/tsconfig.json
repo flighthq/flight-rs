@@ -8,6 +8,10 @@
     "declarationMap": true,
     "sourceMap": true
   },
-  "references": [{ "path": "../surface" }, { "path": "../image" }, { "path": "../types" }],
+  "references": [
+    { "path": "../../upstream/packages/surface" },
+    { "path": "../../upstream/packages/image" },
+    { "path": "../../upstream/packages/types" }
+  ],
   "include": ["src"]
 }
