@@ -1,4 +1,5 @@
 import { invalidateImageResource } from '@flighthq/image';
+import { defineFacadeWasmExports } from '@flighthq/runtime-rs';
 import type {
   SurfaceBevelOptions,
   SurfaceBevelType,
@@ -30,7 +31,10 @@ import type {
 import { BlendMode } from '@flighthq/types';
 
 import { surfaceRsRuntime } from './runtime';
-import {
+import * as surfaceWasmGlue from './wasm/surface_wasm.js';
+import { surfaceWasmBytes } from './wasm/surfaceWasmBytes';
+
+const {
   apply_surface_color_transform_wasm,
   apply_surface_palette_map_wasm,
   apply_surface_threshold_wasm,
@@ -95,8 +99,9 @@ import {
   unpremultiply_surface_pixels_wasm,
   write_surface_pixels_32_wasm,
   write_surface_pixels_wasm,
-} from './wasm/surface_wasm.js';
-import { surfaceWasmBytes } from './wasm/surfaceWasmBytes';
+} = defineFacadeWasmExports('@flighthq/surface-rs', surfaceWasmGlue, {
+  exclude: ['default', 'initSync'],
+});
 
 /**
  * `@flighthq/surface-rs` — wasm-backed implementations of the bulk
@@ -906,10 +911,9 @@ function descOf(region: Readonly<SurfaceRegion>): Uint32Array {
 
 // Lazily instantiate the wasm module on first use. Synchronous and idempotent.
 function ensureSurfaceRs(): void {
-  const runtime = surfaceRsRuntime.get();
-  if (runtime.initialized) return;
-  initSync({ module: surfaceWasmBytes });
-  runtime.initialized = true;
+  surfaceRsRuntime.ensure(() => {
+    initSync({ module: surfaceWasmBytes });
+  });
 }
 
 // True when both regions name the same surface and bounds — the in-place case.
