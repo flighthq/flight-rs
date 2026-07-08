@@ -302,6 +302,7 @@ export function colorMatrixSurface(
   source: Readonly<SurfaceRegion>,
   matrix: ReadonlyArray<number>,
 ): void {
+  if (matrix.length < 20) throw new Error('Color matrix filter requires 20 values');
   ensureSurfaceRs();
   color_matrix_surface_wasm(asUint8(out), asUint8(source.surface.data), descOf(source), Float32Array.from(matrix));
 }
@@ -311,6 +312,7 @@ export function compositeSurfacePixels(
   pixels: Readonly<Uint8ClampedArray>,
   blendMode: BlendMode = BlendMode.Normal,
 ): void {
+  assertSupportedCompositeBlendMode(blendMode);
   ensureSurfaceRs();
   composite_surface_pixels_wasm(asUint8(dest.surface.data), descOf(dest), asUint8(pixels), blendMode);
   invalidateImageResource(dest.surface);
@@ -321,6 +323,7 @@ export function compositeSurfaceRegion(
   source: Readonly<SurfaceRegion>,
   blendMode: BlendMode = BlendMode.Normal,
 ): void {
+  assertSupportedCompositeBlendMode(blendMode);
   ensureSurfaceRs();
   composite_surface_region_wasm(
     asUint8(dest.surface.data),
@@ -423,6 +426,8 @@ export function displaceSurface(
   source: Readonly<SurfaceRegion>,
   options: Readonly<SurfaceDisplacementMapOptions>,
 ): void {
+  const mode = resolveDisplacementMode(options);
+  const fillColor = options.edgeMode === 'transparent' ? 0 : (options.fillColor ?? 0) >>> 0;
   ensureSurfaceRs();
   displace_surface_wasm(
     asUint8(out),
@@ -434,8 +439,8 @@ export function displaceSurface(
     options.componentY ?? 1,
     options.scaleX ?? 0,
     options.scaleY ?? 0,
-    SURFACE_DISPLACEMENT_MODE[options.mode ?? 'wrap'],
-    (options.fillColor ?? 0) >>> 0,
+    SURFACE_DISPLACEMENT_MODE[mode],
+    fillColor,
   );
 }
 
@@ -525,9 +530,21 @@ export function fillSurfacePerlinNoise(
   octaves: number,
   seed: number,
   grayScale: boolean = false,
+  stitch: boolean = false,
+  channelOptions: number = 0x7,
 ): void {
   ensureSurfaceRs();
-  fill_surface_perlin_noise_wasm(asUint8(dest.surface.data), descOf(dest), baseX, baseY, octaves, seed, grayScale);
+  fill_surface_perlin_noise_wasm(
+    asUint8(dest.surface.data),
+    descOf(dest),
+    baseX,
+    baseY,
+    octaves,
+    seed,
+    grayScale,
+    stitch,
+    channelOptions >>> 0,
+  );
   invalidateImageResource(dest.surface);
 }
 
@@ -730,6 +747,8 @@ export function innerShadowSurface(
     roundPasses(options.passes ?? 1),
     (options.color ?? 0x000000ff) >>> 0,
     options.intensity ?? 1,
+    options.offsetX ?? 0,
+    options.offsetY ?? 0,
   );
 }
 
@@ -782,6 +801,7 @@ export function resizeSurface(
   ensureSurfaceRs();
   const opts: Readonly<SurfaceResizeOptions> = typeof options === 'string' ? { mode: options } : options;
   const mode = opts.mode ?? 'bilinear';
+  const edgeMode = opts.edgeMode ?? 'clamp';
   const premultiplied = opts.premultiplied ?? false;
   resize_surface_wasm(
     asUint8(dest.surface.data),
@@ -789,6 +809,7 @@ export function resizeSurface(
     asUint8(source.surface.data),
     descOf(source),
     RESIZE_MODE[mode],
+    SURFACE_EDGE_MODE[edgeMode],
     premultiplied,
   );
   invalidateImageResource(dest.surface);
@@ -800,6 +821,8 @@ export function rotateSurface(
   angle: number,
   pivotX: number = (source.width - 1) / 2,
   pivotY: number = (source.height - 1) / 2,
+  edgeMode: SurfaceEdgeMode = 'clamp',
+  sampleMode: SurfaceResizeMode = 'bilinear',
 ): void {
   ensureSurfaceRs();
   rotate_surface_wasm(
@@ -810,6 +833,8 @@ export function rotateSurface(
     angle,
     pivotX,
     pivotY,
+    SURFACE_EDGE_MODE[edgeMode],
+    RESIZE_MODE[sampleMode],
   );
   invalidateImageResource(dest.surface);
 }
@@ -941,6 +966,25 @@ function toChannelMap(map: ReadonlyArray<number> | null): Uint8Array {
   return map ? Uint8Array.from(map) : EMPTY_CHANNEL_MAP;
 }
 
+function assertSupportedCompositeBlendMode(blendMode: BlendMode): void {
+  if (blendMode === BlendMode.Alpha || blendMode === BlendMode.Shader) {
+    throw new Error(`BlendMode.${BlendMode[blendMode]} is not supported by surface compositing`);
+  }
+}
+
+function resolveDisplacementMode(options: Readonly<SurfaceDisplacementMapOptions>): SurfaceDisplacementMapMode {
+  switch (options.edgeMode) {
+    case 'clamp':
+      return 'clamp';
+    case 'transparent':
+      return 'color';
+    case 'wrap':
+      return 'wrap';
+    default:
+      return options.mode ?? 'wrap';
+  }
+}
+
 const EMPTY_CHANNEL_MAP = new Uint8Array(0);
 const SCRATCH_HISTOGRAM = new Uint32Array(1024);
 const SCRATCH_RECT = new Float64Array(4);
@@ -962,12 +1006,13 @@ const SCRATCH_RECT = new Float64Array(4);
 // Mirrors `surface_bevel_type_from_u8`: Both=0, Inner=1, Outer=2.
 const SURFACE_BEVEL_TYPE: Readonly<Record<SurfaceBevelType, number>> = { both: 0, inner: 1, outer: 2 };
 // Mirrors `surface_edge_mode_from_u8`: Clamp=0, Transparent=1, Wrap=2, Mirror=3.
-const SURFACE_CONVOLUTION_EDGE: Readonly<Record<SurfaceEdgeMode, number>> = {
+const SURFACE_EDGE_MODE: Readonly<Record<SurfaceEdgeMode, number>> = {
   clamp: 0,
   transparent: 1,
   wrap: 2,
   mirror: 3,
 };
+const SURFACE_CONVOLUTION_EDGE: Readonly<Record<SurfaceEdgeMode, number>> = SURFACE_EDGE_MODE;
 // Mirrors `surface_displacement_mode_from_u8`: Clamp=0, Color=1, Ignore=2, Wrap=3.
 const SURFACE_DISPLACEMENT_MODE: Readonly<Record<SurfaceDisplacementMapMode, number>> = {
   clamp: 0,

@@ -69,7 +69,7 @@ export function extract_surface_pixels_wasm(out: Uint8Array, source_data: Uint8A
 
 export function fill_surface_noise_wasm(dest_data: Uint8Array, dest_desc: Uint32Array, seed: number, low: number, high: number, gray_scale: boolean): void;
 
-export function fill_surface_perlin_noise_wasm(dest_data: Uint8Array, dest_desc: Uint32Array, base_x: number, base_y: number, octaves: number, seed: number, gray_scale: boolean): void;
+export function fill_surface_perlin_noise_wasm(dest_data: Uint8Array, dest_desc: Uint32Array, base_x: number, base_y: number, octaves: number, seed: number, gray_scale: boolean, stitch: boolean, channel_options: number): void;
 
 export function fill_surface_rectangle_wasm(dest_data: Uint8Array, dest_desc: Uint32Array, color: number): void;
 
@@ -95,7 +95,7 @@ export function gradient_glow_surface_wasm(out: Uint8Array, scratch: Uint8Array,
 
 export function inner_glow_surface_wasm(out: Uint8Array, scratch: Uint8Array, source_data: Uint8Array, source_desc: Uint32Array, radius_x: number, radius_y: number, passes: number, color: number, intensity: number): void;
 
-export function inner_shadow_surface_wasm(out: Uint8Array, scratch: Uint8Array, source_data: Uint8Array, source_desc: Uint32Array, radius_x: number, radius_y: number, passes: number, color: number, intensity: number): void;
+export function inner_shadow_surface_wasm(out: Uint8Array, scratch: Uint8Array, source_data: Uint8Array, source_desc: Uint32Array, radius_x: number, radius_y: number, passes: number, color: number, intensity: number, offset_x: number, offset_y: number): void;
 
 export function median_surface_wasm(out: Uint8Array, source_data: Uint8Array, source_desc: Uint32Array, radius: number): void;
 
@@ -105,7 +105,7 @@ export function pixelate_surface_wasm(out: Uint8Array, source_data: Uint8Array, 
 
 export function premultiply_surface_pixels_wasm(out: Uint8Array, source: Uint8Array, length: number): void;
 
-export function resize_surface_wasm(dest_data: Uint8Array, dest_desc: Uint32Array, source_data: Uint8Array, source_desc: Uint32Array, mode: number, premultiplied: boolean): void;
+export function resize_surface_wasm(dest_data: Uint8Array, dest_desc: Uint32Array, source_data: Uint8Array, source_desc: Uint32Array, mode: number, edge_mode: number, premultiplied: boolean): void;
 
 export function rotate_surface_180_wasm(dest_data: Uint8Array, dest_desc: Uint32Array, source_data: Uint8Array, source_desc: Uint32Array): void;
 
@@ -113,7 +113,7 @@ export function rotate_surface_clockwise_wasm(dest_data: Uint8Array, dest_desc: 
 
 export function rotate_surface_counter_clockwise_wasm(dest_data: Uint8Array, dest_desc: Uint32Array, source_data: Uint8Array, source_desc: Uint32Array): void;
 
-export function rotate_surface_wasm(dest_data: Uint8Array, dest_desc: Uint32Array, source_data: Uint8Array, source_desc: Uint32Array, angle: number, pivot_x: number, pivot_y: number): void;
+export function rotate_surface_wasm(dest_data: Uint8Array, dest_desc: Uint32Array, source_data: Uint8Array, source_desc: Uint32Array, angle: number, pivot_x: number, pivot_y: number, edge_mode: number, sample_mode: number): void;
 
 export function scroll_surface_wasm(data: Uint8Array, width: number, height: number, dx: number, dy: number): void;
 
@@ -165,7 +165,7 @@ export interface InitOutput {
     readonly extract_surface_pixels_32_wasm: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => void;
     readonly extract_surface_pixels_wasm: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => void;
     readonly fill_surface_noise_wasm: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number) => void;
-    readonly fill_surface_perlin_noise_wasm: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number) => void;
+    readonly fill_surface_perlin_noise_wasm: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number) => void;
     readonly fill_surface_rectangle_wasm: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
     readonly flip_surface_horizontal_wasm: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number) => void;
     readonly flip_surface_vertical_wasm: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number) => void;
@@ -178,16 +178,16 @@ export interface InitOutput {
     readonly gradient_bevel_surface_wasm: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number, m: number, n: number, o: number, p: number, q: number, r: number, s: number) => void;
     readonly gradient_glow_surface_wasm: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number, m: number, n: number, o: number, p: number) => void;
     readonly inner_glow_surface_wasm: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number, m: number, n: number, o: number) => void;
-    readonly inner_shadow_surface_wasm: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number, m: number, n: number, o: number) => void;
+    readonly inner_shadow_surface_wasm: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number, m: number, n: number, o: number, p: number, q: number) => void;
     readonly median_surface_wasm: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number) => void;
     readonly merge_surface_wasm: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number, m: number) => void;
     readonly pixelate_surface_wasm: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number) => void;
     readonly premultiply_surface_pixels_wasm: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
-    readonly resize_surface_wasm: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number) => void;
+    readonly resize_surface_wasm: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number) => void;
     readonly rotate_surface_180_wasm: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number) => void;
     readonly rotate_surface_clockwise_wasm: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number) => void;
     readonly rotate_surface_counter_clockwise_wasm: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number) => void;
-    readonly rotate_surface_wasm: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number) => void;
+    readonly rotate_surface_wasm: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number, m: number, n: number) => void;
     readonly scroll_surface_wasm: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => void;
     readonly set_surface_color_matrix_identity_wasm: (a: number, b: number, c: number) => void;
     readonly sharpen_surface_wasm: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number, m: number, n: number) => void;

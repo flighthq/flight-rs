@@ -1174,8 +1174,8 @@ describe('wasm discriminant map cardinality', () => {
   });
 
   it('SURFACE_CONVOLUTION_EDGE has entries matching SurfaceEdgeMode — output matches reference per variant', () => {
-    const edges: SurfaceEdgeMode[] = ['clamp', 'transparent', 'wrap'];
-    expect(edges).toHaveLength(3);
+    const edges: SurfaceEdgeMode[] = ['clamp', 'transparent', 'wrap', 'mirror'];
+    expect(edges).toHaveLength(4);
     const source = paintSurface(4, 4);
     const matrix = [0, -1, 0, -1, 5, -1, 0, -1, 0];
     for (const edge of edges) {
