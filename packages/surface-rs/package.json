@@ -41,6 +41,7 @@
     "authoritativePackage": "@flighthq/surface",
     "crate": "flighthq-surface",
     "kind": "rust-wasm",
-    "rustBacked": true
+    "rustBacked": true,
+    "supportLevel": "experimental"
   }
 }
