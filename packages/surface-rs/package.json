@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@flighthq/image": "*",
+    "@flighthq/runtime-rs": "*",
     "@flighthq/surface": "*",
     "@flighthq/types": "*"
   },

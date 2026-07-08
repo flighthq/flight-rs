@@ -9,6 +9,7 @@
     "sourceMap": true
   },
   "references": [
+    { "path": "../runtime-rs" },
     { "path": "../../upstream/packages/surface" },
     { "path": "../../upstream/packages/image" },
     { "path": "../../upstream/packages/types" }

@@ -29,6 +29,7 @@ import type {
 } from '@flighthq/types';
 import { BlendMode } from '@flighthq/types';
 
+import { surfaceRsRuntime } from './runtime';
 import {
   apply_surface_color_transform_wasm,
   apply_surface_palette_map_wasm,
@@ -903,13 +904,12 @@ function descOf(region: Readonly<SurfaceRegion>): Uint32Array {
   return Uint32Array.of(region.surface.width, region.surface.height, region.x, region.y, region.width, region.height);
 }
 
-let initialized = false;
-
 // Lazily instantiate the wasm module on first use. Synchronous and idempotent.
 function ensureSurfaceRs(): void {
-  if (initialized) return;
+  const runtime = surfaceRsRuntime.get();
+  if (runtime.initialized) return;
   initSync({ module: surfaceWasmBytes });
-  initialized = true;
+  runtime.initialized = true;
 }
 
 // True when both regions name the same surface and bounds — the in-place case.
