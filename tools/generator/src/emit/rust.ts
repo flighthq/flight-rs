@@ -6381,6 +6381,7 @@ function emitObject(
   }
   if (spreads.length > 1) throw new RustEmissionError('multiple object spreads require ordered Rust lowering');
   if (spreads.length === 1 && target.kind === 'named' && context.entityTypes.has(target.name)) {
+    properties.unshift('__flight_identity: std::sync::Arc::new(()),');
     if (entityRuntimeProperty?.kind === 'computedProperty') {
       properties.unshift(
         `__flight_entity_runtime: std::sync::Arc::new(std::sync::Mutex::new(Some(${emitExpression(
