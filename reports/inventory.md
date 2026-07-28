@@ -1,0 +1,145 @@
+# Upstream Inventory
+
+Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
+
+| Metric | Count |
+| --- | ---: |
+| Packages | 131 |
+| Source files | 1898 |
+| Test files | 1166 |
+| Public exports | 12149 |
+| Export conflicts | 0 |
+
+| Upstream package | Rust crate | Sources | Tests | Exports | SDK | Conflicts |
+| --- | --- | ---: | ---: | ---: | :---: | ---: |
+| `@flighthq/accessibility` | `flighthq-accessibility` | 2 | 1 | 8 | yes | 0 |
+| `@flighthq/adjustments` | `flighthq-adjustments` | 19 | 18 | 49 | yes | 0 |
+| `@flighthq/animation` | `flighthq-animation` | 4 | 3 | 18 | yes | 0 |
+| `@flighthq/app` | `flighthq-app` | 2 | 1 | 42 | yes | 0 |
+| `@flighthq/application` | `flighthq-application` | 3 | 2 | 83 | yes | 0 |
+| `@flighthq/assets` | `flighthq-assets` | 2 | 1 | 10 | yes | 0 |
+| `@flighthq/audio` | `flighthq-audio` | 4 | 3 | 20 | yes | 0 |
+| `@flighthq/binpack` | `flighthq-binpack` | 2 | 1 | 1 | yes | 0 |
+| `@flighthq/bitmapfont` | `flighthq-bitmapfont` | 3 | 2 | 7 | yes | 0 |
+| `@flighthq/bitmapfont-formats` | `flighthq-bitmapfont-formats` | 5 | 4 | 4 | yes | 0 |
+| `@flighthq/bitmaptext` | `flighthq-bitmaptext` | 3 | 2 | 15 | yes | 0 |
+| `@flighthq/camera` | `flighthq-camera` | 10 | 9 | 31 | yes | 0 |
+| `@flighthq/camera2d` | `flighthq-camera2d` | 8 | 7 | 8 | yes | 0 |
+| `@flighthq/capture` | `flighthq-capture` | 3 | 2 | 10 | yes | 0 |
+| `@flighthq/clip` | `flighthq-clip` | 2 | 1 | 23 | yes | 0 |
+| `@flighthq/clipboard` | `flighthq-clipboard` | 2 | 1 | 32 | yes | 0 |
+| `@flighthq/clock` | `flighthq-clock` | 12 | 11 | 14 | yes | 0 |
+| `@flighthq/collision` | `flighthq-collision` | 6 | 5 | 19 | yes | 0 |
+| `@flighthq/color` | `flighthq-color` | 10 | 9 | 32 | yes | 0 |
+| `@flighthq/connectivity` | `flighthq-connectivity` | 2 | 1 | 14 | yes | 0 |
+| `@flighthq/debug` | `flighthq-debug` | 3 | 2 | 9 | yes | 0 |
+| `@flighthq/device` | `flighthq-device` | 2 | 1 | 14 | yes | 0 |
+| `@flighthq/dialog` | `flighthq-dialog` | 2 | 1 | 15 | yes | 0 |
+| `@flighthq/displayobject` | `flighthq-displayobject` | 8 | 7 | 46 | yes | 0 |
+| `@flighthq/displayobject-canvas` | `flighthq-displayobject-canvas` | 31 | 30 | 94 | yes | 0 |
+| `@flighthq/displayobject-dom` | `flighthq-displayobject-dom` | 27 | 26 | 58 | yes | 0 |
+| `@flighthq/displayobject-gl` | `flighthq-displayobject-gl` | 28 | 25 | 89 | yes | 0 |
+| `@flighthq/displayobject-wgpu` | `flighthq-displayobject-wgpu` | 29 | 27 | 95 | yes | 0 |
+| `@flighthq/easing` | `flighthq-easing` | 20 | 19 | 48 | yes | 0 |
+| `@flighthq/effects` | `flighthq-effects` | 72 | 71 | 112 | yes | 0 |
+| `@flighthq/effects-canvas` | `flighthq-effects-canvas` | 48 | 47 | 102 | yes | 0 |
+| `@flighthq/effects-gl` | `flighthq-effects-gl` | 58 | 57 | 135 | yes | 0 |
+| `@flighthq/effects-wgpu` | `flighthq-effects-wgpu` | 56 | 55 | 128 | yes | 0 |
+| `@flighthq/entity` | `flighthq-entity` | 6 | 5 | 12 | yes | 0 |
+| `@flighthq/filesystem` | `flighthq-filesystem` | 2 | 1 | 43 | yes | 0 |
+| `@flighthq/flow` | `flighthq-flow` | 10 | 9 | 9 | yes | 0 |
+| `@flighthq/font` | `flighthq-font` | 8 | 7 | 15 | yes | 0 |
+| `@flighthq/geolocation` | `flighthq-geolocation` | 2 | 1 | 12 | yes | 0 |
+| `@flighthq/geometry` | `flighthq-geometry` | 27 | 26 | 377 | yes | 0 |
+| `@flighthq/glyphatlas` | `flighthq-glyphatlas` | 7 | 6 | 14 | yes | 0 |
+| `@flighthq/haptics` | `flighthq-haptics` | 2 | 1 | 13 | yes | 0 |
+| `@flighthq/host-capacitor` | `flighthq-host-capacitor` | 15 | 13 | 63 | no | 0 |
+| `@flighthq/host-electron` | `flighthq-host-electron` | 19 | 17 | 57 | no | 0 |
+| `@flighthq/host-tauri` | `flighthq-host-tauri` | 13 | 11 | 51 | no | 0 |
+| `@flighthq/image` | `flighthq-image` | 3 | 2 | 20 | yes | 0 |
+| `@flighthq/image-codec` | `flighthq-image-codec` | 8 | 7 | 16 | yes | 0 |
+| `@flighthq/input` | `flighthq-input` | 2 | 1 | 40 | yes | 0 |
+| `@flighthq/interaction` | `flighthq-interaction` | 16 | 15 | 83 | yes | 0 |
+| `@flighthq/intl` | `flighthq-intl` | 8 | 7 | 14 | yes | 0 |
+| `@flighthq/ipc` | `flighthq-ipc` | 2 | 1 | 17 | yes | 0 |
+| `@flighthq/keyboard` | `flighthq-keyboard` | 2 | 1 | 20 | yes | 0 |
+| `@flighthq/lifecycle` | `flighthq-lifecycle` | 2 | 1 | 13 | yes | 0 |
+| `@flighthq/lighting` | `flighthq-lighting` | 11 | 10 | 37 | yes | 0 |
+| `@flighthq/loader` | `flighthq-loader` | 2 | 1 | 13 | yes | 0 |
+| `@flighthq/log` | `flighthq-log` | 2 | 1 | 65 | yes | 0 |
+| `@flighthq/materials` | `flighthq-materials` | 12 | 11 | 68 | yes | 0 |
+| `@flighthq/math` | `flighthq-math` | 16 | 15 | 73 | yes | 0 |
+| `@flighthq/media` | `flighthq-media` | 4 | 3 | 42 | yes | 0 |
+| `@flighthq/mediasession` | `flighthq-mediasession` | 2 | 1 | 10 | yes | 0 |
+| `@flighthq/menu` | `flighthq-menu` | 3 | 2 | 17 | yes | 0 |
+| `@flighthq/mesh` | `flighthq-mesh` | 12 | 11 | 67 | yes | 0 |
+| `@flighthq/motionpath` | `flighthq-motionpath` | 8 | 7 | 7 | yes | 0 |
+| `@flighthq/movieclip` | `flighthq-movieclip` | 3 | 2 | 23 | yes | 0 |
+| `@flighthq/net` | `flighthq-net` | 2 | 1 | 4 | yes | 0 |
+| `@flighthq/node` | `flighthq-node` | 16 | 15 | 105 | yes | 0 |
+| `@flighthq/notification` | `flighthq-notification` | 2 | 1 | 26 | yes | 0 |
+| `@flighthq/particleemitter` | `flighthq-particleemitter` | 11 | 12 | 51 | yes | 0 |
+| `@flighthq/particles` | `flighthq-particles` | 11 | 10 | 50 | yes | 0 |
+| `@flighthq/particles-formats` | `flighthq-particles-formats` | 21 | 14 | 79 | yes | 0 |
+| `@flighthq/path` | `flighthq-path` | 23 | 22 | 50 | yes | 0 |
+| `@flighthq/path-boolean` | `flighthq-path-boolean` | 8 | 8 | 12 | yes | 0 |
+| `@flighthq/path-formats` | `flighthq-path-formats` | 2 | 1 | 3 | yes | 0 |
+| `@flighthq/permissions` | `flighthq-permissions` | 2 | 1 | 5 | yes | 0 |
+| `@flighthq/picking` | `flighthq-picking` | 2 | 1 | 6 | yes | 0 |
+| `@flighthq/platform` | `flighthq-platform` | 2 | 1 | 16 | yes | 0 |
+| `@flighthq/power` | `flighthq-power` | 2 | 1 | 19 | yes | 0 |
+| `@flighthq/protocol` | `flighthq-protocol` | 2 | 1 | 20 | yes | 0 |
+| `@flighthq/render` | `flighthq-render` | 17 | 16 | 63 | yes | 0 |
+| `@flighthq/render-gl` | `flighthq-render-gl` | 24 | 20 | 75 | yes | 0 |
+| `@flighthq/render-wgpu` | `flighthq-render-wgpu` | 18 | 16 | 68 | yes | 0 |
+| `@flighthq/scene` | `flighthq-scene` | 14 | 13 | 43 | yes | 0 |
+| `@flighthq/scene-formats` | `flighthq-scene-formats` | 16 | 9 | 15 | yes | 0 |
+| `@flighthq/scene-gl` | `flighthq-scene-gl` | 53 | 52 | 184 | yes | 0 |
+| `@flighthq/scene-resources` | `flighthq-scene-resources` | 16 | 15 | 37 | yes | 0 |
+| `@flighthq/scene-wgpu` | `flighthq-scene-wgpu` | 42 | 40 | 140 | yes | 0 |
+| `@flighthq/screen` | `flighthq-screen` | 2 | 1 | 31 | yes | 0 |
+| `@flighthq/sdk` | `flighthq-sdk` | 14 | 1 | 5923 | no | 0 |
+| `@flighthq/sensors` | `flighthq-sensors` | 2 | 1 | 32 | yes | 0 |
+| `@flighthq/shading` | `flighthq-shading` | 17 | 16 | 37 | yes | 0 |
+| `@flighthq/shape` | `flighthq-shape` | 7 | 6 | 42 | yes | 0 |
+| `@flighthq/shape-formats` | `flighthq-shape-formats` | 2 | 1 | 5 | yes | 0 |
+| `@flighthq/share` | `flighthq-share` | 2 | 1 | 14 | yes | 0 |
+| `@flighthq/shell` | `flighthq-shell` | 2 | 1 | 14 | yes | 0 |
+| `@flighthq/shortcut` | `flighthq-shortcut` | 2 | 1 | 26 | yes | 0 |
+| `@flighthq/signals` | `flighthq-signals` | 6 | 5 | 14 | yes | 0 |
+| `@flighthq/skeleton3d` | `flighthq-skeleton3d` | 6 | 5 | 16 | yes | 0 |
+| `@flighthq/snapshot` | `flighthq-snapshot` | 5 | 4 | 4 | yes | 0 |
+| `@flighthq/socket` | `flighthq-socket` | 2 | 1 | 11 | yes | 0 |
+| `@flighthq/spatial` | `flighthq-spatial` | 3 | 2 | 10 | yes | 0 |
+| `@flighthq/spring` | `flighthq-spring` | 8 | 7 | 12 | yes | 0 |
+| `@flighthq/sprite` | `flighthq-sprite` | 4 | 3 | 64 | yes | 0 |
+| `@flighthq/spritesheet` | `flighthq-spritesheet` | 8 | 7 | 32 | yes | 0 |
+| `@flighthq/spritesheet-formats` | `flighthq-spritesheet-formats` | 16 | 10 | 55 | yes | 0 |
+| `@flighthq/statusbar` | `flighthq-statusbar` | 2 | 1 | 16 | yes | 0 |
+| `@flighthq/storage` | `flighthq-storage` | 2 | 1 | 39 | yes | 0 |
+| `@flighthq/surface` | `flighthq-surface` | 42 | 41 | 136 | yes | 0 |
+| `@flighthq/text` | `flighthq-text` | 6 | 5 | 86 | yes | 0 |
+| `@flighthq/text-markup` | `flighthq-text-markup` | 5 | 4 | 8 | yes | 0 |
+| `@flighthq/textbidi` | `flighthq-textbidi` | 5 | 4 | 6 | yes | 0 |
+| `@flighthq/textinput` | `flighthq-textinput` | 5 | 4 | 55 | yes | 0 |
+| `@flighthq/textlayout` | `flighthq-textlayout` | 13 | 12 | 47 | yes | 0 |
+| `@flighthq/textsegment` | `flighthq-textsegment` | 4 | 3 | 11 | yes | 0 |
+| `@flighthq/textshaper` | `flighthq-textshaper` | 9 | 8 | 31 | yes | 0 |
+| `@flighthq/textshaper-canvas` | `flighthq-textshaper-canvas` | 2 | 1 | 3 | yes | 0 |
+| `@flighthq/texture` | `flighthq-texture` | 5 | 4 | 42 | yes | 0 |
+| `@flighthq/texture-formats` | `flighthq-texture-formats` | 9 | 8 | 6 | yes | 0 |
+| `@flighthq/textureatlas` | `flighthq-textureatlas` | 4 | 3 | 20 | yes | 0 |
+| `@flighthq/textureatlas-formats` | `flighthq-textureatlas-formats` | 8 | 5 | 29 | yes | 0 |
+| `@flighthq/tilemap-formats` | `flighthq-tilemap-formats` | 9 | 7 | 16 | yes | 0 |
+| `@flighthq/tileset` | `flighthq-tileset` | 3 | 2 | 9 | yes | 0 |
+| `@flighthq/timeline` | `flighthq-timeline` | 2 | 1 | 16 | yes | 0 |
+| `@flighthq/tool-capture` | `flighthq-tool-capture` | 12 | 11 | 57 | no | 0 |
+| `@flighthq/tray` | `flighthq-tray` | 2 | 1 | 23 | yes | 0 |
+| `@flighthq/tween` | `flighthq-tween` | 9 | 7 | 35 | yes | 0 |
+| `@flighthq/types` | `flighthq-types` | 590 | 29 | 1261 | yes | 0 |
+| `@flighthq/updater` | `flighthq-updater` | 2 | 1 | 23 | yes | 0 |
+| `@flighthq/useragent` | `flighthq-useragent` | 3 | 2 | 12 | yes | 0 |
+| `@flighthq/velocity` | `flighthq-velocity` | 4 | 3 | 20 | yes | 0 |
+| `@flighthq/video` | `flighthq-video` | 4 | 3 | 16 | yes | 0 |
+| `@flighthq/webcam` | `flighthq-webcam` | 3 | 2 | 10 | yes | 0 |
+| `@flighthq/xml` | `flighthq-xml` | 3 | 2 | 7 | yes | 0 |

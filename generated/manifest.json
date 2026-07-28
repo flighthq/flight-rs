@@ -1,0 +1,151 @@
+{
+  "blessedFacades": [
+    {
+      "package": "@flighthq/surface-rs",
+      "path": "packages/surface-rs",
+      "reason": "Curated JavaScript/wasm boundary for the generated @flighthq/surface implementation."
+    }
+  ],
+  "schemaVersion": 1,
+  "targets": [
+    {
+      "crate": "flighthq-easing",
+      "emittedSources": [
+        {
+          "declarations": 5,
+          "output": "generated/crates/flighthq-easing/src/ease_back.rs",
+          "outputSha256": "sha256:e748ba0232db43cd1fd5c6575484631125a1be6426f67d6db3cab8d260830e71",
+          "source": "upstream/packages/easing/src/easeBack.ts"
+        },
+        {
+          "declarations": 4,
+          "output": "generated/crates/flighthq-easing/src/ease_bounce.rs",
+          "outputSha256": "sha256:70faf24954282d3d3e0ca1eb6d629e1c1779f19961dbb32d8c1b06a4ef070ced",
+          "source": "upstream/packages/easing/src/easeBounce.ts"
+        },
+        {
+          "declarations": 3,
+          "output": "generated/crates/flighthq-easing/src/ease_circular.rs",
+          "outputSha256": "sha256:ff31f472ffef7e2ef87b60c0d75f5f653c28e660ebbf8e3240edce7c4e73dc93",
+          "source": "upstream/packages/easing/src/easeCircular.ts"
+        },
+        {
+          "declarations": 6,
+          "output": "generated/crates/flighthq-easing/src/ease_combinators.rs",
+          "outputSha256": "sha256:933538ed2254967013f901c2e8d284a535ccf5d0d663e72d0ef1570bec5266e4",
+          "source": "upstream/packages/easing/src/easeCombinators.ts"
+        },
+        {
+          "declarations": 3,
+          "output": "generated/crates/flighthq-easing/src/ease_cubic.rs",
+          "outputSha256": "sha256:4424a154e6402c6e4da2445d2d56609f9d5f8cebd8b3464430ecae2d0253198d",
+          "source": "upstream/packages/easing/src/easeCubic.ts"
+        },
+        {
+          "declarations": 1,
+          "output": "generated/crates/flighthq-easing/src/ease_cubic_bezier.rs",
+          "outputSha256": "sha256:e34b72e878a099df72619e8ad0a5b481787d779456d01be9235751d8f2e041b1",
+          "source": "upstream/packages/easing/src/easeCubicBezier.ts"
+        },
+        {
+          "declarations": 7,
+          "output": "generated/crates/flighthq-easing/src/ease_elastic.rs",
+          "outputSha256": "sha256:b54fcbd80a8605d48077e9dfc27d9b5a06aa41c146f19b0444460fd88a7983c8",
+          "source": "upstream/packages/easing/src/easeElastic.ts"
+        },
+        {
+          "declarations": 3,
+          "output": "generated/crates/flighthq-easing/src/ease_exponential.rs",
+          "outputSha256": "sha256:af23d33f51f7f1e28c3dff689ffb3db3205bc4f7967d6488b33452fe7270ab84",
+          "source": "upstream/packages/easing/src/easeExponential.ts"
+        },
+        {
+          "declarations": 1,
+          "output": "generated/crates/flighthq-easing/src/ease_linear.rs",
+          "outputSha256": "sha256:6ab6213bda892d0220c7fe95da4cade96fd32030d2cd01020378226458f3b38c",
+          "source": "upstream/packages/easing/src/easeLinear.ts"
+        },
+        {
+          "declarations": 3,
+          "output": "generated/crates/flighthq-easing/src/ease_power.rs",
+          "outputSha256": "sha256:9c35b56b23b86ebde74efea081266ad18d6e464b0923702b339977884f2099e8",
+          "source": "upstream/packages/easing/src/easePower.ts"
+        },
+        {
+          "declarations": 3,
+          "output": "generated/crates/flighthq-easing/src/ease_quadratic.rs",
+          "outputSha256": "sha256:53b49e1722dfcaf03555306d177c6054b297fa5d98c6b345a4abe39569cadeaf",
+          "source": "upstream/packages/easing/src/easeQuadratic.ts"
+        },
+        {
+          "declarations": 3,
+          "output": "generated/crates/flighthq-easing/src/ease_quartic.rs",
+          "outputSha256": "sha256:b6a08947ca4a677c27b154cfd4cdde1e329c1d5fcb49e0713a01010a6f936cbb",
+          "source": "upstream/packages/easing/src/easeQuartic.ts"
+        },
+        {
+          "declarations": 3,
+          "output": "generated/crates/flighthq-easing/src/ease_quintic.rs",
+          "outputSha256": "sha256:58b43ebbcb8f67e26631103a82b7b6f52f4e21c2f7d082e1eae18c685a7a73c1",
+          "source": "upstream/packages/easing/src/easeQuintic.ts"
+        },
+        {
+          "declarations": 3,
+          "output": "generated/crates/flighthq-easing/src/ease_sine.rs",
+          "outputSha256": "sha256:2e3f58cc74f4a05d0c2b2633594b513d09bace4102f05efa8d0a4008cf9f488b",
+          "source": "upstream/packages/easing/src/easeSine.ts"
+        },
+        {
+          "declarations": 3,
+          "output": "generated/crates/flighthq-easing/src/ease_smoothstep.rs",
+          "outputSha256": "sha256:cf9f65dcf6d1ff7e8ae85819e5f0c8c0c1dd61eed1bdd78a897a0a8bddc46c6f",
+          "source": "upstream/packages/easing/src/easeSmoothstep.ts"
+        },
+        {
+          "declarations": 1,
+          "output": "generated/crates/flighthq-easing/src/ease_steps.rs",
+          "outputSha256": "sha256:d2e519f5b620e6d4f7a6a09ce5cb54c7663151de40c1384ebedf14e5b398c518",
+          "source": "upstream/packages/easing/src/easeSteps.ts"
+        },
+        {
+          "declarations": 2,
+          "output": "generated/crates/flighthq-easing/src/get_easing_derivative.rs",
+          "outputSha256": "sha256:50ae050c0f75eaa42b12ae817e96429549133806eafc74fed74956e552f9f59b",
+          "source": "upstream/packages/easing/src/getEasingDerivative.ts"
+        }
+      ],
+      "package": "@flighthq/easing",
+      "sourceExclusions": [
+        {
+          "fingerprint": "sha256:4b33f8de58d553aafde59ba5ae35aec0e3e56cb8333cb0c7dc72188b9e714a90",
+          "reason": "Float32Array out-parameter ownership requires the general typed-array borrow rule; emitting a Vec would break alias identity.",
+          "source": "upstream/packages/easing/src/createEasingSamples.ts"
+        },
+        {
+          "fingerprint": "sha256:e58817ba7777eb009955a669f12a0ae854784c12ce540f5c677ee2479848df42",
+          "reason": "Readonly structural-array ownership and reduce lowering must be generalized before emitting the segment table.",
+          "source": "upstream/packages/easing/src/easePiecewise.ts"
+        }
+      ],
+      "unsupportedSources": [],
+      "typeMappings": {
+        "EasingFunction": {
+          "source": "upstream/packages/types/src/EasingFunction.ts",
+          "rust": "std::sync::Arc<dyn Fn(f64) -> f64 + Send + Sync + 'static>",
+          "reason": "A shared immutable callable preserves TypeScript function-value semantics across returned closures."
+        },
+        "ScalarRemap": {
+          "source": "upstream/packages/types/src/ScalarRemap.ts",
+          "rust": "std::sync::Arc<dyn Fn(f64) -> f64 + Send + Sync + 'static>",
+          "reason": "ScalarRemap has the same callable representation as EasingFunction."
+        },
+        "StepPosition": {
+          "source": "upstream/packages/types/src/StepPosition.ts",
+          "rust": "&'static str",
+          "reason": "The initial target preserves the closed string vocabulary while enum lowering is generalized."
+        }
+      }
+    }
+  ],
+  "upstreamCommit": "5d24729f7360475e28a105ae0caeeaa2e1328260"
+}

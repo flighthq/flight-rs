@@ -1,0 +1,10 @@
+node_modules/
+dist/
+build/
+coverage/
+target/
+*.log
+*.tsbuildinfo
+.DS_Store
+.quimby
+

@@ -1,0 +1,30 @@
+{
+  "name": "flight-rs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "check": "npm run generate:check && npm run typecheck && npm run lint && npm run format:check && npm run test",
+    "ci": "npm run check && cargo test --workspace",
+    "clean": "node -e \"for (const path of ['dist', 'build', 'coverage']) require('fs').rmSync(path, { force: true, recursive: true })\"",
+    "fix": "npm run lint:fix && npm run format",
+    "format": "oxfmt --write .",
+    "format:check": "oxfmt --check .",
+    "generate": "tsx tools/generator/src/cli.ts",
+    "generate:check": "tsx tools/generator/src/cli.ts --check",
+    "inventory": "tsx tools/generator/src/cli.ts --inventory --json",
+    "lint": "oxlint --max-warnings=0",
+    "lint:fix": "oxlint --fix --max-warnings=0",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "22.19.7",
+    "@vitest/coverage-v8": "4.1.10",
+    "oxfmt": "0.57.0",
+    "oxlint": "1.72.0",
+    "tsx": "4.22.4",
+    "typescript": "5.9.3",
+    "vitest": "4.1.10"
+  }
+}

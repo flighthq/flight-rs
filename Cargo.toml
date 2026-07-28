@@ -1,0 +1,4 @@
+[workspace]
+members = ["generated/crates/flighthq-easing"]
+resolver = "3"
+
