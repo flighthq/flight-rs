@@ -3374,6 +3374,7 @@ function emitAssignment(expression: Extract<IrExpression, { kind: 'assignment' }
   if (entityRuntimeAssignment) return entityRuntimeAssignment;
   const lateRuntimeAssignment = emitLateEntityRuntimeFieldAssignment(expression, context, true);
   if (lateRuntimeAssignment) return lateRuntimeAssignment;
+  if (isErasedEntityRuntimeAccess(expression.left)) rejectEntityRuntimeStorage();
   if (
     isErasedEntityRuntimeTreeAccess(expression.left) &&
     !isNativeEntityRuntimeTreeAccess(expression.left, context)
@@ -3448,6 +3449,7 @@ function emitAssignmentStatement(
   if (entityRuntimeAssignment) return entityRuntimeAssignment;
   const lateRuntimeAssignment = emitLateEntityRuntimeFieldAssignment(expression, context, false);
   if (lateRuntimeAssignment) return lateRuntimeAssignment;
+  if (isErasedEntityRuntimeAccess(expression.left)) rejectEntityRuntimeStorage();
   if (
     isErasedEntityRuntimeTreeAccess(expression.left) &&
     !isNativeEntityRuntimeTreeAccess(expression.left, context)
@@ -4353,6 +4355,7 @@ function emitTypeDeclaration(
   ];
   if (entity && name === 'Entity') {
     emitted.push(
+      '#[doc(hidden)]',
       `${visibility}trait FlightEntity {`,
       `  fn __flight_entity_runtime(&self) -> &std::sync::Arc<std::sync::Mutex<Option<${entityRuntime!}>>>;`,
       '}',
@@ -4400,13 +4403,19 @@ function emitEntityRuntimeSlotDeclaration(
 
 function entityRuntimeTypePath(context: EmitContext): string {
   if (context.localTypeNames.has('EntityRuntime')) return 'EntityRuntime';
-  const importedModule = context.importedModules.get('EntityRuntime') ?? context.importedModules.get('Entity');
+  const importedModule =
+    context.importedModules.get('EntityRuntime') ??
+    context.importedModules.get('Entity') ??
+    context.importedModules.get('EntityRuntimeKey');
   return importedModule ? `${importedModule}::EntityRuntime` : 'crate::EntityRuntime';
 }
 
 function entityRuntimeMarkerTraitPath(context: EmitContext): string {
   if (context.localTypeNames.has('EntityRuntime')) return 'FlightEntityRuntimeMarker';
-  const importedModule = context.importedModules.get('EntityRuntime') ?? context.importedModules.get('Entity');
+  const importedModule =
+    context.importedModules.get('EntityRuntime') ??
+    context.importedModules.get('Entity') ??
+    context.importedModules.get('EntityRuntimeKey');
   return importedModule ? `${importedModule}::FlightEntityRuntimeMarker` : 'crate::FlightEntityRuntimeMarker';
 }
 
@@ -4420,7 +4429,8 @@ function entityTraitTypePath(context: EmitContext): string {
   const importedModule =
     context.importedModules.get('FlightEntity') ??
     context.importedModules.get('EntityRuntime') ??
-    context.importedModules.get('Entity');
+    context.importedModules.get('Entity') ??
+    context.importedModules.get('EntityRuntimeKey');
   return importedModule ? `${importedModule}::FlightEntity` : 'crate::FlightEntity';
 }
 
@@ -5047,6 +5057,23 @@ function inferEntityTypeParameters(
         const objectType = inferIrExpressionType(expression.object, context);
         if (objectType?.kind === 'named' && lexical.has(objectType.name)) found.add(objectType.name);
       }
+    }
+    if (
+      'kind' in value &&
+      value.kind === 'binary' &&
+      'left' in value &&
+      'right' in value &&
+      value.left &&
+      typeof value.left === 'object' &&
+      'kind' in value.left &&
+      value.left.kind === 'identifier' &&
+      'name' in value.left &&
+      value.left.name === 'EntityRuntimeKey' &&
+      value.right &&
+      typeof value.right === 'object'
+    ) {
+      const receiver = inferIrExpressionType(value.right as IrExpression, context);
+      if (receiver?.kind === 'named' && lexical.has(receiver.name)) found.add(receiver.name);
     }
     for (const child of Object.values(value)) {
       if (Array.isArray(child)) child.forEach(visit);

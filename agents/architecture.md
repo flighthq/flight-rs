@@ -75,7 +75,9 @@ Symbol-keyed `EntityRuntimeKey` storage uses a generated shared native slot on e
 shape. Package-visible runtime extensions populate one typed aggregate handle; field-name/type collisions and
 nested structural identities fall back to source-named typed slots inside that handle. Reads, writes, deletes,
 membership tests, computed initializers, and structural projections preserve the shared slot. Receivers outside
-the statically closed entity family remain emission blockers instead of falling back to opaque state.
+the statically closed entity family remain emission blockers instead of falling back to opaque state. Runtime
+alias parameters retain their Rust arity through zero-storage marker projections that normalize to the same
+handle.
 
 Package-wide exported-type catalogs drive discriminated open-interface discovery. A family is widened only when descendants explicitly redeclare `kind` and every widened member is safely default-materializable. This promotes the Light family without corrupting recursive trait hierarchies or callback-bearing families. Families that cannot satisfy that invariant need a tagged payload representation rather than unsafe zeroed/default storage.
 

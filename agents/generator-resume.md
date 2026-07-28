@@ -212,7 +212,8 @@ The implementation does not widen `EntityRuntime` from a handwritten list. A pac
 preserves generic parameters through aliases and applications, then builds a generated aggregate handle.
 Compatible extension fields stay flat. Reused field names with incompatible types, plus nested structural fields
 whose nominal provenance must survive module boundaries, use source-named typed slots inside the same handle.
-A dynamic/opaque map is never used, so node and backend-specific code retain field types.
+Runtime aliases retain declared arity through zero-storage associated-type markers that normalize to the same
+handle. A dynamic/opaque map is never used, so node and backend-specific code retain field types.
 
 The checked-in generation report predates this implementation. Regenerate the full matrix before claiming
 diagnostic or package-count movement; the focused emitter fixtures are compile-backed when `rustc` is available.

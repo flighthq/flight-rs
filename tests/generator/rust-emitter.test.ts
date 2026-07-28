@@ -1871,6 +1871,9 @@ describe('Rust emission', () => {
         export function hasRuntime(source: Node): boolean {
           return EntityRuntimeKey in source;
         }
+        export function hasGenericRuntime<Type>(source: Type): boolean {
+          return EntityRuntimeKey in source;
+        }
         export function readProjected(source: Node): number {
           const projected = source as Entity;
           return projected[EntityRuntimeKey].count;
@@ -1910,6 +1913,7 @@ describe('Rust emission', () => {
     expect(output).toContain('pub trait FlightEntity');
     expect(output).toContain('__flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<EntityRuntime>>>');
     expect(output).toContain('Type: Clone + FlightEntity');
+    expect(output).toContain('pub fn has_generic_runtime<Type: Clone + FlightEntity>');
     expect(output).toContain('.lock().unwrap().take().is_some()');
     expect(output).toContain('.lock().unwrap().is_some()');
     expect(output).toContain('__flight_entity_runtime: std::sync::Arc::clone(');
