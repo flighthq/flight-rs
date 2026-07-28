@@ -18,6 +18,11 @@ declare module '@flighthq/types' {
     y: number;
   }
 
+  export interface SurfaceFingerprint {
+    readonly cells: Uint8Array;
+    readonly gridSize: number;
+  }
+
   export interface SurfaceRegion {
     height: number;
     surface: Surface;

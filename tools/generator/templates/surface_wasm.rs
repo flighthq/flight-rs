@@ -7,15 +7,16 @@ use flighthq_surface::{
     build_surface_grayscale_color_matrix,
     build_surface_hue_rotation_color_matrix, build_surface_invert_color_matrix,
     build_surface_saturation_color_matrix, build_surface_sepia_color_matrix,
-    color_matrix_surface, concat_surface_color_matrix, convolve_surface, copy_surface_alpha,
-    copy_surface_pixels, dilate_surface, erode_surface, fill_surface_noise,
-    fill_surface_perlin_noise, fill_surface_rectangle, fill_surface_turbulence,
+    color_matrix_surface, compare_surface_fingerprints, concat_surface_color_matrix,
+    convolve_surface, copy_surface_alpha, copy_surface_pixels, create_surface_fingerprint,
+    dilate_surface, erode_surface, fill_surface_noise, fill_surface_perlin_noise,
+    fill_surface_rectangle, fill_surface_turbulence,
     get_surface_color_bounds_rectangle, get_surface_coverage, get_surface_histogram,
     get_surface_mismatch, merge_surface_channels, multiply_surface_alpha, pixelate_surface,
     premultiply_surface_pixels, set_surface_alpha, set_surface_color_matrix_identity,
     unpremultiply_surface_pixels,
 };
-use flighthq_types::{Surface, SurfaceRegion};
+use flighthq_types::{Surface, SurfaceFingerprint, SurfaceRegion};
 use wasm_bindgen::prelude::*;
 
 fn surface(data: &[u8], width: f64, height: f64) -> Surface {
@@ -44,6 +45,13 @@ fn region(data: &[u8], descriptor: &[f64]) -> SurfaceRegion {
         y: descriptor[3],
         width: descriptor[4],
         height: descriptor[5],
+    }
+}
+
+fn fingerprint(cells: &[u8], grid_size: f64) -> SurfaceFingerprint {
+    SurfaceFingerprint {
+        cells: cells.to_vec(),
+        grid_size,
     }
 }
 
@@ -212,6 +220,34 @@ pub fn color_matrix_surface_wasm(
     let source = region(source_data, source_descriptor);
     color_matrix_surface(&mut owned, &source, &matrix.to_vec());
     copy_u8_output(out, &owned);
+}
+
+#[wasm_bindgen]
+pub fn compare_surface_fingerprints_wasm(
+    first_cells: &[u8],
+    first_grid_size: f64,
+    second_cells: &[u8],
+    second_grid_size: f64,
+) -> f64 {
+    compare_surface_fingerprints(
+        &fingerprint(first_cells, first_grid_size),
+        &fingerprint(second_cells, second_grid_size),
+    )
+}
+
+#[wasm_bindgen]
+pub fn create_surface_fingerprint_wasm(
+    out: &mut [u8],
+    source_data: &[u8],
+    source_width: f64,
+    source_height: f64,
+    grid_size: f64,
+) {
+    let result = create_surface_fingerprint(
+        &surface(source_data, source_width, source_height),
+        Some(grid_size),
+    );
+    copy_u8_output(out, &result.cells);
 }
 
 #[wasm_bindgen]

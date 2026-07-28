@@ -1,7 +1,8 @@
 use flighthq_surface::{
     SurfaceConvolutionOptions, apply_surface_curve, apply_surface_levels,
     apply_surface_palette_map, build_surface_brightness_color_matrix, color_matrix_surface,
-    convolve_surface, copy_surface_pixels, dilate_surface, erode_surface, fill_surface_noise,
+    compare_surface_fingerprints, convolve_surface, copy_surface_pixels,
+    create_surface_fingerprint, dilate_surface, erode_surface, fill_surface_noise,
     fill_surface_rectangle, get_surface_color_bounds_rectangle, get_surface_coverage,
     get_surface_histogram, get_surface_mismatch, get_surface_pixel, get_surface_pixel_luminance,
     get_surface_pixel_rgb, merge_surface_channels, multiply_surface_alpha, pixelate_surface,
@@ -268,4 +269,21 @@ fn channel_merge_reads_each_selected_source_channel() {
 
     assert_eq!(out.surface.data, vec![10, 20, 30, 40]);
     assert_eq!(out.surface.version, 1.0);
+}
+
+#[test]
+fn generated_fingerprints_compose_structural_records_and_typed_arrays() {
+    let first = surface(vec![0, 10, 20, 255, 100, 110, 120, 255], 2.0, 1.0);
+    let mut second = first.clone();
+    second.data[4] = 140;
+
+    let first_fingerprint = create_surface_fingerprint(&first, Some(1.0));
+    let second_fingerprint = create_surface_fingerprint(&second, Some(1.0));
+
+    assert_eq!(first_fingerprint.grid_size, 1.0);
+    assert_eq!(first_fingerprint.cells, vec![50, 60, 70]);
+    assert_eq!(
+        compare_surface_fingerprints(&first_fingerprint, &second_fingerprint),
+        20.0 / 3.0,
+    );
 }

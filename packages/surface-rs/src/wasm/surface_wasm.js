@@ -167,6 +167,22 @@ export function color_matrix_surface_wasm(out, source_data, source_descriptor, m
 }
 
 /**
+ * @param {Uint8Array} first_cells
+ * @param {number} first_grid_size
+ * @param {Uint8Array} second_cells
+ * @param {number} second_grid_size
+ * @returns {number}
+ */
+export function compare_surface_fingerprints_wasm(first_cells, first_grid_size, second_cells, second_grid_size) {
+    const ptr0 = passArray8ToWasm0(first_cells, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ptr1 = passArray8ToWasm0(second_cells, wasm.__wbindgen_malloc);
+    const len1 = WASM_VECTOR_LEN;
+    const ret = wasm.compare_surface_fingerprints_wasm(ptr0, len0, first_grid_size, ptr1, len1, second_grid_size);
+    return ret;
+}
+
+/**
  * @param {Float64Array} out
  * @param {Float64Array} first
  * @param {Float64Array} second
@@ -242,6 +258,21 @@ export function copy_surface_pixels_wasm(dest_data, dest_descriptor, source_data
     const ptr3 = passArrayF64ToWasm0(source_descriptor, wasm.__wbindgen_malloc);
     const len3 = WASM_VECTOR_LEN;
     wasm.copy_surface_pixels_wasm(ptr0, len0, dest_data, ptr1, len1, ptr2, len2, ptr3, len3, composite);
+}
+
+/**
+ * @param {Uint8Array} out
+ * @param {Uint8Array} source_data
+ * @param {number} source_width
+ * @param {number} source_height
+ * @param {number} grid_size
+ */
+export function create_surface_fingerprint_wasm(out, source_data, source_width, source_height, grid_size) {
+    var ptr0 = passArray8ToWasm0(out, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    const ptr1 = passArray8ToWasm0(source_data, wasm.__wbindgen_malloc);
+    const len1 = WASM_VECTOR_LEN;
+    wasm.create_surface_fingerprint_wasm(ptr0, len0, out, ptr1, len1, source_width, source_height, grid_size);
 }
 
 /**

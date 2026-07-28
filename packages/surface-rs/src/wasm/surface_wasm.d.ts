@@ -23,6 +23,8 @@ export function build_surface_sepia_color_matrix_wasm(out: Float64Array): void;
 
 export function color_matrix_surface_wasm(out: Uint8Array, source_data: Uint8Array, source_descriptor: Float64Array, matrix: Float64Array): void;
 
+export function compare_surface_fingerprints_wasm(first_cells: Uint8Array, first_grid_size: number, second_cells: Uint8Array, second_grid_size: number): number;
+
 export function concat_surface_color_matrix_wasm(out: Float64Array, first: Float64Array, second: Float64Array): void;
 
 export function convolve_surface_wasm(out: Uint8Array, source_data: Uint8Array, source_descriptor: Float64Array, matrix: Float64Array, matrix_x: number, matrix_y: number, bias: number, edge: string, divisor: number, preserve_alpha: boolean): void;
@@ -30,6 +32,8 @@ export function convolve_surface_wasm(out: Uint8Array, source_data: Uint8Array, 
 export function copy_surface_alpha_wasm(dest_data: Uint8Array, dest_descriptor: Float64Array, source_data: Uint8Array, source_descriptor: Float64Array): void;
 
 export function copy_surface_pixels_wasm(dest_data: Uint8Array, dest_descriptor: Float64Array, source_data: Uint8Array, source_descriptor: Float64Array, composite: boolean): void;
+
+export function create_surface_fingerprint_wasm(out: Uint8Array, source_data: Uint8Array, source_width: number, source_height: number, grid_size: number): void;
 
 export function dilate_surface_wasm(out: Uint8Array, source_data: Uint8Array, source_descriptor: Float64Array, radius: number): void;
 
@@ -80,10 +84,12 @@ export interface InitOutput {
     readonly build_surface_saturation_color_matrix_wasm: (a: number, b: number, c: any, d: number) => void;
     readonly build_surface_sepia_color_matrix_wasm: (a: number, b: number, c: any) => void;
     readonly color_matrix_surface_wasm: (a: number, b: number, c: any, d: number, e: number, f: number, g: number, h: number, i: number) => void;
+    readonly compare_surface_fingerprints_wasm: (a: number, b: number, c: number, d: number, e: number, f: number) => number;
     readonly concat_surface_color_matrix_wasm: (a: number, b: number, c: any, d: number, e: number, f: number, g: number) => void;
     readonly convolve_surface_wasm: (a: number, b: number, c: any, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number, m: number, n: number, o: number, p: number) => void;
     readonly copy_surface_alpha_wasm: (a: number, b: number, c: any, d: number, e: number, f: number, g: number, h: number, i: number) => void;
     readonly copy_surface_pixels_wasm: (a: number, b: number, c: any, d: number, e: number, f: number, g: number, h: number, i: number, j: number) => void;
+    readonly create_surface_fingerprint_wasm: (a: number, b: number, c: any, d: number, e: number, f: number, g: number, h: number) => void;
     readonly dilate_surface_wasm: (a: number, b: number, c: any, d: number, e: number, f: number, g: number, h: number) => void;
     readonly erode_surface_wasm: (a: number, b: number, c: any, d: number, e: number, f: number, g: number, h: number) => void;
     readonly fill_surface_noise_wasm: (a: number, b: number, c: any, d: number, e: number, f: number, g: number, h: number, i: number) => void;

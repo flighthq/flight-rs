@@ -167,6 +167,15 @@ describe('generated wasm boundary', () => {
       reference.getSurfaceMismatch(expectedSurface, comparison, 10),
     );
 
+    const actualFingerprint = rs.createSurfaceFingerprint(actualSurface, 2);
+    const expectedFingerprint = reference.createSurfaceFingerprint(expectedSurface, 2);
+    expect(actualFingerprint.gridSize).toBe(expectedFingerprint.gridSize);
+    expect(actualFingerprint.cells).toEqual(expectedFingerprint.cells);
+    const comparisonFingerprint = reference.createSurfaceFingerprint(comparison, 2);
+    expect(rs.compareSurfaceFingerprints(actualFingerprint, comparisonFingerprint)).toBe(
+      reference.compareSurfaceFingerprints(expectedFingerprint, comparisonFingerprint),
+    );
+
     rs.mergeSurfaceChannels(actual, sourceRegion, sourceRegion, sourceRegion, sourceRegion);
     reference.mergeSurfaceChannels(expected, sourceRegion, sourceRegion, sourceRegion, sourceRegion);
     expect(actualSurface.data).toEqual(expectedSurface.data);

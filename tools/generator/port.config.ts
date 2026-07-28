@@ -52,10 +52,12 @@ export const portConfig = {
         'buildSurfaceSaturationColorMatrix',
         'buildSurfaceSepiaColorMatrix',
         'colorMatrixSurface',
+        'compareSurfaceFingerprints',
         'concatSurfaceColorMatrix',
         'convolveSurface',
         'copySurfaceAlpha',
         'copySurfacePixels',
+        'createSurfaceFingerprint',
         'dilateSurface',
         'erodeSurface',
         'fillSurfaceNoise',
@@ -180,6 +182,11 @@ export const portConfig = {
           reason:
             'Flood fill joins after reusable module-level scratch buffers lower to generated Rust synchronization primitives.',
         },
+        'surfaceFingerprint.ts': {
+          names: ['compareSurfaceFingerprints', 'createSurfaceFingerprint'],
+          reason:
+            'String slicing and numeric text parsing remain at the TypeScript boundary; typed-array fingerprint construction and comparison are independently portable.',
+        },
         'surfaceFormat.ts': {
           names: ['premultiplySurfacePixels', 'unpremultiplySurfacePixels'],
           reason:
@@ -226,6 +233,7 @@ export const portConfig = {
           'surfaceCopy.ts',
           'surfaceCoverage.ts',
           'surfaceFill.ts',
+          'surfaceFingerprint.ts',
           'surfaceFormat.ts',
           'surfaceHistogram.ts',
           'surfaceMorphological.ts',

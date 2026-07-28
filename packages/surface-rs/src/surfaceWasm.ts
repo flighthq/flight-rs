@@ -1,6 +1,13 @@
 import { invalidateImageResource } from '@flighthq/image';
 import type { SurfaceConvolutionOptions } from '@flighthq/surface';
-import type { RectangleLike, Surface, SurfaceHistogram, SurfaceMismatch, SurfaceRegion } from '@flighthq/types';
+import type {
+  RectangleLike,
+  Surface,
+  SurfaceFingerprint,
+  SurfaceHistogram,
+  SurfaceMismatch,
+  SurfaceRegion,
+} from '@flighthq/types';
 
 import {
   apply_surface_curve_wasm,
@@ -14,10 +21,12 @@ import {
   build_surface_saturation_color_matrix_wasm,
   build_surface_sepia_color_matrix_wasm,
   color_matrix_surface_wasm,
+  compare_surface_fingerprints_wasm,
   concat_surface_color_matrix_wasm,
   convolve_surface_wasm,
   copy_surface_alpha_wasm,
   copy_surface_pixels_wasm,
+  create_surface_fingerprint_wasm,
   dilate_surface_wasm,
   erode_surface_wasm,
   fill_surface_noise_wasm,
@@ -169,6 +178,26 @@ export function colorMatrixSurface(
     descriptorOf(source),
     Float64Array.from(matrix),
   );
+}
+
+export function compareSurfaceFingerprints(
+  first: Readonly<SurfaceFingerprint>,
+  second: Readonly<SurfaceFingerprint>,
+): number {
+  ensureSurfaceWasm();
+  return compare_surface_fingerprints_wasm(
+    asUint8(first.cells),
+    first.gridSize,
+    asUint8(second.cells),
+    second.gridSize,
+  );
+}
+
+export function createSurfaceFingerprint(source: Readonly<Surface>, gridSize: number = 16): SurfaceFingerprint {
+  ensureSurfaceWasm();
+  const cells = new Uint8Array(gridSize * gridSize * 3);
+  create_surface_fingerprint_wasm(cells, asUint8(source.data), source.width, source.height, gridSize);
+  return { cells, gridSize };
 }
 
 export function convolveSurface(

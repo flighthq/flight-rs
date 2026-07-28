@@ -3409,6 +3409,24 @@
           "source": "upstream/packages/surface/src/surfaceFill.ts"
         },
         {
+          "fingerprint": "sha256:7d8479995dd468f574ead3bc9ae38fadf83c33fd44f0ac449dc6ff2eda249e77",
+          "name": "formatSurfaceFingerprint",
+          "reason": "String slicing and numeric text parsing remain at the TypeScript boundary; typed-array fingerprint construction and comparison are independently portable.",
+          "source": "upstream/packages/surface/src/surfaceFingerprint.ts"
+        },
+        {
+          "fingerprint": "sha256:03fef51e4e9414af24e9c301e68466246666779d3c19a7bcd3c8f4bb467a2b47",
+          "name": "HEX",
+          "reason": "String slicing and numeric text parsing remain at the TypeScript boundary; typed-array fingerprint construction and comparison are independently portable.",
+          "source": "upstream/packages/surface/src/surfaceFingerprint.ts"
+        },
+        {
+          "fingerprint": "sha256:bc6e1955245ff2282c021186b33daf374e64766e77258507ddd0d58b872656ef",
+          "name": "parseSurfaceFingerprint",
+          "reason": "String slicing and numeric text parsing remain at the TypeScript boundary; typed-array fingerprint construction and comparison are independently portable.",
+          "source": "upstream/packages/surface/src/surfaceFingerprint.ts"
+        },
+        {
           "fingerprint": "sha256:d77f3a792cc4061ce6d5eed0ee406d55fe7cd65c2e6e0ea715fa37bebcbf4c02",
           "name": "channelOffsets",
           "reason": "Pixel-order conversion joins after tuple destructuring and typed-array subarray/set methods lower without losing alias safety.",
@@ -3494,11 +3512,6 @@
           "fingerprint": "sha256:772bd7c6162216f81aac20f938d4497905e1477c44ced4bf6fe91e315a4ecfb8",
           "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
           "source": "upstream/packages/surface/src/surfaceEncode.ts"
-        },
-        {
-          "fingerprint": "sha256:b53d4235f2f6521a670946f8924fe2ec606f7cfd6786f14f980b88b57cd42773",
-          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
-          "source": "upstream/packages/surface/src/surfaceFingerprint.ts"
         },
         {
           "fingerprint": "sha256:7542550265e2150618a24d2b438e1399191728ec4c500052e880be6583d6c321",
@@ -3661,6 +3674,16 @@
         },
         {
           "declarationNames": [
+            "compareSurfaceFingerprints",
+            "createSurfaceFingerprint"
+          ],
+          "declarations": 2,
+          "output": "generated/crates/flighthq-surface/src/surface_fingerprint.rs",
+          "outputSha256": "sha256:7d00e907cfc5b0a4dfe5736f7917469b9da4b00c2b4074d1e38b6f86e5b5e129",
+          "source": "upstream/packages/surface/src/surfaceFingerprint.ts"
+        },
+        {
+          "declarationNames": [
             "premultiplySurfacePixels",
             "unpremultiplySurfacePixels"
           ],
@@ -3794,10 +3817,12 @@
         "buildSurfaceSaturationColorMatrix",
         "buildSurfaceSepiaColorMatrix",
         "colorMatrixSurface",
+        "compareSurfaceFingerprints",
         "concatSurfaceColorMatrix",
         "convolveSurface",
         "copySurfaceAlpha",
         "copySurfacePixels",
+        "createSurfaceFingerprint",
         "dilateSurface",
         "erodeSurface",
         "fillSurfaceNoise",
@@ -3817,9 +3842,9 @@
         "unpremultiplySurfacePixels"
       ],
       "output": "generated/crates/flighthq-surface-wasm/src/lib.rs",
-      "outputSha256": "sha256:6a89d9fb160c62fe70eaf42238b89c499b6a3bec3d8240a570a2dd8a18622e2d",
+      "outputSha256": "sha256:f1560f1d22ebda535c9be597add725906e8fee0ea6e4bbf852905767a12c3461",
       "template": "tools/generator/templates/surface_wasm.rs",
-      "templateSha256": "sha256:9e0b48ab0316e0848e9655dc4b2cf8efb49b6a0a25f016a2c7566a5ced9f3211"
+      "templateSha256": "sha256:246e95cfb281a76336f00f3272e86c17ce89b7b5c2368847489803e63f044303"
     }
   ]
 }

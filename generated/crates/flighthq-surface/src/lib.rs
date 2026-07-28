@@ -21,6 +21,8 @@ mod surface_coverage;
 pub use surface_coverage::*;
 mod surface_fill;
 pub use surface_fill::*;
+mod surface_fingerprint;
+pub use surface_fingerprint::*;
 mod surface_format;
 pub use surface_format::*;
 mod surface_histogram;
