@@ -1,0 +1,31 @@
+// @generated from upstream/packages/effects/src/sharpenEffect.ts; do not edit.
+#![allow(clippy::excessive_precision)]
+#![allow(non_upper_case_globals)]
+#![allow(unused_braces)]
+#![allow(unused_imports)]
+#![allow(unused_mut)]
+#![allow(unused_parens)]
+
+use flighthq_types::SharpenEffect;
+
+// Source: upstream/packages/effects/src/sharpenEffect.ts:3 (sha256:ece45a5e6d19b1eeb2d570ee485943e797ab701bfd20ea1b99845cfeabd6ef5e)
+#[derive(Clone)]
+struct CreateSharpenEffectRecord1 {
+    __flight_identity: std::sync::Arc<()>,
+}
+impl PartialEq for CreateSharpenEffectRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+pub fn create_sharpen_effect(options: Option<SharpenEffect>) -> SharpenEffect {
+    let options = options.unwrap_or(SharpenEffect {
+        __flight_identity: std::sync::Arc::new(()),
+        amount: None,
+    });
+    return SharpenEffect {
+        kind: "SharpenEffect".to_owned(),
+        ..((options).clone()).clone()
+    };
+}

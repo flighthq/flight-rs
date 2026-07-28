@@ -11,6 +11,8 @@ use crate::{Texture, Vector2Like};
 // Source: upstream/packages/types/src/AnimatedNormalModifier.ts:11 (sha256:ffe9e013055090ced18c33db3dc23624189ee7c37ad89167e5ab4878f51bab9c)
 #[derive(Clone)]
 pub struct AnimatedNormalModifier {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub kind: String,
     pub slot: String,
     pub map: Option<Texture>,
@@ -18,6 +20,11 @@ pub struct AnimatedNormalModifier {
     pub strength: Option<f64>,
     pub secondary_map: Option<Texture>,
     pub secondary_scroll: Option<Vector2Like>,
+}
+impl PartialEq for AnimatedNormalModifier {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/AnimatedNormalModifier.ts:21 (sha256:5a1ff8bb5c3b8d845ef331b14f946160b5e56ab0b7721e194bedc09b663f69ce)

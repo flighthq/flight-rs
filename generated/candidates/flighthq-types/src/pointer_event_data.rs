@@ -11,6 +11,8 @@ use crate::NodeAny;
 // Source: upstream/packages/types/src/PointerEventData.ts:3 (sha256:a21b27d68119da759ea2e963106f0280744090b06621aba95150c883bc80fb23)
 #[derive(Clone)]
 pub struct PointerEventData {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub alt_key: bool,
     pub button: f64,
     pub buttons: f64,
@@ -29,6 +31,11 @@ pub struct PointerEventData {
     pub world_y: f64,
     pub x: f64,
     pub y: f64,
+}
+impl PartialEq for PointerEventData {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/PointerEventData.ts:24 (sha256:c584338f2125c37e6d11257c22c6b2a7672743f41eaba5b6ad7d6609d57f6ba8)

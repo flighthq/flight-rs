@@ -9,9 +9,16 @@
 // Source: upstream/packages/types/src/ContactShadowsEffect.ts:2 (sha256:18141af08abdac885e63bf9981ac65735c9d041498d778ad59ee7191837ee6f7)
 #[derive(Clone)]
 pub struct ContactShadowsEffect {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub kind: String,
     pub distance: Option<f64>,
     pub opacity: Option<f64>,
     pub samples: Option<f64>,
     pub smoothness: Option<f64>,
+}
+impl PartialEq for ContactShadowsEffect {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

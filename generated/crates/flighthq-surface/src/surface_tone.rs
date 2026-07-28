@@ -23,13 +23,11 @@ pub fn apply_surface_curve(
     red_lut: Option<Vec<u8>>,
     green_lut: Option<Vec<u8>>,
     blue_lut: Option<Vec<u8>>,
-    alpha_lut: Option<Option<Vec<u8>>>,
+    alpha_lut: Option<Vec<u8>>,
 ) -> () {
     let alpha_lut = alpha_lut.unwrap_or(None);
     let w = (out.width).min(source.width);
     let h = (out.height).min(source.height);
-    let od = &mut out.surface.data;
-    let sd = &source.surface.data;
     {
         let mut py = 0.0_f64;
         while (py < h) {
@@ -60,29 +58,29 @@ pub fn apply_surface_curve(
                     }
                     let si = (((sy * source.surface.width) + sx) * 4.0_f64);
                     let oi = (((oy * out.surface.width) + ox) * 4.0_f64);
-                    let r = (sd[si as usize] as f64);
-                    let g = (sd[(si + 1.0_f64) as usize] as f64);
-                    let b = (sd[(si + 2.0_f64) as usize] as f64);
-                    let a = (sd[(si + 3.0_f64) as usize] as f64);
-                    od[oi as usize] = if (red_lut).is_some() {
-                        (red_lut.as_ref().unwrap()[r as usize].clone()) as u8
+                    let r = (source.surface.data[si as usize] as f64);
+                    let g = (source.surface.data[(si + 1.0_f64) as usize] as f64);
+                    let b = (source.surface.data[(si + 2.0_f64) as usize] as f64);
+                    let a = (source.surface.data[(si + 3.0_f64) as usize] as f64);
+                    out.surface.data[oi as usize] = if (red_lut).is_some() {
+                        (red_lut.as_ref().unwrap()[r as usize] as f64) as u8
                     } else {
-                        (r) as u8
+                        ((r).clone()) as u8
                     };
-                    od[(oi + 1.0_f64) as usize] = if (green_lut).is_some() {
-                        (green_lut.as_ref().unwrap()[g as usize].clone()) as u8
+                    out.surface.data[(oi + 1.0_f64) as usize] = if (green_lut).is_some() {
+                        (green_lut.as_ref().unwrap()[g as usize] as f64) as u8
                     } else {
-                        (g) as u8
+                        ((g).clone()) as u8
                     };
-                    od[(oi + 2.0_f64) as usize] = if (blue_lut).is_some() {
-                        (blue_lut.as_ref().unwrap()[b as usize].clone()) as u8
+                    out.surface.data[(oi + 2.0_f64) as usize] = if (blue_lut).is_some() {
+                        (blue_lut.as_ref().unwrap()[b as usize] as f64) as u8
                     } else {
-                        (b) as u8
+                        ((b).clone()) as u8
                     };
-                    od[(oi + 3.0_f64) as usize] = if (alpha_lut).is_some() {
-                        (alpha_lut.as_ref().unwrap()[a as usize].clone()) as u8
+                    out.surface.data[(oi + 3.0_f64) as usize] = if (alpha_lut).is_some() {
+                        (alpha_lut.as_ref().unwrap()[a as usize] as f64) as u8
                     } else {
-                        (a) as u8
+                        ((a).clone()) as u8
                     };
                     {
                         px += 1.0;

@@ -9,7 +9,14 @@
 // Source: upstream/packages/types/src/CaptureCheckResult.ts:7 (sha256:0f33d23a7c65f0166bba1a41ba7dc198ccaa34b6d6d012761be31a66384a27f4)
 #[derive(Clone)]
 pub struct CaptureCheckResult {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub pass: bool,
     pub difference: f64,
     pub tolerance: f64,
+}
+impl PartialEq for CaptureCheckResult {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

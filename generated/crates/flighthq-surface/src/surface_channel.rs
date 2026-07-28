@@ -26,11 +26,6 @@ pub fn merge_surface_channels(
 ) -> () {
     let w = ((((out.width).min(r.width)).min(g.width)).min(b.width)).min(a.width);
     let h = ((((out.height).min(r.height)).min(g.height)).min(b.height)).min(a.height);
-    let od = &mut out.surface.data;
-    let rd = &r.surface.data;
-    let gd = &g.surface.data;
-    let bd = &b.surface.data;
-    let ad = &a.surface.data;
     {
         let mut py = 0.0_f64;
         while (py < h) {
@@ -79,17 +74,21 @@ pub fn merge_surface_channels(
                         continue;
                     }
                     let di = (((oy * out.surface.width) + ox) * 4.0_f64);
-                    od[di as usize] =
-                        (rd[(((ry * r.surface.width) + rx) * 4.0_f64) as usize] as f64) as u8;
-                    od[(di + 1.0_f64) as usize] = (gd
+                    out.surface.data[di as usize] = (r.surface.data
+                        [(((ry * r.surface.width) + rx) * 4.0_f64) as usize]
+                        as f64) as u8;
+                    out.surface.data[(di + 1.0_f64) as usize] = (g.surface.data
                         [((((gy * g.surface.width) + gx) * 4.0_f64) + 1.0_f64) as usize]
-                        as f64) as u8;
-                    od[(di + 2.0_f64) as usize] = (bd
+                        as f64)
+                        as u8;
+                    out.surface.data[(di + 2.0_f64) as usize] = (b.surface.data
                         [((((by * b.surface.width) + bx) * 4.0_f64) + 2.0_f64) as usize]
-                        as f64) as u8;
-                    od[(di + 3.0_f64) as usize] = (ad
+                        as f64)
+                        as u8;
+                    out.surface.data[(di + 3.0_f64) as usize] = (a.surface.data
                         [((((ay * a.surface.width) + ax) * 4.0_f64) + 3.0_f64) as usize]
-                        as f64) as u8;
+                        as f64)
+                        as u8;
                     {
                         px += 1.0;
                         px

@@ -13,6 +13,8 @@ use crate::{
 // Source: upstream/packages/types/src/Mesh.ts:25 (sha256:9d1fc386d6d46d295994508c69ed48afe084c7671e04527565640f98f319b627)
 #[derive(Clone)]
 pub struct Mesh {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub data: Option<NodeData>,
     pub enabled: bool,
     pub kind: Kind,
@@ -24,8 +26,13 @@ pub struct Mesh {
     pub scale: Vector3,
     pub geometry: MeshGeometry,
     pub materials: Vec<Option<Material>>,
-    pub morph: Option<Option<MeshMorph>>,
-    pub skin: Option<Option<Skin>>,
+    pub morph: Option<MeshMorph>,
+    pub skin: Option<Skin>,
+}
+impl PartialEq for Mesh {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/Mesh.ts:32 (sha256:9660a362828281d9d02e797dc5269a17867a46e13d811c7cdfdcb91529eab499)

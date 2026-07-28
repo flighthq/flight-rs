@@ -12,7 +12,14 @@ pub type IpcErrorCode = String;
 // Source: upstream/packages/types/src/IpcError.ts:9 (sha256:a834bd76744e4543841e55760be9ae588904ca076dfb9b013d692ed19da465d9)
 #[derive(Clone)]
 pub struct IpcError {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub code: IpcErrorCode,
     pub message: String,
     pub channel: String,
+}
+impl PartialEq for IpcError {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

@@ -7,4 +7,5 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/ScalarRemap.ts:1 (sha256:ba5cedd99b1daf8983b0e83d91ee604bd782f5ba4e75f6481106b5036142e841)
-pub type ScalarRemap = std::sync::Arc<dyn Fn(f64) -> f64 + Send + Sync + 'static>;
+pub type ScalarRemap =
+    std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64) -> f64 + Send + 'static>>>;

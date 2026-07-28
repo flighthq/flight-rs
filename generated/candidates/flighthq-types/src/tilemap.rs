@@ -15,21 +15,31 @@ use crate::{
 // Source: upstream/packages/types/src/Tilemap.ts:5 (sha256:566599ce0525cecc527b700162a16b1d22b913e37ba55d06083adf975852aa1c)
 #[derive(Clone)]
 pub struct TilemapData {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub tileset: Option<Tileset>,
     pub columns: f64,
     pub rows: f64,
     pub tiles: Vec<i16>,
     pub material_data: Option<Vec<Option<MaterialData>>>,
 }
+impl PartialEq for TilemapData {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/types/src/Tilemap.ts:15 (sha256:f874667906594d578d67434836527cfbf0d2b6698b49f52f359e7fecee47af82)
 #[derive(Clone)]
 pub struct TilemapRuntime {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
     pub appearance_id: f64,
     pub bounds_using_local_bounds_id: f64,
     pub bounds_using_local_transform_id: f64,
-    pub can_add_child: std::sync::Arc<dyn Fn(Node, Node) -> bool + Send + Sync + 'static>,
+    pub can_add_child:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
     pub children: Option<Vec<Node>>,
     pub color_adjustments: Option<Vec<Adjustment>>,
     pub resolved_color_transform: Option<ColorTransform>,
@@ -55,16 +65,24 @@ pub struct TilemapRuntime {
     pub rotation_sine: f64,
     pub world_matrix: Option<Matrix>,
     pub bounds_rectangle: Option<Rectangle>,
-    pub compute_local_bounds_rectangle:
-        std::sync::Arc<dyn Fn(Rectangle, BoundsNodeAny) -> () + Send + Sync + 'static>,
+    pub compute_local_bounds_rectangle: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
+    >,
     pub local_bounds_rectangle: Option<Rectangle>,
     pub world_bounds_rectangle: Option<Rectangle>,
     pub stage: Option<Stage>,
+}
+impl PartialEq for TilemapRuntime {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/Tilemap.ts:17 (sha256:07492065cf96f90ceaa42389cb8a5707074488d0ff08275fdf0a289f4ed61cf9)
 #[derive(Clone)]
 pub struct Tilemap {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub data: TilemapData,
     pub enabled: bool,
     pub kind: Kind,
@@ -84,6 +102,11 @@ pub struct Tilemap {
     pub skew_y: f64,
     pub x: f64,
     pub y: f64,
+}
+impl PartialEq for Tilemap {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/Tilemap.ts:21 (sha256:62481eb694aea171dfe962d6b52ba7db3a8a9d130002f7e9f0f7acc217dc7cd3)

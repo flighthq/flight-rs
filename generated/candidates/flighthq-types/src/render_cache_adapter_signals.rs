@@ -11,5 +11,13 @@ use crate::Signal;
 // Source: upstream/packages/types/src/RenderCacheAdapterSignals.ts:3 (sha256:5b436c2cfc60c1f85dcc93720d519d0d14ba6ff6bda8db8c3f1b82473b07c237)
 #[derive(Clone)]
 pub struct RenderCacheAdapterSignals {
-    pub on_prepare: Signal,
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub on_prepare:
+        Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
+}
+impl PartialEq for RenderCacheAdapterSignals {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

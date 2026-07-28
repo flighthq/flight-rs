@@ -25,8 +25,6 @@ pub fn copy_surface_pixels(
     let composite = composite.unwrap_or(false);
     let w = (dest.width).min(source.width);
     let h = (dest.height).min(source.height);
-    let sd = &source.surface.data;
-    let dd = &mut dest.surface.data;
     {
         let mut py = 0.0_f64;
         while (py < h) {
@@ -58,33 +56,46 @@ pub fn copy_surface_pixels(
                     let si = (((sy * source.surface.width) + sx) * 4.0_f64);
                     let di = (((dy * dest.surface.width) + dx) * 4.0_f64);
                     if composite {
-                        let src_a = ((sd[(si + 3.0_f64) as usize] as f64) / 255.0_f64);
-                        let dst_a = ((dd[(di + 3.0_f64) as usize] as f64) / 255.0_f64);
+                        let src_a =
+                            ((source.surface.data[(si + 3.0_f64) as usize] as f64) / 255.0_f64);
+                        let dst_a =
+                            ((dest.surface.data[(di + 3.0_f64) as usize] as f64) / 255.0_f64);
                         let out_a = (src_a + (dst_a * (1.0_f64 - src_a)));
                         if (out_a > 0.0_f64) {
-                            dd[di as usize] = (((((sd[si as usize] as f64) * src_a)
-                                + (((dd[di as usize] as f64) * dst_a) * (1.0_f64 - src_a)))
-                                / out_a)
-                                .round()) as u8;
-                            dd[(di + 1.0_f64) as usize] =
-                                (((((sd[(si + 1.0_f64) as usize] as f64) * src_a)
-                                    + (((dd[(di + 1.0_f64) as usize] as f64) * dst_a)
+                            dest.surface.data[di as usize] =
+                                (((((source.surface.data[si as usize] as f64) * src_a)
+                                    + (((dest.surface.data[di as usize] as f64) * dst_a)
                                         * (1.0_f64 - src_a)))
                                     / out_a)
                                     .round()) as u8;
-                            dd[(di + 2.0_f64) as usize] =
-                                (((((sd[(si + 2.0_f64) as usize] as f64) * src_a)
-                                    + (((dd[(di + 2.0_f64) as usize] as f64) * dst_a)
+                            dest.surface.data[(di + 1.0_f64) as usize] =
+                                (((((source.surface.data[(si + 1.0_f64) as usize] as f64)
+                                    * src_a)
+                                    + (((dest.surface.data[(di + 1.0_f64) as usize] as f64)
+                                        * dst_a)
                                         * (1.0_f64 - src_a)))
                                     / out_a)
                                     .round()) as u8;
-                            dd[(di + 3.0_f64) as usize] = ((out_a * 255.0_f64).round()) as u8;
+                            dest.surface.data[(di + 2.0_f64) as usize] =
+                                (((((source.surface.data[(si + 2.0_f64) as usize] as f64)
+                                    * src_a)
+                                    + (((dest.surface.data[(di + 2.0_f64) as usize] as f64)
+                                        * dst_a)
+                                        * (1.0_f64 - src_a)))
+                                    / out_a)
+                                    .round()) as u8;
+                            dest.surface.data[(di + 3.0_f64) as usize] =
+                                ((out_a * 255.0_f64).round()) as u8;
                         }
                     } else {
-                        dd[di as usize] = (sd[si as usize] as f64) as u8;
-                        dd[(di + 1.0_f64) as usize] = (sd[(si + 1.0_f64) as usize] as f64) as u8;
-                        dd[(di + 2.0_f64) as usize] = (sd[(si + 2.0_f64) as usize] as f64) as u8;
-                        dd[(di + 3.0_f64) as usize] = (sd[(si + 3.0_f64) as usize] as f64) as u8;
+                        dest.surface.data[di as usize] =
+                            (source.surface.data[si as usize] as f64) as u8;
+                        dest.surface.data[(di + 1.0_f64) as usize] =
+                            (source.surface.data[(si + 1.0_f64) as usize] as f64) as u8;
+                        dest.surface.data[(di + 2.0_f64) as usize] =
+                            (source.surface.data[(si + 2.0_f64) as usize] as f64) as u8;
+                        dest.surface.data[(di + 3.0_f64) as usize] =
+                            (source.surface.data[(si + 3.0_f64) as usize] as f64) as u8;
                     }
                     {
                         px += 1.0;

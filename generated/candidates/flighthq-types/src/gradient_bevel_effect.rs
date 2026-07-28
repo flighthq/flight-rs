@@ -11,6 +11,8 @@ use crate::EffectSourceMode;
 // Source: upstream/packages/types/src/GradientBevelEffect.ts:7 (sha256:76e90209baf6a5c6e39df6d8af199bc57e81f9812b2b9e6407b949000f3c38ab)
 #[derive(Clone)]
 pub struct GradientBevelEffect {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub kind: String,
     pub alphas: Vec<f64>,
     pub angle: Option<f64>,
@@ -23,4 +25,9 @@ pub struct GradientBevelEffect {
     pub ratios: Vec<f64>,
     pub source_mode: Option<EffectSourceMode>,
     pub strength: Option<f64>,
+}
+impl PartialEq for GradientBevelEffect {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

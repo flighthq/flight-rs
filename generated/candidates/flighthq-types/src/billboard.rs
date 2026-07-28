@@ -14,6 +14,8 @@ pub type BillboardMode = String;
 // Source: upstream/packages/types/src/Billboard.ts:5 (sha256:359335bd551f53c00326360bc7d1ddf91f2cb3315a7438c5021d70df7bda9ea8)
 #[derive(Clone)]
 pub struct Billboard {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub data: Option<NodeData>,
     pub enabled: bool,
     pub kind: Kind,
@@ -26,6 +28,11 @@ pub struct Billboard {
     pub geometry: MeshGeometry,
     pub materials: Vec<Option<Material>>,
     pub mode: BillboardMode,
+}
+impl PartialEq for Billboard {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/Billboard.ts:10 (sha256:d063cc883c96929c07ac1a387813cf27933448fee3c315f77d57621c75606a8a)

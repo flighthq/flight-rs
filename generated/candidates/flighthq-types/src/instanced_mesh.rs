@@ -13,6 +13,8 @@ use crate::{
 // Source: upstream/packages/types/src/InstancedMesh.ts:5 (sha256:4f4896f9cd96c723d6c18c6df5a192c8a1afec0d5c9d3bee2524ab37607ab205)
 #[derive(Clone)]
 pub struct InstancedMesh {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub data: Option<NodeData>,
     pub enabled: bool,
     pub kind: Kind,
@@ -27,6 +29,11 @@ pub struct InstancedMesh {
     pub instance_count: f64,
     pub instance_matrices: Vec<Matrix4>,
     pub materials: Vec<Option<Material>>,
+}
+impl PartialEq for InstancedMesh {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/InstancedMesh.ts:12 (sha256:c04bff99a0216c5367c6862c96ffd3dc91f3604baeded3e4d6188698a4044992)

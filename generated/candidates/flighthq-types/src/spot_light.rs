@@ -11,6 +11,8 @@ use crate::Vector3;
 // Source: upstream/packages/types/src/SpotLight.ts:8 (sha256:0edd1b2af064957ca6052730fdd198fd35252f7c85d90270daca821babeaf691)
 #[derive(Clone)]
 pub struct SpotLight {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub kind: String,
     pub casts_shadow: bool,
     pub color: f64,
@@ -23,6 +25,11 @@ pub struct SpotLight {
     pub position: Vector3,
     pub range: f64,
     pub shadow_bias: f64,
+}
+impl PartialEq for SpotLight {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/SpotLight.ts:23 (sha256:73bb7d27ca0a0a47cb52a7fc69a43e7d2dc3fc9800a4ca1a4f05304bd8810c98)

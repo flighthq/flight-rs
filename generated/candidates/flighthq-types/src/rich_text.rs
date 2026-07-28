@@ -17,6 +17,8 @@ use crate::{
 // Source: upstream/packages/types/src/RichText.ts:9 (sha256:fa82e08e1863fcc75e3ed9619dc8585f19565703bc84971444398c1df93031eb)
 #[derive(Clone)]
 pub struct RichTextData {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub auto_size: TextAutoSize,
     pub height: f64,
     pub text: String,
@@ -39,15 +41,23 @@ pub struct RichTextData {
     pub text_format_ranges: Vec<TextFormatRange>,
     pub word_wrap: bool,
 }
+impl PartialEq for RichTextData {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/types/src/RichText.ts:42 (sha256:8366b22af6581d9b3d860205d8d5245e7bb40398342313332aa3c7da2e420aa1)
 #[derive(Clone)]
 pub struct RichTextRuntime {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
     pub appearance_id: f64,
     pub bounds_using_local_bounds_id: f64,
     pub bounds_using_local_transform_id: f64,
-    pub can_add_child: std::sync::Arc<dyn Fn(Node, Node) -> bool + Send + Sync + 'static>,
+    pub can_add_child:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
     pub children: Option<Vec<Node>>,
     pub color_adjustments: Option<Vec<Adjustment>>,
     pub resolved_color_transform: Option<ColorTransform>,
@@ -73,13 +83,16 @@ pub struct RichTextRuntime {
     pub rotation_sine: f64,
     pub world_matrix: Option<Matrix>,
     pub bounds_rectangle: Option<Rectangle>,
-    pub compute_local_bounds_rectangle:
-        std::sync::Arc<dyn Fn(Rectangle, BoundsNodeAny) -> () + Send + Sync + 'static>,
+    pub compute_local_bounds_rectangle: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
+    >,
     pub local_bounds_rectangle: Option<Rectangle>,
     pub world_bounds_rectangle: Option<Rectangle>,
     pub stage: Option<Stage>,
     pub build_text_layout_params: std::sync::Arc<
-        dyn Fn(TextLabel, TextMeasureFunction) -> TextLayoutParams + Send + Sync + 'static,
+        std::sync::Mutex<
+            Box<dyn FnMut(TextLabel, TextMeasureFunction) -> TextLayoutParams + Send + 'static>,
+        >,
     >,
     pub text_layout: Option<TextLayoutResult>,
     pub text_layout_using_content_id: f64,
@@ -89,10 +102,17 @@ pub struct RichTextRuntime {
     pub selection_end_index: f64,
     pub text_field_signals: Option<TextFieldSignals>,
 }
+impl PartialEq for RichTextRuntime {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/types/src/RichText.ts:57 (sha256:ede1beea3240687757ee8455992b246d3497476a47de43d9b8e5d02d8b73abe7)
 #[derive(Clone)]
 pub struct RichText {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub data: RichTextData,
     pub enabled: bool,
     pub kind: Kind,
@@ -112,6 +132,11 @@ pub struct RichText {
     pub skew_y: f64,
     pub x: f64,
     pub y: f64,
+}
+impl PartialEq for RichText {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/RichText.ts:61 (sha256:596b8a1b265ecce1ee0865dbb2e71192fc576e385865362468b050f38fe00952)

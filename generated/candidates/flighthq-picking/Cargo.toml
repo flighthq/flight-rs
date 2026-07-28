@@ -1,0 +1,18 @@
+# @generated candidate crate; do not edit.
+[package]
+name = "flighthq-picking"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+flighthq-camera = { path = "../flighthq-camera" }
+flighthq-geometry = { path = "../flighthq-geometry" }
+flighthq-mesh = { path = "../flighthq-mesh" }
+flighthq-node = { path = "../flighthq-node" }
+flighthq-scene = { path = "../flighthq-scene" }
+flighthq-types = { path = "../flighthq-types" }

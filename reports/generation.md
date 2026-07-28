@@ -6,1116 +6,555 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | --- | ---: |
 | Inventoried packages | 131 |
 | Default-generated packages | 125 |
-| Emittable packages | 3 |
-| Blocked packages | 122 |
-| Compiled candidates | 1 |
-| Compile-blocked candidates | 1 |
-| Dependency-blocked candidates | 0 |
+| Emittable packages | 60 |
+| Blocked packages | 65 |
+| Compiled candidates | 7 |
+| Compile-blocked candidates | 23 |
+| Dependency-blocked candidates | 29 |
 | Cultivated packages | 1 |
 | Host-bound packages | 4 |
 | Excluded packages | 1 |
-| Source/package blockers | 877 |
+| Source/package blockers | 334 |
 
 | Package | Disposition | Status | Candidate | Sources emitted/attempted | API generated/expected | Missing | Dependents direct/transitive | Opaque sources | Blockers | Target |
 | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| `@flighthq/accessibility` | generated | blocked | source-blocked | 1/2 | 0/8 | 8 | 1/1 | 0 | 2 | no |
-| `@flighthq/adjustments` | generated | blocked | source-blocked | 4/19 | 9/49 | 40 | 6/25 | 1 | 16 | no |
-| `@flighthq/animation` | generated | blocked | source-blocked | 2/4 | 5/18 | 13 | 3/7 | 1 | 3 | no |
+| `@flighthq/accessibility` | generated | emittable | compile-blocked | 2/2 | 8/8 | 0 | 1/1 | 1 | 0 | no |
+| `@flighthq/adjustments` | generated | emittable | compile-blocked | 19/19 | 49/49 | 0 | 6/25 | 0 | 0 | no |
+| `@flighthq/animation` | generated | emittable | compile-blocked | 4/4 | 18/18 | 0 | 3/7 | 2 | 0 | no |
 | `@flighthq/app` | generated | blocked | source-blocked | 1/2 | 0/42 | 42 | 4/4 | 0 | 2 | no |
-| `@flighthq/application` | generated | blocked | source-blocked | 1/3 | 0/83 | 83 | 3/3 | 0 | 3 | no |
+| `@flighthq/application` | generated | emittable | compiled | 3/3 | 83/83 | 0 | 3/3 | 2 | 0 | no |
 | `@flighthq/assets` | generated | blocked | source-blocked | 1/2 | 0/10 | 10 | 1/1 | 0 | 2 | no |
-| `@flighthq/audio` | generated | blocked | source-blocked | 2/4 | 10/20 | 10 | 2/2 | 1 | 3 | no |
+| `@flighthq/audio` | generated | blocked | source-blocked | 3/4 | 13/20 | 7 | 2/2 | 1 | 2 | no |
 | `@flighthq/binpack` | generated | blocked | source-blocked | 1/2 | 0/1 | 1 | 1/1 | 0 | 2 | no |
-| `@flighthq/bitmapfont` | generated | blocked | source-blocked | 1/3 | 0/7 | 7 | 2/2 | 0 | 3 | no |
-| `@flighthq/bitmapfont-formats` | generated | blocked | source-blocked | 2/5 | 1/4 | 3 | 1/1 | 0 | 4 | no |
-| `@flighthq/bitmaptext` | generated | blocked | source-blocked | 1/3 | 0/15 | 15 | 1/1 | 0 | 3 | no |
-| `@flighthq/camera` | generated | blocked | source-blocked | 6/10 | 13/31 | 18 | 4/4 | 0 | 5 | no |
-| `@flighthq/camera2d` | generated | blocked | source-blocked | 6/8 | 6/8 | 2 | 1/1 | 0 | 3 | no |
+| `@flighthq/bitmapfont` | generated | emittable | compile-blocked | 3/3 | 7/7 | 0 | 2/2 | 0 | 0 | no |
+| `@flighthq/bitmapfont-formats` | generated | blocked | source-blocked | 4/5 | 9/4 | 0 | 1/1 | 2 | 1 | no |
+| `@flighthq/bitmaptext` | generated | emittable | dependency-blocked | 3/3 | 15/15 | 0 | 1/1 | 0 | 0 | no |
+| `@flighthq/camera` | generated | emittable | dependency-blocked | 10/10 | 31/31 | 0 | 4/4 | 0 | 0 | no |
+| `@flighthq/camera2d` | generated | emittable | dependency-blocked | 8/8 | 8/8 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/capture` | generated | blocked | source-blocked | 2/3 | 5/10 | 5 | 1/1 | 1 | 2 | no |
-| `@flighthq/clip` | generated | blocked | source-blocked | 1/2 | 0/23 | 23 | 1/1 | 0 | 2 | no |
+| `@flighthq/clip` | generated | emittable | dependency-blocked | 2/2 | 23/23 | 0 | 1/1 | 1 | 0 | no |
 | `@flighthq/clipboard` | generated | blocked | source-blocked | 1/2 | 0/32 | 32 | 4/4 | 0 | 2 | no |
-| `@flighthq/clock` | generated | blocked | source-blocked | 11/12 | 12/14 | 2 | 1/1 | 0 | 2 | no |
-| `@flighthq/collision` | generated | blocked | source-blocked | 4/6 | 8/19 | 11 | 1/1 | 0 | 3 | no |
-| `@flighthq/color` | generated | blocked | source-blocked | 6/10 | 20/32 | 12 | 10/29 | 0 | 5 | no |
+| `@flighthq/clock` | generated | emittable | compile-blocked | 12/12 | 14/14 | 0 | 1/1 | 0 | 0 | no |
+| `@flighthq/collision` | generated | blocked | source-blocked | 5/6 | 9/19 | 10 | 1/1 | 0 | 2 | no |
+| `@flighthq/color` | generated | emittable | compile-blocked | 10/10 | 32/32 | 0 | 10/29 | 0 | 0 | no |
 | `@flighthq/connectivity` | generated | blocked | source-blocked | 1/2 | 0/14 | 14 | 2/2 | 0 | 2 | no |
 | `@flighthq/debug` | generated | blocked | source-blocked | 1/3 | 0/9 | 9 | 1/1 | 0 | 3 | no |
-| `@flighthq/device` | generated | blocked | source-blocked | 1/2 | 0/14 | 14 | 2/2 | 0 | 2 | no |
+| `@flighthq/device` | generated | emittable | dependency-blocked | 2/2 | 14/14 | 0 | 2/2 | 1 | 0 | no |
 | `@flighthq/dialog` | generated | blocked | source-blocked | 1/2 | 0/15 | 15 | 5/5 | 0 | 2 | no |
-| `@flighthq/displayobject` | generated | blocked | source-blocked | 2/8 | 3/46 | 43 | 14/24 | 0 | 7 | no |
-| `@flighthq/displayobject-canvas` | generated | blocked | source-blocked | 7/31 | 10/94 | 84 | 5/5 | 5 | 25 | no |
+| `@flighthq/displayobject` | generated | emittable | dependency-blocked | 8/8 | 46/46 | 0 | 14/24 | 2 | 0 | no |
+| `@flighthq/displayobject-canvas` | generated | blocked | source-blocked | 19/31 | 59/94 | 35 | 5/5 | 17 | 13 | no |
 | `@flighthq/displayobject-dom` | host-bound | host-bound | not-applicable | 0/0 | 0/58 | 58 | 1/1 | 0 | 0 | no |
-| `@flighthq/displayobject-gl` | generated | blocked | source-blocked | 6/28 | 7/89 | 83 | 1/1 | 1 | 23 | no |
-| `@flighthq/displayobject-wgpu` | generated | blocked | source-blocked | 7/29 | 10/95 | 86 | 1/1 | 2 | 23 | no |
+| `@flighthq/displayobject-gl` | generated | blocked | source-blocked | 27/28 | 83/89 | 8 | 1/1 | 12 | 2 | no |
+| `@flighthq/displayobject-wgpu` | generated | blocked | source-blocked | 24/29 | 73/95 | 23 | 1/1 | 9 | 6 | no |
 | `@flighthq/easing` | generated | emittable | promoted | 20/20 | 48/48 | 0 | 2/3 | 0 | 0 | full |
-| `@flighthq/effects` | generated | blocked | source-blocked | 7/72 | 18/112 | 94 | 4/4 | 0 | 66 | no |
-| `@flighthq/effects-canvas` | generated | blocked | source-blocked | 7/48 | 19/102 | 88 | 1/1 | 5 | 42 | no |
-| `@flighthq/effects-gl` | generated | blocked | source-blocked | 5/58 | 15/135 | 120 | 1/1 | 3 | 54 | no |
-| `@flighthq/effects-wgpu` | generated | blocked | source-blocked | 3/56 | 9/128 | 119 | 1/1 | 1 | 54 | no |
-| `@flighthq/entity` | generated | blocked | source-blocked | 2/6 | 3/12 | 9 | 20/61 | 0 | 5 | no |
+| `@flighthq/effects` | generated | emittable | compile-blocked | 72/72 | 112/112 | 0 | 4/4 | 2 | 0 | no |
+| `@flighthq/effects-canvas` | generated | blocked | source-blocked | 9/48 | 29/102 | 78 | 1/1 | 7 | 40 | no |
+| `@flighthq/effects-gl` | generated | blocked | source-blocked | 11/58 | 31/135 | 104 | 1/1 | 8 | 48 | no |
+| `@flighthq/effects-wgpu` | generated | blocked | source-blocked | 10/56 | 26/128 | 102 | 1/1 | 2 | 47 | no |
+| `@flighthq/entity` | generated | emittable | compiled | 6/6 | 12/12 | 0 | 20/61 | 2 | 0 | no |
 | `@flighthq/filesystem` | generated | blocked | source-blocked | 1/2 | 0/43 | 43 | 2/2 | 0 | 2 | no |
-| `@flighthq/flow` | generated | blocked | source-blocked | 5/10 | 4/9 | 5 | 1/1 | 0 | 6 | no |
-| `@flighthq/font` | generated | blocked | source-blocked | 2/8 | 1/15 | 14 | 1/1 | 0 | 7 | no |
+| `@flighthq/flow` | generated | emittable | compile-blocked | 10/10 | 9/9 | 0 | 1/1 | 0 | 0 | no |
+| `@flighthq/font` | generated | blocked | source-blocked | 5/8 | 5/15 | 10 | 1/1 | 0 | 4 | no |
 | `@flighthq/geolocation` | generated | blocked | source-blocked | 1/2 | 0/12 | 12 | 2/2 | 0 | 2 | no |
-| `@flighthq/geometry` | generated | blocked | source-blocked | 9/27 | 32/377 | 345 | 40/53 | 0 | 19 | no |
-| `@flighthq/glyphatlas` | generated | blocked | source-blocked | 4/7 | 5/14 | 9 | 1/1 | 1 | 4 | no |
-| `@flighthq/haptics` | generated | blocked | source-blocked | 1/2 | 0/13 | 13 | 2/2 | 0 | 2 | no |
+| `@flighthq/geometry` | generated | emittable | compile-blocked | 27/27 | 377/377 | 0 | 40/53 | 0 | 0 | no |
+| `@flighthq/glyphatlas` | generated | emittable | dependency-blocked | 7/7 | 14/14 | 0 | 1/1 | 2 | 0 | no |
+| `@flighthq/haptics` | generated | emittable | compile-blocked | 2/2 | 13/13 | 0 | 2/2 | 0 | 0 | no |
 | `@flighthq/host-capacitor` | host-bound | host-bound | not-applicable | 0/0 | 0/63 | 63 | 0/0 | 0 | 0 | no |
 | `@flighthq/host-electron` | host-bound | host-bound | not-applicable | 0/0 | 0/57 | 57 | 0/0 | 0 | 0 | no |
 | `@flighthq/host-tauri` | host-bound | host-bound | not-applicable | 0/0 | 0/51 | 51 | 0/0 | 0 | 0 | no |
-| `@flighthq/image` | generated | blocked | source-blocked | 1/3 | 0/20 | 20 | 11/24 | 0 | 3 | partial |
-| `@flighthq/image-codec` | generated | blocked | source-blocked | 2/8 | 1/16 | 15 | 3/26 | 1 | 7 | no |
-| `@flighthq/input` | generated | blocked | source-blocked | 1/2 | 0/40 | 40 | 1/1 | 0 | 2 | no |
-| `@flighthq/interaction` | generated | blocked | source-blocked | 9/16 | 22/83 | 61 | 1/1 | 1 | 8 | no |
+| `@flighthq/image` | generated | blocked | source-blocked | 2/3 | 11/20 | 9 | 11/24 | 1 | 2 | partial |
+| `@flighthq/image-codec` | generated | blocked | source-blocked | 4/8 | 11/16 | 5 | 3/26 | 0 | 5 | no |
+| `@flighthq/input` | generated | emittable | compile-blocked | 2/2 | 40/40 | 0 | 1/1 | 1 | 0 | no |
+| `@flighthq/interaction` | generated | blocked | source-blocked | 13/16 | 48/83 | 35 | 1/1 | 2 | 4 | no |
 | `@flighthq/intl` | generated | blocked | source-blocked | 1/8 | 0/14 | 14 | 1/1 | 0 | 8 | no |
 | `@flighthq/ipc` | generated | blocked | source-blocked | 1/2 | 0/17 | 17 | 2/2 | 0 | 2 | no |
-| `@flighthq/keyboard` | generated | blocked | source-blocked | 1/2 | 0/20 | 20 | 2/2 | 0 | 2 | no |
-| `@flighthq/lifecycle` | generated | blocked | source-blocked | 1/2 | 0/13 | 13 | 1/1 | 0 | 2 | no |
-| `@flighthq/lighting` | generated | blocked | source-blocked | 2/11 | 4/37 | 33 | 1/1 | 1 | 10 | no |
+| `@flighthq/keyboard` | generated | emittable | compile-blocked | 2/2 | 20/20 | 0 | 2/2 | 1 | 0 | no |
+| `@flighthq/lifecycle` | generated | emittable | compiled | 2/2 | 13/13 | 0 | 1/1 | 1 | 0 | no |
+| `@flighthq/lighting` | generated | emittable | dependency-blocked | 11/11 | 37/37 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/loader` | generated | blocked | source-blocked | 1/2 | 0/13 | 13 | 3/3 | 0 | 2 | no |
 | `@flighthq/log` | generated | blocked | source-blocked | 1/2 | 0/65 | 65 | 7/16 | 0 | 2 | no |
-| `@flighthq/materials` | generated | blocked | source-blocked | 3/12 | 10/68 | 58 | 7/28 | 0 | 10 | no |
-| `@flighthq/math` | generated | blocked | source-blocked | 12/16 | 43/73 | 30 | 4/4 | 1 | 5 | no |
-| `@flighthq/media` | generated | blocked | source-blocked | 1/4 | 0/42 | 42 | 1/1 | 0 | 4 | no |
+| `@flighthq/materials` | generated | emittable | dependency-blocked | 12/12 | 68/68 | 0 | 7/28 | 1 | 0 | no |
+| `@flighthq/math` | generated | emittable | compiled | 16/16 | 73/73 | 0 | 4/4 | 0 | 0 | no |
+| `@flighthq/media` | generated | emittable | compile-blocked | 4/4 | 42/42 | 0 | 1/1 | 3 | 0 | no |
 | `@flighthq/mediasession` | generated | blocked | source-blocked | 1/2 | 0/10 | 10 | 1/1 | 0 | 2 | no |
-| `@flighthq/menu` | generated | blocked | source-blocked | 1/3 | 0/17 | 17 | 3/3 | 0 | 3 | no |
-| `@flighthq/mesh` | generated | blocked | source-blocked | 7/12 | 28/67 | 39 | 6/20 | 0 | 6 | no |
-| `@flighthq/motionpath` | generated | blocked | source-blocked | 7/8 | 6/7 | 1 | 1/1 | 1 | 2 | no |
-| `@flighthq/movieclip` | generated | blocked | source-blocked | 1/3 | 0/23 | 23 | 1/1 | 0 | 3 | no |
+| `@flighthq/menu` | generated | blocked | source-blocked | 2/3 | 6/17 | 11 | 3/3 | 0 | 2 | no |
+| `@flighthq/mesh` | generated | emittable | dependency-blocked | 12/12 | 67/67 | 0 | 6/20 | 1 | 0 | no |
+| `@flighthq/motionpath` | generated | emittable | dependency-blocked | 8/8 | 7/7 | 0 | 1/1 | 0 | 0 | no |
+| `@flighthq/movieclip` | generated | emittable | dependency-blocked | 3/3 | 23/23 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/net` | generated | blocked | source-blocked | 1/2 | 0/4 | 4 | 1/1 | 0 | 2 | no |
-| `@flighthq/node` | generated | blocked | source-blocked | 5/16 | 44/105 | 61 | 23/32 | 1 | 12 | no |
+| `@flighthq/node` | generated | emittable | dependency-blocked | 16/16 | 105/105 | 0 | 23/32 | 1 | 0 | no |
 | `@flighthq/notification` | generated | blocked | source-blocked | 1/2 | 0/26 | 26 | 4/4 | 0 | 2 | no |
-| `@flighthq/particleemitter` | generated | blocked | source-blocked | 5/11 | 4/51 | 47 | 1/1 | 3 | 7 | no |
-| `@flighthq/particles` | generated | blocked | source-blocked | 5/11 | 9/50 | 41 | 3/3 | 1 | 7 | no |
-| `@flighthq/particles-formats` | generated | blocked | source-blocked | 7/21 | 28/79 | 51 | 1/1 | 1 | 15 | no |
-| `@flighthq/path` | generated | blocked | source-blocked | 18/23 | 27/50 | 23 | 8/8 | 13 | 6 | no |
-| `@flighthq/path-boolean` | generated | blocked | source-blocked | 3/8 | 4/12 | 9 | 1/1 | 0 | 6 | no |
-| `@flighthq/path-formats` | generated | blocked | source-blocked | 1/2 | 0/3 | 3 | 1/1 | 0 | 2 | no |
+| `@flighthq/particleemitter` | generated | emittable | dependency-blocked | 11/11 | 51/51 | 0 | 1/1 | 2 | 0 | no |
+| `@flighthq/particles` | generated | emittable | dependency-blocked | 11/11 | 50/50 | 0 | 3/3 | 1 | 0 | no |
+| `@flighthq/particles-formats` | generated | blocked | source-blocked | 15/21 | 56/79 | 23 | 1/1 | 6 | 7 | no |
+| `@flighthq/path` | generated | emittable | compile-blocked | 23/23 | 50/50 | 0 | 8/8 | 0 | 0 | no |
+| `@flighthq/path-boolean` | generated | blocked | source-blocked | 7/8 | 12/12 | 1 | 1/1 | 0 | 2 | no |
+| `@flighthq/path-formats` | generated | emittable | dependency-blocked | 2/2 | 3/3 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/permissions` | generated | blocked | source-blocked | 1/2 | 0/5 | 5 | 1/1 | 0 | 2 | no |
-| `@flighthq/picking` | generated | blocked | source-blocked | 1/2 | 0/6 | 6 | 1/1 | 0 | 2 | no |
-| `@flighthq/platform` | generated | blocked | source-blocked | 1/2 | 0/16 | 16 | 3/3 | 0 | 2 | no |
-| `@flighthq/power` | generated | blocked | source-blocked | 1/2 | 0/19 | 19 | 2/2 | 0 | 2 | no |
-| `@flighthq/protocol` | generated | blocked | source-blocked | 1/2 | 0/20 | 20 | 2/2 | 0 | 2 | no |
-| `@flighthq/render` | generated | blocked | source-blocked | 9/17 | 18/63 | 45 | 9/13 | 4 | 9 | no |
-| `@flighthq/render-gl` | generated | blocked | source-blocked | 12/24 | 18/75 | 58 | 4/4 | 6 | 13 | no |
-| `@flighthq/render-wgpu` | generated | blocked | source-blocked | 5/18 | 7/68 | 61 | 5/5 | 3 | 14 | no |
-| `@flighthq/scene` | generated | blocked | source-blocked | 10/14 | 20/43 | 23 | 6/6 | 3 | 5 | no |
-| `@flighthq/scene-formats` | generated | blocked | source-blocked | 6/16 | 78/15 | 14 | 2/2 | 1 | 11 | no |
-| `@flighthq/scene-gl` | generated | blocked | source-blocked | 9/53 | 34/184 | 150 | 1/1 | 3 | 45 | no |
-| `@flighthq/scene-resources` | generated | blocked | source-blocked | 2/16 | 5/37 | 32 | 1/1 | 0 | 15 | no |
-| `@flighthq/scene-wgpu` | generated | blocked | source-blocked | 4/42 | 9/140 | 131 | 1/1 | 0 | 39 | no |
+| `@flighthq/picking` | generated | emittable | dependency-blocked | 2/2 | 6/6 | 0 | 1/1 | 1 | 0 | no |
+| `@flighthq/platform` | generated | emittable | dependency-blocked | 2/2 | 16/16 | 0 | 3/3 | 1 | 0 | no |
+| `@flighthq/power` | generated | emittable | compile-blocked | 2/2 | 19/19 | 0 | 2/2 | 1 | 0 | no |
+| `@flighthq/protocol` | generated | emittable | compile-blocked | 2/2 | 20/20 | 0 | 2/2 | 1 | 0 | no |
+| `@flighthq/render` | generated | emittable | dependency-blocked | 17/17 | 63/63 | 0 | 9/13 | 3 | 0 | no |
+| `@flighthq/render-gl` | generated | blocked | source-blocked | 20/24 | 60/75 | 24 | 4/4 | 10 | 5 | no |
+| `@flighthq/render-wgpu` | generated | blocked | source-blocked | 10/18 | 26/68 | 42 | 5/5 | 6 | 9 | no |
+| `@flighthq/scene` | generated | emittable | dependency-blocked | 14/14 | 43/43 | 0 | 6/6 | 1 | 0 | no |
+| `@flighthq/scene-formats` | generated | blocked | source-blocked | 9/16 | 83/15 | 9 | 2/2 | 1 | 8 | no |
+| `@flighthq/scene-gl` | generated | blocked | source-blocked | 51/53 | 182/184 | 2 | 1/1 | 22 | 3 | no |
+| `@flighthq/scene-resources` | generated | blocked | source-blocked | 6/16 | 20/37 | 17 | 1/1 | 4 | 11 | no |
+| `@flighthq/scene-wgpu` | generated | blocked | source-blocked | 30/42 | 67/140 | 73 | 1/1 | 17 | 13 | no |
 | `@flighthq/screen` | generated | blocked | source-blocked | 1/2 | 0/31 | 31 | 2/2 | 0 | 2 | no |
 | `@flighthq/sdk` | generated | blocked | source-blocked | 14/14 | 0/5923 | 5923 | 0/0 | 0 | 1 | no |
 | `@flighthq/sensors` | generated | blocked | source-blocked | 1/2 | 0/32 | 32 | 1/1 | 0 | 2 | no |
-| `@flighthq/shading` | generated | blocked | source-blocked | 10/17 | 15/37 | 22 | 2/2 | 0 | 8 | no |
-| `@flighthq/shape` | generated | blocked | source-blocked | 1/7 | 0/42 | 42 | 7/8 | 0 | 7 | no |
+| `@flighthq/shading` | generated | blocked | source-blocked | 16/17 | 36/37 | 1 | 2/2 | 2 | 2 | no |
+| `@flighthq/shape` | generated | blocked | source-blocked | 5/7 | 31/42 | 11 | 7/8 | 0 | 3 | no |
 | `@flighthq/shape-formats` | generated | blocked | source-blocked | 1/2 | 0/5 | 5 | 1/1 | 0 | 2 | no |
 | `@flighthq/share` | generated | blocked | source-blocked | 1/2 | 0/14 | 14 | 2/2 | 0 | 2 | no |
 | `@flighthq/shell` | generated | blocked | source-blocked | 1/2 | 0/14 | 14 | 3/3 | 0 | 2 | no |
 | `@flighthq/shortcut` | generated | blocked | source-blocked | 1/2 | 0/26 | 26 | 3/3 | 0 | 2 | no |
-| `@flighthq/signals` | generated | blocked | source-blocked | 2/6 | 1/14 | 13 | 42/72 | 1 | 5 | no |
-| `@flighthq/skeleton3d` | generated | emittable | compile-blocked | 6/6 | 16/16 | 0 | 3/16 | 1 | 0 | no |
-| `@flighthq/snapshot` | generated | blocked | source-blocked | 1/5 | 0/4 | 4 | 1/1 | 0 | 5 | no |
-| `@flighthq/socket` | generated | blocked | source-blocked | 1/2 | 0/11 | 11 | 1/1 | 0 | 2 | no |
-| `@flighthq/spatial` | generated | blocked | source-blocked | 2/3 | 9/10 | 1 | 2/2 | 0 | 2 | no |
-| `@flighthq/spring` | generated | blocked | source-blocked | 7/8 | 11/12 | 1 | 1/1 | 0 | 2 | no |
-| `@flighthq/sprite` | generated | blocked | source-blocked | 1/4 | 0/64 | 64 | 3/3 | 0 | 4 | no |
-| `@flighthq/spritesheet` | generated | blocked | source-blocked | 1/8 | 0/32 | 32 | 2/2 | 0 | 8 | no |
-| `@flighthq/spritesheet-formats` | generated | blocked | source-blocked | 6/16 | 29/55 | 26 | 1/1 | 3 | 11 | no |
+| `@flighthq/signals` | generated | emittable | compiled | 6/6 | 15/14 | 0 | 42/72 | 0 | 0 | no |
+| `@flighthq/skeleton3d` | generated | emittable | dependency-blocked | 6/6 | 16/16 | 0 | 3/16 | 0 | 0 | no |
+| `@flighthq/snapshot` | generated | emittable | compile-blocked | 5/5 | 4/4 | 0 | 1/1 | 4 | 0 | no |
+| `@flighthq/socket` | generated | emittable | compile-blocked | 2/2 | 11/11 | 0 | 1/1 | 1 | 0 | no |
+| `@flighthq/spatial` | generated | emittable | dependency-blocked | 3/3 | 10/10 | 0 | 2/2 | 0 | 0 | no |
+| `@flighthq/spring` | generated | emittable | compiled | 8/8 | 12/12 | 0 | 1/1 | 0 | 0 | no |
+| `@flighthq/sprite` | generated | emittable | dependency-blocked | 4/4 | 64/64 | 0 | 3/3 | 0 | 0 | no |
+| `@flighthq/spritesheet` | generated | emittable | dependency-blocked | 8/8 | 32/32 | 0 | 2/2 | 3 | 0 | no |
+| `@flighthq/spritesheet-formats` | generated | blocked | source-blocked | 14/16 | 51/55 | 4 | 1/1 | 7 | 3 | no |
 | `@flighthq/statusbar` | generated | blocked | source-blocked | 1/2 | 0/16 | 16 | 2/2 | 0 | 2 | no |
 | `@flighthq/storage` | generated | blocked | source-blocked | 1/2 | 0/39 | 39 | 2/2 | 0 | 2 | no |
 | `@flighthq/surface` | cultivated | cultivated | not-applicable | 0/0 | 0/136 | 136 | 6/9 | 0 | 0 | partial |
-| `@flighthq/text` | generated | blocked | source-blocked | 3/6 | 4/86 | 82 | 8/9 | 0 | 4 | no |
-| `@flighthq/text-markup` | generated | blocked | source-blocked | 2/5 | 1/8 | 7 | 1/1 | 1 | 4 | no |
-| `@flighthq/textbidi` | generated | blocked | source-blocked | 4/5 | 5/6 | 1 | 1/1 | 0 | 2 | no |
-| `@flighthq/textinput` | generated | blocked | source-blocked | 1/5 | 0/55 | 55 | 5/6 | 0 | 5 | no |
-| `@flighthq/textlayout` | generated | blocked | source-blocked | 9/13 | 23/47 | 25 | 9/11 | 1 | 5 | no |
-| `@flighthq/textsegment` | generated | blocked | source-blocked | 3/4 | 8/11 | 3 | 1/1 | 0 | 2 | no |
-| `@flighthq/textshaper` | generated | blocked | source-blocked | 5/9 | 20/31 | 13 | 3/12 | 1 | 5 | no |
+| `@flighthq/text` | generated | blocked | source-blocked | 5/6 | 70/86 | 16 | 8/9 | 1 | 2 | no |
+| `@flighthq/text-markup` | generated | blocked | source-blocked | 4/5 | 6/8 | 2 | 1/1 | 1 | 2 | no |
+| `@flighthq/textbidi` | generated | emittable | compile-blocked | 5/5 | 6/6 | 0 | 1/1 | 0 | 0 | no |
+| `@flighthq/textinput` | generated | emittable | dependency-blocked | 5/5 | 55/55 | 0 | 5/6 | 1 | 0 | no |
+| `@flighthq/textlayout` | generated | emittable | dependency-blocked | 13/13 | 51/47 | 0 | 9/11 | 1 | 0 | no |
+| `@flighthq/textsegment` | generated | emittable | compile-blocked | 4/4 | 11/11 | 0 | 1/1 | 1 | 0 | no |
+| `@flighthq/textshaper` | generated | blocked | source-blocked | 7/9 | 28/31 | 5 | 3/12 | 1 | 3 | no |
 | `@flighthq/textshaper-canvas` | generated | blocked | source-blocked | 1/2 | 0/3 | 3 | 1/1 | 0 | 2 | no |
-| `@flighthq/texture` | generated | blocked | source-blocked | 1/5 | 0/42 | 42 | 5/6 | 0 | 5 | no |
-| `@flighthq/texture-formats` | generated | blocked | source-blocked | 3/9 | 2/6 | 4 | 1/1 | 0 | 7 | no |
-| `@flighthq/textureatlas` | generated | blocked | source-blocked | 1/4 | 0/20 | 20 | 8/13 | 0 | 4 | no |
-| `@flighthq/textureatlas-formats` | generated | blocked | source-blocked | 3/8 | 20/29 | 9 | 2/2 | 2 | 6 | no |
-| `@flighthq/tilemap-formats` | generated | blocked | source-blocked | 3/9 | 6/16 | 10 | 1/1 | 0 | 7 | no |
-| `@flighthq/tileset` | generated | blocked | source-blocked | 1/3 | 0/9 | 9 | 3/8 | 0 | 3 | no |
-| `@flighthq/timeline` | generated | blocked | source-blocked | 1/2 | 0/16 | 16 | 2/2 | 0 | 2 | no |
+| `@flighthq/texture` | generated | emittable | dependency-blocked | 5/5 | 42/42 | 0 | 5/6 | 1 | 0 | no |
+| `@flighthq/texture-formats` | generated | blocked | source-blocked | 8/9 | 8/6 | 0 | 1/1 | 0 | 1 | no |
+| `@flighthq/textureatlas` | generated | blocked | source-blocked | 3/4 | 12/20 | 8 | 8/13 | 0 | 2 | no |
+| `@flighthq/textureatlas-formats` | generated | emittable | dependency-blocked | 8/8 | 29/29 | 0 | 2/2 | 1 | 0 | no |
+| `@flighthq/tilemap-formats` | generated | blocked | source-blocked | 6/9 | 16/16 | 0 | 1/1 | 1 | 3 | no |
+| `@flighthq/tileset` | generated | blocked | source-blocked | 2/3 | 3/9 | 6 | 3/8 | 0 | 2 | no |
+| `@flighthq/timeline` | generated | emittable | compile-blocked | 2/2 | 16/16 | 0 | 2/2 | 0 | 0 | no |
 | `@flighthq/tool-capture` | excluded | excluded | not-applicable | 0/0 | 0/57 | 57 | 0/0 | 0 | 0 | no |
 | `@flighthq/tray` | generated | blocked | source-blocked | 1/2 | 0/23 | 23 | 3/3 | 0 | 2 | no |
-| `@flighthq/tween` | generated | blocked | source-blocked | 4/9 | 8/35 | 28 | 2/2 | 3 | 6 | no |
-| `@flighthq/types` | generated | emittable | compiled | 590/590 | 1261/1261 | 0 | 129/129 | 166 | 0 | partial |
+| `@flighthq/tween` | generated | blocked | source-blocked | 6/9 | 13/35 | 23 | 2/2 | 1 | 4 | no |
+| `@flighthq/types` | generated | emittable | compiled | 590/590 | 1261/1261 | 0 | 129/129 | 101 | 0 | partial |
 | `@flighthq/updater` | generated | blocked | source-blocked | 1/2 | 0/23 | 23 | 2/2 | 0 | 2 | no |
-| `@flighthq/useragent` | generated | blocked | source-blocked | 1/3 | 0/12 | 12 | 3/6 | 0 | 3 | no |
-| `@flighthq/velocity` | generated | blocked | source-blocked | 3/4 | 2/20 | 18 | 3/3 | 1 | 2 | no |
-| `@flighthq/video` | generated | blocked | source-blocked | 2/4 | 8/16 | 8 | 2/2 | 1 | 3 | no |
+| `@flighthq/useragent` | generated | emittable | compile-blocked | 3/3 | 12/12 | 0 | 3/6 | 1 | 0 | no |
+| `@flighthq/velocity` | generated | emittable | dependency-blocked | 4/4 | 20/20 | 0 | 3/3 | 1 | 0 | no |
+| `@flighthq/video` | generated | blocked | source-blocked | 3/4 | 12/16 | 4 | 2/2 | 1 | 2 | no |
 | `@flighthq/webcam` | generated | blocked | source-blocked | 1/3 | 0/10 | 10 | 1/1 | 0 | 3 | no |
-| `@flighthq/xml` | generated | blocked | source-blocked | 2/3 | 4/7 | 3 | 5/5 | 1 | 2 | no |
+| `@flighthq/xml` | generated | emittable | compile-blocked | 3/3 | 7/7 | 0 | 5/5 | 2 | 0 | no |
 
 ## Blockers
-
-### `@flighthq/accessibility`
-
-- **package** `upstream/packages/accessibility/src`: Generated crate is missing 8 of 8 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/accessibility/src/accessibility.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Map")
-
-### `@flighthq/adjustments`
-
-- **package** `upstream/packages/adjustments/src`: Generated crate is missing 40 of 49 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/adjustments/src/brightnessContrastAdjustment.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/adjustments/src/channelMixerAdjustment.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/adjustments/src/colorBlindSimulationAdjustment.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/adjustments/src/colorGradeAdjustment.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/adjustments/src/colorLut.ts`: new-expression Rust lowering is not implemented: array
-- **emission** `upstream/packages/adjustments/src/colorLutAdjustment.ts`: typeof Rust lowering is not implemented
-- **emission** `upstream/packages/adjustments/src/colorMatrixMath.ts`: new-expression Rust lowering is not implemented: array
-- **emission** `upstream/packages/adjustments/src/colorTransformAdjustment.ts`: object field colorMatrix is not present in structural type
-- **emission** `upstream/packages/adjustments/src/exposureAdjustment.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/adjustments/src/grayscaleAdjustment.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/adjustments/src/hueSaturationAdjustment.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/adjustments/src/invertAdjustment.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/adjustments/src/liftGammaGainAdjustment.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/adjustments/src/lookupTableGradeAdjustment.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/adjustments/src/sepiaAdjustment.ts`: object literal requires an inferred structural type
-
-### `@flighthq/animation`
-
-- **package** `upstream/packages/animation/src`: Generated crate is missing 13 of 18 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/animation/src/animationPlayer.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/animation/src/animationTrack.ts`: new-expression Rust lowering is not implemented: array
 
 ### `@flighthq/app`
 
 - **package** `upstream/packages/app/src`: Generated crate is missing 42 of 42 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/app/src/app.ts`: optional property Rust lowering is not implemented
-
-### `@flighthq/application`
-
-- **package** `upstream/packages/application/src`: Generated crate is missing 83 of 83 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/application/src/application.ts`: optional call Rust lowering is not implemented
-- **emission** `upstream/packages/application/src/window.ts`: optional call Rust lowering is not implemented
+- **emission** `upstream/packages/app/src/app.ts`: createWebAppBackend: new-expression Rust lowering is not implemented: crate::host_value::<crate::OpaqueHostValue>("host.DateTimeFormat")
 
 ### `@flighthq/assets`
 
 - **package** `upstream/packages/assets/src`: Generated crate is missing 10 of 10 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/assets/src/assetLibrary.ts`: new-expression Rust lowering is not implemented: error
+- **emission** `upstream/packages/assets/src/assetLibrary.ts`: loadAssetGroup: upstream/packages/assets/src/assetLibrary.ts: async Rust lowering is not implemented for loadAssetGroup
 
 ### `@flighthq/audio`
 
-- **package** `upstream/packages/audio/src`: Generated crate is missing 10 of 20 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/audio/src/audioFormat.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Audio")
-- **emission** `upstream/packages/audio/src/audioResourceFrom.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("AudioBuffer")
+- **package** `upstream/packages/audio/src`: Generated crate is missing 7 of 20 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/audio/src/audioResourceFrom.ts`: loadAudioResourceFromBase64: upstream/packages/audio/src/audioResourceFrom.ts: async Rust lowering is not implemented for loadAudioResourceFromBase64
 
 ### `@flighthq/binpack`
 
 - **package** `upstream/packages/binpack/src`: Generated crate is missing 1 of 1 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/binpack/src/packRectangles.ts`: optional property Rust lowering is not implemented
-
-### `@flighthq/bitmapfont`
-
-- **package** `upstream/packages/bitmapfont/src`: Generated crate is missing 7 of 7 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/bitmapfont/src/bitmapFont.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Map")
-- **emission** `upstream/packages/bitmapfont/src/glyphSource.ts`: optional property Rust lowering is not implemented
+- **emission** `upstream/packages/binpack/src/packRectangles.ts`: compareRectangleId: typeof operand has no inferred Rust type: {"kind":"identifier","name":"a"}
 
 ### `@flighthq/bitmapfont-formats`
 
-- **package** `upstream/packages/bitmapfont-formats/src`: Generated crate is missing 3 of 4 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/bitmapfont-formats/src/bitmapFontJson.ts`: try Rust lowering is not implemented
-- **emission** `upstream/packages/bitmapfont-formats/src/bitmapFontRecord.ts`: optional property Rust lowering is not implemented
-
-### `@flighthq/bitmaptext`
-
-- **package** `upstream/packages/bitmaptext/src`: Generated crate is missing 15 of 15 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/bitmaptext/src/bitmapText.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/bitmaptext/src/updateBitmapText.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Map")
-
-### `@flighthq/camera`
-
-- **package** `upstream/packages/camera/src`: Generated crate is missing 18 of 31 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/camera/src/camera.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/camera/src/intersection.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/camera/src/projection.ts`: Math.tan Rust lowering is not implemented
-- **emission** `upstream/packages/camera/src/shadowCamera.ts`: Math.hypot Rust lowering is not implemented
-
-### `@flighthq/camera2d`
-
-- **package** `upstream/packages/camera2d/src`: Generated crate is missing 2 of 8 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/camera2d/src/camera2d.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/camera2d/src/follow.ts`: optional property Rust lowering is not implemented
+- **emission** `upstream/packages/bitmapfont-formats/src/bitmapFontJson.ts`: parseBitmapFontJsonRecord: typeof operand has no inferred Rust type: {"kind":"identifier","name":"file"}
 
 ### `@flighthq/capture`
 
 - **package** `upstream/packages/capture/src`: Generated crate is missing 5 of 10 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/capture/src/captureBaseline.ts`: object literal requires an inferred structural type
-
-### `@flighthq/clip`
-
-- **package** `upstream/packages/clip/src`: Generated crate is missing 23 of 23 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/clip/src/clipRegion.ts`: new-expression Rust lowering is not implemented: array
+- **emission** `upstream/packages/capture/src/captureBaseline.ts`: getCaptureBaselineField: optional element access requires an inferred nullable collection
 
 ### `@flighthq/clipboard`
 
 - **package** `upstream/packages/clipboard/src`: Generated crate is missing 32 of 32 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/clipboard/src/clipboard.ts`: typeof Rust lowering is not implemented
-
-### `@flighthq/clock`
-
-- **package** `upstream/packages/clock/src`: Generated crate is missing 2 of 14 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/clock/src/createClock.ts`: optional property Rust lowering is not implemented
+- **emission** `upstream/packages/clipboard/src/clipboard.ts`: createWebClipboardBackend: typeof operand has no inferred Rust type: {"kind":"property","name":"read","object":{"kind":"identifier","name":"cb"},"optional":false}
 
 ### `@flighthq/collision`
 
-- **package** `upstream/packages/collision/src`: Generated crate is missing 11 of 19 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/collision/src/shapeCollision.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/collision/src/testCollision.ts`: fall-through switch cases require explicit Rust lowering
-
-### `@flighthq/color`
-
-- **package** `upstream/packages/color/src`: Generated crate is missing 12 of 32 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/color/src/colorFromKelvin.ts`: Math.log Rust lowering is not implemented
-- **emission** `upstream/packages/color/src/hslColor.ts`: cannot infer uninitialized local h
-- **emission** `upstream/packages/color/src/hsvColor.ts`: fall-through switch cases require explicit Rust lowering
-- **emission** `upstream/packages/color/src/oklab.ts`: Math.cbrt Rust lowering is not implemented
+- **package** `upstream/packages/collision/src`: Generated crate is missing 10 of 19 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/collision/src/shapeCollision.ts`: minOverlapAxis: cannot infer mutable top-level value minOverlapAxis
 
 ### `@flighthq/connectivity`
 
 - **package** `upstream/packages/connectivity/src`: Generated crate is missing 14 of 14 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/connectivity/src/connectivity.ts`: optional property Rust lowering is not implemented
+- **emission** `upstream/packages/connectivity/src/connectivity.ts`: detectConnectivityReachability: upstream/packages/connectivity/src/connectivity.ts: async Rust lowering is not implemented for detectConnectivityReachability
 
 ### `@flighthq/debug`
 
 - **package** `upstream/packages/debug/src`: Generated crate is missing 9 of 9 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/debug/src/debug.ts`: optional call Rust lowering is not implemented
-- **emission** `upstream/packages/debug/src/debugTiming.ts`: object literal requires an inferred structural type
-
-### `@flighthq/device`
-
-- **package** `upstream/packages/device/src`: Generated crate is missing 14 of 14 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/device/src/device.ts`: optional property Rust lowering is not implemented
+- **emission** `upstream/packages/debug/src/debug.ts`: _collectDebugChannels: spread Rust lowering is not implemented
+- **emission** `upstream/packages/debug/src/debugTiming.ts`: markDebugFrame: object literal requires an inferred structural type (target=unknown, properties=frame)
 
 ### `@flighthq/dialog`
 
 - **package** `upstream/packages/dialog/src`: Generated crate is missing 15 of 15 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/dialog/src/dialog.ts`: typeof Rust lowering is not implemented
-
-### `@flighthq/displayobject`
-
-- **package** `upstream/packages/displayobject/src`: Generated crate is missing 43 of 46 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/displayobject/src/bitmap.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject/src/displayObject.ts`: spread Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject/src/htmlView.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject/src/renderView.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject/src/stage.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject/src/video.ts`: optional property Rust lowering is not implemented
+- **emission** `upstream/packages/dialog/src/dialog.ts`: createWebDialogBackend: object literal requires an inferred structural type (target={"kind":"named","name":"Promise","arguments":[{"kind":"dynamic"}]}, properties=buttonIndex,cancelled,checkboxChecked)
 
 ### `@flighthq/displayobject-canvas`
 
-- **package** `upstream/packages/displayobject-canvas/src`: Generated crate is missing 84 of 94 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/displayobject-canvas/src/canvasBitmap.ts`: optional call Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject-canvas/src/canvasCache.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-canvas/src/canvasClip.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-canvas/src/canvasCSSFilterBinding.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("WeakMap")
-- **emission** `upstream/packages/displayobject-canvas/src/canvasDisplayObject.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-canvas/src/canvasImageSource.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("WeakMap")
-- **emission** `upstream/packages/displayobject-canvas/src/canvasMaterialRegistry.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject-canvas/src/canvasMaterials.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-canvas/src/canvasParticleEmitter.ts`: optional call Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject-canvas/src/canvasQuadBatch.ts`: optional call Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject-canvas/src/canvasRenderState.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-canvas/src/canvasRenderTarget.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("WeakMap")
-- **emission** `upstream/packages/displayobject-canvas/src/canvasRichText.ts`: optional call Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject-canvas/src/canvasScale9Mapper.ts`: fall-through switch cases require explicit Rust lowering
-- **emission** `upstream/packages/displayobject-canvas/src/canvasScale9Shape.ts`: optional call Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject-canvas/src/canvasShape.ts`: optional call Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject-canvas/src/canvasShapeCommands.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-canvas/src/canvasShapeRegistry.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Map")
-- **emission** `upstream/packages/displayobject-canvas/src/canvasSprite.ts`: optional call Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject-canvas/src/canvasTextInput.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("WeakMap")
-- **emission** `upstream/packages/displayobject-canvas/src/canvasTextLabel.ts`: optional call Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject-canvas/src/canvasTilemap.ts`: optional call Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject-canvas/src/canvasTransform.ts`: Math.fround Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject-canvas/src/canvasVideo.ts`: optional property Rust lowering is not implemented
+- **package** `upstream/packages/displayobject-canvas/src`: Generated crate is missing 35 of 94 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/displayobject-canvas/src/canvasBitmap.ts`: drawCanvasBitmap: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"state"},"optional":false}
+- **emission** `upstream/packages/displayobject-canvas/src/canvasImageSource.ts`: resolveCanvasImageSource: object literal requires an inferred structural type (target=unknown, properties=element,version)
+- **emission** `upstream/packages/displayobject-canvas/src/canvasParticleEmitter.ts`: drawCanvasParticleEmitter: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"state"},"optional":false}
+- **emission** `upstream/packages/displayobject-canvas/src/canvasQuadBatch.ts`: drawCanvasQuadBatch: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"state"},"optional":false}
+- **emission** `upstream/packages/displayobject-canvas/src/canvasRenderTarget.ts`: beginCanvasRenderPass: typeof operand has no inferred Rust type: {"kind":"identifier","name":"preserveColor"}
+- **emission** `upstream/packages/displayobject-canvas/src/canvasRichText.ts`: drawCanvasRichTextField: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"state"},"optional":false}
+- **emission** `upstream/packages/displayobject-canvas/src/canvasScale9Shape.ts`: drawCanvasScale9Shape: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"state"},"optional":false}
+- **emission** `upstream/packages/displayobject-canvas/src/canvasShape.ts`: drawCanvasShape: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"state"},"optional":false}
+- **emission** `upstream/packages/displayobject-canvas/src/canvasSprite.ts`: drawCanvasSprite: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"state"},"optional":false}
+- **emission** `upstream/packages/displayobject-canvas/src/canvasTextLabel.ts`: drawCanvasTextLabel: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"state"},"optional":false}
+- **emission** `upstream/packages/displayobject-canvas/src/canvasTilemap.ts`: drawCanvasTilemap: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"state"},"optional":false}
+- **emission** `upstream/packages/displayobject-canvas/src/canvasVideo.ts`: drawCanvasVideo: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"state"},"optional":false}
 
 ### `@flighthq/displayobject-gl`
 
-- **package** `upstream/packages/displayobject-gl/src`: Generated crate is missing 83 of 89 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/displayobject-gl/src/enableGlColorAdjustmentGuards.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-gl/src/glBitmap.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-gl/src/glCache.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-gl/src/glClip.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-gl/src/glClipContours.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("WeakMap")
-- **emission** `upstream/packages/displayobject-gl/src/glColorAdjustment.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-gl/src/glDefaultMaterial.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-gl/src/glDisplayObject.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject-gl/src/glParticleEmitter.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject-gl/src/glQuadBatch.ts`: optional element access Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject-gl/src/glRichText.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-gl/src/glScale9Shape.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-gl/src/glShape.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-gl/src/glShapeMesh.ts`: optional call Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject-gl/src/glSprite.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject-gl/src/glSpriteBatch.ts`: optional call Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject-gl/src/glSpriteRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-gl/src/glTestHelper.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-gl/src/glTextLabel.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-gl/src/glTilemap.ts`: optional element access Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject-gl/src/glVelocity.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-gl/src/glVideo.ts`: object literal requires an inferred structural type
+- **package** `upstream/packages/displayobject-gl/src`: Generated crate is missing 8 of 89 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/displayobject-gl/src/glVelocity.ts`: defaultGlDisplayObjectVelocityWriter: upstream/packages/displayobject-gl/src/glVelocity.ts: cannot infer return type for defaultGlDisplayObjectVelocityWriter
 
 ### `@flighthq/displayobject-wgpu`
 
-- **package** `upstream/packages/displayobject-wgpu/src`: Generated crate is missing 86 of 95 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/displayobject-wgpu/src/enableWgpuColorAdjustmentGuards.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuBitmap.ts`: optional call Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuCache.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuClip.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuClipContours.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuColorAdjustment.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuDefaultMaterial.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuDisplayObject.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuParticleEmitter.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("WeakMap")
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuQuadBatch.ts`: optional element access Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuRenderStats.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuRichText.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuScale9Shape.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuShape.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuShapeMesh.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuSprite.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuSpriteBatch.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuSpriteRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuTextLabel.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuTilemap.ts`: optional element access Rust lowering is not implemented
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuVelocity.ts`: upstream/packages/displayobject-wgpu/src/wgpuVelocity.ts: cannot infer return type for defaultWgpuDisplayObjectVelocityWriter
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuVideo.ts`: object literal requires an inferred structural type
-
-### `@flighthq/effects`
-
-- **package** `upstream/packages/effects/src`: Generated crate is missing 94 of 112 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/effects/src/autoExposureEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/barrelDistortionEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/bevelEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/blendEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/blendModeMath.ts`: fall-through switch cases require explicit Rust lowering
-- **emission** `upstream/packages/effects/src/bloomEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/blurDownsample.ts`: Math.log2 Rust lowering is not implemented
-- **emission** `upstream/packages/effects/src/blurEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/bokehDepthOfFieldEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/cameraMotionBlurEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/chromaticAberrationEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/colorTemperatureMath.ts`: Math.log Rust lowering is not implemented
-- **emission** `upstream/packages/effects/src/compositeEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/compositeOperatorMath.ts`: fall-through switch cases require explicit Rust lowering
-- **emission** `upstream/packages/effects/src/contactShadowsEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/convolutionEffect.ts`: object spread Rust lowering is not implemented
-- **emission** `upstream/packages/effects/src/crtEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/customShaderEffect.ts`: object spread Rust lowering is not implemented
-- **emission** `upstream/packages/effects/src/depthMath.ts`: Math.acos Rust lowering is not implemented
-- **emission** `upstream/packages/effects/src/directionalBlurEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/displacementEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/ditherEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/dropShadowEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/filmEmulationEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/filmGrainEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/fxaaEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/gaussianKernel.ts`: Math.exp Rust lowering is not implemented
-- **emission** `upstream/packages/effects/src/gaussianMath.ts`: Math.exp Rust lowering is not implemented
-- **emission** `upstream/packages/effects/src/glitchEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/godRaysEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/gradientBevelEffect.ts`: object spread Rust lowering is not implemented
-- **emission** `upstream/packages/effects/src/gradientGlowEffect.ts`: object spread Rust lowering is not implemented
-- **emission** `upstream/packages/effects/src/halftoneEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/innerGlowEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/innerShadowEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/kuwaharaEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/kuwaharaMath.ts`: Math.exp Rust lowering is not implemented
-- **emission** `upstream/packages/effects/src/lensDirtEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/lensDistortionEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/lensFlareEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/medianEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/motionBlurEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/outerGlowEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/outlineEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/panniniProjectionEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/pixelateEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/posterizeEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/radialBlurEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/renderEffectDefaults.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/renderEffectInputs.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/renderEffectInterpolation.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Set")
-- **emission** `upstream/packages/effects/src/scanlinesEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/screenSpaceFogEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/sharpenEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/sketchEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/smaaEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/ssaoEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/ssrEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/taaEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/tiltShiftEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/toneMapEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/toneMapMath.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/effects/src/vignetteEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/volumetricLightEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects/src/whiteBalanceEffect.ts`: object literal requires an inferred structural type
+- **package** `upstream/packages/displayobject-wgpu/src`: Generated crate is missing 23 of 95 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/displayobject-wgpu/src/wgpuClipContours.ts`: ensureClipContourPipelines: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=arrayStride,attributes)
+- **emission** `upstream/packages/displayobject-wgpu/src/wgpuRenderStats.ts`: ensureWgpuRenderStatsMutable: object literal requires an inferred structural type (target={"arguments":[{"arguments":[],"kind":"named","name":"WgpuRenderStats"}],"kind":"named","name":"Mutable"}, properties=batchFlushCount,drawCallCount,instanceCount,textureUploadCount)
+- **emission** `upstream/packages/displayobject-wgpu/src/wgpuShapeMesh.ts`: ensureShapeMeshPipeline: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=arrayStride,attributes)
+- **emission** `upstream/packages/displayobject-wgpu/src/wgpuSpriteBatch.ts`: NORMAL_BLEND: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=color,alpha)
+- **emission** `upstream/packages/displayobject-wgpu/src/wgpuVelocity.ts`: defaultWgpuDisplayObjectVelocityWriter: upstream/packages/displayobject-wgpu/src/wgpuVelocity.ts: cannot infer return type for defaultWgpuDisplayObjectVelocityWriter
 
 ### `@flighthq/effects-canvas`
 
-- **package** `upstream/packages/effects-canvas/src`: Generated crate is missing 88 of 102 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/effects-canvas/src/canvasBloomEffect.ts`: upstream/packages/effects-canvas/src/canvasBloomEffect.ts: cannot infer return type for defaultCanvasBloomEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasBlurEffect.ts`: upstream/packages/effects-canvas/src/canvasBlurEffect.ts: cannot infer return type for defaultCanvasBlurEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasBokehDepthOfFieldEffect.ts`: upstream/packages/effects-canvas/src/canvasBokehDepthOfFieldEffect.ts: cannot infer return type for defaultCanvasBokehDepthOfFieldEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasCameraMotionBlurEffect.ts`: upstream/packages/effects-canvas/src/canvasCameraMotionBlurEffect.ts: cannot infer return type for defaultCanvasCameraMotionBlurEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasChromaticAberrationEffect.ts`: upstream/packages/effects-canvas/src/canvasChromaticAberrationEffect.ts: cannot infer return type for defaultCanvasChromaticAberrationEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasConvolutionEffect.ts`: upstream/packages/effects-canvas/src/canvasConvolutionEffect.ts: cannot infer return type for defaultCanvasConvolutionEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasCrtEffect.ts`: upstream/packages/effects-canvas/src/canvasCrtEffect.ts: cannot infer return type for defaultCanvasCrtEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasDirectionalBlurEffect.ts`: upstream/packages/effects-canvas/src/canvasDirectionalBlurEffect.ts: cannot infer return type for defaultCanvasDirectionalBlurEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasDisplacementEffect.ts`: upstream/packages/effects-canvas/src/canvasDisplacementEffect.ts: cannot infer return type for defaultCanvasDisplacementEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasDitherEffect.ts`: upstream/packages/effects-canvas/src/canvasDitherEffect.ts: cannot infer return type for defaultCanvasDitherEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasDropShadowEffect.ts`: upstream/packages/effects-canvas/src/canvasDropShadowEffect.ts: cannot infer return type for defaultCanvasDropShadowEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasFilmGrainEffect.ts`: upstream/packages/effects-canvas/src/canvasFilmGrainEffect.ts: cannot infer return type for defaultCanvasFilmGrainEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasFxaaEffect.ts`: upstream/packages/effects-canvas/src/canvasFxaaEffect.ts: cannot infer return type for defaultCanvasFxaaEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasGlitchEffect.ts`: upstream/packages/effects-canvas/src/canvasGlitchEffect.ts: cannot infer return type for defaultCanvasGlitchEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasGodRaysEffect.ts`: upstream/packages/effects-canvas/src/canvasGodRaysEffect.ts: cannot infer return type for defaultCanvasGodRaysEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasHalftoneEffect.ts`: upstream/packages/effects-canvas/src/canvasHalftoneEffect.ts: cannot infer return type for defaultCanvasHalftoneEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasKuwaharaEffect.ts`: upstream/packages/effects-canvas/src/canvasKuwaharaEffect.ts: cannot infer return type for defaultCanvasKuwaharaEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasLensDirtEffect.ts`: upstream/packages/effects-canvas/src/canvasLensDirtEffect.ts: cannot infer return type for defaultCanvasLensDirtEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasLensDistortionEffect.ts`: upstream/packages/effects-canvas/src/canvasLensDistortionEffect.ts: cannot infer return type for defaultCanvasLensDistortionEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasLensFlareEffect.ts`: upstream/packages/effects-canvas/src/canvasLensFlareEffect.ts: cannot infer return type for defaultCanvasLensFlareEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasMedianEffect.ts`: upstream/packages/effects-canvas/src/canvasMedianEffect.ts: cannot infer return type for defaultCanvasMedianEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasMotionBlurEffect.ts`: upstream/packages/effects-canvas/src/canvasMotionBlurEffect.ts: cannot infer return type for defaultCanvasMotionBlurEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasOuterGlowEffect.ts`: upstream/packages/effects-canvas/src/canvasOuterGlowEffect.ts: cannot infer return type for defaultCanvasOuterGlowEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasOutlineEffect.ts`: upstream/packages/effects-canvas/src/canvasOutlineEffect.ts: cannot infer return type for defaultCanvasOutlineEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasPixelateEffect.ts`: upstream/packages/effects-canvas/src/canvasPixelateEffect.ts: cannot infer return type for defaultCanvasPixelateEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasPosterizeEffect.ts`: upstream/packages/effects-canvas/src/canvasPosterizeEffect.ts: cannot infer return type for defaultCanvasPosterizeEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasRadialBlurEffect.ts`: upstream/packages/effects-canvas/src/canvasRadialBlurEffect.ts: cannot infer return type for defaultCanvasRadialBlurEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasRenderEffectPipeline.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects-canvas/src/canvasRenderEffectRegistry.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/effects-canvas/src/canvasScanlinesEffect.ts`: upstream/packages/effects-canvas/src/canvasScanlinesEffect.ts: cannot infer return type for defaultCanvasScanlinesEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasScreenSpaceFogEffect.ts`: upstream/packages/effects-canvas/src/canvasScreenSpaceFogEffect.ts: cannot infer return type for defaultCanvasScreenSpaceFogEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasSharpenEffect.ts`: upstream/packages/effects-canvas/src/canvasSharpenEffect.ts: cannot infer return type for defaultCanvasSharpenEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasSketchEffect.ts`: upstream/packages/effects-canvas/src/canvasSketchEffect.ts: cannot infer return type for defaultCanvasSketchEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasSmaaEffect.ts`: upstream/packages/effects-canvas/src/canvasSmaaEffect.ts: cannot infer return type for defaultCanvasSmaaEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasSsaoEffect.ts`: upstream/packages/effects-canvas/src/canvasSsaoEffect.ts: cannot infer return type for defaultCanvasSsaoEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasSsrEffect.ts`: upstream/packages/effects-canvas/src/canvasSsrEffect.ts: cannot infer return type for defaultCanvasSsrEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasTaaEffect.ts`: upstream/packages/effects-canvas/src/canvasTaaEffect.ts: cannot infer return type for defaultCanvasTaaEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasTiltShiftEffect.ts`: upstream/packages/effects-canvas/src/canvasTiltShiftEffect.ts: cannot infer return type for defaultCanvasTiltShiftEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasToneMapEffect.ts`: upstream/packages/effects-canvas/src/canvasToneMapEffect.ts: cannot infer return type for defaultCanvasToneMapEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasVignetteEffect.ts`: upstream/packages/effects-canvas/src/canvasVignetteEffect.ts: cannot infer return type for defaultCanvasVignetteEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasWhiteBalanceEffect.ts`: upstream/packages/effects-canvas/src/canvasWhiteBalanceEffect.ts: cannot infer return type for defaultCanvasWhiteBalanceEffectRunner
+- **package** `upstream/packages/effects-canvas/src`: Generated crate is missing 78 of 102 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/effects-canvas/src/canvasBloomEffect.ts`: defaultCanvasBloomEffectRunner: upstream/packages/effects-canvas/src/canvasBloomEffect.ts: cannot infer return type for defaultCanvasBloomEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasBlurEffect.ts`: defaultCanvasBlurEffectRunner: upstream/packages/effects-canvas/src/canvasBlurEffect.ts: cannot infer return type for defaultCanvasBlurEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasBokehDepthOfFieldEffect.ts`: defaultCanvasBokehDepthOfFieldEffectRunner: upstream/packages/effects-canvas/src/canvasBokehDepthOfFieldEffect.ts: cannot infer return type for defaultCanvasBokehDepthOfFieldEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasCameraMotionBlurEffect.ts`: defaultCanvasCameraMotionBlurEffectRunner: upstream/packages/effects-canvas/src/canvasCameraMotionBlurEffect.ts: cannot infer return type for defaultCanvasCameraMotionBlurEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasChromaticAberrationEffect.ts`: defaultCanvasChromaticAberrationEffectRunner: upstream/packages/effects-canvas/src/canvasChromaticAberrationEffect.ts: cannot infer return type for defaultCanvasChromaticAberrationEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasConvolutionEffect.ts`: defaultCanvasConvolutionEffectRunner: upstream/packages/effects-canvas/src/canvasConvolutionEffect.ts: cannot infer return type for defaultCanvasConvolutionEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasCrtEffect.ts`: defaultCanvasCrtEffectRunner: upstream/packages/effects-canvas/src/canvasCrtEffect.ts: cannot infer return type for defaultCanvasCrtEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasDirectionalBlurEffect.ts`: defaultCanvasDirectionalBlurEffectRunner: upstream/packages/effects-canvas/src/canvasDirectionalBlurEffect.ts: cannot infer return type for defaultCanvasDirectionalBlurEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasDisplacementEffect.ts`: defaultCanvasDisplacementEffectRunner: upstream/packages/effects-canvas/src/canvasDisplacementEffect.ts: cannot infer return type for defaultCanvasDisplacementEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasDitherEffect.ts`: defaultCanvasDitherEffectRunner: upstream/packages/effects-canvas/src/canvasDitherEffect.ts: cannot infer return type for defaultCanvasDitherEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasDropShadowEffect.ts`: defaultCanvasDropShadowEffectRunner: upstream/packages/effects-canvas/src/canvasDropShadowEffect.ts: cannot infer return type for defaultCanvasDropShadowEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasFilmGrainEffect.ts`: defaultCanvasFilmGrainEffectRunner: upstream/packages/effects-canvas/src/canvasFilmGrainEffect.ts: cannot infer return type for defaultCanvasFilmGrainEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasFxaaEffect.ts`: defaultCanvasFxaaEffectRunner: upstream/packages/effects-canvas/src/canvasFxaaEffect.ts: cannot infer return type for defaultCanvasFxaaEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasGlitchEffect.ts`: defaultCanvasGlitchEffectRunner: upstream/packages/effects-canvas/src/canvasGlitchEffect.ts: cannot infer return type for defaultCanvasGlitchEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasGodRaysEffect.ts`: defaultCanvasGodRaysEffectRunner: upstream/packages/effects-canvas/src/canvasGodRaysEffect.ts: cannot infer return type for defaultCanvasGodRaysEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasHalftoneEffect.ts`: defaultCanvasHalftoneEffectRunner: upstream/packages/effects-canvas/src/canvasHalftoneEffect.ts: cannot infer return type for defaultCanvasHalftoneEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasKuwaharaEffect.ts`: defaultCanvasKuwaharaEffectRunner: upstream/packages/effects-canvas/src/canvasKuwaharaEffect.ts: cannot infer return type for defaultCanvasKuwaharaEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasLensDirtEffect.ts`: defaultCanvasLensDirtEffectRunner: upstream/packages/effects-canvas/src/canvasLensDirtEffect.ts: cannot infer return type for defaultCanvasLensDirtEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasLensDistortionEffect.ts`: defaultCanvasLensDistortionEffectRunner: upstream/packages/effects-canvas/src/canvasLensDistortionEffect.ts: cannot infer return type for defaultCanvasLensDistortionEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasLensFlareEffect.ts`: defaultCanvasLensFlareEffectRunner: upstream/packages/effects-canvas/src/canvasLensFlareEffect.ts: cannot infer return type for defaultCanvasLensFlareEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasMedianEffect.ts`: defaultCanvasMedianEffectRunner: upstream/packages/effects-canvas/src/canvasMedianEffect.ts: cannot infer return type for defaultCanvasMedianEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasMotionBlurEffect.ts`: defaultCanvasMotionBlurEffectRunner: upstream/packages/effects-canvas/src/canvasMotionBlurEffect.ts: cannot infer return type for defaultCanvasMotionBlurEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasOuterGlowEffect.ts`: defaultCanvasOuterGlowEffectRunner: upstream/packages/effects-canvas/src/canvasOuterGlowEffect.ts: cannot infer return type for defaultCanvasOuterGlowEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasOutlineEffect.ts`: defaultCanvasOutlineEffectRunner: upstream/packages/effects-canvas/src/canvasOutlineEffect.ts: cannot infer return type for defaultCanvasOutlineEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasPixelateEffect.ts`: defaultCanvasPixelateEffectRunner: upstream/packages/effects-canvas/src/canvasPixelateEffect.ts: cannot infer return type for defaultCanvasPixelateEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasPosterizeEffect.ts`: defaultCanvasPosterizeEffectRunner: upstream/packages/effects-canvas/src/canvasPosterizeEffect.ts: cannot infer return type for defaultCanvasPosterizeEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasRadialBlurEffect.ts`: defaultCanvasRadialBlurEffectRunner: upstream/packages/effects-canvas/src/canvasRadialBlurEffect.ts: cannot infer return type for defaultCanvasRadialBlurEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasScanlinesEffect.ts`: defaultCanvasScanlinesEffectRunner: upstream/packages/effects-canvas/src/canvasScanlinesEffect.ts: cannot infer return type for defaultCanvasScanlinesEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasScreenSpaceFogEffect.ts`: defaultCanvasScreenSpaceFogEffectRunner: upstream/packages/effects-canvas/src/canvasScreenSpaceFogEffect.ts: cannot infer return type for defaultCanvasScreenSpaceFogEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasSharpenEffect.ts`: defaultCanvasSharpenEffectRunner: upstream/packages/effects-canvas/src/canvasSharpenEffect.ts: cannot infer return type for defaultCanvasSharpenEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasSketchEffect.ts`: defaultCanvasSketchEffectRunner: upstream/packages/effects-canvas/src/canvasSketchEffect.ts: cannot infer return type for defaultCanvasSketchEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasSmaaEffect.ts`: defaultCanvasSmaaEffectRunner: upstream/packages/effects-canvas/src/canvasSmaaEffect.ts: cannot infer return type for defaultCanvasSmaaEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasSsaoEffect.ts`: defaultCanvasSsaoEffectRunner: upstream/packages/effects-canvas/src/canvasSsaoEffect.ts: cannot infer return type for defaultCanvasSsaoEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasSsrEffect.ts`: defaultCanvasSsrEffectRunner: upstream/packages/effects-canvas/src/canvasSsrEffect.ts: cannot infer return type for defaultCanvasSsrEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasTaaEffect.ts`: defaultCanvasTaaEffectRunner: upstream/packages/effects-canvas/src/canvasTaaEffect.ts: cannot infer return type for defaultCanvasTaaEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasTiltShiftEffect.ts`: defaultCanvasTiltShiftEffectRunner: upstream/packages/effects-canvas/src/canvasTiltShiftEffect.ts: cannot infer return type for defaultCanvasTiltShiftEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasToneMapEffect.ts`: defaultCanvasToneMapEffectRunner: upstream/packages/effects-canvas/src/canvasToneMapEffect.ts: cannot infer return type for defaultCanvasToneMapEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasVignetteEffect.ts`: defaultCanvasVignetteEffectRunner: upstream/packages/effects-canvas/src/canvasVignetteEffect.ts: cannot infer return type for defaultCanvasVignetteEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasWhiteBalanceEffect.ts`: defaultCanvasWhiteBalanceEffectRunner: upstream/packages/effects-canvas/src/canvasWhiteBalanceEffect.ts: cannot infer return type for defaultCanvasWhiteBalanceEffectRunner
 
 ### `@flighthq/effects-gl`
 
-- **package** `upstream/packages/effects-gl/src`: Generated crate is missing 120 of 135 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/effects-gl/src/glBevelEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects-gl/src/glBlendEffect.ts`: upstream/packages/effects-gl/src/glBlendEffect.ts: cannot infer return type for defaultGlBlendEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glBloomEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects-gl/src/glBlurEffect.ts`: anonymous structural type has no synthesized Rust identity
-- **emission** `upstream/packages/effects-gl/src/glBokehDepthOfFieldEffect.ts`: upstream/packages/effects-gl/src/glBokehDepthOfFieldEffect.ts: cannot infer return type for defaultGlBokehDepthOfFieldEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glCameraMotionBlurEffect.ts`: upstream/packages/effects-gl/src/glCameraMotionBlurEffect.ts: cannot infer return type for defaultGlCameraMotionBlurEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glChromaticAberrationEffect.ts`: upstream/packages/effects-gl/src/glChromaticAberrationEffect.ts: cannot infer return type for defaultGlChromaticAberrationEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glCompositeEffect.ts`: upstream/packages/effects-gl/src/glCompositeEffect.ts: cannot infer return type for defaultGlCompositeEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glConvolutionEffect.ts`: upstream/packages/effects-gl/src/glConvolutionEffect.ts: cannot infer return type for defaultGlConvolutionEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glCrtEffect.ts`: upstream/packages/effects-gl/src/glCrtEffect.ts: cannot infer return type for defaultGlCrtEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glCustomShaderEffect.ts`: typeof Rust lowering is not implemented
-- **emission** `upstream/packages/effects-gl/src/glDirectionalBlurEffect.ts`: upstream/packages/effects-gl/src/glDirectionalBlurEffect.ts: cannot infer return type for defaultGlDirectionalBlurEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glDisplacementEffect.ts`: upstream/packages/effects-gl/src/glDisplacementEffect.ts: cannot infer return type for defaultGlDisplacementEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glDitherEffect.ts`: upstream/packages/effects-gl/src/glDitherEffect.ts: cannot infer return type for defaultGlDitherEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glDropShadowEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects-gl/src/glEffectBlitShader.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("WeakMap")
-- **emission** `upstream/packages/effects-gl/src/glEffectBoxBlur.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("WeakMap")
-- **emission** `upstream/packages/effects-gl/src/glEffectProgramCache.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Map")
-- **emission** `upstream/packages/effects-gl/src/glEffectTintShader.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("WeakMap")
-- **emission** `upstream/packages/effects-gl/src/glFilmGrainEffect.ts`: upstream/packages/effects-gl/src/glFilmGrainEffect.ts: cannot infer return type for defaultGlFilmGrainEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glFxaaEffect.ts`: upstream/packages/effects-gl/src/glFxaaEffect.ts: cannot infer return type for defaultGlFxaaEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glGlitchEffect.ts`: upstream/packages/effects-gl/src/glGlitchEffect.ts: cannot infer return type for defaultGlGlitchEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glGodRaysEffect.ts`: upstream/packages/effects-gl/src/glGodRaysEffect.ts: cannot infer return type for defaultGlGodRaysEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glGradientBevelEffect.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("WeakMap")
-- **emission** `upstream/packages/effects-gl/src/glGradientGlowEffect.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("WeakMap")
-- **emission** `upstream/packages/effects-gl/src/glHalftoneEffect.ts`: upstream/packages/effects-gl/src/glHalftoneEffect.ts: cannot infer return type for defaultGlHalftoneEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glInnerGlowEffect.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("WeakMap")
-- **emission** `upstream/packages/effects-gl/src/glInnerShadowEffect.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("WeakMap")
-- **emission** `upstream/packages/effects-gl/src/glKuwaharaEffect.ts`: upstream/packages/effects-gl/src/glKuwaharaEffect.ts: cannot infer return type for defaultGlKuwaharaEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glLensDirtEffect.ts`: upstream/packages/effects-gl/src/glLensDirtEffect.ts: cannot infer return type for defaultGlLensDirtEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glLensDistortionEffect.ts`: upstream/packages/effects-gl/src/glLensDistortionEffect.ts: cannot infer return type for defaultGlLensDistortionEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glLensFlareEffect.ts`: upstream/packages/effects-gl/src/glLensFlareEffect.ts: cannot infer return type for defaultGlLensFlareEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glMedianEffect.ts`: upstream/packages/effects-gl/src/glMedianEffect.ts: cannot infer return type for defaultGlMedianEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glMotionBlurEffect.ts`: upstream/packages/effects-gl/src/glMotionBlurEffect.ts: cannot infer return type for defaultGlMotionBlurEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glOuterGlowEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects-gl/src/glOutlineEffect.ts`: upstream/packages/effects-gl/src/glOutlineEffect.ts: cannot infer return type for defaultGlOutlineEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glPixelateEffect.ts`: upstream/packages/effects-gl/src/glPixelateEffect.ts: cannot infer return type for defaultGlPixelateEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glPosterizeEffect.ts`: upstream/packages/effects-gl/src/glPosterizeEffect.ts: cannot infer return type for defaultGlPosterizeEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glRadialBlurEffect.ts`: upstream/packages/effects-gl/src/glRadialBlurEffect.ts: cannot infer return type for defaultGlRadialBlurEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glRenderEffectPipeline.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects-gl/src/glRenderEffectRegistry.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/effects-gl/src/glScanlinesEffect.ts`: upstream/packages/effects-gl/src/glScanlinesEffect.ts: cannot infer return type for defaultGlScanlinesEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glScreenSpaceFogEffect.ts`: upstream/packages/effects-gl/src/glScreenSpaceFogEffect.ts: cannot infer return type for defaultGlScreenSpaceFogEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glSharpenEffect.ts`: upstream/packages/effects-gl/src/glSharpenEffect.ts: cannot infer return type for defaultGlSharpenEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glSketchEffect.ts`: upstream/packages/effects-gl/src/glSketchEffect.ts: cannot infer return type for defaultGlSketchEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glSmaaEffect.ts`: upstream/packages/effects-gl/src/glSmaaEffect.ts: cannot infer return type for defaultGlSmaaEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glSsaoEffect.ts`: upstream/packages/effects-gl/src/glSsaoEffect.ts: cannot infer return type for defaultGlSsaoEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glSsrEffect.ts`: upstream/packages/effects-gl/src/glSsrEffect.ts: cannot infer return type for defaultGlSsrEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glTaaEffect.ts`: upstream/packages/effects-gl/src/glTaaEffect.ts: cannot infer return type for defaultGlTaaEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glTiltShiftEffect.ts`: upstream/packages/effects-gl/src/glTiltShiftEffect.ts: cannot infer return type for defaultGlTiltShiftEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glToneMapEffect.ts`: upstream/packages/effects-gl/src/glToneMapEffect.ts: cannot infer return type for defaultGlToneMapEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glVignetteEffect.ts`: upstream/packages/effects-gl/src/glVignetteEffect.ts: cannot infer return type for defaultGlVignetteEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glWhiteBalanceEffect.ts`: upstream/packages/effects-gl/src/glWhiteBalanceEffect.ts: cannot infer return type for defaultGlWhiteBalanceEffectRunner
+- **package** `upstream/packages/effects-gl/src`: Generated crate is missing 104 of 135 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/effects-gl/src/glBevelEffect.ts`: applyBevelEffectToGl: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)
+- **emission** `upstream/packages/effects-gl/src/glBlendEffect.ts`: defaultGlBlendEffectRunner: upstream/packages/effects-gl/src/glBlendEffect.ts: cannot infer return type for defaultGlBlendEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glBloomEffect.ts`: applyBloomEffectToGl: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY)
+- **emission** `upstream/packages/effects-gl/src/glBlurEffect.ts`: applyBlurEffectToGl: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY)
+- **emission** `upstream/packages/effects-gl/src/glBokehDepthOfFieldEffect.ts`: defaultGlBokehDepthOfFieldEffectRunner: upstream/packages/effects-gl/src/glBokehDepthOfFieldEffect.ts: cannot infer return type for defaultGlBokehDepthOfFieldEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glCameraMotionBlurEffect.ts`: defaultGlCameraMotionBlurEffectRunner: upstream/packages/effects-gl/src/glCameraMotionBlurEffect.ts: cannot infer return type for defaultGlCameraMotionBlurEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glChromaticAberrationEffect.ts`: defaultGlChromaticAberrationEffectRunner: upstream/packages/effects-gl/src/glChromaticAberrationEffect.ts: cannot infer return type for defaultGlChromaticAberrationEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glCompositeEffect.ts`: defaultGlCompositeEffectRunner: upstream/packages/effects-gl/src/glCompositeEffect.ts: cannot infer return type for defaultGlCompositeEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glConvolutionEffect.ts`: defaultGlConvolutionEffectRunner: upstream/packages/effects-gl/src/glConvolutionEffect.ts: cannot infer return type for defaultGlConvolutionEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glCrtEffect.ts`: defaultGlCrtEffectRunner: upstream/packages/effects-gl/src/glCrtEffect.ts: cannot infer return type for defaultGlCrtEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glCustomShaderEffect.ts`: defaultGlCustomShaderEffectRunner: upstream/packages/effects-gl/src/glCustomShaderEffect.ts: cannot infer return type for defaultGlCustomShaderEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glDirectionalBlurEffect.ts`: defaultGlDirectionalBlurEffectRunner: upstream/packages/effects-gl/src/glDirectionalBlurEffect.ts: cannot infer return type for defaultGlDirectionalBlurEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glDisplacementEffect.ts`: defaultGlDisplacementEffectRunner: upstream/packages/effects-gl/src/glDisplacementEffect.ts: cannot infer return type for defaultGlDisplacementEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glDitherEffect.ts`: defaultGlDitherEffectRunner: upstream/packages/effects-gl/src/glDitherEffect.ts: cannot infer return type for defaultGlDitherEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glDropShadowEffect.ts`: applyDropShadowEffectToGl: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)
+- **emission** `upstream/packages/effects-gl/src/glFilmGrainEffect.ts`: defaultGlFilmGrainEffectRunner: upstream/packages/effects-gl/src/glFilmGrainEffect.ts: cannot infer return type for defaultGlFilmGrainEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glFxaaEffect.ts`: defaultGlFxaaEffectRunner: upstream/packages/effects-gl/src/glFxaaEffect.ts: cannot infer return type for defaultGlFxaaEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glGlitchEffect.ts`: defaultGlGlitchEffectRunner: upstream/packages/effects-gl/src/glGlitchEffect.ts: cannot infer return type for defaultGlGlitchEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glGodRaysEffect.ts`: defaultGlGodRaysEffectRunner: upstream/packages/effects-gl/src/glGodRaysEffect.ts: cannot infer return type for defaultGlGodRaysEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glGradientBevelEffect.ts`: applyGradientBevelEffectToGl: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)
+- **emission** `upstream/packages/effects-gl/src/glGradientGlowEffect.ts`: applyGradientGlowEffectToGl: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)
+- **emission** `upstream/packages/effects-gl/src/glHalftoneEffect.ts`: defaultGlHalftoneEffectRunner: upstream/packages/effects-gl/src/glHalftoneEffect.ts: cannot infer return type for defaultGlHalftoneEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glInnerGlowEffect.ts`: applyInnerGlowEffectToGl: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,edgeColor,passes)
+- **emission** `upstream/packages/effects-gl/src/glInnerShadowEffect.ts`: applyInnerShadowEffectToGl: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,edgeColor,passes)
+- **emission** `upstream/packages/effects-gl/src/glKuwaharaEffect.ts`: defaultGlKuwaharaEffectRunner: upstream/packages/effects-gl/src/glKuwaharaEffect.ts: cannot infer return type for defaultGlKuwaharaEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glLensDirtEffect.ts`: defaultGlLensDirtEffectRunner: upstream/packages/effects-gl/src/glLensDirtEffect.ts: cannot infer return type for defaultGlLensDirtEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glLensDistortionEffect.ts`: defaultGlLensDistortionEffectRunner: upstream/packages/effects-gl/src/glLensDistortionEffect.ts: cannot infer return type for defaultGlLensDistortionEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glLensFlareEffect.ts`: defaultGlLensFlareEffectRunner: upstream/packages/effects-gl/src/glLensFlareEffect.ts: cannot infer return type for defaultGlLensFlareEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glMedianEffect.ts`: defaultGlMedianEffectRunner: upstream/packages/effects-gl/src/glMedianEffect.ts: cannot infer return type for defaultGlMedianEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glMotionBlurEffect.ts`: defaultGlMotionBlurEffectRunner: upstream/packages/effects-gl/src/glMotionBlurEffect.ts: cannot infer return type for defaultGlMotionBlurEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glOuterGlowEffect.ts`: applyOuterGlowEffectToGl: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)
+- **emission** `upstream/packages/effects-gl/src/glOutlineEffect.ts`: defaultGlOutlineEffectRunner: upstream/packages/effects-gl/src/glOutlineEffect.ts: cannot infer return type for defaultGlOutlineEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glPixelateEffect.ts`: defaultGlPixelateEffectRunner: upstream/packages/effects-gl/src/glPixelateEffect.ts: cannot infer return type for defaultGlPixelateEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glPosterizeEffect.ts`: defaultGlPosterizeEffectRunner: upstream/packages/effects-gl/src/glPosterizeEffect.ts: cannot infer return type for defaultGlPosterizeEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glRadialBlurEffect.ts`: defaultGlRadialBlurEffectRunner: upstream/packages/effects-gl/src/glRadialBlurEffect.ts: cannot infer return type for defaultGlRadialBlurEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glScanlinesEffect.ts`: defaultGlScanlinesEffectRunner: upstream/packages/effects-gl/src/glScanlinesEffect.ts: cannot infer return type for defaultGlScanlinesEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glScreenSpaceFogEffect.ts`: defaultGlScreenSpaceFogEffectRunner: upstream/packages/effects-gl/src/glScreenSpaceFogEffect.ts: cannot infer return type for defaultGlScreenSpaceFogEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glSharpenEffect.ts`: defaultGlSharpenEffectRunner: upstream/packages/effects-gl/src/glSharpenEffect.ts: cannot infer return type for defaultGlSharpenEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glSketchEffect.ts`: defaultGlSketchEffectRunner: upstream/packages/effects-gl/src/glSketchEffect.ts: cannot infer return type for defaultGlSketchEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glSmaaEffect.ts`: defaultGlSmaaEffectRunner: upstream/packages/effects-gl/src/glSmaaEffect.ts: cannot infer return type for defaultGlSmaaEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glSsaoEffect.ts`: defaultGlSsaoEffectRunner: upstream/packages/effects-gl/src/glSsaoEffect.ts: cannot infer return type for defaultGlSsaoEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glSsrEffect.ts`: defaultGlSsrEffectRunner: upstream/packages/effects-gl/src/glSsrEffect.ts: cannot infer return type for defaultGlSsrEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glTaaEffect.ts`: defaultGlTaaEffectRunner: upstream/packages/effects-gl/src/glTaaEffect.ts: cannot infer return type for defaultGlTaaEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glTiltShiftEffect.ts`: defaultGlTiltShiftEffectRunner: upstream/packages/effects-gl/src/glTiltShiftEffect.ts: cannot infer return type for defaultGlTiltShiftEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glToneMapEffect.ts`: defaultGlToneMapEffectRunner: upstream/packages/effects-gl/src/glToneMapEffect.ts: cannot infer return type for defaultGlToneMapEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glVignetteEffect.ts`: defaultGlVignetteEffectRunner: upstream/packages/effects-gl/src/glVignetteEffect.ts: cannot infer return type for defaultGlVignetteEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glWhiteBalanceEffect.ts`: defaultGlWhiteBalanceEffectRunner: upstream/packages/effects-gl/src/glWhiteBalanceEffect.ts: cannot infer return type for defaultGlWhiteBalanceEffectRunner
 
 ### `@flighthq/effects-wgpu`
 
-- **package** `upstream/packages/effects-wgpu/src`: Generated crate is missing 119 of 128 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/effects-wgpu/src/wgpuBevelEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects-wgpu/src/wgpuBloomEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects-wgpu/src/wgpuBlurEffect.ts`: anonymous structural type has no synthesized Rust identity
-- **emission** `upstream/packages/effects-wgpu/src/wgpuBokehDepthOfFieldEffect.ts`: upstream/packages/effects-wgpu/src/wgpuBokehDepthOfFieldEffect.ts: cannot infer return type for defaultWgpuBokehDepthOfFieldEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuCameraMotionBlurEffect.ts`: upstream/packages/effects-wgpu/src/wgpuCameraMotionBlurEffect.ts: cannot infer return type for defaultWgpuCameraMotionBlurEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuChromaticAberrationEffect.ts`: upstream/packages/effects-wgpu/src/wgpuChromaticAberrationEffect.ts: cannot infer return type for defaultWgpuChromaticAberrationEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuColorLutPass.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects-wgpu/src/wgpuConvolutionEffect.ts`: upstream/packages/effects-wgpu/src/wgpuConvolutionEffect.ts: cannot infer return type for defaultWgpuConvolutionEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuCrtEffect.ts`: upstream/packages/effects-wgpu/src/wgpuCrtEffect.ts: cannot infer return type for defaultWgpuCrtEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuDirectionalBlurEffect.ts`: upstream/packages/effects-wgpu/src/wgpuDirectionalBlurEffect.ts: cannot infer return type for defaultWgpuDirectionalBlurEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuDisplacementEffect.ts`: upstream/packages/effects-wgpu/src/wgpuDisplacementEffect.ts: cannot infer return type for defaultWgpuDisplacementEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuDitherEffect.ts`: upstream/packages/effects-wgpu/src/wgpuDitherEffect.ts: cannot infer return type for defaultWgpuDitherEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuDropShadowEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects-wgpu/src/wgpuEffectBlitShader.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("WeakMap")
-- **emission** `upstream/packages/effects-wgpu/src/wgpuEffectBoxBlur.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("WeakMap")
-- **emission** `upstream/packages/effects-wgpu/src/wgpuEffectGradientRamp.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Map")
-- **emission** `upstream/packages/effects-wgpu/src/wgpuEffectPass.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects-wgpu/src/wgpuEffectProgramCache.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Map")
-- **emission** `upstream/packages/effects-wgpu/src/wgpuEffectTintShader.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("WeakMap")
-- **emission** `upstream/packages/effects-wgpu/src/wgpuFilmGrainEffect.ts`: upstream/packages/effects-wgpu/src/wgpuFilmGrainEffect.ts: cannot infer return type for defaultWgpuFilmGrainEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuFxaaEffect.ts`: upstream/packages/effects-wgpu/src/wgpuFxaaEffect.ts: cannot infer return type for defaultWgpuFxaaEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuGlitchEffect.ts`: upstream/packages/effects-wgpu/src/wgpuGlitchEffect.ts: cannot infer return type for defaultWgpuGlitchEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuGodRaysEffect.ts`: upstream/packages/effects-wgpu/src/wgpuGodRaysEffect.ts: cannot infer return type for defaultWgpuGodRaysEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuGradientBevelEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects-wgpu/src/wgpuGradientGlowEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects-wgpu/src/wgpuHalftoneEffect.ts`: upstream/packages/effects-wgpu/src/wgpuHalftoneEffect.ts: cannot infer return type for defaultWgpuHalftoneEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuInnerGlowEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects-wgpu/src/wgpuInnerShadowEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects-wgpu/src/wgpuKuwaharaEffect.ts`: upstream/packages/effects-wgpu/src/wgpuKuwaharaEffect.ts: cannot infer return type for defaultWgpuKuwaharaEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuLensDirtEffect.ts`: upstream/packages/effects-wgpu/src/wgpuLensDirtEffect.ts: cannot infer return type for defaultWgpuLensDirtEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuLensDistortionEffect.ts`: upstream/packages/effects-wgpu/src/wgpuLensDistortionEffect.ts: cannot infer return type for defaultWgpuLensDistortionEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuLensFlareEffect.ts`: upstream/packages/effects-wgpu/src/wgpuLensFlareEffect.ts: cannot infer return type for defaultWgpuLensFlareEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuMedianEffect.ts`: upstream/packages/effects-wgpu/src/wgpuMedianEffect.ts: cannot infer return type for defaultWgpuMedianEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuMotionBlurEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects-wgpu/src/wgpuOuterGlowEffect.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/effects-wgpu/src/wgpuOutlineEffect.ts`: upstream/packages/effects-wgpu/src/wgpuOutlineEffect.ts: cannot infer return type for defaultWgpuOutlineEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuPixelateEffect.ts`: upstream/packages/effects-wgpu/src/wgpuPixelateEffect.ts: cannot infer return type for defaultWgpuPixelateEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuPosterizeEffect.ts`: upstream/packages/effects-wgpu/src/wgpuPosterizeEffect.ts: cannot infer return type for defaultWgpuPosterizeEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuRadialBlurEffect.ts`: upstream/packages/effects-wgpu/src/wgpuRadialBlurEffect.ts: cannot infer return type for defaultWgpuRadialBlurEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuRenderEffectPipeline.ts`: object spread Rust lowering is not implemented
-- **emission** `upstream/packages/effects-wgpu/src/wgpuRenderEffectRegistry.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/effects-wgpu/src/wgpuScanlinesEffect.ts`: upstream/packages/effects-wgpu/src/wgpuScanlinesEffect.ts: cannot infer return type for defaultWgpuScanlinesEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuScreenSpaceFogEffect.ts`: upstream/packages/effects-wgpu/src/wgpuScreenSpaceFogEffect.ts: cannot infer return type for defaultWgpuScreenSpaceFogEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuSharpenEffect.ts`: upstream/packages/effects-wgpu/src/wgpuSharpenEffect.ts: cannot infer return type for defaultWgpuSharpenEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuSketchEffect.ts`: upstream/packages/effects-wgpu/src/wgpuSketchEffect.ts: cannot infer return type for defaultWgpuSketchEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuSmaaEffect.ts`: upstream/packages/effects-wgpu/src/wgpuSmaaEffect.ts: cannot infer return type for defaultWgpuSmaaEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuSsaoEffect.ts`: upstream/packages/effects-wgpu/src/wgpuSsaoEffect.ts: cannot infer return type for defaultWgpuSsaoEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuSsrEffect.ts`: upstream/packages/effects-wgpu/src/wgpuSsrEffect.ts: cannot infer return type for defaultWgpuSsrEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuTaaEffect.ts`: upstream/packages/effects-wgpu/src/wgpuTaaEffect.ts: cannot infer return type for defaultWgpuTaaEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuTiltShiftEffect.ts`: upstream/packages/effects-wgpu/src/wgpuTiltShiftEffect.ts: cannot infer return type for defaultWgpuTiltShiftEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuToneMapEffect.ts`: upstream/packages/effects-wgpu/src/wgpuToneMapEffect.ts: cannot infer return type for defaultWgpuToneMapEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuVignetteEffect.ts`: upstream/packages/effects-wgpu/src/wgpuVignetteEffect.ts: cannot infer return type for defaultWgpuVignetteEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuWhiteBalanceEffect.ts`: upstream/packages/effects-wgpu/src/wgpuWhiteBalanceEffect.ts: cannot infer return type for defaultWgpuWhiteBalanceEffectRunner
-
-### `@flighthq/entity`
-
-- **package** `upstream/packages/entity/src`: Generated crate is missing 9 of 12 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/entity/src/binding.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/entity/src/clone.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/entity/src/entity.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/entity/src/guards.ts`: new-expression Rust lowering is not implemented: proxy
+- **package** `upstream/packages/effects-wgpu/src`: Generated crate is missing 102 of 128 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/effects-wgpu/src/wgpuBevelEffect.ts`: applyBevelEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)
+- **emission** `upstream/packages/effects-wgpu/src/wgpuBloomEffect.ts`: applyBloomEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY)
+- **emission** `upstream/packages/effects-wgpu/src/wgpuBlurEffect.ts`: applyBlurEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY)
+- **emission** `upstream/packages/effects-wgpu/src/wgpuBokehDepthOfFieldEffect.ts`: defaultWgpuBokehDepthOfFieldEffectRunner: upstream/packages/effects-wgpu/src/wgpuBokehDepthOfFieldEffect.ts: cannot infer return type for defaultWgpuBokehDepthOfFieldEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuCameraMotionBlurEffect.ts`: defaultWgpuCameraMotionBlurEffectRunner: upstream/packages/effects-wgpu/src/wgpuCameraMotionBlurEffect.ts: cannot infer return type for defaultWgpuCameraMotionBlurEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuChromaticAberrationEffect.ts`: defaultWgpuChromaticAberrationEffectRunner: upstream/packages/effects-wgpu/src/wgpuChromaticAberrationEffect.ts: cannot infer return type for defaultWgpuChromaticAberrationEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuColorLutPass.ts`: REPLACE_BLEND: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=color,alpha)
+- **emission** `upstream/packages/effects-wgpu/src/wgpuConvolutionEffect.ts`: defaultWgpuConvolutionEffectRunner: upstream/packages/effects-wgpu/src/wgpuConvolutionEffect.ts: cannot infer return type for defaultWgpuConvolutionEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuCrtEffect.ts`: defaultWgpuCrtEffectRunner: upstream/packages/effects-wgpu/src/wgpuCrtEffect.ts: cannot infer return type for defaultWgpuCrtEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuDirectionalBlurEffect.ts`: defaultWgpuDirectionalBlurEffectRunner: upstream/packages/effects-wgpu/src/wgpuDirectionalBlurEffect.ts: cannot infer return type for defaultWgpuDirectionalBlurEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuDisplacementEffect.ts`: defaultWgpuDisplacementEffectRunner: upstream/packages/effects-wgpu/src/wgpuDisplacementEffect.ts: cannot infer return type for defaultWgpuDisplacementEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuDitherEffect.ts`: defaultWgpuDitherEffectRunner: upstream/packages/effects-wgpu/src/wgpuDitherEffect.ts: cannot infer return type for defaultWgpuDitherEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuDropShadowEffect.ts`: applyDropShadowEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)
+- **emission** `upstream/packages/effects-wgpu/src/wgpuEffectPass.ts`: PREMUL_BLEND: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=color,alpha)
+- **emission** `upstream/packages/effects-wgpu/src/wgpuFilmGrainEffect.ts`: defaultWgpuFilmGrainEffectRunner: upstream/packages/effects-wgpu/src/wgpuFilmGrainEffect.ts: cannot infer return type for defaultWgpuFilmGrainEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuFxaaEffect.ts`: defaultWgpuFxaaEffectRunner: upstream/packages/effects-wgpu/src/wgpuFxaaEffect.ts: cannot infer return type for defaultWgpuFxaaEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuGlitchEffect.ts`: defaultWgpuGlitchEffectRunner: upstream/packages/effects-wgpu/src/wgpuGlitchEffect.ts: cannot infer return type for defaultWgpuGlitchEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuGodRaysEffect.ts`: defaultWgpuGodRaysEffectRunner: upstream/packages/effects-wgpu/src/wgpuGodRaysEffect.ts: cannot infer return type for defaultWgpuGodRaysEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuGradientBevelEffect.ts`: applyGradientBevelEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)
+- **emission** `upstream/packages/effects-wgpu/src/wgpuGradientGlowEffect.ts`: applyGradientGlowEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)
+- **emission** `upstream/packages/effects-wgpu/src/wgpuHalftoneEffect.ts`: defaultWgpuHalftoneEffectRunner: upstream/packages/effects-wgpu/src/wgpuHalftoneEffect.ts: cannot infer return type for defaultWgpuHalftoneEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuInnerGlowEffect.ts`: applyInnerGlowEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,edgeColor,passes)
+- **emission** `upstream/packages/effects-wgpu/src/wgpuInnerShadowEffect.ts`: applyInnerShadowEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,edgeColor,passes)
+- **emission** `upstream/packages/effects-wgpu/src/wgpuKuwaharaEffect.ts`: defaultWgpuKuwaharaEffectRunner: upstream/packages/effects-wgpu/src/wgpuKuwaharaEffect.ts: cannot infer return type for defaultWgpuKuwaharaEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuLensDirtEffect.ts`: defaultWgpuLensDirtEffectRunner: upstream/packages/effects-wgpu/src/wgpuLensDirtEffect.ts: cannot infer return type for defaultWgpuLensDirtEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuLensDistortionEffect.ts`: defaultWgpuLensDistortionEffectRunner: upstream/packages/effects-wgpu/src/wgpuLensDistortionEffect.ts: cannot infer return type for defaultWgpuLensDistortionEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuLensFlareEffect.ts`: defaultWgpuLensFlareEffectRunner: upstream/packages/effects-wgpu/src/wgpuLensFlareEffect.ts: cannot infer return type for defaultWgpuLensFlareEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuMedianEffect.ts`: defaultWgpuMedianEffectRunner: upstream/packages/effects-wgpu/src/wgpuMedianEffect.ts: cannot infer return type for defaultWgpuMedianEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuMotionBlurEffect.ts`: defaultWgpuMotionBlurEffectRunner: upstream/packages/effects-wgpu/src/wgpuMotionBlurEffect.ts: cannot infer return type for defaultWgpuMotionBlurEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuOuterGlowEffect.ts`: applyOuterGlowEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)
+- **emission** `upstream/packages/effects-wgpu/src/wgpuOutlineEffect.ts`: defaultWgpuOutlineEffectRunner: upstream/packages/effects-wgpu/src/wgpuOutlineEffect.ts: cannot infer return type for defaultWgpuOutlineEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuPixelateEffect.ts`: defaultWgpuPixelateEffectRunner: upstream/packages/effects-wgpu/src/wgpuPixelateEffect.ts: cannot infer return type for defaultWgpuPixelateEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuPosterizeEffect.ts`: defaultWgpuPosterizeEffectRunner: upstream/packages/effects-wgpu/src/wgpuPosterizeEffect.ts: cannot infer return type for defaultWgpuPosterizeEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuRadialBlurEffect.ts`: defaultWgpuRadialBlurEffectRunner: upstream/packages/effects-wgpu/src/wgpuRadialBlurEffect.ts: cannot infer return type for defaultWgpuRadialBlurEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuScanlinesEffect.ts`: defaultWgpuScanlinesEffectRunner: upstream/packages/effects-wgpu/src/wgpuScanlinesEffect.ts: cannot infer return type for defaultWgpuScanlinesEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuScreenSpaceFogEffect.ts`: defaultWgpuScreenSpaceFogEffectRunner: upstream/packages/effects-wgpu/src/wgpuScreenSpaceFogEffect.ts: cannot infer return type for defaultWgpuScreenSpaceFogEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuSharpenEffect.ts`: defaultWgpuSharpenEffectRunner: upstream/packages/effects-wgpu/src/wgpuSharpenEffect.ts: cannot infer return type for defaultWgpuSharpenEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuSketchEffect.ts`: defaultWgpuSketchEffectRunner: upstream/packages/effects-wgpu/src/wgpuSketchEffect.ts: cannot infer return type for defaultWgpuSketchEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuSmaaEffect.ts`: defaultWgpuSmaaEffectRunner: upstream/packages/effects-wgpu/src/wgpuSmaaEffect.ts: cannot infer return type for defaultWgpuSmaaEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuSsaoEffect.ts`: defaultWgpuSsaoEffectRunner: upstream/packages/effects-wgpu/src/wgpuSsaoEffect.ts: cannot infer return type for defaultWgpuSsaoEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuSsrEffect.ts`: defaultWgpuSsrEffectRunner: upstream/packages/effects-wgpu/src/wgpuSsrEffect.ts: cannot infer return type for defaultWgpuSsrEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuTaaEffect.ts`: defaultWgpuTaaEffectRunner: upstream/packages/effects-wgpu/src/wgpuTaaEffect.ts: cannot infer return type for defaultWgpuTaaEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuTiltShiftEffect.ts`: defaultWgpuTiltShiftEffectRunner: upstream/packages/effects-wgpu/src/wgpuTiltShiftEffect.ts: cannot infer return type for defaultWgpuTiltShiftEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuToneMapEffect.ts`: defaultWgpuToneMapEffectRunner: upstream/packages/effects-wgpu/src/wgpuToneMapEffect.ts: cannot infer return type for defaultWgpuToneMapEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuVignetteEffect.ts`: defaultWgpuVignetteEffectRunner: upstream/packages/effects-wgpu/src/wgpuVignetteEffect.ts: cannot infer return type for defaultWgpuVignetteEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuWhiteBalanceEffect.ts`: defaultWgpuWhiteBalanceEffectRunner: upstream/packages/effects-wgpu/src/wgpuWhiteBalanceEffect.ts: cannot infer return type for defaultWgpuWhiteBalanceEffectRunner
 
 ### `@flighthq/filesystem`
 
 - **package** `upstream/packages/filesystem/src`: Generated crate is missing 43 of 43 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/filesystem/src/filesystem.ts`: object literal requires an inferred structural type
-
-### `@flighthq/flow`
-
-- **package** `upstream/packages/flow/src`: Generated crate is missing 5 of 9 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/flow/src/clearFlowStack.ts`: optional call Rust lowering is not implemented
-- **emission** `upstream/packages/flow/src/popFlowState.ts`: optional call Rust lowering is not implemented
-- **emission** `upstream/packages/flow/src/pushFlowState.ts`: optional call Rust lowering is not implemented
-- **emission** `upstream/packages/flow/src/replaceFlowState.ts`: optional call Rust lowering is not implemented
-- **emission** `upstream/packages/flow/src/updateFlowStack.ts`: optional call Rust lowering is not implemented
+- **emission** `upstream/packages/filesystem/src/filesystem.ts`: createWebFileSystemBackend: await Rust lowering is not implemented
 
 ### `@flighthq/font`
 
-- **package** `upstream/packages/font/src`: Generated crate is missing 14 of 15 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/font/src/font.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/font/src/fontFormat.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/font/src/fontFrom.ts`: upstream/packages/font/src/fontFrom.ts: async Rust lowering is not implemented for loadFontFromBytes
-- **emission** `upstream/packages/font/src/fontResourceFrom.ts`: upstream/packages/font/src/fontResourceFrom.ts: async Rust lowering is not implemented for loadFontResourceFromBytes
-- **emission** `upstream/packages/font/src/fontShorthand.ts`: regular expression Rust lowering is not implemented
-- **emission** `upstream/packages/font/src/fontStatus.ts`: upstream/packages/font/src/fontStatus.ts: async Rust lowering is not implemented for whenFontsReady
+- **package** `upstream/packages/font/src`: Generated crate is missing 10 of 15 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/font/src/fontFrom.ts`: loadFontFromBytes: upstream/packages/font/src/fontFrom.ts: async Rust lowering is not implemented for loadFontFromBytes
+- **emission** `upstream/packages/font/src/fontResourceFrom.ts`: loadFontResourceFromBytes: upstream/packages/font/src/fontResourceFrom.ts: async Rust lowering is not implemented for loadFontResourceFromBytes
+- **emission** `upstream/packages/font/src/fontStatus.ts`: whenFontsReady: upstream/packages/font/src/fontStatus.ts: async Rust lowering is not implemented for whenFontsReady
 
 ### `@flighthq/geolocation`
 
 - **package** `upstream/packages/geolocation/src`: Generated crate is missing 12 of 12 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/geolocation/src/geolocation.ts`: typeof Rust lowering is not implemented
-
-### `@flighthq/geometry`
-
-- **package** `upstream/packages/geometry/src`: Generated crate is missing 345 of 377 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/geometry/src/aabb.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/geometry/src/boundingSphere.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/geometry/src/capsule.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/geometry/src/frustum.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/geometry/src/matrix.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/geometry/src/matrix3.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/geometry/src/matrix4.ts`: fall-through switch cases require explicit Rust lowering
-- **emission** `upstream/packages/geometry/src/obb.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/geometry/src/plane.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/geometry/src/quaternion.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/geometry/src/ray3d.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/geometry/src/rectangle.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/geometry/src/transform2d.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/geometry/src/transform3d.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/geometry/src/typedarray.ts`: new-expression Rust lowering is not implemented: int16_array
-- **emission** `upstream/packages/geometry/src/vector2.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/geometry/src/vector3.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/geometry/src/vector4.ts`: object literal requires an inferred structural type
-
-### `@flighthq/glyphatlas`
-
-- **package** `upstream/packages/glyphatlas/src`: Generated crate is missing 9 of 14 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/glyphatlas/src/glyphAtlas.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Map")
-- **emission** `upstream/packages/glyphatlas/src/glyphAtlasEntry.ts`: spread Rust lowering is not implemented
-- **emission** `upstream/packages/glyphatlas/src/glyphRasterizerBackend.ts`: object literal requires an inferred structural type
-
-### `@flighthq/haptics`
-
-- **package** `upstream/packages/haptics/src`: Generated crate is missing 13 of 13 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/haptics/src/haptics.ts`: typeof Rust lowering is not implemented
+- **emission** `upstream/packages/geolocation/src/geolocation.ts`: createWebGeolocationBackend: typeof operand has no inferred Rust type: {"kind":"property","name":"clearWatch","object":{"kind":"identifier","name":"geo"},"optional":false}
 
 ### `@flighthq/image`
 
-- **package** `upstream/packages/image/src`: Generated crate is missing 20 of 20 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/image/src/imageResource.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/image/src/imageResourceFrom.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("globalThis").image_data
+- **package** `upstream/packages/image/src`: Generated crate is missing 9 of 20 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/image/src/imageResourceFrom.ts`: createCanvasFromImageResource: new-expression Rust lowering is not implemented: crate::host_value::<crate::OpaqueHostValue>("host.ImageData")
 
 ### `@flighthq/image-codec`
 
-- **package** `upstream/packages/image-codec/src`: Generated crate is missing 15 of 16 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/image-codec/src/decodeImage.ts`: upstream/packages/image-codec/src/decodeImage.ts: async Rust lowering is not implemented for decodeImage
-- **emission** `upstream/packages/image-codec/src/encodeImage.ts`: upstream/packages/image-codec/src/encodeImage.ts: async Rust lowering is not implemented for encodeImage
-- **emission** `upstream/packages/image-codec/src/imageDecoderRegistry.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Map")
-- **emission** `upstream/packages/image-codec/src/imageEncoderRegistry.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Map")
-- **emission** `upstream/packages/image-codec/src/registerWebImageDecoders.ts`: await Rust lowering is not implemented
-- **emission** `upstream/packages/image-codec/src/registerWebImageEncoders.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("OffscreenCanvas")
-
-### `@flighthq/input`
-
-- **package** `upstream/packages/input/src`: Generated crate is missing 40 of 40 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/input/src/inputManager.ts`: optional property Rust lowering is not implemented
+- **package** `upstream/packages/image-codec/src`: Generated crate is missing 5 of 16 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/image-codec/src/decodeImage.ts`: decodeImage: upstream/packages/image-codec/src/decodeImage.ts: async Rust lowering is not implemented for decodeImage
+- **emission** `upstream/packages/image-codec/src/encodeImage.ts`: encodeImage: upstream/packages/image-codec/src/encodeImage.ts: async Rust lowering is not implemented for encodeImage
+- **emission** `upstream/packages/image-codec/src/registerWebImageDecoders.ts`: decodeImageWithCanvas: await Rust lowering is not implemented
+- **emission** `upstream/packages/image-codec/src/registerWebImageEncoders.ts`: createCanvasImageEncoder: await Rust lowering is not implemented
 
 ### `@flighthq/interaction`
 
-- **package** `upstream/packages/interaction/src`: Generated crate is missing 61 of 83 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/interaction/src/enableInteractionGuards.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/interaction/src/focusManager.ts`: fall-through switch cases require explicit Rust lowering
-- **emission** `upstream/packages/interaction/src/hitTests.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/interaction/src/interactionManager.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/interaction/src/interactionSpatialIndex.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/interaction/src/nodeInteractionState.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/interaction/src/registerBitmapHitTest.ts`: try Rust lowering is not implemented
+- **package** `upstream/packages/interaction/src`: Generated crate is missing 35 of 83 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/interaction/src/enableInteractionGuards.ts`: warnOnInertInteractionTarget: object literal requires an inferred structural type (target=unknown, properties=message)
+- **emission** `upstream/packages/interaction/src/hitTests.ts`: hitAreaContainsPoint: in-operator requires a static property name or an opaque host receiver
+- **emission** `upstream/packages/interaction/src/interactionManager.ts`: hasInteractionSignalSubscriberInGraph: optional property data has no inferred receiver field
 
 ### `@flighthq/intl`
 
 - **package** `upstream/packages/intl/src`: Generated crate is missing 14 of 14 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/intl/src/cache.ts`: typeof Rust lowering is not implemented
-- **emission** `upstream/packages/intl/src/collator.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Intl").collator
-- **emission** `upstream/packages/intl/src/datetime.ts`: typeof Rust lowering is not implemented
-- **emission** `upstream/packages/intl/src/list.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Intl").list_format
-- **emission** `upstream/packages/intl/src/number.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/intl/src/plural.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/intl/src/relativeTime.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Intl").relative_time_format
+- **emission** `upstream/packages/intl/src/cache.ts`: getCacheKey: typeof operand has no inferred Rust type: {"kind":"identifier","name":"locale"}
+- **emission** `upstream/packages/intl/src/collator.ts`: getCollator: new-expression Rust lowering is not implemented: crate::host_value::<crate::OpaqueHostValue>("host.Collator")
+- **emission** `upstream/packages/intl/src/datetime.ts`: formatDateValue: new-expression Rust lowering is not implemented: crate::host_value::<crate::OpaqueHostValue>("host.DateTimeFormat")
+- **emission** `upstream/packages/intl/src/list.ts`: formatList: new-expression Rust lowering is not implemented: crate::host_value::<crate::OpaqueHostValue>("host.ListFormat")
+- **emission** `upstream/packages/intl/src/number.ts`: formatCompactNumber: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=notation,spread)
+- **emission** `upstream/packages/intl/src/plural.ts`: selectOrdinalCategory: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=type,spread)
+- **emission** `upstream/packages/intl/src/relativeTime.ts`: formatRelativeTime: new-expression Rust lowering is not implemented: crate::host_value::<crate::OpaqueHostValue>("host.RelativeTimeFormat")
 
 ### `@flighthq/ipc`
 
 - **package** `upstream/packages/ipc/src`: Generated crate is missing 17 of 17 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/ipc/src/ipc.ts`: typeof Rust lowering is not implemented
-
-### `@flighthq/keyboard`
-
-- **package** `upstream/packages/keyboard/src`: Generated crate is missing 20 of 20 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/keyboard/src/keyboard.ts`: optional call Rust lowering is not implemented
-
-### `@flighthq/lifecycle`
-
-- **package** `upstream/packages/lifecycle/src`: Generated crate is missing 13 of 13 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/lifecycle/src/lifecycle.ts`: object literal requires an inferred structural type
-
-### `@flighthq/lighting`
-
-- **package** `upstream/packages/lighting/src`: Generated crate is missing 33 of 37 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/lighting/src/ambientLight.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/lighting/src/areaLight.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/lighting/src/directionalLight.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/lighting/src/environment.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/lighting/src/hemisphereLight.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/lighting/src/lightIntensity.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/lighting/src/pointLight.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/lighting/src/sceneLights.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/lighting/src/spotLight.ts`: object literal requires an inferred structural type
+- **emission** `upstream/packages/ipc/src/ipc.ts`: getIpcListenerCount: optional property size has no inferred receiver field
 
 ### `@flighthq/loader`
 
 - **package** `upstream/packages/loader/src`: Generated crate is missing 13 of 13 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/loader/src/resourceLoader.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("AbortController")
+- **emission** `upstream/packages/loader/src/resourceLoader.ts`: cancelResourceLoad: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
 
 ### `@flighthq/log`
 
 - **package** `upstream/packages/log/src`: Generated crate is missing 65 of 65 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/log/src/log.ts`: object literal requires an inferred structural type
-
-### `@flighthq/materials`
-
-- **package** `upstream/packages/materials/src`: Generated crate is missing 58 of 68 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/materials/src/classicMaterials.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/materials/src/colorTransform.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/materials/src/customShaderMaterial.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/materials/src/material.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/materials/src/materialPresets.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/materials/src/pbrExtensionMaterials.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/materials/src/pbrMaterials.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/materials/src/phongToPbr.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/materials/src/unlitMaterials.ts`: optional property Rust lowering is not implemented
-
-### `@flighthq/math`
-
-- **package** `upstream/packages/math/src`: Generated crate is missing 30 of 73 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/math/src/interpolationAdvanced.ts`: Math.exp Rust lowering is not implemented
-- **emission** `upstream/packages/math/src/numberTheory.ts`: Math.trunc Rust lowering is not implemented
-- **emission** `upstream/packages/math/src/randomDistributions.ts`: Math.log Rust lowering is not implemented
-- **emission** `upstream/packages/math/src/rounding.ts`: Math.trunc Rust lowering is not implemented
-
-### `@flighthq/media`
-
-- **package** `upstream/packages/media/src`: Generated crate is missing 42 of 42 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/media/src/audioChannel.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/media/src/audioMixer.ts`: typeof Rust lowering is not implemented
-- **emission** `upstream/packages/media/src/videoChannel.ts`: optional property Rust lowering is not implemented
+- **emission** `upstream/packages/log/src/log.ts`: beginLogGroup: object literal requires an inferred structural type (target={"arguments":[],"kind":"named","name":"LogData"}, properties=msg,group,depth)
 
 ### `@flighthq/mediasession`
 
 - **package** `upstream/packages/mediasession/src`: Generated crate is missing 10 of 10 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/mediasession/src/mediasession.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("MediaMetadata")
+- **emission** `upstream/packages/mediasession/src/mediasession.ts`: createWebMediaSessionBackend: typeof operand has no inferred Rust type: {"kind":"property","name":"setPositionState","object":{"kind":"identifier","name":"session"},"optional":false}
 
 ### `@flighthq/menu`
 
-- **package** `upstream/packages/menu/src`: Generated crate is missing 17 of 17 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/menu/src/menu-templates.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/menu/src/menu.ts`: object spread Rust lowering is not implemented
-
-### `@flighthq/mesh`
-
-- **package** `upstream/packages/mesh/src`: Generated crate is missing 39 of 67 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/mesh/src/meshGeometry.ts`: new-expression Rust lowering is not implemented: uint16_array
-- **emission** `upstream/packages/mesh/src/meshGeometryBuilders.ts`: spread Rust lowering is not implemented
-- **emission** `upstream/packages/mesh/src/meshGeometryIndex.ts`: new-expression Rust lowering is not implemented: uint16_array
-- **emission** `upstream/packages/mesh/src/meshGeometryLayout.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/mesh/src/meshGeometryOperations.ts`: new-expression Rust lowering is not implemented: uint16_array
-
-### `@flighthq/motionpath`
-
-- **package** `upstream/packages/motionpath/src`: Generated crate is missing 1 of 7 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/motionpath/src/getMotionPathHeading.ts`: Math.atan2 Rust lowering is not implemented
-
-### `@flighthq/movieclip`
-
-- **package** `upstream/packages/movieclip/src`: Generated crate is missing 23 of 23 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/movieclip/src/movieClip.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/movieclip/src/spritesheetTimelineSource.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("WeakMap")
+- **package** `upstream/packages/menu/src`: Generated crate is missing 11 of 17 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/menu/src/menu.ts`: showWebContextMenu: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
 
 ### `@flighthq/net`
 
 - **package** `upstream/packages/net/src`: Generated crate is missing 4 of 4 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/net/src/net.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("AbortController")
-
-### `@flighthq/node`
-
-- **package** `upstream/packages/node/src`: Generated crate is missing 61 of 105 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/node/src/boundsRectangle.ts`: cannot infer uninitialized local bounds
-- **emission** `upstream/packages/node/src/hasAppearance.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/node/src/hasBlendMode.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/node/src/hasBoundsRectangle.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/node/src/hasClip.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/node/src/hasMaterial.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/node/src/hasTransform2d.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/node/src/hasTransform3d.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/node/src/hierarchy.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Set")
-- **emission** `upstream/packages/node/src/node.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/node/src/viewport.ts`: optional property Rust lowering is not implemented
+- **emission** `upstream/packages/net/src/net.ts`: createWebNetBackend: await Rust lowering is not implemented
 
 ### `@flighthq/notification`
 
 - **package** `upstream/packages/notification/src`: Generated crate is missing 26 of 26 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/notification/src/notification.ts`: optional call Rust lowering is not implemented
-
-### `@flighthq/particleemitter`
-
-- **package** `upstream/packages/particleemitter/src`: Generated crate is missing 47 of 51 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/particleemitter/src/emitParticleBurst.ts`: Math.atan2 Rust lowering is not implemented
-- **emission** `upstream/packages/particleemitter/src/emitParticleBurst3D.ts`: Math.cbrt Rust lowering is not implemented
-- **emission** `upstream/packages/particleemitter/src/particleEmitter.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/particleemitter/src/particleEmitter3D.ts`: object field blendMode is not present in structural type
-- **emission** `upstream/packages/particleemitter/src/updateParticleEmitter.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/particleemitter/src/updateParticleEmitter3D.ts`: optional property Rust lowering is not implemented
-
-### `@flighthq/particles`
-
-- **package** `upstream/packages/particles/src`: Generated crate is missing 41 of 50 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/particles/src/applyParticleCollisions.ts`: fall-through switch cases require explicit Rust lowering
-- **emission** `upstream/packages/particles/src/applyParticleForces.ts`: fall-through switch cases require explicit Rust lowering
-- **emission** `upstream/packages/particles/src/curve.ts`: new-expression Rust lowering is not implemented: array
-- **emission** `upstream/packages/particles/src/particleEmitterConfig.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/particles/src/updateParticleObjects.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/particles/src/validateParticleEmitterConfig.ts`: object spread Rust lowering is not implemented
+- **emission** `upstream/packages/notification/src/notification.ts`: createServiceWorkerNotificationBackend: await Rust lowering is not implemented
 
 ### `@flighthq/particles-formats`
 
-- **package** `upstream/packages/particles-formats/src`: Generated crate is missing 51 of 79 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/particles-formats/src/detect.ts`: typeof Rust lowering is not implemented
-- **emission** `upstream/packages/particles-formats/src/formatRegistry.ts`: try Rust lowering is not implemented
-- **emission** `upstream/packages/particles-formats/src/libgdxParse.ts`: typeof Rust lowering is not implemented
-- **emission** `upstream/packages/particles-formats/src/libgdxSerialize.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/particles-formats/src/parseParticleConfig.ts`: try Rust lowering is not implemented
-- **emission** `upstream/packages/particles-formats/src/particleDesignerParse.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/particles-formats/src/particleDesignerSerialize.ts`: Math.atan2 Rust lowering is not implemented
-- **emission** `upstream/packages/particles-formats/src/pixiParse.ts`: try Rust lowering is not implemented
-- **emission** `upstream/packages/particles-formats/src/spineParse.ts`: try Rust lowering is not implemented
-- **emission** `upstream/packages/particles-formats/src/spineSerialize.ts`: Math.atan2 Rust lowering is not implemented
-- **emission** `upstream/packages/particles-formats/src/starlingPexParse.ts`: typeof Rust lowering is not implemented
-- **emission** `upstream/packages/particles-formats/src/starlingPexSerialize.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/particles-formats/src/unityParse.ts`: try Rust lowering is not implemented
-- **emission** `upstream/packages/particles-formats/src/unitySerialize.ts`: object literal requires an inferred structural type
-
-### `@flighthq/path`
-
-- **package** `upstream/packages/path/src`: Generated crate is missing 23 of 50 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/path/src/forEachPathSegment.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/path/src/path.ts`: Math.tan Rust lowering is not implemented
-- **emission** `upstream/packages/path/src/pathMeshPool.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/path/src/reversePath.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/path/src/strokePath.ts`: object literal requires an inferred structural type
+- **package** `upstream/packages/particles-formats/src`: Generated crate is missing 23 of 79 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/particles-formats/src/libgdxParse.ts`: sectionsToDocument: object literal requires an inferred structural type (target=unknown, properties=shape,edges,side)
+- **emission** `upstream/packages/particles-formats/src/libgdxSerialize.ts`: configToDocument: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=shape,edges,side)
+- **emission** `upstream/packages/particles-formats/src/particleDesignerParse.ts`: num: typeof operand has no inferred Rust type: {"kind":"identifier","name":"v"}
+- **emission** `upstream/packages/particles-formats/src/spineParse.ts`: rawToDocument: object literal requires an inferred structural type (target={"kind":"primitive","name":"Float"}, properties=low,high)
+- **emission** `upstream/packages/particles-formats/src/starlingPexParse.ts`: extractAttr: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
+- **emission** `upstream/packages/particles-formats/src/unitySerialize.ts`: configToDocument: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[{"name":"x","optional":false,"type":{"kind":"primitive","name":"Float"}},{"name":"y","optional":false,"type":{"kind":"primitive","name":"Float"}},{"name":"z","optional":false,"type":{"kind":"primitive","name":"Float"}}],"kind":"anonymous"}
 
 ### `@flighthq/path-boolean`
 
-- **package** `upstream/packages/path-boolean/src`: Generated crate is missing 9 of 12 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/path-boolean/src/booleanPaths.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/path-boolean/src/martinezKernel.ts`: new-expression Rust lowering is not implemented: event_heap
-- **emission** `upstream/packages/path-boolean/src/offsetPath.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/path-boolean/src/simplifyPath.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/path-boolean/src/unionAllPaths.ts`: optional property Rust lowering is not implemented
-
-### `@flighthq/path-formats`
-
-- **package** `upstream/packages/path-formats/src`: Generated crate is missing 3 of 3 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/path-formats/src/svgPathData.ts`: optional property Rust lowering is not implemented
+- **package** `upstream/packages/path-boolean/src`: Generated crate is missing 1 of 12 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/path-boolean/src/martinezKernel.ts`: buildArrangement: new-expression Rust lowering is not implemented: event_heap
 
 ### `@flighthq/permissions`
 
 - **package** `upstream/packages/permissions/src`: Generated crate is missing 5 of 5 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/permissions/src/permission.ts`: upstream/packages/permissions/src/permission.ts: async Rust lowering is not implemented for readWebPermissionState
-
-### `@flighthq/picking`
-
-- **package** `upstream/packages/picking/src`: Generated crate is missing 6 of 6 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/picking/src/pickScene.ts`: optional property Rust lowering is not implemented
-
-### `@flighthq/platform`
-
-- **package** `upstream/packages/platform/src`: Generated crate is missing 16 of 16 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/platform/src/platform.ts`: optional property Rust lowering is not implemented
-
-### `@flighthq/power`
-
-- **package** `upstream/packages/power/src`: Generated crate is missing 19 of 19 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/power/src/power.ts`: try Rust lowering is not implemented
-
-### `@flighthq/protocol`
-
-- **package** `upstream/packages/protocol/src`: Generated crate is missing 20 of 20 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/protocol/src/protocol.ts`: typeof Rust lowering is not implemented
-
-### `@flighthq/render`
-
-- **package** `upstream/packages/render/src`: Generated crate is missing 45 of 63 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/render/src/enableColorAdjustmentGuards.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/render/src/renderCache.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/render/src/renderColorTransform.ts`: optional call Rust lowering is not implemented
-- **emission** `upstream/packages/render/src/renderProxy.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/render/src/renderQueue.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/render/src/renderState.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/render/src/renderViewport.ts`: typeof Rust lowering is not implemented
-- **emission** `upstream/packages/render/src/sceneRender.ts`: object literal requires an inferred structural type
+- **emission** `upstream/packages/permissions/src/permission.ts`: readWebPermissionState: upstream/packages/permissions/src/permission.ts: async Rust lowering is not implemented for readWebPermissionState
 
 ### `@flighthq/render-gl`
 
-- **package** `upstream/packages/render-gl/src`: Generated crate is missing 58 of 75 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/render-gl/src/glCompressedTexture.ts`: optional element access Rust lowering is not implemented
-- **emission** `upstream/packages/render-gl/src/glDraw.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/render-gl/src/glFullscreenPass.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/render-gl/src/glLinearToSrgbPass.ts`: upstream/packages/render-gl/src/glLinearToSrgbPass.ts: cannot infer return type for NOOP
-- **emission** `upstream/packages/render-gl/src/glMaterialRegistry.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/render-gl/src/glPresentRenderTarget.ts`: upstream/packages/render-gl/src/glPresentRenderTarget.ts: cannot infer return type for NOOP
-- **emission** `upstream/packages/render-gl/src/glRenderPass.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/render-gl/src/glRenderState.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/render-gl/src/glRenderTarget.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/render-gl/src/glShader.ts`: object field program is not present in structural type
-- **emission** `upstream/packages/render-gl/src/glShaderBinding.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("WeakMap")
-- **emission** `upstream/packages/render-gl/src/glTestHelper.ts`: object literal requires an inferred structural type
+- **package** `upstream/packages/render-gl/src`: Generated crate is missing 24 of 75 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/render-gl/src/glDraw.ts`: bindGlImageResourceTexture: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[{"name":"texture","optional":false,"type":{"kind":"dynamic"}},{"name":"version","optional":false,"type":{"kind":"primitive","name":"Float"}}],"kind":"anonymous"}
+- **emission** `upstream/packages/render-gl/src/glFullscreenPass.ts`: clearGlRenderTarget: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[{"name":"width","optional":false,"type":{"kind":"primitive","name":"Float"}},{"name":"height","optional":false,"type":{"kind":"primitive","name":"Float"}}],"kind":"anonymous"}
+- **emission** `upstream/packages/render-gl/src/glRenderPass.ts`: beginGlRenderPass: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[{"name":"width","optional":false,"type":{"kind":"primitive","name":"Float"}},{"name":"height","optional":false,"type":{"kind":"primitive","name":"Float"}}],"kind":"anonymous"}
+- **emission** `upstream/packages/render-gl/src/glRenderState.ts`: createGlRenderState: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=alpha,antialias,powerPreference,stencil,spread)
 
 ### `@flighthq/render-wgpu`
 
-- **package** `upstream/packages/render-wgpu/src`: Generated crate is missing 61 of 68 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/render-wgpu/src/wgpuBackground.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/render-wgpu/src/wgpuDraw.ts`: object spread Rust lowering is not implemented
-- **emission** `upstream/packages/render-wgpu/src/wgpuFullscreenPass.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/render-wgpu/src/wgpuMaterialRegistry.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/render-wgpu/src/wgpuMipmap.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/render-wgpu/src/wgpuRenderState.ts`: upstream/packages/render-wgpu/src/wgpuRenderState.ts: async Rust lowering is not implemented for createWgpuRenderState
-- **emission** `upstream/packages/render-wgpu/src/wgpuRenderTarget.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/render-wgpu/src/wgpuScissor.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/render-wgpu/src/wgpuShader.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/render-wgpu/src/wgpuShaderBinding.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("WeakMap")
-- **emission** `upstream/packages/render-wgpu/src/wgpuSurface.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/render-wgpu/src/wgpuTestHelper.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/render-wgpu/src/wgpuTextureUpload.ts`: object literal requires an inferred structural type
-
-### `@flighthq/scene`
-
-- **package** `upstream/packages/scene/src`: Generated crate is missing 23 of 43 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/scene/src/billboardCamera.ts`: Math.hypot Rust lowering is not implemented
-- **emission** `upstream/packages/scene/src/mesh.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene/src/scene.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene/src/sceneAnimation.ts`: typeof Rust lowering is not implemented
+- **package** `upstream/packages/render-wgpu/src`: Generated crate is missing 42 of 68 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/render-wgpu/src/wgpuBackground.ts`: renderWgpuBackground: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=r,g,b,a)
+- **emission** `upstream/packages/render-wgpu/src/wgpuDraw.ts`: drawWgpuQuadWithTransform: object literal requires an inferred structural type (target=unknown, properties=alpha,transform2D)
+- **emission** `upstream/packages/render-wgpu/src/wgpuMipmap.ts`: generateWgpuMipmaps: object literal requires an inferred structural type (target=unknown, properties=colorAttachments)
+- **emission** `upstream/packages/render-wgpu/src/wgpuRenderState.ts`: createWgpuRenderState: upstream/packages/render-wgpu/src/wgpuRenderState.ts: async Rust lowering is not implemented for createWgpuRenderState
+- **emission** `upstream/packages/render-wgpu/src/wgpuRenderTarget.ts`: beginWgpuRenderPassEncoder: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=r,g,b,a)
+- **emission** `upstream/packages/render-wgpu/src/wgpuShader.ts`: buildStencilFaceState: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=compare,passOp,failOp,depthFailOp)
+- **emission** `upstream/packages/render-wgpu/src/wgpuSurface.ts`: createSurfaceFromWgpuRenderState: upstream/packages/render-wgpu/src/wgpuSurface.ts: async Rust lowering is not implemented for createSurfaceFromWgpuRenderState
+- **emission** `upstream/packages/render-wgpu/src/wgpuTestHelper.ts`: installWgpuConstants: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=MAP_READ,MAP_WRITE,COPY_SRC,COPY_DST,INDEX,VERTEX,UNIFORM,STORAGE,INDIRECT,QUERY_RESOLVE)
 
 ### `@flighthq/scene-formats`
 
-- **package** `upstream/packages/scene-formats/src`: Generated crate is missing 14 of 15 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/scene-formats/src/awdParse.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/scene-formats/src/gltfParse.ts`: typeof Rust lowering is not implemented
-- **emission** `upstream/packages/scene-formats/src/gltfSchema.ts`: anonymous structural type has no synthesized Rust identity
-- **emission** `upstream/packages/scene-formats/src/md2Parse.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/scene-formats/src/md5AnimParse.ts`: regular expression Rust lowering is not implemented
-- **emission** `upstream/packages/scene-formats/src/md5Parse.ts`: regular expression Rust lowering is not implemented
-- **emission** `upstream/packages/scene-formats/src/mtlParse.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Map")
-- **emission** `upstream/packages/scene-formats/src/objParse.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Map")
-- **emission** `upstream/packages/scene-formats/src/shared.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-formats/src/threeDsParse.ts`: optional property Rust lowering is not implemented
+- **package** `upstream/packages/scene-formats/src`: Generated crate is missing 9 of 15 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/scene-formats/src/awdParse.ts`: createSceneFromAwd: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
+- **emission** `upstream/packages/scene-formats/src/gltfParse.ts`: buildGltfAnimationClip: object literal requires an inferred structural type (target=unknown, properties=components,interpolation,quaternion,times,values)
+- **emission** `upstream/packages/scene-formats/src/gltfSchema.ts`: GltfNormalTextureInfo: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[{"name":"KHR_texture_transform","optional":true,"type":{"arguments":[],"kind":"named","name":"GltfTextureTransform"}}],"kind":"anonymous"}
+- **emission** `upstream/packages/scene-formats/src/md2Parse.ts`: createSceneFromMd2: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
+- **emission** `upstream/packages/scene-formats/src/md5AnimParse.ts`: buildAnimationClip: object literal requires an inferred structural type (target=unknown, properties=components,times,values)
+- **emission** `upstream/packages/scene-formats/src/shared.ts`: createEmbeddedTextureRef: object literal requires an inferred structural type (target={"arguments":[],"kind":"named","name":"SceneResourceRef"}, properties=bytes,kind,mimeType,state)
+- **emission** `upstream/packages/scene-formats/src/threeDsParse.ts`: createSceneFrom3ds: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
 
 ### `@flighthq/scene-gl`
 
-- **package** `upstream/packages/scene-gl/src`: Generated crate is missing 150 of 184 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/scene-gl/src/anisotropyPbrGlMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/blinnPhongGlMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/clearcoatPbrGlMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/customShaderGlMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/depthGlMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/drawGlScene.ts`: optional call Rust lowering is not implemented
-- **emission** `upstream/packages/scene-gl/src/emissiveGlMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/enableGlSceneColorSpaceGuards.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/enableGlSceneCustomShaderGuards.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Map")
-- **emission** `upstream/packages/scene-gl/src/glClassicPrelude.ts`: object spread Rust lowering is not implemented
-- **emission** `upstream/packages/scene-gl/src/glDebugPrelude.ts`: object field locModel is not present in structural type
-- **emission** `upstream/packages/scene-gl/src/glEnvironmentIblBake.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/scene-gl/src/glEnvironmentSkybox.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/glLitProgram.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("WeakMap")
-- **emission** `upstream/packages/scene-gl/src/glMatcapPrelude.ts`: object field locModel is not present in structural type
-- **emission** `upstream/packages/scene-gl/src/glMeshUpload.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/glParticleEmitter3D.ts`: new-expression Rust lowering is not implemented: uint16_array
-- **emission** `upstream/packages/scene-gl/src/glPbrProgramCache.ts`: object spread Rust lowering is not implemented
-- **emission** `upstream/packages/scene-gl/src/glPbrStandardBlock.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/scene-gl/src/glSceneRuntime.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/glSceneTestHelper.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/scene-gl/src/glShadedBuiltInModifiers.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/glShadedPrelude.ts`: object spread Rust lowering is not implemented
-- **emission** `upstream/packages/scene-gl/src/glShadowMap.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/glToonPrelude.ts`: object spread Rust lowering is not implemented
-- **emission** `upstream/packages/scene-gl/src/glUnlitPrelude.ts`: object field locJointTexture is not present in structural type
-- **emission** `upstream/packages/scene-gl/src/glWireframePrelude.ts`: object field locModel is not present in structural type
-- **emission** `upstream/packages/scene-gl/src/glWireframeUpload.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("WeakMap")
-- **emission** `upstream/packages/scene-gl/src/iridescencePbrGlMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/lambertGlMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/matcapGlMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/normalGlMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/phongGlMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/shadedGlMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/sheenPbrGlMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/specularGlossinessPbrGlMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/specularPbrGlMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/standardPbrGlMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/subsurfacePbrGlMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/toonGlMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/transmissionVolumePbrGlMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/unlitGlMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/vertexColorGlMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/wireframeGlMeshMaterialRenderer.ts`: object literal requires an inferred structural type
+- **package** `upstream/packages/scene-gl/src`: Generated crate is missing 2 of 184 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/scene-gl/src/enableGlSceneCustomShaderGuards.ts`: warnGlCustomShaderUniformTypes: object literal requires an inferred structural type (target=unknown, properties=message)
+- **emission** `upstream/packages/scene-gl/src/glSceneTestHelper.ts`: makeFakeGl2: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=calls,ARRAY_BUFFER,ELEMENT_ARRAY_BUFFER,STATIC_DRAW,FLOAT,UNSIGNED_BYTE,UNSIGNED_SHORT,UNSIGNED_INT,TRIANGLES,TEXTURE0,TEXTURE1,TEXTURE_2D,VERTEX_SHADER,FRAGMENT_SHADER,COMPILE_STATUS,LINK_STATUS,ACTIVE_UNIFORMS,FLOAT_VEC2,FLOAT_VEC3,FLOAT_VEC4,FLOAT_MAT2,FLOAT_MAT3,FLOAT_MAT4,BLEND,CULL_FACE,BACK,DEPTH_TEST,LESS,ONE,ONE_MINUS_SRC_ALPHA,SRC_ALPHA,FUNC_ADD,FRAMEBUFFER,COLOR_BUFFER_BIT,DEPTH_BUFFER_BIT,COLOR,DEPTH_STENCIL,MAX_VERTEX_UNIFORM_VECTORS,RGBA32F,NEAREST,CLAMP_TO_EDGE,TEXTURE_MIN_FILTER,TEXTURE_MAG_FILTER,TEXTURE_WRAP_S,TEXTURE_WRAP_T,getParameter,createShader,shaderSource,compileShader,getShaderParameter,getShaderInfoLog,deleteShader,createProgram,attachShader,linkProgram,getProgramParameter,getActiveUniform,getProgramInfoLog,useProgram,getUniformLocation,createBuffer,bindBuffer,bufferData,createVertexArray,bindVertexArray,deleteBuffer,deleteFramebuffer,deleteProgram,deleteRenderbuffer,deleteTexture,deleteVertexArray,enableVertexAttribArray,getAttribLocation,vertexAttribPointer,vertexAttribIPointer,vertexAttrib4f,vertexAttribDivisor,bufferSubData,bindFramebuffer,blendEquation,blendFunc,clear,clearColor,clearDepth,clearBufferfv,clearBufferfi,cullFace,depthFunc,depthMask,flush,viewport,disable,enable,drawElements,drawElementsInstanced,drawArrays,activeTexture,bindTexture,createTexture,texParameteri,texImage2D,texSubImage2D,pixelStorei,uniform1i,uniform1f,uniform1fv,uniform2f,uniform2fv,uniform3f,uniform3fv,uniform4f,uniform4fv,uniformMatrix3fv,uniformMatrix4fv)
 
 ### `@flighthq/scene-resources`
 
-- **package** `upstream/packages/scene-resources/src`: Generated crate is missing 32 of 37 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/scene-resources/src/getSceneResourceTextures.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Set")
-- **emission** `upstream/packages/scene-resources/src/load3ds.ts`: upstream/packages/scene-resources/src/load3ds.ts: async Rust lowering is not implemented for loadSceneFrom3ds
-- **emission** `upstream/packages/scene-resources/src/loadGltf.ts`: upstream/packages/scene-resources/src/loadGltf.ts: async Rust lowering is not implemented for loadSceneFromGlb
-- **emission** `upstream/packages/scene-resources/src/loadMd2.ts`: upstream/packages/scene-resources/src/loadMd2.ts: async Rust lowering is not implemented for loadSceneFromMd2
-- **emission** `upstream/packages/scene-resources/src/loadMd5.ts`: upstream/packages/scene-resources/src/loadMd5.ts: async Rust lowering is not implemented for loadSceneFromMd5Mesh
-- **emission** `upstream/packages/scene-resources/src/loadObj.ts`: upstream/packages/scene-resources/src/loadObj.ts: async Rust lowering is not implemented for loadSceneFromObj
-- **emission** `upstream/packages/scene-resources/src/loadSceneFromAwd.ts`: upstream/packages/scene-resources/src/loadSceneFromAwd.ts: async Rust lowering is not implemented for loadSceneFromAwd
-- **emission** `upstream/packages/scene-resources/src/loadSceneOptions.ts`: upstream/packages/scene-resources/src/loadSceneOptions.ts: async Rust lowering is not implemented for resolveScenesWithOptions
-- **emission** `upstream/packages/scene-resources/src/resolveSceneResources.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Set")
-- **emission** `upstream/packages/scene-resources/src/resolveSceneResourcesAndWait.ts`: upstream/packages/scene-resources/src/resolveSceneResourcesAndWait.ts: async Rust lowering is not implemented for resolveSceneResourcesAndWait
-- **emission** `upstream/packages/scene-resources/src/revealSceneResourcesOnResolve.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/scene-resources/src/sceneMaterialTextureRegistry.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Map")
-- **emission** `upstream/packages/scene-resources/src/sceneResourceFetch.ts`: try Rust lowering is not implemented
-- **emission** `upstream/packages/scene-resources/src/sceneResourceResolver.ts`: object literal requires an inferred structural type
+- **package** `upstream/packages/scene-resources/src`: Generated crate is missing 17 of 37 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/scene-resources/src/load3ds.ts`: loadSceneFrom3ds: upstream/packages/scene-resources/src/load3ds.ts: async Rust lowering is not implemented for loadSceneFrom3ds
+- **emission** `upstream/packages/scene-resources/src/loadGltf.ts`: loadSceneFromGlb: upstream/packages/scene-resources/src/loadGltf.ts: async Rust lowering is not implemented for loadSceneFromGlb
+- **emission** `upstream/packages/scene-resources/src/loadMd2.ts`: loadSceneFromMd2: upstream/packages/scene-resources/src/loadMd2.ts: async Rust lowering is not implemented for loadSceneFromMd2
+- **emission** `upstream/packages/scene-resources/src/loadMd5.ts`: loadSceneFromMd5Mesh: upstream/packages/scene-resources/src/loadMd5.ts: async Rust lowering is not implemented for loadSceneFromMd5Mesh
+- **emission** `upstream/packages/scene-resources/src/loadObj.ts`: loadSceneFromObj: upstream/packages/scene-resources/src/loadObj.ts: async Rust lowering is not implemented for loadSceneFromObj
+- **emission** `upstream/packages/scene-resources/src/loadSceneFromAwd.ts`: loadSceneFromAwd: upstream/packages/scene-resources/src/loadSceneFromAwd.ts: async Rust lowering is not implemented for loadSceneFromAwd
+- **emission** `upstream/packages/scene-resources/src/loadSceneOptions.ts`: resolveScenesWithOptions: upstream/packages/scene-resources/src/loadSceneOptions.ts: async Rust lowering is not implemented for resolveScenesWithOptions
+- **emission** `upstream/packages/scene-resources/src/resolveSceneResourcesAndWait.ts`: resolveSceneResourcesAndWait: upstream/packages/scene-resources/src/resolveSceneResourcesAndWait.ts: async Rust lowering is not implemented for resolveSceneResourcesAndWait
+- **emission** `upstream/packages/scene-resources/src/revealSceneResourcesOnResolve.ts`: revealSceneResourcesOnResolve: object literal requires an inferred structural type (target={"kind":"union","variants":[{"arguments":[{"arguments":[],"kind":"named","name":"T"}],"kind":"named","name":"NumericProps"},{"arguments":[],"kind":"named","name":"TweenOptions"}]}, properties=alpha)
+- **emission** `upstream/packages/scene-resources/src/sceneResourceFetch.ts`: createWebSceneResourceFetch: await Rust lowering is not implemented
 
 ### `@flighthq/scene-wgpu`
 
-- **package** `upstream/packages/scene-wgpu/src`: Generated crate is missing 131 of 140 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/scene-wgpu/src/anisotropyPbrWgpuMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/blinnPhongWgpuMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/clearcoatPbrWgpuMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/depthWgpuMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/drawWgpuScene.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/emissiveWgpuMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/iridescencePbrWgpuMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/lambertWgpuMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/matcapWgpuMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/normalWgpuMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/phongWgpuMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/sheenPbrWgpuMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/specularGlossinessPbrWgpuMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/specularPbrWgpuMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/standardPbrWgpuMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/subsurfacePbrWgpuMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/toonWgpuMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/transmissionVolumePbrWgpuMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/unlitWgpuMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/vertexColorWgpuMeshMaterialRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/wgpuClassicPrelude.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/wgpuDebugPrelude.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/wgpuEnvironmentCube.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/wgpuEnvironmentIblBake.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/wgpuEnvironmentSkybox.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/wgpuMatcapPrelude.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/wgpuMeshPipeline.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/wgpuMeshUpload.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/scene-wgpu/src/wgpuParticleEmitter3D.ts`: fall-through switch cases require explicit Rust lowering
-- **emission** `upstream/packages/scene-wgpu/src/wgpuPbrPipelineCache.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/wgpuSceneRuntime.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/wgpuSceneTestHelper.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/wgpuShadowMap.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/wgpuToonPrelude.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/wgpuUnlitPrelude.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/wgpuWireframePrelude.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/wgpuWireframeUpload.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("WeakMap")
-- **emission** `upstream/packages/scene-wgpu/src/wireframeWgpuMeshMaterialRenderer.ts`: object literal requires an inferred structural type
+- **package** `upstream/packages/scene-wgpu/src`: Generated crate is missing 73 of 140 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/scene-wgpu/src/wgpuClassicPrelude.ts`: compileWgpuClassicPipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module,shadowBindGroupLayout)
+- **emission** `upstream/packages/scene-wgpu/src/wgpuDebugPrelude.ts`: compileWgpuDebugPipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module)
+- **emission** `upstream/packages/scene-wgpu/src/wgpuEnvironmentIblBake.ts`: bakeWgpuBrdfLut: object literal requires an inferred structural type (target=unknown, properties=colorAttachments)
+- **emission** `upstream/packages/scene-wgpu/src/wgpuMatcapPrelude.ts`: compileWgpuMatcapPipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module)
+- **emission** `upstream/packages/scene-wgpu/src/wgpuMeshPipeline.ts`: VERTEX_BUFFER_LAYOUTS: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=arrayStride,attributes)
+- **emission** `upstream/packages/scene-wgpu/src/wgpuParticleEmitter3D.ts`: wgpuParticleBlendState: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=operation,srcFactor,dstFactor)
+- **emission** `upstream/packages/scene-wgpu/src/wgpuPbrPipelineCache.ts`: compileWgpuPbrPipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module,pbrSampleBindGroupLayout)
+- **emission** `upstream/packages/scene-wgpu/src/wgpuSceneTestHelper.ts`: installWgpuConstants: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=MAP_READ,MAP_WRITE,COPY_SRC,COPY_DST,INDEX,VERTEX,UNIFORM,STORAGE,INDIRECT,QUERY_RESOLVE)
+- **emission** `upstream/packages/scene-wgpu/src/wgpuShadowMap.ts`: SHADOW_VERTEX_BUFFER_LAYOUTS: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=arrayStride,attributes)
+- **emission** `upstream/packages/scene-wgpu/src/wgpuToonPrelude.ts`: compileWgpuToonPipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module,shadowBindGroupLayout)
+- **emission** `upstream/packages/scene-wgpu/src/wgpuUnlitPrelude.ts`: compileWgpuUnlitPipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module)
+- **emission** `upstream/packages/scene-wgpu/src/wgpuWireframePrelude.ts`: compileWgpuWireframePipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module,topology)
 
 ### `@flighthq/screen`
 
 - **package** `upstream/packages/screen/src`: Generated crate is missing 31 of 31 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/screen/src/screen.ts`: typeof Rust lowering is not implemented
+- **emission** `upstream/packages/screen/src/screen.ts`: getScreenDetailPermission: upstream/packages/screen/src/screen.ts: async Rust lowering is not implemented for getScreenDetailPermission
 
 ### `@flighthq/sdk`
 
@@ -1124,345 +563,738 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 ### `@flighthq/sensors`
 
 - **package** `upstream/packages/sensors/src`: Generated crate is missing 32 of 32 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/sensors/src/sensors.ts`: Math.sign Rust lowering is not implemented
+- **emission** `upstream/packages/sensors/src/sensors.ts`: createWebSensorsBackend: await Rust lowering is not implemented
 
 ### `@flighthq/shading`
 
-- **package** `upstream/packages/shading/src`: Generated crate is missing 22 of 37 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/shading/src/createEnvReflectModifier.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/shading/src/createShadedMaterial.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/shading/src/createVertexDisplaceModifier.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/shading/src/isBuiltInModifierSlot.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Set")
-- **emission** `upstream/packages/shading/src/modifierRegistry.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Map")
-- **emission** `upstream/packages/shading/src/orderModifierStack.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/shading/src/registerBuiltInModifiers.ts`: object literal requires an inferred structural type
+- **package** `upstream/packages/shading/src`: Generated crate is missing 1 of 37 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/shading/src/orderModifierStack.ts`: orderModifierStack: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=index,modifier)
 
 ### `@flighthq/shape`
 
-- **package** `upstream/packages/shape/src`: Generated crate is missing 42 of 42 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/shape/src/scale9Shape.ts`: object field commands is not present in structural type
-- **emission** `upstream/packages/shape/src/shape.ts`: fall-through switch cases require explicit Rust lowering
-- **emission** `upstream/packages/shape/src/shapeCommands.ts`: Math.tan Rust lowering is not implemented
-- **emission** `upstream/packages/shape/src/shapeFill.ts`: fall-through switch cases require explicit Rust lowering
-- **emission** `upstream/packages/shape/src/shapeHitTestBuiltins.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/shape/src/shapeHitTestRegistry.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Map")
+- **package** `upstream/packages/shape/src`: Generated crate is missing 11 of 42 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/shape/src/shape.ts`: copyShapeCommands: spread Rust lowering is not implemented
+- **emission** `upstream/packages/shape/src/shapeHitTestBuiltins.ts`: enableShapeHitTesting: object literal requires an inferred structural type (target={"arguments":[{"arguments":[],"kind":"named","name":"K"}],"kind":"named","name":"ShapeHitTestCommand"}, properties=key,hitTest)
 
 ### `@flighthq/shape-formats`
 
 - **package** `upstream/packages/shape-formats/src`: Generated crate is missing 5 of 5 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/shape-formats/src/shapeJson.ts`: object literal requires an inferred structural type
+- **emission** `upstream/packages/shape-formats/src/shapeJson.ts`: formatShapeJson: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=bitmap)
 
 ### `@flighthq/share`
 
 - **package** `upstream/packages/share/src`: Generated crate is missing 14 of 14 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/share/src/share.ts`: try Rust lowering is not implemented
+- **emission** `upstream/packages/share/src/share.ts`: createWebShareBackend: object literal requires an inferred structural type (target={"kind":"named","name":"Promise","arguments":[{"kind":"dynamic"}]}, properties=completed,activityType,dismissed)
 
 ### `@flighthq/shell`
 
 - **package** `upstream/packages/shell/src`: Generated crate is missing 14 of 14 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/shell/src/shell.ts`: typeof Rust lowering is not implemented
+- **emission** `upstream/packages/shell/src/shell.ts`: isShellUrlAllowed: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
 
 ### `@flighthq/shortcut`
 
 - **package** `upstream/packages/shortcut/src`: Generated crate is missing 26 of 26 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/shortcut/src/shortcut.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Map")
-
-### `@flighthq/signals`
-
-- **package** `upstream/packages/signals/src`: Generated crate is missing 13 of 14 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/signals/src/emitter.ts`: spread Rust lowering is not implemented
-- **emission** `upstream/packages/signals/src/internal.ts`: upstream/packages/signals/src/internal.ts: cannot infer return type for nullSignalEmit
-- **emission** `upstream/packages/signals/src/slot.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/signals/src/throttle.ts`: optional property Rust lowering is not implemented
-
-### `@flighthq/snapshot`
-
-- **package** `upstream/packages/snapshot/src`: Generated crate is missing 4 of 4 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/snapshot/src/captureSnapshot.ts`: typeof Rust lowering is not implemented
-- **emission** `upstream/packages/snapshot/src/equalsSnapshot.ts`: typeof Rust lowering is not implemented
-- **emission** `upstream/packages/snapshot/src/interpolateSnapshots.ts`: typeof Rust lowering is not implemented
-- **emission** `upstream/packages/snapshot/src/restoreSnapshot.ts`: typeof Rust lowering is not implemented
-
-### `@flighthq/socket`
-
-- **package** `upstream/packages/socket/src`: Generated crate is missing 11 of 11 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/socket/src/socket.ts`: optional property Rust lowering is not implemented
-
-### `@flighthq/spatial`
-
-- **package** `upstream/packages/spatial/src`: Generated crate is missing 1 of 10 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/spatial/src/uniformGrid.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Map")
-
-### `@flighthq/spring`
-
-- **package** `upstream/packages/spring/src`: Generated crate is missing 1 of 12 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/spring/src/updateSpring.ts`: Math.exp Rust lowering is not implemented
-
-### `@flighthq/sprite`
-
-- **package** `upstream/packages/sprite/src`: Generated crate is missing 64 of 64 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/sprite/src/quadBatch.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/sprite/src/sprite.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/sprite/src/tilemap.ts`: object literal requires an inferred structural type
-
-### `@flighthq/spritesheet`
-
-- **package** `upstream/packages/spritesheet/src`: Generated crate is missing 32 of 32 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/spritesheet/src/spritesheet.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/spritesheet/src/spritesheetAnimation.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/spritesheet/src/spritesheetData.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/spritesheet/src/spritesheetFrame.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/spritesheet/src/spritesheetFrom.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Map")
-- **emission** `upstream/packages/spritesheet/src/spritesheetPlayer.ts`: spread Rust lowering is not implemented
-- **emission** `upstream/packages/spritesheet/src/spritesheetValidation.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Set")
+- **emission** `upstream/packages/shortcut/src/shortcut.ts`: parseAcceleratorDetailed: in-operator requires a static property name or an opaque host receiver
 
 ### `@flighthq/spritesheet-formats`
 
-- **package** `upstream/packages/spritesheet-formats/src`: Generated crate is missing 26 of 55 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/spritesheet-formats/src/asepriteParse.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/spritesheet-formats/src/asepriteSerialize.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/spritesheet-formats/src/cocosPlistParse.ts`: regular expression Rust lowering is not implemented
-- **emission** `upstream/packages/spritesheet-formats/src/cocosPlistSerialize.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/spritesheet-formats/src/libgdxAtlasParse.ts`: regular expression Rust lowering is not implemented
-- **emission** `upstream/packages/spritesheet-formats/src/spritesheetDetect.ts`: regular expression Rust lowering is not implemented
-- **emission** `upstream/packages/spritesheet-formats/src/starlingParse.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/spritesheet-formats/src/starlingSerialize.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/spritesheet-formats/src/texturePackerParse.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/spritesheet-formats/src/texturePackerSerialize.ts`: object literal requires an inferred structural type
+- **package** `upstream/packages/spritesheet-formats/src`: Generated crate is missing 4 of 55 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/spritesheet-formats/src/asepriteSerialize.ts`: dataToMeta: object literal requires an inferred structural type (target={"kind":"primitive","name":"Void"}, properties=direction,from,name,to,spread)
+- **emission** `upstream/packages/spritesheet-formats/src/texturePackerSerialize.ts`: dataToMeta: object literal requires an inferred structural type (target={"kind":"primitive","name":"Void"}, properties=direction,from,name,to)
 
 ### `@flighthq/statusbar`
 
 - **package** `upstream/packages/statusbar/src`: Generated crate is missing 16 of 16 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/statusbar/src/statusbar.ts`: anonymous structural type has no synthesized Rust identity
+- **emission** `upstream/packages/statusbar/src/statusbar.ts`: pushStatusBarStyleEntry: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[{"name":"handle","optional":false,"type":{"arguments":[],"kind":"named","name":"StatusBarStyleEntryHandle"}},{"name":"entry","optional":false,"type":{"arguments":[],"kind":"named","name":"StatusBarStyleEntry"}}],"kind":"anonymous"}
 
 ### `@flighthq/storage`
 
 - **package** `upstream/packages/storage/src`: Generated crate is missing 39 of 39 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/storage/src/storage.ts`: try Rust lowering is not implemented
+- **emission** `upstream/packages/storage/src/storage.ts`: getStorageQuotaEstimate: upstream/packages/storage/src/storage.ts: async Rust lowering is not implemented for getStorageQuotaEstimate
 
 ### `@flighthq/text`
 
-- **package** `upstream/packages/text/src`: Generated crate is missing 82 of 86 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/text/src/nativeText.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/text/src/richText.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/text/src/textLabel.ts`: optional property Rust lowering is not implemented
+- **package** `upstream/packages/text/src`: Generated crate is missing 16 of 86 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/text/src/nativeText.ts`: patchNativeTextStyle: multiple object spreads require ordered Rust lowering
 
 ### `@flighthq/text-markup`
 
-- **package** `upstream/packages/text-markup/src`: Generated crate is missing 7 of 8 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/text-markup/src/markupNamedColors.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/text-markup/src/markupTagRegistry.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Map")
-- **emission** `upstream/packages/text-markup/src/textMarkup.ts`: object literal requires an inferred structural type
-
-### `@flighthq/textbidi`
-
-- **package** `upstream/packages/textbidi/src`: Generated crate is missing 1 of 6 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/textbidi/src/resolveBidiLevels.ts`: new-expression Rust lowering is not implemented: array
-
-### `@flighthq/textinput`
-
-- **package** `upstream/packages/textinput/src`: Generated crate is missing 55 of 55 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/textinput/src/selectableRichTextManager.ts`: optional call Rust lowering is not implemented
-- **emission** `upstream/packages/textinput/src/textInput.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/textinput/src/textInputEditing.ts`: regular expression Rust lowering is not implemented
-- **emission** `upstream/packages/textinput/src/textInputManager.ts`: object literal requires an inferred structural type
-
-### `@flighthq/textlayout`
-
-- **package** `upstream/packages/textlayout/src`: Generated crate is missing 25 of 47 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/textlayout/src/richTextContent.ts`: regular expression Rust lowering is not implemented
-- **emission** `upstream/packages/textlayout/src/richTextQuery.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/textlayout/src/textFormat.ts`: object spread Rust lowering is not implemented
-- **emission** `upstream/packages/textlayout/src/textLayout.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Set")
-
-### `@flighthq/textsegment`
-
-- **package** `upstream/packages/textsegment/src`: Generated crate is missing 3 of 11 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/textsegment/src/textSegmenterBackend.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Map")
+- **package** `upstream/packages/text-markup/src`: Generated crate is missing 2 of 8 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/text-markup/src/textMarkup.ts`: handleMarkupToken: multiple object spreads require ordered Rust lowering
 
 ### `@flighthq/textshaper`
 
-- **package** `upstream/packages/textshaper/src`: Generated crate is missing 13 of 31 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/textshaper/src/textShaper.ts`: optional call Rust lowering is not implemented
-- **emission** `upstream/packages/textshaper/src/textShaperCache.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Map")
-- **emission** `upstream/packages/textshaper/src/textShaperCluster.ts`: new-expression Rust lowering is not implemented: array
-- **emission** `upstream/packages/textshaper/src/textShaperItemize.ts`: optional property Rust lowering is not implemented
+- **package** `upstream/packages/textshaper/src`: Generated crate is missing 5 of 31 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/textshaper/src/textShaper.ts`: setTextShaperBackend: optional call requires an inferred nullable function: {"kind":"identifier","name":"_textShaperBackendHook"}
+- **emission** `upstream/packages/textshaper/src/textShaperItemize.ts`: shapeTextRuns: object literal requires an inferred structural type (target=unknown, properties=spread,direction,script)
 
 ### `@flighthq/textshaper-canvas`
 
 - **package** `upstream/packages/textshaper-canvas/src`: Generated crate is missing 3 of 3 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/textshaper-canvas/src/canvasTextShaper.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Map")
-
-### `@flighthq/texture`
-
-- **package** `upstream/packages/texture/src`: Generated crate is missing 42 of 42 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/texture/src/cubeTexture.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/texture/src/sampler.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/texture/src/texture.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/texture/src/videoTexture.ts`: object literal requires an inferred structural type
+- **emission** `upstream/packages/textshaper-canvas/src/canvasTextShaper.ts`: createCanvasTextShaperBackend: in-operator requires a static property name or an opaque host receiver
 
 ### `@flighthq/texture-formats`
 
-- **package** `upstream/packages/texture-formats/src`: Generated crate is missing 4 of 6 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/texture-formats/src/byteReader.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("DataView")
-- **emission** `upstream/packages/texture-formats/src/parseAtf.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Set")
-- **emission** `upstream/packages/texture-formats/src/parseBasis.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/texture-formats/src/parseDds.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/texture-formats/src/parseKtx2.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/texture-formats/src/textureLevelLayout.ts`: object literal requires an inferred structural type
+- **emission** `upstream/packages/texture-formats/src/byteReader.ts`: createByteReader: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
 
 ### `@flighthq/textureatlas`
 
-- **package** `upstream/packages/textureatlas/src`: Generated crate is missing 20 of 20 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/textureatlas/src/textureAtlas.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/textureatlas/src/textureAtlasFrom.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/textureatlas/src/textureAtlasRegion.ts`: object literal requires an inferred structural type
-
-### `@flighthq/textureatlas-formats`
-
-- **package** `upstream/packages/textureatlas-formats/src`: Generated crate is missing 9 of 29 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/textureatlas-formats/src/textureAtlasAsepriteParse.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/textureatlas-formats/src/textureAtlasDetect.ts`: typeof Rust lowering is not implemented
-- **emission** `upstream/packages/textureatlas-formats/src/textureAtlasLibgdxParse.ts`: regular expression Rust lowering is not implemented
-- **emission** `upstream/packages/textureatlas-formats/src/textureAtlasPackerParse.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/textureatlas-formats/src/textureAtlasStarlingParse.ts`: object literal requires an inferred structural type
+- **package** `upstream/packages/textureatlas/src`: Generated crate is missing 8 of 20 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/textureatlas/src/textureAtlasFrom.ts`: loadTextureAtlasFromBase64: upstream/packages/textureatlas/src/textureAtlasFrom.ts: async Rust lowering is not implemented for loadTextureAtlasFromBase64
 
 ### `@flighthq/tilemap-formats`
 
-- **package** `upstream/packages/tilemap-formats/src`: Generated crate is missing 10 of 16 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/tilemap-formats/src/tiledColor.ts`: regular expression Rust lowering is not implemented
-- **emission** `upstream/packages/tilemap-formats/src/tiledJsonParse.ts`: typeof Rust lowering is not implemented
-- **emission** `upstream/packages/tilemap-formats/src/tiledLayerData.ts`: regular expression Rust lowering is not implemented
-- **emission** `upstream/packages/tilemap-formats/src/tiledProject.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Map")
-- **emission** `upstream/packages/tilemap-formats/src/tiledTmxFormat.ts`: regular expression Rust lowering is not implemented
-- **emission** `upstream/packages/tilemap-formats/src/tiledXmlParse.ts`: object literal requires an inferred structural type
+- **emission** `upstream/packages/tilemap-formats/src/tiledJsonParse.ts`: boolField: typeof operand has no inferred Rust type: {"kind":"identifier","name":"value"}
+- **emission** `upstream/packages/tilemap-formats/src/tiledProject.ts`: buildTilemapLayersFromTiled: object literal requires an inferred structural type (target={"inner":{"arguments":[],"kind":"named","name":"TilesetGroup"},"kind":"nullable"}, properties=firstGid,tiles,tileset)
+- **emission** `upstream/packages/tilemap-formats/src/tiledXmlParse.ts`: buildTiledLayerFromXml: object literal requires an inferred structural type (target={"arguments":[],"kind":"named","name":"TiledLayer"}, properties=spread,data,height,type,width)
 
 ### `@flighthq/tileset`
 
-- **package** `upstream/packages/tileset/src`: Generated crate is missing 9 of 9 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/tileset/src/tileset.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/tileset/src/tilesetFrom.ts`: object literal requires an inferred structural type
-
-### `@flighthq/timeline`
-
-- **package** `upstream/packages/timeline/src`: Generated crate is missing 16 of 16 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/timeline/src/timeline.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Map")
+- **package** `upstream/packages/tileset/src`: Generated crate is missing 6 of 9 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/tileset/src/tilesetFrom.ts`: loadTilesetFromBase64: upstream/packages/tileset/src/tilesetFrom.ts: async Rust lowering is not implemented for loadTilesetFromBase64
 
 ### `@flighthq/tray`
 
 - **package** `upstream/packages/tray/src`: Generated crate is missing 23 of 23 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/tray/src/tray.ts`: object literal requires an inferred structural type
+- **emission** `upstream/packages/tray/src/tray.ts`: getTrayIcons: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=id)
 
 ### `@flighthq/tween`
 
-- **package** `upstream/packages/tween/src`: Generated crate is missing 28 of 35 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/tween/src/colorTween.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/tween/src/timer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/tween/src/tween.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/tween/src/tweenManager.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/tween/src/tweenStagger.ts`: optional property Rust lowering is not implemented
+- **package** `upstream/packages/tween/src`: Generated crate is missing 23 of 35 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/tween/src/colorTween.ts`: createColorTween: object literal requires an inferred structural type (target={"kind":"union","variants":[{"arguments":[{"arguments":[],"kind":"named","name":"T"}],"kind":"named","name":"NumericProps"},{"arguments":[],"kind":"named","name":"TweenOptions"}]}, properties=b,g,r)
+- **emission** `upstream/packages/tween/src/timer.ts`: createTweenTimer: object literal requires an inferred structural type (target={"kind":"union","variants":[{"arguments":[{"kind":"dynamic"}],"kind":"named","name":"NumericProps"},{"arguments":[],"kind":"named","name":"TweenOptions"}]}, properties=)
+- **emission** `upstream/packages/tween/src/tween.ts`: makeTween: object literal requires an inferred structural type (target={"kind":"primitive","name":"Float"}, properties=change,key,start)
 
 ### `@flighthq/updater`
 
 - **package** `upstream/packages/updater/src`: Generated crate is missing 23 of 23 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/updater/src/updater.ts`: object literal requires an inferred structural type
-
-### `@flighthq/useragent`
-
-- **package** `upstream/packages/useragent/src`: Generated crate is missing 12 of 12 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/useragent/src/userAgent.ts`: try Rust lowering is not implemented
-- **emission** `upstream/packages/useragent/src/userAgentParse.ts`: regular expression Rust lowering is not implemented
-
-### `@flighthq/velocity`
-
-- **package** `upstream/packages/velocity/src`: Generated crate is missing 18 of 20 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/velocity/src/velocityField.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("WeakMap")
+- **emission** `upstream/packages/updater/src/updater.ts`: attachAppUpdater: object literal requires an inferred structural type (target={"kind":"primitive","name":"Float"}, properties=spread,phase)
 
 ### `@flighthq/video`
 
-- **package** `upstream/packages/video/src`: Generated crate is missing 8 of 16 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/video/src/videoFormat.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/video/src/videoResourceFrom.ts`: upstream/packages/video/src/videoResourceFrom.ts: async Rust lowering is not implemented for loadVideoResourceFromBlob
+- **package** `upstream/packages/video/src`: Generated crate is missing 4 of 16 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/video/src/videoResourceFrom.ts`: loadVideoResourceFromBlob: upstream/packages/video/src/videoResourceFrom.ts: async Rust lowering is not implemented for loadVideoResourceFromBlob
 
 ### `@flighthq/webcam`
 
 - **package** `upstream/packages/webcam/src`: Generated crate is missing 10 of 10 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/webcam/src/webcam.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Promise")
-- **emission** `upstream/packages/webcam/src/webcamStream.ts`: object literal requires an inferred structural type
-
-### `@flighthq/xml`
-
-- **package** `upstream/packages/xml/src`: Generated crate is missing 3 of 7 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/xml/src/xmlParse.ts`: object literal requires an inferred structural type
+- **emission** `upstream/packages/webcam/src/webcam.ts`: createWebWebcamBackend: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
+- **emission** `upstream/packages/webcam/src/webcamStream.ts`: createWebcamStreamEntity: object literal requires an inferred structural type (target={"arguments":[],"kind":"named","name":"Type"}, properties=active,deviceId,facingMode,frameRate,height,id,width)
 
 ## Candidate compile blockers
 
-### `@flighthq/skeleton3d`
+### `@flighthq/accessibility`
 
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find function `skin_vertices` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: cannot find value `undefined` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/skin_mesh_geometry.rs`: cannot find function `skin_vertices` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/update_mesh_skin.rs`: cannot find function `compute_skeleton3_d_joint_matrices` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/update_mesh_skin.rs`: cannot find function `capture_mesh_skin_bind_pose` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/update_mesh_skin.rs`: cannot find function `skin_mesh_geometry` in this scope
-- **E0308** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: arguments to this function are incorrect
-- **E0308** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: no field `slice` on type `Vec<SceneNode>`
-- **E0063** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: missing field `names` in initializer of `Skeleton3D`
-- **E0599** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: no method named `is_some` found for type `bool` in the current scope
-- **E0609** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: no field `slice` on type `Option<Option<Vec<String>>>`
-- **E0605** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: non-primitive cast: `Vec<f32>` as `usize`
-- **E0605** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: non-primitive cast: `Vec<f32>` as `usize`
-- **E0610** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: `f64` is a primitive type and therefore doesn't have fields
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: cannot find function `get_node_world_matrix4` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: cannot find function `multiply_matrix4` in this scope
-- **E0609** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: no field `set` on type `&Vec<f32>`
-- **E0610** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: `f64` is a primitive type and therefore doesn't have fields
-- **E0308** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: no field `length` on type `Vec<SceneNode>`
-- **E0369** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: binary operation `==` cannot be applied to type `&Skeleton3D`
-- **E0609** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: no field `length` on type `Option<Vec<String>>`
-- **E0609** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: no field `length` on type `Option<Vec<String>>`
-- **E0609** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: no field `length` on type `Option<Vec<String>>`
-- **E0599** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: no method named `is_some` found for type `bool` in the current scope
-- **E0609** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: no field `index_of` on type `Option<Option<Vec<String>>>`
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: cannot find function `get_node_world_matrix4` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: cannot find function `copy_matrix4` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: cannot find function `get_node_world_matrix4` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: cannot find function `inverse_matrix4` in this scope
-- **E0609** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: no field `set` on type `&Vec<f32>`
-- **E0610** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: `f64` is a primitive type and therefore doesn't have fields
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: cannot find function `create_matrix4` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: cannot find function `create_matrix4` in this scope
-- **E0608** `generated/candidates/flighthq-skeleton3d/src/skin_vertices.rs`: cannot index into a value of type `OpaqueHostValue`
-- **E0369** `generated/candidates/flighthq-skeleton3d/src/update_mesh_skin.rs`: binary operation `==` cannot be applied to type `Option<Option<Skin>>`
-- **E0609** `generated/candidates/flighthq-skeleton3d/src/update_mesh_skin.rs`: no field `skeleton` on type `Option<Option<Skin>>`
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/update_mesh_skin.rs`: cannot find function `get_mesh_geometry_skin_bind_pose` in this scope
-- **E0425** `generated/candidates/flighthq-skeleton3d/src/update_mesh_skin.rs`: cannot find function `set_mesh_geometry_skin_bind_pose` in this scope
-- **E0609** `generated/candidates/flighthq-skeleton3d/src/update_mesh_skin.rs`: no field `skeleton` on type `Option<Option<Skin>>`
+- **E0608** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: cannot index into a value of type `(std::string::String, OpaqueHostValue)`
+- **E0608** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: cannot index into a value of type `(std::string::String, OpaqueHostValue)`
+- **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: no field `parent_node` on type `&OpaqueHostValue`
+- **E0609** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: no field `set_attribute` on type `()`
+- **E0609** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: no field `style` on type `()`
+- **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: no field `parent_node` on type `&mut OpaqueHostValue`
+- **E0599** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: no method named `is_some` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: no method named `is_some` found for enum `OpaqueHostValue` in the current scope
+
+### `@flighthq/adjustments`
+
+- **E0425** `generated/candidates/flighthq-adjustments/src/color_lut_cache.rs`: cannot find value `json` in this scope
+- **E0425** `generated/candidates/flighthq-adjustments/src/color_matrix_adjustment.rs`: cannot find value `array` in this scope
+- **E0063** `generated/candidates/flighthq-adjustments/src/brightness_contrast_adjustment.rs`: missing fields `color_matrix` and `kind` in initializer of `BrightnessContrastAdjustment`
+- **E0063** `generated/candidates/flighthq-adjustments/src/channel_mixer_adjustment.rs`: missing fields `color_matrix` and `kind` in initializer of `ChannelMixerAdjustment`
+- **E0599** `generated/candidates/flighthq-adjustments/src/channel_mixer_adjustment.rs`: no method named `unwrap_or` found for struct `Vec<f64>` in the current scope
+- **E0308** `generated/candidates/flighthq-adjustments/src/color_adjustment_resolution.rs`: mismatched types
+- **E0063** `generated/candidates/flighthq-adjustments/src/color_blind_simulation_adjustment.rs`: missing fields `color_matrix` and `kind` in initializer of `ColorBlindSimulationAdjustment`
+- **E0063** `generated/candidates/flighthq-adjustments/src/color_grade_adjustment.rs`: missing fields `kind` and `transform` in initializer of `ColorGradeAdjustment`
+- **E0609** `generated/candidates/flighthq-adjustments/src/color_lut_adjustment.rs`: no field `transform` on type `&GetAdjustmentColorTransformRecord1`
+- **E0308** `generated/candidates/flighthq-adjustments/src/color_lut_cache.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-adjustments/src/color_lut_cache.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-adjustments/src/color_matrix_adjustment.rs`: no field `color_matrix` on type `&GetAdjustmentColorMatrixRecord1`
+- **E0609** `generated/candidates/flighthq-adjustments/src/color_matrix_adjustment.rs`: no field `color_matrix` on type `&GetAdjustmentColorMatrixRecord1`
+- **E0609** `generated/candidates/flighthq-adjustments/src/color_matrix_adjustment.rs`: no field `color_matrix` on type `&GetAdjustmentColorMatrixRecord1`
+- **E0308** `generated/candidates/flighthq-adjustments/src/color_matrix_adjustment.rs`: mismatched types
+- **E0063** `generated/candidates/flighthq-adjustments/src/exposure_adjustment.rs`: missing fields `color_matrix` and `kind` in initializer of `ExposureAdjustment`
+- **E0063** `generated/candidates/flighthq-adjustments/src/grayscale_adjustment.rs`: missing fields `color_matrix` and `kind` in initializer of `GrayscaleAdjustment`
+- **E0063** `generated/candidates/flighthq-adjustments/src/hue_saturation_adjustment.rs`: missing fields `kind` and `transform` in initializer of `HueSaturationAdjustment`
+- **E0063** `generated/candidates/flighthq-adjustments/src/invert_adjustment.rs`: missing fields `color_matrix` and `kind` in initializer of `InvertAdjustment`
+- **E0063** `generated/candidates/flighthq-adjustments/src/lift_gamma_gain_adjustment.rs`: missing fields `kind` and `transform` in initializer of `LiftGammaGainAdjustment`
+- **E0063** `generated/candidates/flighthq-adjustments/src/lookup_table_grade_adjustment.rs`: missing fields `kind` and `transform` in initializer of `LookupTableGradeAdjustment`
+- **E0063** `generated/candidates/flighthq-adjustments/src/sepia_adjustment.rs`: missing fields `color_matrix` and `kind` in initializer of `SepiaAdjustment`
+
+### `@flighthq/animation`
+
+- **E0308** `generated/candidates/flighthq-animation/src/animation_player.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_player.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_player.rs`: mismatched types
+- **E0369** `generated/candidates/flighthq-animation/src/animation_player.rs`: cannot subtract `f64` from `Option<f64>`
+- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+
+### `@flighthq/bitmapfont`
+
+- **E0609** `generated/candidates/flighthq-bitmapfont/src/bitmap_font.rs`: no field `left` on type `Vec<BitmapFontKerningData>`
+- **E0609** `generated/candidates/flighthq-bitmapfont/src/bitmap_font.rs`: no field `right` on type `Vec<BitmapFontKerningData>`
+- **E0609** `generated/candidates/flighthq-bitmapfont/src/bitmap_font.rs`: no field `amount` on type `Vec<BitmapFontKerningData>`
+- **E0605** `generated/candidates/flighthq-bitmapfont/src/glyph_source.rs`: non-primitive cast: `Option<f64>` as `usize`
+- **E0631** `generated/candidates/flighthq-bitmapfont/src/glyph_source.rs`: type mismatch in closure arguments
+
+### `@flighthq/clock`
+
+- **E0308** `generated/candidates/flighthq-clock/src/add_clock_child.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-clock/src/add_clock_child.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-clock/src/dispose_clock.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-clock/src/get_clock_effective_scale.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-clock/src/get_clock_effective_scale.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-clock/src/get_clock_parent.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-clock/src/is_clock_effectively_paused.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-clock/src/is_clock_effectively_paused.rs`: mismatched types
+
+### `@flighthq/color`
+
+- `generated/candidates/flighthq-color/src/pack_color.rs`: cast cannot be followed by a field access
+- **E0615** `generated/candidates/flighthq-color/src/pack_color.rs`: attempted to take value of method `to_string` on type `f64`
+
+### `@flighthq/effects`
+
+- **E0432** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: unresolved import `flighthq_types::ADVANCED_BLEND_MODE`
+- **E0432** `generated/candidates/flighthq-effects/src/composite_operator_math.rs`: unresolved import `flighthq_types::COMPOSITE_OPERATOR`
+- **E0425** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: cannot find type `AdvancedBlendMode` in this scope
+- **E0425** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: cannot find type `AdvancedBlendMode` in this scope
+- **E0425** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: cannot find type `AdvancedBlendMode` in this scope
+- **E0425** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: cannot find type `AdvancedBlendMode` in this scope
+- **E0425** `generated/candidates/flighthq-effects/src/composite_operator_math.rs`: cannot find type `CompositeOperator` in this scope
+- **E0063** `generated/candidates/flighthq-effects/src/auto_exposure_effect.rs`: missing field `kind` in initializer of `AutoExposureEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/barrel_distortion_effect.rs`: missing field `kind` in initializer of `BarrelDistortionEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/bevel_effect.rs`: missing field `kind` in initializer of `BevelEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/blend_effect.rs`: missing fields `kind` and `mode` in initializer of `BlendEffect`
+- **E0070** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: invalid left-hand side of assignment
+- **E0070** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: invalid left-hand side of assignment
+- **E0070** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: invalid left-hand side of assignment
+- **E0070** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: invalid left-hand side of assignment
+- **E0070** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: invalid left-hand side of assignment
+- **E0070** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: invalid left-hand side of assignment
+- **E0608** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0317** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: `if` may be missing an `else` clause
+- **E0063** `generated/candidates/flighthq-effects/src/bloom_effect.rs`: missing field `kind` in initializer of `BloomEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/blur_effect.rs`: missing field `kind` in initializer of `BlurEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/bokeh_depth_of_field_effect.rs`: missing field `kind` in initializer of `BokehDepthOfFieldEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/camera_motion_blur_effect.rs`: missing field `kind` in initializer of `CameraMotionBlurEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/chromatic_aberration_effect.rs`: missing field `kind` in initializer of `ChromaticAberrationEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/composite_effect.rs`: missing fields `kind` and `operator` in initializer of `CompositeEffect`
+- **E0608** `generated/candidates/flighthq-effects/src/composite_operator_math.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-effects/src/composite_operator_math.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0063** `generated/candidates/flighthq-effects/src/contact_shadows_effect.rs`: missing field `kind` in initializer of `ContactShadowsEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/crt_effect.rs`: missing field `kind` in initializer of `CrtEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/directional_blur_effect.rs`: missing field `kind` in initializer of `DirectionalBlurEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/displacement_effect.rs`: missing field `kind` in initializer of `DisplacementEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/dither_effect.rs`: missing field `kind` in initializer of `DitherEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/drop_shadow_effect.rs`: missing field `kind` in initializer of `DropShadowEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/film_emulation_effect.rs`: missing field `kind` in initializer of `FilmEmulationEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/film_grain_effect.rs`: missing field `kind` in initializer of `FilmGrainEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/fxaa_effect.rs`: missing field `kind` in initializer of `FxaaEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/glitch_effect.rs`: missing field `kind` in initializer of `GlitchEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/god_rays_effect.rs`: missing field `kind` in initializer of `GodRaysEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/halftone_effect.rs`: missing field `kind` in initializer of `HalftoneEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/inner_glow_effect.rs`: missing field `kind` in initializer of `InnerGlowEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/inner_shadow_effect.rs`: missing field `kind` in initializer of `InnerShadowEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/kuwahara_effect.rs`: missing field `kind` in initializer of `KuwaharaEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/lens_dirt_effect.rs`: missing field `kind` in initializer of `LensDirtEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/lens_distortion_effect.rs`: missing field `kind` in initializer of `LensDistortionEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/lens_flare_effect.rs`: missing field `kind` in initializer of `LensFlareEffect`
+- **E0308** `generated/candidates/flighthq-effects/src/linear_sampled_gaussian.rs`: mismatched types
+- **E0608** `generated/candidates/flighthq-effects/src/linear_sampled_gaussian.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
+- **E0608** `generated/candidates/flighthq-effects/src/linear_sampled_gaussian.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
+- **E0608** `generated/candidates/flighthq-effects/src/linear_sampled_gaussian.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
+- **E0063** `generated/candidates/flighthq-effects/src/median_effect.rs`: missing field `kind` in initializer of `MedianEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/motion_blur_effect.rs`: missing field `kind` in initializer of `MotionBlurEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/outer_glow_effect.rs`: missing field `kind` in initializer of `OuterGlowEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/outline_effect.rs`: missing field `kind` in initializer of `OutlineEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/pannini_projection_effect.rs`: missing field `kind` in initializer of `PanniniProjectionEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/pixelate_effect.rs`: missing field `kind` in initializer of `PixelateEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/posterize_effect.rs`: missing field `kind` in initializer of `PosterizeEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/radial_blur_effect.rs`: missing field `kind` in initializer of `RadialBlurEffect`
+- **E0599** `generated/candidates/flighthq-effects/src/render_effect_defaults.rs`: no method named `iter` found for unit type `()` in the current scope
+- **E0599** `generated/candidates/flighthq-effects/src/render_effect_defaults.rs`: no method named `iter` found for mutable reference `&mut RenderEffect` in the current scope
+- **E0599** `generated/candidates/flighthq-effects/src/render_effect_defaults.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
+- **E0599** `generated/candidates/flighthq-effects/src/render_effect_defaults.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
+- **E0277** `generated/candidates/flighthq-effects/src/render_effect_defaults.rs`: can't compare `std::string::String` with `&std::string::String`
+- **E0070** `generated/candidates/flighthq-effects/src/render_effect_defaults.rs`: invalid left-hand side of assignment
+- **E0599** `generated/candidates/flighthq-effects/src/render_effect_defaults.rs`: no method named `iter` found for unit type `()` in the current scope
+- **E0599** `generated/candidates/flighthq-effects/src/render_effect_defaults.rs`: no method named `iter` found for mutable reference `&mut RenderEffect` in the current scope
+- **E0599** `generated/candidates/flighthq-effects/src/render_effect_defaults.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
+- **E0070** `generated/candidates/flighthq-effects/src/render_effect_defaults.rs`: invalid left-hand side of assignment
+- **E0308** `generated/candidates/flighthq-effects/src/render_effect_defaults.rs`: mismatched types
+- **E0599** `generated/candidates/flighthq-effects/src/render_effect_inputs.rs`: no method named `unwrap_or` found for struct `Vec<std::string::String>` in the current scope
+- **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for unit type `()` in the current scope
+- **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
+- **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
+- **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for unit type `()` in the current scope
+- **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
+- **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
+- **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
+- **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for mutable reference `&mut RenderEffect` in the current scope
+- **E0070** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: invalid left-hand side of assignment
+- **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for mutable reference `&mut RenderEffect` in the current scope
+- **E0070** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: invalid left-hand side of assignment
+- **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for mutable reference `&mut RenderEffect` in the current scope
+- **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
+- **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
+- **E0070** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: invalid left-hand side of assignment
+- **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for mutable reference `&mut RenderEffect` in the current scope
+- **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
+- **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
+- **E0070** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: invalid left-hand side of assignment
+- **E0063** `generated/candidates/flighthq-effects/src/scanlines_effect.rs`: missing field `kind` in initializer of `ScanlinesEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/screen_space_fog_effect.rs`: missing field `kind` in initializer of `ScreenSpaceFogEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/sharpen_effect.rs`: missing field `kind` in initializer of `SharpenEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/sketch_effect.rs`: missing field `kind` in initializer of `SketchEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/smaa_effect.rs`: missing field `kind` in initializer of `SmaaEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/ssao_effect.rs`: missing field `kind` in initializer of `SsaoEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/ssr_effect.rs`: missing field `kind` in initializer of `SsrEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/taa_effect.rs`: missing field `kind` in initializer of `TaaEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/tilt_shift_effect.rs`: missing field `kind` in initializer of `TiltShiftEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/tone_map_effect.rs`: missing field `kind` in initializer of `ToneMapEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/vignette_effect.rs`: missing field `kind` in initializer of `VignetteEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/volumetric_light_effect.rs`: missing field `kind` in initializer of `VolumetricLightEffect`
+- **E0063** `generated/candidates/flighthq-effects/src/white_balance_effect.rs`: missing field `kind` in initializer of `WhiteBalanceEffect`
+
+### `@flighthq/flow`
+
+- **E0308** `generated/candidates/flighthq-flow/src/get_flow_stack_visible_states.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-flow/src/pop_flow_state.rs`: `if` and `else` have incompatible types
+- **E0308** `generated/candidates/flighthq-flow/src/push_flow_state.rs`: `if` and `else` have incompatible types
+- **E0308** `generated/candidates/flighthq-flow/src/update_flow_stack.rs`: mismatched types
+
+### `@flighthq/geometry`
+
+- **E0282** `generated/candidates/flighthq-geometry/src/matrix3.rs`: type annotations needed
+- **E0606** `generated/candidates/flighthq-geometry/src/matrix3.rs`: casting `&f64` as `f32` is invalid
+- **E0606** `generated/candidates/flighthq-geometry/src/matrix3.rs`: casting `&f64` as `f32` is invalid
+- **E0606** `generated/candidates/flighthq-geometry/src/matrix3.rs`: casting `&f64` as `f32` is invalid
+- **E0606** `generated/candidates/flighthq-geometry/src/matrix3.rs`: casting `&f64` as `f32` is invalid
+- **E0606** `generated/candidates/flighthq-geometry/src/matrix3.rs`: casting `&f64` as `f32` is invalid
+- **E0606** `generated/candidates/flighthq-geometry/src/matrix3.rs`: casting `&f64` as `f32` is invalid
+- **E0606** `generated/candidates/flighthq-geometry/src/matrix3.rs`: casting `&f64` as `f32` is invalid
+- **E0606** `generated/candidates/flighthq-geometry/src/matrix3.rs`: casting `&f64` as `f32` is invalid
+- **E0606** `generated/candidates/flighthq-geometry/src/matrix3.rs`: casting `&f64` as `f32` is invalid
+- **E0282** `generated/candidates/flighthq-geometry/src/matrix4.rs`: type annotations needed
+- **E0606** `generated/candidates/flighthq-geometry/src/matrix4.rs`: casting `&f64` as `f32` is invalid
+- **E0606** `generated/candidates/flighthq-geometry/src/matrix4.rs`: casting `&f64` as `f32` is invalid
+- **E0606** `generated/candidates/flighthq-geometry/src/matrix4.rs`: casting `&f64` as `f32` is invalid
+- **E0606** `generated/candidates/flighthq-geometry/src/matrix4.rs`: casting `&f64` as `f32` is invalid
+- **E0606** `generated/candidates/flighthq-geometry/src/matrix4.rs`: casting `&f64` as `f32` is invalid
+- **E0606** `generated/candidates/flighthq-geometry/src/matrix4.rs`: casting `&f64` as `f32` is invalid
+- **E0606** `generated/candidates/flighthq-geometry/src/matrix4.rs`: casting `&f64` as `f32` is invalid
+- **E0606** `generated/candidates/flighthq-geometry/src/matrix4.rs`: casting `&f64` as `f32` is invalid
+- **E0606** `generated/candidates/flighthq-geometry/src/matrix4.rs`: casting `&f64` as `f32` is invalid
+- **E0606** `generated/candidates/flighthq-geometry/src/matrix4.rs`: casting `&f64` as `f32` is invalid
+- **E0606** `generated/candidates/flighthq-geometry/src/matrix4.rs`: casting `&f64` as `f32` is invalid
+- **E0606** `generated/candidates/flighthq-geometry/src/matrix4.rs`: casting `&f64` as `f32` is invalid
+- **E0606** `generated/candidates/flighthq-geometry/src/matrix4.rs`: casting `&f64` as `f32` is invalid
+- **E0606** `generated/candidates/flighthq-geometry/src/matrix4.rs`: casting `&f64` as `f32` is invalid
+- **E0606** `generated/candidates/flighthq-geometry/src/matrix4.rs`: casting `&f64` as `f32` is invalid
+- **E0606** `generated/candidates/flighthq-geometry/src/matrix4.rs`: casting `&f64` as `f32` is invalid
+
+### `@flighthq/haptics`
+
+- **E0308** `generated/candidates/flighthq-haptics/src/haptics.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-haptics/src/haptics.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-haptics/src/haptics.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-haptics/src/haptics.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-haptics/src/haptics.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-haptics/src/haptics.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-haptics/src/haptics.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-haptics/src/haptics.rs`: mismatched types
+
+### `@flighthq/input`
+
+- **E0432** `generated/candidates/flighthq-input/src/input_manager.rs`: unresolved imports `flighthq_types::GAMEPAD_AXIS_KIND`, `flighthq_types::GAMEPAD_BUTTON_KIND`, `flighthq_types::KEY_MODIFIER`
+- **E0425** `generated/candidates/flighthq-input/src/input_manager.rs`: cannot find value `_AXIS_DATA` in this scope
+- **E0425** `generated/candidates/flighthq-input/src/input_manager.rs`: cannot find value `_BUTTON_DATA` in this scope
+- **E0425** `generated/candidates/flighthq-input/src/input_manager.rs`: cannot find value `_BUTTON_DATA` in this scope
+- **E0599** `generated/candidates/flighthq-input/src/input_manager.rs`: no method named `unwrap_or` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-input/src/input_manager.rs`: no method named `unwrap_or` found for enum `OpaqueHostValue` in the current scope
+- **E0308** `generated/candidates/flighthq-input/src/input_manager.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-input/src/input_manager.rs`: `if` and `else` have incompatible types
+- **E0609** `generated/candidates/flighthq-input/src/input_manager.rs`: no field `char_code_at` on type `()`
+- **E0599** `generated/candidates/flighthq-input/src/input_manager.rs`: no method named `unwrap_or` found for type `f64` in the current scope
+- **E0599** `generated/candidates/flighthq-input/src/input_manager.rs`: no method named `is_some` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-input/src/input_manager.rs`: no method named `iter` found for unit type `()` in the current scope
+- **E0308** `generated/candidates/flighthq-input/src/input_manager.rs`: mismatched types
+- **E0599** `generated/candidates/flighthq-input/src/input_manager.rs`: no method named `unwrap_or` found for type `bool` in the current scope
+- **E0308** `generated/candidates/flighthq-input/src/input_manager.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-input/src/input_manager.rs`: no field `then` on type `()`
+- **E0317** `generated/candidates/flighthq-input/src/input_manager.rs`: `if` may be missing an `else` clause
+- **E0599** `generated/candidates/flighthq-input/src/input_manager.rs`: no method named `unwrap_or` found for type `f64` in the current scope
+- **E0308** `generated/candidates/flighthq-input/src/input_manager.rs`: mismatched types
+- **E0599** `generated/candidates/flighthq-input/src/input_manager.rs`: no method named `clone` found for type parameter `impl FnMut() -> ()` in the current scope
+
+### `@flighthq/keyboard`
+
+- **E0308** `generated/candidates/flighthq-keyboard/src/keyboard.rs`: mismatched types
+
+### `@flighthq/media`
+
+- **E0425** `generated/candidates/flighthq-media/src/video_channel.rs`: cannot find value `undefined` in this scope
+- **E0369** `generated/candidates/flighthq-media/src/audio_channel.rs`: cannot subtract `f64` from `OpaqueHostValue`
+- **E0308** `generated/candidates/flighthq-media/src/audio_channel.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `duration` on type `&OpaqueHostValue`
+- **E0308** `generated/candidates/flighthq-media/src/audio_channel.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-media/src/audio_channel.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-media/src/audio_channel.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-media/src/audio_channel.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `gain` on type `&mut OpaqueHostValue`
+- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `playback_rate` on type `&mut OpaqueHostValue`
+- **E0308** `generated/candidates/flighthq-media/src/audio_channel.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-media/src/audio_channel.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `buffer` on type `()`
+- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `playback_rate` on type `()`
+- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `gain` on type `()`
+- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `connect` on type `()`
+- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `connect` on type `()`
+- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `onended` on type `()`
+- **E0308** `generated/candidates/flighthq-media/src/audio_channel.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-media/src/audio_channel.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-media/src/audio_channel.rs`: mismatched types
+- **E0369** `generated/candidates/flighthq-media/src/audio_channel.rs`: cannot subtract `f64` from `OpaqueHostValue`
+- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `start` on type `()`
+- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `catch` on type `()`
+- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `onended` on type `&mut OpaqueHostValue`
+- **E0308** `generated/candidates/flighthq-media/src/audio_channel.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-media/src/audio_mixer.rs`: no field `gain` on type `()`
+- **E0609** `generated/candidates/flighthq-media/src/audio_mixer.rs`: no field `connect` on type `()`
+- **E0308** `generated/candidates/flighthq-media/src/audio_mixer.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-media/src/audio_mixer.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-media/src/audio_mixer.rs`: no field `gain` on type `()`
+- **E0609** `generated/candidates/flighthq-media/src/audio_mixer.rs`: no field `connect` on type `()`
+- **E0308** `generated/candidates/flighthq-media/src/audio_mixer.rs`: mismatched types
+- **E0282** `generated/candidates/flighthq-media/src/audio_mixer.rs`: type annotations needed
+- **E0609** `generated/candidates/flighthq-media/src/audio_mixer.rs`: no field `gain` on type `OpaqueHostValue`
+- **E0609** `generated/candidates/flighthq-media/src/audio_mixer.rs`: no field `gain` on type `OpaqueHostValue`
+- **E0308** `generated/candidates/flighthq-media/src/audio_mixer.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-media/src/audio_mixer.rs`: no field `size` on type `&mut Vec<AudioMixerRuntime>`
+- **E0609** `generated/candidates/flighthq-media/src/audio_mixer.rs`: no field `bus_gain_nodes` on type `Vec<AudioMixerRuntime>`
+- **E0609** `generated/candidates/flighthq-media/src/audio_mixer.rs`: no field `bus_output_nodes` on type `Vec<AudioMixerRuntime>`
+- **E0609** `generated/candidates/flighthq-media/src/video_channel.rs`: no field `current_time` on type `&OpaqueHostValue`
+- **E0308** `generated/candidates/flighthq-media/src/video_channel.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-media/src/video_channel.rs`: no field `duration` on type `&mut OpaqueHostValue`
+- **E0609** `generated/candidates/flighthq-media/src/video_channel.rs`: no field `current_time` on type `&mut OpaqueHostValue`
+- **E0609** `generated/candidates/flighthq-media/src/video_channel.rs`: no field `volume` on type `&mut OpaqueHostValue`
+- **E0609** `generated/candidates/flighthq-media/src/video_channel.rs`: no field `playback_rate` on type `&mut OpaqueHostValue`
+- **E0609** `generated/candidates/flighthq-media/src/video_channel.rs`: no field `loop_` on type `&mut OpaqueHostValue`
+- **E0308** `generated/candidates/flighthq-media/src/video_channel.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-media/src/video_channel.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-media/src/video_channel.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-media/src/video_channel.rs`: no field `current_time` on type `&mut OpaqueHostValue`
+- **E0609** `generated/candidates/flighthq-media/src/video_channel.rs`: no field `catch` on type `()`
+- **E0596** `generated/candidates/flighthq-media/src/audio_mixer.rs`: cannot borrow `channel` as mutable, as it is not declared as mutable
+- **E0596** `generated/candidates/flighthq-media/src/audio_mixer.rs`: cannot borrow `channel` as mutable, as it is not declared as mutable
+- **E0596** `generated/candidates/flighthq-media/src/audio_mixer.rs`: cannot borrow `channel` as mutable, as it is not declared as mutable
+
+### `@flighthq/path`
+
+- **E0600** `generated/candidates/flighthq-path/src/decimate_path.rs`: cannot apply unary operator `!` to type `f64`
+- **E0599** `generated/candidates/flighthq-path/src/get_path_bounds.rs`: no method named `lock` found for type `f64` in the current scope
+- **E0599** `generated/candidates/flighthq-path/src/get_path_bounds.rs`: no method named `lock` found for type `f64` in the current scope
+- **E0599** `generated/candidates/flighthq-path/src/get_path_bounds.rs`: no method named `lock` found for type `f64` in the current scope
+- **E0599** `generated/candidates/flighthq-path/src/get_path_bounds.rs`: no method named `lock` found for type `f64` in the current scope
+- **E0277** `generated/candidates/flighthq-path/src/get_path_bounds.rs`: expected a `FnMut(f64, f64)` closure, found `Arc<std::sync::Mutex<Box<(dyn FnMut(f64, f64) + Send + 'static)>>>`
+- **E0308** `generated/candidates/flighthq-path/src/get_path_bounds.rs`: mismatched types
+- **E0599** `generated/candidates/flighthq-path/src/get_path_bounds.rs`: no method named `lock` found for type `f64` in the current scope
+- **E0599** `generated/candidates/flighthq-path/src/get_path_bounds.rs`: no method named `lock` found for type `f64` in the current scope
+- **E0599** `generated/candidates/flighthq-path/src/get_path_bounds.rs`: no method named `lock` found for type `f64` in the current scope
+- **E0599** `generated/candidates/flighthq-path/src/get_path_bounds.rs`: no method named `lock` found for type `f64` in the current scope
+- **E0599** `generated/candidates/flighthq-path/src/get_path_bounds.rs`: no method named `lock` found for type `f64` in the current scope
+- **E0308** `generated/candidates/flighthq-path/src/get_path_bounds.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-path/src/get_path_bounds.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-path/src/get_path_bounds.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-path/src/get_path_bounds.rs`: mismatched types
+- **E0599** `generated/candidates/flighthq-path/src/stroke_path.rs`: no method named `is_some` found for type `bool` in the current scope
+- **E0308** `../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs`: `if` and `else` have incompatible types
+- **E0070** `generated/candidates/flighthq-path/src/stroke_path.rs`: invalid left-hand side of assignment
+
+### `@flighthq/power`
+
+- **E0308** `generated/candidates/flighthq-power/src/power.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-power/src/power.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-power/src/power.rs`: mismatched types
+- **E0599** `generated/candidates/flighthq-power/src/power.rs`: no method named `unwrap_or` found for struct `std::string::String` in the current scope
+- **E0609** `generated/candidates/flighthq-power/src/power.rs`: no field `then` on type `&Promise<WebBatteryManager>`
+- **E0308** `generated/candidates/flighthq-power/src/power.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-power/src/power.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-power/src/power.rs`: mismatched types
+
+### `@flighthq/protocol`
+
+- **E0599** `generated/candidates/flighthq-protocol/src/protocol.rs`: no method named `unwrap_or` found for struct `std::string::String` in the current scope
+- **E0599** `generated/candidates/flighthq-protocol/src/protocol.rs`: no method named `unwrap_or` found for struct `std::string::String` in the current scope
+- **E0599** `generated/candidates/flighthq-protocol/src/protocol.rs`: no method named `unwrap_or` found for struct `std::string::String` in the current scope
+- **E0308** `generated/candidates/flighthq-protocol/src/protocol.rs`: `if` and `else` have incompatible types
+- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `filter` on type `()`
+- **E0608** `generated/candidates/flighthq-protocol/src/protocol.rs`: cannot index into a value of type `OpaqueHostValue`
+- **E0308** `generated/candidates/flighthq-protocol/src/protocol.rs`: mismatched types
+- **E0608** `generated/candidates/flighthq-protocol/src/protocol.rs`: cannot index into a value of type `OpaqueHostValue`
+- **E0608** `generated/candidates/flighthq-protocol/src/protocol.rs`: cannot index into a value of type `OpaqueHostValue`
+- **E0277** `generated/candidates/flighthq-protocol/src/protocol.rs`: `()` doesn't implement `std::fmt::Display`
+- **E0308** `../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs`: mismatched types
+- **E0308** `../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `length` on type `std::string::String`
+- **E0277** `generated/candidates/flighthq-protocol/src/protocol.rs`: can't compare `OpaqueHostValue` with `std::string::String`
+- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `length` on type `std::string::String`
+- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `index_of` on type `std::string::String`
+- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `slice` on type `std::string::String`
+- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `slice` on type `std::string::String`
+- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `length` on type `std::string::String`
+- **E0615** `generated/candidates/flighthq-protocol/src/protocol.rs`: attempted to take value of method `split` on type `std::string::String`
+- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `length` on type `std::string::String`
+- **E0070** `generated/candidates/flighthq-protocol/src/protocol.rs`: invalid left-hand side of assignment
+- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `length` on type `std::string::String`
+- **E0070** `generated/candidates/flighthq-protocol/src/protocol.rs`: invalid left-hand side of assignment
+- **E0308** `generated/candidates/flighthq-protocol/src/protocol.rs`: mismatched types
+- **E0317** `generated/candidates/flighthq-protocol/src/protocol.rs`: `if` may be missing an `else` clause
+
+### `@flighthq/snapshot`
+
+- **E0425** `generated/candidates/flighthq-snapshot/src/capture_snapshot.rs`: cannot find value `array` in this scope
+- **E0425** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: cannot find value `array` in this scope
+- **E0425** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: cannot find value `array` in this scope
+- **E0425** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: cannot find value `array` in this scope
+- **E0425** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: cannot find value `array` in this scope
+- **E0425** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: cannot find value `array` in this scope
+- **E0425** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: cannot find value `array` in this scope
+- **E0425** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: cannot find value `array` in this scope
+- **E0425** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: cannot find value `array` in this scope
+- **E0425** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: cannot find value `array` in this scope
+- **E0425** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: cannot find value `array` in this scope
+- **E0107** `generated/candidates/flighthq-snapshot/src/capture_snapshot.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
+- **E0107** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
+- **E0107** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
+- **E0107** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
+- **E0107** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
+- **E0107** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
+- **E0277** `generated/candidates/flighthq-snapshot/src/capture_snapshot.rs`: the trait bound `T: Default` is not satisfied
+- **E0308** `generated/candidates/flighthq-snapshot/src/capture_snapshot.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-snapshot/src/capture_snapshot.rs`: mismatched types
+- **E0599** `generated/candidates/flighthq-snapshot/src/capture_snapshot.rs`: no method named `is_none` found for enum `OpaqueHostValue` in the current scope
+- **E0608** `generated/candidates/flighthq-snapshot/src/capture_snapshot.rs`: cannot index into a value of type `OpaqueHostValue`
+- **E0599** `generated/candidates/flighthq-snapshot/src/capture_snapshot.rs`: no method named `iter` found for unit type `()` in the current scope
+- **E0599** `generated/candidates/flighthq-snapshot/src/capture_snapshot.rs`: no method named `iter` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: no method named `is_none` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: no method named `is_none` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: no method named `len` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: no method named `len` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: no method named `len` found for enum `OpaqueHostValue` in the current scope
+- **E0608** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: cannot index into a value of type `OpaqueHostValue`
+- **E0608** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: cannot index into a value of type `OpaqueHostValue`
+- **E0609** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: no field `length` on type `()`
+- **E0609** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: no field `length` on type `()`
+- **E0599** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: no method named `iter` found for unit type `()` in the current scope
+- **E0600** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: cannot apply unary operator `!` to type `()`
+- **E0599** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: no method named `iter` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: no method named `iter` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no method named `is_none` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no method named `is_none` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no method named `is_none` found for type parameter `T` in the current scope
+- **E0308** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: mismatched types
+- **E0599** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no method named `len` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no method named `iter` found for unit type `()` in the current scope
+- **E0599** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no method named `iter` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no method named `iter` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no method named `iter` found for enum `OpaqueHostValue` in the current scope
+- **E0070** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: invalid left-hand side of assignment
+- **E0599** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no method named `iter` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no method named `iter` found for enum `OpaqueHostValue` in the current scope
+- **E0070** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: invalid left-hand side of assignment
+- **E0599** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no method named `iter` found for enum `OpaqueHostValue` in the current scope
+- **E0070** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: invalid left-hand side of assignment
+- **E0609** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no field `includes` on type `&Vec<std::string::String>`
+- **E0599** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no method named `is_some` found for enum `OpaqueHostValue` in the current scope
+- **E0308** `../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs`: mismatched types
+- **E0599** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no method named `is_none` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: no method named `is_none` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: no method named `is_none` found for type parameter `T` in the current scope
+- **E0308** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: mismatched types
+- **E0599** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: no method named `truncate` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: no method named `len` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: no method named `len` found for enum `OpaqueHostValue` in the current scope
+- **E0608** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: cannot index into a value of type `OpaqueHostValue`
+- **E0608** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: cannot index into a value of type `OpaqueHostValue`
+- **E0599** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: no method named `len` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: no method named `push` found for enum `OpaqueHostValue` in the current scope
+- **E0608** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: cannot index into a value of type `OpaqueHostValue`
+- **E0599** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: no method named `iter` found for unit type `()` in the current scope
+- **E0599** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: no method named `iter` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: no method named `iter` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: no method named `iter` found for enum `OpaqueHostValue` in the current scope
+- **E0070** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: invalid left-hand side of assignment
+- **E0599** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: no method named `is_none` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: no method named `is_some` found for enum `OpaqueHostValue` in the current scope
+
+### `@flighthq/socket`
+
+- **E0599** `generated/candidates/flighthq-socket/src/socket.rs`: no method named `unwrap` found for reference `&std::sync::Mutex<Box<(dyn FnMut(f64, std::string::String) + Send + 'static)>>` in the current scope
+- **E0308** `generated/candidates/flighthq-socket/src/socket.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-socket/src/socket.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-socket/src/socket.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-socket/src/socket.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-socket/src/socket.rs`: mismatched types
+
+### `@flighthq/textbidi`
+
+- **E0308** `generated/candidates/flighthq-textbidi/src/bidi_class_backend.rs`: mismatched types
+- **E0369** `generated/candidates/flighthq-textbidi/src/bidi_class_backend.rs`: cannot subtract `f64` from `LazyLock<f64>`
+- **E0609** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: no field `length` on type `std::string::String`
+- **E0609** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: no field `code_point_at` on type `std::string::String`
+- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: arguments to this function are incorrect
+- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: arguments to this function are incorrect
+- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: mismatched types
+- **E0600** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: cannot apply unary operator `!` to type `f64`
+- **E0382** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: use of moved value: `sos`
+- **E0382** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: use of moved value: `sos`
+- **E0382** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: borrow of moved value: `sos`
+- **E0382** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: borrow of moved value: `eos`
+- **E0382** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: use of moved value: `embedding_dir`
+- **E0382** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: use of moved value: `resolved`
+
+### `@flighthq/textsegment`
+
+- **E0609** `generated/candidates/flighthq-textsegment/src/text_segment_boundary.rs`: no field `length` on type `std::string::String`
+- **E0609** `generated/candidates/flighthq-textsegment/src/text_segment_boundary.rs`: no field `length` on type `std::string::String`
+- **E0609** `generated/candidates/flighthq-textsegment/src/text_segment_boundary.rs`: no field `length` on type `std::string::String`
+- **E0609** `generated/candidates/flighthq-textsegment/src/text_segment_boundary.rs`: no field `length` on type `std::string::String`
+- **E0609** `generated/candidates/flighthq-textsegment/src/text_segment_boundary.rs`: no field `length` on type `std::string::String`
+- **E0609** `generated/candidates/flighthq-textsegment/src/text_segment_boundary.rs`: no field `length` on type `std::string::String`
+- **E0308** `generated/candidates/flighthq-textsegment/src/text_segmenter_backend.rs`: mismatched types
+- **E0599** `generated/candidates/flighthq-textsegment/src/text_segmenter_backend.rs`: no method named `iter` found for unit type `()` in the current scope
+
+### `@flighthq/timeline`
+
+- **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)
+- **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be applied to values that implement `Try`
+- **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)
+- **E0070** `generated/candidates/flighthq-timeline/src/timeline.rs`: invalid left-hand side of assignment
+- **E0609** `generated/candidates/flighthq-timeline/src/timeline.rs`: no field `set` on type `Option<Vec<(f64, Arc<Mutex<Box<dyn FnMut(..., f64) + Send>>>)>>`
+- **E0308** `generated/candidates/flighthq-timeline/src/timeline.rs`: mismatched types
+- **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)
+- **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be applied to values that implement `Try`
+- **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)
+- **E0070** `generated/candidates/flighthq-timeline/src/timeline.rs`: invalid left-hand side of assignment
+- **E0308** `generated/candidates/flighthq-timeline/src/timeline.rs`: mismatched types
+- **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: can't compare `f64` with `&str`
+- **E0369** `generated/candidates/flighthq-timeline/src/timeline.rs`: binary operation `==` cannot be applied to type `Arc<std::sync::Mutex<Box<(dyn FnMut(DisplayObject, f64) + Send + 'static)>>>`
+- **E0308** `generated/candidates/flighthq-timeline/src/timeline.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-timeline/src/timeline.rs`: mismatched types
+- **E0599** `generated/candidates/flighthq-timeline/src/timeline.rs`: no method named `unwrap` found for reference `&std::sync::Mutex<Box<(dyn FnMut(DisplayObject, f64) + Send + 'static)>>` in the current scope
+- **E0308** `generated/candidates/flighthq-timeline/src/timeline.rs`: mismatched types
+- **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: `FlightUnion2<f64, std::string::String>` doesn't implement `std::fmt::Display`
+- **E0596** `generated/candidates/flighthq-timeline/src/timeline.rs`: cannot borrow `timeline.frame_scripts` as mutable, as it is behind a `&` reference
+
+### `@flighthq/useragent`
+
+- **E0605** `generated/candidates/flighthq-useragent/src/user_agent.rs`: non-primitive cast: `Vec<u8>` as `usize`
+- **E0605** `generated/candidates/flighthq-useragent/src/user_agent.rs`: non-primitive cast: `Vec<u8>` as `usize`
+- **E0609** `generated/candidates/flighthq-useragent/src/user_agent.rs`: no field `exec` on type `regex::Regex`
+- **E0609** `generated/candidates/flighthq-useragent/src/user_agent.rs`: no field `exec` on type `regex::Regex`
+- **E0609** `generated/candidates/flighthq-useragent/src/user_agent.rs`: no field `exec` on type `regex::Regex`
+- **E0609** `generated/candidates/flighthq-useragent/src/user_agent.rs`: no field `exec` on type `regex::Regex`
+- **E0609** `generated/candidates/flighthq-useragent/src/user_agent.rs`: no field `exec` on type `regex::Regex`
+- **E0609** `generated/candidates/flighthq-useragent/src/user_agent.rs`: no field `exec` on type `regex::Regex`
+- **E0317** `generated/candidates/flighthq-useragent/src/user_agent.rs`: `if` may be missing an `else` clause
+- **E0599** `generated/candidates/flighthq-useragent/src/user_agent.rs`: no method named `as_ref` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-useragent/src/user_agent.rs`: no method named `as_ref` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-useragent/src/user_agent.rs`: no method named `is_some` found for type `bool` in the current scope
+- **E0308** `generated/candidates/flighthq-useragent/src/user_agent.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-useragent/src/user_agent.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-useragent/src/user_agent.rs`: no field `exec` on type `regex::Regex`
+- **E0609** `generated/candidates/flighthq-useragent/src/user_agent.rs`: no field `exec` on type `regex::Regex`
+- **E0609** `generated/candidates/flighthq-useragent/src/user_agent.rs`: no field `exec` on type `regex::Regex`
+- **E0609** `generated/candidates/flighthq-useragent/src/user_agent.rs`: no field `exec` on type `regex::Regex`
+- **E0317** `generated/candidates/flighthq-useragent/src/user_agent.rs`: `if` may be missing an `else` clause
+- **E0308** `generated/candidates/flighthq-useragent/src/user_agent_parse.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-useragent/src/user_agent_parse.rs`: no field `match_` on type `std::string::String`
+- **E0609** `generated/candidates/flighthq-useragent/src/user_agent_parse.rs`: no field `match_` on type `std::string::String`
+- **E0609** `generated/candidates/flighthq-useragent/src/user_agent_parse.rs`: no field `match_` on type `std::string::String`
+- **E0609** `generated/candidates/flighthq-useragent/src/user_agent_parse.rs`: no field `match_` on type `std::string::String`
+- **E0609** `generated/candidates/flighthq-useragent/src/user_agent_parse.rs`: no field `match_` on type `std::string::String`
+
+### `@flighthq/xml`
+
+- **E0425** `generated/candidates/flighthq-xml/src/xml_parse.rs`: cannot find value `string` in this scope
+- **E0425** `generated/candidates/flighthq-xml/src/xml_parse.rs`: cannot find value `string` in this scope
+- `generated/candidates/flighthq-xml/src/xml_parse.rs`: in expressions, `_` can only be used on the left-hand side of an assignment
+- **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `exec` on type `regex::Regex`
+- **E0608** `generated/candidates/flighthq-xml/src/xml_parse.rs`: cannot index into a value of type `Option<OpaqueHostValue>`
+- **E0608** `generated/candidates/flighthq-xml/src/xml_parse.rs`: cannot index into a value of type `Option<OpaqueHostValue>`
+- **E0608** `generated/candidates/flighthq-xml/src/xml_parse.rs`: cannot index into a value of type `Option<OpaqueHostValue>`
+- **E0608** `generated/candidates/flighthq-xml/src/xml_parse.rs`: cannot index into a value of type `Option<OpaqueHostValue>`
+- **E0070** `generated/candidates/flighthq-xml/src/xml_parse.rs`: invalid left-hand side of assignment
+- **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
+- **E0599** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no method named `unwrap_or` found for struct `String` in the current scope
+- **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `length` on type `String`
+- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
+- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
+- **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `index_of` on type `String`
+- **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `length` on type `String`
+- **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `length` on type `String`
+- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
+- **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `slice` on type `String`
+- **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `length` on type `String`
+- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
+- **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
+- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
+- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
+- **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `length` on type `String`
+- **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `length` on type `String`
+- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
+- **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `length` on type `String`
+- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
+- **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `slice` on type `String`
+- **E0368** `generated/candidates/flighthq-xml/src/xml_parse.rs`: binary assignment operation `+=` cannot be applied to type `&str`
+- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
+- **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `length` on type `String`
+- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
+- **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `length` on type `String`
+- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
+- **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `slice` on type `String`
+- **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `length` on type `String`
+- **E0599** `generated/candidates/flighthq-xml/src/xml_query.rs`: no method named `is_some` found for struct `String` in the current scope
+- **E0599** `generated/candidates/flighthq-xml/src/xml_query.rs`: no method named `is_none` found for struct `String` in the current scope
+- **E0425** `generated/candidates/flighthq-xml/src/xml_query.rs`: cannot find function `number` in this scope
+- **E0609** `generated/candidates/flighthq-xml/src/xml_query.rs`: no field `filter` on type `Vec<xml_parse::XmlElement>`
+- **E0308** `generated/candidates/flighthq-xml/src/xml_query.rs`: mismatched types

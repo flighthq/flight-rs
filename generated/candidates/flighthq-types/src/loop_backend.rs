@@ -9,7 +9,26 @@
 // Source: upstream/packages/types/src/LoopBackend.ts:3 (sha256:2553303d0a627764378cbf08fb7a0df92efd3414472bc0605d09377d05cc640c)
 #[derive(Clone)]
 pub struct LoopBackend {
-    pub request_frame: crate::OpaqueHostValue,
-    pub cancel_frame: crate::OpaqueHostValue,
-    pub now: crate::OpaqueHostValue,
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub request_frame: std::sync::Arc<
+        std::sync::Mutex<
+            Box<
+                dyn FnMut(
+                        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64) -> () + Send + 'static>>>,
+                    ) -> crate::OpaqueHostValue
+                    + Send
+                    + 'static,
+            >,
+        >,
+    >,
+    pub cancel_frame: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(crate::OpaqueHostValue) -> () + Send + 'static>>,
+    >,
+    pub now: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> f64 + Send + 'static>>>,
+}
+impl PartialEq for LoopBackend {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

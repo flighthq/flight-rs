@@ -1,0 +1,34 @@
+// @generated from upstream/packages/effects/src/ssaoEffect.ts; do not edit.
+#![allow(clippy::excessive_precision)]
+#![allow(non_upper_case_globals)]
+#![allow(unused_braces)]
+#![allow(unused_imports)]
+#![allow(unused_mut)]
+#![allow(unused_parens)]
+
+use flighthq_types::SsaoEffect;
+
+// Source: upstream/packages/effects/src/ssaoEffect.ts:3 (sha256:6131e6956dcfe2a0de479b4a724e8a1534ab7c47195249f34f9834599a5b40b6)
+#[derive(Clone)]
+struct CreateSsaoEffectRecord1 {
+    __flight_identity: std::sync::Arc<()>,
+}
+impl PartialEq for CreateSsaoEffectRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+pub fn create_ssao_effect(options: Option<SsaoEffect>) -> SsaoEffect {
+    let options = options.unwrap_or(SsaoEffect {
+        __flight_identity: std::sync::Arc::new(()),
+        radius: None,
+        intensity: None,
+        bias: None,
+        samples: None,
+    });
+    return SsaoEffect {
+        kind: "SsaoEffect".to_owned(),
+        ..((options).clone()).clone()
+    };
+}

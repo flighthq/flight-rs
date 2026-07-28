@@ -9,10 +9,17 @@
 // Source: upstream/packages/types/src/ToonModifier.ts:10 (sha256:32cd129d4ac517481ab1aa7f5c0cd5b6bb8440220cfdd8973a653c570d128acf)
 #[derive(Clone)]
 pub struct ToonModifier {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub kind: String,
     pub slot: String,
     pub steps: f64,
     pub smoothness: Option<f64>,
+}
+impl PartialEq for ToonModifier {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/ToonModifier.ts:17 (sha256:76d40005572533e5b8ddff8275be511c5f4809bf81e6deca631c5477b8d4156d)

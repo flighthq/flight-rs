@@ -15,19 +15,29 @@ use crate::{
 // Source: upstream/packages/types/src/Bitmap.ts:5 (sha256:f06281ca6690cce0de80eaf20890025a25b951bbeeb25d8536e41672b6d41da8)
 #[derive(Clone)]
 pub struct BitmapData {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub image: Option<ImageResource>,
     pub smoothing: bool,
     pub source_rectangle: Option<Rectangle>,
+}
+impl PartialEq for BitmapData {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/Bitmap.ts:11 (sha256:8a4932663a2d96bc8c292e247b29112eb163e8dad91ad18c4e8c10532d0b8231)
 #[derive(Clone)]
 pub struct BitmapRuntime {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
     pub appearance_id: f64,
     pub bounds_using_local_bounds_id: f64,
     pub bounds_using_local_transform_id: f64,
-    pub can_add_child: std::sync::Arc<dyn Fn(Node, Node) -> bool + Send + Sync + 'static>,
+    pub can_add_child:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
     pub children: Option<Vec<Node>>,
     pub color_adjustments: Option<Vec<Adjustment>>,
     pub resolved_color_transform: Option<ColorTransform>,
@@ -53,16 +63,24 @@ pub struct BitmapRuntime {
     pub rotation_sine: f64,
     pub world_matrix: Option<Matrix>,
     pub bounds_rectangle: Option<Rectangle>,
-    pub compute_local_bounds_rectangle:
-        std::sync::Arc<dyn Fn(Rectangle, BoundsNodeAny) -> () + Send + Sync + 'static>,
+    pub compute_local_bounds_rectangle: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
+    >,
     pub local_bounds_rectangle: Option<Rectangle>,
     pub world_bounds_rectangle: Option<Rectangle>,
     pub stage: Option<Stage>,
+}
+impl PartialEq for BitmapRuntime {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/Bitmap.ts:13 (sha256:2a199713d5d6252c439749551560f64cc8d2917a884a5a78617058dd08cb7e60)
 #[derive(Clone)]
 pub struct Bitmap {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub data: BitmapData,
     pub enabled: bool,
     pub kind: Kind,
@@ -82,6 +100,11 @@ pub struct Bitmap {
     pub skew_y: f64,
     pub x: f64,
     pub y: f64,
+}
+impl PartialEq for Bitmap {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/Bitmap.ts:17 (sha256:f5761838025219d97b7d64c4f139801e3fa233d1d78ef001f219737bb02f5b24)

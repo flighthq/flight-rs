@@ -6,10 +6,12 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_types::EasingFunction;
-
 // Source: upstream/packages/easing/src/getEasingDerivative.ts:15 (sha256:ffeaee626b1cb6d62284a0bec434ffb6782394e849c35683da5f38d2a5876531)
-pub fn get_easing_derivative(ease: EasingFunction, t: f64, epsilon: Option<f64>) -> f64 {
+pub fn get_easing_derivative(
+    ease: &mut impl FnMut(f64) -> f64,
+    t: f64,
+    epsilon: Option<f64>,
+) -> f64 {
     let epsilon = epsilon.unwrap_or(DEFAULT_EPSILON);
     if (t <= epsilon) {
         return ((ease((epsilon * 2.0_f64)) - ease(0.0_f64)) / (epsilon * 2.0_f64));

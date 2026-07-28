@@ -10,35 +10,68 @@ use crate::{Kind, NodeData, Rectangle};
 
 // Source: upstream/packages/types/src/HasBoundsRectangle.ts:6 (sha256:0ecfccab9df1edf64e1fa4ad53d28a8ceedc0b71d2ef87d53af34349fd0640b4)
 #[derive(Clone)]
-pub struct HasBoundsRectangle {}
+pub struct HasBoundsRectangle {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+}
+impl PartialEq for HasBoundsRectangle {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/types/src/HasBoundsRectangle.ts:8 (sha256:a19ae57a4710bd355d13a39e58afc3849abd973976923d88c704c6d487ab6e26)
 #[derive(Clone)]
 pub struct HasBoundsRectangleRuntime {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
     pub bounds_rectangle: Option<Rectangle>,
-    pub compute_local_bounds_rectangle:
-        std::sync::Arc<dyn Fn(Rectangle, BoundsNodeAny) -> () + Send + Sync + 'static>,
+    pub compute_local_bounds_rectangle: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
+    >,
     pub local_bounds_rectangle: Option<Rectangle>,
     pub world_bounds_rectangle: Option<Rectangle>,
+}
+impl PartialEq for HasBoundsRectangleRuntime {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/HasBoundsRectangle.ts:15 (sha256:8fddb53399dce104a81ccb3922daaad01147fa43545a5ab9705329b6ee7c44f3)
 #[derive(Clone)]
 pub struct BoundsNode {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub data: Option<NodeData>,
     pub enabled: bool,
     pub kind: Kind,
     pub name: Option<String>,
 }
+impl PartialEq for BoundsNode {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/types/src/HasBoundsRectangle.ts:16 (sha256:d5830d1d56f8a58a70a0fca0439a5f76e222af81496c1a33fa0321d3c45855c6)
 #[derive(Clone)]
-pub struct BoundsNodeAny {}
+pub struct BoundsNodeAny {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+}
+impl PartialEq for BoundsNodeAny {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/types/src/HasBoundsRectangle.ts:18 (sha256:fd7d412c542ae8c3de6675e94131f1b2b5d5387ab2f73f83b3cb7b4f4fa7affe)
 #[derive(Clone)]
 pub struct Spatial2DNode {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub data: Option<NodeData>,
     pub enabled: bool,
     pub kind: Kind,
@@ -52,4 +85,9 @@ pub struct Spatial2DNode {
     pub skew_y: f64,
     pub x: f64,
     pub y: f64,
+}
+impl PartialEq for Spatial2DNode {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

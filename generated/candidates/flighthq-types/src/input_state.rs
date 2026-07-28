@@ -9,12 +9,19 @@
 // Source: upstream/packages/types/src/InputState.ts:1 (sha256:216dce6f67c2e578771f19028b5b6df661f640ecf89609634c0f5537d28f30e7)
 #[derive(Clone)]
 pub struct InputState {
-    pub axis_values: crate::OpaqueHostValue,
-    pub gamepad_buttons_down: crate::OpaqueHostValue,
-    pub just_pressed_gamepad_buttons: crate::OpaqueHostValue,
-    pub just_pressed_keys: crate::OpaqueHostValue,
-    pub just_released_gamepad_buttons: crate::OpaqueHostValue,
-    pub just_released_keys: crate::OpaqueHostValue,
-    pub keys_down: crate::OpaqueHostValue,
-    pub pointer_buttons_down: crate::OpaqueHostValue,
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub axis_values: Vec<(f64, f64)>,
+    pub gamepad_buttons_down: Vec<f64>,
+    pub just_pressed_gamepad_buttons: Vec<f64>,
+    pub just_pressed_keys: Vec<f64>,
+    pub just_released_gamepad_buttons: Vec<f64>,
+    pub just_released_keys: Vec<f64>,
+    pub keys_down: Vec<f64>,
+    pub pointer_buttons_down: Vec<(f64, f64)>,
+}
+impl PartialEq for InputState {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

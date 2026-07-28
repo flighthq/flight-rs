@@ -14,16 +14,32 @@ pub type DebugSubsystemName = String;
 // Source: upstream/packages/types/src/Debug.ts:25 (sha256:658414808105f35fb9c07e5fcb3d9b0b0931e482a9946c47a6aa585c56615a0f)
 #[derive(Clone)]
 pub struct DebugSubsystemHooks {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub channels: Option<Vec<String>>,
-    pub enable_guards: Option<std::sync::Arc<dyn Fn() -> () + Send + Sync + 'static>>,
-    pub disable_guards: Option<std::sync::Arc<dyn Fn() -> () + Send + Sync + 'static>>,
+    pub enable_guards:
+        Option<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
+    pub disable_guards:
+        Option<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
+}
+impl PartialEq for DebugSubsystemHooks {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/Debug.ts:36 (sha256:11018664ec44ec8b07795b670e356ddc7bda6e50c9d04a148943e0e0b76ec738)
 #[derive(Clone)]
 pub struct DebugOptions {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub subsystems: Option<Vec<DebugSubsystemName>>,
     pub level: Option<LogLevel>,
     pub channels: Option<Vec<String>>,
     pub sink: Option<LogSink>,
+}
+impl PartialEq for DebugOptions {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

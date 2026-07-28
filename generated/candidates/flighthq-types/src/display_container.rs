@@ -15,11 +15,14 @@ use crate::{
 // Source: upstream/packages/types/src/DisplayContainer.ts:3 (sha256:0bf73da11233b3ad1be3ed370d0fda3abc30c492e26b44f74f96b593cbd8aaf6)
 #[derive(Clone)]
 pub struct DisplayContainerRuntime {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
     pub appearance_id: f64,
     pub bounds_using_local_bounds_id: f64,
     pub bounds_using_local_transform_id: f64,
-    pub can_add_child: std::sync::Arc<dyn Fn(Node, Node) -> bool + Send + Sync + 'static>,
+    pub can_add_child:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
     pub children: Option<Vec<Node>>,
     pub color_adjustments: Option<Vec<Adjustment>>,
     pub resolved_color_transform: Option<ColorTransform>,
@@ -45,16 +48,24 @@ pub struct DisplayContainerRuntime {
     pub rotation_sine: f64,
     pub world_matrix: Option<Matrix>,
     pub bounds_rectangle: Option<Rectangle>,
-    pub compute_local_bounds_rectangle:
-        std::sync::Arc<dyn Fn(Rectangle, BoundsNodeAny) -> () + Send + Sync + 'static>,
+    pub compute_local_bounds_rectangle: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
+    >,
     pub local_bounds_rectangle: Option<Rectangle>,
     pub world_bounds_rectangle: Option<Rectangle>,
     pub stage: Option<Stage>,
+}
+impl PartialEq for DisplayContainerRuntime {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/DisplayContainer.ts:5 (sha256:28a273c427a0476a0f2672ce0c0cd835f529dbd3dfed712a62ab4addfc130b5f)
 #[derive(Clone)]
 pub struct DisplayContainer {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub data: Option<DisplayObjectData>,
     pub enabled: bool,
     pub kind: Kind,
@@ -74,4 +85,9 @@ pub struct DisplayContainer {
     pub skew_y: f64,
     pub x: f64,
     pub y: f64,
+}
+impl PartialEq for DisplayContainer {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

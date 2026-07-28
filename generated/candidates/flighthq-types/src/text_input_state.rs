@@ -9,6 +9,8 @@
 // Source: upstream/packages/types/src/TextInputState.ts:10 (sha256:a9ce5aa975796bb35e867912a36b63da2afa409d140e37ef526468868d688827)
 #[derive(Clone)]
 pub struct TextInputHistoryEntry {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub caret_index_after: f64,
     pub caret_index_before: f64,
     pub merge_kind: Option<String>,
@@ -17,10 +19,17 @@ pub struct TextInputHistoryEntry {
     pub text_after: String,
     pub text_before: String,
 }
+impl PartialEq for TextInputHistoryEntry {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/types/src/TextInputState.ts:20 (sha256:b8c71131b48fb802bf08fc22ab717a50b460ecb96f29c0d9615fb6319184d31c)
 #[derive(Clone)]
 pub struct TextInputState {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub always_show_selection: bool,
     pub caret_color: f64,
     pub caret_index: f64,
@@ -37,10 +46,17 @@ pub struct TextInputState {
     pub selection_color: f64,
     pub selection_index: f64,
 }
+impl PartialEq for TextInputState {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/types/src/TextInputState.ts:44 (sha256:1b5f5456e620e7bbc76f4a5bb4aaa3a55f80a9ebc786347d9c288be4f77737da)
 #[derive(Clone)]
 pub struct TextInputOptions {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub always_show_selection: Option<bool>,
     pub caret_color: Option<f64>,
     pub caret_width: Option<f64>,
@@ -50,4 +66,9 @@ pub struct TextInputOptions {
     pub restrict: Option<String>,
     pub selection_alpha: Option<f64>,
     pub selection_color: Option<f64>,
+}
+impl PartialEq for TextInputOptions {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

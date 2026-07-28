@@ -6,14 +6,26 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::Signal;
+use crate::{NodeAny, Signal};
 
 // Source: upstream/packages/types/src/NodeSignals.ts:4 (sha256:3debcb6bbfc793c4ea95337f8afd26ae83f81485392ba271ba5300c0a5eb35fa)
 #[derive(Clone)]
 pub struct NodeSignals {
-    pub on_child_added: Signal,
-    pub on_child_removed: Signal,
-    pub on_children_changed: Signal,
-    pub on_children_order_changed: Signal,
-    pub on_parent_changed: Signal,
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub on_child_added:
+        Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(NodeAny) -> () + Send + 'static>>>>,
+    pub on_child_removed:
+        Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(NodeAny) -> () + Send + 'static>>>>,
+    pub on_children_changed:
+        Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
+    pub on_children_order_changed:
+        Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
+    pub on_parent_changed:
+        Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
+}
+impl PartialEq for NodeSignals {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

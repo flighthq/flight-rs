@@ -13,17 +13,22 @@ pub type NumericProps = crate::OpaqueHostValue;
 
 // Source: upstream/packages/types/src/Tween.ts:7 (sha256:6903b4fa8a509237f7ff329abd18f797ff86f22fe5115266aa530240bdad1859)
 #[derive(Clone)]
-pub struct Tween {
+pub struct Tween<T> {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub complete: bool,
     pub delay: f64,
     pub duration: f64,
     pub ease: EasingFunction,
     pub elapsed: f64,
     pub initialized: bool,
-    pub on_complete: Signal,
-    pub on_repeat: Signal,
-    pub on_update: Signal,
-    pub on_yoyo: Signal,
+    pub on_complete:
+        Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
+    pub on_repeat:
+        Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
+    pub on_update:
+        Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
+    pub on_yoyo: Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
     pub paused: bool,
     pub properties: Vec<TweenPropertyDetail>,
     pub property_map: NumericProps,
@@ -32,5 +37,10 @@ pub struct Tween {
     pub reverse: bool,
     pub smart_rotation: bool,
     pub snapping: bool,
-    pub target: crate::OpaqueHostValue,
+    pub target: T,
+}
+impl<T> PartialEq for Tween<T> {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

@@ -9,7 +9,14 @@
 // Source: upstream/packages/types/src/InvertAdjustment.ts:3 (sha256:21b60731b36b15786ea3aef5f0a4f47736131c14b0ecedd0e2e742ca4c14b308)
 #[derive(Clone)]
 pub struct InvertAdjustment {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub kind: String,
     pub color_matrix: Vec<f64>,
     pub intensity: Option<f64>,
+}
+impl PartialEq for InvertAdjustment {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

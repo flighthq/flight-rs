@@ -14,11 +14,18 @@ pub type MaterialAlphaMode = String;
 // Source: upstream/packages/types/src/SurfaceMaterial.ts:15 (sha256:38a674859bb34f75042080d1aa542c108f3b1477eb602f27aeb3a54e6b580fc4)
 #[derive(Clone)]
 pub struct SurfaceMaterial {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub kind: Kind,
-    pub name: Option<Option<String>>,
+    pub name: Option<String>,
     pub alpha_cutoff: f64,
     pub alpha_mode: MaterialAlphaMode,
     pub alpha_type: AlphaType,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+}
+impl PartialEq for SurfaceMaterial {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

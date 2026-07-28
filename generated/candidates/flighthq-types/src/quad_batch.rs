@@ -15,6 +15,8 @@ use crate::{
 // Source: upstream/packages/types/src/QuadBatch.ts:7 (sha256:1eb0802de4e5a5b34e6e585aa05bc5147a491e7e455d4719ac072ac9577c9caa)
 #[derive(Clone)]
 pub struct QuadBatchData {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub atlas: Option<TextureAtlas>,
     pub ids: Vec<u16>,
     pub instance_count: f64,
@@ -22,15 +24,23 @@ pub struct QuadBatchData {
     pub transforms: Vec<f32>,
     pub transform_type: QuadTransformType,
 }
+impl PartialEq for QuadBatchData {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/types/src/QuadBatch.ts:20 (sha256:75238ecb20b17ee00471a4ef63623e2e5b34bab0747cfd29e59d8662516e1942)
 #[derive(Clone)]
 pub struct QuadBatchRuntime {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
     pub appearance_id: f64,
     pub bounds_using_local_bounds_id: f64,
     pub bounds_using_local_transform_id: f64,
-    pub can_add_child: std::sync::Arc<dyn Fn(Node, Node) -> bool + Send + Sync + 'static>,
+    pub can_add_child:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
     pub children: Option<Vec<Node>>,
     pub color_adjustments: Option<Vec<Adjustment>>,
     pub resolved_color_transform: Option<ColorTransform>,
@@ -56,17 +66,25 @@ pub struct QuadBatchRuntime {
     pub rotation_sine: f64,
     pub world_matrix: Option<Matrix>,
     pub bounds_rectangle: Option<Rectangle>,
-    pub compute_local_bounds_rectangle:
-        std::sync::Arc<dyn Fn(Rectangle, BoundsNodeAny) -> () + Send + Sync + 'static>,
+    pub compute_local_bounds_rectangle: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
+    >,
     pub local_bounds_rectangle: Option<Rectangle>,
     pub world_bounds_rectangle: Option<Rectangle>,
     pub stage: Option<Stage>,
     pub instance_velocities: Option<Vec<f32>>,
 }
+impl PartialEq for QuadBatchRuntime {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/types/src/QuadBatch.ts:31 (sha256:51f21dd1261747ad4e3ecb0223ce247c09417a3ad79113123cf7bde455ecfb17)
 #[derive(Clone)]
 pub struct QuadBatch {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub data: QuadBatchData,
     pub enabled: bool,
     pub kind: Kind,
@@ -86,6 +104,11 @@ pub struct QuadBatch {
     pub skew_y: f64,
     pub x: f64,
     pub y: f64,
+}
+impl PartialEq for QuadBatch {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/QuadBatch.ts:35 (sha256:4a42050cba3214e1f705bc48c73a663b704ae3d048f879dbbbff7cdc5066415c)

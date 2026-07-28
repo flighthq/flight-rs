@@ -9,4 +9,5 @@
 use crate::DisplayObject;
 
 // Source: upstream/packages/types/src/FrameScript.ts:5 (sha256:b6b35d6a74a18ef2879465a828b046c2242a8da63ac7777c6f06e79ad3b899e8)
-pub type FrameScript = std::sync::Arc<dyn Fn(DisplayObject, f64) -> () + Send + Sync + 'static>;
+pub type FrameScript =
+    std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(DisplayObject, f64) -> () + Send + 'static>>>;

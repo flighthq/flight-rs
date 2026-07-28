@@ -11,6 +11,13 @@ use crate::AdjustmentKind;
 // Source: upstream/packages/types/src/ColorMatrixAdjustment.ts:9 (sha256:ddbd2cd1f56b8106535ff2ed70999f9d688030cfca652d1eeb30dc1feca81430)
 #[derive(Clone)]
 pub struct ColorMatrixAdjustment {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub kind: AdjustmentKind,
     pub color_matrix: Vec<f64>,
+}
+impl PartialEq for ColorMatrixAdjustment {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

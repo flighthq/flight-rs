@@ -11,6 +11,8 @@ use crate::{AlphaType, ImageResourceCompressed, PixelFormat};
 // Source: upstream/packages/types/src/ImageResource.ts:18 (sha256:e28dc5618fbdb55d16b93f846822b1c8f71235c796f967cfb1ae7ef45b99657c)
 #[derive(Clone)]
 pub struct ImageResource {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub alpha_type: AlphaType,
     pub compressed: Option<ImageResourceCompressed>,
     pub data: Option<Vec<u8>>,
@@ -19,4 +21,9 @@ pub struct ImageResource {
     pub source: Option<crate::OpaqueHostValue>,
     pub version: f64,
     pub width: f64,
+}
+impl PartialEq for ImageResource {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

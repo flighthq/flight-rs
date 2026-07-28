@@ -14,8 +14,18 @@ pub type MediaReadyState = String;
 // Source: upstream/packages/types/src/MediaChannelSignals.ts:3 (sha256:2dd1022f7a41d0f5bc443fa7736e7be869b06faae79ef1dc39976e5cb321df5c)
 #[derive(Clone)]
 pub struct MediaChannelSignals {
-    pub on_buffering: Signal,
-    pub on_error: Signal,
-    pub on_ready: Signal,
-    pub on_seeked: Signal,
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub on_buffering:
+        Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
+    pub on_error:
+        Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(String) -> () + Send + 'static>>>>,
+    pub on_ready: Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
+    pub on_seeked:
+        Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
+}
+impl PartialEq for MediaChannelSignals {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

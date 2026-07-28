@@ -6,14 +6,21 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{EntityRuntime, SceneMetadata, SceneNode};
+use crate::{AnimationClip, EntityRuntime, SceneMetadata, SceneNode};
 
 // Source: upstream/packages/types/src/Scene.ts:18 (sha256:7adc62c6c88e27dc94837c206a741700dedd5c8a88e4b1213ee17ff202285c66)
 #[derive(Clone)]
 pub struct Scene {
-    pub animations: crate::OpaqueHostValue,
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub animations: Vec<(String, AnimationClip)>,
     pub metadata: Option<SceneMetadata>,
     pub root: SceneNode,
+}
+impl PartialEq for Scene {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/Scene.ts:24 (sha256:a12ec2b057d5fce567435f21acd5d9f22bbc5152fc445e41b62b2fd87aa70e3f)

@@ -17,6 +17,8 @@ pub type TiledRenderOrder = String;
 // Source: upstream/packages/types/src/TiledMap.ts:18 (sha256:06addefb47009dd6ad6194898472603ce2dd11f327687e4795e7ed1fa107eb9f)
 #[derive(Clone)]
 pub struct TiledMap {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub version: String,
     pub tiled_version: Option<String>,
     pub orientation: TiledOrientation,
@@ -30,4 +32,9 @@ pub struct TiledMap {
     pub layers: Vec<TiledLayer>,
     pub tilesets: Vec<TiledTilesetRef>,
     pub properties: Vec<TiledProperty>,
+}
+impl PartialEq for TiledMap {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

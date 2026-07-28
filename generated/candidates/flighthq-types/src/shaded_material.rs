@@ -11,8 +11,10 @@ use crate::{AlphaType, BlendMode, Kind, MaterialAlphaMode, Modifier, Texture};
 // Source: upstream/packages/types/src/ShadedMaterial.ts:23 (sha256:f012cad97304e5b646c0f93382b021b88256802524f06f31c7c237f4904454f6)
 #[derive(Clone)]
 pub struct ShadedMaterial {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub kind: Kind,
-    pub name: Option<Option<String>>,
+    pub name: Option<String>,
     pub alpha_cutoff: f64,
     pub alpha_mode: MaterialAlphaMode,
     pub alpha_type: AlphaType,
@@ -26,6 +28,11 @@ pub struct ShadedMaterial {
     pub shininess: f64,
     pub specular: f64,
     pub specular_map: Option<Texture>,
+}
+impl PartialEq for ShadedMaterial {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/ShadedMaterial.ts:34 (sha256:b7634fc89156534c53372e5bebcbed6102390550b5bcf8dc936efd1d74d135f0)

@@ -47,7 +47,7 @@ pub fn unpremultiply_surface_pixels(out: &mut Vec<u8>, source: &Vec<u8>, length:
                 out[(i + 2.0_f64) as usize] = ((255.0_f64)
                     .min(((source[(i + 2.0_f64) as usize] as f64) * inv).round()))
                     as u8;
-                out[(i + 3.0_f64) as usize] = (a) as u8;
+                out[(i + 3.0_f64) as usize] = ((a).clone()) as u8;
             }
             {
                 i += 4.0_f64;

@@ -18,6 +18,8 @@ pub type BitmapTextAlign = String;
 // Source: upstream/packages/types/src/BitmapText.ts:20 (sha256:1ce347f6ccf8f3976756b26f27a7aaf632a2a078faea3f71b7a73b0305ab6ccc)
 #[derive(Clone)]
 pub struct BitmapTextData {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub align: BitmapTextAlign,
     pub color: f64,
     pub glyph_source: Option<GlyphSource>,
@@ -26,15 +28,23 @@ pub struct BitmapTextData {
     pub text: String,
     pub wrap_width: Option<f64>,
 }
+impl PartialEq for BitmapTextData {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/types/src/BitmapText.ts:40 (sha256:750a82db9e8a5c3f07be88e895ce992c3c0093c2036fda39680353adfa4613f9)
 #[derive(Clone)]
 pub struct BitmapTextRuntime {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
     pub appearance_id: f64,
     pub bounds_using_local_bounds_id: f64,
     pub bounds_using_local_transform_id: f64,
-    pub can_add_child: std::sync::Arc<dyn Fn(Node, Node) -> bool + Send + Sync + 'static>,
+    pub can_add_child:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
     pub children: Option<Vec<Node>>,
     pub color_adjustments: Option<Vec<Adjustment>>,
     pub resolved_color_transform: Option<ColorTransform>,
@@ -60,17 +70,25 @@ pub struct BitmapTextRuntime {
     pub rotation_sine: f64,
     pub world_matrix: Option<Matrix>,
     pub bounds_rectangle: Option<Rectangle>,
-    pub compute_local_bounds_rectangle:
-        std::sync::Arc<dyn Fn(Rectangle, BoundsNodeAny) -> () + Send + Sync + 'static>,
+    pub compute_local_bounds_rectangle: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
+    >,
     pub local_bounds_rectangle: Option<Rectangle>,
     pub world_bounds_rectangle: Option<Rectangle>,
     pub stage: Option<Stage>,
     pub quad_batches: Vec<QuadBatch>,
 }
+impl PartialEq for BitmapTextRuntime {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/types/src/BitmapText.ts:52 (sha256:58a2b715038e0386ac8f038f18f536356df7c840c61bd24fd4846f1d8cc04048)
 #[derive(Clone)]
 pub struct BitmapText {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub data: BitmapTextData,
     pub enabled: bool,
     pub kind: Kind,
@@ -91,16 +109,28 @@ pub struct BitmapText {
     pub x: f64,
     pub y: f64,
 }
+impl PartialEq for BitmapText {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/types/src/BitmapText.ts:58 (sha256:30b3f8bb3e2d7fc885abd15048874ed6359a1c0c62dca87dbb12219b721bfea0)
 #[derive(Clone)]
 pub struct BitmapTextOptions {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub align: Option<BitmapTextAlign>,
     pub color: Option<f64>,
     pub letter_spacing: Option<f64>,
     pub line_height: Option<f64>,
     pub text: Option<String>,
-    pub wrap_width: Option<Option<f64>>,
+    pub wrap_width: Option<f64>,
+}
+impl PartialEq for BitmapTextOptions {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/BitmapText.ts:67 (sha256:0407460c41722f239ace0d39d723460b0ccd154dcc53002ed4852bda8f9a8fcb)

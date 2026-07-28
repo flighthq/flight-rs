@@ -27,8 +27,6 @@ pub fn apply_surface_palette_map(
 ) -> () {
     let w = (dest.width).min(source.width);
     let h = (dest.height).min(source.height);
-    let sd = &source.surface.data;
-    let dd = &mut dest.surface.data;
     {
         let mut py = 0.0_f64;
         while (py < h) {
@@ -59,29 +57,29 @@ pub fn apply_surface_palette_map(
                     }
                     let si = (((sy * source.surface.width) + sx) * 4.0_f64);
                     let di = (((dy * dest.surface.width) + dx) * 4.0_f64);
-                    let r = (sd[si as usize] as f64);
-                    let g = (sd[(si + 1.0_f64) as usize] as f64);
-                    let b = (sd[(si + 2.0_f64) as usize] as f64);
-                    let a = (sd[(si + 3.0_f64) as usize] as f64);
-                    dd[di as usize] = if (red_map).is_some() {
+                    let r = (source.surface.data[si as usize] as f64);
+                    let g = (source.surface.data[(si + 1.0_f64) as usize] as f64);
+                    let b = (source.surface.data[(si + 2.0_f64) as usize] as f64);
+                    let a = (source.surface.data[(si + 3.0_f64) as usize] as f64);
+                    dest.surface.data[di as usize] = if (red_map).is_some() {
                         (red_map.as_ref().unwrap()[r as usize].clone()) as u8
                     } else {
-                        (r) as u8
+                        ((r).clone()) as u8
                     };
-                    dd[(di + 1.0_f64) as usize] = if (green_map).is_some() {
+                    dest.surface.data[(di + 1.0_f64) as usize] = if (green_map).is_some() {
                         (green_map.as_ref().unwrap()[g as usize].clone()) as u8
                     } else {
-                        (g) as u8
+                        ((g).clone()) as u8
                     };
-                    dd[(di + 2.0_f64) as usize] = if (blue_map).is_some() {
+                    dest.surface.data[(di + 2.0_f64) as usize] = if (blue_map).is_some() {
                         (blue_map.as_ref().unwrap()[b as usize].clone()) as u8
                     } else {
-                        (b) as u8
+                        ((b).clone()) as u8
                     };
-                    dd[(di + 3.0_f64) as usize] = if (alpha_map).is_some() {
+                    dest.surface.data[(di + 3.0_f64) as usize] = if (alpha_map).is_some() {
                         (alpha_map.as_ref().unwrap()[a as usize].clone()) as u8
                     } else {
-                        (a) as u8
+                        ((a).clone()) as u8
                     };
                     {
                         px += 1.0;

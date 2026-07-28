@@ -9,6 +9,8 @@
 // Source: upstream/packages/types/src/SceneLightBlock.ts:16 (sha256:54f45ef2c9282dbcb3974ec1207f399ef61d302af45db4aaefe2943aa431874c)
 #[derive(Clone)]
 pub struct SceneLightBlock {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub ambient_count: f64,
     pub data: Vec<f32>,
     pub directional_count: f64,
@@ -16,6 +18,11 @@ pub struct SceneLightBlock {
     pub point_count: f64,
     pub spot_count: f64,
     pub version: f64,
+}
+impl PartialEq for SceneLightBlock {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/SceneLightBlock.ts:32 (sha256:1329bc3822561fa5a7881b8cc5bb49e1b8d65e7184080f1d25d0002bec76349b)

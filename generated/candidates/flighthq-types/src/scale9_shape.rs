@@ -15,18 +15,28 @@ use crate::{
 // Source: upstream/packages/types/src/Scale9Shape.ts:4 (sha256:13a7dbdfd01d4e31fcfb71cc4a0ba9b7cfa64d334bfba297a4d45a4b283f126e)
 #[derive(Clone)]
 pub struct Scale9ShapeData {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub commands: Vec<ShapeCommandToken>,
     pub scale9_grid: RectangleLike,
+}
+impl PartialEq for Scale9ShapeData {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/Scale9Shape.ts:8 (sha256:831bd89dab89638d6e7bc9b13773ab7eeff4153e15c2e474883dba5e36881541)
 #[derive(Clone)]
 pub struct Scale9ShapeRuntime {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
     pub appearance_id: f64,
     pub bounds_using_local_bounds_id: f64,
     pub bounds_using_local_transform_id: f64,
-    pub can_add_child: std::sync::Arc<dyn Fn(Node, Node) -> bool + Send + Sync + 'static>,
+    pub can_add_child:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
     pub children: Option<Vec<Node>>,
     pub color_adjustments: Option<Vec<Adjustment>>,
     pub resolved_color_transform: Option<ColorTransform>,
@@ -52,16 +62,24 @@ pub struct Scale9ShapeRuntime {
     pub rotation_sine: f64,
     pub world_matrix: Option<Matrix>,
     pub bounds_rectangle: Option<Rectangle>,
-    pub compute_local_bounds_rectangle:
-        std::sync::Arc<dyn Fn(Rectangle, BoundsNodeAny) -> () + Send + Sync + 'static>,
+    pub compute_local_bounds_rectangle: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
+    >,
     pub local_bounds_rectangle: Option<Rectangle>,
     pub world_bounds_rectangle: Option<Rectangle>,
     pub stage: Option<Stage>,
+}
+impl PartialEq for Scale9ShapeRuntime {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/Scale9Shape.ts:10 (sha256:c4d9690d18b21e3fb00e7e50dfe7d187fcf5b4135c164263b85824d18571e746)
 #[derive(Clone)]
 pub struct Scale9Shape {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub data: Scale9ShapeData,
     pub enabled: bool,
     pub kind: Kind,
@@ -81,6 +99,11 @@ pub struct Scale9Shape {
     pub skew_y: f64,
     pub x: f64,
     pub y: f64,
+}
+impl PartialEq for Scale9Shape {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/Scale9Shape.ts:14 (sha256:0cf44f91422be23cb180ff098a074ebb2f18a6fb23c692070ba572d7697ad509)

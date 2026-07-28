@@ -11,8 +11,15 @@ use crate::Matrix;
 // Source: upstream/packages/types/src/RenderCache.ts:15 (sha256:fbbab26591c975a56f0549917b0bf0eaa9b582875228a3a3f56270a09bf715a7)
 #[derive(Clone)]
 pub struct RenderCache {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub kind: RenderCacheKind,
     pub transform: Matrix,
+}
+impl PartialEq for RenderCache {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/RenderCache.ts:20 (sha256:6635360182c2b3057df34a9155f11d6864b7b9058b15348f25c4f2386261f1c5)

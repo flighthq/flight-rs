@@ -7,7 +7,4 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/PartialNode.ts:1 (sha256:3583a86c0772720f19035939203975228f4f80c285b178711678669c933b6859)
-#[derive(Clone)]
-pub struct PartialNode {
-    pub data: Option<crate::OpaqueHostValue>,
-}
+pub type PartialNode<T> = T;

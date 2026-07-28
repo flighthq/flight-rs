@@ -12,8 +12,15 @@ pub type SpritesheetParseDiagnosticSeverity = String;
 // Source: upstream/packages/types/src/SpritesheetParseDiagnostic.ts:2 (sha256:a8133944c6332a24d95de37fdef545eba1e984a455e1ed6d411fdd44e848f8bc)
 #[derive(Clone)]
 pub struct SpritesheetParseDiagnostic {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub frame_name: Option<String>,
     pub field: Option<String>,
     pub message: String,
     pub severity: SpritesheetParseDiagnosticSeverity,
+}
+impl PartialEq for SpritesheetParseDiagnostic {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

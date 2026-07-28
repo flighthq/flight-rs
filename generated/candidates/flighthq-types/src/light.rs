@@ -11,5 +11,12 @@ use crate::Kind;
 // Source: upstream/packages/types/src/Light.ts:19 (sha256:11378cc025586905b984f2649a5cbdfc57d770ba6450991d9acb4714ea46dae7)
 #[derive(Clone)]
 pub struct Light {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub kind: Kind,
+}
+impl PartialEq for Light {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

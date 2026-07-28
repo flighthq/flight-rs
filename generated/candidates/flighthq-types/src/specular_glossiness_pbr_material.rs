@@ -11,8 +11,10 @@ use crate::{AlphaType, BlendMode, Kind, MaterialAlphaMode, Texture};
 // Source: upstream/packages/types/src/SpecularGlossinessPbrMaterial.ts:8 (sha256:0507be5be486444087da384892e2e4cc933f986b96fce65dc8cae8f6304a069f)
 #[derive(Clone)]
 pub struct SpecularGlossinessPbrMaterial {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub kind: Kind,
-    pub name: Option<Option<String>>,
+    pub name: Option<String>,
     pub alpha_cutoff: f64,
     pub alpha_mode: MaterialAlphaMode,
     pub alpha_type: AlphaType,
@@ -30,6 +32,11 @@ pub struct SpecularGlossinessPbrMaterial {
     pub occlusion_strength: f64,
     pub specular: f64,
     pub specular_glossiness_map: Option<Texture>,
+}
+impl PartialEq for SpecularGlossinessPbrMaterial {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/SpecularGlossinessPbrMaterial.ts:23 (sha256:4056b9ab3bec4567e887ace32f4b9fbacf942f81b478c6539e5699f27fad407d)

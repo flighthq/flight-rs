@@ -14,7 +14,6 @@ pub fn get_surface_histogram(source: &SurfaceRegion) -> SurfaceHistogram {
     let mut green = vec![0.0_f64; (256.0_f64) as usize];
     let mut blue = vec![0.0_f64; (256.0_f64) as usize];
     let mut alpha = vec![0.0_f64; (256.0_f64) as usize];
-    let data = &source.surface.data;
     let surface_width = source.surface.width;
     {
         let mut py = 0.0_f64;
@@ -40,20 +39,20 @@ pub fn get_surface_histogram(source: &SurfaceRegion) -> SurfaceHistogram {
                     }
                     let i = (((y * surface_width) + x) * 4.0_f64);
                     {
-                        red[(data[i as usize] as f64) as usize] += 1.0;
-                        red[(data[i as usize] as f64) as usize]
+                        red[(source.surface.data[i as usize] as f64) as usize] += 1.0;
+                        red[(source.surface.data[i as usize] as f64) as usize]
                     };
                     {
-                        green[(data[(i + 1.0_f64) as usize] as f64) as usize] += 1.0;
-                        green[(data[(i + 1.0_f64) as usize] as f64) as usize]
+                        green[(source.surface.data[(i + 1.0_f64) as usize] as f64) as usize] += 1.0;
+                        green[(source.surface.data[(i + 1.0_f64) as usize] as f64) as usize]
                     };
                     {
-                        blue[(data[(i + 2.0_f64) as usize] as f64) as usize] += 1.0;
-                        blue[(data[(i + 2.0_f64) as usize] as f64) as usize]
+                        blue[(source.surface.data[(i + 2.0_f64) as usize] as f64) as usize] += 1.0;
+                        blue[(source.surface.data[(i + 2.0_f64) as usize] as f64) as usize]
                     };
                     {
-                        alpha[(data[(i + 3.0_f64) as usize] as f64) as usize] += 1.0;
-                        alpha[(data[(i + 3.0_f64) as usize] as f64) as usize]
+                        alpha[(source.surface.data[(i + 3.0_f64) as usize] as f64) as usize] += 1.0;
+                        alpha[(source.surface.data[(i + 3.0_f64) as usize] as f64) as usize]
                     };
                     {
                         px += 1.0;
@@ -68,9 +67,10 @@ pub fn get_surface_histogram(source: &SurfaceRegion) -> SurfaceHistogram {
         }
     }
     return SurfaceHistogram {
-        alpha: alpha,
-        blue: blue,
-        green: green,
-        red: red,
+        __flight_identity: std::sync::Arc::new(()),
+        alpha: (alpha).clone(),
+        blue: (blue).clone(),
+        green: (green).clone(),
+        red: (red).clone(),
     };
 }

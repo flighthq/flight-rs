@@ -16,60 +16,88 @@ pub fn ease_cubic_bezier(x1: f64, y1: f64, x2: f64, y2: f64) -> EasingFunction {
     let cy = (3.0_f64 * y1);
     let by = ((3.0_f64 * (y2 - y1)) - cy);
     let ay = ((1.0_f64 - cy) - by);
-    let sample_x = move |s: f64| -> f64 { (((((ax * s) + bx) * s) + cx) * s) };
-    let sample_y = move |s: f64| -> f64 { (((((ay * s) + by) * s) + cy) * s) };
-    let sample_derivative_x =
-        move |s: f64| -> f64 { (((((3.0_f64 * ax) * s) + (2.0_f64 * bx)) * s) + cx) };
-    let solve_parameter_for_x = move |x: f64, epsilon: f64| -> f64 {
-        let mut s = x;
-        {
-            let mut i = 0.0_f64;
-            while (i < 8.0_f64) {
-                let x_error = (sample_x(s) - x);
-                if ((x_error).abs() < epsilon) {
+    let mut sample_x: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(f64) -> f64 + Send + 'static>>,
+    > = std::sync::Arc::new(std::sync::Mutex::new(Box::new(move |s: f64| -> f64 {
+        (((((ax * s) + bx) * s) + cx) * s)
+    })
+        as Box<dyn FnMut(f64) -> f64 + Send + 'static>));
+    let mut sample_y: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(f64) -> f64 + Send + 'static>>,
+    > = std::sync::Arc::new(std::sync::Mutex::new(Box::new(move |s: f64| -> f64 {
+        (((((ay * s) + by) * s) + cy) * s)
+    })
+        as Box<dyn FnMut(f64) -> f64 + Send + 'static>));
+    let mut sample_derivative_x: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(f64) -> f64 + Send + 'static>>,
+    > = std::sync::Arc::new(std::sync::Mutex::new(Box::new(move |s: f64| -> f64 {
+        (((((3.0_f64 * ax) * s) + (2.0_f64 * bx)) * s) + cx)
+    })
+        as Box<dyn FnMut(f64) -> f64 + Send + 'static>));
+    let mut solve_parameter_for_x: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(f64, f64) -> f64 + Send + 'static>>,
+    > = std::sync::Arc::new(std::sync::Mutex::new(Box::new({
+        let sample_derivative_x = sample_derivative_x.clone();
+        let sample_x = sample_x.clone();
+        move |x: f64, epsilon: f64| -> f64 {
+            let mut s = x;
+            {
+                let mut i = 0.0_f64;
+                while (i < 8.0_f64) {
+                    let x_error = (((sample_x).clone()).lock().unwrap()(s) - x);
+                    if ((x_error).abs() < epsilon) {
+                        return s;
+                    }
+                    let derivative = ((sample_derivative_x).clone()).lock().unwrap()(s);
+                    if ((derivative).abs() < 0.000001_f64) {
+                        break;
+                    }
+                    s -= (x_error / derivative);
+                    {
+                        i += 1.0;
+                        i
+                    };
+                }
+            }
+            let mut low = 0.0_f64;
+            let mut high = 1.0_f64;
+            s = x;
+            if (s < low) {
+                return low;
+            }
+            if (s > high) {
+                return high;
+            }
+            while (low < high) {
+                let sampled = ((sample_x).clone()).lock().unwrap()(s);
+                if ((sampled - x).abs() < epsilon) {
                     return s;
                 }
-                let derivative = sample_derivative_x(s);
-                if ((derivative).abs() < 0.000001_f64) {
-                    break;
+                if (x > sampled) {
+                    low = s;
+                } else {
+                    high = s;
                 }
-                s -= (x_error / derivative);
-                {
-                    i += 1.0;
-                    i
-                };
+                s = (((high - low) * 0.5_f64) + low);
             }
+            return s;
         }
-        let mut low = 0.0_f64;
-        let mut high = 1.0_f64;
-        s = x;
-        if (s < low) {
-            return low;
-        }
-        if (s > high) {
-            return high;
-        }
-        while (low < high) {
-            let sampled = sample_x(s);
-            if ((sampled - x).abs() < epsilon) {
-                return s;
+    })
+        as Box<dyn FnMut(f64, f64) -> f64 + Send + 'static>));
+    return std::sync::Arc::new(std::sync::Mutex::new(Box::new({
+        let sample_y = sample_y.clone();
+        let solve_parameter_for_x = solve_parameter_for_x.clone();
+        move |t: f64| -> f64 {
+            if (t <= 0.0_f64) {
+                return 0.0_f64;
             }
-            if (x > sampled) {
-                low = s;
-            } else {
-                high = s;
+            if (t >= 1.0_f64) {
+                return 1.0_f64;
             }
-            s = (((high - low) * 0.5_f64) + low);
+            return ((sample_y).clone()).lock().unwrap()(((solve_parameter_for_x).clone())
+                .lock()
+                .unwrap()(t, 1e-7_f64));
         }
-        return s;
-    };
-    return std::sync::Arc::new(move |t: f64| -> f64 {
-        if (t <= 0.0_f64) {
-            return 0.0_f64;
-        }
-        if (t >= 1.0_f64) {
-            return 1.0_f64;
-        }
-        return sample_y(solve_parameter_for_x(t, 1e-7_f64));
-    });
+    })
+        as Box<dyn FnMut(f64) -> f64 + Send + 'static>));
 }

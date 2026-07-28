@@ -18,6 +18,8 @@ import type { IrFunctionDeclaration, IrType, LoweringDiagnostic } from '../model
 import { RustEmissionError, emitRustModule, type RustImport } from './rust.ts';
 import { stableJson, writeOrCheck } from './reports.ts';
 
+const CARGO_DIAGNOSTIC_BUFFER_BYTES = 64 * 1024 * 1024;
+
 export interface RustGenerationReport {
   automaticPackages: AutomaticPackageReport[];
   blessedFacades: typeof portConfig.blessedFacades;
@@ -154,6 +156,7 @@ interface AutomaticPackageAttempt {
 
 interface ImportedSemanticTypes {
   enumNames: readonly string[];
+  functions: readonly IrFunctionDeclaration[];
   typeParameters: Readonly<Record<string, readonly string[]>>;
   types: Readonly<Record<string, IrType>>;
 }
@@ -161,6 +164,7 @@ interface ImportedSemanticTypes {
 const parsedSourceCache = new Map<string, ts.SourceFile>();
 const loweredSourceCache = new Map<string, ReturnType<typeof lowerTypeScriptSource>>();
 const importedSemanticTypesCache = new Map<string, ImportedSemanticTypes>();
+const packageDeclarationIndexCache = new Map<string, ReadonlyMap<string, string>>();
 const typeDeclarationIndexCache = new Map<string, ReadonlyMap<string, string>>();
 const typeEnumNamesCache = new Map<string, readonly string[]>();
 
@@ -303,17 +307,32 @@ function attemptAutomaticPackage(
       const localDeclarations = new Set(lowered.declarations.map((declaration) => declaration.name));
       const emitted = emitRustModule({
         declarations: lowered.declarations,
-        enumNames: collectTypeEnumNames(workspaceDirectory),
+        enumNames: [...collectTypeEnumNames(workspaceDirectory), ...importedSemanticTypes.enumNames],
         imports: collectRustImports(
           sourceFile,
           target,
+          workspaceDirectory,
+          [...Object.keys(importedSemanticTypes.types), ...importedSemanticTypes.enumNames].filter(
+            (name) =>
+              !localDeclarations.has(name) &&
+              Boolean(findPackageDeclarationSource(workspaceDirectory, packageInventory.name, name)),
+          ),
           packageInventory.name === '@flighthq/types'
-            ? [...Object.keys(importedSemanticTypes.types), ...importedSemanticTypes.enumNames].filter(
-                (name) => !localDeclarations.has(name),
-              )
-            : [],
+            ? []
+            : [
+                ...collectInferredTopLevelTypeImports(
+                  lowered.declarations,
+                  importedSemanticTypes.functions,
+                  workspaceDirectory,
+                ),
+                ...Object.keys(importedSemanticTypes.types).filter(
+                  (name) =>
+                    !localDeclarations.has(name) && Boolean(findTypeDeclarationSource(workspaceDirectory, name)),
+                ),
+              ],
         ),
         inlineFunctions: [],
+        semanticFunctions: importedSemanticTypes.functions,
         semanticTypes: {
           ...semanticTypes,
           ...importedSemanticTypes.types,
@@ -338,6 +357,11 @@ function attemptAutomaticPackage(
       }
       for (const declaration of lowered.declarations) {
         if (declaration.exported) generatedExports.add(declaration.name);
+      }
+      for (const statement of sourceFile.statements) {
+        if (ts.isExportDeclaration(statement) && statement.exportClause && ts.isNamedExports(statement.exportClause)) {
+          for (const element of statement.exportClause.elements) generatedExports.add(element.name.text);
+        }
       }
     } catch (error) {
       blockers.push({
@@ -449,6 +473,21 @@ function materializeAutomaticCandidates(
   const expected = new Set<string>();
   const packageByName = new Map(packages.map((item) => [item.package, item]));
   const attemptByPackage = new Map(attempts.map((item) => [item.report.package, item]));
+  const dependencyReadyCache = new Map<string, boolean>();
+  const dependencyReady = (item: AutomaticPackageReport, visiting: ReadonlySet<string> = new Set()): boolean => {
+    const cached = dependencyReadyCache.get(item.package);
+    if (cached !== undefined) return cached;
+    if (item.fullyPromotedTarget) return true;
+    if (item.status !== 'emittable') return false;
+    if (visiting.has(item.package)) return true;
+    const next = new Set([...visiting, item.package]);
+    const ready = item.requiredDependencies.every((dependency) => {
+      const resolved = packageByName.get(dependency.package);
+      return !resolved || dependencyReady(resolved, next);
+    });
+    dependencyReadyCache.set(item.package, ready);
+    return ready;
+  };
   const materialized = packages.map((item): AutomaticPackageReport => {
     if (item.status !== 'emittable' || item.fullyPromotedTarget) return item;
     const attempt = attemptByPackage.get(item.package);
@@ -456,9 +495,16 @@ function materializeAutomaticCandidates(
     const unresolvedDependencies = item.requiredDependencies.flatMap((dependency) => {
       const resolved = packageByName.get(dependency.package);
       if (!resolved) return [];
-      return resolved.status === 'emittable' || resolved.fullyPromotedTarget
+      return dependencyReady(resolved)
         ? []
-        : [{ candidateStatus: resolved.candidate.status, package: resolved.package, status: resolved.status }];
+        : [
+            {
+              candidateStatus:
+                resolved.status === 'emittable' ? ('dependency-blocked' as const) : resolved.candidate.status,
+              package: resolved.package,
+              status: resolved.status,
+            },
+          ];
     });
     const crateDirectory = path.join(candidateRoot, item.crate);
     const crateSourceDirectory = path.join(crateDirectory, 'src');
@@ -477,7 +523,11 @@ function materializeAutomaticCandidates(
     }));
     outputs.push(
       {
-        content: emitCandidateCargoManifest(item, packageByName),
+        content: emitCandidateCargoManifest(
+          item,
+          packageByName,
+          attempt.modules.some((module) => module.content.includes('regex::')),
+        ),
         file: path.join(crateDirectory, 'Cargo.toml'),
       },
       {
@@ -521,6 +571,7 @@ function materializeAutomaticCandidates(
 function emitCandidateCargoManifest(
   candidate: AutomaticPackageReport,
   packageByName: ReadonlyMap<string, AutomaticPackageReport>,
+  usesRegex: boolean,
 ): string {
   const dependencies = candidate.requiredDependencies.map((dependency) => {
     const resolved = packageByName.get(dependency.package);
@@ -529,6 +580,7 @@ function emitCandidateCargoManifest(
       : `../${dependency.crate}`;
     return `${dependency.crate} = { path = "${dependencyPath}" }`;
   });
+  if (usesRegex) dependencies.push('regex = "1"');
   return [
     '# @generated candidate crate; do not edit.',
     '[package]',
@@ -568,16 +620,24 @@ function compileAutomaticCandidates(
   let output = '';
   let cargoSucceeded = true;
   try {
-    output = execFileSync('cargo', ['check', '--workspace', '--manifest-path', manifest, '--message-format=json'], {
-      cwd: workspaceDirectory,
-      encoding: 'utf8',
-      env: {
-        ...process.env,
-        CARGO_TARGET_DIR: path.join(workspaceDirectory, 'target', 'generator-candidates'),
+    output = execFileSync(
+      'cargo',
+      ['check', '--workspace', '--keep-going', '--manifest-path', manifest, '--message-format=json'],
+      {
+        cwd: workspaceDirectory,
+        encoding: 'utf8',
+        env: {
+          ...process.env,
+          CARGO_TARGET_DIR: path.join(workspaceDirectory, 'target', 'generator-candidates'),
+        },
+        maxBuffer: CARGO_DIAGNOSTIC_BUFFER_BYTES,
+        stdio: ['ignore', 'pipe', 'pipe'],
       },
-      stdio: ['ignore', 'pipe', 'pipe'],
-    });
+    );
   } catch (error) {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 'ENOBUFS') {
+      throw new Error(`Candidate Cargo diagnostics exceeded the ${CARGO_DIAGNOSTIC_BUFFER_BYTES}-byte capture limit.`);
+    }
     cargoSucceeded = false;
     output =
       error && typeof error === 'object' && 'stdout' in error && typeof error.stdout === 'string' ? error.stdout : '';
@@ -824,17 +884,33 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
       const emitted = formatRust(
         emitRustModule({
           declarations,
-          enumNames: collectTypeEnumNames(workspaceDirectory),
+          enumNames: [...collectTypeEnumNames(workspaceDirectory), ...importedSemanticTypes.enumNames],
           imports: collectRustImports(
             sourceFile,
             target,
+            workspaceDirectory,
+            [...Object.keys(importedSemanticTypes.types), ...importedSemanticTypes.enumNames].filter(
+              (name) =>
+                !declarations.some((declaration) => declaration.name === name) &&
+                Boolean(findPackageDeclarationSource(workspaceDirectory, target.package, name)),
+            ),
             target.package === '@flighthq/types'
-              ? [...Object.keys(importedSemanticTypes.types), ...importedSemanticTypes.enumNames].filter(
-                  (name) => !declarations.some((declaration) => declaration.name === name),
-                )
-              : [],
+              ? []
+              : [
+                  ...collectInferredTopLevelTypeImports(
+                    lowered.declarations,
+                    importedSemanticTypes.functions,
+                    workspaceDirectory,
+                  ),
+                  ...Object.keys(importedSemanticTypes.types).filter(
+                    (name) =>
+                      !declarations.some((declaration) => declaration.name === name) &&
+                      Boolean(findTypeDeclarationSource(workspaceDirectory, name)),
+                  ),
+                ],
           ),
           inlineFunctions,
+          semanticFunctions: importedSemanticTypes.functions,
           semanticTypes: {
             ...semanticTypes,
             ...importedSemanticTypes.types,
@@ -1032,13 +1108,159 @@ function emitLibrary(target: RustTarget, modules: string[]): string {
         `/// Generated semantic mapping for ${mapping.source}.\n/// ${mapping.reason}\n${mapping.rustDefinition ?? `pub type ${name} = ${mapping.rust};`}`,
     );
   const declarations = modules.sort().map((moduleName) => `mod ${moduleName};\npub use ${moduleName}::*;`);
+  const sharedOpaqueHostValue =
+    target.package !== '@flighthq/types' && Object.hasOwn(target.dependencies, '@flighthq/types');
   return [
     '// @generated by tools/generator; do not edit.',
     '#![forbid(unsafe_code)]',
     '',
-    '/// Opaque ownership token for host-only TypeScript values that cannot cross the generated Rust boundary.',
-    '#[derive(Clone, Default)]',
-    'pub struct OpaqueHostValue;',
+    '/// Tagged storage for TypeScript values whose static type is unknown at the generated Rust boundary.',
+    ...(sharedOpaqueHostValue
+      ? [
+          'pub use flighthq_types::{clear_interval, clear_timeout, flight_now_millis, host_set, host_value, set_interval, set_timeout, FlightCallback, FlightSymbol, FlightTimeout, OpaqueHostValue};',
+        ]
+      : [
+          '#[derive(Clone, Debug, PartialEq)]',
+          'pub enum OpaqueHostValue {',
+          '  Undefined,',
+          '  Null,',
+          '  Bool(bool),',
+          '  Number(f64),',
+          '  String(String),',
+          '  Object,',
+          '}',
+          'impl Default for OpaqueHostValue {',
+          '  fn default() -> Self { Self::Undefined }',
+          '}',
+          '',
+          '/// Native fallback for dynamically typed host reads and calls.',
+          'pub fn host_value<T: Default>(_operation: &str) -> T {',
+          '  T::default()',
+          '}',
+          '/// Native fallback for dynamically typed host writes.',
+          'pub fn host_set<T>(_operation: &str, value: T) -> T {',
+          '  value',
+          '}',
+          '',
+          '/// Native identity for TypeScript `symbol` values.',
+          '#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]',
+          'pub struct FlightSymbol(u64);',
+          'impl FlightSymbol {',
+          '  pub fn new() -> Self {',
+          '    static NEXT: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(1);',
+          '    Self(NEXT.fetch_add(1, std::sync::atomic::Ordering::Relaxed))',
+          '  }',
+          '  pub fn for_name(name: &str) -> Self {',
+          '    static NAMES: std::sync::LazyLock<std::sync::Mutex<Vec<String>>> = std::sync::LazyLock::new(|| std::sync::Mutex::new(Vec::new()));',
+          '    let mut names = NAMES.lock().unwrap();',
+          '    let index = match names.iter().position(|value| value == name) {',
+          '      Some(index) => index,',
+          '      None => { names.push(name.to_owned()); names.len() - 1 },',
+          '    };',
+          '    Self((1_u64 << 63) | index as u64)',
+          '  }',
+          '}',
+          'impl Default for FlightSymbol {',
+          '  fn default() -> Self { Self::new() }',
+          '}',
+          '',
+          '/// Mechanical contract for TypeScript callback type parameters.',
+          "pub trait FlightCallback: Clone + Send + 'static {",
+          "  type Args: Clone + Send + 'static;",
+          '  fn flight_call(&self, args: Self::Args);',
+          '  fn flight_same(&self, other: &Self) -> bool;',
+          '  fn flight_noop() -> Self;',
+          '  fn flight_from_tuple_callback<Factory>(callback: Factory) -> Self',
+          '  where',
+          "    Factory: FnMut(Self::Args) + Send + 'static;",
+          '}',
+          '',
+          'macro_rules! impl_flight_callback {',
+          '  (() => ()) => {',
+          "    impl FlightCallback for std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>> {",
+          '      type Args = ();',
+          '      fn flight_call(&self, (): Self::Args) { self.lock().unwrap()(); }',
+          '      fn flight_same(&self, other: &Self) -> bool { std::sync::Arc::ptr_eq(self, other) }',
+          '      fn flight_noop() -> Self { std::sync::Arc::new(std::sync::Mutex::new(Box::new(|| ()))) }',
+          '      fn flight_from_tuple_callback<Factory>(mut callback: Factory) -> Self',
+          "      where Factory: FnMut(Self::Args) + Send + 'static {",
+          '        std::sync::Arc::new(std::sync::Mutex::new(Box::new(move || callback(()))))',
+          '      }',
+          '    }',
+          '  };',
+          '  (($($type:ident:$value:ident),+) => ($($argument:ident),+)) => {',
+          "    impl<$($type),+> FlightCallback for std::sync::Arc<std::sync::Mutex<Box<dyn FnMut($($type),+) -> () + Send + 'static>>>",
+          "    where $($type: Clone + Send + 'static),+ {",
+          '      type Args = ($($type,)+);',
+          '      fn flight_call(&self, args: Self::Args) {',
+          '        let ($($value,)+) = args;',
+          '        self.lock().unwrap()($($value),+);',
+          '      }',
+          '      fn flight_same(&self, other: &Self) -> bool { std::sync::Arc::ptr_eq(self, other) }',
+          '      fn flight_noop() -> Self { std::sync::Arc::new(std::sync::Mutex::new(Box::new(|$($value: $type),+| { let _ = ($($value),+); () }))) }',
+          '      fn flight_from_tuple_callback<Factory>(mut callback: Factory) -> Self',
+          "      where Factory: FnMut(Self::Args) + Send + 'static {",
+          '        std::sync::Arc::new(std::sync::Mutex::new(Box::new(move |$($value),+| callback(($($value,)+)))))',
+          '      }',
+          '    }',
+          '  };',
+          '}',
+          'impl_flight_callback!(() => ());',
+          'impl_flight_callback!((A:a) => (a));',
+          'impl_flight_callback!((A:a, B:b) => (a, b));',
+          'impl_flight_callback!((A:a, B:b, C:c) => (a, b, c));',
+          'impl_flight_callback!((A:a, B:b, C:c, D:d) => (a, b, c, d));',
+          'impl_flight_callback!((A:a, B:b, C:c, D:d, E:e) => (a, b, c, d, e));',
+          'impl_flight_callback!((A:a, B:b, C:c, D:d, E:e, F:f) => (a, b, c, d, e, f));',
+          '',
+          '/// Cancellable native timer handle for generated `setTimeout` calls.',
+          '#[derive(Clone)]',
+          'pub struct FlightTimeout {',
+          '  cancelled: std::sync::Arc<std::sync::atomic::AtomicBool>,',
+          '}',
+          'pub fn set_timeout<F>(callback: F, delay_ms: f64) -> FlightTimeout',
+          "where F: FnOnce() + Send + 'static {",
+          '  let cancelled = std::sync::Arc::new(std::sync::atomic::AtomicBool::new(false));',
+          '  let worker_cancelled = cancelled.clone();',
+          '  std::thread::spawn(move || {',
+          '    std::thread::sleep(std::time::Duration::from_secs_f64((delay_ms.max(0.0)) / 1000.0));',
+          '    if !worker_cancelled.load(std::sync::atomic::Ordering::Relaxed) { callback(); }',
+          '  });',
+          '  FlightTimeout { cancelled }',
+          '}',
+          'pub fn clear_timeout(timer: FlightTimeout) {',
+          '  timer.cancelled.store(true, std::sync::atomic::Ordering::Relaxed);',
+          '}',
+          'pub fn set_interval<F>(mut callback: F, delay_ms: f64) -> FlightTimeout',
+          "where F: FnMut() + Send + 'static {",
+          '  let cancelled = std::sync::Arc::new(std::sync::atomic::AtomicBool::new(false));',
+          '  let worker_cancelled = cancelled.clone();',
+          '  std::thread::spawn(move || {',
+          '    let delay = std::time::Duration::from_secs_f64((delay_ms.max(0.0)) / 1000.0);',
+          '    while !worker_cancelled.load(std::sync::atomic::Ordering::Relaxed) {',
+          '      std::thread::sleep(delay);',
+          '      if !worker_cancelled.load(std::sync::atomic::Ordering::Relaxed) { callback(); }',
+          '    }',
+          '  });',
+          '  FlightTimeout { cancelled }',
+          '}',
+          'pub fn clear_interval(timer: FlightTimeout) {',
+          '  clear_timeout(timer);',
+          '}',
+          'pub fn flight_now_millis() -> f64 {',
+          '  std::time::SystemTime::now()',
+          '    .duration_since(std::time::UNIX_EPOCH)',
+          '    .unwrap_or_default()',
+          '    .as_secs_f64() * 1000.0',
+          '}',
+        ]),
+    '',
+    '/// Mechanical representation for TypeScript unions whose variants need distinct native storage.',
+    '#[derive(Clone)]',
+    'pub enum FlightUnion2<A, B> {',
+    '  A(A),',
+    '  B(B),',
+    '}',
     '',
     '/// Opaque placeholder for a TypeScript Promise until async lowering supplies a native Future.',
     'pub struct Promise<T> {',
@@ -1049,7 +1271,7 @@ function emitLibrary(target: RustTarget, modules: string[]): string {
     '  fn clone(&self) -> Self { Self { marker: std::marker::PhantomData, value: self.value.clone() } }',
     '}',
     'impl<T> Default for Promise<T> {',
-    '  fn default() -> Self { Self { marker: std::marker::PhantomData, value: OpaqueHostValue } }',
+    '  fn default() -> Self { Self { marker: std::marker::PhantomData, value: OpaqueHostValue::Undefined } }',
     '}',
     '',
     ...aliases.flatMap((alias) => [alias, '']),
@@ -1061,9 +1283,24 @@ function emitLibrary(target: RustTarget, modules: string[]): string {
 function collectRustImports(
   sourceFile: ts.SourceFile,
   target: RustTarget,
+  workspaceDirectory: string,
   additionalCrateTypes: string[],
+  additionalFlightTypes: string[] = [],
 ): RustImport[] {
   const groups = new Map<string, RustImport['names']>();
+  const localReExports = new Map<string, string>();
+  for (const statement of sourceFile.statements) {
+    if (
+      ts.isExportDeclaration(statement) &&
+      !statement.moduleSpecifier &&
+      statement.exportClause &&
+      ts.isNamedExports(statement.exportClause)
+    ) {
+      for (const element of statement.exportClause.elements) {
+        localReExports.set(element.propertyName?.text ?? element.name.text, element.name.text);
+      }
+    }
+  }
   for (const statement of sourceFile.statements) {
     if (!ts.isImportDeclaration(statement) || !ts.isStringLiteral(statement.moduleSpecifier)) continue;
     const specifier = statement.moduleSpecifier.text;
@@ -1074,19 +1311,168 @@ function collectRustImports(
     if (!bindings || !ts.isNamedImports(bindings)) continue;
     const names = groups.get(module) ?? [];
     names.push(
-      ...bindings.elements.map((element) => ({
-        imported: element.propertyName?.text ?? element.name.text,
-        local: element.name.text,
-      })),
+      ...bindings.elements.map((element) => {
+        const local = element.name.text;
+        const exported = localReExports.get(local);
+        return {
+          imported: element.propertyName?.text ?? local,
+          kind:
+            statement.importClause?.isTypeOnly || element.isTypeOnly
+              ? ('type' as const)
+              : classifyImportedRustBinding(
+                  sourceFile.fileName,
+                  specifier,
+                  element.propertyName?.text ?? local,
+                  workspaceDirectory,
+                ),
+          local: exported ?? local,
+          ...(exported ? { public: true } : {}),
+        };
+      }),
+    );
+    groups.set(module, names);
+  }
+  for (const statement of sourceFile.statements) {
+    if (
+      !ts.isExportDeclaration(statement) ||
+      !statement.moduleSpecifier ||
+      !ts.isStringLiteral(statement.moduleSpecifier) ||
+      !statement.exportClause ||
+      !ts.isNamedExports(statement.exportClause)
+    ) {
+      continue;
+    }
+    const specifier = statement.moduleSpecifier.text;
+    const dependency = target.dependencies[specifier];
+    const module = specifier.startsWith('.') ? 'crate' : dependency?.crate.replaceAll('-', '_');
+    if (!module) continue;
+    const names = groups.get(module) ?? [];
+    names.push(
+      ...statement.exportClause.elements.map((element) => {
+        const imported = element.propertyName?.text ?? element.name.text;
+        return {
+          imported,
+          kind:
+            statement.isTypeOnly || element.isTypeOnly
+              ? ('type' as const)
+              : classifyImportedRustBinding(sourceFile.fileName, specifier, imported, workspaceDirectory),
+          local: element.name.text,
+          public: true,
+        };
+      }),
     );
     groups.set(module, names);
   }
   if (additionalCrateTypes.length > 0) {
     const names = groups.get('crate') ?? [];
-    names.push(...additionalCrateTypes.map((name) => ({ imported: name, local: name })));
+    names.push(...additionalCrateTypes.map((name) => ({ imported: name, kind: 'type' as const, local: name })));
     groups.set('crate', names);
   }
+  if (additionalFlightTypes.length > 0) {
+    const names = groups.get('flighthq_types') ?? [];
+    names.push(
+      ...[...new Set(additionalFlightTypes)].flatMap((name) =>
+        names.some((item) => item.local === name)
+          ? []
+          : [
+              {
+                imported: name,
+                kind: 'type' as const,
+                local: name,
+              },
+            ],
+      ),
+    );
+    groups.set('flighthq_types', names);
+  }
   return [...groups].map(([module, names]) => ({ module, names }));
+}
+
+function collectInferredTopLevelTypeImports(
+  declarations: ReturnType<typeof lowerTypeScriptSource>['declarations'],
+  semanticFunctions: readonly IrFunctionDeclaration[],
+  workspaceDirectory: string,
+): string[] {
+  const functions = new Map(semanticFunctions.map((declaration) => [declaration.name, declaration]));
+  const names = declarations.flatMap((declaration) => {
+    if (declaration.kind !== 'variable' || declaration.type || !declaration.initializer) return [];
+    let initializer = declaration.initializer;
+    while (initializer.kind === 'cast') initializer = initializer.expression;
+    if (initializer.kind !== 'call' || initializer.callee.kind !== 'identifier') return [];
+    const returns = functions.get(initializer.callee.name)?.returns;
+    return returns?.kind === 'named' && findTypeDeclarationSource(workspaceDirectory, returns.name)
+      ? [returns.name]
+      : [];
+  });
+  return [...new Set(names)].sort();
+}
+
+function classifyImportedRustBinding(
+  importer: string,
+  specifier: string,
+  name: string,
+  workspaceDirectory: string,
+): NonNullable<RustImport['names'][number]['kind']> {
+  const source = specifier.startsWith('.')
+    ? resolveRelativeTypeScriptSource(importer, specifier)
+    : specifier.startsWith('@flighthq/')
+      ? findPackageDeclarationSource(workspaceDirectory, specifier, name)
+      : undefined;
+  if (!source) return 'value';
+  const statement = parseTypeScriptFile(source).statements.find((candidate) => {
+    if (
+      (ts.isFunctionDeclaration(candidate) ||
+        ts.isClassDeclaration(candidate) ||
+        ts.isInterfaceDeclaration(candidate) ||
+        ts.isTypeAliasDeclaration(candidate) ||
+        ts.isEnumDeclaration(candidate)) &&
+      candidate.name?.text === name
+    ) {
+      return true;
+    }
+    return (
+      ts.isVariableStatement(candidate) &&
+      candidate.declarationList.declarations.some(
+        (declaration) => ts.isIdentifier(declaration.name) && declaration.name.text === name,
+      )
+    );
+  });
+  if (statement && ts.isFunctionDeclaration(statement)) return 'function';
+  if (statement && ts.isVariableStatement(statement)) {
+    const declaration = statement.declarationList.declarations.find(
+      (candidate) => ts.isIdentifier(candidate.name) && candidate.name.text === name,
+    );
+    if (
+      declaration?.initializer &&
+      (ts.isArrowFunction(declaration.initializer) || ts.isFunctionExpression(declaration.initializer))
+    ) {
+      return 'function';
+    }
+    if (
+      declaration?.initializer &&
+      ts.isObjectLiteralExpression(declaration.initializer) &&
+      declaration.initializer.properties.length > 0 &&
+      declaration.initializer.properties.every(
+        (property) =>
+          ts.isPropertyAssignment(property) &&
+          (ts.isNumericLiteral(property.initializer) ||
+            (ts.isPrefixUnaryExpression(property.initializer) && ts.isNumericLiteral(property.initializer.operand))),
+      )
+    ) {
+      return 'type';
+    }
+    return 'constant';
+  }
+  if (
+    statement &&
+    (ts.isClassDeclaration(statement) ||
+      ts.isInterfaceDeclaration(statement) ||
+      ts.isTypeAliasDeclaration(statement) ||
+      ts.isEnumDeclaration(statement))
+  ) {
+    return 'type';
+  }
+  return 'value';
 }
 
 function collectImportedSemanticTypes(sourceFile: ts.SourceFile, workspaceDirectory: string): ImportedSemanticTypes {
@@ -1095,6 +1481,7 @@ function collectImportedSemanticTypes(sourceFile: ts.SourceFile, workspaceDirect
   if (cached) return cached;
   const types = new Map<string, IrType>();
   const enumNames = new Set<string>();
+  const functions = new Map<string, IrFunctionDeclaration>();
   const typeParameters = new Map<string, readonly string[]>();
   const visited = new Set<string>();
   const visit = (file: ts.SourceFile): void => {
@@ -1107,27 +1494,55 @@ function collectImportedSemanticTypes(sourceFile: ts.SourceFile, workspaceDirect
       const specifier = statement.moduleSpecifier.text;
       for (const element of bindings.elements) {
         const name = element.propertyName?.text ?? element.name.text;
-        const source =
-          specifier === '@flighthq/types'
-            ? findTypeDeclarationSource(workspaceDirectory, name)
-            : specifier.startsWith('.')
-              ? path.resolve(path.dirname(file.fileName), `${specifier}.ts`)
-              : undefined;
+        const localName = element.name.text;
+        const source = specifier.startsWith('.')
+          ? resolveRelativeTypeScriptSource(file.fileName, specifier)
+          : specifier.startsWith('@flighthq/')
+            ? findPackageDeclarationSource(workspaceDirectory, specifier, name)
+            : undefined;
         if (!source || !existsSync(source)) continue;
         const semanticSource = parseTypeScriptFile(source);
-        const lowered = lowerTypeScriptFile(source, '@flighthq/types', workspaceDirectory);
-        const declaration = lowered.declarations.find(
-          (item) => (item.kind === 'type' || item.kind === 'enum') && item.name === name,
+        const lowered = lowerTypeScriptFile(
+          source,
+          specifier.startsWith('@flighthq/') ? specifier : '@flighthq/internal',
+          workspaceDirectory,
         );
-        if (declaration?.kind === 'type' || declaration?.kind === 'enum') {
+        const declaration = lowered.declarations.find(
+          (item) =>
+            (item.kind === 'type' ||
+              item.kind === 'enum' ||
+              item.kind === 'function' ||
+              (item.kind === 'variable' && item.initializer?.kind === 'function')) &&
+            item.name === name,
+        );
+        if (declaration) {
           for (const sibling of lowered.declarations) {
             if (sibling.kind === 'type' && !types.has(sibling.name)) {
               types.set(sibling.name, sibling.type);
               typeParameters.set(sibling.name, sibling.typeParameters);
             }
-            if (sibling.kind === 'enum') enumNames.add(sibling.name);
+            if (
+              sibling.kind === 'enum' ||
+              (sibling.kind === 'variable' &&
+                sibling.initializer?.kind === 'object' &&
+                sibling.initializer.properties.length > 0 &&
+                sibling.initializer.properties.every(
+                  (property) =>
+                    property.kind === 'property' &&
+                    property.value.kind === 'literal' &&
+                    typeof property.value.value === 'number',
+                ))
+            ) {
+              enumNames.add(sibling.name);
+            }
+            const siblingFunction = asSemanticFunction(sibling);
+            if (siblingFunction && !functions.has(siblingFunction.name)) {
+              functions.set(siblingFunction.name, siblingFunction);
+            }
           }
         }
+        const semanticFunction = declaration ? asSemanticFunction(declaration) : undefined;
+        if (semanticFunction) functions.set(localName, { ...semanticFunction, name: localName });
         visit(semanticSource);
       }
     }
@@ -1135,11 +1550,81 @@ function collectImportedSemanticTypes(sourceFile: ts.SourceFile, workspaceDirect
   visit(sourceFile);
   const result = {
     enumNames: [...enumNames].sort(),
+    functions: [...functions.values()].sort((left, right) => left.name.localeCompare(right.name)),
     typeParameters: Object.fromEntries(typeParameters),
     types: Object.fromEntries(types),
   };
   importedSemanticTypesCache.set(cacheKey, result);
   return result;
+}
+
+function asSemanticFunction(
+  declaration: ReturnType<typeof lowerTypeScriptSource>['declarations'][number],
+): IrFunctionDeclaration | undefined {
+  if (declaration.kind === 'function') return declaration;
+  if (declaration.kind !== 'variable' || declaration.initializer?.kind !== 'function') return undefined;
+  const returns =
+    declaration.initializer.returns ?? (declaration.type?.kind === 'function' ? declaration.type.returns : undefined);
+  if (!returns) return undefined;
+  return {
+    async: declaration.initializer.async,
+    body: declaration.initializer.body,
+    exported: declaration.exported,
+    kind: 'function',
+    name: declaration.name,
+    origin: declaration.origin,
+    parameters: declaration.initializer.parameters,
+    returns,
+    typeParameters: [],
+  };
+}
+
+function resolveRelativeTypeScriptSource(sourceFile: string, specifier: string): string | undefined {
+  const base = path.resolve(path.dirname(sourceFile), specifier);
+  const candidates = [`${base}.ts`, `${base}.tsx`, path.join(base, 'index.ts'), path.join(base, 'index.tsx')];
+  return candidates.find((candidate) => existsSync(candidate));
+}
+
+function findPackageDeclarationSource(
+  workspaceDirectory: string,
+  packageName: string,
+  name: string,
+): string | undefined {
+  if (packageName === '@flighthq/types') return findTypeDeclarationSource(workspaceDirectory, name);
+  const cacheKey = `${workspaceDirectory}\0${packageName}`;
+  let index = packageDeclarationIndexCache.get(cacheKey);
+  if (!index) {
+    const directory = path.join(
+      workspaceDirectory,
+      portConfig.upstreamDirectory,
+      'packages',
+      packageName.replace(/^@flighthq\//u, ''),
+      'src',
+    );
+    const declarations = new Map<string, string>();
+    for (const file of walkTypeScriptSources(directory)) {
+      const source = parseTypeScriptFile(file);
+      for (const statement of source.statements) {
+        if (
+          (ts.isInterfaceDeclaration(statement) ||
+            ts.isTypeAliasDeclaration(statement) ||
+            ts.isClassDeclaration(statement) ||
+            ts.isEnumDeclaration(statement) ||
+            ts.isFunctionDeclaration(statement)) &&
+          statement.name
+        ) {
+          declarations.set(statement.name.text, file);
+        } else if (ts.isVariableStatement(statement)) {
+          for (const declaration of statement.declarationList.declarations) {
+            if (ts.isIdentifier(declaration.name)) declarations.set(declaration.name.text, file);
+          }
+        }
+      }
+    }
+    index = declarations;
+    packageDeclarationIndexCache.set(cacheKey, index);
+  }
+  return index.get(name);
 }
 
 function findTypeDeclarationSource(workspaceDirectory: string, name: string): string | undefined {

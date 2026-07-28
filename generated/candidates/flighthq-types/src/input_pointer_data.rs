@@ -11,6 +11,8 @@ use crate::{MouseWheelMode, PointerType};
 // Source: upstream/packages/types/src/InputPointerData.ts:4 (sha256:68dfff739dbd1da432c2948738490cd16465a4b8165214a711165ef6c7f52acc)
 #[derive(Clone)]
 pub struct InputPointerData {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub alt_key: bool,
     pub button: f64,
     pub buttons: f64,
@@ -32,4 +34,9 @@ pub struct InputPointerData {
     pub width: f64,
     pub x: f64,
     pub y: f64,
+}
+impl PartialEq for InputPointerData {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

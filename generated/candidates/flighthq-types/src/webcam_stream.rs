@@ -11,6 +11,8 @@ use crate::WebcamFacingMode;
 // Source: upstream/packages/types/src/WebcamStream.ts:3 (sha256:4dd420a3de66629fd9d20d6edebb45002d12629e66fe948f85923169759058ea)
 #[derive(Clone)]
 pub struct WebcamStream {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub active: bool,
     pub device_id: String,
     pub facing_mode: Option<WebcamFacingMode>,
@@ -18,4 +20,9 @@ pub struct WebcamStream {
     pub height: f64,
     pub id: String,
     pub width: f64,
+}
+impl PartialEq for WebcamStream {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

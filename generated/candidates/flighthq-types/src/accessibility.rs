@@ -17,6 +17,8 @@ pub type AccessibilityLiveness = String;
 // Source: upstream/packages/types/src/Accessibility.ts:44 (sha256:1f209c4f7d90191f56d8beee8987f5e88fd79dde04fdb55d2259a7ed5061c8e7)
 #[derive(Clone)]
 pub struct AccessibilityState {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub disabled: Option<bool>,
     pub checked: Option<bool>,
     pub expanded: Option<bool>,
@@ -31,10 +33,17 @@ pub struct AccessibilityState {
     pub value_max: Option<f64>,
     pub value_now: Option<f64>,
 }
+impl PartialEq for AccessibilityState {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/types/src/Accessibility.ts:65 (sha256:0d54531616bd2ab0cae1a50a1978b2e6307e45e6937724a91c4f5dee64f19703)
 #[derive(Clone)]
 pub struct AccessibilityNode {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub id: String,
     pub role: AccessibilityRole,
     pub label: Option<String>,
@@ -44,13 +53,30 @@ pub struct AccessibilityNode {
     pub bounds: Option<Rectangle>,
     pub states: Option<AccessibilityState>,
 }
+impl PartialEq for AccessibilityNode {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/types/src/Accessibility.ts:80 (sha256:a51d3b613a3fd006371860c5d5bd1886bb7d54be4977bbb89c8d051cbd90c9e5)
 #[derive(Clone)]
 pub struct AccessibilityBackend {
-    pub set_node: crate::OpaqueHostValue,
-    pub remove_node: crate::OpaqueHostValue,
-    pub clear: crate::OpaqueHostValue,
-    pub set_focus: crate::OpaqueHostValue,
-    pub announce: crate::OpaqueHostValue,
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub set_node:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(AccessibilityNode) -> () + Send + 'static>>>,
+    pub remove_node:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(String) -> () + Send + 'static>>>,
+    pub clear: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
+    pub set_focus:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(String) -> bool + Send + 'static>>>,
+    pub announce: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(String, AccessibilityLiveness) -> () + Send + 'static>>,
+    >,
+}
+impl PartialEq for AccessibilityBackend {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

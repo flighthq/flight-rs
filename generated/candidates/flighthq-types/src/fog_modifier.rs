@@ -15,6 +15,8 @@ pub type FogModifierMode = crate::OpaqueHostValue;
 // Source: upstream/packages/types/src/FogModifier.ts:23 (sha256:0ddef0017cb9786dae56bccef54787182c9ff0a31489f925f8ac31bcf61731a4)
 #[derive(Clone)]
 pub struct FogModifier {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub kind: String,
     pub slot: String,
     pub color: f64,
@@ -22,6 +24,11 @@ pub struct FogModifier {
     pub near: Option<f64>,
     pub far: Option<f64>,
     pub density: Option<f64>,
+}
+impl PartialEq for FogModifier {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/FogModifier.ts:33 (sha256:f9be10bf3d22f5b02ac325c59b95d2de376e41eea75769877465c6d6634ddd18)

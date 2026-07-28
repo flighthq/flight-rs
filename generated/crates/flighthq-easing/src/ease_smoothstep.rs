@@ -20,8 +20,9 @@ pub fn ease_smoothstep(t: f64) -> f64 {
 
 // Source: upstream/packages/easing/src/easeSmoothstep.ts:15 (sha256:c04bda7527c6948312842851fc16dab67a0ed67089471fec720e26e56aee96e6)
 pub fn ease_smoothstep_range(edge0: f64, edge1: f64) -> ScalarRemap {
-    return std::sync::Arc::new(move |x: f64| -> f64 {
+    return std::sync::Arc::new(std::sync::Mutex::new(Box::new(move |x: f64| -> f64 {
         let t = (0.0_f64).max((1.0_f64).min(((x - edge0) / (edge1 - edge0))));
         return ((t * t) * (3.0_f64 - (2.0_f64 * t)));
-    });
+    })
+        as Box<dyn FnMut(f64) -> f64 + Send + 'static>));
 }

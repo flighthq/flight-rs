@@ -11,8 +11,10 @@ use crate::{AlphaType, BlendMode, Kind, MaterialAlphaMode, Texture};
 // Source: upstream/packages/types/src/BlinnPhongMaterial.ts:8 (sha256:398af6a2a8e8ac3c8ebb3cb210ab657da96659a27250218c3a4773a5ed0e4c88)
 #[derive(Clone)]
 pub struct BlinnPhongMaterial {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub kind: Kind,
-    pub name: Option<Option<String>>,
+    pub name: Option<String>,
     pub alpha_cutoff: f64,
     pub alpha_mode: MaterialAlphaMode,
     pub alpha_type: AlphaType,
@@ -25,6 +27,11 @@ pub struct BlinnPhongMaterial {
     pub shininess: f64,
     pub specular: f64,
     pub specular_map: Option<Texture>,
+}
+impl PartialEq for BlinnPhongMaterial {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/BlinnPhongMaterial.ts:18 (sha256:5c93195075cdac2ebe9f0994ed3bd2eed4cfdf7c368df0a78d8edb6e7bc30b22)

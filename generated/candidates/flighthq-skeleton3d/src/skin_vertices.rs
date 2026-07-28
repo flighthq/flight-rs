@@ -25,7 +25,7 @@ pub fn skin_vertices(
     out_normals: &mut Vec<f32>,
     positions: &Vec<f32>,
     normals: &Vec<f32>,
-    joints: crate::OpaqueHostValue,
+    joints: &Vec<f64>,
     weights: &Vec<f32>,
     joint_matrices: &Vec<f32>,
 ) -> () {

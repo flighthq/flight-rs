@@ -7,13 +7,15 @@
 #![allow(unused_parens)]
 
 use crate::{
-    BlendMode, DisplayObjectClipHooks, Matrix, RenderProxy2D, RenderState, Renderable,
-    SceneGraphSyncPolicy,
+    BlendMode, DisplayObjectClipHooks, ImageResource, Kind, Matrix, RenderProxy, RenderProxy2D,
+    RenderProxyAdapter, RenderState, Renderable, Renderer, SceneGraphSyncPolicy,
 };
 
 // Source: upstream/packages/types/src/CanvasRenderState.ts:8 (sha256:2d3ed80aeffa1af698defe21cc96fededc24c5de7d4a233df2684315565006c5)
 #[derive(Clone)]
 pub struct CanvasRenderState {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub allow_smoothing: bool,
     pub background_color: f64,
     pub background_color_rgba: Vec<f64>,
@@ -28,39 +30,76 @@ pub struct CanvasRenderState {
     pub round_pixels: bool,
     pub apply_blend_mode: Option<
         std::sync::Arc<
-            dyn Fn(crate::OpaqueHostValue, Option<BlendMode>) -> () + Send + Sync + 'static,
+            std::sync::Mutex<
+                Box<dyn FnMut(crate::OpaqueHostValue, Option<BlendMode>) -> () + Send + 'static>,
+            >,
         >,
     >,
     pub canvas_css_filter_resolver: Option<
         std::sync::Arc<
-            dyn Fn(crate::OpaqueHostValue, RenderProxy2D) -> Option<String> + Send + Sync + 'static,
+            std::sync::Mutex<
+                Box<
+                    dyn FnMut(crate::OpaqueHostValue, RenderProxy2D) -> Option<String>
+                        + Send
+                        + 'static,
+                >,
+            >,
         >,
     >,
     pub canvas: crate::OpaqueHostValue,
     pub context: crate::OpaqueHostValue,
     pub context_attributes: crate::OpaqueHostValue,
 }
+impl PartialEq for CanvasRenderState {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/types/src/CanvasRenderState.ts:23 (sha256:b889957a28ba70a783459bf89658abe277f2c59e9dc40952d4b934de00035ed8)
 #[derive(Clone)]
+pub struct CanvasRenderStateRuntimeRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub element: crate::OpaqueHostValue,
+    pub version: f64,
+}
+impl PartialEq for CanvasRenderStateRuntimeRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
 pub struct CanvasRenderStateRuntime {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
-    pub color_adjustment_channel_mixing_guard:
-        Option<std::sync::Arc<dyn Fn(RenderState, Renderable) -> () + Send + Sync + 'static>>,
+    pub color_adjustment_channel_mixing_guard: Option<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(RenderState, Renderable) -> () + Send + 'static>>,
+        >,
+    >,
     pub current_frame_id: f64,
     pub render_adapt_hook: Option<
         std::sync::Arc<
-            dyn Fn(RenderState, Renderable, RenderProxy2D) -> () + Send + Sync + 'static,
+            std::sync::Mutex<
+                Box<dyn FnMut(RenderState, Renderable, RenderProxy2D) -> () + Send + 'static>,
+            >,
         >,
     >,
-    pub render_proxy_adapter_map: crate::OpaqueHostValue,
-    pub render_proxy_map: crate::OpaqueHostValue,
-    pub renderer_map: crate::OpaqueHostValue,
+    pub render_proxy_adapter_map: Vec<(Renderable, RenderProxyAdapter)>,
+    pub render_proxy_map: Vec<(Renderable, RenderProxy)>,
+    pub renderer_map: Vec<(Kind, Renderer)>,
     pub renderer_map_id: f64,
     pub temp_stack: Vec<Renderable>,
     pub current_blend_mode: Option<BlendMode>,
     pub image_smoothing_enabled: bool,
     pub image_smoothing_quality: crate::OpaqueHostValue,
-    pub image_resource_element_cache: Option<crate::OpaqueHostValue>,
-    pub material_renderer_map: Option<crate::OpaqueHostValue>,
+    pub image_resource_element_cache: Option<Vec<(ImageResource, CanvasRenderStateRuntimeRecord1)>>,
+    pub material_renderer_map: Option<Vec<(Kind, crate::OpaqueHostValue)>>,
+}
+impl PartialEq for CanvasRenderStateRuntime {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

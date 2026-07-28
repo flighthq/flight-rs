@@ -24,6 +24,18 @@ describe('Rust emission', () => {
           if (value < 0) throw new Error(\`expected positive value, received \${value}\`);
           return value;
         }
+        export function angle(y: number, x: number): number {
+          return Math.atan2(y, x) + Math.acos(1);
+        }
+        export function selectValue(out: number[], index: number, value: number): void {
+          switch (index) {
+            case 0:
+              out[0] = value;
+              break;
+            default:
+              throw new Error('unsupported index');
+          }
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -43,6 +55,8 @@ describe('Rust emission', () => {
     expect(output).toContain('pub fn create_scale');
     expect(output).toContain('format!("expected positive value, received {}", value)');
     expect(output).toContain('std::sync::Arc::new');
+    expect(output).toContain('(y).atan2(x)');
+    expect(output).not.toContain('break;');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
     const sourceFile = path.join(fixture, 'lib.rs');
@@ -71,6 +85,12 @@ describe('Rust emission', () => {
             readonly onValue?: (value: number) => void;
           };
         }
+        export interface OptionalNames {
+          readonly names?: readonly string[] | null;
+        }
+        export interface OptionalValue {
+          readonly value?: number;
+        }
         export function collectWeights(values: ReadonlyArray<Readonly<Weighted>>): Float32Array {
           const total = values.reduce((sum, value) => sum + (value.weight ?? 1), 0);
           const out = new Float32Array(values.length);
@@ -96,6 +116,36 @@ describe('Rust emission', () => {
         export function copySharedLookup(out: Uint8Array, values: Uint8Array): void {
           copyLookup(out, values);
         }
+        export function cloneFloats(values: Float32Array): Float32Array {
+          return new Float32Array(values);
+        }
+        export function reserveInts(values: Int16Array, capacity: number): Int16Array {
+          const out = new Int16Array(capacity);
+          out.set(values);
+          return out;
+        }
+        export function cloneNames(values: readonly string[]): string[] {
+          return values.slice();
+        }
+        export function findName(values: readonly string[], name: string): number {
+          return values.indexOf(name);
+        }
+        export function clearValues(values: number[]): void {
+          values.length = 0;
+        }
+        export function emptyNames(): OptionalNames {
+          return {};
+        }
+        export function countNames(values?: readonly string[] | null): number {
+          if (values === undefined) return 0;
+          return values.length;
+        }
+        export function positiveInfinity(): number {
+          return Number.POSITIVE_INFINITY;
+        }
+        export function optionalValue(options?: Readonly<OptionalValue>): number {
+          return options?.value ?? 0;
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -116,13 +166,133 @@ describe('Rust emission', () => {
     expect(output).toContain('Some(Bounds {');
     expect(output).toContain('vec![0.0_f64; (256.0_f64) as usize]');
     expect(output).toContain('values: Option<Vec<u8>>');
-    expect(output).toContain('copy_lookup(out, Some((values).clone()))');
+    expect(output).toContain('copy_lookup(out, Some(');
+    expect(output).toContain('pub names: Option<Vec<String>>');
+    expect(output).toContain('.iter().map(|value| (*value) as f32).collect()');
+    expect(output).toContain('let __flight_values: Vec<i16>');
+    expect(output).toContain('.position(|item| item == &__flight_value).map_or(-1.0_f64');
+    expect(output).toContain('values.clear()');
+    expect(output).toContain('names: None');
+    expect(output).toContain('(values).is_none()');
+    expect(output).toContain('f64::INFINITY');
+    expect(output).toContain('options.as_ref().and_then(|value| value.value)');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
     const sourceFile = path.join(fixture, 'lib.rs');
     writeFileSync(sourceFile, output);
     expect(() =>
       execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('resolves TypeScript value imports to emitted Rust function bindings', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/math/src/imports.ts',
+      `
+        import { importedFunction } from './dependency';
+        export function callImported(value: number): number {
+          return importedFunction(value);
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/math', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      imports: [
+        {
+          module: 'crate',
+          names: [{ imported: 'importedFunction', local: 'importedFunction' }],
+        },
+      ],
+      source: 'upstream/packages/math/src/imports.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('use crate::{imported_function};');
+    expect(output).toContain('return imported_function(value)');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
+    const sourceFile = path.join(fixture, 'generated.rs');
+    writeFileSync(sourceFile, output);
+    writeFileSync(
+      path.join(fixture, 'lib.rs'),
+      'pub fn imported_function(value: f64) -> f64 { value }\nmod generated;\n',
+    );
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', 'lib.rs'], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('uses imported generic signatures to type structural call arguments', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/math/src/factory.ts',
+      `
+        import { createEntity } from '@flighthq/entity';
+        export interface Point {
+          x: number;
+        }
+        export function createPoint(x: number): Point {
+          return createEntity({ x });
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const dependency = ts.createSourceFile(
+      '/workspace/upstream/packages/entity/src/entity.ts',
+      `
+        export function createEntity<Type extends object>(obj?: Type): Type {
+          return obj!;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/math', '/workspace');
+    const dependencyFunction = lowerTypeScriptSource(dependency, '@flighthq/entity', '/workspace').declarations.find(
+      (declaration) => declaration.kind === 'function',
+    );
+    expect(dependencyFunction).toBeDefined();
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      imports: [
+        {
+          module: 'crate',
+          names: [{ imported: 'createEntity', local: 'createEntity' }],
+        },
+      ],
+      semanticFunctions: dependencyFunction ? [dependencyFunction] : [],
+      source: 'upstream/packages/math/src/factory.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('create_entity(Some(Point {');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
+    writeFileSync(path.join(fixture, 'generated.rs'), output);
+    writeFileSync(
+      path.join(fixture, 'lib.rs'),
+      [
+        'fn create_entity(obj: Option<generated::Point>) -> generated::Point { obj.unwrap() }',
+        'mod generated;',
+        '',
+      ].join('\n'),
+    );
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', 'lib.rs'], {
         cwd: fixture,
         stdio: 'pipe',
       }),
@@ -307,6 +477,427 @@ describe('Rust emission', () => {
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
     const sourceFile = path.join(fixture, 'lib.rs');
     writeFileSync(sourceFile, output);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('compiles callback-valued weak maps with static closure access and nullable narrowing', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/lifecycle/src/subscriptions.ts',
+      `
+        export interface Owner {
+          readonly name: string;
+        }
+        const subscriptions = new WeakMap<Owner, () => void>();
+        export function attach(owner: Owner): void {
+          subscriptions.set(owner, () => {
+            subscriptions.delete(owner);
+          });
+        }
+        export function detach(owner: Owner): void {
+          const unsubscribe = subscriptions.get(owner);
+          if (unsubscribe !== undefined) unsubscribe();
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/lifecycle', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/lifecycle/src/subscriptions.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).not.toContain('let subscriptions = subscriptions.clone()');
+    expect(output).toContain('unsubscribe.as_ref().unwrap()');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('preserves TypeScript symbol identity in generated collection keys', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/application/src/symbols.ts',
+      `
+        const first = Symbol();
+        const second = Symbol();
+        const values = new Map<symbol, number>();
+        export function store(value: number): void {
+          values.set(first, value);
+        }
+        export function load(): number {
+          return values.get(first) ?? 0;
+        }
+        export function distinct(): boolean {
+          return first !== second;
+        }
+        export function createKey(): symbol {
+          return Symbol();
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/application', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/application/src/symbols.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('std::sync::LazyLock<crate::FlightSymbol>');
+    expect(output).toContain('crate::FlightSymbol::new()');
+    expect(output).toContain('let __flight_key = *FIRST');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(
+      sourceFile,
+      output.replace(
+        '// Source:',
+        `
+        #[derive(Clone, Copy, PartialEq)]
+        pub struct FlightSymbol(u64);
+        impl FlightSymbol {
+          pub fn new() -> Self { Self(1) }
+          pub fn for_name(_: &str) -> Self { Self(1) }
+        }
+        // Source:`,
+      ),
+    );
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('fills contextual callback parameters omitted by TypeScript implementations', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/application/src/backend.ts',
+      `
+        export interface Backend {
+          readonly open: (name: string, width: number) => boolean;
+          readonly close: (name: string) => void;
+        }
+        export function createBackend(): Backend {
+          return {
+            open() {
+              return true;
+            },
+            close() {},
+          };
+        }
+        function notify(): void {}
+        export function createListener(): () => void {
+          return () => notify();
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/application', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/application/src/backend.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('|__flight_unused_0: String, __flight_unused_1: f64|');
+    expect(output).toContain('|__flight_unused_0: String|');
+    expect(output).toContain('move || -> () { notify() }');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('routes dynamically typed host reads, calls, and writes through the native host boundary', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/application/src/host.ts',
+      `
+        export function readWidth(element: any): number {
+          return element.bounds.width;
+        }
+        export function attach(element: any, listener: () => void): void {
+          element.addEventListener('resize', listener);
+          element.style.touchAction = 'none';
+        }
+        export function isVisible(element: any): boolean {
+          return !element.hidden;
+        }
+        export function isStandard(element: any): boolean {
+          return element.mapping === 'standard';
+        }
+        export function readAxes(element: any): number[] {
+          return Array.from(element.axes);
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/application', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/application/src/host.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('crate::host_value::<f64>("host.width")');
+    expect(output).toContain('crate::host_value::<()>("host.addEventListener")');
+    expect(output).toContain('crate::host_set("host.touchAction"');
+    expect(output).toContain('crate::host_value::<bool>("host.hidden")');
+    expect(output).toContain('crate::host_value::<String>("host.mapping")');
+    expect(output).toContain('crate::host_value::<Vec<f64>>("host.Array.from")');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(
+      sourceFile,
+      output.replace(
+        '// Source:',
+        `
+        #[derive(Clone, Default)]
+        pub struct OpaqueHostValue;
+        pub fn host_value<T: Default>(_: &str) -> T { T::default() }
+        pub fn host_set<T>(_: &str, value: T) -> T { value }
+        // Source:`,
+      ),
+    );
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('initializes self-referential callbacks through a shared recursive slot', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/application/src/recursive.ts',
+      `
+        export function createTick(): (value: number) => void {
+          function tick(value: number): void {
+            if (value > 0) tick(value - 1);
+          }
+          return tick;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/application', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/application/src/recursive.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('let __flight_recursive_tick');
+    expect(output).toContain('*__flight_recursive_tick.lock().unwrap() = Some(tick.clone())');
+    expect(output).not.toContain('let tick = tick.clone()');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('preserves nullable locals across owned insertion and mutable flow narrowing', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/application/src/state.ts',
+      `
+        export interface State {
+          value: number;
+        }
+        export interface Holder {
+          state: State | null;
+        }
+        const states = new Map<string, State>();
+        export function getState(key: string): State {
+          let state = states.get(key);
+          if (state === undefined) {
+            state = { value: 0 };
+            states.set(key, state);
+          }
+          return state;
+        }
+        export function updateState(key: string): void {
+          const state = states.get(key);
+          if (state !== undefined) {
+            state.value = 1;
+          }
+        }
+        function mutateState(state: State): void {
+          state.value = 2;
+        }
+        export function updateHolder(holder: Holder): void {
+          if (holder.state !== null) {
+            mutateState(holder.state);
+          }
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/application', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/application/src/state.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('.clone().unwrap()');
+    expect(output).toContain('.as_mut().unwrap().value');
+    expect(output).toContain('.state.as_mut().unwrap()');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('compiles array membership, host array conversion, and nullable value equality', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/application/src/array-identity.ts',
+      `
+        export interface Item {
+          readonly name: string;
+        }
+        const selected = new Map<string, Item>();
+        export function includes(values: readonly Item[], value: Item): boolean {
+          return values.includes(value);
+        }
+        export function selectedIs(key: string, value: Item): boolean {
+          return selected.get(key) === value;
+        }
+        export function fromHost(value: any): any[] {
+          return Array.from(value);
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/application', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/application/src/array-identity.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('.iter().any(|item| item == &__flight_value)');
+    expect(output).toContain('== Some(');
+    expect(output).toContain('host.Array.from');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(
+      sourceFile,
+      output.replace(
+        '// Source:',
+        `
+        #[derive(Clone, Default)]
+        pub struct OpaqueHostValue;
+        pub fn host_value<T: Default>(_: &str) -> T { T::default() }
+        // Source:`,
+      ),
+    );
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('uses cancellable native handles for numerically cast interval ids', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/input/src/timer.ts',
+      `
+        export function createTimer(): () => void {
+          let intervalId = 0;
+          const callback = () => {};
+          intervalId = setInterval(callback, 10) as unknown as number;
+          return () => {
+            clearInterval(intervalId);
+            intervalId = 0;
+          };
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/input', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/input/src/timer.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('Option<crate::FlightTimeout>');
+    expect(output).toContain('crate::set_interval');
+    expect(output).toContain('crate::clear_interval');
+    expect(output).toContain('= None');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(
+      sourceFile,
+      output.replace(
+        '// Source:',
+        `
+        #[derive(Clone)]
+        pub struct FlightTimeout;
+        pub fn set_interval<F: FnMut() + Send + 'static>(_: F, _: f64) -> FlightTimeout { FlightTimeout }
+        pub fn clear_interval(_: FlightTimeout) {}
+        // Source:`,
+      ),
+    );
     expect(() =>
       execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
         cwd: fixture,

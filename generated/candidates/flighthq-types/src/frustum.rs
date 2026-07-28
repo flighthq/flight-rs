@@ -11,12 +11,19 @@ use crate::Plane;
 // Source: upstream/packages/types/src/Frustum.ts:8 (sha256:fa6d32fec091d67a461443a09bc7c418115ac3c6a4b4c8bdb1abd75272621e41)
 #[derive(Clone)]
 pub struct Frustum {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub bottom: Plane,
     pub far: Plane,
     pub left: Plane,
     pub near: Plane,
     pub right: Plane,
     pub top: Plane,
+}
+impl PartialEq for Frustum {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/Frustum.ts:17 (sha256:1494fa0d0979eeca28f09bd1a2d895bfb79f2463ca45ae2e81d3935f178b90b1)

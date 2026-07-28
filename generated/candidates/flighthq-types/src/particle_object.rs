@@ -11,6 +11,8 @@ use crate::ColorTransform;
 // Source: upstream/packages/types/src/ParticleObject.ts:5 (sha256:0cbee5ecbcb67d6d1a2432ec072bea4fbced4c50b41852989623aeba41020e1b)
 #[derive(Clone)]
 pub struct ParticleObject {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub pivot_x: f64,
     pub pivot_y: f64,
     pub rotation: f64,
@@ -23,4 +25,9 @@ pub struct ParticleObject {
     pub alpha: f64,
     pub visible: bool,
     pub color_transform: Option<ColorTransform>,
+}
+impl PartialEq for ParticleObject {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

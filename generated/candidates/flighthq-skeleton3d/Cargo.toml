@@ -10,4 +10,7 @@ publish = false
 path = "src/lib.rs"
 
 [dependencies]
+flighthq-geometry = { path = "../flighthq-geometry" }
+flighthq-mesh = { path = "../flighthq-mesh" }
+flighthq-node = { path = "../flighthq-node" }
 flighthq-types = { path = "../flighthq-types" }

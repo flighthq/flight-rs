@@ -6,6 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
+use crate::skin_vertices;
 use flighthq_types::{AabbLike, MeshSkinBindPose, Skeleton3D};
 
 #[inline]
@@ -27,39 +28,38 @@ pub fn get_mesh_skin_conservative_bounds(
     bind_pose: &MeshSkinBindPose,
     skeleton: &Skeleton3D,
 ) -> () {
-    let positions = &bind_pose.positions;
-    let rest_vertex_count = (__flight_js_to_i32(((positions.len() as f64) / 3.0_f64))
+    let rest_vertex_count = (__flight_js_to_i32(((bind_pose.positions.len() as f64) / 3.0_f64))
         | __flight_js_to_i32(0.0_f64)) as f64;
-    let mut rest_min_x = number.positive_infinity;
-    let mut rest_min_y = number.positive_infinity;
-    let mut rest_min_z = number.positive_infinity;
-    let mut rest_max_x = number.negative_infinity;
-    let mut rest_max_y = number.negative_infinity;
-    let mut rest_max_z = number.negative_infinity;
+    let mut rest_min_x = f64::INFINITY;
+    let mut rest_min_y = f64::INFINITY;
+    let mut rest_min_z = f64::INFINITY;
+    let mut rest_max_x = f64::NEG_INFINITY;
+    let mut rest_max_y = f64::NEG_INFINITY;
+    let mut rest_max_z = f64::NEG_INFINITY;
     {
         let mut v = 0.0_f64;
         while (v < rest_vertex_count) {
             let p = (v * 3.0_f64);
-            let px = (positions[p as usize] as f64);
-            let py = (positions[(p + 1.0_f64) as usize] as f64);
-            let pz = (positions[(p + 2.0_f64) as usize] as f64);
+            let px = (bind_pose.positions[p as usize] as f64);
+            let py = (bind_pose.positions[(p + 1.0_f64) as usize] as f64);
+            let pz = (bind_pose.positions[(p + 2.0_f64) as usize] as f64);
             if (px < rest_min_x) {
-                rest_min_x = px;
+                rest_min_x = ((px).clone()) as f32;
             }
             if (py < rest_min_y) {
-                rest_min_y = py;
+                rest_min_y = ((py).clone()) as f32;
             }
             if (pz < rest_min_z) {
-                rest_min_z = pz;
+                rest_min_z = ((pz).clone()) as f32;
             }
             if (px > rest_max_x) {
-                rest_max_x = px;
+                rest_max_x = ((px).clone()) as f32;
             }
             if (py > rest_max_y) {
-                rest_max_y = py;
+                rest_max_y = ((py).clone()) as f32;
             }
             if (pz > rest_max_z) {
-                rest_max_z = pz;
+                rest_max_z = ((pz).clone()) as f32;
             }
             {
                 v += 1.0;
@@ -68,12 +68,12 @@ pub fn get_mesh_skin_conservative_bounds(
         }
     }
     if (rest_vertex_count == 0.0_f64) {
-        out.min.x = number.positive_infinity;
-        out.min.y = number.positive_infinity;
-        out.min.z = number.positive_infinity;
-        out.max.x = number.negative_infinity;
-        out.max.y = number.negative_infinity;
-        out.max.z = number.negative_infinity;
+        out.min.x = f64::INFINITY;
+        out.min.y = f64::INFINITY;
+        out.min.z = f64::INFINITY;
+        out.max.x = f64::NEG_INFINITY;
+        out.max.y = f64::NEG_INFINITY;
+        out.max.z = f64::NEG_INFINITY;
         return;
     }
     let cx = ((rest_min_x + rest_max_x) * 0.5_f64);
@@ -82,24 +82,19 @@ pub fn get_mesh_skin_conservative_bounds(
     let ex = ((rest_max_x - rest_min_x) * 0.5_f64);
     let ey = ((rest_max_y - rest_min_y) * 0.5_f64);
     let ez = ((rest_max_z - rest_min_z) * 0.5_f64);
-    let palette = &skeleton.joint_matrices;
-    let joint_count = (__flight_js_to_i32(((palette.len() as f64) / 16.0_f64))
+    let joint_count = (__flight_js_to_i32(((skeleton.joint_matrices.len() as f64) / 16.0_f64))
         | __flight_js_to_i32(0.0_f64)) as f64;
-    let referenced = get_referenced_joints(
-        (bind_pose.joints).clone(),
-        (bind_pose.weights).clone(),
-        joint_count,
-    );
-    let mut min_x = number.positive_infinity;
-    let mut min_y = number.positive_infinity;
-    let mut min_z = number.positive_infinity;
-    let mut max_x = number.negative_infinity;
-    let mut max_y = number.negative_infinity;
-    let mut max_z = number.negative_infinity;
+    let referenced = get_referenced_joints(&bind_pose.joints, &bind_pose.weights, joint_count);
+    let mut min_x = f64::INFINITY;
+    let mut min_y = f64::INFINITY;
+    let mut min_z = f64::INFINITY;
+    let mut max_x = f64::NEG_INFINITY;
+    let mut max_y = f64::NEG_INFINITY;
+    let mut max_z = f64::NEG_INFINITY;
     {
         let mut j = 0.0_f64;
         while (j < joint_count) {
-            if (!referenced[j as usize].clone()) {
+            if (!(referenced[j as usize] as f64)) {
                 {
                     j += 1.0;
                     j
@@ -107,44 +102,44 @@ pub fn get_mesh_skin_conservative_bounds(
                 continue;
             }
             let m = (j * 16.0_f64);
-            let tcx = (((((palette[m as usize] as f64) * cx)
-                + ((palette[(m + 4.0_f64) as usize] as f64) * cy))
-                + ((palette[(m + 8.0_f64) as usize] as f64) * cz))
-                + (palette[(m + 12.0_f64) as usize] as f64));
-            let tcy = (((((palette[(m + 1.0_f64) as usize] as f64) * cx)
-                + ((palette[(m + 5.0_f64) as usize] as f64) * cy))
-                + ((palette[(m + 9.0_f64) as usize] as f64) * cz))
-                + (palette[(m + 13.0_f64) as usize] as f64));
-            let tcz = (((((palette[(m + 2.0_f64) as usize] as f64) * cx)
-                + ((palette[(m + 6.0_f64) as usize] as f64) * cy))
-                + ((palette[(m + 10.0_f64) as usize] as f64) * cz))
-                + (palette[(m + 14.0_f64) as usize] as f64));
-            let tex = ((((palette[m as usize] as f64).abs() * ex)
-                + ((palette[(m + 4.0_f64) as usize] as f64).abs() * ey))
-                + ((palette[(m + 8.0_f64) as usize] as f64).abs() * ez));
-            let tey = ((((palette[(m + 1.0_f64) as usize] as f64).abs() * ex)
-                + ((palette[(m + 5.0_f64) as usize] as f64).abs() * ey))
-                + ((palette[(m + 9.0_f64) as usize] as f64).abs() * ez));
-            let tez = ((((palette[(m + 2.0_f64) as usize] as f64).abs() * ex)
-                + ((palette[(m + 6.0_f64) as usize] as f64).abs() * ey))
-                + ((palette[(m + 10.0_f64) as usize] as f64).abs() * ez));
+            let tcx = (((((skeleton.joint_matrices[m as usize] as f64) * cx)
+                + ((skeleton.joint_matrices[(m + 4.0_f64) as usize] as f64) * cy))
+                + ((skeleton.joint_matrices[(m + 8.0_f64) as usize] as f64) * cz))
+                + (skeleton.joint_matrices[(m + 12.0_f64) as usize] as f64));
+            let tcy = (((((skeleton.joint_matrices[(m + 1.0_f64) as usize] as f64) * cx)
+                + ((skeleton.joint_matrices[(m + 5.0_f64) as usize] as f64) * cy))
+                + ((skeleton.joint_matrices[(m + 9.0_f64) as usize] as f64) * cz))
+                + (skeleton.joint_matrices[(m + 13.0_f64) as usize] as f64));
+            let tcz = (((((skeleton.joint_matrices[(m + 2.0_f64) as usize] as f64) * cx)
+                + ((skeleton.joint_matrices[(m + 6.0_f64) as usize] as f64) * cy))
+                + ((skeleton.joint_matrices[(m + 10.0_f64) as usize] as f64) * cz))
+                + (skeleton.joint_matrices[(m + 14.0_f64) as usize] as f64));
+            let tex = ((((skeleton.joint_matrices[m as usize] as f64).abs() * ex)
+                + ((skeleton.joint_matrices[(m + 4.0_f64) as usize] as f64).abs() * ey))
+                + ((skeleton.joint_matrices[(m + 8.0_f64) as usize] as f64).abs() * ez));
+            let tey = ((((skeleton.joint_matrices[(m + 1.0_f64) as usize] as f64).abs() * ex)
+                + ((skeleton.joint_matrices[(m + 5.0_f64) as usize] as f64).abs() * ey))
+                + ((skeleton.joint_matrices[(m + 9.0_f64) as usize] as f64).abs() * ez));
+            let tez = ((((skeleton.joint_matrices[(m + 2.0_f64) as usize] as f64).abs() * ex)
+                + ((skeleton.joint_matrices[(m + 6.0_f64) as usize] as f64).abs() * ey))
+                + ((skeleton.joint_matrices[(m + 10.0_f64) as usize] as f64).abs() * ez));
             if ((tcx - tex) < min_x) {
-                min_x = (tcx - tex);
+                min_x = (tcx - tex) as f32;
             }
             if ((tcy - tey) < min_y) {
-                min_y = (tcy - tey);
+                min_y = (tcy - tey) as f32;
             }
             if ((tcz - tez) < min_z) {
-                min_z = (tcz - tez);
+                min_z = (tcz - tez) as f32;
             }
             if ((tcx + tex) > max_x) {
-                max_x = (tcx + tex);
+                max_x = (tcx + tex) as f32;
             }
             if ((tcy + tey) > max_y) {
-                max_y = (tcy + tey);
+                max_y = (tcy + tey) as f32;
             }
             if ((tcz + tez) > max_z) {
-                max_z = (tcz + tez);
+                max_z = (tcz + tez) as f32;
             }
             {
                 j += 1.0;
@@ -163,51 +158,56 @@ pub fn get_mesh_skin_conservative_bounds(
 // Source: upstream/packages/skeleton3d/src/getMeshSkinBounds.ts:114 (sha256:d5f29d5d3f14f718693419aff01ce6b00a6572a1b05f144dd5c8fe1f355cee4d)
 pub fn get_mesh_skin_exact_bounds(
     out: &mut AabbLike,
-    bind_pose: &MeshSkinBindPose,
+    bind_pose: &mut MeshSkinBindPose,
     skeleton: &Skeleton3D,
 ) -> () {
-    skin_vertices(
-        (bind_pose.skinned_positions).clone(),
-        (bind_pose.skinned_normals).clone(),
-        (bind_pose.positions).clone(),
-        (bind_pose.normals).clone(),
-        (bind_pose.joints).clone(),
-        (bind_pose.weights).clone(),
-        (skeleton.joint_matrices).clone(),
-    );
-    let skinned = &bind_pose.skinned_positions;
-    let vertex_count = (__flight_js_to_i32(((skinned.len() as f64) / 3.0_f64))
+    {
+        let __flight_argument_2 = (bind_pose.positions).clone();
+        let __flight_argument_3 = (bind_pose.normals).clone();
+        let __flight_argument_4 = (bind_pose.joints).clone();
+        let __flight_argument_5 = (bind_pose.weights).clone();
+        skin_vertices(
+            &mut bind_pose.skinned_positions,
+            &mut bind_pose.skinned_normals,
+            &__flight_argument_2,
+            &__flight_argument_3,
+            &__flight_argument_4,
+            &__flight_argument_5,
+            &skeleton.joint_matrices,
+        )
+    };
+    let vertex_count = (__flight_js_to_i32(((bind_pose.skinned_positions.len() as f64) / 3.0_f64))
         | __flight_js_to_i32(0.0_f64)) as f64;
-    let mut min_x = number.positive_infinity;
-    let mut min_y = number.positive_infinity;
-    let mut min_z = number.positive_infinity;
-    let mut max_x = number.negative_infinity;
-    let mut max_y = number.negative_infinity;
-    let mut max_z = number.negative_infinity;
+    let mut min_x = f64::INFINITY;
+    let mut min_y = f64::INFINITY;
+    let mut min_z = f64::INFINITY;
+    let mut max_x = f64::NEG_INFINITY;
+    let mut max_y = f64::NEG_INFINITY;
+    let mut max_z = f64::NEG_INFINITY;
     {
         let mut v = 0.0_f64;
         while (v < vertex_count) {
             let p = (v * 3.0_f64);
-            let px = (skinned[p as usize] as f64);
-            let py = (skinned[(p + 1.0_f64) as usize] as f64);
-            let pz = (skinned[(p + 2.0_f64) as usize] as f64);
+            let px = (bind_pose.skinned_positions[p as usize] as f64);
+            let py = (bind_pose.skinned_positions[(p + 1.0_f64) as usize] as f64);
+            let pz = (bind_pose.skinned_positions[(p + 2.0_f64) as usize] as f64);
             if (px < min_x) {
-                min_x = px;
+                min_x = ((px).clone()) as f32;
             }
             if (py < min_y) {
-                min_y = py;
+                min_y = ((py).clone()) as f32;
             }
             if (pz < min_z) {
-                min_z = pz;
+                min_z = ((pz).clone()) as f32;
             }
             if (px > max_x) {
-                max_x = px;
+                max_x = ((px).clone()) as f32;
             }
             if (py > max_y) {
-                max_y = py;
+                max_y = ((py).clone()) as f32;
             }
             if (pz > max_z) {
-                max_z = pz;
+                max_z = ((pz).clone()) as f32;
             }
             {
                 v += 1.0;
@@ -248,5 +248,5 @@ fn get_referenced_joints(joints: &Vec<f32>, weights: &Vec<f32>, joint_count: f64
             };
         }
     }
-    return referenced;
+    return (referenced).clone();
 }

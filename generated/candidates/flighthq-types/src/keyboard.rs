@@ -32,46 +32,128 @@ pub type SoftKeyboardPhase = String;
 // Source: upstream/packages/types/src/Keyboard.ts:9 (sha256:cec66cf7178370dadaafb2920ac8407220e3651bcad96a192a18d499ad6420f7)
 #[derive(Clone)]
 pub struct SoftKeyboardTransition {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub duration_seconds: f64,
     pub height: f64,
+}
+impl PartialEq for SoftKeyboardTransition {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/Keyboard.ts:13 (sha256:0d37ab980102fd6c29da9c33e3ff69749aa8fc3fceed59fed424bf51c17c3ca4)
 #[derive(Clone)]
 pub struct SoftKeyboardInfo {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub visible: bool,
     pub height: f64,
     pub x: f64,
     pub y: f64,
     pub width: f64,
 }
+impl PartialEq for SoftKeyboardInfo {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/types/src/Keyboard.ts:20 (sha256:22e83e68acafce6d735f550f7047836739fa15be5f62ceccf0e907510f69496f)
 #[derive(Clone)]
 pub struct SoftKeyboardBackend {
-    pub get_info: crate::OpaqueHostValue,
-    pub subscribe: crate::OpaqueHostValue,
-    pub show: crate::OpaqueHostValue,
-    pub hide: crate::OpaqueHostValue,
-    pub get_resize_mode: Option<crate::OpaqueHostValue>,
-    pub set_resize_mode: Option<crate::OpaqueHostValue>,
-    pub get_accessory_bar_visible: Option<crate::OpaqueHostValue>,
-    pub set_accessory_bar_visible: Option<crate::OpaqueHostValue>,
-    pub get_scroll_assist_enabled: Option<crate::OpaqueHostValue>,
-    pub set_scroll_assist_enabled: Option<crate::OpaqueHostValue>,
-    pub set_style: Option<crate::OpaqueHostValue>,
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub get_info: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(SoftKeyboardInfo) -> SoftKeyboardInfo + Send + 'static>>,
+    >,
+    pub subscribe: std::sync::Arc<
+        std::sync::Mutex<
+            Box<
+                dyn FnMut(
+                        std::sync::Arc<
+                            std::sync::Mutex<
+                                Box<
+                                    dyn FnMut(SoftKeyboardPhase, SoftKeyboardTransition) -> ()
+                                        + Send
+                                        + 'static,
+                                >,
+                            >,
+                        >,
+                    ) -> std::sync::Arc<
+                        std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>,
+                    > + Send
+                    + 'static,
+            >,
+        >,
+    >,
+    pub show: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
+    pub hide: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
+    pub get_resize_mode: Option<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut() -> SoftKeyboardResizeMode + Send + 'static>>,
+        >,
+    >,
+    pub set_resize_mode: Option<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(SoftKeyboardResizeMode) -> () + Send + 'static>>,
+        >,
+    >,
+    pub get_accessory_bar_visible:
+        Option<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> bool + Send + 'static>>>>,
+    pub set_accessory_bar_visible:
+        Option<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(bool) -> () + Send + 'static>>>>,
+    pub get_scroll_assist_enabled:
+        Option<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> bool + Send + 'static>>>>,
+    pub set_scroll_assist_enabled:
+        Option<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(bool) -> () + Send + 'static>>>>,
+    pub set_style: Option<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(SoftKeyboardStyleKind) -> () + Send + 'static>>,
+        >,
+    >,
+}
+impl PartialEq for SoftKeyboardBackend {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/Keyboard.ts:33 (sha256:b30795d80dbe254f4e9c948d7cb48d343af06663ca1574e18a0ba9a23e6d8a3e)
 #[derive(Clone)]
 pub struct SoftKeyboard {
-    pub on_show: Signal,
-    pub on_hide: Signal,
-    pub on_resize: Signal,
-    pub on_will_show: Signal,
-    pub on_will_hide: Signal,
-    pub on_will_resize: Signal,
-    pub on_did_show: Signal,
-    pub on_did_hide: Signal,
-    pub on_did_resize: Signal,
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub on_show:
+        Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64) -> () + Send + 'static>>>>,
+    pub on_hide: Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
+    pub on_resize:
+        Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64) -> () + Send + 'static>>>>,
+    pub on_will_show: Signal<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(SoftKeyboardTransition) -> () + Send + 'static>>,
+        >,
+    >,
+    pub on_will_hide: Signal<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(SoftKeyboardTransition) -> () + Send + 'static>>,
+        >,
+    >,
+    pub on_will_resize: Signal<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(SoftKeyboardTransition) -> () + Send + 'static>>,
+        >,
+    >,
+    pub on_did_show:
+        Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64) -> () + Send + 'static>>>>,
+    pub on_did_hide:
+        Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
+    pub on_did_resize:
+        Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64) -> () + Send + 'static>>>>,
+}
+impl PartialEq for SoftKeyboard {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

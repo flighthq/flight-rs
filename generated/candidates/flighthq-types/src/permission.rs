@@ -15,6 +15,21 @@ pub type PermissionState = String;
 // Source: upstream/packages/types/src/Permission.ts:25 (sha256:aa10c0c5b6faf235212cbb21a7e1ff46688f0ffc39fc6592f7349ab40980b0c3)
 #[derive(Clone)]
 pub struct PermissionBackend {
-    pub get_state: crate::OpaqueHostValue,
-    pub request: crate::OpaqueHostValue,
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub get_state: std::sync::Arc<
+        std::sync::Mutex<
+            Box<dyn FnMut(PermissionName) -> crate::Promise<PermissionState> + Send + 'static>,
+        >,
+    >,
+    pub request: std::sync::Arc<
+        std::sync::Mutex<
+            Box<dyn FnMut(PermissionName) -> crate::Promise<PermissionState> + Send + 'static>,
+        >,
+    >,
+}
+impl PartialEq for PermissionBackend {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

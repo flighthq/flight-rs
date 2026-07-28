@@ -1,0 +1,16 @@
+# @generated candidate crate; do not edit.
+[package]
+name = "flighthq-spritesheet"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+flighthq-entity = { path = "../flighthq-entity" }
+flighthq-signals = { path = "../flighthq-signals" }
+flighthq-textureatlas = { path = "../flighthq-textureatlas" }
+flighthq-types = { path = "../flighthq-types" }

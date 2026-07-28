@@ -11,7 +11,14 @@ use crate::ColorTransform;
 // Source: upstream/packages/types/src/ColorTransformAdjustment.ts:10 (sha256:c31fc4c470375aaa6b620ec0028148ba1a6cbcfc3eca340bff502ed3fa6a0899)
 #[derive(Clone)]
 pub struct ColorTransformAdjustment {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub kind: String,
     pub color_matrix: Vec<f64>,
     pub color_transform: ColorTransform,
+}
+impl PartialEq for ColorTransformAdjustment {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

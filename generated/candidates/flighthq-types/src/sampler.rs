@@ -15,12 +15,19 @@ pub type TextureFilter = String;
 // Source: upstream/packages/types/src/Sampler.ts:19 (sha256:08ac581426ed70f9190c38f52b7d331b546b4a23faafe9b65902b84d69d76d50)
 #[derive(Clone)]
 pub struct Sampler {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub anisotropy: f64,
     pub mag_filter: TextureFilter,
     pub min_filter: TextureFilter,
     pub mipmaps: bool,
     pub wrap_u: TextureWrap,
     pub wrap_v: TextureWrap,
+}
+impl PartialEq for Sampler {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/Sampler.ts:28 (sha256:4984430992060b1ac4b1fbcc3dd8b57f6b4e5026f9e4abbfb2a6cf272238fe2f)

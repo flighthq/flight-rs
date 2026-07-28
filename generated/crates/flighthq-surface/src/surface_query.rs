@@ -29,7 +29,6 @@ pub fn get_surface_color_bounds_rectangle(
     find_color: Option<bool>,
 ) -> Option<RectangleLike> {
     let find_color = find_color.unwrap_or(true);
-    let data = &source.surface.data;
     let surface_width = source.surface.width;
     let masked_color = (__flight_js_to_i32(
         (__flight_js_to_u32(color) >> (__flight_js_to_u32(0.0_f64) & 31)) as f64,
@@ -68,21 +67,26 @@ pub fn get_surface_color_bounds_rectangle(
                             (__flight_js_to_i32(
                                 (__flight_js_to_i32(
                                     (__flight_js_to_i32(
-                                        __flight_js_to_i32((data[i as usize] as f64))
+                                        __flight_js_to_i32((source.surface.data[i as usize] as f64))
                                             .wrapping_shl((__flight_js_to_u32(24.0_f64) & 31))
                                             as f64,
                                     ) | __flight_js_to_i32(
-                                        __flight_js_to_i32((data[(i + 1.0_f64) as usize] as f64))
-                                            .wrapping_shl((__flight_js_to_u32(16.0_f64) & 31))
+                                        __flight_js_to_i32(
+                                            (source.surface.data[(i + 1.0_f64) as usize] as f64),
+                                        )
+                                        .wrapping_shl((__flight_js_to_u32(16.0_f64) & 31))
                                             as f64,
                                     )) as f64,
                                 ) | __flight_js_to_i32(
-                                    __flight_js_to_i32((data[(i + 2.0_f64) as usize] as f64))
-                                        .wrapping_shl((__flight_js_to_u32(8.0_f64) & 31))
+                                    __flight_js_to_i32(
+                                        (source.surface.data[(i + 2.0_f64) as usize] as f64),
+                                    )
+                                    .wrapping_shl((__flight_js_to_u32(8.0_f64) & 31))
                                         as f64,
                                 )) as f64,
-                            ) | __flight_js_to_i32((data[(i + 3.0_f64) as usize] as f64)))
-                                as f64,
+                            ) | __flight_js_to_i32(
+                                (source.surface.data[(i + 3.0_f64) as usize] as f64),
+                            )) as f64,
                         ) >> (__flight_js_to_u32(0.0_f64) & 31)) as f64,
                     ) & __flight_js_to_i32(
                         (__flight_js_to_u32(mask) >> (__flight_js_to_u32(0.0_f64) & 31)) as f64,
@@ -118,6 +122,7 @@ pub fn get_surface_color_bounds_rectangle(
         return None;
     }
     return Some(RectangleLike {
+        __flight_identity: std::sync::Arc::new(()),
         x: min_x,
         y: min_y,
         width: ((max_x - min_x) + 1.0_f64),

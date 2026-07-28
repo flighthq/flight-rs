@@ -43,6 +43,18 @@ const portableTypedArrayStorage: Readonly<Record<string, string>> = {
   Uint32Array: 'u32',
 };
 
+const portableTypedArrayRank: Readonly<Record<string, number>> = {
+  Float32Array: 32,
+  Float64Array: 64,
+  Int8Array: 8,
+  Int16Array: 16,
+  Int32Array: 32,
+  Uint8Array: 8,
+  Uint8ClampedArray: 8,
+  Uint16Array: 16,
+  Uint32Array: 32,
+};
+
 const platformDynamicTypes = new Set([
   'AbortController',
   'AbortSignal',
@@ -340,7 +352,10 @@ export function lowerTypeScriptSource(
     if (specifier.startsWith('.') || specifier.startsWith('@flighthq/')) continue;
     if (statement.importClause?.name) {
       externalTypes.add(statement.importClause.name.text);
-      externalValues.set(statement.importClause.name.text, { imported: 'default', specifier });
+      externalValues.set(statement.importClause.name.text, {
+        imported: 'default',
+        specifier,
+      });
     }
     const bindings = statement.importClause?.namedBindings;
     if (bindings && ts.isNamedImports(bindings)) {
@@ -833,8 +848,24 @@ function lowerParameter(node: ts.ParameterDeclaration, context: LoweringContext)
     name: node.name.text,
     optional: Boolean(node.questionToken),
     rest: Boolean(node.dotDotDotToken),
-    type: node.type ? lowerType(node.type, context) : { kind: 'dynamic' },
+    type: node.type
+      ? lowerType(node.type, context)
+      : (inferParameterTypeFromInitializer(node.initializer) ?? { kind: 'dynamic' }),
   };
+}
+
+function inferParameterTypeFromInitializer(node: ts.Expression | undefined): IrType | undefined {
+  if (!node) return undefined;
+  if (ts.isNumericLiteral(node) || ts.isPrefixUnaryExpression(node)) {
+    return { kind: 'primitive', name: 'Float' };
+  }
+  if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
+    return { kind: 'primitive', name: 'String' };
+  }
+  if (node.kind === ts.SyntaxKind.TrueKeyword || node.kind === ts.SyntaxKind.FalseKeyword) {
+    return { kind: 'primitive', name: 'Bool' };
+  }
+  return undefined;
 }
 
 function lowerParameterList(
@@ -879,7 +910,7 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
     case ts.SyntaxKind.NumberKeyword:
       return { kind: 'primitive', name: 'Float' };
     case ts.SyntaxKind.SymbolKeyword:
-      return { kind: 'dynamic' };
+      return { arguments: [], kind: 'named', name: 'FlightSymbol' };
     case ts.SyntaxKind.StringKeyword:
       return { kind: 'primitive', name: 'String' };
     case ts.SyntaxKind.VoidKeyword:
@@ -889,7 +920,11 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
   if (ts.isTypeOperatorNode(node)) return lowerType(node.type, context);
   if (ts.isTypeQueryNode(node)) return { kind: 'dynamic' };
   if (ts.isTypeLiteralNode(node)) {
-    return { extends: [], fields: lowerTypeMembers(node.members, context), kind: 'anonymous' };
+    return {
+      extends: [],
+      fields: lowerTypeMembers(node.members, context),
+      kind: 'anonymous',
+    };
   }
   if (ts.isTupleTypeNode(node)) {
     const elements = node.elements.map((element) =>
@@ -914,6 +949,12 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
     if (name === 'Error') return { arguments: [], kind: 'named', name: 'PortError' };
     const portableType = portableTypeReferenceMap[name];
     if (portableType) return { arguments: [], kind: 'named', name: portableType };
+    if (name === 'Map' || name === 'ReadonlyMap' || name === 'WeakMap') {
+      return { arguments: arguments_, kind: 'named', name: 'RustMap' };
+    }
+    if (name === 'Set' || name === 'ReadonlySet' || name === 'WeakSet') {
+      return { arguments: arguments_, kind: 'named', name: 'RustSet' };
+    }
     if (context.externalTypes.has(name.split('.')[0]!)) return { kind: 'dynamic' };
     if (
       platformDynamicTypes.has(name) ||
@@ -929,16 +970,22 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
       name.startsWith('Performance') ||
       name.endsWith('Event') ||
       name.endsWith('EventListener') ||
-      /^[A-Z]$/u.test(name) ||
       ['BodyInit', 'CSSStyleDeclaration', 'RegExpExecArray', 'TextEncoder', 'WindowEventMap'].includes(name)
     ) {
       return { kind: 'dynamic' };
     }
-    if (['Omit', 'Partial', 'Pick'].includes(name)) return { kind: 'dynamic' };
+    if (['MethodsOf', 'Omit', 'Partial', 'PartialNode', 'Pick'].includes(name) && arguments_[0]) {
+      return arguments_[0];
+    }
     if (['Awaited', 'Exclude', 'Extract', 'NonNullable', 'Readonly', 'Required'].includes(name) && arguments_[0]) {
       return arguments_[0];
     }
-    if (name === 'Parameters') return { element: { kind: 'dynamic' }, kind: 'array' };
+    if (name === 'Parameters' && arguments_[0]) {
+      return { arguments: [arguments_[0]], kind: 'named', name: 'FlightCallbackArgs' };
+    }
+    if (name === 'ReturnType' && node.typeArguments?.[0]?.getText(context.sourceFile).includes('setTimeout')) {
+      return { arguments: [], kind: 'named', name: 'FlightTimeout' };
+    }
     if (['InstanceType', 'PropertyKey', 'ReturnType', 'ThisParameterType'].includes(name)) {
       return { kind: 'dynamic' };
     }
@@ -949,12 +996,20 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
           : (arguments_[0] ?? { kind: 'dynamic' as const });
       return { arguments: [promiseType], kind: 'named', name: 'Promise' };
     }
-    if (name === 'ArrayLike') return { kind: 'dynamic' };
+    if (name === 'ArrayLike') {
+      return { element: arguments_[0] ?? { kind: 'dynamic' }, kind: 'array' };
+    }
     if (name === 'Array' || name === 'ReadonlyArray') {
       return { element: arguments_[0] ?? { kind: 'dynamic' }, kind: 'array' };
     }
     if (name === 'EntityWithoutRuntime' && arguments_[0]) return arguments_[0];
-    if (name === 'Record') return { kind: 'dynamic' };
+    if (name === 'Record') {
+      return {
+        arguments: [arguments_[0] ?? { kind: 'primitive', name: 'String' }, arguments_[1] ?? { kind: 'dynamic' }],
+        kind: 'named',
+        name: 'RustMap',
+      };
+    }
     return { arguments: arguments_, kind: 'named', name };
   }
   if (ts.isUnionTypeNode(node)) {
@@ -1058,11 +1113,16 @@ function lowerTypeMember(node: ts.TypeElement, context: LoweringContext) {
     };
   }
   if (ts.isMethodSignature(node)) {
+    const parameters = lowerParameterList(node.parameters, context).parameters;
     return {
-      contextualParameters: lowerParameterList(node.parameters, context).parameters,
+      contextualParameters: parameters,
       name: propertyName(node.name, context),
       optional: Boolean(node.questionToken),
-      type: { kind: 'dynamic' as const },
+      type: {
+        kind: 'function' as const,
+        parameters: parameters.map((parameter) => parameter.type),
+        returns: node.type ? lowerType(node.type, context) : { kind: 'primitive' as const, name: 'Void' as const },
+      },
     };
   }
   if (ts.isIndexSignatureDeclaration(node)) return undefined;
@@ -1080,13 +1140,65 @@ function commonType(types: IrType[]): IrType {
   const first = types[0];
   if (!first) return { kind: 'dynamic' };
   if (types.every((item) => JSON.stringify(item) === JSON.stringify(first))) return first;
+  if (types.every((item) => item.kind === 'anonymous')) {
+    const anonymous = types as Array<Extract<IrType, { kind: 'anonymous' }>>;
+    const fieldNames = new Set(anonymous.flatMap((item) => item.fields.map((field) => field.name)));
+    return {
+      extends: [],
+      fields: [...fieldNames].map((name) => {
+        const fields = anonymous.flatMap((item) => {
+          const field = item.fields.find((candidate) => candidate.name === name);
+          return field ? [field] : [];
+        });
+        return {
+          name,
+          optional: fields.length !== anonymous.length || fields.some((field) => field.optional),
+          type: commonType(fields.map((field) => field.type)),
+        };
+      }),
+      kind: 'anonymous',
+    };
+  }
   if (first.kind === 'named') {
     const storage = portableTypedArrayStorage[first.name];
     if (storage && types.every((item) => item.kind === 'named' && portableTypedArrayStorage[item.name] === storage)) {
       return first;
     }
+    const typedArrayFamily = first.name.startsWith('Uint')
+      ? 'Uint'
+      : first.name.startsWith('Int')
+        ? 'Int'
+        : first.name.startsWith('Float')
+          ? 'Float'
+          : undefined;
+    if (
+      typedArrayFamily &&
+      types.every(
+        (item) =>
+          item.kind === 'named' &&
+          item.name.startsWith(typedArrayFamily) &&
+          portableTypedArrayRank[item.name] !== undefined,
+      )
+    ) {
+      return types.reduce((widest, item) =>
+        item.kind === 'named' &&
+        portableTypedArrayRank[item.name]! >
+          portableTypedArrayRank[(widest as Extract<IrType, { kind: 'named' }>).name]!
+          ? item
+          : widest,
+      ) as IrType;
+    }
   }
-  return { kind: 'dynamic' };
+  return {
+    kind: 'union',
+    variants: [
+      ...new Map(
+        types
+          .flatMap((item) => (item.kind === 'union' ? item.variants : [item]))
+          .map((item) => [JSON.stringify(item), item]),
+      ).values(),
+    ],
+  };
 }
 
 function hasReturnValue(body: ts.Block): boolean {
@@ -1106,15 +1218,27 @@ function hasReturnValue(body: ts.Block): boolean {
 
 function lowerStatement(node: ts.Statement, context: LoweringContext): IrStatement {
   if (ts.isBlock(node))
-    return { kind: 'block', statements: node.statements.map((item) => lowerStatement(item, context)) };
+    return {
+      kind: 'block',
+      statements: node.statements.map((item) => lowerStatement(item, context)),
+    };
   if (ts.isVariableStatement(node)) {
     const mutable = (node.declarationList.flags & ts.NodeFlags.Const) === 0;
-    return { kind: 'variable', declarations: lowerVariables(node.declarationList, mutable, context) };
+    return {
+      kind: 'variable',
+      declarations: lowerVariables(node.declarationList, mutable, context),
+    };
   }
   if (ts.isExpressionStatement(node))
-    return { expression: lowerExpression(node.expression, context), kind: 'expression' };
+    return {
+      expression: lowerExpression(node.expression, context),
+      kind: 'expression',
+    };
   if (ts.isReturnStatement(node)) {
-    return { expression: node.expression ? lowerExpression(node.expression, context) : undefined, kind: 'return' };
+    return {
+      expression: node.expression ? lowerExpression(node.expression, context) : undefined,
+      kind: 'return',
+    };
   }
   if (ts.isIfStatement(node)) {
     return {
@@ -1176,7 +1300,11 @@ function lowerStatement(node: ts.Statement, context: LoweringContext): IrStateme
     };
   }
   if (ts.isTypeAliasDeclaration(node)) return { kind: 'block', statements: [] };
-  if (ts.isThrowStatement(node)) return { expression: lowerExpression(node.expression, context), kind: 'throw' };
+  if (ts.isThrowStatement(node))
+    return {
+      expression: lowerExpression(node.expression, context),
+      kind: 'throw',
+    };
   if (ts.isSwitchStatement(node)) {
     return {
       cases: node.caseBlock.clauses.map((clause) => ({
@@ -1286,7 +1414,11 @@ function lowerBindingPattern(
         };
       }
       if (ts.isIdentifier(element.name)) {
-        variables.push({ initializer: value, mutable, name: element.name.text });
+        variables.push({
+          initializer: value,
+          mutable,
+          name: element.name.text,
+        });
       } else {
         lowerBindingPattern(element.name, value, mutable, variables, context);
       }
@@ -1352,13 +1484,21 @@ function lowerExpression(node: ts.Expression, context: LoweringContext): IrExpre
     ) {
       return lowerExpression(node.expression, context);
     }
-    return { expression: lowerExpression(node.expression, context), kind: 'cast', type: lowerType(node.type, context) };
+    return {
+      expression: lowerExpression(node.expression, context),
+      kind: 'cast',
+      type: lowerType(node.type, context),
+    };
   }
   if (ts.isNonNullExpression(node)) {
     return lowerExpression(node.expression, context);
   }
   if (ts.isSatisfiesExpression(node)) return lowerExpression(node.expression, context);
-  if (ts.isAwaitExpression(node)) return { expression: lowerExpression(node.expression, context), kind: 'await' };
+  if (ts.isAwaitExpression(node))
+    return {
+      expression: lowerExpression(node.expression, context),
+      kind: 'await',
+    };
   if (ts.isVoidExpression(node)) {
     return {
       kind: 'unary',
@@ -1369,7 +1509,11 @@ function lowerExpression(node: ts.Expression, context: LoweringContext): IrExpre
   }
   if (ts.isRegularExpressionLiteral(node)) {
     const match = /^\/(.*)\/([a-z]*)$/su.exec(node.text);
-    return { flags: match?.[2] ?? '', kind: 'regexp', pattern: match?.[1] ?? node.text };
+    return {
+      flags: match?.[2] ?? '',
+      kind: 'regexp',
+      pattern: match?.[1] ?? node.text,
+    };
   }
   if (node.kind === ts.SyntaxKind.ImportKeyword) return { kind: 'identifier', name: '_Runtime.dynamicImport' };
   if (node.kind === ts.SyntaxKind.ThisKeyword) {
@@ -1404,14 +1548,20 @@ function lowerExpression(node: ts.Expression, context: LoweringContext): IrExpre
   if (node.kind === ts.SyntaxKind.FalseKeyword) return { kind: 'literal', value: false };
   if (node.kind === ts.SyntaxKind.NullKeyword) return { kind: 'literal', value: null };
   if (ts.isArrayLiteralExpression(node)) {
-    return { elements: node.elements.map((element) => lowerExpression(element, context)), kind: 'array' };
+    return {
+      elements: node.elements.map((element) => lowerExpression(element, context)),
+      kind: 'array',
+    };
   }
   if (ts.isObjectLiteralExpression(node)) {
     return {
       kind: 'object',
       properties: node.properties.map((property) => {
         if (ts.isSpreadAssignment(property)) {
-          return { expression: lowerExpression(property.expression, context), kind: 'spread' as const };
+          return {
+            expression: lowerExpression(property.expression, context),
+            kind: 'spread' as const,
+          };
         }
         if (ts.isShorthandPropertyAssignment(property)) {
           return {
@@ -1429,7 +1579,11 @@ function lowerExpression(node: ts.Expression, context: LoweringContext): IrExpre
               value,
             };
           }
-          return { kind: 'property' as const, name: propertyName(property.name, context), value };
+          return {
+            kind: 'property' as const,
+            name: propertyName(property.name, context),
+            value,
+          };
         }
         if (ts.isMethodDeclaration(property) && property.body) {
           const previousClassThis = context.classThis;
@@ -1568,7 +1722,11 @@ function lowerExpression(node: ts.Expression, context: LoweringContext): IrExpre
       typeArguments: node.typeArguments?.map((argument) => lowerType(argument, context)) ?? [],
     };
   }
-  if (ts.isSpreadElement(node)) return { expression: lowerExpression(node.expression, context), kind: 'spread' };
+  if (ts.isSpreadElement(node))
+    return {
+      expression: lowerExpression(node.expression, context),
+      kind: 'spread',
+    };
   if (ts.isTypeOfExpression(node)) {
     if (
       ts.isIdentifier(node.expression) &&
@@ -1586,16 +1744,27 @@ function lowerExpression(node: ts.Expression, context: LoweringContext): IrExpre
         typeArguments: [],
       };
     }
-    return { kind: 'unary', operand: lowerExpression(node.expression, context), operator: 'typeof', postfix: false };
+    return {
+      kind: 'unary',
+      operand: lowerExpression(node.expression, context),
+      operator: 'typeof',
+      postfix: false,
+    };
   }
   if (ts.isDeleteExpression(node)) {
-    return { kind: 'unary', operand: lowerExpression(node.expression, context), operator: 'delete', postfix: false };
+    return {
+      kind: 'unary',
+      operand: lowerExpression(node.expression, context),
+      operator: 'delete',
+      postfix: false,
+    };
   }
   if (ts.isNewExpression(node)) {
     return {
       arguments: node.arguments?.map((argument) => lowerExpression(argument, context)) ?? [],
       callee: lowerExpression(node.expression, context),
       kind: 'new',
+      typeArguments: node.typeArguments?.map((argument) => lowerType(argument, context)) ?? [],
     };
   }
   if (ts.isConditionalExpression(node)) {
@@ -1650,7 +1819,9 @@ function lowerExpression(node: ts.Expression, context: LoweringContext): IrExpre
           ? node.type
             ? lowerType(node.type, context)
             : promiseOfDynamic()
-          : undefined,
+          : node.type
+            ? lowerType(node.type, context)
+            : undefined,
       };
     } finally {
       context.classThis = previousClassThis;
@@ -1676,9 +1847,18 @@ function lowerIdentifier(name: string, context: LoweringContext, locallyBound = 
   if (name === 'undefined') {
     return { kind: 'identifier', name: 'Undefined' };
   }
-  if (name === 'NaN') return { kind: 'property', name: 'NAN', object: { kind: 'identifier', name: 'Float' } };
+  if (name === 'NaN')
+    return {
+      kind: 'property',
+      name: 'NAN',
+      object: { kind: 'identifier', name: 'Float' },
+    };
   if (name === 'Infinity') {
-    return { kind: 'property', name: 'INFINITY', object: { kind: 'identifier', name: 'Float' } };
+    return {
+      kind: 'property',
+      name: 'INFINITY',
+      object: { kind: 'identifier', name: 'Float' },
+    };
   }
   const external = context.externalValues.get(name);
   if (external) {

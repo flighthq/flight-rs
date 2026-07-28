@@ -1,0 +1,276 @@
+// @generated from upstream/packages/particleemitter/src/emitParticleBurst.ts; do not edit.
+#![allow(clippy::excessive_precision)]
+#![allow(non_upper_case_globals)]
+#![allow(unused_braces)]
+#![allow(unused_imports)]
+#![allow(unused_mut)]
+#![allow(unused_parens)]
+
+use crate::reserve_particle_emitter;
+use flighthq_particles::{
+    PARTICLE_VELOCITY_STRIDE as particle_velocity_stride_constant,
+    ensure_particle_emitter_state_capacity, sample_particle_color_curve, sample_particle_curve,
+};
+use flighthq_types::{ParticleEmitter, ParticleEmitterConfig, ParticleEmitterState};
+
+#[inline]
+fn __flight_js_to_u32(value: f64) -> u32 {
+    if !value.is_finite() || value == 0.0 {
+        return 0;
+    }
+    value.trunc().rem_euclid(4294967296.0_f64) as u32
+}
+
+#[inline]
+fn __flight_js_to_i32(value: f64) -> i32 {
+    __flight_js_to_u32(value) as i32
+}
+
+// Source: upstream/packages/particleemitter/src/emitParticleBurst.ts:12 (sha256:c3dc807b578ac94141dd73c6a0532f43a0d50d26a1aa7884792f64f943d23ca6)
+const PARTICLE_TRANSFORM_STRIDE: f64 = 4.0_f64;
+
+// Source: upstream/packages/particleemitter/src/emitParticleBurst.ts:13 (sha256:eed66b9413dd1f3589bacb1e13051ec02a5deec60c911cd17bad429c276ac74b)
+const TWO_PI: f64 = 6.283185307179586_f64;
+
+// Source: upstream/packages/particleemitter/src/emitParticleBurst.ts:31 (sha256:3f7643def80b5ab518a77f3cb78915c9607f154be63ec1ac5793d857338328c0)
+pub fn emit_particle_burst(
+    emitter: &mut ParticleEmitter,
+    state: &mut ParticleEmitterState,
+    config: &ParticleEmitterConfig,
+    count: f64,
+    x: f64,
+    y: f64,
+    tint: Option<f64>,
+) -> f64 {
+    let live_count = emitter.data.particle_count;
+    let mut to_spawn = (count).floor();
+    let max_new = (config.max_particles - live_count);
+    if (to_spawn > max_new) {
+        to_spawn = max_new;
+    }
+    if (to_spawn <= 0.0_f64) {
+        return 0.0_f64;
+    }
+    let has_color_variance = ((((((config.color_start_variance_r != 0.0_f64)
+        || (config.color_start_variance_g != 0.0_f64))
+        || (config.color_start_variance_b != 0.0_f64))
+        || (config.color_end_variance_r != 0.0_f64))
+        || (config.color_end_variance_g != 0.0_f64))
+        || (config.color_end_variance_b != 0.0_f64));
+    let new_count = (live_count + to_spawn);
+    reserve_particle_emitter(emitter, new_count);
+    ensure_particle_emitter_state_capacity(state, new_count, has_color_variance);
+    let color_start_r = config.color_start_r;
+    let color_start_g = config.color_start_g;
+    let color_start_b = config.color_start_b;
+    let color_end_r = config.color_end_r;
+    let color_end_g = config.color_end_g;
+    let color_end_b = config.color_end_b;
+    let alpha_curve = (config.alpha_curve).clone();
+    let color_curve = (config.color_curve).clone();
+    let scale_curve = (config.scale_curve).clone();
+    let has_alpha_curve =
+        ((alpha_curve).is_some() && (alpha_curve.as_ref().unwrap().length > 0.0_f64));
+    let has_color_curve =
+        ((color_curve).is_some() && (color_curve.as_ref().unwrap().length >= 3.0_f64));
+    let has_scale_curve =
+        ((scale_curve).is_some() && (scale_curve.as_ref().unwrap().length > 0.0_f64));
+    let base_angle = (config.direction_y).atan2(config.direction_x);
+    let region_range = (config.region_id_max - config.region_id_min);
+    let region_id_min = config.region_id_min;
+    let rot_speed_range = (config.rotation_speed_max - config.rotation_speed_min);
+    let has_rot_speed =
+        ((config.rotation_speed_min != 0.0_f64) || (config.rotation_speed_max != 0.0_f64));
+    let has_tint = (tint).is_some();
+    let tint_r = if has_tint {
+        ((__flight_js_to_i32(
+            (__flight_js_to_u32(tint) >> (__flight_js_to_u32(24.0_f64) & 31)) as f64,
+        ) & __flight_js_to_i32(255.0_f64)) as f64
+            / 255.0_f64)
+    } else {
+        1.0_f64
+    };
+    let tint_g = if has_tint {
+        ((__flight_js_to_i32(
+            (__flight_js_to_u32(tint) >> (__flight_js_to_u32(16.0_f64) & 31)) as f64,
+        ) & __flight_js_to_i32(255.0_f64)) as f64
+            / 255.0_f64)
+    } else {
+        1.0_f64
+    };
+    let tint_b = if has_tint {
+        ((__flight_js_to_i32(
+            (__flight_js_to_u32(tint) >> (__flight_js_to_u32(8.0_f64) & 31)) as f64,
+        ) & __flight_js_to_i32(255.0_f64)) as f64
+            / 255.0_f64)
+    } else {
+        1.0_f64
+    };
+    let tint_a = if has_tint {
+        ((__flight_js_to_i32(tint) & __flight_js_to_i32(255.0_f64)) as f64 / 255.0_f64)
+    } else {
+        1.0_f64
+    };
+    {
+        let mut s_idx = 0.0_f64;
+        while (s_idx < to_spawn) {
+            let idx = (live_count + s_idx);
+            let lifetime = (config.lifetime_min
+                + (((state.random).clone()).lock().unwrap()()
+                    * (config.lifetime_max - config.lifetime_min)));
+            let lt = (idx * 2.0_f64);
+            state.lifetimes[lt as usize] = (0.0_f64) as f32;
+            state.lifetimes[(lt + 1.0_f64) as usize] = (lifetime) as f32;
+            let angle = (base_angle
+                + (((((state.random).clone()).lock().unwrap()() - 0.5_f64) * 2.0_f64)
+                    * config.spread));
+            let speed = (config.speed_min
+                + (((state.random).clone()).lock().unwrap()()
+                    * (config.speed_max - config.speed_min)));
+            let vt = (idx * particle_velocity_stride_constant);
+            state.velocities[vt as usize] = ((angle).cos() * speed) as f32;
+            state.velocities[(vt + 1.0_f64) as usize] = ((angle).sin() * speed) as f32;
+            state.velocities[(vt + 2.0_f64) as usize] = (0.0_f64) as f32;
+            let mut spawn_x = x;
+            let mut spawn_y = y;
+            if (((config.emitter_shape).clone() == "circle") && (config.emitter_radius > 0.0_f64)) {
+                let r =
+                    ((((state.random).clone()).lock().unwrap()()).sqrt() * config.emitter_radius);
+                let a = (((state.random).clone()).lock().unwrap()() * TWO_PI);
+                spawn_x += ((a).cos() * r);
+                spawn_y += ((a).sin() * r);
+            } else {
+                if (((config.emitter_shape).clone() == "rect")
+                    && ((config.emitter_width > 0.0_f64) || (config.emitter_height > 0.0_f64)))
+                {
+                    spawn_x += ((((state.random).clone()).lock().unwrap()() - 0.5_f64)
+                        * config.emitter_width);
+                    spawn_y += ((((state.random).clone()).lock().unwrap()() - 0.5_f64)
+                        * config.emitter_height);
+                }
+            }
+            let spawn_scale = (config.scale_min
+                + (((state.random).clone()).lock().unwrap()()
+                    * (config.scale_max - config.scale_min)));
+            state.scales[idx as usize] = (spawn_scale) as f32;
+            let tt = (idx * PARTICLE_TRANSFORM_STRIDE);
+            emitter.data.transforms[tt as usize] = (spawn_x) as f32;
+            emitter.data.transforms[(tt + 1.0_f64) as usize] = (spawn_y) as f32;
+            emitter.data.transforms[(tt + 2.0_f64) as usize] = (angle) as f32;
+            emitter.data.transforms[(tt + 3.0_f64) as usize] = if has_scale_curve {
+                (spawn_scale * sample_particle_curve(scale_curve.as_ref().unwrap(), 0.0_f64)) as f32
+            } else {
+                (spawn_scale) as f32
+            };
+            emitter.data.positions_z[idx as usize] = (0.0_f64) as f32;
+            emitter.data.alphas[idx as usize] = if has_alpha_curve {
+                (sample_particle_curve(alpha_curve.as_ref().unwrap(), 0.0_f64)) as f32
+            } else {
+                (config.alpha_start) as f32
+            };
+            let ct = (idx * 3.0_f64);
+            if has_color_curve {
+                sample_particle_color_curve(
+                    &mut emitter.data.colors,
+                    ct,
+                    color_curve.as_ref().unwrap(),
+                    0.0_f64,
+                );
+            } else {
+                if has_color_variance {
+                    let r0 = clamp01(
+                        (color_start_r
+                            + (((((state.random).clone()).lock().unwrap()() - 0.5_f64) * 2.0_f64)
+                                * config.color_start_variance_r)),
+                    );
+                    let g0 = clamp01(
+                        (color_start_g
+                            + (((((state.random).clone()).lock().unwrap()() - 0.5_f64) * 2.0_f64)
+                                * config.color_start_variance_g)),
+                    );
+                    let b0 = clamp01(
+                        (color_start_b
+                            + (((((state.random).clone()).lock().unwrap()() - 0.5_f64) * 2.0_f64)
+                                * config.color_start_variance_b)),
+                    );
+                    let r1 = clamp01(
+                        (color_end_r
+                            + (((((state.random).clone()).lock().unwrap()() - 0.5_f64) * 2.0_f64)
+                                * config.color_end_variance_r)),
+                    );
+                    let g1 = clamp01(
+                        (color_end_g
+                            + (((((state.random).clone()).lock().unwrap()() - 0.5_f64) * 2.0_f64)
+                                * config.color_end_variance_g)),
+                    );
+                    let b1 = clamp01(
+                        (color_end_b
+                            + (((((state.random).clone()).lock().unwrap()() - 0.5_f64) * 2.0_f64)
+                                * config.color_end_variance_b)),
+                    );
+                    state.color_birth[ct as usize] = (r0) as f32;
+                    state.color_birth[(ct + 1.0_f64) as usize] = (g0) as f32;
+                    state.color_birth[(ct + 2.0_f64) as usize] = (b0) as f32;
+                    state.color_death[ct as usize] = (r1) as f32;
+                    state.color_death[(ct + 1.0_f64) as usize] = (g1) as f32;
+                    state.color_death[(ct + 2.0_f64) as usize] = (b1) as f32;
+                    emitter.data.colors[ct as usize] = (r0) as f32;
+                    emitter.data.colors[(ct + 1.0_f64) as usize] = (g0) as f32;
+                    emitter.data.colors[(ct + 2.0_f64) as usize] = (b0) as f32;
+                } else {
+                    emitter.data.colors[ct as usize] = (color_start_r) as f32;
+                    emitter.data.colors[(ct + 1.0_f64) as usize] = (color_start_g) as f32;
+                    emitter.data.colors[(ct + 2.0_f64) as usize] = (color_start_b) as f32;
+                }
+            }
+            if has_tint {
+                emitter.data.colors[ct as usize] *= (tint_r) as f32;
+                emitter.data.colors[(ct + 1.0_f64) as usize] *= (tint_g) as f32;
+                emitter.data.colors[(ct + 2.0_f64) as usize] *= (tint_b) as f32;
+                emitter.data.alphas[idx as usize] *= (tint_a) as f32;
+                if has_color_variance {
+                    state.color_birth[ct as usize] *= (tint_r) as f32;
+                    state.color_birth[(ct + 1.0_f64) as usize] *= (tint_g) as f32;
+                    state.color_birth[(ct + 2.0_f64) as usize] *= (tint_b) as f32;
+                    state.color_death[ct as usize] *= (tint_r) as f32;
+                    state.color_death[(ct + 1.0_f64) as usize] *= (tint_g) as f32;
+                    state.color_death[(ct + 2.0_f64) as usize] *= (tint_b) as f32;
+                }
+            }
+            emitter.data.ids[idx as usize] = (region_id_min
+                + if (config.frame_count > 1.0_f64) {
+                    0.0_f64
+                } else {
+                    if (region_range > 0.0_f64) {
+                        (__flight_js_to_i32(
+                            (((state.random).clone()).lock().unwrap()() * region_range),
+                        ) | __flight_js_to_i32(0.0_f64)) as f64
+                    } else {
+                        0.0_f64
+                    }
+                }) as u16;
+            state.rotation_speeds[idx as usize] = if has_rot_speed {
+                (config.rotation_speed_min
+                    + (((state.random).clone()).lock().unwrap()() * rot_speed_range))
+                    as f32
+            } else {
+                (0.0_f64) as f32
+            };
+            {
+                s_idx += 1.0;
+                s_idx
+            };
+        }
+    }
+    emitter.data.particle_count = new_count;
+    return to_spawn;
+}
+
+// Source: upstream/packages/particleemitter/src/emitParticleBurst.ts:170 (sha256:92c4452839ded0362c28adef5c15154deeaad9b404aff5129f0596af7fea21ad)
+fn clamp01(v: f64) -> f64 {
+    return if (v < 0.0_f64) {
+        0.0_f64
+    } else {
+        if (v > 1.0_f64) { 1.0_f64 } else { v }
+    };
+}

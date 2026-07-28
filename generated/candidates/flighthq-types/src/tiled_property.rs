@@ -12,7 +12,14 @@ pub type TiledPropertyType = String;
 // Source: upstream/packages/types/src/TiledProperty.ts:9 (sha256:e8f81c64bbdac1c2bfe70e245844a7449d62dfc1978d2a4d1340dd6f30e16109)
 #[derive(Clone)]
 pub struct TiledProperty {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub name: String,
     pub type_: TiledPropertyType,
-    pub value: crate::OpaqueHostValue,
+    pub value: crate::FlightUnion2<String, crate::FlightUnion2<f64, bool>>,
+}
+impl PartialEq for TiledProperty {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

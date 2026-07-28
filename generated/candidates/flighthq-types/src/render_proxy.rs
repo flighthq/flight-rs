@@ -13,6 +13,8 @@ use crate::{
 // Source: upstream/packages/types/src/RenderProxy.ts:9 (sha256:a83fce0a440eb87068d75b87cbb845c0ec6b4938505e891b25a907b5cceb1e82)
 #[derive(Clone)]
 pub struct RenderProxy {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub source: Renderable,
     pub kind: Kind,
     pub next: Option<Box<RenderProxy>>,
@@ -32,4 +34,9 @@ pub struct RenderProxy {
     pub renderer_map_id: f64,
     pub transform_frame_id: f64,
     pub visible: bool,
+}
+impl PartialEq for RenderProxy {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

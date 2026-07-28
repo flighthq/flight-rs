@@ -1,0 +1,20 @@
+# @generated candidate crate; do not edit.
+[package]
+name = "flighthq-bitmaptext"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+flighthq-adjustments = { path = "../flighthq-adjustments" }
+flighthq-displayobject = { path = "../flighthq-displayobject" }
+flighthq-geometry = { path = "../flighthq-geometry" }
+flighthq-materials = { path = "../flighthq-materials" }
+flighthq-node = { path = "../flighthq-node" }
+flighthq-sprite = { path = "../flighthq-sprite" }
+flighthq-textureatlas = { path = "../flighthq-textureatlas" }
+flighthq-types = { path = "../flighthq-types" }

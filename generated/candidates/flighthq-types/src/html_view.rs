@@ -15,19 +15,29 @@ use crate::{
 // Source: upstream/packages/types/src/HtmlView.ts:3 (sha256:bba194f0689423bf8577d59419ce7b6d25107d76feeea43c14bd296df846fd93)
 #[derive(Clone)]
 pub struct HtmlViewData {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub element: Option<crate::OpaqueHostValue>,
     pub height: f64,
     pub width: f64,
+}
+impl PartialEq for HtmlViewData {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/HtmlView.ts:9 (sha256:56cbcce7ac4a7d3949a91bbd7c6ff19e5a5db0a8763036515002d9b3cbc9c661)
 #[derive(Clone)]
 pub struct HtmlViewRuntime {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
     pub appearance_id: f64,
     pub bounds_using_local_bounds_id: f64,
     pub bounds_using_local_transform_id: f64,
-    pub can_add_child: std::sync::Arc<dyn Fn(Node, Node) -> bool + Send + Sync + 'static>,
+    pub can_add_child:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
     pub children: Option<Vec<Node>>,
     pub color_adjustments: Option<Vec<Adjustment>>,
     pub resolved_color_transform: Option<ColorTransform>,
@@ -53,16 +63,24 @@ pub struct HtmlViewRuntime {
     pub rotation_sine: f64,
     pub world_matrix: Option<Matrix>,
     pub bounds_rectangle: Option<Rectangle>,
-    pub compute_local_bounds_rectangle:
-        std::sync::Arc<dyn Fn(Rectangle, BoundsNodeAny) -> () + Send + Sync + 'static>,
+    pub compute_local_bounds_rectangle: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
+    >,
     pub local_bounds_rectangle: Option<Rectangle>,
     pub world_bounds_rectangle: Option<Rectangle>,
     pub stage: Option<Stage>,
+}
+impl PartialEq for HtmlViewRuntime {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/HtmlView.ts:11 (sha256:384fc590d337ee16124dcab9b2c796a36cf6ebd5f72e6ecc6530a8d0851df17f)
 #[derive(Clone)]
 pub struct HtmlView {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub data: HtmlViewData,
     pub enabled: bool,
     pub kind: Kind,
@@ -82,6 +100,11 @@ pub struct HtmlView {
     pub skew_y: f64,
     pub x: f64,
     pub y: f64,
+}
+impl PartialEq for HtmlView {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/HtmlView.ts:15 (sha256:1b73ef42e7b0700ee6fae93abed7ad989557e38ed0fcffe229addd777e635b6f)

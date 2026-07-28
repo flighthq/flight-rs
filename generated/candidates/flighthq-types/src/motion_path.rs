@@ -14,10 +14,17 @@ pub type MotionPathLoopMode = String;
 // Source: upstream/packages/types/src/MotionPath.ts:23 (sha256:9ed90b466cc7a1b9394a8de4672a9f73333fe5c5379a26853f9d55533c9c0c5d)
 #[derive(Clone)]
 pub struct MotionPath {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub direction: f64,
     pub distance: f64,
     pub length: f64,
     pub loop_mode: MotionPathLoopMode,
     pub path: Path,
     pub speed: f64,
+}
+impl PartialEq for MotionPath {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

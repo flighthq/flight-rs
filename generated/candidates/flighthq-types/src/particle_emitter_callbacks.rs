@@ -9,6 +9,17 @@
 // Source: upstream/packages/types/src/ParticleEmitterCallbacks.ts:1 (sha256:eeb4954eec290115eb7bff6d11084034fd083fd74cdf423b990a028800fd7a7e)
 #[derive(Clone)]
 pub struct ParticleEmitterCallbacks {
-    pub on_death: Option<std::sync::Arc<dyn Fn(f64, f64, f64) -> () + Send + Sync + 'static>>,
-    pub on_spawn: Option<std::sync::Arc<dyn Fn(f64, f64, f64) -> () + Send + Sync + 'static>>,
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub on_death: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64, f64, f64) -> () + Send + 'static>>>,
+    >,
+    pub on_spawn: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64, f64, f64) -> () + Send + 'static>>>,
+    >,
+}
+impl PartialEq for ParticleEmitterCallbacks {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

@@ -13,8 +13,10 @@ use crate::{
 // Source: upstream/packages/types/src/IridescencePbrMaterial.ts:10 (sha256:5b3ea5014a55ca5d6c53018cfec04235621f6edd3a6f19fe85cf7a70a426a95e)
 #[derive(Clone)]
 pub struct IridescencePbrMaterial {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub kind: Kind,
-    pub name: Option<Option<String>>,
+    pub name: Option<String>,
     pub alpha_cutoff: f64,
     pub alpha_mode: MaterialAlphaMode,
     pub alpha_type: AlphaType,
@@ -27,6 +29,11 @@ pub struct IridescencePbrMaterial {
     pub iridescence_thickness_max: f64,
     pub iridescence_thickness_min: f64,
     pub standard: StandardPbrMaterialProperties,
+}
+impl PartialEq for IridescencePbrMaterial {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/IridescencePbrMaterial.ts:20 (sha256:b2c34ab23c39d3827393d7429d34c648d211ac43d4f9201fea05b009c71c5b79)

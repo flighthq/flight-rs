@@ -49,14 +49,13 @@ pub fn create_surface_fingerprint(source: &Surface, grid_size: Option<f64>) -> S
         );
     }
     let mut cells = vec![0_u8; ((grid_size * grid_size) * 3.0_f64) as usize];
-    let __destructure0 = &source;
-    let width = __destructure0.width;
-    let height = __destructure0.height;
-    let data = &__destructure0.data;
+    let width = source.width;
+    let height = source.height;
     if ((width == 0.0_f64) || (height == 0.0_f64)) {
         return SurfaceFingerprint {
+            __flight_identity: std::sync::Arc::new(()),
             grid_size: grid_size,
-            cells: cells,
+            cells: (cells).clone(),
         };
     }
     {
@@ -80,9 +79,9 @@ pub fn create_surface_fingerprint(source: &Surface, grid_size: Option<f64>) -> S
                             {
                                 let mut x = x0;
                                 while ((x < x1) && (x < width)) {
-                                    sum_r += (data[i as usize] as f64);
-                                    sum_g += (data[(i + 1.0_f64) as usize] as f64);
-                                    sum_b += (data[(i + 2.0_f64) as usize] as f64);
+                                    sum_r += (source.data[i as usize] as f64);
+                                    sum_g += (source.data[(i + 1.0_f64) as usize] as f64);
+                                    sum_b += (source.data[(i + 2.0_f64) as usize] as f64);
                                     {
                                         count += 1.0;
                                         count
@@ -129,7 +128,8 @@ pub fn create_surface_fingerprint(source: &Surface, grid_size: Option<f64>) -> S
         }
     }
     return SurfaceFingerprint {
+        __flight_identity: std::sync::Arc::new(()),
         grid_size: grid_size,
-        cells: cells,
+        cells: (cells).clone(),
     };
 }

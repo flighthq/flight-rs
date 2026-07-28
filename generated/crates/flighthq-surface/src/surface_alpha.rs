@@ -20,8 +20,6 @@ fn __flight_js_to_u32(value: f64) -> u32 {
 pub fn copy_surface_alpha(dest: &mut SurfaceRegion, source: &SurfaceRegion) -> () {
     let w = (dest.width).min(source.width);
     let h = (dest.height).min(source.height);
-    let sd = &source.surface.data;
-    let dd = &mut dest.surface.data;
     {
         let mut py = 0.0_f64;
         while (py < h) {
@@ -52,8 +50,8 @@ pub fn copy_surface_alpha(dest: &mut SurfaceRegion, source: &SurfaceRegion) -> (
                     }
                     let si = (((sy * source.surface.width) + sx) * 4.0_f64);
                     let di = (((dy * dest.surface.width) + dx) * 4.0_f64);
-                    let alpha = (sd[(si + 3.0_f64) as usize] as f64);
-                    dd[(di + 3.0_f64) as usize] = (alpha) as u8;
+                    let alpha = (source.surface.data[(si + 3.0_f64) as usize] as f64);
+                    dest.surface.data[(di + 3.0_f64) as usize] = ((alpha).clone()) as u8;
                     {
                         px += 1.0;
                         px
@@ -75,7 +73,6 @@ pub fn copy_surface_alpha(dest: &mut SurfaceRegion, source: &SurfaceRegion) -> (
 // Source: upstream/packages/surface/src/surfaceAlpha.ts:42 (sha256:515e0a6eceeb3c99029794245b36c952250a7795d3d68e80f1be893d6776a268)
 pub fn multiply_surface_alpha(out: &mut SurfaceRegion, factor: f64) -> () {
     let f = (0.0_f64).max((1.0_f64).min(factor));
-    let data = &mut out.surface.data;
     let surface_width = out.surface.width;
     {
         let mut py = 0.0_f64;
@@ -100,7 +97,8 @@ pub fn multiply_surface_alpha(out: &mut SurfaceRegion, factor: f64) -> () {
                         continue;
                     }
                     let i = ((((y * surface_width) + x) * 4.0_f64) + 3.0_f64);
-                    data[i as usize] = (((data[i as usize] as f64) * f).round()) as u8;
+                    out.surface.data[i as usize] =
+                        (((out.surface.data[i as usize] as f64) * f).round()) as u8;
                     {
                         px += 1.0;
                         px
@@ -122,7 +120,6 @@ pub fn multiply_surface_alpha(out: &mut SurfaceRegion, factor: f64) -> () {
 // Source: upstream/packages/surface/src/surfaceAlpha.ts:66 (sha256:b962bda9a91a273a5ea9f007a1ed45666a22f3e76dda088f7e8a8ac3459f382a)
 pub fn set_surface_alpha(out: &mut SurfaceRegion, alpha: f64) -> () {
     let a = (0.0_f64).max((255.0_f64).min((alpha).round()));
-    let data = &mut out.surface.data;
     let surface_width = out.surface.width;
     {
         let mut py = 0.0_f64;
@@ -146,7 +143,8 @@ pub fn set_surface_alpha(out: &mut SurfaceRegion, alpha: f64) -> () {
                         };
                         continue;
                     }
-                    data[((((y * surface_width) + x) * 4.0_f64) + 3.0_f64) as usize] = (a) as u8;
+                    out.surface.data[((((y * surface_width) + x) * 4.0_f64) + 3.0_f64) as usize] =
+                        (a) as u8;
                     {
                         px += 1.0;
                         px

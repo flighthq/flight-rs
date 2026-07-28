@@ -9,5 +9,8 @@
 use crate::SceneNode;
 
 // Source: upstream/packages/types/src/SceneNodeVisitor.ts:2 (sha256:86ca853e0838537db084747dc4f08afe66eac61fb741deb10326eb0fbc05d6dc)
-pub type SceneNodeVisitor =
-    std::sync::Arc<dyn Fn(SceneNode, f64) -> crate::OpaqueHostValue + Send + Sync + 'static>;
+pub type SceneNodeVisitor = std::sync::Arc<
+    std::sync::Mutex<
+        Box<dyn FnMut(SceneNode, f64) -> crate::FlightUnion2<bool, ()> + Send + 'static>,
+    >,
+>;

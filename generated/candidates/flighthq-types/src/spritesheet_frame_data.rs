@@ -9,6 +9,8 @@
 // Source: upstream/packages/types/src/SpritesheetFrameData.ts:1 (sha256:7d41b954f16f21af8a6aaffcacc5ea5bdc431fa356a5386e8973a752ffaf57fa)
 #[derive(Clone)]
 pub struct SpritesheetFrameData {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub height: f64,
     pub name: String,
     pub offset_x: f64,
@@ -21,4 +23,9 @@ pub struct SpritesheetFrameData {
     pub width: f64,
     pub x: f64,
     pub y: f64,
+}
+impl PartialEq for SpritesheetFrameData {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

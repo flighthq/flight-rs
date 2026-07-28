@@ -17,6 +17,8 @@ pub type ParticleBlendMode = String;
 // Source: upstream/packages/types/src/ParticleEmitterConfig.ts:10 (sha256:cf4bc7901c43bc748e5284248a651f745819fc095bdc6b09ccf7134d7f42f41f)
 #[derive(Clone)]
 pub struct ParticleEmitterConfig {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub alpha_end: f64,
     pub alpha_start: f64,
     pub blend_mode: Option<ParticleBlendMode>,
@@ -69,4 +71,9 @@ pub struct ParticleEmitterConfig {
     pub color_curve: Option<ParticleCurve>,
     pub scale_curve: Option<ParticleCurve>,
     pub world_space: bool,
+}
+impl PartialEq for ParticleEmitterConfig {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

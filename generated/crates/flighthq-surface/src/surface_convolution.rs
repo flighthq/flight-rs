@@ -11,6 +11,8 @@ use flighthq_types::{SurfaceEdgeMode, SurfaceRegion};
 // Source: upstream/packages/surface/src/surfaceConvolution.ts:3 (sha256:d414c7f43602d9cae5d37532248e9afcbcb39ba99c2dc62bee6c8184fdfff075)
 #[derive(Clone)]
 pub struct SurfaceConvolutionOptions {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub bias: Option<f64>,
     pub edge: Option<SurfaceEdgeMode>,
     pub divisor: Option<f64>,
@@ -19,6 +21,11 @@ pub struct SurfaceConvolutionOptions {
     pub matrix_y: f64,
     pub preserve_alpha: Option<bool>,
 }
+impl PartialEq for SurfaceConvolutionOptions {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/surface/src/surfaceConvolution.ts:28 (sha256:87df2bd6a92d4408f2c5abf6f837793a93e8e1755c83ec46028a7e5ed7e7a197)
 pub fn convolve_surface(
@@ -26,24 +33,24 @@ pub fn convolve_surface(
     source: &SurfaceRegion,
     options: &SurfaceConvolutionOptions,
 ) -> () {
-    let __destructure0 = &options;
-    let matrix = &__destructure0.matrix;
-    let matrix_x = __destructure0.matrix_x;
-    let matrix_y = __destructure0.matrix_y;
+    let matrix_x = options.matrix_x;
+    let matrix_y = options.matrix_y;
     if ((matrix_x <= 0.0_f64) || (matrix_y <= 0.0_f64)) {
         panic!(
             "{}",
             "Convolution filter matrix dimensions must be positive"
         );
     }
-    if ((matrix.len() as f64) < (matrix_x * matrix_y)) {
+    if ((options.matrix.len() as f64) < (matrix_x * matrix_y)) {
         panic!(
             "{}",
             "Convolution filter matrix does not match its dimensions"
         );
     }
-    let raw_divisor =
-        (options.divisor).unwrap_or(get_convolution_divisor(matrix, (matrix_x * matrix_y)));
+    let raw_divisor = (options.divisor).unwrap_or(get_convolution_divisor(
+        &options.matrix,
+        (matrix_x * matrix_y),
+    ));
     let divisor = if (raw_divisor == 0.0_f64) {
         1.0_f64
     } else {
@@ -56,7 +63,6 @@ pub fn convolve_surface(
     let offset_y = (matrix_y / 2.0_f64).floor();
     let surface_width = source.surface.width;
     let surface_height = source.surface.height;
-    let data = &source.surface.data;
     {
         let mut py = 0.0_f64;
         while (py < source.height) {
@@ -76,7 +82,8 @@ pub fn convolve_surface(
                                 let mut kx = 0.0_f64;
                                 while (kx < matrix_x) {
                                     let raw_sample_x = (((source.x + px) + kx) - offset_x);
-                                    let weight = matrix[(weight_row_start + kx) as usize].clone();
+                                    let weight =
+                                        options.matrix[(weight_row_start + kx) as usize].clone();
                                     let mut sample_x: f64;
                                     let mut sample_y: f64;
                                     if ((((raw_sample_y < 0.0_f64)
@@ -135,10 +142,13 @@ pub fn convolve_surface(
                                         sample_y = raw_sample_y;
                                     }
                                     let i = (((sample_y * surface_width) + sample_x) * 4.0_f64);
-                                    r += ((data[i as usize] as f64) * weight);
-                                    g += ((data[(i + 1.0_f64) as usize] as f64) * weight);
-                                    b += ((data[(i + 2.0_f64) as usize] as f64) * weight);
-                                    a += ((data[(i + 3.0_f64) as usize] as f64) * weight);
+                                    r += ((source.surface.data[i as usize] as f64) * weight);
+                                    g += ((source.surface.data[(i + 1.0_f64) as usize] as f64)
+                                        * weight);
+                                    b += ((source.surface.data[(i + 2.0_f64) as usize] as f64)
+                                        * weight);
+                                    a += ((source.surface.data[(i + 3.0_f64) as usize] as f64)
+                                        * weight);
                                     {
                                         kx += 1.0;
                                         kx
@@ -158,7 +168,7 @@ pub fn convolve_surface(
                     if preserve_alpha {
                         let cy = (0.0_f64).max((surface_height - 1.0_f64).min((source.y + py)));
                         let cx = (0.0_f64).max((surface_width - 1.0_f64).min((source.x + px)));
-                        out[(di + 3.0_f64) as usize] = (data
+                        out[(di + 3.0_f64) as usize] = (source.surface.data
                             [((((cy * surface_width) + cx) * 4.0_f64) + 3.0_f64) as usize]
                             as f64) as u8;
                     } else {

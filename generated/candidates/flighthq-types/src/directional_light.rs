@@ -11,6 +11,8 @@ use crate::Vector3;
 // Source: upstream/packages/types/src/DirectionalLight.ts:6 (sha256:5aa15d73a4d69dda6f617f278e05d90700a178b45474ec248e36e1a1139373ae)
 #[derive(Clone)]
 pub struct DirectionalLight {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub kind: String,
     pub casts_shadow: bool,
     pub color: f64,
@@ -19,6 +21,11 @@ pub struct DirectionalLight {
     pub normal_bias: f64,
     pub pcf_radius: f64,
     pub shadow_bias: f64,
+}
+impl PartialEq for DirectionalLight {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/DirectionalLight.ts:17 (sha256:14d67d7a33aa627cd20f5f9d8654dc1da943a0d5920a3d62d8399d764b3550de)

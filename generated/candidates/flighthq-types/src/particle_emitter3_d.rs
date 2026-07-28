@@ -11,6 +11,8 @@ use crate::{Kind, ParticleBlendMode, ParticleEmitterData, Quaternion, SceneNodeR
 // Source: upstream/packages/types/src/ParticleEmitter3D.ts:5 (sha256:d66b6f092414db98431d68c37d08a251ff2e6ebfbec95b5e3e3d038794e94ae5)
 #[derive(Clone)]
 pub struct ParticleEmitter3D {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub data: ParticleEmitterData,
     pub enabled: bool,
     pub kind: Kind,
@@ -21,6 +23,11 @@ pub struct ParticleEmitter3D {
     pub rotation: Quaternion,
     pub scale: Vector3,
     pub blend_mode: ParticleBlendMode,
+}
+impl PartialEq for ParticleEmitter3D {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/ParticleEmitter3D.ts:13 (sha256:e20ec3b85ad5a39e40ce41eaa87bc07cc0a9c2c3c19c45f70ca492674f04cdc1)

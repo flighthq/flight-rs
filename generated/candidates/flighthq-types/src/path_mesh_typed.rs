@@ -9,6 +9,13 @@
 // Source: upstream/packages/types/src/PathMeshTyped.ts:7 (sha256:6ef427bcb80822024cdb79b6577acaf3425d9859a5e0d52b83d376894443d4a5)
 #[derive(Clone)]
 pub struct PathMeshTyped {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub vertices: Vec<f32>,
     pub indices: Vec<u32>,
+}
+impl PartialEq for PathMeshTyped {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

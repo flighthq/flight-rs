@@ -11,8 +11,15 @@ use crate::NodeAny;
 // Source: upstream/packages/types/src/HitTestResult.ts:7 (sha256:8c306f73c07c7e0446d168a5392ac66020e80454ef17cc57d870a516f58de455)
 #[derive(Clone)]
 pub struct HitTestResult {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub local_x: f64,
     pub local_y: f64,
     pub node: NodeAny,
     pub sub_index: f64,
+}
+impl PartialEq for HitTestResult {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

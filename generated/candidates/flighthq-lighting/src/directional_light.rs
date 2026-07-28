@@ -1,0 +1,97 @@
+// @generated from upstream/packages/lighting/src/directionalLight.ts; do not edit.
+#![allow(clippy::excessive_precision)]
+#![allow(non_upper_case_globals)]
+#![allow(unused_braces)]
+#![allow(unused_imports)]
+#![allow(unused_mut)]
+#![allow(unused_parens)]
+
+use flighthq_entity::create_entity;
+use flighthq_geometry::{clone_vector3, create_vector3, set_vector3};
+use flighthq_types::{
+    DIRECTIONAL_LIGHT_KIND as directional_light_kind_constant, DirectionalLight, Vector3Like,
+};
+
+// Source: upstream/packages/lighting/src/directionalLight.ts:6 (sha256:ae22f5138e53cd2df7b843f130bdd9febf39d2cad6f130edf563bb11fc9f4431)
+#[derive(Clone)]
+pub struct DirectionalLightOptions {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub casts_shadow: Option<bool>,
+    pub color: Option<f64>,
+    pub direction: Option<Vector3Like>,
+    pub intensity: Option<f64>,
+    pub normal_bias: Option<f64>,
+    pub pcf_radius: Option<f64>,
+    pub shadow_bias: Option<f64>,
+}
+impl PartialEq for DirectionalLightOptions {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/lighting/src/directionalLight.ts:17 (sha256:5f0392990c8eaa6a846b2d300a4eac0bef98355d17752d3dd0795ba567e2f83f)
+pub fn clone_directional_light(source: &DirectionalLight) -> DirectionalLight {
+    return create_entity(Some(DirectionalLight {
+        __flight_identity: std::sync::Arc::new(()),
+        casts_shadow: source.casts_shadow,
+        color: source.color,
+        direction: clone_vector3(&source.direction),
+        intensity: source.intensity,
+        kind: directional_light_kind_constant,
+        normal_bias: source.normal_bias,
+        pcf_radius: source.pcf_radius,
+        shadow_bias: source.shadow_bias,
+    }));
+}
+
+// Source: upstream/packages/lighting/src/directionalLight.ts:33 (sha256:5dad8dd877a42bb83777f9c716aa5247da09b6d46c5505d9be25e756299b8d0a)
+pub fn create_directional_light(options: Option<DirectionalLightOptions>) -> DirectionalLight {
+    let direction = options.as_ref().and_then(|value| (value.direction).clone());
+    return create_entity(Some(DirectionalLight {
+        __flight_identity: std::sync::Arc::new(()),
+        casts_shadow: (options.as_ref().and_then(|value| value.casts_shadow)).unwrap_or(false),
+        color: (options.as_ref().and_then(|value| value.color)).unwrap_or(4294967295.0_f64),
+        direction: if (direction).is_some() {
+            clone_vector3(&direction.as_ref().unwrap())
+        } else {
+            create_vector3(Some(0.0_f64), Some((-1.0_f64)), Some(0.0_f64))
+        },
+        intensity: (options.as_ref().and_then(|value| value.intensity)).unwrap_or(1.0_f64),
+        kind: directional_light_kind_constant,
+        normal_bias: (options.as_ref().and_then(|value| value.normal_bias)).unwrap_or(0.0_f64),
+        pcf_radius: (options.as_ref().and_then(|value| value.pcf_radius)).unwrap_or(0.0_f64),
+        shadow_bias: (options.as_ref().and_then(|value| value.shadow_bias)).unwrap_or(0.0_f64),
+    }));
+}
+
+// Source: upstream/packages/lighting/src/directionalLight.ts:49 (sha256:4ebb605251ad41a9c5ec890964ade685e83cafaec0b08b2e4cc6f6ba86091bbd)
+pub fn set_directional_light_direction(out: &mut DirectionalLight, x: f64, y: f64, z: f64) -> () {
+    let lx = x;
+    let ly = y;
+    let lz = z;
+    let len = (((lx * lx) + (ly * ly)) + (lz * lz)).sqrt();
+    if (len > 0.0_f64) {
+        set_vector3(&mut out.direction, (lx / len), (ly / len), (lz / len));
+    }
+}
+
+// Source: upstream/packages/lighting/src/directionalLight.ts:62 (sha256:6df49593877d65a0a303f937e4e1c00d2c17fb0b7b62c794cc303044d9483125)
+pub fn set_directional_light_target(
+    out: &mut DirectionalLight,
+    from_x: f64,
+    from_y: f64,
+    from_z: f64,
+    to_x: f64,
+    to_y: f64,
+    to_z: f64,
+) -> () {
+    let dx = (to_x - from_x);
+    let dy = (to_y - from_y);
+    let dz = (to_z - from_z);
+    let len = (((dx * dx) + (dy * dy)) + (dz * dz)).sqrt();
+    if (len > 0.0_f64) {
+        set_vector3(&mut out.direction, (dx / len), (dy / len), (dz / len));
+    }
+}

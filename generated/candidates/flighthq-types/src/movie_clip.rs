@@ -15,17 +15,27 @@ use crate::{
 // Source: upstream/packages/types/src/MovieClip.ts:5 (sha256:844ebe6fe1ba72c2844947afcc9d7a7e8ed079b6b61270f799b0abc99e5098cf)
 #[derive(Clone)]
 pub struct MovieClipData {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub timeline: Option<Timeline>,
+}
+impl PartialEq for MovieClipData {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/MovieClip.ts:9 (sha256:5386662f90c427df70f9b3b82fca86921a3fe1eae777a323d15d43c80087a999)
 #[derive(Clone)]
 pub struct MovieClipRuntime {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
     pub appearance_id: f64,
     pub bounds_using_local_bounds_id: f64,
     pub bounds_using_local_transform_id: f64,
-    pub can_add_child: std::sync::Arc<dyn Fn(Node, Node) -> bool + Send + Sync + 'static>,
+    pub can_add_child:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
     pub children: Option<Vec<Node>>,
     pub color_adjustments: Option<Vec<Adjustment>>,
     pub resolved_color_transform: Option<ColorTransform>,
@@ -51,17 +61,25 @@ pub struct MovieClipRuntime {
     pub rotation_sine: f64,
     pub world_matrix: Option<Matrix>,
     pub bounds_rectangle: Option<Rectangle>,
-    pub compute_local_bounds_rectangle:
-        std::sync::Arc<dyn Fn(Rectangle, BoundsNodeAny) -> () + Send + Sync + 'static>,
+    pub compute_local_bounds_rectangle: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
+    >,
     pub local_bounds_rectangle: Option<Rectangle>,
     pub world_bounds_rectangle: Option<Rectangle>,
     pub stage: Option<Stage>,
     pub movie_clip_signals: Option<MovieClipSignals>,
 }
+impl PartialEq for MovieClipRuntime {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/types/src/MovieClip.ts:13 (sha256:9cc2d31b0acbcbef484fc61680c640e6d7dc44d735fc62fbf669952d5327347a)
 #[derive(Clone)]
 pub struct MovieClip {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub data: MovieClipData,
     pub enabled: bool,
     pub kind: Kind,
@@ -81,6 +99,11 @@ pub struct MovieClip {
     pub skew_y: f64,
     pub x: f64,
     pub y: f64,
+}
+impl PartialEq for MovieClip {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/MovieClip.ts:17 (sha256:04be8325f9b5c0fe0519ffc7b46f601f0e47a74ac2c154d5eeb4ce58648b34b1)

@@ -11,8 +11,10 @@ use crate::{AlphaType, BlendMode, Kind, MaterialAlphaMode, Texture};
 // Source: upstream/packages/types/src/ToonMaterial.ts:7 (sha256:1c993883bad8944cd6da043e55da9b6014270eb750d3a0fbc840c9cd107de2b0)
 #[derive(Clone)]
 pub struct ToonMaterial {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub kind: Kind,
-    pub name: Option<Option<String>>,
+    pub name: Option<String>,
     pub alpha_cutoff: f64,
     pub alpha_mode: MaterialAlphaMode,
     pub alpha_type: AlphaType,
@@ -22,6 +24,11 @@ pub struct ToonMaterial {
     pub base_color_map: Option<Texture>,
     pub ramp: Option<Texture>,
     pub steps: f64,
+}
+impl PartialEq for ToonMaterial {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/ToonMaterial.ts:14 (sha256:55e33ed2e0f38dd8d035aef38e0acb2ed01b9bd28c5454513d0fa623d60bea0c)

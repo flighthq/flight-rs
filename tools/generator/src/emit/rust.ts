@@ -17,6 +17,7 @@ export interface RustModule {
   enumNames?: readonly string[];
   imports?: RustImport[];
   inlineFunctions?: IrFunctionDeclaration[];
+  semanticFunctions?: readonly IrFunctionDeclaration[];
   semanticTypeParameters?: Readonly<Record<string, readonly string[]>>;
   semanticTypes?: Readonly<Record<string, IrType>>;
   source: string;
@@ -25,12 +26,22 @@ export interface RustModule {
 
 export interface RustImport {
   module: string;
-  names: Array<{ imported: string; local: string }>;
+  names: Array<{
+    imported: string;
+    kind?: 'constant' | 'function' | 'type' | 'value';
+    local: string;
+    public?: boolean;
+  }>;
 }
 
 interface EmitContext {
   anonymousTypes: ReadonlyMap<string, string>;
+  atomicBoolNames: ReadonlySet<string>;
+  borrowedNames: Set<string>;
+  callbackArgumentStorage: ReadonlyMap<string, string>;
+  callbackTypeParameters: ReadonlySet<string>;
   callbackTypes: ReadonlySet<string>;
+  captureReturns: boolean;
   constantNames: ReadonlyMap<string, string>;
   constantValues: ReadonlyMap<string, number>;
   continueEpilogue: readonly string[];
@@ -39,24 +50,40 @@ interface EmitContext {
   enumNames: ReadonlySet<string>;
   functions: ReadonlyMap<string, IrFunctionDeclaration>;
   inlineFunctions: ReadonlyMap<string, IrFunctionDeclaration>;
+  localTypeNames: ReadonlySet<string>;
+  mutexCollectionNames: ReadonlySet<string>;
+  mutexValueNames: ReadonlySet<string>;
   mutatedNames: ReadonlySet<string>;
   mutatingFunctions: ReadonlyMap<string, ReadonlySet<number>>;
   namedTypeParameters: ReadonlyMap<string, readonly string[]>;
   namedTypes: ReadonlyMap<string, IrType>;
+  nonNullableNames: ReadonlySet<string>;
+  numericNamespaceNames: ReadonlySet<string>;
+  placeAliases: Map<string, IrExpression>;
+  rawClosureNames: Set<string>;
+  recursiveClosureSlots: ReadonlyMap<string, string>;
+  sharedCaptureNames: ReadonlySet<string>;
   symbolTypes: Map<string, IrType>;
+  timerHandleNames: ReadonlySet<string>;
+  unionNarrowings: Map<string, { index: number; variants: readonly IrType[] }>;
 }
 
 export class RustEmissionError extends Error {}
 
 export function emitRustModule(module: RustModule): string {
-  const constantNames = new Map(
-    module.declarations
+  const constantNames = new Map([
+    ...module.declarations
       .filter(
         (declaration): declaration is IrVariableDeclaration =>
           declaration.kind === 'variable' && declaration.initializer?.kind !== 'function',
       )
-      .map((declaration) => [declaration.name, screamingSnakeCase(declaration.name)]),
-  );
+      .map((declaration) => [declaration.name, screamingSnakeCase(declaration.name)] as const),
+    ...(module.imports ?? []).flatMap((group) =>
+      group.names.flatMap((item) =>
+        item.kind === 'constant' ? [[item.local, importedConstantBinding(item)] as const] : [],
+      ),
+    ),
+  ]);
   const constantValues = new Map<string, number>();
   for (const declaration of module.declarations) {
     if (declaration.kind !== 'variable' || !declaration.initializer || declaration.initializer.kind === 'function') {
@@ -69,10 +96,26 @@ export function emitRustModule(module: RustModule): string {
   const mutatingFunctions = collectMutatingFunctionParameters([
     ...module.declarations,
     ...(module.inlineFunctions ?? []),
+    ...(module.semanticFunctions ?? []),
   ]);
+  const moduleMutatedNames = collectMutatedNames(module.declarations, mutatingFunctions);
   const context: EmitContext = {
     anonymousTypes: new Map(),
+    atomicBoolNames: new Set(
+      module.declarations.flatMap((declaration) =>
+        declaration.kind === 'variable' &&
+        declaration.mutable &&
+        declaration.initializer?.kind === 'literal' &&
+        typeof declaration.initializer.value === 'boolean'
+          ? [declaration.name]
+          : [],
+      ),
+    ),
+    borrowedNames: new Set(),
+    callbackArgumentStorage: new Map(),
+    callbackTypeParameters: new Set(),
     callbackTypes: new Set(['EasingFunction', 'ScalarRemap']),
+    captureReturns: false,
     constantNames,
     constantValues,
     continueEpilogue: [],
@@ -84,13 +127,44 @@ export function emitRustModule(module: RustModule): string {
       ...module.declarations
         .filter((declaration) => declaration.kind === 'enum')
         .map((declaration) => declaration.name),
+      ...module.declarations.flatMap((declaration) =>
+        declaration.kind === 'variable' && isNumericNamespaceInitializer(declaration.initializer)
+          ? [declaration.name]
+          : [],
+      ),
     ]),
     functions: new Map(
-      module.declarations
-        .filter((declaration): declaration is IrFunctionDeclaration => declaration.kind === 'function')
-        .map((declaration) => [declaration.name, declaration]),
+      [
+        ...(module.semanticFunctions ?? []),
+        ...module.declarations.filter(
+          (declaration): declaration is IrFunctionDeclaration => declaration.kind === 'function',
+        ),
+      ].map((declaration) => [declaration.name, declaration]),
     ),
     inlineFunctions,
+    localTypeNames: new Set(
+      module.declarations.filter((declaration) => declaration.kind === 'type').map((declaration) => declaration.name),
+    ),
+    mutexCollectionNames: new Set(
+      module.declarations.flatMap((declaration) =>
+        declaration.kind === 'variable' &&
+        declaration.initializer?.kind === 'array' &&
+        moduleMutatedNames.has(declaration.name)
+          ? [declaration.name]
+          : [],
+      ),
+    ),
+    mutexValueNames: new Set(
+      module.declarations.flatMap((declaration) =>
+        declaration.kind === 'variable' &&
+        declaration.initializer &&
+        declaration.initializer.kind !== 'array' &&
+        !(declaration.initializer.kind === 'literal' && typeof declaration.initializer.value === 'boolean') &&
+        moduleMutatedNames.has(declaration.name)
+          ? [declaration.name]
+          : [],
+      ),
+    ),
     mutatedNames: new Set(),
     mutatingFunctions,
     namedTypeParameters: new Map([
@@ -105,6 +179,18 @@ export function emitRustModule(module: RustModule): string {
         .filter((declaration) => declaration.kind === 'type')
         .map((declaration) => [declaration.name, declaration.type] as const),
     ]),
+    nonNullableNames: new Set(),
+    numericNamespaceNames: new Set(
+      module.declarations.flatMap((declaration) =>
+        declaration.kind === 'variable' && isNumericNamespaceInitializer(declaration.initializer)
+          ? [declaration.name]
+          : [],
+      ),
+    ),
+    placeAliases: new Map(),
+    rawClosureNames: new Set(),
+    recursiveClosureSlots: new Map(),
+    sharedCaptureNames: new Set(),
     symbolTypes: new Map(
       module.declarations.flatMap((declaration) => {
         if (declaration.kind !== 'variable') return [];
@@ -114,35 +200,65 @@ export function emitRustModule(module: RustModule): string {
         return type ? [[declaration.name, type] as const] : [];
       }),
     ),
+    timerHandleNames: new Set(),
+    unionNarrowings: new Map(),
   };
-  const declarations = module.declarations.map((declaration) => emitDeclaration(declaration, context)).join('\n\n');
+  for (const declaration of module.declarations) {
+    if (declaration.kind !== 'variable' || declaration.type || !declaration.initializer) continue;
+    const inferred = inferIrExpressionType(declaration.initializer, context);
+    if (inferred) context.symbolTypes.set(declaration.name, inferred);
+  }
+  const declarations = module.declarations
+    .map((declaration) => {
+      try {
+        return emitDeclaration(declaration, context);
+      } catch (error) {
+        if (error instanceof RustEmissionError) {
+          throw new RustEmissionError(`${declaration.name}: ${error.message}`);
+        }
+        throw error;
+      }
+    })
+    .join('\n\n');
   const importGroups: RustImport[] = [
     ...(module.typeImports.length > 0
       ? [
           {
             module: 'crate',
-            names: [...new Set(module.typeImports)].map((name) => ({ imported: name, local: name })),
+            names: [...new Set(module.typeImports)].map((name) => ({
+              imported: name,
+              kind: 'type' as const,
+              local: name,
+            })),
           },
         ]
       : []),
     ...(module.imports ?? []),
   ];
   const imports = importGroups
-    .map((group) => {
+    .flatMap((group) => {
       const names = [
-        ...new Map(
-          group.names
-            .filter(({ local }) => new RegExp(`\\b${local}\\b`, 'u').test(declarations))
-            .map((item) => [item.local, item]),
-        ).values(),
+        ...group.names
+          .flatMap((item) => {
+            const resolved = resolveRustImport(item, declarations);
+            return resolved ? [resolved] : [];
+          })
+          .reduce((bindings, item) => {
+            const previous = bindings.get(item.local);
+            if (!previous || item.public) bindings.set(item.local, item);
+            return bindings;
+          }, new Map<string, RustImport['names'][number]>())
+          .values(),
       ].sort((left, right) => left.local.localeCompare(right.local));
-      if (names.length === 0) return '';
-      const bindings = names
-        .map(({ imported, local }) => (imported === local ? imported : `${imported} as ${local}`))
-        .join(', ');
-      return `use ${group.module}::{${bindings}};`;
+      return [false, true].flatMap((publicBinding) => {
+        const selected = names.filter((item) => Boolean(item.public) === publicBinding);
+        if (selected.length === 0) return [];
+        const bindings = selected
+          .map(({ imported, local }) => (imported === local ? imported : `${imported} as ${local}`))
+          .join(', ');
+        return [`${publicBinding ? 'pub ' : ''}use ${group.module}::{${bindings}};`];
+      });
     })
-    .filter(Boolean)
     .join('\n');
   const numericCoercions = declarations.includes('__flight_js_to_')
     ? [
@@ -188,6 +304,9 @@ function emitDeclaration(declaration: IrDeclaration, context: EmitContext): stri
     case 'variable':
       return `${provenance}\n${emitTopLevelVariable(declaration, context)}`;
     case 'type':
+      if (context.numericNamespaceNames.has(declaration.name)) {
+        return `${provenance}\n// TypeScript numeric namespace ${declaration.name} is represented by its generated Rust constants.`;
+      }
       return `${provenance}\n${emitTypeDeclaration(
         declaration.name,
         declaration.exported,
@@ -343,6 +462,18 @@ function emitEnumDeclaration(declaration: IrEnumDeclaration, context: EmitContex
 }
 
 function emitTopLevelVariable(declaration: IrVariableDeclaration, context: EmitContext): string {
+  if (context.numericNamespaceNames.has(declaration.name) && declaration.initializer?.kind === 'object') {
+    const members = declaration.initializer.properties.flatMap((property) => {
+      if (property.kind !== 'property') return [];
+      const value = evaluateConstant(property.value, context.constantValues);
+      if (value === undefined) return [];
+      return [`pub const ${property.name}: f64 = ${emitLiteral(value)};`];
+    });
+    return [
+      `${declaration.exported ? 'pub ' : ''}struct ${declaration.name};`,
+      `impl ${declaration.name} {\n${indent(members.join('\n'))}\n}`,
+    ].join('\n');
+  }
   if (context.erasedValueNames.has(declaration.name)) {
     return `// TypeScript value namespace ${declaration.name} is represented by its generated Rust type.`;
   }
@@ -354,10 +485,45 @@ function emitTopLevelVariable(declaration: IrVariableDeclaration, context: EmitC
   }
   const visibility = declaration.exported ? 'pub ' : '';
   const name = context.constantNames.get(declaration.name) ?? screamingSnakeCase(declaration.name);
-  const symbol = symbolDescription(declaration.initializer);
-  if (symbol !== undefined) return `${visibility}const ${name}: &'static str = ${JSON.stringify(symbol)};`;
   const objectInitializer = declaration.initializer.kind === 'object' ? declaration.initializer : undefined;
   const inferredObject = objectInitializer ? inferStaticExpressionType(objectInitializer) : undefined;
+  if (
+    context.atomicBoolNames.has(declaration.name) &&
+    declaration.initializer.kind === 'literal' &&
+    typeof declaration.initializer.value === 'boolean'
+  ) {
+    return `${visibility}static ${name}: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(${String(declaration.initializer.value)});`;
+  }
+  if (context.mutexCollectionNames.has(declaration.name)) {
+    const type = declaration.type
+      ? emitType(declaration.type, context)
+      : emitType(
+          inferStaticExpressionType(declaration.initializer) ?? { element: { kind: 'dynamic' }, kind: 'array' },
+          context,
+        );
+    return `${visibility}static ${name}: std::sync::LazyLock<std::sync::Mutex<${type}>> = std::sync::LazyLock::new(|| std::sync::Mutex::new(${emitExpression(declaration.initializer, context, declaration.type)}));`;
+  }
+  if (context.mutexValueNames.has(declaration.name)) {
+    if (!declaration.type && objectInitializer && inferredObject?.kind === 'anonymous') {
+      const recordName = pascalCase(declaration.name);
+      const structuralContext = typeDeclarationContext(context, recordName, inferredObject);
+      const objectContext = {
+        ...structuralContext,
+        anonymousTypes: new Map([...structuralContext.anonymousTypes, [typeKey(inferredObject), recordName]]),
+      };
+      return [
+        emitTypeDeclaration(recordName, declaration.exported, inferredObject, context),
+        `${visibility}static ${name}: std::sync::LazyLock<std::sync::Mutex<${recordName}>> = std::sync::LazyLock::new(|| std::sync::Mutex::new(${emitObject(objectInitializer, objectContext, inferredObject)}));`,
+      ].join('\n\n');
+    }
+    const inferred = declaration.type ?? inferIrExpressionType(declaration.initializer, context);
+    if (!inferred) throw new RustEmissionError(`cannot infer mutable top-level value ${declaration.name}`);
+    return `${visibility}static ${name}: std::sync::LazyLock<std::sync::Mutex<${emitType(inferred, context)}>> = std::sync::LazyLock::new(|| std::sync::Mutex::new(${emitExpression(declaration.initializer, context, inferred)}));`;
+  }
+  const symbol = symbolDescription(declaration.initializer);
+  if (symbol !== undefined) {
+    return `${visibility}static ${name}: std::sync::LazyLock<crate::FlightSymbol> = std::sync::LazyLock::new(|| ${emitExpression(declaration.initializer, context)});`;
+  }
   if (!declaration.type && objectInitializer && inferredObject?.kind === 'anonymous') {
     const recordName = pascalCase(declaration.name);
     const structuralContext = typeDeclarationContext(context, recordName, inferredObject);
@@ -370,10 +536,52 @@ function emitTopLevelVariable(declaration: IrVariableDeclaration, context: EmitC
       `${visibility}static ${name}: std::sync::LazyLock<${recordName}> = std::sync::LazyLock::new(|| ${emitObject(objectInitializer, objectContext, inferredObject)});`,
     ].join('\n\n');
   }
+  if (declaration.type && objectInitializer) {
+    const type = emitType(declaration.type, context);
+    return `${visibility}static ${name}: std::sync::LazyLock<${type}> = std::sync::LazyLock::new(|| ${emitObject(objectInitializer, context, declaration.type)});`;
+  }
   const type = declaration.type ? emitType(declaration.type, context) : inferExpressionType(declaration.initializer);
   const folded = context.constantValues.get(declaration.name);
-  const initializer = folded === undefined ? emitExpression(declaration.initializer, context) : emitLiteral(folded);
+  const initializer =
+    folded === undefined ? emitExpression(declaration.initializer, context, declaration.type) : emitLiteral(folded);
+  const lazyType =
+    declaration.type ??
+    inferStaticExpressionType(declaration.initializer) ??
+    inferIrExpressionType(declaration.initializer, context);
+  if (folded === undefined && !isRustConstExpression(declaration.initializer) && lazyType) {
+    return `${visibility}static ${name}: std::sync::LazyLock<${emitType(lazyType, context)}> = std::sync::LazyLock::new(|| ${initializer});`;
+  }
   return `${visibility}const ${name}: ${type} = ${initializer};`;
+}
+
+function isNumericNamespaceInitializer(expression: IrExpression | undefined): boolean {
+  return (
+    expression?.kind === 'object' &&
+    expression.properties.length > 0 &&
+    expression.properties.every(
+      (property) =>
+        property.kind === 'property' && property.value.kind === 'literal' && typeof property.value.value === 'number',
+    )
+  );
+}
+
+function isRustConstExpression(expression: IrExpression): boolean {
+  switch (expression.kind) {
+    case 'literal':
+      return true;
+    case 'identifier':
+      return true;
+    case 'unary':
+      return ['+', '-', '!', '~'].includes(expression.operator) && isRustConstExpression(expression.operand);
+    case 'binary':
+      return isRustConstExpression(expression.left) && isRustConstExpression(expression.right);
+    case 'property':
+      return expression.object.kind === 'identifier' && expression.object.name === 'Math' && expression.name === 'PI';
+    case 'cast':
+      return isRustConstExpression(expression.expression);
+    default:
+      return false;
+  }
 }
 
 function symbolDescription(expression: IrExpression): string | undefined {
@@ -406,6 +614,28 @@ function inferStaticExpressionType(expression: IrExpression): IrType | undefined
       if (typeof expression.value === 'number') return primitive('Float');
       if (typeof expression.value === 'string') return primitive('String');
       return undefined;
+    case 'call':
+      return isSymbolConstruction(expression) ? { arguments: [], kind: 'named', name: 'FlightSymbol' } : undefined;
+    case 'new': {
+      const name = runtimeConstructorType(expression.callee);
+      if (name === 'Map' || name === 'WeakMap') {
+        return { arguments: expression.typeArguments, kind: 'named', name: 'RustMap' };
+      }
+      if (name === 'Set' || name === 'WeakSet') {
+        return { arguments: expression.typeArguments, kind: 'named', name: 'RustSet' };
+      }
+      if (name === 'Array') {
+        return { element: expression.typeArguments[0] ?? { kind: 'dynamic' }, kind: 'array' };
+      }
+      return undefined;
+    }
+    case 'cast':
+      return expression.type;
+    case 'unary':
+      if (expression.operator === '!') return primitive('Bool');
+      if (expression.operator === 'typeof') return primitive('String');
+      if (['+', '-', '~', '++', '--'].includes(expression.operator)) return primitive('Float');
+      return undefined;
     case 'object': {
       const fields = expression.properties.flatMap((property): IrTypeField[] => {
         if (property.kind !== 'property') return [];
@@ -431,6 +661,7 @@ function emitLiftedFunction(
   }
   const nextContext = functionContext(context, declaration.name, expression, returns);
   registerParameters(expression.parameters, nextContext, callback ? [primitive('Float')] : []);
+  registerLocalTypes(expression.body, nextContext);
   const parameters = expression.parameters.map((parameter) =>
     emitParameter(parameter, nextContext, callback ? primitive('Float') : undefined, expression),
   );
@@ -446,8 +677,14 @@ function emitFunctionDeclaration(declaration: IrFunctionDeclaration, context: Em
       `${declaration.origin.source}: async Rust lowering is not implemented for ${declaration.name}`,
     );
   }
-  const nextContext = functionContext(context, declaration.name, declaration, declaration.returns);
+  const callbackTypeParameters = inferCallbackTypeParameters(declaration);
+  const nextContext = {
+    ...functionContext(context, declaration.name, declaration, declaration.returns),
+    callbackArgumentStorage: inferCallbackArgumentStorage(declaration, callbackTypeParameters),
+    callbackTypeParameters,
+  };
   registerParameters(declaration.parameters, nextContext);
+  registerLocalTypes(declaration.body, nextContext);
   const parameters = declaration.parameters.map((parameter) =>
     emitParameter(parameter, nextContext, undefined, declaration),
   );
@@ -463,7 +700,19 @@ function emitFunctionDeclaration(declaration: IrFunctionDeclaration, context: Em
     nextContext,
     defaults,
   );
-  return `${emitAnonymousDefinitions(nextContext)}${declaration.exported ? 'pub ' : ''}fn ${snakeCase(declaration.name)}(${parameters.join(', ')}) -> ${emitType(declaration.returns, nextContext)} ${body}`;
+  const signature = [...parameters, emitType(declaration.returns, nextContext)].join(' ');
+  const effectiveTypeParameters = declaration.typeParameters.filter((parameter) =>
+    new RegExp(`\\b${parameter}\\b`, 'u').test(signature),
+  );
+  const generics =
+    effectiveTypeParameters.length > 0
+      ? `<${effectiveTypeParameters
+          .map((parameter) =>
+            callbackTypeParameters.has(parameter) ? `${parameter}: crate::FlightCallback` : `${parameter}: Clone`,
+          )
+          .join(', ')}>`
+      : '';
+  return `${emitAnonymousDefinitions(nextContext)}${declaration.exported ? 'pub ' : ''}fn ${snakeCase(declaration.name)}${generics}(${parameters.join(', ')}) -> ${emitType(declaration.returns, nextContext)} ${body}`;
 }
 
 function emitParameter(
@@ -477,20 +726,38 @@ function emitParameter(
   const emitted = emitType(type, context);
   const optional = parameter.optional || parameter.initializer;
   const resolved = resolveSemanticType(type, context);
+  const sharedHandle = isSharedHandleType(type);
   const referenceLike =
     resolved?.kind === 'anonymous' ||
     resolved?.kind === 'array' ||
+    resolved?.kind === 'function' ||
+    resolved?.kind === 'union' ||
+    (resolved?.kind === 'named' &&
+      (resolved.name === 'RustMap' || resolved.name === 'RustSet' || resolved.name === 'FlightRegex')) ||
     (resolved?.kind === 'named' && Boolean(typedArrayType(resolved.name)));
-  const assigned = referenceLike ? context.mutatedNames.has(parameter.name) : assignsName(owner, parameter.name);
   const captured = capturesParameterInReturnedClosure(owner, parameter.name);
-  const borrowed = referenceLike && !optional && !parameter.rest && borrowRecords && !captured;
+  if (resolved?.kind === 'function' && !optional && !parameter.rest && borrowRecords && !captured) {
+    context.rawClosureNames.add(parameter.name);
+    context.borrowedNames.add(parameter.name);
+    return `${safeName(parameter.name)}: &mut impl FnMut(${resolved.parameters
+      .map((item) => emitType(item, context))
+      .join(', ')}) -> ${emitType(resolved.returns, context)}`;
+  }
+  const assigned = referenceLike ? context.mutatedNames.has(parameter.name) : assignsName(owner, parameter.name);
+  const ownedReadHandle = sharedHandle || (type.kind === 'named' && type.name === 'Signal' && !assigned);
+  const borrowed = referenceLike && !ownedReadHandle && !optional && !parameter.rest && borrowRecords && !captured;
+  if (borrowed) context.borrowedNames.add(parameter.name);
   const name = `${assigned && !borrowed ? 'mut ' : ''}${safeName(parameter.name)}`;
-  const storage = optional ? `Option<${emitted}>` : emitted;
+  const storage = optional && type.kind !== 'nullable' ? `Option<${emitted}>` : emitted;
   return `${name}: ${borrowed ? `${assigned ? '&mut ' : '&'}${storage}` : storage}`;
 }
 
 function emitStatementsAsBlock(statements: IrStatement[], context: EmitContext, prefix: string[] = []): string {
-  const lines = [...prefix, ...statements.flatMap((statement) => emitStatement(statement, context))];
+  const lines = [...prefix];
+  for (const statement of statements) {
+    lines.push(...emitStatement(statement, context));
+    if (statementAlwaysReturns(statement, context)) break;
+  }
   return `{\n${indent(lines.join('\n'))}\n}`;
 }
 
@@ -520,34 +787,109 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
       if (statement.async) throw new RustEmissionError('async for-of Rust lowering is not implemented');
       const iterableType = inferIrExpressionType(statement.iterable, context);
       const elementType = iterableType?.kind === 'array' ? iterableType.element : undefined;
-      if (elementType) context.symbolTypes.set(statement.variable, elementType);
       const iterable = emitExpression(statement.iterable, context);
-      const loopContext = { ...context, continueEpilogue: [] };
-      return [
-        `for ${safeName(statement.variable)} in ${parenthesize(iterable)}.iter().cloned() ${emitStatementAsBlock(statement.body, loopContext)}`,
-      ];
+      const loopContext: EmitContext = {
+        ...context,
+        continueEpilogue: [],
+        placeAliases: new Map(context.placeAliases),
+        symbolTypes: new Map(context.symbolTypes),
+      };
+      if (elementType) loopContext.symbolTypes.set(statement.variable, elementType);
+      const bindings = statement.bindings.flatMap((binding) => emitLocalVariable(binding, loopContext));
+      const bodyStatements = statement.body.kind === 'block' ? statement.body.statements : [statement.body];
+      const body = `{\n${indent(
+        [...bindings, ...bodyStatements.flatMap((item) => emitStatement(item, loopContext))].join('\n'),
+      )}\n}`;
+      return [`for ${safeName(statement.variable)} in ${parenthesize(iterable)}.iter().cloned() ${body}`];
     }
     case 'if': {
+      const constant = evaluateStaticBoolean(statement.condition, context);
+      if (constant === true) return emitStatement(statement.consequent, context);
+      if (constant === false) return statement.otherwise ? emitStatement(statement.otherwise, context) : [];
+      const narrowed = narrowTypeofContexts(statement.condition, context);
       const lines = [
-        `if ${emitCondition(statement.condition, context)} ${emitStatementAsBlock(statement.consequent, context)}`,
+        `if ${emitCondition(statement.condition, context)} ${emitStatementAsBlock(statement.consequent, narrowed.whenTrue)}`,
       ];
       if (statement.otherwise) {
-        lines[0] += ` else ${emitStatementAsBlock(statement.otherwise, context)}`;
+        lines[0] += ` else ${emitStatementAsBlock(statement.otherwise, narrowed.whenFalse)}`;
       }
       return lines;
     }
     case 'return':
-      return [
-        statement.expression
-          ? `return ${emitExpression(statement.expression, context, context.currentReturnType)};`
-          : 'return;',
-      ];
+      return context.captureReturns
+        ? [
+            statement.expression
+              ? `return Some(${emitReturnExpression(statement.expression, context)});`
+              : 'return Some(());',
+          ]
+        : [statement.expression ? `return ${emitReturnExpression(statement.expression, context)};` : 'return;'];
     case 'switch':
       return emitSwitchStatement(statement, context);
     case 'throw':
       return [`panic!("{}", ${emitThrowMessage(statement.expression, context)});`];
-    case 'try':
-      throw new RustEmissionError('try Rust lowering is not implemented');
+    case 'try': {
+      if (statement.catchBody) {
+        if (
+          ['break', 'continue'].some(
+            (kind) =>
+              containsStatementKind(statement.tryBody, kind as IrStatement['kind']) ||
+              containsStatementKind(statement.catchBody, kind as IrStatement['kind']),
+          )
+        ) {
+          throw new RustEmissionError('try/catch with escaping loop control is not implemented');
+        }
+        const capturesReturn =
+          containsStatementKind(statement.tryBody, 'return') || containsStatementKind(statement.catchBody, 'return');
+        const catchContext: EmitContext = {
+          ...context,
+          captureReturns: capturesReturn,
+          symbolTypes: new Map(context.symbolTypes),
+        };
+        if (statement.catchName) {
+          catchContext.symbolTypes.set(statement.catchName, { kind: 'dynamic' });
+        }
+        const catchLines = [
+          ...(statement.catchName ? [`let ${safeName(statement.catchName)} = crate::OpaqueHostValue::Object;`] : []),
+          ...emitStatement(statement.catchBody, catchContext),
+        ];
+        const returnType = context.currentReturnType;
+        if (capturesReturn && !returnType) {
+          throw new RustEmissionError('try/catch return capture requires an inferred function return type');
+        }
+        const tryContext: EmitContext = { ...context, captureReturns: capturesReturn };
+        const caught = capturesReturn
+          ? [
+              `let __flight_try_return: Option<${emitType(returnType!, context)}> = match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| -> Option<${emitType(returnType!, context)}> {`,
+              indent(emitStatement(statement.tryBody, tryContext).join('\n')),
+              indent('None'),
+              '})) {',
+              indent('Ok(value) => value,'),
+              indent(
+                `Err(_) => (|| -> Option<${emitType(returnType!, context)}> {\n${indent(
+                  [...catchLines, 'None'].join('\n'),
+                )}\n})(),`,
+              ),
+              '};',
+            ].join('\n')
+          : [
+              'match std::panic::catch_unwind(std::panic::AssertUnwindSafe(||',
+              emitStatementAsBlock(statement.tryBody, context),
+              ')) {',
+              indent('Ok(_) => {}'),
+              indent(`Err(_) => {\n${indent(catchLines.join('\n'))}\n}`),
+              '}',
+            ].join(' ');
+        return [
+          caught,
+          ...(statement.finallyBody ? emitStatement(statement.finallyBody, context) : []),
+          ...(capturesReturn ? ['if let Some(__flight_return) = __flight_try_return { return __flight_return; }'] : []),
+        ];
+      }
+      return [
+        ...emitStatement(statement.tryBody, context),
+        ...(statement.finallyBody ? emitStatement(statement.finallyBody, context) : []),
+      ];
+    }
     case 'variable':
       return statement.declarations.flatMap((variable) => emitLocalVariable(variable, context));
     case 'while':
@@ -560,32 +902,87 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
   }
 }
 
-function emitSwitchStatement(statement: Extract<IrStatement, { kind: 'switch' }>, context: EmitContext): string[] {
-  const value = emitExpression(statement.expression, context);
-  const branches: string[] = [];
-  let defaultBranch: string | undefined;
-  for (const switchCase of statement.cases) {
-    if (!caseTerminates(switchCase.statements)) {
-      throw new RustEmissionError('fall-through switch cases require explicit Rust lowering');
+function emitReturnExpression(expression: IrExpression, context: EmitContext): string {
+  const expected = context.currentReturnType;
+  if (!expected || expected.kind !== 'nullable') {
+    if (
+      expected &&
+      expression.kind === 'identifier' &&
+      context.borrowedNames.has(expression.name) &&
+      !isCopyType(expected, context)
+    ) {
+      return `${emitIdentifier(expression.name, context)}.clone()`;
     }
-    const body = emitStatementsAsBlock(switchCase.statements, context);
-    if (switchCase.expression) {
-      const condition = emitExpression(switchCase.expression, context);
-      branches.push(`${branches.length === 0 ? 'if' : 'else if'} __switch_value == ${condition} ${body}`);
-    } else {
-      defaultBranch = `${branches.length === 0 ? '' : 'else '}${body}`;
-    }
+    return emitExpression(expression, context, expected);
   }
-  if (defaultBranch) branches.push(defaultBranch);
-  return ['{', indent(`let __switch_value = ${value};\n${branches.join(' ')}`), '}'];
+  return emitNullableValue(expression, context, expected);
 }
 
-function caseTerminates(statements: IrStatement[]): boolean {
-  const last = statements.at(-1);
-  if (!last) return false;
-  if (last.kind === 'return' || last.kind === 'throw') return true;
-  if (last.kind === 'block') return caseTerminates(last.statements);
-  return false;
+function emitNullableValue(
+  expression: IrExpression,
+  context: EmitContext,
+  expected: Extract<IrType, { kind: 'nullable' }>,
+): string {
+  if (expression.kind === 'conditional') {
+    return `if ${emitCondition(expression.condition, context)} { ${emitNullableValue(expression.whenTrue, context, expected)} } else { ${emitNullableValue(expression.whenFalse, context, expected)} }`;
+  }
+  if (isNullishExpression(expression)) return emitExpression(expression, context, expected);
+  const actual = inferIrExpressionType(expression, context);
+  return actual?.kind === 'nullable'
+    ? emitExpression(expression, context, expected)
+    : `Some(${emitExpression(expression, context, expected.inner)})`;
+}
+
+function emitSwitchStatement(statement: Extract<IrStatement, { kind: 'switch' }>, context: EmitContext): string[] {
+  const value = emitExpression(statement.expression, context);
+  const defaultIndex = statement.cases.findIndex((switchCase) => !switchCase.expression);
+  const selections: string[] = [];
+  statement.cases.forEach((switchCase, index) => {
+    if (!switchCase.expression) return;
+    selections.push(
+      `${selections.length === 0 ? 'if' : 'else if'} __switch_value == ${emitExpression(
+        switchCase.expression,
+        context,
+      )} { ${String(index)}_usize }`,
+    );
+  });
+  const fallback = defaultIndex >= 0 ? String(defaultIndex) : String(statement.cases.length);
+  const clauses = statement.cases.map((switchCase, index) => {
+    const body = switchCase.statements.flatMap((item) => emitSwitchCaseStatement(item, context));
+    return `if __flight_case <= ${String(index)}_usize {\n${indent(body.join('\n'))}\n}`;
+  });
+  return [
+    '{',
+    indent(
+      [
+        `let __switch_value = ${value};`,
+        `let __flight_case = ${selections.join(' ')}${selections.length > 0 ? ' else ' : ''}{ ${fallback}_usize };`,
+        "'__flight_switch: {",
+        indent(clauses.join('\n')),
+        '}',
+      ].join('\n'),
+    ),
+    '}',
+  ];
+}
+
+function emitSwitchCaseStatement(statement: IrStatement, context: EmitContext): string[] {
+  if (statement.kind === 'break') return ["break '__flight_switch;"];
+  if (statement.kind === 'block') {
+    return [
+      `{\n${indent(statement.statements.flatMap((item) => emitSwitchCaseStatement(item, context)).join('\n'))}\n}`,
+    ];
+  }
+  if (statement.kind === 'if') {
+    let value = `if ${emitCondition(statement.condition, context)} {\n${indent(
+      emitSwitchCaseStatement(statement.consequent, context).join('\n'),
+    )}\n}`;
+    if (statement.otherwise) {
+      value += ` else {\n${indent(emitSwitchCaseStatement(statement.otherwise, context).join('\n'))}\n}`;
+    }
+    return [value];
+  }
+  return emitStatement(statement, context);
 }
 
 function emitForStatement(statement: Extract<IrStatement, { kind: 'for' }>, context: EmitContext): string[] {
@@ -616,33 +1013,181 @@ function emitStatementAsBlock(
 }
 
 function emitLocalVariable(variable: IrVariable, context: EmitContext): string[] {
-  const mutable = variable.mutable || context.mutatedNames.has(variable.name);
+  const transferredBindings = collectTransferredObjectBindings(variable.initializer);
+  const mutable =
+    variable.mutable ||
+    variable.initializer?.kind === 'function' ||
+    context.mutatedNames.has(variable.name) ||
+    transferredBindings.some((binding) => context.mutatedNames.has(binding.source));
   if (!variable.initializer) {
-    if (!variable.type) throw new RustEmissionError(`cannot infer uninitialized local ${variable.name}`);
-    context.symbolTypes.set(variable.name, variable.type);
-    return [`let ${mutable ? 'mut ' : ''}${safeName(variable.name)}: ${emitType(variable.type, context)};`];
+    const inferred = variable.type ?? context.symbolTypes.get(variable.name);
+    if (!inferred) throw new RustEmissionError(`cannot infer uninitialized local ${variable.name}`);
+    const nullable =
+      inferred.kind !== 'nullable' &&
+      (isReferenceLike(inferred, context) ||
+        (inferred.kind === 'named' && !context.enumNames.has(inferred.name) && !typedArrayType(inferred.name)));
+    const type = nullable ? ({ inner: inferred, kind: 'nullable' } as const) : inferred;
+    context.symbolTypes.set(variable.name, type);
+    if (context.sharedCaptureNames.has(variable.name)) {
+      return [
+        `let ${safeName(variable.name)}: std::sync::Arc<std::sync::Mutex<${emitType(type, context)}>> = std::sync::Arc::new(std::sync::Mutex::new(None));`,
+      ];
+    }
+    return [
+      nullable
+        ? `let ${mutable ? 'mut ' : ''}${safeName(variable.name)}: ${emitType(type, context)} = None;`
+        : `let ${mutable ? 'mut ' : ''}${safeName(variable.name)}: ${emitType(type, context)};`,
+    ];
   }
-  const expected = variable.type;
+  const callbackStorage = context.callbackArgumentStorage.get(variable.name);
+  const expected: IrType | undefined = callbackStorage
+    ? {
+        inner: {
+          arguments: [{ arguments: [], kind: 'named', name: callbackStorage }],
+          kind: 'named',
+          name: 'FlightCallbackArgs',
+        },
+        kind: 'nullable',
+      }
+    : variable.type;
   const inferred = expected ?? inferIrExpressionType(variable.initializer, context);
+  if (context.timerHandleNames.has(variable.name)) {
+    const timerType: IrType = {
+      inner: { arguments: [], kind: 'named', name: 'FlightTimeout' },
+      kind: 'nullable',
+    };
+    context.symbolTypes.set(variable.name, timerType);
+    const initializer =
+      variable.initializer.kind === 'literal' && variable.initializer.value === 0
+        ? 'None'
+        : emitExpression(variable.initializer, context, timerType);
+    const sharedCapture = context.sharedCaptureNames.has(variable.name);
+    return [
+      sharedCapture
+        ? `let ${safeName(variable.name)}: std::sync::Arc<std::sync::Mutex<${emitType(timerType, context)}>> = std::sync::Arc::new(std::sync::Mutex::new(${initializer}));`
+        : `let ${mutable ? 'mut ' : ''}${safeName(variable.name)}: ${emitType(timerType, context)} = ${initializer};`,
+    ];
+  }
+  const sharedCapture = context.sharedCaptureNames.has(variable.name);
+  if (
+    inferred?.kind === 'function' &&
+    variable.initializer.kind === 'function' &&
+    containsIdentifier(variable.initializer, variable.name)
+  ) {
+    const slot = `__flight_recursive_${safeName(variable.name)}`;
+    const recursiveContext: EmitContext = {
+      ...context,
+      recursiveClosureSlots: new Map(context.recursiveClosureSlots).set(variable.name, slot),
+    };
+    const type = emitType(inferred, context);
+    const initializer = emitExpression(variable.initializer, recursiveContext, inferred);
+    context.symbolTypes.set(variable.name, inferred);
+    return [
+      `let ${slot}: std::sync::Arc<std::sync::Mutex<Option<${type}>>> = std::sync::Arc::new(std::sync::Mutex::new(None));`,
+      `let ${mutable ? 'mut ' : ''}${safeName(variable.name)}: ${type} = ${initializer};`,
+      `*${slot}.lock().unwrap() = Some(${safeName(variable.name)}.clone());`,
+    ];
+  }
   if (
     inferred &&
     isReferenceLike(inferred, context) &&
     (variable.initializer.kind === 'property' || variable.initializer.kind === 'identifier')
   ) {
     context.symbolTypes.set(variable.name, inferred);
-    const reference = mutable ? '&mut ' : '&';
-    return [`let ${safeName(variable.name)} = ${reference}${emitPlaceExpression(variable.initializer, context)};`];
+    context.placeAliases.set(variable.name, variable.initializer);
+    return [];
   }
-  const initializer = emitExpression(variable.initializer, context, expected);
+  const initializer = emitExpression(
+    variable.initializer,
+    context,
+    expected ??
+      (variable.initializer.kind === 'function' || containsObjectLiteral(variable.initializer) ? inferred : undefined),
+  );
   if (inferred) context.symbolTypes.set(variable.name, inferred);
-  const annotation = expected && expected.kind !== 'dynamic' ? `: ${emitType(expected, context)}` : '';
+  const annotationType = expected ?? (variable.initializer.kind === 'function' ? inferred : undefined);
+  const annotation =
+    annotationType && annotationType.kind !== 'dynamic' ? `: ${emitType(annotationType, context)}` : '';
+  for (const binding of transferredBindings) {
+    if (!context.mutatedNames.has(binding.source)) continue;
+    context.placeAliases.set(binding.source, {
+      kind: 'property',
+      name: binding.field,
+      object: { kind: 'identifier', name: variable.name },
+      optional: false,
+    });
+  }
+  if (sharedCapture && inferred) {
+    return [
+      `let ${safeName(variable.name)}: std::sync::Arc<std::sync::Mutex<${emitType(inferred, context)}>> = std::sync::Arc::new(std::sync::Mutex::new(${initializer}));`,
+    ];
+  }
   return [`let ${mutable ? 'mut ' : ''}${safeName(variable.name)}${annotation} = ${initializer};`];
 }
 
+function collectTransferredObjectBindings(
+  initializer: IrExpression | undefined,
+): Array<{ field: string; source: string }> {
+  let expression = initializer;
+  while (expression?.kind === 'cast') expression = expression.expression;
+  if (expression?.kind === 'call') {
+    expression = expression.arguments[0];
+    while (expression?.kind === 'cast') expression = expression.expression;
+  }
+  if (expression?.kind !== 'object') return [];
+  return expression.properties.flatMap((property) =>
+    property.kind === 'property' && property.value.kind === 'identifier'
+      ? [{ field: property.name, source: property.value.name }]
+      : [],
+  );
+}
+
+function containsObjectLiteral(expression: IrExpression): boolean {
+  if (expression.kind === 'object') return true;
+  if (expression.kind === 'conditional') {
+    return containsObjectLiteral(expression.whenTrue) || containsObjectLiteral(expression.whenFalse);
+  }
+  if (expression.kind === 'cast') return containsObjectLiteral(expression.expression);
+  return false;
+}
+
+function unwrapCasts(expression: IrExpression): IrExpression {
+  let value = expression;
+  while (value.kind === 'cast') value = value.expression;
+  return value;
+}
+
 function emitExpression(expression: IrExpression, context: EmitContext, expectedType?: IrType | undefined): string {
+  if (expectedType?.kind === 'union') {
+    const actualType = inferIrExpressionType(expression, context);
+    if (actualType?.kind !== 'union') {
+      const variantIndex = actualType
+        ? expectedType.variants.findIndex((variant) => typeKey(variant) === typeKey(actualType))
+        : -1;
+      if (variantIndex >= 0) {
+        const variant = expectedType.variants[variantIndex]!;
+        return wrapUnionValue(
+          emitExpression(expression, context, variant),
+          expectedType.variants,
+          variantIndex,
+          context,
+        );
+      }
+    }
+  }
   switch (expression.kind) {
-    case 'array':
-      return `vec![${expression.elements.map((item) => emitExpression(item, context)).join(', ')}]`;
+    case 'array': {
+      const resolved = resolveSemanticType(expectedType, context);
+      const elementType = resolved?.kind === 'array' ? resolved.element : undefined;
+      if (expression.elements.some((item) => item.kind === 'spread')) {
+        const statements = expression.elements.map((item) =>
+          item.kind === 'spread'
+            ? `__flight_array.extend(${parenthesize(emitExpression(item.expression, context))}.iter().cloned());`
+            : `__flight_array.push(${emitExpression(item, context, elementType)});`,
+        );
+        return `{ let mut __flight_array = Vec::new(); ${statements.join(' ')} __flight_array }`;
+      }
+      return `vec![${expression.elements.map((item) => emitExpression(item, context, elementType)).join(', ')}]`;
+    }
     case 'assignment':
       return emitAssignment(expression, context);
     case 'await':
@@ -650,38 +1195,143 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
     case 'binary':
       return coerceExpression(emitBinary(expression, context), expectedType);
     case 'call':
-      return coerceExpression(emitCall(expression, context), expectedType);
+      return coerceExpression(emitCall(expression, context, expectedType), expectedType);
     case 'cast':
-      return `(${emitExpression(expression.expression, context)} as ${emitType(expression.type, context)})`;
-    case 'conditional':
-      return `if ${emitCondition(expression.condition, context)} { ${emitExpression(expression.whenTrue, context, expectedType)} } else { ${emitExpression(expression.whenFalse, context, expectedType)} }`;
+      if (expression.type.kind === 'named' && context.callbackTypeParameters.has(expression.type.name)) {
+        const value = unwrapCasts(expression.expression);
+        if (value.kind === 'identifier' && value.name === 'nullSignalEmit') {
+          return `${expression.type.name}::flight_noop()`;
+        }
+        if (value.kind === 'function') return emitExpression(value, context, expression.type);
+      }
+      return emitExpression(expression.expression, context, expression.type);
+    case 'conditional': {
+      const narrowed = narrowTypeofContexts(expression.condition, context);
+      const whenTrueType = inferIrExpressionType(expression.whenTrue, narrowed.whenTrue);
+      const whenFalseType = inferIrExpressionType(expression.whenFalse, narrowed.whenFalse);
+      const contextualType =
+        expectedType ??
+        (whenTrueType && whenFalseType && typeKey(whenTrueType) === typeKey(whenFalseType) ? whenTrueType : undefined);
+      return `if ${emitCondition(expression.condition, context)} { ${emitExpression(
+        expression.whenTrue,
+        narrowed.whenTrue,
+        contextualType,
+      )} } else { ${emitExpression(expression.whenFalse, narrowed.whenFalse, contextualType)} }`;
+    }
     case 'element':
+      if (isErasedEntityRuntimeAccess(expression)) {
+        return expectedType
+          ? `panic!("entity runtime storage requires the generated native entity trait")`
+          : 'None::<crate::OpaqueHostValue>';
+      }
       return coerceExpression(emitElementRead(expression, context), expectedType);
     case 'function':
       return emitClosure(expression, context, expectedType);
-    case 'identifier':
-      return coerceExpression(emitIdentifier(expression.name, context), expectedType);
+    case 'identifier': {
+      if (expression.name.toLowerCase() === 'undefined' && expectedType?.kind === 'nullable') {
+        return 'None';
+      }
+      if (
+        expression.name.toLowerCase() === 'undefined' &&
+        (resolveSemanticType(expectedType, context) ?? expectedType)?.kind === 'dynamic'
+      ) {
+        return 'crate::OpaqueHostValue::Undefined';
+      }
+      const actualType = context.symbolTypes.get(expression.name);
+      const emitted = emitIdentifier(expression.name, context);
+      const flowNarrowing = context.unionNarrowings.get(expression.name);
+      if (flowNarrowing) {
+        const owned = context.borrowedNames.has(expression.name)
+          ? `${parenthesize(`*${emitted}`)}.clone()`
+          : `${parenthesize(emitted)}.clone()`;
+        return coerceExpression(unwrapUnionValue(owned, flowNarrowing.variants, flowNarrowing.index), expectedType);
+      }
+      if (actualType?.kind === 'union' && expectedType && expectedType.kind !== 'union') {
+        const variantIndex = actualType.variants.findIndex((variant) => typeKey(variant) === typeKey(expectedType));
+        if (variantIndex >= 0) {
+          const owned = context.borrowedNames.has(expression.name)
+            ? `${parenthesize(`*${emitted}`)}.clone()`
+            : `${parenthesize(emitted)}.clone()`;
+          return unwrapUnionValue(owned, actualType.variants, variantIndex);
+        }
+      }
+      const value =
+        context.constantNames.has(expression.name) &&
+        actualType &&
+        isReferenceLike(actualType, context) &&
+        !context.atomicBoolNames.has(expression.name) &&
+        !context.mutexCollectionNames.has(expression.name) &&
+        !context.mutexValueNames.has(expression.name)
+          ? `${parenthesize(`*${emitted}`)}.clone()`
+          : emitted;
+      const borrowedOwnedValue =
+        actualType &&
+        expectedType &&
+        context.borrowedNames.has(expression.name) &&
+        typeKey(actualType) === typeKey(expectedType)
+          ? `${parenthesize(`*${emitted}`)}.clone()`
+          : value;
+      const resolvedActual = resolveSemanticType(actualType, context) ?? actualType;
+      const ownedValue =
+        actualType &&
+        !context.borrowedNames.has(expression.name) &&
+        !context.rawClosureNames.has(expression.name) &&
+        ((!isCopyType(actualType, context) && expectedType && typeKey(actualType) === typeKey(expectedType)) ||
+          context.sharedCaptureNames.has(expression.name) ||
+          resolvedActual?.kind === 'function' ||
+          isSharedHandleType(actualType) ||
+          (actualType.kind === 'named' && actualType.name === 'FlightCallbackArgs') ||
+          (actualType.kind === 'named' && context.callbackTypeParameters.has(actualType.name)))
+          ? `${parenthesize(borrowedOwnedValue)}.clone()`
+          : context.mutexValueNames.has(expression.name)
+            ? `${parenthesize(borrowedOwnedValue)}.clone()`
+            : borrowedOwnedValue;
+      const narrowed =
+        actualType?.kind === 'nullable' && expectedType && expectedType.kind !== 'nullable'
+          ? `${parenthesize(ownedValue)}.clone().unwrap()`
+          : ownedValue;
+      return coerceExpression(narrowed, expectedType);
+    }
     case 'literal':
       return emitLiteral(expression.value, expectedType, context);
     case 'new':
-      return emitNew(expression, context);
+      return emitNew(expression, context, expectedType);
     case 'object':
       return emitObject(expression, context, expectedType);
-    case 'property':
-      return coerceExpression(emitProperty(expression, context), expectedType);
+    case 'property': {
+      const actualType = inferIrExpressionType(expression, context);
+      const value = emitProperty(expression, context, expectedType);
+      const narrowed =
+        actualType?.kind === 'nullable' && expectedType && expectedType.kind !== 'nullable'
+          ? `${parenthesize(value)}.unwrap()`
+          : value;
+      return coerceExpression(narrowed, expectedType);
+    }
     case 'regexp':
-      throw new RustEmissionError('regular expression Rust lowering is not implemented');
+      return emitRegexp(expression);
     case 'spread':
       throw new RustEmissionError('spread Rust lowering is not implemented');
     case 'template':
       return emitTemplate(expression, context);
     case 'unary':
-      return emitUnary(expression, context);
+      return coerceExpression(emitUnary(expression, context), expectedType);
   }
 }
 
-function emitCall(expression: Extract<IrExpression, { kind: 'call' }>, context: EmitContext): string {
-  if (expression.optional) throw new RustEmissionError('optional call Rust lowering is not implemented');
+function emitCall(
+  expression: Extract<IrExpression, { kind: 'call' }>,
+  context: EmitContext,
+  expectedType?: IrType,
+): string {
+  if (expression.optional) return emitOptionalCall(expression, context);
+  if (isSymbolConstruction(expression)) {
+    if (expression.callee.kind === 'property' && expression.callee.name === 'for' && expression.arguments[0]) {
+      return `crate::FlightSymbol::for_name(&${parenthesize(
+        emitExpression(expression.arguments[0], context, primitive('String')),
+      )})`;
+    }
+    return 'crate::FlightSymbol::new()';
+  }
   if (isArrayFillConstruction(expression)) {
     const length = expression.callee.object.arguments[0];
     const value = expression.arguments[0];
@@ -689,14 +1339,91 @@ function emitCall(expression: Extract<IrExpression, { kind: 'call' }>, context: 
     return `vec![${emitExpression(value, context)}; ${parenthesize(emitExpression(length, context))} as usize]`;
   }
   if (expression.callee.kind === 'identifier') {
+    if (expression.callee.name === 'clearTimeout') {
+      const timer = expression.arguments[0];
+      if (!timer) throw new RustEmissionError('clearTimeout requires a timer handle');
+      const timerType = inferIrExpressionType(timer, context);
+      const value = emitExpression(timer, context);
+      return timerType?.kind === 'nullable'
+        ? `if let Some(__flight_timer) = ${parenthesize(value)}.clone() { crate::clear_timeout(__flight_timer); }`
+        : `crate::clear_timeout(${value})`;
+    }
+    if (expression.callee.name === 'clearInterval') {
+      const timer = expression.arguments[0];
+      if (!timer) throw new RustEmissionError('clearInterval requires a timer handle');
+      const timerType = inferIrExpressionType(timer, context);
+      const value = emitExpression(timer, context);
+      return timerType?.kind === 'nullable'
+        ? `if let Some(__flight_timer) = ${parenthesize(value)}.clone() { crate::clear_interval(__flight_timer); }`
+        : `crate::clear_interval(${value})`;
+    }
+    if (expression.callee.name === 'setTimeout') {
+      const callback = expression.arguments[0];
+      const delay = expression.arguments[1];
+      if (!callback || !delay) throw new RustEmissionError('setTimeout requires a callback and delay');
+      const callbackType: IrType = {
+        kind: 'function',
+        parameters: [],
+        returns: primitive('Void'),
+      };
+      const emittedCallback =
+        callback.kind === 'function'
+          ? emitClosure(callback, context, callbackType, false, true)
+          : `{ let __flight_callback = ${emitExpression(
+              callback,
+              context,
+              callbackType,
+            )}; move || __flight_callback.lock().unwrap()() }`;
+      return `crate::set_timeout(${emittedCallback}, ${emitExpression(delay, context, primitive('Float'))})`;
+    }
+    if (expression.callee.name === 'setInterval') {
+      const callback = expression.arguments[0];
+      const delay = expression.arguments[1];
+      if (!callback || !delay) throw new RustEmissionError('setInterval requires a callback and delay');
+      const callbackType: IrType = {
+        kind: 'function',
+        parameters: [],
+        returns: primitive('Void'),
+      };
+      const emittedCallback =
+        callback.kind === 'function'
+          ? emitClosure(callback, context, callbackType, false, true)
+          : `{ let __flight_callback = ${emitExpression(
+              callback,
+              context,
+              callbackType,
+            )}; move || __flight_callback.lock().unwrap()() }`;
+      return `crate::set_interval(${emittedCallback}, ${emitExpression(delay, context, primitive('Float'))})`;
+    }
+    const localType = context.symbolTypes.get(expression.callee.name);
+    if (localType?.kind === 'nullable') {
+      const callbackType = resolveSemanticType(localType.inner, context);
+      if (callbackType?.kind === 'function') {
+        const arguments_ = expression.arguments.map((argument, index) =>
+          argument.kind === 'spread'
+            ? emitExpression(argument.expression, context, callbackType.parameters[index])
+            : emitExpression(argument, context, callbackType.parameters[index]),
+        );
+        return `${emitPlaceExpression(expression.callee, context)}.as_ref().unwrap().lock().unwrap()(${arguments_.join(', ')})`;
+      }
+    }
     const inline = context.inlineFunctions.get(expression.callee.name);
     if (inline) return emitInlineFunctionCall(expression, inline, context);
     const declaration = context.functions.get(expression.callee.name);
-    if (declaration) return emitKnownFunctionCall(expression, declaration, context);
+    if (declaration) return emitKnownFunctionCall(expression, declaration, context, expectedType);
   }
+  const runtimeGlobal = runtimeGlobalType(expression);
+  if (runtimeGlobal) return 'crate::OpaqueHostValue::Object';
   if (expression.callee.kind === 'property' && expression.callee.object.kind === 'identifier') {
     const owner = expression.callee.object.name;
     const method = expression.callee.name;
+    if (owner === 'Array' && method === 'from') {
+      const result =
+        (resolveSemanticType(expectedType, context) ?? expectedType)?.kind === 'array'
+          ? expectedType!
+          : ({ element: { kind: 'dynamic' }, kind: 'array' } as const);
+      return `crate::host_value::<${emitType(result, context)}>("host.Array.from")`;
+    }
     if (owner === 'Math') {
       return emitMathCall(
         method,
@@ -706,17 +1433,264 @@ function emitCall(expression: Extract<IrExpression, { kind: 'call' }>, context: 
     if (owner === 'Number' && method === 'isFinite' && expression.arguments[0]) {
       return `${parenthesize(emitExpression(expression.arguments[0], context))}.is_finite()`;
     }
+    if (owner === 'Number' && method === 'isInteger' && expression.arguments[0]) {
+      const value = emitExpression(expression.arguments[0], context);
+      return `${parenthesize(value)}.is_finite() && ${parenthesize(value)}.fract() == 0.0_f64`;
+    }
+    if (owner === 'Date' && method === 'now') return 'crate::flight_now_millis()';
+    if (owner === '_Runtime' && method === 'typeofGlobal') return '"undefined"';
+  }
+  if (
+    expression.callee.kind === 'property' &&
+    expression.callee.name === 'now' &&
+    runtimeGlobalType(expression.callee.object) === 'Date'
+  ) {
+    return 'crate::flight_now_millis()';
   }
   if (expression.callee.kind === 'property') {
     const ownerType = inferIrExpressionType(expression.callee.object, context);
+    const collectionType = ownerType?.kind === 'nullable' ? ownerType.inner : ownerType;
     const method = expression.callee.name;
     const owner = emitExpression(expression.callee.object, context);
-    if (ownerType?.kind === 'array' && method === 'push') {
-      const argument = expression.arguments[0];
-      if (!argument) throw new RustEmissionError('Array.push requires an argument');
-      return `${owner}.push(${emitExpression(argument, context, ownerType.element)})`;
+    const ownerPlace =
+      ownerType?.kind === 'nullable'
+        ? `${emitPlaceExpression(expression.callee.object, context)}.as_mut().unwrap()`
+        : emitCollectionPlace(expression.callee.object, context);
+    if (collectionType?.kind === 'dynamic') {
+      const result = expectedType ?? primitive('Void');
+      return `crate::host_value::<${emitType(result, context)}>(${JSON.stringify(`host.${method}`)})`;
     }
-    if (ownerType?.kind === 'array' && method === 'reduce') {
+    if (collectionType?.kind === 'named' && collectionType.name === 'RustMap') {
+      const keyType = collectionType.arguments[0];
+      const valueType = collectionType.arguments[1];
+      const keyExpression = expression.arguments[0];
+      if (method === 'clear') return `${ownerPlace}.clear()`;
+      if (method === 'keys') {
+        return `${ownerPlace}.iter().map(|(key, _)| key.clone()).collect::<Vec<_>>()`;
+      }
+      if (method === 'values') {
+        return `${ownerPlace}.iter().map(|(_, value)| value.clone()).collect::<Vec<_>>()`;
+      }
+      if (!keyExpression) throw new RustEmissionError(`Map.${method} requires a key argument`);
+      const key = emitExpression(keyExpression, context, keyType);
+      if (method === 'get') {
+        return `${ownerPlace}.iter().find(|(key, _)| key == &${key}).map(|(_, value)| value.clone())`;
+      }
+      if (method === 'has') {
+        return `${ownerPlace}.iter().any(|(key, _)| key == &${key})`;
+      }
+      if (method === 'delete') {
+        return `{ let __flight_key = ${key}; if let Some(__flight_index) = ${ownerPlace}.iter().position(|(key, _)| key == &__flight_key) { ${ownerPlace}.remove(__flight_index); true } else { false } }`;
+      }
+      if (method === 'set') {
+        const valueExpression = expression.arguments[1];
+        if (!valueExpression) throw new RustEmissionError('Map.set requires a value argument');
+        const value = emitExpression(valueExpression, context, valueType);
+        return `{ let __flight_key = ${key}; let __flight_value = ${value}; if let Some((_, value)) = ${ownerPlace}.iter_mut().find(|(key, _)| key == &__flight_key) { *value = __flight_value; } else { ${ownerPlace}.push((__flight_key, __flight_value)); } }`;
+      }
+    }
+    if (collectionType?.kind === 'named' && collectionType.name === 'RustSet') {
+      const valueType = collectionType.arguments[0];
+      const valueExpression = expression.arguments[0];
+      if (method === 'clear') return `${ownerPlace}.clear()`;
+      if (method === 'keys' || method === 'values') return `${ownerPlace}.clone()`;
+      if (!valueExpression) throw new RustEmissionError(`Set.${method} requires a value argument`);
+      const value = emitExpression(valueExpression, context, valueType);
+      if (method === 'has') return `${ownerPlace}.iter().any(|item| item == &${value})`;
+      if (method === 'add') {
+        return `{ let __flight_value = ${value}; if !${ownerPlace}.contains(&__flight_value) { ${ownerPlace}.push(__flight_value); } }`;
+      }
+      if (method === 'delete') {
+        return `{ let __flight_value = ${value}; if let Some(__flight_index) = ${ownerPlace}.iter().position(|item| item == &__flight_value) { ${ownerPlace}.remove(__flight_index); true } else { false } }`;
+      }
+    }
+    if (collectionType?.kind === 'named' && collectionType.name === 'FlightRegex') {
+      const argument = expression.arguments[0];
+      if (method === 'test') {
+        if (!argument) throw new RustEmissionError('RegExp.test requires a string argument');
+        return `${parenthesize(owner)}.is_match(&${parenthesize(emitExpression(argument, context))})`;
+      }
+    }
+    const callableType =
+      collectionType?.kind === 'function'
+        ? collectionType
+        : ownerType?.kind === 'nullable'
+          ? resolveSemanticType(ownerType.inner, context)
+          : undefined;
+    if (method === 'call' && callableType?.kind === 'function') {
+      const arguments_ = expression.arguments
+        .slice(1)
+        .map((argument, index) => emitExpression(argument, context, callableType.parameters[index]));
+      const callback =
+        ownerType?.kind === 'nullable'
+          ? `${emitPlaceExpression(expression.callee.object, context)}.as_ref().unwrap()`
+          : owner;
+      return `${parenthesize(callback)}.lock().unwrap()(${arguments_.join(', ')})`;
+    }
+    if (collectionType?.kind === 'primitive' && collectionType.name === 'String') {
+      const argument = expression.arguments[0];
+      if (argument?.kind === 'regexp') {
+        const regex = emitRegexp(argument);
+        if (method === 'split') {
+          return `${parenthesize(regex)}.split(&${parenthesize(owner)}).map(|part| part.to_owned()).collect::<Vec<_>>()`;
+        }
+        if (method === 'search') {
+          return `${parenthesize(regex)}.find(&${parenthesize(owner)}).map_or(-1.0_f64, |matched| matched.start() as f64)`;
+        }
+        if (method === 'replace') {
+          const replacement = expression.arguments[1];
+          if (!replacement) throw new RustEmissionError('String.replace requires a replacement');
+          const replaceMethod = argument.flags.includes('g') ? 'replace_all' : 'replace';
+          if (replacement.kind === 'function') {
+            const stringType = primitive('String');
+            const callbackType: IrType = {
+              kind: 'function',
+              parameters: replacement.parameters.map(() => stringType),
+              returns: stringType,
+            };
+            const callbackArguments = replacement.parameters.map(
+              (_, index) => `captures.get(${String(index)}).map_or("", |matched| matched.as_str()).to_owned()`,
+            );
+            return `{ let mut __flight_replace = ${emitClosure(replacement, context, callbackType, false)}; ${parenthesize(regex)}.${replaceMethod}(&${parenthesize(owner)}, |captures: &regex::Captures<'_>| __flight_replace(${callbackArguments.join(', ')})).into_owned() }`;
+          }
+          return `${parenthesize(regex)}.${replaceMethod}(&${parenthesize(owner)}, ${emitExpression(replacement, context)}).into_owned()`;
+        }
+      }
+      if (method === 'startsWith' || method === 'endsWith' || method === 'includes') {
+        if (!argument) throw new RustEmissionError(`String.${method} requires a search argument`);
+        const rustMethod = method === 'startsWith' ? 'starts_with' : method === 'endsWith' ? 'ends_with' : 'contains';
+        return `${parenthesize(owner)}.${rustMethod}(${emitExpression(argument, context)})`;
+      }
+      if (method === 'toLowerCase') return `${parenthesize(owner)}.to_lowercase()`;
+      if (method === 'toUpperCase') return `${parenthesize(owner)}.to_uppercase()`;
+      if (method === 'trim') return `${parenthesize(owner)}.trim().to_owned()`;
+    }
+    if (
+      (collectionType?.kind === 'array' ||
+        (collectionType?.kind === 'named' && Boolean(typedArrayType(collectionType.name)))) &&
+      method === 'slice' &&
+      expression.arguments.length === 0
+    ) {
+      return ownerType?.kind === 'nullable'
+        ? `${parenthesize(owner)}.as_ref().unwrap().clone()`
+        : `${parenthesize(owner)}.clone()`;
+    }
+    if (collectionType?.kind === 'array' && method === 'pop') {
+      const popped = `${ownerPlace}.pop()`;
+      return expectedType?.kind === 'nullable' ? popped : `${popped}.expect("TypeScript Array.pop returned undefined")`;
+    }
+    if (collectionType?.kind === 'array' && method === 'copyWithin') {
+      const target = expression.arguments[0];
+      const start = expression.arguments[1];
+      if (!target || !start) throw new RustEmissionError('Array.copyWithin requires target and start arguments');
+      const end = expression.arguments[2]
+        ? emitExpression(expression.arguments[2], context)
+        : `${ownerPlace}.len() as f64`;
+      return `{ let __flight_start = ${parenthesize(emitExpression(start, context))} as usize; let __flight_end = ${parenthesize(end)} as usize; let __flight_target = ${parenthesize(emitExpression(target, context))} as usize; ${ownerPlace}.copy_within(__flight_start..__flight_end, __flight_target); ${ownerPlace}.clone() }`;
+    }
+    if (collectionType?.kind === 'array' && method === 'splice') {
+      const start = expression.arguments[0];
+      if (!start) throw new RustEmissionError('Array.splice requires a start argument');
+      const startValue = emitExpression(start, context);
+      const count = expression.arguments[1]
+        ? emitExpression(expression.arguments[1], context)
+        : `((${ownerPlace}.len() as f64) - ${parenthesize(startValue)})`;
+      const inserted = expression.arguments
+        .slice(2)
+        .map((argument) => emitExpression(argument, context, collectionType.element));
+      return `${ownerPlace}.splice(${parenthesize(startValue)} as usize..(${parenthesize(startValue)} + ${parenthesize(count)}) as usize, vec![${inserted.join(', ')}])`;
+    }
+    if (
+      (collectionType?.kind === 'array' ||
+        (collectionType?.kind === 'named' && Boolean(typedArrayType(collectionType.name)))) &&
+      method === 'fill'
+    ) {
+      const value = expression.arguments[0];
+      if (!value) throw new RustEmissionError('Array.fill requires a value');
+      const element =
+        collectionType.kind === 'array' ? collectionType.element : typedArrayElementType(collectionType.name);
+      return `${ownerPlace}.fill(${emitExpression(value, context, element)})`;
+    }
+    if (collectionType?.kind === 'named' && typedArrayType(collectionType.name) && method === 'set') {
+      const sourceExpression = expression.arguments[0];
+      if (!sourceExpression) throw new RustEmissionError('TypedArray.set requires a source argument');
+      const offsetExpression = expression.arguments[1];
+      const target = typedArrayType(collectionType.name)!;
+      const source = emitExpression(sourceExpression, context);
+      const offset = offsetExpression ? emitExpression(offsetExpression, context) : '0.0_f64';
+      return [
+        '{',
+        `let __flight_offset = ${parenthesize(offset)} as usize;`,
+        `let __flight_values: Vec<${target.rust}> = ${parenthesize(source)}.iter().map(|value| (*value) as ${target.rust}).collect();`,
+        `${ownerPlace}[__flight_offset..__flight_offset + __flight_values.len()].copy_from_slice(&__flight_values);`,
+        '}',
+      ].join(' ');
+    }
+    if (collectionType?.kind === 'array' && method === 'indexOf') {
+      const argument = expression.arguments[0];
+      if (!argument) throw new RustEmissionError('Array.indexOf requires an argument');
+      const collection =
+        ownerType?.kind === 'nullable' ? `${parenthesize(owner)}.as_ref().unwrap()` : parenthesize(owner);
+      const value = emitExpression(argument, context, collectionType.element);
+      const equality =
+        collectionType.element.kind === 'named' && context.callbackTypeParameters.has(collectionType.element.name)
+          ? 'crate::FlightCallback::flight_same(item, &__flight_value)'
+          : 'item == &__flight_value';
+      return `{ let __flight_value = ${value}; ${collection}.iter().position(|item| ${equality}).map_or(-1.0_f64, |index| index as f64) }`;
+    }
+    if (collectionType?.kind === 'array' && method === 'includes') {
+      const argument = expression.arguments[0];
+      if (!argument) throw new RustEmissionError('Array.includes requires an argument');
+      const collection =
+        ownerType?.kind === 'nullable' ? `${parenthesize(owner)}.as_ref().unwrap()` : parenthesize(owner);
+      const value = emitExpression(argument, context, collectionType.element);
+      const equality =
+        collectionType.element.kind === 'named' && context.callbackTypeParameters.has(collectionType.element.name)
+          ? 'crate::FlightCallback::flight_same(item, &__flight_value)'
+          : 'item == &__flight_value';
+      return `{ let __flight_value = ${value}; ${collection}.iter().any(|item| ${equality}) }`;
+    }
+    if (collectionType?.kind === 'array' && method === 'sort') {
+      const callback = expression.arguments[0];
+      const comparator =
+        callback?.kind === 'function'
+          ? emitClosure(
+              callback,
+              context,
+              {
+                kind: 'function',
+                parameters: [collectionType.element, collectionType.element],
+                returns: primitive('Float'),
+              },
+              false,
+            )
+          : undefined;
+      const ordering = comparator
+        ? `{ let __flight_order = ${parenthesize(comparator)}(left.clone(), right.clone()); __flight_order.partial_cmp(&0.0_f64).unwrap_or(std::cmp::Ordering::Equal) }`
+        : 'left.partial_cmp(right).unwrap_or(std::cmp::Ordering::Equal)';
+      return `{ let mut __flight_values = ${owner}; __flight_values.sort_by(|left, right| ${ordering}); __flight_values }`;
+    }
+    if (collectionType?.kind === 'array' && method === 'slice') {
+      const start = expression.arguments[0] ? emitExpression(expression.arguments[0], context) : '0.0_f64';
+      const end = expression.arguments[1]
+        ? emitExpression(expression.arguments[1], context)
+        : `${parenthesize(owner)}.len() as f64`;
+      return `${parenthesize(owner)}[${parenthesize(start)} as usize..${parenthesize(end)} as usize].to_vec()`;
+    }
+    if (collectionType?.kind === 'array' && method === 'push') {
+      if (expression.arguments.length === 0) throw new RustEmissionError('Array.push requires an argument');
+      const values = expression.arguments.map((argument) => {
+        const emitted = emitExpression(argument, context, collectionType.element);
+        const actualType = inferIrExpressionType(argument, context);
+        return argument.kind === 'identifier' && actualType && !isCopyType(actualType, context)
+          ? `${parenthesize(emitted)}.clone()`
+          : emitted;
+      });
+      return values.length === 1
+        ? `${ownerPlace}.push(${values[0]})`
+        : `${ownerPlace}.extend(vec![${values.join(', ')}])`;
+    }
+    if (collectionType?.kind === 'array' && method === 'reduce') {
       const callback = expression.arguments[0];
       const initial = expression.arguments[1];
       if (callback?.kind !== 'function' || !initial) {
@@ -725,15 +1699,146 @@ function emitCall(expression: Extract<IrExpression, { kind: 'call' }>, context: 
       const accumulatorType = inferIrExpressionType(initial, context) ?? primitive('Float');
       const closureType: IrType = {
         kind: 'function',
-        parameters: [accumulatorType, ownerType.element],
+        parameters: [accumulatorType, collectionType.element],
         returns: accumulatorType,
       };
       return `${parenthesize(owner)}.iter().cloned().fold(${emitExpression(initial, context)}, ${emitClosure(callback, context, closureType, false)})`;
     }
+    if (collectionType?.kind === 'array' && method === 'map') {
+      const callback = expression.arguments[0];
+      if (!callback) throw new RustEmissionError('Array.map requires a callback');
+      if (callback.kind === 'function') {
+        const returns = inferFunctionExpressionReturnType(callback) ?? { kind: 'dynamic' };
+        const closureType: IrType = {
+          kind: 'function',
+          parameters: [collectionType.element],
+          returns,
+        };
+        return `${parenthesize(owner)}.iter().cloned().map(${emitClosure(callback, context, closureType, false)}).collect()`;
+      }
+      if (callback.kind === 'identifier') {
+        const declaration = context.functions.get(callback.name);
+        const localType = resolveSemanticType(context.symbolTypes.get(callback.name), context);
+        if (declaration || localType?.kind === 'function') {
+          const itemName = '__flight_item';
+          const callbackContext: EmitContext = {
+            ...context,
+            symbolTypes: new Map(context.symbolTypes),
+          };
+          callbackContext.symbolTypes.set(itemName, collectionType.element);
+          const call: Extract<IrExpression, { kind: 'call' }> = {
+            arguments: [{ kind: 'identifier', name: itemName }],
+            callee: callback,
+            kind: 'call',
+            typeArguments: [],
+          };
+          return `${parenthesize(owner)}.iter().cloned().map(|${itemName}| ${emitCall(call, callbackContext)}).collect()`;
+        }
+      }
+      throw new RustEmissionError('Array.map requires an inline or inferred named callback');
+    }
+    if (collectionType?.kind === 'array' && method === 'find') {
+      const callback = expression.arguments[0];
+      if (callback?.kind !== 'function') throw new RustEmissionError('Array.find requires a callback');
+      const closureType: IrType = {
+        kind: 'function',
+        parameters: [collectionType.element],
+        returns: primitive('Bool'),
+      };
+      return `${parenthesize(owner)}.iter().find(|value| ${parenthesize(emitClosure(callback, context, closureType, false))}((*value).clone())).cloned()`;
+    }
+    if (collectionType?.kind === 'named' && typedArrayType(collectionType.name) && method === 'subarray') {
+      const start = expression.arguments[0] ? emitExpression(expression.arguments[0], context) : '0.0_f64';
+      const end = expression.arguments[1] ? emitExpression(expression.arguments[1], context) : `${owner}.len() as f64`;
+      return `${owner}[${parenthesize(start)} as usize..${parenthesize(end)} as usize].to_vec()`;
+    }
   }
-  const arguments_ = expression.arguments.map((argument) => emitExpression(argument, context));
   const callee = emitExpression(expression.callee, context);
+  const calleeType = resolveSemanticType(inferIrExpressionType(expression.callee, context), context);
+  const callbackTypeParameter = inferCallbackTypeParameter(expression.callee, context);
+  if (callbackTypeParameter) {
+    const arguments_ = emitCallbackArguments(expression.arguments, callbackTypeParameter, context);
+    return `crate::FlightCallback::flight_call(&${parenthesize(callee)}, ${arguments_})`;
+  }
+  if (calleeType?.kind === 'function') {
+    const arguments_ = expression.arguments.map((argument, index) =>
+      argument.kind === 'spread'
+        ? emitExpression(argument.expression, context, calleeType.parameters[index])
+        : emitExpression(argument, context, calleeType.parameters[index]),
+    );
+    if (expression.callee.kind === 'identifier' && context.rawClosureNames.has(expression.callee.name)) {
+      return `${callee}(${arguments_.join(', ')})`;
+    }
+    return `${parenthesize(callee)}.lock().unwrap()(${arguments_.join(', ')})`;
+  }
+  if (calleeType?.kind === 'nullable') {
+    const callbackType = resolveSemanticType(calleeType.inner, context);
+    if (callbackType?.kind === 'function') {
+      const arguments_ = expression.arguments.map((argument, index) =>
+        argument.kind === 'spread'
+          ? emitExpression(argument.expression, context, callbackType.parameters[index])
+          : emitExpression(argument, context, callbackType.parameters[index]),
+      );
+      return `${emitPlaceExpression(expression.callee, context)}.as_ref().unwrap().lock().unwrap()(${arguments_.join(', ')})`;
+    }
+  }
+  if (calleeType?.kind === 'dynamic') {
+    const result = expectedType ?? primitive('Void');
+    return `crate::host_value::<${emitType(result, context)}>("host.call")`;
+  }
+  const arguments_ = expression.arguments.map((argument) =>
+    argument.kind === 'spread' ? emitExpression(argument.expression, context) : emitExpression(argument, context),
+  );
   return `${expression.callee.kind === 'property' ? parenthesize(callee) : callee}(${arguments_.join(', ')})`;
+}
+
+function emitOptionalCall(expression: Extract<IrExpression, { kind: 'call' }>, context: EmitContext): string {
+  if (
+    expression.callee.kind === 'call' &&
+    expression.callee.callee.kind === 'property' &&
+    expression.callee.callee.name === 'get'
+  ) {
+    const callee = emitCall(expression.callee, context);
+    const arguments_ = expression.arguments.map((argument) =>
+      argument.kind === 'spread' ? emitExpression(argument.expression, context) : emitExpression(argument, context),
+    );
+    return `{ let __flight_callback = ${callee}; __flight_callback.as_ref().map(|callback| callback.lock().unwrap()(${arguments_.join(', ')})) }`;
+  }
+  const hostReturnType = inferOptionalHostCallReturnType(expression, context);
+  if (hostReturnType) {
+    if (hostReturnType.kind === 'primitive' && hostReturnType.name === 'Bool') return 'Some(false)';
+    if (hostReturnType.kind === 'primitive' && hostReturnType.name === 'Void') return 'Some(())';
+    return `None::<${emitType(hostReturnType, context)}>`;
+  }
+  const calleeType = resolveSemanticType(inferIrExpressionType(expression.callee, context), context);
+  const callbackType = calleeType?.kind === 'nullable' ? resolveSemanticType(calleeType.inner, context) : calleeType;
+  if (callbackType?.kind !== 'function') {
+    throw new RustEmissionError(
+      `optional call requires an inferred nullable function: ${JSON.stringify(expression.callee)}`,
+    );
+  }
+  const callee = emitExpression(expression.callee, context);
+  const arguments_ = expression.arguments.map((argument, index) =>
+    argument.kind === 'spread'
+      ? emitExpression(argument.expression, context, callbackType.parameters[index])
+      : emitExpression(argument, context, callbackType.parameters[index]),
+  );
+  return `{ let __flight_callback = ${callee}; __flight_callback.as_ref().map(|callback| callback.lock().unwrap()(${arguments_.join(', ')})) }`;
+}
+
+function inferOptionalHostCallReturnType(
+  expression: Extract<IrExpression, { kind: 'call' }>,
+  context: EmitContext,
+): IrType | undefined {
+  if (!expression.optional || expression.callee.kind !== 'property') return undefined;
+  const receiver = resolveSemanticType(inferIrExpressionType(expression.callee.object, context), context);
+  if (receiver?.kind !== 'dynamic' && !expression.callee.binding) return undefined;
+  if (expression.callee.name === 'getModifierState') return primitive('Bool');
+  if (['addEventListener', 'removeEventListener'].includes(expression.callee.name)) return primitive('Void');
+  if (['exitFullscreen', 'requestFullscreen', 'requestPointerLock'].includes(expression.callee.name)) {
+    return { kind: 'dynamic' };
+  }
+  return undefined;
 }
 
 function emitInlineFunctionCall(
@@ -757,36 +1862,138 @@ function emitKnownFunctionCall(
   expression: Extract<IrExpression, { kind: 'call' }>,
   declaration: IrFunctionDeclaration,
   context: EmitContext,
+  expectedType?: IrType,
 ): string {
+  const substitutions = inferFunctionTypeSubstitutions(declaration, expression, expectedType);
   const restIndex = declaration.parameters.findIndex((parameter) => parameter.rest);
   if (restIndex < 0) {
+    const directlyMutated = collectMutatedNames(declaration);
+    const mutableIndexes = new Set(
+      declaration.parameters.flatMap((parameter, index) =>
+        (context.mutatingFunctions.get(declaration.name)?.has(index) ?? false) || directlyMutated.has(parameter.name)
+          ? [index]
+          : [],
+      ),
+    );
+    const mutableRoots = new Set(
+      [...mutableIndexes].flatMap((index) => {
+        const argument = expression.arguments[index];
+        const root = argument ? expressionRootIdentifier(argument) : undefined;
+        return root ? [root] : [];
+      }),
+    );
+    const prefix: string[] = [];
     const arguments_ = declaration.parameters.map((parameter, index) => {
       const argument = expression.arguments[index];
       if (!argument) {
         if (parameter.optional || parameter.initializer) return 'None';
         throw new RustEmissionError(`${declaration.name} call is missing required argument ${parameter.name}`);
       }
-      return emitKnownFunctionArgument(argument, parameter, context);
+      const parameterType = substituteIrType(parameter.type, substitutions);
+      const root = expressionRootIdentifier(argument);
+      if (
+        !mutableIndexes.has(index) &&
+        root &&
+        mutableRoots.has(root) &&
+        isReferenceLike(parameterType.kind === 'nullable' ? parameterType.inner : parameterType, context)
+      ) {
+        const temporary = `__flight_argument_${String(index)}`;
+        prefix.push(`let ${temporary} = ${parenthesize(emitPlaceExpression(argument, context))}.clone();`);
+        return `&${temporary}`;
+      }
+      return emitKnownFunctionArgument(
+        argument,
+        { ...parameter, type: parameterType },
+        context,
+        mutableIndexes.has(index),
+      );
     });
-    return `${snakeCase(declaration.name)}(${arguments_.join(', ')})`;
+    const call = `${snakeCase(declaration.name)}(${arguments_.join(', ')})`;
+    return prefix.length > 0 ? `{ ${prefix.join(' ')} ${call} }` : call;
   }
   const fixed = expression.arguments
     .slice(0, restIndex)
-    .map((argument, index) => emitExpression(argument, context, declaration.parameters[index]?.type));
+    .map((argument, index) =>
+      emitExpression(
+        argument,
+        context,
+        declaration.parameters[index]
+          ? substituteIrType(declaration.parameters[index]!.type, substitutions)
+          : undefined,
+      ),
+    );
   const rest = declaration.parameters[restIndex]!;
-  const element = rest.type.kind === 'array' ? rest.type.element : undefined;
+  const restType = substituteIrType(rest.type, substitutions);
+  const element = restType.kind === 'array' ? restType.element : undefined;
+  const restArguments = expression.arguments.slice(restIndex);
+  if (restArguments.length === 1 && restArguments[0]?.kind === 'spread') {
+    return `${snakeCase(declaration.name)}(${[
+      ...fixed,
+      emitExpression(restArguments[0].expression, context, restType),
+    ].join(', ')})`;
+  }
+  if (restType.kind === 'named' && restType.name === 'FlightCallbackArgs') {
+    const signalType = expression.arguments[0] ? inferIrExpressionType(expression.arguments[0], context) : undefined;
+    const signalCallback =
+      signalType?.kind === 'named' && signalType.name === 'Signal'
+        ? resolveSemanticType(signalType.arguments[0], context)
+        : undefined;
+    const callback =
+      signalCallback?.kind === 'function' ? signalCallback : resolveSemanticType(restType.arguments[0], context);
+    const values = restArguments.map((argument, index) =>
+      emitExpression(argument, context, callback?.kind === 'function' ? callback.parameters[index] : undefined),
+    );
+    const tuple = values.length === 0 ? '()' : `(${values.join(', ')}${values.length === 1 ? ',' : ''})`;
+    return `${snakeCase(declaration.name)}(${[...fixed, tuple].join(', ')})`;
+  }
   const values = expression.arguments.slice(restIndex).map((argument) => emitExpression(argument, context, element));
   return `${snakeCase(declaration.name)}(${[...fixed, `vec![${values.join(', ')}]`].join(', ')})`;
 }
 
-function emitKnownFunctionArgument(argument: IrExpression, parameter: IrParameter, context: EmitContext): string {
+function emitKnownFunctionArgument(
+  argument: IrExpression,
+  parameter: IrParameter,
+  context: EmitContext,
+  mutable = false,
+): string {
   const argumentType = inferIrExpressionType(argument, context);
   const nullableParameter = parameter.type.kind === 'nullable';
   const expectedType = parameter.type.kind === 'nullable' ? parameter.type.inner : parameter.type;
-  const optionalParameter = Boolean(parameter.optional || parameter.initializer);
+  const optionalParameter = Boolean(parameter.optional || parameter.initializer) && !nullableParameter;
   if (argument.kind === 'literal' && argument.value === null) return 'None';
 
-  let emitted = emitExpression(argument, context, expectedType);
+  if (
+    !nullableParameter &&
+    !optionalParameter &&
+    !isSharedHandleType(expectedType) &&
+    isReferenceLike(expectedType, context)
+  ) {
+    const root = expressionRootIdentifier(argument);
+    const resolvedExpected = resolveSemanticType(expectedType, context) ?? expectedType;
+    if (resolvedExpected.kind === 'function') {
+      const value =
+        argument.kind === 'function'
+          ? emitClosure(argument, context, expectedType, false)
+          : emitPlaceExpression(argument, context);
+      return argument.kind === 'identifier' && context.borrowedNames.has(argument.name) ? value : `&mut ${value}`;
+    }
+    const value =
+      argument.kind === 'function'
+        ? emitExpression(argument, context, expectedType)
+        : emitPlaceExpression(argument, context);
+    if (argumentType?.kind === 'nullable' && typeKey(argumentType.inner) === typeKey(expectedType)) {
+      return `${value}.${mutable ? 'as_mut' : 'as_ref'}().unwrap()`;
+    }
+    return argument.kind === 'identifier' && root && context.borrowedNames.has(root)
+      ? value
+      : `${mutable ? '&mut ' : '&'}${value}`;
+  }
+
+  let emitted = emitExpression(
+    argument,
+    context,
+    nullableParameter && argumentType?.kind === 'nullable' ? parameter.type : expectedType,
+  );
   if ((nullableParameter || optionalParameter) && argumentType && !isCopyType(argumentType, context)) {
     emitted = `${parenthesize(emitted)}.clone()`;
   }
@@ -795,25 +2002,95 @@ function emitKnownFunctionArgument(argument: IrExpression, parameter: IrParamete
   return emitted;
 }
 
+function inferFunctionTypeSubstitutions(
+  declaration: IrFunctionDeclaration,
+  expression: Extract<IrExpression, { kind: 'call' }>,
+  expectedType?: IrType,
+): ReadonlyMap<string, IrType> {
+  const substitutions = new Map<string, IrType>();
+  declaration.typeParameters.forEach((parameter, index) => {
+    const explicit = expression.typeArguments[index];
+    if (explicit) substitutions.set(parameter, explicit);
+  });
+  const bind = (pattern: IrType, actual: IrType | undefined): void => {
+    if (!actual) return;
+    if (
+      pattern.kind === 'named' &&
+      pattern.arguments.length === 0 &&
+      declaration.typeParameters.includes(pattern.name)
+    ) {
+      if (!substitutions.has(pattern.name)) substitutions.set(pattern.name, actual);
+      return;
+    }
+    if (pattern.kind === 'array' && actual.kind === 'array') {
+      bind(pattern.element, actual.element);
+      return;
+    }
+    if (pattern.kind === 'nullable') {
+      bind(pattern.inner, actual.kind === 'nullable' ? actual.inner : actual);
+      return;
+    }
+    if (pattern.kind === 'named' && actual.kind === 'named' && pattern.name === actual.name) {
+      pattern.arguments.forEach((argument, index) => bind(argument, actual.arguments[index]));
+    }
+  };
+  bind(declaration.returns, expectedType);
+  declaration.parameters.forEach((parameter, index) => {
+    const argument = expression.arguments[index];
+    if (argument) bind(parameter.type, inferStaticExpressionType(argument));
+  });
+  return substitutions;
+}
+
+function inferFunctionExpressionReturnType(
+  expression: Extract<IrExpression, { kind: 'function' }>,
+): IrType | undefined {
+  if (expression.returns) return expression.returns;
+  if (expression.expression) return inferStaticExpressionType(expression.expression);
+  for (const statement of expression.body) {
+    if (statement.kind === 'return' && statement.expression) {
+      return inferStaticExpressionType(statement.expression);
+    }
+  }
+  return undefined;
+}
+
 function emitMathCall(method: string, arguments_: string[]): string {
   const first = arguments_[0];
   if (!first) throw new RustEmissionError(`Math.${method} requires an argument`);
   switch (method) {
     case 'abs':
+    case 'acos':
     case 'asin':
+    case 'cbrt':
     case 'ceil':
     case 'cos':
+    case 'exp':
     case 'floor':
+    case 'ln':
+    case 'log':
+    case 'log2':
     case 'round':
     case 'sin':
     case 'sqrt':
-      return `${parenthesize(first)}.${method}()`;
+    case 'tan':
+    case 'trunc':
+      return `${parenthesize(first)}.${method === 'log' ? 'ln' : method}()`;
+    case 'atan2':
+      if (!arguments_[1]) throw new RustEmissionError('Math.atan2 requires two arguments');
+      return `${parenthesize(first)}.atan2(${arguments_[1]})`;
+    case 'hypot':
+      return `${parenthesize(arguments_.map((value) => `${parenthesize(value)}.powi(2)`).join(' + '))}.sqrt()`;
+    case 'sign':
+      return `{ let __flight_value = ${first}; if __flight_value.is_nan() || __flight_value == 0.0 { __flight_value } else { __flight_value.signum() } }`;
     case 'max':
     case 'min':
       return arguments_.slice(1).reduce((value, item) => `${parenthesize(value)}.${method}(${item})`, first);
     case 'imul':
       if (!arguments_[1]) throw new RustEmissionError('Math.imul requires two arguments');
       return `__flight_js_to_i32(${first}).wrapping_mul(__flight_js_to_i32(${arguments_[1]})) as f64`;
+    case 'fround':
+      return `(${parenthesize(first)} as f32) as f64`;
     case 'pow':
       if (!arguments_[1]) throw new RustEmissionError('Math.pow requires two arguments');
       return `${parenthesize(first)}.powf(${arguments_[1]})`;
@@ -822,10 +2099,21 @@ function emitMathCall(method: string, arguments_: string[]): string {
   }
 }
 
-function emitProperty(expression: Extract<IrExpression, { kind: 'property' }>, context: EmitContext): string {
-  if (expression.optional) throw new RustEmissionError('optional property Rust lowering is not implemented');
+function emitProperty(
+  expression: Extract<IrExpression, { kind: 'property' }>,
+  context: EmitContext,
+  expectedType?: IrType,
+): string {
+  if (expression.optional) return emitOptionalProperty(expression, context);
   if (expression.object.kind === 'identifier') {
     if (expression.object.name === 'Math' && expression.name === 'PI') return 'std::f64::consts::PI';
+    if (expression.object.name === 'Number' && expression.name === 'POSITIVE_INFINITY') return 'f64::INFINITY';
+    if (expression.object.name === 'Number' && expression.name === 'NEGATIVE_INFINITY') return 'f64::NEG_INFINITY';
+    if (expression.object.name === 'Number' && expression.name === 'NaN') return 'f64::NAN';
+    if (expression.object.name === 'Number' && expression.name === 'EPSILON') return 'f64::EPSILON';
+    if (expression.object.name === 'Number' && expression.name === 'MAX_SAFE_INTEGER') {
+      return '9007199254740991.0_f64';
+    }
     if (expression.object.name === 'Float' && expression.name === 'INFINITY') return 'f64::INFINITY';
     if (expression.object.name === 'Float' && expression.name === 'NAN') return 'f64::NAN';
     if (context.enumNames.has(expression.object.name)) {
@@ -833,22 +2121,105 @@ function emitProperty(expression: Extract<IrExpression, { kind: 'property' }>, c
     }
   }
   const objectType = inferIrExpressionType(expression.object, context);
+  const resolvedObject = resolveSemanticType(objectType, context) ?? objectType;
+  if (resolvedObject?.kind === 'dynamic') {
+    const result = expectedType ?? { kind: 'dynamic' };
+    return `crate::host_value::<${emitType(result, context)}>(${JSON.stringify(`host.${expression.name}`)})`;
+  }
   if (objectType?.kind === 'array' && expression.name === 'length') {
-    return `(${emitPlaceExpression(expression.object, context)}.len() as f64)`;
+    return `(${emitCollectionPlace(expression.object, context)}.len() as f64)`;
   }
   if (objectType?.kind === 'named' && typedArrayType(objectType.name) && expression.name === 'length') {
     return `(${emitPlaceExpression(expression.object, context)}.len() as f64)`;
+  }
+  if (
+    objectType?.kind === 'nullable' &&
+    (objectType.inner.kind === 'array' ||
+      (objectType.inner.kind === 'named' && Boolean(typedArrayType(objectType.inner.name)))) &&
+    expression.name === 'length'
+  ) {
+    return `(${emitPlaceExpression(expression.object, context)}.as_ref().unwrap().len() as f64)`;
+  }
+  const collectionType = objectType?.kind === 'nullable' ? objectType.inner : objectType;
+  if (collectionType?.kind === 'named' && collectionType.name === 'RustMap') {
+    const keyType = collectionType.arguments[0] ?? primitive('String');
+    const key = emitExpression({ kind: 'literal', value: expression.name }, context, keyType);
+    const owner =
+      objectType?.kind === 'nullable'
+        ? `${emitPlaceExpression(expression.object, context)}.as_ref().unwrap()`
+        : emitPlaceExpression(expression.object, context);
+    return `${owner}.iter().find(|(key, _)| key == &${key}).map(|(_, value)| value.clone()).expect("TypeScript Record key was absent")`;
   }
   const place = emitPropertyPlace(expression, context);
   const type = inferIrExpressionType(expression, context);
   return type && !isCopyType(type, context) ? `${parenthesize(place)}.clone()` : place;
 }
 
+function emitCollectionPlace(expression: IrExpression, context: EmitContext): string {
+  if (expression.kind === 'identifier' && context.mutexCollectionNames.has(expression.name)) {
+    const name = context.constantNames.get(expression.name) ?? screamingSnakeCase(expression.name);
+    return `${name}.lock().unwrap()`;
+  }
+  return emitPlaceExpression(expression, context);
+}
+
 function emitPropertyPlace(expression: Extract<IrExpression, { kind: 'property' }>, context: EmitContext): string {
   if (expression.object.kind === 'identifier' && context.enumNames.has(expression.object.name)) {
     return `${expression.object.name}::${expression.name}`;
   }
+  const objectType = inferIrExpressionType(expression.object, context);
+  if (objectType && isSharedHandleType(objectType.kind === 'nullable' ? objectType.inner : objectType)) {
+    const owner =
+      objectType.kind === 'nullable'
+        ? `${emitPlaceExpression(expression.object, context)}.as_ref().unwrap()`
+        : emitPlaceExpression(expression.object, context);
+    return `${owner}.inner.lock().unwrap().${safeName(expression.name)}`;
+  }
+  if (objectType?.kind === 'nullable') {
+    const root = expressionRootIdentifier(expression.object);
+    const accessor = root && context.mutatedNames.has(root) ? 'as_mut' : 'as_ref';
+    return `${emitPlaceExpression(expression.object, context)}.${accessor}().unwrap().${safeName(expression.name)}`;
+  }
   return `${emitPlaceExpression(expression.object, context)}.${safeName(expression.name)}`;
+}
+
+function emitOptionalProperty(expression: Extract<IrExpression, { kind: 'property' }>, context: EmitContext): string {
+  const objectType = inferIrExpressionType(expression.object, context);
+  if (objectType?.kind !== 'nullable') {
+    return emitProperty({ ...expression, optional: false }, context);
+  }
+  const inner = resolveSemanticType(objectType.inner, context) ?? objectType.inner;
+  const owner = emitPlaceExpression(expression.object, context);
+  if (
+    expression.name === 'length' &&
+    (inner.kind === 'array' || (inner.kind === 'named' && Boolean(typedArrayType(inner.name))))
+  ) {
+    return `${owner}.as_ref().map(|value| value.len() as f64)`;
+  }
+  if (inner.kind === 'named' && inner.name === 'RustMap') {
+    const keyType = inner.arguments[0] ?? primitive('String');
+    const key = emitExpression({ kind: 'literal', value: expression.name }, context, keyType);
+    return `${owner}.as_ref().and_then(|entries| entries.iter().find(|(key, _)| key == &${key}).map(|(_, value)| value.clone()))`;
+  }
+  if (isSharedHandleType(objectType.inner)) {
+    const fieldType = inferPropertyType(objectType.inner, expression.name, context);
+    if (!fieldType) {
+      throw new RustEmissionError(`optional shared property ${expression.name} has no inferred receiver field`);
+    }
+    const value = `value.inner.lock().unwrap().${safeName(expression.name)}`;
+    const body = isCopyType(fieldType, context) ? value : `${parenthesize(value)}.clone()`;
+    return `${owner}.as_ref().map(|value| ${body})`;
+  }
+  const fieldType = inferPropertyType(objectType.inner, expression.name, context);
+  if (!fieldType) {
+    throw new RustEmissionError(`optional property ${expression.name} has no inferred receiver field`);
+  }
+  const value = `value.${safeName(expression.name)}`;
+  const access = fieldType.kind === 'nullable' ? 'and_then' : 'map';
+  const body = isCopyType(fieldType.kind === 'nullable' ? fieldType.inner : fieldType, context)
+    ? value
+    : `${parenthesize(value)}.clone()`;
+  return `${owner}.as_ref().${access}(|value| ${body})`;
 }
 
 function emitPlaceExpression(expression: IrExpression, context: EmitContext): string {
@@ -865,8 +2236,71 @@ function emitPlaceExpression(expression: IrExpression, context: EmitContext): st
 }
 
 function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, context: EmitContext): string {
-  const left = emitExpression(expression.left, context);
   const leftType = inferIrExpressionType(expression.left, context);
+  const rightType = inferIrExpressionType(expression.right, context);
+  const resolvedLeft = resolveSemanticType(leftType, context) ?? leftType;
+  const resolvedRight = resolveSemanticType(rightType, context) ?? rightType;
+  const comparison = ['===', '!==', '==', '!=', '<', '<=', '>', '>='].includes(expression.operator);
+  const left = emitExpression(
+    expression.left,
+    context,
+    comparison && resolvedLeft?.kind === 'dynamic' && resolvedRight?.kind !== 'dynamic' ? rightType : undefined,
+  );
+  if (expression.operator === 'instanceof') {
+    const constructor = runtimeConstructorType(expression.right);
+    const candidate = leftType?.kind === 'nullable' ? leftType.inner : leftType;
+    if (constructor === 'Promise') {
+      return candidate?.kind === 'named' && candidate.name === 'Promise'
+        ? leftType?.kind === 'nullable'
+          ? `${parenthesize(left)}.is_some()`
+          : 'true'
+        : 'false';
+    }
+    if (constructor && typedArrayType(constructor)) {
+      const representedAsConstructor =
+        candidate?.kind === 'named' && typedArrayType(candidate.name)?.rust === typedArrayType(constructor)?.rust;
+      return representedAsConstructor
+        ? leftType?.kind === 'nullable'
+          ? `${parenthesize(left)}.is_some()`
+          : 'true'
+        : 'false';
+    }
+    if (constructor && opaqueHostInstanceConstructors.has(constructor)) return 'false';
+    throw new RustEmissionError('instanceof Rust lowering requires a portable typed-array constructor');
+  }
+  if (expression.operator === 'in') {
+    const rightType = resolveSemanticType(inferIrExpressionType(expression.right, context), context);
+    if (rightType?.kind === 'named' && rightType.name === 'RustMap') {
+      const keyType = rightType.arguments[0] ?? { kind: 'dynamic' };
+      const key = emitExpression(expression.left, context, keyType);
+      const entries = emitPlaceExpression(expression.right, context);
+      return `{ let __flight_key = ${key}; ${entries}.iter().any(|(key, _)| key == &__flight_key) }`;
+    }
+    if (expression.left.kind === 'literal' && typeof expression.left.value === 'string') {
+      const propertyName = expression.left.value;
+      if (rightType?.kind === 'anonymous') {
+        return flattenStructFields(rightType, context).some((field) => field.name === propertyName) ? 'true' : 'false';
+      }
+      if (rightType?.kind === 'dynamic' || !rightType) return 'false';
+    }
+    throw new RustEmissionError('in-operator requires a static property name or an opaque host receiver');
+  }
+  if (
+    (expression.operator === '??' || expression.operator === '??undefined') &&
+    isNullishExpression(expression.right)
+  ) {
+    return left;
+  }
+  if (
+    ['===', '!==', '==', '!='].includes(expression.operator) &&
+    leftType?.kind === 'nullable' &&
+    rightType &&
+    typeKey(leftType.inner) === typeKey(rightType)
+  ) {
+    const equality = expression.operator === '===' || expression.operator === '==';
+    const comparison = `${parenthesize(left)} == Some(${emitExpression(expression.right, context, leftType.inner)})`;
+    return equality ? comparison : `!${parenthesize(comparison)}`;
+  }
   const right = emitExpression(
     expression.right,
     context,
@@ -874,14 +2308,22 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
       ? leftType?.kind === 'nullable'
         ? leftType.inner
         : leftType
-      : undefined,
+      : comparison && resolvedRight?.kind === 'dynamic' && resolvedLeft?.kind !== 'dynamic'
+        ? leftType
+        : undefined,
   );
-  if (
-    expression.right.kind === 'literal' &&
-    expression.right.value === null &&
-    (expression.operator === '===' || expression.operator === '!==')
-  ) {
-    return `${parenthesize(left)}.${expression.operator === '===' ? 'is_none' : 'is_some'}()`;
+  const callbackTypeParameter =
+    inferCallbackTypeParameter(expression.left, context) ?? inferCallbackTypeParameter(expression.right, context);
+  if (callbackTypeParameter && ['===', '!==', '==', '!='].includes(expression.operator)) {
+    const equality = expression.operator === '===' || expression.operator === '==';
+    const same = `crate::FlightCallback::flight_same(&${parenthesize(left)}, &${parenthesize(right)})`;
+    return equality ? same : `!${parenthesize(same)}`;
+  }
+  if (isNullishExpression(expression.right) && ['===', '!==', '==', '!='].includes(expression.operator)) {
+    return `${parenthesize(left)}.${expression.operator === '===' || expression.operator === '==' ? 'is_none' : 'is_some'}()`;
+  }
+  if (isNullishExpression(expression.left) && ['===', '!==', '==', '!='].includes(expression.operator)) {
+    return `${parenthesize(right)}.${expression.operator === '===' || expression.operator === '==' ? 'is_none' : 'is_some'}()`;
   }
   if (expression.operator === '**') return `${parenthesize(left)}.powf(${right})`;
   if (expression.operator === '>>>') {
@@ -899,6 +2341,14 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
   }
   if (expression.operator === '??' || expression.operator === '??undefined') {
     return `${parenthesize(left)}.unwrap_or(${right})`;
+  }
+  if (
+    (expression.operator === '&&' || expression.operator === '||') &&
+    leftType?.kind === 'nullable' &&
+    inferIrExpressionType(expression.right, context)?.kind === 'primitive' &&
+    (inferIrExpressionType(expression.right, context) as Extract<IrType, { kind: 'primitive' }>).name === 'Bool'
+  ) {
+    return `${parenthesize(left)}.is_some() ${expression.operator} ${right}`;
   }
   if (
     (expression.operator === '&&' || expression.operator === '||') &&
@@ -925,11 +2375,57 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
 }
 
 function emitAssignment(expression: Extract<IrExpression, { kind: 'assignment' }>, context: EmitContext): string {
+  if (isErasedEntityRuntimeTreeAccess(expression.left)) return '()';
+  if (
+    expression.left.kind === 'identifier' &&
+    context.timerHandleNames.has(expression.left.name) &&
+    expression.operator === '=' &&
+    expression.right.kind === 'literal' &&
+    expression.right.value === 0
+  ) {
+    const left = emitPlaceExpression(expression.left, context);
+    return `{ ${left} = None; ${left}.clone() }`;
+  }
+  if (expression.left.kind === 'property' && isDynamicHostTree(expression.left.object, context)) {
+    return `crate::host_set(${JSON.stringify(`host.${expression.left.name}`)}, ${emitExpression(expression.right, context)})`;
+  }
+  if (
+    expression.left.kind === 'identifier' &&
+    context.atomicBoolNames.has(expression.left.name) &&
+    expression.operator === '='
+  ) {
+    const name = context.constantNames.get(expression.left.name) ?? screamingSnakeCase(expression.left.name);
+    const right = emitExpression(expression.right, context, primitive('Bool'));
+    return `{ ${name}.store(${right}, std::sync::atomic::Ordering::Relaxed); ${right} }`;
+  }
+  if (isArrayLengthAssignment(expression, context)) {
+    const collection = emitCollectionPlace(expression.left.object, context);
+    const right = emitExpression(expression.right, context);
+    if (expression.operator === '-=') {
+      return `{ let __flight_length = ${collection}.len().saturating_sub(${parenthesize(right)} as usize); ${collection}.truncate(__flight_length); __flight_length as f64 }`;
+    }
+    return expression.right.kind === 'literal' && expression.right.value === 0
+      ? `{ ${collection}.clear(); ${right} }`
+      : `{ let __flight_length = ${parenthesize(right)} as usize; ${collection}.truncate(__flight_length); __flight_length as f64 }`;
+  }
+  if (isExtensibleArrayElementAssignment(expression, context)) {
+    return emitExtensibleArrayElementAssignment(expression, context, true);
+  }
   const left =
     expression.left.kind === 'element'
       ? emitElement(expression.left, context)
       : emitPlaceExpression(expression.left, context);
-  const right = emitExpression(expression.right, context, inferIrExpressionType(expression.left, context));
+  const leftType = inferIrExpressionType(expression.left, context);
+  const rightType = inferIrExpressionType(expression.right, context);
+  const emittedRight = emitExpression(expression.right, context, leftType);
+  const sharedCopy =
+    leftType?.kind === 'nullable' && isSharedHandleType(leftType.inner) && rightType && isSharedHandleType(rightType)
+      ? `${parenthesize(emitExpression(expression.right, context, leftType.inner))}.clone()`
+      : undefined;
+  const right =
+    leftType?.kind === 'nullable' && rightType?.kind !== 'nullable' && !isNullishExpression(expression.right)
+      ? `Some(${sharedCopy ?? emitExpression(expression.right, context, leftType.inner)})`
+      : emittedRight;
   const assignment = emitAssignmentOperation(left, right, expression.operator);
   return `{ ${assignment}; ${left} }`;
 }
@@ -938,11 +2434,50 @@ function emitAssignmentStatement(
   expression: Extract<IrExpression, { kind: 'assignment' }>,
   context: EmitContext,
 ): string {
+  if (isErasedEntityRuntimeTreeAccess(expression.left)) return '()';
+  if (
+    expression.left.kind === 'identifier' &&
+    context.timerHandleNames.has(expression.left.name) &&
+    expression.operator === '=' &&
+    expression.right.kind === 'literal' &&
+    expression.right.value === 0
+  ) {
+    return `${emitPlaceExpression(expression.left, context)} = None`;
+  }
+  if (expression.left.kind === 'property' && isDynamicHostTree(expression.left.object, context)) {
+    return `crate::host_set(${JSON.stringify(`host.${expression.left.name}`)}, ${emitExpression(expression.right, context)})`;
+  }
+  if (
+    expression.left.kind === 'identifier' &&
+    context.atomicBoolNames.has(expression.left.name) &&
+    expression.operator === '='
+  ) {
+    const name = context.constantNames.get(expression.left.name) ?? screamingSnakeCase(expression.left.name);
+    return `${name}.store(${emitExpression(expression.right, context, primitive('Bool'))}, std::sync::atomic::Ordering::Relaxed)`;
+  }
+  if (isArrayLengthAssignment(expression, context)) {
+    const collection = emitCollectionPlace(expression.left.object, context);
+    if (expression.operator === '-=') {
+      return `{ let __flight_length = ${collection}.len().saturating_sub(${parenthesize(emitExpression(expression.right, context))} as usize); ${collection}.truncate(__flight_length); }`;
+    }
+    return expression.right.kind === 'literal' && expression.right.value === 0
+      ? `${collection}.clear()`
+      : `${collection}.truncate(${parenthesize(emitExpression(expression.right, context))} as usize)`;
+  }
+  if (isExtensibleArrayElementAssignment(expression, context)) {
+    return emitExtensibleArrayElementAssignment(expression, context, false);
+  }
   const left =
     expression.left.kind === 'element'
       ? emitElement(expression.left, context)
       : emitPlaceExpression(expression.left, context);
-  const right = emitExpression(expression.right, context, inferIrExpressionType(expression.left, context));
+  const leftType = inferIrExpressionType(expression.left, context);
+  const rightType = inferIrExpressionType(expression.right, context);
+  const emittedRight = emitExpression(expression.right, context, leftType);
+  const right =
+    leftType?.kind === 'nullable' && rightType?.kind !== 'nullable' && !isNullishExpression(expression.right)
+      ? `Some(${emitExpression(expression.right, context, leftType.inner)})`
+      : emittedRight;
   return emitAssignmentOperation(left, right, expression.operator);
 }
 
@@ -951,6 +2486,51 @@ function emitAssignmentOperation(left: string, right: string, operator: string):
   return bitwise.has(operator)
     ? `${left} = ${emitBitwiseOperation(left, right, operator.slice(0, -1))}`
     : `${left} ${operator} ${right}`;
+}
+
+function isArrayLengthAssignment(
+  expression: Extract<IrExpression, { kind: 'assignment' }>,
+  context: EmitContext,
+): expression is Extract<IrExpression, { kind: 'assignment' }> & {
+  left: Extract<IrExpression, { kind: 'property' }>;
+} {
+  if (
+    !['=', '-='].includes(expression.operator) ||
+    expression.left.kind !== 'property' ||
+    expression.left.name !== 'length'
+  ) {
+    return false;
+  }
+  const objectType = inferIrExpressionType(expression.left.object, context);
+  return objectType?.kind === 'array' || (objectType?.kind === 'named' && Boolean(typedArrayType(objectType.name)));
+}
+
+function isExtensibleArrayElementAssignment(
+  expression: Extract<IrExpression, { kind: 'assignment' }>,
+  context: EmitContext,
+): expression is Extract<IrExpression, { kind: 'assignment' }> & {
+  left: Extract<IrExpression, { kind: 'element' }>;
+} {
+  return (
+    expression.operator === '=' &&
+    expression.left.kind === 'element' &&
+    inferIrExpressionType(expression.left.object, context)?.kind === 'array'
+  );
+}
+
+function emitExtensibleArrayElementAssignment(
+  expression: Extract<IrExpression, { kind: 'assignment' }> & {
+    left: Extract<IrExpression, { kind: 'element' }>;
+  },
+  context: EmitContext,
+  returnValue: boolean,
+): string {
+  const collectionType = inferIrExpressionType(expression.left.object, context);
+  const elementType = collectionType?.kind === 'array' ? collectionType.element : undefined;
+  const collection = emitCollectionPlace(expression.left.object, context);
+  const index = emitExpression(expression.left.index, context);
+  const value = emitExpression(expression.right, context, elementType);
+  return `{ let __flight_index = ${parenthesize(index)} as usize; let __flight_value = ${value}; if __flight_index == ${collection}.len() { ${collection}.push(__flight_value); } else { ${collection}[__flight_index] = __flight_value; }${returnValue ? ` ${collection}[__flight_index].clone()` : ''} }`;
 }
 
 function emitBitwiseOperation(left: string, right: string, operator: string): string {
@@ -967,13 +2547,123 @@ function emitUnary(expression: Extract<IrExpression, { kind: 'unary' }>, context
     const operator = expression.operator === '++' ? '+=' : '-=';
     return `{ ${operand} ${operator} 1.0; ${operand} }`;
   }
+  const operandType = inferIrExpressionType(expression.operand, context);
+  if (expression.operator === '!' && (resolveSemanticType(operandType, context) ?? operandType)?.kind === 'dynamic') {
+    return `!${parenthesize(emitExpression(expression.operand, context, primitive('Bool')))}`;
+  }
+  if (expression.operator === '!' && operandType?.kind === 'nullable') {
+    return `${parenthesize(emitExpression(expression.operand, context))}.is_none()`;
+  }
+  if (expression.operator === '!' && operandType && isReferenceLike(operandType, context)) return 'false';
+  if (
+    expression.operator === '!' &&
+    operandType?.kind === 'primitive' &&
+    (operandType.name === 'Float' || operandType.name === 'Int')
+  ) {
+    return `${parenthesize(emitExpression(expression.operand, context))} == 0.0_f64`;
+  }
+  if (expression.operator === 'delete' && isErasedEntityRuntimeTreeAccess(expression.operand)) return 'true';
+  if (expression.operator === 'typeof') {
+    const hostTag = inferHostPropertyTypeofTag(expression.operand, context);
+    if (hostTag) return JSON.stringify(hostTag);
+    if (operandType?.kind === 'union') {
+      const operand = emitExpression(expression.operand, context);
+      return emitUnionTypeof(`&${parenthesize(operand)}`, operandType.variants, context);
+    }
+    const resolved = resolveSemanticType(operandType?.kind === 'nullable' ? operandType.inner : operandType, context);
+    if (resolved?.kind === 'primitive') {
+      return JSON.stringify(
+        resolved.name === 'Bool'
+          ? 'boolean'
+          : resolved.name === 'String'
+            ? 'string'
+            : resolved.name === 'Void'
+              ? 'undefined'
+              : 'number',
+      );
+    }
+    if (resolved?.kind === 'dynamic') {
+      const operand = emitExpression(expression.operand, context);
+      return `match &${parenthesize(operand)} { crate::OpaqueHostValue::Undefined => "undefined", crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object", crate::OpaqueHostValue::Bool(_) => "boolean", crate::OpaqueHostValue::Number(_) => "number", crate::OpaqueHostValue::String(_) => "string" }`;
+    }
+    if (
+      resolved?.kind === 'anonymous' ||
+      resolved?.kind === 'array' ||
+      resolved?.kind === 'function' ||
+      resolved?.kind === 'named'
+    ) {
+      return JSON.stringify(resolved.kind === 'function' ? 'function' : 'object');
+    }
+    throw new RustEmissionError(`typeof operand has no inferred Rust type: ${JSON.stringify(expression.operand)}`);
+  }
   const operand = emitExpression(expression.operand, context);
   if (expression.operator === 'void') return `{ ${operand}; () }`;
-  if (expression.operator === 'typeof' || expression.operator === 'delete') {
-    throw new RustEmissionError(`${expression.operator} Rust lowering is not implemented`);
+  if (expression.operator === 'delete') {
+    throw new RustEmissionError('delete Rust lowering is not implemented');
   }
   if (expression.operator === '~') return `(!${operand})`;
   return `(${expression.operator}${operand})`;
+}
+
+function inferHostPropertyTypeofTag(expression: IrExpression, context: EmitContext): string | undefined {
+  if (expression.kind !== 'property') return undefined;
+  const receiver = resolveSemanticType(inferIrExpressionType(expression.object, context), context);
+  if (!expression.binding && receiver?.kind !== 'dynamic') return undefined;
+  if (!expression.binding) return 'undefined';
+  if (expression.binding === 'DomWindowBackend') {
+    if (['devicePixelRatio', 'innerHeight', 'innerWidth', 'screenX', 'screenY'].includes(expression.name)) {
+      return 'number';
+    }
+    if (expression.name === 'isSecureContext') return 'boolean';
+    if (['localStorage', 'screen', 'visualViewport'].includes(expression.name)) return 'object';
+    return 'function';
+  }
+  if (expression.binding === 'DomDocumentBackend') {
+    if (expression.name === 'hidden') return 'boolean';
+    if (expression.name === 'title') return 'string';
+    if (['body', 'documentElement', 'fonts', 'head', 'pointerLockElement'].includes(expression.name)) {
+      return 'object';
+    }
+    return 'function';
+  }
+  if (expression.binding === 'DomNavigatorBackend') {
+    if (expression.name === 'maxTouchPoints') return 'number';
+    if (['language', 'platform'].includes(expression.name)) return 'string';
+    if (
+      [
+        'clipboard',
+        'connection',
+        'geolocation',
+        'gpu',
+        'languages',
+        'mediaDevices',
+        'mediaSession',
+        'permissions',
+        'storage',
+        'virtualKeyboard',
+        'wakeLock',
+      ].includes(expression.name)
+    ) {
+      return 'object';
+    }
+    return 'function';
+  }
+  return 'undefined';
+}
+
+function isErasedEntityRuntimeAccess(
+  expression: IrExpression,
+): expression is Extract<IrExpression, { kind: 'element' }> {
+  return (
+    expression.kind === 'element' &&
+    expression.index.kind === 'identifier' &&
+    expression.index.name === 'EntityRuntimeKey'
+  );
+}
+
+function isErasedEntityRuntimeTreeAccess(expression: IrExpression): boolean {
+  if (isErasedEntityRuntimeAccess(expression)) return true;
+  return expression.kind === 'property' && isErasedEntityRuntimeTreeAccess(expression.object);
 }
 
 function emitClosure(
@@ -981,41 +2671,144 @@ function emitClosure(
   context: EmitContext,
   expectedType?: IrType | undefined,
   wrapFunction = true,
+  moveClosure = wrapFunction,
 ): string {
+  const resolvedExpected = resolveSemanticType(expectedType, context) ?? expectedType;
+  const callbackTypeParameter =
+    expectedType?.kind === 'named' && context.callbackTypeParameters.has(expectedType.name)
+      ? expectedType.name
+      : undefined;
+  registerContextualAnonymousTypes(resolvedExpected, context, expression.name ?? 'closure');
   const callback =
-    expectedType?.kind === 'named' && context.callbackTypes.has(expectedType.name)
+    callbackTypeParameter || (expectedType?.kind === 'named' && context.callbackTypes.has(expectedType.name))
       ? true
-      : expectedType?.kind === 'function';
+      : resolvedExpected?.kind === 'function' || wrapFunction;
   const returns =
     expression.returns ??
-    (expectedType?.kind === 'function'
-      ? expectedType.returns
-      : expectedType?.kind === 'named' && context.callbackTypes.has(expectedType.name)
-        ? primitive('Float')
-        : primitive('Float'));
+    (callbackTypeParameter
+      ? primitive('Void')
+      : resolvedExpected?.kind === 'function'
+        ? resolvedExpected.returns
+        : expectedType?.kind === 'named' && context.callbackTypes.has(expectedType.name)
+          ? primitive('Float')
+          : (inferFunctionExpressionReturnType(expression) ??
+            (expression.expression ? primitive('Float') : primitive('Void'))));
   const nextContext = functionContext(context, expression.name ?? 'closure', expression, returns);
   const fallbackParameter =
-    expectedType?.kind === 'function'
-      ? expectedType.parameters
+    resolvedExpected?.kind === 'function'
+      ? resolvedExpected.parameters
       : expectedType?.kind === 'named' && context.callbackTypes.has(expectedType.name)
         ? [primitive('Float')]
         : [];
-  registerParameters(expression.parameters, nextContext, fallbackParameter);
-  const parameters = expression.parameters.map((parameter, index) =>
-    emitParameter(parameter, nextContext, fallbackParameter[index], expression, false),
-  );
+  if (callbackTypeParameter && expression.parameters.length === 1) {
+    nextContext.symbolTypes.set(expression.parameters[0]!.name, {
+      arguments: [{ arguments: [], kind: 'named', name: callbackTypeParameter }],
+      kind: 'named',
+      name: 'FlightCallbackArgs',
+    });
+  } else {
+    registerParameters(expression.parameters, nextContext, fallbackParameter);
+  }
+  registerLocalTypes(expression.body, nextContext);
+  const declaredParameters =
+    callbackTypeParameter && expression.parameters.length === 1
+      ? [`${safeName(expression.parameters[0]!.name)}: <${callbackTypeParameter} as crate::FlightCallback>::Args`]
+      : expression.parameters.map((parameter, index) =>
+          emitParameter(parameter, nextContext, fallbackParameter[index], expression, false),
+        );
+  const omittedParameters =
+    callbackTypeParameter || expression.parameters.at(-1)?.rest
+      ? []
+      : fallbackParameter
+          .slice(expression.parameters.length)
+          .map(
+            (parameter, index) =>
+              `__flight_unused_${String(expression.parameters.length + index)}: ${emitType(parameter, nextContext)}`,
+          );
+  const parameters = [...declaredParameters, ...omittedParameters];
   const body = expression.expression
     ? `{ ${emitExpression(expression.expression, nextContext, returns)} }`
     : emitStatementsAsBlock(expression.body, nextContext);
-  const closure = `move |${parameters.join(', ')}| -> ${emitType(returns, nextContext)} ${body}`;
-  return callback && wrapFunction ? `std::sync::Arc::new(${closure})` : closure;
+  const closure = `${moveClosure ? 'move ' : ''}|${parameters.join(', ')}| -> ${emitType(returns, nextContext)} ${body}`;
+  const capturedNames = moveClosure ? collectClonedClosureCaptures(expression, context) : [];
+  const recursiveSlots = moveClosure
+    ? [...context.recursiveClosureSlots.entries()].flatMap(([name, slot]) =>
+        containsIdentifier(expression, name) ? [slot] : [],
+      )
+    : [];
+  const capturedClosure =
+    capturedNames.length > 0 || recursiveSlots.length > 0
+      ? `{ ${[
+          ...recursiveSlots.map((slot) => `let ${slot} = ${slot}.clone();`),
+          ...capturedNames.map(
+            (name) =>
+              `let ${context.mutatedNames.has(name) ? 'mut ' : ''}${safeName(name)} = ${safeName(name)}.clone();`,
+          ),
+        ].join(' ')} ${closure} }`
+      : closure;
+  if (callbackTypeParameter) {
+    return `${callbackTypeParameter}::flight_from_tuple_callback(${capturedClosure})`;
+  }
+  if (callback && wrapFunction) {
+    const functionType =
+      resolvedExpected?.kind === 'function'
+        ? resolvedExpected
+        : {
+            kind: 'function' as const,
+            parameters: expression.parameters.map((parameter) => parameter.type),
+            returns,
+          };
+    const erased = `Box<dyn FnMut(${functionType.parameters.map((item) => emitType(item, nextContext)).join(', ')}) -> ${emitType(functionType.returns, nextContext)} + Send + 'static>`;
+    return `std::sync::Arc::new(std::sync::Mutex::new(Box::new(${capturedClosure}) as ${erased}))`;
+  }
+  return capturedClosure;
+}
+
+function collectClonedClosureCaptures(
+  expression: Extract<IrExpression, { kind: 'function' }>,
+  context: EmitContext,
+): string[] {
+  const localNames = new Set(expression.parameters.map((parameter) => parameter.name));
+  const visitLocals = (value: unknown): void => {
+    if (!value || typeof value !== 'object') return;
+    if ('kind' in value && value.kind === 'function') return;
+    if ('kind' in value && value.kind === 'variable' && 'declarations' in value) {
+      for (const variable of value.declarations as IrVariable[]) localNames.add(variable.name);
+    }
+    for (const child of Object.values(value)) {
+      if (Array.isArray(child)) child.forEach(visitLocals);
+      else visitLocals(child);
+    }
+  };
+  visitLocals(expression.body);
+  const candidates = [...context.symbolTypes.entries()].flatMap(([name, type]) => {
+    if (
+      localNames.has(name) ||
+      context.constantNames.has(name) ||
+      context.recursiveClosureSlots.has(name) ||
+      !containsIdentifier(expression, name)
+    ) {
+      return [];
+    }
+    const resolved = resolveSemanticType(type, context) ?? type;
+    return context.sharedCaptureNames.has(name) ||
+      resolved.kind === 'function' ||
+      isReferenceLike(type, context) ||
+      isSharedHandleType(type) ||
+      (type.kind === 'named' && context.callbackTypeParameters.has(type.name))
+      ? [name]
+      : [];
+  });
+  return [...new Set(candidates)].sort();
 }
 
 function emitType(type: IrType, context: EmitContext): string {
   switch (type.kind) {
     case 'anonymous': {
       const name = context.anonymousTypes.get(typeKey(type));
-      if (!name) throw new RustEmissionError('anonymous structural type has no synthesized Rust identity');
+      if (!name) {
+        throw new RustEmissionError(`anonymous structural type has no synthesized Rust identity: ${typeKey(type)}`);
+      }
       return name;
     }
     case 'array':
@@ -1023,8 +2816,16 @@ function emitType(type: IrType, context: EmitContext): string {
     case 'dynamic':
       return 'crate::OpaqueHostValue';
     case 'function':
-      return `std::sync::Arc<dyn Fn(${type.parameters.map((item) => emitType(item, context)).join(', ')}) -> ${emitType(type.returns, context)} + Send + Sync + 'static>`;
+      return `std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(${type.parameters.map((item) => emitType(item, context)).join(', ')}) -> ${emitType(type.returns, context)} + Send + 'static>>>`;
     case 'named': {
+      if (type.name === 'FlightCallbackArgs') {
+        const callback = type.arguments[0] ?? { kind: 'dynamic' };
+        return `<${emitType(callback, context)} as crate::FlightCallback>::Args`;
+      }
+      if (type.name === 'FlightSymbol') return 'crate::FlightSymbol';
+      if (type.name === 'FlightTimeout') return 'crate::FlightTimeout';
+      if (type.name === 'Nothing') return 'crate::OpaqueHostValue';
+      if (type.name === 'FlightRegex') return 'regex::Regex';
       const typedArray = typedArrayType(type.name);
       if (typedArray) return `Vec<${typedArray.rust}>`;
       if (type.name === 'RustF32') return 'f32';
@@ -1035,20 +2836,27 @@ function emitType(type: IrType, context: EmitContext): string {
       if (type.name === 'RustU8') return 'u8';
       if (type.name === 'RustU16') return 'u16';
       if (type.name === 'RustU32') return 'u32';
+      if (type.name === 'ByteBuffer' || type.name === 'ArrayBufferView') return 'Vec<u8>';
       if (type.name === 'Promise') {
         return `crate::Promise<${emitType(type.arguments[0] ?? { kind: 'dynamic' }, context)}>`;
+      }
+      if (type.name === 'RustMap') {
+        return `Vec<(${emitType(type.arguments[0] ?? { kind: 'dynamic' }, context)}, ${emitType(type.arguments[1] ?? { kind: 'dynamic' }, context)})>`;
+      }
+      if (type.name === 'RustSet') {
+        return `Vec<${emitType(type.arguments[0] ?? { kind: 'dynamic' }, context)}>`;
       }
       const declarationType = context.namedTypes.get(type.name);
       const parameters = context.namedTypeParameters.get(type.name) ?? [];
       const arguments_ = declarationType
-        ? type.arguments.filter((_, index) => {
-            const parameter = parameters[index];
-            if (!parameter) return true;
-            return declarationType.kind === 'anonymous'
-              ? flattenStructFields(declarationType, context).some((field) =>
-                  typeUsesNamedParameter(field.type, parameter),
-                )
-              : typeUsesNamedParameter(declarationType, parameter);
+        ? parameters.flatMap((parameter, index) => {
+            const used =
+              declarationType.kind === 'anonymous'
+                ? flattenStructFields(declarationType, context).some((field) =>
+                    typeUsesNamedParameter(field.type, parameter),
+                  )
+                : typeUsesNamedParameter(declarationType, parameter);
+            return used ? [type.arguments[index] ?? { kind: 'dynamic' as const }] : [];
           })
         : type.arguments;
       return `${type.name}${arguments_.length > 0 ? `<${arguments_.map((item) => emitType(item, context)).join(', ')}>` : ''}`;
@@ -1068,7 +2876,68 @@ function emitType(type: IrType, context: EmitContext): string {
         case 'Void':
           return '()';
       }
+    case 'union':
+      return emitUnionType(type.variants, context);
   }
+}
+
+function emitUnionType(variants: readonly IrType[], context: EmitContext): string {
+  const [first, ...rest] = variants;
+  if (!first) return 'crate::OpaqueHostValue';
+  if (rest.length === 0) return emitType(first, context);
+  return `crate::FlightUnion2<${emitType(first, context)}, ${emitUnionType(rest, context)}>`;
+}
+
+function wrapUnionValue(
+  value: string,
+  variants: readonly IrType[],
+  variantIndex: number,
+  context: EmitContext,
+): string {
+  if (variants.length <= 1) return value;
+  if (variantIndex === 0) {
+    return `crate::FlightUnion2::<${emitType(variants[0]!, context)}, ${emitUnionType(variants.slice(1), context)}>::A(${value})`;
+  }
+  return `crate::FlightUnion2::<${emitType(variants[0]!, context)}, ${emitUnionType(variants.slice(1), context)}>::B(${wrapUnionValue(
+    value,
+    variants.slice(1),
+    variantIndex - 1,
+    context,
+  )})`;
+}
+
+function unwrapUnionValue(value: string, variants: readonly IrType[], variantIndex: number): string {
+  if (variants.length <= 1) return value;
+  if (variantIndex === 0) {
+    return `match ${value} { crate::FlightUnion2::A(value) => value, crate::FlightUnion2::B(_) => panic!("TypeScript union narrowing failed") }`;
+  }
+  return `match ${value} { crate::FlightUnion2::A(_) => panic!("TypeScript union narrowing failed"), crate::FlightUnion2::B(value) => ${unwrapUnionValue(
+    'value',
+    variants.slice(1),
+    variantIndex - 1,
+  )} }`;
+}
+
+function emitUnionTypeof(value: string, variants: readonly IrType[], context: EmitContext): string {
+  const [first, ...rest] = variants;
+  if (!first) return '"undefined"';
+  if (rest.length === 0) return JSON.stringify(typeOfTag(first, context));
+  return `match ${value} { crate::FlightUnion2::A(_) => ${JSON.stringify(typeOfTag(first, context))}, crate::FlightUnion2::B(value) => ${emitUnionTypeof(
+    'value',
+    rest,
+    context,
+  )} }`;
+}
+
+function typeOfTag(type: IrType, context: EmitContext): string {
+  const resolved = resolveSemanticType(type.kind === 'nullable' ? type.inner : type, context);
+  if (resolved?.kind === 'primitive') {
+    if (resolved.name === 'Bool') return 'boolean';
+    if (resolved.name === 'String') return 'string';
+    if (resolved.name === 'Void') return 'undefined';
+    return 'number';
+  }
+  return resolved?.kind === 'function' ? 'function' : 'object';
 }
 
 function emitTypeDeclaration(
@@ -1095,21 +2964,53 @@ function emitTypeDeclaration(
     ),
   );
   const generics = effectiveTypeParameters.length > 0 ? `<${effectiveTypeParameters.join(', ')}>` : '';
+  if (name === 'SignalData') {
+    const storageName = 'SignalDataStorage';
+    const fieldType = (field: IrTypeField): string =>
+      field.optional && field.type.kind !== 'nullable'
+        ? `Option<${emitStructFieldType(field.type, name, structuralContext)}>`
+        : emitStructFieldType(field.type, name, structuralContext);
+    return [
+      `${visibility}struct ${name}${generics} {`,
+      `  #[doc(hidden)] pub inner: std::sync::Arc<std::sync::Mutex<${storageName}${generics}>>,`,
+      '}',
+      `impl${generics} Clone for ${name}${generics} {`,
+      '  fn clone(&self) -> Self { Self { inner: self.inner.clone() } }',
+      '}',
+      '#[doc(hidden)]',
+      `${visibility}struct ${storageName}${generics} {`,
+      indent(fields.map((field) => `pub ${safeName(field.name)}: ${fieldType(field)},`).join('\n')),
+      '}',
+      `impl${generics} ${name}${generics} {`,
+      `  pub fn new(${fields.map((field) => `${safeName(field.name)}: ${fieldType(field)}`).join(', ')}) -> Self {`,
+      `    Self { inner: std::sync::Arc::new(std::sync::Mutex::new(${storageName} {`,
+      fields.map((field) => `      ${safeName(field.name)},`).join('\n'),
+      '    })) }',
+      '  }',
+      '}',
+    ].join('\n');
+  }
   return `${emitAnonymousDefinitions(structuralContext, exported)}${[
     '#[derive(Clone)]',
     `${visibility}struct ${name}${generics} {`,
     indent(
-      fields
-        .map(
+      [
+        '#[doc(hidden)] pub __flight_identity: std::sync::Arc<()>,',
+        ...fields.map(
           (field) =>
             `pub ${safeName(field.name)}: ${
               field.optional
-                ? `Option<${emitStructFieldType(field.type, name, structuralContext)}>`
+                ? field.type.kind === 'nullable'
+                  ? emitStructFieldType(field.type, name, structuralContext)
+                  : `Option<${emitStructFieldType(field.type, name, structuralContext)}>`
                 : emitStructFieldType(field.type, name, structuralContext)
             },`,
-        )
-        .join('\n'),
+        ),
+      ].join('\n'),
     ),
+    '}',
+    `impl${generics} PartialEq for ${name}${generics} {`,
+    '  fn eq(&self, other: &Self) -> bool { std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity) }',
     '}',
   ].join('\n')}`;
 }
@@ -1155,11 +3056,17 @@ function substituteIrType(type: IrType, substitutions: ReadonlyMap<string, IrTyp
     case 'anonymous':
       return {
         extends: type.extends.map((item) => substituteIrType(item, substitutions)),
-        fields: type.fields.map((field) => ({ ...field, type: substituteIrType(field.type, substitutions) })),
+        fields: type.fields.map((field) => ({
+          ...field,
+          type: substituteIrType(field.type, substitutions),
+        })),
         kind: 'anonymous',
       };
     case 'array':
-      return { element: substituteIrType(type.element, substitutions), kind: 'array' };
+      return {
+        element: substituteIrType(type.element, substitutions),
+        kind: 'array',
+      };
     case 'function':
       return {
         kind: 'function',
@@ -1173,7 +3080,15 @@ function substituteIrType(type: IrType, substitutions: ReadonlyMap<string, IrTyp
         name: type.name,
       };
     case 'nullable':
-      return { inner: substituteIrType(type.inner, substitutions), kind: 'nullable' };
+      return {
+        inner: substituteIrType(type.inner, substitutions),
+        kind: 'nullable',
+      };
+    case 'union':
+      return {
+        kind: 'union',
+        variants: type.variants.map((item) => substituteIrType(item, substitutions)),
+      };
     case 'dynamic':
     case 'primitive':
       return type;
@@ -1197,29 +3112,273 @@ function typeUsesNamedParameter(type: IrType, name: string): boolean {
       return type.name === name || type.arguments.some((item) => typeUsesNamedParameter(item, name));
     case 'nullable':
       return typeUsesNamedParameter(type.inner, name);
+    case 'union':
+      return type.variants.some((item) => typeUsesNamedParameter(item, name));
     case 'dynamic':
     case 'primitive':
       return false;
   }
 }
 
+function inferCallbackTypeParameters(declaration: IrFunctionDeclaration): ReadonlySet<string> {
+  const callbackContainers = new Set(['FlightCallbackArgs', 'Signal', 'SignalConnection', 'SignalData']);
+  const usesCallbackContainer = (type: IrType, parameter: string, insideCallback = false): boolean => {
+    switch (type.kind) {
+      case 'anonymous':
+        return (
+          type.extends.some((item) => usesCallbackContainer(item, parameter, insideCallback)) ||
+          type.fields.some((field) => usesCallbackContainer(field.type, parameter, insideCallback))
+        );
+      case 'array':
+        return usesCallbackContainer(type.element, parameter, insideCallback);
+      case 'function':
+        return (
+          type.parameters.some((item) => usesCallbackContainer(item, parameter, insideCallback)) ||
+          usesCallbackContainer(type.returns, parameter, insideCallback)
+        );
+      case 'named': {
+        const nested = insideCallback || callbackContainers.has(type.name);
+        return (
+          (nested && type.name === parameter) ||
+          type.arguments.some((item) => usesCallbackContainer(item, parameter, nested))
+        );
+      }
+      case 'nullable':
+        return usesCallbackContainer(type.inner, parameter, insideCallback);
+      case 'union':
+        return type.variants.some((item) => usesCallbackContainer(item, parameter, insideCallback));
+      case 'dynamic':
+      case 'primitive':
+        return false;
+    }
+  };
+  return new Set(
+    declaration.typeParameters.filter((parameter) =>
+      [...declaration.parameters.map((item) => item.type), declaration.returns].some((type) =>
+        usesCallbackContainer(type, parameter),
+      ),
+    ),
+  );
+}
+
+function inferCallbackArgumentStorage(
+  declaration: IrFunctionDeclaration,
+  callbackTypeParameters: ReadonlySet<string>,
+): ReadonlyMap<string, string> {
+  const storage = new Map<string, string>();
+  const visit = (value: unknown, callback?: { argument: string; typeParameter: string }): void => {
+    if (!value || typeof value !== 'object') return;
+    if (
+      'kind' in value &&
+      value.kind === 'cast' &&
+      'type' in value &&
+      value.type &&
+      typeof value.type === 'object' &&
+      'kind' in value.type &&
+      value.type.kind === 'named' &&
+      'name' in value.type &&
+      typeof value.type.name === 'string' &&
+      callbackTypeParameters.has(value.type.name) &&
+      'expression' in value &&
+      value.expression &&
+      typeof value.expression === 'object'
+    ) {
+      const expression = unwrapCasts(value.expression as IrExpression);
+      if (expression.kind === 'function' && expression.parameters.length === 1) {
+        const callbackExpression = expression as Extract<IrExpression, { kind: 'function' }>;
+        const parameter = callbackExpression.parameters[0]!;
+        visit(callbackExpression.body, { argument: parameter.name, typeParameter: value.type.name });
+        if (callbackExpression.expression) {
+          visit(callbackExpression.expression, { argument: parameter.name, typeParameter: value.type.name });
+        }
+        return;
+      }
+    }
+    if (
+      callback &&
+      'kind' in value &&
+      value.kind === 'assignment' &&
+      'left' in value &&
+      value.left &&
+      typeof value.left === 'object' &&
+      'kind' in value.left &&
+      value.left.kind === 'identifier' &&
+      'name' in value.left &&
+      typeof value.left.name === 'string' &&
+      'right' in value &&
+      value.right &&
+      typeof value.right === 'object' &&
+      'kind' in value.right &&
+      value.right.kind === 'identifier' &&
+      'name' in value.right &&
+      value.right.name === callback.argument
+    ) {
+      storage.set(value.left.name, callback.typeParameter);
+    }
+    for (const child of Object.values(value)) {
+      if (Array.isArray(child)) child.forEach((item) => visit(item, callback));
+      else visit(child, callback);
+    }
+  };
+  visit(declaration.body);
+  return storage;
+}
+
+function inferCallbackTypeParameter(expression: IrExpression, context: EmitContext): string | undefined {
+  if (expression.kind === 'cast') {
+    const inner = inferCallbackTypeParameter(expression.expression, context);
+    if (inner) return inner;
+  }
+  const type = inferIrExpressionType(expression, context);
+  const candidate = type?.kind === 'nullable' ? type.inner : type;
+  return candidate?.kind === 'named' && context.callbackTypeParameters.has(candidate.name) ? candidate.name : undefined;
+}
+
+function emitCallbackArguments(
+  arguments_: readonly IrExpression[],
+  callbackTypeParameter: string,
+  context: EmitContext,
+): string {
+  if (arguments_.length === 1 && arguments_[0]?.kind === 'spread') {
+    const value = emitExpression(arguments_[0].expression, context, {
+      arguments: [{ arguments: [], kind: 'named', name: callbackTypeParameter }],
+      kind: 'named',
+      name: 'FlightCallbackArgs',
+    });
+    return `${parenthesize(value)}.clone()`;
+  }
+  const values = arguments_.map((argument) =>
+    argument.kind === 'spread' ? emitExpression(argument.expression, context) : emitExpression(argument, context),
+  );
+  if (values.length === 0) return '()';
+  return `(${values.join(', ')}${values.length === 1 ? ',' : ''})`;
+}
+
 function functionContext(context: EmitContext, ownerName: string, owner: unknown, returns: IrType): EmitContext {
   const anonymousTypes = new Map(context.anonymousTypes);
   let index = anonymousTypes.size + 1;
-  for (const type of collectAnonymousTypes(owner)) {
+  for (const type of [...collectAnonymousTypes(owner), ...collectInferredObjectTypes(owner)]) {
     const key = typeKey(type);
     if (!anonymousTypes.has(key)) {
       anonymousTypes.set(key, `${pascalCase(ownerName)}Record${String(index++)}`);
     }
   }
+  const sharedCaptureNames = new Set([
+    ...context.sharedCaptureNames,
+    ...collectSharedMutableLocals(owner, context.mutatingFunctions),
+  ]);
   return {
     ...context,
     anonymousTypes,
+    borrowedNames: new Set(),
+    captureReturns: false,
     continueEpilogue: [],
     currentReturnType: returns,
     mutatedNames: collectMutatedNames(owner, context.mutatingFunctions),
+    nonNullableNames: new Set(context.nonNullableNames),
+    placeAliases: new Map(),
+    rawClosureNames: new Set(context.rawClosureNames),
+    recursiveClosureSlots: new Map(context.recursiveClosureSlots),
+    sharedCaptureNames,
     symbolTypes: new Map(context.symbolTypes),
+    timerHandleNames: new Set([...context.timerHandleNames, ...collectTimerHandleNames(owner)]),
+    unionNarrowings: new Map(),
   };
+}
+
+function collectTimerHandleNames(owner: unknown): ReadonlySet<string> {
+  const names = new Set<string>();
+  const visit = (value: unknown): void => {
+    if (!value || typeof value !== 'object') return;
+    if (
+      'kind' in value &&
+      value.kind === 'call' &&
+      'callee' in value &&
+      value.callee &&
+      typeof value.callee === 'object' &&
+      'kind' in value.callee &&
+      value.callee.kind === 'identifier' &&
+      'name' in value.callee &&
+      (value.callee.name === 'clearTimeout' || value.callee.name === 'clearInterval') &&
+      'arguments' in value &&
+      Array.isArray(value.arguments)
+    ) {
+      const timer = value.arguments[0] as IrExpression | undefined;
+      if (timer?.kind === 'identifier') names.add(timer.name);
+    }
+    for (const child of Object.values(value)) {
+      if (Array.isArray(child)) child.forEach(visit);
+      else visit(child);
+    }
+  };
+  visit(owner);
+  return names;
+}
+
+function collectSharedMutableLocals(
+  owner: unknown,
+  mutatingFunctions: ReadonlyMap<string, ReadonlySet<number>>,
+): ReadonlySet<string> {
+  const mutated = collectMutatedNames(owner, mutatingFunctions);
+  const locals = new Set<string>();
+  const visitLocals = (value: unknown): void => {
+    if (!value || typeof value !== 'object') return;
+    if ('kind' in value && value.kind === 'function') return;
+    if ('kind' in value && value.kind === 'variable' && 'declarations' in value) {
+      for (const variable of value.declarations as IrVariable[]) {
+        if (variable.mutable || mutated.has(variable.name)) locals.add(variable.name);
+      }
+    }
+    for (const child of Object.values(value)) {
+      if (Array.isArray(child)) child.forEach(visitLocals);
+      else visitLocals(child);
+    }
+  };
+  if (owner && typeof owner === 'object' && 'body' in owner) visitLocals(owner.body);
+  const captured = new Set<string>();
+  const visitClosures = (value: unknown): void => {
+    if (!value || typeof value !== 'object') return;
+    if ('kind' in value && value.kind === 'function') {
+      for (const name of locals) {
+        if (containsIdentifier(value, name)) captured.add(name);
+      }
+      return;
+    }
+    for (const child of Object.values(value)) {
+      if (Array.isArray(child)) child.forEach(visitClosures);
+      else visitClosures(child);
+    }
+  };
+  if (owner && typeof owner === 'object' && 'body' in owner) visitClosures(owner.body);
+  return captured;
+}
+
+function registerContextualAnonymousTypes(value: unknown, context: EmitContext, ownerName: string): void {
+  const anonymousTypes = context.anonymousTypes as Map<string, string>;
+  let index = anonymousTypes.size + 1;
+  for (const type of collectAnonymousTypes(value)) {
+    const key = typeKey(type);
+    if (!anonymousTypes.has(key)) {
+      anonymousTypes.set(key, `${pascalCase(ownerName)}ContextRecord${String(index++)}`);
+    }
+  }
+}
+
+function collectInferredObjectTypes(value: unknown): IrType[] {
+  const found = new Map<string, IrType>();
+  const visit = (item: unknown): void => {
+    if (!item || typeof item !== 'object') return;
+    if ('kind' in item && item.kind === 'object' && 'properties' in item) {
+      const inferred = inferStaticExpressionType(item as IrExpression);
+      if (inferred?.kind === 'anonymous') found.set(typeKey(inferred), inferred);
+    }
+    for (const child of Object.values(item)) {
+      if (Array.isArray(child)) child.forEach(visit);
+      else visit(child);
+    }
+  };
+  visit(value);
+  return [...found.values()];
 }
 
 function typeDeclarationContext(
@@ -1242,9 +3401,47 @@ function registerParameters(parameters: IrParameter[], context: EmitContext, fal
     const type = parameter.type.kind === 'dynamic' && fallbackTypes[index] ? fallbackTypes[index]! : parameter.type;
     context.symbolTypes.set(
       parameter.name,
-      parameter.optional && !parameter.initializer ? { inner: type, kind: 'nullable' } : type,
+      parameter.optional && !parameter.initializer && type.kind !== 'nullable'
+        ? { inner: type, kind: 'nullable' }
+        : type,
     );
   });
+}
+
+function registerLocalTypes(statements: readonly IrStatement[], context: EmitContext): void {
+  const candidates: Array<{ expression: IrExpression; name: string }> = [];
+  const visit = (value: unknown): void => {
+    if (!value || typeof value !== 'object') return;
+    if ('kind' in value && value.kind === 'function') return;
+    if ('kind' in value && value.kind === 'variable' && 'declarations' in value) {
+      for (const variable of value.declarations as IrVariable[]) {
+        if (variable.type) context.symbolTypes.set(variable.name, variable.type);
+        if (variable.initializer) candidates.push({ expression: variable.initializer, name: variable.name });
+      }
+    }
+    if ('kind' in value && value.kind === 'assignment' && 'left' in value && 'right' in value) {
+      const assignment = value as Extract<IrExpression, { kind: 'assignment' }>;
+      if (assignment.left.kind === 'identifier') {
+        candidates.push({ expression: assignment.right, name: assignment.left.name });
+      }
+    }
+    for (const child of Object.values(value)) {
+      if (Array.isArray(child)) child.forEach(visit);
+      else visit(child);
+    }
+  };
+  statements.forEach(visit);
+  for (let pass = 0; pass <= candidates.length; pass++) {
+    let changed = false;
+    for (const candidate of candidates) {
+      if (context.symbolTypes.has(candidate.name)) continue;
+      const inferred = inferIrExpressionType(candidate.expression, context);
+      if (!inferred) continue;
+      context.symbolTypes.set(candidate.name, inferred);
+      changed = true;
+    }
+    if (!changed) break;
+  }
 }
 
 function emitAnonymousDefinitions(context: EmitContext, exported = false): string {
@@ -1256,13 +3453,21 @@ function emitAnonymousDefinitions(context: EmitContext, exported = false): strin
       '#[derive(Clone)]',
       `${exported ? 'pub ' : ''}struct ${name} {`,
       indent(
-        type.fields
-          .map(
+        [
+          `${exported ? 'pub ' : ''}__flight_identity: std::sync::Arc<()>,`,
+          ...type.fields.map(
             (field) =>
-              `${exported ? 'pub ' : ''}${safeName(field.name)}: ${field.optional ? `Option<${emitType(field.type, context)}>` : emitType(field.type, context)},`,
-          )
-          .join('\n'),
+              `${exported ? 'pub ' : ''}${safeName(field.name)}: ${
+                field.optional && field.type.kind !== 'nullable'
+                  ? `Option<${emitType(field.type, context)}>`
+                  : emitType(field.type, context)
+              },`,
+          ),
+        ].join('\n'),
       ),
+      '}',
+      `impl PartialEq for ${name} {`,
+      '  fn eq(&self, other: &Self) -> bool { std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity) }',
       '}',
     ].join('\n');
   });
@@ -1397,6 +3602,9 @@ function collectMutatedNames(
 function expressionRootIdentifier(value: unknown): string | undefined {
   if (!value || typeof value !== 'object' || !('kind' in value)) return undefined;
   if (value.kind === 'identifier' && 'name' in value && typeof value.name === 'string') return value.name;
+  if (value.kind === 'cast' && 'expression' in value) {
+    return expressionRootIdentifier(value.expression);
+  }
   if ((value.kind === 'element' || value.kind === 'property') && 'object' in value) {
     return expressionRootIdentifier(value.object);
   }
@@ -1408,12 +3616,22 @@ function capturesParameterInReturnedClosure(
   name: string,
 ): boolean {
   if (!('body' in owner) || !Array.isArray(owner.body)) return false;
-  return owner.body.some(
-    (statement) =>
-      statement.kind === 'return' &&
-      statement.expression?.kind === 'function' &&
-      containsIdentifier(statement.expression, name),
-  );
+  if (
+    owner.body.some(
+      (statement) =>
+        statement.kind === 'return' &&
+        statement.expression?.kind === 'function' &&
+        containsIdentifier(statement.expression, name),
+    )
+  ) {
+    return true;
+  }
+  const captures = (value: unknown): boolean => {
+    if (!value || typeof value !== 'object') return false;
+    if ('kind' in value && value.kind === 'function') return containsIdentifier(value, name);
+    return Object.values(value).some((item) => (Array.isArray(item) ? item.some(captures) : captures(item)));
+  };
+  return owner.body.some(captures);
 }
 
 function containsIdentifier(value: unknown, name: string): boolean {
@@ -1423,6 +3641,76 @@ function containsIdentifier(value: unknown, name: string): boolean {
   }
   return Object.values(value).some((item) =>
     Array.isArray(item) ? item.some((child) => containsIdentifier(child, name)) : containsIdentifier(item, name),
+  );
+}
+
+function evaluateStaticBoolean(expression: IrExpression, context: EmitContext): boolean | undefined {
+  if (expression.kind === 'cast') return evaluateStaticBoolean(expression.expression, context);
+  if (expression.kind === 'literal' && typeof expression.value === 'boolean') return expression.value;
+  if (expression.kind === 'unary' && expression.operator === '!') {
+    const operand = evaluateStaticBoolean(expression.operand, context);
+    return operand === undefined ? undefined : !operand;
+  }
+  if (expression.kind !== 'binary') return undefined;
+  if (expression.operator === '&&' || expression.operator === '||') {
+    const left = evaluateStaticBoolean(expression.left, context);
+    const right = evaluateStaticBoolean(expression.right, context);
+    if (expression.operator === '&&') {
+      if (left === false || right === false) return false;
+      return left === true && right === true ? true : undefined;
+    }
+    if (left === true || right === true) return true;
+    return left === false && right === false ? false : undefined;
+  }
+  if (!['===', '!==', '==', '!='].includes(expression.operator)) return undefined;
+  const staticValue = (value: IrExpression): boolean | null | number | string | undefined => {
+    if (value.kind === 'cast') return staticValue(value.expression);
+    if (value.kind === 'literal') return value.value;
+    if (
+      value.kind === 'call' &&
+      value.callee.kind === 'property' &&
+      value.callee.object.kind === 'identifier' &&
+      value.callee.object.name === '_Runtime' &&
+      value.callee.name === 'typeofGlobal'
+    ) {
+      return 'undefined';
+    }
+    if (value.kind === 'unary' && value.operator === 'typeof') {
+      const emitted = emitUnary(value, context);
+      if (/^"(?:boolean|function|number|object|string|undefined)"$/u.test(emitted)) {
+        return JSON.parse(emitted) as string;
+      }
+      if (runtimeGlobalType(value.operand)) return 'undefined';
+      const type = inferIrExpressionType(value.operand, context);
+      if (type?.kind === 'primitive') {
+        if (type.name === 'Bool') return 'boolean';
+        if (type.name === 'String') return 'string';
+        if (type.name === 'Void') return 'undefined';
+        return 'number';
+      }
+    }
+    return undefined;
+  };
+  const left = staticValue(expression.left);
+  const right = staticValue(expression.right);
+  if (left === undefined || right === undefined) return undefined;
+  const equal = left === right;
+  return expression.operator === '===' || expression.operator === '==' ? equal : !equal;
+}
+
+function statementAlwaysReturns(statement: IrStatement, context: EmitContext): boolean {
+  if (statement.kind === 'return' || statement.kind === 'throw') return true;
+  if (statement.kind === 'block') {
+    return statement.statements.some((item) => statementAlwaysReturns(item, context));
+  }
+  if (statement.kind !== 'if') return false;
+  const constant = evaluateStaticBoolean(statement.condition, context);
+  if (constant === true) return statementAlwaysReturns(statement.consequent, context);
+  if (constant === false) return statement.otherwise ? statementAlwaysReturns(statement.otherwise, context) : false;
+  return Boolean(
+    statement.otherwise &&
+    statementAlwaysReturns(statement.consequent, context) &&
+    statementAlwaysReturns(statement.otherwise, context),
   );
 }
 
@@ -1452,8 +3740,16 @@ function isReferenceLike(type: IrType, context: EmitContext): boolean {
   return (
     resolved?.kind === 'anonymous' ||
     resolved?.kind === 'array' ||
+    resolved?.kind === 'function' ||
+    resolved?.kind === 'union' ||
+    (resolved?.kind === 'named' &&
+      ['ArrayBufferView', 'ByteBuffer', 'FlightRegex', 'RustMap', 'RustSet'].includes(resolved.name)) ||
     (resolved?.kind === 'named' && Boolean(typedArrayType(resolved.name)))
   );
+}
+
+function isSharedHandleType(type: IrType): boolean {
+  return type.kind === 'named' && type.name === 'SignalData';
 }
 
 function isCopyType(type: IrType, context: EmitContext): boolean {
@@ -1461,14 +3757,54 @@ function isCopyType(type: IrType, context: EmitContext): boolean {
   if (!resolved) return false;
   if (resolved.kind === 'primitive') return resolved.name !== 'String';
   if (resolved.kind === 'nullable') return isCopyType(resolved.inner, context);
+  if (resolved.kind === 'named' && resolved.name === 'FlightSymbol') return true;
   return false;
 }
 
-function emitNew(expression: Extract<IrExpression, { kind: 'new' }>, context: EmitContext): string {
-  const globalType = runtimeGlobalType(expression.callee);
-  const typedArray = globalType ? typedArrayType(globalType) : undefined;
-  if (typedArray) {
+function emitNew(
+  expression: Extract<IrExpression, { kind: 'new' }>,
+  context: EmitContext,
+  expectedType?: IrType,
+): string {
+  const globalType = runtimeConstructorType(expression.callee);
+  if (globalType === 'Map' || globalType === 'Set' || globalType === 'WeakMap' || globalType === 'WeakSet') {
+    return 'Vec::new()';
+  }
+  if (globalType && opaqueHostConstructors.has(globalType)) {
+    return 'crate::OpaqueHostValue::Object';
+  }
+  if (globalType === 'Array') {
     const length = expression.arguments[0] ? emitExpression(expression.arguments[0], context) : '0.0_f64';
+    return `vec![Default::default(); ${parenthesize(length)} as usize]`;
+  }
+  if (globalType === 'ArrayBuffer') {
+    const length = expression.arguments[0] ? emitExpression(expression.arguments[0], context) : '0.0_f64';
+    return `vec![0_u8; ${parenthesize(length)} as usize]`;
+  }
+  if (expression.callee.kind === 'identifier' && expression.callee.name === 'Proxy') {
+    const target = expression.arguments[0];
+    if (!target) throw new RustEmissionError('Proxy construction requires a target');
+    const value = emitExpression(target, context);
+    return target.kind === 'identifier' && context.borrowedNames.has(target.name) ? `${value}.clone()` : value;
+  }
+  const resolvedExpected = resolveSemanticType(
+    expectedType?.kind === 'nullable' ? expectedType.inner : expectedType,
+    context,
+  );
+  const expectedTypedArray = resolvedExpected?.kind === 'named' ? typedArrayType(resolvedExpected.name) : undefined;
+  const typedArray = expectedTypedArray ?? (globalType ? typedArrayType(globalType) : undefined);
+  if (typedArray) {
+    const argument = expression.arguments[0];
+    const argumentType = argument ? inferIrExpressionType(argument, context) : undefined;
+    const sourceType = argumentType?.kind === 'nullable' ? argumentType.inner : argumentType;
+    if (
+      argument &&
+      (sourceType?.kind === 'array' || (sourceType?.kind === 'named' && Boolean(typedArrayType(sourceType.name))))
+    ) {
+      const source = emitExpression(argument, context);
+      return `${parenthesize(source)}.iter().map(|value| (*value) as ${typedArray.rust}).collect()`;
+    }
+    const length = argument ? emitExpression(argument, context) : '0.0_f64';
     return `vec![${typedArray.zero}; ${parenthesize(length)} as usize]`;
   }
   throw new RustEmissionError(
@@ -1481,29 +3817,165 @@ function emitObject(
   context: EmitContext,
   expectedType?: IrType,
 ): string {
-  const nullable = expectedType?.kind === 'nullable';
-  const target = nullable ? expectedType.inner : expectedType;
-  const resolved = resolveSemanticType(target, context);
-  if (resolved?.kind !== 'anonymous' || !target) {
-    throw new RustEmissionError('object literal requires an inferred structural type');
+  if (expression.properties.length === 1 && expression.properties[0]?.kind === 'spread') {
+    return `${parenthesize(emitExpression(expression.properties[0].expression, context))}.clone()`;
   }
-  const name = emitType(target, context);
-  const fields = new Map(resolved.fields.map((field) => [field.name, field]));
-  const properties = expression.properties.map((property) => {
+  const nullable = expectedType?.kind === 'nullable';
+  const contextualTarget = nullable ? expectedType.inner : expectedType;
+  const target =
+    (contextualTarget?.kind === 'dynamic' ? undefined : contextualTarget) ??
+    inferNamedStructuralObjectType(expression, context) ??
+    contextualTarget ??
+    inferStaticExpressionType(expression);
+  const resolved = resolveSemanticType(target, context);
+  if (resolved?.kind === 'named' && resolved.name === 'RustMap') {
+    const keyType = resolved.arguments[0] ?? primitive('String');
+    const valueType = resolved.arguments[1] ?? { kind: 'dynamic' };
+    const entries: string[] = [];
+    const spreads: string[] = [];
+    for (const property of expression.properties) {
+      if (property.kind === 'spread') {
+        spreads.push(
+          `__flight_record.extend(${parenthesize(emitExpression(property.expression, context, target))}.iter().cloned());`,
+        );
+        continue;
+      }
+      const key =
+        property.kind === 'computedProperty'
+          ? emitExpression(property.key, context, keyType)
+          : emitExpression({ kind: 'literal', value: property.name }, context, keyType);
+      entries.push(`__flight_record.push((${key}, ${emitExpression(property.value, context, valueType)}));`);
+    }
+    const value = `{ let mut __flight_record = Vec::new(); ${[...entries, ...spreads].join(' ')} __flight_record }`;
+    return nullable ? `Some(${value})` : value;
+  }
+  if (expression.properties.length === 0 && (!target || resolved?.kind === 'dynamic')) {
+    return 'crate::OpaqueHostValue::Object';
+  }
+  if (expression.properties.length === 0 && target?.kind === 'named' && !context.namedTypes.has(target.name)) {
+    return `panic!("cannot construct an untyped ${target.name} without a native value")`;
+  }
+  if (resolved?.kind !== 'anonymous' || !target) {
+    throw new RustEmissionError(
+      `object literal requires an inferred structural type (target=${target ? typeKey(target) : 'unknown'}, properties=${expression.properties
+        .map((property) => (property.kind === 'property' ? property.name : property.kind))
+        .join(',')})`,
+    );
+  }
+  const emittedName = emitType(target, context);
+  const name = emittedName.includes('<') ? emittedName.replace('<', '::<') : emittedName;
+  const fields = new Map(flattenStructFields(resolved, context).map((field) => [field.name, field]));
+  const initialized = new Set<string>();
+  const spreads: string[] = [];
+  if (target.kind === 'named' && target.name === 'SignalData') {
+    const arguments_ = [...fields.values()].map((field) => {
+      const property = expression.properties.find(
+        (candidate) => candidate.kind === 'property' && candidate.name === field.name,
+      );
+      if (!property || property.kind !== 'property') {
+        if (field.optional) return 'None';
+        throw new RustEmissionError(`shared object field ${field.name} is not initialized`);
+      }
+      const value = emitExpression(property.value, context, field.type);
+      return field.optional && field.type.kind !== 'nullable' && !isNullishExpression(property.value)
+        ? `Some(${value})`
+        : value;
+    });
+    const value = `${name}::new(${arguments_.join(', ')})`;
+    return nullable ? `Some(${value})` : value;
+  }
+  const properties = expression.properties.flatMap((property) => {
+    if (
+      property.kind === 'computedProperty' &&
+      property.key.kind === 'identifier' &&
+      property.key.name === 'EntityRuntimeKey'
+    ) {
+      return [];
+    }
+    if (property.kind === 'spread') {
+      spreads.push(`..${parenthesize(emitExpression(property.expression, context, target))}.clone()`);
+      return [];
+    }
     if (property.kind !== 'property') {
       throw new RustEmissionError(`object ${property.kind} Rust lowering is not implemented`);
     }
     const field = fields.get(property.name);
     if (!field) throw new RustEmissionError(`object field ${property.name} is not present in structural type`);
-    return `${safeName(property.name)}: ${emitExpression(property.value, context, field.type)},`;
+    initialized.add(property.name);
+    const value = emitExpression(property.value, context, field.type);
+    return [
+      `${safeName(property.name)}: ${
+        field.optional && field.type.kind !== 'nullable' && !isNullishExpression(property.value)
+          ? `Some(${value})`
+          : value
+      },`,
+    ];
   });
-  const value = `${name} {\n${indent(properties.join('\n'))}\n}`;
+  for (const field of resolved.fields) {
+    if (spreads.length === 0 && field.optional && !initialized.has(field.name)) {
+      properties.push(`${safeName(field.name)}: None,`);
+    }
+  }
+  if (spreads.length > 1) throw new RustEmissionError('multiple object spreads require ordered Rust lowering');
+  if (spreads.length === 0) properties.unshift('__flight_identity: std::sync::Arc::new(()),');
+  const value = `${name} {\n${indent([...properties, ...spreads].join('\n'))}\n}`;
   return nullable ? `Some(${value})` : value;
 }
 
+function inferNamedStructuralObjectType(
+  expression: Extract<IrExpression, { kind: 'object' }>,
+  context: EmitContext,
+): IrType | undefined {
+  if (expression.properties.some((property) => property.kind !== 'property')) return undefined;
+  const names = new Set(
+    expression.properties.flatMap((property) => (property.kind === 'property' ? [property.name] : [])),
+  );
+  const matches = [...context.namedTypes.entries()].flatMap(([name, type]) => {
+    if (type.kind !== 'anonymous') return [];
+    const fields = flattenStructFields(type, context);
+    if (
+      fields.some((field) => !field.optional && !names.has(field.name)) ||
+      [...names].some((fieldName) => !fields.some((field) => field.name === fieldName))
+    ) {
+      return [];
+    }
+    return [{ arguments: [], kind: 'named' as const, name }];
+  });
+  const localMatches = matches.filter((match) => context.localTypeNames.has(match.name));
+  const selected = localMatches.length > 0 ? localMatches : matches;
+  const identities = new Map(selected.map((match) => [typeKey(resolveSemanticType(match, context) ?? match), match]));
+  return identities.size === 1 ? [...identities.values()][0] : undefined;
+}
+
 function emitElement(expression: Extract<IrExpression, { kind: 'element' }>, context: EmitContext): string {
-  if (expression.optional) throw new RustEmissionError('optional element access Rust lowering is not implemented');
   const objectType = inferIrExpressionType(expression.object, context);
+  if (expression.optional) {
+    if (
+      objectType?.kind === 'nullable' &&
+      (objectType.inner.kind === 'array' ||
+        (objectType.inner.kind === 'named' && Boolean(typedArrayType(objectType.inner.name))))
+    ) {
+      const owner = emitPlaceExpression(expression.object, context);
+      return `${owner}.as_ref().and_then(|values| values.get(${emitExpression(expression.index, context)} as usize).cloned())`;
+    }
+    if (objectType?.kind === 'nullable' && objectType.inner.kind === 'named' && objectType.inner.name === 'RustMap') {
+      const keyType = objectType.inner.arguments[0] ?? { kind: 'dynamic' };
+      const owner = emitPlaceExpression(expression.object, context);
+      const key = emitExpression(expression.index, context, keyType);
+      return `${owner}.as_ref().and_then(|entries| entries.iter().find(|(key, _)| key == &${key}).map(|(_, value)| value.clone()))`;
+    }
+    throw new RustEmissionError('optional element access requires an inferred nullable collection');
+  }
+  const collectionType = objectType?.kind === 'nullable' ? objectType.inner : objectType;
+  if (collectionType?.kind === 'named' && collectionType.name === 'RustMap') {
+    const keyType = collectionType.arguments[0] ?? { kind: 'dynamic' };
+    const owner =
+      objectType?.kind === 'nullable'
+        ? `${emitPlaceExpression(expression.object, context)}.as_ref().unwrap()`
+        : emitPlaceExpression(expression.object, context);
+    const key = emitExpression(expression.index, context, keyType);
+    return `${owner}.iter().find(|(key, _)| key == &${key}).map(|(_, value)| value).expect("TypeScript Record key was absent")`;
+  }
   const nullableCollection =
     objectType?.kind === 'nullable' &&
     (objectType.inner.kind === 'array' ||
@@ -1517,6 +3989,7 @@ function emitElement(expression: Extract<IrExpression, { kind: 'element' }>, con
 
 function emitElementRead(expression: Extract<IrExpression, { kind: 'element' }>, context: EmitContext): string {
   const place = emitElement(expression, context);
+  if (expression.optional) return place;
   const objectType = inferIrExpressionType(expression.object, context);
   return objectType?.kind === 'named' && typedArrayType(objectType.name) ? `(${place} as f64)` : `${place}.clone()`;
 }
@@ -1532,61 +4005,352 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
       return undefined;
     case 'array':
       return expression.elements[0]
-        ? { element: inferIrExpressionType(expression.elements[0], context) ?? { kind: 'dynamic' }, kind: 'array' }
+        ? {
+            element: inferIrExpressionType(expression.elements[0], context) ?? {
+              kind: 'dynamic',
+            },
+            kind: 'array',
+          }
         : undefined;
     case 'binary': {
       const left = inferIrExpressionType(expression.left, context);
-      if (['===', '!==', '<', '<=', '>', '>='].includes(expression.operator)) {
+      if (['===', '!==', '==', '!=', '<', '<=', '>', '>=', 'instanceof', 'in'].includes(expression.operator)) {
         return primitive('Bool');
       }
       if (expression.operator === '&&' || expression.operator === '||') return left;
       if (expression.operator === '??' || expression.operator === '??undefined') {
+        if (isNullishExpression(expression.right)) return left;
         return left?.kind === 'nullable' ? left.inner : left;
       }
       return left ?? inferIrExpressionType(expression.right, context);
     }
-    case 'conditional':
-      return (
-        inferIrExpressionType(expression.whenTrue, context) ?? inferIrExpressionType(expression.whenFalse, context)
-      );
-    case 'call':
+    case 'conditional': {
+      const narrowed = narrowTypeofContexts(expression.condition, context);
+      const whenTrue = inferIrExpressionType(expression.whenTrue, narrowed.whenTrue);
+      const whenFalse = inferIrExpressionType(expression.whenFalse, narrowed.whenFalse);
+      if (whenTrue?.kind === 'nullable' && whenFalse && typeKey(whenTrue.inner) === typeKey(whenFalse)) {
+        return whenFalse;
+      }
+      if (whenFalse?.kind === 'nullable' && whenTrue && typeKey(whenFalse.inner) === typeKey(whenTrue)) {
+        return whenTrue;
+      }
+      return whenTrue ?? whenFalse;
+    }
+    case 'cast':
+      return expression.type;
+    case 'function':
+      return {
+        kind: 'function',
+        parameters: expression.parameters.map((parameter) => parameter.type),
+        returns:
+          expression.returns ??
+          (expression.expression ? inferIrExpressionType(expression.expression, context) : undefined) ??
+          inferFunctionExpressionReturnType(expression) ??
+          (expression.expression ? primitive('Float') : primitive('Void')),
+      };
+    case 'call': {
+      const hostReturnType = inferOptionalHostCallReturnType(expression, context);
+      if (hostReturnType) return { inner: hostReturnType, kind: 'nullable' };
+      if (runtimeGlobalType(expression)) return { kind: 'dynamic' };
+      if (isSymbolConstruction(expression)) {
+        return { arguments: [], kind: 'named', name: 'FlightSymbol' };
+      }
       if (isArrayFillConstruction(expression) && expression.arguments[0]) {
         return {
-          element: inferIrExpressionType(expression.arguments[0], context) ?? { kind: 'dynamic' },
+          element: inferIrExpressionType(expression.arguments[0], context) ?? {
+            kind: 'dynamic',
+          },
           kind: 'array',
         };
       }
-      return undefined;
-    case 'element': {
-      const inferred = inferIrExpressionType(expression.object, context);
-      const object = inferred?.kind === 'nullable' ? inferred.inner : inferred;
-      if (object?.kind === 'array') return object.element;
-      if (object?.kind === 'named') return typedArrayElementType(object.name);
-      return undefined;
-    }
-    case 'property': {
-      const object = inferIrExpressionType(expression.object, context);
-      if (object?.kind === 'anonymous') return object.fields.find((field) => field.name === expression.name)?.type;
-      if (object?.kind === 'array' && expression.name === 'length') return primitive('Float');
-      if (object?.kind === 'named' && expression.name === 'length' && typedArrayType(object.name)) {
-        return primitive('Float');
+      if (
+        expression.callee.kind === 'property' &&
+        expression.callee.object.kind === 'identifier' &&
+        expression.callee.object.name === 'Array' &&
+        expression.callee.name === 'from'
+      ) {
+        return { element: { kind: 'dynamic' }, kind: 'array' };
       }
-      if (object?.kind === 'named') {
-        const shape = context.namedTypes.get(object.name);
-        if (shape?.kind === 'anonymous') {
-          const field = shape.fields.find((item) => item.name === expression.name);
-          if (field) return field.optional ? { inner: field.type, kind: 'nullable' } : field.type;
+      const collectionMethod =
+        expression.callee.kind === 'property' &&
+        (() => {
+          const owner = inferIrExpressionType(expression.callee.object, context);
+          const collection = owner?.kind === 'nullable' ? owner.inner : owner;
+          return (
+            collection?.kind === 'named' &&
+            collection.name === 'RustMap' &&
+            ['clear', 'delete', 'get', 'has', 'keys', 'set', 'values'].includes(expression.callee.name)
+          );
+        })();
+      if (!collectionMethod) {
+        const callee = resolveSemanticType(inferIrExpressionType(expression.callee, context), context);
+        const callback = callee?.kind === 'nullable' ? resolveSemanticType(callee.inner, context) : callee;
+        if (callback?.kind === 'function') {
+          const returns = callback.returns;
+          return expression.optional && returns.kind !== 'nullable' ? { inner: returns, kind: 'nullable' } : returns;
+        }
+      }
+      if (expression.callee.kind === 'identifier') {
+        const declaration = context.functions.get(expression.callee.name);
+        if (declaration) {
+          return substituteIrType(declaration.returns, inferFunctionTypeSubstitutions(declaration, expression));
+        }
+        const local = context.symbolTypes.get(expression.callee.name);
+        if (local?.kind === 'function') return local.returns;
+      }
+      if (expression.callee.kind === 'property') {
+        const owner = inferIrExpressionType(expression.callee.object, context);
+        const collection = owner?.kind === 'nullable' ? owner.inner : owner;
+        if (collection?.kind === 'array') {
+          if (expression.callee.name === 'slice' || expression.callee.name === 'sort') return collection;
+          if (expression.callee.name === 'find' || expression.callee.name === 'pop') {
+            return { inner: collection.element, kind: 'nullable' };
+          }
+          if (expression.callee.name === 'map' && expression.arguments[0]?.kind === 'function') {
+            return {
+              element: inferFunctionExpressionReturnType(expression.arguments[0]) ?? {
+                kind: 'dynamic',
+              },
+              kind: 'array',
+            };
+          }
+        }
+        if (collection?.kind === 'named' && collection.name === 'RustMap') {
+          if (expression.callee.name === 'keys') {
+            return {
+              element: collection.arguments[0] ?? { kind: 'dynamic' },
+              kind: 'array',
+            };
+          }
+          if (expression.callee.name === 'values') {
+            return {
+              element: collection.arguments[1] ?? { kind: 'dynamic' },
+              kind: 'array',
+            };
+          }
+          if (expression.callee.name === 'get') {
+            return {
+              inner: collection.arguments[1] ?? { kind: 'dynamic' },
+              kind: 'nullable',
+            };
+          }
+          if (expression.callee.name === 'has' || expression.callee.name === 'delete') {
+            return primitive('Bool');
+          }
+        }
+        if (
+          collection?.kind === 'named' &&
+          collection.name === 'RustSet' &&
+          (expression.callee.name === 'has' || expression.callee.name === 'delete')
+        ) {
+          return primitive('Bool');
+        }
+        if (
+          collection?.kind === 'named' &&
+          collection.name === 'RustSet' &&
+          (expression.callee.name === 'keys' || expression.callee.name === 'values')
+        ) {
+          return {
+            element: collection.arguments[0] ?? { kind: 'dynamic' },
+            kind: 'array',
+          };
+        }
+        if (collection?.kind === 'named' && collection.name === 'FlightRegex' && expression.callee.name === 'test') {
+          return primitive('Bool');
+        }
+        if (collection?.kind === 'primitive' && collection.name === 'String') {
+          if (['startsWith', 'endsWith', 'includes'].includes(expression.callee.name)) return primitive('Bool');
+          if (expression.callee.name === 'search') return primitive('Float');
+          if (expression.callee.name === 'replace') return primitive('String');
+          if (expression.callee.name === 'split') {
+            return { element: primitive('String'), kind: 'array' };
+          }
+          if (['toLowerCase', 'toUpperCase', 'trim'].includes(expression.callee.name)) return primitive('String');
+        }
+        if (
+          collection?.kind === 'primitive' &&
+          (collection.name === 'Float' || collection.name === 'Int') &&
+          [
+            'abs',
+            'acos',
+            'asin',
+            'atan',
+            'cbrt',
+            'ceil',
+            'cos',
+            'exp',
+            'floor',
+            'ln',
+            'log2',
+            'round',
+            'sin',
+            'sqrt',
+            'tan',
+            'trunc',
+          ].includes(expression.callee.name)
+        ) {
+          return primitive('Float');
         }
       }
       return undefined;
     }
+    case 'element': {
+      const inferred = inferIrExpressionType(expression.object, context);
+      const object = inferred?.kind === 'nullable' ? inferred.inner : inferred;
+      const element =
+        object?.kind === 'array'
+          ? object.element
+          : object?.kind === 'named'
+            ? object.name === 'RustMap'
+              ? (object.arguments[1] ?? { kind: 'dynamic' })
+              : typedArrayElementType(object.name)
+            : undefined;
+      if (!element) return undefined;
+      return expression.optional && element.kind !== 'nullable' ? { inner: element, kind: 'nullable' } : element;
+    }
+    case 'property': {
+      if (expression.binding) return { kind: 'dynamic' };
+      const object = inferIrExpressionType(expression.object, context);
+      if (!object) return undefined;
+      const receiver = object.kind === 'nullable' ? object.inner : object;
+      if ((resolveSemanticType(receiver, context) ?? receiver).kind === 'dynamic') {
+        return { kind: 'dynamic' };
+      }
+      const field = inferPropertyType(receiver, expression.name, context);
+      if (!field) return undefined;
+      return expression.optional && field.kind !== 'nullable' ? { inner: field, kind: 'nullable' } : field;
+    }
     case 'new': {
-      const name = runtimeGlobalType(expression.callee);
+      const name = runtimeConstructorType(expression.callee);
+      if (name === 'Map' || name === 'WeakMap') {
+        return { arguments: expression.typeArguments, kind: 'named', name: 'RustMap' };
+      }
+      if (name === 'Set' || name === 'WeakSet') {
+        return { arguments: expression.typeArguments, kind: 'named', name: 'RustSet' };
+      }
+      if (name === 'Array') {
+        return {
+          element: expression.typeArguments[0] ?? { kind: 'dynamic' },
+          kind: 'array',
+        };
+      }
+      if (name === 'ArrayBuffer') return { arguments: [], kind: 'named', name: 'ByteBuffer' };
+      if (name && opaqueHostConstructors.has(name)) return { kind: 'dynamic' };
       return name && typedArrayType(name) ? { arguments: [], kind: 'named', name } : undefined;
     }
+    case 'regexp':
+      return { arguments: [], kind: 'named', name: 'FlightRegex' };
+    case 'unary':
+      if (expression.operator === '!') return primitive('Bool');
+      if (expression.operator === 'typeof') return primitive('String');
+      if (['+', '-', '~', '++', '--'].includes(expression.operator)) return primitive('Float');
+      return undefined;
     default:
       return undefined;
   }
+}
+
+function emitRegexp(expression: Extract<IrExpression, { kind: 'regexp' }>): string {
+  const flags = expression.flags;
+  return `regex::RegexBuilder::new(${JSON.stringify(expression.pattern)}).case_insensitive(${String(
+    flags.includes('i'),
+  )}).multi_line(${String(flags.includes('m'))}).dot_matches_new_line(${String(
+    flags.includes('s'),
+  )}).build().expect("upstream TypeScript regular expression must be valid Rust regex syntax")`;
+}
+
+function narrowTypeofContexts(
+  condition: IrExpression,
+  context: EmitContext,
+): { whenFalse: EmitContext; whenTrue: EmitContext } {
+  const clone = (): EmitContext => ({
+    ...context,
+    nonNullableNames: new Set(context.nonNullableNames),
+    symbolTypes: new Map(context.symbolTypes),
+    unionNarrowings: new Map(context.unionNarrowings),
+  });
+  const unchanged = { whenFalse: clone(), whenTrue: clone() };
+  if (condition.kind === 'identifier') {
+    const type = context.symbolTypes.get(condition.name);
+    if (type?.kind === 'nullable' && !context.sharedCaptureNames.has(condition.name)) {
+      const whenTrue = clone();
+      whenTrue.symbolTypes.set(condition.name, type.inner);
+      (whenTrue.nonNullableNames as Set<string>).add(condition.name);
+      return { whenFalse: clone(), whenTrue };
+    }
+    return unchanged;
+  }
+  if (condition.kind !== 'binary' || !['===', '!==', '==', '!='].includes(condition.operator)) {
+    return unchanged;
+  }
+  const nullableIdentifier =
+    condition.left.kind === 'identifier' && isNullishExpression(condition.right)
+      ? condition.left
+      : condition.right.kind === 'identifier' && isNullishExpression(condition.left)
+        ? condition.right
+        : undefined;
+  if (nullableIdentifier) {
+    const type = context.symbolTypes.get(nullableIdentifier.name);
+    if (type?.kind === 'nullable' && !context.sharedCaptureNames.has(nullableIdentifier.name)) {
+      const positive = ['===', '=='].includes(condition.operator);
+      const whenTrue = clone();
+      const whenFalse = clone();
+      const narrowed = positive ? whenFalse : whenTrue;
+      narrowed.symbolTypes.set(nullableIdentifier.name, type.inner);
+      (narrowed.nonNullableNames as Set<string>).add(nullableIdentifier.name);
+      return { whenFalse, whenTrue };
+    }
+  }
+  const typeofExpression =
+    condition.left.kind === 'unary' && condition.left.operator === 'typeof'
+      ? condition.left
+      : condition.right.kind === 'unary' && condition.right.operator === 'typeof'
+        ? condition.right
+        : undefined;
+  const tagExpression = typeofExpression === condition.left ? condition.right : condition.left;
+  if (
+    !typeofExpression ||
+    typeofExpression.operand.kind !== 'identifier' ||
+    tagExpression.kind !== 'literal' ||
+    typeof tagExpression.value !== 'string'
+  ) {
+    return unchanged;
+  }
+  const name = typeofExpression.operand.name;
+  const type = context.symbolTypes.get(name);
+  if (type?.kind !== 'union') return unchanged;
+  const matching = type.variants.flatMap((variant, index) =>
+    typeOfTag(variant, context) === tagExpression.value ? [index] : [],
+  );
+  const remaining = type.variants.flatMap((_, index) => (matching.includes(index) ? [] : [index]));
+  if (matching.length !== 1 || remaining.length !== 1) return unchanged;
+  const positive = ['===', '=='].includes(condition.operator);
+  const whenTrueIndex = positive ? matching[0]! : remaining[0]!;
+  const whenFalseIndex = positive ? remaining[0]! : matching[0]!;
+  const whenTrue = clone();
+  const whenFalse = clone();
+  whenTrue.symbolTypes.set(name, type.variants[whenTrueIndex]!);
+  whenFalse.symbolTypes.set(name, type.variants[whenFalseIndex]!);
+  whenTrue.unionNarrowings.set(name, { index: whenTrueIndex, variants: type.variants });
+  whenFalse.unionNarrowings.set(name, { index: whenFalseIndex, variants: type.variants });
+  return { whenFalse, whenTrue };
+}
+
+function inferPropertyType(object: IrType, name: string, context: EmitContext): IrType | undefined {
+  const resolved = resolveSemanticType(object, context) ?? object;
+  if (
+    (resolved.kind === 'array' || (resolved.kind === 'named' && Boolean(typedArrayType(resolved.name)))) &&
+    name === 'length'
+  ) {
+    return primitive('Float');
+  }
+  if (resolved.kind === 'named' && resolved.name === 'RustMap') {
+    return resolved.arguments[1] ?? { kind: 'dynamic' };
+  }
+  if (resolved.kind !== 'anonymous') return undefined;
+  const field = flattenStructFields(resolved, context).find((item) => item.name === name);
+  if (!field) return undefined;
+  return field.optional && field.type.kind !== 'nullable' ? { inner: field.type, kind: 'nullable' } : field.type;
 }
 
 function isArrayFillConstruction(expression: Extract<IrExpression, { kind: 'call' }>): expression is Extract<
@@ -1619,6 +4383,17 @@ function runtimeGlobalType(expression: IrExpression): string | undefined {
     return undefined;
   }
   return expression.arguments[0].value;
+}
+
+function runtimeConstructorType(expression: IrExpression): string | undefined {
+  if (
+    expression.kind === 'identifier' &&
+    (typedArrayType(expression.name) ||
+      ['Array', 'Map', 'Proxy', 'Set', 'WeakMap', 'WeakSet'].includes(expression.name))
+  ) {
+    return expression.name;
+  }
+  return runtimeGlobalType(expression);
 }
 
 function typedArrayType(name: string): { ir: string; rust: string; zero: string } | undefined {
@@ -1679,34 +4454,86 @@ function emitTemplate(expression: Extract<IrExpression, { kind: 'template' }>, c
 }
 
 function emitIdentifier(name: string, context: EmitContext): string {
-  return context.constantNames.get(name) ?? safeName(name);
+  const alias = context.placeAliases.get(name);
+  if (alias) return emitPlaceExpression(alias, context);
+  const recursiveSlot = context.recursiveClosureSlots.get(name);
+  if (recursiveSlot) return `${recursiveSlot}.lock().unwrap().as_ref().unwrap().clone()`;
+  const emitted = context.constantNames.get(name) ?? safeName(name);
+  const type = context.symbolTypes.get(name);
+  if (context.constantNames.has(name) && type?.kind === 'named' && type.name === 'FlightSymbol') {
+    return `*${emitted}`;
+  }
+  if (context.nonNullableNames.has(name)) {
+    return `${emitted}.${context.mutatedNames.has(name) ? 'as_mut' : 'as_ref'}().unwrap()`;
+  }
+  if (context.sharedCaptureNames.has(name)) return `(*${emitted}.lock().unwrap())`;
+  if (context.mutexValueNames.has(name)) return `(*${emitted}.lock().unwrap())`;
+  return context.atomicBoolNames.has(name) ? `${emitted}.load(std::sync::atomic::Ordering::Relaxed)` : emitted;
+}
+
+function isNullishExpression(expression: IrExpression): boolean {
+  return (
+    (expression.kind === 'literal' && expression.value === null) ||
+    (expression.kind === 'identifier' && expression.name.toLowerCase() === 'undefined')
+  );
+}
+
+function isSymbolConstruction(expression: IrExpression): boolean {
+  if (expression.kind !== 'call') return false;
+  if (expression.callee.kind === 'identifier') return expression.callee.name === 'Symbol';
+  return (
+    expression.callee.kind === 'property' &&
+    expression.callee.object.kind === 'identifier' &&
+    expression.callee.object.name === 'Symbol' &&
+    expression.callee.name === 'for'
+  );
 }
 
 function emitCondition(expression: IrExpression, context: EmitContext): string {
-  const emitted = emitExpression(expression, context);
   const type = inferIrExpressionType(expression, context);
+  const emitted =
+    (resolveSemanticType(type, context) ?? type)?.kind === 'dynamic'
+      ? emitExpression(expression, context, primitive('Bool'))
+      : emitExpression(expression, context);
   if (type?.kind === 'primitive' && type.name === 'Bool') return emitted;
   if (type?.kind === 'primitive' && (type.name === 'Float' || type.name === 'Int')) {
     return `${parenthesize(emitted)} != 0.0_f64`;
   }
   if (type?.kind === 'nullable') return `${parenthesize(emitted)}.is_some()`;
+  if (type && isReferenceLike(type, context)) return 'true';
   return emitted;
 }
 
+function isDynamicHostTree(expression: IrExpression, context: EmitContext): boolean {
+  const root = expressionRootIdentifier(expression);
+  if (!root) return false;
+  const type = context.symbolTypes.get(root);
+  return (resolveSemanticType(type, context) ?? type)?.kind === 'dynamic';
+}
+
 function emitLiteral(value: boolean | null | number | string, expectedType?: IrType, context?: EmitContext): string {
+  const resolved = context ? resolveSemanticType(expectedType, context) : expectedType;
+  if (resolved?.kind === 'dynamic') {
+    if (value === null) return 'crate::OpaqueHostValue::Null';
+    if (typeof value === 'boolean') return `crate::OpaqueHostValue::Bool(${String(value)})`;
+    if (typeof value === 'number') return `crate::OpaqueHostValue::Number(${emitNumberLiteral(value)})`;
+    return `crate::OpaqueHostValue::String(${JSON.stringify(value)}.to_owned())`;
+  }
   if (value === null) return 'None';
   if (typeof value === 'string') {
     const literal = JSON.stringify(value);
-    const resolved = context ? resolveSemanticType(expectedType, context) : expectedType;
     return resolved?.kind === 'primitive' && resolved.name === 'String' ? `${literal}.to_owned()` : literal;
   }
   if (typeof value === 'boolean') return String(value);
+  return coerceExpression(emitNumberLiteral(value), expectedType);
+}
+
+function emitNumberLiteral(value: number): string {
   if (Number.isNaN(value)) return 'f64::NAN';
   if (!Number.isFinite(value)) return value > 0 ? 'f64::INFINITY' : 'f64::NEG_INFINITY';
-  const number = Number.isInteger(value)
+  return Number.isInteger(value)
     ? `${String(value)}.0_f64`
     : `${/[.eE]/u.test(String(value)) ? String(value) : `${String(value)}.0`}_f64`;
-  return coerceExpression(number, expectedType);
 }
 
 function resolveSemanticType(type: IrType | undefined, context: EmitContext): IrType | undefined {
@@ -1875,6 +4702,42 @@ function screamingSnakeCase(value: string): string {
   return snakeCase(value).toUpperCase();
 }
 
+function resolveRustImport(
+  item: RustImport['names'][number],
+  declarations: string,
+): RustImport['names'][number] | undefined {
+  const bindings =
+    item.kind === 'type'
+      ? [item]
+      : item.kind === 'constant'
+        ? [
+            {
+              imported: screamingSnakeCase(item.imported),
+              kind: item.kind,
+              local: importedConstantBinding(item),
+              ...(item.public ? { public: true } : {}),
+            },
+          ]
+        : [
+            item,
+            {
+              imported: snakeCase(item.imported),
+              ...(item.kind ? { kind: item.kind } : {}),
+              local: snakeCase(item.local),
+              ...(item.public ? { public: true } : {}),
+            },
+          ];
+  if (item.public) {
+    if (item.kind === 'function' || item.kind === 'constant') return bindings.at(-1);
+    return bindings[0];
+  }
+  return bindings.find(({ local }) => new RegExp(`\\b${local}\\b`, 'u').test(declarations));
+}
+
+function importedConstantBinding(item: RustImport['names'][number]): string {
+  return item.public ? screamingSnakeCase(item.local) : `${snakeCase(item.local)}_constant`;
+}
+
 function safeName(value: string): string {
   return snakeCase(value);
 }
@@ -1899,32 +4762,73 @@ const typedArrays: Readonly<Record<string, { ir: string; rust: string; zero: str
   Uint32Array: { ir: 'RustU32', rust: 'u32', zero: '0_u32' },
 };
 
-const mutationMethods = new Set(['copyWithin', 'fill', 'pop', 'push', 'reverse', 'shift', 'sort', 'splice', 'unshift']);
+const opaqueHostConstructors = new Set([
+  'AbortController',
+  'Audio',
+  'AudioBuffer',
+  'MediaMetadata',
+  'OffscreenCanvas',
+  'ResizeObserver',
+  'WebSocket',
+]);
+
+const opaqueHostInstanceConstructors = new Set([
+  'HTMLCanvasElement',
+  'HTMLImageElement',
+  'HTMLVideoElement',
+  'ImageBitmap',
+  'OffscreenCanvas',
+]);
+
+const mutationMethods = new Set([
+  'add',
+  'clear',
+  'copyWithin',
+  'delete',
+  'fill',
+  'pop',
+  'push',
+  'reverse',
+  'set',
+  'shift',
+  'sort',
+  'splice',
+  'unshift',
+]);
 
 const rustKeywords = new Set([
+  'abstract',
   'as',
   'async',
   'await',
+  'become',
+  'box',
   'break',
   'const',
   'continue',
   'crate',
   'dyn',
+  'do',
   'else',
   'enum',
   'extern',
   'false',
   'fn',
+  'final',
   'for',
+  'gen',
   'if',
   'impl',
   'in',
   'let',
   'loop',
+  'macro',
   'match',
   'mod',
   'move',
   'mut',
+  'override',
+  'priv',
   'pub',
   'ref',
   'return',
@@ -1935,9 +4839,14 @@ const rustKeywords = new Set([
   'super',
   'trait',
   'true',
+  'try',
   'type',
+  'typeof',
   'unsafe',
+  'unsized',
   'use',
   'where',
   'while',
+  'virtual',
+  'yield',
 ]);

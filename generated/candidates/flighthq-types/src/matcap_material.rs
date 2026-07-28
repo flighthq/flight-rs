@@ -11,8 +11,10 @@ use crate::{AlphaType, BlendMode, Kind, MaterialAlphaMode, Texture};
 // Source: upstream/packages/types/src/MatcapMaterial.ts:7 (sha256:8b4467696325ff69cdbe538077a2259a9bd9f7007df08e3a49a165bf267de4e8)
 #[derive(Clone)]
 pub struct MatcapMaterial {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub kind: Kind,
-    pub name: Option<Option<String>>,
+    pub name: Option<String>,
     pub alpha_cutoff: f64,
     pub alpha_mode: MaterialAlphaMode,
     pub alpha_type: AlphaType,
@@ -20,6 +22,11 @@ pub struct MatcapMaterial {
     pub double_sided: bool,
     pub matcap: Option<Texture>,
     pub tint: f64,
+}
+impl PartialEq for MatcapMaterial {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/MatcapMaterial.ts:12 (sha256:69bf12a40048345093a5b1586225cc07af7a37b16ec5fa67fd999291d501bfaa)

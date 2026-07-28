@@ -16,6 +16,8 @@ use crate::{
 // Source: upstream/packages/types/src/TextLabel.ts:7 (sha256:3f6682b750d0898585b3453f5d4b9d32cacb0721f0e3e4ce087020840c0ef768)
 #[derive(Clone)]
 pub struct TextLabelData {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub auto_size: TextAutoSize,
     pub height: f64,
     pub text: String,
@@ -23,15 +25,23 @@ pub struct TextLabelData {
     pub vertical_align: TextVerticalAlign,
     pub width: f64,
 }
+impl PartialEq for TextLabelData {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/types/src/TextLabel.ts:18 (sha256:6795acda2aa36d88e003498810c2d72cf123d5046fbeab982770ec4810321cc6)
 #[derive(Clone)]
 pub struct TextLabelRuntime {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
     pub appearance_id: f64,
     pub bounds_using_local_bounds_id: f64,
     pub bounds_using_local_transform_id: f64,
-    pub can_add_child: std::sync::Arc<dyn Fn(Node, Node) -> bool + Send + Sync + 'static>,
+    pub can_add_child:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
     pub children: Option<Vec<Node>>,
     pub color_adjustments: Option<Vec<Adjustment>>,
     pub resolved_color_transform: Option<ColorTransform>,
@@ -57,21 +67,31 @@ pub struct TextLabelRuntime {
     pub rotation_sine: f64,
     pub world_matrix: Option<Matrix>,
     pub bounds_rectangle: Option<Rectangle>,
-    pub compute_local_bounds_rectangle:
-        std::sync::Arc<dyn Fn(Rectangle, BoundsNodeAny) -> () + Send + Sync + 'static>,
+    pub compute_local_bounds_rectangle: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
+    >,
     pub local_bounds_rectangle: Option<Rectangle>,
     pub world_bounds_rectangle: Option<Rectangle>,
     pub stage: Option<Stage>,
     pub build_text_layout_params: std::sync::Arc<
-        dyn Fn(TextLabel, TextMeasureFunction) -> TextLayoutParams + Send + Sync + 'static,
+        std::sync::Mutex<
+            Box<dyn FnMut(TextLabel, TextMeasureFunction) -> TextLayoutParams + Send + 'static>,
+        >,
     >,
     pub text_layout: Option<TextLayoutResult>,
     pub text_layout_using_content_id: f64,
+}
+impl PartialEq for TextLabelRuntime {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/TextLabel.ts:31 (sha256:6e6f193698f819105eae685200bdded28eb20248352584c28b2b560109d65e09)
 #[derive(Clone)]
 pub struct TextLabel {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub data: TextLabelData,
     pub enabled: bool,
     pub kind: Kind,
@@ -91,6 +111,11 @@ pub struct TextLabel {
     pub skew_y: f64,
     pub x: f64,
     pub y: f64,
+}
+impl PartialEq for TextLabel {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/TextLabel.ts:35 (sha256:800f6cacad6f11058247fb3a2fe6ad16ab7f1ea94d9d9a986dfb4599742ef0e2)

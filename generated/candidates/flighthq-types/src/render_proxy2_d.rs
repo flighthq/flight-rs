@@ -14,6 +14,8 @@ use crate::{
 // Source: upstream/packages/types/src/RenderProxy2D.ts:7 (sha256:272ac35d464e6e3a9ff7ab35c445b3fd389a16e2ffc6b301a47f16b3b2d11dcc)
 #[derive(Clone)]
 pub struct RenderProxy2D {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub source: Renderable,
     pub kind: Kind,
     pub next: Option<RenderProxy>,
@@ -36,4 +38,9 @@ pub struct RenderProxy2D {
     pub transform2_d: Matrix,
     pub traverse_children: bool,
     pub clip_depth: f64,
+}
+impl PartialEq for RenderProxy2D {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

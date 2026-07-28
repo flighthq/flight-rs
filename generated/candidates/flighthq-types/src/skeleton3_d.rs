@@ -11,8 +11,15 @@ use crate::SceneNode;
 // Source: upstream/packages/types/src/Skeleton3D.ts:12 (sha256:1b17a0f01745f680f0a10d3d66e836133f3b89fc168d920c7604107f106948ae)
 #[derive(Clone)]
 pub struct Skeleton3D {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub inverse_bind_matrices: Vec<f32>,
     pub joint_matrices: Vec<f32>,
     pub joints: Vec<SceneNode>,
-    pub names: Option<Option<Vec<String>>>,
+    pub names: Option<Vec<String>>,
+}
+impl PartialEq for Skeleton3D {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

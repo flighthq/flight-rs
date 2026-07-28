@@ -9,8 +9,15 @@
 // Source: upstream/packages/types/src/GlyphExtents.ts:4 (sha256:849b0e005d763973b878f53b1726dc2ce18953b4486b8f6265cd57d810652ca4)
 #[derive(Clone)]
 pub struct GlyphExtents {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub height: f64,
     pub width: f64,
     pub x_bearing: f64,
     pub y_bearing: f64,
+}
+impl PartialEq for GlyphExtents {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

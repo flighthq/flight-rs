@@ -9,8 +9,15 @@
 // Source: upstream/packages/types/src/FontVariation.ts:1 (sha256:738762ab3d2c7b637084d12086d9c57c38bcc6ed282d5a88e4cc2e2b361652bf)
 #[derive(Clone)]
 pub struct FontVariation {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub axis: String,
     pub value: f64,
+}
+impl PartialEq for FontVariation {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/FontVariation.ts:5 (sha256:b4a196722bd6c808d653575ad7fa7604a02157f7a6be540881126a6b759ab058)

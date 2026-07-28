@@ -11,6 +11,8 @@ use crate::SpritesheetAnimationDirection;
 // Source: upstream/packages/types/src/SpritesheetAnimation.ts:4 (sha256:8ac0c9d0f7a4d1503d6f2ba9bdb34706ca82ef0ab0b9c75b5d02cacf528d77e2)
 #[derive(Clone)]
 pub struct SpritesheetAnimation {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub frames: Vec<f64>,
     pub frame_duration: f64,
     pub frame_durations: Option<Vec<f64>>,
@@ -18,4 +20,9 @@ pub struct SpritesheetAnimation {
     pub loop_: bool,
     pub origin_x: f64,
     pub origin_y: f64,
+}
+impl PartialEq for SpritesheetAnimation {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

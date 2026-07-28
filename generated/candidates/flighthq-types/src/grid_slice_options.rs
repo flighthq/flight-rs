@@ -9,6 +9,8 @@
 // Source: upstream/packages/types/src/GridSliceOptions.ts:1 (sha256:74eac29226f65baa0ccd8d51e1d6a30564af4f67ecd026148f3e2cf967127176)
 #[derive(Clone)]
 pub struct GridSliceOptions {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub columns: f64,
     pub frame_height: Option<f64>,
     pub frame_width: Option<f64>,
@@ -21,4 +23,9 @@ pub struct GridSliceOptions {
     pub rows: f64,
     pub spacing_x: Option<f64>,
     pub spacing_y: Option<f64>,
+}
+impl PartialEq for GridSliceOptions {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

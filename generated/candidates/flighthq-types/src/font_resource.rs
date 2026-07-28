@@ -9,6 +9,13 @@
 // Source: upstream/packages/types/src/FontResource.ts:1 (sha256:05e2cc1dd0df88cfa444c4916544b96e5e1d44ce68be13c3fae8e5842aa95f11)
 #[derive(Clone)]
 pub struct FontResource {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub family: String,
     pub face: Option<crate::OpaqueHostValue>,
+}
+impl PartialEq for FontResource {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

@@ -20,20 +20,83 @@ pub type AppMemoryPressure = String;
 // Source: upstream/packages/types/src/Lifecycle.ts:16 (sha256:03ca8563ffb8efc48fd12319d2e69063bba9996dbda8ac0dbe4eb56caac633e9)
 #[derive(Clone)]
 pub struct LifecycleBackend {
-    pub get_state: crate::OpaqueHostValue,
-    pub subscribe: crate::OpaqueHostValue,
-    pub get_launch_kind: Option<crate::OpaqueHostValue>,
-    pub subscribe_memory_warning: Option<crate::OpaqueHostValue>,
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub get_state:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> AppLifecycleState + Send + 'static>>>,
+    pub subscribe: std::sync::Arc<
+        std::sync::Mutex<
+            Box<
+                dyn FnMut(
+                        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
+                    ) -> std::sync::Arc<
+                        std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>,
+                    > + Send
+                    + 'static,
+            >,
+        >,
+    >,
+    pub get_launch_kind: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> AppLaunchKind + Send + 'static>>>,
+    >,
+    pub subscribe_memory_warning: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<
+                    dyn FnMut(
+                            std::sync::Arc<
+                                std::sync::Mutex<
+                                    Box<dyn FnMut(AppMemoryPressure) -> () + Send + 'static>,
+                                >,
+                            >,
+                        ) -> std::sync::Arc<
+                            std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>,
+                        > + Send
+                        + 'static,
+                >,
+            >,
+        >,
+    >,
+}
+impl PartialEq for LifecycleBackend {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/Lifecycle.ts:30 (sha256:e1e5b2e2eae928794ef748e91dc725ac0315d3ea36f3e762f005931fb53e093f)
 #[derive(Clone)]
 pub struct AppLifecycle {
-    pub on_state_change: Signal,
-    pub on_resume: Signal,
-    pub on_pause: Signal,
-    pub on_back_button: Signal,
-    pub on_memory_warning: Signal,
-    pub on_save_state: Signal,
-    pub on_restore_state: Signal,
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub on_state_change: Signal<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(AppLifecycleState) -> () + Send + 'static>>>,
+    >,
+    pub on_resume:
+        Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
+    pub on_pause: Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
+    pub on_back_button:
+        Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
+    pub on_memory_warning: Signal<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(AppMemoryPressure) -> () + Send + 'static>>>,
+    >,
+    pub on_save_state: Signal<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<dyn FnMut(Vec<(String, crate::OpaqueHostValue)>) -> () + Send + 'static>,
+            >,
+        >,
+    >,
+    pub on_restore_state: Signal<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<dyn FnMut(Vec<(String, crate::OpaqueHostValue)>) -> () + Send + 'static>,
+            >,
+        >,
+    >,
+}
+impl PartialEq for AppLifecycle {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

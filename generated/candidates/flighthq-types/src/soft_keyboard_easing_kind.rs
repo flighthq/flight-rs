@@ -37,4 +37,16 @@ pub type SoftKeyboardEasingLinearKind = crate::OpaqueHostValue;
 pub type SoftKeyboardEasingKeyboardDefaultKind = crate::OpaqueHostValue;
 
 // Source: upstream/packages/types/src/SoftKeyboardEasingKind.ts:11 (sha256:ecad8adae116529ef97375ebe808fc4c51f2faeb8a486984438c965531d5df2e)
-pub type SoftKeyboardEasingKind = crate::OpaqueHostValue;
+pub type SoftKeyboardEasingKind = crate::FlightUnion2<
+    SoftKeyboardEasingDefaultKind,
+    crate::FlightUnion2<
+        SoftKeyboardEasingEaseInKind,
+        crate::FlightUnion2<
+            SoftKeyboardEasingEaseOutKind,
+            crate::FlightUnion2<
+                SoftKeyboardEasingLinearKind,
+                SoftKeyboardEasingKeyboardDefaultKind,
+            >,
+        >,
+    >,
+>;

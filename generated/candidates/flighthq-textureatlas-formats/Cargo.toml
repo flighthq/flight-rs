@@ -1,0 +1,16 @@
+# @generated candidate crate; do not edit.
+[package]
+name = "flighthq-textureatlas-formats"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+flighthq-textureatlas = { path = "../flighthq-textureatlas" }
+flighthq-types = { path = "../flighthq-types" }
+flighthq-xml = { path = "../flighthq-xml" }
+regex = "1"

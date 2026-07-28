@@ -15,6 +15,8 @@ pub type TextFormatListMarker = String;
 // Source: upstream/packages/types/src/TextFormat.ts:7 (sha256:78b33d0aba9800116f93363692c37d18b0e439bf94df4d5120e7d11bf0280f50)
 #[derive(Clone)]
 pub struct TextFormat {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub align: Option<TextFormatAlign>,
     pub block_indent: Option<f64>,
     pub bold: Option<bool>,
@@ -35,4 +37,9 @@ pub struct TextFormat {
     pub target: Option<String>,
     pub underline: Option<bool>,
     pub url: Option<String>,
+}
+impl PartialEq for TextFormat {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

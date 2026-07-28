@@ -25,7 +25,7 @@ pub fn ease_steps(count: f64, position: Option<StepPosition>) -> EasingFunction 
     } else {
         0.0_f64
     };
-    return std::sync::Arc::new(move |t: f64| -> f64 {
+    return std::sync::Arc::new(std::sync::Mutex::new(Box::new(move |t: f64| -> f64 {
         let mut step = ((t * count).floor() + start_offset);
         if ((t >= 0.0_f64) && (step < 0.0_f64)) {
             step = 0.0_f64;
@@ -34,5 +34,6 @@ pub fn ease_steps(count: f64, position: Option<StepPosition>) -> EasingFunction 
             step = jumps;
         }
         return (step / jumps);
-    });
+    })
+        as Box<dyn FnMut(f64) -> f64 + Send + 'static>));
 }

@@ -9,9 +9,16 @@
 // Source: upstream/packages/types/src/TurbulenceForce.ts:1 (sha256:c70dcdd281c70a6164e800a27f105327058f323e9ffcca75502bf78bbb0ebf78)
 #[derive(Clone)]
 pub struct TurbulenceForce {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub kind: String,
     pub strength: f64,
     pub scale: f64,
+}
+impl PartialEq for TurbulenceForce {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/TurbulenceForce.ts:7 (sha256:178cb097068d53978a569129ce3131cd8134c937fa649e9f0aae3e9cdd2ece84)

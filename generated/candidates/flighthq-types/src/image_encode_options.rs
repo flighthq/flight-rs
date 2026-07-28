@@ -9,5 +9,12 @@
 // Source: upstream/packages/types/src/ImageEncodeOptions.ts:3 (sha256:d283ae7b435130ca6c601b84b18546dfec27337034d30c917631bc2ea53cdb89)
 #[derive(Clone)]
 pub struct ImageEncodeOptions {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub quality: Option<f64>,
+}
+impl PartialEq for ImageEncodeOptions {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

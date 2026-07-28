@@ -25,7 +25,6 @@ fn apply_morphological(out: &mut Vec<u8>, source: &SurfaceRegion, radius: f64, d
     let h = source.height;
     let surface_width = source.surface.width;
     let surface_height = source.surface.height;
-    let data = &source.surface.data;
     let mut identity = if dilate { 0.0_f64 } else { 255.0_f64 };
     {
         let mut py = 0.0_f64;
@@ -49,30 +48,48 @@ fn apply_morphological(out: &mut Vec<u8>, source: &SurfaceRegion, radius: f64, d
                                         .max((surface_width - 1.0_f64).min(((source.x + px) + kx)));
                                     let si = (((sy * surface_width) + sx) * 4.0_f64);
                                     if dilate {
-                                        if ((data[si as usize] as f64) > v_r) {
-                                            v_r = (data[si as usize] as f64);
+                                        if ((source.surface.data[si as usize] as f64) > v_r) {
+                                            v_r = (source.surface.data[si as usize] as f64);
                                         }
-                                        if ((data[(si + 1.0_f64) as usize] as f64) > v_g) {
-                                            v_g = (data[(si + 1.0_f64) as usize] as f64);
+                                        if ((source.surface.data[(si + 1.0_f64) as usize] as f64)
+                                            > v_g)
+                                        {
+                                            v_g = (source.surface.data[(si + 1.0_f64) as usize]
+                                                as f64);
                                         }
-                                        if ((data[(si + 2.0_f64) as usize] as f64) > v_b) {
-                                            v_b = (data[(si + 2.0_f64) as usize] as f64);
+                                        if ((source.surface.data[(si + 2.0_f64) as usize] as f64)
+                                            > v_b)
+                                        {
+                                            v_b = (source.surface.data[(si + 2.0_f64) as usize]
+                                                as f64);
                                         }
-                                        if ((data[(si + 3.0_f64) as usize] as f64) > v_a) {
-                                            v_a = (data[(si + 3.0_f64) as usize] as f64);
+                                        if ((source.surface.data[(si + 3.0_f64) as usize] as f64)
+                                            > v_a)
+                                        {
+                                            v_a = (source.surface.data[(si + 3.0_f64) as usize]
+                                                as f64);
                                         }
                                     } else {
-                                        if ((data[si as usize] as f64) < v_r) {
-                                            v_r = (data[si as usize] as f64);
+                                        if ((source.surface.data[si as usize] as f64) < v_r) {
+                                            v_r = (source.surface.data[si as usize] as f64);
                                         }
-                                        if ((data[(si + 1.0_f64) as usize] as f64) < v_g) {
-                                            v_g = (data[(si + 1.0_f64) as usize] as f64);
+                                        if ((source.surface.data[(si + 1.0_f64) as usize] as f64)
+                                            < v_g)
+                                        {
+                                            v_g = (source.surface.data[(si + 1.0_f64) as usize]
+                                                as f64);
                                         }
-                                        if ((data[(si + 2.0_f64) as usize] as f64) < v_b) {
-                                            v_b = (data[(si + 2.0_f64) as usize] as f64);
+                                        if ((source.surface.data[(si + 2.0_f64) as usize] as f64)
+                                            < v_b)
+                                        {
+                                            v_b = (source.surface.data[(si + 2.0_f64) as usize]
+                                                as f64);
                                         }
-                                        if ((data[(si + 3.0_f64) as usize] as f64) < v_a) {
-                                            v_a = (data[(si + 3.0_f64) as usize] as f64);
+                                        if ((source.surface.data[(si + 3.0_f64) as usize] as f64)
+                                            < v_a)
+                                        {
+                                            v_a = (source.surface.data[(si + 3.0_f64) as usize]
+                                                as f64);
                                         }
                                     }
                                     {

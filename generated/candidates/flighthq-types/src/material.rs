@@ -11,8 +11,15 @@ use crate::Kind;
 // Source: upstream/packages/types/src/Material.ts:17 (sha256:a4c315d8130136ab5ad5c38e12d1cebca5388d52af388fbef9c000e2da59083d)
 #[derive(Clone)]
 pub struct Material {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub kind: Kind,
-    pub name: Option<Option<String>>,
+    pub name: Option<String>,
+}
+impl PartialEq for Material {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/Material.ts:28 (sha256:2d9bc41a7f5dd0cf2749211f70bf48ac24a704328b0b4dcdf6886be10129a32a)

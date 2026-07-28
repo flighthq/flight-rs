@@ -9,6 +9,8 @@
 // Source: upstream/packages/types/src/InputKeyboardData.ts:1 (sha256:771b0863ccf5de23a04937149a041c06baa00c7f1fdc857df31c9928a0953f0d)
 #[derive(Clone)]
 pub struct InputKeyboardData {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub alt_key: bool,
     pub caps_lock: bool,
     pub code: String,
@@ -22,4 +24,9 @@ pub struct InputKeyboardData {
     pub repeat: bool,
     pub shift_key: bool,
     pub time_stamp: f64,
+}
+impl PartialEq for InputKeyboardData {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

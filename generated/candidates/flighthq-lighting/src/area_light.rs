@@ -1,0 +1,146 @@
+// @generated from upstream/packages/lighting/src/areaLight.ts; do not edit.
+#![allow(clippy::excessive_precision)]
+#![allow(non_upper_case_globals)]
+#![allow(unused_braces)]
+#![allow(unused_imports)]
+#![allow(unused_mut)]
+#![allow(unused_parens)]
+
+use flighthq_entity::create_entity;
+use flighthq_geometry::{clone_vector3, create_vector3, normalize_vector3, set_vector3};
+use flighthq_types::{AREA_LIGHT_KIND as area_light_kind_constant, AreaLight, Vector3Like};
+
+// Source: upstream/packages/lighting/src/areaLight.ts:6 (sha256:2692ed3168285d890bf7abb2054c889a2ddeeaf73b7ed333349c732c3705c662)
+#[derive(Clone)]
+pub struct AreaLightOptions {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub casts_shadow: Option<bool>,
+    pub color: Option<f64>,
+    pub direction: Option<Vector3Like>,
+    pub intensity: Option<f64>,
+    pub normal_bias: Option<f64>,
+    pub pcf_radius: Option<f64>,
+    pub position: Option<Vector3Like>,
+    pub range: Option<f64>,
+    pub right: Option<Vector3Like>,
+    pub shadow_bias: Option<f64>,
+    pub up: Option<Vector3Like>,
+}
+impl PartialEq for AreaLightOptions {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/lighting/src/areaLight.ts:23 (sha256:70d550d01e6432cb6441f4771d6b2ae4230de0070b9698929f3fe6b7bf345235)
+pub fn clone_area_light(source: &AreaLight) -> AreaLight {
+    return create_entity(Some(AreaLight {
+        __flight_identity: std::sync::Arc::new(()),
+        casts_shadow: source.casts_shadow,
+        color: source.color,
+        direction: clone_vector3(&source.direction),
+        intensity: source.intensity,
+        kind: area_light_kind_constant,
+        normal_bias: source.normal_bias,
+        pcf_radius: source.pcf_radius,
+        position: clone_vector3(&source.position),
+        range: source.range,
+        right: clone_vector3(&source.right),
+        shadow_bias: source.shadow_bias,
+        up: clone_vector3(&source.up),
+    }));
+}
+
+// Source: upstream/packages/lighting/src/areaLight.ts:44 (sha256:619be895075278116bbc3aac51eb5362c6c167bcb2d0e246486bf17e72e7e842)
+pub fn create_area_light(options: Option<AreaLightOptions>) -> AreaLight {
+    let position = options.as_ref().and_then(|value| (value.position).clone());
+    let direction = options.as_ref().and_then(|value| (value.direction).clone());
+    let right = options.as_ref().and_then(|value| (value.right).clone());
+    let up = options.as_ref().and_then(|value| (value.up).clone());
+    return create_entity(Some(AreaLight {
+        __flight_identity: std::sync::Arc::new(()),
+        casts_shadow: (options.as_ref().and_then(|value| value.casts_shadow)).unwrap_or(false),
+        color: (options.as_ref().and_then(|value| value.color)).unwrap_or(4294967295.0_f64),
+        direction: if (direction).is_some() {
+            clone_vector3(&direction.as_ref().unwrap())
+        } else {
+            create_vector3(Some(0.0_f64), Some((-1.0_f64)), Some(0.0_f64))
+        },
+        intensity: (options.as_ref().and_then(|value| value.intensity)).unwrap_or(1.0_f64),
+        kind: area_light_kind_constant,
+        normal_bias: (options.as_ref().and_then(|value| value.normal_bias)).unwrap_or(0.0_f64),
+        pcf_radius: (options.as_ref().and_then(|value| value.pcf_radius)).unwrap_or(0.0_f64),
+        position: if (position).is_some() {
+            clone_vector3(&position.as_ref().unwrap())
+        } else {
+            create_vector3(Some(0.0_f64), Some(0.0_f64), Some(0.0_f64))
+        },
+        range: (options.as_ref().and_then(|value| value.range)).unwrap_or((-1.0_f64)),
+        right: if (right).is_some() {
+            clone_vector3(&right.as_ref().unwrap())
+        } else {
+            create_vector3(Some(1.0_f64), Some(0.0_f64), Some(0.0_f64))
+        },
+        shadow_bias: (options.as_ref().and_then(|value| value.shadow_bias)).unwrap_or(0.0_f64),
+        up: if (up).is_some() {
+            clone_vector3(&up.as_ref().unwrap())
+        } else {
+            create_vector3(Some(0.0_f64), Some(0.0_f64), Some(1.0_f64))
+        },
+    }));
+}
+
+// Source: upstream/packages/lighting/src/areaLight.ts:70 (sha256:afc815a570839e4d778a618b2859079fddb8ed1c12efc31de1fe5979f1ef686b)
+pub fn set_area_light_orientation(
+    out: &mut AreaLight,
+    direction: &Vector3Like,
+    right: &Vector3Like,
+    up: &Vector3Like,
+) -> () {
+    let right_len = (((right.x * right.x) + (right.y * right.y)) + (right.z * right.z)).sqrt();
+    let up_len = (((up.x * up.x) + (up.y * up.y)) + (up.z * up.z)).sqrt();
+    let dir_len = (((direction.x * direction.x) + (direction.y * direction.y))
+        + (direction.z * direction.z))
+        .sqrt();
+    let existing_right_len = (((out.right.x * out.right.x) + (out.right.y * out.right.y))
+        + (out.right.z * out.right.z))
+        .sqrt();
+    let existing_up_len =
+        (((out.up.x * out.up.x) + (out.up.y * out.up.y)) + (out.up.z * out.up.z)).sqrt();
+    if (dir_len > 0.0_f64) {
+        normalize_vector3(&mut out.direction, direction);
+    }
+    if (right_len > 0.0_f64) {
+        set_vector3(
+            &mut out.right,
+            (right.x / right_len),
+            (right.y / right_len),
+            (right.z / right_len),
+        );
+        if (existing_right_len > 0.0_f64) {
+            set_vector3(
+                &mut out.right,
+                (out.right.x * existing_right_len),
+                (out.right.y * existing_right_len),
+                (out.right.z * existing_right_len),
+            );
+        }
+    }
+    if (up_len > 0.0_f64) {
+        set_vector3(
+            &mut out.up,
+            (up.x / up_len),
+            (up.y / up_len),
+            (up.z / up_len),
+        );
+        if (existing_up_len > 0.0_f64) {
+            set_vector3(
+                &mut out.up,
+                (out.up.x * existing_up_len),
+                (out.up.y * existing_up_len),
+                (out.up.z * existing_up_len),
+            );
+        }
+    }
+}

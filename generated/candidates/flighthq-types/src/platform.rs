@@ -24,6 +24,8 @@ pub type PlatformRuntime = String;
 // Source: upstream/packages/types/src/Platform.ts:22 (sha256:222171b0e13d4200b4ea0330662c0887e8c96736d29b9deb0660ca0ac11e9d9f)
 #[derive(Clone)]
 pub struct PlatformInfo {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub name: PlatformName,
     pub kind: PlatformKind,
     pub version: String,
@@ -39,9 +41,23 @@ pub struct PlatformInfo {
     pub distro: String,
     pub distro_version: String,
 }
+impl PartialEq for PlatformInfo {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/types/src/Platform.ts:53 (sha256:4bfcc4232d8ccaaa9b9ddf32789c50d0d31ca62a52b5305151feec8b6f1b36eb)
 #[derive(Clone)]
 pub struct PlatformBackend {
-    pub get_info: crate::OpaqueHostValue,
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub get_info: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(PlatformInfo) -> PlatformInfo + Send + 'static>>,
+    >,
+}
+impl PartialEq for PlatformBackend {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

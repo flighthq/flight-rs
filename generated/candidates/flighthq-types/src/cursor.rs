@@ -12,5 +12,13 @@ pub type Cursor = String;
 // Source: upstream/packages/types/src/Cursor.ts:51 (sha256:348f7f02cc56aed2a81350c7fc1635f72cb24ec15939bdb9d98c3fb10ee42464)
 #[derive(Clone)]
 pub struct CursorBackend {
-    pub set_cursor: crate::OpaqueHostValue,
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub set_cursor:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Option<Cursor>) -> () + Send + 'static>>>,
+}
+impl PartialEq for CursorBackend {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

@@ -9,6 +9,8 @@
 // Source: upstream/packages/types/src/WellKnownMenuItemRole.ts:18 (sha256:81e36f65ff4a6a2f8c06a20ee3278e2aa35915e3ca5a4657532097c40d8c12a7)
 #[derive(Clone)]
 pub struct WellKnownMenuItemRole {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub copy: String,
     pub cut: String,
     pub delete: String,
@@ -53,9 +55,15 @@ pub struct WellKnownMenuItemRole {
     pub view_menu: String,
     pub window_menu: String,
 }
+impl PartialEq for WellKnownMenuItemRole {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 pub static WELL_KNOWN_MENU_ITEM_ROLE: std::sync::LazyLock<WellKnownMenuItemRole> =
     std::sync::LazyLock::new(|| WellKnownMenuItemRole {
+        __flight_identity: std::sync::Arc::new(()),
         copy: "copy".to_owned(),
         cut: "cut".to_owned(),
         delete: "delete".to_owned(),

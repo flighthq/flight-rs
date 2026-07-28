@@ -17,6 +17,8 @@ pub type EmissiveModifierFacing = crate::OpaqueHostValue;
 // Source: upstream/packages/types/src/EmissiveModifier.ts:23 (sha256:1a8dbcef5fd253b0791b984f6f9941f1d377d618e6cffc3d199824faebde91f9)
 #[derive(Clone)]
 pub struct EmissiveModifier {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub kind: String,
     pub slot: String,
     pub color: f64,
@@ -24,6 +26,11 @@ pub struct EmissiveModifier {
     pub mask: Option<Texture>,
     pub facing: Option<EmissiveModifierFacing>,
     pub facing_softness: Option<f64>,
+}
+impl PartialEq for EmissiveModifier {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/EmissiveModifier.ts:33 (sha256:227351bc3b3cc78bd40ccd66e8d053426172aa116ba64a873bd37abcd90872a8)

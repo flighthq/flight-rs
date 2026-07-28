@@ -9,9 +9,16 @@
 // Source: upstream/packages/types/src/Vector3.ts:3 (sha256:4e24edc270be813be011b6acb2a947aa33cc2d50934088d08954905ae3e497c0)
 #[derive(Clone)]
 pub struct Vector3 {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub x: f64,
     pub y: f64,
     pub z: f64,
+}
+impl PartialEq for Vector3 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/Vector3.ts:9 (sha256:e78a143d697374ec159a6bea81968ae5457c1616a563564061ded25d881147c5)

@@ -13,8 +13,10 @@ use crate::{
 // Source: upstream/packages/types/src/SheenPbrMaterial.ts:8 (sha256:bf8bbb2a4eae05ef9b0a9f4af3008d76ff6d0dd95b91491391b39256a66f9f5f)
 #[derive(Clone)]
 pub struct SheenPbrMaterial {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub kind: Kind,
-    pub name: Option<Option<String>>,
+    pub name: Option<String>,
     pub alpha_cutoff: f64,
     pub alpha_mode: MaterialAlphaMode,
     pub alpha_type: AlphaType,
@@ -25,6 +27,11 @@ pub struct SheenPbrMaterial {
     pub sheen_roughness: f64,
     pub sheen_roughness_map: Option<Texture>,
     pub standard: StandardPbrMaterialProperties,
+}
+impl PartialEq for SheenPbrMaterial {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/SheenPbrMaterial.ts:16 (sha256:f86a4ea6c9bc13fd4076726140efea67e23c54b89baf5b97da03ab1931e8dcb7)

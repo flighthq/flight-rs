@@ -44,7 +44,6 @@ pub fn fill_surface_noise(
         };
     let lo = (0.0_f64).max((255.0_f64).min(low));
     let span = ((0.0_f64).max((255.0_f64).min(high)) - lo);
-    let data = &mut dest.surface.data;
     let surface_width = dest.surface.width;
     {
         let mut py = 0.0_f64;
@@ -74,10 +73,10 @@ pub fn fill_surface_noise(
                         continue;
                     }
                     let i = (((y * surface_width) + x) * 4.0_f64);
-                    data[i as usize] = ((r).round()) as u8;
-                    data[(i + 1.0_f64) as usize] = ((g).round()) as u8;
-                    data[(i + 2.0_f64) as usize] = ((b).round()) as u8;
-                    data[(i + 3.0_f64) as usize] = (255.0_f64) as u8;
+                    dest.surface.data[i as usize] = ((r).round()) as u8;
+                    dest.surface.data[(i + 1.0_f64) as usize] = ((g).round()) as u8;
+                    dest.surface.data[(i + 2.0_f64) as usize] = ((b).round()) as u8;
+                    dest.surface.data[(i + 3.0_f64) as usize] = (255.0_f64) as u8;
                     {
                         px += 1.0;
                         px
@@ -121,7 +120,6 @@ pub fn fill_surface_perlin_noise(
         0.0_f64
     };
     let passes = (1.0_f64).max((octaves).round());
-    let data = &mut dest.surface.data;
     let surface_width = dest.surface.width;
     let w = dest.width;
     let h = dest.height;
@@ -171,21 +169,21 @@ pub fn fill_surface_perlin_noise(
                             as f64)
                             != 0.0_f64
                         {
-                            data[di as usize] = (byte) as u8;
+                            dest.surface.data[di as usize] = (byte) as u8;
                         }
                         if ((__flight_js_to_i32(channel_options)
                             & __flight_js_to_i32(SURFACE_NOISE_CHANNEL_G))
                             as f64)
                             != 0.0_f64
                         {
-                            data[(di + 1.0_f64) as usize] = (byte) as u8;
+                            dest.surface.data[(di + 1.0_f64) as usize] = (byte) as u8;
                         }
                         if ((__flight_js_to_i32(channel_options)
                             & __flight_js_to_i32(SURFACE_NOISE_CHANNEL_B))
                             as f64)
                             != 0.0_f64
                         {
-                            data[(di + 2.0_f64) as usize] = (byte) as u8;
+                            dest.surface.data[(di + 2.0_f64) as usize] = (byte) as u8;
                         }
                     } else {
                         if ((__flight_js_to_i32(channel_options)
@@ -193,20 +191,21 @@ pub fn fill_surface_perlin_noise(
                             as f64)
                             != 0.0_f64
                         {
-                            data[di as usize] = ((fractal_value_noise(
+                            dest.surface.data[di as usize] = ((fractal_value_noise(
                                 nx,
                                 ny,
                                 passes,
                                 (__flight_js_to_i32(seed) | __flight_js_to_i32(0.0_f64)) as f64,
                             ) * 255.0_f64)
-                                .round()) as u8;
+                                .round())
+                                as u8;
                         }
                         if ((__flight_js_to_i32(channel_options)
                             & __flight_js_to_i32(SURFACE_NOISE_CHANNEL_G))
                             as f64)
                             != 0.0_f64
                         {
-                            data[(di + 1.0_f64) as usize] = ((fractal_value_noise(
+                            dest.surface.data[(di + 1.0_f64) as usize] = ((fractal_value_noise(
                                 nx,
                                 ny,
                                 passes,
@@ -221,7 +220,7 @@ pub fn fill_surface_perlin_noise(
                             as f64)
                             != 0.0_f64
                         {
-                            data[(di + 2.0_f64) as usize] = ((fractal_value_noise(
+                            dest.surface.data[(di + 2.0_f64) as usize] = ((fractal_value_noise(
                                 nx,
                                 ny,
                                 passes,
@@ -237,16 +236,17 @@ pub fn fill_surface_perlin_noise(
                         as f64)
                         != 0.0_f64
                     {
-                        data[(di + 3.0_f64) as usize] = ((fractal_value_noise(
+                        dest.surface.data[(di + 3.0_f64) as usize] = ((fractal_value_noise(
                             nx,
                             ny,
                             passes,
                             ((__flight_js_to_i32(seed) | __flight_js_to_i32(0.0_f64)) as f64
                                 + 2654435763.0_f64),
                         ) * 255.0_f64)
-                            .round()) as u8;
+                            .round())
+                            as u8;
                     } else {
-                        data[(di + 3.0_f64) as usize] = (255.0_f64) as u8;
+                        dest.surface.data[(di + 3.0_f64) as usize] = (255.0_f64) as u8;
                     }
                     {
                         px += 1.0;
@@ -291,7 +291,6 @@ pub fn fill_surface_turbulence(
         0.0_f64
     };
     let passes = (1.0_f64).max((octaves).round());
-    let data = &mut dest.surface.data;
     let surface_width = dest.surface.width;
     let w = dest.width;
     let h = dest.height;
@@ -341,21 +340,21 @@ pub fn fill_surface_turbulence(
                             as f64)
                             != 0.0_f64
                         {
-                            data[di as usize] = (byte) as u8;
+                            dest.surface.data[di as usize] = (byte) as u8;
                         }
                         if ((__flight_js_to_i32(channel_options)
                             & __flight_js_to_i32(SURFACE_NOISE_CHANNEL_G))
                             as f64)
                             != 0.0_f64
                         {
-                            data[(di + 1.0_f64) as usize] = (byte) as u8;
+                            dest.surface.data[(di + 1.0_f64) as usize] = (byte) as u8;
                         }
                         if ((__flight_js_to_i32(channel_options)
                             & __flight_js_to_i32(SURFACE_NOISE_CHANNEL_B))
                             as f64)
                             != 0.0_f64
                         {
-                            data[(di + 2.0_f64) as usize] = (byte) as u8;
+                            dest.surface.data[(di + 2.0_f64) as usize] = (byte) as u8;
                         }
                     } else {
                         if ((__flight_js_to_i32(channel_options)
@@ -363,20 +362,21 @@ pub fn fill_surface_turbulence(
                             as f64)
                             != 0.0_f64
                         {
-                            data[di as usize] = ((turbulence_noise(
+                            dest.surface.data[di as usize] = ((turbulence_noise(
                                 nx,
                                 ny,
                                 passes,
                                 (__flight_js_to_i32(seed) | __flight_js_to_i32(0.0_f64)) as f64,
                             ) * 255.0_f64)
-                                .round()) as u8;
+                                .round())
+                                as u8;
                         }
                         if ((__flight_js_to_i32(channel_options)
                             & __flight_js_to_i32(SURFACE_NOISE_CHANNEL_G))
                             as f64)
                             != 0.0_f64
                         {
-                            data[(di + 1.0_f64) as usize] = ((turbulence_noise(
+                            dest.surface.data[(di + 1.0_f64) as usize] = ((turbulence_noise(
                                 nx,
                                 ny,
                                 passes,
@@ -391,7 +391,7 @@ pub fn fill_surface_turbulence(
                             as f64)
                             != 0.0_f64
                         {
-                            data[(di + 2.0_f64) as usize] = ((turbulence_noise(
+                            dest.surface.data[(di + 2.0_f64) as usize] = ((turbulence_noise(
                                 nx,
                                 ny,
                                 passes,
@@ -407,16 +407,17 @@ pub fn fill_surface_turbulence(
                         as f64)
                         != 0.0_f64
                     {
-                        data[(di + 3.0_f64) as usize] = ((turbulence_noise(
+                        dest.surface.data[(di + 3.0_f64) as usize] = ((turbulence_noise(
                             nx,
                             ny,
                             passes,
                             ((__flight_js_to_i32(seed) | __flight_js_to_i32(0.0_f64)) as f64
                                 + 2654435763.0_f64),
                         ) * 255.0_f64)
-                            .round()) as u8;
+                            .round())
+                            as u8;
                     } else {
-                        data[(di + 3.0_f64) as usize] = (255.0_f64) as u8;
+                        dest.surface.data[(di + 3.0_f64) as usize] = (255.0_f64) as u8;
                     }
                     {
                         px += 1.0;

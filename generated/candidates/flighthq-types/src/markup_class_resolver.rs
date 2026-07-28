@@ -6,6 +6,8 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
+use crate::TextFormat;
+
 // Source: upstream/packages/types/src/MarkupClassResolver.ts:9 (sha256:c052e7b035ddc0f1752c791c0cf69bcccee961e0005304d3c3b41c35f8ebe5ff)
 pub type MarkupClassResolver =
-    std::sync::Arc<dyn Fn(String) -> Option<crate::OpaqueHostValue> + Send + Sync + 'static>;
+    std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(String) -> Option<TextFormat> + Send + 'static>>>;

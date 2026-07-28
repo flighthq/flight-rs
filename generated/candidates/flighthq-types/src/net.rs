@@ -21,52 +21,100 @@ pub type NetCredentials = String;
 pub type NetRedirect = String;
 
 // Source: upstream/packages/types/src/Net.ts:31 (sha256:1ca3dd765bb3e660c1884ccb0867d8a083385852cbd2ae4af2231c30242843cf)
-pub type NetBody = Option<crate::OpaqueHostValue>;
+pub type NetBody = Option<crate::FlightUnion2<String, crate::FlightUnion2<Vec<u8>, Vec<u8>>>>;
 
 // Source: upstream/packages/types/src/Net.ts:36 (sha256:59733359f481dfa821da4ce87b07778f91fc1337a52446c722f1a5611a54d2e4)
-pub type NetResponseBody = Option<crate::OpaqueHostValue>;
+pub type NetResponseBody =
+    Option<crate::FlightUnion2<String, crate::FlightUnion2<crate::OpaqueHostValue, Vec<u8>>>>;
 
 // Source: upstream/packages/types/src/Net.ts:40 (sha256:be5f077631722591406184fa65398af48876fb3c6e8c82d3a3da4cc352c434e7)
 #[derive(Clone)]
 pub struct NetRequest {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub method: NetMethod,
     pub url: String,
-    pub headers: Option<crate::OpaqueHostValue>,
+    pub headers: Option<Vec<(String, String)>>,
     pub body: Option<NetBody>,
     pub response_type: Option<NetResponseType>,
     pub timeout_ms: Option<f64>,
     pub credentials: Option<NetCredentials>,
     pub redirect: Option<NetRedirect>,
 }
+impl PartialEq for NetRequest {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/types/src/Net.ts:54 (sha256:9f072cdbc05e1b6f6f23c2f526fb60b394c28f9e5d14f3963903e565423c1d32)
 #[derive(Clone)]
 pub struct NetResponse {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub status: f64,
     pub status_text: String,
     pub ok: bool,
-    pub headers: crate::OpaqueHostValue,
+    pub headers: Vec<(String, String)>,
     pub body: NetResponseBody,
     pub url: String,
+}
+impl PartialEq for NetResponse {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/Net.ts:67 (sha256:d44c2fab2668dd3124b15bf357de97a81465504c11e7245ada6850a71efa8c76)
 #[derive(Clone)]
 pub struct NetProgress {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub phase: String,
     pub loaded: f64,
     pub total: f64,
+}
+impl PartialEq for NetProgress {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/Net.ts:75 (sha256:eb3efc65ebc51bd352306b2bce221f8fb7d60e77e6b7ffda364ee0a9ec7268db)
 #[derive(Clone)]
 pub struct NetRequestOptions {
-    pub progress: Option<Signal>,
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub progress: Option<
+        Signal<
+            std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(NetProgress) -> () + Send + 'static>>>,
+        >,
+    >,
     pub signal: Option<crate::OpaqueHostValue>,
+}
+impl PartialEq for NetRequestOptions {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/Net.ts:82 (sha256:a696e70c7b6a85f7e8502e24c5bfcbb73de73d05e5ab826f0cb062ecfc8ebd07)
 #[derive(Clone)]
 pub struct NetBackend {
-    pub send_net_request: crate::OpaqueHostValue,
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub send_net_request: std::sync::Arc<
+        std::sync::Mutex<
+            Box<
+                dyn FnMut(NetRequest, NetRequestOptions) -> crate::Promise<NetResponse>
+                    + Send
+                    + 'static,
+            >,
+        >,
+    >,
+}
+impl PartialEq for NetBackend {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

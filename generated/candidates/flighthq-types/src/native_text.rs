@@ -15,6 +15,8 @@ use crate::{
 // Source: upstream/packages/types/src/NativeText.ts:14 (sha256:f078ff7b5a1fba1d9be2cabd7ecea006f95793b8270319a759825bed6f622e85)
 #[derive(Clone)]
 pub struct NativeTextStyle {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub align: Option<TextFormatAlign>,
     pub bold: Option<bool>,
     pub color: Option<f64>,
@@ -23,10 +25,17 @@ pub struct NativeTextStyle {
     pub leading: Option<f64>,
     pub size: Option<f64>,
 }
+impl PartialEq for NativeTextStyle {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/types/src/NativeText.ts:24 (sha256:323707e2b26e1934faec2551d07b78cd93edc36d497ac9e4c967aaa9fe11128b)
 #[derive(Clone)]
 pub struct NativeTextData {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub auto_size: TextAutoSize,
     pub height: f64,
     pub style: NativeTextStyle,
@@ -34,15 +43,23 @@ pub struct NativeTextData {
     pub vertical_align: TextVerticalAlign,
     pub width: f64,
 }
+impl PartialEq for NativeTextData {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/types/src/NativeText.ts:37 (sha256:ffa5268de8737c98ecb432ac7edb206546da586c3017bc731709b5889c8ee2b7)
 #[derive(Clone)]
 pub struct NativeTextRuntime {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
     pub appearance_id: f64,
     pub bounds_using_local_bounds_id: f64,
     pub bounds_using_local_transform_id: f64,
-    pub can_add_child: std::sync::Arc<dyn Fn(Node, Node) -> bool + Send + Sync + 'static>,
+    pub can_add_child:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
     pub children: Option<Vec<Node>>,
     pub color_adjustments: Option<Vec<Adjustment>>,
     pub resolved_color_transform: Option<ColorTransform>,
@@ -68,8 +85,9 @@ pub struct NativeTextRuntime {
     pub rotation_sine: f64,
     pub world_matrix: Option<Matrix>,
     pub bounds_rectangle: Option<Rectangle>,
-    pub compute_local_bounds_rectangle:
-        std::sync::Arc<dyn Fn(Rectangle, BoundsNodeAny) -> () + Send + Sync + 'static>,
+    pub compute_local_bounds_rectangle: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
+    >,
     pub local_bounds_rectangle: Option<Rectangle>,
     pub world_bounds_rectangle: Option<Rectangle>,
     pub stage: Option<Stage>,
@@ -77,10 +95,17 @@ pub struct NativeTextRuntime {
     pub measured_height: f64,
     pub measured_width: f64,
 }
+impl PartialEq for NativeTextRuntime {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/types/src/NativeText.ts:49 (sha256:63fb798185b5c8be09651c9ed151fffceaa74a6e90ced42503e237507fe47ca0)
 #[derive(Clone)]
 pub struct NativeText {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub data: NativeTextData,
     pub enabled: bool,
     pub kind: Kind,
@@ -100,6 +125,11 @@ pub struct NativeText {
     pub skew_y: f64,
     pub x: f64,
     pub y: f64,
+}
+impl PartialEq for NativeText {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/NativeText.ts:53 (sha256:4e663a6e6e8006b1ba071a4432421e8b640bdf963a2bbc72776e4af3a563159e)

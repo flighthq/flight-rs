@@ -13,7 +13,8 @@ export type IrType =
   | { kind: 'function'; parameters: IrType[]; returns: IrType }
   | { kind: 'named'; arguments: IrType[]; name: string }
   | { kind: 'nullable'; inner: IrType }
-  | { kind: 'primitive'; name: 'Bool' | 'Float' | 'Int' | 'String' | 'Void' };
+  | { kind: 'primitive'; name: 'Bool' | 'Float' | 'Int' | 'String' | 'Void' }
+  | { kind: 'union'; variants: IrType[] };
 
 export interface IrTypeField {
   contextualParameters?: IrParameter[] | undefined;
@@ -57,7 +58,7 @@ export type IrExpression =
     }
   | { kind: 'identifier'; name: string }
   | { kind: 'literal'; value: boolean | null | number | string }
-  | { kind: 'new'; arguments: IrExpression[]; callee: IrExpression }
+  | { kind: 'new'; arguments: IrExpression[]; callee: IrExpression; typeArguments: IrType[] }
   | { kind: 'object'; properties: IrObjectMember[] }
   | {
       binding?:

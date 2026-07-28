@@ -13,8 +13,10 @@ use crate::{
 // Source: upstream/packages/types/src/ClearcoatPbrMaterial.ts:9 (sha256:5a1b624a30b93da464dee8f67fcb3068ba0d034302bd5e979b853388f2a51369)
 #[derive(Clone)]
 pub struct ClearcoatPbrMaterial {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub kind: Kind,
-    pub name: Option<Option<String>>,
+    pub name: Option<String>,
     pub alpha_cutoff: f64,
     pub alpha_mode: MaterialAlphaMode,
     pub alpha_type: AlphaType,
@@ -26,6 +28,11 @@ pub struct ClearcoatPbrMaterial {
     pub clearcoat_roughness: f64,
     pub clearcoat_roughness_map: Option<Texture>,
     pub standard: StandardPbrMaterialProperties,
+}
+impl PartialEq for ClearcoatPbrMaterial {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/ClearcoatPbrMaterial.ts:18 (sha256:5d4a9fac8216afb0c9a38d0acd9567fa18878c290ad7a197ef8485886b91a804)

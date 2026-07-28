@@ -11,9 +11,16 @@ use crate::{ImageResource, Sampler, TextureColorSpace};
 // Source: upstream/packages/types/src/CubeTexture.ts:9 (sha256:305f6d5cc9718e946c74fe51927273973a9feb0a5cd5fc2d53b823c9d295f151)
 #[derive(Clone)]
 pub struct CubeTexture {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub color_space: TextureColorSpace,
     pub faces: Vec<Option<ImageResource>>,
     pub sampler: Sampler,
+}
+impl PartialEq for CubeTexture {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/CubeTexture.ts:15 (sha256:0251690304ad56f19c5f5d38d7793b76642b7b9b547354fbd4e7650e06f6539c)

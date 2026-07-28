@@ -28,4 +28,4 @@ pub const PIXI_PARTICLE_FORMAT_KIND: &'static str = "Pixi";
 pub const PHASER_PARTICLE_FORMAT_KIND: &'static str = "Phaser";
 
 // Source: upstream/packages/types/src/ParticleFormatKind.ts:17 (sha256:7bf5ca45c48ff82573b7b9a94e0772e9df3b13fce608a79e443d52270e855bcb)
-pub type ParticleFormatKind = crate::OpaqueHostValue;
+pub type ParticleFormatKind = crate::FlightUnion2<crate::OpaqueHostValue, String>;

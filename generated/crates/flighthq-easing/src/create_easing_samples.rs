@@ -6,10 +6,12 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_types::EasingFunction;
-
 // Source: upstream/packages/easing/src/createEasingSamples.ts:17 (sha256:5327418e9e6e65ebe8bc0a8b9803c9551818c162b5a8c16495b2aaa7165ad1ee)
-pub fn create_easing_samples(ease: EasingFunction, count: f64, out: Option<Vec<f32>>) -> Vec<f32> {
+pub fn create_easing_samples(
+    ease: &mut impl FnMut(f64) -> f64,
+    count: f64,
+    out: Option<Vec<f32>>,
+) -> Vec<f32> {
     if ((!(count).is_finite()) || (count < 1.0_f64)) {
         panic!(
             "{}",
@@ -20,7 +22,7 @@ pub fn create_easing_samples(ease: EasingFunction, count: f64, out: Option<Vec<f
     let mut result = (out).unwrap_or(vec![0.0_f32; (n) as usize]);
     if (n == 1.0_f64) {
         result[0.0_f64 as usize] = (ease(0.5_f64)) as f32;
-        return result;
+        return (result).clone();
     }
     let step = (1.0_f64 / (n - 1.0_f64));
     {
@@ -40,5 +42,5 @@ pub fn create_easing_samples(ease: EasingFunction, count: f64, out: Option<Vec<f
     }
     result[0.0_f64 as usize] = (ease(0.0_f64)) as f32;
     result[(n - 1.0_f64) as usize] = (ease(1.0_f64)) as f32;
-    return result;
+    return (result).clone();
 }

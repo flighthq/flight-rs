@@ -9,10 +9,17 @@
 // Source: upstream/packages/types/src/TextFeature.ts:1 (sha256:60965055322e7fae474ca845e825ad8865f8e3e44218ee33cf42176b2c64bb40)
 #[derive(Clone)]
 pub struct TextFeature {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub end: Option<f64>,
     pub start: Option<f64>,
     pub tag: String,
     pub value: f64,
+}
+impl PartialEq for TextFeature {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/TextFeature.ts:7 (sha256:c47c006dfb45fa68c500211eeea84a7928fa4b86202766f5b9abb9e18f7dcfb4)

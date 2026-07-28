@@ -15,7 +15,6 @@ pub fn pixelate_surface(out: &mut Vec<u8>, source: &SurfaceRegion, block_size: f
     let h = source.height;
     let surface_width = source.surface.width;
     let surface_height = source.surface.height;
-    let data = &source.surface.data;
     {
         let mut by = 0.0_f64;
         while (by < h) {
@@ -52,10 +51,10 @@ pub fn pixelate_surface(out: &mut Vec<u8>, source: &SurfaceRegion, block_size: f
                                         continue;
                                     }
                                     let si = (((sy * surface_width) + sx) * 4.0_f64);
-                                    r += (data[si as usize] as f64);
-                                    g += (data[(si + 1.0_f64) as usize] as f64);
-                                    b += (data[(si + 2.0_f64) as usize] as f64);
-                                    a += (data[(si + 3.0_f64) as usize] as f64);
+                                    r += (source.surface.data[si as usize] as f64);
+                                    g += (source.surface.data[(si + 1.0_f64) as usize] as f64);
+                                    b += (source.surface.data[(si + 2.0_f64) as usize] as f64);
+                                    a += (source.surface.data[(si + 3.0_f64) as usize] as f64);
                                     {
                                         count += 1.0;
                                         count

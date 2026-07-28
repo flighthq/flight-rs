@@ -24,21 +24,22 @@ pub fn get_surface_mismatch(
             )
         );
     }
-    let a = &source.data;
-    let b = &other.data;
     let total_pixels = (source.width * source.height);
     let mut mismatched_pixels = 0.0_f64;
     let mut max_channel_delta = 0.0_f64;
     {
         let mut i = 0.0_f64;
-        while (i < (a.len() as f64)) {
-            let dr = ((a[i as usize] as f64) - (b[i as usize] as f64)).abs();
-            let dg =
-                ((a[(i + 1.0_f64) as usize] as f64) - (b[(i + 1.0_f64) as usize] as f64)).abs();
-            let db =
-                ((a[(i + 2.0_f64) as usize] as f64) - (b[(i + 2.0_f64) as usize] as f64)).abs();
-            let da =
-                ((a[(i + 3.0_f64) as usize] as f64) - (b[(i + 3.0_f64) as usize] as f64)).abs();
+        while (i < (source.data.len() as f64)) {
+            let dr = ((source.data[i as usize] as f64) - (other.data[i as usize] as f64)).abs();
+            let dg = ((source.data[(i + 1.0_f64) as usize] as f64)
+                - (other.data[(i + 1.0_f64) as usize] as f64))
+                .abs();
+            let db = ((source.data[(i + 2.0_f64) as usize] as f64)
+                - (other.data[(i + 2.0_f64) as usize] as f64))
+                .abs();
+            let da = ((source.data[(i + 3.0_f64) as usize] as f64)
+                - (other.data[(i + 3.0_f64) as usize] as f64))
+                .abs();
             let pixel_delta = (((dr).max(dg)).max(db)).max(da);
             if (pixel_delta > max_channel_delta) {
                 max_channel_delta = pixel_delta;
@@ -56,6 +57,7 @@ pub fn get_surface_mismatch(
         }
     }
     return SurfaceMismatch {
+        __flight_identity: std::sync::Arc::new(()),
         mismatched_pixels: mismatched_pixels,
         total_pixels: total_pixels,
         fraction: if (total_pixels == 0.0_f64) {

@@ -6,11 +6,13 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::DeviceFormFactor;
+use crate::{DeviceCapabilities, DeviceDisplayMetrics, DeviceFormFactor};
 
 // Source: upstream/packages/types/src/Device.ts:8 (sha256:31bfcf037e151d46ad28b7e075466f3fa81d5b3e63f429ed4920acbb3569d836)
 #[derive(Clone)]
 pub struct DeviceInfo {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub arch: String,
     pub available_memory: f64,
     pub board_name: String,
@@ -37,22 +39,50 @@ pub struct DeviceInfo {
     pub total_memory: f64,
     pub web_view_version: String,
 }
+impl PartialEq for DeviceInfo {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/types/src/Device.ts:39 (sha256:ab825aced7d8446357b7a42ff71ba8a55b52a120ccefd1b52fe6ee5a22b7d15b)
 #[derive(Clone)]
 pub struct SafeAreaInsets {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub top: f64,
     pub right: f64,
     pub bottom: f64,
     pub left: f64,
 }
+impl PartialEq for SafeAreaInsets {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/types/src/Device.ts:48 (sha256:d9234d0fef6bd22728456865cec0d55d8c5ad54e516c9d2687070fec558bb782)
 #[derive(Clone)]
 pub struct DeviceBackend {
-    pub get_capabilities: crate::OpaqueHostValue,
-    pub get_display_metrics: crate::OpaqueHostValue,
-    pub get_id: crate::OpaqueHostValue,
-    pub get_info: crate::OpaqueHostValue,
-    pub get_safe_area_insets: crate::OpaqueHostValue,
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub get_capabilities: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(DeviceCapabilities) -> DeviceCapabilities + Send + 'static>>,
+    >,
+    pub get_display_metrics: std::sync::Arc<
+        std::sync::Mutex<
+            Box<dyn FnMut(DeviceDisplayMetrics) -> DeviceDisplayMetrics + Send + 'static>,
+        >,
+    >,
+    pub get_id: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> String + Send + 'static>>>,
+    pub get_info:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(DeviceInfo) -> DeviceInfo + Send + 'static>>>,
+    pub get_safe_area_insets: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(SafeAreaInsets) -> SafeAreaInsets + Send + 'static>>,
+    >,
+}
+impl PartialEq for DeviceBackend {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

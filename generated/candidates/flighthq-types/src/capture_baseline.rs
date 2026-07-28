@@ -6,5 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
+use crate::CaptureColumnBaseline;
+
 // Source: upstream/packages/types/src/CaptureBaseline.ts:9 (sha256:9ba7aa5bbdf36489c4537b44060b184b20eb6fe2bb7810e83f561ba287aa2093)
-pub type CaptureBaseline = crate::OpaqueHostValue;
+pub type CaptureBaseline = Vec<(String, CaptureColumnBaseline)>;

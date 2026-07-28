@@ -15,24 +15,51 @@ pub type HapticNotificationType = String;
 // Source: upstream/packages/types/src/Haptics.ts:9 (sha256:493ca4196d2dc3374693378a6d9043ca983c1eaafd0ffb8973b1edd62f841d28)
 #[derive(Clone)]
 pub struct HapticsCapabilities {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub amplitude_control: bool,
     pub custom_events: bool,
     pub intensity: bool,
     pub patterns: bool,
     pub supported: bool,
 }
+impl PartialEq for HapticsCapabilities {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/types/src/Haptics.ts:17 (sha256:7451aefe9a23805b4a47234fa02bd11c635b0188891dbcb413899544b2e44573)
 #[derive(Clone)]
 pub struct HapticsBackend {
-    pub cancel: crate::OpaqueHostValue,
-    pub capabilities: crate::OpaqueHostValue,
-    pub impact: crate::OpaqueHostValue,
-    pub is_supported: crate::OpaqueHostValue,
-    pub notification: crate::OpaqueHostValue,
-    pub prepare: Option<crate::OpaqueHostValue>,
-    pub selection: crate::OpaqueHostValue,
-    pub vibrate: crate::OpaqueHostValue,
-    pub vibrate_pattern: crate::OpaqueHostValue,
-    pub vibrate_waveform: Option<crate::OpaqueHostValue>,
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub cancel: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> bool + Send + 'static>>>,
+    pub capabilities: std::sync::Arc<
+        std::sync::Mutex<
+            Box<dyn FnMut(HapticsCapabilities) -> HapticsCapabilities + Send + 'static>,
+        >,
+    >,
+    pub impact: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(HapticImpactStyle, f64) -> bool + Send + 'static>>,
+    >,
+    pub is_supported: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> bool + Send + 'static>>>,
+    pub notification: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(HapticNotificationType) -> bool + Send + 'static>>,
+    >,
+    pub prepare: Option<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
+    pub selection: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> bool + Send + 'static>>>,
+    pub vibrate: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64) -> bool + Send + 'static>>>,
+    pub vibrate_pattern:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Vec<f64>) -> bool + Send + 'static>>>,
+    pub vibrate_waveform: Option<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(Vec<f64>, Vec<f64>, f64) -> bool + Send + 'static>>,
+        >,
+    >,
+}
+impl PartialEq for HapticsBackend {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

@@ -11,8 +11,10 @@ use crate::{AlphaType, BlendMode, Kind, MaterialAlphaMode, Texture, VideoTexture
 // Source: upstream/packages/types/src/UnlitMaterial.ts:14 (sha256:6df48f0e486e10bfb7ea85f40498e60724ef3d803a7b97615b6626f222268f4a)
 #[derive(Clone)]
 pub struct UnlitMaterial {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub kind: Kind,
-    pub name: Option<Option<String>>,
+    pub name: Option<String>,
     pub alpha_cutoff: f64,
     pub alpha_mode: MaterialAlphaMode,
     pub alpha_type: AlphaType,
@@ -21,6 +23,11 @@ pub struct UnlitMaterial {
     pub base_color: f64,
     pub base_color_map: Option<Texture>,
     pub base_color_video_map: Option<VideoTexture>,
+}
+impl PartialEq for UnlitMaterial {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/types/src/UnlitMaterial.ts:20 (sha256:109f384517d58d45451b8b52b524915150578f99c842ef3011020beedefaf39d)

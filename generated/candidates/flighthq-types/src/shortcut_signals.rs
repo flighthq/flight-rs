@@ -11,5 +11,16 @@ use crate::Signal;
 // Source: upstream/packages/types/src/ShortcutSignals.ts:6 (sha256:5130b8c1f92a27b3cbd08c9df044203693ef4199cfc6b4d774d6106c1471d378)
 #[derive(Clone)]
 pub struct ShortcutSignals {
-    pub on_trigger: Signal,
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub on_trigger: Signal<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(crate::OpaqueHostValue) -> () + Send + 'static>>,
+        >,
+    >,
+}
+impl PartialEq for ShortcutSignals {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

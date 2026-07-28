@@ -12,8 +12,15 @@ pub type SpritesheetValidationSeverity = String;
 // Source: upstream/packages/types/src/SpritesheetValidationDiagnostic.ts:4 (sha256:e2b5727a7ab4aa6a76e63867100facd11a5c6ad25e7d145c0f5a7e9ebcaee080)
 #[derive(Clone)]
 pub struct SpritesheetValidationDiagnostic {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub animation_name: Option<String>,
     pub frame_index: Option<f64>,
     pub message: String,
     pub severity: SpritesheetValidationSeverity,
+}
+impl PartialEq for SpritesheetValidationDiagnostic {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

@@ -38,7 +38,6 @@ pub fn get_surface_coverage(
         (__flight_js_to_i32(background_color) >> (__flight_js_to_u32(8.0_f64) & 31)) as f64,
     ) & __flight_js_to_i32(255.0_f64)) as f64;
     let ba = (__flight_js_to_i32(background_color) & __flight_js_to_i32(255.0_f64)) as f64;
-    let data = &source.data;
     let total_pixels = (source.width * source.height);
     if (total_pixels == 0.0_f64) {
         return 0.0_f64;
@@ -46,11 +45,12 @@ pub fn get_surface_coverage(
     let mut covered = 0.0_f64;
     {
         let mut i = 0.0_f64;
-        while (i < (data.len() as f64)) {
-            if ((((((data[i as usize] as f64) - br).abs() > channel_tolerance)
-                || (((data[(i + 1.0_f64) as usize] as f64) - bg).abs() > channel_tolerance))
-                || (((data[(i + 2.0_f64) as usize] as f64) - bb).abs() > channel_tolerance))
-                || (((data[(i + 3.0_f64) as usize] as f64) - ba).abs() > channel_tolerance))
+        while (i < (source.data.len() as f64)) {
+            if ((((((source.data[i as usize] as f64) - br).abs() > channel_tolerance)
+                || (((source.data[(i + 1.0_f64) as usize] as f64) - bg).abs()
+                    > channel_tolerance))
+                || (((source.data[(i + 2.0_f64) as usize] as f64) - bb).abs() > channel_tolerance))
+                || (((source.data[(i + 3.0_f64) as usize] as f64) - ba).abs() > channel_tolerance))
             {
                 {
                     covered += 1.0;

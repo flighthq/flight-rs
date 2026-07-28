@@ -9,6 +9,13 @@
 // Source: upstream/packages/types/src/SharpenEffect.ts:3 (sha256:95e10a108935dd00270d48e51a58096a1710da97b05a4f1e05849c2c0a42b7b6)
 #[derive(Clone)]
 pub struct SharpenEffect {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub kind: String,
     pub amount: Option<f64>,
+}
+impl PartialEq for SharpenEffect {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

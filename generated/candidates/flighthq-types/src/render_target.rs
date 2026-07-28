@@ -18,6 +18,8 @@ pub type RenderTargetColorSpace = String;
 // Source: upstream/packages/types/src/RenderTarget.ts:17 (sha256:f976a3e923d48395ab6e3ab23594c3979ad742550499012816e1aa6fada959dc)
 #[derive(Clone)]
 pub struct RenderTargetDescriptor {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub width: f64,
     pub height: f64,
     pub format: Option<RenderTargetFormat>,
@@ -28,4 +30,9 @@ pub struct RenderTargetDescriptor {
     pub color_space: Option<RenderTargetColorSpace>,
     pub clear_colors: Option<Vec<f64>>,
     pub clear_depth: Option<f64>,
+}
+impl PartialEq for RenderTargetDescriptor {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }

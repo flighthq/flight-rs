@@ -9,6 +9,8 @@
 // Source: upstream/packages/types/src/FontMetrics.ts:4 (sha256:6ba8523047f4f3ad5cca4aac77c669aa28d57295fdb2d2e9ae2af6feafb4adf7)
 #[derive(Clone)]
 pub struct FontMetrics {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub ascent: f64,
     pub cap_height: f64,
     pub descent: f64,
@@ -17,4 +19,9 @@ pub struct FontMetrics {
     pub underline_thickness: f64,
     pub units_per_em: f64,
     pub x_height: f64,
+}
+impl PartialEq for FontMetrics {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
