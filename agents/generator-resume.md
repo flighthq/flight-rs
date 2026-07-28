@@ -7,8 +7,7 @@ This is the durable handoff for continuing the mechanical Flight TypeScript-to-R
 The repository is a compiler project, not a collection of manually ported crates.
 
 - A small, explicit set of packages may be cultivated by hand.
-- `packages/surface-rs` and the configured surface source/declaration selections are cultivated. The
-  `flighthq-surface` crate is generated from those selections and must not be edited by hand.
+- `packages/surface-rs` and the configured surface source/declaration selections are cultivated. The `flighthq-surface` crate is generated from those selections and must not be edited by hand.
 - Surface is the only package planned as a standalone wasm package.
 - Selected host packages, build tools such as `tool-capture`, and `*-dom` packages may be host-bound or excluded by explicit policy.
 - All other upstream packages enter generation by default. A failure must appear as a source, compile, or dependency blocker in the generation report.
@@ -203,26 +202,13 @@ Acceptance:
 - 25 inference `E0283` failures;
 - 41 type mismatches, plus a small remainder.
 
-The checkpoint report counted `@flighthq/entity` as compiled even though `EntityRuntimeKey` reads, writes,
-deletes, membership tests, and computed initializers had been erased into no-ops, constants, or a panic. Pass 19
-replaced those approximations with explicit blockers. Pass 20 now lowers statically typed entity operations to a
-shared native slot; receivers outside the closed entity family retain the blocker.
+The checkpoint report counted `@flighthq/entity` as compiled even though `EntityRuntimeKey` reads, writes, deletes, membership tests, and computed initializers had been erased into no-ops, constants, or a panic. Pass 19 replaced those approximations with explicit blockers. Pass 20 now lowers statically typed entity operations to a shared native slot; receivers outside the closed entity family retain the blocker.
 
-The implementation does not widen `EntityRuntime` from a handwritten list. A package-visible source catalog
-preserves generic parameters through aliases and applications, then builds a generated aggregate handle.
-Compatible extension fields stay flat. Reused field names with incompatible types, plus nested structural fields
-whose nominal provenance must survive module boundaries, use source-named typed slots inside the same handle.
-Runtime aliases retain declared arity through zero-storage associated-type markers that normalize to the same
-handle. A dynamic/opaque map is never used, so node and backend-specific code retain field types.
+The implementation does not widen `EntityRuntime` from a handwritten list. A package-visible source catalog preserves generic parameters through aliases and applications, then builds a generated aggregate handle. Compatible extension fields stay flat. Reused field names with incompatible types, plus nested structural fields whose nominal provenance must survive module boundaries, use source-named typed slots inside the same handle. Runtime aliases retain declared arity through zero-storage associated-type markers that normalize to the same handle. A dynamic/opaque map is never used, so node and backend-specific code retain field types.
 
-Field updates bind the runtime and value before taking the aggregate lock once, avoiding self-deadlock when the
-right-hand side reads the same runtime. Entity object spread copies slot presence into a new slot while retaining
-the shared runtime handle, so deleting the symbol from the source does not clear the copy. A package-local
-extension that would add storage to an imported aggregate is rejected explicitly; it must first join the
-configured canonical `@flighthq/types` runtime family.
+Field updates bind the runtime and value before taking the aggregate lock once, avoiding self-deadlock when the right-hand side reads the same runtime. Entity object spread copies slot presence into a new slot while retaining the shared runtime handle, so deleting the symbol from the source does not clear the copy. A package-local extension that would add storage to an imported aggregate is rejected explicitly; it must first join the configured canonical `@flighthq/types` runtime family.
 
-The checked-in generation report predates this implementation. Regenerate the full matrix before claiming
-diagnostic or package-count movement; the focused emitter fixtures are compile-backed when `rustc` is available.
+The checked-in generation report predates this implementation. Regenerate the full matrix before claiming diagnostic or package-count movement; the focused emitter fixtures are compile-backed when `rustc` is available.
 
 Node has 23 direct dependents, so architectural fixes here unlock much of the render/scene graph. Treat string `.includes` and `as_ref` diagnostics as smaller follow-on clusters after the generic/runtime representation is sound.
 

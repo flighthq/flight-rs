@@ -263,11 +263,7 @@ function attemptAutomaticPackage(
     sourceExclusions: [],
     typeMappings: override?.typeMappings ?? {},
   };
-  const packageSemanticTypes = collectPackageSemanticTypes(
-    sourceDirectory,
-    packageInventory.name,
-    workspaceDirectory,
-  );
+  const packageSemanticTypes = collectPackageSemanticTypes(sourceDirectory, packageInventory.name, workspaceDirectory);
   const entityRuntimeSemanticTypes = collectEntityRuntimeSemanticTypes(workspaceDirectory);
   const semanticTypes = {
     ...entityRuntimeSemanticTypes.types,

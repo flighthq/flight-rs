@@ -856,11 +856,7 @@ function emitFunctionDeclaration(declaration: IrFunctionDeclaration, context: Em
   }
   registerParameters(declaration.parameters, nextContext);
   if (!declaration.async) registerLocalTypes(reachableBody, nextContext);
-  nextContext.entityTypeParameters = inferEntityTypeParameters(
-    reachableBody,
-    declaration.typeParameters,
-    nextContext,
-  );
+  nextContext.entityTypeParameters = inferEntityTypeParameters(reachableBody, declaration.typeParameters, nextContext);
   const parameters = declaration.parameters.map((parameter) =>
     emitParameter(parameter, nextContext, undefined, declaration),
   );
@@ -3375,10 +3371,7 @@ function emitAssignment(expression: Extract<IrExpression, { kind: 'assignment' }
   const runtimeFieldAssignment = emitEntityRuntimeFieldAssignment(expression, context, true);
   if (runtimeFieldAssignment) return runtimeFieldAssignment;
   if (isErasedEntityRuntimeAccess(expression.left)) rejectEntityRuntimeStorage();
-  if (
-    isErasedEntityRuntimeTreeAccess(expression.left) &&
-    !isNativeEntityRuntimeTreeAccess(expression.left, context)
-  ) {
+  if (isErasedEntityRuntimeTreeAccess(expression.left) && !isNativeEntityRuntimeTreeAccess(expression.left, context)) {
     rejectEntityRuntimeStorage();
   }
   const bufferViewWrite = emitBufferViewWrite(expression, context, true);
@@ -3450,10 +3443,7 @@ function emitAssignmentStatement(
   const runtimeFieldAssignment = emitEntityRuntimeFieldAssignment(expression, context, false);
   if (runtimeFieldAssignment) return runtimeFieldAssignment;
   if (isErasedEntityRuntimeAccess(expression.left)) rejectEntityRuntimeStorage();
-  if (
-    isErasedEntityRuntimeTreeAccess(expression.left) &&
-    !isNativeEntityRuntimeTreeAccess(expression.left, context)
-  ) {
+  if (isErasedEntityRuntimeTreeAccess(expression.left) && !isNativeEntityRuntimeTreeAccess(expression.left, context)) {
     rejectEntityRuntimeStorage();
   }
   const bufferViewWrite = emitBufferViewWrite(expression, context, false);
@@ -3693,7 +3683,7 @@ function inferHostPropertyTypeofTag(expression: IrExpression, context: EmitConte
   const binding = expression.binding;
   const receiver = resolveSemanticType(inferIrExpressionType(expression.object, context), context);
   if (!binding && receiver?.kind !== 'dynamic') return undefined;
-  if (!binding) return undefined;
+  if (!binding) return 'undefined';
   if (binding === 'DomWindowBackend') {
     if (['devicePixelRatio', 'innerHeight', 'innerWidth', 'screenX', 'screenY'].includes(expression.name)) {
       return 'number';
@@ -3787,16 +3777,10 @@ function isErasedEntityRuntimeTreeAccess(expression: IrExpression): boolean {
 
 function isNativeEntityObject(expression: IrExpression, context: EmitContext): boolean {
   const type = inferIrExpressionType(expression, context);
-  return (
-    type?.kind === 'named' &&
-    (context.entityTypes.has(type.name) || context.entityTypeParameters.has(type.name))
-  );
+  return type?.kind === 'named' && (context.entityTypes.has(type.name) || context.entityTypeParameters.has(type.name));
 }
 
-function isNativeEntityRuntimeAccess(
-  expression: IrExpression,
-  context: EmitContext,
-): boolean {
+function isNativeEntityRuntimeAccess(expression: IrExpression, context: EmitContext): boolean {
   return (
     expression.kind === 'element' &&
     isErasedEntityRuntimeAccess(expression) &&
@@ -3875,11 +3859,12 @@ function emitEntityRuntimeFieldAssignment(
     const assignment = emitAssignmentOperation(field, '__flight_value', expression.operator);
     return `{ let __flight_runtime = ${owner}; let __flight_value = ${value}; let mut __flight_storage = __flight_runtime.inner.lock().unwrap(); ${assignment}; ${field}.clone() }`;
   }
-  const assignment = expression.operator === '='
-    ? late
-      ? `${storedField} = Some(__flight_value)`
-      : `${field} = __flight_value`
-    : emitAssignmentOperation(field, '__flight_value', expression.operator);
+  const assignment =
+    expression.operator === '='
+      ? late
+        ? `${storedField} = Some(__flight_value)`
+        : `${field} = __flight_value`
+      : emitAssignmentOperation(field, '__flight_value', expression.operator);
   return `{ let __flight_runtime = ${owner}; let __flight_value = ${value}; let mut __flight_storage = __flight_runtime.inner.lock().unwrap(); ${assignment}; }`;
 }
 
@@ -4090,12 +4075,10 @@ function emitType(type: IrType, context: EmitContext): string {
       if (type.name.startsWith('RustStructural:')) return type.name.slice('RustStructural:'.length);
       if (type.name !== 'EntityRuntime' && context.entityRuntimeTypes.has(type.name)) {
         const parameters = context.namedTypeParameters.get(type.name) ?? [];
-        const arguments_ = parameters.map(
-          (_parameter, index) => type.arguments[index] ?? primitive('Void'),
-        );
-        return `${type.name}${arguments_.length > 0 ? `<${arguments_
-          .map((argument) => emitType(argument, context))
-          .join(', ')}>` : ''}`;
+        const arguments_ = parameters.map((_parameter, index) => type.arguments[index] ?? primitive('Void'));
+        return `${type.name}${
+          arguments_.length > 0 ? `<${arguments_.map((argument) => emitType(argument, context)).join(', ')}>` : ''
+        }`;
       }
       if (isStructuralUtilityType(type)) {
         const resolved = resolveSemanticType(type, context);
@@ -4378,9 +4361,7 @@ function emitTypeDeclaration(
       [
         '#[doc(hidden)] pub __flight_identity: std::sync::Arc<()>,',
         ...(entityRuntime
-          ? [
-              `#[doc(hidden)] pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<${entityRuntime}>>>,`,
-            ]
+          ? [`#[doc(hidden)] pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<${entityRuntime}>>>,`]
           : []),
         ...fields.map(
           (field) =>
@@ -4425,9 +4406,7 @@ function emitEntityRuntimeSlotDeclaration(
 ): string {
   const visibility = exported ? 'pub ' : '';
   const structuralContext = typeDeclarationContext(context, name, type);
-  const fields = type.fields.filter(
-    (field) => context.entityRuntimeFieldSlots.get(`${name}\0${field.name}`) === name,
-  );
+  const fields = type.fields.filter((field) => context.entityRuntimeFieldSlots.get(`${name}\0${field.name}`) === name);
   const emitted = fields.map((field) => {
     const fieldType =
       field.optional && field.type.kind !== 'nullable'
@@ -4549,9 +4528,7 @@ function registerEntityRuntimeFamilies(context: EmitContext): void {
       .sort((left, right) => left.localeCompare(right)),
   );
   const entityTypes = new Set(
-    [...namedTypes.keys()]
-      .filter((name) => reaches(name, 'Entity'))
-      .sort((left, right) => left.localeCompare(right)),
+    [...namedTypes.keys()].filter((name) => reaches(name, 'Entity')).sort((left, right) => left.localeCompare(right)),
   );
   for (const runtimeName of runtimeTypes) {
     if (!runtimeName.endsWith('Runtime')) continue;
@@ -4656,15 +4633,13 @@ function registerEntityRuntimeFamilies(context: EmitContext): void {
     }
   }
   if (!context.localTypeNames.has('EntityRuntime')) {
-    const localStorageAdditions = runtimeTypes.flatMap((name) => {
+    const localStorageAdditions = [...runtimeTypes].flatMap((name) => {
       if (name === 'EntityRuntime' || !context.localTypeNames.has(name)) return [];
       const declaration = originalContext.namedTypes.get(name);
       if (declaration?.kind !== 'anonymous') return [];
       return declaration.fields.flatMap((field) => {
         const owner = fieldSlots.get(`${name}\0${field.name}`);
-        return owner && (owner !== 'EntityRuntime' || !rootFieldNames.has(field.name))
-          ? [`${name}.${field.name}`]
-          : [];
+        return owner && (owner !== 'EntityRuntime' || !rootFieldNames.has(field.name)) ? [`${name}.${field.name}`] : [];
       });
     });
     if (localStorageAdditions.length > 0) {
@@ -5993,11 +5968,7 @@ function emitStructuralProjectionArgument(
     [
       '__flight_identity: std::sync::Arc::clone(&' + owner + '.__flight_identity),',
       ...(sharesEntityRuntime
-        ? [
-            '__flight_entity_runtime: std::sync::Arc::clone(&' +
-              owner +
-              '.__flight_entity_runtime),',
-          ]
+        ? ['__flight_entity_runtime: std::sync::Arc::clone(&' + owner + '.__flight_entity_runtime),']
         : []),
       ...fields,
       ...(openFields ? ['..Default::default()'] : []),
@@ -6155,21 +6126,28 @@ function emitObject(
     ...expression,
     properties: expression.properties.filter((property) => !entityRuntimeProperties.includes(property)),
   };
-  if (expression.properties.length === 1 && expression.properties[0]?.kind === 'spread') {
-    return `${parenthesize(emitExpression(expression.properties[0].expression, context))}.clone()`;
-  }
   const nullable = expectedType?.kind === 'nullable';
   const contextualTarget = nullable ? expectedType.inner : expectedType;
+  const onlySpread = expression.properties.length === 1 ? expression.properties[0] : undefined;
+  const onlySpreadType =
+    onlySpread?.kind === 'spread' ? inferIrExpressionType(onlySpread.expression, context) : undefined;
+  const nativeEntitySpread =
+    onlySpread?.kind === 'spread' &&
+    onlySpreadType?.kind === 'named' &&
+    context.entityTypes.has(onlySpreadType.name);
+  if (onlySpread?.kind === 'spread' && !nativeEntitySpread) {
+    return `${parenthesize(emitExpression(onlySpread.expression, context))}.clone()`;
+  }
   const target =
     (contextualTarget?.kind === 'dynamic' ? undefined : contextualTarget) ??
+    (nativeEntitySpread ? onlySpreadType : undefined) ??
     inferNamedStructuralObjectType(structuralExpression, context) ??
     contextualTarget ??
     inferStaticExpressionType(structuralExpression);
   const resolved = resolveSemanticType(target, context);
   if (
     entityRuntimeProperties.length > 1 ||
-    (entityRuntimeProperties.length === 1 &&
-      !(target?.kind === 'named' && context.entityTypes.has(target.name)))
+    (entityRuntimeProperties.length === 1 && !(target?.kind === 'named' && context.entityTypes.has(target.name)))
   ) {
     rejectEntityRuntimeStorage();
   }
@@ -6292,11 +6270,11 @@ function emitObject(
     const entityRuntimeInitializer =
       target.kind === 'named' && context.entityTypes.has(target.name)
         ? entityRuntimeProperty?.kind === 'computedProperty'
-          ? `std::sync::Arc::new(std::sync::Mutex::new(Some(${emitExpression(
-              entityRuntimeProperty.value,
-              context,
-              { arguments: [], kind: 'named', name: 'EntityRuntime' },
-            )})))`
+          ? `std::sync::Arc::new(std::sync::Mutex::new(Some(${emitExpression(entityRuntimeProperty.value, context, {
+              arguments: [],
+              kind: 'named',
+              name: 'EntityRuntime',
+            })})))`
           : entitySpread
             ? `std::sync::Arc::new(std::sync::Mutex::new(${entitySpread.name}.__flight_entity_runtime.lock().unwrap().clone()))`
             : 'Default::default()'
@@ -6304,9 +6282,7 @@ function emitObject(
     const value = `{ ${bindings.join(' ')} ${name} {\n${indent(
       [
         '__flight_identity: std::sync::Arc::new(()),',
-        ...(entityRuntimeInitializer
-          ? [`__flight_entity_runtime: ${entityRuntimeInitializer},`]
-          : []),
+        ...(entityRuntimeInitializer ? [`__flight_entity_runtime: ${entityRuntimeInitializer},`] : []),
         ...properties.filter((property): property is string => Boolean(property)),
         ...(openFields ? ['..Default::default()'] : []),
       ].join('\n'),
