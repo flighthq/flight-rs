@@ -4,19 +4,72 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync } from 'node:f
 import path from 'node:path';
 import ts from 'typescript';
 
-import { portConfig, type RustTarget, type WasmFacadeTarget } from '../../port.config.ts';
-import { sourcePathToRustModule } from '../analyze/inventory.ts';
+import {
+  portConfig,
+  type PackageDisposition,
+  type PackagePolicyRule,
+  type RustTarget,
+  type WasmFacadeTarget,
+} from '../../port.config.ts';
+import { sourcePathToImplementationModule, sourcePathToRustModule } from '../analyze/inventory.ts';
 import { lowerTypeScriptSource } from '../lower/typescript.ts';
+import type { PackageInventory, UpstreamInventory } from '../model/inventory.ts';
 import type { IrFunctionDeclaration, IrType, LoweringDiagnostic } from '../model/ir.ts';
 import { RustEmissionError, emitRustModule, type RustImport } from './rust.ts';
 import { stableJson, writeOrCheck } from './reports.ts';
 
 export interface RustGenerationReport {
+  automaticPackages: AutomaticPackageReport[];
   blessedFacades: typeof portConfig.blessedFacades;
-  schemaVersion: 2;
+  schemaVersion: 3;
+  summary: AutomaticPackageSummary;
   targets: RustTargetReport[];
   upstreamCommit: string;
   wasmFacades: WasmFacadeReport[];
+}
+
+export interface AutomaticPackageBlocker {
+  diagnostics: LoweringDiagnostic[];
+  fingerprint: string;
+  reason: string;
+  source: string;
+  stage: 'emission' | 'lowering' | 'package';
+}
+
+export interface AutomaticPackageReport {
+  apiExports: number;
+  attemptedSources: number;
+  blockers: AutomaticPackageBlocker[];
+  crate: string;
+  dependencies: Array<{ crate: string; package: string }>;
+  directDependents: number;
+  disposition: 'generated' | PackageDisposition;
+  emittedSources: Array<{
+    declarationNames: string[];
+    declarations: number;
+    module: string;
+    outputSha256: string;
+    source: string;
+    usesOpaqueHostValues: boolean;
+  }>;
+  generatedExports: string[];
+  missingExports: string[];
+  package: string;
+  policyReason?: string;
+  promotedTarget: boolean;
+  status: 'blocked' | 'cultivated' | 'emittable' | 'excluded' | 'host-bound';
+  transitiveDependents: number;
+}
+
+export interface AutomaticPackageSummary {
+  blocked: number;
+  cultivated: number;
+  eligible: number;
+  emittable: number;
+  excluded: number;
+  hostBound: number;
+  packages: number;
+  sourceBlockers: number;
 }
 
 export interface WasmFacadeReport {
@@ -69,22 +122,257 @@ interface PendingOutput {
   file: string;
 }
 
-export function generateRust(workspaceDirectory: string, check: boolean, upstreamCommit: string): RustGenerationReport {
+const parsedSourceCache = new Map<string, ts.SourceFile>();
+const loweredSourceCache = new Map<string, ReturnType<typeof lowerTypeScriptSource>>();
+const importedSemanticTypesCache = new Map<string, Readonly<Record<string, IrType>>>();
+const typeDeclarationIndexCache = new Map<string, ReadonlyMap<string, string>>();
+
+export function generateRust(
+  workspaceDirectory: string,
+  check: boolean,
+  inventory: UpstreamInventory,
+): RustGenerationReport {
+  validatePackagePolicy(inventory.packages);
+  const automaticPackages = annotateDependencyImpact(
+    inventory.packages.map((item) => attemptAutomaticPackage(workspaceDirectory, item, inventory.packages)),
+  );
   const targets = portConfig.targets.map((target) => generateTarget(workspaceDirectory, target, check));
   const wasmFacades = portConfig.wasmFacades.map((facade) =>
     generateWasmFacade(workspaceDirectory, facade, targets, check),
   );
   const report: RustGenerationReport = {
+    automaticPackages,
     blessedFacades: portConfig.blessedFacades,
-    schemaVersion: 2,
+    schemaVersion: 3,
+    summary: summarizeAutomaticPackages(automaticPackages),
     targets,
-    upstreamCommit,
+    upstreamCommit: inventory.upstreamCommit,
     wasmFacades,
   };
   const generatedDirectory = path.join(workspaceDirectory, portConfig.generatedDirectory);
   mkdirSync(generatedDirectory, { recursive: true });
   writeOrCheck(path.join(generatedDirectory, 'manifest.json'), stableJson(report), check);
   return report;
+}
+
+function attemptAutomaticPackage(
+  workspaceDirectory: string,
+  packageInventory: PackageInventory,
+  packages: PackageInventory[],
+): AutomaticPackageReport {
+  const policy = resolvePackagePolicy(packageInventory.name);
+  const dependencies = packageInventory.dependencies
+    .flatMap((packageName) => {
+      const dependency = packages.find((item) => item.name === packageName);
+      return dependency ? [{ crate: dependency.rustCrate, package: dependency.name }] : [];
+    })
+    .sort((left, right) => left.package.localeCompare(right.package));
+  const promotedTarget = portConfig.targets.some((target) => target.package === packageInventory.name);
+  if (policy) {
+    return {
+      apiExports: packageInventory.exports.length,
+      attemptedSources: 0,
+      blockers: [],
+      crate: packageInventory.rustCrate,
+      dependencies,
+      directDependents: 0,
+      disposition: policy.disposition,
+      emittedSources: [],
+      generatedExports: [],
+      missingExports: packageInventory.exports.map((item) => item.name),
+      package: packageInventory.name,
+      policyReason: policy.reason,
+      promotedTarget,
+      status: policy.disposition,
+      transitiveDependents: 0,
+    };
+  }
+
+  const sourceDirectory = path.join(workspaceDirectory, packageInventory.directory, 'src');
+  const dependencyMap = Object.fromEntries(
+    dependencies.map((dependency) => [dependency.package, { crate: dependency.crate }]),
+  );
+  const override = portConfig.targets.find((target) => target.package === packageInventory.name);
+  const target: RustTarget = {
+    crate: packageInventory.rustCrate,
+    dependencies: { ...dependencyMap, ...override?.dependencies },
+    package: packageInventory.name,
+    sourceExclusions: [],
+    typeMappings: override?.typeMappings ?? {},
+  };
+  const semanticTypes = collectSemanticTypes(workspaceDirectory, target);
+  const blockers: AutomaticPackageBlocker[] = [];
+  const emittedSources: AutomaticPackageReport['emittedSources'] = [];
+  const generatedExports = new Set<string>();
+  const modules = new Map<string, string>();
+  let attemptedSources = 0;
+
+  for (const file of walkTypeScriptSources(sourceDirectory)) {
+    const moduleName = sourcePathToImplementationModule(file);
+    attemptedSources++;
+    const sourceText = readFileSync(file, 'utf8');
+    const source = relative(workspaceDirectory, file);
+    const fingerprint = sha256(sourceText);
+    const previous = modules.get(moduleName);
+    if (previous) {
+      blockers.push({
+        diagnostics: [],
+        fingerprint,
+        reason: `Rust module collision: ${source} and ${previous} both map to ${moduleName}.rs`,
+        source,
+        stage: 'package',
+      });
+      continue;
+    }
+    modules.set(moduleName, source);
+
+    try {
+      const sourceFile = parseTypeScriptFile(file);
+      const lowered = lowerTypeScriptFile(file, packageInventory.name, workspaceDirectory);
+      if (lowered.diagnostics.length > 0) {
+        blockers.push({
+          diagnostics: lowered.diagnostics,
+          fingerprint,
+          reason: 'TypeScript lowering produced diagnostics.',
+          source,
+          stage: 'lowering',
+        });
+        continue;
+      }
+      const importedSemanticTypes = collectImportedSemanticTypes(sourceFile, workspaceDirectory);
+      const emitted = emitRustModule({
+        declarations: lowered.declarations,
+        imports: collectRustImports(
+          sourceFile,
+          target,
+          packageInventory.name === '@flighthq/types' ? Object.keys(importedSemanticTypes) : [],
+        ),
+        inlineFunctions: [],
+        semanticTypes: {
+          ...semanticTypes,
+          ...importedSemanticTypes,
+        },
+        source,
+        typeImports: [],
+      });
+      emittedSources.push({
+        declarationNames: lowered.declarations.map((declaration) => declaration.name).sort(),
+        declarations: lowered.declarations.length,
+        module: moduleName,
+        outputSha256: sha256(emitted),
+        source,
+        usesOpaqueHostValues: emitted.includes('OpaqueHostValue'),
+      });
+      for (const declaration of lowered.declarations) {
+        if (declaration.exported) generatedExports.add(declaration.name);
+      }
+    } catch (error) {
+      blockers.push({
+        diagnostics: [],
+        fingerprint,
+        reason: error instanceof Error ? error.message : String(error),
+        source,
+        stage: 'emission',
+      });
+    }
+  }
+
+  const missingExports = packageInventory.exports
+    .map((item) => item.name)
+    .filter((name) => !generatedExports.has(name))
+    .sort();
+  if (missingExports.length > 0) {
+    blockers.push({
+      diagnostics: [],
+      fingerprint: sha256(missingExports.join('\0')),
+      reason: `Generated crate is missing ${String(missingExports.length)} of ${String(packageInventory.exports.length)} upstream exports; re-export or declaration synthesis is required.`,
+      source: `${packageInventory.directory}/src`,
+      stage: 'package',
+    });
+  }
+  blockers.sort((left, right) => left.source.localeCompare(right.source) || left.reason.localeCompare(right.reason));
+  emittedSources.sort((left, right) => left.source.localeCompare(right.source));
+  return {
+    apiExports: packageInventory.exports.length,
+    attemptedSources,
+    blockers,
+    crate: packageInventory.rustCrate,
+    dependencies,
+    directDependents: 0,
+    disposition: 'generated',
+    emittedSources,
+    generatedExports: [...generatedExports].sort(),
+    missingExports,
+    package: packageInventory.name,
+    promotedTarget,
+    status: blockers.length === 0 ? 'emittable' : 'blocked',
+    transitiveDependents: 0,
+  };
+}
+
+function annotateDependencyImpact(packages: AutomaticPackageReport[]): AutomaticPackageReport[] {
+  const directDependents = new Map<string, Set<string>>();
+  for (const item of packages) {
+    for (const dependency of item.dependencies) {
+      const dependents = directDependents.get(dependency.package) ?? new Set<string>();
+      dependents.add(item.package);
+      directDependents.set(dependency.package, dependents);
+    }
+  }
+  return packages.map((item) => {
+    const visited = new Set<string>();
+    const pending = [...(directDependents.get(item.package) ?? [])];
+    while (pending.length > 0) {
+      const dependent = pending.pop()!;
+      if (dependent === item.package || visited.has(dependent)) continue;
+      visited.add(dependent);
+      pending.push(...(directDependents.get(dependent) ?? []));
+    }
+    return {
+      ...item,
+      directDependents: directDependents.get(item.package)?.size ?? 0,
+      transitiveDependents: visited.size,
+    };
+  });
+}
+
+function resolvePackagePolicy(packageName: string): PackagePolicyRule | undefined {
+  const matching = portConfig.packagePolicy.filter((rule) => matchesPackagePolicy(packageName, rule.match));
+  if (matching.length > 1) {
+    throw new Error(
+      `Package policy rules overlap for ${packageName}: ${matching.map((item) => item.match).join(', ')}`,
+    );
+  }
+  return matching[0];
+}
+
+function matchesPackagePolicy(packageName: string, pattern: string): boolean {
+  const expression = pattern
+    .split('*')
+    .map((part) => part.replace(/[\\^$.*+?()[\]{}|]/gu, '\\$&'))
+    .join('.*');
+  return new RegExp(`^${expression}$`, 'u').test(packageName);
+}
+
+function validatePackagePolicy(packages: PackageInventory[]): void {
+  const stale = portConfig.packagePolicy.filter(
+    (rule) => !packages.some((item) => matchesPackagePolicy(item.name, rule.match)),
+  );
+  if (stale.length > 0) throw new Error(`Stale package policy rules: ${stale.map((item) => item.match).join(', ')}`);
+  for (const item of packages) resolvePackagePolicy(item.name);
+}
+
+function summarizeAutomaticPackages(packages: AutomaticPackageReport[]): AutomaticPackageSummary {
+  return {
+    blocked: packages.filter((item) => item.status === 'blocked').length,
+    cultivated: packages.filter((item) => item.status === 'cultivated').length,
+    eligible: packages.filter((item) => item.disposition === 'generated').length,
+    emittable: packages.filter((item) => item.status === 'emittable').length,
+    excluded: packages.filter((item) => item.status === 'excluded').length,
+    hostBound: packages.filter((item) => item.status === 'host-bound').length,
+    packages: packages.length,
+    sourceBlockers: packages.reduce((total, item) => total + item.blockers.length, 0),
+  };
 }
 
 function generateTarget(workspaceDirectory: string, target: RustTarget, check: boolean): RustTargetReport {
@@ -139,9 +427,8 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
     usedSelections.add(sourceName);
     const moduleName = sourcePathToRustModule(file);
     if (!moduleName) continue;
-    const sourceText = readFileSync(file, 'utf8');
-    const sourceFile = ts.createSourceFile(file, sourceText, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
-    const lowered = lowerTypeScriptSource(sourceFile, target.package, workspaceDirectory);
+    const sourceFile = parseTypeScriptFile(file);
+    const lowered = lowerTypeScriptFile(file, target.package, workspaceDirectory);
     const declarationSelection = target.declarationSelection?.[sourceName];
     const selectedDeclarations = declarationSelection ? new Set(declarationSelection.names) : undefined;
     const declarations = selectedDeclarations
@@ -342,14 +629,7 @@ function collectSemanticTypes(workspaceDirectory: string, target: RustTarget): R
   return Object.fromEntries(
     Object.entries(target.typeMappings).map(([name, mapping]) => {
       const source = path.join(workspaceDirectory, mapping.source);
-      const sourceFile = ts.createSourceFile(
-        source,
-        readFileSync(source, 'utf8'),
-        ts.ScriptTarget.Latest,
-        true,
-        ts.ScriptKind.TS,
-      );
-      const lowered = lowerTypeScriptSource(sourceFile, '@flighthq/types', workspaceDirectory);
+      const lowered = lowerTypeScriptFile(source, '@flighthq/types', workspaceDirectory);
       const declaration = lowered.declarations.find((item) => item.kind === 'type' && item.name === name);
       if (!declaration || declaration.kind !== 'type') {
         throw new Error(`Semantic type mapping ${name} did not resolve from ${mapping.source}`);
@@ -435,6 +715,9 @@ function collectImportedSemanticTypes(
   sourceFile: ts.SourceFile,
   workspaceDirectory: string,
 ): Readonly<Record<string, IrType>> {
+  const cacheKey = `${workspaceDirectory}\0${sourceFile.fileName}`;
+  const cached = importedSemanticTypesCache.get(cacheKey);
+  if (cached) return cached;
   const types = new Map<string, IrType>();
   const visited = new Set<string>();
   const visit = (file: ts.SourceFile): void => {
@@ -454,14 +737,8 @@ function collectImportedSemanticTypes(
               ? path.resolve(path.dirname(file.fileName), `${specifier}.ts`)
               : undefined;
         if (!source || !existsSync(source)) continue;
-        const semanticSource = ts.createSourceFile(
-          source,
-          readFileSync(source, 'utf8'),
-          ts.ScriptTarget.Latest,
-          true,
-          ts.ScriptKind.TS,
-        );
-        const lowered = lowerTypeScriptSource(semanticSource, '@flighthq/types', workspaceDirectory);
+        const semanticSource = parseTypeScriptFile(source);
+        const lowered = lowerTypeScriptFile(source, '@flighthq/types', workspaceDirectory);
         const declaration = lowered.declarations.find((item) => item.kind === 'type' && item.name === name);
         if (declaration?.kind === 'type') {
           for (const sibling of lowered.declarations) {
@@ -473,40 +750,62 @@ function collectImportedSemanticTypes(
     }
   };
   visit(sourceFile);
-  return Object.fromEntries(types);
+  const result = Object.fromEntries(types);
+  importedSemanticTypesCache.set(cacheKey, result);
+  return result;
 }
 
 function findTypeDeclarationSource(workspaceDirectory: string, name: string): string | undefined {
   const directory = path.join(workspaceDirectory, portConfig.upstreamDirectory, 'packages', 'types', 'src');
   const conventional = path.join(directory, `${name}.ts`);
   if (existsSync(conventional)) return conventional;
-  for (const file of walkTypeScriptSources(directory)) {
-    const source = ts.createSourceFile(
-      file,
-      readFileSync(file, 'utf8'),
-      ts.ScriptTarget.Latest,
-      true,
-      ts.ScriptKind.TS,
-    );
-    if (
-      source.statements.some(
-        (statement) =>
-          ((ts.isInterfaceDeclaration(statement) ||
+  let index = typeDeclarationIndexCache.get(workspaceDirectory);
+  if (!index) {
+    const declarations = new Map<string, string>();
+    for (const file of walkTypeScriptSources(directory)) {
+      const source = parseTypeScriptFile(file);
+      for (const statement of source.statements) {
+        if (
+          (ts.isInterfaceDeclaration(statement) ||
             ts.isTypeAliasDeclaration(statement) ||
             ts.isClassDeclaration(statement) ||
             ts.isEnumDeclaration(statement) ||
             ts.isFunctionDeclaration(statement)) &&
-            statement.name?.text === name) ||
-          (ts.isVariableStatement(statement) &&
-            statement.declarationList.declarations.some(
-              (declaration) => ts.isIdentifier(declaration.name) && declaration.name.text === name,
-            )),
-      )
-    ) {
-      return file;
+          statement.name
+        ) {
+          declarations.set(statement.name.text, file);
+        } else if (ts.isVariableStatement(statement)) {
+          for (const declaration of statement.declarationList.declarations) {
+            if (ts.isIdentifier(declaration.name)) declarations.set(declaration.name.text, file);
+          }
+        }
+      }
     }
+    index = declarations;
+    typeDeclarationIndexCache.set(workspaceDirectory, index);
   }
-  return undefined;
+  return index.get(name);
+}
+
+function parseTypeScriptFile(file: string): ts.SourceFile {
+  const cached = parsedSourceCache.get(file);
+  if (cached) return cached;
+  const source = ts.createSourceFile(file, readFileSync(file, 'utf8'), ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
+  parsedSourceCache.set(file, source);
+  return source;
+}
+
+function lowerTypeScriptFile(
+  file: string,
+  packageName: string,
+  workspaceDirectory: string,
+): ReturnType<typeof lowerTypeScriptSource> {
+  const cacheKey = `${workspaceDirectory}\0${packageName}\0${file}`;
+  const cached = loweredSourceCache.get(cacheKey);
+  if (cached) return cached;
+  const lowered = lowerTypeScriptSource(parseTypeScriptFile(file), packageName, workspaceDirectory);
+  loweredSourceCache.set(cacheKey, lowered);
+  return lowered;
 }
 
 function formatRust(content: string, source: string): string {

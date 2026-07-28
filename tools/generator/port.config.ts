@@ -25,10 +25,51 @@ export interface WasmFacadeTarget {
   rustTemplate: string;
 }
 
+export type PackageDisposition = 'cultivated' | 'excluded' | 'host-bound';
+
+export interface PackagePolicyRule {
+  disposition: PackageDisposition;
+  match: string;
+  reason: string;
+}
+
 export const portConfig = {
   generatedDirectory: 'generated',
   reportsDirectory: 'reports',
   upstreamDirectory: 'upstream',
+  packagePolicy: [
+    {
+      disposition: 'cultivated',
+      match: '@flighthq/surface',
+      reason:
+        'Pixel kernels, shared surface identity, alias-sensitive mutation, and the standalone wasm ABI are intentionally cultivated by hand.',
+    },
+    {
+      disposition: 'excluded',
+      match: '@flighthq/tool-capture',
+      reason: 'Build-time browser capture tooling is not part of the native Flight runtime crate graph.',
+    },
+    {
+      disposition: 'host-bound',
+      match: '@flighthq/host-capacitor',
+      reason: 'The Capacitor adapter is a platform integration package rather than a mechanical core-library port.',
+    },
+    {
+      disposition: 'host-bound',
+      match: '@flighthq/host-electron',
+      reason: 'The Electron adapter is a platform integration package rather than a mechanical core-library port.',
+    },
+    {
+      disposition: 'host-bound',
+      match: '@flighthq/host-tauri',
+      reason: 'The Tauri adapter is a platform integration package rather than a mechanical core-library port.',
+    },
+    {
+      disposition: 'host-bound',
+      match: '@flighthq/*-dom',
+      reason: 'DOM substrate packages remain host-bound; native hosts consume the generated substrate-neutral crates.',
+    },
+  ] satisfies PackagePolicyRule[],
   blessedFacades: [
     {
       package: '@flighthq/surface-rs',

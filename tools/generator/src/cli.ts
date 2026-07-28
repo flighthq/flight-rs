@@ -5,7 +5,14 @@ import { portConfig } from '../port.config.ts';
 import { analyzeUpstream } from './analyze/inventory.ts';
 import { auditLowering } from './analyze/lowering.ts';
 import { generateRust } from './emit/core.ts';
-import { createApiReport, inventorySummary, loweringSummary, stableJson, writeOrCheck } from './emit/reports.ts';
+import {
+  createApiReport,
+  generationSummary,
+  inventorySummary,
+  loweringSummary,
+  stableJson,
+  writeOrCheck,
+} from './emit/reports.ts';
 
 const argumentsSet = new Set(process.argv.slice(2));
 const check = argumentsSet.has('--check');
@@ -27,10 +34,11 @@ try {
 
     if (!inventoryOnly) {
       const lowering = auditLowering(workspaceDirectory);
-      const generation = generateRust(workspaceDirectory, check, inventory.upstreamCommit);
+      const generation = generateRust(workspaceDirectory, check, inventory);
       writeOrCheck(path.join(reportsDirectory, 'lowering.json'), stableJson(lowering), check);
       writeOrCheck(path.join(reportsDirectory, 'lowering.md'), loweringSummary(lowering), check);
       writeOrCheck(path.join(reportsDirectory, 'generation.json'), stableJson(generation), check);
+      writeOrCheck(path.join(reportsDirectory, 'generation.md'), generationSummary(generation), check);
       const emitted = generation.targets.reduce((total, target) => total + target.emittedSources.length, 0);
       const excluded = generation.targets.reduce((total, target) => total + target.sourceExclusions.length, 0);
       const unsupported = generation.targets.reduce((total, target) => total + target.unsupportedSources.length, 0);

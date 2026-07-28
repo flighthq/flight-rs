@@ -3,6 +3,7 @@ import path from 'node:path';
 
 import type { ApiReport, UpstreamInventory } from '../model/inventory.ts';
 import type { LoweringAudit } from '../analyze/lowering.ts';
+import type { RustGenerationReport } from './core.ts';
 
 export function createApiReport(inventory: UpstreamInventory): ApiReport {
   return {
@@ -62,6 +63,43 @@ export function loweringSummary(audit: LoweringAudit): string {
     lines.push(`| \`${item.packageName}\` | ${item.declarations} | ${item.lowered} | ${item.diagnostics.length} |`);
   }
   lines.push('');
+  return lines.join('\n');
+}
+
+export function generationSummary(report: RustGenerationReport): string {
+  const lines = [
+    '# Automatic Rust Generation',
+    '',
+    `Upstream commit: \`${report.upstreamCommit}\``,
+    '',
+    '| Metric | Count |',
+    '| --- | ---: |',
+    `| Inventoried packages | ${report.summary.packages} |`,
+    `| Default-generated packages | ${report.summary.eligible} |`,
+    `| Emittable packages | ${report.summary.emittable} |`,
+    `| Blocked packages | ${report.summary.blocked} |`,
+    `| Cultivated packages | ${report.summary.cultivated} |`,
+    `| Host-bound packages | ${report.summary.hostBound} |`,
+    `| Excluded packages | ${report.summary.excluded} |`,
+    `| Source/package blockers | ${report.summary.sourceBlockers} |`,
+    '',
+    '| Package | Disposition | Status | Sources emitted/attempted | API generated/expected | Missing | Dependents direct/transitive | Opaque sources | Blockers | Promoted |',
+    '| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | :---: |',
+  ];
+  for (const item of report.automaticPackages) {
+    const opaqueSources = item.emittedSources.filter((source) => source.usesOpaqueHostValues).length;
+    lines.push(
+      `| \`${item.package}\` | ${item.disposition} | ${item.status} | ${item.emittedSources.length}/${item.attemptedSources} | ${item.generatedExports.length}/${item.apiExports} | ${item.missingExports.length} | ${item.directDependents}/${item.transitiveDependents} | ${opaqueSources} | ${item.blockers.length} | ${item.promotedTarget ? 'yes' : 'no'} |`,
+    );
+  }
+  lines.push('', '## Blockers', '');
+  for (const item of report.automaticPackages.filter((candidate) => candidate.blockers.length > 0)) {
+    lines.push(`### \`${item.package}\``, '');
+    for (const blocker of item.blockers) {
+      lines.push(`- **${blocker.stage}** \`${blocker.source}\`: ${blocker.reason.replace(/\s+/gu, ' ')}`);
+    }
+    lines.push('');
+  }
   return lines.join('\n');
 }
 
