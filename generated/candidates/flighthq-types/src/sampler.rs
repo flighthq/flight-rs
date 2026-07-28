@@ -1,0 +1,27 @@
+// @generated from upstream/packages/types/src/Sampler.ts; do not edit.
+#![allow(clippy::excessive_precision)]
+#![allow(non_upper_case_globals)]
+#![allow(unused_braces)]
+#![allow(unused_imports)]
+#![allow(unused_mut)]
+#![allow(unused_parens)]
+
+// Source: upstream/packages/types/src/Sampler.ts:4 (sha256:b4c7c5f0936a76e753f97d07405cbd81dd9b05623d785710b8a5fc2f21183ee0)
+pub type TextureWrap = String;
+
+// Source: upstream/packages/types/src/Sampler.ts:8 (sha256:5963a37968ed6e884a4afffa8bb58f3596d65bffdb5740fb3e83e281da2405ca)
+pub type TextureFilter = String;
+
+// Source: upstream/packages/types/src/Sampler.ts:19 (sha256:08ac581426ed70f9190c38f52b7d331b546b4a23faafe9b65902b84d69d76d50)
+#[derive(Clone)]
+pub struct Sampler {
+    pub anisotropy: f64,
+    pub mag_filter: TextureFilter,
+    pub min_filter: TextureFilter,
+    pub mipmaps: bool,
+    pub wrap_u: TextureWrap,
+    pub wrap_v: TextureWrap,
+}
+
+// Source: upstream/packages/types/src/Sampler.ts:28 (sha256:4984430992060b1ac4b1fbcc3dd8b57f6b4e5026f9e4abbfb2a6cf272238fe2f)
+pub type SamplerLike = Sampler;

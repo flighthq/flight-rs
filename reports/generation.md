@@ -6,146 +6,149 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | --- | ---: |
 | Inventoried packages | 131 |
 | Default-generated packages | 125 |
-| Emittable packages | 2 |
-| Blocked packages | 123 |
+| Emittable packages | 3 |
+| Blocked packages | 122 |
+| Compiled candidates | 1 |
+| Compile-blocked candidates | 1 |
+| Dependency-blocked candidates | 0 |
 | Cultivated packages | 1 |
 | Host-bound packages | 4 |
 | Excluded packages | 1 |
-| Source/package blockers | 896 |
+| Source/package blockers | 877 |
 
-| Package | Disposition | Status | Sources emitted/attempted | API generated/expected | Missing | Dependents direct/transitive | Opaque sources | Blockers | Promoted |
-| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | :---: |
-| `@flighthq/accessibility` | generated | blocked | 1/2 | 0/8 | 8 | 1/1 | 0 | 2 | no |
-| `@flighthq/adjustments` | generated | blocked | 4/19 | 9/49 | 40 | 6/25 | 1 | 16 | no |
-| `@flighthq/animation` | generated | blocked | 2/4 | 5/18 | 13 | 3/7 | 1 | 3 | no |
-| `@flighthq/app` | generated | blocked | 1/2 | 0/42 | 42 | 4/4 | 0 | 2 | no |
-| `@flighthq/application` | generated | blocked | 1/3 | 0/83 | 83 | 3/3 | 0 | 3 | no |
-| `@flighthq/assets` | generated | blocked | 1/2 | 0/10 | 10 | 1/1 | 0 | 2 | no |
-| `@flighthq/audio` | generated | blocked | 2/4 | 10/20 | 10 | 2/2 | 1 | 3 | no |
-| `@flighthq/binpack` | generated | blocked | 1/2 | 0/1 | 1 | 1/1 | 0 | 2 | no |
-| `@flighthq/bitmapfont` | generated | blocked | 1/3 | 0/7 | 7 | 2/2 | 0 | 3 | no |
-| `@flighthq/bitmapfont-formats` | generated | blocked | 2/5 | 1/4 | 3 | 1/1 | 0 | 4 | no |
-| `@flighthq/bitmaptext` | generated | blocked | 1/3 | 0/15 | 15 | 1/1 | 0 | 3 | no |
-| `@flighthq/camera` | generated | blocked | 6/10 | 13/31 | 18 | 4/4 | 0 | 5 | no |
-| `@flighthq/camera2d` | generated | blocked | 6/8 | 6/8 | 2 | 1/1 | 0 | 3 | no |
-| `@flighthq/capture` | generated | blocked | 2/3 | 5/10 | 5 | 1/1 | 1 | 2 | no |
-| `@flighthq/clip` | generated | blocked | 1/2 | 0/23 | 23 | 1/1 | 0 | 2 | no |
-| `@flighthq/clipboard` | generated | blocked | 1/2 | 0/32 | 32 | 4/4 | 0 | 2 | no |
-| `@flighthq/clock` | generated | blocked | 11/12 | 12/14 | 2 | 1/1 | 0 | 2 | no |
-| `@flighthq/collision` | generated | blocked | 3/6 | 3/19 | 16 | 1/1 | 0 | 4 | no |
-| `@flighthq/color` | generated | blocked | 6/10 | 20/32 | 12 | 10/29 | 0 | 5 | no |
-| `@flighthq/connectivity` | generated | blocked | 1/2 | 0/14 | 14 | 2/2 | 0 | 2 | no |
-| `@flighthq/debug` | generated | blocked | 1/3 | 0/9 | 9 | 1/1 | 0 | 3 | no |
-| `@flighthq/device` | generated | blocked | 1/2 | 0/14 | 14 | 2/2 | 0 | 2 | no |
-| `@flighthq/dialog` | generated | blocked | 1/2 | 0/15 | 15 | 5/5 | 0 | 2 | no |
-| `@flighthq/displayobject` | generated | blocked | 2/8 | 3/46 | 43 | 14/24 | 0 | 7 | no |
-| `@flighthq/displayobject-canvas` | generated | blocked | 7/31 | 10/94 | 84 | 5/5 | 5 | 25 | no |
-| `@flighthq/displayobject-dom` | host-bound | host-bound | 0/0 | 0/58 | 58 | 1/1 | 0 | 0 | no |
-| `@flighthq/displayobject-gl` | generated | blocked | 5/28 | 5/89 | 85 | 1/1 | 0 | 24 | no |
-| `@flighthq/displayobject-wgpu` | generated | blocked | 6/29 | 8/95 | 88 | 1/1 | 1 | 24 | no |
-| `@flighthq/easing` | generated | emittable | 20/20 | 48/48 | 0 | 2/3 | 0 | 0 | yes |
-| `@flighthq/effects` | generated | blocked | 7/72 | 18/112 | 94 | 4/4 | 0 | 66 | no |
-| `@flighthq/effects-canvas` | generated | blocked | 7/48 | 19/102 | 88 | 1/1 | 5 | 42 | no |
-| `@flighthq/effects-gl` | generated | blocked | 5/58 | 15/135 | 120 | 1/1 | 3 | 54 | no |
-| `@flighthq/effects-wgpu` | generated | blocked | 3/56 | 9/128 | 119 | 1/1 | 1 | 54 | no |
-| `@flighthq/entity` | generated | blocked | 2/6 | 3/12 | 9 | 20/61 | 0 | 5 | no |
-| `@flighthq/filesystem` | generated | blocked | 1/2 | 0/43 | 43 | 2/2 | 0 | 2 | no |
-| `@flighthq/flow` | generated | blocked | 5/10 | 4/9 | 5 | 1/1 | 0 | 6 | no |
-| `@flighthq/font` | generated | blocked | 2/8 | 1/15 | 14 | 1/1 | 0 | 7 | no |
-| `@flighthq/geolocation` | generated | blocked | 1/2 | 0/12 | 12 | 2/2 | 0 | 2 | no |
-| `@flighthq/geometry` | generated | blocked | 9/27 | 32/377 | 345 | 40/53 | 0 | 19 | no |
-| `@flighthq/glyphatlas` | generated | blocked | 4/7 | 5/14 | 9 | 1/1 | 1 | 4 | no |
-| `@flighthq/haptics` | generated | blocked | 1/2 | 0/13 | 13 | 2/2 | 0 | 2 | no |
-| `@flighthq/host-capacitor` | host-bound | host-bound | 0/0 | 0/63 | 63 | 0/0 | 0 | 0 | no |
-| `@flighthq/host-electron` | host-bound | host-bound | 0/0 | 0/57 | 57 | 0/0 | 0 | 0 | no |
-| `@flighthq/host-tauri` | host-bound | host-bound | 0/0 | 0/51 | 51 | 0/0 | 0 | 0 | no |
-| `@flighthq/image` | generated | blocked | 1/3 | 0/20 | 20 | 11/24 | 0 | 3 | yes |
-| `@flighthq/image-codec` | generated | blocked | 2/8 | 1/16 | 15 | 3/26 | 1 | 7 | no |
-| `@flighthq/input` | generated | blocked | 1/2 | 0/40 | 40 | 1/1 | 0 | 2 | no |
-| `@flighthq/interaction` | generated | blocked | 7/16 | 20/83 | 63 | 1/1 | 1 | 10 | no |
-| `@flighthq/intl` | generated | blocked | 1/8 | 0/14 | 14 | 1/1 | 0 | 8 | no |
-| `@flighthq/ipc` | generated | blocked | 1/2 | 0/17 | 17 | 2/2 | 0 | 2 | no |
-| `@flighthq/keyboard` | generated | blocked | 1/2 | 0/20 | 20 | 2/2 | 0 | 2 | no |
-| `@flighthq/lifecycle` | generated | blocked | 1/2 | 0/13 | 13 | 1/1 | 0 | 2 | no |
-| `@flighthq/lighting` | generated | blocked | 2/11 | 4/37 | 33 | 1/1 | 1 | 10 | no |
-| `@flighthq/loader` | generated | blocked | 1/2 | 0/13 | 13 | 3/3 | 0 | 2 | no |
-| `@flighthq/log` | generated | blocked | 1/2 | 0/65 | 65 | 7/16 | 0 | 2 | no |
-| `@flighthq/materials` | generated | blocked | 3/12 | 10/68 | 58 | 7/28 | 0 | 10 | no |
-| `@flighthq/math` | generated | blocked | 12/16 | 43/73 | 30 | 4/4 | 1 | 5 | no |
-| `@flighthq/media` | generated | blocked | 1/4 | 0/42 | 42 | 1/1 | 0 | 4 | no |
-| `@flighthq/mediasession` | generated | blocked | 1/2 | 0/10 | 10 | 1/1 | 0 | 2 | no |
-| `@flighthq/menu` | generated | blocked | 1/3 | 0/17 | 17 | 3/3 | 0 | 3 | no |
-| `@flighthq/mesh` | generated | blocked | 7/12 | 28/67 | 39 | 6/20 | 0 | 6 | no |
-| `@flighthq/motionpath` | generated | blocked | 7/8 | 6/7 | 1 | 1/1 | 1 | 2 | no |
-| `@flighthq/movieclip` | generated | blocked | 1/3 | 0/23 | 23 | 1/1 | 0 | 3 | no |
-| `@flighthq/net` | generated | blocked | 1/2 | 0/4 | 4 | 1/1 | 0 | 2 | no |
-| `@flighthq/node` | generated | blocked | 5/16 | 44/105 | 61 | 23/32 | 1 | 12 | no |
-| `@flighthq/notification` | generated | blocked | 1/2 | 0/26 | 26 | 4/4 | 0 | 2 | no |
-| `@flighthq/particleemitter` | generated | blocked | 5/11 | 4/51 | 47 | 1/1 | 3 | 7 | no |
-| `@flighthq/particles` | generated | blocked | 5/11 | 9/50 | 41 | 3/3 | 1 | 7 | no |
-| `@flighthq/particles-formats` | generated | blocked | 5/21 | 11/79 | 68 | 1/1 | 1 | 17 | no |
-| `@flighthq/path` | generated | blocked | 18/23 | 27/50 | 23 | 8/8 | 13 | 6 | no |
-| `@flighthq/path-boolean` | generated | blocked | 3/8 | 4/12 | 9 | 1/1 | 0 | 6 | no |
-| `@flighthq/path-formats` | generated | blocked | 1/2 | 0/3 | 3 | 1/1 | 0 | 2 | no |
-| `@flighthq/permissions` | generated | blocked | 1/2 | 0/5 | 5 | 1/1 | 0 | 2 | no |
-| `@flighthq/picking` | generated | blocked | 1/2 | 0/6 | 6 | 1/1 | 0 | 2 | no |
-| `@flighthq/platform` | generated | blocked | 1/2 | 0/16 | 16 | 3/3 | 0 | 2 | no |
-| `@flighthq/power` | generated | blocked | 1/2 | 0/19 | 19 | 2/2 | 0 | 2 | no |
-| `@flighthq/protocol` | generated | blocked | 1/2 | 0/20 | 20 | 2/2 | 0 | 2 | no |
-| `@flighthq/render` | generated | blocked | 9/17 | 18/63 | 45 | 9/13 | 4 | 9 | no |
-| `@flighthq/render-gl` | generated | blocked | 12/24 | 18/75 | 58 | 4/4 | 6 | 13 | no |
-| `@flighthq/render-wgpu` | generated | blocked | 5/18 | 7/68 | 61 | 5/5 | 3 | 14 | no |
-| `@flighthq/scene` | generated | blocked | 10/14 | 20/43 | 23 | 6/6 | 3 | 5 | no |
-| `@flighthq/scene-formats` | generated | blocked | 6/16 | 78/15 | 14 | 2/2 | 1 | 11 | no |
-| `@flighthq/scene-gl` | generated | blocked | 8/53 | 21/184 | 163 | 1/1 | 2 | 46 | no |
-| `@flighthq/scene-resources` | generated | blocked | 2/16 | 5/37 | 32 | 1/1 | 1 | 15 | no |
-| `@flighthq/scene-wgpu` | generated | blocked | 4/42 | 9/140 | 131 | 1/1 | 0 | 39 | no |
-| `@flighthq/screen` | generated | blocked | 1/2 | 0/31 | 31 | 2/2 | 0 | 2 | no |
-| `@flighthq/sdk` | generated | blocked | 14/14 | 0/5923 | 5923 | 0/0 | 0 | 1 | no |
-| `@flighthq/sensors` | generated | blocked | 1/2 | 0/32 | 32 | 1/1 | 0 | 2 | no |
-| `@flighthq/shading` | generated | blocked | 10/17 | 15/37 | 22 | 2/2 | 0 | 8 | no |
-| `@flighthq/shape` | generated | blocked | 1/7 | 0/42 | 42 | 7/8 | 0 | 7 | no |
-| `@flighthq/shape-formats` | generated | blocked | 1/2 | 0/5 | 5 | 1/1 | 0 | 2 | no |
-| `@flighthq/share` | generated | blocked | 1/2 | 0/14 | 14 | 2/2 | 0 | 2 | no |
-| `@flighthq/shell` | generated | blocked | 1/2 | 0/14 | 14 | 3/3 | 0 | 2 | no |
-| `@flighthq/shortcut` | generated | blocked | 1/2 | 0/26 | 26 | 3/3 | 0 | 2 | no |
-| `@flighthq/signals` | generated | blocked | 2/6 | 1/14 | 13 | 42/72 | 1 | 5 | no |
-| `@flighthq/skeleton3d` | generated | emittable | 6/6 | 16/16 | 0 | 3/16 | 1 | 0 | no |
-| `@flighthq/snapshot` | generated | blocked | 1/5 | 0/4 | 4 | 1/1 | 0 | 5 | no |
-| `@flighthq/socket` | generated | blocked | 1/2 | 0/11 | 11 | 1/1 | 0 | 2 | no |
-| `@flighthq/spatial` | generated | blocked | 2/3 | 9/10 | 1 | 2/2 | 0 | 2 | no |
-| `@flighthq/spring` | generated | blocked | 7/8 | 11/12 | 1 | 1/1 | 0 | 2 | no |
-| `@flighthq/sprite` | generated | blocked | 1/4 | 0/64 | 64 | 3/3 | 0 | 4 | no |
-| `@flighthq/spritesheet` | generated | blocked | 1/8 | 0/32 | 32 | 2/2 | 0 | 8 | no |
-| `@flighthq/spritesheet-formats` | generated | blocked | 6/16 | 29/55 | 26 | 1/1 | 3 | 11 | no |
-| `@flighthq/statusbar` | generated | blocked | 1/2 | 0/16 | 16 | 2/2 | 0 | 2 | no |
-| `@flighthq/storage` | generated | blocked | 1/2 | 0/39 | 39 | 2/2 | 0 | 2 | no |
-| `@flighthq/surface` | cultivated | cultivated | 0/0 | 0/136 | 136 | 6/9 | 0 | 0 | yes |
-| `@flighthq/text` | generated | blocked | 3/6 | 4/86 | 82 | 8/9 | 0 | 4 | no |
-| `@flighthq/text-markup` | generated | blocked | 2/5 | 1/8 | 7 | 1/1 | 1 | 4 | no |
-| `@flighthq/textbidi` | generated | blocked | 4/5 | 5/6 | 1 | 1/1 | 0 | 2 | no |
-| `@flighthq/textinput` | generated | blocked | 1/5 | 0/55 | 55 | 5/6 | 0 | 5 | no |
-| `@flighthq/textlayout` | generated | blocked | 9/13 | 23/47 | 25 | 9/11 | 1 | 5 | no |
-| `@flighthq/textsegment` | generated | blocked | 3/4 | 8/11 | 3 | 1/1 | 0 | 2 | no |
-| `@flighthq/textshaper` | generated | blocked | 4/9 | 17/31 | 16 | 3/12 | 0 | 6 | no |
-| `@flighthq/textshaper-canvas` | generated | blocked | 1/2 | 0/3 | 3 | 1/1 | 0 | 2 | no |
-| `@flighthq/texture` | generated | blocked | 1/5 | 0/42 | 42 | 5/6 | 0 | 5 | no |
-| `@flighthq/texture-formats` | generated | blocked | 3/9 | 2/6 | 4 | 1/1 | 0 | 7 | no |
-| `@flighthq/textureatlas` | generated | blocked | 1/4 | 0/20 | 20 | 8/13 | 0 | 4 | no |
-| `@flighthq/textureatlas-formats` | generated | blocked | 3/8 | 20/29 | 9 | 2/2 | 2 | 6 | no |
-| `@flighthq/tilemap-formats` | generated | blocked | 3/9 | 6/16 | 10 | 1/1 | 0 | 7 | no |
-| `@flighthq/tileset` | generated | blocked | 1/3 | 0/9 | 9 | 3/8 | 0 | 3 | no |
-| `@flighthq/timeline` | generated | blocked | 1/2 | 0/16 | 16 | 2/2 | 0 | 2 | no |
-| `@flighthq/tool-capture` | excluded | excluded | 0/0 | 0/57 | 57 | 0/0 | 0 | 0 | no |
-| `@flighthq/tray` | generated | blocked | 1/2 | 0/23 | 23 | 3/3 | 0 | 2 | no |
-| `@flighthq/tween` | generated | blocked | 4/9 | 8/35 | 28 | 2/2 | 3 | 6 | no |
-| `@flighthq/types` | generated | blocked | 581/590 | 1213/1261 | 48 | 129/129 | 170 | 10 | yes |
-| `@flighthq/updater` | generated | blocked | 1/2 | 0/23 | 23 | 2/2 | 0 | 2 | no |
-| `@flighthq/useragent` | generated | blocked | 1/3 | 0/12 | 12 | 3/6 | 0 | 3 | no |
-| `@flighthq/velocity` | generated | blocked | 3/4 | 2/20 | 18 | 3/3 | 1 | 2 | no |
-| `@flighthq/video` | generated | blocked | 2/4 | 8/16 | 8 | 2/2 | 1 | 3 | no |
-| `@flighthq/webcam` | generated | blocked | 1/3 | 0/10 | 10 | 1/1 | 0 | 3 | no |
-| `@flighthq/xml` | generated | blocked | 2/3 | 4/7 | 3 | 5/5 | 1 | 2 | no |
+| Package | Disposition | Status | Candidate | Sources emitted/attempted | API generated/expected | Missing | Dependents direct/transitive | Opaque sources | Blockers | Target |
+| --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| `@flighthq/accessibility` | generated | blocked | source-blocked | 1/2 | 0/8 | 8 | 1/1 | 0 | 2 | no |
+| `@flighthq/adjustments` | generated | blocked | source-blocked | 4/19 | 9/49 | 40 | 6/25 | 1 | 16 | no |
+| `@flighthq/animation` | generated | blocked | source-blocked | 2/4 | 5/18 | 13 | 3/7 | 1 | 3 | no |
+| `@flighthq/app` | generated | blocked | source-blocked | 1/2 | 0/42 | 42 | 4/4 | 0 | 2 | no |
+| `@flighthq/application` | generated | blocked | source-blocked | 1/3 | 0/83 | 83 | 3/3 | 0 | 3 | no |
+| `@flighthq/assets` | generated | blocked | source-blocked | 1/2 | 0/10 | 10 | 1/1 | 0 | 2 | no |
+| `@flighthq/audio` | generated | blocked | source-blocked | 2/4 | 10/20 | 10 | 2/2 | 1 | 3 | no |
+| `@flighthq/binpack` | generated | blocked | source-blocked | 1/2 | 0/1 | 1 | 1/1 | 0 | 2 | no |
+| `@flighthq/bitmapfont` | generated | blocked | source-blocked | 1/3 | 0/7 | 7 | 2/2 | 0 | 3 | no |
+| `@flighthq/bitmapfont-formats` | generated | blocked | source-blocked | 2/5 | 1/4 | 3 | 1/1 | 0 | 4 | no |
+| `@flighthq/bitmaptext` | generated | blocked | source-blocked | 1/3 | 0/15 | 15 | 1/1 | 0 | 3 | no |
+| `@flighthq/camera` | generated | blocked | source-blocked | 6/10 | 13/31 | 18 | 4/4 | 0 | 5 | no |
+| `@flighthq/camera2d` | generated | blocked | source-blocked | 6/8 | 6/8 | 2 | 1/1 | 0 | 3 | no |
+| `@flighthq/capture` | generated | blocked | source-blocked | 2/3 | 5/10 | 5 | 1/1 | 1 | 2 | no |
+| `@flighthq/clip` | generated | blocked | source-blocked | 1/2 | 0/23 | 23 | 1/1 | 0 | 2 | no |
+| `@flighthq/clipboard` | generated | blocked | source-blocked | 1/2 | 0/32 | 32 | 4/4 | 0 | 2 | no |
+| `@flighthq/clock` | generated | blocked | source-blocked | 11/12 | 12/14 | 2 | 1/1 | 0 | 2 | no |
+| `@flighthq/collision` | generated | blocked | source-blocked | 4/6 | 8/19 | 11 | 1/1 | 0 | 3 | no |
+| `@flighthq/color` | generated | blocked | source-blocked | 6/10 | 20/32 | 12 | 10/29 | 0 | 5 | no |
+| `@flighthq/connectivity` | generated | blocked | source-blocked | 1/2 | 0/14 | 14 | 2/2 | 0 | 2 | no |
+| `@flighthq/debug` | generated | blocked | source-blocked | 1/3 | 0/9 | 9 | 1/1 | 0 | 3 | no |
+| `@flighthq/device` | generated | blocked | source-blocked | 1/2 | 0/14 | 14 | 2/2 | 0 | 2 | no |
+| `@flighthq/dialog` | generated | blocked | source-blocked | 1/2 | 0/15 | 15 | 5/5 | 0 | 2 | no |
+| `@flighthq/displayobject` | generated | blocked | source-blocked | 2/8 | 3/46 | 43 | 14/24 | 0 | 7 | no |
+| `@flighthq/displayobject-canvas` | generated | blocked | source-blocked | 7/31 | 10/94 | 84 | 5/5 | 5 | 25 | no |
+| `@flighthq/displayobject-dom` | host-bound | host-bound | not-applicable | 0/0 | 0/58 | 58 | 1/1 | 0 | 0 | no |
+| `@flighthq/displayobject-gl` | generated | blocked | source-blocked | 6/28 | 7/89 | 83 | 1/1 | 1 | 23 | no |
+| `@flighthq/displayobject-wgpu` | generated | blocked | source-blocked | 7/29 | 10/95 | 86 | 1/1 | 2 | 23 | no |
+| `@flighthq/easing` | generated | emittable | promoted | 20/20 | 48/48 | 0 | 2/3 | 0 | 0 | full |
+| `@flighthq/effects` | generated | blocked | source-blocked | 7/72 | 18/112 | 94 | 4/4 | 0 | 66 | no |
+| `@flighthq/effects-canvas` | generated | blocked | source-blocked | 7/48 | 19/102 | 88 | 1/1 | 5 | 42 | no |
+| `@flighthq/effects-gl` | generated | blocked | source-blocked | 5/58 | 15/135 | 120 | 1/1 | 3 | 54 | no |
+| `@flighthq/effects-wgpu` | generated | blocked | source-blocked | 3/56 | 9/128 | 119 | 1/1 | 1 | 54 | no |
+| `@flighthq/entity` | generated | blocked | source-blocked | 2/6 | 3/12 | 9 | 20/61 | 0 | 5 | no |
+| `@flighthq/filesystem` | generated | blocked | source-blocked | 1/2 | 0/43 | 43 | 2/2 | 0 | 2 | no |
+| `@flighthq/flow` | generated | blocked | source-blocked | 5/10 | 4/9 | 5 | 1/1 | 0 | 6 | no |
+| `@flighthq/font` | generated | blocked | source-blocked | 2/8 | 1/15 | 14 | 1/1 | 0 | 7 | no |
+| `@flighthq/geolocation` | generated | blocked | source-blocked | 1/2 | 0/12 | 12 | 2/2 | 0 | 2 | no |
+| `@flighthq/geometry` | generated | blocked | source-blocked | 9/27 | 32/377 | 345 | 40/53 | 0 | 19 | no |
+| `@flighthq/glyphatlas` | generated | blocked | source-blocked | 4/7 | 5/14 | 9 | 1/1 | 1 | 4 | no |
+| `@flighthq/haptics` | generated | blocked | source-blocked | 1/2 | 0/13 | 13 | 2/2 | 0 | 2 | no |
+| `@flighthq/host-capacitor` | host-bound | host-bound | not-applicable | 0/0 | 0/63 | 63 | 0/0 | 0 | 0 | no |
+| `@flighthq/host-electron` | host-bound | host-bound | not-applicable | 0/0 | 0/57 | 57 | 0/0 | 0 | 0 | no |
+| `@flighthq/host-tauri` | host-bound | host-bound | not-applicable | 0/0 | 0/51 | 51 | 0/0 | 0 | 0 | no |
+| `@flighthq/image` | generated | blocked | source-blocked | 1/3 | 0/20 | 20 | 11/24 | 0 | 3 | partial |
+| `@flighthq/image-codec` | generated | blocked | source-blocked | 2/8 | 1/16 | 15 | 3/26 | 1 | 7 | no |
+| `@flighthq/input` | generated | blocked | source-blocked | 1/2 | 0/40 | 40 | 1/1 | 0 | 2 | no |
+| `@flighthq/interaction` | generated | blocked | source-blocked | 9/16 | 22/83 | 61 | 1/1 | 1 | 8 | no |
+| `@flighthq/intl` | generated | blocked | source-blocked | 1/8 | 0/14 | 14 | 1/1 | 0 | 8 | no |
+| `@flighthq/ipc` | generated | blocked | source-blocked | 1/2 | 0/17 | 17 | 2/2 | 0 | 2 | no |
+| `@flighthq/keyboard` | generated | blocked | source-blocked | 1/2 | 0/20 | 20 | 2/2 | 0 | 2 | no |
+| `@flighthq/lifecycle` | generated | blocked | source-blocked | 1/2 | 0/13 | 13 | 1/1 | 0 | 2 | no |
+| `@flighthq/lighting` | generated | blocked | source-blocked | 2/11 | 4/37 | 33 | 1/1 | 1 | 10 | no |
+| `@flighthq/loader` | generated | blocked | source-blocked | 1/2 | 0/13 | 13 | 3/3 | 0 | 2 | no |
+| `@flighthq/log` | generated | blocked | source-blocked | 1/2 | 0/65 | 65 | 7/16 | 0 | 2 | no |
+| `@flighthq/materials` | generated | blocked | source-blocked | 3/12 | 10/68 | 58 | 7/28 | 0 | 10 | no |
+| `@flighthq/math` | generated | blocked | source-blocked | 12/16 | 43/73 | 30 | 4/4 | 1 | 5 | no |
+| `@flighthq/media` | generated | blocked | source-blocked | 1/4 | 0/42 | 42 | 1/1 | 0 | 4 | no |
+| `@flighthq/mediasession` | generated | blocked | source-blocked | 1/2 | 0/10 | 10 | 1/1 | 0 | 2 | no |
+| `@flighthq/menu` | generated | blocked | source-blocked | 1/3 | 0/17 | 17 | 3/3 | 0 | 3 | no |
+| `@flighthq/mesh` | generated | blocked | source-blocked | 7/12 | 28/67 | 39 | 6/20 | 0 | 6 | no |
+| `@flighthq/motionpath` | generated | blocked | source-blocked | 7/8 | 6/7 | 1 | 1/1 | 1 | 2 | no |
+| `@flighthq/movieclip` | generated | blocked | source-blocked | 1/3 | 0/23 | 23 | 1/1 | 0 | 3 | no |
+| `@flighthq/net` | generated | blocked | source-blocked | 1/2 | 0/4 | 4 | 1/1 | 0 | 2 | no |
+| `@flighthq/node` | generated | blocked | source-blocked | 5/16 | 44/105 | 61 | 23/32 | 1 | 12 | no |
+| `@flighthq/notification` | generated | blocked | source-blocked | 1/2 | 0/26 | 26 | 4/4 | 0 | 2 | no |
+| `@flighthq/particleemitter` | generated | blocked | source-blocked | 5/11 | 4/51 | 47 | 1/1 | 3 | 7 | no |
+| `@flighthq/particles` | generated | blocked | source-blocked | 5/11 | 9/50 | 41 | 3/3 | 1 | 7 | no |
+| `@flighthq/particles-formats` | generated | blocked | source-blocked | 7/21 | 28/79 | 51 | 1/1 | 1 | 15 | no |
+| `@flighthq/path` | generated | blocked | source-blocked | 18/23 | 27/50 | 23 | 8/8 | 13 | 6 | no |
+| `@flighthq/path-boolean` | generated | blocked | source-blocked | 3/8 | 4/12 | 9 | 1/1 | 0 | 6 | no |
+| `@flighthq/path-formats` | generated | blocked | source-blocked | 1/2 | 0/3 | 3 | 1/1 | 0 | 2 | no |
+| `@flighthq/permissions` | generated | blocked | source-blocked | 1/2 | 0/5 | 5 | 1/1 | 0 | 2 | no |
+| `@flighthq/picking` | generated | blocked | source-blocked | 1/2 | 0/6 | 6 | 1/1 | 0 | 2 | no |
+| `@flighthq/platform` | generated | blocked | source-blocked | 1/2 | 0/16 | 16 | 3/3 | 0 | 2 | no |
+| `@flighthq/power` | generated | blocked | source-blocked | 1/2 | 0/19 | 19 | 2/2 | 0 | 2 | no |
+| `@flighthq/protocol` | generated | blocked | source-blocked | 1/2 | 0/20 | 20 | 2/2 | 0 | 2 | no |
+| `@flighthq/render` | generated | blocked | source-blocked | 9/17 | 18/63 | 45 | 9/13 | 4 | 9 | no |
+| `@flighthq/render-gl` | generated | blocked | source-blocked | 12/24 | 18/75 | 58 | 4/4 | 6 | 13 | no |
+| `@flighthq/render-wgpu` | generated | blocked | source-blocked | 5/18 | 7/68 | 61 | 5/5 | 3 | 14 | no |
+| `@flighthq/scene` | generated | blocked | source-blocked | 10/14 | 20/43 | 23 | 6/6 | 3 | 5 | no |
+| `@flighthq/scene-formats` | generated | blocked | source-blocked | 6/16 | 78/15 | 14 | 2/2 | 1 | 11 | no |
+| `@flighthq/scene-gl` | generated | blocked | source-blocked | 9/53 | 34/184 | 150 | 1/1 | 3 | 45 | no |
+| `@flighthq/scene-resources` | generated | blocked | source-blocked | 2/16 | 5/37 | 32 | 1/1 | 0 | 15 | no |
+| `@flighthq/scene-wgpu` | generated | blocked | source-blocked | 4/42 | 9/140 | 131 | 1/1 | 0 | 39 | no |
+| `@flighthq/screen` | generated | blocked | source-blocked | 1/2 | 0/31 | 31 | 2/2 | 0 | 2 | no |
+| `@flighthq/sdk` | generated | blocked | source-blocked | 14/14 | 0/5923 | 5923 | 0/0 | 0 | 1 | no |
+| `@flighthq/sensors` | generated | blocked | source-blocked | 1/2 | 0/32 | 32 | 1/1 | 0 | 2 | no |
+| `@flighthq/shading` | generated | blocked | source-blocked | 10/17 | 15/37 | 22 | 2/2 | 0 | 8 | no |
+| `@flighthq/shape` | generated | blocked | source-blocked | 1/7 | 0/42 | 42 | 7/8 | 0 | 7 | no |
+| `@flighthq/shape-formats` | generated | blocked | source-blocked | 1/2 | 0/5 | 5 | 1/1 | 0 | 2 | no |
+| `@flighthq/share` | generated | blocked | source-blocked | 1/2 | 0/14 | 14 | 2/2 | 0 | 2 | no |
+| `@flighthq/shell` | generated | blocked | source-blocked | 1/2 | 0/14 | 14 | 3/3 | 0 | 2 | no |
+| `@flighthq/shortcut` | generated | blocked | source-blocked | 1/2 | 0/26 | 26 | 3/3 | 0 | 2 | no |
+| `@flighthq/signals` | generated | blocked | source-blocked | 2/6 | 1/14 | 13 | 42/72 | 1 | 5 | no |
+| `@flighthq/skeleton3d` | generated | emittable | compile-blocked | 6/6 | 16/16 | 0 | 3/16 | 1 | 0 | no |
+| `@flighthq/snapshot` | generated | blocked | source-blocked | 1/5 | 0/4 | 4 | 1/1 | 0 | 5 | no |
+| `@flighthq/socket` | generated | blocked | source-blocked | 1/2 | 0/11 | 11 | 1/1 | 0 | 2 | no |
+| `@flighthq/spatial` | generated | blocked | source-blocked | 2/3 | 9/10 | 1 | 2/2 | 0 | 2 | no |
+| `@flighthq/spring` | generated | blocked | source-blocked | 7/8 | 11/12 | 1 | 1/1 | 0 | 2 | no |
+| `@flighthq/sprite` | generated | blocked | source-blocked | 1/4 | 0/64 | 64 | 3/3 | 0 | 4 | no |
+| `@flighthq/spritesheet` | generated | blocked | source-blocked | 1/8 | 0/32 | 32 | 2/2 | 0 | 8 | no |
+| `@flighthq/spritesheet-formats` | generated | blocked | source-blocked | 6/16 | 29/55 | 26 | 1/1 | 3 | 11 | no |
+| `@flighthq/statusbar` | generated | blocked | source-blocked | 1/2 | 0/16 | 16 | 2/2 | 0 | 2 | no |
+| `@flighthq/storage` | generated | blocked | source-blocked | 1/2 | 0/39 | 39 | 2/2 | 0 | 2 | no |
+| `@flighthq/surface` | cultivated | cultivated | not-applicable | 0/0 | 0/136 | 136 | 6/9 | 0 | 0 | partial |
+| `@flighthq/text` | generated | blocked | source-blocked | 3/6 | 4/86 | 82 | 8/9 | 0 | 4 | no |
+| `@flighthq/text-markup` | generated | blocked | source-blocked | 2/5 | 1/8 | 7 | 1/1 | 1 | 4 | no |
+| `@flighthq/textbidi` | generated | blocked | source-blocked | 4/5 | 5/6 | 1 | 1/1 | 0 | 2 | no |
+| `@flighthq/textinput` | generated | blocked | source-blocked | 1/5 | 0/55 | 55 | 5/6 | 0 | 5 | no |
+| `@flighthq/textlayout` | generated | blocked | source-blocked | 9/13 | 23/47 | 25 | 9/11 | 1 | 5 | no |
+| `@flighthq/textsegment` | generated | blocked | source-blocked | 3/4 | 8/11 | 3 | 1/1 | 0 | 2 | no |
+| `@flighthq/textshaper` | generated | blocked | source-blocked | 5/9 | 20/31 | 13 | 3/12 | 1 | 5 | no |
+| `@flighthq/textshaper-canvas` | generated | blocked | source-blocked | 1/2 | 0/3 | 3 | 1/1 | 0 | 2 | no |
+| `@flighthq/texture` | generated | blocked | source-blocked | 1/5 | 0/42 | 42 | 5/6 | 0 | 5 | no |
+| `@flighthq/texture-formats` | generated | blocked | source-blocked | 3/9 | 2/6 | 4 | 1/1 | 0 | 7 | no |
+| `@flighthq/textureatlas` | generated | blocked | source-blocked | 1/4 | 0/20 | 20 | 8/13 | 0 | 4 | no |
+| `@flighthq/textureatlas-formats` | generated | blocked | source-blocked | 3/8 | 20/29 | 9 | 2/2 | 2 | 6 | no |
+| `@flighthq/tilemap-formats` | generated | blocked | source-blocked | 3/9 | 6/16 | 10 | 1/1 | 0 | 7 | no |
+| `@flighthq/tileset` | generated | blocked | source-blocked | 1/3 | 0/9 | 9 | 3/8 | 0 | 3 | no |
+| `@flighthq/timeline` | generated | blocked | source-blocked | 1/2 | 0/16 | 16 | 2/2 | 0 | 2 | no |
+| `@flighthq/tool-capture` | excluded | excluded | not-applicable | 0/0 | 0/57 | 57 | 0/0 | 0 | 0 | no |
+| `@flighthq/tray` | generated | blocked | source-blocked | 1/2 | 0/23 | 23 | 3/3 | 0 | 2 | no |
+| `@flighthq/tween` | generated | blocked | source-blocked | 4/9 | 8/35 | 28 | 2/2 | 3 | 6 | no |
+| `@flighthq/types` | generated | emittable | compiled | 590/590 | 1261/1261 | 0 | 129/129 | 166 | 0 | partial |
+| `@flighthq/updater` | generated | blocked | source-blocked | 1/2 | 0/23 | 23 | 2/2 | 0 | 2 | no |
+| `@flighthq/useragent` | generated | blocked | source-blocked | 1/3 | 0/12 | 12 | 3/6 | 0 | 3 | no |
+| `@flighthq/velocity` | generated | blocked | source-blocked | 3/4 | 2/20 | 18 | 3/3 | 1 | 2 | no |
+| `@flighthq/video` | generated | blocked | source-blocked | 2/4 | 8/16 | 8 | 2/2 | 1 | 3 | no |
+| `@flighthq/webcam` | generated | blocked | source-blocked | 1/3 | 0/10 | 10 | 1/1 | 0 | 3 | no |
+| `@flighthq/xml` | generated | blocked | source-blocked | 2/3 | 4/7 | 3 | 5/5 | 1 | 2 | no |
 
 ## Blockers
 
@@ -261,8 +264,7 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 ### `@flighthq/collision`
 
-- **package** `upstream/packages/collision/src`: Generated crate is missing 16 of 19 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/collision/src/segmentCollision.ts`: object literal requires an inferred structural type
+- **package** `upstream/packages/collision/src`: Generated crate is missing 11 of 19 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/collision/src/shapeCollision.ts`: object literal requires an inferred structural type
 - **emission** `upstream/packages/collision/src/testCollision.ts`: fall-through switch cases require explicit Rust lowering
 
@@ -335,7 +337,7 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 ### `@flighthq/displayobject-gl`
 
-- **package** `upstream/packages/displayobject-gl/src`: Generated crate is missing 85 of 89 upstream exports; re-export or declaration synthesis is required.
+- **package** `upstream/packages/displayobject-gl/src`: Generated crate is missing 83 of 89 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/displayobject-gl/src/enableGlColorAdjustmentGuards.ts`: object literal requires an inferred structural type
 - **emission** `upstream/packages/displayobject-gl/src/glBitmap.ts`: object literal requires an inferred structural type
 - **emission** `upstream/packages/displayobject-gl/src/glCache.ts`: object literal requires an inferred structural type
@@ -354,7 +356,6 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **emission** `upstream/packages/displayobject-gl/src/glSpriteBatch.ts`: optional call Rust lowering is not implemented
 - **emission** `upstream/packages/displayobject-gl/src/glSpriteRenderer.ts`: object literal requires an inferred structural type
 - **emission** `upstream/packages/displayobject-gl/src/glTestHelper.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-gl/src/glTextInput.ts`: object literal requires an inferred structural type
 - **emission** `upstream/packages/displayobject-gl/src/glTextLabel.ts`: object literal requires an inferred structural type
 - **emission** `upstream/packages/displayobject-gl/src/glTilemap.ts`: optional element access Rust lowering is not implemented
 - **emission** `upstream/packages/displayobject-gl/src/glVelocity.ts`: object literal requires an inferred structural type
@@ -362,7 +363,7 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 ### `@flighthq/displayobject-wgpu`
 
-- **package** `upstream/packages/displayobject-wgpu/src`: Generated crate is missing 88 of 95 upstream exports; re-export or declaration synthesis is required.
+- **package** `upstream/packages/displayobject-wgpu/src`: Generated crate is missing 86 of 95 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/displayobject-wgpu/src/enableWgpuColorAdjustmentGuards.ts`: object literal requires an inferred structural type
 - **emission** `upstream/packages/displayobject-wgpu/src/wgpuBitmap.ts`: optional call Rust lowering is not implemented
 - **emission** `upstream/packages/displayobject-wgpu/src/wgpuCache.ts`: object literal requires an inferred structural type
@@ -381,7 +382,6 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **emission** `upstream/packages/displayobject-wgpu/src/wgpuSprite.ts`: optional property Rust lowering is not implemented
 - **emission** `upstream/packages/displayobject-wgpu/src/wgpuSpriteBatch.ts`: object literal requires an inferred structural type
 - **emission** `upstream/packages/displayobject-wgpu/src/wgpuSpriteRenderer.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuTextInput.ts`: object literal requires an inferred structural type
 - **emission** `upstream/packages/displayobject-wgpu/src/wgpuTextLabel.ts`: object literal requires an inferred structural type
 - **emission** `upstream/packages/displayobject-wgpu/src/wgpuTilemap.ts`: optional element access Rust lowering is not implemented
 - **emission** `upstream/packages/displayobject-wgpu/src/wgpuVelocity.ts`: upstream/packages/displayobject-wgpu/src/wgpuVelocity.ts: cannot infer return type for defaultWgpuDisplayObjectVelocityWriter
@@ -709,7 +709,7 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 ### `@flighthq/interaction`
 
-- **package** `upstream/packages/interaction/src`: Generated crate is missing 63 of 83 upstream exports; re-export or declaration synthesis is required.
+- **package** `upstream/packages/interaction/src`: Generated crate is missing 61 of 83 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/interaction/src/enableInteractionGuards.ts`: object literal requires an inferred structural type
 - **emission** `upstream/packages/interaction/src/focusManager.ts`: fall-through switch cases require explicit Rust lowering
 - **emission** `upstream/packages/interaction/src/hitTests.ts`: optional property Rust lowering is not implemented
@@ -717,8 +717,6 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **emission** `upstream/packages/interaction/src/interactionSpatialIndex.ts`: optional property Rust lowering is not implemented
 - **emission** `upstream/packages/interaction/src/nodeInteractionState.ts`: optional property Rust lowering is not implemented
 - **emission** `upstream/packages/interaction/src/registerBitmapHitTest.ts`: try Rust lowering is not implemented
-- **emission** `upstream/packages/interaction/src/registerShapeHitTest.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/interaction/src/registerTextHitTest.ts`: object literal requires an inferred structural type
 
 ### `@flighthq/intl`
 
@@ -875,11 +873,10 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 ### `@flighthq/particles-formats`
 
-- **package** `upstream/packages/particles-formats/src`: Generated crate is missing 68 of 79 upstream exports; re-export or declaration synthesis is required.
+- **package** `upstream/packages/particles-formats/src`: Generated crate is missing 51 of 79 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/particles-formats/src/detect.ts`: typeof Rust lowering is not implemented
 - **emission** `upstream/packages/particles-formats/src/formatRegistry.ts`: try Rust lowering is not implemented
 - **emission** `upstream/packages/particles-formats/src/libgdxParse.ts`: typeof Rust lowering is not implemented
-- **emission** `upstream/packages/particles-formats/src/libgdxSchema.ts`: anonymous structural type has no synthesized Rust identity
 - **emission** `upstream/packages/particles-formats/src/libgdxSerialize.ts`: optional property Rust lowering is not implemented
 - **emission** `upstream/packages/particles-formats/src/parseParticleConfig.ts`: try Rust lowering is not implemented
 - **emission** `upstream/packages/particles-formats/src/particleDesignerParse.ts`: object literal requires an inferred structural type
@@ -890,7 +887,6 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **emission** `upstream/packages/particles-formats/src/starlingPexParse.ts`: typeof Rust lowering is not implemented
 - **emission** `upstream/packages/particles-formats/src/starlingPexSerialize.ts`: optional property Rust lowering is not implemented
 - **emission** `upstream/packages/particles-formats/src/unityParse.ts`: try Rust lowering is not implemented
-- **emission** `upstream/packages/particles-formats/src/unitySchema.ts`: anonymous structural type has no synthesized Rust identity
 - **emission** `upstream/packages/particles-formats/src/unitySerialize.ts`: object literal requires an inferred structural type
 
 ### `@flighthq/path`
@@ -962,7 +958,7 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **emission** `upstream/packages/render-gl/src/glLinearToSrgbPass.ts`: upstream/packages/render-gl/src/glLinearToSrgbPass.ts: cannot infer return type for NOOP
 - **emission** `upstream/packages/render-gl/src/glMaterialRegistry.ts`: optional property Rust lowering is not implemented
 - **emission** `upstream/packages/render-gl/src/glPresentRenderTarget.ts`: upstream/packages/render-gl/src/glPresentRenderTarget.ts: cannot infer return type for NOOP
-- **emission** `upstream/packages/render-gl/src/glRenderPass.ts`: anonymous structural type has no synthesized Rust identity
+- **emission** `upstream/packages/render-gl/src/glRenderPass.ts`: object literal requires an inferred structural type
 - **emission** `upstream/packages/render-gl/src/glRenderState.ts`: object literal requires an inferred structural type
 - **emission** `upstream/packages/render-gl/src/glRenderTarget.ts`: optional property Rust lowering is not implemented
 - **emission** `upstream/packages/render-gl/src/glShader.ts`: object field program is not present in structural type
@@ -1010,7 +1006,7 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 ### `@flighthq/scene-gl`
 
-- **package** `upstream/packages/scene-gl/src`: Generated crate is missing 163 of 184 upstream exports; re-export or declaration synthesis is required.
+- **package** `upstream/packages/scene-gl/src`: Generated crate is missing 150 of 184 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/scene-gl/src/anisotropyPbrGlMeshMaterialRenderer.ts`: object literal requires an inferred structural type
 - **emission** `upstream/packages/scene-gl/src/blinnPhongGlMeshMaterialRenderer.ts`: object literal requires an inferred structural type
 - **emission** `upstream/packages/scene-gl/src/clearcoatPbrGlMeshMaterialRenderer.ts`: object literal requires an inferred structural type
@@ -1026,13 +1022,12 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **emission** `upstream/packages/scene-gl/src/glEnvironmentSkybox.ts`: object literal requires an inferred structural type
 - **emission** `upstream/packages/scene-gl/src/glLitProgram.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("WeakMap")
 - **emission** `upstream/packages/scene-gl/src/glMatcapPrelude.ts`: object field locModel is not present in structural type
-- **emission** `upstream/packages/scene-gl/src/glMeshProgram.ts`: object literal requires an inferred structural type
 - **emission** `upstream/packages/scene-gl/src/glMeshUpload.ts`: object literal requires an inferred structural type
 - **emission** `upstream/packages/scene-gl/src/glParticleEmitter3D.ts`: new-expression Rust lowering is not implemented: uint16_array
 - **emission** `upstream/packages/scene-gl/src/glPbrProgramCache.ts`: object spread Rust lowering is not implemented
 - **emission** `upstream/packages/scene-gl/src/glPbrStandardBlock.ts`: optional property Rust lowering is not implemented
 - **emission** `upstream/packages/scene-gl/src/glSceneRuntime.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-gl/src/glSceneTestHelper.ts`: anonymous structural type has no synthesized Rust identity
+- **emission** `upstream/packages/scene-gl/src/glSceneTestHelper.ts`: optional property Rust lowering is not implemented
 - **emission** `upstream/packages/scene-gl/src/glShadedBuiltInModifiers.ts`: object literal requires an inferred structural type
 - **emission** `upstream/packages/scene-gl/src/glShadedPrelude.ts`: object spread Rust lowering is not implemented
 - **emission** `upstream/packages/scene-gl/src/glShadowMap.ts`: object literal requires an inferred structural type
@@ -1109,7 +1104,7 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **emission** `upstream/packages/scene-wgpu/src/wgpuParticleEmitter3D.ts`: fall-through switch cases require explicit Rust lowering
 - **emission** `upstream/packages/scene-wgpu/src/wgpuPbrPipelineCache.ts`: object literal requires an inferred structural type
 - **emission** `upstream/packages/scene-wgpu/src/wgpuSceneRuntime.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/scene-wgpu/src/wgpuSceneTestHelper.ts`: anonymous structural type has no synthesized Rust identity
+- **emission** `upstream/packages/scene-wgpu/src/wgpuSceneTestHelper.ts`: object literal requires an inferred structural type
 - **emission** `upstream/packages/scene-wgpu/src/wgpuShadowMap.ts`: object literal requires an inferred structural type
 - **emission** `upstream/packages/scene-wgpu/src/wgpuToonPrelude.ts`: object literal requires an inferred structural type
 - **emission** `upstream/packages/scene-wgpu/src/wgpuUnlitPrelude.ts`: object literal requires an inferred structural type
@@ -1170,7 +1165,7 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 ### `@flighthq/shortcut`
 
 - **package** `upstream/packages/shortcut/src`: Generated crate is missing 26 of 26 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/shortcut/src/shortcut.ts`: object literal requires an inferred structural type
+- **emission** `upstream/packages/shortcut/src/shortcut.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Map")
 
 ### `@flighthq/signals`
 
@@ -1238,7 +1233,7 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 ### `@flighthq/statusbar`
 
 - **package** `upstream/packages/statusbar/src`: Generated crate is missing 16 of 16 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/statusbar/src/statusbar.ts`: object literal requires an inferred structural type
+- **emission** `upstream/packages/statusbar/src/statusbar.ts`: anonymous structural type has no synthesized Rust identity
 
 ### `@flighthq/storage`
 
@@ -1287,12 +1282,11 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 ### `@flighthq/textshaper`
 
-- **package** `upstream/packages/textshaper/src`: Generated crate is missing 16 of 31 upstream exports; re-export or declaration synthesis is required.
+- **package** `upstream/packages/textshaper/src`: Generated crate is missing 13 of 31 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/textshaper/src/textShaper.ts`: optional call Rust lowering is not implemented
 - **emission** `upstream/packages/textshaper/src/textShaperCache.ts`: new-expression Rust lowering is not implemented: (_runtime.global_value)("Map")
 - **emission** `upstream/packages/textshaper/src/textShaperCluster.ts`: new-expression Rust lowering is not implemented: array
 - **emission** `upstream/packages/textshaper/src/textShaperItemize.ts`: optional property Rust lowering is not implemented
-- **emission** `upstream/packages/textshaper/src/textShaperSignals.ts`: object literal requires an inferred structural type
 
 ### `@flighthq/textshaper-canvas`
 
@@ -1368,19 +1362,6 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **emission** `upstream/packages/tween/src/tweenManager.ts`: optional property Rust lowering is not implemented
 - **emission** `upstream/packages/tween/src/tweenStagger.ts`: optional property Rust lowering is not implemented
 
-### `@flighthq/types`
-
-- **package** `upstream/packages/types/src`: Generated crate is missing 48 of 1261 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/types/src/AppearanceFlags.ts`: upstream/packages/types/src/AppearanceFlags.ts:1: unsupported Rust declaration enum AppearanceFlags
-- **emission** `upstream/packages/types/src/BatchBarrier.ts`: upstream/packages/types/src/BatchBarrier.ts:4: unsupported Rust declaration enum BatchBarrier
-- **emission** `upstream/packages/types/src/BatchFormat.ts`: upstream/packages/types/src/BatchFormat.ts:13: unsupported Rust declaration enum BatchFormat
-- **emission** `upstream/packages/types/src/GlRenderState.ts`: anonymous structural type has no synthesized Rust identity
-- **emission** `upstream/packages/types/src/Ipc.ts`: upstream/packages/types/src/Ipc.ts:50: unsupported Rust declaration class IpcTimeoutError
-- **emission** `upstream/packages/types/src/Log.ts`: upstream/packages/types/src/Log.ts:6: unsupported Rust declaration enum LogLevel
-- **emission** `upstream/packages/types/src/ParticleObjectsUpdateOptions.ts`: anonymous structural type has no synthesized Rust identity
-- **emission** `upstream/packages/types/src/WellKnownMenuItemRole.ts`: object literal requires an inferred structural type
-- **emission** `upstream/packages/types/src/WgpuRenderState.ts`: anonymous structural type has no synthesized Rust identity
-
 ### `@flighthq/updater`
 
 - **package** `upstream/packages/updater/src`: Generated crate is missing 23 of 23 upstream exports; re-export or declaration synthesis is required.
@@ -1413,3 +1394,75 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 - **package** `upstream/packages/xml/src`: Generated crate is missing 3 of 7 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/xml/src/xmlParse.ts`: object literal requires an inferred structural type
+
+## Candidate compile blockers
+
+### `@flighthq/skeleton3d`
+
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find function `skin_vertices` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: cannot find value `number` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: cannot find value `undefined` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/skin_mesh_geometry.rs`: cannot find function `skin_vertices` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/update_mesh_skin.rs`: cannot find function `compute_skeleton3_d_joint_matrices` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/update_mesh_skin.rs`: cannot find function `capture_mesh_skin_bind_pose` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/update_mesh_skin.rs`: cannot find function `skin_mesh_geometry` in this scope
+- **E0308** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: arguments to this function are incorrect
+- **E0308** `generated/candidates/flighthq-skeleton3d/src/get_mesh_skin_bounds.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: no field `slice` on type `Vec<SceneNode>`
+- **E0063** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: missing field `names` in initializer of `Skeleton3D`
+- **E0599** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: no method named `is_some` found for type `bool` in the current scope
+- **E0609** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: no field `slice` on type `Option<Option<Vec<String>>>`
+- **E0605** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: non-primitive cast: `Vec<f32>` as `usize`
+- **E0605** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: non-primitive cast: `Vec<f32>` as `usize`
+- **E0610** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: `f64` is a primitive type and therefore doesn't have fields
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: cannot find function `get_node_world_matrix4` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: cannot find function `multiply_matrix4` in this scope
+- **E0609** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: no field `set` on type `&Vec<f32>`
+- **E0610** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: `f64` is a primitive type and therefore doesn't have fields
+- **E0308** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: no field `length` on type `Vec<SceneNode>`
+- **E0369** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: binary operation `==` cannot be applied to type `&Skeleton3D`
+- **E0609** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: no field `length` on type `Option<Vec<String>>`
+- **E0609** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: no field `length` on type `Option<Vec<String>>`
+- **E0609** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: no field `length` on type `Option<Vec<String>>`
+- **E0599** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: no method named `is_some` found for type `bool` in the current scope
+- **E0609** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: no field `index_of` on type `Option<Option<Vec<String>>>`
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: cannot find function `get_node_world_matrix4` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: cannot find function `copy_matrix4` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: cannot find function `get_node_world_matrix4` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: cannot find function `inverse_matrix4` in this scope
+- **E0609** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: no field `set` on type `&Vec<f32>`
+- **E0610** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: `f64` is a primitive type and therefore doesn't have fields
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: cannot find function `create_matrix4` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/skeleton3d.rs`: cannot find function `create_matrix4` in this scope
+- **E0608** `generated/candidates/flighthq-skeleton3d/src/skin_vertices.rs`: cannot index into a value of type `OpaqueHostValue`
+- **E0369** `generated/candidates/flighthq-skeleton3d/src/update_mesh_skin.rs`: binary operation `==` cannot be applied to type `Option<Option<Skin>>`
+- **E0609** `generated/candidates/flighthq-skeleton3d/src/update_mesh_skin.rs`: no field `skeleton` on type `Option<Option<Skin>>`
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/update_mesh_skin.rs`: cannot find function `get_mesh_geometry_skin_bind_pose` in this scope
+- **E0425** `generated/candidates/flighthq-skeleton3d/src/update_mesh_skin.rs`: cannot find function `set_mesh_geometry_skin_bind_pose` in this scope
+- **E0609** `generated/candidates/flighthq-skeleton3d/src/update_mesh_skin.rs`: no field `skeleton` on type `Option<Option<Skin>>`

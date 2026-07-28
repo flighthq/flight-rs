@@ -78,18 +78,21 @@ export function generationSummary(report: RustGenerationReport): string {
     `| Default-generated packages | ${report.summary.eligible} |`,
     `| Emittable packages | ${report.summary.emittable} |`,
     `| Blocked packages | ${report.summary.blocked} |`,
+    `| Compiled candidates | ${report.summary.candidateCompiled} |`,
+    `| Compile-blocked candidates | ${report.summary.candidateCompileBlocked} |`,
+    `| Dependency-blocked candidates | ${report.summary.candidateDependencyBlocked} |`,
     `| Cultivated packages | ${report.summary.cultivated} |`,
     `| Host-bound packages | ${report.summary.hostBound} |`,
     `| Excluded packages | ${report.summary.excluded} |`,
     `| Source/package blockers | ${report.summary.sourceBlockers} |`,
     '',
-    '| Package | Disposition | Status | Sources emitted/attempted | API generated/expected | Missing | Dependents direct/transitive | Opaque sources | Blockers | Promoted |',
-    '| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | :---: |',
+    '| Package | Disposition | Status | Candidate | Sources emitted/attempted | API generated/expected | Missing | Dependents direct/transitive | Opaque sources | Blockers | Target |',
+    '| --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |',
   ];
   for (const item of report.automaticPackages) {
     const opaqueSources = item.emittedSources.filter((source) => source.usesOpaqueHostValues).length;
     lines.push(
-      `| \`${item.package}\` | ${item.disposition} | ${item.status} | ${item.emittedSources.length}/${item.attemptedSources} | ${item.generatedExports.length}/${item.apiExports} | ${item.missingExports.length} | ${item.directDependents}/${item.transitiveDependents} | ${opaqueSources} | ${item.blockers.length} | ${item.promotedTarget ? 'yes' : 'no'} |`,
+      `| \`${item.package}\` | ${item.disposition} | ${item.status} | ${item.candidate.status} | ${item.emittedSources.length}/${item.attemptedSources} | ${item.generatedExports.length}/${item.apiExports} | ${item.missingExports.length} | ${item.directDependents}/${item.transitiveDependents} | ${opaqueSources} | ${item.blockers.length} | ${item.fullyPromotedTarget ? 'full' : item.promotedTarget ? 'partial' : 'no'} |`,
     );
   }
   lines.push('', '## Blockers', '');
@@ -97,6 +100,18 @@ export function generationSummary(report: RustGenerationReport): string {
     lines.push(`### \`${item.package}\``, '');
     for (const blocker of item.blockers) {
       lines.push(`- **${blocker.stage}** \`${blocker.source}\`: ${blocker.reason.replace(/\s+/gu, ' ')}`);
+    }
+    lines.push('');
+  }
+  lines.push('## Candidate compile blockers', '');
+  for (const item of report.automaticPackages.filter(
+    (candidate) => candidate.candidate.compileDiagnostics.length > 0,
+  )) {
+    lines.push(`### \`${item.package}\``, '');
+    for (const diagnostic of item.candidate.compileDiagnostics) {
+      const location = diagnostic.source ? ` \`${diagnostic.source}\`` : '';
+      const code = diagnostic.code ? ` **${diagnostic.code}**` : '';
+      lines.push(`-${code}${location}: ${diagnostic.message}`);
     }
     lines.push('');
   }

@@ -1,0 +1,68 @@
+// @generated from upstream/packages/types/src/Assets.ts; do not edit.
+#![allow(clippy::excessive_precision)]
+#![allow(non_upper_case_globals)]
+#![allow(unused_braces)]
+#![allow(unused_imports)]
+#![allow(unused_mut)]
+#![allow(unused_parens)]
+
+use crate::Signal;
+
+// Source: upstream/packages/types/src/Assets.ts:14 (sha256:6850f8b1a9cb591bdd720bae70b19fc946b7e19b1b3e1afc26693097a0c7105b)
+pub type AssetType = String;
+
+// Source: upstream/packages/types/src/Assets.ts:26 (sha256:dd363886862bfd9145656d2ac0f515e1b2cb838f6ed4935611d53d851439b12d)
+#[derive(Clone)]
+pub struct AssetDescriptor {
+    pub id: String,
+    pub url: String,
+    pub type_: AssetType,
+    pub group: Option<String>,
+}
+
+// Source: upstream/packages/types/src/Assets.ts:35 (sha256:a5c567da30c114b281fdbda5fbeb42d18a9f7c05d55e19e175204e70c35f4158)
+pub type AssetManifest = Vec<AssetDescriptor>;
+
+// Source: upstream/packages/types/src/Assets.ts:41 (sha256:aee37f828b27f89953cecce6dba9ac83be8f721de0d5a1efc1824678bd4ae6e6)
+#[derive(Clone)]
+pub struct AssetLoaderAdapter {
+    pub load: crate::OpaqueHostValue,
+    pub dispose: crate::OpaqueHostValue,
+}
+
+// Source: upstream/packages/types/src/Assets.ts:49 (sha256:a09ecbdccede6d33c01e404ef6a1e92b86b782f6a5059caf0c931054d57e9471)
+#[derive(Clone)]
+pub struct AssetEntry {
+    pub value: crate::OpaqueHostValue,
+    pub refcount: f64,
+    pub load_promise: Option<crate::Promise<crate::OpaqueHostValue>>,
+    pub resident: bool,
+}
+
+// Source: upstream/packages/types/src/Assets.ts:59 (sha256:c2975e64f20c3887f99effa54097119b86eff375aef455731671bcfdf7a28162)
+#[derive(Clone)]
+pub struct AssetLibraryRuntime {
+    pub adapters: crate::OpaqueHostValue,
+    pub descriptors: crate::OpaqueHostValue,
+    pub entries: crate::OpaqueHostValue,
+    pub groups: crate::OpaqueHostValue,
+}
+
+// Source: upstream/packages/types/src/Assets.ts:69 (sha256:df8ec4621d734acf79462ed3e19d1ff9af10d97c7e30e0275f530f18818dcb1c)
+#[derive(Clone)]
+pub struct AssetLibrary {
+    pub runtime: AssetLibraryRuntime,
+}
+
+// Source: upstream/packages/types/src/Assets.ts:74 (sha256:facd9146857f33e81e96cc11a9688eafb1b7bc17bb7d9530f52b58af4f4c09a0)
+#[derive(Clone)]
+pub struct AssetLoadProgress {
+    pub loaded: f64,
+    pub total: f64,
+}
+
+// Source: upstream/packages/types/src/Assets.ts:81 (sha256:bad60d78e16ffc949d43a19f33a86531d48ca77ab22b48512322c868b6f61b71)
+#[derive(Clone)]
+pub struct AssetGroupLoadOptions {
+    pub progress: Option<Signal>,
+}

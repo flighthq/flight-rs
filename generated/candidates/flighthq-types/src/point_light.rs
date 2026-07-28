@@ -1,0 +1,26 @@
+// @generated from upstream/packages/types/src/PointLight.ts; do not edit.
+#![allow(clippy::excessive_precision)]
+#![allow(non_upper_case_globals)]
+#![allow(unused_braces)]
+#![allow(unused_imports)]
+#![allow(unused_mut)]
+#![allow(unused_parens)]
+
+use crate::Vector3;
+
+// Source: upstream/packages/types/src/PointLight.ts:6 (sha256:6f39c3e812aacbaba7abb0ed38ec12d38629acd8b6115c8591433f6eb3091057)
+#[derive(Clone)]
+pub struct PointLight {
+    pub kind: String,
+    pub casts_shadow: bool,
+    pub color: f64,
+    pub intensity: f64,
+    pub normal_bias: f64,
+    pub pcf_radius: f64,
+    pub position: Vector3,
+    pub range: f64,
+    pub shadow_bias: f64,
+}
+
+// Source: upstream/packages/types/src/PointLight.ts:18 (sha256:7cae53fe66853284c726ca2a459e1cd12fae6d97de6a22790b09f0feadf23d18)
+pub const POINT_LIGHT_KIND: &'static str = "PointLight";

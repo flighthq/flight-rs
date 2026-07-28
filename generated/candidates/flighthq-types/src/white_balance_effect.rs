@@ -1,0 +1,15 @@
+// @generated from upstream/packages/types/src/WhiteBalanceEffect.ts; do not edit.
+#![allow(clippy::excessive_precision)]
+#![allow(non_upper_case_globals)]
+#![allow(unused_braces)]
+#![allow(unused_imports)]
+#![allow(unused_mut)]
+#![allow(unused_parens)]
+
+// Source: upstream/packages/types/src/WhiteBalanceEffect.ts:3 (sha256:46e7afe7400e1dd441ada4a08bd1d9096ceb91e5f08e1de482c8798457b3e22b)
+#[derive(Clone)]
+pub struct WhiteBalanceEffect {
+    pub kind: String,
+    pub temperature: Option<f64>,
+    pub tint: Option<f64>,
+}

@@ -66,6 +66,11 @@ describe('Rust emission', () => {
           readonly height: number;
           readonly width: number;
         }
+        export interface NestedCallbacks {
+          readonly callbacks?: {
+            readonly onValue?: (value: number) => void;
+          };
+        }
         export function collectWeights(values: ReadonlyArray<Readonly<Weighted>>): Float32Array {
           const total = values.reduce((sum, value) => sum + (value.weight ?? 1), 0);
           const out = new Float32Array(values.length);
@@ -105,6 +110,7 @@ describe('Rust emission', () => {
 
     expect(lowered.diagnostics).toEqual([]);
     expect(output).toContain('pub struct Weighted');
+    expect(output).toContain('pub struct NestedCallbacksRecord1');
     expect(output).toContain('.iter().cloned().fold');
     expect(output).toContain('Vec<f32>');
     expect(output).toContain('Some(Bounds {');
@@ -158,6 +164,145 @@ describe('Rust emission', () => {
     expect(lowered.diagnostics).toEqual([]);
     expect(output).toMatch(/i \+= 1\.0; i \};\s+continue;/u);
     expect(output).toMatch(/if !\(\(value < limit\)\) \{ break; \}\s+continue;/u);
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('compiles numeric enums, bit flags, and merged namespace helpers', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/types/src/Flags.ts',
+      `
+        export enum Flags {
+          None = 0,
+          First = 1 << 0,
+          Highest = 1 << 31,
+        }
+        export namespace Flags {
+          export function any(flags: Flags, test: Flags): boolean {
+            return (flags & test) !== 0;
+          }
+          export function add(flags: Flags, value: Flags): Flags {
+            return flags | value;
+          }
+          export function remove(flags: Flags, value: Flags): Flags {
+            return flags & ~value;
+          }
+        }
+        export enum Mode {
+          First,
+          Second,
+        }
+        export function secondMode(): Mode {
+          return Mode.Second;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/types', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      enumNames: ['Flags', 'Mode'],
+      source: 'upstream/packages/types/src/Flags.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('pub struct Flags(pub u32)');
+    expect(output).toContain('pub const Highest: Self = Self(2147483648_u32)');
+    expect(output).toContain('pub fn any');
+    expect(output).toContain('return Mode::Second');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('compiles data-carrying Error subclasses', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/types/src/PortError.ts',
+      `
+        export class PortTimeoutError extends Error {
+          readonly channel: string;
+          readonly timeoutMs: number;
+
+          constructor(channel: string, timeoutMs: number) {
+            super(\`Channel "\${channel}" timed out after \${timeoutMs}ms\`);
+            this.name = 'PortTimeoutError';
+            this.channel = channel;
+            this.timeoutMs = timeoutMs;
+          }
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/types', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/types/src/PortError.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('pub struct PortTimeoutError');
+    expect(output).toContain('impl std::error::Error for PortTimeoutError');
+    expect(output).toContain('pub fn new(channel: String, timeout_ms: f64)');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('synthesizes typed lazy statics for object constants', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/types/src/Roles.ts',
+      `
+        export const Roles = {
+          copy: 'copy',
+          pasteAndMatchStyle: 'pasteAndMatchStyle',
+        };
+        export function copyRole(): string {
+          return Roles.copy;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/types', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/types/src/Roles.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('pub struct Roles');
+    expect(output).toContain('pub static ROLES: std::sync::LazyLock<Roles>');
+    expect(output).toContain('return (ROLES.copy).clone()');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
     const sourceFile = path.join(fixture, 'lib.rs');

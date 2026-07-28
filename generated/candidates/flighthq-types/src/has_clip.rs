@@ -1,0 +1,25 @@
+// @generated from upstream/packages/types/src/HasClip.ts; do not edit.
+#![allow(clippy::excessive_precision)]
+#![allow(non_upper_case_globals)]
+#![allow(unused_braces)]
+#![allow(unused_imports)]
+#![allow(unused_mut)]
+#![allow(unused_parens)]
+
+use crate::{ClipRegion, Kind, NodeData};
+
+// Source: upstream/packages/types/src/HasClip.ts:5 (sha256:b39fa5ade7f4bc73aef3c9c9d0ae19562baf86ac8cb264b0b1c642fafde0e42f)
+#[derive(Clone)]
+pub struct HasClip {
+    pub clip: Option<ClipRegion>,
+}
+
+// Source: upstream/packages/types/src/HasClip.ts:14 (sha256:dc1acf36df8ea13ca9d52998f125def6512ad669abfd31590fa73865c2bbd85a)
+#[derive(Clone)]
+pub struct ClipNode {
+    pub data: Option<NodeData>,
+    pub enabled: bool,
+    pub kind: Kind,
+    pub name: Option<String>,
+    pub clip: Option<ClipRegion>,
+}

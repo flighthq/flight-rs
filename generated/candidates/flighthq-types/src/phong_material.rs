@@ -1,0 +1,31 @@
+// @generated from upstream/packages/types/src/PhongMaterial.ts; do not edit.
+#![allow(clippy::excessive_precision)]
+#![allow(non_upper_case_globals)]
+#![allow(unused_braces)]
+#![allow(unused_imports)]
+#![allow(unused_mut)]
+#![allow(unused_parens)]
+
+use crate::{AlphaType, BlendMode, Kind, MaterialAlphaMode, Texture};
+
+// Source: upstream/packages/types/src/PhongMaterial.ts:7 (sha256:64e437f2e5a0160d04bbc20e190fa582580cd6407ac92088e8b008e8c8d4aa9b)
+#[derive(Clone)]
+pub struct PhongMaterial {
+    pub kind: Kind,
+    pub name: Option<Option<String>>,
+    pub alpha_cutoff: f64,
+    pub alpha_mode: MaterialAlphaMode,
+    pub alpha_type: AlphaType,
+    pub blend_mode: BlendMode,
+    pub double_sided: bool,
+    pub diffuse: f64,
+    pub diffuse_map: Option<Texture>,
+    pub normal_map: Option<Texture>,
+    pub normal_scale: f64,
+    pub shininess: f64,
+    pub specular: f64,
+    pub specular_map: Option<Texture>,
+}
+
+// Source: upstream/packages/types/src/PhongMaterial.ts:17 (sha256:7de1035721a622fb84c8bb99dc6a08e17c8aaef2385219f54b548e4bf5c67636)
+pub const PHONG_MATERIAL_KIND: &'static str = "PhongMaterial";

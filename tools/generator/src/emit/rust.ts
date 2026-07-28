@@ -1,18 +1,23 @@
 import type {
+  IrClassDeclaration,
   IrDeclaration,
+  IrEnumDeclaration,
   IrExpression,
   IrFunctionDeclaration,
   IrParameter,
   IrStatement,
   IrType,
+  IrTypeField,
   IrVariable,
   IrVariableDeclaration,
 } from '../model/ir.ts';
 
 export interface RustModule {
   declarations: IrDeclaration[];
+  enumNames?: readonly string[];
   imports?: RustImport[];
   inlineFunctions?: IrFunctionDeclaration[];
+  semanticTypeParameters?: Readonly<Record<string, readonly string[]>>;
   semanticTypes?: Readonly<Record<string, IrType>>;
   source: string;
   typeImports: string[];
@@ -31,10 +36,12 @@ interface EmitContext {
   continueEpilogue: readonly string[];
   currentReturnType?: IrType | undefined;
   erasedValueNames: ReadonlySet<string>;
+  enumNames: ReadonlySet<string>;
   functions: ReadonlyMap<string, IrFunctionDeclaration>;
   inlineFunctions: ReadonlyMap<string, IrFunctionDeclaration>;
   mutatedNames: ReadonlySet<string>;
   mutatingFunctions: ReadonlyMap<string, ReadonlySet<number>>;
+  namedTypeParameters: ReadonlyMap<string, readonly string[]>;
   namedTypes: ReadonlyMap<string, IrType>;
   symbolTypes: Map<string, IrType>;
 }
@@ -72,6 +79,12 @@ export function emitRustModule(module: RustModule): string {
     erasedValueNames: new Set(
       module.declarations.filter((declaration) => declaration.kind === 'type').map((declaration) => declaration.name),
     ),
+    enumNames: new Set([
+      ...(module.enumNames ?? []),
+      ...module.declarations
+        .filter((declaration) => declaration.kind === 'enum')
+        .map((declaration) => declaration.name),
+    ]),
     functions: new Map(
       module.declarations
         .filter((declaration): declaration is IrFunctionDeclaration => declaration.kind === 'function')
@@ -80,13 +93,27 @@ export function emitRustModule(module: RustModule): string {
     inlineFunctions,
     mutatedNames: new Set(),
     mutatingFunctions,
+    namedTypeParameters: new Map([
+      ...Object.entries(module.semanticTypeParameters ?? {}),
+      ...module.declarations
+        .filter((declaration) => declaration.kind === 'type')
+        .map((declaration) => [declaration.name, declaration.typeParameters] as const),
+    ]),
     namedTypes: new Map([
       ...Object.entries(module.semanticTypes ?? {}),
       ...module.declarations
         .filter((declaration) => declaration.kind === 'type')
         .map((declaration) => [declaration.name, declaration.type] as const),
     ]),
-    symbolTypes: new Map(),
+    symbolTypes: new Map(
+      module.declarations.flatMap((declaration) => {
+        if (declaration.kind !== 'variable') return [];
+        const type =
+          declaration.type ??
+          (declaration.initializer ? inferStaticExpressionType(declaration.initializer) : undefined);
+        return type ? [[declaration.name, type] as const] : [];
+      }),
+    ),
   };
   const declarations = module.declarations.map((declaration) => emitDeclaration(declaration, context)).join('\n\n');
   const importGroups: RustImport[] = [
@@ -161,13 +188,158 @@ function emitDeclaration(declaration: IrDeclaration, context: EmitContext): stri
     case 'variable':
       return `${provenance}\n${emitTopLevelVariable(declaration, context)}`;
     case 'type':
-      return `${provenance}\n${emitTypeDeclaration(declaration.name, declaration.exported, declaration.type, context)}`;
-    case 'class':
+      return `${provenance}\n${emitTypeDeclaration(
+        declaration.name,
+        declaration.exported,
+        declaration.type,
+        context,
+        declaration.typeParameters,
+      )}`;
     case 'enum':
-      throw new RustEmissionError(
-        `${declaration.origin.source}:${String(declaration.origin.line)}: unsupported Rust declaration ${declaration.kind} ${declaration.name}`,
-      );
+      return `${provenance}\n${emitEnumDeclaration(declaration, context)}`;
+    case 'class':
+      return `${provenance}\n${emitClassDeclaration(declaration, context)}`;
   }
+}
+
+function emitClassDeclaration(declaration: IrClassDeclaration, context: EmitContext): string {
+  if (declaration.methods.length > 0 || declaration.fields.some((field) => field.static)) {
+    throw new RustEmissionError(
+      `${declaration.origin.source}:${String(declaration.origin.line)}: class methods and static fields are not implemented for ${declaration.name}`,
+    );
+  }
+  const extendsPortError = declaration.extends?.kind === 'named' && declaration.extends.name === 'PortError';
+  if (declaration.extends && !extendsPortError) {
+    throw new RustEmissionError(
+      `${declaration.origin.source}:${String(declaration.origin.line)}: class inheritance is not implemented for ${declaration.name}`,
+    );
+  }
+  const constructorContext = functionContext(context, declaration.name, declaration, {
+    arguments: [],
+    kind: 'named',
+    name: declaration.name,
+  });
+  registerParameters(declaration.constructorParameters, constructorContext);
+  const parameters = declaration.constructorParameters.map((parameter) =>
+    emitParameter(parameter, constructorContext, undefined, declaration),
+  );
+  const assignments = new Map<string, IrExpression>();
+  let message: IrExpression | undefined;
+  for (const statement of declaration.constructorBody) {
+    if (
+      statement.kind === 'expression' &&
+      statement.expression.kind === 'call' &&
+      statement.expression.callee.kind === 'identifier' &&
+      statement.expression.callee.name === 'super' &&
+      statement.expression.arguments[0]
+    ) {
+      message = statement.expression.arguments[0];
+      continue;
+    }
+    if (
+      statement.kind === 'expression' &&
+      statement.expression.kind === 'assignment' &&
+      statement.expression.operator === '=' &&
+      statement.expression.left.kind === 'property' &&
+      statement.expression.left.object.kind === 'identifier' &&
+      statement.expression.left.object.name === 'this'
+    ) {
+      assignments.set(statement.expression.left.name, statement.expression.right);
+      continue;
+    }
+    throw new RustEmissionError(
+      `${declaration.origin.source}:${String(declaration.origin.line)}: constructor statement lowering is not implemented for ${declaration.name}`,
+    );
+  }
+  if (extendsPortError && !message) {
+    throw new RustEmissionError(
+      `${declaration.origin.source}: Error subclass ${declaration.name} is missing super(message)`,
+    );
+  }
+  const visibility = declaration.exported ? 'pub ' : '';
+  const fields = declaration.fields.map((field) => {
+    const initializer = assignments.get(field.name) ?? field.initializer;
+    if (!initializer) {
+      throw new RustEmissionError(
+        `${declaration.origin.source}: class field ${declaration.name}.${field.name} is uninitialized`,
+      );
+    }
+    return {
+      declaration: `${field.public ? 'pub ' : ''}${safeName(field.name)}: ${emitType(field.type, constructorContext)},`,
+      initializer: `${safeName(field.name)}: ${emitExpression(initializer, constructorContext, field.type)},`,
+    };
+  });
+  const messageField = extendsPortError ? ['pub message: String,'] : [];
+  const messageInitializer =
+    extendsPortError && message
+      ? [`message: ${emitExpression(message, constructorContext, primitive('String'))},`]
+      : [];
+  return [
+    '#[derive(Clone, Debug)]',
+    `${visibility}struct ${declaration.name} {`,
+    indent([...messageField, ...fields.map((field) => field.declaration)].join('\n')),
+    '}',
+    '',
+    `impl ${declaration.name} {`,
+    indent(
+      `${visibility}fn new(${parameters.join(', ')}) -> Self {\n${indent(`Self {\n${indent([...messageInitializer, ...fields.map((field) => field.initializer)].join('\n'))}\n}`)}\n}`,
+    ),
+    '}',
+    ...(extendsPortError
+      ? [
+          '',
+          `impl std::fmt::Display for ${declaration.name} {`,
+          indent(
+            `fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {\n${indent('formatter.write_str(&self.message)')}\n}`,
+          ),
+          '}',
+          `impl std::error::Error for ${declaration.name} {}`,
+        ]
+      : []),
+  ].join('\n');
+}
+
+function emitEnumDeclaration(declaration: IrEnumDeclaration, context: EmitContext): string {
+  const visibility = declaration.exported ? 'pub ' : '';
+  const values = new Map<string, number>();
+  let previous = -1;
+  const members = declaration.members.map((member) => {
+    const value = member.initializer ? evaluateConstant(member.initializer, values) : previous + 1;
+    if (value === undefined || !Number.isSafeInteger(value) || value < -0x80_00_00_00 || value > 0xff_ff_ff_ff) {
+      throw new RustEmissionError(
+        `${declaration.origin.source}: enum member ${declaration.name}.${member.name} requires a non-negative u32 constant`,
+      );
+    }
+    previous = value;
+    values.set(member.name, value);
+    return `#[allow(non_upper_case_globals)]\n${visibility}const ${member.name}: Self = Self(${String(value >>> 0)}_u32);`;
+  });
+  const methods = declaration.methods.map((method) => emitFunctionDeclaration(method, context));
+  const implementation = [...members, ...methods].length
+    ? `\n\nimpl ${declaration.name} {\n${indent([...members, ...methods].join('\n\n'))}\n}`
+    : '';
+  return [
+    '#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]',
+    '#[repr(transparent)]',
+    `${visibility}struct ${declaration.name}(pub u32);`,
+    implementation,
+    '',
+    `impl std::ops::BitAnd for ${declaration.name} {`,
+    indent(`type Output = Self;\nfn bitand(self, rhs: Self) -> Self { Self(self.0 & rhs.0) }`),
+    '}',
+    `impl std::ops::BitOr for ${declaration.name} {`,
+    indent(`type Output = Self;\nfn bitor(self, rhs: Self) -> Self { Self(self.0 | rhs.0) }`),
+    '}',
+    `impl std::ops::BitXor for ${declaration.name} {`,
+    indent(`type Output = Self;\nfn bitxor(self, rhs: Self) -> Self { Self(self.0 ^ rhs.0) }`),
+    '}',
+    `impl std::ops::Not for ${declaration.name} {`,
+    indent(`type Output = Self;\nfn not(self) -> Self { Self(!self.0) }`),
+    '}',
+    `impl PartialEq<f64> for ${declaration.name} {`,
+    indent(`fn eq(&self, rhs: &f64) -> bool { self.0 as f64 == *rhs }`),
+    '}',
+  ].join('\n');
 }
 
 function emitTopLevelVariable(declaration: IrVariableDeclaration, context: EmitContext): string {
@@ -182,10 +354,69 @@ function emitTopLevelVariable(declaration: IrVariableDeclaration, context: EmitC
   }
   const visibility = declaration.exported ? 'pub ' : '';
   const name = context.constantNames.get(declaration.name) ?? screamingSnakeCase(declaration.name);
+  const symbol = symbolDescription(declaration.initializer);
+  if (symbol !== undefined) return `${visibility}const ${name}: &'static str = ${JSON.stringify(symbol)};`;
+  const objectInitializer = declaration.initializer.kind === 'object' ? declaration.initializer : undefined;
+  const inferredObject = objectInitializer ? inferStaticExpressionType(objectInitializer) : undefined;
+  if (!declaration.type && objectInitializer && inferredObject?.kind === 'anonymous') {
+    const recordName = pascalCase(declaration.name);
+    const structuralContext = typeDeclarationContext(context, recordName, inferredObject);
+    const objectContext = {
+      ...structuralContext,
+      anonymousTypes: new Map([...structuralContext.anonymousTypes, [typeKey(inferredObject), recordName]]),
+    };
+    return [
+      emitTypeDeclaration(recordName, declaration.exported, inferredObject, context),
+      `${visibility}static ${name}: std::sync::LazyLock<${recordName}> = std::sync::LazyLock::new(|| ${emitObject(objectInitializer, objectContext, inferredObject)});`,
+    ].join('\n\n');
+  }
   const type = declaration.type ? emitType(declaration.type, context) : inferExpressionType(declaration.initializer);
   const folded = context.constantValues.get(declaration.name);
   const initializer = folded === undefined ? emitExpression(declaration.initializer, context) : emitLiteral(folded);
   return `${visibility}const ${name}: ${type} = ${initializer};`;
+}
+
+function symbolDescription(expression: IrExpression): string | undefined {
+  if (expression.kind !== 'call' || expression.arguments[0]?.kind !== 'literal') return undefined;
+  const description = expression.arguments[0].value;
+  if (typeof description !== 'string') return undefined;
+  if (expression.callee.kind === 'identifier' && expression.callee.name === 'Symbol') return description;
+  return expression.callee.kind === 'property' &&
+    expression.callee.object.kind === 'identifier' &&
+    expression.callee.object.name === 'Symbol' &&
+    expression.callee.name === 'for'
+    ? description
+    : undefined;
+}
+
+function inferStaticExpressionType(expression: IrExpression): IrType | undefined {
+  switch (expression.kind) {
+    case 'array': {
+      const elements = expression.elements.flatMap((item) => {
+        const type = inferStaticExpressionType(item);
+        return type ? [type] : [];
+      });
+      const first = elements[0];
+      return first && elements.every((item) => typeKey(item) === typeKey(first))
+        ? { element: first, kind: 'array' }
+        : undefined;
+    }
+    case 'literal':
+      if (typeof expression.value === 'boolean') return primitive('Bool');
+      if (typeof expression.value === 'number') return primitive('Float');
+      if (typeof expression.value === 'string') return primitive('String');
+      return undefined;
+    case 'object': {
+      const fields = expression.properties.flatMap((property): IrTypeField[] => {
+        if (property.kind !== 'property') return [];
+        const type = inferStaticExpressionType(property.value);
+        return type ? [{ name: property.name, optional: false, type }] : [];
+      });
+      return fields.length === expression.properties.length ? { extends: [], fields, kind: 'anonymous' } : undefined;
+    }
+    default:
+      return undefined;
+  }
 }
 
 function emitLiftedFunction(
@@ -239,7 +470,7 @@ function emitParameter(
   parameter: IrParameter,
   context: EmitContext,
   fallbackType: IrType | undefined,
-  owner: IrExpression | IrFunctionDeclaration,
+  owner: IrClassDeclaration | IrExpression | IrFunctionDeclaration,
   borrowRecords = true,
 ): string {
   const type = parameter.type.kind === 'dynamic' && fallbackType ? fallbackType : parameter.type;
@@ -597,6 +828,9 @@ function emitProperty(expression: Extract<IrExpression, { kind: 'property' }>, c
     if (expression.object.name === 'Math' && expression.name === 'PI') return 'std::f64::consts::PI';
     if (expression.object.name === 'Float' && expression.name === 'INFINITY') return 'f64::INFINITY';
     if (expression.object.name === 'Float' && expression.name === 'NAN') return 'f64::NAN';
+    if (context.enumNames.has(expression.object.name)) {
+      return `${expression.object.name}::${expression.name}`;
+    }
   }
   const objectType = inferIrExpressionType(expression.object, context);
   if (objectType?.kind === 'array' && expression.name === 'length') {
@@ -611,6 +845,9 @@ function emitProperty(expression: Extract<IrExpression, { kind: 'property' }>, c
 }
 
 function emitPropertyPlace(expression: Extract<IrExpression, { kind: 'property' }>, context: EmitContext): string {
+  if (expression.object.kind === 'identifier' && context.enumNames.has(expression.object.name)) {
+    return `${expression.object.name}::${expression.name}`;
+  }
   return `${emitPlaceExpression(expression.object, context)}.${safeName(expression.name)}`;
 }
 
@@ -654,6 +891,10 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
     return emitBitwiseOperation(left, right, expression.operator);
   }
   if (expression.operator === '&' || expression.operator === '|' || expression.operator === '^') {
+    const leftType = inferIrExpressionType(expression.left, context);
+    if (leftType?.kind === 'named' && context.enumNames.has(leftType.name)) {
+      return `(${left} ${expression.operator} ${right})`;
+    }
     return emitBitwiseOperation(left, right, expression.operator);
   }
   if (expression.operator === '??' || expression.operator === '??undefined') {
@@ -731,6 +972,7 @@ function emitUnary(expression: Extract<IrExpression, { kind: 'unary' }>, context
   if (expression.operator === 'typeof' || expression.operator === 'delete') {
     throw new RustEmissionError(`${expression.operator} Rust lowering is not implemented`);
   }
+  if (expression.operator === '~') return `(!${operand})`;
   return `(${expression.operator}${operand})`;
 }
 
@@ -793,7 +1035,23 @@ function emitType(type: IrType, context: EmitContext): string {
       if (type.name === 'RustU8') return 'u8';
       if (type.name === 'RustU16') return 'u16';
       if (type.name === 'RustU32') return 'u32';
-      return `${type.name}${type.arguments.length > 0 ? `<${type.arguments.map((item) => emitType(item, context)).join(', ')}>` : ''}`;
+      if (type.name === 'Promise') {
+        return `crate::Promise<${emitType(type.arguments[0] ?? { kind: 'dynamic' }, context)}>`;
+      }
+      const declarationType = context.namedTypes.get(type.name);
+      const parameters = context.namedTypeParameters.get(type.name) ?? [];
+      const arguments_ = declarationType
+        ? type.arguments.filter((_, index) => {
+            const parameter = parameters[index];
+            if (!parameter) return true;
+            return declarationType.kind === 'anonymous'
+              ? flattenStructFields(declarationType, context).some((field) =>
+                  typeUsesNamedParameter(field.type, parameter),
+                )
+              : typeUsesNamedParameter(declarationType, parameter);
+          })
+        : type.arguments;
+      return `${type.name}${arguments_.length > 0 ? `<${arguments_.map((item) => emitType(item, context)).join(', ')}>` : ''}`;
     }
     case 'nullable':
       return `Option<${emitType(type.inner, context)}>`;
@@ -813,25 +1071,55 @@ function emitType(type: IrType, context: EmitContext): string {
   }
 }
 
-function emitTypeDeclaration(name: string, exported: boolean, type: IrType, context: EmitContext): string {
+function emitTypeDeclaration(
+  name: string,
+  exported: boolean,
+  type: IrType,
+  context: EmitContext,
+  typeParameters: readonly string[] = [],
+): string {
   const visibility = exported ? 'pub ' : '';
   if (type.kind !== 'anonymous') {
-    return `${visibility}type ${name} = ${emitType(type, context)};`;
+    const emittedType = emitType(type, context);
+    const effectiveTypeParameters = typeParameters.filter((parameter) =>
+      new RegExp(`\\b${parameter}\\b`, 'u').test(emittedType),
+    );
+    const generics = effectiveTypeParameters.length > 0 ? `<${effectiveTypeParameters.join(', ')}>` : '';
+    return `${visibility}type ${name}${generics} = ${emittedType};`;
   }
-  const fields = flattenStructFields(type, context);
-  return [
+  const structuralContext = typeDeclarationContext(context, name, type);
+  const fields = flattenStructFields(type, structuralContext);
+  const effectiveTypeParameters = typeParameters.filter((parameter) =>
+    fields.some((field) =>
+      new RegExp(`\\b${parameter}\\b`, 'u').test(emitStructFieldType(field.type, name, structuralContext)),
+    ),
+  );
+  const generics = effectiveTypeParameters.length > 0 ? `<${effectiveTypeParameters.join(', ')}>` : '';
+  return `${emitAnonymousDefinitions(structuralContext, exported)}${[
     '#[derive(Clone)]',
-    `${visibility}struct ${name} {`,
+    `${visibility}struct ${name}${generics} {`,
     indent(
       fields
         .map(
           (field) =>
-            `pub ${safeName(field.name)}: ${field.optional ? `Option<${emitType(field.type, context)}>` : emitType(field.type, context)},`,
+            `pub ${safeName(field.name)}: ${
+              field.optional
+                ? `Option<${emitStructFieldType(field.type, name, structuralContext)}>`
+                : emitStructFieldType(field.type, name, structuralContext)
+            },`,
         )
         .join('\n'),
     ),
     '}',
-  ].join('\n');
+  ].join('\n')}`;
+}
+
+function emitStructFieldType(type: IrType, ownerName: string, context: EmitContext): string {
+  if (type.kind === 'named' && type.name === ownerName) return `Box<${emitType(type, context)}>`;
+  if (type.kind === 'nullable') {
+    return `Option<${emitStructFieldType(type.inner, ownerName, context)}>`;
+  }
+  return emitType(type, context);
 }
 
 function flattenStructFields(
@@ -843,11 +1131,76 @@ function flattenStructFields(
     if (base.kind === 'anonymous') return flattenStructFields(base, context, visited);
     if (base.kind !== 'named' || visited.has(base.name)) return [];
     const resolved = context.namedTypes.get(base.name);
-    return resolved?.kind === 'anonymous'
-      ? flattenStructFields(resolved, context, new Set([...visited, base.name]))
+    if (resolved?.kind !== 'anonymous') return [];
+    const parameters = context.namedTypeParameters.get(base.name) ?? [];
+    const substitutions = new Map(
+      parameters.flatMap((parameter, index) =>
+        base.arguments[index] ? [[parameter, base.arguments[index]!] as const] : [],
+      ),
+    );
+    const concrete = substitutions.size > 0 ? substituteIrType(resolved, substitutions) : resolved;
+    return concrete.kind === 'anonymous'
+      ? flattenStructFields(concrete, context, new Set([...visited, base.name]))
       : [];
   });
   return [...new Map([...inherited, ...type.fields].map((field) => [field.name, field])).values()];
+}
+
+function substituteIrType(type: IrType, substitutions: ReadonlyMap<string, IrType>): IrType {
+  if (type.kind === 'named' && type.arguments.length === 0) {
+    const replacement = substitutions.get(type.name);
+    if (replacement) return replacement;
+  }
+  switch (type.kind) {
+    case 'anonymous':
+      return {
+        extends: type.extends.map((item) => substituteIrType(item, substitutions)),
+        fields: type.fields.map((field) => ({ ...field, type: substituteIrType(field.type, substitutions) })),
+        kind: 'anonymous',
+      };
+    case 'array':
+      return { element: substituteIrType(type.element, substitutions), kind: 'array' };
+    case 'function':
+      return {
+        kind: 'function',
+        parameters: type.parameters.map((item) => substituteIrType(item, substitutions)),
+        returns: substituteIrType(type.returns, substitutions),
+      };
+    case 'named':
+      return {
+        arguments: type.arguments.map((item) => substituteIrType(item, substitutions)),
+        kind: 'named',
+        name: type.name,
+      };
+    case 'nullable':
+      return { inner: substituteIrType(type.inner, substitutions), kind: 'nullable' };
+    case 'dynamic':
+    case 'primitive':
+      return type;
+  }
+}
+
+function typeUsesNamedParameter(type: IrType, name: string): boolean {
+  switch (type.kind) {
+    case 'anonymous':
+      return (
+        type.extends.some((item) => typeUsesNamedParameter(item, name)) ||
+        type.fields.some((field) => typeUsesNamedParameter(field.type, name))
+      );
+    case 'array':
+      return typeUsesNamedParameter(type.element, name);
+    case 'function':
+      return (
+        type.parameters.some((item) => typeUsesNamedParameter(item, name)) || typeUsesNamedParameter(type.returns, name)
+      );
+    case 'named':
+      return type.name === name || type.arguments.some((item) => typeUsesNamedParameter(item, name));
+    case 'nullable':
+      return typeUsesNamedParameter(type.inner, name);
+    case 'dynamic':
+    case 'primitive':
+      return false;
+  }
 }
 
 function functionContext(context: EmitContext, ownerName: string, owner: unknown, returns: IrType): EmitContext {
@@ -869,6 +1222,21 @@ function functionContext(context: EmitContext, ownerName: string, owner: unknown
   };
 }
 
+function typeDeclarationContext(
+  context: EmitContext,
+  ownerName: string,
+  type: Extract<IrType, { kind: 'anonymous' }>,
+): EmitContext {
+  const anonymousTypes = new Map(context.anonymousTypes);
+  let index = anonymousTypes.size + 1;
+  for (const nested of collectAnonymousTypes(type)) {
+    const key = typeKey(nested);
+    if (key === typeKey(type) || anonymousTypes.has(key)) continue;
+    anonymousTypes.set(key, `${pascalCase(ownerName)}Record${String(index++)}`);
+  }
+  return { ...context, anonymousTypes };
+}
+
 function registerParameters(parameters: IrParameter[], context: EmitContext, fallbackTypes: IrType[] = []): void {
   parameters.forEach((parameter, index) => {
     const type = parameter.type.kind === 'dynamic' && fallbackTypes[index] ? fallbackTypes[index]! : parameter.type;
@@ -879,19 +1247,19 @@ function registerParameters(parameters: IrParameter[], context: EmitContext, fal
   });
 }
 
-function emitAnonymousDefinitions(context: EmitContext): string {
+function emitAnonymousDefinitions(context: EmitContext, exported = false): string {
   if (context.anonymousTypes.size === 0) return '';
   const definitions = [...context.anonymousTypes.entries()].map(([key, name]) => {
     const type = JSON.parse(key) as IrType;
     if (type.kind !== 'anonymous') throw new RustEmissionError(`invalid anonymous type identity ${name}`);
     return [
       '#[derive(Clone)]',
-      `struct ${name} {`,
+      `${exported ? 'pub ' : ''}struct ${name} {`,
       indent(
         type.fields
           .map(
             (field) =>
-              `${safeName(field.name)}: ${field.optional ? `Option<${emitType(field.type, context)}>` : emitType(field.type, context)},`,
+              `${exported ? 'pub ' : ''}${safeName(field.name)}: ${field.optional ? `Option<${emitType(field.type, context)}>` : emitType(field.type, context)},`,
           )
           .join('\n'),
       ),
@@ -1035,7 +1403,10 @@ function expressionRootIdentifier(value: unknown): string | undefined {
   return undefined;
 }
 
-function capturesParameterInReturnedClosure(owner: IrExpression | IrFunctionDeclaration, name: string): boolean {
+function capturesParameterInReturnedClosure(
+  owner: IrClassDeclaration | IrExpression | IrFunctionDeclaration,
+  name: string,
+): boolean {
   if (!('body' in owner) || !Array.isArray(owner.body)) return false;
   return owner.body.some(
     (statement) =>
@@ -1364,6 +1735,7 @@ function evaluateConstant(expression: IrExpression, values: ReadonlyMap<string, 
       if (operand === undefined) return undefined;
       if (expression.operator === '-') return -operand;
       if (expression.operator === '+') return operand;
+      if (expression.operator === '~') return ~operand;
       return undefined;
     }
     case 'binary': {
@@ -1383,6 +1755,18 @@ function evaluateConstant(expression: IrExpression, values: ReadonlyMap<string, 
           return left % right;
         case '**':
           return left ** right;
+        case '&':
+          return left & right;
+        case '|':
+          return left | right;
+        case '^':
+          return left ^ right;
+        case '<<':
+          return left << (right & 31);
+        case '>>':
+          return left >> (right & 31);
+        case '>>>':
+          return left >>> (right & 31);
         default:
           return undefined;
       }

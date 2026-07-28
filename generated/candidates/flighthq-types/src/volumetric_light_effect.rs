@@ -1,0 +1,19 @@
+// @generated from upstream/packages/types/src/VolumetricLightEffect.ts; do not edit.
+#![allow(clippy::excessive_precision)]
+#![allow(non_upper_case_globals)]
+#![allow(unused_braces)]
+#![allow(unused_imports)]
+#![allow(unused_mut)]
+#![allow(unused_parens)]
+
+// Source: upstream/packages/types/src/VolumetricLightEffect.ts:2 (sha256:0c4674272a20a98d17994e001cca3d6c51b1a060f0922a66415643e2ba7d4045)
+#[derive(Clone)]
+pub struct VolumetricLightEffect {
+    pub kind: String,
+    pub density: Option<f64>,
+    pub light_color: Option<f64>,
+    pub light_x: Option<f64>,
+    pub light_y: Option<f64>,
+    pub samples: Option<f64>,
+    pub scattering: Option<f64>,
+}

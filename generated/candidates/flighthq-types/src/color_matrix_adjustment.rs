@@ -1,0 +1,16 @@
+// @generated from upstream/packages/types/src/ColorMatrixAdjustment.ts; do not edit.
+#![allow(clippy::excessive_precision)]
+#![allow(non_upper_case_globals)]
+#![allow(unused_braces)]
+#![allow(unused_imports)]
+#![allow(unused_mut)]
+#![allow(unused_parens)]
+
+use crate::AdjustmentKind;
+
+// Source: upstream/packages/types/src/ColorMatrixAdjustment.ts:9 (sha256:ddbd2cd1f56b8106535ff2ed70999f9d688030cfca652d1eeb30dc1feca81430)
+#[derive(Clone)]
+pub struct ColorMatrixAdjustment {
+    pub kind: AdjustmentKind,
+    pub color_matrix: Vec<f64>,
+}

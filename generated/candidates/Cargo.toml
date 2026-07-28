@@ -1,0 +1,7 @@
+# @generated candidate workspace; do not edit.
+[workspace]
+members = [
+  "flighthq-skeleton3d",
+  "flighthq-types",
+]
+resolver = "3"

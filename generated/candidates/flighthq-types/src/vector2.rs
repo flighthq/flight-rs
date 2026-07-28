@@ -1,0 +1,17 @@
+// @generated from upstream/packages/types/src/Vector2.ts; do not edit.
+#![allow(clippy::excessive_precision)]
+#![allow(non_upper_case_globals)]
+#![allow(unused_braces)]
+#![allow(unused_imports)]
+#![allow(unused_mut)]
+#![allow(unused_parens)]
+
+// Source: upstream/packages/types/src/Vector2.ts:3 (sha256:b7c136ecc5b32d5cd063b9b9437334ad8e1145d1026f64b8ec8473a62410dd62)
+#[derive(Clone)]
+pub struct Vector2 {
+    pub x: f64,
+    pub y: f64,
+}
+
+// Source: upstream/packages/types/src/Vector2.ts:8 (sha256:61680b5e14b9734ef9c9cb97bc5a3bd5ce4a67e9a8515912ad26bbda27cdbc91)
+pub type Vector2Like = Vector2;

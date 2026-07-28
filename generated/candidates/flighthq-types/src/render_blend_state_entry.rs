@@ -1,0 +1,16 @@
+// @generated from upstream/packages/types/src/RenderBlendStateEntry.ts; do not edit.
+#![allow(clippy::excessive_precision)]
+#![allow(non_upper_case_globals)]
+#![allow(unused_braces)]
+#![allow(unused_imports)]
+#![allow(unused_mut)]
+#![allow(unused_parens)]
+
+use crate::BlendMode;
+
+// Source: upstream/packages/types/src/RenderBlendStateEntry.ts:2 (sha256:2f3548c73cc3520a34ae971cf2758535e84b777be11d4e13d56379f04beb3827)
+#[derive(Clone)]
+pub struct RenderBlendStateEntry {
+    pub alpha: f64,
+    pub blend_mode: Option<BlendMode>,
+}
