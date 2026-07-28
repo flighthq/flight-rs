@@ -3,6 +3,7 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_braces)]
 #![allow(unused_imports)]
+#![allow(unused_mut)]
 #![allow(unused_parens)]
 
 // Source: upstream/packages/easing/src/easeBounce.ts:3 (sha256:76adfe8205c912b164dd16eeaaf8dd10d1d34bbd133a41a66aed849847af5495)

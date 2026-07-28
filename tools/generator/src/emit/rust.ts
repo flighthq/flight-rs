@@ -12,6 +12,7 @@ import type {
 export interface RustModule {
   declarations: IrDeclaration[];
   imports?: RustImport[];
+  inlineFunctions?: IrFunctionDeclaration[];
   semanticTypes?: Readonly<Record<string, IrType>>;
   source: string;
   typeImports: string[];
@@ -27,9 +28,13 @@ interface EmitContext {
   callbackTypes: ReadonlySet<string>;
   constantNames: ReadonlyMap<string, string>;
   constantValues: ReadonlyMap<string, number>;
+  continueEpilogue: readonly string[];
   currentReturnType?: IrType | undefined;
   erasedValueNames: ReadonlySet<string>;
+  functions: ReadonlyMap<string, IrFunctionDeclaration>;
+  inlineFunctions: ReadonlyMap<string, IrFunctionDeclaration>;
   mutatedNames: ReadonlySet<string>;
+  mutatingFunctions: ReadonlyMap<string, ReadonlySet<number>>;
   namedTypes: ReadonlyMap<string, IrType>;
   symbolTypes: Map<string, IrType>;
 }
@@ -53,15 +58,28 @@ export function emitRustModule(module: RustModule): string {
     const value = evaluateConstant(declaration.initializer, constantValues);
     if (value !== undefined) constantValues.set(declaration.name, value);
   }
+  const inlineFunctions = new Map((module.inlineFunctions ?? []).map((declaration) => [declaration.name, declaration]));
+  const mutatingFunctions = collectMutatingFunctionParameters([
+    ...module.declarations,
+    ...(module.inlineFunctions ?? []),
+  ]);
   const context: EmitContext = {
     anonymousTypes: new Map(),
     callbackTypes: new Set(['EasingFunction', 'ScalarRemap']),
     constantNames,
     constantValues,
+    continueEpilogue: [],
     erasedValueNames: new Set(
       module.declarations.filter((declaration) => declaration.kind === 'type').map((declaration) => declaration.name),
     ),
+    functions: new Map(
+      module.declarations
+        .filter((declaration): declaration is IrFunctionDeclaration => declaration.kind === 'function')
+        .map((declaration) => [declaration.name, declaration]),
+    ),
+    inlineFunctions,
     mutatedNames: new Set(),
+    mutatingFunctions,
     namedTypes: new Map([
       ...Object.entries(module.semanticTypes ?? {}),
       ...module.declarations
@@ -99,15 +117,38 @@ export function emitRustModule(module: RustModule): string {
     })
     .filter(Boolean)
     .join('\n');
+  const numericCoercions = declarations.includes('__flight_js_to_')
+    ? [
+        '#[inline]',
+        'fn __flight_js_to_u32(value: f64) -> u32 {',
+        indent(
+          [
+            'if !value.is_finite() || value == 0.0 { return 0; }',
+            'value.trunc().rem_euclid(4294967296.0_f64) as u32',
+          ].join('\n'),
+        ),
+        '}',
+        ...(declarations.includes('__flight_js_to_i32(')
+          ? [
+              '',
+              '#[inline]',
+              'fn __flight_js_to_i32(value: f64) -> i32 {',
+              indent('__flight_js_to_u32(value) as i32'),
+              '}',
+            ]
+          : []),
+      ].join('\n')
+    : '';
   return [
     `// @generated from ${module.source}; do not edit.`,
     '#![allow(clippy::excessive_precision)]',
     '#![allow(non_upper_case_globals)]',
     '#![allow(unused_braces)]',
     '#![allow(unused_imports)]',
+    '#![allow(unused_mut)]',
     '#![allow(unused_parens)]',
     '',
-    `${imports.length > 0 ? `${imports}\n\n` : ''}${declarations}`,
+    `${imports.length > 0 ? `${imports}\n\n` : ''}${numericCoercions.length > 0 ? `${numericCoercions}\n\n` : ''}${declarations}`,
     '',
   ].join('\n');
 }
@@ -201,15 +242,20 @@ function emitParameter(
   owner: IrExpression | IrFunctionDeclaration,
   borrowRecords = true,
 ): string {
-  const assigned = context.mutatedNames.has(parameter.name) || assignsName(owner, parameter.name);
   const type = parameter.type.kind === 'dynamic' && fallbackType ? fallbackType : parameter.type;
   const emitted = emitType(type, context);
   const optional = parameter.optional || parameter.initializer;
   const resolved = resolveSemanticType(type, context);
-  const record = resolved?.kind === 'anonymous';
-  const name = `${assigned && !record ? 'mut ' : ''}${safeName(parameter.name)}`;
+  const referenceLike =
+    resolved?.kind === 'anonymous' ||
+    resolved?.kind === 'array' ||
+    (resolved?.kind === 'named' && Boolean(typedArrayType(resolved.name)));
+  const assigned = referenceLike ? context.mutatedNames.has(parameter.name) : assignsName(owner, parameter.name);
+  const captured = capturesParameterInReturnedClosure(owner, parameter.name);
+  const borrowed = referenceLike && !optional && !parameter.rest && borrowRecords && !captured;
+  const name = `${assigned && !borrowed ? 'mut ' : ''}${safeName(parameter.name)}`;
   const storage = optional ? `Option<${emitted}>` : emitted;
-  return `${name}: ${record && !optional && borrowRecords ? `${assigned ? '&mut ' : '&'}${storage}` : storage}`;
+  return `${name}: ${borrowed ? `${assigned ? '&mut ' : '&'}${storage}` : storage}`;
 }
 
 function emitStatementsAsBlock(statements: IrStatement[], context: EmitContext, prefix: string[] = []): string {
@@ -224,14 +270,13 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
     case 'break':
       return ['break;'];
     case 'continue':
-      return ['continue;'];
-    case 'do':
-      return [
-        'loop {',
-        indent(emitStatement(statement.body, context).join('\n')),
-        indent(`if !(${emitExpression(statement.condition, context)}) { break; }`),
-        '}',
-      ];
+      return [...context.continueEpilogue, 'continue;'];
+    case 'do': {
+      const condition = emitCondition(statement.condition, context);
+      const conditionCheck = `if !(${condition}) { break; }`;
+      const loopContext = { ...context, continueEpilogue: [conditionCheck] };
+      return ['loop {', indent(emitStatement(statement.body, loopContext).join('\n')), indent(conditionCheck), '}'];
+    }
     case 'expression':
       return [
         statement.expression.kind === 'assignment'
@@ -246,8 +291,9 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
       const elementType = iterableType?.kind === 'array' ? iterableType.element : undefined;
       if (elementType) context.symbolTypes.set(statement.variable, elementType);
       const iterable = emitExpression(statement.iterable, context);
+      const loopContext = { ...context, continueEpilogue: [] };
       return [
-        `for ${safeName(statement.variable)} in ${parenthesize(iterable)}.iter().cloned() ${emitStatementAsBlock(statement.body, context)}`,
+        `for ${safeName(statement.variable)} in ${parenthesize(iterable)}.iter().cloned() ${emitStatementAsBlock(statement.body, loopContext)}`,
       ];
     }
     case 'if': {
@@ -266,7 +312,7 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
           : 'return;',
       ];
     case 'switch':
-      throw new RustEmissionError('switch Rust lowering is not implemented');
+      return emitSwitchStatement(statement, context);
     case 'throw':
       return [`panic!(${emitThrowMessage(statement.expression, context)});`];
     case 'try':
@@ -274,8 +320,41 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
     case 'variable':
       return statement.declarations.flatMap((variable) => emitLocalVariable(variable, context));
     case 'while':
-      return [`while ${emitCondition(statement.condition, context)} ${emitStatementAsBlock(statement.body, context)}`];
+      return [
+        `while ${emitCondition(statement.condition, context)} ${emitStatementAsBlock(statement.body, {
+          ...context,
+          continueEpilogue: [],
+        })}`,
+      ];
   }
+}
+
+function emitSwitchStatement(statement: Extract<IrStatement, { kind: 'switch' }>, context: EmitContext): string[] {
+  const value = emitExpression(statement.expression, context);
+  const branches: string[] = [];
+  let defaultBranch: string | undefined;
+  for (const switchCase of statement.cases) {
+    if (!caseTerminates(switchCase.statements)) {
+      throw new RustEmissionError('fall-through switch cases require explicit Rust lowering');
+    }
+    const body = emitStatementsAsBlock(switchCase.statements, context);
+    if (switchCase.expression) {
+      const condition = emitExpression(switchCase.expression, context);
+      branches.push(`${branches.length === 0 ? 'if' : 'else if'} __switch_value == ${condition} ${body}`);
+    } else {
+      defaultBranch = `${branches.length === 0 ? '' : 'else '}${body}`;
+    }
+  }
+  if (defaultBranch) branches.push(defaultBranch);
+  return ['{', indent(`let __switch_value = ${value};\n${branches.join(' ')}`), '}'];
+}
+
+function caseTerminates(statements: IrStatement[]): boolean {
+  const last = statements.at(-1);
+  if (!last) return false;
+  if (last.kind === 'return' || last.kind === 'throw') return true;
+  if (last.kind === 'block') return caseTerminates(last.statements);
+  return false;
 }
 
 function emitForStatement(statement: Extract<IrStatement, { kind: 'for' }>, context: EmitContext): string[] {
@@ -285,7 +364,12 @@ function emitForStatement(statement: Extract<IrStatement, { kind: 'for' }>, cont
       ? [`${emitExpression(statement.initializer, context)};`]
       : [];
   const condition = statement.condition ? emitCondition(statement.condition, context) : 'true';
-  const body = emitStatementAsBlock(statement.body, context, statement.increment);
+  const increment = statement.increment ? `${emitExpression(statement.increment, context)};` : undefined;
+  const body = emitStatementAsBlock(
+    statement.body,
+    { ...context, continueEpilogue: increment ? [increment] : [] },
+    statement.increment,
+  );
   return ['{', indent([...initializer, `while ${condition} ${body}`].join('\n')), '}'];
 }
 
@@ -308,8 +392,17 @@ function emitLocalVariable(variable: IrVariable, context: EmitContext): string[]
     return [`let ${mutable ? 'mut ' : ''}${safeName(variable.name)}: ${emitType(variable.type, context)};`];
   }
   const expected = variable.type;
-  const initializer = emitExpression(variable.initializer, context, expected);
   const inferred = expected ?? inferIrExpressionType(variable.initializer, context);
+  if (
+    inferred &&
+    isReferenceLike(inferred, context) &&
+    (variable.initializer.kind === 'property' || variable.initializer.kind === 'identifier')
+  ) {
+    context.symbolTypes.set(variable.name, inferred);
+    const reference = mutable ? '&mut ' : '&';
+    return [`let ${safeName(variable.name)} = ${reference}${emitPlaceExpression(variable.initializer, context)};`];
+  }
+  const initializer = emitExpression(variable.initializer, context, expected);
   if (inferred) context.symbolTypes.set(variable.name, inferred);
   const annotation = expected && expected.kind !== 'dynamic' ? `: ${emitType(expected, context)}` : '';
   return [`let ${mutable ? 'mut ' : ''}${safeName(variable.name)}${annotation} = ${initializer};`];
@@ -332,11 +425,11 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
     case 'conditional':
       return `if ${emitCondition(expression.condition, context)} { ${emitExpression(expression.whenTrue, context, expectedType)} } else { ${emitExpression(expression.whenFalse, context, expectedType)} }`;
     case 'element':
-      return `${emitElement(expression, context)}.clone()`;
+      return coerceExpression(emitElementRead(expression, context), expectedType);
     case 'function':
       return emitClosure(expression, context, expectedType);
     case 'identifier':
-      return emitIdentifier(expression.name, context);
+      return coerceExpression(emitIdentifier(expression.name, context), expectedType);
     case 'literal':
       return emitLiteral(expression.value, expectedType, context);
     case 'new':
@@ -344,7 +437,7 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
     case 'object':
       return emitObject(expression, context, expectedType);
     case 'property':
-      return emitProperty(expression, context);
+      return coerceExpression(emitProperty(expression, context), expectedType);
     case 'regexp':
       throw new RustEmissionError('regular expression Rust lowering is not implemented');
     case 'spread':
@@ -358,6 +451,12 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
 
 function emitCall(expression: Extract<IrExpression, { kind: 'call' }>, context: EmitContext): string {
   if (expression.optional) throw new RustEmissionError('optional call Rust lowering is not implemented');
+  if (expression.callee.kind === 'identifier') {
+    const inline = context.inlineFunctions.get(expression.callee.name);
+    if (inline) return emitInlineFunctionCall(expression, inline, context);
+    const declaration = context.functions.get(expression.callee.name);
+    if (declaration) return emitKnownFunctionCall(expression, declaration, context);
+  }
   if (expression.callee.kind === 'property' && expression.callee.object.kind === 'identifier') {
     const owner = expression.callee.object.name;
     const method = expression.callee.name;
@@ -400,6 +499,44 @@ function emitCall(expression: Extract<IrExpression, { kind: 'call' }>, context: 
   return `${expression.callee.kind === 'property' ? parenthesize(callee) : callee}(${arguments_.join(', ')})`;
 }
 
+function emitInlineFunctionCall(
+  expression: Extract<IrExpression, { kind: 'call' }>,
+  declaration: IrFunctionDeclaration,
+  context: EmitContext,
+): string {
+  if (declaration.body.some((statement) => containsStatementKind(statement, 'return'))) {
+    throw new RustEmissionError(`inline dependency ${declaration.name} contains a return statement`);
+  }
+  const bindings = new Map<string, IrExpression>();
+  declaration.parameters.forEach((parameter, index) => {
+    const argument = expression.arguments[index];
+    if (argument) bindings.set(parameter.name, argument);
+  });
+  const body = substituteIdentifiers(declaration.body, bindings);
+  return emitStatementsAsBlock(body, context);
+}
+
+function emitKnownFunctionCall(
+  expression: Extract<IrExpression, { kind: 'call' }>,
+  declaration: IrFunctionDeclaration,
+  context: EmitContext,
+): string {
+  const restIndex = declaration.parameters.findIndex((parameter) => parameter.rest);
+  if (restIndex < 0) {
+    const arguments_ = expression.arguments.map((argument, index) =>
+      emitExpression(argument, context, declaration.parameters[index]?.type),
+    );
+    return `${snakeCase(declaration.name)}(${arguments_.join(', ')})`;
+  }
+  const fixed = expression.arguments
+    .slice(0, restIndex)
+    .map((argument, index) => emitExpression(argument, context, declaration.parameters[index]?.type));
+  const rest = declaration.parameters[restIndex]!;
+  const element = rest.type.kind === 'array' ? rest.type.element : undefined;
+  const values = expression.arguments.slice(restIndex).map((argument) => emitExpression(argument, context, element));
+  return `${snakeCase(declaration.name)}(${[...fixed, `vec![${values.join(', ')}]`].join(', ')})`;
+}
+
 function emitMathCall(method: string, arguments_: string[]): string {
   const first = arguments_[0];
   if (!first) throw new RustEmissionError(`Math.${method} requires an argument`);
@@ -416,6 +553,9 @@ function emitMathCall(method: string, arguments_: string[]): string {
     case 'max':
     case 'min':
       return arguments_.slice(1).reduce((value, item) => `${parenthesize(value)}.${method}(${item})`, first);
+    case 'imul':
+      if (!arguments_[1]) throw new RustEmissionError('Math.imul requires two arguments');
+      return `__flight_js_to_i32(${first}).wrapping_mul(__flight_js_to_i32(${arguments_[1]})) as f64`;
     case 'pow':
       if (!arguments_[1]) throw new RustEmissionError('Math.pow requires two arguments');
       return `${parenthesize(first)}.powf(${arguments_[1]})`;
@@ -433,9 +573,31 @@ function emitProperty(expression: Extract<IrExpression, { kind: 'property' }>, c
   }
   const objectType = inferIrExpressionType(expression.object, context);
   if (objectType?.kind === 'array' && expression.name === 'length') {
-    return `(${emitExpression(expression.object, context)}.len() as f64)`;
+    return `(${emitPlaceExpression(expression.object, context)}.len() as f64)`;
   }
-  return `${emitExpression(expression.object, context)}.${safeName(expression.name)}`;
+  if (objectType?.kind === 'named' && typedArrayType(objectType.name) && expression.name === 'length') {
+    return `(${emitPlaceExpression(expression.object, context)}.len() as f64)`;
+  }
+  const place = emitPropertyPlace(expression, context);
+  const type = inferIrExpressionType(expression, context);
+  return type && !isCopyType(type, context) ? `${parenthesize(place)}.clone()` : place;
+}
+
+function emitPropertyPlace(expression: Extract<IrExpression, { kind: 'property' }>, context: EmitContext): string {
+  return `${emitPlaceExpression(expression.object, context)}.${safeName(expression.name)}`;
+}
+
+function emitPlaceExpression(expression: IrExpression, context: EmitContext): string {
+  switch (expression.kind) {
+    case 'identifier':
+      return emitIdentifier(expression.name, context);
+    case 'property':
+      return emitPropertyPlace(expression, context);
+    case 'element':
+      return emitElement(expression, context);
+    default:
+      return emitExpression(expression, context);
+  }
 }
 
 function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, context: EmitContext): string {
@@ -459,16 +621,27 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
   }
   if (expression.operator === '**') return `${parenthesize(left)}.powf(${right})`;
   if (expression.operator === '>>>') {
-    return `(((${left}) as u32) >> ((${right}) as u32)) as f64`;
+    return emitBitwiseOperation(left, right, expression.operator);
   }
   if (expression.operator === '>>' || expression.operator === '<<') {
-    return `(((${left}) as i32) ${expression.operator} ((${right}) as u32)) as f64`;
+    return emitBitwiseOperation(left, right, expression.operator);
   }
   if (expression.operator === '&' || expression.operator === '|' || expression.operator === '^') {
-    return `(((${left}) as i32) ${expression.operator} ((${right}) as i32)) as f64`;
+    return emitBitwiseOperation(left, right, expression.operator);
   }
   if (expression.operator === '??' || expression.operator === '??undefined') {
     return `${parenthesize(left)}.unwrap_or(${right})`;
+  }
+  if (
+    (expression.operator === '&&' || expression.operator === '||') &&
+    inferIrExpressionType(expression.left, context)?.kind === 'primitive' &&
+    inferIrExpressionType(expression.left, context)?.kind === 'primitive' &&
+    (inferIrExpressionType(expression.left, context) as Extract<IrType, { kind: 'primitive' }>).name !== 'Bool'
+  ) {
+    const condition = `${parenthesize(left)} != 0.0_f64`;
+    return expression.operator === '&&'
+      ? `if ${condition} { ${right} } else { ${left} }`
+      : `if ${condition} { ${left} } else { ${right} }`;
   }
   const operator =
     expression.operator === '==='
@@ -487,9 +660,10 @@ function emitAssignment(expression: Extract<IrExpression, { kind: 'assignment' }
   const left =
     expression.left.kind === 'element'
       ? emitElement(expression.left, context)
-      : emitExpression(expression.left, context);
+      : emitPlaceExpression(expression.left, context);
   const right = emitExpression(expression.right, context, inferIrExpressionType(expression.left, context));
-  return `{ ${left} ${expression.operator} ${right}; ${left} }`;
+  const assignment = emitAssignmentOperation(left, right, expression.operator);
+  return `{ ${assignment}; ${left} }`;
 }
 
 function emitAssignmentStatement(
@@ -499,9 +673,24 @@ function emitAssignmentStatement(
   const left =
     expression.left.kind === 'element'
       ? emitElement(expression.left, context)
-      : emitExpression(expression.left, context);
+      : emitPlaceExpression(expression.left, context);
   const right = emitExpression(expression.right, context, inferIrExpressionType(expression.left, context));
-  return `${left} ${expression.operator} ${right}`;
+  return emitAssignmentOperation(left, right, expression.operator);
+}
+
+function emitAssignmentOperation(left: string, right: string, operator: string): string {
+  const bitwise = new Set(['&=', '|=', '^=', '<<=', '>>=', '>>>=']);
+  return bitwise.has(operator)
+    ? `${left} = ${emitBitwiseOperation(left, right, operator.slice(0, -1))}`
+    : `${left} ${operator} ${right}`;
+}
+
+function emitBitwiseOperation(left: string, right: string, operator: string): string {
+  const shift = `(__flight_js_to_u32(${right}) & 31)`;
+  if (operator === '>>>') return `(__flight_js_to_u32(${left}) >> ${shift}) as f64`;
+  if (operator === '>>') return `(__flight_js_to_i32(${left}) >> ${shift}) as f64`;
+  if (operator === '<<') return `__flight_js_to_i32(${left}).wrapping_shl(${shift}) as f64`;
+  return `(__flight_js_to_i32(${left}) ${operator} __flight_js_to_i32(${right})) as f64`;
 }
 
 function emitUnary(expression: Extract<IrExpression, { kind: 'unary' }>, context: EmitContext): string {
@@ -645,8 +834,9 @@ function functionContext(context: EmitContext, ownerName: string, owner: unknown
   return {
     ...context,
     anonymousTypes,
+    continueEpilogue: [],
     currentReturnType: returns,
-    mutatedNames: collectMutatedNames(owner),
+    mutatedNames: collectMutatedNames(owner, context.mutatingFunctions),
     symbolTypes: new Map(context.symbolTypes),
   };
 }
@@ -700,10 +890,47 @@ function collectAnonymousTypes(value: unknown): IrType[] {
   return [...found.values()];
 }
 
-function collectMutatedNames(value: unknown): ReadonlySet<string> {
+function collectMutatingFunctionParameters(declarations: IrDeclaration[]): ReadonlyMap<string, ReadonlySet<number>> {
+  const functions = declarations.filter(
+    (declaration): declaration is IrFunctionDeclaration => declaration.kind === 'function',
+  );
+  const signatures = new Map<string, ReadonlySet<number>>();
+  for (let pass = 0; pass <= functions.length; pass++) {
+    let changed = false;
+    for (const declaration of functions) {
+      const mutated = collectMutatedNames(declaration, signatures);
+      const indexes = new Set(
+        declaration.parameters.flatMap((parameter, index) => (mutated.has(parameter.name) ? [index] : [])),
+      );
+      const previous = signatures.get(declaration.name);
+      if (!previous || [...indexes].some((index) => !previous.has(index))) {
+        signatures.set(declaration.name, indexes);
+        changed = true;
+      }
+    }
+    if (!changed) break;
+  }
+  return signatures;
+}
+
+function collectMutatedNames(
+  value: unknown,
+  mutatingFunctions: ReadonlyMap<string, ReadonlySet<number>> = new Map(),
+): ReadonlySet<string> {
   const names = new Set<string>();
+  const aliases = new Map<string, string>();
   const visit = (item: unknown): void => {
     if (!item || typeof item !== 'object') return;
+    if (
+      'name' in item &&
+      typeof item.name === 'string' &&
+      'initializer' in item &&
+      item.initializer &&
+      typeof item.initializer === 'object'
+    ) {
+      const root = expressionRootIdentifier(item.initializer);
+      if (root && root !== item.name) aliases.set(item.name, root);
+    }
     if ('kind' in item && item.kind === 'assignment' && 'left' in item) {
       const root = expressionRootIdentifier(item.left);
       if (root) names.add(root);
@@ -724,12 +951,40 @@ function collectMutatedNames(value: unknown): ReadonlySet<string> {
       const root = expressionRootIdentifier(item.callee.object);
       if (root) names.add(root);
     }
+    if (
+      'kind' in item &&
+      item.kind === 'call' &&
+      'callee' in item &&
+      item.callee &&
+      typeof item.callee === 'object' &&
+      'kind' in item.callee &&
+      item.callee.kind === 'identifier' &&
+      'name' in item.callee &&
+      typeof item.callee.name === 'string' &&
+      'arguments' in item &&
+      Array.isArray(item.arguments)
+    ) {
+      for (const index of mutatingFunctions.get(item.callee.name) ?? []) {
+        const root = expressionRootIdentifier(item.arguments[index]);
+        if (root) names.add(root);
+      }
+    }
     for (const child of Object.values(item)) {
       if (Array.isArray(child)) child.forEach(visit);
       else visit(child);
     }
   };
   visit(value);
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (const [alias, root] of aliases) {
+      if (names.has(alias) && !names.has(root)) {
+        names.add(root);
+        changed = true;
+      }
+    }
+  }
   return names;
 }
 
@@ -740,6 +995,64 @@ function expressionRootIdentifier(value: unknown): string | undefined {
     return expressionRootIdentifier(value.object);
   }
   return undefined;
+}
+
+function capturesParameterInReturnedClosure(owner: IrExpression | IrFunctionDeclaration, name: string): boolean {
+  if (!('body' in owner) || !Array.isArray(owner.body)) return false;
+  return owner.body.some(
+    (statement) =>
+      statement.kind === 'return' &&
+      statement.expression?.kind === 'function' &&
+      containsIdentifier(statement.expression, name),
+  );
+}
+
+function containsIdentifier(value: unknown, name: string): boolean {
+  if (!value || typeof value !== 'object') return false;
+  if ('kind' in value && value.kind === 'identifier' && 'name' in value && value.name === name) {
+    return true;
+  }
+  return Object.values(value).some((item) =>
+    Array.isArray(item) ? item.some((child) => containsIdentifier(child, name)) : containsIdentifier(item, name),
+  );
+}
+
+function containsStatementKind(value: unknown, kind: IrStatement['kind']): boolean {
+  if (!value || typeof value !== 'object') return false;
+  if ('kind' in value && value.kind === kind) return true;
+  return Object.values(value).some((item) =>
+    Array.isArray(item) ? item.some((child) => containsStatementKind(child, kind)) : containsStatementKind(item, kind),
+  );
+}
+
+function substituteIdentifiers<T>(value: T, bindings: ReadonlyMap<string, IrExpression>): T {
+  if (!value || typeof value !== 'object') return value;
+  if ('kind' in value && value.kind === 'identifier' && 'name' in value && typeof value.name === 'string') {
+    return (bindings.get(value.name) ?? value) as T;
+  }
+  if (Array.isArray(value)) {
+    return value.map((item) => substituteIdentifiers(item, bindings)) as T;
+  }
+  return Object.fromEntries(
+    Object.entries(value).map(([key, item]) => [key, substituteIdentifiers(item, bindings)]),
+  ) as T;
+}
+
+function isReferenceLike(type: IrType, context: EmitContext): boolean {
+  const resolved = resolveSemanticType(type, context);
+  return (
+    resolved?.kind === 'anonymous' ||
+    resolved?.kind === 'array' ||
+    (resolved?.kind === 'named' && Boolean(typedArrayType(resolved.name)))
+  );
+}
+
+function isCopyType(type: IrType, context: EmitContext): boolean {
+  const resolved = resolveSemanticType(type, context);
+  if (!resolved) return false;
+  if (resolved.kind === 'primitive') return resolved.name !== 'String';
+  if (resolved.kind === 'nullable') return isCopyType(resolved.inner, context);
+  return false;
 }
 
 function emitNew(expression: Extract<IrExpression, { kind: 'new' }>, context: EmitContext): string {
@@ -777,7 +1090,13 @@ function emitObject(
 
 function emitElement(expression: Extract<IrExpression, { kind: 'element' }>, context: EmitContext): string {
   if (expression.optional) throw new RustEmissionError('optional element access Rust lowering is not implemented');
-  return `${emitExpression(expression.object, context)}[${emitExpression(expression.index, context)} as usize]`;
+  return `${emitPlaceExpression(expression.object, context)}[${emitExpression(expression.index, context)} as usize]`;
+}
+
+function emitElementRead(expression: Extract<IrExpression, { kind: 'element' }>, context: EmitContext): string {
+  const place = emitElement(expression, context);
+  const objectType = inferIrExpressionType(expression.object, context);
+  return objectType?.kind === 'named' && typedArrayType(objectType.name) ? `(${place} as f64)` : `${place}.clone()`;
 }
 
 function inferIrExpressionType(expression: IrExpression, context: EmitContext): IrType | undefined {
@@ -795,6 +1114,10 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
         : undefined;
     case 'binary': {
       const left = inferIrExpressionType(expression.left, context);
+      if (['===', '!==', '<', '<=', '>', '>='].includes(expression.operator)) {
+        return primitive('Bool');
+      }
+      if (expression.operator === '&&' || expression.operator === '||') return left;
       if (expression.operator === '??' || expression.operator === '??undefined') {
         return left?.kind === 'nullable' ? left.inner : left;
       }
@@ -900,7 +1223,14 @@ function emitIdentifier(name: string, context: EmitContext): string {
 }
 
 function emitCondition(expression: IrExpression, context: EmitContext): string {
-  return emitExpression(expression, context);
+  const emitted = emitExpression(expression, context);
+  const type = inferIrExpressionType(expression, context);
+  if (type?.kind === 'primitive' && type.name === 'Bool') return emitted;
+  if (type?.kind === 'primitive' && (type.name === 'Float' || type.name === 'Int')) {
+    return `${parenthesize(emitted)} != 0.0_f64`;
+  }
+  if (type?.kind === 'nullable') return `${parenthesize(emitted)}.is_some()`;
+  return emitted;
 }
 
 function emitLiteral(value: boolean | null | number | string, expectedType?: IrType, context?: EmitContext): string {

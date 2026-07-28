@@ -3,6 +3,7 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_braces)]
 #![allow(unused_imports)]
+#![allow(unused_mut)]
 #![allow(unused_parens)]
 
 // Source: upstream/packages/easing/src/easeCubic.ts:3 (sha256:7973d79913a0a59c432dded763b2007b6e663a23b1da1b9d53a6532a45b0582c)

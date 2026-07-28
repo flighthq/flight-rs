@@ -7,7 +7,7 @@ import ts from 'typescript';
 import { portConfig, type RustTarget } from '../../port.config.ts';
 import { sourcePathToRustModule } from '../analyze/inventory.ts';
 import { lowerTypeScriptSource } from '../lower/typescript.ts';
-import type { IrType, LoweringDiagnostic } from '../model/ir.ts';
+import type { IrFunctionDeclaration, IrType, LoweringDiagnostic } from '../model/ir.ts';
 import { RustEmissionError, emitRustModule, type RustImport } from './rust.ts';
 import { stableJson, writeOrCheck } from './reports.ts';
 
@@ -37,6 +37,7 @@ export interface RustTargetReport {
     outputSha256: string;
     source: string;
   }>;
+  inlineDependencies: RustTarget['inlineDependencies'];
   package: string;
   sourceExclusions: Array<{
     fingerprint: string;
@@ -96,6 +97,7 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
   const modules: string[] = [];
   const outputs: PendingOutput[] = [];
   const semanticTypes = collectSemanticTypes(workspaceDirectory, target);
+  const inlineFunctions = collectInlineFunctions(workspaceDirectory, target);
 
   for (const file of walkTypeScriptSources(sourceDirectory)) {
     const sourceName = path.relative(sourceDirectory, file).split(path.sep).join('/');
@@ -164,6 +166,7 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
             target,
             target.package === '@flighthq/types' ? Object.keys(importedSemanticTypes) : [],
           ),
+          inlineFunctions,
           semanticTypes: {
             ...semanticTypes,
             ...importedSemanticTypes,
@@ -230,11 +233,33 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
     deferredDeclarations,
     deferredSources,
     emittedSources,
+    inlineDependencies: target.inlineDependencies,
     package: target.package,
     sourceExclusions,
     unsupportedSources,
     typeMappings: target.typeMappings,
   };
+}
+
+function collectInlineFunctions(workspaceDirectory: string, target: RustTarget): IrFunctionDeclaration[] {
+  return Object.entries(target.inlineDependencies ?? {}).map(([name, mapping]) => {
+    const source = path.join(workspaceDirectory, mapping.source);
+    const sourceFile = ts.createSourceFile(
+      source,
+      readFileSync(source, 'utf8'),
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(sourceFile, mapping.package, workspaceDirectory);
+    const declaration = lowered.declarations.find(
+      (item): item is IrFunctionDeclaration => item.kind === 'function' && item.name === name,
+    );
+    if (!declaration) {
+      throw new Error(`Inline dependency ${name} did not resolve from ${mapping.source}`);
+    }
+    return declaration;
+  });
 }
 
 function collectSemanticTypes(workspaceDirectory: string, target: RustTarget): Readonly<Record<string, IrType>> {

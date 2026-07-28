@@ -3,6 +3,7 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_braces)]
 #![allow(unused_imports)]
+#![allow(unused_mut)]
 #![allow(unused_parens)]
 
 // Source: upstream/packages/easing/src/easeExponential.ts:3 (sha256:740b32ccdc4c365bc53aeabf178b1854792e66bca8d29de125f4b50ee7a72258)

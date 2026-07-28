@@ -17,5 +17,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "flighthq-surface"
+version = "0.1.0"
+dependencies = [
+ "flighthq-image",
+ "flighthq-types",
+]
+
+[[package]]
 name = "flighthq-types"
 version = "0.1.0"

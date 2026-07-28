@@ -3,6 +3,7 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_braces)]
 #![allow(unused_imports)]
+#![allow(unused_mut)]
 #![allow(unused_parens)]
 
 // Source: upstream/packages/easing/src/easeBack.ts:3 (sha256:5a407d8ee850d00ebab6789fe103585fcb94a0abebeea0bb4f8b6ae4909885a2)

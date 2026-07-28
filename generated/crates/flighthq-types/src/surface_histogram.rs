@@ -3,6 +3,7 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_braces)]
 #![allow(unused_imports)]
+#![allow(unused_mut)]
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/SurfaceHistogram.ts:1 (sha256:fe3a4ec51065cf26290c1cf35547b7e8537b2a68f2d387b53f2f87cc0d961648)

@@ -2837,157 +2837,157 @@
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/alpha_type.rs",
-          "outputSha256": "sha256:87e7d6e1f1b2fe1b37c3ea10b502ec609733a2754e64836d5e6c599c01d34d30",
+          "outputSha256": "sha256:f76df92b87cd329d5099065760fa9a21a033064d3cf3022fabc61ac1b9354ac0",
           "source": "upstream/packages/types/src/AlphaType.ts"
         },
         {
           "declarations": 2,
           "output": "generated/crates/flighthq-types/src/color_transform.rs",
-          "outputSha256": "sha256:86231c8d433f1a82f806498f6ea0dfea6c1fd15d45745da0e6b3ae03fd5dfe8b",
+          "outputSha256": "sha256:9dd69bcaa95bb6c68acd4634a8034404f2743ef141dacf6688c75613d0ab98c5",
           "source": "upstream/packages/types/src/ColorTransform.ts"
         },
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/easing_function.rs",
-          "outputSha256": "sha256:9add7dc133d151440a6984bfd9e26604e849191945e9aec6b679b3e7a72617e2",
+          "outputSha256": "sha256:bcc092a22f736fa0ff119300551e1211144bf432f13150829aa1ccc04b3170e3",
           "source": "upstream/packages/types/src/EasingFunction.ts"
         },
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/easing_segment.rs",
-          "outputSha256": "sha256:13b972c809b7984d9605a378e575692eebbf7ca165981d4e787644221754922c",
+          "outputSha256": "sha256:dd6d100d278395f9171173116330cb050468c2c2a761de9dc2a595a9dc4e5693",
           "source": "upstream/packages/types/src/EasingSegment.ts"
         },
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/gradient_spread.rs",
-          "outputSha256": "sha256:2f22e4e548e5af45f879330df0ea12aa106062b5be83d7147d5fedbbc2829ad0",
+          "outputSha256": "sha256:5440c5e80237336959577b64237f7a484532e081d6b19d9ceb8458974361aef5",
           "source": "upstream/packages/types/src/GradientSpread.ts"
         },
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/image_format.rs",
-          "outputSha256": "sha256:d6eff12eb7b550ed018a79f82e3dc761d64a2deffaa3ef74276d3737ce7361be",
+          "outputSha256": "sha256:818e9d33bcf6124de2c1dac031bf3f6b70749b96278ce340dabcb27cd2191639",
           "source": "upstream/packages/types/src/ImageFormat.ts"
         },
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/image_resource.rs",
-          "outputSha256": "sha256:e048a45af4125566ec7244c08e25d34202011cd0c5ac8a9b5862f13c2dd5b415",
+          "outputSha256": "sha256:6d782629136f6da2a7cf6df3a261b4cb07f06a2c0c1215f4d6060b721cf3ac6f",
           "source": "upstream/packages/types/src/ImageResource.ts"
         },
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/image_resource_compressed.rs",
-          "outputSha256": "sha256:d07b8cf32d681418b0d0d98c6e4c276d79d3cca75a5f72b6c394868a32007111",
+          "outputSha256": "sha256:ed6a3caf8cd3b429518502deb35cc8a7f179e94f338af93365c94b15740695d2",
           "source": "upstream/packages/types/src/ImageResourceCompressed.ts"
         },
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/pixel_format.rs",
-          "outputSha256": "sha256:019c8a5dc72297b7b932a3bd23207c989906f14850d7f9d2f34b89abaab19fe8",
+          "outputSha256": "sha256:d06a62e979ac282abeefe887cb46a7673e6fb3abede25e89130d9ba82602f7a4",
           "source": "upstream/packages/types/src/PixelFormat.ts"
         },
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/pixel_order.rs",
-          "outputSha256": "sha256:42bd1489c4b7e1739dad5706481c00358425a8737470c7136007d1b35a1c0b4c",
+          "outputSha256": "sha256:db6683cbc236c97d9ed306b76d6aebdc419e77f1e7b81e0a8a0384ca59915732",
           "source": "upstream/packages/types/src/PixelOrder.ts"
         },
         {
           "declarations": 2,
           "output": "generated/crates/flighthq-types/src/rectangle.rs",
-          "outputSha256": "sha256:3fe79ba6018b9f8c22b19707247f9e474e5b7c12f77ecb13214f15b93e600fea",
+          "outputSha256": "sha256:ae2534cbecde0665e0607e37b61b1fefbabfd425474edf1f54323491a12ed997",
           "source": "upstream/packages/types/src/Rectangle.ts"
         },
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/scalar_remap.rs",
-          "outputSha256": "sha256:0b762507efba7c56363684a0d7a25c76cb2f0cb4167a30b375d8a5c33835d0c9",
+          "outputSha256": "sha256:85fffdbb244c6da4111053353d3f05ab17d90ebdbe2eefb7574612d9d8dc4303",
           "source": "upstream/packages/types/src/ScalarRemap.ts"
         },
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/step_position.rs",
-          "outputSha256": "sha256:279b93843a1e4861b64ceb0554d8bd421f6c91fcf0cc3d20b004f8c902222a51",
+          "outputSha256": "sha256:f55b1baa0448b1fdbd5777256e62bc97ace60216270943e94ba5c1242f19ebf1",
           "source": "upstream/packages/types/src/StepPosition.ts"
         },
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/surface.rs",
-          "outputSha256": "sha256:3d969d4cef2a614ef59c916ab009fed044cdddd8dd67c5dd21a5868adf88325d",
+          "outputSha256": "sha256:531285a3d21e2949a63a3515d391061017c89104ae575e1745ceb08f37672243",
           "source": "upstream/packages/types/src/Surface.ts"
         },
         {
           "declarations": 2,
           "output": "generated/crates/flighthq-types/src/surface_composite_mode.rs",
-          "outputSha256": "sha256:0d33bdd90701e80d9230a9510ab36dd455d20ffc424ae97295652f9a10d463a5",
+          "outputSha256": "sha256:5e06795f1b77a433986815afadea01e0f6d7adba4199179255e6be2a4b2e33c9",
           "source": "upstream/packages/types/src/SurfaceCompositeMode.ts"
         },
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/surface_edge_mode.rs",
-          "outputSha256": "sha256:2ccca9fe59d71a590f7321f89b20618db6b7f4639aba5144a2951c3d6e86726e",
+          "outputSha256": "sha256:66b4b02e6bbbe1d81f9d4e44659ab857b2f9aac396aa930042d0d5ab08a3c639",
           "source": "upstream/packages/types/src/SurfaceEdgeMode.ts"
         },
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/surface_fingerprint.rs",
-          "outputSha256": "sha256:7ecc185f47f669f2313735a4ebd0038ab119d4d2e29bf3a47c4dda092a8f7a9a",
+          "outputSha256": "sha256:8538c759317d5bfda8cb8a64c21f0826aa1a71448beb6e63dcf19ffe4ae183f7",
           "source": "upstream/packages/types/src/SurfaceFingerprint.ts"
         },
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/surface_histogram.rs",
-          "outputSha256": "sha256:dd1c897baf3fddd216321d7bd8bb1fa2581bb868a79786bd58803f70c200600c",
+          "outputSha256": "sha256:7d8ef5bfaab180f4354abbf707ccaa577e2179d6bde0124a8fb9e66c5a112957",
           "source": "upstream/packages/types/src/SurfaceHistogram.ts"
         },
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/surface_mismatch.rs",
-          "outputSha256": "sha256:bdd659079ea5dfba67c73bbfe544a8d6400a8db51b6501c7dbef20d9b06dd411",
+          "outputSha256": "sha256:f08bdb0faee684062acd9e1b092391a70e3381aa92af0b420c8d35ebc5ceba11",
           "source": "upstream/packages/types/src/SurfaceMismatch.ts"
         },
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/surface_region.rs",
-          "outputSha256": "sha256:78b6236aac105d259cc3dcd3343dc2a3af2244995432881722a32faf8c2db6e8",
+          "outputSha256": "sha256:1424c92c9516615eb805cd4efdcbcca4243edfc2fe50631cfe88c85f9724b918",
           "source": "upstream/packages/types/src/SurfaceRegion.ts"
         },
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/surface_resize_mode.rs",
-          "outputSha256": "sha256:e3244b6ec23fc700e461b0ddd617befc3ab8861a2bdc0dbc27beafc3c672eaa4",
+          "outputSha256": "sha256:2297e3d358024e3e62941d28b99a2fc3f1e993d7b91dae6faa65ad0bfd17eb1d",
           "source": "upstream/packages/types/src/SurfaceResizeMode.ts"
         },
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/texture_container.rs",
-          "outputSha256": "sha256:7b3edfe69f5131966f6ccf357415606cc1f8fb66d04965324c6492989be6c73e",
+          "outputSha256": "sha256:ddc2e44a85ec0ea50c5171c7ffba54bbbc9e1932388dfbe9345c03ec91d67a2b",
           "source": "upstream/packages/types/src/TextureContainer.ts"
         },
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/texture_container_format.rs",
-          "outputSha256": "sha256:ea71e4d23332042a9751fd084ce50f9e29d38690c85c8210b301dd72bb6f08ad",
+          "outputSha256": "sha256:2864c7ab02b926f349a5d424ed2249c447debb4193c6cd1f1a7502f47bb511db",
           "source": "upstream/packages/types/src/TextureContainerFormat.ts"
         },
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/texture_container_level.rs",
-          "outputSha256": "sha256:b77b0a72564fba9e8f9f1395041c1d5071b1929362d5971e47e710e62014e7aa",
+          "outputSha256": "sha256:645b12d78d036328ecda9578c7dc781dfaac78693e84b0b588827d492bf5017a",
           "source": "upstream/packages/types/src/TextureContainerLevel.ts"
         },
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/texture_container_supercompression.rs",
-          "outputSha256": "sha256:7386882eedb542be2ea7bbf6a82ff9c3db1efee111c743be48b169817181e13e",
+          "outputSha256": "sha256:a07cd9496bc057af12dbd97f58662a6592215aac3306564deb41a3ea6881376a",
           "source": "upstream/packages/types/src/TextureContainerSupercompression.ts"
         },
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/threshold_operation.rs",
-          "outputSha256": "sha256:20a0901a5450ff688c7a423017ad507c8ca92c6a8f52016e19dcff356fe0ba82",
+          "outputSha256": "sha256:e552d5bd01bb515fb4ec4dee5424afd437f34cf0a919597e28a24cc06ac60a5a",
           "source": "upstream/packages/types/src/ThresholdOperation.ts"
         }
       ],
@@ -3004,115 +3004,115 @@
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-easing/src/create_easing_samples.rs",
-          "outputSha256": "sha256:21b455b734bad711b4ab4b9daafda820acd92cd8384f4bad8febe5f0912d9208",
+          "outputSha256": "sha256:ea2f326cdb20002817ad1c2c2728b7fcc10d1767c180caca1ffeaadbb31a4b4e",
           "source": "upstream/packages/easing/src/createEasingSamples.ts"
         },
         {
           "declarations": 5,
           "output": "generated/crates/flighthq-easing/src/ease_back.rs",
-          "outputSha256": "sha256:e748ba0232db43cd1fd5c6575484631125a1be6426f67d6db3cab8d260830e71",
+          "outputSha256": "sha256:d64cc8d17466195ffd47b02f1b336a06588131581af441636f1337506fe5ba4a",
           "source": "upstream/packages/easing/src/easeBack.ts"
         },
         {
           "declarations": 4,
           "output": "generated/crates/flighthq-easing/src/ease_bounce.rs",
-          "outputSha256": "sha256:70faf24954282d3d3e0ca1eb6d629e1c1779f19961dbb32d8c1b06a4ef070ced",
+          "outputSha256": "sha256:174a0f9db69f9693ecab4342a338d38df587b8a4df79ecad4d64e3b518d671a9",
           "source": "upstream/packages/easing/src/easeBounce.ts"
         },
         {
           "declarations": 3,
           "output": "generated/crates/flighthq-easing/src/ease_circular.rs",
-          "outputSha256": "sha256:ff31f472ffef7e2ef87b60c0d75f5f653c28e660ebbf8e3240edce7c4e73dc93",
+          "outputSha256": "sha256:8302178c32dd1ede921ae50ebe2d5bce0e0786a5b2f16ed7b73011750ed04516",
           "source": "upstream/packages/easing/src/easeCircular.ts"
         },
         {
           "declarations": 6,
           "output": "generated/crates/flighthq-easing/src/ease_combinators.rs",
-          "outputSha256": "sha256:be418ab3901c3904383d1454b85a021f3f0b48c466967638261f45d629492e3f",
+          "outputSha256": "sha256:217aa1ec75eafa88210ad4881110b4e7563eb1ccfb2b9dc1cb867f6b79fd8083",
           "source": "upstream/packages/easing/src/easeCombinators.ts"
         },
         {
           "declarations": 3,
           "output": "generated/crates/flighthq-easing/src/ease_cubic.rs",
-          "outputSha256": "sha256:4424a154e6402c6e4da2445d2d56609f9d5f8cebd8b3464430ecae2d0253198d",
+          "outputSha256": "sha256:e6fd1debe65273b5e713719518f8c7954ddf4fc787a2a642f180ba432867bbdd",
           "source": "upstream/packages/easing/src/easeCubic.ts"
         },
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-easing/src/ease_cubic_bezier.rs",
-          "outputSha256": "sha256:56fa9a721f28a83d83368e917439e9fb4df0dcd8889a53ccb5188d2335410e3f",
+          "outputSha256": "sha256:a32f2ef4f950d4ae0269420fca51677cfdd643a5233537485ba55b6b5786f215",
           "source": "upstream/packages/easing/src/easeCubicBezier.ts"
         },
         {
           "declarations": 7,
           "output": "generated/crates/flighthq-easing/src/ease_elastic.rs",
-          "outputSha256": "sha256:b54fcbd80a8605d48077e9dfc27d9b5a06aa41c146f19b0444460fd88a7983c8",
+          "outputSha256": "sha256:8d7efc21549978139ecceb0d704aef4e2e4a5499f3794930806cafa12440c23e",
           "source": "upstream/packages/easing/src/easeElastic.ts"
         },
         {
           "declarations": 3,
           "output": "generated/crates/flighthq-easing/src/ease_exponential.rs",
-          "outputSha256": "sha256:af23d33f51f7f1e28c3dff689ffb3db3205bc4f7967d6488b33452fe7270ab84",
+          "outputSha256": "sha256:2c28f0f851e627515e3f2921be2870f6eef2800df829eeaf6d2e7ab214480d1f",
           "source": "upstream/packages/easing/src/easeExponential.ts"
         },
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-easing/src/ease_linear.rs",
-          "outputSha256": "sha256:6ab6213bda892d0220c7fe95da4cade96fd32030d2cd01020378226458f3b38c",
+          "outputSha256": "sha256:fca00942d85bc6f41bb6c4826d870c4ebebf814a35fc52165f06baf6acc7255a",
           "source": "upstream/packages/easing/src/easeLinear.ts"
         },
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-easing/src/ease_piecewise.rs",
-          "outputSha256": "sha256:95e32906939399e8bf7f5ad303b93c424d7a46323b316dc70d38f7343ce32482",
+          "outputSha256": "sha256:3b060ffde1660071d390140e37d1806f69c239294caa6cac74fe3778dd69a578",
           "source": "upstream/packages/easing/src/easePiecewise.ts"
         },
         {
           "declarations": 3,
           "output": "generated/crates/flighthq-easing/src/ease_power.rs",
-          "outputSha256": "sha256:1ce6d26b7177307b31de6d299d943532c32d446adda910f192cea21118f084e9",
+          "outputSha256": "sha256:0daabd6bf1df6b201c3c62e3a9959977269c64b1a8feabe726452d91aa191cd4",
           "source": "upstream/packages/easing/src/easePower.ts"
         },
         {
           "declarations": 3,
           "output": "generated/crates/flighthq-easing/src/ease_quadratic.rs",
-          "outputSha256": "sha256:53b49e1722dfcaf03555306d177c6054b297fa5d98c6b345a4abe39569cadeaf",
+          "outputSha256": "sha256:29fa6fa84e65d983a90a0feca683c640cff4673572124447511a1ebd86f04f50",
           "source": "upstream/packages/easing/src/easeQuadratic.ts"
         },
         {
           "declarations": 3,
           "output": "generated/crates/flighthq-easing/src/ease_quartic.rs",
-          "outputSha256": "sha256:b6a08947ca4a677c27b154cfd4cdde1e329c1d5fcb49e0713a01010a6f936cbb",
+          "outputSha256": "sha256:410437b063d3fc17ba33995c4c2506c39e6c4b2d042390689972abbaf0f3b77d",
           "source": "upstream/packages/easing/src/easeQuartic.ts"
         },
         {
           "declarations": 3,
           "output": "generated/crates/flighthq-easing/src/ease_quintic.rs",
-          "outputSha256": "sha256:58b43ebbcb8f67e26631103a82b7b6f52f4e21c2f7d082e1eae18c685a7a73c1",
+          "outputSha256": "sha256:97e6d3212189afb9079d4ada9676b173c026e764fa21fd58dbbf1fa309377fd8",
           "source": "upstream/packages/easing/src/easeQuintic.ts"
         },
         {
           "declarations": 3,
           "output": "generated/crates/flighthq-easing/src/ease_sine.rs",
-          "outputSha256": "sha256:2e3f58cc74f4a05d0c2b2633594b513d09bace4102f05efa8d0a4008cf9f488b",
+          "outputSha256": "sha256:278abd1bae1e79799f0cb56e16333c203b58c88b8b538370f00b9f72d80d6427",
           "source": "upstream/packages/easing/src/easeSine.ts"
         },
         {
           "declarations": 3,
           "output": "generated/crates/flighthq-easing/src/ease_smoothstep.rs",
-          "outputSha256": "sha256:9a10d6eeb6a072fc50b06fc97a99fbb2003e81718275d1b37cfabcf3a3bfaa13",
+          "outputSha256": "sha256:8d8953cb28c7caa75d53780a5aec8a7f1ccdb45e87b6ff3de80ae019ba7d494e",
           "source": "upstream/packages/easing/src/easeSmoothstep.ts"
         },
         {
           "declarations": 1,
           "output": "generated/crates/flighthq-easing/src/ease_steps.rs",
-          "outputSha256": "sha256:089a05557ed6d2e78a35642612eca4f4dcd41135fab30fe05d87d5f2e47ee988",
+          "outputSha256": "sha256:e2489843921345ff90c2d5b7bb2e8e0bb39e586dfd7832889f3620866b798680",
           "source": "upstream/packages/easing/src/easeSteps.ts"
         },
         {
           "declarations": 2,
           "output": "generated/crates/flighthq-easing/src/get_easing_derivative.rs",
-          "outputSha256": "sha256:90d24f8647905fa509cf6d1b16b032e6089556af4be87e889e0bfae03286666f",
+          "outputSha256": "sha256:692764f9019fa9134559c1eed963d6bb6354daee59bece01e957fa2dfc087c9b",
           "source": "upstream/packages/easing/src/getEasingDerivative.ts"
         }
       ],
@@ -3177,11 +3177,287 @@
         {
           "declarations": 6,
           "output": "generated/crates/flighthq-image/src/image_resource.rs",
-          "outputSha256": "sha256:1f0bccaa2f581d0355702019731d6e24e43fbb837c91bd8808ee5a06f4e121bc",
+          "outputSha256": "sha256:54e744f1f3eb562d57aef0dbb0e3e5cc0c54fdcb90a8876cc84a816cf8495536",
           "source": "upstream/packages/image/src/imageResource.ts"
         }
       ],
       "package": "@flighthq/image",
+      "sourceExclusions": [],
+      "unsupportedSources": [],
+      "typeMappings": {}
+    },
+    {
+      "crate": "flighthq-surface",
+      "deferredDeclarations": [
+        {
+          "fingerprint": "sha256:22e69ef051757ad8fb0ea729651306bf4bdd0b55e1472eca1f4d71759dc24251",
+          "name": "copySurfaceChannel",
+          "reason": "Channel-specific copying joins with the generated ImageChannel type and relative re-export resolution.",
+          "source": "upstream/packages/surface/src/surfaceCopy.ts"
+        },
+        {
+          "fingerprint": "sha256:1f93456ae5fcd78aaea994a258a28c6b4a7d64ac118d4076852445a0a1930f78",
+          "name": "_floodFillVisited",
+          "reason": "Flood fill joins after reusable module-level scratch buffers lower to generated Rust synchronization primitives.",
+          "source": "upstream/packages/surface/src/surfaceFill.ts"
+        },
+        {
+          "fingerprint": "sha256:7c32150689ea613a658cc0bf06e90bae3dd4c80be8bb8b0fde8b48857d46945d",
+          "name": "floodFillSurface",
+          "reason": "Flood fill joins after reusable module-level scratch buffers lower to generated Rust synchronization primitives.",
+          "source": "upstream/packages/surface/src/surfaceFill.ts"
+        },
+        {
+          "fingerprint": "sha256:d77f3a792cc4061ce6d5eed0ee406d55fe7cd65c2e6e0ea715fa37bebcbf4c02",
+          "name": "channelOffsets",
+          "reason": "Pixel-order conversion joins after tuple destructuring and typed-array subarray/set methods lower without losing alias safety.",
+          "source": "upstream/packages/surface/src/surfaceFormat.ts"
+        },
+        {
+          "fingerprint": "sha256:e7a7ee1b946d012752d1327afc83f8ead40f13bf8ee38c403539af51de83ccd3",
+          "name": "convertSurfacePixelOrder",
+          "reason": "Pixel-order conversion joins after tuple destructuring and typed-array subarray/set methods lower without losing alias safety.",
+          "source": "upstream/packages/surface/src/surfaceFormat.ts"
+        },
+        {
+          "fingerprint": "sha256:3cd6788e78b6e8f78696317d8d2505726a11f073b64dfa33994f90438237532b",
+          "name": "getSurfacePixelChannel",
+          "reason": "The ImageChannel-parameterized reader joins when relative TypeScript re-export imports resolve directly to their generated dependency crate.",
+          "source": "upstream/packages/surface/src/surfacePixel.ts"
+        }
+      ],
+      "deferredSources": [
+        {
+          "fingerprint": "sha256:0a367392c3dc95d1f134b27a6f2c29eec5a16fb5bf3ad2d15e7b5d4f4eb94233",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/index.ts"
+        },
+        {
+          "fingerprint": "sha256:599e0a5e1929f7872b177b6623a77dca04951cf5727feb6717653913e74e1ad7",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surface.ts"
+        },
+        {
+          "fingerprint": "sha256:37da09be33afdf0c10b0a3afc69763463bde292ae07d61182d74df54e45f5a83",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceAffine.ts"
+        },
+        {
+          "fingerprint": "sha256:f3bedc7e0ca1e32cbc3fdc2c8ef83946326184d5f46f8279fa7897ed8f23f009",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceBevel.ts"
+        },
+        {
+          "fingerprint": "sha256:880eec393fbe1507271a8c7638516843439dc7e5ff9d2bd753478d60bea6b6f0",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceBlur.ts"
+        },
+        {
+          "fingerprint": "sha256:03aaa0e1eb5ef0c025c751c51586583b883706f87a7985258d37317c177f8481",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceChannel.ts"
+        },
+        {
+          "fingerprint": "sha256:8bc7a57ab69cb182e2abfba316c29b8b9d9f784d377a286367e0bb7827b37c32",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceCompare.ts"
+        },
+        {
+          "fingerprint": "sha256:a9ce17a6452f1f074be7ebdb964a7cb503e8c2d4a8d884ed29a0056ebe2c25e4",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceComposite.ts"
+        },
+        {
+          "fingerprint": "sha256:13031789da978f01b020693d0bb29c11aac4b39d8762f7e230e6da055865b842",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceCrop.ts"
+        },
+        {
+          "fingerprint": "sha256:02d954d165a80fa0a4f3fbb3567ce269ae404e0f0dfce39dfff7de5a4b96adf9",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceDisplacement.ts"
+        },
+        {
+          "fingerprint": "sha256:7ef45980fb7ebc914840153d435c934f7c4dcaa1f6f2a369f4eb2e6734b28eb3",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceDissolve.ts"
+        },
+        {
+          "fingerprint": "sha256:11748b50f7e1cda618a36956c0d214f2de816cba3930e173294aeea2ca436614",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceDraw.ts"
+        },
+        {
+          "fingerprint": "sha256:772bd7c6162216f81aac20f938d4497905e1477c44ced4bf6fe91e315a4ecfb8",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceEncode.ts"
+        },
+        {
+          "fingerprint": "sha256:b53d4235f2f6521a670946f8924fe2ec606f7cfd6786f14f980b88b57cd42773",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceFingerprint.ts"
+        },
+        {
+          "fingerprint": "sha256:7542550265e2150618a24d2b438e1399191728ec4c500052e880be6583d6c321",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceFlip.ts"
+        },
+        {
+          "fingerprint": "sha256:d91cf255cb6c7c88b4de5a57fcdb80ac73a3e8822c975163673352cb6482fa1d",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceFrom.ts"
+        },
+        {
+          "fingerprint": "sha256:6f4d4920acb0117703b514d58a9429541548591d2b70d550f0631f18991b3e55",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceGradient.ts"
+        },
+        {
+          "fingerprint": "sha256:65a0f153888a08a4829b226a5190000de38ef1260e21f904cf75f1949c2429f5",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceGradientFill.ts"
+        },
+        {
+          "fingerprint": "sha256:352c91143433173485143e45fea1601b0b2675945d8ef384be57401f1010ac99",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceHistogram.ts"
+        },
+        {
+          "fingerprint": "sha256:011e1b29279f2833810ebba71e0e04964cc604e9e5e3f718c06032366a2d4f71",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceImageChannel.ts"
+        },
+        {
+          "fingerprint": "sha256:f6ec423824c2be31b30e44d0735dad07d3adae7a0ac45fbdfa11a9065ab6cd4a",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceMedian.ts"
+        },
+        {
+          "fingerprint": "sha256:91c3f72ff99119c12d7cf8c4161fe9260b4783eb5a57185151e1b1f41d8a8c23",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfacePaletteMap.ts"
+        },
+        {
+          "fingerprint": "sha256:aeaff834a9461f1db4e3b999501a7293be6921ca3c18ce63407ade9de7b5b3db",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceQuery.ts"
+        },
+        {
+          "fingerprint": "sha256:45baf2e1d7e728719d1e3e206da8f858ab9292c2b8e911a76fbe0fe0c5890404",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceRegion.ts"
+        },
+        {
+          "fingerprint": "sha256:8509c848831904beb0fc7d1068f303d8433068505b823e9b9fbffb11c2c77394",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceResize.ts"
+        },
+        {
+          "fingerprint": "sha256:fd2318da728fa643121ddbaac3e686ef3275871e020ffd9cde0f5ccf883a80c1",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceRotate.ts"
+        },
+        {
+          "fingerprint": "sha256:db952b324dd107e29d4e79917b0cc34eb808c760cbc0e84ba1903b5b8f106522",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceShadow.ts"
+        },
+        {
+          "fingerprint": "sha256:a7485d1ba8ec6ac6e4c5af755d88df52bd987d40b02fed9cae1aa4bbb2762bb4",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceSharpen.ts"
+        },
+        {
+          "fingerprint": "sha256:403dddfde4f40fde837248096635beb900550c59d1b772b5e361305021c3e6f1",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceTone.ts"
+        },
+        {
+          "fingerprint": "sha256:46019647f2a95b13e3998d56f35e4145f36fb17182ccbaaad559fa13c36e14bc",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceTransform.ts"
+        },
+        {
+          "fingerprint": "sha256:ab9a0079541191355b26563070623ba0d5b14da90d6095b7072e6c6e0e1262d6",
+          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
+          "source": "upstream/packages/surface/src/surfaceWarp.ts"
+        }
+      ],
+      "emittedSources": [
+        {
+          "declarations": 3,
+          "output": "generated/crates/flighthq-surface/src/surface_alpha.rs",
+          "outputSha256": "sha256:f14b07efa96691fd25b118632cd7c8d999e1c2bc911eb5efea5ca8c40451d21d",
+          "source": "upstream/packages/surface/src/surfaceAlpha.ts"
+        },
+        {
+          "declarations": 15,
+          "output": "generated/crates/flighthq-surface/src/surface_color_matrix.rs",
+          "outputSha256": "sha256:a0a7f73fc932875fc26e3a9dfe5647966c15f0bb17ff39a5070a37bcf0959a4d",
+          "source": "upstream/packages/surface/src/surfaceColorMatrix.ts"
+        },
+        {
+          "declarations": 5,
+          "output": "generated/crates/flighthq-surface/src/surface_convolution.rs",
+          "outputSha256": "sha256:38c5b786b1d973b024718ef66cacaa45913074a8cce4491b455b27b8261216a9",
+          "source": "upstream/packages/surface/src/surfaceConvolution.ts"
+        },
+        {
+          "declarations": 1,
+          "output": "generated/crates/flighthq-surface/src/surface_copy.rs",
+          "outputSha256": "sha256:673ec00abfb0554d928bd167c9bb9e30a6827a831766acadf6e1f7c2e46f8caf",
+          "source": "upstream/packages/surface/src/surfaceCopy.ts"
+        },
+        {
+          "declarations": 1,
+          "output": "generated/crates/flighthq-surface/src/surface_coverage.rs",
+          "outputSha256": "sha256:23609f11c122fea3db7097e2bc6bc636f88b88fab7c7390f6c2ff1d6068838a5",
+          "source": "upstream/packages/surface/src/surfaceCoverage.ts"
+        },
+        {
+          "declarations": 1,
+          "output": "generated/crates/flighthq-surface/src/surface_fill.rs",
+          "outputSha256": "sha256:d9526a1cb941099e96f42bd399f1bdd6aa4a946b6965115ffff4810ed4c32ca1",
+          "source": "upstream/packages/surface/src/surfaceFill.ts"
+        },
+        {
+          "declarations": 2,
+          "output": "generated/crates/flighthq-surface/src/surface_format.rs",
+          "outputSha256": "sha256:66ee2e9e6f3c7009f397b0f20a49d5c5373ef81f2fca4c92ff9e0641afa3506a",
+          "source": "upstream/packages/surface/src/surfaceFormat.ts"
+        },
+        {
+          "declarations": 3,
+          "output": "generated/crates/flighthq-surface/src/surface_morphological.rs",
+          "outputSha256": "sha256:2cdf64974cced2a59ddc69a72da00794814a20609f9e3810d2d61291c87f69b7",
+          "source": "upstream/packages/surface/src/surfaceMorphological.ts"
+        },
+        {
+          "declarations": 14,
+          "output": "generated/crates/flighthq-surface/src/surface_noise.rs",
+          "outputSha256": "sha256:fe33ecc48dd3245eb9c9fd98ac63d73c1f9b26ca453da773633219f2cab0b9be",
+          "source": "upstream/packages/surface/src/surfaceNoise.ts"
+        },
+        {
+          "declarations": 8,
+          "output": "generated/crates/flighthq-surface/src/surface_pixel.rs",
+          "outputSha256": "sha256:6829ad89955c7d16f9ac782d1a87bd088c398bf3de7bafd5121c12976d8ad4e4",
+          "source": "upstream/packages/surface/src/surfacePixel.ts"
+        },
+        {
+          "declarations": 1,
+          "output": "generated/crates/flighthq-surface/src/surface_pixelate.rs",
+          "outputSha256": "sha256:6f7a2616ef4b7213435fae55a4c1961058a10133a316af72c3d47c883b810964",
+          "source": "upstream/packages/surface/src/surfacePixelate.ts"
+        }
+      ],
+      "inlineDependencies": {
+        "invalidateImageResource": {
+          "package": "@flighthq/image",
+          "source": "upstream/packages/image/src/imageResource.ts"
+        }
+      },
+      "package": "@flighthq/surface",
       "sourceExclusions": [],
       "unsupportedSources": [],
       "typeMappings": {}

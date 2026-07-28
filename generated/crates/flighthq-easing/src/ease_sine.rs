@@ -3,6 +3,7 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_braces)]
 #![allow(unused_imports)]
+#![allow(unused_mut)]
 #![allow(unused_parens)]
 
 // Source: upstream/packages/easing/src/easeSine.ts:3 (sha256:f7fba9c04b6ad1f8a63ade98d6b928df0620638c4b039fa3310fee78205cfa4c)

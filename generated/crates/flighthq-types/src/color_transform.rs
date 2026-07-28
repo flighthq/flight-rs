@@ -3,6 +3,7 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_braces)]
 #![allow(unused_imports)]
+#![allow(unused_mut)]
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/ColorTransform.ts:3 (sha256:f9f9ced8012658f172b2ddf822467b3392b7396be923f4e6df88055a25371ce4)

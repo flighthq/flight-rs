@@ -3,6 +3,7 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_braces)]
 #![allow(unused_imports)]
+#![allow(unused_mut)]
 #![allow(unused_parens)]
 
 // Source: upstream/packages/easing/src/easeElastic.ts:3 (sha256:fb65745f3b406ea7cfd8b309fb0697d770eb8a9b2745edbca64da42834df7b8a)

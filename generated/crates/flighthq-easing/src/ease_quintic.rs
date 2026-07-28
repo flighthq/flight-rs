@@ -3,6 +3,7 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_braces)]
 #![allow(unused_imports)]
+#![allow(unused_mut)]
 #![allow(unused_parens)]
 
 // Source: upstream/packages/easing/src/easeQuintic.ts:3 (sha256:e888b480ae526a0c878ab944b99b34fa73345fcd47de041f46d222425191f162)

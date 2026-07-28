@@ -92,4 +92,51 @@ describe('Rust emission', () => {
       }),
     ).not.toThrow();
   });
+
+  it('preserves for and do-while updates when continue is lowered', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/math/src/loops.ts',
+      `
+        export function sumOdds(limit: number): number {
+          let total = 0;
+          for (let i = 0; i < limit; i++) {
+            if (i % 2 === 0) continue;
+            total += i;
+          }
+          return total;
+        }
+        export function countWithDoWhile(limit: number): number {
+          let value = 0;
+          do {
+            value++;
+            continue;
+          } while (value < limit);
+          return value;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/math', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/math/src/loops.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toMatch(/i \+= 1\.0; i \};\s+continue;/u);
+    expect(output).toMatch(/if !\(\(value < limit\)\) \{ break; \}\s+continue;/u);
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
 });

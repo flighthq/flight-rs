@@ -8,6 +8,7 @@ export interface RustTarget {
   crate: string;
   declarationSelection?: Record<string, { names: string[]; reason: string }>;
   dependencies: Record<string, { crate: string }>;
+  inlineDependencies?: Record<string, { package: string; source: string }>;
   package: string;
   sourceSelection?: {
     reason: string;
@@ -103,6 +104,71 @@ export const portConfig = {
         sources: ['imageResource.ts'],
         reason:
           'Browser element/load/decode operations in imageResourceFrom.ts are host-bound and remain in the blessed TypeScript boundary.',
+      },
+      sourceExclusions: [],
+      typeMappings: {},
+    },
+    {
+      conformanceTemplate: 'tools/generator/templates/surface_conformance.rs',
+      crate: 'flighthq-surface',
+      declarationSelection: {
+        'surfaceCopy.ts': {
+          names: ['copySurfacePixels'],
+          reason:
+            'Channel-specific copying joins with the generated ImageChannel type and relative re-export resolution.',
+        },
+        'surfaceFill.ts': {
+          names: ['fillSurfaceRectangle'],
+          reason:
+            'Flood fill joins after reusable module-level scratch buffers lower to generated Rust synchronization primitives.',
+        },
+        'surfaceFormat.ts': {
+          names: ['premultiplySurfacePixels', 'unpremultiplySurfacePixels'],
+          reason:
+            'Pixel-order conversion joins after tuple destructuring and typed-array subarray/set methods lower without losing alias safety.',
+        },
+        'surfacePixel.ts': {
+          names: [
+            'LUMA_B',
+            'LUMA_G',
+            'LUMA_R',
+            'getSurfacePixel',
+            'getSurfacePixelLuminance',
+            'getSurfacePixelRgb',
+            'setSurfacePixel',
+            'setSurfacePixelRgb',
+          ],
+          reason:
+            'The ImageChannel-parameterized reader joins when relative TypeScript re-export imports resolve directly to their generated dependency crate.',
+        },
+      },
+      dependencies: {
+        '@flighthq/image': { crate: 'flighthq-image' },
+        '@flighthq/types': { crate: 'flighthq-types' },
+      },
+      inlineDependencies: {
+        invalidateImageResource: {
+          package: '@flighthq/image',
+          source: 'upstream/packages/image/src/imageResource.ts',
+        },
+      },
+      package: '@flighthq/surface',
+      sourceSelection: {
+        sources: [
+          'surfaceAlpha.ts',
+          'surfaceColorMatrix.ts',
+          'surfaceConvolution.ts',
+          'surfaceCopy.ts',
+          'surfaceCoverage.ts',
+          'surfaceFill.ts',
+          'surfaceFormat.ts',
+          'surfaceMorphological.ts',
+          'surfaceNoise.ts',
+          'surfacePixel.ts',
+          'surfacePixelate.ts',
+        ],
+        reason:
+          'Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.',
       },
       sourceExclusions: [],
       typeMappings: {},

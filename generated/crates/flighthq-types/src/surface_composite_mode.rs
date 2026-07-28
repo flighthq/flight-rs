@@ -3,6 +3,7 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_braces)]
 #![allow(unused_imports)]
+#![allow(unused_mut)]
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/SurfaceCompositeMode.ts:12 (sha256:eabe6eecbd50db07c50b07fe9a8f69e42757f5e66c7498cae41d756f296ad9e0)

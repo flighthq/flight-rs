@@ -3,6 +3,7 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_braces)]
 #![allow(unused_imports)]
+#![allow(unused_mut)]
 #![allow(unused_parens)]
 
 // Source: upstream/packages/easing/src/easeQuadratic.ts:3 (sha256:89cf6fbf576047813ed27aac439952d95470a58e901e99fcbaa657b722710ca1)

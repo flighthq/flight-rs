@@ -3,6 +3,7 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_braces)]
 #![allow(unused_imports)]
+#![allow(unused_mut)]
 #![allow(unused_parens)]
 
 // Source: upstream/packages/easing/src/easeCircular.ts:3 (sha256:d38aec60335134ba29d5377bdd378b85b4032a03d45895bc2e8b3104193d6bf0)

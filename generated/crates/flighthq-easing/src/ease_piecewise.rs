@@ -3,6 +3,7 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused_braces)]
 #![allow(unused_imports)]
+#![allow(unused_mut)]
 #![allow(unused_parens)]
 
 use flighthq_types::{EasingFunction, EasingSegment};
@@ -36,7 +37,7 @@ pub fn ease_piecewise(segments: Vec<EasingSegment>) -> EasingFunction {
         accumulated += weight;
         let end = (accumulated / total_weight);
         breakpoints.push(EasePiecewiseRecord1 {
-            ease: seg.ease,
+            ease: (seg.ease).clone(),
             end: end,
             start: start,
         });
@@ -62,7 +63,7 @@ pub fn ease_piecewise(segments: Vec<EasingSegment>) -> EasingFunction {
                             local_t
                         }
                     };
-                    return (bp.ease)(clamped_t);
+                    return ((bp.ease).clone())(clamped_t);
                 }
                 {
                     i += 1.0;
@@ -70,8 +71,6 @@ pub fn ease_piecewise(segments: Vec<EasingSegment>) -> EasingFunction {
                 };
             }
         }
-        return (segments[((segments.len() as f64) - 1.0_f64) as usize]
-            .clone()
-            .ease)(1.0_f64);
+        return ((segments[((segments.len() as f64) - 1.0_f64) as usize].ease).clone())(1.0_f64);
     });
 }
