@@ -23,7 +23,7 @@ pub fn copy_path(source: &Path, mut out: Option<Path>) -> Path {
             winding: (source.winding).clone(),
         };
     }
-    if !((out) == Some((*source).clone())) {
+    if (out.as_mut().unwrap() != source) {
         out.as_mut().unwrap().commands.clear();
         {
             let mut i = 0.0_f64;
@@ -54,5 +54,5 @@ pub fn copy_path(source: &Path, mut out: Option<Path>) -> Path {
         }
         out.as_mut().unwrap().winding = (source.winding).clone();
     }
-    return (out).clone().unwrap();
+    return out.as_mut().unwrap();
 }

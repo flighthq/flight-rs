@@ -93,7 +93,7 @@ pub fn compute_scanline_params(resolution: f64, intensity: f64, out: &mut Vec<f6
 pub fn create_bayer_matrix(order: f64, out: &mut Vec<f32>) -> f64 {
     let size = (2.0_f64).powf((1.0_f64).max((order).round()));
     let size_sq = (size * size);
-    let mut raw = vec![0.0_f32; (size_sq) as usize];
+    let mut raw: Vec<f32> = vec![0.0_f32; (size_sq) as usize];
     raw[0.0_f64 as usize] = (0.0_f64) as f32;
     raw[1.0_f64 as usize] = (2.0_f64) as f32;
     raw[2.0_f64 as usize] = (3.0_f64) as f32;
@@ -102,7 +102,7 @@ pub fn create_bayer_matrix(order: f64, out: &mut Vec<f32>) -> f64 {
     while (current_size < size) {
         let next = (current_size * 2.0_f64);
         let next_sq = (next * next);
-        let mut tmp = vec![0.0_f32; (next_sq) as usize];
+        let mut tmp: Vec<f32> = vec![0.0_f32; (next_sq) as usize];
         {
             let mut y = 0.0_f64;
             while (y < current_size) {
@@ -110,7 +110,7 @@ pub fn create_bayer_matrix(order: f64, out: &mut Vec<f32>) -> f64 {
                     let mut x = 0.0_f64;
                     while (x < current_size) {
                         let base = ((raw[((y * current_size) + x) as usize] as f64) * 4.0_f64);
-                        tmp[((y * next) + x) as usize] = ((base).clone()) as f32;
+                        tmp[((y * next) + x) as usize] = (base) as f32;
                         tmp[((y * next) + (x + current_size)) as usize] = (base + 2.0_f64) as f32;
                         tmp[(((y + current_size) * next) + x) as usize] = (base + 3.0_f64) as f32;
                         tmp[(((y + current_size) * next) + (x + current_size)) as usize] =

@@ -17,8 +17,80 @@ use flighthq_node::{
     get_node_local_transform_revision, get_node_parent, get_node_runtime,
 };
 use flighthq_types::{
-    BLEND_MODE as blend_mode_constant, Node, RenderProxy, RenderProxy2D, RenderState, Renderable,
+    Adjustment, BLEND_MODE as blend_mode_constant, ColorTransform, DisplayObjectClipHooks,
+    InteractionSignals, Material, MaterialData, Matrix, Node, NodeInteractionState, NodeSignals,
+    NodeTraitsKey, RenderProxy, RenderProxy2D, RenderState, Renderable, SceneGraphSyncPolicy,
 };
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub appearance_id: Option<f64>,
+    pub bounds_using_local_bounds_id: Option<f64>,
+    pub bounds_using_local_transform_id: Option<f64>,
+    pub can_add_child: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    >,
+    pub children: Option<Vec<Node>>,
+    pub color_adjustments: Option<Vec<Adjustment>>,
+    pub resolved_color_transform: Option<ColorTransform>,
+    pub color_adjustments_channel_mixing: Option<bool>,
+    pub traits: Option<NodeTraitsKey>,
+    pub interaction_signals: Option<InteractionSignals>,
+    pub local_bounds_id: Option<f64>,
+    pub local_bounds_using_local_bounds_id: Option<f64>,
+    pub local_content_id: Option<f64>,
+    pub local_transform_id: Option<f64>,
+    pub local_transform_using_local_transform_id: Option<f64>,
+    pub node_signals: Option<NodeSignals>,
+    pub interaction_state: Option<NodeInteractionState>,
+    pub parent: Option<Node>,
+    pub world_bounds_using_local_bounds_id: Option<f64>,
+    pub world_bounds_using_world_transform_id: Option<f64>,
+    pub world_transform_id: Option<f64>,
+    pub world_transform_using_local_transform_id: Option<f64>,
+    pub world_transform_using_parent_transform_id: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub allow_smoothing: Option<bool>,
+    pub background_color: Option<f64>,
+    pub background_color_rgba: Option<Vec<f64>>,
+    pub background_color_string: Option<String>,
+    pub current_clip_depth: Option<f64>,
+    pub display_object_clip_hooks: Option<DisplayObjectClipHooks>,
+    pub pixel_ratio: Option<f64>,
+    pub render_alpha: Option<f64>,
+    pub render_blend_mode: Option<BlendMode>,
+    pub render_transform2_d: Option<Matrix>,
+    pub scene_graph_sync_policy: Option<SceneGraphSyncPolicy>,
+    pub round_pixels: Option<bool>,
+}
+impl PartialEq for FlightPartialRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord3 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub material: Option<Material>,
+    pub material_data: Option<MaterialData>,
+}
+impl PartialEq for FlightPartialRecord3 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/render/src/renderProxy.ts:28 (sha256:d894ec3d1e6e7a6a856346f4278e905842c32b9f1a96201950040c468c38fa0c)
 type AdaptHook = std::sync::Arc<
@@ -81,10 +153,10 @@ pub fn create_render_proxy(state: &RenderState, source: &Renderable) -> RenderPr
 
 // Source: upstream/packages/render/src/renderProxy.ts:68 (sha256:1d50624211f554619cb4603869ccdc0833d651a1f97e656af52537147d9dc2dd)
 #[derive(Clone)]
-struct CreateRenderProxy2DRecord1 {
+struct CreateRenderProxy2DRecord4 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateRenderProxy2DRecord1 {
+impl PartialEq for CreateRenderProxy2DRecord4 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -92,7 +164,7 @@ impl PartialEq for CreateRenderProxy2DRecord1 {
 
 pub fn create_render_proxy2_d(
     state: &RenderState,
-    source: &CreateRenderProxy2DRecord1,
+    source: &CreateRenderProxy2DRecord4,
 ) -> RenderProxy2D {
     let mut node = create_render_proxy(state, source);
     node.transform2_d = create_matrix(None, None, None, None, None, None);
@@ -151,10 +223,10 @@ pub fn dispose_render_proxy(state: &RenderState, source: &Renderable) -> () {
 
 // Source: upstream/packages/render/src/renderProxy.ts:102 (sha256:099caff0f69c91cbabd32183dd8757f741a004aa325fa5b436e39529f5cfcf73)
 #[derive(Clone)]
-struct GetOrCreateRenderProxy2DRecord1 {
+struct GetOrCreateRenderProxy2DRecord4 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for GetOrCreateRenderProxy2DRecord1 {
+impl PartialEq for GetOrCreateRenderProxy2DRecord4 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -374,7 +446,28 @@ pub fn walk_node(
         if is_render_proxy_dirty(
             state,
             &current,
-            &data,
+            &RenderProxy {
+                __flight_identity: std::sync::Arc::clone(&(data).__flight_identity),
+                source: ((data).source).clone(),
+                kind: ((data).kind).clone(),
+                next: ((data).next).clone(),
+                alpha: (data).alpha,
+                appearance_frame_id: (data).appearance_frame_id,
+                blend_mode: ((data).blend_mode).clone(),
+                color_transform: ((data).color_transform).clone(),
+                material: ((data).material).clone(),
+                material_data: ((data).material_data).clone(),
+                last_appearance_id: (data).last_appearance_id,
+                last_local_content_id: (data).last_local_content_id,
+                last_local_transform_id: (data).last_local_transform_id,
+                name: ((data).name).clone(),
+                renderer: ((data).renderer).clone(),
+                renderer_data: ((data).renderer_data).clone(),
+                renderer_data_source: ((data).renderer_data_source).clone(),
+                renderer_map_id: (data).renderer_map_id,
+                transform_frame_id: (data).transform_frame_id,
+                visible: (data).visible,
+            },
             Some(((parent_data).clone().unwrap()).clone()),
         ) {
             visit(

@@ -171,7 +171,7 @@ pub fn capture_mesh_morph_bind_pose(geometry: &MeshGeometry) -> MeshMorphBindPos
         get_vertex_attribute_float_offset(&geometry.layout, "position".to_owned());
     let normal_offset = get_vertex_attribute_float_offset(&geometry.layout, "normal".to_owned());
     let tangent_offset = get_vertex_attribute_float_offset(&geometry.layout, "tangent".to_owned());
-    let mut positions = vec![0.0_f32; (vertex_count * 3.0_f64) as usize];
+    let mut positions: Vec<f32> = vec![0.0_f32; (vertex_count * 3.0_f64) as usize];
     let mut normals = if (normal_offset >= 0.0_f64) {
         Some(vec![0.0_f32; (vertex_count * 3.0_f64) as usize])
     } else {

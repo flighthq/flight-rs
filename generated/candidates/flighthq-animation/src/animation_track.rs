@@ -248,7 +248,7 @@ fn clone_number_buffer(src: &Vec<f64>) -> crate::FlightUnion2<Vec<f64>, Vec<f32>
     if false {
         return crate::FlightUnion2::<Vec<f64>, Vec<f32>>::A((src).clone());
     }
-    let mut out = vec![Default::default(); (src.len() as f64) as usize];
+    let mut out: Vec<f64> = vec![Default::default(); (src.len() as f64) as usize];
     {
         let mut i = 0.0_f64;
         while (i < (src.len() as f64)) {

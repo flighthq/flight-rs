@@ -24,7 +24,7 @@ fn __flight_js_to_i32(value: f64) -> i32 {
 // Source: upstream/packages/bitmapfont/src/bitmapFont.ts:10 (sha256:ddd67650e85a2fb766553fbfe3db270e9d61164942d225f66d3fbe92cee1aa9f)
 pub fn create_bitmap_font(data: &BitmapFontData) -> BitmapFont {
     let page_count = (data.pages.len() as f64);
-    let mut glyphs = Vec::new();
+    let mut glyphs: Vec<(f64, GlyphEntry)> = Vec::new();
     for glyph in ((data.glyphs).clone()).iter().cloned() {
         let page = (glyph.page).unwrap_or(0.0_f64);
         {
@@ -51,7 +51,7 @@ pub fn create_bitmap_font(data: &BitmapFontData) -> BitmapFont {
             }
         };
     }
-    let mut kerning = Vec::new();
+    let mut kerning: Vec<(f64, f64)> = Vec::new();
     if ((data.kerning).clone()).is_some() {
         for pair in ((data.kerning).clone())
             .as_ref()

@@ -27,6 +27,6 @@ pub fn dispose_clock(clock: &mut Clock) -> () {
     }
     clock.children.clear();
     if ((clock.on_tick).clone()).is_some() {
-        clear_signal(&mut clock.on_tick);
+        clear_signal(clock.on_tick.as_mut().unwrap());
     }
 }

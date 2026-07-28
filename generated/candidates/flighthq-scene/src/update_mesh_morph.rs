@@ -25,7 +25,7 @@ pub fn update_mesh_morph(mesh: &mut Mesh) -> () {
     }
     blend_mesh_geometry_morph(
         &mut mesh.geometry,
-        morph.as_ref().unwrap(),
+        &morph.as_ref().unwrap(),
         bind_pose.as_mut().unwrap(),
     );
 }

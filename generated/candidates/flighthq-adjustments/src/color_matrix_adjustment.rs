@@ -7,26 +7,40 @@
 #![allow(unused_parens)]
 
 use crate::COLOR_MATRIX_LENGTH as color_matrix_length_constant;
+use flighthq_types::AdjustmentKind;
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub kind: Option<AdjustmentKind>,
+    pub color_matrix: Option<Vec<f64>>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/adjustments/src/colorMatrixAdjustment.ts:9 (sha256:bcb99d30a02350b0fe0cd77861c66f0d1347a1b34f69effc36574a2181e98898)
 #[derive(Clone)]
-struct GetAdjustmentColorMatrixRecord1 {
+struct GetAdjustmentColorMatrixRecord2 {
     __flight_identity: std::sync::Arc<()>,
     kind: String,
 }
-impl PartialEq for GetAdjustmentColorMatrixRecord1 {
+impl PartialEq for GetAdjustmentColorMatrixRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 pub fn get_adjustment_color_matrix(
-    operation: &GetAdjustmentColorMatrixRecord1,
+    operation: &GetAdjustmentColorMatrixRecord2,
 ) -> Option<Vec<f64>> {
-    return if ((array.is_array)(operation.color_matrix)
-        && ((operation.color_matrix.len() as f64) == color_matrix_length_constant))
+    let matrix = (operation.color_matrix).clone();
+    return if ((array.is_array)(matrix)
+        && ((matrix.as_ref().unwrap().len() as f64) == color_matrix_length_constant))
     {
-        Some((operation.color_matrix).clone())
+        (matrix).clone()
     } else {
         None
     };
@@ -34,16 +48,16 @@ pub fn get_adjustment_color_matrix(
 
 // Source: upstream/packages/adjustments/src/colorMatrixAdjustment.ts:15 (sha256:ae984486a3ac2724e48ba3d0fcbab65099e12d56c0de5f73166c3bfb1aeb4fd7)
 #[derive(Clone)]
-struct IsColorMatrixAdjustmentRecord1 {
+struct IsColorMatrixAdjustmentRecord2 {
     __flight_identity: std::sync::Arc<()>,
     kind: String,
 }
-impl PartialEq for IsColorMatrixAdjustmentRecord1 {
+impl PartialEq for IsColorMatrixAdjustmentRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-pub fn is_color_matrix_adjustment(operation: &IsColorMatrixAdjustmentRecord1) -> bool {
+pub fn is_color_matrix_adjustment(operation: &IsColorMatrixAdjustmentRecord2) -> bool {
     return (get_adjustment_color_matrix(operation)).is_some();
 }

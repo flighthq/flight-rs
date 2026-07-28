@@ -107,11 +107,36 @@ describe('Rust emission', () => {
         export interface StringMeasureBackend {
           readonly measure: (value: string) => number;
         }
+        export interface Defaults {
+          count: number;
+          name: string;
+        }
+        export interface BasePosition {
+          x: number;
+        }
+        export interface PositionedValue extends BasePosition {
+          label: string;
+        }
         function measureString(value: string): number {
           return value.length;
         }
+        function fillDefaults(options?: Partial<Defaults>): Defaults {
+          return {
+            count: options?.count ?? 0,
+            name: options?.name ?? 'default',
+          };
+        }
         export function createStringMeasureBackend(): StringMeasureBackend {
           return { measure: measureString };
+        }
+        export function createDefaults(): Defaults {
+          return fillDefaults({ count: 2 });
+        }
+        function readBasePosition(value: Readonly<BasePosition>): number {
+          return value.x;
+        }
+        export function readPositionedValue(value: Readonly<PositionedValue>): number {
+          return readBasePosition(value);
         }
         export function collectWeights(values: ReadonlyArray<Readonly<Weighted>>): Float32Array {
           const total = values.reduce((sum, value) => sum + (value.weight ?? 1), 0);
@@ -139,7 +164,12 @@ describe('Rust emission', () => {
           copyLookup(out, values);
         }
         export function cloneFloats(values: Float32Array): Float32Array {
-          return new Float32Array(values);
+          const copy = new Float32Array(values);
+          return copy;
+        }
+        export function normalizedFloat(values: Float32Array, index: number): number {
+          const normalized = values[index] / 2;
+          return normalized + 1;
         }
         export function reserveInts(values: Int16Array, capacity: number): Int16Array {
           const out = new Int16Array(capacity);
@@ -151,6 +181,9 @@ describe('Rust emission', () => {
         }
         export function findName(values: readonly string[], name: string): number {
           return values.indexOf(name);
+        }
+        export function collectionSize(map: Map<string, number>, set: Set<number>): number {
+          return map.size + set.size;
         }
         export function clearValues(values: number[]): void {
           values.length = 0;
@@ -168,6 +201,15 @@ describe('Rust emission', () => {
         export function optionalValue(options?: Readonly<OptionalValue>): number {
           return options?.value ?? 0;
         }
+        export function allValues(values: readonly (number | null)[]): boolean {
+          return values.every((value) => value !== null);
+        }
+        function isPositive(value: number): boolean {
+          return value > 0;
+        }
+        export function somePositive(values: readonly number[]): boolean {
+          return values.some(isPositive);
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -182,7 +224,7 @@ describe('Rust emission', () => {
 
     expect(lowered.diagnostics).toEqual([]);
     expect(output).toContain('pub struct Weighted');
-    expect(output).toContain('pub struct NestedCallbacksRecord1');
+    expect(output).toContain('pub struct NestedCallbacksRecord2');
     expect(output).toContain('.iter().cloned().fold');
     expect(output).toContain('Vec<f32>');
     expect(output).toContain('Some(Bounds {');
@@ -191,14 +233,23 @@ describe('Rust emission', () => {
     expect(output).toContain('copy_lookup(out, Some(');
     expect(output).toContain('pub names: Option<Vec<String>>');
     expect(output).toContain('.iter().map(|value| (*value) as f32).collect()');
+    expect(output).toContain('let copy: Vec<f32>');
+    expect(output).toContain('let normalized = ((values[index as usize] as f64) / 2.0_f64)');
     expect(output).toContain('let __flight_values: Vec<i16>');
     expect(output).toContain('.position(|item| item == &__flight_value).map_or(-1.0_f64');
+    expect(output).toMatch(/map\.len\(\) as f64.*set\.len\(\) as f64/u);
     expect(output).toContain('values.clear()');
     expect(output).toContain('names: None');
     expect(output).toContain('(values).is_none()');
     expect(output).toContain('f64::INFINITY');
     expect(output).toContain('options.as_ref().and_then(|value| value.value)');
     expect(output).toContain('measure: std::sync::Arc::new(std::sync::Mutex::new(Box::new(');
+    expect(output).toContain('count: Some(2.0_f64)');
+    expect(output).toContain('name: None');
+    expect(output).toContain('.iter().cloned().all(|value: Option<f64>| -> bool');
+    expect(output).toContain('.iter().cloned().any(|__flight_item| is_positive(__flight_item))');
+    expect(output).toContain('&BasePosition {');
+    expect(output).toContain('x: (value).x');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
     const sourceFile = path.join(fixture, 'lib.rs');
@@ -209,6 +260,50 @@ describe('Rust emission', () => {
         stdio: 'pipe',
       }),
     ).not.toThrow();
+  });
+
+  it('narrows discriminated unions and wraps named union assignments', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/camera/src/projection.ts',
+      `
+        export interface OrthographicProjection {
+          kind: 'orthographic';
+          halfWidth: number;
+        }
+        export interface PerspectiveProjection {
+          kind: 'perspective';
+          fovY: number;
+        }
+        export type Projection = OrthographicProjection | PerspectiveProjection;
+        export interface CameraState {
+          projection: Projection;
+        }
+        export function projectionWidth(projection: Projection): number {
+          if (projection.kind === 'perspective') return projection.fovY;
+          return projection.halfWidth;
+        }
+        export function setOrthographic(
+          camera: CameraState,
+          projection: OrthographicProjection,
+        ): void {
+          camera.projection = projection;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/camera', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/camera/src/projection.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('matches!(&(projection), Projection::B(_))');
+    expect(output).toContain('Projection::A(');
+    expect(output).toContain('TypeScript union narrowing failed');
   });
 
   it('resolves TypeScript value imports to emitted Rust function bindings', () => {

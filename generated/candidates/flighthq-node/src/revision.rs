@@ -7,7 +7,10 @@
 #![allow(unused_parens)]
 
 use crate::get_node_runtime;
-use flighthq_types::{Node, NodeRuntime};
+use flighthq_types::{
+    Adjustment, ColorTransform, InteractionSignals, Node, NodeInteractionState, NodeRuntime,
+    NodeSignals, NodeTraitsKey,
+};
 
 #[inline]
 fn __flight_js_to_u32(value: f64) -> u32 {
@@ -15,6 +18,42 @@ fn __flight_js_to_u32(value: f64) -> u32 {
         return 0;
     }
     value.trunc().rem_euclid(4294967296.0_f64) as u32
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub appearance_id: Option<f64>,
+    pub bounds_using_local_bounds_id: Option<f64>,
+    pub bounds_using_local_transform_id: Option<f64>,
+    pub can_add_child: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    >,
+    pub children: Option<Vec<Node>>,
+    pub color_adjustments: Option<Vec<Adjustment>>,
+    pub resolved_color_transform: Option<ColorTransform>,
+    pub color_adjustments_channel_mixing: Option<bool>,
+    pub traits: Option<NodeTraitsKey>,
+    pub interaction_signals: Option<InteractionSignals>,
+    pub local_bounds_id: Option<f64>,
+    pub local_bounds_using_local_bounds_id: Option<f64>,
+    pub local_content_id: Option<f64>,
+    pub local_transform_id: Option<f64>,
+    pub local_transform_using_local_transform_id: Option<f64>,
+    pub node_signals: Option<NodeSignals>,
+    pub interaction_state: Option<NodeInteractionState>,
+    pub parent: Option<Node>,
+    pub world_bounds_using_local_bounds_id: Option<f64>,
+    pub world_bounds_using_world_transform_id: Option<f64>,
+    pub world_transform_id: Option<f64>,
+    pub world_transform_using_local_transform_id: Option<f64>,
+    pub world_transform_using_parent_transform_id: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/node/src/revision.ts:11 (sha256:c7f9f4d4ce86cf8e4acf1ccd9876925b18e7d618c826f5054fd84f26036c0a38)

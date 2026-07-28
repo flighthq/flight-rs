@@ -456,7 +456,11 @@ pub fn create_cylinder_mesh_geometry(
                     let mut nx = cos;
                     let mut ny = slope;
                     let mut nz = sin;
-                    let len = ((((nx * nx) + (ny * ny)) + (nz * nz)).sqrt() || 1.0_f64);
+                    let len = if ((((nx * nx) + (ny * ny)) + (nz * nz)).sqrt()) != 0.0_f64 {
+                        (((nx * nx) + (ny * ny)) + (nz * nz)).sqrt()
+                    } else {
+                        1.0_f64
+                    };
                     nx /= len;
                     ny /= len;
                     nz /= len;
@@ -1199,21 +1203,33 @@ pub fn create_torus_knot_mesh_geometry(
             let mut tgx = (tx1 - tx0);
             let mut tgy = (ty1 - ty0);
             let mut tgz = (tz1 - tz0);
-            let tg_len = ((((tgx * tgx) + (tgy * tgy)) + (tgz * tgz)).sqrt() || 1.0_f64);
+            let tg_len = if ((((tgx * tgx) + (tgy * tgy)) + (tgz * tgz)).sqrt()) != 0.0_f64 {
+                (((tgx * tgx) + (tgy * tgy)) + (tgz * tgz)).sqrt()
+            } else {
+                1.0_f64
+            };
             tgx /= tg_len;
             tgy /= tg_len;
             tgz /= tg_len;
             let mut bx = (tgx + cx);
             let mut by = (tgy + cy);
             let mut bz = (tgz + cz);
-            let b_len = ((((bx * bx) + (by * by)) + (bz * bz)).sqrt() || 1.0_f64);
+            let b_len = if ((((bx * bx) + (by * by)) + (bz * bz)).sqrt()) != 0.0_f64 {
+                (((bx * bx) + (by * by)) + (bz * bz)).sqrt()
+            } else {
+                1.0_f64
+            };
             bx /= b_len;
             by /= b_len;
             bz /= b_len;
             let mut nnx = ((tgy * bz) - (tgz * by));
             let mut nny = ((tgz * bx) - (tgx * bz));
             let mut nnz = ((tgx * by) - (tgy * bx));
-            let n_len = ((((nnx * nnx) + (nny * nny)) + (nnz * nnz)).sqrt() || 1.0_f64);
+            let n_len = if ((((nnx * nnx) + (nny * nny)) + (nnz * nnz)).sqrt()) != 0.0_f64 {
+                (((nnx * nnx) + (nny * nny)) + (nnz * nnz)).sqrt()
+            } else {
+                1.0_f64
+            };
             nnx /= n_len;
             nny /= n_len;
             nnz /= n_len;
@@ -1314,7 +1330,11 @@ pub fn create_torus_mesh_geometry(
                     let mut nx = (px - cx);
                     let mut ny = (py - cy);
                     let mut nz = pz;
-                    let len = ((((nx * nx) + (ny * ny)) + (nz * nz)).sqrt() || 1.0_f64);
+                    let len = if ((((nx * nx) + (ny * ny)) + (nz * nz)).sqrt()) != 0.0_f64 {
+                        (((nx * nx) + (ny * ny)) + (nz * nz)).sqrt()
+                    } else {
+                        1.0_f64
+                    };
                     nx /= len;
                     ny /= len;
                     nz /= len;
@@ -1419,7 +1439,8 @@ fn build_canonical_mesh_geometry(
     indices: &Vec<f64>,
 ) -> MeshGeometry {
     let vertex_count = ((positions.len() as f64) / 3.0_f64);
-    let mut vertices = vec![0.0_f32; (vertex_count * CANONICAL_FLOATS_PER_VERTEX) as usize];
+    let mut vertices: Vec<f32> =
+        vec![0.0_f32; (vertex_count * CANONICAL_FLOATS_PER_VERTEX) as usize];
     {
         let mut i = 0.0_f64;
         while (i < vertex_count) {
@@ -1443,7 +1464,7 @@ fn build_canonical_mesh_geometry(
             };
         }
     }
-    let mut index_array = vec![0_u32; (indices.len() as f64) as usize];
+    let mut index_array: Vec<u32> = vec![0_u32; (indices.len() as f64) as usize];
     {
         let __flight_offset = (0.0_f64) as usize;
         let __flight_values: Vec<u32> = (indices).iter().map(|value| (*value) as u32).collect();

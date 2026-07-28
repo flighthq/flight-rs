@@ -28,7 +28,7 @@ pub fn build_particle_color_curve(
 ) -> Vec<f64> {
     let samples = samples.unwrap_or(33.0_f64);
     let n = (2.0_f64).max((__flight_js_to_i32(samples) | __flight_js_to_i32(0.0_f64)) as f64);
-    let mut lut = vec![Default::default(); (n * 3.0_f64) as usize];
+    let mut lut: Vec<f64> = vec![Default::default(); (n * 3.0_f64) as usize];
     {
         let mut i = 0.0_f64;
         while (i < n) {
@@ -79,7 +79,7 @@ pub fn build_particle_curve(
 ) -> Vec<f64> {
     let samples = samples.unwrap_or(33.0_f64);
     let n = (2.0_f64).max((__flight_js_to_i32(samples) | __flight_js_to_i32(0.0_f64)) as f64);
-    let mut lut = vec![Default::default(); (n) as usize];
+    let mut lut: Vec<f64> = vec![Default::default(); (n) as usize];
     {
         let mut i = 0.0_f64;
         while (i < n) {

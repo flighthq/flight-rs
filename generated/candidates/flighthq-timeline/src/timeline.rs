@@ -8,9 +8,28 @@
 
 use flighthq_signals::{create_signal, emit_signal};
 use flighthq_types::{
-    DisplayObject, FrameScript, Timeline, TimelineFrameEvent, TimelineLabel, TimelineSignals,
-    TimelineSource,
+    DisplayObject, FrameScript, Timeline, TimelineFrameEvent, TimelineLabel, TimelinePlayMode,
+    TimelineSignals, TimelineSource,
 };
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub source: Option<TimelineSource>,
+    pub target: Option<DisplayObject>,
+    pub current_frame: Option<f64>,
+    pub frame_scripts: Option<Vec<(f64, FrameScript)>>,
+    pub is_playing: Option<bool>,
+    pub time_elapsed: Option<f64>,
+    pub last_frame_update: Option<f64>,
+    pub play_mode: Option<TimelinePlayMode>,
+    pub signals: Option<TimelineSignals>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/timeline/src/timeline.ts:12 (sha256:cc8b05b7dad875e3c989fa675ab387eae59048756634b98790fc0f3b56c51b3d)
 pub fn add_timeline_frame_script(
@@ -27,16 +46,16 @@ pub fn add_timeline_frame_script(
 }
 
 // Source: upstream/packages/timeline/src/timeline.ts:17 (sha256:f24f67d158c066578e39768085a54a1194ffcd26260d7c7abd67517dec60b181)
-pub fn create_timeline(obj: Option<Timeline>) -> Timeline {
+pub fn create_timeline(obj: Option<FlightPartialRecord1>) -> Timeline {
     return Timeline {
         __flight_identity: std::sync::Arc::new(()),
         source: obj.as_ref().and_then(|value| (value.source).clone()),
         target: obj.as_ref().and_then(|value| (value.target).clone()),
-        current_frame: (obj.as_ref().map(|value| value.current_frame)).unwrap_or(1.0_f64),
+        current_frame: (obj.as_ref().and_then(|value| value.current_frame)).unwrap_or(1.0_f64),
         frame_scripts: obj.as_ref().and_then(|value| (value.frame_scripts).clone()),
-        is_playing: (obj.as_ref().map(|value| value.is_playing)).unwrap_or(false),
+        is_playing: (obj.as_ref().and_then(|value| value.is_playing)).unwrap_or(false),
         last_frame_update: (-1.0_f64),
-        play_mode: (obj.as_ref().map(|value| (value.play_mode).clone()))
+        play_mode: (obj.as_ref().and_then(|value| (value.play_mode).clone()))
             .unwrap_or("loop".to_owned()),
         signals: obj.as_ref().and_then(|value| (value.signals).clone()),
         time_elapsed: 0.0_f64,
@@ -45,7 +64,7 @@ pub fn create_timeline(obj: Option<Timeline>) -> Timeline {
 
 // Source: upstream/packages/timeline/src/timeline.ts:35 (sha256:8c2623b30f531687bfcf86a7365eef7a608418cd1bf797f02bc930a74bdc4fd0)
 #[derive(Clone)]
-struct CreateTimelineSourceRecord1 {
+struct CreateTimelineSourceRecord2 {
     __flight_identity: std::sync::Arc<()>,
     total_frames: Option<f64>,
     frame_rate: Option<f64>,
@@ -54,13 +73,13 @@ struct CreateTimelineSourceRecord1 {
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(DisplayObject, f64) -> () + Send + 'static>>>,
     >,
 }
-impl PartialEq for CreateTimelineSourceRecord1 {
+impl PartialEq for CreateTimelineSourceRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-pub fn create_timeline_source(obj: &CreateTimelineSourceRecord1) -> TimelineSource {
+pub fn create_timeline_source(obj: &CreateTimelineSourceRecord2) -> TimelineSource {
     return TimelineSource {
         __flight_identity: std::sync::Arc::new(()),
         total_frames: (obj.total_frames).unwrap_or(1.0_f64),
@@ -198,16 +217,7 @@ pub fn remove_timeline_frame_script(
             false
         }
     };
-    if (timeline
-        .frame_scripts
-        .as_ref()
-        .unwrap()
-        .iter()
-        .find(|(key, _)| key == &"size")
-        .map(|(_, value)| value.clone())
-        .expect("TypeScript Record key was absent")
-        == 0.0_f64)
-    {
+    if ((timeline.frame_scripts.as_ref().unwrap().len() as f64) == 0.0_f64) {
         timeline.frame_scripts = None;
     }
 }
@@ -391,7 +401,16 @@ fn resolve_frame(timeline: &Timeline, frame: &crate::FlightUnion2<f64, String>) 
         },
     );
     if (label).is_none() {
-        panic!("{}", format!("Frame label \"{}\" not found", frame));
+        panic!(
+            "{}",
+            format!(
+                "Frame label \"{}\" not found",
+                match (*frame).clone() {
+                    crate::FlightUnion2::A(_) => panic!("TypeScript union narrowing failed"),
+                    crate::FlightUnion2::B(value) => value,
+                }
+            )
+        );
     }
     return label.as_ref().unwrap().frame;
 }

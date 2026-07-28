@@ -9,9 +9,10 @@
 use crate::create_surface_material;
 use flighthq_color::unpack_color_to_linear;
 use flighthq_types::{
+    AlphaType, BlendMode, Kind, MaterialAlphaMode,
     SPECULAR_GLOSSINESS_PBR_MATERIAL_KIND as specular_glossiness_pbr_material_kind_constant,
     STANDARD_PBR_MATERIAL_KIND as standard_pbr_material_kind_constant,
-    SpecularGlossinessPbrMaterial, StandardPbrMaterial, StandardPbrMaterialProperties,
+    SpecularGlossinessPbrMaterial, StandardPbrMaterial, StandardPbrMaterialProperties, Texture,
 };
 
 #[inline]
@@ -25,6 +26,86 @@ fn __flight_js_to_u32(value: f64) -> u32 {
 #[inline]
 fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub kind: Option<Kind>,
+    pub name: Option<String>,
+    pub alpha_cutoff: Option<f64>,
+    pub alpha_mode: Option<MaterialAlphaMode>,
+    pub alpha_type: Option<AlphaType>,
+    pub blend_mode: Option<BlendMode>,
+    pub double_sided: Option<bool>,
+    pub diffuse: Option<f64>,
+    pub diffuse_map: Option<Texture>,
+    pub emissive: Option<f64>,
+    pub emissive_map: Option<Texture>,
+    pub emissive_strength: Option<f64>,
+    pub glossiness: Option<f64>,
+    pub normal_map: Option<Texture>,
+    pub normal_scale: Option<f64>,
+    pub occlusion_map: Option<Texture>,
+    pub occlusion_strength: Option<f64>,
+    pub specular: Option<f64>,
+    pub specular_glossiness_map: Option<Texture>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub kind: Option<Kind>,
+    pub name: Option<String>,
+    pub alpha_cutoff: Option<f64>,
+    pub alpha_mode: Option<MaterialAlphaMode>,
+    pub alpha_type: Option<AlphaType>,
+    pub blend_mode: Option<BlendMode>,
+    pub double_sided: Option<bool>,
+    pub base_color: Option<f64>,
+    pub base_color_map: Option<Texture>,
+    pub emissive: Option<f64>,
+    pub emissive_map: Option<Texture>,
+    pub emissive_strength: Option<f64>,
+    pub metallic: Option<f64>,
+    pub metallic_roughness_map: Option<Texture>,
+    pub normal_map: Option<Texture>,
+    pub normal_scale: Option<f64>,
+    pub occlusion_map: Option<Texture>,
+    pub occlusion_strength: Option<f64>,
+    pub roughness: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord3 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub base_color: Option<f64>,
+    pub base_color_map: Option<Texture>,
+    pub emissive: Option<f64>,
+    pub emissive_map: Option<Texture>,
+    pub emissive_strength: Option<f64>,
+    pub metallic: Option<f64>,
+    pub metallic_roughness_map: Option<Texture>,
+    pub normal_map: Option<Texture>,
+    pub normal_scale: Option<f64>,
+    pub occlusion_map: Option<Texture>,
+    pub occlusion_strength: Option<f64>,
+    pub roughness: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord3 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/materials/src/pbrMaterials.ts:23 (sha256:4846ac22876a1277fb9e084e5fd6d87f1254ca1b0fc2d64a65465ee5ba84be40)
@@ -77,25 +158,26 @@ pub fn convert_specular_glossiness_to_standard_pbr(
 
 // Source: upstream/packages/materials/src/pbrMaterials.ts:82 (sha256:6d1e5a7dd1430e301aca3227e55149598a38dc442ceaafc42b6d1630f3fea604)
 pub fn create_specular_glossiness_pbr_material(
-    opts: Option<SpecularGlossinessPbrMaterial>,
+    opts: Option<FlightPartialRecord1>,
 ) -> SpecularGlossinessPbrMaterial {
     let mut material =
         create_surface_material((specular_glossiness_pbr_material_kind_constant).to_owned());
-    material.diffuse = (opts.as_ref().map(|value| value.diffuse)).unwrap_or(4294967295.0_f64);
+    material.diffuse = (opts.as_ref().and_then(|value| value.diffuse)).unwrap_or(4294967295.0_f64);
     material.diffuse_map = opts.as_ref().and_then(|value| (value.diffuse_map).clone());
-    material.emissive = (opts.as_ref().map(|value| value.emissive)).unwrap_or(255.0_f64);
+    material.emissive = (opts.as_ref().and_then(|value| value.emissive)).unwrap_or(255.0_f64);
     material.emissive_map = opts.as_ref().and_then(|value| (value.emissive_map).clone());
     material.emissive_strength =
-        (opts.as_ref().map(|value| value.emissive_strength)).unwrap_or(1.0_f64);
-    material.glossiness = (opts.as_ref().map(|value| value.glossiness)).unwrap_or(1.0_f64);
+        (opts.as_ref().and_then(|value| value.emissive_strength)).unwrap_or(1.0_f64);
+    material.glossiness = (opts.as_ref().and_then(|value| value.glossiness)).unwrap_or(1.0_f64);
     material.normal_map = opts.as_ref().and_then(|value| (value.normal_map).clone());
-    material.normal_scale = (opts.as_ref().map(|value| value.normal_scale)).unwrap_or(1.0_f64);
+    material.normal_scale = (opts.as_ref().and_then(|value| value.normal_scale)).unwrap_or(1.0_f64);
     material.occlusion_map = opts
         .as_ref()
         .and_then(|value| (value.occlusion_map).clone());
     material.occlusion_strength =
-        (opts.as_ref().map(|value| value.occlusion_strength)).unwrap_or(1.0_f64);
-    material.specular = (opts.as_ref().map(|value| value.specular)).unwrap_or(4294967295.0_f64);
+        (opts.as_ref().and_then(|value| value.occlusion_strength)).unwrap_or(1.0_f64);
+    material.specular =
+        (opts.as_ref().and_then(|value| value.specular)).unwrap_or(4294967295.0_f64);
     material.specular_glossiness_map = opts
         .as_ref()
         .and_then(|value| (value.specular_glossiness_map).clone());
@@ -103,7 +185,7 @@ pub fn create_specular_glossiness_pbr_material(
 }
 
 // Source: upstream/packages/materials/src/pbrMaterials.ts:104 (sha256:2aec8f6092e3534c75f4a3953fd7b612468639f95e378d26fd5cb1e5d604c3e6)
-pub fn create_standard_pbr_material(opts: Option<StandardPbrMaterial>) -> StandardPbrMaterial {
+pub fn create_standard_pbr_material(opts: Option<FlightPartialRecord2>) -> StandardPbrMaterial {
     let mut material = create_surface_material((standard_pbr_material_kind_constant).to_owned());
     assign_standard_pbr_material_properties(&mut material, Some(((opts).clone().unwrap()).clone()));
     return material;
@@ -111,17 +193,17 @@ pub fn create_standard_pbr_material(opts: Option<StandardPbrMaterial>) -> Standa
 
 // Source: upstream/packages/materials/src/pbrMaterials.ts:113 (sha256:ffc83ec68e9fe692c7c4c9719572cc5fa67771f90a9fe42f2b02caf9f0584bcb)
 #[derive(Clone)]
-struct CreateStandardPbrMaterialPropertiesRecord1 {
+struct CreateStandardPbrMaterialPropertiesRecord4 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateStandardPbrMaterialPropertiesRecord1 {
+impl PartialEq for CreateStandardPbrMaterialPropertiesRecord4 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 pub fn create_standard_pbr_material_properties(
-    opts: Option<StandardPbrMaterialProperties>,
+    opts: Option<FlightPartialRecord3>,
 ) -> StandardPbrMaterialProperties {
     let mut properties = StandardPbrMaterialProperties {
         __flight_identity: std::sync::Arc::new(()),
@@ -136,28 +218,29 @@ pub fn create_standard_pbr_material_properties(
 // Source: upstream/packages/materials/src/pbrMaterials.ts:123 (sha256:d85d2e708d1f2dc62493236719438cf15efe77c835cb7179c53e09a02fd654cc)
 fn assign_standard_pbr_material_properties(
     target: &mut StandardPbrMaterialProperties,
-    opts: Option<StandardPbrMaterialProperties>,
+    opts: Option<FlightPartialRecord3>,
 ) -> () {
-    target.base_color = (opts.as_ref().map(|value| value.base_color)).unwrap_or(4294967295.0_f64);
+    target.base_color =
+        (opts.as_ref().and_then(|value| value.base_color)).unwrap_or(4294967295.0_f64);
     target.base_color_map = opts
         .as_ref()
         .and_then(|value| (value.base_color_map).clone());
-    target.emissive = (opts.as_ref().map(|value| value.emissive)).unwrap_or(255.0_f64);
+    target.emissive = (opts.as_ref().and_then(|value| value.emissive)).unwrap_or(255.0_f64);
     target.emissive_map = opts.as_ref().and_then(|value| (value.emissive_map).clone());
     target.emissive_strength =
-        (opts.as_ref().map(|value| value.emissive_strength)).unwrap_or(1.0_f64);
-    target.metallic = (opts.as_ref().map(|value| value.metallic)).unwrap_or(0.0_f64);
+        (opts.as_ref().and_then(|value| value.emissive_strength)).unwrap_or(1.0_f64);
+    target.metallic = (opts.as_ref().and_then(|value| value.metallic)).unwrap_or(0.0_f64);
     target.metallic_roughness_map = opts
         .as_ref()
         .and_then(|value| (value.metallic_roughness_map).clone());
     target.normal_map = opts.as_ref().and_then(|value| (value.normal_map).clone());
-    target.normal_scale = (opts.as_ref().map(|value| value.normal_scale)).unwrap_or(1.0_f64);
+    target.normal_scale = (opts.as_ref().and_then(|value| value.normal_scale)).unwrap_or(1.0_f64);
     target.occlusion_map = opts
         .as_ref()
         .and_then(|value| (value.occlusion_map).clone());
     target.occlusion_strength =
-        (opts.as_ref().map(|value| value.occlusion_strength)).unwrap_or(1.0_f64);
-    target.roughness = (opts.as_ref().map(|value| value.roughness)).unwrap_or(1.0_f64);
+        (opts.as_ref().and_then(|value| value.occlusion_strength)).unwrap_or(1.0_f64);
+    target.roughness = (opts.as_ref().and_then(|value| value.roughness)).unwrap_or(1.0_f64);
 }
 
 // Source: upstream/packages/materials/src/pbrMaterials.ts:142 (sha256:d73291d2c9a128374c2e52e8713d2f8ac4c87c45e28969c9f1bba7dfb19b8913)

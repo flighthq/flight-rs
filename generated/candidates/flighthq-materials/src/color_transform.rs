@@ -22,9 +22,27 @@ fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
 }
 
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub alpha_multiplier: Option<f64>,
+    pub alpha_offset: Option<f64>,
+    pub blue_multiplier: Option<f64>,
+    pub blue_offset: Option<f64>,
+    pub green_multiplier: Option<f64>,
+    pub green_offset: Option<f64>,
+    pub red_multiplier: Option<f64>,
+    pub red_offset: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 // Source: upstream/packages/materials/src/colorTransform.ts:4 (sha256:131b05762498a99e2691b50a18f3ac543088ddee563a8fab218827df95f28793)
 pub fn clone_color_transform(source: &ColorTransformLike) -> ColorTransform {
-    return create_color_transform(Some(((*source).clone()).clone()));
+    return create_color_transform(Some((source).clone()));
 }
 
 // Source: upstream/packages/materials/src/colorTransform.ts:8 (sha256:e8be109f418b7a17469cc502c92550118b7f1b60469b564549df0e812b34ae84)
@@ -136,17 +154,19 @@ pub fn copy_color_transform_to_arrays(
 }
 
 // Source: upstream/packages/materials/src/colorTransform.ts:49 (sha256:bb63464767abcaf6ad3cc2ba5a5a0ae0bd9968b4078038f1ceed7083ec2dd411)
-pub fn create_color_transform(opts: Option<ColorTransformLike>) -> ColorTransform {
+pub fn create_color_transform(opts: Option<FlightPartialRecord1>) -> ColorTransform {
     return create_entity(Some(ColorTransform {
         __flight_identity: std::sync::Arc::new(()),
-        red_multiplier: (opts.as_ref().map(|value| value.red_multiplier)).unwrap_or(1.0_f64),
-        green_multiplier: (opts.as_ref().map(|value| value.green_multiplier)).unwrap_or(1.0_f64),
-        blue_multiplier: (opts.as_ref().map(|value| value.blue_multiplier)).unwrap_or(1.0_f64),
-        alpha_multiplier: (opts.as_ref().map(|value| value.alpha_multiplier)).unwrap_or(1.0_f64),
-        red_offset: (opts.as_ref().map(|value| value.red_offset)).unwrap_or(0.0_f64),
-        green_offset: (opts.as_ref().map(|value| value.green_offset)).unwrap_or(0.0_f64),
-        blue_offset: (opts.as_ref().map(|value| value.blue_offset)).unwrap_or(0.0_f64),
-        alpha_offset: (opts.as_ref().map(|value| value.alpha_offset)).unwrap_or(0.0_f64),
+        red_multiplier: (opts.as_ref().and_then(|value| value.red_multiplier)).unwrap_or(1.0_f64),
+        green_multiplier: (opts.as_ref().and_then(|value| value.green_multiplier))
+            .unwrap_or(1.0_f64),
+        blue_multiplier: (opts.as_ref().and_then(|value| value.blue_multiplier)).unwrap_or(1.0_f64),
+        alpha_multiplier: (opts.as_ref().and_then(|value| value.alpha_multiplier))
+            .unwrap_or(1.0_f64),
+        red_offset: (opts.as_ref().and_then(|value| value.red_offset)).unwrap_or(0.0_f64),
+        green_offset: (opts.as_ref().and_then(|value| value.green_offset)).unwrap_or(0.0_f64),
+        blue_offset: (opts.as_ref().and_then(|value| value.blue_offset)).unwrap_or(0.0_f64),
+        alpha_offset: (opts.as_ref().and_then(|value| value.alpha_offset)).unwrap_or(0.0_f64),
     }));
 }
 

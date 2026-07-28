@@ -12,7 +12,113 @@ use flighthq_geometry::{
     inverse_matrix4, multiply_matrix4,
 };
 use flighthq_node::{get_node_parent, get_node_world_matrix4, set_node_local_matrix4};
-use flighthq_types::{Billboard, BillboardMode, Camera, Matrix4, Quaternion, SceneNode, Vector3};
+use flighthq_types::{
+    Adjustment, Billboard, BillboardMode, Camera, ColorTransform, InteractionSignals, Kind,
+    Material, Matrix4, MeshGeometry, Node, NodeData, NodeInteractionState, NodeSignals,
+    NodeTraitsKey, Quaternion, SceneNode, Transform3DNode, Vector3,
+};
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub data: Option<NodeData>,
+    pub enabled: Option<bool>,
+    pub kind: Option<Kind>,
+    pub name: Option<String>,
+    pub alpha: Option<f64>,
+    pub visible: Option<bool>,
+    pub position: Option<Vector3>,
+    pub rotation: Option<Quaternion>,
+    pub scale: Option<Vector3>,
+    pub geometry: Option<MeshGeometry>,
+    pub materials: Option<Vec<Option<Material>>>,
+    pub mode: Option<BillboardMode>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub appearance_id: Option<f64>,
+    pub bounds_using_local_bounds_id: Option<f64>,
+    pub bounds_using_local_transform_id: Option<f64>,
+    pub can_add_child: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    >,
+    pub children: Option<Vec<Node>>,
+    pub color_adjustments: Option<Vec<Adjustment>>,
+    pub resolved_color_transform: Option<ColorTransform>,
+    pub color_adjustments_channel_mixing: Option<bool>,
+    pub traits: Option<NodeTraitsKey>,
+    pub interaction_signals: Option<InteractionSignals>,
+    pub local_bounds_id: Option<f64>,
+    pub local_bounds_using_local_bounds_id: Option<f64>,
+    pub local_content_id: Option<f64>,
+    pub local_transform_id: Option<f64>,
+    pub local_transform_using_local_transform_id: Option<f64>,
+    pub node_signals: Option<NodeSignals>,
+    pub interaction_state: Option<NodeInteractionState>,
+    pub parent: Option<Node>,
+    pub world_bounds_using_local_bounds_id: Option<f64>,
+    pub world_bounds_using_world_transform_id: Option<f64>,
+    pub world_transform_id: Option<f64>,
+    pub world_transform_using_local_transform_id: Option<f64>,
+    pub world_transform_using_parent_transform_id: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord3 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub data: Option<NodeData>,
+    pub enabled: Option<bool>,
+    pub kind: Option<Kind>,
+    pub name: Option<String>,
+    pub alpha: Option<f64>,
+    pub visible: Option<bool>,
+    pub position: Option<Vector3>,
+    pub rotation: Option<Quaternion>,
+    pub scale: Option<Vector3>,
+}
+impl PartialEq for FlightPartialRecord3 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord4 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub alpha: Option<f64>,
+    pub visible: Option<bool>,
+}
+impl PartialEq for FlightPartialRecord4 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord5 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub position: Option<Vector3>,
+    pub rotation: Option<Quaternion>,
+    pub scale: Option<Vector3>,
+}
+impl PartialEq for FlightPartialRecord5 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/scene/src/billboardCamera.ts:25 (sha256:825e965464f88bc9d6945819ac3e5ea39a654c76d57f7d79896c3b5ffb938646)
 pub fn orient_billboard_to_camera(billboard: &Billboard, camera: &Camera) -> () {
@@ -28,7 +134,16 @@ pub fn orient_scene_billboards_to_camera(scene: &SceneNode, camera: &Camera) -> 
 
 // Source: upstream/packages/scene/src/billboardCamera.ts:44 (sha256:e0e1cf56a6834188df69070d1f7e3b9d97534d2595507dd46b68ec67e3c2a189)
 fn apply_billboard_facing(billboard: &Billboard) -> () {
-    let world = get_node_world_matrix4(billboard);
+    let world = get_node_world_matrix4(&Transform3DNode {
+        __flight_identity: std::sync::Arc::clone(&(billboard).__flight_identity),
+        data: ((billboard).data).clone(),
+        enabled: (billboard).enabled,
+        kind: ((billboard).kind).clone(),
+        name: ((billboard).name).clone(),
+        position: ((billboard).position).clone(),
+        rotation: ((billboard).rotation).clone(),
+        scale: ((billboard).scale).clone(),
+    });
     decompose_matrix4(
         &mut (*_POSITION.lock().unwrap()),
         &mut (*_ROTATION_SCRATCH.lock().unwrap()),
@@ -39,14 +154,29 @@ fn apply_billboard_facing(billboard: &Billboard) -> () {
         &mut (*_FACING_WORLD.lock().unwrap()),
         (billboard.mode).clone(),
     );
-    let parent = get_node_parent(&billboard);
+    let parent = get_node_parent(&Node {
+        __flight_identity: std::sync::Arc::clone(&(billboard).__flight_identity),
+        data: ((billboard).data).clone(),
+        enabled: (billboard).enabled,
+        kind: ((billboard).kind).clone(),
+        name: ((billboard).name).clone(),
+    });
     if (parent).is_none() {
         copy_matrix4(
             &mut (*_LOCAL_SCRATCH.lock().unwrap()),
             &(*_FACING_WORLD.lock().unwrap()),
         );
     } else {
-        let parent_world = get_node_world_matrix4(&parent.as_ref().unwrap());
+        let parent_world = get_node_world_matrix4(&Transform3DNode {
+            __flight_identity: std::sync::Arc::clone(&(parent.as_ref().unwrap()).__flight_identity),
+            data: ((parent.as_ref().unwrap()).data).clone(),
+            enabled: (parent.as_ref().unwrap()).enabled,
+            kind: ((parent.as_ref().unwrap()).kind).clone(),
+            name: ((parent.as_ref().unwrap()).name).clone(),
+            position: ((parent.as_ref().unwrap()).position).clone(),
+            rotation: ((parent.as_ref().unwrap()).rotation).clone(),
+            scale: ((parent.as_ref().unwrap()).scale).clone(),
+        });
         if inverse_matrix4(&mut (*_INVERSE_PARENT_WORLD.lock().unwrap()), &parent_world) {
             multiply_matrix4(
                 &mut (*_LOCAL_SCRATCH.lock().unwrap()),
@@ -60,7 +190,19 @@ fn apply_billboard_facing(billboard: &Billboard) -> () {
             );
         }
     }
-    set_node_local_matrix4(billboard, &(*_LOCAL_SCRATCH.lock().unwrap()));
+    set_node_local_matrix4(
+        &Transform3DNode {
+            __flight_identity: std::sync::Arc::clone(&(billboard).__flight_identity),
+            data: ((billboard).data).clone(),
+            enabled: (billboard).enabled,
+            kind: ((billboard).kind).clone(),
+            name: ((billboard).name).clone(),
+            position: ((billboard).position).clone(),
+            rotation: ((billboard).rotation).clone(),
+            scale: ((billboard).scale).clone(),
+        },
+        &(*_LOCAL_SCRATCH.lock().unwrap()),
+    );
 }
 
 // Source: upstream/packages/scene/src/billboardCamera.ts:66 (sha256:383eda49db8c7bd0f1a8eed77902e919f4e45f95076b65f76c77918329188d0a)
@@ -107,27 +249,51 @@ fn set_billboard_camera_basis(camera: &Camera) -> () {
         ((*_CAMERA_WORLD.lock().unwrap()).m[9.0_f64 as usize] as f64);
     (*_CAMERA_BACK_Z.lock().unwrap()) =
         ((*_CAMERA_WORLD.lock().unwrap()).m[10.0_f64 as usize] as f64);
-    let rl = ((((*_CAMERA_RIGHT_X.lock().unwrap()).clone()).powi(2)
+    let rl = if ((((*_CAMERA_RIGHT_X.lock().unwrap()).clone()).powi(2)
         + ((*_CAMERA_RIGHT_Y.lock().unwrap()).clone()).powi(2)
         + ((*_CAMERA_RIGHT_Z.lock().unwrap()).clone()).powi(2))
-    .sqrt()
-        || 1.0_f64);
+    .sqrt())
+        != 0.0_f64
+    {
+        (((*_CAMERA_RIGHT_X.lock().unwrap()).clone()).powi(2)
+            + ((*_CAMERA_RIGHT_Y.lock().unwrap()).clone()).powi(2)
+            + ((*_CAMERA_RIGHT_Z.lock().unwrap()).clone()).powi(2))
+        .sqrt()
+    } else {
+        1.0_f64
+    };
     (*_CAMERA_RIGHT_X.lock().unwrap()) /= rl;
     (*_CAMERA_RIGHT_Y.lock().unwrap()) /= rl;
     (*_CAMERA_RIGHT_Z.lock().unwrap()) /= rl;
-    let ul = ((((*_CAMERA_UP_X.lock().unwrap()).clone()).powi(2)
+    let ul = if ((((*_CAMERA_UP_X.lock().unwrap()).clone()).powi(2)
         + ((*_CAMERA_UP_Y.lock().unwrap()).clone()).powi(2)
         + ((*_CAMERA_UP_Z.lock().unwrap()).clone()).powi(2))
-    .sqrt()
-        || 1.0_f64);
+    .sqrt())
+        != 0.0_f64
+    {
+        (((*_CAMERA_UP_X.lock().unwrap()).clone()).powi(2)
+            + ((*_CAMERA_UP_Y.lock().unwrap()).clone()).powi(2)
+            + ((*_CAMERA_UP_Z.lock().unwrap()).clone()).powi(2))
+        .sqrt()
+    } else {
+        1.0_f64
+    };
     (*_CAMERA_UP_X.lock().unwrap()) /= ul;
     (*_CAMERA_UP_Y.lock().unwrap()) /= ul;
     (*_CAMERA_UP_Z.lock().unwrap()) /= ul;
-    let bl = ((((*_CAMERA_BACK_X.lock().unwrap()).clone()).powi(2)
+    let bl = if ((((*_CAMERA_BACK_X.lock().unwrap()).clone()).powi(2)
         + ((*_CAMERA_BACK_Y.lock().unwrap()).clone()).powi(2)
         + ((*_CAMERA_BACK_Z.lock().unwrap()).clone()).powi(2))
-    .sqrt()
-        || 1.0_f64);
+    .sqrt())
+        != 0.0_f64
+    {
+        (((*_CAMERA_BACK_X.lock().unwrap()).clone()).powi(2)
+            + ((*_CAMERA_BACK_Y.lock().unwrap()).clone()).powi(2)
+            + ((*_CAMERA_BACK_Z.lock().unwrap()).clone()).powi(2))
+        .sqrt()
+    } else {
+        1.0_f64
+    };
     (*_CAMERA_BACK_X.lock().unwrap()) /= bl;
     (*_CAMERA_BACK_Y.lock().unwrap()) /= bl;
     (*_CAMERA_BACK_Z.lock().unwrap()) /= bl;
@@ -193,7 +359,11 @@ fn write_billboard_facing_matrix(out: &mut Matrix4, mode: BillboardMode) -> () {
                 dnx = (*_CAMERA_BACK_X.lock().unwrap()).clone();
                 dny = (*_CAMERA_BACK_Y.lock().unwrap()).clone();
                 dnz = (*_CAMERA_BACK_Z.lock().unwrap()).clone();
-                dnl = (((dnx).powi(2) + (dny).powi(2) + (dnz).powi(2)).sqrt() || 1.0_f64);
+                dnl = if (((dnx).powi(2) + (dny).powi(2) + (dnz).powi(2)).sqrt()) != 0.0_f64 {
+                    ((dnx).powi(2) + (dny).powi(2) + (dnz).powi(2)).sqrt()
+                } else {
+                    1.0_f64
+                };
             }
             nx = (dnx / dnl);
             ny = (dny / dnl);

@@ -32,7 +32,7 @@ impl PartialEq for MeshGeometryOptions {
 
 // Source: upstream/packages/mesh/src/meshGeometry.ts:30 (sha256:6b7b647175f7a7dd07ef05d3607b4c22fd18fc1a74d35c72c62fb6700f4b6242)
 pub fn clone_mesh_geometry(source: &MeshGeometry) -> MeshGeometry {
-    let mut vertices = vec![0.0_f32; (source.vertices.len() as f64) as usize];
+    let mut vertices: Vec<f32> = vec![0.0_f32; (source.vertices.len() as f64) as usize];
     {
         let __flight_offset = (0.0_f64) as usize;
         let __flight_values: Vec<f32> = ((source.vertices).clone())
@@ -276,7 +276,7 @@ fn get_vertex_count_from_layout(vertices: &Vec<f32>, layout: &VertexAttributeLay
 // Source: upstream/packages/mesh/src/meshGeometry.ts:206 (sha256:3a35231a9da89f55792d7b4cb82ff1db0f9883cca85391b75edf07f106a64c18)
 fn promote_indices(source: &Vec<u32>, vertex_count: f64) -> Vec<u32> {
     if (vertex_count > UINT16_INDEX_CEILING) || (true) {
-        let mut out = vec![0_u32; (source.len() as f64) as usize];
+        let mut out: Vec<u32> = vec![0_u32; (source.len() as f64) as usize];
         {
             let __flight_offset = (0.0_f64) as usize;
             let __flight_values: Vec<u32> = (source).iter().map(|value| (*value) as u32).collect();
@@ -285,7 +285,7 @@ fn promote_indices(source: &Vec<u32>, vertex_count: f64) -> Vec<u32> {
         };
         return out;
     }
-    let mut out = vec![0_u16; (source.len() as f64) as usize];
+    let mut out: Vec<u16> = vec![0_u16; (source.len() as f64) as usize];
     {
         let __flight_offset = (0.0_f64) as usize;
         let __flight_values: Vec<u16> = (source).iter().map(|value| (*value) as u16).collect();

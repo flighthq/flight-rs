@@ -7,22 +7,39 @@
 #![allow(unused_parens)]
 
 use flighthq_entity::create_entity;
-use flighthq_types::{Spritesheet, SpritesheetAnimation};
+use flighthq_types::{Spritesheet, SpritesheetAnimation, SpritesheetAnimationDirection};
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub frames: Option<Vec<f64>>,
+    pub frame_duration: Option<f64>,
+    pub frame_durations: Option<Vec<f64>>,
+    pub direction: Option<SpritesheetAnimationDirection>,
+    pub loop_: Option<bool>,
+    pub origin_x: Option<f64>,
+    pub origin_y: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/spritesheet/src/spritesheetAnimation.ts:4 (sha256:1282c8270af722534f5e7642ca2602d0539978fae0a9955e54f2ac9df674771f)
-pub fn create_spritesheet_animation(obj: Option<SpritesheetAnimation>) -> SpritesheetAnimation {
+pub fn create_spritesheet_animation(obj: Option<FlightPartialRecord1>) -> SpritesheetAnimation {
     return create_entity(Some(SpritesheetAnimation {
         __flight_identity: std::sync::Arc::new(()),
-        direction: (obj.as_ref().map(|value| (value.direction).clone()))
+        direction: (obj.as_ref().and_then(|value| (value.direction).clone()))
             .unwrap_or("forward".to_owned()),
-        frame_duration: (obj.as_ref().map(|value| value.frame_duration)).unwrap_or(0.0_f64),
+        frame_duration: (obj.as_ref().and_then(|value| value.frame_duration)).unwrap_or(0.0_f64),
         frame_durations: obj
             .as_ref()
             .and_then(|value| (value.frame_durations).clone()),
-        frames: (obj.as_ref().map(|value| (value.frames).clone())).unwrap_or(vec![]),
-        loop_: (obj.as_ref().map(|value| value.loop_)).unwrap_or(false),
-        origin_x: (obj.as_ref().map(|value| value.origin_x)).unwrap_or(0.0_f64),
-        origin_y: (obj.as_ref().map(|value| value.origin_y)).unwrap_or(0.0_f64),
+        frames: (obj.as_ref().and_then(|value| (value.frames).clone())).unwrap_or(vec![]),
+        loop_: (obj.as_ref().and_then(|value| value.loop_)).unwrap_or(false),
+        origin_x: (obj.as_ref().and_then(|value| value.origin_x)).unwrap_or(0.0_f64),
+        origin_y: (obj.as_ref().and_then(|value| value.origin_y)).unwrap_or(0.0_f64),
     }));
 }
 
@@ -30,7 +47,7 @@ pub fn create_spritesheet_animation(obj: Option<SpritesheetAnimation>) -> Sprite
 pub fn create_spritesheet_animation_from_frame_names(
     spritesheet: &Spritesheet,
     pattern: &crate::FlightUnion2<String, crate::OpaqueHostValue>,
-    options: Option<SpritesheetAnimation>,
+    options: Option<FlightPartialRecord1>,
 ) -> Option<SpritesheetAnimation> {
     let atlas = (spritesheet.atlas).clone();
     if (atlas).is_none() {
@@ -86,16 +103,16 @@ pub fn create_spritesheet_animation_from_frame_names(
     if ((matched_indices.len() as f64) == 0.0_f64) {
         return None;
     }
-    return Some(create_spritesheet_animation(Some(SpritesheetAnimation {
+    return Some(create_spritesheet_animation(Some(FlightPartialRecord1 {
         __flight_identity: std::sync::Arc::new(()),
-        direction: (options.as_ref().map(|value| (value.direction).clone())).unwrap(),
-        frame_duration: (options.as_ref().map(|value| value.frame_duration)).unwrap(),
+        direction: Some((options.as_ref().and_then(|value| (value.direction).clone())).unwrap()),
+        frame_duration: Some((options.as_ref().and_then(|value| value.frame_duration)).unwrap()),
         frame_durations: options
             .as_ref()
             .and_then(|value| (value.frame_durations).clone()),
-        frames: (matched_indices).clone(),
-        loop_: (options.as_ref().map(|value| value.loop_)).unwrap(),
-        origin_x: (options.as_ref().map(|value| value.origin_x)).unwrap(),
-        origin_y: (options.as_ref().map(|value| value.origin_y)).unwrap(),
+        frames: Some((matched_indices).clone()),
+        loop_: Some((options.as_ref().and_then(|value| value.loop_)).unwrap()),
+        origin_x: Some((options.as_ref().and_then(|value| value.origin_x)).unwrap()),
+        origin_y: Some((options.as_ref().and_then(|value| value.origin_y)).unwrap()),
     })));
 }

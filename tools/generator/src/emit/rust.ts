@@ -49,6 +49,8 @@ interface EmitContext {
   erasedValueNames: ReadonlySet<string>;
   enumNames: ReadonlySet<string>;
   functions: ReadonlyMap<string, IrFunctionDeclaration>;
+  inheritedAnonymousTypeKeys: ReadonlySet<string>;
+  importedTypeNames: ReadonlySet<string>;
   inlineFunctions: ReadonlyMap<string, IrFunctionDeclaration>;
   localTypeNames: ReadonlySet<string>;
   mutexCollectionNames: ReadonlySet<string>;
@@ -65,7 +67,7 @@ interface EmitContext {
   sharedCaptureNames: ReadonlySet<string>;
   symbolTypes: Map<string, IrType>;
   timerHandleNames: ReadonlySet<string>;
-  unionNarrowings: Map<string, { index: number; variants: readonly IrType[] }>;
+  unionNarrowings: Map<string, { index: number; unionName?: string | undefined; variants: readonly IrType[] }>;
 }
 
 export class RustEmissionError extends Error {}
@@ -129,6 +131,7 @@ export function emitRustModule(module: RustModule): string {
         .map((declaration) => declaration.name),
       ...module.declarations.flatMap((declaration) =>
         declaration.kind === 'variable' &&
+        (!declaration.type || declaration.type.kind === 'dynamic') &&
         !moduleMutatedNames.has(declaration.name) &&
         isNumericNamespaceInitializer(declaration.initializer)
           ? [declaration.name]
@@ -143,6 +146,8 @@ export function emitRustModule(module: RustModule): string {
         ),
       ].map((declaration) => [declaration.name, declaration]),
     ),
+    inheritedAnonymousTypeKeys: new Set(),
+    importedTypeNames: new Set(module.typeImports),
     inlineFunctions,
     localTypeNames: new Set(
       module.declarations.filter((declaration) => declaration.kind === 'type').map((declaration) => declaration.name),
@@ -185,6 +190,7 @@ export function emitRustModule(module: RustModule): string {
     numericNamespaceNames: new Set(
       module.declarations.flatMap((declaration) =>
         declaration.kind === 'variable' &&
+        (!declaration.type || declaration.type.kind === 'dynamic') &&
         !moduleMutatedNames.has(declaration.name) &&
         isNumericNamespaceInitializer(declaration.initializer)
           ? [declaration.name]
@@ -212,7 +218,8 @@ export function emitRustModule(module: RustModule): string {
     const inferred = inferIrExpressionType(declaration.initializer, context);
     if (inferred) context.symbolTypes.set(declaration.name, inferred);
   }
-  const declarations = module.declarations
+  registerGlobalResolvedAnonymousTypes([...module.declarations, ...(module.semanticFunctions ?? [])], context);
+  const declarationBodies = module.declarations
     .map((declaration) => {
       try {
         return emitDeclaration(declaration, context);
@@ -224,6 +231,7 @@ export function emitRustModule(module: RustModule): string {
       }
     })
     .join('\n\n');
+  const declarations = [emitAnonymousDefinitions(context, true), declarationBodies].filter(Boolean).join('\n\n');
   const importGroups: RustImport[] = [
     ...(module.typeImports.length > 0
       ? [
@@ -755,6 +763,16 @@ function emitFunctionDeclaration(declaration: IrFunctionDeclaration, context: Em
     callbackArgumentStorage: inferCallbackArgumentStorage(declaration, callbackTypeParameters),
     callbackTypeParameters,
   };
+  for (const parameter of declaration.parameters) {
+    const resolved = resolveSemanticType(parameter.type, nextContext);
+    if (
+      resolved?.kind === 'anonymous' &&
+      (parameter.type.kind === 'anonymous' ||
+        (parameter.type.kind === 'named' && parameter.type.name === 'FlightPartial'))
+    ) {
+      registerContextualAnonymousTypes(resolved, nextContext, declaration.name);
+    }
+  }
   registerParameters(declaration.parameters, nextContext);
   registerLocalTypes(declaration.body, nextContext);
   const parameters = declaration.parameters.map((parameter) =>
@@ -829,9 +847,17 @@ function emitParameter(
 
 function emitStatementsAsBlock(statements: IrStatement[], context: EmitContext, prefix: string[] = []): string {
   const lines = [...prefix];
+  let activeContext = context;
   for (const statement of statements) {
-    lines.push(...emitStatement(statement, context));
-    if (statementAlwaysReturns(statement, context)) break;
+    lines.push(...emitStatement(statement, activeContext));
+    if (statementAlwaysReturns(statement, activeContext)) break;
+    if (
+      statement.kind === 'if' &&
+      !statement.otherwise &&
+      statementAlwaysReturns(statement.consequent, activeContext)
+    ) {
+      activeContext = narrowTypeofContexts(statement.condition, activeContext).whenFalse;
+    }
   }
   return `{\n${indent(lines.join('\n'))}\n}`;
 }
@@ -1200,7 +1226,9 @@ function emitLocalVariable(variable: IrVariable, context: EmitContext): string[]
       (variable.initializer.kind === 'function' || containsObjectLiteral(variable.initializer) ? inferred : undefined),
   );
   if (inferred) context.symbolTypes.set(variable.name, inferred);
-  const annotationType = expected ?? (variable.initializer.kind === 'function' ? inferred : undefined);
+  const annotationType =
+    expected ??
+    (variable.initializer.kind === 'function' || variable.initializer.kind === 'new' ? inferred : undefined);
   const annotation =
     annotationType && annotationType.kind !== 'dynamic' ? `: ${emitType(annotationType, context)}` : '';
   for (const binding of transferredBindings) {
@@ -1260,24 +1288,34 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
       return `Some(${emitExpression(expression, context, expectedType.inner)})`;
     }
   }
-  if (expectedType?.kind === 'union') {
+  const resolvedExpectedType = resolveSemanticType(expectedType, context);
+  const expectedUnion =
+    expectedType?.kind === 'union'
+      ? expectedType
+      : resolvedExpectedType?.kind === 'union'
+        ? resolvedExpectedType
+        : undefined;
+  const expectedUnionName =
+    expectedType?.kind === 'named' ? emitNamedUnionConstructor(expectedType, context) : undefined;
+  if (expectedUnion) {
     const actualType = inferIrExpressionType(expression, context);
     if (actualType?.kind !== 'union') {
       const variantIndex = actualType
-        ? expectedType.variants.findIndex((variant) => typeKey(variant) === typeKey(actualType))
+        ? expectedUnion.variants.findIndex((variant) => semanticTypesEqual(variant, actualType, context))
         : -1;
       if (variantIndex >= 0) {
-        const variant = expectedType.variants[variantIndex]!;
+        const variant = expectedUnion.variants[variantIndex]!;
         return wrapUnionValue(
           emitExpression(expression, context, variant),
-          expectedType.variants,
+          expectedUnion.variants,
           variantIndex,
           context,
+          expectedUnionName,
         );
       }
     }
     if (expression.kind === 'object') {
-      const matches = expectedType.variants.flatMap((variant, index) =>
+      const matches = expectedUnion.variants.flatMap((variant, index) =>
         objectLiteralMatchesType(expression, variant, context) ? [{ index, variant }] : [],
       );
       if (matches.length === 1) {
@@ -1285,9 +1323,10 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
         const resolvedVariant = resolveSemanticType(match.variant, context) ?? match.variant;
         return wrapUnionValue(
           emitExpression(expression, context, resolvedVariant.kind === 'union' ? resolvedVariant : match.variant),
-          expectedType.variants,
+          expectedUnion.variants,
           match.index,
           context,
+          expectedUnionName,
         );
       }
     }
@@ -1391,7 +1430,10 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
         const owned = context.borrowedNames.has(expression.name)
           ? `${parenthesize(`*${emitted}`)}.clone()`
           : `${parenthesize(emitted)}.clone()`;
-        return coerceExpression(unwrapUnionValue(owned, flowNarrowing.variants, flowNarrowing.index), expectedType);
+        return coerceExpression(
+          unwrapUnionValue(owned, flowNarrowing.variants, flowNarrowing.index, flowNarrowing.unionName),
+          expectedType,
+        );
       }
       if (actualType?.kind === 'union' && expectedType && expectedType.kind !== 'union') {
         const variantIndex = actualType.variants.findIndex((variant) => typeKey(variant) === typeKey(expectedType));
@@ -1922,6 +1964,40 @@ function emitCall(
       };
       return `${parenthesize(owner)}.iter().find(|value| ${parenthesize(emitClosure(callback, context, closureType, false))}((*value).clone())).cloned()`;
     }
+    if (collectionType?.kind === 'array' && (method === 'every' || method === 'some')) {
+      const callback = expression.arguments[0];
+      if (!callback) throw new RustEmissionError(`Array.${method} requires a callback`);
+      const closureType: IrType = {
+        kind: 'function',
+        parameters: [collectionType.element],
+        returns: primitive('Bool'),
+      };
+      let predicate: string;
+      if (callback.kind === 'function') {
+        predicate = emitClosure(callback, context, closureType, false);
+      } else if (
+        callback.kind === 'identifier' &&
+        (context.functions.has(callback.name) ||
+          resolveSemanticType(context.symbolTypes.get(callback.name), context)?.kind === 'function')
+      ) {
+        const itemName = '__flight_item';
+        const callbackContext: EmitContext = {
+          ...context,
+          symbolTypes: new Map(context.symbolTypes),
+        };
+        callbackContext.symbolTypes.set(itemName, collectionType.element);
+        const call: Extract<IrExpression, { kind: 'call' }> = {
+          arguments: [{ kind: 'identifier', name: itemName }],
+          callee: callback,
+          kind: 'call',
+          typeArguments: [],
+        };
+        predicate = `|${itemName}| ${emitCall(call, callbackContext)}`;
+      } else {
+        throw new RustEmissionError(`Array.${method} requires an inline or inferred named callback`);
+      }
+      return `${parenthesize(owner)}.iter().cloned().${method === 'every' ? 'all' : 'any'}(${predicate})`;
+    }
     if (collectionType?.kind === 'named' && typedArrayType(collectionType.name) && method === 'subarray') {
       const start = expression.arguments[0] ? emitExpression(expression.arguments[0], context) : '0.0_f64';
       const end = expression.arguments[1] ? emitExpression(expression.arguments[1], context) : `${owner}.len() as f64`;
@@ -2175,6 +2251,13 @@ function emitKnownFunctionArgument(
   const argumentType = inferIrExpressionType(argument, context);
   const nullableParameter = parameter.type.kind === 'nullable';
   const expectedType = parameter.type.kind === 'nullable' ? parameter.type.inner : parameter.type;
+  const resolvedExpectedType = resolveSemanticType(expectedType, context);
+  if (
+    resolvedExpectedType?.kind === 'anonymous' &&
+    (expectedType.kind === 'anonymous' || (expectedType.kind === 'named' && expectedType.name === 'FlightPartial'))
+  ) {
+    registerContextualAnonymousTypes(resolvedExpectedType, context, parameter.name);
+  }
   const optionalParameter = Boolean(parameter.optional || parameter.initializer) && !nullableParameter;
   if (argument.kind === 'literal' && argument.value === null) return 'None';
   if (!nullableParameter && !optionalParameter && expectedType.kind === 'union') {
@@ -2191,7 +2274,7 @@ function emitKnownFunctionArgument(
     isReferenceLike(expectedType, context)
   ) {
     const root = expressionRootIdentifier(argument);
-    const resolvedExpected = resolveSemanticType(expectedType, context) ?? expectedType;
+    const resolvedExpected = resolvedExpectedType ?? expectedType;
     if (resolvedExpected.kind === 'function') {
       const value =
         argument.kind === 'function'
@@ -2203,9 +2286,14 @@ function emitKnownFunctionArgument(
       argument.kind === 'function'
         ? emitExpression(argument, context, expectedType)
         : emitPlaceExpression(argument, context);
-    if (argumentType?.kind === 'nullable' && typeKey(argumentType.inner) === typeKey(expectedType)) {
+    if (argumentType?.kind === 'nullable' && semanticTypesEqual(argumentType.inner, expectedType, context)) {
       return `${value}.${mutable ? 'as_mut' : 'as_ref'}().unwrap()`;
     }
+    const structuralProjection =
+      !mutable && argumentType
+        ? emitStructuralProjectionArgument(value, argumentType, expectedType, context)
+        : undefined;
+    if (structuralProjection) return `&${structuralProjection}`;
     return argument.kind === 'identifier' && root && context.borrowedNames.has(root)
       ? value
       : `${mutable ? '&mut ' : '&'}${value}`;
@@ -2373,6 +2461,17 @@ function emitProperty(
     return `(${emitPlaceExpression(expression.object, context)}.as_ref().unwrap().len() as f64)`;
   }
   const collectionType = objectType?.kind === 'nullable' ? objectType.inner : objectType;
+  if (
+    collectionType?.kind === 'named' &&
+    (collectionType.name === 'RustMap' || collectionType.name === 'RustSet') &&
+    expression.name === 'size'
+  ) {
+    const owner =
+      objectType?.kind === 'nullable'
+        ? `${emitPlaceExpression(expression.object, context)}.as_ref().unwrap()`
+        : emitCollectionPlace(expression.object, context);
+    return `(${owner}.len() as f64)`;
+  }
   if (collectionType?.kind === 'named' && collectionType.name === 'RustMap') {
     const keyType = collectionType.arguments[0] ?? primitive('String');
     const key = emitExpression({ kind: 'literal', value: expression.name }, context, keyType);
@@ -2398,6 +2497,18 @@ function emitCollectionPlace(expression: IrExpression, context: EmitContext): st
 function emitPropertyPlace(expression: Extract<IrExpression, { kind: 'property' }>, context: EmitContext): string {
   if (expression.object.kind === 'identifier' && context.enumNames.has(expression.object.name)) {
     return `${expression.object.name}::${expression.name}`;
+  }
+  if (expression.object.kind === 'identifier') {
+    const narrowing = context.unionNarrowings.get(expression.object.name);
+    if (narrowing) {
+      const identifier = emitIdentifier(expression.object.name, context);
+      const owned = context.borrowedNames.has(expression.object.name)
+        ? `${parenthesize(`*${identifier}`)}.clone()`
+        : `${parenthesize(identifier)}.clone()`;
+      return `${parenthesize(
+        unwrapUnionValue(owned, narrowing.variants, narrowing.index, narrowing.unionName),
+      )}.${safeName(expression.name)}`;
+    }
   }
   const objectType = inferIrExpressionType(expression.object, context);
   if (objectType && isSharedHandleType(objectType.kind === 'nullable' ? objectType.inner : objectType)) {
@@ -2481,6 +2592,16 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
   const rightType = inferIrExpressionType(expression.right, context);
   const resolvedLeft = resolveSemanticType(leftType, context) ?? leftType;
   const resolvedRight = resolveSemanticType(rightType, context) ?? rightType;
+  const discriminant = discriminatedUnionComparison(expression, context);
+  if (discriminant) {
+    const value = emitPlaceExpression({ kind: 'identifier', name: discriminant.name }, context);
+    const matches = `matches!(&${parenthesize(value)}, ${unionVariantPattern(
+      discriminant.variants,
+      discriminant.matchingIndex,
+      discriminant.unionName,
+    )})`;
+    return discriminant.positive ? matches : `!${parenthesize(matches)}`;
+  }
   const comparison = ['===', '!==', '==', '!=', '<', '<=', '>', '>='].includes(expression.operator);
   const nullishContext =
     (expression.operator === '??' || expression.operator === '??undefined') &&
@@ -2618,9 +2739,10 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
   }
   if (
     (expression.operator === '&&' || expression.operator === '||') &&
-    inferIrExpressionType(expression.left, context)?.kind === 'primitive' &&
-    inferIrExpressionType(expression.left, context)?.kind === 'primitive' &&
-    (inferIrExpressionType(expression.left, context) as Extract<IrType, { kind: 'primitive' }>).name !== 'Bool'
+    ((resolvedLeft?.kind === 'primitive' && resolvedLeft.name !== 'Bool') ||
+      (!resolvedLeft &&
+        resolvedRight?.kind === 'primitive' &&
+        (resolvedRight.name === 'Float' || resolvedRight.name === 'Int')))
   ) {
     const condition = `${parenthesize(left)} != 0.0_f64`;
     return expression.operator === '&&'
@@ -3102,6 +3224,10 @@ function emitType(type: IrType, context: EmitContext): string {
     case 'function':
       return `std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(${type.parameters.map((item) => emitType(item, context)).join(', ')}) -> ${emitType(type.returns, context)} + Send + 'static>>>`;
     case 'named': {
+      if (type.name === 'FlightPartial') {
+        const resolved = resolveSemanticType(type, context);
+        if (resolved && typeKey(resolved) !== typeKey(type)) return emitType(resolved, context);
+      }
       if (type.name === 'FlightCallbackArgs') {
         const callback = type.arguments[0] ?? { kind: 'dynamic' };
         return `<${emitType(callback, context)} as crate::FlightCallback>::Args`;
@@ -3172,30 +3298,49 @@ function emitUnionType(variants: readonly IrType[], context: EmitContext): strin
   return `crate::FlightUnion2<${emitType(first, context)}, ${emitUnionType(rest, context)}>`;
 }
 
+function unionVariantPattern(variants: readonly IrType[], variantIndex: number, unionName?: string): string {
+  const constructor = unionName ?? 'crate::FlightUnion2';
+  if (variantIndex === 0) return `${constructor}::A(_)`;
+  if (variants.length <= 2) return `${constructor}::B(_)`;
+  return `crate::FlightUnion2::B(${unionVariantPattern(variants.slice(1), variantIndex - 1)})`;
+}
+
+function emitNamedUnionConstructor(type: Extract<IrType, { kind: 'named' }>, context: EmitContext): string {
+  const emitted = emitType(type, context);
+  return context.localTypeNames.has(type.name) || context.importedTypeNames.has(type.name)
+    ? emitted
+    : `flighthq_types::${emitted}`;
+}
+
 function wrapUnionValue(
   value: string,
   variants: readonly IrType[],
   variantIndex: number,
   context: EmitContext,
+  unionName?: string,
 ): string {
   if (variants.length <= 1) return value;
+  const constructor =
+    unionName ??
+    `crate::FlightUnion2::<${emitType(variants[0]!, context)}, ${emitUnionType(variants.slice(1), context)}>`;
   if (variantIndex === 0) {
-    return `crate::FlightUnion2::<${emitType(variants[0]!, context)}, ${emitUnionType(variants.slice(1), context)}>::A(${value})`;
+    return `${constructor}::A(${value})`;
   }
-  return `crate::FlightUnion2::<${emitType(variants[0]!, context)}, ${emitUnionType(variants.slice(1), context)}>::B(${wrapUnionValue(
-    value,
-    variants.slice(1),
-    variantIndex - 1,
-    context,
-  )})`;
+  return `${constructor}::B(${wrapUnionValue(value, variants.slice(1), variantIndex - 1, context)})`;
 }
 
-function unwrapUnionValue(value: string, variants: readonly IrType[], variantIndex: number): string {
+function unwrapUnionValue(
+  value: string,
+  variants: readonly IrType[],
+  variantIndex: number,
+  unionName?: string,
+): string {
   if (variants.length <= 1) return value;
+  const constructor = unionName ?? 'crate::FlightUnion2';
   if (variantIndex === 0) {
-    return `match ${value} { crate::FlightUnion2::A(value) => value, crate::FlightUnion2::B(_) => panic!("TypeScript union narrowing failed") }`;
+    return `match ${value} { ${constructor}::A(value) => value, ${constructor}::B(_) => panic!("TypeScript union narrowing failed") }`;
   }
-  return `match ${value} { crate::FlightUnion2::A(_) => panic!("TypeScript union narrowing failed"), crate::FlightUnion2::B(value) => ${unwrapUnionValue(
+  return `match ${value} { ${constructor}::A(_) => panic!("TypeScript union narrowing failed"), ${constructor}::B(value) => ${unwrapUnionValue(
     'value',
     variants.slice(1),
     variantIndex - 1,
@@ -3558,6 +3703,7 @@ function functionContext(context: EmitContext, ownerName: string, owner: unknown
     captureReturns: false,
     continueEpilogue: [],
     currentReturnType: returns,
+    inheritedAnonymousTypeKeys: new Set(context.anonymousTypes.keys()),
     mutatedNames: collectMutatedNames(owner, context.mutatingFunctions),
     nonNullableNames: new Set(context.nonNullableNames),
     placeAliases: new Map(),
@@ -3648,6 +3794,33 @@ function registerContextualAnonymousTypes(value: unknown, context: EmitContext, 
   }
 }
 
+function registerGlobalResolvedAnonymousTypes(value: unknown, context: EmitContext): void {
+  const anonymousTypes = context.anonymousTypes as Map<string, string>;
+  const visit = (item: unknown): void => {
+    if (!item || typeof item !== 'object') return;
+    if (
+      'kind' in item &&
+      item.kind === 'named' &&
+      'name' in item &&
+      item.name === 'FlightPartial' &&
+      'arguments' in item
+    ) {
+      const resolved = resolveSemanticType(item as IrType, context);
+      if (resolved?.kind === 'anonymous') {
+        const key = typeKey(resolved);
+        if (!anonymousTypes.has(key)) {
+          anonymousTypes.set(key, `FlightPartialRecord${String(anonymousTypes.size + 1)}`);
+        }
+      }
+    }
+    for (const child of Object.values(item)) {
+      if (Array.isArray(child)) child.forEach(visit);
+      else visit(child);
+    }
+  };
+  visit(value);
+}
+
 function collectInferredObjectTypes(value: unknown): IrType[] {
   const found = new Map<string, IrType>();
   const visit = (item: unknown): void => {
@@ -3677,7 +3850,11 @@ function typeDeclarationContext(
     if (key === typeKey(type) || anonymousTypes.has(key)) continue;
     anonymousTypes.set(key, `${pascalCase(ownerName)}Record${String(index++)}`);
   }
-  return { ...context, anonymousTypes };
+  return {
+    ...context,
+    anonymousTypes,
+    inheritedAnonymousTypeKeys: new Set(context.anonymousTypes.keys()),
+  };
 }
 
 function registerParameters(parameters: IrParameter[], context: EmitContext, fallbackTypes: IrType[] = []): void {
@@ -3730,31 +3907,34 @@ function registerLocalTypes(statements: readonly IrStatement[], context: EmitCon
 
 function emitAnonymousDefinitions(context: EmitContext, exported = false): string {
   if (context.anonymousTypes.size === 0) return '';
-  const definitions = [...context.anonymousTypes.entries()].map(([key, name]) => {
-    const type = JSON.parse(key) as IrType;
-    if (type.kind !== 'anonymous') throw new RustEmissionError(`invalid anonymous type identity ${name}`);
-    return [
-      '#[derive(Clone)]',
-      `${exported ? 'pub ' : ''}struct ${name} {`,
-      indent(
-        [
-          `${exported ? 'pub ' : ''}__flight_identity: std::sync::Arc<()>,`,
-          ...type.fields.map(
-            (field) =>
-              `${exported ? 'pub ' : ''}${safeName(field.name)}: ${
-                field.optional && field.type.kind !== 'nullable'
-                  ? `Option<${emitType(field.type, context)}>`
-                  : emitType(field.type, context)
-              },`,
-          ),
-        ].join('\n'),
-      ),
-      '}',
-      `impl PartialEq for ${name} {`,
-      '  fn eq(&self, other: &Self) -> bool { std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity) }',
-      '}',
-    ].join('\n');
-  });
+  const definitions = [...context.anonymousTypes.entries()]
+    .filter(([key]) => !context.inheritedAnonymousTypeKeys.has(key))
+    .map(([key, name]) => {
+      const type = JSON.parse(key) as IrType;
+      if (type.kind !== 'anonymous') throw new RustEmissionError(`invalid anonymous type identity ${name}`);
+      return [
+        '#[derive(Clone)]',
+        `${exported ? 'pub ' : ''}struct ${name} {`,
+        indent(
+          [
+            `${exported ? 'pub ' : ''}__flight_identity: std::sync::Arc<()>,`,
+            ...type.fields.map(
+              (field) =>
+                `${exported ? 'pub ' : ''}${safeName(field.name)}: ${
+                  field.optional && field.type.kind !== 'nullable'
+                    ? `Option<${emitType(field.type, context)}>`
+                    : emitType(field.type, context)
+                },`,
+            ),
+          ].join('\n'),
+        ),
+        '}',
+        `impl PartialEq for ${name} {`,
+        '  fn eq(&self, other: &Self) -> bool { std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity) }',
+        '}',
+      ].join('\n');
+    });
+  if (definitions.length === 0) return '';
   return `${definitions.join('\n\n')}\n\n`;
 }
 
@@ -4089,6 +4269,40 @@ function isReferenceLike(type: IrType, context: EmitContext): boolean {
       ['ArrayBufferView', 'ByteBuffer', 'FlightRegex', 'RustMap', 'RustSet'].includes(resolved.name)) ||
     (resolved?.kind === 'named' && Boolean(typedArrayType(resolved.name)))
   );
+}
+
+function semanticTypesEqual(left: IrType, right: IrType, context: EmitContext): boolean {
+  return typeKey(resolveSemanticType(left, context) ?? left) === typeKey(resolveSemanticType(right, context) ?? right);
+}
+
+function emitStructuralProjectionArgument(
+  source: string,
+  actualType: IrType,
+  expectedType: IrType,
+  context: EmitContext,
+): string | undefined {
+  const actual = resolveSemanticType(actualType, context);
+  const expected = resolveSemanticType(expectedType, context);
+  if (actual?.kind !== 'anonymous' || expected?.kind !== 'anonymous') return undefined;
+  if (semanticTypesEqual(actual, expected, context)) return undefined;
+  const actualFields = new Map(flattenStructFields(actual, context).map((field) => [field.name, field]));
+  const expectedFields = flattenStructFields(expected, context);
+  if (
+    expectedFields.some((field) => {
+      const actualField = actualFields.get(field.name);
+      return !actualField || !semanticTypesEqual(actualField.type, field.type, context);
+    })
+  ) {
+    return undefined;
+  }
+  const owner = parenthesize(source);
+  const fields = expectedFields.map((field) => {
+    const place = `${owner}.${safeName(field.name)}`;
+    return `${safeName(field.name)}: ${isCopyType(field.type, context) ? place : `${parenthesize(place)}.clone()`},`;
+  });
+  return `${emitType(expectedType, context)} {\n${indent(
+    ['__flight_identity: std::sync::Arc::clone(&' + owner + '.__flight_identity),', ...fields].join('\n'),
+  )}\n}`;
 }
 
 function isSharedHandleType(type: IrType): boolean {
@@ -4442,6 +4656,7 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
         : undefined;
     case 'binary': {
       const left = inferIrExpressionType(expression.left, context);
+      const right = inferIrExpressionType(expression.right, context);
       if (['===', '!==', '==', '!=', '<', '<=', '>', '>=', 'instanceof', 'in'].includes(expression.operator)) {
         return primitive('Bool');
       }
@@ -4450,7 +4665,8 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
         if (isNullishExpression(expression.right)) return left;
         return left?.kind === 'nullable' ? left.inner : left;
       }
-      return left ?? inferIrExpressionType(expression.right, context);
+      if (isPortableNumericStorageType(left) || isPortableNumericStorageType(right)) return primitive('Float');
+      return left ?? right;
     }
     case 'conditional': {
       const narrowed = narrowTypeofContexts(expression.condition, context);
@@ -4750,6 +4966,27 @@ function narrowTypeofContexts(
       return { whenFalse, whenTrue };
     }
   }
+  const discriminant = discriminatedUnionComparison(condition, context);
+  if (discriminant) {
+    const remainingIndex = discriminant.matchingIndex === 0 ? 1 : 0;
+    const whenTrueIndex = discriminant.positive ? discriminant.matchingIndex : remainingIndex;
+    const whenFalseIndex = discriminant.positive ? remainingIndex : discriminant.matchingIndex;
+    const whenTrue = clone();
+    const whenFalse = clone();
+    whenTrue.symbolTypes.set(discriminant.name, discriminant.variants[whenTrueIndex]!);
+    whenFalse.symbolTypes.set(discriminant.name, discriminant.variants[whenFalseIndex]!);
+    whenTrue.unionNarrowings.set(discriminant.name, {
+      index: whenTrueIndex,
+      unionName: discriminant.unionName,
+      variants: discriminant.variants,
+    });
+    whenFalse.unionNarrowings.set(discriminant.name, {
+      index: whenFalseIndex,
+      unionName: discriminant.unionName,
+      variants: discriminant.variants,
+    });
+    return { whenFalse, whenTrue };
+  }
   const typeofExpression =
     condition.left.kind === 'unary' && condition.left.operator === 'typeof'
       ? condition.left
@@ -4785,6 +5022,62 @@ function narrowTypeofContexts(
   return { whenFalse, whenTrue };
 }
 
+function discriminatedUnionComparison(
+  expression: IrExpression,
+  context: EmitContext,
+):
+  | {
+      matchingIndex: number;
+      name: string;
+      positive: boolean;
+      unionName?: string | undefined;
+      variants: readonly IrType[];
+    }
+  | undefined {
+  if (expression.kind !== 'binary' || !['===', '!==', '==', '!='].includes(expression.operator)) {
+    return undefined;
+  }
+  const property =
+    expression.left.kind === 'property' &&
+    expression.left.object.kind === 'identifier' &&
+    expression.right.kind === 'literal' &&
+    expression.right.value !== null
+      ? {
+          literal: expression.right.value,
+          name: expression.left.object.name,
+          propertyName: expression.left.name,
+        }
+      : expression.right.kind === 'property' &&
+          expression.right.object.kind === 'identifier' &&
+          expression.left.kind === 'literal' &&
+          expression.left.value !== null
+        ? {
+            literal: expression.left.value,
+            name: expression.right.object.name,
+            propertyName: expression.right.name,
+          }
+        : undefined;
+  if (!property) return undefined;
+  const name = property.name;
+  const sourceType = context.symbolTypes.get(name);
+  const resolved = resolveSemanticType(sourceType, context);
+  if (resolved?.kind !== 'union' || resolved.variants.length !== 2) return undefined;
+  const matching = resolved.variants.flatMap((variant, index) => {
+    const concrete = resolveSemanticType(variant, context);
+    if (concrete?.kind !== 'anonymous') return [];
+    const field = flattenStructFields(concrete, context).find((item) => item.name === property.propertyName);
+    return field?.discriminantValue === property.literal ? [index] : [];
+  });
+  if (matching.length !== 1) return undefined;
+  return {
+    matchingIndex: matching[0]!,
+    name,
+    positive: expression.operator === '===' || expression.operator === '==',
+    unionName: sourceType?.kind === 'named' ? emitNamedUnionConstructor(sourceType, context) : undefined,
+    variants: resolved.variants,
+  };
+}
+
 function inferPropertyType(object: IrType, name: string, context: EmitContext): IrType | undefined {
   const resolved = resolveSemanticType(object, context) ?? object;
   if (
@@ -4794,6 +5087,9 @@ function inferPropertyType(object: IrType, name: string, context: EmitContext): 
     return primitive('Float');
   }
   if (resolved.kind === 'primitive' && resolved.name === 'String' && name === 'length') {
+    return primitive('Float');
+  }
+  if (resolved.kind === 'named' && (resolved.name === 'RustMap' || resolved.name === 'RustSet') && name === 'size') {
     return primitive('Float');
   }
   if (resolved.kind === 'named' && resolved.name === 'RustMap') {
@@ -4855,6 +5151,13 @@ function typedArrayType(name: string): { ir: string; rust: string; zero: string 
 function typedArrayElementType(name: string): IrType | undefined {
   const typedArray = typedArrayType(name);
   return typedArray ? { arguments: [], kind: 'named', name: typedArray.ir } : undefined;
+}
+
+function isPortableNumericStorageType(type: IrType | undefined): boolean {
+  return (
+    type?.kind === 'named' &&
+    ['RustF32', 'RustF64', 'RustI8', 'RustI16', 'RustI32', 'RustU8', 'RustU16', 'RustU32'].includes(type.name)
+  );
 }
 
 function coerceExpression(value: string, expectedType?: IrType): string {
@@ -5033,6 +5336,17 @@ function emitRustStringLiteral(value: string): string {
 }
 
 function resolveSemanticType(type: IrType | undefined, context: EmitContext): IrType | undefined {
+  if (type?.kind === 'named' && type.name === 'FlightPartial') {
+    const inner = resolveSemanticType(type.arguments[0], context);
+    if (inner?.kind === 'anonymous') {
+      return {
+        extends: [],
+        fields: flattenStructFields(inner, context).map((field) => ({ ...field, optional: true })),
+        kind: 'anonymous',
+      };
+    }
+    return inner;
+  }
   const visited = new Set<string>();
   let resolved = type;
   while (resolved?.kind === 'named' && !visited.has(resolved.name)) {

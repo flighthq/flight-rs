@@ -8,7 +8,46 @@
 
 use flighthq_geometry::{create_rectangle, matrix_transform_rectangle};
 use flighthq_node::get_node_world_bounds_rectangle;
-use flighthq_types::{Matrix, Rectangle, RenderProxy2D, RenderViewport2D};
+use flighthq_types::{
+    Adjustment, ColorTransform, InteractionSignals, Matrix, Node, NodeInteractionState,
+    NodeSignals, NodeTraitsKey, Rectangle, RenderProxy2D, RenderViewport2D,
+};
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub appearance_id: Option<f64>,
+    pub bounds_using_local_bounds_id: Option<f64>,
+    pub bounds_using_local_transform_id: Option<f64>,
+    pub can_add_child: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    >,
+    pub children: Option<Vec<Node>>,
+    pub color_adjustments: Option<Vec<Adjustment>>,
+    pub resolved_color_transform: Option<ColorTransform>,
+    pub color_adjustments_channel_mixing: Option<bool>,
+    pub traits: Option<NodeTraitsKey>,
+    pub interaction_signals: Option<InteractionSignals>,
+    pub local_bounds_id: Option<f64>,
+    pub local_bounds_using_local_bounds_id: Option<f64>,
+    pub local_content_id: Option<f64>,
+    pub local_transform_id: Option<f64>,
+    pub local_transform_using_local_transform_id: Option<f64>,
+    pub node_signals: Option<NodeSignals>,
+    pub interaction_state: Option<NodeInteractionState>,
+    pub parent: Option<Node>,
+    pub world_bounds_using_local_bounds_id: Option<f64>,
+    pub world_bounds_using_world_transform_id: Option<f64>,
+    pub world_transform_id: Option<f64>,
+    pub world_transform_using_local_transform_id: Option<f64>,
+    pub world_transform_using_parent_transform_id: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/render/src/renderViewport.ts:8 (sha256:42679f7ed8e98a08a69ba7734455bff95406edd81a9bdad4d60d84a5974eadc8)
 pub fn compute_render_proxy_world_bounds(

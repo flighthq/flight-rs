@@ -37,7 +37,8 @@ pub fn create_mesh_geometry_from_attributes(
     let vertex_count = ((options.positions.len() as f64) / 3.0_f64);
     let normals = (options.normals).clone();
     let uvs = (options.uvs).clone();
-    let mut vertices = vec![0.0_f32; (vertex_count * CANONICAL_FLOATS_PER_VERTEX) as usize];
+    let mut vertices: Vec<f32> =
+        vec![0.0_f32; (vertex_count * CANONICAL_FLOATS_PER_VERTEX) as usize];
     {
         let mut i = 0.0_f64;
         while (i < vertex_count) {
@@ -72,7 +73,7 @@ pub fn create_mesh_geometry_from_attributes(
         let src = (options.indices).clone();
         let needs_uint32 = (vertex_count > UINT16_INDEX_CEILING);
         if needs_uint32 {
-            let mut a = vec![0_u32; (src.as_ref().unwrap().length) as usize];
+            let mut a: Vec<u32> = vec![0_u32; (src.as_ref().unwrap().length) as usize];
             {
                 let mut i = 0.0_f64;
                 while (i < src.as_ref().unwrap().length) {
@@ -85,7 +86,7 @@ pub fn create_mesh_geometry_from_attributes(
             }
             index_array = Some((a).clone());
         } else {
-            let mut a = vec![0_u16; (src.as_ref().unwrap().length) as usize];
+            let mut a: Vec<u16> = vec![0_u16; (src.as_ref().unwrap().length) as usize];
             {
                 let mut i = 0.0_f64;
                 while (i < src.as_ref().unwrap().length) {
@@ -184,7 +185,7 @@ pub fn merge_mesh_geometries(geometries: &Vec<MeshGeometry>) -> Option<MeshGeome
             total_index_count += vc;
         }
     }
-    let mut merged_vertices = vec![0.0_f32; (total_vertex_floats) as usize];
+    let mut merged_vertices: Vec<f32> = vec![0.0_f32; (total_vertex_floats) as usize];
     let needs_uint32 = ((total_vertex_floats / floats_per_vertex) > UINT16_INDEX_CEILING);
     let mut merged_indices = if (all_indexed) || (total_index_count > 0.0_f64) {
         Some(if needs_uint32 {

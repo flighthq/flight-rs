@@ -7,28 +7,55 @@
 #![allow(unused_parens)]
 
 use flighthq_entity::{create_entity, create_entity_runtime};
-use flighthq_types::{BLEND_MODE as blend_mode_constant, RenderState, RenderStateRuntime};
+use flighthq_types::{
+    BLEND_MODE as blend_mode_constant, DisplayObjectClipHooks, Matrix, RenderState,
+    RenderStateRuntime, SceneGraphSyncPolicy,
+};
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub allow_smoothing: Option<bool>,
+    pub background_color: Option<f64>,
+    pub background_color_rgba: Option<Vec<f64>>,
+    pub background_color_string: Option<String>,
+    pub current_clip_depth: Option<f64>,
+    pub display_object_clip_hooks: Option<DisplayObjectClipHooks>,
+    pub pixel_ratio: Option<f64>,
+    pub render_alpha: Option<f64>,
+    pub render_blend_mode: Option<BlendMode>,
+    pub render_transform2_d: Option<Matrix>,
+    pub scene_graph_sync_policy: Option<SceneGraphSyncPolicy>,
+    pub round_pixels: Option<bool>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/render/src/renderState.ts:5 (sha256:77d919408262f698375721533f66dec71fec3d5cd6234cfbb80066475558968e)
-pub fn create_render_state(obj: Option<RenderState>) -> RenderState {
+pub fn create_render_state(obj: Option<FlightPartialRecord1>) -> RenderState {
     let mut state = create_entity(Some(RenderState {
         __flight_identity: std::sync::Arc::new(()),
-        allow_smoothing: (obj.as_ref().map(|value| value.allow_smoothing)).unwrap_or(true),
-        background_color: (obj.as_ref().map(|value| value.background_color)).unwrap_or(0.0_f64),
+        allow_smoothing: (obj.as_ref().and_then(|value| value.allow_smoothing)).unwrap_or(true),
+        background_color: (obj.as_ref().and_then(|value| value.background_color))
+            .unwrap_or(0.0_f64),
         background_color_rgba: (obj
             .as_ref()
-            .map(|value| (value.background_color_rgba).clone()))
+            .and_then(|value| (value.background_color_rgba).clone()))
         .unwrap_or(vec![]),
         background_color_string: (obj
             .as_ref()
-            .map(|value| (value.background_color_string).clone()))
+            .and_then(|value| (value.background_color_string).clone()))
         .unwrap_or("".to_owned()),
-        current_clip_depth: (obj.as_ref().map(|value| value.current_clip_depth)).unwrap_or(0.0_f64),
+        current_clip_depth: (obj.as_ref().and_then(|value| value.current_clip_depth))
+            .unwrap_or(0.0_f64),
         display_object_clip_hooks: obj
             .as_ref()
             .and_then(|value| (value.display_object_clip_hooks).clone()),
-        pixel_ratio: (obj.as_ref().map(|value| value.pixel_ratio)).unwrap_or(1.0_f64),
-        render_alpha: (obj.as_ref().map(|value| value.render_alpha)).unwrap_or(1.0_f64),
+        pixel_ratio: (obj.as_ref().and_then(|value| value.pixel_ratio)).unwrap_or(1.0_f64),
+        render_alpha: (obj.as_ref().and_then(|value| value.render_alpha)).unwrap_or(1.0_f64),
         render_blend_mode: Some(
             (obj.as_ref()
                 .and_then(|value| (value.render_blend_mode).clone()))
@@ -37,10 +64,10 @@ pub fn create_render_state(obj: Option<RenderState>) -> RenderState {
         render_transform2_d: obj
             .as_ref()
             .and_then(|value| (value.render_transform2_d).clone()),
-        round_pixels: (obj.as_ref().map(|value| value.round_pixels)).unwrap_or(false),
+        round_pixels: (obj.as_ref().and_then(|value| value.round_pixels)).unwrap_or(false),
         scene_graph_sync_policy: (obj
             .as_ref()
-            .map(|value| (value.scene_graph_sync_policy).clone()))
+            .and_then(|value| (value.scene_graph_sync_policy).clone()))
         .unwrap_or("refreshDerivedState".to_owned()),
     }));
     ();

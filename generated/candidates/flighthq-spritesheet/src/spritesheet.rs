@@ -8,7 +8,36 @@
 
 use crate::create_spritesheet_frame;
 use flighthq_entity::create_entity;
-use flighthq_types::{Spritesheet, SpritesheetAnimation, SpritesheetFrame};
+use flighthq_types::{Spritesheet, SpritesheetAnimation, SpritesheetFrame, TextureAtlas};
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub atlas: Option<TextureAtlas>,
+    pub animations: Option<Vec<(String, SpritesheetAnimation)>>,
+    pub frames: Option<Vec<SpritesheetFrame>>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub id: Option<f64>,
+    pub offset_x: Option<f64>,
+    pub offset_y: Option<f64>,
+    pub pivot_x: Option<f64>,
+    pub pivot_y: Option<f64>,
+    pub rotated: Option<bool>,
+}
+impl PartialEq for FlightPartialRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/spritesheet/src/spritesheet.ts:6 (sha256:ece52e49ff2700a8b6a8e9102cc84379f04e6abb6dd08315e6d758b6db6d9718)
 pub fn clone_spritesheet(spritesheet: &Spritesheet) -> Spritesheet {
@@ -16,14 +45,14 @@ pub fn clone_spritesheet(spritesheet: &Spritesheet) -> Spritesheet {
         .iter()
         .cloned()
         .map(|f: SpritesheetFrame| -> crate::OpaqueHostValue {
-            create_spritesheet_frame(Some(SpritesheetFrame {
+            create_spritesheet_frame(Some(FlightPartialRecord2 {
                 __flight_identity: std::sync::Arc::new(()),
-                id: f.id,
-                offset_x: f.offset_x,
-                offset_y: f.offset_y,
+                id: Some(f.id),
+                offset_x: Some(f.offset_x),
+                offset_y: Some(f.offset_y),
                 pivot_x: f.pivot_x,
                 pivot_y: f.pivot_y,
-                rotated: f.rotated,
+                rotated: Some(f.rotated),
             }))
         })
         .collect();
@@ -37,24 +66,24 @@ pub fn clone_spritesheet(spritesheet: &Spritesheet) -> Spritesheet {
 
 // Source: upstream/packages/spritesheet/src/spritesheet.ts:24 (sha256:98a6a5f0626783039851024b48235bdace564ed9b1c823cf7f811c6c94568bb4)
 #[derive(Clone)]
-struct CreateSpritesheetRecord1 {
+struct CreateSpritesheetRecord3 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateSpritesheetRecord1 {
+impl PartialEq for CreateSpritesheetRecord3 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-pub fn create_spritesheet(obj: Option<Spritesheet>) -> Spritesheet {
+pub fn create_spritesheet(obj: Option<FlightPartialRecord1>) -> Spritesheet {
     return create_entity(Some(Spritesheet {
         __flight_identity: std::sync::Arc::new(()),
         atlas: obj.as_ref().and_then(|value| (value.atlas).clone()),
-        animations: (obj.as_ref().map(|value| (value.animations).clone())).unwrap_or({
+        animations: (obj.as_ref().and_then(|value| (value.animations).clone())).unwrap_or({
             let mut __flight_record = Vec::new();
             __flight_record
         }),
-        frames: (obj.as_ref().map(|value| (value.frames).clone())).unwrap_or(vec![]),
+        frames: (obj.as_ref().and_then(|value| (value.frames).clone())).unwrap_or(vec![]),
     }));
 }
 

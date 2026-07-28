@@ -85,15 +85,18 @@ pub fn get_light_luminance(light: &Light) -> f64 {
         return 0.0_f64;
     }
     let r = ((__flight_js_to_i32(
-        (__flight_js_to_u32(color) >> (__flight_js_to_u32(24.0_f64) & 31)) as f64,
+        (__flight_js_to_u32(*(color.as_ref().unwrap())) >> (__flight_js_to_u32(24.0_f64) & 31))
+            as f64,
     ) & __flight_js_to_i32(255.0_f64)) as f64
         / 255.0_f64);
     let g = ((__flight_js_to_i32(
-        (__flight_js_to_u32(color) >> (__flight_js_to_u32(16.0_f64) & 31)) as f64,
+        (__flight_js_to_u32(*(color.as_ref().unwrap())) >> (__flight_js_to_u32(16.0_f64) & 31))
+            as f64,
     ) & __flight_js_to_i32(255.0_f64)) as f64
         / 255.0_f64);
     let b = ((__flight_js_to_i32(
-        (__flight_js_to_u32(color) >> (__flight_js_to_u32(8.0_f64) & 31)) as f64,
+        (__flight_js_to_u32(*(color.as_ref().unwrap())) >> (__flight_js_to_u32(8.0_f64) & 31))
+            as f64,
     ) & __flight_js_to_i32(255.0_f64)) as f64
         / 255.0_f64);
     let luma = (((0.2126_f64 * r) + (0.7152_f64 * g)) + (0.0722_f64 * b));

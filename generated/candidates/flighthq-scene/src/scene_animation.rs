@@ -9,7 +9,46 @@
 use flighthq_animation::sample_animation_track;
 use flighthq_geometry::{set_quaternion, set_vector3};
 use flighthq_node::invalidate_node_local_transform;
-use flighthq_types::AnimationClip;
+use flighthq_types::{
+    Adjustment, AnimationClip, ColorTransform, InteractionSignals, Node, NodeInteractionState,
+    NodeSignals, NodeTraitsKey,
+};
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub appearance_id: Option<f64>,
+    pub bounds_using_local_bounds_id: Option<f64>,
+    pub bounds_using_local_transform_id: Option<f64>,
+    pub can_add_child: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    >,
+    pub children: Option<Vec<Node>>,
+    pub color_adjustments: Option<Vec<Adjustment>>,
+    pub resolved_color_transform: Option<ColorTransform>,
+    pub color_adjustments_channel_mixing: Option<bool>,
+    pub traits: Option<NodeTraitsKey>,
+    pub interaction_signals: Option<InteractionSignals>,
+    pub local_bounds_id: Option<f64>,
+    pub local_bounds_using_local_bounds_id: Option<f64>,
+    pub local_content_id: Option<f64>,
+    pub local_transform_id: Option<f64>,
+    pub local_transform_using_local_transform_id: Option<f64>,
+    pub node_signals: Option<NodeSignals>,
+    pub interaction_state: Option<NodeInteractionState>,
+    pub parent: Option<Node>,
+    pub world_bounds_using_local_bounds_id: Option<f64>,
+    pub world_bounds_using_world_transform_id: Option<f64>,
+    pub world_transform_id: Option<f64>,
+    pub world_transform_using_local_transform_id: Option<f64>,
+    pub world_transform_using_parent_transform_id: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/scene/src/sceneAnimation.ts:15 (sha256:22c0199d511e86ff772e7fc587faf9b43383181bdebac30fd77b3a100caeb9e4)
 pub fn apply_animation_clip_to_scene(clip: &mut AnimationClip, time: f64) -> () {
@@ -79,7 +118,15 @@ pub fn apply_animation_clip_to_scene(clip: &mut AnimationClip, time: f64) -> () 
                     );
                 }
             }
-            invalidate_node_local_transform(&target.as_mut().unwrap().node);
+            invalidate_node_local_transform(&Node {
+                __flight_identity: std::sync::Arc::clone(
+                    &(target.as_mut().unwrap().node).__flight_identity,
+                ),
+                data: ((target.as_mut().unwrap().node).data).clone(),
+                enabled: (target.as_mut().unwrap().node).enabled,
+                kind: ((target.as_mut().unwrap().node).kind).clone(),
+                name: ((target.as_mut().unwrap().node).name).clone(),
+            });
             {
                 i += 1.0;
                 i

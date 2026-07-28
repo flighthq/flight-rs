@@ -106,7 +106,7 @@ pub fn compute_mesh_geometry_wireframe_indices(geometry: &MeshGeometry) -> Vec<u
         }
     }
     if use_uint32 {
-        let mut out = vec![0_u32; (lines.len() as f64) as usize];
+        let mut out: Vec<u32> = vec![0_u32; (lines.len() as f64) as usize];
         {
             let __flight_offset = (0.0_f64) as usize;
             let __flight_values: Vec<u32> = (lines).iter().map(|value| (*value) as u32).collect();
@@ -115,7 +115,7 @@ pub fn compute_mesh_geometry_wireframe_indices(geometry: &MeshGeometry) -> Vec<u
         };
         return out;
     }
-    let mut out = vec![0_u16; (lines.len() as f64) as usize];
+    let mut out: Vec<u16> = vec![0_u16; (lines.len() as f64) as usize];
     {
         let __flight_offset = (0.0_f64) as usize;
         let __flight_values: Vec<u16> = (lines).iter().map(|value| (*value) as u16).collect();
@@ -130,7 +130,7 @@ pub fn expand_mesh_geometry_indices(geometry: &MeshGeometry) -> MeshGeometry {
     let indices = (geometry.indices).clone();
     let floats_per_vertex = (geometry.layout.stride / 4.0_f64);
     if (indices).is_none() {
-        let mut vertices = vec![0.0_f32; (geometry.vertices.len() as f64) as usize];
+        let mut vertices: Vec<f32> = vec![0.0_f32; (geometry.vertices.len() as f64) as usize];
         {
             let __flight_offset = (0.0_f64) as usize;
             let __flight_values: Vec<f32> = (geometry.vertices)
@@ -149,7 +149,7 @@ pub fn expand_mesh_geometry_indices(geometry: &MeshGeometry) -> MeshGeometry {
             subsets: None,
         });
     }
-    let mut vertices =
+    let mut vertices: Vec<f32> =
         vec![0.0_f32; ((indices.as_ref().unwrap().len() as f64) * floats_per_vertex) as usize];
     {
         let mut i = 0.0_f64;

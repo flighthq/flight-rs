@@ -6,56 +6,114 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
+use flighthq_types::SpritesheetAnimationDirection;
 pub use flighthq_types::{SpritesheetAnimationData, SpritesheetData, SpritesheetFrameData};
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub direction: Option<SpritesheetAnimationDirection>,
+    pub frame_duration: Option<f64>,
+    pub frame_durations: Option<Vec<f64>>,
+    pub frame_names: Option<Vec<String>>,
+    pub loop_: Option<bool>,
+    pub name: Option<String>,
+    pub origin_x: Option<f64>,
+    pub origin_y: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub animations: Option<Vec<SpritesheetAnimationData>>,
+    pub frames: Option<Vec<SpritesheetFrameData>>,
+    pub image_file: Option<String>,
+    pub image_height: Option<f64>,
+    pub image_width: Option<f64>,
+    pub scale: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord3 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub height: Option<f64>,
+    pub name: Option<String>,
+    pub offset_x: Option<f64>,
+    pub offset_y: Option<f64>,
+    pub pivot_x: Option<f64>,
+    pub pivot_y: Option<f64>,
+    pub rotated: Option<bool>,
+    pub source_height: Option<f64>,
+    pub source_width: Option<f64>,
+    pub width: Option<f64>,
+    pub x: Option<f64>,
+    pub y: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord3 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/spritesheet/src/spritesheetData.ts:7 (sha256:71f3c52b04d2a42ddc3fc08f427916f2820328dac2e6ecb102a84fdb2782a5a5)
 pub fn create_spritesheet_animation_data(
-    obj: Option<SpritesheetAnimationData>,
+    obj: Option<FlightPartialRecord1>,
 ) -> SpritesheetAnimationData {
     return SpritesheetAnimationData {
         __flight_identity: std::sync::Arc::new(()),
-        direction: (obj.as_ref().map(|value| (value.direction).clone()))
+        direction: (obj.as_ref().and_then(|value| (value.direction).clone()))
             .unwrap_or("forward".to_owned()),
-        frame_duration: (obj.as_ref().map(|value| value.frame_duration)).unwrap_or(100.0_f64),
+        frame_duration: (obj.as_ref().and_then(|value| value.frame_duration)).unwrap_or(100.0_f64),
         frame_durations: obj
             .as_ref()
             .and_then(|value| (value.frame_durations).clone()),
-        frame_names: (obj.as_ref().map(|value| (value.frame_names).clone())).unwrap_or(vec![]),
-        loop_: (obj.as_ref().map(|value| value.loop_)).unwrap_or(true),
-        name: (obj.as_ref().map(|value| (value.name).clone())).unwrap_or("".to_owned()),
-        origin_x: (obj.as_ref().map(|value| value.origin_x)).unwrap_or(0.0_f64),
-        origin_y: (obj.as_ref().map(|value| value.origin_y)).unwrap_or(0.0_f64),
+        frame_names: (obj.as_ref().and_then(|value| (value.frame_names).clone())).unwrap_or(vec![]),
+        loop_: (obj.as_ref().and_then(|value| value.loop_)).unwrap_or(true),
+        name: (obj.as_ref().and_then(|value| (value.name).clone())).unwrap_or("".to_owned()),
+        origin_x: (obj.as_ref().and_then(|value| value.origin_x)).unwrap_or(0.0_f64),
+        origin_y: (obj.as_ref().and_then(|value| value.origin_y)).unwrap_or(0.0_f64),
     };
 }
 
 // Source: upstream/packages/spritesheet/src/spritesheetData.ts:20 (sha256:c3f2395387d416958ff29d606d0e46ff9b0f75d1bb0a3433bf488022d426346b)
-pub fn create_spritesheet_data(obj: Option<SpritesheetData>) -> SpritesheetData {
+pub fn create_spritesheet_data(obj: Option<FlightPartialRecord2>) -> SpritesheetData {
     return SpritesheetData {
         __flight_identity: std::sync::Arc::new(()),
-        animations: (obj.as_ref().map(|value| (value.animations).clone())).unwrap_or(vec![]),
-        frames: (obj.as_ref().map(|value| (value.frames).clone())).unwrap_or(vec![]),
-        image_file: (obj.as_ref().map(|value| (value.image_file).clone())).unwrap_or("".to_owned()),
-        image_height: (obj.as_ref().map(|value| value.image_height)).unwrap_or(0.0_f64),
-        image_width: (obj.as_ref().map(|value| value.image_width)).unwrap_or(0.0_f64),
-        scale: (obj.as_ref().map(|value| value.scale)).unwrap_or(1.0_f64),
+        animations: (obj.as_ref().and_then(|value| (value.animations).clone())).unwrap_or(vec![]),
+        frames: (obj.as_ref().and_then(|value| (value.frames).clone())).unwrap_or(vec![]),
+        image_file: (obj.as_ref().and_then(|value| (value.image_file).clone()))
+            .unwrap_or("".to_owned()),
+        image_height: (obj.as_ref().and_then(|value| value.image_height)).unwrap_or(0.0_f64),
+        image_width: (obj.as_ref().and_then(|value| value.image_width)).unwrap_or(0.0_f64),
+        scale: (obj.as_ref().and_then(|value| value.scale)).unwrap_or(1.0_f64),
     };
 }
 
 // Source: upstream/packages/spritesheet/src/spritesheetData.ts:31 (sha256:9d05562850066d821bd2a4150f42908eb93905565400bc28524d18c1d11af51b)
-pub fn create_spritesheet_frame_data(obj: Option<SpritesheetFrameData>) -> SpritesheetFrameData {
+pub fn create_spritesheet_frame_data(obj: Option<FlightPartialRecord3>) -> SpritesheetFrameData {
     return SpritesheetFrameData {
         __flight_identity: std::sync::Arc::new(()),
-        height: (obj.as_ref().map(|value| value.height)).unwrap_or(0.0_f64),
-        name: (obj.as_ref().map(|value| (value.name).clone())).unwrap_or("".to_owned()),
-        offset_x: (obj.as_ref().map(|value| value.offset_x)).unwrap_or(0.0_f64),
-        offset_y: (obj.as_ref().map(|value| value.offset_y)).unwrap_or(0.0_f64),
+        height: (obj.as_ref().and_then(|value| value.height)).unwrap_or(0.0_f64),
+        name: (obj.as_ref().and_then(|value| (value.name).clone())).unwrap_or("".to_owned()),
+        offset_x: (obj.as_ref().and_then(|value| value.offset_x)).unwrap_or(0.0_f64),
+        offset_y: (obj.as_ref().and_then(|value| value.offset_y)).unwrap_or(0.0_f64),
         pivot_x: obj.as_ref().and_then(|value| value.pivot_x),
         pivot_y: obj.as_ref().and_then(|value| value.pivot_y),
-        rotated: (obj.as_ref().map(|value| value.rotated)).unwrap_or(false),
-        source_height: (obj.as_ref().map(|value| value.source_height)).unwrap_or(0.0_f64),
-        source_width: (obj.as_ref().map(|value| value.source_width)).unwrap_or(0.0_f64),
-        width: (obj.as_ref().map(|value| value.width)).unwrap_or(0.0_f64),
-        x: (obj.as_ref().map(|value| value.x)).unwrap_or(0.0_f64),
-        y: (obj.as_ref().map(|value| value.y)).unwrap_or(0.0_f64),
+        rotated: (obj.as_ref().and_then(|value| value.rotated)).unwrap_or(false),
+        source_height: (obj.as_ref().and_then(|value| value.source_height)).unwrap_or(0.0_f64),
+        source_width: (obj.as_ref().and_then(|value| value.source_width)).unwrap_or(0.0_f64),
+        width: (obj.as_ref().and_then(|value| value.width)).unwrap_or(0.0_f64),
+        x: (obj.as_ref().and_then(|value| value.x)).unwrap_or(0.0_f64),
+        y: (obj.as_ref().and_then(|value| value.y)).unwrap_or(0.0_f64),
     };
 }

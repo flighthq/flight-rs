@@ -8,7 +8,46 @@
 
 use flighthq_geometry::{create_matrix, inverse_matrix, multiply_matrix};
 use flighthq_node::get_node_local_matrix;
-use flighthq_types::{DisplayObject, Matrix, MatrixLike, RectangleLike};
+use flighthq_types::{
+    Adjustment, ColorTransform, DisplayObject, InteractionSignals, Matrix, MatrixLike, Node,
+    NodeInteractionState, NodeSignals, NodeTraitsKey, RectangleLike,
+};
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub appearance_id: Option<f64>,
+    pub bounds_using_local_bounds_id: Option<f64>,
+    pub bounds_using_local_transform_id: Option<f64>,
+    pub can_add_child: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    >,
+    pub children: Option<Vec<Node>>,
+    pub color_adjustments: Option<Vec<Adjustment>>,
+    pub resolved_color_transform: Option<ColorTransform>,
+    pub color_adjustments_channel_mixing: Option<bool>,
+    pub traits: Option<NodeTraitsKey>,
+    pub interaction_signals: Option<InteractionSignals>,
+    pub local_bounds_id: Option<f64>,
+    pub local_bounds_using_local_bounds_id: Option<f64>,
+    pub local_content_id: Option<f64>,
+    pub local_transform_id: Option<f64>,
+    pub local_transform_using_local_transform_id: Option<f64>,
+    pub node_signals: Option<NodeSignals>,
+    pub interaction_state: Option<NodeInteractionState>,
+    pub parent: Option<Node>,
+    pub world_bounds_using_local_bounds_id: Option<f64>,
+    pub world_bounds_using_world_transform_id: Option<f64>,
+    pub world_transform_id: Option<f64>,
+    pub world_transform_using_local_transform_id: Option<f64>,
+    pub world_transform_using_parent_transform_id: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/render/src/renderTarget.ts:5 (sha256:d096576df44fb3f2e8c6e8407060ad62e0000a87855d01af617a915673f40ae7)
 #[derive(Clone)]
@@ -68,12 +107,12 @@ pub fn compute_render_cache_transform(
 
 // Source: upstream/packages/render/src/renderTarget.ts:51 (sha256:38b43bf331e204278fcbaaa4fefe1ed84a8bdeb2d5bed1ee469edd88cd801eaa)
 #[derive(Clone)]
-struct ComputeRenderTargetSizeRecord1 {
+struct ComputeRenderTargetSizeRecord2 {
     __flight_identity: std::sync::Arc<()>,
     width: f64,
     height: f64,
 }
-impl PartialEq for ComputeRenderTargetSizeRecord1 {
+impl PartialEq for ComputeRenderTargetSizeRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -84,11 +123,11 @@ pub fn compute_render_target_size(
     padding: Option<f64>,
     min_width: Option<f64>,
     min_height: Option<f64>,
-) -> ComputeRenderTargetSizeRecord1 {
+) -> ComputeRenderTargetSizeRecord2 {
     let padding = padding.unwrap_or(0.0_f64);
     let min_width = min_width.unwrap_or(1.0_f64);
     let min_height = min_height.unwrap_or(1.0_f64);
-    return ComputeRenderTargetSizeRecord1 {
+    return ComputeRenderTargetSizeRecord2 {
         __flight_identity: std::sync::Arc::new(()),
         width: (min_width).max(((bounds.width).ceil() + (padding * 2.0_f64))),
         height: (min_height).max(((bounds.height).ceil() + (padding * 2.0_f64))),

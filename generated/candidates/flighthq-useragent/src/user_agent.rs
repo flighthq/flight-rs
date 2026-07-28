@@ -15,9 +15,9 @@ pub fn detect_endianness() -> PlatformEndianness {
     let __flight_try_return: Option<PlatformEndianness> = match std::panic::catch_unwind(
         std::panic::AssertUnwindSafe(|| -> Option<PlatformEndianness> {
             {
-                let buf = vec![0_u8; (2.0_f64) as usize];
+                let buf: Vec<u8> = vec![0_u8; (2.0_f64) as usize];
                 vec![0_u16; (buf) as usize][0.0_f64 as usize] = (258.0_f64) as u16;
-                let bytes = vec![0_u8; (buf) as usize];
+                let bytes: Vec<u8> = vec![0_u8; (buf) as usize];
                 if ((bytes[0.0_f64 as usize] as f64) == 1.0_f64) {
                     return Some("big".to_owned());
                 }

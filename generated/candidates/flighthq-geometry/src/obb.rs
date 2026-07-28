@@ -308,49 +308,49 @@ pub fn transform_obb_by_matrix4(out: &mut ObbLike, obb: &ObbLike, m: &Matrix4Lik
         + ((m.m[10.0_f64 as usize] as f64) * (m.m[10.0_f64 as usize] as f64)))
         .sqrt();
     let r00 = if (sx > 0.0_f64) {
-        ((m.m[0.0_f64 as usize] as f64) / sx) as f32
+        ((m.m[0.0_f64 as usize] as f64) / sx)
     } else {
-        (1.0_f64) as f32
+        1.0_f64
     };
     let r10 = if (sx > 0.0_f64) {
-        ((m.m[1.0_f64 as usize] as f64) / sx) as f32
+        ((m.m[1.0_f64 as usize] as f64) / sx)
     } else {
-        (0.0_f64) as f32
+        0.0_f64
     };
     let r20 = if (sx > 0.0_f64) {
-        ((m.m[2.0_f64 as usize] as f64) / sx) as f32
+        ((m.m[2.0_f64 as usize] as f64) / sx)
     } else {
-        (0.0_f64) as f32
+        0.0_f64
     };
     let r01 = if (sy > 0.0_f64) {
-        ((m.m[4.0_f64 as usize] as f64) / sy) as f32
+        ((m.m[4.0_f64 as usize] as f64) / sy)
     } else {
-        (0.0_f64) as f32
+        0.0_f64
     };
     let r11 = if (sy > 0.0_f64) {
-        ((m.m[5.0_f64 as usize] as f64) / sy) as f32
+        ((m.m[5.0_f64 as usize] as f64) / sy)
     } else {
-        (1.0_f64) as f32
+        1.0_f64
     };
     let r21 = if (sy > 0.0_f64) {
-        ((m.m[6.0_f64 as usize] as f64) / sy) as f32
+        ((m.m[6.0_f64 as usize] as f64) / sy)
     } else {
-        (0.0_f64) as f32
+        0.0_f64
     };
     let r02 = if (sz > 0.0_f64) {
-        ((m.m[8.0_f64 as usize] as f64) / sz) as f32
+        ((m.m[8.0_f64 as usize] as f64) / sz)
     } else {
-        (0.0_f64) as f32
+        0.0_f64
     };
     let r12 = if (sz > 0.0_f64) {
-        ((m.m[9.0_f64 as usize] as f64) / sz) as f32
+        ((m.m[9.0_f64 as usize] as f64) / sz)
     } else {
-        (0.0_f64) as f32
+        0.0_f64
     };
     let r22 = if (sz > 0.0_f64) {
-        ((m.m[10.0_f64 as usize] as f64) / sz) as f32
+        ((m.m[10.0_f64 as usize] as f64) / sz)
     } else {
-        (1.0_f64) as f32
+        1.0_f64
     };
     let mut mqw: f64;
     let mut mqx: f64;

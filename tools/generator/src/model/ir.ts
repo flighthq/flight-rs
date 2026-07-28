@@ -18,6 +18,7 @@ export type IrType =
 
 export interface IrTypeField {
   contextualParameters?: IrParameter[] | undefined;
+  discriminantValue?: boolean | number | string | undefined;
   name: string;
   optional: boolean;
   type: IrType;

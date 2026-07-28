@@ -6,39 +6,64 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_types::ColorTransformFunction;
+use flighthq_types::{AdjustmentKind, ColorTransformFunction};
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub kind: Option<AdjustmentKind>,
+    pub transform: Option<ColorTransformFunction>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub kind: Option<AdjustmentKind>,
+    pub color_matrix: Option<Vec<f64>>,
+}
+impl PartialEq for FlightPartialRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/adjustments/src/colorLutAdjustment.ts:10 (sha256:706d5be3108fd619cffdcd0cbd8ced4ac47c2630d4a9b78839c64f3db0f634f2)
 #[derive(Clone)]
-struct GetAdjustmentColorTransformRecord1 {
+struct GetAdjustmentColorTransformRecord3 {
     __flight_identity: std::sync::Arc<()>,
     kind: String,
 }
-impl PartialEq for GetAdjustmentColorTransformRecord1 {
+impl PartialEq for GetAdjustmentColorTransformRecord3 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 pub fn get_adjustment_color_transform(
-    operation: &GetAdjustmentColorTransformRecord1,
+    operation: &GetAdjustmentColorTransformRecord3,
 ) -> Option<ColorTransformFunction> {
-    return Some((operation.transform).clone());
+    let transform = (operation.transform).clone();
+    return (transform).clone();
 }
 
 // Source: upstream/packages/adjustments/src/colorLutAdjustment.ts:20 (sha256:a3555604ecbc722928c2d782499cbed67c36de37dd76a702f84c347c44554b3d)
 #[derive(Clone)]
-struct IsColorLutAdjustmentRecord1 {
+struct IsColorLutAdjustmentRecord3 {
     __flight_identity: std::sync::Arc<()>,
     kind: String,
 }
-impl PartialEq for IsColorLutAdjustmentRecord1 {
+impl PartialEq for IsColorLutAdjustmentRecord3 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-pub fn is_color_lut_adjustment(operation: &IsColorLutAdjustmentRecord1) -> bool {
+pub fn is_color_lut_adjustment(operation: &IsColorLutAdjustmentRecord3) -> bool {
     return ("function" == "function");
 }
 

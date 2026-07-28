@@ -26,7 +26,7 @@ pub fn parse_bitmap_font_xml(
         return None;
     }
     return build_bitmap_font_from_record(
-        record.as_ref().unwrap(),
+        &record.as_ref().unwrap(),
         Some(((options).clone().unwrap()).clone()),
     );
 }
@@ -42,8 +42,8 @@ fn parse_bitmap_font_xml_record(text: String) -> Option<BitmapFontRecord> {
         return None;
     }
     let line_height =
-        get_xml_element_attribute_number(common.as_ref().unwrap(), "lineHeight".to_owned());
-    let base = get_xml_element_attribute_number(common.as_ref().unwrap(), "base".to_owned());
+        get_xml_element_attribute_number(&common.as_ref().unwrap(), "lineHeight".to_owned());
+    let base = get_xml_element_attribute_number(&common.as_ref().unwrap(), "base".to_owned());
     if ((line_height).is_none()) || ((base).is_none()) {
         return None;
     }

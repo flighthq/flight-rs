@@ -14,7 +14,114 @@ use flighthq_geometry::{
 use flighthq_mesh::{get_mesh_geometry_triangle_count, get_mesh_geometry_vertex_position};
 use flighthq_node::{ensure_node_world_matrix4, get_node_runtime, get_node_world_matrix4};
 use flighthq_scene::{get_scene_node_world_bounds, is_mesh};
-use flighthq_types::{Aabb, Camera, Matrix4, Mesh, Ray3D, SceneHit, SceneNode, Vector3};
+use flighthq_types::{
+    Aabb, AabbLike, Adjustment, Camera, ColorTransform, InteractionSignals, Kind, Material,
+    Matrix4, Mesh, MeshGeometry, MeshMorph, Node, NodeData, NodeInteractionState, NodeSignals,
+    NodeTraitsKey, Quaternion, Ray3D, SceneHit, SceneNode, Skin, Transform3DNode, Vector3,
+};
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub data: Option<NodeData>,
+    pub enabled: Option<bool>,
+    pub kind: Option<Kind>,
+    pub name: Option<String>,
+    pub alpha: Option<f64>,
+    pub visible: Option<bool>,
+    pub position: Option<Vector3>,
+    pub rotation: Option<Quaternion>,
+    pub scale: Option<Vector3>,
+    pub geometry: Option<MeshGeometry>,
+    pub materials: Option<Vec<Option<Material>>>,
+    pub morph: Option<MeshMorph>,
+    pub skin: Option<Skin>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub appearance_id: Option<f64>,
+    pub bounds_using_local_bounds_id: Option<f64>,
+    pub bounds_using_local_transform_id: Option<f64>,
+    pub can_add_child: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    >,
+    pub children: Option<Vec<Node>>,
+    pub color_adjustments: Option<Vec<Adjustment>>,
+    pub resolved_color_transform: Option<ColorTransform>,
+    pub color_adjustments_channel_mixing: Option<bool>,
+    pub traits: Option<NodeTraitsKey>,
+    pub interaction_signals: Option<InteractionSignals>,
+    pub local_bounds_id: Option<f64>,
+    pub local_bounds_using_local_bounds_id: Option<f64>,
+    pub local_content_id: Option<f64>,
+    pub local_transform_id: Option<f64>,
+    pub local_transform_using_local_transform_id: Option<f64>,
+    pub node_signals: Option<NodeSignals>,
+    pub interaction_state: Option<NodeInteractionState>,
+    pub parent: Option<Node>,
+    pub world_bounds_using_local_bounds_id: Option<f64>,
+    pub world_bounds_using_world_transform_id: Option<f64>,
+    pub world_transform_id: Option<f64>,
+    pub world_transform_using_local_transform_id: Option<f64>,
+    pub world_transform_using_parent_transform_id: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord3 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub data: Option<NodeData>,
+    pub enabled: Option<bool>,
+    pub kind: Option<Kind>,
+    pub name: Option<String>,
+    pub alpha: Option<f64>,
+    pub visible: Option<bool>,
+    pub position: Option<Vector3>,
+    pub rotation: Option<Quaternion>,
+    pub scale: Option<Vector3>,
+}
+impl PartialEq for FlightPartialRecord3 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord4 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub alpha: Option<f64>,
+    pub visible: Option<bool>,
+}
+impl PartialEq for FlightPartialRecord4 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord5 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub position: Option<Vector3>,
+    pub rotation: Option<Quaternion>,
+    pub scale: Option<Vector3>,
+}
+impl PartialEq for FlightPartialRecord5 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/picking/src/pickScene.ts:24 (sha256:3a8513735f2e1ff5979966971cf58afa9e28db6bef5077145cf4f416dadfbf33)
 #[derive(Clone)]
@@ -34,7 +141,7 @@ impl PartialEq for ScenePickOptions {
 
 // Source: upstream/packages/picking/src/pickScene.ts:32 (sha256:5655906d45bab757bd15d1bc8bbf78b557e341a2171e90e7de4a9a8bb21ffa06)
 #[derive(Clone)]
-struct CreateSceneHitRecord1 {
+struct CreateSceneHitRecord6 {
     __flight_identity: std::sync::Arc<()>,
     distance: f64,
     node: Mesh,
@@ -49,7 +156,7 @@ struct CreateSceneHitRecord1 {
     v: f64,
     w: f64,
 }
-impl PartialEq for CreateSceneHitRecord1 {
+impl PartialEq for CreateSceneHitRecord6 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -269,7 +376,15 @@ fn pick_node(
     {
         intersect_mesh_triangles(node, ray, max_distance, cull_backfaces, on_hit);
     }
-    let mut children = (get_node_runtime(node).children).clone();
+    let mut children = (get_node_runtime(&Node {
+        __flight_identity: std::sync::Arc::clone(&(node).__flight_identity),
+        data: ((node).data).clone(),
+        enabled: (node).enabled,
+        kind: ((node).kind).clone(),
+        name: ((node).name).clone(),
+    })
+    .children)
+        .clone();
     if (children).is_some() {
         {
             let mut i = 0.0_f64;
@@ -292,6 +407,19 @@ fn pick_node(
 }
 
 // Source: upstream/packages/picking/src/pickScene.ts:215 (sha256:1f6f8b8fbbf74c1bd727d9ff65ceb80dc8c2a9c8d0944bac5868984429344bb1)
+#[derive(Clone)]
+struct OutContextRecord6 {
+    __flight_identity: std::sync::Arc<()>,
+    x: f64,
+    y: f64,
+    z: f64,
+}
+impl PartialEq for OutContextRecord6 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 fn intersect_mesh_triangles(
     mesh: &mut Mesh,
     ray: &Ray3D,
@@ -300,11 +428,39 @@ fn intersect_mesh_triangles(
     on_hit: &mut impl FnMut(SceneHit) -> (),
 ) -> () {
     get_scene_node_world_bounds(&mut (*_WORLD_BOUNDS.lock().unwrap()), mesh);
-    if (intersect_ray3_d_aabb(ray, &(*_WORLD_BOUNDS.lock().unwrap())) < 0.0_f64) {
+    if (intersect_ray3_d_aabb(
+        ray,
+        &AabbLike {
+            __flight_identity: std::sync::Arc::clone(
+                &(*_WORLD_BOUNDS.lock().unwrap()).__flight_identity,
+            ),
+            max: ((*_WORLD_BOUNDS.lock().unwrap()).max).clone(),
+            min: ((*_WORLD_BOUNDS.lock().unwrap()).min).clone(),
+        },
+    ) < 0.0_f64)
+    {
         return;
     }
-    ensure_node_world_matrix4(mesh);
-    let world_matrix = get_node_world_matrix4(mesh);
+    ensure_node_world_matrix4(&Transform3DNode {
+        __flight_identity: std::sync::Arc::clone(&(mesh).__flight_identity),
+        data: ((mesh).data).clone(),
+        enabled: (mesh).enabled,
+        kind: ((mesh).kind).clone(),
+        name: ((mesh).name).clone(),
+        position: ((mesh).position).clone(),
+        rotation: ((mesh).rotation).clone(),
+        scale: ((mesh).scale).clone(),
+    });
+    let world_matrix = get_node_world_matrix4(&Transform3DNode {
+        __flight_identity: std::sync::Arc::clone(&(mesh).__flight_identity),
+        data: ((mesh).data).clone(),
+        enabled: (mesh).enabled,
+        kind: ((mesh).kind).clone(),
+        name: ((mesh).name).clone(),
+        position: ((mesh).position).clone(),
+        rotation: ((mesh).rotation).clone(),
+        scale: ((mesh).scale).clone(),
+    });
     if (!inverse_matrix4(&mut (*_INVERSE_WORLD.lock().unwrap()), &world_matrix)) {
         return;
     }

@@ -9,7 +9,43 @@
 use crate::{clone_sampler, copy_sampler, create_sampler};
 use flighthq_entity::create_entity;
 use flighthq_geometry::{clone_vector2, copy_vector2, create_vector2, inverse_matrix3};
-use flighthq_types::{Matrix3Like, VideoResource, VideoTexture, VideoTextureLike};
+use flighthq_types::{
+    Matrix3Like, Sampler, TextureColorSpace, TextureFilter, TextureWrap, Vector2, VideoResource,
+    VideoTexture, VideoTextureLike,
+};
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub uv_offset: Option<Vector2>,
+    pub uv_rotation: Option<f64>,
+    pub uv_scale: Option<Vector2>,
+    pub color_space: Option<TextureColorSpace>,
+    pub frame_id: Option<f64>,
+    pub sampler: Option<Sampler>,
+    pub source: Option<VideoResource>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub anisotropy: Option<f64>,
+    pub mag_filter: Option<TextureFilter>,
+    pub min_filter: Option<TextureFilter>,
+    pub mipmaps: Option<bool>,
+    pub wrap_u: Option<TextureWrap>,
+    pub wrap_v: Option<TextureWrap>,
+}
+impl PartialEq for FlightPartialRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/texture/src/videoTexture.ts:11 (sha256:46518ded4490655f81f5e120629edf77a561064dc9f199a00ffe4b580bc2c2a6)
 pub fn advance_video_texture(video_texture: &mut VideoTextureLike) -> f64 {
@@ -48,27 +84,28 @@ pub fn copy_video_texture(out: &mut VideoTextureLike, source: &VideoTextureLike)
 // Source: upstream/packages/texture/src/videoTexture.ts:52 (sha256:4d0bca75d5af5c18c050d48f50d025d724c02579b10b603320f65c8bac77594e)
 pub fn create_video_texture(
     source: &VideoResource,
-    opts: Option<VideoTextureLike>,
+    opts: Option<FlightPartialRecord1>,
 ) -> VideoTexture {
     return create_entity(Some(VideoTexture {
         __flight_identity: std::sync::Arc::new(()),
-        color_space: (opts.as_ref().map(|value| (value.color_space).clone()))
+        color_space: (opts.as_ref().and_then(|value| (value.color_space).clone()))
             .unwrap_or("srgb".to_owned()),
-        frame_id: (opts.as_ref().map(|value| value.frame_id)).unwrap_or((-1.0_f64)),
-        sampler: if (opts.as_ref().map(|value| (value.sampler).clone())).is_some() {
-            clone_sampler(&opts.as_ref().unwrap().sampler)
+        frame_id: (opts.as_ref().and_then(|value| value.frame_id)).unwrap_or((-1.0_f64)),
+        sampler: if (opts.as_ref().and_then(|value| (value.sampler).clone())).is_some() {
+            clone_sampler(opts.as_ref().unwrap().sampler.as_ref().unwrap())
         } else {
             create_sampler(None)
         },
-        source: (opts.as_ref().map(|value| (value.source).clone())).unwrap_or((*source).clone()),
-        uv_offset: if (opts.as_ref().map(|value| (value.uv_offset).clone())).is_some() {
-            clone_vector2(&opts.as_ref().unwrap().uv_offset)
+        source: (opts.as_ref().and_then(|value| (value.source).clone()))
+            .unwrap_or((*source).clone()),
+        uv_offset: if (opts.as_ref().and_then(|value| (value.uv_offset).clone())).is_some() {
+            clone_vector2(opts.as_ref().unwrap().uv_offset.as_ref().unwrap())
         } else {
             create_vector2(Some(0.0_f64), Some(0.0_f64))
         },
-        uv_rotation: (opts.as_ref().map(|value| value.uv_rotation)).unwrap_or(0.0_f64),
-        uv_scale: if (opts.as_ref().map(|value| (value.uv_scale).clone())).is_some() {
-            clone_vector2(&opts.as_ref().unwrap().uv_scale)
+        uv_rotation: (opts.as_ref().and_then(|value| value.uv_rotation)).unwrap_or(0.0_f64),
+        uv_scale: if (opts.as_ref().and_then(|value| (value.uv_scale).clone())).is_some() {
+            clone_vector2(opts.as_ref().unwrap().uv_scale.as_ref().unwrap())
         } else {
             create_vector2(Some(1.0_f64), Some(1.0_f64))
         },

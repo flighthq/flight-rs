@@ -24,9 +24,9 @@ pub fn lerp_render_effect(
         return false;
     }
     let tc = (0.0_f64).max((1.0_f64).min(t));
-    let mut numeric_keys = Vec::new();
-    let mut boolean_keys = Vec::new();
-    let mut string_keys = Vec::new();
+    let mut numeric_keys: Vec<String> = Vec::new();
+    let mut boolean_keys: Vec<String> = Vec::new();
+    let mut string_keys: Vec<String> = Vec::new();
     let a_rec = a;
     let b_rec = b;
     for key in (crate::host_value::<()>("host.keys")).iter().cloned() {

@@ -8,7 +8,39 @@
 
 use crate::{clone_sampler, copy_sampler, create_sampler, equals_sampler};
 use flighthq_entity::create_entity;
-use flighthq_types::{CubeTexture, CubeTextureLike, ImageResource};
+use flighthq_types::{
+    CubeTexture, CubeTextureLike, ImageResource, Sampler, TextureColorSpace, TextureFilter,
+    TextureWrap,
+};
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub color_space: Option<TextureColorSpace>,
+    pub faces: Option<Vec<Option<ImageResource>>>,
+    pub sampler: Option<Sampler>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub anisotropy: Option<f64>,
+    pub mag_filter: Option<TextureFilter>,
+    pub min_filter: Option<TextureFilter>,
+    pub mipmaps: Option<bool>,
+    pub wrap_u: Option<TextureWrap>,
+    pub wrap_v: Option<TextureWrap>,
+}
+impl PartialEq for FlightPartialRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/texture/src/cubeTexture.ts:9 (sha256:4595ed2a26f9507489ceb9c3434313aecdebce5e09199144599180a3feb17e76)
 pub fn clone_cube_texture(source: &CubeTextureLike) -> CubeTexture {
@@ -89,18 +121,21 @@ pub fn copy_cube_texture(out: &mut CubeTextureLike, source: &CubeTextureLike) ->
 }
 
 // Source: upstream/packages/texture/src/cubeTexture.ts:42 (sha256:10f7bb085bdb359911da1cbfbc17fa8377025fe76e30b6260da3f1c4861f2f90)
-pub fn create_cube_texture(opts: Option<CubeTextureLike>) -> CubeTexture {
+pub fn create_cube_texture(opts: Option<FlightPartialRecord1>) -> CubeTexture {
     return create_entity(Some(CubeTexture {
         __flight_identity: std::sync::Arc::new(()),
-        color_space: (opts.as_ref().map(|value| (value.color_space).clone()))
+        color_space: (opts.as_ref().and_then(|value| (value.color_space).clone()))
             .unwrap_or("srgb".to_owned()),
-        faces: if (opts.as_ref().map(|value| (value.faces).clone())).is_some() {
-            ((opts.as_ref().unwrap().faces).clone()).clone()
+        faces: if (opts.as_ref().and_then(|value| (value.faces).clone())).is_some() {
+            ((opts.as_ref().unwrap().faces).clone())
+                .as_ref()
+                .unwrap()
+                .clone()
         } else {
             vec![None, None, None, None, None, None]
         },
-        sampler: if (opts.as_ref().map(|value| (value.sampler).clone())).is_some() {
-            clone_sampler(&opts.as_ref().unwrap().sampler)
+        sampler: if (opts.as_ref().and_then(|value| (value.sampler).clone())).is_some() {
+            clone_sampler(opts.as_ref().unwrap().sampler.as_ref().unwrap())
         } else {
             create_sampler(None)
         },
@@ -161,10 +196,10 @@ pub fn get_cube_texture_face_size(cube: &CubeTextureLike) -> f64 {
 
 // Source: upstream/packages/texture/src/cubeTexture.ts:78 (sha256:9496ea2802f642930ff88cb065aa24d713f8f55f4e9bad6e13f01f89633b6364)
 pub fn is_cube_texture_complete(cube: &CubeTextureLike) -> bool {
-    return (cube.faces.every)(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-        move |face: crate::OpaqueHostValue| -> f64 { (face).is_some() },
-    )
-        as Box<dyn FnMut(crate::OpaqueHostValue) -> f64 + Send + 'static>)));
+    return ((cube.faces).clone())
+        .iter()
+        .cloned()
+        .all(|face: Option<ImageResource>| -> bool { (face).is_some() });
 }
 
 // Source: upstream/packages/texture/src/cubeTexture.ts:86 (sha256:56d19643acaa2425bb88ab4f26b3d8fd59b41bec0c40ddf55b6bdc1aef5ebaac)

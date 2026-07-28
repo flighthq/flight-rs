@@ -464,7 +464,7 @@ pub fn normalize_clip_region(out: &mut ClipRegion, clip: &ClipRegion) -> () {
     }
     copy_rectangle(&mut out.rect, &clip.rect);
     out.contours = Some(
-        (in_contours)
+        (in_contours.as_ref().unwrap())
             .iter()
             .cloned()
             .map(|c: Vec<f64>| -> crate::OpaqueHostValue { (c).clone() })

@@ -73,7 +73,7 @@ pub fn play_video_resource(
     }
     let runtime = (*VIDEO_CHANNEL_RUNTIMES.lock().unwrap())
         .iter()
-        .find(|(key, _)| key == &(element).clone().unwrap())
+        .find(|(key, _)| key == &(element.as_mut().unwrap()).clone())
         .map(|(_, value)| value.clone());
     if (runtime).is_some() {
         crate::host_value::<()>("host.removeEventListener");
@@ -103,7 +103,7 @@ pub fn play_video_resource(
         })
             as Box<dyn FnMut() -> () + Send + 'static>));
     {
-        let __flight_key = (element).clone().unwrap();
+        let __flight_key = (element.as_mut().unwrap()).clone();
         let __flight_value = VideoChannelRuntime {
             __flight_identity: std::sync::Arc::new(()),
             loops_remaining: (*channel.lock().unwrap()).loops,

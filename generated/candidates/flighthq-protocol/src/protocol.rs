@@ -9,6 +9,20 @@
 use flighthq_signals::{create_signal, emit_signal};
 use flighthq_types::{ParsedProtocolUrl, ProtocolBackend, ProtocolHandler};
 
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub scheme: Option<String>,
+    pub host: Option<String>,
+    pub path: Option<String>,
+    pub query: Option<Vec<(String, String)>>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 // Source: upstream/packages/protocol/src/protocol.ts:9 (sha256:00af5c866b81c185220d029c7614ebc4e769a8032fdb5b6ba44dbb8b0538131e)
 pub fn attach_protocol_handler(handler: ProtocolHandler) -> () {
     detach_protocol_handler(&handler);
@@ -57,10 +71,11 @@ pub fn create_protocol_handler() -> ProtocolHandler {
 }
 
 // Source: upstream/packages/protocol/src/protocol.ts:30 (sha256:26195253814f0fc0b4a2631049f6906ebedecb01aebec722307c617dd34640c9)
-pub fn create_protocol_url(parts: &ParsedProtocolUrl) -> String {
-    let scheme = (parts.scheme).clone();
-    let host = (parts.host).clone();
-    let path = (parts.path).clone();
+pub fn create_protocol_url(parts: &FlightPartialRecord1) -> String {
+    let scheme = ((parts.scheme).clone()).unwrap_or("unknown".to_owned());
+    let host = ((parts.host).clone()).unwrap_or("".to_owned());
+    let path = ((parts.path).clone()).unwrap_or("".to_owned());
+    let query = (parts.query).clone();
     let authority = if host {
         format!("//{}", host)
     } else {
@@ -76,7 +91,7 @@ pub fn create_protocol_url(parts: &ParsedProtocolUrl) -> String {
         (path).clone()
     };
     let mut url = format!("{}:{}{}", scheme, authority, normalized_path);
-    if true {
+    if (query).is_some() {
         let entries = (crate::host_value::<()>("host.entries").filter)(std::sync::Arc::new(
             std::sync::Mutex::new(Box::new(move |__parameter0: crate::OpaqueHostValue| -> () {
                 let k = crate::host_value::<crate::OpaqueHostValue>("host.index");
@@ -106,13 +121,13 @@ pub fn create_protocol_url(parts: &ParsedProtocolUrl) -> String {
 
 // Source: upstream/packages/protocol/src/protocol.ts:50 (sha256:23a54378b0ad4aeec1e23686d4d8957a1537cb9077984fd0ded58015c5f30f0c)
 #[derive(Clone)]
-struct CreateWebProtocolBackendRecord1 {
+struct CreateWebProtocolBackendRecord2 {
     __flight_identity: std::sync::Arc<()>,
     register_protocol_handler: Option<
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(String, String) -> () + Send + 'static>>>,
     >,
 }
-impl PartialEq for CreateWebProtocolBackendRecord1 {
+impl PartialEq for CreateWebProtocolBackendRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -308,10 +323,10 @@ pub fn is_valid_protocol_scheme(scheme: String) -> bool {
 
 // Source: upstream/packages/protocol/src/protocol.ts:177 (sha256:842271fdf1801daed7958666e5bdde5e70b53dae56d7e560c3bbdd31f571bc8c)
 #[derive(Clone)]
-struct ParseProtocolUrlRecord1 {
+struct ParseProtocolUrlRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for ParseProtocolUrlRecord1 {
+impl PartialEq for ParseProtocolUrlRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

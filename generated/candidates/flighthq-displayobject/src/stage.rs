@@ -10,21 +10,279 @@ use crate::create_display_object;
 use flighthq_node::{create_viewport, get_node_root, get_node_runtime};
 use flighthq_signals::{create_signal, emit_signal};
 use flighthq_types::{
-    DisplayObject, DisplayObjectTraits, Stage, StageRuntime, StageSignals, Viewport,
+    Adjustment, AdjustmentKind, BlendMode, BoundsNodeAny, ClipRegion, ColorTransform,
+    DisplayObject, InteractionSignals, Material, MaterialData, Matrix, Node, NodeInteractionState,
+    NodeSignals, NodeTraitsKey, Rectangle, Stage, StageRuntime, StageSignals, ViewportAlign,
+    ViewportScaleMode,
 };
 
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub align: Option<ViewportAlign>,
+    pub root: Option<DisplayObject>,
+    pub scale_mode: Option<ViewportScaleMode>,
+    pub color: Option<f64>,
+    pub stage_height: Option<f64>,
+    pub stage_width: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub bounds_rectangle: Option<Rectangle>,
+    pub compute_local_bounds_rectangle: Option<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
+        >,
+    >,
+    pub local_bounds_rectangle: Option<Rectangle>,
+    pub world_bounds_rectangle: Option<Rectangle>,
+}
+impl PartialEq for FlightPartialRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord3 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub alpha_multiplier: Option<f64>,
+    pub alpha_offset: Option<f64>,
+    pub blue_multiplier: Option<f64>,
+    pub blue_offset: Option<f64>,
+    pub green_multiplier: Option<f64>,
+    pub green_offset: Option<f64>,
+    pub red_multiplier: Option<f64>,
+    pub red_offset: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord3 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord4 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub appearance_id: Option<f64>,
+    pub bounds_using_local_bounds_id: Option<f64>,
+    pub bounds_using_local_transform_id: Option<f64>,
+    pub can_add_child: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    >,
+    pub children: Option<Vec<Node>>,
+    pub color_adjustments: Option<Vec<Adjustment>>,
+    pub resolved_color_transform: Option<ColorTransform>,
+    pub color_adjustments_channel_mixing: Option<bool>,
+    pub traits: Option<NodeTraitsKey>,
+    pub interaction_signals: Option<InteractionSignals>,
+    pub local_bounds_id: Option<f64>,
+    pub local_bounds_using_local_bounds_id: Option<f64>,
+    pub local_content_id: Option<f64>,
+    pub local_transform_id: Option<f64>,
+    pub local_transform_using_local_transform_id: Option<f64>,
+    pub node_signals: Option<NodeSignals>,
+    pub interaction_state: Option<NodeInteractionState>,
+    pub parent: Option<Node>,
+    pub world_bounds_using_local_bounds_id: Option<f64>,
+    pub world_bounds_using_world_transform_id: Option<f64>,
+    pub world_transform_id: Option<f64>,
+    pub world_transform_using_local_transform_id: Option<f64>,
+    pub world_transform_using_parent_transform_id: Option<f64>,
+    pub local_matrix: Option<Matrix>,
+    pub rotation_angle: Option<f64>,
+    pub rotation_cosine: Option<f64>,
+    pub rotation_sine: Option<f64>,
+    pub world_matrix: Option<Matrix>,
+    pub bounds_rectangle: Option<Rectangle>,
+    pub compute_local_bounds_rectangle: Option<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
+        >,
+    >,
+    pub local_bounds_rectangle: Option<Rectangle>,
+    pub world_bounds_rectangle: Option<Rectangle>,
+    pub stage: Option<Stage>,
+}
+impl PartialEq for FlightPartialRecord4 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord5 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub appearance_id: Option<f64>,
+    pub bounds_using_local_bounds_id: Option<f64>,
+    pub bounds_using_local_transform_id: Option<f64>,
+    pub can_add_child: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    >,
+    pub children: Option<Vec<Node>>,
+    pub color_adjustments: Option<Vec<Adjustment>>,
+    pub resolved_color_transform: Option<ColorTransform>,
+    pub color_adjustments_channel_mixing: Option<bool>,
+    pub traits: Option<NodeTraitsKey>,
+    pub interaction_signals: Option<InteractionSignals>,
+    pub local_bounds_id: Option<f64>,
+    pub local_bounds_using_local_bounds_id: Option<f64>,
+    pub local_content_id: Option<f64>,
+    pub local_transform_id: Option<f64>,
+    pub local_transform_using_local_transform_id: Option<f64>,
+    pub node_signals: Option<NodeSignals>,
+    pub interaction_state: Option<NodeInteractionState>,
+    pub parent: Option<Node>,
+    pub world_bounds_using_local_bounds_id: Option<f64>,
+    pub world_bounds_using_world_transform_id: Option<f64>,
+    pub world_transform_id: Option<f64>,
+    pub world_transform_using_local_transform_id: Option<f64>,
+    pub world_transform_using_parent_transform_id: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord5 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord6 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub align: Option<ViewportAlign>,
+    pub root: Option<Node>,
+    pub scale_mode: Option<ViewportScaleMode>,
+}
+impl PartialEq for FlightPartialRecord6 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord7 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub kind: Option<AdjustmentKind>,
+    pub color_matrix: Option<Vec<f64>>,
+}
+impl PartialEq for FlightPartialRecord7 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord8 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub alpha: Option<f64>,
+    pub visible: Option<bool>,
+}
+impl PartialEq for FlightPartialRecord8 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord9 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub blend_mode: Option<BlendMode>,
+}
+impl PartialEq for FlightPartialRecord9 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord10 {
+    pub __flight_identity: std::sync::Arc<()>,
+}
+impl PartialEq for FlightPartialRecord10 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord11 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub clip: Option<ClipRegion>,
+}
+impl PartialEq for FlightPartialRecord11 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord12 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub material: Option<Material>,
+    pub material_data: Option<MaterialData>,
+}
+impl PartialEq for FlightPartialRecord12 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord13 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub local_matrix: Option<Matrix>,
+    pub rotation_angle: Option<f64>,
+    pub rotation_cosine: Option<f64>,
+    pub rotation_sine: Option<f64>,
+    pub world_matrix: Option<Matrix>,
+}
+impl PartialEq for FlightPartialRecord13 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord14 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub pivot_x: Option<f64>,
+    pub pivot_y: Option<f64>,
+    pub rotation: Option<f64>,
+    pub scale_x: Option<f64>,
+    pub scale_y: Option<f64>,
+    pub skew_x: Option<f64>,
+    pub skew_y: Option<f64>,
+    pub x: Option<f64>,
+    pub y: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord14 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 // Source: upstream/packages/displayobject/src/stage.ts:20 (sha256:da2da113b8caf0d17a4879547f07ddebbab7c2bd57237a666358c0fb0e300e6f)
-pub fn create_stage(obj: Option<Stage>) -> Stage {
+pub fn create_stage(obj: Option<FlightPartialRecord1>) -> Stage {
     let root = create_display_object(None);
-    let mut stage = create_viewport(Some(Viewport::<DisplayObjectTraits> {
+    let mut stage = create_viewport(Some(FlightPartialRecord6 {
         __flight_identity: std::sync::Arc::new(()),
-        align: (obj.as_ref().map(|value| (value.align).clone())).unwrap(),
+        align: Some((obj.as_ref().and_then(|value| (value.align).clone())).unwrap()),
         root: Some(root),
-        scale_mode: (obj.as_ref().map(|value| (value.scale_mode).clone())).unwrap(),
+        scale_mode: Some((obj.as_ref().and_then(|value| (value.scale_mode).clone())).unwrap()),
     }));
     stage.color = obj.as_ref().and_then(|value| value.color);
-    stage.stage_height = (obj.as_ref().map(|value| value.stage_height)).unwrap_or(550.0_f64);
-    stage.stage_width = (obj.as_ref().map(|value| value.stage_width)).unwrap_or(400.0_f64);
+    stage.stage_height = (obj.as_ref().and_then(|value| value.stage_height)).unwrap_or(550.0_f64);
+    stage.stage_width = (obj.as_ref().and_then(|value| value.stage_width)).unwrap_or(400.0_f64);
     get_node_runtime(&root).stage = Some((stage).clone());
     return stage;
 }

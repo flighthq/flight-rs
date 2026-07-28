@@ -95,31 +95,31 @@ pub fn disconnect_signal<T: crate::FlightCallback>(signal: &mut Signal<T>, slot:
     if (data).is_none() {
         return;
     }
-    let mut i = (data.as_ref().unwrap().inner.lock().unwrap().slots.len() as f64);
+    let mut i = (data.as_mut().unwrap().inner.lock().unwrap().slots.len() as f64);
     while ({
         i -= 1.0;
         i
     } >= 0.0_f64)
     {
         if crate::FlightCallback::flight_same(
-            &(data.as_ref().unwrap().inner.lock().unwrap().slots[i as usize].clone()),
+            &(data.as_mut().unwrap().inner.lock().unwrap().slots[i as usize].clone()),
             &((slot).clone()),
         ) {
-            data.as_ref()
+            data.as_mut()
                 .unwrap()
                 .inner
                 .lock()
                 .unwrap()
                 .slots
                 .splice((i) as usize..((i) + (1.0_f64)) as usize, vec![]);
-            data.as_ref()
+            data.as_mut()
                 .unwrap()
                 .inner
                 .lock()
                 .unwrap()
                 .priorities
                 .splice((i) as usize..((i) + (1.0_f64)) as usize, vec![]);
-            data.as_ref()
+            data.as_mut()
                 .unwrap()
                 .inner
                 .lock()
@@ -128,7 +128,7 @@ pub fn disconnect_signal<T: crate::FlightCallback>(signal: &mut Signal<T>, slot:
                 .splice((i) as usize..((i) + (1.0_f64)) as usize, vec![]);
         }
     }
-    if ((data.as_ref().unwrap().inner.lock().unwrap().slots.len() as f64) == 0.0_f64) {
+    if ((data.as_mut().unwrap().inner.lock().unwrap().slots.len() as f64) == 0.0_f64) {
         signal.emit = T::flight_noop();
         signal.data = None;
     }

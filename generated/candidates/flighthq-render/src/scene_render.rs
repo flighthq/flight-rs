@@ -15,9 +15,10 @@ use flighthq_geometry::{
 use flighthq_node::{get_node_runtime, get_node_world_matrix4};
 use flighthq_skeleton3d::compute_skeleton3_d_joint_matrices;
 use flighthq_types::{
-    Aabb, AmbientLight, Camera, DirectionalLight, Frustum, HemisphereLight, LinearColor,
-    MAX_FORWARD_LIGHTS as max_forward_lights_constant, Matrix4, Mesh, NodeAny, PointLight,
-    RenderState,
+    Aabb, AabbLike, Adjustment, AmbientLight, Camera, ColorTransform, DirectionalLight, Frustum,
+    HemisphereLight, InteractionSignals, LinearColor,
+    MAX_FORWARD_LIGHTS as max_forward_lights_constant, Matrix4, Mesh, Node, NodeAny,
+    NodeInteractionState, NodeSignals, NodeTraitsKey, PointLight, Projection, RenderState,
     SCENE_LIGHT_AMBIENT_RADIANCE_OFFSET as scene_light_ambient_radiance_offset_constant,
     SCENE_LIGHT_BLOCK_FLOATS as scene_light_block_floats_constant,
     SCENE_LIGHT_DIRECTIONAL_DIRECTION_OFFSET as scene_light_directional_direction_offset_constant,
@@ -28,8 +29,44 @@ use flighthq_types::{
     SCENE_LIGHT_POINT_STRIDE as scene_light_point_stride_constant,
     SCENE_LIGHT_SPOT_OFFSET as scene_light_spot_offset_constant,
     SCENE_LIGHT_SPOT_STRIDE as scene_light_spot_stride_constant, SceneLightBlock, SceneLights,
-    SceneNode, SceneRenderList, SpotLight,
+    SceneNode, SceneRenderList, SpotLight, Transform3DNode,
 };
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub appearance_id: Option<f64>,
+    pub bounds_using_local_bounds_id: Option<f64>,
+    pub bounds_using_local_transform_id: Option<f64>,
+    pub can_add_child: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    >,
+    pub children: Option<Vec<Node>>,
+    pub color_adjustments: Option<Vec<Adjustment>>,
+    pub resolved_color_transform: Option<ColorTransform>,
+    pub color_adjustments_channel_mixing: Option<bool>,
+    pub traits: Option<NodeTraitsKey>,
+    pub interaction_signals: Option<InteractionSignals>,
+    pub local_bounds_id: Option<f64>,
+    pub local_bounds_using_local_bounds_id: Option<f64>,
+    pub local_content_id: Option<f64>,
+    pub local_transform_id: Option<f64>,
+    pub local_transform_using_local_transform_id: Option<f64>,
+    pub node_signals: Option<NodeSignals>,
+    pub interaction_state: Option<NodeInteractionState>,
+    pub parent: Option<Node>,
+    pub world_bounds_using_local_bounds_id: Option<f64>,
+    pub world_bounds_using_world_transform_id: Option<f64>,
+    pub world_transform_id: Option<f64>,
+    pub world_transform_using_local_transform_id: Option<f64>,
+    pub world_transform_using_parent_transform_id: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/render/src/sceneRender.ts:61 (sha256:97f9c697f3929d9639144650dc1e47f071396fbf8324ef34acf934af39dc1a5d)
 pub fn pack_scene_light_block(out: &mut SceneLightBlock, lights: &SceneLights) -> () {
@@ -161,7 +198,13 @@ pub fn prepare_scene_render(
     {
         let __flight_argument_1 = (prepared.frustum).clone();
         collect_visible_meshes(
-            scene,
+            &NodeAny {
+                __flight_identity: std::sync::Arc::clone(&(scene).__flight_identity),
+                data: ((scene).data).clone(),
+                enabled: (scene).enabled,
+                kind: ((scene).kind).clone(),
+                name: ((scene).name).clone(),
+            },
             &__flight_argument_1,
             &mut prepared.world_bounds,
             &mut prepared.meshes,
@@ -296,8 +339,32 @@ fn is_mesh_visible(mesh: &Mesh, frustum: &Frustum, world_bounds: &mut Aabb) -> b
     if (bounds).is_none() {
         return true;
     }
-    transform_aabb_by_matrix4(world_bounds, &bounds, &get_node_world_matrix4(mesh));
-    return is_frustum_intersecting_aabb(frustum, world_bounds);
+    transform_aabb_by_matrix4(
+        world_bounds,
+        &AabbLike {
+            __flight_identity: std::sync::Arc::clone(&(bounds.as_ref().unwrap()).__flight_identity),
+            max: ((bounds.as_ref().unwrap()).max).clone(),
+            min: ((bounds.as_ref().unwrap()).min).clone(),
+        },
+        &get_node_world_matrix4(&Transform3DNode {
+            __flight_identity: std::sync::Arc::clone(&(mesh).__flight_identity),
+            data: ((mesh).data).clone(),
+            enabled: (mesh).enabled,
+            kind: ((mesh).kind).clone(),
+            name: ((mesh).name).clone(),
+            position: ((mesh).position).clone(),
+            rotation: ((mesh).rotation).clone(),
+            scale: ((mesh).scale).clone(),
+        }),
+    );
+    return is_frustum_intersecting_aabb(
+        frustum,
+        &AabbLike {
+            __flight_identity: std::sync::Arc::clone(&(world_bounds).__flight_identity),
+            max: ((world_bounds).max).clone(),
+            min: ((world_bounds).min).clone(),
+        },
+    );
 }
 
 // Source: upstream/packages/render/src/sceneRender.ts:257 (sha256:3ca6f79c93fdbec70532c0d385b0d6ccdac52980c6c9ae12578a3cf74e991a3a)
@@ -403,12 +470,28 @@ fn pack_spot_light(data: &mut Vec<f32>, offset: f64, spot: &SpotLight) -> () {
 
 // Source: upstream/packages/render/src/sceneRender.ts:335 (sha256:6ae943fe437ece4fd9d4775454579270526f230091730ee52eb6d2c3bb9c610e)
 fn set_scene_view_projection_matrix4(out: &mut Matrix4, camera: &Camera, aspect: f64) -> () {
-    if (camera.projection.kind == "perspective") {
+    if matches!(&(camera.projection), flighthq_types::Projection::B(_)) {
         set_perspective_matrix4(
             &mut (*SCRATCH_PROJECTION.lock().unwrap()),
-            (camera.projection.fov_y * 0.5_f64).tan(),
-            if (camera.projection.aspect != 0.0_f64) {
-                camera.projection.aspect
+            ((match (camera.projection).clone() {
+                flighthq_types::Projection::A(_) => panic!("TypeScript union narrowing failed"),
+                flighthq_types::Projection::B(value) => value,
+            })
+            .fov_y
+                * 0.5_f64)
+                .tan(),
+            if ((match (camera.projection).clone() {
+                flighthq_types::Projection::A(_) => panic!("TypeScript union narrowing failed"),
+                flighthq_types::Projection::B(value) => value,
+            })
+            .aspect
+                != 0.0_f64)
+            {
+                (match (camera.projection).clone() {
+                    flighthq_types::Projection::A(_) => panic!("TypeScript union narrowing failed"),
+                    flighthq_types::Projection::B(value) => value,
+                })
+                .aspect
             } else {
                 aspect
             },
@@ -418,10 +501,26 @@ fn set_scene_view_projection_matrix4(out: &mut Matrix4, camera: &Camera, aspect:
     } else {
         set_orthographic_matrix4(
             &mut (*SCRATCH_PROJECTION.lock().unwrap()),
-            (-camera.projection.half_width),
-            camera.projection.half_width,
-            (-camera.projection.half_height),
-            camera.projection.half_height,
+            (-(match (camera.projection).clone() {
+                flighthq_types::Projection::A(value) => value,
+                flighthq_types::Projection::B(_) => panic!("TypeScript union narrowing failed"),
+            })
+            .half_width),
+            (match (camera.projection).clone() {
+                flighthq_types::Projection::A(value) => value,
+                flighthq_types::Projection::B(_) => panic!("TypeScript union narrowing failed"),
+            })
+            .half_width,
+            (-(match (camera.projection).clone() {
+                flighthq_types::Projection::A(value) => value,
+                flighthq_types::Projection::B(_) => panic!("TypeScript union narrowing failed"),
+            })
+            .half_height),
+            (match (camera.projection).clone() {
+                flighthq_types::Projection::A(value) => value,
+                flighthq_types::Projection::B(_) => panic!("TypeScript union narrowing failed"),
+            })
+            .half_height,
             camera.near,
             camera.far,
         );

@@ -8,7 +8,47 @@
 
 use flighthq_geometry::{copy_matrix4, create_matrix4, inverse_matrix4, multiply_matrix4};
 use flighthq_node::get_node_world_matrix4;
-use flighthq_types::{Matrix4, Matrix4Like, SceneNode, Skeleton3D, Skeleton3DValidationDiagnostic};
+use flighthq_types::{
+    Adjustment, ColorTransform, InteractionSignals, Matrix4, Matrix4Like, Node,
+    NodeInteractionState, NodeSignals, NodeTraitsKey, SceneNode, Skeleton3D,
+    Skeleton3DValidationDiagnostic, Transform3DNode,
+};
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub appearance_id: Option<f64>,
+    pub bounds_using_local_bounds_id: Option<f64>,
+    pub bounds_using_local_transform_id: Option<f64>,
+    pub can_add_child: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    >,
+    pub children: Option<Vec<Node>>,
+    pub color_adjustments: Option<Vec<Adjustment>>,
+    pub resolved_color_transform: Option<ColorTransform>,
+    pub color_adjustments_channel_mixing: Option<bool>,
+    pub traits: Option<NodeTraitsKey>,
+    pub interaction_signals: Option<InteractionSignals>,
+    pub local_bounds_id: Option<f64>,
+    pub local_bounds_using_local_bounds_id: Option<f64>,
+    pub local_content_id: Option<f64>,
+    pub local_transform_id: Option<f64>,
+    pub local_transform_using_local_transform_id: Option<f64>,
+    pub node_signals: Option<NodeSignals>,
+    pub interaction_state: Option<NodeInteractionState>,
+    pub parent: Option<Node>,
+    pub world_bounds_using_local_bounds_id: Option<f64>,
+    pub world_bounds_using_world_transform_id: Option<f64>,
+    pub world_transform_id: Option<f64>,
+    pub world_transform_using_local_transform_id: Option<f64>,
+    pub world_transform_using_parent_transform_id: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/skeleton3d/src/skeleton3d.ts:5 (sha256:5046c509e06792a8abf01f7390c3af7e31e79e1074a5f9e9dd0a892abd3ec633)
 pub fn clone_skeleton3_d(skeleton: &Skeleton3D) -> Skeleton3D {
@@ -54,7 +94,18 @@ pub fn compute_skeleton3_d_joint_matrices(skeleton: &mut Skeleton3D) -> () {
             }
             multiply_matrix4(
                 &mut (*_RESULT.lock().unwrap()),
-                &get_node_world_matrix4(&skeleton.joints[j as usize]),
+                &get_node_world_matrix4(&Transform3DNode {
+                    __flight_identity: std::sync::Arc::clone(
+                        &(skeleton.joints[j as usize]).__flight_identity,
+                    ),
+                    data: ((skeleton.joints[j as usize]).data).clone(),
+                    enabled: (skeleton.joints[j as usize]).enabled,
+                    kind: ((skeleton.joints[j as usize]).kind).clone(),
+                    name: ((skeleton.joints[j as usize]).name).clone(),
+                    position: ((skeleton.joints[j as usize]).position).clone(),
+                    rotation: ((skeleton.joints[j as usize]).rotation).clone(),
+                    scale: ((skeleton.joints[j as usize]).scale).clone(),
+                }),
                 &(*_INV_BIND.lock().unwrap()),
             );
             {
@@ -159,9 +210,7 @@ pub fn get_skeleton3_d_joint_index_by_name(skeleton: &Skeleton3D, name: String) 
     }
     return {
         let __flight_value = (name).clone();
-        (names)
-            .as_ref()
-            .unwrap()
+        (names.as_ref().unwrap())
             .iter()
             .position(|item| item == &__flight_value)
             .map_or(-1.0_f64, |index| index as f64)
@@ -179,7 +228,18 @@ pub fn get_skeleton3_d_joint_world_matrix(
     }
     copy_matrix4(
         out,
-        &get_node_world_matrix4(&skeleton.joints[joint_index as usize]),
+        &get_node_world_matrix4(&Transform3DNode {
+            __flight_identity: std::sync::Arc::clone(
+                &(skeleton.joints[joint_index as usize]).__flight_identity,
+            ),
+            data: ((skeleton.joints[joint_index as usize]).data).clone(),
+            enabled: (skeleton.joints[joint_index as usize]).enabled,
+            kind: ((skeleton.joints[joint_index as usize]).kind).clone(),
+            name: ((skeleton.joints[joint_index as usize]).name).clone(),
+            position: ((skeleton.joints[joint_index as usize]).position).clone(),
+            rotation: ((skeleton.joints[joint_index as usize]).rotation).clone(),
+            scale: ((skeleton.joints[joint_index as usize]).scale).clone(),
+        }),
     );
     return true;
 }
@@ -204,7 +264,18 @@ pub fn set_skeleton3_d_bind_pose(skeleton: &mut Skeleton3D) -> () {
         while (j < (skeleton.joints.len() as f64)) {
             inverse_matrix4(
                 &mut (*_RESULT.lock().unwrap()),
-                &get_node_world_matrix4(&skeleton.joints[j as usize]),
+                &get_node_world_matrix4(&Transform3DNode {
+                    __flight_identity: std::sync::Arc::clone(
+                        &(skeleton.joints[j as usize]).__flight_identity,
+                    ),
+                    data: ((skeleton.joints[j as usize]).data).clone(),
+                    enabled: (skeleton.joints[j as usize]).enabled,
+                    kind: ((skeleton.joints[j as usize]).kind).clone(),
+                    name: ((skeleton.joints[j as usize]).name).clone(),
+                    position: ((skeleton.joints[j as usize]).position).clone(),
+                    rotation: ((skeleton.joints[j as usize]).rotation).clone(),
+                    scale: ((skeleton.joints[j as usize]).scale).clone(),
+                }),
             );
             {
                 let __flight_offset = (j * 16.0_f64) as usize;

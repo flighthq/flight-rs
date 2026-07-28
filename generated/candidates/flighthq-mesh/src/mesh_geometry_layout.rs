@@ -36,7 +36,7 @@ pub fn convert_mesh_geometry_layout(
     } else {
         0.0_f64
     };
-    let mut dst_vertices = vec![0.0_f32; (vertex_count * dst_floats_per_vertex) as usize];
+    let mut dst_vertices: Vec<f32> = vec![0.0_f32; (vertex_count * dst_floats_per_vertex) as usize];
     let mut mapping: Vec<ConvertMeshGeometryLayoutRecord1> = vec![];
     for dst_attr in ((target_layout.attributes).clone()).iter().cloned() {
         if (!(dst_attr.format.starts_with)("float32")) {

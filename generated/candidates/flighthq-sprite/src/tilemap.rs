@@ -11,9 +11,252 @@ use flighthq_displayobject::{
 };
 use flighthq_signals::create_signal;
 use flighthq_types::{
-    BoundsNodeAny, Node, Rectangle, TILEMAP_KIND as tilemap_kind_constant, Tilemap, TilemapData,
-    TilemapRuntime, TilemapSignals, Vector2Like,
+    Adjustment, AdjustmentKind, BlendMode, BoundsNodeAny, ClipRegion, ColorTransform,
+    InteractionSignals, Material, MaterialData, Matrix, Node, NodeInteractionState, NodeSignals,
+    NodeTraitsKey, Rectangle, Stage, TILEMAP_KIND as tilemap_kind_constant, Tilemap, TilemapData,
+    TilemapRuntime, TilemapSignals, Tileset, Vector2Like,
 };
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub tileset: Option<Tileset>,
+    pub columns: Option<f64>,
+    pub rows: Option<f64>,
+    pub tiles: Option<Vec<i16>>,
+    pub material_data: Option<Vec<Option<MaterialData>>>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub appearance_id: Option<f64>,
+    pub bounds_using_local_bounds_id: Option<f64>,
+    pub bounds_using_local_transform_id: Option<f64>,
+    pub can_add_child: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    >,
+    pub children: Option<Vec<Node>>,
+    pub color_adjustments: Option<Vec<Adjustment>>,
+    pub resolved_color_transform: Option<ColorTransform>,
+    pub color_adjustments_channel_mixing: Option<bool>,
+    pub traits: Option<NodeTraitsKey>,
+    pub interaction_signals: Option<InteractionSignals>,
+    pub local_bounds_id: Option<f64>,
+    pub local_bounds_using_local_bounds_id: Option<f64>,
+    pub local_content_id: Option<f64>,
+    pub local_transform_id: Option<f64>,
+    pub local_transform_using_local_transform_id: Option<f64>,
+    pub node_signals: Option<NodeSignals>,
+    pub interaction_state: Option<NodeInteractionState>,
+    pub parent: Option<Node>,
+    pub world_bounds_using_local_bounds_id: Option<f64>,
+    pub world_bounds_using_world_transform_id: Option<f64>,
+    pub world_transform_id: Option<f64>,
+    pub world_transform_using_local_transform_id: Option<f64>,
+    pub world_transform_using_parent_transform_id: Option<f64>,
+    pub local_matrix: Option<Matrix>,
+    pub rotation_angle: Option<f64>,
+    pub rotation_cosine: Option<f64>,
+    pub rotation_sine: Option<f64>,
+    pub world_matrix: Option<Matrix>,
+    pub bounds_rectangle: Option<Rectangle>,
+    pub compute_local_bounds_rectangle: Option<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
+        >,
+    >,
+    pub local_bounds_rectangle: Option<Rectangle>,
+    pub world_bounds_rectangle: Option<Rectangle>,
+    pub stage: Option<Stage>,
+}
+impl PartialEq for FlightPartialRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord3 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub alpha_multiplier: Option<f64>,
+    pub alpha_offset: Option<f64>,
+    pub blue_multiplier: Option<f64>,
+    pub blue_offset: Option<f64>,
+    pub green_multiplier: Option<f64>,
+    pub green_offset: Option<f64>,
+    pub red_multiplier: Option<f64>,
+    pub red_offset: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord3 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord4 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub appearance_id: Option<f64>,
+    pub bounds_using_local_bounds_id: Option<f64>,
+    pub bounds_using_local_transform_id: Option<f64>,
+    pub can_add_child: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    >,
+    pub children: Option<Vec<Node>>,
+    pub color_adjustments: Option<Vec<Adjustment>>,
+    pub resolved_color_transform: Option<ColorTransform>,
+    pub color_adjustments_channel_mixing: Option<bool>,
+    pub traits: Option<NodeTraitsKey>,
+    pub interaction_signals: Option<InteractionSignals>,
+    pub local_bounds_id: Option<f64>,
+    pub local_bounds_using_local_bounds_id: Option<f64>,
+    pub local_content_id: Option<f64>,
+    pub local_transform_id: Option<f64>,
+    pub local_transform_using_local_transform_id: Option<f64>,
+    pub node_signals: Option<NodeSignals>,
+    pub interaction_state: Option<NodeInteractionState>,
+    pub parent: Option<Node>,
+    pub world_bounds_using_local_bounds_id: Option<f64>,
+    pub world_bounds_using_world_transform_id: Option<f64>,
+    pub world_transform_id: Option<f64>,
+    pub world_transform_using_local_transform_id: Option<f64>,
+    pub world_transform_using_parent_transform_id: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord4 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord5 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub kind: Option<AdjustmentKind>,
+    pub color_matrix: Option<Vec<f64>>,
+}
+impl PartialEq for FlightPartialRecord5 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord6 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub alpha: Option<f64>,
+    pub visible: Option<bool>,
+}
+impl PartialEq for FlightPartialRecord6 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord7 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub blend_mode: Option<BlendMode>,
+}
+impl PartialEq for FlightPartialRecord7 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord8 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub bounds_rectangle: Option<Rectangle>,
+    pub compute_local_bounds_rectangle: Option<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
+        >,
+    >,
+    pub local_bounds_rectangle: Option<Rectangle>,
+    pub world_bounds_rectangle: Option<Rectangle>,
+}
+impl PartialEq for FlightPartialRecord8 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord9 {
+    pub __flight_identity: std::sync::Arc<()>,
+}
+impl PartialEq for FlightPartialRecord9 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord10 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub clip: Option<ClipRegion>,
+}
+impl PartialEq for FlightPartialRecord10 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord11 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub material: Option<Material>,
+    pub material_data: Option<MaterialData>,
+}
+impl PartialEq for FlightPartialRecord11 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord12 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub local_matrix: Option<Matrix>,
+    pub rotation_angle: Option<f64>,
+    pub rotation_cosine: Option<f64>,
+    pub rotation_sine: Option<f64>,
+    pub world_matrix: Option<Matrix>,
+}
+impl PartialEq for FlightPartialRecord12 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord13 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub pivot_x: Option<f64>,
+    pub pivot_y: Option<f64>,
+    pub rotation: Option<f64>,
+    pub scale_x: Option<f64>,
+    pub scale_y: Option<f64>,
+    pub skew_x: Option<f64>,
+    pub skew_y: Option<f64>,
+    pub x: Option<f64>,
+    pub y: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord13 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/sprite/src/tilemap.ts:21 (sha256:5ac7db3d9c394f7ca11e767732eaeee96cd53e673331fd37e9bc49f9580d61b5)
 pub fn clear_tilemap(tilemap: &mut Tilemap) -> () {
@@ -87,9 +330,9 @@ pub fn create_tilemap(obj: Option<Tilemap>) -> Tilemap {
 }
 
 // Source: upstream/packages/sprite/src/tilemap.ts:58 (sha256:49e8f9b267b9649105bdadc8dfa31c5f3b308db639b167445e8346a897457e5d)
-pub fn create_tilemap_data(data: Option<TilemapData>) -> TilemapData {
-    let columns = (data.as_ref().map(|value| value.columns)).unwrap_or(0.0_f64);
-    let rows = (data.as_ref().map(|value| value.rows)).unwrap_or(0.0_f64);
+pub fn create_tilemap_data(data: Option<FlightPartialRecord1>) -> TilemapData {
+    let columns = (data.as_ref().and_then(|value| value.columns)).unwrap_or(0.0_f64);
+    let rows = (data.as_ref().and_then(|value| value.rows)).unwrap_or(0.0_f64);
     return TilemapData {
         __flight_identity: std::sync::Arc::new(()),
         columns: columns,
@@ -97,7 +340,7 @@ pub fn create_tilemap_data(data: Option<TilemapData>) -> TilemapData {
         material_data: data
             .as_ref()
             .and_then(|value| (value.material_data).clone()),
-        tiles: (data.as_ref().map(|value| (value.tiles).clone()))
+        tiles: (data.as_ref().and_then(|value| (value.tiles).clone()))
             .unwrap_or(vec![0_i16; (columns * rows) as usize].fill((-1.0_f64) as i16)),
         tileset: data.as_ref().and_then(|value| (value.tileset).clone()),
     };
@@ -332,10 +575,10 @@ pub fn set_tilemap_tiles(
 }
 
 // Source: upstream/packages/sprite/src/tilemap.ts:234 (sha256:501b9fca163dc75799a15df3e0ad52fecc82b6e26a584723c13e6e1e2d3fe8c0)
-static DEFAULT_METHODS: std::sync::LazyLock<TilemapRuntime> =
-    std::sync::LazyLock::new(|| TilemapRuntime {
+static DEFAULT_METHODS: std::sync::LazyLock<FlightPartialRecord2> =
+    std::sync::LazyLock::new(|| FlightPartialRecord2 {
         __flight_identity: std::sync::Arc::new(()),
-        compute_local_bounds_rectangle: std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+        compute_local_bounds_rectangle: Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
             move |mut __flight_argument_0: Rectangle, __flight_argument_1: BoundsNodeAny| -> () {
                 compute_tilemap_local_bounds_rectangle(
                     &mut __flight_argument_0,
@@ -343,7 +586,40 @@ static DEFAULT_METHODS: std::sync::LazyLock<TilemapRuntime> =
                 )
             },
         )
-            as Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>)),
+            as Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>))),
+        binding: None,
+        appearance_id: None,
+        bounds_using_local_bounds_id: None,
+        bounds_using_local_transform_id: None,
+        can_add_child: None,
+        children: None,
+        color_adjustments: None,
+        resolved_color_transform: None,
+        color_adjustments_channel_mixing: None,
+        traits: None,
+        interaction_signals: None,
+        local_bounds_id: None,
+        local_bounds_using_local_bounds_id: None,
+        local_content_id: None,
+        local_transform_id: None,
+        local_transform_using_local_transform_id: None,
+        node_signals: None,
+        interaction_state: None,
+        parent: None,
+        world_bounds_using_local_bounds_id: None,
+        world_bounds_using_world_transform_id: None,
+        world_transform_id: None,
+        world_transform_using_local_transform_id: None,
+        world_transform_using_parent_transform_id: None,
+        local_matrix: None,
+        rotation_angle: None,
+        rotation_cosine: None,
+        rotation_sine: None,
+        world_matrix: None,
+        bounds_rectangle: None,
+        local_bounds_rectangle: None,
+        world_bounds_rectangle: None,
+        stage: None,
     });
 
 // Source: upstream/packages/sprite/src/tilemap.ts:238 (sha256:b448b031099576eae638daa302bb5336d794bd3866167b48e8c70433e186bb1a)

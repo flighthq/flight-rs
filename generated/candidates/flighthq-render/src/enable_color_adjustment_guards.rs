@@ -8,7 +8,32 @@
 
 use crate::get_render_state_runtime;
 use flighthq_log::log_once;
-use flighthq_types::{LogData, LogDataProvider, LogLevel, RenderState, Renderable};
+use flighthq_types::{
+    BlendMode, DisplayObjectClipHooks, LogData, LogDataProvider, LogLevel, Matrix, RenderState,
+    Renderable, SceneGraphSyncPolicy,
+};
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub allow_smoothing: Option<bool>,
+    pub background_color: Option<f64>,
+    pub background_color_rgba: Option<Vec<f64>>,
+    pub background_color_string: Option<String>,
+    pub current_clip_depth: Option<f64>,
+    pub display_object_clip_hooks: Option<DisplayObjectClipHooks>,
+    pub pixel_ratio: Option<f64>,
+    pub render_alpha: Option<f64>,
+    pub render_blend_mode: Option<BlendMode>,
+    pub render_transform2_d: Option<Matrix>,
+    pub scene_graph_sync_policy: Option<SceneGraphSyncPolicy>,
+    pub round_pixels: Option<bool>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/render/src/enableColorAdjustmentGuards.ts:8 (sha256:28ef4df81b7a23da7419762fa45a0a7357a25688f3618e2d9e0a8a96c1d049d3)
 pub fn are_color_adjustment_guards_enabled(state: &RenderState) -> bool {
@@ -30,11 +55,11 @@ pub fn enable_color_adjustment_guards(state: &RenderState) -> () {
 
 // Source: upstream/packages/render/src/enableColorAdjustmentGuards.ts:22 (sha256:91cdc82c242c7a7151c3d9427905893a9543c29b3a2d7bd5253b568f3c63c881)
 #[derive(Clone)]
-struct WarnColorAdjustmentChannelMixingNotInlineableRecord1 {
+struct WarnColorAdjustmentChannelMixingNotInlineableRecord2 {
     __flight_identity: std::sync::Arc<()>,
     message: String,
 }
-impl PartialEq for WarnColorAdjustmentChannelMixingNotInlineableRecord1 {
+impl PartialEq for WarnColorAdjustmentChannelMixingNotInlineableRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

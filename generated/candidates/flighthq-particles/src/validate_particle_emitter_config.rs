@@ -8,7 +8,71 @@
 
 use crate::create_particle_emitter_config;
 pub use flighthq_types::ParticleConfigIssue;
-use flighthq_types::ParticleEmitterConfig;
+use flighthq_types::{
+    ParticleBlendMode, ParticleCurve, ParticleEmitterConfig, ParticleEmitterShape,
+};
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub alpha_end: Option<f64>,
+    pub alpha_start: Option<f64>,
+    pub blend_mode: Option<ParticleBlendMode>,
+    pub color_end_b: Option<f64>,
+    pub color_end_g: Option<f64>,
+    pub color_end_r: Option<f64>,
+    pub color_end_variance_b: Option<f64>,
+    pub color_end_variance_g: Option<f64>,
+    pub color_end_variance_r: Option<f64>,
+    pub color_start_b: Option<f64>,
+    pub color_start_g: Option<f64>,
+    pub color_start_r: Option<f64>,
+    pub color_start_variance_b: Option<f64>,
+    pub color_start_variance_g: Option<f64>,
+    pub color_start_variance_r: Option<f64>,
+    pub direction_x: Option<f64>,
+    pub direction_y: Option<f64>,
+    pub direction_z: Option<f64>,
+    pub gravity_x: Option<f64>,
+    pub gravity_y: Option<f64>,
+    pub gravity_z: Option<f64>,
+    pub emitter_cone_angle: Option<f64>,
+    pub emitter_depth: Option<f64>,
+    pub emitter_height: Option<f64>,
+    pub emitter_radius: Option<f64>,
+    pub emitter_shape: Option<ParticleEmitterShape>,
+    pub emitter_width: Option<f64>,
+    pub burst_count: Option<f64>,
+    pub burst_interval: Option<f64>,
+    pub duration: Option<f64>,
+    pub loop_: Option<bool>,
+    pub frame_count: Option<f64>,
+    pub frame_rate: Option<f64>,
+    pub lifetime_max: Option<f64>,
+    pub lifetime_min: Option<f64>,
+    pub max_particles: Option<f64>,
+    pub region_id_max: Option<f64>,
+    pub region_id_min: Option<f64>,
+    pub scale_end: Option<f64>,
+    pub scale_max: Option<f64>,
+    pub scale_min: Option<f64>,
+    pub speed_max: Option<f64>,
+    pub speed_min: Option<f64>,
+    pub spawn_rate: Option<f64>,
+    pub spread: Option<f64>,
+    pub rotation_speed_max: Option<f64>,
+    pub rotation_speed_min: Option<f64>,
+    pub velocity_inheritance: Option<f64>,
+    pub alpha_curve: Option<ParticleCurve>,
+    pub color_curve: Option<ParticleCurve>,
+    pub scale_curve: Option<ParticleCurve>,
+    pub world_space: Option<bool>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/particles/src/validateParticleEmitterConfig.ts:9 (sha256:a63f7598f4378b6e361fbcca3aaac29501875667fdce4035b9c61271311bf5ce)
 static NUMERIC_FIELDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(|| {
@@ -86,7 +150,7 @@ static NON_NEGATIVE_FIELDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLo
 
 // Source: upstream/packages/particles/src/validateParticleEmitterConfig.ts:85 (sha256:458e7d414d06d6f2468cb586896b90136b8aac0c5adb8a169f38b31fb14c9b22)
 pub fn normalize_particle_emitter_config(
-    config: Option<ParticleEmitterConfig>,
+    config: Option<FlightPartialRecord1>,
 ) -> ParticleEmitterConfig {
     let mut out = create_particle_emitter_config(Some(((config).clone().unwrap()).clone()));
     let defaults = create_particle_emitter_config(None);
@@ -156,13 +220,13 @@ pub fn normalize_particle_emitter_config(
 
 // Source: upstream/packages/particles/src/validateParticleEmitterConfig.ts:130 (sha256:a18a08a4eee98a57f847bc012bb29a248fb41fa6234d854be5820852f66068d0)
 #[derive(Clone)]
-struct ValidateParticleEmitterConfigRecord1 {
+struct ValidateParticleEmitterConfigRecord2 {
     __flight_identity: std::sync::Arc<()>,
     field: String,
     message: String,
     severity: String,
 }
-impl PartialEq for ValidateParticleEmitterConfigRecord1 {
+impl PartialEq for ValidateParticleEmitterConfigRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

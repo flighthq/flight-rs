@@ -118,7 +118,7 @@ pub fn apply_surface_levels(
     } else {
         1.0_f64
     };
-    let mut lut = vec![0_u8; (256.0_f64) as usize];
+    let mut lut: Vec<u8> = vec![0_u8; (256.0_f64) as usize];
     {
         let mut i = 0.0_f64;
         while (i < 256.0_f64) {

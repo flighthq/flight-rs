@@ -1070,8 +1070,11 @@ fn build_groups(
             } else {
                 (*g.lock().unwrap()).ascent
             };
-            (*g.lock().unwrap()).height =
-                ((*max_line_height.lock().unwrap()) || (*g.lock().unwrap()).height);
+            (*g.lock().unwrap()).height = if (*max_line_height.lock().unwrap()) != 0.0_f64 {
+                (*max_line_height.lock().unwrap())
+            } else {
+                (*g.lock().unwrap()).height
+            };
             {
                 i -= 1.0;
                 i

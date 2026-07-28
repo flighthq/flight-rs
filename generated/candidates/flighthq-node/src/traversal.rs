@@ -7,7 +7,46 @@
 #![allow(unused_parens)]
 
 use crate::{get_node_parent, get_node_runtime};
-use flighthq_types::{Node, NodeOf};
+use flighthq_types::{
+    Adjustment, ColorTransform, InteractionSignals, Node, NodeInteractionState, NodeOf,
+    NodeSignals, NodeTraitsKey,
+};
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub appearance_id: Option<f64>,
+    pub bounds_using_local_bounds_id: Option<f64>,
+    pub bounds_using_local_transform_id: Option<f64>,
+    pub can_add_child: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    >,
+    pub children: Option<Vec<Node>>,
+    pub color_adjustments: Option<Vec<Adjustment>>,
+    pub resolved_color_transform: Option<ColorTransform>,
+    pub color_adjustments_channel_mixing: Option<bool>,
+    pub traits: Option<NodeTraitsKey>,
+    pub interaction_signals: Option<InteractionSignals>,
+    pub local_bounds_id: Option<f64>,
+    pub local_bounds_using_local_bounds_id: Option<f64>,
+    pub local_content_id: Option<f64>,
+    pub local_transform_id: Option<f64>,
+    pub local_transform_using_local_transform_id: Option<f64>,
+    pub node_signals: Option<NodeSignals>,
+    pub interaction_state: Option<NodeInteractionState>,
+    pub parent: Option<Node>,
+    pub world_bounds_using_local_bounds_id: Option<f64>,
+    pub world_bounds_using_world_transform_id: Option<f64>,
+    pub world_transform_id: Option<f64>,
+    pub world_transform_using_local_transform_id: Option<f64>,
+    pub world_transform_using_parent_transform_id: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/node/src/traversal.ts:10 (sha256:e1cbd11b5c9b93af3c4bf94d0c651a7616faf538a9445cdceec4f8ae7b3e1ee6)
 pub fn find_node<Traits: Clone>(
@@ -52,7 +91,7 @@ pub fn for_each_node_ancestor(source: &Node, callback: &mut impl FnMut(Node) -> 
         if (!callback((current).clone().unwrap())) {
             return;
         }
-        current = get_node_parent(&current);
+        current = get_node_parent(current.as_ref().unwrap());
     }
 }
 
@@ -81,7 +120,7 @@ pub fn get_node_children<Traits: Clone>(source: &Node) -> Vec<NodeOf<Traits>> {
     if (children).is_none() {
         return (*_EMPTY_CHILDREN).clone();
     }
-    return (children).as_ref().unwrap().clone();
+    return (children.as_ref().unwrap()).clone();
 }
 
 // Source: upstream/packages/node/src/traversal.ts:85 (sha256:3d269f9e201cb75d76fa45fb6990cf0a084e4feed3b219b99a790bd71ab37f6f)
@@ -93,7 +132,7 @@ pub fn get_node_depth(source: &Node) -> f64 {
             depth += 1.0;
             depth
         };
-        current = get_node_parent(&current);
+        current = get_node_parent(current.as_ref().unwrap());
     }
     return depth;
 }
@@ -104,15 +143,13 @@ pub fn get_node_next_sibling<Traits: Clone>(source: &Node) -> Option<NodeOf<Trai
     if (parent).is_none() {
         return None;
     }
-    let siblings = (get_node_runtime(&parent).children).clone();
+    let siblings = (get_node_runtime(&parent.as_ref().unwrap()).children).clone();
     if (siblings).is_none() {
         return None;
     }
     let idx = {
         let __flight_value = (*source).clone();
-        (siblings)
-            .as_ref()
-            .unwrap()
+        (siblings.as_ref().unwrap())
             .iter()
             .position(|item| item == &__flight_value)
             .map_or(-1.0_f64, |index| index as f64)
@@ -129,15 +166,13 @@ pub fn get_node_previous_sibling<Traits: Clone>(source: &Node) -> Option<NodeOf<
     if (parent).is_none() {
         return None;
     }
-    let siblings = (get_node_runtime(&parent).children).clone();
+    let siblings = (get_node_runtime(&parent.as_ref().unwrap()).children).clone();
     if (siblings).is_none() {
         return None;
     }
     let idx = {
         let __flight_value = (*source).clone();
-        (siblings)
-            .as_ref()
-            .unwrap()
+        (siblings.as_ref().unwrap())
             .iter()
             .position(|item| item == &__flight_value)
             .map_or(-1.0_f64, |index| index as f64)

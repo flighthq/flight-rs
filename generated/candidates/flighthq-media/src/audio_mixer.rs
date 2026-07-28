@@ -94,7 +94,7 @@ pub fn add_audio_bus_to_mixer(mixer: &AudioMixer, bus: &AudioBus) -> () {
                 .push((__flight_key, __flight_value));
         }
     };
-    register_bus_in_reverse_map(bus, runtime.as_ref().unwrap());
+    register_bus_in_reverse_map(bus, &runtime.as_mut().unwrap());
 }
 
 // Source: upstream/packages/media/src/audioMixer.ts:26 (sha256:f368f046c09b48e8184e8ff3a6dfc144b5d595b25bc662446cdd14b1d489c128)
@@ -186,7 +186,7 @@ pub fn destroy_audio_mixer(mixer: &AudioMixer) -> () {
     .iter()
     .cloned()
     {
-        unregister_bus_from_reverse_map(&bus, runtime.as_ref().unwrap());
+        unregister_bus_from_reverse_map(&bus, &runtime.as_mut().unwrap());
     }
     for gain_node in (runtime
         .as_mut()
@@ -571,7 +571,7 @@ fn unregister_bus_from_reverse_map(bus: &AudioBus, runtime: &AudioMixerRuntime) 
             false
         }
     };
-    if (runtimes.as_mut().unwrap().size == 0.0_f64) {
+    if ((runtimes.as_mut().unwrap().len() as f64) == 0.0_f64) {
         {
             let __flight_key = (*bus).clone();
             if let Some(__flight_index) = (*BUS_TO_MIXER_RUNTIMES.lock().unwrap())
@@ -596,12 +596,7 @@ fn update_bus_gain_node(bus: &AudioBus) -> () {
     if (runtimes).is_none() {
         return;
     }
-    for runtime in (runtimes)
-        .as_ref()
-        .expect("TypeScript nullable iterable was not narrowed")
-        .iter()
-        .cloned()
-    {
+    for runtime in (runtimes.as_ref().unwrap()).iter().cloned() {
         let mut gain_node = (runtime.bus_gain_nodes.get)(bus);
         if (gain_node).is_some() {
             gain_node.gain.value = if bus.muted { 0.0_f64 } else { bus.gain };
@@ -618,12 +613,7 @@ fn update_bus_panner_node(bus: &AudioBus) -> () {
     if (runtimes).is_none() {
         return;
     }
-    for runtime in (runtimes)
-        .as_ref()
-        .expect("TypeScript nullable iterable was not narrowed")
-        .iter()
-        .cloned()
-    {
+    for runtime in (runtimes.as_ref().unwrap()).iter().cloned() {
         let mut panner_node = (runtime.bus_output_nodes.get)(bus);
         if ((panner_node).is_some()) && (false) {
             panner_node.pan.value = bus.pan;

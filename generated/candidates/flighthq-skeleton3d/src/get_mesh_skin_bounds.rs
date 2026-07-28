@@ -124,22 +124,22 @@ pub fn get_mesh_skin_conservative_bounds(
                 + ((skeleton.joint_matrices[(m + 6.0_f64) as usize] as f64).abs() * ey))
                 + ((skeleton.joint_matrices[(m + 10.0_f64) as usize] as f64).abs() * ez));
             if ((tcx - tex) < min_x) {
-                min_x = (tcx - tex) as f32;
+                min_x = (tcx - tex);
             }
             if ((tcy - tey) < min_y) {
-                min_y = (tcy - tey) as f32;
+                min_y = (tcy - tey);
             }
             if ((tcz - tez) < min_z) {
-                min_z = (tcz - tez) as f32;
+                min_z = (tcz - tez);
             }
             if ((tcx + tex) > max_x) {
-                max_x = (tcx + tex) as f32;
+                max_x = (tcx + tex);
             }
             if ((tcy + tey) > max_y) {
-                max_y = (tcy + tey) as f32;
+                max_y = (tcy + tey);
             }
             if ((tcz + tez) > max_z) {
-                max_z = (tcz + tez) as f32;
+                max_z = (tcz + tez);
             }
             {
                 j += 1.0;
@@ -225,7 +225,7 @@ pub fn get_mesh_skin_exact_bounds(
 
 // Source: upstream/packages/skeleton3d/src/getMeshSkinBounds.ts:163 (sha256:aebbf376ba970c5b80fea2f774013c890a9a3c5ff59c2490afbc3631f2c882ba)
 fn get_referenced_joints(joints: &Vec<f32>, weights: &Vec<f32>, joint_count: f64) -> Vec<u8> {
-    let mut referenced = vec![0_u8; (joint_count) as usize];
+    let mut referenced: Vec<u8> = vec![0_u8; (joint_count) as usize];
     let influence_count = (joints.len() as f64);
     {
         let mut k = 0.0_f64;

@@ -15,8 +15,11 @@ use flighthq_geometry::{
 use flighthq_node::invalidate_node_local_bounds;
 use flighthq_signals::create_signal;
 use flighthq_types::{
-    BoundsNodeAny, Node, QUAD_BATCH_KIND as quad_batch_kind_constant, QuadBatch, QuadBatchData,
-    QuadBatchRuntime, QuadBatchSignals, QuadTransformType, Rectangle, Vector2Like,
+    Adjustment, AdjustmentKind, BlendMode, BoundsNodeAny, ClipRegion, ColorTransform,
+    InteractionSignals, Material, MaterialData, Matrix, Node, NodeInteractionState, NodeSignals,
+    NodeTraitsKey, QUAD_BATCH_KIND as quad_batch_kind_constant, QuadBatch, QuadBatchData,
+    QuadBatchRuntime, QuadBatchSignals, QuadTransformType, Rectangle, Stage, TextureAtlas,
+    Vector2Like,
 };
 
 #[inline]
@@ -30,6 +33,299 @@ fn __flight_js_to_u32(value: f64) -> u32 {
 #[inline]
 fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub atlas: Option<TextureAtlas>,
+    pub ids: Option<Vec<u16>>,
+    pub instance_count: Option<f64>,
+    pub material_data: Option<Vec<Option<MaterialData>>>,
+    pub transforms: Option<Vec<f32>>,
+    pub transform_type: Option<QuadTransformType>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub appearance_id: Option<f64>,
+    pub bounds_using_local_bounds_id: Option<f64>,
+    pub bounds_using_local_transform_id: Option<f64>,
+    pub can_add_child: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    >,
+    pub children: Option<Vec<Node>>,
+    pub color_adjustments: Option<Vec<Adjustment>>,
+    pub resolved_color_transform: Option<ColorTransform>,
+    pub color_adjustments_channel_mixing: Option<bool>,
+    pub traits: Option<NodeTraitsKey>,
+    pub interaction_signals: Option<InteractionSignals>,
+    pub local_bounds_id: Option<f64>,
+    pub local_bounds_using_local_bounds_id: Option<f64>,
+    pub local_content_id: Option<f64>,
+    pub local_transform_id: Option<f64>,
+    pub local_transform_using_local_transform_id: Option<f64>,
+    pub node_signals: Option<NodeSignals>,
+    pub interaction_state: Option<NodeInteractionState>,
+    pub parent: Option<Node>,
+    pub world_bounds_using_local_bounds_id: Option<f64>,
+    pub world_bounds_using_world_transform_id: Option<f64>,
+    pub world_transform_id: Option<f64>,
+    pub world_transform_using_local_transform_id: Option<f64>,
+    pub world_transform_using_parent_transform_id: Option<f64>,
+    pub local_matrix: Option<Matrix>,
+    pub rotation_angle: Option<f64>,
+    pub rotation_cosine: Option<f64>,
+    pub rotation_sine: Option<f64>,
+    pub world_matrix: Option<Matrix>,
+    pub bounds_rectangle: Option<Rectangle>,
+    pub compute_local_bounds_rectangle: Option<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
+        >,
+    >,
+    pub local_bounds_rectangle: Option<Rectangle>,
+    pub world_bounds_rectangle: Option<Rectangle>,
+    pub stage: Option<Stage>,
+    pub instance_velocities: Option<Vec<f32>>,
+}
+impl PartialEq for FlightPartialRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord3 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub alpha_multiplier: Option<f64>,
+    pub alpha_offset: Option<f64>,
+    pub blue_multiplier: Option<f64>,
+    pub blue_offset: Option<f64>,
+    pub green_multiplier: Option<f64>,
+    pub green_offset: Option<f64>,
+    pub red_multiplier: Option<f64>,
+    pub red_offset: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord3 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord4 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub appearance_id: Option<f64>,
+    pub bounds_using_local_bounds_id: Option<f64>,
+    pub bounds_using_local_transform_id: Option<f64>,
+    pub can_add_child: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    >,
+    pub children: Option<Vec<Node>>,
+    pub color_adjustments: Option<Vec<Adjustment>>,
+    pub resolved_color_transform: Option<ColorTransform>,
+    pub color_adjustments_channel_mixing: Option<bool>,
+    pub traits: Option<NodeTraitsKey>,
+    pub interaction_signals: Option<InteractionSignals>,
+    pub local_bounds_id: Option<f64>,
+    pub local_bounds_using_local_bounds_id: Option<f64>,
+    pub local_content_id: Option<f64>,
+    pub local_transform_id: Option<f64>,
+    pub local_transform_using_local_transform_id: Option<f64>,
+    pub node_signals: Option<NodeSignals>,
+    pub interaction_state: Option<NodeInteractionState>,
+    pub parent: Option<Node>,
+    pub world_bounds_using_local_bounds_id: Option<f64>,
+    pub world_bounds_using_world_transform_id: Option<f64>,
+    pub world_transform_id: Option<f64>,
+    pub world_transform_using_local_transform_id: Option<f64>,
+    pub world_transform_using_parent_transform_id: Option<f64>,
+    pub local_matrix: Option<Matrix>,
+    pub rotation_angle: Option<f64>,
+    pub rotation_cosine: Option<f64>,
+    pub rotation_sine: Option<f64>,
+    pub world_matrix: Option<Matrix>,
+    pub bounds_rectangle: Option<Rectangle>,
+    pub compute_local_bounds_rectangle: Option<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
+        >,
+    >,
+    pub local_bounds_rectangle: Option<Rectangle>,
+    pub world_bounds_rectangle: Option<Rectangle>,
+    pub stage: Option<Stage>,
+}
+impl PartialEq for FlightPartialRecord4 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord5 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub appearance_id: Option<f64>,
+    pub bounds_using_local_bounds_id: Option<f64>,
+    pub bounds_using_local_transform_id: Option<f64>,
+    pub can_add_child: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    >,
+    pub children: Option<Vec<Node>>,
+    pub color_adjustments: Option<Vec<Adjustment>>,
+    pub resolved_color_transform: Option<ColorTransform>,
+    pub color_adjustments_channel_mixing: Option<bool>,
+    pub traits: Option<NodeTraitsKey>,
+    pub interaction_signals: Option<InteractionSignals>,
+    pub local_bounds_id: Option<f64>,
+    pub local_bounds_using_local_bounds_id: Option<f64>,
+    pub local_content_id: Option<f64>,
+    pub local_transform_id: Option<f64>,
+    pub local_transform_using_local_transform_id: Option<f64>,
+    pub node_signals: Option<NodeSignals>,
+    pub interaction_state: Option<NodeInteractionState>,
+    pub parent: Option<Node>,
+    pub world_bounds_using_local_bounds_id: Option<f64>,
+    pub world_bounds_using_world_transform_id: Option<f64>,
+    pub world_transform_id: Option<f64>,
+    pub world_transform_using_local_transform_id: Option<f64>,
+    pub world_transform_using_parent_transform_id: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord5 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord6 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub kind: Option<AdjustmentKind>,
+    pub color_matrix: Option<Vec<f64>>,
+}
+impl PartialEq for FlightPartialRecord6 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord7 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub alpha: Option<f64>,
+    pub visible: Option<bool>,
+}
+impl PartialEq for FlightPartialRecord7 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord8 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub blend_mode: Option<BlendMode>,
+}
+impl PartialEq for FlightPartialRecord8 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord9 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub bounds_rectangle: Option<Rectangle>,
+    pub compute_local_bounds_rectangle: Option<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
+        >,
+    >,
+    pub local_bounds_rectangle: Option<Rectangle>,
+    pub world_bounds_rectangle: Option<Rectangle>,
+}
+impl PartialEq for FlightPartialRecord9 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord10 {
+    pub __flight_identity: std::sync::Arc<()>,
+}
+impl PartialEq for FlightPartialRecord10 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord11 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub clip: Option<ClipRegion>,
+}
+impl PartialEq for FlightPartialRecord11 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord12 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub material: Option<Material>,
+    pub material_data: Option<MaterialData>,
+}
+impl PartialEq for FlightPartialRecord12 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord13 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub local_matrix: Option<Matrix>,
+    pub rotation_angle: Option<f64>,
+    pub rotation_cosine: Option<f64>,
+    pub rotation_sine: Option<f64>,
+    pub world_matrix: Option<Matrix>,
+}
+impl PartialEq for FlightPartialRecord13 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord14 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub pivot_x: Option<f64>,
+    pub pivot_y: Option<f64>,
+    pub rotation: Option<f64>,
+    pub scale_x: Option<f64>,
+    pub scale_y: Option<f64>,
+    pub skew_x: Option<f64>,
+    pub skew_y: Option<f64>,
+    pub x: Option<f64>,
+    pub y: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord14 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/sprite/src/quadBatch.ts:25 (sha256:11ac8c2d22177f9e5d228dd84ce31cd3dfb75e33a76743fd5bcf560978a399b9)
@@ -94,7 +390,7 @@ pub fn clone_quad_batch(source: &QuadBatch) -> QuadBatch {
 fn copy_local_bounds_rectangle(out: &mut Rectangle, source: &Node) -> () {
     let runtime = get_display_object_runtime(&source);
     if ((runtime.local_bounds_rectangle).clone()).is_some() {
-        copy_rectangle(out, &runtime.local_bounds_rectangle);
+        copy_rectangle(out, runtime.local_bounds_rectangle.as_ref().unwrap());
     }
 }
 
@@ -300,20 +596,25 @@ pub fn create_quad_batch(obj: Option<QuadBatch>) -> QuadBatch {
 }
 
 // Source: upstream/packages/sprite/src/quadBatch.ts:197 (sha256:d8f8cdb62e22227010d70dd56ef4cf8f0cdba6c401de0f4f4aa0ef0d108156df)
-pub fn create_quad_batch_data(data: Option<QuadBatchData>) -> QuadBatchData {
+pub fn create_quad_batch_data(data: Option<FlightPartialRecord1>) -> QuadBatchData {
     return QuadBatchData {
         __flight_identity: std::sync::Arc::new(()),
         atlas: data.as_ref().and_then(|value| (value.atlas).clone()),
-        ids: (data.as_ref().map(|value| (value.ids).clone()))
-            .unwrap_or(vec![0_u16; (0.0_f64) as usize]),
-        instance_count: (data.as_ref().map(|value| value.instance_count)).unwrap_or(0.0_f64),
+        ids: (data.as_ref().and_then(|value| (value.ids).clone())).unwrap_or(vec![
+            0_u16;
+            (0.0_f64)
+                as usize
+        ]),
+        instance_count: (data.as_ref().and_then(|value| value.instance_count)).unwrap_or(0.0_f64),
         material_data: data
             .as_ref()
             .and_then(|value| (value.material_data).clone()),
-        transforms: (data.as_ref().map(|value| (value.transforms).clone()))
+        transforms: (data.as_ref().and_then(|value| (value.transforms).clone()))
             .unwrap_or(vec![0.0_f32; (0.0_f64) as usize]),
-        transform_type: (data.as_ref().map(|value| (value.transform_type).clone()))
-            .unwrap_or("vector2".to_owned()),
+        transform_type: (data
+            .as_ref()
+            .and_then(|value| (value.transform_type).clone()))
+        .unwrap_or("vector2".to_owned()),
     };
 }
 
@@ -751,7 +1052,7 @@ pub fn set_quad_batch_local_bounds_rectangle(target: &QuadBatch, rect: &Rectangl
     if ((runtime.local_bounds_rectangle).clone()).is_none() {
         runtime.local_bounds_rectangle = Some(create_rectangle(None, None, None, None));
     }
-    copy_rectangle(&mut runtime.local_bounds_rectangle, rect);
+    copy_rectangle(runtime.local_bounds_rectangle.as_mut().unwrap(), rect);
     invalidate_node_local_bounds(target);
 }
 
@@ -762,7 +1063,7 @@ pub fn set_quad_batch_transform_type(target: &mut QuadBatch, new_type: QuadTrans
     }
     let count = target.data.instance_count;
     if (new_type == "matrix3x2") {
-        let mut new_transforms = vec![
+        let mut new_transforms: Vec<f32> = vec![
             0.0_f32;
             (((target.data.transforms.len() as f64) / QUAD_VECTOR2_STRIDE).max(count)
                 * QUAD_MATRIX3_X2_STRIDE) as usize
@@ -808,15 +1109,49 @@ pub fn set_quad_batch_transform_type(target: &mut QuadBatch, new_type: QuadTrans
 }
 
 // Source: upstream/packages/sprite/src/quadBatch.ts:581 (sha256:a107c7d7b5b8fb80ae7ff5e80fd9088d840b7655dcea90422f65cc256f7d3279)
-static DEFAULT_METHODS: std::sync::LazyLock<QuadBatchRuntime> =
-    std::sync::LazyLock::new(|| QuadBatchRuntime {
+static DEFAULT_METHODS: std::sync::LazyLock<FlightPartialRecord2> =
+    std::sync::LazyLock::new(|| FlightPartialRecord2 {
         __flight_identity: std::sync::Arc::new(()),
-        compute_local_bounds_rectangle: std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+        compute_local_bounds_rectangle: Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
             move |mut __flight_argument_0: Rectangle, __flight_argument_1: BoundsNodeAny| -> () {
                 copy_local_bounds_rectangle(&mut __flight_argument_0, &__flight_argument_1)
             },
         )
-            as Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>)),
+            as Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>))),
+        binding: None,
+        appearance_id: None,
+        bounds_using_local_bounds_id: None,
+        bounds_using_local_transform_id: None,
+        can_add_child: None,
+        children: None,
+        color_adjustments: None,
+        resolved_color_transform: None,
+        color_adjustments_channel_mixing: None,
+        traits: None,
+        interaction_signals: None,
+        local_bounds_id: None,
+        local_bounds_using_local_bounds_id: None,
+        local_content_id: None,
+        local_transform_id: None,
+        local_transform_using_local_transform_id: None,
+        node_signals: None,
+        interaction_state: None,
+        parent: None,
+        world_bounds_using_local_bounds_id: None,
+        world_bounds_using_world_transform_id: None,
+        world_transform_id: None,
+        world_transform_using_local_transform_id: None,
+        world_transform_using_parent_transform_id: None,
+        local_matrix: None,
+        rotation_angle: None,
+        rotation_cosine: None,
+        rotation_sine: None,
+        world_matrix: None,
+        bounds_rectangle: None,
+        local_bounds_rectangle: None,
+        world_bounds_rectangle: None,
+        stage: None,
+        instance_velocities: None,
     });
 
 // Source: upstream/packages/sprite/src/quadBatch.ts:585 (sha256:238a0f0f99917ec7b8730f572110369690cb68566fc84116df3553cdfcf6783a)

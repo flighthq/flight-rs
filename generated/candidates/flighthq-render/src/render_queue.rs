@@ -9,7 +9,9 @@
 use crate::get_render_state_runtime;
 use flighthq_node::get_node_runtime;
 use flighthq_types::{
-    RenderProxy, RenderQueue, RenderQueueEntry, RenderSortKey, RenderState, Renderable,
+    Adjustment, BlendMode, ColorTransform, DisplayObjectClipHooks, InteractionSignals, Matrix,
+    Node, NodeInteractionState, NodeSignals, NodeTraitsKey, RenderProxy, RenderQueue,
+    RenderQueueEntry, RenderSortKey, RenderState, Renderable, SceneGraphSyncPolicy,
 };
 
 #[inline]
@@ -23,6 +25,64 @@ fn __flight_js_to_u32(value: f64) -> u32 {
 #[inline]
 fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub appearance_id: Option<f64>,
+    pub bounds_using_local_bounds_id: Option<f64>,
+    pub bounds_using_local_transform_id: Option<f64>,
+    pub can_add_child: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    >,
+    pub children: Option<Vec<Node>>,
+    pub color_adjustments: Option<Vec<Adjustment>>,
+    pub resolved_color_transform: Option<ColorTransform>,
+    pub color_adjustments_channel_mixing: Option<bool>,
+    pub traits: Option<NodeTraitsKey>,
+    pub interaction_signals: Option<InteractionSignals>,
+    pub local_bounds_id: Option<f64>,
+    pub local_bounds_using_local_bounds_id: Option<f64>,
+    pub local_content_id: Option<f64>,
+    pub local_transform_id: Option<f64>,
+    pub local_transform_using_local_transform_id: Option<f64>,
+    pub node_signals: Option<NodeSignals>,
+    pub interaction_state: Option<NodeInteractionState>,
+    pub parent: Option<Node>,
+    pub world_bounds_using_local_bounds_id: Option<f64>,
+    pub world_bounds_using_world_transform_id: Option<f64>,
+    pub world_transform_id: Option<f64>,
+    pub world_transform_using_local_transform_id: Option<f64>,
+    pub world_transform_using_parent_transform_id: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub allow_smoothing: Option<bool>,
+    pub background_color: Option<f64>,
+    pub background_color_rgba: Option<Vec<f64>>,
+    pub background_color_string: Option<String>,
+    pub current_clip_depth: Option<f64>,
+    pub display_object_clip_hooks: Option<DisplayObjectClipHooks>,
+    pub pixel_ratio: Option<f64>,
+    pub render_alpha: Option<f64>,
+    pub render_blend_mode: Option<BlendMode>,
+    pub render_transform2_d: Option<Matrix>,
+    pub scene_graph_sync_policy: Option<SceneGraphSyncPolicy>,
+    pub round_pixels: Option<bool>,
+}
+impl PartialEq for FlightPartialRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/render/src/renderQueue.ts:21 (sha256:4146245451006bf68200c59338e3ca689b3c4cda59f5e3d6ecada88114c2dbe6)
@@ -74,7 +134,9 @@ pub fn build_render_queue(state: &RenderState, source: &Renderable, out: &mut Re
                             stack_length += 1.0;
                             stack_length
                         }) as usize;
-                        let __flight_value = children.as_ref().unwrap()[i as usize].clone();
+                        let __flight_value = flighthq_types::Renderable::A(
+                            children.as_ref().unwrap()[i as usize].clone(),
+                        );
                         if __flight_index == _BUILD_STACK.len() {
                             _BUILD_STACK.push(__flight_value);
                         } else {

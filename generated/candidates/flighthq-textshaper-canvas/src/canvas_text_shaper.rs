@@ -122,13 +122,7 @@ pub fn create_canvas_text_shaper_backend() -> crate::OpaqueHostValue {
                         crate::OpaqueHostValue::String("ltr".to_owned());
                 }
                 let width = crate::host_value::<crate::OpaqueHostValue>("host.width");
-                if ((*cache.lock().unwrap())
-                    .iter()
-                    .find(|(key, _)| key == &"size".to_owned())
-                    .map(|(_, value)| value.clone())
-                    .expect("TypeScript Record key was absent")
-                    >= _CACHE_MAX_SIZE)
-                {
+                if (((*cache.lock().unwrap()).len() as f64) >= _CACHE_MAX_SIZE) {
                     {
                         let __flight_key = (((*cache.lock().unwrap())
                             .iter()

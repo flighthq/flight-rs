@@ -19,7 +19,7 @@ pub fn create_stub_glyph_rasterizer_backend() -> GlyphRasterizerBackend {
                 let size = (1.0_f64).max((options.font_size).round());
                 let width = (1.0_f64).max((size * 0.6_f64).round());
                 let height = (1.0_f64).max((size * 0.7_f64).round());
-                let mut pixels = vec![0_u8; ((width * height) * 4.0_f64) as usize];
+                let mut pixels: Vec<u8> = vec![0_u8; ((width * height) * 4.0_f64) as usize];
                 pixels.fill((255.0_f64) as u8);
                 return Some(GlyphRasterizedBitmap {
                     __flight_identity: std::sync::Arc::new(()),
@@ -53,7 +53,7 @@ pub fn create_web_glyph_rasterizer_backend() -> GlyphRasterizerBackend {
                     return None;
                 }
                 return _rasterize_glyph_on_context(
-                    (context).clone().unwrap(),
+                    (context.as_mut().unwrap()).clone(),
                     codepoint,
                     &options,
                 );

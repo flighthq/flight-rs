@@ -109,7 +109,7 @@ pub fn create_web_accessibility_backend(
                     (element).clone().unwrap(),
                     ((node.parent_id).clone()).clone(),
                     &(*elements.lock().unwrap()),
-                    (overlay_root).clone().unwrap(),
+                    (overlay_root.as_mut().unwrap()).clone(),
                 );
             }
         })
@@ -188,8 +188,8 @@ pub fn create_web_accessibility_backend(
                     return false;
                 }
                 crate::host_value::<()>("host.focus");
-                return (crate::host_value::<Option<crate::OpaqueHostValue>>("host.activeElement")
-                    == element);
+                return (crate::host_value::<crate::OpaqueHostValue>("host.activeElement")
+                    == element.as_ref().unwrap());
             }
         })
             as Box<dyn FnMut(String) -> bool + Send + 'static>)),
@@ -206,7 +206,7 @@ pub fn create_web_accessibility_backend(
                     return;
                 }
                 let mut region = _get_accessibility_live_region(
-                    (overlay_root).clone().unwrap(),
+                    (overlay_root.as_ref().unwrap()).clone(),
                     &mut (*live_regions.lock().unwrap()),
                     (liveness).clone(),
                 );
@@ -478,7 +478,7 @@ fn _set_accessibility_element_value_text(
         return;
     }
     if ((first).is_some()) && (crate::host_value::<f64>("host.nodeType") == _TEXT_NODE) {
-        crate::host_set("host.nodeValue", value);
+        crate::host_set("host.nodeValue", value.as_ref().unwrap());
         return;
     }
     crate::host_value::<()>("host.insertBefore");

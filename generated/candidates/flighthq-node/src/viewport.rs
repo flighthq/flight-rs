@@ -9,7 +9,79 @@
 use crate::get_node_runtime;
 use flighthq_entity::create_entity;
 use flighthq_geometry::create_rectangle;
-use flighthq_types::{MatrixLike, Rectangle, Viewport, ViewportAlign};
+use flighthq_types::{
+    Adjustment, BoundsNodeAny, ColorTransform, InteractionSignals, MatrixLike, Node,
+    NodeInteractionState, NodeSignals, NodeTraitsKey, Rectangle, Viewport, ViewportAlign,
+    ViewportScaleMode,
+};
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub bounds_rectangle: Option<Rectangle>,
+    pub compute_local_bounds_rectangle: Option<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
+        >,
+    >,
+    pub local_bounds_rectangle: Option<Rectangle>,
+    pub world_bounds_rectangle: Option<Rectangle>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub align: Option<ViewportAlign>,
+    pub root: Option<Node>,
+    pub scale_mode: Option<ViewportScaleMode>,
+}
+impl PartialEq for FlightPartialRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord3 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub appearance_id: Option<f64>,
+    pub bounds_using_local_bounds_id: Option<f64>,
+    pub bounds_using_local_transform_id: Option<f64>,
+    pub can_add_child: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    >,
+    pub children: Option<Vec<Node>>,
+    pub color_adjustments: Option<Vec<Adjustment>>,
+    pub resolved_color_transform: Option<ColorTransform>,
+    pub color_adjustments_channel_mixing: Option<bool>,
+    pub traits: Option<NodeTraitsKey>,
+    pub interaction_signals: Option<InteractionSignals>,
+    pub local_bounds_id: Option<f64>,
+    pub local_bounds_using_local_bounds_id: Option<f64>,
+    pub local_content_id: Option<f64>,
+    pub local_transform_id: Option<f64>,
+    pub local_transform_using_local_transform_id: Option<f64>,
+    pub node_signals: Option<NodeSignals>,
+    pub interaction_state: Option<NodeInteractionState>,
+    pub parent: Option<Node>,
+    pub world_bounds_using_local_bounds_id: Option<f64>,
+    pub world_bounds_using_world_transform_id: Option<f64>,
+    pub world_transform_id: Option<f64>,
+    pub world_transform_using_local_transform_id: Option<f64>,
+    pub world_transform_using_parent_transform_id: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord3 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/node/src/viewport.ts:14 (sha256:dc28e0ed6cffa9ecb19009e5e5d2f713e25b3850dc3a23608caa3e5420632241)
 pub fn compute_viewport_align_x(
@@ -74,14 +146,19 @@ pub fn compute_viewport_render_transform<Traits: Clone>(
         let runtime = get_node_runtime(&((scene.root).clone()).unwrap());
         if (runtime
             .as_ref()
-            .map(|value| (value.compute_local_bounds_rectangle).clone()))
+            .and_then(|value| (value.compute_local_bounds_rectangle).clone()))
         .is_some()
         {
             (*_TEMP_RECTANGLE.lock().unwrap()).width = 0.0_f64;
             (*_TEMP_RECTANGLE.lock().unwrap()).height = 0.0_f64;
             {
-                let __flight_callback =
-                    (runtime.as_ref().unwrap().compute_local_bounds_rectangle).clone();
+                let __flight_callback = runtime
+                    .as_ref()
+                    .unwrap()
+                    .compute_local_bounds_rectangle
+                    .as_ref()
+                    .unwrap()
+                    .clone();
                 let __flight_result = __flight_callback.lock().unwrap()(
                     (*_TEMP_RECTANGLE.lock().unwrap()).clone(),
                     ((scene.root).clone()).unwrap(),
@@ -143,12 +220,13 @@ pub fn compute_viewport_render_transform<Traits: Clone>(
 }
 
 // Source: upstream/packages/node/src/viewport.ts:98 (sha256:5e7ea835eb8bebbfe5e1f01d1bc0ac32a95387ca805bc37567a204f9376b3cf7)
-pub fn create_viewport<Traits: Clone>(obj: Option<Viewport<Traits>>) -> Viewport<Traits> {
+pub fn create_viewport<Traits: Clone>(obj: Option<FlightPartialRecord2>) -> Viewport<Traits> {
     return create_entity(Some(Viewport::<Traits> {
         __flight_identity: std::sync::Arc::new(()),
-        align: (obj.as_ref().map(|value| (value.align).clone())).unwrap_or("topleft".to_owned()),
+        align: (obj.as_ref().and_then(|value| (value.align).clone()))
+            .unwrap_or("topleft".to_owned()),
         root: obj.as_ref().and_then(|value| (value.root).clone()),
-        scale_mode: (obj.as_ref().map(|value| (value.scale_mode).clone()))
+        scale_mode: (obj.as_ref().and_then(|value| (value.scale_mode).clone()))
             .unwrap_or("noscale".to_owned()),
     }));
 }

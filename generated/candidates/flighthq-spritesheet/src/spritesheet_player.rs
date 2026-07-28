@@ -7,7 +7,9 @@
 #![allow(unused_parens)]
 
 use flighthq_signals::{clear_signal, create_signal, emit_signal};
-use flighthq_types::{Spritesheet, SpritesheetAnimation, SpritesheetFrame, SpritesheetPlayer};
+use flighthq_types::{
+    Signal, Spritesheet, SpritesheetAnimation, SpritesheetFrame, SpritesheetPlayer,
+};
 
 #[inline]
 fn __flight_js_to_u32(value: f64) -> u32 {
@@ -20,6 +22,27 @@ fn __flight_js_to_u32(value: f64) -> u32 {
 #[inline]
 fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub animation: Option<SpritesheetAnimation>,
+    pub complete: Option<bool>,
+    pub elapsed: Option<f64>,
+    pub paused: Option<bool>,
+    pub speed: Option<f64>,
+    pub frame_index: Option<f64>,
+    pub on_complete:
+        Option<Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>>,
+    pub on_loop:
+        Option<Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>>,
+    pub queue: Option<Vec<SpritesheetAnimation>>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:4 (sha256:e66ce9c760beb40f555bed7ad4b6d99d8157b80986f3d23f1c510c866c8d8779)
@@ -63,19 +86,20 @@ pub fn clone_spritesheet_player(player: &SpritesheetPlayer) -> SpritesheetPlayer
 }
 
 // Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:34 (sha256:367882272258fe1ac565e85e6cf5f8623fa9c3b7d64c5c998a686eadea8994ef)
-pub fn create_spritesheet_player(obj: Option<SpritesheetPlayer>) -> SpritesheetPlayer {
+pub fn create_spritesheet_player(obj: Option<FlightPartialRecord1>) -> SpritesheetPlayer {
     return SpritesheetPlayer {
         __flight_identity: std::sync::Arc::new(()),
         animation: obj.as_ref().and_then(|value| (value.animation).clone()),
-        complete: (obj.as_ref().map(|value| value.complete)).unwrap_or(true),
-        elapsed: (obj.as_ref().map(|value| value.elapsed)).unwrap_or(0.0_f64),
-        frame_index: (obj.as_ref().map(|value| value.frame_index)).unwrap_or(0.0_f64),
-        on_complete: (obj.as_ref().map(|value| (value.on_complete).clone()))
+        complete: (obj.as_ref().and_then(|value| value.complete)).unwrap_or(true),
+        elapsed: (obj.as_ref().and_then(|value| value.elapsed)).unwrap_or(0.0_f64),
+        frame_index: (obj.as_ref().and_then(|value| value.frame_index)).unwrap_or(0.0_f64),
+        on_complete: (obj.as_ref().and_then(|value| (value.on_complete).clone()))
             .unwrap_or(create_signal()),
-        on_loop: (obj.as_ref().map(|value| (value.on_loop).clone())).unwrap_or(create_signal()),
-        paused: (obj.as_ref().map(|value| value.paused)).unwrap_or(false),
-        queue: (obj.as_ref().map(|value| (value.queue).clone())).unwrap_or(vec![]),
-        speed: (obj.as_ref().map(|value| value.speed)).unwrap_or(1.0_f64),
+        on_loop: (obj.as_ref().and_then(|value| (value.on_loop).clone()))
+            .unwrap_or(create_signal()),
+        paused: (obj.as_ref().and_then(|value| value.paused)).unwrap_or(false),
+        queue: (obj.as_ref().and_then(|value| (value.queue).clone())).unwrap_or(vec![]),
+        speed: (obj.as_ref().and_then(|value| value.speed)).unwrap_or(1.0_f64),
     };
 }
 
@@ -254,7 +278,7 @@ fn get_cumulative_durations(animation: &SpritesheetAnimation) -> Vec<f64> {
     let frame_durations = (animation.frame_durations).clone();
     let n = (animation.frames.len() as f64);
     let virtual_count = resolve_virtual_frame_count(animation);
-    let mut arr = vec![0.0_f64; (virtual_count + 1.0_f64) as usize];
+    let mut arr: Vec<f64> = vec![0.0_f64; (virtual_count + 1.0_f64) as usize];
     let mut t = 0.0_f64;
     {
         let mut vi = 0.0_f64;

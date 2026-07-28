@@ -88,7 +88,7 @@ pub fn build_bitmap_font_from_record(
     let resolve_page = options
         .as_ref()
         .and_then(|value| (value.resolve_page).clone());
-    let mut resolved = Vec::new();
+    let mut resolved: Vec<(f64, TextureAtlas)> = Vec::new();
     let mut max_page_id = (-1.0_f64);
     if (resolve_page).is_some() {
         for page in ((record.pages).clone()).iter().cloned() {

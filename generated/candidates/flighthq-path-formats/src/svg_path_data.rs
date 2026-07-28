@@ -771,7 +771,7 @@ fn format_svg_number(value: f64, precision: Option<f64>) -> String {
     if (precision).is_none() {
         return string(value);
     }
-    let factor = (10.0_f64).powf(precision);
+    let factor = (10.0_f64).powf(*(precision.as_ref().unwrap()));
     return string(((value * factor).round() / factor));
 }
 

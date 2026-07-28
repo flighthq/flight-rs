@@ -7,7 +7,31 @@
 #![allow(unused_parens)]
 
 use flighthq_textureatlas::create_texture_atlas_region;
-use flighthq_types::{TextureAtlas, TextureAtlasRegionLike};
+use flighthq_types::TextureAtlas;
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub height: Option<f64>,
+    pub id: Option<f64>,
+    pub name: Option<String>,
+    pub original_height: Option<f64>,
+    pub original_width: Option<f64>,
+    pub pivot_x: Option<f64>,
+    pub pivot_y: Option<f64>,
+    pub rotated: Option<bool>,
+    pub source_x: Option<f64>,
+    pub source_y: Option<f64>,
+    pub trimmed: Option<bool>,
+    pub x: Option<f64>,
+    pub y: Option<f64>,
+    pub width: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasLibgdxParse.ts:7 (sha256:4faabc73c9e92c2778296a829dc5b55531388c78336554d7edf85fac92342677)
 pub fn parse_texture_atlas_libgdx_atlas(text: String, atlas: &mut TextureAtlas) -> TextureAtlas {
@@ -152,22 +176,22 @@ pub fn parse_texture_atlas_libgdx_atlas(text: String, atlas: &mut TextureAtlas) 
                     && ((orig_w != atlas_w) || (orig_h != atlas_h));
                 atlas
                     .regions
-                    .push(create_texture_atlas_region(Some(TextureAtlasRegionLike {
+                    .push(create_texture_atlas_region(Some(FlightPartialRecord1 {
                         __flight_identity: std::sync::Arc::new(()),
-                        height: atlas_h,
-                        id: id,
+                        height: Some(atlas_h),
+                        id: Some(id),
                         name: Some((name).clone()),
                         original_height: if trimmed { Some(orig_h) } else { None },
                         original_width: if trimmed { Some(orig_w) } else { None },
                         pivot_x: None,
                         pivot_y: None,
-                        rotated: rotated,
-                        source_x: offset_x,
-                        source_y: offset_y,
-                        trimmed: trimmed,
-                        width: atlas_w,
-                        x: atlas_x,
-                        y: atlas_y,
+                        rotated: Some(rotated),
+                        source_x: Some(offset_x),
+                        source_y: Some(offset_y),
+                        trimmed: Some(trimmed),
+                        width: Some(atlas_w),
+                        x: Some(atlas_x),
+                        y: Some(atlas_y),
                     })));
                 {
                     id += 1.0;

@@ -6,6 +6,32 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub title: Option<String>,
+    pub id: Option<String>,
+    pub body: Option<String>,
+    pub icon: Option<String>,
+    pub badge: Option<String>,
+    pub tag: Option<String>,
+    pub silent: Option<bool>,
+    pub actions: Option<Vec<NotificationAction>>,
+    pub dir: Option<String>,
+    pub image: Option<String>,
+    pub lang: Option<String>,
+    pub renotify: Option<bool>,
+    pub require_interaction: Option<bool>,
+    pub timestamp: Option<f64>,
+    pub vibrate: Option<Vec<f64>>,
+    pub data: Option<crate::OpaqueHostValue>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 // Source: upstream/packages/types/src/Notification.ts:3 (sha256:7fd0bbb82b314b177b287a556e835762396dc52116979186506eaf66bd2d0ced)
 #[derive(Clone)]
 pub struct NotificationAction {
@@ -168,7 +194,7 @@ pub struct NotificationBackend {
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
     pub update_notification: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(String, NotificationRequest) -> crate::Promise<bool> + Send + 'static>,
+            Box<dyn FnMut(String, FlightPartialRecord1) -> crate::Promise<bool> + Send + 'static>,
         >,
     >,
     pub subscribe_click: std::sync::Arc<

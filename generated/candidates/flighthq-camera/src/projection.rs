@@ -33,12 +33,12 @@ pub fn create_perspective_projection(opts: &PerspectiveProjectionOptions) -> Per
 
 // Source: upstream/packages/camera/src/projection.ts:27 (sha256:de356014920dff8ebff0b838571acbadaa8c8bebfdbfd44753b66342dbb0f576)
 pub fn is_orthographic_projection(projection: &Projection) -> bool {
-    return (projection.kind == "orthographic");
+    return matches!(&(projection), flighthq_types::Projection::A(_));
 }
 
 // Source: upstream/packages/camera/src/projection.ts:32 (sha256:0e3dff76e488a9d84b8cf2906d22615a143f32eff40039049d4bc64b37d0a20f)
 pub fn is_perspective_projection(projection: &Projection) -> bool {
-    return (projection.kind == "perspective");
+    return matches!(&(projection), flighthq_types::Projection::B(_));
 }
 
 // Source: upstream/packages/camera/src/projection.ts:44 (sha256:1c51ac5a6cf7bac13b6f98884a96810c6630e44b29d223eb89b026e2839af983)
@@ -49,13 +49,27 @@ pub fn set_projection_matrix4(
     near: f64,
     far: f64,
 ) -> () {
-    if (projection.kind == "perspective") {
-        let tan_half_fov_y = (projection.fov_y * 0.5_f64).tan();
+    if matches!(&(projection), flighthq_types::Projection::B(_)) {
+        let tan_half_fov_y = ((match (*projection).clone() {
+            flighthq_types::Projection::A(_) => panic!("TypeScript union narrowing failed"),
+            flighthq_types::Projection::B(value) => value,
+        })
+        .fov_y
+            * 0.5_f64)
+            .tan();
         set_perspective_matrix4(out, tan_half_fov_y, aspect, near, far);
         return;
     }
-    let half_width = projection.half_width;
-    let half_height = projection.half_height;
+    let half_width = (match (*projection).clone() {
+        flighthq_types::Projection::A(value) => value,
+        flighthq_types::Projection::B(_) => panic!("TypeScript union narrowing failed"),
+    })
+    .half_width;
+    let half_height = (match (*projection).clone() {
+        flighthq_types::Projection::A(value) => value,
+        flighthq_types::Projection::B(_) => panic!("TypeScript union narrowing failed"),
+    })
+    .half_height;
     set_orthographic_matrix4(
         out,
         (-half_width),

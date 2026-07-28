@@ -719,7 +719,7 @@ fn stroke_subpath(
     }
     let mut left: Vec<f64> = vec![];
     let mut right: Vec<f64> = vec![];
-    let mut normals = vec![Default::default(); ((n - 1.0_f64) * 2.0_f64) as usize];
+    let mut normals: Vec<f64> = vec![Default::default(); ((n - 1.0_f64) * 2.0_f64) as usize];
     {
         let mut i = 0.0_f64;
         while (i < (n - 1.0_f64)) {

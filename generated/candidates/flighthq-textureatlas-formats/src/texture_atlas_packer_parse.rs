@@ -10,7 +10,31 @@ use crate::{
     TextureAtlasPackerArrayFrame, TextureAtlasPackerDocument, TextureAtlasPackerHashFrame,
 };
 use flighthq_textureatlas::create_texture_atlas_region;
-use flighthq_types::{TextureAtlas, TextureAtlasRegionLike};
+use flighthq_types::TextureAtlas;
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub height: Option<f64>,
+    pub id: Option<f64>,
+    pub name: Option<String>,
+    pub original_height: Option<f64>,
+    pub original_width: Option<f64>,
+    pub pivot_x: Option<f64>,
+    pub pivot_y: Option<f64>,
+    pub rotated: Option<bool>,
+    pub source_x: Option<f64>,
+    pub source_y: Option<f64>,
+    pub trimmed: Option<bool>,
+    pub x: Option<f64>,
+    pub y: Option<f64>,
+    pub width: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasPackerParse.ts:10 (sha256:1be5adb06eca1d693db5886cf34c1358c86298097fc1de5452c9df16d41ba319)
 #[derive(Clone)]
@@ -27,10 +51,10 @@ impl PartialEq for TextureAtlasPackerParseOptions {
 
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasPackerParse.ts:16 (sha256:4df5333999f12b08cb2e8d5f1e32b88b95d9b5e4adf4ebd566e44463b4afaa99)
 #[derive(Clone)]
-struct ParseTextureAtlasPackerDocumentRecord1 {
+struct ParseTextureAtlasPackerDocumentRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for ParseTextureAtlasPackerDocumentRecord1 {
+impl PartialEq for ParseTextureAtlasPackerDocumentRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -54,10 +78,10 @@ pub fn parse_texture_atlas_packer_document(
 
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasPackerParse.ts:28 (sha256:d212a2bf01a3b0aee8c5a0d896d300731f4481c13c36050284ec7ea494d4b17e)
 #[derive(Clone)]
-struct ParseTextureAtlasPackerJsonRecord1 {
+struct ParseTextureAtlasPackerJsonRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for ParseTextureAtlasPackerJsonRecord1 {
+impl PartialEq for ParseTextureAtlasPackerJsonRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -109,14 +133,14 @@ fn apply_frame(
 ) -> () {
     let normalized =
         normalize_frame_name((name).clone(), (options.strip_path_prefix).unwrap_or(false));
-    let region = create_texture_atlas_region(Some(TextureAtlasRegionLike {
+    let region = create_texture_atlas_region(Some(FlightPartialRecord1 {
         __flight_identity: std::sync::Arc::new(()),
-        height: if entry.rotated {
+        height: Some(if entry.rotated {
             entry.frame.w
         } else {
             entry.frame.h
-        },
-        id: (atlas.regions.len() as f64),
+        }),
+        id: Some((atlas.regions.len() as f64)),
         name: Some((normalized).clone()),
         original_height: Some(if entry.trimmed {
             entry.source_size.h
@@ -138,17 +162,17 @@ fn apply_frame(
         } else {
             None
         }),
-        rotated: entry.rotated,
-        source_x: entry.sprite_source_size.x,
-        source_y: entry.sprite_source_size.y,
-        trimmed: entry.trimmed,
-        width: if entry.rotated {
+        rotated: Some(entry.rotated),
+        source_x: Some(entry.sprite_source_size.x),
+        source_y: Some(entry.sprite_source_size.y),
+        trimmed: Some(entry.trimmed),
+        width: Some(if entry.rotated {
             entry.frame.h
         } else {
             entry.frame.w
-        },
-        x: entry.frame.x,
-        y: entry.frame.y,
+        }),
+        x: Some(entry.frame.x),
+        y: Some(entry.frame.y),
     }));
     atlas.regions.push(((region).clone()).clone());
 }

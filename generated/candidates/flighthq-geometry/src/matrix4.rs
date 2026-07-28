@@ -404,7 +404,7 @@ pub fn create_matrix4(
     m32: Option<f64>,
     m33: Option<f64>,
 ) -> Matrix4 {
-    let mut m = ((*__IDENTITY).clone())
+    let mut m: Vec<f32> = ((*__IDENTITY).clone())
         .iter()
         .map(|value| (*value) as f32)
         .collect();

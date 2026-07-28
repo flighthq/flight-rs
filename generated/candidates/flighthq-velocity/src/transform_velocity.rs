@@ -11,7 +11,46 @@ use flighthq_geometry::{copy_matrix, create_matrix};
 use flighthq_node::{
     ensure_node_world_matrix, get_node_child_at, get_node_child_count, get_node_world_matrix,
 };
-use flighthq_types::{Transform2DNode, VelocityField};
+use flighthq_types::{
+    Adjustment, ColorTransform, InteractionSignals, Node, NodeInteractionState, NodeSignals,
+    NodeTraitsKey, Transform2DNode, VelocityField,
+};
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub appearance_id: Option<f64>,
+    pub bounds_using_local_bounds_id: Option<f64>,
+    pub bounds_using_local_transform_id: Option<f64>,
+    pub can_add_child: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    >,
+    pub children: Option<Vec<Node>>,
+    pub color_adjustments: Option<Vec<Adjustment>>,
+    pub resolved_color_transform: Option<ColorTransform>,
+    pub color_adjustments_channel_mixing: Option<bool>,
+    pub traits: Option<NodeTraitsKey>,
+    pub interaction_signals: Option<InteractionSignals>,
+    pub local_bounds_id: Option<f64>,
+    pub local_bounds_using_local_bounds_id: Option<f64>,
+    pub local_content_id: Option<f64>,
+    pub local_transform_id: Option<f64>,
+    pub local_transform_using_local_transform_id: Option<f64>,
+    pub node_signals: Option<NodeSignals>,
+    pub interaction_state: Option<NodeInteractionState>,
+    pub parent: Option<Node>,
+    pub world_bounds_using_local_bounds_id: Option<f64>,
+    pub world_bounds_using_world_transform_id: Option<f64>,
+    pub world_transform_id: Option<f64>,
+    pub world_transform_using_local_transform_id: Option<f64>,
+    pub world_transform_using_parent_transform_id: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/velocity/src/transformVelocity.ts:16 (sha256:7679812e9ee7a1735a138952026c1e7490ec0c08dd6fd813799081e67c5d9124)
 pub fn contribute_transform_velocity(field: &mut VelocityField, root: &Transform2DNode) -> () {
@@ -37,12 +76,27 @@ fn visit_transform_velocity(field: &mut VelocityField, node: &Transform2DNode) -
     if ((sample.previous_world_transform).clone()).is_none() {
         sample.previous_world_transform = Some(create_matrix(None, None, None, None, None, None));
     }
-    copy_matrix(&mut sample.previous_world_transform, &world);
-    let count = get_node_child_count(&mutable_node);
+    copy_matrix(sample.previous_world_transform.as_mut().unwrap(), &world);
+    let count = get_node_child_count(&Node {
+        __flight_identity: std::sync::Arc::clone(&(mutable_node).__flight_identity),
+        data: ((mutable_node).data).clone(),
+        enabled: (mutable_node).enabled,
+        kind: ((mutable_node).kind).clone(),
+        name: ((mutable_node).name).clone(),
+    });
     {
         let mut i = 0.0_f64;
         while (i < count) {
-            let child = get_node_child_at(&mutable_node, i);
+            let child = get_node_child_at(
+                &Node {
+                    __flight_identity: std::sync::Arc::clone(&(mutable_node).__flight_identity),
+                    data: ((mutable_node).data).clone(),
+                    enabled: (mutable_node).enabled,
+                    kind: ((mutable_node).kind).clone(),
+                    name: ((mutable_node).name).clone(),
+                },
+                i,
+            );
             if (child).is_some() {
                 visit_transform_velocity(field, &child.as_ref().unwrap());
             }

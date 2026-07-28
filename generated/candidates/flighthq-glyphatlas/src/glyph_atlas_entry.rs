@@ -43,14 +43,7 @@ pub fn get_glyph_atlas_entry(atlas: &mut GlyphAtlas, codepoint: f64) -> Option<G
     }
     let mut needs_repack = false;
     while (atlas.runtime.max_glyphs > 0.0_f64)
-        && (atlas
-            .runtime
-            .entries
-            .iter()
-            .find(|(key, _)| key == &"size")
-            .map(|(_, value)| value.clone())
-            .expect("TypeScript Record key was absent")
-            >= atlas.runtime.max_glyphs)
+        && ((atlas.runtime.entries.len() as f64) >= atlas.runtime.max_glyphs)
     {
         if (!_evict_least_recently_used_glyph(&mut atlas.runtime)) {
             break;
@@ -71,15 +64,7 @@ pub fn get_glyph_atlas_entry(atlas: &mut GlyphAtlas, codepoint: f64) -> Option<G
         );
     }
     while (placement).is_none() {
-        if (atlas
-            .runtime
-            .entries
-            .iter()
-            .find(|(key, _)| key == &"size")
-            .map(|(_, value)| value.clone())
-            .expect("TypeScript Record key was absent")
-            == 0.0_f64)
-        {
+        if ((atlas.runtime.entries.len() as f64) == 0.0_f64) {
             return None;
         }
         _evict_least_recently_used_glyph(&mut atlas.runtime);
@@ -117,7 +102,7 @@ pub fn get_glyph_atlas_entry(atlas: &mut GlyphAtlas, codepoint: f64) -> Option<G
     };
     {
         let __flight_key = codepoint;
-        let __flight_value = (bitmap).clone().unwrap();
+        let __flight_value = (bitmap.as_ref().unwrap()).clone();
         if let Some((_, value)) = atlas
             .runtime
             .bitmaps
@@ -130,7 +115,7 @@ pub fn get_glyph_atlas_entry(atlas: &mut GlyphAtlas, codepoint: f64) -> Option<G
         }
     };
     atlas.runtime.lru.push(codepoint);
-    _blit_glyph_into_atlas_surface(&mut atlas.runtime, &entry, bitmap.as_ref().unwrap());
+    _blit_glyph_into_atlas_surface(&mut atlas.runtime, &entry, &bitmap.as_ref().unwrap());
     return Some((entry).clone());
 }
 

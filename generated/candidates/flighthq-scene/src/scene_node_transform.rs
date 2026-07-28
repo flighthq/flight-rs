@@ -8,7 +8,46 @@
 
 use flighthq_geometry::create_matrix4;
 use flighthq_node::set_node_local_matrix4;
-use flighthq_types::{Matrix4, SceneNode, Vector3Like};
+use flighthq_types::{
+    Adjustment, ColorTransform, InteractionSignals, Matrix4, Node, NodeInteractionState,
+    NodeSignals, NodeTraitsKey, SceneNode, Transform3DNode, Vector3Like,
+};
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub appearance_id: Option<f64>,
+    pub bounds_using_local_bounds_id: Option<f64>,
+    pub bounds_using_local_transform_id: Option<f64>,
+    pub can_add_child: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    >,
+    pub children: Option<Vec<Node>>,
+    pub color_adjustments: Option<Vec<Adjustment>>,
+    pub resolved_color_transform: Option<ColorTransform>,
+    pub color_adjustments_channel_mixing: Option<bool>,
+    pub traits: Option<NodeTraitsKey>,
+    pub interaction_signals: Option<InteractionSignals>,
+    pub local_bounds_id: Option<f64>,
+    pub local_bounds_using_local_bounds_id: Option<f64>,
+    pub local_content_id: Option<f64>,
+    pub local_transform_id: Option<f64>,
+    pub local_transform_using_local_transform_id: Option<f64>,
+    pub node_signals: Option<NodeSignals>,
+    pub interaction_state: Option<NodeInteractionState>,
+    pub parent: Option<Node>,
+    pub world_bounds_using_local_bounds_id: Option<f64>,
+    pub world_bounds_using_world_transform_id: Option<f64>,
+    pub world_transform_id: Option<f64>,
+    pub world_transform_using_local_transform_id: Option<f64>,
+    pub world_transform_using_parent_transform_id: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/scene/src/sceneNodeTransform.ts:18 (sha256:b3833befa0472d7879c60d04e8fdd04ff28a14c9a89c32ff8ef6b6b16bf9bcab)
 pub fn set_scene_node_look_at(
@@ -59,7 +98,19 @@ pub fn set_scene_node_look_at(
     (*_SCRATCH_MATRIX.lock().unwrap()).m[13.0_f64 as usize] = (eye_y) as f32;
     (*_SCRATCH_MATRIX.lock().unwrap()).m[14.0_f64 as usize] = (eye_z) as f32;
     (*_SCRATCH_MATRIX.lock().unwrap()).m[15.0_f64 as usize] = (1.0_f64) as f32;
-    set_node_local_matrix4(node, &(*_SCRATCH_MATRIX.lock().unwrap()));
+    set_node_local_matrix4(
+        &Transform3DNode {
+            __flight_identity: std::sync::Arc::clone(&(node).__flight_identity),
+            data: ((node).data).clone(),
+            enabled: (node).enabled,
+            kind: ((node).kind).clone(),
+            name: ((node).name).clone(),
+            position: ((node).position).clone(),
+            rotation: ((node).rotation).clone(),
+            scale: ((node).scale).clone(),
+        },
+        &(*_SCRATCH_MATRIX.lock().unwrap()),
+    );
 }
 
 // Source: upstream/packages/scene/src/sceneNodeTransform.ts:74 (sha256:5ae017fae638d9a4fe19f3ce9271ca480bfb44e1cd347f46ed47a1e376544a67)

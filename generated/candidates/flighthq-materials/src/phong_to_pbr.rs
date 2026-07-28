@@ -8,20 +8,105 @@
 
 use crate::create_standard_pbr_material;
 use flighthq_color::get_color_luminance;
-use flighthq_types::{PhongMaterial, StandardPbrMaterial, StandardPbrMaterialProperties};
+use flighthq_types::{
+    AlphaType, BlendMode, Kind, MaterialAlphaMode, PhongMaterial, StandardPbrMaterial, Texture,
+};
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub base_color: Option<f64>,
+    pub base_color_map: Option<Texture>,
+    pub emissive: Option<f64>,
+    pub emissive_map: Option<Texture>,
+    pub emissive_strength: Option<f64>,
+    pub metallic: Option<f64>,
+    pub metallic_roughness_map: Option<Texture>,
+    pub normal_map: Option<Texture>,
+    pub normal_scale: Option<f64>,
+    pub occlusion_map: Option<Texture>,
+    pub occlusion_strength: Option<f64>,
+    pub roughness: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub kind: Option<Kind>,
+    pub name: Option<String>,
+    pub alpha_cutoff: Option<f64>,
+    pub alpha_mode: Option<MaterialAlphaMode>,
+    pub alpha_type: Option<AlphaType>,
+    pub blend_mode: Option<BlendMode>,
+    pub double_sided: Option<bool>,
+    pub diffuse: Option<f64>,
+    pub diffuse_map: Option<Texture>,
+    pub emissive: Option<f64>,
+    pub emissive_map: Option<Texture>,
+    pub emissive_strength: Option<f64>,
+    pub glossiness: Option<f64>,
+    pub normal_map: Option<Texture>,
+    pub normal_scale: Option<f64>,
+    pub occlusion_map: Option<Texture>,
+    pub occlusion_strength: Option<f64>,
+    pub specular: Option<f64>,
+    pub specular_glossiness_map: Option<Texture>,
+}
+impl PartialEq for FlightPartialRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord3 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub kind: Option<Kind>,
+    pub name: Option<String>,
+    pub alpha_cutoff: Option<f64>,
+    pub alpha_mode: Option<MaterialAlphaMode>,
+    pub alpha_type: Option<AlphaType>,
+    pub blend_mode: Option<BlendMode>,
+    pub double_sided: Option<bool>,
+    pub base_color: Option<f64>,
+    pub base_color_map: Option<Texture>,
+    pub emissive: Option<f64>,
+    pub emissive_map: Option<Texture>,
+    pub emissive_strength: Option<f64>,
+    pub metallic: Option<f64>,
+    pub metallic_roughness_map: Option<Texture>,
+    pub normal_map: Option<Texture>,
+    pub normal_scale: Option<f64>,
+    pub occlusion_map: Option<Texture>,
+    pub occlusion_strength: Option<f64>,
+    pub roughness: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord3 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/materials/src/phongToPbr.ts:17 (sha256:4f0ee09a628abe5b3f48687b2bbca15325445116f4b5e22318de1aa8cadd0c92)
 pub fn convert_phong_to_standard_pbr_material(
     phong: &PhongMaterial,
-    opts: Option<StandardPbrMaterialProperties>,
+    opts: Option<FlightPartialRecord1>,
 ) -> StandardPbrMaterial {
-    return create_standard_pbr_material(Some(StandardPbrMaterial {
-        base_color: phong.diffuse,
+    return create_standard_pbr_material(Some(FlightPartialRecord3 {
+        base_color: Some(phong.diffuse),
         base_color_map: (phong.diffuse_map).clone(),
-        metallic: get_pbr_metallic_from_phong_specular(phong.specular, phong.diffuse),
+        metallic: Some(get_pbr_metallic_from_phong_specular(
+            phong.specular,
+            phong.diffuse,
+        )),
         normal_map: (phong.normal_map).clone(),
-        normal_scale: phong.normal_scale,
-        roughness: get_pbr_roughness_from_phong_shininess(phong.shininess),
+        normal_scale: Some(phong.normal_scale),
+        roughness: Some(get_pbr_roughness_from_phong_shininess(phong.shininess)),
         ..((opts).clone().unwrap()).clone()
     }));
 }

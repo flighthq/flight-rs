@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 use crate::{
-    TEXT_BOUNDS_GUTTER as text_bounds_gutter_constant, compute_text_bounds_height,
+    TEXT_BOUNDS_GUTTER as text_bounds_gutter_constant, TextBoundsSpec, compute_text_bounds_height,
     compute_text_bounds_width,
 };
 use flighthq_types::{RichTextData, TextLayoutResult};
@@ -25,8 +25,18 @@ pub fn compute_rich_text_line_count(layout: &TextLayoutResult) -> f64 {
 
 // Source: upstream/packages/textlayout/src/richTextMetrics.ts:13 (sha256:e078cd35aa3ea18bfa4282bfd9649a07535ff47de2277105988caf72968ecd42)
 pub fn compute_rich_text_max_scroll_h(data: &RichTextData, layout: &TextLayoutResult) -> f64 {
-    let visible_width = (0.0_f64)
-        .max((compute_text_bounds_width(data, layout) - (text_bounds_gutter_constant * 2.0_f64)));
+    let visible_width = (0.0_f64).max(
+        (compute_text_bounds_width(
+            &TextBoundsSpec {
+                __flight_identity: std::sync::Arc::clone(&(data).__flight_identity),
+                auto_size: ((data).auto_size).clone(),
+                height: (data).height,
+                width: (data).width,
+                word_wrap: (data).word_wrap,
+            },
+            layout,
+        ) - (text_bounds_gutter_constant * 2.0_f64)),
+    );
     return (0.0_f64).max((layout.text_width - visible_width).ceil());
 }
 
@@ -67,8 +77,18 @@ pub fn get_rich_text_scroll_y_offset(line_heights: &Vec<f64>, first_visible_line
 
 // Source: upstream/packages/textlayout/src/richTextMetrics.ts:38 (sha256:c1f89faf9d4093caa3b15d6200f0d8c577669082e9d43234768d85141238f965)
 fn get_visible_line_count(data: &RichTextData, layout: &TextLayoutResult) -> f64 {
-    let visible_height = (0.0_f64)
-        .max((compute_text_bounds_height(data, layout) - (text_bounds_gutter_constant * 2.0_f64)));
+    let visible_height = (0.0_f64).max(
+        (compute_text_bounds_height(
+            &TextBoundsSpec {
+                __flight_identity: std::sync::Arc::clone(&(data).__flight_identity),
+                auto_size: ((data).auto_size).clone(),
+                height: (data).height,
+                width: (data).width,
+                word_wrap: (data).word_wrap,
+            },
+            layout,
+        ) - (text_bounds_gutter_constant * 2.0_f64)),
+    );
     if (visible_height == 0.0_f64) {
         return 1.0_f64;
     }

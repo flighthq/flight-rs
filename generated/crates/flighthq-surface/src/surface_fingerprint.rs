@@ -48,7 +48,7 @@ pub fn create_surface_fingerprint(source: &Surface, grid_size: Option<f64>) -> S
             )
         );
     }
-    let mut cells = vec![0_u8; ((grid_size * grid_size) * 3.0_f64) as usize];
+    let mut cells: Vec<u8> = vec![0_u8; ((grid_size * grid_size) * 3.0_f64) as usize];
     let width = source.width;
     let height = source.height;
     if (width == 0.0_f64) || (height == 0.0_f64) {

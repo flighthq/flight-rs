@@ -15,7 +15,7 @@ pub const COLOR_LUT_DEFAULT_SIZE: f64 = 32.0_f64;
 pub fn bake_color_lut(transforms: &Vec<ColorTransformFunction>, size: Option<f64>) -> ColorLut {
     let size = size.unwrap_or(COLOR_LUT_DEFAULT_SIZE);
     let n = (2.0_f64).max((size).floor());
-    let mut samples = vec![Default::default(); (((n * n) * n) * 3.0_f64) as usize];
+    let mut samples: Vec<f64> = vec![Default::default(); (((n * n) * n) * 3.0_f64) as usize];
     let denom = (n - 1.0_f64);
     let mut cell: Vec<f64> = vec![0.0_f64, 0.0_f64, 0.0_f64];
     let mut i = 0.0_f64;

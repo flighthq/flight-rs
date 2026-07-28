@@ -92,7 +92,7 @@ pub fn create_matrix3(
     m21: Option<f64>,
     m22: Option<f64>,
 ) -> Matrix3 {
-    let mut m = ((*__IDENTITY).clone())
+    let mut m: Vec<f32> = ((*__IDENTITY).clone())
         .iter()
         .map(|value| (*value) as f32)
         .collect();
@@ -198,11 +198,11 @@ pub fn inverse_matrix3(out: &mut Matrix3Like, source: &Matrix3Like) -> bool {
         let i01 = ((-a01) * inv_det);
         let i10 = ((-a10) * inv_det);
         let i11 = (a00 * inv_det);
-        out.m[0.0_f64 as usize] = ((i00).clone()) as f32;
+        out.m[0.0_f64 as usize] = (i00) as f32;
         out.m[1.0_f64 as usize] = (i10) as f32;
         out.m[2.0_f64 as usize] = (0.0_f64) as f32;
         out.m[3.0_f64 as usize] = (i01) as f32;
-        out.m[4.0_f64 as usize] = ((i11).clone()) as f32;
+        out.m[4.0_f64 as usize] = (i11) as f32;
         out.m[5.0_f64 as usize] = (0.0_f64) as f32;
         out.m[6.0_f64 as usize] = (-((i00 * a02) + (i01 * a12))) as f32;
         out.m[7.0_f64 as usize] = (-((i10 * a02) + (i11 * a12))) as f32;

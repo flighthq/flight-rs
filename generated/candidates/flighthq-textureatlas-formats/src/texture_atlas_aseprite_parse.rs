@@ -10,7 +10,31 @@ use crate::{
     TextureAtlasAsepriteArrayFrame, TextureAtlasAsepriteBaseFrame, TextureAtlasAsepriteDocument,
 };
 use flighthq_textureatlas::create_texture_atlas_region;
-use flighthq_types::{TextureAtlas, TextureAtlasRegionLike};
+use flighthq_types::TextureAtlas;
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub height: Option<f64>,
+    pub id: Option<f64>,
+    pub name: Option<String>,
+    pub original_height: Option<f64>,
+    pub original_width: Option<f64>,
+    pub pivot_x: Option<f64>,
+    pub pivot_y: Option<f64>,
+    pub rotated: Option<bool>,
+    pub source_x: Option<f64>,
+    pub source_y: Option<f64>,
+    pub trimmed: Option<bool>,
+    pub x: Option<f64>,
+    pub y: Option<f64>,
+    pub width: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasAsepriteParse.ts:11 (sha256:e7f7154531cfbfdd77a10bf579fb1cb43c21adcfd53ebf3869423b485477a68b)
 pub fn parse_texture_atlas_aseprite_document(
@@ -46,10 +70,10 @@ fn apply_aseprite_frame(
 ) -> () {
     atlas
         .regions
-        .push(create_texture_atlas_region(Some(TextureAtlasRegionLike {
+        .push(create_texture_atlas_region(Some(FlightPartialRecord1 {
             __flight_identity: std::sync::Arc::new(()),
-            height: entry.frame.h,
-            id: (atlas.regions.len() as f64),
+            height: Some(entry.frame.h),
+            id: Some((atlas.regions.len() as f64)),
             name: Some((name).clone()),
             original_height: Some(if entry.trimmed {
                 entry.source_size.h
@@ -63,12 +87,12 @@ fn apply_aseprite_frame(
             }),
             pivot_x: None,
             pivot_y: None,
-            rotated: entry.rotated,
-            source_x: entry.sprite_source_size.x,
-            source_y: entry.sprite_source_size.y,
-            trimmed: entry.trimmed,
-            width: entry.frame.w,
-            x: entry.frame.x,
-            y: entry.frame.y,
+            rotated: Some(entry.rotated),
+            source_x: Some(entry.sprite_source_size.x),
+            source_y: Some(entry.sprite_source_size.y),
+            trimmed: Some(entry.trimmed),
+            width: Some(entry.frame.w),
+            x: Some(entry.frame.x),
+            y: Some(entry.frame.y),
         })));
 }

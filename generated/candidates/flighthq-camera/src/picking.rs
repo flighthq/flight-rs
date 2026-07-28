@@ -54,9 +54,9 @@ pub fn get_camera_screen_to_world_ray(
         + ((*__SCRATCH_INVERSE_VP.lock().unwrap()).m[15.0_f64 as usize] as f64));
     if (near_w != 0.0_f64) {
         let inv_w = (1.0_f64 / near_w);
-        near_x *= (inv_w) as f32;
-        near_y *= (inv_w) as f32;
-        near_z *= (inv_w) as f32;
+        near_x *= inv_w;
+        near_y *= inv_w;
+        near_z *= inv_w;
     }
     let mut far_x = ((((((*__SCRATCH_INVERSE_VP.lock().unwrap()).m[0.0_f64 as usize] as f64)
         * nx)
@@ -79,9 +79,9 @@ pub fn get_camera_screen_to_world_ray(
         + ((*__SCRATCH_INVERSE_VP.lock().unwrap()).m[15.0_f64 as usize] as f64));
     if (far_w != 0.0_f64) {
         let inv_w = (1.0_f64 / far_w);
-        far_x *= (inv_w) as f32;
-        far_y *= (inv_w) as f32;
-        far_z *= (inv_w) as f32;
+        far_x *= inv_w;
+        far_y *= inv_w;
+        far_z *= inv_w;
     }
     (*__SCRATCH_NEAR.lock().unwrap()).x = near_x;
     (*__SCRATCH_NEAR.lock().unwrap()).y = near_y;

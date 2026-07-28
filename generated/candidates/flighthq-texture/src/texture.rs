@@ -10,8 +10,42 @@ use crate::{clone_sampler, copy_sampler, create_sampler, equals_sampler};
 use flighthq_entity::create_entity;
 use flighthq_geometry::{clone_vector2, copy_vector2, create_vector2, inverse_matrix3};
 use flighthq_types::{
-    ImageResource, Matrix3Like, Texture, TextureLike, TextureUvTransform, Vector2Like,
+    ImageResource, Matrix3Like, Sampler, SceneResourceRef, Texture, TextureColorSpace,
+    TextureFilter, TextureLike, TextureUvTransform, TextureWrap, Vector2, Vector2Like,
 };
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub uv_offset: Option<Vector2>,
+    pub uv_rotation: Option<f64>,
+    pub uv_scale: Option<Vector2>,
+    pub color_space: Option<TextureColorSpace>,
+    pub image: Option<ImageResource>,
+    pub resource: Option<SceneResourceRef>,
+    pub sampler: Option<Sampler>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub anisotropy: Option<f64>,
+    pub mag_filter: Option<TextureFilter>,
+    pub min_filter: Option<TextureFilter>,
+    pub mipmaps: Option<bool>,
+    pub wrap_u: Option<TextureWrap>,
+    pub wrap_v: Option<TextureWrap>,
+}
+impl PartialEq for FlightPartialRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/texture/src/texture.ts:17 (sha256:81864e252af442c7c384ff6550aa2430ca65dfe56ef85af3ee54f9d33320d069)
 pub fn clone_texture(source: &TextureLike) -> Texture {
@@ -43,26 +77,26 @@ pub fn copy_texture(out: &mut TextureLike, source: &TextureLike) -> () {
 }
 
 // Source: upstream/packages/texture/src/texture.ts:49 (sha256:15d079f849240a755e4198490188b48b408fa933f4cfac6635f33a541f0a3fd8)
-pub fn create_texture(opts: Option<TextureLike>) -> Texture {
+pub fn create_texture(opts: Option<FlightPartialRecord1>) -> Texture {
     return create_entity(Some(Texture {
         __flight_identity: std::sync::Arc::new(()),
-        color_space: (opts.as_ref().map(|value| (value.color_space).clone()))
+        color_space: (opts.as_ref().and_then(|value| (value.color_space).clone()))
             .unwrap_or("srgb".to_owned()),
         image: opts.as_ref().and_then(|value| (value.image).clone()),
         resource: opts.as_ref().and_then(|value| (value.resource).clone()),
-        sampler: if (opts.as_ref().map(|value| (value.sampler).clone())).is_some() {
-            clone_sampler(&opts.as_ref().unwrap().sampler)
+        sampler: if (opts.as_ref().and_then(|value| (value.sampler).clone())).is_some() {
+            clone_sampler(opts.as_ref().unwrap().sampler.as_ref().unwrap())
         } else {
             create_sampler(None)
         },
-        uv_offset: if (opts.as_ref().map(|value| (value.uv_offset).clone())).is_some() {
-            clone_vector2(&opts.as_ref().unwrap().uv_offset)
+        uv_offset: if (opts.as_ref().and_then(|value| (value.uv_offset).clone())).is_some() {
+            clone_vector2(opts.as_ref().unwrap().uv_offset.as_ref().unwrap())
         } else {
             create_vector2(Some(0.0_f64), Some(0.0_f64))
         },
-        uv_rotation: (opts.as_ref().map(|value| value.uv_rotation)).unwrap_or(0.0_f64),
-        uv_scale: if (opts.as_ref().map(|value| (value.uv_scale).clone())).is_some() {
-            clone_vector2(&opts.as_ref().unwrap().uv_scale)
+        uv_rotation: (opts.as_ref().and_then(|value| value.uv_rotation)).unwrap_or(0.0_f64),
+        uv_scale: if (opts.as_ref().and_then(|value| (value.uv_scale).clone())).is_some() {
+            clone_vector2(opts.as_ref().unwrap().uv_scale.as_ref().unwrap())
         } else {
             create_vector2(Some(1.0_f64), Some(1.0_f64))
         },
@@ -102,7 +136,15 @@ pub fn get_texture_height(texture: &TextureLike) -> f64 {
 
 // Source: upstream/packages/texture/src/texture.ts:92 (sha256:605da1f5f7df9eba571d5488dc744827b12cf9f2b69a04b30a186df53cbabe16)
 pub fn get_texture_inverse_uv_matrix(out: &mut Matrix3Like, texture: &TextureLike) -> () {
-    get_texture_uv_matrix(out, texture);
+    get_texture_uv_matrix(
+        out,
+        &TextureUvTransform {
+            __flight_identity: std::sync::Arc::clone(&(texture).__flight_identity),
+            uv_offset: ((texture).uv_offset).clone(),
+            uv_rotation: (texture).uv_rotation,
+            uv_scale: ((texture).uv_scale).clone(),
+        },
+    );
     {
         let __flight_argument_1 = (out).clone();
         inverse_matrix3(out, &__flight_argument_1)

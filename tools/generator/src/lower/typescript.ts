@@ -983,7 +983,12 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
     ) {
       return { kind: 'dynamic' };
     }
-    if (['MethodsOf', 'Omit', 'Partial', 'PartialNode', 'Pick'].includes(name) && arguments_[0]) {
+    const utilityArgument = arguments_[0];
+    if (name === 'Partial' && utilityArgument && utilityArgument.kind !== 'dynamic') {
+      return { arguments: [utilityArgument], kind: 'named', name: 'FlightPartial' };
+    }
+    if (name === 'Partial' && utilityArgument) return utilityArgument;
+    if (['MethodsOf', 'Omit', 'PartialNode', 'Pick'].includes(name) && arguments_[0]) {
       return arguments_[0];
     }
     if (['Awaited', 'Exclude', 'Extract', 'NonNullable', 'Readonly', 'Required'].includes(name) && arguments_[0]) {
@@ -1273,6 +1278,7 @@ function lowerTypeMember(node: ts.TypeElement, context: LoweringContext) {
       contextualParameters: ts.isFunctionTypeNode(node.type)
         ? lowerParameterList(node.type.parameters, context).parameters
         : undefined,
+      discriminantValue: literalTypeValue(node.type),
       name: propertyName(node.name, context),
       optional: Boolean(node.questionToken),
       type: lowerType(node.type, context),
@@ -1300,6 +1306,23 @@ function lowerTypeMember(node: ts.TypeElement, context: LoweringContext) {
     };
   }
   return unsupported(node, context, `type member ${ts.SyntaxKind[node.kind] ?? node.kind}`);
+}
+
+function literalTypeValue(node: ts.TypeNode): boolean | number | string | undefined {
+  if (!ts.isLiteralTypeNode(node)) return undefined;
+  if (ts.isStringLiteral(node.literal) || ts.isNumericLiteral(node.literal)) {
+    return ts.isStringLiteral(node.literal) ? node.literal.text : Number(node.literal.text);
+  }
+  if (node.literal.kind === ts.SyntaxKind.TrueKeyword) return true;
+  if (node.literal.kind === ts.SyntaxKind.FalseKeyword) return false;
+  if (
+    ts.isPrefixUnaryExpression(node.literal) &&
+    node.literal.operator === ts.SyntaxKind.MinusToken &&
+    ts.isNumericLiteral(node.literal.operand)
+  ) {
+    return -Number(node.literal.operand.text);
+  }
+  return undefined;
 }
 
 function commonType(types: IrType[]): IrType {

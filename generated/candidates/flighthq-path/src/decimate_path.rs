@@ -46,7 +46,7 @@ pub fn decimate_path(
             && (contour[1.0_f64 as usize].clone()
                 == contour[((contour.len() as f64) - 1.0_f64) as usize].clone());
         let last = if closed { (n - 1.0_f64) } else { n };
-        let mut keep = vec![0_u8; (last) as usize];
+        let mut keep: Vec<u8> = vec![0_u8; (last) as usize];
         keep[0.0_f64 as usize] = (1.0_f64) as u8;
         keep[(last - 1.0_f64) as usize] = (1.0_f64) as u8;
         douglas_peucker(

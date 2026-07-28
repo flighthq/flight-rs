@@ -70,9 +70,9 @@ pub fn get_camera_frustum_corners(
                 + ((*__SCRATCH_INVERSE_VP.lock().unwrap()).m[15.0_f64 as usize] as f64));
             if (ww != 0.0_f64) {
                 let inv_w = (1.0_f64 / ww);
-                wx *= (inv_w) as f32;
-                wy *= (inv_w) as f32;
-                wz *= (inv_w) as f32;
+                wx *= inv_w;
+                wy *= inv_w;
+                wz *= inv_w;
             }
             results.push(vec![wx, wy, wz]);
             {

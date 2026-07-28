@@ -128,13 +128,13 @@ pub fn transform_mesh_geometry_into(
                     + (inv_t.as_ref().unwrap()[8.0_f64 as usize].clone() * nz));
                 let len = (((tnx * tnx) + (tny * tny)) + (tnz * tnz)).sqrt();
                 if (len > 0.0_f64) {
-                    tnx /= (len) as f32;
-                    tny /= (len) as f32;
-                    tnz /= (len) as f32;
+                    tnx /= len;
+                    tny /= len;
+                    tnz /= len;
                 }
-                dst_verts[nb as usize] = ((tnx).clone()) as f32;
-                dst_verts[(nb + 1.0_f64) as usize] = ((tny).clone()) as f32;
-                dst_verts[(nb + 2.0_f64) as usize] = ((tnz).clone()) as f32;
+                dst_verts[nb as usize] = (tnx) as f32;
+                dst_verts[(nb + 1.0_f64) as usize] = (tny) as f32;
+                dst_verts[(nb + 2.0_f64) as usize] = (tnz) as f32;
             }
             if (tan_float_offset >= 0.0_f64) {
                 let tb = (vert_base + tan_float_offset);
@@ -153,13 +153,13 @@ pub fn transform_mesh_geometry_into(
                     + (inv_t.as_ref().unwrap()[8.0_f64 as usize].clone() * tz));
                 let len = (((ttx * ttx) + (tty * tty)) + (ttz * ttz)).sqrt();
                 if (len > 0.0_f64) {
-                    ttx /= (len) as f32;
-                    tty /= (len) as f32;
-                    ttz /= (len) as f32;
+                    ttx /= len;
+                    tty /= len;
+                    ttz /= len;
                 }
-                dst_verts[tb as usize] = ((ttx).clone()) as f32;
-                dst_verts[(tb + 1.0_f64) as usize] = ((tty).clone()) as f32;
-                dst_verts[(tb + 2.0_f64) as usize] = ((ttz).clone()) as f32;
+                dst_verts[tb as usize] = (ttx) as f32;
+                dst_verts[(tb + 1.0_f64) as usize] = (tty) as f32;
+                dst_verts[(tb + 2.0_f64) as usize] = (ttz) as f32;
                 dst_verts[(tb + 3.0_f64) as usize] = ((tw).clone()) as f32;
             }
             {
@@ -246,7 +246,7 @@ fn compute_matrix3x3_inverse_transpose(matrix: &Matrix4Like) -> Option<Vec<f32>>
         return None;
     }
     let inv_det = (1.0_f64 / det);
-    let mut out = vec![0.0_f32; (9.0_f64) as usize];
+    let mut out: Vec<f32> = vec![0.0_f32; (9.0_f64) as usize];
     out[0.0_f64 as usize] = (c00 * inv_det) as f32;
     out[1.0_f64 as usize] = (c10 * inv_det) as f32;
     out[2.0_f64 as usize] = (c20 * inv_det) as f32;
@@ -328,13 +328,13 @@ fn transform_mesh_geometry_positions(
                 let mut nnz = (nz * inv_sz);
                 let len = (((nnx * nnx) + (nny * nny)) + (nnz * nnz)).sqrt();
                 if (len > 0.0_f64) {
-                    nnx /= (len) as f32;
-                    nny /= (len) as f32;
-                    nnz /= (len) as f32;
+                    nnx /= len;
+                    nny /= len;
+                    nnz /= len;
                 }
-                out.vertices[nb as usize] = ((nnx).clone()) as f32;
-                out.vertices[(nb + 1.0_f64) as usize] = ((nny).clone()) as f32;
-                out.vertices[(nb + 2.0_f64) as usize] = ((nnz).clone()) as f32;
+                out.vertices[nb as usize] = (nnx) as f32;
+                out.vertices[(nb + 1.0_f64) as usize] = (nny) as f32;
+                out.vertices[(nb + 2.0_f64) as usize] = (nnz) as f32;
             }
             if (tan_float_offset >= 0.0_f64) {
                 let tb = (vert_base + tan_float_offset);
@@ -347,13 +347,13 @@ fn transform_mesh_geometry_positions(
                 let mut ntz = (ttz * inv_sz);
                 let len = (((ntx * ntx) + (nty * nty)) + (ntz * ntz)).sqrt();
                 if (len > 0.0_f64) {
-                    ntx /= (len) as f32;
-                    nty /= (len) as f32;
-                    ntz /= (len) as f32;
+                    ntx /= len;
+                    nty /= len;
+                    ntz /= len;
                 }
-                out.vertices[tb as usize] = ((ntx).clone()) as f32;
-                out.vertices[(tb + 1.0_f64) as usize] = ((nty).clone()) as f32;
-                out.vertices[(tb + 2.0_f64) as usize] = ((ntz).clone()) as f32;
+                out.vertices[tb as usize] = (ntx) as f32;
+                out.vertices[(tb + 1.0_f64) as usize] = (nty) as f32;
+                out.vertices[(tb + 2.0_f64) as usize] = (ntz) as f32;
                 out.vertices[(tb + 3.0_f64) as usize] = ((tw).clone()) as f32;
             }
             {

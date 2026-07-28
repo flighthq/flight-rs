@@ -35,10 +35,10 @@ pub fn capture_mesh_skin_bind_pose(geometry: &MeshGeometry) -> MeshSkinBindPose 
     let normal_offset = float_offset_for_semantic(&geometry.layout, "normal".to_owned());
     let joints_offset = float_offset_for_semantic(&geometry.layout, "joints0".to_owned());
     let weights_offset = float_offset_for_semantic(&geometry.layout, "weights0".to_owned());
-    let mut positions = vec![0.0_f32; (vertex_count * 3.0_f64) as usize];
-    let mut normals = vec![0.0_f32; (vertex_count * 3.0_f64) as usize];
-    let mut joints = vec![0.0_f32; (vertex_count * 4.0_f64) as usize];
-    let mut weights = vec![0.0_f32; (vertex_count * 4.0_f64) as usize];
+    let mut positions: Vec<f32> = vec![0.0_f32; (vertex_count * 3.0_f64) as usize];
+    let mut normals: Vec<f32> = vec![0.0_f32; (vertex_count * 3.0_f64) as usize];
+    let mut joints: Vec<f32> = vec![0.0_f32; (vertex_count * 4.0_f64) as usize];
+    let mut weights: Vec<f32> = vec![0.0_f32; (vertex_count * 4.0_f64) as usize];
     {
         let mut v = 0.0_f64;
         while (v < vertex_count) {

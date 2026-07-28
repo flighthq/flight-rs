@@ -14,7 +14,46 @@ use flighthq_geometry::{
     acquire_matrix, copy_matrix, inverse_matrix, multiply_matrix, release_matrix,
 };
 use flighthq_signals::emit_signal;
-use flighthq_types::{Node, NodeOf, Transform2DNode};
+use flighthq_types::{
+    Adjustment, ColorTransform, InteractionSignals, Node, NodeInteractionState, NodeOf,
+    NodeSignals, NodeTraitsKey, Transform2DNode,
+};
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub appearance_id: Option<f64>,
+    pub bounds_using_local_bounds_id: Option<f64>,
+    pub bounds_using_local_transform_id: Option<f64>,
+    pub can_add_child: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    >,
+    pub children: Option<Vec<Node>>,
+    pub color_adjustments: Option<Vec<Adjustment>>,
+    pub resolved_color_transform: Option<ColorTransform>,
+    pub color_adjustments_channel_mixing: Option<bool>,
+    pub traits: Option<NodeTraitsKey>,
+    pub interaction_signals: Option<InteractionSignals>,
+    pub local_bounds_id: Option<f64>,
+    pub local_bounds_using_local_bounds_id: Option<f64>,
+    pub local_content_id: Option<f64>,
+    pub local_transform_id: Option<f64>,
+    pub local_transform_using_local_transform_id: Option<f64>,
+    pub node_signals: Option<NodeSignals>,
+    pub interaction_state: Option<NodeInteractionState>,
+    pub parent: Option<Node>,
+    pub world_bounds_using_local_bounds_id: Option<f64>,
+    pub world_bounds_using_world_transform_id: Option<f64>,
+    pub world_transform_id: Option<f64>,
+    pub world_transform_using_local_transform_id: Option<f64>,
+    pub world_transform_using_parent_transform_id: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/node/src/hierarchy.ts:14 (sha256:cb03ca6747bcfee242b049772b79d8e3c606ba88698154c57c75401604742cca)
 pub fn add_node_child<Traits: Clone>(target: &Node, child: &Node) -> NodeOf<Traits> {
@@ -162,7 +201,7 @@ pub fn get_node_ancestors<Traits: Clone>(source: &Node) -> Vec<NodeOf<Traits>> {
     let mut current = get_node_parent(&(*source).clone());
     while (current).is_some() {
         result.push(((current).clone().unwrap()).clone());
-        current = get_node_parent(&current);
+        current = get_node_parent(current.as_ref().unwrap());
     }
     return result;
 }
@@ -233,7 +272,7 @@ pub fn get_node_child_index(source: &Node, child: &Node) -> f64 {
 
 // Source: upstream/packages/node/src/hierarchy.ts:190 (sha256:e869f4e99ff04be76b4f368be8040f3cbd6ee722efb96f2a931ffeba45f5b1b9)
 pub fn get_node_common_ancestor<Traits: Clone>(a: &Node, b: &mut Node) -> Option<NodeOf<Traits>> {
-    let mut a_ancestors = Vec::new();
+    let mut a_ancestors: Vec<Node> = Vec::new();
     {
         let __flight_value = (*a).clone();
         if !a_ancestors.contains(&__flight_value) {
@@ -248,7 +287,7 @@ pub fn get_node_common_ancestor<Traits: Clone>(a: &Node, b: &mut Node) -> Option
                 a_ancestors.push(__flight_value);
             }
         };
-        cur = get_node_parent(&cur);
+        cur = get_node_parent(cur.as_ref().unwrap());
     }
     let mut b_cur: Option<Node> = Some((*b).clone());
     while (b_cur).is_some() {
@@ -395,7 +434,22 @@ pub fn reparent_node<Traits: Clone>(
     let mut local_m = acquire_matrix();
     {
         copy_matrix(&mut old_world, &get_node_world_matrix(child));
-        add_node_child(new_parent, child);
+        add_node_child(
+            &Node {
+                __flight_identity: std::sync::Arc::clone(&(new_parent).__flight_identity),
+                data: ((new_parent).data).clone(),
+                enabled: (new_parent).enabled,
+                kind: ((new_parent).kind).clone(),
+                name: ((new_parent).name).clone(),
+            },
+            &Node {
+                __flight_identity: std::sync::Arc::clone(&(child).__flight_identity),
+                data: ((child).data).clone(),
+                enabled: (child).enabled,
+                kind: ((child).kind).clone(),
+                name: ((child).name).clone(),
+            },
+        );
         inverse_matrix(&mut local_m, &get_node_world_matrix(new_parent));
         {
             let __flight_argument_1 = (local_m).clone();
@@ -414,7 +468,13 @@ pub fn reparent_node<Traits: Clone>(
         child.rotation = (((b).atan2(a) - skew_y_rad) * RAD_TO_DEG);
         child.x = (local_m.tx + ((a * child.pivot_x) + (c * child.pivot_y)));
         child.y = (local_m.ty + ((b * child.pivot_x) + (d * child.pivot_y)));
-        invalidate_node_local_transform(child);
+        invalidate_node_local_transform(&Node {
+            __flight_identity: std::sync::Arc::clone(&(child).__flight_identity),
+            data: ((child).data).clone(),
+            enabled: (child).enabled,
+            kind: ((child).kind).clone(),
+            name: ((child).name).clone(),
+        });
     }
     {
         release_matrix(&old_world);
@@ -440,14 +500,12 @@ pub fn set_node_child_index(target: &Node, child: &Node, index: f64) -> () {
     if (children).is_none() {
         return;
     }
-    if ((index >= 0.0_f64) && (index <= (children.as_ref().unwrap().len() as f64)))
+    if ((index >= 0.0_f64) && (index <= (children.as_mut().unwrap().len() as f64)))
         && (get_node_parent(child) == target)
     {
         let i = {
             let __flight_value = (*child).clone();
-            (children)
-                .as_ref()
-                .unwrap()
+            (children.as_mut().unwrap())
                 .iter()
                 .position(|item| item == &__flight_value)
                 .map_or(-1.0_f64, |index| index as f64)

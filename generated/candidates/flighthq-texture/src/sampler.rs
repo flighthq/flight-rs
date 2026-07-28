@@ -7,7 +7,23 @@
 #![allow(unused_parens)]
 
 use flighthq_entity::create_entity;
-use flighthq_types::{Sampler, SamplerLike};
+use flighthq_types::{Sampler, SamplerLike, TextureFilter, TextureWrap};
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub anisotropy: Option<f64>,
+    pub mag_filter: Option<TextureFilter>,
+    pub min_filter: Option<TextureFilter>,
+    pub mipmaps: Option<bool>,
+    pub wrap_u: Option<TextureWrap>,
+    pub wrap_v: Option<TextureWrap>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/texture/src/sampler.ts:6 (sha256:f149fc609e1f06e63c2578912a109efba616e60fbf38a24501dd2455c0d6d95e)
 pub fn clone_sampler(source: &SamplerLike) -> Sampler {
@@ -34,9 +50,14 @@ pub fn copy_sampler(out: &mut SamplerLike, source: &SamplerLike) -> () {
 
 // Source: upstream/packages/texture/src/sampler.ts:31 (sha256:e783b304cea5e57093ca83a984948a0dc02f55a2127552720395c8301d95fba0)
 pub fn create_anisotropic_sampler(level: f64) -> Sampler {
-    return create_sampler(Some(SamplerLike {
+    return create_sampler(Some(FlightPartialRecord1 {
         __flight_identity: std::sync::Arc::new(()),
-        anisotropy: level,
+        anisotropy: Some(level),
+        mag_filter: None,
+        min_filter: None,
+        mipmaps: None,
+        wrap_u: None,
+        wrap_v: None,
     }));
 }
 
@@ -47,62 +68,69 @@ pub fn create_clamp_linear_sampler() -> Sampler {
 
 // Source: upstream/packages/texture/src/sampler.ts:43 (sha256:56db6bb97cd170e2169ac6cffa5d0993139e702bf6a9b71c666f7b14aba7dfa0)
 #[derive(Clone)]
-struct CreatePixelArtSamplerRecord1 {
+struct CreatePixelArtSamplerRecord2 {
     __flight_identity: std::sync::Arc<()>,
     mag_filter: String,
     min_filter: String,
     mipmaps: bool,
 }
-impl PartialEq for CreatePixelArtSamplerRecord1 {
+impl PartialEq for CreatePixelArtSamplerRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 pub fn create_pixel_art_sampler() -> Sampler {
-    return create_sampler(Some(SamplerLike {
+    return create_sampler(Some(FlightPartialRecord1 {
         __flight_identity: std::sync::Arc::new(()),
-        mag_filter: "nearest".to_owned(),
-        min_filter: "nearest".to_owned(),
-        mipmaps: false,
+        mag_filter: Some("nearest".to_owned()),
+        min_filter: Some("nearest".to_owned()),
+        mipmaps: Some(false),
+        anisotropy: None,
+        wrap_u: None,
+        wrap_v: None,
     }));
 }
 
 // Source: upstream/packages/texture/src/sampler.ts:50 (sha256:991b5315db93b375f8d04a839a68c9def1574de94af82991d0fe820682e3a2cc)
-pub fn create_sampler(opts: Option<SamplerLike>) -> Sampler {
+pub fn create_sampler(opts: Option<FlightPartialRecord1>) -> Sampler {
     return create_entity(Some(Sampler {
         __flight_identity: std::sync::Arc::new(()),
-        anisotropy: (opts.as_ref().map(|value| value.anisotropy)).unwrap_or(1.0_f64),
-        mag_filter: (opts.as_ref().map(|value| (value.mag_filter).clone()))
+        anisotropy: (opts.as_ref().and_then(|value| value.anisotropy)).unwrap_or(1.0_f64),
+        mag_filter: (opts.as_ref().and_then(|value| (value.mag_filter).clone()))
             .unwrap_or("linear".to_owned()),
-        min_filter: (opts.as_ref().map(|value| (value.min_filter).clone()))
+        min_filter: (opts.as_ref().and_then(|value| (value.min_filter).clone()))
             .unwrap_or("linear-mipmap-linear".to_owned()),
-        mipmaps: (opts.as_ref().map(|value| value.mipmaps)).unwrap_or(true),
-        wrap_u: (opts.as_ref().map(|value| (value.wrap_u).clone()))
+        mipmaps: (opts.as_ref().and_then(|value| value.mipmaps)).unwrap_or(true),
+        wrap_u: (opts.as_ref().and_then(|value| (value.wrap_u).clone()))
             .unwrap_or("clamp-to-edge".to_owned()),
-        wrap_v: (opts.as_ref().map(|value| (value.wrap_v).clone()))
+        wrap_v: (opts.as_ref().and_then(|value| (value.wrap_v).clone()))
             .unwrap_or("clamp-to-edge".to_owned()),
     }));
 }
 
 // Source: upstream/packages/texture/src/sampler.ts:63 (sha256:558556fee9353c533488e551645321a97e72a19a3c26bc48c08e73a1679d9a76)
 #[derive(Clone)]
-struct CreateTilingSamplerRecord1 {
+struct CreateTilingSamplerRecord2 {
     __flight_identity: std::sync::Arc<()>,
     wrap_u: String,
     wrap_v: String,
 }
-impl PartialEq for CreateTilingSamplerRecord1 {
+impl PartialEq for CreateTilingSamplerRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 pub fn create_tiling_sampler() -> Sampler {
-    return create_sampler(Some(SamplerLike {
+    return create_sampler(Some(FlightPartialRecord1 {
         __flight_identity: std::sync::Arc::new(()),
-        wrap_u: "repeat".to_owned(),
-        wrap_v: "repeat".to_owned(),
+        wrap_u: Some("repeat".to_owned()),
+        wrap_v: Some("repeat".to_owned()),
+        anisotropy: None,
+        mag_filter: None,
+        min_filter: None,
+        mipmaps: None,
     }));
 }
 

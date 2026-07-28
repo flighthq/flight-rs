@@ -7,7 +7,10 @@
 #![allow(unused_parens)]
 
 use crate::get_render_state_runtime;
-use flighthq_types::{Kind, RenderState, Renderable, Renderer, RendererData};
+use flighthq_types::{
+    BlendMode, DisplayObjectClipHooks, Kind, Matrix, RenderState, Renderable, Renderer,
+    RendererData, SceneGraphSyncPolicy,
+};
 
 #[inline]
 fn __flight_js_to_u32(value: f64) -> u32 {
@@ -15,6 +18,28 @@ fn __flight_js_to_u32(value: f64) -> u32 {
         return 0;
     }
     value.trunc().rem_euclid(4294967296.0_f64) as u32
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub allow_smoothing: Option<bool>,
+    pub background_color: Option<f64>,
+    pub background_color_rgba: Option<Vec<f64>>,
+    pub background_color_string: Option<String>,
+    pub current_clip_depth: Option<f64>,
+    pub display_object_clip_hooks: Option<DisplayObjectClipHooks>,
+    pub pixel_ratio: Option<f64>,
+    pub render_alpha: Option<f64>,
+    pub render_blend_mode: Option<BlendMode>,
+    pub render_transform2_d: Option<Matrix>,
+    pub scene_graph_sync_policy: Option<SceneGraphSyncPolicy>,
+    pub round_pixels: Option<bool>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
 }
 
 // Source: upstream/packages/render/src/renderer.ts:7 (sha256:0599b7b2f4212b2aaf68f71cac956d3fa39b2ed817e3c6482ead6f4a79119606)

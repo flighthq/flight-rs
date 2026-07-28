@@ -197,22 +197,22 @@ pub fn compute_mesh_geometry_flat_normals(out: &mut MeshGeometry, geometry: &Mes
             let mut nz = ((ex1 * ey2) - (ey1 * ex2));
             let len = (((nx * nx) + (ny * ny)) + (nz * nz)).sqrt();
             if (len > 0.0_f64) {
-                nx /= (len) as f32;
-                ny /= (len) as f32;
-                nz /= (len) as f32;
+                nx /= len;
+                ny /= len;
+                nz /= len;
             }
             let n0 = ((i0 * floats_per_vertex) + NORMAL_OFFSET);
             let n1 = ((i1 * floats_per_vertex) + NORMAL_OFFSET);
             let n2 = ((i2 * floats_per_vertex) + NORMAL_OFFSET);
-            out.vertices[n0 as usize] = ((nx).clone()) as f32;
-            out.vertices[(n0 + 1.0_f64) as usize] = ((ny).clone()) as f32;
-            out.vertices[(n0 + 2.0_f64) as usize] = ((nz).clone()) as f32;
-            out.vertices[n1 as usize] = ((nx).clone()) as f32;
-            out.vertices[(n1 + 1.0_f64) as usize] = ((ny).clone()) as f32;
-            out.vertices[(n1 + 2.0_f64) as usize] = ((nz).clone()) as f32;
-            out.vertices[n2 as usize] = ((nx).clone()) as f32;
-            out.vertices[(n2 + 1.0_f64) as usize] = ((ny).clone()) as f32;
-            out.vertices[(n2 + 2.0_f64) as usize] = ((nz).clone()) as f32;
+            out.vertices[n0 as usize] = (nx) as f32;
+            out.vertices[(n0 + 1.0_f64) as usize] = (ny) as f32;
+            out.vertices[(n0 + 2.0_f64) as usize] = (nz) as f32;
+            out.vertices[n1 as usize] = (nx) as f32;
+            out.vertices[(n1 + 1.0_f64) as usize] = (ny) as f32;
+            out.vertices[(n1 + 2.0_f64) as usize] = (nz) as f32;
+            out.vertices[n2 as usize] = (nx) as f32;
+            out.vertices[(n2 + 1.0_f64) as usize] = (ny) as f32;
+            out.vertices[(n2 + 2.0_f64) as usize] = (nz) as f32;
             {
                 t += 3.0_f64;
                 t
@@ -239,7 +239,7 @@ pub fn compute_mesh_geometry_normals(out: &mut MeshGeometry, geometry: &MeshGeom
     } else {
         vertex_count
     };
-    let mut accum = vec![0.0_f64; (vertex_count * 3.0_f64) as usize];
+    let mut accum: Vec<f64> = vec![0.0_f64; (vertex_count * 3.0_f64) as usize];
     {
         let mut t = 0.0_f64;
         while ((t + 2.0_f64) < index_count) {
@@ -329,8 +329,8 @@ pub fn compute_mesh_geometry_tangents(out: &mut MeshGeometry, geometry: &MeshGeo
     } else {
         vertex_count
     };
-    let mut tan = vec![0.0_f64; (vertex_count * 3.0_f64) as usize];
-    let mut bitan = vec![0.0_f64; (vertex_count * 3.0_f64) as usize];
+    let mut tan: Vec<f64> = vec![0.0_f64; (vertex_count * 3.0_f64) as usize];
+    let mut bitan: Vec<f64> = vec![0.0_f64; (vertex_count * 3.0_f64) as usize];
     {
         let mut t = 0.0_f64;
         while ((t + 2.0_f64) < index_count) {

@@ -2348,7 +2348,11 @@ fn clear_input_binding(
     if (cleanup).is_none() {
         return;
     }
-    cleanup.as_ref().unwrap().lock().unwrap()();
+    {
+        let __flight_callback = (cleanup.as_ref().unwrap()).clone();
+        let __flight_result = __flight_callback.lock().unwrap()();
+        __flight_result
+    };
     {
         let __flight_key = kind;
         if let Some(__flight_index) = by_kind

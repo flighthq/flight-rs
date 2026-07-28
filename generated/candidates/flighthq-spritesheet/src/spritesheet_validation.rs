@@ -16,7 +16,7 @@ pub fn validate_spritesheet(
     let mut diagnostics: Vec<SpritesheetValidationDiagnostic> = vec![];
     let atlas = (spritesheet.atlas).clone();
     if (atlas).is_some() {
-        let region_ids = Vec::new();
+        let region_ids: Vec<crate::OpaqueHostValue> = Vec::new();
         {
             let mut fi = 0.0_f64;
             while (fi < (spritesheet.frames.len() as f64)) {
@@ -83,7 +83,7 @@ pub fn validate_spritesheet_data(
     data: &SpritesheetData,
 ) -> Option<Vec<SpritesheetValidationDiagnostic>> {
     let mut diagnostics: Vec<SpritesheetValidationDiagnostic> = vec![];
-    let mut frame_name_set = Vec::new();
+    let mut frame_name_set: Vec<String> = Vec::new();
     for fd in (data.frames).iter().cloned() {
         if ((fd.name).clone() != "") {
             {

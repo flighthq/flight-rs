@@ -11,7 +11,7 @@ pub fn reserve_float32_array(array: &Vec<f32>, capacity: f64) -> Vec<f32> {
     if ((array.len() as f64) >= capacity) {
         return array.clone();
     }
-    let mut out = vec![0.0_f32; (capacity) as usize];
+    let mut out: Vec<f32> = vec![0.0_f32; (capacity) as usize];
     if true {
         {
             let __flight_offset = (0.0_f64) as usize;
@@ -28,7 +28,7 @@ pub fn reserve_int16_array(array: &Vec<i16>, capacity: f64) -> Vec<i16> {
     if ((array.len() as f64) >= capacity) {
         return array.clone();
     }
-    let mut out = vec![0_i16; (capacity) as usize];
+    let mut out: Vec<i16> = vec![0_i16; (capacity) as usize];
     if true {
         {
             let __flight_offset = (0.0_f64) as usize;
@@ -45,7 +45,7 @@ pub fn reserve_uint16_array(array: &Vec<u16>, capacity: f64) -> Vec<u16> {
     if ((array.len() as f64) >= capacity) {
         return array.clone();
     }
-    let mut out = vec![0_u16; (capacity) as usize];
+    let mut out: Vec<u16> = vec![0_u16; (capacity) as usize];
     if true {
         {
             let __flight_offset = (0.0_f64) as usize;

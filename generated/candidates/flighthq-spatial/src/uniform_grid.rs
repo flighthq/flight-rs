@@ -362,7 +362,7 @@ fn _remove_from_grid(grid: &mut UniformGrid, id: SpatialObjectId) -> () {
                             false
                         }
                     };
-                    if (cell.as_mut().unwrap().ids.size == 0.0_f64) {
+                    if ((cell.as_mut().unwrap().ids.len() as f64) == 0.0_f64) {
                         {
                             let __flight_key = (key).clone();
                             if let Some(__flight_index) =
@@ -396,14 +396,7 @@ fn _remove_from_grid(grid: &mut UniformGrid, id: SpatialObjectId) -> () {
             false
         }
     };
-    if (grid
-        .bounds
-        .iter()
-        .find(|(key, _)| key == &"size")
-        .map(|(_, value)| value.clone())
-        .expect("TypeScript Record key was absent")
-        == 0.0_f64)
-    {
+    if ((grid.bounds.len() as f64) == 0.0_f64) {
         grid.empty = true;
     }
 }
@@ -420,7 +413,7 @@ fn _query_grid_pairs(grid: &UniformGrid, out: &mut Vec<SpatialPair>) -> () {
     .iter()
     .cloned()
     {
-        if (cell.ids.size < 2.0_f64) {
+        if ((cell.ids.len() as f64) < 2.0_f64) {
             continue;
         }
         let mut list = {

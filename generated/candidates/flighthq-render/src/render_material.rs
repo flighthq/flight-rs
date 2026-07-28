@@ -6,7 +6,19 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_types::{RenderProxy, RenderState};
+use flighthq_types::{Material, MaterialData, RenderProxy, RenderState};
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub material: Option<Material>,
+    pub material_data: Option<MaterialData>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/render/src/renderMaterial.ts:6 (sha256:c53b2ce5138a009239dccfe99751c94aa126b62efa577185d0bf72c80f4f382c)
 pub fn update_render_proxy_material(

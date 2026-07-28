@@ -8,15 +8,89 @@
 
 use crate::{get_render_state_runtime, install_render_adapt_hook, update_render_proxy_renderer};
 use flighthq_node::invalidate_node_appearance;
-use flighthq_types::{RenderProxy2D, RenderProxyAdapter, RenderState, Renderable};
+use flighthq_types::{
+    Adjustment, BlendMode, ColorTransform, DisplayObjectClipHooks, InteractionSignals, Material,
+    MaterialData, Matrix, Node, NodeInteractionState, NodeSignals, NodeTraitsKey, RenderProxy2D,
+    RenderProxyAdapter, RenderState, Renderable, SceneGraphSyncPolicy,
+};
+
+#[derive(Clone)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub binding: Option<crate::OpaqueHostValue>,
+    pub appearance_id: Option<f64>,
+    pub bounds_using_local_bounds_id: Option<f64>,
+    pub bounds_using_local_transform_id: Option<f64>,
+    pub can_add_child: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    >,
+    pub children: Option<Vec<Node>>,
+    pub color_adjustments: Option<Vec<Adjustment>>,
+    pub resolved_color_transform: Option<ColorTransform>,
+    pub color_adjustments_channel_mixing: Option<bool>,
+    pub traits: Option<NodeTraitsKey>,
+    pub interaction_signals: Option<InteractionSignals>,
+    pub local_bounds_id: Option<f64>,
+    pub local_bounds_using_local_bounds_id: Option<f64>,
+    pub local_content_id: Option<f64>,
+    pub local_transform_id: Option<f64>,
+    pub local_transform_using_local_transform_id: Option<f64>,
+    pub node_signals: Option<NodeSignals>,
+    pub interaction_state: Option<NodeInteractionState>,
+    pub parent: Option<Node>,
+    pub world_bounds_using_local_bounds_id: Option<f64>,
+    pub world_bounds_using_world_transform_id: Option<f64>,
+    pub world_transform_id: Option<f64>,
+    pub world_transform_using_local_transform_id: Option<f64>,
+    pub world_transform_using_parent_transform_id: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub allow_smoothing: Option<bool>,
+    pub background_color: Option<f64>,
+    pub background_color_rgba: Option<Vec<f64>>,
+    pub background_color_string: Option<String>,
+    pub current_clip_depth: Option<f64>,
+    pub display_object_clip_hooks: Option<DisplayObjectClipHooks>,
+    pub pixel_ratio: Option<f64>,
+    pub render_alpha: Option<f64>,
+    pub render_blend_mode: Option<BlendMode>,
+    pub render_transform2_d: Option<Matrix>,
+    pub scene_graph_sync_policy: Option<SceneGraphSyncPolicy>,
+    pub round_pixels: Option<bool>,
+}
+impl PartialEq for FlightPartialRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct FlightPartialRecord3 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub material: Option<Material>,
+    pub material_data: Option<MaterialData>,
+}
+impl PartialEq for FlightPartialRecord3 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/render/src/renderProxyAdapter.ts:7 (sha256:530d65dcefc2ec1b91a7b5ba71ebfb9db7e1bff73c7f86fdaaac92f0bc17d6c2)
 #[derive(Clone)]
-struct ApplyRenderProxyAdapterRecord1 {
+struct ApplyRenderProxyAdapterRecord4 {
     __flight_identity: std::sync::Arc<()>,
     traverse_children: bool,
 }
-impl PartialEq for ApplyRenderProxyAdapterRecord1 {
+impl PartialEq for ApplyRenderProxyAdapterRecord4 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -25,7 +99,7 @@ impl PartialEq for ApplyRenderProxyAdapterRecord1 {
 pub fn apply_render_proxy_adapter(
     state: &RenderState,
     source: &Renderable,
-    data: &mut ApplyRenderProxyAdapterRecord1,
+    data: &mut ApplyRenderProxyAdapterRecord4,
 ) -> () {
     let render_adapter = get_render_state_runtime(state)
         .render_proxy_adapter_map
