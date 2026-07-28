@@ -2150,5 +2150,27 @@ describe('Rust emission', () => {
         typeImports: [],
       }),
     ).toThrow('typeof window.unknownCapability has no configured host-property tag');
+
+    const shadowedSource = ts.createSourceFile(
+      '/workspace/upstream/packages/application/src/shadowed-capability.ts',
+      `
+        export function supportsShadowedCapability(window: { unknownCapability: () => void }): boolean {
+          return typeof window.unknownCapability === 'function';
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const loweredShadowed = lowerTypeScriptSource(shadowedSource, '@flighthq/application', '/workspace');
+
+    expect(loweredShadowed.diagnostics).toEqual([]);
+    expect(() =>
+      emitRustModule({
+        declarations: loweredShadowed.declarations,
+        source: 'upstream/packages/application/src/shadowed-capability.ts',
+        typeImports: [],
+      }),
+    ).not.toThrow();
   });
 });

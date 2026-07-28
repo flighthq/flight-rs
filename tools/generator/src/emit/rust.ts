@@ -3690,17 +3690,7 @@ function emitUnary(expression: Extract<IrExpression, { kind: 'unary' }>, context
 
 function inferHostPropertyTypeofTag(expression: IrExpression, context: EmitContext): string | undefined {
   if (expression.kind !== 'property') return undefined;
-  const binding =
-    expression.binding ??
-    (expression.object.kind === 'identifier'
-      ? expression.object.name === 'window'
-        ? 'DomWindowBackend'
-        : expression.object.name === 'document'
-          ? 'DomDocumentBackend'
-          : expression.object.name === 'navigator'
-            ? 'DomNavigatorBackend'
-            : undefined
-      : undefined);
+  const binding = expression.binding;
   const receiver = resolveSemanticType(inferIrExpressionType(expression.object, context), context);
   if (!binding && receiver?.kind !== 'dynamic') return undefined;
   if (!binding) return undefined;

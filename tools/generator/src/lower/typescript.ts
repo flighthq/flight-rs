@@ -267,70 +267,6 @@ const webGpuDeviceMembers = new Set([
 const webGpuQueueMembers = new Set(['copyExternalImageToTexture', 'submit', 'writeBuffer', 'writeTexture']);
 const webGpuCanvasContextMembers = new Set(['configure', 'getCurrentTexture']);
 const webGpuLimitsMembers = new Set(['maxBindGroups', 'maxTextureDimension2D', 'minUniformBufferOffsetAlignment']);
-const domWindowMembers = new Set([
-  'addEventListener',
-  'alert',
-  'close',
-  'confirm',
-  'devicePixelRatio',
-  'focus',
-  'getScreenDetails',
-  'innerHeight',
-  'innerWidth',
-  'isSecureContext',
-  'localStorage',
-  'matchMedia',
-  'moveTo',
-  'open',
-  'prompt',
-  'removeEventListener',
-  'resizeTo',
-  'screen',
-  'screenX',
-  'screenY',
-  'showDirectoryPicker',
-  'showOpenFilePicker',
-  'showSaveFilePicker',
-  'visualViewport',
-]);
-const domDocumentMembers = new Set([
-  'addEventListener',
-  'body',
-  'createElement',
-  'createTextNode',
-  'documentElement',
-  'exitFullscreen',
-  'exitPointerLock',
-  'fonts',
-  'getElementById',
-  'hasFocus',
-  'head',
-  'hidden',
-  'pointerLockElement',
-  'querySelector',
-  'removeEventListener',
-  'title',
-]);
-const domNavigatorMembers = new Set([
-  'clipboard',
-  'connection',
-  'geolocation',
-  'getBattery',
-  'getGamepads',
-  'gpu',
-  'language',
-  'languages',
-  'maxTouchPoints',
-  'mediaDevices',
-  'mediaSession',
-  'permissions',
-  'platform',
-  'share',
-  'storage',
-  'vibrate',
-  'virtualKeyboard',
-  'wakeLock',
-]);
 
 export function lowerTypeScriptSource(
   sourceFile: ts.SourceFile,
@@ -1889,15 +1825,24 @@ function lowerExpression(node: ts.Expression, context: LoweringContext): IrExpre
         context.webGpuLimitsBindingNames,
         'limits',
       );
-    const objectIsDomWindow =
-      domWindowMembers.has(node.name.text) &&
-      isBoundGlobalRootExpression(node.expression, context, 'window', context.domWindowBindingNames);
-    const objectIsDomDocument =
-      domDocumentMembers.has(node.name.text) &&
-      isBoundGlobalRootExpression(node.expression, context, 'document', context.domDocumentBindingNames);
-    const objectIsDomNavigator =
-      domNavigatorMembers.has(node.name.text) &&
-      isBoundGlobalRootExpression(node.expression, context, 'navigator', context.domNavigatorBindingNames);
+    const objectIsDomWindow = isBoundGlobalRootExpression(
+      node.expression,
+      context,
+      'window',
+      context.domWindowBindingNames,
+    );
+    const objectIsDomDocument = isBoundGlobalRootExpression(
+      node.expression,
+      context,
+      'document',
+      context.domDocumentBindingNames,
+    );
+    const objectIsDomNavigator = isBoundGlobalRootExpression(
+      node.expression,
+      context,
+      'navigator',
+      context.domNavigatorBindingNames,
+    );
     return {
       binding: webGpuConstantNamespace
         ? 'WebGpuConstantsBackend'
