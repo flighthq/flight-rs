@@ -1,0 +1,45 @@
+hosts:
+  remote:
+    type: ssh
+    host: remote
+
+runtimeProfiles:
+  claude-sbx:
+    runtime: sbx
+    entrypoint: claude
+    requiredTools:
+      - claude
+  codex-sbx:
+    runtime: sbx
+    entrypoint: codex
+    requiredTools:
+      - codex
+
+defaults:
+  runtimeProfile: claude-sbx
+  tmux: true
+  hostAlias: remote
+
+roles:
+  review: {}
+  builder: {}
+  integration: {}
+
+services:
+  serve: quimby serve
+
+layouts:
+  default:
+    expr: ((review review2 review3) | (builder builder2 builder3 integration)):80 / (host $serve):20
+
+default: default
+
+presets:
+  default:
+    layout: default
+    agents:
+      review:
+        role: review
+      builder:
+        role: builder
+        runtimeProfile: codex-sbx
