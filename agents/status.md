@@ -9,3 +9,4 @@
 - `packages/surface-rs` and `flighthq-surface` are the selected cultivated wasm boundary; surface is the only planned standalone wasm package.
 - A cultivated `flighthq-host-winit` compile canary now links the generated application, lifecycle, input, keyboard, haptics, power, platform, device, and screen seams and installs their backends as one native bundle.
 - Node and assets now reach concrete Rust compilation instead of stopping at generic-constructor syntax. The remaining native-render frontier is log plus node/material/skeleton/render, followed by concrete winit event and renderer adapters.
+- `agents/generator-resume.md` is the durable resume playbook: it records the current matrix, generator invariants, validation loop, known traps, and acceptance criteria for passes 19–21.
