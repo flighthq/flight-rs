@@ -160,19 +160,19 @@ pub fn compute_mesh_geometry_flat_normals(out: &mut MeshGeometry, geometry: &Mes
         let mut t = 0.0_f64;
         while ((t + 2.0_f64) < index_count) {
             let i0 = if (indices).is_some() {
-                (indices.as_ref().unwrap()[t as usize] as f64)
+                (indices.as_ref().unwrap()[t as usize] as f64) as u32
             } else {
-                t
+                (t) as u32
             };
             let i1 = if (indices).is_some() {
-                (indices.as_ref().unwrap()[(t + 1.0_f64) as usize] as f64)
+                (indices.as_ref().unwrap()[(t + 1.0_f64) as usize] as f64) as u32
             } else {
-                (t + 1.0_f64)
+                (t + 1.0_f64) as u32
             };
             let i2 = if (indices).is_some() {
-                (indices.as_ref().unwrap()[(t + 2.0_f64) as usize] as f64)
+                (indices.as_ref().unwrap()[(t + 2.0_f64) as usize] as f64) as u32
             } else {
-                (t + 2.0_f64)
+                (t + 2.0_f64) as u32
             };
             let p0 = ((i0 * floats_per_vertex) + POSITION_OFFSET);
             let p1 = ((i1 * floats_per_vertex) + POSITION_OFFSET);
@@ -244,19 +244,19 @@ pub fn compute_mesh_geometry_normals(out: &mut MeshGeometry, geometry: &MeshGeom
         let mut t = 0.0_f64;
         while ((t + 2.0_f64) < index_count) {
             let i0 = if (indices).is_some() {
-                (indices.as_ref().unwrap()[t as usize] as f64)
+                (indices.as_ref().unwrap()[t as usize] as f64) as u32
             } else {
-                t
+                (t) as u32
             };
             let i1 = if (indices).is_some() {
-                (indices.as_ref().unwrap()[(t + 1.0_f64) as usize] as f64)
+                (indices.as_ref().unwrap()[(t + 1.0_f64) as usize] as f64) as u32
             } else {
-                (t + 1.0_f64)
+                (t + 1.0_f64) as u32
             };
             let i2 = if (indices).is_some() {
-                (indices.as_ref().unwrap()[(t + 2.0_f64) as usize] as f64)
+                (indices.as_ref().unwrap()[(t + 2.0_f64) as usize] as f64) as u32
             } else {
-                (t + 2.0_f64)
+                (t + 2.0_f64) as u32
             };
             let b0 = ((i0 * floats_per_vertex) + POSITION_OFFSET);
             let b1 = ((i1 * floats_per_vertex) + POSITION_OFFSET);
@@ -335,19 +335,19 @@ pub fn compute_mesh_geometry_tangents(out: &mut MeshGeometry, geometry: &MeshGeo
         let mut t = 0.0_f64;
         while ((t + 2.0_f64) < index_count) {
             let i0 = if (indices).is_some() {
-                (indices.as_ref().unwrap()[t as usize] as f64)
+                (indices.as_ref().unwrap()[t as usize] as f64) as u32
             } else {
-                t
+                (t) as u32
             };
             let i1 = if (indices).is_some() {
-                (indices.as_ref().unwrap()[(t + 1.0_f64) as usize] as f64)
+                (indices.as_ref().unwrap()[(t + 1.0_f64) as usize] as f64) as u32
             } else {
-                (t + 1.0_f64)
+                (t + 1.0_f64) as u32
             };
             let i2 = if (indices).is_some() {
-                (indices.as_ref().unwrap()[(t + 2.0_f64) as usize] as f64)
+                (indices.as_ref().unwrap()[(t + 2.0_f64) as usize] as f64) as u32
             } else {
-                (t + 2.0_f64)
+                (t + 2.0_f64) as u32
             };
             let p0 = ((i0 * floats_per_vertex) + POSITION_OFFSET);
             let p1 = ((i1 * floats_per_vertex) + POSITION_OFFSET);

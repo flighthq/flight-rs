@@ -48,5 +48,5 @@ pub fn merge_text_format(base: &TextFormat, override_: &TextFormat) -> TextForma
                 .expect("TypeScript Record key was absent") = value;
         }
     }
-    return (result).clone();
+    return result;
 }

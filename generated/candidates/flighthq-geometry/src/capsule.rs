@@ -129,7 +129,11 @@ pub fn intersect_ray3_d_capsule(ray: &Ray3DLike, capsule: &CapsuleLike) -> f64 {
     )
         as Box<dyn FnMut(f64, f64, f64) -> f64 + Send + 'static>));
     if (ab_len2 < 1e-20_f64) {
-        return ((sphere_hit).clone()).lock().unwrap()(ax, ay, az);
+        return {
+            let __flight_callback = (sphere_hit).clone();
+            let __flight_result = __flight_callback.lock().unwrap()(ax, ay, az);
+            __flight_result
+        };
     }
     let mut t_best = (-1.0_f64);
     let inv_ab2 = (1.0_f64 / ab_len2);
@@ -153,14 +157,14 @@ pub fn intersect_ray3_d_capsule(ray: &Ray3DLike, capsule: &CapsuleLike) -> f64 {
             let sqrt_d = (disc).sqrt();
             let t1 = (((-qb) - sqrt_d) / qa);
             let s1 = ((aoab + (t1 * dab)) * inv_ab2);
-            if (((t1 >= 0.0_f64) && (s1 >= 0.0_f64)) && (s1 <= 1.0_f64)) {
+            if ((t1 >= 0.0_f64) && (s1 >= 0.0_f64)) && (s1 <= 1.0_f64) {
                 t_best = t1;
             } else {
                 if (t1 < 0.0_f64) {
                     let t2 = (((-qb) + sqrt_d) / qa);
                     if (t2 >= 0.0_f64) {
                         let s0 = (aoab * inv_ab2);
-                        if ((s0 >= 0.0_f64) && (s0 <= 1.0_f64)) {
+                        if (s0 >= 0.0_f64) && (s0 <= 1.0_f64) {
                             return 0.0_f64;
                         }
                     }
@@ -168,12 +172,20 @@ pub fn intersect_ray3_d_capsule(ray: &Ray3DLike, capsule: &CapsuleLike) -> f64 {
             }
         }
     }
-    let t_a = ((sphere_hit).clone()).lock().unwrap()(ax, ay, az);
-    if ((t_a >= 0.0_f64) && ((t_best < 0.0_f64) || (t_a < t_best))) {
+    let t_a = {
+        let __flight_callback = (sphere_hit).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(ax, ay, az);
+        __flight_result
+    };
+    if (t_a >= 0.0_f64) && ((t_best < 0.0_f64) || (t_a < t_best)) {
         t_best = t_a;
     }
-    let t_b = ((sphere_hit).clone()).lock().unwrap()(bx, by, bz);
-    if ((t_b >= 0.0_f64) && ((t_best < 0.0_f64) || (t_b < t_best))) {
+    let t_b = {
+        let __flight_callback = (sphere_hit).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(bx, by, bz);
+        __flight_result
+    };
+    if (t_b >= 0.0_f64) && ((t_best < 0.0_f64) || (t_b < t_best)) {
         t_best = t_b;
     }
     return t_best;
@@ -181,7 +193,7 @@ pub fn intersect_ray3_d_capsule(ray: &Ray3DLike, capsule: &CapsuleLike) -> f64 {
 
 // Source: upstream/packages/geometry/src/capsule.ts:177 (sha256:21afe3a2c7f68e65b86a18cb5a6ad6798467795587a5c956f2737aae533760de)
 pub fn is_capsule_intersecting_capsule(a: &CapsuleLike, b: &CapsuleLike) -> bool {
-    if ((a.radius < 0.0_f64) || (b.radius < 0.0_f64)) {
+    if (a.radius < 0.0_f64) || (b.radius < 0.0_f64) {
         return false;
     }
     let dist = segment_to_segment_distance_sq(
@@ -194,7 +206,7 @@ pub fn is_capsule_intersecting_capsule(a: &CapsuleLike, b: &CapsuleLike) -> bool
 
 // Source: upstream/packages/geometry/src/capsule.ts:201 (sha256:91dd82175d4bb57b0bff839f0cc90adb669da2c946659c33f832f3f437fac390)
 pub fn is_capsule_intersecting_sphere(capsule: &CapsuleLike, sphere: &BoundingSphereLike) -> bool {
-    if ((capsule.radius < 0.0_f64) || (sphere.radius < 0.0_f64)) {
+    if (capsule.radius < 0.0_f64) || (sphere.radius < 0.0_f64) {
         return false;
     }
     let dist2 = point_to_segment_distance_sq(
@@ -292,7 +304,7 @@ fn segment_to_segment_distance_sq(
     let f = (((d2x * rx) + (d2y * ry)) + (d2z * rz));
     let mut s: f64;
     let mut t: f64;
-    if ((a < 1e-20_f64) && (e < 1e-20_f64)) {
+    if (a < 1e-20_f64) && (e < 1e-20_f64) {
         s = 0.0_f64;
         t = 0.0_f64;
     } else {

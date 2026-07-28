@@ -44,7 +44,7 @@ pub fn acquire_clip_region() -> ClipRegion {
         region.as_mut().unwrap().contours = None;
         region.as_mut().unwrap().winding = "nonZero".to_owned();
         region.as_mut().unwrap().version = 0.0_f64;
-        return (region.as_mut().unwrap()).clone();
+        return region.as_mut().unwrap();
     }
     return make_empty_clip_region();
 }
@@ -81,11 +81,13 @@ pub fn clone_clip_region(clip: &ClipRegion) -> ClipRegion {
     let contours = if ((clip.contours).clone()).is_none() {
         None
     } else {
-        ((clip.contours).clone())
-            .iter()
-            .cloned()
-            .map(|c: Vec<f64>| -> crate::OpaqueHostValue { (c).clone() })
-            .collect()
+        Some(
+            ((clip.contours).clone())
+                .iter()
+                .cloned()
+                .map(|c: Vec<f64>| -> crate::OpaqueHostValue { (c).clone() })
+                .collect(),
+        )
     };
     return ClipRegion {
         __flight_identity: std::sync::Arc::new(()),
@@ -102,15 +104,17 @@ pub fn copy_clip_region(out: &mut ClipRegion, source: &ClipRegion) -> () {
         return;
     }
     copy_rectangle(&mut out.rect, &source.rect);
-    out.contours = Some(if ((source.contours).clone()).is_none() {
+    out.contours = if ((source.contours).clone()).is_none() {
         None
     } else {
-        ((source.contours).clone())
-            .iter()
-            .cloned()
-            .map(|c: Vec<f64>| -> crate::OpaqueHostValue { (c).clone() })
-            .collect()
-    });
+        Some(
+            ((source.contours).clone())
+                .iter()
+                .cloned()
+                .map(|c: Vec<f64>| -> crate::OpaqueHostValue { (c).clone() })
+                .collect(),
+        )
+    };
     out.winding = (source.winding).clone();
     out.version =
         (__flight_js_to_u32((out.version + 1.0_f64)) >> (__flight_js_to_u32(0.0_f64) & 31)) as f64;
@@ -143,7 +147,7 @@ pub fn create_clip_region_from_contours(
         .collect();
     return ClipRegion {
         __flight_identity: std::sync::Arc::new(()),
-        contours: owned,
+        contours: Some(owned),
         rect: (rect).clone(),
         version: 0.0_f64,
         winding: (winding).clone(),
@@ -175,7 +179,7 @@ pub fn create_clip_region_from_path(path: &Path, tolerance: Option<f64>) -> Clip
     set_rectangle_to_contours_bounds(&mut rect, &contours);
     return ClipRegion {
         __flight_identity: std::sync::Arc::new(()),
-        contours: contours,
+        contours: Some((contours).clone()),
         rect: (rect).clone(),
         version: 0.0_f64,
         winding: (path.winding).clone(),
@@ -223,15 +227,15 @@ pub fn equals_clip_region(a: &ClipRegion, b: &ClipRegion) -> bool {
     if ((a.winding).clone() != (b.winding).clone()) {
         return false;
     }
-    if ((((a.rect.x != b.rect.x) || (a.rect.y != b.rect.y)) || (a.rect.width != b.rect.width))
-        || (a.rect.height != b.rect.height))
+    if (((a.rect.x != b.rect.x) || (a.rect.y != b.rect.y)) || (a.rect.width != b.rect.width))
+        || (a.rect.height != b.rect.height)
     {
         return false;
     }
-    if (((a.contours).clone()).is_none() && ((b.contours).clone()).is_none()) {
+    if (((a.contours).clone()).is_none()) && (((b.contours).clone()).is_none()) {
         return true;
     }
-    if (((a.contours).clone()).is_none() || ((b.contours).clone()).is_none()) {
+    if (((a.contours).clone()).is_none()) || (((b.contours).clone()).is_none()) {
         return false;
     }
     let ac = (a.contours).clone();
@@ -294,7 +298,7 @@ pub fn intersect_clip_regions(out: &mut ClipRegion, a: &ClipRegion, b: &ClipRegi
     let y0 = (ay).max(by);
     let x1 = (ax + aw).min((bx + bw));
     let y1 = (ay + ah).min((by + bh));
-    if ((x1 <= x0) || (y1 <= y0)) {
+    if (x1 <= x0) || (y1 <= y0) {
         out.rect.x = 0.0_f64;
         out.rect.y = 0.0_f64;
         out.rect.width = 0.0_f64;
@@ -309,11 +313,11 @@ pub fn intersect_clip_regions(out: &mut ClipRegion, a: &ClipRegion, b: &ClipRegi
     out.rect.y = y0;
     out.rect.width = (x1 - x0);
     out.rect.height = (y1 - y0);
-    if ((a_contours).is_none() && (b_contours).is_none()) {
+    if ((a_contours).is_none()) && ((b_contours).is_none()) {
         out.contours = None;
         out.winding = "nonZero".to_owned();
     } else {
-        if ((a_contours).is_some() && (b_contours).is_none()) {
+        if ((a_contours).is_some()) && ((b_contours).is_none()) {
             out.contours = Some(
                 (a_contours)
                     .iter()
@@ -323,7 +327,7 @@ pub fn intersect_clip_regions(out: &mut ClipRegion, a: &ClipRegion, b: &ClipRegi
             );
             out.winding = (a_winding).clone();
         } else {
-            if ((a_contours).is_none() && (b_contours).is_some()) {
+            if ((a_contours).is_none()) && ((b_contours).is_some()) {
                 out.contours = Some(
                     (b_contours)
                         .iter()
@@ -369,8 +373,8 @@ pub fn is_clip_region_empty(clip: &ClipRegion) -> bool {
     if is_empty_rectangle(&clip.rect) {
         return true;
     }
-    if (((clip.contours).clone()).is_some()
-        && ((clip.contours.as_ref().unwrap().len() as f64) == 0.0_f64))
+    if (((clip.contours).clone()).is_some())
+        && ((clip.contours.as_ref().unwrap().len() as f64) == 0.0_f64)
     {
         return true;
     }
@@ -394,8 +398,8 @@ pub fn normalize_clip_region(out: &mut ClipRegion, clip: &ClipRegion) -> () {
             >> (__flight_js_to_u32(0.0_f64) & 31)) as f64;
         return;
     }
-    if (((in_contours.as_ref().unwrap().len() as f64) == 1.0_f64)
-        && ((in_contours.as_ref().unwrap()[0.0_f64 as usize].len() as f64) == 8.0_f64))
+    if ((in_contours.as_ref().unwrap().len() as f64) == 1.0_f64)
+        && ((in_contours.as_ref().unwrap()[0.0_f64 as usize].len() as f64) == 8.0_f64)
     {
         let c = in_contours.as_ref().unwrap()[0.0_f64 as usize].clone();
         let e = NORMALIZE_EPSILON;
@@ -432,11 +436,11 @@ pub fn normalize_clip_region(out: &mut ClipRegion, clip: &ClipRegion) -> () {
             while (i < 8.0_f64) {
                 let cx = c[i as usize].clone();
                 let cy = c[(i + 1.0_f64) as usize].clone();
-                if (!(((cx - min_x).abs() <= e) || ((cx - max_x).abs() <= e))) {
+                if (!((cx - min_x).abs() <= e) || ((cx - max_x).abs() <= e)) {
                     is_axis_aligned = false;
                     break;
                 }
-                if (!(((cy - min_y).abs() <= e) || ((cy - max_y).abs() <= e))) {
+                if (!((cy - min_y).abs() <= e) || ((cy - max_y).abs() <= e)) {
                     is_axis_aligned = false;
                     break;
                 }
@@ -499,7 +503,7 @@ pub fn transform_clip_region(out: &mut ClipRegion, clip: &ClipRegion, matrix: &M
     let in_contours = (clip.contours).clone();
     let in_winding = (clip.winding).clone();
     if (in_contours).is_none() {
-        let axis_aligned = ((mb == 0.0_f64) && (mc == 0.0_f64));
+        let axis_aligned = (mb == 0.0_f64) && (mc == 0.0_f64);
         if axis_aligned {
             matrix_transform_rectangle(&mut out.rect, matrix, &clip.rect);
             out.contours = None;
@@ -589,11 +593,11 @@ pub fn union_clip_regions(out: &mut ClipRegion, a: &ClipRegion, b: &ClipRegion) 
     let a_winding = (a.winding).clone();
     let b_winding = (b.winding).clone();
     merge_rectangle(&mut out.rect, &a.rect, &b.rect);
-    if ((a_contours).is_none() && (b_contours).is_none()) {
+    if ((a_contours).is_none()) && ((b_contours).is_none()) {
         out.contours = None;
         out.winding = "nonZero".to_owned();
     } else {
-        if ((a_contours).is_some() && (b_contours).is_none()) {
+        if ((a_contours).is_some()) && ((b_contours).is_none()) {
             out.contours = Some(
                 (a_contours)
                     .iter()
@@ -603,7 +607,7 @@ pub fn union_clip_regions(out: &mut ClipRegion, a: &ClipRegion, b: &ClipRegion) 
             );
             out.winding = (a_winding).clone();
         } else {
-            if ((a_contours).is_none() && (b_contours).is_some()) {
+            if ((a_contours).is_none()) && ((b_contours).is_some()) {
                 out.contours = Some(
                     (b_contours)
                         .iter()

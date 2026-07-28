@@ -40,6 +40,6 @@ pub fn create_environment(options: Option<EnvironmentOptions>) -> Environment {
             .as_ref()
             .and_then(|value| (value.environment).clone()),
         intensity: (options.as_ref().and_then(|value| value.intensity)).unwrap_or(1.0_f64),
-        kind: environment_kind_constant,
+        kind: (environment_kind_constant).to_owned(),
     }));
 }

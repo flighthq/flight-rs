@@ -78,9 +78,8 @@ pub fn create_video_texture(
 // Source: upstream/packages/texture/src/videoTexture.ts:67 (sha256:d7ca0d325924a689248b66466c21f8c497f33263db56a7ba20d5146992883330)
 pub fn get_video_texture_height(video_texture: &VideoTextureLike) -> f64 {
     let element = (video_texture.source.element).clone();
-    return if ((element).is_some() && ((element.as_ref().unwrap().video_height).clone() > 0.0_f64))
-    {
-        (element.as_ref().unwrap().video_height).clone()
+    return if ((element).is_some()) && (crate::host_value::<f64>("host.videoHeight") > 0.0_f64) {
+        crate::host_value::<f64>("host.videoHeight")
     } else {
         (-1.0_f64)
     };
@@ -121,8 +120,8 @@ pub fn get_video_texture_uv_matrix(out: &mut Matrix3Like, video_texture: &VideoT
 // Source: upstream/packages/texture/src/videoTexture.ts:105 (sha256:2c9bd5b7b7584330daa490cbcfa38b330e0b614638292370c6dc566ae2cb0b27)
 pub fn get_video_texture_width(video_texture: &VideoTextureLike) -> f64 {
     let element = (video_texture.source.element).clone();
-    return if ((element).is_some() && ((element.as_ref().unwrap().video_width).clone() > 0.0_f64)) {
-        (element.as_ref().unwrap().video_width).clone()
+    return if ((element).is_some()) && (crate::host_value::<f64>("host.videoWidth") > 0.0_f64) {
+        crate::host_value::<f64>("host.videoWidth")
     } else {
         (-1.0_f64)
     };
@@ -131,10 +130,10 @@ pub fn get_video_texture_width(video_texture: &VideoTextureLike) -> f64 {
 // Source: upstream/packages/texture/src/videoTexture.ts:113 (sha256:0333f750509401501bdfcd6aabc2ec720cc79bab1098229c56b0e702aa07adc5)
 pub fn is_video_texture_frame_ready(video_texture: &VideoTextureLike) -> bool {
     let element = (video_texture.source.element).clone();
-    return ((((element).is_some()
-        && ((element.as_ref().unwrap().ready_state).clone() >= HAVE_CURRENT_DATA))
-        && ((element.as_ref().unwrap().video_width).clone() > 0.0_f64))
-        && ((element.as_ref().unwrap().video_height).clone() > 0.0_f64));
+    return ((((element).is_some())
+        && (crate::host_value::<f64>("host.readyState") >= HAVE_CURRENT_DATA))
+        && (crate::host_value::<f64>("host.videoWidth") > 0.0_f64))
+        && (crate::host_value::<f64>("host.videoHeight") > 0.0_f64);
 }
 
 // Source: upstream/packages/texture/src/videoTexture.ts:122 (sha256:d81bf10cf3b0357b2f7c323fc95ea9fb9ccbb3f353438e7ab16e99819ba6a9b3)

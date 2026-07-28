@@ -105,20 +105,20 @@ pub fn divide_vector4(out: &mut Vector4Like, source: &Vector4Like, divisor: &Vec
 
 // Source: upstream/packages/geometry/src/vector4.ts:102 (sha256:a946b6736f0922e8a43277db83b2f615e6557d7bed4f0f8e9987a96a62bba13f)
 pub fn equals_vector4(a: Option<Vector4Like>, b: Option<Vector4Like>) -> bool {
-    if ((a).is_none() || (b).is_none()) {
+    if ((a).is_none()) || ((b).is_none()) {
         return false;
     }
-    return ((((a.as_ref().unwrap().x == b.as_ref().unwrap().x)
+    return (((a.as_ref().unwrap().x == b.as_ref().unwrap().x)
         && (a.as_ref().unwrap().y == b.as_ref().unwrap().y))
         && (a.as_ref().unwrap().z == b.as_ref().unwrap().z))
-        && (a.as_ref().unwrap().w == b.as_ref().unwrap().w));
+        && (a.as_ref().unwrap().w == b.as_ref().unwrap().w);
 }
 
 // Source: upstream/packages/geometry/src/vector4.ts:115 (sha256:4e1c2aa604d686cc5e2d5adc7055472c26fed3d9547cd06c7ee786d7203d2638)
 pub fn get_vector4_angle_between(a: &Vector4Like, b: &Vector4Like) -> f64 {
     let la = get_vector4_length(a);
     let lb = get_vector4_length(b);
-    if ((la == 0.0_f64) || (lb == 0.0_f64)) {
+    if (la == 0.0_f64) || (lb == 0.0_f64) {
         return f64::NAN;
     }
     let _dot = (get_vector4_dot(a, b) / (la * lb));
@@ -201,9 +201,9 @@ pub fn multiply_vector4(out: &mut Vector4Like, a: &Vector4Like, b: &Vector4Like)
 // Source: upstream/packages/geometry/src/vector4.ts:247 (sha256:63f5d9d5746929775ccff51ec9c00bd6a698275c5d0898fbddd8ef497bc0c21d)
 pub fn near_equals_vector4(a: &Vector4Like, b: &Vector4Like, tolerance: Option<f64>) -> bool {
     let tolerance = tolerance.unwrap_or(0.000001_f64);
-    return (((((a.x - b.x).abs() < tolerance) && ((a.y - b.y).abs() < tolerance))
+    return ((((a.x - b.x).abs() < tolerance) && ((a.y - b.y).abs() < tolerance))
         && ((a.z - b.z).abs() < tolerance))
-        && ((a.w - b.w).abs() < tolerance));
+        && ((a.w - b.w).abs() < tolerance);
 }
 
 // Source: upstream/packages/geometry/src/vector4.ts:265 (sha256:f41123c0f8678870845c03e597ee9bc8ae0ba95b5f00392a1f0ce1cc7f539fd0)

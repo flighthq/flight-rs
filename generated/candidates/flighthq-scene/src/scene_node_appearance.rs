@@ -31,9 +31,9 @@ pub fn ensure_scene_node_world_alpha(source: &SceneNode) -> () {
         parent_world_appearance_id = parent_runtime.world_appearance_id;
     }
     let appearance_id = get_node_appearance_revision(source);
-    if (((runtime.world_alpha).is_none()
+    if (((runtime.world_alpha).is_none())
         || (runtime.world_alpha_using_appearance_id != appearance_id))
-        || (runtime.world_alpha_using_parent_appearance_id != parent_world_appearance_id))
+        || (runtime.world_alpha_using_parent_appearance_id != parent_world_appearance_id)
     {
         runtime.world_alpha = Some((parent_world_alpha * source.alpha));
         runtime.world_alpha_using_appearance_id = appearance_id;

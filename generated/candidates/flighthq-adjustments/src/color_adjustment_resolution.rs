@@ -20,7 +20,7 @@ pub const COLOR_ADJUSTMENT_CHANNEL_MIXING: f64 = 2.0_f64;
 
 // Source: upstream/packages/adjustments/src/colorAdjustmentResolution.ts:14 (sha256:b5c2b0957af3de020edc081efdcf8b5ea62997e1c7674f942ca104c049022b55)
 pub fn is_affine_color_matrix(matrix: &Vec<f64>) -> bool {
-    return ((((((((((((matrix[1.0_f64 as usize].clone() == 0.0_f64)
+    return (((((((((((matrix[1.0_f64 as usize].clone() == 0.0_f64)
         && (matrix[2.0_f64 as usize].clone() == 0.0_f64))
         && (matrix[3.0_f64 as usize].clone() == 0.0_f64))
         && (matrix[5.0_f64 as usize].clone() == 0.0_f64))
@@ -31,7 +31,7 @@ pub fn is_affine_color_matrix(matrix: &Vec<f64>) -> bool {
         && (matrix[13.0_f64 as usize].clone() == 0.0_f64))
         && (matrix[15.0_f64 as usize].clone() == 0.0_f64))
         && (matrix[16.0_f64 as usize].clone() == 0.0_f64))
-        && (matrix[17.0_f64 as usize].clone() == 0.0_f64));
+        && (matrix[17.0_f64 as usize].clone() == 0.0_f64);
 }
 
 // Source: upstream/packages/adjustments/src/colorAdjustmentResolution.ts:43 (sha256:3fb78491e79650aebe321a41d474a8e227b4eb8c6065d805d3687fee0c1b35fc)
@@ -39,7 +39,7 @@ pub fn resolve_color_adjustments_color_transform(
     adjustments: Option<Vec<Adjustment>>,
     out: &mut ColorTransform,
 ) -> f64 {
-    if ((adjustments).is_none() || ((adjustments.as_ref().unwrap().len() as f64) == 0.0_f64)) {
+    if ((adjustments).is_none()) || ((adjustments.as_ref().unwrap().len() as f64) == 0.0_f64) {
         return COLOR_ADJUSTMENT_NONE;
     }
     let mut matrices: Vec<Vec<f64>> = vec![];
@@ -68,7 +68,7 @@ pub fn resolve_color_adjustments_color_transform(
     out.green_offset = fused[9.0_f64 as usize].clone();
     out.blue_offset = fused[14.0_f64 as usize].clone();
     out.alpha_offset = fused[19.0_f64 as usize].clone();
-    return if (inlineable && is_affine_color_matrix(&fused)) {
+    return if (inlineable) && (is_affine_color_matrix(&fused)) {
         COLOR_ADJUSTMENT_AFFINE
     } else {
         COLOR_ADJUSTMENT_CHANNEL_MIXING

@@ -64,7 +64,7 @@ pub fn create_vector2(x: Option<f64>, y: Option<f64>) -> Vector2 {
 pub fn create_vector2_from_polar(length: f64, angle: f64) -> Vector2 {
     let mut out = create_vector2(None, None);
     set_vector2_from_polar(&mut out, length, angle);
-    return (out).clone();
+    return out;
 }
 
 // Source: upstream/packages/geometry/src/vector2.ts:69 (sha256:39e72f35c72cd4816cc3b905cbdb3505c595a563855421bf3041303e886df321)
@@ -79,19 +79,19 @@ pub fn divide_vector2(out: &mut Vector2Like, source: &Vector2Like, divisor: &Vec
 
 // Source: upstream/packages/geometry/src/vector2.ts:78 (sha256:4adbf64e66f4408ed79128b453a4822c134d6c286abac5f00e9f4eb7d2c18db4)
 pub fn equals_vector2(a: Option<Vector2Like>, b: Option<Vector2Like>) -> bool {
-    if ((a).is_none() || (b).is_none()) {
+    if ((a).is_none()) || ((b).is_none()) {
         return false;
     }
-    return ((a == b)
+    return (a == b)
         || ((a.as_ref().unwrap().x == b.as_ref().unwrap().x)
-            && (a.as_ref().unwrap().y == b.as_ref().unwrap().y)));
+            && (a.as_ref().unwrap().y == b.as_ref().unwrap().y));
 }
 
 // Source: upstream/packages/geometry/src/vector2.ts:91 (sha256:0df84bc722d03b719a934358655744e55915787b161ee1aca2469341e4ae03b1)
 pub fn get_vector2_angle_between(a: &Vector2Like, b: &Vector2Like) -> f64 {
     let la = get_vector2_length(a);
     let lb = get_vector2_length(b);
-    if ((la == 0.0_f64) || (lb == 0.0_f64)) {
+    if (la == 0.0_f64) || (lb == 0.0_f64) {
         return f64::NAN;
     }
     let _dot = (get_vector2_dot(a, b) / (la * lb));
@@ -154,7 +154,7 @@ pub fn multiply_vector2(out: &mut Vector2Like, a: &Vector2Like, b: &Vector2Like)
 // Source: upstream/packages/geometry/src/vector2.ts:188 (sha256:c58d535fe2785827d73fab7ec370d7aa03ffe2132d6f1e737dc70b652a639974)
 pub fn near_equals_vector2(a: &Vector2Like, b: &Vector2Like, tolerance: Option<f64>) -> bool {
     let tolerance = tolerance.unwrap_or(0.000001_f64);
-    return (((a.x - b.x).abs() < tolerance) && ((a.y - b.y).abs() < tolerance));
+    return ((a.x - b.x).abs() < tolerance) && ((a.y - b.y).abs() < tolerance);
 }
 
 // Source: upstream/packages/geometry/src/vector2.ts:201 (sha256:75466adb581b30681d3c28eaf2953da23ffdd14a355b9a62292bea722b2031f7)

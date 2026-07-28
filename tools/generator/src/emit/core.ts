@@ -15,7 +15,7 @@ import { sourcePathToImplementationModule, sourcePathToRustModule } from '../ana
 import { lowerTypeScriptSource } from '../lower/typescript.ts';
 import type { PackageInventory, UpstreamInventory } from '../model/inventory.ts';
 import type { IrFunctionDeclaration, IrType, LoweringDiagnostic } from '../model/ir.ts';
-import { RustEmissionError, emitRustModule, type RustImport } from './rust.ts';
+import { RustEmissionError, emitRustModule, isNumericNamespaceInitializer, type RustImport } from './rust.ts';
 import { stableJson, writeOrCheck } from './reports.ts';
 
 const CARGO_DIAGNOSTIC_BUFFER_BYTES = 64 * 1024 * 1024;
@@ -1448,17 +1448,14 @@ function classifyImportedRustBinding(
     ) {
       return 'function';
     }
-    if (
-      declaration?.initializer &&
-      ts.isObjectLiteralExpression(declaration.initializer) &&
-      declaration.initializer.properties.length > 0 &&
-      declaration.initializer.properties.every(
-        (property) =>
-          ts.isPropertyAssignment(property) &&
-          (ts.isNumericLiteral(property.initializer) ||
-            (ts.isPrefixUnaryExpression(property.initializer) && ts.isNumericLiteral(property.initializer.operand))),
-      )
-    ) {
+    const loweredDeclaration = declaration
+      ? lowerTypeScriptFile(
+          source,
+          specifier.startsWith('@flighthq/') ? specifier : '@flighthq/internal',
+          workspaceDirectory,
+        ).declarations.find((item) => item.kind === 'variable' && item.name === name)
+      : undefined;
+    if (loweredDeclaration?.kind === 'variable' && isNumericNamespaceInitializer(loweredDeclaration.initializer)) {
       return 'type';
     }
     return 'constant';
@@ -1523,15 +1520,7 @@ function collectImportedSemanticTypes(sourceFile: ts.SourceFile, workspaceDirect
             }
             if (
               sibling.kind === 'enum' ||
-              (sibling.kind === 'variable' &&
-                sibling.initializer?.kind === 'object' &&
-                sibling.initializer.properties.length > 0 &&
-                sibling.initializer.properties.every(
-                  (property) =>
-                    property.kind === 'property' &&
-                    property.value.kind === 'literal' &&
-                    typeof property.value.value === 'number',
-                ))
+              (sibling.kind === 'variable' && isNumericNamespaceInitializer(sibling.initializer))
             ) {
               enumNames.add(sibling.name);
             }

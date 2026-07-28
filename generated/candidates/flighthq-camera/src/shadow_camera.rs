@@ -36,12 +36,12 @@ pub fn configure_directional_shadow_camera(
     let dy = (light_direction.y / dl);
     let dz = (light_direction.z / dl);
     let distance = (radius * 2.0_f64);
-    _eye::x = (cx - (dx * distance));
-    _eye::y = (cy - (dy * distance));
-    _eye::z = (cz - (dz * distance));
-    _target::x = cx;
-    _target::y = cy;
-    _target::z = cz;
+    (*_EYE.lock().unwrap()).x = (cx - (dx * distance));
+    (*_EYE.lock().unwrap()).y = (cy - (dy * distance));
+    (*_EYE.lock().unwrap()).z = (cz - (dz * distance));
+    (*_TARGET.lock().unwrap()).x = cx;
+    (*_TARGET.lock().unwrap()).y = cy;
+    (*_TARGET.lock().unwrap()).z = cz;
     let up = if ((dy).abs() > 0.99_f64) {
         ((*_UP_Z).clone()).clone()
     } else {
@@ -63,20 +63,25 @@ pub fn configure_directional_shadow_camera(
 }
 
 // Source: upstream/packages/camera/src/shadowCamera.ts:50 (sha256:f905567836d6d1525a8a8a4c8f583b89fe0b92ac550f2ea16e2ae37619f7b39e)
-struct _eye;
-impl _eye {
-    pub const x: f64 = 0.0_f64;
-    pub const y: f64 = 0.0_f64;
-    pub const z: f64 = 0.0_f64;
-}
+static _EYE: std::sync::LazyLock<std::sync::Mutex<Vector3Like>> = std::sync::LazyLock::new(|| {
+    std::sync::Mutex::new(Vector3Like {
+        __flight_identity: std::sync::Arc::new(()),
+        x: 0.0_f64,
+        y: 0.0_f64,
+        z: 0.0_f64,
+    })
+});
 
 // Source: upstream/packages/camera/src/shadowCamera.ts:51 (sha256:08ea600988417111f59dbabd52f237be39d8058cf35921fdea2f739efe83cc41)
-struct _target;
-impl _target {
-    pub const x: f64 = 0.0_f64;
-    pub const y: f64 = 0.0_f64;
-    pub const z: f64 = 0.0_f64;
-}
+static _TARGET: std::sync::LazyLock<std::sync::Mutex<Vector3Like>> =
+    std::sync::LazyLock::new(|| {
+        std::sync::Mutex::new(Vector3Like {
+            __flight_identity: std::sync::Arc::new(()),
+            x: 0.0_f64,
+            y: 0.0_f64,
+            z: 0.0_f64,
+        })
+    });
 
 // Source: upstream/packages/camera/src/shadowCamera.ts:52 (sha256:9d8d483e494babc422e1a78566746f1abcff2c7c5f464f53116565950a0f3dde)
 struct _upY;

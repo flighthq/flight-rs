@@ -19,6 +19,7 @@ pub fn create_glyph_source_from_glyph_atlas(mut atlas: GlyphAtlas) -> GlyphSourc
         get_glyph_atlas_image: std::sync::Arc::new(std::sync::Mutex::new(Box::new({
             let mut atlas = atlas.clone();
             move |page: Option<f64>| -> Option<ImageResource> {
+                let page = page.unwrap_or(0.0_f64);
                 return if (page == 0.0_f64) {
                     Some(get_glyph_atlas_surface(&atlas))
                 } else {
@@ -26,7 +27,7 @@ pub fn create_glyph_source_from_glyph_atlas(mut atlas: GlyphAtlas) -> GlyphSourc
                 };
             }
         })
-            as Box<dyn FnMut(f64) -> Option<ImageResource> + Send + 'static>)),
+            as Box<dyn FnMut(Option<f64>) -> Option<ImageResource> + Send + 'static>)),
         get_glyph_entry: std::sync::Arc::new(std::sync::Mutex::new(Box::new({
             let mut atlas = atlas.clone();
             move |codepoint: f64| -> Option<GlyphEntry> {

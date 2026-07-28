@@ -239,7 +239,7 @@ fn get_referenced_joints(joints: &Vec<f32>, weights: &Vec<f32>, joint_count: f64
             }
             let j = (__flight_js_to_i32((joints[k as usize] as f64)) | __flight_js_to_i32(0.0_f64))
                 as f64;
-            if ((j >= 0.0_f64) && (j < joint_count)) {
+            if (j >= 0.0_f64) && (j < joint_count) {
                 referenced[j as usize] = (1.0_f64) as u8;
             }
             {
@@ -248,5 +248,5 @@ fn get_referenced_joints(joints: &Vec<f32>, weights: &Vec<f32>, joint_count: f64
             };
         }
     }
-    return (referenced).clone();
+    return referenced;
 }

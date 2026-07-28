@@ -17,7 +17,7 @@ pub fn ease_in_exponential(t: f64) -> f64 {
 
 // Source: upstream/packages/easing/src/easeExponential.ts:5 (sha256:7fe95e8aec832adf0cafe1d747e30ee786403115946c43dde0e8eb9268ada36d)
 pub fn ease_in_out_exponential(t: f64) -> f64 {
-    if ((t == 0.0_f64) || (t == 1.0_f64)) {
+    if (t == 0.0_f64) || (t == 1.0_f64) {
         return t;
     }
     return if (t < 0.5_f64) {

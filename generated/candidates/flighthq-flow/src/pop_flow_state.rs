@@ -24,12 +24,14 @@ pub fn pop_flow_state(stack: &mut FlowStack) -> Option<FlowState> {
             .map(|callback| callback.lock().unwrap()())
     };
     let revealed = if ((stack.states.len() as f64) > 0.0_f64) {
-        stack.states[((stack.states.len() as f64) - 1.0_f64) as usize].clone()
+        Some(stack.states[((stack.states.len() as f64) - 1.0_f64) as usize].clone())
     } else {
         None
     };
     {
-        let __flight_callback = (revealed.on_resume).clone();
+        let __flight_callback = revealed
+            .as_ref()
+            .and_then(|value| (value.on_resume).clone());
         __flight_callback
             .as_ref()
             .map(|callback| callback.lock().unwrap()())

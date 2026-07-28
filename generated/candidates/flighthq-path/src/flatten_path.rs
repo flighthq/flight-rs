@@ -99,8 +99,8 @@ pub fn flatten_path(path: &Path, tolerance: Option<f64>) -> Vec<Vec<f64>> {
                                     di += 6.0_f64;
                                 } else {
                                     if (command == PathCommand::CLOSE) {
-                                        if ((contour).is_some()
-                                            && ((x != contour_start_x) || (y != contour_start_y)))
+                                        if ((contour).is_some())
+                                            && ((x != contour_start_x) || (y != contour_start_y))
                                         {
                                             contour
                                                 .as_mut()
@@ -123,7 +123,7 @@ pub fn flatten_path(path: &Path, tolerance: Option<f64>) -> Vec<Vec<f64>> {
             };
         }
     }
-    return (contours).clone();
+    return contours;
 }
 
 // Source: upstream/packages/path/src/flattenPath.ts:93 (sha256:c149cd18371e61d38f1ab74d74b8844e0e996af976d1183480658ba491b014ef)
@@ -132,11 +132,11 @@ const MAX_SUBDIVISION_DEPTH: f64 = 16.0_f64;
 // Source: upstream/packages/path/src/flattenPath.ts:97 (sha256:a483ae92fe8e2d3b6fa3a032c474e38acf538d41bdb550a9b323d4eaad406445)
 fn ensure_contour(contours: &mut Vec<Vec<f64>>, contour: Option<Vec<f64>>) -> Vec<f64> {
     if (contour).is_some() {
-        return (contour.as_ref().unwrap()).clone();
+        return contour.as_ref().unwrap();
     }
     let started = vec![0.0_f64, 0.0_f64];
     contours.push(((started).clone()).clone());
-    return (started).clone();
+    return started;
 }
 
 // Source: upstream/packages/path/src/flattenPath.ts:106 (sha256:8ed98f73237bb53812125f0becf17548a48b721622141ae7b21ece6ae93a2790)
@@ -169,7 +169,7 @@ fn flatten_cubic(
 ) -> () {
     let d1 = distance_to_chord_sq(c1x, c1y, x0, y0, x1, y1);
     let d2 = distance_to_chord_sq(c2x, c2y, x0, y0, x1, y1);
-    if ((depth >= MAX_SUBDIVISION_DEPTH) || ((d1 <= tolerance_sq) && (d2 <= tolerance_sq))) {
+    if (depth >= MAX_SUBDIVISION_DEPTH) || ((d1 <= tolerance_sq) && (d2 <= tolerance_sq)) {
         out.extend(vec![x1, y1]);
         return;
     }
@@ -225,8 +225,8 @@ fn flatten_quadratic(
     tolerance_sq: f64,
     depth: f64,
 ) -> () {
-    if ((depth >= MAX_SUBDIVISION_DEPTH)
-        || (distance_to_chord_sq(cx, cy, x0, y0, x1, y1) <= tolerance_sq))
+    if (depth >= MAX_SUBDIVISION_DEPTH)
+        || (distance_to_chord_sq(cx, cy, x0, y0, x1, y1) <= tolerance_sq)
     {
         out.extend(vec![x1, y1]);
         return;

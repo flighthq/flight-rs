@@ -56,13 +56,13 @@ pub fn equals_quaternion(a: Option<QuaternionLike>, b: Option<QuaternionLike>) -
     if (a == b) {
         return true;
     }
-    if ((a).is_none() || (b).is_none()) {
+    if ((a).is_none()) || ((b).is_none()) {
         return false;
     }
-    return ((((a.as_ref().unwrap().x == b.as_ref().unwrap().x)
+    return (((a.as_ref().unwrap().x == b.as_ref().unwrap().x)
         && (a.as_ref().unwrap().y == b.as_ref().unwrap().y))
         && (a.as_ref().unwrap().z == b.as_ref().unwrap().z))
-        && (a.as_ref().unwrap().w == b.as_ref().unwrap().w));
+        && (a.as_ref().unwrap().w == b.as_ref().unwrap().w);
 }
 
 // Source: upstream/packages/geometry/src/quaternion.ts:57 (sha256:41310dda90cd0338123af0975edeffa0004c9593dd0310e6647ed2ad662d5aa6)
@@ -429,7 +429,7 @@ pub fn set_quaternion_from_matrix4(out: &mut QuaternionLike, source: &Matrix4Lik
         out.y = ((m20 - m02) * s);
         out.z = ((m01 - m10) * s);
     } else {
-        if ((m00 > m11) && (m00 > m22)) {
+        if (m00 > m11) && (m00 > m22) {
             let s = (2.0_f64 * (((1.0_f64 + m00) - m11) - m22).sqrt());
             out.w = ((m12 - m21) / s);
             out.x = (0.25_f64 * s);
@@ -561,7 +561,7 @@ pub fn set_quaternion_look_rotation(
         out.y = ((m20 - m02) * s);
         out.z = ((m01 - m10) * s);
     } else {
-        if ((m00 > m11) && (m00 > m22)) {
+        if (m00 > m11) && (m00 > m22) {
             let s = (2.0_f64 * (((1.0_f64 + m00) - m11) - m22).sqrt());
             out.w = ((m12 - m21) / s);
             out.x = (0.25_f64 * s);

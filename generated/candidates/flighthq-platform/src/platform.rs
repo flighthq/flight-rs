@@ -27,12 +27,12 @@ pub fn compare_platform_versions(a: String, b: String) -> f64 {
         let mut i = 0.0_f64;
         while (i < len) {
             let a_num = if (i < (a_parts.len() as f64)) {
-                crate::host_value::<()>("host.call")
+                crate::host_value::<f64>("host.call")
             } else {
                 0.0_f64
             };
             let b_num = if (i < (b_parts.len() as f64)) {
-                crate::host_value::<()>("host.call")
+                crate::host_value::<f64>("host.call")
             } else {
                 0.0_f64
             };
@@ -110,7 +110,12 @@ pub fn create_platform_info() -> PlatformInfo {
 pub fn create_web_platform_backend() -> PlatformBackend {
     return PlatformBackend {
         __flight_identity: std::sync::Arc::new(()),
-        get_info: get_web_platform_info,
+        get_info: std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |mut __flight_argument_0: PlatformInfo| -> PlatformInfo {
+                get_web_platform_info(&mut __flight_argument_0)
+            },
+        )
+            as Box<dyn FnMut(PlatformInfo) -> PlatformInfo + Send + 'static>)),
     };
 }
 
@@ -129,7 +134,11 @@ pub fn get_platform_engine() -> PlatformEngine {
 
 // Source: upstream/packages/platform/src/platform.ts:80 (sha256:5df92e2236bab9cbb8cc38c95ccfb0f671a43b664dbb2c6aa039805f4da158a0)
 pub fn get_platform_info(out: &PlatformInfo) -> PlatformInfo {
-    return ((get_platform_backend().get_info).clone()).lock().unwrap()((*out).clone());
+    return {
+        let __flight_callback = (get_platform_backend().get_info).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*out).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/platform/src/platform.ts:85 (sha256:d204d54270a9ddb274e34c239fb21d0b2a349ba970c52409ce7c040ca2c4ad4c)
@@ -160,7 +169,7 @@ pub fn is_platform_mobile() -> bool {
 // Source: upstream/packages/platform/src/platform.ts:112 (sha256:5ff86c4ff8e07551c06c987e3bbf4480185ccf40cf036eb91f994c0d1c086941)
 pub fn is_platform_native() -> bool {
     let runtime = get_platform_runtime();
-    return ((runtime != "web") && (runtime != "unknown"));
+    return (runtime != "web") && (runtime != "unknown");
 }
 
 // Source: upstream/packages/platform/src/platform.ts:118 (sha256:28a64f09d4f5e946b6c8c6ce468d58bb93ed8382ae6a32a4c774c6eb73d9dd5d)
@@ -202,27 +211,25 @@ fn get_web_platform_info(out: &mut PlatformInfo) -> PlatformInfo {
     } else {
         None
     };
-    let ua = (crate::host_value::<crate::OpaqueHostValue>("host.userAgent"))
-        .unwrap_or(crate::OpaqueHostValue::String("".to_owned()));
+    let ua = (crate::host_value::<Option<String>>("host.userAgent")).unwrap_or("".to_owned());
     out.name = parse_user_agent_name(ua);
     out.kind = parse_user_agent_kind((out.name).clone());
     out.version = parse_user_agent_version(ua, (out.name).clone());
     out.arch = parse_user_agent_arch(ua, None);
-    out.locale = (crate::host_value::<crate::OpaqueHostValue>("host.language"))
-        .unwrap_or(crate::OpaqueHostValue::String("".to_owned()));
-    out.is_touch = if (("undefined" != "undefined") && false) {
+    out.locale = (crate::host_value::<Option<String>>("host.language")).unwrap_or("".to_owned());
+    out.is_touch = if ("undefined" != "undefined") && (false) {
         (crate::host_value::<f64>("host.maxTouchPoints") > 0.0_f64)
     } else {
         false
     };
-    out.runtime = parse_user_agent_runtime(Some(
+    out.runtime = parse_user_agent_runtime(
         (if ("undefined" != "undefined") {
-            crate::OpaqueHostValue::Object
+            Some(crate::OpaqueHostValue::Object)
         } else {
             None
         })
         .clone(),
-    ));
+    );
     out.engine = parse_user_agent_engine(ua);
     out.engine_version = parse_user_agent_engine_version(ua, (out.engine).clone());
     out.endianness = detect_endianness();

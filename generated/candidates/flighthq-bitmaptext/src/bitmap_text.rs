@@ -15,7 +15,8 @@ use flighthq_sprite::{create_quad_batch, reserve_quad_batch};
 use flighthq_textureatlas::create_texture_atlas;
 use flighthq_types::{
     BITMAP_TEXT_KIND as bitmap_text_kind_constant, BitmapText, BitmapTextAlign, BitmapTextData,
-    BitmapTextOptions, BitmapTextRuntime, GlyphSource, Node, QuadBatch, QuadBatchData, Rectangle,
+    BitmapTextOptions, BitmapTextRuntime, BoundsNodeAny, GlyphSource, Node, QuadBatch,
+    QuadBatchData, Rectangle,
 };
 
 // Source: upstream/packages/bitmaptext/src/bitmapText.ts:25 (sha256:6092d0ea3715e74338136af9aad3fb871bc32e15dea783aa072633373219d2fe)
@@ -41,10 +42,18 @@ pub fn create_bitmap_text(
     options: Option<BitmapTextOptions>,
 ) -> BitmapText {
     let mut bitmap_text = create_display_object_generic(
-        bitmap_text_kind_constant,
+        (bitmap_text_kind_constant).to_owned(),
         Some(undefined),
-        Some(create_bitmap_text_data),
-        Some(create_bitmap_text_runtime),
+        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: Option<D>| -> D {
+                create_bitmap_text_data(Some(((__flight_argument_0).clone().unwrap()).clone()))
+            },
+        )
+            as Box<dyn FnMut(Option<D>) -> D + Send + 'static>))),
+        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: Option<R>| -> R { create_bitmap_text_runtime() },
+        )
+            as Box<dyn FnMut(Option<R>) -> R + Send + 'static>))),
     );
     bitmap_text.data.glyph_source = (glyph_source).clone();
     if (options).is_some() {
@@ -54,13 +63,13 @@ pub fn create_bitmap_text(
         __flight_identity: std::sync::Arc::new(()),
         data: QuadBatchData {
             __flight_identity: std::sync::Arc::new(()),
-            atlas: create_texture_atlas(None),
+            atlas: Some(create_texture_atlas(None)),
         },
     }));
     let mut runtime = get_display_object_runtime(&bitmap_text);
     runtime.quad_batches.push(((quad_batch).clone()).clone());
     add_node_child(&bitmap_text, &quad_batch);
-    return (bitmap_text).clone();
+    return bitmap_text;
 }
 
 // Source: upstream/packages/bitmaptext/src/bitmapText.ts:65 (sha256:652b9b9decde0da5b6ec262d3fa215cdbabc38279b594e72639ef8075e765e5d)
@@ -82,14 +91,14 @@ pub fn create_bitmap_text_runtime() -> BitmapTextRuntime {
     let mut runtime = create_display_object_runtime(Some(((*DEFAULT_METHODS).clone()).clone()));
     runtime.local_bounds_rectangle = None;
     runtime.quad_batches = vec![];
-    return (runtime).clone();
+    return runtime;
 }
 
 // Source: upstream/packages/bitmaptext/src/bitmapText.ts:86 (sha256:beb2063df494c0cf5820839f49241ce13a95548f488d2e11f0cd9133bea028f2)
 pub fn get_bitmap_text_bounds(source: &BitmapText) -> Rectangle {
     let mut out = create_rectangle(None, None, None, None);
     compute_bitmap_text_local_bounds_rectangle(&mut out, source);
-    return (out).clone();
+    return out;
 }
 
 // Source: upstream/packages/bitmaptext/src/bitmapText.ts:94 (sha256:9e24e8e7989101781f47989d6ec78853ea00bae1ca1c2488985d26f552e208da)
@@ -177,5 +186,10 @@ fn copy_local_bounds_rectangle(out: &mut Rectangle, source: &Node) -> () {
 static DEFAULT_METHODS: std::sync::LazyLock<BitmapTextRuntime> =
     std::sync::LazyLock::new(|| BitmapTextRuntime {
         __flight_identity: std::sync::Arc::new(()),
-        compute_local_bounds_rectangle: copy_local_bounds_rectangle,
+        compute_local_bounds_rectangle: std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |mut __flight_argument_0: Rectangle, __flight_argument_1: BoundsNodeAny| -> () {
+                copy_local_bounds_rectangle(&mut __flight_argument_0, &__flight_argument_1)
+            },
+        )
+            as Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>)),
     });

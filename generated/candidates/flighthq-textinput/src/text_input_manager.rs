@@ -76,7 +76,7 @@ pub fn create_text_input_manager() -> TextInputManager {
 // Source: upstream/packages/textinput/src/textInputManager.ts:41 (sha256:71866e07667c1624b5639beadcaa833b2deb09241a9cf49147e55c33cdf50948)
 pub fn dispatch_text_input(manager: &TextInputManager, text: String) -> bool {
     let mut target = get_text_input_focus_target(manager);
-    if ((target).is_none() || (text.length == 0.0_f64)) {
+    if ((target).is_none()) || ((text.encode_utf16().count() as f64) == 0.0_f64) {
         return false;
     }
     insert_text_input(target.as_mut().unwrap(), (text).clone());
@@ -139,7 +139,7 @@ pub fn dispatch_text_input_pointer_down(
 // Source: upstream/packages/textinput/src/textInputManager.ts:80 (sha256:b74eb4f68c9f6a4d16075fe1dabd01a0a866e258ad56c0ad8321a310fcb30166)
 pub fn dispatch_text_input_pointer_move(manager: &mut TextInputManager, x: f64, y: f64) -> () {
     let mut target = (manager.focused).clone();
-    if ((target).is_none() || (!target.as_mut().unwrap().enabled)) {
+    if ((target).is_none()) || (!target.as_mut().unwrap().enabled) {
         return;
     }
     let layout = (get_rich_text_runtime(target.as_ref().unwrap()).text_layout).clone();
@@ -158,7 +158,7 @@ pub fn dispatch_text_input_pointer_move(manager: &mut TextInputManager, x: f64, 
 // Source: upstream/packages/textinput/src/textInputManager.ts:89 (sha256:c437416723ce314df0ff774053b771d0ec3fc81d9105175f60a5e0f75dc14903)
 pub fn dispatch_text_input_wheel(manager: &mut TextInputManager, delta_lines: f64) -> () {
     let mut target = (manager.focused).clone();
-    if ((target).is_none() || (!target.as_mut().unwrap().enabled)) {
+    if ((target).is_none()) || (!target.as_mut().unwrap().enabled) {
         return;
     }
     set_rich_text_scroll_v(
@@ -186,7 +186,7 @@ fn get_text_input_focus_target(manager: &TextInputManager) -> Option<RichText> {
         return None;
     }
     let target = (manager.focused).clone();
-    if ((target).is_none() || (!target.as_ref().unwrap().enabled)) {
+    if ((target).is_none()) || (!target.as_ref().unwrap().enabled) {
         return None;
     }
     return (target).clone();

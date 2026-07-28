@@ -25,5 +25,5 @@ pub fn create_entity<Type: Clone>(mut obj: Option<Type>) -> Type {
     }
     let mut entity = (obj).clone().unwrap();
     ();
-    return (entity).clone();
+    return entity;
 }

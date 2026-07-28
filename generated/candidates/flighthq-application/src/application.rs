@@ -189,7 +189,7 @@ pub fn create_web_loop_backend() -> LoopBackend {
         )
             as Box<dyn FnMut(crate::OpaqueHostValue) -> () + Send + 'static>)),
         now: std::sync::Arc::new(std::sync::Mutex::new(Box::new(move || -> f64 {
-            return crate::host_value::<f64>("host.now");
+            return crate::host_value::<f64>("host.call");
         })
             as Box<dyn FnMut() -> f64 + Send + 'static>)),
     };
@@ -228,7 +228,11 @@ pub fn dispose_application(app: &mut Application) -> () {
     .iter()
     .cloned()
     {
-        ((cleanup).clone()).lock().unwrap()();
+        {
+            let __flight_callback = (cleanup).clone();
+            let __flight_result = __flight_callback.lock().unwrap()();
+            __flight_result
+        };
     }
     observers.clear();
     app.is_running = false;
@@ -266,7 +270,7 @@ pub fn get_application_frame_rate(app: &Application) -> f64 {
         .iter()
         .find(|(key, _)| key == &(*app).clone())
         .map(|(_, value)| value.clone());
-    if ((state).is_none() || ((state.as_ref().unwrap().fps_buffer.len() as f64) < 2.0_f64)) {
+    if ((state).is_none()) || ((state.as_ref().unwrap().fps_buffer.len() as f64) < 2.0_f64) {
         return 0.0_f64;
     }
     let len = (state.as_ref().unwrap().fps_buffer.len() as f64);
@@ -331,7 +335,7 @@ pub fn is_application_running(app: &Application) -> bool {
 // Source: upstream/packages/application/src/application.ts:155 (sha256:468a64b9c52a7bf5203ce9a34ec557957d49563390f9d640a7fbbeaa4496daf0)
 pub fn pause_application_loop(app: &mut Application) -> () {
     let mut observers = get_application_observers(app);
-    if ((!app.is_running) || observers.iter().any(|(key, _)| key == &*K_PAUSED)) {
+    if (!app.is_running) || (observers.iter().any(|(key, _)| key == &*K_PAUSED)) {
         return;
     }
     app.is_running = false;
@@ -515,8 +519,9 @@ pub fn start_application_loop(mut app: Application, options: Option<ApplicationL
             let mut observers = observers.clone();
             move |time: f64| -> () {
                 if (!app.is_running) {
-                    (*loop_state.lock().unwrap()).frame_handle =
-                        ((backend.request_frame).clone()).lock().unwrap()(
+                    (*loop_state.lock().unwrap()).frame_handle = {
+                        let __flight_callback = (backend.request_frame).clone();
+                        let __flight_result = __flight_callback.lock().unwrap()(
                             (__flight_recursive_tick
                                 .lock()
                                 .unwrap()
@@ -525,15 +530,21 @@ pub fn start_application_loop(mut app: Application, options: Option<ApplicationL
                                 .clone())
                             .clone(),
                         );
+                        __flight_result
+                    };
                     {
                         let __flight_key = *K_LOOP;
                         let __flight_value = std::sync::Arc::new(std::sync::Mutex::new(Box::new({
                             let backend = backend.clone();
                             let mut loop_state = loop_state.clone();
                             move || -> () {
-                                ((backend.cancel_frame).clone()).lock().unwrap()(
-                                    ((*loop_state.lock().unwrap()).frame_handle).clone(),
-                                )
+                                {
+                                    let __flight_callback = (backend.cancel_frame).clone();
+                                    let __flight_result = __flight_callback.lock().unwrap()(
+                                        ((*loop_state.lock().unwrap()).frame_handle).clone(),
+                                    );
+                                    __flight_result
+                                }
                             }
                         })
                             as Box<dyn FnMut() -> () + Send + 'static>));
@@ -555,8 +566,8 @@ pub fn start_application_loop(mut app: Application, options: Option<ApplicationL
                     (time - (*loop_state.lock().unwrap()).last_time)
                 };
                 (*loop_state.lock().unwrap()).last_time = time;
-                let active_interval = if ((app.is_running && (bg_interval > 0.0_f64))
-                    && (!_is_application_visible()))
+                let active_interval = if ((app.is_running) && (bg_interval > 0.0_f64))
+                    && (!_is_application_visible())
                 {
                     bg_interval
                 } else {
@@ -564,11 +575,12 @@ pub fn start_application_loop(mut app: Application, options: Option<ApplicationL
                 };
                 if (!is_first_tick) {
                     (*loop_state.lock().unwrap()).frame_rate_accumulated += raw;
-                    if ((active_interval > 0.0_f64)
-                        && ((*loop_state.lock().unwrap()).frame_rate_accumulated < active_interval))
+                    if (active_interval > 0.0_f64)
+                        && ((*loop_state.lock().unwrap()).frame_rate_accumulated < active_interval)
                     {
-                        (*loop_state.lock().unwrap()).frame_handle =
-                            ((backend.request_frame).clone()).lock().unwrap()(
+                        (*loop_state.lock().unwrap()).frame_handle = {
+                            let __flight_callback = (backend.request_frame).clone();
+                            let __flight_result = __flight_callback.lock().unwrap()(
                                 (__flight_recursive_tick
                                     .lock()
                                     .unwrap()
@@ -577,6 +589,8 @@ pub fn start_application_loop(mut app: Application, options: Option<ApplicationL
                                     .clone())
                                 .clone(),
                             );
+                            __flight_result
+                        };
                         {
                             let __flight_key = *K_LOOP;
                             let __flight_value =
@@ -584,9 +598,14 @@ pub fn start_application_loop(mut app: Application, options: Option<ApplicationL
                                     let backend = backend.clone();
                                     let mut loop_state = loop_state.clone();
                                     move || -> () {
-                                        ((backend.cancel_frame).clone()).lock().unwrap()(
-                                            ((*loop_state.lock().unwrap()).frame_handle).clone(),
-                                        )
+                                        {
+                                            let __flight_callback = (backend.cancel_frame).clone();
+                                            let __flight_result = __flight_callback.lock().unwrap()(
+                                                ((*loop_state.lock().unwrap()).frame_handle)
+                                                    .clone(),
+                                            );
+                                            __flight_result
+                                        }
                                     }
                                 })
                                     as Box<dyn FnMut() -> () + Send + 'static>));
@@ -602,7 +621,7 @@ pub fn start_application_loop(mut app: Application, options: Option<ApplicationL
                         return;
                     }
                 }
-                let delta = if ((active_interval > 0.0_f64) && (!is_first_tick)) {
+                let delta = if (active_interval > 0.0_f64) && (!is_first_tick) {
                     (*loop_state.lock().unwrap()).frame_rate_accumulated
                 } else {
                     raw
@@ -613,11 +632,11 @@ pub fn start_application_loop(mut app: Application, options: Option<ApplicationL
                 app.elapsed_time += (clamped / 1000.0_f64);
                 app.frame_count += 1.0_f64;
                 record_fps_sample(&mut (*loop_state.lock().unwrap()), clamped);
-                if ((fixed_time_step > 0.0_f64) && ((app.on_fixed_update).clone()).is_some()) {
+                if (fixed_time_step > 0.0_f64) && (((app.on_fixed_update).clone()).is_some()) {
                     (*loop_state.lock().unwrap()).fixed_accumulator += clamped;
                     let mut iters = 0.0_f64;
-                    while (((*loop_state.lock().unwrap()).fixed_accumulator >= fixed_time_step)
-                        && (iters < max_updates_per_frame))
+                    while ((*loop_state.lock().unwrap()).fixed_accumulator >= fixed_time_step)
+                        && (iters < max_updates_per_frame)
                     {
                         (*loop_state.lock().unwrap()).fixed_accumulator -= fixed_time_step;
                         {
@@ -684,8 +703,9 @@ pub fn start_application_loop(mut app: Application, options: Option<ApplicationL
                     emit_signal((app.on_update).clone(), (clamped,));
                     emit_signal((app.on_render).clone(), ());
                 }
-                (*loop_state.lock().unwrap()).frame_handle =
-                    ((backend.request_frame).clone()).lock().unwrap()(
+                (*loop_state.lock().unwrap()).frame_handle = {
+                    let __flight_callback = (backend.request_frame).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()(
                         (__flight_recursive_tick
                             .lock()
                             .unwrap()
@@ -694,15 +714,21 @@ pub fn start_application_loop(mut app: Application, options: Option<ApplicationL
                             .clone())
                         .clone(),
                     );
+                    __flight_result
+                };
                 {
                     let __flight_key = *K_LOOP;
                     let __flight_value = std::sync::Arc::new(std::sync::Mutex::new(Box::new({
                         let backend = backend.clone();
                         let mut loop_state = loop_state.clone();
                         move || -> () {
-                            ((backend.cancel_frame).clone()).lock().unwrap()(
-                                ((*loop_state.lock().unwrap()).frame_handle).clone(),
-                            )
+                            {
+                                let __flight_callback = (backend.cancel_frame).clone();
+                                let __flight_result = __flight_callback.lock().unwrap()(
+                                    ((*loop_state.lock().unwrap()).frame_handle).clone(),
+                                );
+                                __flight_result
+                            }
                         }
                     })
                         as Box<dyn FnMut() -> () + Send + 'static>));
@@ -719,17 +745,24 @@ pub fn start_application_loop(mut app: Application, options: Option<ApplicationL
         })
             as Box<dyn FnMut(f64) -> () + Send + 'static>));
     *__flight_recursive_tick.lock().unwrap() = Some(tick.clone());
-    (*loop_state.lock().unwrap()).frame_handle =
-        ((backend.request_frame).clone()).lock().unwrap()((tick).clone());
+    (*loop_state.lock().unwrap()).frame_handle = {
+        let __flight_callback = (backend.request_frame).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((tick).clone());
+        __flight_result
+    };
     {
         let __flight_key = *K_LOOP;
         let __flight_value = std::sync::Arc::new(std::sync::Mutex::new(Box::new({
             let backend = backend.clone();
             let mut loop_state = loop_state.clone();
             move || -> () {
-                ((backend.cancel_frame).clone()).lock().unwrap()(
-                    ((*loop_state.lock().unwrap()).frame_handle).clone(),
-                )
+                {
+                    let __flight_callback = (backend.cancel_frame).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()(
+                        ((*loop_state.lock().unwrap()).frame_handle).clone(),
+                    );
+                    __flight_result
+                }
             }
         })
             as Box<dyn FnMut() -> () + Send + 'static>));
@@ -952,7 +985,7 @@ fn get_application_observers(
 
 // Source: upstream/packages/application/src/application.ts:392 (sha256:fd56e55c4c3005d431b7d73851e47d30e31fc9e129b9954d732a92262c1c9208)
 fn _is_application_visible() -> bool {
-    return (("undefined" == "undefined") || !(crate::host_value::<bool>("host.hidden")));
+    return ("undefined" == "undefined") || (!(crate::host_value::<bool>("host.hidden")));
 }
 
 // Source: upstream/packages/application/src/application.ts:396 (sha256:ba92246f3bbc130f965686a1304e87c8eb97acc4914f0b9b67ffbcfa57322d09)

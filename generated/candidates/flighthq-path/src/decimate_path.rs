@@ -40,11 +40,11 @@ pub fn decimate_path(
         if (n < 2.0_f64) {
             continue;
         }
-        let closed = (((n >= 3.0_f64)
+        let closed = ((n >= 3.0_f64)
             && (contour[0.0_f64 as usize].clone()
                 == contour[((contour.len() as f64) - 2.0_f64) as usize].clone()))
             && (contour[1.0_f64 as usize].clone()
-                == contour[((contour.len() as f64) - 1.0_f64) as usize].clone()));
+                == contour[((contour.len() as f64) - 1.0_f64) as usize].clone());
         let last = if closed { (n - 1.0_f64) } else { n };
         let mut keep = vec![0_u8; (last) as usize];
         keep[0.0_f64 as usize] = (1.0_f64) as u8;

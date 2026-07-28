@@ -32,8 +32,8 @@ pub fn apply_surface_palette_map(
         while (py < h) {
             let sy = (source.y + py);
             let dy = (dest.y + py);
-            if ((((sy < 0.0_f64) || (sy >= source.surface.height)) || (dy < 0.0_f64))
-                || (dy >= dest.surface.height))
+            if (((sy < 0.0_f64) || (sy >= source.surface.height)) || (dy < 0.0_f64))
+                || (dy >= dest.surface.height)
             {
                 {
                     py += 1.0;
@@ -46,8 +46,8 @@ pub fn apply_surface_palette_map(
                 while (px < w) {
                     let sx = (source.x + px);
                     let dx = (dest.x + px);
-                    if ((((sx < 0.0_f64) || (sx >= source.surface.width)) || (dx < 0.0_f64))
-                        || (dx >= dest.surface.width))
+                    if (((sx < 0.0_f64) || (sx >= source.surface.width)) || (dx < 0.0_f64))
+                        || (dx >= dest.surface.width)
                     {
                         {
                             px += 1.0;

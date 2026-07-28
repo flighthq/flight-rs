@@ -17,7 +17,7 @@ pub fn clone_material(source: &Material) -> Material {
         name: None,
     }));
     copy_material_fields(&mut clone, source, (source.kind).clone());
-    return (clone).clone();
+    return clone;
 }
 
 // Source: upstream/packages/materials/src/material.ts:14 (sha256:f4f6d26d442dce89d4d3d58c685d24f2d54b254a9799dc6aadaa62b09b70e94b)
@@ -36,7 +36,7 @@ pub fn create_material(kind: Kind) -> Material {
         name: None,
     }));
     material.name = None;
-    return (material).clone();
+    return material;
 }
 
 // Source: upstream/packages/materials/src/material.ts:28 (sha256:1a48de1f6d32e81a24970552a896f290aea96a49b2f3fb841ec7f97863c86b42)
@@ -86,14 +86,14 @@ fn copy_material_fields(dst: &mut Material, src: &Material, kind: Kind) -> () {
             .map(|(_, value)| value)
             .expect("TypeScript Record key was absent")
             .clone();
-        if (((key == "standard") && (value).is_some())
+        if ((key == "standard") && ((value).is_some()))
             && (match &(value) {
                 crate::OpaqueHostValue::Undefined => "undefined",
                 crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
                 crate::OpaqueHostValue::Bool(_) => "boolean",
                 crate::OpaqueHostValue::Number(_) => "number",
                 crate::OpaqueHostValue::String(_) => "string",
-            } == "object"))
+            } == "object")
         {
             dst_fields
                 .iter()

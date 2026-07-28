@@ -124,7 +124,7 @@ pub fn intersect_ray3_d_obb(ray: &Ray3DLike, obb: &ObbLike) -> f64 {
                     return (-1.0_f64);
                 }
             } else {
-                if ((o < (-h)) || (o > h)) {
+                if (o < (-h)) || (o > h) {
                     return (-1.0_f64);
                 }
             }
@@ -308,49 +308,49 @@ pub fn transform_obb_by_matrix4(out: &mut ObbLike, obb: &ObbLike, m: &Matrix4Lik
         + ((m.m[10.0_f64 as usize] as f64) * (m.m[10.0_f64 as usize] as f64)))
         .sqrt();
     let r00 = if (sx > 0.0_f64) {
-        ((m.m[0.0_f64 as usize] as f64) / sx)
+        ((m.m[0.0_f64 as usize] as f64) / sx) as f32
     } else {
-        1.0_f64
+        (1.0_f64) as f32
     };
     let r10 = if (sx > 0.0_f64) {
-        ((m.m[1.0_f64 as usize] as f64) / sx)
+        ((m.m[1.0_f64 as usize] as f64) / sx) as f32
     } else {
-        0.0_f64
+        (0.0_f64) as f32
     };
     let r20 = if (sx > 0.0_f64) {
-        ((m.m[2.0_f64 as usize] as f64) / sx)
+        ((m.m[2.0_f64 as usize] as f64) / sx) as f32
     } else {
-        0.0_f64
+        (0.0_f64) as f32
     };
     let r01 = if (sy > 0.0_f64) {
-        ((m.m[4.0_f64 as usize] as f64) / sy)
+        ((m.m[4.0_f64 as usize] as f64) / sy) as f32
     } else {
-        0.0_f64
+        (0.0_f64) as f32
     };
     let r11 = if (sy > 0.0_f64) {
-        ((m.m[5.0_f64 as usize] as f64) / sy)
+        ((m.m[5.0_f64 as usize] as f64) / sy) as f32
     } else {
-        1.0_f64
+        (1.0_f64) as f32
     };
     let r21 = if (sy > 0.0_f64) {
-        ((m.m[6.0_f64 as usize] as f64) / sy)
+        ((m.m[6.0_f64 as usize] as f64) / sy) as f32
     } else {
-        0.0_f64
+        (0.0_f64) as f32
     };
     let r02 = if (sz > 0.0_f64) {
-        ((m.m[8.0_f64 as usize] as f64) / sz)
+        ((m.m[8.0_f64 as usize] as f64) / sz) as f32
     } else {
-        0.0_f64
+        (0.0_f64) as f32
     };
     let r12 = if (sz > 0.0_f64) {
-        ((m.m[9.0_f64 as usize] as f64) / sz)
+        ((m.m[9.0_f64 as usize] as f64) / sz) as f32
     } else {
-        0.0_f64
+        (0.0_f64) as f32
     };
     let r22 = if (sz > 0.0_f64) {
-        ((m.m[10.0_f64 as usize] as f64) / sz)
+        ((m.m[10.0_f64 as usize] as f64) / sz) as f32
     } else {
-        1.0_f64
+        (1.0_f64) as f32
     };
     let mut mqw: f64;
     let mut mqx: f64;
@@ -364,7 +364,7 @@ pub fn transform_obb_by_matrix4(out: &mut ObbLike, obb: &ObbLike, m: &Matrix4Lik
         mqy = ((r20 - r02) * s);
         mqz = ((r01 - r10) * s);
     } else {
-        if ((r00 > r11) && (r00 > r22)) {
+        if (r00 > r11) && (r00 > r22) {
             let s = (2.0_f64 * (((1.0_f64 + r00) - r11) - r22).sqrt());
             mqw = ((r12 - r21) / s);
             mqx = (0.25_f64 * s);
@@ -475,85 +475,145 @@ fn obb_sat_separated(
         },
     )
         as Box<dyn FnMut(f64, f64, f64) -> bool + Send + 'static>));
-    if ((on_axis).clone()).lock().unwrap()(ax0, ay0, az0) {
+    if {
+        let __flight_callback = (on_axis).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(ax0, ay0, az0);
+        __flight_result
+    } {
         return true;
     }
-    if ((on_axis).clone()).lock().unwrap()(ax1, ay1, az1) {
+    if {
+        let __flight_callback = (on_axis).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(ax1, ay1, az1);
+        __flight_result
+    } {
         return true;
     }
-    if ((on_axis).clone()).lock().unwrap()(ax2, ay2, az2) {
+    if {
+        let __flight_callback = (on_axis).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(ax2, ay2, az2);
+        __flight_result
+    } {
         return true;
     }
-    if ((on_axis).clone()).lock().unwrap()(bx0, by0, bz0) {
+    if {
+        let __flight_callback = (on_axis).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(bx0, by0, bz0);
+        __flight_result
+    } {
         return true;
     }
-    if ((on_axis).clone()).lock().unwrap()(bx1, by1, bz1) {
+    if {
+        let __flight_callback = (on_axis).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(bx1, by1, bz1);
+        __flight_result
+    } {
         return true;
     }
-    if ((on_axis).clone()).lock().unwrap()(bx2, by2, bz2) {
+    if {
+        let __flight_callback = (on_axis).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(bx2, by2, bz2);
+        __flight_result
+    } {
         return true;
     }
-    if ((on_axis).clone()).lock().unwrap()(
-        ((ay0 * bz0) - (az0 * by0)),
-        ((az0 * bx0) - (ax0 * bz0)),
-        ((ax0 * by0) - (ay0 * bx0)),
-    ) {
+    if {
+        let __flight_callback = (on_axis).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(
+            ((ay0 * bz0) - (az0 * by0)),
+            ((az0 * bx0) - (ax0 * bz0)),
+            ((ax0 * by0) - (ay0 * bx0)),
+        );
+        __flight_result
+    } {
         return true;
     }
-    if ((on_axis).clone()).lock().unwrap()(
-        ((ay0 * bz1) - (az0 * by1)),
-        ((az0 * bx1) - (ax0 * bz1)),
-        ((ax0 * by1) - (ay0 * bx1)),
-    ) {
+    if {
+        let __flight_callback = (on_axis).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(
+            ((ay0 * bz1) - (az0 * by1)),
+            ((az0 * bx1) - (ax0 * bz1)),
+            ((ax0 * by1) - (ay0 * bx1)),
+        );
+        __flight_result
+    } {
         return true;
     }
-    if ((on_axis).clone()).lock().unwrap()(
-        ((ay0 * bz2) - (az0 * by2)),
-        ((az0 * bx2) - (ax0 * bz2)),
-        ((ax0 * by2) - (ay0 * bx2)),
-    ) {
+    if {
+        let __flight_callback = (on_axis).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(
+            ((ay0 * bz2) - (az0 * by2)),
+            ((az0 * bx2) - (ax0 * bz2)),
+            ((ax0 * by2) - (ay0 * bx2)),
+        );
+        __flight_result
+    } {
         return true;
     }
-    if ((on_axis).clone()).lock().unwrap()(
-        ((ay1 * bz0) - (az1 * by0)),
-        ((az1 * bx0) - (ax1 * bz0)),
-        ((ax1 * by0) - (ay1 * bx0)),
-    ) {
+    if {
+        let __flight_callback = (on_axis).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(
+            ((ay1 * bz0) - (az1 * by0)),
+            ((az1 * bx0) - (ax1 * bz0)),
+            ((ax1 * by0) - (ay1 * bx0)),
+        );
+        __flight_result
+    } {
         return true;
     }
-    if ((on_axis).clone()).lock().unwrap()(
-        ((ay1 * bz1) - (az1 * by1)),
-        ((az1 * bx1) - (ax1 * bz1)),
-        ((ax1 * by1) - (ay1 * bx1)),
-    ) {
+    if {
+        let __flight_callback = (on_axis).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(
+            ((ay1 * bz1) - (az1 * by1)),
+            ((az1 * bx1) - (ax1 * bz1)),
+            ((ax1 * by1) - (ay1 * bx1)),
+        );
+        __flight_result
+    } {
         return true;
     }
-    if ((on_axis).clone()).lock().unwrap()(
-        ((ay1 * bz2) - (az1 * by2)),
-        ((az1 * bx2) - (ax1 * bz2)),
-        ((ax1 * by2) - (ay1 * bx2)),
-    ) {
+    if {
+        let __flight_callback = (on_axis).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(
+            ((ay1 * bz2) - (az1 * by2)),
+            ((az1 * bx2) - (ax1 * bz2)),
+            ((ax1 * by2) - (ay1 * bx2)),
+        );
+        __flight_result
+    } {
         return true;
     }
-    if ((on_axis).clone()).lock().unwrap()(
-        ((ay2 * bz0) - (az2 * by0)),
-        ((az2 * bx0) - (ax2 * bz0)),
-        ((ax2 * by0) - (ay2 * bx0)),
-    ) {
+    if {
+        let __flight_callback = (on_axis).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(
+            ((ay2 * bz0) - (az2 * by0)),
+            ((az2 * bx0) - (ax2 * bz0)),
+            ((ax2 * by0) - (ay2 * bx0)),
+        );
+        __flight_result
+    } {
         return true;
     }
-    if ((on_axis).clone()).lock().unwrap()(
-        ((ay2 * bz1) - (az2 * by1)),
-        ((az2 * bx1) - (ax2 * bz1)),
-        ((ax2 * by1) - (ay2 * bx1)),
-    ) {
+    if {
+        let __flight_callback = (on_axis).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(
+            ((ay2 * bz1) - (az2 * by1)),
+            ((az2 * bx1) - (ax2 * bz1)),
+            ((ax2 * by1) - (ay2 * bx1)),
+        );
+        __flight_result
+    } {
         return true;
     }
-    if ((on_axis).clone()).lock().unwrap()(
-        ((ay2 * bz2) - (az2 * by2)),
-        ((az2 * bx2) - (ax2 * bz2)),
-        ((ax2 * by2) - (ay2 * bx2)),
-    ) {
+    if {
+        let __flight_callback = (on_axis).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(
+            ((ay2 * bz2) - (az2 * by2)),
+            ((az2 * bx2) - (ax2 * bz2)),
+            ((ax2 * by2) - (ay2 * bx2)),
+        );
+        __flight_result
+    } {
         return true;
     }
     return false;

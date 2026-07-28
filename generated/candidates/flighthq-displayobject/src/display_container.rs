@@ -16,10 +16,13 @@ use flighthq_types::{
 // Source: upstream/packages/displayobject/src/displayContainer.ts:6 (sha256:1400add81cdb09f32044940a3e7160c9c8bdf103c12acdb5e22e8e8b74d6f7d9)
 pub fn create_display_container(obj: Option<DisplayContainer>) -> DisplayContainer {
     return create_display_object_generic(
-        display_object_kind_constant,
+        (display_object_kind_constant).to_owned(),
         Some(((obj).clone().unwrap()).clone()),
         Some(undefined),
-        Some(create_display_container_runtime),
+        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: Option<R>| -> R { create_display_container_runtime() },
+        )
+            as Box<dyn FnMut(Option<R>) -> R + Send + 'static>))),
     );
 }
 

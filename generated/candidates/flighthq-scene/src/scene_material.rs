@@ -37,8 +37,8 @@ fn get_named_node_material(node: &SceneNode, name: String) -> Option<Material> {
         let mut i = 0.0_f64;
         while (i < (node.materials.len() as f64)) {
             let material = node.materials[i as usize].clone();
-            if ((material).is_some()
-                && ((material.as_ref().unwrap().name).clone()) == Some((name).clone()))
+            if ((material).is_some())
+                && (((material.as_ref().unwrap().name).clone()) == Some((name).clone()))
             {
                 return (material).clone();
             }

@@ -24,10 +24,10 @@ pub fn clone_aabb(source: &AabbLike) -> Aabb {
 
 // Source: upstream/packages/geometry/src/aabb.ts:13 (sha256:e6e41ae435a619cce2f848b9b53ac35f0e1984974bb83e2de4261fd09b91693f)
 pub fn contains_aabb_point(aabb: &AabbLike, point: &Vector3Like) -> bool {
-    return ((((((point.x >= aabb.min.x) && (point.x <= aabb.max.x)) && (point.y >= aabb.min.y))
+    return (((((point.x >= aabb.min.x) && (point.x <= aabb.max.x)) && (point.y >= aabb.min.y))
         && (point.y <= aabb.max.y))
         && (point.z >= aabb.min.z))
-        && (point.z <= aabb.max.z));
+        && (point.z <= aabb.max.z);
 }
 
 // Source: upstream/packages/geometry/src/aabb.ts:29 (sha256:b3d7db6f9971fb9b3b9d482eb1c0d73c7493a2c241e2bfe739571d6e8433bd5d)
@@ -165,10 +165,10 @@ pub fn intersect_aabb(out: &mut AabbLike, a: &AabbLike, b: &AabbLike) -> () {
 
 // Source: upstream/packages/geometry/src/aabb.ts:189 (sha256:96ea9ddd712db570210c04dd8f2327272d7beed34bdda6370e61e4cd9ec6a497)
 pub fn is_aabb_intersecting_aabb(a: &AabbLike, b: &AabbLike) -> bool {
-    return ((((((a.min.x <= b.max.x) && (a.max.x >= b.min.x)) && (a.min.y <= b.max.y))
+    return (((((a.min.x <= b.max.x) && (a.max.x >= b.min.x)) && (a.min.y <= b.max.y))
         && (a.max.y >= b.min.y))
         && (a.min.z <= b.max.z))
-        && (a.max.z >= b.min.z));
+        && (a.max.z >= b.min.z);
 }
 
 // Source: upstream/packages/geometry/src/aabb.ts:203 (sha256:bf20fcec218a50b50fabd1f31b8a22b774ad881dcc77a19e5d5eb71382195713)

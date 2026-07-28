@@ -8,7 +8,7 @@
 
 // Source: upstream/packages/math/src/interpolationAdvanced.ts:10 (sha256:1c03fab6ab24e491203839af71f3af1dafad5d185d7c4f309d5089fb6f351d21)
 pub fn damp(current: f64, target: f64, lambda: f64, delta_time: f64) -> f64 {
-    if ((delta_time <= 0.0_f64) || (lambda <= 0.0_f64)) {
+    if (delta_time <= 0.0_f64) || (lambda <= 0.0_f64) {
         return current;
     }
     return (target + ((current - target) * ((-lambda) * delta_time).exp()));

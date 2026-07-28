@@ -113,7 +113,7 @@ pub fn clone_matrix4(source: &Matrix4Like) -> Matrix4 {
         None,
     );
     copy_matrix4(&mut m, source);
-    return (m).clone();
+    return m;
 }
 
 // Source: upstream/packages/geometry/src/matrix4.ts:119 (sha256:10f3e210857e0a20096d28e357f51b98b1726bb7f502fca685f3f7ef52c5397e)
@@ -413,54 +413,54 @@ pub fn create_matrix4(
         m: (m).clone(),
     }));
     if (m00).is_some() {
-        out.m[0.0_f64 as usize] = (m00.as_ref().unwrap()) as f32;
+        out.m[0.0_f64 as usize] = (*(m00.as_ref().unwrap())) as f32;
     }
     if (m01).is_some() {
-        out.m[1.0_f64 as usize] = (m01.as_ref().unwrap()) as f32;
+        out.m[1.0_f64 as usize] = (*(m01.as_ref().unwrap())) as f32;
     }
     if (m02).is_some() {
-        out.m[2.0_f64 as usize] = (m02.as_ref().unwrap()) as f32;
+        out.m[2.0_f64 as usize] = (*(m02.as_ref().unwrap())) as f32;
     }
     if (m03).is_some() {
-        out.m[3.0_f64 as usize] = (m03.as_ref().unwrap()) as f32;
+        out.m[3.0_f64 as usize] = (*(m03.as_ref().unwrap())) as f32;
     }
     if (m10).is_some() {
-        out.m[4.0_f64 as usize] = (m10.as_ref().unwrap()) as f32;
+        out.m[4.0_f64 as usize] = (*(m10.as_ref().unwrap())) as f32;
     }
     if (m11).is_some() {
-        out.m[5.0_f64 as usize] = (m11.as_ref().unwrap()) as f32;
+        out.m[5.0_f64 as usize] = (*(m11.as_ref().unwrap())) as f32;
     }
     if (m12).is_some() {
-        out.m[6.0_f64 as usize] = (m12.as_ref().unwrap()) as f32;
+        out.m[6.0_f64 as usize] = (*(m12.as_ref().unwrap())) as f32;
     }
     if (m13).is_some() {
-        out.m[7.0_f64 as usize] = (m13.as_ref().unwrap()) as f32;
+        out.m[7.0_f64 as usize] = (*(m13.as_ref().unwrap())) as f32;
     }
     if (m20).is_some() {
-        out.m[8.0_f64 as usize] = (m20.as_ref().unwrap()) as f32;
+        out.m[8.0_f64 as usize] = (*(m20.as_ref().unwrap())) as f32;
     }
     if (m21).is_some() {
-        out.m[9.0_f64 as usize] = (m21.as_ref().unwrap()) as f32;
+        out.m[9.0_f64 as usize] = (*(m21.as_ref().unwrap())) as f32;
     }
     if (m22).is_some() {
-        out.m[10.0_f64 as usize] = (m22.as_ref().unwrap()) as f32;
+        out.m[10.0_f64 as usize] = (*(m22.as_ref().unwrap())) as f32;
     }
     if (m23).is_some() {
-        out.m[11.0_f64 as usize] = (m23.as_ref().unwrap()) as f32;
+        out.m[11.0_f64 as usize] = (*(m23.as_ref().unwrap())) as f32;
     }
     if (m30).is_some() {
-        out.m[12.0_f64 as usize] = (m30.as_ref().unwrap()) as f32;
+        out.m[12.0_f64 as usize] = (*(m30.as_ref().unwrap())) as f32;
     }
     if (m31).is_some() {
-        out.m[13.0_f64 as usize] = (m31.as_ref().unwrap()) as f32;
+        out.m[13.0_f64 as usize] = (*(m31.as_ref().unwrap())) as f32;
     }
     if (m32).is_some() {
-        out.m[14.0_f64 as usize] = (m32.as_ref().unwrap()) as f32;
+        out.m[14.0_f64 as usize] = (*(m32.as_ref().unwrap())) as f32;
     }
     if (m33).is_some() {
-        out.m[15.0_f64 as usize] = (m33.as_ref().unwrap()) as f32;
+        out.m[15.0_f64 as usize] = (*(m33.as_ref().unwrap())) as f32;
     }
-    return (out).clone();
+    return out;
 }
 
 // Source: upstream/packages/geometry/src/matrix4.ts:383 (sha256:5855d2698fc4efea6e23205dcf0ef4631b9be4bc8496d657743c94395e80d701)
@@ -485,7 +485,7 @@ pub fn create_matrix4_from2_d(
         Some((tx).clone().unwrap()),
         Some((ty).clone().unwrap()),
     );
-    return (out).clone();
+    return out;
 }
 
 // Source: upstream/packages/geometry/src/matrix4.ts:392 (sha256:66163c189727e7f73a6ce04f31adc0d8c3eb2f72118895ff50341aca204b9e3e)
@@ -502,7 +502,7 @@ pub fn create_orthographic_matrix4(
         None,
     );
     set_orthographic_matrix4(&mut out, left, right, bottom, top, z_near, z_far);
-    return (out).clone();
+    return out;
 }
 
 // Source: upstream/packages/geometry/src/matrix4.ts:408 (sha256:a2d933d0aaa115238af90cd19802db117dca17a948554c8d2eba4db2c0514875)
@@ -512,7 +512,7 @@ pub fn create_perspective_matrix4(fov: f64, aspect: f64, z_near: f64, z_far: f64
         None,
     );
     set_perspective_matrix4(&mut out, fov, aspect, z_near, z_far);
-    return (out).clone();
+    return out;
 }
 
 // Source: upstream/packages/geometry/src/matrix4.ts:423 (sha256:ca266460444317fd9c9bb302a97444114937baa772db7de6d1968f13579a7496)
@@ -580,7 +580,7 @@ pub fn decompose_matrix4(
         out_rotation.y = ((r20 - r02) * s);
         out_rotation.z = ((r01 - r10) * s);
     } else {
-        if ((r00 > r11) && (r00 > r22)) {
+        if (r00 > r11) && (r00 > r22) {
             let s = (2.0_f64 * (((1.0_f64 + r00) - r11) - r22).sqrt());
             out_rotation.w = ((r12 - r21) / s);
             out_rotation.x = (0.25_f64 * s);
@@ -609,7 +609,7 @@ pub fn equals_matrix4(a: Option<Matrix4Like>, b: Option<Matrix4Like>) -> bool {
     if (a == b) {
         return true;
     }
-    if ((a).is_none() || (b).is_none()) {
+    if ((a).is_none()) || ((b).is_none()) {
         return false;
     }
     {
@@ -783,10 +783,10 @@ pub fn inverse_matrix4(out: &mut Matrix4Like, source: &Matrix4Like) -> bool {
 
 // Source: upstream/packages/geometry/src/matrix4.ts:622 (sha256:3207d97bd3e73661af4da207b0af5e089a1778a2183292872d19dbf8818543b5)
 pub fn is_affine_matrix4(source: &Matrix4Like) -> bool {
-    return (((((source.m[3.0_f64 as usize] as f64) == 0.0_f64)
+    return ((((source.m[3.0_f64 as usize] as f64) == 0.0_f64)
         && ((source.m[7.0_f64 as usize] as f64) == 0.0_f64))
         && ((source.m[11.0_f64 as usize] as f64) == 0.0_f64))
-        && ((source.m[15.0_f64 as usize] as f64) == 1.0_f64));
+        && ((source.m[15.0_f64 as usize] as f64) == 1.0_f64);
 }
 
 // Source: upstream/packages/geometry/src/matrix4.ts:630 (sha256:bf6e9be9fb07969edf7ed725847e53c54509aa3656e771519aece1435e39cb43)
@@ -1329,7 +1329,7 @@ pub fn set_perspective_matrix4(
     z_near: f64,
     z_far: f64,
 ) -> () {
-    if ((aspect > (-1e-7_f64)) && (aspect < 1e-7_f64)) {
+    if (aspect > (-1e-7_f64)) && (aspect < 1e-7_f64) {
         panic!("{}", "Aspect ratio may not be 0");
     }
     let top = (fov * z_near);

@@ -75,7 +75,7 @@ fn get_visible_line_count(data: &RichTextData, layout: &TextLayoutResult) -> f64
     let mut total = 0.0_f64;
     let mut count = 0.0_f64;
     for height in ((layout.line_heights).clone()).iter().cloned() {
-        if ((count > 0.0_f64) && ((total + height) > visible_height)) {
+        if (count > 0.0_f64) && ((total + height) > visible_height) {
             break;
         }
         total += height;

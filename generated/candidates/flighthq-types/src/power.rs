@@ -57,7 +57,7 @@ pub struct PowerBackend {
     pub is_keep_awake_active:
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> bool + Send + 'static>>>,
     pub set_keep_awake: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(bool, PowerKeepAwakeMode) -> bool + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut(bool, Option<PowerKeepAwakeMode>) -> bool + Send + 'static>>,
     >,
     pub subscribe: std::sync::Arc<
         std::sync::Mutex<

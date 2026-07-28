@@ -31,7 +31,7 @@ pub fn clamp_velocity(out: &mut Velocity2D, velocity: &Velocity2D, max_length: f
     let vy = velocity.y;
     let len_sq = ((vx * vx) + (vy * vy));
     let max_sq = (max_length * max_length);
-    if ((len_sq > max_sq) && (len_sq > 0.0_f64)) {
+    if (len_sq > max_sq) && (len_sq > 0.0_f64) {
         let scale = (max_length / (len_sq).sqrt());
         out.x = (vx * scale);
         out.y = (vy * scale);
@@ -164,7 +164,7 @@ pub fn get_velocity(
         .iter()
         .find(|(key, _)| key == &(source).clone())
         .map(|(_, value)| value.clone());
-    if ((sample).is_none() || (sample.as_ref().unwrap().last_frame_id != field.frame_id)) {
+    if ((sample).is_none()) || (sample.as_ref().unwrap().last_frame_id != field.frame_id) {
         out.x = 0.0_f64;
         out.y = 0.0_f64;
         return out.clone();
@@ -181,15 +181,15 @@ pub fn has_velocity(field: &VelocityField, source: crate::OpaqueHostValue) -> bo
         .iter()
         .find(|(key, _)| key == &(source).clone())
         .map(|(_, value)| value.clone());
-    return (((sample).is_some() && (sample.as_ref().unwrap().last_frame_id == field.frame_id))
+    return (((sample).is_some()) && (sample.as_ref().unwrap().last_frame_id == field.frame_id))
         && ((sample.as_ref().unwrap().velocity.x != 0.0_f64)
-            || (sample.as_ref().unwrap().velocity.y != 0.0_f64)));
+            || (sample.as_ref().unwrap().velocity.y != 0.0_f64));
 }
 
 // Source: upstream/packages/velocity/src/velocityField.ts:112 (sha256:2c406cd053fec2c78104de5760c0f0c13fbc9140caaef30a2484d4b14c87ea6f)
 pub fn is_velocity_zero(velocity: &Velocity2D, epsilon: Option<f64>) -> bool {
     let e = (epsilon).unwrap_or(0.0_f64);
-    return (((velocity.x).abs() <= e) && ((velocity.y).abs() <= e));
+    return ((velocity.x).abs() <= e) && ((velocity.y).abs() <= e);
 }
 
 // Source: upstream/packages/velocity/src/velocityField.ts:118 (sha256:9eeecc456d811005b724d64c80b5823717a201ead6cc5e66e8c25fc21336e603)

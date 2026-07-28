@@ -14,7 +14,7 @@ pub struct GlyphSource {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub get_glyph_atlas_image: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(f64) -> Option<ImageResource> + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut(Option<f64>) -> Option<ImageResource> + Send + 'static>>,
     >,
     pub get_glyph_entry: std::sync::Arc<
         std::sync::Mutex<Box<dyn FnMut(f64) -> Option<GlyphEntry> + Send + 'static>>,

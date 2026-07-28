@@ -47,17 +47,17 @@ static LINEAR_PER_UNIT: std::sync::LazyLock<Vec<(LightUnit, f64)>> =
     std::sync::LazyLock::new(|| {
         let mut __flight_record = Vec::new();
         __flight_record.push((
-            candela_light_unit_constant,
+            (candela_light_unit_constant).to_owned(),
             (1.0_f64 / REFERENCE_PHOTOMETRIC_LEVEL),
         ));
         __flight_record.push((
-            lumen_light_unit_constant,
+            (lumen_light_unit_constant).to_owned(),
             (1.0_f64 / ((REFERENCE_PHOTOMETRIC_LEVEL * 4.0_f64) * std::f64::consts::PI)),
         ));
         __flight_record.push((
-            lux_light_unit_constant,
+            (lux_light_unit_constant).to_owned(),
             (1.0_f64 / REFERENCE_PHOTOMETRIC_LEVEL),
         ));
-        __flight_record.push((unitless_light_unit_constant, 1.0_f64));
+        __flight_record.push(((unitless_light_unit_constant).to_owned(), 1.0_f64));
         __flight_record
     });

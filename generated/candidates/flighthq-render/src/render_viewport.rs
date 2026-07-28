@@ -67,8 +67,8 @@ pub fn is_renderable_in_viewport(
     let vp_min_y = viewport.y;
     let vp_max_x = (viewport.x + viewport.width);
     let vp_max_y = (viewport.y + viewport.height);
-    return (!((((obj_max_x < vp_min_x) || (obj_min_x > vp_max_x)) || (obj_max_y < vp_min_y))
-        || (obj_min_y > vp_max_y)));
+    return (!(((obj_max_x < vp_min_x) || (obj_min_x > vp_max_x)) || (obj_max_y < vp_min_y))
+        || (obj_min_y > vp_max_y));
 }
 
 // Source: upstream/packages/render/src/renderViewport.ts:59 (sha256:5296a3d8d8ddfa5f1fb1ed6ee071836ec7e027ef722494a8c3fc4b2d73857767)
@@ -86,7 +86,7 @@ pub fn is_render_proxy_in_viewport(
 
 // Source: upstream/packages/render/src/renderViewport.ts:70 (sha256:e4c07771d9dd001e5435ebb1141b00de6a69b5cde2855265ca0daf6c6d21b7fe)
 fn is_spatial2_d_node(source: crate::OpaqueHostValue) -> bool {
-    return (((source).is_some()
+    return (((source).is_some())
         && (match &(source) {
             crate::OpaqueHostValue::Undefined => "undefined",
             crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
@@ -94,7 +94,7 @@ fn is_spatial2_d_node(source: crate::OpaqueHostValue) -> bool {
             crate::OpaqueHostValue::Number(_) => "number",
             crate::OpaqueHostValue::String(_) => "string",
         } == "object"))
-        && false);
+        && (false);
 }
 
 // Source: upstream/packages/render/src/renderViewport.ts:75 (sha256:9fff48d19fed43cbeb5a4cd248af698d2084de74b47889d361721625829a5f38)

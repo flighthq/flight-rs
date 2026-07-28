@@ -14,7 +14,7 @@ pub fn acquire_empty_vector2() -> Vector2 {
     let mut v = acquire_vector2();
     v.x = 0.0_f64;
     v.y = 0.0_f64;
-    return (v).clone();
+    return v;
 }
 
 // Source: upstream/packages/geometry/src/vector2Pool.ts:12 (sha256:ef001613245ab8bd9b0f2e4662379929788bf0740263e1dbfb7501b89b760567)

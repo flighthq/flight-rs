@@ -33,7 +33,7 @@ pub fn get_xml_element_attribute_number(element: &XmlElement, name: String) -> O
         .map(|(_, value)| value)
         .expect("TypeScript Record key was absent")
         .clone();
-    if ((value).is_none() || ((value).trim().to_owned() == "")) {
+    if ((value).is_none()) || ((value).trim().to_owned() == "") {
         return None;
     }
     let parsed = number(value);

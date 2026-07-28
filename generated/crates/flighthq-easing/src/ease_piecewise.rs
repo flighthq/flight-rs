@@ -61,8 +61,8 @@ pub fn ease_piecewise(segments: Vec<EasingSegment>) -> EasingFunction {
                 let mut i = 0.0_f64;
                 while (i < ((*breakpoints.lock().unwrap()).len() as f64)) {
                     let bp = (*breakpoints.lock().unwrap())[i as usize].clone();
-                    if ((t <= bp.end)
-                        || (i == (((*breakpoints.lock().unwrap()).len() as f64) - 1.0_f64)))
+                    if (t <= bp.end)
+                        || (i == (((*breakpoints.lock().unwrap()).len() as f64) - 1.0_f64))
                     {
                         let span = (bp.end - bp.start);
                         let local_t = if (span > 0.0_f64) {
@@ -79,7 +79,11 @@ pub fn ease_piecewise(segments: Vec<EasingSegment>) -> EasingFunction {
                                 local_t
                             }
                         };
-                        return ((bp.ease).clone()).lock().unwrap()(clamped_t);
+                        return {
+                            let __flight_callback = (bp.ease).clone();
+                            let __flight_result = __flight_callback.lock().unwrap()(clamped_t);
+                            __flight_result
+                        };
                     }
                     {
                         i += 1.0;
@@ -87,9 +91,12 @@ pub fn ease_piecewise(segments: Vec<EasingSegment>) -> EasingFunction {
                     };
                 }
             }
-            return ((segments[((segments.len() as f64) - 1.0_f64) as usize].ease).clone())
-                .lock()
-                .unwrap()(1.0_f64);
+            return {
+                let __flight_callback =
+                    (segments[((segments.len() as f64) - 1.0_f64) as usize].ease).clone();
+                let __flight_result = __flight_callback.lock().unwrap()(1.0_f64);
+                __flight_result
+            };
         }
     })
         as Box<dyn FnMut(f64) -> f64 + Send + 'static>));

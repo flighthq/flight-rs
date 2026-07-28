@@ -134,7 +134,7 @@ pub fn create_animation_player(
         loop_: (opts.as_ref().and_then(|value| value.loop_)).unwrap_or(true),
         loop_mode: Some(
             (opts.as_ref().and_then(|value| (value.loop_mode).clone()))
-                .unwrap_or(animation_loop_mode_repeat_constant),
+                .unwrap_or((animation_loop_mode_repeat_constant).to_owned()),
         ),
         on_finished: None,
         on_looped: None,
@@ -195,7 +195,7 @@ pub fn stop_animation_player(player: &mut AnimationPlayer) -> () {
 // Source: upstream/packages/animation/src/animationPlayer.ts:165 (sha256:3bb7406c624dfcc7fe82466034bddb751f041fed55e5dbd6853b7e6177c13f9b)
 fn consume_animation_player_loop(player: &mut AnimationPlayer) -> bool {
     let rc = player.repeat_count;
-    if ((rc).is_none() || (rc < 0.0_f64)) {
+    if ((rc).is_none()) || (rc < 0.0_f64) {
         return true;
     }
     if (rc) == Some(0.0_f64) {

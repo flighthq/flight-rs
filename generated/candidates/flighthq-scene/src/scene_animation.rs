@@ -18,8 +18,8 @@ pub fn apply_animation_clip_to_scene(clip: &mut AnimationClip, time: f64) -> () 
         while (i < (clip.channels.len() as f64)) {
             let mut channel = clip.channels[i as usize].clone();
             let mut target = (channel.target_ref).clone();
-            if (((target).is_none() || ("object" != "object"))
-                || ((target.as_mut().unwrap().node).clone()).is_none())
+            if (((target).is_none()) || ("object" != "object"))
+                || (((target.as_mut().unwrap().node).clone()).is_none())
             {
                 {
                     i += 1.0;
@@ -37,7 +37,9 @@ pub fn apply_animation_clip_to_scene(clip: &mut AnimationClip, time: f64) -> () 
                     continue;
                 }
                 sample_animation_track(
-                    &mut morph.as_mut().unwrap().weights,
+                    &(crate::FlightUnion2::<Vec<f64>, Vec<f32>>::B(
+                        (morph.as_mut().unwrap().weights).clone(),
+                    )),
                     &mut channel.track,
                     time,
                 );
@@ -47,7 +49,11 @@ pub fn apply_animation_clip_to_scene(clip: &mut AnimationClip, time: f64) -> () 
                 };
                 continue;
             }
-            sample_animation_track(&mut _SCRATCH, &mut channel.track, time);
+            sample_animation_track(
+                &(crate::FlightUnion2::<Vec<f64>, Vec<f32>>::A((_SCRATCH).clone())),
+                &mut channel.track,
+                time,
+            );
             if ((target.as_mut().unwrap().path).clone() == "Translation") {
                 set_vector3(
                     &mut target.as_mut().unwrap().node.position,

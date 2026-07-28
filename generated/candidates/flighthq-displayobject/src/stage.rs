@@ -19,14 +19,14 @@ pub fn create_stage(obj: Option<Stage>) -> Stage {
     let mut stage = create_viewport(Some(Viewport::<DisplayObjectTraits> {
         __flight_identity: std::sync::Arc::new(()),
         align: (obj.as_ref().map(|value| (value.align).clone())).unwrap(),
-        root: root,
+        root: Some(root),
         scale_mode: (obj.as_ref().map(|value| (value.scale_mode).clone())).unwrap(),
     }));
     stage.color = obj.as_ref().and_then(|value| value.color);
     stage.stage_height = (obj.as_ref().map(|value| value.stage_height)).unwrap_or(550.0_f64);
     stage.stage_width = (obj.as_ref().map(|value| value.stage_width)).unwrap_or(400.0_f64);
     get_node_runtime(&root).stage = Some((stage).clone());
-    return (stage).clone();
+    return stage;
 }
 
 // Source: upstream/packages/displayobject/src/stage.ts:32 (sha256:d0afe852919bc94716fa0e218a45da19d3a7c50ecc4bfc997edc1c6d3da9b07b)
@@ -70,7 +70,9 @@ pub fn get_stage_runtime(source: &mut Stage) -> StageRuntime {
 
 // Source: upstream/packages/displayobject/src/stage.ts:65 (sha256:d73d56adcdeef33c175e91201573449d725352252c6d658aaf412702cfb59586)
 pub fn get_stage_signals(source: &Stage) -> Option<StageSignals> {
-    let runtime = panic!("entity runtime storage requires the generated native entity trait");
+    let runtime = Some(panic!(
+        "entity runtime storage requires the generated native entity trait"
+    ));
     return runtime
         .as_ref()
         .and_then(|value| (value.stage_signals).clone());
@@ -78,12 +80,14 @@ pub fn get_stage_signals(source: &Stage) -> Option<StageSignals> {
 
 // Source: upstream/packages/displayobject/src/stage.ts:70 (sha256:53e699b0818e59446648ed2b595e699ba69afbf416e121f633142b3ce6fb1270)
 pub fn set_stage_size(source: &mut Stage, width: f64, height: f64) -> () {
-    if ((source.stage_width == width) && (source.stage_height == height)) {
+    if (source.stage_width == width) && (source.stage_height == height) {
         return;
     }
     source.stage_width = width;
     source.stage_height = height;
-    let runtime = panic!("entity runtime storage requires the generated native entity trait");
+    let runtime = Some(panic!(
+        "entity runtime storage requires the generated native entity trait"
+    ));
     if (runtime
         .as_ref()
         .and_then(|value| (value.stage_signals).clone()))
@@ -105,11 +109,13 @@ pub fn set_stage_size(source: &mut Stage, width: f64, height: f64) -> () {
 
 // Source: upstream/packages/displayobject/src/stage.ts:78 (sha256:1a05e17c0525eeffdb91b14d2c230cc60f78361bc745327ce885abf240ec08ff)
 fn ensure_stage_runtime(source: &mut Stage) -> StageRuntime {
-    let existing = panic!("entity runtime storage requires the generated native entity trait");
+    let existing = Some(panic!(
+        "entity runtime storage requires the generated native entity trait"
+    ));
     if (existing).is_some() {
-        return (existing.as_ref().unwrap()).clone();
+        return existing.as_ref().unwrap();
     }
     let runtime = create_stage_runtime();
     ();
-    return (runtime).clone();
+    return runtime;
 }

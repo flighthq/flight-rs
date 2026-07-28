@@ -24,64 +24,76 @@ impl PartialEq for AttachAppLifecycleRecord1 {
 
 pub fn attach_app_lifecycle(app: AppLifecycle) -> () {
     detach_app_lifecycle(&app);
-    let backend = get_lifecycle_backend();
+    let backend: std::sync::Arc<std::sync::Mutex<LifecycleBackend>> =
+        std::sync::Arc::new(std::sync::Mutex::new(get_lifecycle_backend()));
     let previous: std::sync::Arc<std::sync::Mutex<AppLifecycleState>> =
-        std::sync::Arc::new(std::sync::Mutex::new(((backend.get_state).clone())
-            .lock()
-            .unwrap()()));
-    let unsubscribe_state = ((backend.subscribe).clone()).lock().unwrap()(std::sync::Arc::new(
-        std::sync::Mutex::new(Box::new({
-            let app = app.clone();
-            let backend = backend.clone();
-            let mut previous = previous.clone();
-            move || -> () {
-                let state = ((backend.get_state).clone()).lock().unwrap()();
-                emit_signal((app.on_state_change).clone(), ((state).clone(),));
-                if ((state == "active") && ((*previous.lock().unwrap()).clone() != "active")) {
-                    emit_signal((app.on_resume).clone(), ());
-                    let saved = (*_SAVED_STATE.lock().unwrap())
-                        .iter()
-                        .find(|(key, _)| key == &(app).clone())
-                        .map(|(_, value)| value.clone());
-                    if (saved).is_some() {
-                        emit_signal(
-                            (app.on_restore_state).clone(),
-                            ((saved.as_ref().unwrap()).clone(),),
-                        );
-                    }
-                } else {
-                    if ((state != "active") && ((*previous.lock().unwrap()).clone() == "active")) {
-                        emit_signal((app.on_pause).clone(), ());
-                        let state_bag: Vec<(String, crate::OpaqueHostValue)> = {
-                            let mut __flight_record = Vec::new();
-                            __flight_record
-                        };
-                        emit_signal((app.on_save_state).clone(), ((state_bag).clone(),));
+        std::sync::Arc::new(std::sync::Mutex::new({
+            let __flight_callback = ((*backend.lock().unwrap()).get_state).clone();
+            let __flight_result = __flight_callback.lock().unwrap()();
+            __flight_result
+        }));
+    let unsubscribe_state = {
+        let __flight_callback = ((*backend.lock().unwrap()).subscribe).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(std::sync::Arc::new(
+            std::sync::Mutex::new(Box::new({
+                let app = app.clone();
+                let mut backend = backend.clone();
+                let mut previous = previous.clone();
+                move || -> () {
+                    let state = {
+                        let __flight_callback = ((*backend.lock().unwrap()).get_state).clone();
+                        let __flight_result = __flight_callback.lock().unwrap()();
+                        __flight_result
+                    };
+                    emit_signal((app.on_state_change).clone(), ((state).clone(),));
+                    if (state == "active") && ((*previous.lock().unwrap()).clone() != "active") {
+                        emit_signal((app.on_resume).clone(), ());
+                        let saved = (*_SAVED_STATE.lock().unwrap())
+                            .iter()
+                            .find(|(key, _)| key == &(app).clone())
+                            .map(|(_, value)| value.clone());
+                        if (saved).is_some() {
+                            emit_signal(
+                                (app.on_restore_state).clone(),
+                                ((saved.as_ref().unwrap()).clone(),),
+                            );
+                        }
+                    } else {
+                        if (state != "active") && ((*previous.lock().unwrap()).clone() == "active")
                         {
-                            let __flight_key = (app).clone();
-                            let __flight_value = (state_bag).clone();
-                            if let Some((_, value)) = (*_SAVED_STATE.lock().unwrap())
-                                .iter_mut()
-                                .find(|(key, _)| key == &__flight_key)
+                            emit_signal((app.on_pause).clone(), ());
+                            let state_bag: Vec<(String, crate::OpaqueHostValue)> = {
+                                let mut __flight_record = Vec::new();
+                                __flight_record
+                            };
+                            emit_signal((app.on_save_state).clone(), ((state_bag).clone(),));
                             {
-                                *value = __flight_value;
-                            } else {
-                                (*_SAVED_STATE.lock().unwrap())
-                                    .push((__flight_key, __flight_value));
-                            }
-                        };
+                                let __flight_key = (app).clone();
+                                let __flight_value = (state_bag).clone();
+                                if let Some((_, value)) = (*_SAVED_STATE.lock().unwrap())
+                                    .iter_mut()
+                                    .find(|(key, _)| key == &__flight_key)
+                                {
+                                    *value = __flight_value;
+                                } else {
+                                    (*_SAVED_STATE.lock().unwrap())
+                                        .push((__flight_key, __flight_value));
+                                }
+                            };
+                        }
                     }
+                    (*previous.lock().unwrap()) = (state).clone();
                 }
-                (*previous.lock().unwrap()) = (state).clone();
-            }
-        }) as Box<dyn FnMut() -> () + Send + 'static>),
-    ));
+            }) as Box<dyn FnMut() -> () + Send + 'static>),
+        ));
+        __flight_result
+    };
     let unsubscribe_memory: std::sync::Arc<
         std::sync::Mutex<
             Option<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
         >,
     > = std::sync::Arc::new(std::sync::Mutex::new(None));
-    let mem_sub = (backend.subscribe_memory_warning).clone();
+    let mem_sub = ((*backend.lock().unwrap()).subscribe_memory_warning).clone();
     if (mem_sub).is_some() {
         (*unsubscribe_memory.lock().unwrap()) =
             Some(((mem_sub.as_ref().unwrap()).clone()).lock().unwrap()(
@@ -100,7 +112,11 @@ pub fn attach_app_lifecycle(app: AppLifecycle) -> () {
             let mut unsubscribe_memory = unsubscribe_memory.clone();
             let unsubscribe_state = unsubscribe_state.clone();
             move || -> () {
-                ((unsubscribe_state).clone()).lock().unwrap()();
+                {
+                    let __flight_callback = (unsubscribe_state).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                };
                 {
                     let __flight_callback = (*unsubscribe_memory.lock().unwrap()).clone();
                     __flight_callback
@@ -206,7 +222,11 @@ pub fn detach_app_lifecycle(app: &AppLifecycle) -> () {
         .find(|(key, _)| key == &(*app).clone())
         .map(|(_, value)| value.clone());
     if (unsubscribe).is_some() {
-        ((unsubscribe.as_ref().unwrap()).clone()).lock().unwrap()();
+        {
+            let __flight_callback = (unsubscribe.as_ref().unwrap()).clone();
+            let __flight_result = __flight_callback.lock().unwrap()();
+            __flight_result
+        };
         {
             let __flight_key = (*app).clone();
             if let Some(__flight_index) = (*_SUBSCRIPTIONS.lock().unwrap())
@@ -243,7 +263,11 @@ pub fn dispose_app_lifecycle(app: &AppLifecycle) -> () {
 pub fn get_app_launch_kind() -> AppLaunchKind {
     let backend = get_lifecycle_backend();
     return if ((backend.get_launch_kind).clone()).is_some() {
-        backend.get_launch_kind.as_ref().unwrap().lock().unwrap()()
+        {
+            let __flight_callback = backend.get_launch_kind.as_ref().unwrap().clone();
+            let __flight_result = __flight_callback.lock().unwrap()();
+            __flight_result
+        }
     } else {
         "warm".to_owned()
     };
@@ -251,9 +275,11 @@ pub fn get_app_launch_kind() -> AppLaunchKind {
 
 // Source: upstream/packages/lifecycle/src/lifecycle.ts:193 (sha256:c1392d830e9ab89b26fb50a32280ba73768d9c941f433aa9482f658a98469c92)
 pub fn get_app_lifecycle_state() -> AppLifecycleState {
-    return ((get_lifecycle_backend().get_state).clone())
-        .lock()
-        .unwrap()();
+    return {
+        let __flight_callback = (get_lifecycle_backend().get_state).clone();
+        let __flight_result = __flight_callback.lock().unwrap()();
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/lifecycle/src/lifecycle.ts:198 (sha256:6811261a7946ac75681e265bed72cddff3860ac612efdc2e32df77fe916dc590)
@@ -266,26 +292,29 @@ pub fn get_lifecycle_backend() -> LifecycleBackend {
 
 // Source: upstream/packages/lifecycle/src/lifecycle.ts:204 (sha256:d882d858252044c15716ada8699c25e7e235e8cc2d5f117c590718ab3639247f)
 pub fn is_app_active() -> bool {
-    return (((get_lifecycle_backend().get_state).clone())
-        .lock()
-        .unwrap()()
-        == "active");
+    return ({
+        let __flight_callback = (get_lifecycle_backend().get_state).clone();
+        let __flight_result = __flight_callback.lock().unwrap()();
+        __flight_result
+    } == "active");
 }
 
 // Source: upstream/packages/lifecycle/src/lifecycle.ts:209 (sha256:521ed26d9bc2baab71a45784f52a6a7fcc99028e8e346bbd2c4d172ba0e904cc)
 pub fn is_app_background() -> bool {
-    return (((get_lifecycle_backend().get_state).clone())
-        .lock()
-        .unwrap()()
-        == "background");
+    return ({
+        let __flight_callback = (get_lifecycle_backend().get_state).clone();
+        let __flight_result = __flight_callback.lock().unwrap()();
+        __flight_result
+    } == "background");
 }
 
 // Source: upstream/packages/lifecycle/src/lifecycle.ts:215 (sha256:c9ff5acfd9137da4fa5e14db02abad7a223be4c84827f5f3ab9186b2eb5063d8)
 pub fn is_app_inactive() -> bool {
-    return (((get_lifecycle_backend().get_state).clone())
-        .lock()
-        .unwrap()()
-        == "inactive");
+    return ({
+        let __flight_callback = (get_lifecycle_backend().get_state).clone();
+        let __flight_result = __flight_callback.lock().unwrap()();
+        __flight_result
+    } == "inactive");
 }
 
 // Source: upstream/packages/lifecycle/src/lifecycle.ts:224 (sha256:4000bffc1a6de20600666c12896b5f39a46e54701b89c5743643ddbdb3065b06)

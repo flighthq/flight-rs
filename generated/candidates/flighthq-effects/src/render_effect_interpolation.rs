@@ -45,7 +45,7 @@ pub fn lerp_render_effect(
             .map(|(_, value)| value)
             .expect("TypeScript Record key was absent")
             .clone();
-        if ((match &(va) {
+        if (match &(va) {
             crate::OpaqueHostValue::Undefined => "undefined",
             crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
             crate::OpaqueHostValue::Bool(_) => "boolean",
@@ -58,7 +58,7 @@ pub fn lerp_render_effect(
                 crate::OpaqueHostValue::Bool(_) => "boolean",
                 crate::OpaqueHostValue::Number(_) => "number",
                 crate::OpaqueHostValue::String(_) => "string",
-            } == "number"))
+            } == "number")
         {
             {
                 let __flight_value = key;
@@ -67,7 +67,7 @@ pub fn lerp_render_effect(
                 }
             };
         } else {
-            if ((match &(va) {
+            if (match &(va) {
                 crate::OpaqueHostValue::Undefined => "undefined",
                 crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
                 crate::OpaqueHostValue::Bool(_) => "boolean",
@@ -80,7 +80,7 @@ pub fn lerp_render_effect(
                     crate::OpaqueHostValue::Bool(_) => "boolean",
                     crate::OpaqueHostValue::Number(_) => "number",
                     crate::OpaqueHostValue::String(_) => "string",
-                } == "boolean"))
+                } == "boolean")
             {
                 {
                     let __flight_value = key;
@@ -89,7 +89,7 @@ pub fn lerp_render_effect(
                     }
                 };
             } else {
-                if ((match &(va) {
+                if (match &(va) {
                     crate::OpaqueHostValue::Undefined => "undefined",
                     crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
                     crate::OpaqueHostValue::Bool(_) => "boolean",
@@ -102,7 +102,7 @@ pub fn lerp_render_effect(
                         crate::OpaqueHostValue::Bool(_) => "boolean",
                         crate::OpaqueHostValue::Number(_) => "number",
                         crate::OpaqueHostValue::String(_) => "string",
-                    } == "string"))
+                    } == "string")
                 {
                     {
                         let __flight_value = key;
@@ -118,9 +118,9 @@ pub fn lerp_render_effect(
         if (key == "kind") {
             continue;
         }
-        if (((!numeric_keys.iter().any(|item| item == &key))
+        if ((!numeric_keys.iter().any(|item| item == &key))
             && (!boolean_keys.iter().any(|item| item == &key)))
-            && (!string_keys.iter().any(|item| item == &key)))
+            && (!string_keys.iter().any(|item| item == &key))
         {
             let vb = b_rec
                 .iter()
@@ -191,7 +191,7 @@ pub fn lerp_render_effect(
             .map(|(_, value)| value)
             .expect("TypeScript Record key was absent")
             .clone();
-        if ((va).is_some() && (vb).is_some()) {
+        if ((va).is_some()) && ((vb).is_some()) {
             out_record
                 .iter()
                 .find(|(key, _)| key == &key)

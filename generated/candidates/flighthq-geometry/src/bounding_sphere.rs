@@ -95,7 +95,7 @@ pub fn is_bounding_sphere_intersecting_bounding_sphere(
     a: &BoundingSphereLike,
     b: &BoundingSphereLike,
 ) -> bool {
-    if ((a.radius < 0.0_f64) || (b.radius < 0.0_f64)) {
+    if (a.radius < 0.0_f64) || (b.radius < 0.0_f64) {
         return false;
     }
     let dx = (a.center.x - b.center.x);
@@ -186,7 +186,7 @@ pub fn set_bounding_sphere_from_aabb(out: &mut BoundingSphereLike, aabb: &AabbLi
     let max_x = aabb.max.x;
     let max_y = aabb.max.y;
     let max_z = aabb.max.z;
-    if (((min_x > max_x) || (min_y > max_y)) || (min_z > max_z)) {
+    if ((min_x > max_x) || (min_y > max_y)) || (min_z > max_z) {
         out.center.x = 0.0_f64;
         out.center.y = 0.0_f64;
         out.center.z = 0.0_f64;

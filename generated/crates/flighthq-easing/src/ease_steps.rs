@@ -20,17 +20,17 @@ pub fn ease_steps(count: f64, position: Option<StepPosition>) -> EasingFunction 
             count
         }
     };
-    let start_offset = if ((position == "jumpStart") || (position == "jumpBoth")) {
+    let start_offset = if (position == "jumpStart") || (position == "jumpBoth") {
         1.0_f64
     } else {
         0.0_f64
     };
     return std::sync::Arc::new(std::sync::Mutex::new(Box::new(move |t: f64| -> f64 {
         let mut step = ((t * count).floor() + start_offset);
-        if ((t >= 0.0_f64) && (step < 0.0_f64)) {
+        if (t >= 0.0_f64) && (step < 0.0_f64) {
             step = 0.0_f64;
         }
-        if ((t <= 1.0_f64) && (step > jumps)) {
+        if (t <= 1.0_f64) && (step > jumps) {
             step = jumps;
         }
         return (step / jumps);

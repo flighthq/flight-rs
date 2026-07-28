@@ -37,7 +37,7 @@ pub fn fill_surface_rectangle(dest: &mut SurfaceRegion, color: f64) -> () {
         let mut py = 0.0_f64;
         while (py < dest.height) {
             let y = (dest.y + py);
-            if ((y < 0.0_f64) || (y >= dest.surface.height)) {
+            if (y < 0.0_f64) || (y >= dest.surface.height) {
                 {
                     py += 1.0;
                     py
@@ -48,7 +48,7 @@ pub fn fill_surface_rectangle(dest: &mut SurfaceRegion, color: f64) -> () {
                 let mut px = 0.0_f64;
                 while (px < dest.width) {
                     let x = (dest.x + px);
-                    if ((x < 0.0_f64) || (x >= dest.surface.width)) {
+                    if (x < 0.0_f64) || (x >= dest.surface.width) {
                         {
                             px += 1.0;
                             px

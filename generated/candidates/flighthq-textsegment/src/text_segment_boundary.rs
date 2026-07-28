@@ -14,7 +14,7 @@ pub fn get_next_grapheme_boundary(text: String, index: f64, locale: Option<Strin
     return next_segment_boundary(
         &segment_graphemes((text).clone(), Some(((locale).clone().unwrap()).clone())),
         index,
-        text.length,
+        (text.encode_utf16().count() as f64),
     );
 }
 
@@ -23,7 +23,7 @@ pub fn get_next_word_boundary(text: String, index: f64, locale: Option<String>) 
     return next_segment_boundary(
         &segment_words((text).clone(), Some(((locale).clone().unwrap()).clone())),
         index,
-        text.length,
+        (text.encode_utf16().count() as f64),
     );
 }
 
@@ -49,18 +49,18 @@ pub fn get_word_range_at(
     index: f64,
     locale: Option<String>,
 ) -> Option<TextSegmentRange> {
-    if (text.length == 0.0_f64) {
+    if ((text.encode_utf16().count() as f64) == 0.0_f64) {
         return None;
     }
-    let clamped = clamp_index(index, text.length);
-    let lookup = if (clamped == text.length) {
-        (text.length - 1.0_f64)
+    let clamped = clamp_index(index, (text.encode_utf16().count() as f64));
+    let lookup = if (clamped == (text.encode_utf16().count() as f64)) {
+        ((text.encode_utf16().count() as f64) - 1.0_f64)
     } else {
         clamped
     };
     let segments = segment_words((text).clone(), Some(((locale).clone().unwrap()).clone()));
     for segment in (segments).iter().cloned() {
-        if ((lookup >= segment.start) && (lookup < segment.end)) {
+        if (lookup >= segment.start) && (lookup < segment.end) {
             return if (segment.is_word_like) == Some(true) {
                 Some(TextSegmentRange {
                     __flight_identity: std::sync::Arc::new(()),

@@ -51,12 +51,12 @@ pub fn emit_particle_burst(
     if (to_spawn <= 0.0_f64) {
         return 0.0_f64;
     }
-    let has_color_variance = ((((((config.color_start_variance_r != 0.0_f64)
+    let has_color_variance = (((((config.color_start_variance_r != 0.0_f64)
         || (config.color_start_variance_g != 0.0_f64))
         || (config.color_start_variance_b != 0.0_f64))
         || (config.color_end_variance_r != 0.0_f64))
         || (config.color_end_variance_g != 0.0_f64))
-        || (config.color_end_variance_b != 0.0_f64));
+        || (config.color_end_variance_b != 0.0_f64);
     let new_count = (live_count + to_spawn);
     reserve_particle_emitter(emitter, new_count);
     ensure_particle_emitter_state_capacity(state, new_count, has_color_variance);
@@ -70,17 +70,17 @@ pub fn emit_particle_burst(
     let color_curve = (config.color_curve).clone();
     let scale_curve = (config.scale_curve).clone();
     let has_alpha_curve =
-        ((alpha_curve).is_some() && (alpha_curve.as_ref().unwrap().length > 0.0_f64));
+        ((alpha_curve).is_some()) && (alpha_curve.as_ref().unwrap().length > 0.0_f64);
     let has_color_curve =
-        ((color_curve).is_some() && (color_curve.as_ref().unwrap().length >= 3.0_f64));
+        ((color_curve).is_some()) && (color_curve.as_ref().unwrap().length >= 3.0_f64);
     let has_scale_curve =
-        ((scale_curve).is_some() && (scale_curve.as_ref().unwrap().length > 0.0_f64));
+        ((scale_curve).is_some()) && (scale_curve.as_ref().unwrap().length > 0.0_f64);
     let base_angle = (config.direction_y).atan2(config.direction_x);
     let region_range = (config.region_id_max - config.region_id_min);
     let region_id_min = config.region_id_min;
     let rot_speed_range = (config.rotation_speed_max - config.rotation_speed_min);
     let has_rot_speed =
-        ((config.rotation_speed_min != 0.0_f64) || (config.rotation_speed_max != 0.0_f64));
+        (config.rotation_speed_min != 0.0_f64) || (config.rotation_speed_max != 0.0_f64);
     let has_tint = (tint).is_some();
     let tint_r = if has_tint {
         ((__flight_js_to_i32(
@@ -116,42 +116,73 @@ pub fn emit_particle_burst(
         while (s_idx < to_spawn) {
             let idx = (live_count + s_idx);
             let lifetime = (config.lifetime_min
-                + (((state.random).clone()).lock().unwrap()()
-                    * (config.lifetime_max - config.lifetime_min)));
+                + ({
+                    let __flight_callback = (state.random).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                } * (config.lifetime_max - config.lifetime_min)));
             let lt = (idx * 2.0_f64);
             state.lifetimes[lt as usize] = (0.0_f64) as f32;
             state.lifetimes[(lt + 1.0_f64) as usize] = (lifetime) as f32;
             let angle = (base_angle
-                + (((((state.random).clone()).lock().unwrap()() - 0.5_f64) * 2.0_f64)
+                + ((({
+                    let __flight_callback = (state.random).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                } - 0.5_f64)
+                    * 2.0_f64)
                     * config.spread));
             let speed = (config.speed_min
-                + (((state.random).clone()).lock().unwrap()()
-                    * (config.speed_max - config.speed_min)));
+                + ({
+                    let __flight_callback = (state.random).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                } * (config.speed_max - config.speed_min)));
             let vt = (idx * particle_velocity_stride_constant);
             state.velocities[vt as usize] = ((angle).cos() * speed) as f32;
             state.velocities[(vt + 1.0_f64) as usize] = ((angle).sin() * speed) as f32;
             state.velocities[(vt + 2.0_f64) as usize] = (0.0_f64) as f32;
             let mut spawn_x = x;
             let mut spawn_y = y;
-            if (((config.emitter_shape).clone() == "circle") && (config.emitter_radius > 0.0_f64)) {
-                let r =
-                    ((((state.random).clone()).lock().unwrap()()).sqrt() * config.emitter_radius);
-                let a = (((state.random).clone()).lock().unwrap()() * TWO_PI);
+            if ((config.emitter_shape).clone() == "circle") && (config.emitter_radius > 0.0_f64) {
+                let r = (({
+                    let __flight_callback = (state.random).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                })
+                .sqrt()
+                    * config.emitter_radius);
+                let a = ({
+                    let __flight_callback = (state.random).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                } * TWO_PI);
                 spawn_x += ((a).cos() * r);
                 spawn_y += ((a).sin() * r);
             } else {
-                if (((config.emitter_shape).clone() == "rect")
-                    && ((config.emitter_width > 0.0_f64) || (config.emitter_height > 0.0_f64)))
+                if ((config.emitter_shape).clone() == "rect")
+                    && ((config.emitter_width > 0.0_f64) || (config.emitter_height > 0.0_f64))
                 {
-                    spawn_x += ((((state.random).clone()).lock().unwrap()() - 0.5_f64)
+                    spawn_x += (({
+                        let __flight_callback = (state.random).clone();
+                        let __flight_result = __flight_callback.lock().unwrap()();
+                        __flight_result
+                    } - 0.5_f64)
                         * config.emitter_width);
-                    spawn_y += ((((state.random).clone()).lock().unwrap()() - 0.5_f64)
+                    spawn_y += (({
+                        let __flight_callback = (state.random).clone();
+                        let __flight_result = __flight_callback.lock().unwrap()();
+                        __flight_result
+                    } - 0.5_f64)
                         * config.emitter_height);
                 }
             }
             let spawn_scale = (config.scale_min
-                + (((state.random).clone()).lock().unwrap()()
-                    * (config.scale_max - config.scale_min)));
+                + ({
+                    let __flight_callback = (state.random).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                } * (config.scale_max - config.scale_min)));
             state.scales[idx as usize] = (spawn_scale) as f32;
             let tt = (idx * PARTICLE_TRANSFORM_STRIDE);
             emitter.data.transforms[tt as usize] = (spawn_x) as f32;
@@ -180,32 +211,62 @@ pub fn emit_particle_burst(
                 if has_color_variance {
                     let r0 = clamp01(
                         (color_start_r
-                            + (((((state.random).clone()).lock().unwrap()() - 0.5_f64) * 2.0_f64)
+                            + ((({
+                                let __flight_callback = (state.random).clone();
+                                let __flight_result = __flight_callback.lock().unwrap()();
+                                __flight_result
+                            } - 0.5_f64)
+                                * 2.0_f64)
                                 * config.color_start_variance_r)),
                     );
                     let g0 = clamp01(
                         (color_start_g
-                            + (((((state.random).clone()).lock().unwrap()() - 0.5_f64) * 2.0_f64)
+                            + ((({
+                                let __flight_callback = (state.random).clone();
+                                let __flight_result = __flight_callback.lock().unwrap()();
+                                __flight_result
+                            } - 0.5_f64)
+                                * 2.0_f64)
                                 * config.color_start_variance_g)),
                     );
                     let b0 = clamp01(
                         (color_start_b
-                            + (((((state.random).clone()).lock().unwrap()() - 0.5_f64) * 2.0_f64)
+                            + ((({
+                                let __flight_callback = (state.random).clone();
+                                let __flight_result = __flight_callback.lock().unwrap()();
+                                __flight_result
+                            } - 0.5_f64)
+                                * 2.0_f64)
                                 * config.color_start_variance_b)),
                     );
                     let r1 = clamp01(
                         (color_end_r
-                            + (((((state.random).clone()).lock().unwrap()() - 0.5_f64) * 2.0_f64)
+                            + ((({
+                                let __flight_callback = (state.random).clone();
+                                let __flight_result = __flight_callback.lock().unwrap()();
+                                __flight_result
+                            } - 0.5_f64)
+                                * 2.0_f64)
                                 * config.color_end_variance_r)),
                     );
                     let g1 = clamp01(
                         (color_end_g
-                            + (((((state.random).clone()).lock().unwrap()() - 0.5_f64) * 2.0_f64)
+                            + ((({
+                                let __flight_callback = (state.random).clone();
+                                let __flight_result = __flight_callback.lock().unwrap()();
+                                __flight_result
+                            } - 0.5_f64)
+                                * 2.0_f64)
                                 * config.color_end_variance_g)),
                     );
                     let b1 = clamp01(
                         (color_end_b
-                            + (((((state.random).clone()).lock().unwrap()() - 0.5_f64) * 2.0_f64)
+                            + ((({
+                                let __flight_callback = (state.random).clone();
+                                let __flight_result = __flight_callback.lock().unwrap()();
+                                __flight_result
+                            } - 0.5_f64)
+                                * 2.0_f64)
                                 * config.color_end_variance_b)),
                     );
                     state.color_birth[ct as usize] = (r0) as f32;
@@ -243,7 +304,11 @@ pub fn emit_particle_burst(
                 } else {
                     if (region_range > 0.0_f64) {
                         (__flight_js_to_i32(
-                            (((state.random).clone()).lock().unwrap()() * region_range),
+                            ({
+                                let __flight_callback = (state.random).clone();
+                                let __flight_result = __flight_callback.lock().unwrap()();
+                                __flight_result
+                            } * region_range),
                         ) | __flight_js_to_i32(0.0_f64)) as f64
                     } else {
                         0.0_f64
@@ -251,8 +316,11 @@ pub fn emit_particle_burst(
                 }) as u16;
             state.rotation_speeds[idx as usize] = if has_rot_speed {
                 (config.rotation_speed_min
-                    + (((state.random).clone()).lock().unwrap()() * rot_speed_range))
-                    as f32
+                    + ({
+                        let __flight_callback = (state.random).clone();
+                        let __flight_result = __flight_callback.lock().unwrap()();
+                        __flight_result
+                    } * rot_speed_range)) as f32
             } else {
                 (0.0_f64) as f32
             };

@@ -12,8 +12,7 @@ use flighthq_types::{
     GAMEPAD_BUTTON_KIND as gamepad_button_kind_values_constant, GamepadAxisKind, GamepadButtonKind,
     GamepadMappingKind, InputGamepadAxisData, InputGamepadButtonData, InputGamepadConnectData,
     InputKeyRepeatOptions, InputKeyRepeatTimer, InputKeyboardData, InputManager, InputPointerData,
-    InputSignals, InputState, InputTextData, KEY_MODIFIER as key_modifier_constant, KeyCode,
-    MouseWheelMode,
+    InputSignals, InputState, InputTextData, KeyCode, KeyModifier, MouseWheelMode,
 };
 
 #[inline]
@@ -224,11 +223,17 @@ pub fn attach_gamepad_input(
         &manager,
         (target).clone(),
         *K_GAMEPAD_INPUT,
-        &mut || -> () {
-            crate::host_value::<()>("host.removeEventListener");
-            crate::host_value::<()>("host.removeEventListener");
-            crate::host_value::<()>("host.call");
-        },
+        std::sync::Arc::new(std::sync::Mutex::new(Box::new({
+            let on_gamepad_connected = on_gamepad_connected.clone();
+            let on_gamepad_disconnected = on_gamepad_disconnected.clone();
+            let mut raf_id = raf_id.clone();
+            move || -> () {
+                crate::host_value::<()>("host.removeEventListener");
+                crate::host_value::<()>("host.removeEventListener");
+                crate::host_value::<()>("host.call");
+            }
+        })
+            as Box<dyn FnMut() -> () + Send + 'static>)),
     );
     {
         options;
@@ -290,10 +295,15 @@ pub fn attach_keyboard_input(
         &manager,
         (target).clone(),
         *K_KEYBOARD_INPUT,
-        &mut || -> () {
-            crate::host_value::<()>("host.removeEventListener");
-            crate::host_value::<()>("host.removeEventListener");
-        },
+        std::sync::Arc::new(std::sync::Mutex::new(Box::new({
+            let on_key_down = on_key_down.clone();
+            let on_key_up = on_key_up.clone();
+            move || -> () {
+                crate::host_value::<()>("host.removeEventListener");
+                crate::host_value::<()>("host.removeEventListener");
+            }
+        })
+            as Box<dyn FnMut() -> () + Send + 'static>)),
     );
 }
 
@@ -419,13 +429,21 @@ pub fn attach_pointer_input(
         &manager,
         (element).clone(),
         *K_POINTER_INPUT,
-        &mut || -> () {
-            crate::host_value::<()>("host.removeEventListener");
-            crate::host_value::<()>("host.removeEventListener");
-            crate::host_value::<()>("host.removeEventListener");
-            crate::host_value::<()>("host.removeEventListener");
-            crate::host_value::<()>("host.removeEventListener");
-        },
+        std::sync::Arc::new(std::sync::Mutex::new(Box::new({
+            let on_context_menu = on_context_menu.clone();
+            let on_pointer_cancel = on_pointer_cancel.clone();
+            let on_pointer_down = on_pointer_down.clone();
+            let on_pointer_move = on_pointer_move.clone();
+            let on_pointer_up = on_pointer_up.clone();
+            move || -> () {
+                crate::host_value::<()>("host.removeEventListener");
+                crate::host_value::<()>("host.removeEventListener");
+                crate::host_value::<()>("host.removeEventListener");
+                crate::host_value::<()>("host.removeEventListener");
+                crate::host_value::<()>("host.removeEventListener");
+            }
+        })
+            as Box<dyn FnMut() -> () + Send + 'static>)),
     );
 }
 
@@ -468,7 +486,11 @@ pub fn attach_relative_pointer_input(
         &manager,
         (element).clone(),
         *K_RELATIVE_POINTER_INPUT,
-        &mut || -> () { crate::host_value::<()>("host.removeEventListener") },
+        std::sync::Arc::new(std::sync::Mutex::new(Box::new({
+            let handler = handler.clone();
+            move || -> () { crate::host_value::<()>("host.removeEventListener") }
+        })
+            as Box<dyn FnMut() -> () + Send + 'static>)),
     );
 }
 
@@ -487,8 +509,7 @@ pub fn attach_text_input(
                 return;
             }
             let ie = (e).clone();
-            let text = (crate::host_value::<crate::OpaqueHostValue>("host.data"))
-                .unwrap_or(crate::OpaqueHostValue::String("".to_owned()));
+            let text = (crate::host_value::<Option<String>>("host.data")).unwrap_or("".to_owned());
             (*_TEXT_DATA.lock().unwrap()).is_composing =
                 crate::host_value::<bool>("host.isComposing");
             (*_TEXT_DATA.lock().unwrap()).text = text;
@@ -508,8 +529,7 @@ pub fn attach_text_input(
                 return;
             }
             let ce = (e).clone();
-            let text = (crate::host_value::<crate::OpaqueHostValue>("host.data"))
-                .unwrap_or(crate::OpaqueHostValue::String("".to_owned()));
+            let text = (crate::host_value::<Option<String>>("host.data")).unwrap_or("".to_owned());
             (*_TEXT_DATA.lock().unwrap()).is_composing = true;
             (*_TEXT_DATA.lock().unwrap()).text = text;
             emit_signal(
@@ -521,10 +541,20 @@ pub fn attach_text_input(
         as Box<dyn FnMut(crate::OpaqueHostValue) -> () + Send + 'static>));
     crate::host_value::<()>("host.addEventListener");
     crate::host_value::<()>("host.addEventListener");
-    set_input_binding(&manager, (element).clone(), *K_TEXT_INPUT, &mut || -> () {
-        crate::host_value::<()>("host.removeEventListener");
-        crate::host_value::<()>("host.removeEventListener");
-    });
+    set_input_binding(
+        &manager,
+        (element).clone(),
+        *K_TEXT_INPUT,
+        std::sync::Arc::new(std::sync::Mutex::new(Box::new({
+            let on_before_input = on_before_input.clone();
+            let on_composition_update = on_composition_update.clone();
+            move || -> () {
+                crate::host_value::<()>("host.removeEventListener");
+                crate::host_value::<()>("host.removeEventListener");
+            }
+        })
+            as Box<dyn FnMut() -> () + Send + 'static>)),
+    );
     {
         options;
         ()
@@ -582,7 +612,11 @@ pub fn attach_wheel_input(
         &manager,
         (element).clone(),
         *K_WHEEL_INPUT,
-        &mut || -> () { crate::host_value::<()>("host.removeEventListener") },
+        std::sync::Arc::new(std::sync::Mutex::new(Box::new({
+            let handler = handler.clone();
+            move || -> () { crate::host_value::<()>("host.removeEventListener") }
+        })
+            as Box<dyn FnMut() -> () + Send + 'static>)),
     );
 }
 
@@ -1149,15 +1183,27 @@ pub fn create_input_key_repeat_timer(options: InputKeyRepeatOptions) -> InputKey
             std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>,
         >|
               -> () {
-            ((stop).clone()).lock().unwrap()();
-            ((callback).clone()).lock().unwrap()();
+            {
+                let __flight_callback = (stop).clone();
+                let __flight_result = __flight_callback.lock().unwrap()();
+                __flight_result
+            };
+            {
+                let __flight_callback = (callback).clone();
+                let __flight_result = __flight_callback.lock().unwrap()();
+                __flight_result
+            };
             (*delay_id.lock().unwrap()) = Some(crate::set_timeout(
                 {
                     let callback = callback.clone();
                     let mut interval_id = interval_id.clone();
                     let options = options.clone();
                     move || -> () {
-                        ((callback).clone()).lock().unwrap()();
+                        {
+                            let __flight_callback = (callback).clone();
+                            let __flight_result = __flight_callback.lock().unwrap()();
+                            __flight_result
+                        };
                         (*interval_id.lock().unwrap()) = Some(crate::set_interval(
                             {
                                 let __flight_callback = (callback).clone();
@@ -1187,9 +1233,27 @@ pub fn create_input_key_repeat_timer(options: InputKeyRepeatOptions) -> InputKey
 
 // Source: upstream/packages/input/src/inputManager.ts:417 (sha256:0aa752968160d69181a564725ef4c7db5551e0f7e5230cbdc0104a5d2081bd0f)
 pub fn create_input_manager() -> InputManager {
-    return InputManager {
-        enabled: true,
-        ..(create_input_signals()).clone()
+    return {
+        let __flight_spread_0 = create_input_signals();
+        InputManager {
+            __flight_identity: std::sync::Arc::new(()),
+            on_gamepad_axis_move: (__flight_spread_0.on_gamepad_axis_move).clone(),
+            on_gamepad_button_down: (__flight_spread_0.on_gamepad_button_down).clone(),
+            on_gamepad_button_up: (__flight_spread_0.on_gamepad_button_up).clone(),
+            on_gamepad_connect: (__flight_spread_0.on_gamepad_connect).clone(),
+            on_gamepad_disconnect: (__flight_spread_0.on_gamepad_disconnect).clone(),
+            on_key_down: (__flight_spread_0.on_key_down).clone(),
+            on_key_up: (__flight_spread_0.on_key_up).clone(),
+            on_pointer_cancel: (__flight_spread_0.on_pointer_cancel).clone(),
+            on_pointer_down: (__flight_spread_0.on_pointer_down).clone(),
+            on_pointer_move: (__flight_spread_0.on_pointer_move).clone(),
+            on_pointer_move_relative: (__flight_spread_0.on_pointer_move_relative).clone(),
+            on_pointer_up: (__flight_spread_0.on_pointer_up).clone(),
+            on_text_edit: (__flight_spread_0.on_text_edit).clone(),
+            on_text_input: (__flight_spread_0.on_text_input).clone(),
+            on_wheel: (__flight_spread_0.on_wheel).clone(),
+            enabled: true,
+        }
     };
 }
 
@@ -1302,13 +1366,25 @@ pub fn get_coalesced_input_pointer_events(
     callback: &mut impl FnMut(InputPointerData) -> (),
 ) -> () {
     let coalesced = if ("undefined" == "function") {
-        crate::host_value::<()>("host.getCoalescedEvents")
+        Some(crate::host_value::<Vec<crate::OpaqueHostValue>>(
+            "host.call",
+        ))
     } else {
         None
     };
-    if ((coalesced).is_some() && (coalesced.length > 0.0_f64)) {
-        for e in (coalesced).iter().cloned() {
-            set_input_pointer_data(&mut (*_POINTER_DATA.lock().unwrap()), e, 0.0_f64, 0.0_f64);
+    if ((coalesced).is_some()) && ((coalesced.as_ref().unwrap().len() as f64) > 0.0_f64) {
+        for e in (coalesced)
+            .as_ref()
+            .expect("TypeScript nullable iterable was not narrowed")
+            .iter()
+            .cloned()
+        {
+            set_input_pointer_data(
+                &mut (*_POINTER_DATA.lock().unwrap()),
+                (e).clone(),
+                0.0_f64,
+                0.0_f64,
+            );
             callback((*_POINTER_DATA.lock().unwrap()).clone());
         }
     } else {
@@ -1361,29 +1437,28 @@ pub fn get_key_code_from_dom_keyboard_event(event: crate::OpaqueHostValue) -> f6
         return code;
     }
     if (crate::host_value::<f64>("host.length") == 1.0_f64) {
-        return (crate::host_value::<()>("host.toLowerCase").char_code_at)(0.0_f64);
+        return crate::host_value::<f64>("host.call");
     }
-    return (KEY_CODES_BY_KEY
+    return KEY_CODES_BY_KEY
         .iter()
         .find(|(key, _)| key == &crate::host_value::<String>("host.key"))
         .map(|(_, value)| value)
         .expect("TypeScript Record key was absent")
-        .clone())
-    .unwrap_or(KeyCode::UNKNOWN);
+        .clone();
 }
 
 // Source: upstream/packages/input/src/inputManager.ts:570 (sha256:8bb4b63cf36a75fad481d7886f69db5e02d1de022cc2ca3580802c252dee0474)
 pub fn get_key_modifier_from_dom_keyboard_event(event: crate::OpaqueHostValue) -> f64 {
-    let mut modifier = key_modifier_constant.none;
+    let mut modifier = KeyModifier::NONE;
     if crate::host_value::<bool>("host.altKey") {
         modifier = (__flight_js_to_i32(modifier)
             | __flight_js_to_i32(
                 if (crate::host_value::<crate::OpaqueHostValue>("host.location")
                     == crate::host_value::<crate::OpaqueHostValue>("host.DOM_KEY_LOCATION_RIGHT"))
                 {
-                    key_modifier_constant.right_alt
+                    KeyModifier::RIGHT_ALT
                 } else {
-                    key_modifier_constant.left_alt
+                    KeyModifier::LEFT_ALT
                 },
             )) as f64;
     }
@@ -1393,9 +1468,9 @@ pub fn get_key_modifier_from_dom_keyboard_event(event: crate::OpaqueHostValue) -
                 if (crate::host_value::<crate::OpaqueHostValue>("host.location")
                     == crate::host_value::<crate::OpaqueHostValue>("host.DOM_KEY_LOCATION_RIGHT"))
                 {
-                    key_modifier_constant.right_ctrl
+                    KeyModifier::RIGHT_CTRL
                 } else {
-                    key_modifier_constant.left_ctrl
+                    KeyModifier::LEFT_CTRL
                 },
             )) as f64;
     }
@@ -1405,9 +1480,9 @@ pub fn get_key_modifier_from_dom_keyboard_event(event: crate::OpaqueHostValue) -
                 if (crate::host_value::<crate::OpaqueHostValue>("host.location")
                     == crate::host_value::<crate::OpaqueHostValue>("host.DOM_KEY_LOCATION_RIGHT"))
                 {
-                    key_modifier_constant.right_meta
+                    KeyModifier::RIGHT_META
                 } else {
-                    key_modifier_constant.left_meta
+                    KeyModifier::LEFT_META
                 },
             )) as f64;
     }
@@ -1417,19 +1492,19 @@ pub fn get_key_modifier_from_dom_keyboard_event(event: crate::OpaqueHostValue) -
                 if (crate::host_value::<crate::OpaqueHostValue>("host.location")
                     == crate::host_value::<crate::OpaqueHostValue>("host.DOM_KEY_LOCATION_RIGHT"))
                 {
-                    key_modifier_constant.right_shift
+                    KeyModifier::RIGHT_SHIFT
                 } else {
-                    key_modifier_constant.left_shift
+                    KeyModifier::LEFT_SHIFT
                 },
             )) as f64;
     }
     if (Some(false)) == Some(true) {
-        modifier = (__flight_js_to_i32(modifier)
-            | __flight_js_to_i32(key_modifier_constant.caps_lock)) as f64;
+        modifier =
+            (__flight_js_to_i32(modifier) | __flight_js_to_i32(KeyModifier::CAPS_LOCK)) as f64;
     }
     if (Some(false)) == Some(true) {
-        modifier = (__flight_js_to_i32(modifier)
-            | __flight_js_to_i32(key_modifier_constant.num_lock)) as f64;
+        modifier =
+            (__flight_js_to_i32(modifier) | __flight_js_to_i32(KeyModifier::NUM_LOCK)) as f64;
     }
     return modifier;
 }
@@ -1456,7 +1531,8 @@ pub fn get_mouse_wheel_mode_from_dom_wheel_event(event: crate::OpaqueHostValue) 
 
 // Source: upstream/packages/input/src/inputManager.ts:598 (sha256:5ad2cbeaa23397e4827f4ba47fc0aaf28eb27a85617e7cd6e86e8984ef32acf7)
 pub fn has_input_pointer_lock() -> bool {
-    return (crate::host_value::<crate::OpaqueHostValue>("host.pointerLockElement")).is_some();
+    return (crate::host_value::<Option<crate::OpaqueHostValue>>("host.pointerLockElement"))
+        .is_some();
 }
 
 // Source: upstream/packages/input/src/inputManager.ts:606 (sha256:d927dcd51a3a70e13037227050648a1592dcf23ea1964f3017b0c965da8a6cae)
@@ -1489,12 +1565,12 @@ pub fn is_input_pointer_button_down(state: &InputState, pointer_id: f64, button:
 
 // Source: upstream/packages/input/src/inputManager.ts:625 (sha256:d597a9a5a2cb16b6ff0e355fb6b92d80b1ca6acb8bb1154b2a48a5964e9120c3)
 pub fn poll_gamepad_input(manager: &InputManager) -> () {
-    if ((!manager.enabled) || ("function" != "function")) {
+    if (!manager.enabled) || ("function" != "function") {
         return;
     }
-    let now = crate::host_value::<()>("host.now");
+    let now = crate::host_value::<f64>("host.call");
     let mut prev = get_or_create_gamepad_poll_state(manager);
-    let gamepads = crate::host_value::<()>("host.getGamepads");
+    let gamepads = crate::host_value::<Vec<Option<crate::OpaqueHostValue>>>("host.call");
     for pad in (gamepads).iter().cloned() {
         if (pad).is_none() {
             continue;
@@ -1502,19 +1578,19 @@ pub fn poll_gamepad_input(manager: &InputManager) -> () {
         let mut prev_axes = (prev
             .axes
             .iter()
-            .find(|(key, _)| key == &pad.index)
+            .find(|(key, _)| key == &crate::host_value::<f64>("host.index"))
             .map(|(_, value)| value.clone()))
         .unwrap_or(vec![]);
         let mut prev_buttons = (prev
             .buttons
             .iter()
-            .find(|(key, _)| key == &pad.index)
+            .find(|(key, _)| key == &crate::host_value::<f64>("host.index"))
             .map(|(_, value)| value.clone()))
         .unwrap_or(vec![]);
         {
             let mut i = 0.0_f64;
-            while (i < pad.axes.length) {
-                let value = pad.axes[i as usize].clone();
+            while (i < crate::host_value::<f64>("host.length")) {
+                let value = crate::host_value::<f64>("host.index");
                 if (value != prev_axes[i as usize].clone()) {
                     {
                         let __flight_index = (i) as usize;
@@ -1525,10 +1601,10 @@ pub fn poll_gamepad_input(manager: &InputManager) -> () {
                             prev_axes[__flight_index] = __flight_value;
                         }
                     };
-                    _axisData::axis = i;
-                    _axisData::gamepad = pad.index;
-                    _axisData::timeStamp = now;
-                    _axisData::value = value;
+                    (*_AXIS_DATA.lock().unwrap()).axis = i;
+                    (*_AXIS_DATA.lock().unwrap()).gamepad = crate::host_value::<f64>("host.index");
+                    (*_AXIS_DATA.lock().unwrap()).time_stamp = now;
+                    (*_AXIS_DATA.lock().unwrap()).value = value;
                     emit_signal(
                         (manager.on_gamepad_axis_move).clone(),
                         ((*_AXIS_DATA.lock().unwrap()).clone(),),
@@ -1542,24 +1618,25 @@ pub fn poll_gamepad_input(manager: &InputManager) -> () {
         }
         {
             let mut i = 0.0_f64;
-            while (i < pad.buttons.length) {
-                let btn = pad.buttons[i as usize].clone();
-                let was_pressed = (prev_buttons[i as usize].clone()).unwrap_or(false);
-                if (btn.pressed != was_pressed) {
+            while (i < crate::host_value::<f64>("host.length")) {
+                let btn = crate::host_value::<crate::OpaqueHostValue>("host.index");
+                let was_pressed = prev_buttons[i as usize].clone();
+                if (crate::host_value::<bool>("host.pressed") != was_pressed) {
                     {
                         let __flight_index = (i) as usize;
-                        let __flight_value = btn.pressed;
+                        let __flight_value = crate::host_value::<bool>("host.pressed");
                         if __flight_index == prev_buttons.len() {
                             prev_buttons.push(__flight_value);
                         } else {
                             prev_buttons[__flight_index] = __flight_value;
                         }
                     };
-                    _buttonData::button = i;
-                    _buttonData::gamepad = pad.index;
-                    _buttonData::timeStamp = now;
-                    _buttonData::value = btn.value;
-                    if btn.pressed {
+                    (*_BUTTON_DATA.lock().unwrap()).button = i;
+                    (*_BUTTON_DATA.lock().unwrap()).gamepad =
+                        crate::host_value::<f64>("host.index");
+                    (*_BUTTON_DATA.lock().unwrap()).time_stamp = now;
+                    (*_BUTTON_DATA.lock().unwrap()).value = crate::host_value::<f64>("host.value");
+                    if crate::host_value::<bool>("host.pressed") {
                         emit_signal(
                             (manager.on_gamepad_button_down).clone(),
                             ((*_BUTTON_DATA.lock().unwrap()).clone(),),
@@ -1578,7 +1655,7 @@ pub fn poll_gamepad_input(manager: &InputManager) -> () {
             }
         }
         {
-            let __flight_key = pad.index;
+            let __flight_key = crate::host_value::<f64>("host.index");
             let __flight_value = (prev_axes).clone();
             if let Some((_, value)) = prev.axes.iter_mut().find(|(key, _)| key == &__flight_key) {
                 *value = __flight_value;
@@ -1587,7 +1664,7 @@ pub fn poll_gamepad_input(manager: &InputManager) -> () {
             }
         };
         {
-            let __flight_key = pad.index;
+            let __flight_key = crate::host_value::<f64>("host.index");
             let __flight_value = (prev_buttons).clone();
             if let Some((_, value)) = prev
                 .buttons
@@ -1619,16 +1696,7 @@ pub fn request_input_pointer_lock(element: crate::OpaqueHostValue) -> crate::Pro
             {
                 let result = crate::host_value::<()>("host.requestPointerLock");
                 if false {
-                    return Some((result.then)(
-                        std::sync::Arc::new(std::sync::Mutex::new(
-                            Box::new(move || -> bool { true })
-                                as Box<dyn FnMut() -> bool + Send + 'static>,
-                        )),
-                        std::sync::Arc::new(std::sync::Mutex::new(Box::new(move || -> bool {
-                            false
-                        })
-                            as Box<dyn FnMut() -> bool + Send + 'static>)),
-                    ));
+                    return Some(crate::host_value::<crate::Promise<bool>>("host.then"));
                 }
                 return Some(crate::host_value::<crate::Promise<bool>>("host.resolve"));
             }
@@ -1643,9 +1711,7 @@ pub fn request_input_pointer_lock(element: crate::OpaqueHostValue) -> crate::Pro
             None
         })(),
     };
-    if let Some(__flight_return) = __flight_try_return {
-        return __flight_return;
-    }
+    return __flight_try_return.expect("TypeScript try/catch completed without returning");
 }
 
 // Source: upstream/packages/input/src/inputManager.ts:704 (sha256:1dfebf0bf8c055f63dcbff30aa18a098b528db1080a250015c7f66e20c281b04)
@@ -1684,12 +1750,14 @@ pub fn was_input_key_released(state: &InputState, key_code: f64) -> bool {
 
 // Source: upstream/packages/input/src/inputManager.ts:742 (sha256:cc9a775df4f4bbbd6043540597797cb0b55fc8f23d5a8ad5f14c6cef55e4b82e)
 fn get_key_code_from_dom_keyboard_code(code: String, location: f64) -> f64 {
-    if ((location == crate::host_value::<f64>("host.DOM_KEY_LOCATION_NUMPAD")) && {
-        let __flight_key = (code).clone();
-        NUMPAD_KEY_CODES_BY_CODE
-            .iter()
-            .any(|(key, _)| key == &__flight_key)
-    }) {
+    if (location == crate::host_value::<f64>("host.DOM_KEY_LOCATION_NUMPAD"))
+        && ({
+            let __flight_key = (code).clone();
+            NUMPAD_KEY_CODES_BY_CODE
+                .iter()
+                .any(|(key, _)| key == &__flight_key)
+        })
+    {
         return NUMPAD_KEY_CODES_BY_CODE
             .iter()
             .find(|(key, _)| key == &(code).clone())
@@ -1697,26 +1765,23 @@ fn get_key_code_from_dom_keyboard_code(code: String, location: f64) -> f64 {
             .expect("TypeScript Record key was absent")
             .clone();
     }
-    return (KEY_CODES_BY_CODE
+    return KEY_CODES_BY_CODE
         .iter()
         .find(|(key, _)| key == &(code).clone())
         .map(|(_, value)| value)
         .expect("TypeScript Record key was absent")
-        .clone())
-    .unwrap_or(KeyCode::UNKNOWN);
+        .clone();
 }
 
 // Source: upstream/packages/input/src/inputManager.ts:749 (sha256:40ca75bc1bd4bfd77ec9b3bbaf7470427dbec0de9c3cc45156b4da748285bbd8)
-fn get_pointer_type_from_dom_pointer_event(
-    event: crate::OpaqueHostValue,
-) -> crate::OpaqueHostValue {
-    return if (((crate::host_value::<String>("host.pointerType") == "mouse")
+fn get_pointer_type_from_dom_pointer_event(event: crate::OpaqueHostValue) -> String {
+    return if ((crate::host_value::<String>("host.pointerType") == "mouse")
         || (crate::host_value::<String>("host.pointerType") == "pen"))
-        || (crate::host_value::<String>("host.pointerType") == "touch"))
+        || (crate::host_value::<String>("host.pointerType") == "touch")
     {
-        crate::host_value::<crate::OpaqueHostValue>("host.pointerType")
+        crate::host_value::<String>("host.pointerType")
     } else {
-        crate::OpaqueHostValue::String("unknown".to_owned())
+        "unknown".to_owned()
     };
 }
 
@@ -1724,8 +1789,8 @@ fn get_pointer_type_from_dom_pointer_event(
 fn set_input_keyboard_data(out: &mut InputKeyboardData, event: crate::OpaqueHostValue) -> () {
     let modifier = get_key_modifier_from_dom_keyboard_event((event).clone());
     out.alt_key = crate::host_value::<bool>("host.altKey");
-    out.caps_lock = ((__flight_js_to_i32(modifier)
-        & __flight_js_to_i32(key_modifier_constant.caps_lock)) as f64
+    out.caps_lock = ((__flight_js_to_i32(modifier) & __flight_js_to_i32(KeyModifier::CAPS_LOCK))
+        as f64
         != 0.0_f64);
     out.code = crate::host_value::<String>("host.code");
     out.ctrl_key = crate::host_value::<bool>("host.ctrlKey");
@@ -1734,8 +1799,8 @@ fn set_input_keyboard_data(out: &mut InputKeyboardData, event: crate::OpaqueHost
     out.location = crate::host_value::<f64>("host.location");
     out.meta_key = crate::host_value::<bool>("host.metaKey");
     out.modifier = modifier;
-    out.num_lock = ((__flight_js_to_i32(modifier)
-        & __flight_js_to_i32(key_modifier_constant.num_lock)) as f64
+    out.num_lock = ((__flight_js_to_i32(modifier) & __flight_js_to_i32(KeyModifier::NUM_LOCK))
+        as f64
         != 0.0_f64);
     out.repeat = crate::host_value::<bool>("host.repeat");
     out.shift_key = crate::host_value::<bool>("host.shiftKey");
@@ -1812,24 +1877,24 @@ fn set_input_pointer_data(
 static _STANDARD_BUTTON_NAMES: std::sync::LazyLock<Vec<Option<GamepadButtonKind>>> =
     std::sync::LazyLock::new(|| {
         vec![
-            gamepad_button_kind_values_constant.button_south,
-            gamepad_button_kind_values_constant.button_east,
-            gamepad_button_kind_values_constant.button_west,
-            gamepad_button_kind_values_constant.button_north,
-            gamepad_button_kind_values_constant.shoulder_left,
-            gamepad_button_kind_values_constant.shoulder_right,
-            gamepad_button_kind_values_constant.trigger_left,
-            gamepad_button_kind_values_constant.trigger_right,
-            gamepad_button_kind_values_constant.select,
-            gamepad_button_kind_values_constant.start,
-            gamepad_button_kind_values_constant.stick_left,
-            gamepad_button_kind_values_constant.stick_right,
-            gamepad_button_kind_values_constant.dpad_up,
-            gamepad_button_kind_values_constant.dpad_down,
-            gamepad_button_kind_values_constant.dpad_left,
-            gamepad_button_kind_values_constant.dpad_right,
-            gamepad_button_kind_values_constant.home,
-            gamepad_button_kind_values_constant.touchpad,
+            Some((gamepad_button_kind_values_constant.button_south).clone()),
+            Some((gamepad_button_kind_values_constant.button_east).clone()),
+            Some((gamepad_button_kind_values_constant.button_west).clone()),
+            Some((gamepad_button_kind_values_constant.button_north).clone()),
+            Some((gamepad_button_kind_values_constant.shoulder_left).clone()),
+            Some((gamepad_button_kind_values_constant.shoulder_right).clone()),
+            Some((gamepad_button_kind_values_constant.trigger_left).clone()),
+            Some((gamepad_button_kind_values_constant.trigger_right).clone()),
+            Some((gamepad_button_kind_values_constant.select).clone()),
+            Some((gamepad_button_kind_values_constant.start).clone()),
+            Some((gamepad_button_kind_values_constant.stick_left).clone()),
+            Some((gamepad_button_kind_values_constant.stick_right).clone()),
+            Some((gamepad_button_kind_values_constant.dpad_up).clone()),
+            Some((gamepad_button_kind_values_constant.dpad_down).clone()),
+            Some((gamepad_button_kind_values_constant.dpad_left).clone()),
+            Some((gamepad_button_kind_values_constant.dpad_right).clone()),
+            Some((gamepad_button_kind_values_constant.home).clone()),
+            Some((gamepad_button_kind_values_constant.touchpad).clone()),
         ]
     });
 
@@ -1837,10 +1902,10 @@ static _STANDARD_BUTTON_NAMES: std::sync::LazyLock<Vec<Option<GamepadButtonKind>
 static _STANDARD_AXIS_NAMES: std::sync::LazyLock<Vec<Option<GamepadAxisKind>>> =
     std::sync::LazyLock::new(|| {
         vec![
-            gamepad_axis_kind_values_constant.stick_left_x,
-            gamepad_axis_kind_values_constant.stick_left_y,
-            gamepad_axis_kind_values_constant.stick_right_x,
-            gamepad_axis_kind_values_constant.stick_right_y,
+            Some((gamepad_axis_kind_values_constant.stick_left_x).clone()),
+            Some((gamepad_axis_kind_values_constant.stick_left_y).clone()),
+            Some((gamepad_axis_kind_values_constant.stick_right_x).clone()),
+            Some((gamepad_axis_kind_values_constant.stick_right_y).clone()),
         ]
     });
 
@@ -2185,22 +2250,28 @@ fn get_or_create_gamepad_poll_state(manager: &InputManager) -> GamepadPollState 
 }
 
 // Source: upstream/packages/input/src/inputManager.ts:1095 (sha256:2096e547be6d6693db0e48fc33c645052551a8e19119772ea738eebbe1d97276)
-struct _axisData;
-impl _axisData {
-    pub const axis: f64 = 0.0_f64;
-    pub const gamepad: f64 = 0.0_f64;
-    pub const timeStamp: f64 = 0.0_f64;
-    pub const value: f64 = 0.0_f64;
-}
+static _AXIS_DATA: std::sync::LazyLock<std::sync::Mutex<InputGamepadAxisData>> =
+    std::sync::LazyLock::new(|| {
+        std::sync::Mutex::new(InputGamepadAxisData {
+            __flight_identity: std::sync::Arc::new(()),
+            axis: 0.0_f64,
+            gamepad: 0.0_f64,
+            time_stamp: 0.0_f64,
+            value: 0.0_f64,
+        })
+    });
 
 // Source: upstream/packages/input/src/inputManager.ts:1096 (sha256:34b1a8814af92987ef63aae37ce961448fb61cb032977801c17b3ec6eca13b14)
-struct _buttonData;
-impl _buttonData {
-    pub const button: f64 = 0.0_f64;
-    pub const gamepad: f64 = 0.0_f64;
-    pub const timeStamp: f64 = 0.0_f64;
-    pub const value: f64 = 0.0_f64;
-}
+static _BUTTON_DATA: std::sync::LazyLock<std::sync::Mutex<InputGamepadButtonData>> =
+    std::sync::LazyLock::new(|| {
+        std::sync::Mutex::new(InputGamepadButtonData {
+            __flight_identity: std::sync::Arc::new(()),
+            button: 0.0_f64,
+            gamepad: 0.0_f64,
+            time_stamp: 0.0_f64,
+            value: 0.0_f64,
+        })
+    });
 
 // Source: upstream/packages/input/src/inputManager.ts:1097 (sha256:497c555f5e599225a283f9f664c574557ada2adf00b20b9c3fe0c8ef1fff503b)
 static _CONNECT_DATA: std::sync::LazyLock<std::sync::Mutex<InputGamepadConnectData>> =
@@ -2299,7 +2370,7 @@ fn set_input_binding(
     manager: &InputManager,
     target: crate::OpaqueHostValue,
     kind: crate::FlightSymbol,
-    cleanup: &mut impl FnMut() -> (),
+    cleanup: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
 ) -> () {
     let mut by_target = (*_INPUT_BINDINGS.lock().unwrap())
         .iter()
@@ -2359,7 +2430,7 @@ fn set_input_binding(
     };
     {
         let __flight_key = kind;
-        let __flight_value = (*cleanup).clone();
+        let __flight_value = (cleanup).clone();
         if let Some((_, value)) = by_kind
             .as_mut()
             .unwrap()

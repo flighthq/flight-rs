@@ -34,14 +34,14 @@ pub fn merge_surface_channels(
             let gy = (g.y + py);
             let by = (b.y + py);
             let ay = (a.y + py);
-            if ((((((((((oy < 0.0_f64) || (oy >= out.surface.height)) || (ry < 0.0_f64))
+            if (((((((((oy < 0.0_f64) || (oy >= out.surface.height)) || (ry < 0.0_f64))
                 || (ry >= r.surface.height))
                 || (gy < 0.0_f64))
                 || (gy >= g.surface.height))
                 || (by < 0.0_f64))
                 || (by >= b.surface.height))
                 || (ay < 0.0_f64))
-                || (ay >= a.surface.height))
+                || (ay >= a.surface.height)
             {
                 {
                     py += 1.0;
@@ -57,15 +57,14 @@ pub fn merge_surface_channels(
                     let gx = (g.x + px);
                     let bx = (b.x + px);
                     let ax = (a.x + px);
-                    if ((((((((((ox < 0.0_f64) || (ox >= out.surface.width))
-                        || (rx < 0.0_f64))
+                    if (((((((((ox < 0.0_f64) || (ox >= out.surface.width)) || (rx < 0.0_f64))
                         || (rx >= r.surface.width))
                         || (gx < 0.0_f64))
                         || (gx >= g.surface.width))
                         || (bx < 0.0_f64))
                         || (bx >= b.surface.width))
                         || (ax < 0.0_f64))
-                        || (ax >= a.surface.width))
+                        || (ax >= a.surface.width)
                     {
                         {
                             px += 1.0;

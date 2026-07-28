@@ -23,8 +23,7 @@ pub fn compute_rich_text_char_index_at_point(layout: &TextLayoutResult, x: f64, 
         let mut i = 0.0_f64;
         while (i < (layout.line_heights.len() as f64)) {
             let line_top = get_line_offset_y(layout, i);
-            let line_bottom =
-                (line_top + (layout.line_heights[i as usize].clone()).unwrap_or(0.0_f64));
+            let line_bottom = (line_top + layout.line_heights[i as usize].clone());
             let dist = if (y < line_top) {
                 (line_top - y)
             } else {
@@ -75,7 +74,7 @@ pub fn compute_rich_text_char_index_at_point(layout: &TextLayoutResult, x: f64, 
             {
                 let mut i = 0.0_f64;
                 while (i < (group.positions.len() as f64)) {
-                    let advance = (group.positions[i as usize].clone()).unwrap_or(0.0_f64);
+                    let advance = group.positions[i as usize].clone();
                     if (x <= (gx + (advance / 2.0_f64))) {
                         return (group.start_index + i);
                     }
@@ -125,8 +124,7 @@ pub fn compute_rich_text_line_metrics(
         __flight_identity: std::sync::Arc::new(()),
         ascent: ascent,
         descent: descent,
-        height: (layout.line_heights[line_index as usize].clone())
-            .unwrap_or(((ascent + descent) + leading)),
+        height: layout.line_heights[line_index as usize].clone(),
         leading: leading,
         width: (right - x),
         x: if (x == f64::INFINITY) { 0.0_f64 } else { x },
@@ -145,21 +143,18 @@ pub fn get_rich_text_char_boundaries(
     }
     let mut x = crate::host_value::<crate::OpaqueHostValue>("host.offsetX");
     let limit = (char_index - crate::host_value::<crate::OpaqueHostValue>("host.startIndex"))
-        .min(crate::host_value::<crate::OpaqueHostValue>("host.length"));
+        .min(crate::host_value::<f64>("host.length"));
     {
         let mut i = 0.0_f64;
         while (i < limit) {
-            x += (group.positions[i as usize].clone()).unwrap_or(0.0_f64);
+            x += (crate::host_value::<Option<f64>>("host.index")).unwrap_or(0.0_f64);
             {
                 i += 1.0;
                 i
             };
         }
     }
-    let char_width = (group.positions
-        [(char_index - crate::host_value::<crate::OpaqueHostValue>("host.startIndex")) as usize]
-        .clone())
-    .unwrap_or(0.0_f64);
+    let char_width = (crate::host_value::<Option<f64>>("host.index")).unwrap_or(0.0_f64);
     out.x = x;
     out.y = crate::host_value::<f64>("host.offsetY");
     out.width = char_width;
@@ -169,7 +164,7 @@ pub fn get_rich_text_char_boundaries(
 
 // Source: upstream/packages/textlayout/src/richTextQuery.ts:109 (sha256:0298d7186f72dc2b349928f8c31fc22aac7dce5366ecbc2061dd1567d0ae3484)
 pub fn get_rich_text_first_char_in_paragraph(text: String, char_index: f64) -> f64 {
-    let clamped = (0.0_f64).max((text.length).min(char_index));
+    let clamped = (0.0_f64).max((text.encode_utf16().count() as f64).min(char_index));
     {
         let mut i = (clamped - 1.0_f64);
         while (i >= 0.0_f64) {
@@ -219,8 +214,7 @@ pub fn get_rich_text_line_index_at_point(layout: &TextLayoutResult, y: f64) -> f
 // Source: upstream/packages/textlayout/src/richTextQuery.ts:132 (sha256:b3313ad08b40bb441598ac753c053328e87bb3aefc9df22db3a8c3a7b1ab6c3f)
 pub fn get_rich_text_line_index_of_char(layout: &TextLayoutResult, char_index: f64) -> f64 {
     let group = get_group_containing_index(layout, char_index);
-    return (crate::host_value::<crate::OpaqueHostValue>("host.lineIndex"))
-        .unwrap_or(crate::OpaqueHostValue::Number(0.0_f64));
+    return (crate::host_value::<crate::OpaqueHostValue>("host.lineIndex")).unwrap_or(0.0_f64);
 }
 
 // Source: upstream/packages/textlayout/src/richTextQuery.ts:137 (sha256:c6d996feb6316a64eb2c5f1b8ce0f215b5d0a29d7b519c089a7284ac956f6764)
@@ -275,9 +269,9 @@ pub fn get_rich_text_link_at_point(layout: &TextLayoutResult, x: f64, y: f64) ->
         if ((group.format.url).clone()).is_none() {
             continue;
         }
-        if ((((x >= group.offset_x) && (x <= (group.offset_x + group.width)))
+        if (((x >= group.offset_x) && (x <= (group.offset_x + group.width)))
             && (y >= group.offset_y))
-            && (y <= (group.offset_y + group.height)))
+            && (y <= (group.offset_y + group.height))
         {
             return (group.format.url).clone();
         }
@@ -290,7 +284,7 @@ pub fn get_rich_text_paragraph_length(text: String, char_index: f64) -> f64 {
     let start = get_rich_text_first_char_in_paragraph((text).clone(), char_index);
     let newline = (text.index_of)("\n", start);
     let end = if (newline == (-1.0_f64)) {
-        text.length
+        (text.encode_utf16().count() as f64)
     } else {
         (newline + 1.0_f64)
     };
@@ -336,7 +330,7 @@ fn get_caret_x(group: &mut TextLayoutGroup, index: f64) -> f64 {
     {
         let mut i = 0.0_f64;
         while (i < limit) {
-            x += (group.positions[i as usize].clone()).unwrap_or(0.0_f64);
+            x += group.positions[i as usize].clone();
             {
                 i += 1.0;
                 i
@@ -352,7 +346,7 @@ fn get_group_containing_index(
     char_index: f64,
 ) -> crate::OpaqueHostValue {
     for group in ((layout.groups).clone()).iter().cloned() {
-        if ((char_index >= group.start_index) && (char_index < group.end_index)) {
+        if (char_index >= group.start_index) && (char_index < group.end_index) {
             return group;
         }
     }
@@ -370,7 +364,7 @@ fn get_line_offset_y(layout: &TextLayoutResult, line_index: f64) -> f64 {
     {
         let mut i = 0.0_f64;
         while (i < line_index) {
-            y += (layout.line_heights[i as usize].clone()).unwrap_or(0.0_f64);
+            y += layout.line_heights[i as usize].clone();
             {
                 i += 1.0;
                 i

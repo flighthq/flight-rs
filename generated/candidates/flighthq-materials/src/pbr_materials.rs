@@ -79,7 +79,8 @@ pub fn convert_specular_glossiness_to_standard_pbr(
 pub fn create_specular_glossiness_pbr_material(
     opts: Option<SpecularGlossinessPbrMaterial>,
 ) -> SpecularGlossinessPbrMaterial {
-    let mut material = create_surface_material(specular_glossiness_pbr_material_kind_constant);
+    let mut material =
+        create_surface_material((specular_glossiness_pbr_material_kind_constant).to_owned());
     material.diffuse = (opts.as_ref().map(|value| value.diffuse)).unwrap_or(4294967295.0_f64);
     material.diffuse_map = opts.as_ref().and_then(|value| (value.diffuse_map).clone());
     material.emissive = (opts.as_ref().map(|value| value.emissive)).unwrap_or(255.0_f64);
@@ -98,14 +99,14 @@ pub fn create_specular_glossiness_pbr_material(
     material.specular_glossiness_map = opts
         .as_ref()
         .and_then(|value| (value.specular_glossiness_map).clone());
-    return (material).clone();
+    return material;
 }
 
 // Source: upstream/packages/materials/src/pbrMaterials.ts:104 (sha256:2aec8f6092e3534c75f4a3953fd7b612468639f95e378d26fd5cb1e5d604c3e6)
 pub fn create_standard_pbr_material(opts: Option<StandardPbrMaterial>) -> StandardPbrMaterial {
-    let mut material = create_surface_material(standard_pbr_material_kind_constant);
+    let mut material = create_surface_material((standard_pbr_material_kind_constant).to_owned());
     assign_standard_pbr_material_properties(&mut material, Some(((opts).clone().unwrap()).clone()));
-    return (material).clone();
+    return material;
 }
 
 // Source: upstream/packages/materials/src/pbrMaterials.ts:113 (sha256:ffc83ec68e9fe692c7c4c9719572cc5fa67771f90a9fe42f2b02caf9f0584bcb)
@@ -129,7 +130,7 @@ pub fn create_standard_pbr_material_properties(
         &mut properties,
         Some(((opts).clone().unwrap()).clone()),
     );
-    return (properties).clone();
+    return properties;
 }
 
 // Source: upstream/packages/materials/src/pbrMaterials.ts:123 (sha256:d85d2e708d1f2dc62493236719438cf15efe77c835cb7179c53e09a02fd654cc)

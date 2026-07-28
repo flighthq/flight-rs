@@ -24,22 +24,25 @@ pub fn get_glyph_atlas_entry(atlas: &mut GlyphAtlas, codepoint: f64) -> Option<G
         _touch_glyph_lru(&mut atlas.runtime, codepoint);
         return Some((existing.as_ref().unwrap()).clone());
     }
-    let bitmap = ((get_glyph_rasterizer_backend().rasterize).clone())
-        .lock()
-        .unwrap()(codepoint, (atlas.runtime.rasterize_options).clone());
+    let bitmap = {
+        let __flight_callback = (get_glyph_rasterizer_backend().rasterize).clone();
+        let __flight_result =
+            __flight_callback.lock().unwrap()(codepoint, (atlas.runtime.rasterize_options).clone());
+        __flight_result
+    };
     if (bitmap).is_none() {
         return None;
     }
     let padding = atlas.runtime.padding;
     let usable_width = (atlas.runtime.surface.width - (2.0_f64 * padding));
     let usable_height = (atlas.runtime.surface.height - (2.0_f64 * padding));
-    if ((bitmap.as_ref().unwrap().width > usable_width)
-        || (bitmap.as_ref().unwrap().height > usable_height))
+    if (bitmap.as_ref().unwrap().width > usable_width)
+        || (bitmap.as_ref().unwrap().height > usable_height)
     {
         return None;
     }
     let mut needs_repack = false;
-    while ((atlas.runtime.max_glyphs > 0.0_f64)
+    while (atlas.runtime.max_glyphs > 0.0_f64)
         && (atlas
             .runtime
             .entries
@@ -47,7 +50,7 @@ pub fn get_glyph_atlas_entry(atlas: &mut GlyphAtlas, codepoint: f64) -> Option<G
             .find(|(key, _)| key == &"size")
             .map(|(_, value)| value.clone())
             .expect("TypeScript Record key was absent")
-            >= atlas.runtime.max_glyphs))
+            >= atlas.runtime.max_glyphs)
     {
         if (!_evict_least_recently_used_glyph(&mut atlas.runtime)) {
             break;
@@ -59,7 +62,7 @@ pub fn get_glyph_atlas_entry(atlas: &mut GlyphAtlas, codepoint: f64) -> Option<G
         bitmap.as_ref().unwrap().width,
         bitmap.as_ref().unwrap().height,
     );
-    if ((placement).is_none() && needs_repack) {
+    if ((placement).is_none()) && (needs_repack) {
         _repack_glyph_atlas(&mut atlas.runtime);
         placement = _place_glyph_on_shelf(
             &mut atlas.runtime,

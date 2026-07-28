@@ -21,8 +21,8 @@ fn __flight_js_to_i32(value: f64) -> i32 {
 
 // Source: upstream/packages/math/src/nextPowerOfTwo.ts:5 (sha256:3b71240a4831585ba3c45ac3f7631da706025c857bcea6fe7d632b91e0afc52b)
 pub fn is_power_of_two(n: f64) -> bool {
-    return ((n > 0.0_f64)
-        && ((__flight_js_to_i32(n) & __flight_js_to_i32((n - 1.0_f64))) as f64 == 0.0_f64));
+    return (n > 0.0_f64)
+        && ((__flight_js_to_i32(n) & __flight_js_to_i32((n - 1.0_f64))) as f64 == 0.0_f64);
 }
 
 // Source: upstream/packages/math/src/nextPowerOfTwo.ts:13 (sha256:1e2d1bc2e7f38cc13726108b6ece732e5a750f00ce6e1a50d726011d9ca76bc3)

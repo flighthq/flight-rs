@@ -8,7 +8,7 @@
 
 use crate::{get_render_state_runtime, install_render_adapt_hook, update_render_proxy_renderer};
 use flighthq_node::invalidate_node_appearance;
-use flighthq_types::{RenderProxyAdapter, RenderState, Renderable};
+use flighthq_types::{RenderProxy2D, RenderProxyAdapter, RenderState, Renderable};
 
 // Source: upstream/packages/render/src/renderProxyAdapter.ts:7 (sha256:530d65dcefc2ec1b91a7b5ba71ebfb9db7e1bff73c7f86fdaaac92f0bc17d6c2)
 #[derive(Clone)]
@@ -34,11 +34,14 @@ pub fn apply_render_proxy_adapter(
         .map(|(_, value)| value.clone());
     let mut traverse_children = true;
     if (render_adapter).is_some() {
-        let result = ((render_adapter.as_ref().unwrap().adapt).clone())
-            .lock()
-            .unwrap()((*state).clone(), (*source).clone(), data);
+        let result = {
+            let __flight_callback = (render_adapter.as_ref().unwrap().adapt).clone();
+            let __flight_result =
+                __flight_callback.lock().unwrap()((*state).clone(), (*source).clone(), data);
+            __flight_result
+        };
         if (result).is_some() {
-            traverse_children = result.as_ref().unwrap();
+            traverse_children = *(result.as_ref().unwrap());
             update_render_proxy_renderer(state, data);
         }
     }
@@ -64,7 +67,24 @@ pub fn set_render_proxy_adapter(
     adapter: Option<RenderProxyAdapter>,
 ) -> () {
     if ((get_render_state_runtime(state).render_adapt_hook).clone() != apply_render_proxy_adapter) {
-        install_render_adapt_hook(state, &mut apply_render_proxy_adapter);
+        install_render_adapt_hook(
+            state,
+            std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+                move |__flight_argument_0: RenderState,
+                      __flight_argument_1: Renderable,
+                      mut __flight_argument_2: RenderProxy2D|
+                      -> () {
+                    apply_render_proxy_adapter(
+                        &__flight_argument_0,
+                        &__flight_argument_1,
+                        &mut __flight_argument_2,
+                    )
+                },
+            )
+                as Box<
+                    dyn FnMut(RenderState, Renderable, RenderProxy2D) -> () + Send + 'static,
+                >)),
+        );
     }
     let mut runtime = get_render_state_runtime(state);
     if (adapter).is_none() {

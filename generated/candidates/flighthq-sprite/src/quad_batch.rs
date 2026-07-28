@@ -15,8 +15,8 @@ use flighthq_geometry::{
 use flighthq_node::invalidate_node_local_bounds;
 use flighthq_signals::create_signal;
 use flighthq_types::{
-    Node, QUAD_BATCH_KIND as quad_batch_kind_constant, QuadBatch, QuadBatchData, QuadBatchRuntime,
-    QuadBatchSignals, QuadTransformType, Rectangle, Vector2Like,
+    BoundsNodeAny, Node, QUAD_BATCH_KIND as quad_batch_kind_constant, QuadBatch, QuadBatchData,
+    QuadBatchRuntime, QuadBatchSignals, QuadTransformType, Rectangle, Vector2Like,
 };
 
 #[inline]
@@ -75,10 +75,12 @@ pub fn clone_quad_batch(source: &QuadBatch) -> QuadBatch {
             ids: ((source.data.ids).clone()).clone(),
             instance_count: source.data.instance_count,
             material_data: if ((source.data.material_data).clone()).is_some() {
-                ((source.data.material_data).clone())
-                    .as_ref()
-                    .unwrap()
-                    .clone()
+                Some(
+                    ((source.data.material_data).clone())
+                        .as_ref()
+                        .unwrap()
+                        .clone(),
+                )
             } else {
                 None
             },
@@ -151,7 +153,7 @@ pub fn compute_quad_batch_local_bounds_rectangle(out: &mut Rectangle, source: &Q
     let atlas = (source.data.atlas).clone();
     let instance_count = source.data.instance_count;
     let transform_type = (source.data.transform_type).clone();
-    if ((atlas).is_none() || (instance_count == 0.0_f64)) {
+    if ((atlas).is_none()) || (instance_count == 0.0_f64) {
         out.x = 0.0_f64;
         out.y = 0.0_f64;
         out.width = 0.0_f64;
@@ -168,7 +170,7 @@ pub fn compute_quad_batch_local_bounds_rectangle(out: &mut Rectangle, source: &Q
             let mut i = 0.0_f64;
             while (i < instance_count) {
                 let id = (source.data.ids[i as usize] as f64);
-                if ((id < 0.0_f64) || (id >= num_regions)) {
+                if (id < 0.0_f64) || (id >= num_regions) {
                     {
                         i += 1.0;
                         i
@@ -176,7 +178,7 @@ pub fn compute_quad_batch_local_bounds_rectangle(out: &mut Rectangle, source: &Q
                     continue;
                 }
                 let region = atlas.as_ref().unwrap().regions[id as usize].clone();
-                if ((region.width <= 0.0_f64) || (region.height <= 0.0_f64)) {
+                if (region.width <= 0.0_f64) || (region.height <= 0.0_f64) {
                     {
                         i += 1.0;
                         i
@@ -211,7 +213,7 @@ pub fn compute_quad_batch_local_bounds_rectangle(out: &mut Rectangle, source: &Q
             let mut i = 0.0_f64;
             while (i < instance_count) {
                 let id = (source.data.ids[i as usize] as f64);
-                if ((id < 0.0_f64) || (id >= num_regions)) {
+                if (id < 0.0_f64) || (id >= num_regions) {
                     {
                         i += 1.0;
                         i
@@ -219,7 +221,7 @@ pub fn compute_quad_batch_local_bounds_rectangle(out: &mut Rectangle, source: &Q
                     continue;
                 }
                 let region = atlas.as_ref().unwrap().regions[id as usize].clone();
-                if ((region.width <= 0.0_f64) || (region.height <= 0.0_f64)) {
+                if (region.width <= 0.0_f64) || (region.height <= 0.0_f64) {
                     {
                         i += 1.0;
                         i
@@ -282,10 +284,18 @@ pub fn compute_quad_batch_local_bounds_rectangle(out: &mut Rectangle, source: &Q
 // Source: upstream/packages/sprite/src/quadBatch.ts:193 (sha256:1c800b4a3898d508262531dded33e2104e3aab48221910d04c9a6b3bb9337774)
 pub fn create_quad_batch(obj: Option<QuadBatch>) -> QuadBatch {
     return create_display_object_generic(
-        quad_batch_kind_constant,
+        (quad_batch_kind_constant).to_owned(),
         Some(((obj).clone().unwrap()).clone()),
-        Some(create_quad_batch_data),
-        Some(create_quad_batch_runtime),
+        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: Option<D>| -> D {
+                create_quad_batch_data(Some(((__flight_argument_0).clone().unwrap()).clone()))
+            },
+        )
+            as Box<dyn FnMut(Option<D>) -> D + Send + 'static>))),
+        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: Option<R>| -> R { create_quad_batch_runtime() },
+        )
+            as Box<dyn FnMut(Option<R>) -> R + Send + 'static>))),
     );
 }
 
@@ -312,7 +322,7 @@ pub fn create_quad_batch_runtime() -> QuadBatchRuntime {
     let mut runtime = create_display_object_runtime(Some(((*DEFAULT_METHODS).clone()).clone()));
     runtime.local_bounds_rectangle = None;
     runtime.instance_velocities = None;
-    return (runtime).clone();
+    return runtime;
 }
 
 // Source: upstream/packages/sprite/src/quadBatch.ts:215 (sha256:a5e5bc8636d351898b9b43f2af798138b6a79864561fd3879b3ba9d82d7637e0)
@@ -344,7 +354,7 @@ pub fn get_quad_batch_capacity(source: &QuadBatch) -> f64 {
 
 // Source: upstream/packages/sprite/src/quadBatch.ts:244 (sha256:ae3bb672ab02dc0fc6d5343042b87f3e85c63bb1bbdfb8195f48e04810a5e505)
 pub fn get_quad_batch_instance_id(source: &QuadBatch, index: f64) -> f64 {
-    if ((index < 0.0_f64) || (index >= source.data.instance_count)) {
+    if (index < 0.0_f64) || (index >= source.data.instance_count) {
         return (-1.0_f64);
     }
     return (source.data.ids[index as usize] as f64);
@@ -358,7 +368,7 @@ pub fn get_quad_batch_instance_transform(
 ) -> bool {
     let instance_count = source.data.instance_count;
     let transform_type = (source.data.transform_type).clone();
-    if ((index < 0.0_f64) || (index >= instance_count)) {
+    if (index < 0.0_f64) || (index >= instance_count) {
         return false;
     }
     if (transform_type == "vector2") {
@@ -403,7 +413,7 @@ pub fn hit_test_quad_batch_point_exact_xy(source: &QuadBatch, x: f64, y: f64) ->
     let atlas = (source.data.atlas).clone();
     let instance_count = source.data.instance_count;
     let transform_type = (source.data.transform_type).clone();
-    if ((atlas).is_none() || (instance_count == 0.0_f64)) {
+    if ((atlas).is_none()) || (instance_count == 0.0_f64) {
         return (-1.0_f64);
     }
     let num_regions = (atlas.as_ref().unwrap().regions.len() as f64);
@@ -412,7 +422,7 @@ pub fn hit_test_quad_batch_point_exact_xy(source: &QuadBatch, x: f64, y: f64) ->
             let mut i = 0.0_f64;
             while (i < instance_count) {
                 let id = (source.data.ids[i as usize] as f64);
-                if ((id < 0.0_f64) || (id >= num_regions)) {
+                if (id < 0.0_f64) || (id >= num_regions) {
                     {
                         i += 1.0;
                         i
@@ -423,8 +433,8 @@ pub fn hit_test_quad_batch_point_exact_xy(source: &QuadBatch, x: f64, y: f64) ->
                 let dx = (source.data.transforms[(i * QUAD_VECTOR2_STRIDE) as usize] as f64);
                 let dy =
                     (source.data.transforms[((i * QUAD_VECTOR2_STRIDE) + 1.0_f64) as usize] as f64);
-                if ((((x >= dx) && (x < (dx + region.width))) && (y >= dy))
-                    && (y < (dy + region.height)))
+                if (((x >= dx) && (x < (dx + region.width))) && (y >= dy))
+                    && (y < (dy + region.height))
                 {
                     return i;
                 }
@@ -439,7 +449,7 @@ pub fn hit_test_quad_batch_point_exact_xy(source: &QuadBatch, x: f64, y: f64) ->
             let mut i = 0.0_f64;
             while (i < instance_count) {
                 let id = (source.data.ids[i as usize] as f64);
-                if ((id < 0.0_f64) || (id >= num_regions)) {
+                if (id < 0.0_f64) || (id >= num_regions) {
                     {
                         i += 1.0;
                         i
@@ -447,7 +457,7 @@ pub fn hit_test_quad_batch_point_exact_xy(source: &QuadBatch, x: f64, y: f64) ->
                     continue;
                 }
                 let region = atlas.as_ref().unwrap().regions[id as usize].clone();
-                if ((region.width <= 0.0_f64) || (region.height <= 0.0_f64)) {
+                if (region.width <= 0.0_f64) || (region.height <= 0.0_f64) {
                     {
                         i += 1.0;
                         i
@@ -471,9 +481,9 @@ pub fn hit_test_quad_batch_point_exact_xy(source: &QuadBatch, x: f64, y: f64) ->
                 let y2 = (((b * w) + (d * h)) + ty);
                 let x3 = ((c * h) + tx);
                 let y3 = ((d * h) + ty);
-                if (((cross_sign(x0, y0, x1, y1, x, y) && cross_sign(x1, y1, x2, y2, x, y))
-                    && cross_sign(x2, y2, x3, y3, x, y))
-                    && cross_sign(x3, y3, x0, y0, x, y))
+                if (((cross_sign(x0, y0, x1, y1, x, y)) && (cross_sign(x1, y1, x2, y2, x, y)))
+                    && (cross_sign(x2, y2, x3, y3, x, y)))
+                    && (cross_sign(x3, y3, x0, y0, x, y))
                 {
                     return i;
                 }
@@ -492,7 +502,7 @@ pub fn hit_test_quad_batch_point_xy(source: &QuadBatch, x: f64, y: f64) -> f64 {
     let atlas = (source.data.atlas).clone();
     let instance_count = source.data.instance_count;
     let transform_type = (source.data.transform_type).clone();
-    if ((atlas).is_none() || (instance_count == 0.0_f64)) {
+    if ((atlas).is_none()) || (instance_count == 0.0_f64) {
         return (-1.0_f64);
     }
     let num_regions = (atlas.as_ref().unwrap().regions.len() as f64);
@@ -501,7 +511,7 @@ pub fn hit_test_quad_batch_point_xy(source: &QuadBatch, x: f64, y: f64) -> f64 {
             let mut i = 0.0_f64;
             while (i < instance_count) {
                 let id = (source.data.ids[i as usize] as f64);
-                if ((id < 0.0_f64) || (id >= num_regions)) {
+                if (id < 0.0_f64) || (id >= num_regions) {
                     {
                         i += 1.0;
                         i
@@ -512,8 +522,8 @@ pub fn hit_test_quad_batch_point_xy(source: &QuadBatch, x: f64, y: f64) -> f64 {
                 let dx = (source.data.transforms[(i * QUAD_VECTOR2_STRIDE) as usize] as f64);
                 let dy =
                     (source.data.transforms[((i * QUAD_VECTOR2_STRIDE) + 1.0_f64) as usize] as f64);
-                if ((((x >= dx) && (x < (dx + region.width))) && (y >= dy))
-                    && (y < (dy + region.height)))
+                if (((x >= dx) && (x < (dx + region.width))) && (y >= dy))
+                    && (y < (dy + region.height))
                 {
                     return i;
                 }
@@ -528,7 +538,7 @@ pub fn hit_test_quad_batch_point_xy(source: &QuadBatch, x: f64, y: f64) -> f64 {
             let mut i = 0.0_f64;
             while (i < instance_count) {
                 let id = (source.data.ids[i as usize] as f64);
-                if ((id < 0.0_f64) || (id >= num_regions)) {
+                if (id < 0.0_f64) || (id >= num_regions) {
                     {
                         i += 1.0;
                         i
@@ -536,7 +546,7 @@ pub fn hit_test_quad_batch_point_xy(source: &QuadBatch, x: f64, y: f64) -> f64 {
                     continue;
                 }
                 let region = atlas.as_ref().unwrap().regions[id as usize].clone();
-                if ((region.width <= 0.0_f64) || (region.height <= 0.0_f64)) {
+                if (region.width <= 0.0_f64) || (region.height <= 0.0_f64) {
                     {
                         i += 1.0;
                         i
@@ -564,7 +574,7 @@ pub fn hit_test_quad_batch_point_xy(source: &QuadBatch, x: f64, y: f64) -> f64 {
                 let min_y = (((y0).min(y1)).min(y2)).min(y3);
                 let max_x = (((x0).max(x1)).max(x2)).max(x3);
                 let max_y = (((y0).max(y1)).max(y2)).max(y3);
-                if ((((x >= min_x) && (x < max_x)) && (y >= min_y)) && (y < max_y)) {
+                if (((x >= min_x) && (x < max_x)) && (y >= min_y)) && (y < max_y) {
                     return i;
                 }
                 {
@@ -605,7 +615,7 @@ pub fn iterate_quad_batch_instances(
 // Source: upstream/packages/sprite/src/quadBatch.ts:425 (sha256:010ec5daf281df50acca9b7dea5e58f5834375093e7e3ec02f2011a8fea556cd)
 pub fn remove_quad_batch_instance(target: &mut QuadBatch, index: f64) -> () {
     let last = (target.data.instance_count - 1.0_f64);
-    if ((index < 0.0_f64) || (index > last)) {
+    if (index < 0.0_f64) || (index > last) {
         return;
     }
     let swap_source = if (index < last) { last } else { (-1.0_f64) };
@@ -674,7 +684,7 @@ pub fn resize_quad_batch(target: &mut QuadBatch, instance_count: f64) -> () {
 
 // Source: upstream/packages/sprite/src/quadBatch.ts:476 (sha256:12fe99dbe97e0ed4c5d706719bdbd77126c0eb4094a36ac7881782b49b195353)
 pub fn set_quad_batch_instance(target: &mut QuadBatch, index: f64, id: f64, x: f64, y: f64) -> () {
-    if ((index < 0.0_f64) || (index >= target.data.instance_count)) {
+    if (index < 0.0_f64) || (index >= target.data.instance_count) {
         return;
     }
     target.data.ids[index as usize] = (id) as u16;
@@ -695,7 +705,7 @@ pub fn set_quad_batch_instance_matrix(
     tx: f64,
     ty: f64,
 ) -> () {
-    if ((index < 0.0_f64) || (index >= target.data.instance_count)) {
+    if (index < 0.0_f64) || (index >= target.data.instance_count) {
         return;
     }
     target.data.ids[index as usize] = (id) as u16;
@@ -715,8 +725,8 @@ pub fn set_quad_batch_instance_range(
     count: f64,
     source: &Vec<f32>,
 ) -> () {
-    if (((start_index < 0.0_f64) || (count <= 0.0_f64))
-        || ((start_index + count) > target.data.instance_count))
+    if ((start_index < 0.0_f64) || (count <= 0.0_f64))
+        || ((start_index + count) > target.data.instance_count)
     {
         return;
     }
@@ -801,7 +811,12 @@ pub fn set_quad_batch_transform_type(target: &mut QuadBatch, new_type: QuadTrans
 static DEFAULT_METHODS: std::sync::LazyLock<QuadBatchRuntime> =
     std::sync::LazyLock::new(|| QuadBatchRuntime {
         __flight_identity: std::sync::Arc::new(()),
-        compute_local_bounds_rectangle: copy_local_bounds_rectangle,
+        compute_local_bounds_rectangle: std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |mut __flight_argument_0: Rectangle, __flight_argument_1: BoundsNodeAny| -> () {
+                copy_local_bounds_rectangle(&mut __flight_argument_0, &__flight_argument_1)
+            },
+        )
+            as Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>)),
     });
 
 // Source: upstream/packages/sprite/src/quadBatch.ts:585 (sha256:238a0f0f99917ec7b8730f572110369690cb68566fc84116df3553cdfcf6783a)

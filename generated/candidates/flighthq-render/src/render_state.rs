@@ -29,10 +29,11 @@ pub fn create_render_state(obj: Option<RenderState>) -> RenderState {
             .and_then(|value| (value.display_object_clip_hooks).clone()),
         pixel_ratio: (obj.as_ref().map(|value| value.pixel_ratio)).unwrap_or(1.0_f64),
         render_alpha: (obj.as_ref().map(|value| value.render_alpha)).unwrap_or(1.0_f64),
-        render_blend_mode: (obj
-            .as_ref()
-            .and_then(|value| (value.render_blend_mode).clone()))
-        .unwrap_or(blend_mode_constant.normal),
+        render_blend_mode: Some(
+            (obj.as_ref()
+                .and_then(|value| (value.render_blend_mode).clone()))
+            .unwrap_or((blend_mode_constant.normal).clone()),
+        ),
         render_transform2_d: obj
             .as_ref()
             .and_then(|value| (value.render_transform2_d).clone()),
@@ -43,7 +44,7 @@ pub fn create_render_state(obj: Option<RenderState>) -> RenderState {
         .unwrap_or("refreshDerivedState".to_owned()),
     }));
     ();
-    return (state).clone();
+    return state;
 }
 
 // Source: upstream/packages/render/src/renderState.ts:29 (sha256:d19fed0d3e8e0d8208b2d8c78b34375c1cecd269b1b4e893f72ea7350c9f85d9)
@@ -57,7 +58,7 @@ pub fn create_render_state_runtime() -> RenderStateRuntime {
     runtime.renderer_map = Vec::new();
     runtime.renderer_map_id = 0.0_f64;
     runtime.temp_stack = vec![];
-    return (runtime).clone();
+    return runtime;
 }
 
 // Source: upstream/packages/render/src/renderState.ts:44 (sha256:fe128b76ac43af999788bb3f3c74ba5dab813e0ad282d0c8458e5d1570dde3fb)

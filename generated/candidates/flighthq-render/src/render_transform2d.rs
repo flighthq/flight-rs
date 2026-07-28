@@ -18,11 +18,11 @@ pub fn update_render_proxy2_d_transform(
     parent_data: Option<RenderProxy2D>,
 ) -> bool {
     let local_transform_id = get_node_local_transform_revision(&(data.source).clone());
-    let parent_dirty = ((parent_data).is_some()
+    let parent_dirty = ((parent_data).is_some())
         && (parent_data.as_ref().unwrap().transform_frame_id
-            == get_render_state_runtime(state).current_frame_id));
+            == get_render_state_runtime(state).current_frame_id);
     let local_dirty = (data.last_local_transform_id != local_transform_id);
-    if (parent_dirty || local_dirty) {
+    if (parent_dirty) || (local_dirty) {
         recalculate_render_transform2_d(
             state,
             data,
@@ -54,7 +54,7 @@ fn recalculate_render_transform2_d(
     let parent_transform2_d = if (parent_data).is_some() {
         (parent_data.as_ref().unwrap().transform2_d).clone()
     } else {
-        (state.render_transform2_d).clone()
+        ((state.render_transform2_d).clone()).unwrap()
     };
     if (parent_transform2_d).is_some() {
         multiply_matrix(&mut data.transform2_d, &parent_transform2_d, &transform2_d);

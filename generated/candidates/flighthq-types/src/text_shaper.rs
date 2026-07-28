@@ -47,7 +47,11 @@ pub struct TextShaperBackend {
     pub shape_run: Option<
         std::sync::Arc<
             std::sync::Mutex<
-                Box<dyn FnMut(String, TextFormat, ShapeRunOptions) -> ShapedRun + Send + 'static>,
+                Box<
+                    dyn FnMut(String, TextFormat, Option<ShapeRunOptions>) -> ShapedRun
+                        + Send
+                        + 'static,
+                >,
             >,
         >,
     >,

@@ -65,7 +65,7 @@ pub fn sample_animation_clip(
         let mut i = 0.0_f64;
         while (i < (clip.channels.len() as f64)) {
             let mut channel = clip.channels[i as usize].clone();
-            sample_animation_track(out, &mut channel.track, time);
+            sample_animation_track(&((*out).clone()), &mut channel.track, time);
             visit((*out).clone(), (channel).clone(), i);
             {
                 i += 1.0;
@@ -80,7 +80,7 @@ fn compute_channels_duration(channels: &Vec<AnimationChannel>) -> f64 {
     let mut max = 0.0_f64;
     for channel in (channels).iter().cloned() {
         let last = (channel.track.times.len() as f64);
-        if ((last > 0.0_f64) && (channel.track.times[(last - 1.0_f64) as usize].clone() > max)) {
+        if (last > 0.0_f64) && (channel.track.times[(last - 1.0_f64) as usize].clone() > max) {
             max = channel.track.times[(last - 1.0_f64) as usize].clone();
         }
     }

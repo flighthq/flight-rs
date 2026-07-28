@@ -11,7 +11,8 @@ use crate::{
 };
 use flighthq_node::{invalidate_node_local_bounds, invalidate_node_local_content};
 use flighthq_types::{
-    BITMAP_KIND as bitmap_kind_constant, Bitmap, BitmapData, BitmapRuntime, Node, Rectangle,
+    BITMAP_KIND as bitmap_kind_constant, Bitmap, BitmapData, BitmapRuntime, BoundsNodeAny, Node,
+    Rectangle,
 };
 
 // Source: upstream/packages/displayobject/src/bitmap.ts:7 (sha256:47f1660cb2ac54773bfb30e2c6016d91fea1b15b7ae1b91d2196074cce9b849f)
@@ -31,10 +32,18 @@ pub fn compute_bitmap_local_bounds_rectangle(out: &mut Rectangle, source: &Node)
 // Source: upstream/packages/displayobject/src/bitmap.ts:18 (sha256:326d69409854f1a85f40bab4d79d2fbf7c0afdc7e848f95ef29b58a82dac68c3)
 pub fn create_bitmap(obj: Option<Bitmap>) -> Bitmap {
     return create_display_object_generic(
-        bitmap_kind_constant,
+        (bitmap_kind_constant).to_owned(),
         Some(((obj).clone().unwrap()).clone()),
-        Some(create_bitmap_data),
-        Some(create_bitmap_runtime),
+        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: Option<D>| -> D {
+                create_bitmap_data(Some(((__flight_argument_0).clone().unwrap()).clone()))
+            },
+        )
+            as Box<dyn FnMut(Option<D>) -> D + Send + 'static>))),
+        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: Option<R>| -> R { create_bitmap_runtime() },
+        )
+            as Box<dyn FnMut(Option<R>) -> R + Send + 'static>))),
     );
 }
 
@@ -71,5 +80,13 @@ pub fn set_bitmap_image(source: &mut Bitmap, value: crate::OpaqueHostValue) -> (
 static DEFAULT_METHODS: std::sync::LazyLock<BitmapRuntime> =
     std::sync::LazyLock::new(|| BitmapRuntime {
         __flight_identity: std::sync::Arc::new(()),
-        compute_local_bounds_rectangle: compute_bitmap_local_bounds_rectangle,
+        compute_local_bounds_rectangle: std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |mut __flight_argument_0: Rectangle, __flight_argument_1: BoundsNodeAny| -> () {
+                compute_bitmap_local_bounds_rectangle(
+                    &mut __flight_argument_0,
+                    &__flight_argument_1,
+                )
+            },
+        )
+            as Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>)),
     });

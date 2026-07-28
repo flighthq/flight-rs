@@ -19,22 +19,25 @@ pub fn attach_socket(socket: &mut Socket) -> () {
 
 // Source: upstream/packages/socket/src/socket.ts:24 (sha256:0e3ba67045fae5ad761e3c0a74a34af228114ee6add36f08ed1345f7781d79b1)
 pub fn close_socket(socket: &mut Socket, code: Option<f64>, reason: Option<String>) -> () {
-    if (((socket.runtime.ready_state).clone() == "closing")
-        || ((socket.runtime.ready_state).clone() == "closed"))
+    if ((socket.runtime.ready_state).clone() == "closing")
+        || ((socket.runtime.ready_state).clone() == "closed")
     {
         return;
     }
     socket.runtime.ready_state = "closing".to_owned();
-    socket
-        .runtime
-        .connection
-        .as_mut()
-        .unwrap()
-        .close_socket_connection
-        .as_ref()
-        .unwrap()
-        .lock()
-        .unwrap()((code).clone().unwrap(), (reason).clone().unwrap());
+    {
+        let __flight_callback = socket
+            .runtime
+            .connection
+            .as_mut()
+            .unwrap()
+            .close_socket_connection
+            .as_ref()
+            .unwrap()
+            .clone();
+        let __flight_result = __flight_callback.lock().unwrap()(code, (reason).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/socket/src/socket.ts:36 (sha256:9267ddb639208c7963a1411016c49d9436aa0f39e3a3308ae9e0623f0a26095a)
@@ -51,11 +54,15 @@ pub fn create_socket(options: &SocketOptions) -> Socket {
         url: (options.url).clone(),
         runtime: (runtime).clone(),
     };
-    socket.runtime.connection = ((get_socket_backend().open_socket).clone()).lock().unwrap()(
-        (*options).clone(),
-        make_socket_event_sink(&mut socket.runtime),
-    );
-    return (socket).clone();
+    socket.runtime.connection = {
+        let __flight_callback = (get_socket_backend().open_socket).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(
+            (*options).clone(),
+            make_socket_event_sink(&mut socket.runtime),
+        );
+        __flight_result
+    };
+    return socket;
 }
 
 // Source: upstream/packages/socket/src/socket.ts:52 (sha256:c495e1eda04a84d7016bba32bd0196f75fc215a124d9e1f6d2e3c1409570ba0f)
@@ -116,20 +123,22 @@ pub fn get_socket_ready_state(socket: &Socket) -> SocketReadyState {
 
 // Source: upstream/packages/socket/src/socket.ts:124 (sha256:7a7a83744be405548de446f329307c11e0fcc867e907822517aa26a8a7f73e7c)
 pub fn send_socket_message(socket: &Socket, data: &crate::FlightUnion2<String, Vec<u8>>) -> bool {
-    if (((socket.runtime.ready_state).clone() != "open")
-        || ((socket.runtime.connection).clone()).is_none())
+    if ((socket.runtime.ready_state).clone() != "open")
+        || (((socket.runtime.connection).clone()).is_none())
     {
         return false;
     }
-    return ((socket
-        .runtime
-        .connection
-        .as_ref()
-        .unwrap()
-        .send_socket_frame)
-        .clone())
-    .lock()
-    .unwrap()((*data).clone());
+    return {
+        let __flight_callback = (socket
+            .runtime
+            .connection
+            .as_ref()
+            .unwrap()
+            .send_socket_frame)
+            .clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*data).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/socket/src/socket.ts:131 (sha256:7e6cc71f55473a95d9efdc5409b4d1d2515f4a9607d28a8178bbe8cd771e9503)

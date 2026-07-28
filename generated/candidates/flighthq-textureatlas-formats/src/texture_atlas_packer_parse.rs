@@ -89,13 +89,13 @@ fn apply_document(
     atlas.regions.clear();
     if (array.is_array)(doc.frames) {
         for entry in (doc.frames).iter().cloned() {
-            apply_frame(atlas, entry.filename, &entry, options);
+            apply_frame(atlas, (entry.filename).clone(), &(entry), options);
         }
     } else {
         for __iteration0 in (crate::host_value::<()>("host.entries")).iter().cloned() {
             let frame_name = __iteration0[0.0_f64 as usize].clone();
             let entry = __iteration0[1.0_f64 as usize].clone();
-            apply_frame(atlas, frame_name, &entry, options);
+            apply_frame(atlas, frame_name, &(entry), options);
         }
     }
 }
@@ -117,27 +117,27 @@ fn apply_frame(
             entry.frame.h
         },
         id: (atlas.regions.len() as f64),
-        name: normalized,
-        original_height: if entry.trimmed {
+        name: Some((normalized).clone()),
+        original_height: Some(if entry.trimmed {
             entry.source_size.h
         } else {
             None
-        },
-        original_width: if entry.trimmed {
+        }),
+        original_width: Some(if entry.trimmed {
             entry.source_size.w
         } else {
             None
-        },
-        pivot_x: if (entry.pivot).is_some() {
+        }),
+        pivot_x: Some(if (entry.pivot).is_some() {
             entry.pivot.x
         } else {
             None
-        },
-        pivot_y: if (entry.pivot).is_some() {
+        }),
+        pivot_y: Some(if (entry.pivot).is_some() {
             entry.pivot.y
         } else {
             None
-        },
+        }),
         rotated: entry.rotated,
         source_x: entry.sprite_source_size.x,
         source_y: entry.sprite_source_size.y,
@@ -156,7 +156,7 @@ fn apply_frame(
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasPackerParse.ts:84 (sha256:0ef2ffcc9fea7d6c4cda4e7c1cdb633c489854fab3de18753ac48f8b86281bca)
 fn normalize_frame_name(name: String, strip: bool) -> String {
     if (!strip) {
-        return (name).clone();
+        return name;
     }
     let slash = ((name.last_index_of)("/")).max((name.last_index_of)("\\"));
     return if (slash >= 0.0_f64) {

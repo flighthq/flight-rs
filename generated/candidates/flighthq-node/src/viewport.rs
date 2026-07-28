@@ -79,17 +79,20 @@ pub fn compute_viewport_render_transform<Traits: Clone>(
         {
             (*_TEMP_RECTANGLE.lock().unwrap()).width = 0.0_f64;
             (*_TEMP_RECTANGLE.lock().unwrap()).height = 0.0_f64;
-            ((runtime.as_ref().unwrap().compute_local_bounds_rectangle).clone())
-                .lock()
-                .unwrap()(
-                (*_TEMP_RECTANGLE.lock().unwrap()).clone(),
-                ((scene.root).clone()).unwrap(),
-            );
+            {
+                let __flight_callback =
+                    (runtime.as_ref().unwrap().compute_local_bounds_rectangle).clone();
+                let __flight_result = __flight_callback.lock().unwrap()(
+                    (*_TEMP_RECTANGLE.lock().unwrap()).clone(),
+                    ((scene.root).clone()).unwrap(),
+                );
+                __flight_result
+            };
             content_width = (*_TEMP_RECTANGLE.lock().unwrap()).width;
             content_height = (*_TEMP_RECTANGLE.lock().unwrap()).height;
         }
     }
-    if ((content_width == 0.0_f64) || (content_height == 0.0_f64)) {
+    if (content_width == 0.0_f64) || (content_height == 0.0_f64) {
         out.a = 1.0_f64;
         out.b = 0.0_f64;
         out.c = 0.0_f64;

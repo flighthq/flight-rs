@@ -114,11 +114,11 @@ pub fn create_audio_mixer(
     options: Option<AudioMixerOptions>,
 ) -> AudioMixer {
     let mut master_gain_node = crate::host_value::<()>("host.createGain");
-    master_gain_node.gain.value =
-        (options.as_ref().and_then(|value| value.master_gain)).unwrap_or(1.0_f64);
-    (master_gain_node.connect)(crate::host_value::<crate::OpaqueHostValue>(
-        "host.destination",
-    ));
+    crate::host_set(
+        "host.value",
+        (options.as_ref().and_then(|value| value.master_gain)).unwrap_or(1.0_f64),
+    );
+    crate::host_value::<()>("host.connect");
     let mixer: AudioMixer = AudioMixer {
         __flight_identity: std::sync::Arc::new(()),
         master_gain: (options.as_ref().and_then(|value| value.master_gain)).unwrap_or(1.0_f64),
@@ -134,7 +134,7 @@ pub fn create_audio_mixer(
             bus_output_nodes: Vec::new(),
             channel_to_bus: Vec::new(),
             context: (context).clone(),
-            master_gain_node: master_gain_node,
+            master_gain_node: (master_gain_node).clone(),
         };
         if let Some((_, value)) = (*MIXER_RUNTIMES.lock().unwrap())
             .iter_mut()
@@ -145,7 +145,7 @@ pub fn create_audio_mixer(
             (*MIXER_RUNTIMES.lock().unwrap()).push((__flight_key, __flight_value));
         }
     };
-    return (mixer).clone();
+    return mixer;
 }
 
 // Source: upstream/packages/media/src/audioMixer.ts:55 (sha256:5c132ab8fc50c6e2118cdcfa1d576ebfcf9603aa63015a42a7197b87f8f506d4)
@@ -596,7 +596,12 @@ fn update_bus_gain_node(bus: &AudioBus) -> () {
     if (runtimes).is_none() {
         return;
     }
-    for runtime in (runtimes).iter().cloned() {
+    for runtime in (runtimes)
+        .as_ref()
+        .expect("TypeScript nullable iterable was not narrowed")
+        .iter()
+        .cloned()
+    {
         let mut gain_node = (runtime.bus_gain_nodes.get)(bus);
         if (gain_node).is_some() {
             gain_node.gain.value = if bus.muted { 0.0_f64 } else { bus.gain };
@@ -613,9 +618,14 @@ fn update_bus_panner_node(bus: &AudioBus) -> () {
     if (runtimes).is_none() {
         return;
     }
-    for runtime in (runtimes).iter().cloned() {
+    for runtime in (runtimes)
+        .as_ref()
+        .expect("TypeScript nullable iterable was not narrowed")
+        .iter()
+        .cloned()
+    {
         let mut panner_node = (runtime.bus_output_nodes.get)(bus);
-        if ((panner_node).is_some() && false) {
+        if ((panner_node).is_some()) && (false) {
             panner_node.pan.value = bus.pan;
         }
     }

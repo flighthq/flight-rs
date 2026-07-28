@@ -437,7 +437,7 @@ pub fn fuse_color_matrices(matrices: &Vec<Vec<f64>>) -> Vec<f64> {
             };
         }
     }
-    return (out).clone();
+    return out;
 }
 
 // Source: upstream/packages/adjustments/src/colorMatrixMath.ts:393 (sha256:477a25b07bbc715a2201905557dad93c44e863152b5294bff2476e8681d66e7c)
@@ -663,7 +663,7 @@ pub fn multiply_color_matrix(a: &Vec<f64>, b: &Vec<f64>, out: Option<Vec<f64>>) 
             result[__flight_index] = __flight_value;
         }
     };
-    return (result).clone();
+    return result;
 }
 
 // Source: upstream/packages/adjustments/src/colorMatrixMath.ts:463 (sha256:54307b8c58c723ac0cc3c83e20c8fc21ec4c6dc30fa4eb85d07c76320fbb77f9)

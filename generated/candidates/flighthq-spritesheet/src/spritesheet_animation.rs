@@ -66,13 +66,13 @@ pub fn create_spritesheet_animation_from_frame_names(
                     == Some(match (*pattern).clone() {
                         crate::FlightUnion2::A(value) => value,
                         crate::FlightUnion2::B(_) => panic!("TypeScript union narrowing failed"),
-                    })
-                    || (name).starts_with(match (*pattern).clone() {
+                    }))
+                    || ((name).starts_with(match (*pattern).clone() {
                         crate::FlightUnion2::A(value) => value,
                         crate::FlightUnion2::B(_) => panic!("TypeScript union narrowing failed"),
                     }))
             } else {
-                crate::host_value::<()>("host.test")
+                crate::host_value::<bool>("host.test")
             };
             if matches {
                 matched_indices.push(i);

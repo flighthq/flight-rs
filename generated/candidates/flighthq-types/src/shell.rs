@@ -21,7 +21,7 @@ pub struct ShellBackend {
     pub open_external: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(String, ShellOpenExternalOptions) -> crate::Promise<bool>
+                dyn FnMut(String, Option<ShellOpenExternalOptions>) -> crate::Promise<bool>
                     + Send
                     + 'static,
             >,
@@ -29,12 +29,20 @@ pub struct ShellBackend {
     >,
     pub open_path: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(String, ShellOpenPathOptions) -> crate::Promise<bool> + Send + 'static>,
+            Box<
+                dyn FnMut(String, Option<ShellOpenPathOptions>) -> crate::Promise<bool>
+                    + Send
+                    + 'static,
+            >,
         >,
     >,
     pub open_path_result: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(String, ShellOpenPathOptions) -> crate::Promise<String> + Send + 'static>,
+            Box<
+                dyn FnMut(String, Option<ShellOpenPathOptions>) -> crate::Promise<String>
+                    + Send
+                    + 'static,
+            >,
         >,
     >,
     pub read_shortcut_link: std::sync::Arc<
@@ -51,7 +59,7 @@ pub struct ShellBackend {
                 dyn FnMut(
                         String,
                         ShellShortcutLink,
-                        ShellShortcutWriteOperation,
+                        Option<ShellShortcutWriteOperation>,
                     ) -> crate::Promise<bool>
                     + Send
                     + 'static,

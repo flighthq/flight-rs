@@ -35,7 +35,7 @@ pub fn convolve_surface(
 ) -> () {
     let matrix_x = options.matrix_x;
     let matrix_y = options.matrix_y;
-    if ((matrix_x <= 0.0_f64) || (matrix_y <= 0.0_f64)) {
+    if (matrix_x <= 0.0_f64) || (matrix_y <= 0.0_f64) {
         panic!(
             "{}",
             "Convolution filter matrix dimensions must be positive"
@@ -86,10 +86,10 @@ pub fn convolve_surface(
                                         options.matrix[(weight_row_start + kx) as usize].clone();
                                     let mut sample_x: f64;
                                     let mut sample_y: f64;
-                                    if ((((raw_sample_y < 0.0_f64)
+                                    if (((raw_sample_y < 0.0_f64)
                                         || (raw_sample_y >= surface_height))
                                         || (raw_sample_x < 0.0_f64))
-                                        || (raw_sample_x >= surface_width))
+                                        || (raw_sample_x >= surface_width)
                                     {
                                         if (edge == "transparent") {
                                             {

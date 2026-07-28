@@ -37,7 +37,7 @@ pub fn clone_point_light(source: &PointLight) -> PointLight {
         casts_shadow: source.casts_shadow,
         color: source.color,
         intensity: source.intensity,
-        kind: point_light_kind_constant,
+        kind: (point_light_kind_constant).to_owned(),
         normal_bias: source.normal_bias,
         pcf_radius: source.pcf_radius,
         position: clone_vector3(&source.position),
@@ -54,7 +54,7 @@ pub fn create_point_light(options: Option<PointLightOptions>) -> PointLight {
         casts_shadow: (options.as_ref().and_then(|value| value.casts_shadow)).unwrap_or(false),
         color: (options.as_ref().and_then(|value| value.color)).unwrap_or(4294967295.0_f64),
         intensity: (options.as_ref().and_then(|value| value.intensity)).unwrap_or(1.0_f64),
-        kind: point_light_kind_constant,
+        kind: (point_light_kind_constant).to_owned(),
         normal_bias: (options.as_ref().and_then(|value| value.normal_bias)).unwrap_or(0.0_f64),
         pcf_radius: (options.as_ref().and_then(|value| value.pcf_radius)).unwrap_or(0.0_f64),
         position: if (position).is_some() {

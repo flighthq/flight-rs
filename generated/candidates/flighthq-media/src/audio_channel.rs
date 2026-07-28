@@ -38,8 +38,8 @@ pub fn fade_audio_channel_gain(
         .iter()
         .find(|(key, _)| key == &(*channel).clone())
         .map(|(_, value)| value.clone());
-    if ((runtime.as_ref().and_then(|value| (value.gain_node).clone())).is_none()
-        || (runtime.as_ref().and_then(|value| (value.gain_node).clone())).is_none())
+    if ((runtime.as_ref().and_then(|value| (value.gain_node).clone())).is_none())
+        || ((runtime.as_ref().and_then(|value| (value.gain_node).clone())).is_none())
     {
         channel.gain = target_gain;
         return;
@@ -58,7 +58,7 @@ pub fn get_audio_channel_current_time(channel: &AudioChannel) -> f64 {
         .iter()
         .find(|(key, _)| key == &(*channel).clone())
         .map(|(_, value)| value.clone());
-    if ((runtime).is_none() || ((channel.state).clone() != "playing")) {
+    if ((runtime).is_none()) || ((channel.state).clone() != "playing") {
         return channel.current_time;
     }
     return ((crate::host_value::<crate::OpaqueHostValue>("host.currentTime")
@@ -120,7 +120,7 @@ pub fn play_audio_resource(
         __flight_identity: std::sync::Arc::new(()),
         current_time: (options.as_ref().and_then(|value| value.current_time)).unwrap_or(0.0_f64),
         gain: (options.as_ref().and_then(|value| value.gain)).unwrap_or(1.0_f64),
-        length: ((source.buffer.as_ref().unwrap().duration).clone() * 1000.0_f64),
+        length: (crate::host_value::<crate::OpaqueHostValue>("host.duration") * 1000.0_f64),
         loops: (options.as_ref().and_then(|value| value.loops)).unwrap_or(0.0_f64),
         playback_rate: (options.as_ref().and_then(|value| value.playback_rate)).unwrap_or(1.0_f64),
         source: (*source).clone(),
@@ -153,7 +153,7 @@ pub fn play_audio_resource(
 
 // Source: upstream/packages/media/src/audioChannel.ts:90 (sha256:9a335edf4c2e7a9b4d3c143869fdc4992d4fc80e99220c1bc02cfc29fad2f8c6)
 pub fn resume_audio_channel(channel: &mut AudioChannel) -> () {
-    if (((channel.state).clone() == "playing") || ((channel.source.buffer).clone()).is_none()) {
+    if ((channel.state).clone() == "playing") || (((channel.source.buffer).clone()).is_none()) {
         return;
     }
     start_audio_channel(channel);
@@ -176,8 +176,8 @@ pub fn set_audio_channel_gain(channel: &mut AudioChannel, value: f64) -> f64 {
         .iter()
         .find(|(key, _)| key == &(*channel).clone())
         .map(|(_, value)| value.clone());
-    if ((runtime.as_ref().and_then(|value| (value.gain_node).clone())).is_some()
-        && (runtime.as_ref().and_then(|value| (value.gain_node).clone())).is_some())
+    if ((runtime.as_ref().and_then(|value| (value.gain_node).clone())).is_some())
+        && ((runtime.as_ref().and_then(|value| (value.gain_node).clone())).is_some())
     {
         runtime
             .as_mut()
@@ -201,8 +201,8 @@ pub fn set_audio_channel_playback_rate(channel: &mut AudioChannel, value: f64) -
     if ((runtime
         .as_ref()
         .and_then(|value| (value.source_node).clone()))
-    .is_some()
-        && (runtime
+    .is_some())
+        && ((runtime
             .as_ref()
             .and_then(|value| (value.source_node).clone()))
         .is_some())
@@ -260,7 +260,7 @@ fn complete_audio_channel(channel: &mut AudioChannel) -> () {
         .iter()
         .find(|(key, _)| key == &(*channel).clone())
         .map(|(_, value)| value.clone());
-    if ((runtime).is_none() || ((channel.state).clone() != "playing")) {
+    if ((runtime).is_none()) || ((channel.state).clone() != "playing") {
         return;
     }
     if (runtime.as_mut().unwrap().loops_remaining != 0.0_f64) {
@@ -288,7 +288,7 @@ fn start_audio_channel(mut channel: AudioChannel) -> () {
         .find(|(key, _)| key == &(channel).clone())
         .map(|(_, value)| value.clone());
     let buffer = (channel.source.buffer).clone();
-    if ((runtime).is_none() || (buffer).is_none()) {
+    if ((runtime).is_none()) || ((buffer).is_none()) {
         return;
     }
     let mut source_node = crate::host_value::<()>("host.createBufferSource");
@@ -334,19 +334,22 @@ fn stop_active_node(mut channel: AudioChannel, complete: bool) -> () {
     let mut source_node = runtime
         .as_ref()
         .and_then(|value| (value.source_node).clone());
-    if (((runtime).is_none() || (source_node).is_none()) || (source_node).is_none()) {
+    if (((runtime).is_none()) || ((source_node).is_none())) || ((source_node).is_none()) {
         return;
     }
     runtime.as_mut().unwrap().source_node = None;
     runtime.as_mut().unwrap().gain_node = None;
-    source_node.as_mut().unwrap().onended = if complete {
-        std::sync::Arc::new(std::sync::Mutex::new(Box::new({
-            let mut channel = channel.clone();
-            move || -> f64 { complete_audio_channel(&mut channel) }
-        })
-            as Box<dyn FnMut() -> f64 + Send + 'static>))
-    } else {
-        crate::OpaqueHostValue::Null
-    };
+    crate::host_set(
+        "host.onended",
+        if complete {
+            Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new({
+                let mut channel = channel.clone();
+                move || -> () { complete_audio_channel(&mut channel) }
+            })
+                as Box<dyn FnMut() -> () + Send + 'static>)))
+        } else {
+            None
+        },
+    );
     crate::host_value::<()>("host.stop");
 }

@@ -11,8 +11,8 @@ use flighthq_displayobject::{
 };
 use flighthq_signals::create_signal;
 use flighthq_types::{
-    Node, Rectangle, TILEMAP_KIND as tilemap_kind_constant, Tilemap, TilemapData, TilemapRuntime,
-    TilemapSignals, Vector2Like,
+    BoundsNodeAny, Node, Rectangle, TILEMAP_KIND as tilemap_kind_constant, Tilemap, TilemapData,
+    TilemapRuntime, TilemapSignals, Vector2Like,
 };
 
 // Source: upstream/packages/sprite/src/tilemap.ts:21 (sha256:5ac7db3d9c394f7ca11e767732eaeee96cd53e673331fd37e9bc49f9580d61b5)
@@ -32,10 +32,12 @@ pub fn clone_tilemap(source: &Tilemap) -> Tilemap {
             __flight_identity: std::sync::Arc::new(()),
             columns: source.data.columns,
             material_data: if ((source.data.material_data).clone()).is_some() {
-                ((source.data.material_data).clone())
-                    .as_ref()
-                    .unwrap()
-                    .clone()
+                Some(
+                    ((source.data.material_data).clone())
+                        .as_ref()
+                        .unwrap()
+                        .clone(),
+                )
             } else {
                 None
             },
@@ -69,10 +71,18 @@ pub fn compute_tilemap_local_bounds_rectangle(out: &mut Rectangle, source: &Node
 // Source: upstream/packages/sprite/src/tilemap.ts:54 (sha256:930c91dc30a707a09a1bee01e624382680cfd059ddbf851b7e0a7dfce9fbdbd9)
 pub fn create_tilemap(obj: Option<Tilemap>) -> Tilemap {
     return create_display_object_generic(
-        tilemap_kind_constant,
+        (tilemap_kind_constant).to_owned(),
         Some(((obj).clone().unwrap()).clone()),
-        Some(create_tilemap_data),
-        Some(create_tilemap_runtime),
+        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: Option<D>| -> D {
+                create_tilemap_data(Some(((__flight_argument_0).clone().unwrap()).clone()))
+            },
+        )
+            as Box<dyn FnMut(Option<D>) -> D + Send + 'static>))),
+        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: Option<R>| -> R { create_tilemap_runtime() },
+        )
+            as Box<dyn FnMut(Option<R>) -> R + Send + 'static>))),
     );
 }
 
@@ -126,11 +136,11 @@ pub fn fill_tilemap_tiles(tilemap: &mut Tilemap, id: f64) -> () {
 pub fn get_tilemap_column_at_x(source: &Tilemap, x: f64) -> f64 {
     let tileset = (source.data.tileset).clone();
     let columns = source.data.columns;
-    if ((tileset).is_none() || (tileset.as_ref().unwrap().tile_width <= 0.0_f64)) {
+    if ((tileset).is_none()) || (tileset.as_ref().unwrap().tile_width <= 0.0_f64) {
         return (-1.0_f64);
     }
     let col = (x / tileset.as_ref().unwrap().tile_width).floor();
-    if ((col < 0.0_f64) || (col >= columns)) {
+    if (col < 0.0_f64) || (col >= columns) {
         return (-1.0_f64);
     }
     return col;
@@ -145,7 +155,7 @@ pub fn get_tilemap_column_row_at_point(
 ) -> bool {
     let col = get_tilemap_column_at_x(source, x);
     let row = get_tilemap_row_at_y(source, y);
-    if ((col < 0.0_f64) || (row < 0.0_f64)) {
+    if (col < 0.0_f64) || (row < 0.0_f64) {
         return false;
     }
     out.x = col;
@@ -157,11 +167,11 @@ pub fn get_tilemap_column_row_at_point(
 pub fn get_tilemap_row_at_y(source: &Tilemap, y: f64) -> f64 {
     let tileset = (source.data.tileset).clone();
     let rows = source.data.rows;
-    if ((tileset).is_none() || (tileset.as_ref().unwrap().tile_height <= 0.0_f64)) {
+    if ((tileset).is_none()) || (tileset.as_ref().unwrap().tile_height <= 0.0_f64) {
         return (-1.0_f64);
     }
     let row = (y / tileset.as_ref().unwrap().tile_height).floor();
-    if ((row < 0.0_f64) || (row >= rows)) {
+    if (row < 0.0_f64) || (row >= rows) {
         return (-1.0_f64);
     }
     return row;
@@ -181,7 +191,7 @@ pub fn get_tilemap_signals(source: &Tilemap) -> Option<TilemapSignals> {
 pub fn get_tilemap_tile(tilemap: &Tilemap, column: f64, row: f64) -> f64 {
     let columns = tilemap.data.columns;
     let rows = tilemap.data.rows;
-    if ((((column < 0.0_f64) || (column >= columns)) || (row < 0.0_f64)) || (row >= rows)) {
+    if (((column < 0.0_f64) || (column >= columns)) || (row < 0.0_f64)) || (row >= rows) {
         return (-1.0_f64);
     }
     return (tilemap.data.tiles[((row * columns) + column) as usize] as f64);
@@ -196,7 +206,7 @@ pub fn get_tilemap_tile_at_point(source: &Tilemap, point: &Vector2Like) -> f64 {
 pub fn get_tilemap_tile_at_point_xy(source: &Tilemap, x: f64, y: f64) -> f64 {
     let col = get_tilemap_column_at_x(source, x);
     let row = get_tilemap_row_at_y(source, y);
-    if ((col < 0.0_f64) || (row < 0.0_f64)) {
+    if (col < 0.0_f64) || (row < 0.0_f64) {
         return (-1.0_f64);
     }
     return get_tilemap_tile(source, col, row);
@@ -207,8 +217,8 @@ pub fn get_tilemap_tile_rect(out: &mut Rectangle, source: &Tilemap, column: f64,
     let tileset = (source.data.tileset).clone();
     let columns = source.data.columns;
     let rows = source.data.rows;
-    if (((((tileset).is_none() || (column < 0.0_f64)) || (column >= columns)) || (row < 0.0_f64))
-        || (row >= rows))
+    if (((((tileset).is_none()) || (column < 0.0_f64)) || (column >= columns)) || (row < 0.0_f64))
+        || (row >= rows)
     {
         return false;
     }
@@ -253,7 +263,7 @@ pub fn resize_tilemap(tilemap: &mut Tilemap, columns: f64, rows: f64) -> () {
 pub fn set_tilemap_tile(tilemap: &mut Tilemap, column: f64, row: f64, id: f64) -> () {
     let columns = tilemap.data.columns;
     let rows = tilemap.data.rows;
-    if ((((column < 0.0_f64) || (column >= columns)) || (row < 0.0_f64)) || (row >= rows)) {
+    if (((column < 0.0_f64) || (column >= columns)) || (row < 0.0_f64)) || (row >= rows) {
         return;
     }
     tilemap.data.tiles[((row * columns) + column) as usize] = (id) as i16;
@@ -278,7 +288,7 @@ pub fn set_tilemap_tiles(
         let mut r = 0.0_f64;
         while (r < height) {
             let target_row = (offset_row + r);
-            if ((target_row < 0.0_f64) || (target_row >= rows)) {
+            if (target_row < 0.0_f64) || (target_row >= rows) {
                 {
                     r += 1.0;
                     r
@@ -289,7 +299,7 @@ pub fn set_tilemap_tiles(
                 let mut c = 0.0_f64;
                 while (c < width) {
                     let target_col = (offset_column + c);
-                    if ((target_col < 0.0_f64) || (target_col >= columns)) {
+                    if (target_col < 0.0_f64) || (target_col >= columns) {
                         {
                             c += 1.0;
                             c
@@ -325,7 +335,15 @@ pub fn set_tilemap_tiles(
 static DEFAULT_METHODS: std::sync::LazyLock<TilemapRuntime> =
     std::sync::LazyLock::new(|| TilemapRuntime {
         __flight_identity: std::sync::Arc::new(()),
-        compute_local_bounds_rectangle: compute_tilemap_local_bounds_rectangle,
+        compute_local_bounds_rectangle: std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |mut __flight_argument_0: Rectangle, __flight_argument_1: BoundsNodeAny| -> () {
+                compute_tilemap_local_bounds_rectangle(
+                    &mut __flight_argument_0,
+                    &__flight_argument_1,
+                )
+            },
+        )
+            as Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>)),
     });
 
 // Source: upstream/packages/sprite/src/tilemap.ts:238 (sha256:b448b031099576eae638daa302bb5336d794bd3866167b48e8c70433e186bb1a)

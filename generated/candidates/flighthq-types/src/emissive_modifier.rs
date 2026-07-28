@@ -9,7 +9,27 @@
 use crate::Texture;
 
 // Source: upstream/packages/types/src/EmissiveModifier.ts:10 (sha256:0fbd2c29a8bac6b5ec11aef11661aedb7b5b3b938be90cb944238b4362bdf6e0)
-// TypeScript value namespace EmissiveModifierFacing is represented by its generated Rust type.
+#[derive(Clone)]
+pub struct EmissiveModifierFacingValues {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub away_from_light: String,
+    pub ignore: String,
+    pub toward_light: String,
+}
+impl PartialEq for EmissiveModifierFacingValues {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+pub static EMISSIVE_MODIFIER_FACING: std::sync::LazyLock<EmissiveModifierFacingValues> =
+    std::sync::LazyLock::new(|| EmissiveModifierFacingValues {
+        __flight_identity: std::sync::Arc::new(()),
+        away_from_light: "AwayFromLight".to_owned(),
+        ignore: "Ignore".to_owned(),
+        toward_light: "TowardLight".to_owned(),
+    });
 
 // Source: upstream/packages/types/src/EmissiveModifier.ts:16 (sha256:18edd2a4d73a3112dbd34748439b33a494abc67eca0dc77d561fb3d0674f8ef7)
 pub type EmissiveModifierFacing = crate::OpaqueHostValue;

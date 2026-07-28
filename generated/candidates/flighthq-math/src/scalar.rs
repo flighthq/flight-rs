@@ -20,7 +20,7 @@ pub fn floor_power_of_two(n: f64) -> f64 {
 
 // Source: upstream/packages/math/src/scalar.ts:31 (sha256:3e3da3029ce7411777b09437541ec88265ea50159e104262c16a8cbef33e37dc)
 pub fn quantize(value: f64, steps: f64, min: f64, max: f64) -> f64 {
-    if ((steps <= 0.0_f64) || (min == max)) {
+    if (steps <= 0.0_f64) || (min == max) {
         return min;
     }
     let t = ((value - min) / (max - min));

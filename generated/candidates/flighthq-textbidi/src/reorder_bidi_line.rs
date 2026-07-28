@@ -31,7 +31,7 @@ pub fn reorder_bidi_line(levels: &Vec<u8>, start: f64, end: f64, out: &mut Vec<f
             if (level > highest) {
                 highest = level;
             }
-            if (((level % 2.0_f64) == 1.0_f64) && (level < lowest_odd)) {
+            if ((level % 2.0_f64) == 1.0_f64) && (level < lowest_odd) {
                 lowest_odd = level;
             }
             {
@@ -48,8 +48,8 @@ pub fn reorder_bidi_line(levels: &Vec<u8>, start: f64, end: f64, out: &mut Vec<f
                 while (k < count) {
                     if ((levels[out[k as usize].clone() as usize] as f64) >= level) {
                         let mut j = k;
-                        while ((j < count)
-                            && ((levels[out[j as usize].clone() as usize] as f64) >= level))
+                        while (j < count)
+                            && ((levels[out[j as usize].clone() as usize] as f64) >= level)
                         {
                             {
                                 j += 1.0;

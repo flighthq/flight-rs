@@ -129,15 +129,19 @@ fn _rasterize_glyph_on_context(
     crate::host_set("host.textBaseline", "alphabetic");
     crate::host_set("host.textAlign", "left");
     let metrics = crate::host_value::<()>("host.measureText");
-    let advance = metrics.width;
-    let left = (metrics.actual_bounding_box_left).unwrap_or(0.0_f64);
-    let right = (metrics.actual_bounding_box_right).unwrap_or(advance);
-    let ascent = (metrics.actual_bounding_box_ascent).unwrap_or(options.font_size);
-    let descent = (metrics.actual_bounding_box_descent).unwrap_or(0.0_f64);
+    let advance = crate::host_value::<crate::OpaqueHostValue>("host.width");
+    let left = (crate::host_value::<Option<f64>>("host.actualBoundingBoxLeft")).unwrap_or(0.0_f64);
+    let right =
+        (crate::host_value::<Option<crate::OpaqueHostValue>>("host.actualBoundingBoxRight"))
+            .unwrap_or((advance).clone());
+    let ascent = (crate::host_value::<Option<f64>>("host.actualBoundingBoxAscent"))
+        .unwrap_or(options.font_size);
+    let descent =
+        (crate::host_value::<Option<f64>>("host.actualBoundingBoxDescent")).unwrap_or(0.0_f64);
     let guard = 1.0_f64;
     let width = ((0.0_f64).max((left + right).ceil()) + (guard * 2.0_f64));
     let height = ((0.0_f64).max((ascent + descent).ceil()) + (guard * 2.0_f64));
-    if ((width <= (guard * 2.0_f64)) || (height <= (guard * 2.0_f64))) {
+    if (width <= (guard * 2.0_f64)) || (height <= (guard * 2.0_f64)) {
         return None;
     }
     let mut canvas = crate::host_value::<crate::OpaqueHostValue>("host.canvas");
@@ -165,7 +169,7 @@ fn _rasterize_glyph_on_context(
         bearing_x: (-left),
         bearing_y: ascent,
         height: height,
-        pixels: vec![0_u8; (image.data) as usize],
+        pixels: vec![0_u8; (crate::host_value::<crate::OpaqueHostValue>("host.data")) as usize],
         width: width,
     });
 }

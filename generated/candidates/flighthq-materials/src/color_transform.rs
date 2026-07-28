@@ -152,8 +152,8 @@ pub fn create_color_transform(opts: Option<ColorTransformLike>) -> ColorTransfor
 
 // Source: upstream/packages/materials/src/colorTransform.ts:62 (sha256:d0d6931e6ec6cf96c032d8fa3f8cc1e9870ca05cf9280e9568cbc28e5f1458aa)
 pub fn equals_color_transform(a: &ColorTransformLike, b: &ColorTransformLike) -> bool {
-    return (equals_color_transform_offsets(a, b, None)
-        && equals_color_transform_multipliers(a, b, None));
+    return (equals_color_transform_offsets(a, b, None))
+        && (equals_color_transform_multipliers(a, b, None));
 }
 
 // Source: upstream/packages/materials/src/colorTransform.ts:66 (sha256:1c44ed042a2834aa5d00b3d778e881bc3c070a2846a1582e6a458b4106943286)
@@ -163,10 +163,10 @@ pub fn equals_color_transform_multipliers(
     compare_alpha: Option<bool>,
 ) -> bool {
     let compare_alpha = compare_alpha.unwrap_or(true);
-    return ((((a.red_multiplier == b.red_multiplier)
+    return (((a.red_multiplier == b.red_multiplier)
         && (a.green_multiplier == b.green_multiplier))
         && (a.blue_multiplier == b.blue_multiplier))
-        && ((!compare_alpha) || (a.alpha_multiplier == b.alpha_multiplier)));
+        && ((!compare_alpha) || (a.alpha_multiplier == b.alpha_multiplier));
 }
 
 // Source: upstream/packages/materials/src/colorTransform.ts:79 (sha256:c170886f1f4859eb796ffce84da5d185c45ff44c0396940b37cb263630e5b27c)
@@ -176,9 +176,9 @@ pub fn equals_color_transform_offsets(
     compare_alpha: Option<bool>,
 ) -> bool {
     let compare_alpha = compare_alpha.unwrap_or(true);
-    return ((((a.red_offset == b.red_offset) && (a.green_offset == b.green_offset))
+    return (((a.red_offset == b.red_offset) && (a.green_offset == b.green_offset))
         && (a.blue_offset == b.blue_offset))
-        && ((!compare_alpha) || (a.alpha_offset == b.alpha_offset)));
+        && ((!compare_alpha) || (a.alpha_offset == b.alpha_offset));
 }
 
 // Source: upstream/packages/materials/src/colorTransform.ts:92 (sha256:5d6275b80dc2038e3d37243737c328b8514e47d8ecd043ab2fd67e1af7019306)
@@ -246,8 +246,12 @@ pub fn is_identity_color_transform(
     compare_alpha_multiplier: Option<bool>,
 ) -> bool {
     let compare_alpha_multiplier = compare_alpha_multiplier.unwrap_or(true);
-    return (equals_color_transform_offsets(source, &_IDENTITY, None)
-        && equals_color_transform_multipliers(source, &_IDENTITY, Some(compare_alpha_multiplier)));
+    return (equals_color_transform_offsets(source, &_IDENTITY, None))
+        && (equals_color_transform_multipliers(
+            source,
+            &_IDENTITY,
+            Some(compare_alpha_multiplier),
+        ));
 }
 
 // Source: upstream/packages/materials/src/colorTransform.ts:128 (sha256:3c0c37559a8abc8f2ac1c5e21a776728ab89d487453ebe3bed9133468a7f4b69)

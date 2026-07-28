@@ -25,7 +25,6 @@ pub fn apply_surface_curve(
     blue_lut: Option<Vec<u8>>,
     alpha_lut: Option<Vec<u8>>,
 ) -> () {
-    let alpha_lut = alpha_lut.unwrap_or(None);
     let w = (out.width).min(source.width);
     let h = (out.height).min(source.height);
     {
@@ -33,8 +32,8 @@ pub fn apply_surface_curve(
         while (py < h) {
             let sy = (source.y + py);
             let oy = (out.y + py);
-            if ((((sy < 0.0_f64) || (sy >= source.surface.height)) || (oy < 0.0_f64))
-                || (oy >= out.surface.height))
+            if (((sy < 0.0_f64) || (sy >= source.surface.height)) || (oy < 0.0_f64))
+                || (oy >= out.surface.height)
             {
                 {
                     py += 1.0;
@@ -47,8 +46,8 @@ pub fn apply_surface_curve(
                 while (px < w) {
                     let sx = (source.x + px);
                     let ox = (out.x + px);
-                    if ((((sx < 0.0_f64) || (sx >= source.surface.width)) || (ox < 0.0_f64))
-                        || (ox >= out.surface.width))
+                    if (((sx < 0.0_f64) || (sx >= source.surface.width)) || (ox < 0.0_f64))
+                        || (ox >= out.surface.width)
                     {
                         {
                             px += 1.0;

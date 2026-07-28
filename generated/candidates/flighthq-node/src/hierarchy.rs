@@ -31,18 +31,20 @@ pub fn add_node_child_at<Traits: Clone>(target: &Node, child: &Node, index: f64)
         if (child == target) {
             panic!("{}", "generated Flight function threw");
         } else {
-            if (((index < 0.0_f64)
-                || ((children).is_some() && (index > (children.as_ref().unwrap().len() as f64))))
-                || ((children).is_none() && (index > 0.0_f64)))
+            if ((index < 0.0_f64)
+                || (((children).is_some()) && (index > (children.as_ref().unwrap().len() as f64))))
+                || (((children).is_none()) && (index > 0.0_f64))
             {
                 throw_out_of_bounds_error();
             }
         }
     }
-    if (!((target_runtime.can_add_child).clone()).lock().unwrap()(
-        (*target).clone(),
-        (*child).clone(),
-    )) {
+    if (!{
+        let __flight_callback = (target_runtime.can_add_child).clone();
+        let __flight_result =
+            __flight_callback.lock().unwrap()((*target).clone(), (*child).clone());
+        __flight_result
+    }) {
         panic!("{}", "generated Flight function threw");
     }
     if (children).is_none() {
@@ -124,8 +126,8 @@ pub fn add_node_children(target: &Node, children: Vec<Node>) -> () {
 
 // Source: upstream/packages/node/src/hierarchy.ts:92 (sha256:8fec8cab407e76878884eed2e26593b4885c530d8a566a9cb5ca8a78d5ec7b92)
 pub fn contains_node_child(source: &Node, child: &mut Node) -> bool {
-    let mut current: Option<Node> = child;
-    while (!((current) == Some((*source).clone())) && (current).is_some()) {
+    let mut current: Option<Node> = Some((*child).clone());
+    while (!((current) == Some((*source).clone()))) && ((current).is_some()) {
         current = get_node_parent(current.as_ref().unwrap());
     }
     return (current) == Some((*source).clone());
@@ -162,14 +164,14 @@ pub fn get_node_ancestors<Traits: Clone>(source: &Node) -> Vec<NodeOf<Traits>> {
         result.push(((current).clone().unwrap()).clone());
         current = get_node_parent(&current);
     }
-    return (result).clone();
+    return result;
 }
 
 // Source: upstream/packages/node/src/hierarchy.ts:136 (sha256:80d8d16e177bec8a86266e3a1d1d203f60a1122de5ae0987c305a829048482d0)
 pub fn get_node_child_at<Traits: Clone>(source: &Node, index: f64) -> Option<NodeOf<Traits>> {
     let children = (get_node_runtime(source).children).clone();
-    if (((children).is_some() && (index >= 0.0_f64))
-        && (index < (children.as_ref().unwrap().len() as f64)))
+    if (((children).is_some()) && (index >= 0.0_f64))
+        && (index < (children.as_ref().unwrap().len() as f64))
     {
         return Some(children.as_ref().unwrap()[index as usize].clone());
     }
@@ -248,7 +250,7 @@ pub fn get_node_common_ancestor<Traits: Clone>(a: &Node, b: &mut Node) -> Option
         };
         cur = get_node_parent(&cur);
     }
-    let mut b_cur: Option<Node> = (*b).clone();
+    let mut b_cur: Option<Node> = Some((*b).clone());
     while (b_cur).is_some() {
         if a_ancestors
             .iter()
@@ -279,7 +281,7 @@ pub fn get_node_root<Traits: Clone>(source: &mut Node) -> NodeOf<Traits> {
 
 // Source: upstream/packages/node/src/hierarchy.ts:232 (sha256:490ca838aa4952803080336d9668f96069626cefd8c0def45a89a588b3c2ee99)
 pub fn is_node_ancestor_of(ancestor: &Node, descendant: &mut Node) -> bool {
-    let mut current: Option<Node> = (*descendant).clone();
+    let mut current: Option<Node> = Some((*descendant).clone());
     while (current).is_some() {
         if (current) == Some((*ancestor).clone()) {
             return true;
@@ -297,7 +299,7 @@ pub fn remove_node_child<Traits: Clone>(target: &Node, child: &Node) -> NodeOf<T
     let mut target_runtime = get_node_runtime(target);
     let mut child_runtime = get_node_runtime(child);
     let mut children = (target_runtime.children).clone();
-    if ((children).is_some() && ((child_runtime.parent).clone()) == Some((*target).clone())) {
+    if ((children).is_some()) && (((child_runtime.parent).clone()) == Some((*target).clone())) {
         child_runtime.parent = None;
         let child_signals = (child_runtime.node_signals).clone();
         if (child_signals).is_some() {
@@ -340,8 +342,8 @@ pub fn remove_node_child<Traits: Clone>(target: &Node, child: &Node) -> NodeOf<T
 // Source: upstream/packages/node/src/hierarchy.ts:283 (sha256:a6cb1995e3abc76605ce1ef8cc8581a5f1f10c6768a57c8bcd8e7c9db10e48c5)
 pub fn remove_node_child_at<Traits: Clone>(target: &Node, index: f64) -> Option<NodeOf<Traits>> {
     let children = (get_node_runtime(target).children).clone();
-    if (((children).is_some() && (index >= 0.0_f64))
-        && (index < (children.as_ref().unwrap().len() as f64)))
+    if (((children).is_some()) && (index >= 0.0_f64))
+        && (index < (children.as_ref().unwrap().len() as f64))
     {
         return Some(remove_node_child(
             target,
@@ -368,8 +370,8 @@ pub fn remove_node_children(
     if (end_index).is_none() {
         end_index = Some(((children.as_ref().unwrap().len() as f64) - 1.0_f64));
     }
-    if (((end_index < begin_index) || (begin_index < 0.0_f64))
-        || (end_index > (children.as_ref().unwrap().len() as f64)))
+    if ((end_index < begin_index) || (begin_index < 0.0_f64))
+        || (end_index > (children.as_ref().unwrap().len() as f64))
     {
         throw_out_of_bounds_error();
     }
@@ -438,8 +440,8 @@ pub fn set_node_child_index(target: &Node, child: &Node, index: f64) -> () {
     if (children).is_none() {
         return;
     }
-    if (((index >= 0.0_f64) && (index <= (children.as_ref().unwrap().len() as f64)))
-        && (get_node_parent(child) == target))
+    if ((index >= 0.0_f64) && (index <= (children.as_ref().unwrap().len() as f64)))
+        && (get_node_parent(child) == target)
     {
         let i = {
             let __flight_value = (*child).clone();
@@ -450,7 +452,7 @@ pub fn set_node_child_index(target: &Node, child: &Node, index: f64) -> () {
                 .position(|item| item == &__flight_value)
                 .map_or(-1.0_f64, |index| index as f64)
         };
-        if ((i != (-1.0_f64)) && (i != index)) {
+        if (i != (-1.0_f64)) && (i != index) {
             children
                 .as_mut()
                 .unwrap()
@@ -474,8 +476,8 @@ pub fn set_node_child_index(target: &Node, child: &Node, index: f64) -> () {
 pub fn swap_node_children(target: &Node, child1: &Node, child2: &Node) -> () {
     let mut target_runtime = get_node_runtime(target);
     let mut children = (target_runtime.children).clone();
-    if (((children).is_some() && (get_node_parent(child1) == target))
-        && (get_node_parent(child2) == target))
+    if (((children).is_some()) && (get_node_parent(child1) == target))
+        && (get_node_parent(child2) == target)
     {
         let index1 = {
             let __flight_value = (*child1).clone();
@@ -511,11 +513,11 @@ pub fn swap_node_children(target: &Node, child1: &Node, child2: &Node) -> () {
 pub fn swap_node_children_at(target: &Node, index1: f64, index2: f64) -> () {
     let mut target_runtime = get_node_runtime(target);
     let mut children = (target_runtime.children).clone();
-    if ((children).is_none() || (index1 == index2)) {
+    if ((children).is_none()) || (index1 == index2) {
         return;
     }
     let len = (children.as_ref().unwrap().len() as f64);
-    if ((((index1 < 0.0_f64) || (index2 < 0.0_f64)) || (index1 >= len)) || (index2 >= len)) {
+    if (((index1 < 0.0_f64) || (index2 < 0.0_f64)) || (index1 >= len)) || (index2 >= len) {
         throw_out_of_bounds_error();
     }
     let swap = children.as_mut().unwrap()[index1 as usize].clone();

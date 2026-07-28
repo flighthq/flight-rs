@@ -60,12 +60,16 @@ pub fn bake_color_lut(transforms: &Vec<ColorTransformFunction>, size: Option<f64
                             {
                                 let mut k = 0.0_f64;
                                 while (k < (transforms.len() as f64)) {
-                                    (transforms[k as usize].clone()).lock().unwrap()(
-                                        (cell).clone(),
-                                        cell[0.0_f64 as usize].clone(),
-                                        cell[1.0_f64 as usize].clone(),
-                                        cell[2.0_f64 as usize].clone(),
-                                    );
+                                    {
+                                        let __flight_callback = transforms[k as usize].clone();
+                                        let __flight_result = __flight_callback.lock().unwrap()(
+                                            (cell).clone(),
+                                            cell[0.0_f64 as usize].clone(),
+                                            cell[1.0_f64 as usize].clone(),
+                                            cell[2.0_f64 as usize].clone(),
+                                        );
+                                        __flight_result
+                                    };
                                     {
                                         k += 1.0;
                                         k

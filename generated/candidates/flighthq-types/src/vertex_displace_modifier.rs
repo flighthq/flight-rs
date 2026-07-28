@@ -9,7 +9,26 @@
 use crate::{Texture, Vector3Like};
 
 // Source: upstream/packages/types/src/VertexDisplaceModifier.ts:10 (sha256:19152c19bdd9931db0c88cecc284140f9f9782c883b08a75585f81d1ec5a4dd2)
-// TypeScript value namespace VertexDisplaceModifierSource is represented by its generated Rust type.
+#[derive(Clone)]
+pub struct VertexDisplaceModifierSourceValues {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub height_map: String,
+    pub sine: String,
+}
+impl PartialEq for VertexDisplaceModifierSourceValues {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+pub static VERTEX_DISPLACE_MODIFIER_SOURCE: std::sync::LazyLock<
+    VertexDisplaceModifierSourceValues,
+> = std::sync::LazyLock::new(|| VertexDisplaceModifierSourceValues {
+    __flight_identity: std::sync::Arc::new(()),
+    height_map: "HeightMap".to_owned(),
+    sine: "Sine".to_owned(),
+});
 
 // Source: upstream/packages/types/src/VertexDisplaceModifier.ts:15 (sha256:63b40fd9115022e1a0623d7422b4d5e7a9348cb474328b05a65f0244020fb586)
 pub type VertexDisplaceModifierSource = crate::OpaqueHostValue;

@@ -33,7 +33,7 @@ static _PARAGRAPH_LAST_LINES: std::sync::LazyLock<std::sync::Mutex<Vec<f64>>> =
 
 // Source: upstream/packages/textlayout/src/textLayout.ts:27 (sha256:ca540e4b34f38ee2dc29926f251dc88b9f376ca4062df6f391af16e00fba8801)
 pub fn compute_text_layout(out: &mut TextLayoutResult, params: &mut TextLayoutParams) -> () {
-    let text = (params.text).clone();
+    let mut text = (params.text).clone();
     let width = params.width;
     let word_wrap = (params.word_wrap).unwrap_or(false);
     let multiline = (params.multiline).unwrap_or(false);
@@ -44,7 +44,7 @@ pub fn compute_text_layout(out: &mut TextLayoutResult, params: &mut TextLayoutPa
     let max_lines = (params.max_lines).unwrap_or((-1.0_f64));
     let truncation_character = ((params.truncation_character).clone()).unwrap_or("…".to_owned());
     let vertical_align = ((params.vertical_align).clone()).unwrap_or("top".to_owned());
-    if ((!text) || ((params.format_ranges.len() as f64) == 0.0_f64)) {
+    if (!text) || ((params.format_ranges.len() as f64) == 0.0_f64) {
         out.groups.clear();
         out.line_ascents.clear();
         out.line_descents.clear();
@@ -65,7 +65,7 @@ pub fn compute_text_layout(out: &mut TextLayoutResult, params: &mut TextLayoutPa
         &mut params.format_ranges,
         &_LINE_BREAKS,
         width,
-        &mut params.measure,
+        (params.measure).clone(),
         word_wrap,
         multiline,
         max_lines,
@@ -118,7 +118,7 @@ fn char_advances(
     let mut current_x = start_x;
     let mut i = start;
     while (i < end) {
-        let cp = ((text.code_point_at)(i)).unwrap_or(0.0_f64);
+        let cp = (text.code_point_at)(i);
         let char_len = if (cp > 65535.0_f64) { 2.0_f64 } else { 1.0_f64 };
         let char = (text.slice)(i, (i + char_len));
         let mut advance: f64;
@@ -130,9 +130,9 @@ fn char_advances(
             continue;
         }
         let next_start = (i + char_len);
-        if ((kerning_enabled && (next_start < end)) && ((text.char_code_at)(next_start) != 9.0_f64))
+        if ((kerning_enabled) && (next_start < end)) && ((text.char_code_at)(next_start) != 9.0_f64)
         {
-            let next_cp = ((text.code_point_at)(next_start)).unwrap_or(0.0_f64);
+            let next_cp = (text.code_point_at)(next_start);
             let next_len = if (next_cp > 65535.0_f64) {
                 2.0_f64
             } else {
@@ -167,8 +167,13 @@ fn get_tab_advance(
     measure: &mut impl FnMut(String, TextFormat) -> f64,
     format: &TextFormat,
 ) -> f64 {
-    if ((tab_stops).is_some() && ((tab_stops.as_ref().unwrap().len() as f64) > 0.0_f64)) {
-        for stop in (tab_stops).iter().cloned() {
+    if ((tab_stops).is_some()) && ((tab_stops.as_ref().unwrap().len() as f64) > 0.0_f64) {
+        for stop in (tab_stops)
+            .as_ref()
+            .expect("TypeScript nullable iterable was not narrowed")
+            .iter()
+            .cloned()
+        {
             if (stop > current_x) {
                 return (stop - current_x);
             }
@@ -290,7 +295,11 @@ fn build_groups(
             move || -> f64 {
                 return (((container_width - TEXT_LAYOUT_GUTTER)
                     - (*right_margin.lock().unwrap()).clone())
-                    - ((base_x).clone()).lock().unwrap()());
+                    - {
+                        let __flight_callback = (base_x).clone();
+                        let __flight_result = __flight_callback.lock().unwrap()();
+                        __flight_result
+                    });
             }
         })
             as Box<dyn FnMut() -> f64 + Send + 'static>));
@@ -411,7 +420,11 @@ fn build_groups(
                 (*offset_x.lock().unwrap()) = 0.0_f64;
                 (*first_line_of_paragraph.lock().unwrap()) = false;
                 (*active_group.lock().unwrap()) = None;
-                ((update_line_metrics).clone()).lock().unwrap()();
+                {
+                    let __flight_callback = (update_line_metrics).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                };
             }
         })
             as Box<dyn FnMut() -> () + Send + 'static>));
@@ -424,12 +437,12 @@ fn build_groups(
         let mut right_margin = right_margin.clone();
         let mut truncated = truncated.clone();
         move || -> bool {
-            if ((max_lines < 0.0_f64) || ((*line_index.lock().unwrap()).clone() < max_lines)) {
+            if (max_lines < 0.0_f64) || ((*line_index.lock().unwrap()).clone() < max_lines) {
                 return false;
             }
             let last_line_index = ((*line_index.lock().unwrap()).clone() - 1.0_f64);
-            if ((truncation_character.length > 0.0_f64)
-                && (((*groups.lock().unwrap()).len() as f64) > 0.0_f64))
+            if ((truncation_character.encode_utf16().count() as f64) > 0.0_f64)
+                && (((*groups.lock().unwrap()).len() as f64) > 0.0_f64)
             {
                 let mut last_group: Option<TextLayoutGroup> = None;
                 {
@@ -446,10 +459,14 @@ fn build_groups(
                     }
                 }
                 if (last_group).is_some() {
-                    let ellipsis_w = ((measure).clone()).lock().unwrap()(
-                        (truncation_character).clone(),
-                        (last_group.as_mut().unwrap().format).clone(),
-                    );
+                    let ellipsis_w = {
+                        let __flight_callback = (measure).clone();
+                        let __flight_result = __flight_callback.lock().unwrap()(
+                            (truncation_character).clone(),
+                            (last_group.as_mut().unwrap().format).clone(),
+                        );
+                        __flight_result
+                    };
                     let available = (((container_width - TEXT_LAYOUT_GUTTER)
                         - (*right_margin.lock().unwrap()).clone())
                         - last_group.as_mut().unwrap().offset_x);
@@ -522,19 +539,27 @@ fn build_groups(
                 (*bullet_pending.lock().unwrap()) = false;
                 if (((*current_format.lock().unwrap()).list_marker).clone() == "none") {
                     if ((*indent.lock().unwrap()).clone() <= 0.0_f64) {
-                        (*indent.lock().unwrap()) = ((((measure).clone()).lock().unwrap()(
-                            (bullet_char).clone(),
-                            (*current_format.lock().unwrap()).clone(),
-                        ))
+                        (*indent.lock().unwrap()) = (({
+                            let __flight_callback = (measure).clone();
+                            let __flight_result = __flight_callback.lock().unwrap()(
+                                (bullet_char).clone(),
+                                (*current_format.lock().unwrap()).clone(),
+                            );
+                            __flight_result
+                        })
                         .ceil()
                             + 2.0_f64);
                     }
                     return;
                 }
-                let bullet_w = ((measure).clone()).lock().unwrap()(
-                    (bullet_char).clone(),
-                    (*current_format.lock().unwrap()).clone(),
-                );
+                let bullet_w = {
+                    let __flight_callback = (measure).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()(
+                        (bullet_char).clone(),
+                        (*current_format.lock().unwrap()).clone(),
+                    );
+                    __flight_result
+                };
                 let mut bullet_group = create_text_layout_group(
                     &(*current_format.lock().unwrap()),
                     (*text_index.lock().unwrap()).clone(),
@@ -583,12 +608,12 @@ fn build_groups(
             while (idx < end) {
                 let range_end = (end).min((*format_range.lock().unwrap()).end);
                 if (idx < range_end) {
-                    if (((*active_group.lock().unwrap()).clone()).is_none()
+                    if (((*active_group.lock().unwrap()).clone()).is_none())
                         || ((*active_group.lock().unwrap())
                             .as_mut()
                             .unwrap()
                             .start_index
-                            != (*active_group.lock().unwrap()).as_mut().unwrap().end_index))
+                            != (*active_group.lock().unwrap()).as_mut().unwrap().end_index)
                     {
                         (*active_group.lock().unwrap()) = Some(create_text_layout_group(
                             &(*format_range.lock().unwrap()).format,
@@ -615,15 +640,21 @@ fn build_groups(
                         range_end,
                         &mut measure,
                         Some(
-                            ((*offset_x.lock().unwrap()).clone()
-                                + ((base_x).clone()).lock().unwrap()()),
+                            ((*offset_x.lock().unwrap()).clone() + {
+                                let __flight_callback = (base_x).clone();
+                                let __flight_result = __flight_callback.lock().unwrap()();
+                                __flight_result
+                            }),
                         ),
                     );
                     let span_width =
                         sum_advances(&(*active_group.lock().unwrap()).as_mut().unwrap().positions);
                     (*active_group.lock().unwrap()).as_mut().unwrap().offset_x =
-                        ((*offset_x.lock().unwrap()).clone()
-                            + ((base_x).clone()).lock().unwrap()());
+                        ((*offset_x.lock().unwrap()).clone() + {
+                            let __flight_callback = (base_x).clone();
+                            let __flight_result = __flight_callback.lock().unwrap()();
+                            __flight_result
+                        });
                     (*active_group.lock().unwrap()).as_mut().unwrap().ascent =
                         (*ascent.lock().unwrap()).clone();
                     (*active_group.lock().unwrap()).as_mut().unwrap().descent =
@@ -643,18 +674,34 @@ fn build_groups(
                 if (idx >= end) {
                     break;
                 }
-                if (!((advance_format_range).clone()).lock().unwrap()()) {
+                if (!{
+                    let __flight_callback = (advance_format_range).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                }) {
                     break;
                 }
-                ((update_line_metrics).clone()).lock().unwrap()();
+                {
+                    let __flight_callback = (update_line_metrics).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                };
             }
             (*text_index.lock().unwrap()) = end;
-            while (((*text_index.lock().unwrap()).clone() >= (*format_range.lock().unwrap()).end)
+            while ((*text_index.lock().unwrap()).clone() >= (*format_range.lock().unwrap()).end)
                 && ((*range_index.lock().unwrap()).clone()
-                    < ((format_ranges.len() as f64) - 1.0_f64)))
+                    < ((format_ranges.len() as f64) - 1.0_f64))
             {
-                ((advance_format_range).clone()).lock().unwrap()();
-                ((update_line_metrics).clone()).lock().unwrap()();
+                {
+                    let __flight_callback = (advance_format_range).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                };
+                {
+                    let __flight_callback = (update_line_metrics).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                };
             }
         }
     })
@@ -692,9 +739,11 @@ fn build_groups(
                         range_end,
                         &mut measure,
                         Some(
-                            (((*offset_x.lock().unwrap()).clone()
-                                + ((base_x).clone()).lock().unwrap()())
-                                + sum_advances(&all_positions)),
+                            (((*offset_x.lock().unwrap()).clone() + {
+                                let __flight_callback = (base_x).clone();
+                                let __flight_result = __flight_callback.lock().unwrap()();
+                                __flight_result
+                            }) + sum_advances(&all_positions)),
                         ),
                     );
                     for p in (_CHAR_ADVANCES).iter().cloned() {
@@ -705,7 +754,11 @@ fn build_groups(
                 if (idx >= end) {
                     break;
                 }
-                if (!((advance_format_range).clone()).lock().unwrap()()) {
+                if (!{
+                    let __flight_callback = (advance_format_range).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                }) {
                     break;
                 }
             }
@@ -747,31 +800,44 @@ fn build_groups(
                     end,
                     &mut measure,
                     Some(
-                        ((*offset_x.lock().unwrap()).clone()
-                            + ((base_x).clone()).lock().unwrap()()),
+                        ((*offset_x.lock().unwrap()).clone() + {
+                            let __flight_callback = (base_x).clone();
+                            let __flight_result = __flight_callback.lock().unwrap()();
+                            __flight_result
+                        }),
                     ),
                 );
                 let total_w = sum_advances(&_CHAR_ADVANCES);
-                if (((*offset_x.lock().unwrap()).clone() + total_w)
-                    <= ((wrap_width).clone()).lock().unwrap()())
-                {
-                    ((place_span).clone()).lock().unwrap()(remaining, end);
+                if (((*offset_x.lock().unwrap()).clone() + total_w) <= {
+                    let __flight_callback = (wrap_width).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                }) {
+                    {
+                        let __flight_callback = (place_span).clone();
+                        let __flight_result = __flight_callback.lock().unwrap()(remaining, end);
+                        __flight_result
+                    };
                     return;
                 }
                 let mut count = 0.0_f64;
                 let mut char_count = 0.0_f64;
                 let mut w = 0.0_f64;
                 let mut i = remaining;
-                while ((i < end) && (count < (_CHAR_ADVANCES.lock().unwrap().len() as f64))) {
-                    let cp = ((text.code_point_at)(i)).unwrap_or(0.0_f64);
+                while (i < end) && (count < (_CHAR_ADVANCES.lock().unwrap().len() as f64)) {
+                    let cp = (text.code_point_at)(i);
                     let cp_len = if (cp > 65535.0_f64) { 2.0_f64 } else { 1.0_f64 };
                     if ((((*offset_x.lock().unwrap()).clone() + w)
-                        + (_CHAR_ADVANCES[count as usize].clone()).unwrap_or(0.0_f64))
-                        > ((wrap_width).clone()).lock().unwrap()())
+                        + _CHAR_ADVANCES[count as usize].clone())
+                        > {
+                            let __flight_callback = (wrap_width).clone();
+                            let __flight_result = __flight_callback.lock().unwrap()();
+                            __flight_result
+                        })
                     {
                         break;
                     }
-                    w += (_CHAR_ADVANCES[count as usize].clone()).unwrap_or(0.0_f64);
+                    w += _CHAR_ADVANCES[count as usize].clone();
                     {
                         count += 1.0;
                         count
@@ -780,12 +846,25 @@ fn build_groups(
                     i += cp_len;
                 }
                 if (char_count == 0.0_f64) {
-                    let cp = ((text.code_point_at)(remaining)).unwrap_or(0.0_f64);
+                    let cp = (text.code_point_at)(remaining);
                     char_count = if (cp > 65535.0_f64) { 2.0_f64 } else { 1.0_f64 };
                 }
-                ((place_span).clone()).lock().unwrap()(remaining, (remaining + char_count));
-                ((commit_line).clone()).lock().unwrap()();
-                if ((check_truncation).clone()).lock().unwrap()() {
+                {
+                    let __flight_callback = (place_span).clone();
+                    let __flight_result =
+                        __flight_callback.lock().unwrap()(remaining, (remaining + char_count));
+                    __flight_result
+                };
+                {
+                    let __flight_callback = (commit_line).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                };
+                if {
+                    let __flight_callback = (check_truncation).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                } {
                     return;
                 }
                 remaining += char_count;
@@ -793,32 +872,56 @@ fn build_groups(
         }
     })
         as Box<dyn FnMut(f64) -> () + Send + 'static>));
-    ((update_line_metrics).clone()).lock().unwrap()();
-    ((update_paragraph_metrics).clone()).lock().unwrap()();
-    while ((*text_index.lock().unwrap()).clone() <= text.length) {
+    {
+        let __flight_callback = (update_line_metrics).clone();
+        let __flight_result = __flight_callback.lock().unwrap()();
+        __flight_result
+    };
+    {
+        let __flight_callback = (update_paragraph_metrics).clone();
+        let __flight_result = __flight_callback.lock().unwrap()();
+        __flight_result
+    };
+    while ((*text_index.lock().unwrap()).clone() <= (text.encode_utf16().count() as f64)) {
         if (*truncated.lock().unwrap()).clone() {
             break;
         }
-        ((emit_bullet).clone()).lock().unwrap()();
+        {
+            let __flight_callback = (emit_bullet).clone();
+            let __flight_result = __flight_callback.lock().unwrap()();
+            __flight_result
+        };
         let has_break = (break_index != (-1.0_f64));
         let break_before_space =
-            (has_break && ((space_index == (-1.0_f64)) || (break_index <= space_index)));
+            (has_break) && ((space_index == (-1.0_f64)) || (break_index <= space_index));
         if break_before_space {
             if ((*text_index.lock().unwrap()).clone() <= break_index) {
-                ((place_span).clone()).lock().unwrap()(
-                    (*text_index.lock().unwrap()).clone(),
-                    break_index,
-                );
+                {
+                    let __flight_callback = (place_span).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()(
+                        (*text_index.lock().unwrap()).clone(),
+                        break_index,
+                    );
+                    __flight_result
+                };
                 (*active_group.lock().unwrap()) = None;
             }
-            ((commit_line).clone()).lock().unwrap()();
+            {
+                let __flight_callback = (commit_line).clone();
+                let __flight_result = __flight_callback.lock().unwrap()();
+                __flight_result
+            };
             {
                 let __flight_value = ((*line_index.lock().unwrap()).clone() - 1.0_f64);
                 if !paragraph_last_lines.contains(&__flight_value) {
                     paragraph_last_lines.push(__flight_value);
                 }
             };
-            if ((check_truncation).clone()).lock().unwrap()() {
+            if {
+                let __flight_callback = (check_truncation).clone();
+                let __flight_result = __flight_callback.lock().unwrap()();
+                __flight_result
+            } {
                 break;
             }
             if (!multiline) {
@@ -835,34 +938,51 @@ fn build_groups(
                 (-1.0_f64)
             };
             space_index = (text.index_of)(" ", (*text_index.lock().unwrap()).clone());
-            ((update_paragraph_metrics).clone()).lock().unwrap()();
-            ((update_line_metrics).clone()).lock().unwrap()();
+            {
+                let __flight_callback = (update_paragraph_metrics).clone();
+                let __flight_result = __flight_callback.lock().unwrap()();
+                __flight_result
+            };
+            {
+                let __flight_callback = (update_line_metrics).clone();
+                let __flight_result = __flight_callback.lock().unwrap()();
+                __flight_result
+            };
         } else {
             if (space_index != (-1.0_f64)) {
                 let word_end = (space_index + 1.0_f64);
-                let seg_end = if (has_break && (break_index < word_end)) {
+                let seg_end = if (has_break) && (break_index < word_end) {
                     break_index
                 } else {
                     word_end
                 };
-                let __destructure1 = ((measure_span).clone()).lock().unwrap()(
-                    (*text_index.lock().unwrap()).clone(),
-                    seg_end,
-                );
+                let __destructure1 = {
+                    let __flight_callback = (measure_span).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()(
+                        (*text_index.lock().unwrap()).clone(),
+                        seg_end,
+                    );
+                    __flight_result
+                };
                 let seg_width = __destructure1.width;
-                let mut should_wrap = ((word_wrap
+                let mut should_wrap = ((word_wrap)
                     && (container_width >= (TEXT_LAYOUT_GUTTER * 2.0_f64)))
-                    && (((*offset_x.lock().unwrap()).clone() + seg_width)
-                        > ((wrap_width).clone()).lock().unwrap()()));
-                if ((should_wrap && (seg_end == word_end))
-                    && ((__destructure1.positions.len() as f64) > 0.0_f64))
+                    && (((*offset_x.lock().unwrap()).clone() + seg_width) > {
+                        let __flight_callback = (wrap_width).clone();
+                        let __flight_result = __flight_callback.lock().unwrap()();
+                        __flight_result
+                    });
+                if ((should_wrap) && (seg_end == word_end))
+                    && ((__destructure1.positions.len() as f64) > 0.0_f64)
                 {
                     let trailing_space = __destructure1.positions
                         [((__destructure1.positions.len() as f64) - 1.0_f64) as usize]
                         .clone();
-                    if ((((*offset_x.lock().unwrap()).clone() + seg_width) - trailing_space)
-                        <= ((wrap_width).clone()).lock().unwrap()())
-                    {
+                    if ((((*offset_x.lock().unwrap()).clone() + seg_width) - trailing_space) <= {
+                        let __flight_callback = (wrap_width).clone();
+                        let __flight_result = __flight_callback.lock().unwrap()();
+                        __flight_result
+                    }) {
                         should_wrap = false;
                     }
                 }
@@ -884,8 +1004,16 @@ fn build_groups(
                             trim_target.end_index
                         };
                     }
-                    ((commit_line).clone()).lock().unwrap()();
-                    if ((check_truncation).clone()).lock().unwrap()() {
+                    {
+                        let __flight_callback = (commit_line).clone();
+                        let __flight_result = __flight_callback.lock().unwrap()();
+                        __flight_result
+                    };
+                    if {
+                        let __flight_callback = (check_truncation).clone();
+                        let __flight_result = __flight_callback.lock().unwrap()();
+                        __flight_result
+                    } {
                         break;
                     }
                     if ((text.char_code_at)((*text_index.lock().unwrap()).clone()) == 32.0_f64) {
@@ -895,22 +1023,35 @@ fn build_groups(
                         };
                     }
                 }
-                ((place_span).clone()).lock().unwrap()(
-                    (*text_index.lock().unwrap()).clone(),
-                    seg_end,
-                );
+                {
+                    let __flight_callback = (place_span).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()(
+                        (*text_index.lock().unwrap()).clone(),
+                        seg_end,
+                    );
+                    __flight_result
+                };
                 space_index = (text.index_of)(" ", word_end);
             } else {
-                if ((*text_index.lock().unwrap()).clone() >= text.length) {
+                if ((*text_index.lock().unwrap()).clone() >= (text.encode_utf16().count() as f64)) {
                     break;
                 }
-                if (word_wrap && (container_width >= (TEXT_LAYOUT_GUTTER * 2.0_f64))) {
-                    ((break_long_word).clone()).lock().unwrap()(text.length);
+                if (word_wrap) && (container_width >= (TEXT_LAYOUT_GUTTER * 2.0_f64)) {
+                    {
+                        let __flight_callback = (break_long_word).clone();
+                        let __flight_result =
+                            __flight_callback.lock().unwrap()((text.encode_utf16().count() as f64));
+                        __flight_result
+                    };
                 } else {
-                    ((place_span).clone()).lock().unwrap()(
-                        (*text_index.lock().unwrap()).clone(),
-                        text.length,
-                    );
+                    {
+                        let __flight_callback = (place_span).clone();
+                        let __flight_result = __flight_callback.lock().unwrap()(
+                            (*text_index.lock().unwrap()).clone(),
+                            (text.encode_utf16().count() as f64),
+                        );
+                        __flight_result
+                    };
                 }
                 break;
             }
@@ -982,7 +1123,7 @@ fn apply_alignment(
             if (resolved == "center") {
                 shift = (((container_width - line_w) - (TEXT_LAYOUT_GUTTER * 2.0_f64)) / 2.0_f64);
             } else {
-                if ((resolved == "justify") && (justification != "none")) {}
+                if (resolved == "justify") && (justification != "none") {}
             }
         }
         if (shift != 0.0_f64) {
@@ -1048,7 +1189,7 @@ fn justify_lines(
             }
             let mut line_groups: Vec<TextLayoutGroup> = vec![];
             for g in (groups).iter().cloned() {
-                if ((g.line_index == li) && ((g.format.align).clone() == "justify")) {
+                if (g.line_index == li) && ((g.format.align).clone() == "justify") {
                     line_groups.push(((g).clone()).clone());
                 }
             }
@@ -1268,8 +1409,8 @@ pub fn create_text_layout_result() -> TextLayoutResult {
 
 // Source: upstream/packages/textlayout/src/textLayout.ts:784 (sha256:29eef70d4b82cb8c4cafec5bfa991e6143190a4f2930489fe2dd028bec3c0193)
 pub fn is_text_layout_truncated(layout: &TextLayoutResult, params: &TextLayoutParams) -> bool {
-    if ((params.max_lines).is_none() || (params.max_lines < 0.0_f64)) {
+    if ((params.max_lines).is_none()) || (params.max_lines < 0.0_f64) {
         return false;
     }
-    return ((layout.num_lines >= params.max_lines) && ((layout.groups.len() as f64) > 0.0_f64));
+    return (layout.num_lines >= params.max_lines) && ((layout.groups.len() as f64) > 0.0_f64);
 }

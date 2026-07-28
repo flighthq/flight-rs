@@ -139,7 +139,7 @@ pub fn create_spritesheet_from_data(data: &SpritesheetData, atlas: &TextureAtlas
     return create_spritesheet(Some(Spritesheet {
         __flight_identity: std::sync::Arc::new(()),
         animations: (animations).clone(),
-        atlas: atlas,
+        atlas: Some((*atlas).clone()),
         frames: frames,
     }));
 }
@@ -177,7 +177,7 @@ pub fn create_spritesheet_from_grid(options: &GridSliceOptions) -> Spritesheet {
                         __flight_identity: std::sync::Arc::new(()),
                         height: frame_height,
                         id: id,
-                        name: format!("{}{}", name_prefix, id),
+                        name: Some(format!("{}{}", name_prefix, id)),
                         width: frame_width,
                         x: x,
                         y: y,
@@ -205,7 +205,7 @@ pub fn create_spritesheet_from_grid(options: &GridSliceOptions) -> Spritesheet {
     }
     return create_spritesheet(Some(Spritesheet {
         __flight_identity: std::sync::Arc::new(()),
-        atlas: atlas,
+        atlas: Some((atlas).clone()),
         frames: frames,
     }));
 }

@@ -31,9 +31,9 @@ fn __flight_js_to_i32(value: f64) -> i32 {
 // Source: upstream/packages/lighting/src/lightAnalysis.ts:17 (sha256:582322bbc6c5cd67d249036500c4c0b7d89ac0784346fb0d894b617356bda66a)
 pub fn get_light_influence_bounds(out: &mut BoundingSphereLike, light: &Light) -> () {
     let kind = (light.kind).clone();
-    if ((((kind == ambient_light_kind_constant) || (kind == hemisphere_light_kind_constant))
+    if (((kind == ambient_light_kind_constant) || (kind == hemisphere_light_kind_constant))
         || (kind == environment_kind_constant))
-        || (kind == directional_light_kind_constant))
+        || (kind == directional_light_kind_constant)
     {
         out.center.x = 0.0_f64;
         out.center.y = 0.0_f64;
@@ -41,8 +41,8 @@ pub fn get_light_influence_bounds(out: &mut BoundingSphereLike, light: &Light) -
         out.radius = (-1.0_f64);
         return;
     }
-    if (((kind == point_light_kind_constant) || (kind == spot_light_kind_constant))
-        || (kind == area_light_kind_constant))
+    if ((kind == point_light_kind_constant) || (kind == spot_light_kind_constant))
+        || (kind == area_light_kind_constant)
     {
         let spatial = light;
         let range = spatial.range;
@@ -132,8 +132,8 @@ impl PartialEq for IsLightShadowCastingRecord1 {
 
 pub fn is_light_shadow_casting(light: &Light) -> bool {
     let kind = (light.kind).clone();
-    if (((kind == ambient_light_kind_constant) || (kind == hemisphere_light_kind_constant))
-        || (kind == environment_kind_constant))
+    if ((kind == ambient_light_kind_constant) || (kind == hemisphere_light_kind_constant))
+        || (kind == environment_kind_constant)
     {
         return false;
     }

@@ -44,7 +44,7 @@ pub fn clone_mesh(source: &Mesh) -> Mesh {
     if ((source.morph).clone()).is_some() {
         clone.morph = (source.morph).clone();
     }
-    return (clone).clone();
+    return clone;
 }
 
 // Source: upstream/packages/scene/src/mesh.ts:46 (sha256:4fbd8df439f616ec0665150fd447de8d79e1ff6b28bcfd083df5d9954a20f3bc)
@@ -54,14 +54,14 @@ pub fn create_mesh(
     kind: Option<Kind>,
     obj: Option<Mesh>,
 ) -> Mesh {
-    let kind = kind.unwrap_or(MESH_KIND);
+    let kind = kind.unwrap_or((MESH_KIND).to_owned());
     let mut mesh = create_scene_node(
         Some(((kind).clone()).clone()),
         Some(((obj).clone().unwrap()).clone()),
     );
     mesh.geometry = (*geometry).clone();
     mesh.materials = (*materials).clone();
-    return (mesh).clone();
+    return mesh;
 }
 
 // Source: upstream/packages/scene/src/mesh.ts:58 (sha256:3075d4aa4f8277ac28e3a3c15c21c3b9e4f7403ec139088ca5b0afc9a5e0e2b5)
@@ -72,12 +72,12 @@ pub fn enable_mesh_signals(source: &Mesh) -> NodeSignals {
 // Source: upstream/packages/scene/src/mesh.ts:68 (sha256:1c56f3460bc3d04c757d8c00e42698868b33fdeda60b5ecb831ce35c206de8e1)
 pub fn get_mesh_deformer(source: &Mesh) -> MeshDeformer {
     if ((source.skin).clone()).is_some() {
-        return mesh_deformer_skeletal_constant;
+        return (mesh_deformer_skeletal_constant).to_owned();
     }
     if ((source.morph).clone()).is_some() {
-        return mesh_deformer_morph_constant;
+        return (mesh_deformer_morph_constant).to_owned();
     }
-    return mesh_deformer_none_constant;
+    return (mesh_deformer_none_constant).to_owned();
 }
 
 // Source: upstream/packages/scene/src/mesh.ts:74 (sha256:c7679192eae905074e4e69117bcd5251d816c92261d0ce8146a129a121728f1c)

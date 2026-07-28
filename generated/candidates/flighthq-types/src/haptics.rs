@@ -41,7 +41,7 @@ pub struct HapticsBackend {
         >,
     >,
     pub impact: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(HapticImpactStyle, f64) -> bool + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut(HapticImpactStyle, Option<f64>) -> bool + Send + 'static>>,
     >,
     pub is_supported: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> bool + Send + 'static>>>,
     pub notification: std::sync::Arc<
@@ -54,7 +54,9 @@ pub struct HapticsBackend {
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Vec<f64>) -> bool + Send + 'static>>>,
     pub vibrate_waveform: Option<
         std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(Vec<f64>, Vec<f64>, f64) -> bool + Send + 'static>>,
+            std::sync::Mutex<
+                Box<dyn FnMut(Vec<f64>, Vec<f64>, Option<f64>) -> bool + Send + 'static>,
+            >,
         >,
     >,
 }

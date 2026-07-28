@@ -48,19 +48,31 @@ pub fn get_path_bounds(path: &Path, out: &mut RectangleLike) -> bool {
                 x = path.data[di as usize].clone();
                 y = path.data[(di + 1.0_f64) as usize].clone();
                 di += 2.0_f64;
-                ((expand).clone()).lock().unwrap()(x, y);
+                {
+                    let __flight_callback = (expand).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()(x, y);
+                    __flight_result
+                };
             } else {
                 if (command == PathCommand::WIDE_MOVE_TO) {
                     x = path.data[(di + 2.0_f64) as usize].clone();
                     y = path.data[(di + 3.0_f64) as usize].clone();
                     di += 4.0_f64;
-                    ((expand).clone()).lock().unwrap()(x, y);
+                    {
+                        let __flight_callback = (expand).clone();
+                        let __flight_result = __flight_callback.lock().unwrap()(x, y);
+                        __flight_result
+                    };
                 } else {
                     if (command == PathCommand::LINE_TO) {
                         let nx = path.data[di as usize].clone();
                         let ny = path.data[(di + 1.0_f64) as usize].clone();
                         di += 2.0_f64;
-                        ((expand).clone()).lock().unwrap()(nx, ny);
+                        {
+                            let __flight_callback = (expand).clone();
+                            let __flight_result = __flight_callback.lock().unwrap()(nx, ny);
+                            __flight_result
+                        };
                         x = nx;
                         y = ny;
                     } else {
@@ -68,7 +80,11 @@ pub fn get_path_bounds(path: &Path, out: &mut RectangleLike) -> bool {
                             let nx = path.data[(di + 2.0_f64) as usize].clone();
                             let ny = path.data[(di + 3.0_f64) as usize].clone();
                             di += 4.0_f64;
-                            ((expand).clone()).lock().unwrap()(nx, ny);
+                            {
+                                let __flight_callback = (expand).clone();
+                                let __flight_result = __flight_callback.lock().unwrap()(nx, ny);
+                                __flight_result
+                            };
                             x = nx;
                             y = ny;
                         } else {
@@ -99,7 +115,7 @@ pub fn get_path_bounds(path: &Path, out: &mut RectangleLike) -> bool {
                                         c2y,
                                         ax,
                                         ay,
-                                        &mut expand,
+                                        (expand).clone(),
                                     );
                                     x = ax;
                                     y = ay;
@@ -139,7 +155,7 @@ fn cubic_extremum_roots(p0: f64, p1: f64, p2: f64, p3: f64, cb: &mut impl FnMut(
             return;
         }
         let t = ((-c) / b);
-        if ((t > 0.0_f64) && (t < 1.0_f64)) {
+        if (t > 0.0_f64) && (t < 1.0_f64) {
             cb(t);
         }
         return;
@@ -151,10 +167,10 @@ fn cubic_extremum_roots(p0: f64, p1: f64, p2: f64, p3: f64, cb: &mut impl FnMut(
     let sqrt_d = (discriminant).sqrt();
     let t1 = (((-b) + sqrt_d) / (2.0_f64 * a));
     let t2 = (((-b) - sqrt_d) / (2.0_f64 * a));
-    if ((t1 > 0.0_f64) && (t1 < 1.0_f64)) {
+    if (t1 > 0.0_f64) && (t1 < 1.0_f64) {
         cb(t1);
     }
-    if (((t2 > 0.0_f64) && (t2 < 1.0_f64)) && ((t2 - t1).abs() > 1e-12_f64)) {
+    if ((t2 > 0.0_f64) && (t2 < 1.0_f64)) && ((t2 - t1).abs() > 1e-12_f64) {
         cb(t2);
     }
 }
@@ -185,18 +201,30 @@ fn expand_cubic_bounds(
     y3: f64,
     expand: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64, f64) -> () + Send + 'static>>>,
 ) -> () {
-    ((expand).clone()).lock().unwrap()(x3, y3);
+    {
+        let __flight_callback = (expand).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(x3, y3);
+        __flight_result
+    };
     cubic_extremum_roots(x0, c1x, c2x, x3, &mut |t: f64| -> () {
-        ((expand).clone()).lock().unwrap()(
-            eval_cubic(x0, c1x, c2x, x3, t),
-            eval_cubic(y0, c1y, c2y, y3, t),
-        );
+        {
+            let __flight_callback = (expand).clone();
+            let __flight_result = __flight_callback.lock().unwrap()(
+                eval_cubic(x0, c1x, c2x, x3, t),
+                eval_cubic(y0, c1y, c2y, y3, t),
+            );
+            __flight_result
+        };
     });
     cubic_extremum_roots(y0, c1y, c2y, y3, &mut |t: f64| -> () {
-        ((expand).clone()).lock().unwrap()(
-            eval_cubic(x0, c1x, c2x, x3, t),
-            eval_cubic(y0, c1y, c2y, y3, t),
-        );
+        {
+            let __flight_callback = (expand).clone();
+            let __flight_result = __flight_callback.lock().unwrap()(
+                eval_cubic(x0, c1x, c2x, x3, t),
+                eval_cubic(y0, c1y, c2y, y3, t),
+            );
+            __flight_result
+        };
     });
 }
 
@@ -214,15 +242,15 @@ fn expand_quadratic_bounds(
     let tx = quadratic_extremum_t(x0, cx, x2);
     if (tx).is_some() {
         expand(
-            eval_quadratic(x0, cx, x2, tx.as_ref().unwrap()),
-            eval_quadratic(y0, cy, y2, tx.as_ref().unwrap()),
+            eval_quadratic(x0, cx, x2, *(tx.as_ref().unwrap())),
+            eval_quadratic(y0, cy, y2, *(tx.as_ref().unwrap())),
         );
     }
     let ty = quadratic_extremum_t(y0, cy, y2);
     if (ty).is_some() {
         expand(
-            eval_quadratic(x0, cx, x2, ty.as_ref().unwrap()),
-            eval_quadratic(y0, cy, y2, ty.as_ref().unwrap()),
+            eval_quadratic(x0, cx, x2, *(ty.as_ref().unwrap())),
+            eval_quadratic(y0, cy, y2, *(ty.as_ref().unwrap())),
         );
     }
 }
@@ -234,7 +262,7 @@ fn quadratic_extremum_t(p0: f64, p1: f64, p2: f64) -> Option<f64> {
         return None;
     }
     let t = ((p0 - p1) / denom);
-    return if ((t > 0.0_f64) && (t < 1.0_f64)) {
+    return if (t > 0.0_f64) && (t < 1.0_f64) {
         Some(t)
     } else {
         None

@@ -24,8 +24,7 @@ pub fn parse_texture_atlas_libgdx_atlas(text: String, atlas: &mut TextureAtlas) 
     let mut i = 0.0_f64;
     let mut id = 0.0_f64;
     while (i < (lines.len() as f64)) {
-        while ((i < (lines.len() as f64)) && ((lines[i as usize].clone()).trim().to_owned() == ""))
-        {
+        while (i < (lines.len() as f64)) && ((lines[i as usize].clone()).trim().to_owned() == "") {
             {
                 i += 1.0;
                 i
@@ -40,8 +39,8 @@ pub fn parse_texture_atlas_libgdx_atlas(text: String, atlas: &mut TextureAtlas) 
                 i += 1.0;
                 i
             };
-            while ((i < (lines.len() as f64))
-                && ((lines[i as usize].clone()).trim().to_owned() != ""))
+            while (i < (lines.len() as f64))
+                && ((lines[i as usize].clone()).trim().to_owned() != "")
             {
                 if ((lines[i as usize].clone()).trim().to_owned()).contains(":") {
                     {
@@ -53,8 +52,7 @@ pub fn parse_texture_atlas_libgdx_atlas(text: String, atlas: &mut TextureAtlas) 
                 }
             }
         }
-        while ((i < (lines.len() as f64)) && ((lines[i as usize].clone()).trim().to_owned() != ""))
-        {
+        while (i < (lines.len() as f64)) && ((lines[i as usize].clone()).trim().to_owned() != "") {
             let line = (lines[i as usize].clone()).trim().to_owned();
             if (!(line).contains(":")) {
                 let region_name = line;
@@ -74,7 +72,7 @@ pub fn parse_texture_atlas_libgdx_atlas(text: String, atlas: &mut TextureAtlas) 
                 let mut index = (-1.0_f64);
                 while (i < (lines.len() as f64)) {
                     let kv = (lines[i as usize].clone()).trim().to_owned();
-                    if ((kv == "") || (!(kv).contains(":"))) {
+                    if (kv == "") || (!(kv).contains(":")) {
                         break;
                     }
                     let colon = (kv.index_of)(":");
@@ -148,19 +146,19 @@ pub fn parse_texture_atlas_libgdx_atlas(text: String, atlas: &mut TextureAtlas) 
                 let name = if (index >= 0.0_f64) {
                     format!("{}_{}", region_name, index)
                 } else {
-                    region_name
+                    (region_name).clone()
                 };
-                let trimmed = (((orig_w > 0.0_f64) && (orig_h > 0.0_f64))
-                    && ((orig_w != atlas_w) || (orig_h != atlas_h)));
+                let trimmed = ((orig_w > 0.0_f64) && (orig_h > 0.0_f64))
+                    && ((orig_w != atlas_w) || (orig_h != atlas_h));
                 atlas
                     .regions
                     .push(create_texture_atlas_region(Some(TextureAtlasRegionLike {
                         __flight_identity: std::sync::Arc::new(()),
                         height: atlas_h,
                         id: id,
-                        name: name,
-                        original_height: if trimmed { orig_h } else { None },
-                        original_width: if trimmed { orig_w } else { None },
+                        name: Some((name).clone()),
+                        original_height: if trimmed { Some(orig_h) } else { None },
+                        original_width: if trimmed { Some(orig_w) } else { None },
                         pivot_x: None,
                         pivot_y: None,
                         rotated: rotated,

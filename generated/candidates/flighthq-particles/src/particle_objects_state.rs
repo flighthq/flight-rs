@@ -14,7 +14,7 @@ pub fn create_particle_objects_state(
     capacity: f64,
     random: Option<RandomSource>,
 ) -> ParticleObjectsState {
-    let random = random.unwrap_or(math.random);
+    let random = random.unwrap_or((math.random).clone());
     return ParticleObjectsState {
         __flight_identity: std::sync::Arc::new(()),
         burst_timer: 0.0_f64,

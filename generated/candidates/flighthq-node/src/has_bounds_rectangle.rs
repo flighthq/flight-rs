@@ -22,7 +22,14 @@ pub fn init_bounds_rectangle_runtime_trait(
     target.compute_local_bounds_rectangle = (methods
         .as_ref()
         .map(|value| (value.compute_local_bounds_rectangle).clone()))
-    .unwrap_or(default_compute_local_bounds_rectangle);
+    .unwrap_or(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+        move |__flight_argument_0: Rectangle, __flight_argument_1: BoundsNodeAny| -> () {
+            default_compute_local_bounds_rectangle(&__flight_argument_0, &__flight_argument_1)
+        },
+    )
+        as Box<
+            dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static,
+        >)));
 }
 
 // Source: upstream/packages/node/src/hasBoundsRectangle.ts:21 (sha256:1ccd3f52d80184fb2202c6f71d2541f57e192b89702ee883c017c80c113fb07c)

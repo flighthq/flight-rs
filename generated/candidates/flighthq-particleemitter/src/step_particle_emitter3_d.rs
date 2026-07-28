@@ -24,7 +24,7 @@ pub fn step_particle_emitter3_d(
     callbacks: Option<ParticleEmitterCallbacks>,
 ) -> () {
     let mut as_emitter = emitter;
-    if ((forces).is_some() && ((forces.as_ref().unwrap().len() as f64) > 0.0_f64)) {
+    if ((forces).is_some()) && ((forces.as_ref().unwrap().len() as f64) > 0.0_f64) {
         apply_particle_forces(&as_emitter, state, forces.as_ref().unwrap(), delta_time);
     }
     update_particle_emitter3_d(
@@ -34,7 +34,7 @@ pub fn step_particle_emitter3_d(
         delta_time,
         Some(((callbacks).clone().unwrap()).clone()),
     );
-    if ((colliders).is_some() && ((colliders.as_ref().unwrap().len() as f64) > 0.0_f64)) {
+    if ((colliders).is_some()) && ((colliders.as_ref().unwrap().len() as f64) > 0.0_f64) {
         apply_particle_collisions(&mut as_emitter, state, colliders.as_ref().unwrap());
     }
 }

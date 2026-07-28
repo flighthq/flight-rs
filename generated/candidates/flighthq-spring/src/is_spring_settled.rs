@@ -18,8 +18,8 @@ pub fn is_spring_settled(
 ) -> bool {
     let position_epsilon = position_epsilon.unwrap_or(SPRING_SETTLE_EPSILON);
     let velocity_epsilon = velocity_epsilon.unwrap_or(SPRING_SETTLE_EPSILON);
-    return (approx_equal(spring.value, target, Some(position_epsilon))
-        && approx_zero(spring.velocity, Some(velocity_epsilon)));
+    return (approx_equal(spring.value, target, Some(position_epsilon)))
+        && (approx_zero(spring.velocity, Some(velocity_epsilon)));
 }
 
 // Source: upstream/packages/spring/src/isSpringSettled.ts:22 (sha256:83a7110b7bcfde35c0048d0a9576dec659df1c651ad9c049fc983206022260d1)

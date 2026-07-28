@@ -15,12 +15,12 @@ pub fn are_entity_runtime_guards_enabled() -> bool {
 
 // Source: upstream/packages/entity/src/guards.ts:12 (sha256:0ee15d649f5ff2ddc07a5570ff48f656990db22c9db9bdf84bef7931bc9dbe6e)
 pub fn create_guarded_entity<Type: Clone>(entity: Type) -> Type {
-    return (entity).clone();
+    return entity;
 }
 
 // Source: upstream/packages/entity/src/guards.ts:36 (sha256:5335355a591f3f3a60987a874a5a18276cb513faad77ab2763aa898a956c94dc)
 pub fn create_guarded_entity_runtime(runtime: EntityRuntime) -> EntityRuntime {
-    return (runtime).clone();
+    return runtime;
 }
 
 // Source: upstream/packages/entity/src/guards.ts:60 (sha256:c6dc53a1535aaf94af488f459d1e9c1ca70f71b1bd7d99d7bb7ac37e0d337549)

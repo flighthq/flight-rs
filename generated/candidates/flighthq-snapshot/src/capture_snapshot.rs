@@ -17,14 +17,14 @@ pub fn capture_snapshot<T: Clone>(source: T) -> Snapshot<T> {
 
 // Source: upstream/packages/snapshot/src/captureSnapshot.ts:22 (sha256:e70b6a21754fd48d6df07bd32853d3748b0d4537cee1b55dd3eea2dc8cd378c8)
 fn freeze_snapshot_deep(value: crate::OpaqueHostValue) -> () {
-    if ((value).is_none()
+    if ((value).is_none())
         || (match &(value) {
             crate::OpaqueHostValue::Undefined => "undefined",
             crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
             crate::OpaqueHostValue::Bool(_) => "boolean",
             crate::OpaqueHostValue::Number(_) => "number",
             crate::OpaqueHostValue::String(_) => "string",
-        } != "object"))
+        } != "object")
     {
         return;
     }
@@ -33,7 +33,7 @@ fn freeze_snapshot_deep(value: crate::OpaqueHostValue) -> () {
         {
             let mut index = 0.0_f64;
             while (index < crate::host_value::<f64>("host.length")) {
-                freeze_snapshot_deep(value[index as usize].clone());
+                freeze_snapshot_deep(crate::host_value::<crate::OpaqueHostValue>("host.index"));
                 {
                     index += 1.0_f64;
                     index
@@ -43,13 +43,6 @@ fn freeze_snapshot_deep(value: crate::OpaqueHostValue) -> () {
         return;
     }
     for key in (crate::host_value::<()>("host.keys")).iter().cloned() {
-        freeze_snapshot_deep(
-            value
-                .iter()
-                .find(|(key, _)| key == &key)
-                .map(|(_, value)| value)
-                .expect("TypeScript Record key was absent")
-                .clone(),
-        );
+        freeze_snapshot_deep(crate::host_value::<crate::OpaqueHostValue>("host.index"));
     }
 }

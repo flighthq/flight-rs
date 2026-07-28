@@ -109,7 +109,7 @@ pub fn create_cube_texture(opts: Option<CubeTextureLike>) -> CubeTexture {
 
 // Source: upstream/packages/texture/src/cubeTexture.ts:52 (sha256:9ce4534069aeece7104a1bb76af4a8d460e925ebbedc12e9cb25573edf7d6f66)
 pub fn equals_cube_texture(a: Option<CubeTextureLike>, b: Option<CubeTextureLike>) -> bool {
-    if ((a).is_none() || (b).is_none()) {
+    if ((a).is_none()) || ((b).is_none()) {
         return false;
     }
     if (a == b) {

@@ -10,7 +10,7 @@ use flighthq_types::Snapshot;
 
 // Source: upstream/packages/snapshot/src/restoreSnapshot.ts:16 (sha256:954eed7a3f0b79bd82df32ee60ee06123deba9c5c21cdac3f733be2ba7fc841c)
 pub fn restore_snapshot<T: Clone>(snapshot: Snapshot<T>, target: T) -> () {
-    if ((((snapshot).is_none()
+    if ((((snapshot).is_none())
         || (match &(snapshot) {
             crate::OpaqueHostValue::Undefined => "undefined",
             crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
@@ -18,8 +18,8 @@ pub fn restore_snapshot<T: Clone>(snapshot: Snapshot<T>, target: T) -> () {
             crate::OpaqueHostValue::Number(_) => "number",
             crate::OpaqueHostValue::String(_) => "string",
         } != "object"))
-        || (target).is_none())
-        || ("object" != "object"))
+        || ((target).is_none()))
+        || ("object" != "object")
     {
         return;
     }
@@ -84,19 +84,19 @@ fn restore_snapshot_value(
     target_value: crate::OpaqueHostValue,
     source_value: crate::OpaqueHostValue,
 ) -> crate::OpaqueHostValue {
-    if ((source_value).is_none()
+    if ((source_value).is_none())
         || (match &(source_value) {
             crate::OpaqueHostValue::Undefined => "undefined",
             crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
             crate::OpaqueHostValue::Bool(_) => "boolean",
             crate::OpaqueHostValue::Number(_) => "number",
             crate::OpaqueHostValue::String(_) => "string",
-        } != "object"))
+        } != "object")
     {
-        return (source_value).clone();
+        return source_value;
     }
     let source_is_array = (array.is_array)(source_value);
-    if (((target_value).is_some()
+    if (((target_value).is_some())
         && (match &(target_value) {
             crate::OpaqueHostValue::Undefined => "undefined",
             crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
@@ -104,10 +104,10 @@ fn restore_snapshot_value(
             crate::OpaqueHostValue::Number(_) => "number",
             crate::OpaqueHostValue::String(_) => "string",
         } == "object"))
-        && ((array.is_array)(target_value) == source_is_array))
+        && ((array.is_array)(target_value) == source_is_array)
     {
         restore_snapshot_into((target_value).clone(), (source_value).clone());
-        return (target_value).clone();
+        return target_value;
     }
     return crate::host_value::<crate::OpaqueHostValue>("host.call");
 }

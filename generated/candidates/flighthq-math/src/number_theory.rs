@@ -21,10 +21,10 @@ fn __flight_js_to_i32(value: f64) -> i32 {
 
 // Source: upstream/packages/math/src/numberTheory.ts:7 (sha256:30e08c82ac68e529fa3df91235a1ec57f8fb59171dd2c5a8e44d4d51ab0a71d2)
 pub fn factorial(n: f64) -> f64 {
-    if ((!(n).is_finite() && (n).fract() == 0.0_f64) || (n < 0.0_f64)) {
+    if (!(n).is_finite() && (n).fract() == 0.0_f64) || (n < 0.0_f64) {
         panic!("{}", "generated Flight function threw");
     }
-    if ((n == 0.0_f64) || (n == 1.0_f64)) {
+    if (n == 0.0_f64) || (n == 1.0_f64) {
         return 1.0_f64;
     }
     let mut result = 1.0_f64;
@@ -45,7 +45,7 @@ pub fn factorial(n: f64) -> f64 {
 pub fn gcd(mut a: f64, mut b: f64) -> f64 {
     a = ((a).trunc()).abs();
     b = ((b).trunc()).abs();
-    if ((a == 0.0_f64) && (b == 0.0_f64)) {
+    if (a == 0.0_f64) && (b == 0.0_f64) {
         panic!("{}", "generated Flight function threw");
     }
     while (b != 0.0_f64) {

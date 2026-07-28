@@ -20,7 +20,7 @@ pub fn reserve_float32_array(array: &Vec<f32>, capacity: f64) -> Vec<f32> {
                 .copy_from_slice(&__flight_values);
         };
     }
-    return (out).clone();
+    return out;
 }
 
 // Source: upstream/packages/geometry/src/typedarray.ts:8 (sha256:e016d560876b7f7754504a4aa2b3b7597f82be40eaf9bee5e464a276d5ed8c3c)
@@ -37,7 +37,7 @@ pub fn reserve_int16_array(array: &Vec<i16>, capacity: f64) -> Vec<i16> {
                 .copy_from_slice(&__flight_values);
         };
     }
-    return (out).clone();
+    return out;
 }
 
 // Source: upstream/packages/geometry/src/typedarray.ts:15 (sha256:10855d09ca0303ec17162812a90dc2b71b1c466153a1cadd76aef47ed82eb1ff)
@@ -54,5 +54,5 @@ pub fn reserve_uint16_array(array: &Vec<u16>, capacity: f64) -> Vec<u16> {
                 .copy_from_slice(&__flight_values);
         };
     }
-    return (out).clone();
+    return out;
 }

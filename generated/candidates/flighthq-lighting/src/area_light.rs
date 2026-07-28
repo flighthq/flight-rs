@@ -41,7 +41,7 @@ pub fn clone_area_light(source: &AreaLight) -> AreaLight {
         color: source.color,
         direction: clone_vector3(&source.direction),
         intensity: source.intensity,
-        kind: area_light_kind_constant,
+        kind: (area_light_kind_constant).to_owned(),
         normal_bias: source.normal_bias,
         pcf_radius: source.pcf_radius,
         position: clone_vector3(&source.position),
@@ -68,7 +68,7 @@ pub fn create_area_light(options: Option<AreaLightOptions>) -> AreaLight {
             create_vector3(Some(0.0_f64), Some((-1.0_f64)), Some(0.0_f64))
         },
         intensity: (options.as_ref().and_then(|value| value.intensity)).unwrap_or(1.0_f64),
-        kind: area_light_kind_constant,
+        kind: (area_light_kind_constant).to_owned(),
         normal_bias: (options.as_ref().and_then(|value| value.normal_bias)).unwrap_or(0.0_f64),
         pcf_radius: (options.as_ref().and_then(|value| value.pcf_radius)).unwrap_or(0.0_f64),
         position: if (position).is_some() {

@@ -31,8 +31,8 @@ pub fn has_image_resource_data(resource: &ImageResource) -> bool {
 
 // Source: upstream/packages/image/src/imageResource.ts:82 (sha256:3025bcd14cf712d8d4f058254a2ddff6f0e58752bf175f0f8128e60614b86bf0)
 pub fn has_image_resource_pixels(resource: &ImageResource) -> bool {
-    return ((((resource.source).clone()).is_some() || ((resource.data).clone()).is_some())
-        || ((resource.compressed).clone()).is_some());
+    return ((((resource.source).clone()).is_some()) || (((resource.data).clone()).is_some()))
+        || (((resource.compressed).clone()).is_some());
 }
 
 // Source: upstream/packages/image/src/imageResource.ts:86 (sha256:bb89b5681b5a1be203b91af484721d4a7e61cb958c13c1d6eb289071a2585b4a)
@@ -48,5 +48,5 @@ pub fn invalidate_image_resource(resource: &mut ImageResource) -> () {
 
 // Source: upstream/packages/image/src/imageResource.ts:97 (sha256:495344d8cd929b57d1b73fcfb210c40ae730dc25f3e602c576a99487310013f0)
 pub fn is_image_resource_empty(resource: &ImageResource) -> bool {
-    return ((resource.width <= 0.0_f64) || (resource.height <= 0.0_f64));
+    return (resource.width <= 0.0_f64) || (resource.height <= 0.0_f64);
 }

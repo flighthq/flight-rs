@@ -48,8 +48,8 @@ impl PartialEq for EnsureNodeLocalMatrix4Record1 {
 
 pub fn ensure_node_local_matrix4(target: &Transform3DNode) -> () {
     let mut runtime = get_entity_runtime(target);
-    if (((runtime.local_matrix4).clone()).is_none()
-        || (runtime.local_transform_using_local_transform_id != runtime.local_transform_id))
+    if (((runtime.local_matrix4).clone()).is_none())
+        || (runtime.local_transform_using_local_transform_id != runtime.local_transform_id)
     {
         recompute_local_transform3_d(target, &mut runtime);
     }
@@ -76,8 +76,8 @@ pub fn ensure_node_world_matrix4(target: &Transform3DNode) -> () {
         parent_runtime = Some(get_entity_runtime(&parent.as_ref().unwrap()));
         parent_world_transform_id = parent_runtime.as_mut().unwrap().world_transform_id;
     }
-    if ((runtime.world_transform_using_local_transform_id != runtime.local_transform_id)
-        || (runtime.world_transform_using_parent_transform_id != parent_world_transform_id))
+    if (runtime.world_transform_using_local_transform_id != runtime.local_transform_id)
+        || (runtime.world_transform_using_parent_transform_id != parent_world_transform_id)
     {
         recompute_world_transform3_d(
             target,

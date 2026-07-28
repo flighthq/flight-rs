@@ -31,7 +31,8 @@ pub fn bake_color_lut_for_run(
 ) -> ColorLut {
     let size = size.unwrap_or(color_lut_default_size_constant);
     let signature = color_lut_run_signature(run, size);
-    if (((cache.signature).clone()) == Some((signature).clone()) && ((cache.lut).clone()).is_some())
+    if (((cache.signature).clone()) == Some((signature).clone()))
+        && (((cache.lut).clone()).is_some())
     {
         return ((cache.lut).clone()).unwrap();
     }
@@ -45,7 +46,7 @@ pub fn bake_color_lut_for_run(
     let lut = bake_color_lut(&transforms, Some(size));
     cache.signature = Some((signature).clone());
     cache.lut = Some((lut).clone());
-    return (lut).clone();
+    return lut;
 }
 
 // Source: upstream/packages/adjustments/src/colorLutCache.ts:40 (sha256:57f403fdf8d5bd7afff86bdc44e1c23863c0e2d90257ec4d19180469fd165e93)

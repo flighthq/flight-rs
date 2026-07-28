@@ -91,7 +91,11 @@ fn compute_path_winding_number(path: &Path, px: f64, py: f64, tolerance: f64) ->
         while (ci < (path.commands.len() as f64)) {
             let command = path.commands[ci as usize].clone();
             if (command == PathCommand::MOVE_TO) {
-                ((flush_contour).clone()).lock().unwrap()();
+                {
+                    let __flight_callback = (flush_contour).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                };
                 x = path.data[di as usize].clone();
                 y = path.data[(di + 1.0_f64) as usize].clone();
                 di += 2.0_f64;
@@ -102,7 +106,11 @@ fn compute_path_winding_number(path: &Path, px: f64, py: f64, tolerance: f64) ->
                 (*has_contour.lock().unwrap()) = true;
             } else {
                 if (command == PathCommand::WIDE_MOVE_TO) {
-                    ((flush_contour).clone()).lock().unwrap()();
+                    {
+                        let __flight_callback = (flush_contour).clone();
+                        let __flight_result = __flight_callback.lock().unwrap()();
+                        __flight_result
+                    };
                     x = path.data[(di + 2.0_f64) as usize].clone();
                     y = path.data[(di + 3.0_f64) as usize].clone();
                     di += 4.0_f64;
@@ -238,13 +246,17 @@ fn compute_path_winding_number(path: &Path, px: f64, py: f64, tolerance: f64) ->
             };
         }
     }
-    ((flush_contour).clone()).lock().unwrap()();
+    {
+        let __flight_callback = (flush_contour).clone();
+        let __flight_result = __flight_callback.lock().unwrap()();
+        __flight_result
+    };
     return ((*winding_number.lock().unwrap()).clone()).abs();
 }
 
 // Source: upstream/packages/path/src/containsPathPoint.ts:146 (sha256:2d8460c6d1d7eae4b9cdaf0cf6789700dbae74522972cd0358fefa500510b87e)
 fn count_segment_crossings(px: f64, py: f64, x0: f64, y0: f64, x1: f64, y1: f64) -> f64 {
-    if (((y0 <= py) && (y1 > py)) || ((y1 <= py) && (y0 > py))) {
+    if ((y0 <= py) && (y1 > py)) || ((y1 <= py) && (y0 > py)) {
         let cross_x = (x0 + (((py - y0) * (x1 - x0)) / (y1 - y0)));
         if (px < cross_x) {
             return if (y1 > y0) { 1.0_f64 } else { (-1.0_f64) };
@@ -270,7 +282,7 @@ fn flatten_cubic_winding_number(
 ) -> f64 {
     let d1 = chord_dist_sq(c1x, c1y, x0, y0, x1, y1);
     let d2 = chord_dist_sq(c2x, c2y, x0, y0, x1, y1);
-    if ((depth >= MAX_SUBDIVISION_DEPTH) || ((d1 <= tolerance_sq) && (d2 <= tolerance_sq))) {
+    if (depth >= MAX_SUBDIVISION_DEPTH) || ((d1 <= tolerance_sq) && (d2 <= tolerance_sq)) {
         return count_segment_crossings(px, py, x0, y0, x1, y1);
     }
     let x01 = ((x0 + c1x) / 2.0_f64);
@@ -327,8 +339,7 @@ fn flatten_quadratic_winding_number(
     tolerance_sq: f64,
     depth: f64,
 ) -> f64 {
-    if ((depth >= MAX_SUBDIVISION_DEPTH) || (chord_dist_sq(cx, cy, x0, y0, x1, y1) <= tolerance_sq))
-    {
+    if (depth >= MAX_SUBDIVISION_DEPTH) || (chord_dist_sq(cx, cy, x0, y0, x1, y1) <= tolerance_sq) {
         return count_segment_crossings(px, py, x0, y0, x1, y1);
     }
     let mx01 = ((x0 + cx) / 2.0_f64);

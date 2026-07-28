@@ -16,7 +16,7 @@ pub fn acquire_identity_quaternion() -> Quaternion {
     q.y = 0.0_f64;
     q.z = 0.0_f64;
     q.w = 1.0_f64;
-    return (q).clone();
+    return q;
 }
 
 // Source: upstream/packages/geometry/src/quaternionPool.ts:14 (sha256:fdaf6cf5940150d9823fa57f5eb9ef18c40b6b31b76513417704fd93ca52526f)

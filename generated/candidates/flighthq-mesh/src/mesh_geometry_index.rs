@@ -16,8 +16,8 @@ pub fn compute_mesh_geometry_wireframe_indices(geometry: &MeshGeometry) -> Vec<u
     } else {
         true
     };
-    if (((geometry.topology).clone() != "triangle-list")
-        && ((geometry.topology).clone() != "triangle-strip"))
+    if ((geometry.topology).clone() != "triangle-list")
+        && ((geometry.topology).clone() != "triangle-strip")
     {
         return if use_uint32 {
             vec![0_u32; (0.0_f64) as usize]
@@ -43,19 +43,19 @@ pub fn compute_mesh_geometry_wireframe_indices(geometry: &MeshGeometry) -> Vec<u
             let mut t = 0.0_f64;
             while ((t + 2.0_f64) < index_count) {
                 let a = if (indices).is_some() {
-                    (indices.as_ref().unwrap()[t as usize] as f64)
+                    (indices.as_ref().unwrap()[t as usize] as f64) as u32
                 } else {
-                    t
+                    (t) as u32
                 };
                 let b = if (indices).is_some() {
-                    (indices.as_ref().unwrap()[(t + 1.0_f64) as usize] as f64)
+                    (indices.as_ref().unwrap()[(t + 1.0_f64) as usize] as f64) as u32
                 } else {
-                    (t + 1.0_f64)
+                    (t + 1.0_f64) as u32
                 };
                 let c = if (indices).is_some() {
-                    (indices.as_ref().unwrap()[(t + 2.0_f64) as usize] as f64)
+                    (indices.as_ref().unwrap()[(t + 2.0_f64) as usize] as f64) as u32
                 } else {
-                    (t + 2.0_f64)
+                    (t + 2.0_f64) as u32
                 };
                 lines.extend(vec![
                     (a).clone(),
@@ -76,19 +76,19 @@ pub fn compute_mesh_geometry_wireframe_indices(geometry: &MeshGeometry) -> Vec<u
             let mut t = 0.0_f64;
             while ((t + 2.0_f64) < index_count) {
                 let a = if (indices).is_some() {
-                    (indices.as_ref().unwrap()[t as usize] as f64)
+                    (indices.as_ref().unwrap()[t as usize] as f64) as u32
                 } else {
-                    t
+                    (t) as u32
                 };
                 let b = if (indices).is_some() {
-                    (indices.as_ref().unwrap()[(t + 1.0_f64) as usize] as f64)
+                    (indices.as_ref().unwrap()[(t + 1.0_f64) as usize] as f64) as u32
                 } else {
-                    (t + 1.0_f64)
+                    (t + 1.0_f64) as u32
                 };
                 let c = if (indices).is_some() {
-                    (indices.as_ref().unwrap()[(t + 2.0_f64) as usize] as f64)
+                    (indices.as_ref().unwrap()[(t + 2.0_f64) as usize] as f64) as u32
                 } else {
-                    (t + 2.0_f64)
+                    (t + 2.0_f64) as u32
                 };
                 lines.extend(vec![
                     (a).clone(),
@@ -113,7 +113,7 @@ pub fn compute_mesh_geometry_wireframe_indices(geometry: &MeshGeometry) -> Vec<u
             out[__flight_offset..__flight_offset + __flight_values.len()]
                 .copy_from_slice(&__flight_values);
         };
-        return (out).clone();
+        return out;
     }
     let mut out = vec![0_u16; (lines.len() as f64) as usize];
     {

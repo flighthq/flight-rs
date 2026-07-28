@@ -14,7 +14,7 @@ use flighthq_types::{Path, PathSegment};
 
 // Source: upstream/packages/path-formats/src/svgPathData.ts:26 (sha256:9167f8486ff8309d236e8a36954c943903721ac23ca3ed984357c332d0165e88)
 pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
-    let length = d.length;
+    let length = (d.encode_utf16().count() as f64);
     let pos: std::sync::Arc<std::sync::Mutex<f64>> =
         std::sync::Arc::new(std::sync::Mutex::new(0.0_f64));
     let mut current_x = 0.0_f64;
@@ -33,9 +33,9 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
         move || -> () {
             while ((*pos.lock().unwrap()).clone() < length) {
                 let c = (d.char_code_at)((*pos.lock().unwrap()).clone());
-                if ((((((c == 32.0_f64) || (c == 9.0_f64)) || (c == 10.0_f64)) || (c == 13.0_f64))
+                if (((((c == 32.0_f64) || (c == 9.0_f64)) || (c == 10.0_f64)) || (c == 13.0_f64))
                     || (c == 12.0_f64))
-                    || (c == 44.0_f64))
+                    || (c == 44.0_f64)
                 {
                     {
                         (*pos.lock().unwrap()) += 1.0;
@@ -54,11 +54,15 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
         let mut pos = pos.clone();
         let skip_separators = skip_separators.clone();
         move || -> Option<f64> {
-            ((skip_separators).clone()).lock().unwrap()();
+            {
+                let __flight_callback = (skip_separators).clone();
+                let __flight_result = __flight_callback.lock().unwrap()();
+                __flight_result
+            };
             let start = (*pos.lock().unwrap()).clone();
-            if (((*pos.lock().unwrap()).clone() < length)
+            if ((*pos.lock().unwrap()).clone() < length)
                 && ((d[(*pos.lock().unwrap()).clone() as usize].clone() == "+")
-                    || (d[(*pos.lock().unwrap()).clone() as usize].clone() == "-")))
+                    || (d[(*pos.lock().unwrap()).clone() as usize].clone() == "-"))
             {
                 {
                     (*pos.lock().unwrap()) += 1.0;
@@ -66,9 +70,9 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                 };
             }
             let mut saw_digit = false;
-            while ((((*pos.lock().unwrap()).clone() < length)
+            while (((*pos.lock().unwrap()).clone() < length)
                 && (d[(*pos.lock().unwrap()).clone() as usize].clone() >= "0"))
-                && (d[(*pos.lock().unwrap()).clone() as usize].clone() <= "9"))
+                && (d[(*pos.lock().unwrap()).clone() as usize].clone() <= "9")
             {
                 {
                     (*pos.lock().unwrap()) += 1.0;
@@ -76,16 +80,16 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                 };
                 saw_digit = true;
             }
-            if (((*pos.lock().unwrap()).clone() < length)
-                && (d[(*pos.lock().unwrap()).clone() as usize].clone() == "."))
+            if ((*pos.lock().unwrap()).clone() < length)
+                && (d[(*pos.lock().unwrap()).clone() as usize].clone() == ".")
             {
                 {
                     (*pos.lock().unwrap()) += 1.0;
                     (*pos.lock().unwrap())
                 };
-                while ((((*pos.lock().unwrap()).clone() < length)
+                while (((*pos.lock().unwrap()).clone() < length)
                     && (d[(*pos.lock().unwrap()).clone() as usize].clone() >= "0"))
-                    && (d[(*pos.lock().unwrap()).clone() as usize].clone() <= "9"))
+                    && (d[(*pos.lock().unwrap()).clone() as usize].clone() <= "9")
                 {
                     {
                         (*pos.lock().unwrap()) += 1.0;
@@ -98,18 +102,18 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                 (*pos.lock().unwrap()) = start;
                 return None;
             }
-            if (((*pos.lock().unwrap()).clone() < length)
+            if ((*pos.lock().unwrap()).clone() < length)
                 && ((d[(*pos.lock().unwrap()).clone() as usize].clone() == "e")
-                    || (d[(*pos.lock().unwrap()).clone() as usize].clone() == "E")))
+                    || (d[(*pos.lock().unwrap()).clone() as usize].clone() == "E"))
             {
                 let exp_start = (*pos.lock().unwrap()).clone();
                 {
                     (*pos.lock().unwrap()) += 1.0;
                     (*pos.lock().unwrap())
                 };
-                if (((*pos.lock().unwrap()).clone() < length)
+                if ((*pos.lock().unwrap()).clone() < length)
                     && ((d[(*pos.lock().unwrap()).clone() as usize].clone() == "+")
-                        || (d[(*pos.lock().unwrap()).clone() as usize].clone() == "-")))
+                        || (d[(*pos.lock().unwrap()).clone() as usize].clone() == "-"))
                 {
                     {
                         (*pos.lock().unwrap()) += 1.0;
@@ -117,9 +121,9 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                     };
                 }
                 let mut exp_digit = false;
-                while ((((*pos.lock().unwrap()).clone() < length)
+                while (((*pos.lock().unwrap()).clone() < length)
                     && (d[(*pos.lock().unwrap()).clone() as usize].clone() >= "0"))
-                    && (d[(*pos.lock().unwrap()).clone() as usize].clone() <= "9"))
+                    && (d[(*pos.lock().unwrap()).clone() as usize].clone() <= "9")
                 {
                     {
                         (*pos.lock().unwrap()) += 1.0;
@@ -144,9 +148,13 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
         let mut pos = pos.clone();
         let skip_separators = skip_separators.clone();
         move || -> Option<f64> {
-            ((skip_separators).clone()).lock().unwrap()();
-            if (((*pos.lock().unwrap()).clone() < length)
-                && (d[(*pos.lock().unwrap()).clone() as usize].clone() == "0"))
+            {
+                let __flight_callback = (skip_separators).clone();
+                let __flight_result = __flight_callback.lock().unwrap()();
+                __flight_result
+            };
+            if ((*pos.lock().unwrap()).clone() < length)
+                && (d[(*pos.lock().unwrap()).clone() as usize].clone() == "0")
             {
                 {
                     (*pos.lock().unwrap()) += 1.0;
@@ -154,8 +162,8 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                 };
                 return Some(0.0_f64);
             }
-            if (((*pos.lock().unwrap()).clone() < length)
-                && (d[(*pos.lock().unwrap()).clone() as usize].clone() == "1"))
+            if ((*pos.lock().unwrap()).clone() < length)
+                && (d[(*pos.lock().unwrap()).clone() as usize].clone() == "1")
             {
                 {
                     (*pos.lock().unwrap()) += 1.0;
@@ -168,7 +176,11 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
     })
         as Box<dyn FnMut() -> Option<f64> + Send + 'static>));
     while true {
-        ((skip_separators).clone()).lock().unwrap()();
+        {
+            let __flight_callback = (skip_separators).clone();
+            let __flight_result = __flight_callback.lock().unwrap()();
+            __flight_result
+        };
         if ((*pos.lock().unwrap()).clone() >= length) {
             break;
         }
@@ -180,10 +192,10 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
             (*pos.lock().unwrap()) += 1.0;
             (*pos.lock().unwrap())
         };
-        if (((last_kind == "") && (command_letter != "M")) && (command_letter != "m")) {
+        if ((last_kind == "") && (command_letter != "M")) && (command_letter != "m") {
             return false;
         }
-        if ((command_letter == "Z") || (command_letter == "z")) {
+        if (command_letter == "Z") || (command_letter == "z") {
             append_path_close(path);
             current_x = start_x;
             current_y = start_y;
@@ -194,7 +206,11 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
         let mut first = true;
         while true {
             if (!first) {
-                ((skip_separators).clone()).lock().unwrap()();
+                {
+                    let __flight_callback = (skip_separators).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                };
                 if ((*pos.lock().unwrap()).clone() >= length) {
                     break;
                 }
@@ -209,9 +225,17 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                 (active).clone()
             };
             if (upper == "M") {
-                let nx = ((read_number).clone()).lock().unwrap()();
-                let ny = ((read_number).clone()).lock().unwrap()();
-                if ((nx).is_none() || (ny).is_none()) {
+                let nx = {
+                    let __flight_callback = (read_number).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                };
+                let ny = {
+                    let __flight_callback = (read_number).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                };
+                if ((nx).is_none()) || ((ny).is_none()) {
                     return false;
                 }
                 current_x = if relative {
@@ -230,9 +254,17 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                 last_kind = "M".to_owned();
             } else {
                 if (upper == "L") {
-                    let nx = ((read_number).clone()).lock().unwrap()();
-                    let ny = ((read_number).clone()).lock().unwrap()();
-                    if ((nx).is_none() || (ny).is_none()) {
+                    let nx = {
+                        let __flight_callback = (read_number).clone();
+                        let __flight_result = __flight_callback.lock().unwrap()();
+                        __flight_result
+                    };
+                    let ny = {
+                        let __flight_callback = (read_number).clone();
+                        let __flight_result = __flight_callback.lock().unwrap()();
+                        __flight_result
+                    };
+                    if ((nx).is_none()) || ((ny).is_none()) {
                         return false;
                     }
                     current_x = if relative {
@@ -249,7 +281,11 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                     last_kind = "L".to_owned();
                 } else {
                     if (upper == "H") {
-                        let nx = ((read_number).clone()).lock().unwrap()();
+                        let nx = {
+                            let __flight_callback = (read_number).clone();
+                            let __flight_result = __flight_callback.lock().unwrap()();
+                            __flight_result
+                        };
                         if (nx).is_none() {
                             return false;
                         }
@@ -262,7 +298,11 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                         last_kind = "L".to_owned();
                     } else {
                         if (upper == "V") {
-                            let ny = ((read_number).clone()).lock().unwrap()();
+                            let ny = {
+                                let __flight_callback = (read_number).clone();
+                                let __flight_result = __flight_callback.lock().unwrap()();
+                                __flight_result
+                            };
                             if (ny).is_none() {
                                 return false;
                             }
@@ -275,25 +315,73 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                             last_kind = "L".to_owned();
                         } else {
                             if (upper == "C") {
-                                let x1 = ((read_number).clone()).lock().unwrap()();
-                                let y1 = ((read_number).clone()).lock().unwrap()();
-                                let x2 = ((read_number).clone()).lock().unwrap()();
-                                let y2 = ((read_number).clone()).lock().unwrap()();
-                                let x = ((read_number).clone()).lock().unwrap()();
-                                let y = ((read_number).clone()).lock().unwrap()();
-                                if ((((((x1).is_none() || (y1).is_none()) || (x2).is_none())
-                                    || (y2).is_none())
-                                    || (x).is_none())
-                                    || (y).is_none())
+                                let x1 = {
+                                    let __flight_callback = (read_number).clone();
+                                    let __flight_result = __flight_callback.lock().unwrap()();
+                                    __flight_result
+                                };
+                                let y1 = {
+                                    let __flight_callback = (read_number).clone();
+                                    let __flight_result = __flight_callback.lock().unwrap()();
+                                    __flight_result
+                                };
+                                let x2 = {
+                                    let __flight_callback = (read_number).clone();
+                                    let __flight_result = __flight_callback.lock().unwrap()();
+                                    __flight_result
+                                };
+                                let y2 = {
+                                    let __flight_callback = (read_number).clone();
+                                    let __flight_result = __flight_callback.lock().unwrap()();
+                                    __flight_result
+                                };
+                                let x = {
+                                    let __flight_callback = (read_number).clone();
+                                    let __flight_result = __flight_callback.lock().unwrap()();
+                                    __flight_result
+                                };
+                                let y = {
+                                    let __flight_callback = (read_number).clone();
+                                    let __flight_result = __flight_callback.lock().unwrap()();
+                                    __flight_result
+                                };
+                                if ((((((x1).is_none()) || ((y1).is_none())) || ((x2).is_none()))
+                                    || ((y2).is_none()))
+                                    || ((x).is_none()))
+                                    || ((y).is_none())
                                 {
                                     return false;
                                 }
-                                let c1x = if relative { (current_x + x1) } else { x1 };
-                                let c1y = if relative { (current_y + y1) } else { y1 };
-                                let c2x = if relative { (current_x + x2) } else { x2 };
-                                let c2y = if relative { (current_y + y2) } else { y2 };
-                                let ax = if relative { (current_x + x) } else { x };
-                                let ay = if relative { (current_y + y) } else { y };
+                                let c1x = if relative {
+                                    (current_x + x1)
+                                } else {
+                                    (x1).clone().unwrap()
+                                };
+                                let c1y = if relative {
+                                    (current_y + y1)
+                                } else {
+                                    (y1).clone().unwrap()
+                                };
+                                let c2x = if relative {
+                                    (current_x + x2)
+                                } else {
+                                    (x2).clone().unwrap()
+                                };
+                                let c2y = if relative {
+                                    (current_y + y2)
+                                } else {
+                                    (y2).clone().unwrap()
+                                };
+                                let ax = if relative {
+                                    (current_x + x)
+                                } else {
+                                    (x).clone().unwrap()
+                                };
+                                let ay = if relative {
+                                    (current_y + y)
+                                } else {
+                                    (y).clone().unwrap()
+                                };
                                 append_path_cubic_curve_to(path, c1x, c1y, c2x, c2y, ax, ay);
                                 last_control2_x = c2x;
                                 last_control2_y = c2y;
@@ -302,16 +390,32 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                                 last_kind = "C".to_owned();
                             } else {
                                 if (upper == "S") {
-                                    let x2 = ((read_number).clone()).lock().unwrap()();
-                                    let y2 = ((read_number).clone()).lock().unwrap()();
-                                    let x = ((read_number).clone()).lock().unwrap()();
-                                    let y = ((read_number).clone()).lock().unwrap()();
-                                    if ((((x2).is_none() || (y2).is_none()) || (x).is_none())
-                                        || (y).is_none())
+                                    let x2 = {
+                                        let __flight_callback = (read_number).clone();
+                                        let __flight_result = __flight_callback.lock().unwrap()();
+                                        __flight_result
+                                    };
+                                    let y2 = {
+                                        let __flight_callback = (read_number).clone();
+                                        let __flight_result = __flight_callback.lock().unwrap()();
+                                        __flight_result
+                                    };
+                                    let x = {
+                                        let __flight_callback = (read_number).clone();
+                                        let __flight_result = __flight_callback.lock().unwrap()();
+                                        __flight_result
+                                    };
+                                    let y = {
+                                        let __flight_callback = (read_number).clone();
+                                        let __flight_result = __flight_callback.lock().unwrap()();
+                                        __flight_result
+                                    };
+                                    if ((((x2).is_none()) || ((y2).is_none())) || ((x).is_none()))
+                                        || ((y).is_none())
                                     {
                                         return false;
                                     }
-                                    let reflect = ((last_kind == "C") || (last_kind == "S"));
+                                    let reflect = (last_kind == "C") || (last_kind == "S");
                                     let c1x = if reflect {
                                         ((2.0_f64 * current_x) - last_control2_x)
                                     } else {
@@ -322,10 +426,26 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                                     } else {
                                         current_y
                                     };
-                                    let c2x = if relative { (current_x + x2) } else { x2 };
-                                    let c2y = if relative { (current_y + y2) } else { y2 };
-                                    let ax = if relative { (current_x + x) } else { x };
-                                    let ay = if relative { (current_y + y) } else { y };
+                                    let c2x = if relative {
+                                        (current_x + x2)
+                                    } else {
+                                        (x2).clone().unwrap()
+                                    };
+                                    let c2y = if relative {
+                                        (current_y + y2)
+                                    } else {
+                                        (y2).clone().unwrap()
+                                    };
+                                    let ax = if relative {
+                                        (current_x + x)
+                                    } else {
+                                        (x).clone().unwrap()
+                                    };
+                                    let ay = if relative {
+                                        (current_y + y)
+                                    } else {
+                                        (y).clone().unwrap()
+                                    };
                                     append_path_cubic_curve_to(path, c1x, c1y, c2x, c2y, ax, ay);
                                     last_control2_x = c2x;
                                     last_control2_y = c2y;
@@ -334,19 +454,56 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                                     last_kind = "S".to_owned();
                                 } else {
                                     if (upper == "Q") {
-                                        let x1 = ((read_number).clone()).lock().unwrap()();
-                                        let y1 = ((read_number).clone()).lock().unwrap()();
-                                        let x = ((read_number).clone()).lock().unwrap()();
-                                        let y = ((read_number).clone()).lock().unwrap()();
-                                        if ((((x1).is_none() || (y1).is_none()) || (x).is_none())
-                                            || (y).is_none())
+                                        let x1 = {
+                                            let __flight_callback = (read_number).clone();
+                                            let __flight_result =
+                                                __flight_callback.lock().unwrap()();
+                                            __flight_result
+                                        };
+                                        let y1 = {
+                                            let __flight_callback = (read_number).clone();
+                                            let __flight_result =
+                                                __flight_callback.lock().unwrap()();
+                                            __flight_result
+                                        };
+                                        let x = {
+                                            let __flight_callback = (read_number).clone();
+                                            let __flight_result =
+                                                __flight_callback.lock().unwrap()();
+                                            __flight_result
+                                        };
+                                        let y = {
+                                            let __flight_callback = (read_number).clone();
+                                            let __flight_result =
+                                                __flight_callback.lock().unwrap()();
+                                            __flight_result
+                                        };
+                                        if ((((x1).is_none()) || ((y1).is_none()))
+                                            || ((x).is_none()))
+                                            || ((y).is_none())
                                         {
                                             return false;
                                         }
-                                        let cx = if relative { (current_x + x1) } else { x1 };
-                                        let cy = if relative { (current_y + y1) } else { y1 };
-                                        let ax = if relative { (current_x + x) } else { x };
-                                        let ay = if relative { (current_y + y) } else { y };
+                                        let cx = if relative {
+                                            (current_x + x1)
+                                        } else {
+                                            (x1).clone().unwrap()
+                                        };
+                                        let cy = if relative {
+                                            (current_y + y1)
+                                        } else {
+                                            (y1).clone().unwrap()
+                                        };
+                                        let ax = if relative {
+                                            (current_x + x)
+                                        } else {
+                                            (x).clone().unwrap()
+                                        };
+                                        let ay = if relative {
+                                            (current_y + y)
+                                        } else {
+                                            (y).clone().unwrap()
+                                        };
                                         append_path_curve_to(path, cx, cy, ax, ay);
                                         last_quad_control_x = cx;
                                         last_quad_control_y = cy;
@@ -355,13 +512,22 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                                         last_kind = "Q".to_owned();
                                     } else {
                                         if (upper == "T") {
-                                            let x = ((read_number).clone()).lock().unwrap()();
-                                            let y = ((read_number).clone()).lock().unwrap()();
-                                            if ((x).is_none() || (y).is_none()) {
+                                            let x = {
+                                                let __flight_callback = (read_number).clone();
+                                                let __flight_result =
+                                                    __flight_callback.lock().unwrap()();
+                                                __flight_result
+                                            };
+                                            let y = {
+                                                let __flight_callback = (read_number).clone();
+                                                let __flight_result =
+                                                    __flight_callback.lock().unwrap()();
+                                                __flight_result
+                                            };
+                                            if ((x).is_none()) || ((y).is_none()) {
                                                 return false;
                                             }
-                                            let reflect =
-                                                ((last_kind == "Q") || (last_kind == "T"));
+                                            let reflect = (last_kind == "Q") || (last_kind == "T");
                                             let cx = if reflect {
                                                 ((2.0_f64 * current_x) - last_quad_control_x)
                                             } else {
@@ -372,8 +538,16 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                                             } else {
                                                 current_y
                                             };
-                                            let ax = if relative { (current_x + x) } else { x };
-                                            let ay = if relative { (current_y + y) } else { y };
+                                            let ax = if relative {
+                                                (current_x + x)
+                                            } else {
+                                                (x).clone().unwrap()
+                                            };
+                                            let ay = if relative {
+                                                (current_y + y)
+                                            } else {
+                                                (y).clone().unwrap()
+                                            };
                                             append_path_curve_to(path, cx, cy, ax, ay);
                                             last_quad_control_x = cx;
                                             last_quad_control_y = cy;
@@ -382,26 +556,67 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                                             last_kind = "T".to_owned();
                                         } else {
                                             if (upper == "A") {
-                                                let rx = ((read_number).clone()).lock().unwrap()();
-                                                let ry = ((read_number).clone()).lock().unwrap()();
-                                                let rotation_degrees =
-                                                    ((read_number).clone()).lock().unwrap()();
-                                                let large_arc =
-                                                    ((read_flag).clone()).lock().unwrap()();
-                                                let sweep = ((read_flag).clone()).lock().unwrap()();
-                                                let x = ((read_number).clone()).lock().unwrap()();
-                                                let y = ((read_number).clone()).lock().unwrap()();
-                                                if (((((((rx).is_none() || (ry).is_none())
-                                                    || (rotation_degrees).is_none())
-                                                    || (large_arc).is_none())
-                                                    || (sweep).is_none())
-                                                    || (x).is_none())
-                                                    || (y).is_none())
+                                                let rx = {
+                                                    let __flight_callback = (read_number).clone();
+                                                    let __flight_result =
+                                                        __flight_callback.lock().unwrap()();
+                                                    __flight_result
+                                                };
+                                                let ry = {
+                                                    let __flight_callback = (read_number).clone();
+                                                    let __flight_result =
+                                                        __flight_callback.lock().unwrap()();
+                                                    __flight_result
+                                                };
+                                                let rotation_degrees = {
+                                                    let __flight_callback = (read_number).clone();
+                                                    let __flight_result =
+                                                        __flight_callback.lock().unwrap()();
+                                                    __flight_result
+                                                };
+                                                let large_arc = {
+                                                    let __flight_callback = (read_flag).clone();
+                                                    let __flight_result =
+                                                        __flight_callback.lock().unwrap()();
+                                                    __flight_result
+                                                };
+                                                let sweep = {
+                                                    let __flight_callback = (read_flag).clone();
+                                                    let __flight_result =
+                                                        __flight_callback.lock().unwrap()();
+                                                    __flight_result
+                                                };
+                                                let x = {
+                                                    let __flight_callback = (read_number).clone();
+                                                    let __flight_result =
+                                                        __flight_callback.lock().unwrap()();
+                                                    __flight_result
+                                                };
+                                                let y = {
+                                                    let __flight_callback = (read_number).clone();
+                                                    let __flight_result =
+                                                        __flight_callback.lock().unwrap()();
+                                                    __flight_result
+                                                };
+                                                if (((((((rx).is_none()) || ((ry).is_none()))
+                                                    || ((rotation_degrees).is_none()))
+                                                    || ((large_arc).is_none()))
+                                                    || ((sweep).is_none()))
+                                                    || ((x).is_none()))
+                                                    || ((y).is_none())
                                                 {
                                                     return false;
                                                 }
-                                                let ax = if relative { (current_x + x) } else { x };
-                                                let ay = if relative { (current_y + y) } else { y };
+                                                let ax = if relative {
+                                                    (current_x + x)
+                                                } else {
+                                                    (x).clone().unwrap()
+                                                };
+                                                let ay = if relative {
+                                                    (current_y + y)
+                                                } else {
+                                                    (y).clone().unwrap()
+                                                };
                                                 append_path_arc_to(
                                                     path,
                                                     (rx).clone().unwrap(),

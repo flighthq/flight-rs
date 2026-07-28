@@ -28,8 +28,7 @@ pub fn convert_phong_to_standard_pbr_material(
 
 // Source: upstream/packages/materials/src/phongToPbr.ts:36 (sha256:df6462ac13f10902000aa41bf7bb6d3963e14e4ae5c8aa50116192de3b47d264)
 pub fn get_pbr_metallic_from_phong_specular(specular: f64, diffuse: f64) -> f64 {
-    return if ((get_color_luminance(specular) > 0.5_f64)
-        && (get_color_luminance(diffuse) < 0.04_f64))
+    return if (get_color_luminance(specular) > 0.5_f64) && (get_color_luminance(diffuse) < 0.04_f64)
     {
         1.0_f64
     } else {

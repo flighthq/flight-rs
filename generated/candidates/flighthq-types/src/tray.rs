@@ -121,8 +121,9 @@ pub struct TrayBackend {
     pub is_destroyed:
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64) -> bool + Send + 'static>>>,
     pub list_ids: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> Vec<f64> + Send + 'static>>>,
-    pub pop_up_context_menu:
-        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64, Vector2Like) -> () + Send + 'static>>>,
+    pub pop_up_context_menu: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(f64, Option<Vector2Like>) -> () + Send + 'static>>,
+    >,
     pub remove_balloon:
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64) -> () + Send + 'static>>>,
     pub set_context_menu: std::sync::Arc<

@@ -46,12 +46,12 @@ pub fn is_spring3_d_settled(
         target_x,
         Some((position_epsilon).clone().unwrap()),
         Some((velocity_epsilon).clone().unwrap()),
-    ) && is_spring_settled(
+    )) && (is_spring_settled(
         &spring3_d.y,
         target_y,
         Some((position_epsilon).clone().unwrap()),
         Some((velocity_epsilon).clone().unwrap()),
-    )) && is_spring_settled(
+    ))) && (is_spring_settled(
         &spring3_d.z,
         target_z,
         Some((position_epsilon).clone().unwrap()),

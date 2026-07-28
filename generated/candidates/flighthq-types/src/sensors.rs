@@ -175,7 +175,11 @@ pub struct SensorsBackend {
     pub __flight_identity: std::sync::Arc<()>,
     pub get_permission_state: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(String) -> crate::Promise<SensorsPermissionState> + Send + 'static>,
+            Box<
+                dyn FnMut(Option<String>) -> crate::Promise<SensorsPermissionState>
+                    + Send
+                    + 'static,
+            >,
         >,
     >,
     pub is_ambient_light_supported:
@@ -207,7 +211,7 @@ pub struct SensorsBackend {
                                 Box<dyn FnMut(OrientationReading) -> () + Send + 'static>,
                             >,
                         >,
-                        SensorSubscribeOptions,
+                        Option<SensorSubscribeOptions>,
                     ) -> std::sync::Arc<
                         std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>,
                     > + Send
@@ -224,7 +228,7 @@ pub struct SensorsBackend {
                                 Box<dyn FnMut(AmbientLightReading) -> () + Send + 'static>,
                             >,
                         >,
-                        SensorSubscribeOptions,
+                        Option<SensorSubscribeOptions>,
                     ) -> std::sync::Arc<
                         std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>,
                     > + Send
@@ -241,7 +245,7 @@ pub struct SensorsBackend {
                                 Box<dyn FnMut(PressureReading) -> () + Send + 'static>,
                             >,
                         >,
-                        SensorSubscribeOptions,
+                        Option<SensorSubscribeOptions>,
                     ) -> std::sync::Arc<
                         std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>,
                     > + Send
@@ -256,7 +260,7 @@ pub struct SensorsBackend {
                         std::sync::Arc<
                             std::sync::Mutex<Box<dyn FnMut(MotionReading) -> () + Send + 'static>>,
                         >,
-                        SensorSubscribeOptions,
+                        Option<SensorSubscribeOptions>,
                     ) -> std::sync::Arc<
                         std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>,
                     > + Send
@@ -271,7 +275,7 @@ pub struct SensorsBackend {
                         std::sync::Arc<
                             std::sync::Mutex<Box<dyn FnMut(MotionReading) -> () + Send + 'static>>,
                         >,
-                        SensorSubscribeOptions,
+                        Option<SensorSubscribeOptions>,
                     ) -> std::sync::Arc<
                         std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>,
                     > + Send
@@ -286,7 +290,7 @@ pub struct SensorsBackend {
                         std::sync::Arc<
                             std::sync::Mutex<Box<dyn FnMut(MotionReading) -> () + Send + 'static>>,
                         >,
-                        SensorSubscribeOptions,
+                        Option<SensorSubscribeOptions>,
                     ) -> std::sync::Arc<
                         std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>,
                     > + Send
@@ -307,7 +311,7 @@ pub struct SensorsBackend {
                                 >,
                             >,
                         >,
-                        SensorSubscribeOptions,
+                        Option<SensorSubscribeOptions>,
                     ) -> std::sync::Arc<
                         std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>,
                     > + Send
@@ -324,7 +328,7 @@ pub struct SensorsBackend {
                                 Box<dyn FnMut(OrientationReading) -> () + Send + 'static>,
                             >,
                         >,
-                        SensorSubscribeOptions,
+                        Option<SensorSubscribeOptions>,
                     ) -> std::sync::Arc<
                         std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>,
                     > + Send
@@ -341,7 +345,7 @@ pub struct SensorsBackend {
                                 Box<dyn FnMut(ProximityReading) -> () + Send + 'static>,
                             >,
                         >,
-                        SensorSubscribeOptions,
+                        Option<SensorSubscribeOptions>,
                     ) -> std::sync::Arc<
                         std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>,
                     > + Send
@@ -358,7 +362,7 @@ pub struct SensorsBackend {
                                 Box<dyn FnMut(QuaternionReading) -> () + Send + 'static>,
                             >,
                         >,
-                        SensorSubscribeOptions,
+                        Option<SensorSubscribeOptions>,
                     ) -> std::sync::Arc<
                         std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>,
                     > + Send

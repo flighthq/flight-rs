@@ -82,7 +82,7 @@ pub fn get_mesh_geometry_vertex_tangent(
     } else {
         0.0_f64
     };
-    if ((vertex_index < 0.0_f64) || (vertex_index >= vertex_count)) {
+    if (vertex_index < 0.0_f64) || (vertex_index >= vertex_count) {
         return false;
     }
     let base = ((vertex_index * floats_per_vertex) + float_offset);
@@ -121,7 +121,7 @@ pub fn get_mesh_geometry_vertex_uv0(
     } else {
         0.0_f64
     };
-    if ((vertex_index < 0.0_f64) || (vertex_index >= vertex_count)) {
+    if (vertex_index < 0.0_f64) || (vertex_index >= vertex_count) {
         return false;
     }
     let base = ((vertex_index * floats_per_vertex) + float_offset);
@@ -215,7 +215,7 @@ pub fn set_mesh_geometry_vertex_tangent(
     } else {
         0.0_f64
     };
-    if ((vertex_index < 0.0_f64) || (vertex_index >= vertex_count)) {
+    if (vertex_index < 0.0_f64) || (vertex_index >= vertex_count) {
         return false;
     }
     let base = ((vertex_index * floats_per_vertex) + float_offset);
@@ -247,7 +247,7 @@ pub fn set_mesh_geometry_vertex_uv0(
     } else {
         0.0_f64
     };
-    if ((vertex_index < 0.0_f64) || (vertex_index >= vertex_count)) {
+    if (vertex_index < 0.0_f64) || (vertex_index >= vertex_count) {
         return false;
     }
     let base = ((vertex_index * floats_per_vertex) + float_offset);
@@ -290,7 +290,7 @@ fn get_float3_attribute(
     } else {
         0.0_f64
     };
-    if ((vertex_index < 0.0_f64) || (vertex_index >= vertex_count)) {
+    if (vertex_index < 0.0_f64) || (vertex_index >= vertex_count) {
         return false;
     }
     let base = ((vertex_index * floats_per_vertex) + float_offset);
@@ -319,7 +319,7 @@ fn set_float3_attribute(
     } else {
         0.0_f64
     };
-    if ((vertex_index < 0.0_f64) || (vertex_index >= vertex_count)) {
+    if (vertex_index < 0.0_f64) || (vertex_index >= vertex_count) {
         return false;
     }
     let base = ((vertex_index * floats_per_vertex) + float_offset);

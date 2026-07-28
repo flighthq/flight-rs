@@ -27,7 +27,13 @@ pub fn get_camera_ray_through_bounding_sphere(
     )) {
         return false;
     }
-    return get_camera_screen_to_world_ray(out, camera, __scratchNdc::x, __scratchNdc::y, aspect);
+    return get_camera_screen_to_world_ray(
+        out,
+        camera,
+        (*__SCRATCH_NDC.lock().unwrap()).x,
+        (*__SCRATCH_NDC.lock().unwrap()).y,
+        aspect,
+    );
 }
 
 // Source: upstream/packages/camera/src/intersection.ts:49 (sha256:d6e3c96ca65a61d8bf5758f803a98dcf25e449edf00869f32665b5f8e84c6d79)
@@ -61,9 +67,12 @@ pub fn intersect_camera_ray_with_plane(
 }
 
 // Source: upstream/packages/camera/src/intersection.ts:82 (sha256:674d692ceb2cb33aaebc2ded7e5e358ee5b99384d8f9c9d7bfd9aa8bbb31494b)
-struct __scratchNdc;
-impl __scratchNdc {
-    pub const x: f64 = 0.0_f64;
-    pub const y: f64 = 0.0_f64;
-    pub const z: f64 = 0.0_f64;
-}
+static __SCRATCH_NDC: std::sync::LazyLock<std::sync::Mutex<Vector3Like>> =
+    std::sync::LazyLock::new(|| {
+        std::sync::Mutex::new(Vector3Like {
+            __flight_identity: std::sync::Arc::new(()),
+            x: 0.0_f64,
+            y: 0.0_f64,
+            z: 0.0_f64,
+        })
+    });

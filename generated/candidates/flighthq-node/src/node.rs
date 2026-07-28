@@ -22,9 +22,13 @@ pub fn create_node<Data: Clone, Runtime: Clone>(
     let mut out = Node {
         __flight_identity: std::sync::Arc::new(()),
         data: if (create_data).is_some() {
-            ((create_data.as_ref().unwrap()).clone()).lock().unwrap()(
-                (obj.as_ref().and_then(|value| (value.data).clone())).unwrap(),
-            )
+            Some({
+                let __flight_callback = (create_data.as_ref().unwrap()).clone();
+                let __flight_result = __flight_callback.lock().unwrap()(Some(
+                    (obj.as_ref().and_then(|value| (value.data).clone())).unwrap(),
+                ));
+                __flight_result
+            })
         } else {
             None
         },
@@ -32,7 +36,7 @@ pub fn create_node<Data: Clone, Runtime: Clone>(
         kind: (node_kind).clone(),
     };
     out.enabled = (obj.as_ref().map(|value| value.enabled)).unwrap_or(true);
-    return (out).clone();
+    return out;
 }
 
 // Source: upstream/packages/node/src/node.ts:41 (sha256:cb2d5a08e65afff3d0bfeb52db6d1f1c8e107ba2a240933ca6c586bc438aee8d)
@@ -43,8 +47,14 @@ pub fn create_node_runtime<Traits: Clone>(
     out.appearance_id = 0.0_f64;
     out.bounds_using_local_bounds_id = (-1.0_f64);
     out.bounds_using_local_transform_id = (-1.0_f64);
-    out.can_add_child = (methods.as_ref().map(|value| (value.can_add_child).clone()))
-        .unwrap_or(default_node_runtime_can_add_child);
+    out.can_add_child = (methods.as_ref().map(|value| (value.can_add_child).clone())).unwrap_or(
+        std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: Node, __flight_argument_1: Node| -> bool {
+                default_node_runtime_can_add_child(&__flight_argument_0, &__flight_argument_1)
+            },
+        )
+            as Box<dyn FnMut(Node, Node) -> bool + Send + 'static>)),
+    );
     out.children = None;
     out.color_adjustments = None;
     out.resolved_color_transform = None;
@@ -63,7 +73,7 @@ pub fn create_node_runtime<Traits: Clone>(
     out.world_transform_id = 0.0_f64;
     out.world_transform_using_local_transform_id = (-1.0_f64);
     out.world_transform_using_parent_transform_id = (-1.0_f64);
-    return (out).clone();
+    return out;
 }
 
 // Source: upstream/packages/node/src/node.ts:70 (sha256:d5c07278e2b47491acf360abb26941038e0cbd9a281cc612ca38d7493825c862)

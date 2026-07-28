@@ -7,7 +7,27 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/FogModifier.ts:8 (sha256:1e1de4c8ca4e3fea22e84f838eef2821dee78f471f3c64c85af74672b9c129b5)
-// TypeScript value namespace FogModifierMode is represented by its generated Rust type.
+#[derive(Clone)]
+pub struct FogModifierModeValues {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub exponential: String,
+    pub exponential2: String,
+    pub linear: String,
+}
+impl PartialEq for FogModifierModeValues {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+pub static FOG_MODIFIER_MODE: std::sync::LazyLock<FogModifierModeValues> =
+    std::sync::LazyLock::new(|| FogModifierModeValues {
+        __flight_identity: std::sync::Arc::new(()),
+        exponential: "Exponential".to_owned(),
+        exponential2: "Exponential2".to_owned(),
+        linear: "Linear".to_owned(),
+    });
 
 // Source: upstream/packages/types/src/FogModifier.ts:14 (sha256:3eee72eb00e1cad648b42b296b15485e221d6fe48b3d9b712e53cf8a398e42e8)
 pub type FogModifierMode = crate::OpaqueHostValue;

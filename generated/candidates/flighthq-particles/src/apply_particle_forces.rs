@@ -36,7 +36,7 @@ pub fn apply_particle_forces(
     forces: &Vec<ParticleForce>,
     delta_time: f64,
 ) -> () {
-    if ((delta_time <= 0.0_f64) || ((forces.len() as f64) == 0.0_f64)) {
+    if (delta_time <= 0.0_f64) || ((forces.len() as f64) == 0.0_f64) {
         return;
     }
     let count = emitter.data.particle_count;
@@ -73,9 +73,9 @@ pub fn apply_particle_forces(
                 }
             };
             let pz = if ((emitter.data.positions_z.len() as f64) > i) {
-                (emitter.data.positions_z[i as usize] as f64)
+                (emitter.data.positions_z[i as usize] as f64) as f32
             } else {
-                0.0_f64
+                (0.0_f64) as f32
             };
             accumulate_forces(
                 forces,
@@ -107,7 +107,7 @@ pub fn apply_particle_object_forces(
     forces: &Vec<ParticleForce>,
     delta_time: f64,
 ) -> () {
-    if ((delta_time <= 0.0_f64) || ((forces.len() as f64) == 0.0_f64)) {
+    if (delta_time <= 0.0_f64) || ((forces.len() as f64) == 0.0_f64) {
         return;
     }
     {
@@ -203,7 +203,7 @@ fn accumulate_forces(
                     if __flight_case <= 0_usize {
                         out[0.0_f64 as usize] += force.x;
                         out[1.0_f64 as usize] += force.y;
-                        out[2.0_f64 as usize] += (force.z).unwrap_or(0.0_f64);
+                        out[2.0_f64 as usize] += force.z;
                         break '__flight_switch;
                     }
                     if __flight_case <= 1_usize {
@@ -214,7 +214,7 @@ fn accumulate_forces(
                     }
                     if __flight_case <= 2_usize {
                         {
-                            let fz = (force.z).unwrap_or(0.0_f64);
+                            let fz = force.z;
                             let dx = (force.x - px);
                             let dy = (force.y - py);
                             let dz = (fz - pz);
@@ -223,7 +223,11 @@ fn accumulate_forces(
                                 break '__flight_switch;
                             }
                             let mag = (force.strength
-                                * falloff_factor(Some(force.falloff), dist, Some(force.radius)));
+                                * falloff_factor(
+                                    Some((force.falloff).clone()),
+                                    dist,
+                                    Some(force.radius),
+                                ));
                             if (mag == 0.0_f64) {
                                 break '__flight_switch;
                             }
@@ -235,7 +239,7 @@ fn accumulate_forces(
                     }
                     if __flight_case <= 3_usize {
                         {
-                            let fz = (force.z).unwrap_or(0.0_f64);
+                            let fz = force.z;
                             let dx = (px - force.x);
                             let dy = (py - force.y);
                             let dz = (pz - fz);
@@ -244,13 +248,17 @@ fn accumulate_forces(
                                 break '__flight_switch;
                             }
                             let mag = (force.strength
-                                * falloff_factor(Some(force.falloff), dist, Some(force.radius)));
+                                * falloff_factor(
+                                    Some((force.falloff).clone()),
+                                    dist,
+                                    Some(force.radius),
+                                ));
                             if (mag == 0.0_f64) {
                                 break '__flight_switch;
                             }
-                            let ax = (force.axis_x).unwrap_or(0.0_f64);
-                            let ay = (force.axis_y).unwrap_or(0.0_f64);
-                            let az = (force.axis_z).unwrap_or(1.0_f64);
+                            let ax = force.axis_x;
+                            let ay = force.axis_y;
+                            let az = force.axis_z;
                             let inv_dist = (1.0_f64 / dist);
                             let rx = (dx * inv_dist);
                             let ry = (dy * inv_dist);
@@ -288,7 +296,7 @@ fn accumulate_forces(
 
 // Source: upstream/packages/particles/src/applyParticleForces.ts:158 (sha256:f4308d680e0d146e014c6de02dd91d8a4050b61a0d31a5899f98fe18c31c36a8)
 fn falloff_factor(falloff: Option<ForceFalloff>, dist: f64, radius: Option<f64>) -> f64 {
-    if (((radius).is_some() && (radius > 0.0_f64)) && (dist > radius)) {
+    if (((radius).is_some()) && (radius > 0.0_f64)) && (dist > radius) {
         return 0.0_f64;
     }
     {
@@ -302,7 +310,7 @@ fn falloff_factor(falloff: Option<ForceFalloff>, dist: f64, radius: Option<f64>)
         };
         '__flight_switch: {
             if __flight_case <= 0_usize {
-                return if ((radius).is_some() && (radius > 0.0_f64)) {
+                return if ((radius).is_some()) && (radius > 0.0_f64) {
                     (0.0_f64).max((1.0_f64 - (dist / radius)))
                 } else {
                     1.0_f64

@@ -42,15 +42,15 @@ pub fn is_particle_emitter3_d_complete(
     state: &ParticleEmitterState,
     config: &ParticleEmitterConfig,
 ) -> bool {
-    if ((config.duration <= 0.0_f64) || config.loop_) {
+    if (config.duration <= 0.0_f64) || (config.loop_) {
         return false;
     }
-    return ((state.emitter_age >= config.duration) && (emitter.data.particle_count == 0.0_f64));
+    return (state.emitter_age >= config.duration) && (emitter.data.particle_count == 0.0_f64);
 }
 
 // Source: upstream/packages/particleemitter/src/updateParticleEmitter3D.ts:31 (sha256:e0c225ef7b89615e590a9ca4c09617b0a80f425bf3c179ad015ea08eb69f83c0)
 fn is_emitting(config: &ParticleEmitterConfig, emitter_age: f64) -> bool {
-    return (((config.duration <= 0.0_f64) || config.loop_) || (emitter_age < config.duration));
+    return ((config.duration <= 0.0_f64) || (config.loop_)) || (emitter_age < config.duration);
 }
 
 // Source: upstream/packages/particleemitter/src/updateParticleEmitter3D.ts:35 (sha256:531c37e4bde2d468f624ad2cadf8bb9ede30a8c0e92c049219c6f96bab8bf70e)
@@ -62,7 +62,7 @@ pub fn update_particle_emitter3_d(
     callbacks: Option<ParticleEmitterCallbacks>,
 ) -> () {
     let world_m = if config.world_space {
-        (get_node_world_matrix4(&emitter).m).clone()
+        Some((get_node_world_matrix4(&emitter).m).clone())
     } else {
         None
     };
@@ -71,7 +71,7 @@ pub fn update_particle_emitter3_d(
         return;
     }
     let origin_m = if (world_m).is_some() {
-        (world_m).clone()
+        (world_m.as_ref().unwrap()).clone()
     } else {
         (get_node_local_matrix4(&emitter).m).clone()
     };
@@ -96,28 +96,28 @@ pub fn update_particle_emitter3_d(
     let color_end_r = config.color_end_r;
     let color_end_g = config.color_end_g;
     let color_end_b = config.color_end_b;
-    let has_color_variance = ((((((config.color_start_variance_r != 0.0_f64)
+    let has_color_variance = (((((config.color_start_variance_r != 0.0_f64)
         || (config.color_start_variance_g != 0.0_f64))
         || (config.color_start_variance_b != 0.0_f64))
         || (config.color_end_variance_r != 0.0_f64))
         || (config.color_end_variance_g != 0.0_f64))
-        || (config.color_end_variance_b != 0.0_f64));
-    let has_color_gradient = (((has_color_variance || (color_start_r != color_end_r))
+        || (config.color_end_variance_b != 0.0_f64);
+    let has_color_gradient = (((has_color_variance) || (color_start_r != color_end_r))
         || (color_start_g != color_end_g))
-        || (color_start_b != color_end_b));
+        || (color_start_b != color_end_b);
     let alpha_curve = (config.alpha_curve).clone();
     let color_curve = (config.color_curve).clone();
     let scale_curve = (config.scale_curve).clone();
     let has_alpha_curve =
-        ((alpha_curve).is_some() && (alpha_curve.as_ref().unwrap().length > 0.0_f64));
+        ((alpha_curve).is_some()) && (alpha_curve.as_ref().unwrap().length > 0.0_f64);
     let has_color_curve =
-        ((color_curve).is_some() && (color_curve.as_ref().unwrap().length >= 3.0_f64));
+        ((color_curve).is_some()) && (color_curve.as_ref().unwrap().length >= 3.0_f64);
     let has_scale_curve =
-        ((scale_curve).is_some() && (scale_curve.as_ref().unwrap().length > 0.0_f64));
-    let has_scale_anim = ((config.scale_end != 1.0_f64) || has_scale_curve);
-    let has_color_work = (has_color_curve || has_color_gradient);
+        ((scale_curve).is_some()) && (scale_curve.as_ref().unwrap().length > 0.0_f64);
+    let has_scale_anim = (config.scale_end != 1.0_f64) || (has_scale_curve);
+    let has_color_work = (has_color_curve) || (has_color_gradient);
     let has_rotation_speed =
-        ((config.rotation_speed_min != 0.0_f64) || (config.rotation_speed_max != 0.0_f64));
+        (config.rotation_speed_min != 0.0_f64) || (config.rotation_speed_max != 0.0_f64);
     let has_flipbook = (config.frame_count > 1.0_f64);
     let signals = get_particle_emitter_signals(state);
     let on_death = callbacks
@@ -134,7 +134,7 @@ pub fn update_particle_emitter3_d(
         if ((state.lifetimes[lt as usize] as f64)
             >= (state.lifetimes[(lt + 1.0_f64) as usize] as f64))
         {
-            if ((on_death).is_some() || (signals).is_some()) {
+            if ((on_death).is_some()) || ((signals).is_some()) {
                 let tt = (i * PARTICLE_TRANSFORM_STRIDE);
                 let dx = (emitter.data.transforms[tt as usize] as f64);
                 let dy = (emitter.data.transforms[(tt + 1.0_f64) as usize] as f64);
@@ -291,7 +291,7 @@ pub fn update_particle_emitter3_d(
     }
     emitter.data.particle_count = live_count;
     let emitting = is_emitting(config, state.emitter_age);
-    if ((config.duration > 0.0_f64) && (!config.loop_)) {
+    if (config.duration > 0.0_f64) && (!config.loop_) {
         state.emitter_age += delta_time;
     }
     state.spawn_accumulator += if emitting {
@@ -301,7 +301,7 @@ pub fn update_particle_emitter3_d(
     };
     let mut to_spawn = (state.spawn_accumulator).floor();
     state.spawn_accumulator -= to_spawn;
-    if (emitting && (config.burst_count > 0.0_f64)) {
+    if (emitting) && (config.burst_count > 0.0_f64) {
         state.burst_timer -= delta_time;
         if (state.burst_timer <= 0.0_f64) {
             to_spawn += config.burst_count;
@@ -325,7 +325,7 @@ pub fn update_particle_emitter3_d(
         let region_id_min = config.region_id_min;
         let rot_speed_range = (config.rotation_speed_max - config.rotation_speed_min);
         let has_rot_speed =
-            ((config.rotation_speed_min != 0.0_f64) || (config.rotation_speed_max != 0.0_f64));
+            (config.rotation_speed_min != 0.0_f64) || (config.rotation_speed_max != 0.0_f64);
         let dir_len = (((config.direction_x * config.direction_x)
             + (config.direction_y * config.direction_y))
             + (config.direction_z * config.direction_z))
@@ -345,7 +345,7 @@ pub fn update_particle_emitter3_d(
         } else {
             0.0_f64
         };
-        let do_trail = ((world_m).is_some() && (!crate::host_value::<()>("host.call")));
+        let do_trail = ((world_m).is_some()) && (!crate::host_value::<()>("host.call"));
         let prev_path_x = if do_trail { state.prev_x } else { track_x };
         let prev_path_y = if do_trail { state.prev_y } else { track_y };
         let prev_path_z = if do_trail { state.prev_z } else { track_z };
@@ -354,14 +354,20 @@ pub fn update_particle_emitter3_d(
             while (s_idx < to_spawn) {
                 let idx = (live_count + s_idx);
                 let lifetime = (config.lifetime_min
-                    + (((state.random).clone()).lock().unwrap()()
-                        * (config.lifetime_max - config.lifetime_min)));
+                    + ({
+                        let __flight_callback = (state.random).clone();
+                        let __flight_result = __flight_callback.lock().unwrap()();
+                        __flight_result
+                    } * (config.lifetime_max - config.lifetime_min)));
                 let lt = (idx * 2.0_f64);
                 state.lifetimes[lt as usize] = (0.0_f64) as f32;
                 state.lifetimes[(lt + 1.0_f64) as usize] = (lifetime) as f32;
                 let speed = (config.speed_min
-                    + (((state.random).clone()).lock().unwrap()()
-                        * (config.speed_max - config.speed_min)));
+                    + ({
+                        let __flight_callback = (state.random).clone();
+                        let __flight_result = __flight_callback.lock().unwrap()();
+                        __flight_result
+                    } * (config.speed_max - config.speed_min)));
                 let mut vx: f64;
                 let mut vy: f64;
                 let mut vz: f64;
@@ -369,17 +375,24 @@ pub fn update_particle_emitter3_d(
                 let mut spawn_y = 0.0_f64;
                 let mut spawn_z = 0.0_f64;
                 let shape = (config.emitter_shape).clone();
-                if ((shape == "sphere") || (shape == "cone3d")) {
+                if (shape == "sphere") || (shape == "cone3d") {
                     let mut sx: f64;
                     let mut sy: f64;
                     let mut sz: f64;
-                    if ((shape == "cone3d") && (config.emitter_cone_angle > 0.0_f64)) {
+                    if (shape == "cone3d") && (config.emitter_cone_angle > 0.0_f64) {
                         let cone_half = (config.emitter_cone_angle / 2.0_f64);
                         let cos_theta = (1.0_f64
-                            - (((state.random).clone()).lock().unwrap()()
-                                * (1.0_f64 - (cone_half).cos())));
+                            - ({
+                                let __flight_callback = (state.random).clone();
+                                let __flight_result = __flight_callback.lock().unwrap()();
+                                __flight_result
+                            } * (1.0_f64 - (cone_half).cos())));
                         let sin_theta = (1.0_f64 - (cos_theta * cos_theta)).sqrt();
-                        let phi = (((state.random).clone()).lock().unwrap()() * TWO_PI);
+                        let phi = ({
+                            let __flight_callback = (state.random).clone();
+                            let __flight_result = __flight_callback.lock().unwrap()();
+                            __flight_result
+                        } * TWO_PI);
                         let lx = (sin_theta * (phi).cos());
                         let ly = (sin_theta * (phi).sin());
                         let lz = cos_theta;
@@ -393,9 +406,17 @@ pub fn update_particle_emitter3_d(
                         let mut s2: f64;
                         loop {
                             {
-                                u = ((((state.random).clone()).lock().unwrap()() * 2.0_f64)
+                                u = (({
+                                    let __flight_callback = (state.random).clone();
+                                    let __flight_result = __flight_callback.lock().unwrap()();
+                                    __flight_result
+                                } * 2.0_f64)
                                     - 1.0_f64);
-                                v = ((((state.random).clone()).lock().unwrap()() * 2.0_f64)
+                                v = (({
+                                    let __flight_callback = (state.random).clone();
+                                    let __flight_result = __flight_callback.lock().unwrap()();
+                                    __flight_result
+                                } * 2.0_f64)
                                     - 1.0_f64);
                                 s2 = ((u * u) + (v * v));
                             }
@@ -412,16 +433,29 @@ pub fn update_particle_emitter3_d(
                     vy = (sy * speed);
                     vz = (sz * speed);
                     if (config.emitter_radius > 0.0_f64) {
-                        let r = ((((state.random).clone()).lock().unwrap()()).cbrt()
+                        let r = (({
+                            let __flight_callback = (state.random).clone();
+                            let __flight_result = __flight_callback.lock().unwrap()();
+                            __flight_result
+                        })
+                        .cbrt()
                             * config.emitter_radius);
                         let mut pu: f64;
                         let mut pv: f64;
                         let mut ps2: f64;
                         loop {
                             {
-                                pu = ((((state.random).clone()).lock().unwrap()() * 2.0_f64)
+                                pu = (({
+                                    let __flight_callback = (state.random).clone();
+                                    let __flight_result = __flight_callback.lock().unwrap()();
+                                    __flight_result
+                                } * 2.0_f64)
                                     - 1.0_f64);
-                                pv = ((((state.random).clone()).lock().unwrap()() * 2.0_f64)
+                                pv = (({
+                                    let __flight_callback = (state.random).clone();
+                                    let __flight_result = __flight_callback.lock().unwrap()();
+                                    __flight_result
+                                } * 2.0_f64)
                                     - 1.0_f64);
                                 ps2 = ((pu * pu) + (pv * pv));
                             }
@@ -437,7 +471,12 @@ pub fn update_particle_emitter3_d(
                 } else {
                     if (shape == "box") {
                         let angle = (base_angle
-                            + (((((state.random).clone()).lock().unwrap()() - 0.5_f64) * 2.0_f64)
+                            + ((({
+                                let __flight_callback = (state.random).clone();
+                                let __flight_result = __flight_callback.lock().unwrap()();
+                                __flight_result
+                            } - 0.5_f64)
+                                * 2.0_f64)
                                 * config.spread));
                         vx = ((angle).cos() * speed);
                         vy = ((angle).sin() * speed);
@@ -447,33 +486,67 @@ pub fn update_particle_emitter3_d(
                             } else {
                                 1.0_f64
                             });
-                        spawn_x = ((((state.random).clone()).lock().unwrap()() - 0.5_f64)
+                        spawn_x = (({
+                            let __flight_callback = (state.random).clone();
+                            let __flight_result = __flight_callback.lock().unwrap()();
+                            __flight_result
+                        } - 0.5_f64)
                             * config.emitter_width);
-                        spawn_y = ((((state.random).clone()).lock().unwrap()() - 0.5_f64)
+                        spawn_y = (({
+                            let __flight_callback = (state.random).clone();
+                            let __flight_result = __flight_callback.lock().unwrap()();
+                            __flight_result
+                        } - 0.5_f64)
                             * config.emitter_height);
-                        spawn_z = ((((state.random).clone()).lock().unwrap()() - 0.5_f64)
+                        spawn_z = (({
+                            let __flight_callback = (state.random).clone();
+                            let __flight_result = __flight_callback.lock().unwrap()();
+                            __flight_result
+                        } - 0.5_f64)
                             * config.emitter_depth);
                     } else {
                         let angle = (base_angle
-                            + (((((state.random).clone()).lock().unwrap()() - 0.5_f64) * 2.0_f64)
+                            + ((({
+                                let __flight_callback = (state.random).clone();
+                                let __flight_result = __flight_callback.lock().unwrap()();
+                                __flight_result
+                            } - 0.5_f64)
+                                * 2.0_f64)
                                 * config.spread));
                         vx = ((angle).cos() * speed);
                         vy = ((angle).sin() * speed);
                         vz = 0.0_f64;
-                        if ((shape == "circle") && (config.emitter_radius > 0.0_f64)) {
-                            let r = ((((state.random).clone()).lock().unwrap()()).sqrt()
+                        if (shape == "circle") && (config.emitter_radius > 0.0_f64) {
+                            let r = (({
+                                let __flight_callback = (state.random).clone();
+                                let __flight_result = __flight_callback.lock().unwrap()();
+                                __flight_result
+                            })
+                            .sqrt()
                                 * config.emitter_radius);
-                            let a = (((state.random).clone()).lock().unwrap()() * TWO_PI);
+                            let a = ({
+                                let __flight_callback = (state.random).clone();
+                                let __flight_result = __flight_callback.lock().unwrap()();
+                                __flight_result
+                            } * TWO_PI);
                             spawn_x = ((a).cos() * r);
                             spawn_y = ((a).sin() * r);
                         } else {
-                            if ((shape == "rect")
+                            if (shape == "rect")
                                 && ((config.emitter_width > 0.0_f64)
-                                    || (config.emitter_height > 0.0_f64)))
+                                    || (config.emitter_height > 0.0_f64))
                             {
-                                spawn_x = ((((state.random).clone()).lock().unwrap()() - 0.5_f64)
+                                spawn_x = (({
+                                    let __flight_callback = (state.random).clone();
+                                    let __flight_result = __flight_callback.lock().unwrap()();
+                                    __flight_result
+                                } - 0.5_f64)
                                     * config.emitter_width);
-                                spawn_y = ((((state.random).clone()).lock().unwrap()() - 0.5_f64)
+                                spawn_y = (({
+                                    let __flight_callback = (state.random).clone();
+                                    let __flight_result = __flight_callback.lock().unwrap()();
+                                    __flight_result
+                                } - 0.5_f64)
                                     * config.emitter_height);
                             }
                         }
@@ -488,27 +561,27 @@ pub fn update_particle_emitter3_d(
                     let origin_x = (prev_path_x + ((track_x - prev_path_x) * t));
                     let origin_y = (prev_path_y + ((track_y - prev_path_y) * t));
                     let origin_z = (prev_path_z + ((track_z - prev_path_z) * t));
-                    let px = (((((world_m[0.0_f64 as usize] as f64) * spawn_x)
-                        + ((world_m[4.0_f64 as usize] as f64) * spawn_y))
-                        + ((world_m[8.0_f64 as usize] as f64) * spawn_z))
+                    let px = (((((world_m.as_ref().unwrap()[0.0_f64 as usize] as f64) * spawn_x)
+                        + ((world_m.as_ref().unwrap()[4.0_f64 as usize] as f64) * spawn_y))
+                        + ((world_m.as_ref().unwrap()[8.0_f64 as usize] as f64) * spawn_z))
                         + origin_x);
-                    let py = (((((world_m[1.0_f64 as usize] as f64) * spawn_x)
-                        + ((world_m[5.0_f64 as usize] as f64) * spawn_y))
-                        + ((world_m[9.0_f64 as usize] as f64) * spawn_z))
+                    let py = (((((world_m.as_ref().unwrap()[1.0_f64 as usize] as f64) * spawn_x)
+                        + ((world_m.as_ref().unwrap()[5.0_f64 as usize] as f64) * spawn_y))
+                        + ((world_m.as_ref().unwrap()[9.0_f64 as usize] as f64) * spawn_z))
                         + origin_y);
-                    let pz = (((((world_m[2.0_f64 as usize] as f64) * spawn_x)
-                        + ((world_m[6.0_f64 as usize] as f64) * spawn_y))
-                        + ((world_m[10.0_f64 as usize] as f64) * spawn_z))
+                    let pz = (((((world_m.as_ref().unwrap()[2.0_f64 as usize] as f64) * spawn_x)
+                        + ((world_m.as_ref().unwrap()[6.0_f64 as usize] as f64) * spawn_y))
+                        + ((world_m.as_ref().unwrap()[10.0_f64 as usize] as f64) * spawn_z))
                         + origin_z);
-                    let wvx = ((((world_m[0.0_f64 as usize] as f64) * vx)
-                        + ((world_m[4.0_f64 as usize] as f64) * vy))
-                        + ((world_m[8.0_f64 as usize] as f64) * vz));
-                    let wvy = ((((world_m[1.0_f64 as usize] as f64) * vx)
-                        + ((world_m[5.0_f64 as usize] as f64) * vy))
-                        + ((world_m[9.0_f64 as usize] as f64) * vz));
-                    let wvz = ((((world_m[2.0_f64 as usize] as f64) * vx)
-                        + ((world_m[6.0_f64 as usize] as f64) * vy))
-                        + ((world_m[10.0_f64 as usize] as f64) * vz));
+                    let wvx = ((((world_m.as_ref().unwrap()[0.0_f64 as usize] as f64) * vx)
+                        + ((world_m.as_ref().unwrap()[4.0_f64 as usize] as f64) * vy))
+                        + ((world_m.as_ref().unwrap()[8.0_f64 as usize] as f64) * vz));
+                    let wvy = ((((world_m.as_ref().unwrap()[1.0_f64 as usize] as f64) * vx)
+                        + ((world_m.as_ref().unwrap()[5.0_f64 as usize] as f64) * vy))
+                        + ((world_m.as_ref().unwrap()[9.0_f64 as usize] as f64) * vz));
+                    let wvz = ((((world_m.as_ref().unwrap()[2.0_f64 as usize] as f64) * vx)
+                        + ((world_m.as_ref().unwrap()[6.0_f64 as usize] as f64) * vy))
+                        + ((world_m.as_ref().unwrap()[10.0_f64 as usize] as f64) * vz));
                     spawn_x = px;
                     spawn_y = py;
                     spawn_z = pz;
@@ -516,7 +589,7 @@ pub fn update_particle_emitter3_d(
                     vy = wvy;
                     vz = wvz;
                 }
-                if (has_vel_inherit && (!crate::host_value::<()>("host.call"))) {
+                if (has_vel_inherit) && (!crate::host_value::<()>("host.call")) {
                     vx += (emitter_vel_x * config.velocity_inheritance);
                     vy += (emitter_vel_y * config.velocity_inheritance);
                     vz += (emitter_vel_z * config.velocity_inheritance);
@@ -526,18 +599,26 @@ pub fn update_particle_emitter3_d(
                 state.velocities[(vt + 1.0_f64) as usize] = (vy) as f32;
                 state.velocities[(vt + 2.0_f64) as usize] = (vz) as f32;
                 let spawn_scale = (config.scale_min
-                    + (((state.random).clone()).lock().unwrap()()
-                        * (config.scale_max - config.scale_min)));
+                    + ({
+                        let __flight_callback = (state.random).clone();
+                        let __flight_result = __flight_callback.lock().unwrap()();
+                        __flight_result
+                    } * (config.scale_max - config.scale_min)));
                 state.scales[idx as usize] = (spawn_scale) as f32;
                 let tt = (idx * PARTICLE_TRANSFORM_STRIDE);
                 emitter.data.transforms[tt as usize] = (spawn_x) as f32;
                 emitter.data.transforms[(tt + 1.0_f64) as usize] = (spawn_y) as f32;
                 emitter.data.transforms[(tt + 2.0_f64) as usize] =
-                    if (((shape == "sphere") || (shape == "cone3d")) || (shape == "box")) {
+                    if ((shape == "sphere") || (shape == "cone3d")) || (shape == "box") {
                         ((vy).atan2(vx)) as f32
                     } else {
                         (base_angle
-                            + (((((state.random).clone()).lock().unwrap()() - 0.5_f64) * 2.0_f64)
+                            + ((({
+                                let __flight_callback = (state.random).clone();
+                                let __flight_result = __flight_callback.lock().unwrap()();
+                                __flight_result
+                            } - 0.5_f64)
+                                * 2.0_f64)
                                 * config.spread)) as f32
                     };
                 emitter.data.transforms[(tt + 3.0_f64) as usize] = if has_scale_curve {
@@ -564,37 +645,61 @@ pub fn update_particle_emitter3_d(
                     if has_color_variance {
                         let r0 = clamp01(
                             (color_start_r
-                                + (((((state.random).clone()).lock().unwrap()() - 0.5_f64)
+                                + ((({
+                                    let __flight_callback = (state.random).clone();
+                                    let __flight_result = __flight_callback.lock().unwrap()();
+                                    __flight_result
+                                } - 0.5_f64)
                                     * 2.0_f64)
                                     * config.color_start_variance_r)),
                         );
                         let g0 = clamp01(
                             (color_start_g
-                                + (((((state.random).clone()).lock().unwrap()() - 0.5_f64)
+                                + ((({
+                                    let __flight_callback = (state.random).clone();
+                                    let __flight_result = __flight_callback.lock().unwrap()();
+                                    __flight_result
+                                } - 0.5_f64)
                                     * 2.0_f64)
                                     * config.color_start_variance_g)),
                         );
                         let b0 = clamp01(
                             (color_start_b
-                                + (((((state.random).clone()).lock().unwrap()() - 0.5_f64)
+                                + ((({
+                                    let __flight_callback = (state.random).clone();
+                                    let __flight_result = __flight_callback.lock().unwrap()();
+                                    __flight_result
+                                } - 0.5_f64)
                                     * 2.0_f64)
                                     * config.color_start_variance_b)),
                         );
                         let r1 = clamp01(
                             (color_end_r
-                                + (((((state.random).clone()).lock().unwrap()() - 0.5_f64)
+                                + ((({
+                                    let __flight_callback = (state.random).clone();
+                                    let __flight_result = __flight_callback.lock().unwrap()();
+                                    __flight_result
+                                } - 0.5_f64)
                                     * 2.0_f64)
                                     * config.color_end_variance_r)),
                         );
                         let g1 = clamp01(
                             (color_end_g
-                                + (((((state.random).clone()).lock().unwrap()() - 0.5_f64)
+                                + ((({
+                                    let __flight_callback = (state.random).clone();
+                                    let __flight_result = __flight_callback.lock().unwrap()();
+                                    __flight_result
+                                } - 0.5_f64)
                                     * 2.0_f64)
                                     * config.color_end_variance_g)),
                         );
                         let b1 = clamp01(
                             (color_end_b
-                                + (((((state.random).clone()).lock().unwrap()() - 0.5_f64)
+                                + ((({
+                                    let __flight_callback = (state.random).clone();
+                                    let __flight_result = __flight_callback.lock().unwrap()();
+                                    __flight_result
+                                } - 0.5_f64)
                                     * 2.0_f64)
                                     * config.color_end_variance_b)),
                         );
@@ -619,7 +724,11 @@ pub fn update_particle_emitter3_d(
                     } else {
                         if (region_range > 0.0_f64) {
                             (__flight_js_to_i32(
-                                (((state.random).clone()).lock().unwrap()() * region_range),
+                                ({
+                                    let __flight_callback = (state.random).clone();
+                                    let __flight_result = __flight_callback.lock().unwrap()();
+                                    __flight_result
+                                } * region_range),
                             ) | __flight_js_to_i32(0.0_f64)) as f64
                         } else {
                             0.0_f64
@@ -627,8 +736,11 @@ pub fn update_particle_emitter3_d(
                     }) as u16;
                 state.rotation_speeds[idx as usize] = if has_rot_speed {
                     (config.rotation_speed_min
-                        + (((state.random).clone()).lock().unwrap()() * rot_speed_range))
-                        as f32
+                        + ({
+                            let __flight_callback = (state.random).clone();
+                            let __flight_result = __flight_callback.lock().unwrap()();
+                            __flight_result
+                        } * rot_speed_range)) as f32
                 } else {
                     (0.0_f64) as f32
                 };
@@ -668,7 +780,7 @@ pub fn update_particle_emitter3_d(
             }
         }
     }
-    if ((signals).is_some() && is_particle_emitter3_d_complete(emitter, state, config)) {
+    if ((signals).is_some()) && (is_particle_emitter3_d_complete(emitter, state, config)) {
         ((signals.as_ref().unwrap().on_emitter_complete.emit).clone())();
     }
 }

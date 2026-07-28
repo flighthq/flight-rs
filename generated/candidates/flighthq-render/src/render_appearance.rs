@@ -17,10 +17,10 @@ pub fn update_render_proxy_appearance(
     parent_data: Option<RenderProxy>,
 ) -> bool {
     let appearance_id = get_node_appearance_revision(&(data.source).clone());
-    if (((parent_data).is_some()
+    if (((parent_data).is_some())
         && (parent_data.as_ref().unwrap().appearance_frame_id
             == get_render_state_runtime(state).current_frame_id))
-        || (data.last_appearance_id != appearance_id))
+        || (data.last_appearance_id != appearance_id)
     {
         recalculate_appearance(state, data, Some(((parent_data).clone().unwrap()).clone()));
         data.last_appearance_id = appearance_id;
@@ -47,7 +47,7 @@ fn recalculate_appearance(
 ) -> () {
     let source = (data.source).clone();
     if (parent_data).is_some() {
-        data.visible = (source.visible && parent_data.as_ref().unwrap().visible);
+        data.visible = (source.visible) && (parent_data.as_ref().unwrap().visible);
         if (!data.visible) {
             return;
         }

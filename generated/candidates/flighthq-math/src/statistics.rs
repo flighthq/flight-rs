@@ -26,7 +26,7 @@ pub fn mean(values: &Vec<f64>) -> f64 {
 }
 
 // Source: upstream/packages/math/src/statistics.ts:17 (sha256:6e4879aebb64bea327e99527553da6c9af8cc93e5e02da75b9ea1c97b789d2c4)
-pub fn median(values: &Vec<f64>) -> f64 {
+pub fn median(values: &mut Vec<f64>) -> f64 {
     if ((values.len() as f64) == 0.0_f64) {
         return f64::NAN;
     }

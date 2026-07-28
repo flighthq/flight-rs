@@ -15,7 +15,7 @@ use flighthq_types::{
 pub fn clone_matrix(source: &MatrixLike) -> Matrix {
     let mut m = create_matrix(None, None, None, None, None, None);
     copy_matrix(&mut m, source);
-    return (m).clone();
+    return m;
 }
 
 // Source: upstream/packages/geometry/src/matrix.ts:18 (sha256:e275c660484bfb81474851f530c09fda90921bca05ce8d364649f238e8742527)
@@ -131,7 +131,7 @@ pub fn create_gradient_transform_matrix(
     let ty = ty.unwrap_or(0.0_f64);
     let mut out = create_matrix(None, None, None, None, None, None);
     set_gradient_transform_matrix(&mut out, width, height, Some(rotation), Some(tx), Some(ty));
-    return (out).clone();
+    return out;
 }
 
 // Source: upstream/packages/geometry/src/matrix.ts:123 (sha256:8c42ee692d5afe71d3726d329431375adda696bd7d1f9ffa103c47a4c5e31704)
@@ -174,7 +174,7 @@ pub fn create_transform_matrix(
         Some(tx),
         Some(ty),
     );
-    return (out).clone();
+    return out;
 }
 
 // Source: upstream/packages/geometry/src/matrix.ts:139 (sha256:c9d73338df7aab825e46232685ce9fc6e9decebfca5773a7f5b5aa30d8479928)
@@ -187,16 +187,16 @@ pub fn equals_matrix(
     if (a == b) {
         return true;
     }
-    if ((a).is_none() || (b).is_none()) {
+    if ((a).is_none()) || ((b).is_none()) {
         return false;
     }
-    return ((((((!compare_translation)
+    return (((((!compare_translation)
         || ((a.as_ref().unwrap().tx == b.as_ref().unwrap().tx)
             && (a.as_ref().unwrap().ty == b.as_ref().unwrap().ty)))
         && (a.as_ref().unwrap().a == b.as_ref().unwrap().a))
         && (a.as_ref().unwrap().b == b.as_ref().unwrap().b))
         && (a.as_ref().unwrap().c == b.as_ref().unwrap().c))
-        && (a.as_ref().unwrap().d == b.as_ref().unwrap().d));
+        && (a.as_ref().unwrap().d == b.as_ref().unwrap().d);
 }
 
 // Source: upstream/packages/geometry/src/matrix.ts:163 (sha256:c021a7a92fa7399f6b1e4aa2477bbdef2c560d530531c10546d366d91caf740c)
@@ -304,7 +304,7 @@ pub fn matrix_transform_bounds(
     let b = source.b;
     let c = source.c;
     let d = source.d;
-    if ((ax == bx) && (ay == by)) {
+    if (ax == bx) && (ay == by) {
         out.x = source.tx;
         out.y = source.ty;
         out.width = 0.0_f64;

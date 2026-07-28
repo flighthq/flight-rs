@@ -16,14 +16,14 @@ use flighthq_types::{
 pub fn add_timeline_frame_script(
     timeline: &mut Timeline,
     frame: &crate::FlightUnion2<f64, String>,
-    script: &mut impl FnMut(DisplayObject, f64) -> (),
+    script: FrameScript,
 ) -> () {
-    let resolved = resolve_frame(timeline, frame);
+    let resolved = resolve_frame(timeline, &((*frame).clone()));
     ({
         timeline.frame_scripts?? = Some(Vec::new());
         timeline.frame_scripts
     }
-    .set)(resolved, script);
+    .set)(resolved, (script).clone());
 }
 
 // Source: upstream/packages/timeline/src/timeline.ts:17 (sha256:f24f67d158c066578e39768085a54a1194ffcd26260d7c7abd67517dec60b181)
@@ -66,7 +66,14 @@ pub fn create_timeline_source(obj: &CreateTimelineSourceRecord1) -> TimelineSour
         total_frames: (obj.total_frames).unwrap_or(1.0_f64),
         frame_rate: obj.frame_rate,
         labels: ((obj.labels).clone()).unwrap_or(((*EMPTY_LABELS).clone()).clone()),
-        construct_frame: ((obj.construct_frame).clone()).unwrap_or(noop_construct_frame),
+        construct_frame: ((obj.construct_frame).clone()).unwrap_or(std::sync::Arc::new(
+            std::sync::Mutex::new(Box::new(
+                move |__flight_argument_0: DisplayObject, __flight_argument_1: f64| -> () {
+                    noop_construct_frame()
+                },
+            )
+                as Box<dyn FnMut(DisplayObject, f64) -> () + Send + 'static>),
+        )),
     };
 }
 
@@ -98,7 +105,7 @@ pub fn get_timeline_current_label(timeline: &Timeline) -> Option<TimelineLabel> 
     let mut result: Option<TimelineLabel> = None;
     for label in (labels).iter().cloned() {
         if (label.frame <= frame) {
-            if ((result).is_none() || (label.frame >= result.as_mut().unwrap().frame)) {
+            if ((result).is_none()) || (label.frame >= result.as_mut().unwrap().frame) {
                 result = Some((label).clone());
             }
         }
@@ -114,7 +121,7 @@ pub fn get_timeline_frame_script(
     if ((timeline.frame_scripts).clone()).is_none() {
         return None;
     }
-    let resolved = resolve_frame(timeline, frame);
+    let resolved = resolve_frame(timeline, &((*frame).clone()));
     return timeline
         .frame_scripts
         .as_mut()
@@ -130,7 +137,7 @@ pub fn goto_and_play_timeline(
     frame: &crate::FlightUnion2<f64, String>,
 ) -> () {
     play_timeline(timeline);
-    seek_timeline(timeline, resolve_frame(timeline, frame));
+    seek_timeline(timeline, resolve_frame(timeline, &((*frame).clone())));
 }
 
 // Source: upstream/packages/timeline/src/timeline.ts:88 (sha256:1e3498ab95d4736131cc9685a5ead895a4da6aa3565c6784b0987cdea7674fcb)
@@ -139,7 +146,7 @@ pub fn goto_and_stop_timeline(
     frame: &crate::FlightUnion2<f64, String>,
 ) -> () {
     stop_timeline(timeline);
-    seek_timeline(timeline, resolve_frame(timeline, frame));
+    seek_timeline(timeline, resolve_frame(timeline, &((*frame).clone())));
 }
 
 // Source: upstream/packages/timeline/src/timeline.ts:93 (sha256:252bf0fc31b7cae71d4f4fe38c0101b55ad13833b65ac92cb1cc458b23e3fd67)
@@ -150,7 +157,7 @@ pub fn next_frame_timeline(timeline: &mut Timeline) -> () {
 
 // Source: upstream/packages/timeline/src/timeline.ts:98 (sha256:ecdeb97462a16ce041ca42c0a22440820ad4152d143a05b789a31b42302b1558)
 pub fn play_timeline(timeline: &mut Timeline) -> () {
-    if (timeline.is_playing || (get_timeline_total_frames(timeline) < 2.0_f64)) {
+    if (timeline.is_playing) || (get_timeline_total_frames(timeline) < 2.0_f64) {
         return;
     }
     timeline.is_playing = true;
@@ -171,7 +178,7 @@ pub fn remove_timeline_frame_script(
     if ((timeline.frame_scripts).clone()).is_none() {
         return;
     }
-    let resolved = resolve_frame(timeline, frame);
+    let resolved = resolve_frame(timeline, &((*frame).clone()));
     {
         let __flight_key = resolved;
         if let Some(__flight_index) = timeline
@@ -213,11 +220,11 @@ pub fn stop_timeline(timeline: &mut Timeline) -> () {
 // Source: upstream/packages/timeline/src/timeline.ts:120 (sha256:a0a5165effb4c5ac27cb8f8a21464fe0b01d703798e50a2eaa23566dc677812e)
 pub fn update_timeline(timeline: &mut Timeline, delta_time: f64) -> () {
     let frame_rate = get_timeline_frame_rate(timeline);
-    if (timeline.is_playing && (frame_rate).is_some()) {
+    if (timeline.is_playing) && ((frame_rate).is_some()) {
         timeline.current_frame = advance_frame(timeline, delta_time);
     }
     fire_construct_frame(timeline);
-    if (timeline.is_playing && (frame_rate).is_none()) {
+    if (timeline.is_playing) && ((frame_rate).is_none()) {
         timeline.current_frame = advance_frame(timeline, delta_time);
     }
 }
@@ -233,7 +240,7 @@ fn advance_frame(timeline: &mut Timeline, delta_time: f64) -> f64 {
     let frame_rate = get_timeline_frame_rate(timeline);
     let total_frames = get_timeline_total_frames(timeline);
     if (frame_rate).is_some() {
-        let frame_time = (1000.0_f64 / frame_rate.as_ref().unwrap());
+        let frame_time = (1000.0_f64 / *(frame_rate.as_ref().unwrap()));
         timeline.time_elapsed += delta_time;
         let mut next = (timeline.current_frame + (timeline.time_elapsed / frame_time).floor());
         timeline.time_elapsed %= frame_time;
@@ -314,15 +321,19 @@ fn fire_construct_frame(timeline: &mut Timeline) -> () {
         );
     }
     if (target).is_some() {
-        timeline
-            .source
-            .as_mut()
-            .unwrap()
-            .construct_frame
-            .as_ref()
-            .unwrap()
-            .lock()
-            .unwrap()((target.as_ref().unwrap()).clone(), current);
+        {
+            let __flight_callback = timeline
+                .source
+                .as_mut()
+                .unwrap()
+                .construct_frame
+                .as_ref()
+                .unwrap()
+                .clone();
+            let __flight_result =
+                __flight_callback.lock().unwrap()((target.as_ref().unwrap()).clone(), current);
+            __flight_result
+        };
     }
     if ((timeline.frame_scripts).clone()).is_some() {
         let script = timeline
@@ -332,7 +343,7 @@ fn fire_construct_frame(timeline: &mut Timeline) -> () {
             .iter()
             .find(|(key, _)| key == &current)
             .map(|(_, value)| value.clone());
-        if ((script).is_some() && (target).is_some()) {
+        if ((script).is_some()) && ((target).is_some()) {
             script.as_ref().unwrap().lock().unwrap()((target).clone().unwrap(), current);
         }
     }

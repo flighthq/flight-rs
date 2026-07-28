@@ -59,7 +59,7 @@ pub fn stroke_path(path: &Path, style: &StrokeStyle, tolerance: Option<f64>) -> 
                 dash_offset,
             )
         } else {
-            vec![StrokeSubpath {
+            vec![DashSegment {
                 __flight_identity: std::sync::Arc::new(()),
                 points: (subpath.points).clone(),
                 closed: subpath.closed,
@@ -81,7 +81,7 @@ pub fn stroke_path(path: &Path, style: &StrokeStyle, tolerance: Option<f64>) -> 
             );
         }
     }
-    return (result).clone();
+    return result;
 }
 
 // Source: upstream/packages/path/src/strokePath.ts:44 (sha256:e6e1586e17306f1abe35eca6d375805bb2afdb4f6855e5393a2acb1ea0d61251)
@@ -272,7 +272,7 @@ fn apply_dash(pts: &Vec<f64>, closed: bool, dash: &Vec<f64>, dash_offset: f64) -
             points: (*pts).clone(),
             closed: closed,
         });
-        return (result).clone();
+        return result;
     }
     let total_dash_length = (dash)
         .iter()
@@ -284,7 +284,7 @@ fn apply_dash(pts: &Vec<f64>, closed: bool, dash: &Vec<f64>, dash_offset: f64) -
             points: (*pts).clone(),
             closed: closed,
         });
-        return (result).clone();
+        return result;
     }
     let offset = (((dash_offset % total_dash_length) + total_dash_length) % total_dash_length);
     let mut dash_index = 0.0_f64;
@@ -321,7 +321,7 @@ fn apply_dash(pts: &Vec<f64>, closed: bool, dash: &Vec<f64>, dash_offset: f64) -
             let dx = (x1 - x0);
             let dy = (y1 - y0);
             let seg_len = ((dx * dx) + (dy * dy)).sqrt();
-            if (is_on && (current).is_none()) {
+            if (is_on) && ((current).is_none()) {
                 current = Some(vec![x0, y0]);
             }
             let mut consumed = 0.0_f64;
@@ -359,10 +359,10 @@ fn apply_dash(pts: &Vec<f64>, closed: bool, dash: &Vec<f64>, dash_offset: f64) -
                     dash_index = ((dash_index + 1.0_f64) % (dash.len() as f64));
                     remaining = dash[dash_index as usize].clone();
                     is_on = ((dash_index % 2.0_f64) == 0.0_f64);
-                    if (is_on && (current).is_none()) {
+                    if (is_on) && ((current).is_none()) {
                         current = Some(vec![ix, iy]);
                     } else {
-                        if ((!is_on) && (current).is_some()) {
+                        if (!is_on) && ((current).is_some()) {
                             if ((current.as_ref().unwrap().len() as f64) >= 4.0_f64) {
                                 result.push(DashSegment {
                                     __flight_identity: std::sync::Arc::new(()),
@@ -381,14 +381,14 @@ fn apply_dash(pts: &Vec<f64>, closed: bool, dash: &Vec<f64>, dash_offset: f64) -
             };
         }
     }
-    if ((current).is_some() && ((current.as_ref().unwrap().len() as f64) >= 4.0_f64)) {
+    if ((current).is_some()) && ((current.as_ref().unwrap().len() as f64) >= 4.0_f64) {
         result.push(DashSegment {
             __flight_identity: std::sync::Arc::new(()),
             points: (current).clone().unwrap(),
             closed: false,
         });
     }
-    return (result).clone();
+    return result;
 }
 
 // Source: upstream/packages/path/src/strokePath.ts:274 (sha256:24d231d16c218a934d68588524c7ccd6681ba4d45f152a41cb192346ba7811bd)
@@ -473,7 +473,11 @@ fn decode_subpaths(path: &Path, tolerance: f64) -> Vec<StrokeSubpath> {
                         .push((((*current.lock().unwrap()).clone()).clone().unwrap()).clone());
                 } else {
                     if (command == PathCommand::LINE_TO) {
-                        let mut sp = ((ensure_current).clone()).lock().unwrap()();
+                        let mut sp = {
+                            let __flight_callback = (ensure_current).clone();
+                            let __flight_result = __flight_callback.lock().unwrap()();
+                            __flight_result
+                        };
                         (*x.lock().unwrap()) = path.data[di as usize].clone();
                         (*y.lock().unwrap()) = path.data[(di + 1.0_f64) as usize].clone();
                         di += 2.0_f64;
@@ -483,7 +487,11 @@ fn decode_subpaths(path: &Path, tolerance: f64) -> Vec<StrokeSubpath> {
                         ]);
                     } else {
                         if (command == PathCommand::WIDE_LINE_TO) {
-                            let mut sp = ((ensure_current).clone()).lock().unwrap()();
+                            let mut sp = {
+                                let __flight_callback = (ensure_current).clone();
+                                let __flight_result = __flight_callback.lock().unwrap()();
+                                __flight_result
+                            };
                             (*x.lock().unwrap()) = path.data[(di + 2.0_f64) as usize].clone();
                             (*y.lock().unwrap()) = path.data[(di + 3.0_f64) as usize].clone();
                             di += 4.0_f64;
@@ -493,7 +501,11 @@ fn decode_subpaths(path: &Path, tolerance: f64) -> Vec<StrokeSubpath> {
                             ]);
                         } else {
                             if (command == PathCommand::CURVE_TO) {
-                                let mut sp = ((ensure_current).clone()).lock().unwrap()();
+                                let mut sp = {
+                                    let __flight_callback = (ensure_current).clone();
+                                    let __flight_result = __flight_callback.lock().unwrap()();
+                                    __flight_result
+                                };
                                 flatten_quadratic(
                                     &mut sp.points,
                                     (*x.lock().unwrap()).clone(),
@@ -510,7 +522,11 @@ fn decode_subpaths(path: &Path, tolerance: f64) -> Vec<StrokeSubpath> {
                                 di += 4.0_f64;
                             } else {
                                 if (command == PathCommand::CUBIC_CURVE_TO) {
-                                    let mut sp = ((ensure_current).clone()).lock().unwrap()();
+                                    let mut sp = {
+                                        let __flight_callback = (ensure_current).clone();
+                                        let __flight_result = __flight_callback.lock().unwrap()();
+                                        __flight_result
+                                    };
                                     flatten_cubic(
                                         &mut sp.points,
                                         (*x.lock().unwrap()).clone(),
@@ -584,7 +600,7 @@ fn flatten_cubic(
 ) -> () {
     let dxc1 = dist_chord_sq(c1x, c1y, x0, y0, x1, y1);
     let dxc2 = dist_chord_sq(c2x, c2y, x0, y0, x1, y1);
-    if ((depth >= MAX_SUBDIVISION_DEPTH) || ((dxc1 <= tolerance_sq) && (dxc2 <= tolerance_sq))) {
+    if (depth >= MAX_SUBDIVISION_DEPTH) || ((dxc1 <= tolerance_sq) && (dxc2 <= tolerance_sq)) {
         out.extend(vec![x1, y1]);
         return;
     }
@@ -652,7 +668,7 @@ fn flatten_quadratic(
         let cross = ((dx * (y0 - cy)) - (dy * (x0 - cx)));
         dist_sq = ((cross * cross) / length_sq);
     }
-    if ((depth >= MAX_SUBDIVISION_DEPTH) || (dist_sq <= tolerance_sq)) {
+    if (depth >= MAX_SUBDIVISION_DEPTH) || (dist_sq <= tolerance_sq) {
         out.extend(vec![x1, y1]);
         return;
     }

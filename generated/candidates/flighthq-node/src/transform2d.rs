@@ -71,8 +71,8 @@ pub fn ensure_node_world_matrix(target: &Transform2DNode) -> () {
         parent_runtime = Some(get_entity_runtime(&parent));
         parent_world_transform_id = parent_runtime.as_mut().unwrap().world_transform_id;
     }
-    if ((runtime.world_transform_using_local_transform_id != runtime.local_transform_id)
-        || (runtime.world_transform_using_parent_transform_id != parent_world_transform_id))
+    if (runtime.world_transform_using_local_transform_id != runtime.local_transform_id)
+        || (runtime.world_transform_using_parent_transform_id != parent_world_transform_id)
     {
         recompute_world_transform2_d(
             target,
@@ -182,7 +182,7 @@ fn recompute_local_transform2_d(
         runtime.local_matrix = Some(create_matrix(None, None, None, None, None, None));
     }
     let mut matrix = (runtime.local_matrix).clone();
-    if ((target.skew_x == 0.0_f64) && (target.skew_y == 0.0_f64)) {
+    if (target.skew_x == 0.0_f64) && (target.skew_y == 0.0_f64) {
         matrix.as_mut().unwrap().a = (runtime.rotation_cosine * target.scale_x);
         matrix.as_mut().unwrap().b = (runtime.rotation_sine * target.scale_x);
         matrix.as_mut().unwrap().c = ((-runtime.rotation_sine) * target.scale_y);

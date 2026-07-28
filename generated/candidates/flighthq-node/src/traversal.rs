@@ -117,7 +117,7 @@ pub fn get_node_next_sibling<Traits: Clone>(source: &Node) -> Option<NodeOf<Trai
             .position(|item| item == &__flight_value)
             .map_or(-1.0_f64, |index| index as f64)
     };
-    if ((idx == (-1.0_f64)) || (idx == ((siblings.as_ref().unwrap().len() as f64) - 1.0_f64))) {
+    if (idx == (-1.0_f64)) || (idx == ((siblings.as_ref().unwrap().len() as f64) - 1.0_f64)) {
         return None;
     }
     return Some(siblings.as_ref().unwrap()[(idx + 1.0_f64) as usize].clone());

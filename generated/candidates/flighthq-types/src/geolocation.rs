@@ -98,9 +98,11 @@ pub struct GeolocationBackend {
                             std::sync::Mutex<Box<dyn FnMut(GeoPosition) -> () + Send + 'static>>,
                         >,
                         GeolocationRequestOptions,
-                        std::sync::Arc<
-                            std::sync::Mutex<
-                                Box<dyn FnMut(GeolocationErrorReason) -> () + Send + 'static>,
+                        Option<
+                            std::sync::Arc<
+                                std::sync::Mutex<
+                                    Box<dyn FnMut(GeolocationErrorReason) -> () + Send + 'static>,
+                                >,
                             >,
                         >,
                     ) -> f64

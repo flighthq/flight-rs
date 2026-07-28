@@ -11,7 +11,7 @@ use flighthq_types::SurfaceRegion;
 // Source: upstream/packages/surface/src/surfaceColorMatrix.ts:10 (sha256:5cd5ab68fd998a7fadaf0c99395211fcaf93385345bf0b865a38443a4091fcf0)
 pub fn build_surface_brightness_color_matrix(out: &mut Vec<f64>, amount: f64) -> () {
     set_color_matrix(
-        (*out).clone(),
+        out,
         vec![
             amount, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, amount, 0.0_f64, 0.0_f64, 0.0_f64,
             0.0_f64, 0.0_f64, amount, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 1.0_f64,
@@ -24,7 +24,7 @@ pub fn build_surface_brightness_color_matrix(out: &mut Vec<f64>, amount: f64) ->
 pub fn build_surface_contrast_color_matrix(out: &mut Vec<f64>, amount: f64) -> () {
     let t = (127.5_f64 * (1.0_f64 - amount));
     set_color_matrix(
-        (*out).clone(),
+        out,
         vec![
             amount, 0.0_f64, 0.0_f64, 0.0_f64, t, 0.0_f64, amount, 0.0_f64, 0.0_f64, t, 0.0_f64,
             0.0_f64, amount, 0.0_f64, t, 0.0_f64, 0.0_f64, 0.0_f64, 1.0_f64, 0.0_f64,
@@ -43,7 +43,7 @@ pub fn build_surface_hue_rotation_color_matrix(out: &mut Vec<f64>, degrees: f64)
     let c = (radians).cos();
     let s = (radians).sin();
     set_color_matrix(
-        (*out).clone(),
+        out,
         vec![
             ((0.213_f64 + (c * 0.787_f64)) - (s * 0.213_f64)),
             ((0.715_f64 - (c * 0.715_f64)) - (s * 0.715_f64)),
@@ -72,7 +72,7 @@ pub fn build_surface_hue_rotation_color_matrix(out: &mut Vec<f64>, degrees: f64)
 // Source: upstream/packages/surface/src/surfaceColorMatrix.ts:70 (sha256:683cfc77d56cd39bc18835f88d36095b457b3be23639a017f3f1833ecedc5314)
 pub fn build_surface_invert_color_matrix(out: &mut Vec<f64>) -> () {
     set_color_matrix(
-        (*out).clone(),
+        out,
         vec![
             (-1.0_f64),
             0.0_f64,
@@ -105,7 +105,7 @@ pub fn build_surface_saturation_color_matrix(out: &mut Vec<f64>, amount: f64) ->
     let g = (LUMA_G * inv);
     let b = (LUMA_B * inv);
     set_color_matrix(
-        (*out).clone(),
+        out,
         vec![
             (r + amount),
             g,
@@ -134,7 +134,7 @@ pub fn build_surface_saturation_color_matrix(out: &mut Vec<f64>, amount: f64) ->
 // Source: upstream/packages/surface/src/surfaceColorMatrix.ts:90 (sha256:99fa07d105b7a270a8f9c524b14d4a82059ec64bb403795b091d7f9cf35dbd21)
 pub fn build_surface_sepia_color_matrix(out: &mut Vec<f64>) -> () {
     set_color_matrix(
-        (*out).clone(),
+        out,
         vec![
             0.393_f64, 0.769_f64, 0.189_f64, 0.0_f64, 0.0_f64, 0.349_f64, 0.686_f64, 0.168_f64,
             0.0_f64, 0.0_f64, 0.272_f64, 0.534_f64, 0.131_f64, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64,
@@ -152,7 +152,7 @@ pub fn color_matrix_surface(out: &mut Vec<u8>, source: &SurfaceRegion, matrix: &
         let mut py = 0.0_f64;
         while (py < source.height) {
             let source_y = (source.y + py);
-            if ((source_y < 0.0_f64) || (source_y >= source.surface.height)) {
+            if (source_y < 0.0_f64) || (source_y >= source.surface.height) {
                 {
                     py += 1.0;
                     py
@@ -163,7 +163,7 @@ pub fn color_matrix_surface(out: &mut Vec<u8>, source: &SurfaceRegion, matrix: &
                 let mut px = 0.0_f64;
                 while (px < source.width) {
                     let source_x = (source.x + px);
-                    if ((source_x < 0.0_f64) || (source_x >= source.surface.width)) {
+                    if (source_x < 0.0_f64) || (source_x >= source.surface.width) {
                         {
                             px += 1.0;
                             px
@@ -272,7 +272,7 @@ pub fn concat_surface_color_matrix(out: &mut Vec<f64>, first: &Vec<f64>, second:
 // Source: upstream/packages/surface/src/surfaceColorMatrix.ts:152 (sha256:b3adff938cb05477d8a11e11cb93411f32c7d78297b0d7305a7fcc3c5cbe7325)
 pub fn set_surface_color_matrix_identity(out: &mut Vec<f64>) -> () {
     set_color_matrix(
-        (*out).clone(),
+        out,
         vec![
             1.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 1.0_f64, 0.0_f64, 0.0_f64,
             0.0_f64, 0.0_f64, 0.0_f64, 1.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64,

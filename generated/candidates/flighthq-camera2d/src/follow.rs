@@ -51,7 +51,7 @@ pub fn update_camera2_d_follow(
     }
     let mut next_x: f64;
     let mut next_y: f64;
-    if ((smooth_time > 0.0_f64) && (delta_time > 0.0_f64)) {
+    if (smooth_time > 0.0_f64) && (delta_time > 0.0_f64) {
         let lambda = (1.0_f64 / smooth_time);
         next_x = damp(cam_x, goal_x, lambda, delta_time);
         next_y = damp(cam_y, goal_y, lambda, delta_time);

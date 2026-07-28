@@ -51,36 +51,39 @@ fn decode_subpaths(path: &Path) -> Vec<Subpath> {
         std::sync::Arc::new(std::sync::Mutex::new(vec![]));
     let current: std::sync::Arc<std::sync::Mutex<Option<Subpath>>> =
         std::sync::Arc::new(std::sync::Mutex::new(None));
-    let mut ensure_current: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut() -> Subpath + Send + 'static>>,
-    > = std::sync::Arc::new(std::sync::Mutex::new(Box::new({
-        let mut current = current.clone();
-        let mut subpaths = subpaths.clone();
-        move || -> Subpath {
-            if ((*current.lock().unwrap()).clone()).is_none() {
-                (*current.lock().unwrap()) = Some(Subpath {
-                    __flight_identity: std::sync::Arc::new(()),
-                    points: vec![SubpathPoint {
+    let ensure_current: std::sync::Arc<
+        std::sync::Mutex<
+            std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> Subpath + Send + 'static>>>,
+        >,
+    > = std::sync::Arc::new(std::sync::Mutex::new(std::sync::Arc::new(
+        std::sync::Mutex::new(Box::new({
+            let mut current = current.clone();
+            let mut subpaths = subpaths.clone();
+            move || -> Subpath {
+                if ((*current.lock().unwrap()).clone()).is_none() {
+                    (*current.lock().unwrap()) = Some(Subpath {
                         __flight_identity: std::sync::Arc::new(()),
-                        x: 0.0_f64,
-                        y: 0.0_f64,
-                        kind: "move".to_owned(),
-                        cx: None,
-                        cy: None,
-                        c1x: None,
-                        c1y: None,
-                        c2x: None,
-                        c2y: None,
-                    }],
-                    closed: false,
-                });
-                (*subpaths.lock().unwrap())
-                    .push((((*current.lock().unwrap()).clone()).clone().unwrap()).clone());
+                        points: vec![SubpathPoint {
+                            __flight_identity: std::sync::Arc::new(()),
+                            x: 0.0_f64,
+                            y: 0.0_f64,
+                            kind: "move".to_owned(),
+                            cx: None,
+                            cy: None,
+                            c1x: None,
+                            c1y: None,
+                            c2x: None,
+                            c2y: None,
+                        }],
+                        closed: false,
+                    });
+                    (*subpaths.lock().unwrap())
+                        .push((((*current.lock().unwrap()).clone()).clone().unwrap()).clone());
+                }
+                return ((*current.lock().unwrap()).clone()).clone().unwrap();
             }
-            return ((*current.lock().unwrap()).clone()).clone().unwrap();
-        }
-    })
-        as Box<dyn FnMut() -> Subpath + Send + 'static>));
+        }) as Box<dyn FnMut() -> Subpath + Send + 'static>),
+    )));
     for_each_path_segment(path, &mut |segment: PathSegment| -> () {
         if ((segment.kind).clone() == "moveTo") {
             (*current.lock().unwrap()) = Some(Subpath {
@@ -103,52 +106,64 @@ fn decode_subpaths(path: &Path) -> Vec<Subpath> {
                 .push((((*current.lock().unwrap()).clone()).clone().unwrap()).clone());
         } else {
             if ((segment.kind).clone() == "lineTo") {
-                ((ensure_current).clone()).lock().unwrap()()
+                {
+                    let __flight_callback = (*ensure_current.lock().unwrap()).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                }
+                .points
+                .push(SubpathPoint {
+                    __flight_identity: std::sync::Arc::new(()),
+                    x: (segment.x).unwrap(),
+                    y: (segment.y).unwrap(),
+                    kind: "line".to_owned(),
+                    cx: None,
+                    cy: None,
+                    c1x: None,
+                    c1y: None,
+                    c2x: None,
+                    c2y: None,
+                });
+            } else {
+                if ((segment.kind).clone() == "curveTo") {
+                    {
+                        let __flight_callback = (*ensure_current.lock().unwrap()).clone();
+                        let __flight_result = __flight_callback.lock().unwrap()();
+                        __flight_result
+                    }
                     .points
                     .push(SubpathPoint {
                         __flight_identity: std::sync::Arc::new(()),
                         x: (segment.x).unwrap(),
                         y: (segment.y).unwrap(),
-                        kind: "line".to_owned(),
-                        cx: None,
-                        cy: None,
+                        kind: "quad".to_owned(),
+                        cx: Some((segment.control_x).unwrap()),
+                        cy: Some((segment.control_y).unwrap()),
                         c1x: None,
                         c1y: None,
                         c2x: None,
                         c2y: None,
                     });
-            } else {
-                if ((segment.kind).clone() == "curveTo") {
-                    ((ensure_current).clone()).lock().unwrap()()
+                } else {
+                    if ((segment.kind).clone() == "cubicCurveTo") {
+                        {
+                            let __flight_callback = (*ensure_current.lock().unwrap()).clone();
+                            let __flight_result = __flight_callback.lock().unwrap()();
+                            __flight_result
+                        }
                         .points
                         .push(SubpathPoint {
                             __flight_identity: std::sync::Arc::new(()),
                             x: (segment.x).unwrap(),
                             y: (segment.y).unwrap(),
-                            kind: "quad".to_owned(),
-                            cx: Some((segment.control_x).unwrap()),
-                            cy: Some((segment.control_y).unwrap()),
-                            c1x: None,
-                            c1y: None,
-                            c2x: None,
-                            c2y: None,
+                            kind: "cubic".to_owned(),
+                            c1x: Some((segment.control1_x).unwrap()),
+                            c1y: Some((segment.control1_y).unwrap()),
+                            c2x: Some((segment.control2_x).unwrap()),
+                            c2y: Some((segment.control2_y).unwrap()),
+                            cx: None,
+                            cy: None,
                         });
-                } else {
-                    if ((segment.kind).clone() == "cubicCurveTo") {
-                        ((ensure_current).clone()).lock().unwrap()()
-                            .points
-                            .push(SubpathPoint {
-                                __flight_identity: std::sync::Arc::new(()),
-                                x: (segment.x).unwrap(),
-                                y: (segment.y).unwrap(),
-                                kind: "cubic".to_owned(),
-                                c1x: Some((segment.control1_x).unwrap()),
-                                c1y: Some((segment.control1_y).unwrap()),
-                                c2x: Some((segment.control2_x).unwrap()),
-                                c2y: Some((segment.control2_y).unwrap()),
-                                cx: None,
-                                cy: None,
-                            });
                     } else {
                         if ((segment.kind).clone() == "close") {
                             if ((*current.lock().unwrap()).clone()).is_some() {
@@ -176,7 +191,7 @@ fn encode_reversed_subpath(subpath: &Subpath, out: &mut Path) -> () {
         while (i >= 1.0_f64) {
             let from = subpath.points[i as usize].clone();
             let to = subpath.points[(i - 1.0_f64) as usize].clone();
-            if (((from.kind).clone() == "line") || ((from.kind).clone() == "move")) {
+            if ((from.kind).clone() == "line") || ((from.kind).clone() == "move") {
                 out.commands.push(PathCommand::LINE_TO);
                 out.data.extend(vec![to.x, to.y]);
             } else {

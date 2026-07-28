@@ -52,14 +52,18 @@ pub fn update_bitmap_text(bitmap_text: &BitmapText) -> () {
         apply_bitmap_text_color(&quad_batch, bitmap_text.data.color);
     }
     let glyph_source = (bitmap_text.data.glyph_source).clone();
-    if ((glyph_source).is_none() || (bitmap_text.data.text.length == 0.0_f64)) {
+    if ((glyph_source).is_none())
+        || ((bitmap_text.data.text.encode_utf16().count() as f64) == 0.0_f64)
+    {
         set_empty_rectangle(&mut bounds);
         invalidate_node_local_bounds(bitmap_text);
         return;
     }
-    let metrics = ((glyph_source.as_ref().unwrap().get_glyph_metrics).clone())
-        .lock()
-        .unwrap()();
+    let metrics = {
+        let __flight_callback = (glyph_source.as_ref().unwrap().get_glyph_metrics).clone();
+        let __flight_result = __flight_callback.lock().unwrap()();
+        __flight_result
+    };
     let line_advance =
         (((metrics.ascent + metrics.descent) + metrics.line_gap) * bitmap_text.data.line_height);
     let lines = layout_bitmap_text_lines(glyph_source.as_ref().unwrap(), &bitmap_text.data);
@@ -82,10 +86,10 @@ pub fn update_bitmap_text(bitmap_text: &BitmapText) -> () {
                 if ((bitmap_text.data.align).clone() == "right") {
                     start_x = (ref_width - line.width);
                 } else {
-                    if (((((bitmap_text.data.align).clone() == "justify")
-                        && (bitmap_text.data.wrap_width).is_some())
+                    if ((((bitmap_text.data.align).clone() == "justify")
+                        && ((bitmap_text.data.wrap_width).is_some()))
                         && (!line.paragraph_end))
-                        && ((line.gaps.len() as f64) > 0.0_f64))
+                        && ((line.gaps.len() as f64) > 0.0_f64)
                     {
                         gap_extra =
                             ((bitmap_text.data.wrap_width - line.width) / (line.gaps.len() as f64));
@@ -275,12 +279,20 @@ fn build_bitmap_text_words(
             as Box<dyn FnMut() -> () + Send + 'static>));
     for character in (paragraph).iter().cloned() {
         let codepoint = (character.code_point_at)(0.0_f64);
-        if ((codepoint).is_none() || (codepoint == CARRIAGE_RETURN)) {
+        if ((codepoint).is_none()) || (codepoint == CARRIAGE_RETURN) {
             continue;
         }
         if (codepoint == SPACE) {
-            ((flush).clone()).lock().unwrap()();
-            let space_entry = ((glyph_source.get_glyph_entry).clone()).lock().unwrap()(SPACE);
+            {
+                let __flight_callback = (flush).clone();
+                let __flight_result = __flight_callback.lock().unwrap()();
+                __flight_result
+            };
+            let space_entry = {
+                let __flight_callback = (glyph_source.get_glyph_entry).clone();
+                let __flight_result = __flight_callback.lock().unwrap()(SPACE);
+                __flight_result
+            };
             (*pending_gap.lock().unwrap()) += (if (space_entry).is_some() {
                 space_entry.as_ref().unwrap().advance
             } else {
@@ -288,18 +300,25 @@ fn build_bitmap_text_words(
             } + letter_spacing);
             continue;
         }
-        let entry = ((glyph_source.get_glyph_entry).clone()).lock().unwrap()(codepoint);
+        let entry = {
+            let __flight_callback = (glyph_source.get_glyph_entry).clone();
+            let __flight_result = __flight_callback.lock().unwrap()(codepoint);
+            __flight_result
+        };
         if (entry).is_none() {
             continue;
         }
         if ((*previous_codepoint.lock().unwrap()).clone() >= 0.0_f64) {
-            (*pen.lock().unwrap()) += ((glyph_source.get_glyph_kerning).clone()).lock().unwrap()(
-                (*previous_codepoint.lock().unwrap()).clone(),
-                codepoint,
-            );
+            (*pen.lock().unwrap()) += {
+                let __flight_callback = (glyph_source.get_glyph_kerning).clone();
+                let __flight_result = __flight_callback.lock().unwrap()(
+                    (*previous_codepoint.lock().unwrap()).clone(),
+                    codepoint,
+                );
+                __flight_result
+            };
         }
-        if ((entry.as_ref().unwrap().width > 0.0_f64) && (entry.as_ref().unwrap().height > 0.0_f64))
-        {
+        if (entry.as_ref().unwrap().width > 0.0_f64) && (entry.as_ref().unwrap().height > 0.0_f64) {
             (*glyphs.lock().unwrap()).push(BitmapTextGlyph {
                 __flight_identity: std::sync::Arc::new(()),
                 codepoint: codepoint,
@@ -311,7 +330,11 @@ fn build_bitmap_text_words(
         (*previous_codepoint.lock().unwrap()) = codepoint;
         (*in_word.lock().unwrap()) = true;
     }
-    ((flush).clone()).lock().unwrap()();
+    {
+        let __flight_callback = (flush).clone();
+        let __flight_result = __flight_callback.lock().unwrap()();
+        __flight_result
+    };
     return (*tokens.lock().unwrap()).clone();
 }
 
@@ -331,9 +354,11 @@ fn ensure_bitmap_text_page_batch(
     if (cached).is_some() {
         return Some((cached.as_ref().unwrap()).clone());
     }
-    let image = ((glyph_source.get_glyph_atlas_image).clone())
-        .lock()
-        .unwrap()(page);
+    let image = {
+        let __flight_callback = (glyph_source.get_glyph_atlas_image).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(Some(page));
+        __flight_result
+    };
     if (image).is_none() {
         return None;
     }
@@ -342,7 +367,7 @@ fn ensure_bitmap_text_page_batch(
             __flight_identity: std::sync::Arc::new(()),
             data: QuadBatchData {
                 __flight_identity: std::sync::Arc::new(()),
-                atlas: create_texture_atlas(None),
+                atlas: Some(create_texture_atlas(None)),
             },
         }));
         apply_bitmap_text_color(&created, color);
@@ -401,9 +426,9 @@ fn layout_bitmap_text_lines(
                 paragraph_end: false,
             };
             for token in (tokens).iter().cloned() {
-                let wraps = (((data.wrap_width).is_some()
+                let wraps = (((data.wrap_width).is_some())
                     && ((current.words.len() as f64) > 0.0_f64))
-                    && (((current.width + token.gap) + token.word.width) > data.wrap_width));
+                    && (((current.width + token.gap) + token.word.width) > data.wrap_width);
                 if wraps {
                     lines.push(((current).clone()).clone());
                     current = BitmapTextLine {
@@ -430,7 +455,7 @@ fn layout_bitmap_text_lines(
             };
         }
     }
-    return (lines).clone();
+    return lines;
 }
 
 // Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:242 (sha256:d2a73c20d95a1a1512ff1f0278c6bd97e0108f4d220b7013c3ed2c4ffbff3066)

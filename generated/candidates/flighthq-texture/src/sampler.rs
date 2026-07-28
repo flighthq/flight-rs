@@ -108,10 +108,10 @@ pub fn create_tiling_sampler() -> Sampler {
 
 // Source: upstream/packages/texture/src/sampler.ts:69 (sha256:5d58898bb1447324a2c15bf58f07c5b07d1c262a8fc932f3a489be11e7220046)
 pub fn equals_sampler(a: Option<SamplerLike>, b: Option<SamplerLike>) -> bool {
-    if ((a).is_none() || (b).is_none()) {
+    if ((a).is_none()) || ((b).is_none()) {
         return false;
     }
-    return ((a == b)
+    return (a == b)
         || ((((((a.as_ref().unwrap().anisotropy == b.as_ref().unwrap().anisotropy)
             && ((a.as_ref().unwrap().mag_filter).clone()
                 == (b.as_ref().unwrap().mag_filter).clone()))
@@ -119,5 +119,5 @@ pub fn equals_sampler(a: Option<SamplerLike>, b: Option<SamplerLike>) -> bool {
                 == (b.as_ref().unwrap().min_filter).clone()))
             && (a.as_ref().unwrap().mipmaps == b.as_ref().unwrap().mipmaps))
             && ((a.as_ref().unwrap().wrap_u).clone() == (b.as_ref().unwrap().wrap_u).clone()))
-            && ((a.as_ref().unwrap().wrap_v).clone() == (b.as_ref().unwrap().wrap_v).clone())));
+            && ((a.as_ref().unwrap().wrap_v).clone() == (b.as_ref().unwrap().wrap_v).clone()));
 }

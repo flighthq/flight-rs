@@ -13,11 +13,15 @@ pub fn ease_clamp(ease: EasingFunction) -> EasingFunction {
     return std::sync::Arc::new(std::sync::Mutex::new(Box::new({
         let ease = ease.clone();
         move |t: f64| -> f64 {
-            ((ease).clone()).lock().unwrap()(if (t < 0.0_f64) {
-                0.0_f64
-            } else {
-                if (t > 1.0_f64) { 1.0_f64 } else { t }
-            })
+            {
+                let __flight_callback = (ease).clone();
+                let __flight_result = __flight_callback.lock().unwrap()(if (t < 0.0_f64) {
+                    0.0_f64
+                } else {
+                    if (t > 1.0_f64) { 1.0_f64 } else { t }
+                });
+                __flight_result
+            }
         }
     })
         as Box<dyn FnMut(f64) -> f64 + Send + 'static>));
@@ -28,7 +32,11 @@ pub fn ease_clamp_output(ease: EasingFunction, min: f64, max: f64) -> EasingFunc
     return std::sync::Arc::new(std::sync::Mutex::new(Box::new({
         let ease = ease.clone();
         move |t: f64| -> f64 {
-            let v = ((ease).clone()).lock().unwrap()(t);
+            let v = {
+                let __flight_callback = (ease).clone();
+                let __flight_result = __flight_callback.lock().unwrap()(t);
+                __flight_result
+            };
             return if (v < min) {
                 min
             } else {
@@ -43,7 +51,13 @@ pub fn ease_clamp_output(ease: EasingFunction, min: f64, max: f64) -> EasingFunc
 pub fn ease_invert(ease: EasingFunction) -> EasingFunction {
     return std::sync::Arc::new(std::sync::Mutex::new(Box::new({
         let ease = ease.clone();
-        move |t: f64| -> f64 { (1.0_f64 - ((ease).clone()).lock().unwrap()(t)) }
+        move |t: f64| -> f64 {
+            (1.0_f64 - {
+                let __flight_callback = (ease).clone();
+                let __flight_result = __flight_callback.lock().unwrap()(t);
+                __flight_result
+            })
+        }
     })
         as Box<dyn FnMut(f64) -> f64 + Send + 'static>));
 }
@@ -54,10 +68,19 @@ pub fn ease_mirror(ease_in: EasingFunction) -> EasingFunction {
         let ease_in = ease_in.clone();
         move |t: f64| -> f64 {
             if (t < 0.5_f64) {
-                return (((ease_in).clone()).lock().unwrap()((t * 2.0_f64)) * 0.5_f64);
+                return ({
+                    let __flight_callback = (ease_in).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()((t * 2.0_f64));
+                    __flight_result
+                } * 0.5_f64);
             }
             return (1.0_f64
-                - (((ease_in).clone()).lock().unwrap()(((1.0_f64 - t) * 2.0_f64)) * 0.5_f64));
+                - ({
+                    let __flight_callback = (ease_in).clone();
+                    let __flight_result =
+                        __flight_callback.lock().unwrap()(((1.0_f64 - t) * 2.0_f64));
+                    __flight_result
+                } * 0.5_f64));
         }
     })
         as Box<dyn FnMut(f64) -> f64 + Send + 'static>));
@@ -67,7 +90,13 @@ pub fn ease_mirror(ease_in: EasingFunction) -> EasingFunction {
 pub fn ease_reverse(ease_in: EasingFunction) -> EasingFunction {
     return std::sync::Arc::new(std::sync::Mutex::new(Box::new({
         let ease_in = ease_in.clone();
-        move |t: f64| -> f64 { (1.0_f64 - ((ease_in).clone()).lock().unwrap()((1.0_f64 - t))) }
+        move |t: f64| -> f64 {
+            (1.0_f64 - {
+                let __flight_callback = (ease_in).clone();
+                let __flight_result = __flight_callback.lock().unwrap()((1.0_f64 - t));
+                __flight_result
+            })
+        }
     })
         as Box<dyn FnMut(f64) -> f64 + Send + 'static>));
 }
@@ -77,7 +106,12 @@ pub fn ease_scale_output(ease: EasingFunction, from_value: f64, to_value: f64) -
     return std::sync::Arc::new(std::sync::Mutex::new(Box::new({
         let ease = ease.clone();
         move |t: f64| -> f64 {
-            (from_value + (((ease).clone()).lock().unwrap()(t) * (to_value - from_value)))
+            (from_value
+                + ({
+                    let __flight_callback = (ease).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()(t);
+                    __flight_result
+                } * (to_value - from_value)))
         }
     })
         as Box<dyn FnMut(f64) -> f64 + Send + 'static>));

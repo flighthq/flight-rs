@@ -51,11 +51,11 @@ pub fn parse_xml_attributes(attrs: String) -> Vec<(String, String)> {
     })
     .is_some()
     {
-        let attr_name = m[1.0_f64 as usize].clone();
-        let value = if (m[2.0_f64 as usize].clone()).is_some() {
-            m[2.0_f64 as usize].clone()
+        let attr_name = crate::host_value::<crate::OpaqueHostValue>("host.index");
+        let value = if (crate::host_value::<crate::OpaqueHostValue>("host.index")).is_some() {
+            crate::host_value::<crate::OpaqueHostValue>("host.index")
         } else {
-            (m[3.0_f64 as usize].clone()).unwrap_or("")
+            crate::host_value::<crate::OpaqueHostValue>("host.index")
         };
         result
             .iter()
@@ -63,7 +63,7 @@ pub fn parse_xml_attributes(attrs: String) -> Vec<(String, String)> {
             .map(|(_, value)| value)
             .expect("TypeScript Record key was absent") = decode_xml_entities(value);
     }
-    return (result).clone();
+    return result;
 }
 
 // Source: upstream/packages/xml/src/xmlParse.ts:34 (sha256:a7aa0aa5ab2be01d7e16430c29b0a95d3eb6d9fabda42b2df4c9aa07b329c349)
@@ -150,13 +150,12 @@ fn decode_xml_entities(s: String) -> String {
             if hex {
                 return (string.from_code_point)(crate::host_value::<()>("host.call"));
             }
-            return (XML_ENTITIES
+            return XML_ENTITIES
                 .iter()
                 .find(|(key, _)| key == &(name).clone())
                 .map(|(_, value)| value)
                 .expect("TypeScript Record key was absent")
-                .clone())
-            .unwrap_or((_).clone());
+                .clone();
         };
         (regex::RegexBuilder::new("&(?:#(\\d+)|#x([\\da-fA-F]+)|(\\w+));")
             .case_insensitive(false)
@@ -191,7 +190,9 @@ fn decode_xml_entities(s: String) -> String {
 // Source: upstream/packages/xml/src/xmlParse.ts:68 (sha256:2eec71b0fc6933bbc95bd293bffdfb962df6e919c9513a82c477b410974df169)
 fn parse_element(src: String, state: &mut ParseState) -> Option<XmlElement> {
     skip_whitespace((src).clone(), state);
-    if ((state.pos >= src.length) || (src[state.pos as usize].clone() != "<")) {
+    if (state.pos >= (src.encode_utf16().count() as f64))
+        || (src[state.pos as usize].clone() != "<")
+    {
         return None;
     }
     {
@@ -203,19 +204,19 @@ fn parse_element(src: String, state: &mut ParseState) -> Option<XmlElement> {
         state.pos = if (end >= 0.0_f64) {
             (end + 2.0_f64)
         } else {
-            src.length
+            (src.encode_utf16().count() as f64)
         };
         return parse_element((src).clone(), state);
     }
     let name_start = state.pos;
-    while ((state.pos < src.length)
+    while (state.pos < (src.encode_utf16().count() as f64))
         && (!(regex::RegexBuilder::new("[\\s>/]")
             .case_insensitive(false)
             .multi_line(false)
             .dot_matches_new_line(false)
             .build()
             .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-        .is_match(&(src[state.pos as usize].clone()))))
+        .is_match(&(src[state.pos as usize].clone())))
     {
         {
             state.pos += 1.0;
@@ -229,18 +230,18 @@ fn parse_element(src: String, state: &mut ParseState) -> Option<XmlElement> {
     skip_whitespace((src).clone(), state);
     let mut attrs_str = "";
     let mut quote = "";
-    while (state.pos < src.length) {
+    while (state.pos < (src.encode_utf16().count() as f64)) {
         let ch = src[state.pos as usize].clone();
         if quote {
             if (ch == quote) {
                 quote = "".to_owned();
             }
         } else {
-            if ((ch == "\"") || (ch == "'")) {
+            if (ch == "\"") || (ch == "'") {
                 quote = ch;
             } else {
-                if ((ch == ">")
-                    || ((ch == "/") && (src[(state.pos + 1.0_f64) as usize].clone() == ">")))
+                if (ch == ">")
+                    || ((ch == "/") && (src[(state.pos + 1.0_f64) as usize].clone() == ">"))
                 {
                     break;
                 }
@@ -258,14 +259,16 @@ fn parse_element(src: String, state: &mut ParseState) -> Option<XmlElement> {
     let mut children: Vec<XmlElement> = vec![];
     let mut text = "";
     if (!self_closing) {
-        while (state.pos < src.length) {
+        while (state.pos < (src.encode_utf16().count() as f64)) {
             skip_whitespace((src).clone(), state);
-            if (state.pos >= src.length) {
+            if (state.pos >= (src.encode_utf16().count() as f64)) {
                 break;
             }
             if (src[state.pos as usize].clone() != "<") {
                 let text_start = state.pos;
-                while ((state.pos < src.length) && (src[state.pos as usize].clone() != "<")) {
+                while (state.pos < (src.encode_utf16().count() as f64))
+                    && (src[state.pos as usize].clone() != "<")
+                {
                     {
                         state.pos += 1.0;
                         state.pos
@@ -275,7 +278,9 @@ fn parse_element(src: String, state: &mut ParseState) -> Option<XmlElement> {
                 continue;
             }
             if (src[(state.pos + 1.0_f64) as usize].clone() == "/") {
-                while ((state.pos < src.length) && (src[state.pos as usize].clone() != ">")) {
+                while (state.pos < (src.encode_utf16().count() as f64))
+                    && (src[state.pos as usize].clone() != ">")
+                {
                     {
                         state.pos += 1.0;
                         state.pos
@@ -304,8 +309,8 @@ fn parse_element(src: String, state: &mut ParseState) -> Option<XmlElement> {
 
 // Source: upstream/packages/xml/src/xmlParse.ts:145 (sha256:8b165c706b68384ac4307222e85dcc19e0a696891ec44a55efdb1a50dacdcbda)
 fn skip_whitespace(src: String, state: &mut ParseState) -> () {
-    while ((state.pos < src.length)
-        && (regex::RegexBuilder::new("\\s")
+    while (state.pos < (src.encode_utf16().count() as f64))
+        && ((regex::RegexBuilder::new("\\s")
             .case_insensitive(false)
             .multi_line(false)
             .dot_matches_new_line(false)
@@ -323,8 +328,9 @@ fn skip_whitespace(src: String, state: &mut ParseState) -> () {
 // Source: upstream/packages/xml/src/xmlParse.ts:149 (sha256:b2c29b1b97506f44d4752e1d1ade68734295aac2e3a260ec56abe80d87683558)
 fn strip_cdata(xml: String) -> String {
     return {
-        let mut __flight_replace =
-            |m: String| -> String { (m.slice)(9.0_f64, (m.length - 3.0_f64)) };
+        let mut __flight_replace = |m: String| -> String {
+            (m.slice)(9.0_f64, ((m.encode_utf16().count() as f64) - 3.0_f64))
+        };
         (regex::RegexBuilder::new("<!\\[CDATA\\[[\\s\\S]*?]]>")
             .case_insensitive(false)
             .multi_line(false)

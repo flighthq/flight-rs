@@ -15,7 +15,7 @@ pub fn acquire_empty_vector3() -> Vector3 {
     v.x = 0.0_f64;
     v.y = 0.0_f64;
     v.z = 0.0_f64;
-    return (v).clone();
+    return v;
 }
 
 // Source: upstream/packages/geometry/src/vector3Pool.ts:13 (sha256:62507464f065ce6aeb4fc017635760dd6860882fe7aa7d585c52278530ef6053)

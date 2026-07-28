@@ -32,7 +32,7 @@ pub fn clone_skeleton3_d(skeleton: &Skeleton3D) -> Skeleton3D {
             clone.names = None;
         }
     }
-    return (clone).clone();
+    return clone;
 }
 
 // Source: upstream/packages/skeleton3d/src/skeleton3d.ts:16 (sha256:9ae8c5a1a8f683deb8ae1d9e297ada2536e6e6af2f007fa0750ad02612972801)
@@ -92,7 +92,7 @@ pub fn create_skeleton3_d(
     if (inverse_bind_matrices).is_none() {
         set_skeleton3_d_bind_pose(&mut skeleton);
     }
-    return (skeleton).clone();
+    return skeleton;
 }
 
 // Source: upstream/packages/skeleton3d/src/skeleton3d.ts:42 (sha256:7573fc033e7c49de46c07984fbea9f06f97f30541e0707f583a08fcd02abbb10)
@@ -128,7 +128,7 @@ pub fn equals_skeleton3_d(a: &Skeleton3D, b: &Skeleton3D) -> bool {
     }
     let a_names = (a.names).clone();
     let b_names = (b.names).clone();
-    if ((a_names).is_none() || (b_names).is_none()) {
+    if ((a_names).is_none()) || ((b_names).is_none()) {
         return (a_names == b_names);
     }
     if ((a_names.as_ref().unwrap().len() as f64) != (b_names.as_ref().unwrap().len() as f64)) {
@@ -174,7 +174,7 @@ pub fn get_skeleton3_d_joint_world_matrix(
     skeleton: &Skeleton3D,
     joint_index: f64,
 ) -> bool {
-    if ((joint_index < 0.0_f64) || (joint_index >= (skeleton.joints.len() as f64))) {
+    if (joint_index < 0.0_f64) || (joint_index >= (skeleton.joints.len() as f64)) {
         return false;
     }
     copy_matrix4(

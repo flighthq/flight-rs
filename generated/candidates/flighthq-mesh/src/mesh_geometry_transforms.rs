@@ -21,7 +21,7 @@ pub fn center_mesh_geometry(geometry: &mut MeshGeometry) -> () {
     let cx = ((b.as_ref().unwrap().min.x + b.as_ref().unwrap().max.x) * 0.5_f64);
     let cy = ((b.as_ref().unwrap().min.y + b.as_ref().unwrap().max.y) * 0.5_f64);
     let cz = ((b.as_ref().unwrap().min.z + b.as_ref().unwrap().max.z) * 0.5_f64);
-    if (((cx == 0.0_f64) && (cy == 0.0_f64)) && (cz == 0.0_f64)) {
+    if ((cx == 0.0_f64) && (cy == 0.0_f64)) && (cz == 0.0_f64) {
         return;
     }
     translate_mesh_geometry(geometry, (-cx), (-cy), (-cz));

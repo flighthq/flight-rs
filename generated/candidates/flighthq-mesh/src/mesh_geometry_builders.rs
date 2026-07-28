@@ -100,90 +100,114 @@ pub fn create_box_mesh_geometry(
                 + Send
                 + 'static,
         >));
-    ((add_face).clone()).lock().unwrap()(
-        hx,
-        (-hy),
-        hz,
-        0.0_f64,
-        0.0_f64,
-        (-depth),
-        0.0_f64,
-        height,
-        0.0_f64,
-        1.0_f64,
-        0.0_f64,
-        0.0_f64,
-    );
-    ((add_face).clone()).lock().unwrap()(
-        (-hx),
-        (-hy),
-        (-hz),
-        0.0_f64,
-        0.0_f64,
-        depth,
-        0.0_f64,
-        height,
-        0.0_f64,
-        (-1.0_f64),
-        0.0_f64,
-        0.0_f64,
-    );
-    ((add_face).clone()).lock().unwrap()(
-        (-hx),
-        hy,
-        hz,
-        width,
-        0.0_f64,
-        0.0_f64,
-        0.0_f64,
-        0.0_f64,
-        (-depth),
-        0.0_f64,
-        1.0_f64,
-        0.0_f64,
-    );
-    ((add_face).clone()).lock().unwrap()(
-        (-hx),
-        (-hy),
-        (-hz),
-        width,
-        0.0_f64,
-        0.0_f64,
-        0.0_f64,
-        0.0_f64,
-        depth,
-        0.0_f64,
-        (-1.0_f64),
-        0.0_f64,
-    );
-    ((add_face).clone()).lock().unwrap()(
-        (-hx),
-        (-hy),
-        hz,
-        width,
-        0.0_f64,
-        0.0_f64,
-        0.0_f64,
-        height,
-        0.0_f64,
-        0.0_f64,
-        0.0_f64,
-        1.0_f64,
-    );
-    ((add_face).clone()).lock().unwrap()(
-        hx,
-        (-hy),
-        (-hz),
-        (-width),
-        0.0_f64,
-        0.0_f64,
-        0.0_f64,
-        height,
-        0.0_f64,
-        0.0_f64,
-        0.0_f64,
-        (-1.0_f64),
-    );
+    {
+        let __flight_callback = (add_face).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(
+            hx,
+            (-hy),
+            hz,
+            0.0_f64,
+            0.0_f64,
+            (-depth),
+            0.0_f64,
+            height,
+            0.0_f64,
+            1.0_f64,
+            0.0_f64,
+            0.0_f64,
+        );
+        __flight_result
+    };
+    {
+        let __flight_callback = (add_face).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(
+            (-hx),
+            (-hy),
+            (-hz),
+            0.0_f64,
+            0.0_f64,
+            depth,
+            0.0_f64,
+            height,
+            0.0_f64,
+            (-1.0_f64),
+            0.0_f64,
+            0.0_f64,
+        );
+        __flight_result
+    };
+    {
+        let __flight_callback = (add_face).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(
+            (-hx),
+            hy,
+            hz,
+            width,
+            0.0_f64,
+            0.0_f64,
+            0.0_f64,
+            0.0_f64,
+            (-depth),
+            0.0_f64,
+            1.0_f64,
+            0.0_f64,
+        );
+        __flight_result
+    };
+    {
+        let __flight_callback = (add_face).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(
+            (-hx),
+            (-hy),
+            (-hz),
+            width,
+            0.0_f64,
+            0.0_f64,
+            0.0_f64,
+            0.0_f64,
+            depth,
+            0.0_f64,
+            (-1.0_f64),
+            0.0_f64,
+        );
+        __flight_result
+    };
+    {
+        let __flight_callback = (add_face).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(
+            (-hx),
+            (-hy),
+            hz,
+            width,
+            0.0_f64,
+            0.0_f64,
+            0.0_f64,
+            height,
+            0.0_f64,
+            0.0_f64,
+            0.0_f64,
+            1.0_f64,
+        );
+        __flight_result
+    };
+    {
+        let __flight_callback = (add_face).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(
+            hx,
+            (-hy),
+            (-hz),
+            (-width),
+            0.0_f64,
+            0.0_f64,
+            0.0_f64,
+            height,
+            0.0_f64,
+            0.0_f64,
+            0.0_f64,
+            (-1.0_f64),
+        );
+        __flight_result
+    };
     return build_canonical_mesh_geometry(
         &(*positions.lock().unwrap()),
         &(*normals.lock().unwrap()),
@@ -252,10 +276,14 @@ pub fn create_capsule_mesh_geometry(
     {
         let mut j = 0.0_f64;
         while (j <= c_seg) {
-            ((add_ring).clone()).lock().unwrap()(
-                ((j / c_seg) * (std::f64::consts::PI * 0.5_f64)),
-                half_h,
-            );
+            {
+                let __flight_callback = (add_ring).clone();
+                let __flight_result = __flight_callback.lock().unwrap()(
+                    ((j / c_seg) * (std::f64::consts::PI * 0.5_f64)),
+                    half_h,
+                );
+                __flight_result
+            };
             {
                 j += 1.0;
                 j
@@ -265,11 +293,15 @@ pub fn create_capsule_mesh_geometry(
     {
         let mut j = 1.0_f64;
         while (j <= c_seg) {
-            ((add_ring).clone()).lock().unwrap()(
-                ((std::f64::consts::PI * 0.5_f64)
-                    + ((j / c_seg) * (std::f64::consts::PI * 0.5_f64))),
-                (-half_h),
-            );
+            {
+                let __flight_callback = (add_ring).clone();
+                let __flight_result = __flight_callback.lock().unwrap()(
+                    ((std::f64::consts::PI * 0.5_f64)
+                        + ((j / c_seg) * (std::f64::consts::PI * 0.5_f64))),
+                    (-half_h),
+                );
+                __flight_result
+            };
             {
                 j += 1.0;
                 j
@@ -490,8 +522,8 @@ pub fn create_dodecahedron_mesh_geometry(radius: Option<f64>, detail: Option<f64
     let radius = radius.unwrap_or(0.5_f64);
     let detail = detail.unwrap_or(0.0_f64);
     return create_polyhedron_mesh_geometry(
-        &DODECAHEDRON_VERTS,
-        &DODECAHEDRON_FACES,
+        &mut DODECAHEDRON_VERTS,
+        &mut DODECAHEDRON_FACES,
         Some(radius),
         Some(detail),
     );
@@ -502,8 +534,8 @@ pub fn create_icosahedron_mesh_geometry(radius: Option<f64>, detail: Option<f64>
     let radius = radius.unwrap_or(0.5_f64);
     let detail = detail.unwrap_or(0.0_f64);
     return create_polyhedron_mesh_geometry(
-        &ICOSAHEDRON_VERTS,
-        &ICOSAHEDRON_FACES,
+        &mut ICOSAHEDRON_VERTS,
+        &mut ICOSAHEDRON_FACES,
         Some(radius),
         Some(detail),
     );
@@ -519,7 +551,7 @@ pub fn create_icosphere_mesh_geometry(
     let subs = (0.0_f64).max((subdivisions).min(6.0_f64));
     let phi = ((1.0_f64 + (5.0_f64).sqrt()) * 0.5_f64);
     let scale = (1.0_f64 / (1.0_f64 + (phi * phi)).sqrt());
-    let base_verts = (vec![
+    let mut base_verts = (vec![
         vec![(-1.0_f64), phi, 0.0_f64],
         vec![1.0_f64, phi, 0.0_f64],
         vec![(-1.0_f64), (-phi), 0.0_f64],
@@ -596,7 +628,7 @@ pub fn create_icosphere_mesh_geometry(
                 .find(|(key, _)| key == &key)
                 .map(|(_, value)| value.clone());
             if (cached).is_some() {
-                return cached.as_ref().unwrap();
+                return *(cached.as_ref().unwrap());
             }
             let va = (*verts.lock().unwrap())[a as usize].clone();
             let vb = (*verts.lock().unwrap())[b as usize].clone();
@@ -633,9 +665,21 @@ pub fn create_icosphere_mesh_geometry(
                 let a = __iteration1[0.0_f64 as usize].clone();
                 let b = __iteration1[1.0_f64 as usize].clone();
                 let c = __iteration1[2.0_f64 as usize].clone();
-                let ab = ((get_midpoint).clone()).lock().unwrap()(a, b);
-                let bc = ((get_midpoint).clone()).lock().unwrap()(b, c);
-                let ca = ((get_midpoint).clone()).lock().unwrap()(c, a);
+                let ab = {
+                    let __flight_callback = (get_midpoint).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()(a, b);
+                    __flight_result
+                };
+                let bc = {
+                    let __flight_callback = (get_midpoint).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()(b, c);
+                    __flight_result
+                };
+                let ca = {
+                    let __flight_callback = (get_midpoint).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()(c, a);
+                    __flight_result
+                };
                 new_faces.extend(vec![
                     vec![a, ab, ca],
                     vec![b, bc, ab],
@@ -690,8 +734,8 @@ pub fn create_octahedron_mesh_geometry(radius: Option<f64>, detail: Option<f64>)
     let radius = radius.unwrap_or(0.5_f64);
     let detail = detail.unwrap_or(0.0_f64);
     return create_polyhedron_mesh_geometry(
-        &OCTAHEDRON_VERTS,
-        &OCTAHEDRON_FACES,
+        &mut OCTAHEDRON_VERTS,
+        &mut OCTAHEDRON_FACES,
         Some(radius),
         Some(detail),
     );
@@ -770,8 +814,8 @@ pub fn create_plane_mesh_geometry(
 
 // Source: upstream/packages/mesh/src/meshGeometryBuilders.ts:404 (sha256:4d5f8eae0c320a6c227c981b1dc5f3f86ed1b6c96de225a0f5891ab5fbef96ad)
 pub fn create_polyhedron_mesh_geometry(
-    vertex_positions: &Vec<Vec<f64>>,
-    face_indices: &Vec<Vec<f64>>,
+    vertex_positions: &mut Vec<Vec<f64>>,
+    face_indices: &mut Vec<Vec<f64>>,
     radius: Option<f64>,
     detail: Option<f64>,
 ) -> MeshGeometry {
@@ -822,7 +866,7 @@ pub fn create_polyhedron_mesh_geometry(
                     .find(|(key, _)| key == &key)
                     .map(|(_, value)| value.clone());
                 if (hit).is_some() {
-                    return hit.as_ref().unwrap();
+                    return *(hit.as_ref().unwrap());
                 }
                 let va = (*verts.lock().unwrap())[a as usize].clone();
                 let vb = (*verts.lock().unwrap())[b as usize].clone();
@@ -862,9 +906,21 @@ pub fn create_polyhedron_mesh_geometry(
                     let a = __iteration4[0.0_f64 as usize].clone();
                     let b = __iteration4[1.0_f64 as usize].clone();
                     let c = __iteration4[2.0_f64 as usize].clone();
-                    let ab = ((get_mid).clone()).lock().unwrap()(a, b);
-                    let bc = ((get_mid).clone()).lock().unwrap()(b, c);
-                    let ca = ((get_mid).clone()).lock().unwrap()(c, a);
+                    let ab = {
+                        let __flight_callback = (get_mid).clone();
+                        let __flight_result = __flight_callback.lock().unwrap()(a, b);
+                        __flight_result
+                    };
+                    let bc = {
+                        let __flight_callback = (get_mid).clone();
+                        let __flight_result = __flight_callback.lock().unwrap()(b, c);
+                        __flight_result
+                    };
+                    let ca = {
+                        let __flight_callback = (get_mid).clone();
+                        let __flight_result = __flight_callback.lock().unwrap()(c, a);
+                        __flight_result
+                    };
                     new_faces.extend(vec![
                         vec![a, ab, ca],
                         vec![b, bc, ab],
@@ -1074,8 +1130,8 @@ pub fn create_tetrahedron_mesh_geometry(radius: Option<f64>, detail: Option<f64>
     let radius = radius.unwrap_or(0.5_f64);
     let detail = detail.unwrap_or(0.0_f64);
     return create_polyhedron_mesh_geometry(
-        &TETRAHEDRON_VERTS,
-        &TETRAHEDRON_FACES,
+        &mut TETRAHEDRON_VERTS,
+        &mut TETRAHEDRON_FACES,
         Some(radius),
         Some(detail),
     );
@@ -1116,15 +1172,27 @@ pub fn create_torus_knot_mesh_geometry(
         let mut i = 0.0_f64;
         while (i <= t_seg) {
             let u = (i / t_seg);
-            let __destructure6 = ((curve_point).clone()).lock().unwrap()(u);
+            let __destructure6 = {
+                let __flight_callback = (curve_point).clone();
+                let __flight_result = __flight_callback.lock().unwrap()(u);
+                __flight_result
+            };
             let cx = __destructure6[0.0_f64 as usize].clone();
             let cy = __destructure6[1.0_f64 as usize].clone();
             let cz = __destructure6[2.0_f64 as usize].clone();
-            let __destructure7 = ((curve_point).clone()).lock().unwrap()((u + 0.001_f64));
+            let __destructure7 = {
+                let __flight_callback = (curve_point).clone();
+                let __flight_result = __flight_callback.lock().unwrap()((u + 0.001_f64));
+                __flight_result
+            };
             let tx1 = __destructure7[0.0_f64 as usize].clone();
             let ty1 = __destructure7[1.0_f64 as usize].clone();
             let tz1 = __destructure7[2.0_f64 as usize].clone();
-            let __destructure8 = ((curve_point).clone()).lock().unwrap()((u - 0.001_f64));
+            let __destructure8 = {
+                let __flight_callback = (curve_point).clone();
+                let __flight_result = __flight_callback.lock().unwrap()((u - 0.001_f64));
+                __flight_result
+            };
             let tx0 = __destructure8[0.0_f64 as usize].clone();
             let ty0 = __destructure8[1.0_f64 as usize].clone();
             let tz0 = __destructure8[2.0_f64 as usize].clone();
@@ -1384,7 +1452,7 @@ fn build_canonical_mesh_geometry(
     };
     let mut geometry = create_mesh_geometry(&mut MeshGeometryOptions {
         __flight_identity: std::sync::Arc::new(()),
-        indices: index_array,
+        indices: Some((index_array).clone()),
         layout: ((*CANONICAL_VERTEX_LAYOUT).clone()).clone(),
         vertices: (vertices).clone(),
         subsets: None,
@@ -1397,7 +1465,7 @@ fn build_canonical_mesh_geometry(
     let mut bounds = create_aabb(None, None, None, None, None, None);
     compute_mesh_geometry_bounds(&mut bounds, &geometry);
     geometry.bounds = Some((bounds).clone());
-    return (geometry).clone();
+    return geometry;
 }
 
 // Source: upstream/packages/mesh/src/meshGeometryBuilders.ts:806 (sha256:a7b0354de76d287339f53dd191039a613081dc1dd7ce7309de50dd4faab3d7e6)
@@ -1437,165 +1505,173 @@ static CANONICAL_VERTEX_LAYOUT: std::sync::LazyLock<VertexAttributeLayout> =
     });
 
 // Source: upstream/packages/mesh/src/meshGeometryBuilders.ts:821 (sha256:b4462050674dcc9993d1595f2e6a95285eae03854ef0722b229ba2820d61de96)
-static TETRAHEDRON_VERTS: std::sync::LazyLock<Vec<Vec<f64>>> = std::sync::LazyLock::new(|| {
-    vec![
-        vec![1.0_f64, 1.0_f64, 1.0_f64],
-        vec![(-1.0_f64), (-1.0_f64), 1.0_f64],
-        vec![(-1.0_f64), 1.0_f64, (-1.0_f64)],
-        vec![1.0_f64, (-1.0_f64), (-1.0_f64)],
-    ]
-});
+static TETRAHEDRON_VERTS: std::sync::LazyLock<std::sync::Mutex<Vec<Vec<f64>>>> =
+    std::sync::LazyLock::new(|| {
+        std::sync::Mutex::new(vec![
+            vec![1.0_f64, 1.0_f64, 1.0_f64],
+            vec![(-1.0_f64), (-1.0_f64), 1.0_f64],
+            vec![(-1.0_f64), 1.0_f64, (-1.0_f64)],
+            vec![1.0_f64, (-1.0_f64), (-1.0_f64)],
+        ])
+    });
 
 // Source: upstream/packages/mesh/src/meshGeometryBuilders.ts:827 (sha256:4eb79ff230e175ca737adef41c542a3c1edb6e13c1337269f4f06524997f6caf)
-static TETRAHEDRON_FACES: std::sync::LazyLock<Vec<Vec<f64>>> = std::sync::LazyLock::new(|| {
-    vec![
-        vec![2.0_f64, 1.0_f64, 0.0_f64],
-        vec![0.0_f64, 3.0_f64, 2.0_f64],
-        vec![1.0_f64, 3.0_f64, 0.0_f64],
-        vec![2.0_f64, 3.0_f64, 1.0_f64],
-    ]
-});
+static TETRAHEDRON_FACES: std::sync::LazyLock<std::sync::Mutex<Vec<Vec<f64>>>> =
+    std::sync::LazyLock::new(|| {
+        std::sync::Mutex::new(vec![
+            vec![2.0_f64, 1.0_f64, 0.0_f64],
+            vec![0.0_f64, 3.0_f64, 2.0_f64],
+            vec![1.0_f64, 3.0_f64, 0.0_f64],
+            vec![2.0_f64, 3.0_f64, 1.0_f64],
+        ])
+    });
 
 // Source: upstream/packages/mesh/src/meshGeometryBuilders.ts:835 (sha256:6eebb530e2af2af1e99aa49fa0ad81fd3643aeba594eec2f6259a134400a07be)
-static OCTAHEDRON_VERTS: std::sync::LazyLock<Vec<Vec<f64>>> = std::sync::LazyLock::new(|| {
-    vec![
-        vec![1.0_f64, 0.0_f64, 0.0_f64],
-        vec![(-1.0_f64), 0.0_f64, 0.0_f64],
-        vec![0.0_f64, 1.0_f64, 0.0_f64],
-        vec![0.0_f64, (-1.0_f64), 0.0_f64],
-        vec![0.0_f64, 0.0_f64, 1.0_f64],
-        vec![0.0_f64, 0.0_f64, (-1.0_f64)],
-    ]
-});
+static OCTAHEDRON_VERTS: std::sync::LazyLock<std::sync::Mutex<Vec<Vec<f64>>>> =
+    std::sync::LazyLock::new(|| {
+        std::sync::Mutex::new(vec![
+            vec![1.0_f64, 0.0_f64, 0.0_f64],
+            vec![(-1.0_f64), 0.0_f64, 0.0_f64],
+            vec![0.0_f64, 1.0_f64, 0.0_f64],
+            vec![0.0_f64, (-1.0_f64), 0.0_f64],
+            vec![0.0_f64, 0.0_f64, 1.0_f64],
+            vec![0.0_f64, 0.0_f64, (-1.0_f64)],
+        ])
+    });
 
 // Source: upstream/packages/mesh/src/meshGeometryBuilders.ts:843 (sha256:b6a7790ba5d50996d7aa4680eb9996abf5d93028d8c6d61065e92db75cf40ed2)
-static OCTAHEDRON_FACES: std::sync::LazyLock<Vec<Vec<f64>>> = std::sync::LazyLock::new(|| {
-    vec![
-        vec![0.0_f64, 2.0_f64, 4.0_f64],
-        vec![0.0_f64, 4.0_f64, 3.0_f64],
-        vec![0.0_f64, 3.0_f64, 5.0_f64],
-        vec![0.0_f64, 5.0_f64, 2.0_f64],
-        vec![1.0_f64, 4.0_f64, 2.0_f64],
-        vec![1.0_f64, 3.0_f64, 4.0_f64],
-        vec![1.0_f64, 5.0_f64, 3.0_f64],
-        vec![1.0_f64, 2.0_f64, 5.0_f64],
-    ]
-});
+static OCTAHEDRON_FACES: std::sync::LazyLock<std::sync::Mutex<Vec<Vec<f64>>>> =
+    std::sync::LazyLock::new(|| {
+        std::sync::Mutex::new(vec![
+            vec![0.0_f64, 2.0_f64, 4.0_f64],
+            vec![0.0_f64, 4.0_f64, 3.0_f64],
+            vec![0.0_f64, 3.0_f64, 5.0_f64],
+            vec![0.0_f64, 5.0_f64, 2.0_f64],
+            vec![1.0_f64, 4.0_f64, 2.0_f64],
+            vec![1.0_f64, 3.0_f64, 4.0_f64],
+            vec![1.0_f64, 5.0_f64, 3.0_f64],
+            vec![1.0_f64, 2.0_f64, 5.0_f64],
+        ])
+    });
 
 // Source: upstream/packages/mesh/src/meshGeometryBuilders.ts:855 (sha256:d91dd4ffb7d3f09014dd5c30a7797156ebe027bc49882dfe439d932c5b3c78c1)
 const _PHI: f64 = 1.618033988749895_f64;
 
 // Source: upstream/packages/mesh/src/meshGeometryBuilders.ts:856 (sha256:df6838f304d9be1b2cccefcca9547e203ebdeeef1440110238cd70bf6317ad26)
-static ICOSAHEDRON_VERTS: std::sync::LazyLock<Vec<Vec<f64>>> = std::sync::LazyLock::new(|| {
-    vec![
-        vec![(-1.0_f64), _PHI, 0.0_f64],
-        vec![1.0_f64, _PHI, 0.0_f64],
-        vec![(-1.0_f64), (-_PHI), 0.0_f64],
-        vec![1.0_f64, (-_PHI), 0.0_f64],
-        vec![0.0_f64, (-1.0_f64), _PHI],
-        vec![0.0_f64, 1.0_f64, _PHI],
-        vec![0.0_f64, (-1.0_f64), (-_PHI)],
-        vec![0.0_f64, 1.0_f64, (-_PHI)],
-        vec![_PHI, 0.0_f64, (-1.0_f64)],
-        vec![_PHI, 0.0_f64, 1.0_f64],
-        vec![(-_PHI), 0.0_f64, (-1.0_f64)],
-        vec![(-_PHI), 0.0_f64, 1.0_f64],
-    ]
-});
+static ICOSAHEDRON_VERTS: std::sync::LazyLock<std::sync::Mutex<Vec<Vec<f64>>>> =
+    std::sync::LazyLock::new(|| {
+        std::sync::Mutex::new(vec![
+            vec![(-1.0_f64), _PHI, 0.0_f64],
+            vec![1.0_f64, _PHI, 0.0_f64],
+            vec![(-1.0_f64), (-_PHI), 0.0_f64],
+            vec![1.0_f64, (-_PHI), 0.0_f64],
+            vec![0.0_f64, (-1.0_f64), _PHI],
+            vec![0.0_f64, 1.0_f64, _PHI],
+            vec![0.0_f64, (-1.0_f64), (-_PHI)],
+            vec![0.0_f64, 1.0_f64, (-_PHI)],
+            vec![_PHI, 0.0_f64, (-1.0_f64)],
+            vec![_PHI, 0.0_f64, 1.0_f64],
+            vec![(-_PHI), 0.0_f64, (-1.0_f64)],
+            vec![(-_PHI), 0.0_f64, 1.0_f64],
+        ])
+    });
 
 // Source: upstream/packages/mesh/src/meshGeometryBuilders.ts:870 (sha256:f824323b9da2ab44101ab17edf7e7c44f8508e5b1aaac8396ef9ae8f2a088f30)
-static ICOSAHEDRON_FACES: std::sync::LazyLock<Vec<Vec<f64>>> = std::sync::LazyLock::new(|| {
-    vec![
-        vec![0.0_f64, 11.0_f64, 5.0_f64],
-        vec![0.0_f64, 5.0_f64, 1.0_f64],
-        vec![0.0_f64, 1.0_f64, 7.0_f64],
-        vec![0.0_f64, 7.0_f64, 10.0_f64],
-        vec![0.0_f64, 10.0_f64, 11.0_f64],
-        vec![1.0_f64, 5.0_f64, 9.0_f64],
-        vec![5.0_f64, 11.0_f64, 4.0_f64],
-        vec![11.0_f64, 10.0_f64, 2.0_f64],
-        vec![10.0_f64, 7.0_f64, 6.0_f64],
-        vec![7.0_f64, 1.0_f64, 8.0_f64],
-        vec![3.0_f64, 9.0_f64, 4.0_f64],
-        vec![3.0_f64, 4.0_f64, 2.0_f64],
-        vec![3.0_f64, 2.0_f64, 6.0_f64],
-        vec![3.0_f64, 6.0_f64, 8.0_f64],
-        vec![3.0_f64, 8.0_f64, 9.0_f64],
-        vec![4.0_f64, 9.0_f64, 5.0_f64],
-        vec![2.0_f64, 4.0_f64, 11.0_f64],
-        vec![6.0_f64, 2.0_f64, 10.0_f64],
-        vec![8.0_f64, 6.0_f64, 7.0_f64],
-        vec![9.0_f64, 8.0_f64, 1.0_f64],
-    ]
-});
+static ICOSAHEDRON_FACES: std::sync::LazyLock<std::sync::Mutex<Vec<Vec<f64>>>> =
+    std::sync::LazyLock::new(|| {
+        std::sync::Mutex::new(vec![
+            vec![0.0_f64, 11.0_f64, 5.0_f64],
+            vec![0.0_f64, 5.0_f64, 1.0_f64],
+            vec![0.0_f64, 1.0_f64, 7.0_f64],
+            vec![0.0_f64, 7.0_f64, 10.0_f64],
+            vec![0.0_f64, 10.0_f64, 11.0_f64],
+            vec![1.0_f64, 5.0_f64, 9.0_f64],
+            vec![5.0_f64, 11.0_f64, 4.0_f64],
+            vec![11.0_f64, 10.0_f64, 2.0_f64],
+            vec![10.0_f64, 7.0_f64, 6.0_f64],
+            vec![7.0_f64, 1.0_f64, 8.0_f64],
+            vec![3.0_f64, 9.0_f64, 4.0_f64],
+            vec![3.0_f64, 4.0_f64, 2.0_f64],
+            vec![3.0_f64, 2.0_f64, 6.0_f64],
+            vec![3.0_f64, 6.0_f64, 8.0_f64],
+            vec![3.0_f64, 8.0_f64, 9.0_f64],
+            vec![4.0_f64, 9.0_f64, 5.0_f64],
+            vec![2.0_f64, 4.0_f64, 11.0_f64],
+            vec![6.0_f64, 2.0_f64, 10.0_f64],
+            vec![8.0_f64, 6.0_f64, 7.0_f64],
+            vec![9.0_f64, 8.0_f64, 1.0_f64],
+        ])
+    });
 
 // Source: upstream/packages/mesh/src/meshGeometryBuilders.ts:896 (sha256:6955c772dc7da0f91fecfcf6a9158c425e3d793f2002559de0e982c147016c9a)
 const _D: f64 = 0.6180339887498948_f64;
 
 // Source: upstream/packages/mesh/src/meshGeometryBuilders.ts:897 (sha256:5d1601b4f2c13b631bad9d0ac15c59a8b98450f358b0c08f4642c3acf17bcc6b)
-static DODECAHEDRON_VERTS: std::sync::LazyLock<Vec<Vec<f64>>> = std::sync::LazyLock::new(|| {
-    vec![
-        vec![(-1.0_f64), (-1.0_f64), (-1.0_f64)],
-        vec![(-1.0_f64), (-1.0_f64), 1.0_f64],
-        vec![(-1.0_f64), 1.0_f64, (-1.0_f64)],
-        vec![(-1.0_f64), 1.0_f64, 1.0_f64],
-        vec![1.0_f64, (-1.0_f64), (-1.0_f64)],
-        vec![1.0_f64, (-1.0_f64), 1.0_f64],
-        vec![1.0_f64, 1.0_f64, (-1.0_f64)],
-        vec![1.0_f64, 1.0_f64, 1.0_f64],
-        vec![0.0_f64, (-_D), (-_PHI)],
-        vec![0.0_f64, (-_D), _PHI],
-        vec![0.0_f64, _D, (-_PHI)],
-        vec![0.0_f64, _D, _PHI],
-        vec![(-_D), (-_PHI), 0.0_f64],
-        vec![(-_D), _PHI, 0.0_f64],
-        vec![_D, (-_PHI), 0.0_f64],
-        vec![_D, _PHI, 0.0_f64],
-        vec![(-_PHI), 0.0_f64, (-_D)],
-        vec![(-_PHI), 0.0_f64, _D],
-        vec![_PHI, 0.0_f64, (-_D)],
-        vec![_PHI, 0.0_f64, _D],
-    ]
-});
+static DODECAHEDRON_VERTS: std::sync::LazyLock<std::sync::Mutex<Vec<Vec<f64>>>> =
+    std::sync::LazyLock::new(|| {
+        std::sync::Mutex::new(vec![
+            vec![(-1.0_f64), (-1.0_f64), (-1.0_f64)],
+            vec![(-1.0_f64), (-1.0_f64), 1.0_f64],
+            vec![(-1.0_f64), 1.0_f64, (-1.0_f64)],
+            vec![(-1.0_f64), 1.0_f64, 1.0_f64],
+            vec![1.0_f64, (-1.0_f64), (-1.0_f64)],
+            vec![1.0_f64, (-1.0_f64), 1.0_f64],
+            vec![1.0_f64, 1.0_f64, (-1.0_f64)],
+            vec![1.0_f64, 1.0_f64, 1.0_f64],
+            vec![0.0_f64, (-_D), (-_PHI)],
+            vec![0.0_f64, (-_D), _PHI],
+            vec![0.0_f64, _D, (-_PHI)],
+            vec![0.0_f64, _D, _PHI],
+            vec![(-_D), (-_PHI), 0.0_f64],
+            vec![(-_D), _PHI, 0.0_f64],
+            vec![_D, (-_PHI), 0.0_f64],
+            vec![_D, _PHI, 0.0_f64],
+            vec![(-_PHI), 0.0_f64, (-_D)],
+            vec![(-_PHI), 0.0_f64, _D],
+            vec![_PHI, 0.0_f64, (-_D)],
+            vec![_PHI, 0.0_f64, _D],
+        ])
+    });
 
 // Source: upstream/packages/mesh/src/meshGeometryBuilders.ts:919 (sha256:a360a55e1d816e93e7044a06c1ac7b328504e0a5f942948f9c7b94946c413e7a)
-static DODECAHEDRON_FACES: std::sync::LazyLock<Vec<Vec<f64>>> = std::sync::LazyLock::new(|| {
-    vec![
-        vec![3.0_f64, 11.0_f64, 7.0_f64],
-        vec![3.0_f64, 7.0_f64, 15.0_f64],
-        vec![3.0_f64, 15.0_f64, 13.0_f64],
-        vec![7.0_f64, 19.0_f64, 11.0_f64],
-        vec![7.0_f64, 11.0_f64, 9.0_f64],
-        vec![7.0_f64, 9.0_f64, 19.0_f64],
-        vec![15.0_f64, 7.0_f64, 19.0_f64],
-        vec![15.0_f64, 19.0_f64, 18.0_f64],
-        vec![15.0_f64, 18.0_f64, 6.0_f64],
-        vec![13.0_f64, 15.0_f64, 6.0_f64],
-        vec![13.0_f64, 6.0_f64, 2.0_f64],
-        vec![13.0_f64, 2.0_f64, 16.0_f64],
-        vec![3.0_f64, 13.0_f64, 16.0_f64],
-        vec![3.0_f64, 16.0_f64, 17.0_f64],
-        vec![3.0_f64, 17.0_f64, 11.0_f64],
-        vec![11.0_f64, 17.0_f64, 1.0_f64],
-        vec![11.0_f64, 1.0_f64, 9.0_f64],
-        vec![9.0_f64, 1.0_f64, 5.0_f64],
-        vec![5.0_f64, 1.0_f64, 17.0_f64],
-        vec![5.0_f64, 17.0_f64, 4.0_f64],
-        vec![5.0_f64, 4.0_f64, 14.0_f64],
-        vec![9.0_f64, 5.0_f64, 14.0_f64],
-        vec![9.0_f64, 14.0_f64, 12.0_f64],
-        vec![9.0_f64, 12.0_f64, 0.0_f64],
-        vec![1.0_f64, 0.0_f64, 12.0_f64],
-        vec![1.0_f64, 12.0_f64, 4.0_f64],
-        vec![1.0_f64, 4.0_f64, 17.0_f64],
-        vec![6.0_f64, 18.0_f64, 8.0_f64],
-        vec![6.0_f64, 8.0_f64, 10.0_f64],
-        vec![6.0_f64, 10.0_f64, 2.0_f64],
-        vec![18.0_f64, 19.0_f64, 8.0_f64],
-        vec![19.0_f64, 7.0_f64, 8.0_f64],
-        vec![7.0_f64, 15.0_f64, 8.0_f64],
-        vec![2.0_f64, 10.0_f64, 16.0_f64],
-        vec![10.0_f64, 8.0_f64, 0.0_f64],
-        vec![0.0_f64, 8.0_f64, 12.0_f64],
-    ]
-});
+static DODECAHEDRON_FACES: std::sync::LazyLock<std::sync::Mutex<Vec<Vec<f64>>>> =
+    std::sync::LazyLock::new(|| {
+        std::sync::Mutex::new(vec![
+            vec![3.0_f64, 11.0_f64, 7.0_f64],
+            vec![3.0_f64, 7.0_f64, 15.0_f64],
+            vec![3.0_f64, 15.0_f64, 13.0_f64],
+            vec![7.0_f64, 19.0_f64, 11.0_f64],
+            vec![7.0_f64, 11.0_f64, 9.0_f64],
+            vec![7.0_f64, 9.0_f64, 19.0_f64],
+            vec![15.0_f64, 7.0_f64, 19.0_f64],
+            vec![15.0_f64, 19.0_f64, 18.0_f64],
+            vec![15.0_f64, 18.0_f64, 6.0_f64],
+            vec![13.0_f64, 15.0_f64, 6.0_f64],
+            vec![13.0_f64, 6.0_f64, 2.0_f64],
+            vec![13.0_f64, 2.0_f64, 16.0_f64],
+            vec![3.0_f64, 13.0_f64, 16.0_f64],
+            vec![3.0_f64, 16.0_f64, 17.0_f64],
+            vec![3.0_f64, 17.0_f64, 11.0_f64],
+            vec![11.0_f64, 17.0_f64, 1.0_f64],
+            vec![11.0_f64, 1.0_f64, 9.0_f64],
+            vec![9.0_f64, 1.0_f64, 5.0_f64],
+            vec![5.0_f64, 1.0_f64, 17.0_f64],
+            vec![5.0_f64, 17.0_f64, 4.0_f64],
+            vec![5.0_f64, 4.0_f64, 14.0_f64],
+            vec![9.0_f64, 5.0_f64, 14.0_f64],
+            vec![9.0_f64, 14.0_f64, 12.0_f64],
+            vec![9.0_f64, 12.0_f64, 0.0_f64],
+            vec![1.0_f64, 0.0_f64, 12.0_f64],
+            vec![1.0_f64, 12.0_f64, 4.0_f64],
+            vec![1.0_f64, 4.0_f64, 17.0_f64],
+            vec![6.0_f64, 18.0_f64, 8.0_f64],
+            vec![6.0_f64, 8.0_f64, 10.0_f64],
+            vec![6.0_f64, 10.0_f64, 2.0_f64],
+            vec![18.0_f64, 19.0_f64, 8.0_f64],
+            vec![19.0_f64, 7.0_f64, 8.0_f64],
+            vec![7.0_f64, 15.0_f64, 8.0_f64],
+            vec![2.0_f64, 10.0_f64, 16.0_f64],
+            vec![10.0_f64, 8.0_f64, 0.0_f64],
+            vec![0.0_f64, 8.0_f64, 12.0_f64],
+        ])
+    });

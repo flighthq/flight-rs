@@ -163,7 +163,7 @@ pub fn intersect_ray3_d_aabb(ray: &Ray3DLike, aabb: &AabbLike) -> f64 {
             return (-1.0_f64);
         }
     } else {
-        if ((ox < aabb.min.x) || (ox > aabb.max.x)) {
+        if (ox < aabb.min.x) || (ox > aabb.max.x) {
             return (-1.0_f64);
         }
     }
@@ -182,7 +182,7 @@ pub fn intersect_ray3_d_aabb(ray: &Ray3DLike, aabb: &AabbLike) -> f64 {
             return (-1.0_f64);
         }
     } else {
-        if ((oy < aabb.min.y) || (oy > aabb.max.y)) {
+        if (oy < aabb.min.y) || (oy > aabb.max.y) {
             return (-1.0_f64);
         }
     }
@@ -201,7 +201,7 @@ pub fn intersect_ray3_d_aabb(ray: &Ray3DLike, aabb: &AabbLike) -> f64 {
             return (-1.0_f64);
         }
     } else {
-        if ((oz < aabb.min.z) || (oz > aabb.max.z)) {
+        if (oz < aabb.min.z) || (oz > aabb.max.z) {
             return (-1.0_f64);
         }
     }
@@ -280,14 +280,14 @@ pub fn intersect_ray3_d_triangle(
     let sy = (ray.origin.y - a.y);
     let sz = (ray.origin.z - a.z);
     let u = ((((sx * hx) + (sy * hy)) + (sz * hz)) * inv_det);
-    if ((u < 0.0_f64) || (u > 1.0_f64)) {
+    if (u < 0.0_f64) || (u > 1.0_f64) {
         return (-1.0_f64);
     }
     let qx = ((sy * e1z) - (sz * e1y));
     let qy = ((sz * e1x) - (sx * e1z));
     let qz = ((sx * e1y) - (sy * e1x));
     let v = ((((dx * qx) + (dy * qy)) + (dz * qz)) * inv_det);
-    if ((v < 0.0_f64) || ((u + v) > 1.0_f64)) {
+    if (v < 0.0_f64) || ((u + v) > 1.0_f64) {
         return (-1.0_f64);
     }
     let t = ((((e2x * qx) + (e2y * qy)) + (e2z * qz)) * inv_det);

@@ -16,7 +16,7 @@ pub fn acquire_empty_vector4() -> Vector4 {
     v.y = 0.0_f64;
     v.z = 0.0_f64;
     v.w = 0.0_f64;
-    return (v).clone();
+    return v;
 }
 
 // Source: upstream/packages/geometry/src/vector4Pool.ts:14 (sha256:b1eec3910d7ed174efee5fa385e7e02c6c9534fbeceb1aea6c3f6435d28173c8)

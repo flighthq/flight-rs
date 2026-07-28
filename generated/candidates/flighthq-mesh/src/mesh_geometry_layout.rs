@@ -51,8 +51,8 @@ pub fn convert_mesh_geometry_layout(
             .iter()
             .find(|value| {
                 (|a: VertexAttribute| -> bool {
-                    (((a.semantic).clone() == (dst_attr.semantic).clone())
-                        && (a.format.starts_with)("float32"))
+                    ((a.semantic).clone() == (dst_attr.semantic).clone())
+                        && ((a.format.starts_with)("float32"))
                 })((*value).clone())
             })
             .cloned();

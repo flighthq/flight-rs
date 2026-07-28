@@ -11,8 +11,8 @@ use flighthq_displayobject::{
 };
 use flighthq_signals::create_signal;
 use flighthq_types::{
-    Node, Rectangle, SPRITE_KIND as sprite_kind_constant, Sprite, SpriteData, SpriteRuntime,
-    SpriteSignals, TextureAtlasRegion, Vector2,
+    BoundsNodeAny, Node, Rectangle, SPRITE_KIND as sprite_kind_constant, Sprite, SpriteData,
+    SpriteRuntime, SpriteSignals, TextureAtlasRegion, Vector2,
 };
 
 // Source: upstream/packages/sprite/src/sprite.ts:25 (sha256:3f58ec086647d398ab85e5d57c2e418c436bba548164f45e2ca3922fcc227bcf)
@@ -62,10 +62,18 @@ pub fn compute_sprite_local_bounds_rectangle(out: &mut Rectangle, source: &Node)
 // Source: upstream/packages/sprite/src/sprite.ts:61 (sha256:c1d157fd8e7c2568e241684ed7019f556f1557596ca4577b7647c3ab1225c182)
 pub fn create_sprite(obj: Option<Sprite>) -> Sprite {
     return create_display_object_generic(
-        sprite_kind_constant,
+        (sprite_kind_constant).to_owned(),
         Some(((obj).clone().unwrap()).clone()),
-        Some(create_sprite_data),
-        Some(create_sprite_runtime),
+        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: Option<D>| -> D {
+                create_sprite_data(Some(((__flight_argument_0).clone().unwrap()).clone()))
+            },
+        )
+            as Box<dyn FnMut(Option<D>) -> D + Send + 'static>))),
+        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: Option<R>| -> R { create_sprite_runtime() },
+        )
+            as Box<dyn FnMut(Option<R>) -> R + Send + 'static>))),
     );
 }
 
@@ -167,7 +175,15 @@ pub fn set_sprite_frame_rect(target: &mut Sprite, rect: Option<Rectangle>) -> ()
 static DEFAULT_METHODS: std::sync::LazyLock<SpriteRuntime> =
     std::sync::LazyLock::new(|| SpriteRuntime {
         __flight_identity: std::sync::Arc::new(()),
-        compute_local_bounds_rectangle: compute_sprite_local_bounds_rectangle,
+        compute_local_bounds_rectangle: std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |mut __flight_argument_0: Rectangle, __flight_argument_1: BoundsNodeAny| -> () {
+                compute_sprite_local_bounds_rectangle(
+                    &mut __flight_argument_0,
+                    &__flight_argument_1,
+                )
+            },
+        )
+            as Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>)),
     });
 
 // Source: upstream/packages/sprite/src/sprite.ts:142 (sha256:e8992e14d88aa22bd95c47d26e2973516b1c9f161d46cfba5e7f6e86b4282777)

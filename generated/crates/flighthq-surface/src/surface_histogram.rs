@@ -19,7 +19,7 @@ pub fn get_surface_histogram(source: &SurfaceRegion) -> SurfaceHistogram {
         let mut py = 0.0_f64;
         while (py < source.height) {
             let y = (source.y + py);
-            if ((y < 0.0_f64) || (y >= source.surface.height)) {
+            if (y < 0.0_f64) || (y >= source.surface.height) {
                 {
                     py += 1.0;
                     py
@@ -30,7 +30,7 @@ pub fn get_surface_histogram(source: &SurfaceRegion) -> SurfaceHistogram {
                 let mut px = 0.0_f64;
                 while (px < source.width) {
                     let x = (source.x + px);
-                    if ((x < 0.0_f64) || (x >= surface_width)) {
+                    if (x < 0.0_f64) || (x >= surface_width) {
                         {
                             px += 1.0;
                             px

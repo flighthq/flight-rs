@@ -25,7 +25,12 @@ fn __flight_js_to_i32(value: f64) -> i32 {
 pub fn create_compact_bidi_class_backend() -> BidiClassBackend {
     return BidiClassBackend {
         __flight_identity: std::sync::Arc::new(()),
-        get_bidi_class: get_compact_bidi_class,
+        get_bidi_class: std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: f64| -> BidiClass {
+                get_compact_bidi_class(__flight_argument_0)
+            },
+        )
+            as Box<dyn FnMut(f64) -> BidiClass + Send + 'static>)),
     };
 }
 

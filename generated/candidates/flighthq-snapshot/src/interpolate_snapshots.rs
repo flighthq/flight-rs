@@ -17,7 +17,7 @@ pub fn interpolate_snapshots<T: Clone>(
     out: T,
     schema: Option<SnapshotSchema>,
 ) -> () {
-    if ((((((a).is_none()
+    if ((((((a).is_none())
         || (match &(a) {
             crate::OpaqueHostValue::Undefined => "undefined",
             crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
@@ -25,7 +25,7 @@ pub fn interpolate_snapshots<T: Clone>(
             crate::OpaqueHostValue::Number(_) => "number",
             crate::OpaqueHostValue::String(_) => "string",
         } != "object"))
-        || (b).is_none())
+        || ((b).is_none()))
         || (match &(b) {
             crate::OpaqueHostValue::Undefined => "undefined",
             crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
@@ -33,8 +33,8 @@ pub fn interpolate_snapshots<T: Clone>(
             crate::OpaqueHostValue::Number(_) => "number",
             crate::OpaqueHostValue::String(_) => "string",
         } != "object"))
-        || (out).is_none())
-        || ("object" != "object"))
+        || ((out).is_none()))
+        || ("object" != "object")
     {
         return;
     }
@@ -81,7 +81,7 @@ fn interpolate_snapshots_into(
             .map(|(_, value)| value)
             .expect("TypeScript Record key was absent")
             .clone();
-        if ((match &(a_value) {
+        if (match &(a_value) {
             crate::OpaqueHostValue::Undefined => "undefined",
             crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
             crate::OpaqueHostValue::Bool(_) => "boolean",
@@ -94,7 +94,7 @@ fn interpolate_snapshots_into(
                 crate::OpaqueHostValue::Bool(_) => "boolean",
                 crate::OpaqueHostValue::Number(_) => "number",
                 crate::OpaqueHostValue::String(_) => "string",
-            } == "number"))
+            } == "number")
         {
             out_record
                 .iter()
@@ -108,7 +108,7 @@ fn interpolate_snapshots_into(
                 };
             continue;
         }
-        if (((((a_value).is_some()
+        if (((((a_value).is_some())
             && (match &(a_value) {
                 crate::OpaqueHostValue::Undefined => "undefined",
                 crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
@@ -116,7 +116,7 @@ fn interpolate_snapshots_into(
                 crate::OpaqueHostValue::Number(_) => "number",
                 crate::OpaqueHostValue::String(_) => "string",
             } == "object"))
-            && (b_value).is_some())
+            && ((b_value).is_some()))
             && (match &(b_value) {
                 crate::OpaqueHostValue::Undefined => "undefined",
                 crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
@@ -124,7 +124,7 @@ fn interpolate_snapshots_into(
                 crate::OpaqueHostValue::Number(_) => "number",
                 crate::OpaqueHostValue::String(_) => "string",
             } == "object"))
-            && ((array.is_array)(a_value) == (array.is_array)(b_value)))
+            && ((array.is_array)(a_value) == (array.is_array)(b_value))
         {
             let mut container = ensure_snapshot_container(
                 out_record
@@ -160,7 +160,7 @@ fn interpolate_snapshots_into(
 
 // Source: upstream/packages/snapshot/src/interpolateSnapshots.ts:81 (sha256:e0d02f0ced0fd389d8abf218f761f6fd9ff18653b5e428be42e6b821114a1b4e)
 fn is_snapshot_path_interpolated(schema: Option<SnapshotSchema>, path: String) -> bool {
-    return ((schema).is_none() || (schema.as_ref().unwrap().includes)(path));
+    return ((schema).is_none()) || ((schema.as_ref().unwrap().includes)(path));
 }
 
 // Source: upstream/packages/snapshot/src/interpolateSnapshots.ts:87 (sha256:0772057dfbe92de054e11b940b63bf178839349dc06db250afa562498bc5ab0a)
@@ -178,7 +178,7 @@ fn ensure_snapshot_container(
     existing: crate::OpaqueHostValue,
     is_array: bool,
 ) -> crate::OpaqueHostValue {
-    if (((existing).is_some()
+    if (((existing).is_some())
         && (match &(existing) {
             crate::OpaqueHostValue::Undefined => "undefined",
             crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
@@ -186,7 +186,7 @@ fn ensure_snapshot_container(
             crate::OpaqueHostValue::Number(_) => "number",
             crate::OpaqueHostValue::String(_) => "string",
         } == "object"))
-        && ((array.is_array)(existing) == is_array))
+        && ((array.is_array)(existing) == is_array)
     {
         return (existing).clone();
     }
@@ -199,16 +199,16 @@ fn ensure_snapshot_container(
 
 // Source: upstream/packages/snapshot/src/interpolateSnapshots.ts:96 (sha256:67a7ee50c608bb7854484d022037db391fdf34fb9f8f3ea9ede421a8cac1a48a)
 fn clone_snapshot_value(value: crate::OpaqueHostValue) -> crate::OpaqueHostValue {
-    if ((value).is_none()
+    if ((value).is_none())
         || (match &(value) {
             crate::OpaqueHostValue::Undefined => "undefined",
             crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
             crate::OpaqueHostValue::Bool(_) => "boolean",
             crate::OpaqueHostValue::Number(_) => "number",
             crate::OpaqueHostValue::String(_) => "string",
-        } != "object"))
+        } != "object")
     {
-        return (value).clone();
+        return value;
     }
     return crate::host_value::<crate::OpaqueHostValue>("host.call");
 }

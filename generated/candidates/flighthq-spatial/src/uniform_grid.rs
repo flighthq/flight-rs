@@ -283,7 +283,7 @@ fn _ray_box_entry_t(
             tmax = t2;
         }
     } else {
-        if ((ox < min_x) || (ox > max_x)) {
+        if (ox < min_x) || (ox > max_x) {
             return (-1.0_f64);
         }
     }
@@ -303,11 +303,11 @@ fn _ray_box_entry_t(
             tmax = t2;
         }
     } else {
-        if ((oy < min_y) || (oy > max_y)) {
+        if (oy < min_y) || (oy > max_y) {
             return (-1.0_f64);
         }
     }
-    if ((tmax < tmin) || (tmax < 0.0_f64)) {
+    if (tmax < tmin) || (tmax < 0.0_f64) {
         return (-1.0_f64);
     }
     return if (tmin > 0.0_f64) { tmin } else { 0.0_f64 };
@@ -451,7 +451,7 @@ fn _query_grid_pairs(grid: &UniformGrid, out: &mut Vec<SpatialPair>) -> () {
                             .iter()
                             .find(|(key, _)| key == &b)
                             .map(|(_, value)| value.clone());
-                        if ((ab).is_none() || (bb).is_none()) {
+                        if ((ab).is_none()) || ((bb).is_none()) {
                             {
                                 j += 1.0;
                                 j
@@ -462,7 +462,7 @@ fn _query_grid_pairs(grid: &UniformGrid, out: &mut Vec<SpatialPair>) -> () {
                             .max(_cell_index(bb.as_ref().unwrap().min_x, cs));
                         let canonical_y = (_cell_index(ab.as_ref().unwrap().min_y, cs))
                             .max(_cell_index(bb.as_ref().unwrap().min_y, cs));
-                        if ((cell.cx == canonical_x) && (cell.cy == canonical_y)) {
+                        if (cell.cx == canonical_x) && (cell.cy == canonical_y) {
                             out.push(SpatialPair {
                                 __flight_identity: std::sync::Arc::new(()),
                                 a: a,
@@ -502,7 +502,8 @@ fn _query_grid_point(grid: &UniformGrid, x: f64, y: f64, out: &mut Vec<SpatialOb
             .iter()
             .find(|(key, _)| key == &id)
             .map(|(_, value)| value.clone());
-        if ((bounds).is_some() && _is_spatial_aabb_contains_point(bounds.as_ref().unwrap(), x, y)) {
+        if ((bounds).is_some()) && (_is_spatial_aabb_contains_point(bounds.as_ref().unwrap(), x, y))
+        {
             out.push(id);
         }
     }
@@ -523,7 +524,7 @@ fn _query_grid_ray(
     }
     let cs = grid.cell_size;
     grid.seen.clear();
-    if ((dx == 0.0_f64) && (dy == 0.0_f64)) {
+    if (dx == 0.0_f64) && (dy == 0.0_f64) {
         _query_grid_point(grid, ox, oy, out);
         return;
     }
@@ -590,8 +591,8 @@ fn _query_grid_ray(
     {
         let mut step = 0.0_f64;
         while (step <= max_steps) {
-            if ((((cx < grid.min_cell_x) || (cx > grid.max_cell_x)) || (cy < grid.min_cell_y))
-                || (cy > grid.max_cell_y))
+            if (((cx < grid.min_cell_x) || (cx > grid.max_cell_x)) || (cy < grid.min_cell_y))
+                || (cy > grid.max_cell_y)
             {
                 break;
             }
@@ -629,7 +630,7 @@ fn _query_grid_ray(
             .iter()
             .find(|(key, _)| key == &id)
             .map(|(_, value)| value.clone());
-        if ((bounds).is_some()
+        if ((bounds).is_some())
             && (_ray_box_entry_t(
                 ox,
                 oy,
@@ -639,7 +640,7 @@ fn _query_grid_ray(
                 bounds.as_ref().unwrap().min_y,
                 bounds.as_ref().unwrap().max_x,
                 bounds.as_ref().unwrap().max_y,
-            ) >= 0.0_f64))
+            ) >= 0.0_f64)
         {
             out.push(id);
         }
@@ -692,8 +693,8 @@ fn _query_grid_region(
                             .iter()
                             .find(|(key, _)| key == &id)
                             .map(|(_, value)| value.clone());
-                        if ((bounds).is_some()
-                            && _is_spatial_aabb_overlapping(bounds.as_ref().unwrap(), region))
+                        if ((bounds).is_some())
+                            && (_is_spatial_aabb_overlapping(bounds.as_ref().unwrap(), region))
                         {
                             out.push(id);
                         }
@@ -713,19 +714,25 @@ fn _query_grid_region(
 }
 
 // Source: upstream/packages/spatial/src/uniformGrid.ts:375 (sha256:e53c83de77d981abb41109e9c2682fcd2a6930d40c2c91c37b2afaaebbc9eb79)
-struct _scratchRectA;
-impl _scratchRectA {
-    pub const x: f64 = 0.0_f64;
-    pub const y: f64 = 0.0_f64;
-    pub const width: f64 = 0.0_f64;
-    pub const height: f64 = 0.0_f64;
-}
+static _SCRATCH_RECT_A: std::sync::LazyLock<std::sync::Mutex<RectangleLike>> =
+    std::sync::LazyLock::new(|| {
+        std::sync::Mutex::new(RectangleLike {
+            __flight_identity: std::sync::Arc::new(()),
+            x: 0.0_f64,
+            y: 0.0_f64,
+            width: 0.0_f64,
+            height: 0.0_f64,
+        })
+    });
 
 // Source: upstream/packages/spatial/src/uniformGrid.ts:376 (sha256:27ab52f8e9c47f5e2ccd592369b83dc133972e262e313e3c499c245efa883daa)
-struct _scratchRectB;
-impl _scratchRectB {
-    pub const x: f64 = 0.0_f64;
-    pub const y: f64 = 0.0_f64;
-    pub const width: f64 = 0.0_f64;
-    pub const height: f64 = 0.0_f64;
-}
+static _SCRATCH_RECT_B: std::sync::LazyLock<std::sync::Mutex<RectangleLike>> =
+    std::sync::LazyLock::new(|| {
+        std::sync::Mutex::new(RectangleLike {
+            __flight_identity: std::sync::Arc::new(()),
+            x: 0.0_f64,
+            y: 0.0_f64,
+            width: 0.0_f64,
+            height: 0.0_f64,
+        })
+    });

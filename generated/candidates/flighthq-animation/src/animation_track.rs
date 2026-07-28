@@ -8,7 +8,7 @@
 
 use flighthq_types::{
     ANIMATION_INTERPOLATION_LINEAR as animation_interpolation_linear_constant,
-    AnimationInterpolation, AnimationTrack, AnimationTrackValidationDiagnostic,
+    AnimationInterpolation, AnimationTrack, AnimationTrackValidationDiagnostic, EasingFunction,
 };
 
 #[inline]
@@ -46,7 +46,7 @@ struct CreateAnimationTrackRecord1 {
     components: Option<f64>,
     interpolation: Option<AnimationInterpolation>,
     quaternion: Option<bool>,
-    easing: Option<crate::OpaqueHostValue>,
+    easing: Option<EasingFunction>,
 }
 impl PartialEq for CreateAnimationTrackRecord1 {
     fn eq(&self, other: &Self) -> bool {
@@ -60,7 +60,7 @@ pub fn create_animation_track(opts: &CreateAnimationTrackRecord1) -> AnimationTr
         components: (opts.components).unwrap_or(1.0_f64),
         easing: (opts.easing).clone(),
         interpolation: ((opts.interpolation).clone())
-            .unwrap_or(animation_interpolation_linear_constant),
+            .unwrap_or((animation_interpolation_linear_constant).to_owned()),
         quaternion: (opts.quaternion).unwrap_or(false),
         times: (opts.times).clone(),
         values: (opts.values).clone(),
@@ -88,12 +88,12 @@ pub fn sample_animation_track(
         }
         return;
     }
-    if ((count == 1.0_f64) || (t <= track.times[0.0_f64 as usize].clone())) {
-        copy_keyframe_value(out, track, 0.0_f64);
+    if (count == 1.0_f64) || (t <= track.times[0.0_f64 as usize].clone()) {
+        copy_keyframe_value(&((*out).clone()), track, 0.0_f64);
         return;
     }
     if (t >= track.times[(count - 1.0_f64) as usize].clone()) {
-        copy_keyframe_value(out, track, (count - 1.0_f64));
+        copy_keyframe_value(&((*out).clone()), track, (count - 1.0_f64));
         return;
     }
     let mut lo = 0.0_f64;
@@ -116,20 +116,24 @@ pub fn sample_animation_track(
         0.0_f64
     };
     if ((track.easing).clone()).is_some() {
-        alpha = track.easing.as_ref().unwrap().lock().unwrap()(alpha);
+        alpha = {
+            let __flight_callback = track.easing.as_ref().unwrap().clone();
+            let __flight_result = __flight_callback.lock().unwrap()(alpha);
+            __flight_result
+        };
     }
     if ((track.interpolation).clone() == "Step") {
-        copy_keyframe_value(out, track, i);
+        copy_keyframe_value(&((*out).clone()), track, i);
         return;
     }
     if ((track.interpolation).clone() == "Cubic") {
-        sample_cubic_segment(out, track, i, alpha, dt);
+        sample_cubic_segment(&((*out).clone()), track, i, alpha, dt);
         return;
     }
     let oi = keyframe_value_offset(track, i);
     let oj = keyframe_value_offset(track, (i + 1.0_f64));
-    if (track.quaternion && (components == 4.0_f64)) {
-        slerp_flat_quaternion(out, &mut track.values, oi, oj, alpha);
+    if (track.quaternion) && (components == 4.0_f64) {
+        slerp_flat_quaternion(&((*out).clone()), &mut track.values, oi, oj, alpha);
         return;
     }
     {
@@ -160,7 +164,7 @@ pub fn trim_animation_track(
         let mut k = 0.0_f64;
         while (k < count) {
             let time = track.times[k as usize].clone();
-            if ((time < start_time) || (time > end_time)) {
+            if (time < start_time) || (time > end_time) {
                 {
                     k += 1.0;
                     k
@@ -209,7 +213,7 @@ pub fn validate_animation_track(
                 diagnostics.push(AnimationTrackValidationDiagnostic {
           __flight_identity: std::sync::Arc::new(()),
           code: "nonAscendingTimes".to_owned(),
-          index: k,
+          index: Some(k),
           message: format!("times[{}] ({}) is not greater than times[{}] ({}); times must be strictly ascending.", k, track.times[k as usize].clone(), (k - 1.0_f64), track.times[(k - 1.0_f64) as usize].clone()),
         });
             }
@@ -352,8 +356,8 @@ fn sample_cubic_segment(
             };
         }
     }
-    if (track.quaternion && (components == 4.0_f64)) {
-        normalize_flat_quaternion(out);
+    if (track.quaternion) && (components == 4.0_f64) {
+        normalize_flat_quaternion(&((*out).clone()));
     }
 }
 

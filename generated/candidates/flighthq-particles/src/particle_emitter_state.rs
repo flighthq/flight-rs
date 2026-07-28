@@ -14,7 +14,7 @@ pub const PARTICLE_VELOCITY_STRIDE: f64 = 3.0_f64;
 
 // Source: upstream/packages/particles/src/particleEmitterState.ts:7 (sha256:69cabc20c4767ead164458449fd85c14de145c15b27bf1e6ed5a516a28e0aa7b)
 pub fn create_particle_emitter_state(random: Option<RandomSource>) -> ParticleEmitterState {
-    let random = random.unwrap_or(math.random);
+    let random = random.unwrap_or((math.random).clone());
     return ParticleEmitterState {
         __flight_identity: std::sync::Arc::new(()),
         burst_timer: 0.0_f64,
@@ -40,7 +40,7 @@ pub fn ensure_particle_emitter_state_capacity(
     has_color_variance: bool,
 ) -> () {
     if ((state.lifetimes.len() as f64) >= (capacity * 2.0_f64)) {
-        if (has_color_variance && ((state.color_birth.len() as f64) < (capacity * 3.0_f64))) {
+        if (has_color_variance) && ((state.color_birth.len() as f64) < (capacity * 3.0_f64)) {
             state.color_birth = reserve_float32_array(&state.color_birth, (capacity * 3.0_f64));
             state.color_death = reserve_float32_array(&state.color_death, (capacity * 3.0_f64));
         }

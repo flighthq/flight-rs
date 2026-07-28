@@ -26,7 +26,7 @@ pub fn parse_user_agent_form_factor(ua: String, max_touch_points: f64) -> Device
         .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
     .is_match(&(ua))
     {
-        return device_form_factor_car_constant;
+        return (device_form_factor_car_constant).to_owned();
     }
     if (regex::RegexBuilder::new(
         "smart[-_]?tv|smarttv|googletv|appletv|hbbtv|netcast|webos.*tv|tizen.*tv|tv safari",
@@ -38,7 +38,7 @@ pub fn parse_user_agent_form_factor(ua: String, max_touch_points: f64) -> Device
     .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
     .is_match(&(ua))
     {
-        return device_form_factor_tv_constant;
+        return (device_form_factor_tv_constant).to_owned();
     }
     if (regex::RegexBuilder::new("watch\\s*os|watch[_ ]?kit|wearable")
         .case_insensitive(true)
@@ -48,7 +48,7 @@ pub fn parse_user_agent_form_factor(ua: String, max_touch_points: f64) -> Device
         .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
     .is_match(&(ua))
     {
-        return device_form_factor_watch_constant;
+        return (device_form_factor_watch_constant).to_owned();
     }
     if (regex::RegexBuilder::new("ipad")
         .case_insensitive(true)
@@ -58,7 +58,7 @@ pub fn parse_user_agent_form_factor(ua: String, max_touch_points: f64) -> Device
         .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
     .is_match(&(ua))
     {
-        return device_form_factor_tablet_constant;
+        return (device_form_factor_tablet_constant).to_owned();
     }
     if ((regex::RegexBuilder::new("android")
         .case_insensitive(true)
@@ -66,16 +66,16 @@ pub fn parse_user_agent_form_factor(ua: String, max_touch_points: f64) -> Device
         .dot_matches_new_line(false)
         .build()
         .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-    .is_match(&(ua))
+    .is_match(&(ua)))
         && (!(regex::RegexBuilder::new("mobile")
             .case_insensitive(true)
             .multi_line(false)
             .dot_matches_new_line(false)
             .build()
             .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-        .is_match(&(ua))))
+        .is_match(&(ua)))
     {
-        return device_form_factor_tablet_constant;
+        return (device_form_factor_tablet_constant).to_owned();
     }
     if (regex::RegexBuilder::new("tablet\\s*pc|silk|kindle fire")
         .case_insensitive(true)
@@ -85,7 +85,7 @@ pub fn parse_user_agent_form_factor(ua: String, max_touch_points: f64) -> Device
         .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
     .is_match(&(ua))
     {
-        return device_form_factor_tablet_constant;
+        return (device_form_factor_tablet_constant).to_owned();
     }
     if (regex::RegexBuilder::new(
         "iphone|ipod|android.*mobile|windows phone|blackberry|bb\\d+|mobile safari",
@@ -97,7 +97,7 @@ pub fn parse_user_agent_form_factor(ua: String, max_touch_points: f64) -> Device
     .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
     .is_match(&(ua))
     {
-        return device_form_factor_phone_constant;
+        return (device_form_factor_phone_constant).to_owned();
     }
     if (regex::RegexBuilder::new("win(?:dows)?nt|macintosh|mac os x|linux(?!.*android)|x11")
         .case_insensitive(true)
@@ -107,12 +107,12 @@ pub fn parse_user_agent_form_factor(ua: String, max_touch_points: f64) -> Device
         .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
     .is_match(&(ua))
     {
-        return device_form_factor_desktop_constant;
+        return (device_form_factor_desktop_constant).to_owned();
     }
     if (max_touch_points == 0.0_f64) {
-        return device_form_factor_desktop_constant;
+        return (device_form_factor_desktop_constant).to_owned();
     }
-    return device_form_factor_unknown_constant;
+    return (device_form_factor_unknown_constant).to_owned();
 }
 
 // Source: upstream/packages/useragent/src/userAgentParse.ts:50 (sha256:30282dc1ccb3eb64badca066b2e824450bc3626941e673c624c86ec34113007e)

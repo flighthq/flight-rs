@@ -69,11 +69,14 @@ pub fn build_particle_color_curve(
             };
         }
     }
-    return (lut).clone();
+    return lut;
 }
 
 // Source: upstream/packages/particles/src/curve.ts:19 (sha256:c16328d38b188b611eb9bf96e02bade98f8027d9c20be610f9317d0b35a19a44)
-pub fn build_particle_curve(f: &mut impl FnMut(f64) -> f64, samples: Option<f64>) -> Vec<f64> {
+pub fn build_particle_curve(
+    f: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64) -> f64 + Send + 'static>>>,
+    samples: Option<f64>,
+) -> Vec<f64> {
     let samples = samples.unwrap_or(33.0_f64);
     let n = (2.0_f64).max((__flight_js_to_i32(samples) | __flight_js_to_i32(0.0_f64)) as f64);
     let mut lut = vec![Default::default(); (n) as usize];
@@ -82,7 +85,11 @@ pub fn build_particle_curve(f: &mut impl FnMut(f64) -> f64, samples: Option<f64>
         while (i < n) {
             {
                 let __flight_index = (i) as usize;
-                let __flight_value = f((i / (n - 1.0_f64)));
+                let __flight_value = {
+                    let __flight_callback = (f).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()((i / (n - 1.0_f64)));
+                    __flight_result
+                };
                 if __flight_index == lut.len() {
                     lut.push(__flight_value);
                 } else {
@@ -95,7 +102,7 @@ pub fn build_particle_curve(f: &mut impl FnMut(f64) -> f64, samples: Option<f64>
             };
         }
     }
-    return (lut).clone();
+    return lut;
 }
 
 // Source: upstream/packages/particles/src/curve.ts:28 (sha256:2d3a5c547e45933a4028ee26d0c2c55a60c44b074cbf46e22a56f0e09562b540)
@@ -148,7 +155,7 @@ pub fn lerp_hsv_in_place(
     t: f64,
 ) -> () {
     lerp_hsv_direct(
-        colors_out,
+        &((*colors_out).clone()),
         offset,
         (birth[offset as usize] as f64),
         (birth[(offset + 1.0_f64) as usize] as f64),
@@ -162,7 +169,7 @@ pub fn lerp_hsv_in_place(
 
 // Source: upstream/packages/particles/src/curve.ts:74 (sha256:ec995439038deda264344784bb5d95a0528ee293b0d0abcfa3cd124ffdd1d4c5)
 pub fn particle_color_curve_from_keyframes(
-    keys: &Vec<ColorKeyframe>,
+    keys: &mut Vec<ColorKeyframe>,
     samples: Option<f64>,
 ) -> Vec<f64> {
     let samples = samples.unwrap_or(33.0_f64);
@@ -245,11 +252,14 @@ pub fn particle_color_curve_to_keyframes(lut: &ParticleCurve) -> Vec<ColorKeyfra
             };
         }
     }
-    return (keys).clone();
+    return keys;
 }
 
 // Source: upstream/packages/particles/src/curve.ts:100 (sha256:cc9e7c9b98ab1da548a15786de0b264e61e4cc7c8dfe97a7cdca0e7e0cce849b)
-pub fn particle_curve_from_keyframes(keys: &Vec<CurveKeyframe>, samples: Option<f64>) -> Vec<f64> {
+pub fn particle_curve_from_keyframes(
+    keys: &mut Vec<CurveKeyframe>,
+    samples: Option<f64>,
+) -> Vec<f64> {
     let samples = samples.unwrap_or(33.0_f64);
     if ((keys.len() as f64) == 0.0_f64) {
         return vec![0.0_f64, 0.0_f64];
@@ -269,7 +279,11 @@ pub fn particle_curve_from_keyframes(keys: &Vec<CurveKeyframe>, samples: Option<
         __flight_values
     };
     return build_particle_curve(
-        &mut |t: f64| -> f64 { interp_keyframe(&sorted, t) },
+        std::sync::Arc::new(std::sync::Mutex::new(Box::new({
+            let sorted = sorted.clone();
+            move |t: f64| -> f64 { interp_keyframe(&sorted, t) }
+        })
+            as Box<dyn FnMut(f64) -> f64 + Send + 'static>)),
         Some(samples),
     );
 }
@@ -310,7 +324,7 @@ pub fn particle_curve_to_keyframes(lut: &ParticleCurve) -> Vec<CurveKeyframe> {
             };
         }
     }
-    return (keys).clone();
+    return keys;
 }
 
 // Source: upstream/packages/particles/src/curve.ts:119 (sha256:2bc6b7fe45a1b3570b160a6c2ccd33245f2938eac3c2959e58a79d8b3bbd934e)

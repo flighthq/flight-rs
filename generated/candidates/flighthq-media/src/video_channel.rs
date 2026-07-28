@@ -12,10 +12,10 @@ use flighthq_types::{VideoChannel, VideoPlayOptions, VideoResource};
 // Source: upstream/packages/media/src/videoChannel.ts:4 (sha256:1dc138a482fd0a2f1cc86cbbf7c5162c15f3072960d7b43125e8ba11b5ceca93)
 pub fn get_video_channel_current_time(channel: &VideoChannel) -> f64 {
     let element = (channel.source.element).clone();
-    if ((element).is_none() || ((channel.state).clone() != "playing")) {
+    if ((element).is_none()) || ((channel.state).clone() != "playing") {
         return channel.current_time;
     }
-    return ((element.as_ref().unwrap().current_time).clone() * 1000.0_f64);
+    return (crate::host_value::<crate::OpaqueHostValue>("host.currentTime") * 1000.0_f64);
 }
 
 // Source: upstream/packages/media/src/videoChannel.ts:10 (sha256:623ecce17487c660f8b12a5095879f60d9fb747c1ed2c5e25368d5f54e168ea4)
@@ -87,7 +87,7 @@ pub fn play_video_resource(
             length: if crate::host_value::<()>("host.call") {
                 0.0_f64
             } else {
-                ((element.as_mut().unwrap().duration).clone() * 1000.0_f64)
+                (crate::host_value::<crate::OpaqueHostValue>("host.duration") * 1000.0_f64)
             },
             loops: (options.as_ref().and_then(|value| value.loops)).unwrap_or(0.0_f64),
             playback_rate: (options.as_ref().and_then(|value| value.playback_rate))
@@ -118,10 +118,16 @@ pub fn play_video_resource(
             (*VIDEO_CHANNEL_RUNTIMES.lock().unwrap()).push((__flight_key, __flight_value));
         }
     };
-    element.as_mut().unwrap().current_time = ((*channel.lock().unwrap()).current_time / 1000.0_f64);
-    element.as_mut().unwrap().volume = (*channel.lock().unwrap()).gain;
-    element.as_mut().unwrap().playback_rate = (*channel.lock().unwrap()).playback_rate;
-    element.as_mut().unwrap().loop_ = crate::OpaqueHostValue::Bool(false);
+    crate::host_set(
+        "host.currentTime",
+        ((*channel.lock().unwrap()).current_time / 1000.0_f64),
+    );
+    crate::host_set("host.volume", (*channel.lock().unwrap()).gain);
+    crate::host_set(
+        "host.playbackRate",
+        (*channel.lock().unwrap()).playback_rate,
+    );
+    crate::host_set("host.loop", false);
     crate::host_value::<()>("host.addEventListener");
     start_video_channel(&mut (*channel.lock().unwrap()));
     return Some((*channel.lock().unwrap()).clone());
@@ -129,7 +135,7 @@ pub fn play_video_resource(
 
 // Source: upstream/packages/media/src/videoChannel.ts:70 (sha256:ea25dc8f646fa1de911d7ab858b8405ff7adef8d8877c20800c1e0a92a2cb76b)
 pub fn resume_video_channel(channel: &mut VideoChannel) -> () {
-    if (((channel.state).clone() == "playing") || ((channel.source.element).clone()).is_none()) {
+    if ((channel.state).clone() == "playing") || (((channel.source.element).clone()).is_none()) {
         return;
     }
     start_video_channel(channel);
@@ -218,9 +224,9 @@ fn complete_video_channel(channel: &mut VideoChannel) -> () {
             .find(|(key, _)| key == &((channel.source.element).clone()).unwrap())
             .map(|(_, value)| value.clone())
     } else {
-        undefined
+        None
     };
-    if ((runtime).is_some() && (runtime.as_mut().unwrap().loops_remaining != 0.0_f64)) {
+    if ((runtime).is_some()) && (runtime.as_mut().unwrap().loops_remaining != 0.0_f64) {
         if (runtime.as_mut().unwrap().loops_remaining > 0.0_f64) {
             {
                 runtime.as_mut().unwrap().loops_remaining -= 1.0;
@@ -242,16 +248,7 @@ fn start_video_channel(mut channel: VideoChannel) -> () {
     if (element).is_none() {
         return;
     }
-    element.as_mut().unwrap().current_time = (channel.current_time / 1000.0_f64);
+    crate::host_set("host.currentTime", (channel.current_time / 1000.0_f64));
     channel.state = "playing".to_owned();
-    (crate::host_value::<()>("host.play").catch)(std::sync::Arc::new(std::sync::Mutex::new(
-        Box::new({
-            let mut channel = channel.clone();
-            move || -> () {
-                if ((channel.state).clone() == "playing") {
-                    channel.state = "stopped".to_owned();
-                }
-            }
-        }) as Box<dyn FnMut() -> () + Send + 'static>,
-    )));
+    crate::host_value::<()>("host.catch");
 }

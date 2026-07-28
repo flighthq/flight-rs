@@ -6,6 +6,7 @@ members = [
   "flighthq-animation",
   "flighthq-application",
   "flighthq-bitmapfont",
+  "flighthq-bitmapfont-formats",
   "flighthq-camera",
   "flighthq-camera2d",
   "flighthq-clip",

@@ -71,13 +71,13 @@ pub fn create_texture(opts: Option<TextureLike>) -> Texture {
 
 // Source: upstream/packages/texture/src/texture.ts:63 (sha256:1622da1aafd580b221b7a60466cc1a295f3a237ea35488cdc096f938f59979fc)
 pub fn equals_texture(a: Option<TextureLike>, b: Option<TextureLike>) -> bool {
-    if ((a).is_none() || (b).is_none()) {
+    if ((a).is_none()) || ((b).is_none()) {
         return false;
     }
     if (a == b) {
         return true;
     }
-    return (((((((((a.as_ref().unwrap().color_space).clone()
+    return ((((((((a.as_ref().unwrap().color_space).clone()
         == (b.as_ref().unwrap().color_space).clone())
         && ((a.as_ref().unwrap().image).clone() == (b.as_ref().unwrap().image).clone()))
         && (a.as_ref().unwrap().uv_rotation == b.as_ref().unwrap().uv_rotation))
@@ -85,7 +85,7 @@ pub fn equals_texture(a: Option<TextureLike>, b: Option<TextureLike>) -> bool {
         && (a.as_ref().unwrap().uv_offset.y == b.as_ref().unwrap().uv_offset.y))
         && (a.as_ref().unwrap().uv_scale.x == b.as_ref().unwrap().uv_scale.x))
         && (a.as_ref().unwrap().uv_scale.y == b.as_ref().unwrap().uv_scale.y))
-        && equals_sampler(
+        && (equals_sampler(
             Some(((a.as_ref().unwrap().sampler).clone()).clone()),
             Some(((b.as_ref().unwrap().sampler).clone()).clone()),
         ));
@@ -140,10 +140,10 @@ pub fn get_texture_width(texture: &TextureLike) -> f64 {
 
 // Source: upstream/packages/texture/src/texture.ts:133 (sha256:217bc68b232ecf21918d7785082802a973436fd090c6bb6e2fd3486a0835e33e)
 pub fn has_texture_uv_transform(texture: &TextureUvTransform) -> bool {
-    return (((((texture.uv_scale.x != 1.0_f64) || (texture.uv_scale.y != 1.0_f64))
+    return ((((texture.uv_scale.x != 1.0_f64) || (texture.uv_scale.y != 1.0_f64))
         || (texture.uv_offset.x != 0.0_f64))
         || (texture.uv_offset.y != 0.0_f64))
-        || (texture.uv_rotation != 0.0_f64));
+        || (texture.uv_rotation != 0.0_f64);
 }
 
 // Source: upstream/packages/texture/src/texture.ts:145 (sha256:a5f8ec6862a851c1a1310d72bd5ac7dca1de671dd0000386519c24e9f869c541)

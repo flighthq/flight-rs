@@ -95,7 +95,7 @@ pub fn get_spritesheet_player_frame(
 ) -> Option<SpritesheetFrame> {
     let animation = (player.animation).clone();
     let frame_index = player.frame_index;
-    if ((animation).is_none() || ((animation.as_ref().unwrap().frames.len() as f64) == 0.0_f64)) {
+    if ((animation).is_none()) || ((animation.as_ref().unwrap().frames.len() as f64) == 0.0_f64) {
         return None;
     }
     let sprite_frame_index = animation.as_ref().unwrap().frames[frame_index as usize].clone();
@@ -110,7 +110,7 @@ pub fn get_spritesheet_player_frame_at(
 ) -> Option<SpritesheetFrame> {
     let animation = (player.animation).clone();
     let frame_index = player.frame_index;
-    if ((animation).is_none() || ((animation.as_ref().unwrap().frames.len() as f64) == 0.0_f64)) {
+    if ((animation).is_none()) || ((animation.as_ref().unwrap().frames.len() as f64) == 0.0_f64) {
         return None;
     }
     let n = (animation.as_ref().unwrap().frames.len() as f64);
@@ -131,7 +131,7 @@ pub fn play_spritesheet_animation(
     restart: Option<bool>,
 ) -> () {
     let restart = restart.unwrap_or(true);
-    if ((!restart) && (animation == (player.animation).clone())) {
+    if (!restart) && (animation == (player.animation).clone()) {
         return;
     }
     player.animation = (animation).clone();
@@ -174,7 +174,7 @@ pub fn resume_spritesheet_player(player: &mut SpritesheetPlayer) -> () {
 // Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:126 (sha256:f2f6088f5661d5524a1a9bb22e7051b7ef1742edc0fe897ba9f9db0a5843ca1e)
 pub fn seek_spritesheet_player_to_frame(player: &mut SpritesheetPlayer, frame_index: f64) -> () {
     let animation = (player.animation).clone();
-    if ((animation).is_none() || ((animation.as_ref().unwrap().frames.len() as f64) == 0.0_f64)) {
+    if ((animation).is_none()) || ((animation.as_ref().unwrap().frames.len() as f64) == 0.0_f64) {
         return;
     }
     let clamped = (0.0_f64)
@@ -186,7 +186,7 @@ pub fn seek_spritesheet_player_to_frame(player: &mut SpritesheetPlayer, frame_in
 // Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:136 (sha256:ccc956a8d2a9290e2da714a354e13a5ca831edd50d23565edfcace178931fefe)
 pub fn seek_spritesheet_player_to_time(player: &mut SpritesheetPlayer, time: f64) -> () {
     let animation = (player.animation).clone();
-    if ((animation).is_none() || ((animation.as_ref().unwrap().frames.len() as f64) == 0.0_f64)) {
+    if ((animation).is_none()) || ((animation.as_ref().unwrap().frames.len() as f64) == 0.0_f64) {
         return;
     }
     let total_time = resolve_animation_total_time(animation.as_ref().unwrap());
@@ -206,8 +206,8 @@ pub fn stop_spritesheet_player(player: &mut SpritesheetPlayer) -> () {
 // Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:151 (sha256:4570c7b97664a83b03bc39414e3fed9a4562b86753f1a6fb200f12dd055e3000)
 pub fn update_spritesheet_player(player: &mut SpritesheetPlayer, delta_time: f64) -> bool {
     let animation = (player.animation).clone();
-    if ((((animation).is_none() || player.complete) || player.paused)
-        || ((animation.as_ref().unwrap().frames.len() as f64) == 0.0_f64))
+    if ((((animation).is_none()) || (player.complete)) || (player.paused))
+        || ((animation.as_ref().unwrap().frames.len() as f64) == 0.0_f64)
     {
         return false;
     }
@@ -216,7 +216,7 @@ pub fn update_spritesheet_player(player: &mut SpritesheetPlayer, delta_time: f64
     let total_time = resolve_animation_total_time(animation.as_ref().unwrap());
     let prev_loop_count = (player.elapsed / total_time).floor();
     player.elapsed += (delta_time * player.speed);
-    if ((!loop_) && (player.elapsed >= total_time)) {
+    if (!loop_) && (player.elapsed >= total_time) {
         if ((player.queue.len() as f64) > 0.0_f64) {
             let next = (player.queue.shift)();
             player.animation = Some(next);
@@ -248,7 +248,7 @@ fn get_cumulative_durations(animation: &SpritesheetAnimation) -> Vec<f64> {
         .find(|(key, _)| key == &(*animation).clone())
         .map(|(_, value)| value.clone());
     if (cached).is_some() {
-        return (cached.as_ref().unwrap()).clone();
+        return cached.as_ref().unwrap();
     }
     let frame_duration = animation.frame_duration;
     let frame_durations = (animation.frame_durations).clone();
@@ -265,7 +265,7 @@ fn get_cumulative_durations(animation: &SpritesheetAnimation) -> Vec<f64> {
             } else {
                 ((2.0_f64 * (n - 1.0_f64)) - vi)
             };
-            t += (frame_durations.as_ref().unwrap()[fi as usize].clone()).unwrap_or(frame_duration);
+            t += frame_durations.as_ref().unwrap()[fi as usize].clone();
             {
                 vi += 1.0;
                 vi
@@ -285,7 +285,7 @@ fn get_cumulative_durations(animation: &SpritesheetAnimation) -> Vec<f64> {
             (*CUMULATIVE_DURATIONS_CACHE.lock().unwrap()).push((__flight_key, __flight_value));
         }
     };
-    return (arr).clone();
+    return arr;
 }
 
 // Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:204 (sha256:3dfbedac804471a0bfcf4076a98171721b64056c643553365388d4e6c31b78ea)
@@ -315,9 +315,9 @@ fn resolve_frame_index_from_elapsed(animation: &SpritesheetAnimation, elapsed: f
 // Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:225 (sha256:5af18316f0e4425342a0804179ccea8c6b44d3c00788f21ef25125870d4add70)
 fn resolve_virtual_frame_count(animation: &SpritesheetAnimation) -> f64 {
     let n = (animation.frames.len() as f64);
-    let is_pingpong = (((animation.direction).clone() == "pingpong")
-        || ((animation.direction).clone() == "pingpong_reverse"));
-    if (is_pingpong && (n > 1.0_f64)) {
+    let is_pingpong = ((animation.direction).clone() == "pingpong")
+        || ((animation.direction).clone() == "pingpong_reverse");
+    if (is_pingpong) && (n > 1.0_f64) {
         return ((2.0_f64 * n) - 2.0_f64);
     }
     return n;

@@ -13,16 +13,21 @@ use flighthq_types::{
 // Source: upstream/packages/accessibility/src/accessibility.ts:11 (sha256:86e42e2a79c1c8e740386bf1331cd24006f9a92fc9515cc0314ee901995e7ce8)
 pub fn announce_accessibility(message: String, liveness: Option<AccessibilityLiveness>) -> () {
     let liveness = liveness.unwrap_or("polite".to_owned());
-    ((get_accessibility_backend().announce).clone())
-        .lock()
-        .unwrap()((message).clone(), (liveness).clone());
+    {
+        let __flight_callback = (get_accessibility_backend().announce).clone();
+        let __flight_result =
+            __flight_callback.lock().unwrap()((message).clone(), (liveness).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/accessibility/src/accessibility.ts:17 (sha256:44dfa7c3b19e520f5630dddb0849635b05ee563c5f8a57fc7f3359248cf4088c)
 pub fn clear_accessibility_tree() -> () {
-    ((get_accessibility_backend().clear).clone())
-        .lock()
-        .unwrap()();
+    {
+        let __flight_callback = (get_accessibility_backend().clear).clone();
+        let __flight_result = __flight_callback.lock().unwrap()();
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/accessibility/src/accessibility.ts:27 (sha256:fdee57bbd10d17303c4547c17846b416231df0be96a17ff8213c41a7c45de5fa)
@@ -38,30 +43,42 @@ pub fn create_web_accessibility_backend(
         std::sync::Arc::new(std::sync::Mutex::new(container));
     let root_resolved: std::sync::Arc<std::sync::Mutex<bool>> =
         std::sync::Arc::new(std::sync::Mutex::new((container).is_some()));
-    let mut get_root: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut() -> Option<crate::OpaqueHostValue> + Send + 'static>>,
-    > = std::sync::Arc::new(std::sync::Mutex::new(Box::new({
-        let mut root = root.clone();
-        let mut root_resolved = root_resolved.clone();
-        move || -> Option<crate::OpaqueHostValue> {
-            if (*root_resolved.lock().unwrap()).clone() {
-                return (*root.lock().unwrap()).clone();
+    let get_root: std::sync::Arc<
+        std::sync::Mutex<
+            std::sync::Arc<
+                std::sync::Mutex<
+                    Box<dyn FnMut() -> Option<crate::OpaqueHostValue> + Send + 'static>,
+                >,
+            >,
+        >,
+    > = std::sync::Arc::new(std::sync::Mutex::new(std::sync::Arc::new(
+        std::sync::Mutex::new(Box::new({
+            let mut root = root.clone();
+            let mut root_resolved = root_resolved.clone();
+            move || -> Option<crate::OpaqueHostValue> {
+                if (*root_resolved.lock().unwrap()).clone() {
+                    return (*root.lock().unwrap()).clone();
+                }
+                (*root_resolved.lock().unwrap()) = true;
+                {
+                    (*root.lock().unwrap()) = None;
+                    return None;
+                }
             }
-            (*root_resolved.lock().unwrap()) = true;
-            {
-                (*root.lock().unwrap()) = None;
-                return None;
-            }
-        }
-    })
-        as Box<dyn FnMut() -> Option<crate::OpaqueHostValue> + Send + 'static>));
+        })
+            as Box<dyn FnMut() -> Option<crate::OpaqueHostValue> + Send + 'static>),
+    )));
     return AccessibilityBackend {
         __flight_identity: std::sync::Arc::new(()),
         set_node: std::sync::Arc::new(std::sync::Mutex::new(Box::new({
             let mut elements = elements.clone();
-            let get_root = get_root.clone();
+            let mut get_root = get_root.clone();
             move |node: AccessibilityNode| -> () {
-                let mut overlay_root = ((get_root).clone()).lock().unwrap()();
+                let mut overlay_root = {
+                    let __flight_callback = (*get_root.lock().unwrap()).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                };
                 if (overlay_root).is_none() {
                     return;
                 }
@@ -110,7 +127,7 @@ pub fn create_web_accessibility_backend(
                 for __iteration0 in ((*elements.lock().unwrap()).clone()).iter().cloned() {
                     let key = __iteration0[0.0_f64 as usize].clone();
                     let other = __iteration0[1.0_f64 as usize].clone();
-                    if crate::host_value::<()>("host.contains") {
+                    if crate::host_value::<bool>("host.contains") {
                         {
                             let __flight_key = key;
                             if let Some(__flight_index) = (*elements.lock().unwrap())
@@ -125,7 +142,9 @@ pub fn create_web_accessibility_backend(
                         };
                     }
                 }
-                if ((element.as_ref().unwrap().parent_node).clone()).is_some() {
+                if (crate::host_value::<Option<crate::OpaqueHostValue>>("host.parentNode"))
+                    .is_some()
+                {
                     crate::host_value::<()>("host.removeChild");
                 }
             }
@@ -133,10 +152,14 @@ pub fn create_web_accessibility_backend(
             as Box<dyn FnMut(String) -> () + Send + 'static>)),
         clear: std::sync::Arc::new(std::sync::Mutex::new(Box::new({
             let mut elements = elements.clone();
-            let get_root = get_root.clone();
+            let mut get_root = get_root.clone();
             let mut live_regions = live_regions.clone();
             move || -> () {
-                let overlay_root = ((get_root).clone()).lock().unwrap()();
+                let overlay_root = {
+                    let __flight_callback = (*get_root.lock().unwrap()).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                };
                 (*elements.lock().unwrap()).clear();
                 (*live_regions.lock().unwrap()).clear();
                 if (overlay_root).is_some() {
@@ -147,9 +170,13 @@ pub fn create_web_accessibility_backend(
             as Box<dyn FnMut() -> () + Send + 'static>)),
         set_focus: std::sync::Arc::new(std::sync::Mutex::new(Box::new({
             let mut elements = elements.clone();
-            let get_root = get_root.clone();
+            let mut get_root = get_root.clone();
             move |id: String| -> bool {
-                let overlay_root = ((get_root).clone()).lock().unwrap()();
+                let overlay_root = {
+                    let __flight_callback = (*get_root.lock().unwrap()).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                };
                 if (overlay_root).is_none() {
                     return false;
                 }
@@ -167,10 +194,14 @@ pub fn create_web_accessibility_backend(
         })
             as Box<dyn FnMut(String) -> bool + Send + 'static>)),
         announce: std::sync::Arc::new(std::sync::Mutex::new(Box::new({
-            let get_root = get_root.clone();
+            let mut get_root = get_root.clone();
             let mut live_regions = live_regions.clone();
             move |message: String, liveness: AccessibilityLiveness| -> () {
-                let overlay_root = ((get_root).clone()).lock().unwrap()();
+                let overlay_root = {
+                    let __flight_callback = (*get_root.lock().unwrap()).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                };
                 if (overlay_root).is_none() {
                     return;
                 }
@@ -196,9 +227,11 @@ pub fn get_accessibility_backend() -> AccessibilityBackend {
 
 // Source: upstream/packages/accessibility/src/accessibility.ts:101 (sha256:280784fc9eb942ee9607ea7b7f52ce5f4a22a980ff6afaf16ef800a210883561)
 pub fn remove_accessibility_node(id: String) -> () {
-    ((get_accessibility_backend().remove_node).clone())
-        .lock()
-        .unwrap()((id).clone());
+    {
+        let __flight_callback = (get_accessibility_backend().remove_node).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((id).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/accessibility/src/accessibility.ts:106 (sha256:9c2150404fdc1c0ef9a73753512fa05d78e4350d378787b58966aca5000b2ae9)
@@ -208,16 +241,20 @@ pub fn set_accessibility_backend(backend: Option<AccessibilityBackend>) -> () {
 
 // Source: upstream/packages/accessibility/src/accessibility.ts:112 (sha256:afed3a491be320f8ed387e3a88795157e8e894d32a43d830ab42c090ae81b002)
 pub fn set_accessibility_focus(id: String) -> bool {
-    return ((get_accessibility_backend().set_focus).clone())
-        .lock()
-        .unwrap()((id).clone());
+    return {
+        let __flight_callback = (get_accessibility_backend().set_focus).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((id).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/accessibility/src/accessibility.ts:118 (sha256:424a6b2312331c87a45df318680bf93a84c1fe629ed84bbe08df46097dbb94d4)
 pub fn set_accessibility_node(node: &AccessibilityNode) -> () {
-    ((get_accessibility_backend().set_node).clone())
-        .lock()
-        .unwrap()((*node).clone());
+    {
+        let __flight_callback = (get_accessibility_backend().set_node).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*node).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/accessibility/src/accessibility.ts:122 (sha256:fa0b551f65e8a4cd7abf102113b8de32b26634cdd65f5bbbb86990a62ac10bc7)
@@ -316,18 +353,18 @@ fn _apply_accessibility_state_attributes(
 // Source: upstream/packages/accessibility/src/accessibility.ts:162 (sha256:765a32dcd37221032140101e553ac26c55c35ae2d191a71fee99003d70ec8b02)
 fn _create_hidden_accessibility_container(doc: crate::OpaqueHostValue) -> crate::OpaqueHostValue {
     let mut container = crate::host_value::<()>("host.createElement");
-    (container.set_attribute)("data-flight-accessibility", "true");
-    let mut style = container.style;
-    style.position = "absolute";
-    style.width = "1px";
-    style.height = "1px";
-    style.margin = "-1px";
-    style.padding = "0";
-    style.border = "0";
-    style.overflow = "hidden";
-    style.clip = "rect(0 0 0 0)";
-    style.clip_path = "inset(50%)";
-    style.white_space = "nowrap";
+    crate::host_value::<()>("host.setAttribute");
+    let mut style = crate::host_value::<crate::OpaqueHostValue>("host.style");
+    crate::host_set("host.position", "absolute");
+    crate::host_set("host.width", "1px");
+    crate::host_set("host.height", "1px");
+    crate::host_set("host.margin", "-1px");
+    crate::host_set("host.padding", "0");
+    crate::host_set("host.border", "0");
+    crate::host_set("host.overflow", "hidden");
+    crate::host_set("host.clip", "rect(0 0 0 0)");
+    crate::host_set("host.clipPath", "inset(50%)");
+    crate::host_set("host.whiteSpace", "nowrap");
     return container;
 }
 
@@ -341,7 +378,9 @@ fn _get_accessibility_live_region(
         .iter()
         .find(|(key, _)| key == &(liveness).clone())
         .map(|(_, value)| value.clone());
-    if ((region).is_none() || ((region.as_mut().unwrap().parent_node).clone()).is_none()) {
+    if ((region).is_none())
+        || ((crate::host_value::<Option<crate::OpaqueHostValue>>("host.parentNode")).is_none())
+    {
         region = Some(crate::host_value::<crate::OpaqueHostValue>(
             "host.createElement",
         ));
@@ -433,12 +472,12 @@ fn _set_accessibility_element_value_text(
 ) -> () {
     let mut first = crate::host_value::<crate::OpaqueHostValue>("host.firstChild");
     if (value).is_none() {
-        if ((first).is_some() && (crate::host_value::<f64>("host.nodeType") == _TEXT_NODE)) {
+        if ((first).is_some()) && (crate::host_value::<f64>("host.nodeType") == _TEXT_NODE) {
             crate::host_value::<()>("host.removeChild");
         }
         return;
     }
-    if ((first).is_some() && (crate::host_value::<f64>("host.nodeType") == _TEXT_NODE)) {
+    if ((first).is_some()) && (crate::host_value::<f64>("host.nodeType") == _TEXT_NODE) {
         crate::host_set("host.nodeValue", value);
         return;
     }

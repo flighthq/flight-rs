@@ -18,7 +18,7 @@ fn snapshot_values_equal(a: crate::OpaqueHostValue, b: crate::OpaqueHostValue) -
     if (a == b) {
         return true;
     }
-    if ((((a).is_none() || (b).is_none())
+    if ((((a).is_none()) || ((b).is_none()))
         || (match &(a) {
             crate::OpaqueHostValue::Undefined => "undefined",
             crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
@@ -32,7 +32,7 @@ fn snapshot_values_equal(a: crate::OpaqueHostValue, b: crate::OpaqueHostValue) -
             crate::OpaqueHostValue::Bool(_) => "boolean",
             crate::OpaqueHostValue::Number(_) => "number",
             crate::OpaqueHostValue::String(_) => "string",
-        } != "object"))
+        } != "object")
     {
         return false;
     }

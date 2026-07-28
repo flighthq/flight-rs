@@ -44,11 +44,19 @@ pub fn ease_cubic_bezier(x1: f64, y1: f64, x2: f64, y2: f64) -> EasingFunction {
             {
                 let mut i = 0.0_f64;
                 while (i < 8.0_f64) {
-                    let x_error = (((sample_x).clone()).lock().unwrap()(s) - x);
+                    let x_error = ({
+                        let __flight_callback = (sample_x).clone();
+                        let __flight_result = __flight_callback.lock().unwrap()(s);
+                        __flight_result
+                    } - x);
                     if ((x_error).abs() < epsilon) {
                         return s;
                     }
-                    let derivative = ((sample_derivative_x).clone()).lock().unwrap()(s);
+                    let derivative = {
+                        let __flight_callback = (sample_derivative_x).clone();
+                        let __flight_result = __flight_callback.lock().unwrap()(s);
+                        __flight_result
+                    };
                     if ((derivative).abs() < 0.000001_f64) {
                         break;
                     }
@@ -69,7 +77,11 @@ pub fn ease_cubic_bezier(x1: f64, y1: f64, x2: f64, y2: f64) -> EasingFunction {
                 return high;
             }
             while (low < high) {
-                let sampled = ((sample_x).clone()).lock().unwrap()(s);
+                let sampled = {
+                    let __flight_callback = (sample_x).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()(s);
+                    __flight_result
+                };
                 if ((sampled - x).abs() < epsilon) {
                     return s;
                 }
@@ -94,9 +106,15 @@ pub fn ease_cubic_bezier(x1: f64, y1: f64, x2: f64, y2: f64) -> EasingFunction {
             if (t >= 1.0_f64) {
                 return 1.0_f64;
             }
-            return ((sample_y).clone()).lock().unwrap()(((solve_parameter_for_x).clone())
-                .lock()
-                .unwrap()(t, 1e-7_f64));
+            return {
+                let __flight_callback = (sample_y).clone();
+                let __flight_result = __flight_callback.lock().unwrap()({
+                    let __flight_callback = (solve_parameter_for_x).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()(t, 1e-7_f64);
+                    __flight_result
+                });
+                __flight_result
+            };
         }
     })
         as Box<dyn FnMut(f64) -> f64 + Send + 'static>));

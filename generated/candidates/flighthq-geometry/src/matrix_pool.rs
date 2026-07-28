@@ -13,7 +13,7 @@ use flighthq_types::Matrix;
 pub fn acquire_identity_matrix() -> Matrix {
     let mut m = acquire_matrix();
     set_matrix_identity(&mut m);
-    return (m).clone();
+    return m;
 }
 
 // Source: upstream/packages/geometry/src/matrixPool.ts:11 (sha256:ec4e435d2cc5bcd4e2e39b0e10f9a3795156068449372817c4e01fce612faf75)

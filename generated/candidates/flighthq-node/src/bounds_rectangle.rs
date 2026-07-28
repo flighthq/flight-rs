@@ -85,8 +85,8 @@ impl PartialEq for EnsureNodeParentBoundsRectangleRecord1 {
 
 pub fn ensure_node_parent_bounds_rectangle(target: &Spatial2DNode) -> () {
     let mut runtime = get_entity_runtime(target);
-    if ((runtime.bounds_using_local_bounds_id != runtime.local_bounds_id)
-        || (runtime.bounds_using_local_transform_id != runtime.local_transform_id))
+    if (runtime.bounds_using_local_bounds_id != runtime.local_bounds_id)
+        || (runtime.bounds_using_local_transform_id != runtime.local_transform_id)
     {
         recompute_node_bounds_rectangle(target, &mut runtime);
     }
@@ -109,15 +109,15 @@ pub fn ensure_node_world_bounds_rectangle(target: &Spatial2DNode) -> () {
         (runtime.world_bounds_using_local_bounds_id != runtime.local_bounds_id);
     let has_children = (get_node_child_count(target) != 0.0_f64);
     let mut force_recompute = false;
-    if ((!has_children) && (!local_bounds_invalid)) {
+    if (!has_children) && (!local_bounds_invalid) {
         if try_fast_recompute_world_bounds_rectangle(target, &mut runtime) {
             return;
         }
         force_recompute = true;
     }
     ensure_node_world_matrix(target);
-    if ((force_recompute || local_bounds_invalid)
-        || (runtime.world_bounds_using_world_transform_id != runtime.world_transform_id))
+    if ((force_recompute) || (local_bounds_invalid))
+        || (runtime.world_bounds_using_world_transform_id != runtime.world_transform_id)
     {
         recompute_world_bounds_rectangle(target, &mut runtime);
     }
@@ -224,9 +224,14 @@ fn recompute_local_bounds_rectangle(
     if ((runtime.local_bounds_rectangle).clone()).is_none() {
         runtime.local_bounds_rectangle = Some(create_rectangle(None, None, None, None));
     }
-    ((runtime.compute_local_bounds_rectangle).clone())
-        .lock()
-        .unwrap()(((runtime.local_bounds_rectangle).clone()).unwrap(), target);
+    {
+        let __flight_callback = (runtime.compute_local_bounds_rectangle).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(
+            ((runtime.local_bounds_rectangle).clone()).unwrap(),
+            target,
+        );
+        __flight_result
+    };
     runtime.local_bounds_using_local_bounds_id = runtime.local_bounds_id;
 }
 
@@ -260,7 +265,7 @@ fn recompute_world_bounds_rectangle(
                 continue;
             }
             let child_world_bounds = get_node_world_bounds_rectangle(&child);
-            if ((child_world_bounds.width != 0.0_f64) && (child_world_bounds.height != 0.0_f64)) {
+            if (child_world_bounds.width != 0.0_f64) && (child_world_bounds.height != 0.0_f64) {
                 {
                     let __flight_argument_1 = (runtime.world_bounds_rectangle).clone();
                     merge_rectangle(
@@ -291,8 +296,8 @@ fn try_fast_recompute_world_bounds_rectangle(
     target: &Spatial2DNode,
     runtime: &mut TryFastRecomputeWorldBoundsRectangleRecord1,
 ) -> bool {
-    if (((runtime.world_bounds_rectangle).clone()).is_some()
-        && ((runtime.world_matrix).clone()).is_some())
+    if (((runtime.world_bounds_rectangle).clone()).is_some())
+        && (((runtime.world_matrix).clone()).is_some())
     {
         let __destructure0 = (runtime.world_matrix).clone();
         let _a = __destructure0.as_ref().unwrap().a;
@@ -309,8 +314,8 @@ fn try_fast_recompute_world_bounds_rectangle(
         let d = __destructure1.as_ref().unwrap().d;
         let tx = __destructure1.as_ref().unwrap().tx;
         let ty = __destructure1.as_ref().unwrap().ty;
-        if ((((a == _a) && (b == _b)) && (c == _c)) && (d == _d)) {
-            if ((tx != _tx) || (ty != _ty)) {
+        if (((a == _a) && (b == _b)) && (c == _c)) && (d == _d) {
+            if (tx != _tx) || (ty != _ty) {
                 runtime.world_bounds_rectangle.as_mut().unwrap().x += (tx - _tx);
                 runtime.world_bounds_rectangle.as_mut().unwrap().y += (ty - _ty);
             }

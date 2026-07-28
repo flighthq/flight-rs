@@ -8,7 +8,7 @@
 
 // Source: upstream/packages/easing/src/easeElastic.ts:3 (sha256:fb65745f3b406ea7cfd8b309fb0697d770eb8a9b2745edbca64da42834df7b8a)
 pub fn ease_in_elastic(mut t: f64) -> f64 {
-    if ((t == 0.0_f64) || (t == 1.0_f64)) {
+    if (t == 0.0_f64) || (t == 1.0_f64) {
         return t;
     }
     return (-((2.0_f64).powf(
@@ -21,7 +21,7 @@ pub fn ease_in_elastic(mut t: f64) -> f64 {
 
 // Source: upstream/packages/easing/src/easeElastic.ts:8 (sha256:486aca4392dc2ed3c79caf688d63b3f9e50d6cc44dabaae15c7ce4c6940a57dc)
 pub fn ease_in_out_elastic(mut t: f64) -> f64 {
-    if ((t == 0.0_f64) || (t == 1.0_f64)) {
+    if (t == 0.0_f64) || (t == 1.0_f64) {
         return t;
     }
     if ({
@@ -50,7 +50,7 @@ pub fn ease_in_out_elastic(mut t: f64) -> f64 {
 
 // Source: upstream/packages/easing/src/easeElastic.ts:14 (sha256:1b00d8c204f9edcd8dec94c70d2efdebd6e5099797902be35831d354bb6574c0)
 pub fn ease_out_elastic(t: f64) -> f64 {
-    if ((t == 0.0_f64) || (t == 1.0_f64)) {
+    if (t == 0.0_f64) || (t == 1.0_f64) {
         return t;
     }
     return (((2.0_f64).powf(((-10.0_f64) * t))

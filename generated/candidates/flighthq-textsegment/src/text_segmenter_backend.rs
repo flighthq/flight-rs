@@ -12,7 +12,23 @@ use flighthq_types::{TextSegment, TextSegmentGranularity, TextSegmenterBackend};
 pub fn create_web_text_segmenter_backend() -> TextSegmenterBackend {
     return TextSegmenterBackend {
         __flight_identity: std::sync::Arc::new(()),
-        segment: segment_with_intl_segmenter,
+        segment: std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: String,
+                  __flight_argument_1: TextSegmentGranularity,
+                  __flight_argument_2: Option<String>|
+                  -> Vec<TextSegment> {
+                segment_with_intl_segmenter(
+                    (__flight_argument_0).clone(),
+                    (__flight_argument_1).clone(),
+                    Some(((__flight_argument_2).clone().unwrap()).clone()),
+                )
+            },
+        )
+            as Box<
+                dyn FnMut(String, TextSegmentGranularity, Option<String>) -> Vec<TextSegment>
+                    + Send
+                    + 'static,
+            >)),
     };
 }
 
@@ -61,19 +77,25 @@ fn segment_with_intl_segmenter(
     }
     let mut out: Vec<TextSegment> = vec![];
     let is_word_granularity = (granularity == "word");
-    for data in (crate::host_value::<()>("host.segment")).iter().cloned() {
-        let start = data.index;
+    for data in (crate::host_value::<Vec<crate::OpaqueHostValue>>("host.call"))
+        .iter()
+        .cloned()
+    {
+        let start = crate::host_value::<f64>("host.index");
         let mut record: TextSegment = TextSegment {
             __flight_identity: std::sync::Arc::new(()),
             start: start,
-            end: (start + data.segment.length),
-            text: data.segment,
+            end: (start
+                + (crate::host_value::<String>("host.segment")
+                    .encode_utf16()
+                    .count() as f64)),
+            text: crate::host_value::<String>("host.segment"),
             is_word_like: None,
         };
         if is_word_granularity {
-            record.is_word_like = Some((data.is_word_like).unwrap_or(false));
+            record.is_word_like = Some(crate::host_value::<bool>("host.isWordLike"));
         }
         out.push(((record).clone()).clone());
     }
-    return (out).clone();
+    return out;
 }

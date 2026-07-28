@@ -42,8 +42,8 @@ pub fn clean_path(
         if (n < 2.0_f64) {
             continue;
         }
-        let closed = ((n >= 3.0_f64)
-            && within_tolerance(
+        let closed = (n >= 3.0_f64)
+            && (within_tolerance(
                 contour[0.0_f64 as usize].clone(),
                 contour[1.0_f64 as usize].clone(),
                 contour[((n * 2.0_f64) - 2.0_f64) as usize].clone(),
@@ -107,9 +107,9 @@ pub fn clean_path(
 // Source: upstream/packages/path/src/cleanPath.ts:52 (sha256:4f7b84ecabcbcfe710a3002a5c7ffd1e4fdccaddf28e909563003a498c215444)
 fn collapse_closed_seam(kept: &mut Vec<f64>, tolerance_sq: f64) -> () {
     let mut changed = true;
-    while (changed
+    while (changed)
         && ((__flight_js_to_i32((kept.len() as f64)) >> (__flight_js_to_u32(1.0_f64) & 31)) as f64
-            > 3.0_f64))
+            > 3.0_f64)
     {
         changed = false;
         let last =
@@ -179,8 +179,8 @@ fn is_redundant_middle(
 // Source: upstream/packages/path/src/cleanPath.ts:114 (sha256:9a2c26c4a1b81de27c8d0730a3aeee79f649dded6ffbdf040e445d3432131189)
 fn push_clean_vertex(kept: &mut Vec<f64>, x: f64, y: f64, tolerance_sq: f64) -> () {
     let k = (kept.len() as f64);
-    if ((k >= 2.0_f64)
-        && within_tolerance(
+    if (k >= 2.0_f64)
+        && (within_tolerance(
             kept[(k - 2.0_f64) as usize].clone(),
             kept[(k - 1.0_f64) as usize].clone(),
             x,

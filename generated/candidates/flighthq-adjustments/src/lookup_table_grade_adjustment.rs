@@ -32,7 +32,7 @@ pub fn create_lookup_table_grade_adjustment(
     let strength = (options.strength).unwrap_or(1.0_f64);
     let mut transform: ColorTransformFunction = std::sync::Arc::new(std::sync::Mutex::new(
         Box::new(move |mut out: Vec<f64>, r: f64, g: f64, b: f64| -> () {
-            if ((lut).is_none() || (strength <= 0.0_f64)) {
+            if ((lut).is_none()) || (strength <= 0.0_f64) {
                 {
                     let __flight_index = (0.0_f64) as usize;
                     let __flight_value = r;

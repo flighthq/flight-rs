@@ -107,8 +107,9 @@ pub struct SocketConnection {
             Box<dyn FnMut(crate::FlightUnion2<String, Vec<u8>>) -> bool + Send + 'static>,
         >,
     >,
-    pub close_socket_connection:
-        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64, String) -> () + Send + 'static>>>,
+    pub close_socket_connection: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(Option<f64>, Option<String>) -> () + Send + 'static>>,
+    >,
 }
 impl PartialEq for SocketConnection {
     fn eq(&self, other: &Self) -> bool {

@@ -22,9 +22,48 @@ fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
 }
 
+#[inline]
+
+fn __flight_number_to_string(value: f64, radix: f64) -> String {
+    let radix = radix.trunc().clamp(2.0_f64, 36.0_f64) as u32;
+    let mut value = value.trunc().rem_euclid(4294967296.0_f64) as u32;
+    if value == 0 {
+        return "0".to_owned();
+    }
+    let mut digits = Vec::new();
+    while value > 0 {
+        let digit = value % radix;
+        digits.push(char::from_digit(digit, radix).unwrap());
+        value /= radix;
+    }
+    digits.iter().rev().collect()
+}
+
+#[inline]
+
+fn __flight_pad_start(value: String, width: f64, pad: String) -> String {
+    let length = value.chars().count();
+    let width = width.max(0.0_f64).trunc() as usize;
+    if length >= width || pad.is_empty() {
+        return value;
+    }
+    let prefix: String = pad.chars().cycle().take(width - length).collect();
+    prefix + &value
+}
+
 // Source: upstream/packages/color/src/packColor.ts:10 (sha256:78dae939b6157197b3aaca2c58a4fa07b402333aaeb9e7bec0c519b9b11827b1)
 pub fn compute_rgb_hex_string(color: f64) -> String {
-    return format!("#{}", (((__flight_js_to_i32(color) & __flight_js_to_i32(16777215.0_f64)) as f64.to_string)(16.0_f64).pad_start)(6.0_f64, "0"));
+    return format!(
+        "#{}",
+        __flight_pad_start(
+            __flight_number_to_string(
+                (__flight_js_to_i32(color) & __flight_js_to_i32(16777215.0_f64)) as f64,
+                16.0_f64
+            ),
+            6.0_f64,
+            "0".to_owned()
+        )
+    );
 }
 
 // Source: upstream/packages/color/src/packColor.ts:15 (sha256:996de9a4f58776bbe434b22983c12c761ee03d1da27ea78cf55ee228a9cc8b31)

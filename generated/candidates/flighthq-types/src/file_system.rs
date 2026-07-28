@@ -143,7 +143,9 @@ pub struct FileSystemBackend {
         std::sync::Mutex<Box<dyn FnMut(String) -> crate::Promise<bool> + Send + 'static>>,
     >,
     pub remove_directory: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String, bool) -> crate::Promise<bool> + Send + 'static>>,
+        std::sync::Mutex<
+            Box<dyn FnMut(String, Option<bool>) -> crate::Promise<bool> + Send + 'static>,
+        >,
     >,
     pub make_directory: std::sync::Arc<
         std::sync::Mutex<Box<dyn FnMut(String) -> crate::Promise<bool> + Send + 'static>>,
@@ -154,7 +156,7 @@ pub struct FileSystemBackend {
     pub read_directory_recursive: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(String, FileWalkOptions) -> crate::Promise<Vec<FileEntry>>
+                dyn FnMut(String, Option<FileWalkOptions>) -> crate::Promise<Vec<FileEntry>>
                     + Send
                     + 'static,
             >,

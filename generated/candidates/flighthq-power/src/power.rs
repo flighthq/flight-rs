@@ -16,125 +16,159 @@ use flighthq_types::{
 pub fn attach_power(power: Power, idle_threshold_seconds: Option<f64>) -> () {
     let idle_threshold_seconds = idle_threshold_seconds.unwrap_or(60.0_f64);
     detach_power(&power);
-    let backend = get_power_backend();
+    let backend: std::sync::Arc<std::sync::Mutex<PowerBackend>> =
+        std::sync::Arc::new(std::sync::Mutex::new(get_power_backend()));
     let was_charging: std::sync::Arc<std::sync::Mutex<bool>> =
         std::sync::Arc::new(std::sync::Mutex::new(
-            ((backend.get_status).clone()).lock().unwrap()(((*_SCRATCH).clone()).clone())
-                .is_charging,
+            {
+                let __flight_callback = ((*backend.lock().unwrap()).get_status).clone();
+                let __flight_result =
+                    __flight_callback.lock().unwrap()(((*_SCRATCH).clone()).clone());
+                __flight_result
+            }
+            .is_charging,
         ));
-    let unsubscribe_change = ((backend.subscribe).clone()).lock().unwrap()(std::sync::Arc::new(
-        std::sync::Mutex::new(Box::new({
-            let backend = backend.clone();
-            let power = power.clone();
-            let mut was_charging = was_charging.clone();
-            move || -> () {
-                let status =
-                    ((backend.get_status).clone()).lock().unwrap()(((*_SCRATCH).clone()).clone());
-                if ((power.on_change).clone()).is_some() {
-                    emit_signal(((power.on_change).clone()).unwrap(), (status,));
-                }
-                if (status.is_charging != (*was_charging.lock().unwrap()).clone()) {
-                    (*was_charging.lock().unwrap()) = status.is_charging;
-                    let transition = if status.is_charging {
-                        (power.on_charging).clone()
-                    } else {
-                        (power.on_discharging).clone()
+    let unsubscribe_change = {
+        let __flight_callback = ((*backend.lock().unwrap()).subscribe).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(std::sync::Arc::new(
+            std::sync::Mutex::new(Box::new({
+                let mut backend = backend.clone();
+                let power = power.clone();
+                let mut was_charging = was_charging.clone();
+                move || -> () {
+                    let status = {
+                        let __flight_callback = ((*backend.lock().unwrap()).get_status).clone();
+                        let __flight_result =
+                            __flight_callback.lock().unwrap()(((*_SCRATCH).clone()).clone());
+                        __flight_result
                     };
-                    if (transition).is_some() {
-                        emit_signal(transition.as_ref().unwrap(), ());
+                    if ((power.on_change).clone()).is_some() {
+                        emit_signal(((power.on_change).clone()).unwrap(), (status,));
+                    }
+                    if (status.is_charging != (*was_charging.lock().unwrap()).clone()) {
+                        (*was_charging.lock().unwrap()) = status.is_charging;
+                        let transition = if status.is_charging {
+                            (power.on_charging).clone()
+                        } else {
+                            (power.on_discharging).clone()
+                        };
+                        if (transition).is_some() {
+                            emit_signal(transition.as_ref().unwrap(), ());
+                        }
                     }
                 }
-            }
-        }) as Box<dyn FnMut() -> () + Send + 'static>),
-    ));
-    let unsubscribe_lock_screen = ((backend.subscribe_lock_screen).clone()).lock().unwrap()(
-        std::sync::Arc::new(std::sync::Mutex::new(Box::new({
-            let power = power.clone();
-            move || -> () {
-                if ((power.on_lock_screen).clone()).is_some() {
-                    emit_signal(((power.on_lock_screen).clone()).unwrap(), ());
+            }) as Box<dyn FnMut() -> () + Send + 'static>),
+        ));
+        __flight_result
+    };
+    let unsubscribe_lock_screen = {
+        let __flight_callback = ((*backend.lock().unwrap()).subscribe_lock_screen).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(std::sync::Arc::new(
+            std::sync::Mutex::new(Box::new({
+                let power = power.clone();
+                move || -> () {
+                    if ((power.on_lock_screen).clone()).is_some() {
+                        emit_signal(((power.on_lock_screen).clone()).unwrap(), ());
+                    }
                 }
-            }
-        })
-            as Box<dyn FnMut() -> () + Send + 'static>)),
-    );
-    let unsubscribe_low_power_mode_change = ((backend.subscribe_low_power_mode_change).clone())
-        .lock()
-        .unwrap()(std::sync::Arc::new(
-        std::sync::Mutex::new(Box::new({
-            let power = power.clone();
-            move || -> () {
-                if ((power.on_low_power_mode_change).clone()).is_some() {
-                    emit_signal(((power.on_low_power_mode_change).clone()).unwrap(), ());
+            }) as Box<dyn FnMut() -> () + Send + 'static>),
+        ));
+        __flight_result
+    };
+    let unsubscribe_low_power_mode_change = {
+        let __flight_callback =
+            ((*backend.lock().unwrap()).subscribe_low_power_mode_change).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(std::sync::Arc::new(
+            std::sync::Mutex::new(Box::new({
+                let power = power.clone();
+                move || -> () {
+                    if ((power.on_low_power_mode_change).clone()).is_some() {
+                        emit_signal(((power.on_low_power_mode_change).clone()).unwrap(), ());
+                    }
                 }
-            }
-        }) as Box<dyn FnMut() -> () + Send + 'static>),
-    ));
-    let unsubscribe_resume = ((backend.subscribe_resume).clone()).lock().unwrap()(
-        std::sync::Arc::new(std::sync::Mutex::new(Box::new({
-            let power = power.clone();
-            move || -> () {
-                if ((power.on_resume).clone()).is_some() {
-                    emit_signal(((power.on_resume).clone()).unwrap(), ());
+            }) as Box<dyn FnMut() -> () + Send + 'static>),
+        ));
+        __flight_result
+    };
+    let unsubscribe_resume = {
+        let __flight_callback = ((*backend.lock().unwrap()).subscribe_resume).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(std::sync::Arc::new(
+            std::sync::Mutex::new(Box::new({
+                let power = power.clone();
+                move || -> () {
+                    if ((power.on_resume).clone()).is_some() {
+                        emit_signal(((power.on_resume).clone()).unwrap(), ());
+                    }
                 }
-            }
-        })
-            as Box<dyn FnMut() -> () + Send + 'static>)),
-    );
-    let unsubscribe_suspend = ((backend.subscribe_suspend).clone()).lock().unwrap()(
-        std::sync::Arc::new(std::sync::Mutex::new(Box::new({
-            let power = power.clone();
-            move || -> () {
-                if ((power.on_suspend).clone()).is_some() {
-                    emit_signal(((power.on_suspend).clone()).unwrap(), ());
+            }) as Box<dyn FnMut() -> () + Send + 'static>),
+        ));
+        __flight_result
+    };
+    let unsubscribe_suspend = {
+        let __flight_callback = ((*backend.lock().unwrap()).subscribe_suspend).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(std::sync::Arc::new(
+            std::sync::Mutex::new(Box::new({
+                let power = power.clone();
+                move || -> () {
+                    if ((power.on_suspend).clone()).is_some() {
+                        emit_signal(((power.on_suspend).clone()).unwrap(), ());
+                    }
                 }
-            }
-        })
-            as Box<dyn FnMut() -> () + Send + 'static>)),
-    );
-    let unsubscribe_thermal_state_change = ((backend.subscribe_thermal_state_change).clone())
-        .lock()
-        .unwrap()(std::sync::Arc::new(
-        std::sync::Mutex::new(Box::new({
-            let power = power.clone();
-            move || -> () {
-                if ((power.on_thermal_state_change).clone()).is_some() {
-                    emit_signal(((power.on_thermal_state_change).clone()).unwrap(), ());
+            }) as Box<dyn FnMut() -> () + Send + 'static>),
+        ));
+        __flight_result
+    };
+    let unsubscribe_thermal_state_change = {
+        let __flight_callback = ((*backend.lock().unwrap()).subscribe_thermal_state_change).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(std::sync::Arc::new(
+            std::sync::Mutex::new(Box::new({
+                let power = power.clone();
+                move || -> () {
+                    if ((power.on_thermal_state_change).clone()).is_some() {
+                        emit_signal(((power.on_thermal_state_change).clone()).unwrap(), ());
+                    }
                 }
-            }
-        }) as Box<dyn FnMut() -> () + Send + 'static>),
-    ));
-    let unsubscribe_unlock_screen = ((backend.subscribe_unlock_screen).clone()).lock().unwrap()(
-        std::sync::Arc::new(std::sync::Mutex::new(Box::new({
-            let power = power.clone();
-            move || -> () {
-                if ((power.on_unlock_screen).clone()).is_some() {
-                    emit_signal(((power.on_unlock_screen).clone()).unwrap(), ());
+            }) as Box<dyn FnMut() -> () + Send + 'static>),
+        ));
+        __flight_result
+    };
+    let unsubscribe_unlock_screen = {
+        let __flight_callback = ((*backend.lock().unwrap()).subscribe_unlock_screen).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(std::sync::Arc::new(
+            std::sync::Mutex::new(Box::new({
+                let power = power.clone();
+                move || -> () {
+                    if ((power.on_unlock_screen).clone()).is_some() {
+                        emit_signal(((power.on_unlock_screen).clone()).unwrap(), ());
+                    }
                 }
-            }
-        })
-            as Box<dyn FnMut() -> () + Send + 'static>)),
-    );
+            }) as Box<dyn FnMut() -> () + Send + 'static>),
+        ));
+        __flight_result
+    };
     let last_idle_state: std::sync::Arc<std::sync::Mutex<PowerIdleState>> =
-        std::sync::Arc::new(std::sync::Mutex::new(((backend.get_system_idle_state)
-            .clone())
-        .lock()
-        .unwrap()(
-            idle_threshold_seconds
-        )));
-    let idle_interval_id: Option<crate::FlightTimeout> = crate::set_interval(
+        std::sync::Arc::new(std::sync::Mutex::new({
+            let __flight_callback = ((*backend.lock().unwrap()).get_system_idle_state).clone();
+            let __flight_result = __flight_callback.lock().unwrap()(idle_threshold_seconds);
+            __flight_result
+        }));
+    let idle_interval_id: Option<crate::FlightTimeout> = Some(crate::set_interval(
         {
-            let backend = backend.clone();
+            let mut backend = backend.clone();
             let mut last_idle_state = last_idle_state.clone();
             let power = power.clone();
             move || -> () {
                 let idle_signal = (power.on_idle_state_change).clone();
-                if ((idle_signal).is_none() || (!has_signal_slots(&idle_signal))) {
+                if ((idle_signal).is_none()) || (!has_signal_slots((idle_signal).clone().unwrap()))
+                {
                     return;
                 }
-                let current = ((backend.get_system_idle_state).clone()).lock().unwrap()(
-                    idle_threshold_seconds,
-                );
+                let current = {
+                    let __flight_callback =
+                        ((*backend.lock().unwrap()).get_system_idle_state).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()(idle_threshold_seconds);
+                    __flight_result
+                };
                 if (current != (*last_idle_state.lock().unwrap()).clone()) {
                     (*last_idle_state.lock().unwrap()) = (current).clone();
                     emit_signal((idle_signal).clone().unwrap(), ());
@@ -142,7 +176,7 @@ pub fn attach_power(power: Power, idle_threshold_seconds: Option<f64>) -> () {
             }
         },
         (*_IDLE_POLLING_INTERVAL_MS.lock().unwrap()).clone(),
-    );
+    ));
     {
         let __flight_key = (power).clone();
         let __flight_value = std::sync::Arc::new(std::sync::Mutex::new(Box::new({
@@ -154,15 +188,41 @@ pub fn attach_power(power: Power, idle_threshold_seconds: Option<f64>) -> () {
             let unsubscribe_thermal_state_change = unsubscribe_thermal_state_change.clone();
             let unsubscribe_unlock_screen = unsubscribe_unlock_screen.clone();
             move || -> () {
-                ((unsubscribe_change).clone()).lock().unwrap()();
-                ((unsubscribe_lock_screen).clone()).lock().unwrap()();
-                ((unsubscribe_low_power_mode_change).clone())
-                    .lock()
-                    .unwrap()();
-                ((unsubscribe_resume).clone()).lock().unwrap()();
-                ((unsubscribe_suspend).clone()).lock().unwrap()();
-                ((unsubscribe_thermal_state_change).clone()).lock().unwrap()();
-                ((unsubscribe_unlock_screen).clone()).lock().unwrap()();
+                {
+                    let __flight_callback = (unsubscribe_change).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                };
+                {
+                    let __flight_callback = (unsubscribe_lock_screen).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                };
+                {
+                    let __flight_callback = (unsubscribe_low_power_mode_change).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                };
+                {
+                    let __flight_callback = (unsubscribe_resume).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                };
+                {
+                    let __flight_callback = (unsubscribe_suspend).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                };
+                {
+                    let __flight_callback = (unsubscribe_thermal_state_change).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                };
+                {
+                    let __flight_callback = (unsubscribe_unlock_screen).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                };
                 if let Some(__flight_timer) = (idle_interval_id).clone() {
                     crate::clear_interval(__flight_timer);
                 };
@@ -304,12 +364,12 @@ pub fn create_web_power_backend() -> PowerBackend {
                 out.battery_level = level;
                 out.charging_time = charging_time;
                 out.discharging_time = discharging_time;
-                out.is_battery_low = (((level >= 0.0_f64) && (level <= 0.2_f64)) && (!charging));
+                out.is_battery_low = ((level >= 0.0_f64) && (level <= 0.2_f64)) && (!charging);
                 out.is_charging = charging;
-                out.is_on_battery = ((level >= 0.0_f64) && (!charging));
+                out.is_on_battery = (level >= 0.0_f64) && (!charging);
                 out.is_low_power = false;
                 out.thermal_state = "Unknown".to_owned();
-                return (out).clone();
+                return out;
             }
         })
             as Box<dyn FnMut(PowerStatus) -> PowerStatus + Send + 'static>)),
@@ -324,7 +384,7 @@ pub fn create_web_power_backend() -> PowerBackend {
         })
             as Box<dyn FnMut() -> f64 + Send + 'static>)),
         set_keep_awake: std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-            move |enabled: bool, mode: PowerKeepAwakeMode| -> bool {
+            move |enabled: bool, mode: Option<PowerKeepAwakeMode>| -> bool {
                 let resolved_mode = (mode).unwrap_or("PreventDisplaySleep".to_owned());
                 if (resolved_mode == "PreventAppSuspension") {
                     return false;
@@ -332,7 +392,7 @@ pub fn create_web_power_backend() -> PowerBackend {
                 return false;
             },
         )
-            as Box<dyn FnMut(bool, PowerKeepAwakeMode) -> bool + Send + 'static>)),
+            as Box<dyn FnMut(bool, Option<PowerKeepAwakeMode>) -> bool + Send + 'static>)),
         subscribe: std::sync::Arc::new(std::sync::Mutex::new(Box::new({
             let mut cached_charging = cached_charging.clone();
             let mut cached_charging_time = cached_charging_time.clone();
@@ -350,27 +410,27 @@ pub fn create_web_power_backend() -> PowerBackend {
         if (((*manager.lock().unwrap())).clone()).is_some() {
           (*cached_level.lock().unwrap()) = (*manager.lock().unwrap()).as_ref().unwrap().level;
         }
-        ((listener).clone()).lock().unwrap()();
+        { let __flight_callback = (listener).clone(); let __flight_result = __flight_callback.lock().unwrap()(); __flight_result };
       } }) as Box<dyn FnMut() -> () + Send + 'static>));
       let mut on_charging_change: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>> = std::sync::Arc::new(std::sync::Mutex::new(Box::new({ let mut cached_charging = cached_charging.clone(); let listener = listener.clone(); let mut manager = manager.clone(); move || -> () {
         if (((*manager.lock().unwrap())).clone()).is_some() {
           (*cached_charging.lock().unwrap()) = (*manager.lock().unwrap()).as_ref().unwrap().charging;
         }
-        ((listener).clone()).lock().unwrap()();
+        { let __flight_callback = (listener).clone(); let __flight_result = __flight_callback.lock().unwrap()(); __flight_result };
       } }) as Box<dyn FnMut() -> () + Send + 'static>));
       let mut on_charging_time_change: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>> = std::sync::Arc::new(std::sync::Mutex::new(Box::new({ let mut cached_charging_time = cached_charging_time.clone(); let listener = listener.clone(); let mut manager = manager.clone(); move || -> () {
         if (((*manager.lock().unwrap())).clone()).is_some() {
           let t = (*manager.lock().unwrap()).as_ref().unwrap().charging_time;
           (*cached_charging_time.lock().unwrap()) = if (t == f64::INFINITY) { (-1.0_f64) } else { t };
         }
-        ((listener).clone()).lock().unwrap()();
+        { let __flight_callback = (listener).clone(); let __flight_result = __flight_callback.lock().unwrap()(); __flight_result };
       } }) as Box<dyn FnMut() -> () + Send + 'static>));
       let mut on_discharging_time_change: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>> = std::sync::Arc::new(std::sync::Mutex::new(Box::new({ let mut cached_discharging_time = cached_discharging_time.clone(); let listener = listener.clone(); let mut manager = manager.clone(); move || -> () {
         if (((*manager.lock().unwrap())).clone()).is_some() {
           let t = (*manager.lock().unwrap()).as_ref().unwrap().discharging_time;
           (*cached_discharging_time.lock().unwrap()) = if (t == f64::INFINITY) { (-1.0_f64) } else { t };
         }
-        ((listener).clone()).lock().unwrap()();
+        { let __flight_callback = (listener).clone(); let __flight_result = __flight_callback.lock().unwrap()(); __flight_result };
       } }) as Box<dyn FnMut() -> () + Send + 'static>));
       let cancelled: std::sync::Arc<std::sync::Mutex<bool>> = std::sync::Arc::new(std::sync::Mutex::new(false));
       ((battery.as_ref().unwrap().then)(std::sync::Arc::new(std::sync::Mutex::new(Box::new({ let mut cached_charging = cached_charging.clone(); let mut cached_charging_time = cached_charging_time.clone(); let mut cached_discharging_time = cached_discharging_time.clone(); let mut cached_level = cached_level.clone(); let mut cancelled = cancelled.clone(); let listener = listener.clone(); let mut manager = manager.clone(); let on_charging_change = on_charging_change.clone(); let on_charging_time_change = on_charging_time_change.clone(); let on_discharging_time_change = on_discharging_time_change.clone(); let on_level_change = on_level_change.clone(); move |m: crate::OpaqueHostValue| -> () {
@@ -386,7 +446,7 @@ pub fn create_web_power_backend() -> PowerBackend {
         Some(());
         Some(());
         Some(());
-        ((listener).clone()).lock().unwrap()();
+        { let __flight_callback = (listener).clone(); let __flight_result = __flight_callback.lock().unwrap()(); __flight_result };
       } }) as Box<dyn FnMut(crate::OpaqueHostValue) -> () + Send + 'static>))).catch)(std::sync::Arc::new(std::sync::Mutex::new(Box::new(move || -> () {
 
       }) as Box<dyn FnMut() -> () + Send + 'static>)));
@@ -562,7 +622,11 @@ pub fn detach_power(power: &Power) -> () {
         .find(|(key, _)| key == &(*power).clone())
         .map(|(_, value)| value.clone());
     if (unsubscribe).is_some() {
-        ((unsubscribe.as_ref().unwrap()).clone()).lock().unwrap()();
+        {
+            let __flight_callback = (unsubscribe.as_ref().unwrap()).clone();
+            let __flight_result = __flight_callback.lock().unwrap()();
+            __flight_result
+        };
         {
             let __flight_key = (*power).clone();
             if let Some(__flight_index) = (*_SUBSCRIPTIONS.lock().unwrap())
@@ -627,9 +691,11 @@ pub fn get_power_backend() -> PowerBackend {
 
 // Source: upstream/packages/power/src/power.ts:315 (sha256:9a1bb90215600e65d7d3cd4692a79e85f02a5cea5ece12f4fb283efe5ed05089)
 pub fn get_power_battery_health(out: &PowerBatteryHealth) -> Option<PowerBatteryHealth> {
-    return ((get_power_backend().get_battery_health).clone())
-        .lock()
-        .unwrap()((*out).clone());
+    return {
+        let __flight_callback = (get_power_backend().get_battery_health).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*out).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/power/src/power.ts:320 (sha256:b45683f595f6dcc4420c7c77a4e051c1a96145a4bc31a4a4befff7ecde20157c)
@@ -639,37 +705,49 @@ pub fn get_power_idle_polling_interval_ms() -> f64 {
 
 // Source: upstream/packages/power/src/power.ts:325 (sha256:5db5ab8c90ae438be3bfafb1dca8e85e673f0f8af0b0688e7e3760ffe74f3ab7)
 pub fn get_power_status(out: &PowerStatus) -> PowerStatus {
-    return ((get_power_backend().get_status).clone()).lock().unwrap()((*out).clone());
+    return {
+        let __flight_callback = (get_power_backend().get_status).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*out).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/power/src/power.ts:330 (sha256:b44f0bfb598400a60be66f6870bf648c73dadc05a34ff90c32ed404838d15e3b)
 pub fn get_power_system_idle_state(threshold_seconds: f64) -> PowerIdleState {
-    return ((get_power_backend().get_system_idle_state).clone())
-        .lock()
-        .unwrap()(threshold_seconds);
+    return {
+        let __flight_callback = (get_power_backend().get_system_idle_state).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(threshold_seconds);
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/power/src/power.ts:335 (sha256:1b206567c5ee89e95377125d52d01a90469c6d767ad9076aa866de6d6e3becae)
 pub fn get_power_system_idle_time() -> f64 {
-    return ((get_power_backend().get_system_idle_time).clone())
-        .lock()
-        .unwrap()();
+    return {
+        let __flight_callback = (get_power_backend().get_system_idle_time).clone();
+        let __flight_result = __flight_callback.lock().unwrap()();
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/power/src/power.ts:340 (sha256:e71dde7ad3269c8395940eef6e669934bb0e21563f767165010d9474921297a0)
 pub fn get_power_thermal_state() -> PowerThermalState {
-    return (((get_power_backend().get_status).clone()).lock().unwrap()(
-        ((*_SCRATCH).clone()).clone(),
-    )
+    return ({
+        let __flight_callback = (get_power_backend().get_status).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(((*_SCRATCH).clone()).clone());
+        __flight_result
+    }
     .thermal_state)
         .clone();
 }
 
 // Source: upstream/packages/power/src/power.ts:345 (sha256:32aa8dd5b7dc9afcc490b8e222745cb61cf7f63588227897585942afd7d406bd)
 pub fn has_power_keep_awake() -> bool {
-    return ((get_power_backend().is_keep_awake_active).clone())
-        .lock()
-        .unwrap()();
+    return {
+        let __flight_callback = (get_power_backend().is_keep_awake_active).clone();
+        let __flight_result = __flight_callback.lock().unwrap()();
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/power/src/power.ts:350 (sha256:587f4b0078c26c5ab6d469aab12864b71d8f05b42620846cd2c79a708b7f2b9d)
@@ -684,9 +762,11 @@ pub fn set_power_idle_polling_interval_ms(interval_ms: f64) -> () {
 
 // Source: upstream/packages/power/src/power.ts:363 (sha256:37a422e6e8991f130f8360af2d0e003e5eaac365af27458db4f97445224bf1d6)
 pub fn set_power_keep_awake(enabled: bool, mode: Option<PowerKeepAwakeMode>) -> bool {
-    return ((get_power_backend().set_keep_awake).clone())
-        .lock()
-        .unwrap()(enabled, (mode).clone().unwrap());
+    return {
+        let __flight_callback = (get_power_backend().set_keep_awake).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(enabled, (mode).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/power/src/power.ts:367 (sha256:6414a3f1532c56810ee95fc29fc8f6c692e8b42d15f6dfb2a5319a4c14a7aa85)

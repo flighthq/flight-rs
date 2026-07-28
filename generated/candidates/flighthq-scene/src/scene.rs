@@ -24,7 +24,7 @@ impl PartialEq for CreateSceneRecord1 {
 
 pub fn create_scene(obj: Option<SceneNode>) -> Scene {
     let root = create_scene_node(
-        Some(scene_node_kind_constant),
+        Some((scene_node_kind_constant).to_owned()),
         Some(((obj).clone().unwrap()).clone()),
     );
     return create_entity(Some(Scene {

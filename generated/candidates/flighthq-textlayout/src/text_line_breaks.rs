@@ -39,10 +39,10 @@ pub fn get_text_line_break_index(line_breaks: &Vec<f64>, start_index: Option<f64
 pub fn get_text_line_breaks(out: &mut Vec<f64>, text: String) -> () {
     out.clear();
     let mut index = (-1.0_f64);
-    while (index < text.length) {
+    while (index < (text.encode_utf16().count() as f64)) {
         let lf = (text.index_of)("\n", (index + 1.0_f64));
         let cr = (text.index_of)("\r", (index + 1.0_f64));
-        if ((lf == (-1.0_f64)) && (cr == (-1.0_f64))) {
+        if (lf == (-1.0_f64)) && (cr == (-1.0_f64)) {
             break;
         }
         index = if (cr == (-1.0_f64)) {

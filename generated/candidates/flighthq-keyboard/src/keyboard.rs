@@ -16,51 +16,72 @@ use flighthq_types::{
 // Source: upstream/packages/keyboard/src/keyboard.ts:18 (sha256:60a46339c430aff3ebe656222950308306c964d49d77f3067f674aad6bb61315)
 pub fn attach_soft_keyboard(keyboard: SoftKeyboard) -> () {
     detach_soft_keyboard(&keyboard);
-    let backend = get_soft_keyboard_backend();
+    let backend: std::sync::Arc<std::sync::Mutex<SoftKeyboardBackend>> =
+        std::sync::Arc::new(std::sync::Mutex::new(get_soft_keyboard_backend()));
     let was_visible: std::sync::Arc<std::sync::Mutex<bool>> =
         std::sync::Arc::new(std::sync::Mutex::new(
-            ((backend.get_info).clone()).lock().unwrap()(((*_SCRATCH).clone()).clone()).visible,
+            {
+                let __flight_callback = ((*backend.lock().unwrap()).get_info).clone();
+                let __flight_result =
+                    __flight_callback.lock().unwrap()(((*_SCRATCH).clone()).clone());
+                __flight_result
+            }
+            .visible,
         ));
-    let unsubscribe = ((backend.subscribe).clone()).lock().unwrap()(std::sync::Arc::new(
-        std::sync::Mutex::new(Box::new({
-            let backend = backend.clone();
-            let keyboard = keyboard.clone();
-            let mut was_visible = was_visible.clone();
-            move |phase: SoftKeyboardPhase, transition: SoftKeyboardTransition| -> () {
-                let prev_visible = (*was_visible.lock().unwrap()).clone();
-                let info =
-                    ((backend.get_info).clone()).lock().unwrap()(((*_SCRATCH).clone()).clone());
-                let now_visible = info.visible;
-                if (phase == "will") {
-                    if (now_visible && (!prev_visible)) {
-                        emit_signal((keyboard.on_will_show).clone(), ((transition).clone(),));
-                    } else {
-                        if ((!now_visible) && prev_visible) {
-                            emit_signal((keyboard.on_will_hide).clone(), ((transition).clone(),));
+    let unsubscribe = {
+        let __flight_callback = ((*backend.lock().unwrap()).subscribe).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(std::sync::Arc::new(
+            std::sync::Mutex::new(Box::new({
+                let mut backend = backend.clone();
+                let keyboard = keyboard.clone();
+                let mut was_visible = was_visible.clone();
+                move |phase: SoftKeyboardPhase, transition: SoftKeyboardTransition| -> () {
+                    let prev_visible = (*was_visible.lock().unwrap()).clone();
+                    let info = {
+                        let __flight_callback = ((*backend.lock().unwrap()).get_info).clone();
+                        let __flight_result =
+                            __flight_callback.lock().unwrap()(((*_SCRATCH).clone()).clone());
+                        __flight_result
+                    };
+                    let now_visible = info.visible;
+                    if (phase == "will") {
+                        if (now_visible) && (!prev_visible) {
+                            emit_signal((keyboard.on_will_show).clone(), ((transition).clone(),));
                         } else {
-                            emit_signal((keyboard.on_will_resize).clone(), ((transition).clone(),));
+                            if (!now_visible) && (prev_visible) {
+                                emit_signal(
+                                    (keyboard.on_will_hide).clone(),
+                                    ((transition).clone(),),
+                                );
+                            } else {
+                                emit_signal(
+                                    (keyboard.on_will_resize).clone(),
+                                    ((transition).clone(),),
+                                );
+                            }
                         }
-                    }
-                } else {
-                    emit_signal((keyboard.on_did_resize).clone(), (info.height,));
-                    emit_signal((keyboard.on_resize).clone(), (info.height,));
-                    if (now_visible != prev_visible) {
-                        (*was_visible.lock().unwrap()) = now_visible;
-                        if now_visible {
-                            emit_signal((keyboard.on_did_show).clone(), (info.height,));
-                            emit_signal((keyboard.on_show).clone(), (info.height,));
-                        } else {
-                            emit_signal((keyboard.on_did_hide).clone(), ());
-                            emit_signal((keyboard.on_hide).clone(), ());
+                    } else {
+                        emit_signal((keyboard.on_did_resize).clone(), (info.height,));
+                        emit_signal((keyboard.on_resize).clone(), (info.height,));
+                        if (now_visible != prev_visible) {
+                            (*was_visible.lock().unwrap()) = now_visible;
+                            if now_visible {
+                                emit_signal((keyboard.on_did_show).clone(), (info.height,));
+                                emit_signal((keyboard.on_show).clone(), (info.height,));
+                            } else {
+                                emit_signal((keyboard.on_did_hide).clone(), ());
+                                emit_signal((keyboard.on_hide).clone(), ());
+                            }
                         }
                     }
                 }
-            }
-        })
-            as Box<
-                dyn FnMut(SoftKeyboardPhase, SoftKeyboardTransition) -> () + Send + 'static,
-            >),
-    ));
+            })
+                as Box<
+                    dyn FnMut(SoftKeyboardPhase, SoftKeyboardTransition) -> () + Send + 'static,
+                >),
+        ));
+        __flight_result
+    };
     {
         let __flight_key = (keyboard).clone();
         let __flight_value = (unsubscribe).clone();
@@ -163,7 +184,7 @@ pub fn create_web_soft_keyboard_backend() -> SoftKeyboardBackend {
                 out.x = geo.x;
                 out.y = geo.y;
                 out.width = geo.width;
-                return (out).clone();
+                return out;
             },
         )
             as Box<dyn FnMut(SoftKeyboardInfo) -> SoftKeyboardInfo + Send + 'static>)),
@@ -206,14 +227,22 @@ pub fn create_web_soft_keyboard_backend() -> SoftKeyboardBackend {
         show: std::sync::Arc::new(std::sync::Mutex::new(Box::new(move || -> () {
             let vk = get_virtual_keyboard();
             if (vk).is_some() {
-                ((vk.as_ref().unwrap().show).clone()).lock().unwrap()();
+                {
+                    let __flight_callback = (vk.as_ref().unwrap().show).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                };
             }
         })
             as Box<dyn FnMut() -> () + Send + 'static>)),
         hide: std::sync::Arc::new(std::sync::Mutex::new(Box::new(move || -> () {
             let vk = get_virtual_keyboard();
             if (vk).is_some() {
-                ((vk.as_ref().unwrap().hide).clone()).lock().unwrap()();
+                {
+                    let __flight_callback = (vk.as_ref().unwrap().hide).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()();
+                    __flight_result
+                };
             }
         })
             as Box<dyn FnMut() -> () + Send + 'static>)),
@@ -234,7 +263,11 @@ pub fn detach_soft_keyboard(keyboard: &SoftKeyboard) -> () {
         .find(|(key, _)| key == &(*keyboard).clone())
         .map(|(_, value)| value.clone());
     if (unsubscribe).is_some() {
-        ((unsubscribe.as_ref().unwrap()).clone()).lock().unwrap()();
+        {
+            let __flight_callback = (unsubscribe.as_ref().unwrap()).clone();
+            let __flight_result = __flight_callback.lock().unwrap()();
+            __flight_result
+        };
         {
             let __flight_key = (*keyboard).clone();
             if let Some(__flight_index) = (*_SUBSCRIPTIONS.lock().unwrap())
@@ -265,17 +298,21 @@ pub fn get_soft_keyboard_backend() -> SoftKeyboardBackend {
 
 // Source: upstream/packages/keyboard/src/keyboard.ts:159 (sha256:f1a1656832cbf57286e7298285927d7987837003f8ecb14a60fac217222f6f87)
 pub fn get_soft_keyboard_height() -> f64 {
-    return ((get_soft_keyboard_backend().get_info).clone())
-        .lock()
-        .unwrap()(((*_SCRATCH).clone()).clone())
+    return {
+        let __flight_callback = (get_soft_keyboard_backend().get_info).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(((*_SCRATCH).clone()).clone());
+        __flight_result
+    }
     .height;
 }
 
 // Source: upstream/packages/keyboard/src/keyboard.ts:164 (sha256:8c08d15eaec239e80dc296922470cdb4a8794314bb0322565b575856bc946316)
 pub fn get_soft_keyboard_info(out: &SoftKeyboardInfo) -> SoftKeyboardInfo {
-    return ((get_soft_keyboard_backend().get_info).clone())
-        .lock()
-        .unwrap()((*out).clone());
+    return {
+        let __flight_callback = (get_soft_keyboard_backend().get_info).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*out).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/keyboard/src/keyboard.ts:170 (sha256:aee49082e07962c5ef24cf4454430c1d2dd466e61a0146a666420d549c2b40dd)
@@ -287,12 +324,16 @@ pub fn get_soft_keyboard_resize_mode() -> SoftKeyboardResizeMode {
             .as_ref()
             .map(|callback| callback.lock().unwrap()())
     })
-    .unwrap_or(soft_keyboard_resize_none_kind_constant);
+    .unwrap_or((soft_keyboard_resize_none_kind_constant).to_owned());
 }
 
 // Source: upstream/packages/keyboard/src/keyboard.ts:177 (sha256:64e095f2b1fb6799ef1045d084f3e318fe3219344f5bb0ffa6b17f460d53f234)
 pub fn hide_soft_keyboard() -> () {
-    ((get_soft_keyboard_backend().hide).clone()).lock().unwrap()();
+    {
+        let __flight_callback = (get_soft_keyboard_backend().hide).clone();
+        let __flight_result = __flight_callback.lock().unwrap()();
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/keyboard/src/keyboard.ts:183 (sha256:913e54393814936b1a379662956df7786518c435b2bdb8eb5d569a8e7716a5e3)
@@ -364,7 +405,11 @@ pub fn set_soft_keyboard_style(style: SoftKeyboardStyleKind) -> () {
 
 // Source: upstream/packages/keyboard/src/keyboard.ts:223 (sha256:9e4b07099556feaed93d37523056ea043e7cb870cb9714871048a1a64ce46b06)
 pub fn show_soft_keyboard() -> () {
-    ((get_soft_keyboard_backend().show).clone()).lock().unwrap()();
+    {
+        let __flight_callback = (get_soft_keyboard_backend().show).clone();
+        let __flight_result = __flight_callback.lock().unwrap()();
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/keyboard/src/keyboard.ts:227 (sha256:09753dcee3eeb8c287eef9972b9c4e8963b68fd28c816e1ad86d573dae7a7488)

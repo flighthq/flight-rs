@@ -16,10 +16,11 @@ pub fn create_glyph_source_from_bitmap_font(font: BitmapFont) -> GlyphSource {
         get_glyph_atlas_image: std::sync::Arc::new(std::sync::Mutex::new(Box::new({
             let font = font.clone();
             move |page: Option<f64>| -> Option<ImageResource> {
+                let page = page.unwrap_or(0.0_f64);
                 return (font.pages[page as usize].image).clone();
             }
         })
-            as Box<dyn FnMut(f64) -> Option<ImageResource> + Send + 'static>)),
+            as Box<dyn FnMut(Option<f64>) -> Option<ImageResource> + Send + 'static>)),
         get_glyph_entry: std::sync::Arc::new(std::sync::Mutex::new(Box::new({
             let font = font.clone();
             move |codepoint: f64| -> Option<GlyphEntry> {

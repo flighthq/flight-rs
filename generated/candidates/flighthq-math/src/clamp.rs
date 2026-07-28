@@ -17,7 +17,7 @@ pub fn clamp(value: f64, min: f64, max: f64) -> f64 {
 
 // Source: upstream/packages/math/src/clamp.ts:10 (sha256:cad3641434ac42729d3e837e869b3e6c11e1cd56795d8486da2f62c2dc90cdfc)
 pub fn in_range(value: f64, min: f64, max: f64) -> bool {
-    return ((value >= min) && (value <= max));
+    return (value >= min) && (value <= max);
 }
 
 // Source: upstream/packages/math/src/clamp.ts:20 (sha256:142b6e44f5644295d5df65fc924152079714b792bd6a4703b1605c82df4bfb3d)

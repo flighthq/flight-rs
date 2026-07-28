@@ -21,6 +21,35 @@ fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
 }
 
+#[inline]
+
+fn __flight_number_to_string(value: f64, radix: f64) -> String {
+    let radix = radix.trunc().clamp(2.0_f64, 36.0_f64) as u32;
+    let mut value = value.trunc().rem_euclid(4294967296.0_f64) as u32;
+    if value == 0 {
+        return "0".to_owned();
+    }
+    let mut digits = Vec::new();
+    while value > 0 {
+        let digit = value % radix;
+        digits.push(char::from_digit(digit, radix).unwrap());
+        value /= radix;
+    }
+    digits.iter().rev().collect()
+}
+
+#[inline]
+
+fn __flight_pad_start(value: String, width: f64, pad: String) -> String {
+    let length = value.chars().count();
+    let width = width.max(0.0_f64).trunc() as usize;
+    if length >= width || pad.is_empty() {
+        return value;
+    }
+    let prefix: String = pad.chars().cycle().take(width - length).collect();
+    prefix + &value
+}
+
 // Source: upstream/packages/render/src/renderColor.ts:3 (sha256:d8c772704d055919d21675d74b973cd67f49bff35e7cffe13636885aca00e00c)
 #[derive(Clone)]
 struct SetRenderStateBackgroundColorRecord1 {
@@ -85,6 +114,11 @@ pub fn set_render_state_background_color(state: &mut RenderState, color: f64) ->
             _state.background_color_rgba[__flight_index] = __flight_value;
         }
     };
-    _state.background_color_string =
-        ("#" + (((uint.to_string)(16.0_f64).pad_start)(8.0_f64, "0").to_upper_case)());
+    _state.background_color_string = ("#"
+        + (__flight_pad_start(
+            __flight_number_to_string(uint, 16.0_f64),
+            8.0_f64,
+            "0".to_owned(),
+        ))
+        .to_uppercase());
 }

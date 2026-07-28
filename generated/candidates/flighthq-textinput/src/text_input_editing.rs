@@ -25,8 +25,8 @@ const DESIRED_CARET_X_UNSET: f64 = -1.0_f64;
 pub fn append_text_input(source: &mut RichText, text: String) -> () {
     replace_text_input(
         source,
-        source.data.text.length,
-        source.data.text.length,
+        (source.data.text.encode_utf16().count() as f64),
+        (source.data.text.encode_utf16().count() as f64),
         (text).clone(),
         None,
     );
@@ -52,15 +52,17 @@ pub fn apply_text_input_restriction(
     }
     value = restrict_text_input((value).clone(), (get_input_state(source).restrict).clone());
     if (source.data.max_chars > 0.0_f64) {
-        let max_length = ((source.data.max_chars - source.data.text.length) + replace_length);
+        let max_length = ((source.data.max_chars
+            - (source.data.text.encode_utf16().count() as f64))
+            + replace_length);
         if (max_length <= 0.0_f64) {
             return "".to_owned();
         }
-        if (value.length > max_length) {
+        if ((value.encode_utf16().count() as f64) > max_length) {
             value = (value.slice)(0.0_f64, max_length);
         }
     }
-    return (value).clone();
+    return value;
 }
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:45 (sha256:b3e029e76f8082259d1b78518f18fab923268eabeaeecedb5132e5cf40c45797)
@@ -103,7 +105,7 @@ pub fn delete_text_input_forward(source: &mut RichText) -> () {
     if (start != end) {
         replace_text_input(source, start, end, "".to_owned(), None);
     } else {
-        if (start < source.data.text.length) {
+        if (start < (source.data.text.encode_utf16().count() as f64)) {
             replace_text_input(source, start, (start + 1.0_f64), "".to_owned(), None);
         }
     }
@@ -139,7 +141,10 @@ pub fn delete_text_input_word_forward(source: &mut RichText) -> () {
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:113 (sha256:f9fe38d5d6e63701c2907e4ed3c7c583a615a480a7fede9b36806a826de59423)
 pub fn get_text_input_caret_index(source: &RichText) -> f64 {
-    return clamp_index(get_input_state(source).caret_index, source.data.text.length);
+    return clamp_index(
+        get_input_state(source).caret_index,
+        (source.data.text.encode_utf16().count() as f64),
+    );
 }
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:117 (sha256:aeae66cdba43974af192034ba3c2869c9210e846dd2f83122c8ddcc4c2b6628d)
@@ -201,7 +206,7 @@ pub fn get_text_input_character_index_at_point(
             };
         }
     }
-    let mut line_start = source.data.text.length;
+    let mut line_start = (source.data.text.encode_utf16().count() as f64);
     let mut line_end = 0.0_f64;
     for group in ((layout.groups).clone()).iter().cloned() {
         if (group.line_index != closest_line_index) {
@@ -229,26 +234,39 @@ pub fn get_text_input_display_text(source: &RichText) -> String {
     if (!state.display_as_password) {
         return (source.data.text).clone();
     }
-    let password_character = if (state.password_character.length > 0.0_f64) {
+    let password_character = if ((state.password_character.encode_utf16().count() as f64) > 0.0_f64)
+    {
         (state.password_character.char_at)(0.0_f64)
     } else {
-        "•"
+        "•".to_owned()
     };
-    return (password_character.repeat)(source.data.text.length);
+    return (password_character.repeat)((source.data.text.encode_utf16().count() as f64));
 }
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:180 (sha256:6b955d3b8c3ce332cbfce64fe58488f118427ef712bf4ef362d76ef72235ffec)
 pub fn get_text_input_selection_begin_index(source: &RichText) -> f64 {
     let state = get_input_state(source);
-    return (clamp_index(state.caret_index, source.data.text.length))
-        .min(clamp_index(state.selection_index, source.data.text.length));
+    return (clamp_index(
+        state.caret_index,
+        (source.data.text.encode_utf16().count() as f64),
+    ))
+    .min(clamp_index(
+        state.selection_index,
+        (source.data.text.encode_utf16().count() as f64),
+    ));
 }
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:188 (sha256:cb2082e4f1f56ce7e9038bf85b683daceb8c1549a9c806485fdb8293086e4ebd)
 pub fn get_text_input_selection_end_index(source: &RichText) -> f64 {
     let state = get_input_state(source);
-    return (clamp_index(state.caret_index, source.data.text.length))
-        .max(clamp_index(state.selection_index, source.data.text.length));
+    return (clamp_index(
+        state.caret_index,
+        (source.data.text.encode_utf16().count() as f64),
+    ))
+    .max(clamp_index(
+        state.selection_index,
+        (source.data.text.encode_utf16().count() as f64),
+    ));
 }
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:196 (sha256:056bda6bbd20a4f4697f235a8bf9c5052e05fa7b9c2411e5128778ac83f852ab)
@@ -334,7 +352,7 @@ pub fn handle_text_input_keyboard(
             if __flight_case <= 1_usize {
                 {
                     let copy_text = get_text_input_selection_text(source);
-                    if (copy_text.length > 0.0_f64) {
+                    if ((copy_text.encode_utf16().count() as f64) > 0.0_f64) {
                         {
                             let __flight_callback =
                                 options.as_ref().and_then(|value| (value.on_copy).clone());
@@ -349,7 +367,7 @@ pub fn handle_text_input_keyboard(
             if __flight_case <= 2_usize {
                 {
                     let cut_text = get_text_input_selection_text(source);
-                    if (cut_text.length > 0.0_f64) {
+                    if ((cut_text.encode_utf16().count() as f64) > 0.0_f64) {
                         {
                             {
                                 let __flight_callback =
@@ -377,7 +395,11 @@ pub fn handle_text_input_keyboard(
                 return true;
             }
             if __flight_case <= 6_usize {
-                move_text_input_caret(source, source.data.text.length, Some(data.shift_key));
+                move_text_input_caret(
+                    source,
+                    (source.data.text.encode_utf16().count() as f64),
+                    Some(data.shift_key),
+                );
                 return true;
             }
             if __flight_case <= 7_usize {
@@ -493,7 +515,7 @@ pub fn insert_text_input(source: &mut RichText, text: String) -> () {
 // Source: upstream/packages/textinput/src/textInputEditing.ts:294 (sha256:88bf3add461c3f4d5a8be11cc63942ed1e5fc19ae9eec849509e97c5a4dd73a6)
 pub fn move_text_input_caret(source: &RichText, index: f64, extend_selection: Option<bool>) -> () {
     let extend_selection = extend_selection.unwrap_or(false);
-    let caret = clamp_index(index, source.data.text.length);
+    let caret = clamp_index(index, (source.data.text.encode_utf16().count() as f64));
     let mut state = get_input_state(source);
     state.caret_index = caret;
     if (!extend_selection) {
@@ -528,8 +550,12 @@ pub fn move_text_input_caret_down(
     extend_selection: Option<bool>,
 ) -> () {
     let extend_selection = extend_selection.unwrap_or(false);
-    if ((layout).is_none() || (layout).is_none()) {
-        move_text_input_caret(source, source.data.text.length, Some(extend_selection));
+    if ((layout).is_none()) || ((layout).is_none()) {
+        move_text_input_caret(
+            source,
+            (source.data.text.encode_utf16().count() as f64),
+            Some(extend_selection),
+        );
         return;
     }
     let mut state = get_input_state(source);
@@ -543,7 +569,11 @@ pub fn move_text_input_caret_down(
     }
     let target_line_index = ((*SCRATCH_RECT.lock().unwrap()).line_index + 1.0_f64);
     if (target_line_index >= layout.as_ref().unwrap().num_lines) {
-        move_text_input_caret(source, source.data.text.length, Some(extend_selection));
+        move_text_input_caret(
+            source,
+            (source.data.text.encode_utf16().count() as f64),
+            Some(extend_selection),
+        );
         return;
     }
     let target_y = (get_line_offset_y(layout.as_ref().unwrap(), target_line_index)
@@ -554,7 +584,10 @@ pub fn move_text_input_caret_down(
         state.desired_caret_x,
         target_y,
     );
-    let new_caret = clamp_index(target_index, source.data.text.length);
+    let new_caret = clamp_index(
+        target_index,
+        (source.data.text.encode_utf16().count() as f64),
+    );
     state.caret_index = new_caret;
     if (!extend_selection) {
         state.selection_index = new_caret;
@@ -569,15 +602,19 @@ pub fn move_text_input_caret_to_line_end(
     extend_selection: Option<bool>,
 ) -> () {
     let extend_selection = extend_selection.unwrap_or(false);
-    if ((layout).is_none() || (layout).is_none()) {
-        move_text_input_caret(source, source.data.text.length, Some(extend_selection));
+    if ((layout).is_none()) || ((layout).is_none()) {
+        move_text_input_caret(
+            source,
+            (source.data.text.encode_utf16().count() as f64),
+            Some(extend_selection),
+        );
         return;
     }
     let line_index = get_caret_line_index(source, layout.as_ref().unwrap());
     let line_end = get_line_end_index(
         layout.as_ref().unwrap(),
         line_index,
-        source.data.text.length,
+        (source.data.text.encode_utf16().count() as f64),
     );
     move_text_input_caret(source, line_end, Some(extend_selection));
 }
@@ -589,7 +626,7 @@ pub fn move_text_input_caret_to_line_start(
     extend_selection: Option<bool>,
 ) -> () {
     let extend_selection = extend_selection.unwrap_or(false);
-    if ((layout).is_none() || (layout).is_none()) {
+    if ((layout).is_none()) || ((layout).is_none()) {
         move_text_input_caret(source, 0.0_f64, Some(extend_selection));
         return;
     }
@@ -605,7 +642,7 @@ pub fn move_text_input_caret_up(
     extend_selection: Option<bool>,
 ) -> () {
     let extend_selection = extend_selection.unwrap_or(false);
-    if ((layout).is_none() || (layout).is_none()) {
+    if ((layout).is_none()) || ((layout).is_none()) {
         move_text_input_caret(source, 0.0_f64, Some(extend_selection));
         return;
     }
@@ -631,7 +668,10 @@ pub fn move_text_input_caret_up(
         state.desired_caret_x,
         target_y,
     );
-    let new_caret = clamp_index(target_index, source.data.text.length);
+    let new_caret = clamp_index(
+        target_index,
+        (source.data.text.encode_utf16().count() as f64),
+    );
     state.caret_index = new_caret;
     if (!extend_selection) {
         state.selection_index = new_caret;
@@ -682,8 +722,11 @@ pub fn replace_text_input(
     text: String,
     options: Option<ReplaceTextInputOptions>,
 ) -> () {
-    let mut start = clamp_index(begin_index, source.data.text.length);
-    let mut end = clamp_index(end_index, source.data.text.length);
+    let mut start = clamp_index(
+        begin_index,
+        (source.data.text.encode_utf16().count() as f64),
+    );
+    let mut end = clamp_index(end_index, (source.data.text.encode_utf16().count() as f64));
     if (end < start) {
         let swap = start;
         start = end;
@@ -694,25 +737,35 @@ pub fn replace_text_input(
     } else {
         (text).clone()
     };
-    if ((value.length == 0.0_f64) && (start == end)) {
+    if ((value.encode_utf16().count() as f64) == 0.0_f64) && (start == end) {
         return;
     }
     let mut state = get_input_state(source);
     let text_before = (source.data.text).clone();
-    let caret_before = clamp_index(state.caret_index, text_before.length);
-    let selection_before = clamp_index(state.selection_index, text_before.length);
+    let caret_before = clamp_index(
+        state.caret_index,
+        (text_before.encode_utf16().count() as f64),
+    );
+    let selection_before = clamp_index(
+        state.selection_index,
+        (text_before.encode_utf16().count() as f64),
+    );
     source.data.text = (((text_before.slice)(0.0_f64, start) + value) + (text_before.slice)(end));
     adjust_text_format_ranges(
         &mut source.data.text_format_ranges,
         (source.data.default_text_format).clone(),
         start,
         end,
-        value.length,
+        (value.encode_utf16().count() as f64),
     );
     state.desired_caret_x = DESIRED_CARET_X_UNSET;
-    set_text_input_selection(source, (start + value.length), (start + value.length));
-    if (!((options.as_ref().and_then(|value| value.skip_history)) == Some(true))
-        && (state.history_limit > 0.0_f64))
+    set_text_input_selection(
+        source,
+        (start + (value.encode_utf16().count() as f64)),
+        (start + (value.encode_utf16().count() as f64)),
+    );
+    if (!((options.as_ref().and_then(|value| value.skip_history)) == Some(true)))
+        && (state.history_limit > 0.0_f64)
     {
         record_text_input_edit(
             &mut state,
@@ -739,12 +792,12 @@ pub fn scroll_text_input_caret_into_view(
     get_text_input_caret_rectangle(&mut (*SCRATCH_RECT.lock().unwrap()), source, layout);
     let caret_top = (*SCRATCH_RECT.lock().unwrap()).y;
     let caret_bottom = ((*SCRATCH_RECT.lock().unwrap()).y + (*SCRATCH_RECT.lock().unwrap()).height);
-    let scroll_v_line = ((source.data.scroll_v).unwrap_or(1.0_f64) - 1.0_f64);
+    let scroll_v_line = (source.data.scroll_v - 1.0_f64);
     let mut view_top = 0.0_f64;
     {
         let mut i = 0.0_f64;
         while (i < scroll_v_line) {
-            view_top += (layout.line_heights[i as usize].clone()).unwrap_or(0.0_f64);
+            view_top += layout.line_heights[i as usize].clone();
             {
                 i += 1.0;
                 i
@@ -786,7 +839,7 @@ pub fn scroll_text_input_caret_into_view(
         }
     }
     let caret_scroll_margin = 8.0_f64;
-    let scroll_h = (source.data.scroll_h).unwrap_or(0.0_f64);
+    let scroll_h = source.data.scroll_h;
     let caret_left = ((*SCRATCH_RECT.lock().unwrap()).x - scroll_h);
     let caret_right = (caret_left + (*SCRATCH_RECT.lock().unwrap()).width);
     if (caret_left < 0.0_f64) {
@@ -810,22 +863,26 @@ pub fn scroll_text_input_caret_into_view(
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:523 (sha256:a94512389b36f72031c31c9c2261138fca7672614a4cbd035d7d4b7351110c98)
 pub fn select_all_text_input(source: &RichText) -> () {
-    set_text_input_selection(source, 0.0_f64, source.data.text.length);
+    set_text_input_selection(
+        source,
+        0.0_f64,
+        (source.data.text.encode_utf16().count() as f64),
+    );
 }
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:527 (sha256:f1ec87a198f30c2104bbbcd69dc33c92c3d93487931e103f7ecbc1aedef3895e)
 pub fn select_line_at_text_input_index(source: &RichText, index: f64) -> () {
     let text = (source.data.text).clone();
-    let mut clamped = (0.0_f64).max((text.length).min(index));
+    let mut clamped = (0.0_f64).max((text.encode_utf16().count() as f64).min(index));
     let mut start = clamped;
     let mut end = clamped;
-    while ((start > 0.0_f64) && ((text.char_at)((start - 1.0_f64)) != "\n")) {
+    while (start > 0.0_f64) && ((text.char_at)((start - 1.0_f64)) != "\n") {
         {
             start -= 1.0;
             start
         };
     }
-    while ((end < text.length) && ((text.char_at)(end) != "\n")) {
+    while (end < (text.encode_utf16().count() as f64)) && ((text.char_at)(end) != "\n") {
         {
             end += 1.0;
             end
@@ -837,29 +894,29 @@ pub fn select_line_at_text_input_index(source: &RichText, index: f64) -> () {
 // Source: upstream/packages/textinput/src/textInputEditing.ts:537 (sha256:a2d982c0f9f31526ed53ad92848dff3fe8e5cc10e8367d3b0d60d3323f3fc3ef)
 pub fn select_word_at_text_input_index(source: &RichText, index: f64) -> () {
     let text = (source.data.text).clone();
-    let mut clamped = (0.0_f64).max((text.length).min(index));
+    let mut clamped = (0.0_f64).max((text.encode_utf16().count() as f64).min(index));
     let mut start = clamped;
     let mut end = clamped;
-    while ((start > 0.0_f64) && is_word_char((text.char_at)((start - 1.0_f64)))) {
+    while (start > 0.0_f64) && (is_word_char((text.char_at)((start - 1.0_f64)))) {
         {
             start -= 1.0;
             start
         };
     }
-    while ((end < text.length) && is_word_char((text.char_at)(end))) {
+    while (end < (text.encode_utf16().count() as f64)) && (is_word_char((text.char_at)(end))) {
         {
             end += 1.0;
             end
         };
     }
     if (start == end) {
-        while ((start > 0.0_f64) && (!is_word_char((text.char_at)((start - 1.0_f64))))) {
+        while (start > 0.0_f64) && (!is_word_char((text.char_at)((start - 1.0_f64)))) {
             {
                 start -= 1.0;
                 start
             };
         }
-        while ((end < text.length) && (!is_word_char((text.char_at)(end)))) {
+        while (end < (text.encode_utf16().count() as f64)) && (!is_word_char((text.char_at)(end))) {
             {
                 end += 1.0;
                 end
@@ -872,8 +929,11 @@ pub fn select_word_at_text_input_index(source: &RichText, index: f64) -> () {
 // Source: upstream/packages/textinput/src/textInputEditing.ts:551 (sha256:b558229e1bb188cad26e6a65e43c9f813fa6ce65f99100f53e0f698a36fd9593)
 pub fn set_text_input_selection(source: &RichText, begin_index: f64, end_index: f64) -> () {
     let mut state = get_input_state(source);
-    state.selection_index = clamp_index(begin_index, source.data.text.length);
-    state.caret_index = clamp_index(end_index, source.data.text.length);
+    state.selection_index = clamp_index(
+        begin_index,
+        (source.data.text.encode_utf16().count() as f64),
+    );
+    state.caret_index = clamp_index(end_index, (source.data.text.encode_utf16().count() as f64));
     invalidate_node_appearance(source);
 }
 
@@ -923,7 +983,7 @@ fn adjust_text_format_ranges(
                         range.start += offset;
                         range.end += offset;
                     } else {
-                        if ((range.start < begin_index) && (range.end >= begin_index)) {
+                        if (range.start < begin_index) && (range.end >= begin_index) {
                             range.end += offset;
                         }
                     }
@@ -940,10 +1000,10 @@ fn adjust_text_format_ranges(
                         range.start += offset;
                         range.end += offset;
                     } else {
-                        if ((range.start <= begin_index) && (range.end > end_index)) {
+                        if (range.start <= begin_index) && (range.end > end_index) {
                             range.end += offset;
                         } else {
-                            if ((range.start >= begin_index) && (range.end <= end_index)) {
+                            if (range.start >= begin_index) && (range.end <= end_index) {
                                 ranges.splice(
                                     ({
                                         i -= 1.0;
@@ -957,14 +1017,14 @@ fn adjust_text_format_ranges(
                                     vec![],
                                 );
                             } else {
-                                if (((range.end > end_index) && (range.start > begin_index))
-                                    && (range.start <= end_index))
+                                if ((range.end > end_index) && (range.start > begin_index))
+                                    && (range.start <= end_index)
                                 {
                                     range.start = begin_index;
                                     range.end += offset;
                                 } else {
-                                    if (((range.start < begin_index) && (range.end > begin_index))
-                                        && (range.end <= end_index))
+                                    if ((range.start < begin_index) && (range.end > begin_index))
+                                        && (range.end <= end_index)
                                     {
                                         range.end = begin_index;
                                     }
@@ -992,7 +1052,7 @@ fn adjust_text_format_ranges(
             };
         }
     }
-    if (((ranges.len() as f64) == 0.0_f64) && (insert_length > 0.0_f64)) {
+    if ((ranges.len() as f64) == 0.0_f64) && (insert_length > 0.0_f64) {
         ranges.push(TextFormatRange {
             __flight_identity: std::sync::Arc::new(()),
             end: (begin_index + insert_length),
@@ -1011,8 +1071,8 @@ fn apply_history_record(
     selection_index: f64,
 ) -> () {
     source.data.text = (text).clone();
-    state.caret_index = clamp_index(caret_index, text.length);
-    state.selection_index = clamp_index(selection_index, text.length);
+    state.caret_index = clamp_index(caret_index, (text.encode_utf16().count() as f64));
+    state.selection_index = clamp_index(selection_index, (text.encode_utf16().count() as f64));
     state.desired_caret_x = DESIRED_CARET_X_UNSET;
     invalidate_node_appearance(source);
 }
@@ -1033,7 +1093,7 @@ fn get_caret_line_index(source: &RichText, layout: &TextLayoutResult) -> f64 {
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:645 (sha256:eb161c6f6ab166b1769dc6be2bde0ad05e6adcd63bd8a4ee1d7b41cba66e2310)
 fn get_fallback_line_height(layout: &TextLayoutResult) -> f64 {
-    return (layout.line_heights[0.0_f64 as usize].clone()).unwrap_or(12.0_f64);
+    return layout.line_heights[0.0_f64 as usize].clone();
 }
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:651 (sha256:65c34441612ab225520e48a928b9ce2e0c5f35afc2dafb0a88e06cc0546d6ae5)
@@ -1050,79 +1110,79 @@ fn get_input_state(source: &RichText) -> TextInputState {
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:657 (sha256:b3ebba0e62bbc63048faf9a23e621cc28707b9164f0c9fe2ce6071ffc677d87d)
 fn get_keyboard_command(data: &KeyboardEventData) -> KeyboardCommand {
-    if (data.ctrl_key || data.meta_key) {
+    if (data.ctrl_key) || (data.meta_key) {
         let key = ((data.key).clone()).to_lowercase();
-        if ((key == "a") || (data.key_code == KeyCode::A)) {
+        if (key == "a") || (data.key_code == KeyCode::A) {
             return "selectAll".to_owned();
         }
-        if ((key == "c") || (data.key_code == KeyCode::C)) {
+        if (key == "c") || (data.key_code == KeyCode::C) {
             return "copy".to_owned();
         }
-        if ((key == "v") || (data.key_code == KeyCode::V)) {
+        if (key == "v") || (data.key_code == KeyCode::V) {
             return "paste".to_owned();
         }
-        if ((key == "x") || (data.key_code == KeyCode::X)) {
+        if (key == "x") || (data.key_code == KeyCode::X) {
             return "cut".to_owned();
         }
-        if ((data.key_code == KeyCode::LEFT) || ((data.key).clone() == "ArrowLeft")) {
+        if (data.key_code == KeyCode::LEFT) || ((data.key).clone() == "ArrowLeft") {
             return "wordLeft".to_owned();
         }
-        if ((data.key_code == KeyCode::RIGHT) || ((data.key).clone() == "ArrowRight")) {
+        if (data.key_code == KeyCode::RIGHT) || ((data.key).clone() == "ArrowRight") {
             return "wordRight".to_owned();
         }
-        if ((data.key_code == KeyCode::BACKSPACE) || ((data.key).clone() == "Backspace")) {
+        if (data.key_code == KeyCode::BACKSPACE) || ((data.key).clone() == "Backspace") {
             return "deleteWordBackward".to_owned();
         }
-        if ((data.key_code == KeyCode::DELETE) || ((data.key).clone() == "Delete")) {
+        if (data.key_code == KeyCode::DELETE) || ((data.key).clone() == "Delete") {
             return "deleteWordForward".to_owned();
         }
-        if ((data.key_code == KeyCode::HOME) || ((data.key).clone() == "Home")) {
+        if (data.key_code == KeyCode::HOME) || ((data.key).clone() == "Home") {
             return "documentStart".to_owned();
         }
-        if ((data.key_code == KeyCode::END) || ((data.key).clone() == "End")) {
+        if (data.key_code == KeyCode::END) || ((data.key).clone() == "End") {
             return "documentEnd".to_owned();
         }
         return "none".to_owned();
     }
     if data.alt_key {
-        if ((data.key_code == KeyCode::LEFT) || ((data.key).clone() == "ArrowLeft")) {
+        if (data.key_code == KeyCode::LEFT) || ((data.key).clone() == "ArrowLeft") {
             return "wordLeft".to_owned();
         }
-        if ((data.key_code == KeyCode::RIGHT) || ((data.key).clone() == "ArrowRight")) {
+        if (data.key_code == KeyCode::RIGHT) || ((data.key).clone() == "ArrowRight") {
             return "wordRight".to_owned();
         }
-        if ((data.key_code == KeyCode::BACKSPACE) || ((data.key).clone() == "Backspace")) {
+        if (data.key_code == KeyCode::BACKSPACE) || ((data.key).clone() == "Backspace") {
             return "deleteWordBackward".to_owned();
         }
-        if ((data.key_code == KeyCode::DELETE) || ((data.key).clone() == "Delete")) {
+        if (data.key_code == KeyCode::DELETE) || ((data.key).clone() == "Delete") {
             return "deleteWordForward".to_owned();
         }
     }
-    if ((data.key_code == KeyCode::BACKSPACE) || ((data.key).clone() == "Backspace")) {
+    if (data.key_code == KeyCode::BACKSPACE) || ((data.key).clone() == "Backspace") {
         return "backspace".to_owned();
     }
-    if ((data.key_code == KeyCode::DELETE) || ((data.key).clone() == "Delete")) {
+    if (data.key_code == KeyCode::DELETE) || ((data.key).clone() == "Delete") {
         return "delete".to_owned();
     }
-    if ((data.key_code == KeyCode::DOWN) || ((data.key).clone() == "ArrowDown")) {
+    if (data.key_code == KeyCode::DOWN) || ((data.key).clone() == "ArrowDown") {
         return "down".to_owned();
     }
-    if ((data.key_code == KeyCode::END) || ((data.key).clone() == "End")) {
+    if (data.key_code == KeyCode::END) || ((data.key).clone() == "End") {
         return "end".to_owned();
     }
-    if ((data.key_code == KeyCode::HOME) || ((data.key).clone() == "Home")) {
+    if (data.key_code == KeyCode::HOME) || ((data.key).clone() == "Home") {
         return "home".to_owned();
     }
-    if ((data.key_code == KeyCode::LEFT) || ((data.key).clone() == "ArrowLeft")) {
+    if (data.key_code == KeyCode::LEFT) || ((data.key).clone() == "ArrowLeft") {
         return "left".to_owned();
     }
-    if ((data.key_code == KeyCode::RETURN) || ((data.key).clone() == "Enter")) {
+    if (data.key_code == KeyCode::RETURN) || ((data.key).clone() == "Enter") {
         return "return".to_owned();
     }
-    if ((data.key_code == KeyCode::RIGHT) || ((data.key).clone() == "ArrowRight")) {
+    if (data.key_code == KeyCode::RIGHT) || ((data.key).clone() == "ArrowRight") {
         return "right".to_owned();
     }
-    if ((data.key_code == KeyCode::UP) || ((data.key).clone() == "ArrowUp")) {
+    if (data.key_code == KeyCode::UP) || ((data.key).clone() == "ArrowUp") {
         return "up".to_owned();
     }
     return "none".to_owned();
@@ -1132,7 +1192,7 @@ fn get_keyboard_command(data: &KeyboardEventData) -> KeyboardCommand {
 fn get_line_end_index(layout: &TextLayoutResult, line_index: f64, text_length: f64) -> f64 {
     let mut end = (-1.0_f64);
     for group in ((layout.groups).clone()).iter().cloned() {
-        if ((group.line_index == line_index) && (group.end_index > end)) {
+        if (group.line_index == line_index) && (group.end_index > end) {
             end = group.end_index;
         }
     }
@@ -1150,7 +1210,7 @@ fn get_line_offset_y(layout: &TextLayoutResult, line_index: f64) -> f64 {
     {
         let mut i = 0.0_f64;
         while (i < line_index) {
-            y += (layout.line_heights[i as usize].clone()).unwrap_or(0.0_f64);
+            y += layout.line_heights[i as usize].clone();
             {
                 i += 1.0;
                 i
@@ -1164,8 +1224,7 @@ fn get_line_offset_y(layout: &TextLayoutResult, line_index: f64) -> f64 {
 fn get_line_start_index(layout: &TextLayoutResult, line_index: f64) -> f64 {
     let mut start = (-1.0_f64);
     for group in ((layout.groups).clone()).iter().cloned() {
-        if ((group.line_index == line_index) && ((start < 0.0_f64) || (group.start_index < start)))
-        {
+        if (group.line_index == line_index) && ((start < 0.0_f64) || (group.start_index < start)) {
             start = group.start_index;
         }
     }
@@ -1178,7 +1237,7 @@ fn get_text_layout_group_at_index(
     index: f64,
 ) -> Option<TextLayoutGroup> {
     for group in ((layout.groups).clone()).iter().cloned() {
-        if ((index >= group.start_index) && (index <= group.end_index)) {
+        if (index >= group.start_index) && (index <= group.end_index) {
             return Some((group).clone());
         }
     }
@@ -1192,7 +1251,7 @@ fn get_text_layout_group_caret_x(group: &mut TextLayoutGroup, index: f64) -> f64
     {
         let mut i = 0.0_f64;
         while (i < limit) {
-            x += (group.positions[i as usize].clone()).unwrap_or(0.0_f64);
+            x += group.positions[i as usize].clone();
             {
                 i += 1.0;
                 i
@@ -1208,7 +1267,7 @@ fn get_text_layout_group_character_index_at_x(group: &mut TextLayoutGroup, x: f6
     {
         let mut i = 0.0_f64;
         while (i < (group.positions.len() as f64)) {
-            let advance = (group.positions[i as usize].clone()).unwrap_or(0.0_f64);
+            let advance = group.positions[i as usize].clone();
             if (x < (current_x + (advance / 2.0_f64))) {
                 return (group.start_index + i);
             }
@@ -1237,16 +1296,16 @@ fn record_text_input_edit(
             .truncate((state.history_index + 1.0_f64) as usize);
     }
     let mut previous = if (state.history_index >= 0.0_f64) {
-        state.history[state.history_index as usize].clone()
+        Some(state.history[state.history_index as usize].clone())
     } else {
-        undefined
+        None
     };
-    if (((previous).is_some() && (merge_kind).is_some())
-        && ((previous.merge_kind).clone() == merge_kind))
+    if (((previous).is_some()) && ((merge_kind).is_some()))
+        && ((previous.as_mut().unwrap().merge_kind).clone() == merge_kind)
     {
-        previous.text_after = (text_after).clone();
-        previous.caret_index_after = state.caret_index;
-        previous.selection_index_after = state.selection_index;
+        previous.as_mut().unwrap().text_after = (text_after).clone();
+        previous.as_mut().unwrap().caret_index_after = state.caret_index;
+        previous.as_mut().unwrap().selection_index_after = state.selection_index;
         return;
     }
     state.history.push(TextInputHistoryEntry {
@@ -1272,8 +1331,10 @@ fn record_text_input_edit(
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:794 (sha256:3f0b23bb62c98647447578fd8f6e1a9c3b2d87f69c2e9aeb2b77405cb829cd5a)
 fn restrict_text_input(text: String, restrict: String) -> String {
-    if ((restrict.length == 0.0_f64) || (text.length == 0.0_f64)) {
-        return (text).clone();
+    if ((restrict.encode_utf16().count() as f64) == 0.0_f64)
+        || ((text.encode_utf16().count() as f64) == 0.0_f64)
+    {
+        return text;
     }
     let __destructure0 = split_restrict_ranges((restrict).clone());
     let accepted = (__destructure0.accepted).clone();
@@ -1281,23 +1342,23 @@ fn restrict_text_input(text: String, restrict: String) -> String {
     let mut out = "";
     for char in (text).iter().cloned() {
         let accepted_match =
-            ((accepted == "") || matches_restrict_ranges(char, (accepted).clone()));
+            (accepted == "") || (matches_restrict_ranges(char, (accepted).clone()));
         let declined_match =
-            ((declined != "") && matches_restrict_ranges(char, (declined).clone()));
-        if (accepted_match && (!declined_match)) {
+            (declined != "") && (matches_restrict_ranges(char, (declined).clone()));
+        if (accepted_match) && (!declined_match) {
             out += char;
         }
     }
-    return (out).clone();
+    return out;
 }
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:807 (sha256:5ec18eb9e2021e2b4c9df750ff90a2c0a31b4f64ed62f5e82484dd1303753774)
 fn matches_restrict_ranges(char: String, ranges: String) -> bool {
     {
         let mut i = 0.0_f64;
-        while (i < ranges.length) {
+        while (i < (ranges.encode_utf16().count() as f64)) {
             let current = (ranges.char_at)(i);
-            if ((current == "\\") && ((i + 1.0_f64) < ranges.length)) {
+            if (current == "\\") && ((i + 1.0_f64) < (ranges.encode_utf16().count() as f64)) {
                 if (char == (ranges.char_at)((i + 1.0_f64))) {
                     return true;
                 }
@@ -1306,11 +1367,13 @@ fn matches_restrict_ranges(char: String, ranges: String) -> bool {
                     i
                 };
             } else {
-                if (((i + 2.0_f64) < ranges.length) && ((ranges.char_at)((i + 1.0_f64)) == "-")) {
+                if ((i + 2.0_f64) < (ranges.encode_utf16().count() as f64))
+                    && ((ranges.char_at)((i + 1.0_f64)) == "-")
+                {
                     let end = (ranges.char_at)((i + 2.0_f64));
                     let code = (char.char_code_at)(0.0_f64);
-                    if ((code >= (current.char_code_at)(0.0_f64))
-                        && (code <= (end.char_code_at)(0.0_f64)))
+                    if (code >= (current.char_code_at)(0.0_f64))
+                        && (code <= (end.char_code_at)(0.0_f64))
                     {
                         return true;
                     }
@@ -1349,9 +1412,9 @@ fn split_restrict_ranges(restrict: String) -> SplitRestrictRangesRecord1 {
     let mut declining = false;
     {
         let mut i = 0.0_f64;
-        while (i < restrict.length) {
+        while (i < (restrict.encode_utf16().count() as f64)) {
             let char = (restrict.char_at)(i);
-            if ((char == "\\") && ((i + 1.0_f64) < restrict.length)) {
+            if (char == "\\") && ((i + 1.0_f64) < (restrict.encode_utf16().count() as f64)) {
                 let escaped = (char + (restrict.char_at)((i + 1.0_f64)));
                 if declining {
                     declined += escaped;
@@ -1392,13 +1455,13 @@ type KeyboardCommand = String;
 // Source: upstream/packages/textinput/src/textInputEditing.ts:874 (sha256:050b27a35b02df39a3fc90980f133783be4f9664f3b949d4b83db163e23e8b91)
 fn find_word_start_before(text: String, index: f64) -> f64 {
     let mut i = index;
-    while ((i > 0.0_f64) && (!is_word_char((text.char_at)((i - 1.0_f64))))) {
+    while (i > 0.0_f64) && (!is_word_char((text.char_at)((i - 1.0_f64)))) {
         {
             i -= 1.0;
             i
         };
     }
-    while ((i > 0.0_f64) && is_word_char((text.char_at)((i - 1.0_f64)))) {
+    while (i > 0.0_f64) && (is_word_char((text.char_at)((i - 1.0_f64)))) {
         {
             i -= 1.0;
             i
@@ -1410,13 +1473,13 @@ fn find_word_start_before(text: String, index: f64) -> f64 {
 // Source: upstream/packages/textinput/src/textInputEditing.ts:883 (sha256:de59b7e56679d4df27ddc24ed1632145cb5e86dc12179b53206cc627e13b832e)
 fn find_word_end_after(text: String, index: f64) -> f64 {
     let mut i = index;
-    while ((i < text.length) && (!is_word_char((text.char_at)(i)))) {
+    while (i < (text.encode_utf16().count() as f64)) && (!is_word_char((text.char_at)(i))) {
         {
             i += 1.0;
             i
         };
     }
-    while ((i < text.length) && is_word_char((text.char_at)(i))) {
+    while (i < (text.encode_utf16().count() as f64)) && (is_word_char((text.char_at)(i))) {
         {
             i += 1.0;
             i
@@ -1437,11 +1500,30 @@ fn is_word_char(char: String) -> bool {
 }
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:897 (sha256:7351f720a26190716f486bc006c1865a3cf502a56fdb176ccb12b37771be5e07)
-struct scratchRect;
-impl scratchRect {
-    pub const height: f64 = 0.0_f64;
-    pub const lineIndex: f64 = 0.0_f64;
-    pub const width: f64 = 0.0_f64;
-    pub const x: f64 = 0.0_f64;
-    pub const y: f64 = 0.0_f64;
+#[derive(Clone)]
+struct ScratchRect {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub height: f64,
+    pub line_index: f64,
+    pub width: f64,
+    pub x: f64,
+    pub y: f64,
 }
+impl PartialEq for ScratchRect {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+static SCRATCH_RECT: std::sync::LazyLock<std::sync::Mutex<ScratchRect>> =
+    std::sync::LazyLock::new(|| {
+        std::sync::Mutex::new(ScratchRect {
+            __flight_identity: std::sync::Arc::new(()),
+            height: 0.0_f64,
+            line_index: 0.0_f64,
+            width: 0.0_f64,
+            x: 0.0_f64,
+            y: 0.0_f64,
+        })
+    });

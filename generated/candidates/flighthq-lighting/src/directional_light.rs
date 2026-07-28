@@ -39,7 +39,7 @@ pub fn clone_directional_light(source: &DirectionalLight) -> DirectionalLight {
         color: source.color,
         direction: clone_vector3(&source.direction),
         intensity: source.intensity,
-        kind: directional_light_kind_constant,
+        kind: (directional_light_kind_constant).to_owned(),
         normal_bias: source.normal_bias,
         pcf_radius: source.pcf_radius,
         shadow_bias: source.shadow_bias,
@@ -59,7 +59,7 @@ pub fn create_directional_light(options: Option<DirectionalLightOptions>) -> Dir
             create_vector3(Some(0.0_f64), Some((-1.0_f64)), Some(0.0_f64))
         },
         intensity: (options.as_ref().and_then(|value| value.intensity)).unwrap_or(1.0_f64),
-        kind: directional_light_kind_constant,
+        kind: (directional_light_kind_constant).to_owned(),
         normal_bias: (options.as_ref().and_then(|value| value.normal_bias)).unwrap_or(0.0_f64),
         pcf_radius: (options.as_ref().and_then(|value| value.pcf_radius)).unwrap_or(0.0_f64),
         shadow_bias: (options.as_ref().and_then(|value| value.shadow_bias)).unwrap_or(0.0_f64),

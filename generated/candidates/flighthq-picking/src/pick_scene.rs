@@ -165,7 +165,7 @@ pub fn pick_scene_all_with_ray3_d(
             .sort_by(|left, right| left.partial_cmp(right).unwrap_or(std::cmp::Ordering::Equal));
         __flight_values
     };
-    return (out_array).clone();
+    return out_array;
 }
 
 // Source: upstream/packages/picking/src/pickScene.ts:122 (sha256:af965e26f8798a8af44b6ba97627731b38c41c4aa93a1a014899181360b41591)
@@ -264,8 +264,8 @@ fn pick_node(
     if (!node.enabled) {
         return;
     }
-    if (is_mesh(node)
-        && ((predicate).is_none() || predicate.as_ref().unwrap().lock().unwrap()(node)))
+    if (is_mesh(node))
+        && (((predicate).is_none()) || (predicate.as_ref().unwrap().lock().unwrap()(node)))
     {
         intersect_mesh_triangles(node, ray, max_distance, cull_backfaces, on_hit);
     }
@@ -325,19 +325,19 @@ fn intersect_mesh_triangles(
         while (triangle < triangle_count) {
             let base = (triangle * 3.0_f64);
             let i0 = if (indices).is_some() {
-                (indices.as_ref().unwrap()[base as usize] as f64)
+                (indices.as_ref().unwrap()[base as usize] as f64) as u32
             } else {
-                base
+                (base) as u32
             };
             let i1 = if (indices).is_some() {
-                (indices.as_ref().unwrap()[(base + 1.0_f64) as usize] as f64)
+                (indices.as_ref().unwrap()[(base + 1.0_f64) as usize] as f64) as u32
             } else {
-                (base + 1.0_f64)
+                (base + 1.0_f64) as u32
             };
             let i2 = if (indices).is_some() {
-                (indices.as_ref().unwrap()[(base + 2.0_f64) as usize] as f64)
+                (indices.as_ref().unwrap()[(base + 2.0_f64) as usize] as f64) as u32
             } else {
-                (base + 2.0_f64)
+                (base + 2.0_f64) as u32
             };
             get_mesh_geometry_vertex_position(&mut (*_A.lock().unwrap()), &mesh.geometry, i0);
             get_mesh_geometry_vertex_position(&mut (*_B.lock().unwrap()), &mesh.geometry, i1);
@@ -348,7 +348,7 @@ fn intersect_mesh_triangles(
                 &(*_B.lock().unwrap()),
                 &(*_C.lock().unwrap()),
             );
-            if ((t < 0.0_f64) || (t > max_distance)) {
+            if (t < 0.0_f64) || (t > max_distance) {
                 {
                     triangle += 1.0;
                     triangle
@@ -382,11 +382,11 @@ fn intersect_mesh_triangles(
                 };
                 continue;
             }
-            if (cull_backfaces
+            if (cull_backfaces)
                 && ((((ray.direction.x * (*_WORLD_NORMAL.lock().unwrap()).x)
                     + (ray.direction.y * (*_WORLD_NORMAL.lock().unwrap()).y))
                     + (ray.direction.z * (*_WORLD_NORMAL.lock().unwrap()).z))
-                    > 0.0_f64))
+                    > 0.0_f64)
             {
                 {
                     triangle += 1.0;

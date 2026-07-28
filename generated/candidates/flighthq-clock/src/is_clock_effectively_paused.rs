@@ -10,7 +10,7 @@ use flighthq_types::Clock;
 
 // Source: upstream/packages/clock/src/isClockEffectivelyPaused.ts:5 (sha256:94d1d81f53c1df88a647fb9f771812bec263d9a53a8c84b6554ca25f3bf79f40)
 pub fn is_clock_effectively_paused(clock: &mut Clock) -> bool {
-    let mut current: Option<Clock> = clock;
+    let mut current: Option<Clock> = Some((*clock).clone());
     while (current).is_some() {
         if current.as_mut().unwrap().paused {
             return true;

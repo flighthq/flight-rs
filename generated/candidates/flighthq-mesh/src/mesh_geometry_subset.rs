@@ -35,7 +35,7 @@ pub fn add_mesh_geometry_subset(geometry: &mut MeshGeometry, subset: &MeshSubset
 
 // Source: upstream/packages/mesh/src/meshGeometrySubset.ts:24 (sha256:dfb5f55502c9216b5ed03809547d2bd2edf116e9cecdde9f39600b9fd8b1a188)
 pub fn get_mesh_geometry_subset_triangle_count(geometry: &MeshGeometry, subset_index: f64) -> f64 {
-    if ((subset_index < 0.0_f64) || (subset_index >= (geometry.subsets.len() as f64))) {
+    if (subset_index < 0.0_f64) || (subset_index >= (geometry.subsets.len() as f64)) {
         return 0.0_f64;
     }
     let index_count = geometry.subsets[subset_index as usize].index_count;

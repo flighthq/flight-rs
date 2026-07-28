@@ -230,7 +230,7 @@ pub fn compute_particle_emitter3_d_local_bounds_aabb(
 // Source: upstream/packages/particleemitter/src/particleEmitter3D.ts:154 (sha256:a941d5d8ab34bc166825cf8dde3c5777d059b861ceb5f606abf9b87f1cc8a371)
 pub fn create_particle_emitter3_d(obj: Option<ParticleEmitter3D>) -> ParticleEmitter3D {
     let mut node = create_scene_node(
-        Some(particle_emitter3_d_kind_constant),
+        Some((particle_emitter3_d_kind_constant).to_owned()),
         Some(((obj).clone().unwrap()).clone()),
     );
     node.data = create_particle_emitter_data(Some(
@@ -238,7 +238,7 @@ pub fn create_particle_emitter3_d(obj: Option<ParticleEmitter3D>) -> ParticleEmi
     ));
     node.blend_mode =
         (obj.as_ref().map(|value| (value.blend_mode).clone())).unwrap_or("normal".to_owned());
-    return (node).clone();
+    return node;
 }
 
 // Source: upstream/packages/particleemitter/src/particleEmitter3D.ts:161 (sha256:8783a1a2e035fb9a5c262ea4c2c232593c834c7167912e71631fad21491a7e91)
@@ -252,7 +252,7 @@ pub fn get_particle_emitter3_d_capacity(source: &ParticleEmitter3D) -> f64 {
 
 // Source: upstream/packages/particleemitter/src/particleEmitter3D.ts:167 (sha256:34696172d9b8786516c98aa37ec593ad466020a6791015d1b1a764af168d7473)
 pub fn get_particle_emitter3_d_particle_alpha(source: &ParticleEmitter3D, index: f64) -> f64 {
-    if ((index < 0.0_f64) || (index >= source.data.particle_count)) {
+    if (index < 0.0_f64) || (index >= source.data.particle_count) {
         return (-1.0_f64);
     }
     return (source.data.alphas[index as usize] as f64);
@@ -260,7 +260,7 @@ pub fn get_particle_emitter3_d_particle_alpha(source: &ParticleEmitter3D, index:
 
 // Source: upstream/packages/particleemitter/src/particleEmitter3D.ts:172 (sha256:6da9448545e5e496112104e2f1adfd5aaf4f4d7a7e9b150a673fe50b6fd5f416)
 pub fn get_particle_emitter3_d_particle_id(source: &ParticleEmitter3D, index: f64) -> f64 {
-    if ((index < 0.0_f64) || (index >= source.data.particle_count)) {
+    if (index < 0.0_f64) || (index >= source.data.particle_count) {
         return (-1.0_f64);
     }
     return (source.data.ids[index as usize] as f64);
@@ -272,7 +272,7 @@ pub fn get_particle_emitter3_d_particle_velocity(
     source: &ParticleEmitter3D,
     index: f64,
 ) -> bool {
-    if ((index < 0.0_f64) || (index >= source.data.particle_count)) {
+    if (index < 0.0_f64) || (index >= source.data.particle_count) {
         return false;
     }
     let vt = (index * PARTICLE_VELOCITY_STRIDE);
@@ -306,7 +306,7 @@ pub fn is_particle_emitter3_d(node: &IsParticleEmitter3DRecord1) -> bool {
 // Source: upstream/packages/particleemitter/src/particleEmitter3D.ts:198 (sha256:3094d60232aefa4d76ff37c4195068cea23d41e3f31cab39040e980ebbbaaf5f)
 pub fn remove_particle_emitter3_d_particle(target: &mut ParticleEmitter3D, index: f64) -> () {
     let last = (target.data.particle_count - 1.0_f64);
-    if ((index < 0.0_f64) || (index > last)) {
+    if (index < 0.0_f64) || (index > last) {
         return;
     }
     if (index < last) {
@@ -372,7 +372,7 @@ pub fn set_particle_emitter3_d_particle(
     rotation: f64,
     scale: f64,
 ) -> () {
-    if ((index < 0.0_f64) || (index >= target.data.particle_count)) {
+    if (index < 0.0_f64) || (index >= target.data.particle_count) {
         return;
     }
     target.data.ids[index as usize] = (id) as u16;
@@ -390,7 +390,7 @@ pub fn set_particle_emitter3_d_particle_alpha(
     index: f64,
     alpha: f64,
 ) -> () {
-    if ((index < 0.0_f64) || (index >= target.data.particle_count)) {
+    if (index < 0.0_f64) || (index >= target.data.particle_count) {
         return;
     }
     target.data.alphas[index as usize] = (alpha) as f32;
@@ -404,7 +404,7 @@ pub fn set_particle_emitter3_d_particle_color(
     g: f64,
     b: f64,
 ) -> () {
-    if ((index < 0.0_f64) || (index >= target.data.particle_count)) {
+    if (index < 0.0_f64) || (index >= target.data.particle_count) {
         return;
     }
     let ct = (index * PARTICLE_COLOR_STRIDE);
@@ -421,7 +421,7 @@ pub fn set_particle_emitter3_d_particle_velocity(
     vy: f64,
     vz: f64,
 ) -> () {
-    if ((index < 0.0_f64) || (index >= target.data.particle_count)) {
+    if (index < 0.0_f64) || (index >= target.data.particle_count) {
         return;
     }
     let vt = (index * PARTICLE_VELOCITY_STRIDE);

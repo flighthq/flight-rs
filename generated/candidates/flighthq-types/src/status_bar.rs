@@ -60,13 +60,13 @@ pub struct StatusBarBackend {
         std::sync::Mutex<Box<dyn FnMut(StatusBarInfo) -> StatusBarInfo + Send + 'static>>,
     >,
     pub set_background_color:
-        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64, bool) -> () + Send + 'static>>>,
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64, Option<bool>) -> () + Send + 'static>>>,
     pub set_overlays_content:
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(bool) -> () + Send + 'static>>>,
     pub set_style:
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(StatusBarStyle) -> () + Send + 'static>>>,
     pub set_visible: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(bool, StatusBarAnimation) -> () + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut(bool, Option<StatusBarAnimation>) -> () + Send + 'static>>,
     >,
     pub subscribe: std::sync::Arc<
         std::sync::Mutex<

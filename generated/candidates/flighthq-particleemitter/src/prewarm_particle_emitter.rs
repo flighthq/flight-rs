@@ -22,7 +22,7 @@ pub fn prewarm_particle_emitter(
 ) -> () {
     let step_delta_time = step_delta_time.unwrap_or((1.0_f64 / 60.0_f64));
     let step = if (step_delta_time > 0.0_f64) {
-        step_delta_time
+        (step_delta_time).clone()
     } else {
         duration
     };

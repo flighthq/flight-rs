@@ -9,7 +9,25 @@
 use crate::ResourceResolutionState;
 
 // Source: upstream/packages/types/src/SceneResourceRef.ts:19 (sha256:6d9879b086fd261aa3e612640eba3775cf3616966fd7549f026399e7a9f6a6ab)
-// TypeScript value namespace SceneResourceRefKind is represented by its generated Rust type.
+#[derive(Clone)]
+pub struct SceneResourceRefKindValues {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub embedded: String,
+    pub external: String,
+}
+impl PartialEq for SceneResourceRefKindValues {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+pub static SCENE_RESOURCE_REF_KIND: std::sync::LazyLock<SceneResourceRefKindValues> =
+    std::sync::LazyLock::new(|| SceneResourceRefKindValues {
+        __flight_identity: std::sync::Arc::new(()),
+        embedded: "Embedded".to_owned(),
+        external: "External".to_owned(),
+    });
 
 // Source: upstream/packages/types/src/SceneResourceRef.ts:24 (sha256:3cce1b6a163bfbc391e5e8fe64c21753dee06b2f1644a5fe0e5ca17c1a21dbfc)
 pub type SceneResourceRefKind = crate::OpaqueHostValue;

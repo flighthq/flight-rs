@@ -55,7 +55,7 @@ pub fn append_path_arc_to(
     end_x: f64,
     end_y: f64,
 ) -> () {
-    if ((radius_x == 0.0_f64) || (radius_y == 0.0_f64)) {
+    if (radius_x == 0.0_f64) || (radius_y == 0.0_f64) {
         append_path_line_to(path, end_x, end_y);
         return;
     }
@@ -70,7 +70,7 @@ pub fn append_path_arc_to(
     }
     let x2 = end_x;
     let y2 = end_y;
-    if ((x1 == x2) && (y1 == y2)) {
+    if (x1 == x2) && (y1 == y2) {
         return;
     }
     let mut rx = (radius_x).abs();
@@ -115,10 +115,10 @@ pub fn append_path_arc_to(
     let vy = (((-y1p) - cyp) / ry);
     let theta1 = vector_angle(1.0_f64, 0.0_f64, ux, uy);
     let mut dtheta = vector_angle(ux, uy, vx, vy);
-    if ((!sweep) && (dtheta > 0.0_f64)) {
+    if (!sweep) && (dtheta > 0.0_f64) {
         dtheta -= (std::f64::consts::PI * 2.0_f64);
     }
-    if (sweep && (dtheta < 0.0_f64)) {
+    if (sweep) && (dtheta < 0.0_f64) {
         dtheta += (std::f64::consts::PI * 2.0_f64);
     }
     append_arc_cubics(path, cx, cy, rx, ry, x_axis_rotation, theta1, dtheta);
@@ -290,7 +290,7 @@ pub fn append_path_round_rectangle(
     height: f64,
     radius: &crate::FlightUnion2<f64, Vec<f64>>,
 ) -> () {
-    let __destructure0 = normalize_corner_radii(radius, width, height);
+    let __destructure0 = normalize_corner_radii(&((*radius).clone()), width, height);
     let rtl = __destructure0[0.0_f64 as usize].clone();
     let rtr = __destructure0[1.0_f64 as usize].clone();
     let rbr = __destructure0[2.0_f64 as usize].clone();
@@ -487,7 +487,7 @@ fn vector_angle(ux: f64, uy: f64, vx: f64, vy: f64) -> f64 {
     let dot = ((ux * vx) + (uy * vy));
     let len_u = ((ux * ux) + (uy * uy)).sqrt();
     let len_v = ((vx * vx) + (vy * vy)).sqrt();
-    if ((len_u == 0.0_f64) || (len_v == 0.0_f64)) {
+    if (len_u == 0.0_f64) || (len_v == 0.0_f64) {
         return 0.0_f64;
     }
     let cos_angle = (-1.0_f64).max((1.0_f64).min((dot / (len_u * len_v))));

@@ -12,6 +12,7 @@ use flighthq_types::{Surface, SurfaceRegion};
 
 fn surface(data: Vec<u8>, width: f64, height: f64) -> Surface {
     Surface {
+        __flight_identity: std::sync::Arc::new(()),
         alpha_type: "straight".to_owned(),
         compressed: None,
         data,
@@ -26,6 +27,7 @@ fn surface(data: Vec<u8>, width: f64, height: f64) -> Surface {
 
 fn region(surface: Surface) -> SurfaceRegion {
     SurfaceRegion {
+        __flight_identity: std::sync::Arc::new(()),
         width: surface.width,
         height: surface.height,
         surface,
@@ -64,6 +66,7 @@ fn coverage_observes_background_and_channel_tolerance() {
 fn identity_convolution_copies_the_selected_region() {
     let source = region(surface(vec![10, 20, 30, 40, 50, 60, 70, 80], 2.0, 1.0));
     let options = SurfaceConvolutionOptions {
+        __flight_identity: std::sync::Arc::new(()),
         bias: None,
         edge: None,
         divisor: None,

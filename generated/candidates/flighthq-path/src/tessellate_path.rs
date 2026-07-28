@@ -53,9 +53,9 @@ fn tessellate_contour(source: &Vec<f64>, vertices: &mut Vec<f64>, indices: &mut 
         while (i < (source.len() as f64)) {
             let x = source[i as usize].clone();
             let y = source[(i + 1.0_f64) as usize].clone();
-            if ((((pts.len() as f64) >= 2.0_f64)
+            if (((pts.len() as f64) >= 2.0_f64)
                 && (pts[((pts.len() as f64) - 2.0_f64) as usize].clone() == x))
-                && (pts[((pts.len() as f64) - 1.0_f64) as usize].clone() == y))
+                && (pts[((pts.len() as f64) - 1.0_f64) as usize].clone() == y)
             {
                 {
                     i += 2.0_f64;
@@ -72,10 +72,10 @@ fn tessellate_contour(source: &Vec<f64>, vertices: &mut Vec<f64>, indices: &mut 
     }
     let mut count =
         (__flight_js_to_i32((pts.len() as f64)) >> (__flight_js_to_u32(1.0_f64) & 31)) as f64;
-    if (((count >= 2.0_f64)
+    if ((count >= 2.0_f64)
         && (pts[0.0_f64 as usize].clone() == pts[((count - 1.0_f64) * 2.0_f64) as usize].clone()))
         && (pts[1.0_f64 as usize].clone()
-            == pts[(((count - 1.0_f64) * 2.0_f64) + 1.0_f64) as usize].clone()))
+            == pts[(((count - 1.0_f64) * 2.0_f64) + 1.0_f64) as usize].clone())
     {
         count -= 1.0_f64;
     }
@@ -137,11 +137,11 @@ fn tessellate_contour(source: &Vec<f64>, vertices: &mut Vec<f64>, indices: &mut 
         }
     }
     let mut guard = ((ring.len() as f64) * (ring.len() as f64));
-    while (((ring.len() as f64) > 3.0_f64)
+    while ((ring.len() as f64) > 3.0_f64)
         && ({
             guard -= 1.0;
             guard
-        } > 0.0_f64))
+        } > 0.0_f64)
     {
         let mut clipped = false;
         {
@@ -192,7 +192,7 @@ fn is_ear(contour: &Vec<f64>, ring: &Vec<f64>, a: f64, b: f64, c: f64) -> bool {
         let mut i = 0.0_f64;
         while (i < (ring.len() as f64)) {
             let p = ring[i as usize].clone();
-            if (((p == a) || (p == b)) || (p == c)) {
+            if ((p == a) || (p == b)) || (p == c) {
                 {
                     i += 1.0;
                     i
@@ -234,7 +234,7 @@ fn is_point_in_triangle(
     let d1 = (((px - bx) * (ay - by)) - ((ax - bx) * (py - by)));
     let d2 = (((px - cx) * (by - cy)) - ((bx - cx) * (py - cy)));
     let d3 = (((px - ax) * (cy - ay)) - ((cx - ax) * (py - ay)));
-    let has_negative = (((d1 < 0.0_f64) || (d2 < 0.0_f64)) || (d3 < 0.0_f64));
-    let has_positive = (((d1 > 0.0_f64) || (d2 > 0.0_f64)) || (d3 > 0.0_f64));
-    return (!(has_negative && has_positive));
+    let has_negative = ((d1 < 0.0_f64) || (d2 < 0.0_f64)) || (d3 < 0.0_f64);
+    let has_positive = ((d1 > 0.0_f64) || (d2 > 0.0_f64)) || (d3 > 0.0_f64);
+    return (!(has_negative) && (has_positive));
 }

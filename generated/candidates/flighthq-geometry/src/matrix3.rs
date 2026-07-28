@@ -14,7 +14,7 @@ use flighthq_types::{Matrix3, Matrix3Like, Matrix4Like, MatrixLike, Vector3Like}
 pub fn clone_matrix3(source: &Matrix3Like) -> Matrix3 {
     let mut m = create_matrix3(None, None, None, None, None, None, None, None, None);
     copy_matrix3(&mut m, source);
-    return (m).clone();
+    return m;
 }
 
 // Source: upstream/packages/geometry/src/matrix3.ts:12 (sha256:ddc657472e41ddc590678e47a18dc441dcad8cb7dfc4fc5fc99530915bd83c2f)
@@ -101,33 +101,33 @@ pub fn create_matrix3(
         m: (m).clone(),
     }));
     if (m00).is_some() {
-        out.m[0.0_f64 as usize] = (m00.as_ref().unwrap()) as f32;
+        out.m[0.0_f64 as usize] = (*(m00.as_ref().unwrap())) as f32;
     }
     if (m01).is_some() {
-        out.m[3.0_f64 as usize] = (m01.as_ref().unwrap()) as f32;
+        out.m[3.0_f64 as usize] = (*(m01.as_ref().unwrap())) as f32;
     }
     if (m02).is_some() {
-        out.m[6.0_f64 as usize] = (m02.as_ref().unwrap()) as f32;
+        out.m[6.0_f64 as usize] = (*(m02.as_ref().unwrap())) as f32;
     }
     if (m10).is_some() {
-        out.m[1.0_f64 as usize] = (m10.as_ref().unwrap()) as f32;
+        out.m[1.0_f64 as usize] = (*(m10.as_ref().unwrap())) as f32;
     }
     if (m11).is_some() {
-        out.m[4.0_f64 as usize] = (m11.as_ref().unwrap()) as f32;
+        out.m[4.0_f64 as usize] = (*(m11.as_ref().unwrap())) as f32;
     }
     if (m12).is_some() {
-        out.m[7.0_f64 as usize] = (m12.as_ref().unwrap()) as f32;
+        out.m[7.0_f64 as usize] = (*(m12.as_ref().unwrap())) as f32;
     }
     if (m20).is_some() {
-        out.m[2.0_f64 as usize] = (m20.as_ref().unwrap()) as f32;
+        out.m[2.0_f64 as usize] = (*(m20.as_ref().unwrap())) as f32;
     }
     if (m21).is_some() {
-        out.m[5.0_f64 as usize] = (m21.as_ref().unwrap()) as f32;
+        out.m[5.0_f64 as usize] = (*(m21.as_ref().unwrap())) as f32;
     }
     if (m22).is_some() {
-        out.m[8.0_f64 as usize] = (m22.as_ref().unwrap()) as f32;
+        out.m[8.0_f64 as usize] = (*(m22.as_ref().unwrap())) as f32;
     }
-    return (out).clone();
+    return out;
 }
 
 // Source: upstream/packages/geometry/src/matrix3.ts:92 (sha256:28d06eb0f236afd0b1d115966d3c5ee3353cccf1320d74b3cfd8ca61fd88bcf8)
@@ -135,7 +135,7 @@ pub fn equals_matrix3(a: Option<Matrix3Like>, b: Option<Matrix3Like>) -> bool {
     if (a == b) {
         return true;
     }
-    if ((a).is_none() || (b).is_none()) {
+    if ((a).is_none()) || ((b).is_none()) {
         return false;
     }
     {
@@ -230,9 +230,9 @@ pub fn inverse_matrix3(out: &mut Matrix3Like, source: &Matrix3Like) -> bool {
 
 // Source: upstream/packages/geometry/src/matrix3.ts:193 (sha256:1c634e8dc737b307b81e8e57f60d4f803790b3908742a8724dffa256dcad0c6d)
 pub fn is_affine_matrix3(source: &Matrix3Like) -> bool {
-    return ((((source.m[2.0_f64 as usize] as f64) == 0.0_f64)
+    return (((source.m[2.0_f64 as usize] as f64) == 0.0_f64)
         && ((source.m[5.0_f64 as usize] as f64) == 0.0_f64))
-        && ((source.m[8.0_f64 as usize] as f64) == 1.0_f64));
+        && ((source.m[8.0_f64 as usize] as f64) == 1.0_f64);
 }
 
 // Source: upstream/packages/geometry/src/matrix3.ts:201 (sha256:8766615cd1ec47c2ba6c4e32b4f87b9469fe8727cc30fd8c8cb2ce90d38b222a)
@@ -255,7 +255,7 @@ pub fn multiply_matrix3(out: &mut Matrix3Like, a: &Matrix3Like, b: &Matrix3Like)
     let b02 = (b.m[6.0_f64 as usize] as f64);
     let b12 = (b.m[7.0_f64 as usize] as f64);
     let b22 = (b.m[8.0_f64 as usize] as f64);
-    if (is_affine_matrix3(a) && is_affine_matrix3(b)) {
+    if (is_affine_matrix3(a)) && (is_affine_matrix3(b)) {
         out.m[0.0_f64 as usize] = ((a00 * b00) + (a01 * b10)) as f32;
         out.m[1.0_f64 as usize] = ((a10 * b00) + (a11 * b10)) as f32;
         out.m[2.0_f64 as usize] = (0.0_f64) as f32;

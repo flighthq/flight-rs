@@ -56,7 +56,7 @@ pub fn clone_spot_light(source: &SpotLight) -> SpotLight {
         direction: clone_vector3(&source.direction),
         inner_cone_cos: source.inner_cone_cos,
         intensity: source.intensity,
-        kind: spot_light_kind_constant,
+        kind: (spot_light_kind_constant).to_owned(),
         normal_bias: source.normal_bias,
         outer_cone_cos: source.outer_cone_cos,
         pcf_radius: source.pcf_radius,
@@ -81,7 +81,7 @@ pub fn create_spot_light(options: Option<SpotLightOptions>) -> SpotLight {
         },
         inner_cone_cos: 1.0_f64,
         intensity: (options.as_ref().and_then(|value| value.intensity)).unwrap_or(1.0_f64),
-        kind: spot_light_kind_constant,
+        kind: (spot_light_kind_constant).to_owned(),
         normal_bias: (options.as_ref().and_then(|value| value.normal_bias)).unwrap_or(0.0_f64),
         outer_cone_cos: 1.0_f64,
         pcf_radius: (options.as_ref().and_then(|value| value.pcf_radius)).unwrap_or(0.0_f64),
@@ -98,7 +98,7 @@ pub fn create_spot_light(options: Option<SpotLightOptions>) -> SpotLight {
         (options.as_ref().and_then(|value| value.inner_cone_degrees)).unwrap_or(0.0_f64),
         (options.as_ref().and_then(|value| value.outer_cone_degrees)).unwrap_or(45.0_f64),
     );
-    return (light).clone();
+    return light;
 }
 
 // Source: upstream/packages/lighting/src/spotLight.ts:73 (sha256:8251cdf5a4d2a71d75f5e5bf39d147e89960443cb1686b27ff5ee7a0b7bb4cd9)

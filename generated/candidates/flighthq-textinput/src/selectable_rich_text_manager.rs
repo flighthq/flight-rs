@@ -42,16 +42,17 @@ pub fn dispatch_selectable_rich_text_key_down(
     if (target).is_none() {
         return false;
     }
-    if ((data.ctrl_key || data.meta_key)
-        && ((((data.key).clone()).to_lowercase() == "a") || (data.key_code == KeyCode::A)))
+    if ((data.ctrl_key) || (data.meta_key))
+        && ((((data.key).clone()).to_lowercase() == "a") || (data.key_code == KeyCode::A))
     {
         let mut runtime = get_mutable_runtime(target.as_ref().unwrap());
         runtime.selection_begin_index = 0.0_f64;
-        runtime.selection_end_index = target.as_ref().unwrap().data.text.length;
+        runtime.selection_end_index =
+            (target.as_ref().unwrap().data.text.encode_utf16().count() as f64);
         return true;
     }
-    if ((data.ctrl_key || data.meta_key)
-        && ((((data.key).clone()).to_lowercase() == "c") || (data.key_code == KeyCode::C)))
+    if ((data.ctrl_key) || (data.meta_key))
+        && ((((data.key).clone()).to_lowercase() == "c") || (data.key_code == KeyCode::C))
     {
         let mut runtime = get_mutable_runtime(target.as_ref().unwrap());
         let start = (runtime.selection_begin_index).min(runtime.selection_end_index);

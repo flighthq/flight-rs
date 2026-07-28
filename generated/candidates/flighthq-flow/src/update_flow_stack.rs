@@ -20,7 +20,7 @@ pub fn update_flow_stack(stack: &FlowStack, delta_time: f64) -> () {
             .as_ref()
             .map(|callback| callback.lock().unwrap()(delta_time))
     };
-    while ((index > 0.0_f64) && stack.states[index as usize].update_below) {
+    while (index > 0.0_f64) && ((stack.states[index as usize].update_below).unwrap_or(false)) {
         {
             index -= 1.0;
             index

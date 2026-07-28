@@ -110,4 +110,4 @@ pub static WELL_KNOWN_MENU_ITEM_ROLE: std::sync::LazyLock<WellKnownMenuItemRole>
     });
 
 // Source: upstream/packages/types/src/WellKnownMenuItemRole.ts:70 (sha256:f4f892ec5dc1d27505969d4667c4839c5b068f9f6aab8ea5304b585cfc886e34)
-pub type WellKnownMenuItemRoleValue = crate::OpaqueHostValue;
+pub type WellKnownMenuItemRoleValue = String;

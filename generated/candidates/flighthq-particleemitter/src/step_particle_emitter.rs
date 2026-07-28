@@ -23,7 +23,7 @@ pub fn step_particle_emitter(
     colliders: Option<Vec<ParticleCollider>>,
     callbacks: Option<ParticleEmitterCallbacks>,
 ) -> () {
-    if ((forces).is_some() && ((forces.as_ref().unwrap().len() as f64) > 0.0_f64)) {
+    if ((forces).is_some()) && ((forces.as_ref().unwrap().len() as f64) > 0.0_f64) {
         apply_particle_forces(emitter, state, forces.as_ref().unwrap(), delta_time);
     }
     update_particle_emitter(
@@ -33,7 +33,7 @@ pub fn step_particle_emitter(
         delta_time,
         Some(((callbacks).clone().unwrap()).clone()),
     );
-    if ((colliders).is_some() && ((colliders.as_ref().unwrap().len() as f64) > 0.0_f64)) {
+    if ((colliders).is_some()) && ((colliders.as_ref().unwrap().len() as f64) > 0.0_f64) {
         apply_particle_collisions(emitter, state, colliders.as_ref().unwrap());
     }
 }

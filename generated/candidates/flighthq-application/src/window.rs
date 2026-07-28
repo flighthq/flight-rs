@@ -336,7 +336,11 @@ pub fn attach_window_render_state(
             }
         })
             as Box<dyn FnMut() -> () + Send + 'static>));
-    ((apply).clone()).lock().unwrap()();
+    {
+        let __flight_callback = (apply).clone();
+        let __flight_result = __flight_callback.lock().unwrap()();
+        __flight_result
+    };
     connect_signal(&mut win.on_resize, (apply).clone(), None);
     {
         let __flight_key = *K_RENDER_STATE;
@@ -424,7 +428,11 @@ pub fn attach_window_visibility(win: ApplicationWindow) -> () {
 
 // Source: upstream/packages/application/src/window.ts:183 (sha256:0167c04c1d975c92c5b68ac39a73fcd5e71b8ee5446aa3604fd9d1f3b9ac0541)
 pub fn center_window(win: &ApplicationWindow) -> () {
-    ((get_window_backend().center).clone()).lock().unwrap()((*win).clone());
+    {
+        let __flight_callback = (get_window_backend().center).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/application/src/window.ts:190 (sha256:1a150ebd11c101de18b31626e68f65e3d2c679d3d0b3ea533372efb57129b7ea)
@@ -432,7 +440,11 @@ pub fn close_window(win: &ApplicationWindow) -> bool {
     if (!request_window_close(win)) {
         return false;
     }
-    ((get_window_backend().close).clone()).lock().unwrap()((*win).clone());
+    {
+        let __flight_callback = (get_window_backend().close).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone());
+        __flight_result
+    };
     emit_signal((win.on_close).clone(), ());
     return true;
 }
@@ -525,7 +537,7 @@ pub fn create_web_window_backend() -> WindowBackend {
                     out.y = win.y;
                     out.width = win.width;
                     out.height = win.height;
-                    return (out).clone();
+                    return out;
                 }
             },
         )
@@ -877,7 +889,11 @@ pub fn dispose_application_window(win: &ApplicationWindow) -> () {
     .iter()
     .cloned()
     {
-        ((cleanup).clone()).lock().unwrap()();
+        {
+            let __flight_callback = (cleanup).clone();
+            let __flight_result = __flight_callback.lock().unwrap()();
+            __flight_result
+        };
     }
     observers.clear();
 }
@@ -896,15 +912,21 @@ pub fn exit_application_pointer_lock() -> crate::Promise<crate::OpaqueHostValue>
 
 // Source: upstream/packages/application/src/window.ts:441 (sha256:aa22f27bf7b4483a2538840a10a68caac2a329fcacc2031d968414cac55d14cb)
 pub fn flash_window_frame(win: &ApplicationWindow) -> () {
-    ((get_window_backend().flash_window_frame).clone())
-        .lock()
-        .unwrap()((*win).clone());
+    {
+        let __flight_callback = (get_window_backend().flash_window_frame).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/application/src/window.ts:446 (sha256:04e13a01db7c45b6762382586d44db003e5e3981f1fbf65dec8efcb1abf9fe3e)
 pub fn focus_window(win: &mut ApplicationWindow) -> () {
     win.focused = true;
-    ((get_window_backend().focus).clone()).lock().unwrap()((*win).clone());
+    {
+        let __flight_callback = (get_window_backend().focus).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/application/src/window.ts:452 (sha256:fbc343d5319c509f1443fab39e007bd8ec558ca6ee38cb7a4b5fc82d69bfdede)
@@ -919,10 +941,11 @@ pub fn get_window_backend() -> WindowBackend {
 
 // Source: upstream/packages/application/src/window.ts:458 (sha256:4b08e60197e0e3e5abd8ec276cad276041bbe2a444f6cd28e0c0fc1b179c2b66)
 pub fn get_window_bounds(win: &ApplicationWindow, out: &WindowBounds) -> WindowBounds {
-    return ((get_window_backend().get_bounds).clone()).lock().unwrap()(
-        (*win).clone(),
-        (*out).clone(),
-    );
+    return {
+        let __flight_callback = (get_window_backend().get_bounds).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone(), (*out).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/application/src/window.ts:466 (sha256:b0fdd8521a90318ffbc95fe30587be034f1d184601ac3cafab37e9c626dc8888)
@@ -936,7 +959,11 @@ pub fn hide_window(win: &mut ApplicationWindow) -> () {
         return;
     }
     win.visible = false;
-    ((get_window_backend().hide).clone()).lock().unwrap()((*win).clone());
+    {
+        let __flight_callback = (get_window_backend().hide).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/application/src/window.ts:480 (sha256:449cebc4fb63fc9cc3223aeed83676489912c73ff9f5ce66a9ba290010a772b5)
@@ -952,7 +979,11 @@ pub fn maximize_window(win: &mut ApplicationWindow) -> () {
         return;
     }
     win.maximized = true;
-    ((get_window_backend().maximize).clone()).lock().unwrap()((*win).clone());
+    {
+        let __flight_callback = (get_window_backend().maximize).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone());
+        __flight_result
+    };
     emit_signal((win.on_maximize).clone(), ());
 }
 
@@ -962,7 +993,11 @@ pub fn minimize_window(win: &mut ApplicationWindow) -> () {
         return;
     }
     win.minimized = true;
-    ((get_window_backend().minimize).clone()).lock().unwrap()((*win).clone());
+    {
+        let __flight_callback = (get_window_backend().minimize).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone());
+        __flight_result
+    };
     emit_signal((win.on_minimize).clone(), ());
 }
 
@@ -1044,8 +1079,11 @@ pub fn open_window(win: &mut ApplicationWindow, options: Option<WindowOptions>) 
     if (options.max_height).is_some() {
         win.max_height = (options.max_height).unwrap();
     }
-    let result =
-        ((get_window_backend().open).clone()).lock().unwrap()((*win).clone(), (options).clone());
+    let result = {
+        let __flight_callback = (get_window_backend().open).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone(), (options).clone());
+        __flight_result
+    };
     if (options.center) == Some(true) {
         center_window(win);
     }
@@ -1083,9 +1121,11 @@ pub fn request_application_fullscreen(
 
 // Source: upstream/packages/application/src/window.ts:547 (sha256:12155aaaac9bafee613742c944fcdfe0719dba3381b2c5ac5f53dfb09e23818d)
 pub fn request_window_attention(win: &ApplicationWindow, attention: bool) -> () {
-    ((get_window_backend().request_attention).clone())
-        .lock()
-        .unwrap()((*win).clone(), attention);
+    {
+        let __flight_callback = (get_window_backend().request_attention).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone(), attention);
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/application/src/window.ts:553 (sha256:0ef31d49cbeb5ddf44622bc7c9bf30f103420d91750139689e8c9b62129c21b0)
@@ -1101,21 +1141,27 @@ pub fn request_window_close(win: &ApplicationWindow) -> bool {
 
 // Source: upstream/packages/application/src/window.ts:559 (sha256:79756d68353f2df8916801795173fca670515d76f79903507ee6bc15dbac8ec5)
 pub fn restore_window(win: &mut ApplicationWindow) -> () {
-    if ((!win.minimized) && (!win.maximized)) {
+    if (!win.minimized) && (!win.maximized) {
         return;
     }
     win.minimized = false;
     win.maximized = false;
-    ((get_window_backend().restore).clone()).lock().unwrap()((*win).clone());
+    {
+        let __flight_callback = (get_window_backend().restore).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone());
+        __flight_result
+    };
     emit_signal((win.on_restore).clone(), ());
 }
 
 // Source: upstream/packages/application/src/window.ts:568 (sha256:6c472d3e8319add9f130cc761b7d2dff8848552253a052a6642d19c81119f972)
 pub fn set_window_always_on_top(win: &mut ApplicationWindow, always_on_top: bool) -> () {
     win.always_on_top = always_on_top;
-    ((get_window_backend().set_always_on_top).clone())
-        .lock()
-        .unwrap()((*win).clone(), always_on_top);
+    {
+        let __flight_callback = (get_window_backend().set_always_on_top).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone(), always_on_top);
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/application/src/window.ts:574 (sha256:9f0742acf83a54ca621d73cf94284a142bbfd43b2a29c54942af9f4bca88cfe7)
@@ -1125,9 +1171,11 @@ pub fn set_window_backend(backend: Option<WindowBackend>) -> () {
 
 // Source: upstream/packages/application/src/window.ts:580 (sha256:86d123cccc7c7c426b332c532420e1af1451c0fc550da9bc71672ecfa4bb1d3e)
 pub fn set_window_content_protection(win: &ApplicationWindow, enabled: bool) -> () {
-    ((get_window_backend().set_content_protection).clone())
-        .lock()
-        .unwrap()((*win).clone(), enabled);
+    {
+        let __flight_callback = (get_window_backend().set_content_protection).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone(), enabled);
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/application/src/window.ts:585 (sha256:62d2948d58dffd19c636cd5936b4512a69994accd838e4ec69b944739ad76922)
@@ -1136,106 +1184,144 @@ pub fn set_window_fullscreen(win: &mut ApplicationWindow, fullscreen: bool) -> (
         return;
     }
     win.fullscreen = fullscreen;
-    ((get_window_backend().set_fullscreen).clone())
-        .lock()
-        .unwrap()((*win).clone(), fullscreen);
+    {
+        let __flight_callback = (get_window_backend().set_fullscreen).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone(), fullscreen);
+        __flight_result
+    };
     emit_signal((win.on_fullscreen_changed).clone(), ());
 }
 
 // Source: upstream/packages/application/src/window.ts:593 (sha256:b70953d0888c4b1dba593fa52b203767a47e98c15ed0692b84afaf39b5bf68d4)
 pub fn set_window_has_shadow(win: &ApplicationWindow, has_shadow: bool) -> () {
-    ((get_window_backend().set_has_shadow).clone())
-        .lock()
-        .unwrap()((*win).clone(), has_shadow);
+    {
+        let __flight_callback = (get_window_backend().set_has_shadow).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone(), has_shadow);
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/application/src/window.ts:598 (sha256:23f5af18d5a3e1aeb2604c43b07e402a85dca84518e3268c788fd86aa3488de5)
 pub fn set_window_icon(win: &mut ApplicationWindow, icon: String) -> () {
     win.icon = (icon).clone();
-    ((get_window_backend().set_icon).clone()).lock().unwrap()((*win).clone(), (icon).clone());
+    {
+        let __flight_callback = (get_window_backend().set_icon).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone(), (icon).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/application/src/window.ts:604 (sha256:31de4c9ddbae554214877619d6c81bb033618076a8ff57a863e1052d4701b542)
 pub fn set_window_maximum_size(win: &mut ApplicationWindow, width: f64, height: f64) -> () {
     win.max_width = width;
     win.max_height = height;
-    ((get_window_backend().set_maximum_size).clone())
-        .lock()
-        .unwrap()((*win).clone(), width, height);
+    {
+        let __flight_callback = (get_window_backend().set_maximum_size).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone(), width, height);
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/application/src/window.ts:611 (sha256:7271ef16d63c0cd4ba058e5ed240d91839ebe15ba9e1b292b19ba0a30a603de2)
 pub fn set_window_menu_bar_visible(win: &ApplicationWindow, visible: bool) -> () {
-    ((get_window_backend().set_menu_bar_visible).clone())
-        .lock()
-        .unwrap()((*win).clone(), visible);
+    {
+        let __flight_callback = (get_window_backend().set_menu_bar_visible).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone(), visible);
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/application/src/window.ts:616 (sha256:b211a2a8a7a159ab1dbbdf3de880673d748c3eb370d5c9fec2e6d2947e48a67c)
 pub fn set_window_minimum_size(win: &mut ApplicationWindow, width: f64, height: f64) -> () {
     win.min_width = width;
     win.min_height = height;
-    ((get_window_backend().set_minimum_size).clone())
-        .lock()
-        .unwrap()((*win).clone(), width, height);
+    {
+        let __flight_callback = (get_window_backend().set_minimum_size).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone(), width, height);
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/application/src/window.ts:623 (sha256:e7dc32e9e56651df02c6319e1dbc1b1cdfe893af4d70b8654ad1faf11ce82470)
 pub fn set_window_opacity(win: &mut ApplicationWindow, opacity: f64) -> () {
     win.opacity = opacity;
-    ((get_window_backend().set_opacity).clone()).lock().unwrap()((*win).clone(), opacity);
+    {
+        let __flight_callback = (get_window_backend().set_opacity).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone(), opacity);
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/application/src/window.ts:629 (sha256:c0e30945952e7929263df3f58d2f68d01fce5a516a750719f2e906a27d86c226)
 pub fn set_window_parent(win: &ApplicationWindow, parent: Option<ApplicationWindow>) -> () {
-    ((get_window_backend().set_parent).clone()).lock().unwrap()((*win).clone(), (parent).clone());
+    {
+        let __flight_callback = (get_window_backend().set_parent).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone(), (parent).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/application/src/window.ts:634 (sha256:5ef1ab2b667f70b6453b0b920fd0ec7bfc960a94a3faa6f72605fec33a7c1273)
 pub fn set_window_position(win: &mut ApplicationWindow, x: f64, y: f64) -> () {
     win.x = x;
     win.y = y;
-    ((get_window_backend().set_position).clone())
-        .lock()
-        .unwrap()((*win).clone(), x, y);
+    {
+        let __flight_callback = (get_window_backend().set_position).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone(), x, y);
+        __flight_result
+    };
     emit_signal((win.on_move).clone(), ());
 }
 
 // Source: upstream/packages/application/src/window.ts:642 (sha256:04e9e62360c4bb59fb8c6828e09c8163108d8801f036480996d1b1a9bcff44db)
 pub fn set_window_progress(win: &ApplicationWindow, progress: f64) -> () {
-    ((get_window_backend().set_progress).clone())
-        .lock()
-        .unwrap()((*win).clone(), progress);
+    {
+        let __flight_callback = (get_window_backend().set_progress).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone(), progress);
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/application/src/window.ts:647 (sha256:2158d098bdb6c10a348bc62ac33c2d9c77cee936bd590598001f136b63024468)
 pub fn set_window_resizable(win: &mut ApplicationWindow, resizable: bool) -> () {
     win.resizable = resizable;
-    ((get_window_backend().set_resizable).clone())
-        .lock()
-        .unwrap()((*win).clone(), resizable);
+    {
+        let __flight_callback = (get_window_backend().set_resizable).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone(), resizable);
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/application/src/window.ts:653 (sha256:3ec39b5d4a6db28effd9e362f8e511f54d81b720aaa2598221f602a4a35010e2)
 pub fn set_window_size(win: &mut ApplicationWindow, width: f64, height: f64) -> () {
     win.width = width;
     win.height = height;
-    ((get_window_backend().set_size).clone()).lock().unwrap()((*win).clone(), width, height);
+    {
+        let __flight_callback = (get_window_backend().set_size).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone(), width, height);
+        __flight_result
+    };
     emit_signal((win.on_resize).clone(), ());
 }
 
 // Source: upstream/packages/application/src/window.ts:661 (sha256:ecbc7c4b0c4124192ad1e827a5c73616d37a821f2fc05c581379464102ca3809)
 pub fn set_window_skip_taskbar(win: &mut ApplicationWindow, skip: bool) -> () {
     win.skip_taskbar = skip;
-    ((get_window_backend().set_skip_taskbar).clone())
-        .lock()
-        .unwrap()((*win).clone(), skip);
+    {
+        let __flight_callback = (get_window_backend().set_skip_taskbar).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone(), skip);
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/application/src/window.ts:667 (sha256:06e144755144326356817ee3e6cd1b1bd14d8e2e634d968bf88402f86012b6a3)
 pub fn set_window_title(win: &mut ApplicationWindow, title: String) -> () {
     win.title = (title).clone();
-    ((get_window_backend().set_title).clone()).lock().unwrap()((*win).clone(), (title).clone());
+    {
+        let __flight_callback = (get_window_backend().set_title).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone(), (title).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/application/src/window.ts:673 (sha256:426343c80d37bbb23bab31cb4459b6f7e15bc1301b98a5c781f540ca89a5fc8c)
@@ -1244,7 +1330,11 @@ pub fn show_window(win: &mut ApplicationWindow) -> () {
         return;
     }
     win.visible = true;
-    ((get_window_backend().show).clone()).lock().unwrap()((*win).clone());
+    {
+        let __flight_callback = (get_window_backend().show).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*win).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/application/src/window.ts:682 (sha256:b48d7fdf6235a5e7014397be4dc61433ef6bf2a07085e63f8ed71284aa9d0ad5)

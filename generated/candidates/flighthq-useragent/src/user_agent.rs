@@ -47,9 +47,9 @@ pub fn parse_user_agent_arch(ua: String, uad_platform: Option<String>) -> String
         if (p).contains("arm") {
             return "arm64".to_owned();
         }
-        if (((((p).contains("x86") || (p).contains("windows")) || (p).contains("linux"))
-            || (p).contains("mac"))
-            || (p).contains("chrome"))
+        if (((((p).contains("x86")) || ((p).contains("windows"))) || ((p).contains("linux")))
+            || ((p).contains("mac")))
+            || ((p).contains("chrome"))
         {
             return "x64".to_owned();
         }
@@ -227,7 +227,7 @@ pub fn parse_user_agent_engine_version(ua: String, engine: PlatformEngine) -> St
 
 // Source: upstream/packages/useragent/src/userAgent.ts:97 (sha256:c92f549e1575efbe4e108a020ad87b125eb57262130bbab1e7e8620ba29d7195)
 pub fn parse_user_agent_kind(name: PlatformName) -> PlatformKind {
-    if ((name == "ios") || (name == "android")) {
+    if (name == "ios") || (name == "android") {
         return "mobile".to_owned();
     }
     return "web".to_owned();
@@ -290,10 +290,10 @@ pub fn parse_user_agent_name(ua: String) -> PlatformName {
 
 // Source: upstream/packages/useragent/src/userAgent.ts:115 (sha256:3f48bb4e95e7fa77f2cfe72dc2a369c302c423f6192c84fbc04eb9a12a115909)
 pub fn parse_user_agent_pointer_width(arch: String) -> f64 {
-    if ((arch == "x64") || (arch == "arm64")) {
+    if (arch == "x64") || (arch == "arm64") {
         return 64.0_f64;
     }
-    if ((arch == "x86") || (arch == "arm")) {
+    if (arch == "x86") || (arch == "arm") {
         return 32.0_f64;
     }
     return (-1.0_f64);

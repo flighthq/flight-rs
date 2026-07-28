@@ -38,12 +38,7 @@ pub fn enable_particle_emitter_signals(state: crate::OpaqueHostValue) -> Particl
 pub fn get_particle_emitter_signals(
     state: crate::OpaqueHostValue,
 ) -> Option<ParticleEmitterSignals> {
-    return state
-        .iter()
-        .find(|(key, _)| key == &*SIGNALS_SLOT)
-        .map(|(_, value)| value)
-        .expect("TypeScript Record key was absent")
-        .clone();
+    return crate::host_value::<crate::OpaqueHostValue>("host.index");
 }
 
 // Source: upstream/packages/particles/src/particleEmitterSignals.ts:39 (sha256:96e83ae56c18de3bf5fd3e8ba9ea7134eac3425cf70c7de9f9fffe0650adb77d)

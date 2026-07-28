@@ -219,19 +219,19 @@ fn resolve_colliders(colliders: &Vec<ParticleCollider>, p: &mut Vec<f64>) -> boo
                 };
                 '__flight_switch: {
                     if __flight_case <= 0_usize {
-                        hit = (resolve_plane(&collider, p) || hit);
+                        hit = (resolve_plane(&collider, p)) || (hit);
                         break '__flight_switch;
                     }
                     if __flight_case <= 1_usize {
-                        hit = (resolve_circle(&collider, p) || hit);
+                        hit = (resolve_circle(&collider, p)) || (hit);
                         break '__flight_switch;
                     }
                     if __flight_case <= 2_usize {
-                        hit = (resolve_rect(&collider, p) || hit);
+                        hit = (resolve_rect(&collider, p)) || (hit);
                         break '__flight_switch;
                     }
                     if __flight_case <= 3_usize {
-                        hit = (resolve_sphere(&collider, p) || hit);
+                        hit = (resolve_sphere(&collider, p)) || (hit);
                         break '__flight_switch;
                     }
                 }
@@ -274,7 +274,7 @@ fn resolve_circle(c: &CircleCollider, p: &mut Vec<f64>) -> bool {
     let dy = (p[1.0_f64 as usize].clone() - c.y);
     let dist = ((dx * dx) + (dy * dy)).sqrt();
     if ((c.mode).clone() == "exclude") {
-        if ((dist >= c.radius) || (dist <= 0.000001_f64)) {
+        if (dist >= c.radius) || (dist <= 0.000001_f64) {
             return false;
         }
         let nx = (dx / dist);
@@ -417,9 +417,9 @@ fn resolve_rect(c: &RectangleCollider, p: &mut Vec<f64>) -> bool {
         }
         return hit;
     }
-    if ((((p[0.0_f64 as usize].clone() <= min_x) || (p[0.0_f64 as usize].clone() >= max_x))
+    if (((p[0.0_f64 as usize].clone() <= min_x) || (p[0.0_f64 as usize].clone() >= max_x))
         || (p[1.0_f64 as usize].clone() <= min_y))
-        || (p[1.0_f64 as usize].clone() >= max_y))
+        || (p[1.0_f64 as usize].clone() >= max_y)
     {
         return false;
     }
@@ -487,7 +487,7 @@ fn resolve_sphere(c: &SphereCollider, p: &mut Vec<f64>) -> bool {
     let dz = (p[2.0_f64 as usize].clone() - c.z);
     let dist = (((dx * dx) + (dy * dy)) + (dz * dz)).sqrt();
     if ((c.mode).clone() == "exclude") {
-        if ((dist >= c.radius) || (dist <= 0.000001_f64)) {
+        if (dist >= c.radius) || (dist <= 0.000001_f64) {
             return false;
         }
         let nx = (dx / dist);

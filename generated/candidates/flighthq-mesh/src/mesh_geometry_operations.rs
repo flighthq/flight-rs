@@ -120,7 +120,7 @@ pub fn create_mesh_geometry_from_attributes(
     let mut bounds = create_aabb(None, None, None, None, None, None);
     compute_mesh_geometry_bounds(&mut bounds, &geometry);
     geometry.bounds = Some((bounds).clone());
-    return (geometry).clone();
+    return geometry;
 }
 
 // Source: upstream/packages/mesh/src/meshGeometryOperations.ts:83 (sha256:4a431b20dcf44afcc7c697c0ac465dcc084172057425a6351a204746e10b167a)
@@ -186,12 +186,12 @@ pub fn merge_mesh_geometries(geometries: &Vec<MeshGeometry>) -> Option<MeshGeome
     }
     let mut merged_vertices = vec![0.0_f32; (total_vertex_floats) as usize];
     let needs_uint32 = ((total_vertex_floats / floats_per_vertex) > UINT16_INDEX_CEILING);
-    let mut merged_indices = if (all_indexed || (total_index_count > 0.0_f64)) {
-        if needs_uint32 {
+    let mut merged_indices = if (all_indexed) || (total_index_count > 0.0_f64) {
+        Some(if needs_uint32 {
             vec![0_u32; (total_index_count) as usize]
         } else {
-            vec![0_u16; (total_index_count) as usize]
-        }
+            vec![0_u32; (total_index_count) as usize]
+        })
     } else {
         None
     };
@@ -216,7 +216,7 @@ pub fn merge_mesh_geometries(geometries: &Vec<MeshGeometry>) -> Option<MeshGeome
             merged_vertices[__flight_offset..__flight_offset + __flight_values.len()]
                 .copy_from_slice(&__flight_values);
         };
-        if true {
+        if (merged_indices).is_some() {
             let src_count = if ((geo.indices).clone()).is_some() {
                 (geo.indices.as_ref().unwrap().len() as f64)
             } else {
@@ -226,11 +226,12 @@ pub fn merge_mesh_geometries(geometries: &Vec<MeshGeometry>) -> Option<MeshGeome
                 let mut j = 0.0_f64;
                 while (j < src_count) {
                     let src_idx = if ((geo.indices).clone()).is_some() {
-                        geo.indices.as_ref().unwrap()[j as usize].clone()
+                        (geo.indices.as_ref().unwrap()[j as usize].clone()) as u32
                     } else {
-                        j
+                        (j) as u32
                     };
-                    merged_indices[(index_offset + j) as usize] = (src_idx + vertex_offset) as u32;
+                    merged_indices.as_mut().unwrap()[(index_offset + j) as usize] =
+                        (src_idx + vertex_offset) as u32;
                     {
                         j += 1.0;
                         j
@@ -252,8 +253,8 @@ pub fn merge_mesh_geometries(geometries: &Vec<MeshGeometry>) -> Option<MeshGeome
     if ((merged_subsets.len() as f64) == 0.0_f64) {
         merged_subsets.push(MeshSubset {
             __flight_identity: std::sync::Arc::new(()),
-            index_count: if true {
-                (merged_indices.len() as f64)
+            index_count: if (merged_indices).is_some() {
+                (merged_indices.as_mut().unwrap().len() as f64)
             } else {
                 (total_vertex_floats / floats_per_vertex)
             },
@@ -303,7 +304,7 @@ pub fn validate_mesh_geometry(geometry: &MeshGeometry) -> bool {
         let mut i = 0.0_f64;
         while (i < (geometry.layout.attributes.len() as f64)) {
             let attr = geometry.layout.attributes[i as usize].clone();
-            if (((attr.semantic).clone() == "position") && (attr.format.starts_with)("float32")) {
+            if ((attr.semantic).clone() == "position") && ((attr.format.starts_with)("float32")) {
                 pos_offset = (attr.byte_offset / 4.0_f64);
                 break;
             }
@@ -321,7 +322,7 @@ pub fn validate_mesh_geometry(geometry: &MeshGeometry) -> bool {
                 let x = (geometry.vertices[base as usize] as f64);
                 let y = (geometry.vertices[(base + 1.0_f64) as usize] as f64);
                 let z = (geometry.vertices[(base + 2.0_f64) as usize] as f64);
-                if (((!is_finite(x)) || (!is_finite(y))) || (!is_finite(z))) {
+                if ((!is_finite(x)) || (!is_finite(y))) || (!is_finite(z)) {
                     return false;
                 }
                 {
@@ -347,9 +348,9 @@ fn layouts_match(a: &VertexAttributeLayout, b: &VertexAttributeLayout) -> bool {
         while (i < (a.attributes.len() as f64)) {
             let aa = a.attributes[i as usize].clone();
             let ba = b.attributes[i as usize].clone();
-            if ((((aa.semantic).clone() != (ba.semantic).clone())
+            if (((aa.semantic).clone() != (ba.semantic).clone())
                 || ((aa.format).clone() != (ba.format).clone()))
-                || (aa.byte_offset != ba.byte_offset))
+                || (aa.byte_offset != ba.byte_offset)
             {
                 return false;
             }

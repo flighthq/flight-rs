@@ -79,7 +79,7 @@ pub fn create_device_info() -> DeviceInfo {
         color_gamut: "".to_owned(),
         cpu_cores: (-1.0_f64),
         font_scale: (-1.0_f64),
-        form_factor: device_form_factor_unknown_constant,
+        form_factor: (device_form_factor_unknown_constant).to_owned(),
         gpu_renderer: "".to_owned(),
         gpu_vendor: "".to_owned(),
         is_hdr: false,
@@ -170,17 +170,17 @@ pub fn create_web_device_backend() -> DeviceBackend {
                 } else {
                     None
                 };
-                let max_touch = if ((nav).is_some() && false) {
+                let max_touch = if ((nav).is_some()) && (false) {
                     crate::host_value::<crate::OpaqueHostValue>("host.maxTouchPoints")
                 } else {
                     (-1.0_f64)
                 };
                 out.has_mouse = (max_touch == 0.0_f64);
-                let ua = (crate::host_value::<crate::OpaqueHostValue>("host.userAgent"))
-                    .unwrap_or(crate::OpaqueHostValue::String("".to_owned()));
+                let ua = (crate::host_value::<Option<String>>("host.userAgent"))
+                    .unwrap_or("".to_owned());
                 out.has_keyboard = detect_desktop_ua(ua);
                 out.has_stylus = false;
-                return (out).clone();
+                return out;
             },
         )
             as Box<dyn FnMut(DeviceCapabilities) -> DeviceCapabilities + Send + 'static>)),
@@ -218,19 +218,19 @@ pub fn create_web_device_backend() -> DeviceBackend {
                     (-1.0_f64)
                 };
                 out.pixel_ratio = pixel_ratio;
-                out.physical_width = if ((scr).is_some() && (pixel_ratio > 0.0_f64)) {
+                out.physical_width = if ((scr).is_some()) && (pixel_ratio > 0.0_f64) {
                     (crate::host_value::<crate::OpaqueHostValue>("host.width") * pixel_ratio)
                         .round()
                 } else {
                     (-1.0_f64)
                 };
-                out.physical_height = if ((scr).is_some() && (pixel_ratio > 0.0_f64)) {
+                out.physical_height = if ((scr).is_some()) && (pixel_ratio > 0.0_f64) {
                     (crate::host_value::<crate::OpaqueHostValue>("host.height") * pixel_ratio)
                         .round()
                 } else {
                     (-1.0_f64)
                 };
-                return (out).clone();
+                return out;
             },
         )
             as Box<dyn FnMut(DeviceDisplayMetrics) -> DeviceDisplayMetrics + Send + 'static>)),
@@ -260,9 +260,7 @@ pub fn create_web_device_backend() -> DeviceBackend {
                     None
                 })(),
             };
-            if let Some(__flight_return) = __flight_try_return {
-                return __flight_return;
-            }
+            return __flight_try_return.expect("TypeScript try/catch completed without returning");
         })
             as Box<dyn FnMut() -> String + Send + 'static>)),
         get_info: std::sync::Arc::new(std::sync::Mutex::new(Box::new(
@@ -272,8 +270,8 @@ pub fn create_web_device_backend() -> DeviceBackend {
                 } else {
                     None
                 };
-                let ua = (crate::host_value::<crate::OpaqueHostValue>("host.userAgent"))
-                    .unwrap_or(crate::OpaqueHostValue::String("".to_owned()));
+                let ua = (crate::host_value::<Option<String>>("host.userAgent"))
+                    .unwrap_or("".to_owned());
                 let uad_platform: Option<String> = nav
                     .as_ref()
                     .unwrap()
@@ -285,8 +283,8 @@ pub fn create_web_device_backend() -> DeviceBackend {
                 out.available_memory = (-1.0_f64);
                 out.board_name = "".to_owned();
                 out.color_gamut = "".to_owned();
-                let cores = if ((nav).is_some() && false) {
-                    (crate::host_value::<crate::OpaqueHostValue>("host.hardwareConcurrency"))
+                let cores = if ((nav).is_some()) && (false) {
+                    (crate::host_value::<Option<f64>>("host.hardwareConcurrency"))
                         .unwrap_or((-1.0_f64))
                 } else {
                     (-1.0_f64)
@@ -295,7 +293,7 @@ pub fn create_web_device_backend() -> DeviceBackend {
                 out.font_scale = (-1.0_f64);
                 out.form_factor = parse_user_agent_form_factor(
                     ua,
-                    if ((nav).is_some() && false) {
+                    if ((nav).is_some()) && (false) {
                         crate::host_value::<f64>("host.maxTouchPoints")
                     } else {
                         (-1.0_f64)
@@ -306,8 +304,8 @@ pub fn create_web_device_backend() -> DeviceBackend {
                 out.gpu_vendor = (gpu_info.vendor).clone();
                 out.is_hdr = false;
                 out.is_jailbroken = false;
-                let dev_mem = if ((nav).is_some() && false) {
-                    (nav.device_memory).unwrap_or((-1.0_f64))
+                let dev_mem = if ((nav).is_some()) && (false) {
+                    ((nav).clone().unwrap().device_memory).unwrap_or((-1.0_f64))
                 } else {
                     (-1.0_f64)
                 };
@@ -329,7 +327,7 @@ pub fn create_web_device_backend() -> DeviceBackend {
                     (-1.0_f64)
                 };
                 out.web_view_version = "".to_owned();
-                return (out).clone();
+                return out;
             },
         )
             as Box<dyn FnMut(DeviceInfo) -> DeviceInfo + Send + 'static>)),
@@ -347,7 +345,7 @@ pub fn create_web_device_backend() -> DeviceBackend {
                     out.right = 0.0_f64;
                     out.top = 0.0_f64;
                 }
-                return (out).clone();
+                return out;
             },
         )
             as Box<dyn FnMut(SafeAreaInsets) -> SafeAreaInsets + Send + 'static>)),
@@ -372,33 +370,47 @@ pub fn get_device_backend() -> DeviceBackend {
 
 // Source: upstream/packages/device/src/device.ts:235 (sha256:3fd09980c2efbca37a5d19d41a6d3cbb2157dbf5af66c6e092ab955b3256d805)
 pub fn get_device_capabilities(out: &DeviceCapabilities) -> DeviceCapabilities {
-    return ((get_device_backend().get_capabilities).clone())
-        .lock()
-        .unwrap()((*out).clone());
+    return {
+        let __flight_callback = (get_device_backend().get_capabilities).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*out).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/device/src/device.ts:241 (sha256:9a131fca30fa4ac0294cbf15fd239ba8978bf9ca27612e8e8dd3ac90922028ea)
 pub fn get_device_display_metrics(out: &DeviceDisplayMetrics) -> DeviceDisplayMetrics {
-    return ((get_device_backend().get_display_metrics).clone())
-        .lock()
-        .unwrap()((*out).clone());
+    return {
+        let __flight_callback = (get_device_backend().get_display_metrics).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*out).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/device/src/device.ts:249 (sha256:eefb40d4123b712488e2251166de2b6704948d203b3f1feaffbd40cb6e366fc3)
 pub fn get_device_id() -> String {
-    return ((get_device_backend().get_id).clone()).lock().unwrap()();
+    return {
+        let __flight_callback = (get_device_backend().get_id).clone();
+        let __flight_result = __flight_callback.lock().unwrap()();
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/device/src/device.ts:254 (sha256:08e4d71e290d60ada19c9ca88bb70baabf3c0478f4a1d9b6af9d6278a8dabbdd)
 pub fn get_device_info(out: &DeviceInfo) -> DeviceInfo {
-    return ((get_device_backend().get_info).clone()).lock().unwrap()((*out).clone());
+    return {
+        let __flight_callback = (get_device_backend().get_info).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*out).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/device/src/device.ts:260 (sha256:09a82151bf7086a0d36544cb36e483a4792020302df95eb2ee977dae540c5367)
 pub fn get_safe_area_insets(out: &SafeAreaInsets) -> SafeAreaInsets {
-    return ((get_device_backend().get_safe_area_insets).clone())
-        .lock()
-        .unwrap()((*out).clone());
+    return {
+        let __flight_callback = (get_device_backend().get_safe_area_insets).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((*out).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/device/src/device.ts:269 (sha256:af90cea0fbbcf91290228096f7270eb7176e3c6fbce0301f8586114d0f4e3e97)
@@ -417,7 +429,11 @@ pub fn refresh_device_info() -> () {
     let backend = get_device_backend();
     let maybe_refreshable = backend;
     {
-        maybe_refreshable.refresh.as_ref().unwrap().lock().unwrap()();
+        {
+            let __flight_callback = maybe_refreshable.refresh.as_ref().unwrap().clone();
+            let __flight_result = __flight_callback.lock().unwrap()();
+            __flight_result
+        };
     }
 }
 
@@ -449,10 +465,10 @@ fn detect_desktop_ua(ua: String) -> bool {
 
 // Source: upstream/packages/device/src/device.ts:293 (sha256:048d9dd469962bed053b458b6924d34183c0e6efa706b9f3b1f2f524e1cdf175)
 fn detect_low_end_device(device_memory_gib: f64, cores: f64) -> bool {
-    if ((device_memory_gib > 0.0_f64) && (device_memory_gib <= 1.0_f64)) {
+    if (device_memory_gib > 0.0_f64) && (device_memory_gib <= 1.0_f64) {
         return true;
     }
-    if ((cores > 0.0_f64) && (cores <= 2.0_f64)) {
+    if (cores > 0.0_f64) && (cores <= 2.0_f64) {
         return true;
     }
     return false;
@@ -508,7 +524,5 @@ fn read_web_gpu_info() -> ReadWebGpuInfoRecord1 {
             None
         })(),
     };
-    if let Some(__flight_return) = __flight_try_return {
-        return __flight_return;
-    }
+    return __flight_try_return.expect("TypeScript try/catch completed without returning");
 }

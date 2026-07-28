@@ -11,8 +11,8 @@ use crate::{
 };
 use flighthq_node::invalidate_node_local_bounds;
 use flighthq_types::{
-    Node, RENDER_VIEW_KIND as render_view_kind_constant, Rectangle, RenderView, RenderViewData,
-    RenderViewRuntime,
+    BoundsNodeAny, Node, RENDER_VIEW_KIND as render_view_kind_constant, Rectangle, RenderView,
+    RenderViewData, RenderViewRuntime,
 };
 
 // Source: upstream/packages/displayobject/src/renderView.ts:15 (sha256:c339ddd5fd94fc9e8538242e15b5e021059d970dbf188729c7b2fc964087f7a9)
@@ -24,10 +24,18 @@ pub fn compute_render_view_local_bounds_rectangle(out: &mut Rectangle, source: &
 // Source: upstream/packages/displayobject/src/renderView.ts:21 (sha256:439f741ca982f24a8900c0b43c151482b2636b2b51468b5f99199251bbdd1cbe)
 pub fn create_render_view(obj: Option<RenderView>) -> RenderView {
     return create_display_object_generic(
-        render_view_kind_constant,
+        (render_view_kind_constant).to_owned(),
         Some(((obj).clone().unwrap()).clone()),
-        Some(create_render_view_data),
-        Some(create_render_view_runtime),
+        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: Option<D>| -> D {
+                create_render_view_data(Some(((__flight_argument_0).clone().unwrap()).clone()))
+            },
+        )
+            as Box<dyn FnMut(Option<D>) -> D + Send + 'static>))),
+        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: Option<R>| -> R { create_render_view_runtime() },
+        )
+            as Box<dyn FnMut(Option<R>) -> R + Send + 'static>))),
     );
 }
 
@@ -53,7 +61,7 @@ pub fn get_render_view_runtime(source: &RenderView) -> RenderViewRuntime {
 
 // Source: upstream/packages/displayobject/src/renderView.ts:41 (sha256:da0463a37167f4971b6f42ac6beec2a90a5987d89e6528065634f5df16a4f489)
 pub fn set_render_view_size(source: &mut RenderView, width: f64, height: f64) -> () {
-    if ((source.data.width == width) && (source.data.height == height)) {
+    if (source.data.width == width) && (source.data.height == height) {
         return;
     }
     source.data.width = width;
@@ -65,5 +73,13 @@ pub fn set_render_view_size(source: &mut RenderView, width: f64, height: f64) ->
 static DEFAULT_METHODS: std::sync::LazyLock<RenderViewRuntime> =
     std::sync::LazyLock::new(|| RenderViewRuntime {
         __flight_identity: std::sync::Arc::new(()),
-        compute_local_bounds_rectangle: compute_render_view_local_bounds_rectangle,
+        compute_local_bounds_rectangle: std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |mut __flight_argument_0: Rectangle, __flight_argument_1: BoundsNodeAny| -> () {
+                compute_render_view_local_bounds_rectangle(
+                    &mut __flight_argument_0,
+                    &__flight_argument_1,
+                )
+            },
+        )
+            as Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>)),
     });

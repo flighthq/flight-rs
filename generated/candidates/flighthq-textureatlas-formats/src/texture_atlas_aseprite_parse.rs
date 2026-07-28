@@ -20,13 +20,13 @@ pub fn parse_texture_atlas_aseprite_document(
     atlas.regions.clear();
     if (array.is_array)(doc.frames) {
         for entry in (doc.frames).iter().cloned() {
-            apply_aseprite_frame(atlas, entry.filename, &entry);
+            apply_aseprite_frame(atlas, (entry.filename).clone(), &(entry));
         }
     } else {
         for __iteration0 in (crate::host_value::<()>("host.entries")).iter().cloned() {
             let frame_name = __iteration0[0.0_f64 as usize].clone();
             let entry = __iteration0[1.0_f64 as usize].clone();
-            apply_aseprite_frame(atlas, frame_name, &entry);
+            apply_aseprite_frame(atlas, frame_name, &(entry));
         }
     }
     return atlas.clone();
@@ -50,17 +50,17 @@ fn apply_aseprite_frame(
             __flight_identity: std::sync::Arc::new(()),
             height: entry.frame.h,
             id: (atlas.regions.len() as f64),
-            name: name,
-            original_height: if entry.trimmed {
+            name: Some((name).clone()),
+            original_height: Some(if entry.trimmed {
                 entry.source_size.h
             } else {
                 None
-            },
-            original_width: if entry.trimmed {
+            }),
+            original_width: Some(if entry.trimmed {
                 entry.source_size.w
             } else {
                 None
-            },
+            }),
             pivot_x: None,
             pivot_y: None,
             rotated: entry.rotated,

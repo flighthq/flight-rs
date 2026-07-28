@@ -91,7 +91,7 @@ fn apply_dash_to_contour(
             let dx = (x1 - x0);
             let dy = (y1 - y0);
             let seg_len = ((dx * dx) + (dy * dy)).sqrt();
-            if (is_on && (!seg_started)) {
+            if (is_on) && (!seg_started) {
                 out.commands.push(PathCommand::MOVE_TO);
                 out.data.extend(vec![x0, y0]);
                 seg_started = true;
@@ -128,10 +128,10 @@ fn apply_dash_to_contour(
                     remaining = dash[dash_index as usize].clone();
                     let was_on = is_on;
                     is_on = ((dash_index % 2.0_f64) == 0.0_f64);
-                    if (was_on && (!is_on)) {
+                    if (was_on) && (!is_on) {
                         seg_started = false;
                     }
-                    if ((!was_on) && is_on) {
+                    if (!was_on) && (is_on) {
                         out.commands.push(PathCommand::MOVE_TO);
                         out.data.extend(vec![ix, iy]);
                         seg_started = true;

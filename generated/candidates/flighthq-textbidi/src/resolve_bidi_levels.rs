@@ -24,10 +24,10 @@ fn __flight_js_to_i32(value: f64) -> i32 {
 
 // Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:22 (sha256:ff3bb02a6da9b247009d289bc8ab14be1f5a42e0893d6ed6131852f8c934690a)
 pub fn resolve_bidi_levels(text: String, base_direction: BidiDirection) -> Vec<u8> {
-    let length = text.length;
+    let length = (text.encode_utf16().count() as f64);
     let mut levels = vec![0_u8; (length) as usize];
     if (length == 0.0_f64) {
-        return (levels).clone();
+        return levels;
     }
     let backend = get_bidi_class_backend();
     let mut original: Vec<BidiClass> = vec![Default::default(); (length) as usize];
@@ -35,7 +35,11 @@ pub fn resolve_bidi_levels(text: String, base_direction: BidiDirection) -> Vec<u
         let mut i = 0.0_f64;
         while (i < length) {
             let codepoint = (text.code_point_at)(i);
-            let cls = ((backend.get_bidi_class).clone()).lock().unwrap()(codepoint);
+            let cls = {
+                let __flight_callback = (backend.get_bidi_class).clone();
+                let __flight_result = __flight_callback.lock().unwrap()(codepoint);
+                __flight_result
+            };
             {
                 let __flight_index = (i) as usize;
                 let __flight_value = (cls).clone();
@@ -106,7 +110,7 @@ pub fn resolve_bidi_levels(text: String, base_direction: BidiDirection) -> Vec<u
             };
         }
     }
-    return (levels).clone();
+    return levels;
 }
 
 // Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:61 (sha256:e6a3a4bc0f59585b0e6abd39737d1b527d2c916a8506271e203487a0e3bf44ed)
@@ -116,7 +120,7 @@ fn compute_paragraph_level(types: &Vec<BidiClass>, start: f64, end: f64) -> f64 
         let mut i = start;
         while (i < end) {
             let t = types[i as usize].clone();
-            if (((t == "LRI") || (t == "RLI")) || (t == "FSI")) {
+            if ((t == "LRI") || (t == "RLI")) || (t == "FSI") {
                 {
                     isolate_depth += 1.0;
                     isolate_depth
@@ -134,7 +138,7 @@ fn compute_paragraph_level(types: &Vec<BidiClass>, start: f64, end: f64) -> f64 
                         if (t == "L") {
                             return 0.0_f64;
                         }
-                        if ((t == "R") || (t == "AL")) {
+                        if (t == "R") || (t == "AL") {
                             return 1.0_f64;
                         }
                     }
@@ -160,10 +164,10 @@ fn pair_isolates(
         let mut i = 0.0_f64;
         while (i < (types.len() as f64)) {
             let t = types[i as usize].clone();
-            if (((t == "LRI") || (t == "RLI")) || (t == "FSI")) {
+            if ((t == "LRI") || (t == "RLI")) || (t == "FSI") {
                 stack.push(i);
             } else {
-                if ((t == "PDI") && ((stack.len() as f64) > 0.0_f64)) {
+                if (t == "PDI") && ((stack.len() as f64) > 0.0_f64) {
                     let initiator = stack
                         .pop()
                         .expect("TypeScript Array.pop returned undefined");
@@ -250,21 +254,21 @@ fn apply_explicit_levels(
                                     working[__flight_index] = __flight_value;
                                 }
                             };
-                            let new_level = if ((t == "RLE") || (t == "RLO")) {
+                            let new_level = if (t == "RLE") || (t == "RLO") {
                                 next_odd(stack_level[top as usize].clone())
                             } else {
                                 next_even(stack_level[top as usize].clone())
                             };
-                            if (((new_level <= max_depth) && (overflow_isolate == 0.0_f64))
-                                && (overflow_embedding == 0.0_f64))
+                            if ((new_level <= max_depth) && (overflow_isolate == 0.0_f64))
+                                && (overflow_embedding == 0.0_f64)
                             {
                                 {
                                     stack_level.push(new_level);
-                                    stack_override.push(if (t == "RLO") {
-                                        "R"
+                                    stack_override.push(Some(if (t == "RLO") {
+                                        "R".to_owned()
                                     } else {
-                                        if (t == "LRO") { "L" } else { None }
-                                    });
+                                        if (t == "LRO") { "L".to_owned() } else { None }
+                                    }));
                                     stack_isolate.push(false);
                                 }
                             } else {
@@ -317,8 +321,8 @@ fn apply_explicit_levels(
                             } else {
                                 next_even(stack_level[top as usize].clone())
                             };
-                            if (((new_level <= max_depth) && (overflow_isolate == 0.0_f64))
-                                && (overflow_embedding == 0.0_f64))
+                            if ((new_level <= max_depth) && (overflow_isolate == 0.0_f64))
+                                && (overflow_embedding == 0.0_f64)
                             {
                                 {
                                     {
@@ -420,8 +424,8 @@ fn apply_explicit_levels(
                                         };
                                     }
                                 } else {
-                                    if ((!stack_isolate[top as usize].clone())
-                                        && ((stack_level.len() as f64) >= 2.0_f64))
+                                    if (!stack_isolate[top as usize].clone())
+                                        && ((stack_level.len() as f64) >= 2.0_f64)
                                     {
                                         {
                                             stack_level
@@ -573,9 +577,9 @@ fn resolve_isolating_run_sequences(
     {
         let mut k = 1.0_f64;
         while (k <= (kept.len() as f64)) {
-            if ((k == (kept.len() as f64))
+            if (k == (kept.len() as f64))
                 || (level_array[kept[k as usize].clone() as usize].clone()
-                    != level_array[kept[run_start as usize].clone() as usize].clone()))
+                    != level_array[kept[run_start as usize].clone() as usize].clone())
             {
                 let mut indices: Vec<f64> = vec![];
                 {
@@ -628,8 +632,8 @@ fn resolve_isolating_run_sequences(
         let mut r = 0.0_f64;
         while (r < (runs.len() as f64)) {
             let first_idx = runs[r as usize].indices[0.0_f64 as usize].clone();
-            if ((original[first_idx as usize].clone() == "PDI")
-                && ((matching_initiator[first_idx as usize] as f64) != (-1.0_f64)))
+            if (original[first_idx as usize].clone() == "PDI")
+                && ((matching_initiator[first_idx as usize] as f64) != (-1.0_f64))
             {
                 {
                     r += 1.0;
@@ -658,8 +662,8 @@ fn resolve_isolating_run_sequences(
                     let last_idx =
                         run.indices[((run.indices.len() as f64) - 1.0_f64) as usize].clone();
                     let last_type = original[last_idx as usize].clone();
-                    if ((((last_type == "LRI") || (last_type == "RLI")) || (last_type == "FSI"))
-                        && ((matching_pdi[last_idx as usize] as f64) < length))
+                    if (((last_type == "LRI") || (last_type == "RLI")) || (last_type == "FSI"))
+                        && ((matching_pdi[last_idx as usize] as f64) < length)
                     {
                         let next = run_by_first
                             .iter()
@@ -718,9 +722,9 @@ fn resolve_sequence(
     };
     let last_idx = sequence[((sequence.len() as f64) - 1.0_f64) as usize].clone();
     let last_type = original[last_idx as usize].clone();
-    let ends_unmatched_isolate = ((((last_type == "LRI") || (last_type == "RLI"))
+    let ends_unmatched_isolate = (((last_type == "LRI") || (last_type == "RLI"))
         || (last_type == "FSI"))
-        && ((matching_pdi[last_idx as usize] as f64) >= (original.len() as f64)));
+        && ((matching_pdi[last_idx as usize] as f64) >= (original.len() as f64));
     let next_level = if ends_unmatched_isolate {
         paragraph_level
     } else {
@@ -762,9 +766,9 @@ fn resolve_sequence(
             if (ty[k as usize].clone() == "NSM") {
                 {
                     let __flight_index = (k) as usize;
-                    let __flight_value = if ((((prev == "LRI") || (prev == "RLI"))
+                    let __flight_value = if (((prev == "LRI") || (prev == "RLI"))
                         || (prev == "FSI"))
-                        || (prev == "PDI"))
+                        || (prev == "PDI")
                     {
                         "ON".to_owned()
                     } else {
@@ -789,10 +793,10 @@ fn resolve_sequence(
         let mut k = 0.0_f64;
         while (k < len) {
             let c = ty[k as usize].clone();
-            if (((c == "L") || (c == "R")) || (c == "AL")) {
+            if ((c == "L") || (c == "R")) || (c == "AL") {
                 strong = (c).clone();
             } else {
-                if ((c == "EN") && (strong == "AL")) {
+                if (c == "EN") && (strong == "AL") {
                     {
                         let __flight_index = (k) as usize;
                         let __flight_value = "AN".to_owned();
@@ -834,8 +838,8 @@ fn resolve_sequence(
         let mut k = 1.0_f64;
         while (k < (len - 1.0_f64)) {
             let c = ty[k as usize].clone();
-            if (((c == "ES") && (ty[(k - 1.0_f64) as usize].clone() == "EN"))
-                && (ty[(k + 1.0_f64) as usize].clone() == "EN"))
+            if ((c == "ES") && (ty[(k - 1.0_f64) as usize].clone() == "EN"))
+                && (ty[(k + 1.0_f64) as usize].clone() == "EN")
             {
                 {
                     let __flight_index = (k) as usize;
@@ -848,8 +852,8 @@ fn resolve_sequence(
                 };
             } else {
                 if (c == "CS") {
-                    if ((ty[(k - 1.0_f64) as usize].clone() == "EN")
-                        && (ty[(k + 1.0_f64) as usize].clone() == "EN"))
+                    if (ty[(k - 1.0_f64) as usize].clone() == "EN")
+                        && (ty[(k + 1.0_f64) as usize].clone() == "EN")
                     {
                         {
                             let __flight_index = (k) as usize;
@@ -861,8 +865,8 @@ fn resolve_sequence(
                             }
                         };
                     } else {
-                        if ((ty[(k - 1.0_f64) as usize].clone() == "AN")
-                            && (ty[(k + 1.0_f64) as usize].clone() == "AN"))
+                        if (ty[(k - 1.0_f64) as usize].clone() == "AN")
+                            && (ty[(k + 1.0_f64) as usize].clone() == "AN")
                         {
                             {
                                 let __flight_index = (k) as usize;
@@ -888,7 +892,7 @@ fn resolve_sequence(
         while (k < len) {
             if (ty[k as usize].clone() == "ET") {
                 let mut j = k;
-                while ((j < len) && (ty[j as usize].clone() == "ET")) {
+                while (j < len) && (ty[j as usize].clone() == "ET") {
                     {
                         j += 1.0;
                         j
@@ -904,7 +908,7 @@ fn resolve_sequence(
                 } else {
                     eos
                 };
-                if ((before == "EN") || (after == "EN")) {
+                if (before == "EN") || (after == "EN") {
                     {
                         let mut m = k;
                         while (m < j) {
@@ -936,8 +940,8 @@ fn resolve_sequence(
     {
         let mut k = 0.0_f64;
         while (k < len) {
-            if (((ty[k as usize].clone() == "ES") || (ty[k as usize].clone() == "ET"))
-                || (ty[k as usize].clone() == "CS"))
+            if ((ty[k as usize].clone() == "ES") || (ty[k as usize].clone() == "ET"))
+                || (ty[k as usize].clone() == "CS")
             {
                 {
                     let __flight_index = (k) as usize;
@@ -960,10 +964,10 @@ fn resolve_sequence(
         let mut k = 0.0_f64;
         while (k < len) {
             let c = ty[k as usize].clone();
-            if ((c == "L") || (c == "R")) {
+            if (c == "L") || (c == "R") {
                 strong = (c).clone();
             } else {
-                if ((c == "EN") && (strong == "L")) {
+                if (c == "EN") && (strong == "L") {
                     {
                         let __flight_index = (k) as usize;
                         let __flight_value = "L".to_owned();
@@ -991,7 +995,7 @@ fn resolve_sequence(
         while (k < len) {
             if is_neutral_or_isolate(ty[k as usize].clone()) {
                 let mut j = k;
-                while ((j < len) && is_neutral_or_isolate(ty[j as usize].clone())) {
+                while (j < len) && (is_neutral_or_isolate(ty[j as usize].clone())) {
                     {
                         j += 1.0;
                         j
@@ -1008,7 +1012,7 @@ fn resolve_sequence(
                     (eos).clone()
                 };
                 let resolved = if (before == after) {
-                    before
+                    (before).clone()
                 } else {
                     embedding_dir
                 };
@@ -1049,12 +1053,12 @@ fn resolve_sequence(
                 if (c == "R") {
                     lvl = (seq_level + 1.0_f64);
                 } else {
-                    if ((c == "AN") || (c == "EN")) {
+                    if (c == "AN") || (c == "EN") {
                         lvl = (seq_level + 2.0_f64);
                     }
                 }
             } else {
-                if (((c == "L") || (c == "EN")) || (c == "AN")) {
+                if ((c == "L") || (c == "EN")) || (c == "AN") {
                     lvl = (seq_level + 1.0_f64);
                 }
             }
@@ -1086,7 +1090,7 @@ fn apply_line_reset(
         let mut i = 0.0_f64;
         while (i < length) {
             let t = original[i as usize].clone();
-            if ((t == "B") || (t == "S")) {
+            if (t == "B") || (t == "S") {
                 {
                     let __flight_index = (i) as usize;
                     let __flight_value = paragraph_level;
@@ -1098,7 +1102,7 @@ fn apply_line_reset(
                 };
                 {
                     let mut j = (i - 1.0_f64);
-                    while ((j >= 0.0_f64) && is_reset_type(original[j as usize].clone())) {
+                    while (j >= 0.0_f64) && (is_reset_type(original[j as usize].clone())) {
                         {
                             let __flight_index = (j) as usize;
                             let __flight_value = paragraph_level;
@@ -1123,7 +1127,7 @@ fn apply_line_reset(
     }
     {
         let mut j = (length - 1.0_f64);
-        while ((j >= 0.0_f64) && is_reset_type(original[j as usize].clone())) {
+        while (j >= 0.0_f64) && (is_reset_type(original[j as usize].clone())) {
             {
                 let __flight_index = (j) as usize;
                 let __flight_value = paragraph_level;
@@ -1143,22 +1147,22 @@ fn apply_line_reset(
 
 // Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:409 (sha256:9a2953e86e5d7423b133ec2dd4604a5c4882107ada938fa33f767f6f09a62c2e)
 fn is_neutral_or_isolate(t: BidiClass) -> bool {
-    return ((((((((t == "B") || (t == "S")) || (t == "WS")) || (t == "ON")) || (t == "FSI"))
+    return (((((((t == "B") || (t == "S")) || (t == "WS")) || (t == "ON")) || (t == "FSI"))
         || (t == "LRI"))
         || (t == "RLI"))
-        || (t == "PDI"));
+        || (t == "PDI");
 }
 
 // Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:415 (sha256:f6998b0c290e2f3f3652d1e92f530f560c3659d404a860c5865389303a874a84)
 fn is_reset_type(t: BidiClass) -> bool {
-    return (((((((((((t == "WS") || (t == "LRI")) || (t == "RLI")) || (t == "FSI"))
+    return ((((((((((t == "WS") || (t == "LRI")) || (t == "RLI")) || (t == "FSI"))
         || (t == "PDI"))
         || (t == "LRE"))
         || (t == "RLE"))
         || (t == "LRO"))
         || (t == "RLO"))
         || (t == "PDF"))
-        || (t == "BN"));
+        || (t == "BN");
 }
 
 // Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:433 (sha256:f6671c440a296df5e2d401cc2d1db9a6972ecd2468ec874a290f75ec19db0b78)

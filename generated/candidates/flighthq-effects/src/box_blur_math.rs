@@ -34,7 +34,7 @@ pub fn compute_box_blur_radius(sigma: f64, passes: f64) -> f64 {
 
 // Source: upstream/packages/effects/src/boxBlurMath.ts:45 (sha256:16c08b9275383dd1ce12f4e5d50966dd076fa284c6f2a914dd442093bd6c3eb5)
 pub fn compute_gaussian_sigma_for_blur_radius(radius: f64, passes: f64) -> f64 {
-    if ((radius <= 0.0_f64) || (passes <= 0.0_f64)) {
+    if (radius <= 0.0_f64) || (passes <= 0.0_f64) {
         return 0.0_f64;
     }
     let width = ((2.0_f64 * radius) + 1.0_f64);

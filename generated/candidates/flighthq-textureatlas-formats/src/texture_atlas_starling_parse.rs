@@ -36,7 +36,7 @@ pub fn parse_texture_atlas_starling_xml(
         return atlas.clone();
     }
     let atlas_el = if ((root.as_ref().unwrap().name).clone() == "TextureAtlas") {
-        root
+        (root).clone().unwrap()
     } else {
         (((root.as_ref().unwrap().children).clone())
             .iter()
@@ -91,8 +91,8 @@ pub fn parse_texture_atlas_starling_xml(
         } else {
             None
         };
-        let trimmed = ((frame_width).is_some()
-            || (el
+        let trimmed = ((frame_width).is_some())
+            || ((el
                 .attributes
                 .iter()
                 .find(|(key, _)| key == &"frameX".to_owned())
@@ -140,25 +140,18 @@ pub fn parse_texture_atlas_starling_xml(
                 __flight_identity: std::sync::Arc::new(()),
                 height: height,
                 id: id,
-                name: el
-                    .attributes
-                    .iter()
-                    .find(|(key, _)| key == &"name".to_owned())
-                    .map(|(_, value)| value)
-                    .expect("TypeScript Record key was absent")
-                    .clone(),
-                original_height: if trimmed {
-                    (frame_height).unwrap_or(height)
-                } else {
-                    None
-                },
-                original_width: if trimmed {
-                    (frame_width).unwrap_or(width)
-                } else {
-                    None
-                },
-                pivot_x: pivot_x,
-                pivot_y: pivot_y,
+                name: Some(
+                    el.attributes
+                        .iter()
+                        .find(|(key, _)| key == &"name".to_owned())
+                        .map(|(_, value)| value)
+                        .expect("TypeScript Record key was absent")
+                        .clone(),
+                ),
+                original_height: Some(if trimmed { frame_height } else { None }),
+                original_width: Some(if trimmed { frame_width } else { None }),
+                pivot_x: Some(pivot_x),
+                pivot_y: Some(pivot_y),
                 rotated: rotated,
                 source_x: if (el
                     .attributes

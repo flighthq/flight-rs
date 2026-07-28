@@ -13,18 +13,27 @@ use flighthq_types::{ParsedProtocolUrl, ProtocolBackend, ProtocolHandler};
 pub fn attach_protocol_handler(handler: ProtocolHandler) -> () {
     detach_protocol_handler(&handler);
     let backend = get_protocol_backend();
-    let pending = ((backend.drain_pending_urls).clone()).lock().unwrap()();
+    let pending = {
+        let __flight_callback = (backend.drain_pending_urls).clone();
+        let __flight_result = __flight_callback.lock().unwrap()();
+        __flight_result
+    };
     for url in (pending).iter().cloned() {
         emit_signal((handler.on_open_url).clone(), ((url).clone(),));
     }
-    let unsubscribe = ((backend.subscribe).clone()).lock().unwrap()(std::sync::Arc::new(
-        std::sync::Mutex::new(Box::new({
-            let handler = handler.clone();
-            move |url: String| -> () {
-                emit_signal((handler.on_open_url).clone(), ((url).clone(),))
-            }
-        }) as Box<dyn FnMut(String) -> () + Send + 'static>),
-    ));
+    let unsubscribe = {
+        let __flight_callback = (backend.subscribe).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(std::sync::Arc::new(
+            std::sync::Mutex::new(Box::new({
+                let handler = handler.clone();
+                move |url: String| -> () {
+                    emit_signal((handler.on_open_url).clone(), ((url).clone(),))
+                }
+            })
+                as Box<dyn FnMut(String) -> () + Send + 'static>),
+        ));
+        __flight_result
+    };
     {
         let __flight_key = (handler).clone();
         let __flight_value = (unsubscribe).clone();
@@ -49,10 +58,14 @@ pub fn create_protocol_handler() -> ProtocolHandler {
 
 // Source: upstream/packages/protocol/src/protocol.ts:30 (sha256:26195253814f0fc0b4a2631049f6906ebedecb01aebec722307c617dd34640c9)
 pub fn create_protocol_url(parts: &ParsedProtocolUrl) -> String {
-    let scheme = ((parts.scheme).clone()).unwrap_or("unknown".to_owned());
-    let host = ((parts.host).clone()).unwrap_or("".to_owned());
-    let path = ((parts.path).clone()).unwrap_or("".to_owned());
-    let authority = if host { format!("//{}", host) } else { "" };
+    let scheme = (parts.scheme).clone();
+    let host = (parts.host).clone();
+    let path = (parts.path).clone();
+    let authority = if host {
+        format!("//{}", host)
+    } else {
+        "".to_owned()
+    };
     let normalized_path = if if (path) != 0.0_f64 {
         (!(path).starts_with("/"))
     } else {
@@ -60,13 +73,13 @@ pub fn create_protocol_url(parts: &ParsedProtocolUrl) -> String {
     } {
         format!("/{}", path)
     } else {
-        path
+        (path).clone()
     };
     let mut url = format!("{}:{}{}", scheme, authority, normalized_path);
     if true {
         let entries = (crate::host_value::<()>("host.entries").filter)(std::sync::Arc::new(
             std::sync::Mutex::new(Box::new(move |__parameter0: crate::OpaqueHostValue| -> () {
-                let k = __parameter0[0.0_f64 as usize].clone();
+                let k = crate::host_value::<crate::OpaqueHostValue>("host.index");
                 return (k.length > 0.0_f64);
             })
                 as Box<dyn FnMut(crate::OpaqueHostValue) -> () + Send + 'static>),
@@ -74,8 +87,8 @@ pub fn create_protocol_url(parts: &ParsedProtocolUrl) -> String {
         if (entries.length > 0.0_f64) {
             let qs = ((entries.map)(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
                 move |__parameter1: crate::OpaqueHostValue| -> () {
-                    let k = __parameter1[0.0_f64 as usize].clone();
-                    let v = __parameter1[1.0_f64 as usize].clone();
+                    let k = crate::host_value::<crate::OpaqueHostValue>("host.index");
+                    let v = crate::host_value::<crate::OpaqueHostValue>("host.index");
                     return format!(
                         "{}={}",
                         crate::host_value::<()>("host.call"),
@@ -212,7 +225,11 @@ pub fn detach_protocol_handler(handler: &ProtocolHandler) -> () {
         .find(|(key, _)| key == &(*handler).clone())
         .map(|(_, value)| value.clone());
     if (unsubscribe).is_some() {
-        ((unsubscribe.as_ref().unwrap()).clone()).lock().unwrap()();
+        {
+            let __flight_callback = (unsubscribe.as_ref().unwrap()).clone();
+            let __flight_result = __flight_callback.lock().unwrap()();
+            __flight_result
+        };
         {
             let __flight_key = (*handler).clone();
             if let Some(__flight_index) = (*_SUBSCRIPTIONS.lock().unwrap())
@@ -243,35 +260,43 @@ pub fn get_protocol_backend() -> ProtocolBackend {
 
 // Source: upstream/packages/protocol/src/protocol.ts:141 (sha256:0762b424a8b78b6e5cd68f89e4140b5e582878100a05f539bc7e755f8957df5f)
 pub fn get_protocol_launch_url() -> Option<String> {
-    return ((get_protocol_backend().get_launch_url).clone())
-        .lock()
-        .unwrap()();
+    return {
+        let __flight_callback = (get_protocol_backend().get_launch_url).clone();
+        let __flight_result = __flight_callback.lock().unwrap()();
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/protocol/src/protocol.ts:147 (sha256:bf592a399a5a84a855f012a9e3ccc9c9c59cf4e4a8e473f2a5726975c98d47e9)
 pub fn get_registered_protocol_schemes() -> Vec<String> {
-    return ((get_protocol_backend().get_registered_schemes).clone())
-        .lock()
-        .unwrap()();
+    return {
+        let __flight_callback = (get_protocol_backend().get_registered_schemes).clone();
+        let __flight_result = __flight_callback.lock().unwrap()();
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/protocol/src/protocol.ts:153 (sha256:0d0b40650511cd9d73a5ea7e079550c89c9b7c91a19de5092623aa920d9dd992)
 pub fn is_protocol_scheme_default(scheme: String) -> bool {
-    return ((get_protocol_backend().is_default).clone())
-        .lock()
-        .unwrap()((scheme).clone());
+    return {
+        let __flight_callback = (get_protocol_backend().is_default).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((scheme).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/protocol/src/protocol.ts:158 (sha256:22de5027235039e5ca9d5e26a0ddbe8b237e06138231d3385511d1a622a07f4d)
 pub fn is_protocol_scheme_registered(scheme: String) -> bool {
-    return ((get_protocol_backend().is_registered).clone())
-        .lock()
-        .unwrap()((scheme).clone());
+    return {
+        let __flight_callback = (get_protocol_backend().is_registered).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((scheme).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/protocol/src/protocol.ts:166 (sha256:6ae6c76401417f2cfe6ec13b993ab35cbfaf6007e2a07e1fba3d42ee474cbdfd)
 pub fn is_valid_protocol_scheme(scheme: String) -> bool {
-    if (("string" != "string") || (scheme.length == 0.0_f64)) {
+    if ("string" != "string") || ((scheme.encode_utf16().count() as f64) == 0.0_f64) {
         return false;
     }
     let lower = (scheme).to_lowercase();
@@ -293,7 +318,7 @@ impl PartialEq for ParseProtocolUrlRecord1 {
 }
 
 pub fn parse_protocol_url(url: String) -> Option<ParsedProtocolUrl> {
-    if (("string" != "string") || (url.length == 0.0_f64)) {
+    if ("string" != "string") || ((url.encode_utf16().count() as f64) == 0.0_f64) {
         return None;
     }
     let colon_idx = (url.index_of)(":");
@@ -311,7 +336,7 @@ pub fn parse_protocol_url(url: String) -> Option<ParsedProtocolUrl> {
         let slash_idx = (rest.index_of)("/");
         let q_idx = (rest.index_of)("?");
         let mut host_end: f64;
-        if ((slash_idx >= 0.0_f64) && ((q_idx < 0.0_f64) || (slash_idx < q_idx))) {
+        if (slash_idx >= 0.0_f64) && ((q_idx < 0.0_f64) || (slash_idx < q_idx)) {
             host_end = slash_idx;
         } else {
             if (q_idx >= 0.0_f64) {
@@ -337,12 +362,12 @@ pub fn parse_protocol_url(url: String) -> Option<ParsedProtocolUrl> {
         let mut __flight_record = Vec::new();
         __flight_record
     };
-    if (query_string.length > 0.0_f64) {
+    if ((query_string.encode_utf16().count() as f64) > 0.0_f64) {
         for pair in ((query_string.split)("&")).iter().cloned() {
             let eq_idx = (pair.index_of)("=");
             if (eq_idx < 0.0_f64) {
                 let k = _safe_decode((pair).clone());
-                if (k.length > 0.0_f64) {
+                if ((k.encode_utf16().count() as f64) > 0.0_f64) {
                     query
                         .iter()
                         .find(|(key, _)| key == &(k).clone())
@@ -351,7 +376,7 @@ pub fn parse_protocol_url(url: String) -> Option<ParsedProtocolUrl> {
                 }
             } else {
                 let k = _safe_decode((pair.slice)(0.0_f64, eq_idx));
-                if (k.length > 0.0_f64) {
+                if ((k.encode_utf16().count() as f64) > 0.0_f64) {
                     query
                         .iter()
                         .find(|(key, _)| key == &(k).clone())
@@ -376,7 +401,11 @@ pub fn register_protocol_scheme(scheme: String) -> bool {
     if (!is_valid_protocol_scheme((scheme).clone())) {
         return false;
     }
-    return ((get_protocol_backend().register).clone()).lock().unwrap()((scheme).clone());
+    return {
+        let __flight_callback = (get_protocol_backend().register).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((scheme).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/protocol/src/protocol.ts:244 (sha256:c7f672589962c3ce702a40c7fd0be2c8421dfecece76332726c783a8a7b68096)
@@ -384,8 +413,12 @@ pub fn register_protocol_schemes(schemes: &Vec<String>) -> bool {
     let backend = get_protocol_backend();
     let mut all_ok = true;
     for scheme in (schemes).iter().cloned() {
-        if ((!is_valid_protocol_scheme((scheme).clone()))
-            || (!((backend.register).clone()).lock().unwrap()((scheme).clone())))
+        if (!is_valid_protocol_scheme((scheme).clone()))
+            || (!{
+                let __flight_callback = (backend.register).clone();
+                let __flight_result = __flight_callback.lock().unwrap()((scheme).clone());
+                __flight_result
+            })
         {
             all_ok = false;
         }
@@ -395,9 +428,11 @@ pub fn register_protocol_schemes(schemes: &Vec<String>) -> bool {
 
 // Source: upstream/packages/protocol/src/protocol.ts:255 (sha256:92beb2ec31bde884f3c58c188e129e48f76ca9f9e052372fded52982679d2bfb)
 pub fn remove_protocol_scheme_as_default(scheme: String) -> bool {
-    return ((get_protocol_backend().remove_as_default).clone())
-        .lock()
-        .unwrap()((scheme).clone());
+    return {
+        let __flight_callback = (get_protocol_backend().remove_as_default).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((scheme).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/protocol/src/protocol.ts:260 (sha256:18f3370317e900c9f55789f988059c5cb157aac2ab84cb754b19c6803890de8f)
@@ -407,16 +442,20 @@ pub fn set_protocol_backend(backend: Option<ProtocolBackend>) -> () {
 
 // Source: upstream/packages/protocol/src/protocol.ts:266 (sha256:c2508dec8c18d102a4667af00aeef82119709bda578702d181d548a58f8bac6b)
 pub fn set_protocol_scheme_as_default(scheme: String) -> bool {
-    return ((get_protocol_backend().set_as_default).clone())
-        .lock()
-        .unwrap()((scheme).clone());
+    return {
+        let __flight_callback = (get_protocol_backend().set_as_default).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((scheme).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/protocol/src/protocol.ts:272 (sha256:e5d079839f7f59eeef27f75636f8896b1a9471bb141af5675d12f401da0271c8)
 pub fn unregister_protocol_scheme(scheme: String) -> bool {
-    return ((get_protocol_backend().unregister).clone())
-        .lock()
-        .unwrap()((scheme).clone());
+    return {
+        let __flight_callback = (get_protocol_backend().unregister).clone();
+        let __flight_result = __flight_callback.lock().unwrap()((scheme).clone());
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/protocol/src/protocol.ts:277 (sha256:78c3a6443380f019b5332f223a41d35d275af899124f34c0631cf27894628bb0)
@@ -424,7 +463,11 @@ pub fn unregister_protocol_schemes(schemes: &Vec<String>) -> bool {
     let backend = get_protocol_backend();
     let mut all_ok = true;
     for scheme in (schemes).iter().cloned() {
-        if (!((backend.unregister).clone()).lock().unwrap()((scheme).clone())) {
+        if (!{
+            let __flight_callback = (backend.unregister).clone();
+            let __flight_result = __flight_callback.lock().unwrap()((scheme).clone());
+            __flight_result
+        }) {
             all_ok = false;
         }
     }
@@ -471,12 +514,10 @@ fn _safe_decode(s: String) -> String {
             Ok(value) => value,
             Err(_) => (|| -> Option<String> {
                 {
-                    return Some((s).clone());
+                    return Some(s);
                 }
                 None
             })(),
         };
-    if let Some(__flight_return) = __flight_try_return {
-        return __flight_return;
-    }
+    return __flight_try_return.expect("TypeScript try/catch completed without returning");
 }

@@ -16,7 +16,7 @@ pub fn get_flow_stack_visible_states(stack: &FlowStack, out: &mut Vec<FlowState>
         return;
     }
     let mut lowest = top;
-    while ((lowest > 0.0_f64) && stack.states[lowest as usize].render_below) {
+    while (lowest > 0.0_f64) && ((stack.states[lowest as usize].render_below).unwrap_or(false)) {
         {
             lowest -= 1.0;
             lowest

@@ -41,11 +41,11 @@ pub fn fit_path_curves(
         if (n < 2.0_f64) {
             continue;
         }
-        let closed = (((n >= 3.0_f64)
+        let closed = ((n >= 3.0_f64)
             && (contour[0.0_f64 as usize].clone()
                 == contour[((contour.len() as f64) - 2.0_f64) as usize].clone()))
             && (contour[1.0_f64 as usize].clone()
-                == contour[((contour.len() as f64) - 1.0_f64) as usize].clone()));
+                == contour[((contour.len() as f64) - 1.0_f64) as usize].clone());
         let pts = if closed {
             (contour)[(0.0_f64) as usize..((n - 1.0_f64) * 2.0_f64) as usize].to_vec()
         } else {
@@ -126,7 +126,7 @@ fn find_corners(pts: &Vec<f64>, n: f64) -> Vec<f64> {
                 - pts[((i * 2.0_f64) + 1.0_f64) as usize].clone());
             let len0 = ((dx0 * dx0) + (dy0 * dy0)).sqrt();
             let len1 = ((dx1 * dx1) + (dy1 * dy1)).sqrt();
-            if ((len0 == 0.0_f64) || (len1 == 0.0_f64)) {
+            if (len0 == 0.0_f64) || (len1 == 0.0_f64) {
                 {
                     i += 1.0;
                     i
@@ -144,7 +144,7 @@ fn find_corners(pts: &Vec<f64>, n: f64) -> Vec<f64> {
         }
     }
     corners.push((n - 1.0_f64));
-    return (corners).clone();
+    return corners;
 }
 
 // Source: upstream/packages/path/src/fitPathCurves.ts:74 (sha256:2f32605ecbce7f49cea5166d924e769451082080f06727dc868cd5d32ea799ad)
@@ -207,7 +207,7 @@ fn chord_length_parameterize(pts: &Vec<f64>, first: f64, last: f64) -> Vec<f64> 
             }
         }
     }
-    return (u).clone();
+    return u;
 }
 
 // Source: upstream/packages/path/src/fitPathCurves.ts:102 (sha256:6033cfbd8e30a64c3b96b43cf74e03f98736e68bdbff11d02ac26ccb1a1a1579)
@@ -373,7 +373,7 @@ fn generate_bezier(
         .powf(2.0_f64))
     .sqrt();
     let epsilon = (0.000001_f64 * seg_length);
-    if ((alpha1 < epsilon) || (alpha2 < epsilon)) {
+    if (alpha1 < epsilon) || (alpha2 < epsilon) {
         alpha1 = {
             alpha2 = (seg_length / 3.0_f64);
             alpha2
@@ -457,7 +457,7 @@ fn reparameterize(
             };
         }
     }
-    return (u_prime).clone();
+    return u_prime;
 }
 
 // Source: upstream/packages/path/src/fitPathCurves.ts:263 (sha256:02df20cab541eebc2401f920a700ab941a7d5353d529365d27ff49d8e2de4b59)

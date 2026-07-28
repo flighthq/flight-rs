@@ -42,16 +42,16 @@ pub fn create_render_proxy(state: &RenderState, source: &Renderable) -> RenderPr
     let renderer = runtime
         .renderer_map
         .iter()
-        .find(|(key, _)| key == &source.kind)
+        .find(|(key, _)| key == &(source.kind).clone())
         .map(|(_, value)| value.clone());
     return create_entity(Some(RenderProxy {
         __flight_identity: std::sync::Arc::new(()),
         source: (*source).clone(),
-        kind: source.kind,
+        kind: (source.kind).clone(),
         next: None,
         alpha: 1.0_f64,
         appearance_frame_id: (-1.0_f64),
-        blend_mode: blend_mode_constant.normal,
+        blend_mode: Some((blend_mode_constant.normal).clone()),
         color_transform: None,
         material: None,
         material_data: None,
@@ -60,15 +60,19 @@ pub fn create_render_proxy(state: &RenderState, source: &Renderable) -> RenderPr
         last_local_transform_id: (-1.0_f64),
         name: None,
         renderer: (renderer).clone(),
-        renderer_data: renderer
-            .as_ref()
-            .unwrap()
-            .create_data
-            .as_ref()
-            .unwrap()
-            .lock()
-            .unwrap()((*state).clone(), (*source).clone()),
-        renderer_data_source: source,
+        renderer_data: {
+            let __flight_callback = renderer
+                .as_ref()
+                .unwrap()
+                .create_data
+                .as_ref()
+                .unwrap()
+                .clone();
+            let __flight_result =
+                __flight_callback.lock().unwrap()((*state).clone(), (*source).clone());
+            __flight_result
+        },
+        renderer_data_source: Some((*source).clone()),
         renderer_map_id: runtime.renderer_map_id,
         transform_frame_id: (-1.0_f64),
         visible: true,
@@ -94,7 +98,7 @@ pub fn create_render_proxy2_d(
     node.transform2_d = create_matrix(None, None, None, None, None, None);
     node.traverse_children = true;
     node.clip_depth = 0.0_f64;
-    return (node).clone();
+    return node;
 }
 
 // Source: upstream/packages/render/src/renderProxy.ts:86 (sha256:7e70ba0c2d12b41cf87957fdbdbeed0d25db52ff3bc4c856a3db500ec934e4fd)
@@ -197,11 +201,8 @@ pub fn get_render_proxy2_d(state: &RenderState, source: &Renderable) -> Option<R
 }
 
 // Source: upstream/packages/render/src/renderProxy.ts:120 (sha256:7611587d0f27185f43869bf78cc98b791918b49c57d271624c7e59f80326f3db)
-pub fn install_render_adapt_hook(
-    state: &RenderState,
-    fn_: &mut impl FnMut(RenderState, Renderable, RenderProxy2D) -> (),
-) -> () {
-    get_render_state_runtime(state).render_adapt_hook = Some(fn_);
+pub fn install_render_adapt_hook(state: &RenderState, fn_: AdaptHook) -> () {
+    get_render_state_runtime(state).render_adapt_hook = Some((fn_).clone());
 }
 
 // Source: upstream/packages/render/src/renderProxy.ts:124 (sha256:0cbb9b9044c1cdae331ef06656017c7a6453199ec7c2b4036c28e574838fb94c)
@@ -212,20 +213,20 @@ pub fn is_render_proxy_dirty(
     parent_data: Option<RenderProxy>,
 ) -> bool {
     let current_frame_id = get_render_state_runtime(state).current_frame_id;
-    let parent_dirty = ((parent_data).is_some()
+    let parent_dirty = ((parent_data).is_some())
         && ((parent_data.as_ref().unwrap().transform_frame_id == current_frame_id)
-            || (parent_data.as_ref().unwrap().appearance_frame_id == current_frame_id)));
-    let local_dirty = (((((state.scene_graph_sync_policy).clone() == "refreshDerivedState")
+            || (parent_data.as_ref().unwrap().appearance_frame_id == current_frame_id));
+    let local_dirty = ((((state.scene_graph_sync_policy).clone() == "refreshDerivedState")
         || (data.last_local_transform_id != get_node_local_transform_revision(&source)))
         || (data.last_appearance_id != get_node_appearance_revision(&source)))
-        || (data.last_local_content_id != get_node_local_content_revision(&source)));
-    return (parent_dirty || local_dirty);
+        || (data.last_local_content_id != get_node_local_content_revision(&source));
+    return (parent_dirty) || (local_dirty);
 }
 
 // Source: upstream/packages/render/src/renderProxy.ts:142 (sha256:79c68d259d30f18e8d7d49715d973a1ebd294921c549dc66cddb1fb07c04a58f)
 pub fn is_render_proxy_visible(data: &RenderProxy2D) -> bool {
-    return ((data.visible && (data.alpha > 0.0_f64))
-        && (!((data.transform2_d.a == 0.0_f64) && (data.transform2_d.d == 0.0_f64))));
+    return ((data.visible) && (data.alpha > 0.0_f64))
+        && (!(data.transform2_d.a == 0.0_f64) && (data.transform2_d.d == 0.0_f64));
 }
 
 // Source: upstream/packages/render/src/renderProxy.ts:151 (sha256:0268c67aefba9a5406053c5af12340b99402e8b64776a903cdbd3da95c7e2ee2)
@@ -286,8 +287,8 @@ pub fn update_render_proxy_renderer(state: &RenderState, node: &mut RenderProxy)
         .iter()
         .find(|(key, _)| key == &(node.kind).clone())
         .map(|(_, value)| value.clone());
-    if (((node.renderer).clone() != renderer)
-        || !(((node.renderer_data_source).clone()) == Some((node.source).clone())))
+    if ((node.renderer).clone() != renderer)
+        || (!(((node.renderer_data_source).clone()) == Some((node.source).clone())))
     {
         if ((node.renderer_data).clone()).is_some() {
             {
@@ -304,14 +305,18 @@ pub fn update_render_proxy_renderer(state: &RenderState, node: &mut RenderProxy)
             };
         }
         node.renderer = (renderer).clone();
-        node.renderer_data = renderer
-            .as_ref()
-            .unwrap()
-            .create_data
-            .as_ref()
-            .unwrap()
-            .lock()
-            .unwrap()((*state).clone(), (node.source).clone());
+        node.renderer_data = {
+            let __flight_callback = renderer
+                .as_ref()
+                .unwrap()
+                .create_data
+                .as_ref()
+                .unwrap()
+                .clone();
+            let __flight_result =
+                __flight_callback.lock().unwrap()((*state).clone(), (node.source).clone());
+            __flight_result
+        };
         node.renderer_data_source = Some((node.source).clone());
     }
     node.renderer_map_id = runtime.renderer_map_id;

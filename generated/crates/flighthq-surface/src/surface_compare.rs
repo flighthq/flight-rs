@@ -15,7 +15,7 @@ pub fn get_surface_mismatch(
     channel_tolerance: Option<f64>,
 ) -> SurfaceMismatch {
     let channel_tolerance = channel_tolerance.unwrap_or(0.0_f64);
-    if ((source.width != other.width) || (source.height != other.height)) {
+    if (source.width != other.width) || (source.height != other.height) {
         panic!(
             "{}",
             format!(

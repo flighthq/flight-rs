@@ -25,8 +25,8 @@ pub fn copy_surface_alpha(dest: &mut SurfaceRegion, source: &SurfaceRegion) -> (
         while (py < h) {
             let sy = (source.y + py);
             let dy = (dest.y + py);
-            if ((((sy < 0.0_f64) || (sy >= source.surface.height)) || (dy < 0.0_f64))
-                || (dy >= dest.surface.height))
+            if (((sy < 0.0_f64) || (sy >= source.surface.height)) || (dy < 0.0_f64))
+                || (dy >= dest.surface.height)
             {
                 {
                     py += 1.0;
@@ -39,8 +39,8 @@ pub fn copy_surface_alpha(dest: &mut SurfaceRegion, source: &SurfaceRegion) -> (
                 while (px < w) {
                     let sx = (source.x + px);
                     let dx = (dest.x + px);
-                    if ((((sx < 0.0_f64) || (sx >= source.surface.width)) || (dx < 0.0_f64))
-                        || (dx >= dest.surface.width))
+                    if (((sx < 0.0_f64) || (sx >= source.surface.width)) || (dx < 0.0_f64))
+                        || (dx >= dest.surface.width)
                     {
                         {
                             px += 1.0;
@@ -78,7 +78,7 @@ pub fn multiply_surface_alpha(out: &mut SurfaceRegion, factor: f64) -> () {
         let mut py = 0.0_f64;
         while (py < out.height) {
             let y = (out.y + py);
-            if ((y < 0.0_f64) || (y >= out.surface.height)) {
+            if (y < 0.0_f64) || (y >= out.surface.height) {
                 {
                     py += 1.0;
                     py
@@ -89,7 +89,7 @@ pub fn multiply_surface_alpha(out: &mut SurfaceRegion, factor: f64) -> () {
                 let mut px = 0.0_f64;
                 while (px < out.width) {
                     let x = (out.x + px);
-                    if ((x < 0.0_f64) || (x >= surface_width)) {
+                    if (x < 0.0_f64) || (x >= surface_width) {
                         {
                             px += 1.0;
                             px
@@ -125,7 +125,7 @@ pub fn set_surface_alpha(out: &mut SurfaceRegion, alpha: f64) -> () {
         let mut py = 0.0_f64;
         while (py < out.height) {
             let y = (out.y + py);
-            if ((y < 0.0_f64) || (y >= out.surface.height)) {
+            if (y < 0.0_f64) || (y >= out.surface.height) {
                 {
                     py += 1.0;
                     py
@@ -136,7 +136,7 @@ pub fn set_surface_alpha(out: &mut SurfaceRegion, alpha: f64) -> () {
                 let mut px = 0.0_f64;
                 while (px < out.width) {
                     let x = (out.x + px);
-                    if ((x < 0.0_f64) || (x >= surface_width)) {
+                    if (x < 0.0_f64) || (x >= surface_width) {
                         {
                             px += 1.0;
                             px

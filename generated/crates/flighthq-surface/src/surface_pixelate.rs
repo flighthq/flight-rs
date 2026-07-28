@@ -32,7 +32,7 @@ pub fn pixelate_surface(out: &mut Vec<u8>, source: &SurfaceRegion, block_size: f
                         let mut py = by;
                         while (py < y_end) {
                             let sy = (source.y + py);
-                            if ((sy < 0.0_f64) || (sy >= surface_height)) {
+                            if (sy < 0.0_f64) || (sy >= surface_height) {
                                 {
                                     py += 1.0;
                                     py
@@ -43,7 +43,7 @@ pub fn pixelate_surface(out: &mut Vec<u8>, source: &SurfaceRegion, block_size: f
                                 let mut px = bx;
                                 while (px < x_end) {
                                     let sx = (source.x + px);
-                                    if ((sx < 0.0_f64) || (sx >= surface_width)) {
+                                    if (sx < 0.0_f64) || (sx >= surface_width) {
                                         {
                                             px += 1.0;
                                             px

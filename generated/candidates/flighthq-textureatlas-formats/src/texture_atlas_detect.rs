@@ -34,7 +34,7 @@ pub fn detect_texture_atlas_format(content: String) -> Option<TextureAtlasFormat
     }
     if (trimmed.starts_with)("<") {
         return if (trimmed.includes)("<TextureAtlas") {
-            Some(texture_atlas_format_kind_starling_constant)
+            Some((texture_atlas_format_kind_starling_constant).to_owned())
         } else {
             None
         };
@@ -61,7 +61,7 @@ pub fn detect_texture_atlas_format(content: String) -> Option<TextureAtlasFormat
         if let Some(__flight_return) = __flight_try_return {
             return __flight_return;
         }
-        if (((raw).is_none()
+        if (((raw).is_none())
             || (match &(raw) {
                 crate::OpaqueHostValue::Undefined => "undefined",
                 crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
@@ -69,7 +69,7 @@ pub fn detect_texture_atlas_format(content: String) -> Option<TextureAtlasFormat
                 crate::OpaqueHostValue::Number(_) => "number",
                 crate::OpaqueHostValue::String(_) => "string",
             } != "object"))
-            || (array.is_array)(raw))
+            || ((array.is_array)(raw))
         {
             return None;
         }
@@ -79,15 +79,15 @@ pub fn detect_texture_atlas_format(content: String) -> Option<TextureAtlasFormat
         }
         let app = (read_meta_app(((obj.meta).clone()).unwrap())).to_lowercase();
         if (app).contains("aseprite") {
-            return Some(texture_atlas_format_kind_aseprite_constant);
+            return Some((texture_atlas_format_kind_aseprite_constant).to_owned());
         }
-        if ((app).contains("texturepacker") || (app).contains("codeandweb")) {
-            return Some(texture_atlas_format_kind_texture_packer_constant);
+        if ((app).contains("texturepacker")) || ((app).contains("codeandweb")) {
+            return Some((texture_atlas_format_kind_texture_packer_constant).to_owned());
         }
         return if has_frame_duration(((obj.frames).clone()).unwrap()) {
-            Some(texture_atlas_format_kind_aseprite_constant)
+            Some((texture_atlas_format_kind_aseprite_constant).to_owned())
         } else {
-            Some(texture_atlas_format_kind_texture_packer_constant)
+            Some((texture_atlas_format_kind_texture_packer_constant).to_owned())
         };
     }
     if ((regex::RegexBuilder::new("^\\s*(size|format|filter|repeat)\\s*:")
@@ -96,8 +96,8 @@ pub fn detect_texture_atlas_format(content: String) -> Option<TextureAtlasFormat
         .dot_matches_new_line(false)
         .build()
         .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-    .is_match(&(trimmed))
-        && (regex::RegexBuilder::new("^\\s*(xy|orig)\\s*:")
+    .is_match(&(trimmed)))
+        && ((regex::RegexBuilder::new("^\\s*(xy|orig)\\s*:")
             .case_insensitive(false)
             .multi_line(true)
             .dot_matches_new_line(false)
@@ -105,7 +105,7 @@ pub fn detect_texture_atlas_format(content: String) -> Option<TextureAtlasFormat
             .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
         .is_match(&(trimmed)))
     {
-        return Some(texture_atlas_format_kind_libgdx_atlas_constant);
+        return Some((texture_atlas_format_kind_libgdx_atlas_constant).to_owned());
     }
     return None;
 }
@@ -113,22 +113,22 @@ pub fn detect_texture_atlas_format(content: String) -> Option<TextureAtlasFormat
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasDetect.ts:53 (sha256:78e34bcf6415019109599e89407bc45b1a2d149171b3aeefbe5efad287ddcf01)
 fn first_frame(frames: crate::OpaqueHostValue) -> crate::OpaqueHostValue {
     if (array.is_array)(frames) {
-        return frames[0.0_f64 as usize].clone();
+        return crate::host_value::<crate::OpaqueHostValue>("host.index");
     }
-    if ((frames).is_some()
+    if ((frames).is_some())
         && (match &(frames) {
             crate::OpaqueHostValue::Undefined => "undefined",
             crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
             crate::OpaqueHostValue::Bool(_) => "boolean",
             crate::OpaqueHostValue::Number(_) => "number",
             crate::OpaqueHostValue::String(_) => "string",
-        } == "object"))
+        } == "object")
     {
         for value in (crate::host_value::<()>("host.values")).iter().cloned() {
             return value;
         }
     }
-    return crate::OpaqueHostValue::Undefined;
+    return undefined;
 }
 
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasDetect.ts:61 (sha256:53c600dbcc30e9bd5e3197373083463723e0c0d483151238ec3eca7036356bfd)
@@ -145,7 +145,7 @@ impl PartialEq for HasFrameDurationRecord1 {
 
 fn has_frame_duration(frames: crate::OpaqueHostValue) -> bool {
     let frame = first_frame((frames).clone());
-    return (((frame).is_some()
+    return (((frame).is_some())
         && (match &(frame) {
             crate::OpaqueHostValue::Undefined => "undefined",
             crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
@@ -159,7 +159,7 @@ fn has_frame_duration(frames: crate::OpaqueHostValue) -> bool {
             crate::OpaqueHostValue::Bool(_) => "boolean",
             crate::OpaqueHostValue::Number(_) => "number",
             crate::OpaqueHostValue::String(_) => "string",
-        } == "number"));
+        } == "number");
 }
 
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasDetect.ts:66 (sha256:cc28b45ffa394bc305f890b8dbd710e9831f07abcdb6c59b9aa375b228736bcf)
@@ -175,14 +175,14 @@ impl PartialEq for ReadMetaAppRecord1 {
 }
 
 fn read_meta_app(meta: crate::OpaqueHostValue) -> String {
-    if ((meta).is_none()
+    if ((meta).is_none())
         || (match &(meta) {
             crate::OpaqueHostValue::Undefined => "undefined",
             crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
             crate::OpaqueHostValue::Bool(_) => "boolean",
             crate::OpaqueHostValue::Number(_) => "number",
             crate::OpaqueHostValue::String(_) => "string",
-        } != "object"))
+        } != "object")
     {
         return "".to_owned();
     }

@@ -24,7 +24,7 @@ pub fn get_path_contour_lengths(path: &Path, tolerance: Option<f64>) -> Vec<f64>
             };
         }
     }
-    return (lengths).clone();
+    return lengths;
 }
 
 // Source: upstream/packages/path/src/getPathContourLengths.ts:16 (sha256:f6a70b1f89e80b2bfda7ddb15d270defd713c353875ba915f408db536dc10fda)

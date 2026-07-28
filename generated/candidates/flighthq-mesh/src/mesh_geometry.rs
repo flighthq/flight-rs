@@ -94,7 +94,7 @@ pub fn clone_mesh_geometry(source: &MeshGeometry) -> MeshGeometry {
     }
     return create_mesh_geometry_runtime(&MeshGeometry {
         __flight_identity: std::sync::Arc::new(()),
-        bounds: bounds,
+        bounds: Some((bounds).clone()),
         indices: (indices).clone(),
         layout: (source.layout).clone(),
         subsets: (subsets).clone(),
@@ -141,7 +141,9 @@ pub fn create_mesh_geometry(options: &mut MeshGeometryOptions) -> MeshGeometry {
 
 // Source: upstream/packages/mesh/src/meshGeometry.ts:101 (sha256:df52879100a3365cd866c3ae4f8eb5a58427625c2cfaa55962d74556faedfcbf)
 pub fn destroy_mesh_geometry_gl_data(geometry: &mut MeshGeometry) -> () {
-    let mut runtime = panic!("entity runtime storage requires the generated native entity trait");
+    let mut runtime = Some(panic!(
+        "entity runtime storage requires the generated native entity trait"
+    ));
     if (runtime).is_some() {
         runtime.as_mut().unwrap().webgl_data = None;
     }
@@ -149,7 +151,9 @@ pub fn destroy_mesh_geometry_gl_data(geometry: &mut MeshGeometry) -> () {
 
 // Source: upstream/packages/mesh/src/meshGeometry.ts:110 (sha256:5839cafe51a3d9980ae3086d406171b7906afe0b5bcb4c24cf82b5858bde56af)
 pub fn destroy_mesh_geometry_wgpu_data(geometry: &mut MeshGeometry) -> () {
-    let mut runtime = panic!("entity runtime storage requires the generated native entity trait");
+    let mut runtime = Some(panic!(
+        "entity runtime storage requires the generated native entity trait"
+    ));
     if (runtime).is_some() {
         runtime.as_mut().unwrap().webgpu_data = None;
     }
@@ -166,7 +170,9 @@ pub fn get_mesh_geometry_index_count(geometry: &MeshGeometry) -> f64 {
 
 // Source: upstream/packages/mesh/src/meshGeometry.ts:123 (sha256:7788618d4d7ce2cbcd71f0b067bfde1204973a5d39ed757445f73baa86e88a20)
 pub fn get_mesh_geometry_morph_bind_pose(geometry: &MeshGeometry) -> Option<MeshMorphBindPose> {
-    let runtime = panic!("entity runtime storage requires the generated native entity trait");
+    let runtime = Some(panic!(
+        "entity runtime storage requires the generated native entity trait"
+    ));
     return if (runtime).is_some() {
         (runtime.as_ref().unwrap().morph_bind_pose).clone()
     } else {
@@ -176,7 +182,9 @@ pub fn get_mesh_geometry_morph_bind_pose(geometry: &MeshGeometry) -> Option<Mesh
 
 // Source: upstream/packages/mesh/src/meshGeometry.ts:131 (sha256:27c9edc09b30f1e6ad990096a17f607d49cb71aa501adbe0c2b18cba8401978b)
 pub fn get_mesh_geometry_skin_bind_pose(geometry: &MeshGeometry) -> Option<MeshSkinBindPose> {
-    let runtime = panic!("entity runtime storage requires the generated native entity trait");
+    let runtime = Some(panic!(
+        "entity runtime storage requires the generated native entity trait"
+    ));
     return if (runtime).is_some() {
         (runtime.as_ref().unwrap().skin_bind_pose).clone()
     } else {
@@ -211,7 +219,9 @@ pub fn set_mesh_geometry_morph_bind_pose(
     geometry: &mut MeshGeometry,
     bind_pose: Option<MeshMorphBindPose>,
 ) -> () {
-    let mut runtime = panic!("entity runtime storage requires the generated native entity trait");
+    let mut runtime = Some(panic!(
+        "entity runtime storage requires the generated native entity trait"
+    ));
     if (runtime).is_some() {
         runtime.as_mut().unwrap().morph_bind_pose = (bind_pose).clone();
     }
@@ -222,7 +232,9 @@ pub fn set_mesh_geometry_skin_bind_pose(
     geometry: &mut MeshGeometry,
     bind_pose: Option<MeshSkinBindPose>,
 ) -> () {
-    let mut runtime = panic!("entity runtime storage requires the generated native entity trait");
+    let mut runtime = Some(panic!(
+        "entity runtime storage requires the generated native entity trait"
+    ));
     if (runtime).is_some() {
         runtime.as_mut().unwrap().skin_bind_pose = (bind_pose).clone();
     }
@@ -249,7 +261,7 @@ fn create_mesh_geometry_runtime(fields: &MeshGeometry) -> MeshGeometry {
         webgpu_data: None,
     };
     ();
-    return (geometry).clone();
+    return geometry;
 }
 
 // Source: upstream/packages/mesh/src/meshGeometry.ts:195 (sha256:8c642d670d8f2a4d133ccfe66b6c05a42bf325663e1e11d567b8f6865327a697)
@@ -263,7 +275,7 @@ fn get_vertex_count_from_layout(vertices: &Vec<f32>, layout: &VertexAttributeLay
 
 // Source: upstream/packages/mesh/src/meshGeometry.ts:206 (sha256:3a35231a9da89f55792d7b4cb82ff1db0f9883cca85391b75edf07f106a64c18)
 fn promote_indices(source: &Vec<u32>, vertex_count: f64) -> Vec<u32> {
-    if ((vertex_count > UINT16_INDEX_CEILING) || true) {
+    if (vertex_count > UINT16_INDEX_CEILING) || (true) {
         let mut out = vec![0_u32; (source.len() as f64) as usize];
         {
             let __flight_offset = (0.0_f64) as usize;
@@ -271,7 +283,7 @@ fn promote_indices(source: &Vec<u32>, vertex_count: f64) -> Vec<u32> {
             out[__flight_offset..__flight_offset + __flight_values.len()]
                 .copy_from_slice(&__flight_values);
         };
-        return (out).clone();
+        return out;
     }
     let mut out = vec![0_u16; (source.len() as f64) as usize];
     {

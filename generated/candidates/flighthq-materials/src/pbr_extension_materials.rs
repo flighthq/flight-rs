@@ -23,7 +23,7 @@ use flighthq_types::{
 pub fn create_anisotropy_pbr_material(
     opts: Option<AnisotropyPbrMaterial>,
 ) -> AnisotropyPbrMaterial {
-    let mut material = create_surface_material(anisotropy_pbr_material_kind_constant);
+    let mut material = create_surface_material((anisotropy_pbr_material_kind_constant).to_owned());
     material.anisotropy_map = opts
         .as_ref()
         .and_then(|value| (value.anisotropy_map).clone());
@@ -33,12 +33,12 @@ pub fn create_anisotropy_pbr_material(
         (opts.as_ref().map(|value| value.anisotropy_strength)).unwrap_or(0.0_f64);
     material.standard = (opts.as_ref().map(|value| (value.standard).clone()))
         .unwrap_or(create_standard_pbr_material_properties(None));
-    return (material).clone();
+    return material;
 }
 
 // Source: upstream/packages/materials/src/pbrExtensionMaterials.ts:38 (sha256:bacc12c834452ca5e37d88c3120fd960c7021b34348697f2814e1b1c2564e271)
 pub fn create_clearcoat_pbr_material(opts: Option<ClearcoatPbrMaterial>) -> ClearcoatPbrMaterial {
-    let mut material = create_surface_material(clearcoat_pbr_material_kind_constant);
+    let mut material = create_surface_material((clearcoat_pbr_material_kind_constant).to_owned());
     material.clearcoat = (opts.as_ref().map(|value| value.clearcoat)).unwrap_or(0.0_f64);
     material.clearcoat_map = opts
         .as_ref()
@@ -53,14 +53,14 @@ pub fn create_clearcoat_pbr_material(opts: Option<ClearcoatPbrMaterial>) -> Clea
         .and_then(|value| (value.clearcoat_roughness_map).clone());
     material.standard = (opts.as_ref().map(|value| (value.standard).clone()))
         .unwrap_or(create_standard_pbr_material_properties(None));
-    return (material).clone();
+    return material;
 }
 
 // Source: upstream/packages/materials/src/pbrExtensionMaterials.ts:52 (sha256:249f28d834353d9f2618852fbf5d0a55bcaec9634177dc8e88d540b6475530f3)
 pub fn create_iridescence_pbr_material(
     opts: Option<IridescencePbrMaterial>,
 ) -> IridescencePbrMaterial {
-    let mut material = create_surface_material(iridescence_pbr_material_kind_constant);
+    let mut material = create_surface_material((iridescence_pbr_material_kind_constant).to_owned());
     material.iridescence = (opts.as_ref().map(|value| value.iridescence)).unwrap_or(0.0_f64);
     material.iridescence_ior =
         (opts.as_ref().map(|value| value.iridescence_ior)).unwrap_or(1.3_f64);
@@ -76,12 +76,12 @@ pub fn create_iridescence_pbr_material(
         (opts.as_ref().map(|value| value.iridescence_thickness_min)).unwrap_or(100.0_f64);
     material.standard = (opts.as_ref().map(|value| (value.standard).clone()))
         .unwrap_or(create_standard_pbr_material_properties(None));
-    return (material).clone();
+    return material;
 }
 
 // Source: upstream/packages/materials/src/pbrExtensionMaterials.ts:66 (sha256:1c8df165b9e747f2ee412eb525194739568029823de250c899e34c192f728802)
 pub fn create_sheen_pbr_material(opts: Option<SheenPbrMaterial>) -> SheenPbrMaterial {
-    let mut material = create_surface_material(sheen_pbr_material_kind_constant);
+    let mut material = create_surface_material((sheen_pbr_material_kind_constant).to_owned());
     material.sheen_color = (opts.as_ref().map(|value| value.sheen_color)).unwrap_or(255.0_f64);
     material.sheen_color_map = opts
         .as_ref()
@@ -93,12 +93,12 @@ pub fn create_sheen_pbr_material(opts: Option<SheenPbrMaterial>) -> SheenPbrMate
         .and_then(|value| (value.sheen_roughness_map).clone());
     material.standard = (opts.as_ref().map(|value| (value.standard).clone()))
         .unwrap_or(create_standard_pbr_material_properties(None));
-    return (material).clone();
+    return material;
 }
 
 // Source: upstream/packages/materials/src/pbrExtensionMaterials.ts:78 (sha256:aedf6f7bd647e67e2972e45199ef02e58aec34f5b29c9ba7c98d282ae15d6adf)
 pub fn create_specular_pbr_material(opts: Option<SpecularPbrMaterial>) -> SpecularPbrMaterial {
-    let mut material = create_surface_material(specular_pbr_material_kind_constant);
+    let mut material = create_surface_material((specular_pbr_material_kind_constant).to_owned());
     material.specular = (opts.as_ref().map(|value| value.specular)).unwrap_or(1.0_f64);
     material.specular_color =
         (opts.as_ref().map(|value| value.specular_color)).unwrap_or(4294967295.0_f64);
@@ -108,14 +108,14 @@ pub fn create_specular_pbr_material(opts: Option<SpecularPbrMaterial>) -> Specul
     material.specular_map = opts.as_ref().and_then(|value| (value.specular_map).clone());
     material.standard = (opts.as_ref().map(|value| (value.standard).clone()))
         .unwrap_or(create_standard_pbr_material_properties(None));
-    return (material).clone();
+    return material;
 }
 
 // Source: upstream/packages/materials/src/pbrExtensionMaterials.ts:91 (sha256:e27ed21c62be14dd9fe930b6e42c858dbcc628ea0846a95713e7e6f3b01b7927)
 pub fn create_subsurface_pbr_material(
     opts: Option<SubsurfacePbrMaterial>,
 ) -> SubsurfacePbrMaterial {
-    let mut material = create_surface_material(subsurface_pbr_material_kind_constant);
+    let mut material = create_surface_material((subsurface_pbr_material_kind_constant).to_owned());
     material.standard = (opts.as_ref().map(|value| (value.standard).clone()))
         .unwrap_or(create_standard_pbr_material_properties(None));
     material.subsurface = (opts.as_ref().map(|value| value.subsurface)).unwrap_or(0.0_f64);
@@ -128,14 +128,15 @@ pub fn create_subsurface_pbr_material(
     material.thickness_map = opts
         .as_ref()
         .and_then(|value| (value.thickness_map).clone());
-    return (material).clone();
+    return material;
 }
 
 // Source: upstream/packages/materials/src/pbrExtensionMaterials.ts:106 (sha256:3c6e424d049a3225554ce25277982f92430910648c55bc2f1252647cf5465448)
 pub fn create_transmission_volume_pbr_material(
     opts: Option<TransmissionVolumePbrMaterial>,
 ) -> TransmissionVolumePbrMaterial {
-    let mut material = create_surface_material(transmission_volume_pbr_material_kind_constant);
+    let mut material =
+        create_surface_material((transmission_volume_pbr_material_kind_constant).to_owned());
     material.attenuation_color =
         (opts.as_ref().map(|value| value.attenuation_color)).unwrap_or(4294967295.0_f64);
     material.attenuation_distance =
@@ -151,5 +152,5 @@ pub fn create_transmission_volume_pbr_material(
     material.transmission_map = opts
         .as_ref()
         .and_then(|value| (value.transmission_map).clone());
-    return (material).clone();
+    return material;
 }

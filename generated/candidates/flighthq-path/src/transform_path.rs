@@ -23,7 +23,7 @@ pub fn transform_path(source: &Path, matrix: &MatrixLike, out: &mut Path) -> () 
         let mut ci = 0.0_f64;
         while (ci < (source.commands.len() as f64)) {
             let command = source.commands[ci as usize].clone();
-            if ((command == PathCommand::MOVE_TO) || (command == PathCommand::LINE_TO)) {
+            if (command == PathCommand::MOVE_TO) || (command == PathCommand::LINE_TO) {
                 let x = out.data[di as usize].clone();
                 let y = out.data[(di + 1.0_f64) as usize].clone();
                 {
@@ -110,8 +110,8 @@ pub fn transform_path(source: &Path, matrix: &MatrixLike, out: &mut Path) -> () 
                         }
                         di += 6.0_f64;
                     } else {
-                        if ((command == PathCommand::WIDE_MOVE_TO)
-                            || (command == PathCommand::WIDE_LINE_TO))
+                        if (command == PathCommand::WIDE_MOVE_TO)
+                            || (command == PathCommand::WIDE_LINE_TO)
                         {
                             let x = out.data[(di + 2.0_f64) as usize].clone();
                             let y = out.data[(di + 3.0_f64) as usize].clone();

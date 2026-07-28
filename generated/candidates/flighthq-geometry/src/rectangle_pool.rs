@@ -16,7 +16,7 @@ pub fn acquire_empty_rectangle() -> Rectangle {
     r.y = 0.0_f64;
     r.width = 0.0_f64;
     r.height = 0.0_f64;
-    return (r).clone();
+    return r;
 }
 
 // Source: upstream/packages/geometry/src/rectanglePool.ts:14 (sha256:6fc408cfc41ec5a0acd2b2f6cb93ca91f5e8f96237e0db62d8e53dec85b42e28)

@@ -11,7 +11,8 @@ use crate::{
 };
 use flighthq_node::{invalidate_node_local_bounds, invalidate_node_local_content};
 use flighthq_types::{
-    Node, Rectangle, VIDEO_KIND as video_kind_constant, Video, VideoData, VideoRuntime,
+    BoundsNodeAny, Node, Rectangle, VIDEO_KIND as video_kind_constant, Video, VideoData,
+    VideoRuntime,
 };
 
 // Source: upstream/packages/displayobject/src/video.ts:7 (sha256:abc6de320572efec2ad862016241c33ac16a429cbac13617bb10bd7baf45c731)
@@ -21,19 +22,27 @@ pub fn compute_video_local_bounds_rectangle(out: &mut Rectangle, source: &Node) 
         .source
         .as_ref()
         .and_then(|value| (value.element).clone());
-    if ((element).is_some() && (element).is_some()) {
-        out.width = (element.as_ref().unwrap().video_width).clone();
-        out.height = (element.as_ref().unwrap().video_height).clone();
+    if ((element).is_some()) && ((element).is_some()) {
+        out.width = crate::host_value::<f64>("host.videoWidth");
+        out.height = crate::host_value::<f64>("host.videoHeight");
     }
 }
 
 // Source: upstream/packages/displayobject/src/video.ts:15 (sha256:5a8a3a7fb3283548e76ec7813886ee7317f280d4aafeb0dbb507b0e2fc6f3e25)
 pub fn create_video(obj: Option<Video>) -> Video {
     return create_display_object_generic(
-        video_kind_constant,
+        (video_kind_constant).to_owned(),
         Some(((obj).clone().unwrap()).clone()),
-        Some(create_video_data),
-        Some(create_video_runtime),
+        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: Option<D>| -> D {
+                create_video_data(Some(((__flight_argument_0).clone().unwrap()).clone()))
+            },
+        )
+            as Box<dyn FnMut(Option<D>) -> D + Send + 'static>))),
+        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: Option<R>| -> R { create_video_runtime() },
+        )
+            as Box<dyn FnMut(Option<R>) -> R + Send + 'static>))),
     );
 }
 
@@ -73,5 +82,10 @@ pub fn set_video_source(source: &mut Video, value: crate::OpaqueHostValue) -> ()
 static DEFAULT_METHODS: std::sync::LazyLock<VideoRuntime> =
     std::sync::LazyLock::new(|| VideoRuntime {
         __flight_identity: std::sync::Arc::new(()),
-        compute_local_bounds_rectangle: compute_video_local_bounds_rectangle,
+        compute_local_bounds_rectangle: std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |mut __flight_argument_0: Rectangle, __flight_argument_1: BoundsNodeAny| -> () {
+                compute_video_local_bounds_rectangle(&mut __flight_argument_0, &__flight_argument_1)
+            },
+        )
+            as Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>)),
     });

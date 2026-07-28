@@ -63,8 +63,8 @@ pub fn fill_surface_noise(
                         b = (lo + ((state / 4294967296.0_f64) * span));
                     }
                     let x = (dest.x + px);
-                    if ((((y < 0.0_f64) || (y >= dest.surface.height)) || (x < 0.0_f64))
-                        || (x >= surface_width))
+                    if (((y < 0.0_f64) || (y >= dest.surface.height)) || (x < 0.0_f64))
+                        || (x >= surface_width)
                     {
                         {
                             px += 1.0;
@@ -127,7 +127,7 @@ pub fn fill_surface_perlin_noise(
         let mut py = 0.0_f64;
         while (py < dest.height) {
             let y = (dest.y + py);
-            if ((y < 0.0_f64) || (y >= dest.surface.height)) {
+            if (y < 0.0_f64) || (y >= dest.surface.height) {
                 {
                     py += 1.0;
                     py
@@ -138,7 +138,7 @@ pub fn fill_surface_perlin_noise(
                 let mut px = 0.0_f64;
                 while (px < dest.width) {
                     let x = (dest.x + px);
-                    if ((x < 0.0_f64) || (x >= surface_width)) {
+                    if (x < 0.0_f64) || (x >= surface_width) {
                         {
                             px += 1.0;
                             px
@@ -298,7 +298,7 @@ pub fn fill_surface_turbulence(
         let mut py = 0.0_f64;
         while (py < dest.height) {
             let y = (dest.y + py);
-            if ((y < 0.0_f64) || (y >= dest.surface.height)) {
+            if (y < 0.0_f64) || (y >= dest.surface.height) {
                 {
                     py += 1.0;
                     py
@@ -309,7 +309,7 @@ pub fn fill_surface_turbulence(
                 let mut px = 0.0_f64;
                 while (px < dest.width) {
                     let x = (dest.x + px);
-                    if ((x < 0.0_f64) || (x >= surface_width)) {
+                    if (x < 0.0_f64) || (x >= surface_width) {
                         {
                             px += 1.0;
                             px

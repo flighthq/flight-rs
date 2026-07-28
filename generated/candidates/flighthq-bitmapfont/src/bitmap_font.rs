@@ -35,7 +35,7 @@ pub fn create_bitmap_font(data: &BitmapFontData) -> BitmapFont {
                 bearing_x: glyph.bearing_x,
                 bearing_y: glyph.bearing_y,
                 height: glyph.height,
-                page: if ((page >= 0.0_f64) && (page < page_count)) {
+                page: if (page >= 0.0_f64) && (page < page_count) {
                     page
                 } else {
                     0.0_f64
@@ -53,7 +53,12 @@ pub fn create_bitmap_font(data: &BitmapFontData) -> BitmapFont {
     }
     let mut kerning = Vec::new();
     if ((data.kerning).clone()).is_some() {
-        for pair in ((data.kerning).clone()).iter().cloned() {
+        for pair in ((data.kerning).clone())
+            .as_ref()
+            .expect("TypeScript nullable iterable was not narrowed")
+            .iter()
+            .cloned()
+        {
             {
                 let __flight_key = pack_bitmap_font_kerning_key(pair.left, pair.right);
                 let __flight_value = pair.amount;

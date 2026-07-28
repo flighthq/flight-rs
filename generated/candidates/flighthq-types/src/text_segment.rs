@@ -47,7 +47,7 @@ pub struct TextSegmenterBackend {
     pub segment: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(String, TextSegmentGranularity, String) -> Vec<TextSegment>
+                dyn FnMut(String, TextSegmentGranularity, Option<String>) -> Vec<TextSegment>
                     + Send
                     + 'static,
             >,

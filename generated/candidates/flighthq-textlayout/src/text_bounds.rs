@@ -72,7 +72,7 @@ pub fn compute_text_bounds_rectangle(
 
 // Source: upstream/packages/textlayout/src/textBounds.ts:51 (sha256:e5b271e3c1ab9d01f53bf4eb111f0cffbe8c9c504e7686dedc973fbb2375b7ae)
 pub fn compute_text_bounds_width(spec: &TextBoundsSpec, layout: &TextLayoutResult) -> f64 {
-    if (((spec.auto_size).clone() == "none") || spec.word_wrap) {
+    if ((spec.auto_size).clone() == "none") || ((spec.word_wrap).unwrap_or(false)) {
         return spec.width;
     }
     return (layout.text_width + (text_layout_gutter_constant * 2.0_f64)).ceil();

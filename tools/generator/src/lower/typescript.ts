@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import ts from 'typescript';
 
@@ -919,6 +920,13 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
   if (ts.isArrayTypeNode(node)) return { element: lowerType(node.elementType, context), kind: 'array' };
   if (ts.isTypeOperatorNode(node)) return lowerType(node.type, context);
   if (ts.isTypeQueryNode(node)) return { kind: 'dynamic' };
+  if (ts.isIndexedAccessTypeNode(node)) {
+    const namespaceType = inferValueNamespaceType(node, context);
+    if (namespaceType) return namespaceType;
+    const propertyType = inferIndexedPropertyType(node, context);
+    if (propertyType) return propertyType;
+    return { kind: 'dynamic' };
+  }
   if (ts.isTypeLiteralNode(node)) {
     return {
       extends: [],
@@ -934,9 +942,10 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
   }
   if (ts.isParenthesizedTypeNode(node)) return lowerType(node.type, context);
   if (ts.isFunctionTypeNode(node)) {
+    const parameters = lowerParameterList(node.parameters, context).parameters;
     return {
       kind: 'function',
-      parameters: lowerParameterList(node.parameters, context).parameters.map((parameter) => parameter.type),
+      parameters: parameters.map(callbackParameterType),
       returns: lowerType(node.type, context),
     };
   }
@@ -1043,7 +1052,7 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
       kind: 'anonymous',
     };
   }
-  if (ts.isIndexedAccessTypeNode(node) || ts.isConditionalTypeNode(node) || ts.isMappedTypeNode(node)) {
+  if (ts.isConditionalTypeNode(node) || ts.isMappedTypeNode(node)) {
     return { kind: 'dynamic' };
   }
   if (ts.isLiteralTypeNode(node)) {
@@ -1062,6 +1071,163 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
     }
   }
   return unsupported(node, context, `type ${ts.SyntaxKind[node.kind] ?? node.kind}`);
+}
+
+function inferValueNamespaceType(node: ts.IndexedAccessTypeNode, context: LoweringContext): IrType | undefined {
+  let objectType = node.objectType;
+  while (ts.isParenthesizedTypeNode(objectType)) objectType = objectType.type;
+  if (!ts.isTypeQueryNode(objectType) || !ts.isIdentifier(objectType.exprName)) return undefined;
+  const namespace = objectType.exprName.text;
+  const declaration = context.sourceFile.statements
+    .filter(ts.isVariableStatement)
+    .flatMap((statement) => [...statement.declarationList.declarations])
+    .find((candidate) => ts.isIdentifier(candidate.name) && candidate.name.text === namespace);
+  if (!declaration?.initializer || !ts.isObjectLiteralExpression(declaration.initializer)) return undefined;
+  const types = declaration.initializer.properties.flatMap((property): IrType[] => {
+    if (!ts.isPropertyAssignment(property)) return [];
+    const inferred = inferParameterTypeFromInitializer(property.initializer);
+    return inferred ? [inferred] : [];
+  });
+  if (types.length !== declaration.initializer.properties.length) return undefined;
+  return commonType(types);
+}
+
+function inferIndexedPropertyType(node: ts.IndexedAccessTypeNode, context: LoweringContext): IrType | undefined {
+  let objectType = node.objectType;
+  while (ts.isParenthesizedTypeNode(objectType)) objectType = objectType.type;
+  let indexType = node.indexType;
+  while (ts.isParenthesizedTypeNode(indexType)) indexType = indexType.type;
+  if (
+    !ts.isTypeReferenceNode(objectType) ||
+    !ts.isIdentifier(objectType.typeName) ||
+    !ts.isLiteralTypeNode(indexType) ||
+    !ts.isStringLiteral(indexType.literal)
+  ) {
+    return undefined;
+  }
+  return resolveIndexedPropertyType(objectType.typeName.text, indexType.literal.text, context, new Set<string>());
+}
+
+function resolveIndexedPropertyType(
+  typeName: string,
+  property: string,
+  context: LoweringContext,
+  visited: Set<string>,
+): IrType | undefined {
+  const resolved = resolveTypeDeclaration(typeName, context);
+  if (!resolved) return undefined;
+  const key = `${resolved.context.sourceFile.fileName}\0${typeName}\0${property}`;
+  if (visited.has(key)) return undefined;
+  visited.add(key);
+  const declaration = resolved.declaration;
+  const members =
+    ts.isInterfaceDeclaration(declaration) || ts.isClassDeclaration(declaration)
+      ? declaration.members
+      : ts.isTypeAliasDeclaration(declaration) && ts.isTypeLiteralNode(declaration.type)
+        ? declaration.type.members
+        : undefined;
+  if (!members) return undefined;
+  const member = members.find(
+    (candidate) =>
+      (ts.isPropertySignature(candidate) || ts.isPropertyDeclaration(candidate)) &&
+      candidate.type &&
+      propertyName(candidate.name, resolved.context) === property,
+  );
+  if (!member || (!ts.isPropertySignature(member) && !ts.isPropertyDeclaration(member)) || !member.type) {
+    return undefined;
+  }
+  return lowerResolvedPropertyType(member.type, resolved.context, visited);
+}
+
+function lowerResolvedPropertyType(
+  node: ts.TypeNode,
+  context: LoweringContext,
+  visited: Set<string>,
+): IrType | undefined {
+  if (ts.isTypeReferenceNode(node) && ts.isIdentifier(node.typeName) && !node.typeArguments?.length) {
+    const resolved = resolveTypeDeclaration(node.typeName.text, context);
+    if (!resolved || !ts.isTypeAliasDeclaration(resolved.declaration)) return undefined;
+    const key = `${resolved.context.sourceFile.fileName}\0${node.typeName.text}`;
+    if (visited.has(key)) return undefined;
+    visited.add(key);
+    return lowerResolvedPropertyType(resolved.declaration.type, resolved.context, visited);
+  }
+  return lowerType(node, context);
+}
+
+function resolveTypeDeclaration(
+  name: string,
+  context: LoweringContext,
+):
+  | {
+      context: LoweringContext;
+      declaration: ts.ClassDeclaration | ts.InterfaceDeclaration | ts.TypeAliasDeclaration;
+    }
+  | undefined {
+  const local = context.sourceFile.statements.find(
+    (statement): statement is ts.ClassDeclaration | ts.InterfaceDeclaration | ts.TypeAliasDeclaration =>
+      (ts.isClassDeclaration(statement) ||
+        ts.isInterfaceDeclaration(statement) ||
+        ts.isTypeAliasDeclaration(statement)) &&
+      statement.name?.text === name,
+  );
+  if (local) return { context, declaration: local };
+  const imported = resolveImportedTypeSource(name, context);
+  if (!imported) return undefined;
+  const sourceFile = ts.createSourceFile(
+    imported.source,
+    readFileSync(imported.source, 'utf8'),
+    ts.ScriptTarget.Latest,
+    true,
+    imported.source.endsWith('.tsx') ? ts.ScriptKind.TSX : ts.ScriptKind.TS,
+  );
+  const nextContext = { ...context, packageName: imported.packageName, sourceFile };
+  const declaration = sourceFile.statements.find(
+    (statement): statement is ts.ClassDeclaration | ts.InterfaceDeclaration | ts.TypeAliasDeclaration =>
+      (ts.isClassDeclaration(statement) ||
+        ts.isInterfaceDeclaration(statement) ||
+        ts.isTypeAliasDeclaration(statement)) &&
+      statement.name?.text === imported.imported,
+  );
+  return declaration ? { context: nextContext, declaration } : undefined;
+}
+
+function resolveImportedTypeSource(
+  localName: string,
+  context: LoweringContext,
+): { imported: string; packageName: string; source: string } | undefined {
+  for (const statement of context.sourceFile.statements) {
+    if (!ts.isImportDeclaration(statement) || !ts.isStringLiteral(statement.moduleSpecifier)) continue;
+    const bindings = statement.importClause?.namedBindings;
+    if (!bindings || !ts.isNamedImports(bindings)) continue;
+    const binding = bindings.elements.find((element) => element.name.text === localName);
+    if (!binding) continue;
+    const imported = binding.propertyName?.text ?? binding.name.text;
+    const specifier = statement.moduleSpecifier.text;
+    const base = specifier.startsWith('@flighthq/')
+      ? path.join(
+          context.workspaceDirectory,
+          'upstream',
+          'packages',
+          specifier.slice('@flighthq/'.length),
+          'src',
+          imported,
+        )
+      : specifier.startsWith('.')
+        ? path.resolve(path.dirname(context.sourceFile.fileName), specifier)
+        : undefined;
+    if (!base) return undefined;
+    const source = [`${base}.ts`, `${base}.tsx`, path.join(base, 'index.ts'), path.join(base, 'index.tsx')].find(
+      (candidate) => existsSync(candidate),
+    );
+    if (!source) return undefined;
+    return {
+      imported,
+      packageName: specifier.startsWith('@flighthq/') ? specifier : context.packageName,
+      source,
+    };
+  }
+  return undefined;
 }
 
 function isNullishType(node: ts.TypeNode): boolean {
@@ -1120,7 +1286,7 @@ function lowerTypeMember(node: ts.TypeElement, context: LoweringContext) {
       optional: Boolean(node.questionToken),
       type: {
         kind: 'function' as const,
-        parameters: parameters.map((parameter) => parameter.type),
+        parameters: parameters.map(callbackParameterType),
         returns: node.type ? lowerType(node.type, context) : { kind: 'primitive' as const, name: 'Void' as const },
       },
     };
@@ -1355,7 +1521,7 @@ function lowerStatement(node: ts.Statement, context: LoweringContext): IrStateme
           name: node.name.text,
           type: {
             kind: 'function',
-            parameters: parameters.map((parameter) => parameter.type),
+            parameters: parameters.map(callbackParameterType),
             returns: node.type ? lowerType(node.type, context) : { kind: 'dynamic' },
           },
         },
@@ -1365,6 +1531,12 @@ function lowerStatement(node: ts.Statement, context: LoweringContext): IrStateme
   }
   if (ts.isEmptyStatement(node)) return { kind: 'block', statements: [] };
   return unsupported(node, context, `statement ${ts.SyntaxKind[node.kind] ?? node.kind}`);
+}
+
+function callbackParameterType(parameter: IrParameter): IrType {
+  return parameter.optional && parameter.type.kind !== 'nullable'
+    ? { inner: parameter.type, kind: 'nullable' }
+    : parameter.type;
 }
 
 function lowerVariables(node: ts.VariableDeclarationList, mutable: boolean, context: LoweringContext): IrVariable[] {

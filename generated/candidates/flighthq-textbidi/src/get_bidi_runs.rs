@@ -18,7 +18,7 @@ pub fn get_bidi_runs(text: String, base_direction: BidiDirection) -> Vec<BidiRun
     {
         let mut i = 1.0_f64;
         while (i <= length) {
-            if ((i == length) || ((levels[i as usize] as f64) != (levels[start as usize] as f64))) {
+            if (i == length) || ((levels[i as usize] as f64) != (levels[start as usize] as f64)) {
                 let level = (levels[start as usize] as f64);
                 runs.push(BidiRun {
                     __flight_identity: std::sync::Arc::new(()),
@@ -39,5 +39,5 @@ pub fn get_bidi_runs(text: String, base_direction: BidiDirection) -> Vec<BidiRun
             };
         }
     }
-    return (runs).clone();
+    return runs;
 }

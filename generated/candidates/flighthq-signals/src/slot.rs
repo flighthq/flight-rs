@@ -136,7 +136,7 @@ pub fn disconnect_signal<T: crate::FlightCallback>(signal: &mut Signal<T>, slot:
 
 // Source: upstream/packages/signals/src/slot.ts:58 (sha256:f9e7f2c203efab8f134bd3da34dfcd6cc8077c614fe6d121d664a36a7a643aeb)
 pub fn has_signal_slots<T: crate::FlightCallback>(signal: Signal<T>) -> bool {
-    return (((signal.data).clone()).is_some()
+    return (((signal.data).clone()).is_some())
         && ((signal
             .data
             .as_ref()
@@ -146,7 +146,7 @@ pub fn has_signal_slots<T: crate::FlightCallback>(signal: Signal<T>) -> bool {
             .unwrap()
             .slots
             .len() as f64)
-            > 0.0_f64));
+            > 0.0_f64);
 }
 
 // Source: upstream/packages/signals/src/slot.ts:62 (sha256:53d4a7642c70a243bfa1ebc3d8dfea148586739a29ffb797616a6740ac9a20fc)
@@ -161,14 +161,14 @@ fn init_signal<T: crate::FlightCallback>(signal: &mut Signal<T>) -> () {
 
 // Source: upstream/packages/signals/src/slot.ts:69 (sha256:8b42fc0718c235693ee2db00927e515b1d37487376359b5c5ff12cd9801e8359)
 pub fn is_slot_connected<T: crate::FlightCallback>(signal: Signal<T>, slot: T) -> bool {
-    return (((signal.data).clone()).is_some()
+    return (((signal.data).clone()).is_some())
         && ({
             let __flight_value = (slot).clone();
             ((signal.data.as_ref().unwrap().inner.lock().unwrap().slots).clone())
                 .iter()
                 .position(|item| crate::FlightCallback::flight_same(item, &__flight_value))
                 .map_or(-1.0_f64, |index| index as f64)
-        } != (-1.0_f64)));
+        } != (-1.0_f64));
 }
 
 // Source: upstream/packages/signals/src/slot.ts:73 (sha256:1256e8499e3f9e2364648cbcc28a8d8405445b32c0ea7b2b37e74c6a229bd329)

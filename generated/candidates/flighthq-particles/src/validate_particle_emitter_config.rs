@@ -247,12 +247,12 @@ pub fn validate_particle_emitter_config(
         &"scaleCurve",
         1.0_f64,
     );
-    return (issues).clone();
+    return issues;
 }
 
 // Source: upstream/packages/particles/src/validateParticleEmitterConfig.ts:184 (sha256:240fb75be0e4ecb4ddb72582c461f9119053b2a7ae5ebc33752483d6703ed0a0)
 fn is_finite_curve(curve: Option<Vec<f64>>) -> bool {
-    if ((curve).is_none() || ((curve.as_ref().unwrap().len() as f64) == 0.0_f64)) {
+    if ((curve).is_none()) || ((curve.as_ref().unwrap().len() as f64) == 0.0_f64) {
         return false;
     }
     {
@@ -351,7 +351,7 @@ fn report_unit_range(
     field: &ParticleEmitterConfig,
 ) -> () {
     let value = config[field as usize].clone();
-    if ((value).is_finite() && ((value < 0.0_f64) || (value > 1.0_f64))) {
+    if ((value).is_finite() && (value < 0.0_f64) || (value > 1.0_f64)) {
         issues.push(ParticleConfigIssue {
             __flight_identity: std::sync::Arc::new(()),
             field: (*field).clone(),

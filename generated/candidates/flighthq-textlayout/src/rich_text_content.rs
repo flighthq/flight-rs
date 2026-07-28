@@ -20,12 +20,11 @@ pub fn compute_rich_text_content(
     data: &RichTextData,
     password_character: Option<String>,
 ) -> () {
-    let password_character = password_character.unwrap_or(None);
     out.text = "".to_owned();
     out.format_ranges.clear();
     let base_format = create_base_format(data);
     let source = get_renderable_source(data, ((password_character).clone()).clone());
-    if (source.length == 0.0_f64) {
+    if ((source.encode_utf16().count() as f64) == 0.0_f64) {
         return;
     }
     append_text(
@@ -35,7 +34,10 @@ pub fn compute_rich_text_content(
         data.condense_white,
         data.max_chars,
     );
-    clamp_ranges(&mut out.format_ranges, out.text.length);
+    clamp_ranges(
+        &mut out.format_ranges,
+        (out.text.encode_utf16().count() as f64),
+    );
     apply_text_format_ranges(out, &data.text_format_ranges);
 }
 
@@ -74,46 +76,53 @@ fn append_text(
             .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
         .replace_all(&(value), " ")
         .into_owned();
-        if (out.text.length == 0.0_f64) {
+        if ((out.text.encode_utf16().count() as f64) == 0.0_f64) {
             value = (value.trim_start)();
         }
         if ((out.text).clone()).ends_with(" ") {
             value = (value.trim_start)();
         }
     }
-    if (value.length == 0.0_f64) {
+    if ((value.encode_utf16().count() as f64) == 0.0_f64) {
         return;
     }
     let remaining = if (max_chars < 0.0_f64) {
-        value.length
+        (value.encode_utf16().count() as f64)
     } else {
-        (0.0_f64).max((max_chars - out.text.length))
+        (0.0_f64).max((max_chars - (out.text.encode_utf16().count() as f64)))
     };
     if (remaining == 0.0_f64) {
         return;
     }
-    if (value.length > remaining) {
+    if ((value.encode_utf16().count() as f64) > remaining) {
         value = (value.slice)(0.0_f64, remaining);
     }
-    let start = out.text.length;
+    let start = (out.text.encode_utf16().count() as f64);
     out.text += (value).clone();
-    write_format_range(&mut out.format_ranges, format, start, out.text.length);
+    write_format_range(
+        &mut out.format_ranges,
+        format,
+        start,
+        (out.text.encode_utf16().count() as f64),
+    );
 }
 
 // Source: upstream/packages/textlayout/src/richTextContent.ts:69 (sha256:f1747b1c807432a75063b6faa16cd2854fba96b7541ac633455c123cf92d47d8)
 fn apply_text_format_ranges(out: &mut RichTextContent, overrides: &Vec<TextFormatRange>) -> () {
-    if (((overrides.len() as f64) == 0.0_f64) || (out.text.length == 0.0_f64)) {
+    if ((overrides.len() as f64) == 0.0_f64)
+        || ((out.text.encode_utf16().count() as f64) == 0.0_f64)
+    {
         return;
     }
     for override_ in (overrides).iter().cloned() {
-        let start = (0.0_f64).max((out.text.length).min(override_.start));
-        let end = (start).max((out.text.length).min(override_.end));
+        let start = (0.0_f64).max((out.text.encode_utf16().count() as f64).min(override_.start));
+        let end = (start).max((out.text.encode_utf16().count() as f64).min(override_.end));
         if (start == end) {
             continue;
         }
         let mut next: Vec<TextFormatRange> = vec![];
         for range in (out.format_ranges).iter().cloned() {
-            if ((range.end <= start) || (range.start >= end)) {
+            if (range.end <= start) || (range.start >= end) {
                 write_format_range(&mut next, &range.format, range.start, range.end);
                 continue;
             }
@@ -170,7 +179,7 @@ fn create_base_format(data: &RichTextData) -> TextFormat {
     if (format.color).is_none() {
         format.color = Some(data.text_color);
     }
-    return (format).clone();
+    return format;
 }
 
 // Source: upstream/packages/textlayout/src/richTextContent.ts:118 (sha256:7f06abd12e25e9e61f75d50d23db46f1a9cdc500b91e99739865b7c18f05c259)
@@ -190,13 +199,12 @@ fn decode_html_entities(value: String) -> String {
                     10.0_f64,
                 ));
             }
-            return (NAMED_ENTITIES
+            return NAMED_ENTITIES
                 .iter()
                 .find(|(key, _)| key == &(lower).clone())
                 .map(|(_, value)| value)
                 .expect("TypeScript Record key was absent")
-                .clone())
-            .unwrap_or(format!("&{};", entity));
+                .clone();
         };
         (regex::RegexBuilder::new("&(#x[0-9a-f]+|#[0-9]+|[a-z]+);")
             .case_insensitive(true)
@@ -225,12 +233,12 @@ fn get_renderable_source(data: &RichTextData, password_character: Option<String>
     if (password_character).is_none() {
         return (data.text).clone();
     }
-    let mask = if (password_character.as_ref().unwrap().length > 0.0_f64) {
+    let mask = if ((password_character.as_ref().unwrap().encode_utf16().count() as f64) > 0.0_f64) {
         (password_character.as_ref().unwrap().char_at)(0.0_f64)
     } else {
-        "•"
+        "•".to_owned()
     };
-    return (mask.repeat)(data.text.length);
+    return (mask.repeat)((data.text.encode_utf16().count() as f64));
 }
 
 // Source: upstream/packages/textlayout/src/richTextContent.ts:133 (sha256:29e6bd354a194abe1d36111a87bc0a8e9728d443c9b9c2b05e169be762ffb718)
@@ -244,8 +252,8 @@ fn write_format_range(
         return;
     }
     let mut previous = ranges[((ranges.len() as f64) - 1.0_f64) as usize].clone();
-    if (((previous).is_some() && (previous.end == start))
-        && text_format_equals(&previous.format, format))
+    if (((previous).is_some()) && (previous.end == start))
+        && (text_format_equals(&previous.format, format))
     {
         previous.end = end;
     } else {

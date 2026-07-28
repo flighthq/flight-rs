@@ -29,7 +29,7 @@ pub fn compute_rectangle_intersection(
     let x1 = (get_rectangle_max_x(a)).min(get_rectangle_max_x(b));
     let y0 = (get_rectangle_min_y(a)).max(get_rectangle_min_y(b));
     let y1 = (get_rectangle_max_y(a)).min(get_rectangle_max_y(b));
-    if ((x1 <= x0) || (y1 <= y0)) {
+    if (x1 <= x0) || (y1 <= y0) {
         set_empty_rectangle(out);
         return;
     }
@@ -50,7 +50,7 @@ pub fn contains_rectangle_point_xy(source: &RectangleLike, x: f64, y: f64) -> bo
     let x1 = (source.x).max((source.x + source.width));
     let y0 = (source.y).min((source.y + source.height));
     let y1 = (source.y).max((source.y + source.height));
-    return ((((x >= x0) && (x < x1)) && (y >= y0)) && (y < y1));
+    return (((x >= x0) && (x < x1)) && (y >= y0)) && (y < y1);
 }
 
 // Source: upstream/packages/geometry/src/rectangle.ts:41 (sha256:3bc19773ab1c078e7a8b71ddc97decb01daf6f8bd54038ccdb2d40efe7474f77)
@@ -89,7 +89,7 @@ pub fn encloses_rectangle(source: &RectangleLike, other: &RectangleLike) -> bool
     let ox1 = (other.x).max((other.x + other.width));
     let oy0 = (other.y).min((other.y + other.height));
     let oy1 = (other.y).max((other.y + other.height));
-    return ((((ox0 >= sx0) && (oy0 >= sy0)) && (ox1 <= sx1)) && (oy1 <= sy1));
+    return (((ox0 >= sx0) && (oy0 >= sy0)) && (ox1 <= sx1)) && (oy1 <= sy1);
 }
 
 // Source: upstream/packages/geometry/src/rectangle.ts:74 (sha256:318ce51dcc668fbeef32217962eb9f56d12c88e0ac7284fa6e5b28e645adf386)
@@ -97,13 +97,13 @@ pub fn equals_rectangle(a: Option<RectangleLike>, b: Option<RectangleLike>) -> b
     if (a == b) {
         return true;
     }
-    if ((a).is_none() || (b).is_none()) {
+    if ((a).is_none()) || ((b).is_none()) {
         return false;
     }
-    return ((((a.as_ref().unwrap().x == b.as_ref().unwrap().x)
+    return (((a.as_ref().unwrap().x == b.as_ref().unwrap().x)
         && (a.as_ref().unwrap().y == b.as_ref().unwrap().y))
         && (a.as_ref().unwrap().width == b.as_ref().unwrap().width))
-        && (a.as_ref().unwrap().height == b.as_ref().unwrap().height));
+        && (a.as_ref().unwrap().height == b.as_ref().unwrap().height);
 }
 
 // Source: upstream/packages/geometry/src/rectangle.ts:83 (sha256:09621264efc2eb178e97a06f4f79de836c35ea82f8f97ea70caee2b3bf7cda9f)
@@ -195,15 +195,15 @@ pub fn inflate_rectangle(out: &mut RectangleLike, source: &RectangleLike, dx: f6
 
 // Source: upstream/packages/geometry/src/rectangle.ts:164 (sha256:e45f92f942d98428fadbad6099c49a798da4ccba8fac82a5ec000500f526817f)
 pub fn intersects_rectangle(a: &RectangleLike, b: &RectangleLike) -> bool {
-    return (!((((get_rectangle_max_x(a) <= get_rectangle_min_x(b))
+    return (!(((get_rectangle_max_x(a) <= get_rectangle_min_x(b))
         || (get_rectangle_min_x(a) >= get_rectangle_max_x(b)))
         || (get_rectangle_max_y(a) <= get_rectangle_min_y(b)))
-        || (get_rectangle_min_y(a) >= get_rectangle_max_y(b))));
+        || (get_rectangle_min_y(a) >= get_rectangle_max_y(b)));
 }
 
 // Source: upstream/packages/geometry/src/rectangle.ts:178 (sha256:bd8eb1bd33a7be488dac074a5e697de92dff88b083b6b60d54e6eb2a2512e9ab)
 pub fn is_empty_rectangle(source: &RectangleLike) -> bool {
-    return ((source.width == 0.0_f64) || (source.height == 0.0_f64));
+    return (source.width == 0.0_f64) || (source.height == 0.0_f64);
 }
 
 // Source: upstream/packages/geometry/src/rectangle.ts:182 (sha256:7613b27281770b8334fff6fd8cc64e1764e1f4a5fdb034c0516609a42eb87bdd)
@@ -230,10 +230,10 @@ pub fn merge_rectangle(
     let oy = other.y;
     let ow = other.width;
     let oh = other.height;
-    let s_empty = ((sw == 0.0_f64) || (sh == 0.0_f64));
-    let o_empty = ((ow == 0.0_f64) || (oh == 0.0_f64));
-    if (s_empty || o_empty) {
-        if (o_empty && (source == out)) {
+    let s_empty = (sw == 0.0_f64) || (sh == 0.0_f64);
+    let o_empty = (ow == 0.0_f64) || (oh == 0.0_f64);
+    if (s_empty) || (o_empty) {
+        if (o_empty) && (source == out) {
             return;
         }
         out.x = if o_empty { sx } else { ox };

@@ -46,11 +46,10 @@ pub fn get_surface_coverage(
     {
         let mut i = 0.0_f64;
         while (i < (source.data.len() as f64)) {
-            if ((((((source.data[i as usize] as f64) - br).abs() > channel_tolerance)
-                || (((source.data[(i + 1.0_f64) as usize] as f64) - bg).abs()
-                    > channel_tolerance))
+            if (((((source.data[i as usize] as f64) - br).abs() > channel_tolerance)
+                || (((source.data[(i + 1.0_f64) as usize] as f64) - bg).abs() > channel_tolerance))
                 || (((source.data[(i + 2.0_f64) as usize] as f64) - bb).abs() > channel_tolerance))
-                || (((source.data[(i + 3.0_f64) as usize] as f64) - ba).abs() > channel_tolerance))
+                || (((source.data[(i + 3.0_f64) as usize] as f64) - ba).abs() > channel_tolerance)
             {
                 {
                     covered += 1.0;

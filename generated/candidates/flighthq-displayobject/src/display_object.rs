@@ -45,7 +45,7 @@ pub fn add_display_object_color_adjustment(source: &DisplayObject, adjustment: &
 // Source: upstream/packages/displayobject/src/displayObject.ts:49 (sha256:45e3f59a162c6bdee66c20f61ee29bb1041b987c3b5d83b7b8fc9f571c6d40c9)
 pub fn create_display_object(obj: Option<DisplayObject>) -> DisplayObject {
     return create_display_object_generic(
-        display_object_kind_constant,
+        (display_object_kind_constant).to_owned(),
         Some(((obj).clone().unwrap()).clone()),
         None,
         None,
@@ -74,7 +74,7 @@ pub fn create_display_object_generic<R: Clone>(
     init_blend_mode_trait(&mut out, Some(((obj).clone().unwrap()).clone()));
     init_material_trait(&mut out, Some(((obj).clone().unwrap()).clone()));
     init_clip_trait(&mut out, Some(((obj).clone().unwrap()).clone()));
-    return (out).clone();
+    return out;
 }
 
 // Source: upstream/packages/displayobject/src/displayObject.ts:74 (sha256:0b3aaed33a093799fe4bfd9903f0b2a4166bd7fa6ff38db9852d31e75a056f07)
@@ -86,7 +86,7 @@ pub fn create_display_object_runtime(
     out.stage = None;
     init_transform2_d_runtime_trait(&mut out, Some(((methods).clone().unwrap()).clone()));
     init_bounds_rectangle_runtime_trait(&mut out, Some(((methods).clone().unwrap()).clone()));
-    return (out).clone();
+    return out;
 }
 
 // Source: upstream/packages/displayobject/src/displayObject.ts:87 (sha256:7f0ff2a6656f2a1fe27dea97082d4c6e7090eea3c99f2c166482aa852d7b3665)
@@ -128,23 +128,21 @@ pub fn set_display_object_color_transform(
 ) -> () {
     set_display_object_color_adjustments(
         source,
-        Some(
-            (if (color_transform).is_none() {
-                None
-            } else {
-                vec![create_color_transform_adjustment(
-                    &color_transform.as_ref().unwrap(),
-                )]
-            })
-            .clone(),
-        ),
+        (if (color_transform).is_none() {
+            None
+        } else {
+            Some(vec![create_color_transform_adjustment(
+                &color_transform.as_ref().unwrap(),
+            )])
+        })
+        .clone(),
     );
 }
 
 // Source: upstream/packages/displayobject/src/displayObject.ts:133 (sha256:ec53c619f284d0880a918ced30cbe9848cbb2cee29faf21f8b2706d8fff34d78)
 fn resolve_display_object_color_adjustments(runtime: &mut DisplayObjectRuntime) -> () {
     let adjustments = (runtime.color_adjustments).clone();
-    if ((adjustments).is_none() || ((adjustments.as_ref().unwrap().len() as f64) == 0.0_f64)) {
+    if ((adjustments).is_none()) || ((adjustments.as_ref().unwrap().len() as f64) == 0.0_f64) {
         runtime.resolved_color_transform = None;
         runtime.color_adjustments_channel_mixing = false;
         return;

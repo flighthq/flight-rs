@@ -29,11 +29,11 @@ pub type NodeData = crate::OpaqueHostValue;
 
 // Source: upstream/packages/types/src/Node.ts:12 (sha256:a0ca5c6eda1567093009cdd9b82a3d010054165b96eb6cc50e665fc0cde6b922)
 pub type NodeDataFactory<D> =
-    std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(D) -> D + Send + 'static>>>;
+    std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Option<D>) -> D + Send + 'static>>>;
 
 // Source: upstream/packages/types/src/Node.ts:13 (sha256:a77dc1f914baf7d31135c3537c5a89fe7b7eaedf57b66a4bb17a44317cf68633)
 pub type NodeRuntimeFactory<R> =
-    std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(R) -> R + Send + 'static>>>;
+    std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Option<R>) -> R + Send + 'static>>>;
 
 // Source: upstream/packages/types/src/Node.ts:14 (sha256:38f920314f6e0716d2c3896881e9117164a3e94a87f00fff6e36f9f5d69e1d0c)
 #[derive(Clone)]

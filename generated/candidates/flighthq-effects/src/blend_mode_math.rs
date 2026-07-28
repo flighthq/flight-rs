@@ -83,7 +83,16 @@ pub fn get_advanced_blend_rgb(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
 ) -> () {
     if is_non_separable_blend_mode((mode).clone()) {
-        blend_non_separable_rgb((mode).clone(), cb_r, cb_g, cb_b, cs_r, cs_g, cs_b, out);
+        blend_non_separable_rgb(
+            (mode).clone(),
+            cb_r,
+            cb_g,
+            cb_b,
+            cs_r,
+            cs_g,
+            cs_b,
+            &((*out).clone()),
+        );
         return;
     }
     let r = get_separable_blend_channel((mode).clone(), cb_r, cs_r);
@@ -177,10 +186,10 @@ pub fn get_separable_blend_channel(mode: AdvancedBlendMode, cb: f64, cs: f64) ->
 
 // Source: upstream/packages/effects/src/blendModeMath.ts:120 (sha256:4be93976d04aad2e1d12f1d98bd449ee2b9e2bf7f15a90d4f54b620a4a59d09b)
 pub fn is_non_separable_blend_mode(mode: AdvancedBlendMode) -> bool {
-    return ((((mode == advanced_blend_mode_constant.hue)
+    return (((mode == advanced_blend_mode_constant.hue)
         || (mode == advanced_blend_mode_constant.saturation))
         || (mode == advanced_blend_mode_constant.color))
-        || (mode == advanced_blend_mode_constant.luminosity));
+        || (mode == advanced_blend_mode_constant.luminosity);
 }
 
 // Source: upstream/packages/effects/src/blendModeMath.ts:130 (sha256:443d6cadca0ac7d73a27748b698259ead53ed14183143ed9a9a2c58feb93b5c8)
@@ -296,5 +305,5 @@ fn set_blend_saturation(r: f64, g: f64, b: f64, target: f64) -> Vec<f64> {
             out[__flight_index] = __flight_value;
         }
     };
-    return (out).clone();
+    return out;
 }

@@ -20,7 +20,7 @@ pub fn create_billboard(
     obj: Option<Billboard>,
 ) -> Billboard {
     let mode = mode.unwrap_or("full".to_owned());
-    let kind = kind.unwrap_or(BILLBOARD_KIND);
+    let kind = kind.unwrap_or((BILLBOARD_KIND).to_owned());
     let mut billboard = create_scene_node(
         Some(((kind).clone()).clone()),
         Some(((obj).clone().unwrap()).clone()),
@@ -28,7 +28,7 @@ pub fn create_billboard(
     billboard.geometry = (*geometry).clone();
     billboard.materials = (*materials).clone();
     billboard.mode = (mode).clone();
-    return (billboard).clone();
+    return billboard;
 }
 
 // Source: upstream/packages/scene/src/billboard.ts:46 (sha256:ad62048d6887b1083246a862661fe8bc0eb2a769c4851f08185965764da8607d)
@@ -49,5 +49,5 @@ pub fn get_billboard_signals(source: &Billboard) -> Option<NodeSignals> {
 // Source: upstream/packages/scene/src/billboard.ts:61 (sha256:2df21ee89214648dc557fbf93bcf0025abe505634be62a03350b14933e694dd3)
 pub fn is_billboard(source: &SceneNode) -> bool {
     let candidate = source;
-    return (((candidate.geometry).clone()).is_some() && ((candidate.mode).clone()).is_some());
+    return (((candidate.geometry).clone()).is_some()) && (((candidate.mode).clone()).is_some());
 }

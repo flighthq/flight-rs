@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import ts from 'typescript';
@@ -26,6 +26,15 @@ describe('Rust emission', () => {
         }
         export function angle(y: number, x: number): number {
           return Math.atan2(y, x) + Math.acos(1);
+        }
+        export function hex(value: number): string {
+          return (value & 255).toString(16).padStart(2, '0');
+        }
+        export function cacheKey(value: string): string {
+          return \`\${value}\\u0000end\`;
+        }
+        export function utf16Length(value: string): number {
+          return value.length;
         }
         export function selectValue(out: number[], index: number, value: number): void {
           switch (index) {
@@ -56,6 +65,10 @@ describe('Rust emission', () => {
     expect(output).toContain('format!("expected positive value, received {}", value)');
     expect(output).toContain('std::sync::Arc::new');
     expect(output).toContain('(y).atan2(x)');
+    expect(output).toContain('fn __flight_number_to_string');
+    expect(output).toContain('fn __flight_pad_start');
+    expect(output).toContain('\\u{0000}');
+    expect(output).toContain('value.encode_utf16().count() as f64');
     expect(output).not.toContain('break;');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
@@ -90,6 +103,15 @@ describe('Rust emission', () => {
         }
         export interface OptionalValue {
           readonly value?: number;
+        }
+        export interface StringMeasureBackend {
+          readonly measure: (value: string) => number;
+        }
+        function measureString(value: string): number {
+          return value.length;
+        }
+        export function createStringMeasureBackend(): StringMeasureBackend {
+          return { measure: measureString };
         }
         export function collectWeights(values: ReadonlyArray<Readonly<Weighted>>): Float32Array {
           const total = values.reduce((sum, value) => sum + (value.weight ?? 1), 0);
@@ -176,6 +198,7 @@ describe('Rust emission', () => {
     expect(output).toContain('(values).is_none()');
     expect(output).toContain('f64::INFINITY');
     expect(output).toContain('options.as_ref().and_then(|value| value.value)');
+    expect(output).toContain('measure: std::sync::Arc::new(std::sync::Mutex::new(Box::new(');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
     const sourceFile = path.join(fixture, 'lib.rs');
@@ -287,6 +310,56 @@ describe('Rust emission', () => {
       path.join(fixture, 'lib.rs'),
       [
         'fn create_entity(obj: Option<generated::Point>) -> generated::Point { obj.unwrap() }',
+        'mod generated;',
+        '',
+      ].join('\n'),
+    );
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', 'lib.rs'], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('selects nested structural union variants for object arguments', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/log/src/union.ts',
+      `
+        export type LogData = string | Readonly<Record<string, unknown>>;
+        export type LogDataProvider = () => LogData;
+        export function log(data: LogData | LogDataProvider): void {
+          void data;
+        }
+        export function warn(): void {
+          log({ message: 'generated warning' });
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/log', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/log/src/union.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain(
+      'crate::FlightUnion2::<LogData, LogDataProvider>::A(crate::FlightUnion2::<String, Vec<(String, crate::OpaqueHostValue)>>::B(',
+    );
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
+    writeFileSync(path.join(fixture, 'generated.rs'), output);
+    writeFileSync(
+      path.join(fixture, 'lib.rs'),
+      [
+        '#[derive(Clone)]',
+        'pub enum OpaqueHostValue { String(String) }',
+        '#[derive(Clone)]',
+        'pub enum FlightUnion2<A, B> { A(A), B(B) }',
         'mod generated;',
         '',
       ].join('\n'),
@@ -485,6 +558,137 @@ describe('Rust emission', () => {
     ).not.toThrow();
   });
 
+  it('preserves string value namespaces alongside their TypeScript type aliases', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/types/src/GamepadAxisKind.ts',
+      `
+        export const GamepadAxisKind = {
+          STICK_LEFT_X: 'StickLeftX',
+          STICK_LEFT_Y: 'StickLeftY',
+        };
+        export type GamepadAxisKind = (typeof GamepadAxisKind)[keyof typeof GamepadAxisKind];
+        export const FallbackAxis: string = 'None';
+        export const DefaultAxes: readonly (GamepadAxisKind | undefined)[] = [
+          GamepadAxisKind.STICK_LEFT_X,
+        ];
+        export function firstAxis(): GamepadAxisKind {
+          return GamepadAxisKind.STICK_LEFT_X;
+        }
+        export function fallbackAxis(): string {
+          return FallbackAxis;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/types', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/types/src/GamepadAxisKind.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('pub struct GamepadAxisKindValues');
+    expect(output).toContain('pub static GAMEPAD_AXIS_KIND');
+    expect(output).toContain('pub type GamepadAxisKind = String');
+    expect(output).toContain("pub const FALLBACK_AXIS: &'static str");
+    expect(output).toContain('vec![Some((GAMEPAD_AXIS_KIND.stick_left_x).clone())]');
+    expect(output).toContain('FALLBACK_AXIS).clone()).to_owned()');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('projects structurally compatible object spreads across distinct Rust structs', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/input/src/manager.ts',
+      `
+        interface Signals {
+          readonly label: string;
+          readonly count: number;
+        }
+        interface Manager extends Signals {
+          readonly enabled: boolean;
+        }
+        function createSignals(): Signals {
+          return { label: 'input', count: 1 };
+        }
+        export function createManager(): Manager {
+          return { ...createSignals(), enabled: true };
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/input', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/input/src/manager.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('let __flight_spread_0 = create_signals()');
+    expect(output).toContain('label: (__flight_spread_0.label).clone()');
+    expect(output).not.toContain('..(create_signals()).clone()');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('keeps mutated numeric records as mutex-backed state instead of value namespaces', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/input/src/state.ts',
+      `
+        const eventData: { value: number } = { value: 0 };
+        export function updateEventData(value: number): number {
+          eventData.value = value;
+          return eventData.value;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/input', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/input/src/state.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('static EVENT_DATA: std::sync::LazyLock<std::sync::Mutex<EventData>>');
+    expect(output).not.toContain('struct eventData;');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
   it('compiles callback-valued weak maps with static closure access and nullable narrowing', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/lifecycle/src/subscriptions.ts',
@@ -497,6 +701,12 @@ describe('Rust emission', () => {
           subscriptions.set(owner, () => {
             subscriptions.delete(owner);
           });
+        }
+        export function attachCallback(owner: Owner, cleanup: () => void): void {
+          subscriptions.set(owner, cleanup);
+        }
+        export function attachEmpty(owner: Owner): void {
+          attachCallback(owner, () => {});
         }
         export function detach(owner: Owner): void {
           const unsubscribe = subscriptions.get(owner);
@@ -517,6 +727,8 @@ describe('Rust emission', () => {
     expect(lowered.diagnostics).toEqual([]);
     expect(output).not.toContain('let subscriptions = subscriptions.clone()');
     expect(output).toContain('unsubscribe.as_ref().unwrap()');
+    expect(output).toContain('cleanup: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send +');
+    expect(output).not.toContain('cleanup: &mut impl FnMut');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
     const sourceFile = path.join(fixture, 'lib.rs');
@@ -596,6 +808,8 @@ describe('Rust emission', () => {
         export interface Backend {
           readonly open: (name: string, width: number) => boolean;
           readonly close: (name: string) => void;
+          readonly impact: (amount?: number) => boolean;
+          readonly read: (index?: number) => number;
         }
         export function createBackend(): Backend {
           return {
@@ -603,6 +817,13 @@ describe('Rust emission', () => {
               return true;
             },
             close() {},
+            impact(amount) {
+              const value = amount === undefined ? 0 : Math.min(1, amount);
+              return value > 0;
+            },
+            read(index = 0) {
+              return [1][index]!;
+            },
           };
         }
         function notify(): void {}
@@ -624,6 +845,8 @@ describe('Rust emission', () => {
     expect(lowered.diagnostics).toEqual([]);
     expect(output).toContain('|__flight_unused_0: String, __flight_unused_1: f64|');
     expect(output).toContain('|__flight_unused_0: String|');
+    expect(output).toContain('FnMut(Option<f64>) -> bool');
+    expect(output).toContain('let index = index.unwrap_or(0.0_f64)');
     expect(output).toContain('move || -> () { notify() }');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
@@ -657,6 +880,43 @@ describe('Rust emission', () => {
         export function readAxes(element: any): number[] {
           return Array.from(element.axes);
         }
+        export function readText(element: any): string {
+          return element.data ?? '';
+        }
+        export function hasTarget(element: any): boolean {
+          return element.target !== null;
+        }
+        export function readCharCode(element: any): number {
+          return element.key.toLowerCase().charCodeAt(0);
+        }
+        export function readLanguage(element: any | null): string {
+          return element?.language ?? '';
+        }
+        export function hasValue(element: any | null): boolean {
+          return element !== null && 'value' in element;
+        }
+        export function sumCoalesced(element: any): number {
+          const values = typeof element.getCoalescedEvents === 'function' ? element.getCoalescedEvents() : null;
+          if (!values) return 0;
+          let total = 0;
+          for (const value of values) total += value.x;
+          return total;
+        }
+        export function countSegments(segmenter: any): number {
+          let count = 0;
+          for (const _segment of segmenter.segment('value')) {
+            count += _segment.index + _segment.segment.length;
+          }
+          return count;
+        }
+        export function readAxis(gamepad: any | null, index: number): number {
+          if (gamepad === null) return 0;
+          return gamepad.axes[index];
+        }
+        export function readButton(gamepad: any | null, index: number): boolean {
+          if (gamepad === null) return false;
+          return gamepad.buttons[index].pressed;
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -676,6 +936,17 @@ describe('Rust emission', () => {
     expect(output).toContain('crate::host_value::<bool>("host.hidden")');
     expect(output).toContain('crate::host_value::<String>("host.mapping")');
     expect(output).toContain('crate::host_value::<Vec<f64>>("host.Array.from")');
+    expect(output).toContain('crate::host_value::<Option<String>>("host.data")');
+    expect(output).toContain('crate::host_value::<Option<crate::OpaqueHostValue>>("host.target")');
+    expect(output).toContain('crate::host_value::<f64>("host.call")');
+    expect(output).toContain('crate::host_value::<Option<String>>("host.language")');
+    expect(output).toContain('Some(crate::host_value::<Vec<crate::OpaqueHostValue>>("host.call"))');
+    expect(output).toContain('for _segment in (crate::host_value::<Vec<crate::OpaqueHostValue>>("host.call"))');
+    expect(output).toContain('crate::host_value::<f64>("host.index")');
+    expect(output).toContain('crate::host_value::<String>("host.segment").encode_utf16().count() as f64');
+    expect(output).toContain('expect("TypeScript nullable iterable was not narrowed").iter().cloned()');
+    expect(output).toContain('crate::host_value::<f64>("host.index")');
+    expect(output).toContain('crate::host_value::<bool>("host.pressed")');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
     const sourceFile = path.join(fixture, 'lib.rs');
@@ -688,6 +959,76 @@ describe('Rust emission', () => {
         pub struct OpaqueHostValue;
         pub fn host_value<T: Default>(_: &str) -> T { T::default() }
         pub fn host_set<T>(_: &str, value: T) -> T { value }
+        // Source:`,
+      ),
+    );
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('resolves imported indexed-access fields and exhaustive try/catch returns', () => {
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
+    const typesDirectory = path.join(fixture, 'upstream/packages/types/src');
+    mkdirSync(typesDirectory, { recursive: true });
+    writeFileSync(
+      path.join(typesDirectory, 'PointerEventData.ts'),
+      `export type PointerType = 'mouse' | 'pen' | 'touch' | 'unknown';`,
+    );
+    writeFileSync(
+      path.join(typesDirectory, 'InputPointerData.ts'),
+      `
+        import type { PointerType } from './PointerEventData';
+        export interface InputPointerData {
+          pointerType: PointerType;
+        }
+      `,
+    );
+    const inputSource = path.join(fixture, 'upstream/packages/input/src/input.ts');
+    mkdirSync(path.dirname(inputSource), { recursive: true });
+    const source = ts.createSourceFile(
+      inputSource,
+      `
+        import type { InputPointerData } from '@flighthq/types';
+        export function readPointerType(event: any): InputPointerData['pointerType'] {
+          return event.pointerType;
+        }
+        export function recover(value: string): string {
+          try {
+            return value;
+          } catch {
+            return 'fallback';
+          }
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/input', fixture);
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/input/src/input.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('pub fn read_pointer_type(event: crate::OpaqueHostValue) -> String');
+    expect(output).toContain('crate::host_value::<String>("host.pointerType")');
+    expect(output).toContain('return __flight_try_return.expect("TypeScript try/catch completed without returning");');
+
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(
+      sourceFile,
+      output.replace(
+        '// Source:',
+        `
+        #[derive(Clone, Default)]
+        pub struct OpaqueHostValue;
+        pub fn host_value<T: Default>(_: &str) -> T { T::default() }
         // Source:`,
       ),
     );
@@ -746,6 +1087,7 @@ describe('Rust emission', () => {
         }
         export interface Holder {
           state: State | null;
+          visible?: boolean;
         }
         const states = new Map<string, State>();
         export function getState(key: string): State {
@@ -770,6 +1112,9 @@ describe('Rust emission', () => {
             mutateState(holder.state);
           }
         }
+        export function isHolderVisible(holder: Holder): boolean {
+          return holder.state !== null && holder.visible ? true : false;
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -786,6 +1131,7 @@ describe('Rust emission', () => {
     expect(output).toContain('.clone().unwrap()');
     expect(output).toContain('.as_mut().unwrap().value');
     expect(output).toContain('.state.as_mut().unwrap()');
+    expect(output).toContain('(holder.visible).unwrap_or(false)');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
     const sourceFile = path.join(fixture, 'lib.rs');

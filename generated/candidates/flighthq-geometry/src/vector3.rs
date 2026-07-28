@@ -75,7 +75,7 @@ pub fn create_vector3(x: Option<f64>, y: Option<f64>, z: Option<f64>) -> Vector3
 pub fn create_vector3_from_spherical(radius: f64, theta: f64, phi: f64) -> Vector3 {
     let mut out = create_vector3(None, None, None);
     set_vector3_from_spherical(&mut out, radius, theta, phi);
-    return (out).clone();
+    return out;
 }
 
 // Source: upstream/packages/geometry/src/vector3.ts:95 (sha256:6d0843add672a56ea17f712227f5da6ed773302c18e2c02b01f644e033b0890f)
@@ -103,19 +103,19 @@ pub fn divide_vector3(out: &mut Vector3Like, source: &Vector3Like, divisor: &Vec
 
 // Source: upstream/packages/geometry/src/vector3.ts:123 (sha256:ca2ed710b8cd020bb999d7b5efa0fe89199a4d5ea0f2e0514b877010b241a626)
 pub fn equals_vector3(a: Option<Vector3Like>, b: Option<Vector3Like>) -> bool {
-    if ((a).is_none() || (b).is_none()) {
+    if ((a).is_none()) || ((b).is_none()) {
         return false;
     }
-    return (((a.as_ref().unwrap().x == b.as_ref().unwrap().x)
+    return ((a.as_ref().unwrap().x == b.as_ref().unwrap().x)
         && (a.as_ref().unwrap().y == b.as_ref().unwrap().y))
-        && (a.as_ref().unwrap().z == b.as_ref().unwrap().z));
+        && (a.as_ref().unwrap().z == b.as_ref().unwrap().z);
 }
 
 // Source: upstream/packages/geometry/src/vector3.ts:136 (sha256:1ccdc2a834984cecd4db6ae9862e0440e99e9a3eebb5f0e5541c44bcf7ce2130)
 pub fn get_vector3_angle_between(a: &Vector3Like, b: &Vector3Like) -> f64 {
     let la = get_vector3_length(a);
     let lb = get_vector3_length(b);
-    if ((la == 0.0_f64) || (lb == 0.0_f64)) {
+    if (la == 0.0_f64) || (lb == 0.0_f64) {
         return f64::NAN;
     }
     let _dot = (get_vector3_dot(a, b) / (la * lb));
@@ -205,8 +205,8 @@ pub fn multiply_vector3(out: &mut Vector3Like, a: &Vector3Like, b: &Vector3Like)
 // Source: upstream/packages/geometry/src/vector3.ts:285 (sha256:aba72e090a837a6ea12bbe18871b17e610c285c023b0df53d930eefe7ebc7cf4)
 pub fn near_equals_vector3(a: &Vector3Like, b: &Vector3Like, tolerance: Option<f64>) -> bool {
     let tolerance = tolerance.unwrap_or(0.000001_f64);
-    return ((((a.x - b.x).abs() < tolerance) && ((a.y - b.y).abs() < tolerance))
-        && ((a.z - b.z).abs() < tolerance));
+    return (((a.x - b.x).abs() < tolerance) && ((a.y - b.y).abs() < tolerance))
+        && ((a.z - b.z).abs() < tolerance);
 }
 
 // Source: upstream/packages/geometry/src/vector3.ts:298 (sha256:d08305da36f51946cc97f8ef328d41ef6c0397e8cb23ab344b26d3705e2f29c1)

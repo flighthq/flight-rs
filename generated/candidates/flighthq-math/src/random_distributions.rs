@@ -6,14 +6,22 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_types::{Vector2Like, Vector3Like};
+use flighthq_types::{RandomSource, Vector2Like, Vector3Like};
 
 // Source: upstream/packages/math/src/randomDistributions.ts:7 (sha256:e89d1aa8eca58889f13ba413275fd5fee1a826902346ee4dd1cf0f2242725a4b)
-pub fn pick<T: Clone>(random: &mut impl FnMut() -> f64, items: &Vec<T>) -> Option<T> {
+pub fn pick<T: Clone>(random: RandomSource, items: &Vec<T>) -> Option<T> {
     if ((items.len() as f64) == 0.0_f64) {
         return None;
     }
-    return Some(items[(random() * (items.len() as f64)).floor() as usize].clone());
+    return Some(
+        items[({
+            let __flight_callback = (random).clone();
+            let __flight_result = __flight_callback.lock().unwrap()();
+            __flight_result
+        } * (items.len() as f64))
+            .floor() as usize]
+            .clone(),
+    );
 }
 
 // Source: upstream/packages/math/src/randomDistributions.ts:23 (sha256:36a24aa9a5852046b5c7bd1dcaed1a6482a5f09323d9282cf142c9347305daf4)
@@ -181,10 +189,10 @@ pub fn random_weighted(random: &mut impl FnMut() -> f64, weights: &Vec<f64>) -> 
 }
 
 // Source: upstream/packages/math/src/randomDistributions.ts:202 (sha256:a1bf49861762efc4b535fda196a5a72eba76c4ff1202f37daf82690daaa03da6)
-pub fn shuffle<T: Clone>(random: &mut impl FnMut() -> f64, items: &Vec<T>) -> Vec<T> {
+pub fn shuffle<T: Clone>(random: &mut impl FnMut() -> f64, items: &mut Vec<T>) -> Vec<T> {
     let mut copy = (items).clone();
     shuffle_in_place(random, &mut copy);
-    return (copy).clone();
+    return copy;
 }
 
 // Source: upstream/packages/math/src/randomDistributions.ts:212 (sha256:fbf2fde3966c0c44d95ccd4a2218b04511672fdfc56e9c38a92b9c36e7f0fc13)

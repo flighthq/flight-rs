@@ -21,7 +21,7 @@ pub fn create_spritesheet_timeline_source(
         __flight_identity: std::sync::Arc::new(()),
         total_frames: (animation.frames.len() as f64),
         labels: vec![],
-        frame_rate: (1000.0_f64 / animation.frame_duration),
+        frame_rate: Some((1000.0_f64 / animation.frame_duration)),
         construct_frame: std::sync::Arc::new(std::sync::Mutex::new(Box::new({
             let animation = animation.clone();
             let mut bitmaps = bitmaps.clone();

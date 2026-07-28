@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 use flighthq_textshaper::{get_text_shaper_backend, measure_text};
-use flighthq_types::TextMeasureFunction;
+use flighthq_types::{TextFormat, TextMeasureFunction};
 
 // Source: upstream/packages/textlayout/src/textLayoutMeasure.ts:11 (sha256:c9787b742cfed724dbb1d937ab2b1365577b4dac7bc6328ffe7393fbf143a2bd)
 pub fn get_text_layout_measure_provider() -> Option<TextMeasureFunction> {
@@ -15,7 +15,12 @@ pub fn get_text_layout_measure_provider() -> Option<TextMeasureFunction> {
         return Some((_MEASURE_PROVIDER.as_ref().unwrap()).clone());
     }
     if (get_text_shaper_backend()).is_some() {
-        return Some(measure_text);
+        return Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: String, __flight_argument_1: TextFormat| -> f64 {
+                measure_text((__flight_argument_0).clone(), &__flight_argument_1)
+            },
+        )
+            as Box<dyn FnMut(String, TextFormat) -> f64 + Send + 'static>)));
     }
     return None;
 }

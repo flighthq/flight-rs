@@ -13,7 +13,7 @@ use flighthq_types::{Clock, ClockOptions};
 pub fn create_child_clock(parent: &mut Clock, options: Option<ClockOptions>) -> Clock {
     let mut child = create_clock(Some(((options).clone().unwrap()).clone()));
     add_clock_child(parent, &mut child);
-    return (child).clone();
+    return child;
 }
 
 // Source: upstream/packages/clock/src/createClock.ts:15 (sha256:ad5a178ea582292e1506fc5afed9cccb078120b53cbe1436fe6338d0893dfbed)

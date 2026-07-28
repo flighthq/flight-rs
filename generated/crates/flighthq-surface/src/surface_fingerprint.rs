@@ -51,7 +51,7 @@ pub fn create_surface_fingerprint(source: &Surface, grid_size: Option<f64>) -> S
     let mut cells = vec![0_u8; ((grid_size * grid_size) * 3.0_f64) as usize];
     let width = source.width;
     let height = source.height;
-    if ((width == 0.0_f64) || (height == 0.0_f64)) {
+    if (width == 0.0_f64) || (height == 0.0_f64) {
         return SurfaceFingerprint {
             __flight_identity: std::sync::Arc::new(()),
             grid_size: grid_size,
@@ -74,11 +74,11 @@ pub fn create_surface_fingerprint(source: &Surface, grid_size: Option<f64>) -> S
                     let mut count = 0.0_f64;
                     {
                         let mut y = y0;
-                        while ((y < y1) && (y < height)) {
+                        while (y < y1) && (y < height) {
                             let mut i = (((y * width) + x0) * 4.0_f64);
                             {
                                 let mut x = x0;
-                                while ((x < x1) && (x < width)) {
+                                while (x < x1) && (x < width) {
                                     sum_r += (source.data[i as usize] as f64);
                                     sum_g += (source.data[(i + 1.0_f64) as usize] as f64);
                                     sum_b += (source.data[(i + 2.0_f64) as usize] as f64);

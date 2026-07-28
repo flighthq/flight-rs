@@ -45,7 +45,7 @@ pub fn blend_mesh_geometry_morph(
         bind_pose.blended_positions[__flight_offset..__flight_offset + __flight_values.len()]
             .copy_from_slice(&__flight_values);
     };
-    if ((blended_normals).is_some() && (normals).is_some()) {
+    if ((blended_normals).is_some()) && ((normals).is_some()) {
         {
             let __flight_offset = (0.0_f64) as usize;
             let __flight_values: Vec<f32> = (normals[(0.0_f64) as usize..(floats) as usize]
@@ -58,7 +58,7 @@ pub fn blend_mesh_geometry_morph(
                 .copy_from_slice(&__flight_values);
         };
     }
-    if ((blended_tangents).is_some() && (tangents).is_some()) {
+    if ((blended_tangents).is_some()) && ((tangents).is_some()) {
         {
             let __flight_offset = (0.0_f64) as usize;
             let __flight_values: Vec<f32> = (tangents[(0.0_f64) as usize..(floats) as usize]
@@ -90,7 +90,7 @@ pub fn blend_mesh_geometry_morph(
                 weight,
                 floats,
             );
-            if ((blended_normals).is_some() && ((target.normal_deltas).clone()).is_some()) {
+            if ((blended_normals).is_some()) && (((target.normal_deltas).clone()).is_some()) {
                 accumulate_deltas(
                     blended_normals.as_mut().unwrap(),
                     target.normal_deltas.as_ref().unwrap(),
@@ -98,7 +98,7 @@ pub fn blend_mesh_geometry_morph(
                     floats,
                 );
             }
-            if ((blended_tangents).is_some() && ((target.tangent_deltas).clone()).is_some()) {
+            if ((blended_tangents).is_some()) && (((target.tangent_deltas).clone()).is_some()) {
                 accumulate_deltas(
                     blended_tangents.as_mut().unwrap(),
                     target.tangent_deltas.as_ref().unwrap(),
@@ -130,7 +130,7 @@ pub fn blend_mesh_geometry_morph(
                 geometry.vertices[((dst + position_offset) + 2.0_f64) as usize] =
                     (bind_pose.blended_positions[(s + 2.0_f64) as usize] as f64) as f32;
             }
-            if ((blended_normals).is_some() && (normal_offset >= 0.0_f64)) {
+            if ((blended_normals).is_some()) && (normal_offset >= 0.0_f64) {
                 geometry.vertices[(dst + normal_offset) as usize] =
                     (blended_normals.as_mut().unwrap()[s as usize].clone()) as f32;
                 geometry.vertices[((dst + normal_offset) + 1.0_f64) as usize] =
@@ -138,7 +138,7 @@ pub fn blend_mesh_geometry_morph(
                 geometry.vertices[((dst + normal_offset) + 2.0_f64) as usize] =
                     (blended_normals.as_mut().unwrap()[(s + 2.0_f64) as usize].clone()) as f32;
             }
-            if ((blended_tangents).is_some() && (tangent_offset >= 0.0_f64)) {
+            if ((blended_tangents).is_some()) && (tangent_offset >= 0.0_f64) {
                 geometry.vertices[(dst + tangent_offset) as usize] =
                     (blended_tangents.as_mut().unwrap()[s as usize].clone()) as f32;
                 geometry.vertices[((dst + tangent_offset) + 1.0_f64) as usize] =
@@ -173,12 +173,12 @@ pub fn capture_mesh_morph_bind_pose(geometry: &MeshGeometry) -> MeshMorphBindPos
     let tangent_offset = get_vertex_attribute_float_offset(&geometry.layout, "tangent".to_owned());
     let mut positions = vec![0.0_f32; (vertex_count * 3.0_f64) as usize];
     let mut normals = if (normal_offset >= 0.0_f64) {
-        vec![0.0_f32; (vertex_count * 3.0_f64) as usize]
+        Some(vec![0.0_f32; (vertex_count * 3.0_f64) as usize])
     } else {
         None
     };
     let mut tangents = if (tangent_offset >= 0.0_f64) {
-        vec![0.0_f32; (vertex_count * 3.0_f64) as usize]
+        Some(vec![0.0_f32; (vertex_count * 3.0_f64) as usize])
     } else {
         None
     };
@@ -198,19 +198,19 @@ pub fn capture_mesh_morph_bind_pose(geometry: &MeshGeometry) -> MeshMorphBindPos
                     as f64) as f32;
             }
             if (normals).is_some() {
-                normals[p as usize] =
+                normals.as_mut().unwrap()[p as usize] =
                     (geometry.vertices[(base + normal_offset) as usize] as f64) as f32;
-                normals[(p + 1.0_f64) as usize] =
+                normals.as_mut().unwrap()[(p + 1.0_f64) as usize] =
                     (geometry.vertices[((base + normal_offset) + 1.0_f64) as usize] as f64) as f32;
-                normals[(p + 2.0_f64) as usize] =
+                normals.as_mut().unwrap()[(p + 2.0_f64) as usize] =
                     (geometry.vertices[((base + normal_offset) + 2.0_f64) as usize] as f64) as f32;
             }
             if (tangents).is_some() {
-                tangents[p as usize] =
+                tangents.as_mut().unwrap()[p as usize] =
                     (geometry.vertices[(base + tangent_offset) as usize] as f64) as f32;
-                tangents[(p + 1.0_f64) as usize] =
+                tangents.as_mut().unwrap()[(p + 1.0_f64) as usize] =
                     (geometry.vertices[((base + tangent_offset) + 1.0_f64) as usize] as f64) as f32;
-                tangents[(p + 2.0_f64) as usize] =
+                tangents.as_mut().unwrap()[(p + 2.0_f64) as usize] =
                     (geometry.vertices[((base + tangent_offset) + 2.0_f64) as usize] as f64) as f32;
             }
             {
@@ -222,19 +222,19 @@ pub fn capture_mesh_morph_bind_pose(geometry: &MeshGeometry) -> MeshMorphBindPos
     return MeshMorphBindPose {
         __flight_identity: std::sync::Arc::new(()),
         blended_normals: if (normals).is_some() {
-            vec![0.0_f32; (vertex_count * 3.0_f64) as usize]
+            Some(vec![0.0_f32; (vertex_count * 3.0_f64) as usize])
         } else {
             None
         },
         blended_positions: vec![0.0_f32; (vertex_count * 3.0_f64) as usize],
         blended_tangents: if (tangents).is_some() {
-            vec![0.0_f32; (vertex_count * 3.0_f64) as usize]
+            Some(vec![0.0_f32; (vertex_count * 3.0_f64) as usize])
         } else {
             None
         },
-        normals: normals,
+        normals: (normals).clone(),
         positions: (positions).clone(),
-        tangents: tangents,
+        tangents: (tangents).clone(),
     };
 }
 

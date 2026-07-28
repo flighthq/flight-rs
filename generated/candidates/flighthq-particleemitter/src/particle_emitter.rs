@@ -14,7 +14,7 @@ use flighthq_geometry::{
 };
 use flighthq_node::invalidate_node_local_bounds;
 use flighthq_types::{
-    Node, PARTICLE_EMITTER_KIND as particle_emitter_kind_constant, ParticleEmitter,
+    BoundsNodeAny, Node, PARTICLE_EMITTER_KIND as particle_emitter_kind_constant, ParticleEmitter,
     ParticleEmitterData, ParticleEmitterRuntime, Rectangle, Vector2Like,
 };
 
@@ -179,7 +179,7 @@ pub fn compute_particle_emitter_local_bounds_rectangle(
 ) -> () {
     let atlas = (source.data.atlas).clone();
     let particle_count = source.data.particle_count;
-    if ((atlas).is_none() || (particle_count == 0.0_f64)) {
+    if ((atlas).is_none()) || (particle_count == 0.0_f64) {
         out.x = 0.0_f64;
         out.y = 0.0_f64;
         out.width = 0.0_f64;
@@ -195,7 +195,7 @@ pub fn compute_particle_emitter_local_bounds_rectangle(
         let mut i = 0.0_f64;
         while (i < particle_count) {
             let id = (source.data.ids[i as usize] as f64);
-            if ((id < 0.0_f64) || (id >= num_regions)) {
+            if (id < 0.0_f64) || (id >= num_regions) {
                 {
                     i += 1.0;
                     i
@@ -203,7 +203,7 @@ pub fn compute_particle_emitter_local_bounds_rectangle(
                 continue;
             }
             let region = atlas.as_ref().unwrap().regions[id as usize].clone();
-            if ((region.width <= 0.0_f64) || (region.height <= 0.0_f64)) {
+            if (region.width <= 0.0_f64) || (region.height <= 0.0_f64) {
                 {
                     i += 1.0;
                     i
@@ -265,10 +265,18 @@ pub fn compute_particle_emitter_local_bounds_rectangle(
 // Source: upstream/packages/particleemitter/src/particleEmitter.ts:198 (sha256:ee49d2e98c5b645c6dd723f40f805537f25d473924f4f4624740b26c70d7b012)
 pub fn create_particle_emitter(obj: Option<ParticleEmitter>) -> ParticleEmitter {
     return create_display_object_generic(
-        particle_emitter_kind_constant,
+        (particle_emitter_kind_constant).to_owned(),
         Some(((obj).clone().unwrap()).clone()),
-        Some(create_particle_emitter_data),
-        Some(create_particle_emitter_runtime),
+        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: Option<D>| -> D {
+                create_particle_emitter_data(Some(((__flight_argument_0).clone().unwrap()).clone()))
+            },
+        )
+            as Box<dyn FnMut(Option<D>) -> D + Send + 'static>))),
+        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: Option<R>| -> R { create_particle_emitter_runtime() },
+        )
+            as Box<dyn FnMut(Option<R>) -> R + Send + 'static>))),
     );
 }
 
@@ -304,7 +312,7 @@ pub fn create_particle_emitter_data(data: Option<ParticleEmitterData>) -> Partic
 pub fn create_particle_emitter_runtime() -> ParticleEmitterRuntime {
     let mut runtime = create_display_object_runtime(Some(((*DEFAULT_METHODS).clone()).clone()));
     runtime.local_bounds_rectangle = None;
-    return (runtime).clone();
+    return runtime;
 }
 
 // Source: upstream/packages/particleemitter/src/particleEmitter.ts:227 (sha256:d8d451c8d17568725cb656523093484ae2fec348a0aceb5c10fdd36876263e72)
@@ -318,7 +326,7 @@ pub fn get_particle_emitter_capacity(source: &ParticleEmitter) -> f64 {
 
 // Source: upstream/packages/particleemitter/src/particleEmitter.ts:237 (sha256:a98ad2fcc3f015497b346664e0001be1ae1cae16fb208464c269976e0e696ee3)
 pub fn get_particle_emitter_particle_alpha(source: &ParticleEmitter, index: f64) -> f64 {
-    if ((index < 0.0_f64) || (index >= source.data.particle_count)) {
+    if (index < 0.0_f64) || (index >= source.data.particle_count) {
         return (-1.0_f64);
     }
     return (source.data.alphas[index as usize] as f64);
@@ -326,7 +334,7 @@ pub fn get_particle_emitter_particle_alpha(source: &ParticleEmitter, index: f64)
 
 // Source: upstream/packages/particleemitter/src/particleEmitter.ts:246 (sha256:1a9c7fd18a5403f11bf48f1f3464523225d3e57d617e45a20886008405b34192)
 pub fn get_particle_emitter_particle_id(source: &ParticleEmitter, index: f64) -> f64 {
-    if ((index < 0.0_f64) || (index >= source.data.particle_count)) {
+    if (index < 0.0_f64) || (index >= source.data.particle_count) {
         return (-1.0_f64);
     }
     return (source.data.ids[index as usize] as f64);
@@ -338,7 +346,7 @@ pub fn get_particle_emitter_particle_velocity(
     source: &ParticleEmitter,
     index: f64,
 ) -> bool {
-    if ((index < 0.0_f64) || (index >= source.data.particle_count)) {
+    if (index < 0.0_f64) || (index >= source.data.particle_count) {
         return false;
     }
     let vt = (index * PARTICLE_VELOCITY_STRIDE);
@@ -355,7 +363,7 @@ pub fn get_particle_emitter_runtime(source: &ParticleEmitter) -> ParticleEmitter
 // Source: upstream/packages/particleemitter/src/particleEmitter.ts:276 (sha256:c7f267eb197bdb2f30c11fc9831fd9f3a54aef58e648688efe13b1cbdef877d4)
 pub fn remove_particle_emitter_particle(target: &mut ParticleEmitter, index: f64) -> () {
     let last = (target.data.particle_count - 1.0_f64);
-    if ((index < 0.0_f64) || (index > last)) {
+    if (index < 0.0_f64) || (index > last) {
         return;
     }
     if (index < last) {
@@ -427,7 +435,7 @@ pub fn set_particle_emitter_particle(
     rotation: f64,
     scale: f64,
 ) -> () {
-    if ((index < 0.0_f64) || (index >= target.data.particle_count)) {
+    if (index < 0.0_f64) || (index >= target.data.particle_count) {
         return;
     }
     target.data.ids[index as usize] = (id) as u16;
@@ -444,7 +452,7 @@ pub fn set_particle_emitter_particle_alpha(
     index: f64,
     alpha: f64,
 ) -> () {
-    if ((index < 0.0_f64) || (index >= target.data.particle_count)) {
+    if (index < 0.0_f64) || (index >= target.data.particle_count) {
         return;
     }
     target.data.alphas[index as usize] = (alpha) as f32;
@@ -458,7 +466,7 @@ pub fn set_particle_emitter_particle_color(
     g: f64,
     b: f64,
 ) -> () {
-    if ((index < 0.0_f64) || (index >= target.data.particle_count)) {
+    if (index < 0.0_f64) || (index >= target.data.particle_count) {
         return;
     }
     let ct = (index * PARTICLE_COLOR_STRIDE);
@@ -474,7 +482,7 @@ pub fn set_particle_emitter_particle_velocity(
     vx: f64,
     vy: f64,
 ) -> () {
-    if ((index < 0.0_f64) || (index >= target.data.particle_count)) {
+    if (index < 0.0_f64) || (index >= target.data.particle_count) {
         return;
     }
     let vt = (index * PARTICLE_VELOCITY_STRIDE);
@@ -486,5 +494,10 @@ pub fn set_particle_emitter_particle_velocity(
 static DEFAULT_METHODS: std::sync::LazyLock<ParticleEmitterRuntime> =
     std::sync::LazyLock::new(|| ParticleEmitterRuntime {
         __flight_identity: std::sync::Arc::new(()),
-        compute_local_bounds_rectangle: copy_local_bounds_rectangle,
+        compute_local_bounds_rectangle: std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |mut __flight_argument_0: Rectangle, __flight_argument_1: BoundsNodeAny| -> () {
+                copy_local_bounds_rectangle(&mut __flight_argument_0, &__flight_argument_1)
+            },
+        )
+            as Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>)),
     });

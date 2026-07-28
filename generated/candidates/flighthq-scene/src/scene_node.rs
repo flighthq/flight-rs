@@ -15,12 +15,15 @@ pub use flighthq_types::{SCENE_NODE_KIND, SceneNode, SceneNodeRuntime, SceneNode
 
 // Source: upstream/packages/scene/src/sceneNode.ts:17 (sha256:63226bd7e603e1382a282e143d894ddef46a663b327e255b2bce15010dbbd5a6)
 pub fn create_scene_node(kind: Option<Kind>, obj: Option<SceneNode>) -> SceneNode {
-    let kind = kind.unwrap_or(SCENE_NODE_KIND);
+    let kind = kind.unwrap_or((SCENE_NODE_KIND).to_owned());
     let mut node = create_node(
         (kind).clone(),
         Some(((obj).clone().unwrap()).clone()),
         Some(undefined),
-        Some(create_scene_node_runtime),
+        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: Option<R>| -> R { create_scene_node_runtime() },
+        )
+            as Box<dyn FnMut(Option<R>) -> R + Send + 'static>))),
     );
     init_appearance_trait(&mut node, Some(((obj).clone().unwrap()).clone()));
     init_transform3_d_trait(&mut node, None);
@@ -36,7 +39,7 @@ pub fn create_scene_node_runtime() -> SceneNodeRuntime {
     out.world_alpha_using_parent_appearance_id = (-1.0_f64);
     out.world_appearance_id = 0.0_f64;
     init_transform3_d_runtime_trait(&mut out);
-    return (out).clone();
+    return out;
 }
 
 // Source: upstream/packages/scene/src/sceneNode.ts:38 (sha256:79451d392d0d20a823df24637068db86a986ceca476c01d14fded4205cda79a1)

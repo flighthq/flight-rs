@@ -111,12 +111,11 @@ pub fn pack_scene_light_block(out: &mut SceneLightBlock, lights: &SceneLights) -
             }
         }
     }
-    if ((((((out.directional_count == directional_count)
-        && (out.ambient_count == ambient_count))
+    if (((((out.directional_count == directional_count) && (out.ambient_count == ambient_count))
         && (out.point_count == point_count))
         && (out.spot_count == spot_count))
         && (out.hemisphere_count == hemisphere_count))
-        && is_float32_array_equal(&out.data, &(*SCRATCH_LIGHT_DATA.lock().unwrap())))
+        && (is_float32_array_equal(&out.data, &(*SCRATCH_LIGHT_DATA.lock().unwrap())))
     {
         return;
     }
@@ -182,7 +181,7 @@ pub fn prepare_scene_render(
             };
         }
     }
-    return (prepared.list).clone();
+    return prepared.list;
 }
 
 // Source: upstream/packages/render/src/sceneRender.ts:177 (sha256:689f4451932aba0abb62e8e99552350da08f40e378876dc60d75dc9c8185cd2a)
@@ -192,11 +191,11 @@ fn collect_visible_meshes(
     world_bounds: &mut Aabb,
     out: &mut Vec<Mesh>,
 ) -> () {
-    if ((!node.enabled) || (!node.visible)) {
+    if (!node.enabled) || (!node.visible) {
         return;
     }
     let mesh = node;
-    if (((mesh.geometry).clone()).is_some() && is_mesh_visible(&mesh, frustum, world_bounds)) {
+    if (((mesh.geometry).clone()).is_some()) && (is_mesh_visible(&mesh, frustum, world_bounds)) {
         out.push(((mesh).clone()).clone());
     }
     let children = (get_node_runtime(node).children).clone();

@@ -29,16 +29,28 @@ pub fn add_movie_clip_frame_script(
     if ((clip.data.timeline).clone()).is_none() {
         return;
     }
-    add_timeline_frame_script(clip.data.timeline.as_mut().unwrap(), frame, script);
+    add_timeline_frame_script(
+        clip.data.timeline.as_mut().unwrap(),
+        &((*frame).clone()),
+        (*script).clone(),
+    );
 }
 
 // Source: upstream/packages/movieclip/src/movieClip.ts:41 (sha256:2908ac026f087f773d1f7020a2c64405e4d02ca4c7dfadbd6f97dd98e3614dae)
 pub fn create_movie_clip(obj: Option<MovieClip>) -> MovieClip {
     return create_display_object_generic(
-        movie_clip_kind_constant,
+        (movie_clip_kind_constant).to_owned(),
         Some(((obj).clone().unwrap()).clone()),
-        Some(create_movie_clip_data),
-        Some(create_movie_clip_runtime),
+        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: Option<D>| -> D {
+                create_movie_clip_data(Some(((__flight_argument_0).clone().unwrap()).clone()))
+            },
+        )
+            as Box<dyn FnMut(Option<D>) -> D + Send + 'static>))),
+        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: Option<R>| -> R { create_movie_clip_runtime() },
+        )
+            as Box<dyn FnMut(Option<R>) -> R + Send + 'static>))),
     );
 }
 
@@ -54,7 +66,7 @@ pub fn create_movie_clip_data(data: Option<MovieClipData>) -> MovieClipData {
 pub fn create_movie_clip_runtime() -> MovieClipRuntime {
     let mut out = create_display_object_runtime(None);
     out.movie_clip_signals = None;
-    return (out).clone();
+    return out;
 }
 
 // Source: upstream/packages/movieclip/src/movieClip.ts:57 (sha256:761af96bbad2e1ada29761db35e74e3edd119d9207a09f05e3ee2c83ef900c84)
@@ -101,7 +113,7 @@ pub fn get_movie_clip_frame_script(
     if ((clip.data.timeline).clone()).is_none() {
         return None;
     }
-    return get_timeline_frame_script(clip.data.timeline.as_ref().unwrap(), frame);
+    return get_timeline_frame_script(clip.data.timeline.as_ref().unwrap(), &((*frame).clone()));
 }
 
 // Source: upstream/packages/movieclip/src/movieClip.ts:90 (sha256:ffff04fd96bfb54881d7a693c5c88390a43b12c74bcb89de90c7f3a2469865a5)
@@ -136,7 +148,7 @@ pub fn goto_and_play_movie_clip(
     if ((clip.data.timeline).clone()).is_none() {
         return;
     }
-    goto_and_play_timeline(clip.data.timeline.as_mut().unwrap(), frame);
+    goto_and_play_timeline(clip.data.timeline.as_mut().unwrap(), &((*frame).clone()));
 }
 
 // Source: upstream/packages/movieclip/src/movieClip.ts:108 (sha256:8ce564ccb96a4bdde778c272780514cb4c7a40b2b0d126b28c87d872d3fc184d)
@@ -147,7 +159,7 @@ pub fn goto_and_stop_movie_clip(
     if ((clip.data.timeline).clone()).is_none() {
         return;
     }
-    goto_and_stop_timeline(clip.data.timeline.as_mut().unwrap(), frame);
+    goto_and_stop_timeline(clip.data.timeline.as_mut().unwrap(), &((*frame).clone()));
 }
 
 // Source: upstream/packages/movieclip/src/movieClip.ts:113 (sha256:70475fd2e5a10696562a7d688705f047fe4be1fd4c0e8401f010d45f06b97cd0)
@@ -187,7 +199,7 @@ pub fn remove_movie_clip_frame_script(
     if ((clip.data.timeline).clone()).is_none() {
         return;
     }
-    remove_timeline_frame_script(clip.data.timeline.as_mut().unwrap(), frame);
+    remove_timeline_frame_script(clip.data.timeline.as_mut().unwrap(), &((*frame).clone()));
 }
 
 // Source: upstream/packages/movieclip/src/movieClip.ts:140 (sha256:a50da8e6dea744b5bd03dcb5c07edc91af3ec66074f634dcf5124dd8965a9274)

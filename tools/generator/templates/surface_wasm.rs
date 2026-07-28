@@ -21,6 +21,7 @@ use wasm_bindgen::prelude::*;
 
 fn surface(data: &[u8], width: f64, height: f64) -> Surface {
     Surface {
+        __flight_identity: std::sync::Arc::new(()),
         alpha_type: "straight".to_owned(),
         compressed: None,
         data: data.to_vec(),
@@ -40,6 +41,7 @@ fn region(data: &[u8], descriptor: &[f64]) -> SurfaceRegion {
         "surface region descriptor must contain [surfaceWidth, surfaceHeight, x, y, width, height]",
     );
     SurfaceRegion {
+        __flight_identity: std::sync::Arc::new(()),
         surface: surface(data, descriptor[0], descriptor[1]),
         x: descriptor[2],
         y: descriptor[3],
@@ -50,6 +52,7 @@ fn region(data: &[u8], descriptor: &[f64]) -> SurfaceRegion {
 
 fn fingerprint(cells: &[u8], grid_size: f64) -> SurfaceFingerprint {
     SurfaceFingerprint {
+        __flight_identity: std::sync::Arc::new(()),
         cells: cells.to_vec(),
         grid_size,
     }
@@ -93,7 +96,7 @@ pub fn apply_surface_curve_wasm(
         optional_byte_channel_map(red_lut),
         optional_byte_channel_map(green_lut),
         optional_byte_channel_map(blue_lut),
-        Some(optional_byte_channel_map(alpha_lut)),
+        optional_byte_channel_map(alpha_lut),
     );
     copy_u8_output(dest_data, &dest.surface.data);
 }
@@ -267,6 +270,7 @@ pub fn convolve_surface_wasm(
     let mut owned = out.to_vec();
     let source = region(source_data, source_descriptor);
     let options = SurfaceConvolutionOptions {
+        __flight_identity: std::sync::Arc::new(()),
         bias: Some(bias),
         edge: Some(edge),
         divisor: if divisor.is_nan() {

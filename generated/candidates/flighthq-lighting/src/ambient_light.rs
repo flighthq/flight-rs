@@ -38,6 +38,6 @@ pub fn create_ambient_light(options: Option<AmbientLightOptions>) -> AmbientLigh
         __flight_identity: std::sync::Arc::new(()),
         color: (options.as_ref().and_then(|value| value.color)).unwrap_or(4294967295.0_f64),
         intensity: (options.as_ref().and_then(|value| value.intensity)).unwrap_or(1.0_f64),
-        kind: ambient_light_kind_constant,
+        kind: (ambient_light_kind_constant).to_owned(),
     }));
 }
