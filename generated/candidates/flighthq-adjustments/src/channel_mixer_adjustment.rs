@@ -9,11 +9,22 @@
 use crate::create_channel_mixer_color_matrix;
 use flighthq_types::ChannelMixerAdjustment;
 
+#[derive(Clone)]
+pub struct FlightOmitRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub matrix: Vec<f64>,
+}
+impl PartialEq for FlightOmitRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 // Source: upstream/packages/adjustments/src/channelMixerAdjustment.ts:9 (sha256:9cc9895ee668e174188dd1fa6483a16626d324d8d10b009d95cba5b40e1da4a8)
 pub fn create_channel_mixer_adjustment(
-    options: Option<ChannelMixerAdjustment>,
+    options: Option<FlightOmitRecord1>,
 ) -> ChannelMixerAdjustment {
-    let options = options.unwrap_or(ChannelMixerAdjustment {
+    let options = options.unwrap_or(FlightOmitRecord1 {
         __flight_identity: std::sync::Arc::new(()),
         matrix: ((*IDENTITY_CHANNEL_MIXER).clone()).clone(),
     });
@@ -116,11 +127,14 @@ pub fn create_channel_mixer_adjustment(
             color_matrix[__flight_index] = __flight_value;
         }
     };
-    return ChannelMixerAdjustment {
-        kind: "ChannelMixerAdjustment".to_owned(),
-        matrix: (matrix).clone(),
-        color_matrix: (color_matrix).clone(),
-        ..((options).clone()).clone()
+    return {
+        let __flight_spread_1 = options;
+        ChannelMixerAdjustment {
+            __flight_identity: std::sync::Arc::new(()),
+            kind: "ChannelMixerAdjustment".to_owned(),
+            color_matrix: (color_matrix).clone(),
+            matrix: (matrix).clone(),
+        }
     };
 }
 

@@ -29,7 +29,7 @@ fn freeze_snapshot_deep(value: crate::OpaqueHostValue) -> () {
         return;
     }
     crate::host_value::<()>("host.freeze");
-    if (array.is_array)(value) {
+    if false {
         {
             let mut index = 0.0_f64;
             while (index < crate::host_value::<f64>("host.length")) {

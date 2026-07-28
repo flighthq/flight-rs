@@ -1381,7 +1381,7 @@ fn get_input_state(source: &RichText) -> TextInputState {
             "text input is not enabled on this RichText; call enableTextInput first"
         );
     }
-    return state.as_ref().unwrap();
+    return ((state.as_ref().unwrap()).clone()).clone();
 }
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:657 (sha256:b3ebba0e62bbc63048faf9a23e621cc28707b9164f0c9fe2ce6071ffc677d87d)

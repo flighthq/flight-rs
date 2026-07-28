@@ -934,9 +934,10 @@ pub fn get_window_backend() -> WindowBackend {
     if ((*_WINDOW_BACKEND.lock().unwrap()).clone()).is_none() {
         (*_WINDOW_BACKEND.lock().unwrap()) = Some(create_web_window_backend());
     }
-    return ((*_WINDOW_BACKEND.lock().unwrap()).clone())
+    return (((*_WINDOW_BACKEND.lock().unwrap()).clone())
         .clone()
-        .unwrap();
+        .unwrap())
+    .clone();
 }
 
 // Source: upstream/packages/application/src/window.ts:458 (sha256:4b08e60197e0e3e5abd8ec276cad276041bbe2a444f6cd28e0c0fc1b179c2b66)
@@ -1381,5 +1382,5 @@ fn get_application_window_observers(
             }
         };
     }
-    return (observers).clone().unwrap();
+    return ((observers).clone().unwrap()).clone();
 }

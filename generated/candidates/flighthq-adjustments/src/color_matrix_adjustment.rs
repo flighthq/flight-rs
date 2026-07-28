@@ -37,7 +37,7 @@ pub fn get_adjustment_color_matrix(
     operation: &GetAdjustmentColorMatrixRecord2,
 ) -> Option<Vec<f64>> {
     let matrix = (operation.color_matrix).clone();
-    return if ((array.is_array)(matrix)
+    return if ((matrix).is_some()
         && ((matrix.as_ref().unwrap().len() as f64) == color_matrix_length_constant))
     {
         (matrix).clone()

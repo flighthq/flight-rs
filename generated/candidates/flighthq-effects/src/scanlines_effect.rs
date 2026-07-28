@@ -8,25 +8,42 @@
 
 use flighthq_types::ScanlinesEffect;
 
-// Source: upstream/packages/effects/src/scanlinesEffect.ts:3 (sha256:14bd9d022c429f61b5f5eeb1af6c7488c4a0dbb23850dda7c1fa7d6d0b2a7bf9)
 #[derive(Clone)]
-struct CreateScanlinesEffectRecord1 {
-    __flight_identity: std::sync::Arc<()>,
+pub struct FlightOmitRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub count: Option<f64>,
+    pub intensity: Option<f64>,
 }
-impl PartialEq for CreateScanlinesEffectRecord1 {
+impl PartialEq for FlightOmitRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-pub fn create_scanlines_effect(options: Option<ScanlinesEffect>) -> ScanlinesEffect {
-    let options = options.unwrap_or(ScanlinesEffect {
+// Source: upstream/packages/effects/src/scanlinesEffect.ts:3 (sha256:14bd9d022c429f61b5f5eeb1af6c7488c4a0dbb23850dda7c1fa7d6d0b2a7bf9)
+#[derive(Clone)]
+struct CreateScanlinesEffectRecord2 {
+    __flight_identity: std::sync::Arc<()>,
+}
+impl PartialEq for CreateScanlinesEffectRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+pub fn create_scanlines_effect(options: Option<FlightOmitRecord1>) -> ScanlinesEffect {
+    let options = options.unwrap_or(FlightOmitRecord1 {
         __flight_identity: std::sync::Arc::new(()),
         count: None,
         intensity: None,
     });
-    return ScanlinesEffect {
-        kind: "ScanlinesEffect".to_owned(),
-        ..((options).clone()).clone()
+    return {
+        let __flight_spread_1 = options;
+        ScanlinesEffect {
+            __flight_identity: std::sync::Arc::new(()),
+            kind: "ScanlinesEffect".to_owned(),
+            count: __flight_spread_1.count,
+            intensity: __flight_spread_1.intensity,
+        }
     };
 }

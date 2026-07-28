@@ -10,8 +10,10 @@ use flighthq_types::{Path, PathCommand, RectangleLike};
 
 // Source: upstream/packages/path/src/getPathBounds.ts:10 (sha256:221af710454c801852fa4eaeb795765bbdaf804e3c46c03792eff7e8f4e44caf)
 pub fn get_path_bounds(path: &Path, out: &mut RectangleLike) -> bool {
-    let mut min_x = f64::INFINITY;
-    let mut min_y = f64::INFINITY;
+    let min_x: std::sync::Arc<std::sync::Mutex<f64>> =
+        std::sync::Arc::new(std::sync::Mutex::new(f64::INFINITY));
+    let min_y: std::sync::Arc<std::sync::Mutex<f64>> =
+        std::sync::Arc::new(std::sync::Mutex::new(f64::INFINITY));
     let max_x: std::sync::Arc<std::sync::Mutex<f64>> =
         std::sync::Arc::new(std::sync::Mutex::new((-f64::INFINITY)));
     let max_y: std::sync::Arc<std::sync::Mutex<f64>> =
@@ -24,6 +26,8 @@ pub fn get_path_bounds(path: &Path, out: &mut RectangleLike) -> bool {
     > = std::sync::Arc::new(std::sync::Mutex::new(Box::new({
         let mut max_x = max_x.clone();
         let mut max_y = max_y.clone();
+        let mut min_x = min_x.clone();
+        let mut min_y = min_y.clone();
         move |px: f64, py: f64| -> () {
             if (px < (*min_x.lock().unwrap()).clone()) {
                 (*min_x.lock().unwrap()) = px;
@@ -94,7 +98,23 @@ pub fn get_path_bounds(path: &Path, out: &mut RectangleLike) -> bool {
                                 let ax = path.data[(di + 2.0_f64) as usize].clone();
                                 let ay = path.data[(di + 3.0_f64) as usize].clone();
                                 di += 4.0_f64;
-                                expand_quadratic_bounds(x, y, cx, cy, ax, ay, &mut expand);
+                                expand_quadratic_bounds(
+                                    x,
+                                    y,
+                                    cx,
+                                    cy,
+                                    ax,
+                                    ay,
+                                    &mut |__flight_callback_argument_0: f64,
+                                          __flight_callback_argument_1: f64|
+                                     -> () {
+                                        let __flight_callback = (expand).clone();
+                                        __flight_callback.lock().unwrap()(
+                                            __flight_callback_argument_0,
+                                            __flight_callback_argument_1,
+                                        )
+                                    },
+                                );
                                 x = ax;
                                 y = ay;
                             } else {
@@ -131,17 +151,17 @@ pub fn get_path_bounds(path: &Path, out: &mut RectangleLike) -> bool {
             };
         }
     }
-    if ((*min_x.lock().unwrap()) == f64::INFINITY) {
+    if ((*min_x.lock().unwrap()).clone() == f64::INFINITY) {
         out.x = 0.0_f64;
         out.y = 0.0_f64;
         out.width = 0.0_f64;
         out.height = 0.0_f64;
         return false;
     }
-    out.x = (*min_x.lock().unwrap());
-    out.y = (*min_y.lock().unwrap());
-    out.width = ((*max_x.lock().unwrap()).clone() - (*min_x.lock().unwrap()));
-    out.height = ((*max_y.lock().unwrap()).clone() - (*min_y.lock().unwrap()));
+    out.x = (*min_x.lock().unwrap()).clone();
+    out.y = (*min_y.lock().unwrap()).clone();
+    out.width = ((*max_x.lock().unwrap()).clone() - (*min_x.lock().unwrap()).clone());
+    out.height = ((*max_y.lock().unwrap()).clone() - (*min_y.lock().unwrap()).clone());
     return true;
 }
 

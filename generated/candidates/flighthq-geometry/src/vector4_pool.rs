@@ -32,7 +32,7 @@ pub fn acquire_vector4() -> Vector4 {
     } else {
         v = Some(create_vector4(None, None, None, None));
     }
-    return (v).clone().unwrap();
+    return ((v).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/geometry/src/vector4Pool.ts:26 (sha256:86eab05ee014e148c7c62c525d86678270380b8b833618fa745b3f4343648e24)

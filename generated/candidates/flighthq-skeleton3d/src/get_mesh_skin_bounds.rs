@@ -44,22 +44,22 @@ pub fn get_mesh_skin_conservative_bounds(
             let py = (bind_pose.positions[(p + 1.0_f64) as usize] as f64);
             let pz = (bind_pose.positions[(p + 2.0_f64) as usize] as f64);
             if (px < rest_min_x) {
-                rest_min_x = ((px).clone()) as f32;
+                rest_min_x = px;
             }
             if (py < rest_min_y) {
-                rest_min_y = ((py).clone()) as f32;
+                rest_min_y = py;
             }
             if (pz < rest_min_z) {
-                rest_min_z = ((pz).clone()) as f32;
+                rest_min_z = pz;
             }
             if (px > rest_max_x) {
-                rest_max_x = ((px).clone()) as f32;
+                rest_max_x = px;
             }
             if (py > rest_max_y) {
-                rest_max_y = ((py).clone()) as f32;
+                rest_max_y = py;
             }
             if (pz > rest_max_z) {
-                rest_max_z = ((pz).clone()) as f32;
+                rest_max_z = pz;
             }
             {
                 v += 1.0;
@@ -94,7 +94,7 @@ pub fn get_mesh_skin_conservative_bounds(
     {
         let mut j = 0.0_f64;
         while (j < joint_count) {
-            if (!(referenced[j as usize] as f64)) {
+            if (referenced[j as usize] as f64) == 0.0_f64 {
                 {
                     j += 1.0;
                     j
@@ -192,22 +192,22 @@ pub fn get_mesh_skin_exact_bounds(
             let py = (bind_pose.skinned_positions[(p + 1.0_f64) as usize] as f64);
             let pz = (bind_pose.skinned_positions[(p + 2.0_f64) as usize] as f64);
             if (px < min_x) {
-                min_x = ((px).clone()) as f32;
+                min_x = px;
             }
             if (py < min_y) {
-                min_y = ((py).clone()) as f32;
+                min_y = py;
             }
             if (pz < min_z) {
-                min_z = ((pz).clone()) as f32;
+                min_z = pz;
             }
             if (px > max_x) {
-                max_x = ((px).clone()) as f32;
+                max_x = px;
             }
             if (py > max_y) {
-                max_y = ((py).clone()) as f32;
+                max_y = py;
             }
             if (pz > max_z) {
-                max_z = ((pz).clone()) as f32;
+                max_z = pz;
             }
             {
                 v += 1.0;

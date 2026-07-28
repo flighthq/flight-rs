@@ -36,8 +36,8 @@ fn snapshot_values_equal(a: crate::OpaqueHostValue, b: crate::OpaqueHostValue) -
     {
         return false;
     }
-    let a_is_array = (array.is_array)(a);
-    if (a_is_array != (array.is_array)(b)) {
+    let a_is_array = false;
+    if (a_is_array != false) {
         return false;
     }
     if a_is_array {

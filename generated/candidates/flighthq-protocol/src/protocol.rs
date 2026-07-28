@@ -270,7 +270,7 @@ pub fn get_protocol_backend() -> ProtocolBackend {
     if ((*_BACKEND.lock().unwrap()).clone()).is_none() {
         (*_BACKEND.lock().unwrap()) = Some(create_web_protocol_backend());
     }
-    return ((*_BACKEND.lock().unwrap()).clone()).clone().unwrap();
+    return (((*_BACKEND.lock().unwrap()).clone()).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/protocol/src/protocol.ts:141 (sha256:0762b424a8b78b6e5cd68f89e4140b5e582878100a05f539bc7e755f8957df5f)

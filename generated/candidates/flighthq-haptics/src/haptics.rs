@@ -125,7 +125,7 @@ pub fn get_haptics_backend() -> HapticsBackend {
     if ((*_BACKEND.lock().unwrap()).clone()).is_none() {
         (*_BACKEND.lock().unwrap()) = Some(create_web_haptics_backend());
     }
-    return ((*_BACKEND.lock().unwrap()).clone()).clone().unwrap();
+    return (((*_BACKEND.lock().unwrap()).clone()).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/haptics/src/haptics.ts:66 (sha256:7a1382de8efb35fdedeb9ddb3e3b3d89f503fd19a24e25f7e234d828f31590e3)

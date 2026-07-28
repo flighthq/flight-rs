@@ -31,7 +31,7 @@ pub fn acquire_matrix3() -> Matrix3 {
             None, None, None, None, None, None, None, None, None,
         ));
     }
-    return (m).clone().unwrap();
+    return ((m).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/geometry/src/matrix3Pool.ts:23 (sha256:4ed143326344ac48c209876b7ad6b9f5243c92a41142f25091d8fad8e88cf00a)

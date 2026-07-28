@@ -371,7 +371,7 @@ fn ensure_stage_runtime(source: &mut Stage) -> StageRuntime {
         "entity runtime storage requires the generated native entity trait"
     ));
     if (existing).is_some() {
-        return existing.as_ref().unwrap();
+        return ((existing.as_ref().unwrap()).clone()).clone();
     }
     let runtime = create_stage_runtime();
     ();

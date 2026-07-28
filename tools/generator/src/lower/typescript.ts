@@ -988,6 +988,16 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
       return { arguments: [utilityArgument], kind: 'named', name: 'FlightPartial' };
     }
     if (name === 'Partial' && utilityArgument) return utilityArgument;
+    if (name === 'Omit' && utilityArgument && node.typeArguments?.[1]) {
+      const omitted = literalStringTypeValues(node.typeArguments[1]);
+      if (omitted.length > 0) {
+        return {
+          arguments: [utilityArgument],
+          kind: 'named',
+          name: `FlightOmit:${JSON.stringify(omitted)}`,
+        };
+      }
+    }
     if (['MethodsOf', 'Omit', 'PartialNode', 'Pick'].includes(name) && arguments_[0]) {
       return arguments_[0];
     }
@@ -1323,6 +1333,12 @@ function literalTypeValue(node: ts.TypeNode): boolean | number | string | undefi
     return -Number(node.literal.operand.text);
   }
   return undefined;
+}
+
+function literalStringTypeValues(node: ts.TypeNode): string[] {
+  if (ts.isParenthesizedTypeNode(node)) return literalStringTypeValues(node.type);
+  if (ts.isUnionTypeNode(node)) return node.types.flatMap(literalStringTypeValues);
+  return ts.isLiteralTypeNode(node) && ts.isStringLiteral(node.literal) ? [node.literal.text] : [];
 }
 
 function commonType(types: IrType[]): IrType {

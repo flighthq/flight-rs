@@ -8,27 +8,44 @@
 
 use flighthq_types::ChromaticAberrationEffect;
 
+#[derive(Clone)]
+pub struct FlightOmitRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub intensity: Option<f64>,
+    pub radial: Option<bool>,
+}
+impl PartialEq for FlightOmitRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 // Source: upstream/packages/effects/src/chromaticAberrationEffect.ts:3 (sha256:456450d4b5d8fd416d14fc8ec9a8ec513ca50ec885dd193183d640ea2b163629)
 #[derive(Clone)]
-struct CreateChromaticAberrationEffectRecord1 {
+struct CreateChromaticAberrationEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateChromaticAberrationEffectRecord1 {
+impl PartialEq for CreateChromaticAberrationEffectRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 pub fn create_chromatic_aberration_effect(
-    options: Option<ChromaticAberrationEffect>,
+    options: Option<FlightOmitRecord1>,
 ) -> ChromaticAberrationEffect {
-    let options = options.unwrap_or(ChromaticAberrationEffect {
+    let options = options.unwrap_or(FlightOmitRecord1 {
         __flight_identity: std::sync::Arc::new(()),
         intensity: None,
         radial: None,
     });
-    return ChromaticAberrationEffect {
-        kind: "ChromaticAberrationEffect".to_owned(),
-        ..((options).clone()).clone()
+    return {
+        let __flight_spread_1 = options;
+        ChromaticAberrationEffect {
+            __flight_identity: std::sync::Arc::new(()),
+            kind: "ChromaticAberrationEffect".to_owned(),
+            intensity: __flight_spread_1.intensity,
+            radial: __flight_spread_1.radial,
+        }
     };
 }

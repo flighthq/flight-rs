@@ -7,23 +7,35 @@
 #![allow(unused_parens)]
 
 use crate::sample_color_lut;
-use flighthq_types::{ColorTransformFunction, LookupTableGradeAdjustment};
+use flighthq_types::{ColorLut, ColorTransformFunction, LookupTableGradeAdjustment};
+
+#[derive(Clone)]
+pub struct FlightOmitRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub lut: Option<ColorLut>,
+    pub strength: Option<f64>,
+}
+impl PartialEq for FlightOmitRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/adjustments/src/lookupTableGradeAdjustment.ts:10 (sha256:fecafa0e20c0bdf19d25cb014e6a956a309fcfe291f5ef451bf28f11cc1710a8)
 #[derive(Clone)]
-struct CreateLookupTableGradeAdjustmentRecord1 {
+struct CreateLookupTableGradeAdjustmentRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateLookupTableGradeAdjustmentRecord1 {
+impl PartialEq for CreateLookupTableGradeAdjustmentRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 pub fn create_lookup_table_grade_adjustment(
-    options: Option<LookupTableGradeAdjustment>,
+    options: Option<FlightOmitRecord1>,
 ) -> LookupTableGradeAdjustment {
-    let options = options.unwrap_or(LookupTableGradeAdjustment {
+    let options = options.unwrap_or(FlightOmitRecord1 {
         __flight_identity: std::sync::Arc::new(()),
         lut: None,
         strength: None,
@@ -92,9 +104,14 @@ pub fn create_lookup_table_grade_adjustment(
             };
         }) as Box<dyn FnMut(Vec<f64>, f64, f64, f64) -> () + Send + 'static>,
     ));
-    return LookupTableGradeAdjustment {
-        kind: "LookupTableGradeAdjustment".to_owned(),
-        transform: (transform).clone(),
-        ..((options).clone()).clone()
+    return {
+        let __flight_spread_1 = options;
+        LookupTableGradeAdjustment {
+            __flight_identity: std::sync::Arc::new(()),
+            kind: "LookupTableGradeAdjustment".to_owned(),
+            transform: (transform).clone(),
+            lut: (__flight_spread_1.lut).clone(),
+            strength: __flight_spread_1.strength,
+        }
     };
 }

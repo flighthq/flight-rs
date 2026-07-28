@@ -60,7 +60,7 @@ pub fn decimate_path(
         {
             let mut i = 0.0_f64;
             while (i < last) {
-                if (!(keep[i as usize] as f64)) {
+                if (keep[i as usize] as f64) == 0.0_f64 {
                     {
                         i += 1.0;
                         i

@@ -293,7 +293,7 @@ pub fn get_soft_keyboard_backend() -> SoftKeyboardBackend {
     if ((*_BACKEND.lock().unwrap()).clone()).is_none() {
         (*_BACKEND.lock().unwrap()) = Some(create_web_soft_keyboard_backend());
     }
-    return ((*_BACKEND.lock().unwrap()).clone()).clone().unwrap();
+    return (((*_BACKEND.lock().unwrap()).clone()).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/keyboard/src/keyboard.ts:159 (sha256:f1a1656832cbf57286e7298285927d7987837003f8ecb14a60fac217222f6f87)

@@ -287,7 +287,7 @@ pub fn get_lifecycle_backend() -> LifecycleBackend {
     if ((*_BACKEND.lock().unwrap()).clone()).is_none() {
         (*_BACKEND.lock().unwrap()) = Some(create_web_lifecycle_backend());
     }
-    return ((*_BACKEND.lock().unwrap()).clone()).clone().unwrap();
+    return (((*_BACKEND.lock().unwrap()).clone()).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/lifecycle/src/lifecycle.ts:204 (sha256:d882d858252044c15716ada8699c25e7e235e8cc2d5f117c590718ab3639247f)

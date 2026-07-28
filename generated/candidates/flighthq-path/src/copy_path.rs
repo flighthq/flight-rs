@@ -54,5 +54,5 @@ pub fn copy_path(source: &Path, mut out: Option<Path>) -> Path {
         }
         out.as_mut().unwrap().winding = (source.winding).clone();
     }
-    return out.as_mut().unwrap();
+    return ((out.as_mut().unwrap()).clone()).clone();
 }

@@ -60,7 +60,7 @@ pub fn acquire_spritesheet_player() -> SpritesheetPlayer {
         p.as_mut().unwrap().paused = false;
         p.as_mut().unwrap().queue.clear();
         p.as_mut().unwrap().speed = 1.0_f64;
-        return (p).clone().unwrap();
+        return ((p).clone().unwrap()).clone();
     }
     return create_spritesheet_player(None);
 }
@@ -272,7 +272,7 @@ fn get_cumulative_durations(animation: &SpritesheetAnimation) -> Vec<f64> {
         .find(|(key, _)| key == &(*animation).clone())
         .map(|(_, value)| value.clone());
     if (cached).is_some() {
-        return cached.as_ref().unwrap();
+        return ((cached.as_ref().unwrap()).clone()).clone();
     }
     let frame_duration = animation.frame_duration;
     let frame_durations = (animation.frame_durations).clone();

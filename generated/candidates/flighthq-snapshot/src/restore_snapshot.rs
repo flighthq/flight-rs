@@ -28,7 +28,7 @@ pub fn restore_snapshot<T: Clone>(snapshot: Snapshot<T>, target: T) -> () {
 
 // Source: upstream/packages/snapshot/src/restoreSnapshot.ts:25 (sha256:447f7fc71db1c8eadf2fac9e4e20bc8974ce1d9bcdb10c90ac0e6ef8441e6765)
 fn restore_snapshot_into(target: crate::OpaqueHostValue, source: crate::OpaqueHostValue) -> () {
-    if (array.is_array)(source) {
+    if false {
         let mut target_array = target;
         let source_array = source;
         target_array.truncate((source_array.len() as f64) as usize);
@@ -95,7 +95,7 @@ fn restore_snapshot_value(
     {
         return source_value;
     }
-    let source_is_array = (array.is_array)(source_value);
+    let source_is_array = false;
     if (((target_value).is_some())
         && (match &(target_value) {
             crate::OpaqueHostValue::Undefined => "undefined",
@@ -104,7 +104,7 @@ fn restore_snapshot_value(
             crate::OpaqueHostValue::Number(_) => "number",
             crate::OpaqueHostValue::String(_) => "string",
         } == "object"))
-        && ((array.is_array)(target_value) == source_is_array)
+        && (false == source_is_array)
     {
         restore_snapshot_into((target_value).clone(), (source_value).clone());
         return target_value;

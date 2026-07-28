@@ -21,21 +21,38 @@ fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
 }
 
-// Source: upstream/packages/adjustments/src/colorGradeAdjustment.ts:9 (sha256:f8e6162f7dd7cca9b62f96e74d3925cc4e1e81bb8e378418ba53b91482587f1b)
 #[derive(Clone)]
-struct CreateColorGradeAdjustmentRecord1 {
-    __flight_identity: std::sync::Arc<()>,
+pub struct FlightOmitRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub exposure: Option<f64>,
+    pub brightness: Option<f64>,
+    pub contrast: Option<f64>,
+    pub saturation: Option<f64>,
+    pub temperature: Option<f64>,
+    pub tint: Option<f64>,
+    pub lift: Option<f64>,
+    pub gamma: Option<f64>,
+    pub gain: Option<f64>,
 }
-impl PartialEq for CreateColorGradeAdjustmentRecord1 {
+impl PartialEq for FlightOmitRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-pub fn create_color_grade_adjustment(
-    options: Option<ColorGradeAdjustment>,
-) -> ColorGradeAdjustment {
-    let options = options.unwrap_or(ColorGradeAdjustment {
+// Source: upstream/packages/adjustments/src/colorGradeAdjustment.ts:9 (sha256:f8e6162f7dd7cca9b62f96e74d3925cc4e1e81bb8e378418ba53b91482587f1b)
+#[derive(Clone)]
+struct CreateColorGradeAdjustmentRecord2 {
+    __flight_identity: std::sync::Arc<()>,
+}
+impl PartialEq for CreateColorGradeAdjustmentRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+pub fn create_color_grade_adjustment(options: Option<FlightOmitRecord1>) -> ColorGradeAdjustment {
+    let options = options.unwrap_or(FlightOmitRecord1 {
         __flight_identity: std::sync::Arc::new(()),
         exposure: None,
         brightness: None,
@@ -119,10 +136,22 @@ pub fn create_color_grade_adjustment(
             }
         })
             as Box<dyn FnMut(Vec<f64>, f64, f64, f64) -> () + Send + 'static>));
-    return ColorGradeAdjustment {
-        kind: "ColorGradeAdjustment".to_owned(),
-        transform: (transform).clone(),
-        ..((options).clone()).clone()
+    return {
+        let __flight_spread_1 = options;
+        ColorGradeAdjustment {
+            __flight_identity: std::sync::Arc::new(()),
+            kind: "ColorGradeAdjustment".to_owned(),
+            transform: (transform).clone(),
+            exposure: __flight_spread_1.exposure,
+            brightness: __flight_spread_1.brightness,
+            contrast: __flight_spread_1.contrast,
+            saturation: __flight_spread_1.saturation,
+            temperature: __flight_spread_1.temperature,
+            tint: __flight_spread_1.tint,
+            lift: __flight_spread_1.lift,
+            gamma: __flight_spread_1.gamma,
+            gain: __flight_spread_1.gain,
+        }
     };
 }
 

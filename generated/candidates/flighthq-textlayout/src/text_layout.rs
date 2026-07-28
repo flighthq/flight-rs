@@ -638,7 +638,15 @@ fn build_groups(
                         &(*current_format.lock().unwrap()),
                         idx,
                         range_end,
-                        &mut measure,
+                        &mut |__flight_callback_argument_0: String,
+                              __flight_callback_argument_1: TextFormat|
+                         -> f64 {
+                            let __flight_callback = (measure).clone();
+                            __flight_callback.lock().unwrap()(
+                                __flight_callback_argument_0,
+                                __flight_callback_argument_1,
+                            )
+                        },
                         Some(
                             ((*offset_x.lock().unwrap()).clone() + {
                                 let __flight_callback = (base_x).clone();
@@ -737,7 +745,15 @@ fn build_groups(
                         &(*current_format.lock().unwrap()),
                         idx,
                         range_end,
-                        &mut measure,
+                        &mut |__flight_callback_argument_0: String,
+                              __flight_callback_argument_1: TextFormat|
+                         -> f64 {
+                            let __flight_callback = (measure).clone();
+                            __flight_callback.lock().unwrap()(
+                                __flight_callback_argument_0,
+                                __flight_callback_argument_1,
+                            )
+                        },
                         Some(
                             (((*offset_x.lock().unwrap()).clone() + {
                                 let __flight_callback = (base_x).clone();
@@ -798,7 +814,15 @@ fn build_groups(
                     &(*current_format.lock().unwrap()),
                     remaining,
                     end,
-                    &mut measure,
+                    &mut |__flight_callback_argument_0: String,
+                          __flight_callback_argument_1: TextFormat|
+                     -> f64 {
+                        let __flight_callback = (measure).clone();
+                        __flight_callback.lock().unwrap()(
+                            __flight_callback_argument_0,
+                            __flight_callback_argument_1,
+                        )
+                    },
                     Some(
                         ((*offset_x.lock().unwrap()).clone() + {
                             let __flight_callback = (base_x).clone();
@@ -994,7 +1018,9 @@ fn build_groups(
                             None
                         },
                     );
-                    if true {
+                    if ((trim_target && ((trim_target.positions.len() as f64) > 0.0_f64))
+                        && (trim_target.line_index == (*line_index.lock().unwrap()).clone()))
+                    {
                         let trailing_w = trim_target.positions
                             [((trim_target.positions.len() as f64) - 1.0_f64) as usize]
                             .clone();

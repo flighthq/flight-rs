@@ -8,21 +8,34 @@
 
 use flighthq_types::{ColorTransformFunction, HueSaturationAdjustment};
 
+#[derive(Clone)]
+pub struct FlightOmitRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub hue: Option<f64>,
+    pub saturation: Option<f64>,
+    pub lightness: Option<f64>,
+}
+impl PartialEq for FlightOmitRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 // Source: upstream/packages/adjustments/src/hueSaturationAdjustment.ts:6 (sha256:dcd80a35c51eb9dbe51668399d612c676ac8470c7d2fc9d62f3d682c2d443f13)
 #[derive(Clone)]
-struct CreateHueSaturationAdjustmentRecord1 {
+struct CreateHueSaturationAdjustmentRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateHueSaturationAdjustmentRecord1 {
+impl PartialEq for CreateHueSaturationAdjustmentRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 pub fn create_hue_saturation_adjustment(
-    options: Option<HueSaturationAdjustment>,
+    options: Option<FlightOmitRecord1>,
 ) -> HueSaturationAdjustment {
-    let options = options.unwrap_or(HueSaturationAdjustment {
+    let options = options.unwrap_or(FlightOmitRecord1 {
         __flight_identity: std::sync::Arc::new(()),
         hue: None,
         saturation: None,
@@ -124,10 +137,16 @@ pub fn create_hue_saturation_adjustment(
             };
         }) as Box<dyn FnMut(Vec<f64>, f64, f64, f64) -> () + Send + 'static>,
     ));
-    return HueSaturationAdjustment {
-        kind: "HueSaturationAdjustment".to_owned(),
-        transform: (transform).clone(),
-        ..((options).clone()).clone()
+    return {
+        let __flight_spread_1 = options;
+        HueSaturationAdjustment {
+            __flight_identity: std::sync::Arc::new(()),
+            kind: "HueSaturationAdjustment".to_owned(),
+            transform: (transform).clone(),
+            hue: __flight_spread_1.hue,
+            saturation: __flight_spread_1.saturation,
+            lightness: __flight_spread_1.lightness,
+        }
     };
 }
 

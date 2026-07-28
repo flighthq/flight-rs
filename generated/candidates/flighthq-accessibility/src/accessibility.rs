@@ -222,7 +222,7 @@ pub fn get_accessibility_backend() -> AccessibilityBackend {
     if ((*_BACKEND.lock().unwrap()).clone()).is_none() {
         (*_BACKEND.lock().unwrap()) = Some(create_web_accessibility_backend(None));
     }
-    return ((*_BACKEND.lock().unwrap()).clone()).clone().unwrap();
+    return (((*_BACKEND.lock().unwrap()).clone()).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/accessibility/src/accessibility.ts:101 (sha256:280784fc9eb942ee9607ea7b7f52ce5f4a22a980ff6afaf16ef800a210883561)
@@ -401,7 +401,7 @@ fn _get_accessibility_live_region(
         };
         crate::host_value::<()>("host.appendChild");
     }
-    return (region).clone().unwrap();
+    return ((region).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/accessibility/src/accessibility.ts:199 (sha256:480632ebc019a08ca06de4543ce0b6940dd580b5ab7a289fe465adda12203b8d)

@@ -69,7 +69,7 @@ pub fn detect_texture_atlas_format(content: String) -> Option<TextureAtlasFormat
                 crate::OpaqueHostValue::Number(_) => "number",
                 crate::OpaqueHostValue::String(_) => "string",
             } != "object"))
-            || ((array.is_array)(raw))
+            || (false)
         {
             return None;
         }
@@ -112,7 +112,7 @@ pub fn detect_texture_atlas_format(content: String) -> Option<TextureAtlasFormat
 
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasDetect.ts:53 (sha256:78e34bcf6415019109599e89407bc45b1a2d149171b3aeefbe5efad287ddcf01)
 fn first_frame(frames: crate::OpaqueHostValue) -> crate::OpaqueHostValue {
-    if (array.is_array)(frames) {
+    if false {
         return crate::host_value::<crate::OpaqueHostValue>("host.index");
     }
     if ((frames).is_some())

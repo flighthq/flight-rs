@@ -132,7 +132,7 @@ const MAX_SUBDIVISION_DEPTH: f64 = 16.0_f64;
 // Source: upstream/packages/path/src/flattenPath.ts:97 (sha256:a483ae92fe8e2d3b6fa3a032c474e38acf538d41bdb550a9b323d4eaad406445)
 fn ensure_contour(contours: &mut Vec<Vec<f64>>, contour: Option<Vec<f64>>) -> Vec<f64> {
     if (contour).is_some() {
-        return contour.as_ref().unwrap();
+        return ((contour.as_ref().unwrap()).clone()).clone();
     }
     let started = vec![0.0_f64, 0.0_f64];
     contours.push(((started).clone()).clone());

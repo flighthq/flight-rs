@@ -117,6 +117,11 @@ describe('Rust emission', () => {
         export interface PositionedValue extends BasePosition {
           label: string;
         }
+        export interface AdjustmentOptions {
+          kind: string;
+          colorMatrix: readonly number[];
+          intensity?: number;
+        }
         function measureString(value: string): number {
           return value.length;
         }
@@ -137,6 +142,11 @@ describe('Rust emission', () => {
         }
         export function readPositionedValue(value: Readonly<PositionedValue>): number {
           return readBasePosition(value);
+        }
+        export function createAdjustment(
+          options: Readonly<Omit<AdjustmentOptions, 'kind' | 'colorMatrix'>> = {},
+        ): AdjustmentOptions {
+          return { kind: 'test', ...options, colorMatrix: [1] };
         }
         export function collectWeights(values: ReadonlyArray<Readonly<Weighted>>): Float32Array {
           const total = values.reduce((sum, value) => sum + (value.weight ?? 1), 0);
@@ -210,6 +220,38 @@ describe('Rust emission', () => {
         export function somePositive(values: readonly number[]): boolean {
           return values.some(isPositive);
         }
+        export function serializeWeights(values: readonly Weighted[]): string {
+          return JSON.stringify(values);
+        }
+        export function hasValues(values: readonly number[] | null): boolean {
+          return Array.isArray(values);
+        }
+        function callPair(callback: (x: number, y: number) => void): void {
+          callback(1, 2);
+        }
+        export function capturedMinimum(): number {
+          let minimum = Infinity;
+          const expand = (x: number, _y: number) => {
+            if (x < minimum) minimum = x;
+          };
+          callPair(expand);
+          return minimum;
+        }
+        export function falseByte(values: Uint8Array, index: number): boolean {
+          return !values[index];
+        }
+        export function ownOptional(values: number[] | null): number[] {
+          if (values !== null) return values;
+          return [];
+        }
+        export function clearNarrowed(): number[] | null {
+          let values: number[] | null = [];
+          if (values !== null) values = null;
+          return values;
+        }
+        export function nonEmpty(values: number[] | null): number[] | null {
+          return values && values.length > 0 ? values : null;
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -224,7 +266,7 @@ describe('Rust emission', () => {
 
     expect(lowered.diagnostics).toEqual([]);
     expect(output).toContain('pub struct Weighted');
-    expect(output).toContain('pub struct NestedCallbacksRecord2');
+    expect(output).toContain('pub struct NestedCallbacksRecord');
     expect(output).toContain('.iter().cloned().fold');
     expect(output).toContain('Vec<f32>');
     expect(output).toContain('Some(Bounds {');
@@ -246,8 +288,12 @@ describe('Rust emission', () => {
     expect(output).toContain('measure: std::sync::Arc::new(std::sync::Mutex::new(Box::new(');
     expect(output).toContain('count: Some(2.0_f64)');
     expect(output).toContain('name: None');
+    expect(output).toContain('pub struct FlightOmitRecord2');
+    expect(output).toContain('options: Option<FlightOmitRecord2>');
     expect(output).toContain('.iter().cloned().all(|value: Option<f64>| -> bool');
     expect(output).toContain('.iter().cloned().any(|__flight_item| is_positive(__flight_item))');
+    expect(output).toContain('format!("[{}]", __flight_items.join(","))');
+    expect(output).toContain('(values).is_some()');
     expect(output).toContain('&BasePosition {');
     expect(output).toContain('x: (value).x');
 
@@ -342,6 +388,57 @@ describe('Rust emission', () => {
     writeFileSync(
       path.join(fixture, 'lib.rs'),
       'pub fn imported_function(value: f64) -> f64 { value }\nmod generated;\n',
+    );
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', 'lib.rs'], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('types host-bound Promise callbacks while keeping the native placeholder inert', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/power/src/promise.ts',
+      `
+        interface Manager {
+          level: number;
+        }
+        export function observeManager(promise: Promise<Manager> | null): void {
+          if (promise === null) return;
+          promise
+            .then((manager) => {
+              void manager.level;
+            })
+            .catch(() => {});
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/power', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/power/src/promise.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('move |manager: Manager| -> ()');
+    expect(output).toContain('crate::Promise::<()>::default()');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
+    writeFileSync(path.join(fixture, 'generated.rs'), output);
+    writeFileSync(
+      path.join(fixture, 'lib.rs'),
+      [
+        'pub struct Promise<T> { marker: std::marker::PhantomData<fn() -> T> }',
+        'impl<T> Clone for Promise<T> { fn clone(&self) -> Self { Self { marker: std::marker::PhantomData } } }',
+        'impl<T> Default for Promise<T> { fn default() -> Self { Self { marker: std::marker::PhantomData } } }',
+        'mod generated;',
+        '',
+      ].join('\n'),
     );
     expect(() =>
       execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', 'lib.rs'], {

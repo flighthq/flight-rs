@@ -32,7 +32,7 @@ pub fn acquire_quaternion() -> Quaternion {
     } else {
         q = Some(create_quaternion(None, None, None, None));
     }
-    return (q).clone().unwrap();
+    return ((q).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/geometry/src/quaternionPool.ts:26 (sha256:42c2235c62fd6902d6e94635533f3d260398d635a72dc455c61b8f6ef19f259c)

@@ -80,7 +80,7 @@ fn decode_subpaths(path: &Path) -> Vec<Subpath> {
                     (*subpaths.lock().unwrap())
                         .push((((*current.lock().unwrap()).clone()).clone().unwrap()).clone());
                 }
-                return ((*current.lock().unwrap()).clone()).clone().unwrap();
+                return (((*current.lock().unwrap()).clone()).clone().unwrap()).clone();
             }
         }) as Box<dyn FnMut() -> Subpath + Send + 'static>),
     )));

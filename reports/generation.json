@@ -77,7 +77,7 @@
           ],
           "declarations": 20,
           "module": "accessibility",
-          "outputSha256": "sha256:5ae466bf89db3625bf0bca5f917e524ba701c74f615f2384629204655c3dd84f",
+          "outputSha256": "sha256:d2a16288cbfeeabdc0fd5eb702a63b955f1a9fc504a007d21095a8a8d0312cfd",
           "source": "upstream/packages/accessibility/src/accessibility.ts",
           "usesOpaqueHostValues": true
         },
@@ -120,39 +120,9 @@
       "candidate": {
         "compileDiagnostics": [
           {
-            "code": "E0425",
-            "message": "cannot find value `json` in this scope",
-            "source": "generated/candidates/flighthq-adjustments/src/color_lut_cache.rs"
-          },
-          {
-            "code": "E0425",
-            "message": "cannot find value `array` in this scope",
-            "source": "generated/candidates/flighthq-adjustments/src/color_matrix_adjustment.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing fields `color_matrix` and `kind` in initializer of `BrightnessContrastAdjustment`",
-            "source": "generated/candidates/flighthq-adjustments/src/brightness_contrast_adjustment.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing fields `color_matrix` and `kind` in initializer of `ChannelMixerAdjustment`",
-            "source": "generated/candidates/flighthq-adjustments/src/channel_mixer_adjustment.rs"
-          },
-          {
             "code": "E0308",
             "message": "mismatched types",
             "source": "generated/candidates/flighthq-adjustments/src/color_adjustment_resolution.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing fields `color_matrix` and `kind` in initializer of `ColorBlindSimulationAdjustment`",
-            "source": "generated/candidates/flighthq-adjustments/src/color_blind_simulation_adjustment.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing fields `kind` and `transform` in initializer of `ColorGradeAdjustment`",
-            "source": "generated/candidates/flighthq-adjustments/src/color_grade_adjustment.rs"
           },
           {
             "code": "E0609",
@@ -178,41 +148,6 @@
             "code": "E0308",
             "message": "mismatched types",
             "source": "generated/candidates/flighthq-adjustments/src/color_matrix_adjustment.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing fields `color_matrix` and `kind` in initializer of `ExposureAdjustment`",
-            "source": "generated/candidates/flighthq-adjustments/src/exposure_adjustment.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing fields `color_matrix` and `kind` in initializer of `GrayscaleAdjustment`",
-            "source": "generated/candidates/flighthq-adjustments/src/grayscale_adjustment.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing fields `kind` and `transform` in initializer of `HueSaturationAdjustment`",
-            "source": "generated/candidates/flighthq-adjustments/src/hue_saturation_adjustment.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing fields `color_matrix` and `kind` in initializer of `InvertAdjustment`",
-            "source": "generated/candidates/flighthq-adjustments/src/invert_adjustment.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing fields `kind` and `transform` in initializer of `LiftGammaGainAdjustment`",
-            "source": "generated/candidates/flighthq-adjustments/src/lift_gamma_gain_adjustment.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing fields `kind` and `transform` in initializer of `LookupTableGradeAdjustment`",
-            "source": "generated/candidates/flighthq-adjustments/src/lookup_table_grade_adjustment.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing fields `color_matrix` and `kind` in initializer of `SepiaAdjustment`",
-            "source": "generated/candidates/flighthq-adjustments/src/sepia_adjustment.rs"
           }
         ],
         "path": "generated/candidates/flighthq-adjustments",
@@ -236,7 +171,7 @@
           ],
           "declarations": 1,
           "module": "brightness_contrast_adjustment",
-          "outputSha256": "sha256:21f29dabff7449d6d2d463dea6d8efdaea4f5ddbbed6338f30ccd02c0815cec9",
+          "outputSha256": "sha256:63c3cc859cb65b71411b23f374ef8310839531db2def87d108f09ba23e105780",
           "source": "upstream/packages/adjustments/src/brightnessContrastAdjustment.ts",
           "usesOpaqueHostValues": false
         },
@@ -247,7 +182,7 @@
           ],
           "declarations": 2,
           "module": "channel_mixer_adjustment",
-          "outputSha256": "sha256:78b6698247abbe93dbbb47f859ddc2e0385b7ad92f60c30269a932941484e657",
+          "outputSha256": "sha256:aeda9ca775024f034e35e648403cf5c12c7812682a4c0865079a84643b8936f7",
           "source": "upstream/packages/adjustments/src/channelMixerAdjustment.ts",
           "usesOpaqueHostValues": false
         },
@@ -272,7 +207,7 @@
           ],
           "declarations": 2,
           "module": "color_blind_simulation_adjustment",
-          "outputSha256": "sha256:1f950e377ff368d64a8c70a021d74cd78843fd663af71ca76c2bb29b7875ab6f",
+          "outputSha256": "sha256:baebbabe34ad6d586507f8fe1107726cea999ffd5cd7bb6942dfb19f79df7381",
           "source": "upstream/packages/adjustments/src/colorBlindSimulationAdjustment.ts",
           "usesOpaqueHostValues": false
         },
@@ -284,7 +219,7 @@
           ],
           "declarations": 3,
           "module": "color_grade_adjustment",
-          "outputSha256": "sha256:253d8d5fb155f5e123c9639b6756f88f73adb50c2117e51eb51ac26719302101",
+          "outputSha256": "sha256:6716d7c51711526dd56e04c3b6fa97c8ee732468c4d550e7302b63338b332f32",
           "source": "upstream/packages/adjustments/src/colorGradeAdjustment.ts",
           "usesOpaqueHostValues": false
         },
@@ -321,7 +256,7 @@
           ],
           "declarations": 3,
           "module": "color_lut_cache",
-          "outputSha256": "sha256:eebb3820b5b5a693127acda230eb3a0ca66d70e59f843e826c65513543269a38",
+          "outputSha256": "sha256:774b102c39703c436f1c196dff05a0406e14387c722d298a6150ecc73c4516aa",
           "source": "upstream/packages/adjustments/src/colorLutCache.ts",
           "usesOpaqueHostValues": false
         },
@@ -332,7 +267,7 @@
           ],
           "declarations": 2,
           "module": "color_matrix_adjustment",
-          "outputSha256": "sha256:604bbf05b0ea0b18c4100169dbcb6fd7f0e1435129d973c4157fc5c0557356c5",
+          "outputSha256": "sha256:d0f9524439ef1d0696253e5bc3c1f24f0e8cffcdb0afd56e57c94fd614fe5a90",
           "source": "upstream/packages/adjustments/src/colorMatrixAdjustment.ts",
           "usesOpaqueHostValues": false
         },
@@ -385,7 +320,7 @@
           ],
           "declarations": 1,
           "module": "exposure_adjustment",
-          "outputSha256": "sha256:be51b9dcea0d8e0426e3801d0a2d38445c7e78130cc2e5c88bb58a330f4891bd",
+          "outputSha256": "sha256:74993a8fef892e319d3efac81852d55aa1947f1a8329825728b9e73cb0dc4c61",
           "source": "upstream/packages/adjustments/src/exposureAdjustment.ts",
           "usesOpaqueHostValues": false
         },
@@ -395,7 +330,7 @@
           ],
           "declarations": 1,
           "module": "grayscale_adjustment",
-          "outputSha256": "sha256:d1eb395419249a8c5e89c6632a50f1179386c3c824c7b44b4690897a5dbaab82",
+          "outputSha256": "sha256:8257e651ec063750b777a7edd25dc6a25bb57e528acb5a9cb3cbc65a023230b6",
           "source": "upstream/packages/adjustments/src/grayscaleAdjustment.ts",
           "usesOpaqueHostValues": false
         },
@@ -408,7 +343,7 @@
           ],
           "declarations": 4,
           "module": "hue_saturation_adjustment",
-          "outputSha256": "sha256:0d46f5cb36a8f578dbb14f769fa6441b8683f77a6d98e34a6e0900b319256170",
+          "outputSha256": "sha256:047c3d3b46e6fc68c2e7961b0d6420bd359b6410e029bfebca74d89319702c68",
           "source": "upstream/packages/adjustments/src/hueSaturationAdjustment.ts",
           "usesOpaqueHostValues": false
         },
@@ -426,7 +361,7 @@
           ],
           "declarations": 1,
           "module": "invert_adjustment",
-          "outputSha256": "sha256:60c6c39ca925ff0f999d6c1430b703e43dc04eda014bb7e5509d6d689252ec8b",
+          "outputSha256": "sha256:6181382e4027bd2273a29cb58f06d70ddb1e0fdb34088b1c8bc86366eafb7d50",
           "source": "upstream/packages/adjustments/src/invertAdjustment.ts",
           "usesOpaqueHostValues": false
         },
@@ -438,7 +373,7 @@
           ],
           "declarations": 3,
           "module": "lift_gamma_gain_adjustment",
-          "outputSha256": "sha256:8300a24ebce1e69a3e7c5b3734335429fda89d861bfe8069c52463af1c516ed3",
+          "outputSha256": "sha256:d9d23142e291e234727621ac573d834da770728cec5f6cafe27e1277f5878785",
           "source": "upstream/packages/adjustments/src/liftGammaGainAdjustment.ts",
           "usesOpaqueHostValues": false
         },
@@ -448,7 +383,7 @@
           ],
           "declarations": 1,
           "module": "lookup_table_grade_adjustment",
-          "outputSha256": "sha256:42c3295e680b0aadb9ddf313ea3d1a71355ec6d6b27bec1e26e91def4ba1cfa8",
+          "outputSha256": "sha256:316e9c9859c4d18b52b71b20e9ec23d10b47e822d64c4af84cdc60bd4d2446e1",
           "source": "upstream/packages/adjustments/src/lookupTableGradeAdjustment.ts",
           "usesOpaqueHostValues": false
         },
@@ -458,7 +393,7 @@
           ],
           "declarations": 1,
           "module": "sepia_adjustment",
-          "outputSha256": "sha256:6ca169910073df979bcb1a6e46a5c9f6618ad7e46d864e8f9abf01dde1d0d246",
+          "outputSha256": "sha256:fa1051969c4ef4911eb64823e9e8335cdb6637f0ae13a809cbaff3fbeaeec04b",
           "source": "upstream/packages/adjustments/src/sepiaAdjustment.ts",
           "usesOpaqueHostValues": false
         }
@@ -965,7 +900,7 @@
           ],
           "declarations": 39,
           "module": "application",
-          "outputSha256": "sha256:e1c7df90151e4985ddd9b46e53ee936ef610b484893b03762169fbd8f4706b4e",
+          "outputSha256": "sha256:845312cd4c24f277405eb194b5fea7de71407deaae91940ddf3b2ff7e3f01f72",
           "source": "upstream/packages/application/src/application.ts",
           "usesOpaqueHostValues": true
         },
@@ -1056,7 +991,7 @@
           ],
           "declarations": 74,
           "module": "window",
-          "outputSha256": "sha256:8677e704cab0775d7c11c1ac30ef2834fd9e4949797d14f8c4da291b2bcfcc95",
+          "outputSha256": "sha256:5c5037c49e0056ea67d7da1a707a65fe67857529c32f785c184775e9f1dd256a",
           "source": "upstream/packages/application/src/window.ts",
           "usesOpaqueHostValues": true
         }
@@ -1550,7 +1485,7 @@
           ],
           "declarations": 7,
           "module": "bitmap_font_json",
-          "outputSha256": "sha256:6b8024d62e83f5cc0074d5497ae34861fc3cb8f357437440e361a9548d7fa8bb",
+          "outputSha256": "sha256:c79edc01e6544f490e06880c993adcbb67331cc466104afbf623b675431dac4c",
           "source": "upstream/packages/bitmapfont-formats/src/bitmapFontJson.ts",
           "usesOpaqueHostValues": true
         },
@@ -2178,7 +2113,7 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:6bdff943ba4cadc141b2cd0212ef058d109f7838339163d2b15d3569d4276284",
-          "reason": "getCaptureBaselineField: optional element access requires an inferred nullable collection",
+          "reason": "formatCaptureBaseline: JSON.stringify requires a portable scalar or structural array",
           "source": "upstream/packages/capture/src/captureBaseline.ts",
           "stage": "emission"
         }
@@ -2261,17 +2196,197 @@
       "attemptedSources": 2,
       "blockers": [],
       "candidate": {
-        "compileDiagnostics": [],
-        "path": "generated/candidates/flighthq-clip",
-        "status": "dependency-blocked",
-        "syntaxCheckedSources": 2,
-        "unresolvedDependencies": [
+        "compileDiagnostics": [
           {
-            "candidateStatus": "compile-blocked",
-            "package": "@flighthq/path",
-            "status": "emittable"
+            "code": "E0599",
+            "message": "no method named `is_some` found for struct `ClipRegion` in the current scope",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "no method named `as_mut` found for struct `ClipRegion` in the current scope",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "no method named `as_mut` found for struct `ClipRegion` in the current scope",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "no method named `as_mut` found for struct `ClipRegion` in the current scope",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "no method named `as_mut` found for struct `ClipRegion` in the current scope",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "no method named `as_mut` found for struct `ClipRegion` in the current scope",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "no method named `as_mut` found for struct `ClipRegion` in the current scope",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "no method named `as_mut` found for struct `ClipRegion` in the current scope",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "no method named `as_mut` found for struct `ClipRegion` in the current scope",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0631",
+            "message": "type mismatch in closure arguments",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "the method `collect` exists for struct `Map<Cloned<Iter<'_, Vec<Vec<f64>>>>, {closure@clip_region.rs:88:22}>`, but its trait bounds were not satisfied",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0631",
+            "message": "type mismatch in closure arguments",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "the method `collect` exists for struct `Map<Cloned<Iter<'_, Vec<Vec<f64>>>>, {closure@clip_region.rs:114:22}>`, but its trait bounds were not satisfied",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "a value of type `Vec<Vec<f64>>` cannot be built from an iterator over elements of type `OpaqueHostValue`",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0631",
+            "message": "type mismatch in closure arguments",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "the method `collect` exists for struct `Map<Cloned<Iter<'_, Vec<Vec<f64>>>>, {closure@clip_region.rs:325:26}>`, but its trait bounds were not satisfied",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0631",
+            "message": "type mismatch in closure arguments",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "the method `collect` exists for struct `Map<Cloned<Iter<'_, Vec<Vec<f64>>>>, {closure@clip_region.rs:335:30}>`, but its trait bounds were not satisfied",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0631",
+            "message": "type mismatch in closure arguments",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "the method `collect` exists for struct `Map<Cloned<Iter<'_, Vec<Vec<f64>>>>, {closure@clip_region.rs:350:26}>`, but its trait bounds were not satisfied",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "a value of type `Vec<Vec<f64>>` cannot be built from an iterator over elements of type `OpaqueHostValue`",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0631",
+            "message": "type mismatch in closure arguments",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "the method `collect` exists for struct `Map<Cloned<Iter<'_, Vec<Vec<f64>>>>, {closure@clip_region.rs:605:26}>`, but its trait bounds were not satisfied",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0631",
+            "message": "type mismatch in closure arguments",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "the method `collect` exists for struct `Map<Cloned<Iter<'_, Vec<Vec<f64>>>>, {closure@clip_region.rs:615:30}>`, but its trait bounds were not satisfied",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0631",
+            "message": "type mismatch in closure arguments",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "the method `collect` exists for struct `Map<Cloned<Iter<'_, Vec<Vec<f64>>>>, {closure@clip_region.rs:630:26}>`, but its trait bounds were not satisfied",
+            "source": "generated/candidates/flighthq-clip/src/clip_region.rs"
           }
-        ]
+        ],
+        "path": "generated/candidates/flighthq-clip",
+        "status": "compile-blocked",
+        "syntaxCheckedSources": 2,
+        "unresolvedDependencies": []
       },
       "crate": "flighthq-clip",
       "dependencies": [
@@ -2328,7 +2443,7 @@
           ],
           "declarations": 32,
           "module": "clip_region",
-          "outputSha256": "sha256:e7ff8e0796cff7a259662539384f27d99af1db4accf1df96c8a847ccd7904179",
+          "outputSha256": "sha256:5eab643d95ac8c7d26bb4edc1358172c7ea65ef564aefab67b0f26236709a8c5",
           "source": "upstream/packages/clip/src/clipRegion.ts",
           "usesOpaqueHostValues": true
         },
@@ -3238,7 +3353,7 @@
           ],
           "declarations": 19,
           "module": "device",
-          "outputSha256": "sha256:9600aa6d749cff97627416295c29367e827025d1daec48a137731cdd58032a8c",
+          "outputSha256": "sha256:2d08688809ea262bc3e453624cf14c7193fc744fc75af6c76baf297a27e8e210",
           "source": "upstream/packages/device/src/device.ts",
           "usesOpaqueHostValues": true
         },
@@ -3512,7 +3627,7 @@
           ],
           "declarations": 9,
           "module": "stage",
-          "outputSha256": "sha256:79ae99475c902778e6372fc6027e9df39075800f3352cc376c89cf8407667966",
+          "outputSha256": "sha256:88b0ad580d339eab20bab433b3b08cc5d1bca04227e82ca287678ab2129a76ca",
           "source": "upstream/packages/displayobject/src/stage.ts",
           "usesOpaqueHostValues": true
         },
@@ -3801,7 +3916,7 @@
           ],
           "declarations": 15,
           "module": "canvas_cache",
-          "outputSha256": "sha256:807fbdd0553e472bc02d2757a8305a2c6ba0c29a6d6792f6c61f505cd11667d1",
+          "outputSha256": "sha256:9443b92afcba17d0e05a1dde506b5ff1dd04276a825256018c11214c6e0f35ed",
           "source": "upstream/packages/displayobject-canvas/src/canvasCache.ts",
           "usesOpaqueHostValues": true
         },
@@ -3939,7 +4054,7 @@
           ],
           "declarations": 3,
           "module": "canvas_scale9_mapper",
-          "outputSha256": "sha256:43ff38c408f9276f9d7d7b264232901d088313b933ec62da093aab5a52c4b74d",
+          "outputSha256": "sha256:24ca9770b4368e6c5bc11af87a3486d2f75d1f886a9be1b8eb4ee0e4d77cfdd6",
           "source": "upstream/packages/displayobject-canvas/src/canvasScale9Mapper.ts",
           "usesOpaqueHostValues": true
         },
@@ -4455,7 +4570,7 @@
           ],
           "declarations": 14,
           "module": "gl_cache",
-          "outputSha256": "sha256:72c1ec40e0e01b747ae72aa039d9f5a0e5654874338eb29fb50410832e3aa098",
+          "outputSha256": "sha256:4bed5547d35bbcd097cdad515cd1f520280b98159c462cfa3546f05b694fa454",
           "source": "upstream/packages/displayobject-gl/src/glCache.ts",
           "usesOpaqueHostValues": true
         },
@@ -4620,7 +4735,7 @@
           ],
           "declarations": 14,
           "module": "gl_rich_text",
-          "outputSha256": "sha256:5c3927880eb845c9f21d2c6676cdc6a6aac9c115ed5fb7a33f23a417b0ef0175",
+          "outputSha256": "sha256:6b383b1c4ec72588e64a98fb8a13422cb40865730f8f8c2d340bccf093af131f",
           "source": "upstream/packages/displayobject-gl/src/glRichText.ts",
           "usesOpaqueHostValues": true
         },
@@ -4684,7 +4799,7 @@
           ],
           "declarations": 9,
           "module": "gl_shape_mesh",
-          "outputSha256": "sha256:b31c5b6c25f5a06db84629dd7ea8643242109ec995f3844da52bc967d100b80e",
+          "outputSha256": "sha256:a8425ca65e3c0f67ec0aa594007e4a72a6047681fea8b8c880d1ae6b8f9a76a7",
           "source": "upstream/packages/displayobject-gl/src/glShapeMesh.ts",
           "usesOpaqueHostValues": true
         },
@@ -5170,7 +5285,7 @@
           ],
           "declarations": 16,
           "module": "wgpu_cache",
-          "outputSha256": "sha256:4ddd555157ae33c53de0afc2237df500611b0b3480f046235460bfeae3ead743",
+          "outputSha256": "sha256:2d0a8e1cf6d39bda7d725a9760cc828db02eb5e9c778ca3b6ae6be9229f826a8",
           "source": "upstream/packages/displayobject-wgpu/src/wgpuCache.ts",
           "usesOpaqueHostValues": true
         },
@@ -5220,7 +5335,7 @@
           ],
           "declarations": 16,
           "module": "wgpu_color_adjustment",
-          "outputSha256": "sha256:7fb9c053e7f5084de6d283df216edd1deaf4da564cda8ac9383ad1b1b542ccd0",
+          "outputSha256": "sha256:2c714f0b6d8fcb2d94a0a36762fb2c0741f2dd9efaa3a5b21e003973b518df4a",
           "source": "upstream/packages/displayobject-wgpu/src/wgpuColorAdjustment.ts",
           "usesOpaqueHostValues": true
         },
@@ -5233,7 +5348,7 @@
           ],
           "declarations": 4,
           "module": "wgpu_default_material",
-          "outputSha256": "sha256:acb7eec0fb82be0e7127a41069db0e4236a162c278dd0863f3eaa44c3d05a900",
+          "outputSha256": "sha256:79184fc8b99d223b2a16e85208ca669bd8a4d35da1e6e480d46425b4e7e3be9d",
           "source": "upstream/packages/displayobject-wgpu/src/wgpuDefaultMaterial.ts",
           "usesOpaqueHostValues": true
         },
@@ -5264,7 +5379,7 @@
           ],
           "declarations": 10,
           "module": "wgpu_particle_emitter",
-          "outputSha256": "sha256:88f5e2972248040950674797ec001245ea101643ad7706ea7f938f80fb4c9891",
+          "outputSha256": "sha256:2ea17ff6708979fba044adbd767869c153b4d8e6a27942e63f40f3cdad97499f",
           "source": "upstream/packages/displayobject-wgpu/src/wgpuParticleEmitter.ts",
           "usesOpaqueHostValues": true
         },
@@ -5321,7 +5436,7 @@
           ],
           "declarations": 14,
           "module": "wgpu_rich_text",
-          "outputSha256": "sha256:6e5856fb8ffcae91f327ebc7127b44bea1107c8d74ae3ccd621e2b9e6fa122e0",
+          "outputSha256": "sha256:f00577a6cdb5744fca42b9bf4bb91a90ca926a8cb42e1c6988f79dcc12fb2188",
           "source": "upstream/packages/displayobject-wgpu/src/wgpuRichText.ts",
           "usesOpaqueHostValues": true
         },
@@ -5964,26 +6079,6 @@
             "source": "generated/candidates/flighthq-effects/src/composite_operator_math.rs"
           },
           {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `AutoExposureEffect`",
-            "source": "generated/candidates/flighthq-effects/src/auto_exposure_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `BarrelDistortionEffect`",
-            "source": "generated/candidates/flighthq-effects/src/barrel_distortion_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `BevelEffect`",
-            "source": "generated/candidates/flighthq-effects/src/bevel_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing fields `kind` and `mode` in initializer of `BlendEffect`",
-            "source": "generated/candidates/flighthq-effects/src/blend_effect.rs"
-          },
-          {
             "code": "E0070",
             "message": "invalid left-hand side of assignment",
             "source": "generated/candidates/flighthq-effects/src/blend_mode_math.rs"
@@ -6054,36 +6149,6 @@
             "source": "generated/candidates/flighthq-effects/src/blend_mode_math.rs"
           },
           {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `BloomEffect`",
-            "source": "generated/candidates/flighthq-effects/src/bloom_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `BlurEffect`",
-            "source": "generated/candidates/flighthq-effects/src/blur_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `BokehDepthOfFieldEffect`",
-            "source": "generated/candidates/flighthq-effects/src/bokeh_depth_of_field_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `CameraMotionBlurEffect`",
-            "source": "generated/candidates/flighthq-effects/src/camera_motion_blur_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `ChromaticAberrationEffect`",
-            "source": "generated/candidates/flighthq-effects/src/chromatic_aberration_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing fields `kind` and `operator` in initializer of `CompositeEffect`",
-            "source": "generated/candidates/flighthq-effects/src/composite_effect.rs"
-          },
-          {
             "code": "E0608",
             "message": "cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`",
             "source": "generated/candidates/flighthq-effects/src/composite_operator_math.rs"
@@ -6094,94 +6159,9 @@
             "source": "generated/candidates/flighthq-effects/src/composite_operator_math.rs"
           },
           {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `ContactShadowsEffect`",
-            "source": "generated/candidates/flighthq-effects/src/contact_shadows_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `CrtEffect`",
-            "source": "generated/candidates/flighthq-effects/src/crt_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `DirectionalBlurEffect`",
-            "source": "generated/candidates/flighthq-effects/src/directional_blur_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `DisplacementEffect`",
-            "source": "generated/candidates/flighthq-effects/src/displacement_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `DitherEffect`",
-            "source": "generated/candidates/flighthq-effects/src/dither_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `DropShadowEffect`",
-            "source": "generated/candidates/flighthq-effects/src/drop_shadow_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `FilmEmulationEffect`",
-            "source": "generated/candidates/flighthq-effects/src/film_emulation_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `FilmGrainEffect`",
-            "source": "generated/candidates/flighthq-effects/src/film_grain_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `FxaaEffect`",
-            "source": "generated/candidates/flighthq-effects/src/fxaa_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `GlitchEffect`",
-            "source": "generated/candidates/flighthq-effects/src/glitch_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `GodRaysEffect`",
-            "source": "generated/candidates/flighthq-effects/src/god_rays_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `HalftoneEffect`",
-            "source": "generated/candidates/flighthq-effects/src/halftone_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `InnerGlowEffect`",
-            "source": "generated/candidates/flighthq-effects/src/inner_glow_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `InnerShadowEffect`",
-            "source": "generated/candidates/flighthq-effects/src/inner_shadow_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `KuwaharaEffect`",
-            "source": "generated/candidates/flighthq-effects/src/kuwahara_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `LensDirtEffect`",
-            "source": "generated/candidates/flighthq-effects/src/lens_dirt_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `LensDistortionEffect`",
-            "source": "generated/candidates/flighthq-effects/src/lens_distortion_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `LensFlareEffect`",
-            "source": "generated/candidates/flighthq-effects/src/lens_flare_effect.rs"
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-effects/src/custom_shader_effect.rs"
           },
           {
             "code": "E0308",
@@ -6202,46 +6182,6 @@
             "code": "E0608",
             "message": "cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`",
             "source": "generated/candidates/flighthq-effects/src/linear_sampled_gaussian.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `MedianEffect`",
-            "source": "generated/candidates/flighthq-effects/src/median_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `MotionBlurEffect`",
-            "source": "generated/candidates/flighthq-effects/src/motion_blur_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `OuterGlowEffect`",
-            "source": "generated/candidates/flighthq-effects/src/outer_glow_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `OutlineEffect`",
-            "source": "generated/candidates/flighthq-effects/src/outline_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `PanniniProjectionEffect`",
-            "source": "generated/candidates/flighthq-effects/src/pannini_projection_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `PixelateEffect`",
-            "source": "generated/candidates/flighthq-effects/src/pixelate_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `PosterizeEffect`",
-            "source": "generated/candidates/flighthq-effects/src/posterize_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `RadialBlurEffect`",
-            "source": "generated/candidates/flighthq-effects/src/radial_blur_effect.rs"
           },
           {
             "code": "E0599",
@@ -6392,71 +6332,6 @@
             "code": "E0070",
             "message": "invalid left-hand side of assignment",
             "source": "generated/candidates/flighthq-effects/src/render_effect_interpolation.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `ScanlinesEffect`",
-            "source": "generated/candidates/flighthq-effects/src/scanlines_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `ScreenSpaceFogEffect`",
-            "source": "generated/candidates/flighthq-effects/src/screen_space_fog_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `SharpenEffect`",
-            "source": "generated/candidates/flighthq-effects/src/sharpen_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `SketchEffect`",
-            "source": "generated/candidates/flighthq-effects/src/sketch_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `SmaaEffect`",
-            "source": "generated/candidates/flighthq-effects/src/smaa_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `SsaoEffect`",
-            "source": "generated/candidates/flighthq-effects/src/ssao_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `SsrEffect`",
-            "source": "generated/candidates/flighthq-effects/src/ssr_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `TaaEffect`",
-            "source": "generated/candidates/flighthq-effects/src/taa_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `TiltShiftEffect`",
-            "source": "generated/candidates/flighthq-effects/src/tilt_shift_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `ToneMapEffect`",
-            "source": "generated/candidates/flighthq-effects/src/tone_map_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `VignetteEffect`",
-            "source": "generated/candidates/flighthq-effects/src/vignette_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `VolumetricLightEffect`",
-            "source": "generated/candidates/flighthq-effects/src/volumetric_light_effect.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing field `kind` in initializer of `WhiteBalanceEffect`",
-            "source": "generated/candidates/flighthq-effects/src/white_balance_effect.rs"
           }
         ],
         "path": "generated/candidates/flighthq-effects",
@@ -6480,7 +6355,7 @@
           ],
           "declarations": 1,
           "module": "auto_exposure_effect",
-          "outputSha256": "sha256:c503ea531866278e7d17d52b771b39daec33f5612fa40212fd87c6002aa8fa0c",
+          "outputSha256": "sha256:c8e15e9d621ce86341ce07c0cdee1c347d8a1497abd8c659e956f8624786749c",
           "source": "upstream/packages/effects/src/autoExposureEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6490,7 +6365,7 @@
           ],
           "declarations": 1,
           "module": "barrel_distortion_effect",
-          "outputSha256": "sha256:11f9ec0692f2322044aaa0be1e20ebd76483437cb474856715d06b78874ac05d",
+          "outputSha256": "sha256:1b1be4a2edd51937d2cc4e932fb9f6a3d23e2403d1b844fb4214d9bbd0cdf32c",
           "source": "upstream/packages/effects/src/barrelDistortionEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6500,7 +6375,7 @@
           ],
           "declarations": 1,
           "module": "bevel_effect",
-          "outputSha256": "sha256:97f8975e1248580d76c37927d0845c9aebdabf4303397408c550c2041195ed26",
+          "outputSha256": "sha256:55c37333d61af7535da0e989ddbfce997ddcfa572389ba5885bfb8914947fb69",
           "source": "upstream/packages/effects/src/bevelEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6510,7 +6385,7 @@
           ],
           "declarations": 1,
           "module": "blend_effect",
-          "outputSha256": "sha256:86dd9eff7dac4b8629b5da001b487ea20d8d9963cade5c856d67b264a8b37924",
+          "outputSha256": "sha256:b0a08cb777babfa9c358646aaff5d1456dc2bacaf193bedc509074ee20e53ba3",
           "source": "upstream/packages/effects/src/blendEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6541,7 +6416,7 @@
           ],
           "declarations": 4,
           "module": "bloom_effect",
-          "outputSha256": "sha256:359b7a0dd64c220d94e2866497765ae185d34db8edee2a4f51b9973d2f5917ab",
+          "outputSha256": "sha256:8d4697142c7837e14b16a08d57888ac22dc3c9f3233e7743eba7c519147dac5f",
           "source": "upstream/packages/effects/src/bloomEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6563,7 +6438,7 @@
           ],
           "declarations": 1,
           "module": "blur_effect",
-          "outputSha256": "sha256:9f46725879ceccca3ea7cb03b48eacd0acefac3886e7d4622c739d206d895e4e",
+          "outputSha256": "sha256:946fd36f02149f7880a5e616f8fde46d4ffc5d9077e9c2f207a840625b45ac29",
           "source": "upstream/packages/effects/src/blurEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6573,7 +6448,7 @@
           ],
           "declarations": 1,
           "module": "bokeh_depth_of_field_effect",
-          "outputSha256": "sha256:cf1e40a76dee5c786640fec44846afd0916bde75fc24ca76a4185ee46372f1a4",
+          "outputSha256": "sha256:7c7e9cc7d534ec96e5a241a27ebbbf6ba4d7215b72b56aa2e3a3e191aa8ecc92",
           "source": "upstream/packages/effects/src/bokehDepthOfFieldEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6597,7 +6472,7 @@
           ],
           "declarations": 1,
           "module": "camera_motion_blur_effect",
-          "outputSha256": "sha256:cb7fbeaf20b84be05b01c518c29399fc5bd2b9e0745a5d4a6be01d276e0af0f6",
+          "outputSha256": "sha256:86b306786aca3af52945342406564ec1fe4a57c6f0adfcdd511d359a1b9a7db1",
           "source": "upstream/packages/effects/src/cameraMotionBlurEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6607,7 +6482,7 @@
           ],
           "declarations": 1,
           "module": "chromatic_aberration_effect",
-          "outputSha256": "sha256:259032651ffb5841fa2fe04f0496dfd44a8a64ff3604ea718d1de7636a9e1a19",
+          "outputSha256": "sha256:57f794af3ccaaf642c3226ce53b53974a11b9018d6da5fd9b0e71ce68e8464aa",
           "source": "upstream/packages/effects/src/chromaticAberrationEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6628,7 +6503,7 @@
           ],
           "declarations": 1,
           "module": "composite_effect",
-          "outputSha256": "sha256:5383410134443bf50fb0488019d5db3dd66bb5acdf2554d1840f3b50aa4ea754",
+          "outputSha256": "sha256:b48b4859b86fce3b52f9ee823c6b4f481f89dc619b1826fb5720e0810cefd459",
           "source": "upstream/packages/effects/src/compositeEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6648,7 +6523,7 @@
           ],
           "declarations": 1,
           "module": "contact_shadows_effect",
-          "outputSha256": "sha256:def19c4be3355dbeec01fd542b0b9e4cef500c91f9e231e174d0551a15ff04dc",
+          "outputSha256": "sha256:9bc9aa537d65b3106ff9e2863034f052d59c0ef6a454c6dbdff46f20d3846161",
           "source": "upstream/packages/effects/src/contactShadowsEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6658,7 +6533,7 @@
           ],
           "declarations": 1,
           "module": "convolution_effect",
-          "outputSha256": "sha256:a4da15ad46ad4250fa5ac710763e5986850682053e65f7baddc2d188400d4931",
+          "outputSha256": "sha256:1216cf70c17ed710658a27f410e4bfedc7b42598c7a4052c7a5da040ac930046",
           "source": "upstream/packages/effects/src/convolutionEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6668,7 +6543,7 @@
           ],
           "declarations": 1,
           "module": "crt_effect",
-          "outputSha256": "sha256:579c9a71ffc895ce688bf9c441f7bf8ae91a517a4a433b1a83bde04a526b660e",
+          "outputSha256": "sha256:b0e2c965ef1cfa7596cae7947fc961f9a3cc46303ddb9ab80374dcc52f108bbb",
           "source": "upstream/packages/effects/src/crtEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6678,7 +6553,7 @@
           ],
           "declarations": 1,
           "module": "custom_shader_effect",
-          "outputSha256": "sha256:fea6a992e937a20b12bebc23abf8824342b337fde9daaa131405bbeedb0e1a79",
+          "outputSha256": "sha256:e05404aff617a1b987701fa4ef4660603ea1a280e4632a62ec99dad30fdba0aa",
           "source": "upstream/packages/effects/src/customShaderEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6701,7 +6576,7 @@
           ],
           "declarations": 1,
           "module": "directional_blur_effect",
-          "outputSha256": "sha256:e6ed7026b6ba12637b12320f6054c0e1c3077adfb7d05822a503d77e214a03a8",
+          "outputSha256": "sha256:0a77cce318c382e1fcd6f02d29380c608d59cb19fca253f211657578f5bd2f13",
           "source": "upstream/packages/effects/src/directionalBlurEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6711,7 +6586,7 @@
           ],
           "declarations": 1,
           "module": "displacement_effect",
-          "outputSha256": "sha256:443a7495c2a7595b1fdac562ea03cce77c292f20b27c8e5e5c19f8ed65995ec5",
+          "outputSha256": "sha256:2a717dfb8f6db913fcd6ce94e5852727160c8e3a73a9061b8314141fca6d3bf2",
           "source": "upstream/packages/effects/src/displacementEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6721,7 +6596,7 @@
           ],
           "declarations": 1,
           "module": "dither_effect",
-          "outputSha256": "sha256:17365a530adef64cbbcd544c5ab4705e977c2d07ddf5551abcf84ebb29e7e021",
+          "outputSha256": "sha256:6559d1cc2a1110fb6e83c748e9259c4c48bbc6925e326b35477f252cf5cfb3b9",
           "source": "upstream/packages/effects/src/ditherEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6731,7 +6606,7 @@
           ],
           "declarations": 1,
           "module": "drop_shadow_effect",
-          "outputSha256": "sha256:5cebc82699ba3ec559c9c2ed2c00f19a1c32cbc8e67f8fc2952ce3c5eafa5043",
+          "outputSha256": "sha256:a981cd0bfb17148766934e6eb837e1caf952e5e3d9622ecf9dbafad5a9cdf33c",
           "source": "upstream/packages/effects/src/dropShadowEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6754,7 +6629,7 @@
           ],
           "declarations": 1,
           "module": "film_emulation_effect",
-          "outputSha256": "sha256:c046311655f8d31a13d98fae1f0860e9d7940a43611e1e6e683a10adef488af0",
+          "outputSha256": "sha256:b075fe32c421b7b253b5a7081ad79676c83b0bb7d4e85ba907e254fd8bde3313",
           "source": "upstream/packages/effects/src/filmEmulationEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6764,7 +6639,7 @@
           ],
           "declarations": 1,
           "module": "film_grain_effect",
-          "outputSha256": "sha256:65d44d83e086c184d074335a7cd722f05370bd1356de7ff6923365e0b5ede66d",
+          "outputSha256": "sha256:b8bc6714e7c2ba026f758abf3e861f8c13dd4d18db5848ffc32f96c4b0352750",
           "source": "upstream/packages/effects/src/filmGrainEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6774,7 +6649,7 @@
           ],
           "declarations": 1,
           "module": "fxaa_effect",
-          "outputSha256": "sha256:cda2a855780abe838ead82d9001fcc6f662c61e7fde77f7edf0fbd97da8b47ae",
+          "outputSha256": "sha256:2d1c166bdccbf154dade477bf1ff3500ad44647e6716dcee585de2c6a7c4cf8d",
           "source": "upstream/packages/effects/src/fxaaEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6808,7 +6683,7 @@
           ],
           "declarations": 1,
           "module": "glitch_effect",
-          "outputSha256": "sha256:71cb26881320ed482afd73587d8ecfe537229c93a21b210ea8769c4555143bc1",
+          "outputSha256": "sha256:9d9c92c0ff1c75d2190c87f7a340c41ca7b83c575eaec4fbf18df63d712620f4",
           "source": "upstream/packages/effects/src/glitchEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6818,7 +6693,7 @@
           ],
           "declarations": 1,
           "module": "god_rays_effect",
-          "outputSha256": "sha256:d22651d27128ff8a52e413671e62be236be9edf04eb44fc6e583dbd72e6ac01b",
+          "outputSha256": "sha256:5365918a341f29298613ed41ee94767ee48a5cbcde59ce140144b62b24f00afd",
           "source": "upstream/packages/effects/src/godRaysEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6841,7 +6716,7 @@
           ],
           "declarations": 1,
           "module": "gradient_bevel_effect",
-          "outputSha256": "sha256:0f386af378866e7120f07504361d266222855920ffeb9dce8b96a4c9a8e89fc9",
+          "outputSha256": "sha256:93e31250e907f72a823f0b10252d9862857ead8b13d56b746ffacbb5af559945",
           "source": "upstream/packages/effects/src/gradientBevelEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6851,7 +6726,7 @@
           ],
           "declarations": 1,
           "module": "gradient_glow_effect",
-          "outputSha256": "sha256:70f613a2e2328b57536253fbc396739a80e0b0743be03c86ca4384b70a9df768",
+          "outputSha256": "sha256:f4d852f049ebcd8f1d3df9f4d2b8985f48fcc678b941581c474df16b1e69ab48",
           "source": "upstream/packages/effects/src/gradientGlowEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6861,7 +6736,7 @@
           ],
           "declarations": 1,
           "module": "halftone_effect",
-          "outputSha256": "sha256:82c9c711d6919309dab7157a52b99af0926a4c522e622e7fe6165e5628691da1",
+          "outputSha256": "sha256:0824e6dea8b9135b5337a671f4720f597a755eeb2b590bfee499ae2e46a5eee5",
           "source": "upstream/packages/effects/src/halftoneEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6879,7 +6754,7 @@
           ],
           "declarations": 1,
           "module": "inner_glow_effect",
-          "outputSha256": "sha256:9928a7173d639d9ba90d99eff99f188314ac7faa82074ee8e79910dab2f73262",
+          "outputSha256": "sha256:11dac29b983c931037889c3cc1ecb0605d8b74524171baa33d77f3a684861443",
           "source": "upstream/packages/effects/src/innerGlowEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6889,7 +6764,7 @@
           ],
           "declarations": 1,
           "module": "inner_shadow_effect",
-          "outputSha256": "sha256:27ad54db8070183a976054839a54ca6825f43e20a04502aed451285302862771",
+          "outputSha256": "sha256:ac11abf893c13571a1b4ce81d6c2782223575bdbf5fe171409a24d2bc36a2d6c",
           "source": "upstream/packages/effects/src/innerShadowEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6899,7 +6774,7 @@
           ],
           "declarations": 1,
           "module": "kuwahara_effect",
-          "outputSha256": "sha256:fd51be3245ee35e0a549895842e47cd4b8d6cb6d69fe8968ab0bfa45f4811b06",
+          "outputSha256": "sha256:dbaf49797864e15f352799df7b040d288019c6e56b9ca6960082f36bb95430be",
           "source": "upstream/packages/effects/src/kuwaharaEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6922,7 +6797,7 @@
           ],
           "declarations": 1,
           "module": "lens_dirt_effect",
-          "outputSha256": "sha256:4a5ddae3788a215191bada4c026e9a317b4f3413111ce2aff3b4a3105a488d2e",
+          "outputSha256": "sha256:7d978cb68d9affb98104e33fcedcf16321c94ce6e0877add3acfa84311d2a974",
           "source": "upstream/packages/effects/src/lensDirtEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6932,7 +6807,7 @@
           ],
           "declarations": 1,
           "module": "lens_distortion_effect",
-          "outputSha256": "sha256:b024d56058b8b0fd76177573f84bd8a50eea6c8ad47cc328923d48643184b337",
+          "outputSha256": "sha256:4f7dbc1278073eb485e5d65d54f8177b9379704ae6bbb2e6b4c5a1e5e7034a87",
           "source": "upstream/packages/effects/src/lensDistortionEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6942,7 +6817,7 @@
           ],
           "declarations": 1,
           "module": "lens_flare_effect",
-          "outputSha256": "sha256:4677108812fa56d6d69b547b2fe1c64ab8ad31e31f649c2d759ea92e8e0ca29b",
+          "outputSha256": "sha256:1c6dd543e6ab1b76a3fe0c517c81ef9924f6acd354e123f165949ec9ab2848b5",
           "source": "upstream/packages/effects/src/lensFlareEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6964,7 +6839,7 @@
           ],
           "declarations": 1,
           "module": "median_effect",
-          "outputSha256": "sha256:a374ee1fbf7e6cf448ed2f74f725c762cfb214f7033a47833219fd7daabafd7a",
+          "outputSha256": "sha256:0ccdd911cd47eb974cfd5a962792e076ccdf53fab6105c1c7f4efb94804b07ef",
           "source": "upstream/packages/effects/src/medianEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6974,7 +6849,7 @@
           ],
           "declarations": 1,
           "module": "motion_blur_effect",
-          "outputSha256": "sha256:e6aee1285954bf5aed25ef9a6acb58b8532c18d85b87cabe9bda30b449898614",
+          "outputSha256": "sha256:ce1b55726d485fd32815f282d7db96addcaa7accae08be9f97d26732468b50b1",
           "source": "upstream/packages/effects/src/motionBlurEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6984,7 +6859,7 @@
           ],
           "declarations": 1,
           "module": "outer_glow_effect",
-          "outputSha256": "sha256:606b1033b93f5439efc31099025d3796b3aad81aab511ec1691ab6f80d6f1902",
+          "outputSha256": "sha256:02c75ccbd4ff3afed5c631de0f0bbb12c262cde9e92b9d6cde75912e89dd17b8",
           "source": "upstream/packages/effects/src/outerGlowEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -6994,7 +6869,7 @@
           ],
           "declarations": 1,
           "module": "outline_effect",
-          "outputSha256": "sha256:dee8b82cf549232f230f20ec0793c20e6ad6a7a26b9e3b596dc9d5fbe426c769",
+          "outputSha256": "sha256:a8e7bcb8e680d4f316558d508619013660d85be331576be24f4375b7b3cc3559",
           "source": "upstream/packages/effects/src/outlineEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -7004,7 +6879,7 @@
           ],
           "declarations": 1,
           "module": "pannini_projection_effect",
-          "outputSha256": "sha256:078fb06a685333884ec03f096c9370d5bb8d5ec22e5679b7691421a086f8908e",
+          "outputSha256": "sha256:9d24f7a6ad912180f1ea26900dfc0f10d1cb84a5f6460c4e82a51f1ecedf2198",
           "source": "upstream/packages/effects/src/panniniProjectionEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -7014,7 +6889,7 @@
           ],
           "declarations": 1,
           "module": "pixelate_effect",
-          "outputSha256": "sha256:84fc582ec91dd70a2836ccc5f1b0cd82f6bc300783a19c9a57b6dc713fe4143f",
+          "outputSha256": "sha256:f7429257a98e7c181e67a35dff64c2359c6e9848dc820de19871b25dec500908",
           "source": "upstream/packages/effects/src/pixelateEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -7024,7 +6899,7 @@
           ],
           "declarations": 1,
           "module": "posterize_effect",
-          "outputSha256": "sha256:55a91a71251989d266486d8daac688bdaa04b112e3a1209e864ded519dd34d4d",
+          "outputSha256": "sha256:c5858af2d607640b14c8b79988b529f03b7564e4d79b1ab803abb6f3d4e57ea5",
           "source": "upstream/packages/effects/src/posterizeEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -7034,7 +6909,7 @@
           ],
           "declarations": 1,
           "module": "radial_blur_effect",
-          "outputSha256": "sha256:36d5c8d92d423fd5a3d6d0c4c5a181ef2f1a93318ec650b1fd8c1d52b7d1a392",
+          "outputSha256": "sha256:1390fccb974d439208b3c5e5b6c75d7155762edbe830eba26eb049464ce6ce97",
           "source": "upstream/packages/effects/src/radialBlurEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -7090,7 +6965,7 @@
           ],
           "declarations": 1,
           "module": "scanlines_effect",
-          "outputSha256": "sha256:d59b130e0ca4b66974bea965cf79ff8743cbda67b2f314952292a4ccc7752a38",
+          "outputSha256": "sha256:8bcd1a3c84e2f1907d7f99aa25f0a6acb34f3a47812847c234d4fd4c6f947687",
           "source": "upstream/packages/effects/src/scanlinesEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -7100,7 +6975,7 @@
           ],
           "declarations": 1,
           "module": "screen_space_fog_effect",
-          "outputSha256": "sha256:9431bd15622a44303e2551fb63cd65271aae3e73279963a5ae2575b31b89dcdd",
+          "outputSha256": "sha256:a307f0ac19cfcf286d34cc83e6d8a8269c0bb67be36556526f6df3a21c886d91",
           "source": "upstream/packages/effects/src/screenSpaceFogEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -7110,7 +6985,7 @@
           ],
           "declarations": 1,
           "module": "sharpen_effect",
-          "outputSha256": "sha256:6143a069641133ab96b8f15c9114eaf0fa2d50fe44852d26c240c00fb9e180d0",
+          "outputSha256": "sha256:015f12e24bf60dfd836169e2aa422cb5a84bdffa47ddd7e5e9d64fe578963d15",
           "source": "upstream/packages/effects/src/sharpenEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -7120,7 +6995,7 @@
           ],
           "declarations": 1,
           "module": "sketch_effect",
-          "outputSha256": "sha256:21b31bccffc4008160bf856c5fb91c01efa2acb97093c423b3e3dfd57f967ec9",
+          "outputSha256": "sha256:cec1cd1fd11a87ce855cd0f3a1ab38309364c1d0536525d258b6e5548e55f3e4",
           "source": "upstream/packages/effects/src/sketchEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -7130,7 +7005,7 @@
           ],
           "declarations": 1,
           "module": "smaa_effect",
-          "outputSha256": "sha256:cc1a3bb5375e2a0183394cd3697524cd14e58ec6ebc3581031a399250191930b",
+          "outputSha256": "sha256:562a04f76d0d93c9a7513aedddb148db59aaeaebb6cc1b29e9a1bc45fbffdfe0",
           "source": "upstream/packages/effects/src/smaaEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -7140,7 +7015,7 @@
           ],
           "declarations": 1,
           "module": "ssao_effect",
-          "outputSha256": "sha256:85f87edbaaea3c8c9f2f6e77182fc4f02a4138c76181c51f61da45a39679f849",
+          "outputSha256": "sha256:08e68cd2ec3b02210176dd08212044c48e36b4a51be47900b3548719612b7f42",
           "source": "upstream/packages/effects/src/ssaoEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -7150,7 +7025,7 @@
           ],
           "declarations": 1,
           "module": "ssr_effect",
-          "outputSha256": "sha256:a55a2cb770ff156ae3b96d473c21136bd13d3187b10be1c37e30291435e72d98",
+          "outputSha256": "sha256:429844671299a13b30e5548c07ab1426b7d048d639796edda2fcda88a2b7c758",
           "source": "upstream/packages/effects/src/ssrEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -7173,7 +7048,7 @@
           ],
           "declarations": 1,
           "module": "taa_effect",
-          "outputSha256": "sha256:84007c29ed6f1ece11384d941de0f6273e99c9ff2b380a14b5ed7f9dda4ba1eb",
+          "outputSha256": "sha256:8f559e63fc9faff45384dbac29b1920048378ec0649ef09b5454c2ca25babeac",
           "source": "upstream/packages/effects/src/taaEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -7183,7 +7058,7 @@
           ],
           "declarations": 1,
           "module": "tilt_shift_effect",
-          "outputSha256": "sha256:493d24199ce7882d67aa251922e73822e2369e381e0f65b73ab5cf3d0be04897",
+          "outputSha256": "sha256:cea7bbf8de4f677307a346335bf2343b6be922ce9c836195425e7ac5aec02e5a",
           "source": "upstream/packages/effects/src/tiltShiftEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -7193,7 +7068,7 @@
           ],
           "declarations": 1,
           "module": "tone_map_effect",
-          "outputSha256": "sha256:947346437b6b4acf779f06e3ea323dcc8a316d5765c3d634d3dbb61432b1f256",
+          "outputSha256": "sha256:9be458943202bd91b63a3cf5c59d47763d80d0f1afa497347914743bf0ecfdf7",
           "source": "upstream/packages/effects/src/toneMapEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -7223,7 +7098,7 @@
           ],
           "declarations": 1,
           "module": "vignette_effect",
-          "outputSha256": "sha256:f46635f5cd78e65687ff63b32b2c7c7d5a228da701a03555d3c9fa58b290d93e",
+          "outputSha256": "sha256:1dd82cdf821a95f15c26c39bafeb7532e529ca77b92a985b2b87a1ad9efed3bf",
           "source": "upstream/packages/effects/src/vignetteEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -7233,7 +7108,7 @@
           ],
           "declarations": 1,
           "module": "volumetric_light_effect",
-          "outputSha256": "sha256:a0d1c9e80f9ada8757e910f244039480217e527dc4e937450ce349abad9763c0",
+          "outputSha256": "sha256:676477a9461722523290c5eb35d2e5b6ce4f8590e152f2961af37f58191657e4",
           "source": "upstream/packages/effects/src/volumetricLightEffect.ts",
           "usesOpaqueHostValues": false
         },
@@ -7243,7 +7118,7 @@
           ],
           "declarations": 1,
           "module": "white_balance_effect",
-          "outputSha256": "sha256:86cbb1ff2c2a91153be4bdd1609aa84b6721c5dd4156655e3d21bc3ad59e21d1",
+          "outputSha256": "sha256:658cdd11a0fac9d376c87a08dcbd59d3e1e86dbfdb4710b132c4cf6356edb571",
           "source": "upstream/packages/effects/src/whiteBalanceEffect.ts",
           "usesOpaqueHostValues": false
         }
@@ -7770,7 +7645,7 @@
           ],
           "declarations": 11,
           "module": "canvas_render_effect_registration",
-          "outputSha256": "sha256:7f7a719cdddcb2372192254ecfbd2d6fb5139a3015dc05a136bfcf36d02a6ff9",
+          "outputSha256": "sha256:f2bbd2238fdd547a612956d8835845446b697720d543c91e1f3d88482e108e64",
           "source": "upstream/packages/effects-canvas/src/canvasRenderEffectRegistration.ts",
           "usesOpaqueHostValues": true
         },
@@ -8324,7 +8199,7 @@
           ],
           "declarations": 4,
           "module": "gl_color_lut_pass",
-          "outputSha256": "sha256:c0625ce910ad947ba87ee8d71045f71557f742760bb7844db274002162725adc",
+          "outputSha256": "sha256:11852149ac832ccffdc7919f659ae5d5758a27e78d2d75f6feeffb0a4f998774",
           "source": "upstream/packages/effects-gl/src/glColorLutPass.ts",
           "usesOpaqueHostValues": true
         },
@@ -8357,7 +8232,7 @@
           ],
           "declarations": 13,
           "module": "gl_effect_blit_shader",
-          "outputSha256": "sha256:3bbbf7ea2a54b69a92bac564952d0a59f8b94d8b3540bc3c1d7300b8d32d8175",
+          "outputSha256": "sha256:c8cd93efbf0a1c7c70e37eafe138443f5c5c20eaf936049fd316f8884b46b205",
           "source": "upstream/packages/effects-gl/src/glEffectBlitShader.ts",
           "usesOpaqueHostValues": true
         },
@@ -8374,7 +8249,7 @@
           ],
           "declarations": 8,
           "module": "gl_effect_box_blur",
-          "outputSha256": "sha256:fc6c62e7dc6902fa0899e7560bddc78803b0ff686b281d04be9371cb536d03ef",
+          "outputSha256": "sha256:66f1c849d15fa09635b55b60401462610a3e194478ed9b1f30c0b40bd42129f5",
           "source": "upstream/packages/effects-gl/src/glEffectBoxBlur.ts",
           "usesOpaqueHostValues": true
         },
@@ -8398,7 +8273,7 @@
           ],
           "declarations": 4,
           "module": "gl_effect_program_cache",
-          "outputSha256": "sha256:ac40fdd0face7196645df0fed309c1d32749d0cab7614b8d994655f10bb6675c",
+          "outputSha256": "sha256:8d3d8d515b77e7354f0539750c0cb61f58bbd0e9c73020f8c608f9c03d25d108",
           "source": "upstream/packages/effects-gl/src/glEffectProgramCache.ts",
           "usesOpaqueHostValues": true
         },
@@ -8416,7 +8291,7 @@
           ],
           "declarations": 9,
           "module": "gl_effect_tint_shader",
-          "outputSha256": "sha256:f2957906d5d33ca4a00780a364e382fcdb1a22070985d173710fe96ebe1562e6",
+          "outputSha256": "sha256:eea6436065946293d744080beadb7ec73e691e812fc612a9585e00569285c56c",
           "source": "upstream/packages/effects-gl/src/glEffectTintShader.ts",
           "usesOpaqueHostValues": true
         },
@@ -8454,7 +8329,7 @@
           ],
           "declarations": 13,
           "module": "gl_render_effect_registrar",
-          "outputSha256": "sha256:e65eeabe2e0bdc1736b417497a720061acf51cb933c337bc363c37651bc9a98b",
+          "outputSha256": "sha256:b0ac1d675ba1ee63326c7cc6655d6958fb6c22c959bdc4e0eff0d561a2fdd263",
           "source": "upstream/packages/effects-gl/src/glRenderEffectRegistrar.ts",
           "usesOpaqueHostValues": false
         },
@@ -9045,7 +8920,7 @@
           ],
           "declarations": 12,
           "module": "wgpu_effect_blit_shader",
-          "outputSha256": "sha256:8f75b4ba23be8d32f3038ae0962c99f2fc984ecb9e27faab4e609d74161880c0",
+          "outputSha256": "sha256:603c2233949702bacd6f7d94c9df3d62e256192b5dd5803aa5290d6418e1c1c2",
           "source": "upstream/packages/effects-wgpu/src/wgpuEffectBlitShader.ts",
           "usesOpaqueHostValues": false
         },
@@ -9060,7 +8935,7 @@
           ],
           "declarations": 6,
           "module": "wgpu_effect_box_blur",
-          "outputSha256": "sha256:a445639351a7d4cb71223e586b5e738cd306f6b34cb352e076811ad41d03263b",
+          "outputSha256": "sha256:324bf61bafd2165b33751ef0cd5a77288a10767b506b34713499927b0741b03c",
           "source": "upstream/packages/effects-wgpu/src/wgpuEffectBoxBlur.ts",
           "usesOpaqueHostValues": false
         },
@@ -9073,7 +8948,7 @@
           ],
           "declarations": 4,
           "module": "wgpu_effect_gradient_ramp",
-          "outputSha256": "sha256:103dfa17570fadb51c8421f6cad3dadc550c1c98e454272edffa1497cec7266f",
+          "outputSha256": "sha256:f951afb332977fa8fefbb633232d61b782bd7c0b1df4a9abac557eb8195d8464",
           "source": "upstream/packages/effects-wgpu/src/wgpuEffectGradientRamp.ts",
           "usesOpaqueHostValues": true
         },
@@ -9084,7 +8959,7 @@
           ],
           "declarations": 2,
           "module": "wgpu_effect_program_cache",
-          "outputSha256": "sha256:31635ab06afdb46ca73afc77e60c163bacf56178c79441c7a36205727018a285",
+          "outputSha256": "sha256:ff879b752c13d1d3ad3721ea261fba7379c0ca30a50e1d093e2687d81a29ec46",
           "source": "upstream/packages/effects-wgpu/src/wgpuEffectProgramCache.ts",
           "usesOpaqueHostValues": false
         },
@@ -9106,7 +8981,7 @@
           ],
           "declarations": 13,
           "module": "wgpu_effect_tint_shader",
-          "outputSha256": "sha256:b8675f31a94b71fa11516592e4fdec33316fc2420ec05e2ca0daa2b7f252a200",
+          "outputSha256": "sha256:b522505143f88a2e984a745790930ae6e5ad39911e06b69f2ac67143157c50f1",
           "source": "upstream/packages/effects-wgpu/src/wgpuEffectTintShader.ts",
           "usesOpaqueHostValues": false
         },
@@ -9140,7 +9015,7 @@
           ],
           "declarations": 8,
           "module": "wgpu_render_effect_registrants",
-          "outputSha256": "sha256:a3cedd5aaa44a8a79d919527cca268c37016c0de1b5ed8f3c0af313079e14008",
+          "outputSha256": "sha256:5c398434454d91f17a58cb2043efbbd1818a483a2fccb67ef31a523c0b975644",
           "source": "upstream/packages/effects-wgpu/src/wgpuRenderEffectRegistrants.ts",
           "usesOpaqueHostValues": false
         },
@@ -10080,7 +9955,7 @@
           ],
           "declarations": 5,
           "module": "matrix3_pool",
-          "outputSha256": "sha256:a5a07769ec187ea9936ce6c409e3e04309a987a97b7bc19608fa5166bc42d9a9",
+          "outputSha256": "sha256:0ce1682126eb3420bfe2ae18f839ca161ee8fead74536d2b749ae1d02597c090",
           "source": "upstream/packages/geometry/src/matrix3Pool.ts",
           "usesOpaqueHostValues": false
         },
@@ -10154,7 +10029,7 @@
           ],
           "declarations": 5,
           "module": "matrix4_pool",
-          "outputSha256": "sha256:a28fe32cbf438583fd2f01dc1c0ffeb05da5f1d3f5d940d31036cda0f941a83b",
+          "outputSha256": "sha256:ef0affc9c410cdbcc83bf2ae26e50d09ec3bcd41512dc3d2ab899d354e8f079d",
           "source": "upstream/packages/geometry/src/matrix4Pool.ts",
           "usesOpaqueHostValues": false
         },
@@ -10168,7 +10043,7 @@
           ],
           "declarations": 5,
           "module": "matrix_pool",
-          "outputSha256": "sha256:32cac4e06e38f03290a1924114385f8a95803a65184e2b92b43c8549c9a9d18e",
+          "outputSha256": "sha256:65f4695aee02dcf209e8217802b14331e625e353944d8a4972ea888cabe37eb2",
           "source": "upstream/packages/geometry/src/matrixPool.ts",
           "usesOpaqueHostValues": false
         },
@@ -10249,7 +10124,7 @@
           ],
           "declarations": 5,
           "module": "quaternion_pool",
-          "outputSha256": "sha256:138da03f7ff95f904d007bc2387937cf65601c228cff898dc84ccaca13128b6c",
+          "outputSha256": "sha256:e8e929d3bb75d52b1ab7b5452f0763506910685464cb9ef224c6907b490eaabe",
           "source": "upstream/packages/geometry/src/quaternionPool.ts",
           "usesOpaqueHostValues": false
         },
@@ -10330,7 +10205,7 @@
           ],
           "declarations": 5,
           "module": "rectangle_pool",
-          "outputSha256": "sha256:33251a10e578b6740bb44008efc11fce9cfab825661385a2d47fef0958baae2c",
+          "outputSha256": "sha256:59dc7476a2e71c2bcd5fa0bda230945692302da62661fb7c3a37cf0af2048913",
           "source": "upstream/packages/geometry/src/rectanglePool.ts",
           "usesOpaqueHostValues": false
         },
@@ -10482,7 +10357,7 @@
           ],
           "declarations": 5,
           "module": "vector3_pool",
-          "outputSha256": "sha256:af593494c6692839d9814265a8cf6039e3dd4be1740df9ca326e985f4825c676",
+          "outputSha256": "sha256:31ade946fa98b1361b3f5713f10d38014a56ea7d56487c99b756ea72b9fb6db0",
           "source": "upstream/packages/geometry/src/vector3Pool.ts",
           "usesOpaqueHostValues": false
         },
@@ -10538,7 +10413,7 @@
           ],
           "declarations": 5,
           "module": "vector4_pool",
-          "outputSha256": "sha256:09de11cbfd7ade690746421ff0c0d4207085a35c2b1c2f1f101ecb0ad60f5bf9",
+          "outputSha256": "sha256:3091b343606da89b568563b909291e2568ad18fceebd6df12676f2d3309392a0",
           "source": "upstream/packages/geometry/src/vector4Pool.ts",
           "usesOpaqueHostValues": false
         }
@@ -11037,7 +10912,7 @@
           ],
           "declarations": 7,
           "module": "glyph_rasterizer_backend",
-          "outputSha256": "sha256:c6d4d2aa858936e7a31c437a4ac2f960ab87c918028b07429012cd7ff10ee451",
+          "outputSha256": "sha256:d8dd5b7984f70bdfc85a6fb5b55d3f5cd7c1e235808b76633b805c1013810840",
           "source": "upstream/packages/glyphatlas/src/glyphRasterizerBackend.ts",
           "usesOpaqueHostValues": true
         },
@@ -11138,7 +11013,7 @@
           ],
           "declarations": 15,
           "module": "haptics",
-          "outputSha256": "sha256:afff96011ea5e097bdfa517f89b8db45b83c6b9578e8d5948221f1bd8fbc54cb",
+          "outputSha256": "sha256:57660dc976ebcc75a89b25b1618efd20dc685b6e76d13d6701d263147f6a570b",
           "source": "upstream/packages/haptics/src/haptics.ts",
           "usesOpaqueHostValues": false
         },
@@ -11960,7 +11835,7 @@
           ],
           "declarations": 69,
           "module": "input_manager",
-          "outputSha256": "sha256:0d4ea5da9bcec33c5ac1ad96b32d7a28a11c799297b04d10486ff72698f5e961",
+          "outputSha256": "sha256:bc0b0a05ad972eace1ff8b335e51950c297a485276aedae1744301457bd77270",
           "source": "upstream/packages/input/src/inputManager.ts",
           "usesOpaqueHostValues": true
         }
@@ -12263,7 +12138,7 @@
           ],
           "declarations": 57,
           "module": "interaction_manager",
-          "outputSha256": "sha256:3caac55e5afae6ca753f1c7af27e836a550bf5e4a3a6a5864ebbed7505b85d5f",
+          "outputSha256": "sha256:2716a33fb0529727c12e39b05c9742d65119e44ede989a7b78c92d4a2d9e384c",
           "source": "upstream/packages/interaction/src/interactionManager.ts",
           "usesOpaqueHostValues": true
         },
@@ -12765,7 +12640,7 @@
           ],
           "declarations": 27,
           "module": "keyboard",
-          "outputSha256": "sha256:3d229cc0a4663d42efb0e929a80b882a48e387af8e711da0837b937f2eb00c5f",
+          "outputSha256": "sha256:1061153b50c89a19856cd7a6e76ff0bbd6eda04ba41ce8e6ea6890bc50d0d2e7",
           "source": "upstream/packages/keyboard/src/keyboard.ts",
           "usesOpaqueHostValues": true
         }
@@ -12863,7 +12738,7 @@
           ],
           "declarations": 16,
           "module": "lifecycle",
-          "outputSha256": "sha256:66403a55a4d9a58cc17eea6259fd413fa76bbefb0d830d5aa2eacb1dea59804a",
+          "outputSha256": "sha256:b4d0bdd6d8a1cbbbb06d874e0887f1c7ac1cbac66c0fe61b9493befcb9755a3c",
           "source": "upstream/packages/lifecycle/src/lifecycle.ts",
           "usesOpaqueHostValues": true
         }
@@ -15507,66 +15382,6 @@
             "source": "generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs"
           },
           {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs"
-          },
-          {
             "code": "E0277",
             "message": "cannot multiply `u32` by `f64`",
             "source": "generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs"
@@ -16233,7 +16048,7 @@
           ],
           "declarations": 9,
           "module": "mesh_geometry_compute",
-          "outputSha256": "sha256:939153ae94ebc84cee9da0f103864f6e1ebe14bde5783f41c080473a119a8304",
+          "outputSha256": "sha256:69b91b826f107334d770927208cce7e4a4739e7b79b308ded6902c17463b8d0e",
           "source": "upstream/packages/mesh/src/meshGeometryCompute.ts",
           "usesOpaqueHostValues": false
         },
@@ -16428,15 +16243,9 @@
       "candidate": {
         "compileDiagnostics": [],
         "path": "generated/candidates/flighthq-motionpath",
-        "status": "dependency-blocked",
+        "status": "compiled",
         "syntaxCheckedSources": 8,
-        "unresolvedDependencies": [
-          {
-            "candidateStatus": "compile-blocked",
-            "package": "@flighthq/path",
-            "status": "emittable"
-          }
-        ]
+        "unresolvedDependencies": []
       },
       "crate": "flighthq-motionpath",
       "dependencies": [
@@ -19742,8 +19551,8 @@
       "blockers": [
         {
           "diagnostics": [],
-          "fingerprint": "sha256:d01ddd945ce10e02e65609e2aef6076a42c0f5ef0f3fc7672ac5c49ad8a8ef06",
-          "reason": "Generated crate is missing 23 of 79 upstream exports; re-export or declaration synthesis is required.",
+          "fingerprint": "sha256:b6ee4fc2d5d125e9374ed8e9c7d6a223eb69145c03e97df8582dabd8be8fd668",
+          "reason": "Generated crate is missing 25 of 79 upstream exports; re-export or declaration synthesis is required.",
           "source": "upstream/packages/particles-formats/src",
           "stage": "package"
         },
@@ -19773,6 +19582,13 @@
           "fingerprint": "sha256:447d60397b896885bcf33c00854a83cc6a2d66707ea0928b8c6a4cf04f02312b",
           "reason": "rawToDocument: object literal requires an inferred structural type (target={\"kind\":\"primitive\",\"name\":\"Float\"}, properties=low,high)",
           "source": "upstream/packages/particles-formats/src/spineParse.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:b9e414da2ad5095a9fdb19227acb6cea7c38915ba4a161a5404452f5a3063b79",
+          "reason": "serializeSpineParticle: JSON.stringify requires a portable scalar or structural array",
+          "source": "upstream/packages/particles-formats/src/spineSerialize.ts",
           "stage": "emission"
         },
         {
@@ -19818,7 +19634,7 @@
           ],
           "declarations": 3,
           "module": "detect",
-          "outputSha256": "sha256:a7f3e6f71a914a7dc4641d986de2905673b49f36e58b8ea847f5e4259e0bd9e8",
+          "outputSha256": "sha256:0217ba7687f4c360e9cbda70af780d7a976de212c8171f74a0be95aee2ac39aa",
           "source": "upstream/packages/particles-formats/src/detect.ts",
           "usesOpaqueHostValues": true
         },
@@ -19898,7 +19714,7 @@
           ],
           "declarations": 10,
           "module": "particle_designer_serialize",
-          "outputSha256": "sha256:41b6ff185d4c2d44a640a1fe2df9dfc6afb603b6721eebddee6dbe0939ca615c",
+          "outputSha256": "sha256:de4640d4b91aad3d9273a5bd81ee6d7ff787ca5e43f5ceef0f1e590c7278f17a",
           "source": "upstream/packages/particles-formats/src/particleDesignerSerialize.ts",
           "usesOpaqueHostValues": false
         },
@@ -19920,7 +19736,7 @@
           ],
           "declarations": 13,
           "module": "pixi_parse",
-          "outputSha256": "sha256:4bd754638ebfd81337db5d0fbc06cdd7dcee7a0c72cb212baf1866d9ec8ca632",
+          "outputSha256": "sha256:247acdf690429c361a40d3dd02ed6c10d1d6328e2d9bea5a143d37d76ba25465",
           "source": "upstream/packages/particles-formats/src/pixiParse.ts",
           "usesOpaqueHostValues": true
         },
@@ -19950,22 +19766,6 @@
         },
         {
           "declarationNames": [
-            "RAD2DEG",
-            "collectSpineSerializeWarnings",
-            "configToDocument",
-            "configToSpineBlendMode",
-            "rgbToHex",
-            "serializeSpineParticle",
-            "serializeSpineParticleDocument"
-          ],
-          "declarations": 7,
-          "module": "spine_serialize",
-          "outputSha256": "sha256:08b5eb8a4793c0d331dbd4286118894c74f436b91e2edab4bf82645bbfb26803",
-          "source": "upstream/packages/particles-formats/src/spineSerialize.ts",
-          "usesOpaqueHostValues": false
-        },
-        {
-          "declarationNames": [
             "StarlingPexColor",
             "StarlingPexDocument"
           ],
@@ -19990,7 +19790,7 @@
           ],
           "declarations": 10,
           "module": "starling_pex_serialize",
-          "outputSha256": "sha256:4d971c6bbd3d85cd052d6ba926e920bc9069bab76c88e947c298a9638ddad6a6",
+          "outputSha256": "sha256:0b130b09ccf56a3680de5a7b5d4ef6041b2ed9264a5f31e6d3817bd5151d82f8",
           "source": "upstream/packages/particles-formats/src/starlingPexSerialize.ts",
           "usesOpaqueHostValues": false
         },
@@ -20027,7 +19827,7 @@
           ],
           "declarations": 28,
           "module": "unity_parse",
-          "outputSha256": "sha256:10026e65a24fffe20336db605623a01dbd33913da15abb95289c60382a902c48",
+          "outputSha256": "sha256:021ebe2772c00db7ecb9c4a796c7c26a75993f7dd8d023bc3c8809c83090a157",
           "source": "upstream/packages/particles-formats/src/unityParse.ts",
           "usesOpaqueHostValues": true
         },
@@ -20109,8 +19909,6 @@
         "registerParticleFormat",
         "serializeParticleDesignerPlist",
         "serializeParticleDesignerPlistDocument",
-        "serializeSpineParticle",
-        "serializeSpineParticleDocument",
         "serializeStarlingPex",
         "serializeStarlingPexDocument",
         "unregisterParticleFormat"
@@ -20137,6 +19935,8 @@
         "parseStarlingPexDocument",
         "serializeLibgdxParticle",
         "serializeLibgdxParticleDocument",
+        "serializeSpineParticle",
+        "serializeSpineParticleDocument",
         "serializeUnityParticle",
         "serializeUnityParticleDocument"
       ],
@@ -20160,85 +19960,9 @@
       "attemptedSources": 23,
       "blockers": [],
       "candidate": {
-        "compileDiagnostics": [
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-path/src/copy_path.rs"
-          },
-          {
-            "code": "E0600",
-            "message": "cannot apply unary operator `!` to type `f64`",
-            "source": "generated/candidates/flighthq-path/src/decimate_path.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-path/src/flatten_path.rs"
-          },
-          {
-            "code": "E0599",
-            "message": "no method named `lock` found for type `f64` in the current scope",
-            "source": "generated/candidates/flighthq-path/src/get_path_bounds.rs"
-          },
-          {
-            "code": "E0599",
-            "message": "no method named `lock` found for type `f64` in the current scope",
-            "source": "generated/candidates/flighthq-path/src/get_path_bounds.rs"
-          },
-          {
-            "code": "E0599",
-            "message": "no method named `lock` found for type `f64` in the current scope",
-            "source": "generated/candidates/flighthq-path/src/get_path_bounds.rs"
-          },
-          {
-            "code": "E0599",
-            "message": "no method named `lock` found for type `f64` in the current scope",
-            "source": "generated/candidates/flighthq-path/src/get_path_bounds.rs"
-          },
-          {
-            "code": "E0277",
-            "message": "expected a `FnMut(f64, f64)` closure, found `Arc<std::sync::Mutex<Box<(dyn FnMut(f64, f64) + Send + 'static)>>>`",
-            "source": "generated/candidates/flighthq-path/src/get_path_bounds.rs"
-          },
-          {
-            "code": "E0599",
-            "message": "no method named `lock` found for type `f64` in the current scope",
-            "source": "generated/candidates/flighthq-path/src/get_path_bounds.rs"
-          },
-          {
-            "code": "E0599",
-            "message": "no method named `lock` found for type `f64` in the current scope",
-            "source": "generated/candidates/flighthq-path/src/get_path_bounds.rs"
-          },
-          {
-            "code": "E0599",
-            "message": "no method named `lock` found for type `f64` in the current scope",
-            "source": "generated/candidates/flighthq-path/src/get_path_bounds.rs"
-          },
-          {
-            "code": "E0599",
-            "message": "no method named `lock` found for type `f64` in the current scope",
-            "source": "generated/candidates/flighthq-path/src/get_path_bounds.rs"
-          },
-          {
-            "code": "E0599",
-            "message": "no method named `lock` found for type `f64` in the current scope",
-            "source": "generated/candidates/flighthq-path/src/get_path_bounds.rs"
-          },
-          {
-            "code": "E0599",
-            "message": "no method named `is_some` found for type `bool` in the current scope",
-            "source": "generated/candidates/flighthq-path/src/stroke_path.rs"
-          },
-          {
-            "code": "E0070",
-            "message": "invalid left-hand side of assignment",
-            "source": "generated/candidates/flighthq-path/src/stroke_path.rs"
-          }
-        ],
+        "compileDiagnostics": [],
         "path": "generated/candidates/flighthq-path",
-        "status": "compile-blocked",
+        "status": "compiled",
         "syntaxCheckedSources": 23,
         "unresolvedDependencies": []
       },
@@ -20290,7 +20014,7 @@
           ],
           "declarations": 2,
           "module": "copy_path",
-          "outputSha256": "sha256:4112e5f0a10eab9ecbad8d2a7f5757bd35966503941c24f817f5ae51e41b3f34",
+          "outputSha256": "sha256:b975385e6c8dec8e36a8db98dc727452c310da7f355adf2f47471d835733d1b4",
           "source": "upstream/packages/path/src/copyPath.ts",
           "usesOpaqueHostValues": false
         },
@@ -20314,7 +20038,7 @@
           ],
           "declarations": 2,
           "module": "decimate_path",
-          "outputSha256": "sha256:23818ca65d0162bc75116dffa2f4d152192440732b331c07aff1289d2e14e28e",
+          "outputSha256": "sha256:1c978ef81421d7612718dbe84359c0795c6ad7d6dbce9779ed676a10f15b7e31",
           "source": "upstream/packages/path/src/decimatePath.ts",
           "usesOpaqueHostValues": false
         },
@@ -20349,7 +20073,7 @@
           ],
           "declarations": 6,
           "module": "flatten_path",
-          "outputSha256": "sha256:4500fd7ad5342fd42e61acdcfbd1dccaa66374d663ecc590ae741f29eecca6b0",
+          "outputSha256": "sha256:12174bd71ce28f312579676b8dcd9b4ecb9ae642e029d654703b0d0c2c66194b",
           "source": "upstream/packages/path/src/flattenPath.ts",
           "usesOpaqueHostValues": false
         },
@@ -20375,7 +20099,7 @@
           ],
           "declarations": 7,
           "module": "get_path_bounds",
-          "outputSha256": "sha256:f3f8a1bd184d4ed1e169b30617bf8e45fc96f90c8385e1fe192cf4fb33c0bc97",
+          "outputSha256": "sha256:43cbabae9e5a57c9fd4738baf41da6be8599a1a1470b2b548344dffda8ee3e3d",
           "source": "upstream/packages/path/src/getPathBounds.ts",
           "usesOpaqueHostValues": false
         },
@@ -20502,7 +20226,7 @@
           ],
           "declarations": 7,
           "module": "path_mesh_pool",
-          "outputSha256": "sha256:16ccacda7177b3972a8e46726980d24db09c51857b7114fe848e8813590e8143",
+          "outputSha256": "sha256:df716c51e1aebfa82d7438193c06f64722bd4c2a2334eacf09868a998250a979",
           "source": "upstream/packages/path/src/pathMeshPool.ts",
           "usesOpaqueHostValues": false
         },
@@ -20516,7 +20240,7 @@
           ],
           "declarations": 5,
           "module": "reverse_path",
-          "outputSha256": "sha256:42a75c134d9fd6378bbda843da132ab5df3c1a2e357022ee8190412c41b92f12",
+          "outputSha256": "sha256:d67c64ad821107214c2ad02369932485db86f41f7d37a673bc253837e8b467ac",
           "source": "upstream/packages/path/src/reversePath.ts",
           "usesOpaqueHostValues": false
         },
@@ -20538,7 +20262,7 @@
           ],
           "declarations": 13,
           "module": "stroke_path",
-          "outputSha256": "sha256:b8ffcd2187b3eb6269c0128c4eb3833675fab52d68442d2dcbe32ccfeba932ca",
+          "outputSha256": "sha256:b3c5db20e9d7a76b3546c002cf48f0f809fb1762ab7f23f178084d08d8a6ffb9",
           "source": "upstream/packages/path/src/strokePath.ts",
           "usesOpaqueHostValues": false
         },
@@ -20743,7 +20467,7 @@
           ],
           "declarations": 4,
           "module": "path_boolean_backend",
-          "outputSha256": "sha256:68fe3acbc939cb6b5b020651e5b1af4bc160853fcb3f0875c3e40d44d13991da",
+          "outputSha256": "sha256:426edb45bcb260a327af81c12bd70d129926d1032f759f978851d67c66d400a7",
           "source": "upstream/packages/path-boolean/src/pathBooleanBackend.ts",
           "usesOpaqueHostValues": false
         },
@@ -20818,17 +20542,322 @@
       "attemptedSources": 2,
       "blockers": [],
       "candidate": {
-        "compileDiagnostics": [],
-        "path": "generated/candidates/flighthq-path-formats",
-        "status": "dependency-blocked",
-        "syntaxCheckedSources": 2,
-        "unresolvedDependencies": [
+        "compileDiagnostics": [
           {
-            "candidateStatus": "compile-blocked",
-            "package": "@flighthq/path",
-            "status": "emittable"
+            "code": "E0425",
+            "message": "cannot find value `number` in this scope",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `char_code_at` on type `std::string::String`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "the type `str` cannot be indexed by `usize`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "the type `str` cannot be indexed by `usize`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "the type `str` cannot be indexed by `usize`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "the type `str` cannot be indexed by `usize`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "the type `str` cannot be indexed by `usize`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "the type `str` cannot be indexed by `usize`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "the type `str` cannot be indexed by `usize`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "the type `str` cannot be indexed by `usize`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "the type `str` cannot be indexed by `usize`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "the type `str` cannot be indexed by `usize`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "the type `str` cannot be indexed by `usize`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "the type `str` cannot be indexed by `usize`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "the type `str` cannot be indexed by `usize`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `slice` on type `std::string::String`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "the type `str` cannot be indexed by `usize`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "the type `str` cannot be indexed by `usize`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "the type `str` cannot be indexed by `usize`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "the type `str` cannot be indexed by `usize`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "cannot add `Option<f64>` to `f64`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "cannot add `Option<f64>` to `f64`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "cannot add `Option<f64>` to `f64`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "cannot add `Option<f64>` to `f64`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "cannot add `Option<f64>` to `f64`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "cannot add `Option<f64>` to `f64`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "cannot add `Option<f64>` to `f64`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "cannot add `Option<f64>` to `f64`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "cannot add `Option<f64>` to `f64`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "cannot add `Option<f64>` to `f64`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "cannot add `Option<f64>` to `f64`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "cannot add `Option<f64>` to `f64`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "cannot add `Option<f64>` to `f64`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "cannot add `Option<f64>` to `f64`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "cannot add `Option<f64>` to `f64`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "cannot add `Option<f64>` to `f64`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "cannot add `Option<f64>` to `f64`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "cannot add `Option<f64>` to `f64`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "cannot add `Option<f64>` to `f64`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "cannot add `Option<f64>` to `f64`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "cannot add `Option<f64>` to `f64`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "cannot add `Option<f64>` to `f64`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "cannot add `Option<f64>` to `f64`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "cannot add `Option<f64>` to `f64`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0369",
+            "message": "cannot multiply `Option<f64>` by `f64`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs"
+          },
+          {
+            "code": "E0615",
+            "message": "attempted to take value of method `join` on type `Vec<std::string::String>`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find function `string` in this scope",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find function `string` in this scope",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `index_of` on type `&'static str`",
+            "source": "generated/candidates/flighthq-path-formats/src/svg_path_data.rs"
           }
-        ]
+        ],
+        "path": "generated/candidates/flighthq-path-formats",
+        "status": "compile-blocked",
+        "syntaxCheckedSources": 2,
+        "unresolvedDependencies": []
       },
       "crate": "flighthq-path-formats",
       "dependencies": [
@@ -21048,7 +21077,7 @@
           ],
           "declarations": 30,
           "module": "pick_scene",
-          "outputSha256": "sha256:9855caa28063dff85c848282584e8e143526bd045e4a0b111253ed467ca3ed56",
+          "outputSha256": "sha256:a48ca81702c7408b99b7d4595e7874f5d920ff98d6cbcd5a61f6bddb5e5a401a",
           "source": "upstream/packages/picking/src/pickScene.ts",
           "usesOpaqueHostValues": true
         }
@@ -21157,7 +21186,7 @@
           ],
           "declarations": 19,
           "module": "platform",
-          "outputSha256": "sha256:093b9af5b955ce8c0b14c520db55cddb7652d9ea1931d47194b6c284f5b487d8",
+          "outputSha256": "sha256:595a7055c4345b7aefb717f751c028fb95c1edcd5292874027a81cbda288e22d",
           "source": "upstream/packages/platform/src/platform.ts",
           "usesOpaqueHostValues": true
         }
@@ -21202,35 +21231,9 @@
       "attemptedSources": 2,
       "blockers": [],
       "candidate": {
-        "compileDiagnostics": [
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-power/src/power.rs"
-          },
-          {
-            "code": "E0609",
-            "message": "no field `then` on type `&Promise<WebBatteryManager>`",
-            "source": "generated/candidates/flighthq-power/src/power.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-power/src/power.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-power/src/power.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-power/src/power.rs"
-          }
-        ],
+        "compileDiagnostics": [],
         "path": "generated/candidates/flighthq-power",
-        "status": "compile-blocked",
+        "status": "compiled",
         "syntaxCheckedSources": 2,
         "unresolvedDependencies": []
       },
@@ -21289,7 +21292,7 @@
           ],
           "declarations": 28,
           "module": "power",
-          "outputSha256": "sha256:a4681d6c5479c6994267d4574da401d4a0f358b235640636526c71112045752c",
+          "outputSha256": "sha256:41330a55ae4b4371f854d208eec4dc6ce414f038d225ff68a88d59cadaadb71a",
           "source": "upstream/packages/power/src/power.ts",
           "usesOpaqueHostValues": true
         }
@@ -21481,7 +21484,7 @@
           ],
           "declarations": 25,
           "module": "protocol",
-          "outputSha256": "sha256:297030906510810df0f8bab4a98479c5f6a89b0f4bf1a39b0a8a7111bf7a586a",
+          "outputSha256": "sha256:b738d9d058f9a5593ba184a593fde6760a0861b00d27a5ae4031cfd7bf84f469",
           "source": "upstream/packages/protocol/src/protocol.ts",
           "usesOpaqueHostValues": true
         }
@@ -21709,7 +21712,7 @@
           ],
           "declarations": 17,
           "module": "render_proxy",
-          "outputSha256": "sha256:95535c7cfc57137bfab5e78bd6ee6473bc5a95530443aacb27b9dfcd9db0d48f",
+          "outputSha256": "sha256:551a44b3079495cd57503cebb8686d0b6a08081e87dbb4a3c419765987736c01",
           "source": "upstream/packages/render/src/renderProxy.ts",
           "usesOpaqueHostValues": true
         },
@@ -21820,7 +21823,7 @@
           ],
           "declarations": 18,
           "module": "scene_render",
-          "outputSha256": "sha256:c1b1e169c79e3d432c54f6b831ae82f1d04c4220eaed6ef5f2f52af8fc6b4dbb",
+          "outputSha256": "sha256:ad70d3912a17d141f034c822b5c328a19797a0c8b1138363afd113b2e15ef772",
           "source": "upstream/packages/render/src/sceneRender.ts",
           "usesOpaqueHostValues": true
         }
@@ -22046,9 +22049,9 @@
           ],
           "declarations": 5,
           "module": "gl_linear_to_srgb_pass",
-          "outputSha256": "sha256:38ea44a2d4bdaa0544ccd7d773002e84bfe9ab7924ed6b520e44677468d54f34",
+          "outputSha256": "sha256:7df16b1710b03cd7aa9438fabd54cbbd9476d1504f8af64d243211bdaac3eeb8",
           "source": "upstream/packages/render-gl/src/glLinearToSrgbPass.ts",
-          "usesOpaqueHostValues": false
+          "usesOpaqueHostValues": true
         },
         {
           "declarationNames": [
@@ -22072,9 +22075,9 @@
           ],
           "declarations": 5,
           "module": "gl_present_render_target",
-          "outputSha256": "sha256:ec7da6cbbba154646b377ce1fd7a70ec74e362c68dc0fbabfdc086938fc301e5",
+          "outputSha256": "sha256:1a110396ff97bc95a66e28187812122453ba6f1e399da75e226dfadcecf1512b",
           "source": "upstream/packages/render-gl/src/glPresentRenderTarget.ts",
-          "usesOpaqueHostValues": false
+          "usesOpaqueHostValues": true
         },
         {
           "declarationNames": [
@@ -22115,7 +22118,7 @@
           ],
           "declarations": 12,
           "module": "gl_render_target",
-          "outputSha256": "sha256:992710d61c3eeebee464ea5b32e3c157864f6ca41866eb48514be780c5610c4f",
+          "outputSha256": "sha256:6e5e9c7be9d2fdf8062311190491de47b9d3ea1c7462767ae30a9d489b49ee59",
           "source": "upstream/packages/render-gl/src/glRenderTarget.ts",
           "usesOpaqueHostValues": true
         },
@@ -22162,7 +22165,7 @@
           ],
           "declarations": 6,
           "module": "gl_shader_binding",
-          "outputSha256": "sha256:42730b05d3de63458b5cb6a3ef323d8df7889266198507c6c5c90af3ecd72c14",
+          "outputSha256": "sha256:acb6ac41180cc3228b0a756e88e2649f80197ce1d396371b93c8cff93bacf8e6",
           "source": "upstream/packages/render-gl/src/glShaderBinding.ts",
           "usesOpaqueHostValues": true
         },
@@ -23242,7 +23245,7 @@
           ],
           "declarations": 10,
           "module": "obj_parse",
-          "outputSha256": "sha256:92a1d3a18d0024fe0f165caa8712d2fee2db989ad342facf244d2f91dec4e8c4",
+          "outputSha256": "sha256:5f8fd94f42fa88e049fd9f0ed852a568e900cdbdbf14052f58e32e649fc74566",
           "source": "upstream/packages/scene-formats/src/objParse.ts",
           "usesOpaqueHostValues": true
         },
@@ -23714,7 +23717,7 @@
           ],
           "declarations": 24,
           "module": "gl_environment_ibl_bake",
-          "outputSha256": "sha256:846390a37bbc2d26e919d9f5dac3be191ca324719df73b6187a3c430a86ad0c9",
+          "outputSha256": "sha256:0c86659a4fecadc67bd16a58ab04f8cfed5ba2ef9241d5c8155bcf48e9a65241",
           "source": "upstream/packages/scene-gl/src/glEnvironmentIblBake.ts",
           "usesOpaqueHostValues": true
         },
@@ -23732,7 +23735,7 @@
           ],
           "declarations": 9,
           "module": "gl_environment_skybox",
-          "outputSha256": "sha256:b128322ad7167eb153d108fff8c661b84d8ae75d1a58ae753bfa66258656ae78",
+          "outputSha256": "sha256:eae6450ca7a748a86ce3f6c802b08b62ddcef8af36411ec34cb2cc077e0a14c3",
           "source": "upstream/packages/scene-gl/src/glEnvironmentSkybox.ts",
           "usesOpaqueHostValues": true
         },
@@ -23753,7 +23756,7 @@
           ],
           "declarations": 12,
           "module": "gl_lit_program",
-          "outputSha256": "sha256:d80be4b116cda2a15ecd7dfc64d14094eff9deabf57cf5c963afafa633025aaf",
+          "outputSha256": "sha256:f1fe6ce96299ba30640bd45f4326330b4d7346038a1c0f6d40d076c38a8ffcca",
           "source": "upstream/packages/scene-gl/src/glLitProgram.ts",
           "usesOpaqueHostValues": true
         },
@@ -23828,7 +23831,7 @@
           ],
           "declarations": 8,
           "module": "gl_mesh_upload",
-          "outputSha256": "sha256:f77a01aaec4590b9793fec4e73715b7821028bd0ed25c40fe35aea049a7baa3c",
+          "outputSha256": "sha256:1ef2dc8dacfb65a35d90c716996cdd43149289eb40c00065d40a485a9c2d0bd4",
           "source": "upstream/packages/scene-gl/src/glMeshUpload.ts",
           "usesOpaqueHostValues": true
         },
@@ -23853,7 +23856,7 @@
           ],
           "declarations": 16,
           "module": "gl_particle_emitter3_d",
-          "outputSha256": "sha256:080ce5aabc266ad5389770f72b25e242e58918715861462a4ff8588a9c770ac6",
+          "outputSha256": "sha256:8df8617b798bf2e632ce2170dc6b6b2a50e4e8a1b5b46454b4f0e038c64c5ba9",
           "source": "upstream/packages/scene-gl/src/glParticleEmitter3D.ts",
           "usesOpaqueHostValues": true
         },
@@ -23921,7 +23924,7 @@
           ],
           "declarations": 9,
           "module": "gl_scene_runtime",
-          "outputSha256": "sha256:0d4b585e7dfaafbe1b55964b44a080239e1d04a31d21f6834a77d1d2a25c5ced",
+          "outputSha256": "sha256:6b3c9a4f44ef75f29a6632887ca3d29740ac280ff2440a8e77897897a364c414",
           "source": "upstream/packages/scene-gl/src/glSceneRuntime.ts",
           "usesOpaqueHostValues": true
         },
@@ -24073,7 +24076,7 @@
           ],
           "declarations": 5,
           "module": "gl_wireframe_upload",
-          "outputSha256": "sha256:0ccb53a31fa0083f67c9be72048212e289bb9b67ec48222d7048ba25afbbe9e0",
+          "outputSha256": "sha256:23f09a24052e38027b49e22f1788d3acfb7bf5ef38f991daf614cbf9fff71233",
           "source": "upstream/packages/scene-gl/src/glWireframeUpload.ts",
           "usesOpaqueHostValues": true
         },
@@ -24724,7 +24727,7 @@
           ],
           "declarations": 9,
           "module": "resolve_scene_resources",
-          "outputSha256": "sha256:3c5975bd6bcce4d114020e593b02ffbac4fa3df261cbc2a8abf51875ce1e77e6",
+          "outputSha256": "sha256:8ebc3e0376cf754d989b93fe85c32f42207b2bbd1d985255dd6e0a62161c69e3",
           "source": "upstream/packages/scene-resources/src/resolveSceneResources.ts",
           "usesOpaqueHostValues": true
         },
@@ -25217,7 +25220,7 @@
           ],
           "declarations": 10,
           "module": "standard_pbr_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:0ac5fe35a637a98d7416da4370e005003d8ae50319bd0598b08e465873b4a850",
+          "outputSha256": "sha256:1d91c5dd24c434504e147ec16f91fe9de27407679df0457c6acfd3939bef24de",
           "source": "upstream/packages/scene-wgpu/src/standardPbrWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -25335,7 +25338,7 @@
           ],
           "declarations": 25,
           "module": "wgpu_environment_ibl_bake",
-          "outputSha256": "sha256:079da7863aba66c81773d1fe0821d43c944405997804f901c778cd4955a34d38",
+          "outputSha256": "sha256:2f1d0883029e840bc77c8ce6b46a5a8b2ff138ab1c7b94854c17a8e7c640186b",
           "source": "upstream/packages/scene-wgpu/src/wgpuEnvironmentIblBake.ts",
           "usesOpaqueHostValues": true
         },
@@ -25355,7 +25358,7 @@
           ],
           "declarations": 11,
           "module": "wgpu_environment_skybox",
-          "outputSha256": "sha256:663fce1aef7ec1f2a00cf9b77ec7231ddd6a96e05eaee0f03c7bd30a3111d044",
+          "outputSha256": "sha256:71111600ebd3203c3b2421292dbc1bee00856694dd9e2d80f9694430afad853d",
           "source": "upstream/packages/scene-wgpu/src/wgpuEnvironmentSkybox.ts",
           "usesOpaqueHostValues": true
         },
@@ -25409,7 +25412,7 @@
           ],
           "declarations": 7,
           "module": "wgpu_scene_runtime",
-          "outputSha256": "sha256:03dee3c415f6267923a7ff470d0de71811b42e9e006d248f3d032d92c61459a6",
+          "outputSha256": "sha256:b2f315812836f2f90b8da283b9ce202a1a4258fcb85c5582338e498cd28beab0",
           "source": "upstream/packages/scene-wgpu/src/wgpuSceneRuntime.ts",
           "usesOpaqueHostValues": true
         },
@@ -33325,7 +33328,7 @@
           ],
           "declarations": 3,
           "module": "get_mesh_skin_bounds",
-          "outputSha256": "sha256:705fa24da3807808bd9b70969209a6f39b44cbb8e8bf643ed8cb2bffb61bd530",
+          "outputSha256": "sha256:c5de6e68b7f1bf46dfea16ccd3267601b01f3b20dc538cff10589899d64a0fd5",
           "source": "upstream/packages/skeleton3d/src/getMeshSkinBounds.ts",
           "usesOpaqueHostValues": false
         },
@@ -33440,61 +33443,6 @@
       "blockers": [],
       "candidate": {
         "compileDiagnostics": [
-          {
-            "code": "E0425",
-            "message": "cannot find value `array` in this scope",
-            "source": "generated/candidates/flighthq-snapshot/src/capture_snapshot.rs"
-          },
-          {
-            "code": "E0425",
-            "message": "cannot find value `array` in this scope",
-            "source": "generated/candidates/flighthq-snapshot/src/equals_snapshot.rs"
-          },
-          {
-            "code": "E0425",
-            "message": "cannot find value `array` in this scope",
-            "source": "generated/candidates/flighthq-snapshot/src/equals_snapshot.rs"
-          },
-          {
-            "code": "E0425",
-            "message": "cannot find value `array` in this scope",
-            "source": "generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs"
-          },
-          {
-            "code": "E0425",
-            "message": "cannot find value `array` in this scope",
-            "source": "generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs"
-          },
-          {
-            "code": "E0425",
-            "message": "cannot find value `array` in this scope",
-            "source": "generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs"
-          },
-          {
-            "code": "E0425",
-            "message": "cannot find value `array` in this scope",
-            "source": "generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs"
-          },
-          {
-            "code": "E0425",
-            "message": "cannot find value `array` in this scope",
-            "source": "generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs"
-          },
-          {
-            "code": "E0425",
-            "message": "cannot find value `array` in this scope",
-            "source": "generated/candidates/flighthq-snapshot/src/restore_snapshot.rs"
-          },
-          {
-            "code": "E0425",
-            "message": "cannot find value `array` in this scope",
-            "source": "generated/candidates/flighthq-snapshot/src/restore_snapshot.rs"
-          },
-          {
-            "code": "E0425",
-            "message": "cannot find value `array` in this scope",
-            "source": "generated/candidates/flighthq-snapshot/src/restore_snapshot.rs"
-          },
           {
             "code": "E0107",
             "message": "type alias takes 0 generic arguments but 1 generic argument was supplied",
@@ -33827,7 +33775,7 @@
           ],
           "declarations": 2,
           "module": "capture_snapshot",
-          "outputSha256": "sha256:5f726d3f5acde5321a7d44d28d41efa8321b6dfbfd01b37f3eff9e82ae7ff12d",
+          "outputSha256": "sha256:eb205b27618840ce2b78c46c57650521c4f5e9a8f921b19f80a8a7fc16f524c9",
           "source": "upstream/packages/snapshot/src/captureSnapshot.ts",
           "usesOpaqueHostValues": true
         },
@@ -33838,7 +33786,7 @@
           ],
           "declarations": 2,
           "module": "equals_snapshot",
-          "outputSha256": "sha256:8b90c1bf243eba7ddda9378fc8b8cd677cbc5d95861f2a789d5d82731207a467",
+          "outputSha256": "sha256:9cc5497ebd6eb22f52cf61bb05cdfab7c1b8b15de38eb732f8087d7618b0d3dd",
           "source": "upstream/packages/snapshot/src/equalsSnapshot.ts",
           "usesOpaqueHostValues": true
         },
@@ -33860,7 +33808,7 @@
           ],
           "declarations": 5,
           "module": "interpolate_snapshots",
-          "outputSha256": "sha256:253bcd0bb53d60454d89b538a845b6344b2e2b45d161de5acfb05ca92d614d27",
+          "outputSha256": "sha256:05943f0f8eb543428938921481aa36ac99d92614cec02549c0664d6148a1c51d",
           "source": "upstream/packages/snapshot/src/interpolateSnapshots.ts",
           "usesOpaqueHostValues": true
         },
@@ -33872,7 +33820,7 @@
           ],
           "declarations": 3,
           "module": "restore_snapshot",
-          "outputSha256": "sha256:e355da097c5bdd6fe4f5678b6c8a75a006ea4be3e47941a0cedd3b30360d1fc7",
+          "outputSha256": "sha256:58f07e0d36bc85c0c6657890bb4aa6acb973d822d51716d5341426dafaac59e1",
           "source": "upstream/packages/snapshot/src/restoreSnapshot.ts",
           "usesOpaqueHostValues": true
         }
@@ -33983,7 +33931,7 @@
           ],
           "declarations": 14,
           "module": "socket",
-          "outputSha256": "sha256:f71af78c955773ce5c29ecd751794c7a9284abb8296e2b57de2c1845f2207e49",
+          "outputSha256": "sha256:1ff81e29c7fb867f3a7d0bb2d73dd4c0ed9da3cb1fee6bb4d8df5ec149b4c8ce",
           "source": "upstream/packages/socket/src/socket.ts",
           "usesOpaqueHostValues": true
         }
@@ -34367,7 +34315,7 @@
           ],
           "declarations": 38,
           "module": "quad_batch",
-          "outputSha256": "sha256:755c0453d06ad6d22f9f9f6c678cb22ef6b97415b871b74d0e09f07db25b3fba",
+          "outputSha256": "sha256:eb5836d7f6ec892a2c2ef5328ec216d675a554a5d2c40dc1e53861150da4612c",
           "source": "upstream/packages/sprite/src/quadBatch.ts",
           "usesOpaqueHostValues": true
         },
@@ -34662,7 +34610,7 @@
           ],
           "declarations": 24,
           "module": "spritesheet_player",
-          "outputSha256": "sha256:4bce7a4aaf92eb1f7b446d44ca2bce6e8b79d20619430305adcac79c9144f7c3",
+          "outputSha256": "sha256:c3648bc617d85037db0f95fd4ed5728e3a9006f679713321076924613dd3daa5",
           "source": "upstream/packages/spritesheet/src/spritesheetPlayer.ts",
           "usesOpaqueHostValues": false
         },
@@ -34807,7 +34755,7 @@
           ],
           "declarations": 7,
           "module": "aseprite_parse",
-          "outputSha256": "sha256:a593c500033dd373c4d2882bef7821beaf2e9e2792d9e774c7288463bb3ba054",
+          "outputSha256": "sha256:cfea66b62e497ad8df1c26565916c7532e43e51364373b854f85d6236764b442",
           "source": "upstream/packages/spritesheet-formats/src/asepriteParse.ts",
           "usesOpaqueHostValues": true
         },
@@ -34900,7 +34848,7 @@
           ],
           "declarations": 9,
           "module": "libgdx_atlas_parse",
-          "outputSha256": "sha256:faaff59e20c3da905a9b46461c64980a57cc8a16b3f09b6c45d46cfb26139383",
+          "outputSha256": "sha256:bac7b77d18ec36acd47afc006141274eaf4fe593c0593fda59f0b89f5a05504b",
           "source": "upstream/packages/spritesheet-formats/src/libgdxAtlasParse.ts",
           "usesOpaqueHostValues": true
         },
@@ -34935,7 +34883,7 @@
           ],
           "declarations": 14,
           "module": "spritesheet_detect",
-          "outputSha256": "sha256:b72604e678bdbe3164d52b8181de1354cbfe354d5448c656affda4277b58ef98",
+          "outputSha256": "sha256:1945665a3bbec678d2ecaa39ef6c29b75e7a0cd8fc9346f28f424ef8e0b62500",
           "source": "upstream/packages/spritesheet-formats/src/spritesheetDetect.ts",
           "usesOpaqueHostValues": false
         },
@@ -35846,7 +35794,7 @@
           ],
           "declarations": 20,
           "module": "markup_tag_registry",
-          "outputSha256": "sha256:956e493642c69d0a40df43a96ab4351a259365e43d7ec00c2b91ef0b6a735cac",
+          "outputSha256": "sha256:19d90ede6a910664a71d6a2cb47d7a1239cb9ffcf806b08d173f3f3e7cd717cc",
           "source": "upstream/packages/text-markup/src/markupTagRegistry.ts",
           "usesOpaqueHostValues": true
         }
@@ -36028,7 +35976,7 @@
           ],
           "declarations": 31,
           "module": "bidi_class_backend",
-          "outputSha256": "sha256:04a7503787e2d561904a4a59fda5c2c55ff694531fedc8d4c9d4db7f688336e7",
+          "outputSha256": "sha256:aeaf4948c5a8a77aaca838ffa3593651432ff87826359fc6118ba22842b59e17",
           "source": "upstream/packages/textbidi/src/bidiClassBackend.ts",
           "usesOpaqueHostValues": false
         },
@@ -36188,7 +36136,7 @@
           ],
           "declarations": 6,
           "module": "text_input",
-          "outputSha256": "sha256:9ace12a9eb93ffff3cb4d3a4f9aa8fff1cf611a78dbedf710df1e2f3526544cd",
+          "outputSha256": "sha256:ac2cd5d0123a8d2abd8aa9b65d3cd59f15ec85360109d13d304c6bb3f76802d7",
           "source": "upstream/packages/textinput/src/textInput.ts",
           "usesOpaqueHostValues": true
         },
@@ -36254,7 +36202,7 @@
           ],
           "declarations": 57,
           "module": "text_input_editing",
-          "outputSha256": "sha256:aa38321ae59698c341624822574a979c6b4b557c47e764744216538d3c53adb7",
+          "outputSha256": "sha256:45fd7efef1a8b9c9db084b50ef8e997cb865c577ce098c9f5ebfa2a21b96caf5",
           "source": "upstream/packages/textinput/src/textInputEditing.ts",
           "usesOpaqueHostValues": true
         },
@@ -36422,7 +36370,7 @@
           ],
           "declarations": 13,
           "module": "rich_text_content",
-          "outputSha256": "sha256:9f9c5a8499a1b356937bcc2f9628c1e5660421077733a3a25904785dcc198715",
+          "outputSha256": "sha256:f539bcf80c884132cc53ae6403f8d03c4de8c8fbd5c591ffb20e5573ba30074d",
           "source": "upstream/packages/textlayout/src/richTextContent.ts",
           "usesOpaqueHostValues": false
         },
@@ -36527,7 +36475,7 @@
           ],
           "declarations": 15,
           "module": "text_layout",
-          "outputSha256": "sha256:c032bb45d5ea6a7bb2998446d2dfef78d4ed94b7c8cc8056d4233268be54e421",
+          "outputSha256": "sha256:20a63f5f834820bc0e0cb1cafae064d2b400e6a795e592448f4f240fd06ec45e",
           "source": "upstream/packages/textlayout/src/textLayout.ts",
           "usesOpaqueHostValues": false
         },
@@ -36728,7 +36676,7 @@
           ],
           "declarations": 8,
           "module": "text_segmenter_backend",
-          "outputSha256": "sha256:9f9afa5d3019c46cf9628f42716428b69c4eb1e6987fe04784785d789fb4c392",
+          "outputSha256": "sha256:13f179eb709f6fb57b4695e6ae11b4452fdb4928ba6ada20e16e095123447bb5",
           "source": "upstream/packages/textsegment/src/textSegmenterBackend.ts",
           "usesOpaqueHostValues": true
         }
@@ -36895,7 +36843,7 @@
           ],
           "declarations": 4,
           "module": "text_shaper_signals",
-          "outputSha256": "sha256:b3099ff7403c26d3234ece9ddf71b723095d0729d0a422905439a837e1f1c6d3",
+          "outputSha256": "sha256:769d1d4a8d7fdec91c933b636e3f2a4ca0fa3b18d1f5f0214284553b6eb23cef",
           "source": "upstream/packages/textshaper/src/textShaperSignals.ts",
           "usesOpaqueHostValues": false
         }
@@ -37572,7 +37520,7 @@
           ],
           "declarations": 3,
           "module": "texture_atlas_aseprite_parse",
-          "outputSha256": "sha256:f9b39cbabdb6ae46187936a131402077cb9492a98ab5de0d7f88dba0eb0ab59f",
+          "outputSha256": "sha256:ba17605bfc62812809afb96253e1e9ad44bb467b3fae62ae3703d0a8c3a0559c",
           "source": "upstream/packages/textureatlas-formats/src/textureAtlasAsepriteParse.ts",
           "usesOpaqueHostValues": false
         },
@@ -37604,7 +37552,7 @@
           ],
           "declarations": 4,
           "module": "texture_atlas_detect",
-          "outputSha256": "sha256:8214c587b9aee3d8d70f39cafc8382a7cf4b7d6217063df9b6fce3923c4f1b42",
+          "outputSha256": "sha256:5b866685665f783a610c1e472d5ca76e3ac46289e67fbaf408d4ce2a00864afb",
           "source": "upstream/packages/textureatlas-formats/src/textureAtlasDetect.ts",
           "usesOpaqueHostValues": true
         },
@@ -37629,7 +37577,7 @@
           ],
           "declarations": 6,
           "module": "texture_atlas_packer_parse",
-          "outputSha256": "sha256:311d9f607e867f290d939f32becad306228e416d0a25b4599da32a22c1eca6bf",
+          "outputSha256": "sha256:8c2a9ea6eaa2a09ff77a49aba709758114950bcb71da69af8bdf00d0902e0983",
           "source": "upstream/packages/textureatlas-formats/src/textureAtlasPackerParse.ts",
           "usesOpaqueHostValues": false
         },
@@ -46553,11 +46501,6 @@
             "source": "generated/candidates/flighthq-useragent/src/user_agent.rs"
           },
           {
-            "code": "E0599",
-            "message": "no method named `is_some` found for type `bool` in the current scope",
-            "source": "generated/candidates/flighthq-useragent/src/user_agent.rs"
-          },
-          {
             "code": "E0308",
             "message": "mismatched types",
             "source": "generated/candidates/flighthq-useragent/src/user_agent.rs"
@@ -46655,7 +46598,7 @@
           ],
           "declarations": 9,
           "module": "user_agent",
-          "outputSha256": "sha256:d681a8d11eb046ed1bdd95624d139604f3ccee6bb202bf2b640effae1ea3b656",
+          "outputSha256": "sha256:e45063110edc2bc0842638c4aac16b29722e828b29f6daad7ffc7f0f76d6f219",
           "source": "upstream/packages/useragent/src/userAgent.ts",
           "usesOpaqueHostValues": true
         },
@@ -46776,7 +46719,7 @@
           ],
           "declarations": 18,
           "module": "velocity_field",
-          "outputSha256": "sha256:d2d94211617b53906b55226a3258fec0d816563a399aa5b2779468e95c0de440",
+          "outputSha256": "sha256:ee5bb92c3c1f99b4902cc973ab2ff20b539ee9a14a0c52538594a73c965e14be",
           "source": "upstream/packages/velocity/src/velocityField.ts",
           "usesOpaqueHostValues": true
         },
@@ -47268,15 +47211,15 @@
   "summary": {
     "blocked": 63,
     "candidateCompileBlocked": 20,
-    "candidateCompiled": 19,
-    "candidateDependencyBlocked": 22,
+    "candidateCompiled": 22,
+    "candidateDependencyBlocked": 19,
     "cultivated": 1,
     "eligible": 125,
     "emittable": 62,
     "excluded": 1,
     "hostBound": 4,
     "packages": 131,
-    "sourceBlockers": 323
+    "sourceBlockers": 324
   },
   "targets": [
     {

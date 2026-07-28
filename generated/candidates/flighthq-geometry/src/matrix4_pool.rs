@@ -32,7 +32,7 @@ pub fn acquire_matrix4() -> Matrix4 {
             None, None,
         ));
     }
-    return (m).clone().unwrap();
+    return ((m).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/geometry/src/matrix4Pool.ts:23 (sha256:5dcaf987f95f442d7dd2d9033eb31f460d0e123626f8ec1561c25215e75b0ffe)

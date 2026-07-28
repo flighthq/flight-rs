@@ -8,21 +8,32 @@
 
 use flighthq_types::{ColorBlindSimulationAdjustment, ColorBlindType};
 
+#[derive(Clone)]
+pub struct FlightOmitRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub type_: Option<ColorBlindType>,
+}
+impl PartialEq for FlightOmitRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 // Source: upstream/packages/adjustments/src/colorBlindSimulationAdjustment.ts:12 (sha256:4daf685ba89d32e62e8c11e84b0418c2b3c5692c9bdbff175e1be355c92d0765)
 #[derive(Clone)]
-struct CreateColorBlindSimulationAdjustmentRecord1 {
+struct CreateColorBlindSimulationAdjustmentRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateColorBlindSimulationAdjustmentRecord1 {
+impl PartialEq for CreateColorBlindSimulationAdjustmentRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 pub fn create_color_blind_simulation_adjustment(
-    options: Option<ColorBlindSimulationAdjustment>,
+    options: Option<FlightOmitRecord1>,
 ) -> ColorBlindSimulationAdjustment {
-    let options = options.unwrap_or(ColorBlindSimulationAdjustment {
+    let options = options.unwrap_or(FlightOmitRecord1 {
         __flight_identity: std::sync::Arc::new(()),
         type_: None,
     });
@@ -55,10 +66,14 @@ pub fn create_color_blind_simulation_adjustment(
         1.0_f64,
         0.0_f64,
     ];
-    return ColorBlindSimulationAdjustment {
-        kind: "ColorBlindSimulationAdjustment".to_owned(),
-        color_matrix: (color_matrix).clone(),
-        ..((options).clone()).clone()
+    return {
+        let __flight_spread_1 = options;
+        ColorBlindSimulationAdjustment {
+            __flight_identity: std::sync::Arc::new(()),
+            kind: "ColorBlindSimulationAdjustment".to_owned(),
+            color_matrix: (color_matrix).clone(),
+            type_: (__flight_spread_1.type_).clone(),
+        }
     };
 }
 

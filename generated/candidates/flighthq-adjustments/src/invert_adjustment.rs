@@ -8,19 +8,30 @@
 
 use flighthq_types::InvertAdjustment;
 
-// Source: upstream/packages/adjustments/src/invertAdjustment.ts:6 (sha256:d16be5a43825d22ec95f513b635f5e8a8f26441525c5b2aee10ed8895edb2ac5)
 #[derive(Clone)]
-struct CreateInvertAdjustmentRecord1 {
-    __flight_identity: std::sync::Arc<()>,
+pub struct FlightOmitRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub intensity: Option<f64>,
 }
-impl PartialEq for CreateInvertAdjustmentRecord1 {
+impl PartialEq for FlightOmitRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-pub fn create_invert_adjustment(options: Option<InvertAdjustment>) -> InvertAdjustment {
-    let options = options.unwrap_or(InvertAdjustment {
+// Source: upstream/packages/adjustments/src/invertAdjustment.ts:6 (sha256:d16be5a43825d22ec95f513b635f5e8a8f26441525c5b2aee10ed8895edb2ac5)
+#[derive(Clone)]
+struct CreateInvertAdjustmentRecord2 {
+    __flight_identity: std::sync::Arc<()>,
+}
+impl PartialEq for CreateInvertAdjustmentRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+pub fn create_invert_adjustment(options: Option<FlightOmitRecord1>) -> InvertAdjustment {
+    let options = options.unwrap_or(FlightOmitRecord1 {
         __flight_identity: std::sync::Arc::new(()),
         intensity: None,
     });
@@ -31,9 +42,13 @@ pub fn create_invert_adjustment(options: Option<InvertAdjustment>) -> InvertAdju
         s, 0.0_f64, 0.0_f64, 0.0_f64, o, 0.0_f64, s, 0.0_f64, 0.0_f64, o, 0.0_f64, 0.0_f64, s,
         0.0_f64, o, 0.0_f64, 0.0_f64, 0.0_f64, 1.0_f64, 0.0_f64,
     ];
-    return InvertAdjustment {
-        kind: "InvertAdjustment".to_owned(),
-        color_matrix: (color_matrix).clone(),
-        ..((options).clone()).clone()
+    return {
+        let __flight_spread_1 = options;
+        InvertAdjustment {
+            __flight_identity: std::sync::Arc::new(()),
+            kind: "InvertAdjustment".to_owned(),
+            color_matrix: (color_matrix).clone(),
+            intensity: __flight_spread_1.intensity,
+        }
     };
 }

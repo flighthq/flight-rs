@@ -329,7 +329,6 @@ pub fn parse_user_agent_runtime(
         .find(|(key, _)| key == &"electron".to_owned())
         .map(|(_, value)| value.clone())
         .expect("TypeScript Record key was absent"))
-    .is_some()
     {
         return "electron".to_owned();
     }

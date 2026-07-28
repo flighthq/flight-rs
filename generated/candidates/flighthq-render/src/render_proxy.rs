@@ -260,7 +260,7 @@ pub fn get_or_create_render_proxy2_d(state: &RenderState, source: &Renderable) -
     if (node.as_mut().unwrap().renderer_map_id != runtime.renderer_map_id) {
         update_render_proxy_renderer(state, &mut node);
     }
-    return (node).clone().unwrap();
+    return ((node).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/render/src/renderProxy.ts:116 (sha256:020621bf9373b9a3534c1a6ed4a39684dd8c9aed1523f4965915b4efe48842ea)

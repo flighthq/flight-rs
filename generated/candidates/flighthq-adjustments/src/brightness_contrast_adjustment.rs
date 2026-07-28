@@ -8,21 +8,33 @@
 
 use flighthq_types::BrightnessContrastAdjustment;
 
+#[derive(Clone)]
+pub struct FlightOmitRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub brightness: Option<f64>,
+    pub contrast: Option<f64>,
+}
+impl PartialEq for FlightOmitRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 // Source: upstream/packages/adjustments/src/brightnessContrastAdjustment.ts:10 (sha256:076aa1b0b6b9f74f032d3f8d445eb38f4934ff5691844e38cc37840962b869c4)
 #[derive(Clone)]
-struct CreateBrightnessContrastAdjustmentRecord1 {
+struct CreateBrightnessContrastAdjustmentRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateBrightnessContrastAdjustmentRecord1 {
+impl PartialEq for CreateBrightnessContrastAdjustmentRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 pub fn create_brightness_contrast_adjustment(
-    options: Option<BrightnessContrastAdjustment>,
+    options: Option<FlightOmitRecord1>,
 ) -> BrightnessContrastAdjustment {
-    let options = options.unwrap_or(BrightnessContrastAdjustment {
+    let options = options.unwrap_or(FlightOmitRecord1 {
         __flight_identity: std::sync::Arc::new(()),
         brightness: None,
         contrast: None,
@@ -35,9 +47,14 @@ pub fn create_brightness_contrast_adjustment(
         s, 0.0_f64, 0.0_f64, 0.0_f64, o, 0.0_f64, s, 0.0_f64, 0.0_f64, o, 0.0_f64, 0.0_f64, s,
         0.0_f64, o, 0.0_f64, 0.0_f64, 0.0_f64, 1.0_f64, 0.0_f64,
     ];
-    return BrightnessContrastAdjustment {
-        kind: "BrightnessContrastAdjustment".to_owned(),
-        color_matrix: (color_matrix).clone(),
-        ..((options).clone()).clone()
+    return {
+        let __flight_spread_1 = options;
+        BrightnessContrastAdjustment {
+            __flight_identity: std::sync::Arc::new(()),
+            kind: "BrightnessContrastAdjustment".to_owned(),
+            color_matrix: (color_matrix).clone(),
+            brightness: __flight_spread_1.brightness,
+            contrast: __flight_spread_1.contrast,
+        }
     };
 }

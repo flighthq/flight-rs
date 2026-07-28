@@ -310,7 +310,7 @@ fn ensure_prepared_scene(state: &RenderState) -> PreparedScene {
             }
         };
     }
-    return (prepared).clone().unwrap();
+    return ((prepared).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/render/src/sceneRender.ts:239 (sha256:c0643880e674ac80bacd203c21f9f946cdb007d741b645acc8eb0ac92782b952)

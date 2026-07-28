@@ -31,7 +31,7 @@ pub fn acquire_vector3() -> Vector3 {
     } else {
         v = Some(create_vector3(None, None, None));
     }
-    return (v).clone().unwrap();
+    return ((v).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/geometry/src/vector3Pool.ts:25 (sha256:ec63d294ec9dcef62efe3b95cc6ccf7aa93f5ad79c03340dc8fc64da56c266dd)

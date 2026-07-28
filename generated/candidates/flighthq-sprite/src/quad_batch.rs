@@ -485,10 +485,10 @@ pub fn compute_quad_batch_local_bounds_rectangle(out: &mut Rectangle, source: &Q
                 let dy =
                     (source.data.transforms[((i * QUAD_VECTOR2_STRIDE) + 1.0_f64) as usize] as f64);
                 if (dx < min_x) {
-                    min_x = ((dx).clone()) as f32;
+                    min_x = dx;
                 }
                 if (dy < min_y) {
-                    min_y = ((dy).clone()) as f32;
+                    min_y = dy;
                 }
                 let rx = (dx + region.width);
                 let ry = (dy + region.height);
@@ -546,10 +546,10 @@ pub fn compute_quad_batch_local_bounds_rectangle(out: &mut Rectangle, source: &Q
                 let q_max_x = (((x0).max(x1)).max(x2)).max(x3);
                 let q_max_y = (((y0).max(y1)).max(y2)).max(y3);
                 if (q_min_x < min_x) {
-                    min_x = (q_min_x) as f32;
+                    min_x = q_min_x;
                 }
                 if (q_min_y < min_y) {
-                    min_y = (q_min_y) as f32;
+                    min_y = q_min_y;
                 }
                 if (q_max_x > max_x) {
                     max_x = q_max_x;

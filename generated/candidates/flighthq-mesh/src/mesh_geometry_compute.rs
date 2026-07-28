@@ -40,22 +40,22 @@ pub fn compute_mesh_geometry_bounding_sphere(
             let py = (geometry.vertices[(base + 1.0_f64) as usize] as f64);
             let pz = (geometry.vertices[(base + 2.0_f64) as usize] as f64);
             if (px < min_x) {
-                min_x = ((px).clone()) as f32;
+                min_x = px;
             }
             if (py < min_y) {
-                min_y = ((py).clone()) as f32;
+                min_y = py;
             }
             if (pz < min_z) {
-                min_z = ((pz).clone()) as f32;
+                min_z = pz;
             }
             if (px > max_x) {
-                max_x = ((px).clone()) as f32;
+                max_x = px;
             }
             if (py > max_y) {
-                max_y = ((py).clone()) as f32;
+                max_y = py;
             }
             if (pz > max_z) {
-                max_z = ((pz).clone()) as f32;
+                max_z = pz;
             }
             {
                 i += 1.0;
@@ -112,22 +112,22 @@ pub fn compute_mesh_geometry_bounds(out: &mut AabbLike, geometry: &MeshGeometry)
             let py = (geometry.vertices[(base + 1.0_f64) as usize] as f64);
             let pz = (geometry.vertices[(base + 2.0_f64) as usize] as f64);
             if (px < min_x) {
-                min_x = ((px).clone()) as f32;
+                min_x = px;
             }
             if (py < min_y) {
-                min_y = ((py).clone()) as f32;
+                min_y = py;
             }
             if (pz < min_z) {
-                min_z = ((pz).clone()) as f32;
+                min_z = pz;
             }
             if (px > max_x) {
-                max_x = ((px).clone()) as f32;
+                max_x = px;
             }
             if (py > max_y) {
-                max_y = ((py).clone()) as f32;
+                max_y = py;
             }
             if (pz > max_z) {
-                max_z = ((pz).clone()) as f32;
+                max_z = pz;
             }
             {
                 i += 1.0;

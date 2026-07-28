@@ -8,24 +8,39 @@
 
 use flighthq_types::SketchEffect;
 
-// Source: upstream/packages/effects/src/sketchEffect.ts:3 (sha256:9f94bede0b61869b7bd3c4dd51809a07dcd6daf5562af4bae2eb181dd4e309cd)
 #[derive(Clone)]
-struct CreateSketchEffectRecord1 {
-    __flight_identity: std::sync::Arc<()>,
+pub struct FlightOmitRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub strength: Option<f64>,
 }
-impl PartialEq for CreateSketchEffectRecord1 {
+impl PartialEq for FlightOmitRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-pub fn create_sketch_effect(options: Option<SketchEffect>) -> SketchEffect {
-    let options = options.unwrap_or(SketchEffect {
+// Source: upstream/packages/effects/src/sketchEffect.ts:3 (sha256:9f94bede0b61869b7bd3c4dd51809a07dcd6daf5562af4bae2eb181dd4e309cd)
+#[derive(Clone)]
+struct CreateSketchEffectRecord2 {
+    __flight_identity: std::sync::Arc<()>,
+}
+impl PartialEq for CreateSketchEffectRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+pub fn create_sketch_effect(options: Option<FlightOmitRecord1>) -> SketchEffect {
+    let options = options.unwrap_or(FlightOmitRecord1 {
         __flight_identity: std::sync::Arc::new(()),
         strength: None,
     });
-    return SketchEffect {
-        kind: "SketchEffect".to_owned(),
-        ..((options).clone()).clone()
+    return {
+        let __flight_spread_1 = options;
+        SketchEffect {
+            __flight_identity: std::sync::Arc::new(()),
+            kind: "SketchEffect".to_owned(),
+            strength: __flight_spread_1.strength,
+        }
     };
 }

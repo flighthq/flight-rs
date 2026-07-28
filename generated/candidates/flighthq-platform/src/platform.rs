@@ -124,7 +124,7 @@ pub fn get_platform_backend() -> PlatformBackend {
     if ((*_BACKEND.lock().unwrap()).clone()).is_none() {
         (*_BACKEND.lock().unwrap()) = Some(create_web_platform_backend());
     }
-    return ((*_BACKEND.lock().unwrap()).clone()).clone().unwrap();
+    return (((*_BACKEND.lock().unwrap()).clone()).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/platform/src/platform.ts:75 (sha256:8794dae5f515151c2b70b0984b07baec9a6ae6ff89231e5ffd41b1391f4c73b6)

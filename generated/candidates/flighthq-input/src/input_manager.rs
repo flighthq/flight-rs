@@ -2246,7 +2246,7 @@ fn get_or_create_gamepad_poll_state(manager: &InputManager) -> GamepadPollState 
             }
         };
     }
-    return (state).clone().unwrap();
+    return ((state).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/input/src/inputManager.ts:1095 (sha256:2096e547be6d6693db0e48fc33c645052551a8e19119772ea738eebbe1d97276)

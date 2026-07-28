@@ -111,7 +111,7 @@ fn apply_document(
     options: &TextureAtlasPackerParseOptions,
 ) -> () {
     atlas.regions.clear();
-    if (array.is_array)(doc.frames) {
+    if false {
         for entry in (doc.frames).iter().cloned() {
             apply_frame(atlas, (entry.filename).clone(), &(entry), options);
         }

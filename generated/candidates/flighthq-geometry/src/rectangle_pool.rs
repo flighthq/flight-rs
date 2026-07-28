@@ -32,7 +32,7 @@ pub fn acquire_rectangle() -> Rectangle {
     } else {
         r = Some(create_rectangle(None, None, None, None));
     }
-    return (r).clone().unwrap();
+    return ((r).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/geometry/src/rectanglePool.ts:26 (sha256:56b0c9740f3479e101b1cbfd9680abdd5dca829693b3baaa668dff47b1a288f2)

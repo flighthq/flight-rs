@@ -306,7 +306,7 @@ pub fn enable_text_input(node: &RichText, options: Option<TextInputOptions>) -> 
             apply_text_input_options(&mut state.as_mut().unwrap(), &options.as_ref().unwrap());
         }
     }
-    return (state).clone().unwrap();
+    return ((state).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/textinput/src/textInput.ts:29 (sha256:084146c3fd6190c26e0e9272eb6a74f0d6f6fe71ee806877f6f79961cb6453df)

@@ -95,5 +95,14 @@ impl PartialEq for ColorLutRunSignatureRecord3 {
 }
 
 fn color_lut_run_signature(run: &Vec<ColorLutRunSignatureRecord3>, size: f64) -> String {
-    return format!("{}\n{}", size, (json.stringify)(run));
+    return format!("{}\n{}", size, {
+        let __flight_items = (run)
+            .iter()
+            .map(|value| {
+                let __flight_fields = vec![format!("{}{:?}", "\"kind\":", value.kind)];
+                format!("{{{}}}", __flight_fields.join(","))
+            })
+            .collect::<Vec<_>>();
+        format!("[{}]", __flight_items.join(","))
+    });
 }

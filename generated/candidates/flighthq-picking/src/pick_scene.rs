@@ -284,7 +284,8 @@ pub fn pick_scene_with_ray3_d(
 ) -> Option<SceneHit> {
     let found: std::sync::Arc<std::sync::Mutex<bool>> =
         std::sync::Arc::new(std::sync::Mutex::new(false));
-    let mut best_t = f64::INFINITY;
+    let best_t: std::sync::Arc<std::sync::Mutex<f64>> =
+        std::sync::Arc::new(std::sync::Mutex::new(f64::INFINITY));
     for_each_scene_ray_hit(
         scene,
         ray,

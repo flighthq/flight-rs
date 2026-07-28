@@ -767,8 +767,7 @@ function emitFunctionDeclaration(declaration: IrFunctionDeclaration, context: Em
     const resolved = resolveSemanticType(parameter.type, nextContext);
     if (
       resolved?.kind === 'anonymous' &&
-      (parameter.type.kind === 'anonymous' ||
-        (parameter.type.kind === 'named' && parameter.type.name === 'FlightPartial'))
+      (parameter.type.kind === 'anonymous' || isStructuralUtilityType(parameter.type))
     ) {
       registerContextualAnonymousTypes(resolved, nextContext, declaration.name);
     }
@@ -1015,6 +1014,17 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
 function emitReturnExpression(expression: IrExpression, context: EmitContext): string {
   const expected = context.currentReturnType;
   if (!expected || expected.kind !== 'nullable') {
+    const root = expressionRootIdentifier(expression);
+    const actual = root ? context.symbolTypes.get(root) : undefined;
+    if (
+      expected &&
+      root &&
+      ((actual?.kind === 'nullable' && semanticTypesEqual(actual.inner, expected, context)) ||
+        (actual && context.nonNullableNames.has(root) && semanticTypesEqual(actual, expected, context))) &&
+      !isCopyType(expected, context)
+    ) {
+      return `${parenthesize(emitExpression(expression, context, expected))}.clone()`;
+    }
     if (
       expected &&
       expression.kind === 'identifier' &&
@@ -1469,6 +1479,7 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
           context.sharedCaptureNames.has(expression.name) ||
           resolvedActual?.kind === 'function' ||
           isSharedHandleType(actualType) ||
+          (actualType.kind === 'named' && actualType.name === 'Signal') ||
           (actualType.kind === 'named' && actualType.name === 'FlightCallbackArgs') ||
           (actualType.kind === 'named' && context.callbackTypeParameters.has(actualType.name)))
           ? `${parenthesize(borrowedOwnedValue)}.clone()`
@@ -1521,6 +1532,8 @@ function emitCall(
   expectedType?: IrType,
 ): string {
   if (expression.optional) return emitOptionalCall(expression, context);
+  const promiseCall = emitPromiseCall(expression, context);
+  if (promiseCall) return promiseCall;
   const knownHostReturnType = inferKnownHostCallReturnType(expression, context);
   if (knownHostReturnType) {
     return `crate::host_value::<${emitType(expectedType ?? knownHostReturnType, context)}>("host.call")`;
@@ -1613,11 +1626,34 @@ function emitCall(
     const declaration = context.functions.get(expression.callee.name);
     if (declaration) return emitKnownFunctionCall(expression, declaration, context, expectedType);
   }
+  if (
+    expression.callee.kind === 'property' &&
+    expression.callee.object.kind === 'identifier' &&
+    expression.callee.object.name === 'JSON' &&
+    expression.callee.name === 'stringify'
+  ) {
+    const value = expression.arguments[0];
+    if (!value) throw new RustEmissionError('JSON.stringify requires a value');
+    return emitJsonStringify(value, context);
+  }
   const runtimeGlobal = runtimeGlobalType(expression);
   if (runtimeGlobal) return 'crate::OpaqueHostValue::Object';
   if (expression.callee.kind === 'property' && expression.callee.object.kind === 'identifier') {
     const owner = expression.callee.object.name;
     const method = expression.callee.name;
+    if (owner === 'Array' && method === 'isArray') {
+      const value = expression.arguments[0];
+      if (!value) throw new RustEmissionError('Array.isArray requires a value');
+      const type = inferIrExpressionType(value, context);
+      const resolved = resolveSemanticType(type?.kind === 'nullable' ? type.inner : type, context);
+      const represented =
+        resolved?.kind === 'array' || (resolved?.kind === 'named' && Boolean(typedArrayType(resolved.name)));
+      return type?.kind === 'nullable'
+        ? represented
+          ? `${parenthesize(emitExpression(value, context))}.is_some()`
+          : 'false'
+        : String(represented);
+    }
     if (owner === 'Array' && method === 'from') {
       const result =
         (resolveSemanticType(expectedType, context) ?? expectedType)?.kind === 'array'
@@ -2046,6 +2082,51 @@ function emitCall(
   return `${expression.callee.kind === 'property' ? parenthesize(callee) : callee}(${arguments_.join(', ')})`;
 }
 
+function emitPromiseCall(
+  expression: Extract<IrExpression, { kind: 'call' }>,
+  context: EmitContext,
+): string | undefined {
+  if (
+    expression.callee.kind !== 'property' ||
+    (expression.callee.name !== 'then' && expression.callee.name !== 'catch')
+  ) {
+    return undefined;
+  }
+  const promise = promiseType(inferIrExpressionType(expression.callee.object, context), context);
+  if (!promise) return undefined;
+  const callbackExpression = expression.arguments[0];
+  if (!callbackExpression) return undefined;
+  const inferredCallback = resolveSemanticType(inferIrExpressionType(callbackExpression, context), context);
+  const callbackReturns = inferredCallback?.kind === 'function' ? inferredCallback.returns : primitive('Void');
+  const callbackType: IrType =
+    expression.callee.name === 'then'
+      ? {
+          kind: 'function',
+          parameters: [promise.arguments[0] ?? { kind: 'dynamic' }],
+          returns: callbackReturns,
+        }
+      : {
+          kind: 'function',
+          parameters: inferredCallback?.kind === 'function' ? inferredCallback.parameters : [],
+          returns: callbackReturns,
+        };
+  const owner = emitExpression(expression.callee.object, context, promise);
+  const callback = emitExpression(callbackExpression, context, callbackType);
+  if (expression.callee.name === 'catch') {
+    return `{ let __flight_promise = ${owner}; let __flight_callback = ${callback}; let _ = &__flight_callback; __flight_promise.clone() }`;
+  }
+  const result =
+    callbackReturns.kind === 'named' && callbackReturns.name === 'Promise'
+      ? (callbackReturns.arguments[0] ?? { kind: 'dynamic' as const })
+      : callbackReturns;
+  return `{ let __flight_promise = ${owner}; let __flight_callback = ${callback}; let _ = (&__flight_promise, &__flight_callback); crate::Promise::<${emitType(result, context)}>::default() }`;
+}
+
+function promiseType(type: IrType | undefined, context: EmitContext): Extract<IrType, { kind: 'named' }> | undefined {
+  const resolved = resolveSemanticType(type?.kind === 'nullable' ? type.inner : type, context);
+  return resolved?.kind === 'named' && resolved.name === 'Promise' ? resolved : undefined;
+}
+
 function emitLockedCallbackCall(callback: string, arguments_: readonly string[]): string {
   return `{ let __flight_callback = ${callback}; let __flight_result = __flight_callback.lock().unwrap()(${arguments_.join(', ')}); __flight_result }`;
 }
@@ -2225,9 +2306,10 @@ function emitKnownFunctionCall(
   }
   if (restType.kind === 'named' && restType.name === 'FlightCallbackArgs') {
     const signalType = expression.arguments[0] ? inferIrExpressionType(expression.arguments[0], context) : undefined;
+    const signal = signalType?.kind === 'nullable' ? signalType.inner : signalType;
     const signalCallback =
-      signalType?.kind === 'named' && signalType.name === 'Signal'
-        ? resolveSemanticType(signalType.arguments[0], context)
+      signal?.kind === 'named' && signal.name === 'Signal'
+        ? resolveSemanticType(signal.arguments[0], context)
         : undefined;
     const callback =
       signalCallback?.kind === 'function' ? signalCallback : resolveSemanticType(restType.arguments[0], context);
@@ -2254,7 +2336,7 @@ function emitKnownFunctionArgument(
   const resolvedExpectedType = resolveSemanticType(expectedType, context);
   if (
     resolvedExpectedType?.kind === 'anonymous' &&
-    (expectedType.kind === 'anonymous' || (expectedType.kind === 'named' && expectedType.name === 'FlightPartial'))
+    (expectedType.kind === 'anonymous' || isStructuralUtilityType(expectedType))
   ) {
     registerContextualAnonymousTypes(resolvedExpectedType, context, parameter.name);
   }
@@ -2276,6 +2358,19 @@ function emitKnownFunctionArgument(
     const root = expressionRootIdentifier(argument);
     const resolvedExpected = resolvedExpectedType ?? expectedType;
     if (resolvedExpected.kind === 'function') {
+      const resolvedArgument = resolveSemanticType(argumentType, context) ?? argumentType;
+      if (
+        argument.kind !== 'function' &&
+        resolvedArgument?.kind === 'function' &&
+        !(argument.kind === 'identifier' && context.rawClosureNames.has(argument.name))
+      ) {
+        const callback = emitExpression(argument, context, argumentType);
+        const parameters = resolvedExpected.parameters.map(
+          (type, index) => `__flight_callback_argument_${String(index)}: ${emitType(type, context)}`,
+        );
+        const values = resolvedExpected.parameters.map((_type, index) => `__flight_callback_argument_${String(index)}`);
+        return `&mut |${parameters.join(', ')}| -> ${emitType(resolvedExpected.returns, context)} { let __flight_callback = ${callback}; __flight_callback.lock().unwrap()(${values.join(', ')}) }`;
+      }
       const value =
         argument.kind === 'function'
           ? emitClosure(argument, context, expectedType, false)
@@ -2363,6 +2458,48 @@ function inferFunctionExpressionReturnType(
     }
   }
   return undefined;
+}
+
+function emitJsonStringify(expression: IrExpression, context: EmitContext): string {
+  const type = resolveSemanticType(inferIrExpressionType(expression, context), context);
+  const value = emitPlaceExpression(expression, context);
+  if (type?.kind === 'primitive') {
+    return type.name === 'String'
+      ? `format!("{:?}", ${value})`
+      : type.name === 'Void'
+        ? '"null".to_owned()'
+        : `${parenthesize(value)}.to_string()`;
+  }
+  if (type?.kind !== 'array') {
+    throw new RustEmissionError('JSON.stringify requires a portable scalar or structural array');
+  }
+  const element = resolveSemanticType(type.element, context);
+  if (element?.kind === 'primitive') {
+    return `{ let __flight_items = ${parenthesize(value)}.iter().map(|value| ${
+      element.name === 'String' ? 'format!("{:?}", value)' : 'value.to_string()'
+    }).collect::<Vec<_>>(); format!("[{}]", __flight_items.join(",")) }`;
+  }
+  if (element?.kind !== 'anonymous') {
+    throw new RustEmissionError('JSON.stringify structural arrays require inferred record elements');
+  }
+  const fields = flattenStructFields(element, context).flatMap((field) => {
+    const fieldType = resolveSemanticType(field.type, context) ?? field.type;
+    const inner = fieldType.kind === 'nullable' ? resolveSemanticType(fieldType.inner, context) : fieldType;
+    if (inner?.kind !== 'primitive' || inner.name === 'Void') return [];
+    const key = emitRustStringLiteral(`${JSON.stringify(field.name)}:`);
+    const place = `value.${safeName(field.name)}`;
+    const formatted = inner.name === 'String' ? `format!("{}{:?}", ${key}, field)` : `format!("{}{}", ${key}, field)`;
+    return [
+      fieldType.kind === 'nullable' || field.optional
+        ? `${place}.as_ref().map_or_else(|| format!("{}null", ${key}), |field| ${formatted})`
+        : inner.name === 'String'
+          ? `format!("{}{:?}", ${key}, ${place})`
+          : `format!("{}{}", ${key}, ${place})`,
+    ];
+  });
+  return `{ let __flight_items = ${parenthesize(value)}.iter().map(|value| { let __flight_fields = vec![${fields.join(
+    ', ',
+  )}]; format!("{{{}}}", __flight_fields.join(",")) }).collect::<Vec<_>>(); format!("[{}]", __flight_items.join(",")) }`;
 }
 
 function emitMathCall(method: string, arguments_: string[]): string {
@@ -2799,10 +2936,11 @@ function emitAssignment(expression: Extract<IrExpression, { kind: 'assignment' }
   if (isExtensibleArrayElementAssignment(expression, context)) {
     return emitExtensibleArrayElementAssignment(expression, context, true);
   }
+  const placeContext = assignmentPlaceContext(expression.left, context);
   const left =
     expression.left.kind === 'element'
-      ? emitElement(expression.left, context)
-      : emitPlaceExpression(expression.left, context);
+      ? emitElement(expression.left, placeContext)
+      : emitPlaceExpression(expression.left, placeContext);
   const leftType = inferIrExpressionType(expression.left, context);
   const rightType = inferIrExpressionType(expression.right, context);
   const emittedRight = emitExpression(expression.right, context, leftType);
@@ -2855,10 +2993,11 @@ function emitAssignmentStatement(
   if (isExtensibleArrayElementAssignment(expression, context)) {
     return emitExtensibleArrayElementAssignment(expression, context, false);
   }
+  const placeContext = assignmentPlaceContext(expression.left, context);
   const left =
     expression.left.kind === 'element'
-      ? emitElement(expression.left, context)
-      : emitPlaceExpression(expression.left, context);
+      ? emitElement(expression.left, placeContext)
+      : emitPlaceExpression(expression.left, placeContext);
   const leftType = inferIrExpressionType(expression.left, context);
   const rightType = inferIrExpressionType(expression.right, context);
   const emittedRight = emitExpression(expression.right, context, leftType);
@@ -2867,6 +3006,15 @@ function emitAssignmentStatement(
       ? `Some(${emitExpression(expression.right, context, leftType.inner)})`
       : emittedRight;
   return emitAssignmentOperation(left, right, expression.operator);
+}
+
+function assignmentPlaceContext(expression: IrExpression, context: EmitContext): EmitContext {
+  if (expression.kind !== 'identifier') return context;
+  const root = expressionRootIdentifier(expression);
+  if (!root || !context.nonNullableNames.has(root)) return context;
+  const nonNullableNames = new Set(context.nonNullableNames);
+  nonNullableNames.delete(root);
+  return { ...context, nonNullableNames };
 }
 
 function emitAssignmentOperation(left: string, right: string, operator: string): string {
@@ -2945,8 +3093,8 @@ function emitUnary(expression: Extract<IrExpression, { kind: 'unary' }>, context
   if (expression.operator === '!' && operandType && isReferenceLike(operandType, context)) return 'false';
   if (
     expression.operator === '!' &&
-    operandType?.kind === 'primitive' &&
-    (operandType.name === 'Float' || operandType.name === 'Int')
+    ((operandType?.kind === 'primitive' && (operandType.name === 'Float' || operandType.name === 'Int')) ||
+      isPortableNumericStorageType(operandType))
   ) {
     return `${parenthesize(emitExpression(expression.operand, context))} == 0.0_f64`;
   }
@@ -3224,7 +3372,7 @@ function emitType(type: IrType, context: EmitContext): string {
     case 'function':
       return `std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(${type.parameters.map((item) => emitType(item, context)).join(', ')}) -> ${emitType(type.returns, context)} + Send + 'static>>>`;
     case 'named': {
-      if (type.name === 'FlightPartial') {
+      if (isStructuralUtilityType(type)) {
         const resolved = resolveSemanticType(type, context);
         if (resolved && typeKey(resolved) !== typeKey(type)) return emitType(resolved, context);
       }
@@ -3802,14 +3950,16 @@ function registerGlobalResolvedAnonymousTypes(value: unknown, context: EmitConte
       'kind' in item &&
       item.kind === 'named' &&
       'name' in item &&
-      item.name === 'FlightPartial' &&
+      isStructuralUtilityType(item as IrType) &&
       'arguments' in item
     ) {
       const resolved = resolveSemanticType(item as IrType, context);
       if (resolved?.kind === 'anonymous') {
         const key = typeKey(resolved);
         if (!anonymousTypes.has(key)) {
-          anonymousTypes.set(key, `FlightPartialRecord${String(anonymousTypes.size + 1)}`);
+          const prefix =
+            (item as Extract<IrType, { kind: 'named' }>).name === 'FlightPartial' ? 'FlightPartial' : 'FlightOmit';
+          anonymousTypes.set(key, `${prefix}Record${String(anonymousTypes.size + 1)}`);
         }
       }
     }
@@ -4409,7 +4559,12 @@ function emitObject(
   if (expression.properties.length === 0 && (!target || resolved?.kind === 'dynamic')) {
     return 'crate::OpaqueHostValue::Object';
   }
-  if (expression.properties.length === 0 && target?.kind === 'named' && !context.namedTypes.has(target.name)) {
+  if (
+    expression.properties.length === 0 &&
+    target?.kind === 'named' &&
+    !context.namedTypes.has(target.name) &&
+    resolved?.kind !== 'anonymous'
+  ) {
     return `panic!("cannot construct an untyped ${target.name} without a native value")`;
   }
   if (resolved?.kind !== 'anonymous' || !target) {
@@ -4639,6 +4794,7 @@ function emitElementRead(
 function inferIrExpressionType(expression: IrExpression, context: EmitContext): IrType | undefined {
   switch (expression.kind) {
     case 'identifier':
+      if (expression.name === 'Infinity' || expression.name === 'NaN') return primitive('Float');
       return context.symbolTypes.get(expression.name);
     case 'literal':
       if (typeof expression.value === 'number') return primitive('Float');
@@ -4699,6 +4855,22 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
           (expression.expression ? primitive('Float') : primitive('Void')),
       };
     case 'call': {
+      if (
+        expression.callee.kind === 'property' &&
+        (expression.callee.name === 'then' || expression.callee.name === 'catch')
+      ) {
+        const promise = promiseType(inferIrExpressionType(expression.callee.object, context), context);
+        if (promise) {
+          if (expression.callee.name === 'catch') return promise;
+          const callback = expression.arguments[0]
+            ? resolveSemanticType(inferIrExpressionType(expression.arguments[0], context), context)
+            : undefined;
+          const returns = callback?.kind === 'function' ? callback.returns : primitive('Void');
+          return returns.kind === 'named' && returns.name === 'Promise'
+            ? returns
+            : { arguments: [returns], kind: 'named', name: 'Promise' };
+        }
+      }
       const hostReturnType = inferOptionalHostCallReturnType(expression, context);
       if (hostReturnType) return { inner: hostReturnType, kind: 'nullable' };
       const knownHostReturnType = inferKnownHostCallReturnType(expression, context);
@@ -4874,6 +5046,15 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
         : resolvedElement;
     }
     case 'property': {
+      if (
+        expression.object.kind === 'identifier' &&
+        ((expression.object.name === 'Number' &&
+          ['EPSILON', 'MAX_SAFE_INTEGER', 'NaN', 'NEGATIVE_INFINITY', 'POSITIVE_INFINITY'].includes(expression.name)) ||
+          (expression.object.name === 'Float' && ['INFINITY', 'NAN'].includes(expression.name)) ||
+          (expression.object.name === 'Math' && expression.name === 'PI'))
+      ) {
+        return primitive('Float');
+      }
       if (expression.binding) return { kind: 'dynamic' };
       const object = inferIrExpressionType(expression.object, context);
       if (!object) return undefined;
@@ -5251,6 +5432,7 @@ function emitCondition(expression: IrExpression, context: EmitContext): string {
     (resolveSemanticType(type, context) ?? type)?.kind === 'dynamic'
       ? emitExpression(expression, context, primitive('Bool'))
       : emitExpression(expression, context);
+  if (expression.kind === 'binary' && (expression.operator === '&&' || expression.operator === '||')) return emitted;
   if (type?.kind === 'primitive' && type.name === 'Bool') return emitted;
   if (type?.kind === 'primitive' && (type.name === 'Float' || type.name === 'Int')) {
     return `${parenthesize(emitted)} != 0.0_f64`;
@@ -5347,6 +5529,18 @@ function resolveSemanticType(type: IrType | undefined, context: EmitContext): Ir
     }
     return inner;
   }
+  if (type?.kind === 'named' && type.name.startsWith('FlightOmit:')) {
+    const inner = resolveSemanticType(type.arguments[0], context);
+    if (inner?.kind === 'anonymous') {
+      const omitted = new Set<string>(JSON.parse(type.name.slice('FlightOmit:'.length)) as string[]);
+      return {
+        extends: [],
+        fields: flattenStructFields(inner, context).filter((field) => !omitted.has(field.name)),
+        kind: 'anonymous',
+      };
+    }
+    return inner;
+  }
   const visited = new Set<string>();
   let resolved = type;
   while (resolved?.kind === 'named' && !visited.has(resolved.name)) {
@@ -5355,6 +5549,10 @@ function resolveSemanticType(type: IrType | undefined, context: EmitContext): Ir
     if (resolved.kind === 'named' && visited.has(resolved.name)) break;
   }
   return resolved;
+}
+
+function isStructuralUtilityType(type: IrType | undefined): type is Extract<IrType, { kind: 'named' }> {
+  return type?.kind === 'named' && (type.name === 'FlightPartial' || type.name.startsWith('FlightOmit:'));
 }
 
 function evaluateConstant(expression: IrExpression, values: ReadonlyMap<string, number>): number | undefined {

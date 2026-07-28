@@ -39,7 +39,7 @@ pub fn get_bidi_class_backend() -> BidiClassBackend {
     if ((*_BACKEND.lock().unwrap()).clone()).is_none() {
         (*_BACKEND.lock().unwrap()) = Some(create_compact_bidi_class_backend());
     }
-    return ((*_BACKEND.lock().unwrap()).clone()).clone().unwrap();
+    return (((*_BACKEND.lock().unwrap()).clone()).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/textbidi/src/bidiClassBackend.ts:27 (sha256:7e7dcb62c648fd18d53fc53823253ec4ec7509a56cf077b3f837f97903ddcf96)

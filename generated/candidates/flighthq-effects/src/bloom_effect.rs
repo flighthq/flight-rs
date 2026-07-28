@@ -8,6 +8,20 @@
 
 use flighthq_types::BloomEffect;
 
+#[derive(Clone)]
+pub struct FlightOmitRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub threshold: Option<f64>,
+    pub intensity: Option<f64>,
+    pub radius: Option<f64>,
+    pub passes: Option<f64>,
+}
+impl PartialEq for FlightOmitRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 // Source: upstream/packages/effects/src/bloomEffect.ts:7 (sha256:f34073dbd363e96e331b2a1ba428bb190daccbacf4c0dbd957021b90b65025fd)
 pub fn compute_bloom_blur_radius(effect: &BloomEffect) -> f64 {
     return (0.0_f64).max((effect.radius).unwrap_or(8.0_f64));
@@ -25,25 +39,32 @@ pub fn compute_bloom_threshold(effect: &BloomEffect) -> f64 {
 
 // Source: upstream/packages/effects/src/bloomEffect.ts:19 (sha256:617321597270316572516fdf538933545aea4fa2d8cd22b426fc4e882207e95f)
 #[derive(Clone)]
-struct CreateBloomEffectRecord1 {
+struct CreateBloomEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateBloomEffectRecord1 {
+impl PartialEq for CreateBloomEffectRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-pub fn create_bloom_effect(options: Option<BloomEffect>) -> BloomEffect {
-    let options = options.unwrap_or(BloomEffect {
+pub fn create_bloom_effect(options: Option<FlightOmitRecord1>) -> BloomEffect {
+    let options = options.unwrap_or(FlightOmitRecord1 {
         __flight_identity: std::sync::Arc::new(()),
         threshold: None,
         intensity: None,
         radius: None,
         passes: None,
     });
-    return BloomEffect {
-        kind: "BloomEffect".to_owned(),
-        ..((options).clone()).clone()
+    return {
+        let __flight_spread_1 = options;
+        BloomEffect {
+            __flight_identity: std::sync::Arc::new(()),
+            kind: "BloomEffect".to_owned(),
+            threshold: __flight_spread_1.threshold,
+            intensity: __flight_spread_1.intensity,
+            radius: __flight_spread_1.radius,
+            passes: __flight_spread_1.passes,
+        }
     };
 }

@@ -38,9 +38,8 @@ pub fn stroke_path(path: &Path, style: &StrokeStyle, tolerance: Option<f64>) -> 
         winding: "nonZero".to_owned(),
     };
     let subpaths = decode_subpaths(path, tolerance);
-    let dash = if (((style.dash).clone()).is_some()
-        && ((style.dash.as_ref().unwrap().len() as f64) > 0.0_f64))
-        .is_some()
+    let dash = if ((style.dash).clone()).is_some()
+        && ((style.dash.as_ref().unwrap().len() as f64) > 0.0_f64)
     {
         (style.dash).clone()
     } else {
@@ -347,7 +346,7 @@ fn apply_dash(pts: &Vec<f64>, closed: bool, dash: &Vec<f64>, dash_offset: f64) -
                                 closed: false,
                             });
                         }
-                        current.as_mut().unwrap() = None;
+                        current = None;
                     }
                     if (step >= remaining) {
                         current = Some(vec![ix, iy]);
@@ -436,7 +435,7 @@ fn decode_subpaths(path: &Path, tolerance: f64) -> Vec<StrokeSubpath> {
                 (*x.lock().unwrap()) = 0.0_f64;
                 (*y.lock().unwrap()) = 0.0_f64;
             }
-            return ((*current.lock().unwrap()).clone()).clone().unwrap();
+            return (((*current.lock().unwrap()).clone()).clone().unwrap()).clone();
         }
     })
         as Box<dyn FnMut() -> StrokeSubpath + Send + 'static>));

@@ -6,21 +6,38 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_types::OuterGlowEffect;
+use flighthq_types::{EffectSourceMode, OuterGlowEffect};
 
-// Source: upstream/packages/effects/src/outerGlowEffect.ts:4 (sha256:9e9b60be5f480a66fef755ca2d03553cc8be4a2e4ef7b2029ffd4663a8a3762c)
 #[derive(Clone)]
-struct CreateOuterGlowEffectRecord1 {
-    __flight_identity: std::sync::Arc<()>,
+pub struct FlightOmitRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub alpha: Option<f64>,
+    pub blur_x: Option<f64>,
+    pub blur_y: Option<f64>,
+    pub color: Option<f64>,
+    pub quality: Option<f64>,
+    pub source_mode: Option<EffectSourceMode>,
+    pub strength: Option<f64>,
 }
-impl PartialEq for CreateOuterGlowEffectRecord1 {
+impl PartialEq for FlightOmitRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-pub fn create_outer_glow_effect(options: Option<OuterGlowEffect>) -> OuterGlowEffect {
-    let options = options.unwrap_or(OuterGlowEffect {
+// Source: upstream/packages/effects/src/outerGlowEffect.ts:4 (sha256:9e9b60be5f480a66fef755ca2d03553cc8be4a2e4ef7b2029ffd4663a8a3762c)
+#[derive(Clone)]
+struct CreateOuterGlowEffectRecord2 {
+    __flight_identity: std::sync::Arc<()>,
+}
+impl PartialEq for CreateOuterGlowEffectRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+pub fn create_outer_glow_effect(options: Option<FlightOmitRecord1>) -> OuterGlowEffect {
+    let options = options.unwrap_or(FlightOmitRecord1 {
         __flight_identity: std::sync::Arc::new(()),
         alpha: None,
         blur_x: None,
@@ -30,8 +47,18 @@ pub fn create_outer_glow_effect(options: Option<OuterGlowEffect>) -> OuterGlowEf
         source_mode: None,
         strength: None,
     });
-    return OuterGlowEffect {
-        kind: "OuterGlowEffect".to_owned(),
-        ..((options).clone()).clone()
+    return {
+        let __flight_spread_1 = options;
+        OuterGlowEffect {
+            __flight_identity: std::sync::Arc::new(()),
+            kind: "OuterGlowEffect".to_owned(),
+            alpha: __flight_spread_1.alpha,
+            blur_x: __flight_spread_1.blur_x,
+            blur_y: __flight_spread_1.blur_y,
+            color: __flight_spread_1.color,
+            quality: __flight_spread_1.quality,
+            source_mode: (__flight_spread_1.source_mode).clone(),
+            strength: __flight_spread_1.strength,
+        }
     };
 }

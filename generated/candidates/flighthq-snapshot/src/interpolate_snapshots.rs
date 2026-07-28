@@ -60,7 +60,7 @@ fn interpolate_snapshots_into(
     let mut out_record = out;
     let a_record = a;
     let b_record = b;
-    if (array.is_array)(b) {
+    if false {
         crate::host_set("host.length", (b.len() as f64));
     }
     for key in (crate::host_value::<()>("host.keys")).iter().cloned() {
@@ -124,7 +124,7 @@ fn interpolate_snapshots_into(
                 crate::OpaqueHostValue::Number(_) => "number",
                 crate::OpaqueHostValue::String(_) => "string",
             } == "object"))
-            && ((array.is_array)(a_value) == (array.is_array)(b_value))
+            && (false == false)
         {
             let mut container = ensure_snapshot_container(
                 out_record
@@ -133,7 +133,7 @@ fn interpolate_snapshots_into(
                     .map(|(_, value)| value)
                     .expect("TypeScript Record key was absent")
                     .clone(),
-                (array.is_array)(b_value),
+                false,
             );
             out_record
                 .iter()
@@ -186,7 +186,7 @@ fn ensure_snapshot_container(
             crate::OpaqueHostValue::Number(_) => "number",
             crate::OpaqueHostValue::String(_) => "string",
         } == "object"))
-        && ((array.is_array)(existing) == is_array)
+        && (false == is_array)
     {
         return (existing).clone();
     }

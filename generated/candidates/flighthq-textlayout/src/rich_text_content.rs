@@ -276,7 +276,7 @@ fn text_format_equals(a: &TextFormat, b: &TextFormat) -> bool {
     for key in (a_keys).iter().cloned() {
         let a_value = a[key as usize].clone();
         let b_value = b[key as usize].clone();
-        if ((array.is_array)(a_value) && (array.is_array)(b_value)) {
+        if (false && false) {
             if (a_value.length != b_value.length) {
                 return false;
             }

@@ -21,21 +21,34 @@ fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
 }
 
+#[derive(Clone)]
+pub struct FlightOmitRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub lift: Option<f64>,
+    pub gamma: Option<f64>,
+    pub gain: Option<f64>,
+}
+impl PartialEq for FlightOmitRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 // Source: upstream/packages/adjustments/src/liftGammaGainAdjustment.ts:6 (sha256:e86a15b30666226017b1cb779869b1d6dd87c356e86675c76432e2d7dda3271d)
 #[derive(Clone)]
-struct CreateLiftGammaGainAdjustmentRecord1 {
+struct CreateLiftGammaGainAdjustmentRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateLiftGammaGainAdjustmentRecord1 {
+impl PartialEq for CreateLiftGammaGainAdjustmentRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 pub fn create_lift_gamma_gain_adjustment(
-    options: Option<LiftGammaGainAdjustment>,
+    options: Option<FlightOmitRecord1>,
 ) -> LiftGammaGainAdjustment {
-    let options = options.unwrap_or(LiftGammaGainAdjustment {
+    let options = options.unwrap_or(FlightOmitRecord1 {
         __flight_identity: std::sync::Arc::new(()),
         lift: None,
         gamma: None,
@@ -100,10 +113,16 @@ pub fn create_lift_gamma_gain_adjustment(
             }
         })
             as Box<dyn FnMut(Vec<f64>, f64, f64, f64) -> () + Send + 'static>));
-    return LiftGammaGainAdjustment {
-        kind: "LiftGammaGainAdjustment".to_owned(),
-        transform: (transform).clone(),
-        ..((options).clone()).clone()
+    return {
+        let __flight_spread_1 = options;
+        LiftGammaGainAdjustment {
+            __flight_identity: std::sync::Arc::new(()),
+            kind: "LiftGammaGainAdjustment".to_owned(),
+            transform: (transform).clone(),
+            lift: __flight_spread_1.lift,
+            gamma: __flight_spread_1.gamma,
+            gain: __flight_spread_1.gain,
+        }
     };
 }
 

@@ -68,7 +68,7 @@ pub fn acquire_path_mesh(path: &Path, tolerance: Option<f64>) -> PathMesh {
         .unwrap()
         .indices
         .truncate((fresh.indices.len() as f64) as usize);
-    return (mesh).clone().unwrap();
+    return ((mesh).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/path/src/pathMeshPool.ts:31 (sha256:c9d3adad472e3b886825034c091dbd5d4a8bf6eff14d29a650a10bec9e08c24c)
@@ -86,7 +86,7 @@ pub fn acquire_path_mesh_typed(path: &Path, tolerance: Option<f64>) -> PathMeshT
     };
     mesh.as_mut().unwrap().vertices = (fresh.vertices).clone();
     mesh.as_mut().unwrap().indices = (fresh.indices).clone();
-    return (mesh).clone().unwrap();
+    return ((mesh).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/path/src/pathMeshPool.ts:44 (sha256:f5c2f0eff2d794b29210067122e292cffcb0cf475fc59259e276351f2c4f58dc)

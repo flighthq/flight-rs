@@ -8,25 +8,42 @@
 
 use flighthq_types::WhiteBalanceEffect;
 
-// Source: upstream/packages/effects/src/whiteBalanceEffect.ts:3 (sha256:b7080261a2c18434a5374ab542bd861f0dba9e4ba2ca8faf9fb7e2fbb6133e74)
 #[derive(Clone)]
-struct CreateWhiteBalanceEffectRecord1 {
-    __flight_identity: std::sync::Arc<()>,
+pub struct FlightOmitRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub temperature: Option<f64>,
+    pub tint: Option<f64>,
 }
-impl PartialEq for CreateWhiteBalanceEffectRecord1 {
+impl PartialEq for FlightOmitRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-pub fn create_white_balance_effect(options: Option<WhiteBalanceEffect>) -> WhiteBalanceEffect {
-    let options = options.unwrap_or(WhiteBalanceEffect {
+// Source: upstream/packages/effects/src/whiteBalanceEffect.ts:3 (sha256:b7080261a2c18434a5374ab542bd861f0dba9e4ba2ca8faf9fb7e2fbb6133e74)
+#[derive(Clone)]
+struct CreateWhiteBalanceEffectRecord2 {
+    __flight_identity: std::sync::Arc<()>,
+}
+impl PartialEq for CreateWhiteBalanceEffectRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+pub fn create_white_balance_effect(options: Option<FlightOmitRecord1>) -> WhiteBalanceEffect {
+    let options = options.unwrap_or(FlightOmitRecord1 {
         __flight_identity: std::sync::Arc::new(()),
         temperature: None,
         tint: None,
     });
-    return WhiteBalanceEffect {
-        kind: "WhiteBalanceEffect".to_owned(),
-        ..((options).clone()).clone()
+    return {
+        let __flight_spread_1 = options;
+        WhiteBalanceEffect {
+            __flight_identity: std::sync::Arc::new(()),
+            kind: "WhiteBalanceEffect".to_owned(),
+            temperature: __flight_spread_1.temperature,
+            tint: __flight_spread_1.tint,
+        }
     };
 }

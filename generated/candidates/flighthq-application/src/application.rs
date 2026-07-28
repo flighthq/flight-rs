@@ -324,7 +324,7 @@ pub fn get_loop_backend() -> LoopBackend {
     if ((*_LOOP_BACKEND.lock().unwrap()).clone()).is_none() {
         (*_LOOP_BACKEND.lock().unwrap()) = Some(create_web_loop_backend());
     }
-    return ((*_LOOP_BACKEND.lock().unwrap()).clone()).clone().unwrap();
+    return (((*_LOOP_BACKEND.lock().unwrap()).clone()).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/application/src/application.ts:151 (sha256:9bbe5c835e6327c56cf71f349067c93d88215c1d7a4acd3dac81cc9256927f56)
@@ -654,7 +654,10 @@ pub fn start_application_loop(mut app: Application, options: Option<ApplicationL
                                 Err(_) => {
                                     let err = crate::OpaqueHostValue::Object;
                                     {
-                                        emit_signal(((app.on_error).clone()).unwrap(), (err,));
+                                        emit_signal(
+                                            ((app.on_error).clone()).unwrap(),
+                                            ((err).clone(),),
+                                        );
                                     }
                                 }
                             }
@@ -684,7 +687,7 @@ pub fn start_application_loop(mut app: Application, options: Option<ApplicationL
                         Err(_) => {
                             let err = crate::OpaqueHostValue::Object;
                             {
-                                emit_signal(((app.on_error).clone()).unwrap(), (err,));
+                                emit_signal(((app.on_error).clone()).unwrap(), ((err).clone(),));
                             }
                         }
                     }
@@ -695,7 +698,7 @@ pub fn start_application_loop(mut app: Application, options: Option<ApplicationL
                         Err(_) => {
                             let err = crate::OpaqueHostValue::Object;
                             {
-                                emit_signal(((app.on_error).clone()).unwrap(), (err,));
+                                emit_signal(((app.on_error).clone()).unwrap(), ((err).clone(),));
                             }
                         }
                     }
@@ -801,7 +804,7 @@ pub fn step_application_loop(app: &mut Application, delta_time: f64) -> () {
             Err(_) => {
                 let err = crate::OpaqueHostValue::Object;
                 {
-                    emit_signal(((app.on_error).clone()).unwrap(), (err,));
+                    emit_signal(((app.on_error).clone()).unwrap(), ((err).clone(),));
                 }
             }
         }
@@ -812,7 +815,7 @@ pub fn step_application_loop(app: &mut Application, delta_time: f64) -> () {
             Err(_) => {
                 let err = crate::OpaqueHostValue::Object;
                 {
-                    emit_signal(((app.on_error).clone()).unwrap(), (err,));
+                    emit_signal(((app.on_error).clone()).unwrap(), ((err).clone(),));
                 }
             }
         }
@@ -980,7 +983,7 @@ fn get_application_observers(
             }
         };
     }
-    return (observers).clone().unwrap();
+    return ((observers).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/application/src/application.ts:392 (sha256:fd56e55c4c3005d431b7d73851e47d30e31fc9e129b9954d732a92262c1c9208)

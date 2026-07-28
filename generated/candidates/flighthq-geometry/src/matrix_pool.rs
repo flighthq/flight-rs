@@ -29,7 +29,7 @@ pub fn acquire_matrix() -> Matrix {
     } else {
         m = Some(create_matrix(None, None, None, None, None, None));
     }
-    return (m).clone().unwrap();
+    return ((m).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/geometry/src/matrixPool.ts:23 (sha256:0d2a5eb0a5c0a2c92b3cf517f54845b0db45f42f752dd3f21824cf59d707c238)

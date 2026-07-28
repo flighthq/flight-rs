@@ -64,7 +64,7 @@ fn parse_bitmap_font_json_record(text: String) -> Option<BitmapFontRecord> {
         return None;
     }
     let raw_chars = crate::host_value::<crate::OpaqueHostValue>("host.chars");
-    if (!(array.is_array)(raw_chars)) {
+    if (!false) {
         return None;
     }
     let mut chars: Vec<BitmapFontCharRecord> = vec![];
@@ -78,7 +78,7 @@ fn parse_bitmap_font_json_record(text: String) -> Option<BitmapFontRecord> {
         return None;
     }
     let mut pages: Vec<BitmapFontPageRecord> = vec![];
-    if (array.is_array)(crate::host_value::<crate::OpaqueHostValue>("host.pages")) {
+    if false {
         {
             let mut id = 0.0_f64;
             while (id < crate::host_value::<f64>("host.length")) {
@@ -107,7 +107,7 @@ fn parse_bitmap_font_json_record(text: String) -> Option<BitmapFontRecord> {
         }
     }
     let mut kernings: Vec<BitmapFontKerningRecord> = vec![];
-    if (array.is_array)(crate::host_value::<crate::OpaqueHostValue>("host.kernings")) {
+    if false {
         for raw in (crate::host_value::<crate::OpaqueHostValue>("host.kernings"))
             .iter()
             .cloned()
@@ -141,7 +141,7 @@ fn is_object(value: crate::OpaqueHostValue) -> bool {
         crate::OpaqueHostValue::String(_) => "string",
     } == "object")
         && ((value).is_some()))
-        && (!(array.is_array)(value));
+        && (!false);
 }
 
 // Source: upstream/packages/bitmapfont-formats/src/bitmapFontJson.ts:73 (sha256:2c43614aab520677cd8862d1077ddd6189c2090a04062b507efbb1b3195de053)

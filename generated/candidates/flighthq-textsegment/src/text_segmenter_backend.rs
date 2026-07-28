@@ -37,7 +37,7 @@ pub fn get_text_segmenter_backend() -> TextSegmenterBackend {
     if ((*_BACKEND.lock().unwrap()).clone()).is_none() {
         (*_BACKEND.lock().unwrap()) = Some(create_web_text_segmenter_backend());
     }
-    return ((*_BACKEND.lock().unwrap()).clone()).clone().unwrap();
+    return (((*_BACKEND.lock().unwrap()).clone()).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/textsegment/src/textSegmenterBackend.ts:24 (sha256:598a62c1dae3193fd76072bf9a00672a2d17ed2ce2914fde26ba57bdc0e40bda)

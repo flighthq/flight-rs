@@ -113,7 +113,7 @@ pub fn get_socket_backend() -> SocketBackend {
     if ((*_BACKEND.lock().unwrap()).clone()).is_none() {
         (*_BACKEND.lock().unwrap()) = Some(create_web_socket_backend());
     }
-    return ((*_BACKEND.lock().unwrap()).clone()).clone().unwrap();
+    return (((*_BACKEND.lock().unwrap()).clone()).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/socket/src/socket.ts:118 (sha256:51bc08949197ed721cc8f797add000aa23ec337ff407f0eb0da4d23483e7182d)

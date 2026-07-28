@@ -72,7 +72,7 @@ pub fn get_glyph_rasterizer_backend() -> GlyphRasterizerBackend {
     if ((*_BACKEND.lock().unwrap()).clone()).is_none() {
         (*_BACKEND.lock().unwrap()) = Some(create_web_glyph_rasterizer_backend());
     }
-    return ((*_BACKEND.lock().unwrap()).clone()).clone().unwrap();
+    return (((*_BACKEND.lock().unwrap()).clone()).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/glyphatlas/src/glyphRasterizerBackend.ts:54 (sha256:db0a730806afd604b259ee162e309d2d45828b73b7fba5ab3c50e59bbe5cb1c4)

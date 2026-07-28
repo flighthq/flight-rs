@@ -8,19 +8,30 @@
 
 use flighthq_types::ExposureAdjustment;
 
-// Source: upstream/packages/adjustments/src/exposureAdjustment.ts:9 (sha256:a244d4a1c4c5edfabd326c03a596be32c1c8c399f83425daa656837c35eeb160)
 #[derive(Clone)]
-struct CreateExposureAdjustmentRecord1 {
-    __flight_identity: std::sync::Arc<()>,
+pub struct FlightOmitRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub exposure: Option<f64>,
 }
-impl PartialEq for CreateExposureAdjustmentRecord1 {
+impl PartialEq for FlightOmitRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-pub fn create_exposure_adjustment(options: Option<ExposureAdjustment>) -> ExposureAdjustment {
-    let options = options.unwrap_or(ExposureAdjustment {
+// Source: upstream/packages/adjustments/src/exposureAdjustment.ts:9 (sha256:a244d4a1c4c5edfabd326c03a596be32c1c8c399f83425daa656837c35eeb160)
+#[derive(Clone)]
+struct CreateExposureAdjustmentRecord2 {
+    __flight_identity: std::sync::Arc<()>,
+}
+impl PartialEq for CreateExposureAdjustmentRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+pub fn create_exposure_adjustment(options: Option<FlightOmitRecord1>) -> ExposureAdjustment {
+    let options = options.unwrap_or(FlightOmitRecord1 {
         __flight_identity: std::sync::Arc::new(()),
         exposure: None,
     });
@@ -29,9 +40,13 @@ pub fn create_exposure_adjustment(options: Option<ExposureAdjustment>) -> Exposu
         m, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, m, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64,
         0.0_f64, m, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 1.0_f64, 0.0_f64,
     ];
-    return ExposureAdjustment {
-        kind: "ExposureAdjustment".to_owned(),
-        color_matrix: color_matrix,
-        ..((options).clone()).clone()
+    return {
+        let __flight_spread_1 = options;
+        ExposureAdjustment {
+            __flight_identity: std::sync::Arc::new(()),
+            kind: "ExposureAdjustment".to_owned(),
+            color_matrix: color_matrix,
+            exposure: __flight_spread_1.exposure,
+        }
     };
 }

@@ -42,7 +42,7 @@ pub fn parse_texture_atlas_aseprite_document(
     atlas: &mut TextureAtlas,
 ) -> TextureAtlas {
     atlas.regions.clear();
-    if (array.is_array)(doc.frames) {
+    if false {
         for entry in (doc.frames).iter().cloned() {
             apply_aseprite_frame(atlas, (entry.filename).clone(), &(entry));
         }

@@ -43,7 +43,7 @@ pub fn attach_power(power: Power, idle_threshold_seconds: Option<f64>) -> () {
                         __flight_result
                     };
                     if ((power.on_change).clone()).is_some() {
-                        emit_signal(((power.on_change).clone()).unwrap(), (status,));
+                        emit_signal(((power.on_change).clone()).unwrap(), ((status).clone(),));
                     }
                     if (status.is_charging != (*was_charging.lock().unwrap()).clone()) {
                         (*was_charging.lock().unwrap()) = status.is_charging;
@@ -53,7 +53,7 @@ pub fn attach_power(power: Power, idle_threshold_seconds: Option<f64>) -> () {
                             (power.on_discharging).clone()
                         };
                         if (transition).is_some() {
-                            emit_signal(transition.as_ref().unwrap(), ());
+                            emit_signal((transition.as_ref().unwrap()).clone(), ());
                         }
                     }
                 }
@@ -433,23 +433,23 @@ pub fn create_web_power_backend() -> PowerBackend {
         { let __flight_callback = (listener).clone(); let __flight_result = __flight_callback.lock().unwrap()(); __flight_result };
       } }) as Box<dyn FnMut() -> () + Send + 'static>));
       let cancelled: std::sync::Arc<std::sync::Mutex<bool>> = std::sync::Arc::new(std::sync::Mutex::new(false));
-      ((battery.as_ref().unwrap().then)(std::sync::Arc::new(std::sync::Mutex::new(Box::new({ let mut cached_charging = cached_charging.clone(); let mut cached_charging_time = cached_charging_time.clone(); let mut cached_discharging_time = cached_discharging_time.clone(); let mut cached_level = cached_level.clone(); let mut cancelled = cancelled.clone(); let listener = listener.clone(); let mut manager = manager.clone(); let on_charging_change = on_charging_change.clone(); let on_charging_time_change = on_charging_time_change.clone(); let on_discharging_time_change = on_discharging_time_change.clone(); let on_level_change = on_level_change.clone(); move |m: crate::OpaqueHostValue| -> () {
+      { let __flight_promise = { let __flight_promise = (battery.as_ref().unwrap()).clone(); let __flight_callback = std::sync::Arc::new(std::sync::Mutex::new(Box::new({ let mut cached_charging = cached_charging.clone(); let mut cached_charging_time = cached_charging_time.clone(); let mut cached_discharging_time = cached_discharging_time.clone(); let mut cached_level = cached_level.clone(); let mut cancelled = cancelled.clone(); let listener = listener.clone(); let mut manager = manager.clone(); let on_charging_change = on_charging_change.clone(); let on_charging_time_change = on_charging_time_change.clone(); let on_discharging_time_change = on_discharging_time_change.clone(); let on_level_change = on_level_change.clone(); move |m: WebBatteryManager| -> () {
         if ((*cancelled.lock().unwrap())).clone() {
           return;
         }
-        (*manager.lock().unwrap()) = Some(m);
-        (*cached_level.lock().unwrap()) = crate::host_value::<f64>("host.level");
-        (*cached_charging.lock().unwrap()) = crate::host_value::<bool>("host.charging");
-        (*cached_charging_time.lock().unwrap()) = if (crate::host_value::<crate::OpaqueHostValue>("host.chargingTime") == f64::INFINITY) { (-1.0_f64) } else { crate::host_value::<f64>("host.chargingTime") };
-        (*cached_discharging_time.lock().unwrap()) = if (crate::host_value::<crate::OpaqueHostValue>("host.dischargingTime") == f64::INFINITY) { (-1.0_f64) } else { crate::host_value::<f64>("host.dischargingTime") };
-        Some(());
-        Some(());
-        Some(());
-        Some(());
+        (*manager.lock().unwrap()) = Some((m).clone());
+        (*cached_level.lock().unwrap()) = m.level;
+        (*cached_charging.lock().unwrap()) = m.charging;
+        (*cached_charging_time.lock().unwrap()) = if (m.charging_time == f64::INFINITY) { (-1.0_f64) } else { m.charging_time };
+        (*cached_discharging_time.lock().unwrap()) = if (m.discharging_time == f64::INFINITY) { (-1.0_f64) } else { m.discharging_time };
+        { let __flight_callback = (m.add_event_listener).clone(); __flight_callback.as_ref().map(|callback| callback.lock().unwrap()("levelchange".to_owned(), (on_level_change).clone())) };
+        { let __flight_callback = (m.add_event_listener).clone(); __flight_callback.as_ref().map(|callback| callback.lock().unwrap()("chargingchange".to_owned(), (on_charging_change).clone())) };
+        { let __flight_callback = (m.add_event_listener).clone(); __flight_callback.as_ref().map(|callback| callback.lock().unwrap()("chargingtimechange".to_owned(), (on_charging_time_change).clone())) };
+        { let __flight_callback = (m.add_event_listener).clone(); __flight_callback.as_ref().map(|callback| callback.lock().unwrap()("dischargingtimechange".to_owned(), (on_discharging_time_change).clone())) };
         { let __flight_callback = (listener).clone(); let __flight_result = __flight_callback.lock().unwrap()(); __flight_result };
-      } }) as Box<dyn FnMut(crate::OpaqueHostValue) -> () + Send + 'static>))).catch)(std::sync::Arc::new(std::sync::Mutex::new(Box::new(move || -> () {
+      } }) as Box<dyn FnMut(WebBatteryManager) -> () + Send + 'static>)); let _ = (&__flight_promise, &__flight_callback); crate::Promise::<()>::default() }; let __flight_callback = std::sync::Arc::new(std::sync::Mutex::new(Box::new(move || -> () {
 
-      }) as Box<dyn FnMut() -> () + Send + 'static>)));
+      }) as Box<dyn FnMut() -> () + Send + 'static>)); let _ = &__flight_callback; __flight_promise.clone() };
       return std::sync::Arc::new(std::sync::Mutex::new(Box::new({ let mut cancelled = cancelled.clone(); let mut manager = manager.clone(); let on_charging_change = on_charging_change.clone(); let on_charging_time_change = on_charging_time_change.clone(); let on_discharging_time_change = on_discharging_time_change.clone(); let on_level_change = on_level_change.clone(); move || -> () {
         (*cancelled.lock().unwrap()) = true;
         { let __flight_callback = (*manager.lock().unwrap()).as_ref().and_then(|value| (value.remove_event_listener).clone()); __flight_callback.as_ref().map(|callback| callback.lock().unwrap()("levelchange".to_owned(), (on_level_change).clone())) };
@@ -686,7 +686,7 @@ pub fn get_power_backend() -> PowerBackend {
     if ((*_BACKEND.lock().unwrap()).clone()).is_none() {
         (*_BACKEND.lock().unwrap()) = Some(create_web_power_backend());
     }
-    return ((*_BACKEND.lock().unwrap()).clone()).clone().unwrap();
+    return (((*_BACKEND.lock().unwrap()).clone()).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/power/src/power.ts:315 (sha256:9a1bb90215600e65d7d3cd4692a79e85f02a5cea5ece12f4fb283efe5ed05089)

@@ -365,7 +365,7 @@ pub fn get_device_backend() -> DeviceBackend {
     if ((*_BACKEND.lock().unwrap()).clone()).is_none() {
         (*_BACKEND.lock().unwrap()) = Some(create_web_device_backend());
     }
-    return ((*_BACKEND.lock().unwrap()).clone()).clone().unwrap();
+    return (((*_BACKEND.lock().unwrap()).clone()).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/device/src/device.ts:235 (sha256:3fd09980c2efbca37a5d19d41a6d3cbb2157dbf5af66c6e092ab955b3256d805)

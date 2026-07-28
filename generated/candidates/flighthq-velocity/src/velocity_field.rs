@@ -150,7 +150,7 @@ pub fn ensure_velocity_sample(
             }
         };
     }
-    return (sample).clone().unwrap();
+    return ((sample).clone().unwrap()).clone();
 }
 
 // Source: upstream/packages/velocity/src/velocityField.ts:91 (sha256:2101e8a86d7a71ae1aab896617db881fdf9b731e27a9a333ea495987179e1894)

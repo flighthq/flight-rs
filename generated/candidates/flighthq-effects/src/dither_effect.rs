@@ -8,24 +8,39 @@
 
 use flighthq_types::DitherEffect;
 
-// Source: upstream/packages/effects/src/ditherEffect.ts:3 (sha256:a94783752ee994f0a6723ed9a6a297fa4a4d02f01bed52b36be69b8116d2142b)
 #[derive(Clone)]
-struct CreateDitherEffectRecord1 {
-    __flight_identity: std::sync::Arc<()>,
+pub struct FlightOmitRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub levels: Option<f64>,
 }
-impl PartialEq for CreateDitherEffectRecord1 {
+impl PartialEq for FlightOmitRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-pub fn create_dither_effect(options: Option<DitherEffect>) -> DitherEffect {
-    let options = options.unwrap_or(DitherEffect {
+// Source: upstream/packages/effects/src/ditherEffect.ts:3 (sha256:a94783752ee994f0a6723ed9a6a297fa4a4d02f01bed52b36be69b8116d2142b)
+#[derive(Clone)]
+struct CreateDitherEffectRecord2 {
+    __flight_identity: std::sync::Arc<()>,
+}
+impl PartialEq for CreateDitherEffectRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+pub fn create_dither_effect(options: Option<FlightOmitRecord1>) -> DitherEffect {
+    let options = options.unwrap_or(FlightOmitRecord1 {
         __flight_identity: std::sync::Arc::new(()),
         levels: None,
     });
-    return DitherEffect {
-        kind: "DitherEffect".to_owned(),
-        ..((options).clone()).clone()
+    return {
+        let __flight_spread_1 = options;
+        DitherEffect {
+            __flight_identity: std::sync::Arc::new(()),
+            kind: "DitherEffect".to_owned(),
+            levels: __flight_spread_1.levels,
+        }
     };
 }

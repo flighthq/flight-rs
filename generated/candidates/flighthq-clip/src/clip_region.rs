@@ -44,7 +44,7 @@ pub fn acquire_clip_region() -> ClipRegion {
         region.as_mut().unwrap().contours = None;
         region.as_mut().unwrap().winding = "nonZero".to_owned();
         region.as_mut().unwrap().version = 0.0_f64;
-        return region.as_mut().unwrap();
+        return ((region.as_mut().unwrap()).clone()).clone();
     }
     return make_empty_clip_region();
 }
