@@ -18,7 +18,7 @@ const base64 = bytes.toString('base64');
 // output inside @flighthq/surface-rs, not a package: the stray manifest would
 // register as a phantom workspace, and the whole dir is git-ignored anyway.
 // Strip both so every bake leaves src/wasm holding only the artifacts.
-for (const scaffold of ['package.json', '.gitignore']) {
+for (const scaffold of ['package.json', '.gitignore', 'surface_wasm_bg.wasm', 'surface_wasm_bg.wasm.d.ts']) {
   rmSync(join(wasmDir, scaffold), { force: true });
 }
 

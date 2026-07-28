@@ -15,8 +15,9 @@
     "inventory": "tsx tools/generator/src/cli.ts --inventory --json",
     "lint": "oxlint --max-warnings=0",
     "lint:fix": "oxlint --fix --max-warnings=0",
-    "test": "vitest run",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "test": "vitest run && vitest run --config packages/surface-rs/vitest.config.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "wasm": "tsx tools/generator/src/build-wasm.ts"
   },
   "devDependencies": {
     "@types/node": "22.19.7",

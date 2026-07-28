@@ -6,7 +6,7 @@
       "reason": "Curated JavaScript/wasm boundary for the generated @flighthq/surface implementation."
     }
   ],
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "targets": [
     {
       "crate": "flighthq-types",
@@ -2835,156 +2835,237 @@
       ],
       "emittedSources": [
         {
+          "declarationNames": [
+            "AlphaType"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/alpha_type.rs",
           "outputSha256": "sha256:f76df92b87cd329d5099065760fa9a21a033064d3cf3022fabc61ac1b9354ac0",
           "source": "upstream/packages/types/src/AlphaType.ts"
         },
         {
+          "declarationNames": [
+            "ColorTransform",
+            "ColorTransformLike"
+          ],
           "declarations": 2,
           "output": "generated/crates/flighthq-types/src/color_transform.rs",
           "outputSha256": "sha256:9dd69bcaa95bb6c68acd4634a8034404f2743ef141dacf6688c75613d0ab98c5",
           "source": "upstream/packages/types/src/ColorTransform.ts"
         },
         {
+          "declarationNames": [
+            "EasingFunction"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/easing_function.rs",
           "outputSha256": "sha256:bcc092a22f736fa0ff119300551e1211144bf432f13150829aa1ccc04b3170e3",
           "source": "upstream/packages/types/src/EasingFunction.ts"
         },
         {
+          "declarationNames": [
+            "EasingSegment"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/easing_segment.rs",
           "outputSha256": "sha256:dd6d100d278395f9171173116330cb050468c2c2a761de9dc2a595a9dc4e5693",
           "source": "upstream/packages/types/src/EasingSegment.ts"
         },
         {
+          "declarationNames": [
+            "GradientSpread"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/gradient_spread.rs",
           "outputSha256": "sha256:5440c5e80237336959577b64237f7a484532e081d6b19d9ceb8458974361aef5",
           "source": "upstream/packages/types/src/GradientSpread.ts"
         },
         {
+          "declarationNames": [
+            "ImageFormat"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/image_format.rs",
           "outputSha256": "sha256:818e9d33bcf6124de2c1dac031bf3f6b70749b96278ce340dabcb27cd2191639",
           "source": "upstream/packages/types/src/ImageFormat.ts"
         },
         {
+          "declarationNames": [
+            "ImageResource"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/image_resource.rs",
           "outputSha256": "sha256:6d782629136f6da2a7cf6df3a261b4cb07f06a2c0c1215f4d6060b721cf3ac6f",
           "source": "upstream/packages/types/src/ImageResource.ts"
         },
         {
+          "declarationNames": [
+            "ImageResourceCompressed"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/image_resource_compressed.rs",
           "outputSha256": "sha256:ed6a3caf8cd3b429518502deb35cc8a7f179e94f338af93365c94b15740695d2",
           "source": "upstream/packages/types/src/ImageResourceCompressed.ts"
         },
         {
+          "declarationNames": [
+            "PixelFormat"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/pixel_format.rs",
           "outputSha256": "sha256:d06a62e979ac282abeefe887cb46a7673e6fb3abede25e89130d9ba82602f7a4",
           "source": "upstream/packages/types/src/PixelFormat.ts"
         },
         {
+          "declarationNames": [
+            "PixelOrder"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/pixel_order.rs",
           "outputSha256": "sha256:db6683cbc236c97d9ed306b76d6aebdc419e77f1e7b81e0a8a0384ca59915732",
           "source": "upstream/packages/types/src/PixelOrder.ts"
         },
         {
+          "declarationNames": [
+            "Rectangle",
+            "RectangleLike"
+          ],
           "declarations": 2,
           "output": "generated/crates/flighthq-types/src/rectangle.rs",
           "outputSha256": "sha256:ae2534cbecde0665e0607e37b61b1fefbabfd425474edf1f54323491a12ed997",
           "source": "upstream/packages/types/src/Rectangle.ts"
         },
         {
+          "declarationNames": [
+            "ScalarRemap"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/scalar_remap.rs",
           "outputSha256": "sha256:85fffdbb244c6da4111053353d3f05ab17d90ebdbe2eefb7574612d9d8dc4303",
           "source": "upstream/packages/types/src/ScalarRemap.ts"
         },
         {
+          "declarationNames": [
+            "StepPosition"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/step_position.rs",
           "outputSha256": "sha256:f55b1baa0448b1fdbd5777256e62bc97ace60216270943e94ba5c1242f19ebf1",
           "source": "upstream/packages/types/src/StepPosition.ts"
         },
         {
+          "declarationNames": [
+            "Surface"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/surface.rs",
           "outputSha256": "sha256:531285a3d21e2949a63a3515d391061017c89104ae575e1745ceb08f37672243",
           "source": "upstream/packages/types/src/Surface.ts"
         },
         {
+          "declarationNames": [
+            "SurfaceCompositeMode",
+            "SurfaceCompositeMode"
+          ],
           "declarations": 2,
           "output": "generated/crates/flighthq-types/src/surface_composite_mode.rs",
           "outputSha256": "sha256:5e06795f1b77a433986815afadea01e0f6d7adba4199179255e6be2a4b2e33c9",
           "source": "upstream/packages/types/src/SurfaceCompositeMode.ts"
         },
         {
+          "declarationNames": [
+            "SurfaceEdgeMode"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/surface_edge_mode.rs",
           "outputSha256": "sha256:66b4b02e6bbbe1d81f9d4e44659ab857b2f9aac396aa930042d0d5ab08a3c639",
           "source": "upstream/packages/types/src/SurfaceEdgeMode.ts"
         },
         {
+          "declarationNames": [
+            "SurfaceFingerprint"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/surface_fingerprint.rs",
           "outputSha256": "sha256:8538c759317d5bfda8cb8a64c21f0826aa1a71448beb6e63dcf19ffe4ae183f7",
           "source": "upstream/packages/types/src/SurfaceFingerprint.ts"
         },
         {
+          "declarationNames": [
+            "SurfaceHistogram"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/surface_histogram.rs",
           "outputSha256": "sha256:7d8ef5bfaab180f4354abbf707ccaa577e2179d6bde0124a8fb9e66c5a112957",
           "source": "upstream/packages/types/src/SurfaceHistogram.ts"
         },
         {
+          "declarationNames": [
+            "SurfaceMismatch"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/surface_mismatch.rs",
           "outputSha256": "sha256:f08bdb0faee684062acd9e1b092391a70e3381aa92af0b420c8d35ebc5ceba11",
           "source": "upstream/packages/types/src/SurfaceMismatch.ts"
         },
         {
+          "declarationNames": [
+            "SurfaceRegion"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/surface_region.rs",
           "outputSha256": "sha256:1424c92c9516615eb805cd4efdcbcca4243edfc2fe50631cfe88c85f9724b918",
           "source": "upstream/packages/types/src/SurfaceRegion.ts"
         },
         {
+          "declarationNames": [
+            "SurfaceResizeMode"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/surface_resize_mode.rs",
           "outputSha256": "sha256:2297e3d358024e3e62941d28b99a2fc3f1e993d7b91dae6faa65ad0bfd17eb1d",
           "source": "upstream/packages/types/src/SurfaceResizeMode.ts"
         },
         {
+          "declarationNames": [
+            "TextureContainer"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/texture_container.rs",
           "outputSha256": "sha256:ddc2e44a85ec0ea50c5171c7ffba54bbbc9e1932388dfbe9345c03ec91d67a2b",
           "source": "upstream/packages/types/src/TextureContainer.ts"
         },
         {
+          "declarationNames": [
+            "TextureContainerFormat"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/texture_container_format.rs",
           "outputSha256": "sha256:2864c7ab02b926f349a5d424ed2249c447debb4193c6cd1f1a7502f47bb511db",
           "source": "upstream/packages/types/src/TextureContainerFormat.ts"
         },
         {
+          "declarationNames": [
+            "TextureContainerLevel"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/texture_container_level.rs",
           "outputSha256": "sha256:645b12d78d036328ecda9578c7dc781dfaac78693e84b0b588827d492bf5017a",
           "source": "upstream/packages/types/src/TextureContainerLevel.ts"
         },
         {
+          "declarationNames": [
+            "TextureContainerSupercompression"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/texture_container_supercompression.rs",
           "outputSha256": "sha256:a07cd9496bc057af12dbd97f58662a6592215aac3306564deb41a3ea6881376a",
           "source": "upstream/packages/types/src/TextureContainerSupercompression.ts"
         },
         {
+          "declarationNames": [
+            "ThresholdOperation"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-types/src/threshold_operation.rs",
           "outputSha256": "sha256:e552d5bd01bb515fb4ec4dee5424afd437f34cf0a919597e28a24cc06ac60a5a",
@@ -3002,114 +3083,208 @@
       "deferredSources": [],
       "emittedSources": [
         {
+          "declarationNames": [
+            "createEasingSamples"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-easing/src/create_easing_samples.rs",
           "outputSha256": "sha256:ea2f326cdb20002817ad1c2c2728b7fcc10d1767c180caca1ffeaadbb31a4b4e",
           "source": "upstream/packages/easing/src/createEasingSamples.ts"
         },
         {
+          "declarationNames": [
+            "easeInBack",
+            "easeInOutBack",
+            "easeOutBack",
+            "s",
+            "s2"
+          ],
           "declarations": 5,
           "output": "generated/crates/flighthq-easing/src/ease_back.rs",
           "outputSha256": "sha256:d64cc8d17466195ffd47b02f1b336a06588131581af441636f1337506fe5ba4a",
           "source": "upstream/packages/easing/src/easeBack.ts"
         },
         {
+          "declarationNames": [
+            "bounceOut",
+            "easeInBounce",
+            "easeInOutBounce",
+            "easeOutBounce"
+          ],
           "declarations": 4,
           "output": "generated/crates/flighthq-easing/src/ease_bounce.rs",
           "outputSha256": "sha256:174a0f9db69f9693ecab4342a338d38df587b8a4df79ecad4d64e3b518d671a9",
           "source": "upstream/packages/easing/src/easeBounce.ts"
         },
         {
+          "declarationNames": [
+            "easeInCircular",
+            "easeInOutCircular",
+            "easeOutCircular"
+          ],
           "declarations": 3,
           "output": "generated/crates/flighthq-easing/src/ease_circular.rs",
           "outputSha256": "sha256:8302178c32dd1ede921ae50ebe2d5bce0e0786a5b2f16ed7b73011750ed04516",
           "source": "upstream/packages/easing/src/easeCircular.ts"
         },
         {
+          "declarationNames": [
+            "easeClamp",
+            "easeClampOutput",
+            "easeInvert",
+            "easeMirror",
+            "easeReverse",
+            "easeScaleOutput"
+          ],
           "declarations": 6,
           "output": "generated/crates/flighthq-easing/src/ease_combinators.rs",
           "outputSha256": "sha256:217aa1ec75eafa88210ad4881110b4e7563eb1ccfb2b9dc1cb867f6b79fd8083",
           "source": "upstream/packages/easing/src/easeCombinators.ts"
         },
         {
+          "declarationNames": [
+            "easeInCubic",
+            "easeInOutCubic",
+            "easeOutCubic"
+          ],
           "declarations": 3,
           "output": "generated/crates/flighthq-easing/src/ease_cubic.rs",
           "outputSha256": "sha256:e6fd1debe65273b5e713719518f8c7954ddf4fc787a2a642f180ba432867bbdd",
           "source": "upstream/packages/easing/src/easeCubic.ts"
         },
         {
+          "declarationNames": [
+            "easeCubicBezier"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-easing/src/ease_cubic_bezier.rs",
           "outputSha256": "sha256:a32f2ef4f950d4ae0269420fca51677cfdd643a5233537485ba55b6b5786f215",
           "source": "upstream/packages/easing/src/easeCubicBezier.ts"
         },
         {
+          "declarationNames": [
+            "easeInElastic",
+            "easeInOutElastic",
+            "easeOutElastic",
+            "p",
+            "p2",
+            "s",
+            "s2"
+          ],
           "declarations": 7,
           "output": "generated/crates/flighthq-easing/src/ease_elastic.rs",
           "outputSha256": "sha256:8d7efc21549978139ecceb0d704aef4e2e4a5499f3794930806cafa12440c23e",
           "source": "upstream/packages/easing/src/easeElastic.ts"
         },
         {
+          "declarationNames": [
+            "easeInExponential",
+            "easeInOutExponential",
+            "easeOutExponential"
+          ],
           "declarations": 3,
           "output": "generated/crates/flighthq-easing/src/ease_exponential.rs",
           "outputSha256": "sha256:2c28f0f851e627515e3f2921be2870f6eef2800df829eeaf6d2e7ab214480d1f",
           "source": "upstream/packages/easing/src/easeExponential.ts"
         },
         {
+          "declarationNames": [
+            "easeLinear"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-easing/src/ease_linear.rs",
           "outputSha256": "sha256:fca00942d85bc6f41bb6c4826d870c4ebebf814a35fc52165f06baf6acc7255a",
           "source": "upstream/packages/easing/src/easeLinear.ts"
         },
         {
+          "declarationNames": [
+            "easePiecewise"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-easing/src/ease_piecewise.rs",
           "outputSha256": "sha256:3b060ffde1660071d390140e37d1806f69c239294caa6cac74fe3778dd69a578",
           "source": "upstream/packages/easing/src/easePiecewise.ts"
         },
         {
+          "declarationNames": [
+            "easeInOutPower",
+            "easeInPower",
+            "easeOutPower"
+          ],
           "declarations": 3,
           "output": "generated/crates/flighthq-easing/src/ease_power.rs",
           "outputSha256": "sha256:0daabd6bf1df6b201c3c62e3a9959977269c64b1a8feabe726452d91aa191cd4",
           "source": "upstream/packages/easing/src/easePower.ts"
         },
         {
+          "declarationNames": [
+            "easeInOutQuadratic",
+            "easeInQuadratic",
+            "easeOutQuadratic"
+          ],
           "declarations": 3,
           "output": "generated/crates/flighthq-easing/src/ease_quadratic.rs",
           "outputSha256": "sha256:29fa6fa84e65d983a90a0feca683c640cff4673572124447511a1ebd86f04f50",
           "source": "upstream/packages/easing/src/easeQuadratic.ts"
         },
         {
+          "declarationNames": [
+            "easeInOutQuartic",
+            "easeInQuartic",
+            "easeOutQuartic"
+          ],
           "declarations": 3,
           "output": "generated/crates/flighthq-easing/src/ease_quartic.rs",
           "outputSha256": "sha256:410437b063d3fc17ba33995c4c2506c39e6c4b2d042390689972abbaf0f3b77d",
           "source": "upstream/packages/easing/src/easeQuartic.ts"
         },
         {
+          "declarationNames": [
+            "easeInOutQuintic",
+            "easeInQuintic",
+            "easeOutQuintic"
+          ],
           "declarations": 3,
           "output": "generated/crates/flighthq-easing/src/ease_quintic.rs",
           "outputSha256": "sha256:97e6d3212189afb9079d4ada9676b173c026e764fa21fd58dbbf1fa309377fd8",
           "source": "upstream/packages/easing/src/easeQuintic.ts"
         },
         {
+          "declarationNames": [
+            "easeInOutSine",
+            "easeInSine",
+            "easeOutSine"
+          ],
           "declarations": 3,
           "output": "generated/crates/flighthq-easing/src/ease_sine.rs",
           "outputSha256": "sha256:278abd1bae1e79799f0cb56e16333c203b58c88b8b538370f00b9f72d80d6427",
           "source": "upstream/packages/easing/src/easeSine.ts"
         },
         {
+          "declarationNames": [
+            "easeSmootherstep",
+            "easeSmoothstep",
+            "easeSmoothstepRange"
+          ],
           "declarations": 3,
           "output": "generated/crates/flighthq-easing/src/ease_smoothstep.rs",
           "outputSha256": "sha256:8d8953cb28c7caa75d53780a5aec8a7f1ccdb45e87b6ff3de80ae019ba7d494e",
           "source": "upstream/packages/easing/src/easeSmoothstep.ts"
         },
         {
+          "declarationNames": [
+            "easeSteps"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-easing/src/ease_steps.rs",
           "outputSha256": "sha256:e2489843921345ff90c2d5b7bb2e8e0bb39e586dfd7832889f3620866b798680",
           "source": "upstream/packages/easing/src/easeSteps.ts"
         },
         {
+          "declarationNames": [
+            "defaultEpsilon",
+            "getEasingDerivative"
+          ],
           "declarations": 2,
           "output": "generated/crates/flighthq-easing/src/get_easing_derivative.rs",
           "outputSha256": "sha256:692764f9019fa9134559c1eed963d6bb6354daee59bece01e957fa2dfc087c9b",
@@ -3175,6 +3350,14 @@
       ],
       "emittedSources": [
         {
+          "declarationNames": [
+            "disposeImageResource",
+            "hasImageResourceData",
+            "hasImageResourcePixels",
+            "hasImageResourceSource",
+            "invalidateImageResource",
+            "isImageResourceEmpty"
+          ],
           "declarations": 6,
           "output": "generated/crates/flighthq-image/src/image_resource.rs",
           "outputSha256": "sha256:54e744f1f3eb562d57aef0dbb0e3e5cc0c54fdcb90a8876cc84a816cf8495536",
@@ -3385,66 +3568,142 @@
       ],
       "emittedSources": [
         {
+          "declarationNames": [
+            "copySurfaceAlpha",
+            "multiplySurfaceAlpha",
+            "setSurfaceAlpha"
+          ],
           "declarations": 3,
           "output": "generated/crates/flighthq-surface/src/surface_alpha.rs",
           "outputSha256": "sha256:f14b07efa96691fd25b118632cd7c8d999e1c2bc911eb5efea5ca8c40451d21d",
           "source": "upstream/packages/surface/src/surfaceAlpha.ts"
         },
         {
+          "declarationNames": [
+            "LUMA_B",
+            "LUMA_G",
+            "LUMA_R",
+            "buildSurfaceBrightnessColorMatrix",
+            "buildSurfaceContrastColorMatrix",
+            "buildSurfaceGrayscaleColorMatrix",
+            "buildSurfaceHueRotationColorMatrix",
+            "buildSurfaceInvertColorMatrix",
+            "buildSurfaceSaturationColorMatrix",
+            "buildSurfaceSepiaColorMatrix",
+            "clampByte",
+            "colorMatrixSurface",
+            "concatSurfaceColorMatrix",
+            "setColorMatrix",
+            "setSurfaceColorMatrixIdentity"
+          ],
           "declarations": 15,
           "output": "generated/crates/flighthq-surface/src/surface_color_matrix.rs",
           "outputSha256": "sha256:a0a7f73fc932875fc26e3a9dfe5647966c15f0bb17ff39a5070a37bcf0959a4d",
           "source": "upstream/packages/surface/src/surfaceColorMatrix.ts"
         },
         {
+          "declarationNames": [
+            "SurfaceConvolutionOptions",
+            "clampByte",
+            "convolveSurface",
+            "getConvolutionDivisor",
+            "resolveConvolutionMirror"
+          ],
           "declarations": 5,
           "output": "generated/crates/flighthq-surface/src/surface_convolution.rs",
           "outputSha256": "sha256:38c5b786b1d973b024718ef66cacaa45913074a8cce4491b455b27b8261216a9",
           "source": "upstream/packages/surface/src/surfaceConvolution.ts"
         },
         {
+          "declarationNames": [
+            "copySurfacePixels"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-surface/src/surface_copy.rs",
           "outputSha256": "sha256:673ec00abfb0554d928bd167c9bb9e30a6827a831766acadf6e1f7c2e46f8caf",
           "source": "upstream/packages/surface/src/surfaceCopy.ts"
         },
         {
+          "declarationNames": [
+            "getSurfaceCoverage"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-surface/src/surface_coverage.rs",
           "outputSha256": "sha256:23609f11c122fea3db7097e2bc6bc636f88b88fab7c7390f6c2ff1d6068838a5",
           "source": "upstream/packages/surface/src/surfaceCoverage.ts"
         },
         {
+          "declarationNames": [
+            "fillSurfaceRectangle"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-surface/src/surface_fill.rs",
           "outputSha256": "sha256:d9526a1cb941099e96f42bd399f1bdd6aa4a946b6965115ffff4810ed4c32ca1",
           "source": "upstream/packages/surface/src/surfaceFill.ts"
         },
         {
+          "declarationNames": [
+            "premultiplySurfacePixels",
+            "unpremultiplySurfacePixels"
+          ],
           "declarations": 2,
           "output": "generated/crates/flighthq-surface/src/surface_format.rs",
           "outputSha256": "sha256:66ee2e9e6f3c7009f397b0f20a49d5c5373ef81f2fca4c92ff9e0641afa3506a",
           "source": "upstream/packages/surface/src/surfaceFormat.ts"
         },
         {
+          "declarationNames": [
+            "applyMorphological",
+            "dilateSurface",
+            "erodeSurface"
+          ],
           "declarations": 3,
           "output": "generated/crates/flighthq-surface/src/surface_morphological.rs",
           "outputSha256": "sha256:2cdf64974cced2a59ddc69a72da00794814a20609f9e3810d2d61291c87f69b7",
           "source": "upstream/packages/surface/src/surfaceMorphological.ts"
         },
         {
+          "declarationNames": [
+            "SURFACE_NOISE_CHANNEL_A",
+            "SURFACE_NOISE_CHANNEL_B",
+            "SURFACE_NOISE_CHANNEL_G",
+            "SURFACE_NOISE_CHANNEL_R",
+            "fillSurfaceNoise",
+            "fillSurfacePerlinNoise",
+            "fillSurfaceTurbulence",
+            "fractalValueNoise",
+            "hashLattice",
+            "nextRandomState",
+            "smoothStep",
+            "stitchedCoord",
+            "turbulenceNoise",
+            "valueNoise"
+          ],
           "declarations": 14,
           "output": "generated/crates/flighthq-surface/src/surface_noise.rs",
           "outputSha256": "sha256:fe33ecc48dd3245eb9c9fd98ac63d73c1f9b26ca453da773633219f2cab0b9be",
           "source": "upstream/packages/surface/src/surfaceNoise.ts"
         },
         {
+          "declarationNames": [
+            "LUMA_B",
+            "LUMA_G",
+            "LUMA_R",
+            "getSurfacePixel",
+            "getSurfacePixelLuminance",
+            "getSurfacePixelRgb",
+            "setSurfacePixel",
+            "setSurfacePixelRgb"
+          ],
           "declarations": 8,
           "output": "generated/crates/flighthq-surface/src/surface_pixel.rs",
           "outputSha256": "sha256:6829ad89955c7d16f9ac782d1a87bd088c398bf3de7bafd5121c12976d8ad4e4",
           "source": "upstream/packages/surface/src/surfacePixel.ts"
         },
         {
+          "declarationNames": [
+            "pixelateSurface"
+          ],
           "declarations": 1,
           "output": "generated/crates/flighthq-surface/src/surface_pixelate.rs",
           "outputSha256": "sha256:6f7a2616ef4b7213435fae55a4c1961058a10133a316af72c3d47c883b810964",
@@ -3463,5 +3722,42 @@
       "typeMappings": {}
     }
   ],
-  "upstreamCommit": "5d24729f7360475e28a105ae0caeeaa2e1328260"
+  "upstreamCommit": "5d24729f7360475e28a105ae0caeeaa2e1328260",
+  "wasmFacades": [
+    {
+      "coreCrate": "flighthq-surface",
+      "crate": "flighthq-surface-wasm",
+      "exports": [
+        "buildSurfaceBrightnessColorMatrix",
+        "buildSurfaceContrastColorMatrix",
+        "buildSurfaceGrayscaleColorMatrix",
+        "buildSurfaceHueRotationColorMatrix",
+        "buildSurfaceInvertColorMatrix",
+        "buildSurfaceSaturationColorMatrix",
+        "buildSurfaceSepiaColorMatrix",
+        "colorMatrixSurface",
+        "concatSurfaceColorMatrix",
+        "convolveSurface",
+        "copySurfaceAlpha",
+        "copySurfacePixels",
+        "dilateSurface",
+        "erodeSurface",
+        "fillSurfaceNoise",
+        "fillSurfacePerlinNoise",
+        "fillSurfaceRectangle",
+        "fillSurfaceTurbulence",
+        "getSurfaceCoverage",
+        "multiplySurfaceAlpha",
+        "pixelateSurface",
+        "premultiplySurfacePixels",
+        "setSurfaceAlpha",
+        "setSurfaceColorMatrixIdentity",
+        "unpremultiplySurfacePixels"
+      ],
+      "output": "generated/crates/flighthq-surface-wasm/src/lib.rs",
+      "outputSha256": "sha256:85363bc257dd522fb5f86b27f0579a1c696e6022ce1c1714fcd73ef3d628a27a",
+      "template": "tools/generator/templates/surface_wasm.rs",
+      "templateSha256": "sha256:8bdfb6e09b512cb5cf2a33ddafe1b80fa22b6e41cadd24650072e2d97ac49152"
+    }
+  ]
 }

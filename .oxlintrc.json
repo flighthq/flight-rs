@@ -8,6 +8,7 @@
     "upstream/**",
     "generated/**",
     "reports/**",
+    "packages/**/src/wasm/**",
     "build/**",
     "dist/**",
     "coverage/**",

@@ -18,6 +18,13 @@ export interface RustTarget {
   typeMappings: Record<string, { reason: string; rust: string; rustDefinition?: string; source: string }>;
 }
 
+export interface WasmFacadeTarget {
+  coreCrate: string;
+  crate: string;
+  exports: string[];
+  rustTemplate: string;
+}
+
 export const portConfig = {
   generatedDirectory: 'generated',
   reportsDirectory: 'reports',
@@ -29,6 +36,40 @@ export const portConfig = {
       reason: 'Curated JavaScript/wasm boundary for the generated @flighthq/surface implementation.',
     },
   ],
+  wasmFacades: [
+    {
+      coreCrate: 'flighthq-surface',
+      crate: 'flighthq-surface-wasm',
+      exports: [
+        'buildSurfaceBrightnessColorMatrix',
+        'buildSurfaceContrastColorMatrix',
+        'buildSurfaceGrayscaleColorMatrix',
+        'buildSurfaceHueRotationColorMatrix',
+        'buildSurfaceInvertColorMatrix',
+        'buildSurfaceSaturationColorMatrix',
+        'buildSurfaceSepiaColorMatrix',
+        'colorMatrixSurface',
+        'concatSurfaceColorMatrix',
+        'convolveSurface',
+        'copySurfaceAlpha',
+        'copySurfacePixels',
+        'dilateSurface',
+        'erodeSurface',
+        'fillSurfaceNoise',
+        'fillSurfacePerlinNoise',
+        'fillSurfaceRectangle',
+        'fillSurfaceTurbulence',
+        'getSurfaceCoverage',
+        'multiplySurfaceAlpha',
+        'pixelateSurface',
+        'premultiplySurfacePixels',
+        'setSurfaceAlpha',
+        'setSurfaceColorMatrixIdentity',
+        'unpremultiplySurfacePixels',
+      ],
+      rustTemplate: 'tools/generator/templates/surface_wasm.rs',
+    },
+  ] satisfies WasmFacadeTarget[],
   targets: [
     {
       crate: 'flighthq-types',

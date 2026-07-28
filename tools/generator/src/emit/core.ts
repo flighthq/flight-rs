@@ -4,7 +4,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync } from 'node:f
 import path from 'node:path';
 import ts from 'typescript';
 
-import { portConfig, type RustTarget } from '../../port.config.ts';
+import { portConfig, type RustTarget, type WasmFacadeTarget } from '../../port.config.ts';
 import { sourcePathToRustModule } from '../analyze/inventory.ts';
 import { lowerTypeScriptSource } from '../lower/typescript.ts';
 import type { IrFunctionDeclaration, IrType, LoweringDiagnostic } from '../model/ir.ts';
@@ -13,9 +13,20 @@ import { stableJson, writeOrCheck } from './reports.ts';
 
 export interface RustGenerationReport {
   blessedFacades: typeof portConfig.blessedFacades;
-  schemaVersion: 1;
+  schemaVersion: 2;
   targets: RustTargetReport[];
   upstreamCommit: string;
+  wasmFacades: WasmFacadeReport[];
+}
+
+export interface WasmFacadeReport {
+  coreCrate: string;
+  crate: string;
+  exports: string[];
+  output: string;
+  outputSha256: string;
+  template: string;
+  templateSha256: string;
 }
 
 export interface RustTargetReport {
@@ -32,6 +43,7 @@ export interface RustTargetReport {
     source: string;
   }>;
   emittedSources: Array<{
+    declarationNames: string[];
     declarations: number;
     output: string;
     outputSha256: string;
@@ -59,11 +71,15 @@ interface PendingOutput {
 
 export function generateRust(workspaceDirectory: string, check: boolean, upstreamCommit: string): RustGenerationReport {
   const targets = portConfig.targets.map((target) => generateTarget(workspaceDirectory, target, check));
+  const wasmFacades = portConfig.wasmFacades.map((facade) =>
+    generateWasmFacade(workspaceDirectory, facade, targets, check),
+  );
   const report: RustGenerationReport = {
     blessedFacades: portConfig.blessedFacades,
-    schemaVersion: 1,
+    schemaVersion: 2,
     targets,
     upstreamCommit,
+    wasmFacades,
   };
   const generatedDirectory = path.join(workspaceDirectory, portConfig.generatedDirectory);
   mkdirSync(generatedDirectory, { recursive: true });
@@ -180,6 +196,7 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
       outputs.push({ content: emitted, file: outputFile });
       modules.push(moduleName);
       emittedSources.push({
+        declarationNames: declarations.map((declaration) => declaration.name).sort(),
         declarations: declarations.length,
         output: relative(workspaceDirectory, outputFile),
         outputSha256: sha256(emitted),
@@ -238,6 +255,65 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
     sourceExclusions,
     unsupportedSources,
     typeMappings: target.typeMappings,
+  };
+}
+
+function generateWasmFacade(
+  workspaceDirectory: string,
+  facade: WasmFacadeTarget,
+  targets: RustTargetReport[],
+  check: boolean,
+): WasmFacadeReport {
+  const core = targets.find((target) => target.crate === facade.coreCrate);
+  if (!core) throw new Error(`Wasm facade ${facade.crate} references missing core crate ${facade.coreCrate}`);
+  const generatedDeclarations = new Set(core.emittedSources.flatMap((source) => source.declarationNames));
+  const missing = facade.exports.filter((name) => !generatedDeclarations.has(name));
+  if (missing.length > 0) {
+    throw new Error(`Wasm facade ${facade.crate} references deferred core exports: ${missing.join(', ')}`);
+  }
+
+  const crateDirectory = path.join(workspaceDirectory, portConfig.generatedDirectory, 'crates', facade.crate);
+  if (!check) rmSync(crateDirectory, { force: true, recursive: true });
+  const sourceFile = path.join(crateDirectory, 'src', 'lib.rs');
+  const manifestFile = path.join(crateDirectory, 'Cargo.toml');
+  const templateFile = path.join(workspaceDirectory, facade.rustTemplate);
+  const template = readFileSync(templateFile, 'utf8');
+  const source = formatRust(template, templateFile);
+  const manifest = [
+    '[package]',
+    `name = "${facade.crate}"`,
+    'version = "0.1.0"',
+    'edition = "2024"',
+    'license = "MIT"',
+    'publish = false',
+    '',
+    '[lib]',
+    'crate-type = ["cdylib", "rlib"]',
+    'path = "src/lib.rs"',
+    '',
+    '[dependencies]',
+    `${facade.coreCrate} = { path = "../${facade.coreCrate}" }`,
+    'flighthq-types = { path = "../flighthq-types" }',
+    'wasm-bindgen = "0.2"',
+    '',
+  ].join('\n');
+  const outputs = [
+    { content: manifest, file: manifestFile },
+    { content: source, file: sourceFile },
+  ];
+  for (const output of outputs) {
+    mkdirSync(path.dirname(output.file), { recursive: true });
+    writeOrCheck(output.file, output.content, check);
+  }
+  verifyNoStaleOutputs(crateDirectory, new Set(outputs.map((output) => output.file)), check);
+  return {
+    coreCrate: facade.coreCrate,
+    crate: facade.crate,
+    exports: [...facade.exports].sort(),
+    output: relative(workspaceDirectory, sourceFile),
+    outputSha256: sha256(source),
+    template: facade.rustTemplate,
+    templateSha256: sha256(template),
   };
 }
 

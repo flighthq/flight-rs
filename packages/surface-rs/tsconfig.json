@@ -1,18 +1,22 @@
 {
-  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "composite": true,
-    "rootDir": "src",
-    "outDir": "dist",
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true
+    "exactOptionalPropertyTypes": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmitOnError": true,
+    "noImplicitOverride": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "ES2022",
+    "types": ["node"]
   },
-  "references": [
-    { "path": "../runtime-rs" },
-    { "path": "../../upstream/packages/surface" },
-    { "path": "../../upstream/packages/image" },
-    { "path": "../../upstream/packages/types" }
-  ],
+  "exclude": ["src/**/*.test.ts"],
   "include": ["src"]
 }
