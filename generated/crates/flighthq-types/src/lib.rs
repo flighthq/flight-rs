@@ -5,6 +5,28 @@
 #[derive(Clone, Default)]
 pub struct OpaqueHostValue;
 
+/// Opaque placeholder for a TypeScript Promise until async lowering supplies a native Future.
+pub struct Promise<T> {
+    marker: std::marker::PhantomData<fn() -> T>,
+    value: OpaqueHostValue,
+}
+impl<T> Clone for Promise<T> {
+    fn clone(&self) -> Self {
+        Self {
+            marker: std::marker::PhantomData,
+            value: self.value.clone(),
+        }
+    }
+}
+impl<T> Default for Promise<T> {
+    fn default() -> Self {
+        Self {
+            marker: std::marker::PhantomData,
+            value: OpaqueHostValue,
+        }
+    }
+}
+
 mod alpha_type;
 pub use alpha_type::*;
 mod color_transform;
