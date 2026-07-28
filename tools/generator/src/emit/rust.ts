@@ -3372,8 +3372,8 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
 function emitAssignment(expression: Extract<IrExpression, { kind: 'assignment' }>, context: EmitContext): string {
   const entityRuntimeAssignment = emitEntityRuntimeAssignment(expression, context, true);
   if (entityRuntimeAssignment) return entityRuntimeAssignment;
-  const lateRuntimeAssignment = emitLateEntityRuntimeFieldAssignment(expression, context, true);
-  if (lateRuntimeAssignment) return lateRuntimeAssignment;
+  const runtimeFieldAssignment = emitEntityRuntimeFieldAssignment(expression, context, true);
+  if (runtimeFieldAssignment) return runtimeFieldAssignment;
   if (isErasedEntityRuntimeAccess(expression.left)) rejectEntityRuntimeStorage();
   if (
     isErasedEntityRuntimeTreeAccess(expression.left) &&
@@ -3447,8 +3447,8 @@ function emitAssignmentStatement(
 ): string {
   const entityRuntimeAssignment = emitEntityRuntimeAssignment(expression, context, false);
   if (entityRuntimeAssignment) return entityRuntimeAssignment;
-  const lateRuntimeAssignment = emitLateEntityRuntimeFieldAssignment(expression, context, false);
-  if (lateRuntimeAssignment) return lateRuntimeAssignment;
+  const runtimeFieldAssignment = emitEntityRuntimeFieldAssignment(expression, context, false);
+  if (runtimeFieldAssignment) return runtimeFieldAssignment;
   if (isErasedEntityRuntimeAccess(expression.left)) rejectEntityRuntimeStorage();
   if (
     isErasedEntityRuntimeTreeAccess(expression.left) &&
@@ -3609,6 +3609,8 @@ function emitBitwiseOperation(left: string, right: string, operator: string): st
 
 function emitUnary(expression: Extract<IrExpression, { kind: 'unary' }>, context: EmitContext): string {
   if (expression.operator === '++' || expression.operator === '--') {
+    const runtimeUpdate = emitEntityRuntimeFieldUpdate(expression, context);
+    if (runtimeUpdate) return runtimeUpdate;
     const operand = emitPlaceExpression(expression.operand, context);
     const operator = expression.operator === '++' ? '+=' : '-=';
     return `{ ${operand} ${operator} 1.0; ${operand} }`;
@@ -3630,6 +3632,7 @@ function emitUnary(expression: Extract<IrExpression, { kind: 'unary' }>, context
   }
   if (expression.operator === 'delete' && isErasedEntityRuntimeTreeAccess(expression.operand)) {
     if (
+      expression.operand.kind === 'element' &&
       isErasedEntityRuntimeAccess(expression.operand) &&
       isNativeEntityRuntimeAccess(expression.operand, context)
     ) {
@@ -3687,10 +3690,21 @@ function emitUnary(expression: Extract<IrExpression, { kind: 'unary' }>, context
 
 function inferHostPropertyTypeofTag(expression: IrExpression, context: EmitContext): string | undefined {
   if (expression.kind !== 'property') return undefined;
+  const binding =
+    expression.binding ??
+    (expression.object.kind === 'identifier'
+      ? expression.object.name === 'window'
+        ? 'DomWindowBackend'
+        : expression.object.name === 'document'
+          ? 'DomDocumentBackend'
+          : expression.object.name === 'navigator'
+            ? 'DomNavigatorBackend'
+            : undefined
+      : undefined);
   const receiver = resolveSemanticType(inferIrExpressionType(expression.object, context), context);
-  if (!expression.binding && receiver?.kind !== 'dynamic') return undefined;
-  if (!expression.binding) return 'undefined';
-  if (expression.binding === 'DomWindowBackend') {
+  if (!binding && receiver?.kind !== 'dynamic') return undefined;
+  if (!binding) return undefined;
+  if (binding === 'DomWindowBackend') {
     if (['devicePixelRatio', 'innerHeight', 'innerWidth', 'screenX', 'screenY'].includes(expression.name)) {
       return 'number';
     }
@@ -3719,7 +3733,7 @@ function inferHostPropertyTypeofTag(expression: IrExpression, context: EmitConte
     }
     throw new RustEmissionError(`typeof window.${expression.name} has no configured host-property tag`);
   }
-  if (expression.binding === 'DomDocumentBackend') {
+  if (binding === 'DomDocumentBackend') {
     if (expression.name === 'hidden') return 'boolean';
     if (expression.name === 'title') return 'string';
     if (['body', 'documentElement', 'fonts', 'head', 'pointerLockElement'].includes(expression.name)) {
@@ -3742,7 +3756,7 @@ function inferHostPropertyTypeofTag(expression: IrExpression, context: EmitConte
     }
     throw new RustEmissionError(`typeof document.${expression.name} has no configured host-property tag`);
   }
-  if (expression.binding === 'DomNavigatorBackend') {
+  if (binding === 'DomNavigatorBackend') {
     if (expression.name === 'maxTouchPoints') return 'number';
     if (['language', 'platform'].includes(expression.name)) return 'string';
     if (
@@ -3765,12 +3779,10 @@ function inferHostPropertyTypeofTag(expression: IrExpression, context: EmitConte
     if (['getBattery', 'getGamepads', 'share', 'vibrate'].includes(expression.name)) return 'function';
     throw new RustEmissionError(`typeof navigator.${expression.name} has no configured host-property tag`);
   }
-  return 'undefined';
+  return undefined;
 }
 
-function isErasedEntityRuntimeAccess(
-  expression: IrExpression,
-): expression is Extract<IrExpression, { kind: 'element' }> {
+function isErasedEntityRuntimeAccess(expression: IrExpression): boolean {
   return (
     expression.kind === 'element' &&
     expression.index.kind === 'identifier' &&
@@ -3792,10 +3804,14 @@ function isNativeEntityObject(expression: IrExpression, context: EmitContext): b
 }
 
 function isNativeEntityRuntimeAccess(
-  expression: Extract<IrExpression, { kind: 'element' }>,
+  expression: IrExpression,
   context: EmitContext,
 ): boolean {
-  return isErasedEntityRuntimeAccess(expression) && isNativeEntityObject(expression.object, context);
+  return (
+    expression.kind === 'element' &&
+    isErasedEntityRuntimeAccess(expression) &&
+    isNativeEntityObject(expression.object, context)
+  );
 }
 
 function isNativeEntityRuntimeTreeAccess(expression: IrExpression, context: EmitContext): boolean {
@@ -3810,6 +3826,10 @@ function entityRuntimeSlot(expression: IrExpression, context: EmitContext): stri
   return `${entityTraitTypePath(context)}::__flight_entity_runtime(${reference})`;
 }
 
+function emitEntityRuntimeValue(expression: IrExpression, context: EmitContext): string {
+  return `({ let __flight_runtime = ${entityRuntimeSlot(expression, context)}.lock().unwrap().clone().expect("entity runtime was read before initialization"); __flight_runtime })`;
+}
+
 function emitEntityRuntimeAssignment(
   expression: Extract<IrExpression, { kind: 'assignment' }>,
   context: EmitContext,
@@ -3817,6 +3837,7 @@ function emitEntityRuntimeAssignment(
 ): string | undefined {
   if (
     expression.operator !== '=' ||
+    expression.left.kind !== 'element' ||
     !isErasedEntityRuntimeAccess(expression.left) ||
     !isNativeEntityRuntimeAccess(expression.left, context)
   ) {
@@ -3833,12 +3854,12 @@ function emitEntityRuntimeAssignment(
     : `*${slot}.lock().unwrap() = Some(${value})`;
 }
 
-function emitLateEntityRuntimeFieldAssignment(
+function emitEntityRuntimeFieldAssignment(
   expression: Extract<IrExpression, { kind: 'assignment' }>,
   context: EmitContext,
   returnValue: boolean,
 ): string | undefined {
-  if (expression.operator !== '=' || expression.left.kind !== 'property') return undefined;
+  if (expression.left.kind !== 'property') return undefined;
   const objectType = inferIrExpressionType(expression.left.object, context);
   const runtime = objectType?.kind === 'nullable' ? objectType.inner : objectType;
   if (runtime?.kind !== 'named' || !context.entityRuntimeTypes.has(runtime.name)) {
@@ -3851,11 +3872,46 @@ function emitLateEntityRuntimeFieldAssignment(
   const fieldType = inferPropertyType(runtime, expression.left.name, context);
   const value = emitExpression(expression.right, context, fieldType);
   const slot = entityRuntimeFieldSlot(runtime.name, expression.left.name, context);
-  if (!context.entityRuntimeLateFields.has(`${slot}\0${expression.left.name}`)) return undefined;
-  const field = entityRuntimeStorageField(`${owner}.inner.lock().unwrap()`, slot, expression.left.name);
-  return returnValue
-    ? `{ let __flight_value = ${value}; ${field} = Some(__flight_value.clone()); __flight_value }`
-    : `${field} = Some(${value})`;
+  const storedField = entityRuntimeStorageField('__flight_storage', slot, expression.left.name);
+  const late = context.entityRuntimeLateFields.has(`${slot}\0${expression.left.name}`);
+  const field = late
+    ? `(*${storedField}.as_mut().expect("entity runtime field ${expression.left.name} was read before initialization"))`
+    : storedField;
+  const assignedField = late ? `${storedField} = Some(__flight_value.clone())` : `${field} = __flight_value.clone()`;
+  if (returnValue) {
+    if (expression.operator === '=') {
+      return `{ let __flight_runtime = ${owner}; let __flight_value = ${value}; { let mut __flight_storage = __flight_runtime.inner.lock().unwrap(); ${assignedField}; } __flight_value }`;
+    }
+    const assignment = emitAssignmentOperation(field, '__flight_value', expression.operator);
+    return `{ let __flight_runtime = ${owner}; let __flight_value = ${value}; let mut __flight_storage = __flight_runtime.inner.lock().unwrap(); ${assignment}; ${field}.clone() }`;
+  }
+  const assignment = expression.operator === '='
+    ? late
+      ? `${storedField} = Some(__flight_value)`
+      : `${field} = __flight_value`
+    : emitAssignmentOperation(field, '__flight_value', expression.operator);
+  return `{ let __flight_runtime = ${owner}; let __flight_value = ${value}; let mut __flight_storage = __flight_runtime.inner.lock().unwrap(); ${assignment}; }`;
+}
+
+function emitEntityRuntimeFieldUpdate(
+  expression: Extract<IrExpression, { kind: 'unary' }>,
+  context: EmitContext,
+): string | undefined {
+  if (expression.operand.kind !== 'property') return undefined;
+  const objectType = inferIrExpressionType(expression.operand.object, context);
+  const runtime = objectType?.kind === 'nullable' ? objectType.inner : objectType;
+  if (runtime?.kind !== 'named' || !context.entityRuntimeTypes.has(runtime.name)) return undefined;
+  const owner =
+    objectType?.kind === 'nullable'
+      ? `${emitPlaceExpression(expression.operand.object, context)}.as_ref().unwrap()`
+      : emitPlaceExpression(expression.operand.object, context);
+  const slot = entityRuntimeFieldSlot(runtime.name, expression.operand.name, context);
+  const storedField = entityRuntimeStorageField('__flight_storage', slot, expression.operand.name);
+  const field = context.entityRuntimeLateFields.has(`${slot}\0${expression.operand.name}`)
+    ? `(*${storedField}.as_mut().expect("entity runtime field ${expression.operand.name} was read before initialization"))`
+    : storedField;
+  const operator = expression.operator === '++' ? '+=' : '-=';
+  return `{ let __flight_runtime = ${owner}; let mut __flight_storage = __flight_runtime.inner.lock().unwrap(); ${field} ${operator} 1.0; ${field}.clone() }`;
 }
 
 function rejectEntityRuntimeStorage(): never {
@@ -4609,6 +4665,24 @@ function registerEntityRuntimeFamilies(context: EmitContext): void {
       }
     }
   }
+  if (!context.localTypeNames.has('EntityRuntime')) {
+    const localStorageAdditions = runtimeTypes.flatMap((name) => {
+      if (name === 'EntityRuntime' || !context.localTypeNames.has(name)) return [];
+      const declaration = originalContext.namedTypes.get(name);
+      if (declaration?.kind !== 'anonymous') return [];
+      return declaration.fields.flatMap((field) => {
+        const owner = fieldSlots.get(`${name}\0${field.name}`);
+        return owner && (owner !== 'EntityRuntime' || !rootFieldNames.has(field.name))
+          ? [`${name}.${field.name}`]
+          : [];
+      });
+    });
+    if (localStorageAdditions.length > 0) {
+      context.entityRuntimeClosureError = `imported EntityRuntime aggregate cannot acquire package-local storage fields: ${localStorageAdditions.join(
+        ', ',
+      )}`;
+    }
+  }
 }
 
 function runtimeStorageTypeKey(type: IrType, context: EmitContext): string {
@@ -5052,7 +5126,7 @@ function inferEntityTypeParameters(
   const visit = (value: unknown): void => {
     if (!value || typeof value !== 'object') return;
     if ('kind' in value && value.kind === 'element') {
-      const expression = value as IrExpression;
+      const expression = value as Extract<IrExpression, { kind: 'element' }>;
       if (isErasedEntityRuntimeAccess(expression)) {
         const objectType = inferIrExpressionType(expression.object, context);
         if (objectType?.kind === 'named' && lexical.has(objectType.name)) found.add(objectType.name);
@@ -6234,7 +6308,7 @@ function emitObject(
               { arguments: [], kind: 'named', name: 'EntityRuntime' },
             )})))`
           : entitySpread
-            ? `${entitySpread.name}.__flight_entity_runtime.clone()`
+            ? `std::sync::Arc::new(std::sync::Mutex::new(${entitySpread.name}.__flight_entity_runtime.lock().unwrap().clone()))`
             : 'Default::default()'
         : undefined;
     const value = `{ ${bindings.join(' ')} ${name} {\n${indent(
@@ -6251,6 +6325,14 @@ function emitObject(
   }
   const initialized = new Set<string>();
   const spreads: string[] = [];
+  const entitySpreadProperty =
+    target.kind === 'named' && context.entityTypes.has(target.name)
+      ? structuralExpression.properties.find((property) => {
+          if (property.kind !== 'spread') return false;
+          const sourceType = inferIrExpressionType(property.expression, context);
+          return sourceType?.kind === 'named' && context.entityTypes.has(sourceType.name);
+        })
+      : undefined;
   if (target.kind === 'named' && target.name === 'SignalData') {
     const arguments_ = [...fields.values()].map((field) => {
       const property = structuralExpression.properties.find(
@@ -6270,7 +6352,11 @@ function emitObject(
   }
   const properties = structuralExpression.properties.flatMap((property) => {
     if (property.kind === 'spread') {
-      spreads.push(`..${parenthesize(emitExpression(property.expression, context, target))}.clone()`);
+      spreads.push(
+        property === entitySpreadProperty
+          ? '..__flight_entity_spread.clone()'
+          : `..${parenthesize(emitExpression(property.expression, context, target))}.clone()`,
+      );
       return [];
     }
     if (property.kind !== 'property') {
@@ -6294,19 +6380,20 @@ function emitObject(
     }
   }
   if (spreads.length > 1) throw new RustEmissionError('multiple object spreads require ordered Rust lowering');
-  if (
-    spreads.length === 1 &&
-    target.kind === 'named' &&
-    context.entityTypes.has(target.name) &&
-    entityRuntimeProperty?.kind === 'computedProperty'
-  ) {
-    properties.unshift(
-      `__flight_entity_runtime: std::sync::Arc::new(std::sync::Mutex::new(Some(${emitExpression(
-        entityRuntimeProperty.value,
-        context,
-        { arguments: [], kind: 'named', name: 'EntityRuntime' },
-      )}))),`,
-    );
+  if (spreads.length === 1 && target.kind === 'named' && context.entityTypes.has(target.name)) {
+    if (entityRuntimeProperty?.kind === 'computedProperty') {
+      properties.unshift(
+        `__flight_entity_runtime: std::sync::Arc::new(std::sync::Mutex::new(Some(${emitExpression(
+          entityRuntimeProperty.value,
+          context,
+          { arguments: [], kind: 'named', name: 'EntityRuntime' },
+        )}))),`,
+      );
+    } else if (entitySpreadProperty?.kind === 'spread') {
+      properties.unshift(
+        '__flight_entity_runtime: std::sync::Arc::new(std::sync::Mutex::new(__flight_entity_spread.__flight_entity_runtime.lock().unwrap().clone())),',
+      );
+    }
   }
   if (spreads.length === 0) {
     properties.unshift(
@@ -6324,9 +6411,9 @@ function emitObject(
         : []),
     );
   }
-  const value = `${name} {\n${indent(
+  const value = `${entitySpreadProperty?.kind === 'spread' ? `{ let __flight_entity_spread = ${emitExpression(entitySpreadProperty.expression, context, target)}; ` : ''}${name} {\n${indent(
     [...properties, ...spreads, ...(openFields && spreads.length === 0 ? ['..Default::default()'] : [])].join('\n'),
-  )}\n}`;
+  )}\n}${entitySpreadProperty?.kind === 'spread' ? ' }' : ''}`;
   return nullable ? `Some(${value})` : value;
 }
 
@@ -6382,7 +6469,7 @@ function objectLiteralMatchesType(
 
 function emitElement(expression: Extract<IrExpression, { kind: 'element' }>, context: EmitContext): string {
   if (isNativeEntityRuntimeAccess(expression, context)) {
-    return `${entityRuntimeSlot(expression.object, context)}.lock().unwrap().clone().expect("entity runtime was read before initialization")`;
+    return emitEntityRuntimeValue(expression.object, context);
   }
   const objectType = inferIrExpressionType(expression.object, context);
   if (expression.optional) {

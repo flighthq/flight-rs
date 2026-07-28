@@ -215,6 +215,12 @@ whose nominal provenance must survive module boundaries, use source-named typed 
 Runtime aliases retain declared arity through zero-storage associated-type markers that normalize to the same
 handle. A dynamic/opaque map is never used, so node and backend-specific code retain field types.
 
+Field updates bind the runtime and value before taking the aggregate lock once, avoiding self-deadlock when the
+right-hand side reads the same runtime. Entity object spread copies slot presence into a new slot while retaining
+the shared runtime handle, so deleting the symbol from the source does not clear the copy. A package-local
+extension that would add storage to an imported aggregate is rejected explicitly; it must first join the
+configured canonical `@flighthq/types` runtime family.
+
 The checked-in generation report predates this implementation. Regenerate the full matrix before claiming
 diagnostic or package-count movement; the focused emitter fixtures are compile-backed when `rustc` is available.
 

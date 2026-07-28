@@ -1128,9 +1128,10 @@ function collectPackageSemanticTypes(
 function collectEntityRuntimeSemanticTypes(
   workspaceDirectory: string,
 ): Pick<ImportedSemanticTypes, 'typeParameters' | 'types'> {
-  const source = findPackageDeclarationSource(workspaceDirectory, '@flighthq/types', 'EntityRuntime');
+  const family = portConfig.typeLowering.entityRuntimeFamily;
+  const source = findPackageDeclarationSource(workspaceDirectory, family.package, family.runtimeType);
   return source
-    ? collectPackageSemanticTypes(path.dirname(source), '@flighthq/types', workspaceDirectory)
+    ? collectPackageSemanticTypes(path.dirname(source), family.package, workspaceDirectory)
     : { typeParameters: {}, types: {} };
 }
 

@@ -71,13 +71,15 @@ The compiler-driven candidate matrix classifies work in dependency order:
 
 Structural records are interned by resolved schema at module signatures, preserve imported nested-record provenance, and project across nominal Rust records with single-evaluation ownership. Generic projections use Rust constructor turbofish syntax and never capture unbound type parameters in a module-global record.
 
-Symbol-keyed `EntityRuntimeKey` storage uses a generated shared native slot on every statically identified entity
-shape. Package-visible runtime extensions populate one typed aggregate handle; field-name/type collisions and
-nested structural identities fall back to source-named typed slots inside that handle. Reads, writes, deletes,
-membership tests, computed initializers, and structural projections preserve the shared slot. Receivers outside
-the statically closed entity family remain emission blockers instead of falling back to opaque state. Runtime
-alias parameters retain their Rust arity through zero-storage marker projections that normalize to the same
-handle.
+Symbol-keyed `EntityRuntimeKey` storage uses a generated native slot on every statically identified entity shape.
+Package-visible runtime extensions populate one typed aggregate handle; field-name/type collisions and nested
+structural identities fall back to source-named typed slots inside that handle. Entity aliases and structural
+projections share slot presence, while object spread copies presence into a distinct slot and keeps the runtime
+handle shared. Runtime field mutation evaluates the receiver and value before acquiring the aggregate lock once.
+An extension that would add storage to an imported aggregate remains an explicit blocker until the canonical
+source family includes it. Receivers outside the statically closed entity family likewise remain blockers instead
+of falling back to opaque state. Runtime alias parameters retain their Rust arity through zero-storage marker
+projections that normalize to the same handle.
 
 Package-wide exported-type catalogs drive discriminated open-interface discovery. A family is widened only when descendants explicitly redeclare `kind` and every widened member is safely default-materializable. This promotes the Light family without corrupting recursive trait hierarchies or callback-bearing families. Families that cannot satisfy that invariant need a tagged payload representation rather than unsafe zeroed/default storage.
 

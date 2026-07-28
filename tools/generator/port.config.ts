@@ -38,6 +38,12 @@ export const portConfig = {
   reportsDirectory: 'reports',
   upstreamDirectory: 'upstream',
   typeLowering: {
+    entityRuntimeFamily: {
+      package: '@flighthq/types',
+      reason:
+        'EntityRuntime is the declared root for generated native entity storage; package-visible extensions may join only when they resolve against this canonical source family.',
+      runtimeType: 'EntityRuntime',
+    },
     genericIntersectionBaseOverrides: [
       {
         name: 'Node',

@@ -1865,6 +1865,12 @@ describe('Rust emission', () => {
         export function writeCount(source: Node, value: number): void {
           source[EntityRuntimeKey].count = value;
         }
+        export function bumpCount(source: Node): void {
+          source[EntityRuntimeKey].count = source[EntityRuntimeKey].count + 1;
+        }
+        export function incrementCount(source: Node): number {
+          return source[EntityRuntimeKey].count++;
+        }
         export function removeRuntime(source: Node): boolean {
           return delete source[EntityRuntimeKey];
         }
@@ -1877,6 +1883,11 @@ describe('Rust emission', () => {
         export function readProjected(source: Node): number {
           const projected = source as Entity;
           return projected[EntityRuntimeKey].count;
+        }
+        export function copyKeepsRuntime(source: Node): boolean {
+          const copied: Node = { ...source };
+          delete source[EntityRuntimeKey];
+          return EntityRuntimeKey in copied;
         }
         export function readGlState(source: GlNode): string {
           const runtime = source[EntityRuntimeKey] as GlNodeRuntime;
@@ -1917,6 +1928,18 @@ describe('Rust emission', () => {
     expect(output).toContain('.lock().unwrap().take().is_some()');
     expect(output).toContain('.lock().unwrap().is_some()');
     expect(output).toContain('__flight_entity_runtime: std::sync::Arc::clone(');
+    expect(output).toContain(
+      'std::sync::Arc::new(std::sync::Mutex::new(__flight_entity_spread.__flight_entity_runtime.lock().unwrap().clone()))',
+    );
+    expect(output).toContain(
+      'let __flight_value = (({ let __flight_runtime = FlightEntity::__flight_entity_runtime(source).lock().unwrap().clone().expect("entity runtime was read before initialization"); __flight_runtime }).inner.lock().unwrap().count + 1.0_f64);',
+    );
+    expect(output).toContain(
+      'let mut __flight_storage = __flight_runtime.inner.lock().unwrap(); __flight_storage.count = __flight_value;',
+    );
+    expect(output).toContain(
+      'let mut __flight_storage = __flight_runtime.inner.lock().unwrap(); __flight_storage.count += 1.0;',
+    );
     expect(output).not.toContain('refusing to erase observable runtime state');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-entity-runtime-'));
@@ -2041,6 +2064,68 @@ describe('Rust emission', () => {
         stdio: 'pipe',
       }),
     ).not.toThrow();
+  });
+
+  it('rejects package-local runtime storage that cannot join an imported aggregate', () => {
+    const typesSource = ts.createSourceFile(
+      '/workspace/upstream/packages/types/src/entity-runtime.ts',
+      `
+        export interface Entity {}
+        export interface EntityRuntime {
+          binding?: string;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const loweredTypes = lowerTypeScriptSource(typesSource, '@flighthq/types', '/workspace');
+    const typesOutput = emitRustModule({
+      declarations: loweredTypes.declarations,
+      source: 'upstream/packages/types/src/entity-runtime.ts',
+      typeImports: [],
+    });
+    expect(loweredTypes.diagnostics).toEqual([]);
+    expect(typesOutput).toContain('pub struct EntityRuntimeStorage');
+
+    const renderSource = ts.createSourceFile(
+      '/workspace/upstream/packages/render-gl/src/entity-runtime.ts',
+      `
+        export interface GlNodeRuntime extends EntityRuntime {
+          backendState: string;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const loweredRender = lowerTypeScriptSource(renderSource, '@flighthq/render-gl', '/workspace');
+    const semanticTypes = Object.fromEntries(
+      loweredTypes.declarations.flatMap((declaration) =>
+        declaration.kind === 'type' ? [[declaration.name, declaration.type] as const] : [],
+      ),
+    );
+
+    expect(loweredRender.diagnostics).toEqual([]);
+    expect(() =>
+      emitRustModule({
+        declarations: loweredRender.declarations,
+        imports: [
+          {
+            module: 'flighthq_types',
+            names: [
+              { imported: 'Entity', kind: 'type', local: 'Entity' },
+              { imported: 'EntityRuntime', kind: 'type', local: 'EntityRuntime' },
+            ],
+          },
+        ],
+        semanticTypes,
+        source: 'upstream/packages/render-gl/src/entity-runtime.ts',
+        typeImports: ['Entity', 'EntityRuntime'],
+      }),
+    ).toThrow(
+      'imported EntityRuntime aggregate cannot acquire package-local storage fields: GlNodeRuntime.backendState',
+    );
   });
 
   it('reports unknown DOM typeof properties instead of assuming they are functions', () => {
