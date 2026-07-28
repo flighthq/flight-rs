@@ -8,7 +8,7 @@
 
 use flighthq_types::SharpenEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub amount: Option<f64>,
@@ -20,7 +20,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/sharpenEffect.ts:3 (sha256:ece45a5e6d19b1eeb2d570ee485943e797ab701bfd20ea1b99845cfeabd6ef5e)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateSharpenEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -41,6 +41,7 @@ pub fn create_sharpen_effect(options: Option<FlightOmitRecord1>) -> SharpenEffec
             __flight_identity: std::sync::Arc::new(()),
             kind: "SharpenEffect".to_owned(),
             amount: __flight_spread_1.amount,
+            ..Default::default()
         }
     };
 }

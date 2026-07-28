@@ -26,7 +26,7 @@ impl PartialEq for RenderQueueEntry {
 }
 
 // Source: upstream/packages/types/src/RenderQueue.ts:7 (sha256:3ff8f98c70e258e788235d2d468ab190af55513ae4c7692f0bbf58b1b1de6803)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct RenderQueue {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

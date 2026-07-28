@@ -12,7 +12,7 @@ use crate::Signal;
 pub type ConnectivityConnectionType = String;
 
 // Source: upstream/packages/types/src/Connectivity.ts:14 (sha256:5752a05f4ce927af1550ac0ac16f6c72448f9047937cc7c5763607805eda30ac)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ConnectivityStatus {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -32,7 +32,7 @@ impl PartialEq for ConnectivityStatus {
 }
 
 // Source: upstream/packages/types/src/Connectivity.ts:33 (sha256:4a5a0a696af9982bef1e5f820e58d16adc7bae99cd95ca4ab2e96f8b4102e502)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ConnectivityReachability {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -46,7 +46,7 @@ impl PartialEq for ConnectivityReachability {
 }
 
 // Source: upstream/packages/types/src/Connectivity.ts:40 (sha256:04eb504c78a104034fcf12550f79a5fa4e3c1cce0567add6b5870616ea27e511)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ConnectivityReachabilityOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

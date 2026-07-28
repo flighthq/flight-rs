@@ -57,9 +57,9 @@ fn interpolate_snapshots_into(
     schema: Option<SnapshotSchema>,
     prefix: String,
 ) -> () {
-    let mut out_record = out;
-    let a_record = a;
-    let b_record = b;
+    let mut out_record = crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast");
+    let a_record = crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast");
+    let b_record = crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast");
     if false {
         crate::host_set("host.length", (b.len() as f64));
     }
@@ -102,7 +102,7 @@ fn interpolate_snapshots_into(
                 .map(|(_, value)| value)
                 .expect("TypeScript Record key was absent") =
                 if is_snapshot_path_interpolated(((schema).clone()).clone(), path) {
-                    lerp(a_value, b_value, t)
+                    lerp((a_value).clone(), (b_value).clone(), t)
                 } else {
                     (b_value).clone()
                 };
@@ -164,7 +164,7 @@ fn is_snapshot_path_interpolated(schema: Option<SnapshotSchema>, path: String) -
 }
 
 // Source: upstream/packages/snapshot/src/interpolateSnapshots.ts:87 (sha256:0772057dfbe92de054e11b940b63bf178839349dc06db250afa562498bc5ab0a)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct EnsureSnapshotContainerRecord1 {
     __flight_identity: std::sync::Arc<()>,
 }

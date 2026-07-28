@@ -18,7 +18,7 @@ use flighthq_types::{
     VideoTexture, WIREFRAME_MATERIAL_KIND as wireframe_material_kind_constant, WireframeMaterial,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<Kind>,
@@ -37,7 +37,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<Kind>,
@@ -57,7 +57,7 @@ impl PartialEq for FlightPartialRecord2 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<Kind>,
@@ -76,7 +76,7 @@ impl PartialEq for FlightPartialRecord3 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord4 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<Kind>,
@@ -95,7 +95,7 @@ impl PartialEq for FlightPartialRecord4 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord5 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<Kind>,
@@ -116,7 +116,7 @@ impl PartialEq for FlightPartialRecord5 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord6 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<Kind>,
@@ -136,7 +136,7 @@ impl PartialEq for FlightPartialRecord6 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord7 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<Kind>,
@@ -154,7 +154,7 @@ impl PartialEq for FlightPartialRecord7 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord8 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<Kind>,

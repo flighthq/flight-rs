@@ -12,7 +12,7 @@ use crate::{MenuItemTemplate, Signal};
 pub type AppActivationPolicy = String;
 
 // Source: upstream/packages/types/src/App.ts:10 (sha256:0281de8d7faa1c59332d24025a12c05617382864b9ea653e696fc73447d42e38)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AppLoginItem {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -28,7 +28,7 @@ impl PartialEq for AppLoginItem {
 }
 
 // Source: upstream/packages/types/src/App.ts:22 (sha256:b5fa820102a6212ceff5de2018db5d6130b3cac3032ba564f49a3b3cf978f7ee)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AppLoginItemLike {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

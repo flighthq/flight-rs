@@ -8,7 +8,7 @@
 
 use crate::{TextFormatAlign, TextFormatListMarker};
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub align: Option<TextFormatAlign>,
@@ -42,7 +42,7 @@ impl PartialEq for FlightPartialRecord1 {
 pub type MarkupTagResult = crate::FlightUnion2<FlightPartialRecord1, MarkupTagEffect>;
 
 // Source: upstream/packages/types/src/MarkupTagHandler.ts:16 (sha256:7b8cbeecd35b9e04b3c14957a910b0b80f82dfe3f2c265b9d531aae186772ceb)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct MarkupTagEffect {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

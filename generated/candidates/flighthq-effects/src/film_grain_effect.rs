@@ -8,7 +8,7 @@
 
 use flighthq_types::FilmGrainEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub intensity: Option<f64>,
@@ -22,7 +22,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/filmGrainEffect.ts:3 (sha256:21a9c56250775731b8a903f8c21cea59c93be48a6406f372ba2412fad0b99e8b)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateFilmGrainEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -47,6 +47,7 @@ pub fn create_film_grain_effect(options: Option<FlightOmitRecord1>) -> FilmGrain
             intensity: __flight_spread_1.intensity,
             size: __flight_spread_1.size,
             seed: __flight_spread_1.seed,
+            ..Default::default()
         }
     };
 }

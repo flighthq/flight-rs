@@ -27,7 +27,7 @@ impl PartialEq for RenderViewRenderer {
 }
 
 // Source: upstream/packages/types/src/RenderView.ts:8 (sha256:556e68ccb2b4d2da3c6e6fa1b0f8ef10383a12cfba0251775f192815485a287a)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct RenderViewData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -91,7 +91,7 @@ impl PartialEq for RenderViewRuntime {
 }
 
 // Source: upstream/packages/types/src/RenderView.ts:16 (sha256:9e068323ff1e912e4e842c84bad910c8656c7863fbc4ef2b8a47ba90d85cac26)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct RenderView {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

@@ -9,7 +9,7 @@
 use crate::{GlTextureFilterKind, GlTextureWrapKind};
 
 // Source: upstream/packages/types/src/GlTextureDescriptor.ts:3 (sha256:0d3187bca3d7c678f1484e6aedbf610a1a6951193c0c51e8000528cf347725f2)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlTextureDescriptor {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

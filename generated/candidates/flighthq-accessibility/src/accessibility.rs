@@ -104,9 +104,12 @@ pub fn create_web_accessibility_backend(
                         }
                     };
                 }
-                _apply_accessibility_element_attributes((element).clone().unwrap(), &node);
+                _apply_accessibility_element_attributes(
+                    ((element).clone().unwrap()).clone(),
+                    &node,
+                );
                 _reparent_accessibility_element(
-                    (element).clone().unwrap(),
+                    ((element).clone().unwrap()).clone(),
                     ((node.parent_id).clone()).clone(),
                     &(*elements.lock().unwrap()),
                     (overlay_root.as_mut().unwrap()).clone(),
@@ -127,7 +130,15 @@ pub fn create_web_accessibility_backend(
                 for __iteration0 in ((*elements.lock().unwrap()).clone()).iter().cloned() {
                     let key = __iteration0[0.0_f64 as usize].clone();
                     let other = __iteration0[1.0_f64 as usize].clone();
-                    if crate::host_value::<bool>("host.contains") {
+                    if match &(crate::host_value::<()>("host.contains")) {
+                        crate::OpaqueHostValue::Undefined | crate::OpaqueHostValue::Null => false,
+                        crate::OpaqueHostValue::Bool(value) => *value,
+                        crate::OpaqueHostValue::Number(value) => {
+                            *value != 0.0_f64 && !value.is_nan()
+                        }
+                        crate::OpaqueHostValue::String(value) => !value.is_empty(),
+                        crate::OpaqueHostValue::Object => true,
+                    } {
                         {
                             let __flight_key = key;
                             if let Some(__flight_index) = (*elements.lock().unwrap())

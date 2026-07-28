@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/TextFeature.ts:1 (sha256:60965055322e7fae474ca845e825ad8865f8e3e44218ee33cf42176b2c64bb40)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextFeature {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

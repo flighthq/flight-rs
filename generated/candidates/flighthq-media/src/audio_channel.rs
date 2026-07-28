@@ -104,7 +104,7 @@ pub fn pause_audio_channel(channel: &mut AudioChannel) -> () {
     }
     channel.current_time = get_audio_channel_current_time(channel);
     channel.state = "paused".to_owned();
-    stop_active_node(channel, false);
+    stop_active_node((channel).clone(), false);
 }
 
 // Source: upstream/packages/media/src/audioChannel.ts:59 (sha256:f6cbb96984f5f4e9d19100c5d47ae4c33cef4c89772305e6a85c22bb4e4f6dcd)
@@ -147,7 +147,7 @@ pub fn play_audio_resource(
             (*CHANNEL_RUNTIME.lock().unwrap()).push((__flight_key, __flight_value));
         }
     };
-    start_audio_channel(&mut channel);
+    start_audio_channel((channel).clone());
     return Some((channel).clone());
 }
 
@@ -156,15 +156,15 @@ pub fn resume_audio_channel(channel: &mut AudioChannel) -> () {
     if ((channel.state).clone() == "playing") || (((channel.source.buffer).clone()).is_none()) {
         return;
     }
-    start_audio_channel(channel);
+    start_audio_channel((channel).clone());
 }
 
 // Source: upstream/packages/media/src/audioChannel.ts:95 (sha256:11acfc206c18491d7e632701e9aebc79db6bb0b1552efb859a20e88871003fa0)
 pub fn set_audio_channel_current_time(channel: &mut AudioChannel, value: f64) -> f64 {
     channel.current_time = clamp(value, 0.0_f64, channel.length);
     if ((channel.state).clone() == "playing") {
-        stop_active_node(channel, false);
-        start_audio_channel(channel);
+        stop_active_node((channel).clone(), false);
+        start_audio_channel((channel).clone());
     }
     return channel.current_time;
 }
@@ -221,13 +221,13 @@ pub fn set_audio_channel_playback_rate(channel: &mut AudioChannel, value: f64) -
 
 // Source: upstream/packages/media/src/audioChannel.ts:118 (sha256:69231a09eb24698856d74f9d4d70985613cccf15e3159ec9159249e30b161343)
 pub fn stop_audio_channel(channel: &mut AudioChannel) -> () {
-    stop_active_node(channel, false);
+    stop_active_node((channel).clone(), false);
     channel.current_time = 0.0_f64;
     channel.state = "stopped".to_owned();
 }
 
 // Source: upstream/packages/media/src/audioChannel.ts:124 (sha256:c397ad8edeb6bd3d33d363442549a95a27d6117328d9a0a296655467762d40cc)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct AudioChannelRuntime {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -271,7 +271,7 @@ fn complete_audio_channel(channel: &mut AudioChannel) -> () {
             };
         }
         channel.current_time = 0.0_f64;
-        start_audio_channel(channel);
+        start_audio_channel((channel).clone());
         return;
     }
     runtime.as_mut().unwrap().gain_node = None;

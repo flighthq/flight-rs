@@ -8,7 +8,7 @@
 
 use flighthq_types::{InnerEffectSourceMode, InnerGlowEffect};
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha: Option<f64>,
@@ -26,7 +26,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/innerGlowEffect.ts:4 (sha256:8ffdefb7949478edf386983ea702db37c25697510f18477650ed5fbecc1b3946)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateInnerGlowEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -59,6 +59,7 @@ pub fn create_inner_glow_effect(options: Option<FlightOmitRecord1>) -> InnerGlow
             quality: __flight_spread_1.quality,
             source_mode: (__flight_spread_1.source_mode).clone(),
             strength: __flight_spread_1.strength,
+            ..Default::default()
         }
     };
 }

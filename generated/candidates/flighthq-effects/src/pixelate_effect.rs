@@ -8,7 +8,7 @@
 
 use flighthq_types::PixelateEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub size: Option<f64>,
@@ -20,7 +20,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/pixelateEffect.ts:3 (sha256:db945901f90476fd1ead5a7daf4df2b6619d7a93691e6e6f8b9eac4949e89189)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreatePixelateEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -41,6 +41,7 @@ pub fn create_pixelate_effect(options: Option<FlightOmitRecord1>) -> PixelateEff
             __flight_identity: std::sync::Arc::new(()),
             kind: "PixelateEffect".to_owned(),
             size: __flight_spread_1.size,
+            ..Default::default()
         }
     };
 }

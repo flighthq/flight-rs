@@ -9,7 +9,7 @@
 use crate::{AlphaType, ImageResourceCompressed, PixelFormat};
 
 // Source: upstream/packages/types/src/ImageResource.ts:18 (sha256:e28dc5618fbdb55d16b93f846822b1c8f71235c796f967cfb1ae7ef45b99657c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ImageResource {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

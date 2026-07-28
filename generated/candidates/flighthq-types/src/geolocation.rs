@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/Geolocation.ts:8 (sha256:5417b3f83e7e0285670398975f0aa6df0c4500a1ad50700de97d2a3358a4321a)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GeoPosition {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -34,7 +34,7 @@ pub type GeolocationErrorReason = String;
 pub type GeolocationPermissionState = String;
 
 // Source: upstream/packages/types/src/Geolocation.ts:29 (sha256:22f866c0ec750b09a4f5ebefce2e17cb9296a23384038fd24a041981784c87ab)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GeoPositionResult {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -48,7 +48,7 @@ impl PartialEq for GeoPositionResult {
 }
 
 // Source: upstream/packages/types/src/Geolocation.ts:34 (sha256:5f1a61b650bedcbcdbe22934d14b583849c03ba675c429173cd6b734ff9eb020)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GeolocationRequestOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

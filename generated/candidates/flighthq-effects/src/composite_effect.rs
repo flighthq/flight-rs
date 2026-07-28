@@ -8,7 +8,7 @@
 
 use flighthq_types::{CompositeEffect, CompositeOperator};
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub backdrop_key: Option<String>,
@@ -20,7 +20,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/compositeEffect.ts:9 (sha256:ddeffc215988871bb79eb05f6c45224a0027a6c2fa04a0a818ef1f17b8c1cb2f)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateCompositeEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -45,6 +45,7 @@ pub fn create_composite_effect(
             kind: "CompositeEffect".to_owned(),
             operator: (operator).clone(),
             backdrop_key: (__flight_spread_2.backdrop_key).clone(),
+            ..Default::default()
         }
     };
 }

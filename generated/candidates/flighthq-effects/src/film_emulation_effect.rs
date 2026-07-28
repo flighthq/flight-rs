@@ -8,7 +8,7 @@
 
 use flighthq_types::FilmEmulationEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub gate_weave: Option<f64>,
@@ -23,7 +23,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/filmEmulationEffect.ts:3 (sha256:c477602139c9e9cff2013aa4bc0d84e327f1e8beaa141f9a6111d80d8b50bdf1)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateFilmEmulationEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -50,6 +50,7 @@ pub fn create_film_emulation_effect(options: Option<FlightOmitRecord1>) -> FilmE
             grain_intensity: __flight_spread_1.grain_intensity,
             halation_radius: __flight_spread_1.halation_radius,
             halation_strength: __flight_spread_1.halation_strength,
+            ..Default::default()
         }
     };
 }

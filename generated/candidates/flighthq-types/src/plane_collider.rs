@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/PlaneCollider.ts:3 (sha256:f907b1021536fba69371bfd0af406ef009dd4095952f0183e8c9d04a58d6277c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct PlaneCollider {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

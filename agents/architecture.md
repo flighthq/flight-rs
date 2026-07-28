@@ -48,17 +48,17 @@ Cultivation is opt-in and package-specific. Every other substrate-neutral packag
 
 ## Native host boundary
 
-Native hosts are cultivated adapters over generated package seams; they are not translations of the web default backend. A future `flighthq-host-winit` crate should install native implementations for generated application, lifecycle, input, keyboard, haptics, power, screen, and rendering interfaces.
+Native hosts are cultivated adapters over generated package seams; they are not translations of the web default backend. The cultivated `flighthq-host-winit` compile canary installs generated application, lifecycle, keyboard, haptics, power, screen, platform, and device backends as one bundle and creates the generated input manager. Its concrete event-loop and rendering adapters remain handwritten host work.
 
 TypeScript `Promise<T>` currently lowers to an inert, typed placeholder when it occurs inside a web default backend. Chained callbacks are type-checked and captured but are not executed in native placeholder code. The native host must install its backend before that web-only path is used. Async functions needed by substrate-neutral code require a later Future/task IR rather than silently using this placeholder.
 
 Current native-host prerequisite frontier:
 
-- application, lifecycle, input, keyboard, haptics, and power compile as generated candidates;
-- platform and device wait on user-agent lowering;
-- screen needs core/backend source separation because its web default path is async and host-bound;
+- application, lifecycle, input, keyboard, haptics, power, platform, device, and screen compile as generated candidates;
+- the host-winit canary compiles those seams together in its own Cargo workspace;
 - the render stack waits on log plus the node/material/skeleton dependency frontier;
-- `host-winit` itself is absent from the filtered upstream package tree and must be introduced as a cultivated native adapter once its generated seams are stable.
+- candidate crates intentionally remain separate from the promoted surface workspace because candidate and promoted graphs both contain a `flighthq-types` package;
+- concrete winit event translation and renderer ownership are the next cultivated host steps.
 
 ## Generator blocker architecture
 
@@ -69,4 +69,8 @@ The compiler-driven candidate matrix classifies work in dependency order:
 3. Dependency blockers are not patched locally; they automatically re-enter compilation when prerequisites compile.
 4. Host-bound operations lower only through explicit placeholders or cultivated backend interfaces.
 
-The next cross-cutting representation task is canonical structural-record identity. Anonymous/open records must be interned by resolved schema across module and function boundaries; function-local nominal structs cannot safely represent TypeScript structural compatibility. After that, dynamic host objects need a typed backend-capability IR, and genuinely portable async code needs Future/task lowering.
+Structural records are interned by resolved schema at module signatures, preserve imported nested-record provenance, and project across nominal Rust records with single-evaluation ownership. Generic projections use Rust constructor turbofish syntax and never capture unbound type parameters in a module-global record.
+
+Package-wide exported-type catalogs drive discriminated open-interface discovery. A family is widened only when descendants explicitly redeclare `kind` and every widened member is safely default-materializable. This promotes the Light family without corrupting recursive trait hierarchies or callback-bearing families. Families that cannot satisfy that invariant need a tagged payload representation rather than unsafe zeroed/default storage.
+
+The next cross-cutting tasks are typed backend-capability IR for dynamic host objects, a tagged representation for non-defaultable open families, and Future/task lowering for genuinely portable async code.

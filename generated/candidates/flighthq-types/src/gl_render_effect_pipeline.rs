@@ -12,7 +12,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/GlRenderEffectPipeline.ts:15 (sha256:fdc15a042a1a80053691e6e5e9fdcec40ccc068adde5e22e51ae98764f1520a6)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlRenderEffectContext {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -35,7 +35,7 @@ pub type GlRenderEffectRunner = std::sync::Arc<
 >;
 
 // Source: upstream/packages/types/src/GlRenderEffectPipeline.ts:29 (sha256:4a319c9f224ad0ea33a1150b24214c3f6c6c7c49f71d4b2018541d137eb2d3d0)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct RenderEffectPipelineOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -50,7 +50,7 @@ impl PartialEq for RenderEffectPipelineOptions {
 }
 
 // Source: upstream/packages/types/src/GlRenderEffectPipeline.ts:41 (sha256:ea1b2223d50df5b640545106804895714d12cb99a7838ab014ed2e3816d701a9)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlRenderEffectPipeline {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

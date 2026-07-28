@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/RenderViewport2D.ts:1 (sha256:b46ca770066f9cfd6944ad07364c70f769bac42b2d14045f5d9152dc011f6276)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct RenderViewport2D {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

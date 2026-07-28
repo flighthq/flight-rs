@@ -9,7 +9,7 @@
 use crate::Signal;
 
 // Source: upstream/packages/types/src/TextFieldSignals.ts:4 (sha256:0bb251d437abeca372e55ededd638d514ae52b590f9733a5547ced24b2f4f562)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextFieldChangeEvent {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -23,7 +23,7 @@ impl PartialEq for TextFieldChangeEvent {
 }
 
 // Source: upstream/packages/types/src/TextFieldSignals.ts:10 (sha256:d95669ea7d7acf941d87103a00653ddf36137335866b5ef1ca81504d696b9522)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextFieldLinkEvent {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -38,7 +38,7 @@ impl PartialEq for TextFieldLinkEvent {
 }
 
 // Source: upstream/packages/types/src/TextFieldSignals.ts:17 (sha256:287c64c789388d20f99a69a6a87c0b2e6a9df7b301f039fe09b25118491921e2)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextFieldScrollEvent {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

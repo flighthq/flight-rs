@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/TextInputState.ts:10 (sha256:a9ce5aa975796bb35e867912a36b63da2afa409d140e37ef526468868d688827)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextInputHistoryEntry {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -26,7 +26,7 @@ impl PartialEq for TextInputHistoryEntry {
 }
 
 // Source: upstream/packages/types/src/TextInputState.ts:20 (sha256:b8c71131b48fb802bf08fc22ab717a50b460ecb96f29c0d9615fb6319184d31c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextInputState {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -53,7 +53,7 @@ impl PartialEq for TextInputState {
 }
 
 // Source: upstream/packages/types/src/TextInputState.ts:44 (sha256:1b5f5456e620e7bbc76f4a5bb4aaa3a55f80a9ebc786347d9c288be4f77737da)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextInputOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

@@ -30,8 +30,19 @@ fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
 }
 
-#[derive(Clone)]
-pub struct FlightPartialRecord1 {
+#[derive(Clone, Default)]
+pub struct SharedStructuralRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub kind: String,
+}
+impl PartialEq for SharedStructuralRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alphas: Option<Vec<f32>>,
     pub atlas: Option<TextureAtlas>,
@@ -43,14 +54,14 @@ pub struct FlightPartialRecord1 {
     pub velocities: Option<Vec<f32>>,
     pub world_space: Option<bool>,
 }
-impl PartialEq for FlightPartialRecord1 {
+impl PartialEq for FlightPartialRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-#[derive(Clone)]
-pub struct FlightPartialRecord2 {
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha_multiplier: Option<f64>,
     pub alpha_offset: Option<f64>,
@@ -61,14 +72,14 @@ pub struct FlightPartialRecord2 {
     pub red_multiplier: Option<f64>,
     pub red_offset: Option<f64>,
 }
-impl PartialEq for FlightPartialRecord2 {
+impl PartialEq for FlightPartialRecord3 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-#[derive(Clone)]
-pub struct FlightPartialRecord3 {
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord4 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
     pub appearance_id: Option<f64>,
@@ -111,14 +122,14 @@ pub struct FlightPartialRecord3 {
     pub world_bounds_rectangle: Option<Rectangle>,
     pub stage: Option<Stage>,
 }
-impl PartialEq for FlightPartialRecord3 {
+impl PartialEq for FlightPartialRecord4 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-#[derive(Clone)]
-pub struct FlightPartialRecord4 {
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord5 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
     pub appearance_id: Option<f64>,
@@ -147,14 +158,14 @@ pub struct FlightPartialRecord4 {
     pub world_transform_using_local_transform_id: Option<f64>,
     pub world_transform_using_parent_transform_id: Option<f64>,
 }
-impl PartialEq for FlightPartialRecord4 {
+impl PartialEq for FlightPartialRecord5 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-#[derive(Clone)]
-pub struct FlightPartialRecord5 {
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord6 {
     pub __flight_identity: std::sync::Arc<()>,
     pub data: Option<NodeData>,
     pub enabled: Option<bool>,
@@ -166,29 +177,18 @@ pub struct FlightPartialRecord5 {
     pub rotation: Option<Quaternion>,
     pub scale: Option<Vector3>,
 }
-impl PartialEq for FlightPartialRecord5 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone)]
-pub struct FlightPartialRecord6 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub kind: Option<AdjustmentKind>,
-    pub color_matrix: Option<Vec<f64>>,
-}
 impl PartialEq for FlightPartialRecord6 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord7 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub alpha: Option<f64>,
-    pub visible: Option<bool>,
+    pub kind: Option<AdjustmentKind>,
+    pub color_matrix: Option<Vec<f64>>,
+    pub color_transform: Option<ColorTransform>,
 }
 impl PartialEq for FlightPartialRecord7 {
     fn eq(&self, other: &Self) -> bool {
@@ -196,10 +196,11 @@ impl PartialEq for FlightPartialRecord7 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord8 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub blend_mode: Option<BlendMode>,
+    pub alpha: Option<f64>,
+    pub visible: Option<bool>,
 }
 impl PartialEq for FlightPartialRecord8 {
     fn eq(&self, other: &Self) -> bool {
@@ -207,8 +208,19 @@ impl PartialEq for FlightPartialRecord8 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord9 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub blend_mode: Option<BlendMode>,
+}
+impl PartialEq for FlightPartialRecord9 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord10 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
     pub bounds_rectangle: Option<Rectangle>,
@@ -220,26 +232,15 @@ pub struct FlightPartialRecord9 {
     pub local_bounds_rectangle: Option<Rectangle>,
     pub world_bounds_rectangle: Option<Rectangle>,
 }
-impl PartialEq for FlightPartialRecord9 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone)]
-pub struct FlightPartialRecord10 {
-    pub __flight_identity: std::sync::Arc<()>,
-}
 impl PartialEq for FlightPartialRecord10 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord11 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub clip: Option<ClipRegion>,
 }
 impl PartialEq for FlightPartialRecord11 {
     fn eq(&self, other: &Self) -> bool {
@@ -247,11 +248,10 @@ impl PartialEq for FlightPartialRecord11 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord12 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub material: Option<Material>,
-    pub material_data: Option<MaterialData>,
+    pub clip: Option<ClipRegion>,
 }
 impl PartialEq for FlightPartialRecord12 {
     fn eq(&self, other: &Self) -> bool {
@@ -259,8 +259,20 @@ impl PartialEq for FlightPartialRecord12 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord13 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub material: Option<Material>,
+    pub material_data: Option<MaterialData>,
+}
+impl PartialEq for FlightPartialRecord13 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord14 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
     pub local_matrix: Option<Matrix>,
@@ -269,14 +281,14 @@ pub struct FlightPartialRecord13 {
     pub rotation_sine: Option<f64>,
     pub world_matrix: Option<Matrix>,
 }
-impl PartialEq for FlightPartialRecord13 {
+impl PartialEq for FlightPartialRecord14 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-#[derive(Clone)]
-pub struct FlightPartialRecord14 {
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord15 {
     pub __flight_identity: std::sync::Arc<()>,
     pub pivot_x: Option<f64>,
     pub pivot_y: Option<f64>,
@@ -288,20 +300,20 @@ pub struct FlightPartialRecord14 {
     pub x: Option<f64>,
     pub y: Option<f64>,
 }
-impl PartialEq for FlightPartialRecord14 {
+impl PartialEq for FlightPartialRecord15 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-#[derive(Clone)]
-pub struct FlightPartialRecord15 {
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord16 {
     pub __flight_identity: std::sync::Arc<()>,
     pub position: Option<Vector3>,
     pub rotation: Option<Quaternion>,
     pub scale: Option<Vector3>,
 }
-impl PartialEq for FlightPartialRecord15 {
+impl PartialEq for FlightPartialRecord16 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -564,22 +576,52 @@ pub fn get_particle_emitter3_d_particle_velocity(
 
 // Source: upstream/packages/particleemitter/src/particleEmitter3D.ts:190 (sha256:923d3618825db83f1dcdc5260dd880381eba99696cd133d09d42a4558ef84590)
 pub fn get_particle_emitter3_d_runtime(source: &ParticleEmitter3D) -> ParticleEmitter3DRuntime {
-    return get_scene_node_runtime(&source);
+    return {
+        let __flight_source = &(get_scene_node_runtime(&source));
+        ParticleEmitter3DRuntime {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            binding: (__flight_source.binding).clone(),
+            appearance_id: __flight_source.appearance_id,
+            bounds_using_local_bounds_id: __flight_source.bounds_using_local_bounds_id,
+            bounds_using_local_transform_id: __flight_source.bounds_using_local_transform_id,
+            can_add_child: (__flight_source.can_add_child).clone(),
+            children: (__flight_source.children).clone(),
+            color_adjustments: (__flight_source.color_adjustments).clone(),
+            resolved_color_transform: (__flight_source.resolved_color_transform).clone(),
+            color_adjustments_channel_mixing: __flight_source.color_adjustments_channel_mixing,
+            traits: (__flight_source.traits).clone(),
+            interaction_signals: (__flight_source.interaction_signals).clone(),
+            local_bounds_id: __flight_source.local_bounds_id,
+            local_bounds_using_local_bounds_id: __flight_source.local_bounds_using_local_bounds_id,
+            local_content_id: __flight_source.local_content_id,
+            local_transform_id: __flight_source.local_transform_id,
+            local_transform_using_local_transform_id: __flight_source
+                .local_transform_using_local_transform_id,
+            node_signals: (__flight_source.node_signals).clone(),
+            interaction_state: (__flight_source.interaction_state).clone(),
+            parent: (__flight_source.parent).clone(),
+            world_bounds_using_local_bounds_id: __flight_source.world_bounds_using_local_bounds_id,
+            world_bounds_using_world_transform_id: __flight_source
+                .world_bounds_using_world_transform_id,
+            world_transform_id: __flight_source.world_transform_id,
+            world_transform_using_local_transform_id: __flight_source
+                .world_transform_using_local_transform_id,
+            world_transform_using_parent_transform_id: __flight_source
+                .world_transform_using_parent_transform_id,
+            world_alpha: __flight_source.world_alpha,
+            world_alpha_using_appearance_id: __flight_source.world_alpha_using_appearance_id,
+            world_alpha_using_parent_appearance_id: __flight_source
+                .world_alpha_using_parent_appearance_id,
+            world_appearance_id: __flight_source.world_appearance_id,
+            local_matrix4: (__flight_source.local_matrix4).clone(),
+            local_matrix4_detached: __flight_source.local_matrix4_detached,
+            world_matrix4: (__flight_source.world_matrix4).clone(),
+        }
+    };
 }
 
 // Source: upstream/packages/particleemitter/src/particleEmitter3D.ts:194 (sha256:53ccdc048bf6625edc739e17e698d25ee6b76aeb8f9ba9256e6a43e004d85399)
-#[derive(Clone)]
-struct IsParticleEmitter3DRecord16 {
-    __flight_identity: std::sync::Arc<()>,
-    kind: String,
-}
-impl PartialEq for IsParticleEmitter3DRecord16 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-pub fn is_particle_emitter3_d(node: &IsParticleEmitter3DRecord16) -> bool {
+pub fn is_particle_emitter3_d(node: &SharedStructuralRecord1) -> bool {
     return ((node.kind).clone() == particle_emitter3_d_kind_constant);
 }
 

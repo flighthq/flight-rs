@@ -9,7 +9,7 @@
 use crate::{FontResource, TextDirection};
 
 // Source: upstream/packages/types/src/ShapedRun.ts:4 (sha256:97982e4b3f7fa038ad153749e13161c636d57c83607c9e39fce12652e3168c43)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ShapedGlyph {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -27,7 +27,7 @@ impl PartialEq for ShapedGlyph {
 }
 
 // Source: upstream/packages/types/src/ShapedRun.ts:13 (sha256:8b0fb4643dfec361ac4d51caaaef5867c9e05efc2ef364fddcf328380fc07ac5)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ShapedRun {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

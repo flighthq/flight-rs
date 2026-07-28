@@ -13,7 +13,7 @@ use flighthq_types::{
 };
 
 // Source: upstream/packages/bitmapfont-formats/src/bitmapFontRecord.ts:16 (sha256:182ceaddee1847336c2926bdbcbd220df1fad5ad725ec3b0cc21f45dd02da713)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct BitmapFontCharRecord {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -34,7 +34,7 @@ impl PartialEq for BitmapFontCharRecord {
 }
 
 // Source: upstream/packages/bitmapfont-formats/src/bitmapFontRecord.ts:30 (sha256:4f116fa26e71d8730c5448413eb7005c1f0f4539e88c6d0da93c80091aa64f8d)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct BitmapFontKerningRecord {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -49,7 +49,7 @@ impl PartialEq for BitmapFontKerningRecord {
 }
 
 // Source: upstream/packages/bitmapfont-formats/src/bitmapFontRecord.ts:38 (sha256:90e36dee9bbb4651c12cb4465b07b9039fbe398c4ca8975e052c6179e700355c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct BitmapFontPageRecord {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -63,7 +63,7 @@ impl PartialEq for BitmapFontPageRecord {
 }
 
 // Source: upstream/packages/bitmapfont-formats/src/bitmapFontRecord.ts:48 (sha256:ae30b6e490fa58d911ccf7d6ad417734cdf4bcb81f934892511ccb503ffd7231)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct BitmapFontRecord {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

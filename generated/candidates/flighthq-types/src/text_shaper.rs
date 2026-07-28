@@ -9,7 +9,7 @@
 use crate::{FontMetrics, GlyphExtents, ShapedRun, TextDirection, TextFormat, TextMeasureFunction};
 
 // Source: upstream/packages/types/src/TextShaper.ts:21 (sha256:5276a896b0d7cc1055fd89e424f1238e5721d9bbabc642c70f5be6c52e2739b2)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ShapeRunOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

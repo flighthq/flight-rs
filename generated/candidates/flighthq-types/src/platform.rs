@@ -22,7 +22,7 @@ pub type PlatformKind = String;
 pub type PlatformRuntime = String;
 
 // Source: upstream/packages/types/src/Platform.ts:22 (sha256:222171b0e13d4200b4ea0330662c0887e8c96736d29b9deb0660ca0ac11e9d9f)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct PlatformInfo {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

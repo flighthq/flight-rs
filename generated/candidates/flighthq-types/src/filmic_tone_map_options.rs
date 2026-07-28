@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/FilmicToneMapOptions.ts:1 (sha256:90b88974fa401779beea4ea28f131baed780d42c8ed8a9e9d2bbdf626f5a2a9d)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FilmicToneMapOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

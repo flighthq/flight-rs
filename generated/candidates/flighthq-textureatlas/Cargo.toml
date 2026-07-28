@@ -1,0 +1,15 @@
+# @generated candidate crate; do not edit.
+[package]
+name = "flighthq-textureatlas"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+flighthq-entity = { path = "../flighthq-entity" }
+flighthq-image = { path = "../flighthq-image" }
+flighthq-types = { path = "../flighthq-types" }

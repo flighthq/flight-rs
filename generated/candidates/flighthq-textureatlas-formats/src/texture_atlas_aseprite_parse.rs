@@ -12,7 +12,7 @@ use crate::{
 use flighthq_textureatlas::create_texture_atlas_region;
 use flighthq_types::TextureAtlas;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub height: Option<f64>,

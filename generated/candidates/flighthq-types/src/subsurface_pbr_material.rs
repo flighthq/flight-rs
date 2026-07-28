@@ -11,7 +11,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/SubsurfacePbrMaterial.ts:10 (sha256:65c957b56652bf654a5edb4ff862a042de7eb6da4f81f68dc17489e12f8b3a6e)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SubsurfacePbrMaterial {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -22,6 +22,9 @@ pub struct SubsurfacePbrMaterial {
     pub alpha_type: AlphaType,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub shader_key: String,
+    pub textures: Option<Vec<(String, Texture)>>,
+    pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
     pub standard: StandardPbrMaterialProperties,
     pub subsurface: f64,
     pub subsurface_color: f64,

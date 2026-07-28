@@ -8,7 +8,7 @@
 
 use flighthq_types::CameraMotionBlurEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub intensity: Option<f64>,
@@ -21,7 +21,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/cameraMotionBlurEffect.ts:3 (sha256:6bf830f726d4b6198235f2ce7c8733825be69a812324745b0cf7118cad872d4e)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateCameraMotionBlurEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -46,6 +46,7 @@ pub fn create_camera_motion_blur_effect(
             kind: "CameraMotionBlurEffect".to_owned(),
             intensity: __flight_spread_1.intensity,
             samples: __flight_spread_1.samples,
+            ..Default::default()
         }
     };
 }

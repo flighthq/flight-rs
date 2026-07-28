@@ -9,7 +9,7 @@
 use crate::NodeAny;
 
 // Source: upstream/packages/types/src/HitTestResult.ts:7 (sha256:8c306f73c07c7e0446d168a5392ac66020e80454ef17cc57d870a516f58de455)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct HitTestResult {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

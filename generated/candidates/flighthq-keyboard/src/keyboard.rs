@@ -113,7 +113,7 @@ pub fn create_soft_keyboard() -> SoftKeyboard {
 }
 
 // Source: upstream/packages/keyboard/src/keyboard.ts:70 (sha256:5435cdf55efda8197a7892a9456e0ec242d961f535e5341d3ddb0d17e437fe50)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateSoftKeyboardInfoRecord1 {
     __flight_identity: std::sync::Arc<()>,
     visible: bool,
@@ -140,7 +140,7 @@ pub fn create_soft_keyboard_info() -> SoftKeyboardInfo {
 }
 
 // Source: upstream/packages/keyboard/src/keyboard.ts:75 (sha256:d624e47c835466e138f17a7580c26b825a973c719c19721dd145c578233033ee)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateSoftKeyboardTransitionRecord1 {
     __flight_identity: std::sync::Arc<()>,
     duration_seconds: f64,
@@ -161,7 +161,7 @@ pub fn create_soft_keyboard_transition() -> SoftKeyboardTransition {
 }
 
 // Source: upstream/packages/keyboard/src/keyboard.ts:85 (sha256:0a917a6c0eb1eb7ce65d4fd005fba2a912fa04cf4ef475061320f64aa6349804)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateWebSoftKeyboardBackendRecord1 {
     __flight_identity: std::sync::Arc<()>,
     duration_seconds: f64,
@@ -447,23 +447,12 @@ impl PartialEq for VirtualKeyboard {
 }
 
 // Source: upstream/packages/keyboard/src/keyboard.ts:240 (sha256:2ff1a381f178211ebdd7c09ad164f231a69f2d1089ed4679c5404f045294562c)
-#[derive(Clone)]
-struct GetVirtualKeyboardRecord1 {
-    __flight_identity: std::sync::Arc<()>,
-    virtual_keyboard: Option<VirtualKeyboard>,
-}
-impl PartialEq for GetVirtualKeyboardRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
 fn get_virtual_keyboard() -> Option<VirtualKeyboard> {
     return None;
 }
 
 // Source: upstream/packages/keyboard/src/keyboard.ts:246 (sha256:e7187dd15738a3ec74992e267cb3d5a884aa121faa5649de8cfe7529d2ce8038)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct WebKeyboardGeometry {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -479,7 +468,7 @@ impl PartialEq for WebKeyboardGeometry {
 }
 
 // Source: upstream/packages/keyboard/src/keyboard.ts:253 (sha256:53b48ac5bcef0e1bcd24f61fc8ce5e0b31b78ea2c6c49dc3a736f2a6b964ac5c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct GetWebKeyboardGeometryRecord1 {
     __flight_identity: std::sync::Arc<()>,
     height: f64,

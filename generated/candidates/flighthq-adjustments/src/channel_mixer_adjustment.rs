@@ -9,7 +9,7 @@
 use crate::create_channel_mixer_color_matrix;
 use flighthq_types::ChannelMixerAdjustment;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub matrix: Vec<f64>,
@@ -134,6 +134,7 @@ pub fn create_channel_mixer_adjustment(
             kind: "ChannelMixerAdjustment".to_owned(),
             color_matrix: (color_matrix).clone(),
             matrix: (matrix).clone(),
+            ..Default::default()
         }
     };
 }

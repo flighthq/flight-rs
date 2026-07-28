@@ -297,7 +297,7 @@ fn apply_explicit_levels(
                                     level_array[__flight_index] = __flight_value;
                                 }
                             };
-                            if (stack_override[top as usize].clone()).is_some() {
+                            if !(stack_override.get((top) as usize).is_none()) {
                                 {
                                     let __flight_index = (i) as usize;
                                     let __flight_value = stack_override[top as usize].clone();
@@ -397,7 +397,7 @@ fn apply_explicit_levels(
                                     level_array[__flight_index] = __flight_value;
                                 }
                             };
-                            if (stack_override[new_top as usize].clone()).is_some() {
+                            if !(stack_override.get((new_top) as usize).is_none()) {
                                 {
                                     let __flight_index = (i) as usize;
                                     let __flight_value = stack_override[new_top as usize].clone();
@@ -509,7 +509,7 @@ fn apply_explicit_levels(
                                     level_array[__flight_index] = __flight_value;
                                 }
                             };
-                            if (stack_override[top as usize].clone()).is_some() {
+                            if !(stack_override.get((top) as usize).is_none()) {
                                 {
                                     let __flight_index = (i) as usize;
                                     let __flight_value = stack_override[top as usize].clone();
@@ -534,7 +534,7 @@ fn apply_explicit_levels(
 }
 
 // Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:211 (sha256:5e5bebfd7380a306e78bda85f7c5a6bbbbb8085d5f8373e3f86a3a1a683be45d)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct ResolveIsolatingRunSequencesRecord1 {
     __flight_identity: std::sync::Arc<()>,
     indices: Vec<f64>,

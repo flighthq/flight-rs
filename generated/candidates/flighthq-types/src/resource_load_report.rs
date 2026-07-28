@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/ResourceLoadReport.ts:1 (sha256:5d88a5895d063fb1af7f3cf44977166f657bc07086ddc3c5fc5042d01dd48f7f)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ResourceLoadReport {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

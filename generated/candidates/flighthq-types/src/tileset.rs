@@ -9,7 +9,7 @@
 use crate::TextureAtlas;
 
 // Source: upstream/packages/types/src/Tileset.ts:4 (sha256:d6e33651124681afb7fbc943153d3030db984440a90a66e9199e28c4e7a67f9d)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Tileset {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

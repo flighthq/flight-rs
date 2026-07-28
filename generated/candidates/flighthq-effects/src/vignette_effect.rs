@@ -8,7 +8,7 @@
 
 use flighthq_types::VignetteEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub intensity: Option<f64>,
@@ -23,7 +23,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/vignetteEffect.ts:3 (sha256:ff1e866bf28660a38b22f91ad21146cd788d71bdc84649da1088015c4d33d020)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateVignetteEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -50,6 +50,7 @@ pub fn create_vignette_effect(options: Option<FlightOmitRecord1>) -> VignetteEff
             radius: __flight_spread_1.radius,
             softness: __flight_spread_1.softness,
             color: __flight_spread_1.color,
+            ..Default::default()
         }
     };
 }

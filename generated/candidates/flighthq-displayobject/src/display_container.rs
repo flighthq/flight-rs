@@ -16,7 +16,7 @@ use flighthq_types::{
     NodeSignals, NodeTraitsKey, Rectangle, Stage,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha_multiplier: Option<f64>,
@@ -34,7 +34,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -84,7 +84,7 @@ impl PartialEq for FlightPartialRecord2 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -120,11 +120,12 @@ impl PartialEq for FlightPartialRecord3 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord4 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<AdjustmentKind>,
     pub color_matrix: Option<Vec<f64>>,
+    pub color_transform: Option<ColorTransform>,
 }
 impl PartialEq for FlightPartialRecord4 {
     fn eq(&self, other: &Self) -> bool {
@@ -132,7 +133,7 @@ impl PartialEq for FlightPartialRecord4 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord5 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha: Option<f64>,
@@ -144,7 +145,7 @@ impl PartialEq for FlightPartialRecord5 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord6 {
     pub __flight_identity: std::sync::Arc<()>,
     pub blend_mode: Option<BlendMode>,
@@ -155,7 +156,7 @@ impl PartialEq for FlightPartialRecord6 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord7 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -174,7 +175,7 @@ impl PartialEq for FlightPartialRecord7 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord8 {
     pub __flight_identity: std::sync::Arc<()>,
 }
@@ -184,7 +185,7 @@ impl PartialEq for FlightPartialRecord8 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord9 {
     pub __flight_identity: std::sync::Arc<()>,
     pub clip: Option<ClipRegion>,
@@ -195,7 +196,7 @@ impl PartialEq for FlightPartialRecord9 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord10 {
     pub __flight_identity: std::sync::Arc<()>,
     pub material: Option<Material>,
@@ -207,7 +208,7 @@ impl PartialEq for FlightPartialRecord10 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord11 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -223,7 +224,7 @@ impl PartialEq for FlightPartialRecord11 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord12 {
     pub __flight_identity: std::sync::Arc<()>,
     pub pivot_x: Option<f64>,
@@ -244,44 +245,159 @@ impl PartialEq for FlightPartialRecord12 {
 
 // Source: upstream/packages/displayobject/src/displayContainer.ts:6 (sha256:1400add81cdb09f32044940a3e7160c9c8bdf103c12acdb5e22e8e8b74d6f7d9)
 pub fn create_display_container(obj: Option<DisplayContainer>) -> DisplayContainer {
-    return create_display_object_generic(
-        (display_object_kind_constant).to_owned(),
-        Some(((obj).clone().unwrap()).clone()),
-        Some(undefined),
-        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-            move |__flight_argument_0: Option<R>| -> R { create_display_container_runtime() },
-        )
-            as Box<dyn FnMut(Option<R>) -> R + Send + 'static>))),
-    );
+    return {
+        let __flight_source = &(create_display_object_generic(
+            (display_object_kind_constant).to_owned(),
+            Some(((obj).clone().unwrap()).clone()),
+            Some(undefined),
+            Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+                move |__flight_argument_0: Option<R>| -> R { create_display_container_runtime() },
+            )
+                as Box<dyn FnMut(Option<R>) -> R + Send + 'static>))),
+        ));
+        DisplayContainer {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+            alpha: __flight_source.alpha,
+            visible: __flight_source.visible,
+            blend_mode: (__flight_source.blend_mode).clone(),
+            clip: (__flight_source.clip).clone(),
+            material: (__flight_source.material).clone(),
+            material_data: (__flight_source.material_data).clone(),
+            pivot_x: __flight_source.pivot_x,
+            pivot_y: __flight_source.pivot_y,
+            rotation: __flight_source.rotation,
+            scale_x: __flight_source.scale_x,
+            scale_y: __flight_source.scale_y,
+            skew_x: __flight_source.skew_x,
+            skew_y: __flight_source.skew_y,
+            x: __flight_source.x,
+            y: __flight_source.y,
+        }
+    };
 }
 
 // Source: upstream/packages/displayobject/src/displayContainer.ts:15 (sha256:03ea635558047bbf20d579c36a8a9aa3ccb3466e55af8411f9dd57a1ab2c7061)
 pub fn create_display_container_runtime() -> DisplayContainerRuntime {
-    return create_display_object_runtime(None);
+    return {
+        let __flight_source = &(create_display_object_runtime(None));
+        DisplayContainerRuntime {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            binding: (__flight_source.binding).clone(),
+            appearance_id: __flight_source.appearance_id,
+            bounds_using_local_bounds_id: __flight_source.bounds_using_local_bounds_id,
+            bounds_using_local_transform_id: __flight_source.bounds_using_local_transform_id,
+            can_add_child: (__flight_source.can_add_child).clone(),
+            children: (__flight_source.children).clone(),
+            color_adjustments: (__flight_source.color_adjustments).clone(),
+            resolved_color_transform: (__flight_source.resolved_color_transform).clone(),
+            color_adjustments_channel_mixing: __flight_source.color_adjustments_channel_mixing,
+            traits: (__flight_source.traits).clone(),
+            interaction_signals: (__flight_source.interaction_signals).clone(),
+            local_bounds_id: __flight_source.local_bounds_id,
+            local_bounds_using_local_bounds_id: __flight_source.local_bounds_using_local_bounds_id,
+            local_content_id: __flight_source.local_content_id,
+            local_transform_id: __flight_source.local_transform_id,
+            local_transform_using_local_transform_id: __flight_source
+                .local_transform_using_local_transform_id,
+            node_signals: (__flight_source.node_signals).clone(),
+            interaction_state: (__flight_source.interaction_state).clone(),
+            parent: (__flight_source.parent).clone(),
+            world_bounds_using_local_bounds_id: __flight_source.world_bounds_using_local_bounds_id,
+            world_bounds_using_world_transform_id: __flight_source
+                .world_bounds_using_world_transform_id,
+            world_transform_id: __flight_source.world_transform_id,
+            world_transform_using_local_transform_id: __flight_source
+                .world_transform_using_local_transform_id,
+            world_transform_using_parent_transform_id: __flight_source
+                .world_transform_using_parent_transform_id,
+            local_matrix: (__flight_source.local_matrix).clone(),
+            rotation_angle: __flight_source.rotation_angle,
+            rotation_cosine: __flight_source.rotation_cosine,
+            rotation_sine: __flight_source.rotation_sine,
+            world_matrix: (__flight_source.world_matrix).clone(),
+            bounds_rectangle: (__flight_source.bounds_rectangle).clone(),
+            compute_local_bounds_rectangle: (__flight_source.compute_local_bounds_rectangle)
+                .clone(),
+            local_bounds_rectangle: (__flight_source.local_bounds_rectangle).clone(),
+            world_bounds_rectangle: (__flight_source.world_bounds_rectangle).clone(),
+            stage: (__flight_source.stage).clone(),
+        }
+    };
 }
 
 // Source: upstream/packages/displayobject/src/displayContainer.ts:19 (sha256:c0fe0804ae1ed3e8e3c68e3f4a3491c7ddb47ff624d086b52e33a1201063658c)
 pub fn get_display_container_runtime(source: &DisplayContainer) -> DisplayContainerRuntime {
-    return get_display_object_runtime(&DisplayObject {
-        __flight_identity: std::sync::Arc::clone(&(source).__flight_identity),
-        data: ((source).data).clone(),
-        enabled: (source).enabled,
-        kind: ((source).kind).clone(),
-        name: ((source).name).clone(),
-        alpha: (source).alpha,
-        visible: (source).visible,
-        blend_mode: ((source).blend_mode).clone(),
-        clip: ((source).clip).clone(),
-        material: ((source).material).clone(),
-        material_data: ((source).material_data).clone(),
-        pivot_x: (source).pivot_x,
-        pivot_y: (source).pivot_y,
-        rotation: (source).rotation,
-        scale_x: (source).scale_x,
-        scale_y: (source).scale_y,
-        skew_x: (source).skew_x,
-        skew_y: (source).skew_y,
-        x: (source).x,
-        y: (source).y,
-    });
+    return {
+        let __flight_source = &(get_display_object_runtime(&{
+            let __flight_source = &(source);
+            DisplayObject {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                data: (__flight_source.data).clone(),
+                enabled: __flight_source.enabled,
+                kind: (__flight_source.kind).clone(),
+                name: (__flight_source.name).clone(),
+                alpha: __flight_source.alpha,
+                visible: __flight_source.visible,
+                blend_mode: (__flight_source.blend_mode).clone(),
+                clip: (__flight_source.clip).clone(),
+                material: (__flight_source.material).clone(),
+                material_data: (__flight_source.material_data).clone(),
+                pivot_x: __flight_source.pivot_x,
+                pivot_y: __flight_source.pivot_y,
+                rotation: __flight_source.rotation,
+                scale_x: __flight_source.scale_x,
+                scale_y: __flight_source.scale_y,
+                skew_x: __flight_source.skew_x,
+                skew_y: __flight_source.skew_y,
+                x: __flight_source.x,
+                y: __flight_source.y,
+            }
+        }));
+        DisplayContainerRuntime {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            binding: (__flight_source.binding).clone(),
+            appearance_id: __flight_source.appearance_id,
+            bounds_using_local_bounds_id: __flight_source.bounds_using_local_bounds_id,
+            bounds_using_local_transform_id: __flight_source.bounds_using_local_transform_id,
+            can_add_child: (__flight_source.can_add_child).clone(),
+            children: (__flight_source.children).clone(),
+            color_adjustments: (__flight_source.color_adjustments).clone(),
+            resolved_color_transform: (__flight_source.resolved_color_transform).clone(),
+            color_adjustments_channel_mixing: __flight_source.color_adjustments_channel_mixing,
+            traits: (__flight_source.traits).clone(),
+            interaction_signals: (__flight_source.interaction_signals).clone(),
+            local_bounds_id: __flight_source.local_bounds_id,
+            local_bounds_using_local_bounds_id: __flight_source.local_bounds_using_local_bounds_id,
+            local_content_id: __flight_source.local_content_id,
+            local_transform_id: __flight_source.local_transform_id,
+            local_transform_using_local_transform_id: __flight_source
+                .local_transform_using_local_transform_id,
+            node_signals: (__flight_source.node_signals).clone(),
+            interaction_state: (__flight_source.interaction_state).clone(),
+            parent: (__flight_source.parent).clone(),
+            world_bounds_using_local_bounds_id: __flight_source.world_bounds_using_local_bounds_id,
+            world_bounds_using_world_transform_id: __flight_source
+                .world_bounds_using_world_transform_id,
+            world_transform_id: __flight_source.world_transform_id,
+            world_transform_using_local_transform_id: __flight_source
+                .world_transform_using_local_transform_id,
+            world_transform_using_parent_transform_id: __flight_source
+                .world_transform_using_parent_transform_id,
+            local_matrix: (__flight_source.local_matrix).clone(),
+            rotation_angle: __flight_source.rotation_angle,
+            rotation_cosine: __flight_source.rotation_cosine,
+            rotation_sine: __flight_source.rotation_sine,
+            world_matrix: (__flight_source.world_matrix).clone(),
+            bounds_rectangle: (__flight_source.bounds_rectangle).clone(),
+            compute_local_bounds_rectangle: (__flight_source.compute_local_bounds_rectangle)
+                .clone(),
+            local_bounds_rectangle: (__flight_source.local_bounds_rectangle).clone(),
+            world_bounds_rectangle: (__flight_source.world_bounds_rectangle).clone(),
+            stage: (__flight_source.stage).clone(),
+        }
+    };
 }

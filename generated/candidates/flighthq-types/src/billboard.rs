@@ -12,7 +12,7 @@ use crate::{Kind, Material, MeshGeometry, NodeData, Quaternion, SceneNodeRuntime
 pub type BillboardMode = String;
 
 // Source: upstream/packages/types/src/Billboard.ts:5 (sha256:359335bd551f53c00326360bc7d1ddf91f2cb3315a7438c5021d70df7bda9ea8)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Billboard {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

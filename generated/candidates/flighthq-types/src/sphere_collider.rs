@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/SphereCollider.ts:3 (sha256:e1395bd52f8ef9e59ced5eba00b1b6fa6801860e758edbb7764c6f482d55d205)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SphereCollider {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

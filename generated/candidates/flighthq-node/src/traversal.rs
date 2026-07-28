@@ -12,7 +12,7 @@ use flighthq_types::{
     NodeSignals, NodeTraitsKey,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -62,7 +62,18 @@ pub fn find_node<Traits: Clone>(
         while (i < (children.as_ref().unwrap().len() as f64)) {
             let child = children.as_ref().unwrap()[i as usize].clone();
             if predicate((child).clone()) {
-                return Some(child);
+                return Some({
+                    let __flight_source = &((child).clone());
+                    NodeOf::<Traits> {
+                        __flight_identity: std::sync::Arc::clone(
+                            &__flight_source.__flight_identity,
+                        ),
+                        data: (__flight_source.data).clone(),
+                        enabled: __flight_source.enabled,
+                        kind: (__flight_source.kind).clone(),
+                        name: (__flight_source.name).clone(),
+                    }
+                });
             }
             let found = find_node(&child, predicate);
             if (found).is_some() {
@@ -143,7 +154,18 @@ pub fn get_node_next_sibling<Traits: Clone>(source: &Node) -> Option<NodeOf<Trai
     if (parent).is_none() {
         return None;
     }
-    let siblings = (get_node_runtime(&parent.as_ref().unwrap()).children).clone();
+    let siblings = (get_node_runtime(&{
+        let __flight_source = &(parent.as_ref().unwrap());
+        Node {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+        }
+    })
+    .children)
+        .clone();
     if (siblings).is_none() {
         return None;
     }
@@ -157,7 +179,16 @@ pub fn get_node_next_sibling<Traits: Clone>(source: &Node) -> Option<NodeOf<Trai
     if (idx == (-1.0_f64)) || (idx == ((siblings.as_ref().unwrap().len() as f64) - 1.0_f64)) {
         return None;
     }
-    return Some(siblings.as_ref().unwrap()[(idx + 1.0_f64) as usize].clone());
+    return Some({
+        let __flight_source = &(siblings.as_ref().unwrap()[(idx + 1.0_f64) as usize].clone());
+        NodeOf::<Traits> {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+        }
+    });
 }
 
 // Source: upstream/packages/node/src/traversal.ts:115 (sha256:ea66e3f05f4facea3b702ea8df77f5082042c12690a4ae9bacd88f2f0c9043b4)
@@ -166,7 +197,18 @@ pub fn get_node_previous_sibling<Traits: Clone>(source: &Node) -> Option<NodeOf<
     if (parent).is_none() {
         return None;
     }
-    let siblings = (get_node_runtime(&parent.as_ref().unwrap()).children).clone();
+    let siblings = (get_node_runtime(&{
+        let __flight_source = &(parent.as_ref().unwrap());
+        Node {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+        }
+    })
+    .children)
+        .clone();
     if (siblings).is_none() {
         return None;
     }
@@ -180,7 +222,16 @@ pub fn get_node_previous_sibling<Traits: Clone>(source: &Node) -> Option<NodeOf<
     if (idx <= 0.0_f64) {
         return None;
     }
-    return Some(siblings.as_ref().unwrap()[(idx - 1.0_f64) as usize].clone());
+    return Some({
+        let __flight_source = &(siblings.as_ref().unwrap()[(idx - 1.0_f64) as usize].clone());
+        NodeOf::<Traits> {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+        }
+    });
 }
 
 // Source: upstream/packages/node/src/traversal.ts:133 (sha256:2146fc3e716d6abe6681bf9b9a6d5229630b9f945cbb72c8b6b94ee7094ec9cf)

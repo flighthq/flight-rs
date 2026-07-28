@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub title: Option<String>,
@@ -33,7 +33,7 @@ impl PartialEq for FlightPartialRecord1 {
 }
 
 // Source: upstream/packages/types/src/Notification.ts:3 (sha256:7fd0bbb82b314b177b287a556e835762396dc52116979186506eaf66bd2d0ced)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct NotificationAction {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -48,7 +48,7 @@ impl PartialEq for NotificationAction {
 }
 
 // Source: upstream/packages/types/src/Notification.ts:10 (sha256:10e3f2c0b3b3de4ab198ab3ff6e7ff8116cc5ef89b7cd2ee336f9f66a67deab7)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct NotificationRequest {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -76,7 +76,7 @@ impl PartialEq for NotificationRequest {
 }
 
 // Source: upstream/packages/types/src/Notification.ts:41 (sha256:0f489909137afb911d21dce4bdd290acbfa4e6dfce45ab5823bc4dc2b6105d53)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct NotificationChannel {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -93,7 +93,7 @@ impl PartialEq for NotificationChannel {
 pub type NotificationPermission = String;
 
 // Source: upstream/packages/types/src/Notification.ts:52 (sha256:320b9d34e90f00b4c40a8ab680705177fb8843f754fa87f576471dce44afbf68)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct NotificationCapabilities {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -112,7 +112,7 @@ impl PartialEq for NotificationCapabilities {
 }
 
 // Source: upstream/packages/types/src/Notification.ts:70 (sha256:0209b04bdf408588f14a4ae6964f9c75687d6db63592d5bb2088ba98c8ee3b93)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct NotificationSchedule {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -126,7 +126,7 @@ impl PartialEq for NotificationSchedule {
 }
 
 // Source: upstream/packages/types/src/Notification.ts:79 (sha256:c7c5d774886f84fb54b5104b263c47ed6a533f7029791896fdf5ecd90d3a9c5c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ScheduledNotification {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

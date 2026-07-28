@@ -13,7 +13,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/Video.ts:4 (sha256:8c8f35f7ee5d4f94eb9f0554b9fcc97816a674dda9694357b7a93803162903b6)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct VideoData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -76,7 +76,7 @@ impl PartialEq for VideoRuntime {
 }
 
 // Source: upstream/packages/types/src/Video.ts:11 (sha256:65a44c3615f4560c8a06e3e136837ccef7693076a3514c1bc2fe482bb1194482)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Video {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

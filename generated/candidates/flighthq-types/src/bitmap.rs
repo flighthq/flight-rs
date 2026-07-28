@@ -13,7 +13,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/Bitmap.ts:5 (sha256:f06281ca6690cce0de80eaf20890025a25b951bbeeb25d8536e41672b6d41da8)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct BitmapData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -77,7 +77,7 @@ impl PartialEq for BitmapRuntime {
 }
 
 // Source: upstream/packages/types/src/Bitmap.ts:13 (sha256:2a199713d5d6252c439749551560f64cc8d2917a884a5a78617058dd08cb7e60)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Bitmap {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

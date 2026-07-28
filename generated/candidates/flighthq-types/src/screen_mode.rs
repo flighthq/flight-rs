@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/ScreenMode.ts:4 (sha256:349708442009d9ca88cc966d0d145afd0cc7550f64a884cf0cc79436a412f93c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ScreenMode {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

@@ -9,7 +9,7 @@
 use crate::{SceneAnimationPath, SceneNode};
 
 // Source: upstream/packages/types/src/SceneAnimationTarget.ts:9 (sha256:01ab1226d7ebad39e82c031c642a554df71ce554250b32dd76289a8ee735cabc)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SceneAnimationTarget {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

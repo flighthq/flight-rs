@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/WellKnownMenuItemRole.ts:18 (sha256:81e36f65ff4a6a2f8c06a20ee3278e2aa35915e3ca5a4657532097c40d8c12a7)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct WellKnownMenuItemRole {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

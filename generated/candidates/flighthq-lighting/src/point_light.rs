@@ -11,7 +11,7 @@ use flighthq_geometry::{clone_vector3, create_vector3};
 use flighthq_types::{POINT_LIGHT_KIND as point_light_kind_constant, PointLight, Vector3Like};
 
 // Source: upstream/packages/lighting/src/pointLight.ts:6 (sha256:35ec8d4b09d8b5e4ec4a3bb1b4cc4df6cae2b1df2ee5ff01c43296dc64029d2c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct PointLightOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -40,9 +40,18 @@ pub fn clone_point_light(source: &PointLight) -> PointLight {
         kind: (point_light_kind_constant).to_owned(),
         normal_bias: source.normal_bias,
         pcf_radius: source.pcf_radius,
-        position: clone_vector3(&source.position),
+        position: clone_vector3(&{
+            let __flight_source = &(source.position);
+            Vector3Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                x: __flight_source.x,
+                y: __flight_source.y,
+                z: __flight_source.z,
+            }
+        }),
         range: source.range,
         shadow_bias: source.shadow_bias,
+        ..Default::default()
     }));
 }
 
@@ -64,5 +73,6 @@ pub fn create_point_light(options: Option<PointLightOptions>) -> PointLight {
         },
         range: (options.as_ref().and_then(|value| value.range)).unwrap_or((-1.0_f64)),
         shadow_bias: (options.as_ref().and_then(|value| value.shadow_bias)).unwrap_or(0.0_f64),
+        ..Default::default()
     }));
 }

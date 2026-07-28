@@ -9,7 +9,7 @@
 use crate::TextDirection;
 
 // Source: upstream/packages/types/src/TextItem.ts:2 (sha256:03eb326d7a5f55efed303d758eb178987ffdc0aa78c46cae7f57a143c6580a16)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextItem {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

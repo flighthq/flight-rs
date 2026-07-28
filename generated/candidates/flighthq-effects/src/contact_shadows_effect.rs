@@ -8,7 +8,7 @@
 
 use flighthq_types::ContactShadowsEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub distance: Option<f64>,
@@ -23,7 +23,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/contactShadowsEffect.ts:3 (sha256:4bc30aa21b51ac6d1144ef6e52410b9010dfd548130f08c88f4b071dbdaa3dd3)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateContactShadowsEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -50,6 +50,7 @@ pub fn create_contact_shadows_effect(options: Option<FlightOmitRecord1>) -> Cont
             opacity: __flight_spread_1.opacity,
             samples: __flight_spread_1.samples,
             smoothness: __flight_spread_1.smoothness,
+            ..Default::default()
         }
     };
 }

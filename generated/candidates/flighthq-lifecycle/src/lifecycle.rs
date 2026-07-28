@@ -12,7 +12,7 @@ use flighthq_types::{
 };
 
 // Source: upstream/packages/lifecycle/src/lifecycle.ts:20 (sha256:89e79b96ca581bb812b5c08e91843553be3b8ab2f6445aac25eba8f6f2d468b9)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct AttachAppLifecycleRecord1 {
     __flight_identity: std::sync::Arc<()>,
 }

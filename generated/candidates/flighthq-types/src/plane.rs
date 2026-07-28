@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/Plane.ts:7 (sha256:73509be81808ed51445dcbf3fa04b6114e34d5f25f6bbcda267be4299ad107eb)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Plane {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

@@ -21,7 +21,9 @@ pub fn create_particle_emitter_signals() -> ParticleEmitterSignals {
 
 // Source: upstream/packages/particles/src/particleEmitterSignals.ts:26 (sha256:9859b11f2926c1647db71ff5bc9c951f09eca6550a6c2c2fee5c16c7bd8cc011)
 pub fn enable_particle_emitter_signals(state: crate::OpaqueHostValue) -> ParticleEmitterSignals {
-    let mut s = state;
+    let mut s = crate::host_value::<Vec<(crate::FlightSymbol, Option<ParticleEmitterSignals>)>>(
+        "host.cast",
+    );
     return {
         s.iter()
             .find(|(key, _)| key == &*SIGNALS_SLOT)

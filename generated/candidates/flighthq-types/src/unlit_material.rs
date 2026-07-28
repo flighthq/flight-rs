@@ -9,7 +9,7 @@
 use crate::{AlphaType, BlendMode, Kind, MaterialAlphaMode, Texture, VideoTexture};
 
 // Source: upstream/packages/types/src/UnlitMaterial.ts:14 (sha256:6df48f0e486e10bfb7ea85f40498e60724ef3d803a7b97615b6626f222268f4a)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct UnlitMaterial {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -20,6 +20,9 @@ pub struct UnlitMaterial {
     pub alpha_type: AlphaType,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub shader_key: String,
+    pub textures: Option<Vec<(String, Texture)>>,
+    pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
     pub base_color: f64,
     pub base_color_map: Option<Texture>,
     pub base_color_video_map: Option<VideoTexture>,

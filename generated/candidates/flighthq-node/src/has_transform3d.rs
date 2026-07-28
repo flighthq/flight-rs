@@ -10,7 +10,7 @@ use flighthq_geometry::{create_quaternion, create_vector3};
 pub use flighthq_types::{HasTransform3D, HasTransform3DRuntime};
 use flighthq_types::{Quaternion, Vector3};
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub position: Option<Vector3>,

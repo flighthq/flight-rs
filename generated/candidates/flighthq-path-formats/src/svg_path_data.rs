@@ -12,6 +12,17 @@ use flighthq_path::{
 };
 use flighthq_types::{Path, PathSegment};
 
+#[derive(Clone, Default)]
+pub struct SharedStructuralRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub precision: Option<f64>,
+}
+impl PartialEq for SharedStructuralRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 // Source: upstream/packages/path-formats/src/svgPathData.ts:26 (sha256:9167f8486ff8309d236e8a36954c943903721ac23ca3ed984357c332d0165e88)
 pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
     let length = (d.encode_utf16().count() as f64);
@@ -656,18 +667,7 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
 }
 
 // Source: upstream/packages/path-formats/src/svgPathData.ts:282 (sha256:55264b4768f768b2ea3800cf3ca542d138e2f3b9614d0a30a9a7c965bbd9e588)
-#[derive(Clone)]
-struct FormatSvgPathDataRecord1 {
-    __flight_identity: std::sync::Arc<()>,
-    precision: Option<f64>,
-}
-impl PartialEq for FormatSvgPathDataRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-pub fn format_svg_path_data(path: &Path, options: Option<FormatSvgPathDataRecord1>) -> String {
+pub fn format_svg_path_data(path: &Path, options: Option<SharedStructuralRecord1>) -> String {
     let precision = options.as_ref().and_then(|value| value.precision);
     let parts: std::sync::Arc<std::sync::Mutex<Vec<String>>> =
         std::sync::Arc::new(std::sync::Mutex::new(vec![]));

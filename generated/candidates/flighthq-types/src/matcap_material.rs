@@ -9,7 +9,7 @@
 use crate::{AlphaType, BlendMode, Kind, MaterialAlphaMode, Texture};
 
 // Source: upstream/packages/types/src/MatcapMaterial.ts:7 (sha256:8b4467696325ff69cdbe538077a2259a9bd9f7007df08e3a49a165bf267de4e8)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct MatcapMaterial {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -20,6 +20,9 @@ pub struct MatcapMaterial {
     pub alpha_type: AlphaType,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub shader_key: String,
+    pub textures: Option<Vec<(String, Texture)>>,
+    pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
     pub matcap: Option<Texture>,
     pub tint: f64,
 }

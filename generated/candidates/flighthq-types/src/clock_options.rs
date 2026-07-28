@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/ClockOptions.ts:3 (sha256:787fb04080d6bb77b20fec61602689e57360183e1178b3fadc77aca4fece3c43)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ClockOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

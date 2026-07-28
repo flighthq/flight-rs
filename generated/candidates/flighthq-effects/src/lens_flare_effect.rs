@@ -8,7 +8,7 @@
 
 use flighthq_types::LensFlareEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub threshold: Option<f64>,
@@ -23,7 +23,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/lensFlareEffect.ts:3 (sha256:59979a471e4b460a4183b4739fd11756d4610ff8c7ddeae72ca27034a6283cc6)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateLensFlareEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -50,6 +50,7 @@ pub fn create_lens_flare_effect(options: Option<FlightOmitRecord1>) -> LensFlare
             intensity: __flight_spread_1.intensity,
             ghosts: __flight_spread_1.ghosts,
             halo: __flight_spread_1.halo,
+            ..Default::default()
         }
     };
 }

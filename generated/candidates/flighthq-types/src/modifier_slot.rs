@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/ModifierSlot.ts:18 (sha256:39f229da2717033e4fa985dbc4d87edcd1c9f7ca4f651c9876c60f018ab108b5)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ModifierSlotValues {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

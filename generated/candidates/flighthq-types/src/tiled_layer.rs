@@ -9,7 +9,7 @@
 use crate::{TiledObject, TiledProperty};
 
 // Source: upstream/packages/types/src/TiledLayer.ts:9 (sha256:2d20861db9bf593f294963fcbdb3b3f0ab935e0c465e3d213b67d1aaff5b3a22)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TiledLayerBase {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -28,7 +28,7 @@ impl PartialEq for TiledLayerBase {
 }
 
 // Source: upstream/packages/types/src/TiledLayer.ts:19 (sha256:74eafef6a565157e5970c142944550be373bd48e9bfd2fe885439256462d07b4)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TiledTileLayer {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -51,7 +51,7 @@ impl PartialEq for TiledTileLayer {
 }
 
 // Source: upstream/packages/types/src/TiledLayer.ts:29 (sha256:958f497af9dc09e685c1f7282cc9a69e1c0d647240663b9eab0d21a101d0d577)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TiledObjectGroup {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -72,7 +72,7 @@ impl PartialEq for TiledObjectGroup {
 }
 
 // Source: upstream/packages/types/src/TiledLayer.ts:34 (sha256:6fb8c67ce2d25882e8d4d9135bcc7f8153d2dca237447a72e913e4767cb5f3d5)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TiledImageLayer {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -93,7 +93,7 @@ impl PartialEq for TiledImageLayer {
 }
 
 // Source: upstream/packages/types/src/TiledLayer.ts:39 (sha256:c4b29754412667f51fc041ca12b866ff1f739c898f34cf9c020a45dc8dd2c7ef)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TiledGroupLayer {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

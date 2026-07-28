@@ -10,7 +10,7 @@ use crate::create_spritesheet_frame;
 use flighthq_entity::create_entity;
 use flighthq_types::{Spritesheet, SpritesheetAnimation, SpritesheetFrame, TextureAtlas};
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub atlas: Option<TextureAtlas>,
@@ -23,7 +23,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub id: Option<f64>,
@@ -65,7 +65,7 @@ pub fn clone_spritesheet(spritesheet: &Spritesheet) -> Spritesheet {
 }
 
 // Source: upstream/packages/spritesheet/src/spritesheet.ts:24 (sha256:98a6a5f0626783039851024b48235bdace564ed9b1c823cf7f811c6c94568bb4)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateSpritesheetRecord3 {
     __flight_identity: std::sync::Arc<()>,
 }

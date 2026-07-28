@@ -12,7 +12,7 @@ use flighthq_types::{
     RenderStateRuntime, SceneGraphSyncPolicy,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub allow_smoothing: Option<bool>,

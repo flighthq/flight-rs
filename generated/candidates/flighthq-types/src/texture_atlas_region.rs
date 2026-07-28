@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/TextureAtlasRegion.ts:3 (sha256:65a7d001c8ca2defe349f281d226c6c796c8b9e14f2bf8701f6bc6bdc86dcb5d)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextureAtlasRegion {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

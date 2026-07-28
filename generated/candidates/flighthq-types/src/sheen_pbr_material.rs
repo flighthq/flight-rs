@@ -11,7 +11,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/SheenPbrMaterial.ts:8 (sha256:bf8bbb2a4eae05ef9b0a9f4af3008d76ff6d0dd95b91491391b39256a66f9f5f)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SheenPbrMaterial {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -22,6 +22,9 @@ pub struct SheenPbrMaterial {
     pub alpha_type: AlphaType,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub shader_key: String,
+    pub textures: Option<Vec<(String, Texture)>>,
+    pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
     pub sheen_color: f64,
     pub sheen_color_map: Option<Texture>,
     pub sheen_roughness: f64,

@@ -10,7 +10,7 @@
 pub type FileSystemPathKind = String;
 
 // Source: upstream/packages/types/src/FileSystem.ts:4 (sha256:798e6ae7b339bf8fda3e53144f6b89168f0861e6787d5800a65326bd26bc99f9)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FileEntry {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -28,7 +28,7 @@ impl PartialEq for FileEntry {
 pub type FileWatchEventType = String;
 
 // Source: upstream/packages/types/src/FileSystem.ts:12 (sha256:9f015c20852be1b166ac56bf9148df155faabf9799539f10ed50547cfee36429)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FileWatchEvent {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -42,7 +42,7 @@ impl PartialEq for FileWatchEvent {
 }
 
 // Source: upstream/packages/types/src/FileSystem.ts:17 (sha256:cb6abf1b2c839e4b1f961dd9e9135a46fd52df8599153d567bf91ceb3dff67a9)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FileStat {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -59,7 +59,7 @@ impl PartialEq for FileStat {
 }
 
 // Source: upstream/packages/types/src/FileSystem.ts:27 (sha256:362f818235d81511bbb0d5952e5fa14f7fb229aed67b2d2f0942d008058a78a4)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FilePermissions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -74,7 +74,7 @@ impl PartialEq for FilePermissions {
 }
 
 // Source: upstream/packages/types/src/FileSystem.ts:35 (sha256:841067e277893e01b880c558cd5378868092395d8600f4cef5306fdf9c9cfa60)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FileSystemUsage {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -88,7 +88,7 @@ impl PartialEq for FileSystemUsage {
 }
 
 // Source: upstream/packages/types/src/FileSystem.ts:41 (sha256:034031679c1d16ee2669a56f80a4e8264e80521c09861939d1435e1a4c27fffe)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FileWalkOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

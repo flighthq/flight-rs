@@ -9,7 +9,7 @@
 use crate::ColorLut;
 
 // Source: upstream/packages/types/src/GlColorLutTextureCache.ts:8 (sha256:28022486054f5704cc934e961f951937b26459388fd4d73a20763de668fb2500)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlColorLutTextureCache {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

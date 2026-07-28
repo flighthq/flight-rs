@@ -8,7 +8,7 @@
 
 use flighthq_types::FxaaEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub edge_threshold: Option<f64>,
@@ -21,7 +21,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/fxaaEffect.ts:3 (sha256:238a02304c004187854c6b923e219342a070d34b4315aa3251a8725eb037fd13)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateFxaaEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -44,6 +44,7 @@ pub fn create_fxaa_effect(options: Option<FlightOmitRecord1>) -> FxaaEffect {
             kind: "FxaaEffect".to_owned(),
             edge_threshold: __flight_spread_1.edge_threshold,
             subpixel: __flight_spread_1.subpixel,
+            ..Default::default()
         }
     };
 }

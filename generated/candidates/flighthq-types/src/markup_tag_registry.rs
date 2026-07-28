@@ -9,7 +9,7 @@
 use crate::{MarkupClassResolver, MarkupColorResolver, MarkupTagHandler};
 
 // Source: upstream/packages/types/src/MarkupTagRegistry.ts:10 (sha256:91817bed76d0f18f64a416ffaff3426e341ec0d81715b5a30d25d9cc7a434cc3)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct MarkupTagRegistry {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

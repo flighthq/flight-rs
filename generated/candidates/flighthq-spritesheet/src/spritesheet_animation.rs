@@ -9,7 +9,7 @@
 use flighthq_entity::create_entity;
 use flighthq_types::{Spritesheet, SpritesheetAnimation, SpritesheetAnimationDirection};
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub frames: Option<Vec<f64>>,

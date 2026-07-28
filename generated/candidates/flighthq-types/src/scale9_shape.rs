@@ -13,7 +13,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/Scale9Shape.ts:4 (sha256:13a7dbdfd01d4e31fcfb71cc4a0ba9b7cfa64d334bfba297a4d45a4b283f126e)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Scale9ShapeData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -76,7 +76,7 @@ impl PartialEq for Scale9ShapeRuntime {
 }
 
 // Source: upstream/packages/types/src/Scale9Shape.ts:10 (sha256:c4d9690d18b21e3fb00e7e50dfe7d187fcf5b4135c164263b85824d18571e746)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Scale9Shape {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

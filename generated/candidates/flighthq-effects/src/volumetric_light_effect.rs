@@ -8,7 +8,7 @@
 
 use flighthq_types::VolumetricLightEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub density: Option<f64>,
@@ -25,7 +25,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/volumetricLightEffect.ts:3 (sha256:169af6783f03baa47eb6fa38ca00da245644f336396e7b6809f9969533e0bafd)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateVolumetricLightEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -56,6 +56,7 @@ pub fn create_volumetric_light_effect(options: Option<FlightOmitRecord1>) -> Vol
             light_y: __flight_spread_1.light_y,
             samples: __flight_spread_1.samples,
             scattering: __flight_spread_1.scattering,
+            ..Default::default()
         }
     };
 }

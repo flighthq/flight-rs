@@ -10,7 +10,7 @@
 pub type SpritesheetValidationSeverity = String;
 
 // Source: upstream/packages/types/src/SpritesheetValidationDiagnostic.ts:4 (sha256:e2b5727a7ab4aa6a76e63867100facd11a5c6ad25e7d145c0f5a7e9ebcaee080)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SpritesheetValidationDiagnostic {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

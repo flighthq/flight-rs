@@ -9,7 +9,7 @@
 use flighthq_types::{Path, PathCommand, PathSegment};
 
 // Source: upstream/packages/path/src/forEachPathSegment.ts:11 (sha256:b0ce2a07893d7e18c0ab3659b0128300f8eb880b269af127886cb7936881ae4f)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct ForEachPathSegmentRecord1 {
     __flight_identity: std::sync::Arc<()>,
     kind: String,

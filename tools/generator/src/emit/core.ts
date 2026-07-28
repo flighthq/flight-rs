@@ -262,7 +262,10 @@ function attemptAutomaticPackage(
     sourceExclusions: [],
     typeMappings: override?.typeMappings ?? {},
   };
-  const semanticTypes = collectSemanticTypes(workspaceDirectory, target);
+  const semanticTypes = {
+    ...collectPackageSemanticTypes(sourceDirectory, packageInventory.name, workspaceDirectory),
+    ...collectSemanticTypes(workspaceDirectory, target),
+  };
   const blockers: AutomaticPackageBlocker[] = [];
   const emittedSources: AutomaticPackageReport['emittedSources'] = [];
   const generatedExports = new Set<string>();
@@ -1079,6 +1082,22 @@ function collectSemanticTypes(workspaceDirectory: string, target: RustTarget): R
       return [name, declaration.type];
     }),
   );
+}
+
+function collectPackageSemanticTypes(
+  sourceDirectory: string,
+  packageName: string,
+  workspaceDirectory: string,
+): Readonly<Record<string, IrType>> {
+  const types = new Map<string, IrType>();
+  for (const file of walkTypeScriptSources(sourceDirectory)) {
+    const lowered = lowerTypeScriptFile(file, packageName, workspaceDirectory);
+    for (const declaration of lowered.declarations) {
+      if (declaration.kind !== 'type' || !declaration.exported || types.has(declaration.name)) continue;
+      types.set(declaration.name, declaration.type);
+    }
+  }
+  return Object.fromEntries(types);
 }
 
 function emitCargoManifest(target: RustTarget): string {

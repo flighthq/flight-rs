@@ -415,7 +415,7 @@ pub fn set_loop_backend(backend: Option<LoopBackend>) -> () {
 }
 
 // Source: upstream/packages/application/src/application.ts:195 (sha256:cc31ce6e7b7ffb1349bb39c965cc5c7f5ed12afbb68a1d65479c31ca34408474)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct StartApplicationLoopRecord1 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -939,7 +939,7 @@ static _LOOP_BACKEND: std::sync::LazyLock<std::sync::Mutex<Option<LoopBackend>>>
     std::sync::LazyLock::new(|| std::sync::Mutex::new(None));
 
 // Source: upstream/packages/application/src/application.ts:371 (sha256:37211d505503f8ecae55a905713eed072dcae393446b9ebecee2c5eca7ba70ab)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct LoopState {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

@@ -8,7 +8,7 @@
 
 use flighthq_types::{EffectSourceMode, GradientGlowEffect};
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alphas: Vec<f64>,
@@ -41,6 +41,7 @@ pub fn create_gradient_glow_effect(options: &FlightOmitRecord1) -> GradientGlowE
             ratios: (__flight_spread_1.ratios).clone(),
             source_mode: (__flight_spread_1.source_mode).clone(),
             strength: __flight_spread_1.strength,
+            ..Default::default()
         }
     };
 }

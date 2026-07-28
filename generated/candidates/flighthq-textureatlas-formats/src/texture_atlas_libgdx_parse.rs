@@ -9,7 +9,7 @@
 use flighthq_textureatlas::create_texture_atlas_region;
 use flighthq_types::TextureAtlas;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub height: Option<f64>,
@@ -131,37 +131,66 @@ pub fn parse_texture_atlas_libgdx_atlas(text: String, atlas: &mut TextureAtlas) 
                             if __flight_case <= 1_usize {
                                 {
                                     let parts = (value.split)(",");
-                                    atlas_x = crate::host_value::<f64>("host.call");
-                                    atlas_y = crate::host_value::<f64>("host.call");
+                                    atlas_x = ((parts[0.0_f64 as usize].trim)())
+                                        .trim()
+                                        .parse::<f64>()
+                                        .unwrap_or(f64::NAN);
+                                    atlas_y = ((parts[1.0_f64 as usize].trim)())
+                                        .trim()
+                                        .parse::<f64>()
+                                        .unwrap_or(f64::NAN);
                                     break '__flight_switch;
                                 }
                             }
                             if __flight_case <= 2_usize {
                                 {
                                     let parts = (value.split)(",");
-                                    atlas_w = crate::host_value::<f64>("host.call");
-                                    atlas_h = crate::host_value::<f64>("host.call");
+                                    atlas_w = ((parts[0.0_f64 as usize].trim)())
+                                        .trim()
+                                        .parse::<f64>()
+                                        .unwrap_or(f64::NAN);
+                                    atlas_h = ((parts[1.0_f64 as usize].trim)())
+                                        .trim()
+                                        .parse::<f64>()
+                                        .unwrap_or(f64::NAN);
                                     break '__flight_switch;
                                 }
                             }
                             if __flight_case <= 3_usize {
                                 {
                                     let parts = (value.split)(",");
-                                    orig_w = crate::host_value::<f64>("host.call");
-                                    orig_h = crate::host_value::<f64>("host.call");
+                                    orig_w = ((parts[0.0_f64 as usize].trim)())
+                                        .trim()
+                                        .parse::<f64>()
+                                        .unwrap_or(f64::NAN);
+                                    orig_h = ((parts[1.0_f64 as usize].trim)())
+                                        .trim()
+                                        .parse::<f64>()
+                                        .unwrap_or(f64::NAN);
                                     break '__flight_switch;
                                 }
                             }
                             if __flight_case <= 4_usize {
                                 {
                                     let parts = (value.split)(",");
-                                    offset_x = crate::host_value::<f64>("host.call");
-                                    offset_y = crate::host_value::<f64>("host.call");
+                                    offset_x = ((parts[0.0_f64 as usize].trim)())
+                                        .trim()
+                                        .parse::<f64>()
+                                        .unwrap_or(f64::NAN);
+                                    offset_y = ((parts[1.0_f64 as usize].trim)())
+                                        .trim()
+                                        .parse::<f64>()
+                                        .unwrap_or(f64::NAN);
                                     break '__flight_switch;
                                 }
                             }
                             if __flight_case <= 5_usize {
-                                index = crate::host_value::<f64>("host.call");
+                                index = {
+                                    let __flight_value = value;
+                                    let __flight_radix = (10.0_f64) as u32;
+                                    i64::from_str_radix(__flight_value.trim(), __flight_radix)
+                                        .map_or(f64::NAN, |value| value as f64)
+                                };
                                 break '__flight_switch;
                             }
                         }

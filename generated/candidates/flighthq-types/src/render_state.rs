@@ -15,7 +15,7 @@ use crate::{
 pub type SceneGraphSyncPolicy = String;
 
 // Source: upstream/packages/types/src/RenderState.ts:20 (sha256:824f9ece3ebf65a6e609c2e05d8f066e4c5cec4b5983b2d84169f77ea69680fd)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct RenderState {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -39,7 +39,7 @@ impl PartialEq for RenderState {
 }
 
 // Source: upstream/packages/types/src/RenderState.ts:42 (sha256:12eafb27ebd3efdcc20e516b8a329a06026b353134ab8badbafeedc31aba8220)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct RenderStateRuntime {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

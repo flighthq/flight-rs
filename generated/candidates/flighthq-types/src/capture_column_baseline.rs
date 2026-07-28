@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/CaptureColumnBaseline.ts:7 (sha256:2ba66ba5544ade33f1481f2b55dbcbfd334b40d738ce9c1e056325d2f0def0eb)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct CaptureColumnBaseline {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

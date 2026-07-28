@@ -9,6 +9,17 @@
 use flighthq_entity::create_entity;
 use flighthq_types::{Vector2Like, Vector3, Vector3Like, Vector4Like};
 
+#[derive(Clone, Default)]
+pub struct SharedStructuralRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub m: Vec<f32>,
+}
+impl PartialEq for SharedStructuralRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 // Source: upstream/packages/geometry/src/vector3.ts:8 (sha256:c5afbbcaba93725b6dbbe95332676d5c775ccb24c3f125bcd7e53295fceb8abd)
 pub fn add_vector3(out: &mut Vector3Like, a: &Vector3Like, b: &Vector3Like) -> () {
     out.x = (a.x + b.x);
@@ -311,21 +322,10 @@ pub fn subtract_vector3(out: &mut Vector3Like, source: &Vector3Like, other: &Vec
 }
 
 // Source: upstream/packages/geometry/src/vector3.ts:442 (sha256:f50576dcfa1a61bb5656385e925c57f235594b69e15866cf37f65adbd8fd88df)
-#[derive(Clone)]
-struct TransformVector3ByMatrix3Record1 {
-    __flight_identity: std::sync::Arc<()>,
-    m: Vec<f32>,
-}
-impl PartialEq for TransformVector3ByMatrix3Record1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
 pub fn transform_vector3_by_matrix3(
     out: &mut Vector3Like,
     source: &Vector3Like,
-    matrix: &TransformVector3ByMatrix3Record1,
+    matrix: &SharedStructuralRecord1,
 ) -> () {
     let x = source.x;
     let y = source.y;

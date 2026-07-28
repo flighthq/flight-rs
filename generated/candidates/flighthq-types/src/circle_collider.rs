@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/CircleCollider.ts:3 (sha256:dcfcc46aced0c60b01e65f51abfa2b424490c5877253164876e9db3fa19c7998)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct CircleCollider {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

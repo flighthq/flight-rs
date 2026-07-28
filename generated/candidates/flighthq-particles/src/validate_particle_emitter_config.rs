@@ -12,7 +12,7 @@ use flighthq_types::{
     ParticleBlendMode, ParticleCurve, ParticleEmitterConfig, ParticleEmitterShape,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha_end: Option<f64>,
@@ -154,8 +154,8 @@ pub fn normalize_particle_emitter_config(
 ) -> ParticleEmitterConfig {
     let mut out = create_particle_emitter_config(Some(((config).clone().unwrap()).clone()));
     let defaults = create_particle_emitter_config(None);
-    let mut mutable = out;
-    let defaults_rec = defaults;
+    let mut mutable = crate::host_value::<Vec<(String, f64)>>("host.cast");
+    let defaults_rec = crate::host_value::<Vec<(String, f64)>>("host.cast");
     for field in ((*NUMERIC_FIELDS).clone()).iter().cloned() {
         if (!(mutable
             .iter()
@@ -219,7 +219,7 @@ pub fn normalize_particle_emitter_config(
 }
 
 // Source: upstream/packages/particles/src/validateParticleEmitterConfig.ts:130 (sha256:a18a08a4eee98a57f847bc012bb29a248fb41fa6234d854be5820852f66068d0)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct ValidateParticleEmitterConfigRecord2 {
     __flight_identity: std::sync::Arc<()>,
     field: String,
@@ -249,7 +249,7 @@ pub fn validate_particle_emitter_config(
     }
     for field in ((*NON_NEGATIVE_FIELDS).clone()).iter().cloned() {
         let value = config[field as usize].clone();
-        if ((value).is_finite() && (value < 0.0_f64)) {
+        if ((value).is_finite()) && (value < 0.0_f64) {
             issues.push(ParticleConfigIssue {
                 __flight_identity: std::sync::Arc::new(()),
                 field: field,
@@ -258,7 +258,7 @@ pub fn validate_particle_emitter_config(
             });
         }
     }
-    if ((config.lifetime_max).is_finite() && (config.lifetime_max <= 0.0_f64)) {
+    if ((config.lifetime_max).is_finite()) && (config.lifetime_max <= 0.0_f64) {
         issues.push(ParticleConfigIssue {
             __flight_identity: std::sync::Arc::new(()),
             field: "lifetimeMax",
@@ -266,7 +266,7 @@ pub fn validate_particle_emitter_config(
             severity: "warning".to_owned(),
         });
     }
-    if ((config.max_particles).is_finite() && (config.max_particles <= 0.0_f64)) {
+    if ((config.max_particles).is_finite()) && (config.max_particles <= 0.0_f64) {
         issues.push(ParticleConfigIssue {
             __flight_identity: std::sync::Arc::new(()),
             field: "maxParticles",
@@ -274,7 +274,7 @@ pub fn validate_particle_emitter_config(
             severity: "warning".to_owned(),
         });
     }
-    if ((config.frame_count).is_finite() && (config.frame_count < 1.0_f64)) {
+    if ((config.frame_count).is_finite()) && (config.frame_count < 1.0_f64) {
         issues.push(ParticleConfigIssue {
             __flight_identity: std::sync::Arc::new(()),
             field: "frameCount",
@@ -395,7 +395,7 @@ fn report_inverted_range(
 ) -> () {
     let min = config[min_field as usize].clone();
     let max = config[max_field as usize].clone();
-    if (((min).is_finite() && (max).is_finite()) && (min > max)) {
+    if (((min).is_finite()) && ((max).is_finite())) && (min > max) {
         issues.push(ParticleConfigIssue {
             __flight_identity: std::sync::Arc::new(()),
             field: (*min_field).clone(),
@@ -415,7 +415,7 @@ fn report_unit_range(
     field: &ParticleEmitterConfig,
 ) -> () {
     let value = config[field as usize].clone();
-    if ((value).is_finite() && (value < 0.0_f64) || (value > 1.0_f64)) {
+    if ((value).is_finite()) && ((value < 0.0_f64) || (value > 1.0_f64)) {
         issues.push(ParticleConfigIssue {
             __flight_identity: std::sync::Arc::new(()),
             field: (*field).clone(),

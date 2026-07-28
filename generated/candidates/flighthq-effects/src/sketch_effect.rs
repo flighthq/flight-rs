@@ -8,7 +8,7 @@
 
 use flighthq_types::SketchEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub strength: Option<f64>,
@@ -20,7 +20,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/sketchEffect.ts:3 (sha256:9f94bede0b61869b7bd3c4dd51809a07dcd6daf5562af4bae2eb181dd4e309cd)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateSketchEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -41,6 +41,7 @@ pub fn create_sketch_effect(options: Option<FlightOmitRecord1>) -> SketchEffect 
             __flight_identity: std::sync::Arc::new(()),
             kind: "SketchEffect".to_owned(),
             strength: __flight_spread_1.strength,
+            ..Default::default()
         }
     };
 }

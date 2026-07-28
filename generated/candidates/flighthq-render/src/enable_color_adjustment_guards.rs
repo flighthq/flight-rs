@@ -13,7 +13,7 @@ use flighthq_types::{
     Renderable, SceneGraphSyncPolicy,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub allow_smoothing: Option<bool>,
@@ -54,7 +54,7 @@ pub fn enable_color_adjustment_guards(state: &RenderState) -> () {
 }
 
 // Source: upstream/packages/render/src/enableColorAdjustmentGuards.ts:22 (sha256:91cdc82c242c7a7151c3d9427905893a9543c29b3a2d7bd5253b568f3c63c881)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct WarnColorAdjustmentChannelMixingNotInlineableRecord2 {
     __flight_identity: std::sync::Arc<()>,
     message: String,

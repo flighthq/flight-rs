@@ -10,7 +10,7 @@ use crate::TEXT_LAYOUT_GUTTER as text_layout_gutter_constant;
 use flighthq_types::{RectangleLike, TextAutoSize, TextLayoutResult};
 
 // Source: upstream/packages/textlayout/src/textBounds.ts:9 (sha256:22ed1f7a16012f2378cd9af1f778a4fb162eded85e201f8d1ffe4d26c4d6dcde)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextBoundsSpec {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

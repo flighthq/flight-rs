@@ -18,7 +18,7 @@ pub type VertexFormat = String;
 pub type PrimitiveTopology = String;
 
 // Source: upstream/packages/types/src/MeshGeometry.ts:26 (sha256:ba5dd9a697a0d03ad2a6bd0554f6db2787b7536229bbdcfc395ac93cc8a6a889)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct VertexAttribute {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -33,7 +33,7 @@ impl PartialEq for VertexAttribute {
 }
 
 // Source: upstream/packages/types/src/MeshGeometry.ts:35 (sha256:9b14faf8c5337ca465ecc163e62107de498b98fb6e4e0b7c34f3d40514045479)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct VertexAttributeLayout {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -47,7 +47,7 @@ impl PartialEq for VertexAttributeLayout {
 }
 
 // Source: upstream/packages/types/src/MeshGeometry.ts:43 (sha256:41d1dc5491ddd2855f1e3421ef84e991bbcd8ef4acd680dfb88ea7ecbc9da8ae)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct MeshSubset {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -61,7 +61,7 @@ impl PartialEq for MeshSubset {
 }
 
 // Source: upstream/packages/types/src/MeshGeometry.ts:54 (sha256:ba607b6e53ee733bb8d2233cfaf78618ed0be454fbbe45809ec8977365013d83)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct MeshGeometry {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -106,7 +106,7 @@ impl PartialEq for MeshGeometryWgpuData {
 }
 
 // Source: upstream/packages/types/src/MeshGeometry.ts:85 (sha256:973da6177456239f25e9a96ed6ef48c2ed2d80cfcce006894fd4acd3c2cf1dcb)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct MeshGeometryRuntime {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

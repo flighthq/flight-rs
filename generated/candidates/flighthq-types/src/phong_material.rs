@@ -9,7 +9,7 @@
 use crate::{AlphaType, BlendMode, Kind, MaterialAlphaMode, Texture};
 
 // Source: upstream/packages/types/src/PhongMaterial.ts:7 (sha256:64e437f2e5a0160d04bbc20e190fa582580cd6407ac92088e8b008e8c8d4aa9b)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct PhongMaterial {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -20,6 +20,9 @@ pub struct PhongMaterial {
     pub alpha_type: AlphaType,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub shader_key: String,
+    pub textures: Option<Vec<(String, Texture)>>,
+    pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
     pub diffuse: f64,
     pub diffuse_map: Option<Texture>,
     pub normal_map: Option<Texture>,

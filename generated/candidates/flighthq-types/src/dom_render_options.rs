@@ -9,7 +9,7 @@
 use crate::SceneGraphSyncPolicy;
 
 // Source: upstream/packages/types/src/DomRenderOptions.ts:2 (sha256:1701b24fbfde13aa4e2817401a96890ba1a6f52001f929abc32a1eaf8259cd47)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct DomRenderOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

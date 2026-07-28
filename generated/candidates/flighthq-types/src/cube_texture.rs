@@ -9,7 +9,7 @@
 use crate::{ImageResource, Sampler, TextureColorSpace};
 
 // Source: upstream/packages/types/src/CubeTexture.ts:9 (sha256:305f6d5cc9718e946c74fe51927273973a9feb0a5cd5fc2d53b823c9d295f151)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct CubeTexture {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

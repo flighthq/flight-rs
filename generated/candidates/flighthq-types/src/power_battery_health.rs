@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/PowerBatteryHealth.ts:4 (sha256:2b1e7228e14fe09951fbae6a4dd37ecba0f001ce64c98e212657861bcac07409)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct PowerBatteryHealth {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/TweenPropertyDetail.ts:1 (sha256:d8b13478c32c050f10440ebe6dc0b1ef9dc33cabde40a9fddb26ab0bd47a1001)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TweenPropertyDetail {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

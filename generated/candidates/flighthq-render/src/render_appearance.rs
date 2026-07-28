@@ -14,7 +14,7 @@ use flighthq_types::{
     SceneGraphSyncPolicy,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -50,7 +50,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub allow_smoothing: Option<bool>,
@@ -92,9 +92,12 @@ pub fn update_render_proxy_appearance(
 }
 
 // Source: upstream/packages/render/src/renderAppearance.ts:19 (sha256:41880c43d52808bd3cb08a187578239dd58381cce79622f6e310bb3441fd1209)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct RecalculateAppearanceRecord3 {
     __flight_identity: std::sync::Arc<()>,
+    alpha: f64,
+    visible: bool,
+    blend_mode: Option<BlendMode>,
 }
 impl PartialEq for RecalculateAppearanceRecord3 {
     fn eq(&self, other: &Self) -> bool {

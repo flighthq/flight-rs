@@ -53,7 +53,7 @@ static K_VISIBILITY: std::sync::LazyLock<crate::FlightSymbol> =
 
 // Source: upstream/packages/application/src/window.ts:25 (sha256:512a62afddcf3aa0da9a96831a07cfad42679602a1cd0e3ecb4a27b442ea995c)
 pub fn attach_window_close(win: ApplicationWindow) -> () {
-    let mut observers = get_application_window_observers(&win);
+    let observers = get_application_window_observers(&win);
     {
         let __flight_callback = observers
             .iter()
@@ -203,8 +203,8 @@ pub fn attach_window_fullscreen(win: ApplicationWindow) -> () {
 }
 
 // Source: upstream/packages/application/src/window.ts:87 (sha256:fe2eb02cbf056c8abb4afb4d00697bada952bd702a07a67b0386a046afeb8902)
-pub fn attach_window_move(mut win: ApplicationWindow) -> () {
-    let mut observers = get_application_window_observers(&win);
+pub fn attach_window_move(win: ApplicationWindow) -> () {
+    let observers = get_application_window_observers(&win);
     {
         let __flight_callback = observers
             .iter()
@@ -402,7 +402,13 @@ pub fn attach_window_visibility(win: ApplicationWindow) -> () {
         std::sync::Arc::new(std::sync::Mutex::new(Box::new({
             let win = win.clone();
             move || -> () {
-                if crate::host_value::<bool>("host.hidden") {
+                if match &(crate::host_value::<crate::OpaqueHostValue>("host.hidden")) {
+                    crate::OpaqueHostValue::Undefined | crate::OpaqueHostValue::Null => false,
+                    crate::OpaqueHostValue::Bool(value) => *value,
+                    crate::OpaqueHostValue::Number(value) => *value != 0.0_f64 && !value.is_nan(),
+                    crate::OpaqueHostValue::String(value) => !value.is_empty(),
+                    crate::OpaqueHostValue::Object => true,
+                } {
                     emit_signal((win.on_deactivate).clone(), ());
                 } else {
                     emit_signal((win.on_activate).clone(), ());
@@ -1003,7 +1009,7 @@ pub fn minimize_window(win: &mut ApplicationWindow) -> () {
 }
 
 // Source: upstream/packages/application/src/window.ts:506 (sha256:f07246d7ed70e6d25c1eec41fa04fc97d64878ed8f993099a4e2ee47452ad3e0)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct OpenWindowRecord1 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -1092,7 +1098,7 @@ pub fn open_window(win: &mut ApplicationWindow, options: Option<WindowOptions>) 
 }
 
 // Source: upstream/packages/application/src/window.ts:532 (sha256:23b3d384bae334e33c7abb59e06ede1b32d38578ffb1043115bc833ee75db194)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct PrepareElementForInputRecord1 {
     __flight_identity: std::sync::Arc<()>,
     webkit_tap_highlight_color: String,

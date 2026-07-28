@@ -9,7 +9,7 @@
 use flighthq_signals::{create_signal, emit_signal};
 use flighthq_types::{ParsedProtocolUrl, ProtocolBackend, ProtocolHandler};
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub scheme: Option<String>,
@@ -81,11 +81,7 @@ pub fn create_protocol_url(parts: &FlightPartialRecord1) -> String {
     } else {
         "".to_owned()
     };
-    let normalized_path = if if (path) != 0.0_f64 {
-        (!(path).starts_with("/"))
-    } else {
-        path
-    } {
+    let normalized_path = if (path) && (!(path).starts_with("/")) {
         format!("/{}", path)
     } else {
         (path).clone()
@@ -120,7 +116,7 @@ pub fn create_protocol_url(parts: &FlightPartialRecord1) -> String {
 }
 
 // Source: upstream/packages/protocol/src/protocol.ts:50 (sha256:23a54378b0ad4aeec1e23686d4d8957a1537cb9077984fd0ded58015c5f30f0c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateWebProtocolBackendRecord2 {
     __flight_identity: std::sync::Arc<()>,
     register_protocol_handler: Option<
@@ -322,7 +318,7 @@ pub fn is_valid_protocol_scheme(scheme: String) -> bool {
 }
 
 // Source: upstream/packages/protocol/src/protocol.ts:177 (sha256:842271fdf1801daed7958666e5bdde5e70b53dae56d7e560c3bbdd31f571bc8c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct ParseProtocolUrlRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -378,7 +374,13 @@ pub fn parse_protocol_url(url: String) -> Option<ParsedProtocolUrl> {
         __flight_record
     };
     if ((query_string.encode_utf16().count() as f64) > 0.0_f64) {
-        for pair in ((query_string.split)("&")).iter().cloned() {
+        for pair in ((query_string)
+            .split("&".to_owned().as_str())
+            .map(|part| part.to_owned())
+            .collect::<Vec<_>>())
+        .iter()
+        .cloned()
+        {
             let eq_idx = (pair.index_of)("=");
             if (eq_idx < 0.0_f64) {
                 let k = _safe_decode((pair).clone());

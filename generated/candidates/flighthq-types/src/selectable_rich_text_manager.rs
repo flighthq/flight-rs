@@ -9,7 +9,7 @@
 use crate::RichText;
 
 // Source: upstream/packages/types/src/SelectableRichTextManager.ts:3 (sha256:6d058addff5ee1865dc3b94841d6a732b6c5a31f6b9474f0cb5900253ceebf44)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SelectableRichTextManager {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

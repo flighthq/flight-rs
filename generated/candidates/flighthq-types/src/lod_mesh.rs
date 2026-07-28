@@ -9,7 +9,7 @@
 use crate::{Kind, Mesh, NodeData, Quaternion, SceneNodeRuntime, Vector3};
 
 // Source: upstream/packages/types/src/LodMesh.ts:3 (sha256:7de356902d9f6fa19ea37b1b481cc713ad9031657c6d565f6ceb4d292413bb5d)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct LodLevel {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -23,7 +23,7 @@ impl PartialEq for LodLevel {
 }
 
 // Source: upstream/packages/types/src/LodMesh.ts:7 (sha256:f20298e4daa6fca2ab54b6ee21e6f74a40612b8e57a3a28744270fcf0a4666c4)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct LodMesh {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

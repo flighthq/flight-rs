@@ -15,7 +15,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/RichText.ts:9 (sha256:fa82e08e1863fcc75e3ed9619dc8585f19565703bc84971444398c1df93031eb)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct RichTextData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -109,7 +109,7 @@ impl PartialEq for RichTextRuntime {
 }
 
 // Source: upstream/packages/types/src/RichText.ts:57 (sha256:ede1beea3240687757ee8455992b246d3497476a47de43d9b8e5d02d8b73abe7)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct RichText {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

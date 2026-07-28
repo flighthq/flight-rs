@@ -14,7 +14,7 @@ use flighthq_types::{
     PhongMaterial, Texture,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<Kind>,
@@ -38,7 +38,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<Kind>,

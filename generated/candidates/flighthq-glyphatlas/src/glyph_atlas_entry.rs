@@ -12,6 +12,18 @@ use flighthq_types::{
     GlyphAtlas, GlyphAtlasRuntime, GlyphAtlasShelf, GlyphEntry, GlyphRasterizedBitmap,
 };
 
+#[derive(Clone, Default)]
+pub struct SharedStructuralRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub x: f64,
+    pub y: f64,
+}
+impl PartialEq for SharedStructuralRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 // Source: upstream/packages/glyphatlas/src/glyphAtlasEntry.ts:11 (sha256:373222fdd72b51dac4115ab2eab87a0c412c7559b36131aae5bfeb33a49a755a)
 pub fn get_glyph_atlas_entry(atlas: &mut GlyphAtlas, codepoint: f64) -> Option<GlyphEntry> {
     let existing = atlas
@@ -56,7 +68,7 @@ pub fn get_glyph_atlas_entry(atlas: &mut GlyphAtlas, codepoint: f64) -> Option<G
         bitmap.as_ref().unwrap().height,
     );
     if ((placement).is_none()) && (needs_repack) {
-        _repack_glyph_atlas(&mut atlas.runtime);
+        _repack_glyph_atlas((atlas.runtime).clone());
         placement = _place_glyph_on_shelf(
             &mut atlas.runtime,
             bitmap.as_ref().unwrap().width,
@@ -68,7 +80,7 @@ pub fn get_glyph_atlas_entry(atlas: &mut GlyphAtlas, codepoint: f64) -> Option<G
             return None;
         }
         _evict_least_recently_used_glyph(&mut atlas.runtime);
-        _repack_glyph_atlas(&mut atlas.runtime);
+        _repack_glyph_atlas((atlas.runtime).clone());
         placement = _place_glyph_on_shelf(
             &mut atlas.runtime,
             bitmap.as_ref().unwrap().width,
@@ -196,23 +208,11 @@ fn _mark_glyph_atlas_dirty_rect(
 }
 
 // Source: upstream/packages/glyphatlas/src/glyphAtlasEntry.ts:119 (sha256:d6bf407e0f838a0a0c58b177fbab592d3abe3157c606abdcfb7ecc9099de0ef4)
-#[derive(Clone)]
-struct PlaceGlyphOnShelfRecord1 {
-    __flight_identity: std::sync::Arc<()>,
-    x: f64,
-    y: f64,
-}
-impl PartialEq for PlaceGlyphOnShelfRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
 fn _place_glyph_on_shelf(
     runtime: &mut GlyphAtlasRuntime,
     width: f64,
     height: f64,
-) -> Option<PlaceGlyphOnShelfRecord1> {
+) -> Option<SharedStructuralRecord1> {
     let padding = runtime.padding;
     let right_limit = (runtime.surface.width - padding);
     let mut best: Option<crate::OpaqueHostValue> = None;
@@ -233,7 +233,7 @@ fn _place_glyph_on_shelf(
     if (best).is_some() {
         let x = crate::host_value::<crate::OpaqueHostValue>("host.cursorX");
         crate::host_set("host.cursorX", ((x + width) + padding));
-        return Some(PlaceGlyphOnShelfRecord1 {
+        return Some(SharedStructuralRecord1 {
             __flight_identity: std::sync::Arc::new(()),
             x: x,
             y: crate::host_value::<f64>("host.y"),
@@ -253,7 +253,7 @@ fn _place_glyph_on_shelf(
         y: y,
     });
     runtime.pack_bottom = ((y + height) + padding);
-    return Some(PlaceGlyphOnShelfRecord1 {
+    return Some(SharedStructuralRecord1 {
         __flight_identity: std::sync::Arc::new(()),
         x: padding,
         y: y,
@@ -378,13 +378,17 @@ fn _repack_glyph_atlas(mut runtime: GlyphAtlasRuntime) -> () {
         );
         write_surface_pixels(&mut region, &bitmap.as_ref().unwrap().pixels);
     }
-    _mark_glyph_atlas_dirty_rect(
-        &mut runtime,
-        0.0_f64,
-        0.0_f64,
-        runtime.surface.width,
-        runtime.surface.height,
-    );
+    {
+        let __flight_argument_3 = runtime.surface.width;
+        let __flight_argument_4 = runtime.surface.height;
+        _mark_glyph_atlas_dirty_rect(
+            &mut runtime,
+            0.0_f64,
+            0.0_f64,
+            __flight_argument_3,
+            __flight_argument_4,
+        )
+    };
 }
 
 // Source: upstream/packages/glyphatlas/src/glyphAtlasEntry.ts:186 (sha256:58d1b855596a9310033c2b5671dbc900c5d6f09d865a7a1e71a7e46ccfa742ce)

@@ -9,7 +9,7 @@
 use crate::{PathOffsetEnd, PathOffsetJoin};
 
 // Source: upstream/packages/types/src/PathOffsetOptions.ts:13 (sha256:58496674ac809c68befeef91aea257e966fec422df3b0a676931ea4736ed37e0)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct PathOffsetOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

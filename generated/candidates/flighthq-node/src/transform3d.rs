@@ -13,12 +13,12 @@ use flighthq_geometry::{
     decompose_matrix4, inverse_matrix4, matrix4_transform_point, multiply_matrix4, release_matrix4,
 };
 use flighthq_types::{
-    Adjustment, ColorTransform, Entity, InteractionSignals, Matrix4Like, Node,
-    NodeInteractionState, NodeSignals, NodeTraitsKey, Transform3DLike, Transform3DNode,
-    Vector3Like,
+    Adjustment, ColorTransform, Entity, InteractionSignals, Matrix4, Matrix4Like, Node,
+    NodeInteractionState, NodeSignals, NodeTraitsKey, QuaternionLike, Transform3DLike,
+    Transform3DNode, Vector3Like,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -62,7 +62,17 @@ pub fn convert_node_vector3_global_to_local(
 ) -> () {
     let mut inv = acquire_matrix4();
     inverse_matrix4(&mut inv, &get_node_world_matrix4(source));
-    matrix4_transform_point(out, &inv, point);
+    matrix4_transform_point(
+        out,
+        &{
+            let __flight_source = &(inv);
+            Matrix4Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                m: (__flight_source.m).clone(),
+            }
+        },
+        point,
+    );
     release_matrix4(&inv);
 }
 
@@ -79,6 +89,34 @@ pub fn convert_node_vector3_local_to_global(
 #[derive(Clone)]
 struct EnsureNodeLocalMatrix4Record2 {
     __flight_identity: std::sync::Arc<()>,
+    binding: Option<crate::OpaqueHostValue>,
+    appearance_id: f64,
+    bounds_using_local_bounds_id: f64,
+    bounds_using_local_transform_id: f64,
+    can_add_child:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    children: Option<Vec<Node>>,
+    color_adjustments: Option<Vec<Adjustment>>,
+    resolved_color_transform: Option<ColorTransform>,
+    color_adjustments_channel_mixing: bool,
+    traits: Option<NodeTraitsKey>,
+    interaction_signals: Option<InteractionSignals>,
+    local_bounds_id: f64,
+    local_bounds_using_local_bounds_id: f64,
+    local_content_id: f64,
+    local_transform_id: f64,
+    local_transform_using_local_transform_id: f64,
+    node_signals: Option<NodeSignals>,
+    interaction_state: Option<NodeInteractionState>,
+    parent: Option<Node>,
+    world_bounds_using_local_bounds_id: f64,
+    world_bounds_using_world_transform_id: f64,
+    world_transform_id: f64,
+    world_transform_using_local_transform_id: f64,
+    world_transform_using_parent_transform_id: f64,
+    local_matrix4: Option<Matrix4>,
+    local_matrix4_detached: bool,
+    world_matrix4: Option<Matrix4>,
 }
 impl PartialEq for EnsureNodeLocalMatrix4Record2 {
     fn eq(&self, other: &Self) -> bool {
@@ -87,8 +125,11 @@ impl PartialEq for EnsureNodeLocalMatrix4Record2 {
 }
 
 pub fn ensure_node_local_matrix4(target: &Transform3DNode) -> () {
-    let mut runtime = get_entity_runtime(&Entity {
-        __flight_identity: std::sync::Arc::clone(&(target).__flight_identity),
+    let mut runtime = get_entity_runtime(&{
+        let __flight_source = &(target);
+        Entity {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+        }
     });
     if (((runtime.local_matrix4).clone()).is_none())
         || (runtime.local_transform_using_local_transform_id != runtime.local_transform_id)
@@ -101,6 +142,34 @@ pub fn ensure_node_local_matrix4(target: &Transform3DNode) -> () {
 #[derive(Clone)]
 struct EnsureNodeWorldMatrix4Record2 {
     __flight_identity: std::sync::Arc<()>,
+    binding: Option<crate::OpaqueHostValue>,
+    appearance_id: f64,
+    bounds_using_local_bounds_id: f64,
+    bounds_using_local_transform_id: f64,
+    can_add_child:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    children: Option<Vec<Node>>,
+    color_adjustments: Option<Vec<Adjustment>>,
+    resolved_color_transform: Option<ColorTransform>,
+    color_adjustments_channel_mixing: bool,
+    traits: Option<NodeTraitsKey>,
+    interaction_signals: Option<InteractionSignals>,
+    local_bounds_id: f64,
+    local_bounds_using_local_bounds_id: f64,
+    local_content_id: f64,
+    local_transform_id: f64,
+    local_transform_using_local_transform_id: f64,
+    node_signals: Option<NodeSignals>,
+    interaction_state: Option<NodeInteractionState>,
+    parent: Option<Node>,
+    world_bounds_using_local_bounds_id: f64,
+    world_bounds_using_world_transform_id: f64,
+    world_transform_id: f64,
+    world_transform_using_local_transform_id: f64,
+    world_transform_using_parent_transform_id: f64,
+    local_matrix4: Option<Matrix4>,
+    local_matrix4_detached: bool,
+    world_matrix4: Option<Matrix4>,
 }
 impl PartialEq for EnsureNodeWorldMatrix4Record2 {
     fn eq(&self, other: &Self) -> bool {
@@ -109,16 +178,22 @@ impl PartialEq for EnsureNodeWorldMatrix4Record2 {
 }
 
 pub fn ensure_node_world_matrix4(target: &Transform3DNode) -> () {
-    let mut runtime = get_entity_runtime(&Entity {
-        __flight_identity: std::sync::Arc::clone(&(target).__flight_identity),
+    let mut runtime = get_entity_runtime(&{
+        let __flight_source = &(target);
+        Entity {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+        }
     });
     let parent = (runtime.parent).clone();
     let mut parent_runtime: Option<EnsureNodeWorldMatrix4Record2>;
     let mut parent_world_transform_id = 0.0_f64;
     if (parent).is_some() {
         ensure_node_world_matrix4(&parent.as_ref().unwrap());
-        parent_runtime = Some(get_entity_runtime(&Entity {
-            __flight_identity: std::sync::Arc::clone(&(parent.as_ref().unwrap()).__flight_identity),
+        parent_runtime = Some(get_entity_runtime(&{
+            let __flight_source = &(parent.as_ref().unwrap());
+            Entity {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            }
         }));
         parent_world_transform_id = parent_runtime.as_mut().unwrap().world_transform_id;
     }
@@ -137,6 +212,34 @@ pub fn ensure_node_world_matrix4(target: &Transform3DNode) -> () {
 #[derive(Clone)]
 struct GetNodeLocalMatrix4Record2 {
     __flight_identity: std::sync::Arc<()>,
+    binding: Option<crate::OpaqueHostValue>,
+    appearance_id: f64,
+    bounds_using_local_bounds_id: f64,
+    bounds_using_local_transform_id: f64,
+    can_add_child:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    children: Option<Vec<Node>>,
+    color_adjustments: Option<Vec<Adjustment>>,
+    resolved_color_transform: Option<ColorTransform>,
+    color_adjustments_channel_mixing: bool,
+    traits: Option<NodeTraitsKey>,
+    interaction_signals: Option<InteractionSignals>,
+    local_bounds_id: f64,
+    local_bounds_using_local_bounds_id: f64,
+    local_content_id: f64,
+    local_transform_id: f64,
+    local_transform_using_local_transform_id: f64,
+    node_signals: Option<NodeSignals>,
+    interaction_state: Option<NodeInteractionState>,
+    parent: Option<Node>,
+    world_bounds_using_local_bounds_id: f64,
+    world_bounds_using_world_transform_id: f64,
+    world_transform_id: f64,
+    world_transform_using_local_transform_id: f64,
+    world_transform_using_parent_transform_id: f64,
+    local_matrix4: Option<Matrix4>,
+    local_matrix4_detached: bool,
+    world_matrix4: Option<Matrix4>,
 }
 impl PartialEq for GetNodeLocalMatrix4Record2 {
     fn eq(&self, other: &Self) -> bool {
@@ -146,8 +249,11 @@ impl PartialEq for GetNodeLocalMatrix4Record2 {
 
 pub fn get_node_local_matrix4(target: &Transform3DNode) -> Matrix4Like {
     ensure_node_local_matrix4(target);
-    return ((get_entity_runtime(&Entity {
-        __flight_identity: std::sync::Arc::clone(&(target).__flight_identity),
+    return ((get_entity_runtime(&{
+        let __flight_source = &(target);
+        Entity {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+        }
     })
     .local_matrix4)
         .clone())
@@ -156,15 +262,68 @@ pub fn get_node_local_matrix4(target: &Transform3DNode) -> Matrix4Like {
 
 // Source: upstream/packages/node/src/transform3d.ts:85 (sha256:e7180730187ed0bef79e4b777d3a21deeddcda466ada2770d2dc3388a54d8ad7)
 pub fn get_node_transform3_d(out: &mut Transform3DLike, source: &Transform3DNode) -> () {
-    copy_vector3(&mut out.position, &source.position);
-    copy_quaternion(&mut out.rotation, &source.rotation);
-    copy_vector3(&mut out.scale, &source.scale);
+    copy_vector3(&mut out.position, &{
+        let __flight_source = &(source.position);
+        Vector3Like {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            x: __flight_source.x,
+            y: __flight_source.y,
+            z: __flight_source.z,
+        }
+    });
+    copy_quaternion(&mut out.rotation, &{
+        let __flight_source = &(source.rotation);
+        QuaternionLike {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            x: __flight_source.x,
+            y: __flight_source.y,
+            z: __flight_source.z,
+            w: __flight_source.w,
+        }
+    });
+    copy_vector3(&mut out.scale, &{
+        let __flight_source = &(source.scale);
+        Vector3Like {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            x: __flight_source.x,
+            y: __flight_source.y,
+            z: __flight_source.z,
+        }
+    });
 }
 
 // Source: upstream/packages/node/src/transform3d.ts:91 (sha256:7685bbe4e4fc9d7e0823567d0c9f544e3fd93ab36e29e8bb8dd6ef96695cad78)
 #[derive(Clone)]
 struct GetNodeWorldMatrix4Record2 {
     __flight_identity: std::sync::Arc<()>,
+    binding: Option<crate::OpaqueHostValue>,
+    appearance_id: f64,
+    bounds_using_local_bounds_id: f64,
+    bounds_using_local_transform_id: f64,
+    can_add_child:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    children: Option<Vec<Node>>,
+    color_adjustments: Option<Vec<Adjustment>>,
+    resolved_color_transform: Option<ColorTransform>,
+    color_adjustments_channel_mixing: bool,
+    traits: Option<NodeTraitsKey>,
+    interaction_signals: Option<InteractionSignals>,
+    local_bounds_id: f64,
+    local_bounds_using_local_bounds_id: f64,
+    local_content_id: f64,
+    local_transform_id: f64,
+    local_transform_using_local_transform_id: f64,
+    node_signals: Option<NodeSignals>,
+    interaction_state: Option<NodeInteractionState>,
+    parent: Option<Node>,
+    world_bounds_using_local_bounds_id: f64,
+    world_bounds_using_world_transform_id: f64,
+    world_transform_id: f64,
+    world_transform_using_local_transform_id: f64,
+    world_transform_using_parent_transform_id: f64,
+    local_matrix4: Option<Matrix4>,
+    local_matrix4_detached: bool,
+    world_matrix4: Option<Matrix4>,
 }
 impl PartialEq for GetNodeWorldMatrix4Record2 {
     fn eq(&self, other: &Self) -> bool {
@@ -174,8 +333,11 @@ impl PartialEq for GetNodeWorldMatrix4Record2 {
 
 pub fn get_node_world_matrix4(target: &Transform3DNode) -> Matrix4Like {
     ensure_node_world_matrix4(target);
-    return ((get_entity_runtime(&Entity {
-        __flight_identity: std::sync::Arc::clone(&(target).__flight_identity),
+    return ((get_entity_runtime(&{
+        let __flight_source = &(target);
+        Entity {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+        }
     })
     .world_matrix4)
         .clone())
@@ -186,6 +348,34 @@ pub fn get_node_world_matrix4(target: &Transform3DNode) -> Matrix4Like {
 #[derive(Clone)]
 struct IsNodeLocalMatrix4DetachedRecord2 {
     __flight_identity: std::sync::Arc<()>,
+    binding: Option<crate::OpaqueHostValue>,
+    appearance_id: f64,
+    bounds_using_local_bounds_id: f64,
+    bounds_using_local_transform_id: f64,
+    can_add_child:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    children: Option<Vec<Node>>,
+    color_adjustments: Option<Vec<Adjustment>>,
+    resolved_color_transform: Option<ColorTransform>,
+    color_adjustments_channel_mixing: bool,
+    traits: Option<NodeTraitsKey>,
+    interaction_signals: Option<InteractionSignals>,
+    local_bounds_id: f64,
+    local_bounds_using_local_bounds_id: f64,
+    local_content_id: f64,
+    local_transform_id: f64,
+    local_transform_using_local_transform_id: f64,
+    node_signals: Option<NodeSignals>,
+    interaction_state: Option<NodeInteractionState>,
+    parent: Option<Node>,
+    world_bounds_using_local_bounds_id: f64,
+    world_bounds_using_world_transform_id: f64,
+    world_transform_id: f64,
+    world_transform_using_local_transform_id: f64,
+    world_transform_using_parent_transform_id: f64,
+    local_matrix4: Option<Matrix4>,
+    local_matrix4_detached: bool,
+    world_matrix4: Option<Matrix4>,
 }
 impl PartialEq for IsNodeLocalMatrix4DetachedRecord2 {
     fn eq(&self, other: &Self) -> bool {
@@ -195,8 +385,11 @@ impl PartialEq for IsNodeLocalMatrix4DetachedRecord2 {
 
 pub fn is_node_local_matrix4_detached(target: &Transform3DNode) -> bool {
     ensure_node_local_matrix4(target);
-    return get_entity_runtime(&Entity {
-        __flight_identity: std::sync::Arc::clone(&(target).__flight_identity),
+    return get_entity_runtime(&{
+        let __flight_source = &(target);
+        Entity {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+        }
     })
     .local_matrix4_detached;
 }
@@ -205,6 +398,34 @@ pub fn is_node_local_matrix4_detached(target: &Transform3DNode) -> bool {
 #[derive(Clone)]
 struct SetNodeLocalMatrix4Record2 {
     __flight_identity: std::sync::Arc<()>,
+    binding: Option<crate::OpaqueHostValue>,
+    appearance_id: f64,
+    bounds_using_local_bounds_id: f64,
+    bounds_using_local_transform_id: f64,
+    can_add_child:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    children: Option<Vec<Node>>,
+    color_adjustments: Option<Vec<Adjustment>>,
+    resolved_color_transform: Option<ColorTransform>,
+    color_adjustments_channel_mixing: bool,
+    traits: Option<NodeTraitsKey>,
+    interaction_signals: Option<InteractionSignals>,
+    local_bounds_id: f64,
+    local_bounds_using_local_bounds_id: f64,
+    local_content_id: f64,
+    local_transform_id: f64,
+    local_transform_using_local_transform_id: f64,
+    node_signals: Option<NodeSignals>,
+    interaction_state: Option<NodeInteractionState>,
+    parent: Option<Node>,
+    world_bounds_using_local_bounds_id: f64,
+    world_bounds_using_world_transform_id: f64,
+    world_transform_id: f64,
+    world_transform_using_local_transform_id: f64,
+    world_transform_using_parent_transform_id: f64,
+    local_matrix4: Option<Matrix4>,
+    local_matrix4_detached: bool,
+    world_matrix4: Option<Matrix4>,
 }
 impl PartialEq for SetNodeLocalMatrix4Record2 {
     fn eq(&self, other: &Self) -> bool {
@@ -213,8 +434,11 @@ impl PartialEq for SetNodeLocalMatrix4Record2 {
 }
 
 pub fn set_node_local_matrix4(target: &Transform3DNode, source: &Matrix4Like) -> () {
-    let mut runtime = get_entity_runtime(&Entity {
-        __flight_identity: std::sync::Arc::clone(&(target).__flight_identity),
+    let mut runtime = get_entity_runtime(&{
+        let __flight_source = &(target);
+        Entity {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+        }
     });
     if ((runtime.local_matrix4).clone()).is_none() {
         runtime.local_matrix4 = Some(create_matrix4(
@@ -223,12 +447,15 @@ pub fn set_node_local_matrix4(target: &Transform3DNode, source: &Matrix4Like) ->
         ));
     }
     copy_matrix4(runtime.local_matrix4.as_mut().unwrap(), source);
-    invalidate_node_local_transform(&Node {
-        __flight_identity: std::sync::Arc::clone(&(target).__flight_identity),
-        data: ((target).data).clone(),
-        enabled: (target).enabled,
-        kind: ((target).kind).clone(),
-        name: ((target).name).clone(),
+    invalidate_node_local_transform(&{
+        let __flight_source = &(target);
+        Node {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+        }
     });
     runtime.local_transform_using_local_transform_id = runtime.local_transform_id;
     runtime.local_matrix4_detached = true;
@@ -236,15 +463,43 @@ pub fn set_node_local_matrix4(target: &Transform3DNode, source: &Matrix4Like) ->
 
 // Source: upstream/packages/node/src/transform3d.ts:122 (sha256:016ead47d432103ce68af7e00c98e47350241182f909c3c60e0e13d6b860c31e)
 pub fn set_node_transform3_d(target: &mut Transform3DNode, source: &Transform3DLike) -> () {
-    copy_vector3(&mut target.position, &source.position);
-    copy_quaternion(&mut target.rotation, &source.rotation);
-    copy_vector3(&mut target.scale, &source.scale);
-    invalidate_node_local_transform(&Node {
-        __flight_identity: std::sync::Arc::clone(&(target).__flight_identity),
-        data: ((target).data).clone(),
-        enabled: (target).enabled,
-        kind: ((target).kind).clone(),
-        name: ((target).name).clone(),
+    copy_vector3(&mut target.position, &{
+        let __flight_source = &(source.position);
+        Vector3Like {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            x: __flight_source.x,
+            y: __flight_source.y,
+            z: __flight_source.z,
+        }
+    });
+    copy_quaternion(&mut target.rotation, &{
+        let __flight_source = &(source.rotation);
+        QuaternionLike {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            x: __flight_source.x,
+            y: __flight_source.y,
+            z: __flight_source.z,
+            w: __flight_source.w,
+        }
+    });
+    copy_vector3(&mut target.scale, &{
+        let __flight_source = &(source.scale);
+        Vector3Like {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            x: __flight_source.x,
+            y: __flight_source.y,
+            z: __flight_source.z,
+        }
+    });
+    invalidate_node_local_transform(&{
+        let __flight_source = &(target);
+        Node {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+        }
     });
 }
 
@@ -252,6 +507,34 @@ pub fn set_node_transform3_d(target: &mut Transform3DNode, source: &Transform3DL
 #[derive(Clone)]
 struct SyncNodeTransform3DFromMatrix4Record2 {
     __flight_identity: std::sync::Arc<()>,
+    binding: Option<crate::OpaqueHostValue>,
+    appearance_id: f64,
+    bounds_using_local_bounds_id: f64,
+    bounds_using_local_transform_id: f64,
+    can_add_child:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    children: Option<Vec<Node>>,
+    color_adjustments: Option<Vec<Adjustment>>,
+    resolved_color_transform: Option<ColorTransform>,
+    color_adjustments_channel_mixing: bool,
+    traits: Option<NodeTraitsKey>,
+    interaction_signals: Option<InteractionSignals>,
+    local_bounds_id: f64,
+    local_bounds_using_local_bounds_id: f64,
+    local_content_id: f64,
+    local_transform_id: f64,
+    local_transform_using_local_transform_id: f64,
+    node_signals: Option<NodeSignals>,
+    interaction_state: Option<NodeInteractionState>,
+    parent: Option<Node>,
+    world_bounds_using_local_bounds_id: f64,
+    world_bounds_using_world_transform_id: f64,
+    world_transform_id: f64,
+    world_transform_using_local_transform_id: f64,
+    world_transform_using_parent_transform_id: f64,
+    local_matrix4: Option<Matrix4>,
+    local_matrix4_detached: bool,
+    world_matrix4: Option<Matrix4>,
 }
 impl PartialEq for SyncNodeTransform3DFromMatrix4Record2 {
     fn eq(&self, other: &Self) -> bool {
@@ -260,8 +543,11 @@ impl PartialEq for SyncNodeTransform3DFromMatrix4Record2 {
 }
 
 pub fn sync_node_transform3_d_from_matrix4(target: &mut Transform3DNode) -> () {
-    let mut runtime = get_entity_runtime(&Entity {
-        __flight_identity: std::sync::Arc::clone(&(target).__flight_identity),
+    let mut runtime = get_entity_runtime(&{
+        let __flight_source = &(target);
+        Entity {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+        }
     });
     ensure_node_local_matrix4(target);
     decompose_matrix4(
@@ -277,6 +563,34 @@ pub fn sync_node_transform3_d_from_matrix4(target: &mut Transform3DNode) -> () {
 #[derive(Clone)]
 struct RecomputeLocalTransform3DRecord2 {
     __flight_identity: std::sync::Arc<()>,
+    binding: Option<crate::OpaqueHostValue>,
+    appearance_id: f64,
+    bounds_using_local_bounds_id: f64,
+    bounds_using_local_transform_id: f64,
+    can_add_child:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    children: Option<Vec<Node>>,
+    color_adjustments: Option<Vec<Adjustment>>,
+    resolved_color_transform: Option<ColorTransform>,
+    color_adjustments_channel_mixing: bool,
+    traits: Option<NodeTraitsKey>,
+    interaction_signals: Option<InteractionSignals>,
+    local_bounds_id: f64,
+    local_bounds_using_local_bounds_id: f64,
+    local_content_id: f64,
+    local_transform_id: f64,
+    local_transform_using_local_transform_id: f64,
+    node_signals: Option<NodeSignals>,
+    interaction_state: Option<NodeInteractionState>,
+    parent: Option<Node>,
+    world_bounds_using_local_bounds_id: f64,
+    world_bounds_using_world_transform_id: f64,
+    world_transform_id: f64,
+    world_transform_using_local_transform_id: f64,
+    world_transform_using_parent_transform_id: f64,
+    local_matrix4: Option<Matrix4>,
+    local_matrix4_detached: bool,
+    world_matrix4: Option<Matrix4>,
 }
 impl PartialEq for RecomputeLocalTransform3DRecord2 {
     fn eq(&self, other: &Self) -> bool {
@@ -296,9 +610,34 @@ fn recompute_local_transform3_d(
     }
     compose_matrix4(
         runtime.local_matrix4.as_mut().unwrap(),
-        &target.position,
-        &target.rotation,
-        &target.scale,
+        &{
+            let __flight_source = &(target.position);
+            Vector3Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                x: __flight_source.x,
+                y: __flight_source.y,
+                z: __flight_source.z,
+            }
+        },
+        &{
+            let __flight_source = &(target.rotation);
+            QuaternionLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                x: __flight_source.x,
+                y: __flight_source.y,
+                z: __flight_source.z,
+                w: __flight_source.w,
+            }
+        },
+        &{
+            let __flight_source = &(target.scale);
+            Vector3Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                x: __flight_source.x,
+                y: __flight_source.y,
+                z: __flight_source.z,
+            }
+        },
     );
     runtime.local_matrix4_detached = false;
     runtime.local_transform_using_local_transform_id = runtime.local_transform_id;
@@ -308,6 +647,34 @@ fn recompute_local_transform3_d(
 #[derive(Clone)]
 struct RecomputeWorldTransform3DRecord2 {
     __flight_identity: std::sync::Arc<()>,
+    binding: Option<crate::OpaqueHostValue>,
+    appearance_id: f64,
+    bounds_using_local_bounds_id: f64,
+    bounds_using_local_transform_id: f64,
+    can_add_child:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    children: Option<Vec<Node>>,
+    color_adjustments: Option<Vec<Adjustment>>,
+    resolved_color_transform: Option<ColorTransform>,
+    color_adjustments_channel_mixing: bool,
+    traits: Option<NodeTraitsKey>,
+    interaction_signals: Option<InteractionSignals>,
+    local_bounds_id: f64,
+    local_bounds_using_local_bounds_id: f64,
+    local_content_id: f64,
+    local_transform_id: f64,
+    local_transform_using_local_transform_id: f64,
+    node_signals: Option<NodeSignals>,
+    interaction_state: Option<NodeInteractionState>,
+    parent: Option<Node>,
+    world_bounds_using_local_bounds_id: f64,
+    world_bounds_using_world_transform_id: f64,
+    world_transform_id: f64,
+    world_transform_using_local_transform_id: f64,
+    world_transform_using_parent_transform_id: f64,
+    local_matrix4: Option<Matrix4>,
+    local_matrix4_detached: bool,
+    world_matrix4: Option<Matrix4>,
 }
 impl PartialEq for RecomputeWorldTransform3DRecord2 {
     fn eq(&self, other: &Self) -> bool {

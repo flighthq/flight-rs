@@ -1,0 +1,24 @@
+[package]
+name = "flighthq-host-winit"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+flighthq-application = { path = "../../generated/candidates/flighthq-application" }
+flighthq-device = { path = "../../generated/candidates/flighthq-device" }
+flighthq-haptics = { path = "../../generated/candidates/flighthq-haptics" }
+flighthq-input = { path = "../../generated/candidates/flighthq-input" }
+flighthq-keyboard = { path = "../../generated/candidates/flighthq-keyboard" }
+flighthq-lifecycle = { path = "../../generated/candidates/flighthq-lifecycle" }
+flighthq-platform = { path = "../../generated/candidates/flighthq-platform" }
+flighthq-power = { path = "../../generated/candidates/flighthq-power" }
+flighthq-screen = { path = "../../generated/candidates/flighthq-screen" }
+flighthq-types = { path = "../../generated/candidates/flighthq-types" }
+
+[workspace]
+resolver = "3"

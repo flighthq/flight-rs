@@ -11,7 +11,7 @@ use flighthq_geometry::{clone_vector3, create_vector3, normalize_vector3, set_ve
 use flighthq_types::{AREA_LIGHT_KIND as area_light_kind_constant, AreaLight, Vector3Like};
 
 // Source: upstream/packages/lighting/src/areaLight.ts:6 (sha256:2692ed3168285d890bf7abb2054c889a2ddeeaf73b7ed333349c732c3705c662)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AreaLightOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -39,16 +39,49 @@ pub fn clone_area_light(source: &AreaLight) -> AreaLight {
         __flight_identity: std::sync::Arc::new(()),
         casts_shadow: source.casts_shadow,
         color: source.color,
-        direction: clone_vector3(&source.direction),
+        direction: clone_vector3(&{
+            let __flight_source = &(source.direction);
+            Vector3Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                x: __flight_source.x,
+                y: __flight_source.y,
+                z: __flight_source.z,
+            }
+        }),
         intensity: source.intensity,
         kind: (area_light_kind_constant).to_owned(),
         normal_bias: source.normal_bias,
         pcf_radius: source.pcf_radius,
-        position: clone_vector3(&source.position),
+        position: clone_vector3(&{
+            let __flight_source = &(source.position);
+            Vector3Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                x: __flight_source.x,
+                y: __flight_source.y,
+                z: __flight_source.z,
+            }
+        }),
         range: source.range,
-        right: clone_vector3(&source.right),
+        right: clone_vector3(&{
+            let __flight_source = &(source.right);
+            Vector3Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                x: __flight_source.x,
+                y: __flight_source.y,
+                z: __flight_source.z,
+            }
+        }),
         shadow_bias: source.shadow_bias,
-        up: clone_vector3(&source.up),
+        up: clone_vector3(&{
+            let __flight_source = &(source.up);
+            Vector3Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                x: __flight_source.x,
+                y: __flight_source.y,
+                z: __flight_source.z,
+            }
+        }),
+        ..Default::default()
     }));
 }
 
@@ -88,6 +121,7 @@ pub fn create_area_light(options: Option<AreaLightOptions>) -> AreaLight {
         } else {
             create_vector3(Some(0.0_f64), Some(0.0_f64), Some(1.0_f64))
         },
+        ..Default::default()
     }));
 }
 
@@ -119,12 +153,17 @@ pub fn set_area_light_orientation(
             (right.z / right_len),
         );
         if (existing_right_len > 0.0_f64) {
-            set_vector3(
-                &mut out.right,
-                (out.right.x * existing_right_len),
-                (out.right.y * existing_right_len),
-                (out.right.z * existing_right_len),
-            );
+            {
+                let __flight_argument_1 = (out.right.x * existing_right_len);
+                let __flight_argument_2 = (out.right.y * existing_right_len);
+                let __flight_argument_3 = (out.right.z * existing_right_len);
+                set_vector3(
+                    &mut out.right,
+                    __flight_argument_1,
+                    __flight_argument_2,
+                    __flight_argument_3,
+                )
+            };
         }
     }
     if (up_len > 0.0_f64) {
@@ -135,12 +174,17 @@ pub fn set_area_light_orientation(
             (up.z / up_len),
         );
         if (existing_up_len > 0.0_f64) {
-            set_vector3(
-                &mut out.up,
-                (out.up.x * existing_up_len),
-                (out.up.y * existing_up_len),
-                (out.up.z * existing_up_len),
-            );
+            {
+                let __flight_argument_1 = (out.up.x * existing_up_len);
+                let __flight_argument_2 = (out.up.y * existing_up_len);
+                let __flight_argument_3 = (out.up.z * existing_up_len);
+                set_vector3(
+                    &mut out.up,
+                    __flight_argument_1,
+                    __flight_argument_2,
+                    __flight_argument_3,
+                )
+            };
         }
     }
 }

@@ -10,7 +10,7 @@ use flighthq_entity::create_entity;
 use flighthq_types::{HEMISPHERE_LIGHT_KIND as hemisphere_light_kind_constant, HemisphereLight};
 
 // Source: upstream/packages/lighting/src/hemisphereLight.ts:5 (sha256:f48e11d8bbf94531f6345b7c6fb837bd4692b35a64107828f8df618c7885f7e5)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct HemisphereLightOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -43,5 +43,6 @@ pub fn create_hemisphere_light(options: Option<HemisphereLightOptions>) -> Hemis
         intensity: (options.as_ref().and_then(|value| value.intensity)).unwrap_or(1.0_f64),
         kind: (hemisphere_light_kind_constant).to_owned(),
         sky_color: (options.as_ref().and_then(|value| value.sky_color)).unwrap_or(4294967295.0_f64),
+        ..Default::default()
     }));
 }

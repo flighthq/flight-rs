@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/Skeleton3DValidationDiagnostic.ts:2 (sha256:41bab638d37fdc7e7496947a4605fcb02182c229ff3592074b2c4751f416b6de)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Skeleton3DValidationDiagnostic {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

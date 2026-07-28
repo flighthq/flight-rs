@@ -65,7 +65,7 @@ impl PartialEq<f64> for LogLevel {
 pub type LogData = crate::FlightUnion2<String, Vec<(String, crate::OpaqueHostValue)>>;
 
 // Source: upstream/packages/types/src/Log.ts:20 (sha256:d983c478cbedc28ac64db9a78d5b83adb8b0750a9224e97fa3ddfcfb7c7f2eaa)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct LogContext {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -87,7 +87,7 @@ pub type LogFormatter =
     std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(LogEntry) -> String + Send + 'static>>>;
 
 // Source: upstream/packages/types/src/Log.ts:35 (sha256:03d5fbfd5d9c17508b12ce413efa7dd22bcba10df869e54bf449316a542abe71)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct LogSpan {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -102,7 +102,7 @@ impl PartialEq for LogSpan {
 }
 
 // Source: upstream/packages/types/src/Log.ts:43 (sha256:a56853b5dcd8fd8a420ab21e31ab308857ff83b921b6b51ba6356b5c35f534da)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct LogTimer {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

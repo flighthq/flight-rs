@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/GridSliceOptions.ts:1 (sha256:74eac29226f65baa0ccd8d51e1d6a30564af4f67ecd026148f3e2cf967127176)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GridSliceOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

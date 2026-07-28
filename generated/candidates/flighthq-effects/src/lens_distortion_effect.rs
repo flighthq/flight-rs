@@ -8,7 +8,7 @@
 
 use flighthq_types::LensDistortionEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub amount: Option<f64>,
@@ -21,7 +21,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/lensDistortionEffect.ts:3 (sha256:3c272223b98303b3de96ea3f91824da1e932424f3a5eda24672deda3d98e0062)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateLensDistortionEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -44,6 +44,7 @@ pub fn create_lens_distortion_effect(options: Option<FlightOmitRecord1>) -> Lens
             kind: "LensDistortionEffect".to_owned(),
             amount: __flight_spread_1.amount,
             scale: __flight_spread_1.scale,
+            ..Default::default()
         }
     };
 }

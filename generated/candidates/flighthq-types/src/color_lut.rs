@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/ColorLut.ts:7 (sha256:be6ba6a1866c93da805e84383b814f93299e5cabc64fcf55fb68cbef7c3d3e19)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ColorLut {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

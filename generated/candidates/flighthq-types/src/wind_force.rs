@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/WindForce.ts:1 (sha256:27ca0b806294b5d3ba41620b3e85e381c09e51e239b7dc6e2b247981fa00a48a)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct WindForce {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

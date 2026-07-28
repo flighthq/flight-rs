@@ -12,7 +12,7 @@ use crate::{MenuItemTemplate, RectangleLike, Vector2Like};
 pub type TrayEventType = String;
 
 // Source: upstream/packages/types/src/Tray.ts:17 (sha256:c4ef1c05f76623259a77367cf49aac139141f89a58186212b2b07c8610d9aa4c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TrayIconOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -28,7 +28,7 @@ impl PartialEq for TrayIconOptions {
 }
 
 // Source: upstream/packages/types/src/Tray.ts:27 (sha256:cde84e659e6cb64716aa79f9915d8eeea1e6f8ea8b24f44d5c1e5f7360052768)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TrayBalloonOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -47,7 +47,7 @@ impl PartialEq for TrayBalloonOptions {
 }
 
 // Source: upstream/packages/types/src/Tray.ts:39 (sha256:324c3fc492474e4a425f589501d72ac2cea799bb1972ad63f6e0b56881a052fc)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TrayCapabilities {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -65,7 +65,7 @@ impl PartialEq for TrayCapabilities {
 }
 
 // Source: upstream/packages/types/src/Tray.ts:50 (sha256:49b7e96735e55e9a4cd1b6e5e20192bc01078c2101a25c1fba7b185631e99cc6)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TrayEventData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -87,7 +87,7 @@ impl PartialEq for TrayEventData {
 }
 
 // Source: upstream/packages/types/src/Tray.ts:63 (sha256:0405b464300168d7dafcea1b461230700cd66bf5675627bd2a5979f7245b49d8)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TrayIcon {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

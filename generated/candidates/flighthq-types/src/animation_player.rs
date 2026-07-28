@@ -9,7 +9,7 @@
 use crate::{AnimationClip, AnimationLoopMode, Signal};
 
 // Source: upstream/packages/types/src/AnimationPlayer.ts:15 (sha256:0b9d7f9fbe702a6f038b3e5be956635e807a756ca48b0dd3b883bbea575664d3)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AnimationPlayer {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

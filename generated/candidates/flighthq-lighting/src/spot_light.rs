@@ -11,7 +11,7 @@ use flighthq_geometry::{clone_vector3, create_vector3, set_vector3};
 use flighthq_types::{SPOT_LIGHT_KIND as spot_light_kind_constant, SpotLight, Vector3Like};
 
 // Source: upstream/packages/lighting/src/spotLight.ts:6 (sha256:568f8b40451fc552029c1d925406e49260d65cb59925a33e673446d908ae2c3a)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SpotLightConeAngles {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -25,7 +25,7 @@ impl PartialEq for SpotLightConeAngles {
 }
 
 // Source: upstream/packages/lighting/src/spotLight.ts:11 (sha256:d0bf1578d5df68cbb0e862e25e3ac2b9d7a0141cb8461c4a9226d61baecee179)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SpotLightOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -53,16 +53,33 @@ pub fn clone_spot_light(source: &SpotLight) -> SpotLight {
         __flight_identity: std::sync::Arc::new(()),
         casts_shadow: source.casts_shadow,
         color: source.color,
-        direction: clone_vector3(&source.direction),
+        direction: clone_vector3(&{
+            let __flight_source = &(source.direction);
+            Vector3Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                x: __flight_source.x,
+                y: __flight_source.y,
+                z: __flight_source.z,
+            }
+        }),
         inner_cone_cos: source.inner_cone_cos,
         intensity: source.intensity,
         kind: (spot_light_kind_constant).to_owned(),
         normal_bias: source.normal_bias,
         outer_cone_cos: source.outer_cone_cos,
         pcf_radius: source.pcf_radius,
-        position: clone_vector3(&source.position),
+        position: clone_vector3(&{
+            let __flight_source = &(source.position);
+            Vector3Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                x: __flight_source.x,
+                y: __flight_source.y,
+                z: __flight_source.z,
+            }
+        }),
         range: source.range,
         shadow_bias: source.shadow_bias,
+        ..Default::default()
     }));
 }
 
@@ -92,6 +109,7 @@ pub fn create_spot_light(options: Option<SpotLightOptions>) -> SpotLight {
         },
         range: (options.as_ref().and_then(|value| value.range)).unwrap_or((-1.0_f64)),
         shadow_bias: (options.as_ref().and_then(|value| value.shadow_bias)).unwrap_or(0.0_f64),
+        ..Default::default()
     }));
     set_spot_light_cone(
         &mut light,

@@ -28,6 +28,18 @@ fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
 }
 
+#[derive(Clone, Default)]
+pub struct SharedStructuralRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub x: f64,
+    pub y: f64,
+}
+impl PartialEq for SharedStructuralRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 // Source: upstream/packages/input/src/inputManager.ts:30 (sha256:4a7b3c7dce7eb29f8dee9e960ad0cbb80e6f554168eee1663e2da52aa3ba5dfd)
 const MAX_GAMEPAD_AXES: f64 = 32.0_f64;
 
@@ -52,20 +64,8 @@ pub fn apply_gamepad_axis_dead_zone(value: f64, dead_zone: f64) -> f64 {
 }
 
 // Source: upstream/packages/input/src/inputManager.ts:58 (sha256:cc1bb9388bcde5ec54cce54c4c88a99913560d9ca5ceeb0c36088a56a0e051c7)
-#[derive(Clone)]
-struct ApplyGamepadStickDeadZoneRecord1 {
-    __flight_identity: std::sync::Arc<()>,
-    x: f64,
-    y: f64,
-}
-impl PartialEq for ApplyGamepadStickDeadZoneRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
 pub fn apply_gamepad_stick_dead_zone(
-    out: &mut ApplyGamepadStickDeadZoneRecord1,
+    out: &mut SharedStructuralRecord1,
     x: f64,
     y: f64,
     dead_zone: f64,
@@ -562,12 +562,12 @@ pub fn attach_text_input(
 }
 
 // Source: upstream/packages/input/src/inputManager.ts:258 (sha256:513ffb107d07d9857dd4f46e44b67703d14d913038b19d8fb88c7a6fd2dfbd74)
-#[derive(Clone)]
-struct AttachWheelInputRecord1 {
+#[derive(Clone, Default)]
+struct AttachWheelInputRecord2 {
     __flight_identity: std::sync::Arc<()>,
     passive: bool,
 }
-impl PartialEq for AttachWheelInputRecord1 {
+impl PartialEq for AttachWheelInputRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -1280,8 +1280,8 @@ pub fn create_input_signals() -> InputSignals {
 }
 
 // Source: upstream/packages/input/src/inputManager.ts:450 (sha256:441cf45f7800fc6117250e0f7ecdd82823a66096c43474e0588da5d3d635799e)
-#[derive(Clone)]
-struct CreateInputStateRecord1 {
+#[derive(Clone, Default)]
+struct CreateInputStateRecord2 {
     __flight_identity: std::sync::Arc<()>,
     axis_values: Vec<(crate::OpaqueHostValue, crate::OpaqueHostValue)>,
     gamepad_buttons_down: Vec<crate::OpaqueHostValue>,
@@ -1292,7 +1292,7 @@ struct CreateInputStateRecord1 {
     keys_down: Vec<crate::OpaqueHostValue>,
     pointer_buttons_down: Vec<(crate::OpaqueHostValue, crate::OpaqueHostValue)>,
 }
-impl PartialEq for CreateInputStateRecord1 {
+impl PartialEq for CreateInputStateRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -1355,7 +1355,13 @@ pub fn end_input_state_frame(state: &mut InputState) -> () {
 
 // Source: upstream/packages/input/src/inputManager.ts:504 (sha256:b0e8e54a187375456c63f06547c688a9b96c1d871f166fa3b77adc1320bea706)
 pub fn exit_input_pointer_lock() -> () {
-    if crate::host_value::<bool>("host.exitPointerLock") {
+    if match &(crate::host_value::<crate::OpaqueHostValue>("host.exitPointerLock")) {
+        crate::OpaqueHostValue::Undefined | crate::OpaqueHostValue::Null => false,
+        crate::OpaqueHostValue::Bool(value) => *value,
+        crate::OpaqueHostValue::Number(value) => *value != 0.0_f64 && !value.is_nan(),
+        crate::OpaqueHostValue::String(value) => !value.is_empty(),
+        crate::OpaqueHostValue::Object => true,
+    } {
         crate::host_value::<()>("host.exitPointerLock");
     }
 }
@@ -1365,29 +1371,8 @@ pub fn get_coalesced_input_pointer_events(
     event: crate::OpaqueHostValue,
     callback: &mut impl FnMut(InputPointerData) -> (),
 ) -> () {
-    let coalesced = if ("undefined" == "function") {
-        Some(crate::host_value::<Vec<crate::OpaqueHostValue>>(
-            "host.call",
-        ))
-    } else {
-        None
-    };
-    if ((coalesced).is_some()) && ((coalesced.as_ref().unwrap().len() as f64) > 0.0_f64) {
-        for e in (coalesced)
-            .as_ref()
-            .expect("TypeScript nullable iterable was not narrowed")
-            .iter()
-            .cloned()
-        {
-            set_input_pointer_data(
-                &mut (*_POINTER_DATA.lock().unwrap()),
-                (e).clone(),
-                0.0_f64,
-                0.0_f64,
-            );
-            callback((*_POINTER_DATA.lock().unwrap()).clone());
-        }
-    } else {
+    let coalesced: Option<Vec<crate::OpaqueHostValue>> = None;
+    {
         set_input_pointer_data(
             &mut (*_POINTER_DATA.lock().unwrap()),
             (event).clone(),
@@ -1450,7 +1435,13 @@ pub fn get_key_code_from_dom_keyboard_event(event: crate::OpaqueHostValue) -> f6
 // Source: upstream/packages/input/src/inputManager.ts:570 (sha256:8bb4b63cf36a75fad481d7886f69db5e02d1de022cc2ca3580802c252dee0474)
 pub fn get_key_modifier_from_dom_keyboard_event(event: crate::OpaqueHostValue) -> f64 {
     let mut modifier = KeyModifier::NONE;
-    if crate::host_value::<bool>("host.altKey") {
+    if match &(crate::host_value::<crate::OpaqueHostValue>("host.altKey")) {
+        crate::OpaqueHostValue::Undefined | crate::OpaqueHostValue::Null => false,
+        crate::OpaqueHostValue::Bool(value) => *value,
+        crate::OpaqueHostValue::Number(value) => *value != 0.0_f64 && !value.is_nan(),
+        crate::OpaqueHostValue::String(value) => !value.is_empty(),
+        crate::OpaqueHostValue::Object => true,
+    } {
         modifier = (__flight_js_to_i32(modifier)
             | __flight_js_to_i32(
                 if (crate::host_value::<crate::OpaqueHostValue>("host.location")
@@ -1462,7 +1453,13 @@ pub fn get_key_modifier_from_dom_keyboard_event(event: crate::OpaqueHostValue) -
                 },
             )) as f64;
     }
-    if crate::host_value::<bool>("host.ctrlKey") {
+    if match &(crate::host_value::<crate::OpaqueHostValue>("host.ctrlKey")) {
+        crate::OpaqueHostValue::Undefined | crate::OpaqueHostValue::Null => false,
+        crate::OpaqueHostValue::Bool(value) => *value,
+        crate::OpaqueHostValue::Number(value) => *value != 0.0_f64 && !value.is_nan(),
+        crate::OpaqueHostValue::String(value) => !value.is_empty(),
+        crate::OpaqueHostValue::Object => true,
+    } {
         modifier = (__flight_js_to_i32(modifier)
             | __flight_js_to_i32(
                 if (crate::host_value::<crate::OpaqueHostValue>("host.location")
@@ -1474,7 +1471,13 @@ pub fn get_key_modifier_from_dom_keyboard_event(event: crate::OpaqueHostValue) -
                 },
             )) as f64;
     }
-    if crate::host_value::<bool>("host.metaKey") {
+    if match &(crate::host_value::<crate::OpaqueHostValue>("host.metaKey")) {
+        crate::OpaqueHostValue::Undefined | crate::OpaqueHostValue::Null => false,
+        crate::OpaqueHostValue::Bool(value) => *value,
+        crate::OpaqueHostValue::Number(value) => *value != 0.0_f64 && !value.is_nan(),
+        crate::OpaqueHostValue::String(value) => !value.is_empty(),
+        crate::OpaqueHostValue::Object => true,
+    } {
         modifier = (__flight_js_to_i32(modifier)
             | __flight_js_to_i32(
                 if (crate::host_value::<crate::OpaqueHostValue>("host.location")
@@ -1486,7 +1489,13 @@ pub fn get_key_modifier_from_dom_keyboard_event(event: crate::OpaqueHostValue) -
                 },
             )) as f64;
     }
-    if crate::host_value::<bool>("host.shiftKey") {
+    if match &(crate::host_value::<crate::OpaqueHostValue>("host.shiftKey")) {
+        crate::OpaqueHostValue::Undefined | crate::OpaqueHostValue::Null => false,
+        crate::OpaqueHostValue::Bool(value) => *value,
+        crate::OpaqueHostValue::Number(value) => *value != 0.0_f64 && !value.is_nan(),
+        crate::OpaqueHostValue::String(value) => !value.is_empty(),
+        crate::OpaqueHostValue::Object => true,
+    } {
         modifier = (__flight_js_to_i32(modifier)
             | __flight_js_to_i32(
                 if (crate::host_value::<crate::OpaqueHostValue>("host.location")
@@ -1636,7 +1645,15 @@ pub fn poll_gamepad_input(manager: &InputManager) -> () {
                         crate::host_value::<f64>("host.index");
                     (*_BUTTON_DATA.lock().unwrap()).time_stamp = now;
                     (*_BUTTON_DATA.lock().unwrap()).value = crate::host_value::<f64>("host.value");
-                    if crate::host_value::<bool>("host.pressed") {
+                    if match &(crate::host_value::<crate::OpaqueHostValue>("host.pressed")) {
+                        crate::OpaqueHostValue::Undefined | crate::OpaqueHostValue::Null => false,
+                        crate::OpaqueHostValue::Bool(value) => *value,
+                        crate::OpaqueHostValue::Number(value) => {
+                            *value != 0.0_f64 && !value.is_nan()
+                        }
+                        crate::OpaqueHostValue::String(value) => !value.is_empty(),
+                        crate::OpaqueHostValue::Object => true,
+                    } {
                         emit_signal(
                             (manager.on_gamepad_button_down).clone(),
                             ((*_BUTTON_DATA.lock().unwrap()).clone(),),
@@ -2191,7 +2208,7 @@ static _TEXT_DATA: std::sync::LazyLock<std::sync::Mutex<InputTextData>> =
     });
 
 // Source: upstream/packages/input/src/inputManager.ts:1079 (sha256:6e924387b115045da35088047ded4d9cf1c8158783d45c1589373965f017fda9)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct GamepadPollState {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -2210,13 +2227,13 @@ static _GAMEPAD_POLL_STATES: std::sync::LazyLock<
 > = std::sync::LazyLock::new(|| std::sync::Mutex::new(Vec::new()));
 
 // Source: upstream/packages/input/src/inputManager.ts:1086 (sha256:febd3f8de482fabe4ce53f7b882b9e135ca44a9db5ff610eb19c02d6a609556b)
-#[derive(Clone)]
-struct GetOrCreateGamepadPollStateRecord1 {
+#[derive(Clone, Default)]
+struct GetOrCreateGamepadPollStateRecord2 {
     __flight_identity: std::sync::Arc<()>,
     axes: Vec<(crate::OpaqueHostValue, crate::OpaqueHostValue)>,
     buttons: Vec<(crate::OpaqueHostValue, crate::OpaqueHostValue)>,
 }
-impl PartialEq for GetOrCreateGamepadPollStateRecord1 {
+impl PartialEq for GetOrCreateGamepadPollStateRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

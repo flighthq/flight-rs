@@ -8,7 +8,7 @@
 
 use flighthq_types::{ColorBlindSimulationAdjustment, ColorBlindType};
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub type_: Option<ColorBlindType>,
@@ -20,7 +20,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/adjustments/src/colorBlindSimulationAdjustment.ts:12 (sha256:4daf685ba89d32e62e8c11e84b0418c2b3c5692c9bdbff175e1be355c92d0765)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateColorBlindSimulationAdjustmentRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -73,6 +73,7 @@ pub fn create_color_blind_simulation_adjustment(
             kind: "ColorBlindSimulationAdjustment".to_owned(),
             color_matrix: (color_matrix).clone(),
             type_: (__flight_spread_1.type_).clone(),
+            ..Default::default()
         }
     };
 }

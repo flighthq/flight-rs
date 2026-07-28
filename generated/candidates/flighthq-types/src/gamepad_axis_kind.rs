@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/GamepadAxisKind.ts:1 (sha256:84a9ba443c46b06a538ba92b0c24148ff23ab6841975b789897f9519ed7afbbb)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GamepadAxisKindValues {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

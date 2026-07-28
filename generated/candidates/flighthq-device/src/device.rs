@@ -15,15 +15,27 @@ use flighthq_useragent::{
     parse_user_agent_os_version,
 };
 
+#[derive(Clone, Default)]
+pub struct SharedStructuralRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub vendor: String,
+    pub renderer: String,
+}
+impl PartialEq for SharedStructuralRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 // Source: upstream/packages/device/src/device.ts:18 (sha256:f60608508463454406d94785e828a2e60c0af02b3708ebc17ef02b171ea4c86b)
-#[derive(Clone)]
-struct CreateDeviceCapabilitiesRecord1 {
+#[derive(Clone, Default)]
+struct CreateDeviceCapabilitiesRecord2 {
     __flight_identity: std::sync::Arc<()>,
     has_keyboard: bool,
     has_mouse: bool,
     has_stylus: bool,
 }
-impl PartialEq for CreateDeviceCapabilitiesRecord1 {
+impl PartialEq for CreateDeviceCapabilitiesRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -39,8 +51,8 @@ pub fn create_device_capabilities() -> DeviceCapabilities {
 }
 
 // Source: upstream/packages/device/src/device.ts:28 (sha256:f64ef1e53152639f53a1ace22e5c0dec82dbe0b60e6b0ae105dd32649f397d2d)
-#[derive(Clone)]
-struct CreateDeviceDisplayMetricsRecord1 {
+#[derive(Clone, Default)]
+struct CreateDeviceDisplayMetricsRecord2 {
     __flight_identity: std::sync::Arc<()>,
     color_depth: f64,
     density_dpi: f64,
@@ -50,7 +62,7 @@ struct CreateDeviceDisplayMetricsRecord1 {
     physical_width: f64,
     pixel_ratio: f64,
 }
-impl PartialEq for CreateDeviceDisplayMetricsRecord1 {
+impl PartialEq for CreateDeviceDisplayMetricsRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -102,15 +114,15 @@ pub fn create_device_info() -> DeviceInfo {
 }
 
 // Source: upstream/packages/device/src/device.ts:73 (sha256:541814e647a87911c1423d461f625f17b3c54e025750ea647528e28a4423d57c)
-#[derive(Clone)]
-struct CreateSafeAreaInsetsRecord1 {
+#[derive(Clone, Default)]
+struct CreateSafeAreaInsetsRecord2 {
     __flight_identity: std::sync::Arc<()>,
     bottom: f64,
     left: f64,
     right: f64,
     top: f64,
 }
-impl PartialEq for CreateSafeAreaInsetsRecord1 {
+impl PartialEq for CreateSafeAreaInsetsRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -127,21 +139,10 @@ pub fn create_safe_area_insets() -> SafeAreaInsets {
 }
 
 // Source: upstream/packages/device/src/device.ts:79 (sha256:0c79deaa5d9400647deba6a3ce29caa5a78517be1f817060d7ed5218566beb5f)
-#[derive(Clone)]
-struct CreateWebDeviceBackendRecord1 {
-    __flight_identity: std::sync::Arc<()>,
-    user_agent_data: Option<CreateWebDeviceBackendRecord2>,
-}
-impl PartialEq for CreateWebDeviceBackendRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateWebDeviceBackendRecord2 {
     __flight_identity: std::sync::Arc<()>,
-    platform: Option<String>,
+    user_agent_data: Option<CreateWebDeviceBackendRecord3>,
 }
 impl PartialEq for CreateWebDeviceBackendRecord2 {
     fn eq(&self, other: &Self) -> bool {
@@ -149,12 +150,23 @@ impl PartialEq for CreateWebDeviceBackendRecord2 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateWebDeviceBackendRecord3 {
+    __flight_identity: std::sync::Arc<()>,
+    platform: Option<String>,
+}
+impl PartialEq for CreateWebDeviceBackendRecord3 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+struct CreateWebDeviceBackendRecord4 {
     __flight_identity: std::sync::Arc<()>,
     device_memory: Option<f64>,
 }
-impl PartialEq for CreateWebDeviceBackendRecord3 {
+impl PartialEq for CreateWebDeviceBackendRecord4 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -165,20 +177,11 @@ pub fn create_web_device_backend() -> DeviceBackend {
         __flight_identity: std::sync::Arc::new(()),
         get_capabilities: std::sync::Arc::new(std::sync::Mutex::new(Box::new(
             move |mut out: DeviceCapabilities| -> DeviceCapabilities {
-                let nav = if ("undefined" != "undefined") {
-                    crate::OpaqueHostValue::Object
-                } else {
-                    None
-                };
-                let max_touch = if ((nav).is_some()) && (false) {
-                    crate::host_value::<crate::OpaqueHostValue>("host.maxTouchPoints")
-                } else {
-                    (-1.0_f64)
-                };
+                let nav: Option<crate::OpaqueHostValue> = None;
+                let max_touch = (-1.0_f64);
                 out.has_mouse = (max_touch == 0.0_f64);
-                let ua = (crate::host_value::<Option<String>>("host.userAgent"))
-                    .unwrap_or("".to_owned());
-                out.has_keyboard = detect_desktop_ua(ua);
+                let ua = (None::<String>).unwrap_or("".to_owned());
+                out.has_keyboard = detect_desktop_ua((ua).clone());
                 out.has_stylus = false;
                 return out;
             },
@@ -186,50 +189,16 @@ pub fn create_web_device_backend() -> DeviceBackend {
             as Box<dyn FnMut(DeviceCapabilities) -> DeviceCapabilities + Send + 'static>)),
         get_display_metrics: std::sync::Arc::new(std::sync::Mutex::new(Box::new(
             move |mut out: DeviceDisplayMetrics| -> DeviceDisplayMetrics {
-                let win = if ("undefined" != "undefined") {
-                    crate::OpaqueHostValue::Object
-                } else {
-                    None
-                };
-                let scr = if ("undefined" != "undefined") {
-                    crate::OpaqueHostValue::Object
-                } else {
-                    None
-                };
-                out.color_depth = if (scr).is_some() {
-                    crate::host_value::<f64>("host.colorDepth")
-                } else {
-                    (-1.0_f64)
-                };
+                let win: Option<crate::OpaqueHostValue> = None;
+                let scr: Option<crate::OpaqueHostValue> = None;
+                out.color_depth = (-1.0_f64);
                 out.density_dpi = (-1.0_f64);
-                out.logical_height = if (scr).is_some() {
-                    crate::host_value::<f64>("host.height")
-                } else {
-                    (-1.0_f64)
-                };
-                out.logical_width = if (scr).is_some() {
-                    crate::host_value::<f64>("host.width")
-                } else {
-                    (-1.0_f64)
-                };
-                let pixel_ratio = if (win).is_some() {
-                    crate::host_value::<crate::OpaqueHostValue>("host.devicePixelRatio")
-                } else {
-                    (-1.0_f64)
-                };
+                out.logical_height = (-1.0_f64);
+                out.logical_width = (-1.0_f64);
+                let pixel_ratio = (-1.0_f64);
                 out.pixel_ratio = pixel_ratio;
-                out.physical_width = if ((scr).is_some()) && (pixel_ratio > 0.0_f64) {
-                    (crate::host_value::<crate::OpaqueHostValue>("host.width") * pixel_ratio)
-                        .round()
-                } else {
-                    (-1.0_f64)
-                };
-                out.physical_height = if ((scr).is_some()) && (pixel_ratio > 0.0_f64) {
-                    (crate::host_value::<crate::OpaqueHostValue>("host.height") * pixel_ratio)
-                        .round()
-                } else {
-                    (-1.0_f64)
-                };
+                out.physical_width = (-1.0_f64);
+                out.physical_height = (-1.0_f64);
                 return out;
             },
         )
@@ -239,14 +208,7 @@ pub fn create_web_device_backend() -> DeviceBackend {
                 std::panic::AssertUnwindSafe(|| -> Option<String> {
                     {
                         let key = "__flighthq_device_id";
-                        let existing = if ("undefined" != "undefined") {
-                            crate::host_value::<()>("host.getItem")
-                        } else {
-                            None
-                        };
-                        if (existing).is_some() {
-                            return Some(existing);
-                        }
+                        let existing: Option<crate::OpaqueHostValue> = None;
                         return Some("".to_owned());
                     }
                     None
@@ -265,59 +227,35 @@ pub fn create_web_device_backend() -> DeviceBackend {
             as Box<dyn FnMut() -> String + Send + 'static>)),
         get_info: std::sync::Arc::new(std::sync::Mutex::new(Box::new(
             move |mut out: DeviceInfo| -> DeviceInfo {
-                let nav = if ("undefined" != "undefined") {
-                    crate::OpaqueHostValue::Object
-                } else {
-                    None
-                };
-                let ua = (crate::host_value::<Option<String>>("host.userAgent"))
-                    .unwrap_or("".to_owned());
-                let uad_platform: Option<String> = nav
-                    .as_ref()
-                    .unwrap()
-                    .user_agent_data
-                    .as_ref()
-                    .and_then(|value| (value.platform).clone());
-                out.arch =
-                    parse_user_agent_arch(ua, Some(((uad_platform).clone().unwrap()).clone()));
+                let nav: Option<crate::OpaqueHostValue> = None;
+                let ua = (None::<String>).unwrap_or("".to_owned());
+                let uad_platform: Option<String> = None::<String>;
+                out.arch = parse_user_agent_arch(
+                    (ua).clone(),
+                    Some(((uad_platform).clone().unwrap()).clone()),
+                );
                 out.available_memory = (-1.0_f64);
                 out.board_name = "".to_owned();
                 out.color_gamut = "".to_owned();
-                let cores = if ((nav).is_some()) && (false) {
-                    (crate::host_value::<Option<f64>>("host.hardwareConcurrency"))
-                        .unwrap_or((-1.0_f64))
-                } else {
-                    (-1.0_f64)
-                };
+                let cores = (-1.0_f64);
                 out.cpu_cores = cores;
                 out.font_scale = (-1.0_f64);
-                out.form_factor = parse_user_agent_form_factor(
-                    ua,
-                    if ((nav).is_some()) && (false) {
-                        crate::host_value::<f64>("host.maxTouchPoints")
-                    } else {
-                        (-1.0_f64)
-                    },
-                );
+                out.form_factor = parse_user_agent_form_factor((ua).clone(), (-1.0_f64));
                 let gpu_info = read_web_gpu_info();
                 out.gpu_renderer = (gpu_info.renderer).clone();
                 out.gpu_vendor = (gpu_info.vendor).clone();
                 out.is_hdr = false;
                 out.is_jailbroken = false;
-                let dev_mem = if ((nav).is_some()) && (false) {
-                    ((nav).clone().unwrap().device_memory).unwrap_or((-1.0_f64))
-                } else {
-                    (-1.0_f64)
-                };
-                out.is_low_end_device = detect_low_end_device(dev_mem, cores);
+                let dev_mem = (-1.0_f64);
+                out.is_low_end_device = detect_low_end_device(dev_mem, (cores).clone());
                 out.is_rooted = false;
                 out.is_virtual = false;
                 out.manufacturer = "".to_owned();
                 out.marketing_name = "".to_owned();
                 out.model = "".to_owned();
                 out.os_build = "".to_owned();
-                out.os_name = parse_user_agent_os_name(ua);
-                out.os_version = parse_user_agent_os_version(ua);
+                out.os_name = parse_user_agent_os_name((ua).clone());
+                out.os_version = parse_user_agent_os_version((ua).clone());
                 out.platform_string = ua;
                 out.product_name = "".to_owned();
                 out.supported_abis = vec![];
@@ -414,12 +352,12 @@ pub fn get_safe_area_insets(out: &SafeAreaInsets) -> SafeAreaInsets {
 }
 
 // Source: upstream/packages/device/src/device.ts:269 (sha256:af90cea0fbbcf91290228096f7270eb7176e3c6fbce0301f8586114d0f4e3e97)
-#[derive(Clone)]
-struct RefreshDeviceInfoRecord1 {
+#[derive(Clone, Default)]
+struct RefreshDeviceInfoRecord2 {
     __flight_identity: std::sync::Arc<()>,
     refresh: Option<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
 }
-impl PartialEq for RefreshDeviceInfoRecord1 {
+impl PartialEq for RefreshDeviceInfoRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -427,7 +365,17 @@ impl PartialEq for RefreshDeviceInfoRecord1 {
 
 pub fn refresh_device_info() -> () {
     let backend = get_device_backend();
-    let maybe_refreshable = backend;
+    let maybe_refreshable = {
+        let __flight_source = &((backend).clone());
+        RefreshDeviceInfoRecord2 {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            refresh: None,
+        }
+    };
+    if (((maybe_refreshable.refresh).clone())
+        .as_ref()
+        .map_or("undefined", |_| "function")
+        == "function")
     {
         {
             let __flight_callback = maybe_refreshable.refresh.as_ref().unwrap().clone();
@@ -475,19 +423,7 @@ fn detect_low_end_device(device_memory_gib: f64, cores: f64) -> bool {
 }
 
 // Source: upstream/packages/device/src/device.ts:300 (sha256:c27bed01e4ce73f12f917d8702cd6841a0f62a2737448446ed1a03f625ca525d)
-#[derive(Clone)]
-struct ReadWebGpuInfoRecord1 {
-    __flight_identity: std::sync::Arc<()>,
-    vendor: String,
-    renderer: String,
-}
-impl PartialEq for ReadWebGpuInfoRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct ReadWebGpuInfoRecord2 {
     __flight_identity: std::sync::Arc<()>,
     renderer: String,
@@ -499,11 +435,11 @@ impl PartialEq for ReadWebGpuInfoRecord2 {
     }
 }
 
-fn read_web_gpu_info() -> ReadWebGpuInfoRecord1 {
-    let __flight_try_return: Option<ReadWebGpuInfoRecord1> = match std::panic::catch_unwind(
-        std::panic::AssertUnwindSafe(|| -> Option<ReadWebGpuInfoRecord1> {
+fn read_web_gpu_info() -> SharedStructuralRecord1 {
+    let __flight_try_return: Option<SharedStructuralRecord1> = match std::panic::catch_unwind(
+        std::panic::AssertUnwindSafe(|| -> Option<SharedStructuralRecord1> {
             {
-                return Some(ReadWebGpuInfoRecord1 {
+                return Some(SharedStructuralRecord1 {
                     __flight_identity: std::sync::Arc::new(()),
                     renderer: "".to_owned(),
                     vendor: "".to_owned(),
@@ -513,9 +449,9 @@ fn read_web_gpu_info() -> ReadWebGpuInfoRecord1 {
         }),
     ) {
         Ok(value) => value,
-        Err(_) => (|| -> Option<ReadWebGpuInfoRecord1> {
+        Err(_) => (|| -> Option<SharedStructuralRecord1> {
             {
-                return Some(ReadWebGpuInfoRecord1 {
+                return Some(SharedStructuralRecord1 {
                     __flight_identity: std::sync::Arc::new(()),
                     renderer: "".to_owned(),
                     vendor: "".to_owned(),

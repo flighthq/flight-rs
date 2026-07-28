@@ -13,7 +13,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/MovieClip.ts:5 (sha256:844ebe6fe1ba72c2844947afcc9d7a7e8ed079b6b61270f799b0abc99e5098cf)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct MovieClipData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -76,7 +76,7 @@ impl PartialEq for MovieClipRuntime {
 }
 
 // Source: upstream/packages/types/src/MovieClip.ts:13 (sha256:9cc2d31b0acbcbef484fc61680c640e6d7dc44d735fc62fbf669952d5327347a)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct MovieClip {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

@@ -6,14 +6,23 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
+use crate::AdjustmentKind;
+use crate::{ColorBlindType, ColorTransform};
+
 // Source: upstream/packages/types/src/ChannelMixerAdjustment.ts:3 (sha256:84da0f283936b20e51ba76eccd3f2f24d92874106d702c51515bd990ba2803fd)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ChannelMixerAdjustment {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub kind: String,
+    pub kind: AdjustmentKind,
     pub color_matrix: Vec<f64>,
+    pub intensity: Option<f64>,
+    pub exposure: Option<f64>,
+    pub color_transform: ColorTransform,
+    pub type_: Option<ColorBlindType>,
     pub matrix: Vec<f64>,
+    pub brightness: Option<f64>,
+    pub contrast: Option<f64>,
 }
 impl PartialEq for ChannelMixerAdjustment {
     fn eq(&self, other: &Self) -> bool {

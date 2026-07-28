@@ -33,7 +33,7 @@ pub type CameraLike = Camera;
 pub type Projection = crate::FlightUnion2<OrthographicProjection, PerspectiveProjection>;
 
 // Source: upstream/packages/types/src/Camera.ts:28 (sha256:e3adb55f5918c927447f09149b2a6a9d9abee406e4abe3295085b6e634017e2a)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct PerspectiveProjection {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -48,7 +48,7 @@ impl PartialEq for PerspectiveProjection {
 }
 
 // Source: upstream/packages/types/src/Camera.ts:36 (sha256:e14f2b29ed5efd13226a5e9ca3bfc45e4904ee84f8ff0c7839a3de1b4e006497)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct OrthographicProjection {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

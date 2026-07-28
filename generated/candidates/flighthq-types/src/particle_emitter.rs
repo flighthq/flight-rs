@@ -13,7 +13,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/ParticleEmitter.ts:5 (sha256:9c6f0dcedb3a91c11fff28e45f21e2ee263d55c2d2364234aab4c53af2fdf631)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ParticleEmitterData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -83,7 +83,7 @@ impl PartialEq for ParticleEmitterRuntime {
 }
 
 // Source: upstream/packages/types/src/ParticleEmitter.ts:26 (sha256:47bb56e88c7034c21aa5566b2b4795a62133103582b000b558fd6de0ba71275b)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ParticleEmitter {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

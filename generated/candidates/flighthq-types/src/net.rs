@@ -28,7 +28,7 @@ pub type NetResponseBody =
     Option<crate::FlightUnion2<String, crate::FlightUnion2<crate::OpaqueHostValue, Vec<u8>>>>;
 
 // Source: upstream/packages/types/src/Net.ts:40 (sha256:be5f077631722591406184fa65398af48876fb3c6e8c82d3a3da4cc352c434e7)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct NetRequest {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -48,7 +48,7 @@ impl PartialEq for NetRequest {
 }
 
 // Source: upstream/packages/types/src/Net.ts:54 (sha256:9f072cdbc05e1b6f6f23c2f526fb60b394c28f9e5d14f3963903e565423c1d32)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct NetResponse {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -66,7 +66,7 @@ impl PartialEq for NetResponse {
 }
 
 // Source: upstream/packages/types/src/Net.ts:67 (sha256:d44c2fab2668dd3124b15bf357de97a81465504c11e7245ada6850a71efa8c76)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct NetProgress {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -81,7 +81,7 @@ impl PartialEq for NetProgress {
 }
 
 // Source: upstream/packages/types/src/Net.ts:75 (sha256:eb3efc65ebc51bd352306b2bce221f8fb7d60e77e6b7ffda364ee0a9ec7268db)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct NetRequestOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/Capsule.ts:5 (sha256:fbaf014ea5264f7e12234a5516e989174163eb8de214050b034b3820750e1394)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Capsule {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

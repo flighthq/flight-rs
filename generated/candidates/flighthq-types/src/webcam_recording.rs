@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/WebcamRecording.ts:2 (sha256:ebc991d9c9e88ecc39034abee14a1612490800439ac6fd345ed0a3d9656f89f5)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct WebcamRecording {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

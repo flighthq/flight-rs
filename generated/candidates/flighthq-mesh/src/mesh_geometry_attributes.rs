@@ -8,22 +8,48 @@
 
 use flighthq_types::{MeshGeometry, VertexAttribute, VertexAttributeLayout, VertexSemantic};
 
-// Source: upstream/packages/mesh/src/meshGeometryAttributes.ts:10 (sha256:585479d56561d263a6ab15effdb23136fcd5805f3be360ab1bfa3bdb76133626)
-#[derive(Clone)]
-struct GetMeshGeometryVertexNormalRecord1 {
-    __flight_identity: std::sync::Arc<()>,
-    x: f64,
-    y: f64,
-    z: f64,
+#[derive(Clone, Default)]
+pub struct SharedStructuralRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub x: f64,
+    pub y: f64,
+    pub z: f64,
 }
-impl PartialEq for GetMeshGeometryVertexNormalRecord1 {
+impl PartialEq for SharedStructuralRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
+#[derive(Clone, Default)]
+pub struct SharedStructuralRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub w: f64,
+    pub x: f64,
+    pub y: f64,
+    pub z: f64,
+}
+impl PartialEq for SharedStructuralRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct SharedStructuralRecord3 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub x: f64,
+    pub y: f64,
+}
+impl PartialEq for SharedStructuralRecord3 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/mesh/src/meshGeometryAttributes.ts:10 (sha256:585479d56561d263a6ab15effdb23136fcd5805f3be360ab1bfa3bdb76133626)
 pub fn get_mesh_geometry_vertex_normal(
-    out: &mut GetMeshGeometryVertexNormalRecord1,
+    out: &mut SharedStructuralRecord1,
     geometry: &MeshGeometry,
     vertex_index: f64,
 ) -> bool {
@@ -31,21 +57,8 @@ pub fn get_mesh_geometry_vertex_normal(
 }
 
 // Source: upstream/packages/mesh/src/meshGeometryAttributes.ts:20 (sha256:0133be6c1d65c52e13178c7c2be8009820ca8ffe63e59244f61999b615e369d6)
-#[derive(Clone)]
-struct GetMeshGeometryVertexPositionRecord1 {
-    __flight_identity: std::sync::Arc<()>,
-    x: f64,
-    y: f64,
-    z: f64,
-}
-impl PartialEq for GetMeshGeometryVertexPositionRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
 pub fn get_mesh_geometry_vertex_position(
-    out: &mut GetMeshGeometryVertexPositionRecord1,
+    out: &mut SharedStructuralRecord1,
     geometry: &MeshGeometry,
     vertex_index: f64,
 ) -> bool {
@@ -53,22 +66,8 @@ pub fn get_mesh_geometry_vertex_position(
 }
 
 // Source: upstream/packages/mesh/src/meshGeometryAttributes.ts:30 (sha256:81c92306bfe892dd7973fef73b30be4ab4917dcb776c487b1fc78e8ca116af4d)
-#[derive(Clone)]
-struct GetMeshGeometryVertexTangentRecord1 {
-    __flight_identity: std::sync::Arc<()>,
-    w: f64,
-    x: f64,
-    y: f64,
-    z: f64,
-}
-impl PartialEq for GetMeshGeometryVertexTangentRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
 pub fn get_mesh_geometry_vertex_tangent(
-    out: &mut GetMeshGeometryVertexTangentRecord1,
+    out: &mut SharedStructuralRecord2,
     geometry: &MeshGeometry,
     vertex_index: f64,
 ) -> bool {
@@ -94,20 +93,8 @@ pub fn get_mesh_geometry_vertex_tangent(
 }
 
 // Source: upstream/packages/mesh/src/meshGeometryAttributes.ts:50 (sha256:122f94199abdd869df0c89b68208e92cf131e4dac630ef5be406dd589374a987)
-#[derive(Clone)]
-struct GetMeshGeometryVertexUv0Record1 {
-    __flight_identity: std::sync::Arc<()>,
-    x: f64,
-    y: f64,
-}
-impl PartialEq for GetMeshGeometryVertexUv0Record1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
 pub fn get_mesh_geometry_vertex_uv0(
-    out: &mut GetMeshGeometryVertexUv0Record1,
+    out: &mut SharedStructuralRecord3,
     geometry: &MeshGeometry,
     vertex_index: f64,
 ) -> bool {
@@ -261,21 +248,8 @@ pub fn set_mesh_geometry_vertex_uv0(
 }
 
 // Source: upstream/packages/mesh/src/meshGeometryAttributes.ts:159 (sha256:96e9c693dd4eac183d97b7476ad5a690f4fd2583bb7249efd50bcd651ebb23e6)
-#[derive(Clone)]
-struct GetFloat3AttributeRecord1 {
-    __flight_identity: std::sync::Arc<()>,
-    x: f64,
-    y: f64,
-    z: f64,
-}
-impl PartialEq for GetFloat3AttributeRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
 fn get_float3_attribute(
-    out: &mut GetFloat3AttributeRecord1,
+    out: &mut SharedStructuralRecord1,
     geometry: &MeshGeometry,
     vertex_index: f64,
     semantic: VertexSemantic,

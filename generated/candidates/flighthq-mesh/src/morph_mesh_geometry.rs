@@ -87,14 +87,14 @@ pub fn blend_mesh_geometry_morph(
             accumulate_deltas(
                 &mut bind_pose.blended_positions,
                 &target.position_deltas,
-                weight,
+                (weight).clone(),
                 floats,
             );
             if ((blended_normals).is_some()) && (((target.normal_deltas).clone()).is_some()) {
                 accumulate_deltas(
                     blended_normals.as_mut().unwrap(),
                     target.normal_deltas.as_ref().unwrap(),
-                    weight,
+                    (weight).clone(),
                     floats,
                 );
             }
@@ -102,7 +102,7 @@ pub fn blend_mesh_geometry_morph(
                 accumulate_deltas(
                     blended_tangents.as_mut().unwrap(),
                     target.tangent_deltas.as_ref().unwrap(),
-                    weight,
+                    (weight).clone(),
                     floats,
                 );
             }

@@ -84,7 +84,7 @@ pub fn play_video_resource(
             current_time: (options.as_ref().and_then(|value| value.current_time))
                 .unwrap_or(0.0_f64),
             gain: (options.as_ref().and_then(|value| value.gain)).unwrap_or(1.0_f64),
-            length: if crate::host_value::<()>("host.call") {
+            length: if (crate::host_value::<f64>("host.duration")).is_nan() {
                 0.0_f64
             } else {
                 (crate::host_value::<crate::OpaqueHostValue>("host.duration") * 1000.0_f64)
@@ -129,7 +129,7 @@ pub fn play_video_resource(
     );
     crate::host_set("host.loop", false);
     crate::host_value::<()>("host.addEventListener");
-    start_video_channel(&mut (*channel.lock().unwrap()));
+    start_video_channel((*channel.lock().unwrap()).clone());
     return Some((*channel.lock().unwrap()).clone());
 }
 
@@ -138,7 +138,7 @@ pub fn resume_video_channel(channel: &mut VideoChannel) -> () {
     if ((channel.state).clone() == "playing") || (((channel.source.element).clone()).is_none()) {
         return;
     }
-    start_video_channel(channel);
+    start_video_channel((channel).clone());
 }
 
 // Source: upstream/packages/media/src/videoChannel.ts:75 (sha256:ddd2f6665848dbb0002ec1cf43938a9e6ec3a1aa5b59a8e9cbb905073a7b09a3)
@@ -234,7 +234,7 @@ fn complete_video_channel(channel: &mut VideoChannel) -> () {
             };
         }
         channel.current_time = 0.0_f64;
-        start_video_channel(channel);
+        start_video_channel((channel).clone());
         return;
     }
     channel.current_time = channel.length;

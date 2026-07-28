@@ -15,9 +15,14 @@ pub fn detect_endianness() -> PlatformEndianness {
     let __flight_try_return: Option<PlatformEndianness> = match std::panic::catch_unwind(
         std::panic::AssertUnwindSafe(|| -> Option<PlatformEndianness> {
             {
-                let buf: Vec<u8> = vec![0_u8; (2.0_f64) as usize];
-                vec![0_u16; (buf) as usize][0.0_f64 as usize] = (258.0_f64) as u16;
-                let bytes: Vec<u8> = vec![0_u8; (buf) as usize];
+                let mut buf: Vec<u8> = vec![0_u8; (2.0_f64) as usize];
+                {
+                    let __flight_index = (0.0_f64) as usize * 2_usize;
+                    let __flight_value = (258.0_f64) as u16;
+                    let __flight_bytes = __flight_value.to_ne_bytes();
+                    buf[__flight_index..__flight_index + 2_usize].copy_from_slice(&__flight_bytes);
+                };
+                let bytes: Vec<u8> = (buf).iter().map(|value| (*value) as u8).collect();
                 if ((bytes[0.0_f64 as usize] as f64) == 1.0_f64) {
                     return Some("big".to_owned());
                 }
@@ -178,9 +183,21 @@ pub fn parse_user_agent_engine_version(ua: String, engine: PlatformEngine) -> St
         '__flight_switch: {
             if __flight_case <= 0_usize {
                 {
-                    let m = (regex::RegexBuilder::new("firefox\\/([\\d.]+)").case_insensitive(true).multi_line(false).dot_matches_new_line(false).build().expect("upstream TypeScript regular expression must be valid Rust regex syntax").exec)(ua);
-                    return if m {
-                        m[1.0_f64 as usize].clone()
+                    let m = {
+                        let __flight_regex = regex::RegexBuilder::new("firefox\\/([\\d.]+)").case_insensitive(true).multi_line(false).dot_matches_new_line(false).build().expect("upstream TypeScript regular expression must be valid Rust regex syntax");
+                        __flight_regex.captures(&((ua).clone())).map(|captures| {
+                            (0..captures.len())
+                                .map(|index| {
+                                    captures
+                                        .get(index)
+                                        .map_or("", |matched| matched.as_str())
+                                        .to_owned()
+                                })
+                                .collect::<Vec<_>>()
+                        })
+                    };
+                    return if (m).is_some() {
+                        m.as_ref().unwrap()[1.0_f64 as usize].clone()
                     } else {
                         "".to_owned()
                     };
@@ -188,17 +205,53 @@ pub fn parse_user_agent_engine_version(ua: String, engine: PlatformEngine) -> St
             }
             if __flight_case <= 1_usize {
                 {
-                    let edg = (regex::RegexBuilder::new("edg\\/([\\d.]+)").case_insensitive(true).multi_line(false).dot_matches_new_line(false).build().expect("upstream TypeScript regular expression must be valid Rust regex syntax").exec)(ua);
-                    if edg {
-                        return edg[1.0_f64 as usize].clone();
+                    let edg = {
+                        let __flight_regex = regex::RegexBuilder::new("edg\\/([\\d.]+)").case_insensitive(true).multi_line(false).dot_matches_new_line(false).build().expect("upstream TypeScript regular expression must be valid Rust regex syntax");
+                        __flight_regex.captures(&((ua).clone())).map(|captures| {
+                            (0..captures.len())
+                                .map(|index| {
+                                    captures
+                                        .get(index)
+                                        .map_or("", |matched| matched.as_str())
+                                        .to_owned()
+                                })
+                                .collect::<Vec<_>>()
+                        })
+                    };
+                    if (edg).is_some() {
+                        return edg.as_ref().unwrap()[1.0_f64 as usize].clone();
                     }
-                    let opr = (regex::RegexBuilder::new("opr\\/([\\d.]+)").case_insensitive(true).multi_line(false).dot_matches_new_line(false).build().expect("upstream TypeScript regular expression must be valid Rust regex syntax").exec)(ua);
-                    if opr {
-                        return opr[1.0_f64 as usize].clone();
+                    let opr = {
+                        let __flight_regex = regex::RegexBuilder::new("opr\\/([\\d.]+)").case_insensitive(true).multi_line(false).dot_matches_new_line(false).build().expect("upstream TypeScript regular expression must be valid Rust regex syntax");
+                        __flight_regex.captures(&((ua).clone())).map(|captures| {
+                            (0..captures.len())
+                                .map(|index| {
+                                    captures
+                                        .get(index)
+                                        .map_or("", |matched| matched.as_str())
+                                        .to_owned()
+                                })
+                                .collect::<Vec<_>>()
+                        })
+                    };
+                    if (opr).is_some() {
+                        return opr.as_ref().unwrap()[1.0_f64 as usize].clone();
                     }
-                    let chrome = (regex::RegexBuilder::new("chrome\\/([\\d.]+)").case_insensitive(true).multi_line(false).dot_matches_new_line(false).build().expect("upstream TypeScript regular expression must be valid Rust regex syntax").exec)(ua);
-                    return if chrome {
-                        chrome[1.0_f64 as usize].clone()
+                    let chrome = {
+                        let __flight_regex = regex::RegexBuilder::new("chrome\\/([\\d.]+)").case_insensitive(true).multi_line(false).dot_matches_new_line(false).build().expect("upstream TypeScript regular expression must be valid Rust regex syntax");
+                        __flight_regex.captures(&((ua).clone())).map(|captures| {
+                            (0..captures.len())
+                                .map(|index| {
+                                    captures
+                                        .get(index)
+                                        .map_or("", |matched| matched.as_str())
+                                        .to_owned()
+                                })
+                                .collect::<Vec<_>>()
+                        })
+                    };
+                    return if (chrome).is_some() {
+                        chrome.as_ref().unwrap()[1.0_f64 as usize].clone()
                     } else {
                         "".to_owned()
                     };
@@ -206,13 +259,37 @@ pub fn parse_user_agent_engine_version(ua: String, engine: PlatformEngine) -> St
             }
             if __flight_case <= 2_usize {
                 {
-                    let ver = (regex::RegexBuilder::new("version\\/([\\d.]+)").case_insensitive(true).multi_line(false).dot_matches_new_line(false).build().expect("upstream TypeScript regular expression must be valid Rust regex syntax").exec)(ua);
-                    if ver {
-                        return ver[1.0_f64 as usize].clone();
+                    let ver = {
+                        let __flight_regex = regex::RegexBuilder::new("version\\/([\\d.]+)").case_insensitive(true).multi_line(false).dot_matches_new_line(false).build().expect("upstream TypeScript regular expression must be valid Rust regex syntax");
+                        __flight_regex.captures(&((ua).clone())).map(|captures| {
+                            (0..captures.len())
+                                .map(|index| {
+                                    captures
+                                        .get(index)
+                                        .map_or("", |matched| matched.as_str())
+                                        .to_owned()
+                                })
+                                .collect::<Vec<_>>()
+                        })
+                    };
+                    if (ver).is_some() {
+                        return ver.as_ref().unwrap()[1.0_f64 as usize].clone();
                     }
-                    let wk = (regex::RegexBuilder::new("applewebkit\\/([\\d.]+)").case_insensitive(true).multi_line(false).dot_matches_new_line(false).build().expect("upstream TypeScript regular expression must be valid Rust regex syntax").exec)(ua);
-                    return if wk {
-                        wk[1.0_f64 as usize].clone()
+                    let wk = {
+                        let __flight_regex = regex::RegexBuilder::new("applewebkit\\/([\\d.]+)").case_insensitive(true).multi_line(false).dot_matches_new_line(false).build().expect("upstream TypeScript regular expression must be valid Rust regex syntax");
+                        __flight_regex.captures(&((ua).clone())).map(|captures| {
+                            (0..captures.len())
+                                .map(|index| {
+                                    captures
+                                        .get(index)
+                                        .map_or("", |matched| matched.as_str())
+                                        .to_owned()
+                                })
+                                .collect::<Vec<_>>()
+                        })
+                    };
+                    return if (wk).is_some() {
+                        wk.as_ref().unwrap()[1.0_f64 as usize].clone()
                     } else {
                         "".to_owned()
                     };
@@ -221,6 +298,7 @@ pub fn parse_user_agent_engine_version(ua: String, engine: PlatformEngine) -> St
             if __flight_case <= 3_usize {
                 return "".to_owned();
             }
+            unreachable!("exhaustive TypeScript switch completed without returning");
         }
     }
 }
@@ -306,50 +384,59 @@ pub fn parse_user_agent_runtime(
     if (win).is_none() {
         return "unknown".to_owned();
     }
-    let proc = win
-        .as_ref()
-        .unwrap()
-        .iter()
-        .find(|(key, _)| key == &"process".to_owned())
-        .map(|(_, value)| value.clone())
-        .expect("TypeScript Record key was absent");
-    if (proc.as_ref().and_then(|entries| {
+    let proc = crate::host_value::<Option<Vec<(String, crate::OpaqueHostValue)>>>("host.cast");
+    if ((proc.as_ref().and_then(|entries| {
         entries
             .iter()
             .find(|(key, _)| key == &"versions".to_owned())
             .map(|(_, value)| value.clone())
-    }) && proc
-        .as_ref()
-        .unwrap()
-        .iter()
-        .find(|(key, _)| key == &"versions".to_owned())
-        .map(|(_, value)| value.clone())
-        .expect("TypeScript Record key was absent")
-        .iter()
-        .find(|(key, _)| key == &"electron".to_owned())
-        .map(|(_, value)| value.clone())
-        .expect("TypeScript Record key was absent"))
+    }))
+    .is_some())
+        && (match &(crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast")
+            .iter()
+            .find(|(key, _)| key == &"electron".to_owned())
+            .map(|(_, value)| value.clone())
+            .expect("TypeScript Record key was absent"))
+        {
+            crate::OpaqueHostValue::Undefined | crate::OpaqueHostValue::Null => false,
+            crate::OpaqueHostValue::Bool(value) => *value,
+            crate::OpaqueHostValue::Number(value) => *value != 0.0_f64 && !value.is_nan(),
+            crate::OpaqueHostValue::String(value) => !value.is_empty(),
+            crate::OpaqueHostValue::Object => true,
+        })
     {
         return "electron".to_owned();
     }
-    if win
+    if match &(win
         .as_ref()
         .unwrap()
         .iter()
         .find(|(key, _)| key == &"__TAURI__".to_owned())
         .map(|(_, value)| value.clone())
-        .expect("TypeScript Record key was absent")
+        .expect("TypeScript Record key was absent"))
     {
+        crate::OpaqueHostValue::Undefined | crate::OpaqueHostValue::Null => false,
+        crate::OpaqueHostValue::Bool(value) => *value,
+        crate::OpaqueHostValue::Number(value) => *value != 0.0_f64 && !value.is_nan(),
+        crate::OpaqueHostValue::String(value) => !value.is_empty(),
+        crate::OpaqueHostValue::Object => true,
+    } {
         return "tauri".to_owned();
     }
-    if win
+    if match &(win
         .as_ref()
         .unwrap()
         .iter()
         .find(|(key, _)| key == &"Capacitor".to_owned())
         .map(|(_, value)| value.clone())
-        .expect("TypeScript Record key was absent")
+        .expect("TypeScript Record key was absent"))
     {
+        crate::OpaqueHostValue::Undefined | crate::OpaqueHostValue::Null => false,
+        crate::OpaqueHostValue::Bool(value) => *value,
+        crate::OpaqueHostValue::Number(value) => *value != 0.0_f64 && !value.is_nan(),
+        crate::OpaqueHostValue::String(value) => !value.is_empty(),
+        crate::OpaqueHostValue::Object => true,
+    } {
         return "capacitor".to_owned();
     }
     return "web".to_owned();
@@ -375,9 +462,21 @@ pub fn parse_user_agent_version(ua: String, name: PlatformName) -> String {
         '__flight_switch: {
             if __flight_case <= 0_usize {
                 {
-                    let m = (regex::RegexBuilder::new("windows nt ([\\d.]+)").case_insensitive(true).multi_line(false).dot_matches_new_line(false).build().expect("upstream TypeScript regular expression must be valid Rust regex syntax").exec)(ua);
-                    return if m {
-                        m[1.0_f64 as usize].clone()
+                    let m = {
+                        let __flight_regex = regex::RegexBuilder::new("windows nt ([\\d.]+)").case_insensitive(true).multi_line(false).dot_matches_new_line(false).build().expect("upstream TypeScript regular expression must be valid Rust regex syntax");
+                        __flight_regex.captures(&((ua).clone())).map(|captures| {
+                            (0..captures.len())
+                                .map(|index| {
+                                    captures
+                                        .get(index)
+                                        .map_or("", |matched| matched.as_str())
+                                        .to_owned()
+                                })
+                                .collect::<Vec<_>>()
+                        })
+                    };
+                    return if (m).is_some() {
+                        m.as_ref().unwrap()[1.0_f64 as usize].clone()
                     } else {
                         "".to_owned()
                     };
@@ -385,9 +484,21 @@ pub fn parse_user_agent_version(ua: String, name: PlatformName) -> String {
             }
             if __flight_case <= 1_usize {
                 {
-                    let m = (regex::RegexBuilder::new("mac os x ([\\d_.]+)").case_insensitive(true).multi_line(false).dot_matches_new_line(false).build().expect("upstream TypeScript regular expression must be valid Rust regex syntax").exec)(ua);
-                    return if m {
-                        (m[1.0_f64 as usize].replace)(regex::RegexBuilder::new("_").case_insensitive(false).multi_line(false).dot_matches_new_line(false).build().expect("upstream TypeScript regular expression must be valid Rust regex syntax"), ".")
+                    let m = {
+                        let __flight_regex = regex::RegexBuilder::new("mac os x ([\\d_.]+)").case_insensitive(true).multi_line(false).dot_matches_new_line(false).build().expect("upstream TypeScript regular expression must be valid Rust regex syntax");
+                        __flight_regex.captures(&((ua).clone())).map(|captures| {
+                            (0..captures.len())
+                                .map(|index| {
+                                    captures
+                                        .get(index)
+                                        .map_or("", |matched| matched.as_str())
+                                        .to_owned()
+                                })
+                                .collect::<Vec<_>>()
+                        })
+                    };
+                    return if (m).is_some() {
+                        (regex::RegexBuilder::new("_").case_insensitive(false).multi_line(false).dot_matches_new_line(false).build().expect("upstream TypeScript regular expression must be valid Rust regex syntax")).replace_all(&(m.as_ref().unwrap()[1.0_f64 as usize].clone()), ".").into_owned()
                     } else {
                         "".to_owned()
                     };
@@ -395,9 +506,21 @@ pub fn parse_user_agent_version(ua: String, name: PlatformName) -> String {
             }
             if __flight_case <= 2_usize {
                 {
-                    let m = (regex::RegexBuilder::new("cpu(?: iphone)? os ([\\d_]+)").case_insensitive(true).multi_line(false).dot_matches_new_line(false).build().expect("upstream TypeScript regular expression must be valid Rust regex syntax").exec)(ua);
-                    return if m {
-                        (m[1.0_f64 as usize].replace)(regex::RegexBuilder::new("_").case_insensitive(false).multi_line(false).dot_matches_new_line(false).build().expect("upstream TypeScript regular expression must be valid Rust regex syntax"), ".")
+                    let m = {
+                        let __flight_regex = regex::RegexBuilder::new("cpu(?: iphone)? os ([\\d_]+)").case_insensitive(true).multi_line(false).dot_matches_new_line(false).build().expect("upstream TypeScript regular expression must be valid Rust regex syntax");
+                        __flight_regex.captures(&((ua).clone())).map(|captures| {
+                            (0..captures.len())
+                                .map(|index| {
+                                    captures
+                                        .get(index)
+                                        .map_or("", |matched| matched.as_str())
+                                        .to_owned()
+                                })
+                                .collect::<Vec<_>>()
+                        })
+                    };
+                    return if (m).is_some() {
+                        (regex::RegexBuilder::new("_").case_insensitive(false).multi_line(false).dot_matches_new_line(false).build().expect("upstream TypeScript regular expression must be valid Rust regex syntax")).replace_all(&(m.as_ref().unwrap()[1.0_f64 as usize].clone()), ".").into_owned()
                     } else {
                         "".to_owned()
                     };
@@ -405,9 +528,21 @@ pub fn parse_user_agent_version(ua: String, name: PlatformName) -> String {
             }
             if __flight_case <= 3_usize {
                 {
-                    let m = (regex::RegexBuilder::new("android ([\\d.]+)").case_insensitive(true).multi_line(false).dot_matches_new_line(false).build().expect("upstream TypeScript regular expression must be valid Rust regex syntax").exec)(ua);
-                    return if m {
-                        m[1.0_f64 as usize].clone()
+                    let m = {
+                        let __flight_regex = regex::RegexBuilder::new("android ([\\d.]+)").case_insensitive(true).multi_line(false).dot_matches_new_line(false).build().expect("upstream TypeScript regular expression must be valid Rust regex syntax");
+                        __flight_regex.captures(&((ua).clone())).map(|captures| {
+                            (0..captures.len())
+                                .map(|index| {
+                                    captures
+                                        .get(index)
+                                        .map_or("", |matched| matched.as_str())
+                                        .to_owned()
+                                })
+                                .collect::<Vec<_>>()
+                        })
+                    };
+                    return if (m).is_some() {
+                        m.as_ref().unwrap()[1.0_f64 as usize].clone()
                     } else {
                         "".to_owned()
                     };
@@ -419,6 +554,7 @@ pub fn parse_user_agent_version(ua: String, name: PlatformName) -> String {
             if __flight_case <= 5_usize {
                 return "".to_owned();
             }
+            unreachable!("exhaustive TypeScript switch completed without returning");
         }
     }
 }

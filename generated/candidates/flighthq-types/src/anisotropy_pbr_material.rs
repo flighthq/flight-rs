@@ -11,7 +11,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/AnisotropyPbrMaterial.ts:9 (sha256:7d4930b865e98d18c06c99337f13c915fac0fadbc100b8e0cecd23d4ca9d2080)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AnisotropyPbrMaterial {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -22,6 +22,9 @@ pub struct AnisotropyPbrMaterial {
     pub alpha_type: AlphaType,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub shader_key: String,
+    pub textures: Option<Vec<(String, Texture)>>,
+    pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
     pub anisotropy_map: Option<Texture>,
     pub anisotropy_rotation: f64,
     pub anisotropy_strength: f64,

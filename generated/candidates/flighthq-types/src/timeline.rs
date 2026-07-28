@@ -9,7 +9,7 @@
 use crate::{DisplayObject, FrameScript, TimelinePlayMode, TimelineSignals, TimelineSource};
 
 // Source: upstream/packages/types/src/Timeline.ts:11 (sha256:22eaec57774f6ccaf44aec27c892f4911b2d8891b4dc81635fb147fe9f11f61b)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Timeline {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

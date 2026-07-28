@@ -10,7 +10,7 @@ use crate::{connect_signal, disconnect_signal};
 use flighthq_types::Signal;
 
 // Source: upstream/packages/signals/src/throttle.ts:10 (sha256:9ff1029d5c3091e092ff0d59362f51d66eed27c820470f270b0a384f0b0e01b6)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SignalThrottleOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

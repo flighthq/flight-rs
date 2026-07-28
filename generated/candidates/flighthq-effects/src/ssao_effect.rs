@@ -8,7 +8,7 @@
 
 use flighthq_types::SsaoEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub radius: Option<f64>,
@@ -23,7 +23,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/ssaoEffect.ts:3 (sha256:6131e6956dcfe2a0de479b4a724e8a1534ab7c47195249f34f9834599a5b40b6)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateSsaoEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -50,6 +50,7 @@ pub fn create_ssao_effect(options: Option<FlightOmitRecord1>) -> SsaoEffect {
             intensity: __flight_spread_1.intensity,
             bias: __flight_spread_1.bias,
             samples: __flight_spread_1.samples,
+            ..Default::default()
         }
     };
 }

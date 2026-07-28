@@ -13,7 +13,7 @@ use flighthq_types::{
     Vector3,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub data: Option<NodeData>,
@@ -36,7 +36,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -81,12 +81,15 @@ pub fn find_scene_material_by_name(root: &SceneNode, name: String) -> Option<Mat
     let found: std::sync::Arc<std::sync::Mutex<Option<Material>>> =
         std::sync::Arc::new(std::sync::Mutex::new(None));
     find_node(
-        &Node {
-            __flight_identity: std::sync::Arc::clone(&(root).__flight_identity),
-            data: ((root).data).clone(),
-            enabled: (root).enabled,
-            kind: ((root).kind).clone(),
-            name: ((root).name).clone(),
+        &{
+            let __flight_source = &(root);
+            Node {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                data: (__flight_source.data).clone(),
+                enabled: __flight_source.enabled,
+                kind: (__flight_source.kind).clone(),
+                name: (__flight_source.name).clone(),
+            }
         },
         &mut |node: Node| -> bool {
             let match_ = get_named_node_material(&node, (name).clone());
@@ -102,7 +105,7 @@ pub fn find_scene_material_by_name(root: &SceneNode, name: String) -> Option<Mat
 
 // Source: upstream/packages/scene/src/sceneMaterial.ts:26 (sha256:551ccf8e51b997ca62bb0e397eb0c657199dfc5ec63d835c9c931d5fea5eec5d)
 fn get_named_node_material(node: &SceneNode, name: String) -> Option<Material> {
-    let materials = (node.materials).clone();
+    let materials = None::<Vec<Option<Material>>>;
     if (materials).is_none() {
         return None;
     }

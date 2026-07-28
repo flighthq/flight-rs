@@ -23,7 +23,7 @@ use flighthq_types::{
     TimelineLabel, TimelinePlayMode, TimelineSignals, TimelineSource,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub timeline: Option<Timeline>,
@@ -34,7 +34,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha_multiplier: Option<f64>,
@@ -52,7 +52,7 @@ impl PartialEq for FlightPartialRecord2 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -102,7 +102,7 @@ impl PartialEq for FlightPartialRecord3 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord4 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -138,7 +138,7 @@ impl PartialEq for FlightPartialRecord4 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord5 {
     pub __flight_identity: std::sync::Arc<()>,
     pub source: Option<TimelineSource>,
@@ -157,11 +157,12 @@ impl PartialEq for FlightPartialRecord5 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord6 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<AdjustmentKind>,
     pub color_matrix: Option<Vec<f64>>,
+    pub color_transform: Option<ColorTransform>,
 }
 impl PartialEq for FlightPartialRecord6 {
     fn eq(&self, other: &Self) -> bool {
@@ -169,7 +170,7 @@ impl PartialEq for FlightPartialRecord6 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord7 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha: Option<f64>,
@@ -181,7 +182,7 @@ impl PartialEq for FlightPartialRecord7 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord8 {
     pub __flight_identity: std::sync::Arc<()>,
     pub blend_mode: Option<BlendMode>,
@@ -192,7 +193,7 @@ impl PartialEq for FlightPartialRecord8 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord9 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -211,7 +212,7 @@ impl PartialEq for FlightPartialRecord9 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord10 {
     pub __flight_identity: std::sync::Arc<()>,
 }
@@ -221,7 +222,7 @@ impl PartialEq for FlightPartialRecord10 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord11 {
     pub __flight_identity: std::sync::Arc<()>,
     pub clip: Option<ClipRegion>,
@@ -232,7 +233,7 @@ impl PartialEq for FlightPartialRecord11 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord12 {
     pub __flight_identity: std::sync::Arc<()>,
     pub material: Option<Material>,
@@ -244,7 +245,7 @@ impl PartialEq for FlightPartialRecord12 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord13 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -260,7 +261,7 @@ impl PartialEq for FlightPartialRecord13 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord14 {
     pub __flight_identity: std::sync::Arc<()>,
     pub pivot_x: Option<f64>,
@@ -291,7 +292,7 @@ pub fn add_movie_clip_frame_script(
     add_timeline_frame_script(
         clip.data.timeline.as_mut().unwrap(),
         &((*frame).clone()),
-        (*script).clone(),
+        (script).clone(),
     );
 }
 
@@ -348,7 +349,17 @@ pub fn enable_movie_clip_signals(clip: &mut MovieClip) -> MovieClipSignals {
     }
     let signals = enable_timeline_signals(clip.data.timeline.as_mut().unwrap());
     runtime.movie_clip_signals = Some(signals);
-    return signals;
+    return {
+        let __flight_source = &(signals);
+        MovieClipSignals {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            on_complete: (__flight_source.on_complete).clone(),
+            on_enter_frame: (__flight_source.on_enter_frame).clone(),
+            on_exit_frame: (__flight_source.on_exit_frame).clone(),
+            on_frame_constructed: (__flight_source.on_frame_constructed).clone(),
+            on_loop: (__flight_source.on_loop).clone(),
+        }
+    };
 }
 
 // Source: upstream/packages/movieclip/src/movieClip.ts:76 (sha256:bc292a615868a71d0e5efc95f690936f7ba566bd1c47d8c49fc0e5a58790f818)

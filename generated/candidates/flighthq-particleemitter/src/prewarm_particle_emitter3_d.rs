@@ -14,7 +14,7 @@ use flighthq_types::{
     ParticleEmitterState, Quaternion, Rectangle, Stage, TextureAtlas, Vector3,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha_multiplier: Option<f64>,
@@ -32,7 +32,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -82,7 +82,7 @@ impl PartialEq for FlightPartialRecord2 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -118,7 +118,7 @@ impl PartialEq for FlightPartialRecord3 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord4 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alphas: Option<Vec<f32>>,
@@ -137,7 +137,7 @@ impl PartialEq for FlightPartialRecord4 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord5 {
     pub __flight_identity: std::sync::Arc<()>,
     pub data: Option<NodeData>,
@@ -156,11 +156,12 @@ impl PartialEq for FlightPartialRecord5 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord6 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<AdjustmentKind>,
     pub color_matrix: Option<Vec<f64>>,
+    pub color_transform: Option<ColorTransform>,
 }
 impl PartialEq for FlightPartialRecord6 {
     fn eq(&self, other: &Self) -> bool {
@@ -168,7 +169,7 @@ impl PartialEq for FlightPartialRecord6 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord7 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha: Option<f64>,
@@ -180,7 +181,7 @@ impl PartialEq for FlightPartialRecord7 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord8 {
     pub __flight_identity: std::sync::Arc<()>,
     pub blend_mode: Option<BlendMode>,
@@ -191,7 +192,7 @@ impl PartialEq for FlightPartialRecord8 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord9 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -210,7 +211,7 @@ impl PartialEq for FlightPartialRecord9 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord10 {
     pub __flight_identity: std::sync::Arc<()>,
 }
@@ -220,7 +221,7 @@ impl PartialEq for FlightPartialRecord10 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord11 {
     pub __flight_identity: std::sync::Arc<()>,
     pub clip: Option<ClipRegion>,
@@ -231,7 +232,7 @@ impl PartialEq for FlightPartialRecord11 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord12 {
     pub __flight_identity: std::sync::Arc<()>,
     pub material: Option<Material>,
@@ -243,7 +244,7 @@ impl PartialEq for FlightPartialRecord12 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord13 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -259,7 +260,7 @@ impl PartialEq for FlightPartialRecord13 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord14 {
     pub __flight_identity: std::sync::Arc<()>,
     pub pivot_x: Option<f64>,
@@ -278,7 +279,7 @@ impl PartialEq for FlightPartialRecord14 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord15 {
     pub __flight_identity: std::sync::Arc<()>,
     pub position: Option<Vector3>,

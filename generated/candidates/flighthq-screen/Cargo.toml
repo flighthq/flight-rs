@@ -1,0 +1,14 @@
+# @generated candidate crate; do not edit.
+[package]
+name = "flighthq-screen"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+flighthq-signals = { path = "../flighthq-signals" }
+flighthq-types = { path = "../flighthq-types" }

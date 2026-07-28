@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/Quaternion.ts:6 (sha256:4c26914e14fa1460f7650189dc991a220e1efb5bcc96ed852feb1693d4f5ec36)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Quaternion {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

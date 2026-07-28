@@ -9,11 +9,11 @@
 use crate::{clone_sampler, copy_sampler, create_sampler, equals_sampler};
 use flighthq_entity::create_entity;
 use flighthq_types::{
-    CubeTexture, CubeTextureLike, ImageResource, Sampler, TextureColorSpace, TextureFilter,
-    TextureWrap,
+    CubeTexture, CubeTextureLike, ImageResource, Sampler, SamplerLike, TextureColorSpace,
+    TextureFilter, TextureWrap,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub color_space: Option<TextureColorSpace>,
@@ -26,7 +26,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub anisotropy: Option<f64>,
@@ -48,7 +48,18 @@ pub fn clone_cube_texture(source: &CubeTextureLike) -> CubeTexture {
         __flight_identity: std::sync::Arc::new(()),
         color_space: (source.color_space).clone(),
         faces: ((source.faces).clone()).clone(),
-        sampler: clone_sampler(&source.sampler),
+        sampler: clone_sampler(&{
+            let __flight_source = &(source.sampler);
+            SamplerLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                anisotropy: __flight_source.anisotropy,
+                mag_filter: (__flight_source.mag_filter).clone(),
+                min_filter: (__flight_source.min_filter).clone(),
+                mipmaps: __flight_source.mipmaps,
+                wrap_u: (__flight_source.wrap_u).clone(),
+                wrap_v: (__flight_source.wrap_v).clone(),
+            }
+        }),
     }));
 }
 
@@ -61,7 +72,18 @@ pub fn copy_cube_texture(out: &mut CubeTextureLike, source: &CubeTextureLike) ->
     let f3 = source.faces[3.0_f64 as usize].clone();
     let f4 = source.faces[4.0_f64 as usize].clone();
     let f5 = source.faces[5.0_f64 as usize].clone();
-    copy_sampler(&mut out.sampler, &source.sampler);
+    copy_sampler(&mut out.sampler, &{
+        let __flight_source = &(source.sampler);
+        SamplerLike {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            anisotropy: __flight_source.anisotropy,
+            mag_filter: (__flight_source.mag_filter).clone(),
+            min_filter: (__flight_source.min_filter).clone(),
+            mipmaps: __flight_source.mipmaps,
+            wrap_u: (__flight_source.wrap_u).clone(),
+            wrap_v: (__flight_source.wrap_v).clone(),
+        }
+    });
     out.color_space = (color_space).clone();
     let mut faces = (out.faces).clone();
     {

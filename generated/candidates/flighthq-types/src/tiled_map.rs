@@ -15,7 +15,7 @@ pub type TiledOrientation = String;
 pub type TiledRenderOrder = String;
 
 // Source: upstream/packages/types/src/TiledMap.ts:18 (sha256:06addefb47009dd6ad6194898472603ce2dd11f327687e4795e7ed1fa107eb9f)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TiledMap {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

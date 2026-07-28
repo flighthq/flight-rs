@@ -10,7 +10,7 @@ use flighthq_entity::create_entity;
 use flighthq_types::{CubeTexture, ENVIRONMENT_KIND as environment_kind_constant, Environment};
 
 // Source: upstream/packages/lighting/src/environment.ts:5 (sha256:ce0e4dfc08f4a0dc24d5dd5edb21e699b40e425877de3d1721ef14d6ad242721)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct EnvironmentOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -41,5 +41,6 @@ pub fn create_environment(options: Option<EnvironmentOptions>) -> Environment {
             .and_then(|value| (value.environment).clone()),
         intensity: (options.as_ref().and_then(|value| value.intensity)).unwrap_or(1.0_f64),
         kind: (environment_kind_constant).to_owned(),
+        ..Default::default()
     }));
 }

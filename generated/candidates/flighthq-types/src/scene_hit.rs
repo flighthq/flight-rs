@@ -9,7 +9,7 @@
 use crate::Mesh;
 
 // Source: upstream/packages/types/src/SceneHit.ts:10 (sha256:e9a2b22b1b333a9ccf977475cb5aec34adb10248f4b01b7d65b733cab6ff42f2)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SceneHit {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

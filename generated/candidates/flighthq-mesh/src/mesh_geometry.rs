@@ -14,7 +14,7 @@ use flighthq_types::{
 };
 
 // Source: upstream/packages/mesh/src/meshGeometry.ts:19 (sha256:a33a9efe64b61d07fa86e41111d86d5ec5ba0c4a2c4d9d17ab09563800dc99cb)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct MeshGeometryOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -80,21 +80,21 @@ pub fn clone_mesh_geometry(source: &MeshGeometry) -> MeshGeometry {
             };
         }
     }
-    let mut bounds = None;
+    let mut bounds: Option<crate::OpaqueHostValue> = None;
     if ((source.bounds).clone()).is_some() {
         let b = (source.bounds).clone();
-        bounds = create_aabb(
+        bounds = Some(create_aabb(
             Some(b.as_ref().unwrap().min.x),
             Some(b.as_ref().unwrap().min.y),
             Some(b.as_ref().unwrap().min.z),
             Some(b.as_ref().unwrap().max.x),
             Some(b.as_ref().unwrap().max.y),
             Some(b.as_ref().unwrap().max.z),
-        );
+        ));
     }
     return create_mesh_geometry_runtime(&MeshGeometry {
         __flight_identity: std::sync::Arc::new(()),
-        bounds: Some((bounds).clone()),
+        bounds: bounds,
         indices: (indices).clone(),
         layout: (source.layout).clone(),
         subsets: (subsets).clone(),

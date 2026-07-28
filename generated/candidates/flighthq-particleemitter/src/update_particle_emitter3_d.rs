@@ -33,7 +33,7 @@ fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha_multiplier: Option<f64>,
@@ -51,7 +51,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -101,7 +101,7 @@ impl PartialEq for FlightPartialRecord2 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -137,7 +137,7 @@ impl PartialEq for FlightPartialRecord3 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord4 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alphas: Option<Vec<f32>>,
@@ -156,7 +156,7 @@ impl PartialEq for FlightPartialRecord4 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord5 {
     pub __flight_identity: std::sync::Arc<()>,
     pub data: Option<NodeData>,
@@ -175,11 +175,12 @@ impl PartialEq for FlightPartialRecord5 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord6 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<AdjustmentKind>,
     pub color_matrix: Option<Vec<f64>>,
+    pub color_transform: Option<ColorTransform>,
 }
 impl PartialEq for FlightPartialRecord6 {
     fn eq(&self, other: &Self) -> bool {
@@ -187,7 +188,7 @@ impl PartialEq for FlightPartialRecord6 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord7 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha: Option<f64>,
@@ -199,7 +200,7 @@ impl PartialEq for FlightPartialRecord7 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord8 {
     pub __flight_identity: std::sync::Arc<()>,
     pub blend_mode: Option<BlendMode>,
@@ -210,7 +211,7 @@ impl PartialEq for FlightPartialRecord8 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord9 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -229,7 +230,7 @@ impl PartialEq for FlightPartialRecord9 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord10 {
     pub __flight_identity: std::sync::Arc<()>,
 }
@@ -239,7 +240,7 @@ impl PartialEq for FlightPartialRecord10 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord11 {
     pub __flight_identity: std::sync::Arc<()>,
     pub clip: Option<ClipRegion>,
@@ -250,7 +251,7 @@ impl PartialEq for FlightPartialRecord11 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord12 {
     pub __flight_identity: std::sync::Arc<()>,
     pub material: Option<Material>,
@@ -262,7 +263,7 @@ impl PartialEq for FlightPartialRecord12 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord13 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -278,7 +279,7 @@ impl PartialEq for FlightPartialRecord13 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord14 {
     pub __flight_identity: std::sync::Arc<()>,
     pub pivot_x: Option<f64>,
@@ -297,7 +298,7 @@ impl PartialEq for FlightPartialRecord14 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord15 {
     pub __flight_identity: std::sync::Arc<()>,
     pub position: Option<Vector3>,
@@ -343,15 +344,18 @@ pub fn update_particle_emitter3_d(
 ) -> () {
     let world_m = if config.world_space {
         Some(
-            (get_node_world_matrix4(&Transform3DNode {
-                __flight_identity: std::sync::Arc::clone(&(emitter).__flight_identity),
-                data: ((emitter).data).clone(),
-                enabled: (emitter).enabled,
-                kind: ((emitter).kind).clone(),
-                name: ((emitter).name).clone(),
-                position: ((emitter).position).clone(),
-                rotation: ((emitter).rotation).clone(),
-                scale: ((emitter).scale).clone(),
+            (get_node_world_matrix4(&{
+                let __flight_source = &(emitter);
+                Transform3DNode {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    data: (__flight_source.data).clone(),
+                    enabled: __flight_source.enabled,
+                    kind: (__flight_source.kind).clone(),
+                    name: (__flight_source.name).clone(),
+                    position: (__flight_source.position).clone(),
+                    rotation: (__flight_source.rotation).clone(),
+                    scale: (__flight_source.scale).clone(),
+                }
             })
             .m)
                 .clone(),
@@ -366,15 +370,18 @@ pub fn update_particle_emitter3_d(
     let origin_m = if (world_m).is_some() {
         (world_m.as_ref().unwrap()).clone()
     } else {
-        (get_node_local_matrix4(&Transform3DNode {
-            __flight_identity: std::sync::Arc::clone(&(emitter).__flight_identity),
-            data: ((emitter).data).clone(),
-            enabled: (emitter).enabled,
-            kind: ((emitter).kind).clone(),
-            name: ((emitter).name).clone(),
-            position: ((emitter).position).clone(),
-            rotation: ((emitter).rotation).clone(),
-            scale: ((emitter).scale).clone(),
+        (get_node_local_matrix4(&{
+            let __flight_source = &(emitter);
+            Transform3DNode {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                data: (__flight_source.data).clone(),
+                enabled: __flight_source.enabled,
+                kind: (__flight_source.kind).clone(),
+                name: (__flight_source.name).clone(),
+                position: (__flight_source.position).clone(),
+                rotation: (__flight_source.rotation).clone(),
+                scale: (__flight_source.scale).clone(),
+            }
         })
         .m)
             .clone()
@@ -386,7 +393,7 @@ pub fn update_particle_emitter3_d(
     let mut emitter_vel_x = 0.0_f64;
     let mut emitter_vel_y = 0.0_f64;
     let mut emitter_vel_z = 0.0_f64;
-    if (!crate::host_value::<()>("host.call")) {
+    if (!(state.prev_x).is_nan()) {
         emitter_vel_x = ((track_x - state.prev_x) / delta_time);
         emitter_vel_y = ((track_y - state.prev_y) / delta_time);
         emitter_vel_z = ((track_z - state.prev_z) / delta_time);
@@ -423,7 +430,7 @@ pub fn update_particle_emitter3_d(
     let has_rotation_speed =
         (config.rotation_speed_min != 0.0_f64) || (config.rotation_speed_max != 0.0_f64);
     let has_flipbook = (config.frame_count > 1.0_f64);
-    let signals = get_particle_emitter_signals(state);
+    let signals = get_particle_emitter_signals((state).clone());
     let on_death = callbacks
         .as_ref()
         .and_then(|value| (value.on_death).clone());
@@ -649,7 +656,7 @@ pub fn update_particle_emitter3_d(
         } else {
             0.0_f64
         };
-        let do_trail = ((world_m).is_some()) && (!crate::host_value::<()>("host.call"));
+        let do_trail = ((world_m).is_some()) && (!(state.prev_x).is_nan());
         let prev_path_x = if do_trail { state.prev_x } else { track_x };
         let prev_path_y = if do_trail { state.prev_y } else { track_y };
         let prev_path_z = if do_trail { state.prev_z } else { track_z };
@@ -893,7 +900,7 @@ pub fn update_particle_emitter3_d(
                     vy = wvy;
                     vz = wvz;
                 }
-                if (has_vel_inherit) && (!crate::host_value::<()>("host.call")) {
+                if (has_vel_inherit) && (!(state.prev_x).is_nan()) {
                     vx += (emitter_vel_x * config.velocity_inheritance);
                     vy += (emitter_vel_y * config.velocity_inheritance);
                     vz += (emitter_vel_z * config.velocity_inheritance);

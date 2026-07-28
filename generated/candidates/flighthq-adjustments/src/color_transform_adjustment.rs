@@ -39,5 +39,6 @@ pub fn create_color_transform_adjustment(
         kind: "ColorTransformAdjustment".to_owned(),
         color_transform: (*color_transform).clone(),
         color_matrix: (color_matrix).clone(),
+        ..Default::default()
     };
 }

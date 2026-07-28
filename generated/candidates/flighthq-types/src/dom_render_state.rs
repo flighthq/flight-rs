@@ -13,7 +13,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/DomRenderState.ts:8 (sha256:7dd771caabb5913c54dc523f2804bfcdff548e84aca709060279660fb26ea9af)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct DomRenderState {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -50,7 +50,7 @@ impl PartialEq for DomRenderState {
 }
 
 // Source: upstream/packages/types/src/DomRenderState.ts:20 (sha256:95a2d3164f536c2bae6c8c55ccfe6be59858dcb9485508c252f453ccb8a8fceb)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct DomRenderStateRuntimeRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub element: crate::OpaqueHostValue,
@@ -62,7 +62,7 @@ impl PartialEq for DomRenderStateRuntimeRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct DomRenderStateRuntime {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -102,7 +102,7 @@ impl PartialEq for DomRenderStateRuntime {
 }
 
 // Source: upstream/packages/types/src/DomRenderState.ts:49 (sha256:38fa448f3ab74d60dcd04814fef23fdd7681955b2281907978b8d6bc1f47c017)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct DomClipContourEntry {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

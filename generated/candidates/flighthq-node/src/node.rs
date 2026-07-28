@@ -14,7 +14,7 @@ use flighthq_types::{
     NodeInteractionState, NodeRuntime, NodeRuntimeFactory, NodeSignals, NodeTraitsKey,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -135,8 +135,11 @@ pub fn default_node_runtime_can_add_child(_target: &Node, _child: &Node) -> bool
 
 // Source: upstream/packages/node/src/node.ts:97 (sha256:1765dee6602ac1b442a498d6fa60c88b896ed640064a8db0dae7bb54a6d207c1)
 pub fn dispose_node(target: &Node) -> () {
-    let mut runtime = get_entity_runtime(&Entity {
-        __flight_identity: std::sync::Arc::clone(&(target).__flight_identity),
+    let mut runtime = get_entity_runtime(&{
+        let __flight_source = &(target);
+        Entity {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+        }
     });
     let parent = (runtime.parent).clone();
     if (parent).is_some() {
@@ -175,8 +178,11 @@ pub fn dispose_node(target: &Node) -> () {
 
 // Source: upstream/packages/node/src/node.ts:139 (sha256:551dfe1fd464044bd176d313788b22dba049dd9866f38a3a9a4a41ee67830fc6)
 pub fn enable_node_signals(source: &Node) -> NodeSignals {
-    let mut runtime = get_entity_runtime(&Entity {
-        __flight_identity: std::sync::Arc::clone(&(source).__flight_identity),
+    let mut runtime = get_entity_runtime(&{
+        let __flight_source = &(source);
+        Entity {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+        }
     });
     return {
         runtime.node_signals?? = Some(create_node_signals());
@@ -186,15 +192,21 @@ pub fn enable_node_signals(source: &Node) -> NodeSignals {
 
 // Source: upstream/packages/node/src/node.ts:144 (sha256:f67f85bd1019e6ace600710e14cf73de5c78ca31e09efa904d6d2929a81a465e)
 pub fn get_node_runtime<Traits: Clone>(source: &Node) -> NodeRuntime<Traits> {
-    return get_entity_runtime(&Entity {
-        __flight_identity: std::sync::Arc::clone(&(source).__flight_identity),
+    return get_entity_runtime(&{
+        let __flight_source = &(source);
+        Entity {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+        }
     });
 }
 
 // Source: upstream/packages/node/src/node.ts:150 (sha256:79dede77260e41ec94bd413b273e961790a50bc19e112c51346e204c425f95e3)
 pub fn get_node_signals(source: &Node) -> Option<NodeSignals> {
-    return (get_entity_runtime(&Entity {
-        __flight_identity: std::sync::Arc::clone(&(source).__flight_identity),
+    return (get_entity_runtime(&{
+        let __flight_source = &(source);
+        Entity {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+        }
     })
     .node_signals)
         .clone();

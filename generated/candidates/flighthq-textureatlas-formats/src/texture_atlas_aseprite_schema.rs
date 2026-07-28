@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasAsepriteSchema.ts:6 (sha256:2beead3ae5eac032bc7a50b746eb0b1898365ec252e52473c4f9c0ddebd635f8)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextureAtlasAsepriteRect {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -23,7 +23,7 @@ impl PartialEq for TextureAtlasAsepriteRect {
 }
 
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasAsepriteSchema.ts:13 (sha256:0c0a517b77629b15a5c7f0996b5d745135521a390b8e344bfbac77dffce09ca1)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextureAtlasAsepriteSize {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -37,7 +37,7 @@ impl PartialEq for TextureAtlasAsepriteSize {
 }
 
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasAsepriteSchema.ts:18 (sha256:d4896ebca38c25e376543c3a1cfb238c813dc355bc0f6d9dd1bd24f9400a4b26)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextureAtlasAsepriteFrameTag {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -54,7 +54,7 @@ impl PartialEq for TextureAtlasAsepriteFrameTag {
 }
 
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasAsepriteSchema.ts:30 (sha256:c398159e8f726192008c83badf867731d8c23a7bf213a7a2774073f3e75c8877)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextureAtlasAsepriteBaseFrame {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -75,7 +75,7 @@ impl PartialEq for TextureAtlasAsepriteBaseFrame {
 pub type TextureAtlasAsepriteHashFrame = TextureAtlasAsepriteBaseFrame;
 
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasAsepriteSchema.ts:42 (sha256:0ff3adfc0f9e14a55e2c6c04be79cb8527c30b213c5e673c9b2af54bba2aa90a)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextureAtlasAsepriteArrayFrame {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

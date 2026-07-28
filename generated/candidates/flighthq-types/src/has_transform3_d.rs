@@ -9,7 +9,7 @@
 use crate::{Kind, Matrix4, NodeData, Quaternion, Vector3};
 
 // Source: upstream/packages/types/src/HasTransform3D.ts:12 (sha256:ac6499b869984707d016242a71546b88681eeb1961c741ac5cae8a0e70f63a28)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct HasTransform3D {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -24,7 +24,7 @@ impl PartialEq for HasTransform3D {
 }
 
 // Source: upstream/packages/types/src/HasTransform3D.ts:18 (sha256:1d64b827bad156d3d07cd1ca90f99aecb21a157026d06c1920d015992b2d3e2e)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct HasTransform3DRuntime {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -40,7 +40,7 @@ impl PartialEq for HasTransform3DRuntime {
 }
 
 // Source: upstream/packages/types/src/HasTransform3D.ts:28 (sha256:da9298db6d25709679d19c3277a12efc13fb2ea8c4793a128cb1288dba978dcf)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Transform3DNode {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

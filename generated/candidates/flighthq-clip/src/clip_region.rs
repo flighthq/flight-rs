@@ -51,7 +51,20 @@ pub fn acquire_clip_region() -> ClipRegion {
 
 // Source: upstream/packages/clip/src/clipRegion.ts:36 (sha256:7a59178716662e1a52c5113a1b6c898fa61193e9a0b969c40b3435c1f46024d8)
 pub fn clip_region_contains_point(clip: &ClipRegion, x: f64, y: f64) -> bool {
-    if (!contains_rectangle_point_xy(&clip.rect, x, y)) {
+    if (!contains_rectangle_point_xy(
+        &{
+            let __flight_source = &(clip.rect);
+            RectangleLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                height: __flight_source.height,
+                width: __flight_source.width,
+                x: __flight_source.x,
+                y: __flight_source.y,
+            }
+        },
+        x,
+        y,
+    )) {
         return false;
     }
     if ((clip.contours).clone()).is_none() {
@@ -67,17 +80,50 @@ pub fn clip_region_contains_point(clip: &ClipRegion, x: f64, y: f64) -> bool {
 
 // Source: upstream/packages/clip/src/clipRegion.ts:44 (sha256:bc05f50cfaa45bc8f6657c3c73ed5b0edbec840f524721dc704249f233b929e9)
 pub fn clip_region_contains_rectangle(clip: &ClipRegion, rectangle: &RectangleLike) -> bool {
-    return encloses_rectangle(&clip.rect, rectangle);
+    return encloses_rectangle(
+        &{
+            let __flight_source = &(clip.rect);
+            RectangleLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                height: __flight_source.height,
+                width: __flight_source.width,
+                x: __flight_source.x,
+                y: __flight_source.y,
+            }
+        },
+        rectangle,
+    );
 }
 
 // Source: upstream/packages/clip/src/clipRegion.ts:50 (sha256:8c3b33804cc8b658c651dd137e601da6ea8f8039849f22478253edccc50c7e70)
 pub fn clip_region_intersects_rectangle(clip: &ClipRegion, rectangle: &RectangleLike) -> bool {
-    return intersects_rectangle(&clip.rect, rectangle);
+    return intersects_rectangle(
+        &{
+            let __flight_source = &(clip.rect);
+            RectangleLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                height: __flight_source.height,
+                width: __flight_source.width,
+                x: __flight_source.x,
+                y: __flight_source.y,
+            }
+        },
+        rectangle,
+    );
 }
 
 // Source: upstream/packages/clip/src/clipRegion.ts:56 (sha256:ab7a1eeb04d49249d5e43a72e3c7a1223ef820a46c339e72919d69223b3e2fa2)
 pub fn clone_clip_region(clip: &ClipRegion) -> ClipRegion {
-    let rect = clone_rectangle(&clip.rect);
+    let rect = clone_rectangle(&{
+        let __flight_source = &(clip.rect);
+        RectangleLike {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            height: __flight_source.height,
+            width: __flight_source.width,
+            x: __flight_source.x,
+            y: __flight_source.y,
+        }
+    });
     let contours = if ((clip.contours).clone()).is_none() {
         None
     } else {
@@ -103,7 +149,16 @@ pub fn copy_clip_region(out: &mut ClipRegion, source: &ClipRegion) -> () {
     if (out == source) {
         return;
     }
-    copy_rectangle(&mut out.rect, &source.rect);
+    copy_rectangle(&mut out.rect, &{
+        let __flight_source = &(source.rect);
+        RectangleLike {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            height: __flight_source.height,
+            width: __flight_source.width,
+            x: __flight_source.x,
+            y: __flight_source.y,
+        }
+    });
     out.contours = if ((source.contours).clone()).is_none() {
         None
     } else {
@@ -370,7 +425,16 @@ pub fn invalidate_clip_region(clip: &mut ClipRegion) -> () {
 
 // Source: upstream/packages/clip/src/clipRegion.ts:237 (sha256:7a43038b37ceffae64da4f681a143bdeaa2c7545e4af66bb6c413e8fe9bc7e96)
 pub fn is_clip_region_empty(clip: &ClipRegion) -> bool {
-    if is_empty_rectangle(&clip.rect) {
+    if is_empty_rectangle(&{
+        let __flight_source = &(clip.rect);
+        RectangleLike {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            height: __flight_source.height,
+            width: __flight_source.width,
+            x: __flight_source.x,
+            y: __flight_source.y,
+        }
+    }) {
         return true;
     }
     if (((clip.contours).clone()).is_some())
@@ -391,7 +455,16 @@ pub fn normalize_clip_region(out: &mut ClipRegion, clip: &ClipRegion) -> () {
     let in_contours = (clip.contours).clone();
     let in_winding = (clip.winding).clone();
     if (in_contours).is_none() {
-        copy_rectangle(&mut out.rect, &clip.rect);
+        copy_rectangle(&mut out.rect, &{
+            let __flight_source = &(clip.rect);
+            RectangleLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                height: __flight_source.height,
+                width: __flight_source.width,
+                x: __flight_source.x,
+                y: __flight_source.y,
+            }
+        });
         out.contours = None;
         out.winding = (in_winding).clone();
         out.version = (__flight_js_to_u32((out.version + 1.0_f64))
@@ -462,7 +535,16 @@ pub fn normalize_clip_region(out: &mut ClipRegion, clip: &ClipRegion) -> () {
             return;
         }
     }
-    copy_rectangle(&mut out.rect, &clip.rect);
+    copy_rectangle(&mut out.rect, &{
+        let __flight_source = &(clip.rect);
+        RectangleLike {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            height: __flight_source.height,
+            width: __flight_source.width,
+            x: __flight_source.x,
+            y: __flight_source.y,
+        }
+    });
     out.contours = Some(
         (in_contours.as_ref().unwrap())
             .iter()
@@ -505,7 +587,16 @@ pub fn transform_clip_region(out: &mut ClipRegion, clip: &ClipRegion, matrix: &M
     if (in_contours).is_none() {
         let axis_aligned = (mb == 0.0_f64) && (mc == 0.0_f64);
         if axis_aligned {
-            matrix_transform_rectangle(&mut out.rect, matrix, &clip.rect);
+            matrix_transform_rectangle(&mut out.rect, matrix, &{
+                let __flight_source = &(clip.rect);
+                RectangleLike {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    height: __flight_source.height,
+                    width: __flight_source.width,
+                    x: __flight_source.x,
+                    y: __flight_source.y,
+                }
+            });
             out.contours = None;
             out.winding = "nonZero".to_owned();
         } else {
@@ -592,7 +683,29 @@ pub fn union_clip_regions(out: &mut ClipRegion, a: &ClipRegion, b: &ClipRegion) 
     let b_contours = (b.contours).clone();
     let a_winding = (a.winding).clone();
     let b_winding = (b.winding).clone();
-    merge_rectangle(&mut out.rect, &a.rect, &b.rect);
+    merge_rectangle(
+        &mut out.rect,
+        &{
+            let __flight_source = &(a.rect);
+            RectangleLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                height: __flight_source.height,
+                width: __flight_source.width,
+                x: __flight_source.x,
+                y: __flight_source.y,
+            }
+        },
+        &{
+            let __flight_source = &(b.rect);
+            RectangleLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                height: __flight_source.height,
+                width: __flight_source.width,
+                x: __flight_source.x,
+                y: __flight_source.y,
+            }
+        },
+    );
     if ((a_contours).is_none()) && ((b_contours).is_none()) {
         out.contours = None;
         out.winding = "nonZero".to_owned();

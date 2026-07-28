@@ -26,7 +26,7 @@ impl PartialEq for RenderBatchKey {
 }
 
 // Source: upstream/packages/types/src/RenderDrawContext.ts:12 (sha256:64c7fd0c32d1edb4c773b2c5102350b78ef31ae0b5968d34b119d4b8b3706b94)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct RenderDrawContext {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

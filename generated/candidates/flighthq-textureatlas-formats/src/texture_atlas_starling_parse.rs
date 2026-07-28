@@ -10,7 +10,7 @@ use flighthq_textureatlas::create_texture_atlas_region;
 use flighthq_types::TextureAtlas;
 use flighthq_xml::parse_xml_document;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub height: Option<f64>,
@@ -35,7 +35,7 @@ impl PartialEq for FlightPartialRecord1 {
 }
 
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasStarlingParse.ts:5 (sha256:2ac90c2c6866b87895d0c19c21f0b9cf34a4de68f1985c0d5623c3ea1f3cc309)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextureAtlasStarlingParseOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -85,10 +85,46 @@ pub fn parse_texture_atlas_starling_xml(
         {
             continue;
         }
-        let x = crate::host_value::<()>("host.call");
-        let y = crate::host_value::<()>("host.call");
-        let width = crate::host_value::<()>("host.call");
-        let height = crate::host_value::<()>("host.call");
+        let x = (el
+            .attributes
+            .iter()
+            .find(|(key, _)| key == &"x".to_owned())
+            .map(|(_, value)| value)
+            .expect("TypeScript Record key was absent")
+            .clone())
+        .trim()
+        .parse::<f64>()
+        .unwrap_or(f64::NAN);
+        let y = (el
+            .attributes
+            .iter()
+            .find(|(key, _)| key == &"y".to_owned())
+            .map(|(_, value)| value)
+            .expect("TypeScript Record key was absent")
+            .clone())
+        .trim()
+        .parse::<f64>()
+        .unwrap_or(f64::NAN);
+        let width = (el
+            .attributes
+            .iter()
+            .find(|(key, _)| key == &"width".to_owned())
+            .map(|(_, value)| value)
+            .expect("TypeScript Record key was absent")
+            .clone())
+        .trim()
+        .parse::<f64>()
+        .unwrap_or(f64::NAN);
+        let height = (el
+            .attributes
+            .iter()
+            .find(|(key, _)| key == &"height".to_owned())
+            .map(|(_, value)| value)
+            .expect("TypeScript Record key was absent")
+            .clone())
+        .trim()
+        .parse::<f64>()
+        .unwrap_or(f64::NAN);
         let frame_width = if (el
             .attributes
             .iter()
@@ -98,7 +134,17 @@ pub fn parse_texture_atlas_starling_xml(
             .clone())
         .is_some()
         {
-            crate::host_value::<()>("host.call")
+            Some(
+                (el.attributes
+                    .iter()
+                    .find(|(key, _)| key == &"frameWidth".to_owned())
+                    .map(|(_, value)| value)
+                    .expect("TypeScript Record key was absent")
+                    .clone())
+                .trim()
+                .parse::<f64>()
+                .unwrap_or(f64::NAN),
+            )
         } else {
             None
         };
@@ -111,7 +157,17 @@ pub fn parse_texture_atlas_starling_xml(
             .clone())
         .is_some()
         {
-            crate::host_value::<()>("host.call")
+            Some(
+                (el.attributes
+                    .iter()
+                    .find(|(key, _)| key == &"frameHeight".to_owned())
+                    .map(|(_, value)| value)
+                    .expect("TypeScript Record key was absent")
+                    .clone())
+                .trim()
+                .parse::<f64>()
+                .unwrap_or(f64::NAN),
+            )
         } else {
             None
         };
@@ -141,7 +197,17 @@ pub fn parse_texture_atlas_starling_xml(
             .clone())
         .is_some()
         {
-            crate::host_value::<()>("host.call")
+            Some(
+                (el.attributes
+                    .iter()
+                    .find(|(key, _)| key == &"pivotX".to_owned())
+                    .map(|(_, value)| value)
+                    .expect("TypeScript Record key was absent")
+                    .clone())
+                .trim()
+                .parse::<f64>()
+                .unwrap_or(f64::NAN),
+            )
         } else {
             None
         };
@@ -154,7 +220,17 @@ pub fn parse_texture_atlas_starling_xml(
             .clone())
         .is_some()
         {
-            crate::host_value::<()>("host.call")
+            Some(
+                (el.attributes
+                    .iter()
+                    .find(|(key, _)| key == &"pivotY".to_owned())
+                    .map(|(_, value)| value)
+                    .expect("TypeScript Record key was absent")
+                    .clone())
+                .trim()
+                .parse::<f64>()
+                .unwrap_or(f64::NAN),
+            )
         } else {
             None
         };
@@ -172,10 +248,18 @@ pub fn parse_texture_atlas_starling_xml(
                         .expect("TypeScript Record key was absent")
                         .clone(),
                 ),
-                original_height: Some(if trimmed { frame_height } else { None }),
-                original_width: Some(if trimmed { frame_width } else { None }),
-                pivot_x: Some(pivot_x),
-                pivot_y: Some(pivot_y),
+                original_height: if trimmed {
+                    Some((frame_height).unwrap_or(height))
+                } else {
+                    None
+                },
+                original_width: if trimmed {
+                    Some((frame_width).unwrap_or(width))
+                } else {
+                    None
+                },
+                pivot_x: pivot_x,
+                pivot_y: pivot_y,
                 rotated: Some(rotated),
                 source_x: Some(
                     if (el
@@ -187,7 +271,16 @@ pub fn parse_texture_atlas_starling_xml(
                         .clone())
                     .is_some()
                     {
-                        (-crate::host_value::<()>("host.call"))
+                        (-(el
+                            .attributes
+                            .iter()
+                            .find(|(key, _)| key == &"frameX".to_owned())
+                            .map(|(_, value)| value)
+                            .expect("TypeScript Record key was absent")
+                            .clone())
+                        .trim()
+                        .parse::<f64>()
+                        .unwrap_or(f64::NAN))
                     } else {
                         0.0_f64
                     },
@@ -202,7 +295,16 @@ pub fn parse_texture_atlas_starling_xml(
                         .clone())
                     .is_some()
                     {
-                        (-crate::host_value::<()>("host.call"))
+                        (-(el
+                            .attributes
+                            .iter()
+                            .find(|(key, _)| key == &"frameY".to_owned())
+                            .map(|(_, value)| value)
+                            .expect("TypeScript Record key was absent")
+                            .clone())
+                        .trim()
+                        .parse::<f64>()
+                        .unwrap_or(f64::NAN))
                     } else {
                         0.0_f64
                     },

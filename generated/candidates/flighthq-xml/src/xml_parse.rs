@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/xml/src/xmlParse.ts:7 (sha256:8413d922b6b9aacab00f8d6d95f3e14c96e5643e16fc094a3e965313f929e615)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct XmlElement {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -23,7 +23,7 @@ impl PartialEq for XmlElement {
 }
 
 // Source: upstream/packages/xml/src/xmlParse.ts:18 (sha256:5d3faebf7d0c254ea5522a2669360263c6aab9196a4015bcfba2079457bba066)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct ParseXmlAttributesRecord1 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -46,7 +46,19 @@ pub fn parse_xml_attributes(attrs: String) -> Vec<(String, String)> {
         .expect("upstream TypeScript regular expression must be valid Rust regex syntax");
     let mut m: Option<crate::OpaqueHostValue>;
     while ({
-        m = Some((re.exec)(attrs));
+        m = {
+            let __flight_regex = re;
+            __flight_regex.captures(&((attrs).clone())).map(|captures| {
+                (0..captures.len())
+                    .map(|index| {
+                        captures
+                            .get(index)
+                            .map_or("", |matched| matched.as_str())
+                            .to_owned()
+                    })
+                    .collect::<Vec<_>>()
+            })
+        };
         m
     })
     .is_some()
@@ -67,7 +79,7 @@ pub fn parse_xml_attributes(attrs: String) -> Vec<(String, String)> {
 }
 
 // Source: upstream/packages/xml/src/xmlParse.ts:34 (sha256:a7aa0aa5ab2be01d7e16430c29b0a95d3eb6d9fabda42b2df4c9aa07b329c349)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct ParseXmlDocumentRecord1 {
     __flight_identity: std::sync::Arc<()>,
     pos: f64,
@@ -117,7 +129,7 @@ pub fn parse_xml_document(xml: String) -> Option<XmlElement> {
 }
 
 // Source: upstream/packages/xml/src/xmlParse.ts:48 (sha256:9c67998340c6b093dfb9c8b8d29c8c1995935436f7e04c286d22775ca18ce3ee)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct ParseState {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -145,10 +157,20 @@ fn decode_xml_entities(s: String) -> String {
     return {
         let mut __flight_replace = |_: String, dec: String, hex: String, name: String| -> String {
             if dec {
-                return (string.from_code_point)(crate::host_value::<()>("host.call"));
+                return (string.from_code_point)({
+                    let __flight_value = (dec).clone();
+                    let __flight_radix = (10.0_f64) as u32;
+                    i64::from_str_radix(__flight_value.trim(), __flight_radix)
+                        .map_or(f64::NAN, |value| value as f64)
+                });
             }
             if hex {
-                return (string.from_code_point)(crate::host_value::<()>("host.call"));
+                return (string.from_code_point)({
+                    let __flight_value = (hex).clone();
+                    let __flight_radix = (16.0_f64) as u32;
+                    i64::from_str_radix(__flight_value.trim(), __flight_radix)
+                        .map_or(f64::NAN, |value| value as f64)
+                });
             }
             return XML_ENTITIES
                 .iter()

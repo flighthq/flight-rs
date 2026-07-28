@@ -11,7 +11,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/Mesh.ts:25 (sha256:9d1fc386d6d46d295994508c69ed48afe084c7671e04527565640f98f319b627)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Mesh {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

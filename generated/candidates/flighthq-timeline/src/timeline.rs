@@ -12,8 +12,24 @@ use flighthq_types::{
     TimelineSignals, TimelineSource,
 };
 
-#[derive(Clone)]
-pub struct FlightPartialRecord1 {
+#[derive(Clone, Default)]
+pub struct SharedStructuralRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub total_frames: Option<f64>,
+    pub frame_rate: Option<f64>,
+    pub labels: Option<Vec<TimelineLabel>>,
+    pub construct_frame: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(DisplayObject, f64) -> () + Send + 'static>>>,
+    >,
+}
+impl PartialEq for SharedStructuralRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub source: Option<TimelineSource>,
     pub target: Option<DisplayObject>,
@@ -25,7 +41,7 @@ pub struct FlightPartialRecord1 {
     pub play_mode: Option<TimelinePlayMode>,
     pub signals: Option<TimelineSignals>,
 }
-impl PartialEq for FlightPartialRecord1 {
+impl PartialEq for FlightPartialRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -46,7 +62,7 @@ pub fn add_timeline_frame_script(
 }
 
 // Source: upstream/packages/timeline/src/timeline.ts:17 (sha256:f24f67d158c066578e39768085a54a1194ffcd26260d7c7abd67517dec60b181)
-pub fn create_timeline(obj: Option<FlightPartialRecord1>) -> Timeline {
+pub fn create_timeline(obj: Option<FlightPartialRecord2>) -> Timeline {
     return Timeline {
         __flight_identity: std::sync::Arc::new(()),
         source: obj.as_ref().and_then(|value| (value.source).clone()),
@@ -63,23 +79,7 @@ pub fn create_timeline(obj: Option<FlightPartialRecord1>) -> Timeline {
 }
 
 // Source: upstream/packages/timeline/src/timeline.ts:35 (sha256:8c2623b30f531687bfcf86a7365eef7a608418cd1bf797f02bc930a74bdc4fd0)
-#[derive(Clone)]
-struct CreateTimelineSourceRecord2 {
-    __flight_identity: std::sync::Arc<()>,
-    total_frames: Option<f64>,
-    frame_rate: Option<f64>,
-    labels: Option<Vec<TimelineLabel>>,
-    construct_frame: Option<
-        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(DisplayObject, f64) -> () + Send + 'static>>>,
-    >,
-}
-impl PartialEq for CreateTimelineSourceRecord2 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-pub fn create_timeline_source(obj: &CreateTimelineSourceRecord2) -> TimelineSource {
+pub fn create_timeline_source(obj: &SharedStructuralRecord1) -> TimelineSource {
     return TimelineSource {
         __flight_identity: std::sync::Arc::new(()),
         total_frames: (obj.total_frames).unwrap_or(1.0_f64),
@@ -156,7 +156,10 @@ pub fn goto_and_play_timeline(
     frame: &crate::FlightUnion2<f64, String>,
 ) -> () {
     play_timeline(timeline);
-    seek_timeline(timeline, resolve_frame(timeline, &((*frame).clone())));
+    {
+        let __flight_argument_1 = resolve_frame(timeline, &((*frame).clone()));
+        seek_timeline(timeline, __flight_argument_1)
+    };
 }
 
 // Source: upstream/packages/timeline/src/timeline.ts:88 (sha256:1e3498ab95d4736131cc9685a5ead895a4da6aa3565c6784b0987cdea7674fcb)
@@ -165,13 +168,19 @@ pub fn goto_and_stop_timeline(
     frame: &crate::FlightUnion2<f64, String>,
 ) -> () {
     stop_timeline(timeline);
-    seek_timeline(timeline, resolve_frame(timeline, &((*frame).clone())));
+    {
+        let __flight_argument_1 = resolve_frame(timeline, &((*frame).clone()));
+        seek_timeline(timeline, __flight_argument_1)
+    };
 }
 
 // Source: upstream/packages/timeline/src/timeline.ts:93 (sha256:252bf0fc31b7cae71d4f4fe38c0101b55ad13833b65ac92cb1cc458b23e3fd67)
 pub fn next_frame_timeline(timeline: &mut Timeline) -> () {
     stop_timeline(timeline);
-    seek_timeline(timeline, (timeline.current_frame + 1.0_f64));
+    {
+        let __flight_argument_1 = (timeline.current_frame + 1.0_f64);
+        seek_timeline(timeline, __flight_argument_1)
+    };
 }
 
 // Source: upstream/packages/timeline/src/timeline.ts:98 (sha256:ecdeb97462a16ce041ca42c0a22440820ad4152d143a05b789a31b42302b1558)
@@ -186,7 +195,10 @@ pub fn play_timeline(timeline: &mut Timeline) -> () {
 // Source: upstream/packages/timeline/src/timeline.ts:104 (sha256:ed15e7e5a76a15b38925be4c0e81f436b8a941bc4196de4ae38de12e21eb4c95)
 pub fn prev_frame_timeline(timeline: &mut Timeline) -> () {
     stop_timeline(timeline);
-    seek_timeline(timeline, (timeline.current_frame - 1.0_f64));
+    {
+        let __flight_argument_1 = (timeline.current_frame - 1.0_f64);
+        seek_timeline(timeline, __flight_argument_1)
+    };
 }
 
 // Source: upstream/packages/timeline/src/timeline.ts:109 (sha256:97c14a8e92352ab0d0c47e290c76600a02770620aa9bf4ce8e178e509b6ba32b)
@@ -393,13 +405,7 @@ fn resolve_frame(timeline: &Timeline, frame: &crate::FlightUnion2<f64, String>) 
             crate::FlightUnion2::B(_) => panic!("TypeScript union narrowing failed"),
         };
     }
-    let label = find_timeline_label(
-        timeline,
-        match (*frame).clone() {
-            crate::FlightUnion2::A(_) => panic!("TypeScript union narrowing failed"),
-            crate::FlightUnion2::B(value) => value,
-        },
-    );
+    let label = find_timeline_label(timeline, (frame).clone());
     if (label).is_none() {
         panic!(
             "{}",

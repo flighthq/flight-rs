@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/CurlNoiseForce.ts:1 (sha256:89b594bb0f1664166cf9aff7b19dc58ab01f4cc2fe2171e2a343c204870ab4a7)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct CurlNoiseForce {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/InputState.ts:1 (sha256:216dce6f67c2e578771f19028b5b6df661f640ecf89609634c0f5537d28f30e7)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct InputState {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

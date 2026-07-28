@@ -9,7 +9,7 @@
 use flighthq_types::ParticleCurve;
 pub use flighthq_types::{ParticleBlendMode, ParticleEmitterConfig, ParticleEmitterShape};
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha_end: Option<f64>,

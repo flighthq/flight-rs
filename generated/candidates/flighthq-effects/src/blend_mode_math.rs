@@ -180,6 +180,7 @@ pub fn get_separable_blend_channel(mode: AdvancedBlendMode, cb: f64, cs: f64) ->
             if __flight_case <= 7_usize {
                 return cs;
             }
+            unreachable!("exhaustive TypeScript switch completed without returning");
         }
     }
 }

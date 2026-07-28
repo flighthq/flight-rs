@@ -8,7 +8,7 @@
 
 use flighthq_types::ScreenSpaceFogEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub color: Option<f64>,
@@ -23,7 +23,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/screenSpaceFogEffect.ts:3 (sha256:6a0bbf280ed41f5d3c962e3862f956fe874b6e6e3fec9362c09c85d2e424dd5e)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateScreenSpaceFogEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -50,6 +50,7 @@ pub fn create_screen_space_fog_effect(options: Option<FlightOmitRecord1>) -> Scr
             near: __flight_spread_1.near,
             far: __flight_spread_1.far,
             density: __flight_spread_1.density,
+            ..Default::default()
         }
     };
 }

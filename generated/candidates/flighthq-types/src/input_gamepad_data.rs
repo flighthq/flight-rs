@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/InputGamepadData.ts:1 (sha256:f6f3872e38d26fd5c0c360caad23d753be822f63cb968e3c284ab16d66ff612e)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct InputGamepadAxisData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -23,7 +23,7 @@ impl PartialEq for InputGamepadAxisData {
 }
 
 // Source: upstream/packages/types/src/InputGamepadData.ts:8 (sha256:67611d7cfb4735a3bd32f9efeacecff3a61b78eab1a7a05b8eeac35d932b0944)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct InputGamepadButtonData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -39,7 +39,7 @@ impl PartialEq for InputGamepadButtonData {
 }
 
 // Source: upstream/packages/types/src/InputGamepadData.ts:15 (sha256:4177d3531b0c1218bdfe2219f99275e7b1be1971b99912f52f8debe397599417)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct InputGamepadConnectData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

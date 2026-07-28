@@ -9,7 +9,7 @@
 use crate::{AlphaType, BlendMode, Kind, MaterialAlphaMode, Modifier, Texture};
 
 // Source: upstream/packages/types/src/ShadedMaterial.ts:23 (sha256:f012cad97304e5b646c0f93382b021b88256802524f06f31c7c237f4904454f6)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ShadedMaterial {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -20,6 +20,9 @@ pub struct ShadedMaterial {
     pub alpha_type: AlphaType,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub shader_key: String,
+    pub textures: Option<Vec<(String, Texture)>>,
+    pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
     pub diffuse: f64,
     pub diffuse_map: Option<Texture>,
     pub modifiers: Vec<Modifier>,

@@ -81,7 +81,7 @@ pub fn apply_particle_forces(
                 forces,
                 (emitter.data.transforms[tt as usize] as f64),
                 (emitter.data.transforms[(tt + 1.0_f64) as usize] as f64),
-                pz,
+                (pz).clone(),
                 (state.velocities[vt as usize] as f64),
                 (state.velocities[(vt + 1.0_f64) as usize] as f64),
                 (state.velocities[(vt + 2.0_f64) as usize] as f64),
@@ -296,7 +296,9 @@ fn accumulate_forces(
 
 // Source: upstream/packages/particles/src/applyParticleForces.ts:158 (sha256:f4308d680e0d146e014c6de02dd91d8a4050b61a0d31a5899f98fe18c31c36a8)
 fn falloff_factor(falloff: Option<ForceFalloff>, dist: f64, radius: Option<f64>) -> f64 {
-    if (((radius).is_some()) && (radius > 0.0_f64)) && (dist > radius) {
+    if (((radius).is_some()) && ((radius).as_ref().is_some_and(|value| *value > 0.0_f64)))
+        && (dist > radius)
+    {
         return 0.0_f64;
     }
     {
@@ -310,7 +312,9 @@ fn falloff_factor(falloff: Option<ForceFalloff>, dist: f64, radius: Option<f64>)
         };
         '__flight_switch: {
             if __flight_case <= 0_usize {
-                return if ((radius).is_some()) && (radius > 0.0_f64) {
+                return if ((radius).is_some())
+                    && ((radius).as_ref().is_some_and(|value| *value > 0.0_f64))
+                {
                     (0.0_f64).max((1.0_f64 - (dist / radius)))
                 } else {
                     1.0_f64
@@ -325,6 +329,7 @@ fn falloff_factor(falloff: Option<ForceFalloff>, dist: f64, radius: Option<f64>)
             if __flight_case <= 2_usize {
                 return 1.0_f64;
             }
+            unreachable!("exhaustive TypeScript switch completed without returning");
         }
     }
 }

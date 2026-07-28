@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/TextSelectionRectangle.ts:1 (sha256:8b127f9af8b5c5c504869aff4b368a55038b3df041dcc04c392bae8aed708e39)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextSelectionRectangle {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

@@ -8,23 +8,22 @@
 
 use flighthq_types::{AdjustmentKind, ColorTransformFunction};
 
-#[derive(Clone)]
-pub struct FlightPartialRecord1 {
+#[derive(Clone, Default)]
+pub struct SharedStructuralRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub kind: Option<AdjustmentKind>,
-    pub transform: Option<ColorTransformFunction>,
+    pub kind: String,
 }
-impl PartialEq for FlightPartialRecord1 {
+impl PartialEq for SharedStructuralRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<AdjustmentKind>,
-    pub color_matrix: Option<Vec<f64>>,
+    pub transform: Option<ColorTransformFunction>,
 }
 impl PartialEq for FlightPartialRecord2 {
     fn eq(&self, other: &Self) -> bool {
@@ -32,39 +31,49 @@ impl PartialEq for FlightPartialRecord2 {
     }
 }
 
-// Source: upstream/packages/adjustments/src/colorLutAdjustment.ts:10 (sha256:706d5be3108fd619cffdcd0cbd8ced4ac47c2630d4a9b78839c64f3db0f634f2)
-#[derive(Clone)]
-struct GetAdjustmentColorTransformRecord3 {
-    __flight_identity: std::sync::Arc<()>,
-    kind: String,
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord3 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub kind: Option<AdjustmentKind>,
+    pub color_matrix: Option<Vec<f64>>,
 }
-impl PartialEq for GetAdjustmentColorTransformRecord3 {
+impl PartialEq for FlightPartialRecord3 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
+// Source: upstream/packages/adjustments/src/colorLutAdjustment.ts:10 (sha256:706d5be3108fd619cffdcd0cbd8ced4ac47c2630d4a9b78839c64f3db0f634f2)
 pub fn get_adjustment_color_transform(
-    operation: &GetAdjustmentColorTransformRecord3,
+    operation: &SharedStructuralRecord1,
 ) -> Option<ColorTransformFunction> {
-    let transform = (operation.transform).clone();
-    return (transform).clone();
+    let transform = None::<ColorTransformFunction>;
+    if ((transform).as_ref().map_or("undefined", |_| "function") == "function") {
+        return (transform).clone();
+    }
+    let matrix = (|| -> Option<Vec<f64>> {
+        let matrix = None::<Vec<f64>>;
+        return if ((matrix).is_some())
+            && ((matrix.as_ref().unwrap().len() as f64) == crate::COLOR_MATRIX_LENGTH)
+        {
+            (matrix).clone()
+        } else {
+            None
+        };
+    })();
+    return if (matrix).is_none() {
+        None
+    } else {
+        Some(color_matrix_transform(((matrix).clone().unwrap()).clone()))
+    };
 }
 
 // Source: upstream/packages/adjustments/src/colorLutAdjustment.ts:20 (sha256:a3555604ecbc722928c2d782499cbed67c36de37dd76a702f84c347c44554b3d)
-#[derive(Clone)]
-struct IsColorLutAdjustmentRecord3 {
-    __flight_identity: std::sync::Arc<()>,
-    kind: String,
-}
-impl PartialEq for IsColorLutAdjustmentRecord3 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-pub fn is_color_lut_adjustment(operation: &IsColorLutAdjustmentRecord3) -> bool {
-    return ("function" == "function");
+pub fn is_color_lut_adjustment(operation: &SharedStructuralRecord1) -> bool {
+    return ((None::<ColorTransformFunction>)
+        .as_ref()
+        .map_or("undefined", |_| "function")
+        == "function");
 }
 
 // Source: upstream/packages/adjustments/src/colorLutAdjustment.ts:27 (sha256:653f829c8320921dd0e21c19733fb780fd327720e40b8fa9e742a4e9e5105e95)

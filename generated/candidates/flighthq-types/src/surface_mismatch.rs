@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/SurfaceMismatch.ts:7 (sha256:5f3316dd663fb43b928a0aa7c6a2a7dcc8eb53576c487164eac51368915db919)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SurfaceMismatch {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

@@ -27,7 +27,7 @@ fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -63,7 +63,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub allow_smoothing: Option<bool>,
@@ -124,7 +124,18 @@ pub fn build_render_queue(state: &RenderState, source: &Renderable, out: &mut Re
             scene_order += 1.0;
             scene_order
         };
-        let children = (get_node_runtime(&current).children).clone();
+        let children = (get_node_runtime(&{
+            let __flight_source = &(current);
+            Node {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                data: (__flight_source.data).clone(),
+                enabled: __flight_source.enabled,
+                kind: (__flight_source.kind).clone(),
+                name: (__flight_source.name).clone(),
+            }
+        })
+        .children)
+            .clone();
         if (children).is_some() {
             {
                 let mut i = ((children.as_ref().unwrap().len() as f64) - 1.0_f64);

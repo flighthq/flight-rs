@@ -52,16 +52,40 @@ pub fn append_rotation_matrix4(
         };
         {
             let __flight_argument_2 = (m).clone();
-            multiply_matrix4(&mut m, &t1, &__flight_argument_2)
+            multiply_matrix4(
+                &mut m,
+                &{
+                    let __flight_source = &(t1);
+                    Matrix4Like {
+                        __flight_identity: std::sync::Arc::clone(
+                            &__flight_source.__flight_identity,
+                        ),
+                        m: (__flight_source.m).clone(),
+                    }
+                },
+                &__flight_argument_2,
+            )
         };
         {
             let __flight_argument_1 = (m).clone();
-            multiply_matrix4(&mut m, &__flight_argument_1, &t2)
+            multiply_matrix4(&mut m, &__flight_argument_1, &{
+                let __flight_source = &(t2);
+                Matrix4Like {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    m: (__flight_source.m).clone(),
+                }
+            })
         };
         release_matrix4(&t1);
         release_matrix4(&t2);
     }
-    append_matrix4(out, source, &m);
+    append_matrix4(out, source, &{
+        let __flight_source = &(m);
+        Matrix4Like {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            m: (__flight_source.m).clone(),
+        }
+    });
     release_matrix4(&m);
 }
 
@@ -78,7 +102,13 @@ pub fn append_scale_matrix4(
         &mut m, x_scale, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, y_scale, 0.0_f64, 0.0_f64, 0.0_f64,
         0.0_f64, z_scale, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 1.0_f64,
     );
-    append_matrix4(out, source, &m);
+    append_matrix4(out, source, &{
+        let __flight_source = &(m);
+        Matrix4Like {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            m: (__flight_source.m).clone(),
+        }
+    });
     release_matrix4(&m);
 }
 
@@ -978,16 +1008,40 @@ pub fn prepend_rotation_matrix4(
         };
         {
             let __flight_argument_1 = (m).clone();
-            multiply_matrix4(&mut m, &__flight_argument_1, &t1)
+            multiply_matrix4(&mut m, &__flight_argument_1, &{
+                let __flight_source = &(t1);
+                Matrix4Like {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    m: (__flight_source.m).clone(),
+                }
+            })
         };
         {
             let __flight_argument_2 = (m).clone();
-            multiply_matrix4(&mut m, &t2, &__flight_argument_2)
+            multiply_matrix4(
+                &mut m,
+                &{
+                    let __flight_source = &(t2);
+                    Matrix4Like {
+                        __flight_identity: std::sync::Arc::clone(
+                            &__flight_source.__flight_identity,
+                        ),
+                        m: (__flight_source.m).clone(),
+                    }
+                },
+                &__flight_argument_2,
+            )
         };
         release_matrix4(&t1);
         release_matrix4(&t2);
     }
-    prepend_matrix4(out, source, &m);
+    prepend_matrix4(out, source, &{
+        let __flight_source = &(m);
+        Matrix4Like {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            m: (__flight_source.m).clone(),
+        }
+    });
     release_matrix4(&m);
 }
 
@@ -1004,7 +1058,13 @@ pub fn prepend_scale_matrix4(
         &mut m, x_scale, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, y_scale, 0.0_f64, 0.0_f64, 0.0_f64,
         0.0_f64, z_scale, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 1.0_f64,
     );
-    prepend_matrix4(out, source, &m);
+    prepend_matrix4(out, source, &{
+        let __flight_source = &(m);
+        Matrix4Like {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            m: (__flight_source.m).clone(),
+        }
+    });
     release_matrix4(&m);
 }
 
@@ -1021,7 +1081,17 @@ pub fn prepend_translation_matrix4(
         let __flight_argument_1 = (m).clone();
         translate_matrix4(&mut m, &__flight_argument_1, x, y, z)
     };
-    multiply_matrix4(out, &m, source);
+    multiply_matrix4(
+        out,
+        &{
+            let __flight_source = &(m);
+            Matrix4Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                m: (__flight_source.m).clone(),
+            }
+        },
+        source,
+    );
     release_matrix4(&m);
 }
 
@@ -1034,7 +1104,13 @@ pub fn rotate_matrix4(
 ) -> () {
     let mut m = acquire_identity_matrix4();
     __get_axis_rotation(&mut m, axis.x, axis.y, axis.z, radians);
-    multiply_matrix4(out, source, &m);
+    multiply_matrix4(out, source, &{
+        let __flight_source = &(m);
+        Matrix4Like {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            m: (__flight_source.m).clone(),
+        }
+    });
     release_matrix4(&m);
 }
 
@@ -1157,28 +1233,40 @@ pub fn set_matrix4_from_float32_array(out: &mut Matrix4Like, offset: f64, source
 
 // Source: upstream/packages/geometry/src/matrix4.ts:983 (sha256:2dc17460f750466baaac0e1a0db10f7dc2ed9e6ff46a8e33931b3ece831c43a1)
 pub fn set_matrix4_from_matrix(out: &mut Matrix4Like, source: &mut MatrixLike) -> () {
-    set_matrix4_from2_d(
-        out,
-        source.a,
-        source.b,
-        source.c,
-        source.d,
-        Some(source.tx),
-        Some(source.ty),
-    );
+    {
+        let __flight_argument_1 = source.a;
+        let __flight_argument_2 = source.b;
+        let __flight_argument_3 = source.c;
+        let __flight_argument_4 = source.d;
+        set_matrix4_from2_d(
+            out,
+            __flight_argument_1,
+            __flight_argument_2,
+            __flight_argument_3,
+            __flight_argument_4,
+            Some(source.tx),
+            Some(source.ty),
+        )
+    };
 }
 
 // Source: upstream/packages/geometry/src/matrix4.ts:987 (sha256:aaec5593dd92599e6f8a8c03be1c6738b60471ebf8db54e3e38890aba8299386)
 pub fn set_matrix4_from_matrix3(out: &mut Matrix4Like, source: &mut Matrix3Like) -> () {
-    set_matrix4_from2_d(
-        out,
-        (source.m[0.0_f64 as usize] as f64),
-        (source.m[3.0_f64 as usize] as f64),
-        (source.m[1.0_f64 as usize] as f64),
-        (source.m[4.0_f64 as usize] as f64),
-        Some((source.m[6.0_f64 as usize] as f64).clone()),
-        Some((source.m[7.0_f64 as usize] as f64).clone()),
-    );
+    {
+        let __flight_argument_1 = (source.m[0.0_f64 as usize] as f64);
+        let __flight_argument_2 = (source.m[3.0_f64 as usize] as f64);
+        let __flight_argument_3 = (source.m[1.0_f64 as usize] as f64);
+        let __flight_argument_4 = (source.m[4.0_f64 as usize] as f64);
+        set_matrix4_from2_d(
+            out,
+            __flight_argument_1,
+            __flight_argument_2,
+            __flight_argument_3,
+            __flight_argument_4,
+            Some((source.m[6.0_f64 as usize] as f64).clone()),
+            Some((source.m[7.0_f64 as usize] as f64).clone()),
+        )
+    };
     out.m[2.0_f64 as usize] = (source.m[2.0_f64 as usize] as f64) as f32;
     out.m[6.0_f64 as usize] = (source.m[5.0_f64 as usize] as f64) as f32;
     out.m[10.0_f64 as usize] = (source.m[8.0_f64 as usize] as f64) as f32;

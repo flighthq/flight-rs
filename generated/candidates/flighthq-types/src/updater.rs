@@ -9,7 +9,7 @@
 use crate::Signal;
 
 // Source: upstream/packages/types/src/Updater.ts:3 (sha256:1a4227bf38066f4a4499f6a90fd5f83924785eed1ec826d5e0179710b06f66bb)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct UpdateInfo {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -30,7 +30,7 @@ impl PartialEq for UpdateInfo {
 }
 
 // Source: upstream/packages/types/src/Updater.ts:19 (sha256:11d221573978c7b4e9f7ba9e3c0d1d3c61febc18c1d0183bdbcfd1f43d1dc822)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct UpdateProgress {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -47,7 +47,7 @@ impl PartialEq for UpdateProgress {
 }
 
 // Source: upstream/packages/types/src/Updater.ts:29 (sha256:e5ccf43d6259ff948cd1ba965273672b0bb44d11ee4b25cca5a996fb25c9fad6)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct UpdaterError {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -61,7 +61,7 @@ impl PartialEq for UpdaterError {
 }
 
 // Source: upstream/packages/types/src/Updater.ts:36 (sha256:470ed3d4a89e436a0060785a649555cfc186680cbe7ae153237b7e388779f9b9)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct UpdaterConfig {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -76,7 +76,7 @@ impl PartialEq for UpdaterConfig {
 }
 
 // Source: upstream/packages/types/src/Updater.ts:43 (sha256:1ac49d69455eaa69b05812978062d74dcd0c76e96b9736868b345f996393ffcb)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct UpdaterSignatureConfig {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -93,7 +93,7 @@ impl PartialEq for UpdaterSignatureConfig {
 pub type UpdaterPhase = String;
 
 // Source: upstream/packages/types/src/Updater.ts:54 (sha256:3be040e014fd577cb94613014924a615e10e19a94f95f69af0e4e1573141d271)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct UpdaterState {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

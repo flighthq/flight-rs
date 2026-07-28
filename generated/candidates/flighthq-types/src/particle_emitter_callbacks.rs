@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/ParticleEmitterCallbacks.ts:1 (sha256:eeb4954eec290115eb7bff6d11084034fd083fd74cdf423b990a028800fd7a7e)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ParticleEmitterCallbacks {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

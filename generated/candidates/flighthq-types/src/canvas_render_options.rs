@@ -9,7 +9,7 @@
 use crate::{Matrix, SceneGraphSyncPolicy};
 
 // Source: upstream/packages/types/src/CanvasRenderOptions.ts:4 (sha256:11d2b4fc4d995793ae8fce447563e9b4d4eef417364ba3290f680e23dce49c59)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct CanvasRenderOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

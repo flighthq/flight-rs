@@ -9,7 +9,7 @@
 use crate::Vector3;
 
 // Source: upstream/packages/types/src/BoundingSphere.ts:6 (sha256:92c524ce02c86cb0a9e5328f47a35f2de5f28ff17c6a6e73d56cc9fb56bfef78)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct BoundingSphere {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

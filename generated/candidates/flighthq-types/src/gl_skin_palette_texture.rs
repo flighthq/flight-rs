@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/GlSkinPaletteTexture.ts:13 (sha256:8648ac5ec97c9c94e9fd0f8a99237a5aa4493265d0fda487fc210e84961e8acc)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlSkinPaletteTexture {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

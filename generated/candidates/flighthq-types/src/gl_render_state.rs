@@ -15,7 +15,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/GlRenderState.ts:17 (sha256:464eeba3f4bedfaa41e89c4eeecce566a24f5114fdb842604f4ceec1b98c796a)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlRenderState {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -48,7 +48,7 @@ impl PartialEq for GlRenderState {
 }
 
 // Source: upstream/packages/types/src/GlRenderState.ts:27 (sha256:08d46091d710deac70dc82dd5ba3988c6e74e8161dfcd2028e9f0166f91e02d5)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlBlendRealization {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -96,7 +96,7 @@ impl PartialEq for GlColorAdjustmentFold {
 }
 
 // Source: upstream/packages/types/src/GlRenderState.ts:58 (sha256:7f085bde9bee33f86e50ded46dba560b552423df3fb29df4e96cc9721d0b4390)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlRenderStateRuntimeRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub width: f64,
@@ -108,7 +108,7 @@ impl PartialEq for GlRenderStateRuntimeRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlRenderStateRuntimeRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub texture: crate::OpaqueHostValue,
@@ -120,7 +120,7 @@ impl PartialEq for GlRenderStateRuntimeRecord2 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlRenderStateRuntimeRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub texture: crate::OpaqueHostValue,
@@ -228,7 +228,7 @@ impl PartialEq for GlRenderStateRuntime {
 }
 
 // Source: upstream/packages/types/src/GlRenderState.ts:199 (sha256:0da153eab934fe3f87515e82075d31ac520b4f06c9b9f577ab8c9df6deb67b3b)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlParticleShader {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -250,7 +250,7 @@ impl PartialEq for GlParticleShader {
 }
 
 // Source: upstream/packages/types/src/GlRenderState.ts:212 (sha256:ded8686177b12513a00a42563ec4137a71485ee36e78558ecc4264002402f2e6)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlQuadBatchShader {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -272,7 +272,7 @@ impl PartialEq for GlQuadBatchShader {
 }
 
 // Source: upstream/packages/types/src/GlRenderState.ts:227 (sha256:878007b0f0638b9a8cffca06d9f3695352bacac83938a2bdd17c8531e0284244)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlColorTransformInstancedShader {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -288,7 +288,7 @@ impl PartialEq for GlColorTransformInstancedShader {
 }
 
 // Source: upstream/packages/types/src/GlRenderState.ts:237 (sha256:62f2e01ebd177547173cfce08db7ebca084c85651e7ad11469783a9caf3c435d)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlUniformColorTransformShader {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -306,7 +306,7 @@ impl PartialEq for GlUniformColorTransformShader {
 }
 
 // Source: upstream/packages/types/src/GlRenderState.ts:250 (sha256:7406eb32184442b43c5c70062e932bc89b3e113b70586bc5d1fc23a1eb54eaae)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlShapeMeshColorTransformShader {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -324,7 +324,7 @@ impl PartialEq for GlShapeMeshColorTransformShader {
 }
 
 // Source: upstream/packages/types/src/GlRenderState.ts:259 (sha256:c5eed51656152d130c5bd39967bda2fdec09e68c7666b1789992993ec2ac9b57)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlScissorRect {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

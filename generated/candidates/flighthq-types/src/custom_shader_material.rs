@@ -6,14 +6,14 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{AlphaType, BlendMode, MaterialAlphaMode, Texture};
+use crate::{AlphaType, BlendMode, Kind, MaterialAlphaMode, Texture};
 
 // Source: upstream/packages/types/src/CustomShaderMaterial.ts:11 (sha256:a8c84d5a06304f2943dc6a1e7a3b630148b0705730330018dafd7e117b112f4c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct CustomShaderMaterial {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub kind: String,
+    pub kind: Kind,
     pub name: Option<String>,
     pub alpha_cutoff: f64,
     pub alpha_mode: MaterialAlphaMode,

@@ -8,7 +8,7 @@
 
 use flighthq_types::{EffectSourceMode, OuterGlowEffect};
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha: Option<f64>,
@@ -26,7 +26,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/outerGlowEffect.ts:4 (sha256:9e9b60be5f480a66fef755ca2d03553cc8be4a2e4ef7b2029ffd4663a8a3762c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateOuterGlowEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -59,6 +59,7 @@ pub fn create_outer_glow_effect(options: Option<FlightOmitRecord1>) -> OuterGlow
             quality: __flight_spread_1.quality,
             source_mode: (__flight_spread_1.source_mode).clone(),
             strength: __flight_spread_1.strength,
+            ..Default::default()
         }
     };
 }

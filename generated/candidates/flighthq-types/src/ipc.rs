@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/Ipc.ts:3 (sha256:f7cdb31590d86af53e30d5330334731416dff4cc04d00950220c73694a5fb245)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct IpcBackendCapabilities {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -113,7 +113,7 @@ impl PartialEq for IpcBackend {
 }
 
 // Source: upstream/packages/types/src/Ipc.ts:30 (sha256:e226e76590272b023938169c7a8a42aea87f7f146f9584181caa951ca6fe81bb)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct IpcChannel {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -144,7 +144,7 @@ impl PartialEq for IpcMessageEvent {
 }
 
 // Source: upstream/packages/types/src/Ipc.ts:44 (sha256:859db417db809b19f94bf2dde63794bf6868b68dd6a2dbdaa2e0b440207ba6da)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct IpcTarget {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

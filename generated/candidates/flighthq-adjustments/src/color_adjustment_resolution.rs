@@ -6,10 +6,10 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{fuse_color_matrices, get_adjustment_color_matrix};
+use crate::fuse_color_matrices;
 use flighthq_types::{Adjustment, AdjustmentKind, ColorTransform};
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<AdjustmentKind>,
@@ -47,17 +47,6 @@ pub fn is_affine_color_matrix(matrix: &Vec<f64>) -> bool {
 }
 
 // Source: upstream/packages/adjustments/src/colorAdjustmentResolution.ts:43 (sha256:3fb78491e79650aebe321a41d474a8e227b4eb8c6065d805d3687fee0c1b35fc)
-#[derive(Clone)]
-struct OperationContextRecord2 {
-    __flight_identity: std::sync::Arc<()>,
-    kind: String,
-}
-impl PartialEq for OperationContextRecord2 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
 pub fn resolve_color_adjustments_color_transform(
     adjustments: Option<Vec<Adjustment>>,
     out: &mut ColorTransform,
@@ -70,12 +59,16 @@ pub fn resolve_color_adjustments_color_transform(
     {
         let mut i = 0.0_f64;
         while (i < (adjustments.as_ref().unwrap().len() as f64)) {
-            let matrix = get_adjustment_color_matrix(&OperationContextRecord2 {
-                __flight_identity: std::sync::Arc::clone(
-                    &(adjustments.as_ref().unwrap()[i as usize]).__flight_identity,
-                ),
-                kind: ((adjustments.as_ref().unwrap()[i as usize]).kind).clone(),
-            });
+            let matrix = (|| -> Option<Vec<f64>> {
+                let matrix = None::<Vec<f64>>;
+                return if ((matrix).is_some())
+                    && ((matrix.as_ref().unwrap().len() as f64) == crate::COLOR_MATRIX_LENGTH)
+                {
+                    (matrix).clone()
+                } else {
+                    None
+                };
+            })();
             if (matrix).is_none() {
                 inlineable = false;
             } else {

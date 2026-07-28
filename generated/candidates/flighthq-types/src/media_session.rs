@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/MediaSession.ts:4 (sha256:165d70f259cafc04182a0625560eaeac80af5cc5825a3f8ea7d7c8aaf2fa89fd)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct MediaSessionArtwork {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -22,7 +22,7 @@ impl PartialEq for MediaSessionArtwork {
 }
 
 // Source: upstream/packages/types/src/MediaSession.ts:12 (sha256:aee262f51e361dfe8ea521ea2ec6f94a4381baf8678d6ce00fd092f7a3fa562d)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct MediaSessionMetadata {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -41,7 +41,7 @@ impl PartialEq for MediaSessionMetadata {
 pub type MediaSessionAction = String;
 
 // Source: upstream/packages/types/src/MediaSession.ts:35 (sha256:0f48bcd9db61c0a9d9c03f2b69844f40f9a14b13fb84bfeb0b893f02962fdd5d)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct MediaSessionActionDetails {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -60,7 +60,7 @@ impl PartialEq for MediaSessionActionDetails {
 pub type MediaSessionPlaybackState = String;
 
 // Source: upstream/packages/types/src/MediaSession.ts:48 (sha256:778cd16a82d742b05604332092f1827cab6eb4d6b799756b7c841c1bef9c8cae)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct MediaSessionPositionState {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

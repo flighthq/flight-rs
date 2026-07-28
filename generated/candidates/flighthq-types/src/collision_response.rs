@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/CollisionResponse.ts:3 (sha256:801757bc83a57b31e8922ff6be2250042dcde8f1a022db4cd9bc030a1aa20c6b)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct CollisionResponse {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

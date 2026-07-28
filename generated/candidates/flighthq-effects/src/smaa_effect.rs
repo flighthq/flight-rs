@@ -8,7 +8,7 @@
 
 use flighthq_types::SmaaEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub threshold: Option<f64>,
@@ -20,7 +20,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/smaaEffect.ts:3 (sha256:9c5fa8e51982ceba3092993c452263c5c6afaeac130240b525438d9105dbb230)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateSmaaEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -41,6 +41,7 @@ pub fn create_smaa_effect(options: Option<FlightOmitRecord1>) -> SmaaEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "SmaaEffect".to_owned(),
             threshold: __flight_spread_1.threshold,
+            ..Default::default()
         }
     };
 }

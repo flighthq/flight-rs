@@ -30,7 +30,7 @@ pub const SOFT_KEYBOARD_STYLE_DARK_KIND: &'static str = "Dark";
 pub type SoftKeyboardPhase = String;
 
 // Source: upstream/packages/types/src/Keyboard.ts:9 (sha256:cec66cf7178370dadaafb2920ac8407220e3651bcad96a192a18d499ad6420f7)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SoftKeyboardTransition {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -44,7 +44,7 @@ impl PartialEq for SoftKeyboardTransition {
 }
 
 // Source: upstream/packages/types/src/Keyboard.ts:13 (sha256:0d37ab980102fd6c29da9c33e3ff69749aa8fc3fceed59fed424bf51c17c3ca4)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SoftKeyboardInfo {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

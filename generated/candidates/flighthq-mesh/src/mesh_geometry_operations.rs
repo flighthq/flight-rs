@@ -15,7 +15,7 @@ use flighthq_geometry::create_aabb;
 use flighthq_types::{MeshGeometry, MeshSubset, VertexAttributeLayout};
 
 // Source: upstream/packages/mesh/src/meshGeometryOperations.ts:16 (sha256:594c1b6b37974803ded7399e56221006adb4f5cfd748c999ef2740be53a08cce)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct MeshGeometryFromAttributesOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

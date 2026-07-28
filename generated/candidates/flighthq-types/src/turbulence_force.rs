@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/TurbulenceForce.ts:1 (sha256:c70dcdd281c70a6164e800a27f105327058f323e9ffcca75502bf78bbb0ebf78)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TurbulenceForce {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

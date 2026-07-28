@@ -9,7 +9,7 @@
 use crate::{Material, Matrix3, Matrix4, MeshSubset};
 
 // Source: upstream/packages/types/src/SceneRenderProxy.ts:27 (sha256:ef71456cb51dc060753a40631451e1faaa529a884a46a2d05160fd482624f090)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SceneRenderProxy {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

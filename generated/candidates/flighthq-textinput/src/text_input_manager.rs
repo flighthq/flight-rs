@@ -21,7 +21,7 @@ use flighthq_types::{
     TextInputManager, TextInputSource, TextVerticalAlign,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha_multiplier: Option<f64>,
@@ -39,7 +39,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -89,7 +89,7 @@ impl PartialEq for FlightPartialRecord2 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -125,7 +125,7 @@ impl PartialEq for FlightPartialRecord3 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord4 {
     pub __flight_identity: std::sync::Arc<()>,
     pub auto_size: Option<TextAutoSize>,
@@ -156,7 +156,7 @@ impl PartialEq for FlightPartialRecord4 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord5 {
     pub __flight_identity: std::sync::Arc<()>,
     pub auto_size: Option<TextAutoSize>,
@@ -172,11 +172,12 @@ impl PartialEq for FlightPartialRecord5 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord6 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<AdjustmentKind>,
     pub color_matrix: Option<Vec<f64>>,
+    pub color_transform: Option<ColorTransform>,
 }
 impl PartialEq for FlightPartialRecord6 {
     fn eq(&self, other: &Self) -> bool {
@@ -184,7 +185,7 @@ impl PartialEq for FlightPartialRecord6 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord7 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha: Option<f64>,
@@ -196,7 +197,7 @@ impl PartialEq for FlightPartialRecord7 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord8 {
     pub __flight_identity: std::sync::Arc<()>,
     pub blend_mode: Option<BlendMode>,
@@ -207,7 +208,7 @@ impl PartialEq for FlightPartialRecord8 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord9 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -226,7 +227,7 @@ impl PartialEq for FlightPartialRecord9 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord10 {
     pub __flight_identity: std::sync::Arc<()>,
 }
@@ -236,7 +237,7 @@ impl PartialEq for FlightPartialRecord10 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord11 {
     pub __flight_identity: std::sync::Arc<()>,
     pub clip: Option<ClipRegion>,
@@ -247,7 +248,7 @@ impl PartialEq for FlightPartialRecord11 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord12 {
     pub __flight_identity: std::sync::Arc<()>,
     pub material: Option<Material>,
@@ -259,7 +260,7 @@ impl PartialEq for FlightPartialRecord12 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord13 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -275,7 +276,7 @@ impl PartialEq for FlightPartialRecord13 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord14 {
     pub __flight_identity: std::sync::Arc<()>,
     pub pivot_x: Option<f64>,
@@ -374,14 +375,17 @@ pub fn dispatch_text_input_key_down(
     }
     return handle_text_input_keyboard(
         &mut target.as_mut().unwrap(),
-        &KeyboardEventData {
-            __flight_identity: std::sync::Arc::clone(&(data).__flight_identity),
-            alt_key: (data).alt_key,
-            ctrl_key: (data).ctrl_key,
-            key: ((data).key).clone(),
-            key_code: (data).key_code,
-            meta_key: (data).meta_key,
-            shift_key: (data).shift_key,
+        &{
+            let __flight_source = &(data);
+            KeyboardEventData {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                alt_key: __flight_source.alt_key,
+                ctrl_key: __flight_source.ctrl_key,
+                key: (__flight_source.key).clone(),
+                key_code: __flight_source.key_code,
+                meta_key: __flight_source.meta_key,
+                shift_key: __flight_source.shift_key,
+            }
         },
         Some(HandleTextInputKeyboardOptions {
             __flight_identity: std::sync::Arc::new(()),
@@ -445,11 +449,10 @@ pub fn dispatch_text_input_wheel(manager: &mut TextInputManager, delta_lines: f6
     if ((target).is_none()) || (!target.as_mut().unwrap().enabled) {
         return;
     }
-    set_rich_text_scroll_v(
-        target.as_mut().unwrap(),
-        (target.as_mut().unwrap().data.scroll_v + (delta_lines).round()),
-        None,
-    );
+    {
+        let __flight_argument_1 = (target.as_mut().unwrap().data.scroll_v + (delta_lines).round());
+        set_rich_text_scroll_v(target.as_mut().unwrap(), __flight_argument_1, None)
+    };
 }
 
 // Source: upstream/packages/textinput/src/textInputManager.ts:95 (sha256:c72725f0773ffbea1f408368e39a3fb3fa8938134c1876d1a234045048e8b509)

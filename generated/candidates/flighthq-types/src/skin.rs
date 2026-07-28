@@ -9,7 +9,7 @@
 use crate::{SceneNode, Skeleton3D};
 
 // Source: upstream/packages/types/src/Skin.ts:13 (sha256:4237493d27e6444829b2009db82e94785c1ed46e5e9d134ec1b288566e759151)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Skin {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

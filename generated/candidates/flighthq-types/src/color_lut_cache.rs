@@ -9,7 +9,7 @@
 use crate::ColorLut;
 
 // Source: upstream/packages/types/src/ColorLutCache.ts:10 (sha256:0d473d81ac14313acf8701b87b9845ba0b6598bffce370c9661c9a3a0d756df9)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ColorLutCache {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

@@ -13,7 +13,7 @@ use flighthq_types::{
     RenderState, Renderable, SceneGraphSyncPolicy,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -49,7 +49,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub allow_smoothing: Option<bool>,
@@ -71,7 +71,7 @@ impl PartialEq for FlightPartialRecord2 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub material: Option<Material>,
@@ -84,7 +84,7 @@ impl PartialEq for FlightPartialRecord3 {
 }
 
 // Source: upstream/packages/render/src/explainDisplayObjectRender.ts:10 (sha256:3a24a8aa2b14a0155d209fd31e930b1ff8445fa77105537639d87c7c613d2f13)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct DisplayObjectRenderExplanation {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

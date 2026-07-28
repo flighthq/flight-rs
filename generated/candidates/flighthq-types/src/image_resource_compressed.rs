@@ -9,7 +9,7 @@
 use crate::TextureContainer;
 
 // Source: upstream/packages/types/src/ImageResourceCompressed.ts:11 (sha256:0bbed5fa912595338b4bbf39d199d4f209dd50c8e10b1caafc708a883c0639e4)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ImageResourceCompressed {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

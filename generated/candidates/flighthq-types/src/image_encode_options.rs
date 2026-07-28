@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/ImageEncodeOptions.ts:3 (sha256:d283ae7b435130ca6c601b84b18546dfec27337034d30c917631bc2ea53cdb89)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ImageEncodeOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

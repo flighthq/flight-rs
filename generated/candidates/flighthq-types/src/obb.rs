@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/Obb.ts:6 (sha256:11179d71566a75a56eb4e9778d3032adf6a87a52cdd4ab1f888e67e145a6cd86)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Obb {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

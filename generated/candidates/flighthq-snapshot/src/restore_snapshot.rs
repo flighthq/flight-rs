@@ -55,8 +55,8 @@ fn restore_snapshot_into(target: crate::OpaqueHostValue, source: crate::OpaqueHo
         }
         return;
     }
-    let mut target_object = target;
-    let source_object = source;
+    let mut target_object = crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast");
+    let source_object = crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast");
     for key in (crate::host_value::<()>("host.keys")).iter().cloned() {
         target_object
             .iter()

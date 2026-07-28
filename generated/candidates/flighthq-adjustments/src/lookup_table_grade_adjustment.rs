@@ -9,7 +9,7 @@
 use crate::sample_color_lut;
 use flighthq_types::{ColorLut, ColorTransformFunction, LookupTableGradeAdjustment};
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub lut: Option<ColorLut>,
@@ -22,7 +22,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/adjustments/src/lookupTableGradeAdjustment.ts:10 (sha256:fecafa0e20c0bdf19d25cb014e6a956a309fcfe291f5ef451bf28f11cc1710a8)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateLookupTableGradeAdjustmentRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }

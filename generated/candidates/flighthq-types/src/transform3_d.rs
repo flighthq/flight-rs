@@ -9,7 +9,7 @@
 use crate::{Quaternion, Vector3};
 
 // Source: upstream/packages/types/src/Transform3D.ts:10 (sha256:aa17fd420e35972ab44fa60b948ff2ace8dfbdda06715a1b77ca9104b708378f)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Transform3D {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

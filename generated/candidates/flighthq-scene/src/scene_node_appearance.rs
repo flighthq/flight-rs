@@ -21,7 +21,7 @@ fn __flight_js_to_u32(value: f64) -> u32 {
     value.trunc().rem_euclid(4294967296.0_f64) as u32
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -57,7 +57,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub data: Option<NodeData>,
@@ -76,7 +76,7 @@ impl PartialEq for FlightPartialRecord2 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha: Option<f64>,
@@ -88,7 +88,7 @@ impl PartialEq for FlightPartialRecord3 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord4 {
     pub __flight_identity: std::sync::Arc<()>,
     pub position: Option<Vector3>,
@@ -113,12 +113,15 @@ pub fn ensure_scene_node_world_alpha(source: &SceneNode) -> () {
         parent_world_alpha = (parent_runtime.world_alpha).unwrap();
         parent_world_appearance_id = parent_runtime.world_appearance_id;
     }
-    let appearance_id = get_node_appearance_revision(&Node {
-        __flight_identity: std::sync::Arc::clone(&(source).__flight_identity),
-        data: ((source).data).clone(),
-        enabled: (source).enabled,
-        kind: ((source).kind).clone(),
-        name: ((source).name).clone(),
+    let appearance_id = get_node_appearance_revision(&{
+        let __flight_source = &(source);
+        Node {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+        }
     });
     if (((runtime.world_alpha).is_none())
         || (runtime.world_alpha_using_appearance_id != appearance_id))
@@ -147,12 +150,15 @@ pub fn get_scene_node_world_alpha(source: &SceneNode) -> f64 {
 // Source: upstream/packages/scene/src/sceneNodeAppearance.ts:51 (sha256:93a8b55e16993cd78df0d2d4522dc27b41c76caa39ecf77e121571ef67685df9)
 pub fn set_scene_node_alpha(source: &mut SceneNode, alpha: f64) -> () {
     source.alpha = alpha;
-    invalidate_node_appearance(&Node {
-        __flight_identity: std::sync::Arc::clone(&(source).__flight_identity),
-        data: ((source).data).clone(),
-        enabled: (source).enabled,
-        kind: ((source).kind).clone(),
-        name: ((source).name).clone(),
+    invalidate_node_appearance(&{
+        let __flight_source = &(source);
+        Node {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+        }
     });
 }
 

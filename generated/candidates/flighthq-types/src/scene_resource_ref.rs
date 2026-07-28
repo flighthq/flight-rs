@@ -9,7 +9,7 @@
 use crate::ResourceResolutionState;
 
 // Source: upstream/packages/types/src/SceneResourceRef.ts:19 (sha256:6d9879b086fd261aa3e612640eba3775cf3616966fd7549f026399e7a9f6a6ab)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SceneResourceRefKindValues {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -33,7 +33,7 @@ pub static SCENE_RESOURCE_REF_KIND: std::sync::LazyLock<SceneResourceRefKindValu
 pub type SceneResourceRefKind = crate::OpaqueHostValue;
 
 // Source: upstream/packages/types/src/SceneResourceRef.ts:26 (sha256:4ee0d3100445a232f371383b0c8814a4733c92a5b104b7161b3cbbbb1f3f36a7)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct SceneResourceRefBase {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -47,7 +47,7 @@ impl PartialEq for SceneResourceRefBase {
 }
 
 // Source: upstream/packages/types/src/SceneResourceRef.ts:37 (sha256:7146c1414efc8e29e20296d4a6a42c86d0166ae7fb08651b22f41988985d4dad)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct EmbeddedSceneResourceRef {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -63,7 +63,7 @@ impl PartialEq for EmbeddedSceneResourceRef {
 }
 
 // Source: upstream/packages/types/src/SceneResourceRef.ts:45 (sha256:140b7e85692e88f5951041afa2025e9a7949ffd119cba949a3ad0d634095ac6b)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ExternalSceneResourceRef {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

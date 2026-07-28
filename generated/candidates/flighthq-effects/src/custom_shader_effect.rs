@@ -8,7 +8,7 @@
 
 use flighthq_types::CustomShaderEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub shader_key: String,
@@ -29,6 +29,7 @@ pub fn create_custom_shader_effect(options: &FlightOmitRecord1) -> CustomShaderE
             kind: "CustomShaderEffect".to_owned(),
             shader_key: (__flight_spread_1.shader_key).clone(),
             uniforms: (__flight_spread_1.uniforms).clone(),
+            ..Default::default()
         }
     };
 }

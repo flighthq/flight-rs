@@ -11,7 +11,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/SpecularPbrMaterial.ts:9 (sha256:2bead9a06dcdc8051b768a13fda3930c65487e64e643d1439da8b709d5d437e2)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SpecularPbrMaterial {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -22,6 +22,9 @@ pub struct SpecularPbrMaterial {
     pub alpha_type: AlphaType,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub shader_key: String,
+    pub textures: Option<Vec<(String, Texture)>>,
+    pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
     pub specular: f64,
     pub specular_color: f64,
     pub specular_color_map: Option<Texture>,

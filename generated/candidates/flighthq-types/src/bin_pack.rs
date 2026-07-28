@@ -43,7 +43,7 @@ impl PartialEq for PackedRectangle {
 }
 
 // Source: upstream/packages/types/src/BinPack.ts:33 (sha256:2ce3c70c7b5ec3d8a6559fbd1d31675efc82b30a5c1d78f8c43af58fa83e2ef7)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct BinPackOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -63,7 +63,7 @@ impl PartialEq for BinPackOptions {
 }
 
 // Source: upstream/packages/types/src/BinPack.ts:61 (sha256:9a7fcfb77a423785d0d90037d8ab0662fd34dfc628dbea27c2b7f862914d4699)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct PackResult {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

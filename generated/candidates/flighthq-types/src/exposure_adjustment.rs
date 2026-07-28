@@ -6,14 +6,23 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
+use crate::AdjustmentKind;
+use crate::{ColorBlindType, ColorTransform};
+
 // Source: upstream/packages/types/src/ExposureAdjustment.ts:7 (sha256:6a3ba44800f4e773b8ffc9b4398d9fe0abfe4614bac29eb81a0f941426893814)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ExposureAdjustment {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub kind: String,
+    pub kind: AdjustmentKind,
     pub color_matrix: Vec<f64>,
+    pub intensity: Option<f64>,
     pub exposure: Option<f64>,
+    pub color_transform: ColorTransform,
+    pub type_: Option<ColorBlindType>,
+    pub matrix: Vec<f64>,
+    pub brightness: Option<f64>,
+    pub contrast: Option<f64>,
 }
 impl PartialEq for ExposureAdjustment {
     fn eq(&self, other: &Self) -> bool {

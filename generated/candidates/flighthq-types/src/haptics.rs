@@ -13,7 +13,7 @@ pub type HapticImpactStyle = String;
 pub type HapticNotificationType = String;
 
 // Source: upstream/packages/types/src/Haptics.ts:9 (sha256:493ca4196d2dc3374693378a6d9043ca983c1eaafd0ffb8973b1edd62f841d28)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct HapticsCapabilities {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

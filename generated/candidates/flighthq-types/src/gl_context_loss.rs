@@ -9,7 +9,7 @@
 use crate::GlRenderState;
 
 // Source: upstream/packages/types/src/GlContextLoss.ts:2 (sha256:b2fb6a5b0a8d1a5b9676900f192c81d468570c3bc80cf710456d8644d925220e)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlContextLossSignals {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

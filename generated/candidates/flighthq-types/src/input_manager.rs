@@ -12,7 +12,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/InputManager.ts:3 (sha256:9c46b3880e43cd53f90eb927e6182f0408e9d8f24a051e786fb4992850ce7eb2)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AttachInputOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

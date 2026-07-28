@@ -6,10 +6,11 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
+use crate::Texture;
 use crate::{AlphaType, BlendMode, Kind, MaterialAlphaMode};
 
 // Source: upstream/packages/types/src/DepthMaterial.ts:6 (sha256:2b6e077b6b1679a2d911c05c53b37f74ef4d6522381ff80e683b663407c47559)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct DepthMaterial {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -20,6 +21,9 @@ pub struct DepthMaterial {
     pub alpha_type: AlphaType,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub shader_key: String,
+    pub textures: Option<Vec<(String, Texture)>>,
+    pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
     pub far: f64,
     pub near: f64,
 }

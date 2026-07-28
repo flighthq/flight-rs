@@ -17,10 +17,11 @@ use flighthq_scene::{get_scene_node_world_bounds, is_mesh};
 use flighthq_types::{
     Aabb, AabbLike, Adjustment, Camera, ColorTransform, InteractionSignals, Kind, Material,
     Matrix4, Mesh, MeshGeometry, MeshMorph, Node, NodeData, NodeInteractionState, NodeSignals,
-    NodeTraitsKey, Quaternion, Ray3D, SceneHit, SceneNode, Skin, Transform3DNode, Vector3,
+    NodeTraitsKey, Quaternion, Ray3D, Ray3DLike, SceneHit, SceneNode, Skin, Transform3DNode,
+    Vector3, Vector3Like,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub data: Option<NodeData>,
@@ -43,7 +44,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -79,7 +80,7 @@ impl PartialEq for FlightPartialRecord2 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub data: Option<NodeData>,
@@ -98,7 +99,7 @@ impl PartialEq for FlightPartialRecord3 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord4 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha: Option<f64>,
@@ -110,7 +111,7 @@ impl PartialEq for FlightPartialRecord4 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord5 {
     pub __flight_identity: std::sync::Arc<()>,
     pub position: Option<Vector3>,
@@ -124,7 +125,7 @@ impl PartialEq for FlightPartialRecord5 {
 }
 
 // Source: upstream/packages/picking/src/pickScene.ts:24 (sha256:3a8513735f2e1ff5979966971cf58afa9e28db6bef5077145cf4f416dadfbf33)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ScenePickOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -140,7 +141,7 @@ impl PartialEq for ScenePickOptions {
 }
 
 // Source: upstream/packages/picking/src/pickScene.ts:32 (sha256:5655906d45bab757bd15d1bc8bbf78b557e341a2171e90e7de4a9a8bb21ffa06)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateSceneHitRecord6 {
     __flight_identity: std::sync::Arc<()>,
     distance: f64,
@@ -200,7 +201,7 @@ pub fn pick_scene(
     return pick_scene_with_ray3_d(
         scene,
         &(*_CAMERA_RAY.lock().unwrap()),
-        out,
+        (out).clone(),
         Some(((options).clone().unwrap()).clone()),
     );
 }
@@ -226,7 +227,7 @@ pub fn pick_scene_all(
     return pick_scene_all_with_ray3_d(
         scene,
         &(*_CAMERA_RAY.lock().unwrap()),
-        out_array,
+        (out_array).clone(),
         Some(((options).clone().unwrap()).clone()),
     );
 }
@@ -372,17 +373,20 @@ fn pick_node(
     if (!node.enabled) {
         return;
     }
-    if (is_mesh(node))
+    if (is_mesh((node).clone()))
         && (((predicate).is_none()) || (predicate.as_ref().unwrap().lock().unwrap()(node)))
     {
         intersect_mesh_triangles(node, ray, max_distance, cull_backfaces, on_hit);
     }
-    let mut children = (get_node_runtime(&Node {
-        __flight_identity: std::sync::Arc::clone(&(node).__flight_identity),
-        data: ((node).data).clone(),
-        enabled: (node).enabled,
-        kind: ((node).kind).clone(),
-        name: ((node).name).clone(),
+    let mut children = (get_node_runtime(&{
+        let __flight_source = &(node);
+        Node {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+        }
     })
     .children)
         .clone();
@@ -408,7 +412,7 @@ fn pick_node(
 }
 
 // Source: upstream/packages/picking/src/pickScene.ts:215 (sha256:1f6f8b8fbbf74c1bd727d9ff65ceb80dc8c2a9c8d0944bac5868984429344bb1)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct OutContextRecord6 {
     __flight_identity: std::sync::Arc<()>,
     x: f64,
@@ -430,37 +434,51 @@ fn intersect_mesh_triangles(
 ) -> () {
     get_scene_node_world_bounds(&mut (*_WORLD_BOUNDS.lock().unwrap()), mesh);
     if (intersect_ray3_d_aabb(
-        ray,
-        &AabbLike {
-            __flight_identity: std::sync::Arc::clone(
-                &(*_WORLD_BOUNDS.lock().unwrap()).__flight_identity,
-            ),
-            max: ((*_WORLD_BOUNDS.lock().unwrap()).max).clone(),
-            min: ((*_WORLD_BOUNDS.lock().unwrap()).min).clone(),
+        &{
+            let __flight_source = &(ray);
+            Ray3DLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                direction: (__flight_source.direction).clone(),
+                origin: (__flight_source.origin).clone(),
+            }
+        },
+        &{
+            let __flight_source = &(*_WORLD_BOUNDS.lock().unwrap());
+            AabbLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                max: (__flight_source.max).clone(),
+                min: (__flight_source.min).clone(),
+            }
         },
     ) < 0.0_f64)
     {
         return;
     }
-    ensure_node_world_matrix4(&Transform3DNode {
-        __flight_identity: std::sync::Arc::clone(&(mesh).__flight_identity),
-        data: ((mesh).data).clone(),
-        enabled: (mesh).enabled,
-        kind: ((mesh).kind).clone(),
-        name: ((mesh).name).clone(),
-        position: ((mesh).position).clone(),
-        rotation: ((mesh).rotation).clone(),
-        scale: ((mesh).scale).clone(),
+    ensure_node_world_matrix4(&{
+        let __flight_source = &(mesh);
+        Transform3DNode {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+            position: (__flight_source.position).clone(),
+            rotation: (__flight_source.rotation).clone(),
+            scale: (__flight_source.scale).clone(),
+        }
     });
-    let world_matrix = get_node_world_matrix4(&Transform3DNode {
-        __flight_identity: std::sync::Arc::clone(&(mesh).__flight_identity),
-        data: ((mesh).data).clone(),
-        enabled: (mesh).enabled,
-        kind: ((mesh).kind).clone(),
-        name: ((mesh).name).clone(),
-        position: ((mesh).position).clone(),
-        rotation: ((mesh).rotation).clone(),
-        scale: ((mesh).scale).clone(),
+    let world_matrix = get_node_world_matrix4(&{
+        let __flight_source = &(mesh);
+        Transform3DNode {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+            position: (__flight_source.position).clone(),
+            rotation: (__flight_source.rotation).clone(),
+            scale: (__flight_source.scale).clone(),
+        }
     });
     if (!inverse_matrix4(&mut (*_INVERSE_WORLD.lock().unwrap()), &world_matrix)) {
         return;
@@ -496,14 +514,65 @@ fn intersect_mesh_triangles(
             } else {
                 (base + 2.0_f64) as u32
             };
-            get_mesh_geometry_vertex_position(&mut (*_A.lock().unwrap()), &mesh.geometry, i0);
-            get_mesh_geometry_vertex_position(&mut (*_B.lock().unwrap()), &mesh.geometry, i1);
-            get_mesh_geometry_vertex_position(&mut (*_C.lock().unwrap()), &mesh.geometry, i2);
+            get_mesh_geometry_vertex_position(
+                &mut (*_A.lock().unwrap()),
+                &mesh.geometry,
+                (i0).clone(),
+            );
+            get_mesh_geometry_vertex_position(
+                &mut (*_B.lock().unwrap()),
+                &mesh.geometry,
+                (i1).clone(),
+            );
+            get_mesh_geometry_vertex_position(
+                &mut (*_C.lock().unwrap()),
+                &mesh.geometry,
+                (i2).clone(),
+            );
             let t = intersect_ray3_d_triangle(
-                &(*_LOCAL_RAY.lock().unwrap()),
-                &(*_A.lock().unwrap()),
-                &(*_B.lock().unwrap()),
-                &(*_C.lock().unwrap()),
+                &{
+                    let __flight_source = &(*_LOCAL_RAY.lock().unwrap());
+                    Ray3DLike {
+                        __flight_identity: std::sync::Arc::clone(
+                            &__flight_source.__flight_identity,
+                        ),
+                        direction: (__flight_source.direction).clone(),
+                        origin: (__flight_source.origin).clone(),
+                    }
+                },
+                &{
+                    let __flight_source = &(*_A.lock().unwrap());
+                    Vector3Like {
+                        __flight_identity: std::sync::Arc::clone(
+                            &__flight_source.__flight_identity,
+                        ),
+                        x: __flight_source.x,
+                        y: __flight_source.y,
+                        z: __flight_source.z,
+                    }
+                },
+                &{
+                    let __flight_source = &(*_B.lock().unwrap());
+                    Vector3Like {
+                        __flight_identity: std::sync::Arc::clone(
+                            &__flight_source.__flight_identity,
+                        ),
+                        x: __flight_source.x,
+                        y: __flight_source.y,
+                        z: __flight_source.z,
+                    }
+                },
+                &{
+                    let __flight_source = &(*_C.lock().unwrap());
+                    Vector3Like {
+                        __flight_identity: std::sync::Arc::clone(
+                            &__flight_source.__flight_identity,
+                        ),
+                        x: __flight_source.x,
+                        y: __flight_source.y,
+                        z: __flight_source.z,
+                    }
+                },
             );
             if (t < 0.0_f64) || (t > max_distance) {
                 {
@@ -557,13 +626,35 @@ fn intersect_mesh_triangles(
             (*_HIT.lock().unwrap()).normal_x = (*_WORLD_NORMAL.lock().unwrap()).x;
             (*_HIT.lock().unwrap()).normal_y = (*_WORLD_NORMAL.lock().unwrap()).y;
             (*_HIT.lock().unwrap()).normal_z = (*_WORLD_NORMAL.lock().unwrap()).z;
-            get_ray3_d_point_at(&mut (*_WORLD_POINT.lock().unwrap()), ray, t);
+            get_ray3_d_point_at(
+                &mut (*_WORLD_POINT.lock().unwrap()),
+                &{
+                    let __flight_source = &(ray);
+                    Ray3DLike {
+                        __flight_identity: std::sync::Arc::clone(
+                            &__flight_source.__flight_identity,
+                        ),
+                        direction: (__flight_source.direction).clone(),
+                        origin: (__flight_source.origin).clone(),
+                    }
+                },
+                t,
+            );
             (*_HIT.lock().unwrap()).point_x = (*_WORLD_POINT.lock().unwrap()).x;
             (*_HIT.lock().unwrap()).point_y = (*_WORLD_POINT.lock().unwrap()).y;
             (*_HIT.lock().unwrap()).point_z = (*_WORLD_POINT.lock().unwrap()).z;
             get_ray3_d_point_at(
                 &mut (*_LOCAL_POINT.lock().unwrap()),
-                &(*_LOCAL_RAY.lock().unwrap()),
+                &{
+                    let __flight_source = &(*_LOCAL_RAY.lock().unwrap());
+                    Ray3DLike {
+                        __flight_identity: std::sync::Arc::clone(
+                            &__flight_source.__flight_identity,
+                        ),
+                        direction: (__flight_source.direction).clone(),
+                        origin: (__flight_source.origin).clone(),
+                    }
+                },
                 t,
             );
             write_barycentric(

@@ -12,7 +12,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/CanvasRenderState.ts:8 (sha256:2d3ed80aeffa1af698defe21cc96fededc24c5de7d4a233df2684315565006c5)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct CanvasRenderState {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -57,7 +57,7 @@ impl PartialEq for CanvasRenderState {
 }
 
 // Source: upstream/packages/types/src/CanvasRenderState.ts:23 (sha256:b889957a28ba70a783459bf89658abe277f2c59e9dc40952d4b934de00035ed8)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct CanvasRenderStateRuntimeRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub element: crate::OpaqueHostValue,
@@ -69,7 +69,7 @@ impl PartialEq for CanvasRenderStateRuntimeRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct CanvasRenderStateRuntime {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

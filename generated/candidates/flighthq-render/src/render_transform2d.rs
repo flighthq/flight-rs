@@ -10,12 +10,12 @@ use crate::get_render_state_runtime;
 use flighthq_geometry::{copy_matrix, multiply_matrix};
 use flighthq_node::{get_node_local_matrix, get_node_local_transform_revision};
 use flighthq_types::{
-    Adjustment, BlendMode, ColorTransform, DisplayObjectClipHooks, InteractionSignals, Matrix,
-    Node, NodeInteractionState, NodeSignals, NodeTraitsKey, RenderProxy2D, RenderState,
-    SceneGraphSyncPolicy, Transform2DNode,
+    Adjustment, BlendMode, ColorTransform, DisplayObjectClipHooks, InteractionSignals, Kind,
+    Matrix, MatrixLike, Node, NodeData, NodeInteractionState, NodeSignals, NodeTraitsKey,
+    RenderProxy2D, RenderState, SceneGraphSyncPolicy, Transform2DNode,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -51,7 +51,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub allow_smoothing: Option<bool>,
@@ -97,9 +97,22 @@ pub fn update_render_proxy2_d_transform(
 }
 
 // Source: upstream/packages/render/src/renderTransform2d.ts:25 (sha256:6a2c29ffed0ca2316d918a121df2248ae3ba3aa74d183b796ce597c8caecb455)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct RecalculateRenderTransform2DRecord3 {
     __flight_identity: std::sync::Arc<()>,
+    data: Option<NodeData>,
+    enabled: bool,
+    kind: Kind,
+    name: Option<String>,
+    pivot_x: f64,
+    pivot_y: f64,
+    rotation: f64,
+    scale_x: f64,
+    scale_y: f64,
+    skew_x: f64,
+    skew_y: f64,
+    x: f64,
+    y: f64,
 }
 impl PartialEq for RecalculateRenderTransform2DRecord3 {
     fn eq(&self, other: &Self) -> bool {
@@ -112,21 +125,24 @@ fn recalculate_render_transform2_d(
     data: &mut RenderProxy2D,
     parent_data: Option<RenderProxy2D>,
 ) -> () {
-    let transform2_d = get_node_local_matrix(&Transform2DNode {
-        __flight_identity: std::sync::Arc::clone(&((data.source).clone()).__flight_identity),
-        data: (((data.source).clone()).data).clone(),
-        enabled: ((data.source).clone()).enabled,
-        kind: (((data.source).clone()).kind).clone(),
-        name: (((data.source).clone()).name).clone(),
-        pivot_x: ((data.source).clone()).pivot_x,
-        pivot_y: ((data.source).clone()).pivot_y,
-        rotation: ((data.source).clone()).rotation,
-        scale_x: ((data.source).clone()).scale_x,
-        scale_y: ((data.source).clone()).scale_y,
-        skew_x: ((data.source).clone()).skew_x,
-        skew_y: ((data.source).clone()).skew_y,
-        x: ((data.source).clone()).x,
-        y: ((data.source).clone()).y,
+    let transform2_d = get_node_local_matrix(&{
+        let __flight_source = &((data.source).clone());
+        Transform2DNode {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+            pivot_x: __flight_source.pivot_x,
+            pivot_y: __flight_source.pivot_y,
+            rotation: __flight_source.rotation,
+            scale_x: __flight_source.scale_x,
+            scale_y: __flight_source.scale_y,
+            skew_x: __flight_source.skew_x,
+            skew_y: __flight_source.skew_y,
+            x: __flight_source.x,
+            y: __flight_source.y,
+        }
     });
     let parent_transform2_d = if (parent_data).is_some() {
         (parent_data.as_ref().unwrap().transform2_d).clone()
@@ -134,9 +150,46 @@ fn recalculate_render_transform2_d(
         ((state.render_transform2_d).clone()).unwrap()
     };
     if (parent_transform2_d).is_some() {
-        multiply_matrix(&mut data.transform2_d, &parent_transform2_d, &transform2_d);
+        multiply_matrix(
+            &mut data.transform2_d,
+            &{
+                let __flight_source = &(parent_transform2_d);
+                MatrixLike {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    a: __flight_source.a,
+                    b: __flight_source.b,
+                    c: __flight_source.c,
+                    d: __flight_source.d,
+                    tx: __flight_source.tx,
+                    ty: __flight_source.ty,
+                }
+            },
+            &{
+                let __flight_source = &(transform2_d);
+                MatrixLike {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    a: __flight_source.a,
+                    b: __flight_source.b,
+                    c: __flight_source.c,
+                    d: __flight_source.d,
+                    tx: __flight_source.tx,
+                    ty: __flight_source.ty,
+                }
+            },
+        );
     } else {
-        copy_matrix(&mut data.transform2_d, &transform2_d);
+        copy_matrix(&mut data.transform2_d, &{
+            let __flight_source = &(transform2_d);
+            MatrixLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                a: __flight_source.a,
+                b: __flight_source.b,
+                c: __flight_source.c,
+                d: __flight_source.d,
+                tx: __flight_source.tx,
+                ty: __flight_source.ty,
+            }
+        });
     }
     data.transform_frame_id = get_render_state_runtime(state).current_frame_id;
 }

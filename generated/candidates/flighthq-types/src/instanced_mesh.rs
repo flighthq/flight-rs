@@ -11,7 +11,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/InstancedMesh.ts:5 (sha256:4f4896f9cd96c723d6c18c6df5a192c8a1afec0d5c9d3bee2524ab37607ab205)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct InstancedMesh {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

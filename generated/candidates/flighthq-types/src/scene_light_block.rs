@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/SceneLightBlock.ts:16 (sha256:54f45ef2c9282dbcb3974ec1207f399ef61d302af45db4aaefe2943aa431874c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SceneLightBlock {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

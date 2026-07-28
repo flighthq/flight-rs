@@ -10,11 +10,11 @@ use flighthq_animation::sample_animation_track;
 use flighthq_geometry::{set_quaternion, set_vector3};
 use flighthq_node::invalidate_node_local_transform;
 use flighthq_types::{
-    Adjustment, AnimationClip, ColorTransform, InteractionSignals, Node, NodeInteractionState,
-    NodeSignals, NodeTraitsKey,
+    Adjustment, AnimationClip, ColorTransform, InteractionSignals, MeshMorph, Node,
+    NodeInteractionState, NodeSignals, NodeTraitsKey,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -57,7 +57,8 @@ pub fn apply_animation_clip_to_scene(clip: &mut AnimationClip, time: f64) -> () 
         while (i < (clip.channels.len() as f64)) {
             let mut channel = clip.channels[i as usize].clone();
             let mut target = (channel.target_ref).clone();
-            if (((target).is_none()) || ("object" != "object"))
+            if (((target).is_none())
+                || ((target).as_ref().map_or("undefined", |_| "object") != "object"))
                 || (((target.as_mut().unwrap().node).clone()).is_none())
             {
                 {
@@ -67,7 +68,7 @@ pub fn apply_animation_clip_to_scene(clip: &mut AnimationClip, time: f64) -> () 
                 continue;
             }
             if ((target.as_mut().unwrap().path).clone() == "Weights") {
-                let mut morph = ((target.as_mut().unwrap().node).clone().morph).clone();
+                let mut morph = None::<Option<MeshMorph>>;
                 if (morph).is_none() {
                     {
                         i += 1.0;
@@ -118,14 +119,15 @@ pub fn apply_animation_clip_to_scene(clip: &mut AnimationClip, time: f64) -> () 
                     );
                 }
             }
-            invalidate_node_local_transform(&Node {
-                __flight_identity: std::sync::Arc::clone(
-                    &(target.as_mut().unwrap().node).__flight_identity,
-                ),
-                data: ((target.as_mut().unwrap().node).data).clone(),
-                enabled: (target.as_mut().unwrap().node).enabled,
-                kind: ((target.as_mut().unwrap().node).kind).clone(),
-                name: ((target.as_mut().unwrap().node).name).clone(),
+            invalidate_node_local_transform(&{
+                let __flight_source = &(target.as_mut().unwrap().node);
+                Node {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    data: (__flight_source.data).clone(),
+                    enabled: __flight_source.enabled,
+                    kind: (__flight_source.kind).clone(),
+                    name: (__flight_source.name).clone(),
+                }
             });
             {
                 i += 1.0;

@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/KeyboardEventData.ts:1 (sha256:31ee934c70dc671de1fcf994c61ced46730f1b001bc666d65bcd71240f0101a3)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct KeyboardEventData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

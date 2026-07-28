@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/MeshSkinBindPose.ts:10 (sha256:736e4bf4ec95bf4937e25e58fcd614373bff9626fbfd4431685b2b025bd9f67c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct MeshSkinBindPose {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

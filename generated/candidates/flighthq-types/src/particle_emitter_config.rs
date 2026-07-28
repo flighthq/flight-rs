@@ -15,7 +15,7 @@ pub type ParticleEmitterShape = String;
 pub type ParticleBlendMode = String;
 
 // Source: upstream/packages/types/src/ParticleEmitterConfig.ts:10 (sha256:cf4bc7901c43bc748e5284248a651f745819fc095bdc6b09ccf7134d7f42f41f)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ParticleEmitterConfig {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

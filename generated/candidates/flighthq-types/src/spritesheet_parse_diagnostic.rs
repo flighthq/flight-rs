@@ -10,7 +10,7 @@
 pub type SpritesheetParseDiagnosticSeverity = String;
 
 // Source: upstream/packages/types/src/SpritesheetParseDiagnostic.ts:2 (sha256:a8133944c6332a24d95de37fdef545eba1e984a455e1ed6d411fdd44e848f8bc)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SpritesheetParseDiagnostic {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

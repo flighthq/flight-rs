@@ -18,8 +18,8 @@ use flighthq_types::{
     Adjustment, AdjustmentKind, BlendMode, BoundsNodeAny, ClipRegion, ColorTransform,
     InteractionSignals, Material, MaterialData, Matrix, Node, NodeInteractionState, NodeSignals,
     NodeTraitsKey, QUAD_BATCH_KIND as quad_batch_kind_constant, QuadBatch, QuadBatchData,
-    QuadBatchRuntime, QuadBatchSignals, QuadTransformType, Rectangle, Stage, TextureAtlas,
-    Vector2Like,
+    QuadBatchRuntime, QuadBatchSignals, QuadTransformType, Rectangle, RectangleLike, Stage,
+    TextureAtlas, Vector2Like,
 };
 
 #[inline]
@@ -35,7 +35,7 @@ fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub atlas: Option<TextureAtlas>,
@@ -51,7 +51,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -102,7 +102,7 @@ impl PartialEq for FlightPartialRecord2 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha_multiplier: Option<f64>,
@@ -120,7 +120,7 @@ impl PartialEq for FlightPartialRecord3 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord4 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -170,7 +170,7 @@ impl PartialEq for FlightPartialRecord4 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord5 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -206,11 +206,12 @@ impl PartialEq for FlightPartialRecord5 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord6 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<AdjustmentKind>,
     pub color_matrix: Option<Vec<f64>>,
+    pub color_transform: Option<ColorTransform>,
 }
 impl PartialEq for FlightPartialRecord6 {
     fn eq(&self, other: &Self) -> bool {
@@ -218,7 +219,7 @@ impl PartialEq for FlightPartialRecord6 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord7 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha: Option<f64>,
@@ -230,7 +231,7 @@ impl PartialEq for FlightPartialRecord7 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord8 {
     pub __flight_identity: std::sync::Arc<()>,
     pub blend_mode: Option<BlendMode>,
@@ -241,7 +242,7 @@ impl PartialEq for FlightPartialRecord8 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord9 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -260,7 +261,7 @@ impl PartialEq for FlightPartialRecord9 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord10 {
     pub __flight_identity: std::sync::Arc<()>,
 }
@@ -270,7 +271,7 @@ impl PartialEq for FlightPartialRecord10 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord11 {
     pub __flight_identity: std::sync::Arc<()>,
     pub clip: Option<ClipRegion>,
@@ -281,7 +282,7 @@ impl PartialEq for FlightPartialRecord11 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord12 {
     pub __flight_identity: std::sync::Arc<()>,
     pub material: Option<Material>,
@@ -293,7 +294,7 @@ impl PartialEq for FlightPartialRecord12 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord13 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -309,7 +310,7 @@ impl PartialEq for FlightPartialRecord13 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord14 {
     pub __flight_identity: std::sync::Arc<()>,
     pub pivot_x: Option<f64>,
@@ -638,7 +639,12 @@ pub fn create_quad_batch_signals() -> QuadBatchSignals {
 
 // Source: upstream/packages/sprite/src/quadBatch.ts:228 (sha256:3656710a8318a9f521d167f964ae723d7cfb0869fe97796ca8a60bd8e8b7ae93)
 pub fn enable_quad_batch_signals(target: &mut QuadBatch) -> QuadBatchSignals {
-    let mut s = target;
+    let mut s = {
+        let __flight_source = &((*target).clone());
+        QuadBatchWithSignals {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+        }
+    };
     return {
         s[*QUAD_BATCH_SIGNALS_SLOT as usize]?? = create_quad_batch_signals();
         s[*QUAD_BATCH_SIGNALS_SLOT as usize]
@@ -691,7 +697,15 @@ pub fn get_quad_batch_runtime(source: &QuadBatch) -> QuadBatchRuntime {
 
 // Source: upstream/packages/sprite/src/quadBatch.ts:275 (sha256:5ac7812183ca0fd3bee59ca974dbd2f7661a1f35484e0140c3c184ed4eb4f506)
 pub fn get_quad_batch_signals(source: &QuadBatch) -> Option<QuadBatchSignals> {
-    return Some(source[*QUAD_BATCH_SIGNALS_SLOT as usize].clone());
+    return Some(
+        {
+            let __flight_source = &((*source).clone());
+            QuadBatchWithSignals {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            }
+        }[*QUAD_BATCH_SIGNALS_SLOT as usize]
+            .clone(),
+    );
 }
 
 // Source: upstream/packages/sprite/src/quadBatch.ts:279 (sha256:1688ee6fb6c74e4d710d23d8e3095921c2f9e15fc653e6593270fb133bcbda29)
@@ -782,9 +796,10 @@ pub fn hit_test_quad_batch_point_exact_xy(source: &QuadBatch, x: f64, y: f64) ->
                 let y2 = (((b * w) + (d * h)) + ty);
                 let x3 = ((c * h) + tx);
                 let y3 = ((d * h) + ty);
-                if (((cross_sign(x0, y0, x1, y1, x, y)) && (cross_sign(x1, y1, x2, y2, x, y)))
+                if (((cross_sign((x0).clone(), (y0).clone(), x1, y1, x, y))
+                    && (cross_sign(x1, y1, x2, y2, x, y)))
                     && (cross_sign(x2, y2, x3, y3, x, y)))
-                    && (cross_sign(x3, y3, x0, y0, x, y))
+                    && (cross_sign(x3, y3, (x0).clone(), (y0).clone(), x, y))
                 {
                     return i;
                 }
@@ -1052,7 +1067,16 @@ pub fn set_quad_batch_local_bounds_rectangle(target: &QuadBatch, rect: &Rectangl
     if ((runtime.local_bounds_rectangle).clone()).is_none() {
         runtime.local_bounds_rectangle = Some(create_rectangle(None, None, None, None));
     }
-    copy_rectangle(runtime.local_bounds_rectangle.as_mut().unwrap(), rect);
+    copy_rectangle(runtime.local_bounds_rectangle.as_mut().unwrap(), &{
+        let __flight_source = &(rect);
+        RectangleLike {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            height: __flight_source.height,
+            width: __flight_source.width,
+            x: __flight_source.x,
+            y: __flight_source.y,
+        }
+    });
     invalidate_node_local_bounds(target);
 }
 
@@ -1159,7 +1183,7 @@ static QUAD_BATCH_SIGNALS_SLOT: std::sync::LazyLock<crate::FlightSymbol> =
     std::sync::LazyLock::new(|| crate::FlightSymbol::new());
 
 // Source: upstream/packages/sprite/src/quadBatch.ts:587 (sha256:d16672a42737f57500938890eb91408d7e0a5c60205b13d1b8a7e268ad5b846b)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct QuadBatchWithSignals {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -1171,11 +1195,25 @@ impl PartialEq for QuadBatchWithSignals {
 }
 
 // Source: upstream/packages/sprite/src/quadBatch.ts:591 (sha256:b8dcad1528fa3e80019397998b4a14d1787977e992f28e2314611a54bc6d7659)
-struct quadTransformStride;
-impl quadTransformStride {
-    pub const vector2: f64 = 2.0_f64;
-    pub const matrix3x2: f64 = 6.0_f64;
+#[derive(Clone, Default)]
+struct QuadTransformStride {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub vector2: f64,
+    pub matrix3x2: f64,
 }
+impl PartialEq for QuadTransformStride {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+static QUAD_TRANSFORM_STRIDE: std::sync::LazyLock<QuadTransformStride> =
+    std::sync::LazyLock::new(|| QuadTransformStride {
+        __flight_identity: std::sync::Arc::new(()),
+        vector2: 2.0_f64,
+        matrix3x2: 6.0_f64,
+    });
 
 // Source: upstream/packages/sprite/src/quadBatch.ts:597 (sha256:3930812f9a6af5c8e54a67d87e38cceaed2ad9d1da940fe279ed936d8bb366da)
 fn cross_sign(ax: f64, ay: f64, bx: f64, by: f64, px: f64, py: f64) -> bool {

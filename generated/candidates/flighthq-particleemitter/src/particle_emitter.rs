@@ -17,7 +17,8 @@ use flighthq_types::{
     Adjustment, AdjustmentKind, BlendMode, BoundsNodeAny, ClipRegion, ColorTransform,
     InteractionSignals, Material, MaterialData, Matrix, Node, NodeInteractionState, NodeSignals,
     NodeTraitsKey, PARTICLE_EMITTER_KIND as particle_emitter_kind_constant, ParticleEmitter,
-    ParticleEmitterData, ParticleEmitterRuntime, Rectangle, Stage, TextureAtlas, Vector2Like,
+    ParticleEmitterData, ParticleEmitterRuntime, Rectangle, RectangleLike, Stage, TextureAtlas,
+    Vector2Like,
 };
 
 #[inline]
@@ -33,7 +34,7 @@ fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alphas: Option<Vec<f32>>,
@@ -52,7 +53,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -102,7 +103,7 @@ impl PartialEq for FlightPartialRecord2 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha_multiplier: Option<f64>,
@@ -120,7 +121,7 @@ impl PartialEq for FlightPartialRecord3 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord4 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -156,11 +157,12 @@ impl PartialEq for FlightPartialRecord4 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord5 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<AdjustmentKind>,
     pub color_matrix: Option<Vec<f64>>,
+    pub color_transform: Option<ColorTransform>,
 }
 impl PartialEq for FlightPartialRecord5 {
     fn eq(&self, other: &Self) -> bool {
@@ -168,7 +170,7 @@ impl PartialEq for FlightPartialRecord5 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord6 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha: Option<f64>,
@@ -180,7 +182,7 @@ impl PartialEq for FlightPartialRecord6 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord7 {
     pub __flight_identity: std::sync::Arc<()>,
     pub blend_mode: Option<BlendMode>,
@@ -191,7 +193,7 @@ impl PartialEq for FlightPartialRecord7 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord8 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -210,7 +212,7 @@ impl PartialEq for FlightPartialRecord8 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord9 {
     pub __flight_identity: std::sync::Arc<()>,
 }
@@ -220,7 +222,7 @@ impl PartialEq for FlightPartialRecord9 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord10 {
     pub __flight_identity: std::sync::Arc<()>,
     pub clip: Option<ClipRegion>,
@@ -231,7 +233,7 @@ impl PartialEq for FlightPartialRecord10 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord11 {
     pub __flight_identity: std::sync::Arc<()>,
     pub material: Option<Material>,
@@ -243,7 +245,7 @@ impl PartialEq for FlightPartialRecord11 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord12 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -259,7 +261,7 @@ impl PartialEq for FlightPartialRecord12 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord13 {
     pub __flight_identity: std::sync::Arc<()>,
     pub pivot_x: Option<f64>,
@@ -292,7 +294,51 @@ pub const PARTICLE_EMITTER_DELETED_ID: f64 = 65535.0_f64;
 
 // Source: upstream/packages/particleemitter/src/particleEmitter.ts:29 (sha256:13efde0037b4577c1339b505ad1bcbb838ba27bd6e1fdcc910238f45f78fd854)
 fn copy_local_bounds_rectangle(out: &mut Rectangle, source: &Node) -> () {
-    let runtime = get_display_object_runtime(&source);
+    let runtime = {
+        let __flight_source = &(get_display_object_runtime(&source));
+        ParticleEmitterRuntime {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            binding: (__flight_source.binding).clone(),
+            appearance_id: __flight_source.appearance_id,
+            bounds_using_local_bounds_id: __flight_source.bounds_using_local_bounds_id,
+            bounds_using_local_transform_id: __flight_source.bounds_using_local_transform_id,
+            can_add_child: (__flight_source.can_add_child).clone(),
+            children: (__flight_source.children).clone(),
+            color_adjustments: (__flight_source.color_adjustments).clone(),
+            resolved_color_transform: (__flight_source.resolved_color_transform).clone(),
+            color_adjustments_channel_mixing: __flight_source.color_adjustments_channel_mixing,
+            traits: (__flight_source.traits).clone(),
+            interaction_signals: (__flight_source.interaction_signals).clone(),
+            local_bounds_id: __flight_source.local_bounds_id,
+            local_bounds_using_local_bounds_id: __flight_source.local_bounds_using_local_bounds_id,
+            local_content_id: __flight_source.local_content_id,
+            local_transform_id: __flight_source.local_transform_id,
+            local_transform_using_local_transform_id: __flight_source
+                .local_transform_using_local_transform_id,
+            node_signals: (__flight_source.node_signals).clone(),
+            interaction_state: (__flight_source.interaction_state).clone(),
+            parent: (__flight_source.parent).clone(),
+            world_bounds_using_local_bounds_id: __flight_source.world_bounds_using_local_bounds_id,
+            world_bounds_using_world_transform_id: __flight_source
+                .world_bounds_using_world_transform_id,
+            world_transform_id: __flight_source.world_transform_id,
+            world_transform_using_local_transform_id: __flight_source
+                .world_transform_using_local_transform_id,
+            world_transform_using_parent_transform_id: __flight_source
+                .world_transform_using_parent_transform_id,
+            local_matrix: (__flight_source.local_matrix).clone(),
+            rotation_angle: __flight_source.rotation_angle,
+            rotation_cosine: __flight_source.rotation_cosine,
+            rotation_sine: __flight_source.rotation_sine,
+            world_matrix: (__flight_source.world_matrix).clone(),
+            bounds_rectangle: (__flight_source.bounds_rectangle).clone(),
+            compute_local_bounds_rectangle: (__flight_source.compute_local_bounds_rectangle)
+                .clone(),
+            local_bounds_rectangle: (__flight_source.local_bounds_rectangle).clone(),
+            world_bounds_rectangle: (__flight_source.world_bounds_rectangle).clone(),
+            stage: (__flight_source.stage).clone(),
+        }
+    };
     if ((runtime.local_bounds_rectangle).clone()).is_some() {
         copy_rectangle(out, runtime.local_bounds_rectangle.as_ref().unwrap());
     }
@@ -554,7 +600,52 @@ pub fn create_particle_emitter_data(data: Option<FlightPartialRecord1>) -> Parti
 
 // Source: upstream/packages/particleemitter/src/particleEmitter.ts:221 (sha256:987b0c6ff40fc28b62281a970bc58d8f8862117c42537f3031c8f9e94e047c35)
 pub fn create_particle_emitter_runtime() -> ParticleEmitterRuntime {
-    let mut runtime = create_display_object_runtime(Some(((*DEFAULT_METHODS).clone()).clone()));
+    let mut runtime = {
+        let __flight_source =
+            &(create_display_object_runtime(Some(((*DEFAULT_METHODS).clone()).clone())));
+        ParticleEmitterRuntime {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            binding: (__flight_source.binding).clone(),
+            appearance_id: __flight_source.appearance_id,
+            bounds_using_local_bounds_id: __flight_source.bounds_using_local_bounds_id,
+            bounds_using_local_transform_id: __flight_source.bounds_using_local_transform_id,
+            can_add_child: (__flight_source.can_add_child).clone(),
+            children: (__flight_source.children).clone(),
+            color_adjustments: (__flight_source.color_adjustments).clone(),
+            resolved_color_transform: (__flight_source.resolved_color_transform).clone(),
+            color_adjustments_channel_mixing: __flight_source.color_adjustments_channel_mixing,
+            traits: (__flight_source.traits).clone(),
+            interaction_signals: (__flight_source.interaction_signals).clone(),
+            local_bounds_id: __flight_source.local_bounds_id,
+            local_bounds_using_local_bounds_id: __flight_source.local_bounds_using_local_bounds_id,
+            local_content_id: __flight_source.local_content_id,
+            local_transform_id: __flight_source.local_transform_id,
+            local_transform_using_local_transform_id: __flight_source
+                .local_transform_using_local_transform_id,
+            node_signals: (__flight_source.node_signals).clone(),
+            interaction_state: (__flight_source.interaction_state).clone(),
+            parent: (__flight_source.parent).clone(),
+            world_bounds_using_local_bounds_id: __flight_source.world_bounds_using_local_bounds_id,
+            world_bounds_using_world_transform_id: __flight_source
+                .world_bounds_using_world_transform_id,
+            world_transform_id: __flight_source.world_transform_id,
+            world_transform_using_local_transform_id: __flight_source
+                .world_transform_using_local_transform_id,
+            world_transform_using_parent_transform_id: __flight_source
+                .world_transform_using_parent_transform_id,
+            local_matrix: (__flight_source.local_matrix).clone(),
+            rotation_angle: __flight_source.rotation_angle,
+            rotation_cosine: __flight_source.rotation_cosine,
+            rotation_sine: __flight_source.rotation_sine,
+            world_matrix: (__flight_source.world_matrix).clone(),
+            bounds_rectangle: (__flight_source.bounds_rectangle).clone(),
+            compute_local_bounds_rectangle: (__flight_source.compute_local_bounds_rectangle)
+                .clone(),
+            local_bounds_rectangle: (__flight_source.local_bounds_rectangle).clone(),
+            world_bounds_rectangle: (__flight_source.world_bounds_rectangle).clone(),
+            stage: (__flight_source.stage).clone(),
+        }
+    };
     runtime.local_bounds_rectangle = None;
     return runtime;
 }
@@ -601,7 +692,51 @@ pub fn get_particle_emitter_particle_velocity(
 
 // Source: upstream/packages/particleemitter/src/particleEmitter.ts:267 (sha256:bfbf41a6ed0a04605b33e12c5565c26e88bdfec2fe76102691dc7eb865ecc66f)
 pub fn get_particle_emitter_runtime(source: &ParticleEmitter) -> ParticleEmitterRuntime {
-    return get_display_object_runtime(source);
+    return {
+        let __flight_source = &(get_display_object_runtime(source));
+        ParticleEmitterRuntime {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            binding: (__flight_source.binding).clone(),
+            appearance_id: __flight_source.appearance_id,
+            bounds_using_local_bounds_id: __flight_source.bounds_using_local_bounds_id,
+            bounds_using_local_transform_id: __flight_source.bounds_using_local_transform_id,
+            can_add_child: (__flight_source.can_add_child).clone(),
+            children: (__flight_source.children).clone(),
+            color_adjustments: (__flight_source.color_adjustments).clone(),
+            resolved_color_transform: (__flight_source.resolved_color_transform).clone(),
+            color_adjustments_channel_mixing: __flight_source.color_adjustments_channel_mixing,
+            traits: (__flight_source.traits).clone(),
+            interaction_signals: (__flight_source.interaction_signals).clone(),
+            local_bounds_id: __flight_source.local_bounds_id,
+            local_bounds_using_local_bounds_id: __flight_source.local_bounds_using_local_bounds_id,
+            local_content_id: __flight_source.local_content_id,
+            local_transform_id: __flight_source.local_transform_id,
+            local_transform_using_local_transform_id: __flight_source
+                .local_transform_using_local_transform_id,
+            node_signals: (__flight_source.node_signals).clone(),
+            interaction_state: (__flight_source.interaction_state).clone(),
+            parent: (__flight_source.parent).clone(),
+            world_bounds_using_local_bounds_id: __flight_source.world_bounds_using_local_bounds_id,
+            world_bounds_using_world_transform_id: __flight_source
+                .world_bounds_using_world_transform_id,
+            world_transform_id: __flight_source.world_transform_id,
+            world_transform_using_local_transform_id: __flight_source
+                .world_transform_using_local_transform_id,
+            world_transform_using_parent_transform_id: __flight_source
+                .world_transform_using_parent_transform_id,
+            local_matrix: (__flight_source.local_matrix).clone(),
+            rotation_angle: __flight_source.rotation_angle,
+            rotation_cosine: __flight_source.rotation_cosine,
+            rotation_sine: __flight_source.rotation_sine,
+            world_matrix: (__flight_source.world_matrix).clone(),
+            bounds_rectangle: (__flight_source.bounds_rectangle).clone(),
+            compute_local_bounds_rectangle: (__flight_source.compute_local_bounds_rectangle)
+                .clone(),
+            local_bounds_rectangle: (__flight_source.local_bounds_rectangle).clone(),
+            world_bounds_rectangle: (__flight_source.world_bounds_rectangle).clone(),
+            stage: (__flight_source.stage).clone(),
+        }
+    };
 }
 
 // Source: upstream/packages/particleemitter/src/particleEmitter.ts:276 (sha256:c7f267eb197bdb2f30c11fc9831fd9f3a54aef58e648688efe13b1cbdef877d4)
@@ -661,11 +796,64 @@ pub fn set_particle_emitter_local_bounds_rectangle(
     target: &ParticleEmitter,
     rect: &Rectangle,
 ) -> () {
-    let mut runtime = get_display_object_runtime(target);
+    let mut runtime = {
+        let __flight_source = &(get_display_object_runtime(target));
+        ParticleEmitterRuntime {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            binding: (__flight_source.binding).clone(),
+            appearance_id: __flight_source.appearance_id,
+            bounds_using_local_bounds_id: __flight_source.bounds_using_local_bounds_id,
+            bounds_using_local_transform_id: __flight_source.bounds_using_local_transform_id,
+            can_add_child: (__flight_source.can_add_child).clone(),
+            children: (__flight_source.children).clone(),
+            color_adjustments: (__flight_source.color_adjustments).clone(),
+            resolved_color_transform: (__flight_source.resolved_color_transform).clone(),
+            color_adjustments_channel_mixing: __flight_source.color_adjustments_channel_mixing,
+            traits: (__flight_source.traits).clone(),
+            interaction_signals: (__flight_source.interaction_signals).clone(),
+            local_bounds_id: __flight_source.local_bounds_id,
+            local_bounds_using_local_bounds_id: __flight_source.local_bounds_using_local_bounds_id,
+            local_content_id: __flight_source.local_content_id,
+            local_transform_id: __flight_source.local_transform_id,
+            local_transform_using_local_transform_id: __flight_source
+                .local_transform_using_local_transform_id,
+            node_signals: (__flight_source.node_signals).clone(),
+            interaction_state: (__flight_source.interaction_state).clone(),
+            parent: (__flight_source.parent).clone(),
+            world_bounds_using_local_bounds_id: __flight_source.world_bounds_using_local_bounds_id,
+            world_bounds_using_world_transform_id: __flight_source
+                .world_bounds_using_world_transform_id,
+            world_transform_id: __flight_source.world_transform_id,
+            world_transform_using_local_transform_id: __flight_source
+                .world_transform_using_local_transform_id,
+            world_transform_using_parent_transform_id: __flight_source
+                .world_transform_using_parent_transform_id,
+            local_matrix: (__flight_source.local_matrix).clone(),
+            rotation_angle: __flight_source.rotation_angle,
+            rotation_cosine: __flight_source.rotation_cosine,
+            rotation_sine: __flight_source.rotation_sine,
+            world_matrix: (__flight_source.world_matrix).clone(),
+            bounds_rectangle: (__flight_source.bounds_rectangle).clone(),
+            compute_local_bounds_rectangle: (__flight_source.compute_local_bounds_rectangle)
+                .clone(),
+            local_bounds_rectangle: (__flight_source.local_bounds_rectangle).clone(),
+            world_bounds_rectangle: (__flight_source.world_bounds_rectangle).clone(),
+            stage: (__flight_source.stage).clone(),
+        }
+    };
     if ((runtime.local_bounds_rectangle).clone()).is_none() {
         runtime.local_bounds_rectangle = Some(create_rectangle(None, None, None, None));
     }
-    copy_rectangle(runtime.local_bounds_rectangle.as_mut().unwrap(), rect);
+    copy_rectangle(runtime.local_bounds_rectangle.as_mut().unwrap(), &{
+        let __flight_source = &(rect);
+        RectangleLike {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            height: __flight_source.height,
+            width: __flight_source.width,
+            x: __flight_source.x,
+            y: __flight_source.y,
+        }
+    });
     invalidate_node_local_bounds(target);
 }
 

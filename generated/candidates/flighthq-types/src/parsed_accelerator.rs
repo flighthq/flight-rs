@@ -9,7 +9,7 @@
 use crate::ShortcutModifier;
 
 // Source: upstream/packages/types/src/ParsedAccelerator.ts:5 (sha256:e5a370a23deaa2973797ecbab7dda4326fc52ebf08a72fc55747a4ce9957c748)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ParsedAccelerator {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

@@ -8,7 +8,7 @@
 
 use flighthq_types::ScanlinesEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub count: Option<f64>,
@@ -21,7 +21,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/scanlinesEffect.ts:3 (sha256:14bd9d022c429f61b5f5eeb1af6c7488c4a0dbb23850dda7c1fa7d6d0b2a7bf9)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateScanlinesEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -44,6 +44,7 @@ pub fn create_scanlines_effect(options: Option<FlightOmitRecord1>) -> ScanlinesE
             kind: "ScanlinesEffect".to_owned(),
             count: __flight_spread_1.count,
             intensity: __flight_spread_1.intensity,
+            ..Default::default()
         }
     };
 }

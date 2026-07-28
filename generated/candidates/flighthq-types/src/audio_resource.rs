@@ -33,7 +33,7 @@ impl PartialEq for AudioChannel {
 }
 
 // Source: upstream/packages/types/src/AudioResource.ts:16 (sha256:07c7981f0fa5015691d9aecdffec83d3e8aa66cc930ba16af85e6de948189e8f)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AudioPlayOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -49,7 +49,7 @@ impl PartialEq for AudioPlayOptions {
 }
 
 // Source: upstream/packages/types/src/AudioResource.ts:23 (sha256:d17808fcafdb2857423b4feb55d2b94250690da4b885fc122c08c9a8944aad2c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AudioResource {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -62,7 +62,7 @@ impl PartialEq for AudioResource {
 }
 
 // Source: upstream/packages/types/src/AudioResource.ts:27 (sha256:18ed341db225455421ca6bc6cfb29f8e58a6f370e9e516cf1c6eb32ccfdfb6a8)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AudioResourceUrl {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

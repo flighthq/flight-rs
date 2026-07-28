@@ -74,7 +74,7 @@ impl PartialEq for ShellBackend {
 }
 
 // Source: upstream/packages/types/src/Shell.ts:25 (sha256:9bc711b953691a63bb8c3020572a290feccf58dfc79e159500015cf6fc82847b)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ShellOpenExternalOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -87,7 +87,7 @@ impl PartialEq for ShellOpenExternalOptions {
 }
 
 // Source: upstream/packages/types/src/Shell.ts:32 (sha256:504d357a093150c5ae4b689410873225c43e1c8ee3c614a21c5d689082fb1b76)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ShellOpenPathOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -101,7 +101,7 @@ impl PartialEq for ShellOpenPathOptions {
 }
 
 // Source: upstream/packages/types/src/Shell.ts:39 (sha256:4c98c49be5de57273aa9d3cc5ea9b68fd36302b9c7efca25e2d585194a7a49f8)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ShellShortcutLink {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

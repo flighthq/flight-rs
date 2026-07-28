@@ -71,7 +71,7 @@ impl PartialEq for ApplicationWindow {
 }
 
 // Source: upstream/packages/types/src/ApplicationWindow.ts:53 (sha256:f1bd48dc8b90c3350a7eb428b57ee99d2442cdfe213fbca3d6c341b0140541e3)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct WindowOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -101,7 +101,7 @@ impl PartialEq for WindowOptions {
 }
 
 // Source: upstream/packages/types/src/ApplicationWindow.ts:76 (sha256:c4283b158481445c344429a7d156350e5c7de857955bfe2d32de79a101df7ec7)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct WindowBounds {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

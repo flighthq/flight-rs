@@ -13,7 +13,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/Shape.ts:4 (sha256:013919eaba4c67e9fda790d47ff75aaf2af424e067fec2b548ba5faa6781d20f)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ShapeData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -75,7 +75,7 @@ impl PartialEq for ShapeRuntime {
 }
 
 // Source: upstream/packages/types/src/Shape.ts:10 (sha256:ddef9a6d87db4f5c30a8e3f6b7a3c913911ebbaf2f83aff9861ea80582c0e02f)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Shape {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

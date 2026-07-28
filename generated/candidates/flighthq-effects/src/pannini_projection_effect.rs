@@ -8,7 +8,7 @@
 
 use flighthq_types::PanniniProjectionEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub compression: Option<f64>,
@@ -21,7 +21,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/panniniProjectionEffect.ts:3 (sha256:baefe2699542025de3aa3d1c53564b01d183b79364be530356c8e6d0841ed62e)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreatePanniniProjectionEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -46,6 +46,7 @@ pub fn create_pannini_projection_effect(
             kind: "PanniniProjectionEffect".to_owned(),
             compression: __flight_spread_1.compression,
             crop: __flight_spread_1.crop,
+            ..Default::default()
         }
     };
 }

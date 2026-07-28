@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/Flow.ts:16 (sha256:1dcf59ee7b59c493adf889564e539b8495ed2a5e9f0b6145954c455cb28fe588)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlowState {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -29,7 +29,7 @@ impl PartialEq for FlowState {
 }
 
 // Source: upstream/packages/types/src/Flow.ts:29 (sha256:3e145f4a7645c5e37bb6f4d5be12c006ea332396a6f233562d12006faa6dd9e0)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlowStack {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

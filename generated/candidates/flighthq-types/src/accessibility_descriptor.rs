@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/AccessibilityDescriptor.ts:1 (sha256:496abee7f03f4315f5dc12ff7b8351e29ff07cfb093d16334f0925fce9b88b93)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AccessibilityDescriptor {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

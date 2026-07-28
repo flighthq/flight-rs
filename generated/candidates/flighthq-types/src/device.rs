@@ -9,7 +9,7 @@
 use crate::{DeviceCapabilities, DeviceDisplayMetrics, DeviceFormFactor};
 
 // Source: upstream/packages/types/src/Device.ts:8 (sha256:31bfcf037e151d46ad28b7e075466f3fa81d5b3e63f429ed4920acbb3569d836)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct DeviceInfo {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -46,7 +46,7 @@ impl PartialEq for DeviceInfo {
 }
 
 // Source: upstream/packages/types/src/Device.ts:39 (sha256:ab825aced7d8446357b7a42ff71ba8a55b52a120ccefd1b52fe6ee5a22b7d15b)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SafeAreaInsets {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

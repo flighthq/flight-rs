@@ -13,6 +13,22 @@ use flighthq_types::{
     AnimationLoopMode, AnimationPlayer,
 };
 
+#[derive(Clone, Default)]
+pub struct SharedStructuralRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub loop_: Option<bool>,
+    pub loop_mode: Option<AnimationLoopMode>,
+    pub playing: Option<bool>,
+    pub repeat_count: Option<f64>,
+    pub speed: Option<f64>,
+    pub time: Option<f64>,
+}
+impl PartialEq for SharedStructuralRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 // Source: upstream/packages/animation/src/animationPlayer.ts:12 (sha256:4150ce1d6253810aa5779d68f5ee0166746d6b28755ce6a350244b24b982fb0f)
 pub fn advance_animation_player(player: &mut AnimationPlayer, dt: f64) -> () {
     if (!player.playing) {
@@ -108,25 +124,9 @@ pub fn clone_animation_player(player: &AnimationPlayer) -> AnimationPlayer {
 }
 
 // Source: upstream/packages/animation/src/animationPlayer.ts:103 (sha256:69dd43b62da744fdb1b8fc26718e136b73b7cddd43de6ab4b64879c358724a6f)
-#[derive(Clone)]
-struct CreateAnimationPlayerRecord1 {
-    __flight_identity: std::sync::Arc<()>,
-    loop_: Option<bool>,
-    loop_mode: Option<AnimationLoopMode>,
-    playing: Option<bool>,
-    repeat_count: Option<f64>,
-    speed: Option<f64>,
-    time: Option<f64>,
-}
-impl PartialEq for CreateAnimationPlayerRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
 pub fn create_animation_player(
     clip: &AnimationClip,
-    opts: Option<CreateAnimationPlayerRecord1>,
+    opts: Option<SharedStructuralRecord1>,
 ) -> AnimationPlayer {
     return AnimationPlayer {
         __flight_identity: std::sync::Arc::new(()),
@@ -195,7 +195,7 @@ pub fn stop_animation_player(player: &mut AnimationPlayer) -> () {
 // Source: upstream/packages/animation/src/animationPlayer.ts:165 (sha256:3bb7406c624dfcc7fe82466034bddb751f041fed55e5dbd6853b7e6177c13f9b)
 fn consume_animation_player_loop(player: &mut AnimationPlayer) -> bool {
     let rc = player.repeat_count;
-    if ((rc).is_none()) || (rc < 0.0_f64) {
+    if ((rc).is_none()) || ((rc).as_ref().is_some_and(|value| *value < 0.0_f64)) {
         return true;
     }
     if (rc) == Some(0.0_f64) {

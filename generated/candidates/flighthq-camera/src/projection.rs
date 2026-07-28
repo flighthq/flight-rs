@@ -82,7 +82,7 @@ pub fn set_projection_matrix4(
 }
 
 // Source: upstream/packages/camera/src/projection.ts:64 (sha256:10fca9c7533cef2be0a3c068ffafb9e851966a47e21568c1077b91aa7c8f7e81)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct OrthographicProjectionOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -96,7 +96,7 @@ impl PartialEq for OrthographicProjectionOptions {
 }
 
 // Source: upstream/packages/camera/src/projection.ts:70 (sha256:34ac68876d041d6ffeaa372aaf4fb1b6dfc40e83a7deda58e9368a6f82ebbb23)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct PerspectiveProjectionOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

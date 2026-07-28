@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/InputKeyboardData.ts:1 (sha256:771b0863ccf5de23a04937149a041c06baa00c7f1fdc857df31c9928a0953f0d)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct InputKeyboardData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

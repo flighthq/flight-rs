@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/TextSelectionRange.ts:1 (sha256:96078cda6e89736707ddc7b1e7a04db8aa77d347428394e0b6fe493a1891e353)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextSelectionRange {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

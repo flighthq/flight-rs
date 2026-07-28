@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/TextInputEditRecord.ts:1 (sha256:ea05859e4ca23f53459b8a910a23c684cd6fa115d61f3e3c658e611d6d8fe522)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextInputEditRecord {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

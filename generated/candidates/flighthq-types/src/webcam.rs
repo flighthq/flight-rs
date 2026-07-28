@@ -10,7 +10,7 @@
 pub type WebcamSource = String;
 
 // Source: upstream/packages/types/src/Webcam.ts:8 (sha256:d0b604cf45d81a7fea0ce444a0099767a7e3349f82643a649b142c6817fddb11)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct WebcamCaptureOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -26,7 +26,7 @@ impl PartialEq for WebcamCaptureOptions {
 }
 
 // Source: upstream/packages/types/src/Webcam.ts:16 (sha256:9cf8203c121b8cd475eac9dc25c820c259d432f3a426d0bd93f499a728e23b40)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct WebcamPhoto {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -42,7 +42,7 @@ impl PartialEq for WebcamPhoto {
 }
 
 // Source: upstream/packages/types/src/Webcam.ts:23 (sha256:d3e545a30f9b2abfac821914485200373bb53b52f54c064b8c228c62feccbbe1)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct WebcamVideo {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

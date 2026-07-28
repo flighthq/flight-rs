@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/CaptureCheckResult.ts:7 (sha256:0f33d23a7c65f0166bba1a41ba7dc198ccaa34b6d6d012761be31a66384a27f4)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct CaptureCheckResult {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

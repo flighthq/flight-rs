@@ -58,7 +58,7 @@ pub fn create_socket(options: &SocketOptions) -> Socket {
         let __flight_callback = (get_socket_backend().open_socket).clone();
         let __flight_result = __flight_callback.lock().unwrap()(
             (*options).clone(),
-            make_socket_event_sink(&mut socket.runtime),
+            make_socket_event_sink((socket.runtime).clone()),
         );
         __flight_result
     };
@@ -220,7 +220,7 @@ fn make_socket_event_sink(mut runtime: SocketRuntime) -> SocketEventSink {
 }
 
 // Source: upstream/packages/socket/src/socket.ts:165 (sha256:bc19cc2f23e8031bc1e2836d35411297f051b7dc7e93b977dd02c04518edc230)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct ToSocketMessageRecord1 {
     __flight_identity: std::sync::Arc<()>,
     data: Vec<u8>,

@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/BlendMode.ts:16 (sha256:4e5b5258b1f5c2f68304f09935f1ec144026db13f7cb742b3d238e7d2a06d012)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct BlendModeValues {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

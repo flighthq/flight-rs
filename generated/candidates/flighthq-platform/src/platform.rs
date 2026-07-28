@@ -20,32 +20,46 @@ pub fn compare_platform_versions(a: String, b: String) -> f64 {
     if (a == b) {
         return 0.0_f64;
     }
-    let a_parts = if (a == "") { vec![] } else { (a.split)(".") };
-    let b_parts = if (b == "") { vec![] } else { (b.split)(".") };
+    let a_parts = if (a == "") {
+        vec![]
+    } else {
+        (a).split(".".to_owned().as_str())
+            .map(|part| part.to_owned())
+            .collect::<Vec<_>>()
+    };
+    let b_parts = if (b == "") {
+        vec![]
+    } else {
+        (b).split(".".to_owned().as_str())
+            .map(|part| part.to_owned())
+            .collect::<Vec<_>>()
+    };
     let len = (a_parts.len() as f64).max((b_parts.len() as f64));
     {
         let mut i = 0.0_f64;
         while (i < len) {
             let a_num = if (i < (a_parts.len() as f64)) {
-                crate::host_value::<f64>("host.call")
+                {
+                    let __flight_value = a_parts[i as usize].clone();
+                    let __flight_radix = (10.0_f64) as u32;
+                    i64::from_str_radix(__flight_value.trim(), __flight_radix)
+                        .map_or(f64::NAN, |value| value as f64)
+                }
             } else {
                 0.0_f64
             };
             let b_num = if (i < (b_parts.len() as f64)) {
-                crate::host_value::<f64>("host.call")
+                {
+                    let __flight_value = b_parts[i as usize].clone();
+                    let __flight_radix = (10.0_f64) as u32;
+                    i64::from_str_radix(__flight_value.trim(), __flight_radix)
+                        .map_or(f64::NAN, |value| value as f64)
+                }
             } else {
                 0.0_f64
             };
-            let a_n = if crate::host_value::<()>("host.call") {
-                0.0_f64
-            } else {
-                a_num
-            };
-            let b_n = if crate::host_value::<()>("host.call") {
-                0.0_f64
-            } else {
-                b_num
-            };
+            let a_n = if (a_num).is_nan() { 0.0_f64 } else { a_num };
+            let b_n = if (b_num).is_nan() { 0.0_f64 } else { b_num };
             if (a_n < b_n) {
                 return (-1.0_f64);
             }
@@ -62,7 +76,7 @@ pub fn compare_platform_versions(a: String, b: String) -> f64 {
 }
 
 // Source: upstream/packages/platform/src/platform.ts:41 (sha256:421be3157885a78a82f887e34e754ea0d04303d4ad8d9dc5e1747742d5a1be9c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreatePlatformInfoRecord1 {
     __flight_identity: std::sync::Arc<()>,
     arch: String,
@@ -206,32 +220,17 @@ static _SCRATCH: std::sync::LazyLock<PlatformInfo> =
 
 // Source: upstream/packages/platform/src/platform.ts:147 (sha256:b1ba0076fe22d520a58f593a7a68b357f4dd667dfaf57a6a7aca76930301e048)
 fn get_web_platform_info(out: &mut PlatformInfo) -> PlatformInfo {
-    let nav = if ("undefined" != "undefined") {
-        crate::OpaqueHostValue::Object
-    } else {
-        None
-    };
-    let ua = (crate::host_value::<Option<String>>("host.userAgent")).unwrap_or("".to_owned());
-    out.name = parse_user_agent_name(ua);
+    let nav: Option<crate::OpaqueHostValue> = None;
+    let ua = (None::<String>).unwrap_or("".to_owned());
+    out.name = parse_user_agent_name((ua).clone());
     out.kind = parse_user_agent_kind((out.name).clone());
-    out.version = parse_user_agent_version(ua, (out.name).clone());
-    out.arch = parse_user_agent_arch(ua, None);
-    out.locale = (crate::host_value::<Option<String>>("host.language")).unwrap_or("".to_owned());
-    out.is_touch = if ("undefined" != "undefined") && (false) {
-        (crate::host_value::<f64>("host.maxTouchPoints") > 0.0_f64)
-    } else {
-        false
-    };
-    out.runtime = parse_user_agent_runtime(
-        (if ("undefined" != "undefined") {
-            Some(crate::OpaqueHostValue::Object)
-        } else {
-            None
-        })
-        .clone(),
-    );
-    out.engine = parse_user_agent_engine(ua);
-    out.engine_version = parse_user_agent_engine_version(ua, (out.engine).clone());
+    out.version = parse_user_agent_version((ua).clone(), (out.name).clone());
+    out.arch = parse_user_agent_arch((ua).clone(), None);
+    out.locale = (None::<String>).unwrap_or("".to_owned());
+    out.is_touch = false;
+    out.runtime = parse_user_agent_runtime((None).clone());
+    out.engine = parse_user_agent_engine((ua).clone());
+    out.engine_version = parse_user_agent_engine_version((ua).clone(), (out.engine).clone());
     out.endianness = detect_endianness();
     out.pointer_width = parse_user_agent_pointer_width((out.arch).clone());
     out.os_build = "".to_owned();

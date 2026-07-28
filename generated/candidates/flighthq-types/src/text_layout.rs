@@ -15,7 +15,7 @@ pub type TextMeasureFunction =
     std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(String, TextFormat) -> f64 + Send + 'static>>>;
 
 // Source: upstream/packages/types/src/TextLayout.ts:10 (sha256:25a70f58982f05188d38a15abf985c669e653dddf4bebfad31755210bff86a5b)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextLayoutGroup {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -65,7 +65,7 @@ impl PartialEq for TextLayoutParams {
 }
 
 // Source: upstream/packages/types/src/TextLayout.ts:49 (sha256:0775b68e5d326626f79c05fb51f2b81d734453706da315289b1c8772c0062d88)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextLayoutResult {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

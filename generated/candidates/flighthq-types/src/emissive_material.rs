@@ -9,7 +9,7 @@
 use crate::{AlphaType, BlendMode, Kind, MaterialAlphaMode, Texture};
 
 // Source: upstream/packages/types/src/EmissiveMaterial.ts:7 (sha256:69801d3535461cd2a982b945b3099efbf3129d5d5152ed829a5e5ab849141c58)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct EmissiveMaterial {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -20,6 +20,9 @@ pub struct EmissiveMaterial {
     pub alpha_type: AlphaType,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub shader_key: String,
+    pub textures: Option<Vec<(String, Texture)>>,
+    pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
     pub emissive: f64,
     pub emissive_map: Option<Texture>,
     pub emissive_strength: f64,

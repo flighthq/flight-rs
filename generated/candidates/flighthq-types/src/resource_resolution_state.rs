@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/ResourceResolutionState.ts:13 (sha256:e6f358cfd733d99644950b435f4f6d03df783abd35c42700ab41de86e63960ba)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ResourceResolutionStateValues {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

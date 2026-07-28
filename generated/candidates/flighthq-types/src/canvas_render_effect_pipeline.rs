@@ -9,7 +9,7 @@
 use crate::{ColorLutCache, RenderEffect, RenderEffectPipelineOptions};
 
 // Source: upstream/packages/types/src/CanvasRenderEffectPipeline.ts:14 (sha256:56f73a3c7c106c2cfc9affd8f47d517ff6685a4a5bad8083b9d9fe76d3fcf217)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct CanvasRenderEffectContext {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -30,7 +30,7 @@ pub type CanvasRenderEffectRunner = std::sync::Arc<
 >;
 
 // Source: upstream/packages/types/src/CanvasRenderEffectPipeline.ts:34 (sha256:e0a62ab9b91837adf5488e49d0c33cd05027b35154948fc8d2167b4185d6ba2d)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct CanvasRenderTargetPool {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -44,7 +44,7 @@ impl PartialEq for CanvasRenderTargetPool {
 }
 
 // Source: upstream/packages/types/src/CanvasRenderEffectPipeline.ts:43 (sha256:f0f92129b058ee5f05cd9b1720f2d60db4a348e6e4db086f74a9ceb8718520af)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct CanvasRenderEffectPipeline {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

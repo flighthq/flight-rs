@@ -15,7 +15,7 @@ pub type AccessibilityRole = String;
 pub type AccessibilityLiveness = String;
 
 // Source: upstream/packages/types/src/Accessibility.ts:44 (sha256:1f209c4f7d90191f56d8beee8987f5e88fd79dde04fdb55d2259a7ed5061c8e7)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AccessibilityState {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -40,7 +40,7 @@ impl PartialEq for AccessibilityState {
 }
 
 // Source: upstream/packages/types/src/Accessibility.ts:65 (sha256:0d54531616bd2ab0cae1a50a1978b2e6307e45e6937724a91c4f5dee64f19703)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AccessibilityNode {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

@@ -9,7 +9,7 @@
 use flighthq_types::RenderEffect;
 
 // Source: upstream/packages/effects/src/renderEffectDefaults.ts:12 (sha256:026a7af589b7e7987ffbe4bfe04ffab31ac80701a4c415478623c93f77160df7)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct GetRenderEffectDefaultsRecord1 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -47,7 +47,7 @@ pub fn normalize_render_effect(effect: &RenderEffect, out: &mut RenderEffect) ->
         return false;
     }
     let effect_rec = effect;
-    let mut out_rec = out;
+    let mut out_rec = crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast");
     for key in (crate::host_value::<()>("host.keys")).iter().cloned() {
         out_rec
             .iter()

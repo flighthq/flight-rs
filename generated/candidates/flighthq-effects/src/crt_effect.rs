@@ -8,7 +8,7 @@
 
 use flighthq_types::CrtEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub curvature: Option<f64>,
@@ -23,7 +23,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/crtEffect.ts:3 (sha256:45c15cf0b5f39d30b11eefbc49b6d4f93c662f10428e5a88b145a96a0f11dd34)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateCrtEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -50,6 +50,7 @@ pub fn create_crt_effect(options: Option<FlightOmitRecord1>) -> CrtEffect {
             scanline_intensity: __flight_spread_1.scanline_intensity,
             vignette: __flight_spread_1.vignette,
             aberration: __flight_spread_1.aberration,
+            ..Default::default()
         }
     };
 }

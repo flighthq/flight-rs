@@ -8,7 +8,7 @@
 
 use flighthq_types::ChromaticAberrationEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub intensity: Option<f64>,
@@ -21,7 +21,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/chromaticAberrationEffect.ts:3 (sha256:456450d4b5d8fd416d14fc8ec9a8ec513ca50ec885dd193183d640ea2b163629)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateChromaticAberrationEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -46,6 +46,7 @@ pub fn create_chromatic_aberration_effect(
             kind: "ChromaticAberrationEffect".to_owned(),
             intensity: __flight_spread_1.intensity,
             radial: __flight_spread_1.radial,
+            ..Default::default()
         }
     };
 }

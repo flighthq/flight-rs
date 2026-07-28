@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/DeviceDisplayMetrics.ts:4 (sha256:fd5b657fabf51d428cdc82826b34ec7bec63021ebe69311aa6204fa508c6be76)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct DeviceDisplayMetrics {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

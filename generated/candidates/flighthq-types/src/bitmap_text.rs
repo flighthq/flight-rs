@@ -16,7 +16,7 @@ use crate::{
 pub type BitmapTextAlign = String;
 
 // Source: upstream/packages/types/src/BitmapText.ts:20 (sha256:1ce347f6ccf8f3976756b26f27a7aaf632a2a078faea3f71b7a73b0305ab6ccc)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct BitmapTextData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -85,7 +85,7 @@ impl PartialEq for BitmapTextRuntime {
 }
 
 // Source: upstream/packages/types/src/BitmapText.ts:52 (sha256:58a2b715038e0386ac8f038f18f536356df7c840c61bd24fd4846f1d8cc04048)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct BitmapText {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -116,7 +116,7 @@ impl PartialEq for BitmapText {
 }
 
 // Source: upstream/packages/types/src/BitmapText.ts:58 (sha256:30b3f8bb3e2d7fc885abd15048874ed6359a1c0c62dca87dbb12219b721bfea0)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct BitmapTextOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

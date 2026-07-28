@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/CdlValues.ts:1 (sha256:047556e1bd2714b7eba4d25c2d396bdaa84aff6c40f6623e0d58b8a6ea6d7515)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct CdlValues {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/Transform2D.ts:7 (sha256:749a846f4dec5c40a8c70da40251904477dd924b7522bf0bc30df38e2aa6a04f)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Transform2D {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

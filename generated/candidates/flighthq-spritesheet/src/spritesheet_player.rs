@@ -24,7 +24,7 @@ fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub animation: Option<SpritesheetAnimation>,
@@ -425,6 +425,7 @@ fn resolve_virtual_index_to_display_index(
             if __flight_case <= 4_usize {
                 return virtual_index;
             }
+            unreachable!("exhaustive TypeScript switch completed without returning");
         }
     }
 }

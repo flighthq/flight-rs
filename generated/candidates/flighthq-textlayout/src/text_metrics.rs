@@ -9,7 +9,7 @@
 use flighthq_types::{TextLayoutResult, TextMetrics};
 
 // Source: upstream/packages/textlayout/src/textMetrics.ts:3 (sha256:847084489806b3129c9219dafdd66d83752fdbb3de22646d9e9a873945f03dd8)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateTextMetricsRecord1 {
     __flight_identity: std::sync::Arc<()>,
     height: f64,

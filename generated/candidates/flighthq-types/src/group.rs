@@ -9,7 +9,7 @@
 use crate::{Kind, NodeData, Quaternion, SceneNodeRuntime, Vector3};
 
 // Source: upstream/packages/types/src/Group.ts:2 (sha256:915353b7c975ff8acc0de8188a6114cc3ba2c609c1f3f3f57944ca7a52dc0d30)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Group {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

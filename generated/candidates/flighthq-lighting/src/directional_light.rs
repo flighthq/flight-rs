@@ -13,7 +13,7 @@ use flighthq_types::{
 };
 
 // Source: upstream/packages/lighting/src/directionalLight.ts:6 (sha256:ae22f5138e53cd2df7b843f130bdd9febf39d2cad6f130edf563bb11fc9f4431)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct DirectionalLightOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -37,12 +37,21 @@ pub fn clone_directional_light(source: &DirectionalLight) -> DirectionalLight {
         __flight_identity: std::sync::Arc::new(()),
         casts_shadow: source.casts_shadow,
         color: source.color,
-        direction: clone_vector3(&source.direction),
+        direction: clone_vector3(&{
+            let __flight_source = &(source.direction);
+            Vector3Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                x: __flight_source.x,
+                y: __flight_source.y,
+                z: __flight_source.z,
+            }
+        }),
         intensity: source.intensity,
         kind: (directional_light_kind_constant).to_owned(),
         normal_bias: source.normal_bias,
         pcf_radius: source.pcf_radius,
         shadow_bias: source.shadow_bias,
+        ..Default::default()
     }));
 }
 
@@ -63,6 +72,7 @@ pub fn create_directional_light(options: Option<DirectionalLightOptions>) -> Dir
         normal_bias: (options.as_ref().and_then(|value| value.normal_bias)).unwrap_or(0.0_f64),
         pcf_radius: (options.as_ref().and_then(|value| value.pcf_radius)).unwrap_or(0.0_f64),
         shadow_bias: (options.as_ref().and_then(|value| value.shadow_bias)).unwrap_or(0.0_f64),
+        ..Default::default()
     }));
 }
 

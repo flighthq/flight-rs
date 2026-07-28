@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/AcceleratorParseError.ts:3 (sha256:353b654b412c10670deff7c560b299be80853ca9514e424354aafae28f18ebd6)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AcceleratorParseError {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

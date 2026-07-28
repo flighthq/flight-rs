@@ -8,7 +8,7 @@
 
 use flighthq_types::SpritesheetFrame;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub id: Option<f64>,

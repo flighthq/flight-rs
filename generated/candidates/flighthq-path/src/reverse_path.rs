@@ -21,7 +21,7 @@ pub fn reverse_path(source: &Path, out: &mut Path) -> () {
 }
 
 // Source: upstream/packages/path/src/reversePath.ts:23 (sha256:fa601de91b2925148316f3dac6183d041ec502f2e101ca35686f91bf2ec024b6)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct DecodeSubpathsRecord1 {
     __flight_identity: std::sync::Arc<()>,
     points: Vec<DecodeSubpathsRecord2>,
@@ -33,7 +33,7 @@ impl PartialEq for DecodeSubpathsRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct DecodeSubpathsRecord2 {
     __flight_identity: std::sync::Arc<()>,
     x: f64,
@@ -225,7 +225,7 @@ fn encode_reversed_subpath(subpath: &Subpath, out: &mut Path) -> () {
 }
 
 // Source: upstream/packages/path/src/reversePath.ts:93 (sha256:fe5d45a0ab024b667e20ec67427ec99ed04779d3a6abaa0d84db92db0553e28a)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct Subpath {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -239,7 +239,7 @@ impl PartialEq for Subpath {
 }
 
 // Source: upstream/packages/path/src/reversePath.ts:98 (sha256:87f9d701440ffe67edb4a00fd36f932e5c0a4241738e1f26384e0b1c335ff7c4)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct SubpathPoint {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

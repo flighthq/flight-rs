@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/InputTextData.ts:1 (sha256:ccd247bbdcefcf45f723d0a33eeb2d3cc4c690b9b1802a4d99adf76644e9d73f)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct InputTextData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

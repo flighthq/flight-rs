@@ -62,7 +62,7 @@ pub fn compute_text_layout(out: &mut TextLayoutResult, params: &mut TextLayoutPa
         &mut out.groups,
         &mut (*_PARAGRAPH_LAST_LINES.lock().unwrap()),
         (text).clone(),
-        &mut params.format_ranges,
+        (params.format_ranges).clone(),
         &_LINE_BREAKS,
         width,
         (params.measure).clone(),
@@ -185,7 +185,7 @@ fn get_tab_advance(
 }
 
 // Source: upstream/packages/textlayout/src/textLayout.ts:167 (sha256:c3d8c03964f30c8e521a40add816ab8f7ed143b4731d6e95211160aeed283508)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct BuildGroupsRecord1 {
     __flight_identity: std::sync::Arc<()>,
     positions: Vec<f64>,
@@ -1018,8 +1018,8 @@ fn build_groups(
                             None
                         },
                     );
-                    if ((trim_target && ((trim_target.positions.len() as f64) > 0.0_f64))
-                        && (trim_target.line_index == (*line_index.lock().unwrap()).clone()))
+                    if ((true) && ((trim_target.positions.len() as f64) > 0.0_f64))
+                        && (trim_target.line_index == (*line_index.lock().unwrap()).clone())
                     {
                         let trailing_w = trim_target.positions
                             [((trim_target.positions.len() as f64) - 1.0_f64) as usize]
@@ -1438,7 +1438,11 @@ pub fn create_text_layout_result() -> TextLayoutResult {
 
 // Source: upstream/packages/textlayout/src/textLayout.ts:784 (sha256:29eef70d4b82cb8c4cafec5bfa991e6143190a4f2930489fe2dd028bec3c0193)
 pub fn is_text_layout_truncated(layout: &TextLayoutResult, params: &TextLayoutParams) -> bool {
-    if ((params.max_lines).is_none()) || (params.max_lines < 0.0_f64) {
+    if ((params.max_lines).is_none())
+        || ((params.max_lines)
+            .as_ref()
+            .is_some_and(|value| *value < 0.0_f64))
+    {
         return false;
     }
     return (layout.num_lines >= params.max_lines) && ((layout.groups.len() as f64) > 0.0_f64);

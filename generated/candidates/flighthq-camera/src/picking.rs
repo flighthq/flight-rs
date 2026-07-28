@@ -10,7 +10,7 @@ use crate::get_camera_view_projection_matrix4;
 use flighthq_geometry::{
     create_matrix4, create_vector3, inverse_matrix4, normalize_vector3, subtract_vector3,
 };
-use flighthq_types::{Camera, Matrix4, Ray3DLike, Vector3, Vector3Like};
+use flighthq_types::{Camera, Matrix4, Matrix4Like, Ray3DLike, Vector3, Vector3Like};
 
 // Source: upstream/packages/camera/src/picking.ts:16 (sha256:d433108a9e90d9d15959567e9e3d7f9f1d905c02e0b9b7f0c9269b24e69fd28c)
 pub fn get_camera_screen_to_world_ray(
@@ -25,10 +25,13 @@ pub fn get_camera_screen_to_world_ray(
         camera,
         aspect,
     );
-    if (!inverse_matrix4(
-        &mut (*__SCRATCH_INVERSE_VP.lock().unwrap()),
-        &(*__SCRATCH_VIEW_PROJECTION.lock().unwrap()),
-    )) {
+    if (!inverse_matrix4(&mut (*__SCRATCH_INVERSE_VP.lock().unwrap()), &{
+        let __flight_source = &(*__SCRATCH_VIEW_PROJECTION.lock().unwrap());
+        Matrix4Like {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            m: (__flight_source.m).clone(),
+        }
+    })) {
         return false;
     }
     let nx = ndc_x;
@@ -91,8 +94,24 @@ pub fn get_camera_screen_to_world_ray(
     (*__SCRATCH_FAR.lock().unwrap()).z = far_z;
     subtract_vector3(
         &mut (*__SCRATCH_DIR.lock().unwrap()),
-        &(*__SCRATCH_FAR.lock().unwrap()),
-        &(*__SCRATCH_NEAR.lock().unwrap()),
+        &{
+            let __flight_source = &(*__SCRATCH_FAR.lock().unwrap());
+            Vector3Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                x: __flight_source.x,
+                y: __flight_source.y,
+                z: __flight_source.z,
+            }
+        },
+        &{
+            let __flight_source = &(*__SCRATCH_NEAR.lock().unwrap());
+            Vector3Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                x: __flight_source.x,
+                y: __flight_source.y,
+                z: __flight_source.z,
+            }
+        },
     );
     {
         let __flight_argument_1 = (*__SCRATCH_DIR.lock().unwrap()).clone();

@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/FontVariation.ts:1 (sha256:738762ab3d2c7b637084d12086d9c57c38bcc6ed282d5a88e4cc2e2b361652bf)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FontVariation {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

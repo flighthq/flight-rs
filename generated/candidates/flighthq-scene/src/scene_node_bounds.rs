@@ -16,7 +16,7 @@ use flighthq_types::{
     SceneNode, Skin, Transform3DNode, Vector3,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub data: Option<NodeData>,
@@ -39,7 +39,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -75,7 +75,7 @@ impl PartialEq for FlightPartialRecord2 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub data: Option<NodeData>,
@@ -94,7 +94,7 @@ impl PartialEq for FlightPartialRecord3 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord4 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha: Option<f64>,
@@ -106,7 +106,7 @@ impl PartialEq for FlightPartialRecord4 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord5 {
     pub __flight_identity: std::sync::Arc<()>,
     pub position: Option<Vector3>,
@@ -135,7 +135,7 @@ pub fn get_scene_node_world_bounds(out: &mut AabbLike, node: &mut SceneNode) -> 
 
 // Source: upstream/packages/scene/src/sceneNodeBounds.ts:31 (sha256:768fc425f96dd1e17f1de801e0ec10b80fa383c41cdbfeeddd3dec2f6030d02c)
 fn _accumulate_world_bounds(out: &mut AabbLike, node: &mut SceneNode) -> () {
-    if is_mesh(node) {
+    if is_mesh((node).clone()) {
         let mut geom = node.geometry;
         let mut local_bounds = geom.bounds;
         if (local_bounds).is_none() {
@@ -143,57 +143,70 @@ fn _accumulate_world_bounds(out: &mut AabbLike, node: &mut SceneNode) -> () {
             local_bounds = (*_SCRATCH_LOCAL_AABB.lock().unwrap()).clone();
         }
         if (local_bounds.min.x <= local_bounds.max.x) {
-            ensure_node_world_matrix4(&Transform3DNode {
-                __flight_identity: std::sync::Arc::clone(&(node).__flight_identity),
-                data: ((node).data).clone(),
-                enabled: (node).enabled,
-                kind: ((node).kind).clone(),
-                name: ((node).name).clone(),
-                position: ((node).position).clone(),
-                rotation: ((node).rotation).clone(),
-                scale: ((node).scale).clone(),
+            ensure_node_world_matrix4(&{
+                let __flight_source = &(node);
+                Transform3DNode {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    data: (__flight_source.data).clone(),
+                    enabled: __flight_source.enabled,
+                    kind: (__flight_source.kind).clone(),
+                    name: (__flight_source.name).clone(),
+                    position: (__flight_source.position).clone(),
+                    rotation: (__flight_source.rotation).clone(),
+                    scale: (__flight_source.scale).clone(),
+                }
             });
-            let world_matrix = get_node_world_matrix4(&Transform3DNode {
-                __flight_identity: std::sync::Arc::clone(&(node).__flight_identity),
-                data: ((node).data).clone(),
-                enabled: (node).enabled,
-                kind: ((node).kind).clone(),
-                name: ((node).name).clone(),
-                position: ((node).position).clone(),
-                rotation: ((node).rotation).clone(),
-                scale: ((node).scale).clone(),
+            let world_matrix = get_node_world_matrix4(&{
+                let __flight_source = &(node);
+                Transform3DNode {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    data: (__flight_source.data).clone(),
+                    enabled: __flight_source.enabled,
+                    kind: (__flight_source.kind).clone(),
+                    name: (__flight_source.name).clone(),
+                    position: (__flight_source.position).clone(),
+                    rotation: (__flight_source.rotation).clone(),
+                    scale: (__flight_source.scale).clone(),
+                }
             });
             transform_aabb_by_matrix4(
                 &mut (*_SCRATCH_WORLD_AABB.lock().unwrap()),
-                &AabbLike {
-                    __flight_identity: std::sync::Arc::clone(&(local_bounds).__flight_identity),
-                    max: ((local_bounds).max).clone(),
-                    min: ((local_bounds).min).clone(),
+                &{
+                    let __flight_source = &(local_bounds);
+                    AabbLike {
+                        __flight_identity: std::sync::Arc::clone(
+                            &__flight_source.__flight_identity,
+                        ),
+                        max: (__flight_source.max).clone(),
+                        min: (__flight_source.min).clone(),
+                    }
                 },
                 &world_matrix,
             );
             {
                 let __flight_argument_1 = (out).clone();
-                union_aabb(
-                    out,
-                    &__flight_argument_1,
-                    &AabbLike {
+                union_aabb(out, &__flight_argument_1, &{
+                    let __flight_source = &(*_SCRATCH_WORLD_AABB.lock().unwrap());
+                    AabbLike {
                         __flight_identity: std::sync::Arc::clone(
-                            &(*_SCRATCH_WORLD_AABB.lock().unwrap()).__flight_identity,
+                            &__flight_source.__flight_identity,
                         ),
-                        max: ((*_SCRATCH_WORLD_AABB.lock().unwrap()).max).clone(),
-                        min: ((*_SCRATCH_WORLD_AABB.lock().unwrap()).min).clone(),
-                    },
-                )
+                        max: (__flight_source.max).clone(),
+                        min: (__flight_source.min).clone(),
+                    }
+                })
             };
         }
     }
-    let mut children = (get_node_runtime(&Node {
-        __flight_identity: std::sync::Arc::clone(&(node).__flight_identity),
-        data: ((node).data).clone(),
-        enabled: (node).enabled,
-        kind: ((node).kind).clone(),
-        name: ((node).name).clone(),
+    let mut children = (get_node_runtime(&{
+        let __flight_source = &(node);
+        Node {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+        }
     })
     .children)
         .clone();

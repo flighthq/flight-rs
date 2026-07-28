@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/WgpuAdapterCapabilities.ts:1 (sha256:2fe9d81139cc8bc8bbac0afcccc562276e9af5032731679eff3ffa753eef5bac)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct WgpuAdapterCapabilities {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

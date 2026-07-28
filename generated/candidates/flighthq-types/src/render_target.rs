@@ -16,7 +16,7 @@ pub type RenderTargetDepth = String;
 pub type RenderTargetColorSpace = String;
 
 // Source: upstream/packages/types/src/RenderTarget.ts:17 (sha256:f976a3e923d48395ab6e3ab23594c3979ad742550499012816e1aa6fada959dc)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct RenderTargetDescriptor {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

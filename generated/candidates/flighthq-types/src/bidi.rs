@@ -27,7 +27,7 @@ impl PartialEq for BidiClassBackend {
 pub type BidiDirection = String;
 
 // Source: upstream/packages/types/src/Bidi.ts:56 (sha256:6858c9f5f04f80c3b6f9cac539ffd824b9b3a8502bd78f86753a90a20ce92d4a)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct BidiRun {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

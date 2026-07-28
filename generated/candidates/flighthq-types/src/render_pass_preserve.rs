@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/RenderPassPreserve.ts:12 (sha256:2805a51b880bf870f6ccf558ebde7f8b063f961cfa63130bc3e2379ee52220c6)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct RenderPassPreserve {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

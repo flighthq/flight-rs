@@ -9,7 +9,7 @@
 use crate::{TextureContainerFormat, TextureContainerLevel, TextureContainerSupercompression};
 
 // Source: upstream/packages/types/src/TextureContainer.ts:17 (sha256:8ec3670c4d9138ddabd2f31f44282b7a63234e7b28abfeaaa79fb46b60386ac4)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextureContainer {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

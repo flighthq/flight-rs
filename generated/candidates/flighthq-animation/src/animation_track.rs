@@ -24,6 +24,22 @@ fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
 }
 
+#[derive(Clone, Default)]
+pub struct SharedStructuralRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub times: Vec<f64>,
+    pub values: Vec<f64>,
+    pub components: Option<f64>,
+    pub interpolation: Option<AnimationInterpolation>,
+    pub quaternion: Option<bool>,
+    pub easing: Option<EasingFunction>,
+}
+impl PartialEq for SharedStructuralRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 // Source: upstream/packages/animation/src/animationTrack.ts:7 (sha256:174718dbaf594c79c64898237335c8e3b84df564d02f9655dd96147190f38f8e)
 pub fn clone_animation_track(track: &AnimationTrack) -> AnimationTrack {
     return AnimationTrack {
@@ -38,23 +54,7 @@ pub fn clone_animation_track(track: &AnimationTrack) -> AnimationTrack {
 }
 
 // Source: upstream/packages/animation/src/animationTrack.ts:21 (sha256:4629c25874da3b01a7200d0899e22036af2e19e659fb6368b27aec4e771cff8a)
-#[derive(Clone)]
-struct CreateAnimationTrackRecord1 {
-    __flight_identity: std::sync::Arc<()>,
-    times: Vec<f64>,
-    values: Vec<f64>,
-    components: Option<f64>,
-    interpolation: Option<AnimationInterpolation>,
-    quaternion: Option<bool>,
-    easing: Option<EasingFunction>,
-}
-impl PartialEq for CreateAnimationTrackRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-pub fn create_animation_track(opts: &CreateAnimationTrackRecord1) -> AnimationTrack {
+pub fn create_animation_track(opts: &SharedStructuralRecord1) -> AnimationTrack {
     return AnimationTrack {
         __flight_identity: std::sync::Arc::new(()),
         components: (opts.components).unwrap_or(1.0_f64),

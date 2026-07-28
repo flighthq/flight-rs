@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/CompositeOperator.ts:13 (sha256:1de09ebce0100e9f44efd2c4d31879c2262de4cb7062e216cbd7244d798af1cf)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct CompositeOperatorValues {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

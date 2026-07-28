@@ -27,12 +27,15 @@ pub fn compute_rich_text_line_count(layout: &TextLayoutResult) -> f64 {
 pub fn compute_rich_text_max_scroll_h(data: &RichTextData, layout: &TextLayoutResult) -> f64 {
     let visible_width = (0.0_f64).max(
         (compute_text_bounds_width(
-            &TextBoundsSpec {
-                __flight_identity: std::sync::Arc::clone(&(data).__flight_identity),
-                auto_size: ((data).auto_size).clone(),
-                height: (data).height,
-                width: (data).width,
-                word_wrap: (data).word_wrap,
+            &{
+                let __flight_source = &(data);
+                TextBoundsSpec {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    auto_size: (__flight_source.auto_size).clone(),
+                    height: __flight_source.height,
+                    width: __flight_source.width,
+                    word_wrap: Some(__flight_source.word_wrap),
+                }
             },
             layout,
         ) - (text_bounds_gutter_constant * 2.0_f64)),
@@ -79,12 +82,15 @@ pub fn get_rich_text_scroll_y_offset(line_heights: &Vec<f64>, first_visible_line
 fn get_visible_line_count(data: &RichTextData, layout: &TextLayoutResult) -> f64 {
     let visible_height = (0.0_f64).max(
         (compute_text_bounds_height(
-            &TextBoundsSpec {
-                __flight_identity: std::sync::Arc::clone(&(data).__flight_identity),
-                auto_size: ((data).auto_size).clone(),
-                height: (data).height,
-                width: (data).width,
-                word_wrap: (data).word_wrap,
+            &{
+                let __flight_source = &(data);
+                TextBoundsSpec {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    auto_size: (__flight_source.auto_size).clone(),
+                    height: __flight_source.height,
+                    width: __flight_source.width,
+                    word_wrap: Some(__flight_source.word_wrap),
+                }
             },
             layout,
         ) - (text_bounds_gutter_constant * 2.0_f64)),

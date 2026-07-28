@@ -14,7 +14,7 @@ use flighthq_types::{
     NodeSignals, NodeTraitsKey, Quaternion, SCENE_NODE_KIND as scene_node_kind_constant, Vector3,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub data: Option<NodeData>,
@@ -33,7 +33,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -69,7 +69,7 @@ impl PartialEq for FlightPartialRecord2 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha: Option<f64>,
@@ -81,7 +81,7 @@ impl PartialEq for FlightPartialRecord3 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord4 {
     pub __flight_identity: std::sync::Arc<()>,
     pub position: Option<Vector3>,
@@ -95,7 +95,7 @@ impl PartialEq for FlightPartialRecord4 {
 }
 
 // Source: upstream/packages/scene/src/scene.ts:13 (sha256:83e79015335e10a8587a9c1c61074e7a3478234bce69f8ce0b642a9133fffc3b)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateSceneRecord5 {
     __flight_identity: std::sync::Arc<()>,
 }

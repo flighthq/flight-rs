@@ -13,7 +13,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/QuadBatch.ts:7 (sha256:1eb0802de4e5a5b34e6e585aa05bc5147a491e7e455d4719ac072ac9577c9caa)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct QuadBatchData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -81,7 +81,7 @@ impl PartialEq for QuadBatchRuntime {
 }
 
 // Source: upstream/packages/types/src/QuadBatch.ts:31 (sha256:51f21dd1261747ad4e3ecb0223ce247c09417a3ad79113123cf7bde455ecfb17)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct QuadBatch {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

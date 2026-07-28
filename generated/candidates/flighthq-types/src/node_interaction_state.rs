@@ -9,7 +9,7 @@
 use crate::{Cursor, HitArea};
 
 // Source: upstream/packages/types/src/NodeInteractionState.ts:18 (sha256:1a80443ef92b7e9bc7ac2dd87e10ced28db13469f8d2df5f858aa35a5a986944)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct NodeInteractionState {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

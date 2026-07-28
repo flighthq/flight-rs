@@ -60,7 +60,7 @@ impl<N> PartialEq for InteractionManager<N> {
 }
 
 // Source: upstream/packages/types/src/InteractionManager.ts:35 (sha256:05373e969c761eb766f2817146d279968935d9f6ea2106bae3d7fd29620c361c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct InteractionManagerOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -80,7 +80,7 @@ impl PartialEq for InteractionManagerOptions {
 pub type InteractionInputSource = InputSignals;
 
 // Source: upstream/packages/types/src/InteractionManager.ts:48 (sha256:034806c53b63b6077ead04323f22478a19925c34cd79a170cacfc8b5e01b4da4)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct InteractionPointerOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -99,7 +99,7 @@ impl PartialEq for InteractionPointerOptions {
 }
 
 // Source: upstream/packages/types/src/InteractionManager.ts:58 (sha256:6c846f5649ce0d7c3800c0bf309bebafb3e4bc1f67b56d12bc9e2acce5c9d262)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct InteractionPointerState<N> {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

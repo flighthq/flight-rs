@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/GamepadButtonKind.ts:1 (sha256:906685412e512673d8085c9de446922f6e65426abf8ae45aa85d9e6bb2b785a7)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GamepadButtonKindValues {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

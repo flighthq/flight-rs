@@ -10,7 +10,7 @@
 pub type IpcErrorCode = String;
 
 // Source: upstream/packages/types/src/IpcError.ts:9 (sha256:a834bd76744e4543841e55760be9ae588904ca076dfb9b013d692ed19da465d9)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct IpcError {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

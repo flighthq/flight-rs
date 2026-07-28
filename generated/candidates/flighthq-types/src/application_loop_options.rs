@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/ApplicationLoopOptions.ts:2 (sha256:6da530e1a42c7e3a45d4d16e018a2403a0457de4ad6ce1f2ab5ad26993e83fc5)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ApplicationLoopOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

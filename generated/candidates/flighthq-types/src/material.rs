@@ -7,14 +7,23 @@
 #![allow(unused_parens)]
 
 use crate::Kind;
+use crate::{AlphaType, BlendMode, MaterialAlphaMode, Texture};
 
 // Source: upstream/packages/types/src/Material.ts:17 (sha256:a4c315d8130136ab5ad5c38e12d1cebca5388d52af388fbef9c000e2da59083d)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Material {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Kind,
     pub name: Option<String>,
+    pub alpha_cutoff: f64,
+    pub alpha_mode: MaterialAlphaMode,
+    pub alpha_type: AlphaType,
+    pub blend_mode: BlendMode,
+    pub double_sided: bool,
+    pub shader_key: String,
+    pub textures: Option<Vec<(String, Texture)>>,
+    pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
 }
 impl PartialEq for Material {
     fn eq(&self, other: &Self) -> bool {

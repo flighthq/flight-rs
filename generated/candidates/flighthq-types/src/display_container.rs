@@ -62,7 +62,7 @@ impl PartialEq for DisplayContainerRuntime {
 }
 
 // Source: upstream/packages/types/src/DisplayContainer.ts:5 (sha256:28a273c427a0476a0f2672ce0c0cd835f529dbd3dfed712a62ab4addfc130b5f)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct DisplayContainer {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

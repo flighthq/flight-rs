@@ -8,7 +8,7 @@
 
 use flighthq_types::GrayscaleAdjustment;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub intensity: Option<f64>,
@@ -20,7 +20,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/adjustments/src/grayscaleAdjustment.ts:6 (sha256:c5def2b47e2ea5ec0351a431b3d66ef5a279c4f282694cb747b52790d7f73466)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateGrayscaleAdjustmentRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -70,6 +70,7 @@ pub fn create_grayscale_adjustment(options: Option<FlightOmitRecord1>) -> Graysc
             kind: "GrayscaleAdjustment".to_owned(),
             color_matrix: (color_matrix).clone(),
             intensity: __flight_spread_1.intensity,
+            ..Default::default()
         }
     };
 }

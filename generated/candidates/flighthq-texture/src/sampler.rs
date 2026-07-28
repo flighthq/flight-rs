@@ -9,7 +9,7 @@
 use flighthq_entity::create_entity;
 use flighthq_types::{Sampler, SamplerLike, TextureFilter, TextureWrap};
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub anisotropy: Option<f64>,
@@ -67,7 +67,7 @@ pub fn create_clamp_linear_sampler() -> Sampler {
 }
 
 // Source: upstream/packages/texture/src/sampler.ts:43 (sha256:56db6bb97cd170e2169ac6cffa5d0993139e702bf6a9b71c666f7b14aba7dfa0)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreatePixelArtSamplerRecord2 {
     __flight_identity: std::sync::Arc<()>,
     mag_filter: String,
@@ -110,7 +110,7 @@ pub fn create_sampler(opts: Option<FlightPartialRecord1>) -> Sampler {
 }
 
 // Source: upstream/packages/texture/src/sampler.ts:63 (sha256:558556fee9353c533488e551645321a97e72a19a3c26bc48c08e73a1679d9a76)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateTilingSamplerRecord2 {
     __flight_identity: std::sync::Arc<()>,
     wrap_u: String,

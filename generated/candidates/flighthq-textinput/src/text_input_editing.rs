@@ -21,8 +21,20 @@ use flighthq_types::{
     TextSelectionRectangle, TextVerticalAlign,
 };
 
-#[derive(Clone)]
-pub struct FlightPartialRecord1 {
+#[derive(Clone, Default)]
+pub struct SharedStructuralRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub accepted: String,
+    pub declined: String,
+}
+impl PartialEq for SharedStructuralRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha_multiplier: Option<f64>,
     pub alpha_offset: Option<f64>,
@@ -33,14 +45,14 @@ pub struct FlightPartialRecord1 {
     pub red_multiplier: Option<f64>,
     pub red_offset: Option<f64>,
 }
-impl PartialEq for FlightPartialRecord1 {
+impl PartialEq for FlightPartialRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-#[derive(Clone)]
-pub struct FlightPartialRecord2 {
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
     pub appearance_id: Option<f64>,
@@ -83,14 +95,14 @@ pub struct FlightPartialRecord2 {
     pub world_bounds_rectangle: Option<Rectangle>,
     pub stage: Option<Stage>,
 }
-impl PartialEq for FlightPartialRecord2 {
+impl PartialEq for FlightPartialRecord3 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-#[derive(Clone)]
-pub struct FlightPartialRecord3 {
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord4 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
     pub appearance_id: Option<f64>,
@@ -119,14 +131,14 @@ pub struct FlightPartialRecord3 {
     pub world_transform_using_local_transform_id: Option<f64>,
     pub world_transform_using_parent_transform_id: Option<f64>,
 }
-impl PartialEq for FlightPartialRecord3 {
+impl PartialEq for FlightPartialRecord4 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-#[derive(Clone)]
-pub struct FlightPartialRecord4 {
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord5 {
     pub __flight_identity: std::sync::Arc<()>,
     pub auto_size: Option<TextAutoSize>,
     pub height: Option<f64>,
@@ -150,14 +162,14 @@ pub struct FlightPartialRecord4 {
     pub text_format_ranges: Option<Vec<TextFormatRange>>,
     pub word_wrap: Option<bool>,
 }
-impl PartialEq for FlightPartialRecord4 {
+impl PartialEq for FlightPartialRecord5 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-#[derive(Clone)]
-pub struct FlightPartialRecord5 {
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord6 {
     pub __flight_identity: std::sync::Arc<()>,
     pub auto_size: Option<TextAutoSize>,
     pub height: Option<f64>,
@@ -166,29 +178,18 @@ pub struct FlightPartialRecord5 {
     pub vertical_align: Option<TextVerticalAlign>,
     pub width: Option<f64>,
 }
-impl PartialEq for FlightPartialRecord5 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone)]
-pub struct FlightPartialRecord6 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub kind: Option<AdjustmentKind>,
-    pub color_matrix: Option<Vec<f64>>,
-}
 impl PartialEq for FlightPartialRecord6 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord7 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub alpha: Option<f64>,
-    pub visible: Option<bool>,
+    pub kind: Option<AdjustmentKind>,
+    pub color_matrix: Option<Vec<f64>>,
+    pub color_transform: Option<ColorTransform>,
 }
 impl PartialEq for FlightPartialRecord7 {
     fn eq(&self, other: &Self) -> bool {
@@ -196,10 +197,11 @@ impl PartialEq for FlightPartialRecord7 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord8 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub blend_mode: Option<BlendMode>,
+    pub alpha: Option<f64>,
+    pub visible: Option<bool>,
 }
 impl PartialEq for FlightPartialRecord8 {
     fn eq(&self, other: &Self) -> bool {
@@ -207,8 +209,19 @@ impl PartialEq for FlightPartialRecord8 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord9 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub blend_mode: Option<BlendMode>,
+}
+impl PartialEq for FlightPartialRecord9 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord10 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
     pub bounds_rectangle: Option<Rectangle>,
@@ -220,26 +233,15 @@ pub struct FlightPartialRecord9 {
     pub local_bounds_rectangle: Option<Rectangle>,
     pub world_bounds_rectangle: Option<Rectangle>,
 }
-impl PartialEq for FlightPartialRecord9 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone)]
-pub struct FlightPartialRecord10 {
-    pub __flight_identity: std::sync::Arc<()>,
-}
 impl PartialEq for FlightPartialRecord10 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord11 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub clip: Option<ClipRegion>,
 }
 impl PartialEq for FlightPartialRecord11 {
     fn eq(&self, other: &Self) -> bool {
@@ -247,11 +249,10 @@ impl PartialEq for FlightPartialRecord11 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord12 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub material: Option<Material>,
-    pub material_data: Option<MaterialData>,
+    pub clip: Option<ClipRegion>,
 }
 impl PartialEq for FlightPartialRecord12 {
     fn eq(&self, other: &Self) -> bool {
@@ -259,8 +260,20 @@ impl PartialEq for FlightPartialRecord12 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord13 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub material: Option<Material>,
+    pub material_data: Option<MaterialData>,
+}
+impl PartialEq for FlightPartialRecord13 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord14 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
     pub local_matrix: Option<Matrix>,
@@ -269,14 +282,14 @@ pub struct FlightPartialRecord13 {
     pub rotation_sine: Option<f64>,
     pub world_matrix: Option<Matrix>,
 }
-impl PartialEq for FlightPartialRecord13 {
+impl PartialEq for FlightPartialRecord14 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-#[derive(Clone)]
-pub struct FlightPartialRecord14 {
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord15 {
     pub __flight_identity: std::sync::Arc<()>,
     pub pivot_x: Option<f64>,
     pub pivot_y: Option<f64>,
@@ -288,7 +301,7 @@ pub struct FlightPartialRecord14 {
     pub x: Option<f64>,
     pub y: Option<f64>,
 }
-impl PartialEq for FlightPartialRecord14 {
+impl PartialEq for FlightPartialRecord15 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -299,13 +312,17 @@ const DESIRED_CARET_X_UNSET: f64 = -1.0_f64;
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:24 (sha256:822ae4d1588ba3c539010c11d459e7b21b08b296f9c12a6adc83a440a65f57b3)
 pub fn append_text_input(source: &mut RichText, text: String) -> () {
-    replace_text_input(
-        source,
-        (source.data.text.encode_utf16().count() as f64),
-        (source.data.text.encode_utf16().count() as f64),
-        (text).clone(),
-        None,
-    );
+    {
+        let __flight_argument_1 = (source.data.text.encode_utf16().count() as f64);
+        let __flight_argument_2 = (source.data.text.encode_utf16().count() as f64);
+        replace_text_input(
+            source,
+            __flight_argument_1,
+            __flight_argument_2,
+            (text).clone(),
+            None,
+        )
+    };
 }
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:28 (sha256:2bcf55cee88568cda03c95371a3becad84d2b6c174a001685b1fc961891f3b60)
@@ -764,12 +781,12 @@ pub fn handle_text_input_keyboard(
 }
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:290 (sha256:88cdbbf595a3131dbdf070e9075b980cd0b01b5bdcf2eb03c01ee4c92d4da133)
-#[derive(Clone)]
-struct InsertTextInputRecord15 {
+#[derive(Clone, Default)]
+struct InsertTextInputRecord16 {
     __flight_identity: std::sync::Arc<()>,
     apply_input_rules: bool,
 }
-impl PartialEq for InsertTextInputRecord15 {
+impl PartialEq for InsertTextInputRecord16 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -981,13 +998,17 @@ pub fn replace_selected_text_input(
     text: String,
     options: Option<ReplaceTextInputOptions>,
 ) -> () {
-    replace_text_input(
-        source,
-        get_text_input_selection_begin_index(source),
-        get_text_input_selection_end_index(source),
-        (text).clone(),
-        Some(((options).clone().unwrap()).clone()),
-    );
+    {
+        let __flight_argument_1 = get_text_input_selection_begin_index(source);
+        let __flight_argument_2 = get_text_input_selection_end_index(source);
+        replace_text_input(
+            source,
+            __flight_argument_1,
+            __flight_argument_2,
+            (text).clone(),
+            Some(((options).clone().unwrap()).clone()),
+        )
+    };
 }
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:435 (sha256:002b130522137d99169e98e9e4013aeb5ac3f118aa7002ffe92dbb426354a182)
@@ -1027,13 +1048,16 @@ pub fn replace_text_input(
         (text_before.encode_utf16().count() as f64),
     );
     source.data.text = (((text_before.slice)(0.0_f64, start) + value) + (text_before.slice)(end));
-    adjust_text_format_ranges(
-        &mut source.data.text_format_ranges,
-        (source.data.default_text_format).clone(),
-        start,
-        end,
-        (value.encode_utf16().count() as f64),
-    );
+    {
+        let __flight_argument_1 = (source.data.default_text_format).clone();
+        adjust_text_format_ranges(
+            &mut source.data.text_format_ranges,
+            __flight_argument_1,
+            start,
+            end,
+            (value.encode_utf16().count() as f64),
+        )
+    };
     state.desired_caret_x = DESIRED_CARET_X_UNSET;
     set_text_input_selection(
         source,
@@ -1670,19 +1694,7 @@ fn matches_restrict_ranges(char: String, ranges: String) -> bool {
 }
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:825 (sha256:d2a615ef67c355856c20d433446309bf66a747a0bc9b5c1c7c6a46c0a0227ee1)
-#[derive(Clone)]
-struct SplitRestrictRangesRecord15 {
-    __flight_identity: std::sync::Arc<()>,
-    accepted: String,
-    declined: String,
-}
-impl PartialEq for SplitRestrictRangesRecord15 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-fn split_restrict_ranges(restrict: String) -> SplitRestrictRangesRecord15 {
+fn split_restrict_ranges(restrict: String) -> SharedStructuralRecord1 {
     let mut accepted = "";
     let mut declined = "";
     let mut declining = false;
@@ -1718,7 +1730,7 @@ fn split_restrict_ranges(restrict: String) -> SplitRestrictRangesRecord15 {
             };
         }
     }
-    return SplitRestrictRangesRecord15 {
+    return SharedStructuralRecord1 {
         __flight_identity: std::sync::Arc::new(()),
         accepted: (accepted).clone(),
         declined: (declined).clone(),
@@ -1776,7 +1788,7 @@ fn is_word_char(char: String) -> bool {
 }
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:897 (sha256:7351f720a26190716f486bc006c1865a3cf502a56fdb176ccb12b37771be5e07)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct ScratchRect {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

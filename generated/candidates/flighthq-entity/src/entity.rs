@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/entity/src/entity.ts:4 (sha256:e8e8ec56ac0d693d53dc93ebf38f390809e722b38285fd85aff1e9c1d5c98d77)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateEntityRecord1 {
     __flight_identity: std::sync::Arc<()>,
 }

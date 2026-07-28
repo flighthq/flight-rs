@@ -8,7 +8,7 @@
 
 use flighthq_types::GodRaysEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub center_x: Option<f64>,
@@ -26,7 +26,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/godRaysEffect.ts:3 (sha256:1f649a2052d40e3944766a2f2827a6fdfb1db84b877ce1bad8b1be86e206b95b)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateGodRaysEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -59,6 +59,7 @@ pub fn create_god_rays_effect(options: Option<FlightOmitRecord1>) -> GodRaysEffe
             weight: __flight_spread_1.weight,
             exposure: __flight_spread_1.exposure,
             samples: __flight_spread_1.samples,
+            ..Default::default()
         }
     };
 }

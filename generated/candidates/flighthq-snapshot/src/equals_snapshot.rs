@@ -10,7 +10,7 @@ use flighthq_types::Snapshot;
 
 // Source: upstream/packages/snapshot/src/equalsSnapshot.ts:10 (sha256:264d4460cde7e82c345d46949d99d8fbe687d608ca025150d69dfd49f38a11d1)
 pub fn equals_snapshot<T: Clone>(a: Snapshot<T>, b: Snapshot<T>) -> bool {
-    return snapshot_values_equal(a, b);
+    return snapshot_values_equal((a).clone(), (b).clone());
 }
 
 // Source: upstream/packages/snapshot/src/equalsSnapshot.ts:14 (sha256:afeebde982685368418fc68f512c4d204470065e1b57ddf2158ed94b3cda9a62)
@@ -63,8 +63,8 @@ fn snapshot_values_equal(a: crate::OpaqueHostValue, b: crate::OpaqueHostValue) -
         }
         return true;
     }
-    let a_object = a;
-    let b_object = b;
+    let a_object = crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast");
+    let b_object = crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast");
     let a_keys = crate::host_value::<()>("host.keys");
     if (a_keys.length != crate::host_value::<()>("host.keys").length) {
         return false;

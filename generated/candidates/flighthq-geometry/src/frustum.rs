@@ -83,22 +83,161 @@ pub fn get_frustum_corners(
 
 // Source: upstream/packages/geometry/src/frustum.ts:74 (sha256:ec07b7e6fe2aa96684e0cf438b8c475d66b0d510a8ef3f7d33a9e9ab5d970b10)
 pub fn is_frustum_containing_point(frustum: &FrustumLike, point: &Vector3Like) -> bool {
-    return (((((__plane_signed_distance(&frustum.left, point) >= 0.0_f64)
-        && (__plane_signed_distance(&frustum.right, point) >= 0.0_f64))
-        && (__plane_signed_distance(&frustum.bottom, point) >= 0.0_f64))
-        && (__plane_signed_distance(&frustum.top, point) >= 0.0_f64))
-        && (__plane_signed_distance(&frustum.near, point) >= 0.0_f64))
-        && (__plane_signed_distance(&frustum.far, point) >= 0.0_f64);
+    return (((((__plane_signed_distance(
+        &{
+            let __flight_source = &(frustum.left);
+            PlaneLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                a: __flight_source.a,
+                b: __flight_source.b,
+                c: __flight_source.c,
+                d: __flight_source.d,
+            }
+        },
+        point,
+    ) >= 0.0_f64)
+        && (__plane_signed_distance(
+            &{
+                let __flight_source = &(frustum.right);
+                PlaneLike {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    a: __flight_source.a,
+                    b: __flight_source.b,
+                    c: __flight_source.c,
+                    d: __flight_source.d,
+                }
+            },
+            point,
+        ) >= 0.0_f64))
+        && (__plane_signed_distance(
+            &{
+                let __flight_source = &(frustum.bottom);
+                PlaneLike {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    a: __flight_source.a,
+                    b: __flight_source.b,
+                    c: __flight_source.c,
+                    d: __flight_source.d,
+                }
+            },
+            point,
+        ) >= 0.0_f64))
+        && (__plane_signed_distance(
+            &{
+                let __flight_source = &(frustum.top);
+                PlaneLike {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    a: __flight_source.a,
+                    b: __flight_source.b,
+                    c: __flight_source.c,
+                    d: __flight_source.d,
+                }
+            },
+            point,
+        ) >= 0.0_f64))
+        && (__plane_signed_distance(
+            &{
+                let __flight_source = &(frustum.near);
+                PlaneLike {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    a: __flight_source.a,
+                    b: __flight_source.b,
+                    c: __flight_source.c,
+                    d: __flight_source.d,
+                }
+            },
+            point,
+        ) >= 0.0_f64))
+        && (__plane_signed_distance(
+            &{
+                let __flight_source = &(frustum.far);
+                PlaneLike {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    a: __flight_source.a,
+                    b: __flight_source.b,
+                    c: __flight_source.c,
+                    d: __flight_source.d,
+                }
+            },
+            point,
+        ) >= 0.0_f64);
 }
 
 // Source: upstream/packages/geometry/src/frustum.ts:91 (sha256:34739c072bec664cd64231f94d69f27876e6aee2c8e898c8980d02f176272958)
 pub fn is_frustum_intersecting_aabb(frustum: &FrustumLike, aabb: &AabbLike) -> bool {
-    return (((((__plane_intersects_aabb(&frustum.left, aabb))
-        && (__plane_intersects_aabb(&frustum.right, aabb)))
-        && (__plane_intersects_aabb(&frustum.bottom, aabb)))
-        && (__plane_intersects_aabb(&frustum.top, aabb)))
-        && (__plane_intersects_aabb(&frustum.near, aabb)))
-        && (__plane_intersects_aabb(&frustum.far, aabb));
+    return (((((__plane_intersects_aabb(
+        &{
+            let __flight_source = &(frustum.left);
+            PlaneLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                a: __flight_source.a,
+                b: __flight_source.b,
+                c: __flight_source.c,
+                d: __flight_source.d,
+            }
+        },
+        aabb,
+    )) && (__plane_intersects_aabb(
+        &{
+            let __flight_source = &(frustum.right);
+            PlaneLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                a: __flight_source.a,
+                b: __flight_source.b,
+                c: __flight_source.c,
+                d: __flight_source.d,
+            }
+        },
+        aabb,
+    ))) && (__plane_intersects_aabb(
+        &{
+            let __flight_source = &(frustum.bottom);
+            PlaneLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                a: __flight_source.a,
+                b: __flight_source.b,
+                c: __flight_source.c,
+                d: __flight_source.d,
+            }
+        },
+        aabb,
+    ))) && (__plane_intersects_aabb(
+        &{
+            let __flight_source = &(frustum.top);
+            PlaneLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                a: __flight_source.a,
+                b: __flight_source.b,
+                c: __flight_source.c,
+                d: __flight_source.d,
+            }
+        },
+        aabb,
+    ))) && (__plane_intersects_aabb(
+        &{
+            let __flight_source = &(frustum.near);
+            PlaneLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                a: __flight_source.a,
+                b: __flight_source.b,
+                c: __flight_source.c,
+                d: __flight_source.d,
+            }
+        },
+        aabb,
+    ))) && (__plane_intersects_aabb(
+        &{
+            let __flight_source = &(frustum.far);
+            PlaneLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                a: __flight_source.a,
+                b: __flight_source.b,
+                c: __flight_source.c,
+                d: __flight_source.d,
+            }
+        },
+        aabb,
+    ));
 }
 
 // Source: upstream/packages/geometry/src/frustum.ts:109 (sha256:37e3a47ead4503ee5b56c8e7115d29c8190d9dda40ea335196d468f0e10ec9d1)
@@ -107,12 +246,132 @@ pub fn is_frustum_intersecting_sphere(frustum: &FrustumLike, sphere: &BoundingSp
         return false;
     }
     let r = sphere.radius;
-    return (((((__plane_signed_distance(&frustum.left, &sphere.center) >= (-r))
-        && (__plane_signed_distance(&frustum.right, &sphere.center) >= (-r)))
-        && (__plane_signed_distance(&frustum.bottom, &sphere.center) >= (-r)))
-        && (__plane_signed_distance(&frustum.top, &sphere.center) >= (-r)))
-        && (__plane_signed_distance(&frustum.near, &sphere.center) >= (-r)))
-        && (__plane_signed_distance(&frustum.far, &sphere.center) >= (-r));
+    return (((((__plane_signed_distance(
+        &{
+            let __flight_source = &(frustum.left);
+            PlaneLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                a: __flight_source.a,
+                b: __flight_source.b,
+                c: __flight_source.c,
+                d: __flight_source.d,
+            }
+        },
+        &{
+            let __flight_source = &(sphere.center);
+            Vector3Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                x: __flight_source.x,
+                y: __flight_source.y,
+                z: __flight_source.z,
+            }
+        },
+    ) >= (-r))
+        && (__plane_signed_distance(
+            &{
+                let __flight_source = &(frustum.right);
+                PlaneLike {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    a: __flight_source.a,
+                    b: __flight_source.b,
+                    c: __flight_source.c,
+                    d: __flight_source.d,
+                }
+            },
+            &{
+                let __flight_source = &(sphere.center);
+                Vector3Like {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    x: __flight_source.x,
+                    y: __flight_source.y,
+                    z: __flight_source.z,
+                }
+            },
+        ) >= (-r)))
+        && (__plane_signed_distance(
+            &{
+                let __flight_source = &(frustum.bottom);
+                PlaneLike {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    a: __flight_source.a,
+                    b: __flight_source.b,
+                    c: __flight_source.c,
+                    d: __flight_source.d,
+                }
+            },
+            &{
+                let __flight_source = &(sphere.center);
+                Vector3Like {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    x: __flight_source.x,
+                    y: __flight_source.y,
+                    z: __flight_source.z,
+                }
+            },
+        ) >= (-r)))
+        && (__plane_signed_distance(
+            &{
+                let __flight_source = &(frustum.top);
+                PlaneLike {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    a: __flight_source.a,
+                    b: __flight_source.b,
+                    c: __flight_source.c,
+                    d: __flight_source.d,
+                }
+            },
+            &{
+                let __flight_source = &(sphere.center);
+                Vector3Like {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    x: __flight_source.x,
+                    y: __flight_source.y,
+                    z: __flight_source.z,
+                }
+            },
+        ) >= (-r)))
+        && (__plane_signed_distance(
+            &{
+                let __flight_source = &(frustum.near);
+                PlaneLike {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    a: __flight_source.a,
+                    b: __flight_source.b,
+                    c: __flight_source.c,
+                    d: __flight_source.d,
+                }
+            },
+            &{
+                let __flight_source = &(sphere.center);
+                Vector3Like {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    x: __flight_source.x,
+                    y: __flight_source.y,
+                    z: __flight_source.z,
+                }
+            },
+        ) >= (-r)))
+        && (__plane_signed_distance(
+            &{
+                let __flight_source = &(frustum.far);
+                PlaneLike {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    a: __flight_source.a,
+                    b: __flight_source.b,
+                    c: __flight_source.c,
+                    d: __flight_source.d,
+                }
+            },
+            &{
+                let __flight_source = &(sphere.center);
+                Vector3Like {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    x: __flight_source.x,
+                    y: __flight_source.y,
+                    z: __flight_source.z,
+                }
+            },
+        ) >= (-r));
 }
 
 // Source: upstream/packages/geometry/src/frustum.ts:132 (sha256:12022dda18811bc664c3270aa393982f7ebf4b4cedf0d83f12da271ce472f0e7)

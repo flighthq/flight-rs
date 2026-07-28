@@ -8,7 +8,7 @@
 
 use flighthq_types::BlurEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub blur_x: Option<f64>,
@@ -21,7 +21,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/blurEffect.ts:6 (sha256:c201dc944b5cc997ed7759922a210418e3312ca5fa5dc98527912545d52f144e)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateBlurEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -44,6 +44,7 @@ pub fn create_blur_effect(options: Option<FlightOmitRecord1>) -> BlurEffect {
             kind: "BlurEffect".to_owned(),
             blur_x: __flight_spread_1.blur_x,
             blur_y: __flight_spread_1.blur_y,
+            ..Default::default()
         }
     };
 }

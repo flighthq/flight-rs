@@ -9,7 +9,7 @@
 use crate::{FontVariation, TextDirection, TextFeature};
 
 // Source: upstream/packages/types/src/TextShaperOptions.ts:4 (sha256:f41ba551f122e03a7501256d4ed0a1391ee63f6eee999ff52f9a2bf455ef110e)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextShaperOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

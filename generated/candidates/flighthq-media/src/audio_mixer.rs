@@ -487,7 +487,7 @@ pub fn unroute_audio_channel_from_mixer_bus(mixer: &AudioMixer, channel: &AudioC
 }
 
 // Source: upstream/packages/media/src/audioMixer.ts:189 (sha256:09ec725a7aec9b80c6e1a0b3594491e2536780c0f42513c34b6317b2d2a0dc73)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct AudioMixerRuntime {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

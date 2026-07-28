@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/GlCapabilities.ts:1 (sha256:76cc879028708f5d0eed8db4f3b31fa4d064e3e284516d8ef2e3e0ea38f64f9d)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlCapabilities {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

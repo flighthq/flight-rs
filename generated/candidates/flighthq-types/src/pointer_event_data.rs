@@ -9,7 +9,7 @@
 use crate::NodeAny;
 
 // Source: upstream/packages/types/src/PointerEventData.ts:3 (sha256:a21b27d68119da759ea2e963106f0280744090b06621aba95150c883bc80fb23)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct PointerEventData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

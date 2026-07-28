@@ -9,7 +9,7 @@
 use crate::ColorLut;
 
 // Source: upstream/packages/types/src/WgpuColorLutTextureCache.ts:8 (sha256:c598e5b3c7afe9486b6cb5b0debd608414646860ec136cf35c318b86b51ff1b1)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct WgpuColorLutTextureCache {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

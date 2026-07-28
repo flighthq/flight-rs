@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/StopTweenOptions.ts:1 (sha256:f98aeac39ecac327c8680435b2a6ba09725750f980cd6e002b44199ac35e559e)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct StopTweenOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

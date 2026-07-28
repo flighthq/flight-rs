@@ -8,7 +8,7 @@
 
 use flighthq_types::BarrelDistortionEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub amount: Option<f64>,
@@ -21,7 +21,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/barrelDistortionEffect.ts:3 (sha256:ff0c477d6ebfcc411a27e6bd6821f14499dd408424a1de8104a3d5b67093846e)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateBarrelDistortionEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -46,6 +46,7 @@ pub fn create_barrel_distortion_effect(
             kind: "BarrelDistortionEffect".to_owned(),
             amount: __flight_spread_1.amount,
             scale: __flight_spread_1.scale,
+            ..Default::default()
         }
     };
 }

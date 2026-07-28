@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/ShareFile.ts:4 (sha256:a711f287d7c262f8edf953607a9ea92f281847d56d31dea115091e548556bb89)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ShareFile {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

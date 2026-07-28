@@ -405,7 +405,13 @@ pub fn set_matrix3_normal_from_matrix4(out: &mut Matrix3Like, source: &Matrix4Li
         let __flight_argument_1 = (scratch).clone();
         inverse_matrix3(&mut scratch, &__flight_argument_1)
     };
-    transpose_matrix3(out, &scratch);
+    transpose_matrix3(out, &{
+        let __flight_source = &(scratch);
+        Matrix3Like {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            m: (__flight_source.m).clone(),
+        }
+    });
     release_matrix3(&scratch);
 }
 

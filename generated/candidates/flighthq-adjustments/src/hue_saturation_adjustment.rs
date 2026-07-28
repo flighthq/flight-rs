@@ -8,7 +8,7 @@
 
 use flighthq_types::{ColorTransformFunction, HueSaturationAdjustment};
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub hue: Option<f64>,
@@ -22,7 +22,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/adjustments/src/hueSaturationAdjustment.ts:6 (sha256:dcd80a35c51eb9dbe51668399d612c676ac8470c7d2fc9d62f3d682c2d443f13)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateHueSaturationAdjustmentRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }

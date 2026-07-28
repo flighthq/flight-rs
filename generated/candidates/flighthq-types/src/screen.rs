@@ -9,7 +9,7 @@
 use crate::{ScreenColorSpace, ScreenMode, ScreenOrientation};
 
 // Source: upstream/packages/types/src/Screen.ts:15 (sha256:8c0ce810ee2e74aaea03bb2fbd0ee5e0c2217e6884ce71d709afffa863c7141a)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ScreenInfo {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -46,7 +46,7 @@ impl PartialEq for ScreenInfo {
 }
 
 // Source: upstream/packages/types/src/Screen.ts:55 (sha256:1cc599f5359d3e14c76c56912e89bb8191f25c1314ca323f59fd3de988da9c97)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ScreenBackendRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub x: f64,

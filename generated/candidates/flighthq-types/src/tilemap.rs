@@ -13,7 +13,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/Tilemap.ts:5 (sha256:566599ce0525cecc527b700162a16b1d22b913e37ba55d06083adf975852aa1c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TilemapData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -79,7 +79,7 @@ impl PartialEq for TilemapRuntime {
 }
 
 // Source: upstream/packages/types/src/Tilemap.ts:17 (sha256:07492065cf96f90ceaa42389cb8a5707074488d0ff08275fdf0a289f4ed61cf9)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Tilemap {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

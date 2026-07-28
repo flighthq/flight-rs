@@ -8,7 +8,7 @@
 
 use flighthq_types::AutoExposureEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub adaptation_speed: Option<f64>,
@@ -23,7 +23,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/autoExposureEffect.ts:3 (sha256:747c0be704448251bac3207e5d4e1c414cd5a0fffcf06e7482a98db6f499be88)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateAutoExposureEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -50,6 +50,7 @@ pub fn create_auto_exposure_effect(options: Option<FlightOmitRecord1>) -> AutoEx
             exposure_compensation: __flight_spread_1.exposure_compensation,
             max_exposure: __flight_spread_1.max_exposure,
             min_exposure: __flight_spread_1.min_exposure,
+            ..Default::default()
         }
     };
 }

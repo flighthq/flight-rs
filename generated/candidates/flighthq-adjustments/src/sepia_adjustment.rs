@@ -8,7 +8,7 @@
 
 use flighthq_types::SepiaAdjustment;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub intensity: Option<f64>,
@@ -20,7 +20,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/adjustments/src/sepiaAdjustment.ts:5 (sha256:b67e0c7ed9fbb4d1eeb6be54adfcc307d4b9e7daf89050454664eaba40353180)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateSepiaAdjustmentRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -66,6 +66,7 @@ pub fn create_sepia_adjustment(options: Option<FlightOmitRecord1>) -> SepiaAdjus
             kind: "SepiaAdjustment".to_owned(),
             color_matrix: (color_matrix).clone(),
             intensity: __flight_spread_1.intensity,
+            ..Default::default()
         }
     };
 }

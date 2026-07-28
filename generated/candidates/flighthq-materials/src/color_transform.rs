@@ -22,7 +22,7 @@ fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha_multiplier: Option<f64>,
@@ -266,12 +266,41 @@ pub fn is_identity_color_transform(
     compare_alpha_multiplier: Option<bool>,
 ) -> bool {
     let compare_alpha_multiplier = compare_alpha_multiplier.unwrap_or(true);
-    return (equals_color_transform_offsets(source, &_IDENTITY, None))
-        && (equals_color_transform_multipliers(
-            source,
-            &_IDENTITY,
-            Some(compare_alpha_multiplier),
-        ));
+    return (equals_color_transform_offsets(
+        source,
+        &{
+            let __flight_source = &(_IDENTITY);
+            ColorTransformLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                alpha_multiplier: __flight_source.alpha_multiplier,
+                alpha_offset: __flight_source.alpha_offset,
+                blue_multiplier: __flight_source.blue_multiplier,
+                blue_offset: __flight_source.blue_offset,
+                green_multiplier: __flight_source.green_multiplier,
+                green_offset: __flight_source.green_offset,
+                red_multiplier: __flight_source.red_multiplier,
+                red_offset: __flight_source.red_offset,
+            }
+        },
+        None,
+    )) && (equals_color_transform_multipliers(
+        source,
+        &{
+            let __flight_source = &(_IDENTITY);
+            ColorTransformLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                alpha_multiplier: __flight_source.alpha_multiplier,
+                alpha_offset: __flight_source.alpha_offset,
+                blue_multiplier: __flight_source.blue_multiplier,
+                blue_offset: __flight_source.blue_offset,
+                green_multiplier: __flight_source.green_multiplier,
+                green_offset: __flight_source.green_offset,
+                red_multiplier: __flight_source.red_multiplier,
+                red_offset: __flight_source.red_offset,
+            }
+        },
+        Some(compare_alpha_multiplier),
+    ));
 }
 
 // Source: upstream/packages/materials/src/colorTransform.ts:128 (sha256:3c0c37559a8abc8f2ac1c5e21a776728ab89d487453ebe3bed9133468a7f4b69)

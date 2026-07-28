@@ -8,7 +8,7 @@
 
 use flighthq_types::KuwaharaEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub radius: Option<f64>,
@@ -20,7 +20,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/kuwaharaEffect.ts:3 (sha256:0c5c8da8cbcd8628aa61679b9b5ef5c415acf1a54c396023db9c0171f325260a)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateKuwaharaEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -41,6 +41,7 @@ pub fn create_kuwahara_effect(options: Option<FlightOmitRecord1>) -> KuwaharaEff
             __flight_identity: std::sync::Arc::new(()),
             kind: "KuwaharaEffect".to_owned(),
             radius: __flight_spread_1.radius,
+            ..Default::default()
         }
     };
 }

@@ -8,7 +8,7 @@
 
 use flighthq_types::ConvolutionEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub matrix: Vec<f64>,
@@ -41,6 +41,7 @@ pub fn create_convolution_effect(options: &FlightOmitRecord1) -> ConvolutionEffe
             color: __flight_spread_1.color,
             divisor: __flight_spread_1.divisor,
             preserve_alpha: __flight_spread_1.preserve_alpha,
+            ..Default::default()
         }
     };
 }

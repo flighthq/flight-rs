@@ -9,11 +9,11 @@
 use flighthq_geometry::create_matrix4;
 use flighthq_node::set_node_local_matrix4;
 use flighthq_types::{
-    Adjustment, ColorTransform, InteractionSignals, Matrix4, Node, NodeInteractionState,
-    NodeSignals, NodeTraitsKey, SceneNode, Transform3DNode, Vector3Like,
+    Adjustment, ColorTransform, InteractionSignals, Matrix4, Matrix4Like, Node,
+    NodeInteractionState, NodeSignals, NodeTraitsKey, SceneNode, Transform3DNode, Vector3Like,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -99,17 +99,26 @@ pub fn set_scene_node_look_at(
     (*_SCRATCH_MATRIX.lock().unwrap()).m[14.0_f64 as usize] = (eye_z) as f32;
     (*_SCRATCH_MATRIX.lock().unwrap()).m[15.0_f64 as usize] = (1.0_f64) as f32;
     set_node_local_matrix4(
-        &Transform3DNode {
-            __flight_identity: std::sync::Arc::clone(&(node).__flight_identity),
-            data: ((node).data).clone(),
-            enabled: (node).enabled,
-            kind: ((node).kind).clone(),
-            name: ((node).name).clone(),
-            position: ((node).position).clone(),
-            rotation: ((node).rotation).clone(),
-            scale: ((node).scale).clone(),
+        &{
+            let __flight_source = &(node);
+            Transform3DNode {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                data: (__flight_source.data).clone(),
+                enabled: __flight_source.enabled,
+                kind: (__flight_source.kind).clone(),
+                name: (__flight_source.name).clone(),
+                position: (__flight_source.position).clone(),
+                rotation: (__flight_source.rotation).clone(),
+                scale: (__flight_source.scale).clone(),
+            }
         },
-        &(*_SCRATCH_MATRIX.lock().unwrap()),
+        &{
+            let __flight_source = &(*_SCRATCH_MATRIX.lock().unwrap());
+            Matrix4Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                m: (__flight_source.m).clone(),
+            }
+        },
     );
 }
 

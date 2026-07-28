@@ -9,7 +9,7 @@
 use crate::Matrix;
 
 // Source: upstream/packages/types/src/RenderCache.ts:15 (sha256:fbbab26591c975a56f0549917b0bf0eaa9b582875228a3a3f56270a09bf715a7)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct RenderCache {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

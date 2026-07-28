@@ -13,7 +13,7 @@ pub type TextureWrap = String;
 pub type TextureFilter = String;
 
 // Source: upstream/packages/types/src/Sampler.ts:19 (sha256:08ac581426ed70f9190c38f52b7d331b546b4a23faafe9b65902b84d69d76d50)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Sampler {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

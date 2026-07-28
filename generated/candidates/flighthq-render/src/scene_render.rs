@@ -16,8 +16,8 @@ use flighthq_node::{get_node_runtime, get_node_world_matrix4};
 use flighthq_skeleton3d::compute_skeleton3_d_joint_matrices;
 use flighthq_types::{
     Aabb, AabbLike, Adjustment, AmbientLight, Camera, ColorTransform, DirectionalLight, Frustum,
-    HemisphereLight, InteractionSignals, LinearColor,
-    MAX_FORWARD_LIGHTS as max_forward_lights_constant, Matrix4, Mesh, Node, NodeAny,
+    FrustumLike, HemisphereLight, InteractionSignals, LinearColor,
+    MAX_FORWARD_LIGHTS as max_forward_lights_constant, Matrix4, Matrix4Like, Mesh, Node, NodeAny,
     NodeInteractionState, NodeSignals, NodeTraitsKey, PointLight, Projection, RenderState,
     SCENE_LIGHT_AMBIENT_RADIANCE_OFFSET as scene_light_ambient_radiance_offset_constant,
     SCENE_LIGHT_BLOCK_FLOATS as scene_light_block_floats_constant,
@@ -32,7 +32,7 @@ use flighthq_types::{
     SceneNode, SceneRenderList, SpotLight, Transform3DNode,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -198,12 +198,15 @@ pub fn prepare_scene_render(
     {
         let __flight_argument_1 = (prepared.frustum).clone();
         collect_visible_meshes(
-            &NodeAny {
-                __flight_identity: std::sync::Arc::clone(&(scene).__flight_identity),
-                data: ((scene).data).clone(),
-                enabled: (scene).enabled,
-                kind: ((scene).kind).clone(),
-                name: ((scene).name).clone(),
+            &{
+                let __flight_source = &(scene);
+                NodeAny {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    data: (__flight_source.data).clone(),
+                    enabled: __flight_source.enabled,
+                    kind: (__flight_source.kind).clone(),
+                    name: (__flight_source.name).clone(),
+                }
             },
             &__flight_argument_1,
             &mut prepared.world_bounds,
@@ -241,13 +244,35 @@ fn collect_visible_meshes(
     if (((mesh.geometry).clone()).is_some()) && (is_mesh_visible(&mesh, frustum, world_bounds)) {
         out.push(((mesh).clone()).clone());
     }
-    let children = (get_node_runtime(node).children).clone();
+    let children = (get_node_runtime(&{
+        let __flight_source = &(node);
+        Node {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+        }
+    })
+    .children)
+        .clone();
     if (children).is_some() {
         {
             let mut i = 0.0_f64;
             while (i < (children.as_ref().unwrap().len() as f64)) {
                 collect_visible_meshes(
-                    &children.as_ref().unwrap()[i as usize],
+                    &{
+                        let __flight_source = &(children.as_ref().unwrap()[i as usize]);
+                        NodeAny {
+                            __flight_identity: std::sync::Arc::clone(
+                                &__flight_source.__flight_identity,
+                            ),
+                            data: (__flight_source.data).clone(),
+                            enabled: __flight_source.enabled,
+                            kind: (__flight_source.kind).clone(),
+                            name: (__flight_source.name).clone(),
+                        }
+                    },
                     frustum,
                     world_bounds,
                     out,
@@ -341,28 +366,48 @@ fn is_mesh_visible(mesh: &Mesh, frustum: &Frustum, world_bounds: &mut Aabb) -> b
     }
     transform_aabb_by_matrix4(
         world_bounds,
-        &AabbLike {
-            __flight_identity: std::sync::Arc::clone(&(bounds.as_ref().unwrap()).__flight_identity),
-            max: ((bounds.as_ref().unwrap()).max).clone(),
-            min: ((bounds.as_ref().unwrap()).min).clone(),
+        &{
+            let __flight_source = &(bounds.as_ref().unwrap());
+            AabbLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                max: (__flight_source.max).clone(),
+                min: (__flight_source.min).clone(),
+            }
         },
-        &get_node_world_matrix4(&Transform3DNode {
-            __flight_identity: std::sync::Arc::clone(&(mesh).__flight_identity),
-            data: ((mesh).data).clone(),
-            enabled: (mesh).enabled,
-            kind: ((mesh).kind).clone(),
-            name: ((mesh).name).clone(),
-            position: ((mesh).position).clone(),
-            rotation: ((mesh).rotation).clone(),
-            scale: ((mesh).scale).clone(),
+        &get_node_world_matrix4(&{
+            let __flight_source = &(mesh);
+            Transform3DNode {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                data: (__flight_source.data).clone(),
+                enabled: __flight_source.enabled,
+                kind: (__flight_source.kind).clone(),
+                name: (__flight_source.name).clone(),
+                position: (__flight_source.position).clone(),
+                rotation: (__flight_source.rotation).clone(),
+                scale: (__flight_source.scale).clone(),
+            }
         }),
     );
     return is_frustum_intersecting_aabb(
-        frustum,
-        &AabbLike {
-            __flight_identity: std::sync::Arc::clone(&(world_bounds).__flight_identity),
-            max: ((world_bounds).max).clone(),
-            min: ((world_bounds).min).clone(),
+        &{
+            let __flight_source = &(frustum);
+            FrustumLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                bottom: (__flight_source.bottom).clone(),
+                far: (__flight_source.far).clone(),
+                left: (__flight_source.left).clone(),
+                near: (__flight_source.near).clone(),
+                right: (__flight_source.right).clone(),
+                top: (__flight_source.top).clone(),
+            }
+        },
+        &{
+            let __flight_source = &(world_bounds);
+            AabbLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                max: (__flight_source.max).clone(),
+                min: (__flight_source.min).clone(),
+            }
         },
     );
 }
@@ -525,11 +570,27 @@ fn set_scene_view_projection_matrix4(out: &mut Matrix4, camera: &Camera, aspect:
             camera.far,
         );
     }
-    multiply_matrix4(out, &(*SCRATCH_PROJECTION.lock().unwrap()), &camera.view);
+    multiply_matrix4(
+        out,
+        &{
+            let __flight_source = &(*SCRATCH_PROJECTION.lock().unwrap());
+            Matrix4Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                m: (__flight_source.m).clone(),
+            }
+        },
+        &{
+            let __flight_source = &(camera.view);
+            Matrix4Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                m: (__flight_source.m).clone(),
+            }
+        },
+    );
 }
 
 // Source: upstream/packages/render/src/sceneRender.ts:362 (sha256:dae722491fd94bb008c3e5f116635e5a16ace87866b5ee982c3b83751821366f)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct PreparedScene {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

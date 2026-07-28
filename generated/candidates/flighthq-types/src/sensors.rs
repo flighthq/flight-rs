@@ -15,7 +15,7 @@ pub type SensorAccuracy = String;
 pub type SensorsPermissionState = String;
 
 // Source: upstream/packages/types/src/Sensors.ts:12 (sha256:044a0d9f6a0c93c6f5432e7a36417455ea0eb827d6cf5cee4f59db1e2310e551)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SensorSubscribeOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -28,7 +28,7 @@ impl PartialEq for SensorSubscribeOptions {
 }
 
 // Source: upstream/packages/types/src/Sensors.ts:18 (sha256:51bd776e4a7a8b10fcbbc699dc76e06d0449bb319ba3fec3622edf9a25ad972d)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SensorReading {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -43,7 +43,7 @@ impl PartialEq for SensorReading {
 }
 
 // Source: upstream/packages/types/src/Sensors.ts:25 (sha256:a0fee4c9a83cb406ba8bf5c31d9c8db5ed796722c31d24065f01bb70c78501b6)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AmbientLightReading {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -59,7 +59,7 @@ impl PartialEq for AmbientLightReading {
 }
 
 // Source: upstream/packages/types/src/Sensors.ts:31 (sha256:d9789d44f99a99d533ddaa60cb9ceacd1d9cde74fa6fb2fa844977259fa2f44d)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct MotionReading {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -77,7 +77,7 @@ impl PartialEq for MotionReading {
 }
 
 // Source: upstream/packages/types/src/Sensors.ts:38 (sha256:67d8fdfd155627df7d5bb19d20914d7369b80a52ccc97af1013f7ead21399bd2)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct OrientationReading {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -97,7 +97,7 @@ impl PartialEq for OrientationReading {
 }
 
 // Source: upstream/packages/types/src/Sensors.ts:49 (sha256:5069ef36bc445bb25c7a2257fb9cd9441de5beac960ff089221e17b4d34f22a2)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct PressureReading {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -114,7 +114,7 @@ impl PartialEq for PressureReading {
 }
 
 // Source: upstream/packages/types/src/Sensors.ts:56 (sha256:c3fccbc7fd5d65aa51a854b8d20a5a3fcdae05e9e5fb4bc9b578f8d7d82c0fb1)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ProximityReading {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -132,7 +132,7 @@ impl PartialEq for ProximityReading {
 }
 
 // Source: upstream/packages/types/src/Sensors.ts:63 (sha256:99e9f923970fafdabc49c090481797531b17ac7305f6e25b774fab108fd30893)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct QuaternionReading {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -151,7 +151,7 @@ impl PartialEq for QuaternionReading {
 }
 
 // Source: upstream/packages/types/src/Sensors.ts:71 (sha256:1bf3e1d56477d4bcc013cd9c52fb7b529c2a0bb296a02b8de6556d6e217b9e4b)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct RotationRateReading {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

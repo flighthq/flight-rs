@@ -10,7 +10,7 @@ use flighthq_entity::create_entity;
 use flighthq_types::{AMBIENT_LIGHT_KIND as ambient_light_kind_constant, AmbientLight};
 
 // Source: upstream/packages/lighting/src/ambientLight.ts:5 (sha256:327e7902f53591c7b64ef38c05213c1a455523299f0a1843b732f97800f973b9)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AmbientLightOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -39,5 +39,6 @@ pub fn create_ambient_light(options: Option<AmbientLightOptions>) -> AmbientLigh
         color: (options.as_ref().and_then(|value| value.color)).unwrap_or(4294967295.0_f64),
         intensity: (options.as_ref().and_then(|value| value.intensity)).unwrap_or(1.0_f64),
         kind: (ambient_light_kind_constant).to_owned(),
+        ..Default::default()
     }));
 }

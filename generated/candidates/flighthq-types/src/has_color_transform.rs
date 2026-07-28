@@ -9,7 +9,7 @@
 use crate::{ColorTransform, Kind, NodeData};
 
 // Source: upstream/packages/types/src/HasColorTransform.ts:11 (sha256:2741d9efd5f774a32dc979e21ec9e6a9e83d7965042b23eb2898e3d2b3dc5984)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct HasColorTransform {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -22,7 +22,7 @@ impl PartialEq for HasColorTransform {
 }
 
 // Source: upstream/packages/types/src/HasColorTransform.ts:15 (sha256:c71983ba71d03c397abfb2ca2c08fe27203037688f5d7c1588d0a3102144b6f4)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ColorTransformNode {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

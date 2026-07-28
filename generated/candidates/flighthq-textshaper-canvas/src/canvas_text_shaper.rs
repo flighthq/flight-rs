@@ -92,9 +92,7 @@ pub fn create_canvas_text_shaper_backend() -> crate::OpaqueHostValue {
                 }
                 crate::host_set("host.font", font_string);
                 if supports_letter_spacing {
-                    ((*ctx.lock().unwrap()).clone())
-                        .clone()
-                        .unwrap()
+                    crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast")
                         .iter()
                         .find(|(key, _)| key == &"letterSpacing".to_owned())
                         .map(|(_, value)| value)
@@ -102,9 +100,7 @@ pub fn create_canvas_text_shaper_backend() -> crate::OpaqueHostValue {
                         format!("{}px", (format.letter_spacing).unwrap_or(0.0_f64));
                 }
                 if supports_word_spacing {
-                    ((*ctx.lock().unwrap()).clone())
-                        .clone()
-                        .unwrap()
+                    crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast")
                         .iter()
                         .find(|(key, _)| key == &"wordSpacing".to_owned())
                         .map(|(_, value)| value)
@@ -112,9 +108,7 @@ pub fn create_canvas_text_shaper_backend() -> crate::OpaqueHostValue {
                         crate::OpaqueHostValue::String("0px".to_owned());
                 }
                 if supports_direction {
-                    ((*ctx.lock().unwrap()).clone())
-                        .clone()
-                        .unwrap()
+                    crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast")
                         .iter()
                         .find(|(key, _)| key == &"direction".to_owned())
                         .map(|(_, value)| value)

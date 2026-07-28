@@ -9,7 +9,7 @@
 use crate::{AnimationClip, EntityRuntime, SceneMetadata, SceneNode};
 
 // Source: upstream/packages/types/src/Scene.ts:18 (sha256:7adc62c6c88e27dc94837c206a741700dedd5c8a88e4b1213ee17ff202285c66)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Scene {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

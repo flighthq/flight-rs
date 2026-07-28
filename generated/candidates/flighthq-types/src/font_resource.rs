@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/FontResource.ts:1 (sha256:05e2cc1dd0df88cfa444c4916544b96e5e1d44ce68be13c3fae8e5842aa95f11)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FontResource {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

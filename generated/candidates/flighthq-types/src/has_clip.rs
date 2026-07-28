@@ -9,7 +9,7 @@
 use crate::{ClipRegion, Kind, NodeData};
 
 // Source: upstream/packages/types/src/HasClip.ts:5 (sha256:b39fa5ade7f4bc73aef3c9c9d0ae19562baf86ac8cb264b0b1c642fafde0e42f)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct HasClip {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -22,7 +22,7 @@ impl PartialEq for HasClip {
 }
 
 // Source: upstream/packages/types/src/HasClip.ts:14 (sha256:dc1acf36df8ea13ca9d52998f125def6512ad669abfd31590fa73865c2bbd85a)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ClipNode {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

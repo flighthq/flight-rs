@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/AdvancedBlendMode.ts:12 (sha256:246dc8eea0a9289427da6640a41dd800aada2c4d63134fa12af743c0921bf524)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AdvancedBlendModeValues {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

@@ -9,7 +9,7 @@
 use crate::TextFormatRange;
 
 // Source: upstream/packages/types/src/RichTextContent.ts:3 (sha256:048d186739d8bfe34b14f636cd57fb89116b401bab1347c3742749f04b2838be)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct RichTextContent {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

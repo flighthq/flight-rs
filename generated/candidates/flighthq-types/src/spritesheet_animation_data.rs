@@ -9,7 +9,7 @@
 use crate::SpritesheetAnimationDirection;
 
 // Source: upstream/packages/types/src/SpritesheetAnimationData.ts:3 (sha256:dfe210ac4871351e75459a262cd969098d4ff4081e39eeb4de236436b5a71976)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SpritesheetAnimationData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

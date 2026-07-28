@@ -8,7 +8,7 @@
 
 use flighthq_types::{Material, MaterialData, RenderProxy, RenderState};
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub material: Option<Material>,

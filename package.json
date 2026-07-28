@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "check": "npm run generate:check && npm run typecheck && npm run lint && npm run format:check && npm run test",
-    "ci": "npm run check && cargo test --workspace",
+    "ci": "npm run check && cargo test --workspace && npm run test:host-winit",
     "clean": "node -e \"for (const path of ['dist', 'build', 'coverage']) require('fs').rmSync(path, { force: true, recursive: true })\"",
     "fix": "npm run lint:fix && npm run format",
     "format": "oxfmt --write .",
@@ -16,6 +16,7 @@
     "lint": "oxlint --max-warnings=0",
     "lint:fix": "oxlint --fix --max-warnings=0",
     "test": "vitest run && vitest run --config packages/surface-rs/vitest.config.ts",
+    "test:host-winit": "cargo test --manifest-path crates/flighthq-host-winit/Cargo.toml",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "wasm": "tsx tools/generator/src/build-wasm.ts"
   },

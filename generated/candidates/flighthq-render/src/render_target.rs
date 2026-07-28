@@ -13,8 +13,20 @@ use flighthq_types::{
     NodeInteractionState, NodeSignals, NodeTraitsKey, RectangleLike,
 };
 
-#[derive(Clone)]
-pub struct FlightPartialRecord1 {
+#[derive(Clone, Default)]
+pub struct SharedStructuralRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub width: f64,
+    pub height: f64,
+}
+impl PartialEq for SharedStructuralRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
     pub appearance_id: Option<f64>,
@@ -43,14 +55,14 @@ pub struct FlightPartialRecord1 {
     pub world_transform_using_local_transform_id: Option<f64>,
     pub world_transform_using_parent_transform_id: Option<f64>,
 }
-impl PartialEq for FlightPartialRecord1 {
+impl PartialEq for FlightPartialRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 // Source: upstream/packages/render/src/renderTarget.ts:5 (sha256:d096576df44fb3f2e8c6e8407060ad62e0000a87855d01af617a915673f40ae7)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct RenderTargetSizeOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -74,7 +86,18 @@ pub fn compute_display_object_render_target_transform(
     let content_x = content_x.unwrap_or(0.0_f64);
     let content_y = content_y.unwrap_or(0.0_f64);
     let local_transform = get_node_local_matrix(source);
-    inverse_matrix(&mut (*_TEMP_INV_LOCAL.lock().unwrap()), &local_transform);
+    inverse_matrix(&mut (*_TEMP_INV_LOCAL.lock().unwrap()), &{
+        let __flight_source = &(local_transform);
+        MatrixLike {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            a: __flight_source.a,
+            b: __flight_source.b,
+            c: __flight_source.c,
+            d: __flight_source.d,
+            tx: __flight_source.tx,
+            ty: __flight_source.ty,
+        }
+    });
     (*_TEMP_TRANSLATION.lock().unwrap()).a = 1.0_f64;
     (*_TEMP_TRANSLATION.lock().unwrap()).b = 0.0_f64;
     (*_TEMP_TRANSLATION.lock().unwrap()).c = 0.0_f64;
@@ -83,8 +106,30 @@ pub fn compute_display_object_render_target_transform(
     (*_TEMP_TRANSLATION.lock().unwrap()).ty = (content_y - bounds.y);
     multiply_matrix(
         out_render_transform,
-        &(*_TEMP_TRANSLATION.lock().unwrap()),
-        &(*_TEMP_INV_LOCAL.lock().unwrap()),
+        &{
+            let __flight_source = &(*_TEMP_TRANSLATION.lock().unwrap());
+            MatrixLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                a: __flight_source.a,
+                b: __flight_source.b,
+                c: __flight_source.c,
+                d: __flight_source.d,
+                tx: __flight_source.tx,
+                ty: __flight_source.ty,
+            }
+        },
+        &{
+            let __flight_source = &(*_TEMP_INV_LOCAL.lock().unwrap());
+            MatrixLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                a: __flight_source.a,
+                b: __flight_source.b,
+                c: __flight_source.c,
+                d: __flight_source.d,
+                tx: __flight_source.tx,
+                ty: __flight_source.ty,
+            }
+        },
     );
 }
 
@@ -106,28 +151,16 @@ pub fn compute_render_cache_transform(
 }
 
 // Source: upstream/packages/render/src/renderTarget.ts:51 (sha256:38b43bf331e204278fcbaaa4fefe1ed84a8bdeb2d5bed1ee469edd88cd801eaa)
-#[derive(Clone)]
-struct ComputeRenderTargetSizeRecord2 {
-    __flight_identity: std::sync::Arc<()>,
-    width: f64,
-    height: f64,
-}
-impl PartialEq for ComputeRenderTargetSizeRecord2 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
 pub fn compute_render_target_size(
     bounds: &RectangleLike,
     padding: Option<f64>,
     min_width: Option<f64>,
     min_height: Option<f64>,
-) -> ComputeRenderTargetSizeRecord2 {
+) -> SharedStructuralRecord1 {
     let padding = padding.unwrap_or(0.0_f64);
     let min_width = min_width.unwrap_or(1.0_f64);
     let min_height = min_height.unwrap_or(1.0_f64);
-    return ComputeRenderTargetSizeRecord2 {
+    return SharedStructuralRecord1 {
         __flight_identity: std::sync::Arc::new(()),
         width: (min_width).max(((bounds.width).ceil() + (padding * 2.0_f64))),
         height: (min_height).max(((bounds.height).ceil() + (padding * 2.0_f64))),

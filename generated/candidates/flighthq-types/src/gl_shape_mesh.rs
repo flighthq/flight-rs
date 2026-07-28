@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/GlShapeMesh.ts:6 (sha256:a98d63487f02cfd3f29e097d5ce1d4a4e7b76d27a12a74cd459a5383365de922)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlShapeMesh {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

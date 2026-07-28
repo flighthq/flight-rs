@@ -18,7 +18,7 @@ use flighthq_types::{
     Vector2Like,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -60,7 +60,23 @@ pub fn convert_node_vector2_global_to_local(
     source: &Transform2DNode,
     vector: &Vector2Like,
 ) -> () {
-    inverse_matrix_transform_point_xy(out, &get_node_world_matrix(source), vector.x, vector.y);
+    inverse_matrix_transform_point_xy(
+        out,
+        &{
+            let __flight_source = &(get_node_world_matrix(source));
+            MatrixLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                a: __flight_source.a,
+                b: __flight_source.b,
+                c: __flight_source.c,
+                d: __flight_source.d,
+                tx: __flight_source.tx,
+                ty: __flight_source.ty,
+            }
+        },
+        vector.x,
+        vector.y,
+    );
 }
 
 // Source: upstream/packages/node/src/transform2d.ts:39 (sha256:78974095e131a641e6700333e776e3652017af5a8e408f867743be7cef35418a)
@@ -69,13 +85,59 @@ pub fn convert_node_vector2_local_to_global(
     source: &Transform2DNode,
     vector: &Vector2Like,
 ) -> () {
-    matrix_transform_point_xy(out, &get_node_world_matrix(source), vector.x, vector.y);
+    matrix_transform_point_xy(
+        out,
+        &{
+            let __flight_source = &(get_node_world_matrix(source));
+            MatrixLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                a: __flight_source.a,
+                b: __flight_source.b,
+                c: __flight_source.c,
+                d: __flight_source.d,
+                tx: __flight_source.tx,
+                ty: __flight_source.ty,
+            }
+        },
+        vector.x,
+        vector.y,
+    );
 }
 
 // Source: upstream/packages/node/src/transform2d.ts:47 (sha256:3be4e134897216f7c00602c3134fddc788d273a7166eb061db80252a17cd2fc2)
 #[derive(Clone)]
 struct EnsureNodeLocalMatrixRecord2 {
     __flight_identity: std::sync::Arc<()>,
+    binding: Option<crate::OpaqueHostValue>,
+    appearance_id: f64,
+    bounds_using_local_bounds_id: f64,
+    bounds_using_local_transform_id: f64,
+    can_add_child:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    children: Option<Vec<Node>>,
+    color_adjustments: Option<Vec<Adjustment>>,
+    resolved_color_transform: Option<ColorTransform>,
+    color_adjustments_channel_mixing: bool,
+    traits: Option<NodeTraitsKey>,
+    interaction_signals: Option<InteractionSignals>,
+    local_bounds_id: f64,
+    local_bounds_using_local_bounds_id: f64,
+    local_content_id: f64,
+    local_transform_id: f64,
+    local_transform_using_local_transform_id: f64,
+    node_signals: Option<NodeSignals>,
+    interaction_state: Option<NodeInteractionState>,
+    parent: Option<Node>,
+    world_bounds_using_local_bounds_id: f64,
+    world_bounds_using_world_transform_id: f64,
+    world_transform_id: f64,
+    world_transform_using_local_transform_id: f64,
+    world_transform_using_parent_transform_id: f64,
+    local_matrix: Option<Matrix>,
+    rotation_angle: f64,
+    rotation_cosine: f64,
+    rotation_sine: f64,
+    world_matrix: Option<Matrix>,
 }
 impl PartialEq for EnsureNodeLocalMatrixRecord2 {
     fn eq(&self, other: &Self) -> bool {
@@ -84,8 +146,11 @@ impl PartialEq for EnsureNodeLocalMatrixRecord2 {
 }
 
 pub fn ensure_node_local_matrix(target: &Transform2DNode) -> () {
-    let mut runtime = get_entity_runtime(&Entity {
-        __flight_identity: std::sync::Arc::clone(&(target).__flight_identity),
+    let mut runtime = get_entity_runtime(&{
+        let __flight_source = &(target);
+        Entity {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+        }
     });
     if (runtime.local_transform_using_local_transform_id != runtime.local_transform_id) {
         recompute_local_transform2_d(target, &mut runtime);
@@ -96,6 +161,36 @@ pub fn ensure_node_local_matrix(target: &Transform2DNode) -> () {
 #[derive(Clone)]
 struct EnsureNodeWorldMatrixRecord2 {
     __flight_identity: std::sync::Arc<()>,
+    binding: Option<crate::OpaqueHostValue>,
+    appearance_id: f64,
+    bounds_using_local_bounds_id: f64,
+    bounds_using_local_transform_id: f64,
+    can_add_child:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    children: Option<Vec<Node>>,
+    color_adjustments: Option<Vec<Adjustment>>,
+    resolved_color_transform: Option<ColorTransform>,
+    color_adjustments_channel_mixing: bool,
+    traits: Option<NodeTraitsKey>,
+    interaction_signals: Option<InteractionSignals>,
+    local_bounds_id: f64,
+    local_bounds_using_local_bounds_id: f64,
+    local_content_id: f64,
+    local_transform_id: f64,
+    local_transform_using_local_transform_id: f64,
+    node_signals: Option<NodeSignals>,
+    interaction_state: Option<NodeInteractionState>,
+    parent: Option<Node>,
+    world_bounds_using_local_bounds_id: f64,
+    world_bounds_using_world_transform_id: f64,
+    world_transform_id: f64,
+    world_transform_using_local_transform_id: f64,
+    world_transform_using_parent_transform_id: f64,
+    local_matrix: Option<Matrix>,
+    rotation_angle: f64,
+    rotation_cosine: f64,
+    rotation_sine: f64,
+    world_matrix: Option<Matrix>,
 }
 impl PartialEq for EnsureNodeWorldMatrixRecord2 {
     fn eq(&self, other: &Self) -> bool {
@@ -104,16 +199,22 @@ impl PartialEq for EnsureNodeWorldMatrixRecord2 {
 }
 
 pub fn ensure_node_world_matrix(target: &Transform2DNode) -> () {
-    let mut runtime = get_entity_runtime(&Entity {
-        __flight_identity: std::sync::Arc::clone(&(target).__flight_identity),
+    let mut runtime = get_entity_runtime(&{
+        let __flight_source = &(target);
+        Entity {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+        }
     });
     let parent = ((runtime.parent).clone()).unwrap();
     let mut parent_runtime: Option<EnsureNodeWorldMatrixRecord2>;
     let mut parent_world_transform_id = 0.0_f64;
     if (parent).is_some() {
         ensure_node_world_matrix(&parent);
-        parent_runtime = Some(get_entity_runtime(&Entity {
-            __flight_identity: std::sync::Arc::clone(&(parent).__flight_identity),
+        parent_runtime = Some(get_entity_runtime(&{
+            let __flight_source = &(parent);
+            Entity {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            }
         }));
         parent_world_transform_id = parent_runtime.as_mut().unwrap().world_transform_id;
     }
@@ -132,6 +233,36 @@ pub fn ensure_node_world_matrix(target: &Transform2DNode) -> () {
 #[derive(Clone)]
 struct GetNodeLocalMatrixRecord2 {
     __flight_identity: std::sync::Arc<()>,
+    binding: Option<crate::OpaqueHostValue>,
+    appearance_id: f64,
+    bounds_using_local_bounds_id: f64,
+    bounds_using_local_transform_id: f64,
+    can_add_child:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    children: Option<Vec<Node>>,
+    color_adjustments: Option<Vec<Adjustment>>,
+    resolved_color_transform: Option<ColorTransform>,
+    color_adjustments_channel_mixing: bool,
+    traits: Option<NodeTraitsKey>,
+    interaction_signals: Option<InteractionSignals>,
+    local_bounds_id: f64,
+    local_bounds_using_local_bounds_id: f64,
+    local_content_id: f64,
+    local_transform_id: f64,
+    local_transform_using_local_transform_id: f64,
+    node_signals: Option<NodeSignals>,
+    interaction_state: Option<NodeInteractionState>,
+    parent: Option<Node>,
+    world_bounds_using_local_bounds_id: f64,
+    world_bounds_using_world_transform_id: f64,
+    world_transform_id: f64,
+    world_transform_using_local_transform_id: f64,
+    world_transform_using_parent_transform_id: f64,
+    local_matrix: Option<Matrix>,
+    rotation_angle: f64,
+    rotation_cosine: f64,
+    rotation_sine: f64,
+    world_matrix: Option<Matrix>,
 }
 impl PartialEq for GetNodeLocalMatrixRecord2 {
     fn eq(&self, other: &Self) -> bool {
@@ -141,8 +272,11 @@ impl PartialEq for GetNodeLocalMatrixRecord2 {
 
 pub fn get_node_local_matrix(target: &Transform2DNode) -> Matrix {
     ensure_node_local_matrix(target);
-    return ((get_entity_runtime(&Entity {
-        __flight_identity: std::sync::Arc::clone(&(target).__flight_identity),
+    return ((get_entity_runtime(&{
+        let __flight_source = &(target);
+        Entity {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+        }
     })
     .local_matrix)
         .clone())
@@ -166,6 +300,36 @@ pub fn get_node_transform2_d(out: &mut Transform2DLike, source: &Transform2DNode
 #[derive(Clone)]
 struct GetNodeWorldMatrixRecord2 {
     __flight_identity: std::sync::Arc<()>,
+    binding: Option<crate::OpaqueHostValue>,
+    appearance_id: f64,
+    bounds_using_local_bounds_id: f64,
+    bounds_using_local_transform_id: f64,
+    can_add_child:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    children: Option<Vec<Node>>,
+    color_adjustments: Option<Vec<Adjustment>>,
+    resolved_color_transform: Option<ColorTransform>,
+    color_adjustments_channel_mixing: bool,
+    traits: Option<NodeTraitsKey>,
+    interaction_signals: Option<InteractionSignals>,
+    local_bounds_id: f64,
+    local_bounds_using_local_bounds_id: f64,
+    local_content_id: f64,
+    local_transform_id: f64,
+    local_transform_using_local_transform_id: f64,
+    node_signals: Option<NodeSignals>,
+    interaction_state: Option<NodeInteractionState>,
+    parent: Option<Node>,
+    world_bounds_using_local_bounds_id: f64,
+    world_bounds_using_world_transform_id: f64,
+    world_transform_id: f64,
+    world_transform_using_local_transform_id: f64,
+    world_transform_using_parent_transform_id: f64,
+    local_matrix: Option<Matrix>,
+    rotation_angle: f64,
+    rotation_cosine: f64,
+    rotation_sine: f64,
+    world_matrix: Option<Matrix>,
 }
 impl PartialEq for GetNodeWorldMatrixRecord2 {
     fn eq(&self, other: &Self) -> bool {
@@ -175,8 +339,11 @@ impl PartialEq for GetNodeWorldMatrixRecord2 {
 
 pub fn get_node_world_matrix(target: &Transform2DNode) -> Matrix {
     ensure_node_world_matrix(target);
-    return ((get_entity_runtime(&Entity {
-        __flight_identity: std::sync::Arc::clone(&(target).__flight_identity),
+    return ((get_entity_runtime(&{
+        let __flight_source = &(target);
+        Entity {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+        }
     })
     .world_matrix)
         .clone())
@@ -186,12 +353,15 @@ pub fn get_node_world_matrix(target: &Transform2DNode) -> Matrix {
 // Source: upstream/packages/node/src/transform2d.ts:101 (sha256:430ca47f27b161924ddb55dd30da83d4b7a3117e19fb42ccbcecf84ba3084e1c)
 pub fn set_node_local_matrix(target: &mut Transform2DNode, source: &MatrixLike) -> () {
     decompose_matrix_to_transform2_d(target, source);
-    invalidate_node_local_transform(&Node {
-        __flight_identity: std::sync::Arc::clone(&(target).__flight_identity),
-        data: ((target).data).clone(),
-        enabled: (target).enabled,
-        kind: ((target).kind).clone(),
-        name: ((target).name).clone(),
+    invalidate_node_local_transform(&{
+        let __flight_source = &(target);
+        Node {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+        }
     });
 }
 
@@ -206,12 +376,15 @@ pub fn set_node_transform2_d(target: &mut Transform2DNode, source: &Transform2DL
     target.skew_y = source.skew_y;
     target.x = source.x;
     target.y = source.y;
-    invalidate_node_local_transform(&Node {
-        __flight_identity: std::sync::Arc::clone(&(target).__flight_identity),
-        data: ((target).data).clone(),
-        enabled: (target).enabled,
-        kind: ((target).kind).clone(),
-        name: ((target).name).clone(),
+    invalidate_node_local_transform(&{
+        let __flight_source = &(target);
+        Node {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+        }
     });
 }
 
@@ -219,6 +392,36 @@ pub fn set_node_transform2_d(target: &mut Transform2DNode, source: &Transform2DL
 #[derive(Clone)]
 struct RecomputeLocalTransform2DRecord2 {
     __flight_identity: std::sync::Arc<()>,
+    binding: Option<crate::OpaqueHostValue>,
+    appearance_id: f64,
+    bounds_using_local_bounds_id: f64,
+    bounds_using_local_transform_id: f64,
+    can_add_child:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    children: Option<Vec<Node>>,
+    color_adjustments: Option<Vec<Adjustment>>,
+    resolved_color_transform: Option<ColorTransform>,
+    color_adjustments_channel_mixing: bool,
+    traits: Option<NodeTraitsKey>,
+    interaction_signals: Option<InteractionSignals>,
+    local_bounds_id: f64,
+    local_bounds_using_local_bounds_id: f64,
+    local_content_id: f64,
+    local_transform_id: f64,
+    local_transform_using_local_transform_id: f64,
+    node_signals: Option<NodeSignals>,
+    interaction_state: Option<NodeInteractionState>,
+    parent: Option<Node>,
+    world_bounds_using_local_bounds_id: f64,
+    world_bounds_using_world_transform_id: f64,
+    world_transform_id: f64,
+    world_transform_using_local_transform_id: f64,
+    world_transform_using_parent_transform_id: f64,
+    local_matrix: Option<Matrix>,
+    rotation_angle: f64,
+    rotation_cosine: f64,
+    rotation_sine: f64,
+    world_matrix: Option<Matrix>,
 }
 impl PartialEq for RecomputeLocalTransform2DRecord2 {
     fn eq(&self, other: &Self) -> bool {
@@ -276,6 +479,36 @@ fn recompute_local_transform2_d(
 #[derive(Clone)]
 struct RecomputeWorldTransform2DRecord2 {
     __flight_identity: std::sync::Arc<()>,
+    binding: Option<crate::OpaqueHostValue>,
+    appearance_id: f64,
+    bounds_using_local_bounds_id: f64,
+    bounds_using_local_transform_id: f64,
+    can_add_child:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    children: Option<Vec<Node>>,
+    color_adjustments: Option<Vec<Adjustment>>,
+    resolved_color_transform: Option<ColorTransform>,
+    color_adjustments_channel_mixing: bool,
+    traits: Option<NodeTraitsKey>,
+    interaction_signals: Option<InteractionSignals>,
+    local_bounds_id: f64,
+    local_bounds_using_local_bounds_id: f64,
+    local_content_id: f64,
+    local_transform_id: f64,
+    local_transform_using_local_transform_id: f64,
+    node_signals: Option<NodeSignals>,
+    interaction_state: Option<NodeInteractionState>,
+    parent: Option<Node>,
+    world_bounds_using_local_bounds_id: f64,
+    world_bounds_using_world_transform_id: f64,
+    world_transform_id: f64,
+    world_transform_using_local_transform_id: f64,
+    world_transform_using_parent_transform_id: f64,
+    local_matrix: Option<Matrix>,
+    rotation_angle: f64,
+    rotation_cosine: f64,
+    rotation_sine: f64,
+    world_matrix: Option<Matrix>,
 }
 impl PartialEq for RecomputeWorldTransform2DRecord2 {
     fn eq(&self, other: &Self) -> bool {

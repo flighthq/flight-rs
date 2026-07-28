@@ -9,7 +9,7 @@
 use crate::ColorTransform;
 
 // Source: upstream/packages/types/src/ParticleObject.ts:5 (sha256:0cbee5ecbcb67d6d1a2432ec072bea4fbced4c50b41852989623aeba41020e1b)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ParticleObject {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

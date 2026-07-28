@@ -21,7 +21,7 @@ fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub lift: Option<f64>,
@@ -35,7 +35,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/adjustments/src/liftGammaGainAdjustment.ts:6 (sha256:e86a15b30666226017b1cb779869b1d6dd87c356e86675c76432e2d7dda3271d)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateLiftGammaGainAdjustmentRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }

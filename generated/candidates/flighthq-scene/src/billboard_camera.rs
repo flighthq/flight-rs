@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{get_scene_node_runtime, is_billboard};
+use crate::get_scene_node_runtime;
 use flighthq_geometry::{
     copy_matrix4, create_matrix4, create_quaternion, create_vector3, decompose_matrix4,
     inverse_matrix4, multiply_matrix4,
@@ -14,11 +14,11 @@ use flighthq_geometry::{
 use flighthq_node::{get_node_parent, get_node_world_matrix4, set_node_local_matrix4};
 use flighthq_types::{
     Adjustment, Billboard, BillboardMode, Camera, ColorTransform, InteractionSignals, Kind,
-    Material, Matrix4, MeshGeometry, Node, NodeData, NodeInteractionState, NodeSignals,
-    NodeTraitsKey, Quaternion, SceneNode, Transform3DNode, Vector3,
+    Material, Matrix4, Matrix4Like, MeshGeometry, Node, NodeData, NodeInteractionState,
+    NodeSignals, NodeTraitsKey, Quaternion, SceneNode, Transform3DNode, Vector3,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub data: Option<NodeData>,
@@ -40,7 +40,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -76,7 +76,7 @@ impl PartialEq for FlightPartialRecord2 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub data: Option<NodeData>,
@@ -95,7 +95,7 @@ impl PartialEq for FlightPartialRecord3 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord4 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha: Option<f64>,
@@ -107,7 +107,7 @@ impl PartialEq for FlightPartialRecord4 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord5 {
     pub __flight_identity: std::sync::Arc<()>,
     pub position: Option<Vector3>,
@@ -134,80 +134,179 @@ pub fn orient_scene_billboards_to_camera(scene: &SceneNode, camera: &Camera) -> 
 
 // Source: upstream/packages/scene/src/billboardCamera.ts:44 (sha256:e0e1cf56a6834188df69070d1f7e3b9d97534d2595507dd46b68ec67e3c2a189)
 fn apply_billboard_facing(billboard: &Billboard) -> () {
-    let world = get_node_world_matrix4(&Transform3DNode {
-        __flight_identity: std::sync::Arc::clone(&(billboard).__flight_identity),
-        data: ((billboard).data).clone(),
-        enabled: (billboard).enabled,
-        kind: ((billboard).kind).clone(),
-        name: ((billboard).name).clone(),
-        position: ((billboard).position).clone(),
-        rotation: ((billboard).rotation).clone(),
-        scale: ((billboard).scale).clone(),
-    });
+    let world = {
+        let __flight_source = &(get_node_world_matrix4(&{
+            let __flight_source = &(billboard);
+            Transform3DNode {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                data: (__flight_source.data).clone(),
+                enabled: __flight_source.enabled,
+                kind: (__flight_source.kind).clone(),
+                name: (__flight_source.name).clone(),
+                position: (__flight_source.position).clone(),
+                rotation: (__flight_source.rotation).clone(),
+                scale: (__flight_source.scale).clone(),
+            }
+        }));
+        Matrix4 {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            m: (__flight_source.m).clone(),
+        }
+    };
     decompose_matrix4(
         &mut (*_POSITION.lock().unwrap()),
         &mut (*_ROTATION_SCRATCH.lock().unwrap()),
         &mut (*_SCALE.lock().unwrap()),
-        &world,
+        &{
+            let __flight_source = &(world);
+            Matrix4Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                m: (__flight_source.m).clone(),
+            }
+        },
     );
     write_billboard_facing_matrix(
         &mut (*_FACING_WORLD.lock().unwrap()),
         (billboard.mode).clone(),
     );
-    let parent = get_node_parent(&Node {
-        __flight_identity: std::sync::Arc::clone(&(billboard).__flight_identity),
-        data: ((billboard).data).clone(),
-        enabled: (billboard).enabled,
-        kind: ((billboard).kind).clone(),
-        name: ((billboard).name).clone(),
+    let parent = get_node_parent(&{
+        let __flight_source = &({
+            let __flight_source = &((*billboard).clone());
+            SceneNode {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                data: (__flight_source.data).clone(),
+                enabled: __flight_source.enabled,
+                kind: (__flight_source.kind).clone(),
+                name: (__flight_source.name).clone(),
+                alpha: __flight_source.alpha,
+                visible: __flight_source.visible,
+                position: (__flight_source.position).clone(),
+                rotation: (__flight_source.rotation).clone(),
+                scale: (__flight_source.scale).clone(),
+            }
+        });
+        Node {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+        }
     });
     if (parent).is_none() {
-        copy_matrix4(
-            &mut (*_LOCAL_SCRATCH.lock().unwrap()),
-            &(*_FACING_WORLD.lock().unwrap()),
-        );
-    } else {
-        let parent_world = get_node_world_matrix4(&Transform3DNode {
-            __flight_identity: std::sync::Arc::clone(&(parent.as_ref().unwrap()).__flight_identity),
-            data: ((parent.as_ref().unwrap()).data).clone(),
-            enabled: (parent.as_ref().unwrap()).enabled,
-            kind: ((parent.as_ref().unwrap()).kind).clone(),
-            name: ((parent.as_ref().unwrap()).name).clone(),
-            position: ((parent.as_ref().unwrap()).position).clone(),
-            rotation: ((parent.as_ref().unwrap()).rotation).clone(),
-            scale: ((parent.as_ref().unwrap()).scale).clone(),
+        copy_matrix4(&mut (*_LOCAL_SCRATCH.lock().unwrap()), &{
+            let __flight_source = &(*_FACING_WORLD.lock().unwrap());
+            Matrix4Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                m: (__flight_source.m).clone(),
+            }
         });
-        if inverse_matrix4(&mut (*_INVERSE_PARENT_WORLD.lock().unwrap()), &parent_world) {
+    } else {
+        let parent_world = {
+            let __flight_source = &(get_node_world_matrix4(&{
+                let __flight_source = &(parent.as_ref().unwrap());
+                Transform3DNode {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    data: (__flight_source.data).clone(),
+                    enabled: __flight_source.enabled,
+                    kind: (__flight_source.kind).clone(),
+                    name: (__flight_source.name).clone(),
+                    position: (__flight_source.position).clone(),
+                    rotation: (__flight_source.rotation).clone(),
+                    scale: (__flight_source.scale).clone(),
+                }
+            }));
+            Matrix4 {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                m: (__flight_source.m).clone(),
+            }
+        };
+        if inverse_matrix4(&mut (*_INVERSE_PARENT_WORLD.lock().unwrap()), &{
+            let __flight_source = &(parent_world);
+            Matrix4Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                m: (__flight_source.m).clone(),
+            }
+        }) {
             multiply_matrix4(
                 &mut (*_LOCAL_SCRATCH.lock().unwrap()),
-                &(*_INVERSE_PARENT_WORLD.lock().unwrap()),
-                &(*_FACING_WORLD.lock().unwrap()),
+                &{
+                    let __flight_source = &(*_INVERSE_PARENT_WORLD.lock().unwrap());
+                    Matrix4Like {
+                        __flight_identity: std::sync::Arc::clone(
+                            &__flight_source.__flight_identity,
+                        ),
+                        m: (__flight_source.m).clone(),
+                    }
+                },
+                &{
+                    let __flight_source = &(*_FACING_WORLD.lock().unwrap());
+                    Matrix4Like {
+                        __flight_identity: std::sync::Arc::clone(
+                            &__flight_source.__flight_identity,
+                        ),
+                        m: (__flight_source.m).clone(),
+                    }
+                },
             );
         } else {
-            copy_matrix4(
-                &mut (*_LOCAL_SCRATCH.lock().unwrap()),
-                &(*_FACING_WORLD.lock().unwrap()),
-            );
+            copy_matrix4(&mut (*_LOCAL_SCRATCH.lock().unwrap()), &{
+                let __flight_source = &(*_FACING_WORLD.lock().unwrap());
+                Matrix4Like {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    m: (__flight_source.m).clone(),
+                }
+            });
         }
     }
     set_node_local_matrix4(
-        &Transform3DNode {
-            __flight_identity: std::sync::Arc::clone(&(billboard).__flight_identity),
-            data: ((billboard).data).clone(),
-            enabled: (billboard).enabled,
-            kind: ((billboard).kind).clone(),
-            name: ((billboard).name).clone(),
-            position: ((billboard).position).clone(),
-            rotation: ((billboard).rotation).clone(),
-            scale: ((billboard).scale).clone(),
+        &{
+            let __flight_source = &(billboard);
+            Transform3DNode {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                data: (__flight_source.data).clone(),
+                enabled: __flight_source.enabled,
+                kind: (__flight_source.kind).clone(),
+                name: (__flight_source.name).clone(),
+                position: (__flight_source.position).clone(),
+                rotation: (__flight_source.rotation).clone(),
+                scale: (__flight_source.scale).clone(),
+            }
         },
-        &(*_LOCAL_SCRATCH.lock().unwrap()),
+        &{
+            let __flight_source = &(*_LOCAL_SCRATCH.lock().unwrap());
+            Matrix4Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                m: (__flight_source.m).clone(),
+            }
+        },
     );
 }
 
 // Source: upstream/packages/scene/src/billboardCamera.ts:66 (sha256:383eda49db8c7bd0f1a8eed77902e919f4e45f95076b65f76c77918329188d0a)
 fn orient_billboard_subtree(node: &SceneNode) -> () {
-    if is_billboard(node) {
+    if (|| -> bool {
+        let candidate = {
+            let __flight_source = &((node).clone());
+            FlightPartialRecord1 {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                data: (__flight_source.data).clone(),
+                enabled: Some(__flight_source.enabled),
+                kind: Some((__flight_source.kind).clone()),
+                name: (__flight_source.name).clone(),
+                alpha: Some(__flight_source.alpha),
+                visible: Some(__flight_source.visible),
+                position: Some((__flight_source.position).clone()),
+                rotation: Some((__flight_source.rotation).clone()),
+                scale: Some((__flight_source.scale).clone()),
+                geometry: None,
+                materials: None,
+                mode: None,
+            }
+        };
+        return (((candidate.geometry).clone()).is_some())
+            && (((candidate.mode).clone()).is_some());
+    })() {
         apply_billboard_facing(node);
     }
     let children = (get_scene_node_runtime(node).children).clone();
@@ -227,7 +326,13 @@ fn orient_billboard_subtree(node: &SceneNode) -> () {
 
 // Source: upstream/packages/scene/src/billboardCamera.ts:83 (sha256:c833d71802f43edc7987b05711ed4787c968a2c34770502241e0161d7657fb32)
 fn set_billboard_camera_basis(camera: &Camera) -> () {
-    inverse_matrix4(&mut (*_CAMERA_WORLD.lock().unwrap()), &camera.view);
+    inverse_matrix4(&mut (*_CAMERA_WORLD.lock().unwrap()), &{
+        let __flight_source = &(camera.view);
+        Matrix4Like {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            m: (__flight_source.m).clone(),
+        }
+    });
     (*_CAMERA_EYE_X.lock().unwrap()) =
         ((*_CAMERA_WORLD.lock().unwrap()).m[12.0_f64 as usize] as f64);
     (*_CAMERA_EYE_Y.lock().unwrap()) =

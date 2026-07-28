@@ -12,7 +12,8 @@ use flighthq_types::{
     BoundingSphere, BoundingSphereLike, DIRECTIONAL_LIGHT_KIND as directional_light_kind_constant,
     ENVIRONMENT_KIND as environment_kind_constant,
     HEMISPHERE_LIGHT_KIND as hemisphere_light_kind_constant, Light,
-    POINT_LIGHT_KIND as point_light_kind_constant, SPOT_LIGHT_KIND as spot_light_kind_constant,
+    POINT_LIGHT_KIND as point_light_kind_constant, PointLight,
+    SPOT_LIGHT_KIND as spot_light_kind_constant,
 };
 
 #[inline]
@@ -44,7 +45,22 @@ pub fn get_light_influence_bounds(out: &mut BoundingSphereLike, light: &Light) -
     if ((kind == point_light_kind_constant) || (kind == spot_light_kind_constant))
         || (kind == area_light_kind_constant)
     {
-        let spatial = light;
+        let spatial = {
+            let __flight_source = &((*light).clone());
+            PointLight {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                kind: (__flight_source.kind).clone(),
+                casts_shadow: __flight_source.casts_shadow,
+                color: __flight_source.color,
+                intensity: __flight_source.intensity,
+                normal_bias: __flight_source.normal_bias,
+                pcf_radius: __flight_source.pcf_radius,
+                position: (__flight_source.position).clone(),
+                range: __flight_source.range,
+                shadow_bias: __flight_source.shadow_bias,
+                ..Default::default()
+            }
+        };
         let range = spatial.range;
         if (range < 0.0_f64) {
             out.center.x = 0.0_f64;
@@ -66,7 +82,7 @@ pub fn get_light_influence_bounds(out: &mut BoundingSphereLike, light: &Light) -
 }
 
 // Source: upstream/packages/lighting/src/lightAnalysis.ts:60 (sha256:d267de3a4faaa737907f95eebabceaa4b992b7a82181095b79291b36c1144123)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct GetLightLuminanceRecord1 {
     __flight_identity: std::sync::Arc<()>,
     color: Option<f64>,
@@ -79,7 +95,14 @@ impl PartialEq for GetLightLuminanceRecord1 {
 }
 
 pub fn get_light_luminance(light: &Light) -> f64 {
-    let colored = light;
+    let colored = {
+        let __flight_source = &((*light).clone());
+        GetLightLuminanceRecord1 {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            color: Some(__flight_source.color),
+            intensity: Some(__flight_source.intensity),
+        }
+    };
     let color = colored.color;
     if (color).is_none() {
         return 0.0_f64;
@@ -122,7 +145,7 @@ pub fn has_light_influence_on_bounds(light: &Light, bounds: &BoundingSphereLike)
 }
 
 // Source: upstream/packages/lighting/src/lightAnalysis.ts:94 (sha256:cadd8dbe715f4178ad999a2c4965dc0946bc2459f5afd721e6b5bc84a81f685b)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct IsLightShadowCastingRecord1 {
     __flight_identity: std::sync::Arc<()>,
     casts_shadow: bool,
@@ -140,7 +163,14 @@ pub fn is_light_shadow_casting(light: &Light) -> bool {
     {
         return false;
     }
-    return light.casts_shadow;
+    return {
+        let __flight_source = &((*light).clone());
+        IsLightShadowCastingRecord1 {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            casts_shadow: __flight_source.casts_shadow,
+        }
+    }
+    .casts_shadow;
 }
 
 // Source: upstream/packages/lighting/src/lightAnalysis.ts:103 (sha256:598079d3d933dca6dd38e0c05c819ab7fb9bdfda5fe0f7e31c38909d8f8c1b74)

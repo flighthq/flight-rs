@@ -9,7 +9,7 @@
 use crate::SignalConnection;
 
 // Source: upstream/packages/types/src/SignalScope.ts:11 (sha256:ab1284b002b4f39be560d8d1b63061737bf030c13630a89059462527e899c163)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SignalScope {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

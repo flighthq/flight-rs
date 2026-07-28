@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/FontMetrics.ts:4 (sha256:6ba8523047f4f3ad5cca4aac77c669aa28d57295fdb2d2e9ae2af6feafb4adf7)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FontMetrics {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

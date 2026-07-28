@@ -9,7 +9,7 @@
 use crate::Signal;
 
 // Source: upstream/packages/types/src/Clock.ts:8 (sha256:e6e95909db1bea0affe3369897e0632ad4f455db8211a678d4d881f01d456a9b)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Clock {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

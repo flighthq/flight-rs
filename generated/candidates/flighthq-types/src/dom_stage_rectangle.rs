@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/DomStageRectangle.ts:1 (sha256:fc8013d047c9528642b95db2f22da6d31c527b58936e073300f57cc07e3e6ff3)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct DomStageRectangle {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/AgxToneMapOptions.ts:1 (sha256:05232ac34dd4349934a0f088c510d3ff4afaf9e0c95177de7d8970d2cdec04a2)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AgxToneMapOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

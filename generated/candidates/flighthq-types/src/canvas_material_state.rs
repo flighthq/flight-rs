@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/CanvasMaterialState.ts:10 (sha256:f5ca82625513b77cd226c8943e1b28c78a44186cd6f2c42822439644719c69f8)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct CanvasMaterialState {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

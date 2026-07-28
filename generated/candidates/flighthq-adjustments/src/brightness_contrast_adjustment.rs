@@ -8,7 +8,7 @@
 
 use flighthq_types::BrightnessContrastAdjustment;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub brightness: Option<f64>,
@@ -21,7 +21,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/adjustments/src/brightnessContrastAdjustment.ts:10 (sha256:076aa1b0b6b9f74f032d3f8d445eb38f4934ff5691844e38cc37840962b869c4)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateBrightnessContrastAdjustmentRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -55,6 +55,7 @@ pub fn create_brightness_contrast_adjustment(
             color_matrix: (color_matrix).clone(),
             brightness: __flight_spread_1.brightness,
             contrast: __flight_spread_1.contrast,
+            ..Default::default()
         }
     };
 }

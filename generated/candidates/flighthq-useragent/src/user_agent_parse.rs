@@ -222,76 +222,124 @@ pub fn parse_user_agent_os_name(ua: String) -> String {
 
 // Source: upstream/packages/useragent/src/userAgentParse.ts:66 (sha256:0734439e3ba3affde4953ec382dcbabee352bc2500bbac86b93ca1a0436739b1)
 pub fn parse_user_agent_os_version(ua: String) -> String {
-    let android = (ua.match_)(
-        regex::RegexBuilder::new("android\\s+([\\d.]+)")
+    let android = {
+        let __flight_regex = regex::RegexBuilder::new("android\\s+([\\d.]+)")
             .case_insensitive(true)
             .multi_line(false)
             .dot_matches_new_line(false)
             .build()
-            .expect("upstream TypeScript regular expression must be valid Rust regex syntax"),
-    );
-    if android {
-        return android[1.0_f64 as usize].clone();
+            .expect("upstream TypeScript regular expression must be valid Rust regex syntax");
+        __flight_regex.captures(&(ua)).map(|captures| {
+            (0..captures.len())
+                .map(|index| {
+                    captures
+                        .get(index)
+                        .map_or("", |matched| matched.as_str())
+                        .to_owned()
+                })
+                .collect::<Vec<_>>()
+        })
+    };
+    if (android).is_some() {
+        return android.as_ref().unwrap()[1.0_f64 as usize].clone();
     }
-    let ios = (ua.match_)(
-        regex::RegexBuilder::new("(?:iphone|ipad|ipod).*?os\\s+([\\d_]+)")
+    let ios = {
+        let __flight_regex = regex::RegexBuilder::new("(?:iphone|ipad|ipod).*?os\\s+([\\d_]+)")
             .case_insensitive(true)
             .multi_line(false)
             .dot_matches_new_line(false)
             .build()
-            .expect("upstream TypeScript regular expression must be valid Rust regex syntax"),
-    );
-    if ios {
-        return (ios[1.0_f64 as usize].replace)(
-            regex::RegexBuilder::new("_")
-                .case_insensitive(false)
-                .multi_line(false)
-                .dot_matches_new_line(false)
-                .build()
-                .expect("upstream TypeScript regular expression must be valid Rust regex syntax"),
-            ".",
-        );
+            .expect("upstream TypeScript regular expression must be valid Rust regex syntax");
+        __flight_regex.captures(&(ua)).map(|captures| {
+            (0..captures.len())
+                .map(|index| {
+                    captures
+                        .get(index)
+                        .map_or("", |matched| matched.as_str())
+                        .to_owned()
+                })
+                .collect::<Vec<_>>()
+        })
+    };
+    if (ios).is_some() {
+        return (regex::RegexBuilder::new("_")
+            .case_insensitive(false)
+            .multi_line(false)
+            .dot_matches_new_line(false)
+            .build()
+            .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
+        .replace_all(&(ios.as_ref().unwrap()[1.0_f64 as usize].clone()), ".")
+        .into_owned();
     }
-    let win = (ua.match_)(
-        regex::RegexBuilder::new("windows nt\\s+([\\d.]+)")
+    let win = {
+        let __flight_regex = regex::RegexBuilder::new("windows nt\\s+([\\d.]+)")
             .case_insensitive(true)
             .multi_line(false)
             .dot_matches_new_line(false)
             .build()
-            .expect("upstream TypeScript regular expression must be valid Rust regex syntax"),
-    );
-    if win {
-        return win[1.0_f64 as usize].clone();
+            .expect("upstream TypeScript regular expression must be valid Rust regex syntax");
+        __flight_regex.captures(&(ua)).map(|captures| {
+            (0..captures.len())
+                .map(|index| {
+                    captures
+                        .get(index)
+                        .map_or("", |matched| matched.as_str())
+                        .to_owned()
+                })
+                .collect::<Vec<_>>()
+        })
+    };
+    if (win).is_some() {
+        return win.as_ref().unwrap()[1.0_f64 as usize].clone();
     }
-    let mac = (ua.match_)(
-        regex::RegexBuilder::new("mac os x\\s+([\\d_.]+)")
+    let mac = {
+        let __flight_regex = regex::RegexBuilder::new("mac os x\\s+([\\d_.]+)")
             .case_insensitive(true)
             .multi_line(false)
             .dot_matches_new_line(false)
             .build()
-            .expect("upstream TypeScript regular expression must be valid Rust regex syntax"),
-    );
-    if mac {
-        return (mac[1.0_f64 as usize].replace)(
-            regex::RegexBuilder::new("_")
-                .case_insensitive(false)
-                .multi_line(false)
-                .dot_matches_new_line(false)
-                .build()
-                .expect("upstream TypeScript regular expression must be valid Rust regex syntax"),
-            ".",
-        );
+            .expect("upstream TypeScript regular expression must be valid Rust regex syntax");
+        __flight_regex.captures(&(ua)).map(|captures| {
+            (0..captures.len())
+                .map(|index| {
+                    captures
+                        .get(index)
+                        .map_or("", |matched| matched.as_str())
+                        .to_owned()
+                })
+                .collect::<Vec<_>>()
+        })
+    };
+    if (mac).is_some() {
+        return (regex::RegexBuilder::new("_")
+            .case_insensitive(false)
+            .multi_line(false)
+            .dot_matches_new_line(false)
+            .build()
+            .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
+        .replace_all(&(mac.as_ref().unwrap()[1.0_f64 as usize].clone()), ".")
+        .into_owned();
     }
-    let cros = (ua.match_)(
-        regex::RegexBuilder::new("cros\\s+\\S+\\s+([\\d.]+)")
+    let cros = {
+        let __flight_regex = regex::RegexBuilder::new("cros\\s+\\S+\\s+([\\d.]+)")
             .case_insensitive(true)
             .multi_line(false)
             .dot_matches_new_line(false)
             .build()
-            .expect("upstream TypeScript regular expression must be valid Rust regex syntax"),
-    );
-    if cros {
-        return cros[1.0_f64 as usize].clone();
+            .expect("upstream TypeScript regular expression must be valid Rust regex syntax");
+        __flight_regex.captures(&(ua)).map(|captures| {
+            (0..captures.len())
+                .map(|index| {
+                    captures
+                        .get(index)
+                        .map_or("", |matched| matched.as_str())
+                        .to_owned()
+                })
+                .collect::<Vec<_>>()
+        })
+    };
+    if (cros).is_some() {
+        return cros.as_ref().unwrap()[1.0_f64 as usize].clone();
     }
     return "".to_owned();
 }

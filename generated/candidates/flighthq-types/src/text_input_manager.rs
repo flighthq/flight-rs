@@ -9,7 +9,7 @@
 use crate::RichText;
 
 // Source: upstream/packages/types/src/TextInputManager.ts:4 (sha256:25f1c1cf0cc86e7ea162adc431abce3f681b4ece190fe96afef5380b3c890a1f)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextInputSource {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -21,7 +21,7 @@ impl PartialEq for TextInputSource {
 }
 
 // Source: upstream/packages/types/src/TextInputManager.ts:8 (sha256:8cc504b6ffd314ebe6b2ee4b1fbaffd18de06d27d0633a503699869b5d8a3656)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextInputManager {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

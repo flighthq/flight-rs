@@ -9,7 +9,7 @@
 use crate::Plane;
 
 // Source: upstream/packages/types/src/Frustum.ts:8 (sha256:fa6d32fec091d67a461443a09bc7c418115ac3c6a4b4c8bdb1abd75272621e41)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Frustum {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

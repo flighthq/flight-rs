@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/TimelineLabel.ts:1 (sha256:f1bcd87631389ed349560d3d4adc78ee8835215d5e36b96236cc9169f128a773)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TimelineLabel {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

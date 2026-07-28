@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/SurfaceCompositeMode.ts:12 (sha256:eabe6eecbd50db07c50b07fe9a8f69e42757f5e66c7498cae41d756f296ad9e0)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SurfaceCompositeModeValues {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

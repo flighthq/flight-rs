@@ -9,7 +9,7 @@
 use crate::{AlphaType, BlendMode, Kind, MaterialAlphaMode, Texture};
 
 // Source: upstream/packages/types/src/SpecularGlossinessPbrMaterial.ts:8 (sha256:0507be5be486444087da384892e2e4cc933f986b96fce65dc8cae8f6304a069f)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SpecularGlossinessPbrMaterial {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -20,6 +20,9 @@ pub struct SpecularGlossinessPbrMaterial {
     pub alpha_type: AlphaType,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub shader_key: String,
+    pub textures: Option<Vec<(String, Texture)>>,
+    pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
     pub diffuse: f64,
     pub diffuse_map: Option<Texture>,
     pub emissive: f64,

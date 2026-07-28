@@ -9,7 +9,7 @@
 use crate::{VelocityField, WgpuRenderState};
 
 // Source: upstream/packages/types/src/WgpuVelocityWriter.ts:11 (sha256:669927618ba45f10b871136f1943ea25c1a7d4367b9becd2dd02df1d475c5715)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct WgpuVelocityContext {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

@@ -9,7 +9,7 @@
 use crate::{Kind, ParticleBlendMode, ParticleEmitterData, Quaternion, SceneNodeRuntime, Vector3};
 
 // Source: upstream/packages/types/src/ParticleEmitter3D.ts:5 (sha256:d66b6f092414db98431d68c37d08a251ff2e6ebfbec95b5e3e3d038794e94ae5)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ParticleEmitter3D {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

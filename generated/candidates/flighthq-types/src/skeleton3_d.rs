@@ -9,7 +9,7 @@
 use crate::SceneNode;
 
 // Source: upstream/packages/types/src/Skeleton3D.ts:12 (sha256:1b17a0f01745f680f0a10d3d66e836133f3b89fc168d920c7604107f106948ae)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Skeleton3D {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

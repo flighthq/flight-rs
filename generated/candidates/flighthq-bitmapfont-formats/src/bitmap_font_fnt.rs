@@ -129,7 +129,7 @@ pub fn parse_bitmap_font_fnt(
         return None;
     }
     return build_bitmap_font_from_record(
-        &record.as_ref().unwrap(),
+        (record.as_ref().unwrap()).clone(),
         Some(((options).clone().unwrap()).clone()),
     );
 }
@@ -241,7 +241,7 @@ fn parse_bitmap_font_fnt_record(text: String) -> Option<BitmapFontRecord> {
 }
 
 // Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:111 (sha256:220544cc241ccf8ae5b74176f788cd6e3b1b2fd0cfe8fa87b012c9a310e21bc1)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct ParseFntFieldsRecord1 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -264,7 +264,19 @@ fn parse_fnt_fields(rest: String) -> Vec<(String, String)> {
         .expect("upstream TypeScript regular expression must be valid Rust regex syntax");
     let mut match_: Option<crate::OpaqueHostValue>;
     while ({
-        match_ = Some((re.exec)(rest));
+        match_ = {
+            let __flight_regex = re;
+            __flight_regex.captures(&((rest).clone())).map(|captures| {
+                (0..captures.len())
+                    .map(|index| {
+                        captures
+                            .get(index)
+                            .map_or("", |matched| matched.as_str())
+                            .to_owned()
+                    })
+                    .collect::<Vec<_>>()
+            })
+        };
         match_
     })
     .is_some()

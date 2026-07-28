@@ -15,7 +15,7 @@ use crate::{
 pub const SCENE_NODE_KIND: &'static str = "SceneNode";
 
 // Source: upstream/packages/types/src/SceneNode.ts:5 (sha256:e59b10ab032a8806eb3f07b403def56d6adc8d08691cf80873bc9ead2465c762)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SceneNodeTraits {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -32,7 +32,7 @@ impl PartialEq for SceneNodeTraits {
 }
 
 // Source: upstream/packages/types/src/SceneNode.ts:6 (sha256:6e5459ccd42b488779163a72435bac6de76645ff853dd8d832f9e843f9a146be)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SceneNode {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

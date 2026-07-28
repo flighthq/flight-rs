@@ -9,7 +9,7 @@
 use crate::ForceFalloff;
 
 // Source: upstream/packages/types/src/VortexForce.ts:3 (sha256:6aaa77d84372f1551d6fc26daaed4a2c899f8b66961ddd301bf997171fd67014)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct VortexForce {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

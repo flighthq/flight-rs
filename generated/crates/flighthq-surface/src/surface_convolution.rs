@@ -9,7 +9,7 @@
 use flighthq_types::{SurfaceEdgeMode, SurfaceRegion};
 
 // Source: upstream/packages/surface/src/surfaceConvolution.ts:3 (sha256:d414c7f43602d9cae5d37532248e9afcbcb39ba99c2dc62bee6c8184fdfff075)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SurfaceConvolutionOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

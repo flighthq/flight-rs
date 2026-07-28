@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/Font.ts:3 (sha256:87ada5ff249ddbcff03022e2e64cf96b1cfb4946188ecab2931c2f205b4a7203)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Font {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -20,7 +20,7 @@ impl PartialEq for Font {
 }
 
 // Source: upstream/packages/types/src/Font.ts:7 (sha256:50b0b605c4a59647c487994d45d99039aa098de090df70939b4e58a2635be502)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FontUrl {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

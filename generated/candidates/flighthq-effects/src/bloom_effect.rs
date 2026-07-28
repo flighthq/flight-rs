@@ -8,7 +8,7 @@
 
 use flighthq_types::BloomEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub threshold: Option<f64>,
@@ -38,7 +38,7 @@ pub fn compute_bloom_threshold(effect: &BloomEffect) -> f64 {
 }
 
 // Source: upstream/packages/effects/src/bloomEffect.ts:19 (sha256:617321597270316572516fdf538933545aea4fa2d8cd22b426fc4e882207e95f)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateBloomEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -65,6 +65,7 @@ pub fn create_bloom_effect(options: Option<FlightOmitRecord1>) -> BloomEffect {
             intensity: __flight_spread_1.intensity,
             radius: __flight_spread_1.radius,
             passes: __flight_spread_1.passes,
+            ..Default::default()
         }
     };
 }

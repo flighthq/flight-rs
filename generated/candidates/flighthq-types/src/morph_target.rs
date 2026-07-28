@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/MorphTarget.ts:10 (sha256:a188aff29a2a3c80860716f2e22624be4888a384001af449f8290b49adbda94e)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct MorphTarget {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -22,7 +22,7 @@ impl PartialEq for MorphTarget {
 }
 
 // Source: upstream/packages/types/src/MorphTarget.ts:22 (sha256:71b4483bdbf0b4a6fc8b0b13a251315a59fc167b5ba49f7629fa1662b1cd429d)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct MeshMorph {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

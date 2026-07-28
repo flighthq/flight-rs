@@ -9,7 +9,7 @@
 use crate::{GlRenderState, VelocityField};
 
 // Source: upstream/packages/types/src/GlVelocityWriter.ts:11 (sha256:4bb0b95c7721e34f551efe228cd44c568f2c48c8992d41604f80e0f3dc582058)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlVelocityContext {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

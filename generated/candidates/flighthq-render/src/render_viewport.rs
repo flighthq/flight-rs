@@ -9,11 +9,11 @@
 use flighthq_geometry::{create_rectangle, matrix_transform_rectangle};
 use flighthq_node::get_node_world_bounds_rectangle;
 use flighthq_types::{
-    Adjustment, ColorTransform, InteractionSignals, Matrix, Node, NodeInteractionState,
-    NodeSignals, NodeTraitsKey, Rectangle, RenderProxy2D, RenderViewport2D,
+    Adjustment, ColorTransform, InteractionSignals, Matrix, MatrixLike, Node, NodeInteractionState,
+    NodeSignals, NodeTraitsKey, Rectangle, RectangleLike, RenderProxy2D, RenderViewport2D,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -91,8 +91,28 @@ pub fn is_renderable_in_viewport(
     if (render_transform2_d).is_some() {
         matrix_transform_rectangle(
             &mut (*_SCRATCH_TRANSFORMED.lock().unwrap()),
-            &render_transform2_d.as_ref().unwrap(),
-            &(*_SCRATCH_BOUNDS.lock().unwrap()),
+            &{
+                let __flight_source = &(render_transform2_d.as_ref().unwrap());
+                MatrixLike {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    a: __flight_source.a,
+                    b: __flight_source.b,
+                    c: __flight_source.c,
+                    d: __flight_source.d,
+                    tx: __flight_source.tx,
+                    ty: __flight_source.ty,
+                }
+            },
+            &{
+                let __flight_source = &(*_SCRATCH_BOUNDS.lock().unwrap());
+                RectangleLike {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    height: __flight_source.height,
+                    width: __flight_source.width,
+                    x: __flight_source.x,
+                    y: __flight_source.y,
+                }
+            },
         );
         (*_SCRATCH_BOUNDS.lock().unwrap()) = (*_SCRATCH_TRANSFORMED.lock().unwrap()).clone();
     }

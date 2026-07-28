@@ -8,7 +8,7 @@
 
 use flighthq_types::InvertAdjustment;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub intensity: Option<f64>,
@@ -20,7 +20,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/adjustments/src/invertAdjustment.ts:6 (sha256:d16be5a43825d22ec95f513b635f5e8a8f26441525c5b2aee10ed8895edb2ac5)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateInvertAdjustmentRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -49,6 +49,7 @@ pub fn create_invert_adjustment(options: Option<FlightOmitRecord1>) -> InvertAdj
             kind: "InvertAdjustment".to_owned(),
             color_matrix: (color_matrix).clone(),
             intensity: __flight_spread_1.intensity,
+            ..Default::default()
         }
     };
 }

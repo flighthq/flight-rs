@@ -9,7 +9,7 @@
 use crate::{RenderTargetColorSpace, RenderTargetFormat};
 
 // Source: upstream/packages/types/src/GlRenderTarget.ts:12 (sha256:1d7b3079c6b24684ec694b81e6452a67319688ff4d9c5d28b29dd0e49cfab576)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlRenderTarget {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -35,7 +35,7 @@ impl PartialEq for GlRenderTarget {
 }
 
 // Source: upstream/packages/types/src/GlRenderTarget.ts:37 (sha256:2964c155d661a295bf99a92f68807ff0836cebfe176a49edfb6da5fec9a0ef41)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlRenderTargetPool {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

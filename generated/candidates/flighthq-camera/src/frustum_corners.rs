@@ -8,7 +8,7 @@
 
 use crate::get_camera_view_projection_matrix4;
 use flighthq_geometry::{create_matrix4, inverse_matrix4};
-use flighthq_types::{Camera, Matrix4, Vector3Like};
+use flighthq_types::{Camera, Matrix4, Matrix4Like, Vector3Like};
 
 // Source: upstream/packages/camera/src/frustumCorners.ts:22 (sha256:84e8e374cdb6014b2346b9ab7daad1b43da5454de01f39233945b8e260915b39)
 pub fn get_camera_frustum_corners(
@@ -21,10 +21,13 @@ pub fn get_camera_frustum_corners(
         camera,
         aspect,
     );
-    if (!inverse_matrix4(
-        &mut (*__SCRATCH_INVERSE_VP.lock().unwrap()),
-        &(*__SCRATCH_VIEW_PROJECTION.lock().unwrap()),
-    )) {
+    if (!inverse_matrix4(&mut (*__SCRATCH_INVERSE_VP.lock().unwrap()), &{
+        let __flight_source = &(*__SCRATCH_VIEW_PROJECTION.lock().unwrap());
+        Matrix4Like {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            m: (__flight_source.m).clone(),
+        }
+    })) {
         return false;
     }
     let ndc_corners: Vec<Vec<f64>> = vec![

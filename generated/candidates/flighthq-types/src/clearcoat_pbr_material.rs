@@ -11,7 +11,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/ClearcoatPbrMaterial.ts:9 (sha256:5a1b624a30b93da464dee8f67fcb3068ba0d034302bd5e979b853388f2a51369)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ClearcoatPbrMaterial {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -22,6 +22,9 @@ pub struct ClearcoatPbrMaterial {
     pub alpha_type: AlphaType,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub shader_key: String,
+    pub textures: Option<Vec<(String, Texture)>>,
+    pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
     pub clearcoat: f64,
     pub clearcoat_map: Option<Texture>,
     pub clearcoat_normal_map: Option<Texture>,

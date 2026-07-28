@@ -18,7 +18,7 @@ pub type PowerKeepAwakeMode = String;
 pub type PowerThermalState = String;
 
 // Source: upstream/packages/types/src/Power.ts:14 (sha256:44cf3532b9917b2948b45143545b106cfcaccb118916aab9fa59e3e14c59ba03)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct PowerStatus {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -151,7 +151,7 @@ impl PartialEq for PowerBackend {
 }
 
 // Source: upstream/packages/types/src/Power.ts:65 (sha256:0ce15ac4501682cc3cc8f344a70b5bdea9ffa4d3457eff5b32539b81c89fb28e)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Power {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

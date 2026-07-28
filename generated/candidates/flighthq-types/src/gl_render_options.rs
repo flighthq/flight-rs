@@ -9,7 +9,7 @@
 use crate::SceneGraphSyncPolicy;
 
 // Source: upstream/packages/types/src/GlRenderOptions.ts:3 (sha256:7f50935c919761fcfd91bcdfd7b7f034bd1aed9b68274069b5cd5b0ce2fe4c0e)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlRenderOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

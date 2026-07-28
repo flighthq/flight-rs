@@ -9,7 +9,7 @@
 use crate::TextFormat;
 
 // Source: upstream/packages/types/src/TextFormatRange.ts:3 (sha256:2fbda001021463d274256011f3219ce1967f554a26d37e1db2e928d8ba7bfbe1)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextFormatRange {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

@@ -10,7 +10,7 @@
 pub type AnimationTrackValidationCode = String;
 
 // Source: upstream/packages/types/src/AnimationTrackValidationDiagnostic.ts:8 (sha256:f69ccacd70f068caceeaabfaa792b8a1e9ccb6913c87a4cea6f9322515abb218)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AnimationTrackValidationDiagnostic {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

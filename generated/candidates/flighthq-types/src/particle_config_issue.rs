@@ -9,7 +9,7 @@
 use crate::ParticleEmitterConfig;
 
 // Source: upstream/packages/types/src/ParticleConfigIssue.ts:3 (sha256:870f81d1bcca90743407102466af90fae576da09798c1d82c808d7d4aa3c0d0b)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ParticleConfigIssue {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

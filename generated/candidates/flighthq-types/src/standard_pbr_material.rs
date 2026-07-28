@@ -9,7 +9,7 @@
 use crate::{AlphaType, BlendMode, Kind, MaterialAlphaMode, Texture};
 
 // Source: upstream/packages/types/src/StandardPbrMaterial.ts:9 (sha256:e3e8bb5da43cdf61422509a2cf0c16e4467b16f4d54b14e2509c5242740f0f9d)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct StandardPbrMaterialProperties {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -33,7 +33,7 @@ impl PartialEq for StandardPbrMaterialProperties {
 }
 
 // Source: upstream/packages/types/src/StandardPbrMaterial.ts:26 (sha256:75623596e21f7fa8bdb96972f77d790d3fa4eaa91a9a238efce37fd2c87cff25)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct StandardPbrMaterial {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -44,6 +44,9 @@ pub struct StandardPbrMaterial {
     pub alpha_type: AlphaType,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub shader_key: String,
+    pub textures: Option<Vec<(String, Texture)>>,
+    pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
     pub base_color: f64,
     pub base_color_map: Option<Texture>,
     pub emissive: f64,

@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/ParticleBurstSchedule.ts:2 (sha256:642ae888818bc21d880dc1557322e143548aa81a79806debeacc863c79ce20a9)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ParticleBurstEntry {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

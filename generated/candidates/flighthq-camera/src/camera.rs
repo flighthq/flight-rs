@@ -43,7 +43,13 @@ pub fn get_camera_inverse_view_projection_matrix4(
         camera,
         aspect,
     );
-    return inverse_matrix4(out, &(*__SCRATCH_VIEW_PROJECTION.lock().unwrap()));
+    return inverse_matrix4(out, &{
+        let __flight_source = &(*__SCRATCH_VIEW_PROJECTION.lock().unwrap());
+        Matrix4Like {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            m: (__flight_source.m).clone(),
+        }
+    });
 }
 
 // Source: upstream/packages/camera/src/camera.ts:47 (sha256:f297dd8a29f983503919530244ded9bb913147e260aa4575b43161154fff4210)
@@ -59,7 +65,23 @@ pub fn get_camera_view_projection_matrix4(
         camera.near,
         camera.far,
     );
-    multiply_matrix4(out, &(*__SCRATCH_PROJECTION.lock().unwrap()), &camera.view);
+    multiply_matrix4(
+        out,
+        &{
+            let __flight_source = &(*__SCRATCH_PROJECTION.lock().unwrap());
+            Matrix4Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                m: (__flight_source.m).clone(),
+            }
+        },
+        &{
+            let __flight_source = &(camera.view);
+            Matrix4Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                m: (__flight_source.m).clone(),
+            }
+        },
+    );
 }
 
 // Source: upstream/packages/camera/src/camera.ts:54 (sha256:d664784b9b748d6677868774dd9f0fa3b5dfd9b8507c83fda461b16850f92bf5)

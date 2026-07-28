@@ -12,7 +12,7 @@ use crate::{
 use flighthq_textureatlas::create_texture_atlas_region;
 use flighthq_types::TextureAtlas;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub height: Option<f64>,
@@ -37,7 +37,7 @@ impl PartialEq for FlightPartialRecord1 {
 }
 
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasPackerParse.ts:10 (sha256:1be5adb06eca1d693db5886cf34c1358c86298097fc1de5452c9df16d41ba319)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextureAtlasPackerParseOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -50,7 +50,7 @@ impl PartialEq for TextureAtlasPackerParseOptions {
 }
 
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasPackerParse.ts:16 (sha256:4df5333999f12b08cb2e8d5f1e32b88b95d9b5e4adf4ebd566e44463b4afaa99)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct ParseTextureAtlasPackerDocumentRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -77,7 +77,7 @@ pub fn parse_texture_atlas_packer_document(
 }
 
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasPackerParse.ts:28 (sha256:d212a2bf01a3b0aee8c5a0d896d300731f4481c13c36050284ec7ea494d4b17e)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct ParseTextureAtlasPackerJsonRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }

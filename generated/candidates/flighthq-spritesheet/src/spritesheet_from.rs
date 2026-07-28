@@ -16,7 +16,7 @@ use flighthq_types::{
     TextureAtlas, TextureAtlasRegion, Tileset,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub atlas: Option<TextureAtlas>,
@@ -29,7 +29,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub frames: Option<Vec<f64>>,
@@ -46,7 +46,7 @@ impl PartialEq for FlightPartialRecord2 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub id: Option<f64>,
@@ -62,7 +62,7 @@ impl PartialEq for FlightPartialRecord3 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord4 {
     pub __flight_identity: std::sync::Arc<()>,
     pub image: Option<ImageResource>,
@@ -74,7 +74,7 @@ impl PartialEq for FlightPartialRecord4 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord5 {
     pub __flight_identity: std::sync::Arc<()>,
     pub height: Option<f64>,
@@ -99,7 +99,7 @@ impl PartialEq for FlightPartialRecord5 {
 }
 
 // Source: upstream/packages/spritesheet/src/spritesheetFrom.ts:13 (sha256:33ef5d8ef476265f6ac3a7ddd8dca509de6033265694e4ca7d508c9745be29cc)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateSpritesheetFromDataRecord6 {
     __flight_identity: std::sync::Arc<()>,
 }

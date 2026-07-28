@@ -9,7 +9,7 @@
 use crate::WebcamFacingMode;
 
 // Source: upstream/packages/types/src/WebcamDevice.ts:2 (sha256:db3309a70b1f1ba4f37c304d478dba321eaeaaa7171564a8d22535cf9465714b)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct WebcamDevice {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

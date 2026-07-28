@@ -9,7 +9,7 @@
 use crate::{WebcamCapabilityRange, WebcamFacingMode};
 
 // Source: upstream/packages/types/src/WebcamCapabilities.ts:3 (sha256:87fe517940a95013951f6aa994e4805d07583a2bd3485d8dc037c4ff60dfabdd)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct WebcamCapabilities {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

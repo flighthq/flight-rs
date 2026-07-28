@@ -22,7 +22,15 @@ pub fn get_camera_ray_through_bounding_sphere(
     if (!get_camera_world_to_screen(
         &mut (*__SCRATCH_NDC.lock().unwrap()),
         camera,
-        &sphere.center,
+        &{
+            let __flight_source = &(sphere.center);
+            Vector3Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                x: __flight_source.x,
+                y: __flight_source.y,
+                z: __flight_source.z,
+            }
+        },
         aspect,
     )) {
         return false;

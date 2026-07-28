@@ -9,7 +9,7 @@
 use crate::{Sampler, TextureColorSpace, Vector2, VideoResource};
 
 // Source: upstream/packages/types/src/VideoTexture.ts:17 (sha256:7abb03c5c4db4ca292ed0fb8648bea6061f3639e0819d705324002234f974e73)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct VideoTexture {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

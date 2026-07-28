@@ -9,7 +9,7 @@
 use crate::{AmbientLight, DirectionalLight, HemisphereLight, PointLight, SpotLight};
 
 // Source: upstream/packages/types/src/SceneLights.ts:16 (sha256:f5a941b32883e5ab9c05cc0ff252b4a844ac0e2c703c38a00e780617d0bff2e4)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SceneLights {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

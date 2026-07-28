@@ -9,7 +9,7 @@
 use crate::EasingFunction;
 
 // Source: upstream/packages/types/src/TweenOptions.ts:3 (sha256:1a93638bf1b8e99e78d9808d729bfab6dc8c338484d0ba13486298519278bfad)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TweenOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

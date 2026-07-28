@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/RenderStateStats.ts:1 (sha256:e15542a000266526dd230ed0dfaf27250b30220b35c80cdfff0afa61c188a307)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct RenderStateStats {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

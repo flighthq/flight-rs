@@ -6,22 +6,31 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::Vector3;
+use crate::CubeTexture;
+use crate::{Kind, Vector3};
 
 // Source: upstream/packages/types/src/PointLight.ts:6 (sha256:6f39c3e812aacbaba7abb0ed38ec12d38629acd8b6115c8591433f6eb3091057)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct PointLight {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub kind: String,
+    pub kind: Kind,
     pub casts_shadow: bool,
     pub color: f64,
+    pub direction: Vector3,
+    pub inner_cone_cos: f64,
     pub intensity: f64,
     pub normal_bias: f64,
+    pub outer_cone_cos: f64,
     pub pcf_radius: f64,
     pub position: Vector3,
     pub range: f64,
     pub shadow_bias: f64,
+    pub ground_color: f64,
+    pub sky_color: f64,
+    pub environment: Option<CubeTexture>,
+    pub right: Vector3,
+    pub up: Vector3,
 }
 impl PartialEq for PointLight {
     fn eq(&self, other: &Self) -> bool {

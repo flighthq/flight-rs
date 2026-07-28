@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/Vector4.ts:3 (sha256:605be1f5b500314d2373ba437263c088efe4808538765cd886d0a59672a7b948)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Vector4 {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

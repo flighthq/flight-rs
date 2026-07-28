@@ -26,7 +26,7 @@ impl PartialEq for SocketMessage {
 }
 
 // Source: upstream/packages/types/src/Socket.ts:25 (sha256:70feadd1c025c4997d89d136902b97e58ff5a753a73a96fafbd94f1424acf306)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SocketOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -41,7 +41,7 @@ impl PartialEq for SocketOptions {
 }
 
 // Source: upstream/packages/types/src/Socket.ts:33 (sha256:9c3671a4e8bb7d9c85eb6b2ea7483bc8a1163721fc43826ac9a6dd254805e450)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SocketCloseInfo {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -139,7 +139,7 @@ impl PartialEq for SocketBackend {
 }
 
 // Source: upstream/packages/types/src/Socket.ts:81 (sha256:7940256a4633f11cb9216d01300491a24e5452eef9bbc604fa695e6ecda42659)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SocketRuntime {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -155,7 +155,7 @@ impl PartialEq for SocketRuntime {
 }
 
 // Source: upstream/packages/types/src/Socket.ts:92 (sha256:b86755aef7f21cdbdf6fe0f9b1b5da2c48bbf6395e26a4466d9c7d69a153cfe6)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Socket {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

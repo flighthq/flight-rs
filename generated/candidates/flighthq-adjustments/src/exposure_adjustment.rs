@@ -8,7 +8,7 @@
 
 use flighthq_types::ExposureAdjustment;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub exposure: Option<f64>,
@@ -20,7 +20,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/adjustments/src/exposureAdjustment.ts:9 (sha256:a244d4a1c4c5edfabd326c03a596be32c1c8c399f83425daa656837c35eeb160)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateExposureAdjustmentRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -47,6 +47,7 @@ pub fn create_exposure_adjustment(options: Option<FlightOmitRecord1>) -> Exposur
             kind: "ExposureAdjustment".to_owned(),
             color_matrix: color_matrix,
             exposure: __flight_spread_1.exposure,
+            ..Default::default()
         }
     };
 }

@@ -12,7 +12,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/WgpuRenderEffectPipeline.ts:14 (sha256:fd9b6f3f63bcd3f4391e10fb091fcb7444196085bcefc1d301287787dfe3a3e2)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct WgpuRenderEffectContext {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -35,7 +35,7 @@ pub type WgpuRenderEffectRunner = std::sync::Arc<
 >;
 
 // Source: upstream/packages/types/src/WgpuRenderEffectPipeline.ts:32 (sha256:a7039648e61c44e19af4213680f60efe61ad6452ffc0b16c420927d0116c0349)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct WgpuRenderEffectPipeline {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

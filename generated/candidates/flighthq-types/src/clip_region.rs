@@ -9,7 +9,7 @@
 use crate::{PathWinding, Rectangle};
 
 // Source: upstream/packages/types/src/ClipRegion.ts:19 (sha256:f73b90fe6168b429bc413bda84ebe794b96c7345e5da4ab65264c4241d9995b2)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ClipRegion {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

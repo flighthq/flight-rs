@@ -12,13 +12,13 @@ use flighthq_geometry::{create_matrix, multiply_matrix};
 use flighthq_signals::create_signal;
 use flighthq_types::{
     Adjustment, BlendMode, ColorTransform, DisplayObjectClipHooks, InteractionSignals, Material,
-    MaterialData, Matrix, Node, NodeInteractionState, NodeSignals, NodeTraitsKey,
+    MaterialData, Matrix, MatrixLike, Node, NodeInteractionState, NodeSignals, NodeTraitsKey,
     RenderCacheAdapterSignals, RenderProxy2D, RenderState, Renderable, Renderer,
     SceneGraphSyncPolicy,
 };
 pub use flighthq_types::{RENDER_CACHE_KIND, RenderCache, RenderCacheAdapter};
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -54,7 +54,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub allow_smoothing: Option<bool>,
@@ -76,7 +76,7 @@ impl PartialEq for FlightPartialRecord2 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub material: Option<Material>,
@@ -123,11 +123,20 @@ pub fn create_render_cache_adapter(cache: Option<RenderCache>) -> RenderCacheAda
                 node.kind = (RENDER_CACHE_KIND).to_owned();
                 {
                     let __flight_argument_1 = (node.transform2_d).clone();
-                    multiply_matrix(
-                        &mut node.transform2_d,
-                        &__flight_argument_1,
-                        &attached.as_ref().unwrap().transform,
-                    )
+                    multiply_matrix(&mut node.transform2_d, &__flight_argument_1, &{
+                        let __flight_source = &(attached.as_ref().unwrap().transform);
+                        MatrixLike {
+                            __flight_identity: std::sync::Arc::clone(
+                                &__flight_source.__flight_identity,
+                            ),
+                            a: __flight_source.a,
+                            b: __flight_source.b,
+                            c: __flight_source.c,
+                            d: __flight_source.d,
+                            tx: __flight_source.tx,
+                            ty: __flight_source.ty,
+                        }
+                    })
                 };
                 return Some(false);
             }
@@ -150,7 +159,7 @@ pub fn enable_render_cache_adapter_signals(adapter: &mut RenderCacheAdapter) -> 
 // Source: upstream/packages/render/src/renderCache.ts:60 (sha256:ea102352571a2280cd139e663503229090035a2ae044f000616d9aa2b2a7d249)
 pub fn get_render_proxy_cache(state: &RenderState, source: &Renderable) -> Option<RenderCache> {
     let adapter = get_render_proxy_adapter(state, source);
-    return if is_render_cache_adapter((adapter).clone().unwrap()) {
+    return if is_render_cache_adapter(((adapter).clone().unwrap()).clone()) {
         Some(adapter.as_ref().unwrap().cache)
     } else {
         None
@@ -196,7 +205,7 @@ pub fn use_render_cache(
     cache: &RenderCache,
 ) -> RenderCacheAdapter {
     let mut existing = get_render_proxy_adapter(state, source);
-    if is_render_cache_adapter((existing).clone().unwrap()) {
+    if is_render_cache_adapter(((existing).clone().unwrap()).clone()) {
         existing.as_mut().unwrap().cache = cache;
         return (existing).clone().unwrap();
     }

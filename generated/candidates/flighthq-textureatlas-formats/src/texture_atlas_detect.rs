@@ -15,7 +15,7 @@ use flighthq_types::{
 };
 
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasDetect.ts:22 (sha256:7a16380baaf152b449e628d715865a8599a7301ba68ffdbd0d3f1c8a71a9cf4c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct DetectTextureAtlasFormatRecord1 {
     __flight_identity: std::sync::Arc<()>,
     frames: Option<crate::OpaqueHostValue>,
@@ -132,7 +132,7 @@ fn first_frame(frames: crate::OpaqueHostValue) -> crate::OpaqueHostValue {
 }
 
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasDetect.ts:61 (sha256:53c600dbcc30e9bd5e3197373083463723e0c0d483151238ec3eca7036356bfd)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct HasFrameDurationRecord1 {
     __flight_identity: std::sync::Arc<()>,
     duration: Option<crate::OpaqueHostValue>,
@@ -153,17 +153,14 @@ fn has_frame_duration(frames: crate::OpaqueHostValue) -> bool {
             crate::OpaqueHostValue::Number(_) => "number",
             crate::OpaqueHostValue::String(_) => "string",
         } == "object"))
-        && (match &((frame.duration).clone()) {
-            crate::OpaqueHostValue::Undefined => "undefined",
-            crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
-            crate::OpaqueHostValue::Bool(_) => "boolean",
-            crate::OpaqueHostValue::Number(_) => "number",
-            crate::OpaqueHostValue::String(_) => "string",
-        } == "number");
+        && (((frame.duration).clone())
+            .as_ref()
+            .map_or("undefined", |_| "object")
+            == "number");
 }
 
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasDetect.ts:66 (sha256:cc28b45ffa394bc305f890b8dbd710e9831f07abcdb6c59b9aa375b228736bcf)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct ReadMetaAppRecord1 {
     __flight_identity: std::sync::Arc<()>,
     app: Option<crate::OpaqueHostValue>,
@@ -187,14 +184,7 @@ fn read_meta_app(meta: crate::OpaqueHostValue) -> String {
         return "".to_owned();
     }
     let app = (meta.app).clone();
-    return if (match &(app) {
-        crate::OpaqueHostValue::Undefined => "undefined",
-        crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
-        crate::OpaqueHostValue::Bool(_) => "boolean",
-        crate::OpaqueHostValue::Number(_) => "number",
-        crate::OpaqueHostValue::String(_) => "string",
-    } == "string")
-    {
+    return if ((app).as_ref().map_or("undefined", |_| "object") == "string") {
         (app).clone().unwrap()
     } else {
         "".to_owned()

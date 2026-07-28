@@ -14,7 +14,7 @@ use flighthq_types::{
     Skeleton3DValidationDiagnostic, Transform3DNode,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -94,19 +94,30 @@ pub fn compute_skeleton3_d_joint_matrices(skeleton: &mut Skeleton3D) -> () {
             }
             multiply_matrix4(
                 &mut (*_RESULT.lock().unwrap()),
-                &get_node_world_matrix4(&Transform3DNode {
-                    __flight_identity: std::sync::Arc::clone(
-                        &(skeleton.joints[j as usize]).__flight_identity,
-                    ),
-                    data: ((skeleton.joints[j as usize]).data).clone(),
-                    enabled: (skeleton.joints[j as usize]).enabled,
-                    kind: ((skeleton.joints[j as usize]).kind).clone(),
-                    name: ((skeleton.joints[j as usize]).name).clone(),
-                    position: ((skeleton.joints[j as usize]).position).clone(),
-                    rotation: ((skeleton.joints[j as usize]).rotation).clone(),
-                    scale: ((skeleton.joints[j as usize]).scale).clone(),
+                &get_node_world_matrix4(&{
+                    let __flight_source = &(skeleton.joints[j as usize]);
+                    Transform3DNode {
+                        __flight_identity: std::sync::Arc::clone(
+                            &__flight_source.__flight_identity,
+                        ),
+                        data: (__flight_source.data).clone(),
+                        enabled: __flight_source.enabled,
+                        kind: (__flight_source.kind).clone(),
+                        name: (__flight_source.name).clone(),
+                        position: (__flight_source.position).clone(),
+                        rotation: (__flight_source.rotation).clone(),
+                        scale: (__flight_source.scale).clone(),
+                    }
                 }),
-                &(*_INV_BIND.lock().unwrap()),
+                &{
+                    let __flight_source = &(*_INV_BIND.lock().unwrap());
+                    Matrix4Like {
+                        __flight_identity: std::sync::Arc::clone(
+                            &__flight_source.__flight_identity,
+                        ),
+                        m: (__flight_source.m).clone(),
+                    }
+                },
             );
             {
                 let __flight_offset = (base) as usize;
@@ -228,17 +239,18 @@ pub fn get_skeleton3_d_joint_world_matrix(
     }
     copy_matrix4(
         out,
-        &get_node_world_matrix4(&Transform3DNode {
-            __flight_identity: std::sync::Arc::clone(
-                &(skeleton.joints[joint_index as usize]).__flight_identity,
-            ),
-            data: ((skeleton.joints[joint_index as usize]).data).clone(),
-            enabled: (skeleton.joints[joint_index as usize]).enabled,
-            kind: ((skeleton.joints[joint_index as usize]).kind).clone(),
-            name: ((skeleton.joints[joint_index as usize]).name).clone(),
-            position: ((skeleton.joints[joint_index as usize]).position).clone(),
-            rotation: ((skeleton.joints[joint_index as usize]).rotation).clone(),
-            scale: ((skeleton.joints[joint_index as usize]).scale).clone(),
+        &get_node_world_matrix4(&{
+            let __flight_source = &(skeleton.joints[joint_index as usize]);
+            Transform3DNode {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                data: (__flight_source.data).clone(),
+                enabled: __flight_source.enabled,
+                kind: (__flight_source.kind).clone(),
+                name: (__flight_source.name).clone(),
+                position: (__flight_source.position).clone(),
+                rotation: (__flight_source.rotation).clone(),
+                scale: (__flight_source.scale).clone(),
+            }
         }),
     );
     return true;
@@ -264,17 +276,20 @@ pub fn set_skeleton3_d_bind_pose(skeleton: &mut Skeleton3D) -> () {
         while (j < (skeleton.joints.len() as f64)) {
             inverse_matrix4(
                 &mut (*_RESULT.lock().unwrap()),
-                &get_node_world_matrix4(&Transform3DNode {
-                    __flight_identity: std::sync::Arc::clone(
-                        &(skeleton.joints[j as usize]).__flight_identity,
-                    ),
-                    data: ((skeleton.joints[j as usize]).data).clone(),
-                    enabled: (skeleton.joints[j as usize]).enabled,
-                    kind: ((skeleton.joints[j as usize]).kind).clone(),
-                    name: ((skeleton.joints[j as usize]).name).clone(),
-                    position: ((skeleton.joints[j as usize]).position).clone(),
-                    rotation: ((skeleton.joints[j as usize]).rotation).clone(),
-                    scale: ((skeleton.joints[j as usize]).scale).clone(),
+                &get_node_world_matrix4(&{
+                    let __flight_source = &(skeleton.joints[j as usize]);
+                    Transform3DNode {
+                        __flight_identity: std::sync::Arc::clone(
+                            &__flight_source.__flight_identity,
+                        ),
+                        data: (__flight_source.data).clone(),
+                        enabled: __flight_source.enabled,
+                        kind: (__flight_source.kind).clone(),
+                        name: (__flight_source.name).clone(),
+                        position: (__flight_source.position).clone(),
+                        rotation: (__flight_source.rotation).clone(),
+                        scale: (__flight_source.scale).clone(),
+                    }
                 }),
             );
             {

@@ -51,7 +51,7 @@ fn __flight_pad_start(value: String, width: f64, pad: String) -> String {
 }
 
 // Source: upstream/packages/render/src/renderColor.ts:3 (sha256:d8c772704d055919d21675d74b973cd67f49bff35e7cffe13636885aca00e00c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct SetRenderStateBackgroundColorRecord1 {
     __flight_identity: std::sync::Arc<()>,
     background_color: f64,
@@ -65,7 +65,15 @@ impl PartialEq for SetRenderStateBackgroundColorRecord1 {
 }
 
 pub fn set_render_state_background_color(state: &mut RenderState, color: f64) -> () {
-    let mut _state = state;
+    let mut _state = {
+        let __flight_source = &((*state).clone());
+        SetRenderStateBackgroundColorRecord1 {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            background_color: __flight_source.background_color,
+            background_color_rgba: (__flight_source.background_color_rgba).clone(),
+            background_color_string: (__flight_source.background_color_string).clone(),
+        }
+    };
     let uint = (__flight_js_to_u32(color) >> (__flight_js_to_u32(0.0_f64) & 31)) as f64;
     _state.background_color = uint;
     let r = (__flight_js_to_u32(

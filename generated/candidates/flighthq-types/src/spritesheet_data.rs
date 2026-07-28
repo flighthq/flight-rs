@@ -9,7 +9,7 @@
 use crate::{SpritesheetAnimationData, SpritesheetFrameData};
 
 // Source: upstream/packages/types/src/SpritesheetData.ts:4 (sha256:f78005b7c0e199cd815a4d375ae51320d35863adf25ef1fc9ed4dbe445066bfe)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SpritesheetData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

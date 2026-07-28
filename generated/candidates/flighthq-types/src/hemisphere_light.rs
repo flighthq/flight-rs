@@ -6,15 +6,31 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
+use crate::Kind;
+use crate::{CubeTexture, Vector3};
+
 // Source: upstream/packages/types/src/HemisphereLight.ts:5 (sha256:68701c0cc28dd9805f8d8fb3d66e5ef450aebc299ed1638873ae1bef483dc713)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct HemisphereLight {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub kind: String,
-    pub ground_color: f64,
+    pub kind: Kind,
+    pub casts_shadow: bool,
+    pub color: f64,
+    pub direction: Vector3,
+    pub inner_cone_cos: f64,
     pub intensity: f64,
+    pub normal_bias: f64,
+    pub outer_cone_cos: f64,
+    pub pcf_radius: f64,
+    pub position: Vector3,
+    pub range: f64,
+    pub shadow_bias: f64,
+    pub ground_color: f64,
     pub sky_color: f64,
+    pub environment: Option<CubeTexture>,
+    pub right: Vector3,
+    pub up: Vector3,
 }
 impl PartialEq for HemisphereLight {
     fn eq(&self, other: &Self) -> bool {

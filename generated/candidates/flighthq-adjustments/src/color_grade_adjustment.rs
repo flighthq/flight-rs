@@ -21,7 +21,7 @@ fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub exposure: Option<f64>,
@@ -41,7 +41,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/adjustments/src/colorGradeAdjustment.ts:9 (sha256:f8e6162f7dd7cca9b62f96e74d3925cc4e1e81bb8e378418ba53b91482587f1b)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateColorGradeAdjustmentRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }

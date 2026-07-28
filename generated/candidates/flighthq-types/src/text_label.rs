@@ -14,7 +14,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/TextLabel.ts:7 (sha256:3f6682b750d0898585b3453f5d4b9d32cacb0721f0e3e4ce087020840c0ef768)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextLabelData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -88,7 +88,7 @@ impl PartialEq for TextLabelRuntime {
 }
 
 // Source: upstream/packages/types/src/TextLabel.ts:31 (sha256:6e6f193698f819105eae685200bdded28eb20248352584c28b2b560109d65e09)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextLabel {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

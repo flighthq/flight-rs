@@ -34,7 +34,7 @@ fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha_multiplier: Option<f64>,
@@ -52,7 +52,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -102,7 +102,7 @@ impl PartialEq for FlightPartialRecord2 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -138,7 +138,7 @@ impl PartialEq for FlightPartialRecord3 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord4 {
     pub __flight_identity: std::sync::Arc<()>,
     pub atlas: Option<TextureAtlas>,
@@ -154,7 +154,7 @@ impl PartialEq for FlightPartialRecord4 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord5 {
     pub __flight_identity: std::sync::Arc<()>,
     pub image: Option<ImageResource>,
@@ -166,7 +166,7 @@ impl PartialEq for FlightPartialRecord5 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord6 {
     pub __flight_identity: std::sync::Arc<()>,
     pub height: Option<f64>,
@@ -190,11 +190,12 @@ impl PartialEq for FlightPartialRecord6 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord7 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<AdjustmentKind>,
     pub color_matrix: Option<Vec<f64>>,
+    pub color_transform: Option<ColorTransform>,
 }
 impl PartialEq for FlightPartialRecord7 {
     fn eq(&self, other: &Self) -> bool {
@@ -202,7 +203,7 @@ impl PartialEq for FlightPartialRecord7 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord8 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha: Option<f64>,
@@ -214,7 +215,7 @@ impl PartialEq for FlightPartialRecord8 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord9 {
     pub __flight_identity: std::sync::Arc<()>,
     pub blend_mode: Option<BlendMode>,
@@ -225,7 +226,7 @@ impl PartialEq for FlightPartialRecord9 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord10 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -244,7 +245,7 @@ impl PartialEq for FlightPartialRecord10 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord11 {
     pub __flight_identity: std::sync::Arc<()>,
 }
@@ -254,7 +255,7 @@ impl PartialEq for FlightPartialRecord11 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord12 {
     pub __flight_identity: std::sync::Arc<()>,
     pub clip: Option<ClipRegion>,
@@ -265,7 +266,7 @@ impl PartialEq for FlightPartialRecord12 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord13 {
     pub __flight_identity: std::sync::Arc<()>,
     pub material: Option<Material>,
@@ -277,7 +278,7 @@ impl PartialEq for FlightPartialRecord13 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord14 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -293,7 +294,7 @@ impl PartialEq for FlightPartialRecord14 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord15 {
     pub __flight_identity: std::sync::Arc<()>,
     pub pivot_x: Option<f64>,
@@ -701,7 +702,10 @@ fn layout_bitmap_text_lines(
     data: &BitmapTextData,
 ) -> Vec<BitmapTextLine> {
     let mut lines: Vec<BitmapTextLine> = vec![];
-    let paragraphs = (data.text.split)("\n");
+    let paragraphs = ((data.text).clone())
+        .split("\n".to_owned().as_str())
+        .map(|part| part.to_owned())
+        .collect::<Vec<_>>();
     {
         let mut pi = 0.0_f64;
         while (pi < (paragraphs.len() as f64)) {
@@ -770,7 +774,7 @@ fn set_empty_rectangle(out: &mut Rectangle) -> () {
 }
 
 // Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:257 (sha256:addde9091e717fe715e2337f95e4c64b535673b79412c3fccda76136eb05f90a)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct BitmapTextGlyph {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -785,7 +789,7 @@ impl PartialEq for BitmapTextGlyph {
 }
 
 // Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:265 (sha256:f6f1145192267bf5628b287995e2a28d9e834b5c7c96a7c9d16b90e38ccf38eb)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct BitmapTextPageBatch {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -800,7 +804,7 @@ impl PartialEq for BitmapTextPageBatch {
 }
 
 // Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:273 (sha256:e16d053098a238a17b8aff009c25ee0710c6f3819a3a825092cf06b4ed9783c0)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct BitmapTextLine {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -816,7 +820,7 @@ impl PartialEq for BitmapTextLine {
 }
 
 // Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:281 (sha256:2dafecf5ba6b88df3930aa9c085040985a8191db73398e385aacc144cc6698c4)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct BitmapTextToken {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -830,7 +834,7 @@ impl PartialEq for BitmapTextToken {
 }
 
 // Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:287 (sha256:3401bd7270b995d95bd0883e9b0104675fac441bbb5d1b368e2ff25dc110b1b9)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct BitmapTextWord {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

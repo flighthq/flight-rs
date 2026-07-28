@@ -8,7 +8,7 @@
 
 use flighthq_types::{BevelEffect, EffectSourceMode};
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub angle: Option<f64>,
@@ -31,7 +31,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/bevelEffect.ts:4 (sha256:14b78e6e86a452b7dd16a5c6bb5194e2f2d6a40a72cc2350199439881dc149e2)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateBevelEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -74,6 +74,7 @@ pub fn create_bevel_effect(options: Option<FlightOmitRecord1>) -> BevelEffect {
             shadow_color: __flight_spread_1.shadow_color,
             source_mode: (__flight_spread_1.source_mode).clone(),
             strength: __flight_spread_1.strength,
+            ..Default::default()
         }
     };
 }

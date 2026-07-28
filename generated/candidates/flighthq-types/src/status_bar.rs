@@ -18,7 +18,7 @@ pub type StatusBarAnimation = String;
 pub type StatusBarStyleEntryHandle = f64;
 
 // Source: upstream/packages/types/src/StatusBar.ts:18 (sha256:baf105696afc3a95b25b0bb94d2213bb3e4ae1f2e12440ec8fe44751dc5f0ce3)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct StatusBarInfo {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -35,7 +35,7 @@ impl PartialEq for StatusBarInfo {
 }
 
 // Source: upstream/packages/types/src/StatusBar.ts:31 (sha256:cb0442851b0b549082926c288dde8cd8d17ba423dbd107e50192db91817e5273)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct StatusBarStyleEntry {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

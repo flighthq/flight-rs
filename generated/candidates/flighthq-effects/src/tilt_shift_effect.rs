@@ -8,7 +8,7 @@
 
 use flighthq_types::TiltShiftEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub center: Option<f64>,
@@ -22,7 +22,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/tiltShiftEffect.ts:3 (sha256:2ff62cd921c5f37d54bffaed6b7d2015ef8107f8a5f8ca2c084ded52800c023d)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateTiltShiftEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -47,6 +47,7 @@ pub fn create_tilt_shift_effect(options: Option<FlightOmitRecord1>) -> TiltShift
             center: __flight_spread_1.center,
             width: __flight_spread_1.width,
             blur: __flight_spread_1.blur,
+            ..Default::default()
         }
     };
 }

@@ -21,6 +21,39 @@ fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
 }
 
+#[derive(Clone, Default)]
+pub struct SharedStructuralRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub time: f64,
+}
+impl PartialEq for SharedStructuralRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct SharedStructuralRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub f: f64,
+    pub i: f64,
+}
+impl PartialEq for SharedStructuralRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct SharedStructuralRecord3 {
+    pub __flight_identity: std::sync::Arc<()>,
+}
+impl PartialEq for SharedStructuralRecord3 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 // Source: upstream/packages/particles/src/curve.ts:6 (sha256:783ff7a690c8c841b486c92aa530da277279f483891265bc824bbb646fbf97ce)
 pub fn build_particle_color_curve(
     f: &mut impl FnMut(f64) -> Vec<f64>,
@@ -405,40 +438,17 @@ fn interp_keyframe(sorted: &Vec<CurveKeyframe>, t: f64) -> f64 {
 }
 
 // Source: upstream/packages/particles/src/curve.ts:172 (sha256:51e0bc24bd5b3d4de372d255864ad4cd7140fbe32de9a647dccf4bb261bb0ae1)
-#[derive(Clone)]
-struct LocateKeyframeRecord1 {
-    __flight_identity: std::sync::Arc<()>,
-    time: f64,
-}
-impl PartialEq for LocateKeyframeRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone)]
-struct LocateKeyframeRecord2 {
-    __flight_identity: std::sync::Arc<()>,
-    f: f64,
-    i: f64,
-}
-impl PartialEq for LocateKeyframeRecord2 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-fn locate_keyframe(sorted: &Vec<LocateKeyframeRecord1>, t: f64) -> LocateKeyframeRecord2 {
+fn locate_keyframe(sorted: &Vec<SharedStructuralRecord1>, t: f64) -> SharedStructuralRecord2 {
     let n = (sorted.len() as f64);
     if (t <= sorted[0.0_f64 as usize].time) {
-        return LocateKeyframeRecord2 {
+        return SharedStructuralRecord2 {
             __flight_identity: std::sync::Arc::new(()),
             f: 0.0_f64,
             i: 0.0_f64,
         };
     }
     if (t >= sorted[(n - 1.0_f64) as usize].time) {
-        return LocateKeyframeRecord2 {
+        return SharedStructuralRecord2 {
             __flight_identity: std::sync::Arc::new(()),
             f: 0.0_f64,
             i: (n - 1.0_f64),
@@ -451,7 +461,7 @@ fn locate_keyframe(sorted: &Vec<LocateKeyframeRecord1>, t: f64) -> LocateKeyfram
             let t1 = sorted[(i + 1.0_f64) as usize].time;
             if (t <= t1) {
                 let span = (t1 - t0);
-                return LocateKeyframeRecord2 {
+                return SharedStructuralRecord2 {
                     __flight_identity: std::sync::Arc::new(()),
                     f: if (span <= 0.0_f64) {
                         0.0_f64
@@ -467,7 +477,7 @@ fn locate_keyframe(sorted: &Vec<LocateKeyframeRecord1>, t: f64) -> LocateKeyfram
             };
         }
     }
-    return LocateKeyframeRecord2 {
+    return SharedStructuralRecord2 {
         __flight_identity: std::sync::Arc::new(()),
         f: 0.0_f64,
         i: (n - 1.0_f64),
@@ -507,18 +517,8 @@ fn rgb_to_hsv(r: f64, g: f64, b: f64) -> Vec<f64> {
 }
 
 // Source: upstream/packages/particles/src/curve.ts:205 (sha256:3452760874a3ff7d3f0fcc1950e46641661c7dd60e111240f3559e0ebb0357ff)
-#[derive(Clone)]
-struct SampleParticleColorCurveRecord1 {
-    __flight_identity: std::sync::Arc<()>,
-}
-impl PartialEq for SampleParticleColorCurveRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
 pub fn sample_particle_color_curve(
-    out: &mut SampleParticleColorCurveRecord1,
+    out: &mut SharedStructuralRecord3,
     offset: f64,
     lut: &ParticleCurve,
     t: f64,

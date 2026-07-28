@@ -12,7 +12,7 @@ use crate::ScreenInfo;
 pub type ScreenChangeKind = String;
 
 // Source: upstream/packages/types/src/ScreenChangeEvent.ts:9 (sha256:0df84ed31b7ce6e6a43f4157117de2810ac834a62a1ed693d18653775a3ddabb)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ScreenChangedMetrics {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -28,7 +28,7 @@ impl PartialEq for ScreenChangedMetrics {
 }
 
 // Source: upstream/packages/types/src/ScreenChangeEvent.ts:18 (sha256:6e7d0cde46a0a46d22bbb899faccdde996f0a657c7ed717975ec556572ac03c4)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ScreenChangeEvent {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

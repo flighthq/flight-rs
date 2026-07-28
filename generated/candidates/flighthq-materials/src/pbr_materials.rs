@@ -28,7 +28,7 @@ fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<Kind>,
@@ -57,7 +57,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<Kind>,
@@ -86,7 +86,7 @@ impl PartialEq for FlightPartialRecord2 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub base_color: Option<f64>,
@@ -192,7 +192,7 @@ pub fn create_standard_pbr_material(opts: Option<FlightPartialRecord2>) -> Stand
 }
 
 // Source: upstream/packages/materials/src/pbrMaterials.ts:113 (sha256:ffc83ec68e9fe692c7c4c9719572cc5fa67771f90a9fe42f2b02caf9f0584bcb)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateStandardPbrMaterialPropertiesRecord4 {
     __flight_identity: std::sync::Arc<()>,
 }

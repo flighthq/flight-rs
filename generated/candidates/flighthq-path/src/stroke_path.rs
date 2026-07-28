@@ -23,6 +23,18 @@ fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
 }
 
+#[derive(Clone, Default)]
+pub struct SharedStructuralRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub closed: bool,
+    pub points: Vec<f64>,
+}
+impl PartialEq for SharedStructuralRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 // Source: upstream/packages/path/src/strokePath.ts:18 (sha256:ff09778339802ad40f5eb6181a9146b87ef39a3da709c527b12088488334a2f5)
 pub fn stroke_path(path: &Path, style: &StrokeStyle, tolerance: Option<f64>) -> Path {
     let tolerance = tolerance.unwrap_or(0.25_f64);
@@ -38,7 +50,7 @@ pub fn stroke_path(path: &Path, style: &StrokeStyle, tolerance: Option<f64>) -> 
         winding: "nonZero".to_owned(),
     };
     let subpaths = decode_subpaths(path, tolerance);
-    let dash = if ((style.dash).clone()).is_some()
+    let dash = if (((style.dash).clone()).is_some())
         && ((style.dash.as_ref().unwrap().len() as f64) > 0.0_f64)
     {
         (style.dash).clone()
@@ -391,13 +403,13 @@ fn apply_dash(pts: &Vec<f64>, closed: bool, dash: &Vec<f64>, dash_offset: f64) -
 }
 
 // Source: upstream/packages/path/src/strokePath.ts:274 (sha256:24d231d16c218a934d68588524c7ccd6681ba4d45f152a41cb192346ba7811bd)
-#[derive(Clone)]
-struct DecodeSubpathsRecord1 {
+#[derive(Clone, Default)]
+struct DecodeSubpathsRecord2 {
     __flight_identity: std::sync::Arc<()>,
     points: Vec<f64>,
     closed: bool,
 }
-impl PartialEq for DecodeSubpathsRecord1 {
+impl PartialEq for DecodeSubpathsRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -911,7 +923,7 @@ fn stroke_subpath(
 }
 
 // Source: upstream/packages/path/src/strokePath.ts:539 (sha256:b575a87005f395f30ed6c04a51e8b7bdc6a918aec1b8569ac6540de3723a24a0)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct DashSegment {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -925,7 +937,7 @@ impl PartialEq for DashSegment {
 }
 
 // Source: upstream/packages/path/src/strokePath.ts:544 (sha256:f821d1e4b6316a1842811cb358ebce36ac387ed35affddd0adcdcb253ed2b79b)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct StrokeSubpath {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

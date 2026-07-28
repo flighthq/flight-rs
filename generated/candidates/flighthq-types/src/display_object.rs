@@ -13,7 +13,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/DisplayObject.ts:9 (sha256:6a8c06bc00834ebd8b57775a5f59f472af7b5ecf7f98b1939235b0cca1a66dc4)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct DisplayObject {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -44,7 +44,7 @@ impl PartialEq for DisplayObject {
 }
 
 // Source: upstream/packages/types/src/DisplayObject.ts:13 (sha256:ede92710ddf9f1e1a1e8a29eaca2c42e699bd220631531bdcb4363f81ef9a95b)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct DisplayObjectTraits {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -75,7 +75,7 @@ impl PartialEq for DisplayObjectTraits {
 }
 
 // Source: upstream/packages/types/src/DisplayObject.ts:17 (sha256:af6b3e6bcc2bd2d24e7d294305d34cfb623314545885e763f3205e2be1eabe46)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct DisplayObjectData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

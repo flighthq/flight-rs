@@ -71,8 +71,8 @@ pub fn update_particle_objects(
     let emitter_y = (options.as_ref().and_then(|value| value.emitter_y)).unwrap_or(f64::NAN);
     let mut emitter_vel_x = 0.0_f64;
     let mut emitter_vel_y = 0.0_f64;
-    if ((config.velocity_inheritance != 0.0_f64) && (!crate::host_value::<()>("host.call")))
-        && (!crate::host_value::<()>("host.call"))
+    if ((config.velocity_inheritance != 0.0_f64) && (!(emitter_x).is_nan()))
+        && (!(state.prev_x).is_nan())
     {
         emitter_vel_x = ((emitter_x - state.prev_x) / delta_time);
         emitter_vel_y = ((emitter_y - state.prev_y) / delta_time);
@@ -310,7 +310,7 @@ pub fn update_particle_objects(
             }
         }
     }
-    if (!crate::host_value::<()>("host.call")) {
+    if (!(emitter_x).is_nan()) {
         state.prev_x = emitter_x;
         state.prev_y = emitter_y;
     }

@@ -49,7 +49,7 @@ impl PartialEq for StorageBackend {
 }
 
 // Source: upstream/packages/types/src/Storage.ts:22 (sha256:02a0e1a37682e44dd655893df32418d5d3b9e6f907cfd7590a289256a8b7bae8)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct StorageChange {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -79,7 +79,7 @@ impl PartialEq for StorageMigration {
 }
 
 // Source: upstream/packages/types/src/Storage.ts:37 (sha256:7a96a1d7dd351cf083f20376c7f9e44aa41c631acd3d360ed8b32b29b141895d)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct StorageNamespace {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -92,7 +92,7 @@ impl PartialEq for StorageNamespace {
 }
 
 // Source: upstream/packages/types/src/Storage.ts:42 (sha256:1d2171ddf6a3843fac1e2d252f811586bcc5cea0a4a63ff26dca808185bf3ad4)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct StorageQuota {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

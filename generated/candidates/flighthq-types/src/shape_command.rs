@@ -30,7 +30,7 @@ pub type LineScaleMode = String;
 pub type SpreadMethod = String;
 
 // Source: upstream/packages/types/src/ShapeCommand.ts:19 (sha256:22fb7d1d443aab0e1b9a6696c74b267d14950c785bf7e614378a029c5dac6373)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ShapeCommandRegistry {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

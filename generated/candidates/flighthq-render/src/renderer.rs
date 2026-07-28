@@ -20,7 +20,7 @@ fn __flight_js_to_u32(value: f64) -> u32 {
     value.trunc().rem_euclid(4294967296.0_f64) as u32
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub allow_smoothing: Option<bool>,
@@ -44,7 +44,7 @@ impl PartialEq for FlightPartialRecord1 {
 
 // Source: upstream/packages/render/src/renderer.ts:7 (sha256:0599b7b2f4212b2aaf68f71cac956d3fa39b2ed817e3c6482ead6f4a79119606)
 pub fn copy_all_renderers_from_render_state(target: &mut RenderState, source: &RenderState) -> () {
-    copy_renderers_from_render_state(target, source);
+    copy_renderers_from_render_state((target).clone(), source);
     if ((source.display_object_clip_hooks).clone()).is_some() {
         target.display_object_clip_hooks = (source.display_object_clip_hooks).clone();
     }
@@ -61,7 +61,7 @@ pub fn copy_renderers_from_render_state(target: RenderState, source: &RenderStat
         std::sync::Mutex::new(Box::new({
             let target = target.clone();
             move |renderer: crate::OpaqueHostValue, kind: crate::OpaqueHostValue| -> () {
-                register_renderer(&target, kind, &renderer);
+                register_renderer(&target, (kind).clone(), &renderer);
             }
         })
             as Box<

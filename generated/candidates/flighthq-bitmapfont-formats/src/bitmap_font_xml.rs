@@ -26,7 +26,7 @@ pub fn parse_bitmap_font_xml(
         return None;
     }
     return build_bitmap_font_from_record(
-        &record.as_ref().unwrap(),
+        (record.as_ref().unwrap()).clone(),
         Some(((options).clone().unwrap()).clone()),
     );
 }

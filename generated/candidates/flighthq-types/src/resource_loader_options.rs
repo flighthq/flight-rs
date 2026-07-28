@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/ResourceLoaderOptions.ts:1 (sha256:0dd43a3c03529479515b41775d119298f6b8fef74dc6c89fdafd16cc4c5417cc)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ResourceLoaderOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

@@ -8,7 +8,7 @@
 
 use flighthq_types::SsrEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub max_distance: Option<f64>,
@@ -22,7 +22,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/ssrEffect.ts:3 (sha256:30717c7fd0026c3b42818f92458ad6af6bfa29454faf42e1fced442ccd6580f6)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateSsrEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -47,6 +47,7 @@ pub fn create_ssr_effect(options: Option<FlightOmitRecord1>) -> SsrEffect {
             max_distance: __flight_spread_1.max_distance,
             resolution: __flight_spread_1.resolution,
             steps: __flight_spread_1.steps,
+            ..Default::default()
         }
     };
 }

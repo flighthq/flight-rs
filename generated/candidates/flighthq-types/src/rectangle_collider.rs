@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/RectangleCollider.ts:3 (sha256:d04abecd3e545664430a4e1898ff017dce37cf27a8bcb56a28856a9919551801)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct RectangleCollider {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

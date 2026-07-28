@@ -13,7 +13,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/NativeText.ts:14 (sha256:f078ff7b5a1fba1d9be2cabd7ecea006f95793b8270319a759825bed6f622e85)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct NativeTextStyle {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -32,7 +32,7 @@ impl PartialEq for NativeTextStyle {
 }
 
 // Source: upstream/packages/types/src/NativeText.ts:24 (sha256:323707e2b26e1934faec2551d07b78cd93edc36d497ac9e4c967aaa9fe11128b)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct NativeTextData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -102,7 +102,7 @@ impl PartialEq for NativeTextRuntime {
 }
 
 // Source: upstream/packages/types/src/NativeText.ts:49 (sha256:63fb798185b5c8be09651c9ed151fffceaa74a6e90ced42503e237507fe47ca0)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct NativeText {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

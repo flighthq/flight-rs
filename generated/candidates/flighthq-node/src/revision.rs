@@ -20,7 +20,7 @@ fn __flight_js_to_u32(value: f64) -> u32 {
     value.trunc().rem_euclid(4294967296.0_f64) as u32
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,

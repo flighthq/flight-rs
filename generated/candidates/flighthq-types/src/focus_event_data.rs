@@ -9,7 +9,7 @@
 use crate::NodeAny;
 
 // Source: upstream/packages/types/src/FocusEventData.ts:13 (sha256:4023679f50e6d11b765f0721c4d05d8ce680fcc4c4ae59be897eed87facd55e0)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FocusEventData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

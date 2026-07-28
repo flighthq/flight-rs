@@ -8,7 +8,7 @@
 
 use flighthq_types::{InnerEffectSourceMode, InnerShadowEffect};
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha: Option<f64>,
@@ -28,7 +28,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/innerShadowEffect.ts:4 (sha256:0fb9b1b51145317d567bd88695272e999cc3a21df22ed8d3c1868eb3615d8fb7)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateInnerShadowEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -65,6 +65,7 @@ pub fn create_inner_shadow_effect(options: Option<FlightOmitRecord1>) -> InnerSh
             quality: __flight_spread_1.quality,
             source_mode: (__flight_spread_1.source_mode).clone(),
             strength: __flight_spread_1.strength,
+            ..Default::default()
         }
     };
 }

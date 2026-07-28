@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/DragForce.ts:1 (sha256:0c7e83c50022ff2886f0d7f4b6a1dc9bd2abbc11a4087087bf9640f29669e99c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct DragForce {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

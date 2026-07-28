@@ -15,11 +15,11 @@ use flighthq_geometry::{
 };
 use flighthq_signals::emit_signal;
 use flighthq_types::{
-    Adjustment, ColorTransform, InteractionSignals, Node, NodeInteractionState, NodeOf,
+    Adjustment, ColorTransform, InteractionSignals, MatrixLike, Node, NodeInteractionState, NodeOf,
     NodeSignals, NodeTraitsKey, Transform2DNode,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -106,7 +106,18 @@ pub fn add_node_child_at<Traits: Clone>(target: &Node, child: &Node, index: f64)
         };
         if (i != (-1.0_f64)) {
             if (i == index) {
-                return child;
+                return {
+                    let __flight_source = &((*child).clone());
+                    NodeOf::<Traits> {
+                        __flight_identity: std::sync::Arc::clone(
+                            &__flight_source.__flight_identity,
+                        ),
+                        data: (__flight_source.data).clone(),
+                        enabled: __flight_source.enabled,
+                        kind: (__flight_source.kind).clone(),
+                        name: (__flight_source.name).clone(),
+                    }
+                };
             }
             children
                 .as_mut()
@@ -146,7 +157,16 @@ pub fn add_node_child_at<Traits: Clone>(target: &Node, child: &Node, index: f64)
         }
         invalidate_node_parent_reference(child);
     }
-    return child;
+    return {
+        let __flight_source = &((*child).clone());
+        NodeOf::<Traits> {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+        }
+    };
 }
 
 // Source: upstream/packages/node/src/hierarchy.ts:82 (sha256:c6d3c0c211f12eb98cb3da0a1ada90eabcb0a8591e30a7d247c7c514d78950f3)
@@ -212,7 +232,16 @@ pub fn get_node_child_at<Traits: Clone>(source: &Node, index: f64) -> Option<Nod
     if (((children).is_some()) && (index >= 0.0_f64))
         && (index < (children.as_ref().unwrap().len() as f64))
     {
-        return Some(children.as_ref().unwrap()[index as usize].clone());
+        return Some({
+            let __flight_source = &(children.as_ref().unwrap()[index as usize].clone());
+            NodeOf::<Traits> {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                data: (__flight_source.data).clone(),
+                enabled: __flight_source.enabled,
+                kind: (__flight_source.kind).clone(),
+                name: (__flight_source.name).clone(),
+            }
+        });
     }
     return None;
 }
@@ -228,7 +257,18 @@ pub fn get_node_child_by_name<Traits: Clone>(
             let mut i = 0.0_f64;
             while (i < (children.as_ref().unwrap().len() as f64)) {
                 if ((children.as_ref().unwrap()[i as usize].name).clone()) == Some((name).clone()) {
-                    return Some(children.as_ref().unwrap()[i as usize].clone());
+                    return Some({
+                        let __flight_source = &(children.as_ref().unwrap()[i as usize].clone());
+                        NodeOf::<Traits> {
+                            __flight_identity: std::sync::Arc::clone(
+                                &__flight_source.__flight_identity,
+                            ),
+                            data: (__flight_source.data).clone(),
+                            enabled: __flight_source.enabled,
+                            kind: (__flight_source.kind).clone(),
+                            name: (__flight_source.name).clone(),
+                        }
+                    });
                 }
                 {
                     i += 1.0;
@@ -309,11 +349,38 @@ pub fn get_node_parent<Traits: Clone>(source: &Node) -> Option<NodeOf<Traits>> {
 
 // Source: upstream/packages/node/src/hierarchy.ts:218 (sha256:55991388fe1d241abcf88b2fcebf696d1baf41e046ef7ada8aecd177c89ff5db)
 pub fn get_node_root<Traits: Clone>(source: &mut Node) -> NodeOf<Traits> {
-    let mut current: NodeOf<Traits> = source;
-    let mut parent = get_node_parent(&current);
+    let mut current: NodeOf<Traits> = {
+        let __flight_source = &((*source).clone());
+        NodeOf::<Traits> {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+        }
+    };
+    let mut parent = get_node_parent(&{
+        let __flight_source = &(current);
+        Node {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+        }
+    });
     while (parent).is_some() {
         current = (parent).clone().unwrap();
-        parent = get_node_parent(&current);
+        parent = get_node_parent(&{
+            let __flight_source = &(current);
+            Node {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                data: (__flight_source.data).clone(),
+                enabled: __flight_source.enabled,
+                kind: (__flight_source.kind).clone(),
+                name: (__flight_source.name).clone(),
+            }
+        });
     }
     return (current).clone();
 }
@@ -333,7 +400,16 @@ pub fn is_node_ancestor_of(ancestor: &Node, descendant: &mut Node) -> bool {
 // Source: upstream/packages/node/src/hierarchy.ts:252 (sha256:4eb47901b8d63670c59c930467b0b360f42d9172f31b88c1d1357c945ba7b2bb)
 pub fn remove_node_child<Traits: Clone>(target: &Node, child: &Node) -> NodeOf<Traits> {
     if false {
-        return child.clone();
+        return {
+            let __flight_source = &(child);
+            NodeOf::<Traits> {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                data: (__flight_source.data).clone(),
+                enabled: __flight_source.enabled,
+                kind: (__flight_source.kind).clone(),
+                name: (__flight_source.name).clone(),
+            }
+        };
     }
     let mut target_runtime = get_node_runtime(target);
     let mut child_runtime = get_node_runtime(child);
@@ -375,7 +451,16 @@ pub fn remove_node_child<Traits: Clone>(target: &Node, child: &Node) -> NodeOf<T
             );
         }
     }
-    return child;
+    return {
+        let __flight_source = &((*child).clone());
+        NodeOf::<Traits> {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+        }
+    };
 }
 
 // Source: upstream/packages/node/src/hierarchy.ts:283 (sha256:a6cb1995e3abc76605ce1ef8cc8581a5f1f10c6768a57c8bcd8e7c9db10e48c5)
@@ -384,10 +469,25 @@ pub fn remove_node_child_at<Traits: Clone>(target: &Node, index: f64) -> Option<
     if (((children).is_some()) && (index >= 0.0_f64))
         && (index < (children.as_ref().unwrap().len() as f64))
     {
-        return Some(remove_node_child(
-            target,
-            &children.as_ref().unwrap()[index as usize].clone(),
-        ));
+        return Some(remove_node_child(target, &{
+            let __flight_source = &({
+                let __flight_source = &(children.as_ref().unwrap()[index as usize].clone());
+                NodeOf::<Traits> {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    data: (__flight_source.data).clone(),
+                    enabled: __flight_source.enabled,
+                    kind: (__flight_source.kind).clone(),
+                    name: (__flight_source.name).clone(),
+                }
+            });
+            Node {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                data: (__flight_source.data).clone(),
+                enabled: __flight_source.enabled,
+                kind: (__flight_source.kind).clone(),
+                name: (__flight_source.name).clone(),
+            }
+        }));
     }
     return None;
 }
@@ -409,13 +509,21 @@ pub fn remove_node_children(
     if (end_index).is_none() {
         end_index = Some(((children.as_ref().unwrap().len() as f64) - 1.0_f64));
     }
-    if ((end_index < begin_index) || (begin_index < 0.0_f64))
-        || (end_index > (children.as_ref().unwrap().len() as f64))
+    if (((end_index)
+        .as_ref()
+        .is_some_and(|value| *value < begin_index))
+        || (begin_index < 0.0_f64))
+        || ((end_index)
+            .as_ref()
+            .is_some_and(|value| *value > (children.as_ref().unwrap().len() as f64)))
     {
         throw_out_of_bounds_error();
     }
     let mut num_removals = (end_index - begin_index);
-    while (num_removals >= 0.0_f64) {
+    while (num_removals)
+        .as_ref()
+        .is_some_and(|value| *value >= 0.0_f64)
+    {
         remove_node_child_at(target, begin_index);
         {
             num_removals -= 1.0;
@@ -433,27 +541,66 @@ pub fn reparent_node<Traits: Clone>(
     let mut old_world = acquire_matrix();
     let mut local_m = acquire_matrix();
     {
-        copy_matrix(&mut old_world, &get_node_world_matrix(child));
+        copy_matrix(&mut old_world, &{
+            let __flight_source = &(get_node_world_matrix(child));
+            MatrixLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                a: __flight_source.a,
+                b: __flight_source.b,
+                c: __flight_source.c,
+                d: __flight_source.d,
+                tx: __flight_source.tx,
+                ty: __flight_source.ty,
+            }
+        });
         add_node_child(
-            &Node {
-                __flight_identity: std::sync::Arc::clone(&(new_parent).__flight_identity),
-                data: ((new_parent).data).clone(),
-                enabled: (new_parent).enabled,
-                kind: ((new_parent).kind).clone(),
-                name: ((new_parent).name).clone(),
+            &{
+                let __flight_source = &(new_parent);
+                Node {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    data: (__flight_source.data).clone(),
+                    enabled: __flight_source.enabled,
+                    kind: (__flight_source.kind).clone(),
+                    name: (__flight_source.name).clone(),
+                }
             },
-            &Node {
-                __flight_identity: std::sync::Arc::clone(&(child).__flight_identity),
-                data: ((child).data).clone(),
-                enabled: (child).enabled,
-                kind: ((child).kind).clone(),
-                name: ((child).name).clone(),
+            &{
+                let __flight_source = &(child);
+                Node {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    data: (__flight_source.data).clone(),
+                    enabled: __flight_source.enabled,
+                    kind: (__flight_source.kind).clone(),
+                    name: (__flight_source.name).clone(),
+                }
             },
         );
-        inverse_matrix(&mut local_m, &get_node_world_matrix(new_parent));
+        inverse_matrix(&mut local_m, &{
+            let __flight_source = &(get_node_world_matrix(new_parent));
+            MatrixLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                a: __flight_source.a,
+                b: __flight_source.b,
+                c: __flight_source.c,
+                d: __flight_source.d,
+                tx: __flight_source.tx,
+                ty: __flight_source.ty,
+            }
+        });
         {
             let __flight_argument_1 = (local_m).clone();
-            multiply_matrix(&mut local_m, &__flight_argument_1, &old_world)
+            multiply_matrix(&mut local_m, &__flight_argument_1, &{
+                let __flight_source = &(old_world);
+                MatrixLike {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    a: __flight_source.a,
+                    b: __flight_source.b,
+                    c: __flight_source.c,
+                    d: __flight_source.d,
+                    tx: __flight_source.tx,
+                    ty: __flight_source.ty,
+                }
+            })
         };
         let a = local_m.a;
         let b = local_m.b;
@@ -468,19 +615,31 @@ pub fn reparent_node<Traits: Clone>(
         child.rotation = (((b).atan2(a) - skew_y_rad) * RAD_TO_DEG);
         child.x = (local_m.tx + ((a * child.pivot_x) + (c * child.pivot_y)));
         child.y = (local_m.ty + ((b * child.pivot_x) + (d * child.pivot_y)));
-        invalidate_node_local_transform(&Node {
-            __flight_identity: std::sync::Arc::clone(&(child).__flight_identity),
-            data: ((child).data).clone(),
-            enabled: (child).enabled,
-            kind: ((child).kind).clone(),
-            name: ((child).name).clone(),
+        invalidate_node_local_transform(&{
+            let __flight_source = &(child);
+            Node {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                data: (__flight_source.data).clone(),
+                enabled: __flight_source.enabled,
+                kind: (__flight_source.kind).clone(),
+                name: (__flight_source.name).clone(),
+            }
         });
     }
     {
         release_matrix(&old_world);
         release_matrix(&local_m);
     }
-    return child;
+    return {
+        let __flight_source = &((*child).clone());
+        NodeOf::<Traits> {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+        }
+    };
 }
 
 // Source: upstream/packages/node/src/hierarchy.ts:373 (sha256:28d73aeb3d841821044c411c0500aee0a0581d87b23521d6fc6cac96ff598f4d)

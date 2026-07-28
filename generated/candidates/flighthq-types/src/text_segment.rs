@@ -10,7 +10,7 @@
 pub type TextSegmentGranularity = String;
 
 // Source: upstream/packages/types/src/TextSegment.ts:15 (sha256:9b243f874c904eab543ac8b4bf5d2d573d276fd43d61844e87ac58bb55bfba3c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextSegment {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -26,7 +26,7 @@ impl PartialEq for TextSegment {
 }
 
 // Source: upstream/packages/types/src/TextSegment.ts:24 (sha256:6f779d73dea3b8ccd32e3072ea63d62d6703cab13841d3d52d1bdab232fb9b73)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextSegmentRange {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

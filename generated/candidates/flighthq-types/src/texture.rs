@@ -12,7 +12,7 @@ use crate::{ImageResource, Sampler, SceneResourceRef, Vector2};
 pub type TextureColorSpace = String;
 
 // Source: upstream/packages/types/src/Texture.ts:19 (sha256:0258d751a90d1b64591856499e6b3ae95657bc6e33ee8be16ad96871bda50e91)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Texture {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

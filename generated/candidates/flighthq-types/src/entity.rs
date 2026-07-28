@@ -10,7 +10,7 @@
 pub type Kind = String;
 
 // Source: upstream/packages/types/src/Entity.ts:2 (sha256:f85f87cc89d4e93a438fb81e5b911bfb1ecfdec7d52c81fa9ae258bec22021a6)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Entity {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -25,7 +25,7 @@ impl PartialEq for Entity {
 pub type EntityWithoutRuntime<Type> = Type;
 
 // Source: upstream/packages/types/src/Entity.ts:6 (sha256:2442a2b2f11e739d0ec1d2f573d38c0fe55fef3a64723ef98ff3c0f7b4981bdb)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct EntityRuntime {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

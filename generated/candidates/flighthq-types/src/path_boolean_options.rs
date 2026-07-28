@@ -9,7 +9,7 @@
 use crate::PathWinding;
 
 // Source: upstream/packages/types/src/PathBooleanOptions.ts:8 (sha256:77f27bd1ddb42906bc777d6ec44717fb5c614f61f8351f86314d8f65fdfa8d74)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct PathBooleanOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

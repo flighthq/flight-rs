@@ -159,7 +159,8 @@ pub fn attach_power(power: Power, idle_threshold_seconds: Option<f64>) -> () {
             let power = power.clone();
             move || -> () {
                 let idle_signal = (power.on_idle_state_change).clone();
-                if ((idle_signal).is_none()) || (!has_signal_slots((idle_signal).clone().unwrap()))
+                if ((idle_signal).is_none())
+                    || (!has_signal_slots(((idle_signal).clone().unwrap()).clone()))
                 {
                     return;
                 }
@@ -171,7 +172,7 @@ pub fn attach_power(power: Power, idle_threshold_seconds: Option<f64>) -> () {
                 };
                 if (current != (*last_idle_state.lock().unwrap()).clone()) {
                     (*last_idle_state.lock().unwrap()) = (current).clone();
-                    emit_signal((idle_signal).clone().unwrap(), ());
+                    emit_signal(((idle_signal).clone().unwrap()).clone(), ());
                 }
             }
         },
@@ -258,7 +259,7 @@ pub fn create_power() -> Power {
 }
 
 // Source: upstream/packages/power/src/power.ts:96 (sha256:31220e79dea98836efc9259d9f01eddae2313fc885d4221b7b90d85ce2f76e08)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreatePowerBatteryHealthRecord1 {
     __flight_identity: std::sync::Arc<()>,
     capacity_wear_level: f64,
@@ -285,7 +286,7 @@ pub fn create_power_battery_health() -> PowerBatteryHealth {
 }
 
 // Source: upstream/packages/power/src/power.ts:107 (sha256:31f2f439ed220bd4e26c34219a518b7a055c690cb8ce9b28feb699516c18352f)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreatePowerStatusRecord1 {
     __flight_identity: std::sync::Arc<()>,
     battery_level: f64,
@@ -318,7 +319,7 @@ pub fn create_power_status() -> PowerStatus {
 }
 
 // Source: upstream/packages/power/src/power.ts:122 (sha256:ae048d02da49237e65fb444ca5b6ecad80db05371477c1dacf61c69c5132aac6)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateWebPowerBackendRecord1 {
     __flight_identity: std::sync::Arc<()>,
     wake_lock: Option<WebWakeLock>,
@@ -796,7 +797,7 @@ static _SUBSCRIPTIONS: std::sync::LazyLock<
 > = std::sync::LazyLock::new(|| std::sync::Mutex::new(Vec::new()));
 
 // Source: upstream/packages/power/src/power.ts:373 (sha256:527de96a12234d71a669e562030b12271121bdde40dd217825e8972cacaa7103)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct WebBatteryManager {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -844,7 +845,7 @@ impl PartialEq for WebBatteryManager {
 }
 
 // Source: upstream/packages/power/src/power.ts:388 (sha256:0e5f710f35624261383b25f3873b61b77f5a8fc0da86765d0464085fe9522a89)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct WebWakeLockSentinel {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -896,23 +897,6 @@ impl PartialEq for WebWakeLock {
 }
 
 // Source: upstream/packages/power/src/power.ts:397 (sha256:74647174bb3bd72b1673059fcc3c32e364a4c452cc9325005db72ac38480859a)
-#[derive(Clone)]
-struct GetWebBatteryManagerPromiseRecord1 {
-    __flight_identity: std::sync::Arc<()>,
-    get_battery: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<dyn FnMut() -> crate::Promise<WebBatteryManager> + Send + 'static>,
-            >,
-        >,
-    >,
-}
-impl PartialEq for GetWebBatteryManagerPromiseRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
 fn get_web_battery_manager_promise() -> Option<crate::Promise<WebBatteryManager>> {
     return None;
 }

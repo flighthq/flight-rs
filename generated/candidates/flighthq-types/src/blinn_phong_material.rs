@@ -9,7 +9,7 @@
 use crate::{AlphaType, BlendMode, Kind, MaterialAlphaMode, Texture};
 
 // Source: upstream/packages/types/src/BlinnPhongMaterial.ts:8 (sha256:398af6a2a8e8ac3c8ebb3cb210ab657da96659a27250218c3a4773a5ed0e4c88)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct BlinnPhongMaterial {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -20,6 +20,9 @@ pub struct BlinnPhongMaterial {
     pub alpha_type: AlphaType,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub shader_key: String,
+    pub textures: Option<Vec<(String, Texture)>>,
+    pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
     pub diffuse: f64,
     pub diffuse_map: Option<Texture>,
     pub normal_map: Option<Texture>,

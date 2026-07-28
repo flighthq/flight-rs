@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/GlyphExtents.ts:4 (sha256:849b0e005d763973b878f53b1726dc2ce18953b4486b8f6265cd57d810652ca4)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlyphExtents {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

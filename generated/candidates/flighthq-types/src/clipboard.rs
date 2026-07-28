@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/Clipboard.ts:2 (sha256:f807ed597514439692ed56f36de242e15a76aa6a22154813ff5cb12500150119)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ClipboardBookmark {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -21,7 +21,7 @@ impl PartialEq for ClipboardBookmark {
 }
 
 // Source: upstream/packages/types/src/Clipboard.ts:9 (sha256:7386aa9e0d59fb35d0826be076149f4b1898c4e882d038d1f1e364735a201249)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ClipboardWriteItem {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

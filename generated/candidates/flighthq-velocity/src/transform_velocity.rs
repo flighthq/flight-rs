@@ -12,11 +12,11 @@ use flighthq_node::{
     ensure_node_world_matrix, get_node_child_at, get_node_child_count, get_node_world_matrix,
 };
 use flighthq_types::{
-    Adjustment, ColorTransform, InteractionSignals, Node, NodeInteractionState, NodeSignals,
-    NodeTraitsKey, Transform2DNode, VelocityField,
+    Adjustment, ColorTransform, InteractionSignals, MatrixLike, Node, NodeInteractionState,
+    NodeSignals, NodeTraitsKey, Transform2DNode, VelocityField,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -62,7 +62,7 @@ fn visit_transform_velocity(field: &mut VelocityField, node: &Transform2DNode) -
     let mutable_node = (*node).clone();
     ensure_node_world_matrix(&mutable_node);
     let world = get_node_world_matrix(&mutable_node);
-    let mut sample = ensure_velocity_sample(field, node);
+    let mut sample = ensure_velocity_sample(field, (node).clone());
     if (sample.explicit_frame_id != field.frame_id) {
         if ((sample.previous_world_transform).clone()).is_some() {
             sample.velocity.x = (world.tx - sample.previous_world_transform.as_mut().unwrap().tx);
@@ -76,24 +76,43 @@ fn visit_transform_velocity(field: &mut VelocityField, node: &Transform2DNode) -
     if ((sample.previous_world_transform).clone()).is_none() {
         sample.previous_world_transform = Some(create_matrix(None, None, None, None, None, None));
     }
-    copy_matrix(sample.previous_world_transform.as_mut().unwrap(), &world);
-    let count = get_node_child_count(&Node {
-        __flight_identity: std::sync::Arc::clone(&(mutable_node).__flight_identity),
-        data: ((mutable_node).data).clone(),
-        enabled: (mutable_node).enabled,
-        kind: ((mutable_node).kind).clone(),
-        name: ((mutable_node).name).clone(),
+    copy_matrix(sample.previous_world_transform.as_mut().unwrap(), &{
+        let __flight_source = &(world);
+        MatrixLike {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            a: __flight_source.a,
+            b: __flight_source.b,
+            c: __flight_source.c,
+            d: __flight_source.d,
+            tx: __flight_source.tx,
+            ty: __flight_source.ty,
+        }
+    });
+    let count = get_node_child_count(&{
+        let __flight_source = &(mutable_node);
+        Node {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+        }
     });
     {
         let mut i = 0.0_f64;
         while (i < count) {
             let child = get_node_child_at(
-                &Node {
-                    __flight_identity: std::sync::Arc::clone(&(mutable_node).__flight_identity),
-                    data: ((mutable_node).data).clone(),
-                    enabled: (mutable_node).enabled,
-                    kind: ((mutable_node).kind).clone(),
-                    name: ((mutable_node).name).clone(),
+                &{
+                    let __flight_source = &(mutable_node);
+                    Node {
+                        __flight_identity: std::sync::Arc::clone(
+                            &__flight_source.__flight_identity,
+                        ),
+                        data: (__flight_source.data).clone(),
+                        enabled: __flight_source.enabled,
+                        kind: (__flight_source.kind).clone(),
+                        name: (__flight_source.name).clone(),
+                    }
                 },
                 i,
             );

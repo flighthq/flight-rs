@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/IpcPort.ts:10 (sha256:eb686338f579e0999842a3055f14260281d1ab06fbd0af5ae1b1108cfcccec02)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct IpcPort {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

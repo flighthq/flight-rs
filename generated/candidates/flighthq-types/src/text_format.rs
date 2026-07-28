@@ -13,7 +13,7 @@ pub type TextFormatAlign = String;
 pub type TextFormatListMarker = String;
 
 // Source: upstream/packages/types/src/TextFormat.ts:7 (sha256:78b33d0aba9800116f93363692c37d18b0e439bf94df4d5120e7d11bf0280f50)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextFormat {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

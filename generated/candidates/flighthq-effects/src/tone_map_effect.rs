@@ -8,7 +8,7 @@
 
 use flighthq_types::{ToneMapEffect, ToneMapOperator};
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub operator: Option<ToneMapOperator>,
@@ -22,7 +22,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/toneMapEffect.ts:3 (sha256:911baa094a5c4361d603a14376b771ce11472f9a4b2778bd07ba77293ff2b88a)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateToneMapEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -47,6 +47,7 @@ pub fn create_tone_map_effect(options: Option<FlightOmitRecord1>) -> ToneMapEffe
             operator: (__flight_spread_1.operator).clone(),
             exposure: __flight_spread_1.exposure,
             white: __flight_spread_1.white,
+            ..Default::default()
         }
     };
 }

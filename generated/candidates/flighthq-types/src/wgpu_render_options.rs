@@ -9,7 +9,7 @@
 use crate::SceneGraphSyncPolicy;
 
 // Source: upstream/packages/types/src/WgpuRenderOptions.ts:3 (sha256:ea94e5de542002d884aee75a4010cdd86ac2934f0b3d88c2b7202f8228e80c8a)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct WgpuRenderOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

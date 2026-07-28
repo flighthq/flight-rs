@@ -8,7 +8,7 @@
 
 use flighthq_types::TaaEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub feedback: Option<f64>,
@@ -20,7 +20,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/taaEffect.ts:3 (sha256:126b00855beb9589d638799a9fa0390c4d760b2d2c202cf9137473fe27fda25a)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateTaaEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -41,6 +41,7 @@ pub fn create_taa_effect(options: Option<FlightOmitRecord1>) -> TaaEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "TaaEffect".to_owned(),
             feedback: __flight_spread_1.feedback,
+            ..Default::default()
         }
     };
 }

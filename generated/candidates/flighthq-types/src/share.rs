@@ -9,7 +9,7 @@
 use crate::ShareFile;
 
 // Source: upstream/packages/types/src/Share.ts:8 (sha256:899bb63cf41c77e3ac2f6eb0b8bb40a741677907ea1d9a313634713185401ef3)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ShareContent {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -25,7 +25,7 @@ impl PartialEq for ShareContent {
 }
 
 // Source: upstream/packages/types/src/Share.ts:18 (sha256:a0ca18e785ad84e681b4558039731aab27c833c90dae6585aae3e9336c25e4e9)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ShareOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -39,7 +39,7 @@ impl PartialEq for ShareOptions {
 }
 
 // Source: upstream/packages/types/src/Share.ts:28 (sha256:4ad57cec0c278f2921a223a6bdec550daf82a2c2bafa0e67d32f8f21150b757b)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ShareResult {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

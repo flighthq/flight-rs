@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/Matrix.ts:3 (sha256:8ddd28fa32ed92240e8fd2a344a367c2dfdcead7d3069f3abc97744cb17e7eea)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Matrix {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

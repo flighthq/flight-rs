@@ -12,7 +12,7 @@ use crate::{LogLevel, LogSink};
 pub type DebugSubsystemName = String;
 
 // Source: upstream/packages/types/src/Debug.ts:25 (sha256:658414808105f35fb9c07e5fcb3d9b0b0931e482a9946c47a6aa585c56615a0f)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct DebugSubsystemHooks {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -29,7 +29,7 @@ impl PartialEq for DebugSubsystemHooks {
 }
 
 // Source: upstream/packages/types/src/Debug.ts:36 (sha256:11018664ec44ec8b07795b670e356ddc7bda6e50c9d04a148943e0e0b76ec738)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct DebugOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

@@ -17,7 +17,7 @@ use flighthq_types::{
     RenderViewData, RenderViewRenderer, RenderViewRuntime, Stage,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub height: Option<f64>,
@@ -30,7 +30,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -80,7 +80,7 @@ impl PartialEq for FlightPartialRecord2 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha_multiplier: Option<f64>,
@@ -98,7 +98,7 @@ impl PartialEq for FlightPartialRecord3 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord4 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -134,11 +134,12 @@ impl PartialEq for FlightPartialRecord4 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord5 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<AdjustmentKind>,
     pub color_matrix: Option<Vec<f64>>,
+    pub color_transform: Option<ColorTransform>,
 }
 impl PartialEq for FlightPartialRecord5 {
     fn eq(&self, other: &Self) -> bool {
@@ -146,7 +147,7 @@ impl PartialEq for FlightPartialRecord5 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord6 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha: Option<f64>,
@@ -158,7 +159,7 @@ impl PartialEq for FlightPartialRecord6 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord7 {
     pub __flight_identity: std::sync::Arc<()>,
     pub blend_mode: Option<BlendMode>,
@@ -169,7 +170,7 @@ impl PartialEq for FlightPartialRecord7 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord8 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -188,7 +189,7 @@ impl PartialEq for FlightPartialRecord8 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord9 {
     pub __flight_identity: std::sync::Arc<()>,
 }
@@ -198,7 +199,7 @@ impl PartialEq for FlightPartialRecord9 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord10 {
     pub __flight_identity: std::sync::Arc<()>,
     pub clip: Option<ClipRegion>,
@@ -209,7 +210,7 @@ impl PartialEq for FlightPartialRecord10 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord11 {
     pub __flight_identity: std::sync::Arc<()>,
     pub material: Option<Material>,
@@ -221,7 +222,7 @@ impl PartialEq for FlightPartialRecord11 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord12 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -237,7 +238,7 @@ impl PartialEq for FlightPartialRecord12 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord13 {
     pub __flight_identity: std::sync::Arc<()>,
     pub pivot_x: Option<f64>,
@@ -292,12 +293,101 @@ pub fn create_render_view_data(data: Option<FlightPartialRecord1>) -> RenderView
 
 // Source: upstream/packages/displayobject/src/renderView.ts:33 (sha256:4b5509403b0e261699c920c20f1915036f8eaedc1cdb3832d61bc41ca3297895)
 pub fn create_render_view_runtime() -> RenderViewRuntime {
-    return create_display_object_runtime(Some(((*DEFAULT_METHODS).clone()).clone()));
+    return {
+        let __flight_source =
+            &(create_display_object_runtime(Some(((*DEFAULT_METHODS).clone()).clone())));
+        RenderViewRuntime {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            binding: (__flight_source.binding).clone(),
+            appearance_id: __flight_source.appearance_id,
+            bounds_using_local_bounds_id: __flight_source.bounds_using_local_bounds_id,
+            bounds_using_local_transform_id: __flight_source.bounds_using_local_transform_id,
+            can_add_child: (__flight_source.can_add_child).clone(),
+            children: (__flight_source.children).clone(),
+            color_adjustments: (__flight_source.color_adjustments).clone(),
+            resolved_color_transform: (__flight_source.resolved_color_transform).clone(),
+            color_adjustments_channel_mixing: __flight_source.color_adjustments_channel_mixing,
+            traits: (__flight_source.traits).clone(),
+            interaction_signals: (__flight_source.interaction_signals).clone(),
+            local_bounds_id: __flight_source.local_bounds_id,
+            local_bounds_using_local_bounds_id: __flight_source.local_bounds_using_local_bounds_id,
+            local_content_id: __flight_source.local_content_id,
+            local_transform_id: __flight_source.local_transform_id,
+            local_transform_using_local_transform_id: __flight_source
+                .local_transform_using_local_transform_id,
+            node_signals: (__flight_source.node_signals).clone(),
+            interaction_state: (__flight_source.interaction_state).clone(),
+            parent: (__flight_source.parent).clone(),
+            world_bounds_using_local_bounds_id: __flight_source.world_bounds_using_local_bounds_id,
+            world_bounds_using_world_transform_id: __flight_source
+                .world_bounds_using_world_transform_id,
+            world_transform_id: __flight_source.world_transform_id,
+            world_transform_using_local_transform_id: __flight_source
+                .world_transform_using_local_transform_id,
+            world_transform_using_parent_transform_id: __flight_source
+                .world_transform_using_parent_transform_id,
+            local_matrix: (__flight_source.local_matrix).clone(),
+            rotation_angle: __flight_source.rotation_angle,
+            rotation_cosine: __flight_source.rotation_cosine,
+            rotation_sine: __flight_source.rotation_sine,
+            world_matrix: (__flight_source.world_matrix).clone(),
+            bounds_rectangle: (__flight_source.bounds_rectangle).clone(),
+            compute_local_bounds_rectangle: (__flight_source.compute_local_bounds_rectangle)
+                .clone(),
+            local_bounds_rectangle: (__flight_source.local_bounds_rectangle).clone(),
+            world_bounds_rectangle: (__flight_source.world_bounds_rectangle).clone(),
+            stage: (__flight_source.stage).clone(),
+        }
+    };
 }
 
 // Source: upstream/packages/displayobject/src/renderView.ts:37 (sha256:57f6a6c0549d601eb1496de07cff49430570fb9c027b83dc7ad320e40a9ead33)
 pub fn get_render_view_runtime(source: &RenderView) -> RenderViewRuntime {
-    return get_display_object_runtime(source);
+    return {
+        let __flight_source = &(get_display_object_runtime(source));
+        RenderViewRuntime {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            binding: (__flight_source.binding).clone(),
+            appearance_id: __flight_source.appearance_id,
+            bounds_using_local_bounds_id: __flight_source.bounds_using_local_bounds_id,
+            bounds_using_local_transform_id: __flight_source.bounds_using_local_transform_id,
+            can_add_child: (__flight_source.can_add_child).clone(),
+            children: (__flight_source.children).clone(),
+            color_adjustments: (__flight_source.color_adjustments).clone(),
+            resolved_color_transform: (__flight_source.resolved_color_transform).clone(),
+            color_adjustments_channel_mixing: __flight_source.color_adjustments_channel_mixing,
+            traits: (__flight_source.traits).clone(),
+            interaction_signals: (__flight_source.interaction_signals).clone(),
+            local_bounds_id: __flight_source.local_bounds_id,
+            local_bounds_using_local_bounds_id: __flight_source.local_bounds_using_local_bounds_id,
+            local_content_id: __flight_source.local_content_id,
+            local_transform_id: __flight_source.local_transform_id,
+            local_transform_using_local_transform_id: __flight_source
+                .local_transform_using_local_transform_id,
+            node_signals: (__flight_source.node_signals).clone(),
+            interaction_state: (__flight_source.interaction_state).clone(),
+            parent: (__flight_source.parent).clone(),
+            world_bounds_using_local_bounds_id: __flight_source.world_bounds_using_local_bounds_id,
+            world_bounds_using_world_transform_id: __flight_source
+                .world_bounds_using_world_transform_id,
+            world_transform_id: __flight_source.world_transform_id,
+            world_transform_using_local_transform_id: __flight_source
+                .world_transform_using_local_transform_id,
+            world_transform_using_parent_transform_id: __flight_source
+                .world_transform_using_parent_transform_id,
+            local_matrix: (__flight_source.local_matrix).clone(),
+            rotation_angle: __flight_source.rotation_angle,
+            rotation_cosine: __flight_source.rotation_cosine,
+            rotation_sine: __flight_source.rotation_sine,
+            world_matrix: (__flight_source.world_matrix).clone(),
+            bounds_rectangle: (__flight_source.bounds_rectangle).clone(),
+            compute_local_bounds_rectangle: (__flight_source.compute_local_bounds_rectangle)
+                .clone(),
+            local_bounds_rectangle: (__flight_source.local_bounds_rectangle).clone(),
+            world_bounds_rectangle: (__flight_source.world_bounds_rectangle).clone(),
+            stage: (__flight_source.stage).clone(),
+        }
+    };
 }
 
 // Source: upstream/packages/displayobject/src/renderView.ts:41 (sha256:da0463a37167f4971b6f42ac6beec2a90a5987d89e6528065634f5df16a4f489)

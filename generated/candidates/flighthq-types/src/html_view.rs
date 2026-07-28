@@ -13,7 +13,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/HtmlView.ts:3 (sha256:bba194f0689423bf8577d59419ce7b6d25107d76feeea43c14bd296df846fd93)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct HtmlViewData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -77,7 +77,7 @@ impl PartialEq for HtmlViewRuntime {
 }
 
 // Source: upstream/packages/types/src/HtmlView.ts:11 (sha256:384fc590d337ee16124dcab9b2c796a36cf6ebd5f72e6ecc6530a8d0851df17f)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct HtmlView {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

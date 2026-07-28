@@ -8,7 +8,7 @@
 
 use flighthq_types::DirectionalBlurEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub angle: Option<f64>,
@@ -22,7 +22,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/directionalBlurEffect.ts:3 (sha256:401d47059c3e52d92662d0ebb64d0ca602ef23544159ab858bd9ef7d119d512c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateDirectionalBlurEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -47,6 +47,7 @@ pub fn create_directional_blur_effect(options: Option<FlightOmitRecord1>) -> Dir
             angle: __flight_spread_1.angle,
             length: __flight_spread_1.length,
             samples: __flight_spread_1.samples,
+            ..Default::default()
         }
     };
 }

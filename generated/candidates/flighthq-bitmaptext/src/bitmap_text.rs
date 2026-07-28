@@ -18,11 +18,11 @@ use flighthq_types::{
     BitmapTextAlign, BitmapTextData, BitmapTextOptions, BitmapTextRuntime, BlendMode,
     BoundsNodeAny, ClipRegion, ColorTransform, GlyphSource, ImageResource, InteractionSignals,
     Material, MaterialData, Matrix, Node, NodeInteractionState, NodeSignals, NodeTraitsKey,
-    QuadBatch, QuadBatchData, QuadTransformType, Rectangle, Stage, TextureAtlas,
+    QuadBatch, QuadBatchData, QuadTransformType, Rectangle, RectangleLike, Stage, TextureAtlas,
     TextureAtlasRegion,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub align: Option<BitmapTextAlign>,
@@ -39,7 +39,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -90,7 +90,7 @@ impl PartialEq for FlightPartialRecord2 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha_multiplier: Option<f64>,
@@ -108,7 +108,7 @@ impl PartialEq for FlightPartialRecord3 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord4 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -158,7 +158,7 @@ impl PartialEq for FlightPartialRecord4 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord5 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -194,7 +194,7 @@ impl PartialEq for FlightPartialRecord5 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord6 {
     pub __flight_identity: std::sync::Arc<()>,
     pub atlas: Option<TextureAtlas>,
@@ -210,7 +210,7 @@ impl PartialEq for FlightPartialRecord6 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord7 {
     pub __flight_identity: std::sync::Arc<()>,
     pub image: Option<ImageResource>,
@@ -222,11 +222,12 @@ impl PartialEq for FlightPartialRecord7 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord8 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<AdjustmentKind>,
     pub color_matrix: Option<Vec<f64>>,
+    pub color_transform: Option<ColorTransform>,
 }
 impl PartialEq for FlightPartialRecord8 {
     fn eq(&self, other: &Self) -> bool {
@@ -234,7 +235,7 @@ impl PartialEq for FlightPartialRecord8 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord9 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha: Option<f64>,
@@ -246,7 +247,7 @@ impl PartialEq for FlightPartialRecord9 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord10 {
     pub __flight_identity: std::sync::Arc<()>,
     pub blend_mode: Option<BlendMode>,
@@ -257,7 +258,7 @@ impl PartialEq for FlightPartialRecord10 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord11 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -276,7 +277,7 @@ impl PartialEq for FlightPartialRecord11 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord12 {
     pub __flight_identity: std::sync::Arc<()>,
 }
@@ -286,7 +287,7 @@ impl PartialEq for FlightPartialRecord12 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord13 {
     pub __flight_identity: std::sync::Arc<()>,
     pub clip: Option<ClipRegion>,
@@ -297,7 +298,7 @@ impl PartialEq for FlightPartialRecord13 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord14 {
     pub __flight_identity: std::sync::Arc<()>,
     pub material: Option<Material>,
@@ -309,7 +310,7 @@ impl PartialEq for FlightPartialRecord14 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord15 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -325,7 +326,7 @@ impl PartialEq for FlightPartialRecord15 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord16 {
     pub __flight_identity: std::sync::Arc<()>,
     pub pivot_x: Option<f64>,
@@ -358,7 +359,16 @@ pub fn compute_bitmap_text_local_bounds_rectangle(out: &mut Rectangle, source: &
         out.height = 0.0_f64;
         return;
     }
-    copy_rectangle(out, &bounds.as_ref().unwrap());
+    copy_rectangle(out, &{
+        let __flight_source = &(bounds.as_ref().unwrap());
+        RectangleLike {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            height: __flight_source.height,
+            width: __flight_source.width,
+            x: __flight_source.x,
+            y: __flight_source.y,
+        }
+    });
 }
 
 // Source: upstream/packages/bitmaptext/src/bitmapText.ts:48 (sha256:9ae99b607504937177e17558023ec62201669c98fc99d2efc27270f6a21924ca)

@@ -8,7 +8,7 @@
 
 use flighthq_types::OutlineEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub threshold: Option<f64>,
@@ -22,7 +22,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/outlineEffect.ts:3 (sha256:f7d12c4a36e281c4b105db315466a95bd7146bfe1235db79e3ac2ac54022e1b8)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateOutlineEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -47,6 +47,7 @@ pub fn create_outline_effect(options: Option<FlightOmitRecord1>) -> OutlineEffec
             threshold: __flight_spread_1.threshold,
             thickness: __flight_spread_1.thickness,
             color: __flight_spread_1.color,
+            ..Default::default()
         }
     };
 }

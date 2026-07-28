@@ -27,7 +27,7 @@ impl<N> PartialEq for FocusManager<N> {
 }
 
 // Source: upstream/packages/types/src/FocusManager.ts:25 (sha256:f7ba8b429aae2588af29d1706a7960c1210c571898c5e9aee9b3644104e82811)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FocusManagerOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -40,7 +40,7 @@ impl PartialEq for FocusManagerOptions {
 }
 
 // Source: upstream/packages/types/src/FocusManager.ts:31 (sha256:68ddc2493463eb67824ddeca7e1ac85925757a209b4332deeb6440949341897a)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FocusNavigationOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

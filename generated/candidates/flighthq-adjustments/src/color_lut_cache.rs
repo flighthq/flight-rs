@@ -6,29 +6,25 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{
-    COLOR_LUT_DEFAULT_SIZE as color_lut_default_size_constant, bake_color_lut,
-    get_adjustment_color_transform,
-};
+use crate::{COLOR_LUT_DEFAULT_SIZE as color_lut_default_size_constant, bake_color_lut};
 use flighthq_types::{AdjustmentKind, ColorLut, ColorLutCache, ColorTransformFunction};
 
-#[derive(Clone)]
-pub struct FlightPartialRecord1 {
+#[derive(Clone, Default)]
+pub struct SharedStructuralRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub kind: Option<AdjustmentKind>,
-    pub color_matrix: Option<Vec<f64>>,
+    pub kind: String,
 }
-impl PartialEq for FlightPartialRecord1 {
+impl PartialEq for SharedStructuralRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<AdjustmentKind>,
-    pub transform: Option<ColorTransformFunction>,
+    pub color_matrix: Option<Vec<f64>>,
 }
 impl PartialEq for FlightPartialRecord2 {
     fn eq(&self, other: &Self) -> bool {
@@ -36,21 +32,22 @@ impl PartialEq for FlightPartialRecord2 {
     }
 }
 
-// Source: upstream/packages/adjustments/src/colorLutCache.ts:20 (sha256:43b7051bda2b12fe9ccb47c39eaebd4ec760dff96ad22db73055c349ecefe0c7)
-#[derive(Clone)]
-struct BakeColorLutForRunRecord3 {
-    __flight_identity: std::sync::Arc<()>,
-    kind: String,
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord3 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub kind: Option<AdjustmentKind>,
+    pub transform: Option<ColorTransformFunction>,
 }
-impl PartialEq for BakeColorLutForRunRecord3 {
+impl PartialEq for FlightPartialRecord3 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
+// Source: upstream/packages/adjustments/src/colorLutCache.ts:20 (sha256:43b7051bda2b12fe9ccb47c39eaebd4ec760dff96ad22db73055c349ecefe0c7)
 pub fn bake_color_lut_for_run(
     cache: &mut ColorLutCache,
-    run: &Vec<BakeColorLutForRunRecord3>,
+    run: &Vec<SharedStructuralRecord1>,
     size: Option<f64>,
 ) -> ColorLut {
     let size = size.unwrap_or(color_lut_default_size_constant);
@@ -62,7 +59,84 @@ pub fn bake_color_lut_for_run(
     }
     let mut transforms: Vec<ColorTransformFunction> = vec![];
     for operation in (run).iter().cloned() {
-        let transform = get_adjustment_color_transform(&operation);
+        let transform = (|| -> Option<ColorTransformFunction> {
+            let transform = None::<ColorTransformFunction>;
+            if ((transform).as_ref().map_or("undefined", |_| "function") == "function") {
+                return (transform).clone();
+            }
+            let matrix = (|| -> Option<Vec<f64>> {
+                let matrix = None::<Vec<f64>>;
+                return if ((matrix).is_some())
+                    && ((matrix.as_ref().unwrap().len() as f64) == crate::COLOR_MATRIX_LENGTH)
+                {
+                    (matrix).clone()
+                } else {
+                    None
+                };
+            })();
+            return if (matrix).is_none() {
+                None
+            } else {
+                Some((|| -> ColorTransformFunction {
+                    return std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+                        move |mut out: Vec<f64>, r: f64, g: f64, b: f64| -> () {
+                            {
+                                let __flight_index = (0.0_f64) as usize;
+                                let __flight_value = (((((matrix.as_ref().unwrap()
+                                    [0.0_f64 as usize]
+                                    .clone()
+                                    * r)
+                                    + (matrix.as_ref().unwrap()[1.0_f64 as usize].clone() * g))
+                                    + (matrix.as_ref().unwrap()[2.0_f64 as usize].clone() * b))
+                                    + matrix.as_ref().unwrap()[3.0_f64 as usize].clone())
+                                    + (matrix.as_ref().unwrap()[4.0_f64 as usize].clone()
+                                        / 255.0_f64));
+                                if __flight_index == out.len() {
+                                    out.push(__flight_value);
+                                } else {
+                                    out[__flight_index] = __flight_value;
+                                }
+                            };
+                            {
+                                let __flight_index = (1.0_f64) as usize;
+                                let __flight_value = (((((matrix.as_ref().unwrap()
+                                    [5.0_f64 as usize]
+                                    .clone()
+                                    * r)
+                                    + (matrix.as_ref().unwrap()[6.0_f64 as usize].clone() * g))
+                                    + (matrix.as_ref().unwrap()[7.0_f64 as usize].clone() * b))
+                                    + matrix.as_ref().unwrap()[8.0_f64 as usize].clone())
+                                    + (matrix.as_ref().unwrap()[9.0_f64 as usize].clone()
+                                        / 255.0_f64));
+                                if __flight_index == out.len() {
+                                    out.push(__flight_value);
+                                } else {
+                                    out[__flight_index] = __flight_value;
+                                }
+                            };
+                            {
+                                let __flight_index = (2.0_f64) as usize;
+                                let __flight_value = (((((matrix.as_ref().unwrap()
+                                    [10.0_f64 as usize]
+                                    .clone()
+                                    * r)
+                                    + (matrix.as_ref().unwrap()[11.0_f64 as usize].clone() * g))
+                                    + (matrix.as_ref().unwrap()[12.0_f64 as usize].clone() * b))
+                                    + matrix.as_ref().unwrap()[13.0_f64 as usize].clone())
+                                    + (matrix.as_ref().unwrap()[14.0_f64 as usize].clone()
+                                        / 255.0_f64));
+                                if __flight_index == out.len() {
+                                    out.push(__flight_value);
+                                } else {
+                                    out[__flight_index] = __flight_value;
+                                }
+                            };
+                        },
+                    )
+                        as Box<dyn FnMut(Vec<f64>, f64, f64, f64) -> () + Send + 'static>));
+                })())
+            };
+        })();
         if (transform).is_some() {
             transforms.push(((transform.as_ref().unwrap()).clone()).clone());
         }
@@ -83,18 +157,7 @@ pub fn create_color_lut_cache() -> ColorLutCache {
 }
 
 // Source: upstream/packages/adjustments/src/colorLutCache.ts:48 (sha256:15cbc958713f0e9b3b31ba476d3c5cb73ef8c6673ab1b45d8837bed603377581)
-#[derive(Clone)]
-struct ColorLutRunSignatureRecord3 {
-    __flight_identity: std::sync::Arc<()>,
-    kind: String,
-}
-impl PartialEq for ColorLutRunSignatureRecord3 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-fn color_lut_run_signature(run: &Vec<ColorLutRunSignatureRecord3>, size: f64) -> String {
+fn color_lut_run_signature(run: &Vec<SharedStructuralRecord1>, size: f64) -> String {
     return format!("{}\n{}", size, {
         let __flight_items = (run)
             .iter()

@@ -12,7 +12,7 @@ use flighthq_types::{
     NodeTraitsKey, SceneNode,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -50,11 +50,14 @@ impl PartialEq for FlightPartialRecord1 {
 
 // Source: upstream/packages/scene/src/sceneNodeDispose.ts:14 (sha256:6ceb2c9b1f10930f91019087647b65f5d0e71d59e820422cff6fd1ea43e50077)
 pub fn dispose_scene_node(node: &SceneNode) -> () {
-    dispose_node(&Node {
-        __flight_identity: std::sync::Arc::clone(&(node).__flight_identity),
-        data: ((node).data).clone(),
-        enabled: (node).enabled,
-        kind: ((node).kind).clone(),
-        name: ((node).name).clone(),
+    dispose_node(&{
+        let __flight_source = &(node);
+        Node {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+        }
     });
 }

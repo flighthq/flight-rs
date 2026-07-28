@@ -15,7 +15,7 @@ pub type MenuItemType = String;
 pub type MenuItemRole = crate::FlightUnion2<WellKnownMenuItemRoleValue, String>;
 
 // Source: upstream/packages/types/src/Menu.ts:19 (sha256:49f11b531fed1394d5111d3dfa9d6f94036b76ec1cf83854645794700bb4419a)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct MenuItemTemplate {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

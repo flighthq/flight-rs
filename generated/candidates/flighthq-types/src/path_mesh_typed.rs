@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/PathMeshTyped.ts:7 (sha256:6ef427bcb80822024cdb79b6577acaf3425d9859a5e0d52b83d376894443d4a5)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct PathMeshTyped {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

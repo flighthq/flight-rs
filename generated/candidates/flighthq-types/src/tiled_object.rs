@@ -9,7 +9,7 @@
 use crate::{TiledProperty, Vector2Like};
 
 // Source: upstream/packages/types/src/TiledObject.ts:9 (sha256:d8b583fd4ac5be7b2e225eb093440e762ac18bd63947531c364b379b941aa409)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TiledObject {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

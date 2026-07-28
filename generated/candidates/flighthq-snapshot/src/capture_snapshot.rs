@@ -11,7 +11,7 @@ use flighthq_types::Snapshot;
 // Source: upstream/packages/snapshot/src/captureSnapshot.ts:14 (sha256:5bf8bd69d748313c1d8000c2dffa018e591078ceb4261bc84bb4d35bc903498d)
 pub fn capture_snapshot<T: Clone>(source: T) -> Snapshot<T> {
     let clone = crate::host_value::<T>("host.call");
-    freeze_snapshot_deep(clone);
+    freeze_snapshot_deep((clone).clone());
     return clone;
 }
 

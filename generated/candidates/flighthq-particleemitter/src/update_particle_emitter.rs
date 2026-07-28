@@ -34,7 +34,7 @@ fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha_multiplier: Option<f64>,
@@ -52,7 +52,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -102,7 +102,7 @@ impl PartialEq for FlightPartialRecord2 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -138,7 +138,7 @@ impl PartialEq for FlightPartialRecord3 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord4 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alphas: Option<Vec<f32>>,
@@ -157,11 +157,12 @@ impl PartialEq for FlightPartialRecord4 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord5 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<AdjustmentKind>,
     pub color_matrix: Option<Vec<f64>>,
+    pub color_transform: Option<ColorTransform>,
 }
 impl PartialEq for FlightPartialRecord5 {
     fn eq(&self, other: &Self) -> bool {
@@ -169,7 +170,7 @@ impl PartialEq for FlightPartialRecord5 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord6 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha: Option<f64>,
@@ -181,7 +182,7 @@ impl PartialEq for FlightPartialRecord6 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord7 {
     pub __flight_identity: std::sync::Arc<()>,
     pub blend_mode: Option<BlendMode>,
@@ -192,7 +193,7 @@ impl PartialEq for FlightPartialRecord7 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord8 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -211,7 +212,7 @@ impl PartialEq for FlightPartialRecord8 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord9 {
     pub __flight_identity: std::sync::Arc<()>,
 }
@@ -221,7 +222,7 @@ impl PartialEq for FlightPartialRecord9 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord10 {
     pub __flight_identity: std::sync::Arc<()>,
     pub clip: Option<ClipRegion>,
@@ -232,7 +233,7 @@ impl PartialEq for FlightPartialRecord10 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord11 {
     pub __flight_identity: std::sync::Arc<()>,
     pub material: Option<Material>,
@@ -244,7 +245,7 @@ impl PartialEq for FlightPartialRecord11 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord12 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -260,7 +261,7 @@ impl PartialEq for FlightPartialRecord12 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord13 {
     pub __flight_identity: std::sync::Arc<()>,
     pub pivot_x: Option<f64>,
@@ -332,7 +333,7 @@ pub fn update_particle_emitter(
     let has_vel_inherit = (config.velocity_inheritance != 0.0_f64);
     let mut emitter_vel_x = 0.0_f64;
     let mut emitter_vel_y = 0.0_f64;
-    if (!crate::host_value::<()>("host.call")) {
+    if (!(state.prev_x).is_nan()) {
         emitter_vel_x = ((track_x - state.prev_x) / delta_time);
         emitter_vel_y = ((track_y - state.prev_y) / delta_time);
     }
@@ -374,7 +375,7 @@ pub fn update_particle_emitter(
     let on_spawn = callbacks
         .as_ref()
         .and_then(|value| (value.on_spawn).clone());
-    let signals = get_particle_emitter_signals(state);
+    let signals = get_particle_emitter_signals((state).clone());
     let mut live_count = emitter.data.particle_count;
     let mut i = 0.0_f64;
     while (i < live_count) {
@@ -574,7 +575,7 @@ pub fn update_particle_emitter(
         let rot_speed_range = (config.rotation_speed_max - config.rotation_speed_min);
         let has_rot_speed =
             (config.rotation_speed_min != 0.0_f64) || (config.rotation_speed_max != 0.0_f64);
-        let do_trail = ((world_transform).is_some()) && (!crate::host_value::<()>("host.call"));
+        let do_trail = ((world_transform).is_some()) && (!(state.prev_x).is_nan());
         let prev_path_x = if do_trail { state.prev_x } else { track_x };
         let prev_path_y = if do_trail { state.prev_y } else { track_y };
         let dir_len = (((config.direction_x * config.direction_x)
@@ -822,7 +823,7 @@ pub fn update_particle_emitter(
                     vx = wvx;
                     vy = wvy;
                 }
-                if (has_vel_inherit) && (!crate::host_value::<()>("host.call")) {
+                if (has_vel_inherit) && (!(state.prev_x).is_nan()) {
                     vx += (emitter_vel_x * config.velocity_inheritance);
                     vy += (emitter_vel_y * config.velocity_inheritance);
                 }

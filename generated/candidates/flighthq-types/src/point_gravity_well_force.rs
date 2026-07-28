@@ -9,7 +9,7 @@
 use crate::ForceFalloff;
 
 // Source: upstream/packages/types/src/PointGravityWellForce.ts:11 (sha256:c053bdacfe96edb8c4feb840ad48c21fcfae6a2a4a93eca6b49039e2fc0739f2)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct PointGravityWellForce {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

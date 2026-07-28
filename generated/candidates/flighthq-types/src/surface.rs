@@ -9,7 +9,7 @@
 use crate::{AlphaType, ImageResourceCompressed, PixelFormat};
 
 // Source: upstream/packages/types/src/Surface.ts:8 (sha256:b1031fe4ef5c1d3deb40e43e9ac35498c8bc35ad4217086bd1f8732d1f78a0f3)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Surface {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

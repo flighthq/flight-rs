@@ -11,7 +11,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/TransmissionVolumePbrMaterial.ts:11 (sha256:a9dcfc45f73df391d7747d9e18ba602175b8421cc16144dbe110e62d58258b23)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TransmissionVolumePbrMaterial {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -22,6 +22,9 @@ pub struct TransmissionVolumePbrMaterial {
     pub alpha_type: AlphaType,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub shader_key: String,
+    pub textures: Option<Vec<(String, Texture)>>,
+    pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
     pub attenuation_color: f64,
     pub attenuation_distance: f64,
     pub ior: f64,

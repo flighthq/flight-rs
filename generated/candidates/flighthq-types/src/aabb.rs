@@ -9,7 +9,7 @@
 use crate::{Vector3, Vector3Like};
 
 // Source: upstream/packages/types/src/Aabb.ts:7 (sha256:fddcf6f4384ac64540b2d5e5773987e8bd13b153e3415c0fc5624922679fdd33)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Aabb {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -23,7 +23,7 @@ impl PartialEq for Aabb {
 }
 
 // Source: upstream/packages/types/src/Aabb.ts:12 (sha256:b297ec83d7e3724ec14478784fcfb1cfdd769c0f27970ff606ef16e542de48c2)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AabbLike {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

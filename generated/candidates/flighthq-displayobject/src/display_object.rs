@@ -13,9 +13,9 @@ use flighthq_adjustments::{
 };
 use flighthq_materials::create_color_transform;
 use flighthq_node::{
-    create_node, create_node_runtime, get_node_runtime, init_appearance_trait,
-    init_blend_mode_trait, init_bounds_rectangle_runtime_trait, init_bounds_rectangle_trait,
-    init_clip_trait, init_material_trait, init_transform2_d_runtime_trait, init_transform2_d_trait,
+    create_node_runtime, get_node_runtime, init_appearance_trait, init_blend_mode_trait,
+    init_bounds_rectangle_runtime_trait, init_bounds_rectangle_trait, init_clip_trait,
+    init_material_trait, init_transform2_d_runtime_trait, init_transform2_d_trait,
     invalidate_node_appearance,
 };
 use flighthq_types::{
@@ -27,7 +27,7 @@ use flighthq_types::{
     NodeInteractionState, NodeSignals, NodeTraitsKey, Rectangle, Stage,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -77,7 +77,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha_multiplier: Option<f64>,
@@ -95,7 +95,7 @@ impl PartialEq for FlightPartialRecord2 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -131,11 +131,12 @@ impl PartialEq for FlightPartialRecord3 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord4 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<AdjustmentKind>,
     pub color_matrix: Option<Vec<f64>>,
+    pub color_transform: Option<ColorTransform>,
 }
 impl PartialEq for FlightPartialRecord4 {
     fn eq(&self, other: &Self) -> bool {
@@ -143,7 +144,7 @@ impl PartialEq for FlightPartialRecord4 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord5 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha: Option<f64>,
@@ -155,7 +156,7 @@ impl PartialEq for FlightPartialRecord5 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord6 {
     pub __flight_identity: std::sync::Arc<()>,
     pub blend_mode: Option<BlendMode>,
@@ -166,7 +167,7 @@ impl PartialEq for FlightPartialRecord6 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord7 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -185,7 +186,7 @@ impl PartialEq for FlightPartialRecord7 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord8 {
     pub __flight_identity: std::sync::Arc<()>,
 }
@@ -195,7 +196,7 @@ impl PartialEq for FlightPartialRecord8 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord9 {
     pub __flight_identity: std::sync::Arc<()>,
     pub clip: Option<ClipRegion>,
@@ -206,7 +207,7 @@ impl PartialEq for FlightPartialRecord9 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord10 {
     pub __flight_identity: std::sync::Arc<()>,
     pub material: Option<Material>,
@@ -218,7 +219,7 @@ impl PartialEq for FlightPartialRecord10 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord11 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -234,7 +235,7 @@ impl PartialEq for FlightPartialRecord11 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord12 {
     pub __flight_identity: std::sync::Arc<()>,
     pub pivot_x: Option<f64>,
@@ -288,19 +289,35 @@ pub fn create_display_object_generic<R: Clone>(
     create_data: Option<DisplayObjectDataFactory>,
     create_display_object_runtime_factory: Option<DisplayObjectRuntimeFactory<R>>,
 ) -> DisplayObject {
-    let mut out = create_node(
-        (kind).clone(),
-        Some(((obj).clone().unwrap()).clone()),
-        Some(((create_data).clone().unwrap()).clone()),
-        Some(
-            ((create_display_object_runtime_factory).unwrap_or(create_display_object_runtime))
-                .clone(),
-        ),
-    );
+    let mut out = (|| -> Node {
+        let runtime_factory =
+            (create_display_object_runtime_factory).unwrap_or(create_display_object_runtime);
+        let mut out = Node {
+            __flight_identity: std::sync::Arc::new(()),
+            data: if (create_data).is_some() {
+                Some({
+                    let __flight_callback = (create_data.as_ref().unwrap()).clone();
+                    let __flight_result = __flight_callback.lock().unwrap()(Some(
+                        (obj.as_ref().and_then(|value| (value.data).clone())).unwrap(),
+                    ));
+                    __flight_result
+                })
+            } else {
+                None
+            },
+            name: obj.as_ref().and_then(|value| (value.name).clone()),
+            kind: (kind).clone(),
+        };
+        out.enabled = (obj.as_ref().map(|value| value.enabled)).unwrap_or(true);
+        return out;
+    })();
     init_transform2_d_trait(&mut out, Some(((obj).clone().unwrap()).clone()));
     init_bounds_rectangle_trait(
-        &HasBoundsRectangle {
-            __flight_identity: std::sync::Arc::clone(&(out).__flight_identity),
+        &{
+            let __flight_source = &(out);
+            HasBoundsRectangle {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            }
         },
         Some(((obj).clone().unwrap()).clone()),
     );
@@ -335,7 +352,19 @@ pub fn get_display_object_runtime(source: &DisplayObject) -> DisplayObjectRuntim
 
 // Source: upstream/packages/displayobject/src/displayObject.ts:95 (sha256:2b791d3d6f013a3c6c937920cc560a118edd4f567f629026944f13605540b654)
 pub fn is_display_object(node: &NodeAny) -> bool {
-    return ((get_node_runtime(node).traits).clone() == display_object_traits_key_constant);
+    return ((get_node_runtime(&{
+        let __flight_source = &(node);
+        Node {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+        }
+    })
+    .traits)
+        .clone()
+        == display_object_traits_key_constant);
 }
 
 // Source: upstream/packages/displayobject/src/displayObject.ts:99 (sha256:c7a43ea7c71c4292de9bdbedb90aab790bd95c73552155fdbe283cdc1c4c4934)

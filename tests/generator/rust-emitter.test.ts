@@ -36,6 +36,9 @@ describe('Rust emission', () => {
         export function utf16Length(value: string): number {
           return value.length;
         }
+        export function twiceLength(value: string): number {
+          return utf16Length(value) + utf16Length(value);
+        }
         export function selectValue(out: number[], index: number, value: number): void {
           switch (index) {
             case 0:
@@ -44,6 +47,15 @@ describe('Rust emission', () => {
             default:
               throw new Error('unsupported index');
           }
+        }
+        interface Point {
+          x: number;
+        }
+        function setX(out: Point, x: number): void {
+          out.x = x;
+        }
+        export function doubleX(out: Point): void {
+          setX(out, out.x * 2);
         }
       `,
       ts.ScriptTarget.Latest,
@@ -69,6 +81,8 @@ describe('Rust emission', () => {
     expect(output).toContain('fn __flight_pad_start');
     expect(output).toContain('\\u{0000}');
     expect(output).toContain('value.encode_utf16().count() as f64');
+    expect(output).toContain('utf16_length((value).clone())');
+    expect(output).toContain('let __flight_argument_1 = (out.x * 2.0_f64);');
     expect(output).not.toContain('break;');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
@@ -294,8 +308,8 @@ describe('Rust emission', () => {
     expect(output).toContain('.iter().cloned().any(|__flight_item| is_positive(__flight_item))');
     expect(output).toContain('format!("[{}]", __flight_items.join(","))');
     expect(output).toContain('(values).is_some()');
-    expect(output).toContain('&BasePosition {');
-    expect(output).toContain('x: (value).x');
+    expect(output).toContain('&{ let __flight_source = &(value); BasePosition {');
+    expect(output).toContain('x: __flight_source.x');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
     const sourceFile = path.join(fixture, 'lib.rs');
@@ -412,6 +426,10 @@ describe('Rust emission', () => {
             })
             .catch(() => {});
         }
+        export async function requestManager(): Promise<boolean> {
+          await Promise.resolve();
+          return true;
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -427,6 +445,7 @@ describe('Rust emission', () => {
     expect(lowered.diagnostics).toEqual([]);
     expect(output).toContain('move |manager: Manager| -> ()');
     expect(output).toContain('crate::Promise::<()>::default()');
+    expect(output).toContain('pub fn request_manager() -> crate::Promise<bool> {\n  Default::default()');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
     writeFileSync(path.join(fixture, 'generated.rs'), output);
@@ -446,6 +465,89 @@ describe('Rust emission', () => {
         stdio: 'pipe',
       }),
     ).not.toThrow();
+  });
+
+  it('lowers shared byte-buffer views, regex captures, and exhaustive switches', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/useragent/src/portable.ts',
+      `
+        export function firstNativeByte(): number {
+          const buffer = new ArrayBuffer(2);
+          new Uint16Array(buffer)[0] = 0x0102;
+          return new Uint8Array(buffer)[0];
+        }
+        export function execVersion(value: string): string {
+          const match = /version\\/([\\d.]+)/i.exec(value);
+          return match ? match[1] : '';
+        }
+        export function matchVersion(value: string): string {
+          const match = value.match(/version\\/([\\d.]+)/i);
+          return match ? match[1] : '';
+        }
+        export function platform(value: string): string {
+          switch (value) {
+            case 'web':
+              return 'browser';
+            default:
+              return 'native';
+          }
+        }
+        export function majorVersion(value: string): number {
+          const part = value.split('.')[0];
+          const parsed = parseInt(part, 10);
+          return isNaN(parsed) ? 0 : parsed;
+        }
+        export function nativeUserAgent(): string {
+          return typeof navigator !== 'undefined' ? navigator.userAgent : '';
+        }
+        export function nativeTouchPoints(): number {
+          const nav = typeof navigator === 'undefined' ? null : navigator;
+          return nav !== null && 'maxTouchPoints' in nav ? nav.maxTouchPoints : -1;
+        }
+        export function nativeStoredValue(): string {
+          const existing = typeof localStorage !== 'undefined' ? localStorage.getItem('key') : null;
+          if (existing !== null) return existing;
+          return '';
+        }
+        interface Mode {
+          value: number;
+        }
+        export function ensureMode(out: Mode[]): Mode[] {
+          out.length = 1;
+          if (out[0] === undefined) out[0] = { value: 0 };
+          return out;
+        }
+        export function positiveOptional(value?: number): boolean {
+          return typeof value === 'number' && value > 0;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/useragent', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/useragent/src/portable.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('let mut buffer: Vec<u8>');
+    expect(output).toContain('let __flight_bytes = __flight_value.to_ne_bytes()');
+    expect(output).toContain('.captures(&');
+    expect(output).toContain('collect::<Vec<_>>()');
+    expect(output).toContain('i64::from_str_radix');
+    expect(output).toContain('.is_nan()');
+    expect(output).toContain('pub fn native_user_agent() -> String {\n  return "".to_owned();');
+    expect(output).toContain('pub fn native_touch_points() -> f64');
+    expect(output).toContain('let nav: Option<crate::OpaqueHostValue> = None;');
+    expect(output).toContain('return (-1.0_f64);');
+    expect(output).not.toContain('host.maxTouchPoints');
+    expect(output).toContain('let existing: Option<crate::OpaqueHostValue> = None;');
+    expect(output).toContain('.get((0.0_f64) as usize).is_none()');
+    expect(output).toContain('.as_ref().is_some_and(|value| *value > 0.0_f64)');
+    expect(output).toContain('exhaustive TypeScript switch completed without returning');
   });
 
   it('uses imported generic signatures to type structural call arguments', () => {
@@ -508,6 +610,210 @@ describe('Rust emission', () => {
     );
     expect(() =>
       execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', 'lib.rs'], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('inlines cross-module structural helpers and projects optional cast fields', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/adjustments/src/caller.ts',
+      `
+        import { readMatrix } from './helper';
+        export interface Adjustment {
+          kind: string;
+        }
+        export function resolveMatrix(adjustment: Adjustment): readonly number[] | null {
+          return readMatrix(adjustment);
+        }
+        export interface Backend {
+          run: () => void;
+        }
+        export function createBackend(): Backend {
+          const backend: Backend & { refresh?: () => void } = {
+            run() {},
+            refresh() {},
+          };
+          return backend;
+        }
+        export function refreshBackend(backend: Backend): void {
+          const maybeRefreshable = backend as unknown as { refresh?: () => void };
+          if (typeof maybeRefreshable.refresh === 'function') maybeRefreshable.refresh();
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const helper = ts.createSourceFile(
+      '/workspace/upstream/packages/adjustments/src/helper.ts',
+      `
+        interface MatrixAdjustment {
+          kind: string;
+          matrix: readonly number[];
+        }
+        export function readMatrix(value: Readonly<{ kind: string }>): readonly number[] | null {
+          const matrix = (value as Readonly<Partial<MatrixAdjustment>>).matrix;
+          return Array.isArray(matrix) ? matrix : null;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/adjustments', '/workspace');
+    const helperLowered = lowerTypeScriptSource(helper, '@flighthq/adjustments', '/workspace');
+    const helperFunction = helperLowered.declarations.find(
+      (declaration): declaration is Extract<(typeof helperLowered.declarations)[number], { kind: 'function' }> =>
+        declaration.kind === 'function',
+    );
+    const helperTypes = Object.fromEntries(
+      helperLowered.declarations.flatMap((declaration) =>
+        declaration.kind === 'type' ? [[declaration.name, declaration.type]] : [],
+      ),
+    );
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      semanticFunctions: helperFunction ? [helperFunction] : [],
+      semanticTypes: helperTypes,
+      source: 'upstream/packages/adjustments/src/caller.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(helperLowered.diagnostics).toEqual([]);
+    expect(output).not.toContain('read_matrix(adjustment)');
+    expect(output).toContain('let matrix = None::<Vec<f64>>');
+    expect(output).toContain('refresh: None');
+    expect(output).toContain('.as_ref().map_or("undefined", |_| "function")');
+    expect(output).toContain('run: (__flight_source.run).clone()');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('canonicalizes repeated structural parameters across functions in one module', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/adjustments/src/signature.ts',
+      `
+        function signature(values: ReadonlyArray<Readonly<{ kind: string }>>): string {
+          return JSON.stringify(values);
+        }
+        export function publicSignature(values: ReadonlyArray<Readonly<{ kind: string }>>): string {
+          return signature(values);
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/adjustments', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/adjustments/src/signature.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('pub struct SharedStructuralRecord1');
+    expect(output).toContain('signature(values)');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('canonicalizes structural signatures against inferred top-level records', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/screen/src/scratch.ts',
+      `
+        const scratchPoint = { x: 0, y: 0 };
+        function readPoint(value: Readonly<{ x: number; y: number }>): number {
+          return value.x + value.y;
+        }
+        export function readScratchPoint(): number {
+          return readPoint(scratchPoint);
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/screen', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/screen/src/scratch.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('pub struct SharedStructuralRecord1');
+    expect(output).toContain('SharedStructuralRecord1 {');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('preserves fields across discriminated open-interface families', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/lighting/src/openFamily.ts',
+      `
+        export interface Light {
+          kind: string;
+        }
+        export interface PointLight extends Light {
+          kind: 'PointLight';
+          range: number;
+        }
+        export function getRange(light: Light): number {
+          const point = light as PointLight;
+          return point.range;
+        }
+        export function getPointRange(point: PointLight): number {
+          return getRange(point);
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/lighting', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/lighting/src/openFamily.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toMatch(/pub struct Light \{[\s\S]*pub range: f64,/u);
+    expect(output).toContain('..Default::default()');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
         cwd: fixture,
         stdio: 'pipe',
       }),
@@ -738,6 +1044,45 @@ describe('Rust emission', () => {
     expect(output).toContain('pub struct Roles');
     expect(output).toContain('pub static ROLES: std::sync::LazyLock<Roles>');
     expect(output).toContain('return (ROLES.copy).clone()');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('uses Rust turbofish syntax for generic structural projections', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/node/src/genericProjection.ts',
+      `
+        interface Source<T> {
+          readonly value: T;
+        }
+        interface Target<T> {
+          readonly value: T;
+        }
+        export function project<T>(source: Source<T>): Target<T> {
+          return source;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/node', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/node/src/genericProjection.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('Target::<T> {');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
     const sourceFile = path.join(fixture, 'lib.rs');
@@ -1132,7 +1477,7 @@ describe('Rust emission', () => {
     expect(output).toContain('crate::host_value::<Option<crate::OpaqueHostValue>>("host.target")');
     expect(output).toContain('crate::host_value::<f64>("host.call")');
     expect(output).toContain('crate::host_value::<Option<String>>("host.language")');
-    expect(output).toContain('Some(crate::host_value::<Vec<crate::OpaqueHostValue>>("host.call"))');
+    expect(output).toContain('let values: Option<Vec<crate::OpaqueHostValue>> = None;');
     expect(output).toContain('for _segment in (crate::host_value::<Vec<crate::OpaqueHostValue>>("host.call"))');
     expect(output).toContain('crate::host_value::<f64>("host.index")');
     expect(output).toContain('crate::host_value::<String>("host.segment").encode_utf16().count() as f64');

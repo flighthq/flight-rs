@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/DecodedImage.ts:5 (sha256:b15a526392f9278b8177a746db9d128ae267248a7f2fc9c968da69246f3df017)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct DecodedImage {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

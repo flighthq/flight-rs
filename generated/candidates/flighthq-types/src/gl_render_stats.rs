@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/GlRenderStats.ts:1 (sha256:1f13b147835dbaa106b3a6a6d9c329a105bd72f05dc81e86f568f8c0522afca5)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlRenderStats {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

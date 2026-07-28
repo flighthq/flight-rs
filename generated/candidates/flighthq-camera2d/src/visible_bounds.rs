@@ -8,18 +8,37 @@
 
 use crate::get_camera2_d_view_matrix;
 use flighthq_geometry::{create_matrix, inverse_matrix, matrix_transform_bounds};
-use flighthq_types::{Camera2D, Matrix, RectangleLike};
+use flighthq_types::{Camera2D, Matrix, MatrixLike, RectangleLike};
 
 // Source: upstream/packages/camera2d/src/visibleBounds.ts:12 (sha256:461d01346f3440b6ceb039d7aa60872eb9d0c58d9732f46a86c049c57131059e)
 pub fn get_camera2_d_visible_bounds(camera: &Camera2D, out: &mut RectangleLike) -> () {
     get_camera2_d_view_matrix(camera, &mut (*SCRATCH_MATRIX.lock().unwrap()));
-    inverse_matrix(
-        &mut (*SCRATCH_INVERSE.lock().unwrap()),
-        &(*SCRATCH_MATRIX.lock().unwrap()),
-    );
+    inverse_matrix(&mut (*SCRATCH_INVERSE.lock().unwrap()), &{
+        let __flight_source = &(*SCRATCH_MATRIX.lock().unwrap());
+        MatrixLike {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            a: __flight_source.a,
+            b: __flight_source.b,
+            c: __flight_source.c,
+            d: __flight_source.d,
+            tx: __flight_source.tx,
+            ty: __flight_source.ty,
+        }
+    });
     matrix_transform_bounds(
         out,
-        &(*SCRATCH_INVERSE.lock().unwrap()),
+        &{
+            let __flight_source = &(*SCRATCH_INVERSE.lock().unwrap());
+            MatrixLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                a: __flight_source.a,
+                b: __flight_source.b,
+                c: __flight_source.c,
+                d: __flight_source.d,
+                tx: __flight_source.tx,
+                ty: __flight_source.ty,
+            }
+        },
         0.0_f64,
         0.0_f64,
         camera.viewport_width,

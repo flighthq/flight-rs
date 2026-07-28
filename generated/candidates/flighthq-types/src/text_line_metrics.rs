@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/TextLineMetrics.ts:1 (sha256:64a88c9ccc0e9fe3487909249cc2864640081668dda970a173ad10e1e25ea147)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextLineMetrics {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

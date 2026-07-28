@@ -10,7 +10,7 @@
 pub type SpatialObjectId = f64;
 
 // Source: upstream/packages/types/src/Spatial.ts:19 (sha256:b6d4e18dccb6b633e55a76a547626386e1a252b89d1832b0ec714542a680deab)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SpatialAabb {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -26,7 +26,7 @@ impl PartialEq for SpatialAabb {
 }
 
 // Source: upstream/packages/types/src/Spatial.ts:29 (sha256:ade59b2f2d517cdbda7de60ef266ff2e20d781bbe29a295411ab44ff58c12936)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SpatialPair {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

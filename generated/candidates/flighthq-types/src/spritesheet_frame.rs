@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/SpritesheetFrame.ts:1 (sha256:4f827eaaaaaca75e8a9b87aa72d34e221739ae8994eeb32f74bf5b0018147a67)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SpritesheetFrame {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

@@ -8,7 +8,7 @@
 
 use flighthq_types::DisplacementEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub intensity: Option<f64>,
@@ -22,7 +22,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/displacementEffect.ts:3 (sha256:afd4c94e0ffcb042de03804d5b8d728e4525beb0996e75687a5259ff6e585183)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateDisplacementEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -47,6 +47,7 @@ pub fn create_displacement_effect(options: Option<FlightOmitRecord1>) -> Displac
             intensity: __flight_spread_1.intensity,
             frequency: __flight_spread_1.frequency,
             seed: __flight_spread_1.seed,
+            ..Default::default()
         }
     };
 }

@@ -21,7 +21,7 @@ use flighthq_types::{
 };
 pub use flighthq_types::{MESH_KIND, Mesh, MeshRuntime};
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub data: Option<NodeData>,
@@ -44,7 +44,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -80,7 +80,7 @@ impl PartialEq for FlightPartialRecord2 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub data: Option<NodeData>,
@@ -99,7 +99,7 @@ impl PartialEq for FlightPartialRecord3 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord4 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha: Option<f64>,
@@ -111,7 +111,7 @@ impl PartialEq for FlightPartialRecord4 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord5 {
     pub __flight_identity: std::sync::Arc<()>,
     pub position: Option<Vector3>,
@@ -148,45 +148,54 @@ pub fn clone_mesh(source: &Mesh) -> Mesh {
         }),
     );
     clone.alpha = source.alpha;
-    set_node_transform3_d(
-        &mut clone,
-        &Transform3DLike {
-            __flight_identity: std::sync::Arc::clone(&(source).__flight_identity),
-            position: ((source).position).clone(),
-            rotation: ((source).rotation).clone(),
-            scale: ((source).scale).clone(),
-        },
-    );
-    if is_node_local_matrix4_detached(&Transform3DNode {
-        __flight_identity: std::sync::Arc::clone(&(source).__flight_identity),
-        data: ((source).data).clone(),
-        enabled: (source).enabled,
-        kind: ((source).kind).clone(),
-        name: ((source).name).clone(),
-        position: ((source).position).clone(),
-        rotation: ((source).rotation).clone(),
-        scale: ((source).scale).clone(),
+    set_node_transform3_d(&mut clone, &{
+        let __flight_source = &(source);
+        Transform3DLike {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            position: (__flight_source.position).clone(),
+            rotation: (__flight_source.rotation).clone(),
+            scale: (__flight_source.scale).clone(),
+        }
+    });
+    if is_node_local_matrix4_detached(&{
+        let __flight_source = &(source);
+        Transform3DNode {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+            position: (__flight_source.position).clone(),
+            rotation: (__flight_source.rotation).clone(),
+            scale: (__flight_source.scale).clone(),
+        }
     }) {
         set_node_local_matrix4(
-            &Transform3DNode {
-                __flight_identity: std::sync::Arc::clone(&(clone).__flight_identity),
-                data: ((clone).data).clone(),
-                enabled: (clone).enabled,
-                kind: ((clone).kind).clone(),
-                name: ((clone).name).clone(),
-                position: ((clone).position).clone(),
-                rotation: ((clone).rotation).clone(),
-                scale: ((clone).scale).clone(),
+            &{
+                let __flight_source = &(clone);
+                Transform3DNode {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    data: (__flight_source.data).clone(),
+                    enabled: __flight_source.enabled,
+                    kind: (__flight_source.kind).clone(),
+                    name: (__flight_source.name).clone(),
+                    position: (__flight_source.position).clone(),
+                    rotation: (__flight_source.rotation).clone(),
+                    scale: (__flight_source.scale).clone(),
+                }
             },
-            &get_node_local_matrix4(&Transform3DNode {
-                __flight_identity: std::sync::Arc::clone(&(source).__flight_identity),
-                data: ((source).data).clone(),
-                enabled: (source).enabled,
-                kind: ((source).kind).clone(),
-                name: ((source).name).clone(),
-                position: ((source).position).clone(),
-                rotation: ((source).rotation).clone(),
-                scale: ((source).scale).clone(),
+            &get_node_local_matrix4(&{
+                let __flight_source = &(source);
+                Transform3DNode {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    data: (__flight_source.data).clone(),
+                    enabled: __flight_source.enabled,
+                    kind: (__flight_source.kind).clone(),
+                    name: (__flight_source.name).clone(),
+                    position: (__flight_source.position).clone(),
+                    rotation: (__flight_source.rotation).clone(),
+                    scale: (__flight_source.scale).clone(),
+                }
             }),
         );
     }
@@ -218,12 +227,15 @@ pub fn create_mesh(
 
 // Source: upstream/packages/scene/src/mesh.ts:58 (sha256:3075d4aa4f8277ac28e3a3c15c21c3b9e4f7403ec139088ca5b0afc9a5e0e2b5)
 pub fn enable_mesh_signals(source: &Mesh) -> NodeSignals {
-    return enable_node_signals(&Node {
-        __flight_identity: std::sync::Arc::clone(&(source).__flight_identity),
-        data: ((source).data).clone(),
-        enabled: (source).enabled,
-        kind: ((source).kind).clone(),
-        name: ((source).name).clone(),
+    return enable_node_signals(&{
+        let __flight_source = &(source);
+        Node {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+        }
     });
 }
 
@@ -240,28 +252,75 @@ pub fn get_mesh_deformer(source: &Mesh) -> MeshDeformer {
 
 // Source: upstream/packages/scene/src/mesh.ts:74 (sha256:c7679192eae905074e4e69117bcd5251d816c92261d0ce8146a129a121728f1c)
 pub fn get_mesh_runtime(source: &Mesh) -> MeshRuntime {
-    return get_scene_node_runtime(&SceneNode {
-        __flight_identity: std::sync::Arc::clone(&(source).__flight_identity),
-        data: ((source).data).clone(),
-        enabled: (source).enabled,
-        kind: ((source).kind).clone(),
-        name: ((source).name).clone(),
-        alpha: (source).alpha,
-        visible: (source).visible,
-        position: ((source).position).clone(),
-        rotation: ((source).rotation).clone(),
-        scale: ((source).scale).clone(),
-    });
+    return {
+        let __flight_source = &(get_scene_node_runtime(&{
+            let __flight_source = &(source);
+            SceneNode {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                data: (__flight_source.data).clone(),
+                enabled: __flight_source.enabled,
+                kind: (__flight_source.kind).clone(),
+                name: (__flight_source.name).clone(),
+                alpha: __flight_source.alpha,
+                visible: __flight_source.visible,
+                position: (__flight_source.position).clone(),
+                rotation: (__flight_source.rotation).clone(),
+                scale: (__flight_source.scale).clone(),
+            }
+        }));
+        MeshRuntime {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            binding: (__flight_source.binding).clone(),
+            appearance_id: __flight_source.appearance_id,
+            bounds_using_local_bounds_id: __flight_source.bounds_using_local_bounds_id,
+            bounds_using_local_transform_id: __flight_source.bounds_using_local_transform_id,
+            can_add_child: (__flight_source.can_add_child).clone(),
+            children: (__flight_source.children).clone(),
+            color_adjustments: (__flight_source.color_adjustments).clone(),
+            resolved_color_transform: (__flight_source.resolved_color_transform).clone(),
+            color_adjustments_channel_mixing: __flight_source.color_adjustments_channel_mixing,
+            traits: (__flight_source.traits).clone(),
+            interaction_signals: (__flight_source.interaction_signals).clone(),
+            local_bounds_id: __flight_source.local_bounds_id,
+            local_bounds_using_local_bounds_id: __flight_source.local_bounds_using_local_bounds_id,
+            local_content_id: __flight_source.local_content_id,
+            local_transform_id: __flight_source.local_transform_id,
+            local_transform_using_local_transform_id: __flight_source
+                .local_transform_using_local_transform_id,
+            node_signals: (__flight_source.node_signals).clone(),
+            interaction_state: (__flight_source.interaction_state).clone(),
+            parent: (__flight_source.parent).clone(),
+            world_bounds_using_local_bounds_id: __flight_source.world_bounds_using_local_bounds_id,
+            world_bounds_using_world_transform_id: __flight_source
+                .world_bounds_using_world_transform_id,
+            world_transform_id: __flight_source.world_transform_id,
+            world_transform_using_local_transform_id: __flight_source
+                .world_transform_using_local_transform_id,
+            world_transform_using_parent_transform_id: __flight_source
+                .world_transform_using_parent_transform_id,
+            world_alpha: __flight_source.world_alpha,
+            world_alpha_using_appearance_id: __flight_source.world_alpha_using_appearance_id,
+            world_alpha_using_parent_appearance_id: __flight_source
+                .world_alpha_using_parent_appearance_id,
+            world_appearance_id: __flight_source.world_appearance_id,
+            local_matrix4: (__flight_source.local_matrix4).clone(),
+            local_matrix4_detached: __flight_source.local_matrix4_detached,
+            world_matrix4: (__flight_source.world_matrix4).clone(),
+        }
+    };
 }
 
 // Source: upstream/packages/scene/src/mesh.ts:78 (sha256:466ba13ecedfaf8075dc2fe6b2531259b77deb132787565db2b95555df9410c9)
 pub fn get_mesh_signals(source: &Mesh) -> Option<NodeSignals> {
-    return get_node_signals(&Node {
-        __flight_identity: std::sync::Arc::clone(&(source).__flight_identity),
-        data: ((source).data).clone(),
-        enabled: (source).enabled,
-        kind: ((source).kind).clone(),
-        name: ((source).name).clone(),
+    return get_node_signals(&{
+        let __flight_source = &(source);
+        Node {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+        }
     });
 }
 

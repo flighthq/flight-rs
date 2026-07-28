@@ -9,7 +9,7 @@
 use crate::TextLayoutResult;
 
 // Source: upstream/packages/types/src/TextInputEditingOptions.ts:3 (sha256:5590b9268fa80b60dca5aef1830cbce447b9bc3240aa278d1e8c521d2f3c2868)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct HandleTextInputKeyboardOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -25,7 +25,7 @@ impl PartialEq for HandleTextInputKeyboardOptions {
 }
 
 // Source: upstream/packages/types/src/TextInputEditingOptions.ts:11 (sha256:3682fbf9a96dcd27f1b6c9bc18511c79dd7807f6758e8170b382151c31a2fc2a)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ReplaceTextInputOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

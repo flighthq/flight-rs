@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/ParticleObjectsUpdateOptions.ts:1 (sha256:1ed9b46eef521e88df1ffdb7977e1ad37acda2e09c6c5b198ec3b8aaf15e7fd0)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ParticleObjectsUpdateOptionsRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub on_death: Option<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
@@ -20,7 +20,7 @@ impl PartialEq for ParticleObjectsUpdateOptionsRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ParticleObjectsUpdateOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

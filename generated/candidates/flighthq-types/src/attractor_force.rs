@@ -9,7 +9,7 @@
 use crate::ForceFalloff;
 
 // Source: upstream/packages/types/src/AttractorForce.ts:3 (sha256:4a254f8d5da04800e4650dfb75e31888fd2646240cbba4e557003330f7d39df6)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AttractorForce {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

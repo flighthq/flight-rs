@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/PathSegment.ts:12 (sha256:db16b55842026cbb291940c65ffaefa52646bfcbdbc43d08be6790754e4c8b20)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct PathSegment {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/SceneMetadata.ts:4 (sha256:3810ff78b354f1ff97baaf4c1518bebbea1f3df522afa50f5d449004054ad09f)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SceneMetadata {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

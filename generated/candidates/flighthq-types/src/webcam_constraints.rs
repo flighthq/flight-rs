@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/WebcamConstraints.ts:1 (sha256:7eb44a726269aabe8168241ccb3838d727d91d974673cb660d0d612ba2fcf4cc)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct WebcamConstraints {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

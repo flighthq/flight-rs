@@ -92,7 +92,7 @@ pub fn create_uniform_grid_spatial_backend(cell_size: f64) -> SpatialIndexBacken
 }
 
 // Source: upstream/packages/spatial/src/uniformGrid.ts:58 (sha256:bf8ee7d148f40d101a35cf9e62d37751ed15b9b9ce6f5ad5dcbfcc8b44a4d9a1)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct GridCell {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -107,7 +107,7 @@ impl PartialEq for GridCell {
 }
 
 // Source: upstream/packages/spatial/src/uniformGrid.ts:70 (sha256:57e8d887164f3090f0d102ec05909c147024674db43a35a732ab5894c59f7ae1)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct UniformGrid {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

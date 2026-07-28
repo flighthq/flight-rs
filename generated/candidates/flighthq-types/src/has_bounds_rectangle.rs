@@ -9,7 +9,7 @@
 use crate::{Kind, NodeData, Rectangle};
 
 // Source: upstream/packages/types/src/HasBoundsRectangle.ts:6 (sha256:0ecfccab9df1edf64e1fa4ad53d28a8ceedc0b71d2ef87d53af34349fd0640b4)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct HasBoundsRectangle {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -40,7 +40,7 @@ impl PartialEq for HasBoundsRectangleRuntime {
 }
 
 // Source: upstream/packages/types/src/HasBoundsRectangle.ts:15 (sha256:8fddb53399dce104a81ccb3922daaad01147fa43545a5ab9705329b6ee7c44f3)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct BoundsNode {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -56,7 +56,7 @@ impl PartialEq for BoundsNode {
 }
 
 // Source: upstream/packages/types/src/HasBoundsRectangle.ts:16 (sha256:d5830d1d56f8a58a70a0fca0439a5f76e222af81496c1a33fa0321d3c45855c6)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct BoundsNodeAny {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -68,7 +68,7 @@ impl PartialEq for BoundsNodeAny {
 }
 
 // Source: upstream/packages/types/src/HasBoundsRectangle.ts:18 (sha256:fd7d412c542ae8c3de6675e94131f1b2b5d5387ab2f73f83b3cb7b4f4fa7affe)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Spatial2DNode {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

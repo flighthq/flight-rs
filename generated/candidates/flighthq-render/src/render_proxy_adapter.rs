@@ -9,13 +9,46 @@
 use crate::{get_render_state_runtime, install_render_adapt_hook, update_render_proxy_renderer};
 use flighthq_node::invalidate_node_appearance;
 use flighthq_types::{
-    Adjustment, BlendMode, ColorTransform, DisplayObjectClipHooks, InteractionSignals, Material,
-    MaterialData, Matrix, Node, NodeInteractionState, NodeSignals, NodeTraitsKey, RenderProxy2D,
-    RenderProxyAdapter, RenderState, Renderable, SceneGraphSyncPolicy,
+    Adjustment, BlendMode, ColorTransform, DisplayObjectClipHooks, InteractionSignals, Kind,
+    Material, MaterialData, Matrix, Node, NodeInteractionState, NodeSignals, NodeTraitsKey,
+    RenderProxy, RenderProxy2D, RenderProxyAdapter, RenderState, Renderable, Renderer,
+    RendererData, SceneGraphSyncPolicy,
 };
 
 #[derive(Clone)]
-pub struct FlightPartialRecord1 {
+pub struct SharedStructuralRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub source: Renderable,
+    pub kind: Kind,
+    pub next: Option<RenderProxy>,
+    pub alpha: f64,
+    pub appearance_frame_id: f64,
+    pub blend_mode: Option<BlendMode>,
+    pub color_transform: Option<ColorTransform>,
+    pub material: Option<Material>,
+    pub material_data: Option<MaterialData>,
+    pub last_appearance_id: f64,
+    pub last_local_content_id: f64,
+    pub last_local_transform_id: f64,
+    pub name: Option<String>,
+    pub renderer: Option<Renderer>,
+    pub renderer_data: Option<RendererData>,
+    pub renderer_data_source: Option<Renderable>,
+    pub renderer_map_id: f64,
+    pub transform_frame_id: f64,
+    pub visible: bool,
+    pub transform2_d: Matrix,
+    pub traverse_children: bool,
+    pub clip_depth: f64,
+}
+impl PartialEq for SharedStructuralRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
     pub appearance_id: Option<f64>,
@@ -44,14 +77,14 @@ pub struct FlightPartialRecord1 {
     pub world_transform_using_local_transform_id: Option<f64>,
     pub world_transform_using_parent_transform_id: Option<f64>,
 }
-impl PartialEq for FlightPartialRecord1 {
+impl PartialEq for FlightPartialRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-#[derive(Clone)]
-pub struct FlightPartialRecord2 {
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub allow_smoothing: Option<bool>,
     pub background_color: Option<f64>,
@@ -66,40 +99,29 @@ pub struct FlightPartialRecord2 {
     pub scene_graph_sync_policy: Option<SceneGraphSyncPolicy>,
     pub round_pixels: Option<bool>,
 }
-impl PartialEq for FlightPartialRecord2 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone)]
-pub struct FlightPartialRecord3 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub material: Option<Material>,
-    pub material_data: Option<MaterialData>,
-}
 impl PartialEq for FlightPartialRecord3 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-// Source: upstream/packages/render/src/renderProxyAdapter.ts:7 (sha256:530d65dcefc2ec1b91a7b5ba71ebfb9db7e1bff73c7f86fdaaac92f0bc17d6c2)
-#[derive(Clone)]
-struct ApplyRenderProxyAdapterRecord4 {
-    __flight_identity: std::sync::Arc<()>,
-    traverse_children: bool,
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord4 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub material: Option<Material>,
+    pub material_data: Option<MaterialData>,
 }
-impl PartialEq for ApplyRenderProxyAdapterRecord4 {
+impl PartialEq for FlightPartialRecord4 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
+// Source: upstream/packages/render/src/renderProxyAdapter.ts:7 (sha256:530d65dcefc2ec1b91a7b5ba71ebfb9db7e1bff73c7f86fdaaac92f0bc17d6c2)
 pub fn apply_render_proxy_adapter(
     state: &RenderState,
     source: &Renderable,
-    data: &mut ApplyRenderProxyAdapterRecord4,
+    data: &mut SharedStructuralRecord1,
 ) -> () {
     let render_adapter = get_render_state_runtime(state)
         .render_proxy_adapter_map
@@ -111,7 +133,36 @@ pub fn apply_render_proxy_adapter(
         let result = {
             let __flight_callback = (render_adapter.as_ref().unwrap().adapt).clone();
             let __flight_result =
-                __flight_callback.lock().unwrap()((*state).clone(), (*source).clone(), data);
+                __flight_callback.lock().unwrap()((*state).clone(), (*source).clone(), {
+                    let __flight_source = &((*data).clone());
+                    RenderProxy2D {
+                        __flight_identity: std::sync::Arc::clone(
+                            &__flight_source.__flight_identity,
+                        ),
+                        source: (__flight_source.source).clone(),
+                        kind: (__flight_source.kind).clone(),
+                        next: (__flight_source.next).clone(),
+                        alpha: __flight_source.alpha,
+                        appearance_frame_id: __flight_source.appearance_frame_id,
+                        blend_mode: (__flight_source.blend_mode).clone(),
+                        color_transform: (__flight_source.color_transform).clone(),
+                        material: (__flight_source.material).clone(),
+                        material_data: (__flight_source.material_data).clone(),
+                        last_appearance_id: __flight_source.last_appearance_id,
+                        last_local_content_id: __flight_source.last_local_content_id,
+                        last_local_transform_id: __flight_source.last_local_transform_id,
+                        name: (__flight_source.name).clone(),
+                        renderer: (__flight_source.renderer).clone(),
+                        renderer_data: (__flight_source.renderer_data).clone(),
+                        renderer_data_source: (__flight_source.renderer_data_source).clone(),
+                        renderer_map_id: __flight_source.renderer_map_id,
+                        transform_frame_id: __flight_source.transform_frame_id,
+                        visible: __flight_source.visible,
+                        transform2_d: (__flight_source.transform2_d).clone(),
+                        traverse_children: __flight_source.traverse_children,
+                        clip_depth: __flight_source.clip_depth,
+                    }
+                });
             __flight_result
         };
         if (result).is_some() {

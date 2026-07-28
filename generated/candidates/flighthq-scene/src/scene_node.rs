@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 use flighthq_node::{
-    create_node, create_node_runtime, enable_node_signals, get_node_runtime, get_node_signals,
+    create_node_runtime, enable_node_signals, get_node_runtime, get_node_signals,
     init_appearance_trait, init_transform3_d_runtime_trait, init_transform3_d_trait,
 };
 use flighthq_types::{
@@ -17,7 +17,7 @@ use flighthq_types::{
 };
 pub use flighthq_types::{SCENE_NODE_KIND, SceneNode, SceneNodeRuntime, SceneNodeTraits};
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub data: Option<NodeData>,
@@ -36,7 +36,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub binding: Option<crate::OpaqueHostValue>,
@@ -72,7 +72,7 @@ impl PartialEq for FlightPartialRecord2 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha: Option<f64>,
@@ -84,7 +84,7 @@ impl PartialEq for FlightPartialRecord3 {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightPartialRecord4 {
     pub __flight_identity: std::sync::Arc<()>,
     pub position: Option<Vector3>,
@@ -100,15 +100,21 @@ impl PartialEq for FlightPartialRecord4 {
 // Source: upstream/packages/scene/src/sceneNode.ts:17 (sha256:63226bd7e603e1382a282e143d894ddef46a663b327e255b2bce15010dbbd5a6)
 pub fn create_scene_node(kind: Option<Kind>, obj: Option<FlightPartialRecord1>) -> SceneNode {
     let kind = kind.unwrap_or((SCENE_NODE_KIND).to_owned());
-    let mut node = create_node(
-        (kind).clone(),
-        Some(((obj).clone().unwrap()).clone()),
-        Some(undefined),
-        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-            move |__flight_argument_0: Option<R>| -> R { create_scene_node_runtime() },
-        )
-            as Box<dyn FnMut(Option<R>) -> R + Send + 'static>))),
-    );
+    let mut node = (|| -> Node {
+        let runtime_factory = create_scene_node_runtime;
+        let mut out = Node {
+            __flight_identity: std::sync::Arc::new(()),
+            data: Some(if (undefined).is_some() {
+                undefined((obj.as_ref().and_then(|value| (value.data).clone())).unwrap())
+            } else {
+                crate::OpaqueHostValue::Null
+            }),
+            name: obj.as_ref().and_then(|value| (value.name).clone()),
+            kind: (kind).clone(),
+        };
+        out.enabled = (obj.as_ref().and_then(|value| value.enabled)).unwrap_or(true);
+        return out;
+    })();
     init_appearance_trait(&mut node, Some(((obj).clone().unwrap()).clone()));
     init_transform3_d_trait(&mut node, None);
     return node;
@@ -128,33 +134,42 @@ pub fn create_scene_node_runtime() -> SceneNodeRuntime {
 
 // Source: upstream/packages/scene/src/sceneNode.ts:38 (sha256:79451d392d0d20a823df24637068db86a986ceca476c01d14fded4205cda79a1)
 pub fn enable_scene_node_signals(source: &SceneNode) -> NodeSignals {
-    return enable_node_signals(&Node {
-        __flight_identity: std::sync::Arc::clone(&(source).__flight_identity),
-        data: ((source).data).clone(),
-        enabled: (source).enabled,
-        kind: ((source).kind).clone(),
-        name: ((source).name).clone(),
+    return enable_node_signals(&{
+        let __flight_source = &(source);
+        Node {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+        }
     });
 }
 
 // Source: upstream/packages/scene/src/sceneNode.ts:42 (sha256:dba286523d03c3be126b782754ac4af20e855dc47ba27121f6aa81a335a2299c)
 pub fn get_scene_node_runtime(source: &SceneNode) -> SceneNodeRuntime {
-    return get_node_runtime(&Node {
-        __flight_identity: std::sync::Arc::clone(&(source).__flight_identity),
-        data: ((source).data).clone(),
-        enabled: (source).enabled,
-        kind: ((source).kind).clone(),
-        name: ((source).name).clone(),
+    return get_node_runtime(&{
+        let __flight_source = &(source);
+        Node {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+        }
     });
 }
 
 // Source: upstream/packages/scene/src/sceneNode.ts:46 (sha256:34a017800aae991e1ed4494dedde801a41f52d1e588f074c87cac81b89daca82)
 pub fn get_scene_node_signals(source: &SceneNode) -> Option<NodeSignals> {
-    return get_node_signals(&Node {
-        __flight_identity: std::sync::Arc::clone(&(source).__flight_identity),
-        data: ((source).data).clone(),
-        enabled: (source).enabled,
-        kind: ((source).kind).clone(),
-        name: ((source).name).clone(),
+    return get_node_signals(&{
+        let __flight_source = &(source);
+        Node {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            data: (__flight_source.data).clone(),
+            enabled: __flight_source.enabled,
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+        }
     });
 }

@@ -31,7 +31,7 @@ impl PartialEq for GlyphSource {
 }
 
 // Source: upstream/packages/types/src/GlyphSource.ts:34 (sha256:35b568c220bc7e447eb59d00ddffd58a2c092b969eb3e20a71199392e2edb9a4)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlyphEntry {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -51,7 +51,7 @@ impl PartialEq for GlyphEntry {
 }
 
 // Source: upstream/packages/types/src/GlyphSource.ts:50 (sha256:0eb6596ab428f58bb83ef3c812867a6539e640d5c18b243b4e76a11c5b205617)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlyphMetrics {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -66,7 +66,7 @@ impl PartialEq for GlyphMetrics {
 }
 
 // Source: upstream/packages/types/src/GlyphSource.ts:60 (sha256:f7176fd3653d1eed66fa8e264d284cacdba9c577464213d51d710bf2f18bea8b)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlyphRasterizedBitmap {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -84,7 +84,7 @@ impl PartialEq for GlyphRasterizedBitmap {
 }
 
 // Source: upstream/packages/types/src/GlyphSource.ts:71 (sha256:41c7407d7cd069a73c5d57fee671d76247ab5f92dfb2173c052ae8224759b857)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlyphRasterizeOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -121,7 +121,7 @@ impl PartialEq for GlyphRasterizerBackend {
 }
 
 // Source: upstream/packages/types/src/GlyphSource.ts:88 (sha256:0e4e882c018edcf42950aa1ffa8e7c33e117c5021bf9aaf9df71ea1547866b3c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlyphAtlasOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -139,7 +139,7 @@ impl PartialEq for GlyphAtlasOptions {
 }
 
 // Source: upstream/packages/types/src/GlyphSource.ts:99 (sha256:dc15e695a4ce542d6a7bf3906d5ca2b88fa4114d6404823a05cb8eb49a786bfc)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlyphAtlasShelf {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -154,7 +154,7 @@ impl PartialEq for GlyphAtlasShelf {
 }
 
 // Source: upstream/packages/types/src/GlyphSource.ts:109 (sha256:93ed7ab4507aab5b5f68c6ccd4bc3dadbdcc4563a8fb382623d12c8cc3195291)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlyphAtlasRuntime {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -181,7 +181,7 @@ impl PartialEq for GlyphAtlasRuntime {
 }
 
 // Source: upstream/packages/types/src/GlyphSource.ts:131 (sha256:8e4d8aabe5261fd2a81059c9e8298e9eef9beea41daee9fbb92c9c0e4b57d96d)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlyphAtlas {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

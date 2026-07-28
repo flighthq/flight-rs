@@ -6,16 +6,31 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::CubeTexture;
+use crate::Vector3;
+use crate::{CubeTexture, Kind};
 
 // Source: upstream/packages/types/src/Environment.ts:6 (sha256:37d6730ce4b1aa4065299ff5ae1ab3d22a8d91deca205f4b503605f00ff3a1ed)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Environment {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub kind: String,
-    pub environment: Option<CubeTexture>,
+    pub kind: Kind,
+    pub casts_shadow: bool,
+    pub color: f64,
+    pub direction: Vector3,
+    pub inner_cone_cos: f64,
     pub intensity: f64,
+    pub normal_bias: f64,
+    pub outer_cone_cos: f64,
+    pub pcf_radius: f64,
+    pub position: Vector3,
+    pub range: f64,
+    pub shadow_bias: f64,
+    pub ground_color: f64,
+    pub sky_color: f64,
+    pub environment: Option<CubeTexture>,
+    pub right: Vector3,
+    pub up: Vector3,
 }
 impl PartialEq for Environment {
     fn eq(&self, other: &Self) -> bool {

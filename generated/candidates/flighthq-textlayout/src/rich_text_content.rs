@@ -34,10 +34,10 @@ pub fn compute_rich_text_content(
         data.condense_white,
         data.max_chars,
     );
-    clamp_ranges(
-        &mut out.format_ranges,
-        (out.text.encode_utf16().count() as f64),
-    );
+    {
+        let __flight_argument_1 = (out.text.encode_utf16().count() as f64);
+        clamp_ranges(&mut out.format_ranges, __flight_argument_1)
+    };
     apply_text_format_ranges(out, &data.text_format_ranges);
 }
 
@@ -99,12 +99,10 @@ fn append_text(
     }
     let start = (out.text.encode_utf16().count() as f64);
     out.text += (value).clone();
-    write_format_range(
-        &mut out.format_ranges,
-        format,
-        start,
-        (out.text.encode_utf16().count() as f64),
-    );
+    {
+        let __flight_argument_3 = (out.text.encode_utf16().count() as f64);
+        write_format_range(&mut out.format_ranges, format, start, __flight_argument_3)
+    };
 }
 
 // Source: upstream/packages/textlayout/src/richTextContent.ts:69 (sha256:f1747b1c807432a75063b6faa16cd2854fba96b7541ac633455c123cf92d47d8)
@@ -276,7 +274,7 @@ fn text_format_equals(a: &TextFormat, b: &TextFormat) -> bool {
     for key in (a_keys).iter().cloned() {
         let a_value = a[key as usize].clone();
         let b_value = b[key as usize].clone();
-        if (false && false) {
+        if (false) && (false) {
             if (a_value.length != b_value.length) {
                 return false;
             }

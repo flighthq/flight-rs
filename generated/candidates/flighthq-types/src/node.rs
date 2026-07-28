@@ -13,7 +13,7 @@ use crate::{Adjustment, ColorTransform, InteractionSignals, Kind, NodeInteractio
 // TypeScript value namespace NodeTraitsKey is represented by its generated Rust type.
 
 // Source: upstream/packages/types/src/Node.ts:8 (sha256:39191231a60dcc3e755c8e4031f1f112ede2e3524412f41f03330316061c9c1d)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct NodeTraitsKey {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -36,7 +36,7 @@ pub type NodeRuntimeFactory<R> =
     std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Option<R>) -> R + Send + 'static>>>;
 
 // Source: upstream/packages/types/src/Node.ts:14 (sha256:38f920314f6e0716d2c3896881e9117164a3e94a87f00fff6e36f9f5d69e1d0c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct NodeTraits {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -52,7 +52,7 @@ impl PartialEq for NodeTraits {
 }
 
 // Source: upstream/packages/types/src/Node.ts:20 (sha256:426dc2d14c89b2af765f48019e4ba9f16cf36c7064b91789ac3a6f185cbf142e)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Node {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

@@ -9,7 +9,7 @@
 use crate::{Matrix4, Mesh, SceneLightBlock};
 
 // Source: upstream/packages/types/src/SceneRenderList.ts:19 (sha256:e11b968da873cd528cfaa43d46b5ab9bef8b469ce02eb2d7ce0a7e02127f15e2)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SceneRenderList {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

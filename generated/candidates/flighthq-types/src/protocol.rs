@@ -9,7 +9,7 @@
 use crate::Signal;
 
 // Source: upstream/packages/types/src/Protocol.ts:5 (sha256:ba077607db282b1c9f6ca90eea8515cebe470d4f5183c598f62a10cbc8ebb69a)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ParsedProtocolUrl {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

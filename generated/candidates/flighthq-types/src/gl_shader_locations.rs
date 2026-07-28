@@ -9,7 +9,7 @@
 use crate::{GlRenderState, RenderProxy2D};
 
 // Source: upstream/packages/types/src/GlShaderLocations.ts:3 (sha256:a325101a93776ff6cf403aaf8ccb7ce58d8b7c489527809358af07d486f1a2b8)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct GlShaderLocations {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

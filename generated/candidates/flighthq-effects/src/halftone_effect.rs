@@ -8,7 +8,7 @@
 
 use flighthq_types::HalftoneEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub scale: Option<f64>,
@@ -21,7 +21,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/halftoneEffect.ts:3 (sha256:c0a7642f369912c99adfe0329fb649695a982e51a91ec5c9f4b041fc55c09c50)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateHalftoneEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -44,6 +44,7 @@ pub fn create_halftone_effect(options: Option<FlightOmitRecord1>) -> HalftoneEff
             kind: "HalftoneEffect".to_owned(),
             scale: __flight_spread_1.scale,
             angle: __flight_spread_1.angle,
+            ..Default::default()
         }
     };
 }

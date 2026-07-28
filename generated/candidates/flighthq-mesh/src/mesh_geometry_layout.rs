@@ -10,7 +10,7 @@ use crate::{MeshGeometryOptions, create_mesh_geometry};
 use flighthq_types::{MeshGeometry, VertexAttribute, VertexAttributeLayout};
 
 // Source: upstream/packages/mesh/src/meshGeometryLayout.ts:15 (sha256:0c1f90826c2b15369835edd583dc7bda176cc18f692ce16696c410422faa1a33)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct ConvertMeshGeometryLayoutRecord1 {
     __flight_identity: std::sync::Arc<()>,
     component_count: f64,

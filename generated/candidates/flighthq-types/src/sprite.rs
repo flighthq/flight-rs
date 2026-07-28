@@ -13,7 +13,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/Sprite.ts:5 (sha256:417d847384b11dc6fde6e0c4683e3e4bbc271e82de90a2a6369c16d776657111)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SpriteData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -77,7 +77,7 @@ impl PartialEq for SpriteRuntime {
 }
 
 // Source: upstream/packages/types/src/Sprite.ts:13 (sha256:ebe1fffa076c256cc6d00a80e625c780e8a0f9b262cab3c8b645b094107d72fb)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Sprite {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

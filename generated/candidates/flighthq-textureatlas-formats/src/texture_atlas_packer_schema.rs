@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasPackerSchema.ts:5 (sha256:b90622ac69b3fedb4b2dec510b2e99c623651e4bf98a07613a26b0273d90fede)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextureAtlasPackerRect {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -23,7 +23,7 @@ impl PartialEq for TextureAtlasPackerRect {
 }
 
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasPackerSchema.ts:12 (sha256:3d25d4fb63609ac30574f0b5b8f7722faa89ee63a70a1e54c14e56d02136c66b)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextureAtlasPackerSize {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -37,7 +37,7 @@ impl PartialEq for TextureAtlasPackerSize {
 }
 
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasPackerSchema.ts:17 (sha256:fe1acd4ffb3357c26c2a2bfd2ed94086829b6a903da894ee5be31e06d73bbaad)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextureAtlasPackerPivot {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -51,7 +51,7 @@ impl PartialEq for TextureAtlasPackerPivot {
 }
 
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasPackerSchema.ts:22 (sha256:1f1fde2202c9eabd9d7cabb7884fcf1f567961fc723415e1bac27fab0ae69807)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextureAtlasPackerFrameTag {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -67,7 +67,7 @@ impl PartialEq for TextureAtlasPackerFrameTag {
 }
 
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasPackerSchema.ts:29 (sha256:864b10bf3703b4f5b773b0425e7d33bc137a004fa2099697b03d411981808987)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextureAtlasPackerHashFrame {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -85,7 +85,7 @@ impl PartialEq for TextureAtlasPackerHashFrame {
 }
 
 // Source: upstream/packages/textureatlas-formats/src/textureAtlasPackerSchema.ts:38 (sha256:9ab26f23dd1cb31acedabd8644d504e3df1efb4f0d6f58e8ab3b1116478e0c38)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextureAtlasPackerArrayFrame {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

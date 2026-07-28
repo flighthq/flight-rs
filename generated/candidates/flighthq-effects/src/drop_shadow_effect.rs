@@ -8,7 +8,7 @@
 
 use flighthq_types::{DropShadowEffect, EffectSourceMode};
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha: Option<f64>,
@@ -28,7 +28,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/dropShadowEffect.ts:4 (sha256:3ab0759bb38792b708d22eb5f5a8d8352d1d2ba3181a9bd200650c5d0a6f40d9)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateDropShadowEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -65,6 +65,7 @@ pub fn create_drop_shadow_effect(options: Option<FlightOmitRecord1>) -> DropShad
             quality: __flight_spread_1.quality,
             source_mode: (__flight_spread_1.source_mode).clone(),
             strength: __flight_spread_1.strength,
+            ..Default::default()
         }
     };
 }

@@ -6,24 +6,30 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::Vector3;
+use crate::CubeTexture;
+use crate::{Kind, Vector3};
 
 // Source: upstream/packages/types/src/AreaLight.ts:7 (sha256:9ea86c550f139c78db1e1e5f74465c7b5551ae23b4269fa6f342fabefe27471a)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AreaLight {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub kind: String,
+    pub kind: Kind,
     pub casts_shadow: bool,
     pub color: f64,
     pub direction: Vector3,
+    pub inner_cone_cos: f64,
     pub intensity: f64,
     pub normal_bias: f64,
+    pub outer_cone_cos: f64,
     pub pcf_radius: f64,
     pub position: Vector3,
     pub range: f64,
-    pub right: Vector3,
     pub shadow_bias: f64,
+    pub ground_color: f64,
+    pub sky_color: f64,
+    pub environment: Option<CubeTexture>,
+    pub right: Vector3,
     pub up: Vector3,
 }
 impl PartialEq for AreaLight {

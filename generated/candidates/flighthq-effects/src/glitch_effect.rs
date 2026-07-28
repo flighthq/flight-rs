@@ -8,7 +8,7 @@
 
 use flighthq_types::GlitchEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub intensity: Option<f64>,
@@ -23,7 +23,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/glitchEffect.ts:3 (sha256:03b2073852f91ad105439e1f2e07636700322abc0e950f3007c8e1f4ef056073)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateGlitchEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -50,6 +50,7 @@ pub fn create_glitch_effect(options: Option<FlightOmitRecord1>) -> GlitchEffect 
             block_size: __flight_spread_1.block_size,
             color_shift: __flight_spread_1.color_shift,
             seed: __flight_spread_1.seed,
+            ..Default::default()
         }
     };
 }

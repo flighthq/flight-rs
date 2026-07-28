@@ -8,7 +8,7 @@
 
 use flighthq_types::RadialBlurEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub center_x: Option<f64>,
@@ -23,7 +23,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/radialBlurEffect.ts:3 (sha256:68819aed0525c78be2fd6a3c6f6ca844a70af6ad4acb49b81f34f3b4e401d66e)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateRadialBlurEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -50,6 +50,7 @@ pub fn create_radial_blur_effect(options: Option<FlightOmitRecord1>) -> RadialBl
             center_y: __flight_spread_1.center_y,
             strength: __flight_spread_1.strength,
             samples: __flight_spread_1.samples,
+            ..Default::default()
         }
     };
 }

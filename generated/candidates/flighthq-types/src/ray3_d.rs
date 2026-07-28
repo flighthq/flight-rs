@@ -9,7 +9,7 @@
 use crate::Vector3;
 
 // Source: upstream/packages/types/src/Ray3D.ts:6 (sha256:2f17c1e22289ae4dfddeb7a4e65e66444a584a087a9bf46bf1fc9f71608132bf)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Ray3D {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

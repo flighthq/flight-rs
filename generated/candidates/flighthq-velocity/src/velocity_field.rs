@@ -66,7 +66,7 @@ pub fn copy_velocity(out: &mut Velocity2D, source: &Velocity2D) -> Velocity2D {
 }
 
 // Source: upstream/packages/velocity/src/velocityField.ts:57 (sha256:fe7d4e4e231d2c435b69b5ae51d9a15bf63e0efbef2488a6c970617ef4bb5c8e)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateVelocityFieldRecord1 {
     __flight_identity: std::sync::Arc<()>,
     samples: Vec<(crate::OpaqueHostValue, crate::OpaqueHostValue)>,
@@ -103,7 +103,7 @@ pub fn damp_velocity(
 }
 
 // Source: upstream/packages/velocity/src/velocityField.ts:80 (sha256:8f596053da0af3d96dcee722eb5814c68847a9f9d75db45e8a18edc0cc778029)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct EnsureVelocitySampleRecord1 {
     __flight_identity: std::sync::Arc<()>,
     x: f64,

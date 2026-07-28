@@ -9,7 +9,7 @@
 use crate::ApplicationWindow;
 
 // Source: upstream/packages/types/src/Dialog.ts:4 (sha256:2da479e7ae1fd3e75c80d5433ee0ec659267e48f3e6c530727b2681c3a23eb86)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FileDialogFilter {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -24,7 +24,7 @@ impl PartialEq for FileDialogFilter {
 }
 
 // Source: upstream/packages/types/src/Dialog.ts:16 (sha256:53c050ed33cc396f7b2b0a42259ba0d150ab85aaabfb793de56538c274ec258e)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FileDialogHandle {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -42,7 +42,7 @@ impl PartialEq for FileDialogHandle {
 pub type FileDialogStartIn = String;
 
 // Source: upstream/packages/types/src/Dialog.ts:37 (sha256:3801250869a4c1c55a3128890cefb7369d0f25c402cc60f287db4f6360d29fed)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct OpenFileDialogOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -61,7 +61,7 @@ impl PartialEq for OpenFileDialogOptions {
 }
 
 // Source: upstream/packages/types/src/Dialog.ts:51 (sha256:0745db5662ca681a7ad9ac1b1d3642dd232e8361479cc01426fef026c727999f)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct OpenDirectoryDialogOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -77,7 +77,7 @@ impl PartialEq for OpenDirectoryDialogOptions {
 }
 
 // Source: upstream/packages/types/src/Dialog.ts:60 (sha256:470f1114705823515bcb88354fdc64b924b2c0e854fcdfa2d4375d73f34086c5)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct SaveFileDialogOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -95,7 +95,7 @@ impl PartialEq for SaveFileDialogOptions {
 }
 
 // Source: upstream/packages/types/src/Dialog.ts:73 (sha256:c35a79c2218c54c750521f58b14f64f0341ef515c4d2b68056657a667155fcff)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct PromptDialogOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -115,7 +115,7 @@ impl PartialEq for PromptDialogOptions {
 pub type MessageDialogKind = String;
 
 // Source: upstream/packages/types/src/Dialog.ts:84 (sha256:8e024b60092946fed8e1d754f27c433fca083f92173e92cf2e0a976b8aa5305b)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct MessageDialogOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -137,7 +137,7 @@ impl PartialEq for MessageDialogOptions {
 }
 
 // Source: upstream/packages/types/src/Dialog.ts:104 (sha256:5955c19ad7714113252dfbab0942d980da86468e0febf98aaf04b3bfc2ce69c6)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct MessageDialogResult {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

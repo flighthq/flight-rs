@@ -6,10 +6,11 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{Texture, Vector3Like};
+use crate::{EmissiveModifierFacing, FogModifierMode};
+use crate::{ModifierKind, ModifierSlot, Texture, Vector2Like, Vector3Like};
 
 // Source: upstream/packages/types/src/VertexDisplaceModifier.ts:10 (sha256:19152c19bdd9931db0c88cecc284140f9f9782c883b08a75585f81d1ec5a4dd2)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct VertexDisplaceModifierSourceValues {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -34,19 +35,43 @@ pub static VERTEX_DISPLACE_MODIFIER_SOURCE: std::sync::LazyLock<
 pub type VertexDisplaceModifierSource = crate::OpaqueHostValue;
 
 // Source: upstream/packages/types/src/VertexDisplaceModifier.ts:28 (sha256:6e37b62b50d5b48500aae731c8675045a8e2096273488315f353d68df10c6e8c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct VertexDisplaceModifier {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub kind: String,
-    pub slot: String,
+    pub kind: ModifierKind,
+    pub slot: ModifierSlot,
     pub source: VertexDisplaceModifierSource,
     pub amplitude: f64,
     pub axis: Option<Vector3Like>,
-    pub map: Option<Texture>,
     pub frequency: Option<f64>,
     pub speed: Option<f64>,
     pub direction: Option<Vector3Like>,
+    pub steps: f64,
+    pub smoothness: Option<f64>,
+    pub color: f64,
+    pub power: Option<f64>,
+    pub intensity: Option<f64>,
+    pub bias: Option<f64>,
+    pub mode: Option<FogModifierMode>,
+    pub near: Option<f64>,
+    pub far: Option<f64>,
+    pub density: Option<f64>,
+    pub tint: f64,
+    pub fresnel_bias: Option<f64>,
+    pub roughness: Option<f64>,
+    pub strength: f64,
+    pub mask: Option<Texture>,
+    pub facing: Option<EmissiveModifierFacing>,
+    pub facing_softness: Option<f64>,
+    pub threshold: f64,
+    pub edge_color: f64,
+    pub edge_width: Option<f64>,
+    pub scale: Option<f64>,
+    pub scroll: Vector2Like,
+    pub secondary_map: Option<Texture>,
+    pub secondary_scroll: Option<Vector2Like>,
+    pub map: Option<Texture>,
 }
 impl PartialEq for VertexDisplaceModifier {
     fn eq(&self, other: &Self) -> bool {

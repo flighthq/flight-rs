@@ -8,7 +8,7 @@
 
 use flighthq_types::MotionBlurEffect;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub intensity: Option<f64>,
@@ -21,7 +21,7 @@ impl PartialEq for FlightOmitRecord1 {
 }
 
 // Source: upstream/packages/effects/src/motionBlurEffect.ts:3 (sha256:527237d0c12d359f1246316cf7e8c878a73ce69edfc04420cc799245d42234cd)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct CreateMotionBlurEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,
 }
@@ -44,6 +44,7 @@ pub fn create_motion_blur_effect(options: Option<FlightOmitRecord1>) -> MotionBl
             kind: "MotionBlurEffect".to_owned(),
             intensity: __flight_spread_1.intensity,
             samples: __flight_spread_1.samples,
+            ..Default::default()
         }
     };
 }

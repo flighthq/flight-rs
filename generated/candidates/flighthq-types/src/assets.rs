@@ -12,7 +12,7 @@ use crate::Signal;
 pub type AssetType = String;
 
 // Source: upstream/packages/types/src/Assets.ts:26 (sha256:dd363886862bfd9145656d2ac0f515e1b2cb838f6ed4935611d53d851439b12d)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AssetDescriptor {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -47,7 +47,7 @@ impl<T> PartialEq for AssetLoaderAdapter<T> {
 }
 
 // Source: upstream/packages/types/src/Assets.ts:49 (sha256:a09ecbdccede6d33c01e404ef6a1e92b86b782f6a5059caf0c931054d57e9471)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AssetEntry {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -63,7 +63,7 @@ impl PartialEq for AssetEntry {
 }
 
 // Source: upstream/packages/types/src/Assets.ts:59 (sha256:c2975e64f20c3887f99effa54097119b86eff375aef455731671bcfdf7a28162)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AssetLibraryRuntime {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -79,7 +79,7 @@ impl PartialEq for AssetLibraryRuntime {
 }
 
 // Source: upstream/packages/types/src/Assets.ts:69 (sha256:df8ec4621d734acf79462ed3e19d1ff9af10d97c7e30e0275f530f18818dcb1c)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AssetLibrary {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -92,7 +92,7 @@ impl PartialEq for AssetLibrary {
 }
 
 // Source: upstream/packages/types/src/Assets.ts:74 (sha256:facd9146857f33e81e96cc11a9688eafb1b7bc17bb7d9530f52b58af4f4c09a0)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AssetLoadProgress {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -106,7 +106,7 @@ impl PartialEq for AssetLoadProgress {
 }
 
 // Source: upstream/packages/types/src/Assets.ts:81 (sha256:bad60d78e16ffc949d43a19f33a86531d48ca77ab22b48512322c868b6f61b71)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AssetGroupLoadOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

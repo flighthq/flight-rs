@@ -9,7 +9,7 @@
 use crate::Vector2;
 
 // Source: upstream/packages/types/src/TextureUvTransform.ts:8 (sha256:c7d84fc63c4e42f7111351d57c474737b772fb184ba51740fbace05a822640f6)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TextureUvTransform {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

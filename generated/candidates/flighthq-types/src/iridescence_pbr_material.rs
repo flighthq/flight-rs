@@ -11,7 +11,7 @@ use crate::{
 };
 
 // Source: upstream/packages/types/src/IridescencePbrMaterial.ts:10 (sha256:5b3ea5014a55ca5d6c53018cfec04235621f6edd3a6f19fe85cf7a70a426a95e)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct IridescencePbrMaterial {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -22,6 +22,9 @@ pub struct IridescencePbrMaterial {
     pub alpha_type: AlphaType,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub shader_key: String,
+    pub textures: Option<Vec<(String, Texture)>>,
+    pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
     pub iridescence: f64,
     pub iridescence_ior: f64,
     pub iridescence_map: Option<Texture>,

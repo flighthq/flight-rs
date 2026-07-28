@@ -25,7 +25,7 @@ impl PathCommand {
 // TypeScript numeric namespace PathCommand is represented by its generated Rust constants.
 
 // Source: upstream/packages/types/src/Path.ts:22 (sha256:9cbb0d15071e08ebc7e743943a37cb1426cb47860423d48eb0de4fd5729f9b81)
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Path {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
