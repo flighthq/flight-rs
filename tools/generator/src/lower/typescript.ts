@@ -31,6 +31,18 @@ const portableTypeReferenceMap: Readonly<Record<string, string>> = {
   Uint8ClampedArray: 'Uint8ClampedArray',
 };
 
+const portableTypedArrayStorage: Readonly<Record<string, string>> = {
+  Float32Array: 'f32',
+  Float64Array: 'f64',
+  Int8Array: 'i8',
+  Int16Array: 'i16',
+  Int32Array: 'i32',
+  Uint8Array: 'u8',
+  Uint8ClampedArray: 'u8',
+  Uint16Array: 'u16',
+  Uint32Array: 'u32',
+};
+
 const platformDynamicTypes = new Set([
   'AbortController',
   'AbortSignal',
@@ -1067,7 +1079,14 @@ function lowerTypeMember(node: ts.TypeElement, context: LoweringContext) {
 function commonType(types: IrType[]): IrType {
   const first = types[0];
   if (!first) return { kind: 'dynamic' };
-  return types.every((item) => JSON.stringify(item) === JSON.stringify(first)) ? first : { kind: 'dynamic' };
+  if (types.every((item) => JSON.stringify(item) === JSON.stringify(first))) return first;
+  if (first.kind === 'named') {
+    const storage = portableTypedArrayStorage[first.name];
+    if (storage && types.every((item) => item.kind === 'named' && portableTypedArrayStorage[item.name] === storage)) {
+      return first;
+    }
+  }
+  return { kind: 'dynamic' };
 }
 
 function hasReturnValue(body: ts.Block): boolean {

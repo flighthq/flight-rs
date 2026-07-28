@@ -146,7 +146,7 @@ pub fn build_surface_sepia_color_matrix(out: &mut Vec<f64>) -> () {
 // Source: upstream/packages/surface/src/surfaceColorMatrix.ts:102 (sha256:2783d62795f430ec2c47013d9ad1b1fdece7f9104f275d9bb4c97a9a7fe1d357)
 pub fn color_matrix_surface(out: &mut Vec<u8>, source: &SurfaceRegion, matrix: &Vec<f64>) -> () {
     if ((matrix.len() as f64) < 20.0_f64) {
-        panic!("Color matrix filter requires 20 values");
+        panic!("{}", "Color matrix filter requires 20 values");
     }
     {
         let mut py = 0.0_f64;

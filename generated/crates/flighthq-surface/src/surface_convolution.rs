@@ -31,10 +31,16 @@ pub fn convolve_surface(
     let matrix_x = __destructure0.matrix_x;
     let matrix_y = __destructure0.matrix_y;
     if ((matrix_x <= 0.0_f64) || (matrix_y <= 0.0_f64)) {
-        panic!("Convolution filter matrix dimensions must be positive");
+        panic!(
+            "{}",
+            "Convolution filter matrix dimensions must be positive"
+        );
     }
     if ((matrix.len() as f64) < (matrix_x * matrix_y)) {
-        panic!("Convolution filter matrix does not match its dimensions");
+        panic!(
+            "{}",
+            "Convolution filter matrix does not match its dimensions"
+        );
     }
     let raw_divisor =
         (options.divisor).unwrap_or(get_convolution_divisor(matrix, (matrix_x * matrix_y)));

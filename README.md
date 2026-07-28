@@ -25,7 +25,7 @@ cargo test --workspace
 
 `npm run wasm` installs the pinned Rust target and an exactly matched `wasm-bindgen` CLI when needed, compiles the generated adapter, and bakes synchronous module bytes into the blessed facade. `npm run check` exercises both generator tests and the real wasm facade parity suite.
 
-The compiled target set currently covers all of `@flighthq/easing`, the portable image-resource state slice, the required type closure, and an initial 14-module `@flighthq/surface` kernel slice. The facade shadows only those mechanically generated operations; every deferred surface export continues to come directly from cultivated TypeScript. Translation coverage expands by improving general lowering rules, while source and declaration deferrals remain fingerprinted in [`reports/generation.json`](reports/generation.json).
+The compiled target set currently covers all of `@flighthq/easing`, the portable image-resource state slice, the required type closure, and an initial 17-module `@flighthq/surface` kernel slice. The facade shadows only those mechanically generated operations; every deferred surface export continues to come directly from cultivated TypeScript. Translation coverage expands by improving general lowering rules, while source and declaration deferrals remain fingerprinted in [`reports/generation.json`](reports/generation.json).
 
 ## Preserved manual port
 

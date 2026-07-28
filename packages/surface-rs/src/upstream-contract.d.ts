@@ -32,6 +32,13 @@ declare module '@flighthq/types' {
     green: number[];
     red: number[];
   }
+
+  export interface SurfaceMismatch {
+    fraction: number;
+    maxChannelDelta: number;
+    mismatchedPixels: number;
+    totalPixels: number;
+  }
 }
 
 declare module '@flighthq/image' {

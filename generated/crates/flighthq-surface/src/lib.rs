@@ -7,8 +7,12 @@ pub struct OpaqueHostValue;
 
 mod surface_alpha;
 pub use surface_alpha::*;
+mod surface_channel;
+pub use surface_channel::*;
 mod surface_color_matrix;
 pub use surface_color_matrix::*;
+mod surface_compare;
+pub use surface_compare::*;
 mod surface_convolution;
 pub use surface_convolution::*;
 mod surface_copy;
@@ -33,3 +37,5 @@ mod surface_pixelate;
 pub use surface_pixelate::*;
 mod surface_query;
 pub use surface_query::*;
+mod surface_tone;
+pub use surface_tone::*;

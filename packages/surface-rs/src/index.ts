@@ -3,6 +3,8 @@
 // implementations; every deferred function remains the cultivated TypeScript
 // implementation until its source is admitted to generation.
 export {
+  applySurfaceCurve,
+  applySurfaceLevels,
   applySurfacePaletteMap,
   buildSurfaceBrightnessColorMatrix,
   buildSurfaceContrastColorMatrix,
@@ -25,7 +27,9 @@ export {
   getSurfaceColorBoundsRectangle,
   getSurfaceCoverage,
   getSurfaceHistogram,
+  getSurfaceMismatch,
   initSurfaceWasm,
+  mergeSurfaceChannels,
   multiplySurfaceAlpha,
   pixelateSurface,
   premultiplySurfacePixels,

@@ -18,7 +18,7 @@ struct EasePiecewiseRecord1 {
 
 pub fn ease_piecewise(segments: Vec<EasingSegment>) -> EasingFunction {
     if ((segments.len() as f64) == 0.0_f64) {
-        panic!("easePiecewise: segments array must not be empty");
+        panic!("{}", "easePiecewise: segments array must not be empty");
     }
     let total_weight = (segments)
         .iter()
@@ -27,7 +27,10 @@ pub fn ease_piecewise(segments: Vec<EasingSegment>) -> EasingFunction {
             (sum + (seg.weight).unwrap_or(1.0_f64))
         });
     if (total_weight <= 0.0_f64) {
-        panic!("easePiecewise: total segment weight must be greater than zero");
+        panic!(
+            "{}",
+            "easePiecewise: total segment weight must be greater than zero"
+        );
     }
     let mut breakpoints: Vec<EasePiecewiseRecord1> = vec![];
     let mut accumulated = 0.0_f64;

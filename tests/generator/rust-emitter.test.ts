@@ -20,6 +20,10 @@ describe('Rust emission', () => {
         export function createScale(scale: number): (value: number) => number {
           return (value) => value * scale;
         }
+        export function requirePositive(value: number): number {
+          if (value < 0) throw new Error(\`expected positive value, received \${value}\`);
+          return value;
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -37,6 +41,7 @@ describe('Rust emission', () => {
     expect(output).toBe(emitRustModule(module));
     expect(output).toContain('pub fn clamp');
     expect(output).toContain('pub fn create_scale');
+    expect(output).toContain('format!("expected positive value, received {}", value)');
     expect(output).toContain('std::sync::Arc::new');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
@@ -77,6 +82,15 @@ describe('Rust emission', () => {
           for (const value of values) bins[value]++;
           return bins;
         }
+        export function copyLookup(
+          out: Uint8Array,
+          values: Readonly<Uint8Array | Uint8ClampedArray | null>,
+        ): void {
+          out[0] = values !== null ? values[0] : 0;
+        }
+        export function copySharedLookup(out: Uint8Array, values: Uint8Array): void {
+          copyLookup(out, values);
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -95,6 +109,8 @@ describe('Rust emission', () => {
     expect(output).toContain('Vec<f32>');
     expect(output).toContain('Some(Bounds {');
     expect(output).toContain('vec![0.0_f64; (256.0_f64) as usize]');
+    expect(output).toContain('values: Option<Vec<u8>>');
+    expect(output).toContain('copy_lookup(out, Some((values).clone()))');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
     const sourceFile = path.join(fixture, 'lib.rs');

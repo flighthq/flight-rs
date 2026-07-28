@@ -1,10 +1,11 @@
 use flighthq_surface::{
-    SurfaceConvolutionOptions, apply_surface_palette_map, build_surface_brightness_color_matrix,
-    color_matrix_surface, convolve_surface, copy_surface_pixels, dilate_surface, erode_surface,
-    fill_surface_noise, fill_surface_rectangle, get_surface_color_bounds_rectangle,
-    get_surface_coverage, get_surface_histogram, get_surface_pixel, get_surface_pixel_luminance,
-    get_surface_pixel_rgb, multiply_surface_alpha, pixelate_surface, premultiply_surface_pixels,
-    set_surface_alpha, set_surface_pixel, unpremultiply_surface_pixels,
+    SurfaceConvolutionOptions, apply_surface_curve, apply_surface_levels,
+    apply_surface_palette_map, build_surface_brightness_color_matrix, color_matrix_surface,
+    convolve_surface, copy_surface_pixels, dilate_surface, erode_surface, fill_surface_noise,
+    fill_surface_rectangle, get_surface_color_bounds_rectangle, get_surface_coverage,
+    get_surface_histogram, get_surface_mismatch, get_surface_pixel, get_surface_pixel_luminance,
+    get_surface_pixel_rgb, merge_surface_channels, multiply_surface_alpha, pixelate_surface,
+    premultiply_surface_pixels, set_surface_alpha, set_surface_pixel, unpremultiply_surface_pixels,
 };
 use flighthq_types::{Surface, SurfaceRegion};
 
@@ -225,4 +226,46 @@ fn nullable_palette_maps_pass_through_unselected_channels() {
 
     assert_eq!(destination.surface.data, vec![245, 20, 30, 40]);
     assert_eq!(destination.surface.version, 1.0);
+}
+
+#[test]
+fn compatible_typed_array_unions_drive_curve_and_levels_kernels() {
+    let source = region(surface(vec![10, 128, 240, 77], 1.0, 1.0));
+    let mut curved = region(surface(vec![0; 4], 1.0, 1.0));
+    let inverted = (0..256).map(|value| (255 - value) as u8).collect();
+
+    apply_surface_curve(&mut curved, &source, Some(inverted), None, None, None);
+    assert_eq!(curved.surface.data, vec![245, 128, 240, 77]);
+    assert_eq!(curved.surface.version, 1.0);
+
+    let mut leveled = region(surface(vec![0; 4], 1.0, 1.0));
+    apply_surface_levels(&mut leveled, &source, Some(0.0), Some(255.0), Some(0.5));
+    assert_eq!(leveled.surface.data, vec![0, 64, 226, 77]);
+    assert_eq!(leveled.surface.version, 1.0);
+}
+
+#[test]
+fn mismatch_summary_reports_tolerance_fraction_and_maximum_delta() {
+    let source = surface(vec![0, 0, 0, 255, 0, 0, 0, 255], 2.0, 1.0);
+    let other = surface(vec![10, 0, 0, 255, 0, 128, 0, 255], 2.0, 1.0);
+    let mismatch = get_surface_mismatch(&source, &other, Some(10.0));
+
+    assert_eq!(mismatch.mismatched_pixels, 1.0);
+    assert_eq!(mismatch.total_pixels, 2.0);
+    assert_eq!(mismatch.fraction, 0.5);
+    assert_eq!(mismatch.max_channel_delta, 128.0);
+}
+
+#[test]
+fn channel_merge_reads_each_selected_source_channel() {
+    let red = region(surface(vec![10, 1, 2, 3], 1.0, 1.0));
+    let green = region(surface(vec![4, 20, 5, 6], 1.0, 1.0));
+    let blue = region(surface(vec![7, 8, 30, 9], 1.0, 1.0));
+    let alpha = region(surface(vec![11, 12, 13, 40], 1.0, 1.0));
+    let mut out = region(surface(vec![0; 4], 1.0, 1.0));
+
+    merge_surface_channels(&mut out, &red, &green, &blue, &alpha);
+
+    assert_eq!(out.surface.data, vec![10, 20, 30, 40]);
+    assert_eq!(out.surface.version, 1.0);
 }

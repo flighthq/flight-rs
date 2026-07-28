@@ -3088,7 +3088,7 @@
           ],
           "declarations": 1,
           "output": "generated/crates/flighthq-easing/src/create_easing_samples.rs",
-          "outputSha256": "sha256:ea2f326cdb20002817ad1c2c2728b7fcc10d1767c180caca1ffeaadbb31a4b4e",
+          "outputSha256": "sha256:c21121fb62b595efd1379dec8fb47cc960cdf80323640d3d9c8b56650f87ec54",
           "source": "upstream/packages/easing/src/createEasingSamples.ts"
         },
         {
@@ -3202,7 +3202,7 @@
           ],
           "declarations": 1,
           "output": "generated/crates/flighthq-easing/src/ease_piecewise.rs",
-          "outputSha256": "sha256:3b060ffde1660071d390140e37d1806f69c239294caa6cac74fe3778dd69a578",
+          "outputSha256": "sha256:c7293aea3a6424573a8171ed5e17cf510f8f23161243ac8ba1b1db0832a9d1a5",
           "source": "upstream/packages/easing/src/easePiecewise.ts"
         },
         {
@@ -3373,6 +3373,24 @@
       "crate": "flighthq-surface",
       "deferredDeclarations": [
         {
+          "fingerprint": "sha256:efa0b1eac6fd0ce759efc8ecc1f9b3de08260d97399f14200ab483feb13e8248",
+          "name": "makeSurface",
+          "reason": "Surface allocation through the entity package remains at the TypeScript boundary; the region-based merge kernel is independently portable.",
+          "source": "upstream/packages/surface/src/surfaceChannel.ts"
+        },
+        {
+          "fingerprint": "sha256:db0668f2d42385b13515fe150fe7052077c2a72f61d4c18ed1d45b43fea0a9af",
+          "name": "splitSurfaceChannels",
+          "reason": "Surface allocation through the entity package remains at the TypeScript boundary; the region-based merge kernel is independently portable.",
+          "source": "upstream/packages/surface/src/surfaceChannel.ts"
+        },
+        {
+          "fingerprint": "sha256:88abad9b0e7ef83d9b5aed85eac5b7a551c6a2cd88710d94bd586fcb0a9e0478",
+          "name": "compareSurface",
+          "reason": "Diff-surface construction remains at the TypeScript boundary; the allocation-free mismatch summary is independently portable.",
+          "source": "upstream/packages/surface/src/surfaceCompare.ts"
+        },
+        {
           "fingerprint": "sha256:22e69ef051757ad8fb0ea729651306bf4bdd0b55e1472eca1f4d71759dc24251",
           "name": "copySurfaceChannel",
           "reason": "Channel-specific copying joins with the generated ImageChannel type and relative re-export resolution.",
@@ -3446,16 +3464,6 @@
           "fingerprint": "sha256:880eec393fbe1507271a8c7638516843439dc7e5ff9d2bd753478d60bea6b6f0",
           "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
           "source": "upstream/packages/surface/src/surfaceBlur.ts"
-        },
-        {
-          "fingerprint": "sha256:03aaa0e1eb5ef0c025c751c51586583b883706f87a7985258d37317c177f8481",
-          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
-          "source": "upstream/packages/surface/src/surfaceChannel.ts"
-        },
-        {
-          "fingerprint": "sha256:8bc7a57ab69cb182e2abfba316c29b8b9d9f784d377a286367e0bb7827b37c32",
-          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
-          "source": "upstream/packages/surface/src/surfaceCompare.ts"
         },
         {
           "fingerprint": "sha256:a9ce17a6452f1f074be7ebdb964a7cb503e8c2d4a8d884ed29a0056ebe2c25e4",
@@ -3548,11 +3556,6 @@
           "source": "upstream/packages/surface/src/surfaceSharpen.ts"
         },
         {
-          "fingerprint": "sha256:403dddfde4f40fde837248096635beb900550c59d1b772b5e361305021c3e6f1",
-          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
-          "source": "upstream/packages/surface/src/surfaceTone.ts"
-        },
-        {
           "fingerprint": "sha256:46019647f2a95b13e3998d56f35e4145f36fb17182ccbaaad559fa13c36e14bc",
           "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
           "source": "upstream/packages/surface/src/surfaceTransform.ts"
@@ -3577,6 +3580,15 @@
         },
         {
           "declarationNames": [
+            "mergeSurfaceChannels"
+          ],
+          "declarations": 1,
+          "output": "generated/crates/flighthq-surface/src/surface_channel.rs",
+          "outputSha256": "sha256:4aeff02161e0e1fe7e602a12c737b2b903327e71d3a33403e68ec80f1e4f207f",
+          "source": "upstream/packages/surface/src/surfaceChannel.ts"
+        },
+        {
+          "declarationNames": [
             "LUMA_B",
             "LUMA_G",
             "LUMA_R",
@@ -3595,8 +3607,17 @@
           ],
           "declarations": 15,
           "output": "generated/crates/flighthq-surface/src/surface_color_matrix.rs",
-          "outputSha256": "sha256:a0a7f73fc932875fc26e3a9dfe5647966c15f0bb17ff39a5070a37bcf0959a4d",
+          "outputSha256": "sha256:1f2c682284a7591abab24a7b5a7be7e3fb5cb4d3b5b8c267e4badc7904450138",
           "source": "upstream/packages/surface/src/surfaceColorMatrix.ts"
+        },
+        {
+          "declarationNames": [
+            "getSurfaceMismatch"
+          ],
+          "declarations": 1,
+          "output": "generated/crates/flighthq-surface/src/surface_compare.rs",
+          "outputSha256": "sha256:f6591ed5015d503648a847842159281991808eb280d07367dfff26977bb0dada",
+          "source": "upstream/packages/surface/src/surfaceCompare.ts"
         },
         {
           "declarationNames": [
@@ -3608,7 +3629,7 @@
           ],
           "declarations": 5,
           "output": "generated/crates/flighthq-surface/src/surface_convolution.rs",
-          "outputSha256": "sha256:38c5b786b1d973b024718ef66cacaa45913074a8cce4491b455b27b8261216a9",
+          "outputSha256": "sha256:2a598ad619eaef79ab12e6ec6fa6d0d7ef98897eb66ffd8116e0a66bd62917f2",
           "source": "upstream/packages/surface/src/surfaceConvolution.ts"
         },
         {
@@ -3732,6 +3753,16 @@
           "output": "generated/crates/flighthq-surface/src/surface_query.rs",
           "outputSha256": "sha256:4e3055918a4418a6612d58e026027c286c65e0cc73f3db8fc61bbd3d9b2d1fb0",
           "source": "upstream/packages/surface/src/surfaceQuery.ts"
+        },
+        {
+          "declarationNames": [
+            "applySurfaceCurve",
+            "applySurfaceLevels"
+          ],
+          "declarations": 2,
+          "output": "generated/crates/flighthq-surface/src/surface_tone.rs",
+          "outputSha256": "sha256:9d384197cabef203a79c0e0b1784afe8c2cef389f32bce0656e56f2895806afe",
+          "source": "upstream/packages/surface/src/surfaceTone.ts"
         }
       ],
       "inlineDependencies": {
@@ -3752,6 +3783,8 @@
       "coreCrate": "flighthq-surface",
       "crate": "flighthq-surface-wasm",
       "exports": [
+        "applySurfaceCurve",
+        "applySurfaceLevels",
         "applySurfacePaletteMap",
         "buildSurfaceBrightnessColorMatrix",
         "buildSurfaceContrastColorMatrix",
@@ -3774,6 +3807,8 @@
         "getSurfaceColorBoundsRectangle",
         "getSurfaceCoverage",
         "getSurfaceHistogram",
+        "getSurfaceMismatch",
+        "mergeSurfaceChannels",
         "multiplySurfaceAlpha",
         "pixelateSurface",
         "premultiplySurfacePixels",
@@ -3782,9 +3817,9 @@
         "unpremultiplySurfacePixels"
       ],
       "output": "generated/crates/flighthq-surface-wasm/src/lib.rs",
-      "outputSha256": "sha256:7ccb6563f01e4c8660b7fc9f9fb1c7c0d4c68819fd7392f6b4d370427d26dd00",
+      "outputSha256": "sha256:6a89d9fb160c62fe70eaf42238b89c499b6a3bec3d8240a570a2dd8a18622e2d",
       "template": "tools/generator/templates/surface_wasm.rs",
-      "templateSha256": "sha256:e05c08e2b3e8dfa29ce622212adeee7a0a05344c92231a7b9f54c33ec5ea9629"
+      "templateSha256": "sha256:9e0b48ab0316e0848e9655dc4b2cf8efb49b6a0a25f016a2c7566a5ced9f3211"
     }
   ]
 }

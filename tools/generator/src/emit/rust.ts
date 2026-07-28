@@ -314,7 +314,7 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
     case 'switch':
       return emitSwitchStatement(statement, context);
     case 'throw':
-      return [`panic!(${emitThrowMessage(statement.expression, context)});`];
+      return [`panic!("{}", ${emitThrowMessage(statement.expression, context)});`];
     case 'try':
       throw new RustEmissionError('try Rust lowering is not implemented');
     case 'variable':
@@ -443,7 +443,7 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
     case 'spread':
       throw new RustEmissionError('spread Rust lowering is not implemented');
     case 'template':
-      throw new RustEmissionError('template-string Rust lowering is not implemented');
+      return emitTemplate(expression, context);
     case 'unary':
       return emitUnary(expression, context);
   }
@@ -529,9 +529,14 @@ function emitKnownFunctionCall(
 ): string {
   const restIndex = declaration.parameters.findIndex((parameter) => parameter.rest);
   if (restIndex < 0) {
-    const arguments_ = expression.arguments.map((argument, index) =>
-      emitExpression(argument, context, declaration.parameters[index]?.type),
-    );
+    const arguments_ = declaration.parameters.map((parameter, index) => {
+      const argument = expression.arguments[index];
+      if (!argument) {
+        if (parameter.optional || parameter.initializer) return 'None';
+        throw new RustEmissionError(`${declaration.name} call is missing required argument ${parameter.name}`);
+      }
+      return emitKnownFunctionArgument(argument, parameter, context);
+    });
     return `${snakeCase(declaration.name)}(${arguments_.join(', ')})`;
   }
   const fixed = expression.arguments
@@ -541,6 +546,22 @@ function emitKnownFunctionCall(
   const element = rest.type.kind === 'array' ? rest.type.element : undefined;
   const values = expression.arguments.slice(restIndex).map((argument) => emitExpression(argument, context, element));
   return `${snakeCase(declaration.name)}(${[...fixed, `vec![${values.join(', ')}]`].join(', ')})`;
+}
+
+function emitKnownFunctionArgument(argument: IrExpression, parameter: IrParameter, context: EmitContext): string {
+  const argumentType = inferIrExpressionType(argument, context);
+  const nullableParameter = parameter.type.kind === 'nullable';
+  const expectedType = parameter.type.kind === 'nullable' ? parameter.type.inner : parameter.type;
+  const optionalParameter = Boolean(parameter.optional || parameter.initializer);
+  if (argument.kind === 'literal' && argument.value === null) return 'None';
+
+  let emitted = emitExpression(argument, context, expectedType);
+  if ((nullableParameter || optionalParameter) && argumentType && !isCopyType(argumentType, context)) {
+    emitted = `${parenthesize(emitted)}.clone()`;
+  }
+  if (nullableParameter && argumentType?.kind !== 'nullable') emitted = `Some(${emitted})`;
+  if (optionalParameter) emitted = `Some(${emitted})`;
+  return emitted;
 }
 
 function emitMathCall(method: string, arguments_: string[]): string {
@@ -1272,6 +1293,18 @@ function emitThrowMessage(expression: IrExpression, context: EmitContext): strin
     return emitExpression(expression.arguments[0]!, context);
   }
   return JSON.stringify('generated Flight function threw');
+}
+
+function emitTemplate(expression: Extract<IrExpression, { kind: 'template' }>, context: EmitContext): string {
+  const arguments_: string[] = [];
+  const format = expression.parts
+    .map((part) => {
+      if (typeof part === 'string') return part.replaceAll('{', '{{').replaceAll('}', '}}');
+      arguments_.push(emitExpression(part, context));
+      return '{}';
+    })
+    .join('');
+  return `format!(${[JSON.stringify(format), ...arguments_].join(', ')})`;
 }
 
 function emitIdentifier(name: string, context: EmitContext): string {

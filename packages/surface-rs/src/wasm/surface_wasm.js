@@ -5,6 +5,57 @@
  * @param {Float64Array} dest_descriptor
  * @param {Uint8Array} source_data
  * @param {Float64Array} source_descriptor
+ * @param {Uint8Array} red_lut
+ * @param {Uint8Array} green_lut
+ * @param {Uint8Array} blue_lut
+ * @param {Uint8Array} alpha_lut
+ */
+export function apply_surface_curve_wasm(dest_data, dest_descriptor, source_data, source_descriptor, red_lut, green_lut, blue_lut, alpha_lut) {
+    var ptr0 = passArray8ToWasm0(dest_data, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    const ptr1 = passArrayF64ToWasm0(dest_descriptor, wasm.__wbindgen_malloc);
+    const len1 = WASM_VECTOR_LEN;
+    const ptr2 = passArray8ToWasm0(source_data, wasm.__wbindgen_malloc);
+    const len2 = WASM_VECTOR_LEN;
+    const ptr3 = passArrayF64ToWasm0(source_descriptor, wasm.__wbindgen_malloc);
+    const len3 = WASM_VECTOR_LEN;
+    const ptr4 = passArray8ToWasm0(red_lut, wasm.__wbindgen_malloc);
+    const len4 = WASM_VECTOR_LEN;
+    const ptr5 = passArray8ToWasm0(green_lut, wasm.__wbindgen_malloc);
+    const len5 = WASM_VECTOR_LEN;
+    const ptr6 = passArray8ToWasm0(blue_lut, wasm.__wbindgen_malloc);
+    const len6 = WASM_VECTOR_LEN;
+    const ptr7 = passArray8ToWasm0(alpha_lut, wasm.__wbindgen_malloc);
+    const len7 = WASM_VECTOR_LEN;
+    wasm.apply_surface_curve_wasm(ptr0, len0, dest_data, ptr1, len1, ptr2, len2, ptr3, len3, ptr4, len4, ptr5, len5, ptr6, len6, ptr7, len7);
+}
+
+/**
+ * @param {Uint8Array} dest_data
+ * @param {Float64Array} dest_descriptor
+ * @param {Uint8Array} source_data
+ * @param {Float64Array} source_descriptor
+ * @param {number} black_point
+ * @param {number} white_point
+ * @param {number} gamma
+ */
+export function apply_surface_levels_wasm(dest_data, dest_descriptor, source_data, source_descriptor, black_point, white_point, gamma) {
+    var ptr0 = passArray8ToWasm0(dest_data, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    const ptr1 = passArrayF64ToWasm0(dest_descriptor, wasm.__wbindgen_malloc);
+    const len1 = WASM_VECTOR_LEN;
+    const ptr2 = passArray8ToWasm0(source_data, wasm.__wbindgen_malloc);
+    const len2 = WASM_VECTOR_LEN;
+    const ptr3 = passArrayF64ToWasm0(source_descriptor, wasm.__wbindgen_malloc);
+    const len3 = WASM_VECTOR_LEN;
+    wasm.apply_surface_levels_wasm(ptr0, len0, dest_data, ptr1, len1, ptr2, len2, ptr3, len3, black_point, white_point, gamma);
+}
+
+/**
+ * @param {Uint8Array} dest_data
+ * @param {Float64Array} dest_descriptor
+ * @param {Uint8Array} source_data
+ * @param {Float64Array} source_descriptor
  * @param {Float64Array} red_map
  * @param {Float64Array} green_map
  * @param {Float64Array} blue_map
@@ -340,6 +391,62 @@ export function get_surface_histogram_wasm(out, data, descriptor) {
     const ptr2 = passArrayF64ToWasm0(descriptor, wasm.__wbindgen_malloc);
     const len2 = WASM_VECTOR_LEN;
     wasm.get_surface_histogram_wasm(ptr0, len0, out, ptr1, len1, ptr2, len2);
+}
+
+/**
+ * @param {Float64Array} out
+ * @param {Uint8Array} source_data
+ * @param {number} source_width
+ * @param {number} source_height
+ * @param {Uint8Array} other_data
+ * @param {number} other_width
+ * @param {number} other_height
+ * @param {number} channel_tolerance
+ */
+export function get_surface_mismatch_wasm(out, source_data, source_width, source_height, other_data, other_width, other_height, channel_tolerance) {
+    var ptr0 = passArrayF64ToWasm0(out, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    const ptr1 = passArray8ToWasm0(source_data, wasm.__wbindgen_malloc);
+    const len1 = WASM_VECTOR_LEN;
+    const ptr2 = passArray8ToWasm0(other_data, wasm.__wbindgen_malloc);
+    const len2 = WASM_VECTOR_LEN;
+    wasm.get_surface_mismatch_wasm(ptr0, len0, out, ptr1, len1, source_width, source_height, ptr2, len2, other_width, other_height, channel_tolerance);
+}
+
+/**
+ * @param {Uint8Array} out_data
+ * @param {Float64Array} out_descriptor
+ * @param {Uint8Array} red_data
+ * @param {Float64Array} red_descriptor
+ * @param {Uint8Array} green_data
+ * @param {Float64Array} green_descriptor
+ * @param {Uint8Array} blue_data
+ * @param {Float64Array} blue_descriptor
+ * @param {Uint8Array} alpha_data
+ * @param {Float64Array} alpha_descriptor
+ */
+export function merge_surface_channels_wasm(out_data, out_descriptor, red_data, red_descriptor, green_data, green_descriptor, blue_data, blue_descriptor, alpha_data, alpha_descriptor) {
+    var ptr0 = passArray8ToWasm0(out_data, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    const ptr1 = passArrayF64ToWasm0(out_descriptor, wasm.__wbindgen_malloc);
+    const len1 = WASM_VECTOR_LEN;
+    const ptr2 = passArray8ToWasm0(red_data, wasm.__wbindgen_malloc);
+    const len2 = WASM_VECTOR_LEN;
+    const ptr3 = passArrayF64ToWasm0(red_descriptor, wasm.__wbindgen_malloc);
+    const len3 = WASM_VECTOR_LEN;
+    const ptr4 = passArray8ToWasm0(green_data, wasm.__wbindgen_malloc);
+    const len4 = WASM_VECTOR_LEN;
+    const ptr5 = passArrayF64ToWasm0(green_descriptor, wasm.__wbindgen_malloc);
+    const len5 = WASM_VECTOR_LEN;
+    const ptr6 = passArray8ToWasm0(blue_data, wasm.__wbindgen_malloc);
+    const len6 = WASM_VECTOR_LEN;
+    const ptr7 = passArrayF64ToWasm0(blue_descriptor, wasm.__wbindgen_malloc);
+    const len7 = WASM_VECTOR_LEN;
+    const ptr8 = passArray8ToWasm0(alpha_data, wasm.__wbindgen_malloc);
+    const len8 = WASM_VECTOR_LEN;
+    const ptr9 = passArrayF64ToWasm0(alpha_descriptor, wasm.__wbindgen_malloc);
+    const len9 = WASM_VECTOR_LEN;
+    wasm.merge_surface_channels_wasm(ptr0, len0, out_data, ptr1, len1, ptr2, len2, ptr3, len3, ptr4, len4, ptr5, len5, ptr6, len6, ptr7, len7, ptr8, len8, ptr9, len9);
 }
 
 /**

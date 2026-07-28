@@ -150,6 +150,28 @@ describe('generated wasm boundary', () => {
     expect(actualSurface.data).toEqual(expectedSurface.data);
     expect(actualSurface.version).toBe(expectedSurface.version);
 
+    const byteInverted = Uint8Array.from(inverted);
+    rs.applySurfaceCurve(actual, sourceRegion, byteInverted, null, null, null);
+    reference.applySurfaceCurve(expected, sourceRegion, byteInverted, null, null, null);
+    expect(actualSurface.data).toEqual(expectedSurface.data);
+    expect(actualSurface.version).toBe(expectedSurface.version);
+
+    rs.applySurfaceLevels(actual, sourceRegion, 12, 240, 0.75);
+    reference.applySurfaceLevels(expected, sourceRegion, 12, 240, 0.75);
+    expect(actualSurface.data).toEqual(expectedSurface.data);
+    expect(actualSurface.version).toBe(expectedSurface.version);
+
+    const comparison = cloneSurface(actualSurface);
+    comparison.data[5] = (comparison.data[5]! + 128) & 0xff;
+    expect(rs.getSurfaceMismatch(actualSurface, comparison, 10)).toEqual(
+      reference.getSurfaceMismatch(expectedSurface, comparison, 10),
+    );
+
+    rs.mergeSurfaceChannels(actual, sourceRegion, sourceRegion, sourceRegion, sourceRegion);
+    reference.mergeSurfaceChannels(expected, sourceRegion, sourceRegion, sourceRegion, sourceRegion);
+    expect(actualSurface.data).toEqual(expectedSurface.data);
+    expect(actualSurface.version).toBe(expectedSurface.version);
+
     expect(rs.getSurfaceColorBoundsRectangle(actual, 0xffffff00, 0xaabbcc00)).toEqual(
       reference.getSurfaceColorBoundsRectangle(expected, 0xffffff00, 0xaabbcc00),
     );

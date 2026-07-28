@@ -41,6 +41,8 @@ export const portConfig = {
       coreCrate: 'flighthq-surface',
       crate: 'flighthq-surface-wasm',
       exports: [
+        'applySurfaceCurve',
+        'applySurfaceLevels',
         'applySurfacePaletteMap',
         'buildSurfaceBrightnessColorMatrix',
         'buildSurfaceContrastColorMatrix',
@@ -63,6 +65,8 @@ export const portConfig = {
         'getSurfaceColorBoundsRectangle',
         'getSurfaceCoverage',
         'getSurfaceHistogram',
+        'getSurfaceMismatch',
+        'mergeSurfaceChannels',
         'multiplySurfaceAlpha',
         'pixelateSurface',
         'premultiplySurfacePixels',
@@ -156,6 +160,16 @@ export const portConfig = {
       conformanceTemplate: 'tools/generator/templates/surface_conformance.rs',
       crate: 'flighthq-surface',
       declarationSelection: {
+        'surfaceCompare.ts': {
+          names: ['getSurfaceMismatch'],
+          reason:
+            'Diff-surface construction remains at the TypeScript boundary; the allocation-free mismatch summary is independently portable.',
+        },
+        'surfaceChannel.ts': {
+          names: ['mergeSurfaceChannels'],
+          reason:
+            'Surface allocation through the entity package remains at the TypeScript boundary; the region-based merge kernel is independently portable.',
+        },
         'surfaceCopy.ts': {
           names: ['copySurfacePixels'],
           reason:
@@ -205,7 +219,9 @@ export const portConfig = {
       sourceSelection: {
         sources: [
           'surfaceAlpha.ts',
+          'surfaceChannel.ts',
           'surfaceColorMatrix.ts',
+          'surfaceCompare.ts',
           'surfaceConvolution.ts',
           'surfaceCopy.ts',
           'surfaceCoverage.ts',
@@ -218,6 +234,7 @@ export const portConfig = {
           'surfacePixel.ts',
           'surfacePixelate.ts',
           'surfaceQuery.ts',
+          'surfaceTone.ts',
         ],
         reason:
           'Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.',

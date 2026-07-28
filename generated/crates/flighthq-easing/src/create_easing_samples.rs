@@ -11,7 +11,10 @@ use flighthq_types::EasingFunction;
 // Source: upstream/packages/easing/src/createEasingSamples.ts:17 (sha256:5327418e9e6e65ebe8bc0a8b9803c9551818c162b5a8c16495b2aaa7165ad1ee)
 pub fn create_easing_samples(ease: EasingFunction, count: f64, out: Option<Vec<f32>>) -> Vec<f32> {
     if ((!(count).is_finite()) || (count < 1.0_f64)) {
-        panic!("createEasingSamples: count must be a finite integer >= 1");
+        panic!(
+            "{}",
+            "createEasingSamples: count must be a finite integer >= 1"
+        );
     }
     let n = (count).floor();
     let mut result = (out).unwrap_or(vec![0.0_f32; (n) as usize]);

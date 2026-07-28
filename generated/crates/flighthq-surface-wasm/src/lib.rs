@@ -2,16 +2,17 @@
 #![forbid(unsafe_code)]
 
 use flighthq_surface::{
-    SurfaceConvolutionOptions, apply_surface_palette_map, build_surface_brightness_color_matrix,
+    SurfaceConvolutionOptions, apply_surface_curve, apply_surface_levels,
+    apply_surface_palette_map, build_surface_brightness_color_matrix,
     build_surface_contrast_color_matrix, build_surface_grayscale_color_matrix,
     build_surface_hue_rotation_color_matrix, build_surface_invert_color_matrix,
     build_surface_saturation_color_matrix, build_surface_sepia_color_matrix, color_matrix_surface,
     concat_surface_color_matrix, convolve_surface, copy_surface_alpha, copy_surface_pixels,
     dilate_surface, erode_surface, fill_surface_noise, fill_surface_perlin_noise,
     fill_surface_rectangle, fill_surface_turbulence, get_surface_color_bounds_rectangle,
-    get_surface_coverage, get_surface_histogram, multiply_surface_alpha, pixelate_surface,
-    premultiply_surface_pixels, set_surface_alpha, set_surface_color_matrix_identity,
-    unpremultiply_surface_pixels,
+    get_surface_coverage, get_surface_histogram, get_surface_mismatch, merge_surface_channels,
+    multiply_surface_alpha, pixelate_surface, premultiply_surface_pixels, set_surface_alpha,
+    set_surface_color_matrix_identity, unpremultiply_surface_pixels,
 };
 use flighthq_types::{Surface, SurfaceRegion};
 use wasm_bindgen::prelude::*;
@@ -65,6 +66,58 @@ fn copy_f64_output(out: &mut [f64], owned: &[f64]) {
 
 fn optional_channel_map(values: &[f64]) -> Option<Vec<f64>> {
     (!values.is_empty()).then(|| values.to_vec())
+}
+
+fn optional_byte_channel_map(values: &[u8]) -> Option<Vec<u8>> {
+    (!values.is_empty()).then(|| values.to_vec())
+}
+
+#[wasm_bindgen]
+#[allow(clippy::too_many_arguments)]
+pub fn apply_surface_curve_wasm(
+    dest_data: &mut [u8],
+    dest_descriptor: &[f64],
+    source_data: &[u8],
+    source_descriptor: &[f64],
+    red_lut: &[u8],
+    green_lut: &[u8],
+    blue_lut: &[u8],
+    alpha_lut: &[u8],
+) {
+    let mut dest = region(dest_data, dest_descriptor);
+    let source = region(source_data, source_descriptor);
+    apply_surface_curve(
+        &mut dest,
+        &source,
+        optional_byte_channel_map(red_lut),
+        optional_byte_channel_map(green_lut),
+        optional_byte_channel_map(blue_lut),
+        Some(optional_byte_channel_map(alpha_lut)),
+    );
+    copy_u8_output(dest_data, &dest.surface.data);
+}
+
+#[wasm_bindgen]
+#[allow(clippy::too_many_arguments)]
+pub fn apply_surface_levels_wasm(
+    dest_data: &mut [u8],
+    dest_descriptor: &[f64],
+    source_data: &[u8],
+    source_descriptor: &[f64],
+    black_point: f64,
+    white_point: f64,
+    gamma: f64,
+) {
+    let mut dest = region(dest_data, dest_descriptor);
+    let source = region(source_data, source_descriptor);
+    apply_surface_levels(
+        &mut dest,
+        &source,
+        Some(black_point),
+        Some(white_point),
+        Some(gamma),
+    );
+    copy_u8_output(dest_data, &dest.surface.data);
 }
 
 #[wasm_bindgen]
@@ -419,4 +472,53 @@ pub fn get_surface_histogram_wasm(out: &mut [f64], data: &[u8], descriptor: &[f6
     out[256..512].copy_from_slice(&histogram.green);
     out[512..768].copy_from_slice(&histogram.blue);
     out[768..1024].copy_from_slice(&histogram.alpha);
+}
+
+#[wasm_bindgen]
+#[allow(clippy::too_many_arguments)]
+pub fn get_surface_mismatch_wasm(
+    out: &mut [f64],
+    source_data: &[u8],
+    source_width: f64,
+    source_height: f64,
+    other_data: &[u8],
+    other_width: f64,
+    other_height: f64,
+    channel_tolerance: f64,
+) {
+    assert_eq!(out.len(), 4, "mismatch output must contain four metrics");
+    let mismatch = get_surface_mismatch(
+        &surface(source_data, source_width, source_height),
+        &surface(other_data, other_width, other_height),
+        Some(channel_tolerance),
+    );
+    out.copy_from_slice(&[
+        mismatch.mismatched_pixels,
+        mismatch.total_pixels,
+        mismatch.fraction,
+        mismatch.max_channel_delta,
+    ]);
+}
+
+#[wasm_bindgen]
+#[allow(clippy::too_many_arguments)]
+pub fn merge_surface_channels_wasm(
+    out_data: &mut [u8],
+    out_descriptor: &[f64],
+    red_data: &[u8],
+    red_descriptor: &[f64],
+    green_data: &[u8],
+    green_descriptor: &[f64],
+    blue_data: &[u8],
+    blue_descriptor: &[f64],
+    alpha_data: &[u8],
+    alpha_descriptor: &[f64],
+) {
+    let mut out = region(out_data, out_descriptor);
+    let red = region(red_data, red_descriptor);
+    let green = region(green_data, green_descriptor);
+    let blue = region(blue_data, blue_descriptor);
+    let alpha = region(alpha_data, alpha_descriptor);
+    merge_surface_channels(&mut out, &red, &green, &blue, &alpha);
+    copy_u8_output(out_data, &out.surface.data);
 }
