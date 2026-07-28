@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import ts from 'typescript';
 
+import { portConfig } from '../../port.config.ts';
 import type {
   IrDeclaration,
   IrExpression,
@@ -1026,7 +1027,9 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
     if (name === 'Array' || name === 'ReadonlyArray') {
       return { element: arguments_[0] ?? { kind: 'dynamic' }, kind: 'array' };
     }
-    if (name === 'EntityWithoutRuntime' && arguments_[0]) return arguments_[0];
+    if (portConfig.typeLowering.transparentTypeWrappers.some((wrapper) => wrapper.name === name) && arguments_[0]) {
+      return arguments_[0];
+    }
     if (name === 'Record') {
       return {
         arguments: [arguments_[0] ?? { kind: 'primitive', name: 'String' }, arguments_[1] ?? { kind: 'dynamic' }],
@@ -1049,14 +1052,14 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
     const types = node.types.map((item) => lowerType(item, context));
     const stringType = types.find((item) => item.kind === 'primitive' && item.name === 'String');
     if (stringType) return stringType;
-    const nodeType = types.find((item) => item.kind === 'named' && item.name === 'Node');
-    const genericPartner = types.find(
-      (item) => item.kind === 'named' && ['D', 'R', 'T', 'Traits', 'Type', 'U'].includes(item.name),
+    const genericIndex = node.types.findIndex((item) => isTypeParameterReference(item));
+    const genericType = genericIndex < 0 ? undefined : types[genericIndex];
+    const configuredBase = types.find(
+      (item) =>
+        item.kind === 'named' &&
+        portConfig.typeLowering.genericIntersectionBaseOverrides.some((override) => override.name === item.name),
     );
-    if (types.length === 2 && nodeType && genericPartner) return nodeType;
-    const genericType = types.find(
-      (item) => item.kind === 'named' && ['D', 'R', 'T', 'Traits', 'Type', 'U'].includes(item.name),
-    );
+    if (types.length === 2 && configuredBase && genericType) return configuredBase;
     if (genericType) return genericType;
     const concrete = types.filter((item) => item.kind !== 'dynamic');
     if (concrete.length === 0) return { kind: 'dynamic' };
@@ -1086,6 +1089,22 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
     }
   }
   return unsupported(node, context, `type ${ts.SyntaxKind[node.kind] ?? node.kind}`);
+}
+
+function isTypeParameterReference(node: ts.TypeNode): boolean {
+  if (!ts.isTypeReferenceNode(node) || !ts.isIdentifier(node.typeName) || node.typeArguments?.length) return false;
+  const name = node.typeName.text;
+  for (let current: ts.Node | undefined = node.parent; current; current = current.parent) {
+    const typeParameters =
+      ts.isFunctionLike(current) ||
+      ts.isClassDeclaration(current) ||
+      ts.isInterfaceDeclaration(current) ||
+      ts.isTypeAliasDeclaration(current)
+        ? current.typeParameters
+        : undefined;
+    if (typeParameters?.some((parameter) => parameter.name.text === name)) return true;
+  }
+  return false;
 }
 
 function inferValueNamespaceType(node: ts.IndexedAccessTypeNode, context: LoweringContext): IrType | undefined {

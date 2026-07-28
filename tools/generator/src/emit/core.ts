@@ -399,6 +399,7 @@ function attemptAutomaticPackage(
         const emittedSource = emittedSources.find((item) => item.source === output.source);
         if (emittedSource) emittedSource.outputSha256 = sha256(output.content);
       } catch (error) {
+        if (!(error instanceof RustEmissionError)) throw error;
         blockers.push({
           diagnostics: [],
           fingerprint: sha256(output.content),
@@ -476,20 +477,15 @@ function materializeAutomaticCandidates(
   const expected = new Set<string>();
   const packageByName = new Map(packages.map((item) => [item.package, item]));
   const attemptByPackage = new Map(attempts.map((item) => [item.report.package, item]));
-  const dependencyReadyCache = new Map<string, boolean>();
   const dependencyReady = (item: AutomaticPackageReport, visiting: ReadonlySet<string> = new Set()): boolean => {
-    const cached = dependencyReadyCache.get(item.package);
-    if (cached !== undefined) return cached;
     if (item.fullyPromotedTarget) return true;
     if (item.status !== 'emittable') return false;
     if (visiting.has(item.package)) return true;
     const next = new Set([...visiting, item.package]);
-    const ready = item.requiredDependencies.every((dependency) => {
+    return item.requiredDependencies.every((dependency) => {
       const resolved = packageByName.get(dependency.package);
       return !resolved || dependencyReady(resolved, next);
     });
-    dependencyReadyCache.set(item.package, ready);
-    return ready;
   };
   const materialized = packages.map((item): AutomaticPackageReport => {
     if (item.status !== 'emittable' || item.fullyPromotedTarget) return item;
@@ -1703,7 +1699,7 @@ function lowerTypeScriptFile(
   return lowered;
 }
 
-function formatRust(content: string, source: string): string {
+export function formatRust(content: string, source: string): string {
   try {
     return execFileSync('rustfmt', ['--emit', 'stdout', '--edition', '2024'], {
       encoding: 'utf8',
@@ -1711,6 +1707,9 @@ function formatRust(content: string, source: string): string {
       stdio: ['pipe', 'pipe', 'pipe'],
     });
   } catch (error) {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT') {
+      throw new Error('Required generator tool rustfmt was not found in PATH.');
+    }
     const stderr =
       error && typeof error === 'object' && 'stderr' in error && typeof error.stderr === 'string'
         ? error.stderr.trim()

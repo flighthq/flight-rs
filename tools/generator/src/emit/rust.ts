@@ -1530,9 +1530,7 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
     }
     case 'element':
       if (isErasedEntityRuntimeAccess(expression)) {
-        return expectedType
-          ? `panic!("entity runtime storage requires the generated native entity trait")`
-          : 'None::<crate::OpaqueHostValue>';
+        rejectEntityRuntimeStorage();
       }
       return coerceExpression(emitElementRead(expression, context, expectedType), expectedType);
     case 'function':
@@ -3117,6 +3115,13 @@ function emitPlaceExpression(expression: IrExpression, context: EmitContext): st
 }
 
 function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, context: EmitContext): string {
+  if (
+    expression.operator === 'in' &&
+    expression.left.kind === 'identifier' &&
+    expression.left.name === 'EntityRuntimeKey'
+  ) {
+    rejectEntityRuntimeStorage();
+  }
   const leftType = inferIrExpressionType(expression.left, context);
   const rightType = inferIrExpressionType(expression.right, context);
   const resolvedLeft = resolveSemanticType(leftType, context) ?? leftType;
@@ -3317,7 +3322,7 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
 }
 
 function emitAssignment(expression: Extract<IrExpression, { kind: 'assignment' }>, context: EmitContext): string {
-  if (isErasedEntityRuntimeTreeAccess(expression.left)) return '()';
+  if (isErasedEntityRuntimeTreeAccess(expression.left)) rejectEntityRuntimeStorage();
   const bufferViewWrite = emitBufferViewWrite(expression, context, true);
   if (bufferViewWrite) return bufferViewWrite;
   if (
@@ -3379,7 +3384,7 @@ function emitAssignmentStatement(
   expression: Extract<IrExpression, { kind: 'assignment' }>,
   context: EmitContext,
 ): string {
-  if (isErasedEntityRuntimeTreeAccess(expression.left)) return '()';
+  if (isErasedEntityRuntimeTreeAccess(expression.left)) rejectEntityRuntimeStorage();
   const bufferViewWrite = emitBufferViewWrite(expression, context, false);
   if (bufferViewWrite) return bufferViewWrite;
   if (
@@ -3552,7 +3557,9 @@ function emitUnary(expression: Extract<IrExpression, { kind: 'unary' }>, context
   ) {
     return `${parenthesize(emitExpression(expression.operand, context))} == 0.0_f64`;
   }
-  if (expression.operator === 'delete' && isErasedEntityRuntimeTreeAccess(expression.operand)) return 'true';
+  if (expression.operator === 'delete' && isErasedEntityRuntimeTreeAccess(expression.operand)) {
+    rejectEntityRuntimeStorage();
+  }
   if (expression.operator === 'typeof') {
     const hostTag = inferHostPropertyTypeofTag(expression.operand, context);
     if (hostTag) return emitRustStringLiteral(hostTag);
@@ -3612,7 +3619,28 @@ function inferHostPropertyTypeofTag(expression: IrExpression, context: EmitConte
     }
     if (expression.name === 'isSecureContext') return 'boolean';
     if (['localStorage', 'screen', 'visualViewport'].includes(expression.name)) return 'object';
-    return 'function';
+    if (
+      [
+        'addEventListener',
+        'alert',
+        'close',
+        'confirm',
+        'focus',
+        'getScreenDetails',
+        'matchMedia',
+        'moveTo',
+        'open',
+        'prompt',
+        'removeEventListener',
+        'resizeTo',
+        'showDirectoryPicker',
+        'showOpenFilePicker',
+        'showSaveFilePicker',
+      ].includes(expression.name)
+    ) {
+      return 'function';
+    }
+    throw new RustEmissionError(`typeof window.${expression.name} has no configured host-property tag`);
   }
   if (expression.binding === 'DomDocumentBackend') {
     if (expression.name === 'hidden') return 'boolean';
@@ -3620,7 +3648,22 @@ function inferHostPropertyTypeofTag(expression: IrExpression, context: EmitConte
     if (['body', 'documentElement', 'fonts', 'head', 'pointerLockElement'].includes(expression.name)) {
       return 'object';
     }
-    return 'function';
+    if (
+      [
+        'addEventListener',
+        'createElement',
+        'createTextNode',
+        'exitFullscreen',
+        'exitPointerLock',
+        'getElementById',
+        'hasFocus',
+        'querySelector',
+        'removeEventListener',
+      ].includes(expression.name)
+    ) {
+      return 'function';
+    }
+    throw new RustEmissionError(`typeof document.${expression.name} has no configured host-property tag`);
   }
   if (expression.binding === 'DomNavigatorBackend') {
     if (expression.name === 'maxTouchPoints') return 'number';
@@ -3642,7 +3685,8 @@ function inferHostPropertyTypeofTag(expression: IrExpression, context: EmitConte
     ) {
       return 'object';
     }
-    return 'function';
+    if (['getBattery', 'getGamepads', 'share', 'vibrate'].includes(expression.name)) return 'function';
+    throw new RustEmissionError(`typeof navigator.${expression.name} has no configured host-property tag`);
   }
   return 'undefined';
 }
@@ -3660,6 +3704,12 @@ function isErasedEntityRuntimeAccess(
 function isErasedEntityRuntimeTreeAccess(expression: IrExpression): boolean {
   if (isErasedEntityRuntimeAccess(expression)) return true;
   return expression.kind === 'property' && isErasedEntityRuntimeTreeAccess(expression.object);
+}
+
+function rejectEntityRuntimeStorage(): never {
+  throw new RustEmissionError(
+    'EntityRuntimeKey storage requires an aggregate native entity runtime representation; refusing to erase observable runtime state',
+  );
 }
 
 function emitClosure(
@@ -5462,6 +5512,16 @@ function emitObject(
   context: EmitContext,
   expectedType?: IrType,
 ): string {
+  if (
+    expression.properties.some(
+      (property) =>
+        property.kind === 'computedProperty' &&
+        property.key.kind === 'identifier' &&
+        property.key.name === 'EntityRuntimeKey',
+    )
+  ) {
+    rejectEntityRuntimeStorage();
+  }
   if (expression.properties.length === 1 && expression.properties[0]?.kind === 'spread') {
     return `${parenthesize(emitExpression(expression.properties[0].expression, context))}.clone()`;
   }
@@ -5592,13 +5652,6 @@ function emitObject(
     return nullable ? `Some(${value})` : value;
   }
   const properties = expression.properties.flatMap((property) => {
-    if (
-      property.kind === 'computedProperty' &&
-      property.key.kind === 'identifier' &&
-      property.key.name === 'EntityRuntimeKey'
-    ) {
-      return [];
-    }
     if (property.kind === 'spread') {
       spreads.push(`..${parenthesize(emitExpression(property.expression, context, target))}.clone()`);
       return [];

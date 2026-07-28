@@ -7,7 +7,8 @@ This is the durable handoff for continuing the mechanical Flight TypeScript-to-R
 The repository is a compiler project, not a collection of manually ported crates.
 
 - A small, explicit set of packages may be cultivated by hand.
-- `packages/surface-rs` and `flighthq-surface` are cultivated together.
+- `packages/surface-rs` and the configured surface source/declaration selections are cultivated. The
+  `flighthq-surface` crate is generated from those selections and must not be edited by hand.
 - Surface is the only package planned as a standalone wasm package.
 - Selected host packages, build tools such as `tool-capture`, and `*-dom` packages may be host-bound or excluded by explicit policy.
 - All other upstream packages enter generation by default. A failure must appear as a source, compile, or dependency blocker in the generation report.
@@ -201,6 +202,12 @@ Acceptance:
 - 76 missing-field `E0609` failures, mostly TypeScript runtime extensions projected onto `EntityRuntime`;
 - 25 inference `E0283` failures;
 - 41 type mismatches, plus a small remainder.
+
+The checkpoint report also counted `@flighthq/entity` as compiled even though `EntityRuntimeKey` reads, writes,
+deletes, membership tests, and computed initializers were erased into no-ops, constants, or a panic. Those
+operations must remain source blockers until a native runtime representation exists. Regenerate the baseline
+with that blocker before measuring pass 20 diagnostic progress; do not restore compiling stubs to preserve the
+old headline count.
 
 Do not widen `EntityRuntime` indiscriminately. The package uses compositional runtime extension bags. Preserve generic parameters through aliases, imports, applications, and structural canonicalization, then represent runtime extensions explicitly. Candidate designs are:
 

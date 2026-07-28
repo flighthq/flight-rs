@@ -1788,4 +1788,61 @@ describe('Rust emission', () => {
       }),
     ).not.toThrow();
   });
+
+  it('reports every EntityRuntimeKey storage operation instead of emitting runtime stubs', () => {
+    const fixtures = [
+      'return source[EntityRuntimeKey];',
+      'source[EntityRuntimeKey] = value;',
+      'source[EntityRuntimeKey].binding = value;',
+      'return delete source[EntityRuntimeKey];',
+      'return EntityRuntimeKey in source;',
+      'return { [EntityRuntimeKey]: value };',
+    ];
+
+    for (const [index, body] of fixtures.entries()) {
+      const source = ts.createSourceFile(
+        `/workspace/upstream/packages/entity/src/runtime-${String(index)}.ts`,
+        `export function runtimeOperation(source: any, value: any): any { ${body} }`,
+        ts.ScriptTarget.Latest,
+        true,
+        ts.ScriptKind.TS,
+      );
+      const lowered = lowerTypeScriptSource(source, '@flighthq/entity', '/workspace');
+
+      expect(lowered.diagnostics).toEqual([]);
+      expect(() =>
+        emitRustModule({
+          declarations: lowered.declarations,
+          source: `upstream/packages/entity/src/runtime-${String(index)}.ts`,
+          typeImports: [],
+        }),
+      ).toThrow(
+        'EntityRuntimeKey storage requires an aggregate native entity runtime representation; refusing to erase observable runtime state',
+      );
+    }
+  });
+
+  it('reports unknown DOM typeof properties instead of assuming they are functions', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/application/src/capability.ts',
+      `
+        export function supportsUnknownCapability(): boolean {
+          return typeof window.unknownCapability === 'function';
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/application', '/workspace');
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(() =>
+      emitRustModule({
+        declarations: lowered.declarations,
+        source: 'upstream/packages/application/src/capability.ts',
+        typeImports: [],
+      }),
+    ).toThrow('typeof window.unknownCapability has no configured host-property tag');
+  });
 });

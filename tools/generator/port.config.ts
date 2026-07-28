@@ -37,12 +37,28 @@ export const portConfig = {
   generatedDirectory: 'generated',
   reportsDirectory: 'reports',
   upstreamDirectory: 'upstream',
+  typeLowering: {
+    genericIntersectionBaseOverrides: [
+      {
+        name: 'Node',
+        reason:
+          'Flight node aliases intersect the concrete Node storage record with a generic traits parameter; Rust keeps the storage record while traits move through generated runtime fields.',
+      },
+    ],
+    transparentTypeWrappers: [
+      {
+        name: 'EntityWithoutRuntime',
+        reason:
+          'EntityWithoutRuntime removes TypeScript symbol-keyed storage; generated Rust preserves the portable entity shape while EntityRuntimeKey operations remain explicit blockers.',
+      },
+    ],
+  },
   packagePolicy: [
     {
       disposition: 'cultivated',
       match: '@flighthq/surface',
       reason:
-        'Pixel kernels, shared surface identity, alias-sensitive mutation, and the standalone wasm ABI are intentionally cultivated by hand.',
+        'The TypeScript/wasm facade and its explicit source/declaration admission policy are cultivated; flighthq-surface itself is generated from those selections.',
     },
     {
       disposition: 'excluded',
