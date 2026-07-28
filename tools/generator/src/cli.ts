@@ -26,19 +26,26 @@ try {
   if (inventoryOnly && jsonOnly) {
     process.stdout.write(stableJson(inventory));
   } else {
-    if (!check) mkdirSync(reportsDirectory, { recursive: true });
     const api = createApiReport(inventory);
-    writeOrCheck(path.join(reportsDirectory, 'api.json'), stableJson(api), check);
-    writeOrCheck(path.join(reportsDirectory, 'inventory.json'), stableJson(inventory), check);
-    writeOrCheck(path.join(reportsDirectory, 'inventory.md'), inventorySummary(inventory), check);
+    const reports = [
+      { content: stableJson(api), file: 'api.json' },
+      { content: stableJson(inventory), file: 'inventory.json' },
+      { content: inventorySummary(inventory), file: 'inventory.md' },
+    ];
 
     if (!inventoryOnly) {
       const lowering = auditLowering(workspaceDirectory);
       const generation = generateRust(workspaceDirectory, check, inventory);
-      writeOrCheck(path.join(reportsDirectory, 'lowering.json'), stableJson(lowering), check);
-      writeOrCheck(path.join(reportsDirectory, 'lowering.md'), loweringSummary(lowering), check);
-      writeOrCheck(path.join(reportsDirectory, 'generation.json'), stableJson(generation), check);
-      writeOrCheck(path.join(reportsDirectory, 'generation.md'), generationSummary(generation), check);
+      reports.push(
+        { content: stableJson(lowering), file: 'lowering.json' },
+        { content: loweringSummary(lowering), file: 'lowering.md' },
+        { content: stableJson(generation), file: 'generation.json' },
+        { content: generationSummary(generation), file: 'generation.md' },
+      );
+      if (!check) mkdirSync(reportsDirectory, { recursive: true });
+      for (const report of reports) {
+        writeOrCheck(path.join(reportsDirectory, report.file), report.content, check);
+      }
       const emitted = generation.targets.reduce((total, target) => total + target.emittedSources.length, 0);
       const excluded = generation.targets.reduce((total, target) => total + target.sourceExclusions.length, 0);
       const unsupported = generation.targets.reduce((total, target) => total + target.unsupportedSources.length, 0);
@@ -46,6 +53,10 @@ try {
         `${check ? 'Verified' : 'Generated'} ${inventory.summary.packages} inventoried packages; emitted ${String(emitted)} Rust modules, with ${String(excluded)} explicit exclusions and ${String(unsupported)} unsupported sources.\n`,
       );
     } else {
+      if (!check) mkdirSync(reportsDirectory, { recursive: true });
+      for (const report of reports) {
+        writeOrCheck(path.join(reportsDirectory, report.file), report.content, check);
+      }
       process.stdout.write(
         `${check ? 'Verified' : 'Inventoried'} ${inventory.summary.packages} packages and ${inventory.summary.exports} public exports.\n`,
       );

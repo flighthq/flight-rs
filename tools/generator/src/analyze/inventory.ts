@@ -336,8 +336,39 @@ function readSdkPackages(sdk: PackageDescriptor | undefined): Set<string> {
   return packages;
 }
 
-function readUpstreamCommit(upstreamDirectory: string): string {
-  return execFileSync('git', ['-C', upstreamDirectory, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+export function readUpstreamCommit(upstreamDirectory: string): string {
+  const workspaceDirectory = path.dirname(upstreamDirectory);
+  const submodulePath = path.relative(workspaceDirectory, upstreamDirectory).replaceAll(path.sep, '/');
+  const gitlink = execFileSync('git', ['-C', workspaceDirectory, 'ls-tree', 'HEAD', '--', submodulePath], {
+    encoding: 'utf8',
+  }).trim();
+  const match = /^160000 commit (?<commit>[0-9a-f]{40})\t/u.exec(gitlink);
+  if (!match?.groups?.commit) {
+    throw new Error(`Expected ${submodulePath} to be a recorded Git submodule.`);
+  }
+  const expected = match.groups.commit;
+  let upstreamRoot: string;
+  try {
+    upstreamRoot = execFileSync('git', ['-C', upstreamDirectory, 'rev-parse', '--show-toplevel'], {
+      encoding: 'utf8',
+    }).trim();
+  } catch {
+    throw new Error(
+      `Upstream submodule is not initialized at ${path.relative(process.cwd(), upstreamDirectory)}; expected recorded commit ${expected}.`,
+    );
+  }
+  if (path.resolve(upstreamRoot) !== path.resolve(upstreamDirectory)) {
+    throw new Error(
+      `Upstream submodule is not initialized at ${path.relative(process.cwd(), upstreamDirectory)}; expected recorded commit ${expected}.`,
+    );
+  }
+  const actual = execFileSync('git', ['-C', upstreamDirectory, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+  if (actual !== expected) {
+    throw new Error(
+      `Upstream submodule HEAD ${actual} does not match the recorded commit ${expected} at ${path.relative(process.cwd(), upstreamDirectory)}.`,
+    );
+  }
+  return actual;
 }
 
 function resolveExports(

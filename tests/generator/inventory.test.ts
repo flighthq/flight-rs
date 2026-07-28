@@ -1,12 +1,30 @@
+import { execFileSync } from 'node:child_process';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 
 import {
   analyzeUpstream,
   packageNameToRustCrate,
+  readUpstreamCommit,
   sourcePathToImplementationModule,
   sourcePathToRustModule,
 } from '../../tools/generator/src/analyze/inventory.ts';
 import { auditLowering } from '../../tools/generator/src/analyze/lowering.ts';
+
+function git(directory: string, ...arguments_: string[]): string {
+  return execFileSync('git', ['-C', directory, ...arguments_], {
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe'],
+  }).trim();
+}
+
+function commitFile(directory: string, file: string, content: string): string {
+  writeFileSync(path.join(directory, file), content);
+  git(directory, 'add', file);
+  git(directory, 'commit', '-m', `fixture ${file}`);
+  return git(directory, 'rev-parse', 'HEAD');
+}
 
 describe('cultivated upstream analysis', () => {
   it('accounts for every package and representative export', () => {
@@ -27,6 +45,43 @@ describe('cultivated upstream analysis', () => {
     expect(audit.summary.packages).toBe(131);
     expect(audit.summary.lowered).toBe(audit.summary.declarations);
     expect(audit.summary.diagnostics).toBe(0);
+  });
+});
+
+describe('upstream provenance', () => {
+  it('requires the initialized upstream HEAD to match the recorded gitlink', () => {
+    const workspace = mkdtempSync(path.join(os.tmpdir(), 'flight-generator-provenance-'));
+    const upstream = path.join(workspace, 'upstream');
+    try {
+      mkdirSync(upstream);
+      git(workspace, 'init');
+      git(workspace, 'config', 'user.email', 'generator@example.invalid');
+      git(workspace, 'config', 'user.name', 'Generator Test');
+      git(upstream, 'init');
+      git(upstream, 'config', 'user.email', 'generator@example.invalid');
+      git(upstream, 'config', 'user.name', 'Generator Test');
+      const recorded = commitFile(upstream, 'source.ts', 'export const version = 1;\n');
+      writeFileSync(
+        path.join(workspace, '.gitmodules'),
+        '[submodule "upstream"]\n\tpath = upstream\n\turl = https://example.invalid/upstream.git\n',
+      );
+      git(workspace, 'add', '.gitmodules');
+      git(workspace, 'update-index', '--add', '--cacheinfo', `160000,${recorded},upstream`);
+      git(workspace, 'commit', '-m', 'record upstream');
+
+      expect(readUpstreamCommit(upstream)).toBe(recorded);
+
+      const moved = commitFile(upstream, 'source.ts', 'export const version = 2;\n');
+      expect(moved).not.toBe(recorded);
+      expect(() => readUpstreamCommit(upstream)).toThrow(
+        `Upstream submodule HEAD ${moved} does not match the recorded commit ${recorded}`,
+      );
+
+      rmSync(path.join(upstream, '.git'), { force: true, recursive: true });
+      expect(() => readUpstreamCommit(upstream)).toThrow('Upstream submodule is not initialized');
+    } finally {
+      rmSync(workspace, { force: true, recursive: true });
+    }
   });
 });
 
