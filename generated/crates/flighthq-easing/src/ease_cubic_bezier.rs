@@ -5,7 +5,7 @@
 #![allow(unused_imports)]
 #![allow(unused_parens)]
 
-use crate::EasingFunction;
+use flighthq_types::EasingFunction;
 
 // Source: upstream/packages/easing/src/easeCubicBezier.ts:9 (sha256:d7f3f750548dac640f288e297287aabe71bc61372f08e47181b143eb7fdfe17b)
 pub fn ease_cubic_bezier(x1: f64, y1: f64, x2: f64, y2: f64) -> EasingFunction {
@@ -32,10 +32,7 @@ pub fn ease_cubic_bezier(x1: f64, y1: f64, x2: f64, y2: f64) -> EasingFunction {
                 if ((derivative).abs() < 0.000001_f64) {
                     break;
                 }
-                {
-                    s -= (x_error / derivative);
-                    s
-                };
+                s -= (x_error / derivative);
                 {
                     i += 1.0;
                     i
@@ -44,10 +41,7 @@ pub fn ease_cubic_bezier(x1: f64, y1: f64, x2: f64, y2: f64) -> EasingFunction {
         }
         let mut low = 0.0_f64;
         let mut high = 1.0_f64;
-        {
-            s = x;
-            s
-        };
+        s = x;
         if (s < low) {
             return low;
         }
@@ -60,20 +54,11 @@ pub fn ease_cubic_bezier(x1: f64, y1: f64, x2: f64, y2: f64) -> EasingFunction {
                 return s;
             }
             if (x > sampled) {
-                {
-                    low = s;
-                    low
-                };
+                low = s;
             } else {
-                {
-                    high = s;
-                    high
-                };
+                high = s;
             }
-            {
-                s = (((high - low) * 0.5_f64) + low);
-                s
-            };
+            s = (((high - low) * 0.5_f64) + low);
         }
         return s;
     };

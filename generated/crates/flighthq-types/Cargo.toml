@@ -1,5 +1,5 @@
 [package]
-name = "flighthq-easing"
+name = "flighthq-types"
 version = "0.1.0"
 edition = "2024"
 license = "MIT"
@@ -7,6 +7,3 @@ publish = false
 
 [lib]
 path = "src/lib.rs"
-
-[dependencies]
-flighthq-types = { path = "../flighthq-types" }

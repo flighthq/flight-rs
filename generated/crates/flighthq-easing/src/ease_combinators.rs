@@ -5,7 +5,7 @@
 #![allow(unused_imports)]
 #![allow(unused_parens)]
 
-use crate::EasingFunction;
+use flighthq_types::EasingFunction;
 
 // Source: upstream/packages/easing/src/easeCombinators.ts:16 (sha256:6320e25c24e62c87988aad0e6fa64915417d9bd5b9eb2ce6abcaccf5d73d3497)
 pub fn ease_clamp(ease: EasingFunction) -> EasingFunction {

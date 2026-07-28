@@ -1,9 +1,11 @@
 use std::sync::Arc;
 
 use flighthq_easing::{
-    ease_clamp, ease_cubic_bezier, ease_in_back, ease_in_out_quadratic, ease_in_power, ease_linear,
-    ease_out_back, ease_smoothstep_range, ease_steps, get_easing_derivative,
+    create_easing_samples, ease_clamp, ease_cubic_bezier, ease_in_back, ease_in_cubic,
+    ease_in_out_quadratic, ease_in_power, ease_linear, ease_out_back, ease_piecewise,
+    ease_smoothstep_range, ease_steps, get_easing_derivative,
 };
+use flighthq_types::EasingSegment;
 
 fn close(actual: f64, expected: f64, epsilon: f64) {
     assert!(
@@ -56,4 +58,33 @@ fn cubic_bezier_solver_handles_linear_curve() {
     for sample in [0.0, 0.1, 0.25, 0.5, 0.9, 1.0] {
         close(linear_bezier(sample), sample, 1e-6);
     }
+}
+
+#[test]
+fn typed_array_sampling_preserves_owned_output_and_f32_values() {
+    let out = vec![0.0_f32; 10];
+    let allocation = out.as_ptr();
+    let samples = create_easing_samples(Arc::new(ease_linear), 5.9, Some(out));
+    assert_eq!(samples.as_ptr(), allocation);
+    assert_eq!(samples.len(), 10);
+    assert_eq!(&samples[..6], &[0.0, 0.25, 0.5, 0.75, 1.0, 0.0]);
+
+    let midpoint = create_easing_samples(Arc::new(ease_in_cubic), 1.0, None);
+    close(f64::from(midpoint[0]), 0.125, 1e-7);
+}
+
+#[test]
+fn structural_segments_lower_to_weighted_owned_records() {
+    let piecewise = ease_piecewise(vec![
+        EasingSegment {
+            ease: Arc::new(ease_linear),
+            weight: Some(1.0),
+        },
+        EasingSegment {
+            ease: Arc::new(|_| 1.0),
+            weight: Some(2.0),
+        },
+    ]);
+    close(piecewise(1.0 / 6.0), 0.5, 1e-12);
+    close(piecewise(2.0 / 3.0), 1.0, 1e-12);
 }

@@ -5,7 +5,7 @@
 #![allow(unused_imports)]
 #![allow(unused_parens)]
 
-use crate::EasingFunction;
+use flighthq_types::EasingFunction;
 
 // Source: upstream/packages/easing/src/easePower.ts:6 (sha256:bea4c7c6c1180598b2753000171fca1d6d6cdad1dfd3948103316549a3fa280f)
 pub fn ease_in_out_power(exponent: f64) -> EasingFunction {

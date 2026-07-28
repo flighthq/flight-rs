@@ -7,8 +7,8 @@ import ts from 'typescript';
 import { portConfig, type RustTarget } from '../../port.config.ts';
 import { sourcePathToRustModule } from '../analyze/inventory.ts';
 import { lowerTypeScriptSource } from '../lower/typescript.ts';
-import type { LoweringDiagnostic } from '../model/ir.ts';
-import { RustEmissionError, emitRustModule } from './rust.ts';
+import type { IrType, LoweringDiagnostic } from '../model/ir.ts';
+import { RustEmissionError, emitRustModule, type RustImport } from './rust.ts';
 import { stableJson, writeOrCheck } from './reports.ts';
 
 export interface RustGenerationReport {
@@ -20,6 +20,17 @@ export interface RustGenerationReport {
 
 export interface RustTargetReport {
   crate: string;
+  deferredDeclarations: Array<{
+    fingerprint: string;
+    name: string;
+    reason: string;
+    source: string;
+  }>;
+  deferredSources: Array<{
+    fingerprint: string;
+    reason: string;
+    source: string;
+  }>;
   emittedSources: Array<{
     declarations: number;
     output: string;
@@ -75,11 +86,16 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
 
   const exclusions = new Map(target.sourceExclusions.map((item) => [item.source, item]));
   const usedExclusions = new Set<string>();
+  const selectedSources = target.sourceSelection ? new Set(target.sourceSelection.sources) : undefined;
+  const usedSelections = new Set<string>();
+  const deferredSources: RustTargetReport['deferredSources'] = [];
+  const deferredDeclarations: RustTargetReport['deferredDeclarations'] = [];
   const sourceExclusions: RustTargetReport['sourceExclusions'] = [];
   const unsupportedSources: RustTargetReport['unsupportedSources'] = [];
   const emittedSources: RustTargetReport['emittedSources'] = [];
   const modules: string[] = [];
   const outputs: PendingOutput[] = [];
+  const semanticTypes = collectSemanticTypes(workspaceDirectory, target);
 
   for (const file of walkTypeScriptSources(sourceDirectory)) {
     const sourceName = path.relative(sourceDirectory, file).split(path.sep).join('/');
@@ -94,11 +110,43 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
       });
       continue;
     }
+    if (selectedSources && !selectedSources.has(sourceName)) {
+      deferredSources.push({
+        fingerprint: sha256(readFileSync(file, 'utf8')),
+        reason: target.sourceSelection!.reason,
+        source: relative(workspaceDirectory, file),
+      });
+      continue;
+    }
+    usedSelections.add(sourceName);
     const moduleName = sourcePathToRustModule(file);
     if (!moduleName) continue;
     const sourceText = readFileSync(file, 'utf8');
     const sourceFile = ts.createSourceFile(file, sourceText, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
     const lowered = lowerTypeScriptSource(sourceFile, target.package, workspaceDirectory);
+    const declarationSelection = target.declarationSelection?.[sourceName];
+    const selectedDeclarations = declarationSelection ? new Set(declarationSelection.names) : undefined;
+    const declarations = selectedDeclarations
+      ? lowered.declarations.filter((declaration) => selectedDeclarations.has(declaration.name))
+      : lowered.declarations;
+    if (selectedDeclarations) {
+      for (const declaration of lowered.declarations) {
+        if (selectedDeclarations.has(declaration.name)) continue;
+        deferredDeclarations.push({
+          fingerprint: declaration.origin.fingerprint,
+          name: declaration.name,
+          reason: declarationSelection!.reason,
+          source: declaration.origin.source,
+        });
+      }
+      const missing = [...selectedDeclarations].filter(
+        (name) => !declarations.some((declaration) => declaration.name === name),
+      );
+      if (missing.length > 0) {
+        throw new Error(`Stale ${target.package} declaration selections in ${sourceName}: ${missing.join(', ')}`);
+      }
+    }
+    const importedSemanticTypes = collectImportedSemanticTypes(sourceFile, workspaceDirectory);
     if (lowered.diagnostics.length > 0) {
       unsupportedSources.push({
         diagnostics: lowered.diagnostics,
@@ -110,9 +158,18 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
     try {
       const emitted = formatRust(
         emitRustModule({
-          declarations: lowered.declarations,
+          declarations,
+          imports: collectRustImports(
+            sourceFile,
+            target,
+            target.package === '@flighthq/types' ? Object.keys(importedSemanticTypes) : [],
+          ),
+          semanticTypes: {
+            ...semanticTypes,
+            ...importedSemanticTypes,
+          },
           source: relative(workspaceDirectory, file),
-          typeImports: collectFlightTypeImports(sourceFile),
+          typeImports: [],
         }),
         file,
       );
@@ -120,7 +177,7 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
       outputs.push({ content: emitted, file: outputFile });
       modules.push(moduleName);
       emittedSources.push({
-        declarations: lowered.declarations.length,
+        declarations: declarations.length,
         output: relative(workspaceDirectory, outputFile),
         outputSha256: sha256(emitted),
         source: relative(workspaceDirectory, file),
@@ -138,6 +195,10 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
   const staleExclusions = [...exclusions.keys()].filter((source) => !usedExclusions.has(source));
   if (staleExclusions.length > 0) {
     throw new Error(`Stale ${target.package} source exclusions: ${staleExclusions.join(', ')}`);
+  }
+  const staleSelections = selectedSources ? [...selectedSources].filter((source) => !usedSelections.has(source)) : [];
+  if (staleSelections.length > 0) {
+    throw new Error(`Stale ${target.package} source selections: ${staleSelections.join(', ')}`);
   }
 
   const cargoManifest = emitCargoManifest(target);
@@ -158,10 +219,16 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
   verifyNoStaleOutputs(crateDirectory, new Set(outputs.map((output) => output.file)), check);
 
   emittedSources.sort((left, right) => left.source.localeCompare(right.source));
+  deferredDeclarations.sort((left, right) =>
+    left.source === right.source ? left.name.localeCompare(right.name) : left.source.localeCompare(right.source),
+  );
+  deferredSources.sort((left, right) => left.source.localeCompare(right.source));
   sourceExclusions.sort((left, right) => left.source.localeCompare(right.source));
   unsupportedSources.sort((left, right) => left.source.localeCompare(right.source));
   return {
     crate: target.crate,
+    deferredDeclarations,
+    deferredSources,
     emittedSources,
     package: target.package,
     sourceExclusions,
@@ -170,7 +237,31 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
   };
 }
 
+function collectSemanticTypes(workspaceDirectory: string, target: RustTarget): Readonly<Record<string, IrType>> {
+  return Object.fromEntries(
+    Object.entries(target.typeMappings).map(([name, mapping]) => {
+      const source = path.join(workspaceDirectory, mapping.source);
+      const sourceFile = ts.createSourceFile(
+        source,
+        readFileSync(source, 'utf8'),
+        ts.ScriptTarget.Latest,
+        true,
+        ts.ScriptKind.TS,
+      );
+      const lowered = lowerTypeScriptSource(sourceFile, '@flighthq/types', workspaceDirectory);
+      const declaration = lowered.declarations.find((item) => item.kind === 'type' && item.name === name);
+      if (!declaration || declaration.kind !== 'type') {
+        throw new Error(`Semantic type mapping ${name} did not resolve from ${mapping.source}`);
+      }
+      return [name, declaration.type];
+    }),
+  );
+}
+
 function emitCargoManifest(target: RustTarget): string {
+  const dependencies = Object.values(target.dependencies)
+    .sort((left, right) => left.crate.localeCompare(right.crate))
+    .map(({ crate }) => `${crate} = { path = "../${crate}" }`);
   return [
     '[package]',
     `name = "${target.crate}"`,
@@ -182,6 +273,7 @@ function emitCargoManifest(target: RustTarget): string {
     '[lib]',
     'path = "src/lib.rs"',
     '',
+    ...(dependencies.length > 0 ? ['[dependencies]', ...dependencies, ''] : []),
   ].join('\n');
 }
 
@@ -190,12 +282,16 @@ function emitLibrary(target: RustTarget, modules: string[]): string {
     .sort(([left], [right]) => left.localeCompare(right))
     .map(
       ([name, mapping]) =>
-        `/// Generated semantic mapping for ${mapping.source}.\n/// ${mapping.reason}\npub type ${name} = ${mapping.rust};`,
+        `/// Generated semantic mapping for ${mapping.source}.\n/// ${mapping.reason}\n${mapping.rustDefinition ?? `pub type ${name} = ${mapping.rust};`}`,
     );
   const declarations = modules.sort().map((moduleName) => `mod ${moduleName};\npub use ${moduleName}::*;`);
   return [
     '// @generated by tools/generator; do not edit.',
     '#![forbid(unsafe_code)]',
+    '',
+    '/// Opaque ownership token for host-only TypeScript values that cannot cross the generated Rust boundary.',
+    '#[derive(Clone, Default)]',
+    'pub struct OpaqueHostValue;',
     '',
     ...aliases.flatMap((alias) => [alias, '']),
     ...declarations,
@@ -203,21 +299,76 @@ function emitLibrary(target: RustTarget, modules: string[]): string {
   ].join('\n');
 }
 
-function collectFlightTypeImports(sourceFile: ts.SourceFile): string[] {
-  const imports: string[] = [];
+function collectRustImports(
+  sourceFile: ts.SourceFile,
+  target: RustTarget,
+  additionalCrateTypes: string[],
+): RustImport[] {
+  const groups = new Map<string, RustImport['names']>();
   for (const statement of sourceFile.statements) {
-    if (
-      !ts.isImportDeclaration(statement) ||
-      !ts.isStringLiteral(statement.moduleSpecifier) ||
-      statement.moduleSpecifier.text !== '@flighthq/types'
-    ) {
-      continue;
-    }
+    if (!ts.isImportDeclaration(statement) || !ts.isStringLiteral(statement.moduleSpecifier)) continue;
+    const specifier = statement.moduleSpecifier.text;
+    const dependency = target.dependencies[specifier];
+    const module = specifier.startsWith('.') ? 'crate' : dependency?.crate.replaceAll('-', '_');
+    if (!module) continue;
     const bindings = statement.importClause?.namedBindings;
     if (!bindings || !ts.isNamedImports(bindings)) continue;
-    imports.push(...bindings.elements.map((element) => element.propertyName?.text ?? element.name.text));
+    const names = groups.get(module) ?? [];
+    names.push(
+      ...bindings.elements.map((element) => ({
+        imported: element.propertyName?.text ?? element.name.text,
+        local: element.name.text,
+      })),
+    );
+    groups.set(module, names);
   }
-  return imports;
+  if (additionalCrateTypes.length > 0) {
+    const names = groups.get('crate') ?? [];
+    names.push(...additionalCrateTypes.map((name) => ({ imported: name, local: name })));
+    groups.set('crate', names);
+  }
+  return [...groups].map(([module, names]) => ({ module, names }));
+}
+
+function collectImportedSemanticTypes(
+  sourceFile: ts.SourceFile,
+  workspaceDirectory: string,
+): Readonly<Record<string, IrType>> {
+  const types = new Map<string, IrType>();
+  const visited = new Set<string>();
+  const visit = (file: ts.SourceFile): void => {
+    if (visited.has(file.fileName)) return;
+    visited.add(file.fileName);
+    for (const statement of file.statements) {
+      if (!ts.isImportDeclaration(statement) || !ts.isStringLiteral(statement.moduleSpecifier)) continue;
+      const bindings = statement.importClause?.namedBindings;
+      if (!bindings || !ts.isNamedImports(bindings)) continue;
+      const specifier = statement.moduleSpecifier.text;
+      for (const element of bindings.elements) {
+        const name = element.propertyName?.text ?? element.name.text;
+        const source =
+          specifier === '@flighthq/types'
+            ? path.join(workspaceDirectory, portConfig.upstreamDirectory, 'packages', 'types', 'src', `${name}.ts`)
+            : specifier.startsWith('.')
+              ? path.resolve(path.dirname(file.fileName), `${specifier}.ts`)
+              : undefined;
+        if (!source || !existsSync(source)) continue;
+        const semanticSource = ts.createSourceFile(
+          source,
+          readFileSync(source, 'utf8'),
+          ts.ScriptTarget.Latest,
+          true,
+          ts.ScriptKind.TS,
+        );
+        const lowered = lowerTypeScriptSource(semanticSource, '@flighthq/types', workspaceDirectory);
+        const declaration = lowered.declarations.find((item) => item.kind === 'type' && item.name === name);
+        if (declaration?.kind === 'type') types.set(name, declaration.type);
+        visit(semanticSource);
+      }
+    }
+  };
+  visit(sourceFile);
+  return Object.fromEntries(types);
 }
 
 function formatRust(content: string, source: string): string {

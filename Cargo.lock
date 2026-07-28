@@ -5,3 +5,17 @@ version = 4
 [[package]]
 name = "flighthq-easing"
 version = "0.1.0"
+dependencies = [
+ "flighthq-types",
+]
+
+[[package]]
+name = "flighthq-image"
+version = "0.1.0"
+dependencies = [
+ "flighthq-types",
+]
+
+[[package]]
+name = "flighthq-types"
+version = "0.1.0"

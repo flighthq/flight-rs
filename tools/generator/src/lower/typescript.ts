@@ -941,6 +941,7 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
     if (name === 'Array' || name === 'ReadonlyArray') {
       return { element: arguments_[0] ?? { kind: 'dynamic' }, kind: 'array' };
     }
+    if (name === 'EntityWithoutRuntime' && arguments_[0]) return arguments_[0];
     if (name === 'Record') return { kind: 'dynamic' };
     return { arguments: arguments_, kind: 'named', name };
   }
@@ -1034,12 +1035,13 @@ function lowerExpressionWithTypeArguments(node: ts.ExpressionWithTypeArguments, 
 
 function lowerTypeMember(node: ts.TypeElement, context: LoweringContext) {
   if (ts.isPropertySignature(node) && node.type) {
+    if (ts.isComputedPropertyName(node.name)) return undefined;
     return {
       contextualParameters: ts.isFunctionTypeNode(node.type)
         ? lowerParameterList(node.type.parameters, context).parameters
         : undefined,
       name: propertyName(node.name, context),
-      optional: Boolean(node.questionToken) || ts.isComputedPropertyName(node.name),
+      optional: Boolean(node.questionToken),
       type: lowerType(node.type, context),
     };
   }

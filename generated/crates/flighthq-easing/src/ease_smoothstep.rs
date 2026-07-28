@@ -5,7 +5,7 @@
 #![allow(unused_imports)]
 #![allow(unused_parens)]
 
-use crate::ScalarRemap;
+use flighthq_types::ScalarRemap;
 
 // Source: upstream/packages/easing/src/easeSmoothstep.ts:6 (sha256:a6b92c8f9e8f5e06f3ab799ed9364f4bcca4a31dfe7f8a18f1b23854eea635c2)
 pub fn ease_smootherstep(t: f64) -> f64 {

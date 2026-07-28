@@ -5,7 +5,7 @@
 #![allow(unused_imports)]
 #![allow(unused_parens)]
 
-use crate::EasingFunction;
+use flighthq_types::EasingFunction;
 
 // Source: upstream/packages/easing/src/getEasingDerivative.ts:15 (sha256:ffeaee626b1cb6d62284a0bec434ffb6782394e849c35683da5f38d2a5876531)
 pub fn get_easing_derivative(ease: EasingFunction, t: f64, epsilon: Option<f64>) -> f64 {
