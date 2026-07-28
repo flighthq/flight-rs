@@ -143,6 +143,17 @@ describe('generated wasm boundary', () => {
     reference.copySurfaceAlpha(expected, sourceRegion);
     expect(actualSurface.data).toEqual(expectedSurface.data);
     expect(actualSurface.version).toBe(expectedSurface.version);
+
+    const inverted = Array.from({ length: 256 }, (_, value) => 255 - value);
+    rs.applySurfacePaletteMap(actual, sourceRegion, inverted, null, null, null);
+    reference.applySurfacePaletteMap(expected, sourceRegion, inverted, null, null, null);
+    expect(actualSurface.data).toEqual(expectedSurface.data);
+    expect(actualSurface.version).toBe(expectedSurface.version);
+
+    expect(rs.getSurfaceColorBoundsRectangle(actual, 0xffffff00, 0xaabbcc00)).toEqual(
+      reference.getSurfaceColorBoundsRectangle(expected, 0xffffff00, 0xaabbcc00),
+    );
+    expect(rs.getSurfaceHistogram(actual)).toEqual(reference.getSurfaceHistogram(expected));
   });
 
   it('matches deterministic noise variants and coverage', () => {

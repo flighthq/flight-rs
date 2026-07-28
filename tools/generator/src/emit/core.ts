@@ -449,7 +449,7 @@ function collectImportedSemanticTypes(
         const name = element.propertyName?.text ?? element.name.text;
         const source =
           specifier === '@flighthq/types'
-            ? path.join(workspaceDirectory, portConfig.upstreamDirectory, 'packages', 'types', 'src', `${name}.ts`)
+            ? findTypeDeclarationSource(workspaceDirectory, name)
             : specifier.startsWith('.')
               ? path.resolve(path.dirname(file.fileName), `${specifier}.ts`)
               : undefined;
@@ -463,13 +463,50 @@ function collectImportedSemanticTypes(
         );
         const lowered = lowerTypeScriptSource(semanticSource, '@flighthq/types', workspaceDirectory);
         const declaration = lowered.declarations.find((item) => item.kind === 'type' && item.name === name);
-        if (declaration?.kind === 'type') types.set(name, declaration.type);
+        if (declaration?.kind === 'type') {
+          for (const sibling of lowered.declarations) {
+            if (sibling.kind === 'type' && !types.has(sibling.name)) types.set(sibling.name, sibling.type);
+          }
+        }
         visit(semanticSource);
       }
     }
   };
   visit(sourceFile);
   return Object.fromEntries(types);
+}
+
+function findTypeDeclarationSource(workspaceDirectory: string, name: string): string | undefined {
+  const directory = path.join(workspaceDirectory, portConfig.upstreamDirectory, 'packages', 'types', 'src');
+  const conventional = path.join(directory, `${name}.ts`);
+  if (existsSync(conventional)) return conventional;
+  for (const file of walkTypeScriptSources(directory)) {
+    const source = ts.createSourceFile(
+      file,
+      readFileSync(file, 'utf8'),
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    if (
+      source.statements.some(
+        (statement) =>
+          ((ts.isInterfaceDeclaration(statement) ||
+            ts.isTypeAliasDeclaration(statement) ||
+            ts.isClassDeclaration(statement) ||
+            ts.isEnumDeclaration(statement) ||
+            ts.isFunctionDeclaration(statement)) &&
+            statement.name?.text === name) ||
+          (ts.isVariableStatement(statement) &&
+            statement.declarationList.declarations.some(
+              (declaration) => ts.isIdentifier(declaration.name) && declaration.name.text === name,
+            )),
+      )
+    ) {
+      return file;
+    }
+  }
+  return undefined;
 }
 
 function formatRust(content: string, source: string): string {

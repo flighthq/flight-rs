@@ -57,6 +57,10 @@ describe('Rust emission', () => {
         export interface Weighted {
           readonly weight?: number;
         }
+        export interface Bounds {
+          readonly height: number;
+          readonly width: number;
+        }
         export function collectWeights(values: ReadonlyArray<Readonly<Weighted>>): Float32Array {
           const total = values.reduce((sum, value) => sum + (value.weight ?? 1), 0);
           const out = new Float32Array(values.length);
@@ -64,6 +68,14 @@ describe('Rust emission', () => {
             out[i] = (values[i].weight ?? 1) / total;
           }
           return out;
+        }
+        export function positiveBounds(width: number, height: number): Bounds | null {
+          return width > 0 && height > 0 ? { width, height } : null;
+        }
+        export function countBytes(values: Uint8Array): number[] {
+          const bins = new Array<number>(256).fill(0);
+          for (const value of values) bins[value]++;
+          return bins;
         }
       `,
       ts.ScriptTarget.Latest,
@@ -81,6 +93,8 @@ describe('Rust emission', () => {
     expect(output).toContain('pub struct Weighted');
     expect(output).toContain('.iter().cloned().fold');
     expect(output).toContain('Vec<f32>');
+    expect(output).toContain('Some(Bounds {');
+    expect(output).toContain('vec![0.0_f64; (256.0_f64) as usize]');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
     const sourceFile = path.join(fixture, 'lib.rs');

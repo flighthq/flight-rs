@@ -2,15 +2,16 @@
 #![forbid(unsafe_code)]
 
 use flighthq_surface::{
-    SurfaceConvolutionOptions, build_surface_brightness_color_matrix,
+    SurfaceConvolutionOptions, apply_surface_palette_map, build_surface_brightness_color_matrix,
     build_surface_contrast_color_matrix, build_surface_grayscale_color_matrix,
     build_surface_hue_rotation_color_matrix, build_surface_invert_color_matrix,
     build_surface_saturation_color_matrix, build_surface_sepia_color_matrix, color_matrix_surface,
     concat_surface_color_matrix, convolve_surface, copy_surface_alpha, copy_surface_pixels,
     dilate_surface, erode_surface, fill_surface_noise, fill_surface_perlin_noise,
-    fill_surface_rectangle, fill_surface_turbulence, get_surface_coverage, multiply_surface_alpha,
-    pixelate_surface, premultiply_surface_pixels, set_surface_alpha,
-    set_surface_color_matrix_identity, unpremultiply_surface_pixels,
+    fill_surface_rectangle, fill_surface_turbulence, get_surface_color_bounds_rectangle,
+    get_surface_coverage, get_surface_histogram, multiply_surface_alpha, pixelate_surface,
+    premultiply_surface_pixels, set_surface_alpha, set_surface_color_matrix_identity,
+    unpremultiply_surface_pixels,
 };
 use flighthq_types::{Surface, SurfaceRegion};
 use wasm_bindgen::prelude::*;
@@ -60,6 +61,35 @@ fn copy_f64_output(out: &mut [f64], owned: &[f64]) {
         "generated matrix output changed length"
     );
     out.copy_from_slice(owned);
+}
+
+fn optional_channel_map(values: &[f64]) -> Option<Vec<f64>> {
+    (!values.is_empty()).then(|| values.to_vec())
+}
+
+#[wasm_bindgen]
+#[allow(clippy::too_many_arguments)]
+pub fn apply_surface_palette_map_wasm(
+    dest_data: &mut [u8],
+    dest_descriptor: &[f64],
+    source_data: &[u8],
+    source_descriptor: &[f64],
+    red_map: &[f64],
+    green_map: &[f64],
+    blue_map: &[f64],
+    alpha_map: &[f64],
+) {
+    let mut dest = region(dest_data, dest_descriptor);
+    let source = region(source_data, source_descriptor);
+    apply_surface_palette_map(
+        &mut dest,
+        &source,
+        optional_channel_map(red_map),
+        optional_channel_map(green_map),
+        optional_channel_map(blue_map),
+        optional_channel_map(alpha_map),
+    );
+    copy_u8_output(dest_data, &dest.surface.data);
 }
 
 #[wasm_bindgen]
@@ -353,4 +383,40 @@ pub fn get_surface_coverage_wasm(
         background_color,
         Some(channel_tolerance),
     )
+}
+
+#[wasm_bindgen]
+pub fn get_surface_color_bounds_rectangle_wasm(
+    out: &mut [f64],
+    data: &[u8],
+    descriptor: &[f64],
+    mask: f64,
+    color: f64,
+    find_color: bool,
+) -> bool {
+    assert_eq!(out.len(), 4, "rectangle output must contain four values");
+    let Some(rectangle) = get_surface_color_bounds_rectangle(
+        &region(data, descriptor),
+        mask,
+        color,
+        Some(find_color),
+    ) else {
+        return false;
+    };
+    out.copy_from_slice(&[rectangle.x, rectangle.y, rectangle.width, rectangle.height]);
+    true
+}
+
+#[wasm_bindgen]
+pub fn get_surface_histogram_wasm(out: &mut [f64], data: &[u8], descriptor: &[f64]) {
+    assert_eq!(
+        out.len(),
+        1024,
+        "histogram output must contain four 256-bin channels"
+    );
+    let histogram = get_surface_histogram(&region(data, descriptor));
+    out[0..256].copy_from_slice(&histogram.red);
+    out[256..512].copy_from_slice(&histogram.green);
+    out[512..768].copy_from_slice(&histogram.blue);
+    out[768..1024].copy_from_slice(&histogram.alpha);
 }

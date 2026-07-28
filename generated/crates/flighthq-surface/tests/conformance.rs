@@ -1,7 +1,8 @@
 use flighthq_surface::{
-    SurfaceConvolutionOptions, build_surface_brightness_color_matrix, color_matrix_surface,
-    convolve_surface, copy_surface_pixels, dilate_surface, erode_surface, fill_surface_noise,
-    fill_surface_rectangle, get_surface_coverage, get_surface_pixel, get_surface_pixel_luminance,
+    SurfaceConvolutionOptions, apply_surface_palette_map, build_surface_brightness_color_matrix,
+    color_matrix_surface, convolve_surface, copy_surface_pixels, dilate_surface, erode_surface,
+    fill_surface_noise, fill_surface_rectangle, get_surface_color_bounds_rectangle,
+    get_surface_coverage, get_surface_histogram, get_surface_pixel, get_surface_pixel_luminance,
     get_surface_pixel_rgb, multiply_surface_alpha, pixelate_surface, premultiply_surface_pixels,
     set_surface_alpha, set_surface_pixel, unpremultiply_surface_pixels,
 };
@@ -171,4 +172,57 @@ fn deterministic_noise_skips_clipped_pixels_without_changing_the_field() {
 
     assert_eq!(clipped.surface.data, full.surface.data[4..]);
     assert_eq!(clipped.surface.version, 1.0);
+}
+
+#[test]
+fn color_bounds_returns_a_generated_rectangle_or_none() {
+    let source = region(surface(
+        vec![0, 0, 0, 255, 10, 20, 30, 255, 10, 20, 30, 128],
+        3.0,
+        1.0,
+    ));
+    let bounds = get_surface_color_bounds_rectangle(
+        &source,
+        0xffff_ff00_u32 as f64,
+        0x0a14_1eff_u32 as f64,
+        None,
+    )
+    .expect("matching RGB bounds");
+    assert_eq!(
+        (bounds.x, bounds.y, bounds.width, bounds.height),
+        (1.0, 0.0, 2.0, 1.0)
+    );
+    assert!(
+        get_surface_color_bounds_rectangle(
+            &source,
+            0xffff_ffff_u32 as f64,
+            0xffff_ffff_u32 as f64,
+            None,
+        )
+        .is_none(),
+    );
+}
+
+#[test]
+fn histogram_counts_generated_channel_bins() {
+    let source = region(surface(vec![1, 2, 3, 4, 1, 8, 3, 9], 2.0, 1.0));
+    let histogram = get_surface_histogram(&source);
+    assert_eq!(histogram.red[1], 2.0);
+    assert_eq!(histogram.green[2], 1.0);
+    assert_eq!(histogram.green[8], 1.0);
+    assert_eq!(histogram.blue[3], 2.0);
+    assert_eq!(histogram.alpha[4], 1.0);
+    assert_eq!(histogram.alpha[9], 1.0);
+}
+
+#[test]
+fn nullable_palette_maps_pass_through_unselected_channels() {
+    let source = region(surface(vec![10, 20, 30, 40], 1.0, 1.0));
+    let mut destination = region(surface(vec![0; 4], 1.0, 1.0));
+    let red = (0..256).map(|value| (255 - value) as f64).collect();
+
+    apply_surface_palette_map(&mut destination, &source, Some(red), None, None, None);
+
+    assert_eq!(destination.surface.data, vec![245, 20, 30, 40]);
+    assert_eq!(destination.surface.version, 1.0);
 }

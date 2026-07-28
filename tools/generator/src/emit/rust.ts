@@ -451,6 +451,12 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
 
 function emitCall(expression: Extract<IrExpression, { kind: 'call' }>, context: EmitContext): string {
   if (expression.optional) throw new RustEmissionError('optional call Rust lowering is not implemented');
+  if (isArrayFillConstruction(expression)) {
+    const length = expression.callee.object.arguments[0];
+    const value = expression.arguments[0];
+    if (!length || !value) throw new RustEmissionError('new Array(length).fill(value) requires both arguments');
+    return `vec![${emitExpression(value, context)}; ${parenthesize(emitExpression(length, context))} as usize]`;
+  }
   if (expression.callee.kind === 'identifier') {
     const inline = context.inlineFunctions.get(expression.callee.name);
     if (inline) return emitInlineFunctionCall(expression, inline, context);
@@ -694,11 +700,12 @@ function emitBitwiseOperation(left: string, right: string, operator: string): st
 }
 
 function emitUnary(expression: Extract<IrExpression, { kind: 'unary' }>, context: EmitContext): string {
-  const operand = emitExpression(expression.operand, context);
   if (expression.operator === '++' || expression.operator === '--') {
+    const operand = emitPlaceExpression(expression.operand, context);
     const operator = expression.operator === '++' ? '+=' : '-=';
     return `{ ${operand} ${operator} 1.0; ${operand} }`;
   }
+  const operand = emitExpression(expression.operand, context);
   if (expression.operator === 'void') return `{ ${operand}; () }`;
   if (expression.operator === 'typeof' || expression.operator === 'delete') {
     throw new RustEmissionError(`${expression.operator} Rust lowering is not implemented`);
@@ -937,6 +944,16 @@ function collectMutatedNames(
     }
     if (
       'kind' in item &&
+      item.kind === 'unary' &&
+      'operator' in item &&
+      (item.operator === '++' || item.operator === '--') &&
+      'operand' in item
+    ) {
+      const root = expressionRootIdentifier(item.operand);
+      if (root) names.add(root);
+    }
+    if (
+      'kind' in item &&
       item.kind === 'call' &&
       'callee' in item &&
       item.callee &&
@@ -1072,11 +1089,14 @@ function emitObject(
   context: EmitContext,
   expectedType?: IrType,
 ): string {
-  if (expectedType?.kind !== 'anonymous') {
+  const nullable = expectedType?.kind === 'nullable';
+  const target = nullable ? expectedType.inner : expectedType;
+  const resolved = resolveSemanticType(target, context);
+  if (resolved?.kind !== 'anonymous' || !target) {
     throw new RustEmissionError('object literal requires an inferred structural type');
   }
-  const name = emitType(expectedType, context);
-  const fields = new Map(expectedType.fields.map((field) => [field.name, field]));
+  const name = emitType(target, context);
+  const fields = new Map(resolved.fields.map((field) => [field.name, field]));
   const properties = expression.properties.map((property) => {
     if (property.kind !== 'property') {
       throw new RustEmissionError(`object ${property.kind} Rust lowering is not implemented`);
@@ -1085,12 +1105,22 @@ function emitObject(
     if (!field) throw new RustEmissionError(`object field ${property.name} is not present in structural type`);
     return `${safeName(property.name)}: ${emitExpression(property.value, context, field.type)},`;
   });
-  return `${name} {\n${indent(properties.join('\n'))}\n}`;
+  const value = `${name} {\n${indent(properties.join('\n'))}\n}`;
+  return nullable ? `Some(${value})` : value;
 }
 
 function emitElement(expression: Extract<IrExpression, { kind: 'element' }>, context: EmitContext): string {
   if (expression.optional) throw new RustEmissionError('optional element access Rust lowering is not implemented');
-  return `${emitPlaceExpression(expression.object, context)}[${emitExpression(expression.index, context)} as usize]`;
+  const objectType = inferIrExpressionType(expression.object, context);
+  const nullableCollection =
+    objectType?.kind === 'nullable' &&
+    (objectType.inner.kind === 'array' ||
+      (objectType.inner.kind === 'named' && Boolean(typedArrayType(objectType.inner.name))));
+  const root = expressionRootIdentifier(expression.object);
+  const object = nullableCollection
+    ? `${emitPlaceExpression(expression.object, context)}.${root && context.mutatedNames.has(root) ? 'as_mut' : 'as_ref'}().unwrap()`
+    : emitPlaceExpression(expression.object, context);
+  return `${object}[${emitExpression(expression.index, context)} as usize]`;
 }
 
 function emitElementRead(expression: Extract<IrExpression, { kind: 'element' }>, context: EmitContext): string {
@@ -1127,8 +1157,17 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
       return (
         inferIrExpressionType(expression.whenTrue, context) ?? inferIrExpressionType(expression.whenFalse, context)
       );
+    case 'call':
+      if (isArrayFillConstruction(expression) && expression.arguments[0]) {
+        return {
+          element: inferIrExpressionType(expression.arguments[0], context) ?? { kind: 'dynamic' },
+          kind: 'array',
+        };
+      }
+      return undefined;
     case 'element': {
-      const object = inferIrExpressionType(expression.object, context);
+      const inferred = inferIrExpressionType(expression.object, context);
+      const object = inferred?.kind === 'nullable' ? inferred.inner : inferred;
       if (object?.kind === 'array') return object.element;
       if (object?.kind === 'named') return typedArrayElementType(object.name);
       return undefined;
@@ -1156,6 +1195,23 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
     default:
       return undefined;
   }
+}
+
+function isArrayFillConstruction(expression: Extract<IrExpression, { kind: 'call' }>): expression is Extract<
+  IrExpression,
+  { kind: 'call' }
+> & {
+  callee: Extract<IrExpression, { kind: 'property' }> & {
+    object: Extract<IrExpression, { kind: 'new' }>;
+  };
+} {
+  return (
+    expression.callee.kind === 'property' &&
+    expression.callee.name === 'fill' &&
+    expression.callee.object.kind === 'new' &&
+    expression.callee.object.callee.kind === 'identifier' &&
+    expression.callee.object.callee.name === 'Array'
+  );
 }
 
 function runtimeGlobalType(expression: IrExpression): string | undefined {

@@ -41,6 +41,7 @@ export const portConfig = {
       coreCrate: 'flighthq-surface',
       crate: 'flighthq-surface-wasm',
       exports: [
+        'applySurfacePaletteMap',
         'buildSurfaceBrightnessColorMatrix',
         'buildSurfaceContrastColorMatrix',
         'buildSurfaceGrayscaleColorMatrix',
@@ -59,7 +60,9 @@ export const portConfig = {
         'fillSurfacePerlinNoise',
         'fillSurfaceRectangle',
         'fillSurfaceTurbulence',
+        'getSurfaceColorBoundsRectangle',
         'getSurfaceCoverage',
+        'getSurfaceHistogram',
         'multiplySurfaceAlpha',
         'pixelateSurface',
         'premultiplySurfacePixels',
@@ -168,6 +171,11 @@ export const portConfig = {
           reason:
             'Pixel-order conversion joins after tuple destructuring and typed-array subarray/set methods lower without losing alias safety.',
         },
+        'surfaceHistogram.ts': {
+          names: ['getSurfaceHistogram'],
+          reason:
+            'Histogram equalization joins after its palette-map dependency enters the generated surface slice; the allocation-only histogram query is independently portable.',
+        },
         'surfacePixel.ts': {
           names: [
             'LUMA_B',
@@ -203,10 +211,13 @@ export const portConfig = {
           'surfaceCoverage.ts',
           'surfaceFill.ts',
           'surfaceFormat.ts',
+          'surfaceHistogram.ts',
           'surfaceMorphological.ts',
           'surfaceNoise.ts',
+          'surfacePaletteMap.ts',
           'surfacePixel.ts',
           'surfacePixelate.ts',
+          'surfaceQuery.ts',
         ],
         reason:
           'Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.',

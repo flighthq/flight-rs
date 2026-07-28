@@ -11,12 +11,26 @@ declare module '@flighthq/types' {
     width: number;
   }
 
+  export interface RectangleLike {
+    height: number;
+    width: number;
+    x: number;
+    y: number;
+  }
+
   export interface SurfaceRegion {
     height: number;
     surface: Surface;
     width: number;
     x: number;
     y: number;
+  }
+
+  export interface SurfaceHistogram {
+    alpha: number[];
+    blue: number[];
+    green: number[];
+    red: number[];
   }
 }
 

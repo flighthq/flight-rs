@@ -3403,6 +3403,18 @@
           "source": "upstream/packages/surface/src/surfaceFormat.ts"
         },
         {
+          "fingerprint": "sha256:131eede446aebf4be66f6f1230f55fd338309affb28546e968a2274eb2dd539e",
+          "name": "buildEqualizeMap",
+          "reason": "Histogram equalization joins after its palette-map dependency enters the generated surface slice; the allocation-only histogram query is independently portable.",
+          "source": "upstream/packages/surface/src/surfaceHistogram.ts"
+        },
+        {
+          "fingerprint": "sha256:1ece63c97a19aa5f71698911319cee28abec61cd76a98ce56fd7e505eba55ab6",
+          "name": "equalizeSurfaceHistogram",
+          "reason": "Histogram equalization joins after its palette-map dependency enters the generated surface slice; the allocation-only histogram query is independently portable.",
+          "source": "upstream/packages/surface/src/surfaceHistogram.ts"
+        },
+        {
           "fingerprint": "sha256:3cd6788e78b6e8f78696317d8d2505726a11f073b64dfa33994f90438237532b",
           "name": "getSurfacePixelChannel",
           "reason": "The ImageChannel-parameterized reader joins when relative TypeScript re-export imports resolve directly to their generated dependency crate.",
@@ -3501,11 +3513,6 @@
           "source": "upstream/packages/surface/src/surfaceGradientFill.ts"
         },
         {
-          "fingerprint": "sha256:352c91143433173485143e45fea1601b0b2675945d8ef384be57401f1010ac99",
-          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
-          "source": "upstream/packages/surface/src/surfaceHistogram.ts"
-        },
-        {
           "fingerprint": "sha256:011e1b29279f2833810ebba71e0e04964cc604e9e5e3f718c06032366a2d4f71",
           "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
           "source": "upstream/packages/surface/src/surfaceImageChannel.ts"
@@ -3514,16 +3521,6 @@
           "fingerprint": "sha256:f6ec423824c2be31b30e44d0735dad07d3adae7a0ac45fbdfa11a9065ab6cd4a",
           "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
           "source": "upstream/packages/surface/src/surfaceMedian.ts"
-        },
-        {
-          "fingerprint": "sha256:91c3f72ff99119c12d7cf8c4161fe9260b4783eb5a57185151e1b1f41d8a8c23",
-          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
-          "source": "upstream/packages/surface/src/surfacePaletteMap.ts"
-        },
-        {
-          "fingerprint": "sha256:aeaff834a9461f1db4e3b999501a7293be6921ca3c18ce63407ade9de7b5b3db",
-          "reason": "Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.",
-          "source": "upstream/packages/surface/src/surfaceQuery.ts"
         },
         {
           "fingerprint": "sha256:45baf2e1d7e728719d1e3e206da8f858ab9292c2b8e911a76fbe0fe0c5890404",
@@ -3653,6 +3650,15 @@
         },
         {
           "declarationNames": [
+            "getSurfaceHistogram"
+          ],
+          "declarations": 1,
+          "output": "generated/crates/flighthq-surface/src/surface_histogram.rs",
+          "outputSha256": "sha256:2499b5c547eda31c1180955ef81bfb89589574ab9c85a0a4f557df29f2580d6e",
+          "source": "upstream/packages/surface/src/surfaceHistogram.ts"
+        },
+        {
+          "declarationNames": [
             "applyMorphological",
             "dilateSurface",
             "erodeSurface"
@@ -3686,6 +3692,15 @@
         },
         {
           "declarationNames": [
+            "applySurfacePaletteMap"
+          ],
+          "declarations": 1,
+          "output": "generated/crates/flighthq-surface/src/surface_palette_map.rs",
+          "outputSha256": "sha256:516902ebc245e73203f58c9534e32a64a4b915bea4db78cf68e5189620878e5f",
+          "source": "upstream/packages/surface/src/surfacePaletteMap.ts"
+        },
+        {
+          "declarationNames": [
             "LUMA_B",
             "LUMA_G",
             "LUMA_R",
@@ -3708,6 +3723,15 @@
           "output": "generated/crates/flighthq-surface/src/surface_pixelate.rs",
           "outputSha256": "sha256:6f7a2616ef4b7213435fae55a4c1961058a10133a316af72c3d47c883b810964",
           "source": "upstream/packages/surface/src/surfacePixelate.ts"
+        },
+        {
+          "declarationNames": [
+            "getSurfaceColorBoundsRectangle"
+          ],
+          "declarations": 1,
+          "output": "generated/crates/flighthq-surface/src/surface_query.rs",
+          "outputSha256": "sha256:4e3055918a4418a6612d58e026027c286c65e0cc73f3db8fc61bbd3d9b2d1fb0",
+          "source": "upstream/packages/surface/src/surfaceQuery.ts"
         }
       ],
       "inlineDependencies": {
@@ -3728,6 +3752,7 @@
       "coreCrate": "flighthq-surface",
       "crate": "flighthq-surface-wasm",
       "exports": [
+        "applySurfacePaletteMap",
         "buildSurfaceBrightnessColorMatrix",
         "buildSurfaceContrastColorMatrix",
         "buildSurfaceGrayscaleColorMatrix",
@@ -3746,7 +3771,9 @@
         "fillSurfacePerlinNoise",
         "fillSurfaceRectangle",
         "fillSurfaceTurbulence",
+        "getSurfaceColorBoundsRectangle",
         "getSurfaceCoverage",
+        "getSurfaceHistogram",
         "multiplySurfaceAlpha",
         "pixelateSurface",
         "premultiplySurfacePixels",
@@ -3755,9 +3782,9 @@
         "unpremultiplySurfacePixels"
       ],
       "output": "generated/crates/flighthq-surface-wasm/src/lib.rs",
-      "outputSha256": "sha256:85363bc257dd522fb5f86b27f0579a1c696e6022ce1c1714fcd73ef3d628a27a",
+      "outputSha256": "sha256:7ccb6563f01e4c8660b7fc9f9fb1c7c0d4c68819fd7392f6b4d370427d26dd00",
       "template": "tools/generator/templates/surface_wasm.rs",
-      "templateSha256": "sha256:8bdfb6e09b512cb5cf2a33ddafe1b80fa22b6e41cadd24650072e2d97ac49152"
+      "templateSha256": "sha256:e05c08e2b3e8dfa29ce622212adeee7a0a05344c92231a7b9f54c33ec5ea9629"
     }
   ]
 }

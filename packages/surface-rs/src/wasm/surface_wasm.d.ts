@@ -1,6 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
+export function apply_surface_palette_map_wasm(dest_data: Uint8Array, dest_descriptor: Float64Array, source_data: Uint8Array, source_descriptor: Float64Array, red_map: Float64Array, green_map: Float64Array, blue_map: Float64Array, alpha_map: Float64Array): void;
+
 export function build_surface_brightness_color_matrix_wasm(out: Float64Array, amount: number): void;
 
 export function build_surface_contrast_color_matrix_wasm(out: Float64Array, amount: number): void;
@@ -37,7 +39,11 @@ export function fill_surface_rectangle_wasm(data: Uint8Array, descriptor: Float6
 
 export function fill_surface_turbulence_wasm(data: Uint8Array, descriptor: Float64Array, base_x: number, base_y: number, octaves: number, seed: number, gray_scale: boolean, stitch: boolean, channel_options: number): void;
 
+export function get_surface_color_bounds_rectangle_wasm(out: Float64Array, data: Uint8Array, descriptor: Float64Array, mask: number, color: number, find_color: boolean): boolean;
+
 export function get_surface_coverage_wasm(data: Uint8Array, width: number, height: number, background_color: number, channel_tolerance: number): number;
+
+export function get_surface_histogram_wasm(out: Float64Array, data: Uint8Array, descriptor: Float64Array): void;
 
 export function multiply_surface_alpha_wasm(data: Uint8Array, descriptor: Float64Array, factor: number): void;
 
@@ -55,6 +61,7 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
     readonly memory: WebAssembly.Memory;
+    readonly apply_surface_palette_map_wasm: (a: number, b: number, c: any, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number, m: number, n: number, o: number, p: number, q: number) => void;
     readonly build_surface_brightness_color_matrix_wasm: (a: number, b: number, c: any, d: number) => void;
     readonly build_surface_contrast_color_matrix_wasm: (a: number, b: number, c: any, d: number) => void;
     readonly build_surface_grayscale_color_matrix_wasm: (a: number, b: number, c: any) => void;
@@ -73,7 +80,9 @@ export interface InitOutput {
     readonly fill_surface_perlin_noise_wasm: (a: number, b: number, c: any, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number) => void;
     readonly fill_surface_rectangle_wasm: (a: number, b: number, c: any, d: number, e: number, f: number) => void;
     readonly fill_surface_turbulence_wasm: (a: number, b: number, c: any, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number) => void;
+    readonly get_surface_color_bounds_rectangle_wasm: (a: number, b: number, c: any, d: number, e: number, f: number, g: number, h: number, i: number, j: number) => number;
     readonly get_surface_coverage_wasm: (a: number, b: number, c: number, d: number, e: number, f: number) => number;
+    readonly get_surface_histogram_wasm: (a: number, b: number, c: any, d: number, e: number, f: number, g: number) => void;
     readonly multiply_surface_alpha_wasm: (a: number, b: number, c: any, d: number, e: number, f: number) => void;
     readonly pixelate_surface_wasm: (a: number, b: number, c: any, d: number, e: number, f: number, g: number, h: number) => void;
     readonly premultiply_surface_pixels_wasm: (a: number, b: number, c: any, d: number, e: number, f: number) => void;

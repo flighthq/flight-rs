@@ -1,8 +1,9 @@
 import { invalidateImageResource } from '@flighthq/image';
 import type { SurfaceConvolutionOptions } from '@flighthq/surface';
-import type { Surface, SurfaceRegion } from '@flighthq/types';
+import type { RectangleLike, Surface, SurfaceHistogram, SurfaceRegion } from '@flighthq/types';
 
 import {
+  apply_surface_palette_map_wasm,
   build_surface_brightness_color_matrix_wasm,
   build_surface_contrast_color_matrix_wasm,
   build_surface_grayscale_color_matrix_wasm,
@@ -21,7 +22,9 @@ import {
   fill_surface_perlin_noise_wasm,
   fill_surface_rectangle_wasm,
   fill_surface_turbulence_wasm,
+  get_surface_color_bounds_rectangle_wasm,
   get_surface_coverage_wasm,
+  get_surface_histogram_wasm,
   initSync,
   multiply_surface_alpha_wasm,
   pixelate_surface_wasm,
@@ -33,6 +36,7 @@ import {
 import { surfaceWasmBytes } from './wasm/surfaceWasmBytes';
 
 let initialized = false;
+const EMPTY_CHANNEL_MAP = new Float64Array();
 
 /**
  * Eagerly instantiates the mechanically generated surface module. Every
@@ -40,6 +44,28 @@ let initialized = false;
  */
 export function initSurfaceWasm(): void {
   ensureSurfaceWasm();
+}
+
+export function applySurfacePaletteMap(
+  dest: Readonly<SurfaceRegion>,
+  source: Readonly<SurfaceRegion>,
+  redMap: ReadonlyArray<number> | null,
+  greenMap: ReadonlyArray<number> | null,
+  blueMap: ReadonlyArray<number> | null,
+  alphaMap: ReadonlyArray<number> | null,
+): void {
+  ensureSurfaceWasm();
+  apply_surface_palette_map_wasm(
+    asUint8(dest.surface.data),
+    descriptorOf(dest),
+    asUint8(source.surface.data),
+    descriptorOf(source),
+    channelMap(redMap),
+    channelMap(greenMap),
+    channelMap(blueMap),
+    channelMap(alphaMap),
+  );
+  invalidateImageResource(dest.surface);
 }
 
 export function buildSurfaceBrightnessColorMatrix(out: number[], amount: number): void {
@@ -273,6 +299,44 @@ export function getSurfaceCoverage(
   );
 }
 
+export function getSurfaceColorBoundsRectangle(
+  source: Readonly<SurfaceRegion>,
+  mask: number,
+  color: number,
+  findColor: boolean = true,
+): RectangleLike | null {
+  ensureSurfaceWasm();
+  const rectangle = new Float64Array(4);
+  const found = get_surface_color_bounds_rectangle_wasm(
+    rectangle,
+    asUint8(source.surface.data),
+    descriptorOf(source),
+    mask,
+    color,
+    findColor,
+  );
+  return found
+    ? {
+        x: rectangle[0]!,
+        y: rectangle[1]!,
+        width: rectangle[2]!,
+        height: rectangle[3]!,
+      }
+    : null;
+}
+
+export function getSurfaceHistogram(source: Readonly<SurfaceRegion>): SurfaceHistogram {
+  ensureSurfaceWasm();
+  const histogram = new Float64Array(1024);
+  get_surface_histogram_wasm(histogram, asUint8(source.surface.data), descriptorOf(source));
+  return {
+    red: Array.from(histogram.subarray(0, 256)),
+    green: Array.from(histogram.subarray(256, 512)),
+    blue: Array.from(histogram.subarray(512, 768)),
+    alpha: Array.from(histogram.subarray(768, 1024)),
+  };
+}
+
 function ensureSurfaceWasm(): void {
   if (initialized) return;
   initSync({ module: surfaceWasmBytes });
@@ -293,4 +357,8 @@ function asUint8(data: Readonly<Uint8ClampedArray>): Uint8Array {
 
 function descriptorOf(region: Readonly<SurfaceRegion>): Float64Array {
   return Float64Array.of(region.surface.width, region.surface.height, region.x, region.y, region.width, region.height);
+}
+
+function channelMap(values: ReadonlyArray<number> | null): Float64Array {
+  return values ? Float64Array.from(values) : EMPTY_CHANNEL_MAP;
 }

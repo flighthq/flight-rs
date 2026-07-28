@@ -1,6 +1,36 @@
 /* @ts-self-types="./surface_wasm.d.ts" */
 
 /**
+ * @param {Uint8Array} dest_data
+ * @param {Float64Array} dest_descriptor
+ * @param {Uint8Array} source_data
+ * @param {Float64Array} source_descriptor
+ * @param {Float64Array} red_map
+ * @param {Float64Array} green_map
+ * @param {Float64Array} blue_map
+ * @param {Float64Array} alpha_map
+ */
+export function apply_surface_palette_map_wasm(dest_data, dest_descriptor, source_data, source_descriptor, red_map, green_map, blue_map, alpha_map) {
+    var ptr0 = passArray8ToWasm0(dest_data, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    const ptr1 = passArrayF64ToWasm0(dest_descriptor, wasm.__wbindgen_malloc);
+    const len1 = WASM_VECTOR_LEN;
+    const ptr2 = passArray8ToWasm0(source_data, wasm.__wbindgen_malloc);
+    const len2 = WASM_VECTOR_LEN;
+    const ptr3 = passArrayF64ToWasm0(source_descriptor, wasm.__wbindgen_malloc);
+    const len3 = WASM_VECTOR_LEN;
+    const ptr4 = passArrayF64ToWasm0(red_map, wasm.__wbindgen_malloc);
+    const len4 = WASM_VECTOR_LEN;
+    const ptr5 = passArrayF64ToWasm0(green_map, wasm.__wbindgen_malloc);
+    const len5 = WASM_VECTOR_LEN;
+    const ptr6 = passArrayF64ToWasm0(blue_map, wasm.__wbindgen_malloc);
+    const len6 = WASM_VECTOR_LEN;
+    const ptr7 = passArrayF64ToWasm0(alpha_map, wasm.__wbindgen_malloc);
+    const len7 = WASM_VECTOR_LEN;
+    wasm.apply_surface_palette_map_wasm(ptr0, len0, dest_data, ptr1, len1, ptr2, len2, ptr3, len3, ptr4, len4, ptr5, len5, ptr6, len6, ptr7, len7);
+}
+
+/**
  * @param {Float64Array} out
  * @param {number} amount
  */
@@ -263,6 +293,26 @@ export function fill_surface_turbulence_wasm(data, descriptor, base_x, base_y, o
 }
 
 /**
+ * @param {Float64Array} out
+ * @param {Uint8Array} data
+ * @param {Float64Array} descriptor
+ * @param {number} mask
+ * @param {number} color
+ * @param {boolean} find_color
+ * @returns {boolean}
+ */
+export function get_surface_color_bounds_rectangle_wasm(out, data, descriptor, mask, color, find_color) {
+    var ptr0 = passArrayF64ToWasm0(out, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    const ptr1 = passArray8ToWasm0(data, wasm.__wbindgen_malloc);
+    const len1 = WASM_VECTOR_LEN;
+    const ptr2 = passArrayF64ToWasm0(descriptor, wasm.__wbindgen_malloc);
+    const len2 = WASM_VECTOR_LEN;
+    const ret = wasm.get_surface_color_bounds_rectangle_wasm(ptr0, len0, out, ptr1, len1, ptr2, len2, mask, color, find_color);
+    return ret !== 0;
+}
+
+/**
  * @param {Uint8Array} data
  * @param {number} width
  * @param {number} height
@@ -275,6 +325,21 @@ export function get_surface_coverage_wasm(data, width, height, background_color,
     const len0 = WASM_VECTOR_LEN;
     const ret = wasm.get_surface_coverage_wasm(ptr0, len0, width, height, background_color, channel_tolerance);
     return ret;
+}
+
+/**
+ * @param {Float64Array} out
+ * @param {Uint8Array} data
+ * @param {Float64Array} descriptor
+ */
+export function get_surface_histogram_wasm(out, data, descriptor) {
+    var ptr0 = passArrayF64ToWasm0(out, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    const ptr1 = passArray8ToWasm0(data, wasm.__wbindgen_malloc);
+    const len1 = WASM_VECTOR_LEN;
+    const ptr2 = passArrayF64ToWasm0(descriptor, wasm.__wbindgen_malloc);
+    const len2 = WASM_VECTOR_LEN;
+    wasm.get_surface_histogram_wasm(ptr0, len0, out, ptr1, len1, ptr2, len2);
 }
 
 /**
