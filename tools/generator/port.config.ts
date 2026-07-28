@@ -49,7 +49,7 @@ export const portConfig = {
       {
         name: 'EntityWithoutRuntime',
         reason:
-          'EntityWithoutRuntime removes TypeScript symbol-keyed storage; generated Rust preserves the portable entity shape while EntityRuntimeKey operations remain explicit blockers.',
+          'EntityWithoutRuntime removes the TypeScript symbol member from the public shape; generated Rust carries it in the source-derived aggregate EntityRuntime slot and rejects receivers outside the statically closed entity family.',
       },
     ],
   },

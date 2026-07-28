@@ -164,6 +164,7 @@ interface ImportedSemanticTypes {
 const parsedSourceCache = new Map<string, ts.SourceFile>();
 const loweredSourceCache = new Map<string, ReturnType<typeof lowerTypeScriptSource>>();
 const importedSemanticTypesCache = new Map<string, ImportedSemanticTypes>();
+const packageSemanticTypesCache = new Map<string, Pick<ImportedSemanticTypes, 'typeParameters' | 'types'>>();
 const packageDeclarationIndexCache = new Map<string, ReadonlyMap<string, string>>();
 const typeDeclarationIndexCache = new Map<string, ReadonlyMap<string, string>>();
 const typeEnumNamesCache = new Map<string, readonly string[]>();
@@ -262,8 +263,15 @@ function attemptAutomaticPackage(
     sourceExclusions: [],
     typeMappings: override?.typeMappings ?? {},
   };
+  const packageSemanticTypes = collectPackageSemanticTypes(
+    sourceDirectory,
+    packageInventory.name,
+    workspaceDirectory,
+  );
+  const entityRuntimeSemanticTypes = collectEntityRuntimeSemanticTypes(workspaceDirectory);
   const semanticTypes = {
-    ...collectPackageSemanticTypes(sourceDirectory, packageInventory.name, workspaceDirectory),
+    ...entityRuntimeSemanticTypes.types,
+    ...packageSemanticTypes.types,
     ...collectSemanticTypes(workspaceDirectory, target),
   };
   const blockers: AutomaticPackageBlocker[] = [];
@@ -340,7 +348,11 @@ function attemptAutomaticPackage(
           ...semanticTypes,
           ...importedSemanticTypes.types,
         },
-        semanticTypeParameters: importedSemanticTypes.typeParameters,
+        semanticTypeParameters: {
+          ...entityRuntimeSemanticTypes.typeParameters,
+          ...packageSemanticTypes.typeParameters,
+          ...importedSemanticTypes.typeParameters,
+        },
         source,
         typeImports: [],
       });
@@ -819,7 +831,11 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
   const emittedSources: RustTargetReport['emittedSources'] = [];
   const modules: string[] = [];
   const outputs: PendingOutput[] = [];
-  const semanticTypes = collectSemanticTypes(workspaceDirectory, target);
+  const entityRuntimeSemanticTypes = collectEntityRuntimeSemanticTypes(workspaceDirectory);
+  const semanticTypes = {
+    ...entityRuntimeSemanticTypes.types,
+    ...collectSemanticTypes(workspaceDirectory, target),
+  };
   const inlineFunctions = collectInlineFunctions(workspaceDirectory, target);
 
   for (const file of walkTypeScriptSources(sourceDirectory)) {
@@ -914,7 +930,10 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
             ...semanticTypes,
             ...importedSemanticTypes.types,
           },
-          semanticTypeParameters: importedSemanticTypes.typeParameters,
+          semanticTypeParameters: {
+            ...entityRuntimeSemanticTypes.typeParameters,
+            ...importedSemanticTypes.typeParameters,
+          },
           source: relative(workspaceDirectory, file),
           typeImports: [],
         }),
@@ -1084,16 +1103,35 @@ function collectPackageSemanticTypes(
   sourceDirectory: string,
   packageName: string,
   workspaceDirectory: string,
-): Readonly<Record<string, IrType>> {
+): Pick<ImportedSemanticTypes, 'typeParameters' | 'types'> {
+  const cacheKey = `${workspaceDirectory}\0${packageName}\0${sourceDirectory}`;
+  const cached = packageSemanticTypesCache.get(cacheKey);
+  if (cached) return cached;
   const types = new Map<string, IrType>();
+  const typeParameters = new Map<string, readonly string[]>();
   for (const file of walkTypeScriptSources(sourceDirectory)) {
     const lowered = lowerTypeScriptFile(file, packageName, workspaceDirectory);
     for (const declaration of lowered.declarations) {
       if (declaration.kind !== 'type' || !declaration.exported || types.has(declaration.name)) continue;
       types.set(declaration.name, declaration.type);
+      typeParameters.set(declaration.name, declaration.typeParameters);
     }
   }
-  return Object.fromEntries(types);
+  const result = {
+    typeParameters: Object.fromEntries(typeParameters),
+    types: Object.fromEntries(types),
+  };
+  packageSemanticTypesCache.set(cacheKey, result);
+  return result;
+}
+
+function collectEntityRuntimeSemanticTypes(
+  workspaceDirectory: string,
+): Pick<ImportedSemanticTypes, 'typeParameters' | 'types'> {
+  const source = findPackageDeclarationSource(workspaceDirectory, '@flighthq/types', 'EntityRuntime');
+  return source
+    ? collectPackageSemanticTypes(path.dirname(source), '@flighthq/types', workspaceDirectory)
+    : { typeParameters: {}, types: {} };
 }
 
 function emitCargoManifest(target: RustTarget): string {

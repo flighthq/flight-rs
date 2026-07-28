@@ -71,11 +71,14 @@ The compiler-driven candidate matrix classifies work in dependency order:
 
 Structural records are interned by resolved schema at module signatures, preserve imported nested-record provenance, and project across nominal Rust records with single-evaluation ownership. Generic projections use Rust constructor turbofish syntax and never capture unbound type parameters in a module-global record.
 
-Symbol-keyed `EntityRuntimeKey` storage currently has no native representation. Reads, writes, deletes,
-membership tests, and computed initializers are emission blockers rather than compilable approximations. The
-pass-20 runtime aggregate or typed extension-slot design must remove those blockers without losing observable
-binding or extension state.
+Symbol-keyed `EntityRuntimeKey` storage uses a generated shared native slot on every statically identified entity
+shape. Package-visible runtime extensions populate one typed aggregate handle; field-name/type collisions and
+nested structural identities fall back to source-named typed slots inside that handle. Reads, writes, deletes,
+membership tests, computed initializers, and structural projections preserve the shared slot. Receivers outside
+the statically closed entity family remain emission blockers instead of falling back to opaque state.
 
 Package-wide exported-type catalogs drive discriminated open-interface discovery. A family is widened only when descendants explicitly redeclare `kind` and every widened member is safely default-materializable. This promotes the Light family without corrupting recursive trait hierarchies or callback-bearing families. Families that cannot satisfy that invariant need a tagged payload representation rather than unsafe zeroed/default storage.
 
-The next cross-cutting tasks are the native entity runtime representation, typed backend-capability IR for dynamic host objects, a tagged representation for non-defaultable open families, and Future/task lowering for genuinely portable async code.
+The next cross-cutting tasks are validating the entity runtime representation against the regenerated compiler
+matrix, typed backend-capability IR for dynamic host objects, a tagged representation for non-defaultable open
+families, and Future/task lowering for genuinely portable async code.

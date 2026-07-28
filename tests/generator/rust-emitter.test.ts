@@ -1789,7 +1789,7 @@ describe('Rust emission', () => {
     ).not.toThrow();
   });
 
-  it('reports every EntityRuntimeKey storage operation instead of emitting runtime stubs', () => {
+  it('retains EntityRuntimeKey rejection when the receiver has no static entity representation', () => {
     const fixtures = [
       'return source[EntityRuntimeKey];',
       'source[EntityRuntimeKey] = value;',
@@ -1820,6 +1820,223 @@ describe('Rust emission', () => {
         'EntityRuntimeKey storage requires an aggregate native entity runtime representation; refusing to erase observable runtime state',
       );
     }
+  });
+
+  it('compiles source-derived aggregate entity runtime storage and preserves it across projections', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/types/src/entity-runtime.ts',
+      `
+        export interface Entity {}
+        export interface EntityRuntime {
+          binding?: string;
+        }
+        export interface Node extends Entity {
+          name: string;
+        }
+        export interface NodeRuntime<Traits> extends EntityRuntime {
+          callback: () => void;
+          count: number;
+        }
+        export interface GlNode extends Entity {}
+        export interface GlNodeRuntime extends EntityRuntime {
+          backendState: string;
+        }
+        export interface WgpuNode extends Entity {}
+        export interface WgpuNodeRuntime extends EntityRuntime {
+          backendState: number;
+        }
+        export function createRuntime<Traits>(): NodeRuntime<Traits> {
+          return {
+            binding: null,
+            callback() {},
+            count: 1,
+          };
+        }
+        export function createNode(runtime: NodeRuntime<string>): Node {
+          return { name: 'node', [EntityRuntimeKey]: runtime };
+        }
+        export function attachRuntime<Type>(source: Type, runtime: NodeRuntime<string>): Type {
+          source[EntityRuntimeKey] = runtime;
+          return source;
+        }
+        export function readCount(source: Node): number {
+          return source[EntityRuntimeKey].count;
+        }
+        export function writeCount(source: Node, value: number): void {
+          source[EntityRuntimeKey].count = value;
+        }
+        export function removeRuntime(source: Node): boolean {
+          return delete source[EntityRuntimeKey];
+        }
+        export function hasRuntime(source: Node): boolean {
+          return EntityRuntimeKey in source;
+        }
+        export function readProjected(source: Node): number {
+          const projected = source as Entity;
+          return projected[EntityRuntimeKey].count;
+        }
+        export function readGlState(source: GlNode): string {
+          const runtime = source[EntityRuntimeKey] as GlNodeRuntime;
+          return runtime.backendState;
+        }
+        export function readWgpuState(source: WgpuNode): number {
+          const runtime = source[EntityRuntimeKey] as WgpuNodeRuntime;
+          return runtime.backendState;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/types', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/types/src/entity-runtime.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('pub struct EntityRuntimeStorage');
+    expect(output).toContain('pub type NodeRuntime<Traits> =');
+    expect(output).toContain('std::marker::PhantomData<Traits>');
+    expect(output).toContain('FlightEntityRuntimeMarker');
+    expect(output).toContain('pub fn create_runtime<Traits: Clone>() -> NodeRuntime<Traits>');
+    expect(output).toContain('pub struct GlNodeRuntimeStorage');
+    expect(output).toContain('pub struct WgpuNodeRuntimeStorage');
+    expect(output).toContain('pub gl_node_runtime: crate::GlNodeRuntimeStorage');
+    expect(output).toContain('pub wgpu_node_runtime: crate::WgpuNodeRuntimeStorage');
+    expect(output).toContain('.gl_node_runtime.backend_state');
+    expect(output).toContain('.wgpu_node_runtime.backend_state');
+    expect(output).toContain('pub trait FlightEntity');
+    expect(output).toContain('__flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<EntityRuntime>>>');
+    expect(output).toContain('Type: Clone + FlightEntity');
+    expect(output).toContain('.lock().unwrap().take().is_some()');
+    expect(output).toContain('.lock().unwrap().is_some()');
+    expect(output).toContain('__flight_entity_runtime: std::sync::Arc::clone(');
+    expect(output).not.toContain('refusing to erase observable runtime state');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-entity-runtime-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('applies generic arguments through aliases before structural field inference', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/types/src/generic-alias.ts',
+      `
+        export interface ValueBox<Value> {
+          value: Value;
+        }
+        export type ValueAlias<Value> = ValueBox<Value>;
+        export interface StringValue extends ValueAlias<string> {
+          label: string;
+        }
+        export function readString(source: ValueAlias<string>): string {
+          return source.value;
+        }
+        export function readExtendedString(source: StringValue): string {
+          return source.value;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/types', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/types/src/generic-alias.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('pub struct ValueBox<Value>');
+    expect(output).toContain('pub type ValueAlias<Value> = ValueBox<Value>;');
+    expect(output).toContain('pub struct StringValue');
+    expect(output).toContain('pub value: String');
+    expect(output).toContain('source: &ValueAlias<String>');
+    expect(output).toContain('-> String');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-generic-alias-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('preserves imported semantic type parameters through alias applications', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/node/src/imported-generic.ts',
+      `
+        export function readImportedString(source: ValueAlias<string>): string {
+          return source.value;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/node', '/workspace');
+    const valueParameter = { arguments: [], kind: 'named' as const, name: 'Value' };
+    const semanticTypes = {
+      ValueAlias: { arguments: [valueParameter], kind: 'named' as const, name: 'ValueBox' },
+      ValueBox: {
+        extends: [],
+        fields: [{ name: 'value', optional: false, type: valueParameter }],
+        kind: 'anonymous' as const,
+      },
+    };
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      imports: [
+        {
+          module: 'external',
+          names: [{ imported: 'ValueAlias', kind: 'type', local: 'ValueAlias' }],
+        },
+      ],
+      semanticTypeParameters: { ValueAlias: ['Value'], ValueBox: ['Value'] },
+      semanticTypes,
+      source: 'upstream/packages/node/src/imported-generic.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('source: &ValueAlias<String>');
+    expect(output).toContain('return (source.value).clone();');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-imported-generic-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(
+      sourceFile,
+      output.replace(
+        '// Source:',
+        `
+        mod external {
+          #[derive(Clone)]
+          pub struct ValueBox<Value> {
+            pub value: Value,
+          }
+          pub type ValueAlias<Value> = ValueBox<Value>;
+        }
+        // Source:`,
+      ),
+    );
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
   });
 
   it('reports unknown DOM typeof properties instead of assuming they are functions', () => {

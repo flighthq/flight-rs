@@ -203,18 +203,19 @@ Acceptance:
 - 25 inference `E0283` failures;
 - 41 type mismatches, plus a small remainder.
 
-The checkpoint report also counted `@flighthq/entity` as compiled even though `EntityRuntimeKey` reads, writes,
-deletes, membership tests, and computed initializers were erased into no-ops, constants, or a panic. Those
-operations must remain source blockers until a native runtime representation exists. Regenerate the baseline
-with that blocker before measuring pass 20 diagnostic progress; do not restore compiling stubs to preserve the
-old headline count.
+The checkpoint report counted `@flighthq/entity` as compiled even though `EntityRuntimeKey` reads, writes,
+deletes, membership tests, and computed initializers had been erased into no-ops, constants, or a panic. Pass 19
+replaced those approximations with explicit blockers. Pass 20 now lowers statically typed entity operations to a
+shared native slot; receivers outside the closed entity family retain the blocker.
 
-Do not widen `EntityRuntime` indiscriminately. The package uses compositional runtime extension bags. Preserve generic parameters through aliases, imports, applications, and structural canonicalization, then represent runtime extensions explicitly. Candidate designs are:
+The implementation does not widen `EntityRuntime` from a handwritten list. A package-visible source catalog
+preserves generic parameters through aliases and applications, then builds a generated aggregate handle.
+Compatible extension fields stay flat. Reused field names with incompatible types, plus nested structural fields
+whose nominal provenance must survive module boundaries, use source-named typed slots inside the same handle.
+A dynamic/opaque map is never used, so node and backend-specific code retain field types.
 
-- a generated aggregate runtime record assembled from package-visible extensions; or
-- a typed extension-slot map keyed by stable generated identities.
-
-Prefer the aggregate when the complete set is statically knowable. A dynamic/opaque map loses the field types that node code relies on.
+The checked-in generation report predates this implementation. Regenerate the full matrix before claiming
+diagnostic or package-count movement; the focused emitter fixtures are compile-backed when `rustc` is available.
 
 Node has 23 direct dependents, so architectural fixes here unlock much of the render/scene graph. Treat string `.includes` and `as_ref` diagnostics as smaller follow-on clusters after the generic/runtime representation is sound.
 

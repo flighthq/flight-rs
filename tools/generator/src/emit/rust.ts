@@ -46,6 +46,13 @@ interface EmitContext {
   constantValues: ReadonlyMap<string, number>;
   continueEpilogue: readonly string[];
   currentReturnType?: IrType | undefined;
+  entityRuntimeClosureError?: string | undefined;
+  entityRuntimeFieldSlots: ReadonlyMap<string, string>;
+  entityRuntimeLateFields: ReadonlySet<string>;
+  entityRuntimeSlotTypes: ReadonlySet<string>;
+  entityRuntimeTypes: ReadonlySet<string>;
+  entityTypeParameters: ReadonlySet<string>;
+  entityTypes: ReadonlySet<string>;
   erasedValueNames: ReadonlySet<string>;
   enumNames: ReadonlySet<string>;
   functions: ReadonlyMap<string, IrFunctionDeclaration>;
@@ -54,6 +61,7 @@ interface EmitContext {
   importedTypeNames: ReadonlySet<string>;
   inlineFunctions: ReadonlyMap<string, IrFunctionDeclaration>;
   knownNullNames: Set<string>;
+  lexicalTypeParameters: ReadonlySet<string>;
   localFunctionNames: ReadonlySet<string>;
   localTypeNames: ReadonlySet<string>;
   mutexCollectionNames: ReadonlySet<string>;
@@ -125,6 +133,12 @@ export function emitRustModule(module: RustModule): string {
     constantNames,
     constantValues,
     continueEpilogue: [],
+    entityRuntimeFieldSlots: new Map(),
+    entityRuntimeLateFields: new Set(),
+    entityRuntimeSlotTypes: new Set(),
+    entityRuntimeTypes: new Set(),
+    entityTypeParameters: new Set(),
+    entityTypes: new Set(),
     erasedValueNames: new Set(
       module.declarations.filter((declaration) => declaration.kind === 'type').map((declaration) => declaration.name),
     ),
@@ -158,6 +172,7 @@ export function emitRustModule(module: RustModule): string {
     importedTypeNames: new Set(module.typeImports),
     inlineFunctions,
     knownNullNames: new Set(),
+    lexicalTypeParameters: new Set(),
     localFunctionNames: new Set(
       module.declarations
         .filter((declaration): declaration is IrFunctionDeclaration => declaration.kind === 'function')
@@ -229,6 +244,7 @@ export function emitRustModule(module: RustModule): string {
     timerHandleNames: new Set(),
     unionNarrowings: new Map(),
   };
+  registerEntityRuntimeFamilies(context);
   registerOpenInterfaceFamilies(context);
   for (const declaration of module.declarations) {
     if (declaration.kind !== 'variable' || !declaration.initializer) continue;
@@ -827,6 +843,7 @@ function emitFunctionDeclaration(declaration: IrFunctionDeclaration, context: Em
     ...functionContext(context, declaration.name, contextOwner, declaration.returns),
     callbackArgumentStorage: inferCallbackArgumentStorage(declaration, callbackTypeParameters),
     callbackTypeParameters,
+    lexicalTypeParameters: new Set(declaration.typeParameters),
   };
   for (const parameter of declaration.parameters) {
     const resolved = resolveSemanticType(parameter.type, nextContext);
@@ -839,6 +856,11 @@ function emitFunctionDeclaration(declaration: IrFunctionDeclaration, context: Em
   }
   registerParameters(declaration.parameters, nextContext);
   if (!declaration.async) registerLocalTypes(reachableBody, nextContext);
+  nextContext.entityTypeParameters = inferEntityTypeParameters(
+    reachableBody,
+    declaration.typeParameters,
+    nextContext,
+  );
   const parameters = declaration.parameters.map((parameter) =>
     emitParameter(parameter, nextContext, undefined, declaration),
   );
@@ -869,7 +891,11 @@ function emitFunctionDeclaration(declaration: IrFunctionDeclaration, context: Em
     effectiveTypeParameters.length > 0
       ? `<${effectiveTypeParameters
           .map((parameter) =>
-            callbackTypeParameters.has(parameter) ? `${parameter}: crate::FlightCallback` : `${parameter}: Clone`,
+            callbackTypeParameters.has(parameter)
+              ? `${parameter}: crate::FlightCallback`
+              : nextContext.entityTypeParameters.has(parameter)
+                ? `${parameter}: Clone + ${entityTraitTypePath(nextContext)}`
+                : `${parameter}: Clone`,
           )
           .join(', ')}>`
       : '';
@@ -887,7 +913,7 @@ function emitParameter(
   const emitted = emitType(type, context);
   const optional = parameter.optional || parameter.initializer;
   const resolved = resolveSemanticType(type, context);
-  const sharedHandle = isSharedHandleType(type);
+  const sharedHandle = isSharedHandleType(type, context);
   const referenceLike =
     resolved?.kind === 'anonymous' ||
     resolved?.kind === 'array' ||
@@ -1529,7 +1555,7 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
       )} } else { ${emitExpression(expression.whenFalse, narrowed.whenFalse, contextualType)} }`;
     }
     case 'element':
-      if (isErasedEntityRuntimeAccess(expression)) {
+      if (isErasedEntityRuntimeAccess(expression) && !isNativeEntityRuntimeAccess(expression, context)) {
         rejectEntityRuntimeStorage();
       }
       return coerceExpression(emitElementRead(expression, context, expectedType), expectedType);
@@ -1618,7 +1644,7 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
         ((!isCopyType(actualType, context) && expectedType && typeKey(actualType) === typeKey(expectedType)) ||
           context.sharedCaptureNames.has(expression.name) ||
           resolvedActual?.kind === 'function' ||
-          isSharedHandleType(actualType) ||
+          isSharedHandleType(actualType, context) ||
           (actualType.kind === 'named' && actualType.name === 'Signal') ||
           (actualType.kind === 'named' && actualType.name === 'FlightCallbackArgs') ||
           (actualType.kind === 'named' && context.callbackTypeParameters.has(actualType.name)))
@@ -2699,7 +2725,7 @@ function emitKnownFunctionArgument(
     !optionalParameter &&
     !owned &&
     expectedType.kind !== 'union' &&
-    !isSharedHandleType(expectedType) &&
+    !isSharedHandleType(expectedType, context) &&
     !(expectedType.kind === 'named' && expectedType.name === 'Signal' && !mutable) &&
     isReferenceLike(expectedType, context)
   ) {
@@ -3032,11 +3058,20 @@ function emitPropertyPlace(expression: Extract<IrExpression, { kind: 'property' 
     }
   }
   const objectType = inferIrExpressionType(expression.object, context);
-  if (objectType && isSharedHandleType(objectType.kind === 'nullable' ? objectType.inner : objectType)) {
+  if (objectType && isSharedHandleType(objectType.kind === 'nullable' ? objectType.inner : objectType, context)) {
     const owner =
       objectType.kind === 'nullable'
         ? `${emitPlaceExpression(expression.object, context)}.as_ref().unwrap()`
         : emitPlaceExpression(expression.object, context);
+    const runtime = objectType.kind === 'nullable' ? objectType.inner : objectType;
+    if (runtime.kind === 'named' && context.entityRuntimeTypes.has(runtime.name)) {
+      const slot = entityRuntimeFieldSlot(runtime.name, expression.name, context);
+      const place = entityRuntimeStorageField(`${owner}.inner.lock().unwrap()`, slot, expression.name);
+      if (context.entityRuntimeLateFields.has(`${slot}\0${expression.name}`)) {
+        return `(*${place}.as_mut().expect("entity runtime field ${expression.name} was read before initialization"))`;
+      }
+      return place;
+    }
     return `${owner}.inner.lock().unwrap().${safeName(expression.name)}`;
   }
   if (objectType?.kind === 'nullable') {
@@ -3080,12 +3115,22 @@ function emitOptionalProperty(
     const key = emitExpression({ kind: 'literal', value: expression.name }, context, keyType);
     return `${owner}.as_ref().and_then(|entries| entries.iter().find(|(key, _)| key == &${key}).map(|(_, value)| value.clone()))`;
   }
-  if (isSharedHandleType(objectType.inner)) {
+  if (isSharedHandleType(objectType.inner, context)) {
     const fieldType = inferPropertyType(objectType.inner, expression.name, context);
     if (!fieldType) {
       throw new RustEmissionError(`optional shared property ${expression.name} has no inferred receiver field`);
     }
-    const value = `value.inner.lock().unwrap().${safeName(expression.name)}`;
+    const runtimeSlot =
+      objectType.inner.kind === 'named' && context.entityRuntimeTypes.has(objectType.inner.name)
+        ? entityRuntimeFieldSlot(objectType.inner.name, expression.name, context)
+        : undefined;
+    const storedValue = runtimeSlot
+      ? entityRuntimeStorageField('value.inner.lock().unwrap()', runtimeSlot, expression.name)
+      : `value.inner.lock().unwrap().${safeName(expression.name)}`;
+    const value =
+      runtimeSlot && context.entityRuntimeLateFields.has(`${runtimeSlot}\0${expression.name}`)
+        ? `${storedValue}.as_ref().expect("entity runtime field ${expression.name} was read before initialization")`
+        : storedValue;
     const body = isCopyType(fieldType, context) ? value : `${parenthesize(value)}.clone()`;
     return `${owner}.as_ref().map(|value| ${body})`;
   }
@@ -3120,6 +3165,9 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
     expression.left.kind === 'identifier' &&
     expression.left.name === 'EntityRuntimeKey'
   ) {
+    if (isNativeEntityObject(expression.right, context)) {
+      return `${entityRuntimeSlot(expression.right, context)}.lock().unwrap().is_some()`;
+    }
     rejectEntityRuntimeStorage();
   }
   const leftType = inferIrExpressionType(expression.left, context);
@@ -3322,7 +3370,16 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
 }
 
 function emitAssignment(expression: Extract<IrExpression, { kind: 'assignment' }>, context: EmitContext): string {
-  if (isErasedEntityRuntimeTreeAccess(expression.left)) rejectEntityRuntimeStorage();
+  const entityRuntimeAssignment = emitEntityRuntimeAssignment(expression, context, true);
+  if (entityRuntimeAssignment) return entityRuntimeAssignment;
+  const lateRuntimeAssignment = emitLateEntityRuntimeFieldAssignment(expression, context, true);
+  if (lateRuntimeAssignment) return lateRuntimeAssignment;
+  if (
+    isErasedEntityRuntimeTreeAccess(expression.left) &&
+    !isNativeEntityRuntimeTreeAccess(expression.left, context)
+  ) {
+    rejectEntityRuntimeStorage();
+  }
   const bufferViewWrite = emitBufferViewWrite(expression, context, true);
   if (bufferViewWrite) return bufferViewWrite;
   if (
@@ -3369,7 +3426,10 @@ function emitAssignment(expression: Extract<IrExpression, { kind: 'assignment' }
   const rightType = inferIrExpressionType(expression.right, context);
   const emittedRight = emitExpression(expression.right, context, leftType);
   const sharedCopy =
-    leftType?.kind === 'nullable' && isSharedHandleType(leftType.inner) && rightType && isSharedHandleType(rightType)
+    leftType?.kind === 'nullable' &&
+    isSharedHandleType(leftType.inner, context) &&
+    rightType &&
+    isSharedHandleType(rightType, context)
       ? `${parenthesize(emitExpression(expression.right, context, leftType.inner))}.clone()`
       : undefined;
   const right =
@@ -3384,7 +3444,16 @@ function emitAssignmentStatement(
   expression: Extract<IrExpression, { kind: 'assignment' }>,
   context: EmitContext,
 ): string {
-  if (isErasedEntityRuntimeTreeAccess(expression.left)) rejectEntityRuntimeStorage();
+  const entityRuntimeAssignment = emitEntityRuntimeAssignment(expression, context, false);
+  if (entityRuntimeAssignment) return entityRuntimeAssignment;
+  const lateRuntimeAssignment = emitLateEntityRuntimeFieldAssignment(expression, context, false);
+  if (lateRuntimeAssignment) return lateRuntimeAssignment;
+  if (
+    isErasedEntityRuntimeTreeAccess(expression.left) &&
+    !isNativeEntityRuntimeTreeAccess(expression.left, context)
+  ) {
+    rejectEntityRuntimeStorage();
+  }
   const bufferViewWrite = emitBufferViewWrite(expression, context, false);
   if (bufferViewWrite) return bufferViewWrite;
   if (
@@ -3558,6 +3627,12 @@ function emitUnary(expression: Extract<IrExpression, { kind: 'unary' }>, context
     return `${parenthesize(emitExpression(expression.operand, context))} == 0.0_f64`;
   }
   if (expression.operator === 'delete' && isErasedEntityRuntimeTreeAccess(expression.operand)) {
+    if (
+      isErasedEntityRuntimeAccess(expression.operand) &&
+      isNativeEntityRuntimeAccess(expression.operand, context)
+    ) {
+      return `${entityRuntimeSlot(expression.operand.object, context)}.lock().unwrap().take().is_some()`;
+    }
     rejectEntityRuntimeStorage();
   }
   if (expression.operator === 'typeof') {
@@ -3704,6 +3779,81 @@ function isErasedEntityRuntimeAccess(
 function isErasedEntityRuntimeTreeAccess(expression: IrExpression): boolean {
   if (isErasedEntityRuntimeAccess(expression)) return true;
   return expression.kind === 'property' && isErasedEntityRuntimeTreeAccess(expression.object);
+}
+
+function isNativeEntityObject(expression: IrExpression, context: EmitContext): boolean {
+  const type = inferIrExpressionType(expression, context);
+  return (
+    type?.kind === 'named' &&
+    (context.entityTypes.has(type.name) || context.entityTypeParameters.has(type.name))
+  );
+}
+
+function isNativeEntityRuntimeAccess(
+  expression: Extract<IrExpression, { kind: 'element' }>,
+  context: EmitContext,
+): boolean {
+  return isErasedEntityRuntimeAccess(expression) && isNativeEntityObject(expression.object, context);
+}
+
+function isNativeEntityRuntimeTreeAccess(expression: IrExpression, context: EmitContext): boolean {
+  if (isErasedEntityRuntimeAccess(expression)) return isNativeEntityRuntimeAccess(expression, context);
+  return expression.kind === 'property' && isNativeEntityRuntimeTreeAccess(expression.object, context);
+}
+
+function entityRuntimeSlot(expression: IrExpression, context: EmitContext): string {
+  const root = expressionRootIdentifier(expression);
+  const source = emitPlaceExpression(expression, context);
+  const reference = root && context.borrowedNames.has(root) ? source : `&${parenthesize(source)}`;
+  return `${entityTraitTypePath(context)}::__flight_entity_runtime(${reference})`;
+}
+
+function emitEntityRuntimeAssignment(
+  expression: Extract<IrExpression, { kind: 'assignment' }>,
+  context: EmitContext,
+  returnValue: boolean,
+): string | undefined {
+  if (
+    expression.operator !== '=' ||
+    !isErasedEntityRuntimeAccess(expression.left) ||
+    !isNativeEntityRuntimeAccess(expression.left, context)
+  ) {
+    return undefined;
+  }
+  const value = emitExpression(expression.right, context, {
+    arguments: [],
+    kind: 'named',
+    name: 'EntityRuntime',
+  });
+  const slot = entityRuntimeSlot(expression.left.object, context);
+  return returnValue
+    ? `{ let __flight_runtime = ${value}; *${slot}.lock().unwrap() = Some(__flight_runtime.clone()); __flight_runtime }`
+    : `*${slot}.lock().unwrap() = Some(${value})`;
+}
+
+function emitLateEntityRuntimeFieldAssignment(
+  expression: Extract<IrExpression, { kind: 'assignment' }>,
+  context: EmitContext,
+  returnValue: boolean,
+): string | undefined {
+  if (expression.operator !== '=' || expression.left.kind !== 'property') return undefined;
+  const objectType = inferIrExpressionType(expression.left.object, context);
+  const runtime = objectType?.kind === 'nullable' ? objectType.inner : objectType;
+  if (runtime?.kind !== 'named' || !context.entityRuntimeTypes.has(runtime.name)) {
+    return undefined;
+  }
+  const owner =
+    objectType?.kind === 'nullable'
+      ? `${emitPlaceExpression(expression.left.object, context)}.as_ref().unwrap()`
+      : emitPlaceExpression(expression.left.object, context);
+  const fieldType = inferPropertyType(runtime, expression.left.name, context);
+  const value = emitExpression(expression.right, context, fieldType);
+  const slot = entityRuntimeFieldSlot(runtime.name, expression.left.name, context);
+  if (!context.entityRuntimeLateFields.has(`${slot}\0${expression.left.name}`)) return undefined;
+  const field = entityRuntimeStorageField(`${owner}.inner.lock().unwrap()`, slot, expression.left.name);
+  return returnValue
+    ? `{ let __flight_value = ${value}; ${field} = Some(__flight_value.clone()); __flight_value }`
+    : `${field} = Some(${value})`;
 }
 
 function rejectEntityRuntimeStorage(): never {
@@ -3864,7 +4014,7 @@ function collectClonedClosureCaptures(
     return context.sharedCaptureNames.has(name) ||
       resolved.kind === 'function' ||
       isReferenceLike(type, context) ||
-      isSharedHandleType(type) ||
+      isSharedHandleType(type, context) ||
       (type.kind === 'named' && context.callbackTypeParameters.has(type.name))
       ? [name]
       : [];
@@ -3888,7 +4038,17 @@ function emitType(type: IrType, context: EmitContext): string {
     case 'function':
       return `std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(${type.parameters.map((item) => emitType(item, context)).join(', ')}) -> ${emitType(type.returns, context)} + Send + 'static>>>`;
     case 'named': {
+      if (type.arguments.length === 0 && context.lexicalTypeParameters.has(type.name)) return type.name;
       if (type.name.startsWith('RustStructural:')) return type.name.slice('RustStructural:'.length);
+      if (type.name !== 'EntityRuntime' && context.entityRuntimeTypes.has(type.name)) {
+        const parameters = context.namedTypeParameters.get(type.name) ?? [];
+        const arguments_ = parameters.map(
+          (_parameter, index) => type.arguments[index] ?? primitive('Void'),
+        );
+        return `${type.name}${arguments_.length > 0 ? `<${arguments_
+          .map((argument) => emitType(argument, context))
+          .join(', ')}>` : ''}`;
+      }
       if (isStructuralUtilityType(type)) {
         const resolved = resolveSemanticType(type, context);
         if (resolved && typeKey(resolved) !== typeKey(type)) return emitType(resolved, context);
@@ -4047,15 +4207,36 @@ function emitTypeDeclaration(
   typeParameters: readonly string[] = [],
 ): string {
   const visibility = exported ? 'pub ' : '';
+  if (name !== 'EntityRuntime' && context.entityRuntimeTypes.has(name)) {
+    if (context.entityRuntimeClosureError) {
+      throw new RustEmissionError(
+        `aggregate native entity runtime closure is unavailable: ${context.entityRuntimeClosureError}`,
+      );
+    }
+    const slot =
+      context.entityRuntimeSlotTypes.has(name) && type.kind === 'anonymous'
+        ? emitEntityRuntimeSlotDeclaration(name, exported, type, context)
+        : '';
+    const marker = entityRuntimeMarkerType(typeParameters);
+    const generics = typeParameters.length > 0 ? `<${typeParameters.join(', ')}>` : '';
+    const runtime = marker
+      ? `<std::marker::PhantomData<${marker}> as ${entityRuntimeMarkerTraitPath(context)}>::Runtime`
+      : entityRuntimeTypePath(context);
+    return `${slot}${slot ? '\n' : ''}${visibility}type ${name}${generics} = ${runtime};`;
+  }
   if (type.kind !== 'anonymous') {
-    const emittedType = emitType(type, context);
+    const aliasContext = { ...context, lexicalTypeParameters: new Set(typeParameters) };
+    const emittedType = emitType(type, aliasContext);
     const effectiveTypeParameters = typeParameters.filter((parameter) =>
       new RegExp(`\\b${parameter}\\b`, 'u').test(emittedType),
     );
     const generics = effectiveTypeParameters.length > 0 ? `<${effectiveTypeParameters.join(', ')}>` : '';
     return `${visibility}type ${name}${generics} = ${emittedType};`;
   }
-  const structuralContext = typeDeclarationContext(context, name, type);
+  const structuralContext = {
+    ...typeDeclarationContext(context, name, type),
+    lexicalTypeParameters: new Set(typeParameters),
+  };
   const fields = flattenStructFields(type, structuralContext);
   const effectiveTypeParameters = typeParameters.filter((parameter) =>
     fields.some((field) =>
@@ -4063,6 +4244,53 @@ function emitTypeDeclaration(
     ),
   );
   const generics = effectiveTypeParameters.length > 0 ? `<${effectiveTypeParameters.join(', ')}>` : '';
+  if (context.entityRuntimeTypes.has(name)) {
+    if (context.entityRuntimeClosureError) {
+      throw new RustEmissionError(
+        `aggregate native entity runtime closure is unavailable: ${context.entityRuntimeClosureError}`,
+      );
+    }
+    if (name !== 'EntityRuntime') {
+      return `${visibility}type ${name} = ${entityRuntimeTypePath(context)};`;
+    }
+    const storageName = 'EntityRuntimeStorage';
+    const storageFields = fields.map((field) => {
+      const fieldType =
+        field.optional && field.type.kind !== 'nullable'
+          ? `Option<${emitStructFieldType(field.type, name, structuralContext)}>`
+          : emitStructFieldType(field.type, name, structuralContext);
+      const storageType = context.entityRuntimeLateFields.has(`EntityRuntime\0${field.name}`)
+        ? `Option<${fieldType}>`
+        : fieldType;
+      return `pub ${safeName(field.name)}: ${storageType},`;
+    });
+    storageFields.push(
+      ...[...context.entityRuntimeSlotTypes]
+        .sort((left, right) => left.localeCompare(right))
+        .map((owner) => `pub ${snakeCase(owner)}: crate::${owner}Storage,`),
+    );
+    return `${emitAnonymousDefinitions(structuralContext, exported)}${[
+      '#[derive(Clone, Default)]',
+      `${visibility}struct ${name} {`,
+      `  #[doc(hidden)] pub inner: std::sync::Arc<std::sync::Mutex<${storageName}>>,`,
+      '}',
+      '#[doc(hidden)]',
+      '#[derive(Default)]',
+      `${visibility}struct ${storageName} {`,
+      indent(storageFields.join('\n')),
+      '}',
+      `impl PartialEq for ${name} {`,
+      '  fn eq(&self, other: &Self) -> bool { std::sync::Arc::ptr_eq(&self.inner, &other.inner) }',
+      '}',
+      '#[doc(hidden)]',
+      `${visibility}trait FlightEntityRuntimeMarker {`,
+      '  type Runtime;',
+      '}',
+      `impl<Marker> FlightEntityRuntimeMarker for std::marker::PhantomData<Marker> {`,
+      '  type Runtime = EntityRuntime;',
+      '}',
+    ].join('\n')}`;
+  }
   if (name === 'SignalData') {
     const storageName = 'SignalDataStorage';
     const fieldType = (field: IrTypeField): string =>
@@ -4092,12 +4320,20 @@ function emitTypeDeclaration(
   const derivesDefault = fields.every(
     (field) => field.optional || rustTypeSupportsDefault(field.type, structuralContext),
   );
-  return `${emitAnonymousDefinitions(structuralContext, exported)}${[
+  const entity = context.entityTypes.has(name);
+  const entityRuntime = entity ? entityRuntimeTypePath(context) : undefined;
+  const entityTrait = entity ? entityTraitTypePath(context) : undefined;
+  const emitted = [
     `#[derive(Clone${derivesDefault ? ', Default' : ''})]`,
     `${visibility}struct ${name}${generics} {`,
     indent(
       [
         '#[doc(hidden)] pub __flight_identity: std::sync::Arc<()>,',
+        ...(entityRuntime
+          ? [
+              `#[doc(hidden)] pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<${entityRuntime}>>>,`,
+            ]
+          : []),
         ...fields.map(
           (field) =>
             `pub ${safeName(field.name)}: ${
@@ -4114,7 +4350,78 @@ function emitTypeDeclaration(
     `impl${generics} PartialEq for ${name}${generics} {`,
     '  fn eq(&self, other: &Self) -> bool { std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity) }',
     '}',
+  ];
+  if (entity && name === 'Entity') {
+    emitted.push(
+      `${visibility}trait FlightEntity {`,
+      `  fn __flight_entity_runtime(&self) -> &std::sync::Arc<std::sync::Mutex<Option<${entityRuntime!}>>>;`,
+      '}',
+    );
+  }
+  if (entity && entityTrait) {
+    emitted.push(
+      `impl${generics} ${entityTrait} for ${name}${generics} {`,
+      `  fn __flight_entity_runtime(&self) -> &std::sync::Arc<std::sync::Mutex<Option<${entityRuntime!}>>> { &self.__flight_entity_runtime }`,
+      '}',
+    );
+  }
+  return `${emitAnonymousDefinitions(structuralContext, exported)}${emitted.join('\n')}`;
+}
+
+function emitEntityRuntimeSlotDeclaration(
+  name: string,
+  exported: boolean,
+  type: Extract<IrType, { kind: 'anonymous' }>,
+  context: EmitContext,
+): string {
+  const visibility = exported ? 'pub ' : '';
+  const structuralContext = typeDeclarationContext(context, name, type);
+  const fields = type.fields.filter(
+    (field) => context.entityRuntimeFieldSlots.get(`${name}\0${field.name}`) === name,
+  );
+  const emitted = fields.map((field) => {
+    const fieldType =
+      field.optional && field.type.kind !== 'nullable'
+        ? `Option<${emitStructFieldType(field.type, name, structuralContext)}>`
+        : emitStructFieldType(field.type, name, structuralContext);
+    const storageType = context.entityRuntimeLateFields.has(`${name}\0${field.name}`)
+      ? `Option<${fieldType}>`
+      : fieldType;
+    return `pub ${safeName(field.name)}: ${storageType},`;
+  });
+  return `${emitAnonymousDefinitions(structuralContext, exported)}${[
+    '#[doc(hidden)]',
+    '#[derive(Default)]',
+    `${visibility}struct ${name}Storage {`,
+    indent(emitted.join('\n')),
+    '}',
   ].join('\n')}`;
+}
+
+function entityRuntimeTypePath(context: EmitContext): string {
+  if (context.localTypeNames.has('EntityRuntime')) return 'EntityRuntime';
+  const importedModule = context.importedModules.get('EntityRuntime') ?? context.importedModules.get('Entity');
+  return importedModule ? `${importedModule}::EntityRuntime` : 'crate::EntityRuntime';
+}
+
+function entityRuntimeMarkerTraitPath(context: EmitContext): string {
+  if (context.localTypeNames.has('EntityRuntime')) return 'FlightEntityRuntimeMarker';
+  const importedModule = context.importedModules.get('EntityRuntime') ?? context.importedModules.get('Entity');
+  return importedModule ? `${importedModule}::FlightEntityRuntimeMarker` : 'crate::FlightEntityRuntimeMarker';
+}
+
+function entityRuntimeMarkerType(typeParameters: readonly string[]): string | undefined {
+  if (typeParameters.length === 0) return undefined;
+  return typeParameters.length === 1 ? typeParameters[0] : `(${typeParameters.join(', ')})`;
+}
+
+function entityTraitTypePath(context: EmitContext): string {
+  if (context.localTypeNames.has('Entity')) return 'FlightEntity';
+  const importedModule =
+    context.importedModules.get('FlightEntity') ??
+    context.importedModules.get('EntityRuntime') ??
+    context.importedModules.get('Entity');
+  return importedModule ? `${importedModule}::FlightEntity` : 'crate::FlightEntity';
 }
 
 function emitStructFieldType(type: IrType, ownerName: string, context: EmitContext): string {
@@ -4132,18 +4439,12 @@ function flattenStructFields(
 ): Extract<IrType, { kind: 'anonymous' }>['fields'] {
   const inherited = type.extends.flatMap((base) => {
     if (base.kind === 'anonymous') return flattenStructFields(base, context, visited);
-    if (base.kind !== 'named' || visited.has(base.name)) return [];
-    const resolved = context.namedTypes.get(base.name);
-    if (resolved?.kind !== 'anonymous') return [];
-    const parameters = context.namedTypeParameters.get(base.name) ?? [];
-    const substitutions = new Map(
-      parameters.flatMap((parameter, index) =>
-        base.arguments[index] ? [[parameter, base.arguments[index]!] as const] : [],
-      ),
-    );
-    const concrete = substitutions.size > 0 ? substituteIrType(resolved, substitutions) : resolved;
-    if (concrete.kind !== 'anonymous') return [];
-    const fields = flattenStructFields(concrete, context, new Set([...visited, base.name]));
+    if (base.kind !== 'named') return [];
+    const application = typeKey(base);
+    if (visited.has(application)) return [];
+    const concrete = resolveSemanticType(base, context);
+    if (concrete?.kind !== 'anonymous') return [];
+    const fields = flattenStructFields(concrete, context, new Set([...visited, application]));
     const importedModule = context.importedModules.get(base.name);
     if (!importedModule || context.localTypeNames.has(base.name)) return fields;
     const nestedNames = importedNestedStructuralNames(base.name, concrete, importedModule);
@@ -4163,6 +4464,194 @@ function flattenStructFields(
     );
   }
   return [...fields.values()];
+}
+
+function registerEntityRuntimeFamilies(context: EmitContext): void {
+  const namedTypes = context.namedTypes as Map<string, IrType>;
+  if (!namedTypes.has('Entity') && !namedTypes.has('EntityRuntime')) return;
+
+  const reaches = (
+    name: string,
+    root: 'Entity' | 'EntityRuntime',
+    visited: ReadonlySet<string> = new Set(),
+  ): boolean => {
+    if (name === root) return true;
+    if (visited.has(name)) return false;
+    const declaration = namedTypes.get(name);
+    if (!declaration) return false;
+    const nextVisited = new Set([...visited, name]);
+    if (declaration.kind === 'named') return reaches(declaration.name, root, nextVisited);
+    return (
+      declaration.kind === 'anonymous' &&
+      declaration.extends.some((base) => base.kind === 'named' && reaches(base.name, root, nextVisited))
+    );
+  };
+
+  const runtimeTypes = new Set(
+    [...namedTypes.keys()]
+      .filter((name) => reaches(name, 'EntityRuntime'))
+      .sort((left, right) => left.localeCompare(right)),
+  );
+  const entityTypes = new Set(
+    [...namedTypes.keys()]
+      .filter((name) => reaches(name, 'Entity'))
+      .sort((left, right) => left.localeCompare(right)),
+  );
+  for (const runtimeName of runtimeTypes) {
+    if (!runtimeName.endsWith('Runtime')) continue;
+    const entityName = runtimeName.slice(0, -'Runtime'.length);
+    if (namedTypes.has(entityName)) entityTypes.add(entityName);
+  }
+  (context.entityRuntimeTypes as Set<string>).clear();
+  runtimeTypes.forEach((name) => (context.entityRuntimeTypes as Set<string>).add(name));
+  (context.entityTypes as Set<string>).clear();
+  entityTypes.forEach((name) => (context.entityTypes as Set<string>).add(name));
+
+  const root = namedTypes.get('EntityRuntime');
+  if (root?.kind !== 'anonymous') return;
+  const originalContext: EmitContext = { ...context, namedTypes: new Map(namedTypes) };
+  const occurrences = new Map<string, IrTypeField[]>();
+  for (const name of runtimeTypes) {
+    const declaration = originalContext.namedTypes.get(name);
+    if (declaration?.kind !== 'anonymous') continue;
+    const parameters = originalContext.namedTypeParameters.get(name) ?? [];
+    for (const field of declaration.fields) {
+      const lexical = parameters.find((parameter) => typeUsesNamedParameter(field.type, parameter));
+      if (lexical) {
+        context.entityRuntimeClosureError = `entity runtime extension ${name} retains generic field ${field.name}: ${lexical}`;
+        return;
+      }
+      const fields = occurrences.get(field.name) ?? [];
+      fields.push(field);
+      occurrences.set(field.name, fields);
+    }
+  }
+
+  const slottedFields = new Set<string>();
+  const aggregateFields: IrTypeField[] = [];
+  for (const [fieldName, fields] of occurrences) {
+    const [first, ...rest] = fields;
+    if (
+      !first ||
+      rest.some(
+        (field) =>
+          runtimeStorageTypeKey(first.type, originalContext) !== runtimeStorageTypeKey(field.type, originalContext),
+      ) ||
+      fields.some((field) => collectAnonymousTypes(field.type).length > 0)
+    ) {
+      slottedFields.add(fieldName);
+      continue;
+    }
+    aggregateFields.push({
+      ...first,
+      optional: fields.every((field) => field.optional),
+    });
+  }
+  aggregateFields.sort((left, right) => left.name.localeCompare(right.name));
+  namedTypes.set('EntityRuntime', { extends: [], fields: aggregateFields, kind: 'anonymous' });
+  const rootFieldNames = new Set(flattenStructFields(root, originalContext).map((field) => field.name));
+  const addedFields = aggregateFields.filter((field) => !rootFieldNames.has(field.name)).map((field) => field.name);
+  (context.openInterfaceFields as Map<string, ReadonlySet<string>>).set('EntityRuntime', new Set(addedFields));
+
+  const fieldSlots = context.entityRuntimeFieldSlots as Map<string, string>;
+  const slotTypes = context.entityRuntimeSlotTypes as Set<string>;
+  const mappings = new Map<string, ReadonlyMap<string, string>>();
+  const mapFields = (name: string, visited: ReadonlySet<string> = new Set()): ReadonlyMap<string, string> => {
+    const cached = mappings.get(name);
+    if (cached) return cached;
+    if (visited.has(name)) return new Map();
+    const declaration = originalContext.namedTypes.get(name);
+    const mapped = new Map<string, string>();
+    const nextVisited = new Set([...visited, name]);
+    if (declaration?.kind === 'named') {
+      for (const [field, owner] of mapFields(declaration.name, nextVisited)) mapped.set(field, owner);
+    } else if (declaration?.kind === 'anonymous') {
+      for (const base of declaration.extends) {
+        if (base.kind !== 'named') continue;
+        for (const [field, owner] of mapFields(base.name, nextVisited)) mapped.set(field, owner);
+      }
+      for (const field of declaration.fields) {
+        const owner = slottedFields.has(field.name) ? name : 'EntityRuntime';
+        mapped.set(field.name, owner);
+        if (owner !== 'EntityRuntime') slotTypes.add(owner);
+      }
+    }
+    mappings.set(name, mapped);
+    return mapped;
+  };
+  for (const name of runtimeTypes) {
+    for (const [field, owner] of mapFields(name)) fieldSlots.set(`${name}\0${field}`, owner);
+  }
+  for (const field of aggregateFields) fieldSlots.set(`EntityRuntime\0${field.name}`, 'EntityRuntime');
+
+  for (const field of aggregateFields) {
+    if (!field.optional && !rustTypeSupportsDefault(field.type, context)) {
+      (context.entityRuntimeLateFields as Set<string>).add(`EntityRuntime\0${field.name}`);
+    }
+  }
+  for (const owner of slotTypes) {
+    const declaration = originalContext.namedTypes.get(owner);
+    if (declaration?.kind !== 'anonymous') continue;
+    for (const field of declaration.fields) {
+      if (!slottedFields.has(field.name)) continue;
+      if (!field.optional && !rustTypeSupportsDefault(field.type, originalContext)) {
+        (context.entityRuntimeLateFields as Set<string>).add(`${owner}\0${field.name}`);
+      }
+    }
+  }
+}
+
+function runtimeStorageTypeKey(type: IrType, context: EmitContext): string {
+  return typeKey(runtimeStorageCanonicalType(type, context));
+}
+
+function runtimeStorageCanonicalType(
+  type: IrType,
+  context: EmitContext,
+  visited: ReadonlySet<string> = new Set(),
+): IrType {
+  if (type.kind === 'named') {
+    const declaration = context.namedTypes.get(type.name);
+    const application = typeKey(type);
+    if (declaration && declaration.kind !== 'anonymous' && !visited.has(application)) {
+      const parameters = context.namedTypeParameters.get(type.name) ?? [];
+      const substitutions = new Map(
+        parameters.flatMap((parameter, index) =>
+          type.arguments[index] ? [[parameter, type.arguments[index]!] as const] : [],
+        ),
+      );
+      const applied = substitutions.size > 0 ? substituteIrType(declaration, substitutions) : declaration;
+      return runtimeStorageCanonicalType(applied, context, new Set([...visited, application]));
+    }
+    return {
+      ...type,
+      arguments: type.arguments.map((argument) => runtimeStorageCanonicalType(argument, context, visited)),
+    };
+  }
+  if (type.kind === 'anonymous') return type;
+  if (type.kind === 'array') {
+    return { element: runtimeStorageCanonicalType(type.element, context, visited), kind: 'array' };
+  }
+  if (type.kind === 'function') {
+    return {
+      kind: 'function',
+      parameters: type.parameters.map((parameter) => runtimeStorageCanonicalType(parameter, context, visited)),
+      returns: runtimeStorageCanonicalType(type.returns, context, visited),
+    };
+  }
+  if (type.kind === 'nullable') {
+    return {
+      inner: runtimeStorageCanonicalType(type.inner, context, visited),
+      kind: 'nullable',
+    };
+  }
+  if (type.kind === 'union') {
+    return {
+      kind: 'union',
+      variants: type.variants.map((variant) => runtimeStorageCanonicalType(variant, context, visited)),
+    };
+  }
+  return type;
 }
 
 function registerOpenInterfaceFamilies(context: EmitContext): void {
@@ -4541,6 +5030,31 @@ function inferCallbackTypeParameters(declaration: IrFunctionDeclaration): Readon
       ),
     ),
   );
+}
+
+function inferEntityTypeParameters(
+  owner: unknown,
+  typeParameters: readonly string[],
+  context: EmitContext,
+): ReadonlySet<string> {
+  const lexical = new Set(typeParameters);
+  const found = new Set<string>();
+  const visit = (value: unknown): void => {
+    if (!value || typeof value !== 'object') return;
+    if ('kind' in value && value.kind === 'element') {
+      const expression = value as IrExpression;
+      if (isErasedEntityRuntimeAccess(expression)) {
+        const objectType = inferIrExpressionType(expression.object, context);
+        if (objectType?.kind === 'named' && lexical.has(objectType.name)) found.add(objectType.name);
+      }
+    }
+    for (const child of Object.values(value)) {
+      if (Array.isArray(child)) child.forEach(visit);
+      else visit(child);
+    }
+  };
+  visit(owner);
+  return found;
 }
 
 function inferCallbackArgumentStorage(
@@ -5379,9 +5893,21 @@ function emitStructuralProjectionArgument(
       },`,
     ];
   });
+  const sharesEntityRuntime =
+    actualType.kind === 'named' &&
+    expectedType.kind === 'named' &&
+    context.entityTypes.has(actualType.name) &&
+    context.entityTypes.has(expectedType.name);
   return `{ let ${owner} = &${parenthesize(source)}; ${emitStructConstructorType(expectedType, context)} {\n${indent(
     [
       '__flight_identity: std::sync::Arc::clone(&' + owner + '.__flight_identity),',
+      ...(sharesEntityRuntime
+        ? [
+            '__flight_entity_runtime: std::sync::Arc::clone(&' +
+              owner +
+              '.__flight_entity_runtime),',
+          ]
+        : []),
       ...fields,
       ...(openFields ? ['..Default::default()'] : []),
     ].join('\n'),
@@ -5412,8 +5938,23 @@ function emitStructuralFunctionAdapter(
   )}| -> ${emitType(expected.returns, context)} { ${result} }) as ${erased})) }`;
 }
 
-function isSharedHandleType(type: IrType): boolean {
-  return type.kind === 'named' && type.name === 'SignalData';
+function isSharedHandleType(type: IrType, context: EmitContext): boolean {
+  return type.kind === 'named' && (type.name === 'SignalData' || context.entityRuntimeTypes.has(type.name));
+}
+
+function entityRuntimeFieldSlot(runtimeName: string, fieldName: string, context: EmitContext): string {
+  const slot = context.entityRuntimeFieldSlots.get(`${runtimeName}\0${fieldName}`);
+  if (!slot) {
+    throw new RustEmissionError(
+      `entity runtime field ${fieldName} is ambiguous or absent on static receiver ${runtimeName}`,
+    );
+  }
+  return slot;
+}
+
+function entityRuntimeStorageField(storage: string, slot: string, fieldName: string): string {
+  const owner = slot === 'EntityRuntime' ? storage : `${storage}.${snakeCase(slot)}`;
+  return `${owner}.${safeName(fieldName)}`;
 }
 
 function isCopyType(type: IrType, context: EmitContext): boolean {
@@ -5512,16 +6053,17 @@ function emitObject(
   context: EmitContext,
   expectedType?: IrType,
 ): string {
-  if (
-    expression.properties.some(
-      (property) =>
-        property.kind === 'computedProperty' &&
-        property.key.kind === 'identifier' &&
-        property.key.name === 'EntityRuntimeKey',
-    )
-  ) {
-    rejectEntityRuntimeStorage();
-  }
+  const entityRuntimeProperties = expression.properties.filter(
+    (property) =>
+      property.kind === 'computedProperty' &&
+      property.key.kind === 'identifier' &&
+      property.key.name === 'EntityRuntimeKey',
+  );
+  const entityRuntimeProperty = entityRuntimeProperties.length === 1 ? entityRuntimeProperties[0] : undefined;
+  const structuralExpression: typeof expression = {
+    ...expression,
+    properties: expression.properties.filter((property) => !entityRuntimeProperties.includes(property)),
+  };
   if (expression.properties.length === 1 && expression.properties[0]?.kind === 'spread') {
     return `${parenthesize(emitExpression(expression.properties[0].expression, context))}.clone()`;
   }
@@ -5529,10 +6071,17 @@ function emitObject(
   const contextualTarget = nullable ? expectedType.inner : expectedType;
   const target =
     (contextualTarget?.kind === 'dynamic' ? undefined : contextualTarget) ??
-    inferNamedStructuralObjectType(expression, context) ??
+    inferNamedStructuralObjectType(structuralExpression, context) ??
     contextualTarget ??
-    inferStaticExpressionType(expression);
+    inferStaticExpressionType(structuralExpression);
   const resolved = resolveSemanticType(target, context);
+  if (
+    entityRuntimeProperties.length > 1 ||
+    (entityRuntimeProperties.length === 1 &&
+      !(target?.kind === 'named' && context.entityTypes.has(target.name)))
+  ) {
+    rejectEntityRuntimeStorage();
+  }
   if (resolved?.kind === 'named' && resolved.name === 'RustMap') {
     const keyType = resolved.arguments[0] ?? primitive('String');
     const valueType = resolved.arguments[1] ?? { kind: 'dynamic' };
@@ -5575,7 +6124,29 @@ function emitObject(
   const name = emitStructConstructorType(target, context);
   const openFields = target.kind === 'named' ? context.openInterfaceFields.get(target.name) : undefined;
   const fields = new Map(flattenStructFields(resolved, context).map((field) => [field.name, field]));
-  const structuralSpreads = expression.properties.flatMap((property, index) => {
+  if (target.kind === 'named' && context.entityRuntimeTypes.has(target.name)) {
+    const assignments = structuralExpression.properties.map((property) => {
+      if (property.kind !== 'property') {
+        throw new RustEmissionError(`entity runtime object ${property.kind} lowering is not implemented`);
+      }
+      const field = fields.get(property.name);
+      if (!field) throw new RustEmissionError(`entity runtime field ${property.name} is not in the source closure`);
+      const value = emitExpression(property.value, context, field.type);
+      const stored =
+        field.optional && field.type.kind !== 'nullable' && !isNullishExpression(property.value)
+          ? `Some(${value})`
+          : value;
+      const slot = entityRuntimeFieldSlot(target.name, property.name, context);
+      return `${entityRuntimeStorageField('__flight_storage', slot, property.name)} = ${
+        context.entityRuntimeLateFields.has(`${slot}\0${property.name}`) ? `Some(${stored})` : stored
+      };`;
+    });
+    const value = `{ let __flight_runtime = ${entityRuntimeTypePath(context)}::default(); { let mut __flight_storage = __flight_runtime.inner.lock().unwrap(); ${assignments.join(
+      ' ',
+    )} } __flight_runtime }`;
+    return nullable ? `Some(${value})` : value;
+  }
+  const structuralSpreads = structuralExpression.properties.flatMap((property, index) => {
     if (property.kind !== 'spread') return [];
     const sourceType = inferIrExpressionType(property.expression, context);
     const resolvedSource = resolveSemanticType(sourceType, context) ?? sourceType;
@@ -5595,7 +6166,7 @@ function emitObject(
       string,
       { expression: IrExpression; kind: 'property' } | { field: IrTypeField; kind: 'spread'; name: string }
     >();
-    expression.properties.forEach((property, index) => {
+    structuralExpression.properties.forEach((property, index) => {
       if (property.kind === 'property') {
         if (fields.has(property.name)) values.set(property.name, { expression: property.value, kind: 'property' });
         return;
@@ -5623,9 +6194,28 @@ function emitObject(
     const bindings = structuralSpreads.map(
       (spread) => `let ${spread.name} = ${emitExpression(spread.property.expression, context)};`,
     );
+    const entitySpread = structuralSpreads.find((spread) => {
+      const sourceType = inferIrExpressionType(spread.property.expression, context);
+      return sourceType?.kind === 'named' && context.entityTypes.has(sourceType.name);
+    });
+    const entityRuntimeInitializer =
+      target.kind === 'named' && context.entityTypes.has(target.name)
+        ? entityRuntimeProperty?.kind === 'computedProperty'
+          ? `std::sync::Arc::new(std::sync::Mutex::new(Some(${emitExpression(
+              entityRuntimeProperty.value,
+              context,
+              { arguments: [], kind: 'named', name: 'EntityRuntime' },
+            )})))`
+          : entitySpread
+            ? `${entitySpread.name}.__flight_entity_runtime.clone()`
+            : 'Default::default()'
+        : undefined;
     const value = `{ ${bindings.join(' ')} ${name} {\n${indent(
       [
         '__flight_identity: std::sync::Arc::new(()),',
+        ...(entityRuntimeInitializer
+          ? [`__flight_entity_runtime: ${entityRuntimeInitializer},`]
+          : []),
         ...properties.filter((property): property is string => Boolean(property)),
         ...(openFields ? ['..Default::default()'] : []),
       ].join('\n'),
@@ -5636,7 +6226,7 @@ function emitObject(
   const spreads: string[] = [];
   if (target.kind === 'named' && target.name === 'SignalData') {
     const arguments_ = [...fields.values()].map((field) => {
-      const property = expression.properties.find(
+      const property = structuralExpression.properties.find(
         (candidate) => candidate.kind === 'property' && candidate.name === field.name,
       );
       if (!property || property.kind !== 'property') {
@@ -5651,7 +6241,7 @@ function emitObject(
     const value = `${name}::new(${arguments_.join(', ')})`;
     return nullable ? `Some(${value})` : value;
   }
-  const properties = expression.properties.flatMap((property) => {
+  const properties = structuralExpression.properties.flatMap((property) => {
     if (property.kind === 'spread') {
       spreads.push(`..${parenthesize(emitExpression(property.expression, context, target))}.clone()`);
       return [];
@@ -5677,7 +6267,36 @@ function emitObject(
     }
   }
   if (spreads.length > 1) throw new RustEmissionError('multiple object spreads require ordered Rust lowering');
-  if (spreads.length === 0) properties.unshift('__flight_identity: std::sync::Arc::new(()),');
+  if (
+    spreads.length === 1 &&
+    target.kind === 'named' &&
+    context.entityTypes.has(target.name) &&
+    entityRuntimeProperty?.kind === 'computedProperty'
+  ) {
+    properties.unshift(
+      `__flight_entity_runtime: std::sync::Arc::new(std::sync::Mutex::new(Some(${emitExpression(
+        entityRuntimeProperty.value,
+        context,
+        { arguments: [], kind: 'named', name: 'EntityRuntime' },
+      )}))),`,
+    );
+  }
+  if (spreads.length === 0) {
+    properties.unshift(
+      '__flight_identity: std::sync::Arc::new(()),',
+      ...(target.kind === 'named' && context.entityTypes.has(target.name)
+        ? [
+            entityRuntimeProperty?.kind === 'computedProperty'
+              ? `__flight_entity_runtime: std::sync::Arc::new(std::sync::Mutex::new(Some(${emitExpression(
+                  entityRuntimeProperty.value,
+                  context,
+                  { arguments: [], kind: 'named', name: 'EntityRuntime' },
+                )}))),`
+              : '__flight_entity_runtime: Default::default(),',
+          ]
+        : []),
+    );
+  }
   const value = `${name} {\n${indent(
     [...properties, ...spreads, ...(openFields && spreads.length === 0 ? ['..Default::default()'] : [])].join('\n'),
   )}\n}`;
@@ -5735,6 +6354,9 @@ function objectLiteralMatchesType(
 }
 
 function emitElement(expression: Extract<IrExpression, { kind: 'element' }>, context: EmitContext): string {
+  if (isNativeEntityRuntimeAccess(expression, context)) {
+    return `${entityRuntimeSlot(expression.object, context)}.lock().unwrap().clone().expect("entity runtime was read before initialization")`;
+  }
   const objectType = inferIrExpressionType(expression.object, context);
   if (expression.optional) {
     if (
@@ -6039,6 +6661,9 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
       return undefined;
     }
     case 'element': {
+      if (isNativeEntityRuntimeAccess(expression, context)) {
+        return { arguments: [], kind: 'named', name: 'EntityRuntime' };
+      }
       const inferred = inferIrExpressionType(expression.object, context);
       const object = inferred?.kind === 'nullable' ? inferred.inner : inferred;
       const element =
@@ -6552,12 +7177,16 @@ function emitRustStringLiteral(value: string): string {
   return `${emitted}"`;
 }
 
-function resolveSemanticType(type: IrType | undefined, context: EmitContext): IrType | undefined {
+function resolveSemanticType(
+  type: IrType | undefined,
+  context: EmitContext,
+  visited: ReadonlySet<string> = new Set(),
+): IrType | undefined {
   if (type?.kind === 'named' && type.name.startsWith('RustStructural:')) {
     return type.arguments[0] ?? type;
   }
   if (type?.kind === 'named' && type.name === 'FlightPartial') {
-    const inner = resolveSemanticType(type.arguments[0], context);
+    const inner = resolveSemanticType(type.arguments[0], context, visited);
     if (inner?.kind === 'anonymous') {
       return {
         extends: [],
@@ -6568,7 +7197,7 @@ function resolveSemanticType(type: IrType | undefined, context: EmitContext): Ir
     return inner;
   }
   if (type?.kind === 'named' && type.name.startsWith('FlightOmit:')) {
-    const inner = resolveSemanticType(type.arguments[0], context);
+    const inner = resolveSemanticType(type.arguments[0], context, visited);
     if (inner?.kind === 'anonymous') {
       const omitted = new Set<string>(JSON.parse(type.name.slice('FlightOmit:'.length)) as string[]);
       return {
@@ -6579,14 +7208,21 @@ function resolveSemanticType(type: IrType | undefined, context: EmitContext): Ir
     }
     return inner;
   }
-  const visited = new Set<string>();
-  let resolved = type;
-  while (resolved?.kind === 'named' && !visited.has(resolved.name)) {
-    visited.add(resolved.name);
-    resolved = context.namedTypes.get(resolved.name) ?? resolved;
-    if (resolved.kind === 'named' && visited.has(resolved.name)) break;
-  }
-  return resolved;
+  if (type?.kind !== 'named') return type;
+  if (type.arguments.length === 0 && context.lexicalTypeParameters.has(type.name)) return type;
+  const key = typeKey(type);
+  if (visited.has(key)) return type;
+  const declaration = context.namedTypes.get(type.name);
+  if (!declaration) return type;
+  const parameters = context.namedTypeParameters.get(type.name) ?? [];
+  const substitutions = new Map(
+    parameters.flatMap((parameter, index) =>
+      type.arguments[index] ? [[parameter, type.arguments[index]!] as const] : [],
+    ),
+  );
+  const applied = substitutions.size > 0 ? substituteIrType(declaration, substitutions) : declaration;
+  if (typeKey(applied) === key) return applied;
+  return resolveSemanticType(applied, context, new Set([...visited, key]));
 }
 
 function isStructuralUtilityType(type: IrType | undefined): type is Extract<IrType, { kind: 'named' }> {
