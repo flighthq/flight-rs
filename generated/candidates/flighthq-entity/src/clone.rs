@@ -14,7 +14,7 @@ pub fn clone_entity<Type: Clone + flighthq_types::FlightEntity>(source: Type) ->
     *flighthq_types::FlightEntity::__flight_entity_runtime(&(copy))
         .lock()
         .unwrap() = None;
-    return create_entity(Some((copy).clone()));
+    return create_entity(Some(((copy).clone()).clone()));
 }
 
 // Source: upstream/packages/entity/src/clone.ts:19 (sha256:f821dde436032aea524e91fa419eba4f843d76d89558a537e9a02c7ab3c6e0c3)
@@ -25,5 +25,5 @@ pub fn strip_entity_runtime<Type: Clone + flighthq_types::FlightEntity>(source: 
         .unwrap()
         .take()
         .is_some();
-    return copy;
+    return (copy).clone();
 }

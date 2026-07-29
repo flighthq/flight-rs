@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 use crate::copy_path;
-use flighthq_types::{Matrix, MatrixLike, Path, PathCommand};
+use flighthq_types::{MatrixLike, Path, PathCommand};
 
 // Source: upstream/packages/path/src/transformPath.ts:12 (sha256:196c70663e7fa56160a411be71604f40cf01472133e577447f96205043a975e4)
 pub fn transform_path(source: &Path, matrix: &MatrixLike, out: &mut Path) -> () {
@@ -150,7 +150,7 @@ pub fn transform_path(source: &Path, matrix: &MatrixLike, out: &mut Path) -> () 
 pub fn translate_path(source: &Path, dx: f64, dy: f64, out: &mut Path) -> () {
     transform_path(
         source,
-        &Matrix {
+        &MatrixLike {
             __flight_identity: std::sync::Arc::new(()),
             __flight_entity_runtime: Default::default(),
             a: 1.0_f64,

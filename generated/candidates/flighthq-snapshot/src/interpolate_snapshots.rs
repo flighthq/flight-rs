@@ -193,7 +193,9 @@ fn ensure_snapshot_container(
     return if is_array {
         vec![]
     } else {
-        crate::OpaqueHostValue::Object
+        EnsureSnapshotContainerRecord1 {
+            __flight_identity: std::sync::Arc::new(()),
+        }
     };
 }
 

@@ -20,6 +20,51 @@ impl PartialEq for ForEachPathSegmentRecord1 {
     }
 }
 
+#[derive(Clone, Default)]
+struct ForEachPathSegmentSynthesizedRecord656596556 {
+    __flight_identity: std::sync::Arc<()>,
+    kind: String,
+    x: f64,
+    y: f64,
+}
+impl PartialEq for ForEachPathSegmentSynthesizedRecord656596556 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+struct ForEachPathSegmentSynthesizedRecord4105457919 {
+    __flight_identity: std::sync::Arc<()>,
+    control_x: f64,
+    control_y: f64,
+    kind: String,
+    x: f64,
+    y: f64,
+}
+impl PartialEq for ForEachPathSegmentSynthesizedRecord4105457919 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+struct ForEachPathSegmentSynthesizedRecord2480247970 {
+    __flight_identity: std::sync::Arc<()>,
+    control1_x: f64,
+    control1_y: f64,
+    control2_x: f64,
+    control2_y: f64,
+    kind: String,
+    x: f64,
+    y: f64,
+}
+impl PartialEq for ForEachPathSegmentSynthesizedRecord2480247970 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 pub fn for_each_path_segment(path: &Path, visitor: &mut impl FnMut(PathSegment) -> ()) -> () {
     let mut di = 0.0_f64;
     {
@@ -30,68 +75,109 @@ pub fn for_each_path_segment(path: &Path, visitor: &mut impl FnMut(PathSegment) 
                 let x = path.data[di as usize].clone();
                 let y = path.data[(di + 1.0_f64) as usize].clone();
                 di += 2.0_f64;
-                visitor(PathSegment {
-                    __flight_identity: std::sync::Arc::new(()),
-                    kind: "moveTo".to_owned(),
-                    x: Some(x),
-                    y: Some(y),
-                    control_x: None,
-                    control_y: None,
-                    control1_x: None,
-                    control1_y: None,
-                    control2_x: None,
-                    control2_y: None,
-                });
-            } else {
-                if (command == PathCommand::WIDE_MOVE_TO) {
-                    let x = path.data[(di + 2.0_f64) as usize].clone();
-                    let y = path.data[(di + 3.0_f64) as usize].clone();
-                    di += 4.0_f64;
-                    visitor(PathSegment {
+                visitor({
+                    let __flight_source = &(ForEachPathSegmentSynthesizedRecord656596556 {
                         __flight_identity: std::sync::Arc::new(()),
                         kind: "moveTo".to_owned(),
-                        x: Some(x),
-                        y: Some(y),
+                        x: x,
+                        y: y,
+                    });
+                    PathSegment {
+                        __flight_identity: std::sync::Arc::clone(
+                            &__flight_source.__flight_identity,
+                        ),
+                        kind: (__flight_source.kind).clone(),
+                        x: Some(__flight_source.x),
+                        y: Some(__flight_source.y),
                         control_x: None,
                         control_y: None,
                         control1_x: None,
                         control1_y: None,
                         control2_x: None,
                         control2_y: None,
-                    });
-                } else {
-                    if (command == PathCommand::LINE_TO) {
-                        let x = path.data[di as usize].clone();
-                        let y = path.data[(di + 1.0_f64) as usize].clone();
-                        di += 2.0_f64;
-                        visitor(PathSegment {
+                    }
+                });
+            } else {
+                if (command == PathCommand::WIDE_MOVE_TO) {
+                    let x = path.data[(di + 2.0_f64) as usize].clone();
+                    let y = path.data[(di + 3.0_f64) as usize].clone();
+                    di += 4.0_f64;
+                    visitor({
+                        let __flight_source = &(ForEachPathSegmentSynthesizedRecord656596556 {
                             __flight_identity: std::sync::Arc::new(()),
-                            kind: "lineTo".to_owned(),
-                            x: Some(x),
-                            y: Some(y),
+                            kind: "moveTo".to_owned(),
+                            x: x,
+                            y: y,
+                        });
+                        PathSegment {
+                            __flight_identity: std::sync::Arc::clone(
+                                &__flight_source.__flight_identity,
+                            ),
+                            kind: (__flight_source.kind).clone(),
+                            x: Some(__flight_source.x),
+                            y: Some(__flight_source.y),
                             control_x: None,
                             control_y: None,
                             control1_x: None,
                             control1_y: None,
                             control2_x: None,
                             control2_y: None,
-                        });
-                    } else {
-                        if (command == PathCommand::WIDE_LINE_TO) {
-                            let x = path.data[(di + 2.0_f64) as usize].clone();
-                            let y = path.data[(di + 3.0_f64) as usize].clone();
-                            di += 4.0_f64;
-                            visitor(PathSegment {
+                        }
+                    });
+                } else {
+                    if (command == PathCommand::LINE_TO) {
+                        let x = path.data[di as usize].clone();
+                        let y = path.data[(di + 1.0_f64) as usize].clone();
+                        di += 2.0_f64;
+                        visitor({
+                            let __flight_source = &(ForEachPathSegmentSynthesizedRecord656596556 {
                                 __flight_identity: std::sync::Arc::new(()),
                                 kind: "lineTo".to_owned(),
-                                x: Some(x),
-                                y: Some(y),
+                                x: x,
+                                y: y,
+                            });
+                            PathSegment {
+                                __flight_identity: std::sync::Arc::clone(
+                                    &__flight_source.__flight_identity,
+                                ),
+                                kind: (__flight_source.kind).clone(),
+                                x: Some(__flight_source.x),
+                                y: Some(__flight_source.y),
                                 control_x: None,
                                 control_y: None,
                                 control1_x: None,
                                 control1_y: None,
                                 control2_x: None,
                                 control2_y: None,
+                            }
+                        });
+                    } else {
+                        if (command == PathCommand::WIDE_LINE_TO) {
+                            let x = path.data[(di + 2.0_f64) as usize].clone();
+                            let y = path.data[(di + 3.0_f64) as usize].clone();
+                            di += 4.0_f64;
+                            visitor({
+                                let __flight_source =
+                                    &(ForEachPathSegmentSynthesizedRecord656596556 {
+                                        __flight_identity: std::sync::Arc::new(()),
+                                        kind: "lineTo".to_owned(),
+                                        x: x,
+                                        y: y,
+                                    });
+                                PathSegment {
+                                    __flight_identity: std::sync::Arc::clone(
+                                        &__flight_source.__flight_identity,
+                                    ),
+                                    kind: (__flight_source.kind).clone(),
+                                    x: Some(__flight_source.x),
+                                    y: Some(__flight_source.y),
+                                    control_x: None,
+                                    control_y: None,
+                                    control1_x: None,
+                                    control1_y: None,
+                                    control2_x: None,
+                                    control2_y: None,
+                                }
                             });
                         } else {
                             if (command == PathCommand::CURVE_TO) {
@@ -100,17 +186,30 @@ pub fn for_each_path_segment(path: &Path, visitor: &mut impl FnMut(PathSegment) 
                                 let x = path.data[(di + 2.0_f64) as usize].clone();
                                 let y = path.data[(di + 3.0_f64) as usize].clone();
                                 di += 4.0_f64;
-                                visitor(PathSegment {
-                                    __flight_identity: std::sync::Arc::new(()),
-                                    kind: "curveTo".to_owned(),
-                                    control_x: Some(control_x),
-                                    control_y: Some(control_y),
-                                    x: Some(x),
-                                    y: Some(y),
-                                    control1_x: None,
-                                    control1_y: None,
-                                    control2_x: None,
-                                    control2_y: None,
+                                visitor({
+                                    let __flight_source =
+                                        &(ForEachPathSegmentSynthesizedRecord4105457919 {
+                                            __flight_identity: std::sync::Arc::new(()),
+                                            kind: "curveTo".to_owned(),
+                                            control_x: control_x,
+                                            control_y: control_y,
+                                            x: x,
+                                            y: y,
+                                        });
+                                    PathSegment {
+                                        __flight_identity: std::sync::Arc::clone(
+                                            &__flight_source.__flight_identity,
+                                        ),
+                                        kind: (__flight_source.kind).clone(),
+                                        x: Some(__flight_source.x),
+                                        y: Some(__flight_source.y),
+                                        control_x: Some(__flight_source.control_x),
+                                        control_y: Some(__flight_source.control_y),
+                                        control1_x: None,
+                                        control1_y: None,
+                                        control2_x: None,
+                                        control2_y: None,
+                                    }
                                 });
                             } else {
                                 if (command == PathCommand::CUBIC_CURVE_TO) {
@@ -121,31 +220,54 @@ pub fn for_each_path_segment(path: &Path, visitor: &mut impl FnMut(PathSegment) 
                                     let x = path.data[(di + 4.0_f64) as usize].clone();
                                     let y = path.data[(di + 5.0_f64) as usize].clone();
                                     di += 6.0_f64;
-                                    visitor(PathSegment {
-                                        __flight_identity: std::sync::Arc::new(()),
-                                        kind: "cubicCurveTo".to_owned(),
-                                        control1_x: Some(control1_x),
-                                        control1_y: Some(control1_y),
-                                        control2_x: Some(control2_x),
-                                        control2_y: Some(control2_y),
-                                        x: Some(x),
-                                        y: Some(y),
-                                        control_x: None,
-                                        control_y: None,
+                                    visitor({
+                                        let __flight_source =
+                                            &(ForEachPathSegmentSynthesizedRecord2480247970 {
+                                                __flight_identity: std::sync::Arc::new(()),
+                                                kind: "cubicCurveTo".to_owned(),
+                                                control1_x: control1_x,
+                                                control1_y: control1_y,
+                                                control2_x: control2_x,
+                                                control2_y: control2_y,
+                                                x: x,
+                                                y: y,
+                                            });
+                                        PathSegment {
+                                            __flight_identity: std::sync::Arc::clone(
+                                                &__flight_source.__flight_identity,
+                                            ),
+                                            kind: (__flight_source.kind).clone(),
+                                            x: Some(__flight_source.x),
+                                            y: Some(__flight_source.y),
+                                            control_x: None,
+                                            control_y: None,
+                                            control1_x: Some(__flight_source.control1_x),
+                                            control1_y: Some(__flight_source.control1_y),
+                                            control2_x: Some(__flight_source.control2_x),
+                                            control2_y: Some(__flight_source.control2_y),
+                                        }
                                     });
                                 } else {
                                     if (command == PathCommand::CLOSE) {
-                                        visitor(PathSegment {
-                                            __flight_identity: std::sync::Arc::new(()),
-                                            kind: "close".to_owned(),
-                                            x: None,
-                                            y: None,
-                                            control_x: None,
-                                            control_y: None,
-                                            control1_x: None,
-                                            control1_y: None,
-                                            control2_x: None,
-                                            control2_y: None,
+                                        visitor({
+                                            let __flight_source = &(ForEachPathSegmentRecord1 {
+                                                __flight_identity: std::sync::Arc::new(()),
+                                                kind: "close".to_owned(),
+                                            });
+                                            PathSegment {
+                                                __flight_identity: std::sync::Arc::clone(
+                                                    &__flight_source.__flight_identity,
+                                                ),
+                                                kind: (__flight_source.kind).clone(),
+                                                x: None,
+                                                y: None,
+                                                control_x: None,
+                                                control_y: None,
+                                                control1_x: None,
+                                                control1_y: None,
+                                                control2_x: None,
+                                                control2_y: None,
+                                            }
                                         });
                                     }
                                 }

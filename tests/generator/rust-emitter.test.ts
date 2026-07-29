@@ -2493,6 +2493,74 @@ describe('Rust emission', () => {
     ).not.toThrow();
   });
 
+  it('compiles and runs all contextual object literal recovery paths', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/effects-gl/src/contextual-objects.ts',
+      `
+        export interface DeclaredOptions {
+          readonly offset: number;
+          readonly scale: number;
+        }
+        interface SemanticOptions {
+          readonly bias: number;
+          readonly input: number;
+        }
+        function evaluate(options: DeclaredOptions): number {
+          return options.offset + options.scale;
+        }
+        export function declaredParameterPath(): number {
+          return evaluate({ offset: 2, scale: 3 });
+        }
+        export function declaredReturnPath(value: number): DeclaredOptions {
+          return { offset: value, scale: 4 };
+        }
+        export function semanticSignaturePath(input: number): number {
+          const options: any = { bias: 4, input };
+          return options.input + options.bias;
+        }
+        export function synthesizedRecordPath(input: number): number {
+          const packet: any = { left: input, right: 2 };
+          return packet.left * packet.right;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/effects-gl', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/effects-gl/src/contextual-objects.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('evaluate(&DeclaredOptions {');
+    expect(output).toContain('let options = SemanticOptions {');
+    expect(output).toMatch(/struct SynthesizedRecordPathSynthesizedRecord\d+/u);
+    expect(output).not.toContain('OpaqueHostValue');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-contextual-objects-'));
+    const binary = path.join(fixture, 'contextual-objects');
+    writeFileSync(path.join(fixture, 'generated.rs'), output);
+    writeFileSync(
+      path.join(fixture, 'main.rs'),
+      [
+        'mod generated;',
+        'fn main() {',
+        '  assert_eq!(generated::declared_parameter_path(), 5.0);',
+        '  let returned = generated::declared_return_path(6.0);',
+        '  assert_eq!(returned.offset + returned.scale, 10.0);',
+        '  assert_eq!(generated::semantic_signature_path(3.0), 7.0);',
+        '  assert_eq!(generated::synthesized_record_path(8.0), 16.0);',
+        '}',
+        '',
+      ].join('\n'),
+    );
+    expect(() => compileRustExecutable('main.rs', binary, fixture)).not.toThrow();
+    expect(() => execFileSync(binary, [], { cwd: fixture, stdio: 'pipe' })).not.toThrow();
+  });
+
   it('compiles typed ImageData and OffscreenCanvas constructors against an installable native backend', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/image/src/constructors.ts',

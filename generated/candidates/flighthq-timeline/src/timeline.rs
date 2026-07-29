@@ -332,14 +332,14 @@ fn fire_construct_frame(timeline: &mut Timeline) -> () {
     if (signals).is_some() {
         emit_signal(
             (signals.as_ref().unwrap().on_exit_frame).clone(),
-            ((frame_event).clone(),),
+            (frame_event,),
         );
     }
     timeline.last_frame_update = current;
     if (signals).is_some() {
         emit_signal(
             (signals.as_ref().unwrap().on_enter_frame).clone(),
-            ((frame_event).clone(),),
+            (frame_event,),
         );
     }
     if (target).is_some() {
@@ -372,7 +372,7 @@ fn fire_construct_frame(timeline: &mut Timeline) -> () {
     if (signals).is_some() {
         emit_signal(
             (signals.as_ref().unwrap().on_frame_constructed).clone(),
-            ((frame_event).clone(),),
+            (frame_event,),
         );
     }
 }

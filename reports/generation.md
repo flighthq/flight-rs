@@ -6,15 +6,15 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | --- | ---: |
 | Inventoried packages | 131 |
 | Default-generated packages | 125 |
-| Emittable packages | 67 |
-| Blocked packages | 58 |
+| Emittable packages | 74 |
+| Blocked packages | 51 |
 | Compiled candidates | 28 |
-| Compile-blocked candidates | 23 |
-| Dependency-blocked candidates | 15 |
+| Compile-blocked candidates | 28 |
+| Dependency-blocked candidates | 17 |
 | Cultivated packages | 1 |
 | Host-bound packages | 4 |
 | Excluded packages | 1 |
-| Source/package blockers | 322 |
+| Source/package blockers | 274 |
 
 | Package | Disposition | Status | Candidate | Sources emitted/attempted | API generated/expected | Missing | Dependents direct/transitive | Opaque sources | Blockers | Target |
 | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
@@ -35,22 +35,22 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | `@flighthq/clip` | generated | emittable | compile-blocked | 2/2 | 23/23 | 0 | 1/1 | 1 | 0 | no |
 | `@flighthq/clipboard` | generated | blocked | source-blocked | 1/2 | 0/32 | 32 | 4/4 | 0 | 2 | no |
 | `@flighthq/clock` | generated | emittable | compile-blocked | 12/12 | 14/14 | 0 | 1/1 | 0 | 0 | no |
-| `@flighthq/collision` | generated | blocked | source-blocked | 5/6 | 9/19 | 10 | 1/1 | 0 | 2 | no |
+| `@flighthq/collision` | generated | emittable | compile-blocked | 6/6 | 19/19 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/color` | generated | emittable | compiled | 10/10 | 32/32 | 0 | 10/29 | 0 | 0 | no |
 | `@flighthq/connectivity` | generated | emittable | compile-blocked | 2/2 | 14/14 | 0 | 2/2 | 1 | 0 | no |
 | `@flighthq/debug` | generated | blocked | source-blocked | 2/3 | 4/9 | 5 | 1/1 | 1 | 2 | no |
 | `@flighthq/device` | generated | emittable | compiled | 2/2 | 14/14 | 0 | 2/2 | 1 | 0 | no |
-| `@flighthq/dialog` | generated | blocked | source-blocked | 1/2 | 0/15 | 15 | 5/5 | 0 | 2 | no |
+| `@flighthq/dialog` | generated | emittable | compile-blocked | 2/2 | 15/15 | 0 | 5/5 | 1 | 0 | no |
 | `@flighthq/displayobject` | generated | blocked | source-blocked | 7/8 | 36/46 | 10 | 14/24 | 6 | 2 | no |
-| `@flighthq/displayobject-canvas` | generated | blocked | source-blocked | 17/31 | 53/94 | 41 | 5/5 | 15 | 15 | no |
+| `@flighthq/displayobject-canvas` | generated | blocked | source-blocked | 18/31 | 56/94 | 38 | 5/5 | 16 | 14 | no |
 | `@flighthq/displayobject-dom` | host-bound | host-bound | not-applicable | 0/0 | 0/58 | 58 | 1/1 | 0 | 0 | no |
-| `@flighthq/displayobject-gl` | generated | blocked | source-blocked | 25/28 | 79/89 | 12 | 1/1 | 15 | 4 | no |
-| `@flighthq/displayobject-wgpu` | generated | blocked | source-blocked | 22/29 | 69/95 | 27 | 1/1 | 13 | 8 | no |
+| `@flighthq/displayobject-gl` | generated | blocked | source-blocked | 25/28 | 79/89 | 12 | 1/1 | 16 | 4 | no |
+| `@flighthq/displayobject-wgpu` | generated | blocked | source-blocked | 26/29 | 84/95 | 12 | 1/1 | 17 | 4 | no |
 | `@flighthq/easing` | generated | emittable | promoted | 20/20 | 48/48 | 0 | 2/3 | 0 | 0 | full |
 | `@flighthq/effects` | generated | emittable | compile-blocked | 72/72 | 112/112 | 0 | 4/4 | 2 | 0 | no |
 | `@flighthq/effects-canvas` | generated | blocked | source-blocked | 9/48 | 29/102 | 78 | 1/1 | 7 | 40 | no |
 | `@flighthq/effects-gl` | generated | blocked | source-blocked | 11/58 | 31/135 | 104 | 1/1 | 8 | 48 | no |
-| `@flighthq/effects-wgpu` | generated | blocked | source-blocked | 10/56 | 26/128 | 102 | 1/1 | 2 | 47 | no |
+| `@flighthq/effects-wgpu` | generated | blocked | source-blocked | 12/56 | 37/128 | 91 | 1/1 | 4 | 45 | no |
 | `@flighthq/entity` | generated | emittable | compiled | 6/6 | 12/12 | 0 | 20/61 | 1 | 0 | no |
 | `@flighthq/filesystem` | generated | blocked | source-blocked | 1/2 | 0/43 | 43 | 2/2 | 0 | 2 | no |
 | `@flighthq/flow` | generated | emittable | compiled | 10/10 | 9/9 | 0 | 1/1 | 0 | 0 | no |
@@ -86,7 +86,7 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | `@flighthq/notification` | generated | blocked | source-blocked | 1/2 | 0/26 | 26 | 4/4 | 0 | 2 | no |
 | `@flighthq/particleemitter` | generated | emittable | dependency-blocked | 11/11 | 51/51 | 0 | 1/1 | 10 | 0 | no |
 | `@flighthq/particles` | generated | emittable | compile-blocked | 11/11 | 50/50 | 0 | 3/3 | 1 | 0 | no |
-| `@flighthq/particles-formats` | generated | blocked | source-blocked | 14/21 | 54/79 | 25 | 1/1 | 5 | 8 | no |
+| `@flighthq/particles-formats` | generated | blocked | source-blocked | 16/21 | 62/79 | 17 | 1/1 | 7 | 6 | no |
 | `@flighthq/path` | generated | emittable | compiled | 23/23 | 50/50 | 0 | 8/8 | 0 | 0 | no |
 | `@flighthq/path-boolean` | generated | blocked | source-blocked | 7/8 | 12/12 | 1 | 1/1 | 0 | 2 | no |
 | `@flighthq/path-formats` | generated | emittable | compile-blocked | 2/2 | 3/3 | 0 | 1/1 | 0 | 0 | no |
@@ -96,18 +96,18 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | `@flighthq/power` | generated | emittable | compiled | 2/2 | 19/19 | 0 | 2/2 | 1 | 0 | no |
 | `@flighthq/protocol` | generated | emittable | compile-blocked | 2/2 | 20/20 | 0 | 2/2 | 1 | 0 | no |
 | `@flighthq/render` | generated | blocked | source-blocked | 14/17 | 39/63 | 24 | 9/13 | 10 | 4 | no |
-| `@flighthq/render-gl` | generated | blocked | source-blocked | 22/24 | 66/75 | 18 | 4/4 | 15 | 3 | no |
-| `@flighthq/render-wgpu` | generated | blocked | source-blocked | 12/18 | 32/68 | 36 | 5/5 | 9 | 7 | no |
+| `@flighthq/render-gl` | generated | blocked | source-blocked | 23/24 | 79/75 | 5 | 4/4 | 16 | 2 | no |
+| `@flighthq/render-wgpu` | generated | emittable | dependency-blocked | 18/18 | 68/68 | 0 | 5/5 | 15 | 0 | no |
 | `@flighthq/scene` | generated | blocked | source-blocked | 9/14 | 26/43 | 17 | 6/6 | 7 | 6 | no |
-| `@flighthq/scene-formats` | generated | blocked | source-blocked | 9/16 | 83/15 | 9 | 2/2 | 2 | 8 | no |
-| `@flighthq/scene-gl` | generated | blocked | source-blocked | 51/53 | 182/184 | 2 | 1/1 | 24 | 3 | no |
-| `@flighthq/scene-resources` | generated | blocked | source-blocked | 14/16 | 32/37 | 5 | 1/1 | 13 | 3 | no |
-| `@flighthq/scene-wgpu` | generated | blocked | source-blocked | 30/42 | 67/140 | 73 | 1/1 | 18 | 13 | no |
+| `@flighthq/scene-formats` | generated | blocked | source-blocked | 10/16 | 84/15 | 8 | 2/2 | 3 | 7 | no |
+| `@flighthq/scene-gl` | generated | blocked | source-blocked | 52/53 | 185/184 | 2 | 1/1 | 25 | 2 | no |
+| `@flighthq/scene-resources` | generated | blocked | source-blocked | 15/16 | 34/37 | 3 | 1/1 | 14 | 2 | no |
+| `@flighthq/scene-wgpu` | generated | blocked | source-blocked | 41/42 | 140/140 | 2 | 1/1 | 29 | 2 | no |
 | `@flighthq/screen` | generated | emittable | compiled | 2/2 | 31/31 | 0 | 2/2 | 1 | 0 | no |
 | `@flighthq/sdk` | generated | blocked | source-blocked | 14/14 | 0/5923 | 5923 | 0/0 | 0 | 1 | no |
 | `@flighthq/sensors` | generated | blocked | source-blocked | 1/2 | 0/32 | 32 | 1/1 | 0 | 2 | no |
-| `@flighthq/shading` | generated | blocked | source-blocked | 16/17 | 36/37 | 1 | 2/2 | 2 | 2 | no |
-| `@flighthq/shape` | generated | blocked | source-blocked | 5/7 | 31/42 | 11 | 7/8 | 2 | 3 | no |
+| `@flighthq/shading` | generated | emittable | compile-blocked | 17/17 | 37/37 | 0 | 2/2 | 3 | 0 | no |
+| `@flighthq/shape` | generated | blocked | source-blocked | 6/7 | 32/42 | 10 | 7/8 | 2 | 2 | no |
 | `@flighthq/shape-formats` | generated | blocked | source-blocked | 1/2 | 0/5 | 5 | 1/1 | 0 | 2 | no |
 | `@flighthq/share` | generated | blocked | source-blocked | 1/2 | 0/14 | 14 | 2/2 | 0 | 2 | no |
 | `@flighthq/shell` | generated | emittable | compile-blocked | 2/2 | 14/14 | 0 | 3/3 | 1 | 0 | no |
@@ -130,20 +130,20 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | `@flighthq/textinput` | generated | emittable | dependency-blocked | 5/5 | 55/55 | 0 | 5/6 | 4 | 0 | no |
 | `@flighthq/textlayout` | generated | emittable | dependency-blocked | 13/13 | 51/47 | 0 | 9/11 | 1 | 0 | no |
 | `@flighthq/textsegment` | generated | emittable | compiled | 4/4 | 11/11 | 0 | 1/1 | 1 | 0 | no |
-| `@flighthq/textshaper` | generated | blocked | source-blocked | 7/9 | 28/31 | 5 | 3/12 | 1 | 3 | no |
+| `@flighthq/textshaper` | generated | blocked | source-blocked | 8/9 | 30/31 | 3 | 3/12 | 1 | 2 | no |
 | `@flighthq/textshaper-canvas` | generated | emittable | dependency-blocked | 2/2 | 3/3 | 0 | 1/1 | 1 | 0 | no |
 | `@flighthq/texture` | generated | emittable | compiled | 5/5 | 42/42 | 0 | 5/6 | 0 | 0 | no |
 | `@flighthq/texture-formats` | generated | blocked | source-blocked | 8/9 | 8/6 | 0 | 1/1 | 0 | 1 | no |
 | `@flighthq/textureatlas` | generated | emittable | dependency-blocked | 4/4 | 20/20 | 0 | 8/13 | 1 | 0 | no |
 | `@flighthq/textureatlas-formats` | generated | emittable | dependency-blocked | 8/8 | 29/29 | 0 | 2/2 | 1 | 0 | no |
-| `@flighthq/tilemap-formats` | generated | blocked | source-blocked | 7/9 | 16/16 | 0 | 1/1 | 2 | 2 | no |
+| `@flighthq/tilemap-formats` | generated | blocked | source-blocked | 8/9 | 16/16 | 0 | 1/1 | 3 | 1 | no |
 | `@flighthq/tileset` | generated | emittable | dependency-blocked | 3/3 | 9/9 | 0 | 3/8 | 1 | 0 | no |
 | `@flighthq/timeline` | generated | emittable | compile-blocked | 2/2 | 16/16 | 0 | 2/2 | 0 | 0 | no |
 | `@flighthq/tool-capture` | excluded | excluded | not-applicable | 0/0 | 0/57 | 57 | 0/0 | 0 | 0 | no |
-| `@flighthq/tray` | generated | blocked | source-blocked | 1/2 | 0/23 | 23 | 3/3 | 0 | 2 | no |
-| `@flighthq/tween` | generated | blocked | source-blocked | 6/9 | 13/35 | 23 | 2/2 | 1 | 4 | no |
+| `@flighthq/tray` | generated | emittable | compile-blocked | 2/2 | 23/23 | 0 | 3/3 | 1 | 0 | no |
+| `@flighthq/tween` | generated | emittable | dependency-blocked | 9/9 | 36/35 | 0 | 2/2 | 3 | 0 | no |
 | `@flighthq/types` | generated | emittable | compiled | 590/590 | 1261/1261 | 0 | 129/129 | 76 | 0 | partial |
-| `@flighthq/updater` | generated | blocked | source-blocked | 1/2 | 0/23 | 23 | 2/2 | 0 | 2 | no |
+| `@flighthq/updater` | generated | emittable | compile-blocked | 2/2 | 23/23 | 0 | 2/2 | 1 | 0 | no |
 | `@flighthq/useragent` | generated | emittable | compiled | 3/3 | 12/12 | 0 | 3/6 | 1 | 0 | no |
 | `@flighthq/velocity` | generated | emittable | dependency-blocked | 4/4 | 20/20 | 0 | 3/3 | 2 | 0 | no |
 | `@flighthq/video` | generated | blocked | source-blocked | 3/4 | 12/16 | 4 | 2/2 | 1 | 2 | no |
@@ -167,20 +167,10 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **package** `upstream/packages/clipboard/src`: Generated crate is missing 32 of 32 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/clipboard/src/clipboard.ts`: createWebClipboardBackend: typeof operand has no inferred Rust type: {"kind":"property","name":"read","object":{"kind":"identifier","name":"cb"},"optional":false}
 
-### `@flighthq/collision`
-
-- **package** `upstream/packages/collision/src`: Generated crate is missing 10 of 19 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/collision/src/shapeCollision.ts`: minOverlapAxis: cannot infer mutable top-level value minOverlapAxis
-
 ### `@flighthq/debug`
 
 - **package** `upstream/packages/debug/src`: Generated crate is missing 5 of 9 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/debug/src/debug.ts`: _collectDebugChannels: spread Rust lowering is not implemented
-
-### `@flighthq/dialog`
-
-- **package** `upstream/packages/dialog/src`: Generated crate is missing 15 of 15 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/dialog/src/dialog.ts`: createWebDialogBackend: object literal requires an inferred structural type (target={"kind":"named","name":"Promise","arguments":[{"kind":"dynamic"}]}, properties=buttonIndex,cancelled,checkboxChecked)
 
 ### `@flighthq/displayobject`
 
@@ -189,10 +179,9 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 ### `@flighthq/displayobject-canvas`
 
-- **package** `upstream/packages/displayobject-canvas/src`: Generated crate is missing 41 of 94 upstream exports; re-export or declaration synthesis is required.
+- **package** `upstream/packages/displayobject-canvas/src`: Generated crate is missing 38 of 94 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/displayobject-canvas/src/canvasBitmap.ts`: drawCanvasBitmap: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"state"},"optional":false}
 - **emission** `upstream/packages/displayobject-canvas/src/canvasDisplayObject.ts`: renderCanvasDisplayObject: entity runtime field children is unavailable on static receiver DisplayObjectRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
-- **emission** `upstream/packages/displayobject-canvas/src/canvasImageSource.ts`: resolveCanvasImageSource: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=element,version)
 - **emission** `upstream/packages/displayobject-canvas/src/canvasParticleEmitter.ts`: drawCanvasParticleEmitter: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"state"},"optional":false}
 - **emission** `upstream/packages/displayobject-canvas/src/canvasQuadBatch.ts`: drawCanvasQuadBatch: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"state"},"optional":false}
 - **emission** `upstream/packages/displayobject-canvas/src/canvasRenderState.ts`: createCanvasRenderState: EntityRuntimeKey storage requires an aggregate native entity runtime representation; refusing to erase observable runtime state
@@ -214,13 +203,9 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 ### `@flighthq/displayobject-wgpu`
 
-- **package** `upstream/packages/displayobject-wgpu/src`: Generated crate is missing 27 of 95 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuClipContours.ts`: ensureClipContourPipelines: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=arrayStride,attributes)
+- **package** `upstream/packages/displayobject-wgpu/src`: Generated crate is missing 12 of 95 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/displayobject-wgpu/src/wgpuDisplayObject.ts`: renderWgpuDisplayObject: entity runtime field children is unavailable on static receiver DisplayObjectRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuRenderStats.ts`: ensureWgpuRenderStatsMutable: object literal requires an inferred structural type (target={"arguments":[{"arguments":[],"kind":"named","name":"WgpuRenderStats"}],"kind":"named","name":"Mutable"}, properties=batchFlushCount,drawCallCount,instanceCount,textureUploadCount)
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuShapeMesh.ts`: ensureShapeMeshPipeline: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=arrayStride,attributes)
 - **emission** `upstream/packages/displayobject-wgpu/src/wgpuSprite.ts`: renderWgpuSprite: entity runtime field children is unavailable on static receiver DisplayObjectRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuSpriteBatch.ts`: NORMAL_BLEND: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=color,alpha)
 - **emission** `upstream/packages/displayobject-wgpu/src/wgpuVelocity.ts`: defaultWgpuDisplayObjectVelocityWriter: upstream/packages/displayobject-wgpu/src/wgpuVelocity.ts: cannot infer return type for defaultWgpuDisplayObjectVelocityWriter
 
 ### `@flighthq/effects-canvas`
@@ -269,10 +254,10 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 ### `@flighthq/effects-gl`
 
 - **package** `upstream/packages/effects-gl/src`: Generated crate is missing 104 of 135 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/effects-gl/src/glBevelEffect.ts`: applyBevelEffectToGl: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)
+- **emission** `upstream/packages/effects-gl/src/glBevelEffect.ts`: defaultGlBevelEffectRunner: upstream/packages/effects-gl/src/glBevelEffect.ts: cannot infer return type for defaultGlBevelEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glBlendEffect.ts`: defaultGlBlendEffectRunner: upstream/packages/effects-gl/src/glBlendEffect.ts: cannot infer return type for defaultGlBlendEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glBloomEffect.ts`: applyBloomEffectToGl: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY)
-- **emission** `upstream/packages/effects-gl/src/glBlurEffect.ts`: applyBlurEffectToGl: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY)
+- **emission** `upstream/packages/effects-gl/src/glBloomEffect.ts`: defaultGlBloomEffectRunner: upstream/packages/effects-gl/src/glBloomEffect.ts: cannot infer return type for defaultGlBloomEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glBlurEffect.ts`: defaultGlBlurEffectRunner: upstream/packages/effects-gl/src/glBlurEffect.ts: cannot infer return type for defaultGlBlurEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glBokehDepthOfFieldEffect.ts`: defaultGlBokehDepthOfFieldEffectRunner: upstream/packages/effects-gl/src/glBokehDepthOfFieldEffect.ts: cannot infer return type for defaultGlBokehDepthOfFieldEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glCameraMotionBlurEffect.ts`: defaultGlCameraMotionBlurEffectRunner: upstream/packages/effects-gl/src/glCameraMotionBlurEffect.ts: cannot infer return type for defaultGlCameraMotionBlurEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glChromaticAberrationEffect.ts`: defaultGlChromaticAberrationEffectRunner: upstream/packages/effects-gl/src/glChromaticAberrationEffect.ts: cannot infer return type for defaultGlChromaticAberrationEffectRunner
@@ -283,23 +268,23 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **emission** `upstream/packages/effects-gl/src/glDirectionalBlurEffect.ts`: defaultGlDirectionalBlurEffectRunner: upstream/packages/effects-gl/src/glDirectionalBlurEffect.ts: cannot infer return type for defaultGlDirectionalBlurEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glDisplacementEffect.ts`: defaultGlDisplacementEffectRunner: upstream/packages/effects-gl/src/glDisplacementEffect.ts: cannot infer return type for defaultGlDisplacementEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glDitherEffect.ts`: defaultGlDitherEffectRunner: upstream/packages/effects-gl/src/glDitherEffect.ts: cannot infer return type for defaultGlDitherEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glDropShadowEffect.ts`: applyDropShadowEffectToGl: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)
+- **emission** `upstream/packages/effects-gl/src/glDropShadowEffect.ts`: defaultGlDropShadowEffectRunner: upstream/packages/effects-gl/src/glDropShadowEffect.ts: cannot infer return type for defaultGlDropShadowEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glFilmGrainEffect.ts`: defaultGlFilmGrainEffectRunner: upstream/packages/effects-gl/src/glFilmGrainEffect.ts: cannot infer return type for defaultGlFilmGrainEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glFxaaEffect.ts`: defaultGlFxaaEffectRunner: upstream/packages/effects-gl/src/glFxaaEffect.ts: cannot infer return type for defaultGlFxaaEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glGlitchEffect.ts`: defaultGlGlitchEffectRunner: upstream/packages/effects-gl/src/glGlitchEffect.ts: cannot infer return type for defaultGlGlitchEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glGodRaysEffect.ts`: defaultGlGodRaysEffectRunner: upstream/packages/effects-gl/src/glGodRaysEffect.ts: cannot infer return type for defaultGlGodRaysEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glGradientBevelEffect.ts`: applyGradientBevelEffectToGl: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)
-- **emission** `upstream/packages/effects-gl/src/glGradientGlowEffect.ts`: applyGradientGlowEffectToGl: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)
+- **emission** `upstream/packages/effects-gl/src/glGradientBevelEffect.ts`: defaultGlGradientBevelEffectRunner: upstream/packages/effects-gl/src/glGradientBevelEffect.ts: cannot infer return type for defaultGlGradientBevelEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glGradientGlowEffect.ts`: defaultGlGradientGlowEffectRunner: upstream/packages/effects-gl/src/glGradientGlowEffect.ts: cannot infer return type for defaultGlGradientGlowEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glHalftoneEffect.ts`: defaultGlHalftoneEffectRunner: upstream/packages/effects-gl/src/glHalftoneEffect.ts: cannot infer return type for defaultGlHalftoneEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glInnerGlowEffect.ts`: applyInnerGlowEffectToGl: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,edgeColor,passes)
-- **emission** `upstream/packages/effects-gl/src/glInnerShadowEffect.ts`: applyInnerShadowEffectToGl: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,edgeColor,passes)
+- **emission** `upstream/packages/effects-gl/src/glInnerGlowEffect.ts`: defaultGlInnerGlowEffectRunner: upstream/packages/effects-gl/src/glInnerGlowEffect.ts: cannot infer return type for defaultGlInnerGlowEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glInnerShadowEffect.ts`: defaultGlInnerShadowEffectRunner: upstream/packages/effects-gl/src/glInnerShadowEffect.ts: cannot infer return type for defaultGlInnerShadowEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glKuwaharaEffect.ts`: defaultGlKuwaharaEffectRunner: upstream/packages/effects-gl/src/glKuwaharaEffect.ts: cannot infer return type for defaultGlKuwaharaEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glLensDirtEffect.ts`: defaultGlLensDirtEffectRunner: upstream/packages/effects-gl/src/glLensDirtEffect.ts: cannot infer return type for defaultGlLensDirtEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glLensDistortionEffect.ts`: defaultGlLensDistortionEffectRunner: upstream/packages/effects-gl/src/glLensDistortionEffect.ts: cannot infer return type for defaultGlLensDistortionEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glLensFlareEffect.ts`: defaultGlLensFlareEffectRunner: upstream/packages/effects-gl/src/glLensFlareEffect.ts: cannot infer return type for defaultGlLensFlareEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glMedianEffect.ts`: defaultGlMedianEffectRunner: upstream/packages/effects-gl/src/glMedianEffect.ts: cannot infer return type for defaultGlMedianEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glMotionBlurEffect.ts`: defaultGlMotionBlurEffectRunner: upstream/packages/effects-gl/src/glMotionBlurEffect.ts: cannot infer return type for defaultGlMotionBlurEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glOuterGlowEffect.ts`: applyOuterGlowEffectToGl: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)
+- **emission** `upstream/packages/effects-gl/src/glOuterGlowEffect.ts`: defaultGlOuterGlowEffectRunner: upstream/packages/effects-gl/src/glOuterGlowEffect.ts: cannot infer return type for defaultGlOuterGlowEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glOutlineEffect.ts`: defaultGlOutlineEffectRunner: upstream/packages/effects-gl/src/glOutlineEffect.ts: cannot infer return type for defaultGlOutlineEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glPixelateEffect.ts`: defaultGlPixelateEffectRunner: upstream/packages/effects-gl/src/glPixelateEffect.ts: cannot infer return type for defaultGlPixelateEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glPosterizeEffect.ts`: defaultGlPosterizeEffectRunner: upstream/packages/effects-gl/src/glPosterizeEffect.ts: cannot infer return type for defaultGlPosterizeEffectRunner
@@ -319,37 +304,35 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 ### `@flighthq/effects-wgpu`
 
-- **package** `upstream/packages/effects-wgpu/src`: Generated crate is missing 102 of 128 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/effects-wgpu/src/wgpuBevelEffect.ts`: applyBevelEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)
-- **emission** `upstream/packages/effects-wgpu/src/wgpuBloomEffect.ts`: applyBloomEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY)
-- **emission** `upstream/packages/effects-wgpu/src/wgpuBlurEffect.ts`: applyBlurEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY)
+- **package** `upstream/packages/effects-wgpu/src`: Generated crate is missing 91 of 128 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/effects-wgpu/src/wgpuBevelEffect.ts`: defaultWgpuBevelEffectRunner: upstream/packages/effects-wgpu/src/wgpuBevelEffect.ts: cannot infer return type for defaultWgpuBevelEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuBloomEffect.ts`: defaultWgpuBloomEffectRunner: upstream/packages/effects-wgpu/src/wgpuBloomEffect.ts: cannot infer return type for defaultWgpuBloomEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuBlurEffect.ts`: defaultWgpuBlurEffectRunner: upstream/packages/effects-wgpu/src/wgpuBlurEffect.ts: cannot infer return type for defaultWgpuBlurEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuBokehDepthOfFieldEffect.ts`: defaultWgpuBokehDepthOfFieldEffectRunner: upstream/packages/effects-wgpu/src/wgpuBokehDepthOfFieldEffect.ts: cannot infer return type for defaultWgpuBokehDepthOfFieldEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuCameraMotionBlurEffect.ts`: defaultWgpuCameraMotionBlurEffectRunner: upstream/packages/effects-wgpu/src/wgpuCameraMotionBlurEffect.ts: cannot infer return type for defaultWgpuCameraMotionBlurEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuChromaticAberrationEffect.ts`: defaultWgpuChromaticAberrationEffectRunner: upstream/packages/effects-wgpu/src/wgpuChromaticAberrationEffect.ts: cannot infer return type for defaultWgpuChromaticAberrationEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuColorLutPass.ts`: REPLACE_BLEND: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=color,alpha)
 - **emission** `upstream/packages/effects-wgpu/src/wgpuConvolutionEffect.ts`: defaultWgpuConvolutionEffectRunner: upstream/packages/effects-wgpu/src/wgpuConvolutionEffect.ts: cannot infer return type for defaultWgpuConvolutionEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuCrtEffect.ts`: defaultWgpuCrtEffectRunner: upstream/packages/effects-wgpu/src/wgpuCrtEffect.ts: cannot infer return type for defaultWgpuCrtEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuDirectionalBlurEffect.ts`: defaultWgpuDirectionalBlurEffectRunner: upstream/packages/effects-wgpu/src/wgpuDirectionalBlurEffect.ts: cannot infer return type for defaultWgpuDirectionalBlurEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuDisplacementEffect.ts`: defaultWgpuDisplacementEffectRunner: upstream/packages/effects-wgpu/src/wgpuDisplacementEffect.ts: cannot infer return type for defaultWgpuDisplacementEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuDitherEffect.ts`: defaultWgpuDitherEffectRunner: upstream/packages/effects-wgpu/src/wgpuDitherEffect.ts: cannot infer return type for defaultWgpuDitherEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuDropShadowEffect.ts`: applyDropShadowEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)
-- **emission** `upstream/packages/effects-wgpu/src/wgpuEffectPass.ts`: PREMUL_BLEND: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=color,alpha)
+- **emission** `upstream/packages/effects-wgpu/src/wgpuDropShadowEffect.ts`: defaultWgpuDropShadowEffectRunner: upstream/packages/effects-wgpu/src/wgpuDropShadowEffect.ts: cannot infer return type for defaultWgpuDropShadowEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuFilmGrainEffect.ts`: defaultWgpuFilmGrainEffectRunner: upstream/packages/effects-wgpu/src/wgpuFilmGrainEffect.ts: cannot infer return type for defaultWgpuFilmGrainEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuFxaaEffect.ts`: defaultWgpuFxaaEffectRunner: upstream/packages/effects-wgpu/src/wgpuFxaaEffect.ts: cannot infer return type for defaultWgpuFxaaEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuGlitchEffect.ts`: defaultWgpuGlitchEffectRunner: upstream/packages/effects-wgpu/src/wgpuGlitchEffect.ts: cannot infer return type for defaultWgpuGlitchEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuGodRaysEffect.ts`: defaultWgpuGodRaysEffectRunner: upstream/packages/effects-wgpu/src/wgpuGodRaysEffect.ts: cannot infer return type for defaultWgpuGodRaysEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuGradientBevelEffect.ts`: applyGradientBevelEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)
-- **emission** `upstream/packages/effects-wgpu/src/wgpuGradientGlowEffect.ts`: applyGradientGlowEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)
+- **emission** `upstream/packages/effects-wgpu/src/wgpuGradientBevelEffect.ts`: defaultWgpuGradientBevelEffectRunner: upstream/packages/effects-wgpu/src/wgpuGradientBevelEffect.ts: cannot infer return type for defaultWgpuGradientBevelEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuGradientGlowEffect.ts`: defaultWgpuGradientGlowEffectRunner: upstream/packages/effects-wgpu/src/wgpuGradientGlowEffect.ts: cannot infer return type for defaultWgpuGradientGlowEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuHalftoneEffect.ts`: defaultWgpuHalftoneEffectRunner: upstream/packages/effects-wgpu/src/wgpuHalftoneEffect.ts: cannot infer return type for defaultWgpuHalftoneEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuInnerGlowEffect.ts`: applyInnerGlowEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,edgeColor,passes)
-- **emission** `upstream/packages/effects-wgpu/src/wgpuInnerShadowEffect.ts`: applyInnerShadowEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,edgeColor,passes)
+- **emission** `upstream/packages/effects-wgpu/src/wgpuInnerGlowEffect.ts`: defaultWgpuInnerGlowEffectRunner: upstream/packages/effects-wgpu/src/wgpuInnerGlowEffect.ts: cannot infer return type for defaultWgpuInnerGlowEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuInnerShadowEffect.ts`: defaultWgpuInnerShadowEffectRunner: upstream/packages/effects-wgpu/src/wgpuInnerShadowEffect.ts: cannot infer return type for defaultWgpuInnerShadowEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuKuwaharaEffect.ts`: defaultWgpuKuwaharaEffectRunner: upstream/packages/effects-wgpu/src/wgpuKuwaharaEffect.ts: cannot infer return type for defaultWgpuKuwaharaEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuLensDirtEffect.ts`: defaultWgpuLensDirtEffectRunner: upstream/packages/effects-wgpu/src/wgpuLensDirtEffect.ts: cannot infer return type for defaultWgpuLensDirtEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuLensDistortionEffect.ts`: defaultWgpuLensDistortionEffectRunner: upstream/packages/effects-wgpu/src/wgpuLensDistortionEffect.ts: cannot infer return type for defaultWgpuLensDistortionEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuLensFlareEffect.ts`: defaultWgpuLensFlareEffectRunner: upstream/packages/effects-wgpu/src/wgpuLensFlareEffect.ts: cannot infer return type for defaultWgpuLensFlareEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuMedianEffect.ts`: defaultWgpuMedianEffectRunner: upstream/packages/effects-wgpu/src/wgpuMedianEffect.ts: cannot infer return type for defaultWgpuMedianEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuMotionBlurEffect.ts`: defaultWgpuMotionBlurEffectRunner: upstream/packages/effects-wgpu/src/wgpuMotionBlurEffect.ts: cannot infer return type for defaultWgpuMotionBlurEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuOuterGlowEffect.ts`: applyOuterGlowEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)
+- **emission** `upstream/packages/effects-wgpu/src/wgpuOuterGlowEffect.ts`: defaultWgpuOuterGlowEffectRunner: upstream/packages/effects-wgpu/src/wgpuOuterGlowEffect.ts: cannot infer return type for defaultWgpuOuterGlowEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuOutlineEffect.ts`: defaultWgpuOutlineEffectRunner: upstream/packages/effects-wgpu/src/wgpuOutlineEffect.ts: cannot infer return type for defaultWgpuOutlineEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuPixelateEffect.ts`: defaultWgpuPixelateEffectRunner: upstream/packages/effects-wgpu/src/wgpuPixelateEffect.ts: cannot infer return type for defaultWgpuPixelateEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuPosterizeEffect.ts`: defaultWgpuPosterizeEffectRunner: upstream/packages/effects-wgpu/src/wgpuPosterizeEffect.ts: cannot infer return type for defaultWgpuPosterizeEffectRunner
@@ -400,8 +383,8 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **emission** `upstream/packages/intl/src/collator.ts`: getCollator: new-expression Rust lowering is not implemented: crate::host_value::<crate::OpaqueHostValue>("host.Collator")
 - **emission** `upstream/packages/intl/src/datetime.ts`: formatDateValue: new-expression Rust lowering is not implemented: crate::host_value::<crate::OpaqueHostValue>("host.DateTimeFormat")
 - **emission** `upstream/packages/intl/src/list.ts`: formatList: new-expression Rust lowering is not implemented: crate::host_value::<crate::OpaqueHostValue>("host.ListFormat")
-- **emission** `upstream/packages/intl/src/number.ts`: formatCompactNumber: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=notation,spread)
-- **emission** `upstream/packages/intl/src/plural.ts`: selectOrdinalCategory: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=type,spread)
+- **emission** `upstream/packages/intl/src/number.ts`: formatCompactNumber: object literal requires an inferred structural type (target=unknown, properties=notation,spread)
+- **emission** `upstream/packages/intl/src/plural.ts`: selectOrdinalCategory: object literal requires an inferred structural type (target=unknown, properties=type,spread)
 - **emission** `upstream/packages/intl/src/relativeTime.ts`: formatRelativeTime: new-expression Rust lowering is not implemented: crate::host_value::<crate::OpaqueHostValue>("host.RelativeTimeFormat")
 
 ### `@flighthq/ipc`
@@ -449,14 +432,12 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 ### `@flighthq/particles-formats`
 
-- **package** `upstream/packages/particles-formats/src`: Generated crate is missing 25 of 79 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/particles-formats/src/libgdxParse.ts`: sectionsToDocument: object literal requires an inferred structural type (target=unknown, properties=shape,edges,side)
+- **package** `upstream/packages/particles-formats/src`: Generated crate is missing 17 of 79 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/particles-formats/src/libgdxSerialize.ts`: documentToText: spread Rust lowering is not implemented
 - **emission** `upstream/packages/particles-formats/src/particleDesignerParse.ts`: num: typeof operand has no inferred Rust type: {"kind":"identifier","name":"v"}
-- **emission** `upstream/packages/particles-formats/src/spineParse.ts`: rawToDocument: object literal requires an inferred structural type (target={"kind":"primitive","name":"Float"}, properties=low,high)
 - **emission** `upstream/packages/particles-formats/src/spineSerialize.ts`: serializeSpineParticle: JSON.stringify requires a portable scalar or structural array
 - **emission** `upstream/packages/particles-formats/src/starlingPexParse.ts`: extractAttr: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
-- **emission** `upstream/packages/particles-formats/src/unitySerialize.ts`: configToDocument: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[{"name":"x","optional":false,"type":{"kind":"primitive","name":"Float"}},{"name":"y","optional":false,"type":{"kind":"primitive","name":"Float"}},{"name":"z","optional":false,"type":{"kind":"primitive","name":"Float"}}],"kind":"anonymous"}
+- **emission** `upstream/packages/particles-formats/src/unitySerialize.ts`: serializeUnityParticle: JSON.stringify requires a portable scalar or structural array
 
 ### `@flighthq/path-boolean`
 
@@ -482,19 +463,8 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 ### `@flighthq/render-gl`
 
-- **package** `upstream/packages/render-gl/src`: Generated crate is missing 18 of 75 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/render-gl/src/glDraw.ts`: bindGlVideoTexture: object literal requires an inferred structural type (target=unknown, properties=texture,uploadedFrameId)
-- **emission** `upstream/packages/render-gl/src/glRenderState.ts`: createGlRenderState: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=alpha,antialias,powerPreference,stencil,spread)
-
-### `@flighthq/render-wgpu`
-
-- **package** `upstream/packages/render-wgpu/src`: Generated crate is missing 36 of 68 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/render-wgpu/src/wgpuBackground.ts`: renderWgpuBackground: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=r,g,b,a)
-- **emission** `upstream/packages/render-wgpu/src/wgpuDraw.ts`: drawWgpuQuadWithTransform: object literal requires an inferred structural type (target=unknown, properties=alpha,transform2D)
-- **emission** `upstream/packages/render-wgpu/src/wgpuRenderState.ts`: getWgpuSampler: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=minFilter,magFilter,addressModeU,addressModeV)
-- **emission** `upstream/packages/render-wgpu/src/wgpuRenderTarget.ts`: beginWgpuRenderPassEncoder: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=r,g,b,a)
-- **emission** `upstream/packages/render-wgpu/src/wgpuShader.ts`: buildStencilFaceState: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=compare,passOp,failOp,depthFailOp)
-- **emission** `upstream/packages/render-wgpu/src/wgpuTestHelper.ts`: installWgpuConstants: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=MAP_READ,MAP_WRITE,COPY_SRC,COPY_DST,INDEX,VERTEX,UNIFORM,STORAGE,INDIRECT,QUERY_RESOLVE)
+- **package** `upstream/packages/render-gl/src`: Generated crate is missing 5 of 75 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/render-gl/src/glRenderState.ts`: createGlRenderState: object literal requires an inferred structural type (target=unknown, properties=alpha,antialias,powerPreference,stencil,spread)
 
 ### `@flighthq/scene`
 
@@ -507,12 +477,11 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 ### `@flighthq/scene-formats`
 
-- **package** `upstream/packages/scene-formats/src`: Generated crate is missing 9 of 15 upstream exports; re-export or declaration synthesis is required.
+- **package** `upstream/packages/scene-formats/src`: Generated crate is missing 8 of 15 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/scene-formats/src/awdParse.ts`: createSceneFromAwd: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
-- **emission** `upstream/packages/scene-formats/src/gltfParse.ts`: buildGltfAnimationClip: object literal requires an inferred structural type (target=unknown, properties=components,interpolation,quaternion,times,values)
+- **emission** `upstream/packages/scene-formats/src/gltfParse.ts`: readAccessor: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
 - **emission** `upstream/packages/scene-formats/src/gltfSchema.ts`: GltfNormalTextureInfo: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[{"name":"KHR_texture_transform","optional":true,"type":{"arguments":[],"kind":"named","name":"GltfTextureTransform"}}],"kind":"anonymous"}
 - **emission** `upstream/packages/scene-formats/src/md2Parse.ts`: createSceneFromMd2: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
-- **emission** `upstream/packages/scene-formats/src/md5AnimParse.ts`: buildAnimationClip: object literal requires an inferred structural type (target=unknown, properties=components,times,values)
 - **emission** `upstream/packages/scene-formats/src/shared.ts`: findSceneSkeletonJoints: spread Rust lowering is not implemented
 - **emission** `upstream/packages/scene-formats/src/threeDsParse.ts`: createSceneFrom3ds: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
 
@@ -520,29 +489,16 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 - **package** `upstream/packages/scene-gl/src`: Generated crate is missing 2 of 184 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/scene-gl/src/glParticleEmitter3D.ts`: collectParticleEmitter3DNodes: entity runtime field children is unavailable on static receiver NodeRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
-- **emission** `upstream/packages/scene-gl/src/glSceneTestHelper.ts`: makeFakeGl2: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=calls,ARRAY_BUFFER,ELEMENT_ARRAY_BUFFER,STATIC_DRAW,FLOAT,UNSIGNED_BYTE,UNSIGNED_SHORT,UNSIGNED_INT,TRIANGLES,TEXTURE0,TEXTURE1,TEXTURE_2D,VERTEX_SHADER,FRAGMENT_SHADER,COMPILE_STATUS,LINK_STATUS,ACTIVE_UNIFORMS,FLOAT_VEC2,FLOAT_VEC3,FLOAT_VEC4,FLOAT_MAT2,FLOAT_MAT3,FLOAT_MAT4,BLEND,CULL_FACE,BACK,DEPTH_TEST,LESS,ONE,ONE_MINUS_SRC_ALPHA,SRC_ALPHA,FUNC_ADD,FRAMEBUFFER,COLOR_BUFFER_BIT,DEPTH_BUFFER_BIT,COLOR,DEPTH_STENCIL,MAX_VERTEX_UNIFORM_VECTORS,RGBA32F,NEAREST,CLAMP_TO_EDGE,TEXTURE_MIN_FILTER,TEXTURE_MAG_FILTER,TEXTURE_WRAP_S,TEXTURE_WRAP_T,getParameter,createShader,shaderSource,compileShader,getShaderParameter,getShaderInfoLog,deleteShader,createProgram,attachShader,linkProgram,getProgramParameter,getActiveUniform,getProgramInfoLog,useProgram,getUniformLocation,createBuffer,bindBuffer,bufferData,createVertexArray,bindVertexArray,deleteBuffer,deleteFramebuffer,deleteProgram,deleteRenderbuffer,deleteTexture,deleteVertexArray,enableVertexAttribArray,getAttribLocation,vertexAttribPointer,vertexAttribIPointer,vertexAttrib4f,vertexAttribDivisor,bufferSubData,bindFramebuffer,blendEquation,blendFunc,clear,clearColor,clearDepth,clearBufferfv,clearBufferfi,cullFace,depthFunc,depthMask,flush,viewport,disable,enable,drawElements,drawElementsInstanced,drawArrays,activeTexture,bindTexture,createTexture,texParameteri,texImage2D,texSubImage2D,pixelStorei,uniform1i,uniform1f,uniform1fv,uniform2f,uniform2fv,uniform3f,uniform3fv,uniform4f,uniform4fv,uniformMatrix3fv,uniformMatrix4fv)
 
 ### `@flighthq/scene-resources`
 
-- **package** `upstream/packages/scene-resources/src`: Generated crate is missing 5 of 37 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/scene-resources/src/revealSceneResourcesOnResolve.ts`: revealSceneResourcesOnResolve: object literal requires an inferred structural type (target={"kind":"union","variants":[{"arguments":[{"arguments":[],"kind":"named","name":"T"}],"kind":"named","name":"NumericProps"},{"arguments":[],"kind":"named","name":"TweenOptions"}]}, properties=alpha)
+- **package** `upstream/packages/scene-resources/src`: Generated crate is missing 3 of 37 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/scene-resources/src/sceneResourceFetch.ts`: createWebSceneResourceFetch: await Rust lowering is not implemented
 
 ### `@flighthq/scene-wgpu`
 
-- **package** `upstream/packages/scene-wgpu/src`: Generated crate is missing 73 of 140 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/scene-wgpu/src/wgpuClassicPrelude.ts`: compileWgpuClassicPipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module,shadowBindGroupLayout)
-- **emission** `upstream/packages/scene-wgpu/src/wgpuDebugPrelude.ts`: compileWgpuDebugPipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module)
-- **emission** `upstream/packages/scene-wgpu/src/wgpuEnvironmentIblBake.ts`: BAKE_CLEAR: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=r,g,b,a)
-- **emission** `upstream/packages/scene-wgpu/src/wgpuMatcapPrelude.ts`: compileWgpuMatcapPipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module)
-- **emission** `upstream/packages/scene-wgpu/src/wgpuMeshPipeline.ts`: VERTEX_BUFFER_LAYOUTS: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=arrayStride,attributes)
-- **emission** `upstream/packages/scene-wgpu/src/wgpuParticleEmitter3D.ts`: wgpuParticleBlendState: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=operation,srcFactor,dstFactor)
-- **emission** `upstream/packages/scene-wgpu/src/wgpuPbrPipelineCache.ts`: compileWgpuPbrPipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module,pbrSampleBindGroupLayout)
-- **emission** `upstream/packages/scene-wgpu/src/wgpuSceneTestHelper.ts`: installWgpuConstants: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=MAP_READ,MAP_WRITE,COPY_SRC,COPY_DST,INDEX,VERTEX,UNIFORM,STORAGE,INDIRECT,QUERY_RESOLVE)
-- **emission** `upstream/packages/scene-wgpu/src/wgpuShadowMap.ts`: SHADOW_VERTEX_BUFFER_LAYOUTS: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=arrayStride,attributes)
-- **emission** `upstream/packages/scene-wgpu/src/wgpuToonPrelude.ts`: compileWgpuToonPipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module,shadowBindGroupLayout)
-- **emission** `upstream/packages/scene-wgpu/src/wgpuUnlitPrelude.ts`: compileWgpuUnlitPipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module)
-- **emission** `upstream/packages/scene-wgpu/src/wgpuWireframePrelude.ts`: compileWgpuWireframePipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module,topology)
+- **package** `upstream/packages/scene-wgpu/src`: Generated crate is missing 2 of 140 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/scene-wgpu/src/wgpuParticleEmitter3D.ts`: collectParticleEmitter3DNodes: entity runtime field children is unavailable on static receiver NodeRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
 
 ### `@flighthq/sdk`
 
@@ -553,26 +509,20 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **package** `upstream/packages/sensors/src`: Generated crate is missing 32 of 32 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/sensors/src/sensors.ts`: createWebSensorsBackend: await Rust lowering is not implemented
 
-### `@flighthq/shading`
-
-- **package** `upstream/packages/shading/src`: Generated crate is missing 1 of 37 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/shading/src/orderModifierStack.ts`: orderModifierStack: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=index,modifier)
-
 ### `@flighthq/shape`
 
-- **package** `upstream/packages/shape/src`: Generated crate is missing 11 of 42 upstream exports; re-export or declaration synthesis is required.
+- **package** `upstream/packages/shape/src`: Generated crate is missing 10 of 42 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/shape/src/shape.ts`: copyShapeCommands: spread Rust lowering is not implemented
-- **emission** `upstream/packages/shape/src/shapeHitTestBuiltins.ts`: enableShapeHitTesting: object literal requires an inferred structural type (target={"arguments":[{"arguments":[],"kind":"named","name":"K"}],"kind":"named","name":"ShapeHitTestCommand"}, properties=key,hitTest)
 
 ### `@flighthq/shape-formats`
 
 - **package** `upstream/packages/shape-formats/src`: Generated crate is missing 5 of 5 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/shape-formats/src/shapeJson.ts`: formatShapeJson: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=bitmap)
+- **emission** `upstream/packages/shape-formats/src/shapeJson.ts`: formatShapeJson: JSON.stringify requires a portable scalar or structural array
 
 ### `@flighthq/share`
 
 - **package** `upstream/packages/share/src`: Generated crate is missing 14 of 14 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/share/src/share.ts`: createWebShareBackend: object literal requires an inferred structural type (target={"kind":"named","name":"Promise","arguments":[{"kind":"dynamic"}]}, properties=completed,activityType,dismissed)
+- **emission** `upstream/packages/share/src/share.ts`: shareFileToDomFile: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
 
 ### `@flighthq/shortcut`
 
@@ -582,13 +532,13 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 ### `@flighthq/spritesheet-formats`
 
 - **package** `upstream/packages/spritesheet-formats/src`: Generated crate is missing 4 of 55 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/spritesheet-formats/src/asepriteSerialize.ts`: dataToMeta: object literal requires an inferred structural type (target={"kind":"primitive","name":"Void"}, properties=direction,from,name,to,spread)
-- **emission** `upstream/packages/spritesheet-formats/src/texturePackerSerialize.ts`: dataToMeta: object literal requires an inferred structural type (target={"kind":"primitive","name":"Void"}, properties=direction,from,name,to)
+- **emission** `upstream/packages/spritesheet-formats/src/asepriteSerialize.ts`: serializeAsepriteSpritesheet: JSON.stringify requires a portable scalar or structural array
+- **emission** `upstream/packages/spritesheet-formats/src/texturePackerSerialize.ts`: serializeTexturePackerSpritesheet: JSON.stringify requires a portable scalar or structural array
 
 ### `@flighthq/statusbar`
 
 - **package** `upstream/packages/statusbar/src`: Generated crate is missing 16 of 16 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/statusbar/src/statusbar.ts`: pushStatusBarStyleEntry: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[{"name":"handle","optional":false,"type":{"arguments":[],"kind":"named","name":"StatusBarStyleEntryHandle"}},{"name":"entry","optional":false,"type":{"arguments":[],"kind":"named","name":"StatusBarStyleEntry"}}],"kind":"anonymous"}
+- **emission** `upstream/packages/statusbar/src/statusbar.ts`: _styleStack: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[{"name":"handle","optional":false,"type":{"arguments":[],"kind":"named","name":"StatusBarStyleEntryHandle"}},{"name":"entry","optional":false,"type":{"arguments":[],"kind":"named","name":"StatusBarStyleEntry"}}],"kind":"anonymous"}
 
 ### `@flighthq/storage`
 
@@ -607,9 +557,8 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 ### `@flighthq/textshaper`
 
-- **package** `upstream/packages/textshaper/src`: Generated crate is missing 5 of 31 upstream exports; re-export or declaration synthesis is required.
+- **package** `upstream/packages/textshaper/src`: Generated crate is missing 3 of 31 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/textshaper/src/textShaper.ts`: setTextShaperBackend: optional call requires an inferred nullable function: {"kind":"identifier","name":"_textShaperBackendHook"}
-- **emission** `upstream/packages/textshaper/src/textShaperItemize.ts`: shapeTextRuns: object literal requires an inferred structural type (target=unknown, properties=spread,direction,script)
 
 ### `@flighthq/texture-formats`
 
@@ -618,24 +567,6 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 ### `@flighthq/tilemap-formats`
 
 - **emission** `upstream/packages/tilemap-formats/src/tiledJsonParse.ts`: boolField: typeof operand has no inferred Rust type: {"kind":"identifier","name":"value"}
-- **emission** `upstream/packages/tilemap-formats/src/tiledXmlParse.ts`: buildTiledLayerFromXml: object literal requires an inferred structural type (target={"arguments":[],"kind":"named","name":"TiledLayer"}, properties=spread,data,height,type,width)
-
-### `@flighthq/tray`
-
-- **package** `upstream/packages/tray/src`: Generated crate is missing 23 of 23 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/tray/src/tray.ts`: getTrayIcons: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=id)
-
-### `@flighthq/tween`
-
-- **package** `upstream/packages/tween/src`: Generated crate is missing 23 of 35 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/tween/src/colorTween.ts`: createColorTween: object literal requires an inferred structural type (target={"kind":"union","variants":[{"arguments":[{"arguments":[],"kind":"named","name":"T"}],"kind":"named","name":"NumericProps"},{"arguments":[],"kind":"named","name":"TweenOptions"}]}, properties=b,g,r)
-- **emission** `upstream/packages/tween/src/timer.ts`: createTweenTimer: object literal requires an inferred structural type (target={"kind":"union","variants":[{"arguments":[],"kind":"named","name":"T"},{"kind":"primitive","name":"Float"}]}, properties=)
-- **emission** `upstream/packages/tween/src/tween.ts`: makeTween: object literal requires an inferred structural type (target={"kind":"primitive","name":"Float"}, properties=change,key,start)
-
-### `@flighthq/updater`
-
-- **package** `upstream/packages/updater/src`: Generated crate is missing 23 of 23 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/updater/src/updater.ts`: attachAppUpdater: object literal requires an inferred structural type (target={"kind":"primitive","name":"Float"}, properties=spread,phase)
 
 ### `@flighthq/video`
 
@@ -809,6 +740,45 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **E0308** `generated/candidates/flighthq-clock/src/get_clock_parent.rs`: mismatched types
 - **E0308** `generated/candidates/flighthq-clock/src/is_clock_effectively_paused.rs`: mismatched types
 
+### `@flighthq/collision`
+
+- **E0609** `generated/candidates/flighthq-collision/src/point_containment.rs`: no field `x` on type `&CollisionShape`
+- **E0609** `generated/candidates/flighthq-collision/src/point_containment.rs`: no field `y` on type `&CollisionShape`
+- **E0609** `generated/candidates/flighthq-collision/src/point_containment.rs`: no field `radius` on type `&CollisionShape`
+- **E0609** `generated/candidates/flighthq-collision/src/point_containment.rs`: no field `radius` on type `&CollisionShape`
+- **E0609** `generated/candidates/flighthq-collision/src/point_containment.rs`: no field `min_x` on type `&CollisionShape`
+- **E0609** `generated/candidates/flighthq-collision/src/point_containment.rs`: no field `max_x` on type `&CollisionShape`
+- **E0609** `generated/candidates/flighthq-collision/src/point_containment.rs`: no field `min_y` on type `&CollisionShape`
+- **E0609** `generated/candidates/flighthq-collision/src/point_containment.rs`: no field `max_y` on type `&CollisionShape`
+- **E0609** `generated/candidates/flighthq-collision/src/point_containment.rs`: no field `rotation` on type `&CollisionShape`
+- **E0609** `generated/candidates/flighthq-collision/src/point_containment.rs`: no field `rotation` on type `&CollisionShape`
+- **E0609** `generated/candidates/flighthq-collision/src/point_containment.rs`: no field `x` on type `&CollisionShape`
+- **E0609** `generated/candidates/flighthq-collision/src/point_containment.rs`: no field `y` on type `&CollisionShape`
+- **E0609** `generated/candidates/flighthq-collision/src/point_containment.rs`: no field `half_w` on type `&CollisionShape`
+- **E0609** `generated/candidates/flighthq-collision/src/point_containment.rs`: no field `half_h` on type `&CollisionShape`
+- **E0609** `generated/candidates/flighthq-collision/src/point_containment.rs`: no field `points` on type `&CollisionShape`
+- **E0609** `generated/candidates/flighthq-collision/src/point_containment.rs`: no field `points` on type `&CollisionShape`
+- **E0609** `generated/candidates/flighthq-collision/src/point_containment.rs`: no field `x1` on type `&CollisionShape`
+- **E0609** `generated/candidates/flighthq-collision/src/point_containment.rs`: no field `x0` on type `&CollisionShape`
+- **E0609** `generated/candidates/flighthq-collision/src/point_containment.rs`: no field `y1` on type `&CollisionShape`
+- **E0609** `generated/candidates/flighthq-collision/src/point_containment.rs`: no field `y0` on type `&CollisionShape`
+- **E0609** `generated/candidates/flighthq-collision/src/point_containment.rs`: no field `x0` on type `&CollisionShape`
+- **E0609** `generated/candidates/flighthq-collision/src/point_containment.rs`: no field `y0` on type `&CollisionShape`
+- **E0609** `generated/candidates/flighthq-collision/src/point_containment.rs`: no field `x0` on type `&CollisionShape`
+- **E0609** `generated/candidates/flighthq-collision/src/point_containment.rs`: no field `y0` on type `&CollisionShape`
+- **E0609** `generated/candidates/flighthq-collision/src/point_containment.rs`: no field `x` on type `&CollisionShape`
+- **E0609** `generated/candidates/flighthq-collision/src/point_containment.rs`: no field `y` on type `&CollisionShape`
+- **E0308** `generated/candidates/flighthq-collision/src/test_collision.rs`: arguments to this function are incorrect
+- **E0308** `generated/candidates/flighthq-collision/src/test_collision.rs`: arguments to this function are incorrect
+- **E0308** `generated/candidates/flighthq-collision/src/test_collision.rs`: arguments to this function are incorrect
+- **E0308** `generated/candidates/flighthq-collision/src/test_collision.rs`: arguments to this function are incorrect
+- **E0308** `generated/candidates/flighthq-collision/src/test_collision.rs`: arguments to this function are incorrect
+- **E0308** `generated/candidates/flighthq-collision/src/test_collision.rs`: arguments to this function are incorrect
+- **E0308** `generated/candidates/flighthq-collision/src/test_collision.rs`: arguments to this function are incorrect
+- **E0308** `generated/candidates/flighthq-collision/src/test_collision.rs`: arguments to this function are incorrect
+- **E0308** `generated/candidates/flighthq-collision/src/test_collision.rs`: arguments to this function are incorrect
+- **E0308** `generated/candidates/flighthq-collision/src/test_collision.rs`: arguments to this function are incorrect
+
 ### `@flighthq/connectivity`
 
 - **E0308** `generated/candidates/flighthq-connectivity/src/connectivity.rs`: mismatched types
@@ -821,6 +791,49 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **E0308** `generated/candidates/flighthq-connectivity/src/connectivity.rs`: mismatched types
 - **E0308** `generated/candidates/flighthq-connectivity/src/connectivity.rs`: mismatched types
 - **E0308** `generated/candidates/flighthq-connectivity/src/connectivity.rs`: mismatched types
+
+### `@flighthq/dialog`
+
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0599** `generated/candidates/flighthq-dialog/src/dialog.rs`: no method named `is_none` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-dialog/src/dialog.rs`: no method named `iter` found for enum `OpaqueHostValue` in the current scope
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
+- **E0277** `generated/candidates/flighthq-dialog/src/dialog.rs`: `OpaqueHostValue` doesn't implement `std::fmt::Display`
+- **E0308** `<rustc>/library/alloc/src/macros.rs`: mismatched types
+- **E0070** `generated/candidates/flighthq-dialog/src/dialog.rs`: invalid left-hand side of assignment
+- **E0070** `generated/candidates/flighthq-dialog/src/dialog.rs`: invalid left-hand side of assignment
+- **E0609** `generated/candidates/flighthq-dialog/src/dialog.rs`: no field `length` on type `()`
+- **E0599** `generated/candidates/flighthq-dialog/src/dialog.rs`: no method named `is_none` found for enum `OpaqueHostValue` in the current scope
+- **E0599** `generated/candidates/flighthq-dialog/src/dialog.rs`: no method named `iter` found for enum `OpaqueHostValue` in the current scope
+- **E0615** `generated/candidates/flighthq-dialog/src/dialog.rs`: attempted to take value of method `join` on type `Vec<std::string::String>`
+- **E0277** `generated/candidates/flighthq-dialog/src/dialog.rs`: can't compare `OpaqueHostValue` with `std::string::String`
+- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
 
 ### `@flighthq/effects`
 
@@ -1443,6 +1456,30 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **E0070** `generated/candidates/flighthq-protocol/src/protocol.rs`: invalid left-hand side of assignment
 - **E0308** `generated/candidates/flighthq-protocol/src/protocol.rs`: mismatched types
 
+### `@flighthq/shading`
+
+- **E0425** `generated/candidates/flighthq-shading/src/create_emissive_modifier.rs`: cannot find type `EmissiveModifierFacing` in this scope
+- **E0425** `generated/candidates/flighthq-shading/src/create_fog_modifier.rs`: cannot find type `FogModifierMode` in this scope
+- **E0422** `generated/candidates/flighthq-shading/src/order_modifier_stack.rs`: cannot find struct, variant or union type `ClosureSynthesizedRecord2984407717` in this scope
+- **E0425** `generated/candidates/flighthq-shading/src/order_modifier_stack.rs`: cannot find type `ModifierSlot` in this scope
+- **E0425** `generated/candidates/flighthq-shading/src/order_modifier_stack.rs`: cannot find type `ModifierSlot` in this scope
+- **E0425** `generated/candidates/flighthq-shading/src/order_modifier_stack.rs`: cannot find type `ModifierSlot` in this scope
+- **E0425** `generated/candidates/flighthq-shading/src/order_modifier_stack.rs`: cannot find type `ModifierSlot` in this scope
+- **E0063** `generated/candidates/flighthq-shading/src/create_shaded_material.rs`: missing fields `alpha_cutoff`, `alpha_mode`, `alpha_type` and 14 other fields in initializer of `ShadedMaterial`
+- **E0308** `<rustc>/library/alloc/src/macros.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-shading/src/get_modifier_define_key.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-shading/src/get_modifier_define_key.rs`: mismatched types
+- **E0593** `generated/candidates/flighthq-shading/src/order_modifier_stack.rs`: closure is expected to take 1 argument, but it takes 2 arguments
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `map` on type `Modifier`
+- **E0368** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: binary assignment operation `+=` cannot be applied to type `&str`
+- **E0308** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: mismatched types
+- **E0368** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: binary assignment operation `+=` cannot be applied to type `&str`
+- **E0308** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: mismatched types
+
 ### `@flighthq/shell`
 
 - **E0308** `<rustc>/library/alloc/src/macros.rs`: mismatched types
@@ -1520,6 +1557,7 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **E0609** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no field `includes` on type `&Vec<std::string::String>`
 - **E0599** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no method named `is_some` found for enum `OpaqueHostValue` in the current scope
 - **E0308** `<rustc>/library/alloc/src/macros.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: mismatched types
 - **E0599** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no method named `is_none` found for enum `OpaqueHostValue` in the current scope
 - **E0599** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: no method named `is_none` found for enum `OpaqueHostValue` in the current scope
 - **E0599** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: no method named `is_none` found for type parameter `T` in the current scope
@@ -1588,6 +1626,36 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **E0308** `generated/candidates/flighthq-timeline/src/timeline.rs`: mismatched types
 - **E0308** `generated/candidates/flighthq-timeline/src/timeline.rs`: mismatched types
 - **E0596** `generated/candidates/flighthq-timeline/src/timeline.rs`: cannot borrow `timeline.frame_scripts` as mutable, as it is behind a `&` reference
+
+### `@flighthq/tray`
+
+- **E0308** `generated/candidates/flighthq-tray/src/tray.rs`: mismatched types
+- **E0277** `generated/candidates/flighthq-tray/src/tray.rs`: a value of type `Vec<TrayIcon>` cannot be built from an iterator over elements of type `OpaqueHostValue`
+
+### `@flighthq/updater`
+
+- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
 
 ### `@flighthq/xml`
 

@@ -780,7 +780,7 @@ fn build_groups(
             }
             (*range_index.lock().unwrap()) = saved_range_index;
             (*format_range.lock().unwrap()) = (*format_range.lock().unwrap()).clone();
-            (*current_format.lock().unwrap()) = saved_format;
+            (*current_format.lock().unwrap()) = (saved_format).clone();
             return BuildGroupsRecord1 {
                 __flight_identity: std::sync::Arc::new(()),
                 positions: (all_positions).clone(),

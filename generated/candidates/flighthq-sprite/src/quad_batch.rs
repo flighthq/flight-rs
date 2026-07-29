@@ -2591,8 +2591,8 @@ impl PartialEq for QuadBatchWithSignals {
 struct QuadTransformStride {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub vector2: f64,
     pub matrix3x2: f64,
+    pub vector2: f64,
 }
 impl PartialEq for QuadTransformStride {
     fn eq(&self, other: &Self) -> bool {

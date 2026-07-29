@@ -488,7 +488,10 @@ function materializeAutomaticCandidates(
   const packageByName = new Map(packages.map((item) => [item.package, item]));
   const attemptByPackage = new Map(attempts.map((item) => [item.report.package, item]));
   const dependencyReady = (item: AutomaticPackageReport, visiting: ReadonlySet<string> = new Set()): boolean => {
-    if (item.fullyPromotedTarget) return true;
+    // Promoted crates and automatic candidates intentionally use separate crate graphs.
+    // Crossing that boundary can introduce two path sources with the same Cargo package
+    // identity, so keep the automatic package dependency-blocked until those graphs unify.
+    if (item.fullyPromotedTarget) return false;
     if (item.status !== 'emittable') return false;
     if (visiting.has(item.package)) return true;
     const next = new Set([...visiting, item.package]);
@@ -508,8 +511,11 @@ function materializeAutomaticCandidates(
         ? []
         : [
             {
-              candidateStatus:
-                resolved.status === 'emittable' ? ('dependency-blocked' as const) : resolved.candidate.status,
+              candidateStatus: resolved.fullyPromotedTarget
+                ? resolved.candidate.status
+                : resolved.status === 'emittable'
+                  ? ('dependency-blocked' as const)
+                  : resolved.candidate.status,
               package: resolved.package,
               status: resolved.status,
             },

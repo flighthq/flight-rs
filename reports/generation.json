@@ -3153,26 +3153,193 @@
     {
       "apiExports": 19,
       "attemptedSources": 6,
-      "blockers": [
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:b33aadc16e83dc94a5c1696920e5146ead05120ad2218a97cad1b7fe06635f25",
-          "reason": "Generated crate is missing 10 of 19 upstream exports; re-export or declaration synthesis is required.",
-          "source": "upstream/packages/collision/src",
-          "stage": "package"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:b2b0b03c222039c5ec5e90543a4862039a7381a9ddc1c9dcbf643f5b19537b19",
-          "reason": "minOverlapAxis: cannot infer mutable top-level value minOverlapAxis",
-          "source": "upstream/packages/collision/src/shapeCollision.ts",
-          "stage": "emission"
-        }
-      ],
+      "blockers": [],
       "candidate": {
-        "compileDiagnostics": [],
-        "status": "source-blocked",
-        "syntaxCheckedSources": 0,
+        "compileDiagnostics": [
+          {
+            "code": "E0609",
+            "message": "no field `x` on type `&CollisionShape`",
+            "source": "generated/candidates/flighthq-collision/src/point_containment.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `y` on type `&CollisionShape`",
+            "source": "generated/candidates/flighthq-collision/src/point_containment.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `radius` on type `&CollisionShape`",
+            "source": "generated/candidates/flighthq-collision/src/point_containment.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `radius` on type `&CollisionShape`",
+            "source": "generated/candidates/flighthq-collision/src/point_containment.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `min_x` on type `&CollisionShape`",
+            "source": "generated/candidates/flighthq-collision/src/point_containment.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `max_x` on type `&CollisionShape`",
+            "source": "generated/candidates/flighthq-collision/src/point_containment.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `min_y` on type `&CollisionShape`",
+            "source": "generated/candidates/flighthq-collision/src/point_containment.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `max_y` on type `&CollisionShape`",
+            "source": "generated/candidates/flighthq-collision/src/point_containment.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `rotation` on type `&CollisionShape`",
+            "source": "generated/candidates/flighthq-collision/src/point_containment.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `rotation` on type `&CollisionShape`",
+            "source": "generated/candidates/flighthq-collision/src/point_containment.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `x` on type `&CollisionShape`",
+            "source": "generated/candidates/flighthq-collision/src/point_containment.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `y` on type `&CollisionShape`",
+            "source": "generated/candidates/flighthq-collision/src/point_containment.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `half_w` on type `&CollisionShape`",
+            "source": "generated/candidates/flighthq-collision/src/point_containment.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `half_h` on type `&CollisionShape`",
+            "source": "generated/candidates/flighthq-collision/src/point_containment.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `points` on type `&CollisionShape`",
+            "source": "generated/candidates/flighthq-collision/src/point_containment.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `points` on type `&CollisionShape`",
+            "source": "generated/candidates/flighthq-collision/src/point_containment.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `x1` on type `&CollisionShape`",
+            "source": "generated/candidates/flighthq-collision/src/point_containment.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `x0` on type `&CollisionShape`",
+            "source": "generated/candidates/flighthq-collision/src/point_containment.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `y1` on type `&CollisionShape`",
+            "source": "generated/candidates/flighthq-collision/src/point_containment.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `y0` on type `&CollisionShape`",
+            "source": "generated/candidates/flighthq-collision/src/point_containment.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `x0` on type `&CollisionShape`",
+            "source": "generated/candidates/flighthq-collision/src/point_containment.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `y0` on type `&CollisionShape`",
+            "source": "generated/candidates/flighthq-collision/src/point_containment.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `x0` on type `&CollisionShape`",
+            "source": "generated/candidates/flighthq-collision/src/point_containment.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `y0` on type `&CollisionShape`",
+            "source": "generated/candidates/flighthq-collision/src/point_containment.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `x` on type `&CollisionShape`",
+            "source": "generated/candidates/flighthq-collision/src/point_containment.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `y` on type `&CollisionShape`",
+            "source": "generated/candidates/flighthq-collision/src/point_containment.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "arguments to this function are incorrect",
+            "source": "generated/candidates/flighthq-collision/src/test_collision.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "arguments to this function are incorrect",
+            "source": "generated/candidates/flighthq-collision/src/test_collision.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "arguments to this function are incorrect",
+            "source": "generated/candidates/flighthq-collision/src/test_collision.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "arguments to this function are incorrect",
+            "source": "generated/candidates/flighthq-collision/src/test_collision.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "arguments to this function are incorrect",
+            "source": "generated/candidates/flighthq-collision/src/test_collision.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "arguments to this function are incorrect",
+            "source": "generated/candidates/flighthq-collision/src/test_collision.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "arguments to this function are incorrect",
+            "source": "generated/candidates/flighthq-collision/src/test_collision.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "arguments to this function are incorrect",
+            "source": "generated/candidates/flighthq-collision/src/test_collision.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "arguments to this function are incorrect",
+            "source": "generated/candidates/flighthq-collision/src/test_collision.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "arguments to this function are incorrect",
+            "source": "generated/candidates/flighthq-collision/src/test_collision.rs"
+          }
+        ],
+        "path": "generated/candidates/flighthq-collision",
+        "status": "compile-blocked",
+        "syntaxCheckedSources": 6,
         "unresolvedDependencies": []
       },
       "crate": "flighthq-collision",
@@ -3193,7 +3360,7 @@
           "declarationNames": [],
           "declarations": 0,
           "module": "_internal_index",
-          "outputSha256": "sha256:ab568de7cb26c857f838db2a215b07ccdd2e3293a0d6fcacf51f0fe1553a377c",
+          "outputSha256": "sha256:bcd8aec829e5d83210bf16fe74f0995257d045651b2f04cf2fea05a75d9a1219",
           "source": "upstream/packages/collision/src/index.ts",
           "usesOpaqueHostValues": false
         },
@@ -3204,7 +3371,7 @@
           ],
           "declarations": 2,
           "module": "manifold",
-          "outputSha256": "sha256:a614ab90d3e88cefd089830de90b96a0b6d5ccf39ed4cb66f7b4a00118d13354",
+          "outputSha256": "sha256:449aea1d330c5694901b12a492df9f45d4efc2401cc8cf51d851d8230b08c595",
           "source": "upstream/packages/collision/src/manifold.ts",
           "usesOpaqueHostValues": false
         },
@@ -3216,7 +3383,7 @@
           ],
           "declarations": 3,
           "module": "point_containment",
-          "outputSha256": "sha256:3967492713993f39c7bbaddf1859953f8be6ed36ba8fbeacd6bc3603db66c304",
+          "outputSha256": "sha256:2e9e9b0f9e74587659aede2cce4af9948a1e6a20a9c55ddbcbb184287d4bb374",
           "source": "upstream/packages/collision/src/pointContainment.ts",
           "usesOpaqueHostValues": false
         },
@@ -3236,8 +3403,40 @@
           ],
           "declarations": 11,
           "module": "segment_collision",
-          "outputSha256": "sha256:d944d04113fa093a9731553f987964f275eca435fdc12f305813fae20f20445c",
+          "outputSha256": "sha256:b37856b8c39039a850ac8a655013f0faad35ec4c3927131f64fbdbd46d25f23b",
           "source": "upstream/packages/collision/src/segmentCollision.ts",
+          "usesOpaqueHostValues": false
+        },
+        {
+          "declarationNames": [
+            "EPS",
+            "accumulatePolygonAxes",
+            "circleAabbOverlap",
+            "circlePolygonAxisOverlap",
+            "minOverlapAxis",
+            "polygonAxisOverlap",
+            "satCircleConvexOverlap",
+            "satConvexOverlap",
+            "scratchA",
+            "scratchAxis",
+            "scratchB",
+            "testAabbAabbCollision",
+            "testAabbObbCollision",
+            "testAabbPolygonCollision",
+            "testCircleAabbCollision",
+            "testCircleCircleCollision",
+            "testCircleObbCollision",
+            "testCirclePolygonCollision",
+            "testObbObbCollision",
+            "testObbPolygonCollision",
+            "testPolygonPolygonCollision",
+            "writeAabbVertices",
+            "writeObbVertices"
+          ],
+          "declarations": 23,
+          "module": "shape_collision",
+          "outputSha256": "sha256:a3410a836f104d8120da5269aabe64b0c0bcebb684a2f89a9d2ed00012aa0715",
+          "source": "upstream/packages/collision/src/shapeCollision.ts",
           "usesOpaqueHostValues": false
         },
         {
@@ -3247,7 +3446,7 @@
           ],
           "declarations": 2,
           "module": "test_collision",
-          "outputSha256": "sha256:5a378142e63c1f21dfd86ebf86125b6bd267b5bb9f4bc6c313389c2665add52e",
+          "outputSha256": "sha256:1a80ac7837780add27d754aec55893476ac29446c15c5dddcd2a0bdc5ec4ef00",
           "source": "upstream/packages/collision/src/testCollision.ts",
           "usesOpaqueHostValues": false
         }
@@ -3257,14 +3456,6 @@
         "clearCollisionManifold",
         "createCollisionManifold",
         "getCollisionShapeContainsPoint",
-        "testCollision",
-        "testSegmentAabbCollision",
-        "testSegmentCircleCollision",
-        "testSegmentObbCollision",
-        "testSegmentPolygonCollision",
-        "testSegmentSegmentCollision"
-      ],
-      "missingExports": [
         "testAabbAabbCollision",
         "testAabbObbCollision",
         "testAabbPolygonCollision",
@@ -3272,19 +3463,30 @@
         "testCircleCircleCollision",
         "testCircleObbCollision",
         "testCirclePolygonCollision",
+        "testCollision",
         "testObbObbCollision",
         "testObbPolygonCollision",
-        "testPolygonPolygonCollision"
+        "testPolygonPolygonCollision",
+        "testSegmentAabbCollision",
+        "testSegmentCircleCollision",
+        "testSegmentObbCollision",
+        "testSegmentPolygonCollision",
+        "testSegmentSegmentCollision"
       ],
+      "missingExports": [],
       "package": "@flighthq/collision",
       "promotedTarget": false,
       "requiredDependencies": [
+        {
+          "crate": "flighthq-geometry",
+          "package": "@flighthq/geometry"
+        },
         {
           "crate": "flighthq-types",
           "package": "@flighthq/types"
         }
       ],
-      "status": "blocked",
+      "status": "emittable",
       "transitiveDependents": 1
     },
     {
@@ -3815,26 +4017,213 @@
     {
       "apiExports": 15,
       "attemptedSources": 2,
-      "blockers": [
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:40ca39196691f5eda747c7a6f8091d8b1a84f64ead4f3ee9d9dc80038bc8e6cf",
-          "reason": "Generated crate is missing 15 of 15 upstream exports; re-export or declaration synthesis is required.",
-          "source": "upstream/packages/dialog/src",
-          "stage": "package"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:b7e593beaed5f0fc803ffdb1a5358e79f29323edf64392059561eca237893da2",
-          "reason": "createWebDialogBackend: object literal requires an inferred structural type (target={\"kind\":\"named\",\"name\":\"Promise\",\"arguments\":[{\"kind\":\"dynamic\"}]}, properties=buttonIndex,cancelled,checkboxChecked)",
-          "source": "upstream/packages/dialog/src/dialog.ts",
-          "stage": "emission"
-        }
-      ],
+      "blockers": [],
       "candidate": {
-        "compileDiagnostics": [],
-        "status": "source-blocked",
-        "syntaxCheckedSources": 0,
+        "compileDiagnostics": [
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "no method named `is_none` found for enum `OpaqueHostValue` in the current scope",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "no method named `iter` found for enum `OpaqueHostValue` in the current scope",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "`OpaqueHostValue` doesn't implement `std::fmt::Display`",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "<rustc>/library/alloc/src/macros.rs"
+          },
+          {
+            "code": "E0070",
+            "message": "invalid left-hand side of assignment",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0070",
+            "message": "invalid left-hand side of assignment",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `length` on type `()`",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "no method named `is_none` found for enum `OpaqueHostValue` in the current scope",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "no method named `iter` found for enum `OpaqueHostValue` in the current scope",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0615",
+            "message": "attempted to take value of method `join` on type `Vec<std::string::String>`",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "can't compare `OpaqueHostValue` with `std::string::String`",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
+          }
+        ],
+        "path": "generated/candidates/flighthq-dialog",
+        "status": "compile-blocked",
+        "syntaxCheckedSources": 2,
         "unresolvedDependencies": []
       },
       "crate": "flighthq-dialog",
@@ -3848,17 +4237,58 @@
       "disposition": "generated",
       "emittedSources": [
         {
+          "declarationNames": [
+            "FileSystemAccessDirectoryPickerOptions",
+            "FileSystemAccessOpenPickerOptions",
+            "FileSystemAccessSavePickerOptions",
+            "FileSystemDirectoryHandle",
+            "FileSystemFileHandle",
+            "FileSystemWritableFileStream",
+            "WindowWithFileSystemAccess",
+            "_backend",
+            "_fileSystemDirectoryHandleRegistry",
+            "_fileSystemHandleRegistry",
+            "buildAcceptAttribute",
+            "buildFileSystemAccessTypes",
+            "createWebDialogBackend",
+            "getDialogBackend",
+            "getWebDirectorySystemHandle",
+            "getWebFileSystemHandle",
+            "openDirectoryPickerAccessApi",
+            "openFileSystemAccessPicker",
+            "openWebDirectoryDialog",
+            "openWebFileDialog",
+            "saveWebFile",
+            "setDialogBackend",
+            "showConfirmDialog",
+            "showErrorBox",
+            "showErrorDialog",
+            "showInfoDialog",
+            "showMessageDialog",
+            "showOpenDirectoryDialog",
+            "showOpenFileDialog",
+            "showPromptDialog",
+            "showSaveFileDialog",
+            "showWarningDialog",
+            "toFileSystemAccessStartIn"
+          ],
+          "declarations": 33,
+          "module": "dialog",
+          "outputSha256": "sha256:85392221c93690c93d611759a8b7883558a21cf7c5f15bffa544fa1aab7f1e9f",
+          "source": "upstream/packages/dialog/src/dialog.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
           "declarationNames": [],
           "declarations": 0,
           "module": "_internal_index",
-          "outputSha256": "sha256:6e5ea294164f5129445cec250bb82fb1617966adb16bf7d1d1ff699eb8ca56ec",
+          "outputSha256": "sha256:f6ef0741f6b06bf4b530ae9b411676ecd880a62eea09d317c54f2f116d3bf2db",
           "source": "upstream/packages/dialog/src/index.ts",
           "usesOpaqueHostValues": false
         }
       ],
       "fullyPromotedTarget": false,
-      "generatedExports": [],
-      "missingExports": [
+      "generatedExports": [
         "createWebDialogBackend",
         "getDialogBackend",
         "getWebDirectorySystemHandle",
@@ -3875,10 +4305,16 @@
         "showSaveFileDialog",
         "showWarningDialog"
       ],
+      "missingExports": [],
       "package": "@flighthq/dialog",
       "promotedTarget": false,
-      "requiredDependencies": [],
-      "status": "blocked",
+      "requiredDependencies": [
+        {
+          "crate": "flighthq-types",
+          "package": "@flighthq/types"
+        }
+      ],
+      "status": "emittable",
       "transitiveDependents": 5
     },
     {
@@ -4116,8 +4552,8 @@
       "blockers": [
         {
           "diagnostics": [],
-          "fingerprint": "sha256:15c54f678aeba18dee65c09e3d3d30c68adf6ac4571f7a600db4b5ec343c1261",
-          "reason": "Generated crate is missing 41 of 94 upstream exports; re-export or declaration synthesis is required.",
+          "fingerprint": "sha256:1b794a247e667897c3efe7f3f34e1861c42ef977ecfdf4857bf51775a6eeaf7d",
+          "reason": "Generated crate is missing 38 of 94 upstream exports; re-export or declaration synthesis is required.",
           "source": "upstream/packages/displayobject-canvas/src",
           "stage": "package"
         },
@@ -4133,13 +4569,6 @@
           "fingerprint": "sha256:dc5f401e9c41d1c8b72db53ce5c5dd6755bd5aa5b5fdad0188271c7cc41bf40a",
           "reason": "renderCanvasDisplayObject: entity runtime field children is unavailable on static receiver DisplayObjectRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits",
           "source": "upstream/packages/displayobject-canvas/src/canvasDisplayObject.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:c7a672eb9a79d3baef7286fd869318c1cc4338d1bd42c92ce7de07463413c4e7",
-          "reason": "resolveCanvasImageSource: object literal requires an inferred structural type (target={\"kind\":\"dynamic\"}, properties=element,version)",
-          "source": "upstream/packages/displayobject-canvas/src/canvasImageSource.ts",
           "stage": "emission"
         },
         {
@@ -4314,7 +4743,7 @@
           ],
           "declarations": 15,
           "module": "canvas_cache",
-          "outputSha256": "sha256:0547b712c4b076d13e50b9c52187d392fc8278f9354a89e4632d285bdc97cf09",
+          "outputSha256": "sha256:47e6abf2946782ff899fcaea131b54e823ecef3b6e4f24539abc6085eac11e50",
           "source": "upstream/packages/displayobject-canvas/src/canvasCache.ts",
           "usesOpaqueHostValues": true
         },
@@ -4382,6 +4811,18 @@
           "module": "canvas_fill_pattern",
           "outputSha256": "sha256:e7a5aff08d830945245b07031f02e538a3306dfcdee9bc04a3e8fa2fc18ebda5",
           "source": "upstream/packages/displayobject-canvas/src/canvasFillPattern.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
+            "CanvasImageSourceKind",
+            "explainCanvasImageSource",
+            "resolveCanvasImageSource"
+          ],
+          "declarations": 3,
+          "module": "canvas_image_source",
+          "outputSha256": "sha256:9d143aed77417ed98b25acf8af18f618f764f3a02c0060eb22797161f607191f",
+          "source": "upstream/packages/displayobject-canvas/src/canvasImageSource.ts",
           "usesOpaqueHostValues": true
         },
         {
@@ -4456,7 +4897,7 @@
           ],
           "declarations": 19,
           "module": "canvas_shape_commands",
-          "outputSha256": "sha256:ec4518a1e7d34d67a82748b141a97d1ced6785067dc895b8dd32932ae2c5daae",
+          "outputSha256": "sha256:bc6ef3e47c5ae237984ee69200f62a9c713de5f29a87a416481726b7b277592e",
           "source": "upstream/packages/displayobject-canvas/src/canvasShapeCommands.ts",
           "usesOpaqueHostValues": true
         },
@@ -4488,7 +4929,7 @@
           ],
           "declarations": 10,
           "module": "canvas_text_input",
-          "outputSha256": "sha256:3720321a76f19469966f58ad5f54ecdeaab15bb76777d12a60d8a75bf3fdb741",
+          "outputSha256": "sha256:4c7035ca64d2f5d3a64014d6ffc6a8a94534b87b936bed966d7bc42106945b67",
           "source": "upstream/packages/displayobject-canvas/src/canvasTextInput.ts",
           "usesOpaqueHostValues": true
         },
@@ -4523,6 +4964,7 @@
       ],
       "fullyPromotedTarget": false,
       "generatedExports": [
+        "CanvasImageSourceKind",
         "applyCanvasBlendMode",
         "applyCanvasMaterial",
         "buildScale9Mapper",
@@ -4558,6 +5000,7 @@
         "enableCanvasRenderCache",
         "enableCanvasTextInput",
         "ensureCanvasRenderCacheTarget",
+        "explainCanvasImageSource",
         "getCanvasCssFilter",
         "getCanvasMaterialRenderer",
         "getCanvasRenderCacheTarget",
@@ -4573,12 +5016,12 @@
         "releaseCanvasRenderCache",
         "renderCanvasBackground",
         "resolveCanvasCssFilter",
+        "resolveCanvasImageSource",
         "resolveCanvasMaterialRenderer",
         "setCanvasCssFilter",
         "setCanvasTransform"
       ],
       "missingExports": [
-        "CanvasImageSourceKind",
         "CanvasTextInputOverlay",
         "beginCanvasRenderPass",
         "createCanvasRenderState",
@@ -4609,7 +5052,6 @@
         "drawCanvasTilemap",
         "drawCanvasVideo",
         "endCanvasRenderPass",
-        "explainCanvasImageSource",
         "getCanvasRenderStateRuntime",
         "mapCanvasScale9ShapeCommands",
         "registerCanvasTextInputOverlay",
@@ -4617,7 +5059,6 @@
         "renderCanvasShapeCommands",
         "renderCanvasSprite",
         "resizeCanvasRenderTarget",
-        "resolveCanvasImageSource",
         "setCanvasRenderTransform2D"
       ],
       "package": "@flighthq/displayobject-canvas",
@@ -4630,6 +5071,10 @@
         {
           "crate": "flighthq-geometry",
           "package": "@flighthq/geometry"
+        },
+        {
+          "crate": "flighthq-image",
+          "package": "@flighthq/image"
         },
         {
           "crate": "flighthq-node",
@@ -4931,9 +5376,9 @@
           ],
           "declarations": 5,
           "module": "gl_bitmap",
-          "outputSha256": "sha256:b9571276dfc82df98cc7a2267dc9fdb5987b7acfaa6b30729fd8564af6f068a9",
+          "outputSha256": "sha256:9a8d222a1d2388926533fc57172c61fbdc676bc7363bf9672fdd925295064870",
           "source": "upstream/packages/displayobject-gl/src/glBitmap.ts",
-          "usesOpaqueHostValues": false
+          "usesOpaqueHostValues": true
         },
         {
           "declarationNames": [
@@ -4954,7 +5399,7 @@
           ],
           "declarations": 14,
           "module": "gl_cache",
-          "outputSha256": "sha256:66c5cb0a4c1b3252f6a19ffdac25aaf4159a61c61c992d79dbc17c2488cc5ce6",
+          "outputSha256": "sha256:65b5fb849d87dc72598420fbdacf6b8ef3673a6da34a216563da34b18883ce46",
           "source": "upstream/packages/displayobject-gl/src/glCache.ts",
           "usesOpaqueHostValues": true
         },
@@ -5107,7 +5552,7 @@
           ],
           "declarations": 14,
           "module": "gl_rich_text",
-          "outputSha256": "sha256:675e8aff538f33a4e6306260f3c5463e441722258437035b45979ef3980fe763",
+          "outputSha256": "sha256:c8460bbb8c769d95d54c9eba9e7781f5cbaa73cba0007b706d9be7adab21270c",
           "source": "upstream/packages/displayobject-gl/src/glRichText.ts",
           "usesOpaqueHostValues": true
         },
@@ -5137,7 +5582,7 @@
           ],
           "declarations": 10,
           "module": "gl_scale9_shape",
-          "outputSha256": "sha256:bb0884df8e1ad472807694dada28afc19596618afe5191e3af41099ca2975775",
+          "outputSha256": "sha256:132b48255781caf1192160ca975849c224c355f6068bd6551ab87d6f4b1eaa40",
           "source": "upstream/packages/displayobject-gl/src/glScale9Shape.ts",
           "usesOpaqueHostValues": true
         },
@@ -5230,7 +5675,7 @@
           ],
           "declarations": 6,
           "module": "gl_text_input",
-          "outputSha256": "sha256:3e82dda04b9fc0c9e591e0b4cb29b2d347c4863635e254267b535ad1fca2728b",
+          "outputSha256": "sha256:08d9c99e2280934a7db8df37a4b2bc18cf20b0ce118e3ef9ddf726116a79ce29",
           "source": "upstream/packages/displayobject-gl/src/glTextInput.ts",
           "usesOpaqueHostValues": true
         },
@@ -5272,7 +5717,7 @@
           ],
           "declarations": 5,
           "module": "gl_video",
-          "outputSha256": "sha256:d64849fe60e90834acb39aeefb10e6d633d979cbd25d0f7a64210296380b6604",
+          "outputSha256": "sha256:ac101d5d514167fa441400c9a8a71fed2e4dac37929341017c559d0e79fe97a6",
           "source": "upstream/packages/displayobject-gl/src/glVideo.ts",
           "usesOpaqueHostValues": true
         },
@@ -5464,17 +5909,10 @@
       "blockers": [
         {
           "diagnostics": [],
-          "fingerprint": "sha256:3fc71bc467504e0be3e9e344c8ef237245d74f78cef1d0270aa897a09e7744b8",
-          "reason": "Generated crate is missing 27 of 95 upstream exports; re-export or declaration synthesis is required.",
+          "fingerprint": "sha256:0ca760582f7ca6e0c4f6ca087d62d0fd0a76ba6511249930e630addebfb7d709",
+          "reason": "Generated crate is missing 12 of 95 upstream exports; re-export or declaration synthesis is required.",
           "source": "upstream/packages/displayobject-wgpu/src",
           "stage": "package"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:ed0423d302942f8bd4795ce3909882354bc8e993622850b40c3e151808d6d28e",
-          "reason": "ensureClipContourPipelines: object literal requires an inferred structural type (target={\"kind\":\"dynamic\"}, properties=arrayStride,attributes)",
-          "source": "upstream/packages/displayobject-wgpu/src/wgpuClipContours.ts",
-          "stage": "emission"
         },
         {
           "diagnostics": [],
@@ -5485,30 +5923,9 @@
         },
         {
           "diagnostics": [],
-          "fingerprint": "sha256:8ea89c7bdb29089a9cc982febea3cde8f53c384b4933e9906976da5f216daa8d",
-          "reason": "ensureWgpuRenderStatsMutable: object literal requires an inferred structural type (target={\"arguments\":[{\"arguments\":[],\"kind\":\"named\",\"name\":\"WgpuRenderStats\"}],\"kind\":\"named\",\"name\":\"Mutable\"}, properties=batchFlushCount,drawCallCount,instanceCount,textureUploadCount)",
-          "source": "upstream/packages/displayobject-wgpu/src/wgpuRenderStats.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:46c62af3ed1b1372a903a9fa569024d77c4c55838530dfdff96dbb6a3091092b",
-          "reason": "ensureShapeMeshPipeline: object literal requires an inferred structural type (target={\"kind\":\"dynamic\"}, properties=arrayStride,attributes)",
-          "source": "upstream/packages/displayobject-wgpu/src/wgpuShapeMesh.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
           "fingerprint": "sha256:0074c99d8a9632c55b06e5fae28cb3664bb962336a4ea7ed300cca0bfea1fa97",
           "reason": "renderWgpuSprite: entity runtime field children is unavailable on static receiver DisplayObjectRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits",
           "source": "upstream/packages/displayobject-wgpu/src/wgpuSprite.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:b18c65b863143b49ef2a906190a0fd7f70669f0d7b61c72c91eeb583ab7095c2",
-          "reason": "NORMAL_BLEND: object literal requires an inferred structural type (target={\"kind\":\"dynamic\"}, properties=color,alpha)",
-          "source": "upstream/packages/displayobject-wgpu/src/wgpuSpriteBatch.ts",
           "stage": "emission"
         },
         {
@@ -5657,7 +6074,7 @@
           ],
           "declarations": 16,
           "module": "wgpu_cache",
-          "outputSha256": "sha256:5f755114864da6b028b2c2e981006e282571b84e5840912eaba8a7198cbee87f",
+          "outputSha256": "sha256:6193fdf8739cc7beacefa3151b8d47852f6678a4fa3e6507b2b450d1d7b80afa",
           "source": "upstream/packages/displayobject-wgpu/src/wgpuCache.ts",
           "usesOpaqueHostValues": true
         },
@@ -5672,6 +6089,22 @@
           "outputSha256": "sha256:08b94d5df0c15541f98307c4adc9fed4cef3327ebea4cbbb655d1c6563e6c4e9",
           "source": "upstream/packages/displayobject-wgpu/src/wgpuClip.ts",
           "usesOpaqueHostValues": false
+        },
+        {
+          "declarationNames": [
+            "CLIP_UNIFORM_BYTES",
+            "CLIP_WGSL",
+            "createClipContourUniformBuffer",
+            "createClipContourVertexBuffer",
+            "ensureClipContourPipelines",
+            "popWgpuClipContours",
+            "pushWgpuClipContours"
+          ],
+          "declarations": 7,
+          "module": "wgpu_clip_contours",
+          "outputSha256": "sha256:8e011a199a3a7e54e428ddc5f4bc24c1d448a018257609bd1330c12a03e1db73",
+          "source": "upstream/packages/displayobject-wgpu/src/wgpuClipContours.ts",
+          "usesOpaqueHostValues": true
         },
         {
           "declarationNames": [
@@ -5773,9 +6206,25 @@
           ],
           "declarations": 2,
           "module": "wgpu_renderer_data",
-          "outputSha256": "sha256:8d36922124161a5b89be15cd7f09945aaf69033521b585bdf9fb23846b22cc09",
+          "outputSha256": "sha256:743f11e21bb887a1665ba56deaf9b6b3fe1757514ca1b4f98403027a8db378ce",
           "source": "upstream/packages/displayobject-wgpu/src/wgpuRendererData.ts",
           "usesOpaqueHostValues": false
+        },
+        {
+          "declarationNames": [
+            "Mutable",
+            "_stats",
+            "ensureWgpuRenderStatsMutable",
+            "getWgpuRenderStats",
+            "recordWgpuBatchFlush",
+            "recordWgpuTextureUpload",
+            "resetWgpuRenderStats"
+          ],
+          "declarations": 7,
+          "module": "wgpu_render_stats",
+          "outputSha256": "sha256:3633d4481fdc0a51cf741abce2251dc4b5b51ec730aa69e2d47a9c6293a13db6",
+          "source": "upstream/packages/displayobject-wgpu/src/wgpuRenderStats.ts",
+          "usesOpaqueHostValues": true
         },
         {
           "declarationNames": [
@@ -5825,7 +6274,7 @@
           ],
           "declarations": 9,
           "module": "wgpu_scale9_shape",
-          "outputSha256": "sha256:5a30b55749794832894d94146ca0338bef2d7b112cf34c7450c9bb5ad9288aa5",
+          "outputSha256": "sha256:f80caf8b64427ede68c411bbd9f7f896a56a0cec60ec8145159e1b285ca852b2",
           "source": "upstream/packages/displayobject-wgpu/src/wgpuScale9Shape.ts",
           "usesOpaqueHostValues": true
         },
@@ -5841,6 +6290,56 @@
           "module": "wgpu_shape",
           "outputSha256": "sha256:ddb63aa2e16af2bf811e81f447fc9e19d7fea4d43f9ef5cd93974ad9319208a7",
           "source": "upstream/packages/displayobject-wgpu/src/wgpuShape.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
+            "SHAPE_MESH_UNIFORM_BYTES",
+            "SHAPE_MESH_UNIFORM_FLOATS",
+            "SHAPE_MESH_WGSL",
+            "WgpuShapeMesh",
+            "_shapeMeshIndexScratch",
+            "_shapeMeshUniformScratch",
+            "drawWgpuShapeMeshes",
+            "ensureShapeMeshIndexBuffer",
+            "ensureShapeMeshPipeline",
+            "ensureShapeMeshUniform",
+            "ensureShapeMeshVertexBuffer",
+            "shapeMeshMatrix",
+            "writeShapeMeshIndices"
+          ],
+          "declarations": 13,
+          "module": "wgpu_shape_mesh",
+          "outputSha256": "sha256:4832456b31093e6d5feb0bcf1c6e6c061394504d8540f7e96de425ef6083d0cc",
+          "source": "upstream/packages/displayobject-wgpu/src/wgpuShapeMesh.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
+            "ADD_BLEND",
+            "NORMAL_BLEND",
+            "QUAD_BATCH_PRELUDE_WGSL",
+            "SPRITE_INSTANCE_FLOATS",
+            "SPRITE_INSTANCE_STRIDE",
+            "WgpuQuadBatchResources",
+            "_quadBatchResources",
+            "acquireWgpuSpriteBatchBufferSlot",
+            "createWgpuSpriteBatchBuffer",
+            "ensureWgpuQuadBatchResources",
+            "flushWgpuSpriteBatch",
+            "getWgpuQuadBatchPipeline",
+            "getWgpuQuadBatchPreludeWGSL",
+            "packWgpuSpriteBatchMaterialInstance",
+            "prepareWgpuSpriteBatchWrite",
+            "recordWgpuSpriteBatchColorTransform",
+            "resetWgpuSpriteBatch",
+            "resetWgpuSpriteBatchBufferPool",
+            "writeWgpuSpriteBatchUniforms"
+          ],
+          "declarations": 19,
+          "module": "wgpu_sprite_batch",
+          "outputSha256": "sha256:742ec8a530daa34c55490dc7fce7bfb2943df949e32bf220404af1916e54702a",
+          "source": "upstream/packages/displayobject-wgpu/src/wgpuSpriteBatch.ts",
           "usesOpaqueHostValues": true
         },
         {
@@ -5865,7 +6364,7 @@
           ],
           "declarations": 6,
           "module": "wgpu_text_input",
-          "outputSha256": "sha256:b32124e00ce14813e97fdfd3773b5fb312a12c0bb174ef7126e9fe9aa15e0858",
+          "outputSha256": "sha256:da51f2df82f474b21543a1d3bb5a5aa7901591f501ee5f8d97747e6a47bcdfc4",
           "source": "upstream/packages/displayobject-wgpu/src/wgpuTextInput.ts",
           "usesOpaqueHostValues": true
         },
@@ -5912,8 +6411,10 @@
       ],
       "fullyPromotedTarget": false,
       "generatedExports": [
+        "SPRITE_INSTANCE_FLOATS",
         "WgpuQuadBatchResources",
         "WgpuRichTextOverlay",
+        "WgpuShapeMesh",
         "areWgpuColorAdjustmentGuardsEnabled",
         "buildWgpuScale9Mapper",
         "createWgpuCacheState",
@@ -5957,6 +6458,7 @@
         "drawWgpuScale9Shape",
         "drawWgpuScale9ShapeMask",
         "drawWgpuShape",
+        "drawWgpuShapeMeshes",
         "drawWgpuTextInputOverlay",
         "drawWgpuTextLabel",
         "drawWgpuVideo",
@@ -5967,11 +6469,21 @@
         "enableWgpuTextInput",
         "ensureWgpuQuadBatchResources",
         "ensureWgpuRenderCacheTarget",
+        "flushWgpuSpriteBatch",
         "getWgpuQuadBatchPipeline",
+        "getWgpuQuadBatchPreludeWGSL",
         "getWgpuRenderCacheTarget",
+        "getWgpuRenderStats",
         "getWgpuRendererData",
+        "packWgpuSpriteBatchMaterialInstance",
+        "popWgpuClipContours",
         "popWgpuClipRectangle",
+        "prepareWgpuSpriteBatchWrite",
+        "pushWgpuClipContours",
         "pushWgpuClipRectangle",
+        "recordWgpuBatchFlush",
+        "recordWgpuSpriteBatchColorTransform",
+        "recordWgpuTextureUpload",
         "refreshWgpuRenderCache",
         "registerDefaultWgpuMaterial",
         "registerWgpuDisplayObjectRenderers",
@@ -5980,36 +6492,23 @@
         "registerWgpuTextInputOverlay",
         "releaseWgpuRenderCache",
         "remapWgpuScale9Commands",
+        "resetWgpuRenderStats",
+        "resetWgpuSpriteBatchBufferPool",
         "scopeModuleMocks"
       ],
       "missingExports": [
-        "SPRITE_INSTANCE_FLOATS",
-        "WgpuShapeMesh",
         "createWgpuVelocityTarget",
         "defaultWgpuDisplayObjectRenderer",
         "defaultWgpuDisplayObjectVelocityWriter",
         "defaultWgpuParticleEmitterVelocityWriter",
         "defaultWgpuQuadBatchVelocityWriter",
         "drawWgpuDisplayObject",
-        "drawWgpuShapeMeshes",
         "drawWgpuVelocityQuad",
-        "flushWgpuSpriteBatch",
-        "getWgpuQuadBatchPreludeWGSL",
-        "getWgpuRenderStats",
         "getWgpuVelocityWriter",
-        "packWgpuSpriteBatchMaterialInstance",
-        "popWgpuClipContours",
-        "prepareWgpuSpriteBatchWrite",
-        "pushWgpuClipContours",
-        "recordWgpuBatchFlush",
-        "recordWgpuSpriteBatchColorTransform",
-        "recordWgpuTextureUpload",
         "registerWgpuVelocityWriter",
         "renderWgpuDisplayObject",
         "renderWgpuSprite",
-        "renderWgpuVelocity",
-        "resetWgpuRenderStats",
-        "resetWgpuSpriteBatchBufferPool"
+        "renderWgpuVelocity"
       ],
       "package": "@flighthq/displayobject-wgpu",
       "promotedTarget": false,
@@ -8177,7 +8676,7 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:f82b608e941e4bdfb1b2b78fc627835bd61f553f87fd33ec24e9da8090fc8345",
-          "reason": "applyBevelEffectToGl: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)",
+          "reason": "defaultGlBevelEffectRunner: upstream/packages/effects-gl/src/glBevelEffect.ts: cannot infer return type for defaultGlBevelEffectRunner",
           "source": "upstream/packages/effects-gl/src/glBevelEffect.ts",
           "stage": "emission"
         },
@@ -8191,14 +8690,14 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:0838609b8f311f26b0523a95c8c6eaba2dfb54bcf11b38d8768669adcb7e31c9",
-          "reason": "applyBloomEffectToGl: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY)",
+          "reason": "defaultGlBloomEffectRunner: upstream/packages/effects-gl/src/glBloomEffect.ts: cannot infer return type for defaultGlBloomEffectRunner",
           "source": "upstream/packages/effects-gl/src/glBloomEffect.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:20ec25b2416dd738d5bc6f6a7429e655d01e7672d7f7ce5de7872ee957256f80",
-          "reason": "applyBlurEffectToGl: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY)",
+          "reason": "defaultGlBlurEffectRunner: upstream/packages/effects-gl/src/glBlurEffect.ts: cannot infer return type for defaultGlBlurEffectRunner",
           "source": "upstream/packages/effects-gl/src/glBlurEffect.ts",
           "stage": "emission"
         },
@@ -8275,7 +8774,7 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:7a39a5826e8f1382cb67ad5f5da290bf3695a590b723743e7281d7d9b4153107",
-          "reason": "applyDropShadowEffectToGl: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)",
+          "reason": "defaultGlDropShadowEffectRunner: upstream/packages/effects-gl/src/glDropShadowEffect.ts: cannot infer return type for defaultGlDropShadowEffectRunner",
           "source": "upstream/packages/effects-gl/src/glDropShadowEffect.ts",
           "stage": "emission"
         },
@@ -8310,14 +8809,14 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:f0b1b8ec7b79365210244b2fa1093e03de979a29f5df411a100de2d877fd3115",
-          "reason": "applyGradientBevelEffectToGl: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)",
+          "reason": "defaultGlGradientBevelEffectRunner: upstream/packages/effects-gl/src/glGradientBevelEffect.ts: cannot infer return type for defaultGlGradientBevelEffectRunner",
           "source": "upstream/packages/effects-gl/src/glGradientBevelEffect.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:15e8f6c27d1049524cbe4982173a0b7c00b866025918c29b09f8d03a212c4066",
-          "reason": "applyGradientGlowEffectToGl: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)",
+          "reason": "defaultGlGradientGlowEffectRunner: upstream/packages/effects-gl/src/glGradientGlowEffect.ts: cannot infer return type for defaultGlGradientGlowEffectRunner",
           "source": "upstream/packages/effects-gl/src/glGradientGlowEffect.ts",
           "stage": "emission"
         },
@@ -8331,14 +8830,14 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:8be2b92524234d41934578862900f2a3542c513d77ae34c03b27c2e18bedbcb5",
-          "reason": "applyInnerGlowEffectToGl: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,edgeColor,passes)",
+          "reason": "defaultGlInnerGlowEffectRunner: upstream/packages/effects-gl/src/glInnerGlowEffect.ts: cannot infer return type for defaultGlInnerGlowEffectRunner",
           "source": "upstream/packages/effects-gl/src/glInnerGlowEffect.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:dbae431b28c2ca8aff88bd6ad50e94ab5da898da61cbced5231abf2f885776fc",
-          "reason": "applyInnerShadowEffectToGl: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,edgeColor,passes)",
+          "reason": "defaultGlInnerShadowEffectRunner: upstream/packages/effects-gl/src/glInnerShadowEffect.ts: cannot infer return type for defaultGlInnerShadowEffectRunner",
           "source": "upstream/packages/effects-gl/src/glInnerShadowEffect.ts",
           "stage": "emission"
         },
@@ -8387,7 +8886,7 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:611ec44d6175fe53a56ecb0cf2dc4bd8af8016f2f696673bb81e2fbee8cf4f6e",
-          "reason": "applyOuterGlowEffectToGl: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)",
+          "reason": "defaultGlOuterGlowEffectRunner: upstream/packages/effects-gl/src/glOuterGlowEffect.ts: cannot infer return type for defaultGlOuterGlowEffectRunner",
           "source": "upstream/packages/effects-gl/src/glOuterGlowEffect.ts",
           "stage": "emission"
         },
@@ -8653,7 +9152,7 @@
           ],
           "declarations": 7,
           "module": "gl_render_effect_pipeline",
-          "outputSha256": "sha256:ee4125aeb7eba502a5ca0310fe666cfcbdf7140bda550d382bb83158e38d9916",
+          "outputSha256": "sha256:6d900b6e3744ba34a3ee07c1088db153f9e50c8781d9263d9d09216aa0799e79",
           "source": "upstream/packages/effects-gl/src/glRenderEffectPipeline.ts",
           "usesOpaqueHostValues": true
         },
@@ -8870,29 +9369,29 @@
       "blockers": [
         {
           "diagnostics": [],
-          "fingerprint": "sha256:2a843b814426476373761f38da200c49d6c5150988b9b05e57e643080e71f8d5",
-          "reason": "Generated crate is missing 102 of 128 upstream exports; re-export or declaration synthesis is required.",
+          "fingerprint": "sha256:89f7c7b44467593e661b88fc1ea7ba7ed5201c72e903d317fa48860796488cb9",
+          "reason": "Generated crate is missing 91 of 128 upstream exports; re-export or declaration synthesis is required.",
           "source": "upstream/packages/effects-wgpu/src",
           "stage": "package"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:ab3001fecab65d031c8d7d0c58f9ff1dbb80d5af78bd63378395fd80f87c0222",
-          "reason": "applyBevelEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)",
+          "reason": "defaultWgpuBevelEffectRunner: upstream/packages/effects-wgpu/src/wgpuBevelEffect.ts: cannot infer return type for defaultWgpuBevelEffectRunner",
           "source": "upstream/packages/effects-wgpu/src/wgpuBevelEffect.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:1634b32dc2293d4b7a68d80b32f87d2abc2333d820cc840b783ebbf266bcbef6",
-          "reason": "applyBloomEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY)",
+          "reason": "defaultWgpuBloomEffectRunner: upstream/packages/effects-wgpu/src/wgpuBloomEffect.ts: cannot infer return type for defaultWgpuBloomEffectRunner",
           "source": "upstream/packages/effects-wgpu/src/wgpuBloomEffect.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:fd008d859fa2612fc8a67e774c6a71319f3dbd3e76693fd651c515e5e971fa70",
-          "reason": "applyBlurEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY)",
+          "reason": "defaultWgpuBlurEffectRunner: upstream/packages/effects-wgpu/src/wgpuBlurEffect.ts: cannot infer return type for defaultWgpuBlurEffectRunner",
           "source": "upstream/packages/effects-wgpu/src/wgpuBlurEffect.ts",
           "stage": "emission"
         },
@@ -8915,13 +9414,6 @@
           "fingerprint": "sha256:bd6793d55a8f4af73641712f2eb148615d722d298411bb5df95acaf21227da8a",
           "reason": "defaultWgpuChromaticAberrationEffectRunner: upstream/packages/effects-wgpu/src/wgpuChromaticAberrationEffect.ts: cannot infer return type for defaultWgpuChromaticAberrationEffectRunner",
           "source": "upstream/packages/effects-wgpu/src/wgpuChromaticAberrationEffect.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:5048fb56ff668b95d99de34f19ec87cfa13a1015530b52c86c64b302896adb08",
-          "reason": "REPLACE_BLEND: object literal requires an inferred structural type (target={\"kind\":\"dynamic\"}, properties=color,alpha)",
-          "source": "upstream/packages/effects-wgpu/src/wgpuColorLutPass.ts",
           "stage": "emission"
         },
         {
@@ -8962,15 +9454,8 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:fa2273879eab37bc9dc4f29b93d81c11e7f80011491762f9055a8a69381252a5",
-          "reason": "applyDropShadowEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)",
+          "reason": "defaultWgpuDropShadowEffectRunner: upstream/packages/effects-wgpu/src/wgpuDropShadowEffect.ts: cannot infer return type for defaultWgpuDropShadowEffectRunner",
           "source": "upstream/packages/effects-wgpu/src/wgpuDropShadowEffect.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:07d6c7a34f35abfefd05eb0341a1a70c64a09baba19e2458691a6876480bc18e",
-          "reason": "PREMUL_BLEND: object literal requires an inferred structural type (target={\"kind\":\"dynamic\"}, properties=color,alpha)",
-          "source": "upstream/packages/effects-wgpu/src/wgpuEffectPass.ts",
           "stage": "emission"
         },
         {
@@ -9004,14 +9489,14 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:d0c48c7ab6fa0acefa450d69346221f26690dc4e94fe29da40c65b99b0c860ab",
-          "reason": "applyGradientBevelEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)",
+          "reason": "defaultWgpuGradientBevelEffectRunner: upstream/packages/effects-wgpu/src/wgpuGradientBevelEffect.ts: cannot infer return type for defaultWgpuGradientBevelEffectRunner",
           "source": "upstream/packages/effects-wgpu/src/wgpuGradientBevelEffect.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:58f252d0c6a53ec214345fd6c8426b7186cd55688a921afe64f24625090d2085",
-          "reason": "applyGradientGlowEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)",
+          "reason": "defaultWgpuGradientGlowEffectRunner: upstream/packages/effects-wgpu/src/wgpuGradientGlowEffect.ts: cannot infer return type for defaultWgpuGradientGlowEffectRunner",
           "source": "upstream/packages/effects-wgpu/src/wgpuGradientGlowEffect.ts",
           "stage": "emission"
         },
@@ -9025,14 +9510,14 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:88d376ccc68fd868f7eda28c30ae8c3c15ad5bcb52ed087be8e62a2f8604c095",
-          "reason": "applyInnerGlowEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,edgeColor,passes)",
+          "reason": "defaultWgpuInnerGlowEffectRunner: upstream/packages/effects-wgpu/src/wgpuInnerGlowEffect.ts: cannot infer return type for defaultWgpuInnerGlowEffectRunner",
           "source": "upstream/packages/effects-wgpu/src/wgpuInnerGlowEffect.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:ad98d3c08d6f2f9b2c60506596bbc4ae3169ac184d8690c5011520c32a29fe61",
-          "reason": "applyInnerShadowEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,edgeColor,passes)",
+          "reason": "defaultWgpuInnerShadowEffectRunner: upstream/packages/effects-wgpu/src/wgpuInnerShadowEffect.ts: cannot infer return type for defaultWgpuInnerShadowEffectRunner",
           "source": "upstream/packages/effects-wgpu/src/wgpuInnerShadowEffect.ts",
           "stage": "emission"
         },
@@ -9081,7 +9566,7 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:d734130d8c182790f8ea2081cdb800b42120dcf34d96d4444da28c67ee8ef2ca",
-          "reason": "applyOuterGlowEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)",
+          "reason": "defaultWgpuOuterGlowEffectRunner: upstream/packages/effects-wgpu/src/wgpuOuterGlowEffect.ts: cannot infer return type for defaultWgpuOuterGlowEffectRunner",
           "source": "upstream/packages/effects-wgpu/src/wgpuOuterGlowEffect.ts",
           "stage": "emission"
         },
@@ -9240,6 +9725,24 @@
         },
         {
           "declarationNames": [
+            "COLOR_LUT_FRAGMENT_WGSL",
+            "REPLACE_BLEND",
+            "applyColorLutPassToWgpu",
+            "clamp01",
+            "getLutBindGroupLayout",
+            "getLutPipeline",
+            "lutBindGroupLayouts",
+            "lutPipelines",
+            "uploadLutTexture"
+          ],
+          "declarations": 9,
+          "module": "wgpu_color_lut_pass",
+          "outputSha256": "sha256:f4d78ff8ce136a423a10d2a1b30b97366f52ed02cc0bca6cf613be7fd1751a74",
+          "source": "upstream/packages/effects-wgpu/src/wgpuColorLutPass.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
             "COLOR_MATRIX_FRAGMENT_WGSL",
             "applyColorMatrixPassToWgpu"
           ],
@@ -9300,6 +9803,37 @@
         },
         {
           "declarationNames": [
+            "EFFECT_VERTEX_WGSL",
+            "ERASE_BLEND",
+            "PREMUL_BLEND",
+            "REPLACE_BLEND",
+            "WgpuDualSourceEffectPipeline",
+            "WgpuEffectBlendMode",
+            "WgpuEffectPassState",
+            "WgpuEffectPipeline",
+            "acquireUniformSlot",
+            "beginEffectPass",
+            "clearWgpuEffectTarget",
+            "createWgpuDualSourceEffectPipeline",
+            "createWgpuEffectPipeline",
+            "drawWgpuDualSourceEffectPass",
+            "drawWgpuEffectPass",
+            "effectPassStates",
+            "getBlendState",
+            "getOrCreateEffectPassState",
+            "getOrCreateTextureBG",
+            "getWgpuEffectPassState",
+            "resolveEffectPipeline",
+            "writeUniformSlot"
+          ],
+          "declarations": 22,
+          "module": "wgpu_effect_pass",
+          "outputSha256": "sha256:50048ac6ad59c1e2cb5f85386c280bef97d9f42a70a0dd12e9d53ce5d0866371",
+          "source": "upstream/packages/effects-wgpu/src/wgpuEffectPass.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
             "_pipelines",
             "getWgpuEffectPipeline"
           ],
@@ -9344,7 +9878,7 @@
           ],
           "declarations": 8,
           "module": "wgpu_render_effect_pipeline",
-          "outputSha256": "sha256:ab6f436caa57355a3cdfde3de58820ee1dbadfdc1ac4eb7f9b2c134b50a6aea0",
+          "outputSha256": "sha256:93d4cf45d097c772417dddd4547e3895709d1b483ee6ad0ee05560d83ce047b0",
           "source": "upstream/packages/effects-wgpu/src/wgpuRenderEffectPipeline.ts",
           "usesOpaqueHostValues": true
         },
@@ -9381,6 +9915,11 @@
       ],
       "fullyPromotedTarget": false,
       "generatedExports": [
+        "EFFECT_VERTEX_WGSL",
+        "WgpuDualSourceEffectPipeline",
+        "WgpuEffectBlendMode",
+        "WgpuEffectPipeline",
+        "applyColorLutPassToWgpu",
         "applyColorMatrixPassToWgpu",
         "applyWgpuEffectBlitOffsetPass",
         "applyWgpuEffectBlitPass",
@@ -9390,10 +9929,16 @@
         "applyWgpuEffectInvertTintPass",
         "applyWgpuEffectTintPass",
         "beginWgpuRenderEffectPipeline",
+        "clearWgpuEffectTarget",
+        "createWgpuDualSourceEffectPipeline",
+        "createWgpuEffectPipeline",
         "createWgpuRenderEffectPipeline",
         "destroyWgpuRenderEffectPipeline",
+        "drawWgpuDualSourceEffectPass",
+        "drawWgpuEffectPass",
         "endWgpuRenderEffectPipeline",
         "getWgpuEffectGradientRampTexture",
+        "getWgpuEffectPassState",
         "getWgpuEffectPipeline",
         "getWgpuRenderEffectRunner",
         "hasWgpuRenderEffectRunner",
@@ -9409,19 +9954,14 @@
         "setWgpuRenderEffectVelocityTexture"
       ],
       "missingExports": [
-        "EFFECT_VERTEX_WGSL",
         "MAX_CONVOLUTION_EFFECT_WGPU_KERNEL_SIZE",
         "MAX_MEDIAN_EFFECT_WGPU_RADIUS",
-        "WgpuDualSourceEffectPipeline",
-        "WgpuEffectBlendMode",
-        "WgpuEffectPipeline",
         "applyBevelEffectToWgpu",
         "applyBloomEffectToWgpu",
         "applyBlurEffectToWgpu",
         "applyBokehDepthOfFieldEffectToWgpu",
         "applyCameraMotionBlurEffectToWgpu",
         "applyChromaticAberrationEffectToWgpu",
-        "applyColorLutPassToWgpu",
         "applyConvolutionEffectToWgpu",
         "applyCrtEffectToWgpu",
         "applyDirectionalBlurEffectToWgpu",
@@ -9461,9 +10001,6 @@
         "applyToneMapEffectToWgpu",
         "applyVignetteEffectToWgpu",
         "applyWhiteBalanceEffectToWgpu",
-        "clearWgpuEffectTarget",
-        "createWgpuDualSourceEffectPipeline",
-        "createWgpuEffectPipeline",
         "defaultWgpuBevelEffectRunner",
         "defaultWgpuBloomEffectRunner",
         "defaultWgpuBlurEffectRunner",
@@ -9507,10 +10044,7 @@
         "defaultWgpuTiltShiftEffectRunner",
         "defaultWgpuToneMapEffectRunner",
         "defaultWgpuVignetteEffectRunner",
-        "defaultWgpuWhiteBalanceEffectRunner",
-        "drawWgpuDualSourceEffectPass",
-        "drawWgpuEffectPass",
-        "getWgpuEffectPassState"
+        "defaultWgpuWhiteBalanceEffectRunner"
       ],
       "package": "@flighthq/effects-wgpu",
       "promotedTarget": false,
@@ -9574,7 +10108,7 @@
           ],
           "declarations": 2,
           "module": "clone",
-          "outputSha256": "sha256:c6f71331a3b6d74fa986c91b706acc9a70918d3fc34d4a289be50c4c8b3afa50",
+          "outputSha256": "sha256:e85f10172744470a11e6348cf5b68cf88925d94e61b6ff55a139a28e7b5aa017",
           "source": "upstream/packages/entity/src/clone.ts",
           "usesOpaqueHostValues": false
         },
@@ -12631,7 +13165,7 @@
           ],
           "declarations": 5,
           "module": "register_bitmap_hit_test",
-          "outputSha256": "sha256:e80c70e594b4ed72455b027432925433510b2d0da1f082dd6114bd151eb7902b",
+          "outputSha256": "sha256:95f6193fede74d9991a6b767fd781fb0f53111502c933597369f58093833f038",
           "source": "upstream/packages/interaction/src/registerBitmapHitTest.ts",
           "usesOpaqueHostValues": true
         },
@@ -12653,7 +13187,7 @@
           ],
           "declarations": 3,
           "module": "register_shape_hit_test",
-          "outputSha256": "sha256:4969e03caead89ade69196aed5e99076ce0b53f80be374b677f3f5847f9a2980",
+          "outputSha256": "sha256:5dfab14d7e8e9dfce34e23ae3cf00dc1b5c197628f1d9185316420257abbe584",
           "source": "upstream/packages/interaction/src/registerShapeHitTest.ts",
           "usesOpaqueHostValues": true
         },
@@ -12665,7 +13199,7 @@
           ],
           "declarations": 3,
           "module": "register_text_hit_test",
-          "outputSha256": "sha256:c26f0aa957ceb835ee34e2f2c3a699d62b945103deeb45e299b103dad4a5be3e",
+          "outputSha256": "sha256:403e0d14576e61e1fd5fef249020f58dfb004a70a0fdb48e8a0b0e851dc2cf1e",
           "source": "upstream/packages/interaction/src/registerTextHitTest.ts",
           "usesOpaqueHostValues": true
         },
@@ -12851,14 +13385,14 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:a9d5e871d6e1513794ed4be92e73c5a888116e4a243f4651abdbc09121c99552",
-          "reason": "formatCompactNumber: object literal requires an inferred structural type (target={\"kind\":\"dynamic\"}, properties=notation,spread)",
+          "reason": "formatCompactNumber: object literal requires an inferred structural type (target=unknown, properties=notation,spread)",
           "source": "upstream/packages/intl/src/number.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:cb193d8bdb5f60422e75dbbf7a44560a49c8d0f517c3bb5263b80239b6f41a9a",
-          "reason": "selectOrdinalCategory: object literal requires an inferred structural type (target={\"kind\":\"dynamic\"}, properties=type,spread)",
+          "reason": "selectOrdinalCategory: object literal requires an inferred structural type (target=unknown, properties=type,spread)",
           "source": "upstream/packages/intl/src/plural.ts",
           "stage": "emission"
         },
@@ -17035,7 +17569,7 @@
           ],
           "declarations": 7,
           "module": "viewport",
-          "outputSha256": "sha256:01f4ed77dfd01e2106b496330aa118b89dd29ed4ad982f0a8a6ef23d359f3e14",
+          "outputSha256": "sha256:8451440398fdec1e88d011ca8a23dae6c0380c653c4a9f6d08c4ee0af96db139",
           "source": "upstream/packages/node/src/viewport.ts",
           "usesOpaqueHostValues": true
         }
@@ -18419,17 +18953,10 @@
       "blockers": [
         {
           "diagnostics": [],
-          "fingerprint": "sha256:b6ee4fc2d5d125e9374ed8e9c7d6a223eb69145c03e97df8582dabd8be8fd668",
-          "reason": "Generated crate is missing 25 of 79 upstream exports; re-export or declaration synthesis is required.",
+          "fingerprint": "sha256:969e716a5eb9129f01b48f63df940b8bcb47be75295c0c763f061be6310993ce",
+          "reason": "Generated crate is missing 17 of 79 upstream exports; re-export or declaration synthesis is required.",
           "source": "upstream/packages/particles-formats/src",
           "stage": "package"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:23ae6c3423de8e567a168c7ba4ad03918222f1d5251719270fd246b53064217d",
-          "reason": "sectionsToDocument: object literal requires an inferred structural type (target=unknown, properties=shape,edges,side)",
-          "source": "upstream/packages/particles-formats/src/libgdxParse.ts",
-          "stage": "emission"
         },
         {
           "diagnostics": [],
@@ -18443,13 +18970,6 @@
           "fingerprint": "sha256:f6b76929c2ce6145b89dbe3614e12de3a960e697c9c0dd0b95b27b116efab6d9",
           "reason": "num: typeof operand has no inferred Rust type: {\"kind\":\"identifier\",\"name\":\"v\"}",
           "source": "upstream/packages/particles-formats/src/particleDesignerParse.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:447d60397b896885bcf33c00854a83cc6a2d66707ea0928b8c6a4cf04f02312b",
-          "reason": "rawToDocument: object literal requires an inferred structural type (target={\"kind\":\"primitive\",\"name\":\"Float\"}, properties=low,high)",
-          "source": "upstream/packages/particles-formats/src/spineParse.ts",
           "stage": "emission"
         },
         {
@@ -18469,7 +18989,7 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:157d9da3488530c7a129b89be423a225c19f7ab5ef92bc0f4c051418d3f7d9bf",
-          "reason": "configToDocument: anonymous structural type has no synthesized Rust identity: {\"extends\":[],\"fields\":[{\"name\":\"x\",\"optional\":false,\"type\":{\"kind\":\"primitive\",\"name\":\"Float\"}},{\"name\":\"y\",\"optional\":false,\"type\":{\"kind\":\"primitive\",\"name\":\"Float\"}},{\"name\":\"z\",\"optional\":false,\"type\":{\"kind\":\"primitive\",\"name\":\"Float\"}}],\"kind\":\"anonymous\"}",
+          "reason": "serializeUnityParticle: JSON.stringify requires a portable scalar or structural array",
           "source": "upstream/packages/particles-formats/src/unitySerialize.ts",
           "stage": "emission"
         }
@@ -18519,7 +19039,7 @@
           ],
           "declarations": 8,
           "module": "format_registry",
-          "outputSha256": "sha256:60f4a6699b0efdf071ac86e11aabbdb5194d2aa962d50cc82d779c78701fdc5e",
+          "outputSha256": "sha256:88e5d84e1616ae9bf062498e568ae7754ecb4cb64219352a1d7f0db49544503d",
           "source": "upstream/packages/particles-formats/src/formatRegistry.ts",
           "usesOpaqueHostValues": true
         },
@@ -18530,6 +19050,32 @@
           "outputSha256": "sha256:d9fe547a92e67b4ecd73736ad464b30247635bdca7db6df26a8083c588d4988f",
           "source": "upstream/packages/particles-formats/src/index.ts",
           "usesOpaqueHostValues": false
+        },
+        {
+          "declarationNames": [
+            "DEG2RAD",
+            "LibgdxParseOptions",
+            "LibgdxParseResult",
+            "LibgdxParsed",
+            "LibgdxSection",
+            "boolKey",
+            "collectLibgdxWarnings",
+            "documentToConfig",
+            "hexToRgb",
+            "numKey",
+            "parseLibgdxParticle",
+            "parseLibgdxParticleDocument",
+            "parseLibgdxText",
+            "rangeToMinMax",
+            "readRange",
+            "sectionsToDocument",
+            "strKey"
+          ],
+          "declarations": 17,
+          "module": "libgdx_parse",
+          "outputSha256": "sha256:bd6854449fd377b8bc8a6ff5feae649d9e35ff4b3db6bec2fba5d84774bd92f1",
+          "source": "upstream/packages/particles-formats/src/libgdxParse.ts",
+          "usesOpaqueHostValues": true
         },
         {
           "declarationNames": [
@@ -18617,6 +19163,34 @@
           "outputSha256": "sha256:7504650966833561e12fb187c4aa6b10d688710a44316ed66d4e022dc2e9e17f",
           "source": "upstream/packages/particles-formats/src/serializeResult.ts",
           "usesOpaqueHostValues": false
+        },
+        {
+          "declarationNames": [
+            "DEG2RAD",
+            "SpineParsed",
+            "alphaKeyframesToCurve",
+            "collectSpineWarnings",
+            "firstAlpha",
+            "firstTintColor",
+            "hexToRgb",
+            "lastAlpha",
+            "lastTintColor",
+            "parseSpineJson",
+            "parseSpineParticle",
+            "parseSpineParticleDocument",
+            "rangeHigh",
+            "rangeLow",
+            "rangeMid",
+            "rawToConfig",
+            "rawToDocument",
+            "spineBlendMode",
+            "tintKeyframesToCurve"
+          ],
+          "declarations": 19,
+          "module": "spine_parse",
+          "outputSha256": "sha256:277c24b661e83f13d2eba76d1d00c5aefbbe59aceb809a766bae366864a5444e",
+          "source": "upstream/packages/particles-formats/src/spineParse.ts",
+          "usesOpaqueHostValues": true
         },
         {
           "declarationNames": [
@@ -18726,6 +19300,9 @@
       ],
       "fullyPromotedTarget": false,
       "generatedExports": [
+        "LibgdxParseOptions",
+        "LibgdxParseResult",
+        "LibgdxParsed",
         "LibgdxParticleDocument",
         "LibgdxRangeValue",
         "ParseParticleConfigOptions",
@@ -18740,6 +19317,7 @@
         "PixiParsed",
         "SpineAlphaKeyframe",
         "SpineBlendMode",
+        "SpineParsed",
         "SpineParticleDocument",
         "SpineRangeValue",
         "SpineTintKeyframe",
@@ -18767,11 +19345,15 @@
         "detectRegisteredParticleFormat",
         "getParticleFormatCodec",
         "getRegisteredParticleFormats",
+        "parseLibgdxParticle",
+        "parseLibgdxParticleDocument",
         "parseParticleConfig",
         "parseParticleConfigDocument",
         "parsePixiParticle",
         "parsePixiParticleDocument",
         "parseRegisteredParticleFormat",
+        "parseSpineParticle",
+        "parseSpineParticleDocument",
         "parseUnityParticle",
         "parseUnityParticleDocument",
         "registerParticleFormat",
@@ -18782,23 +19364,15 @@
         "unregisterParticleFormat"
       ],
       "missingExports": [
-        "LibgdxParseOptions",
-        "LibgdxParseResult",
-        "LibgdxParsed",
         "LibgdxSerializeOptions",
         "ParticleDesignerParseOptions",
         "ParticleDesignerParsed",
-        "SpineParsed",
         "StarlingPexParseOptions",
         "StarlingPexParseResult",
         "StarlingPexParsed",
         "UnitySerializeOptions",
-        "parseLibgdxParticle",
-        "parseLibgdxParticleDocument",
         "parseParticleDesignerPlist",
         "parseParticleDesignerPlistDocument",
-        "parseSpineParticle",
-        "parseSpineParticleDocument",
         "parseStarlingPex",
         "parseStarlingPexDocument",
         "serializeLibgdxParticle",
@@ -18951,7 +19525,7 @@
           ],
           "declarations": 1,
           "module": "for_each_path_segment",
-          "outputSha256": "sha256:b115f8ef3f9edde4956fc031f2a3c4648d59681d3a3d88410d6e5c4b535c113f",
+          "outputSha256": "sha256:4f6a8354f516afe2fba99465b933513d99df935365902b96c6ee55be64b040b1",
           "source": "upstream/packages/path/src/forEachPathSegment.ts",
           "usesOpaqueHostValues": false
         },
@@ -19164,7 +19738,7 @@
           ],
           "declarations": 2,
           "module": "transform_path",
-          "outputSha256": "sha256:90df20d61c2d04484a1e0339e8d8b7b8def0efeb93058c26f3c88af4fba59f75",
+          "outputSha256": "sha256:68ca23e139ed92c8e6910eeff7cd6653780476bdb88eba185e0fdb3fc5b0402b",
           "source": "upstream/packages/path/src/transformPath.ts",
           "usesOpaqueHostValues": false
         }
@@ -20685,22 +21259,15 @@
       "blockers": [
         {
           "diagnostics": [],
-          "fingerprint": "sha256:f99fcda94715759a12cc5ddd5e9ca4297574d8043d09c29f6e5ea827bc15de3f",
-          "reason": "Generated crate is missing 18 of 75 upstream exports; re-export or declaration synthesis is required.",
+          "fingerprint": "sha256:1bd2adefb47adf29bba2a77a14266226b8ca62c3c3b0d0e509a0e37e6410e1ab",
+          "reason": "Generated crate is missing 5 of 75 upstream exports; re-export or declaration synthesis is required.",
           "source": "upstream/packages/render-gl/src",
           "stage": "package"
         },
         {
           "diagnostics": [],
-          "fingerprint": "sha256:95e35f4a444f57c2324ac9df020b4801809b847a890e257b2568d788c4873477",
-          "reason": "bindGlVideoTexture: object literal requires an inferred structural type (target=unknown, properties=texture,uploadedFrameId)",
-          "source": "upstream/packages/render-gl/src/glDraw.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
           "fingerprint": "sha256:4fc58b2394471d77366fe429052afc98571072058cd3d174a4be86bc7d85dd4f",
-          "reason": "createGlRenderState: object literal requires an inferred structural type (target={\"kind\":\"dynamic\"}, properties=alpha,antialias,powerPreference,stencil,spread)",
+          "reason": "createGlRenderState: object literal requires an inferred structural type (target=unknown, properties=alpha,antialias,powerPreference,stencil,spread)",
           "source": "upstream/packages/render-gl/src/glRenderState.ts",
           "stage": "emission"
         }
@@ -20762,6 +21329,38 @@
         },
         {
           "declarationNames": [
+            "DEFAULT_GL_BLEND_MODES",
+            "NORMAL_BLEND",
+            "applyGlBlendMode",
+            "applyGlSamplerState",
+            "bindGlImageResourceTexture",
+            "bindGlTexture",
+            "bindGlVideoTexture",
+            "createGlTexture",
+            "drawGlQuad",
+            "enableGlBlendModeSupport",
+            "ensureGlAnisotropyExt",
+            "glMagFilterValue",
+            "glMinFilterValue",
+            "glTextureWrapValue",
+            "isBlendModeSupported",
+            "isGlMipmapFilter",
+            "premultiplyStraightRgba8",
+            "registerDefaultGlBlendModes",
+            "registerGlBlendMode",
+            "setGlQuadMatrixFromOffset",
+            "updateGlTexture",
+            "uploadGlDisplayTexture",
+            "useGlProgram"
+          ],
+          "declarations": 23,
+          "module": "gl_draw",
+          "outputSha256": "sha256:fd9604b3cfcf5664882379621082d6f6d5d0e93d5d28ee53f9c184aa286130fa",
+          "source": "upstream/packages/render-gl/src/glDraw.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
             "createGlCanvasElement"
           ],
           "declarations": 1,
@@ -20781,7 +21380,7 @@
           ],
           "declarations": 6,
           "module": "gl_fullscreen_pass",
-          "outputSha256": "sha256:ce86a64c3c469a294bb4bcd98e6448d5b618561a20e3a4c4465cc8160fca7ea9",
+          "outputSha256": "sha256:105bb952ca8aec6cc7edc555625bc0416cdd443b2f4fe501d5ea41b53365a2fc",
           "source": "upstream/packages/render-gl/src/glFullscreenPass.ts",
           "usesOpaqueHostValues": true
         },
@@ -20861,7 +21460,7 @@
           ],
           "declarations": 9,
           "module": "gl_render_pass",
-          "outputSha256": "sha256:08e297658bbff0417fb3d5528d1bd7ae18a7239dea7e9fba81664d8d43ed0586",
+          "outputSha256": "sha256:74c73d31c4537d8820e3040d1d41068e510ce6624681ea113ec539f61570453b",
           "source": "upstream/packages/render-gl/src/glRenderPass.ts",
           "usesOpaqueHostValues": true
         },
@@ -20971,7 +21570,7 @@
           ],
           "declarations": 3,
           "module": "_internal_gl_test_helper",
-          "outputSha256": "sha256:e70a7d9947645b21006d00d7e2fd758343c64cd344a58a4f717d1053b986ac4a",
+          "outputSha256": "sha256:1dafb97c79a1750de4401174a1875b1430e66f7ba6741e731b2184919651d88d",
           "source": "upstream/packages/render-gl/src/glTestHelper.ts",
           "usesOpaqueHostValues": true
         },
@@ -21026,7 +21625,11 @@
         "GlUniformColorTransformShader",
         "LINEAR_TO_SRGB_FRAGMENT_SRC",
         "acquireGlRenderTarget",
+        "applyGlBlendMode",
         "beginGlRenderPass",
+        "bindGlImageResourceTexture",
+        "bindGlTexture",
+        "bindGlVideoTexture",
         "clearGlRenderTarget",
         "compileDefaultGlProgram",
         "compileGlBitmapProgram",
@@ -21040,6 +21643,7 @@
         "createGlRenderTargetPool",
         "createGlSkinPaletteTexture",
         "createGlState",
+        "createGlTexture",
         "declareGlRenderTargetColorSpace",
         "destroyGlRenderTarget",
         "destroyGlRenderTargetPool",
@@ -21047,19 +21651,24 @@
         "detectGlCompressedTextureSupport",
         "drawGlFullscreenPass",
         "drawGlLinearToSrgbPass",
+        "drawGlQuad",
         "drawGlRenderTargetResult",
+        "enableGlBlendModeSupport",
         "endGlRenderPass",
         "getGlCompressedTextureFormat",
         "getGlMaterialRenderer",
         "getGlMaterialShader",
         "getGlShader",
         "hasGlCompressedTextureFormat",
+        "isBlendModeSupported",
         "linkGlProgram",
         "makeGL",
         "makeShaderLoc",
         "presentGlRenderTarget",
         "readGlRenderTargetPixels",
+        "registerDefaultGlBlendModes",
         "registerGlBitmapShader",
+        "registerGlBlendMode",
         "registerGlCompressedTextureDecoder",
         "registerGlCompressedTextureUpload",
         "registerGlMaterialRenderer",
@@ -21074,34 +21683,24 @@
         "setGlBaseUniforms",
         "setGlMatrixFromTransform",
         "setGlMatrixFromValues",
+        "setGlQuadMatrixFromOffset",
         "setGlRenderTransform2D",
         "setGlShader",
+        "updateGlTexture",
         "uploadGlCompressedTextureContainer",
         "uploadGlSkinPaletteTexture",
         "uploadGlTextureData",
         "uploadGlTextureElement",
         "uploadGlTextureImageResource",
-        "uploadGlTextureVideoFrame"
+        "uploadGlTextureVideoFrame",
+        "useGlProgram"
       ],
       "missingExports": [
-        "applyGlBlendMode",
-        "bindGlImageResourceTexture",
-        "bindGlTexture",
-        "bindGlVideoTexture",
         "createGlRenderState",
         "createGlRenderStateRuntime",
-        "createGlTexture",
         "destroyGlRenderState",
-        "drawGlQuad",
-        "enableGlBlendModeSupport",
         "getGlRenderStateRuntime",
-        "invalidateGlRenderStateCache",
-        "isBlendModeSupported",
-        "registerDefaultGlBlendModes",
-        "registerGlBlendMode",
-        "setGlQuadMatrixFromOffset",
-        "updateGlTexture",
-        "useGlProgram"
+        "invalidateGlRenderStateCache"
       ],
       "package": "@flighthq/render-gl",
       "promotedTarget": false,
@@ -21125,62 +21724,19 @@
     {
       "apiExports": 68,
       "attemptedSources": 18,
-      "blockers": [
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:74e3d5ecbd45541ac2e2188d00ad8dc5e94160221f39aab610965b080aaffc9d",
-          "reason": "Generated crate is missing 36 of 68 upstream exports; re-export or declaration synthesis is required.",
-          "source": "upstream/packages/render-wgpu/src",
-          "stage": "package"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:5aa3d4aa619818e6c5268a0d46b6ce5ae96a1d73d6ba0fd768f5dd01dc628967",
-          "reason": "renderWgpuBackground: object literal requires an inferred structural type (target={\"kind\":\"dynamic\"}, properties=r,g,b,a)",
-          "source": "upstream/packages/render-wgpu/src/wgpuBackground.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:4f23d96922a5d12cf1382a4b254fbf9bba1db80ab19ca60cf47ace404b33e694",
-          "reason": "drawWgpuQuadWithTransform: object literal requires an inferred structural type (target=unknown, properties=alpha,transform2D)",
-          "source": "upstream/packages/render-wgpu/src/wgpuDraw.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:fb92afda54a0c8bb8f548d6cc045eb238a4af548440c6b0ea31ae984165ed56d",
-          "reason": "getWgpuSampler: object literal requires an inferred structural type (target={\"kind\":\"dynamic\"}, properties=minFilter,magFilter,addressModeU,addressModeV)",
-          "source": "upstream/packages/render-wgpu/src/wgpuRenderState.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:b7322eb4c74882e4e3ab205401b9d004adeef3f66a278dc58264691a1212662a",
-          "reason": "beginWgpuRenderPassEncoder: object literal requires an inferred structural type (target={\"kind\":\"dynamic\"}, properties=r,g,b,a)",
-          "source": "upstream/packages/render-wgpu/src/wgpuRenderTarget.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:b32e4965a71ea1d96330438b649702bf0f861d4a4b34b2306feaf8768193f0e9",
-          "reason": "buildStencilFaceState: object literal requires an inferred structural type (target={\"kind\":\"dynamic\"}, properties=compare,passOp,failOp,depthFailOp)",
-          "source": "upstream/packages/render-wgpu/src/wgpuShader.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:60e8829f84f111253aa8c6c1b06799fffa7860bd4d0849f4cdc75b859503dcb3",
-          "reason": "installWgpuConstants: object literal requires an inferred structural type (target={\"kind\":\"dynamic\"}, properties=MAP_READ,MAP_WRITE,COPY_SRC,COPY_DST,INDEX,VERTEX,UNIFORM,STORAGE,INDIRECT,QUERY_RESOLVE)",
-          "source": "upstream/packages/render-wgpu/src/wgpuTestHelper.ts",
-          "stage": "emission"
-        }
-      ],
+      "blockers": [],
       "candidate": {
         "compileDiagnostics": [],
-        "status": "source-blocked",
-        "syntaxCheckedSources": 0,
-        "unresolvedDependencies": []
+        "path": "generated/candidates/flighthq-render-wgpu",
+        "status": "dependency-blocked",
+        "syntaxCheckedSources": 18,
+        "unresolvedDependencies": [
+          {
+            "candidateStatus": "source-blocked",
+            "package": "@flighthq/render",
+            "status": "blocked"
+          }
+        ]
       },
       "crate": "flighthq-render-wgpu",
       "dependencies": [
@@ -21212,7 +21768,7 @@
           "declarationNames": [],
           "declarations": 0,
           "module": "_internal_index",
-          "outputSha256": "sha256:be6d9fe21f19800bf8a98120af5040f30d7e32c11d5871a5c398bffd6f31ffb9",
+          "outputSha256": "sha256:e28b2af9fd707a4953b0a75c3c8bc1691bbc520697523d410841d7e565f0fa3d",
           "source": "upstream/packages/render-wgpu/src/index.ts",
           "usesOpaqueHostValues": false
         },
@@ -21222,8 +21778,43 @@
           ],
           "declarations": 1,
           "module": "wgpu_adapter_capabilities",
-          "outputSha256": "sha256:2a1e6c89b6816192584d9f6742796cd94ad1426d2a9625a4ca11c8a631558c58",
+          "outputSha256": "sha256:e88b60b11484ac38dcb69ff298afd280a054a0e9e5cf796a8872d9faf6d9644c",
           "source": "upstream/packages/render-wgpu/src/wgpuAdapterCapabilities.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
+            "ensureWgpuDepthStencil",
+            "renderWgpuBackground",
+            "submitWgpuRenderPass"
+          ],
+          "declarations": 3,
+          "module": "wgpu_background",
+          "outputSha256": "sha256:81ddb5ae12e53f249f1ac640e826913e963332abda7fd9ae562e491d02ae6bb4",
+          "source": "upstream/packages/render-wgpu/src/wgpuBackground.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
+            "applyWgpuBlendMode",
+            "bindWgpuImageResourceTexture",
+            "bindWgpuTexture",
+            "buildWgpuRenderTargetBindGroup",
+            "createWgpuTextureEntry",
+            "drawWgpuQuad",
+            "drawWgpuQuadWithTransform",
+            "enableWgpuBlendModeSupport",
+            "getWgpuRenderProxyColorTransform",
+            "premultiplyStraightRgba8",
+            "submitWgpuQuadDraw",
+            "updateWgpuTextureEntry",
+            "uploadWgpuImageResourceEntry",
+            "warmWgpuPipelines"
+          ],
+          "declarations": 14,
+          "module": "wgpu_draw",
+          "outputSha256": "sha256:e8217adc13837e05a76ba0cd9ba7d9f726e875304c26ebbac798fabf4bd3d7cb",
+          "source": "upstream/packages/render-wgpu/src/wgpuDraw.ts",
           "usesOpaqueHostValues": true
         },
         {
@@ -21232,7 +21823,7 @@
           ],
           "declarations": 1,
           "module": "wgpu_element",
-          "outputSha256": "sha256:b2ed4e7a53331b88f2f20683ad935c0c1ea5e7f02402188597173db7eb998acf",
+          "outputSha256": "sha256:77accbb8316a193a7b7c486e36017fb619fe0f4c154cb1c3ad28ea9de9098e1d",
           "source": "upstream/packages/render-wgpu/src/wgpuElement.ts",
           "usesOpaqueHostValues": true
         },
@@ -21245,7 +21836,7 @@
           ],
           "declarations": 4,
           "module": "wgpu_fullscreen_pass",
-          "outputSha256": "sha256:88aeca3606af707e900a3baf34dcb3d9257ca426a41f2d6b99ba464c89970bbf",
+          "outputSha256": "sha256:99683cc67ca772cce44d440692be5d3bcdeda5ada20f868d9a30b70ad12ea333",
           "source": "upstream/packages/render-wgpu/src/wgpuFullscreenPass.ts",
           "usesOpaqueHostValues": true
         },
@@ -21257,7 +21848,7 @@
           ],
           "declarations": 3,
           "module": "wgpu_material_registry",
-          "outputSha256": "sha256:dc2c39dfe7fb54fe90b1d1623640aff7c3cc8be7c1701f72a3000dc2f4498db5",
+          "outputSha256": "sha256:b57367b384674f9fa783337ef6e3239275b0828e0c598b5a5aeda388202b12e7",
           "source": "upstream/packages/render-wgpu/src/wgpuMaterialRegistry.ts",
           "usesOpaqueHostValues": false
         },
@@ -21270,8 +21861,43 @@
           ],
           "declarations": 4,
           "module": "wgpu_mipmap",
-          "outputSha256": "sha256:d28322f9d29003172e94d80576dbd2ba8b724ef8743f256faa878c6e7df0bf22",
+          "outputSha256": "sha256:b9c747e7cd11a4c0966bf6b1062773a5963e2fe8da4b048b5388664c03da12a8",
           "source": "upstream/packages/render-wgpu/src/wgpuMipmap.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
+            "RING_SLOT_COUNT",
+            "createWgpuRenderState",
+            "createWgpuRenderStateRuntime",
+            "destroyWgpuRenderState",
+            "getWgpuRenderStateRuntime",
+            "getWgpuSampler",
+            "isWgpuSupported"
+          ],
+          "declarations": 7,
+          "module": "wgpu_render_state",
+          "outputSha256": "sha256:23c62165f6a3bc53081c5f03daeb302131addc187867d6369f1135c0e3fd735d",
+          "source": "upstream/packages/render-wgpu/src/wgpuRenderState.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
+            "beginWgpuRenderPass",
+            "beginWgpuRenderPassEncoder",
+            "createWgpuRenderTarget",
+            "destroyWgpuRenderTarget",
+            "drawWgpuRenderTargetResult",
+            "endWgpuRenderPass",
+            "isWgpuColorPreserved",
+            "resizeWgpuRenderTarget",
+            "resolveWgpuClearColor",
+            "setWgpuRenderTransform2D"
+          ],
+          "declarations": 10,
+          "module": "wgpu_render_target",
+          "outputSha256": "sha256:e86ebbf9dd8521c856109033b9d9e236c6792c4543a728628a1551cb7ada341e",
+          "source": "upstream/packages/render-wgpu/src/wgpuRenderTarget.ts",
           "usesOpaqueHostValues": true
         },
         {
@@ -21283,7 +21909,7 @@
           ],
           "declarations": 4,
           "module": "wgpu_render_target_pool",
-          "outputSha256": "sha256:e3643ae83e14e66471dd4eae3da9ff604d7c349e9054135899a9734ecc3b310a",
+          "outputSha256": "sha256:a43b70bccd5907a4fce3ace7c38421332aa289464426dcff1d9583dd557c5e72",
           "source": "upstream/packages/render-wgpu/src/wgpuRenderTargetPool.ts",
           "usesOpaqueHostValues": true
         },
@@ -21295,8 +21921,32 @@
           ],
           "declarations": 3,
           "module": "wgpu_scissor",
-          "outputSha256": "sha256:1d63789e17027dfb47d0ce7291fe7f8e5d75f102dbd49841747916727538b0cb",
+          "outputSha256": "sha256:a2b369144867a49ac1b01334830fda0caf6edf82ee70ee5fe2fa3375abe3e479",
           "source": "upstream/packages/render-wgpu/src/wgpuScissor.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
+            "BITMAP_SHADER_SRC",
+            "BLEND_MODES",
+            "MASK_FRAGMENT_SRC",
+            "NORMAL_BLEND",
+            "StencilMode",
+            "UNIFORM_BYTE_SIZE",
+            "buildStencilFaceState",
+            "createWgpuBindGroupLayouts",
+            "createWgpuBlendState",
+            "createWgpuPipelineLayout",
+            "getActiveWgpuPipeline",
+            "getWgpuPipeline",
+            "setWgpuMatrixFromTransform",
+            "writeWgpuMatrixOnlyUniforms",
+            "writeWgpuQuadUniforms"
+          ],
+          "declarations": 15,
+          "module": "wgpu_shader",
+          "outputSha256": "sha256:0eb6b8040272e4047990d40f3d647498748a5e31ec5123e11885b5265b421dff",
+          "source": "upstream/packages/render-wgpu/src/wgpuShader.ts",
           "usesOpaqueHostValues": true
         },
         {
@@ -21308,7 +21958,7 @@
           ],
           "declarations": 4,
           "module": "wgpu_shader_binding",
-          "outputSha256": "sha256:49429639e8b39be04e0d9849d5885143150874be0d5f638f5c59b428cef49ddf",
+          "outputSha256": "sha256:058dc4d3b0e1eacfbc087f2daac72cac97e193fe1231a355535f27a66385dc3b",
           "source": "upstream/packages/render-wgpu/src/wgpuShaderBinding.ts",
           "usesOpaqueHostValues": true
         },
@@ -21318,7 +21968,7 @@
           ],
           "declarations": 1,
           "module": "wgpu_shader_registry",
-          "outputSha256": "sha256:2ad2f07f66bf478dd18689124c40f714e55bae4252a81257ad55e927604137e9",
+          "outputSha256": "sha256:cb05b1718fc970ebe9f2c154b2cb856967058b873b16b19db8edc9b3664d9cb2",
           "source": "upstream/packages/render-wgpu/src/wgpuShaderRegistry.ts",
           "usesOpaqueHostValues": false
         },
@@ -21331,8 +21981,32 @@
           ],
           "declarations": 4,
           "module": "wgpu_surface",
-          "outputSha256": "sha256:68fcb436932a097ea4bde44b8996758fb9c8b7da0eb4c7d3845a8db24fcc1946",
+          "outputSha256": "sha256:7d7c8a65b7f65e6ffeb02850c95a278ba4aac15a81c76062ef61b6d1acf556e1",
           "source": "upstream/packages/render-wgpu/src/wgpuSurface.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
+            "createWgpuRenderStateForTest",
+            "installWgpuConstants",
+            "installWgpuMock",
+            "makeAdapter",
+            "makeBindGroup",
+            "makeBindGroupLayout",
+            "makeBuffer",
+            "makeCommandEncoder",
+            "makeDevice",
+            "makePipeline",
+            "makePipelineLayout",
+            "makeRenderPassEncoder",
+            "makeSampler",
+            "makeShaderModule",
+            "makeTexture"
+          ],
+          "declarations": 15,
+          "module": "_internal_wgpu_test_helper",
+          "outputSha256": "sha256:d259b9d56e60fffa6e486616c2b26db0eaf057dc43742788f272d92dc5a6b580",
+          "source": "upstream/packages/render-wgpu/src/wgpuTestHelper.ts",
           "usesOpaqueHostValues": true
         },
         {
@@ -21343,87 +22017,90 @@
           ],
           "declarations": 3,
           "module": "wgpu_texture_upload",
-          "outputSha256": "sha256:2a30e41b4de688c40d739fb155653c183684d634ba36bec5c33e011debcbb628",
+          "outputSha256": "sha256:abf909785636e0957b3f6e7777c2b7956097a6b7ee712118ec2303fb585c7b7b",
           "source": "upstream/packages/render-wgpu/src/wgpuTextureUpload.ts",
           "usesOpaqueHostValues": true
         }
       ],
       "fullyPromotedTarget": false,
       "generatedExports": [
+        "UNIFORM_BYTE_SIZE",
+        "WgpuBitmapShader",
         "WgpuRenderTarget",
         "WgpuRenderTargetPool",
         "acquireWgpuFrameCaptureTexture",
         "acquireWgpuRenderTarget",
+        "applyWgpuBlendMode",
         "applyWgpuScissorRect",
+        "beginWgpuRenderPass",
+        "bindWgpuImageResourceTexture",
+        "bindWgpuTexture",
+        "buildWgpuRenderTargetBindGroup",
         "createSurfaceFromWgpuRenderState",
+        "createWgpuBindGroupLayouts",
         "createWgpuCanvasElement",
         "createWgpuFullscreenPipeline",
+        "createWgpuPipelineLayout",
+        "createWgpuRenderState",
         "createWgpuRenderStateForTest",
+        "createWgpuRenderStateRuntime",
+        "createWgpuRenderTarget",
         "createWgpuRenderTargetPool",
+        "createWgpuTextureEntry",
         "destroyWgpuFullscreenPipeline",
+        "destroyWgpuRenderState",
+        "destroyWgpuRenderTarget",
         "destroyWgpuRenderTargetPool",
         "drawWgpuFullscreenPass",
+        "drawWgpuQuad",
+        "drawWgpuQuadWithTransform",
+        "drawWgpuRenderTargetResult",
+        "enableWgpuBlendModeSupport",
         "enableWgpuFrameCapture",
         "encodeWgpuFrameCapture",
+        "endWgpuRenderPass",
         "generateWgpuMipmaps",
+        "getActiveWgpuPipeline",
         "getWgpuAdapterCapabilities",
         "getWgpuMaterialRenderer",
         "getWgpuMipLevelCount",
+        "getWgpuPipeline",
+        "getWgpuRenderProxyColorTransform",
+        "getWgpuRenderStateRuntime",
+        "getWgpuSampler",
         "getWgpuShader",
         "installWgpuMock",
+        "isWgpuSupported",
         "popWgpuScissorRect",
         "pushWgpuScissorRect",
         "registerWgpuBitmapShader",
         "registerWgpuMaterialRenderer",
         "releaseWgpuRenderTarget",
-        "resolveWgpuMaterialRenderer",
-        "resolveWgpuShader",
-        "setWgpuShader",
-        "uploadWgpuTextureData",
-        "uploadWgpuTextureElement",
-        "uploadWgpuTextureImageResource"
-      ],
-      "missingExports": [
-        "UNIFORM_BYTE_SIZE",
-        "WgpuBitmapShader",
-        "applyWgpuBlendMode",
-        "beginWgpuRenderPass",
-        "bindWgpuImageResourceTexture",
-        "bindWgpuTexture",
-        "buildWgpuRenderTargetBindGroup",
-        "createWgpuBindGroupLayouts",
-        "createWgpuPipelineLayout",
-        "createWgpuRenderState",
-        "createWgpuRenderStateRuntime",
-        "createWgpuRenderTarget",
-        "createWgpuTextureEntry",
-        "destroyWgpuRenderState",
-        "destroyWgpuRenderTarget",
-        "drawWgpuQuad",
-        "drawWgpuQuadWithTransform",
-        "drawWgpuRenderTargetResult",
-        "enableWgpuBlendModeSupport",
-        "endWgpuRenderPass",
-        "getActiveWgpuPipeline",
-        "getWgpuPipeline",
-        "getWgpuRenderProxyColorTransform",
-        "getWgpuRenderStateRuntime",
-        "getWgpuSampler",
-        "isWgpuSupported",
         "renderWgpuBackground",
         "resizeWgpuRenderTarget",
+        "resolveWgpuMaterialRenderer",
+        "resolveWgpuShader",
         "setWgpuMatrixFromTransform",
         "setWgpuRenderTransform2D",
+        "setWgpuShader",
         "submitWgpuQuadDraw",
         "submitWgpuRenderPass",
         "updateWgpuTextureEntry",
+        "uploadWgpuTextureData",
+        "uploadWgpuTextureElement",
+        "uploadWgpuTextureImageResource",
         "warmWgpuPipelines",
         "writeWgpuMatrixOnlyUniforms",
         "writeWgpuQuadUniforms"
       ],
+      "missingExports": [],
       "package": "@flighthq/render-wgpu",
       "promotedTarget": false,
       "requiredDependencies": [
+        {
+          "crate": "flighthq-geometry",
+          "package": "@flighthq/geometry"
+        },
         {
           "crate": "flighthq-render",
           "package": "@flighthq/render"
@@ -21433,7 +22110,7 @@
           "package": "@flighthq/types"
         }
       ],
-      "status": "blocked",
+      "status": "emittable",
       "transitiveDependents": 5
     },
     {
@@ -21706,8 +22383,8 @@
       "blockers": [
         {
           "diagnostics": [],
-          "fingerprint": "sha256:750814ba4d74caa9e225eb792905c235281b49916167901e8dcd77da17bdaf30",
-          "reason": "Generated crate is missing 9 of 15 upstream exports; re-export or declaration synthesis is required.",
+          "fingerprint": "sha256:25e88aebfe0c24b5791f86c8f2a8a15596e402417d15e02185948b36ffbc8ac7",
+          "reason": "Generated crate is missing 8 of 15 upstream exports; re-export or declaration synthesis is required.",
           "source": "upstream/packages/scene-formats/src",
           "stage": "package"
         },
@@ -21721,7 +22398,7 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:b67709c19e5c8a8e001e9175cd543165ed856da39c32516867200a4b1fa9372e",
-          "reason": "buildGltfAnimationClip: object literal requires an inferred structural type (target=unknown, properties=components,interpolation,quaternion,times,values)",
+          "reason": "readAccessor: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object",
           "source": "upstream/packages/scene-formats/src/gltfParse.ts",
           "stage": "emission"
         },
@@ -21737,13 +22414,6 @@
           "fingerprint": "sha256:0157d3988144d536bca0fd0a2b9f89683ee91e2a57224dbeb4fb8dd8be3ab2f8",
           "reason": "createSceneFromMd2: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object",
           "source": "upstream/packages/scene-formats/src/md2Parse.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:55b92e6ae177fe7b29c41b3430daee9248b24c78c8b7dcc2ccf8a76f7a649800",
-          "reason": "buildAnimationClip: object literal requires an inferred structural type (target=unknown, properties=components,times,values)",
-          "source": "upstream/packages/scene-formats/src/md5AnimParse.ts",
           "stage": "emission"
         },
         {
@@ -21895,6 +22565,32 @@
         },
         {
           "declarationNames": [
+            "DEFAULT_BASEFRAME",
+            "FLAG_QX",
+            "FLAG_QY",
+            "FLAG_QZ",
+            "FLAG_TX",
+            "FLAG_TY",
+            "FLAG_TZ",
+            "Md5AnimBaseframePose",
+            "Md5AnimHierarchyEntry",
+            "buildAnimationClip",
+            "parseBaseframeBlock",
+            "parseBaseframeLine",
+            "parseFrameBlock",
+            "parseHierarchyBlock",
+            "parseHierarchyLine",
+            "parseMd5Anim",
+            "skipBlock"
+          ],
+          "declarations": 17,
+          "module": "md5_anim_parse",
+          "outputSha256": "sha256:e48e9ff5e0b268af273f38f03c8d69643b5653ecb73e51619a921d01a4b985f9",
+          "source": "upstream/packages/scene-formats/src/md5AnimParse.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
             "createSceneFromMd5Mesh",
             "parseJointLine",
             "parseJointsBlock",
@@ -21908,7 +22604,7 @@
           ],
           "declarations": 10,
           "module": "md5_parse",
-          "outputSha256": "sha256:c18f15647e34f7505c469a9d8a2f85a2bde1111928a53433f19104b50f25bfb1",
+          "outputSha256": "sha256:a99d07243640021bcad14c446725c615bd290b826550abd0ca4d1a889c73432d",
           "source": "upstream/packages/scene-formats/src/md5Parse.ts",
           "usesOpaqueHostValues": true
         },
@@ -22084,6 +22780,7 @@
         "ThreeDsMesh",
         "createSceneFromMd5Mesh",
         "createSceneFromObj",
+        "parseMd5Anim",
         "parseObjMaterialLibrary"
       ],
       "missingExports": [
@@ -22094,12 +22791,15 @@
         "createSceneFromMd2",
         "createScenesFromGlb",
         "createScenesFromGltf",
-        "parseAwdSkeletonAnimations",
-        "parseMd5Anim"
+        "parseAwdSkeletonAnimations"
       ],
       "package": "@flighthq/scene-formats",
       "promotedTarget": false,
       "requiredDependencies": [
+        {
+          "crate": "flighthq-animation",
+          "package": "@flighthq/animation"
+        },
         {
           "crate": "flighthq-geometry",
           "package": "@flighthq/geometry"
@@ -22148,13 +22848,6 @@
           "fingerprint": "sha256:fd2a5159bee1dc31027d5c6194d979956eb0845d642d164518c8523d3752090f",
           "reason": "collectParticleEmitter3DNodes: entity runtime field children is unavailable on static receiver NodeRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits",
           "source": "upstream/packages/scene-gl/src/glParticleEmitter3D.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:7581e80b6d9db403fbb2f6f0a736814a2d840e887a82d61f435bc0e2fffd06d8",
-          "reason": "makeFakeGl2: object literal requires an inferred structural type (target={\"kind\":\"dynamic\"}, properties=calls,ARRAY_BUFFER,ELEMENT_ARRAY_BUFFER,STATIC_DRAW,FLOAT,UNSIGNED_BYTE,UNSIGNED_SHORT,UNSIGNED_INT,TRIANGLES,TEXTURE0,TEXTURE1,TEXTURE_2D,VERTEX_SHADER,FRAGMENT_SHADER,COMPILE_STATUS,LINK_STATUS,ACTIVE_UNIFORMS,FLOAT_VEC2,FLOAT_VEC3,FLOAT_VEC4,FLOAT_MAT2,FLOAT_MAT3,FLOAT_MAT4,BLEND,CULL_FACE,BACK,DEPTH_TEST,LESS,ONE,ONE_MINUS_SRC_ALPHA,SRC_ALPHA,FUNC_ADD,FRAMEBUFFER,COLOR_BUFFER_BIT,DEPTH_BUFFER_BIT,COLOR,DEPTH_STENCIL,MAX_VERTEX_UNIFORM_VECTORS,RGBA32F,NEAREST,CLAMP_TO_EDGE,TEXTURE_MIN_FILTER,TEXTURE_MAG_FILTER,TEXTURE_WRAP_S,TEXTURE_WRAP_T,getParameter,createShader,shaderSource,compileShader,getShaderParameter,getShaderInfoLog,deleteShader,createProgram,attachShader,linkProgram,getProgramParameter,getActiveUniform,getProgramInfoLog,useProgram,getUniformLocation,createBuffer,bindBuffer,bufferData,createVertexArray,bindVertexArray,deleteBuffer,deleteFramebuffer,deleteProgram,deleteRenderbuffer,deleteTexture,deleteVertexArray,enableVertexAttribArray,getAttribLocation,vertexAttribPointer,vertexAttribIPointer,vertexAttrib4f,vertexAttribDivisor,bufferSubData,bindFramebuffer,blendEquation,blendFunc,clear,clearColor,clearDepth,clearBufferfv,clearBufferfi,cullFace,depthFunc,depthMask,flush,viewport,disable,enable,drawElements,drawElementsInstanced,drawArrays,activeTexture,bindTexture,createTexture,texParameteri,texImage2D,texSubImage2D,pixelStorei,uniform1i,uniform1f,uniform1fv,uniform2f,uniform2fv,uniform3f,uniform3fv,uniform4f,uniform4fv,uniformMatrix3fv,uniformMatrix4fv)",
-          "source": "upstream/packages/scene-gl/src/glSceneTestHelper.ts",
           "stage": "emission"
         }
       ],
@@ -22310,7 +23003,7 @@
           ],
           "declarations": 12,
           "module": "draw_gl_scene",
-          "outputSha256": "sha256:3e760fb5dd212be1fa8b8ebb6141709a395d07f9f393f49fafb21ee7121f7c7c",
+          "outputSha256": "sha256:fbb414556bfb888ed687476fceb6a681cf4fbda540703de1891b106e809be5fb",
           "source": "upstream/packages/scene-gl/src/drawGlScene.ts",
           "usesOpaqueHostValues": true
         },
@@ -22536,7 +23229,7 @@
           ],
           "declarations": 17,
           "module": "gl_mesh_program",
-          "outputSha256": "sha256:9f7fc132ae7dcf846c57f74d32bfa408b4865e41e84d0cacfa0906635355206f",
+          "outputSha256": "sha256:dfdb024ef7441a238613388bd2bea5b688a8447d02a61af5f80b7573ca2ff9cf",
           "source": "upstream/packages/scene-gl/src/glMeshProgram.ts",
           "usesOpaqueHostValues": true
         },
@@ -22623,6 +23316,18 @@
           "module": "gl_scene_runtime",
           "outputSha256": "sha256:278a77de7163c58c1402b2b403026695cb75cbc5b4e01dfc4862795eb8de5e03",
           "source": "upstream/packages/scene-gl/src/glSceneRuntime.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
+            "FakeGl2",
+            "makeFakeGl2",
+            "makeGlSceneState"
+          ],
+          "declarations": 3,
+          "module": "_internal_gl_scene_test_helper",
+          "outputSha256": "sha256:4d085ca1f8c3d6f6a6cc9b03446aabf3299bf08a6a1df3479fc12928cf3eb48d",
+          "source": "upstream/packages/scene-gl/src/glSceneTestHelper.ts",
           "usesOpaqueHostValues": true
         },
         {
@@ -23020,6 +23725,7 @@
       ],
       "fullyPromotedTarget": false,
       "generatedExports": [
+        "FakeGl2",
         "GL_MESH_LIGHT_BLOCK_GLSL",
         "GL_PBR_BASE_COLOR_TEXTURE_UNIT",
         "GL_PBR_EMISSIVE_TEXTURE_UNIT",
@@ -23151,6 +23857,8 @@
         "iridescencePbrGlMeshMaterialRenderer",
         "isGlTextureReady",
         "lambertGlMeshMaterialRenderer",
+        "makeFakeGl2",
+        "makeGlSceneState",
         "matcapGlMeshMaterialRenderer",
         "normalGlMeshMaterialRenderer",
         "phongGlMeshMaterialRenderer",
@@ -23272,17 +23980,10 @@
       "blockers": [
         {
           "diagnostics": [],
-          "fingerprint": "sha256:3e9e6d2d6077e30fa35fc769b81c52d4aecd61591c21a21dc2161364c5322b9d",
-          "reason": "Generated crate is missing 5 of 37 upstream exports; re-export or declaration synthesis is required.",
+          "fingerprint": "sha256:37e5e8931a38ffc74cb913076ceefe7507db150b27567ad6664f4cbda7d41ae1",
+          "reason": "Generated crate is missing 3 of 37 upstream exports; re-export or declaration synthesis is required.",
           "source": "upstream/packages/scene-resources/src",
           "stage": "package"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:b72fb7baff5aa052dd6e9243da0f0bfb945d976bef647aa0424d84f0f308b8f1",
-          "reason": "revealSceneResourcesOnResolve: object literal requires an inferred structural type (target={\"kind\":\"union\",\"variants\":[{\"arguments\":[{\"arguments\":[],\"kind\":\"named\",\"name\":\"T\"}],\"kind\":\"named\",\"name\":\"NumericProps\"},{\"arguments\":[],\"kind\":\"named\",\"name\":\"TweenOptions\"}]}, properties=alpha)",
-          "source": "upstream/packages/scene-resources/src/revealSceneResourcesOnResolve.ts",
-          "stage": "emission"
         },
         {
           "diagnostics": [],
@@ -23443,7 +24144,7 @@
           ],
           "declarations": 9,
           "module": "resolve_scene_resources",
-          "outputSha256": "sha256:75b234525a7ff881250e0aaff922aa77e6184634a00bc6d5f9916cd83d7fbde7",
+          "outputSha256": "sha256:cd473a7e746bf798badfca410ad048f219aa6b6d51096e12c75f76a3baee4c10",
           "source": "upstream/packages/scene-resources/src/resolveSceneResources.ts",
           "usesOpaqueHostValues": true
         },
@@ -23455,6 +24156,18 @@
           "module": "resolve_scene_resources_and_wait",
           "outputSha256": "sha256:6df3c9e9f1ced50574719d00bb77f805e5086314584af328ddb8e50a77bd7012",
           "source": "upstream/packages/scene-resources/src/resolveSceneResourcesAndWait.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
+            "SceneResourceRevealOptions",
+            "collectPendingTextureOwners",
+            "revealSceneResourcesOnResolve"
+          ],
+          "declarations": 3,
+          "module": "reveal_scene_resources_on_resolve",
+          "outputSha256": "sha256:ff6017ec58b686067f31695a85655d7391e0e0fe7cdda1311dc92e9e53ed7163",
+          "source": "upstream/packages/scene-resources/src/revealSceneResourcesOnResolve.ts",
           "usesOpaqueHostValues": true
         },
         {
@@ -23513,6 +24226,7 @@
         "SceneResourceInFlight",
         "SceneResourceResolver",
         "SceneResourceResolverOptions",
+        "SceneResourceRevealOptions",
         "SceneResourceSignals",
         "createSceneMaterialTextureRegistry",
         "createSceneResourceResolver",
@@ -23536,14 +24250,13 @@
         "resolveOneSceneResourceTexture",
         "resolveSceneResources",
         "resolveSceneResourcesAndWait",
-        "resolveScenesWithOptions"
+        "resolveScenesWithOptions",
+        "revealSceneResourcesOnResolve"
       ],
       "missingExports": [
         "SceneResourceFetch",
-        "SceneResourceRevealOptions",
         "createWebSceneResourceFetch",
-        "resolveSceneResourceUri",
-        "revealSceneResourcesOnResolve"
+        "resolveSceneResourceUri"
       ],
       "package": "@flighthq/scene-resources",
       "promotedTarget": false,
@@ -23573,6 +24286,10 @@
           "package": "@flighthq/signals"
         },
         {
+          "crate": "flighthq-tween",
+          "package": "@flighthq/tween"
+        },
+        {
           "crate": "flighthq-types",
           "package": "@flighthq/types"
         }
@@ -23586,93 +24303,16 @@
       "blockers": [
         {
           "diagnostics": [],
-          "fingerprint": "sha256:15e4139ed1eb1786c0085bec1a12a2418deab6405bd37bbe06eadf3188942238",
-          "reason": "Generated crate is missing 73 of 140 upstream exports; re-export or declaration synthesis is required.",
+          "fingerprint": "sha256:a8aeca2cf2410b596390d805ec8aaf56b6b73af2873ae65ece2c39660212dc6f",
+          "reason": "Generated crate is missing 2 of 140 upstream exports; re-export or declaration synthesis is required.",
           "source": "upstream/packages/scene-wgpu/src",
           "stage": "package"
         },
         {
           "diagnostics": [],
-          "fingerprint": "sha256:34e3b8429f72fe1e8ff36c565d59e5af11bf1bcb82a512079a2d3b972baa51b2",
-          "reason": "compileWgpuClassicPipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module,shadowBindGroupLayout)",
-          "source": "upstream/packages/scene-wgpu/src/wgpuClassicPrelude.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:c35d6d4095ee541b30e3530128172bfed3bc20ad1847331ec363db4c4b8f16dd",
-          "reason": "compileWgpuDebugPipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module)",
-          "source": "upstream/packages/scene-wgpu/src/wgpuDebugPrelude.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:d94f65e562b33640ab1f033fc14d804c7d7b72871194edd40dceba4e69bee9c8",
-          "reason": "BAKE_CLEAR: object literal requires an inferred structural type (target={\"kind\":\"dynamic\"}, properties=r,g,b,a)",
-          "source": "upstream/packages/scene-wgpu/src/wgpuEnvironmentIblBake.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:549fbe9b75b032617f634fdfcdaf7e2cf1c9ce321885f176df4e8ad18e664ab3",
-          "reason": "compileWgpuMatcapPipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module)",
-          "source": "upstream/packages/scene-wgpu/src/wgpuMatcapPrelude.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:fb46e34ae77e18d6c547e25ed8bae316bf3b787fc452eab99bfe71700e4afee3",
-          "reason": "VERTEX_BUFFER_LAYOUTS: object literal requires an inferred structural type (target={\"kind\":\"dynamic\"}, properties=arrayStride,attributes)",
-          "source": "upstream/packages/scene-wgpu/src/wgpuMeshPipeline.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
           "fingerprint": "sha256:952fdf5de1efb5e4e7c28f4ab5eccb6cdf10c68088ca9a83f2b3ad7eb7c36e4a",
-          "reason": "wgpuParticleBlendState: object literal requires an inferred structural type (target={\"kind\":\"dynamic\"}, properties=operation,srcFactor,dstFactor)",
+          "reason": "collectParticleEmitter3DNodes: entity runtime field children is unavailable on static receiver NodeRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits",
           "source": "upstream/packages/scene-wgpu/src/wgpuParticleEmitter3D.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:f4523818f6c43a509391e56dc7b2570c59b9d0f3915a266812377f3e5c72d4a4",
-          "reason": "compileWgpuPbrPipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module,pbrSampleBindGroupLayout)",
-          "source": "upstream/packages/scene-wgpu/src/wgpuPbrPipelineCache.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:0afba53adbaf8fd013f26bf5a2404cf15830e29b69a25a0f5d54a2f77e379ac1",
-          "reason": "installWgpuConstants: object literal requires an inferred structural type (target={\"kind\":\"dynamic\"}, properties=MAP_READ,MAP_WRITE,COPY_SRC,COPY_DST,INDEX,VERTEX,UNIFORM,STORAGE,INDIRECT,QUERY_RESOLVE)",
-          "source": "upstream/packages/scene-wgpu/src/wgpuSceneTestHelper.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:db02c62651c4adad2450f532f420a33b56b296b8983905d00ae81deb4a3ab05b",
-          "reason": "SHADOW_VERTEX_BUFFER_LAYOUTS: object literal requires an inferred structural type (target={\"kind\":\"dynamic\"}, properties=arrayStride,attributes)",
-          "source": "upstream/packages/scene-wgpu/src/wgpuShadowMap.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:25a26785ffbb97e7c2d4cf7d2ace7e8f63a43af2f19603d94aedacbb35048533",
-          "reason": "compileWgpuToonPipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module,shadowBindGroupLayout)",
-          "source": "upstream/packages/scene-wgpu/src/wgpuToonPrelude.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:9a2dfa222eee3f96ee10b0909ff92dbb1da89fe2140db4965169c332f8cff487",
-          "reason": "compileWgpuUnlitPipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module)",
-          "source": "upstream/packages/scene-wgpu/src/wgpuUnlitPrelude.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:68cb6aa1e09a116c2a58f50a39ee545abd63988343a02bd44955adc60cfca4c0",
-          "reason": "compileWgpuWireframePipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module,topology)",
-          "source": "upstream/packages/scene-wgpu/src/wgpuWireframePrelude.ts",
           "stage": "emission"
         }
       ],
@@ -23736,7 +24376,7 @@
           ],
           "declarations": 3,
           "module": "anisotropy_pbr_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:114b37f8b7def9bae5c3f91986f22583e440be01c9d20b1736fe1ab460ef29d3",
+          "outputSha256": "sha256:8e619ae28638e7583bd1faa054ca25ed4d4a13713ab39ae6d3a41f3ef2d36812",
           "source": "upstream/packages/scene-wgpu/src/anisotropyPbrWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": false
         },
@@ -23752,7 +24392,7 @@
           ],
           "declarations": 7,
           "module": "blinn_phong_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:06d6580e6ff66313a8dadde9cc07c5975ca756750f6f1b6f1e15f2da5beedc16",
+          "outputSha256": "sha256:b48027bf8ed0ca660ef70de0b0f560431f7231f54c1e53427987b37f65bf98c1",
           "source": "upstream/packages/scene-wgpu/src/blinnPhongWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -23764,7 +24404,7 @@
           ],
           "declarations": 3,
           "module": "clearcoat_pbr_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:923a84c51b5a4f0099120e1666f28b0e40c3900c271a79537d835697f624fc54",
+          "outputSha256": "sha256:03657aeb6430ca928788b02a7cc8d7b3734eaf10ba1d0c2ad954b6e249ed15d9",
           "source": "upstream/packages/scene-wgpu/src/clearcoatPbrWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": false
         },
@@ -23776,7 +24416,7 @@
           ],
           "declarations": 3,
           "module": "depth_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:ff572abf5cb5017bb49c4b1348500c59efc30485be58da644077cb1cd5770974",
+          "outputSha256": "sha256:bbf48dbb8d611075466b0fc36b47d3bcbe88a4b8af46a9f11312773c33919276",
           "source": "upstream/packages/scene-wgpu/src/depthWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -23790,7 +24430,7 @@
           ],
           "declarations": 5,
           "module": "draw_wgpu_scene",
-          "outputSha256": "sha256:c65f16dbf42b3830a442bf75f90d53d2c657cec6558652f00c089a1ab9442a01",
+          "outputSha256": "sha256:7f5a725ee8b172574dfb682ccd08d110ce136764b23b6970458faa3cd49f590e",
           "source": "upstream/packages/scene-wgpu/src/drawWgpuScene.ts",
           "usesOpaqueHostValues": true
         },
@@ -23805,7 +24445,7 @@
           ],
           "declarations": 6,
           "module": "emissive_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:5a1644101ccc6482003878dc0c9b9570b3dffdfb160bdd56a96502ee54144275",
+          "outputSha256": "sha256:7f5df481513e9728e13aa7e9e76cf0c277500d9ba159f56ef0981c30e89838db",
           "source": "upstream/packages/scene-wgpu/src/emissiveWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -23825,7 +24465,7 @@
           ],
           "declarations": 3,
           "module": "iridescence_pbr_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:151c24e46eb338269e4ad0d0349e25df2866b7c23668e5d7ba8259ae4d6f020e",
+          "outputSha256": "sha256:99126c22a4502431a6d69ce86b3c2b8c294137adf7de8b704bbdb6d0549b1626",
           "source": "upstream/packages/scene-wgpu/src/iridescencePbrWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": false
         },
@@ -23840,7 +24480,7 @@
           ],
           "declarations": 6,
           "module": "lambert_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:2ca8e56becbca72916d4b5c1dff77ab146080d5eeb2733df4ea67502de63f0ff",
+          "outputSha256": "sha256:ff26bd8343f26c745e8e1252e796897aa8ab84954a98fe7b65b06c1af430307c",
           "source": "upstream/packages/scene-wgpu/src/lambertWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -23855,7 +24495,7 @@
           ],
           "declarations": 6,
           "module": "matcap_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:efba4aa8321c625b8f69e20c986b435d164654fd7b17d240aad8d42e735ea499",
+          "outputSha256": "sha256:3cadb494dc9c3b1cb3f6c2fd683bc7fe108771d4668e5e1eaee035cf8a48e773",
           "source": "upstream/packages/scene-wgpu/src/matcapWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -23867,7 +24507,7 @@
           ],
           "declarations": 3,
           "module": "normal_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:71c9f601a2e224dc1110a4dbb74b9f665c0175013fef9c5275398c84d0356132",
+          "outputSha256": "sha256:1644f73116ffbab833b4dab2168e1b4dcdf2e9908bc48ae8da5a1858aaf58f78",
           "source": "upstream/packages/scene-wgpu/src/normalWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -23883,7 +24523,7 @@
           ],
           "declarations": 7,
           "module": "phong_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:952f67c91fbae34fc25c57536da181a6886b7656286fae4207b4b1a824520549",
+          "outputSha256": "sha256:f7f7e54d42c6708e3a5bf54c24eb8f23ffa31ab54d7a441969f42c952d3f35de",
           "source": "upstream/packages/scene-wgpu/src/phongWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -23906,7 +24546,7 @@
           ],
           "declarations": 4,
           "module": "sheen_pbr_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:88ae55461d3f0ecc201ed23111036a3107e0ca5677835d8adcb295db161fe387",
+          "outputSha256": "sha256:84a0fc44b4f1363458a55dd65a3129b18091e10c2963eec9756e5f04247be36e",
           "source": "upstream/packages/scene-wgpu/src/sheenPbrWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": false
         },
@@ -23925,7 +24565,7 @@
           ],
           "declarations": 10,
           "module": "specular_glossiness_pbr_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:1ef138229a71342d321143ac0058658e0cef0c5e01bb45048f7fb040119f0e99",
+          "outputSha256": "sha256:e0f3bf78a67e37930ac4cac46d122a724883847dad9df1ad0006e1f0afcea34b",
           "source": "upstream/packages/scene-wgpu/src/specularGlossinessPbrWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": false
         },
@@ -23938,7 +24578,7 @@
           ],
           "declarations": 4,
           "module": "specular_pbr_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:2de6b498d2a8ff9bb8ad88609a1b514f22c33467a40d9156e2f0a8ef1f5f87d6",
+          "outputSha256": "sha256:bed4708b22c2d304ea60e7cd15f9d22f86364cb195d063ce07981a231952cbb7",
           "source": "upstream/packages/scene-wgpu/src/specularPbrWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": false
         },
@@ -23957,7 +24597,7 @@
           ],
           "declarations": 10,
           "module": "standard_pbr_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:a0ecfe32dc09363cf3ced739134e93c1d36457ba33bce09d2d16facfb66fac59",
+          "outputSha256": "sha256:e8992dbc9b079d173b750234d4f433fedc8386385a89cfdba1aeb6d35d41147c",
           "source": "upstream/packages/scene-wgpu/src/standardPbrWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -23970,7 +24610,7 @@
           ],
           "declarations": 4,
           "module": "subsurface_pbr_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:f9eafad7a280fd0b7677164c85094bb3fb425b5cc16649cbb74eb73a6bc14d50",
+          "outputSha256": "sha256:190a17f6143700309918d76821aef584adc1691ba516535965eaac4ef4d02a71",
           "source": "upstream/packages/scene-wgpu/src/subsurfacePbrWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": false
         },
@@ -23985,7 +24625,7 @@
           ],
           "declarations": 6,
           "module": "toon_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:f7d4561908c68ea2079f951aa3f21e35054f0bb163bffc892adf4e099f9c6c8f",
+          "outputSha256": "sha256:ed530321508b079c903b01552d86b32698300ba21bdb46b7f5a9b2ab9381d401",
           "source": "upstream/packages/scene-wgpu/src/toonWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -23998,7 +24638,7 @@
           ],
           "declarations": 4,
           "module": "transmission_volume_pbr_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:057079a930cac22e76a197540e842ce57147084dd1deda47d94d666f12943813",
+          "outputSha256": "sha256:1d273d49df55aa2eed210dad91ddb4bfc21f27b8409251da5e36d4dc3374fc41",
           "source": "upstream/packages/scene-wgpu/src/transmissionVolumePbrWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": false
         },
@@ -24013,7 +24653,7 @@
           ],
           "declarations": 6,
           "module": "unlit_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:44ef8dfdc5991280f8d792b24902e9d548e83bea7f924819e3e1bca8346d701c",
+          "outputSha256": "sha256:924c9e32e95a34347bb64d564dd34c42d5e90f347fb1fa8689c5cbbf147790c9",
           "source": "upstream/packages/scene-wgpu/src/unlitWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -24028,8 +24668,48 @@
           ],
           "declarations": 6,
           "module": "vertex_color_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:fca2d39cdbe9b5abb206970bf5f21006661bf848a9c106074c5cf10ab9bbe8c7",
+          "outputSha256": "sha256:fe1782012f7f8ff7a29d42feeead78bd895589802e2021aa3af93567f179b1b4",
           "source": "upstream/packages/scene-wgpu/src/vertexColorWgpuMeshMaterialRenderer.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
+            "CLASSIC_UNIFORM_BYTES",
+            "CLASSIC_WGSL_BODY",
+            "WgpuClassicDefineKey",
+            "WgpuClassicLightingModel",
+            "WgpuClassicPipeline",
+            "_scratch",
+            "bindWgpuClassicSurface",
+            "buildWgpuClassicDefineKey",
+            "compileWgpuClassicPipeline",
+            "ensureWgpuClassicPipeline",
+            "getWgpuClassicModuleSourceForKey"
+          ],
+          "declarations": 11,
+          "module": "wgpu_classic_prelude",
+          "outputSha256": "sha256:b36b4ea50737a593abe1728267b378c157436567ac8dac729dc84ccb14b96766",
+          "source": "upstream/packages/scene-wgpu/src/wgpuClassicPrelude.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
+            "DEBUG_MODE_CONSTS_WGSL",
+            "DEBUG_UNIFORM_BYTES",
+            "DEBUG_WGSL_BODY",
+            "WgpuDebugDefineKey",
+            "WgpuDebugPipeline",
+            "_scratch",
+            "bindWgpuDebugSurface",
+            "buildWgpuDebugDefineKey",
+            "compileWgpuDebugPipeline",
+            "ensureWgpuDebugPipeline",
+            "getWgpuDebugModuleSourceForKey"
+          ],
+          "declarations": 11,
+          "module": "wgpu_debug_prelude",
+          "outputSha256": "sha256:712b3482c26de53d230f367a543d82c755d78ce25c22556d7d95d48d0cb8d8a3",
+          "source": "upstream/packages/scene-wgpu/src/wgpuDebugPrelude.ts",
           "usesOpaqueHostValues": true
         },
         {
@@ -24043,6 +24723,40 @@
           "module": "wgpu_environment_cube",
           "outputSha256": "sha256:ef4d47fd5713afbe365ed7f1a975c4ed70df53a7ee92adce862b489d5e1a13b9",
           "source": "upstream/packages/scene-wgpu/src/wgpuEnvironmentCube.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
+            "BAKE_CLEAR",
+            "BAKE_COMMON_WGSL",
+            "BAKE_UNIFORM_BYTES",
+            "BAKE_VERTEX_WGSL",
+            "BRDF_LUT_FRAGMENT_WGSL",
+            "BRDF_LUT_SIZE",
+            "CUBE_FACE_BASIS",
+            "IBL_BAKE_FORMAT",
+            "IRRADIANCE_FRAGMENT_WGSL",
+            "IRRADIANCE_SIZE",
+            "PREFILTERED_FRAGMENT_WGSL",
+            "PREFILTERED_MIPS",
+            "PREFILTERED_SIZE",
+            "WgpuBakePrograms",
+            "WgpuBakedCube",
+            "_bakePrograms",
+            "_bakeScratch",
+            "bakeWgpuBrdfLut",
+            "bakeWgpuEnvironmentIbl",
+            "bakeWgpuIrradiance",
+            "bakeWgpuPrefiltered",
+            "createWgpuBakeCube",
+            "destroyWgpuSceneIbl",
+            "ensureWgpuBakePrograms",
+            "renderWgpuBakeCubeFaces"
+          ],
+          "declarations": 25,
+          "module": "wgpu_environment_ibl_bake",
+          "outputSha256": "sha256:0023ac96fb0adf312e1026b350456834f98049fe989654e07b6ddd05225bf405",
+          "source": "upstream/packages/scene-wgpu/src/wgpuEnvironmentIblBake.ts",
           "usesOpaqueHostValues": true
         },
         {
@@ -24067,6 +24781,25 @@
         },
         {
           "declarationNames": [
+            "MATCAP_UNIFORM_BYTES",
+            "MATCAP_WGSL_BODY",
+            "WgpuMatcapDefineKey",
+            "WgpuMatcapPipeline",
+            "_scratch",
+            "bindWgpuMatcapSurface",
+            "buildWgpuMatcapDefineKey",
+            "compileWgpuMatcapPipeline",
+            "ensureWgpuMatcapPipeline",
+            "getWgpuMatcapModuleSourceForKey"
+          ],
+          "declarations": 10,
+          "module": "wgpu_matcap_prelude",
+          "outputSha256": "sha256:ff151d9a47f4a28cbfa428f4a5978445110f3b85ab96da6b591761324e29240a",
+          "source": "upstream/packages/scene-wgpu/src/wgpuMatcapPrelude.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
             "getWgpuMeshMaterialRenderer",
             "registerWgpuMeshMaterialRenderer",
             "resolveWgpuMeshMaterialRenderer"
@@ -24079,6 +24812,59 @@
         },
         {
           "declarationNames": [
+            "DEPTH_STENCIL_FORMAT",
+            "DRAW_UNIFORM_BYTES",
+            "FRAME_COUNTS_OFFSET",
+            "FRAME_HEMISPHERE_OFFSET",
+            "FRAME_POINT_OFFSET",
+            "FRAME_SPOT_OFFSET",
+            "FRAME_UNIFORM_BYTES",
+            "IBL_DUMMY_FORMAT",
+            "IBL_SAMPLE_UNIFORM_BYTES",
+            "SHADOW_DEPTH_FORMAT",
+            "SHADOW_SAMPLE_UNIFORM_BYTES",
+            "VERTEX_BUFFER_LAYOUTS",
+            "WGPU_MESH_PRELUDE_WGSL",
+            "WHITE_PIXEL",
+            "WgpuMeshPipeline",
+            "WgpuSceneLayouts",
+            "_dynamicOffsets",
+            "_frameScratch",
+            "_iblSampleScratch",
+            "_shadowSampleScratch",
+            "beginWgpuMeshDraw",
+            "createWgpuMeshPipeline",
+            "drawWgpuMeshSubset",
+            "ensureWgpuFrameBindGroup",
+            "ensureWgpuIblSampleBindGroup",
+            "ensureWgpuIblSampleLayout",
+            "ensureWgpuPbrSampleBindGroup",
+            "ensureWgpuPbrSampleLayout",
+            "ensureWgpuPlaceholderTextureView",
+            "ensureWgpuSceneLayouts",
+            "ensureWgpuScenePipeline",
+            "ensureWgpuShadowSampleBindGroup",
+            "ensureWgpuShadowSampleLayout",
+            "getWgpuMaterialSampler",
+            "isWgpuTextureReady",
+            "resetWgpuUvTransformStash",
+            "resolveWgpuMaterialTextureView",
+            "scratchCameraPosition",
+            "scratchInverseView",
+            "scratchUvMatrix",
+            "scratchViewProjection",
+            "stashWgpuUvTransform",
+            "writeWgpuDrawUniform",
+            "writeWgpuFrameUniform"
+          ],
+          "declarations": 44,
+          "module": "wgpu_mesh_pipeline",
+          "outputSha256": "sha256:2f52b3abf8540c5ce9e1fdd62a6a61754ad08e09495ff5ca09f6107145935a3a",
+          "source": "upstream/packages/scene-wgpu/src/wgpuMeshPipeline.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
             "alignTo4",
             "ensureWgpuMeshUpload"
           ],
@@ -24086,6 +24872,18 @@
           "module": "wgpu_mesh_upload",
           "outputSha256": "sha256:ce0e35562bfedbc66bc267da3656f334a24390d4085eb3e93afca23f195ec008",
           "source": "upstream/packages/scene-wgpu/src/wgpuMeshUpload.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
+            "WgpuPbrPipeline",
+            "compileWgpuPbrPipeline",
+            "ensureWgpuPbrPipeline"
+          ],
+          "declarations": 3,
+          "module": "wgpu_pbr_pipeline_cache",
+          "outputSha256": "sha256:8436566b32c19fc67fc11fe987f7271eb971c8b76b9098b2b6a0903b56d9dfc9",
+          "source": "upstream/packages/scene-wgpu/src/wgpuPbrPipelineCache.ts",
           "usesOpaqueHostValues": true
         },
         {
@@ -24121,6 +24919,90 @@
         },
         {
           "declarationNames": [
+            "FakeWgpu",
+            "installWgpuConstants",
+            "makeWgpuSceneState"
+          ],
+          "declarations": 3,
+          "module": "_internal_wgpu_scene_test_helper",
+          "outputSha256": "sha256:1989ec431192a34594cf2e7a47045f8b09d452641ea6c4a6e57fcd1dd99dbcd1",
+          "source": "upstream/packages/scene-wgpu/src/wgpuSceneTestHelper.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
+            "SHADOW_DEPTH_WGSL",
+            "SHADOW_MAP_SIZE",
+            "SHADOW_VERTEX_BUFFER_LAYOUTS",
+            "_dynamicOffsets",
+            "_shadowProxy",
+            "destroyWgpuSceneShadow",
+            "drawWgpuSceneShadowMap",
+            "ensureWgpuShadowDepthPipeline"
+          ],
+          "declarations": 8,
+          "module": "wgpu_shadow_map",
+          "outputSha256": "sha256:0d37ea43440b1183399ffd1ab54908c0f13058ee6bbf3292aec340557289d996",
+          "source": "upstream/packages/scene-wgpu/src/wgpuShadowMap.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
+            "TOON_UNIFORM_BYTES",
+            "TOON_WGSL_BODY",
+            "WgpuToonDefineKey",
+            "WgpuToonPipeline",
+            "_scratch",
+            "bindWgpuToonSurface",
+            "buildWgpuToonDefineKey",
+            "compileWgpuToonPipeline",
+            "ensureWgpuToonPipeline",
+            "getWgpuToonModuleSourceForKey"
+          ],
+          "declarations": 10,
+          "module": "wgpu_toon_prelude",
+          "outputSha256": "sha256:44a8f7d51e7c5cce747424a7b84d1e414bb25c3fb69edb1fc637ab9849773e39",
+          "source": "upstream/packages/scene-wgpu/src/wgpuToonPrelude.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
+            "UNLIT_UNIFORM_BYTES",
+            "UNLIT_WGSL_BODY",
+            "WgpuUnlitDefineKey",
+            "WgpuUnlitPipeline",
+            "_scratch",
+            "bindWgpuUnlitSurface",
+            "buildWgpuUnlitDefineKey",
+            "compileWgpuUnlitPipeline",
+            "ensureWgpuUnlitPipeline",
+            "getWgpuUnlitModuleSourceForKey"
+          ],
+          "declarations": 10,
+          "module": "wgpu_unlit_prelude",
+          "outputSha256": "sha256:0b6b2d897ba0878be4c9032ffd461d4cfc6e9fb870e8dbe72b6b54b97cac147d",
+          "source": "upstream/packages/scene-wgpu/src/wgpuUnlitPrelude.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
+            "WIREFRAME_UNIFORM_BYTES",
+            "WIREFRAME_WGSL_BODY",
+            "WgpuWireframePipeline",
+            "_scratch",
+            "bindWgpuWireframeColor",
+            "compileWgpuWireframePipeline",
+            "ensureWgpuWireframePipeline",
+            "getWgpuWireframeModuleSource"
+          ],
+          "declarations": 8,
+          "module": "wgpu_wireframe_prelude",
+          "outputSha256": "sha256:ee944a12cd12735ae86ca867eeb1f148373a1e9f0271cc3c553bb0a3400f37cb",
+          "source": "upstream/packages/scene-wgpu/src/wgpuWireframePrelude.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
             "WgpuWireframeUpload",
             "alignTo4",
             "buildLineIndices",
@@ -24144,42 +25026,111 @@
           ],
           "declarations": 6,
           "module": "wireframe_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:508862626bd8314b6c5ff666bc1d54c196903b7d5d46824b4df7869e56a4d2b5",
+          "outputSha256": "sha256:e8a19034fc78220e86cb579884d523fa4fe4d3f934c7952f6e86d44a953e2a98",
           "source": "upstream/packages/scene-wgpu/src/wireframeWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         }
       ],
       "fullyPromotedTarget": false,
       "generatedExports": [
+        "FakeWgpu",
+        "SHADOW_DEPTH_FORMAT",
+        "WGPU_MESH_PRELUDE_WGSL",
         "WGPU_PBR_MATERIAL_UNIFORM_FLOATS",
+        "WgpuClassicDefineKey",
+        "WgpuClassicLightingModel",
+        "WgpuClassicPipeline",
+        "WgpuDebugDefineKey",
+        "WgpuDebugPipeline",
+        "WgpuMatcapDefineKey",
+        "WgpuMatcapPipeline",
         "WgpuMaterialBinding",
+        "WgpuMeshPipeline",
         "WgpuMeshUpload",
         "WgpuPbrDefineKey",
+        "WgpuPbrPipeline",
         "WgpuSceneIbl",
+        "WgpuSceneLayouts",
         "WgpuSceneRuntime",
         "WgpuSceneShadow",
+        "WgpuToonDefineKey",
+        "WgpuToonPipeline",
+        "WgpuUnlitDefineKey",
+        "WgpuUnlitPipeline",
+        "WgpuWireframePipeline",
         "WgpuWireframeUpload",
         "anisotropyPbrWgpuMeshMaterialRenderer",
+        "bakeWgpuEnvironmentIbl",
+        "beginWgpuMeshDraw",
+        "bindWgpuClassicSurface",
+        "bindWgpuDebugSurface",
+        "bindWgpuMatcapSurface",
+        "bindWgpuToonSurface",
+        "bindWgpuUnlitSurface",
+        "bindWgpuWireframeColor",
         "blinnPhongWgpuMeshMaterialRenderer",
+        "buildWgpuClassicDefineKey",
+        "buildWgpuDebugDefineKey",
+        "buildWgpuMatcapDefineKey",
         "buildWgpuPbrDefineKey",
         "buildWgpuPbrDefineSource",
         "buildWgpuPbrStandardDefineKey",
+        "buildWgpuToonDefineKey",
+        "buildWgpuUnlitDefineKey",
         "clearcoatPbrWgpuMeshMaterialRenderer",
+        "compileWgpuClassicPipeline",
+        "compileWgpuDebugPipeline",
+        "compileWgpuMatcapPipeline",
+        "compileWgpuPbrPipeline",
+        "compileWgpuToonPipeline",
+        "compileWgpuUnlitPipeline",
+        "compileWgpuWireframePipeline",
+        "createWgpuMeshPipeline",
         "depthWgpuMeshMaterialRenderer",
+        "destroyWgpuSceneIbl",
+        "destroyWgpuSceneShadow",
         "drawWgpuEnvironmentSkybox",
+        "drawWgpuMeshSubset",
         "drawWgpuScene",
+        "drawWgpuSceneShadowMap",
         "emissiveWgpuMeshMaterialRenderer",
+        "ensureWgpuClassicPipeline",
+        "ensureWgpuDebugPipeline",
         "ensureWgpuEnvironmentSourceCube",
+        "ensureWgpuFrameBindGroup",
+        "ensureWgpuIblSampleBindGroup",
+        "ensureWgpuIblSampleLayout",
+        "ensureWgpuMatcapPipeline",
         "ensureWgpuMeshUpload",
         "ensureWgpuPbrMaterialBindGroup",
+        "ensureWgpuPbrPipeline",
+        "ensureWgpuPbrSampleBindGroup",
+        "ensureWgpuPbrSampleLayout",
+        "ensureWgpuPlaceholderTextureView",
+        "ensureWgpuSceneLayouts",
+        "ensureWgpuScenePipeline",
+        "ensureWgpuShadowSampleBindGroup",
+        "ensureWgpuShadowSampleLayout",
+        "ensureWgpuToonPipeline",
+        "ensureWgpuUnlitPipeline",
+        "ensureWgpuWireframePipeline",
         "ensureWgpuWireframeUpload",
+        "getWgpuClassicModuleSourceForKey",
+        "getWgpuDebugModuleSourceForKey",
+        "getWgpuMatcapModuleSourceForKey",
+        "getWgpuMaterialSampler",
         "getWgpuMeshMaterialRenderer",
         "getWgpuPbrMaterialScratch",
         "getWgpuPbrModuleBody",
         "getWgpuPbrModuleSourceForKey",
         "getWgpuSceneRuntime",
+        "getWgpuToonModuleSourceForKey",
+        "getWgpuUnlitModuleSourceForKey",
+        "getWgpuWireframeModuleSource",
         "iridescencePbrWgpuMeshMaterialRenderer",
+        "isWgpuTextureReady",
         "lambertWgpuMeshMaterialRenderer",
+        "makeWgpuSceneState",
         "matcapWgpuMeshMaterialRenderer",
         "normalWgpuMeshMaterialRenderer",
         "phongWgpuMeshMaterialRenderer",
@@ -24204,11 +25155,13 @@
         "registerVertexColorWgpuMaterial",
         "registerWgpuMeshMaterialRenderer",
         "registerWireframeWgpuMaterial",
+        "resolveWgpuMaterialTextureView",
         "resolveWgpuMeshMaterialRenderer",
         "sheenPbrWgpuMeshMaterialRenderer",
         "specularGlossinessPbrWgpuMeshMaterialRenderer",
         "specularPbrWgpuMeshMaterialRenderer",
         "standardPbrWgpuMeshMaterialRenderer",
+        "stashWgpuUvTransform",
         "subsurfacePbrWgpuMeshMaterialRenderer",
         "toonWgpuMeshMaterialRenderer",
         "transmissionVolumePbrWgpuMeshMaterialRenderer",
@@ -24216,83 +25169,14 @@
         "updateWgpuEnvironmentCubeFace",
         "vertexColorWgpuMeshMaterialRenderer",
         "wireframeWgpuMeshMaterialRenderer",
+        "writeWgpuDrawUniform",
+        "writeWgpuFrameUniform",
         "writeWgpuPbrMaterialUniform",
         "writeWgpuPbrStandardBlock"
       ],
       "missingExports": [
-        "SHADOW_DEPTH_FORMAT",
-        "WGPU_MESH_PRELUDE_WGSL",
-        "WgpuClassicDefineKey",
-        "WgpuClassicLightingModel",
-        "WgpuClassicPipeline",
-        "WgpuDebugDefineKey",
-        "WgpuDebugPipeline",
-        "WgpuMatcapDefineKey",
-        "WgpuMatcapPipeline",
-        "WgpuMeshPipeline",
-        "WgpuPbrPipeline",
-        "WgpuSceneLayouts",
-        "WgpuToonDefineKey",
-        "WgpuToonPipeline",
-        "WgpuUnlitDefineKey",
-        "WgpuUnlitPipeline",
-        "WgpuWireframePipeline",
-        "bakeWgpuEnvironmentIbl",
-        "beginWgpuMeshDraw",
-        "bindWgpuClassicSurface",
-        "bindWgpuDebugSurface",
-        "bindWgpuMatcapSurface",
-        "bindWgpuToonSurface",
-        "bindWgpuUnlitSurface",
-        "bindWgpuWireframeColor",
-        "buildWgpuClassicDefineKey",
-        "buildWgpuDebugDefineKey",
-        "buildWgpuMatcapDefineKey",
-        "buildWgpuToonDefineKey",
-        "buildWgpuUnlitDefineKey",
-        "compileWgpuClassicPipeline",
-        "compileWgpuDebugPipeline",
-        "compileWgpuMatcapPipeline",
-        "compileWgpuPbrPipeline",
-        "compileWgpuToonPipeline",
-        "compileWgpuUnlitPipeline",
-        "compileWgpuWireframePipeline",
-        "createWgpuMeshPipeline",
         "destroyWgpuParticleEmitter3DResources",
-        "destroyWgpuSceneIbl",
-        "destroyWgpuSceneShadow",
-        "drawWgpuMeshSubset",
-        "drawWgpuSceneParticleEmitters",
-        "drawWgpuSceneShadowMap",
-        "ensureWgpuClassicPipeline",
-        "ensureWgpuDebugPipeline",
-        "ensureWgpuFrameBindGroup",
-        "ensureWgpuIblSampleBindGroup",
-        "ensureWgpuIblSampleLayout",
-        "ensureWgpuMatcapPipeline",
-        "ensureWgpuPbrPipeline",
-        "ensureWgpuPbrSampleBindGroup",
-        "ensureWgpuPbrSampleLayout",
-        "ensureWgpuPlaceholderTextureView",
-        "ensureWgpuSceneLayouts",
-        "ensureWgpuScenePipeline",
-        "ensureWgpuShadowSampleBindGroup",
-        "ensureWgpuShadowSampleLayout",
-        "ensureWgpuToonPipeline",
-        "ensureWgpuUnlitPipeline",
-        "ensureWgpuWireframePipeline",
-        "getWgpuClassicModuleSourceForKey",
-        "getWgpuDebugModuleSourceForKey",
-        "getWgpuMatcapModuleSourceForKey",
-        "getWgpuMaterialSampler",
-        "getWgpuToonModuleSourceForKey",
-        "getWgpuUnlitModuleSourceForKey",
-        "getWgpuWireframeModuleSource",
-        "isWgpuTextureReady",
-        "resolveWgpuMaterialTextureView",
-        "stashWgpuUvTransform",
-        "writeWgpuDrawUniform",
-        "writeWgpuFrameUniform"
+        "drawWgpuSceneParticleEmitters"
       ],
       "package": "@flighthq/scene-wgpu",
       "promotedTarget": false,
@@ -24310,6 +25194,10 @@
           "package": "@flighthq/geometry"
         },
         {
+          "crate": "flighthq-image",
+          "package": "@flighthq/image"
+        },
+        {
           "crate": "flighthq-node",
           "package": "@flighthq/node"
         },
@@ -24320,6 +25208,10 @@
         {
           "crate": "flighthq-render-wgpu",
           "package": "@flighthq/render-wgpu"
+        },
+        {
+          "crate": "flighthq-texture",
+          "package": "@flighthq/texture"
         },
         {
           "crate": "flighthq-types",
@@ -24412,7 +25304,7 @@
           ],
           "declarations": 45,
           "module": "screen",
-          "outputSha256": "sha256:084aa0141eaae37dab2c3fc4d4e1d30ffae94a385d0d9a57aa19e06c0f04df4a",
+          "outputSha256": "sha256:cd25bbe4880ffc81afd5272dbb4ae9231f1805682041e5a45a3ae1efe03e2fea",
           "source": "upstream/packages/screen/src/screen.ts",
           "usesOpaqueHostValues": true
         }
@@ -31134,26 +32026,118 @@
     {
       "apiExports": 37,
       "attemptedSources": 17,
-      "blockers": [
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:0eee21d81e9b6a130569f0f2b2841a7beb1415515b966d14deb4865291b2680d",
-          "reason": "Generated crate is missing 1 of 37 upstream exports; re-export or declaration synthesis is required.",
-          "source": "upstream/packages/shading/src",
-          "stage": "package"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:115e1acf340c683b2f4fa4d63df124332c48a8e6b1a412abf684fff7197fdc93",
-          "reason": "orderModifierStack: object literal requires an inferred structural type (target={\"kind\":\"dynamic\"}, properties=index,modifier)",
-          "source": "upstream/packages/shading/src/orderModifierStack.ts",
-          "stage": "emission"
-        }
-      ],
+      "blockers": [],
       "candidate": {
-        "compileDiagnostics": [],
-        "status": "source-blocked",
-        "syntaxCheckedSources": 0,
+        "compileDiagnostics": [
+          {
+            "code": "E0425",
+            "message": "cannot find type `EmissiveModifierFacing` in this scope",
+            "source": "generated/candidates/flighthq-shading/src/create_emissive_modifier.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `FogModifierMode` in this scope",
+            "source": "generated/candidates/flighthq-shading/src/create_fog_modifier.rs"
+          },
+          {
+            "code": "E0422",
+            "message": "cannot find struct, variant or union type `ClosureSynthesizedRecord2984407717` in this scope",
+            "source": "generated/candidates/flighthq-shading/src/order_modifier_stack.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `ModifierSlot` in this scope",
+            "source": "generated/candidates/flighthq-shading/src/order_modifier_stack.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `ModifierSlot` in this scope",
+            "source": "generated/candidates/flighthq-shading/src/order_modifier_stack.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `ModifierSlot` in this scope",
+            "source": "generated/candidates/flighthq-shading/src/order_modifier_stack.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `ModifierSlot` in this scope",
+            "source": "generated/candidates/flighthq-shading/src/order_modifier_stack.rs"
+          },
+          {
+            "code": "E0063",
+            "message": "missing fields `alpha_cutoff`, `alpha_mode`, `alpha_type` and 14 other fields in initializer of `ShadedMaterial`",
+            "source": "generated/candidates/flighthq-shading/src/create_shaded_material.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "<rustc>/library/alloc/src/macros.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-shading/src/get_modifier_define_key.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-shading/src/get_modifier_define_key.rs"
+          },
+          {
+            "code": "E0593",
+            "message": "closure is expected to take 1 argument, but it takes 2 arguments",
+            "source": "generated/candidates/flighthq-shading/src/order_modifier_stack.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `map` on type `Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0368",
+            "message": "binary assignment operation `+=` cannot be applied to type `&str`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0368",
+            "message": "binary assignment operation `+=` cannot be applied to type `&str`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          }
+        ],
+        "path": "generated/candidates/flighthq-shading",
+        "status": "compile-blocked",
+        "syntaxCheckedSources": 17,
         "unresolvedDependencies": []
       },
       "crate": "flighthq-shading",
@@ -31177,7 +32161,7 @@
           ],
           "declarations": 2,
           "module": "create_animated_normal_modifier",
-          "outputSha256": "sha256:e8c5c759cd1f06a1d211236ced1457fd8fa7bf505db9ab5ff762d7a1ef07d1fd",
+          "outputSha256": "sha256:39291da67166700fba3ba137e48db439900c555bbc68c46b8dfd66e21a842abf",
           "source": "upstream/packages/shading/src/createAnimatedNormalModifier.ts",
           "usesOpaqueHostValues": false
         },
@@ -31188,7 +32172,7 @@
           ],
           "declarations": 2,
           "module": "create_dissolve_modifier",
-          "outputSha256": "sha256:b66b3c4f3c4738297481118a1aa286d0d1f4135f8d56683211e29efec72794e4",
+          "outputSha256": "sha256:fe48bcb4f49a76659649fe69453258aaed43ffbc53143947ad3c92d9166859da",
           "source": "upstream/packages/shading/src/createDissolveModifier.ts",
           "usesOpaqueHostValues": false
         },
@@ -31199,7 +32183,7 @@
           ],
           "declarations": 2,
           "module": "create_emissive_modifier",
-          "outputSha256": "sha256:0d9295861488f9ba5f1f2487d796931d253cb18738f85f23a9292b2f322f0395",
+          "outputSha256": "sha256:12dc48b2b2bf8944c7a673f2df547c51748a57d0f20724efe77b966fe64d7a6f",
           "source": "upstream/packages/shading/src/createEmissiveModifier.ts",
           "usesOpaqueHostValues": false
         },
@@ -31210,7 +32194,7 @@
           ],
           "declarations": 2,
           "module": "create_env_reflect_modifier",
-          "outputSha256": "sha256:178af6fd0dd89a2aaad84ee701901c65dda6418a57a6282ce000a681ae67376c",
+          "outputSha256": "sha256:ffc965735162119537d1f7723328f5156dc7293c2d2077a2af6f4764c556ebb1",
           "source": "upstream/packages/shading/src/createEnvReflectModifier.ts",
           "usesOpaqueHostValues": false
         },
@@ -31221,7 +32205,7 @@
           ],
           "declarations": 2,
           "module": "create_fog_modifier",
-          "outputSha256": "sha256:27b37203ca9a98f83cbea65f46132875543cf002cfa3ede08f7ef5b31bcf639a",
+          "outputSha256": "sha256:cb285ed4953ac3c8df29fdda8f85dab827d276f222724914fd16a96d012407a5",
           "source": "upstream/packages/shading/src/createFogModifier.ts",
           "usesOpaqueHostValues": false
         },
@@ -31232,7 +32216,7 @@
           ],
           "declarations": 2,
           "module": "create_rim_modifier",
-          "outputSha256": "sha256:8085b2f0c6b2462e00c9928424ec0329c2a2141186d966fd5aebfa7020e46aa6",
+          "outputSha256": "sha256:e49a23cea98b40c9e042a09cd706cdcd5b46333a0c7a243c75d9edde5a1195d8",
           "source": "upstream/packages/shading/src/createRimModifier.ts",
           "usesOpaqueHostValues": false
         },
@@ -31243,7 +32227,7 @@
           ],
           "declarations": 2,
           "module": "create_shaded_material",
-          "outputSha256": "sha256:edf61ccb93ae7c032d7217b832536f43929450498dbe27aa773d3e73fb4e93bb",
+          "outputSha256": "sha256:d2a3eee05341adef3acbdfc5db8d5d47fad6b74ea1f0ba91168a8af322fcba31",
           "source": "upstream/packages/shading/src/createShadedMaterial.ts",
           "usesOpaqueHostValues": false
         },
@@ -31254,7 +32238,7 @@
           ],
           "declarations": 2,
           "module": "create_toon_modifier",
-          "outputSha256": "sha256:4e8b977fbff19920b3bf1b3175a498f921ef27913435e7da307979f0e29b28e4",
+          "outputSha256": "sha256:7c0979d2b6e4d22b48dc045497beb50a5c1d3e1d12840924851b3a7c5e433ce2",
           "source": "upstream/packages/shading/src/createToonModifier.ts",
           "usesOpaqueHostValues": false
         },
@@ -31266,7 +32250,7 @@
           ],
           "declarations": 3,
           "module": "create_vertex_displace_modifier",
-          "outputSha256": "sha256:972afb9c12effb1635dcff424429e854a03294f3a27130a3078972eb5ab5d572",
+          "outputSha256": "sha256:f6b37a03f6d139f04ee9ebb09351e6f47eddd288bceca9390aa0fae4d8a06d27",
           "source": "upstream/packages/shading/src/createVertexDisplaceModifier.ts",
           "usesOpaqueHostValues": false
         },
@@ -31277,7 +32261,7 @@
           ],
           "declarations": 2,
           "module": "get_modifier_define_key",
-          "outputSha256": "sha256:9dbf0238018dbaa077da796404628b9d49f19952b185ec42fdfed4f943e6fd1b",
+          "outputSha256": "sha256:49ac223dab6932b9856e8bf00c97fd9af5f6e98112a5e18582a68182c2874a2d",
           "source": "upstream/packages/shading/src/getModifierDefineKey.ts",
           "usesOpaqueHostValues": false
         },
@@ -31287,7 +32271,7 @@
           ],
           "declarations": 1,
           "module": "get_unregistered_modifier_kinds",
-          "outputSha256": "sha256:0df3d4c8643d2b1e751b6283ec1feb757885e5416d49c552f9476d94e418a835",
+          "outputSha256": "sha256:ebf43f9dd4cb4b5890e4022bc1a74bf30d6bc49f9013b365dd80d8f6e96a1d2a",
           "source": "upstream/packages/shading/src/getUnregisteredModifierKinds.ts",
           "usesOpaqueHostValues": false
         },
@@ -31295,7 +32279,7 @@
           "declarationNames": [],
           "declarations": 0,
           "module": "_internal_index",
-          "outputSha256": "sha256:93d77db110d6eb12f322d46c0d31c1e9af0cde91caa77a9fa95c745a6ca38383",
+          "outputSha256": "sha256:77e21ded3ff2d7a9c8f5661f1acd0c3b60a1c6f1dfd3d3adb31abdac6b752854",
           "source": "upstream/packages/shading/src/index.ts",
           "usesOpaqueHostValues": false
         },
@@ -31306,7 +32290,7 @@
           ],
           "declarations": 2,
           "module": "is_built_in_modifier_slot",
-          "outputSha256": "sha256:4957f6128d40fa4bc984667588cf4bdd52067209c9cf8d4e7b644c818f240ece",
+          "outputSha256": "sha256:a6ff510ae92fa3336937805ad93a7224293713c121bec1d166ca958b7abd16a0",
           "source": "upstream/packages/shading/src/isBuiltInModifierSlot.ts",
           "usesOpaqueHostValues": false
         },
@@ -31316,7 +32300,7 @@
           ],
           "declarations": 1,
           "module": "is_modifier_stack_valid",
-          "outputSha256": "sha256:cd40a3cda1bfae3efa59fe24913fb594f2ab0a109e6bc1c1f7016d23db07eddf",
+          "outputSha256": "sha256:e10a3b13367fb8e9c7f62292e426648a9dc8c5d716d754389a113c28cf5b4264",
           "source": "upstream/packages/shading/src/isModifierStackValid.ts",
           "usesOpaqueHostValues": false
         },
@@ -31330,8 +32314,20 @@
           ],
           "declarations": 5,
           "module": "modifier_registry",
-          "outputSha256": "sha256:3623df67106b007efd77551d144331135f8b4b94ebf81b2dd0683d09b579beb5",
+          "outputSha256": "sha256:512bf6780944b84c9e260aa9b05b2b391df6a6e04c8cfdad0f9463327856094f",
           "source": "upstream/packages/shading/src/modifierRegistry.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
+            "SLOT_RANK",
+            "getModifierSlotRank",
+            "orderModifierStack"
+          ],
+          "declarations": 3,
+          "module": "order_modifier_stack",
+          "outputSha256": "sha256:b165d668d382b1381f27929edf6bfaf7f1eccd0d484b49f0afead116a93d15ac",
+          "source": "upstream/packages/shading/src/orderModifierStack.ts",
           "usesOpaqueHostValues": true
         },
         {
@@ -31348,7 +32344,7 @@
           ],
           "declarations": 9,
           "module": "register_built_in_modifiers",
-          "outputSha256": "sha256:3143cbc28e95a3563f42409057838e9e28fc921a4ed63630d4ba923431e55fa1",
+          "outputSha256": "sha256:e76b06f974328d02bb1f157521709c2cca767c437de41317912a341c54f94d07",
           "source": "upstream/packages/shading/src/registerBuiltInModifiers.ts",
           "usesOpaqueHostValues": true
         }
@@ -31385,6 +32381,7 @@
         "getUnregisteredModifierKinds",
         "isBuiltInModifierSlot",
         "isModifierStackValid",
+        "orderModifierStack",
         "registerBuiltInModifiers",
         "registerModifier",
         "resolveModifier",
@@ -31392,9 +32389,7 @@
         "toonModifierDefinition",
         "vertexDisplaceModifierDefinition"
       ],
-      "missingExports": [
-        "orderModifierStack"
-      ],
+      "missingExports": [],
       "package": "@flighthq/shading",
       "promotedTarget": false,
       "requiredDependencies": [
@@ -31407,7 +32402,7 @@
           "package": "@flighthq/types"
         }
       ],
-      "status": "blocked",
+      "status": "emittable",
       "transitiveDependents": 2
     },
     {
@@ -31416,8 +32411,8 @@
       "blockers": [
         {
           "diagnostics": [],
-          "fingerprint": "sha256:a9adda4478ac29c64dfca1e704578e1b46c84981c24710f5d23c2e8e5111ab52",
-          "reason": "Generated crate is missing 11 of 42 upstream exports; re-export or declaration synthesis is required.",
+          "fingerprint": "sha256:450b3384caa6c2bab8fd9e5de4b1206990b509536e2175afe90ac11cd6cd2dbd",
+          "reason": "Generated crate is missing 10 of 42 upstream exports; re-export or declaration synthesis is required.",
           "source": "upstream/packages/shape/src",
           "stage": "package"
         },
@@ -31426,13 +32421,6 @@
           "fingerprint": "sha256:af494df128a12e2c9887b2e3bbf29b6a49bb2d536e8359dcc139fae397c09c6b",
           "reason": "copyShapeCommands: spread Rust lowering is not implemented",
           "source": "upstream/packages/shape/src/shape.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:e3861babb1844d8e77e086f8b7454fb5482ffe79be15f02e1987dd326bcf147e",
-          "reason": "enableShapeHitTesting: object literal requires an inferred structural type (target={\"arguments\":[{\"arguments\":[],\"kind\":\"named\",\"name\":\"K\"}],\"kind\":\"named\",\"name\":\"ShapeHitTestCommand\"}, properties=key,hitTest)",
-          "source": "upstream/packages/shape/src/shapeHitTestBuiltins.ts",
           "stage": "emission"
         }
       ],
@@ -31539,6 +32527,16 @@
         },
         {
           "declarationNames": [
+            "enableShapeHitTesting"
+          ],
+          "declarations": 1,
+          "module": "shape_hit_test_builtins",
+          "outputSha256": "sha256:b088c58e8be27b9c00b45e8bff9ceb9390683894fd4c52ef01638fd5cd12abf8",
+          "source": "upstream/packages/shape/src/shapeHitTestBuiltins.ts",
+          "usesOpaqueHostValues": false
+        },
+        {
+          "declarationNames": [
             "AnyHitTestFn",
             "hitTestShapeCommandPoint",
             "hitTests",
@@ -31579,6 +32577,7 @@
         "createScale9Shape",
         "createScale9ShapeData",
         "createScale9ShapeRuntime",
+        "enableShapeHitTesting",
         "getScale9ShapeRuntime",
         "getShapeFillRegions",
         "hasNonSolidShapeFill",
@@ -31592,7 +32591,6 @@
         "createShape",
         "createShapeData",
         "createShapeRuntime",
-        "enableShapeHitTesting",
         "getShapeBounds",
         "getShapeCommandCount",
         "getShapeRuntime",
@@ -31631,7 +32629,7 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:fdd14d3582c82e74ec76b73914048471b47ece24492f8e12830e742d76daee3a",
-          "reason": "formatShapeJson: object literal requires an inferred structural type (target={\"kind\":\"dynamic\"}, properties=bitmap)",
+          "reason": "formatShapeJson: JSON.stringify requires a portable scalar or structural array",
           "source": "upstream/packages/shape-formats/src/shapeJson.ts",
           "stage": "emission"
         }
@@ -31698,7 +32696,7 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:6c91f6969dd120edb0d26b91276b79f9cff52f7984f3585d9b1ff6c280d24889",
-          "reason": "createWebShareBackend: object literal requires an inferred structural type (target={\"kind\":\"named\",\"name\":\"Promise\",\"arguments\":[{\"kind\":\"dynamic\"}]}, properties=completed,activityType,dismissed)",
+          "reason": "shareFileToDomFile: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object",
           "source": "upstream/packages/share/src/share.ts",
           "stage": "emission"
         }
@@ -32568,6 +33566,11 @@
             "source": "<rustc>/library/alloc/src/macros.rs"
           },
           {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs"
+          },
+          {
             "code": "E0599",
             "message": "no method named `is_none` found for enum `OpaqueHostValue` in the current scope",
             "source": "generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs"
@@ -32722,7 +33725,7 @@
           ],
           "declarations": 5,
           "module": "interpolate_snapshots",
-          "outputSha256": "sha256:971783fed381ada031186f013637e1f9cd27634d4d69b02fcc80dd7a4a667f28",
+          "outputSha256": "sha256:f39f2187a1c28f2db4b22adbda1565117363e62b2299885b997844b4682b76e5",
           "source": "upstream/packages/snapshot/src/interpolateSnapshots.ts",
           "usesOpaqueHostValues": true
         },
@@ -33224,7 +34227,7 @@
           ],
           "declarations": 38,
           "module": "quad_batch",
-          "outputSha256": "sha256:701493aeefddeb1fe502ae387b34efc6d5f272d5fac08a0ce285b35a8017e152",
+          "outputSha256": "sha256:d29519d89510f1d3910e63866825e4d587876992c6d3827ab3dac8afb61f84ec",
           "source": "upstream/packages/sprite/src/quadBatch.ts",
           "usesOpaqueHostValues": true
         },
@@ -33608,14 +34611,14 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:2b4c6a3bf2611143a01a1d2364fda9f49439122f53473ad1a186be318d926405",
-          "reason": "dataToMeta: object literal requires an inferred structural type (target={\"kind\":\"primitive\",\"name\":\"Void\"}, properties=direction,from,name,to,spread)",
+          "reason": "serializeAsepriteSpritesheet: JSON.stringify requires a portable scalar or structural array",
           "source": "upstream/packages/spritesheet-formats/src/asepriteSerialize.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:e0064455cdfc24f8083127d79e7c904262400cc0ccf510d3d01e11f9bdf1b419",
-          "reason": "dataToMeta: object literal requires an inferred structural type (target={\"kind\":\"primitive\",\"name\":\"Void\"}, properties=direction,from,name,to)",
+          "reason": "serializeTexturePackerSpritesheet: JSON.stringify requires a portable scalar or structural array",
           "source": "upstream/packages/spritesheet-formats/src/texturePackerSerialize.ts",
           "stage": "emission"
         }
@@ -33976,7 +34979,7 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:a7a986f50fe32e45cdf0730b0e2ef6eced26945af12ea774d76c401f5159c568",
-          "reason": "pushStatusBarStyleEntry: anonymous structural type has no synthesized Rust identity: {\"extends\":[],\"fields\":[{\"name\":\"handle\",\"optional\":false,\"type\":{\"arguments\":[],\"kind\":\"named\",\"name\":\"StatusBarStyleEntryHandle\"}},{\"name\":\"entry\",\"optional\":false,\"type\":{\"arguments\":[],\"kind\":\"named\",\"name\":\"StatusBarStyleEntry\"}}],\"kind\":\"anonymous\"}",
+          "reason": "_styleStack: anonymous structural type has no synthesized Rust identity: {\"extends\":[],\"fields\":[{\"name\":\"handle\",\"optional\":false,\"type\":{\"arguments\":[],\"kind\":\"named\",\"name\":\"StatusBarStyleEntryHandle\"}},{\"name\":\"entry\",\"optional\":false,\"type\":{\"arguments\":[],\"kind\":\"named\",\"name\":\"StatusBarStyleEntry\"}}],\"kind\":\"anonymous\"}",
           "source": "upstream/packages/statusbar/src/statusbar.ts",
           "stage": "emission"
         }
@@ -34438,7 +35441,7 @@
           ],
           "declarations": 58,
           "module": "rich_text",
-          "outputSha256": "sha256:c57450c2edfe24583e78095d1f0bf8b483cb6fa8aee4ca4822ccdba9de5820f3",
+          "outputSha256": "sha256:9911c08effb7fcd068c6d4735a089699ef585f7af5e98878a308c1fba70f3b81",
           "source": "upstream/packages/text/src/richText.ts",
           "usesOpaqueHostValues": true
         },
@@ -35389,7 +36392,7 @@
           ],
           "declarations": 15,
           "module": "text_layout",
-          "outputSha256": "sha256:6e9d6328acdccab88fb60540b41cc072bba30eb2e2f10d07877b865d709e8dcb",
+          "outputSha256": "sha256:e64c9ca81b5e0df343921776433bcfd94b83d0173081c3378f77e160eb77cf8c",
           "source": "upstream/packages/textlayout/src/textLayout.ts",
           "usesOpaqueHostValues": false
         },
@@ -35627,8 +36630,8 @@
       "blockers": [
         {
           "diagnostics": [],
-          "fingerprint": "sha256:b6bced60143311ede2593c99013edb1d08fa7a47fb9088289cc9a14187e9e861",
-          "reason": "Generated crate is missing 5 of 31 upstream exports; re-export or declaration synthesis is required.",
+          "fingerprint": "sha256:c3364f057fb0ecb965c033dafbea8e03c8a7abb2eb2cc84760cc481e45f9a2bf",
+          "reason": "Generated crate is missing 3 of 31 upstream exports; re-export or declaration synthesis is required.",
           "source": "upstream/packages/textshaper/src",
           "stage": "package"
         },
@@ -35637,13 +36640,6 @@
           "fingerprint": "sha256:d2d9e997f50910f94c40499fd6bbbb2025cb2b23b7b080ec87d8913fc49ed9f6",
           "reason": "setTextShaperBackend: optional call requires an inferred nullable function: {\"kind\":\"identifier\",\"name\":\"_textShaperBackendHook\"}",
           "source": "upstream/packages/textshaper/src/textShaper.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:29667660b484897ab34750fce7dc972251ceba5f43bccce823aa4f1ecbe03fcf",
-          "reason": "shapeTextRuns: object literal requires an inferred structural type (target=unknown, properties=spread,direction,script)",
-          "source": "upstream/packages/textshaper/src/textShaperItemize.ts",
           "stage": "emission"
         }
       ],
@@ -35711,6 +36707,19 @@
           "module": "text_shaper_cluster",
           "outputSha256": "sha256:51378bde8aa5cd37bb43765efeb1d3f2d818c6cafa7ba66415952b46f9e41fab",
           "source": "upstream/packages/textshaper/src/textShaperCluster.ts",
+          "usesOpaqueHostValues": false
+        },
+        {
+          "declarationNames": [
+            "getCodePointBidiClass",
+            "getCodePointScript",
+            "itemizeText",
+            "shapeTextRuns"
+          ],
+          "declarations": 4,
+          "module": "text_shaper_itemize",
+          "outputSha256": "sha256:a553d741ea2e86ecc49487fa623a5b2eb19053272e6bd289d39ac9c969518ba6",
+          "source": "upstream/packages/textshaper/src/textShaperItemize.ts",
           "usesOpaqueHostValues": false
         },
         {
@@ -35788,17 +36797,17 @@
         "getGlyphName",
         "getIndexRangeForCluster",
         "getTextShaperSignals",
+        "itemizeText",
         "releaseShapedRun",
         "shapeTextRun",
         "shapeTextRunCached",
-        "shapeTextRunInto"
+        "shapeTextRunInto",
+        "shapeTextRuns"
       ],
       "missingExports": [
         "getTextShaperBackend",
-        "itemizeText",
         "measureText",
-        "setTextShaperBackend",
-        "shapeTextRuns"
+        "setTextShaperBackend"
       ],
       "package": "@flighthq/textshaper",
       "promotedTarget": false,
@@ -36601,13 +37610,6 @@
           "reason": "boolField: typeof operand has no inferred Rust type: {\"kind\":\"identifier\",\"name\":\"value\"}",
           "source": "upstream/packages/tilemap-formats/src/tiledJsonParse.ts",
           "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:8bd4f5231c84d077dfc986895e296beb46ad0406b3415243bea312dca5b2f384",
-          "reason": "buildTiledLayerFromXml: object literal requires an inferred structural type (target={\"arguments\":[],\"kind\":\"named\",\"name\":\"TiledLayer\"}, properties=spread,data,height,type,width)",
-          "source": "upstream/packages/tilemap-formats/src/tiledXmlParse.ts",
-          "stage": "emission"
         }
       ],
       "candidate": {
@@ -36726,6 +37728,34 @@
           "outputSha256": "sha256:cb3e7a76093e605632915a837d280c11e212c7e26668317ae71b4658bb44c050",
           "source": "upstream/packages/tilemap-formats/src/tiledTmxFormat.ts",
           "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
+            "asCompression",
+            "asOrientation",
+            "asPropertyType",
+            "asRenderOrder",
+            "attrBool",
+            "attrNumber",
+            "attrString",
+            "buildTiledLayerBaseFromXml",
+            "buildTiledLayerDataFromXml",
+            "buildTiledLayerFromXml",
+            "buildTiledObjectFromXml",
+            "buildTiledPropertiesFromXml",
+            "buildTiledTilesetFromXml",
+            "buildTiledTilesetRefFromXml",
+            "buildTiledTilesetTileFromXml",
+            "parsePropertyValue",
+            "parseTiledPoints",
+            "parseTiledTileset",
+            "parseTiledTmx"
+          ],
+          "declarations": 19,
+          "module": "tiled_xml_parse",
+          "outputSha256": "sha256:5196d68004906fb6b3bfa0b7612441df11e38e6b51520af19174a52360413c92",
+          "source": "upstream/packages/tilemap-formats/src/tiledXmlParse.ts",
+          "usesOpaqueHostValues": true
         }
       ],
       "fullyPromotedTarget": false,
@@ -36758,6 +37788,10 @@
         {
           "crate": "flighthq-types",
           "package": "@flighthq/types"
+        },
+        {
+          "crate": "flighthq-xml",
+          "package": "@flighthq/xml"
         }
       ],
       "status": "blocked",
@@ -37015,7 +38049,7 @@
           ],
           "declarations": 26,
           "module": "timeline",
-          "outputSha256": "sha256:1e188966a3a1a02754bfdf8a81b466a10462909d04ce9a64afc9ab95216724bd",
+          "outputSha256": "sha256:4c7145e04e8a414692da3a8c2660b34dd23c1d57e5c3fc0595883b72fae022fd",
           "source": "upstream/packages/timeline/src/timeline.ts",
           "usesOpaqueHostValues": false
         }
@@ -37154,26 +38188,23 @@
     {
       "apiExports": 23,
       "attemptedSources": 2,
-      "blockers": [
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:677a2f01cc29efd0b0579f42fe6603e275b526310fafc6b0606f5dad9f962b33",
-          "reason": "Generated crate is missing 23 of 23 upstream exports; re-export or declaration synthesis is required.",
-          "source": "upstream/packages/tray/src",
-          "stage": "package"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:84c5cb7fcc1b3ce12269f917830a22774b81828f5e34dfff56c255f06e987c59",
-          "reason": "getTrayIcons: object literal requires an inferred structural type (target={\"kind\":\"dynamic\"}, properties=id)",
-          "source": "upstream/packages/tray/src/tray.ts",
-          "stage": "emission"
-        }
-      ],
+      "blockers": [],
       "candidate": {
-        "compileDiagnostics": [],
-        "status": "source-blocked",
-        "syntaxCheckedSources": 0,
+        "compileDiagnostics": [
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-tray/src/tray.rs"
+          },
+          {
+            "code": "E0277",
+            "message": "a value of type `Vec<TrayIcon>` cannot be built from an iterator over elements of type `OpaqueHostValue`",
+            "source": "generated/candidates/flighthq-tray/src/tray.rs"
+          }
+        ],
+        "path": "generated/candidates/flighthq-tray",
+        "status": "compile-blocked",
+        "syntaxCheckedSources": 2,
         "unresolvedDependencies": []
       },
       "crate": "flighthq-tray",
@@ -37190,14 +38221,47 @@
           "declarationNames": [],
           "declarations": 0,
           "module": "_internal_index",
-          "outputSha256": "sha256:7ff049ecd0295b48671ddc68f3be8a292e7b45e2c8daf3f68de845b54ac363d8",
+          "outputSha256": "sha256:fc0facf4b9edb7538e94b088e7d8456a7d5f8e80114194286178dbd637db22c9",
           "source": "upstream/packages/tray/src/index.ts",
           "usesOpaqueHostValues": false
+        },
+        {
+          "declarationNames": [
+            "WEB_CAPABILITIES",
+            "_backend",
+            "createTrayIcon",
+            "createWebTrayBackend",
+            "destroyTrayIcon",
+            "displayTrayBalloon",
+            "getTrayBackend",
+            "getTrayCapabilities",
+            "getTrayIconBounds",
+            "getTrayIconTitle",
+            "getTrayIconTooltip",
+            "getTrayIcons",
+            "isTrayDestroyed",
+            "onTrayEvent",
+            "popupTrayContextMenu",
+            "removeTrayBalloon",
+            "setTrayBackend",
+            "setTrayIcon",
+            "setTrayIconContextMenu",
+            "setTrayIconTemplate",
+            "setTrayIconTitle",
+            "setTrayIconTooltip",
+            "setTrayIgnoreDoubleClickEvents",
+            "setTrayPressedIcon",
+            "startTrayIconAnimation"
+          ],
+          "declarations": 25,
+          "module": "tray",
+          "outputSha256": "sha256:263505560d4412986246571433da372a318ac144cb65c2bb74e13318229f97f4",
+          "source": "upstream/packages/tray/src/tray.ts",
+          "usesOpaqueHostValues": true
         }
       ],
       "fullyPromotedTarget": false,
-      "generatedExports": [],
-      "missingExports": [
+      "generatedExports": [
         "createTrayIcon",
         "createWebTrayBackend",
         "destroyTrayIcon",
@@ -37222,50 +38286,34 @@
         "setTrayPressedIcon",
         "startTrayIconAnimation"
       ],
+      "missingExports": [],
       "package": "@flighthq/tray",
       "promotedTarget": false,
-      "requiredDependencies": [],
-      "status": "blocked",
+      "requiredDependencies": [
+        {
+          "crate": "flighthq-types",
+          "package": "@flighthq/types"
+        }
+      ],
+      "status": "emittable",
       "transitiveDependents": 3
     },
     {
       "apiExports": 35,
       "attemptedSources": 9,
-      "blockers": [
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:b79cec1420f5d439ea836c541422826f7bde357264adbcc6d4aff364c21f3f0a",
-          "reason": "Generated crate is missing 23 of 35 upstream exports; re-export or declaration synthesis is required.",
-          "source": "upstream/packages/tween/src",
-          "stage": "package"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:f1c5a3b33d1428efbbe6233336526651979442110f3fa96b3a2c2e03750c7aa8",
-          "reason": "createColorTween: object literal requires an inferred structural type (target={\"kind\":\"union\",\"variants\":[{\"arguments\":[{\"arguments\":[],\"kind\":\"named\",\"name\":\"T\"}],\"kind\":\"named\",\"name\":\"NumericProps\"},{\"arguments\":[],\"kind\":\"named\",\"name\":\"TweenOptions\"}]}, properties=b,g,r)",
-          "source": "upstream/packages/tween/src/colorTween.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:7ae26ccaa3b45f7463cad5bbb4f574302697645a26b68aa02280c70c5710d57c",
-          "reason": "createTweenTimer: object literal requires an inferred structural type (target={\"kind\":\"union\",\"variants\":[{\"arguments\":[],\"kind\":\"named\",\"name\":\"T\"},{\"kind\":\"primitive\",\"name\":\"Float\"}]}, properties=)",
-          "source": "upstream/packages/tween/src/timer.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:f7eaf693546fec24f28b40c6216dd4ea768a85efdf9a3cf94d6f8a96fd7f9c87",
-          "reason": "makeTween: object literal requires an inferred structural type (target={\"kind\":\"primitive\",\"name\":\"Float\"}, properties=change,key,start)",
-          "source": "upstream/packages/tween/src/tween.ts",
-          "stage": "emission"
-        }
-      ],
+      "blockers": [],
       "candidate": {
         "compileDiagnostics": [],
-        "status": "source-blocked",
-        "syntaxCheckedSources": 0,
-        "unresolvedDependencies": []
+        "path": "generated/candidates/flighthq-tween",
+        "status": "dependency-blocked",
+        "syntaxCheckedSources": 9,
+        "unresolvedDependencies": [
+          {
+            "candidateStatus": "promoted",
+            "package": "@flighthq/easing",
+            "status": "emittable"
+          }
+        ]
       },
       "crate": "flighthq-tween",
       "dependencies": [
@@ -37286,10 +38334,21 @@
       "disposition": "generated",
       "emittedSources": [
         {
+          "declarationNames": [
+            "ColorComponents",
+            "createColorTween"
+          ],
+          "declarations": 2,
+          "module": "color_tween",
+          "outputSha256": "sha256:6b361904bfa03c9d545e2c375bb7eafc16ccacbdcf58887c09c4c5ef2fe1c49d",
+          "source": "upstream/packages/tween/src/colorTween.ts",
+          "usesOpaqueHostValues": false
+        },
+        {
           "declarationNames": [],
           "declarations": 0,
           "module": "_internal_index",
-          "outputSha256": "sha256:7978c7a346fce85758c5e7a03739c5ce42f78fb697e1902d6bebf7d3d9750bce",
+          "outputSha256": "sha256:16838733d7d7e447e3cc8cbd09d221807c3e6f1a5fbaeced92d13d71fc98e536",
           "source": "upstream/packages/tween/src/index.ts",
           "usesOpaqueHostValues": false
         },
@@ -37299,9 +38358,47 @@
           ],
           "declarations": 1,
           "module": "_internal_internal",
-          "outputSha256": "sha256:f4593bc38466f54bec4d775437ffbee53c1db67f09c2eca34258c28c52b28ded",
+          "outputSha256": "sha256:e4c24908aa81cd1ec687ddccbbccefbf8eaca6997524bd5fd4afc55eb5326392",
           "source": "upstream/packages/tween/src/internal.ts",
           "usesOpaqueHostValues": false
+        },
+        {
+          "declarationNames": [
+            "createTweenTimer"
+          ],
+          "declarations": 1,
+          "module": "timer",
+          "outputSha256": "sha256:c947e61e130892933cd3410a0536c66a1700266c4d6b444ab4246cb16f602e8d",
+          "source": "upstream/packages/tween/src/timer.ts",
+          "usesOpaqueHostValues": true
+        },
+        {
+          "declarationNames": [
+            "applyTween",
+            "createTween",
+            "getActiveTweenCount",
+            "getTweensOf",
+            "hasTweensOf",
+            "isTweenManager",
+            "killTweensOfProperty",
+            "makeTween",
+            "pauseAllTweens",
+            "pauseTween",
+            "pauseTweens",
+            "registerTween",
+            "resetAllTweens",
+            "resumeAllTweens",
+            "resumeTween",
+            "resumeTweens",
+            "stopAllTweens",
+            "stopTween",
+            "stopTweens"
+          ],
+          "declarations": 19,
+          "module": "tween",
+          "outputSha256": "sha256:d773446b4bafb9ec4e857756eba54a945b043674449a5c073c586d03ca7f21d5",
+          "source": "upstream/packages/tween/src/tween.ts",
+          "usesOpaqueHostValues": true
         },
         {
           "declarationNames": [
@@ -37310,7 +38407,7 @@
           ],
           "declarations": 2,
           "module": "tween_manager",
-          "outputSha256": "sha256:a6c6b2d12462f62e3289dbab9bb6479c405d3a1a4b37093151bcd17cfad8c9c9",
+          "outputSha256": "sha256:97fd2772fd7c1e6172e5af1d4319ba9a0e3f27e1a3cacec7a843e98117cb9f96",
           "source": "upstream/packages/tween/src/tweenManager.ts",
           "usesOpaqueHostValues": false
         },
@@ -37324,7 +38421,7 @@
           ],
           "declarations": 5,
           "module": "tween_progress",
-          "outputSha256": "sha256:0cd23994e771329865cf902883381b118a805bfda0206a88579f6e6c0b88e59e",
+          "outputSha256": "sha256:7e74ec86b40fe43e4c800bc58ac284fad5fac8b02bd07f0fb1725ad94618f57d",
           "source": "upstream/packages/tween/src/tweenProgress.ts",
           "usesOpaqueHostValues": true
         },
@@ -37336,7 +38433,7 @@
           ],
           "declarations": 3,
           "module": "tween_stagger",
-          "outputSha256": "sha256:9d0dcbbd6fea16363faa5dcedcde73a10f225e9ca6a6895f648156023f062c5a",
+          "outputSha256": "sha256:43ae5d69763fb9c1926d8b5ed1377fde97d7ec3d4b39ebbe7abbf7a05c966622",
           "source": "upstream/packages/tween/src/tweenStagger.ts",
           "usesOpaqueHostValues": false
         },
@@ -37348,52 +38445,51 @@
           ],
           "declarations": 3,
           "module": "update_tweens",
-          "outputSha256": "sha256:b9f27dbb1665759c956fe0cb7bd8cd34c3d1c5429e32eda16758a628056e5c7e",
+          "outputSha256": "sha256:290d9715dc5f5a0057921aee17c3e7ad3888f34d1237238b9f1e151f53acaf9f",
           "source": "upstream/packages/tween/src/updateTweens.ts",
           "usesOpaqueHostValues": false
         }
       ],
       "fullyPromotedTarget": false,
       "generatedExports": [
-        "TweenManagerOptions",
-        "TweenStaggerOptions",
-        "completeTween",
-        "createTweenManager",
-        "createTweenStagger",
-        "defaultManager",
-        "getTweenProgress",
-        "initializeTween",
-        "invalidateTween",
-        "restartTween",
-        "seekTween",
-        "setTweenProgress",
-        "updateTweens"
-      ],
-      "missingExports": [
         "NumericProps",
         "StopTweenOptions",
         "Tween",
         "TweenManager",
+        "TweenManagerOptions",
         "TweenOptions",
+        "TweenStaggerOptions",
         "applyTween",
+        "completeTween",
         "createColorTween",
         "createTween",
+        "createTweenManager",
+        "createTweenStagger",
         "createTweenTimer",
+        "defaultManager",
         "getActiveTweenCount",
+        "getTweenProgress",
         "getTweensOf",
         "hasTweensOf",
+        "initializeTween",
+        "invalidateTween",
         "killTweensOfProperty",
         "pauseAllTweens",
         "pauseTween",
         "pauseTweens",
         "resetAllTweens",
+        "restartTween",
         "resumeAllTweens",
         "resumeTween",
         "resumeTweens",
+        "seekTween",
+        "setTweenProgress",
         "stopAllTweens",
         "stopTween",
-        "stopTweens"
+        "stopTweens",
+        "updateTweens"
       ],
+      "missingExports": [],
       "package": "@flighthq/tween",
       "promotedTarget": false,
       "requiredDependencies": [
@@ -37410,7 +38506,7 @@
           "package": "@flighthq/types"
         }
       ],
-      "status": "blocked",
+      "status": "emittable",
       "transitiveDependents": 2
     },
     {
@@ -43851,7 +44947,7 @@
           ],
           "declarations": 2,
           "module": "well_known_menu_item_role",
-          "outputSha256": "sha256:9fb061b5e686082b62bd5cb483dc9b5817b640249930ab2207bef21a8ab648c7",
+          "outputSha256": "sha256:c6bc14b9404f6e02de35981901b1d14c47f690b7ca3b77688022cc9c494d1f77",
           "source": "upstream/packages/types/src/WellKnownMenuItemRole.ts",
           "usesOpaqueHostValues": false
         },
@@ -45299,26 +46395,123 @@
     {
       "apiExports": 23,
       "attemptedSources": 2,
-      "blockers": [
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:7f80ac63e13cc5654b9380eefa1bb380fbafeb5fda69f2af78f09ac7995a74fa",
-          "reason": "Generated crate is missing 23 of 23 upstream exports; re-export or declaration synthesis is required.",
-          "source": "upstream/packages/updater/src",
-          "stage": "package"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:4d0ab10d33fe213e79c5414d87d98c55c665aae618a032f583a4e71734844759",
-          "reason": "attachAppUpdater: object literal requires an inferred structural type (target={\"kind\":\"primitive\",\"name\":\"Float\"}, properties=spread,phase)",
-          "source": "upstream/packages/updater/src/updater.ts",
-          "stage": "emission"
-        }
-      ],
+      "blockers": [],
       "candidate": {
-        "compileDiagnostics": [],
-        "status": "source-blocked",
-        "syntaxCheckedSources": 0,
+        "compileDiagnostics": [
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-updater/src/updater.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-updater/src/updater.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-updater/src/updater.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-updater/src/updater.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-updater/src/updater.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-updater/src/updater.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-updater/src/updater.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-updater/src/updater.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-updater/src/updater.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-updater/src/updater.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-updater/src/updater.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-updater/src/updater.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-updater/src/updater.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-updater/src/updater.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-updater/src/updater.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-updater/src/updater.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-updater/src/updater.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-updater/src/updater.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-updater/src/updater.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-updater/src/updater.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-updater/src/updater.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-updater/src/updater.rs"
+          }
+        ],
+        "path": "generated/candidates/flighthq-updater",
+        "status": "compile-blocked",
+        "syntaxCheckedSources": 2,
         "unresolvedDependencies": []
       },
       "crate": "flighthq-updater",
@@ -45339,14 +46532,49 @@
           "declarationNames": [],
           "declarations": 0,
           "module": "_internal_index",
-          "outputSha256": "sha256:610f0acdd4da09bd084d454ee4192d8e2e774a3357622c869875cf43fb0fd214",
+          "outputSha256": "sha256:3b7606837e38becb639aca9641239a79197d19dea28e607f54643d57bd3a03db",
           "source": "upstream/packages/updater/src/index.ts",
           "usesOpaqueHostValues": false
+        },
+        {
+          "declarationNames": [
+            "_backend",
+            "_setState",
+            "_states",
+            "_subscriptions",
+            "attachAppUpdater",
+            "cancelAppUpdateDownload",
+            "checkAndDownloadAppUpdate",
+            "checkForAppUpdate",
+            "createAppUpdater",
+            "createUpdaterConfig",
+            "createUpdaterState",
+            "createWebUpdaterBackend",
+            "detachAppUpdater",
+            "disposeAppUpdater",
+            "downloadAppUpdate",
+            "getAppUpdaterState",
+            "getUpdaterBackend",
+            "getUpdaterChannel",
+            "getUpdaterConfig",
+            "isAppUpdateEligible",
+            "quitAndInstallUpdate",
+            "rollbackAppUpdate",
+            "setUpdaterBackend",
+            "setUpdaterChannel",
+            "setUpdaterConfig",
+            "setUpdaterFeedUrl",
+            "setUpdaterSignatureConfig"
+          ],
+          "declarations": 27,
+          "module": "updater",
+          "outputSha256": "sha256:e0187302ce16b6ae0eef089ae1f0fb18ab838ab38d0c4a911d5e0908376b65f4",
+          "source": "upstream/packages/updater/src/updater.ts",
+          "usesOpaqueHostValues": true
         }
       ],
       "fullyPromotedTarget": false,
-      "generatedExports": [],
-      "missingExports": [
+      "generatedExports": [
         "attachAppUpdater",
         "cancelAppUpdateDownload",
         "checkAndDownloadAppUpdate",
@@ -45371,10 +46599,20 @@
         "setUpdaterFeedUrl",
         "setUpdaterSignatureConfig"
       ],
+      "missingExports": [],
       "package": "@flighthq/updater",
       "promotedTarget": false,
-      "requiredDependencies": [],
-      "status": "blocked",
+      "requiredDependencies": [
+        {
+          "crate": "flighthq-signals",
+          "package": "@flighthq/signals"
+        },
+        {
+          "crate": "flighthq-types",
+          "package": "@flighthq/types"
+        }
+      ],
+      "status": "emittable",
       "transitiveDependents": 2
     },
     {
@@ -46031,17 +47269,17 @@
   ],
   "schemaVersion": 3,
   "summary": {
-    "blocked": 58,
-    "candidateCompileBlocked": 23,
+    "blocked": 51,
+    "candidateCompileBlocked": 28,
     "candidateCompiled": 28,
-    "candidateDependencyBlocked": 15,
+    "candidateDependencyBlocked": 17,
     "cultivated": 1,
     "eligible": 125,
-    "emittable": 67,
+    "emittable": 74,
     "excluded": 1,
     "hostBound": 4,
     "packages": 131,
-    "sourceBlockers": 322
+    "sourceBlockers": 274
   },
   "targets": [
     {
