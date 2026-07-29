@@ -15572,7 +15572,7 @@
           {
             "code": "E0308",
             "message": "mismatched types",
-            "source": "../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs"
+            "source": "<rustc>/library/alloc/src/macros.rs"
           },
           {
             "code": "E0277",
@@ -15582,7 +15582,7 @@
           {
             "code": "E0308",
             "message": "mismatched types",
-            "source": "../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs"
+            "source": "<rustc>/library/alloc/src/macros.rs"
           },
           {
             "code": "E0277",
@@ -19689,17 +19689,17 @@
           {
             "code": "E0308",
             "message": "mismatched types",
-            "source": "../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs"
+            "source": "<rustc>/library/alloc/src/macros.rs"
           },
           {
             "code": "E0308",
             "message": "mismatched types",
-            "source": "../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs"
+            "source": "<rustc>/library/alloc/src/macros.rs"
           },
           {
             "code": "E0308",
             "message": "mismatched types",
-            "source": "../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs"
+            "source": "<rustc>/library/alloc/src/macros.rs"
           },
           {
             "code": "E0615",
@@ -20170,12 +20170,12 @@
           {
             "code": "E0308",
             "message": "mismatched types",
-            "source": "../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs"
+            "source": "<rustc>/library/alloc/src/macros.rs"
           },
           {
             "code": "E0308",
             "message": "mismatched types",
-            "source": "../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs"
+            "source": "<rustc>/library/alloc/src/macros.rs"
           },
           {
             "code": "E0277",
@@ -31765,7 +31765,7 @@
           {
             "code": "E0308",
             "message": "mismatched types",
-            "source": "../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs"
+            "source": "<rustc>/library/alloc/src/macros.rs"
           },
           {
             "code": "E0308",
@@ -32565,7 +32565,7 @@
           {
             "code": "E0308",
             "message": "mismatched types",
-            "source": "../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs"
+            "source": "<rustc>/library/alloc/src/macros.rs"
           },
           {
             "code": "E0599",

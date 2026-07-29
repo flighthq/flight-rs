@@ -696,14 +696,7 @@ function compileAutomaticCandidates(
     diagnostics.push({
       ...(message.message.code?.code ? { code: message.message.code.code } : {}),
       message: message.message.message ?? 'Rust compilation failed.',
-      ...(source
-        ? {
-            source: relative(
-              workspaceDirectory,
-              path.isAbsolute(source) ? source : path.resolve(candidateRoot, source),
-            ),
-          }
-        : {}),
+      ...(source ? { source: normalizeDiagnosticSource(workspaceDirectory, candidateRoot, source) } : {}),
     });
     diagnosticsByCrate.set(candidate.crate, diagnostics);
   }
@@ -1900,4 +1893,16 @@ function sha256(content: string): string {
 
 function relative(workspaceDirectory: string, file: string): string {
   return path.relative(workspaceDirectory, file).split(path.sep).join('/');
+}
+
+export function normalizeDiagnosticSource(workspaceDirectory: string, candidateRoot: string, source: string): string {
+  const resolved = path.isAbsolute(source) ? path.normalize(source) : path.resolve(candidateRoot, source);
+  const workspaceRelative = path.relative(workspaceDirectory, resolved);
+  const outsideWorkspace =
+    workspaceRelative === '..' || workspaceRelative.startsWith(`..${path.sep}`) || path.isAbsolute(workspaceRelative);
+  if (!outsideWorkspace) return workspaceRelative.split(path.sep).join('/');
+
+  const external = resolved.split(path.sep).join('/');
+  const rustcLibrary = /(?:^|\/)rustc\/[^/]+\/(library\/.*)$/u.exec(external);
+  return rustcLibrary ? `<rustc>/${rustcLibrary[1]}` : external;
 }

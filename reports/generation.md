@@ -1121,9 +1121,9 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **E0282** `generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs`: type annotations needed
 - **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs`: can't compare `std::string::String` with `&std::string::String`
 - **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs`: arguments to this function are incorrect
-- **E0308** `../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs`: mismatched types
+- **E0308** `<rustc>/library/alloc/src/macros.rs`: mismatched types
 - **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs`: a value of type `Vec<Vec<f64>>` cannot be built from an iterator over elements of type `OpaqueHostValue`
-- **E0308** `../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs`: mismatched types
+- **E0308** `<rustc>/library/alloc/src/macros.rs`: mismatched types
 - **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs`: a value of type `Vec<Vec<f64>>` cannot be built from an iterator over elements of type `OpaqueHostValue`
 - **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs`: can't compare `std::string::String` with `&std::string::String`
 - **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs`: arguments to this function are incorrect
@@ -1414,9 +1414,9 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot add `Option<f64>` to `f64`
 - **E0369** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot multiply `Option<f64>` by `f64`
 - **E0308** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: mismatched types
-- **E0308** `../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs`: mismatched types
-- **E0308** `../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs`: mismatched types
-- **E0308** `../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs`: mismatched types
+- **E0308** `<rustc>/library/alloc/src/macros.rs`: mismatched types
+- **E0308** `<rustc>/library/alloc/src/macros.rs`: mismatched types
+- **E0308** `<rustc>/library/alloc/src/macros.rs`: mismatched types
 - **E0615** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: attempted to take value of method `join` on type `Vec<std::string::String>`
 - **E0425** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot find function `string` in this scope
 - **E0425** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot find function `string` in this scope
@@ -1430,8 +1430,8 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `length` on type `OpaqueHostValue`
 - **E0308** `generated/candidates/flighthq-protocol/src/protocol.rs`: mismatched types
 - **E0277** `generated/candidates/flighthq-protocol/src/protocol.rs`: `()` doesn't implement `std::fmt::Display`
-- **E0308** `../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs`: mismatched types
-- **E0308** `../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs`: mismatched types
+- **E0308** `<rustc>/library/alloc/src/macros.rs`: mismatched types
+- **E0308** `<rustc>/library/alloc/src/macros.rs`: mismatched types
 - **E0277** `generated/candidates/flighthq-protocol/src/protocol.rs`: can't compare `OpaqueHostValue` with `std::string::String`
 - **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `index_of` on type `std::string::String`
 - **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `slice` on type `std::string::String`
@@ -1445,7 +1445,7 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 ### `@flighthq/shell`
 
-- **E0308** `../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs`: mismatched types
+- **E0308** `<rustc>/library/alloc/src/macros.rs`: mismatched types
 - **E0308** `generated/candidates/flighthq-shell/src/shell.rs`: mismatched types
 - **E0308** `generated/candidates/flighthq-shell/src/shell.rs`: mismatched types
 - **E0308** `generated/candidates/flighthq-shell/src/shell.rs`: mismatched types
@@ -1519,7 +1519,7 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **E0070** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: invalid left-hand side of assignment
 - **E0609** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no field `includes` on type `&Vec<std::string::String>`
 - **E0599** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no method named `is_some` found for enum `OpaqueHostValue` in the current scope
-- **E0308** `../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs`: mismatched types
+- **E0308** `<rustc>/library/alloc/src/macros.rs`: mismatched types
 - **E0599** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no method named `is_none` found for enum `OpaqueHostValue` in the current scope
 - **E0599** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: no method named `is_none` found for enum `OpaqueHostValue` in the current scope
 - **E0599** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: no method named `is_none` found for type parameter `T` in the current scope
