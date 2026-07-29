@@ -6132,9 +6132,7 @@ function emitObject(
   const onlySpreadType =
     onlySpread?.kind === 'spread' ? inferIrExpressionType(onlySpread.expression, context) : undefined;
   const nativeEntitySpread =
-    onlySpread?.kind === 'spread' &&
-    onlySpreadType?.kind === 'named' &&
-    context.entityTypes.has(onlySpreadType.name);
+    onlySpread?.kind === 'spread' && onlySpreadType?.kind === 'named' && context.entityTypes.has(onlySpreadType.name);
   if (onlySpread?.kind === 'spread' && !nativeEntitySpread) {
     return `${parenthesize(emitExpression(onlySpread.expression, context))}.clone()`;
   }
