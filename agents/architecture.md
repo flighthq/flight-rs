@@ -57,8 +57,23 @@ Current native-host prerequisite frontier:
 - application, lifecycle, input, keyboard, haptics, power, platform, device, and screen compile as generated candidates;
 - the host-winit canary compiles those seams together in its own Cargo workspace;
 - the render stack waits on log plus the node/material/skeleton dependency frontier;
-- candidate crates intentionally remain separate from the promoted surface workspace because candidate and promoted graphs both contain a `flighthq-types` package;
+- candidate and promoted crates share dependencies through the dependency-closed promotion model below;
 - concrete winit event translation and renderer ownership are the next cultivated host steps.
+
+## Crate identity across promotion
+
+Every `@flighthq/<name>` package has one Rust package identity, `flighthq-<name>`, in a compilation graph. Promotion does not rename crates, and candidate crates do not receive a distinct prefix: either approach would turn source-compatible Flight types into nominally different Rust types and require adapters at every mixed-graph boundary.
+
+Promotion is therefore dependency-closed. A package may become fully promoted only after each of its Flight package dependencies is fully promoted. A partial cultivated target does not own the package identity in the automatic candidate graph. Generation must reject a fully promoted target whose dependency closure contains a partial target or automatic candidate.
+
+The candidate graph resolves each package through one deterministic map:
+
+1. A fully promoted package resolves to its crate under `generated/crates`.
+2. Every other generated package resolves to its crate under `generated/candidates`.
+3. Only the second group is a candidate-workspace member; dependencies may point at the first group as external path dependencies.
+4. Generation rejects duplicate package identities and any dependency edge that disagrees with the map.
+
+This merges the graphs incrementally as packages graduate without maintaining graph-specific copies. For the current `types`/`easing`/`tween` boundary, `@flighthq/types` must graduate from its partial target to the full already-compiling package before the fully promoted `@flighthq/easing` crate can enter the candidate graph. `@flighthq/tween` and its automatic `@flighthq/signals` dependency then both resolve `flighthq-types` to that promoted crate, while `flighthq-easing` reaches the same path through its own manifest. Cargo sees one `flighthq-types` identity throughout the graph.
 
 ## Generator blocker architecture
 
