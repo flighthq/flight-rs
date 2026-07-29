@@ -2066,6 +2066,126 @@ describe('Rust emission', () => {
     ).not.toThrow();
   });
 
+  it('compiles an entity runtime aggregate and a downstream consumer as separate crates', () => {
+    const typesSource = ts.createSourceFile(
+      '/workspace/upstream/packages/types/src/entity-runtime.ts',
+      `
+        export interface Entity {}
+        export interface EntityRuntime {
+          count: number;
+        }
+        export interface Node extends Entity {
+          name: string;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const loweredTypes = lowerTypeScriptSource(typesSource, '@flighthq/types', '/workspace');
+    const typesOutput = emitRustModule({
+      declarations: loweredTypes.declarations,
+      source: 'upstream/packages/types/src/entity-runtime.ts',
+      typeImports: [],
+    });
+    const semanticTypes = Object.fromEntries(
+      loweredTypes.declarations.flatMap((declaration) =>
+        declaration.kind === 'type' ? [[declaration.name, declaration.type] as const] : [],
+      ),
+    );
+    const semanticTypeParameters = Object.fromEntries(
+      loweredTypes.declarations.flatMap((declaration) =>
+        declaration.kind === 'type' ? [[declaration.name, declaration.typeParameters] as const] : [],
+      ),
+    );
+
+    const consumerSource = ts.createSourceFile(
+      '/workspace/upstream/packages/node/src/entity-runtime.ts',
+      `
+        export function attachRuntime(source: Node, runtime: EntityRuntime): Node {
+          source[EntityRuntimeKey] = runtime;
+          return source;
+        }
+        export function readCount(source: Node): number {
+          return source[EntityRuntimeKey].count;
+        }
+        export function hasRuntime(source: Node): boolean {
+          return EntityRuntimeKey in source;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const loweredConsumer = lowerTypeScriptSource(consumerSource, '@flighthq/node', '/workspace');
+    const consumerOutput = emitRustModule({
+      declarations: loweredConsumer.declarations,
+      imports: [
+        {
+          module: 'flighthq_types',
+          names: [
+            { imported: 'EntityRuntime', kind: 'type', local: 'EntityRuntime' },
+            { imported: 'Node', kind: 'type', local: 'Node' },
+          ],
+        },
+      ],
+      semanticTypeParameters,
+      semanticTypes,
+      source: 'upstream/packages/node/src/entity-runtime.ts',
+      typeImports: [],
+    });
+
+    expect(loweredTypes.diagnostics).toEqual([]);
+    expect(loweredConsumer.diagnostics).toEqual([]);
+    expect(consumerOutput).toContain('flighthq_types::FlightEntity::__flight_entity_runtime(source)');
+    expect(consumerOutput).toContain('.inner.lock().unwrap().count');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-cross-crate-runtime-'));
+    const typesFile = path.join(fixture, 'types.rs');
+    const typesMetadata = path.join(fixture, 'libflighthq_types.rmeta');
+    const consumerFile = path.join(fixture, 'consumer.rs');
+    writeFileSync(typesFile, typesOutput);
+    writeFileSync(consumerFile, consumerOutput);
+    expect(() =>
+      execFileSync(
+        'rustc',
+        [
+          '--crate-name',
+          'flighthq_types',
+          '--crate-type',
+          'lib',
+          '--emit',
+          'metadata',
+          '--edition',
+          '2024',
+          typesFile,
+          '-o',
+          typesMetadata,
+        ],
+        { cwd: fixture, stdio: 'pipe' },
+      ),
+    ).not.toThrow();
+    expect(() =>
+      execFileSync(
+        'rustc',
+        [
+          '--crate-name',
+          'flighthq_node',
+          '--crate-type',
+          'lib',
+          '--emit',
+          'metadata',
+          '--edition',
+          '2024',
+          '--extern',
+          `flighthq_types=${typesMetadata}`,
+          consumerFile,
+        ],
+        { cwd: fixture, stdio: 'pipe' },
+      ),
+    ).not.toThrow();
+  });
+
   it('rejects package-local runtime storage that cannot join an imported aggregate', () => {
     const typesSource = ts.createSourceFile(
       '/workspace/upstream/packages/types/src/entity-runtime.ts',
