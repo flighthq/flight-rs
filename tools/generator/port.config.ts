@@ -48,6 +48,7 @@ export const portConfig = {
   upstreamDirectory: 'upstream',
   typeLowering: {
     entityRuntimeFamily: {
+      entityType: 'Entity',
       package: '@flighthq/types',
       reason:
         'EntityRuntime is the declared root for generated native entity storage; package-visible extensions may join only when they resolve against this canonical source family.',
@@ -176,6 +177,13 @@ export const portConfig = {
   targets: [
     {
       crate: 'flighthq-types',
+      declarationSelection: {
+        'Entity.ts': {
+          names: ['Entity', 'EntityRuntime'],
+          reason:
+            'Entity-backed promoted records require the native runtime root storage and trait; utility aliases and the symbol key remain deferred with their consuming operations.',
+        },
+      },
       dependencies: {},
       package: '@flighthq/types',
       sourceSelection: {
@@ -184,6 +192,7 @@ export const portConfig = {
           'ColorTransform.ts',
           'EasingFunction.ts',
           'EasingSegment.ts',
+          'Entity.ts',
           'GradientSpread.ts',
           'ImageFormat.ts',
           'ImageResource.ts',

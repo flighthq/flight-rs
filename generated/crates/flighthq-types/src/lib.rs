@@ -297,6 +297,8 @@ mod easing_function;
 pub use easing_function::*;
 mod easing_segment;
 pub use easing_segment::*;
+mod entity;
+pub use entity::*;
 mod gradient_spread;
 pub use gradient_spread::*;
 mod image_format;

@@ -11,13 +11,7 @@ use flighthq_types::ExposureAdjustment;
 #[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub intensity: Option<f64>,
     pub exposure: Option<f64>,
-    pub color_transform: ColorTransform,
-    pub type_: Option<ColorBlindType>,
-    pub matrix: Vec<f64>,
-    pub brightness: Option<f64>,
-    pub contrast: Option<f64>,
 }
 impl PartialEq for FlightOmitRecord1 {
     fn eq(&self, other: &Self) -> bool {
@@ -39,11 +33,7 @@ impl PartialEq for CreateExposureAdjustmentRecord2 {
 pub fn create_exposure_adjustment(options: Option<FlightOmitRecord1>) -> ExposureAdjustment {
     let options = options.unwrap_or(FlightOmitRecord1 {
         __flight_identity: std::sync::Arc::new(()),
-        intensity: None,
         exposure: None,
-        type_: None,
-        brightness: None,
-        contrast: None,
     });
     let m = (2.0_f64).powf((options.exposure).unwrap_or(0.0_f64));
     let color_matrix = vec![
@@ -56,13 +46,7 @@ pub fn create_exposure_adjustment(options: Option<FlightOmitRecord1>) -> Exposur
             __flight_identity: std::sync::Arc::new(()),
             kind: "ExposureAdjustment".to_owned(),
             color_matrix: color_matrix,
-            intensity: __flight_spread_1.intensity,
             exposure: __flight_spread_1.exposure,
-            color_transform: (__flight_spread_1.color_transform).clone(),
-            type_: (__flight_spread_1.type_).clone(),
-            matrix: (__flight_spread_1.matrix).clone(),
-            brightness: __flight_spread_1.brightness,
-            contrast: __flight_spread_1.contrast,
             ..Default::default()
         }
     };

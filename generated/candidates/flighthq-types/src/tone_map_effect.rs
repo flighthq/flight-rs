@@ -1,0 +1,118 @@
+// @generated from upstream/packages/types/src/ToneMapEffect.ts; do not edit.
+#![allow(clippy::excessive_precision)]
+#![allow(non_upper_case_globals)]
+#![allow(unused_braces)]
+#![allow(unused_imports)]
+#![allow(unused_mut)]
+#![allow(unused_parens)]
+
+use crate::Kind;
+use crate::{AdvancedBlendMode, EffectSourceMode};
+
+// Source: upstream/packages/types/src/ToneMapEffect.ts:3 (sha256:18c47bb6429d38fa8969cddceb75fbd9f3ed125456bb5048b53a7ae029c6e08b)
+pub type ToneMapOperator = String;
+
+// Source: upstream/packages/types/src/ToneMapEffect.ts:5 (sha256:3ed46015146588b439615b5f39aec2e63064c530db2f30842559d441ef41f01a)
+#[derive(Clone, Default)]
+pub struct ToneMapEffect {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub kind: Kind,
+    pub temperature: Option<f64>,
+    pub tint: Option<f64>,
+    pub density: Option<f64>,
+    pub light_color: Option<f64>,
+    pub light_x: Option<f64>,
+    pub light_y: Option<f64>,
+    pub samples: Option<f64>,
+    pub scattering: Option<f64>,
+    pub intensity: Option<f64>,
+    pub radius: Option<f64>,
+    pub softness: Option<f64>,
+    pub color: Option<f64>,
+    pub operator: Option<ToneMapOperator>,
+    pub exposure: Option<f64>,
+    pub white: Option<f64>,
+    pub center: Option<f64>,
+    pub width: Option<f64>,
+    pub blur: Option<f64>,
+    pub feedback: Option<f64>,
+    pub max_distance: Option<f64>,
+    pub resolution: Option<f64>,
+    pub steps: Option<f64>,
+    pub bias: Option<f64>,
+    pub threshold: Option<f64>,
+    pub strength: Option<f64>,
+    pub amount: Option<f64>,
+    pub near: Option<f64>,
+    pub far: Option<f64>,
+    pub count: Option<f64>,
+    pub center_x: Option<f64>,
+    pub center_y: Option<f64>,
+    pub levels: Option<f64>,
+    pub size: Option<f64>,
+    pub compression: Option<f64>,
+    pub crop: Option<f64>,
+    pub thickness: Option<f64>,
+    pub alpha: Option<f64>,
+    pub blur_x: Option<f64>,
+    pub blur_y: Option<f64>,
+    pub quality: Option<f64>,
+    pub source_mode: Option<EffectSourceMode>,
+    pub ghosts: Option<f64>,
+    pub halo: Option<f64>,
+    pub scale: Option<f64>,
+    pub seed: Option<f64>,
+    pub angle: Option<f64>,
+    pub distance: Option<f64>,
+    pub alphas: Vec<f64>,
+    pub colors: Vec<f64>,
+    pub ratios: Vec<f64>,
+    pub bevel_type: Option<String>,
+    pub decay: Option<f64>,
+    pub weight: Option<f64>,
+    pub block_size: Option<f64>,
+    pub color_shift: Option<f64>,
+    pub edge_threshold: Option<f64>,
+    pub subpixel: Option<f64>,
+    pub gate_weave: Option<f64>,
+    pub grain_intensity: Option<f64>,
+    pub halation_radius: Option<f64>,
+    pub halation_strength: Option<f64>,
+    pub frequency: Option<f64>,
+    pub length: Option<f64>,
+    pub shader_key: String,
+    pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
+    pub curvature: Option<f64>,
+    pub scanline_intensity: Option<f64>,
+    pub vignette: Option<f64>,
+    pub aberration: Option<f64>,
+    pub matrix: Vec<f64>,
+    pub matrix_x: f64,
+    pub matrix_y: f64,
+    pub clamp: Option<bool>,
+    pub divisor: Option<f64>,
+    pub preserve_alpha: Option<bool>,
+    pub opacity: Option<f64>,
+    pub smoothness: Option<f64>,
+    pub backdrop_key: Option<String>,
+    pub radial: Option<bool>,
+    pub focus_distance: Option<f64>,
+    pub focus_range: Option<f64>,
+    pub max_blur: Option<f64>,
+    pub passes: Option<f64>,
+    pub mode: AdvancedBlendMode,
+    pub highlight_alpha: Option<f64>,
+    pub highlight_color: Option<f64>,
+    pub shadow_alpha: Option<f64>,
+    pub shadow_color: Option<f64>,
+    pub adaptation_speed: Option<f64>,
+    pub exposure_compensation: Option<f64>,
+    pub max_exposure: Option<f64>,
+    pub min_exposure: Option<f64>,
+}
+impl PartialEq for ToneMapEffect {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}

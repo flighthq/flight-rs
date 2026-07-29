@@ -7,6 +7,7 @@ use flighthq_types::ImageResource;
 fn resource() -> ImageResource {
     ImageResource {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         alpha_type: "straight".to_owned(),
         compressed: None,
         data: Some(vec![1, 2, 3, 4]),

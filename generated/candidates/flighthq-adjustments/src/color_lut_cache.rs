@@ -25,13 +25,6 @@ pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<AdjustmentKind>,
     pub color_matrix: Option<Vec<f64>>,
-    pub intensity: Option<f64>,
-    pub exposure: Option<f64>,
-    pub color_transform: Option<ColorTransform>,
-    pub type_: Option<ColorBlindType>,
-    pub matrix: Option<Vec<f64>>,
-    pub brightness: Option<f64>,
-    pub contrast: Option<f64>,
 }
 impl PartialEq for FlightPartialRecord2 {
     fn eq(&self, other: &Self) -> bool {

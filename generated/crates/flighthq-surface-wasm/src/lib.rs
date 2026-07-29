@@ -21,6 +21,7 @@ use wasm_bindgen::prelude::*;
 fn surface(data: &[u8], width: f64, height: f64) -> Surface {
     Surface {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         alpha_type: "straight".to_owned(),
         compressed: None,
         data: data.to_vec(),

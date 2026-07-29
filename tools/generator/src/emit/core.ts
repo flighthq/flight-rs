@@ -315,6 +315,7 @@ function attemptAutomaticPackage(
       const localDeclarations = new Set(lowered.declarations.map((declaration) => declaration.name));
       const emitted = emitRustModule({
         declarations: lowered.declarations,
+        entityRuntimeAggregateAvailable: packageInventory.name === portConfig.typeLowering.entityRuntimeFamily.package,
         enumNames: [...collectTypeEnumNames(workspaceDirectory), ...importedSemanticTypes.enumNames],
         imports: collectRustImports(
           sourceFile,
@@ -893,6 +894,33 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
       continue;
     }
     try {
+      const localEntityRuntimeRoot =
+        Boolean(selectedDeclarations) &&
+        declarations.some(
+          (declaration) =>
+            declaration.kind === 'type' &&
+            (declaration.name === portConfig.typeLowering.entityRuntimeFamily.entityType ||
+              declaration.name === portConfig.typeLowering.entityRuntimeFamily.runtimeType),
+        );
+      const moduleSemanticTypes = {
+        ...semanticTypes,
+        ...importedSemanticTypes.types,
+      };
+      const moduleSemanticTypeParameters = {
+        ...entityRuntimeSemanticTypes.typeParameters,
+        ...importedSemanticTypes.typeParameters,
+      };
+      if (localEntityRuntimeRoot) {
+        const localNames = new Set(
+          declarations.flatMap((declaration) => (declaration.kind === 'type' ? [declaration.name] : [])),
+        );
+        for (const name of Object.keys(entityRuntimeSemanticTypes.types)) {
+          if (!localNames.has(name)) delete moduleSemanticTypes[name];
+        }
+        for (const name of Object.keys(entityRuntimeSemanticTypes.typeParameters)) {
+          if (!localNames.has(name)) delete moduleSemanticTypeParameters[name];
+        }
+      }
       const emitted = formatRust(
         emitRustModule({
           declarations,
@@ -923,14 +951,8 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
           ),
           inlineFunctions,
           semanticFunctions: importedSemanticTypes.functions,
-          semanticTypes: {
-            ...semanticTypes,
-            ...importedSemanticTypes.types,
-          },
-          semanticTypeParameters: {
-            ...entityRuntimeSemanticTypes.typeParameters,
-            ...importedSemanticTypes.typeParameters,
-          },
+          semanticTypes: moduleSemanticTypes,
+          semanticTypeParameters: moduleSemanticTypeParameters,
           source: relative(workspaceDirectory, file),
           typeImports: [],
         }),
@@ -965,6 +987,7 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
     throw new Error(`Stale ${target.package} source selections: ${staleSelections.join(', ')}`);
   }
 
+  verifyEntityRuntimeRootInvariant(target, outputs);
   const cargoManifest = emitCargoManifest(target);
   const library = formatRust(emitLibrary(target, modules), path.join(crateSourceDirectory, 'lib.rs'));
   outputs.push(
@@ -1000,6 +1023,27 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
     unsupportedSources,
     typeMappings: target.typeMappings,
   };
+}
+
+function verifyEntityRuntimeRootInvariant(target: RustTarget, outputs: readonly PendingOutput[]): void {
+  const modules = outputs.map((output) => output.content);
+  const requiresLocalRoot = modules.some(
+    (content) => content.includes('crate::EntityRuntime') || content.includes('crate::FlightEntity'),
+  );
+  if (!requiresLocalRoot) return;
+  const requiredDefinitions = [
+    ['EntityRuntime', 'pub struct EntityRuntime {'],
+    ['EntityRuntimeStorage', 'pub struct EntityRuntimeStorage {'],
+    ['FlightEntity', 'pub trait FlightEntity {'],
+  ] as const;
+  const missing = requiredDefinitions.flatMap(([name, definition]) =>
+    modules.some((content) => content.includes(definition)) ? [] : [name],
+  );
+  if (missing.length > 0) {
+    throw new Error(
+      `Generated target ${target.crate} emits native entity fields or impls without crate-root support: ${missing.join(', ')}`,
+    );
+  }
 }
 
 function generateWasmFacade(
@@ -1127,9 +1171,77 @@ function collectEntityRuntimeSemanticTypes(
 ): Pick<ImportedSemanticTypes, 'typeParameters' | 'types'> {
   const family = portConfig.typeLowering.entityRuntimeFamily;
   const source = findPackageDeclarationSource(workspaceDirectory, family.package, family.runtimeType);
-  return source
-    ? collectPackageSemanticTypes(path.dirname(source), family.package, workspaceDirectory)
-    : { typeParameters: {}, types: {} };
+  if (!source) return { typeParameters: {}, types: {} };
+  const packageTypes = collectPackageSemanticTypes(path.dirname(source), family.package, workspaceDirectory);
+  const allTypes = new Map(Object.entries(packageTypes.types));
+  const reachesRoot = (name: string, root: string, visited: ReadonlySet<string> = new Set()): boolean => {
+    if (name === root) return true;
+    if (visited.has(name)) return false;
+    const declaration = allTypes.get(name);
+    if (!declaration) return false;
+    const nextVisited = new Set([...visited, name]);
+    if (declaration.kind === 'named') return reachesRoot(declaration.name, root, nextVisited);
+    return (
+      declaration.kind === 'anonymous' &&
+      declaration.extends.some((base) => base.kind === 'named' && reachesRoot(base.name, root, nextVisited))
+    );
+  };
+  const included = new Set(
+    [...allTypes.keys()].filter(
+      (name) => reachesRoot(name, family.entityType) || reachesRoot(name, family.runtimeType),
+    ),
+  );
+  const pending = [...included];
+  while (pending.length > 0) {
+    const name = pending.pop()!;
+    const declaration = allTypes.get(name);
+    if (!declaration) continue;
+    for (const referenced of collectNamedTypeReferences(declaration)) {
+      if (!allTypes.has(referenced) || included.has(referenced)) continue;
+      included.add(referenced);
+      pending.push(referenced);
+    }
+  }
+  return {
+    typeParameters: Object.fromEntries(
+      Object.entries(packageTypes.typeParameters).filter(([name]) => included.has(name)),
+    ),
+    types: Object.fromEntries(Object.entries(packageTypes.types).filter(([name]) => included.has(name))),
+  };
+}
+
+function collectNamedTypeReferences(type: IrType): ReadonlySet<string> {
+  const names = new Set<string>();
+  const visit = (candidate: IrType): void => {
+    switch (candidate.kind) {
+      case 'anonymous':
+        candidate.extends.forEach(visit);
+        candidate.fields.forEach((field) => visit(field.type));
+        break;
+      case 'array':
+        visit(candidate.element);
+        break;
+      case 'function':
+        candidate.parameters.forEach(visit);
+        visit(candidate.returns);
+        break;
+      case 'named':
+        names.add(candidate.name);
+        candidate.arguments.forEach(visit);
+        break;
+      case 'nullable':
+        visit(candidate.inner);
+        break;
+      case 'union':
+        candidate.variants.forEach(visit);
+        break;
+      case 'dynamic':
+      case 'primitive':
+        break;
+    }
+  };
+  visit(type);
+  return names;
 }
 
 function emitCargoManifest(target: RustTarget): string {

@@ -1878,6 +1878,12 @@ describe('Rust emission', () => {
         export function hasRuntime(source: Node): boolean {
           return EntityRuntimeKey in source;
         }
+        export function hasRuntimeComparison(source: Node): boolean {
+          return source[EntityRuntimeKey] !== undefined;
+        }
+        export function setBinding(source: Node, binding: string): void {
+          source[EntityRuntimeKey].binding = binding;
+        }
         export function hasGenericRuntime<Type>(source: Type): boolean {
           return EntityRuntimeKey in source;
         }
@@ -1889,6 +1895,16 @@ describe('Rust emission', () => {
           const copied: Node = { ...source };
           delete source[EntityRuntimeKey];
           return EntityRuntimeKey in copied;
+        }
+        export function cloneWithoutRuntime<Type extends Entity>(source: Readonly<Type>): Type {
+          const copy = { ...source } as Record<PropertyKey, unknown>;
+          copy[EntityRuntimeKey] = undefined;
+          return copy as unknown as Type;
+        }
+        export function stripRuntime<Type extends Entity>(source: Readonly<Type>): Type {
+          const copy = { ...source } as Record<PropertyKey, unknown>;
+          delete copy[EntityRuntimeKey];
+          return copy as unknown as Type;
         }
         export function readGlState(source: GlNode): string {
           const runtime = source[EntityRuntimeKey] as GlNodeRuntime;
@@ -1926,8 +1942,12 @@ describe('Rust emission', () => {
     expect(output).toContain('__flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<EntityRuntime>>>');
     expect(output).toContain('Type: Clone + FlightEntity');
     expect(output).toContain('pub fn has_generic_runtime<Type: Clone + FlightEntity>');
+    expect(output).toContain('pub fn clone_without_runtime<Type: Clone + FlightEntity>');
+    expect(output).toContain('FlightEntity::__flight_fresh_clone');
+    expect(output).toContain('FlightEntity::__flight_entity_runtime(&(copy)).lock().unwrap() = None');
     expect(output).toContain('.lock().unwrap().take().is_some()');
     expect(output).toContain('.lock().unwrap().is_some()');
+    expect(output).toContain('let __flight_value = Some((binding).clone())');
     expect(output).toContain('__flight_entity_runtime: std::sync::Arc::clone(');
     expect(output).toContain(
       'std::sync::Arc::new(std::sync::Mutex::new(__flight_entity_spread.__flight_entity_runtime.lock().unwrap().clone()))',
@@ -1948,6 +1968,184 @@ describe('Rust emission', () => {
     writeFileSync(sourceFile, output);
     expect(() =>
       execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('admits generic runtime aliases while scoping generic-dependent field blockers to their consumers', () => {
+    const typesSource = ts.createSourceFile(
+      '/workspace/upstream/packages/types/src/generic-runtime.ts',
+      `
+        export interface Entity {}
+        export interface EntityRuntime {
+          binding?: string;
+        }
+        export interface NodeRuntime<Traits> extends EntityRuntime {
+          count: number;
+          genericValue: Traits;
+        }
+        export function readCount(runtime: NodeRuntime<string>): number {
+          return runtime.count;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const loweredTypes = lowerTypeScriptSource(typesSource, '@flighthq/types', '/workspace');
+    const output = emitRustModule({
+      declarations: loweredTypes.declarations,
+      source: 'upstream/packages/types/src/generic-runtime.ts',
+      typeImports: [],
+    });
+
+    expect(loweredTypes.diagnostics).toEqual([]);
+    expect(output).toContain('pub type NodeRuntime<Traits> =');
+    expect(output).toContain('std::marker::PhantomData<Traits>');
+    expect(output).toContain('pub count: f64');
+    expect(output).not.toContain('pub generic_value:');
+    expect(output).not.toContain('aggregate native entity runtime closure is unavailable');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-generic-runtime-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+
+    const semanticTypes = Object.fromEntries(
+      loweredTypes.declarations.flatMap((declaration) =>
+        declaration.kind === 'type' ? [[declaration.name, declaration.type] as const] : [],
+      ),
+    );
+    const semanticTypeParameters = Object.fromEntries(
+      loweredTypes.declarations.flatMap((declaration) =>
+        declaration.kind === 'type' ? [[declaration.name, declaration.typeParameters] as const] : [],
+      ),
+    );
+    const consumerSource = ts.createSourceFile(
+      '/workspace/upstream/packages/node/src/generic-runtime.ts',
+      `
+        export function readGenericValue(runtime: NodeRuntime<string>): string {
+          return runtime.genericValue;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const loweredConsumer = lowerTypeScriptSource(consumerSource, '@flighthq/node', '/workspace');
+
+    expect(loweredConsumer.diagnostics).toEqual([]);
+    expect(() =>
+      emitRustModule({
+        declarations: loweredConsumer.declarations,
+        semanticTypeParameters,
+        semanticTypes,
+        source: 'upstream/packages/node/src/generic-runtime.ts',
+        typeImports: [],
+      }),
+    ).toThrow(
+      'entity runtime field genericValue is unavailable on static receiver NodeRuntime: entity runtime extension NodeRuntime field genericValue retains generic parameter Traits',
+    );
+  });
+
+  it('compiles a promoted entity target with source-derived crate-root runtime support', () => {
+    const entitySource = ts.createSourceFile(
+      '/workspace/upstream/packages/types/src/Entity.ts',
+      `
+        export interface Entity {}
+        export interface EntityRuntime {
+          binding: object | null;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const loweredEntity = lowerTypeScriptSource(entitySource, '@flighthq/types', '/workspace');
+    const entityOutput = emitRustModule({
+      declarations: loweredEntity.declarations,
+      source: 'upstream/packages/types/src/Entity.ts',
+      typeImports: [],
+    });
+    const semanticTypes = Object.fromEntries(
+      loweredEntity.declarations.flatMap((declaration) =>
+        declaration.kind === 'type' ? [[declaration.name, declaration.type] as const] : [],
+      ),
+    );
+    const semanticTypeParameters = Object.fromEntries(
+      loweredEntity.declarations.flatMap((declaration) =>
+        declaration.kind === 'type' ? [[declaration.name, declaration.typeParameters] as const] : [],
+      ),
+    );
+    const promotedSource = ts.createSourceFile(
+      '/workspace/upstream/packages/types/src/Surface.ts',
+      `
+        export interface Surface extends Entity {
+          width: number;
+        }
+        export type SurfaceLike = Surface;
+        export interface PlainSurface {
+          width: number;
+        }
+        export function readSurface(surface: SurfaceLike): number {
+          return surface.width;
+        }
+        export function readProjectedSurface(surface: PlainSurface): number {
+          return readSurface(surface);
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const loweredPromoted = lowerTypeScriptSource(promotedSource, '@flighthq/types', '/workspace');
+    const promotedOutput = emitRustModule({
+      declarations: loweredPromoted.declarations,
+      imports: [
+        {
+          module: 'crate',
+          names: [
+            { imported: 'Entity', kind: 'type', local: 'Entity' },
+            { imported: 'EntityRuntime', kind: 'type', local: 'EntityRuntime' },
+          ],
+        },
+      ],
+      semanticTypeParameters,
+      semanticTypes,
+      source: 'upstream/packages/types/src/Surface.ts',
+      typeImports: [],
+    });
+
+    expect(loweredEntity.diagnostics).toEqual([]);
+    expect(loweredPromoted.diagnostics).toEqual([]);
+    expect(entityOutput).toContain('pub struct EntityRuntimeStorage');
+    expect(entityOutput).toContain('pub trait FlightEntity');
+    expect(promotedOutput).toContain('impl crate::FlightEntity for Surface');
+    expect(promotedOutput).toContain('__flight_entity_runtime: Default::default()');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-promoted-entity-'));
+    writeFileSync(path.join(fixture, 'entity.rs'), entityOutput);
+    writeFileSync(path.join(fixture, 'surface.rs'), promotedOutput);
+    writeFileSync(
+      path.join(fixture, 'lib.rs'),
+      [
+        '#[derive(Clone, Default)]',
+        'pub struct OpaqueHostValue;',
+        'mod entity;',
+        'pub use entity::*;',
+        'mod surface;',
+        'pub use surface::*;',
+      ].join('\n'),
+    );
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', 'lib.rs'], {
         cwd: fixture,
         stdio: 'pipe',
       }),

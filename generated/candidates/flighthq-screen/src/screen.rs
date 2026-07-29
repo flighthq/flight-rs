@@ -704,6 +704,7 @@ pub fn get_screen_cursor_screen(out: &mut ScreenInfo) -> ScreenInfo {
             let __flight_source = &(_SCRATCH_POINT);
             Vector2Like {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: Default::default(),
                 x: __flight_source.x,
                 y: __flight_source.y,
             }

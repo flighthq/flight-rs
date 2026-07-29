@@ -13,6 +13,7 @@ use flighthq_types::{Surface, SurfaceRegion};
 fn surface(data: Vec<u8>, width: f64, height: f64) -> Surface {
     Surface {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         alpha_type: "straight".to_owned(),
         compressed: None,
         data,
