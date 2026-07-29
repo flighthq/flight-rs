@@ -60,6 +60,9 @@ pub fn append_rotation_matrix4(
                         __flight_identity: std::sync::Arc::clone(
                             &__flight_source.__flight_identity,
                         ),
+                        __flight_entity_runtime: std::sync::Arc::clone(
+                            &__flight_source.__flight_entity_runtime,
+                        ),
                         m: (__flight_source.m).clone(),
                     }
                 },
@@ -72,6 +75,9 @@ pub fn append_rotation_matrix4(
                 let __flight_source = &(t2);
                 Matrix4Like {
                     __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    __flight_entity_runtime: std::sync::Arc::clone(
+                        &__flight_source.__flight_entity_runtime,
+                    ),
                     m: (__flight_source.m).clone(),
                 }
             })
@@ -83,6 +89,9 @@ pub fn append_rotation_matrix4(
         let __flight_source = &(m);
         Matrix4Like {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            __flight_entity_runtime: std::sync::Arc::clone(
+                &__flight_source.__flight_entity_runtime,
+            ),
             m: (__flight_source.m).clone(),
         }
     });
@@ -106,6 +115,9 @@ pub fn append_scale_matrix4(
         let __flight_source = &(m);
         Matrix4Like {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            __flight_entity_runtime: std::sync::Arc::clone(
+                &__flight_source.__flight_entity_runtime,
+            ),
             m: (__flight_source.m).clone(),
         }
     });
@@ -440,6 +452,7 @@ pub fn create_matrix4(
         .collect();
     let mut out: Matrix4 = create_entity(Some(Matrix4 {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         m: (m).clone(),
     }));
     if (m00).is_some() {
@@ -1012,6 +1025,9 @@ pub fn prepend_rotation_matrix4(
                 let __flight_source = &(t1);
                 Matrix4Like {
                     __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    __flight_entity_runtime: std::sync::Arc::clone(
+                        &__flight_source.__flight_entity_runtime,
+                    ),
                     m: (__flight_source.m).clone(),
                 }
             })
@@ -1026,6 +1042,9 @@ pub fn prepend_rotation_matrix4(
                         __flight_identity: std::sync::Arc::clone(
                             &__flight_source.__flight_identity,
                         ),
+                        __flight_entity_runtime: std::sync::Arc::clone(
+                            &__flight_source.__flight_entity_runtime,
+                        ),
                         m: (__flight_source.m).clone(),
                     }
                 },
@@ -1039,6 +1058,9 @@ pub fn prepend_rotation_matrix4(
         let __flight_source = &(m);
         Matrix4Like {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            __flight_entity_runtime: std::sync::Arc::clone(
+                &__flight_source.__flight_entity_runtime,
+            ),
             m: (__flight_source.m).clone(),
         }
     });
@@ -1062,6 +1084,9 @@ pub fn prepend_scale_matrix4(
         let __flight_source = &(m);
         Matrix4Like {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            __flight_entity_runtime: std::sync::Arc::clone(
+                &__flight_source.__flight_entity_runtime,
+            ),
             m: (__flight_source.m).clone(),
         }
     });
@@ -1087,6 +1112,9 @@ pub fn prepend_translation_matrix4(
             let __flight_source = &(m);
             Matrix4Like {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 m: (__flight_source.m).clone(),
             }
         },
@@ -1108,6 +1136,9 @@ pub fn rotate_matrix4(
         let __flight_source = &(m);
         Matrix4Like {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            __flight_entity_runtime: std::sync::Arc::clone(
+                &__flight_source.__flight_entity_runtime,
+            ),
             m: (__flight_source.m).clone(),
         }
     });

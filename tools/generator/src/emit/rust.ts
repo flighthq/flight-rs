@@ -6115,10 +6115,7 @@ function emitNew(
   );
 }
 
-function emitHostConstruct(
-  expression: Extract<IrExpression, { kind: 'hostConstruct' }>,
-  context: EmitContext,
-): string {
+function emitHostConstruct(expression: Extract<IrExpression, { kind: 'hostConstruct' }>, context: EmitContext): string {
   switch (expression.capability) {
     case 'ImageData':
       return emitImageDataConstruct(expression.arguments, context);
@@ -6129,6 +6126,16 @@ function emitHostConstruct(
       const width = emitExpression(expression.arguments[0]!, context, primitive('Float'));
       const height = emitExpression(expression.arguments[1]!, context, primitive('Float'));
       return `crate::host_offscreen_canvas(${width}, ${height})`;
+    }
+    case 'URL': {
+      if (expression.arguments.length < 1 || expression.arguments.length > 2) {
+        throw new RustEmissionError('URL construction requires a value and optional base');
+      }
+      const value = emitExpression(expression.arguments[0]!, context, primitive('String'));
+      const base = expression.arguments[1]
+        ? `Some(${emitExpression(expression.arguments[1], context, primitive('String'))})`
+        : 'None';
+      return `crate::host_url(${value}, ${base})`;
     }
     default: {
       const unsupported: never = expression.capability;
@@ -6144,10 +6151,7 @@ function emitImageDataConstruct(arguments_: IrExpression[], context: EmitContext
     throw new RustEmissionError('ImageData construction requires pixels and width or width and height');
   }
   const firstType = inferIrExpressionType(first, context);
-  const resolvedFirst = resolveSemanticType(
-    firstType?.kind === 'nullable' ? firstType.inner : firstType,
-    context,
-  );
+  const resolvedFirst = resolveSemanticType(firstType?.kind === 'nullable' ? firstType.inner : firstType, context);
   if (resolvedFirst?.kind === 'primitive' && (resolvedFirst.name === 'Float' || resolvedFirst.name === 'Int')) {
     if (arguments_.length !== 2) {
       throw new RustEmissionError('ImageData dimension construction with settings is not implemented');
@@ -6161,15 +6165,29 @@ function emitImageDataConstruct(arguments_: IrExpression[], context: EmitContext
   if (arguments_.length > 3) {
     throw new RustEmissionError('ImageData pixel construction with settings is not implemented');
   }
-  const data = emitExpression(first, context, {
+  const byteArrayType = {
     arguments: [],
-    kind: 'named',
+    kind: 'named' as const,
     name: 'Uint8ClampedArray',
-  });
+  };
   const width = emitExpression(second, context, primitive('Float'));
-  const height = arguments_[2]
-    ? `Some(${emitExpression(arguments_[2]!, context, primitive('Float'))})`
-    : 'None';
+  const heightExpression = arguments_[2];
+  const heightType = heightExpression ? inferIrExpressionType(heightExpression, context) : undefined;
+  const height =
+    !heightExpression || isNullishExpression(heightExpression)
+      ? 'None'
+      : heightType?.kind === 'nullable'
+        ? emitExpression(heightExpression, context, heightType)
+        : `Some(${emitExpression(heightExpression, context, primitive('Float'))})`;
+  if (firstType?.kind === 'nullable') {
+    if (!heightExpression || heightType?.kind === 'nullable' || isNullishExpression(heightExpression)) {
+      throw new RustEmissionError('nullable ImageData pixels require a non-null height for dimension fallback');
+    }
+    const data = emitExpression(first, context, firstType);
+    const dimensionsHeight = emitExpression(heightExpression, context, primitive('Float'));
+    return `{ let __flight_data = ${data}; let __flight_width = ${width}; let __flight_height = ${dimensionsHeight}; match __flight_data { Some(data) => crate::host_image_data(crate::FlightImageDataRequest::Pixels { data, width: __flight_width, height: Some(__flight_height) }), None => crate::host_image_data(crate::FlightImageDataRequest::Dimensions { width: __flight_width, height: __flight_height }) } }`;
+  }
+  const data = emitExpression(first, context, byteArrayType);
   return `crate::host_image_data(crate::FlightImageDataRequest::Pixels { data: ${data}, width: ${width}, height: ${height} })`;
 }
 
@@ -7604,7 +7622,7 @@ const opaqueHostConstructors = new Set([
   'WebSocket',
 ]);
 
-const nativeHostHandleTypes = new Set(['FlightImageData', 'FlightOffscreenCanvas']);
+const nativeHostHandleTypes = new Set(['FlightImageData', 'FlightOffscreenCanvas', 'FlightUrl']);
 
 function isNativeHostHandleType(type: IrType | undefined): boolean {
   return type?.kind === 'named' && nativeHostHandleTypes.has(type.name);

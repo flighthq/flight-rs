@@ -711,6 +711,7 @@ static _SCRATCH_RECT_A: std::sync::LazyLock<std::sync::Mutex<RectangleLike>> =
     std::sync::LazyLock::new(|| {
         std::sync::Mutex::new(RectangleLike {
             __flight_identity: std::sync::Arc::new(()),
+            __flight_entity_runtime: Default::default(),
             x: 0.0_f64,
             y: 0.0_f64,
             width: 0.0_f64,
@@ -723,6 +724,7 @@ static _SCRATCH_RECT_B: std::sync::LazyLock<std::sync::Mutex<RectangleLike>> =
     std::sync::LazyLock::new(|| {
         std::sync::Mutex::new(RectangleLike {
             __flight_identity: std::sync::Arc::new(()),
+            __flight_entity_runtime: Default::default(),
             x: 0.0_f64,
             y: 0.0_f64,
             width: 0.0_f64,

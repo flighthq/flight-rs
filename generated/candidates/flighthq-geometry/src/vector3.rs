@@ -76,6 +76,7 @@ pub fn copy_vector3(out: &mut Vector3Like, source: &Vector3Like) -> () {
 pub fn create_vector3(x: Option<f64>, y: Option<f64>, z: Option<f64>) -> Vector3 {
     return create_entity(Some(Vector3 {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         x: (x).unwrap_or(0.0_f64),
         y: (y).unwrap_or(0.0_f64),
         z: (z).unwrap_or(0.0_f64),

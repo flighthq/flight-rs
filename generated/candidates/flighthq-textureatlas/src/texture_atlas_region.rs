@@ -147,6 +147,7 @@ pub fn add_texture_atlas_region_vector2(
 pub fn create_texture_atlas_region(obj: Option<FlightPartialRecord1>) -> TextureAtlasRegion {
     return create_entity(Some(TextureAtlasRegion {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         x: (obj.as_ref().and_then(|value| value.x)).unwrap_or(0.0_f64),
         y: (obj.as_ref().and_then(|value| value.y)).unwrap_or(0.0_f64),
         width: (obj.as_ref().and_then(|value| value.width)).unwrap_or(0.0_f64),

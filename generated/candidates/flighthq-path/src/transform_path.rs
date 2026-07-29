@@ -152,6 +152,7 @@ pub fn translate_path(source: &Path, dx: f64, dy: f64, out: &mut Path) -> () {
         source,
         &Matrix {
             __flight_identity: std::sync::Arc::new(()),
+            __flight_entity_runtime: Default::default(),
             a: 1.0_f64,
             b: 0.0_f64,
             c: 0.0_f64,

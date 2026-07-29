@@ -29,6 +29,9 @@ pub fn get_camera_screen_to_world_ray(
         let __flight_source = &(*__SCRATCH_VIEW_PROJECTION.lock().unwrap());
         Matrix4Like {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            __flight_entity_runtime: std::sync::Arc::clone(
+                &__flight_source.__flight_entity_runtime,
+            ),
             m: (__flight_source.m).clone(),
         }
     })) {
@@ -98,6 +101,9 @@ pub fn get_camera_screen_to_world_ray(
             let __flight_source = &(*__SCRATCH_FAR.lock().unwrap());
             Vector3Like {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 x: __flight_source.x,
                 y: __flight_source.y,
                 z: __flight_source.z,
@@ -107,6 +113,9 @@ pub fn get_camera_screen_to_world_ray(
             let __flight_source = &(*__SCRATCH_NEAR.lock().unwrap());
             Vector3Like {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 x: __flight_source.x,
                 y: __flight_source.y,
                 z: __flight_source.z,

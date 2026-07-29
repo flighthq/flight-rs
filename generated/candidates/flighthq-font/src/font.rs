@@ -13,6 +13,7 @@ use flighthq_types::Font;
 pub fn create_font(name: String) -> Font {
     return create_entity(Some(Font {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         name: (name).clone(),
     }));
 }

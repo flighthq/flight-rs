@@ -32,7 +32,7 @@ export interface IrParameter {
   type: IrType;
 }
 
-export type IrHostConstructorCapability = 'ImageData' | 'OffscreenCanvas';
+export type IrHostConstructorCapability = 'ImageData' | 'OffscreenCanvas' | 'URL';
 
 export type IrExpression =
   | { kind: 'array'; elements: IrExpression[] }

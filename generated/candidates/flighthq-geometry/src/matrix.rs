@@ -145,6 +145,7 @@ pub fn create_matrix(
 ) -> Matrix {
     return create_entity(Some(Matrix {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         a: (a).unwrap_or(1.0_f64),
         b: (b).unwrap_or(0.0_f64),
         c: (c).unwrap_or(0.0_f64),

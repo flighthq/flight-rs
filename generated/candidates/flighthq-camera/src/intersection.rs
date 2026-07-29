@@ -26,6 +26,9 @@ pub fn get_camera_ray_through_bounding_sphere(
             let __flight_source = &(sphere.center);
             Vector3Like {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 x: __flight_source.x,
                 y: __flight_source.y,
                 z: __flight_source.z,
@@ -79,6 +82,7 @@ static __SCRATCH_NDC: std::sync::LazyLock<std::sync::Mutex<Vector3Like>> =
     std::sync::LazyLock::new(|| {
         std::sync::Mutex::new(Vector3Like {
             __flight_identity: std::sync::Arc::new(()),
+            __flight_entity_runtime: Default::default(),
             x: 0.0_f64,
             y: 0.0_f64,
             z: 0.0_f64,

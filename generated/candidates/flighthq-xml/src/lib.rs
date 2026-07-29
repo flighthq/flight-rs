@@ -26,6 +26,109 @@ pub fn host_set<T>(_operation: &str, value: T) -> T {
     value
 }
 
+/// Typed inputs for native `ImageData` construction.
+#[derive(Clone, Debug, PartialEq)]
+pub enum FlightImageDataRequest {
+    Dimensions {
+        width: f64,
+        height: f64,
+    },
+    Pixels {
+        data: Vec<u8>,
+        width: f64,
+        height: Option<f64>,
+    },
+}
+
+/// Typed handle returned by a native `ImageData` constructor.
+#[derive(Clone)]
+pub struct FlightImageData(std::sync::Arc<dyn std::any::Any + Send + Sync>);
+impl FlightImageData {
+    pub fn from_native<Value>(value: Value) -> Self
+    where
+        Value: std::any::Any + Send + Sync + 'static,
+    {
+        Self(std::sync::Arc::new(value))
+    }
+    pub fn downcast_ref<Value>(&self) -> Option<&Value>
+    where
+        Value: std::any::Any + Send + Sync + 'static,
+    {
+        self.0.downcast_ref::<Value>()
+    }
+}
+
+/// Typed handle returned by a native `OffscreenCanvas` constructor.
+#[derive(Clone)]
+pub struct FlightOffscreenCanvas(std::sync::Arc<dyn std::any::Any + Send + Sync>);
+impl FlightOffscreenCanvas {
+    pub fn from_native<Value>(value: Value) -> Self
+    where
+        Value: std::any::Any + Send + Sync + 'static,
+    {
+        Self(std::sync::Arc::new(value))
+    }
+    pub fn downcast_ref<Value>(&self) -> Option<&Value>
+    where
+        Value: std::any::Any + Send + Sync + 'static,
+    {
+        self.0.downcast_ref::<Value>()
+    }
+}
+
+/// Typed handle returned by a native `URL` constructor.
+#[derive(Clone)]
+pub struct FlightUrl(std::sync::Arc<dyn std::any::Any + Send + Sync>);
+impl FlightUrl {
+    pub fn from_native<Value>(value: Value) -> Self
+    where
+        Value: std::any::Any + Send + Sync + 'static,
+    {
+        Self(std::sync::Arc::new(value))
+    }
+    pub fn downcast_ref<Value>(&self) -> Option<&Value>
+    where
+        Value: std::any::Any + Send + Sync + 'static,
+    {
+        self.0.downcast_ref::<Value>()
+    }
+}
+
+/// Native implementation surface for typed host constructors.
+pub trait NativeHostConstructors: Send + Sync {
+    fn image_data(&self, request: FlightImageDataRequest) -> FlightImageData;
+    fn offscreen_canvas(&self, width: f64, height: f64) -> FlightOffscreenCanvas;
+    fn url(&self, value: String, base: Option<String>) -> FlightUrl;
+}
+static NATIVE_HOST_CONSTRUCTORS: std::sync::OnceLock<std::sync::Arc<dyn NativeHostConstructors>> =
+    std::sync::OnceLock::new();
+pub fn install_native_host_constructors<Backend>(backend: Backend) -> Result<(), &'static str>
+where
+    Backend: NativeHostConstructors + 'static,
+{
+    NATIVE_HOST_CONSTRUCTORS
+        .set(std::sync::Arc::new(backend))
+        .map_err(|_| "native host constructors were already installed")
+}
+pub fn host_image_data(request: FlightImageDataRequest) -> FlightImageData {
+    match NATIVE_HOST_CONSTRUCTORS.get() {
+        Some(backend) => backend.image_data(request),
+        None => FlightImageData::from_native(request),
+    }
+}
+pub fn host_offscreen_canvas(width: f64, height: f64) -> FlightOffscreenCanvas {
+    match NATIVE_HOST_CONSTRUCTORS.get() {
+        Some(backend) => backend.offscreen_canvas(width, height),
+        None => FlightOffscreenCanvas::from_native((width, height)),
+    }
+}
+pub fn host_url(value: String, base: Option<String>) -> FlightUrl {
+    match NATIVE_HOST_CONSTRUCTORS.get() {
+        Some(backend) => backend.url(value, base),
+        None => FlightUrl::from_native((value, base)),
+    }
+}
+
 /// Native identity for TypeScript `symbol` values.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub struct FlightSymbol(u64);

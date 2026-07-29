@@ -11,7 +11,26 @@ use flighthq_types::{BLEND_MODE as blend_mode_constant, Kind, MaterialAlphaMode,
 
 // Source: upstream/packages/materials/src/surfaceMaterial.ts:10 (sha256:62794450cefb8dd0245c91e8c65ad4cd160b2aeea9fa2618a6d233b71799737f)
 pub fn create_surface_material(kind: Kind) -> SurfaceMaterial {
-    let mut material = create_material((kind).clone());
+    let mut material = {
+        let __flight_source = &(create_material((kind).clone()));
+        SurfaceMaterial {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            __flight_entity_runtime: std::sync::Arc::clone(
+                &__flight_source.__flight_entity_runtime,
+            ),
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+            alpha_cutoff: __flight_source.alpha_cutoff,
+            alpha_mode: (__flight_source.alpha_mode).clone(),
+            alpha_type: (__flight_source.alpha_type).clone(),
+            blend_mode: (__flight_source.blend_mode).clone(),
+            double_sided: __flight_source.double_sided,
+            shader_key: (__flight_source.shader_key).clone(),
+            textures: (__flight_source.textures).clone(),
+            uniforms: (__flight_source.uniforms).clone(),
+            ..Default::default()
+        }
+    };
     material.alpha_cutoff = DEFAULT_ALPHA_CUTOFF;
     material.alpha_mode = (DEFAULT_ALPHA_MODE).clone();
     material.alpha_type = (DEFAULT_ALPHA_TYPE).clone();

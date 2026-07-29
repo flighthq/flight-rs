@@ -36,6 +36,7 @@ pub fn clone_environment(source: &Environment) -> Environment {
 pub fn create_environment(options: Option<EnvironmentOptions>) -> Environment {
     return create_entity(Some(Environment {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         environment: options
             .as_ref()
             .and_then(|value| (value.environment).clone()),

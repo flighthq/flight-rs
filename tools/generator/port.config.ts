@@ -68,6 +68,12 @@ export const portConfig = {
           'OffscreenCanvas construction crosses a declared native backend seam with typed dimensions and a distinct native handle.',
         resultType: 'FlightOffscreenCanvas',
       },
+      {
+        capability: 'URL',
+        global: 'URL',
+        reason: 'URL construction crosses a declared native backend seam with typed value and optional base inputs.',
+        resultType: 'FlightUrl',
+      },
     ] satisfies NativeHostConstructor[],
     genericIntersectionBaseOverrides: [
       {

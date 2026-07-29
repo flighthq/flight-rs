@@ -123,6 +123,7 @@ pub fn get_surface_color_bounds_rectangle(
     }
     return Some(RectangleLike {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         x: min_x,
         y: min_y,
         width: ((max_x - min_x) + 1.0_f64),

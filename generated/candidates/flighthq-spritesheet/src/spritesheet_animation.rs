@@ -30,6 +30,7 @@ impl PartialEq for FlightPartialRecord1 {
 pub fn create_spritesheet_animation(obj: Option<FlightPartialRecord1>) -> SpritesheetAnimation {
     return create_entity(Some(SpritesheetAnimation {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         direction: (obj.as_ref().and_then(|value| (value.direction).clone()))
             .unwrap_or("forward".to_owned()),
         frame_duration: (obj.as_ref().and_then(|value| value.frame_duration)).unwrap_or(0.0_f64),

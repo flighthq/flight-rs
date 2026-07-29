@@ -29,6 +29,7 @@ impl PartialEq for FlightPartialRecord1 {
 pub fn clone_sampler(source: &SamplerLike) -> Sampler {
     return create_entity(Some(Sampler {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         anisotropy: source.anisotropy,
         mag_filter: (source.mag_filter).clone(),
         min_filter: (source.min_filter).clone(),
@@ -96,6 +97,7 @@ pub fn create_pixel_art_sampler() -> Sampler {
 pub fn create_sampler(opts: Option<FlightPartialRecord1>) -> Sampler {
     return create_entity(Some(Sampler {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         anisotropy: (opts.as_ref().and_then(|value| value.anisotropy)).unwrap_or(1.0_f64),
         mag_filter: (opts.as_ref().and_then(|value| (value.mag_filter).clone()))
             .unwrap_or("linear".to_owned()),

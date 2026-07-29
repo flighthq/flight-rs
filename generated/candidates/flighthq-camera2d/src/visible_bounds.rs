@@ -17,6 +17,9 @@ pub fn get_camera2_d_visible_bounds(camera: &Camera2D, out: &mut RectangleLike) 
         let __flight_source = &(*SCRATCH_MATRIX.lock().unwrap());
         MatrixLike {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            __flight_entity_runtime: std::sync::Arc::clone(
+                &__flight_source.__flight_entity_runtime,
+            ),
             a: __flight_source.a,
             b: __flight_source.b,
             c: __flight_source.c,
@@ -31,6 +34,9 @@ pub fn get_camera2_d_visible_bounds(camera: &Camera2D, out: &mut RectangleLike) 
             let __flight_source = &(*SCRATCH_INVERSE.lock().unwrap());
             MatrixLike {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 a: __flight_source.a,
                 b: __flight_source.b,
                 c: __flight_source.c,

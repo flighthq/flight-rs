@@ -26,6 +26,7 @@ impl PartialEq for FlightPartialRecord1 {
 pub fn create_texture_atlas(obj: Option<FlightPartialRecord1>) -> TextureAtlas {
     return create_entity(Some(TextureAtlas {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         image: obj.as_ref().and_then(|value| (value.image).clone()),
         regions: (obj.as_ref().and_then(|value| (value.regions).clone())).unwrap_or(vec![]),
     }));

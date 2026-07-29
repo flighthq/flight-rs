@@ -119,6 +119,7 @@ pub fn build_tileset_regions(target: &mut Tileset) -> () {
 pub fn create_tileset(obj: Option<FlightPartialRecord1>) -> Tileset {
     return create_entity(Some(Tileset {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         atlas: obj.as_ref().and_then(|value| (value.atlas).clone()),
         columns: (obj.as_ref().and_then(|value| value.columns)).unwrap_or(0.0_f64),
         margin: (obj.as_ref().and_then(|value| value.margin)).unwrap_or(0.0_f64),

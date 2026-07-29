@@ -23,6 +23,7 @@ pub fn create_transform2_d(
 ) -> Transform2D {
     return create_entity(Some(Transform2D {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         pivot_x: (pivot_x).unwrap_or(0.0_f64),
         pivot_y: (pivot_y).unwrap_or(0.0_f64),
         rotation: (rotation).unwrap_or(0.0_f64),

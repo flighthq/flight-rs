@@ -51,6 +51,7 @@ impl PartialEq for FlightPartialRecord2 {
 pub fn clone_texture(source: &TextureLike) -> Texture {
     return create_entity(Some(Texture {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         color_space: (source.color_space).clone(),
         image: (source.image).clone(),
         resource: (source.resource).clone(),
@@ -58,6 +59,9 @@ pub fn clone_texture(source: &TextureLike) -> Texture {
             let __flight_source = &(source.sampler);
             SamplerLike {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 anisotropy: __flight_source.anisotropy,
                 mag_filter: (__flight_source.mag_filter).clone(),
                 min_filter: (__flight_source.min_filter).clone(),
@@ -70,6 +74,9 @@ pub fn clone_texture(source: &TextureLike) -> Texture {
             let __flight_source = &(source.uv_offset);
             Vector2Like {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 x: __flight_source.x,
                 y: __flight_source.y,
             }
@@ -79,6 +86,9 @@ pub fn clone_texture(source: &TextureLike) -> Texture {
             let __flight_source = &(source.uv_scale);
             Vector2Like {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 x: __flight_source.x,
                 y: __flight_source.y,
             }
@@ -96,6 +106,9 @@ pub fn copy_texture(out: &mut TextureLike, source: &TextureLike) -> () {
         let __flight_source = &(source.sampler);
         SamplerLike {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            __flight_entity_runtime: std::sync::Arc::clone(
+                &__flight_source.__flight_entity_runtime,
+            ),
             anisotropy: __flight_source.anisotropy,
             mag_filter: (__flight_source.mag_filter).clone(),
             min_filter: (__flight_source.min_filter).clone(),
@@ -108,6 +121,9 @@ pub fn copy_texture(out: &mut TextureLike, source: &TextureLike) -> () {
         let __flight_source = &(source.uv_offset);
         Vector2Like {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            __flight_entity_runtime: std::sync::Arc::clone(
+                &__flight_source.__flight_entity_runtime,
+            ),
             x: __flight_source.x,
             y: __flight_source.y,
         }
@@ -116,6 +132,9 @@ pub fn copy_texture(out: &mut TextureLike, source: &TextureLike) -> () {
         let __flight_source = &(source.uv_scale);
         Vector2Like {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            __flight_entity_runtime: std::sync::Arc::clone(
+                &__flight_source.__flight_entity_runtime,
+            ),
             x: __flight_source.x,
             y: __flight_source.y,
         }
@@ -130,6 +149,7 @@ pub fn copy_texture(out: &mut TextureLike, source: &TextureLike) -> () {
 pub fn create_texture(opts: Option<FlightPartialRecord1>) -> Texture {
     return create_entity(Some(Texture {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         color_space: (opts.as_ref().and_then(|value| (value.color_space).clone()))
             .unwrap_or("srgb".to_owned()),
         image: opts.as_ref().and_then(|value| (value.image).clone()),

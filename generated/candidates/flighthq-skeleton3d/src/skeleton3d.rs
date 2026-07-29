@@ -100,6 +100,9 @@ pub fn compute_skeleton3_d_joint_matrices(skeleton: &mut Skeleton3D) -> () {
                         __flight_identity: std::sync::Arc::clone(
                             &__flight_source.__flight_identity,
                         ),
+                        __flight_entity_runtime: std::sync::Arc::clone(
+                            &__flight_source.__flight_entity_runtime,
+                        ),
                         data: (__flight_source.data).clone(),
                         enabled: __flight_source.enabled,
                         kind: (__flight_source.kind).clone(),
@@ -114,6 +117,9 @@ pub fn compute_skeleton3_d_joint_matrices(skeleton: &mut Skeleton3D) -> () {
                     Matrix4Like {
                         __flight_identity: std::sync::Arc::clone(
                             &__flight_source.__flight_identity,
+                        ),
+                        __flight_entity_runtime: std::sync::Arc::clone(
+                            &__flight_source.__flight_entity_runtime,
                         ),
                         m: (__flight_source.m).clone(),
                     }
@@ -243,6 +249,9 @@ pub fn get_skeleton3_d_joint_world_matrix(
             let __flight_source = &(skeleton.joints[joint_index as usize]);
             Transform3DNode {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 data: (__flight_source.data).clone(),
                 enabled: __flight_source.enabled,
                 kind: (__flight_source.kind).clone(),
@@ -281,6 +290,9 @@ pub fn set_skeleton3_d_bind_pose(skeleton: &mut Skeleton3D) -> () {
                     Transform3DNode {
                         __flight_identity: std::sync::Arc::clone(
                             &__flight_source.__flight_identity,
+                        ),
+                        __flight_entity_runtime: std::sync::Arc::clone(
+                            &__flight_source.__flight_entity_runtime,
                         ),
                         data: (__flight_source.data).clone(),
                         enabled: __flight_source.enabled,

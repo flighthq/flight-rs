@@ -34,6 +34,7 @@ impl PartialEq for PointLightOptions {
 pub fn clone_point_light(source: &PointLight) -> PointLight {
     return create_entity(Some(PointLight {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         casts_shadow: source.casts_shadow,
         color: source.color,
         intensity: source.intensity,
@@ -44,6 +45,9 @@ pub fn clone_point_light(source: &PointLight) -> PointLight {
             let __flight_source = &(source.position);
             Vector3Like {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 x: __flight_source.x,
                 y: __flight_source.y,
                 z: __flight_source.z,
@@ -60,6 +64,7 @@ pub fn create_point_light(options: Option<PointLightOptions>) -> PointLight {
     let position = options.as_ref().and_then(|value| (value.position).clone());
     return create_entity(Some(PointLight {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         casts_shadow: (options.as_ref().and_then(|value| value.casts_shadow)).unwrap_or(false),
         color: (options.as_ref().and_then(|value| value.color)).unwrap_or(4294967295.0_f64),
         intensity: (options.as_ref().and_then(|value| value.intensity)).unwrap_or(1.0_f64),

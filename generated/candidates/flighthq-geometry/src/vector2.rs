@@ -55,6 +55,7 @@ pub fn copy_vector2(out: &mut Vector2Like, source: &Vector2Like) -> () {
 pub fn create_vector2(x: Option<f64>, y: Option<f64>) -> Vector2 {
     return create_entity(Some(Vector2 {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         x: (x).unwrap_or(0.0_f64),
         y: (y).unwrap_or(0.0_f64),
     }));

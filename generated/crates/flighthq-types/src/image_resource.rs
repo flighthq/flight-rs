@@ -6,13 +6,15 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{AlphaType, ImageResourceCompressed, PixelFormat};
+use crate::{AlphaType, EntityRuntime, ImageResourceCompressed, PixelFormat};
 
 // Source: upstream/packages/types/src/ImageResource.ts:18 (sha256:e28dc5618fbdb55d16b93f846822b1c8f71235c796f967cfb1ae7ef45b99657c)
 #[derive(Clone, Default)]
 pub struct ImageResource {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
     pub alpha_type: AlphaType,
     pub compressed: Option<ImageResourceCompressed>,
     pub data: Option<Vec<u8>>,
@@ -25,5 +27,12 @@ pub struct ImageResource {
 impl PartialEq for ImageResource {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for ImageResource {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
     }
 }

@@ -56,6 +56,9 @@ pub fn clip_region_contains_point(clip: &ClipRegion, x: f64, y: f64) -> bool {
             let __flight_source = &(clip.rect);
             RectangleLike {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 height: __flight_source.height,
                 width: __flight_source.width,
                 x: __flight_source.x,
@@ -85,6 +88,9 @@ pub fn clip_region_contains_rectangle(clip: &ClipRegion, rectangle: &RectangleLi
             let __flight_source = &(clip.rect);
             RectangleLike {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 height: __flight_source.height,
                 width: __flight_source.width,
                 x: __flight_source.x,
@@ -102,6 +108,9 @@ pub fn clip_region_intersects_rectangle(clip: &ClipRegion, rectangle: &Rectangle
             let __flight_source = &(clip.rect);
             RectangleLike {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 height: __flight_source.height,
                 width: __flight_source.width,
                 x: __flight_source.x,
@@ -118,6 +127,9 @@ pub fn clone_clip_region(clip: &ClipRegion) -> ClipRegion {
         let __flight_source = &(clip.rect);
         RectangleLike {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            __flight_entity_runtime: std::sync::Arc::clone(
+                &__flight_source.__flight_entity_runtime,
+            ),
             height: __flight_source.height,
             width: __flight_source.width,
             x: __flight_source.x,
@@ -153,6 +165,9 @@ pub fn copy_clip_region(out: &mut ClipRegion, source: &ClipRegion) -> () {
         let __flight_source = &(source.rect);
         RectangleLike {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            __flight_entity_runtime: std::sync::Arc::clone(
+                &__flight_source.__flight_entity_runtime,
+            ),
             height: __flight_source.height,
             width: __flight_source.width,
             x: __flight_source.x,
@@ -429,6 +444,9 @@ pub fn is_clip_region_empty(clip: &ClipRegion) -> bool {
         let __flight_source = &(clip.rect);
         RectangleLike {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            __flight_entity_runtime: std::sync::Arc::clone(
+                &__flight_source.__flight_entity_runtime,
+            ),
             height: __flight_source.height,
             width: __flight_source.width,
             x: __flight_source.x,
@@ -459,6 +477,9 @@ pub fn normalize_clip_region(out: &mut ClipRegion, clip: &ClipRegion) -> () {
             let __flight_source = &(clip.rect);
             RectangleLike {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 height: __flight_source.height,
                 width: __flight_source.width,
                 x: __flight_source.x,
@@ -539,6 +560,9 @@ pub fn normalize_clip_region(out: &mut ClipRegion, clip: &ClipRegion) -> () {
         let __flight_source = &(clip.rect);
         RectangleLike {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            __flight_entity_runtime: std::sync::Arc::clone(
+                &__flight_source.__flight_entity_runtime,
+            ),
             height: __flight_source.height,
             width: __flight_source.width,
             x: __flight_source.x,
@@ -591,6 +615,9 @@ pub fn transform_clip_region(out: &mut ClipRegion, clip: &ClipRegion, matrix: &M
                 let __flight_source = &(clip.rect);
                 RectangleLike {
                     __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    __flight_entity_runtime: std::sync::Arc::clone(
+                        &__flight_source.__flight_entity_runtime,
+                    ),
                     height: __flight_source.height,
                     width: __flight_source.width,
                     x: __flight_source.x,
@@ -689,6 +716,9 @@ pub fn union_clip_regions(out: &mut ClipRegion, a: &ClipRegion, b: &ClipRegion) 
             let __flight_source = &(a.rect);
             RectangleLike {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 height: __flight_source.height,
                 width: __flight_source.width,
                 x: __flight_source.x,
@@ -699,6 +729,9 @@ pub fn union_clip_regions(out: &mut ClipRegion, a: &ClipRegion, b: &ClipRegion) 
             let __flight_source = &(b.rect);
             RectangleLike {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 height: __flight_source.height,
                 width: __flight_source.width,
                 x: __flight_source.x,

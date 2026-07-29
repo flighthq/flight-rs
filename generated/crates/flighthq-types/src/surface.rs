@@ -6,13 +6,15 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{AlphaType, ImageResourceCompressed, PixelFormat};
+use crate::{AlphaType, EntityRuntime, ImageResourceCompressed, PixelFormat};
 
 // Source: upstream/packages/types/src/Surface.ts:8 (sha256:b1031fe4ef5c1d3deb40e43e9ac35498c8bc35ad4217086bd1f8732d1f78a0f3)
 #[derive(Clone, Default)]
 pub struct Surface {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
     pub alpha_type: AlphaType,
     pub compressed: Option<ImageResourceCompressed>,
     pub data: Vec<u8>,
@@ -26,5 +28,12 @@ pub struct Surface {
 impl PartialEq for Surface {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for Surface {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
     }
 }

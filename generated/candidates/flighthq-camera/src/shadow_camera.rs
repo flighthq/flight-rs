@@ -75,6 +75,7 @@ pub fn configure_directional_shadow_camera(
 static _EYE: std::sync::LazyLock<std::sync::Mutex<Vector3Like>> = std::sync::LazyLock::new(|| {
     std::sync::Mutex::new(Vector3Like {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         x: 0.0_f64,
         y: 0.0_f64,
         z: 0.0_f64,
@@ -86,6 +87,7 @@ static _TARGET: std::sync::LazyLock<std::sync::Mutex<Vector3Like>> =
     std::sync::LazyLock::new(|| {
         std::sync::Mutex::new(Vector3Like {
             __flight_identity: std::sync::Arc::new(()),
+            __flight_entity_runtime: Default::default(),
             x: 0.0_f64,
             y: 0.0_f64,
             z: 0.0_f64,
@@ -95,6 +97,7 @@ static _TARGET: std::sync::LazyLock<std::sync::Mutex<Vector3Like>> =
 // Source: upstream/packages/camera/src/shadowCamera.ts:52 (sha256:9d8d483e494babc422e1a78566746f1abcff2c7c5f464f53116565950a0f3dde)
 static _UP_Y: std::sync::LazyLock<Vector3Like> = std::sync::LazyLock::new(|| Vector3Like {
     __flight_identity: std::sync::Arc::new(()),
+    __flight_entity_runtime: Default::default(),
     x: 0.0_f64,
     y: 1.0_f64,
     z: 0.0_f64,
@@ -103,6 +106,7 @@ static _UP_Y: std::sync::LazyLock<Vector3Like> = std::sync::LazyLock::new(|| Vec
 // Source: upstream/packages/camera/src/shadowCamera.ts:53 (sha256:2e44e7b15a62c7b63d69d3f9edfd7ffae4d503734d7c2460349e0f8b8bc65a4e)
 static _UP_Z: std::sync::LazyLock<Vector3Like> = std::sync::LazyLock::new(|| Vector3Like {
     __flight_identity: std::sync::Arc::new(()),
+    __flight_entity_runtime: Default::default(),
     x: 0.0_f64,
     y: 0.0_f64,
     z: 1.0_f64,

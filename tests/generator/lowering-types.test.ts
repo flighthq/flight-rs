@@ -48,14 +48,20 @@ describe('configured type lowering exceptions', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/image/src/constructors.ts',
       `
-        export function createImage(data: Uint8ClampedArray, width: number, height: number): ImageData {
-          return new ImageData(data, width, height);
+        export function createImage(data: Uint8ClampedArray, width: number, height: number) {
+          return new globalThis.ImageData(data, width, height);
         }
-        export function createCanvas(width: number, height: number): OffscreenCanvas {
+        export function createCanvas(width: number, height: number) {
           return new OffscreenCanvas(width, height);
+        }
+        export function createUrl(value: string, base: string) {
+          return new URL(value, base);
         }
         export function createShadowed(ImageData: any): any {
           return new ImageData();
+        }
+        export function createShadowedGlobal(globalThis: any): any {
+          return new globalThis.ImageData();
         }
       `,
       ts.ScriptTarget.Latest,
@@ -81,10 +87,16 @@ describe('configured type lowering exceptions', () => {
       kind: 'hostConstruct',
       resultType: 'FlightOffscreenCanvas',
     });
+    expect(returnExpression('createUrl')).toMatchObject({
+      capability: 'URL',
+      kind: 'hostConstruct',
+      resultType: 'FlightUrl',
+    });
     expect(returnExpression('createShadowed')).toMatchObject({
       callee: { kind: 'identifier', name: 'ImageData' },
       kind: 'new',
     });
+    expect(returnExpression('createShadowedGlobal')).toMatchObject({ kind: 'new' });
     expect(functions.find((candidate) => candidate.name === 'createImage')?.returns).toEqual({
       arguments: [],
       kind: 'named',

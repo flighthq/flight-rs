@@ -46,12 +46,16 @@ impl PartialEq for FlightPartialRecord2 {
 pub fn clone_cube_texture(source: &CubeTextureLike) -> CubeTexture {
     return create_entity(Some(CubeTexture {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         color_space: (source.color_space).clone(),
         faces: ((source.faces).clone()).clone(),
         sampler: clone_sampler(&{
             let __flight_source = &(source.sampler);
             SamplerLike {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 anisotropy: __flight_source.anisotropy,
                 mag_filter: (__flight_source.mag_filter).clone(),
                 min_filter: (__flight_source.min_filter).clone(),
@@ -76,6 +80,9 @@ pub fn copy_cube_texture(out: &mut CubeTextureLike, source: &CubeTextureLike) ->
         let __flight_source = &(source.sampler);
         SamplerLike {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            __flight_entity_runtime: std::sync::Arc::clone(
+                &__flight_source.__flight_entity_runtime,
+            ),
             anisotropy: __flight_source.anisotropy,
             mag_filter: (__flight_source.mag_filter).clone(),
             min_filter: (__flight_source.min_filter).clone(),
@@ -146,6 +153,7 @@ pub fn copy_cube_texture(out: &mut CubeTextureLike, source: &CubeTextureLike) ->
 pub fn create_cube_texture(opts: Option<FlightPartialRecord1>) -> CubeTexture {
     return create_entity(Some(CubeTexture {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         color_space: (opts.as_ref().and_then(|value| (value.color_space).clone()))
             .unwrap_or("srgb".to_owned()),
         faces: if (opts.as_ref().and_then(|value| (value.faces).clone())).is_some() {

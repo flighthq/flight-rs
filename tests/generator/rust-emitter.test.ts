@@ -2303,14 +2303,31 @@ describe('Rust emission', () => {
           data: Uint8ClampedArray,
           width: number,
           height: number,
-        ): ImageData {
+        ) {
           return new ImageData(data, width, height);
         }
-        export function blankImage(width: number, height: number): ImageData {
+        export function imageFromOptionalHeight(
+          data: Uint8ClampedArray,
+          width: number,
+          height?: number,
+        ) {
+          return new ImageData(data, width, height);
+        }
+        export function imageFromNullablePixels(
+          data: Uint8ClampedArray | null,
+          width: number,
+          height: number,
+        ) {
+          return new ImageData(data, width, height);
+        }
+        export function blankImage(width: number, height: number) {
           return new ImageData(width, height);
         }
-        export function createCanvas(width: number, height: number): OffscreenCanvas {
+        export function createCanvas(width: number, height: number) {
           return new OffscreenCanvas(width, height);
+        }
+        export function createUrl(value: string, base: string) {
+          return new URL(value, base);
         }
       `,
       ts.ScriptTarget.Latest,
@@ -2330,7 +2347,12 @@ describe('Rust emission', () => {
     expect(output).toContain('crate::FlightImageDataRequest::Dimensions');
     expect(output).toContain('-> crate::FlightOffscreenCanvas');
     expect(output).toContain('crate::host_offscreen_canvas(width, height)');
+    expect(output).toContain('-> crate::FlightUrl');
+    expect(output).toContain('crate::host_url');
+    expect(output).toContain('height: height');
+    expect(output).toContain('match __flight_data');
     expect(output).not.toContain('OpaqueHostValue::Object');
+    expect(output).not.toContain('height: Some((height).clone().unwrap())');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-host-constructors-'));
     const binary = path.join(fixture, 'host-constructors');
@@ -2352,23 +2374,61 @@ describe('Rust emission', () => {
         '  fn offscreen_canvas(&self, width: f64, height: f64) -> FlightOffscreenCanvas {',
         '    FlightOffscreenCanvas::from_native(format!("canvas:{width}:{height}"))',
         '  }',
+        '  fn url(&self, value: String, base: Option<String>) -> FlightUrl {',
+        '    FlightUrl::from_native(format!("url:{value}:{base:?}"))',
+        '  }',
         '}',
         'fn main() {',
         '  install_native_host_constructors(TestBackend).unwrap();',
-        '  let image = host_image_data(FlightImageDataRequest::Pixels { data: vec![1, 2, 3, 4], width: 1.0, height: Some(1.0) });',
-        '  assert_eq!(image.downcast_ref::<String>().map(String::as_str), Some("pixels:4:1:Some(1.0)"));',
-        '  let canvas = host_offscreen_canvas(4.0, 8.0);',
+        '  let pixels = vec![1, 2, 3, 4];',
+        '  let image = generated::image_from_optional_height(&pixels, 1.0, None);',
+        '  assert_eq!(image.downcast_ref::<String>().map(String::as_str), Some("pixels:4:1:None"));',
+        '  let dimensions = generated::image_from_nullable_pixels(None, 2.0, 3.0);',
+        '  assert_eq!(dimensions.downcast_ref::<String>().map(String::as_str), Some("dimensions:2:3"));',
+        '  let canvas = generated::create_canvas(4.0, 8.0);',
         '  assert_eq!(canvas.downcast_ref::<String>().map(String::as_str), Some("canvas:4:8"));',
+        '  let url = generated::create_url("child".to_owned(), "https://example.com".to_owned());',
+        '  assert_eq!(url.downcast_ref::<String>().map(String::as_str), Some("url:child:Some(\\"https://example.com\\")"));',
         '}',
         '',
       ].join('\n'),
     );
-    expect(() =>
-      execFileSync('rustc', ['--edition', '2024', 'main.rs', '-o', binary], {
-        cwd: fixture,
-        stdio: 'pipe',
-      }),
-    ).not.toThrow();
+    expect(() => compileRustExecutable('main.rs', binary, fixture)).not.toThrow();
     expect(() => execFileSync(binary, [], { cwd: fixture, stdio: 'pipe' })).not.toThrow();
   });
 });
+
+function compileRustExecutable(source: string, output: string, cwd: string): void {
+  const sysroot = execFileSync('rustc', ['--print', 'sysroot'], {
+    cwd,
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe'],
+  }).trim();
+  const host = execFileSync('rustc', ['--version', '--verbose'], {
+    cwd,
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe'],
+  })
+    .split('\n')
+    .find((line) => line.startsWith('host: '))
+    ?.slice('host: '.length);
+  if (!host) throw new Error('rustc did not report its host target');
+  const linker = path.join(sysroot, 'lib', 'rustlib', host, 'bin', 'rust-lld');
+  execFileSync(
+    'rustc',
+    [
+      '--edition',
+      '2024',
+      '--target',
+      'x86_64-unknown-linux-musl',
+      '-C',
+      `linker=${linker}`,
+      '-C',
+      'link-self-contained=yes',
+      source,
+      '-o',
+      output,
+    ],
+    { cwd, stdio: 'pipe' },
+  );
+}

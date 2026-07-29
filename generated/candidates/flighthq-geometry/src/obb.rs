@@ -24,6 +24,7 @@ pub fn create_obb(
 ) -> Obb {
     return create_entity(Some(Obb {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         center_x: center_x,
         center_y: center_y,
         center_z: center_z,

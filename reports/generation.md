@@ -6,145 +6,145 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | --- | ---: |
 | Inventoried packages | 131 |
 | Default-generated packages | 125 |
-| Emittable packages | 70 |
-| Blocked packages | 55 |
-| Compiled candidates | 28 |
-| Compile-blocked candidates | 22 |
-| Dependency-blocked candidates | 19 |
+| Emittable packages | 58 |
+| Blocked packages | 67 |
+| Compiled candidates | 0 |
+| Compile-blocked candidates | 1 |
+| Dependency-blocked candidates | 56 |
 | Cultivated packages | 1 |
 | Host-bound packages | 4 |
 | Excluded packages | 1 |
-| Source/package blockers | 294 |
+| Source/package blockers | 475 |
 
 | Package | Disposition | Status | Candidate | Sources emitted/attempted | API generated/expected | Missing | Dependents direct/transitive | Opaque sources | Blockers | Target |
 | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| `@flighthq/accessibility` | generated | emittable | compile-blocked | 2/2 | 8/8 | 0 | 1/1 | 1 | 0 | no |
-| `@flighthq/adjustments` | generated | emittable | compiled | 19/19 | 49/49 | 0 | 6/25 | 0 | 0 | no |
-| `@flighthq/animation` | generated | emittable | compile-blocked | 4/4 | 18/18 | 0 | 3/7 | 1 | 0 | no |
-| `@flighthq/app` | generated | emittable | compile-blocked | 2/2 | 42/42 | 0 | 4/4 | 1 | 0 | no |
-| `@flighthq/application` | generated | emittable | compiled | 3/3 | 83/83 | 0 | 3/3 | 2 | 0 | no |
-| `@flighthq/assets` | generated | emittable | compile-blocked | 2/2 | 10/10 | 0 | 1/1 | 1 | 0 | no |
-| `@flighthq/audio` | generated | emittable | compile-blocked | 4/4 | 20/20 | 0 | 2/2 | 2 | 0 | no |
+| `@flighthq/accessibility` | generated | emittable | dependency-blocked | 2/2 | 8/8 | 0 | 1/1 | 1 | 0 | no |
+| `@flighthq/adjustments` | generated | emittable | dependency-blocked | 19/19 | 49/49 | 0 | 6/25 | 0 | 0 | no |
+| `@flighthq/animation` | generated | emittable | dependency-blocked | 4/4 | 18/18 | 0 | 3/7 | 1 | 0 | no |
+| `@flighthq/app` | generated | emittable | dependency-blocked | 2/2 | 42/42 | 0 | 4/4 | 1 | 0 | no |
+| `@flighthq/application` | generated | emittable | dependency-blocked | 3/3 | 83/83 | 0 | 3/3 | 2 | 0 | no |
+| `@flighthq/assets` | generated | emittable | dependency-blocked | 2/2 | 10/10 | 0 | 1/1 | 1 | 0 | no |
+| `@flighthq/audio` | generated | emittable | dependency-blocked | 4/4 | 20/20 | 0 | 2/2 | 2 | 0 | no |
 | `@flighthq/binpack` | generated | blocked | source-blocked | 1/2 | 0/1 | 1 | 1/1 | 0 | 2 | no |
-| `@flighthq/bitmapfont` | generated | emittable | compiled | 3/3 | 7/7 | 0 | 2/2 | 0 | 0 | no |
+| `@flighthq/bitmapfont` | generated | emittable | dependency-blocked | 3/3 | 7/7 | 0 | 2/2 | 0 | 0 | no |
 | `@flighthq/bitmapfont-formats` | generated | emittable | dependency-blocked | 5/5 | 9/4 | 0 | 1/1 | 3 | 0 | no |
-| `@flighthq/bitmaptext` | generated | emittable | dependency-blocked | 3/3 | 15/15 | 0 | 1/1 | 2 | 0 | no |
-| `@flighthq/camera` | generated | emittable | compiled | 10/10 | 31/31 | 0 | 4/4 | 0 | 0 | no |
-| `@flighthq/camera2d` | generated | emittable | compiled | 8/8 | 8/8 | 0 | 1/1 | 0 | 0 | no |
+| `@flighthq/bitmaptext` | generated | blocked | source-blocked | 1/3 | 0/15 | 15 | 1/1 | 0 | 3 | no |
+| `@flighthq/camera` | generated | emittable | dependency-blocked | 10/10 | 31/31 | 0 | 4/4 | 0 | 0 | no |
+| `@flighthq/camera2d` | generated | emittable | dependency-blocked | 8/8 | 8/8 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/capture` | generated | blocked | source-blocked | 2/3 | 5/10 | 5 | 1/1 | 1 | 2 | no |
-| `@flighthq/clip` | generated | emittable | compile-blocked | 2/2 | 23/23 | 0 | 1/1 | 1 | 0 | no |
+| `@flighthq/clip` | generated | emittable | dependency-blocked | 2/2 | 23/23 | 0 | 1/1 | 1 | 0 | no |
 | `@flighthq/clipboard` | generated | blocked | source-blocked | 1/2 | 0/32 | 32 | 4/4 | 0 | 2 | no |
-| `@flighthq/clock` | generated | emittable | compile-blocked | 12/12 | 14/14 | 0 | 1/1 | 0 | 0 | no |
+| `@flighthq/clock` | generated | emittable | dependency-blocked | 12/12 | 14/14 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/collision` | generated | blocked | source-blocked | 5/6 | 9/19 | 10 | 1/1 | 0 | 2 | no |
-| `@flighthq/color` | generated | emittable | compiled | 10/10 | 32/32 | 0 | 10/29 | 0 | 0 | no |
-| `@flighthq/connectivity` | generated | emittable | compile-blocked | 2/2 | 14/14 | 0 | 2/2 | 1 | 0 | no |
+| `@flighthq/color` | generated | emittable | dependency-blocked | 10/10 | 32/32 | 0 | 10/29 | 0 | 0 | no |
+| `@flighthq/connectivity` | generated | emittable | dependency-blocked | 2/2 | 14/14 | 0 | 2/2 | 1 | 0 | no |
 | `@flighthq/debug` | generated | blocked | source-blocked | 2/3 | 4/9 | 5 | 1/1 | 1 | 2 | no |
-| `@flighthq/device` | generated | emittable | compiled | 2/2 | 14/14 | 0 | 2/2 | 1 | 0 | no |
+| `@flighthq/device` | generated | emittable | dependency-blocked | 2/2 | 14/14 | 0 | 2/2 | 1 | 0 | no |
 | `@flighthq/dialog` | generated | blocked | source-blocked | 1/2 | 0/15 | 15 | 5/5 | 0 | 2 | no |
-| `@flighthq/displayobject` | generated | emittable | dependency-blocked | 8/8 | 46/46 | 0 | 14/24 | 7 | 0 | no |
-| `@flighthq/displayobject-canvas` | generated | blocked | source-blocked | 19/31 | 59/94 | 35 | 5/5 | 17 | 13 | no |
+| `@flighthq/displayobject` | generated | blocked | source-blocked | 6/8 | 28/46 | 18 | 14/24 | 5 | 3 | no |
+| `@flighthq/displayobject-canvas` | generated | blocked | source-blocked | 16/31 | 51/94 | 43 | 5/5 | 14 | 16 | no |
 | `@flighthq/displayobject-dom` | host-bound | host-bound | not-applicable | 0/0 | 0/58 | 58 | 1/1 | 0 | 0 | no |
-| `@flighthq/displayobject-gl` | generated | blocked | source-blocked | 27/28 | 83/89 | 8 | 1/1 | 17 | 2 | no |
-| `@flighthq/displayobject-wgpu` | generated | blocked | source-blocked | 24/29 | 73/95 | 23 | 1/1 | 15 | 6 | no |
+| `@flighthq/displayobject-gl` | generated | blocked | source-blocked | 7/28 | 23/89 | 68 | 1/1 | 3 | 22 | no |
+| `@flighthq/displayobject-wgpu` | generated | blocked | source-blocked | 7/29 | 25/95 | 71 | 1/1 | 3 | 23 | no |
 | `@flighthq/easing` | generated | emittable | promoted | 20/20 | 48/48 | 0 | 2/3 | 0 | 0 | full |
-| `@flighthq/effects` | generated | emittable | compile-blocked | 72/72 | 112/112 | 0 | 4/4 | 2 | 0 | no |
+| `@flighthq/effects` | generated | emittable | dependency-blocked | 72/72 | 112/112 | 0 | 4/4 | 2 | 0 | no |
 | `@flighthq/effects-canvas` | generated | blocked | source-blocked | 9/48 | 29/102 | 78 | 1/1 | 7 | 40 | no |
 | `@flighthq/effects-gl` | generated | blocked | source-blocked | 11/58 | 31/135 | 104 | 1/1 | 8 | 48 | no |
-| `@flighthq/effects-wgpu` | generated | blocked | source-blocked | 10/56 | 26/128 | 102 | 1/1 | 2 | 47 | no |
-| `@flighthq/entity` | generated | emittable | compiled | 6/6 | 12/12 | 0 | 20/61 | 2 | 0 | no |
+| `@flighthq/effects-wgpu` | generated | blocked | source-blocked | 9/56 | 21/128 | 107 | 1/1 | 1 | 48 | no |
+| `@flighthq/entity` | generated | blocked | source-blocked | 3/6 | 5/12 | 7 | 20/61 | 0 | 4 | no |
 | `@flighthq/filesystem` | generated | blocked | source-blocked | 1/2 | 0/43 | 43 | 2/2 | 0 | 2 | no |
-| `@flighthq/flow` | generated | emittable | compiled | 10/10 | 9/9 | 0 | 1/1 | 0 | 0 | no |
-| `@flighthq/font` | generated | emittable | compile-blocked | 8/8 | 15/15 | 0 | 1/1 | 1 | 0 | no |
+| `@flighthq/flow` | generated | emittable | dependency-blocked | 10/10 | 9/9 | 0 | 1/1 | 0 | 0 | no |
+| `@flighthq/font` | generated | emittable | dependency-blocked | 8/8 | 15/15 | 0 | 1/1 | 1 | 0 | no |
 | `@flighthq/geolocation` | generated | blocked | source-blocked | 1/2 | 0/12 | 12 | 2/2 | 0 | 2 | no |
-| `@flighthq/geometry` | generated | emittable | compiled | 27/27 | 377/377 | 0 | 40/53 | 0 | 0 | no |
+| `@flighthq/geometry` | generated | emittable | dependency-blocked | 27/27 | 377/377 | 0 | 40/53 | 0 | 0 | no |
 | `@flighthq/glyphatlas` | generated | emittable | dependency-blocked | 7/7 | 14/14 | 0 | 1/1 | 2 | 0 | no |
-| `@flighthq/haptics` | generated | emittable | compiled | 2/2 | 13/13 | 0 | 2/2 | 0 | 0 | no |
+| `@flighthq/haptics` | generated | emittable | dependency-blocked | 2/2 | 13/13 | 0 | 2/2 | 0 | 0 | no |
 | `@flighthq/host-capacitor` | host-bound | host-bound | not-applicable | 0/0 | 0/63 | 63 | 0/0 | 0 | 0 | no |
 | `@flighthq/host-electron` | host-bound | host-bound | not-applicable | 0/0 | 0/57 | 57 | 0/0 | 0 | 0 | no |
 | `@flighthq/host-tauri` | host-bound | host-bound | not-applicable | 0/0 | 0/51 | 51 | 0/0 | 0 | 0 | no |
-| `@flighthq/image` | generated | blocked | source-blocked | 2/3 | 11/20 | 9 | 11/24 | 1 | 2 | partial |
+| `@flighthq/image` | generated | emittable | dependency-blocked | 3/3 | 20/20 | 0 | 11/24 | 2 | 0 | partial |
 | `@flighthq/image-codec` | generated | blocked | source-blocked | 6/8 | 14/16 | 2 | 3/26 | 0 | 3 | no |
-| `@flighthq/input` | generated | emittable | compiled | 2/2 | 40/40 | 0 | 1/1 | 1 | 0 | no |
-| `@flighthq/interaction` | generated | blocked | source-blocked | 15/16 | 71/83 | 12 | 1/1 | 14 | 2 | no |
+| `@flighthq/input` | generated | emittable | dependency-blocked | 2/2 | 40/40 | 0 | 1/1 | 1 | 0 | no |
+| `@flighthq/interaction` | generated | blocked | source-blocked | 9/16 | 21/83 | 62 | 1/1 | 8 | 8 | no |
 | `@flighthq/intl` | generated | blocked | source-blocked | 1/8 | 0/14 | 14 | 1/1 | 0 | 8 | no |
 | `@flighthq/ipc` | generated | blocked | source-blocked | 1/2 | 0/17 | 17 | 2/2 | 0 | 2 | no |
-| `@flighthq/keyboard` | generated | emittable | compiled | 2/2 | 20/20 | 0 | 2/2 | 1 | 0 | no |
-| `@flighthq/lifecycle` | generated | emittable | compiled | 2/2 | 13/13 | 0 | 1/1 | 1 | 0 | no |
-| `@flighthq/lighting` | generated | emittable | compiled | 11/11 | 37/37 | 0 | 1/1 | 0 | 0 | no |
+| `@flighthq/keyboard` | generated | emittable | dependency-blocked | 2/2 | 20/20 | 0 | 2/2 | 1 | 0 | no |
+| `@flighthq/lifecycle` | generated | emittable | dependency-blocked | 2/2 | 13/13 | 0 | 1/1 | 1 | 0 | no |
+| `@flighthq/lighting` | generated | emittable | dependency-blocked | 11/11 | 37/37 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/loader` | generated | blocked | source-blocked | 1/2 | 0/13 | 13 | 3/3 | 0 | 2 | no |
 | `@flighthq/log` | generated | blocked | source-blocked | 1/2 | 0/65 | 65 | 7/16 | 0 | 2 | no |
-| `@flighthq/materials` | generated | emittable | compile-blocked | 12/12 | 68/68 | 0 | 7/28 | 1 | 0 | no |
-| `@flighthq/math` | generated | emittable | compiled | 16/16 | 73/73 | 0 | 4/4 | 0 | 0 | no |
-| `@flighthq/media` | generated | emittable | compile-blocked | 4/4 | 42/42 | 0 | 1/1 | 3 | 0 | no |
+| `@flighthq/materials` | generated | emittable | dependency-blocked | 12/12 | 68/68 | 0 | 7/28 | 1 | 0 | no |
+| `@flighthq/math` | generated | emittable | dependency-blocked | 16/16 | 73/73 | 0 | 4/4 | 0 | 0 | no |
+| `@flighthq/media` | generated | emittable | dependency-blocked | 4/4 | 42/42 | 0 | 1/1 | 3 | 0 | no |
 | `@flighthq/mediasession` | generated | blocked | source-blocked | 1/2 | 0/10 | 10 | 1/1 | 0 | 2 | no |
 | `@flighthq/menu` | generated | blocked | source-blocked | 2/3 | 6/17 | 11 | 3/3 | 0 | 2 | no |
-| `@flighthq/mesh` | generated | emittable | compile-blocked | 12/12 | 67/67 | 0 | 6/20 | 2 | 0 | no |
-| `@flighthq/motionpath` | generated | emittable | compiled | 8/8 | 7/7 | 0 | 1/1 | 0 | 0 | no |
-| `@flighthq/movieclip` | generated | emittable | dependency-blocked | 3/3 | 23/23 | 0 | 1/1 | 2 | 0 | no |
+| `@flighthq/mesh` | generated | blocked | source-blocked | 11/12 | 55/67 | 12 | 6/20 | 1 | 2 | no |
+| `@flighthq/motionpath` | generated | emittable | dependency-blocked | 8/8 | 7/7 | 0 | 1/1 | 0 | 0 | no |
+| `@flighthq/movieclip` | generated | blocked | source-blocked | 2/3 | 1/23 | 22 | 1/1 | 1 | 2 | no |
 | `@flighthq/net` | generated | blocked | source-blocked | 1/2 | 0/4 | 4 | 1/1 | 0 | 2 | no |
-| `@flighthq/node` | generated | emittable | compile-blocked | 16/16 | 105/105 | 0 | 23/32 | 10 | 0 | no |
+| `@flighthq/node` | generated | blocked | source-blocked | 8/16 | 30/105 | 75 | 23/32 | 3 | 9 | no |
 | `@flighthq/notification` | generated | blocked | source-blocked | 1/2 | 0/26 | 26 | 4/4 | 0 | 2 | no |
-| `@flighthq/particleemitter` | generated | emittable | dependency-blocked | 11/11 | 51/51 | 0 | 1/1 | 10 | 0 | no |
-| `@flighthq/particles` | generated | emittable | compile-blocked | 11/11 | 50/50 | 0 | 3/3 | 1 | 0 | no |
+| `@flighthq/particleemitter` | generated | blocked | source-blocked | 10/11 | 30/51 | 21 | 1/1 | 9 | 2 | no |
+| `@flighthq/particles` | generated | emittable | dependency-blocked | 11/11 | 50/50 | 0 | 3/3 | 1 | 0 | no |
 | `@flighthq/particles-formats` | generated | blocked | source-blocked | 14/21 | 54/79 | 25 | 1/1 | 5 | 8 | no |
-| `@flighthq/path` | generated | emittable | compiled | 23/23 | 50/50 | 0 | 8/8 | 0 | 0 | no |
+| `@flighthq/path` | generated | emittable | dependency-blocked | 23/23 | 50/50 | 0 | 8/8 | 0 | 0 | no |
 | `@flighthq/path-boolean` | generated | blocked | source-blocked | 7/8 | 12/12 | 1 | 1/1 | 0 | 2 | no |
-| `@flighthq/path-formats` | generated | emittable | compile-blocked | 2/2 | 3/3 | 0 | 1/1 | 0 | 0 | no |
+| `@flighthq/path-formats` | generated | emittable | dependency-blocked | 2/2 | 3/3 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/permissions` | generated | blocked | source-blocked | 1/2 | 0/5 | 5 | 1/1 | 0 | 2 | no |
-| `@flighthq/picking` | generated | emittable | dependency-blocked | 2/2 | 6/6 | 0 | 1/1 | 1 | 0 | no |
-| `@flighthq/platform` | generated | emittable | compiled | 2/2 | 16/16 | 0 | 3/3 | 1 | 0 | no |
-| `@flighthq/power` | generated | emittable | compiled | 2/2 | 19/19 | 0 | 2/2 | 1 | 0 | no |
-| `@flighthq/protocol` | generated | emittable | compile-blocked | 2/2 | 20/20 | 0 | 2/2 | 1 | 0 | no |
-| `@flighthq/render` | generated | emittable | dependency-blocked | 17/17 | 63/63 | 0 | 9/13 | 13 | 0 | no |
-| `@flighthq/render-gl` | generated | blocked | source-blocked | 22/24 | 66/75 | 18 | 4/4 | 15 | 3 | no |
-| `@flighthq/render-wgpu` | generated | blocked | source-blocked | 12/18 | 32/68 | 36 | 5/5 | 9 | 7 | no |
-| `@flighthq/scene` | generated | emittable | dependency-blocked | 14/14 | 43/43 | 0 | 6/6 | 12 | 0 | no |
-| `@flighthq/scene-formats` | generated | blocked | source-blocked | 9/16 | 83/15 | 9 | 2/2 | 2 | 8 | no |
-| `@flighthq/scene-gl` | generated | blocked | source-blocked | 52/53 | 184/184 | 0 | 1/1 | 25 | 1 | no |
+| `@flighthq/picking` | generated | blocked | source-blocked | 1/2 | 0/6 | 6 | 1/1 | 0 | 2 | no |
+| `@flighthq/platform` | generated | emittable | dependency-blocked | 2/2 | 16/16 | 0 | 3/3 | 1 | 0 | no |
+| `@flighthq/power` | generated | emittable | dependency-blocked | 2/2 | 19/19 | 0 | 2/2 | 1 | 0 | no |
+| `@flighthq/protocol` | generated | emittable | dependency-blocked | 2/2 | 20/20 | 0 | 2/2 | 1 | 0 | no |
+| `@flighthq/render` | generated | blocked | source-blocked | 6/17 | 21/63 | 42 | 9/13 | 3 | 12 | no |
+| `@flighthq/render-gl` | generated | blocked | source-blocked | 12/24 | 29/75 | 54 | 4/4 | 8 | 13 | no |
+| `@flighthq/render-wgpu` | generated | blocked | source-blocked | 5/18 | 13/68 | 55 | 5/5 | 4 | 14 | no |
+| `@flighthq/scene` | generated | blocked | source-blocked | 9/14 | 26/43 | 17 | 6/6 | 7 | 6 | no |
+| `@flighthq/scene-formats` | generated | blocked | source-blocked | 8/16 | 82/15 | 10 | 2/2 | 1 | 9 | no |
+| `@flighthq/scene-gl` | generated | blocked | source-blocked | 50/53 | 174/184 | 10 | 1/1 | 23 | 4 | no |
 | `@flighthq/scene-resources` | generated | blocked | source-blocked | 14/16 | 32/37 | 5 | 1/1 | 13 | 3 | no |
-| `@flighthq/scene-wgpu` | generated | blocked | source-blocked | 30/42 | 67/140 | 73 | 1/1 | 18 | 13 | no |
-| `@flighthq/screen` | generated | emittable | compiled | 2/2 | 31/31 | 0 | 2/2 | 1 | 0 | no |
+| `@flighthq/scene-wgpu` | generated | blocked | source-blocked | 7/42 | 14/140 | 126 | 1/1 | 3 | 36 | no |
+| `@flighthq/screen` | generated | emittable | dependency-blocked | 2/2 | 31/31 | 0 | 2/2 | 1 | 0 | no |
 | `@flighthq/sdk` | generated | blocked | source-blocked | 14/14 | 0/5923 | 5923 | 0/0 | 0 | 1 | no |
 | `@flighthq/sensors` | generated | blocked | source-blocked | 1/2 | 0/32 | 32 | 1/1 | 0 | 2 | no |
 | `@flighthq/shading` | generated | blocked | source-blocked | 16/17 | 36/37 | 1 | 2/2 | 2 | 2 | no |
 | `@flighthq/shape` | generated | blocked | source-blocked | 5/7 | 31/42 | 11 | 7/8 | 2 | 3 | no |
 | `@flighthq/shape-formats` | generated | blocked | source-blocked | 1/2 | 0/5 | 5 | 1/1 | 0 | 2 | no |
 | `@flighthq/share` | generated | blocked | source-blocked | 1/2 | 0/14 | 14 | 2/2 | 0 | 2 | no |
-| `@flighthq/shell` | generated | blocked | source-blocked | 1/2 | 0/14 | 14 | 3/3 | 0 | 2 | no |
+| `@flighthq/shell` | generated | emittable | dependency-blocked | 2/2 | 14/14 | 0 | 3/3 | 1 | 0 | no |
 | `@flighthq/shortcut` | generated | blocked | source-blocked | 1/2 | 0/26 | 26 | 3/3 | 0 | 2 | no |
-| `@flighthq/signals` | generated | emittable | compiled | 6/6 | 15/14 | 0 | 42/72 | 0 | 0 | no |
+| `@flighthq/signals` | generated | emittable | dependency-blocked | 6/6 | 15/14 | 0 | 42/72 | 0 | 0 | no |
 | `@flighthq/skeleton3d` | generated | emittable | dependency-blocked | 6/6 | 16/16 | 0 | 3/16 | 2 | 0 | no |
-| `@flighthq/snapshot` | generated | emittable | compile-blocked | 5/5 | 4/4 | 0 | 1/1 | 4 | 0 | no |
-| `@flighthq/socket` | generated | emittable | compile-blocked | 2/2 | 11/11 | 0 | 1/1 | 1 | 0 | no |
-| `@flighthq/spatial` | generated | emittable | compiled | 3/3 | 10/10 | 0 | 2/2 | 0 | 0 | no |
-| `@flighthq/spring` | generated | emittable | compiled | 8/8 | 12/12 | 0 | 1/1 | 0 | 0 | no |
-| `@flighthq/sprite` | generated | emittable | dependency-blocked | 4/4 | 64/64 | 0 | 3/3 | 3 | 0 | no |
+| `@flighthq/snapshot` | generated | emittable | dependency-blocked | 5/5 | 4/4 | 0 | 1/1 | 4 | 0 | no |
+| `@flighthq/socket` | generated | emittable | dependency-blocked | 2/2 | 11/11 | 0 | 1/1 | 1 | 0 | no |
+| `@flighthq/spatial` | generated | emittable | dependency-blocked | 3/3 | 10/10 | 0 | 2/2 | 0 | 0 | no |
+| `@flighthq/spring` | generated | emittable | dependency-blocked | 8/8 | 12/12 | 0 | 1/1 | 0 | 0 | no |
+| `@flighthq/sprite` | generated | blocked | source-blocked | 3/4 | 34/64 | 30 | 3/3 | 2 | 2 | no |
 | `@flighthq/spritesheet` | generated | emittable | dependency-blocked | 8/8 | 32/32 | 0 | 2/2 | 4 | 0 | no |
 | `@flighthq/spritesheet-formats` | generated | blocked | source-blocked | 14/16 | 51/55 | 4 | 1/1 | 7 | 3 | no |
 | `@flighthq/statusbar` | generated | blocked | source-blocked | 1/2 | 0/16 | 16 | 2/2 | 0 | 2 | no |
 | `@flighthq/storage` | generated | blocked | source-blocked | 1/2 | 0/39 | 39 | 2/2 | 0 | 2 | no |
 | `@flighthq/surface` | cultivated | cultivated | not-applicable | 0/0 | 0/136 | 136 | 6/9 | 0 | 0 | partial |
-| `@flighthq/text` | generated | blocked | source-blocked | 5/6 | 70/86 | 16 | 8/9 | 3 | 2 | no |
+| `@flighthq/text` | generated | blocked | source-blocked | 2/6 | 1/86 | 85 | 8/9 | 0 | 5 | no |
 | `@flighthq/text-markup` | generated | blocked | source-blocked | 4/5 | 6/8 | 2 | 1/1 | 1 | 2 | no |
-| `@flighthq/textbidi` | generated | emittable | compile-blocked | 5/5 | 6/6 | 0 | 1/1 | 0 | 0 | no |
-| `@flighthq/textinput` | generated | emittable | dependency-blocked | 5/5 | 55/55 | 0 | 5/6 | 4 | 0 | no |
-| `@flighthq/textlayout` | generated | emittable | dependency-blocked | 13/13 | 51/47 | 0 | 9/11 | 1 | 0 | no |
-| `@flighthq/textsegment` | generated | emittable | compiled | 4/4 | 11/11 | 0 | 1/1 | 1 | 0 | no |
+| `@flighthq/textbidi` | generated | emittable | dependency-blocked | 5/5 | 6/6 | 0 | 1/1 | 0 | 0 | no |
+| `@flighthq/textinput` | generated | blocked | source-blocked | 2/5 | 55/55 | 0 | 5/6 | 1 | 3 | no |
+| `@flighthq/textlayout` | generated | blocked | source-blocked | 11/13 | 51/47 | 0 | 9/11 | 1 | 2 | no |
+| `@flighthq/textsegment` | generated | emittable | dependency-blocked | 4/4 | 11/11 | 0 | 1/1 | 1 | 0 | no |
 | `@flighthq/textshaper` | generated | blocked | source-blocked | 7/9 | 28/31 | 5 | 3/12 | 1 | 3 | no |
 | `@flighthq/textshaper-canvas` | generated | emittable | dependency-blocked | 2/2 | 3/3 | 0 | 1/1 | 1 | 0 | no |
-| `@flighthq/texture` | generated | emittable | compiled | 5/5 | 42/42 | 0 | 5/6 | 0 | 0 | no |
+| `@flighthq/texture` | generated | emittable | dependency-blocked | 5/5 | 42/42 | 0 | 5/6 | 0 | 0 | no |
 | `@flighthq/texture-formats` | generated | blocked | source-blocked | 8/9 | 8/6 | 0 | 1/1 | 0 | 1 | no |
 | `@flighthq/textureatlas` | generated | emittable | dependency-blocked | 4/4 | 20/20 | 0 | 8/13 | 1 | 0 | no |
 | `@flighthq/textureatlas-formats` | generated | emittable | dependency-blocked | 8/8 | 29/29 | 0 | 2/2 | 1 | 0 | no |
 | `@flighthq/tilemap-formats` | generated | blocked | source-blocked | 7/9 | 16/16 | 0 | 1/1 | 2 | 2 | no |
 | `@flighthq/tileset` | generated | emittable | dependency-blocked | 3/3 | 9/9 | 0 | 3/8 | 1 | 0 | no |
-| `@flighthq/timeline` | generated | emittable | compile-blocked | 2/2 | 16/16 | 0 | 2/2 | 0 | 0 | no |
+| `@flighthq/timeline` | generated | emittable | dependency-blocked | 2/2 | 16/16 | 0 | 2/2 | 0 | 0 | no |
 | `@flighthq/tool-capture` | excluded | excluded | not-applicable | 0/0 | 0/57 | 57 | 0/0 | 0 | 0 | no |
 | `@flighthq/tray` | generated | blocked | source-blocked | 1/2 | 0/23 | 23 | 3/3 | 0 | 2 | no |
 | `@flighthq/tween` | generated | blocked | source-blocked | 6/9 | 13/35 | 23 | 2/2 | 1 | 4 | no |
-| `@flighthq/types` | generated | emittable | compiled | 590/590 | 1261/1261 | 0 | 129/129 | 99 | 0 | partial |
+| `@flighthq/types` | generated | blocked | source-blocked | 552/590 | 1082/1261 | 179 | 129/129 | 68 | 39 | partial |
 | `@flighthq/updater` | generated | blocked | source-blocked | 1/2 | 0/23 | 23 | 2/2 | 0 | 2 | no |
-| `@flighthq/useragent` | generated | emittable | compiled | 3/3 | 12/12 | 0 | 3/6 | 1 | 0 | no |
+| `@flighthq/useragent` | generated | emittable | dependency-blocked | 3/3 | 12/12 | 0 | 3/6 | 1 | 0 | no |
 | `@flighthq/velocity` | generated | emittable | dependency-blocked | 4/4 | 20/20 | 0 | 3/3 | 2 | 0 | no |
 | `@flighthq/video` | generated | blocked | source-blocked | 3/4 | 12/16 | 4 | 2/2 | 1 | 2 | no |
 | `@flighthq/webcam` | generated | blocked | source-blocked | 1/3 | 0/10 | 10 | 1/1 | 0 | 3 | no |
@@ -156,6 +156,12 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 - **package** `upstream/packages/binpack/src`: Generated crate is missing 1 of 1 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/binpack/src/packRectangles.ts`: compareRectangleId: typeof operand has no inferred Rust type: {"kind":"identifier","name":"a"}
+
+### `@flighthq/bitmaptext`
+
+- **package** `upstream/packages/bitmaptext/src`: Generated crate is missing 15 of 15 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/bitmaptext/src/bitmapText.ts`: computeBitmapTextLocalBoundsRectangle: entity runtime field localBoundsRectangle is ambiguous or absent on static receiver BitmapTextRuntime
+- **emission** `upstream/packages/bitmaptext/src/updateBitmapText.ts`: updateBitmapText: entity runtime field quadBatches is ambiguous or absent on static receiver BitmapTextRuntime
 
 ### `@flighthq/capture`
 
@@ -182,35 +188,81 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **package** `upstream/packages/dialog/src`: Generated crate is missing 15 of 15 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/dialog/src/dialog.ts`: createWebDialogBackend: object literal requires an inferred structural type (target={"kind":"named","name":"Promise","arguments":[{"kind":"dynamic"}]}, properties=buttonIndex,cancelled,checkboxChecked)
 
+### `@flighthq/displayobject`
+
+- **package** `upstream/packages/displayobject/src`: Generated crate is missing 18 of 46 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/displayobject/src/displayObject.ts`: addDisplayObjectColorAdjustment: entity runtime field colorAdjustments is ambiguous or absent on static receiver DisplayObjectRuntime
+- **emission** `upstream/packages/displayobject/src/stage.ts`: createStage: entity runtime field stage is ambiguous or absent on static receiver DisplayObjectRuntime
+
 ### `@flighthq/displayobject-canvas`
 
-- **package** `upstream/packages/displayobject-canvas/src`: Generated crate is missing 35 of 94 upstream exports; re-export or declaration synthesis is required.
+- **package** `upstream/packages/displayobject-canvas/src`: Generated crate is missing 43 of 94 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/displayobject-canvas/src/canvasBitmap.ts`: drawCanvasBitmap: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"state"},"optional":false}
+- **emission** `upstream/packages/displayobject-canvas/src/canvasDisplayObject.ts`: renderCanvasDisplayObject: entity runtime field children is ambiguous or absent on static receiver DisplayObjectRuntime
 - **emission** `upstream/packages/displayobject-canvas/src/canvasImageSource.ts`: resolveCanvasImageSource: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=element,version)
 - **emission** `upstream/packages/displayobject-canvas/src/canvasParticleEmitter.ts`: drawCanvasParticleEmitter: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"state"},"optional":false}
 - **emission** `upstream/packages/displayobject-canvas/src/canvasQuadBatch.ts`: drawCanvasQuadBatch: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"state"},"optional":false}
+- **emission** `upstream/packages/displayobject-canvas/src/canvasRenderState.ts`: createCanvasRenderState: EntityRuntimeKey storage requires an aggregate native entity runtime representation; refusing to erase observable runtime state
 - **emission** `upstream/packages/displayobject-canvas/src/canvasRenderTarget.ts`: beginCanvasRenderPass: optional element access requires an inferred nullable collection
-- **emission** `upstream/packages/displayobject-canvas/src/canvasRichText.ts`: drawCanvasRichTextField: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"state"},"optional":false}
+- **emission** `upstream/packages/displayobject-canvas/src/canvasRichText.ts`: drawCanvasRichText: entity runtime field input is ambiguous or absent on static receiver RichTextRuntime
 - **emission** `upstream/packages/displayobject-canvas/src/canvasScale9Shape.ts`: drawCanvasScale9Shape: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"state"},"optional":false}
 - **emission** `upstream/packages/displayobject-canvas/src/canvasShape.ts`: drawCanvasShape: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"state"},"optional":false}
 - **emission** `upstream/packages/displayobject-canvas/src/canvasSprite.ts`: drawCanvasSprite: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"state"},"optional":false}
+- **emission** `upstream/packages/displayobject-canvas/src/canvasTextInput.ts`: drawCanvasTextInputOverlay: entity runtime field textLayout is ambiguous or absent on static receiver RichTextRuntime
 - **emission** `upstream/packages/displayobject-canvas/src/canvasTextLabel.ts`: drawCanvasTextLabel: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"state"},"optional":false}
 - **emission** `upstream/packages/displayobject-canvas/src/canvasTilemap.ts`: drawCanvasTilemap: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"state"},"optional":false}
 - **emission** `upstream/packages/displayobject-canvas/src/canvasVideo.ts`: drawCanvasVideo: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"state"},"optional":false}
 
 ### `@flighthq/displayobject-gl`
 
-- **package** `upstream/packages/displayobject-gl/src`: Generated crate is missing 8 of 89 upstream exports; re-export or declaration synthesis is required.
+- **package** `upstream/packages/displayobject-gl/src`: Generated crate is missing 68 of 89 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/displayobject-gl/src/enableGlColorAdjustmentGuards.ts`: areGlColorAdjustmentGuardsEnabled: entity runtime field glColorAdjustmentGuard is ambiguous or absent on static receiver GlRenderStateRuntime
+- **emission** `upstream/packages/displayobject-gl/src/glBitmap.ts`: destroyGlBitmapData: entity runtime field imageResourceTextureCache is ambiguous or absent on static receiver GlRenderStateRuntime
+- **emission** `upstream/packages/displayobject-gl/src/glCache.ts`: createGlCacheState: entity runtime field defaultBitmapShader is ambiguous or absent on static receiver GlRenderStateRuntime
+- **emission** `upstream/packages/displayobject-gl/src/glClip.ts`: popOneGlClip: entity runtime field clipForms is ambiguous or absent on static receiver GlRenderStateRuntime
+- **emission** `upstream/packages/displayobject-gl/src/glClipContours.ts`: popGlClipContours: entity runtime field currentMaskDepth is ambiguous or absent on static receiver GlRenderStateRuntime
+- **emission** `upstream/packages/displayobject-gl/src/glClipRectangle.ts`: popGlClipRectangle: entity runtime field currentScissorRect is ambiguous or absent on static receiver GlRenderStateRuntime
+- **emission** `upstream/packages/displayobject-gl/src/glColorAdjustment.ts`: enableGlColorAdjustment: entity runtime field glColorAdjustmentFold is ambiguous or absent on static receiver GlRenderStateRuntime
+- **emission** `upstream/packages/displayobject-gl/src/glDisplayObject.ts`: renderGlDisplayObject: entity runtime field tempStack is ambiguous or absent on static receiver GlRenderStateRuntime
+- **emission** `upstream/packages/displayobject-gl/src/glParticleEmitter.ts`: ensureParticleShader: entity runtime field particleShader is ambiguous or absent on static receiver GlRenderStateRuntime
+- **emission** `upstream/packages/displayobject-gl/src/glQuadBatch.ts`: submitGlQuadBatch: entity runtime field spriteBatchCount is ambiguous or absent on static receiver GlRenderStateRuntime
+- **emission** `upstream/packages/displayobject-gl/src/glRichText.ts`: drawGlRichText: entity runtime field input is ambiguous or absent on static receiver RichTextRuntime
+- **emission** `upstream/packages/displayobject-gl/src/glScale9Shape.ts`: drawGlScale9Shape: entity runtime field currentTexture is ambiguous or absent on static receiver GlRenderStateRuntime
+- **emission** `upstream/packages/displayobject-gl/src/glShape.ts`: destroyGlShapeData: entity runtime field imageResourceTextureCache is ambiguous or absent on static receiver GlRenderStateRuntime
+- **emission** `upstream/packages/displayobject-gl/src/glShapeMesh.ts`: drawGlShapeMeshBatch: entity runtime field currentProgram is ambiguous or absent on static receiver GlRenderStateRuntime
+- **emission** `upstream/packages/displayobject-gl/src/glSprite.ts`: renderGlSprite: entity runtime field tempStack is ambiguous or absent on static receiver GlRenderStateRuntime
+- **emission** `upstream/packages/displayobject-gl/src/glSpriteBatch.ts`: ensureGlQuadBatchShader: entity runtime field quadBatchShader is ambiguous or absent on static receiver GlRenderStateRuntime
+- **emission** `upstream/packages/displayobject-gl/src/glSpriteRenderer.ts`: submitGlSpriteNode: entity runtime field spriteBatchCount is ambiguous or absent on static receiver GlRenderStateRuntime
+- **emission** `upstream/packages/displayobject-gl/src/glTextLabel.ts`: destroyGlTextLabelData: entity runtime field imageResourceTextureCache is ambiguous or absent on static receiver GlRenderStateRuntime
+- **emission** `upstream/packages/displayobject-gl/src/glTilemap.ts`: submitGlTilemap: entity runtime field spriteBatchCount is ambiguous or absent on static receiver GlRenderStateRuntime
 - **emission** `upstream/packages/displayobject-gl/src/glVelocity.ts`: defaultGlDisplayObjectVelocityWriter: upstream/packages/displayobject-gl/src/glVelocity.ts: cannot infer return type for defaultGlDisplayObjectVelocityWriter
+- **emission** `upstream/packages/displayobject-gl/src/glVideo.ts`: destroyGlVideoData: entity runtime field videoTextureCache is ambiguous or absent on static receiver GlRenderStateRuntime
 
 ### `@flighthq/displayobject-wgpu`
 
-- **package** `upstream/packages/displayobject-wgpu/src`: Generated crate is missing 23 of 95 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuClipContours.ts`: ensureClipContourPipelines: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=arrayStride,attributes)
+- **package** `upstream/packages/displayobject-wgpu/src`: Generated crate is missing 71 of 95 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/displayobject-wgpu/src/enableWgpuColorAdjustmentGuards.ts`: areWgpuColorAdjustmentGuardsEnabled: entity runtime field wgpuColorAdjustmentGuard is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/displayobject-wgpu/src/wgpuBitmap.ts`: drawWgpuBitmap: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/displayobject-wgpu/src/wgpuCache.ts`: createWgpuCacheState: entity runtime field uniformBindGroupLayout is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/displayobject-wgpu/src/wgpuClip.ts`: popOneWgpuClip: entity runtime field clipForms is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/displayobject-wgpu/src/wgpuClipContours.ts`: popWgpuClipContours: entity runtime field clipContourStack is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/displayobject-wgpu/src/wgpuClipRectangle.ts`: popWgpuClipRectangle: entity runtime field scissorStack is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/displayobject-wgpu/src/wgpuColorAdjustment.ts`: enableWgpuColorAdjustment: entity runtime field wgpuColorAdjustmentFold is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/displayobject-wgpu/src/wgpuDisplayObject.ts`: renderWgpuDisplayObject: entity runtime field tempStack is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/displayobject-wgpu/src/wgpuParticleEmitter.ts`: ensureParticleResources: entity runtime field uniformBindGroupLayout is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/displayobject-wgpu/src/wgpuQuadBatch.ts`: submitWgpuQuadBatch: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
 - **emission** `upstream/packages/displayobject-wgpu/src/wgpuRenderStats.ts`: ensureWgpuRenderStatsMutable: object literal requires an inferred structural type (target={"arguments":[{"arguments":[],"kind":"named","name":"WgpuRenderStats"}],"kind":"named","name":"Mutable"}, properties=batchFlushCount,drawCallCount,instanceCount,textureUploadCount)
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuShapeMesh.ts`: ensureShapeMeshPipeline: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=arrayStride,attributes)
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuSpriteBatch.ts`: NORMAL_BLEND: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=color,alpha)
+- **emission** `upstream/packages/displayobject-wgpu/src/wgpuRichText.ts`: drawWgpuRichText: entity runtime field input is ambiguous or absent on static receiver RichTextRuntime
+- **emission** `upstream/packages/displayobject-wgpu/src/wgpuScale9Shape.ts`: drawWgpuScale9Shape: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/displayobject-wgpu/src/wgpuShape.ts`: destroyWgpuShapeData: entity runtime field imageResourceTextureCache is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/displayobject-wgpu/src/wgpuShapeMesh.ts`: drawWgpuShapeMeshes: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/displayobject-wgpu/src/wgpuSprite.ts`: renderWgpuSprite: entity runtime field tempStack is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/displayobject-wgpu/src/wgpuSpriteBatch.ts`: ensureWgpuQuadBatchResources: entity runtime field uniformBindGroupLayout is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/displayobject-wgpu/src/wgpuSpriteRenderer.ts`: submitWgpuSpriteNode: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/displayobject-wgpu/src/wgpuTextLabel.ts`: destroyWgpuTextLabelData: entity runtime field imageResourceTextureCache is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/displayobject-wgpu/src/wgpuTilemap.ts`: submitWgpuTilemap: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
 - **emission** `upstream/packages/displayobject-wgpu/src/wgpuVelocity.ts`: defaultWgpuDisplayObjectVelocityWriter: upstream/packages/displayobject-wgpu/src/wgpuVelocity.ts: cannot infer return type for defaultWgpuDisplayObjectVelocityWriter
+- **emission** `upstream/packages/displayobject-wgpu/src/wgpuVideo.ts`: drawWgpuVideo: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
 
 ### `@flighthq/effects-canvas`
 
@@ -308,7 +360,7 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 ### `@flighthq/effects-wgpu`
 
-- **package** `upstream/packages/effects-wgpu/src`: Generated crate is missing 102 of 128 upstream exports; re-export or declaration synthesis is required.
+- **package** `upstream/packages/effects-wgpu/src`: Generated crate is missing 107 of 128 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/effects-wgpu/src/wgpuBevelEffect.ts`: applyBevelEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY,passes)
 - **emission** `upstream/packages/effects-wgpu/src/wgpuBloomEffect.ts`: applyBloomEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY)
 - **emission** `upstream/packages/effects-wgpu/src/wgpuBlurEffect.ts`: applyBlurEffectToWgpu: object literal requires an inferred structural type (target=unknown, properties=blurX,blurY)
@@ -343,6 +395,7 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **emission** `upstream/packages/effects-wgpu/src/wgpuPixelateEffect.ts`: defaultWgpuPixelateEffectRunner: upstream/packages/effects-wgpu/src/wgpuPixelateEffect.ts: cannot infer return type for defaultWgpuPixelateEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuPosterizeEffect.ts`: defaultWgpuPosterizeEffectRunner: upstream/packages/effects-wgpu/src/wgpuPosterizeEffect.ts: cannot infer return type for defaultWgpuPosterizeEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuRadialBlurEffect.ts`: defaultWgpuRadialBlurEffectRunner: upstream/packages/effects-wgpu/src/wgpuRadialBlurEffect.ts: cannot infer return type for defaultWgpuRadialBlurEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuRenderEffectPipeline.ts`: presentWgpuRenderEffectResult: entity runtime field commandEncoder is ambiguous or absent on static receiver WgpuRenderStateRuntime
 - **emission** `upstream/packages/effects-wgpu/src/wgpuScanlinesEffect.ts`: defaultWgpuScanlinesEffectRunner: upstream/packages/effects-wgpu/src/wgpuScanlinesEffect.ts: cannot infer return type for defaultWgpuScanlinesEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuScreenSpaceFogEffect.ts`: defaultWgpuScreenSpaceFogEffectRunner: upstream/packages/effects-wgpu/src/wgpuScreenSpaceFogEffect.ts: cannot infer return type for defaultWgpuScreenSpaceFogEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuSharpenEffect.ts`: defaultWgpuSharpenEffectRunner: upstream/packages/effects-wgpu/src/wgpuSharpenEffect.ts: cannot infer return type for defaultWgpuSharpenEffectRunner
@@ -356,6 +409,13 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **emission** `upstream/packages/effects-wgpu/src/wgpuVignetteEffect.ts`: defaultWgpuVignetteEffectRunner: upstream/packages/effects-wgpu/src/wgpuVignetteEffect.ts: cannot infer return type for defaultWgpuVignetteEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuWhiteBalanceEffect.ts`: defaultWgpuWhiteBalanceEffectRunner: upstream/packages/effects-wgpu/src/wgpuWhiteBalanceEffect.ts: cannot infer return type for defaultWgpuWhiteBalanceEffectRunner
 
+### `@flighthq/entity`
+
+- **package** `upstream/packages/entity/src`: Generated crate is missing 7 of 12 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/entity/src/binding.ts`: attachEntityBinding: entity runtime field binding is ambiguous or absent on static receiver EntityRuntime
+- **emission** `upstream/packages/entity/src/clone.ts`: cloneEntity: EntityRuntimeKey storage requires an aggregate native entity runtime representation; refusing to erase observable runtime state
+- **emission** `upstream/packages/entity/src/runtime.ts`: createEntityRuntime: entity runtime field binding is ambiguous or absent on static receiver EntityRuntime
+
 ### `@flighthq/filesystem`
 
 - **package** `upstream/packages/filesystem/src`: Generated crate is missing 43 of 43 upstream exports; re-export or declaration synthesis is required.
@@ -366,11 +426,6 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **package** `upstream/packages/geolocation/src`: Generated crate is missing 12 of 12 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/geolocation/src/geolocation.ts`: createWebGeolocationBackend: typeof operand has no inferred Rust type: {"kind":"property","name":"clearWatch","object":{"kind":"identifier","name":"geo"},"optional":false}
 
-### `@flighthq/image`
-
-- **package** `upstream/packages/image/src`: Generated crate is missing 9 of 20 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/image/src/imageResourceFrom.ts`: createCanvasFromImageResource: new-expression Rust lowering is not implemented: crate::host_value::<crate::OpaqueHostValue>("host.ImageData")
-
 ### `@flighthq/image-codec`
 
 - **package** `upstream/packages/image-codec/src`: Generated crate is missing 2 of 16 upstream exports; re-export or declaration synthesis is required.
@@ -379,8 +434,14 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 ### `@flighthq/interaction`
 
-- **package** `upstream/packages/interaction/src`: Generated crate is missing 12 of 83 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/interaction/src/hitTests.ts`: hitAreaContainsPoint: in-operator requires a static property name or an opaque host receiver
+- **package** `upstream/packages/interaction/src`: Generated crate is missing 62 of 83 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/interaction/src/enableInteractionGuards.ts`: hasEligibleNodeInSubtree: entity runtime field children is ambiguous or absent on static receiver NodeRuntime
+- **emission** `upstream/packages/interaction/src/focusManager.ts`: collectFocusStops: entity runtime field children is ambiguous or absent on static receiver NodeRuntime
+- **emission** `upstream/packages/interaction/src/hitTests.ts`: findFirstHit: entity runtime field children is ambiguous or absent on static receiver NodeRuntime
+- **emission** `upstream/packages/interaction/src/interactionManager.ts`: enableInteractionSignals: entity runtime field interactionSignals is ambiguous or absent on static receiver NodeRuntime
+- **emission** `upstream/packages/interaction/src/interactionSpatialIndex.ts`: collectSpatialCandidates: entity runtime field children is ambiguous or absent on static receiver NodeRuntime
+- **emission** `upstream/packages/interaction/src/nodeInteractionState.ts`: enableNodeInteractionState: entity runtime field interactionState is ambiguous or absent on static receiver NodeRuntime
+- **emission** `upstream/packages/interaction/src/spatialQuery.ts`: hitTestAreaQuery: entity runtime field children is ambiguous or absent on static receiver NodeRuntime
 
 ### `@flighthq/intl`
 
@@ -418,15 +479,42 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **package** `upstream/packages/menu/src`: Generated crate is missing 11 of 17 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/menu/src/menu.ts`: showWebContextMenu: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
 
+### `@flighthq/mesh`
+
+- **package** `upstream/packages/mesh/src`: Generated crate is missing 12 of 67 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/mesh/src/meshGeometry.ts`: destroyMeshGeometryGlData: entity runtime field webglData is ambiguous or absent on static receiver MeshGeometryRuntime
+
+### `@flighthq/movieclip`
+
+- **package** `upstream/packages/movieclip/src`: Generated crate is missing 22 of 23 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/movieclip/src/movieClip.ts`: createMovieClipRuntime: entity runtime field movieClipSignals is ambiguous or absent on static receiver MovieClipRuntime
+
 ### `@flighthq/net`
 
 - **package** `upstream/packages/net/src`: Generated crate is missing 4 of 4 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/net/src/net.ts`: createWebNetBackend: await Rust lowering is not implemented
 
+### `@flighthq/node`
+
+- **package** `upstream/packages/node/src`: Generated crate is missing 75 of 105 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/node/src/boundsRectangle.ts`: getNodeLocalBoundsRectangle: entity runtime field localBoundsRectangle is ambiguous or absent on static receiver HasBoundsRectangleRuntime
+- **emission** `upstream/packages/node/src/hasBoundsRectangle.ts`: initBoundsRectangleRuntimeTrait: entity runtime field boundsRectangle is ambiguous or absent on static receiver HasBoundsRectangleRuntime
+- **emission** `upstream/packages/node/src/hasTransform2d.ts`: initTransform2DRuntimeTrait: entity runtime field localMatrix is ambiguous or absent on static receiver HasTransform2DRuntime
+- **emission** `upstream/packages/node/src/hasTransform3d.ts`: initTransform3DRuntimeTrait: entity runtime field localMatrix4 is ambiguous or absent on static receiver HasTransform3DRuntime
+- **emission** `upstream/packages/node/src/hierarchy.ts`: addNodeChildAt: entity runtime field children is ambiguous or absent on static receiver NodeRuntime
+- **emission** `upstream/packages/node/src/node.ts`: createNodeRuntime: entity runtime field appearanceId is ambiguous or absent on static receiver NodeRuntime
+- **emission** `upstream/packages/node/src/revision.ts`: computeNodeWorldTransformRevision: entity runtime field localTransformId is ambiguous or absent on static receiver NodeRuntime
+- **emission** `upstream/packages/node/src/traversal.ts`: findNode: entity runtime field children is ambiguous or absent on static receiver NodeRuntime
+
 ### `@flighthq/notification`
 
 - **package** `upstream/packages/notification/src`: Generated crate is missing 26 of 26 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/notification/src/notification.ts`: createServiceWorkerNotificationBackend: await Rust lowering is not implemented
+
+### `@flighthq/particleemitter`
+
+- **package** `upstream/packages/particleemitter/src`: Generated crate is missing 21 of 51 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/particleemitter/src/particleEmitter.ts`: copyLocalBoundsRectangle: entity runtime field localBoundsRectangle is ambiguous or absent on static receiver ParticleEmitterRuntime
 
 ### `@flighthq/particles-formats`
 
@@ -449,35 +537,85 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **package** `upstream/packages/permissions/src`: Generated crate is missing 5 of 5 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/permissions/src/permission.ts`: requestWebGeolocationPermission: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
 
+### `@flighthq/picking`
+
+- **package** `upstream/packages/picking/src`: Generated crate is missing 6 of 6 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/picking/src/pickScene.ts`: pickNode: entity runtime field children is ambiguous or absent on static receiver NodeRuntime
+
+### `@flighthq/render`
+
+- **package** `upstream/packages/render/src`: Generated crate is missing 42 of 63 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/render/src/enableColorAdjustmentGuards.ts`: areColorAdjustmentGuardsEnabled: entity runtime field colorAdjustmentChannelMixingGuard is ambiguous or absent on static receiver RenderStateRuntime
+- **emission** `upstream/packages/render/src/explainDisplayObjectRender.ts`: explainDisplayObjectRender: entity runtime field rendererMap is ambiguous or absent on static receiver RenderStateRuntime
+- **emission** `upstream/packages/render/src/renderAppearance.ts`: updateRenderProxyAppearance: entity runtime field currentFrameId is ambiguous or absent on static receiver RenderStateRuntime
+- **emission** `upstream/packages/render/src/renderColorTransform.ts`: updateRenderProxyColorTransform: entity runtime field resolvedColorTransform is ambiguous or absent on static receiver NodeRuntime
+- **emission** `upstream/packages/render/src/renderer.ts`: copyRenderersFromRenderState: entity runtime field rendererMap is ambiguous or absent on static receiver RenderStateRuntime
+- **emission** `upstream/packages/render/src/renderProxy.ts`: createRenderProxy: entity runtime field rendererMap is ambiguous or absent on static receiver RenderStateRuntime
+- **emission** `upstream/packages/render/src/renderProxyAdapter.ts`: applyRenderProxyAdapter: entity runtime field renderProxyAdapterMap is ambiguous or absent on static receiver RenderStateRuntime
+- **emission** `upstream/packages/render/src/renderQueue.ts`: buildRenderQueue: entity runtime field renderProxyMap is ambiguous or absent on static receiver RenderStateRuntime
+- **emission** `upstream/packages/render/src/renderState.ts`: createRenderStateRuntime: entity runtime field colorAdjustmentChannelMixingGuard is ambiguous or absent on static receiver RenderStateRuntime
+- **emission** `upstream/packages/render/src/renderTransform2d.ts`: updateRenderProxy2DTransform: entity runtime field currentFrameId is ambiguous or absent on static receiver RenderStateRuntime
+- **emission** `upstream/packages/render/src/sceneRender.ts`: collectVisibleMeshes: entity runtime field children is ambiguous or absent on static receiver NodeRuntime
+
 ### `@flighthq/render-gl`
 
-- **package** `upstream/packages/render-gl/src`: Generated crate is missing 18 of 75 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/render-gl/src/glDraw.ts`: bindGlVideoTexture: object literal requires an inferred structural type (target=unknown, properties=texture,uploadedFrameId)
+- **package** `upstream/packages/render-gl/src`: Generated crate is missing 54 of 75 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/render-gl/src/glBackground.ts`: renderGlBackground: entity runtime field renderTargetViewport is ambiguous or absent on static receiver GlRenderStateRuntime
+- **emission** `upstream/packages/render-gl/src/glCompressedTexture.ts`: registerGlCompressedTextureDecoder: entity runtime field compressedTextureDecoder is ambiguous or absent on static receiver GlRenderStateRuntime
+- **emission** `upstream/packages/render-gl/src/glDraw.ts`: applyGlBlendMode: entity runtime field currentBlendMode is ambiguous or absent on static receiver GlRenderStateRuntime
+- **emission** `upstream/packages/render-gl/src/glFullscreenPass.ts`: clearGlRenderTarget: entity runtime field currentFramebuffer is ambiguous or absent on static receiver GlRenderStateRuntime
+- **emission** `upstream/packages/render-gl/src/glMaterialRegistry.ts`: getGlMaterialRenderer: entity runtime field materialRendererMap is ambiguous or absent on static receiver GlRenderStateRuntime
+- **emission** `upstream/packages/render-gl/src/glReadback.ts`: readGlRenderTargetPixels: entity runtime field currentFramebuffer is ambiguous or absent on static receiver GlRenderStateRuntime
+- **emission** `upstream/packages/render-gl/src/glRenderPass.ts`: beginGlRenderPass: entity runtime field currentFramebuffer is ambiguous or absent on static receiver GlRenderStateRuntime
 - **emission** `upstream/packages/render-gl/src/glRenderState.ts`: createGlRenderState: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=alpha,antialias,powerPreference,stencil,spread)
+- **emission** `upstream/packages/render-gl/src/glRenderTarget.ts`: createGlRenderTarget: entity runtime field currentTexture is ambiguous or absent on static receiver GlRenderStateRuntime
+- **emission** `upstream/packages/render-gl/src/glShader.ts`: createDefaultGlBitmapShader: entity runtime field renderTargetViewport is ambiguous or absent on static receiver GlRenderStateRuntime
+- **emission** `upstream/packages/render-gl/src/glShaderBinding.ts`: getGlMaterialShader: entity runtime field materialBitmapShaderMap is ambiguous or absent on static receiver GlRenderStateRuntime
+- **emission** `upstream/packages/render-gl/src/glShaderRegistry.ts`: registerGlBitmapShader: entity runtime field defaultBitmapShader is ambiguous or absent on static receiver GlRenderStateRuntime
 
 ### `@flighthq/render-wgpu`
 
-- **package** `upstream/packages/render-wgpu/src`: Generated crate is missing 36 of 68 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/render-wgpu/src/wgpuBackground.ts`: renderWgpuBackground: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=r,g,b,a)
-- **emission** `upstream/packages/render-wgpu/src/wgpuDraw.ts`: drawWgpuQuadWithTransform: object literal requires an inferred structural type (target=unknown, properties=alpha,transform2D)
-- **emission** `upstream/packages/render-wgpu/src/wgpuRenderState.ts`: getWgpuSampler: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=minFilter,magFilter,addressModeU,addressModeV)
+- **package** `upstream/packages/render-wgpu/src`: Generated crate is missing 55 of 68 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/render-wgpu/src/wgpuBackground.ts`: ensureWgpuDepthStencil: entity runtime field depthStencilTexture is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/render-wgpu/src/wgpuDraw.ts`: applyWgpuBlendMode: entity runtime field currentBlendMode is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/render-wgpu/src/wgpuFullscreenPass.ts`: drawWgpuFullscreenPass: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/render-wgpu/src/wgpuMaterialRegistry.ts`: getWgpuMaterialRenderer: entity runtime field materialRendererMap is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/render-wgpu/src/wgpuMipmap.ts`: generateWgpuMipmaps: entity runtime field mipmapBindGroupLayout is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/render-wgpu/src/wgpuRenderState.ts`: destroyWgpuRenderState: entity runtime field uniformBuffer is ambiguous or absent on static receiver WgpuRenderStateRuntime
 - **emission** `upstream/packages/render-wgpu/src/wgpuRenderTarget.ts`: beginWgpuRenderPassEncoder: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=r,g,b,a)
+- **emission** `upstream/packages/render-wgpu/src/wgpuScissor.ts`: applyWgpuScissorRect: entity runtime field currentScissorRect is ambiguous or absent on static receiver WgpuRenderStateRuntime
 - **emission** `upstream/packages/render-wgpu/src/wgpuShader.ts`: buildStencilFaceState: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=compare,passOp,failOp,depthFailOp)
+- **emission** `upstream/packages/render-wgpu/src/wgpuShaderBinding.ts`: resolveWgpuShader: entity runtime field webgpuShaderBindingResolver is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/render-wgpu/src/wgpuShaderRegistry.ts`: registerWgpuBitmapShader: entity runtime field defaultBitmapShader is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/render-wgpu/src/wgpuSurface.ts`: acquireWgpuFrameCaptureTexture: entity runtime field frameCaptureEnabled is ambiguous or absent on static receiver WgpuRenderStateRuntime
 - **emission** `upstream/packages/render-wgpu/src/wgpuTestHelper.ts`: installWgpuConstants: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=MAP_READ,MAP_WRITE,COPY_SRC,COPY_DST,INDEX,VERTEX,UNIFORM,STORAGE,INDIRECT,QUERY_RESOLVE)
+
+### `@flighthq/scene`
+
+- **package** `upstream/packages/scene/src`: Generated crate is missing 17 of 43 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/scene/src/billboardCamera.ts`: orientBillboardSubtree: entity runtime field children is ambiguous or absent on static receiver SceneNodeRuntime
+- **emission** `upstream/packages/scene/src/sceneNode.ts`: createSceneNodeRuntime: entity runtime field traits is ambiguous or absent on static receiver SceneNodeRuntime
+- **emission** `upstream/packages/scene/src/sceneNodeAppearance.ts`: ensureSceneNodeWorldAlpha: entity runtime field parent is ambiguous or absent on static receiver SceneNodeRuntime
+- **emission** `upstream/packages/scene/src/sceneNodeBounds.ts`: _accumulateWorldBounds: entity runtime field children is ambiguous or absent on static receiver NodeRuntime
+- **emission** `upstream/packages/scene/src/sceneNodeCulling.ts`: _cullNode: entity runtime field children is ambiguous or absent on static receiver NodeRuntime
 
 ### `@flighthq/scene-formats`
 
-- **package** `upstream/packages/scene-formats/src`: Generated crate is missing 9 of 15 upstream exports; re-export or declaration synthesis is required.
+- **package** `upstream/packages/scene-formats/src`: Generated crate is missing 10 of 15 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/scene-formats/src/awdParse.ts`: createSceneFromAwd: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
 - **emission** `upstream/packages/scene-formats/src/gltfParse.ts`: buildGltfAnimationClip: object literal requires an inferred structural type (target=unknown, properties=components,interpolation,quaternion,times,values)
 - **emission** `upstream/packages/scene-formats/src/gltfSchema.ts`: GltfNormalTextureInfo: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[{"name":"KHR_texture_transform","optional":true,"type":{"arguments":[],"kind":"named","name":"GltfTextureTransform"}}],"kind":"anonymous"}
 - **emission** `upstream/packages/scene-formats/src/md2Parse.ts`: createSceneFromMd2: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
 - **emission** `upstream/packages/scene-formats/src/md5AnimParse.ts`: buildAnimationClip: object literal requires an inferred structural type (target=unknown, properties=components,times,values)
+- **emission** `upstream/packages/scene-formats/src/md5Parse.ts`: createSceneFromMd5Mesh: object literal requires an inferred structural type (target=unknown, properties=x,y,z)
 - **emission** `upstream/packages/scene-formats/src/shared.ts`: findSceneSkeletonJoints: spread Rust lowering is not implemented
 - **emission** `upstream/packages/scene-formats/src/threeDsParse.ts`: createSceneFrom3ds: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
 
 ### `@flighthq/scene-gl`
 
+- **package** `upstream/packages/scene-gl/src`: Generated crate is missing 10 of 184 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/scene-gl/src/glParticleEmitter3D.ts`: collectParticleEmitter3DNodes: entity runtime field children is ambiguous or absent on static receiver NodeRuntime
+- **emission** `upstream/packages/scene-gl/src/glSceneRuntime.ts`: getGlSceneRuntime: entity runtime field sceneMeshMaterialRegistry is ambiguous or absent on static receiver GlRenderStateRuntime
 - **emission** `upstream/packages/scene-gl/src/glSceneTestHelper.ts`: makeFakeGl2: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=calls,ARRAY_BUFFER,ELEMENT_ARRAY_BUFFER,STATIC_DRAW,FLOAT,UNSIGNED_BYTE,UNSIGNED_SHORT,UNSIGNED_INT,TRIANGLES,TEXTURE0,TEXTURE1,TEXTURE_2D,VERTEX_SHADER,FRAGMENT_SHADER,COMPILE_STATUS,LINK_STATUS,ACTIVE_UNIFORMS,FLOAT_VEC2,FLOAT_VEC3,FLOAT_VEC4,FLOAT_MAT2,FLOAT_MAT3,FLOAT_MAT4,BLEND,CULL_FACE,BACK,DEPTH_TEST,LESS,ONE,ONE_MINUS_SRC_ALPHA,SRC_ALPHA,FUNC_ADD,FRAMEBUFFER,COLOR_BUFFER_BIT,DEPTH_BUFFER_BIT,COLOR,DEPTH_STENCIL,MAX_VERTEX_UNIFORM_VECTORS,RGBA32F,NEAREST,CLAMP_TO_EDGE,TEXTURE_MIN_FILTER,TEXTURE_MAG_FILTER,TEXTURE_WRAP_S,TEXTURE_WRAP_T,getParameter,createShader,shaderSource,compileShader,getShaderParameter,getShaderInfoLog,deleteShader,createProgram,attachShader,linkProgram,getProgramParameter,getActiveUniform,getProgramInfoLog,useProgram,getUniformLocation,createBuffer,bindBuffer,bufferData,createVertexArray,bindVertexArray,deleteBuffer,deleteFramebuffer,deleteProgram,deleteRenderbuffer,deleteTexture,deleteVertexArray,enableVertexAttribArray,getAttribLocation,vertexAttribPointer,vertexAttribIPointer,vertexAttrib4f,vertexAttribDivisor,bufferSubData,bindFramebuffer,blendEquation,blendFunc,clear,clearColor,clearDepth,clearBufferfv,clearBufferfi,cullFace,depthFunc,depthMask,flush,viewport,disable,enable,drawElements,drawElementsInstanced,drawArrays,activeTexture,bindTexture,createTexture,texParameteri,texImage2D,texSubImage2D,pixelStorei,uniform1i,uniform1f,uniform1fv,uniform2f,uniform2fv,uniform3f,uniform3fv,uniform4f,uniform4fv,uniformMatrix3fv,uniformMatrix4fv)
 
 ### `@flighthq/scene-resources`
@@ -488,19 +626,42 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 ### `@flighthq/scene-wgpu`
 
-- **package** `upstream/packages/scene-wgpu/src`: Generated crate is missing 73 of 140 upstream exports; re-export or declaration synthesis is required.
+- **package** `upstream/packages/scene-wgpu/src`: Generated crate is missing 126 of 140 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/scene-wgpu/src/anisotropyPbrWgpuMeshMaterialRenderer.ts`: anisotropyPbrWgpuMeshMaterialRenderer: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/scene-wgpu/src/blinnPhongWgpuMeshMaterialRenderer.ts`: blinnPhongWgpuMeshMaterialRenderer: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/scene-wgpu/src/clearcoatPbrWgpuMeshMaterialRenderer.ts`: clearcoatPbrWgpuMeshMaterialRenderer: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/scene-wgpu/src/depthWgpuMeshMaterialRenderer.ts`: depthWgpuMeshMaterialRenderer: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/scene-wgpu/src/emissiveWgpuMeshMaterialRenderer.ts`: emissiveWgpuMeshMaterialRenderer: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/scene-wgpu/src/iridescencePbrWgpuMeshMaterialRenderer.ts`: iridescencePbrWgpuMeshMaterialRenderer: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/scene-wgpu/src/lambertWgpuMeshMaterialRenderer.ts`: lambertWgpuMeshMaterialRenderer: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/scene-wgpu/src/matcapWgpuMeshMaterialRenderer.ts`: matcapWgpuMeshMaterialRenderer: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/scene-wgpu/src/normalWgpuMeshMaterialRenderer.ts`: normalWgpuMeshMaterialRenderer: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/scene-wgpu/src/phongWgpuMeshMaterialRenderer.ts`: phongWgpuMeshMaterialRenderer: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/scene-wgpu/src/sheenPbrWgpuMeshMaterialRenderer.ts`: sheenPbrWgpuMeshMaterialRenderer: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/scene-wgpu/src/specularGlossinessPbrWgpuMeshMaterialRenderer.ts`: specularGlossinessPbrWgpuMeshMaterialRenderer: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/scene-wgpu/src/specularPbrWgpuMeshMaterialRenderer.ts`: specularPbrWgpuMeshMaterialRenderer: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/scene-wgpu/src/standardPbrWgpuMeshMaterialRenderer.ts`: standardPbrWgpuMeshMaterialRenderer: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/scene-wgpu/src/subsurfacePbrWgpuMeshMaterialRenderer.ts`: subsurfacePbrWgpuMeshMaterialRenderer: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/scene-wgpu/src/toonWgpuMeshMaterialRenderer.ts`: toonWgpuMeshMaterialRenderer: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/scene-wgpu/src/transmissionVolumePbrWgpuMeshMaterialRenderer.ts`: transmissionVolumePbrWgpuMeshMaterialRenderer: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/scene-wgpu/src/unlitWgpuMeshMaterialRenderer.ts`: unlitWgpuMeshMaterialRenderer: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/scene-wgpu/src/vertexColorWgpuMeshMaterialRenderer.ts`: vertexColorWgpuMeshMaterialRenderer: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
 - **emission** `upstream/packages/scene-wgpu/src/wgpuClassicPrelude.ts`: compileWgpuClassicPipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module,shadowBindGroupLayout)
 - **emission** `upstream/packages/scene-wgpu/src/wgpuDebugPrelude.ts`: compileWgpuDebugPipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module)
 - **emission** `upstream/packages/scene-wgpu/src/wgpuEnvironmentIblBake.ts`: BAKE_CLEAR: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=r,g,b,a)
+- **emission** `upstream/packages/scene-wgpu/src/wgpuEnvironmentSkybox.ts`: drawWgpuEnvironmentSkybox: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
 - **emission** `upstream/packages/scene-wgpu/src/wgpuMatcapPrelude.ts`: compileWgpuMatcapPipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module)
-- **emission** `upstream/packages/scene-wgpu/src/wgpuMeshPipeline.ts`: VERTEX_BUFFER_LAYOUTS: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=arrayStride,attributes)
+- **emission** `upstream/packages/scene-wgpu/src/wgpuMeshPipeline.ts`: beginWgpuMeshDraw: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
+- **emission** `upstream/packages/scene-wgpu/src/wgpuMeshUpload.ts`: ensureWgpuMeshUpload: entity runtime field webgpuData is ambiguous or absent on static receiver MeshGeometryRuntime
 - **emission** `upstream/packages/scene-wgpu/src/wgpuParticleEmitter3D.ts`: wgpuParticleBlendState: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=operation,srcFactor,dstFactor)
 - **emission** `upstream/packages/scene-wgpu/src/wgpuPbrPipelineCache.ts`: compileWgpuPbrPipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module,pbrSampleBindGroupLayout)
+- **emission** `upstream/packages/scene-wgpu/src/wgpuSceneRuntime.ts`: getWgpuSceneRuntime: entity runtime field sceneMeshMaterialRegistry is ambiguous or absent on static receiver WgpuRenderStateRuntime
 - **emission** `upstream/packages/scene-wgpu/src/wgpuSceneTestHelper.ts`: installWgpuConstants: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=MAP_READ,MAP_WRITE,COPY_SRC,COPY_DST,INDEX,VERTEX,UNIFORM,STORAGE,INDIRECT,QUERY_RESOLVE)
-- **emission** `upstream/packages/scene-wgpu/src/wgpuShadowMap.ts`: SHADOW_VERTEX_BUFFER_LAYOUTS: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=arrayStride,attributes)
+- **emission** `upstream/packages/scene-wgpu/src/wgpuShadowMap.ts`: drawWgpuSceneShadowMap: entity runtime field commandEncoder is ambiguous or absent on static receiver WgpuRenderStateRuntime
 - **emission** `upstream/packages/scene-wgpu/src/wgpuToonPrelude.ts`: compileWgpuToonPipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module,shadowBindGroupLayout)
 - **emission** `upstream/packages/scene-wgpu/src/wgpuUnlitPrelude.ts`: compileWgpuUnlitPipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module)
 - **emission** `upstream/packages/scene-wgpu/src/wgpuWireframePrelude.ts`: compileWgpuWireframePipeline: object literal requires an inferred structural type (target=unknown, properties=doubleSided,format,materialBindGroupLayout,module,topology)
+- **emission** `upstream/packages/scene-wgpu/src/wireframeWgpuMeshMaterialRenderer.ts`: wireframeWgpuMeshMaterialRenderer: entity runtime field renderPass is ambiguous or absent on static receiver WgpuRenderStateRuntime
 
 ### `@flighthq/sdk`
 
@@ -532,21 +693,21 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **package** `upstream/packages/share/src`: Generated crate is missing 14 of 14 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/share/src/share.ts`: createWebShareBackend: object literal requires an inferred structural type (target={"kind":"named","name":"Promise","arguments":[{"kind":"dynamic"}]}, properties=completed,activityType,dismissed)
 
-### `@flighthq/shell`
-
-- **package** `upstream/packages/shell/src`: Generated crate is missing 14 of 14 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/shell/src/shell.ts`: isShellUrlAllowed: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
-
 ### `@flighthq/shortcut`
 
 - **package** `upstream/packages/shortcut/src`: Generated crate is missing 26 of 26 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/shortcut/src/shortcut.ts`: parseAcceleratorDetailed: in-operator requires a static property name or an opaque host receiver
 
+### `@flighthq/sprite`
+
+- **package** `upstream/packages/sprite/src`: Generated crate is missing 30 of 64 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/sprite/src/quadBatch.ts`: copyLocalBoundsRectangle: entity runtime field localBoundsRectangle is ambiguous or absent on static receiver QuadBatchRuntime
+
 ### `@flighthq/spritesheet-formats`
 
 - **package** `upstream/packages/spritesheet-formats/src`: Generated crate is missing 4 of 55 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/spritesheet-formats/src/asepriteSerialize.ts`: dataToMeta: object literal requires an inferred structural type (target={"kind":"primitive","name":"Void"}, properties=direction,from,name,to,spread)
-- **emission** `upstream/packages/spritesheet-formats/src/texturePackerSerialize.ts`: dataToMeta: object literal requires an inferred structural type (target={"kind":"primitive","name":"Void"}, properties=direction,from,name,to)
+- **emission** `upstream/packages/spritesheet-formats/src/asepriteSerialize.ts`: dataToMeta: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=direction,from,name,to,spread)
+- **emission** `upstream/packages/spritesheet-formats/src/texturePackerSerialize.ts`: dataToMeta: object literal requires an inferred structural type (target={"kind":"dynamic"}, properties=direction,from,name,to)
 
 ### `@flighthq/statusbar`
 
@@ -560,13 +721,27 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 ### `@flighthq/text`
 
-- **package** `upstream/packages/text/src`: Generated crate is missing 16 of 86 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/text/src/nativeText.ts`: patchNativeTextStyle: multiple object spreads require ordered Rust lowering
+- **package** `upstream/packages/text/src`: Generated crate is missing 85 of 86 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/text/src/nativeText.ts`: computeNativeTextLocalBoundsRectangle: entity runtime field measuredWidth is ambiguous or absent on static receiver NativeTextRuntime
+- **emission** `upstream/packages/text/src/richText.ts`: createRichTextRuntime: entity runtime field buildTextLayoutParams is ambiguous or absent on static receiver RichTextRuntime
+- **emission** `upstream/packages/text/src/textLabel.ts`: createTextLabelRuntime: entity runtime field buildTextLayoutParams is ambiguous or absent on static receiver TextLabelRuntime
+- **emission** `upstream/packages/text/src/textLabelLayout.ts`: ensureTextLayout: entity runtime field textLayout is ambiguous or absent on static receiver TextLabelRuntime
 
 ### `@flighthq/text-markup`
 
 - **package** `upstream/packages/text-markup/src`: Generated crate is missing 2 of 8 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/text-markup/src/textMarkup.ts`: handleMarkupToken: multiple object spreads require ordered Rust lowering
+
+### `@flighthq/textinput`
+
+- **emission** `upstream/packages/textinput/src/selectableRichTextManager.ts`: blurSelectableRichText: entity runtime field selectionBeginIndex is ambiguous or absent on static receiver RichTextRuntime
+- **emission** `upstream/packages/textinput/src/textInput.ts`: disableTextInput: entity runtime field input is ambiguous or absent on static receiver RichTextRuntime
+- **emission** `upstream/packages/textinput/src/textInputManager.ts`: dispatchTextInputPointerDown: entity runtime field textLayout is ambiguous or absent on static receiver RichTextRuntime
+
+### `@flighthq/textlayout`
+
+- **emission** `upstream/packages/textlayout/src/richTextContent.ts`: clearRichTextContent: entity runtime field richTextContent is ambiguous or absent on static receiver RichTextRuntime
+- **emission** `upstream/packages/textlayout/src/textLayoutRuntime.ts`: clearTextLayoutResult: entity runtime field textLayout is ambiguous or absent on static receiver TextLabelRuntime
 
 ### `@flighthq/textshaper`
 
@@ -595,6 +770,48 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **emission** `upstream/packages/tween/src/timer.ts`: createTweenTimer: object literal requires an inferred structural type (target={"kind":"union","variants":[{"arguments":[],"kind":"named","name":"T"},{"kind":"primitive","name":"Float"}]}, properties=)
 - **emission** `upstream/packages/tween/src/tween.ts`: makeTween: object literal requires an inferred structural type (target={"kind":"primitive","name":"Float"}, properties=change,key,start)
 
+### `@flighthq/types`
+
+- **package** `upstream/packages/types/src`: Generated crate is missing 179 of 1261 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/types/src/Billboard.ts`: BillboardRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/Bitmap.ts`: BitmapRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/BitmapText.ts`: BitmapTextRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/CanvasRenderState.ts`: CanvasRenderStateRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/DisplayContainer.ts`: DisplayContainerRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/DisplayObject.ts`: DisplayObjectRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/DomRenderState.ts`: DomRenderStateRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/Entity.ts`: EntityRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/GlRenderState.ts`: GlRenderStateRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/Group.ts`: GroupRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/HasAppearance.ts`: HasAppearanceRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/HasBoundsRectangle.ts`: HasBoundsRectangleRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/HasTransform2D.ts`: HasTransform2DRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/HasTransform3D.ts`: HasTransform3DRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/HtmlView.ts`: HtmlViewRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/InstancedMesh.ts`: InstancedMeshRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/LodMesh.ts`: LodMeshRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/Mesh.ts`: MeshRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/MeshGeometry.ts`: MeshGeometryRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/MovieClip.ts`: MovieClipRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/NativeText.ts`: NativeTextRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/Node.ts`: NodeRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/ParticleEmitter.ts`: ParticleEmitterRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/ParticleEmitter3D.ts`: ParticleEmitter3DRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/QuadBatch.ts`: QuadBatchRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/RenderState.ts`: RenderStateRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/RenderView.ts`: RenderViewRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/RichText.ts`: RichTextRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/Scale9Shape.ts`: Scale9ShapeRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/Scene.ts`: SceneRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/SceneNode.ts`: SceneNodeRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/Shape.ts`: ShapeRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/Sprite.ts`: SpriteRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/Stage.ts`: StageRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/TextLabel.ts`: TextLabelRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/Tilemap.ts`: TilemapRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/Video.ts`: VideoRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+- **emission** `upstream/packages/types/src/WgpuRenderState.ts`: WgpuRenderStateRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
+
 ### `@flighthq/updater`
 
 - **package** `upstream/packages/updater/src`: Generated crate is missing 23 of 23 upstream exports; re-export or declaration synthesis is required.
@@ -609,1109 +826,9 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 - **package** `upstream/packages/webcam/src`: Generated crate is missing 10 of 10 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/webcam/src/webcam.ts`: createWebWebcamBackend: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
-- **emission** `upstream/packages/webcam/src/webcamStream.ts`: createWebcamStreamEntity: object literal requires an inferred structural type (target={"arguments":[],"kind":"named","name":"Type"}, properties=active,deviceId,facingMode,frameRate,height,id,width)
+- **emission** `upstream/packages/webcam/src/webcamStream.ts`: WebcamStreamRuntime: aggregate native entity runtime closure is unavailable: entity runtime extension NodeRuntime retains generic field canAddChild: Traits
 
 ## Candidate compile blockers
-
-### `@flighthq/accessibility`
-
-- **E0608** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: cannot index into a value of type `(std::string::String, OpaqueHostValue)`
-- **E0608** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: cannot index into a value of type `(std::string::String, OpaqueHostValue)`
-- **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
-- **E0599** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: no method named `is_some` found for enum `OpaqueHostValue` in the current scope
-- **E0599** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: no method named `is_some` found for enum `OpaqueHostValue` in the current scope
-
-### `@flighthq/animation`
-
-- **E0308** `generated/candidates/flighthq-animation/src/animation_clip.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_player.rs`: mismatched types
-- **E0369** `generated/candidates/flighthq-animation/src/animation_player.rs`: cannot subtract `f64` from `Option<f64>`
-- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-
-### `@flighthq/app`
-
-- **E0609** `generated/candidates/flighthq-app/src/app.rs`: no field `then` on type `()`
-- **E0308** `generated/candidates/flighthq-app/src/app.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-app/src/app.rs`: the trait bound `std::string::String: Pattern` is not satisfied
-- **E0609** `generated/candidates/flighthq-app/src/app.rs`: no field `slice` on type `std::string::String`
-- **E0609** `generated/candidates/flighthq-app/src/app.rs`: no field `length` on type `std::string::String`
-
-### `@flighthq/assets`
-
-- **E0425** `generated/candidates/flighthq-assets/src/asset_library.rs`: cannot find value `runtime` in this scope
-- **E0308** `generated/candidates/flighthq-assets/src/asset_library.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-assets/src/asset_library.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-assets/src/asset_library.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-assets/src/asset_library.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-assets/src/asset_library.rs`: mismatched types
-- **E0608** `generated/candidates/flighthq-assets/src/asset_library.rs`: cannot index into a value of type `(std::string::String, AssetEntry)`
-- **E0608** `generated/candidates/flighthq-assets/src/asset_library.rs`: cannot index into a value of type `(std::string::String, AssetEntry)`
-- **E0308** `generated/candidates/flighthq-assets/src/asset_library.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-assets/src/asset_library.rs`: can't compare `std::string::String` with `Option<std::string::String>`
-- **E0277** `generated/candidates/flighthq-assets/src/asset_library.rs`: can't compare `std::string::String` with `Option<std::string::String>`
-- **E0308** `generated/candidates/flighthq-assets/src/asset_library.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-assets/src/asset_library.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-assets/src/asset_library.rs`: mismatched types
-
-### `@flighthq/audio`
-
-- **E0308** `generated/candidates/flighthq-audio/src/audio_format.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-audio/src/audio_format.rs`: no field `byte_length` on type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0609** `generated/candidates/flighthq-audio/src/audio_format.rs`: no field `byte_length` on type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0609** `generated/candidates/flighthq-audio/src/audio_format.rs`: no field `byte_length` on type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-audio/src/audio_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0606** `generated/candidates/flighthq-audio/src/audio_format.rs`: casting `&FlightUnion2<Vec<u8>, Vec<u8>>` as `usize` is invalid
-- **E0369** `generated/candidates/flighthq-audio/src/audio_resource.rs`: cannot multiply `OpaqueHostValue` by `f64`
-- **E0308** `generated/candidates/flighthq-audio/src/audio_resource_from.rs`: mismatched types
-
-### `@flighthq/clip`
-
-- **E0599** `generated/candidates/flighthq-clip/src/clip_region.rs`: no method named `is_some` found for struct `ClipRegion` in the current scope
-- **E0599** `generated/candidates/flighthq-clip/src/clip_region.rs`: no method named `as_mut` found for struct `ClipRegion` in the current scope
-- **E0599** `generated/candidates/flighthq-clip/src/clip_region.rs`: no method named `as_mut` found for struct `ClipRegion` in the current scope
-- **E0599** `generated/candidates/flighthq-clip/src/clip_region.rs`: no method named `as_mut` found for struct `ClipRegion` in the current scope
-- **E0599** `generated/candidates/flighthq-clip/src/clip_region.rs`: no method named `as_mut` found for struct `ClipRegion` in the current scope
-- **E0599** `generated/candidates/flighthq-clip/src/clip_region.rs`: no method named `as_mut` found for struct `ClipRegion` in the current scope
-- **E0599** `generated/candidates/flighthq-clip/src/clip_region.rs`: no method named `as_mut` found for struct `ClipRegion` in the current scope
-- **E0599** `generated/candidates/flighthq-clip/src/clip_region.rs`: no method named `as_mut` found for struct `ClipRegion` in the current scope
-- **E0599** `generated/candidates/flighthq-clip/src/clip_region.rs`: no method named `as_mut` found for struct `ClipRegion` in the current scope
-- **E0308** `generated/candidates/flighthq-clip/src/clip_region.rs`: mismatched types
-- **E0631** `generated/candidates/flighthq-clip/src/clip_region.rs`: type mismatch in closure arguments
-- **E0599** `generated/candidates/flighthq-clip/src/clip_region.rs`: the method `collect` exists for struct `Map<Cloned<Iter<'_, Vec<...>>>, ...>`, but its trait bounds were not satisfied
-- **E0308** `generated/candidates/flighthq-clip/src/clip_region.rs`: mismatched types
-- **E0631** `generated/candidates/flighthq-clip/src/clip_region.rs`: type mismatch in closure arguments
-- **E0599** `generated/candidates/flighthq-clip/src/clip_region.rs`: the method `collect` exists for struct `Map<Cloned<Iter<'_, Vec<...>>>, ...>`, but its trait bounds were not satisfied
-- **E0308** `generated/candidates/flighthq-clip/src/clip_region.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-clip/src/clip_region.rs`: a value of type `Vec<Vec<f64>>` cannot be built from an iterator over elements of type `OpaqueHostValue`
-- **E0308** `generated/candidates/flighthq-clip/src/clip_region.rs`: mismatched types
-- **E0631** `generated/candidates/flighthq-clip/src/clip_region.rs`: type mismatch in closure arguments
-- **E0599** `generated/candidates/flighthq-clip/src/clip_region.rs`: the method `collect` exists for struct `Map<Cloned<Iter<'_, Vec<...>>>, ...>`, but its trait bounds were not satisfied
-- **E0308** `generated/candidates/flighthq-clip/src/clip_region.rs`: mismatched types
-- **E0631** `generated/candidates/flighthq-clip/src/clip_region.rs`: type mismatch in closure arguments
-- **E0599** `generated/candidates/flighthq-clip/src/clip_region.rs`: the method `collect` exists for struct `Map<Cloned<Iter<'_, Vec<...>>>, ...>`, but its trait bounds were not satisfied
-- **E0308** `generated/candidates/flighthq-clip/src/clip_region.rs`: mismatched types
-- **E0631** `generated/candidates/flighthq-clip/src/clip_region.rs`: type mismatch in closure arguments
-- **E0599** `generated/candidates/flighthq-clip/src/clip_region.rs`: the method `collect` exists for struct `Map<Cloned<Iter<'_, Vec<...>>>, ...>`, but its trait bounds were not satisfied
-- **E0308** `generated/candidates/flighthq-clip/src/clip_region.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-clip/src/clip_region.rs`: a value of type `Vec<Vec<f64>>` cannot be built from an iterator over elements of type `OpaqueHostValue`
-- **E0308** `generated/candidates/flighthq-clip/src/clip_region.rs`: mismatched types
-- **E0631** `generated/candidates/flighthq-clip/src/clip_region.rs`: type mismatch in closure arguments
-- **E0599** `generated/candidates/flighthq-clip/src/clip_region.rs`: the method `collect` exists for struct `Map<Cloned<Iter<'_, Vec<...>>>, ...>`, but its trait bounds were not satisfied
-- **E0308** `generated/candidates/flighthq-clip/src/clip_region.rs`: mismatched types
-- **E0631** `generated/candidates/flighthq-clip/src/clip_region.rs`: type mismatch in closure arguments
-- **E0599** `generated/candidates/flighthq-clip/src/clip_region.rs`: the method `collect` exists for struct `Map<Cloned<Iter<'_, Vec<...>>>, ...>`, but its trait bounds were not satisfied
-- **E0308** `generated/candidates/flighthq-clip/src/clip_region.rs`: mismatched types
-- **E0631** `generated/candidates/flighthq-clip/src/clip_region.rs`: type mismatch in closure arguments
-- **E0599** `generated/candidates/flighthq-clip/src/clip_region.rs`: the method `collect` exists for struct `Map<Cloned<Iter<'_, Vec<...>>>, ...>`, but its trait bounds were not satisfied
-
-### `@flighthq/clock`
-
-- **E0308** `generated/candidates/flighthq-clock/src/add_clock_child.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-clock/src/add_clock_child.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-clock/src/get_clock_effective_scale.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-clock/src/get_clock_effective_scale.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-clock/src/get_clock_parent.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-clock/src/is_clock_effectively_paused.rs`: mismatched types
-- **E0499** `generated/candidates/flighthq-clock/src/dispose_clock.rs`: cannot borrow `*clock` as mutable more than once at a time
-
-### `@flighthq/connectivity`
-
-- **E0308** `generated/candidates/flighthq-connectivity/src/connectivity.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-connectivity/src/connectivity.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-connectivity/src/connectivity.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-connectivity/src/connectivity.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-connectivity/src/connectivity.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-connectivity/src/connectivity.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-connectivity/src/connectivity.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-connectivity/src/connectivity.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-connectivity/src/connectivity.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-connectivity/src/connectivity.rs`: mismatched types
-
-### `@flighthq/effects`
-
-- **E0425** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: cannot find type `AdvancedBlendMode` in this scope
-- **E0425** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: cannot find type `AdvancedBlendMode` in this scope
-- **E0425** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: cannot find type `AdvancedBlendMode` in this scope
-- **E0425** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: cannot find type `AdvancedBlendMode` in this scope
-- **E0425** `generated/candidates/flighthq-effects/src/composite_operator_math.rs`: cannot find type `CompositeOperator` in this scope
-- **E0070** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: invalid left-hand side of assignment
-- **E0070** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: invalid left-hand side of assignment
-- **E0070** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: invalid left-hand side of assignment
-- **E0070** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: invalid left-hand side of assignment
-- **E0070** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: invalid left-hand side of assignment
-- **E0070** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: invalid left-hand side of assignment
-- **E0608** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0308** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: mismatched types
-- **E0608** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-effects/src/composite_operator_math.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-effects/src/composite_operator_math.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0308** `generated/candidates/flighthq-effects/src/linear_sampled_gaussian.rs`: mismatched types
-- **E0608** `generated/candidates/flighthq-effects/src/linear_sampled_gaussian.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0608** `generated/candidates/flighthq-effects/src/linear_sampled_gaussian.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0608** `generated/candidates/flighthq-effects/src/linear_sampled_gaussian.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0599** `generated/candidates/flighthq-effects/src/render_effect_defaults.rs`: no method named `iter` found for unit type `()` in the current scope
-- **E0277** `generated/candidates/flighthq-effects/src/render_effect_defaults.rs`: can't compare `std::string::String` with `&std::string::String`
-- **E0599** `generated/candidates/flighthq-effects/src/render_effect_defaults.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
-- **E0599** `generated/candidates/flighthq-effects/src/render_effect_defaults.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
-- **E0277** `generated/candidates/flighthq-effects/src/render_effect_defaults.rs`: can't compare `std::string::String` with `&std::string::String`
-- **E0308** `generated/candidates/flighthq-effects/src/render_effect_defaults.rs`: mismatched types
-- **E0070** `generated/candidates/flighthq-effects/src/render_effect_defaults.rs`: invalid left-hand side of assignment
-- **E0599** `generated/candidates/flighthq-effects/src/render_effect_defaults.rs`: no method named `iter` found for unit type `()` in the current scope
-- **E0277** `generated/candidates/flighthq-effects/src/render_effect_defaults.rs`: can't compare `std::string::String` with `&std::string::String`
-- **E0599** `generated/candidates/flighthq-effects/src/render_effect_defaults.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
-- **E0070** `generated/candidates/flighthq-effects/src/render_effect_defaults.rs`: invalid left-hand side of assignment
-- **E0308** `generated/candidates/flighthq-effects/src/render_effect_defaults.rs`: mismatched types
-- **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for unit type `()` in the current scope
-- **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
-- **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
-- **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for unit type `()` in the current scope
-- **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
-- **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
-- **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
-- **E0277** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: can't compare `std::string::String` with `&std::string::String`
-- **E0070** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: invalid left-hand side of assignment
-- **E0277** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: can't compare `std::string::String` with `&std::string::String`
-- **E0070** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: invalid left-hand side of assignment
-- **E0277** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: can't compare `std::string::String` with `&std::string::String`
-- **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
-- **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
-- **E0070** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: invalid left-hand side of assignment
-- **E0277** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: can't compare `std::string::String` with `&std::string::String`
-- **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
-- **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
-- **E0070** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: invalid left-hand side of assignment
-- **E0308** `generated/candidates/flighthq-effects/src/custom_shader_effect.rs`: mismatched types
-
-### `@flighthq/font`
-
-- **E0609** `generated/candidates/flighthq-font/src/font_format.rs`: no field `byte_length` on type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-font/src/font_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-font/src/font_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-font/src/font_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-font/src/font_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-font/src/font_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-font/src/font_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-font/src/font_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-font/src/font_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-font/src/font_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-font/src/font_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-font/src/font_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-font/src/font_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-font/src/font_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-font/src/font_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-font/src/font_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-font/src/font_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-font/src/font_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-font/src/font_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-font/src/font_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-font/src/font_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-font/src/font_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-font/src/font_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-font/src/font_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0608** `generated/candidates/flighthq-font/src/font_format.rs`: cannot index into a value of type `FlightUnion2<Vec<u8>, Vec<u8>>`
-- **E0606** `generated/candidates/flighthq-font/src/font_format.rs`: casting `&FlightUnion2<Vec<u8>, Vec<u8>>` as `usize` is invalid
-- **E0277** `generated/candidates/flighthq-font/src/font_shorthand.rs`: `Option<std::string::String>` doesn't implement `std::fmt::Display`
-
-### `@flighthq/materials`
-
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `diffuse` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `diffuse_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `normal_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `normal_scale` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `shininess` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `specular` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `specular_map` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/classic_materials.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `diffuse` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `diffuse_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `emissive` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `emissive_map` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/classic_materials.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `diffuse` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `diffuse_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `normal_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `normal_scale` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `shininess` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `specular` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `specular_map` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/classic_materials.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/color_transform.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/custom_shader_material.rs`: mismatched types
-- **E0063** `generated/candidates/flighthq-materials/src/material.rs`: missing fields `alpha_cutoff`, `alpha_mode`, `alpha_type` and 5 other fields in initializer of `Material`
-- **E0063** `generated/candidates/flighthq-materials/src/material.rs`: missing fields `alpha_cutoff`, `alpha_mode`, `alpha_type` and 5 other fields in initializer of `Material`
-- **E0599** `generated/candidates/flighthq-materials/src/material.rs`: no method named `iter` found for unit type `()` in the current scope
-- **E0277** `generated/candidates/flighthq-materials/src/material.rs`: can't compare `std::string::String` with `&std::string::String`
-- **E0277** `generated/candidates/flighthq-materials/src/material.rs`: can't compare `std::string::String` with `&std::string::String`
-- **E0599** `generated/candidates/flighthq-materials/src/material.rs`: no method named `iter` found for unit type `()` in the current scope
-- **E0277** `generated/candidates/flighthq-materials/src/material.rs`: can't compare `std::string::String` with `&std::string::String`
-- **E0599** `generated/candidates/flighthq-materials/src/material.rs`: no method named `is_some` found for enum `OpaqueHostValue` in the current scope
-- **E0277** `generated/candidates/flighthq-materials/src/material.rs`: can't compare `std::string::String` with `&std::string::String`
-- **E0070** `generated/candidates/flighthq-materials/src/material.rs`: invalid left-hand side of assignment
-- **E0277** `generated/candidates/flighthq-materials/src/material.rs`: can't compare `std::string::String` with `&std::string::String`
-- **E0070** `generated/candidates/flighthq-materials/src/material.rs`: invalid left-hand side of assignment
-- **E0070** `generated/candidates/flighthq-materials/src/material.rs`: invalid left-hand side of assignment
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `anisotropy_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `anisotropy_rotation` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `anisotropy_strength` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `standard` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `clearcoat` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `clearcoat_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `clearcoat_normal_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `clearcoat_roughness` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `clearcoat_roughness_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `standard` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `iridescence` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `iridescence_ior` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `iridescence_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `iridescence_thickness_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `iridescence_thickness_max` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `iridescence_thickness_min` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `standard` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `sheen_color` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `sheen_color_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `sheen_roughness` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `sheen_roughness_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `standard` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `specular` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `specular_color` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `specular_color_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `specular_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `standard` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `standard` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `subsurface` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `subsurface_color` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `subsurface_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `thickness` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `thickness_map` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `attenuation_color` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `attenuation_distance` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `ior` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `standard` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `thickness` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `thickness_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `transmission` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: no field `transmission_map` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/pbr_extension_materials.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: mismatched types
-- **E0608** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0608** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0608** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0308** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: mismatched types
-- **E0608** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0608** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0608** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0608** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `diffuse` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `diffuse_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `emissive` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `emissive_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `emissive_strength` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `glossiness` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `normal_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `normal_scale` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `occlusion_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `occlusion_strength` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `specular` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `specular_glossiness_map` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: mismatched types
-- **E0063** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: missing fields `base_color`, `base_color_map`, `emissive` and 9 other fields in initializer of `StandardPbrMaterialProperties`
-- **E0308** `generated/candidates/flighthq-materials/src/phong_to_pbr.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/phong_to_pbr.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/surface_material.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/surface_material.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/surface_material.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `far` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `near` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `emissive` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `emissive_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `emissive_strength` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `matcap` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `tint` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `normal_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `normal_scale` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `base_color` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `base_color_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `ramp` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `steps` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `base_color` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `base_color_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `base_color_video_map` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `tint` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `color` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `thickness` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
-
-### `@flighthq/media`
-
-- **E0369** `generated/candidates/flighthq-media/src/audio_channel.rs`: cannot subtract `f64` from `OpaqueHostValue`
-- **E0369** `generated/candidates/flighthq-media/src/audio_channel.rs`: cannot multiply `OpaqueHostValue` by `f64`
-- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `gain` on type `&mut OpaqueHostValue`
-- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `playback_rate` on type `&mut OpaqueHostValue`
-- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `buffer` on type `()`
-- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `playback_rate` on type `()`
-- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `gain` on type `()`
-- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `connect` on type `()`
-- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `connect` on type `()`
-- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `onended` on type `()`
-- **E0308** `generated/candidates/flighthq-media/src/audio_channel.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-media/src/audio_channel.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-media/src/audio_channel.rs`: mismatched types
-- **E0369** `generated/candidates/flighthq-media/src/audio_channel.rs`: cannot subtract `f64` from `OpaqueHostValue`
-- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `start` on type `()`
-- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `catch` on type `()`
-- **E0609** `generated/candidates/flighthq-media/src/audio_mixer.rs`: no field `gain` on type `()`
-- **E0609** `generated/candidates/flighthq-media/src/audio_mixer.rs`: no field `connect` on type `()`
-- **E0308** `generated/candidates/flighthq-media/src/audio_mixer.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-media/src/audio_mixer.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-media/src/audio_mixer.rs`: mismatched types
-- **E0282** `generated/candidates/flighthq-media/src/audio_mixer.rs`: type annotations needed
-- **E0609** `generated/candidates/flighthq-media/src/audio_mixer.rs`: no field `gain` on type `OpaqueHostValue`
-- **E0609** `generated/candidates/flighthq-media/src/audio_mixer.rs`: no field `gain` on type `OpaqueHostValue`
-- **E0308** `generated/candidates/flighthq-media/src/audio_mixer.rs`: mismatched types
-- **E0615** `generated/candidates/flighthq-media/src/audio_mixer.rs`: attempted to take value of method `get` on type `Vec<(AudioBus, OpaqueHostValue)>`
-- **E0615** `generated/candidates/flighthq-media/src/audio_mixer.rs`: attempted to take value of method `get` on type `Vec<(AudioBus, OpaqueHostValue)>`
-- **E0369** `generated/candidates/flighthq-media/src/video_channel.rs`: cannot multiply `OpaqueHostValue` by `f64`
-- **E0369** `generated/candidates/flighthq-media/src/video_channel.rs`: cannot multiply `OpaqueHostValue` by `f64`
-- **E0596** `generated/candidates/flighthq-media/src/audio_mixer.rs`: cannot borrow `channel` as mutable, as it is not declared as mutable
-- **E0596** `generated/candidates/flighthq-media/src/audio_mixer.rs`: cannot borrow `channel` as mutable, as it is not declared as mutable
-- **E0596** `generated/candidates/flighthq-media/src/audio_mixer.rs`: cannot borrow `channel` as mutable, as it is not declared as mutable
-
-### `@flighthq/mesh`
-
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry.rs`: mismatched types
-- **E0605** `generated/candidates/flighthq-mesh/src/mesh_geometry.rs`: non-primitive cast: `Vec<u32>` as `u32`
-- **E0282** `generated/candidates/flighthq-mesh/src/mesh_geometry.rs`: type annotations needed for `Option<_>`
-- **E0282** `generated/candidates/flighthq-mesh/src/mesh_geometry.rs`: type annotations needed for `Option<_>`
-- **E0282** `generated/candidates/flighthq-mesh/src/mesh_geometry.rs`: type annotations needed for `Option<_>`
-- **E0282** `generated/candidates/flighthq-mesh/src/mesh_geometry.rs`: type annotations needed for `Option<_>`
-- **E0282** `generated/candidates/flighthq-mesh/src/mesh_geometry.rs`: type annotations needed for `Option<_>`
-- **E0282** `generated/candidates/flighthq-mesh/src/mesh_geometry.rs`: type annotations needed for `Option<_>`
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry.rs`: mismatched types
-- **E0615** `generated/candidates/flighthq-mesh/src/mesh_geometry_attributes.rs`: attempted to take value of method `starts_with` on type `std::string::String`
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs`: arguments to this function are incorrect
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs`: arguments to this function are incorrect
-- **E0282** `generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs`: type annotations needed
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs`: can't compare `std::string::String` with `&std::string::String`
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs`: arguments to this function are incorrect
-- **E0308** `../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs`: a value of type `Vec<Vec<f64>>` cannot be built from an iterator over elements of type `OpaqueHostValue`
-- **E0308** `../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs`: a value of type `Vec<Vec<f64>>` cannot be built from an iterator over elements of type `OpaqueHostValue`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs`: can't compare `std::string::String` with `&std::string::String`
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs`: arguments to this function are incorrect
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_index.rs`: the trait bound `Vec<f64>: Extend<u32>` is not satisfied
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_index.rs`: the trait bound `Vec<f64>: Extend<u32>` is not satisfied
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_index.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_index.rs`: cannot multiply `u32` by `f64`
-- **E0615** `generated/candidates/flighthq-mesh/src/mesh_geometry_layout.rs`: attempted to take value of method `starts_with` on type `std::string::String`
-- **E0615** `generated/candidates/flighthq-mesh/src/mesh_geometry_layout.rs`: attempted to take value of method `starts_with` on type `std::string::String`
-- **E0609** `generated/candidates/flighthq-mesh/src/mesh_geometry_operations.rs`: no field `length` on type `&FlightUnion2<Vec<f64>, ...>`
-- **E0609** `generated/candidates/flighthq-mesh/src/mesh_geometry_operations.rs`: no field `length` on type `&FlightUnion2<Vec<f64>, ...>`
-- **E0608** `generated/candidates/flighthq-mesh/src/mesh_geometry_operations.rs`: cannot index into a value of type `Option<FlightUnion2<Vec<f64>, FlightUnion2<Vec<u16>, Vec<u32>>>>`
-- **E0609** `generated/candidates/flighthq-mesh/src/mesh_geometry_operations.rs`: no field `length` on type `&FlightUnion2<Vec<f64>, ...>`
-- **E0609** `generated/candidates/flighthq-mesh/src/mesh_geometry_operations.rs`: no field `length` on type `&FlightUnion2<Vec<f64>, ...>`
-- **E0608** `generated/candidates/flighthq-mesh/src/mesh_geometry_operations.rs`: cannot index into a value of type `Option<FlightUnion2<Vec<f64>, FlightUnion2<Vec<u16>, Vec<u32>>>>`
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_operations.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_operations.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_operations.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_operations.rs`: cannot add `f64` to `u32`
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_operations.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_operations.rs`: mismatched types
-- **E0615** `generated/candidates/flighthq-mesh/src/mesh_geometry_operations.rs`: attempted to take value of method `starts_with` on type `std::string::String`
-- **E0425** `generated/candidates/flighthq-mesh/src/mesh_geometry_operations.rs`: cannot find function `is_finite` in this scope
-- **E0425** `generated/candidates/flighthq-mesh/src/mesh_geometry_operations.rs`: cannot find function `is_finite` in this scope
-- **E0425** `generated/candidates/flighthq-mesh/src/mesh_geometry_operations.rs`: cannot find function `is_finite` in this scope
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: cannot multiply `f32` by `f64`
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: cannot multiply `f32` by `f64`
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: cannot multiply `f32` by `f64`
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: cannot multiply `f32` by `f64`
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: cannot multiply `f32` by `f64`
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: cannot multiply `f32` by `f64`
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: cannot multiply `f32` by `f64`
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: cannot multiply `f32` by `f64`
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: cannot multiply `f32` by `f64`
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: cannot multiply `f32` by `f64`
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: cannot multiply `f32` by `f64`
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: cannot multiply `f32` by `f64`
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: cannot multiply `f32` by `f64`
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: cannot multiply `f32` by `f64`
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: cannot multiply `f32` by `f64`
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: cannot multiply `f32` by `f64`
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: cannot multiply `f32` by `f64`
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: cannot multiply `f32` by `f64`
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_transforms.rs`: mismatched types
-- **E0608** `generated/candidates/flighthq-mesh/src/morph_mesh_geometry.rs`: cannot index into a value of type `Option<Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-mesh/src/morph_mesh_geometry.rs`: cannot index into a value of type `Option<Vec<f32>>`
-
-### `@flighthq/node`
-
-- **E0425** `generated/candidates/flighthq-node/src/transform2d.rs`: cannot find function `compute_node_world_transform_revision` in this scope
-- **E0107** `generated/candidates/flighthq-node/src/hierarchy.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-node/src/hierarchy.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-node/src/hierarchy.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-node/src/hierarchy.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-node/src/hierarchy.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-node/src/hierarchy.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-node/src/hierarchy.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-node/src/hierarchy.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-node/src/hierarchy.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-node/src/hierarchy.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-node/src/hierarchy.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-node/src/node.rs`: struct takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-node/src/node.rs`: struct takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-node/src/revision.rs`: struct takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-node/src/revision.rs`: struct takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-node/src/traversal.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-node/src/traversal.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-node/src/traversal.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-node/src/traversal.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-node/src/traversal.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-node/src/viewport.rs`: struct takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-node/src/viewport.rs`: struct takes 0 generic arguments but 1 generic argument was supplied
-- **E0308** `generated/candidates/flighthq-node/src/bounds_rectangle.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-node/src/bounds_rectangle.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-node/src/bounds_rectangle.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-node/src/bounds_rectangle.rs`: no field `local_bounds_using_local_bounds_id` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/bounds_rectangle.rs`: no field `local_bounds_id` on type `EntityRuntime`
-- **E0308** `generated/candidates/flighthq-node/src/bounds_rectangle.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-node/src/bounds_rectangle.rs`: no field `bounds_using_local_bounds_id` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/bounds_rectangle.rs`: no field `local_bounds_id` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/bounds_rectangle.rs`: no field `bounds_using_local_transform_id` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/bounds_rectangle.rs`: no field `local_transform_id` on type `EntityRuntime`
-- **E0308** `generated/candidates/flighthq-node/src/bounds_rectangle.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-node/src/bounds_rectangle.rs`: no field `world_bounds_using_local_bounds_id` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/bounds_rectangle.rs`: no field `local_bounds_id` on type `EntityRuntime`
-- **E0308** `generated/candidates/flighthq-node/src/bounds_rectangle.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-node/src/bounds_rectangle.rs`: no field `world_bounds_using_world_transform_id` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/bounds_rectangle.rs`: no field `world_transform_id` on type `EntityRuntime`
-- **E0308** `generated/candidates/flighthq-node/src/bounds_rectangle.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-node/src/bounds_rectangle.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-node/src/bounds_rectangle.rs`: no field `local_bounds_rectangle` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/bounds_rectangle.rs`: no field `bounds_rectangle` on type `EntityRuntime`
-- **E0308** `generated/candidates/flighthq-node/src/bounds_rectangle.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-node/src/bounds_rectangle.rs`: no field `world_bounds_rectangle` on type `EntityRuntime`
-- **E0308** `generated/candidates/flighthq-node/src/bounds_rectangle.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-node/src/bounds_rectangle.rs`: mismatched types
-- **E0283** `generated/candidates/flighthq-node/src/hierarchy.rs`: type annotations needed
-- **E0308** `generated/candidates/flighthq-node/src/hierarchy.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-node/src/hierarchy.rs`: mismatched types
-- **E0107** `generated/candidates/flighthq-node/src/hierarchy.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0599** `generated/candidates/flighthq-node/src/hierarchy.rs`: no method named `is_some` found for struct `Node` in the current scope
-- **E0308** `generated/candidates/flighthq-node/src/hierarchy.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-node/src/hierarchy.rs`: mismatched types
-- **E0107** `generated/candidates/flighthq-node/src/hierarchy.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0283** `generated/candidates/flighthq-node/src/hierarchy.rs`: type annotations needed
-- **E0283** `generated/candidates/flighthq-node/src/hierarchy.rs`: type annotations needed
-- **E0369** `generated/candidates/flighthq-node/src/hierarchy.rs`: binary operation `==` cannot be applied to type `FlightUnion2<bool, ()>`
-- **E0107** `generated/candidates/flighthq-node/src/hierarchy.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-node/src/hierarchy.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-node/src/hierarchy.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0283** `generated/candidates/flighthq-node/src/hierarchy.rs`: type annotations needed
-- **E0308** `generated/candidates/flighthq-node/src/hierarchy.rs`: mismatched types
-- **E0283** `generated/candidates/flighthq-node/src/hierarchy.rs`: type annotations needed
-- **E0283** `generated/candidates/flighthq-node/src/hierarchy.rs`: type annotations needed
-- **E0107** `generated/candidates/flighthq-node/src/hierarchy.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-node/src/hierarchy.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0283** `generated/candidates/flighthq-node/src/hierarchy.rs`: type annotations needed
-- **E0107** `generated/candidates/flighthq-node/src/hierarchy.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0308** `generated/candidates/flighthq-node/src/hierarchy.rs`: mismatched types
-- **E0107** `generated/candidates/flighthq-node/src/hierarchy.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-node/src/hierarchy.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0369** `generated/candidates/flighthq-node/src/hierarchy.rs`: cannot subtract `f64` from `Option<f64>`
-- **E0107** `generated/candidates/flighthq-node/src/hierarchy.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0283** `generated/candidates/flighthq-node/src/hierarchy.rs`: type annotations needed
-- **E0308** `generated/candidates/flighthq-node/src/hierarchy.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-node/src/hierarchy.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-node/src/hierarchy.rs`: mismatched types
-- **E0283** `generated/candidates/flighthq-node/src/hierarchy.rs`: type annotations needed
-- **E0308** `generated/candidates/flighthq-node/src/node.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-node/src/node.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-node/src/node.rs`: mismatched types
-- **E0063** `generated/candidates/flighthq-node/src/node.rs`: missing field `enabled` in initializer of `Node`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `appearance_id` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `bounds_using_local_bounds_id` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `bounds_using_local_transform_id` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `can_add_child` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `children` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `color_adjustments` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `resolved_color_transform` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `color_adjustments_channel_mixing` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `node_signals` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `interaction_signals` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `interaction_state` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `local_bounds_id` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `local_bounds_using_local_bounds_id` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `local_content_id` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `local_transform_id` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `local_transform_using_local_transform_id` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `parent` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `world_bounds_using_local_bounds_id` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `world_bounds_using_world_transform_id` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `world_transform_id` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `world_transform_using_local_transform_id` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `world_transform_using_parent_transform_id` on type `EntityRuntime`
-- **E0308** `generated/candidates/flighthq-node/src/node.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `parent` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `children` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `children` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `node_signals` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `node_signals` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `interaction_signals` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `interaction_signals` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `interaction_state` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `node_signals` on type `EntityRuntime`
-- **E0070** `generated/candidates/flighthq-node/src/node.rs`: invalid left-hand side of assignment
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `node_signals` on type `EntityRuntime`
-- **E0308** `generated/candidates/flighthq-node/src/node.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-node/src/node.rs`: no field `node_signals` on type `EntityRuntime`
-- **E0283** `generated/candidates/flighthq-node/src/revision.rs`: type annotations needed
-- **E0283** `generated/candidates/flighthq-node/src/revision.rs`: type annotations needed
-- **E0283** `generated/candidates/flighthq-node/src/revision.rs`: type annotations needed
-- **E0283** `generated/candidates/flighthq-node/src/revision.rs`: type annotations needed
-- **E0283** `generated/candidates/flighthq-node/src/revision.rs`: type annotations needed
-- **E0283** `generated/candidates/flighthq-node/src/revision.rs`: type annotations needed
-- **E0283** `generated/candidates/flighthq-node/src/revision.rs`: type annotations needed
-- **E0283** `generated/candidates/flighthq-node/src/revision.rs`: type annotations needed
-- **E0283** `generated/candidates/flighthq-node/src/revision.rs`: type annotations needed
-- **E0283** `generated/candidates/flighthq-node/src/revision.rs`: type annotations needed
-- **E0283** `generated/candidates/flighthq-node/src/revision.rs`: type annotations needed
-- **E0609** `generated/candidates/flighthq-node/src/transform2d.rs`: no field `local_transform_using_local_transform_id` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/transform2d.rs`: no field `local_transform_id` on type `EntityRuntime`
-- **E0308** `generated/candidates/flighthq-node/src/transform2d.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-node/src/transform2d.rs`: no field `parent` on type `EntityRuntime`
-- **E0308** `generated/candidates/flighthq-node/src/transform2d.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-node/src/transform2d.rs`: no field `world_transform_using_local_transform_id` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/transform2d.rs`: no field `local_transform_id` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/transform2d.rs`: no field `world_transform_using_parent_transform_id` on type `EntityRuntime`
-- **E0308** `generated/candidates/flighthq-node/src/transform2d.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-node/src/transform2d.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-node/src/transform2d.rs`: no field `local_matrix` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/transform2d.rs`: no field `world_matrix` on type `EntityRuntime`
-- **E0308** `generated/candidates/flighthq-node/src/transform2d.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-node/src/transform2d.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-node/src/transform2d.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-node/src/transform3d.rs`: no field `local_matrix4` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/transform3d.rs`: no field `local_transform_using_local_transform_id` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/transform3d.rs`: no field `local_transform_id` on type `EntityRuntime`
-- **E0308** `generated/candidates/flighthq-node/src/transform3d.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-node/src/transform3d.rs`: no field `parent` on type `EntityRuntime`
-- **E0308** `generated/candidates/flighthq-node/src/transform3d.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-node/src/transform3d.rs`: no field `world_transform_using_local_transform_id` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/transform3d.rs`: no field `local_transform_id` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/transform3d.rs`: no field `world_transform_using_parent_transform_id` on type `EntityRuntime`
-- **E0308** `generated/candidates/flighthq-node/src/transform3d.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-node/src/transform3d.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-node/src/transform3d.rs`: no field `local_matrix4` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/transform3d.rs`: no field `world_matrix4` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/transform3d.rs`: no field `local_matrix4_detached` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/transform3d.rs`: no field `local_matrix4` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/transform3d.rs`: no field `local_matrix4` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/transform3d.rs`: no field `local_matrix4` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/transform3d.rs`: no field `local_transform_using_local_transform_id` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/transform3d.rs`: no field `local_transform_id` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/transform3d.rs`: no field `local_matrix4_detached` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/transform3d.rs`: no field `local_matrix4` on type `EntityRuntime`
-- **E0609** `generated/candidates/flighthq-node/src/transform3d.rs`: no field `local_matrix4_detached` on type `EntityRuntime`
-- **E0308** `generated/candidates/flighthq-node/src/transform3d.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-node/src/transform3d.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-node/src/transform3d.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-node/src/transform3d.rs`: mismatched types
-- **E0107** `generated/candidates/flighthq-node/src/traversal.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0283** `generated/candidates/flighthq-node/src/traversal.rs`: type annotations needed
-- **E0283** `generated/candidates/flighthq-node/src/traversal.rs`: type annotations needed
-- **E0283** `generated/candidates/flighthq-node/src/traversal.rs`: type annotations needed
-- **E0308** `generated/candidates/flighthq-node/src/traversal.rs`: mismatched types
-- **E0283** `generated/candidates/flighthq-node/src/traversal.rs`: type annotations needed
-- **E0107** `generated/candidates/flighthq-node/src/traversal.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-node/src/traversal.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0283** `generated/candidates/flighthq-node/src/traversal.rs`: type annotations needed
-- **E0609** `generated/candidates/flighthq-node/src/viewport.rs`: no field `includes` on type `std::string::String`
-- **E0609** `generated/candidates/flighthq-node/src/viewport.rs`: no field `includes` on type `std::string::String`
-- **E0609** `generated/candidates/flighthq-node/src/viewport.rs`: no field `includes` on type `std::string::String`
-- **E0609** `generated/candidates/flighthq-node/src/viewport.rs`: no field `includes` on type `std::string::String`
-- **E0599** `generated/candidates/flighthq-node/src/viewport.rs`: no method named `as_ref` found for struct `NodeRuntime` in the current scope
-- **E0599** `generated/candidates/flighthq-node/src/viewport.rs`: no method named `as_ref` found for struct `NodeRuntime` in the current scope
-- **E0107** `generated/candidates/flighthq-node/src/viewport.rs`: struct takes 0 generic arguments but 1 generic argument was supplied
-
-### `@flighthq/particles`
-
-- **E0425** `generated/candidates/flighthq-particles/src/particle_emitter_state.rs`: cannot find value `math` in this scope
-- **E0425** `generated/candidates/flighthq-particles/src/particle_objects_state.rs`: cannot find value `math` in this scope
-- **E0308** `generated/candidates/flighthq-particles/src/apply_particle_collisions.rs`: mismatched types
-- **E0608** `generated/candidates/flighthq-particles/src/apply_particle_collisions.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0608** `generated/candidates/flighthq-particles/src/apply_particle_collisions.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0608** `generated/candidates/flighthq-particles/src/apply_particle_collisions.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0608** `generated/candidates/flighthq-particles/src/apply_particle_collisions.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0608** `generated/candidates/flighthq-particles/src/apply_particle_collisions.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0608** `generated/candidates/flighthq-particles/src/apply_particle_collisions.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0308** `generated/candidates/flighthq-particles/src/apply_particle_collisions.rs`: mismatched types
-- **E0608** `generated/candidates/flighthq-particles/src/apply_particle_collisions.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0608** `generated/candidates/flighthq-particles/src/apply_particle_collisions.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0608** `generated/candidates/flighthq-particles/src/apply_particle_collisions.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0608** `generated/candidates/flighthq-particles/src/apply_particle_collisions.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0609** `generated/candidates/flighthq-particles/src/apply_particle_collisions.rs`: no field `kind` on type `FlightUnion2<CircleCollider, ...>`
-- **E0308** `generated/candidates/flighthq-particles/src/apply_particle_collisions.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-particles/src/apply_particle_collisions.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-particles/src/apply_particle_collisions.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-particles/src/apply_particle_collisions.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: arguments to this function are incorrect
-- **E0608** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0608** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0608** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0308** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: mismatched types
-- **E0608** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0608** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0609** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: no field `kind` on type `FlightUnion2<AttractorForce, ...>`
-- **E0609** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: no field `x` on type `FlightUnion2<AttractorForce, ...>`
-- **E0609** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: no field `y` on type `FlightUnion2<AttractorForce, ...>`
-- **E0609** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: no field `z` on type `FlightUnion2<AttractorForce, ...>`
-- **E0609** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: no field `strength` on type `FlightUnion2<AttractorForce, ...>`
-- **E0609** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: no field `strength` on type `FlightUnion2<AttractorForce, ...>`
-- **E0609** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: no field `strength` on type `FlightUnion2<AttractorForce, ...>`
-- **E0609** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: no field `z` on type `FlightUnion2<AttractorForce, ...>`
-- **E0609** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: no field `x` on type `FlightUnion2<AttractorForce, ...>`
-- **E0609** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: no field `y` on type `FlightUnion2<AttractorForce, ...>`
-- **E0609** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: no field `strength` on type `FlightUnion2<AttractorForce, ...>`
-- **E0609** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: no field `falloff` on type `FlightUnion2<AttractorForce, ...>`
-- **E0609** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: no field `radius` on type `FlightUnion2<AttractorForce, ...>`
-- **E0609** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: no field `z` on type `FlightUnion2<AttractorForce, ...>`
-- **E0609** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: no field `x` on type `FlightUnion2<AttractorForce, ...>`
-- **E0609** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: no field `y` on type `FlightUnion2<AttractorForce, ...>`
-- **E0609** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: no field `strength` on type `FlightUnion2<AttractorForce, ...>`
-- **E0609** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: no field `falloff` on type `FlightUnion2<AttractorForce, ...>`
-- **E0609** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: no field `radius` on type `FlightUnion2<AttractorForce, ...>`
-- **E0609** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: no field `axis_x` on type `FlightUnion2<AttractorForce, ...>`
-- **E0609** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: no field `axis_y` on type `FlightUnion2<AttractorForce, ...>`
-- **E0609** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: no field `axis_z` on type `FlightUnion2<AttractorForce, ...>`
-- **E0609** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: no field `scale` on type `FlightUnion2<AttractorForce, ...>`
-- **E0609** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: no field `strength` on type `FlightUnion2<AttractorForce, ...>`
-- **E0609** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: no field `strength` on type `FlightUnion2<AttractorForce, ...>`
-- **E0609** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: no field `strength` on type `FlightUnion2<AttractorForce, ...>`
-- **E0308** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-particles/src/apply_particle_forces.rs`: cannot divide `f64` by `Option<f64>`
-- **E0608** `generated/candidates/flighthq-particles/src/curve.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f32>, Vec<f64>>`
-- **E0608** `generated/candidates/flighthq-particles/src/curve.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f32>, Vec<f64>>`
-- **E0608** `generated/candidates/flighthq-particles/src/curve.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f32>, Vec<f64>>`
-- **E0308** `generated/candidates/flighthq-particles/src/curve.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-particles/src/curve.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-particles/src/curve.rs`: no field `length` on type `&Vec<f64>`
-- **E0609** `generated/candidates/flighthq-particles/src/curve.rs`: no field `length` on type `&Vec<f64>`
-- **E0308** `generated/candidates/flighthq-particles/src/curve.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-particles/src/curve.rs`: no field `length` on type `&Vec<f64>`
-- **E0608** `generated/candidates/flighthq-particles/src/curve.rs`: cannot index into a value of type `&mut SharedStructuralRecord3`
-- **E0608** `generated/candidates/flighthq-particles/src/curve.rs`: cannot index into a value of type `&mut SharedStructuralRecord3`
-- **E0608** `generated/candidates/flighthq-particles/src/curve.rs`: cannot index into a value of type `&mut SharedStructuralRecord3`
-- **E0608** `generated/candidates/flighthq-particles/src/curve.rs`: cannot index into a value of type `&mut SharedStructuralRecord3`
-- **E0608** `generated/candidates/flighthq-particles/src/curve.rs`: cannot index into a value of type `&mut SharedStructuralRecord3`
-- **E0608** `generated/candidates/flighthq-particles/src/curve.rs`: cannot index into a value of type `&mut SharedStructuralRecord3`
-- **E0608** `generated/candidates/flighthq-particles/src/curve.rs`: cannot index into a value of type `&mut SharedStructuralRecord3`
-- **E0608** `generated/candidates/flighthq-particles/src/curve.rs`: cannot index into a value of type `&mut SharedStructuralRecord3`
-- **E0608** `generated/candidates/flighthq-particles/src/curve.rs`: cannot index into a value of type `&mut SharedStructuralRecord3`
-- **E0608** `generated/candidates/flighthq-particles/src/curve.rs`: cannot index into a value of type `&mut SharedStructuralRecord3`
-- **E0608** `generated/candidates/flighthq-particles/src/curve.rs`: cannot index into a value of type `&mut SharedStructuralRecord3`
-- **E0608** `generated/candidates/flighthq-particles/src/curve.rs`: cannot index into a value of type `&mut SharedStructuralRecord3`
-- **E0609** `generated/candidates/flighthq-particles/src/curve.rs`: no field `length` on type `&Vec<f64>`
-- **E0277** `generated/candidates/flighthq-particles/src/particle_emitter_signals.rs`: the `?` operator can only be applied to values that implement `Try`
-- **E0277** `generated/candidates/flighthq-particles/src/particle_emitter_signals.rs`: the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)
-- **E0277** `generated/candidates/flighthq-particles/src/particle_emitter_signals.rs`: the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)
-- **E0070** `generated/candidates/flighthq-particles/src/particle_emitter_signals.rs`: invalid left-hand side of assignment
-- **E0308** `generated/candidates/flighthq-particles/src/particle_emitter_signals.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-particles/src/particle_emitter_signals.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-particles/src/update_particle_objects.rs`: no field `length` on type `&Vec<f64>`
-- **E0609** `generated/candidates/flighthq-particles/src/update_particle_objects.rs`: no field `length` on type `&Vec<f64>`
-- **E0308** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: mismatched types
-- **E0070** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: invalid left-hand side of assignment
-- **E0608** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: cannot index into a value of type `&ParticleEmitterConfig`
-- **E0308** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: mismatched types
-- **E0425** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: cannot find function `string` in this scope
-- **E0608** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: cannot index into a value of type `&ParticleEmitterConfig`
-- **E0308** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: arguments to this function are incorrect
-- **E0308** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: arguments to this function are incorrect
-- **E0308** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: arguments to this function are incorrect
-- **E0308** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: arguments to this function are incorrect
-- **E0308** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: mismatched types
-- **E0605** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: non-primitive cast: `std::string::String` as `usize`
-- **E0605** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: non-primitive cast: `std::string::String` as `usize`
-- **E0277** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: `ParticleEmitterConfig` doesn't implement `std::fmt::Display`
-- **E0277** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: `ParticleEmitterConfig` doesn't implement `std::fmt::Display`
-- **E0277** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: `ParticleEmitterConfig` doesn't implement `std::fmt::Display`
-- **E0608** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: cannot index into a value of type `&ParticleEmitterConfig`
-- **E0608** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: cannot index into a value of type `&ParticleEmitterConfig`
-- **E0606** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: casting `&ParticleEmitterConfig` as `usize` is invalid
-- **E0606** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: casting `&ParticleEmitterConfig` as `usize` is invalid
-- **E0608** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: cannot index into a value of type `&ParticleEmitterConfig`
-- **E0606** `generated/candidates/flighthq-particles/src/validate_particle_emitter_config.rs`: casting `&ParticleEmitterConfig` as `usize` is invalid
-
-### `@flighthq/path-formats`
-
-- **E0425** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot find value `number` in this scope
-- **E0609** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: no field `char_code_at` on type `std::string::String`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: the type `str` cannot be indexed by `usize`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: the type `str` cannot be indexed by `usize`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: the type `str` cannot be indexed by `usize`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: the type `str` cannot be indexed by `usize`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: the type `str` cannot be indexed by `usize`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: the type `str` cannot be indexed by `usize`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: the type `str` cannot be indexed by `usize`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: the type `str` cannot be indexed by `usize`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: the type `str` cannot be indexed by `usize`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: the type `str` cannot be indexed by `usize`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: the type `str` cannot be indexed by `usize`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: the type `str` cannot be indexed by `usize`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: the type `str` cannot be indexed by `usize`
-- **E0609** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: no field `slice` on type `std::string::String`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: the type `str` cannot be indexed by `usize`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: the type `str` cannot be indexed by `usize`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: the type `str` cannot be indexed by `usize`
-- **E0308** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: the type `str` cannot be indexed by `usize`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot add `Option<f64>` to `f64`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot add `Option<f64>` to `f64`
-- **E0308** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot add `Option<f64>` to `f64`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot add `Option<f64>` to `f64`
-- **E0308** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot add `Option<f64>` to `f64`
-- **E0308** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot add `Option<f64>` to `f64`
-- **E0308** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot add `Option<f64>` to `f64`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot add `Option<f64>` to `f64`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot add `Option<f64>` to `f64`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot add `Option<f64>` to `f64`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot add `Option<f64>` to `f64`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot add `Option<f64>` to `f64`
-- **E0308** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot add `Option<f64>` to `f64`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot add `Option<f64>` to `f64`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot add `Option<f64>` to `f64`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot add `Option<f64>` to `f64`
-- **E0308** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot add `Option<f64>` to `f64`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot add `Option<f64>` to `f64`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot add `Option<f64>` to `f64`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot add `Option<f64>` to `f64`
-- **E0308** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot add `Option<f64>` to `f64`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot add `Option<f64>` to `f64`
-- **E0308** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot add `Option<f64>` to `f64`
-- **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot add `Option<f64>` to `f64`
-- **E0369** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot multiply `Option<f64>` by `f64`
-- **E0308** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: mismatched types
-- **E0308** `../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs`: mismatched types
-- **E0308** `../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs`: mismatched types
-- **E0308** `../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs`: mismatched types
-- **E0615** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: attempted to take value of method `join` on type `Vec<std::string::String>`
-- **E0425** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot find function `string` in this scope
-- **E0425** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: cannot find function `string` in this scope
-- **E0609** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: no field `index_of` on type `&'static str`
-
-### `@flighthq/protocol`
-
-- **E0308** `generated/candidates/flighthq-protocol/src/protocol.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-protocol/src/protocol.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `filter` on type `()`
-- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `length` on type `OpaqueHostValue`
-- **E0308** `generated/candidates/flighthq-protocol/src/protocol.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-protocol/src/protocol.rs`: `()` doesn't implement `std::fmt::Display`
-- **E0308** `../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs`: mismatched types
-- **E0308** `../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-protocol/src/protocol.rs`: can't compare `OpaqueHostValue` with `std::string::String`
-- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `index_of` on type `std::string::String`
-- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `slice` on type `std::string::String`
-- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `slice` on type `std::string::String`
-- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `index_of` on type `std::string::String`
-- **E0070** `generated/candidates/flighthq-protocol/src/protocol.rs`: invalid left-hand side of assignment
-- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `slice` on type `std::string::String`
-- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `slice` on type `std::string::String`
-- **E0070** `generated/candidates/flighthq-protocol/src/protocol.rs`: invalid left-hand side of assignment
-- **E0308** `generated/candidates/flighthq-protocol/src/protocol.rs`: mismatched types
-
-### `@flighthq/snapshot`
-
-- **E0107** `generated/candidates/flighthq-snapshot/src/capture_snapshot.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0107** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: type alias takes 0 generic arguments but 1 generic argument was supplied
-- **E0277** `generated/candidates/flighthq-snapshot/src/capture_snapshot.rs`: the trait bound `T: Default` is not satisfied
-- **E0308** `generated/candidates/flighthq-snapshot/src/capture_snapshot.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-snapshot/src/capture_snapshot.rs`: mismatched types
-- **E0599** `generated/candidates/flighthq-snapshot/src/capture_snapshot.rs`: no method named `is_none` found for enum `OpaqueHostValue` in the current scope
-- **E0599** `generated/candidates/flighthq-snapshot/src/capture_snapshot.rs`: no method named `iter` found for unit type `()` in the current scope
-- **E0599** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: no method named `is_none` found for enum `OpaqueHostValue` in the current scope
-- **E0599** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: no method named `is_none` found for enum `OpaqueHostValue` in the current scope
-- **E0599** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: no method named `len` found for enum `OpaqueHostValue` in the current scope
-- **E0599** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: no method named `len` found for enum `OpaqueHostValue` in the current scope
-- **E0599** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: no method named `len` found for enum `OpaqueHostValue` in the current scope
-- **E0608** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: cannot index into a value of type `OpaqueHostValue`
-- **E0608** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: cannot index into a value of type `OpaqueHostValue`
-- **E0609** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: no field `length` on type `()`
-- **E0609** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: no field `length` on type `()`
-- **E0599** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: no method named `iter` found for unit type `()` in the current scope
-- **E0600** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: cannot apply unary operator `!` to type `()`
-- **E0277** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: can't compare `std::string::String` with `&std::string::String`
-- **E0277** `generated/candidates/flighthq-snapshot/src/equals_snapshot.rs`: can't compare `std::string::String` with `&std::string::String`
-- **E0599** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no method named `is_none` found for enum `OpaqueHostValue` in the current scope
-- **E0599** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no method named `is_none` found for enum `OpaqueHostValue` in the current scope
-- **E0599** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no method named `is_none` found for type parameter `T` in the current scope
-- **E0308** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: mismatched types
-- **E0599** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no method named `len` found for enum `OpaqueHostValue` in the current scope
-- **E0599** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no method named `iter` found for unit type `()` in the current scope
-- **E0277** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: can't compare `std::string::String` with `&std::string::String`
-- **E0277** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: can't compare `std::string::String` with `&std::string::String`
-- **E0277** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: can't compare `std::string::String` with `&std::string::String`
-- **E0308** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: arguments to this function are incorrect
-- **E0308** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: mismatched types
-- **E0070** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: invalid left-hand side of assignment
-- **E0599** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no method named `is_some` found for enum `OpaqueHostValue` in the current scope
-- **E0599** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no method named `is_some` found for enum `OpaqueHostValue` in the current scope
-- **E0277** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: can't compare `std::string::String` with `&std::string::String`
-- **E0277** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: can't compare `std::string::String` with `&std::string::String`
-- **E0070** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: invalid left-hand side of assignment
-- **E0277** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: can't compare `std::string::String` with `&std::string::String`
-- **E0070** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: invalid left-hand side of assignment
-- **E0609** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no field `includes` on type `&Vec<std::string::String>`
-- **E0599** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no method named `is_some` found for enum `OpaqueHostValue` in the current scope
-- **E0308** `../../../../../../../../../rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library/alloc/src/macros.rs`: mismatched types
-- **E0599** `generated/candidates/flighthq-snapshot/src/interpolate_snapshots.rs`: no method named `is_none` found for enum `OpaqueHostValue` in the current scope
-- **E0599** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: no method named `is_none` found for enum `OpaqueHostValue` in the current scope
-- **E0599** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: no method named `is_none` found for type parameter `T` in the current scope
-- **E0308** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: mismatched types
-- **E0599** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: no method named `truncate` found for enum `OpaqueHostValue` in the current scope
-- **E0599** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: no method named `len` found for enum `OpaqueHostValue` in the current scope
-- **E0599** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: no method named `len` found for enum `OpaqueHostValue` in the current scope
-- **E0608** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: cannot index into a value of type `OpaqueHostValue`
-- **E0608** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: cannot index into a value of type `OpaqueHostValue`
-- **E0599** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: no method named `len` found for enum `OpaqueHostValue` in the current scope
-- **E0599** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: no method named `push` found for enum `OpaqueHostValue` in the current scope
-- **E0608** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: cannot index into a value of type `OpaqueHostValue`
-- **E0599** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: no method named `iter` found for unit type `()` in the current scope
-- **E0277** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: can't compare `std::string::String` with `&std::string::String`
-- **E0277** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: can't compare `std::string::String` with `&std::string::String`
-- **E0277** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: can't compare `std::string::String` with `&std::string::String`
-- **E0070** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: invalid left-hand side of assignment
-- **E0599** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: no method named `is_none` found for enum `OpaqueHostValue` in the current scope
-- **E0599** `generated/candidates/flighthq-snapshot/src/restore_snapshot.rs`: no method named `is_some` found for enum `OpaqueHostValue` in the current scope
-
-### `@flighthq/socket`
-
-- **E0599** `generated/candidates/flighthq-socket/src/socket.rs`: no method named `unwrap` found for reference `&Mutex<Box<dyn FnMut(..., ...) + Send>>` in the current scope
-- **E0308** `generated/candidates/flighthq-socket/src/socket.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-socket/src/socket.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-socket/src/socket.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-socket/src/socket.rs`: mismatched types
-
-### `@flighthq/textbidi`
-
-- **E0369** `generated/candidates/flighthq-textbidi/src/bidi_class_backend.rs`: cannot subtract `f64` from `LazyLock<f64>`
-- **E0609** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: no field `code_point_at` on type `std::string::String`
-- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: arguments to this function are incorrect
-- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: arguments to this function are incorrect
-- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: mismatched types
-- **E0600** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: cannot apply unary operator `!` to type `f64`
-- **E0382** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: use of moved value: `sos`
-- **E0382** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: use of moved value: `sos`
-- **E0382** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: borrow of moved value: `sos`
-- **E0382** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: borrow of moved value: `eos`
-- **E0382** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: use of moved value: `embedding_dir`
-- **E0382** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: use of moved value: `resolved`
-
-### `@flighthq/timeline`
-
-- **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)
-- **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be applied to values that implement `Try`
-- **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)
-- **E0070** `generated/candidates/flighthq-timeline/src/timeline.rs`: invalid left-hand side of assignment
-- **E0609** `generated/candidates/flighthq-timeline/src/timeline.rs`: no field `set` on type `Option<Vec<(f64, Arc<Mutex<Box<...>>>)>>`
-- **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)
-- **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be applied to values that implement `Try`
-- **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)
-- **E0070** `generated/candidates/flighthq-timeline/src/timeline.rs`: invalid left-hand side of assignment
-- **E0308** `generated/candidates/flighthq-timeline/src/timeline.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-timeline/src/timeline.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-timeline/src/timeline.rs`: mismatched types
-- **E0599** `generated/candidates/flighthq-timeline/src/timeline.rs`: no method named `unwrap` found for reference `&Mutex<Box<dyn FnMut(..., f64) + Send>>` in the current scope
-- **E0308** `generated/candidates/flighthq-timeline/src/timeline.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-timeline/src/timeline.rs`: mismatched types
-- **E0596** `generated/candidates/flighthq-timeline/src/timeline.rs`: cannot borrow `timeline.frame_scripts` as mutable, as it is behind a `&` reference
 
 ### `@flighthq/xml`
 

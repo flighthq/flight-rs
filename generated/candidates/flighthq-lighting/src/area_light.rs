@@ -37,12 +37,16 @@ impl PartialEq for AreaLightOptions {
 pub fn clone_area_light(source: &AreaLight) -> AreaLight {
     return create_entity(Some(AreaLight {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         casts_shadow: source.casts_shadow,
         color: source.color,
         direction: clone_vector3(&{
             let __flight_source = &(source.direction);
             Vector3Like {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 x: __flight_source.x,
                 y: __flight_source.y,
                 z: __flight_source.z,
@@ -56,6 +60,9 @@ pub fn clone_area_light(source: &AreaLight) -> AreaLight {
             let __flight_source = &(source.position);
             Vector3Like {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 x: __flight_source.x,
                 y: __flight_source.y,
                 z: __flight_source.z,
@@ -66,6 +73,9 @@ pub fn clone_area_light(source: &AreaLight) -> AreaLight {
             let __flight_source = &(source.right);
             Vector3Like {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 x: __flight_source.x,
                 y: __flight_source.y,
                 z: __flight_source.z,
@@ -76,6 +86,9 @@ pub fn clone_area_light(source: &AreaLight) -> AreaLight {
             let __flight_source = &(source.up);
             Vector3Like {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 x: __flight_source.x,
                 y: __flight_source.y,
                 z: __flight_source.z,
@@ -93,6 +106,7 @@ pub fn create_area_light(options: Option<AreaLightOptions>) -> AreaLight {
     let up = options.as_ref().and_then(|value| (value.up).clone());
     return create_entity(Some(AreaLight {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         casts_shadow: (options.as_ref().and_then(|value| value.casts_shadow)).unwrap_or(false),
         color: (options.as_ref().and_then(|value| value.color)).unwrap_or(4294967295.0_f64),
         direction: if (direction).is_some() {

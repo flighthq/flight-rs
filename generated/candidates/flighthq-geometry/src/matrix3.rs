@@ -98,6 +98,7 @@ pub fn create_matrix3(
         .collect();
     let mut out: Matrix3 = create_entity(Some(Matrix3 {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         m: (m).clone(),
     }));
     if (m00).is_some() {
@@ -409,6 +410,9 @@ pub fn set_matrix3_normal_from_matrix4(out: &mut Matrix3Like, source: &Matrix4Li
         let __flight_source = &(scratch);
         Matrix3Like {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            __flight_entity_runtime: std::sync::Arc::clone(
+                &__flight_source.__flight_entity_runtime,
+            ),
             m: (__flight_source.m).clone(),
         }
     });

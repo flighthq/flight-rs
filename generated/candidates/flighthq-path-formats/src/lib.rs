@@ -3,8 +3,10 @@
 
 /// Tagged storage for TypeScript values whose static type is unknown at the generated Rust boundary.
 pub use flighthq_types::{
-    FlightCallback, FlightSymbol, FlightTimeout, OpaqueHostValue, clear_interval, clear_timeout,
-    flight_now_millis, host_set, host_value, set_interval, set_timeout,
+    FlightCallback, FlightImageData, FlightImageDataRequest, FlightOffscreenCanvas, FlightSymbol,
+    FlightTimeout, FlightUrl, NativeHostConstructors, OpaqueHostValue, clear_interval,
+    clear_timeout, flight_now_millis, host_image_data, host_offscreen_canvas, host_set, host_url,
+    host_value, install_native_host_constructors, set_interval, set_timeout,
 };
 
 /// Mechanical representation for TypeScript unions whose variants need distinct native storage.

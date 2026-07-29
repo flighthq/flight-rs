@@ -21,6 +21,7 @@ pub fn create_ray3_d(
 ) -> Ray3D {
     return create_entity(Some(Ray3D {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         direction: create_vector3(
             Some((direction_x).unwrap_or(0.0_f64)),
             Some((direction_y).unwrap_or(0.0_f64)),

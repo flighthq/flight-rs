@@ -21,6 +21,7 @@ pub fn create_capsule(
 ) -> Capsule {
     return create_entity(Some(Capsule {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         end_x: end_x,
         end_y: end_y,
         end_z: end_z,

@@ -39,6 +39,9 @@ pub fn create_custom_shader_material(opts: Option<FlightPartialRecord1>) -> Cust
             &(create_surface_material((custom_shader_material_kind_constant).to_owned()));
         CustomShaderMaterial {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            __flight_entity_runtime: std::sync::Arc::clone(
+                &__flight_source.__flight_entity_runtime,
+            ),
             kind: (__flight_source.kind).clone(),
             name: (__flight_source.name).clone(),
             alpha_cutoff: __flight_source.alpha_cutoff,

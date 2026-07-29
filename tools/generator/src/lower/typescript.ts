@@ -760,9 +760,13 @@ function mergeNamespace(node: ts.ModuleDeclaration, declarations: IrDeclaration[
 function lowerFunction(node: ts.FunctionDeclaration, context: LoweringContext): IrFunctionDeclaration {
   if (!node.name || !node.body) throw new Error('Expected named function with a body');
   const loweredParameters = lowerParameterList(node.parameters, context);
+  const body = [
+    ...loweredParameters.prefix,
+    ...node.body.statements.map((statement) => lowerStatement(statement, context)),
+  ];
   return {
     async: hasModifier(node, ts.SyntaxKind.AsyncKeyword),
-    body: [...loweredParameters.prefix, ...node.body.statements.map((statement) => lowerStatement(statement, context))],
+    body,
     exported: hasModifier(node, ts.SyntaxKind.ExportKeyword),
     kind: 'function',
     name: node.name.text,
@@ -773,7 +777,7 @@ function lowerFunction(node: ts.FunctionDeclaration, context: LoweringContext): 
       : hasModifier(node, ts.SyntaxKind.AsyncKeyword)
         ? promiseOfDynamic()
         : hasReturnValue(node.body)
-          ? { kind: 'dynamic' }
+          ? (inferNativeHostFunctionReturnType(body) ?? { kind: 'dynamic' })
           : { kind: 'primitive', name: 'Void' },
     typeParameters: node.typeParameters?.map((parameter) => parameter.name.text) ?? [],
   };
@@ -1382,6 +1386,55 @@ function hasReturnValue(body: ts.Block): boolean {
   return found;
 }
 
+function inferNativeHostFunctionReturnType(statements: readonly IrStatement[]): IrType | undefined {
+  const expressions = statements.flatMap(collectFunctionReturnExpressions);
+  if (expressions.length === 0 || expressions.some((expression) => expression === undefined)) return undefined;
+  const types = expressions.map((expression) => (expression ? inferNativeHostExpressionType(expression) : undefined));
+  const first = types[0];
+  return first && types.every((type) => type && JSON.stringify(type) === JSON.stringify(first)) ? first : undefined;
+}
+
+function collectFunctionReturnExpressions(statement: IrStatement): Array<IrExpression | undefined> {
+  switch (statement.kind) {
+    case 'return':
+      return [statement.expression];
+    case 'block':
+      return statement.statements.flatMap(collectFunctionReturnExpressions);
+    case 'do':
+    case 'while':
+      return collectFunctionReturnExpressions(statement.body);
+    case 'for':
+    case 'forOf':
+      return collectFunctionReturnExpressions(statement.body);
+    case 'if':
+      return [
+        ...collectFunctionReturnExpressions(statement.consequent),
+        ...(statement.otherwise ? collectFunctionReturnExpressions(statement.otherwise) : []),
+      ];
+    case 'switch':
+      return statement.cases.flatMap((switchCase) => switchCase.statements.flatMap(collectFunctionReturnExpressions));
+    case 'try':
+      return [
+        ...collectFunctionReturnExpressions(statement.tryBody),
+        ...(statement.catchBody ? collectFunctionReturnExpressions(statement.catchBody) : []),
+        ...(statement.finallyBody ? collectFunctionReturnExpressions(statement.finallyBody) : []),
+      ];
+    default:
+      return [];
+  }
+}
+
+function inferNativeHostExpressionType(expression: IrExpression): IrType | undefined {
+  if (expression.kind === 'hostConstruct') {
+    return { arguments: [], kind: 'named', name: expression.resultType };
+  }
+  if (expression.kind === 'cast') return inferNativeHostExpressionType(expression.expression);
+  if (expression.kind !== 'conditional') return undefined;
+  const whenTrue = inferNativeHostExpressionType(expression.whenTrue);
+  const whenFalse = inferNativeHostExpressionType(expression.whenFalse);
+  return whenTrue && whenFalse && JSON.stringify(whenTrue) === JSON.stringify(whenFalse) ? whenTrue : undefined;
+}
+
 function lowerStatement(node: ts.Statement, context: LoweringContext): IrStatement {
   if (ts.isBlock(node))
     return {
@@ -1941,14 +1994,20 @@ function lowerExpression(node: ts.Expression, context: LoweringContext): IrExpre
     };
   }
   if (ts.isNewExpression(node)) {
-    const nativeHostConstructor =
-      ts.isIdentifier(node.expression) &&
-      !isLexicallyBound(node.expression, context) &&
-      !context.externalValues.has(node.expression.text)
-        ? portConfig.typeLowering.nativeHostConstructors.find(
-            (constructor) => constructor.global === node.expression.text,
-          )
-        : undefined;
+    const callee = node.expression;
+    const nativeHostConstructorName =
+      ts.isIdentifier(callee) && !isLexicallyBound(callee, context) && !context.externalValues.has(callee.text)
+        ? callee.text
+        : ts.isPropertyAccessExpression(callee) &&
+            ts.isIdentifier(callee.expression) &&
+            callee.expression.text === 'globalThis' &&
+            !isLexicallyBound(callee.expression, context) &&
+            !context.externalValues.has(callee.expression.text)
+          ? callee.name.text
+          : undefined;
+    const nativeHostConstructor = portConfig.typeLowering.nativeHostConstructors.find(
+      (constructor) => constructor.global === nativeHostConstructorName,
+    );
     if (nativeHostConstructor) {
       return {
         arguments: node.arguments?.map((argument) => lowerExpression(argument, context)) ?? [],

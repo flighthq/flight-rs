@@ -157,6 +157,7 @@ pub fn copy_color_transform_to_arrays(
 pub fn create_color_transform(opts: Option<FlightPartialRecord1>) -> ColorTransform {
     return create_entity(Some(ColorTransform {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         red_multiplier: (opts.as_ref().and_then(|value| value.red_multiplier)).unwrap_or(1.0_f64),
         green_multiplier: (opts.as_ref().and_then(|value| value.green_multiplier))
             .unwrap_or(1.0_f64),
@@ -272,6 +273,9 @@ pub fn is_identity_color_transform(
             let __flight_source = &(_IDENTITY);
             ColorTransformLike {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 alpha_multiplier: __flight_source.alpha_multiplier,
                 alpha_offset: __flight_source.alpha_offset,
                 blue_multiplier: __flight_source.blue_multiplier,
@@ -289,6 +293,9 @@ pub fn is_identity_color_transform(
             let __flight_source = &(_IDENTITY);
             ColorTransformLike {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 alpha_multiplier: __flight_source.alpha_multiplier,
                 alpha_offset: __flight_source.alpha_offset,
                 blue_multiplier: __flight_source.blue_multiplier,

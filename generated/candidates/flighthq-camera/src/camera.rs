@@ -17,6 +17,7 @@ use flighthq_types::{Camera, Matrix4, Matrix4Like, Projection, Vector3Like};
 pub fn create_camera(opts: &CameraOptions) -> Camera {
     return create_entity(Some(Camera {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         far: opts.far,
         inverse_view_projection: create_matrix4(
             None, None, None, None, None, None, None, None, None, None, None, None, None, None,
@@ -47,6 +48,9 @@ pub fn get_camera_inverse_view_projection_matrix4(
         let __flight_source = &(*__SCRATCH_VIEW_PROJECTION.lock().unwrap());
         Matrix4Like {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            __flight_entity_runtime: std::sync::Arc::clone(
+                &__flight_source.__flight_entity_runtime,
+            ),
             m: (__flight_source.m).clone(),
         }
     });
@@ -71,6 +75,9 @@ pub fn get_camera_view_projection_matrix4(
             let __flight_source = &(*__SCRATCH_PROJECTION.lock().unwrap());
             Matrix4Like {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 m: (__flight_source.m).clone(),
             }
         },
@@ -78,6 +85,9 @@ pub fn get_camera_view_projection_matrix4(
             let __flight_source = &(camera.view);
             Matrix4Like {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 m: (__flight_source.m).clone(),
             }
         },

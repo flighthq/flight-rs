@@ -26,6 +26,9 @@ pub fn get_camera_frustum(out: &mut FrustumLike, camera: &Camera, aspect: f64) -
         let __flight_source = &(*__SCRATCH_VIEW_PROJECTION.lock().unwrap());
         Matrix4Like {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            __flight_entity_runtime: std::sync::Arc::clone(
+                &__flight_source.__flight_entity_runtime,
+            ),
             m: (__flight_source.m).clone(),
         }
     });
@@ -39,6 +42,9 @@ pub fn is_box_in_camera_frustum(camera: &Camera, aabb: &AabbLike, aspect: f64) -
             let __flight_source = &(*__SCRATCH_FRUSTUM.lock().unwrap());
             FrustumLike {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 bottom: (__flight_source.bottom).clone(),
                 far: (__flight_source.far).clone(),
                 left: (__flight_source.left).clone(),
@@ -59,6 +65,9 @@ pub fn is_point_in_camera_frustum(camera: &Camera, point: &Vector3Like, aspect: 
             let __flight_source = &(*__SCRATCH_FRUSTUM.lock().unwrap());
             FrustumLike {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 bottom: (__flight_source.bottom).clone(),
                 far: (__flight_source.far).clone(),
                 left: (__flight_source.left).clone(),
@@ -83,6 +92,9 @@ pub fn is_sphere_in_camera_frustum(
             let __flight_source = &(*__SCRATCH_FRUSTUM.lock().unwrap());
             FrustumLike {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 bottom: (__flight_source.bottom).clone(),
                 far: (__flight_source.far).clone(),
                 left: (__flight_source.left).clone(),

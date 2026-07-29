@@ -80,6 +80,9 @@ fn visit_transform_velocity(field: &mut VelocityField, node: &Transform2DNode) -
         let __flight_source = &(world);
         MatrixLike {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            __flight_entity_runtime: std::sync::Arc::clone(
+                &__flight_source.__flight_entity_runtime,
+            ),
             a: __flight_source.a,
             b: __flight_source.b,
             c: __flight_source.c,
@@ -92,6 +95,9 @@ fn visit_transform_velocity(field: &mut VelocityField, node: &Transform2DNode) -
         let __flight_source = &(mutable_node);
         Node {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            __flight_entity_runtime: std::sync::Arc::clone(
+                &__flight_source.__flight_entity_runtime,
+            ),
             data: (__flight_source.data).clone(),
             enabled: __flight_source.enabled,
             kind: (__flight_source.kind).clone(),
@@ -107,6 +113,9 @@ fn visit_transform_velocity(field: &mut VelocityField, node: &Transform2DNode) -
                     Node {
                         __flight_identity: std::sync::Arc::clone(
                             &__flight_source.__flight_identity,
+                        ),
+                        __flight_entity_runtime: std::sync::Arc::clone(
+                            &__flight_source.__flight_entity_runtime,
                         ),
                         data: (__flight_source.data).clone(),
                         enabled: __flight_source.enabled,

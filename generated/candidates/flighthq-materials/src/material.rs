@@ -13,8 +13,10 @@ use flighthq_types::{Kind, Material};
 pub fn clone_material(source: &Material) -> Material {
     let mut clone = create_entity(Some(Material {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         kind: (source.kind).clone(),
         name: None,
+        ..Default::default()
     }));
     copy_material_fields(&mut clone, source, (source.kind).clone());
     return clone;
@@ -32,8 +34,10 @@ pub fn copy_material(out: &mut Material, source: &Material) -> () {
 pub fn create_material(kind: Kind) -> Material {
     let mut material = create_entity(Some(Material {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         kind: (kind).clone(),
         name: None,
+        ..Default::default()
     }));
     material.name = None;
     return material;

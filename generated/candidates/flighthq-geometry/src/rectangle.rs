@@ -72,6 +72,7 @@ pub fn create_rectangle(
 ) -> Rectangle {
     return create_entity(Some(Rectangle {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         x: (x).unwrap_or(0.0_f64),
         y: (y).unwrap_or(0.0_f64),
         width: (width).unwrap_or(0.0_f64),

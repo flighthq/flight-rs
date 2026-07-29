@@ -16,6 +16,7 @@ use flighthq_types::{
 pub fn create_frustum() -> Frustum {
     return create_entity(Some(Frustum {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         bottom: create_plane(None, None, None, None),
         far: create_plane(None, None, None, None),
         left: create_plane(None, None, None, None),
@@ -88,6 +89,9 @@ pub fn is_frustum_containing_point(frustum: &FrustumLike, point: &Vector3Like) -
             let __flight_source = &(frustum.left);
             PlaneLike {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 a: __flight_source.a,
                 b: __flight_source.b,
                 c: __flight_source.c,
@@ -101,6 +105,9 @@ pub fn is_frustum_containing_point(frustum: &FrustumLike, point: &Vector3Like) -
                 let __flight_source = &(frustum.right);
                 PlaneLike {
                     __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    __flight_entity_runtime: std::sync::Arc::clone(
+                        &__flight_source.__flight_entity_runtime,
+                    ),
                     a: __flight_source.a,
                     b: __flight_source.b,
                     c: __flight_source.c,
@@ -114,6 +121,9 @@ pub fn is_frustum_containing_point(frustum: &FrustumLike, point: &Vector3Like) -
                 let __flight_source = &(frustum.bottom);
                 PlaneLike {
                     __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    __flight_entity_runtime: std::sync::Arc::clone(
+                        &__flight_source.__flight_entity_runtime,
+                    ),
                     a: __flight_source.a,
                     b: __flight_source.b,
                     c: __flight_source.c,
@@ -127,6 +137,9 @@ pub fn is_frustum_containing_point(frustum: &FrustumLike, point: &Vector3Like) -
                 let __flight_source = &(frustum.top);
                 PlaneLike {
                     __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    __flight_entity_runtime: std::sync::Arc::clone(
+                        &__flight_source.__flight_entity_runtime,
+                    ),
                     a: __flight_source.a,
                     b: __flight_source.b,
                     c: __flight_source.c,
@@ -140,6 +153,9 @@ pub fn is_frustum_containing_point(frustum: &FrustumLike, point: &Vector3Like) -
                 let __flight_source = &(frustum.near);
                 PlaneLike {
                     __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    __flight_entity_runtime: std::sync::Arc::clone(
+                        &__flight_source.__flight_entity_runtime,
+                    ),
                     a: __flight_source.a,
                     b: __flight_source.b,
                     c: __flight_source.c,
@@ -153,6 +169,9 @@ pub fn is_frustum_containing_point(frustum: &FrustumLike, point: &Vector3Like) -
                 let __flight_source = &(frustum.far);
                 PlaneLike {
                     __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    __flight_entity_runtime: std::sync::Arc::clone(
+                        &__flight_source.__flight_entity_runtime,
+                    ),
                     a: __flight_source.a,
                     b: __flight_source.b,
                     c: __flight_source.c,
@@ -170,6 +189,9 @@ pub fn is_frustum_intersecting_aabb(frustum: &FrustumLike, aabb: &AabbLike) -> b
             let __flight_source = &(frustum.left);
             PlaneLike {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 a: __flight_source.a,
                 b: __flight_source.b,
                 c: __flight_source.c,
@@ -182,6 +204,9 @@ pub fn is_frustum_intersecting_aabb(frustum: &FrustumLike, aabb: &AabbLike) -> b
             let __flight_source = &(frustum.right);
             PlaneLike {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 a: __flight_source.a,
                 b: __flight_source.b,
                 c: __flight_source.c,
@@ -194,6 +219,9 @@ pub fn is_frustum_intersecting_aabb(frustum: &FrustumLike, aabb: &AabbLike) -> b
             let __flight_source = &(frustum.bottom);
             PlaneLike {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 a: __flight_source.a,
                 b: __flight_source.b,
                 c: __flight_source.c,
@@ -206,6 +234,9 @@ pub fn is_frustum_intersecting_aabb(frustum: &FrustumLike, aabb: &AabbLike) -> b
             let __flight_source = &(frustum.top);
             PlaneLike {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 a: __flight_source.a,
                 b: __flight_source.b,
                 c: __flight_source.c,
@@ -218,6 +249,9 @@ pub fn is_frustum_intersecting_aabb(frustum: &FrustumLike, aabb: &AabbLike) -> b
             let __flight_source = &(frustum.near);
             PlaneLike {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 a: __flight_source.a,
                 b: __flight_source.b,
                 c: __flight_source.c,
@@ -230,6 +264,9 @@ pub fn is_frustum_intersecting_aabb(frustum: &FrustumLike, aabb: &AabbLike) -> b
             let __flight_source = &(frustum.far);
             PlaneLike {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 a: __flight_source.a,
                 b: __flight_source.b,
                 c: __flight_source.c,
@@ -251,6 +288,9 @@ pub fn is_frustum_intersecting_sphere(frustum: &FrustumLike, sphere: &BoundingSp
             let __flight_source = &(frustum.left);
             PlaneLike {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 a: __flight_source.a,
                 b: __flight_source.b,
                 c: __flight_source.c,
@@ -261,6 +301,9 @@ pub fn is_frustum_intersecting_sphere(frustum: &FrustumLike, sphere: &BoundingSp
             let __flight_source = &(sphere.center);
             Vector3Like {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 x: __flight_source.x,
                 y: __flight_source.y,
                 z: __flight_source.z,
@@ -272,6 +315,9 @@ pub fn is_frustum_intersecting_sphere(frustum: &FrustumLike, sphere: &BoundingSp
                 let __flight_source = &(frustum.right);
                 PlaneLike {
                     __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    __flight_entity_runtime: std::sync::Arc::clone(
+                        &__flight_source.__flight_entity_runtime,
+                    ),
                     a: __flight_source.a,
                     b: __flight_source.b,
                     c: __flight_source.c,
@@ -282,6 +328,9 @@ pub fn is_frustum_intersecting_sphere(frustum: &FrustumLike, sphere: &BoundingSp
                 let __flight_source = &(sphere.center);
                 Vector3Like {
                     __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    __flight_entity_runtime: std::sync::Arc::clone(
+                        &__flight_source.__flight_entity_runtime,
+                    ),
                     x: __flight_source.x,
                     y: __flight_source.y,
                     z: __flight_source.z,
@@ -293,6 +342,9 @@ pub fn is_frustum_intersecting_sphere(frustum: &FrustumLike, sphere: &BoundingSp
                 let __flight_source = &(frustum.bottom);
                 PlaneLike {
                     __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    __flight_entity_runtime: std::sync::Arc::clone(
+                        &__flight_source.__flight_entity_runtime,
+                    ),
                     a: __flight_source.a,
                     b: __flight_source.b,
                     c: __flight_source.c,
@@ -303,6 +355,9 @@ pub fn is_frustum_intersecting_sphere(frustum: &FrustumLike, sphere: &BoundingSp
                 let __flight_source = &(sphere.center);
                 Vector3Like {
                     __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    __flight_entity_runtime: std::sync::Arc::clone(
+                        &__flight_source.__flight_entity_runtime,
+                    ),
                     x: __flight_source.x,
                     y: __flight_source.y,
                     z: __flight_source.z,
@@ -314,6 +369,9 @@ pub fn is_frustum_intersecting_sphere(frustum: &FrustumLike, sphere: &BoundingSp
                 let __flight_source = &(frustum.top);
                 PlaneLike {
                     __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    __flight_entity_runtime: std::sync::Arc::clone(
+                        &__flight_source.__flight_entity_runtime,
+                    ),
                     a: __flight_source.a,
                     b: __flight_source.b,
                     c: __flight_source.c,
@@ -324,6 +382,9 @@ pub fn is_frustum_intersecting_sphere(frustum: &FrustumLike, sphere: &BoundingSp
                 let __flight_source = &(sphere.center);
                 Vector3Like {
                     __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    __flight_entity_runtime: std::sync::Arc::clone(
+                        &__flight_source.__flight_entity_runtime,
+                    ),
                     x: __flight_source.x,
                     y: __flight_source.y,
                     z: __flight_source.z,
@@ -335,6 +396,9 @@ pub fn is_frustum_intersecting_sphere(frustum: &FrustumLike, sphere: &BoundingSp
                 let __flight_source = &(frustum.near);
                 PlaneLike {
                     __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    __flight_entity_runtime: std::sync::Arc::clone(
+                        &__flight_source.__flight_entity_runtime,
+                    ),
                     a: __flight_source.a,
                     b: __flight_source.b,
                     c: __flight_source.c,
@@ -345,6 +409,9 @@ pub fn is_frustum_intersecting_sphere(frustum: &FrustumLike, sphere: &BoundingSp
                 let __flight_source = &(sphere.center);
                 Vector3Like {
                     __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    __flight_entity_runtime: std::sync::Arc::clone(
+                        &__flight_source.__flight_entity_runtime,
+                    ),
                     x: __flight_source.x,
                     y: __flight_source.y,
                     z: __flight_source.z,
@@ -356,6 +423,9 @@ pub fn is_frustum_intersecting_sphere(frustum: &FrustumLike, sphere: &BoundingSp
                 let __flight_source = &(frustum.far);
                 PlaneLike {
                     __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    __flight_entity_runtime: std::sync::Arc::clone(
+                        &__flight_source.__flight_entity_runtime,
+                    ),
                     a: __flight_source.a,
                     b: __flight_source.b,
                     c: __flight_source.c,
@@ -366,6 +436,9 @@ pub fn is_frustum_intersecting_sphere(frustum: &FrustumLike, sphere: &BoundingSp
                 let __flight_source = &(sphere.center);
                 Vector3Like {
                     __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    __flight_entity_runtime: std::sync::Arc::clone(
+                        &__flight_source.__flight_entity_runtime,
+                    ),
                     x: __flight_source.x,
                     y: __flight_source.y,
                     z: __flight_source.z,
