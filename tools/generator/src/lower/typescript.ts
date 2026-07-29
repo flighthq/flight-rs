@@ -902,6 +902,12 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
       return { arguments: arguments_, kind: 'named', name: 'RustSet' };
     }
     if (context.externalTypes.has(name.split('.')[0]!)) return { kind: 'dynamic' };
+    const nativeHostConstructor = portConfig.typeLowering.nativeHostConstructors.find(
+      (constructor) => constructor.global === name,
+    );
+    if (nativeHostConstructor) {
+      return { arguments: [], kind: 'named', name: nativeHostConstructor.resultType };
+    }
     if (
       platformDynamicTypes.has(name) ||
       name.startsWith('GPU') ||
@@ -1935,6 +1941,22 @@ function lowerExpression(node: ts.Expression, context: LoweringContext): IrExpre
     };
   }
   if (ts.isNewExpression(node)) {
+    const nativeHostConstructor =
+      ts.isIdentifier(node.expression) &&
+      !isLexicallyBound(node.expression, context) &&
+      !context.externalValues.has(node.expression.text)
+        ? portConfig.typeLowering.nativeHostConstructors.find(
+            (constructor) => constructor.global === node.expression.text,
+          )
+        : undefined;
+    if (nativeHostConstructor) {
+      return {
+        arguments: node.arguments?.map((argument) => lowerExpression(argument, context)) ?? [],
+        capability: nativeHostConstructor.capability,
+        kind: 'hostConstruct',
+        resultType: nativeHostConstructor.resultType,
+      };
+    }
     return {
       arguments: node.arguments?.map((argument) => lowerExpression(argument, context)) ?? [],
       callee: lowerExpression(node.expression, context),

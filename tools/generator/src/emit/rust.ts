@@ -780,6 +780,8 @@ function inferStaticExpressionType(expression: IrExpression): IrType | undefined
       return undefined;
     case 'call':
       return isSymbolConstruction(expression) ? { arguments: [], kind: 'named', name: 'FlightSymbol' } : undefined;
+    case 'hostConstruct':
+      return { arguments: [], kind: 'named', name: expression.resultType };
     case 'new': {
       const name = runtimeConstructorType(expression.callee);
       if (name === 'Map' || name === 'WeakMap') {
@@ -1557,6 +1559,8 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
       return coerceExpression(emitElementRead(expression, context, expectedType), expectedType);
     case 'function':
       return emitClosure(expression, context, expectedType);
+    case 'hostConstruct':
+      return emitHostConstruct(expression, context);
     case 'identifier': {
       const resolvedExpected = resolveSemanticType(expectedType, context) ?? expectedType;
       const functionDeclaration = context.functions.get(expression.name);
@@ -1885,7 +1889,7 @@ function emitCall(
       ownerType?.kind === 'nullable'
         ? `${emitPlaceExpression(expression.callee.object, context)}.as_mut().unwrap()`
         : emitCollectionPlace(expression.callee.object, context);
-    if (collectionType?.kind === 'dynamic') {
+    if (collectionType?.kind === 'dynamic' || isNativeHostHandleType(collectionType)) {
       const result = expectedType ?? primitive('Void');
       return `crate::host_value::<${emitType(result, context)}>(${emitRustStringLiteral(`host.${method}`)})`;
     }
@@ -2952,7 +2956,7 @@ function emitProperty(
   const objectType = inferIrExpressionType(expression.object, context);
   const resolvedObject = resolveSemanticType(objectType, context) ?? objectType;
   const resolvedReceiver = resolvedObject?.kind === 'nullable' ? resolvedObject.inner : resolvedObject;
-  if (resolvedReceiver?.kind === 'dynamic') {
+  if (resolvedReceiver?.kind === 'dynamic' || isNativeHostHandleType(resolvedReceiver)) {
     const result = expectedType ?? inferDynamicHostPropertyType(expression.name) ?? { kind: 'dynamic' };
     return `crate::host_value::<${emitType(result, context)}>(${emitRustStringLiteral(`host.${expression.name}`)})`;
   }
@@ -3094,7 +3098,7 @@ function emitOptionalProperty(
     return emitProperty({ ...expression, optional: false }, context);
   }
   const inner = resolveSemanticType(objectType.inner, context) ?? objectType.inner;
-  if (inner.kind === 'dynamic') {
+  if (inner.kind === 'dynamic' || isNativeHostHandleType(inner)) {
     const result =
       expectedType?.kind === 'nullable' ? expectedType : ({ inner: expectedType ?? inner, kind: 'nullable' } as const);
     return `crate::host_value::<${emitType(result, context)}>(${emitRustStringLiteral(`host.${expression.name}`)})`;
@@ -4090,6 +4094,7 @@ function emitType(type: IrType, context: EmitContext): string {
       }
       if (type.name === 'FlightSymbol') return 'crate::FlightSymbol';
       if (type.name === 'FlightTimeout') return 'crate::FlightTimeout';
+      if (nativeHostHandleTypes.has(type.name)) return `crate::${type.name}`;
       if (type.name === 'Nothing') return 'crate::OpaqueHostValue';
       if (type.name === 'FlightRegex') return 'regex::Regex';
       const typedArray = typedArrayType(type.name);
@@ -6110,6 +6115,64 @@ function emitNew(
   );
 }
 
+function emitHostConstruct(
+  expression: Extract<IrExpression, { kind: 'hostConstruct' }>,
+  context: EmitContext,
+): string {
+  switch (expression.capability) {
+    case 'ImageData':
+      return emitImageDataConstruct(expression.arguments, context);
+    case 'OffscreenCanvas': {
+      if (expression.arguments.length !== 2) {
+        throw new RustEmissionError('OffscreenCanvas construction requires width and height');
+      }
+      const width = emitExpression(expression.arguments[0]!, context, primitive('Float'));
+      const height = emitExpression(expression.arguments[1]!, context, primitive('Float'));
+      return `crate::host_offscreen_canvas(${width}, ${height})`;
+    }
+    default: {
+      const unsupported: never = expression.capability;
+      throw new RustEmissionError(`native host construction is not implemented: ${String(unsupported)}`);
+    }
+  }
+}
+
+function emitImageDataConstruct(arguments_: IrExpression[], context: EmitContext): string {
+  const first = arguments_[0];
+  const second = arguments_[1];
+  if (!first || !second) {
+    throw new RustEmissionError('ImageData construction requires pixels and width or width and height');
+  }
+  const firstType = inferIrExpressionType(first, context);
+  const resolvedFirst = resolveSemanticType(
+    firstType?.kind === 'nullable' ? firstType.inner : firstType,
+    context,
+  );
+  if (resolvedFirst?.kind === 'primitive' && (resolvedFirst.name === 'Float' || resolvedFirst.name === 'Int')) {
+    if (arguments_.length !== 2) {
+      throw new RustEmissionError('ImageData dimension construction with settings is not implemented');
+    }
+    return `crate::host_image_data(crate::FlightImageDataRequest::Dimensions { width: ${emitExpression(first, context, primitive('Float'))}, height: ${emitExpression(second, context, primitive('Float'))} })`;
+  }
+  const pixels = resolvedFirst?.kind === 'named' ? typedArrayType(resolvedFirst.name) : undefined;
+  if (!pixels || pixels.rust !== 'u8') {
+    throw new RustEmissionError('ImageData pixel construction requires a statically typed byte array');
+  }
+  if (arguments_.length > 3) {
+    throw new RustEmissionError('ImageData pixel construction with settings is not implemented');
+  }
+  const data = emitExpression(first, context, {
+    arguments: [],
+    kind: 'named',
+    name: 'Uint8ClampedArray',
+  });
+  const width = emitExpression(second, context, primitive('Float'));
+  const height = arguments_[2]
+    ? `Some(${emitExpression(arguments_[2]!, context, primitive('Float'))})`
+    : 'None';
+  return `crate::host_image_data(crate::FlightImageDataRequest::Pixels { data: ${data}, width: ${width}, height: ${height} })`;
+}
+
 function emitObject(
   expression: Extract<IrExpression, { kind: 'object' }>,
   context: EmitContext,
@@ -6553,6 +6616,8 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
           inferFunctionExpressionReturnType(expression) ??
           (expression.expression ? primitive('Float') : primitive('Void')),
       };
+    case 'hostConstruct':
+      return { arguments: [], kind: 'named', name: expression.resultType };
     case 'call': {
       const portableGlobal =
         expression.callee.kind === 'identifier' ? expression.callee.name : runtimeGlobalType(expression.callee);
@@ -6773,7 +6838,8 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
       const object = inferIrExpressionType(expression.object, context);
       if (!object) return undefined;
       const receiver = object.kind === 'nullable' ? object.inner : object;
-      if ((resolveSemanticType(receiver, context) ?? receiver).kind === 'dynamic') {
+      const resolvedReceiver = resolveSemanticType(receiver, context) ?? receiver;
+      if (resolvedReceiver.kind === 'dynamic' || isNativeHostHandleType(resolvedReceiver)) {
         return inferDynamicHostPropertyType(expression.name) ?? { kind: 'dynamic' };
       }
       const field = inferPropertyType(receiver, expression.name, context);
@@ -7197,7 +7263,7 @@ function isDynamicHostTree(expression: IrExpression, context: EmitContext): bool
   const resolved = resolveSemanticType(type, context) ?? type;
   const receiver =
     resolved?.kind === 'nullable' ? (resolveSemanticType(resolved.inner, context) ?? resolved.inner) : resolved;
-  return receiver?.kind === 'dynamic';
+  return receiver?.kind === 'dynamic' || isNativeHostHandleType(receiver);
 }
 
 function inferDynamicHostElementType(expression: IrExpression, context: EmitContext): IrType | undefined {
@@ -7534,10 +7600,15 @@ const opaqueHostConstructors = new Set([
   'Audio',
   'AudioBuffer',
   'MediaMetadata',
-  'OffscreenCanvas',
   'ResizeObserver',
   'WebSocket',
 ]);
+
+const nativeHostHandleTypes = new Set(['FlightImageData', 'FlightOffscreenCanvas']);
+
+function isNativeHostHandleType(type: IrType | undefined): boolean {
+  return type?.kind === 'named' && nativeHostHandleTypes.has(type.name);
+}
 
 const opaqueHostInstanceConstructors = new Set([
   'HTMLCanvasElement',

@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import ts from 'typescript';
 
+import { emitNativeHostCapabilityRuntime } from '../../tools/generator/src/emit/native-host.ts';
 import { emitRustModule } from '../../tools/generator/src/emit/rust.ts';
 import { lowerTypeScriptSource } from '../../tools/generator/src/lower/typescript.ts';
 
@@ -2292,5 +2293,82 @@ describe('Rust emission', () => {
         typeImports: [],
       }),
     ).not.toThrow();
+  });
+
+  it('compiles typed ImageData and OffscreenCanvas constructors against an installable native backend', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/image/src/constructors.ts',
+      `
+        export function imageFromPixels(
+          data: Uint8ClampedArray,
+          width: number,
+          height: number,
+        ): ImageData {
+          return new ImageData(data, width, height);
+        }
+        export function blankImage(width: number, height: number): ImageData {
+          return new ImageData(width, height);
+        }
+        export function createCanvas(width: number, height: number): OffscreenCanvas {
+          return new OffscreenCanvas(width, height);
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/image', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/image/src/constructors.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('-> crate::FlightImageData');
+    expect(output).toContain('crate::FlightImageDataRequest::Pixels');
+    expect(output).toContain('crate::FlightImageDataRequest::Dimensions');
+    expect(output).toContain('-> crate::FlightOffscreenCanvas');
+    expect(output).toContain('crate::host_offscreen_canvas(width, height)');
+    expect(output).not.toContain('OpaqueHostValue::Object');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-host-constructors-'));
+    const binary = path.join(fixture, 'host-constructors');
+    writeFileSync(path.join(fixture, 'generated.rs'), output);
+    writeFileSync(
+      path.join(fixture, 'main.rs'),
+      [
+        ...emitNativeHostCapabilityRuntime(),
+        'mod generated;',
+        'struct TestBackend;',
+        'impl NativeHostConstructors for TestBackend {',
+        '  fn image_data(&self, request: FlightImageDataRequest) -> FlightImageData {',
+        '    let description = match request {',
+        '      FlightImageDataRequest::Dimensions { width, height } => format!("dimensions:{width}:{height}"),',
+        '      FlightImageDataRequest::Pixels { data, width, height } => format!("pixels:{}:{width}:{height:?}", data.len()),',
+        '    };',
+        '    FlightImageData::from_native(description)',
+        '  }',
+        '  fn offscreen_canvas(&self, width: f64, height: f64) -> FlightOffscreenCanvas {',
+        '    FlightOffscreenCanvas::from_native(format!("canvas:{width}:{height}"))',
+        '  }',
+        '}',
+        'fn main() {',
+        '  install_native_host_constructors(TestBackend).unwrap();',
+        '  let image = host_image_data(FlightImageDataRequest::Pixels { data: vec![1, 2, 3, 4], width: 1.0, height: Some(1.0) });',
+        '  assert_eq!(image.downcast_ref::<String>().map(String::as_str), Some("pixels:4:1:Some(1.0)"));',
+        '  let canvas = host_offscreen_canvas(4.0, 8.0);',
+        '  assert_eq!(canvas.downcast_ref::<String>().map(String::as_str), Some("canvas:4:8"));',
+        '}',
+        '',
+      ].join('\n'),
+    );
+    expect(() =>
+      execFileSync('rustc', ['--edition', '2024', 'main.rs', '-o', binary], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+    expect(() => execFileSync(binary, [], { cwd: fixture, stdio: 'pipe' })).not.toThrow();
   });
 });

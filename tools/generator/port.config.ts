@@ -1,6 +1,15 @@
+import type { IrHostConstructorCapability } from './src/model/ir.ts';
+
 export interface SourceExclusion {
   reason: string;
   source: string;
+}
+
+export interface NativeHostConstructor {
+  capability: IrHostConstructorCapability;
+  global: string;
+  reason: string;
+  resultType: string;
 }
 
 export interface RustTarget {
@@ -44,6 +53,22 @@ export const portConfig = {
         'EntityRuntime is the declared root for generated native entity storage; package-visible extensions may join only when they resolve against this canonical source family.',
       runtimeType: 'EntityRuntime',
     },
+    nativeHostConstructors: [
+      {
+        capability: 'ImageData',
+        global: 'ImageData',
+        reason:
+          'ImageData construction crosses a declared native backend seam while retaining typed pixel and dimension inputs.',
+        resultType: 'FlightImageData',
+      },
+      {
+        capability: 'OffscreenCanvas',
+        global: 'OffscreenCanvas',
+        reason:
+          'OffscreenCanvas construction crosses a declared native backend seam with typed dimensions and a distinct native handle.',
+        resultType: 'FlightOffscreenCanvas',
+      },
+    ] satisfies NativeHostConstructor[],
     genericIntersectionBaseOverrides: [
       {
         name: 'Node',

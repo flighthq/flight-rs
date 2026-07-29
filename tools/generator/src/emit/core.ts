@@ -15,6 +15,7 @@ import { sourcePathToImplementationModule, sourcePathToRustModule } from '../ana
 import { lowerTypeScriptSource } from '../lower/typescript.ts';
 import type { PackageInventory, UpstreamInventory } from '../model/inventory.ts';
 import type { IrFunctionDeclaration, IrType, LoweringDiagnostic } from '../model/ir.ts';
+import { emitNativeHostCapabilityRuntime, nativeHostCapabilityExports } from './native-host.ts';
 import { RustEmissionError, emitRustModule, isNumericNamespaceInitializer, type RustImport } from './rust.ts';
 import { stableJson, writeOrCheck } from './reports.ts';
 
@@ -1167,7 +1168,7 @@ function emitLibrary(target: RustTarget, modules: string[]): string {
     '/// Tagged storage for TypeScript values whose static type is unknown at the generated Rust boundary.',
     ...(sharedOpaqueHostValue
       ? [
-          'pub use flighthq_types::{clear_interval, clear_timeout, flight_now_millis, host_set, host_value, set_interval, set_timeout, FlightCallback, FlightSymbol, FlightTimeout, OpaqueHostValue};',
+          `pub use flighthq_types::{clear_interval, clear_timeout, flight_now_millis, host_set, host_value, ${nativeHostCapabilityExports.join(', ')}, set_interval, set_timeout, FlightCallback, FlightSymbol, FlightTimeout, OpaqueHostValue};`,
         ]
       : [
           '#[derive(Clone, Debug, PartialEq)]',
@@ -1191,6 +1192,8 @@ function emitLibrary(target: RustTarget, modules: string[]): string {
           'pub fn host_set<T>(_operation: &str, value: T) -> T {',
           '  value',
           '}',
+          '',
+          ...emitNativeHostCapabilityRuntime(),
           '',
           '/// Native identity for TypeScript `symbol` values.',
           '#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]',

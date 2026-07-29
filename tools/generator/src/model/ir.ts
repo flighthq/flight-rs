@@ -32,6 +32,8 @@ export interface IrParameter {
   type: IrType;
 }
 
+export type IrHostConstructorCapability = 'ImageData' | 'OffscreenCanvas';
+
 export type IrExpression =
   | { kind: 'array'; elements: IrExpression[] }
   | { kind: 'await'; expression: IrExpression }
@@ -56,6 +58,12 @@ export type IrExpression =
       body: IrStatement[];
       expression?: IrExpression | undefined;
       returns?: IrType | undefined;
+    }
+  | {
+      arguments: IrExpression[];
+      capability: IrHostConstructorCapability;
+      kind: 'hostConstruct';
+      resultType: string;
     }
   | { kind: 'identifier'; name: string }
   | { kind: 'literal'; value: boolean | null | number | string }
