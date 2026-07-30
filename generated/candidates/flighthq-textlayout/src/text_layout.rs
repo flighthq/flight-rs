@@ -120,7 +120,13 @@ fn char_advances(
     while (i < end) {
         let cp = (text.code_point_at)(i);
         let char_len = if (cp > 65535.0_f64) { 2.0_f64 } else { 1.0_f64 };
-        let char = (text.slice)(i, (i + char_len));
+        let char = String::from_utf16_lossy(
+            &(text)
+                .encode_utf16()
+                .skip((i) as usize)
+                .take(((i + char_len) as usize).saturating_sub((i) as usize))
+                .collect::<Vec<u16>>(),
+        );
         let mut advance: f64;
         if (char == "\t") {
             advance = get_tab_advance(current_x, ((tab_stops).clone()).clone(), measure, format);
@@ -138,7 +144,13 @@ fn char_advances(
             } else {
                 1.0_f64
             };
-            let next_char = (text.slice)(next_start, (next_start + next_len));
+            let next_char = String::from_utf16_lossy(
+                &(text)
+                    .encode_utf16()
+                    .skip((next_start) as usize)
+                    .take(((next_start + next_len) as usize).saturating_sub((next_start) as usize))
+                    .collect::<Vec<u16>>(),
+            );
             let next_w = measure(next_char, (*format).clone());
             let pair_w = measure((char + next_char), (*format).clone());
             advance = (pair_w - next_w);

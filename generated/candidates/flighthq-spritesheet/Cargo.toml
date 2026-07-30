@@ -13,4 +13,4 @@ path = "src/lib.rs"
 flighthq-entity = { path = "../flighthq-entity" }
 flighthq-signals = { path = "../flighthq-signals" }
 flighthq-textureatlas = { path = "../flighthq-textureatlas" }
-flighthq-types = { path = "../flighthq-types" }
+flighthq-types = { path = "../../crates/flighthq-types" }

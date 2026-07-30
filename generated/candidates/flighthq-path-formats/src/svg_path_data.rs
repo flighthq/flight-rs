@@ -146,9 +146,14 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                     (*pos.lock().unwrap()) = exp_start;
                 }
             }
-            return Some((number.parse_float)((d.slice)(
-                start,
-                (*pos.lock().unwrap()).clone(),
+            return Some((number.parse_float)(String::from_utf16_lossy(
+                &(d).encode_utf16()
+                    .skip((start) as usize)
+                    .take(
+                        (((*pos.lock().unwrap()).clone()) as usize)
+                            .saturating_sub((start) as usize),
+                    )
+                    .collect::<Vec<u16>>(),
             )));
         }
     })

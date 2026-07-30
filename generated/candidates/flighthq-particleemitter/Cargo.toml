@@ -15,4 +15,4 @@ flighthq-geometry = { path = "../flighthq-geometry" }
 flighthq-node = { path = "../flighthq-node" }
 flighthq-particles = { path = "../flighthq-particles" }
 flighthq-scene = { path = "../flighthq-scene" }
-flighthq-types = { path = "../flighthq-types" }
+flighthq-types = { path = "../../crates/flighthq-types" }

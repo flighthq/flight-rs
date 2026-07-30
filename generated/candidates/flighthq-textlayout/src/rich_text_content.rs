@@ -89,7 +89,7 @@ fn append_text(
         if ((out.text.encode_utf16().count() as f64) == 0.0_f64) {
             value = (value.trim_start)();
         }
-        if ((out.text).clone()).ends_with(" ") {
+        if ((out.text).clone()).ends_with((" ".to_owned()).as_str()) {
             value = (value.trim_start)();
         }
     }
@@ -105,7 +105,13 @@ fn append_text(
         return;
     }
     if ((value.encode_utf16().count() as f64) > remaining) {
-        value = (value.slice)(0.0_f64, remaining);
+        value = String::from_utf16_lossy(
+            &(value)
+                .encode_utf16()
+                .skip((0.0_f64) as usize)
+                .take(((remaining) as usize).saturating_sub((0.0_f64) as usize))
+                .collect::<Vec<u16>>(),
+        );
     }
     let start = (out.text.encode_utf16().count() as f64);
     out.text += (value).clone();
@@ -195,15 +201,25 @@ fn decode_html_entities(value: String) -> String {
     return {
         let mut __flight_replace = |_match: String, entity: String| -> String {
             let lower = (entity).to_lowercase();
-            if (lower).starts_with("#x") {
+            if (lower).starts_with(("#x".to_owned()).as_str()) {
                 return (string.from_code_point)((number.parse_int)(
-                    (lower.slice)(2.0_f64),
+                    String::from_utf16_lossy(
+                        &(lower)
+                            .encode_utf16()
+                            .skip((2.0_f64) as usize)
+                            .collect::<Vec<u16>>(),
+                    ),
                     16.0_f64,
                 ));
             }
-            if (lower).starts_with("#") {
+            if (lower).starts_with(("#".to_owned()).as_str()) {
                 return (string.from_code_point)((number.parse_int)(
-                    (lower.slice)(1.0_f64),
+                    String::from_utf16_lossy(
+                        &(lower)
+                            .encode_utf16()
+                            .skip((1.0_f64) as usize)
+                            .collect::<Vec<u16>>(),
+                    ),
                     10.0_f64,
                 ));
             }

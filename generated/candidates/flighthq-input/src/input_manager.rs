@@ -1715,7 +1715,11 @@ pub fn request_input_pointer_lock(element: crate::OpaqueHostValue) -> crate::Pro
                 if false {
                     return Some(crate::host_value::<crate::Promise<bool>>("host.then"));
                 }
-                return Some(crate::host_value::<crate::Promise<bool>>("host.resolve"));
+                return Some({
+                    let __flight_value = true;
+                    let _ = &__flight_value;
+                    crate::Promise::<bool>::default()
+                });
             }
             None
         }),
@@ -1723,7 +1727,11 @@ pub fn request_input_pointer_lock(element: crate::OpaqueHostValue) -> crate::Pro
         Ok(value) => value,
         Err(_) => (|| -> Option<crate::Promise<bool>> {
             {
-                return Some(crate::host_value::<crate::Promise<bool>>("host.resolve"));
+                return Some({
+                    let __flight_value = false;
+                    let _ = &__flight_value;
+                    crate::Promise::<bool>::default()
+                });
             }
             None
         })(),

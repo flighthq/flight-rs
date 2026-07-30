@@ -875,7 +875,13 @@ pub fn dispatch_selectable_rich_text_key_down(
             .min(runtime.inner.lock().unwrap().selection_end_index);
         let end = (runtime.inner.lock().unwrap().selection_begin_index)
             .max(runtime.inner.lock().unwrap().selection_end_index);
-        let selected = (target.as_ref().unwrap().data.text.slice)(start, end);
+        let selected = String::from_utf16_lossy(
+            &((target.as_ref().unwrap().data.text).clone())
+                .encode_utf16()
+                .skip((start) as usize)
+                .take(((end) as usize).saturating_sub((start) as usize))
+                .collect::<Vec<u16>>(),
+        );
         if (selected.length > 0.0_f64) {
             {
                 let __flight_callback = on_copy;
@@ -999,7 +1005,13 @@ pub fn get_selectable_rich_text_selection_text(manager: &SelectableRichTextManag
         .min(runtime.inner.lock().unwrap().selection_end_index);
     let end = (runtime.inner.lock().unwrap().selection_begin_index)
         .max(runtime.inner.lock().unwrap().selection_end_index);
-    return (target.as_ref().unwrap().data.text.slice)(start, end);
+    return String::from_utf16_lossy(
+        &((target.as_ref().unwrap().data.text).clone())
+            .encode_utf16()
+            .skip((start) as usize)
+            .take(((end) as usize).saturating_sub((start) as usize))
+            .collect::<Vec<u16>>(),
+    );
 }
 
 // Source: upstream/packages/textinput/src/selectableRichTextManager.ts:97 (sha256:733e60d658d9c7706305e948bd891d19dd23aaca31961e89d0f62f726b7ddd45)

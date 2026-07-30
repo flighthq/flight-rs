@@ -14,5 +14,5 @@ flighthq-node = { path = "../flighthq-node" }
 flighthq-signals = { path = "../flighthq-signals" }
 flighthq-text = { path = "../flighthq-text" }
 flighthq-textlayout = { path = "../flighthq-textlayout" }
-flighthq-types = { path = "../flighthq-types" }
+flighthq-types = { path = "../../crates/flighthq-types" }
 regex = "1"

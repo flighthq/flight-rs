@@ -259,7 +259,13 @@ pub fn get_rich_text_line_text(text: String, layout: &TextLayoutResult, line_ind
     return if (start == f64::INFINITY) {
         "".to_owned()
     } else {
-        (text.slice)(start, end)
+        String::from_utf16_lossy(
+            &(text)
+                .encode_utf16()
+                .skip((start) as usize)
+                .take(((end) as usize).saturating_sub((start) as usize))
+                .collect::<Vec<u16>>(),
+        )
     };
 }
 

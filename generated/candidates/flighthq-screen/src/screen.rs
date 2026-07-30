@@ -1065,13 +1065,13 @@ fn get_web_is_hdr() -> bool {
 fn get_web_orientation() -> ScreenOrientation {
     let obj = get_web_screen_orientation_object();
     let type_ = (obj.as_ref().and_then(|value| (value.type_).clone())).unwrap_or("".to_owned());
-    if (type_).starts_with("portrait-primary") {
+    if (type_).starts_with(("portrait-primary".to_owned()).as_str()) {
         return "Portrait".to_owned();
     }
-    if (type_).starts_with("portrait-secondary") {
+    if (type_).starts_with(("portrait-secondary".to_owned()).as_str()) {
         return "PortraitFlipped".to_owned();
     }
-    if (type_).starts_with("landscape-secondary") {
+    if (type_).starts_with(("landscape-secondary".to_owned()).as_str()) {
         return "LandscapeFlipped".to_owned();
     }
     return "Landscape".to_owned();

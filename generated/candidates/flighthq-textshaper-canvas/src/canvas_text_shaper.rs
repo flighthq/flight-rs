@@ -85,7 +85,7 @@ pub fn create_canvas_text_shaper_backend() -> crate::OpaqueHostValue {
                 );
                 let cached = (*cache.lock().unwrap())
                     .iter()
-                    .find(|(key, _)| key == &cache_key)
+                    .find(|(key, _)| key == &(cache_key).clone())
                     .map(|(_, value)| value.clone());
                 if (cached).is_some() {
                     return *(cached.as_ref().unwrap());
@@ -137,7 +137,7 @@ pub fn create_canvas_text_shaper_backend() -> crate::OpaqueHostValue {
                     };
                 }
                 {
-                    let __flight_key = cache_key;
+                    let __flight_key = (cache_key).clone();
                     let __flight_value = width;
                     if let Some((_, value)) = (*cache.lock().unwrap())
                         .iter_mut()

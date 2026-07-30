@@ -13,4 +13,4 @@ path = "src/lib.rs"
 flighthq-displayobject = { path = "../flighthq-displayobject" }
 flighthq-node = { path = "../flighthq-node" }
 flighthq-timeline = { path = "../flighthq-timeline" }
-flighthq-types = { path = "../flighthq-types" }
+flighthq-types = { path = "../../crates/flighthq-types" }

@@ -184,7 +184,12 @@ fn normalize_frame_name(name: String, strip: bool) -> String {
     }
     let slash = ((name.last_index_of)("/")).max((name.last_index_of)("\\"));
     return if (slash >= 0.0_f64) {
-        (name.slice)((slash + 1.0_f64))
+        String::from_utf16_lossy(
+            &(name)
+                .encode_utf16()
+                .skip((slash + 1.0_f64) as usize)
+                .collect::<Vec<u16>>(),
+        )
     } else {
         (name).clone()
     };

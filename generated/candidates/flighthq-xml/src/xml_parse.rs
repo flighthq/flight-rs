@@ -245,7 +245,13 @@ fn parse_element(src: String, state: &mut ParseState) -> Option<XmlElement> {
             state.pos
         };
     }
-    let name = (src.slice)(name_start, state.pos);
+    let name = String::from_utf16_lossy(
+        &(src)
+            .encode_utf16()
+            .skip((name_start) as usize)
+            .take(((state.pos) as usize).saturating_sub((name_start) as usize))
+            .collect::<Vec<u16>>(),
+    );
     if (!name) {
         return None;
     }
@@ -296,7 +302,14 @@ fn parse_element(src: String, state: &mut ParseState) -> Option<XmlElement> {
                         state.pos
                     };
                 }
-                text += decode_xml_entities(((src.slice)(text_start, state.pos).trim)());
+                text += decode_xml_entities((String::from_utf16_lossy(
+                    &(src)
+                        .encode_utf16()
+                        .skip((text_start) as usize)
+                        .take(((state.pos) as usize).saturating_sub((text_start) as usize))
+                        .collect::<Vec<u16>>(),
+                )
+                .trim)());
                 continue;
             }
             if (src[(state.pos + 1.0_f64) as usize].clone() == "/") {
@@ -351,7 +364,15 @@ fn skip_whitespace(src: String, state: &mut ParseState) -> () {
 fn strip_cdata(xml: String) -> String {
     return {
         let mut __flight_replace = |m: String| -> String {
-            (m.slice)(9.0_f64, ((m.encode_utf16().count() as f64) - 3.0_f64))
+            String::from_utf16_lossy(
+                &(m).encode_utf16()
+                    .skip((9.0_f64) as usize)
+                    .take(
+                        (((m.encode_utf16().count() as f64) - 3.0_f64) as usize)
+                            .saturating_sub((9.0_f64) as usize),
+                    )
+                    .collect::<Vec<u16>>(),
+            )
         };
         (regex::RegexBuilder::new("<!\\[CDATA\\[[\\s\\S]*?]]>")
             .case_insensitive(false)

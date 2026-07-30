@@ -871,7 +871,13 @@ pub fn apply_text_input_restriction(
             return "".to_owned();
         }
         if ((value.encode_utf16().count() as f64) > max_length) {
-            value = (value.slice)(0.0_f64, max_length);
+            value = String::from_utf16_lossy(
+                &(value)
+                    .encode_utf16()
+                    .skip((0.0_f64) as usize)
+                    .take(((max_length) as usize).saturating_sub((0.0_f64) as usize))
+                    .collect::<Vec<u16>>(),
+            );
         }
     }
     return value;
@@ -1097,9 +1103,15 @@ pub fn get_text_input_selection_rectangles(
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:209 (sha256:e702e98a319e54cf229be449d6f3424d6f0a26495eb47a9b4e250379e7ac425e)
 pub fn get_text_input_selection_text(source: &RichText) -> String {
-    return (source.data.text.slice)(
-        get_text_input_selection_begin_index(source),
-        get_text_input_selection_end_index(source),
+    return String::from_utf16_lossy(
+        &((source.data.text).clone())
+            .encode_utf16()
+            .skip((get_text_input_selection_begin_index(source)) as usize)
+            .take(
+                ((get_text_input_selection_end_index(source)) as usize)
+                    .saturating_sub((get_text_input_selection_begin_index(source)) as usize),
+            )
+            .collect::<Vec<u16>>(),
     );
 }
 
@@ -1566,7 +1578,19 @@ pub fn replace_text_input(
         state.selection_index,
         (text_before.encode_utf16().count() as f64),
     );
-    source.data.text = (((text_before.slice)(0.0_f64, start) + value) + (text_before.slice)(end));
+    source.data.text = ((String::from_utf16_lossy(
+        &(text_before)
+            .encode_utf16()
+            .skip((0.0_f64) as usize)
+            .take(((start) as usize).saturating_sub((0.0_f64) as usize))
+            .collect::<Vec<u16>>(),
+    ) + value)
+        + String::from_utf16_lossy(
+            &(text_before)
+                .encode_utf16()
+                .skip((end) as usize)
+                .collect::<Vec<u16>>(),
+        ));
     {
         let __flight_argument_1 = (source.data.default_text_format).clone();
         adjust_text_format_ranges(

@@ -58,7 +58,7 @@ pub fn parse_texture_atlas_libgdx_atlas(text: String, atlas: &mut TextureAtlas) 
             break;
         }
         let maybe_image = (lines[i as usize].clone()).trim().to_owned();
-        if (!(maybe_image).contains(":")) {
+        if (!(maybe_image).contains((":".to_owned()).as_str())) {
             {
                 i += 1.0;
                 i
@@ -66,7 +66,9 @@ pub fn parse_texture_atlas_libgdx_atlas(text: String, atlas: &mut TextureAtlas) 
             while (i < (lines.len() as f64))
                 && ((lines[i as usize].clone()).trim().to_owned() != "")
             {
-                if ((lines[i as usize].clone()).trim().to_owned()).contains(":") {
+                if ((lines[i as usize].clone()).trim().to_owned())
+                    .contains((":".to_owned()).as_str())
+                {
                     {
                         i += 1.0;
                         i
@@ -78,7 +80,7 @@ pub fn parse_texture_atlas_libgdx_atlas(text: String, atlas: &mut TextureAtlas) 
         }
         while (i < (lines.len() as f64)) && ((lines[i as usize].clone()).trim().to_owned() != "") {
             let line = (lines[i as usize].clone()).trim().to_owned();
-            if (!(line).contains(":")) {
+            if (!(line).contains((":".to_owned()).as_str())) {
                 let region_name = line;
                 {
                     i += 1.0;
@@ -96,12 +98,25 @@ pub fn parse_texture_atlas_libgdx_atlas(text: String, atlas: &mut TextureAtlas) 
                 let mut index = (-1.0_f64);
                 while (i < (lines.len() as f64)) {
                     let kv = (lines[i as usize].clone()).trim().to_owned();
-                    if (kv == "") || (!(kv).contains(":")) {
+                    if (kv == "") || (!(kv).contains((":".to_owned()).as_str())) {
                         break;
                     }
                     let colon = (kv.index_of)(":");
-                    let key = ((kv.slice)(0.0_f64, colon).trim)();
-                    let value = ((kv.slice)((colon + 1.0_f64)).trim)();
+                    let key = (String::from_utf16_lossy(
+                        &(kv)
+                            .encode_utf16()
+                            .skip((0.0_f64) as usize)
+                            .take(((colon) as usize).saturating_sub((0.0_f64) as usize))
+                            .collect::<Vec<u16>>(),
+                    )
+                    .trim)();
+                    let value = (String::from_utf16_lossy(
+                        &(kv)
+                            .encode_utf16()
+                            .skip((colon + 1.0_f64) as usize)
+                            .collect::<Vec<u16>>(),
+                    )
+                    .trim)();
                     {
                         i += 1.0;
                         i

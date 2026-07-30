@@ -75,6 +75,14 @@ The candidate graph resolves each package through one deterministic map:
 
 This merges the graphs incrementally as packages graduate without maintaining graph-specific copies. For the current `types`/`easing`/`tween` boundary, `@flighthq/types` must graduate from its partial target to the full already-compiling package before the fully promoted `@flighthq/easing` crate can enter the candidate graph. `@flighthq/tween` and its automatic `@flighthq/signals` dependency then both resolve `flighthq-types` to that promoted crate, while `flighthq-easing` reaches the same path through its own manifest. Cargo sees one `flighthq-types` identity throughout the graph.
 
+Two workspaces are the intended end state, not a temporary omission. The root workspace tests promoted shipping crates, while the generated candidate workspace separately checks the automatic graph. `cargo test --workspace` covers only the root; `npm run ci` must continue to check both graphs through deterministic generation/candidate compilation followed by root-workspace and host tests.
+
+`@flighthq/image` is the deliberate permanent partial exception. Its promoted crate admits the portable image-resource slice needed by surface, while `imageResourceFrom.ts` browser element/load/decode behavior remains host-bound. The automatic candidate and promoted partial crates may therefore keep the same `flighthq-image` package name in their separate workspaces, but the resolution map must never admit both paths to one Cargo graph. This model mitigates cross-graph X1 collisions; it does not claim that duplicate package names disappear globally. Full promotion of image would violate the host boundary and is forbidden unless that policy itself changes.
+
+`@flighthq/surface` can never be fully promoted while it depends on permanently partial image. That is acceptable because surface is cultivated and has no automatic candidate, so there is no competing candidate identity. Its selected generated crate remains the blessed wasm boundary without weakening dependency-closed promotion for automatic packages.
+
+Fully promoting `@flighthq/types` expands the root workspace and blessed wasm dependency from its curated slice to the complete generated type package. That transition is allowed only while `npm run wasm`, the `packages/surface-rs` parity suite, and `cargo test --workspace` all pass. A new dependency that the wasm target cannot satisfy blocks the promotion even if the automatic candidate graph compiles.
+
 ## Generator blocker architecture
 
 The compiler-driven candidate matrix classifies work in dependency order:
@@ -83,6 +91,8 @@ The compiler-driven candidate matrix classifies work in dependency order:
 2. Compile blockers identify Rust type, ownership, representation, or control-flow defects after emission.
 3. Dependency blockers are not patched locally; they automatically re-enter compilation when prerequisites compile.
 4. Host-bound operations lower only through explicit placeholders or cultivated backend interfaces.
+
+Canvas, WebGL, and WebGPU packages carry an explicit `host-backend` disposition while typed backend-capability IR remains outstanding. Existing opaque sources in substrate-neutral packages are grandfathered by a per-package baseline that may decrease but not grow; a baseline overage produces source-scoped emission blockers rather than new `OpaqueHostValue` output.
 
 Structural records are interned by resolved schema at module signatures, preserve imported nested-record provenance, and project across nominal Rust records with single-evaluation ownership. Generic projections use Rust constructor turbofish syntax and never capture unbound type parameters in a module-global record.
 

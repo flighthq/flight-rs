@@ -101,7 +101,7 @@ fn interpolate_snapshots_into(
                 .find(|(key, _)| key == &key)
                 .map(|(_, value)| value)
                 .expect("TypeScript Record key was absent") =
-                if is_snapshot_path_interpolated(((schema).clone()).clone(), path) {
+                if is_snapshot_path_interpolated(((schema).clone()).clone(), (path).clone()) {
                     lerp((a_value).clone(), (b_value).clone(), t)
                 } else {
                     (b_value).clone()
@@ -146,7 +146,7 @@ fn interpolate_snapshots_into(
                 (b_value).clone(),
                 t,
                 ((schema).clone()).clone(),
-                path,
+                (path).clone(),
             );
             continue;
         }

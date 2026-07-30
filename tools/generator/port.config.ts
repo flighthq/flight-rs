@@ -274,48 +274,8 @@ export const portConfig = {
   targets: [
     {
       crate: 'flighthq-types',
-      declarationSelection: {
-        'Entity.ts': {
-          names: ['Entity', 'EntityRuntime'],
-          reason:
-            'Entity-backed promoted records require the native runtime root storage and trait; utility aliases and the symbol key remain deferred with their consuming operations.',
-        },
-      },
       dependencies: {},
       package: '@flighthq/types',
-      sourceSelection: {
-        sources: [
-          'AlphaType.ts',
-          'ColorTransform.ts',
-          'EasingFunction.ts',
-          'EasingSegment.ts',
-          'Entity.ts',
-          'GradientSpread.ts',
-          'ImageFormat.ts',
-          'ImageResource.ts',
-          'ImageResourceCompressed.ts',
-          'PixelFormat.ts',
-          'PixelOrder.ts',
-          'Rectangle.ts',
-          'ScalarRemap.ts',
-          'StepPosition.ts',
-          'Surface.ts',
-          'SurfaceCompositeMode.ts',
-          'SurfaceEdgeMode.ts',
-          'SurfaceFingerprint.ts',
-          'SurfaceHistogram.ts',
-          'SurfaceMismatch.ts',
-          'SurfaceRegion.ts',
-          'SurfaceResizeMode.ts',
-          'TextureContainer.ts',
-          'TextureContainerFormat.ts',
-          'TextureContainerLevel.ts',
-          'TextureContainerSupercompression.ts',
-          'ThresholdOperation.ts',
-        ],
-        reason:
-          'Generated type closure required by the easing canary and surface/image ABI; additional records are added as their consuming packages enter the compiled target set.',
-      },
       sourceExclusions: [],
       typeMappings: {},
     },

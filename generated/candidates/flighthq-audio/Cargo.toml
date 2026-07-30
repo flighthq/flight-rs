@@ -10,4 +10,4 @@ publish = false
 path = "src/lib.rs"
 
 [dependencies]
-flighthq-types = { path = "../flighthq-types" }
+flighthq-types = { path = "../../crates/flighthq-types" }

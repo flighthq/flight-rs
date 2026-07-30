@@ -55,7 +55,6 @@ members = [
   "flighthq-textureatlas-formats",
   "flighthq-tileset",
   "flighthq-timeline",
-  "flighthq-types",
   "flighthq-useragent",
   "flighthq-xml",
 ]

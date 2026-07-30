@@ -195,7 +195,9 @@ pub fn get_texture_atlas_region_sequence(
 ) -> Vec<TextureAtlasRegion> {
     let mut result: Vec<TextureAtlasRegion> = vec![];
     for region in ((atlas.regions).clone()).iter().cloned() {
-        if (((region.name).clone()).is_some()) && (((region.name).clone()).starts_with(prefix)) {
+        if (((region.name).clone()).is_some())
+            && (((region.name).clone()).starts_with(((prefix).clone()).as_str()))
+        {
             result.push(((region).clone()).clone());
         }
     }

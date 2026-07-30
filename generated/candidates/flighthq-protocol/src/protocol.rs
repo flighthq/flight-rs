@@ -81,7 +81,7 @@ pub fn create_protocol_url(parts: &FlightPartialRecord1) -> String {
     } else {
         "".to_owned()
     };
-    let normalized_path = if (path) && (!(path).starts_with("/")) {
+    let normalized_path = if (path) && (!(path).starts_with(("/".to_owned()).as_str())) {
         format!("/{}", path)
     } else {
         (path).clone()
@@ -336,11 +336,23 @@ pub fn parse_protocol_url(url: String) -> Option<ParsedProtocolUrl> {
     if (colon_idx <= 0.0_f64) {
         return None;
     }
-    let scheme = ((url.slice)(0.0_f64, colon_idx).to_lower_case)();
+    let scheme = (String::from_utf16_lossy(
+        &(url)
+            .encode_utf16()
+            .skip((0.0_f64) as usize)
+            .take(((colon_idx) as usize).saturating_sub((0.0_f64) as usize))
+            .collect::<Vec<u16>>(),
+    )
+    .to_lower_case)();
     if (!((*_SCHEME_PATTERN).clone()).is_match(&(scheme))) {
         return None;
     }
-    let mut rest = (url.slice)((colon_idx + 1.0_f64));
+    let mut rest = String::from_utf16_lossy(
+        &(url)
+            .encode_utf16()
+            .skip((colon_idx + 1.0_f64) as usize)
+            .collect::<Vec<u16>>(),
+    );
     let mut host = "";
     if (rest.starts_with)("//") {
         rest = (rest.slice)(2.0_f64);
@@ -392,14 +404,25 @@ pub fn parse_protocol_url(url: String) -> Option<ParsedProtocolUrl> {
                         .expect("TypeScript Record key was absent") = "".to_owned();
                 }
             } else {
-                let k = _safe_decode((pair.slice)(0.0_f64, eq_idx));
+                let k = _safe_decode(String::from_utf16_lossy(
+                    &(pair)
+                        .encode_utf16()
+                        .skip((0.0_f64) as usize)
+                        .take(((eq_idx) as usize).saturating_sub((0.0_f64) as usize))
+                        .collect::<Vec<u16>>(),
+                ));
                 if ((k.encode_utf16().count() as f64) > 0.0_f64) {
                     query
                         .iter()
                         .find(|(key, _)| key == &(k).clone())
                         .map(|(_, value)| value)
                         .expect("TypeScript Record key was absent") =
-                        _safe_decode((pair.slice)((eq_idx + 1.0_f64)));
+                        _safe_decode(String::from_utf16_lossy(
+                            &(pair)
+                                .encode_utf16()
+                                .skip((eq_idx + 1.0_f64) as usize)
+                                .collect::<Vec<u16>>(),
+                        ));
                 }
             }
         }

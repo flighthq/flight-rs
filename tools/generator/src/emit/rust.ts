@@ -1742,6 +1742,15 @@ function emitCall(
   expectedType?: IrType,
 ): string {
   if (expression.optional) return emitOptionalCall(expression, context);
+  const resolvedPromise = promiseResolveType(expression, context);
+  if (resolvedPromise) {
+    const emittedPromise = promiseType(expectedType, context) ?? resolvedPromise;
+    const value = expression.arguments[0];
+    const observed = value
+      ? `let __flight_value = ${emitExpression(value, context, resolvedPromise.arguments[0])}; let _ = &__flight_value; `
+      : '';
+    return `{ ${observed}crate::Promise::<${emitType(emittedPromise.arguments[0] ?? primitive('Void'), context)}>::default() }`;
+  }
   const promiseCall = emitPromiseCall(expression, context);
   if (promiseCall) return promiseCall;
   const portableGlobal =
@@ -2044,7 +2053,17 @@ function emitCall(
       if (method === 'startsWith' || method === 'endsWith' || method === 'includes') {
         if (!argument) throw new RustEmissionError(`String.${method} requires a search argument`);
         const rustMethod = method === 'startsWith' ? 'starts_with' : method === 'endsWith' ? 'ends_with' : 'contains';
-        return `${parenthesize(owner)}.${rustMethod}(${emitExpression(argument, context)})`;
+        return `${parenthesize(owner)}.${rustMethod}(${parenthesize(emitExpression(argument, context, primitive('String')))}.as_str())`;
+      }
+      if (method === 'slice') {
+        const start = expression.arguments[0] ?? ({ kind: 'literal', value: 0 } as const);
+        const end = expression.arguments[1];
+        const units = `(${parenthesize(owner)}).encode_utf16()`;
+        const startIndex = `${parenthesize(emitExpression(start, context, primitive('Float')))} as usize`;
+        const collected = end
+          ? `${units}.skip(${startIndex}).take((${parenthesize(emitExpression(end, context, primitive('Float')))} as usize).saturating_sub(${startIndex})).collect::<Vec<u16>>()`
+          : `${units}.skip(${startIndex}).collect::<Vec<u16>>()`;
+        return `String::from_utf16_lossy(&${collected})`;
       }
       if (method === 'toLowerCase') return `${parenthesize(owner)}.to_lowercase()`;
       if (method === 'toUpperCase') return `${parenthesize(owner)}.to_uppercase()`;
@@ -2406,6 +2425,28 @@ function emitPromiseCall(
 function promiseType(type: IrType | undefined, context: EmitContext): Extract<IrType, { kind: 'named' }> | undefined {
   const resolved = resolveSemanticType(type?.kind === 'nullable' ? type.inner : type, context);
   return resolved?.kind === 'named' && resolved.name === 'Promise' ? resolved : undefined;
+}
+
+function promiseResolveType(
+  expression: Extract<IrExpression, { kind: 'call' }>,
+  context: EmitContext,
+): Extract<IrType, { kind: 'named' }> | undefined {
+  if (
+    expression.callee.kind !== 'property' ||
+    expression.callee.name !== 'resolve' ||
+    runtimeGlobalType(expression.callee.object) !== 'Promise'
+  ) {
+    return undefined;
+  }
+  return {
+    arguments: [
+      expression.arguments[0]
+        ? (inferIrExpressionType(expression.arguments[0], context) ?? { kind: 'dynamic' })
+        : primitive('Void'),
+    ],
+    kind: 'named',
+    name: 'Promise',
+  };
 }
 
 function emitLockedCallbackCall(callback: string, arguments_: readonly string[]): string {
@@ -6862,6 +6903,8 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
       if (typeof expression.value === 'boolean') return primitive('Bool');
       if (typeof expression.value === 'string') return primitive('String');
       return undefined;
+    case 'template':
+      return primitive('String');
     case 'object':
       return synthesizeObjectLiteralType(expression, context);
     case 'array':
@@ -6928,6 +6971,8 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
       if (portableGlobal === 'isNaN') {
         return primitive('Bool');
       }
+      const resolvedPromise = promiseResolveType(expression, context);
+      if (resolvedPromise) return resolvedPromise;
       if (
         expression.callee.kind === 'property' &&
         (expression.callee.name === 'then' || expression.callee.name === 'catch')

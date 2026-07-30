@@ -330,7 +330,7 @@ pub fn get_wgpu_pipeline(
         .unwrap()
         .pipeline_cache
         .iter()
-        .find(|(key, _)| key == &key)
+        .find(|(key, _)| key == &(key).clone())
         .map(|(_, value)| value.clone());
     if (cached).is_some() {
         return ((cached.as_ref().unwrap()).clone()).clone();
@@ -362,7 +362,7 @@ pub fn get_wgpu_pipeline(
     );
     let pipeline = crate::host_value::<()>("host.createRenderPipeline");
     {
-        let __flight_key = key;
+        let __flight_key = (key).clone();
         let __flight_value = (pipeline).clone();
         if let Some((_, value)) = runtime
             .inner

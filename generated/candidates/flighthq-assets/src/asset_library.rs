@@ -43,7 +43,11 @@ pub fn acquire_asset<T: Clone>(library: &mut AssetLibrary, id: String) -> crate:
             existing.as_mut().unwrap().refcount
         };
         if existing.as_mut().unwrap().resident {
-            return crate::host_value::<crate::Promise<T>>("host.resolve");
+            return {
+                let __flight_value = (existing.as_mut().unwrap().value).clone();
+                let _ = &__flight_value;
+                crate::Promise::<T>::default()
+            };
         }
         return ((existing.as_mut().unwrap().load_promise).clone()).unwrap();
     }

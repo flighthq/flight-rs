@@ -18,7 +18,7 @@ flighthq-lifecycle = { path = "../../generated/candidates/flighthq-lifecycle" }
 flighthq-platform = { path = "../../generated/candidates/flighthq-platform" }
 flighthq-power = { path = "../../generated/candidates/flighthq-power" }
 flighthq-screen = { path = "../../generated/candidates/flighthq-screen" }
-flighthq-types = { path = "../../generated/candidates/flighthq-types" }
+flighthq-types = { path = "../../generated/crates/flighthq-types" }
 
 [workspace]
 resolver = "3"

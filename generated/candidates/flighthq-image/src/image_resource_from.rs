@@ -76,7 +76,9 @@ pub fn create_image_resource_from_image_element(img: crate::OpaqueHostValue) -> 
 
 // Source: upstream/packages/image/src/imageResourceFrom.ts:61 (sha256:753933c52ef5581f81af9094c64b3c54e8a40c7d10d7e4b8169a15e7df3cdfc5)
 pub fn is_image_resource_same_origin(url: String) -> bool {
-    if ((url).starts_with("data:")) || ((url).starts_with("blob:")) {
+    if ((url).starts_with(("data:".to_owned()).as_str()))
+        || ((url).starts_with(("blob:".to_owned()).as_str()))
+    {
         return true;
     }
     let __flight_try_return: Option<bool> =

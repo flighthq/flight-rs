@@ -11,6 +11,6 @@ path = "src/lib.rs"
 
 [dependencies]
 flighthq-textureatlas = { path = "../flighthq-textureatlas" }
-flighthq-types = { path = "../flighthq-types" }
+flighthq-types = { path = "../../crates/flighthq-types" }
 flighthq-xml = { path = "../flighthq-xml" }
 regex = "1"

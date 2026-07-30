@@ -1,10 +1,12 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 
 import { portConfig } from '../../tools/generator/port.config.ts';
 import {
   formatRust,
   normalizeDiagnosticSource,
+  validateCandidateCrateGraph,
+  type CandidateCrateNode,
   type RustGenerationReport,
 } from '../../tools/generator/src/emit/core.ts';
 
@@ -20,6 +22,57 @@ describe('generator prerequisites', () => {
       if (path === undefined) delete process.env.PATH;
       else process.env.PATH = path;
     }
+  });
+});
+
+describe('candidate crate resolution', () => {
+  const candidateTypes = {
+    crate: 'flighthq-types',
+    dependencies: [],
+    fullyPromotedTarget: false,
+    package: '@flighthq/types',
+  } satisfies CandidateCrateNode;
+
+  it('rejects a fully promoted package whose dependency closure is not fully promoted', () => {
+    expect(() =>
+      validateCandidateCrateGraph([
+        candidateTypes,
+        {
+          crate: 'flighthq-easing',
+          dependencies: [{ crate: 'flighthq-types', package: '@flighthq/types' }],
+          fullyPromotedTarget: true,
+          package: '@flighthq/easing',
+        },
+      ]),
+    ).toThrow('Fully promoted package @flighthq/easing depends on non-fully-promoted package @flighthq/types');
+  });
+
+  it('rejects duplicate Cargo identities and dependency edges that disagree with the resolution map', () => {
+    expect(() =>
+      validateCandidateCrateGraph([
+        candidateTypes,
+        {
+          crate: 'flighthq-types',
+          dependencies: [],
+          fullyPromotedTarget: false,
+          package: '@flighthq/other-types',
+        },
+      ]),
+    ).toThrow('Duplicate candidate Cargo package identity flighthq-types: @flighthq/types and @flighthq/other-types');
+
+    expect(() =>
+      validateCandidateCrateGraph([
+        candidateTypes,
+        {
+          crate: 'flighthq-tween',
+          dependencies: [{ crate: 'flighthq-renamed-types', package: '@flighthq/types' }],
+          fullyPromotedTarget: false,
+          package: '@flighthq/tween',
+        },
+      ]),
+    ).toThrow(
+      'Candidate dependency edge @flighthq/tween -> @flighthq/types names flighthq-renamed-types, but the resolution map selects flighthq-types',
+    );
   });
 });
 
@@ -81,6 +134,36 @@ describe('compiler diagnostic source paths', () => {
           blocker.reason.includes('requires OpaqueHostValue after static type recovery'),
       ),
     ).toBe(true);
+  });
+
+  it('resolves dependency-closed promotions through one Cargo identity', () => {
+    const report = JSON.parse(
+      readFileSync(path.join(process.cwd(), 'reports/generation.json'), 'utf8'),
+    ) as RustGenerationReport;
+    const types = report.automaticPackages.find((item) => item.package === '@flighthq/types');
+    const easing = report.automaticPackages.find((item) => item.package === '@flighthq/easing');
+    const tween = report.automaticPackages.find((item) => item.package === '@flighthq/tween');
+
+    expect(types?.fullyPromotedTarget).toBe(true);
+    expect(types?.candidate.status).toBe('promoted');
+    expect(easing?.fullyPromotedTarget).toBe(true);
+    expect(easing?.requiredDependencies).toContainEqual({
+      crate: 'flighthq-types',
+      package: '@flighthq/types',
+    });
+    expect(tween?.candidate.status).not.toBe('dependency-blocked');
+    expect(tween?.requiredDependencies).toContainEqual({
+      crate: 'flighthq-types',
+      package: '@flighthq/types',
+    });
+    expect(report.summary.candidateCompiled).toBeGreaterThanOrEqual(28);
+    expect(existsSync(path.join(process.cwd(), 'generated/candidates/flighthq-types'))).toBe(false);
+    expect(
+      readFileSync(path.join(process.cwd(), 'generated/candidates/flighthq-signals/Cargo.toml'), 'utf8'),
+    ).toContain('flighthq-types = { path = "../../crates/flighthq-types" }');
+    expect(readFileSync(path.join(process.cwd(), 'crates/flighthq-host-winit/Cargo.toml'), 'utf8')).toContain(
+      'flighthq-types = { path = "../../generated/crates/flighthq-types" }',
+    );
   });
 });
 

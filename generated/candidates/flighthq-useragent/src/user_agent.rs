@@ -49,12 +49,14 @@ pub fn detect_endianness() -> PlatformEndianness {
 pub fn parse_user_agent_arch(ua: String, uad_platform: Option<String>) -> String {
     if (uad_platform).is_some() {
         let p = (uad_platform.as_ref().unwrap()).to_lowercase();
-        if (p).contains("arm") {
+        if (p).contains(("arm".to_owned()).as_str()) {
             return "arm64".to_owned();
         }
-        if (((((p).contains("x86")) || ((p).contains("windows"))) || ((p).contains("linux")))
-            || ((p).contains("mac")))
-            || ((p).contains("chrome"))
+        if (((((p).contains(("x86".to_owned()).as_str()))
+            || ((p).contains(("windows".to_owned()).as_str())))
+            || ((p).contains(("linux".to_owned()).as_str())))
+            || ((p).contains(("mac".to_owned()).as_str())))
+            || ((p).contains(("chrome".to_owned()).as_str()))
         {
             return "x64".to_owned();
         }

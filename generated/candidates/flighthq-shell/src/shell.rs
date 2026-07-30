@@ -161,7 +161,11 @@ pub fn open_shell_external_url(
     options: Option<ShellOpenExternalOptions>,
 ) -> crate::Promise<bool> {
     if (!is_shell_url_allowed((url).clone())) {
-        return crate::host_value::<crate::Promise<bool>>("host.resolve");
+        return {
+            let __flight_value = false;
+            let _ = &__flight_value;
+            crate::Promise::<bool>::default()
+        };
     }
     return {
         let __flight_callback = (get_shell_backend().open_external).clone();

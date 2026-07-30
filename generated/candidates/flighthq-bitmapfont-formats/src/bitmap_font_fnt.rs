@@ -168,9 +168,20 @@ fn parse_bitmap_font_fnt_record(text: String) -> Option<BitmapFontRecord> {
         let tag = if (space_at < 0.0_f64) {
             (line).clone()
         } else {
-            (line.slice)(0.0_f64, space_at)
+            String::from_utf16_lossy(
+                &(line)
+                    .encode_utf16()
+                    .skip((0.0_f64) as usize)
+                    .take(((space_at) as usize).saturating_sub((0.0_f64) as usize))
+                    .collect::<Vec<u16>>(),
+            )
         };
-        let fields = parse_fnt_fields((line.slice)((tag.encode_utf16().count() as f64)));
+        let fields = parse_fnt_fields(String::from_utf16_lossy(
+            &(line)
+                .encode_utf16()
+                .skip((tag.encode_utf16().count() as f64) as usize)
+                .collect::<Vec<u16>>(),
+        ));
         if (tag == "common") {
             line_height = read_fnt_number(Some(
                 (fields

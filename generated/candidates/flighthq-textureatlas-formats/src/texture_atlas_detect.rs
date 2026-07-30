@@ -78,10 +78,12 @@ pub fn detect_texture_atlas_format(content: String) -> Option<TextureAtlasFormat
             return None;
         }
         let app = (read_meta_app(((obj.meta).clone()).unwrap())).to_lowercase();
-        if (app).contains("aseprite") {
+        if (app).contains(("aseprite".to_owned()).as_str()) {
             return Some((texture_atlas_format_kind_aseprite_constant).to_owned());
         }
-        if ((app).contains("texturepacker")) || ((app).contains("codeandweb")) {
+        if ((app).contains(("texturepacker".to_owned()).as_str()))
+            || ((app).contains(("codeandweb".to_owned()).as_str()))
+        {
             return Some((texture_atlas_format_kind_texture_packer_constant).to_owned());
         }
         return if has_frame_duration(((obj.frames).clone()).unwrap()) {

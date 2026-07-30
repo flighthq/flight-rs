@@ -629,7 +629,7 @@ pub fn create_icosphere_mesh_geometry(
             };
             let cached = (*midpoint_cache.lock().unwrap())
                 .iter()
-                .find(|(key, _)| key == &key)
+                .find(|(key, _)| key == &(key).clone())
                 .map(|(_, value)| value.clone());
             if (cached).is_some() {
                 return *(cached.as_ref().unwrap());
@@ -646,7 +646,7 @@ pub fn create_icosphere_mesh_geometry(
             let idx = ((*verts.lock().unwrap()).len() as f64);
             (*verts.lock().unwrap()).push(vec![mx, my, mz]);
             {
-                let __flight_key = key;
+                let __flight_key = (key).clone();
                 let __flight_value = idx;
                 if let Some((_, value)) = (*midpoint_cache.lock().unwrap())
                     .iter_mut()
@@ -867,7 +867,7 @@ pub fn create_polyhedron_mesh_geometry(
                 };
                 let hit = (*mid_cache.lock().unwrap())
                     .iter()
-                    .find(|(key, _)| key == &key)
+                    .find(|(key, _)| key == &(key).clone())
                     .map(|(_, value)| value.clone());
                 if (hit).is_some() {
                     return *(hit.as_ref().unwrap());
@@ -887,7 +887,7 @@ pub fn create_polyhedron_mesh_geometry(
                 let idx = ((*verts.lock().unwrap()).len() as f64);
                 (*verts.lock().unwrap()).push(vec![mx, my, mz]);
                 {
-                    let __flight_key = key;
+                    let __flight_key = (key).clone();
                     let __flight_value = idx;
                     if let Some((_, value)) = (*mid_cache.lock().unwrap())
                         .iter_mut()

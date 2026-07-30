@@ -912,7 +912,7 @@ pub fn exit_application_fullscreen() -> crate::Promise<crate::OpaqueHostValue> {
 // Source: upstream/packages/application/src/window.ts:431 (sha256:5b581ba0ad01e7c4010b5b4ec3dd8ee53274ae7b8af731161a82c85904e3d70d)
 pub fn exit_application_pointer_lock() -> crate::Promise<crate::OpaqueHostValue> {
     {
-        return crate::host_value::<crate::Promise<crate::OpaqueHostValue>>("host.resolve");
+        return { crate::Promise::<crate::OpaqueHostValue>::default() };
     }
 }
 
@@ -977,7 +977,7 @@ pub fn hide_window(win: &mut ApplicationWindow) -> () {
 pub fn lock_application_pointer(
     element: crate::OpaqueHostValue,
 ) -> crate::Promise<crate::OpaqueHostValue> {
-    return crate::host_value::<crate::Promise<crate::OpaqueHostValue>>("host.resolve");
+    return { crate::Promise::<crate::OpaqueHostValue>::default() };
 }
 
 // Source: upstream/packages/application/src/window.ts:488 (sha256:07aa885b72b80baaaf97f8cdfebdb6df04b3b387e9c8cf7a0e2826faed660f7f)

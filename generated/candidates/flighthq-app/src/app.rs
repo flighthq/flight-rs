@@ -554,19 +554,23 @@ pub fn create_web_app_backend() -> AppBackend {
                       -> std::sync::Arc<
                     std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>,
                 > {
-                    let id = (crate::host_value::<()>("host.resolve").then)(std::sync::Arc::new(
-                        std::sync::Mutex::new(Box::new({
-                            let listener = listener.clone();
-                            move || -> f64 {
-                                {
-                                    let __flight_callback = (listener).clone();
-                                    let __flight_result = __flight_callback.lock().unwrap()();
-                                    __flight_result
+                    let id = {
+                        let __flight_promise = { crate::Promise::<()>::default() };
+                        let __flight_callback =
+                            std::sync::Arc::new(std::sync::Mutex::new(Box::new({
+                                let listener = listener.clone();
+                                move |__flight_unused_0: ()| -> () {
+                                    {
+                                        let __flight_callback = (listener).clone();
+                                        let __flight_result = __flight_callback.lock().unwrap()();
+                                        __flight_result
+                                    }
                                 }
-                            }
-                        })
-                            as Box<dyn FnMut() -> f64 + Send + 'static>),
-                    ));
+                            })
+                                as Box<dyn FnMut(()) -> () + Send + 'static>));
+                        let _ = (&__flight_promise, &__flight_callback);
+                        crate::Promise::<()>::default()
+                    };
                     {
                         id;
                         ()
@@ -686,8 +690,13 @@ pub fn get_app_command_line_switch(name: String) -> Option<String> {
         if (arg == format!("--{}", name)) {
             return Some("".to_owned());
         }
-        if (arg).starts_with(prefix) {
-            return Some((arg.slice)(prefix.length));
+        if (arg).starts_with(((prefix).clone()).as_str()) {
+            return Some(String::from_utf16_lossy(
+                &(arg)
+                    .encode_utf16()
+                    .skip((prefix.encode_utf16().count() as f64) as usize)
+                    .collect::<Vec<u16>>(),
+            ));
         }
     }
     return None;

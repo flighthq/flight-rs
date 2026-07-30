@@ -9,7 +9,7 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | Emittable packages | 69 |
 | Blocked packages | 56 |
 | Compiled candidates | 28 |
-| Compile-blocked candidates | 24 |
+| Compile-blocked candidates | 23 |
 | Dependency-blocked candidates | 16 |
 | Cultivated packages | 1 |
 | Host-bound packages | 4 |
@@ -21,7 +21,7 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | `@flighthq/accessibility` | generated | emittable | compile-blocked | 2/2 | 8/8 | 0 | 1/1 | 1 | 0 | no |
 | `@flighthq/adjustments` | generated | emittable | compiled | 19/19 | 49/49 | 0 | 6/25 | 0 | 0 | no |
 | `@flighthq/animation` | generated | emittable | compile-blocked | 4/4 | 18/18 | 0 | 3/7 | 1 | 0 | no |
-| `@flighthq/app` | generated | emittable | compile-blocked | 2/2 | 42/42 | 0 | 4/4 | 1 | 0 | no |
+| `@flighthq/app` | generated | emittable | compiled | 2/2 | 42/42 | 0 | 4/4 | 1 | 0 | no |
 | `@flighthq/application` | generated | emittable | compiled | 3/3 | 83/83 | 0 | 3/3 | 2 | 0 | no |
 | `@flighthq/assets` | generated | emittable | compile-blocked | 2/2 | 10/10 | 0 | 1/1 | 1 | 0 | no |
 | `@flighthq/audio` | generated | emittable | compile-blocked | 4/4 | 20/20 | 0 | 2/2 | 2 | 0 | no |
@@ -142,7 +142,7 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | `@flighthq/tool-capture` | excluded | excluded | not-applicable | 0/0 | 0/57 | 57 | 0/0 | 0 | 0 | no |
 | `@flighthq/tray` | generated | blocked | source-blocked | 1/2 | 23/23 | 0 | 3/3 | 0 | 1 | no |
 | `@flighthq/tween` | generated | blocked | source-blocked | 6/9 | 36/35 | 0 | 2/2 | 0 | 3 | no |
-| `@flighthq/types` | generated | emittable | compiled | 590/590 | 1261/1261 | 0 | 129/129 | 76 | 0 | partial |
+| `@flighthq/types` | generated | emittable | promoted | 590/590 | 1261/1261 | 0 | 129/129 | 76 | 0 | full |
 | `@flighthq/updater` | generated | blocked | source-blocked | 1/2 | 23/23 | 0 | 2/2 | 0 | 1 | no |
 | `@flighthq/useragent` | generated | emittable | compiled | 3/3 | 12/12 | 0 | 3/6 | 1 | 0 | no |
 | `@flighthq/velocity` | generated | emittable | dependency-blocked | 4/4 | 20/20 | 0 | 3/3 | 2 | 0 | no |
@@ -677,14 +677,6 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
 - **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
 
-### `@flighthq/app`
-
-- **E0609** `generated/candidates/flighthq-app/src/app.rs`: no field `then` on type `()`
-- **E0308** `generated/candidates/flighthq-app/src/app.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-app/src/app.rs`: the trait bound `std::string::String: Pattern` is not satisfied
-- **E0609** `generated/candidates/flighthq-app/src/app.rs`: no field `slice` on type `std::string::String`
-- **E0609** `generated/candidates/flighthq-app/src/app.rs`: no field `length` on type `std::string::String`
-
 ### `@flighthq/assets`
 
 - **E0425** `generated/candidates/flighthq-assets/src/asset_library.rs`: cannot find value `runtime` in this scope
@@ -865,6 +857,7 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **E0608** `generated/candidates/flighthq-effects/src/blend_mode_math.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
 - **E0608** `generated/candidates/flighthq-effects/src/composite_operator_math.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
 - **E0608** `generated/candidates/flighthq-effects/src/composite_operator_math.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0308** `generated/candidates/flighthq-effects/src/custom_shader_effect.rs`: mismatched types
 - **E0308** `generated/candidates/flighthq-effects/src/linear_sampled_gaussian.rs`: mismatched types
 - **E0608** `generated/candidates/flighthq-effects/src/linear_sampled_gaussian.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
 - **E0608** `generated/candidates/flighthq-effects/src/linear_sampled_gaussian.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
@@ -900,7 +893,6 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
 - **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
 - **E0070** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: invalid left-hand side of assignment
-- **E0308** `generated/candidates/flighthq-effects/src/custom_shader_effect.rs`: mismatched types
 
 ### `@flighthq/font`
 
@@ -1135,18 +1127,26 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry.rs`: mismatched types
 - **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry.rs`: mismatched types
 - **E0605** `generated/candidates/flighthq-mesh/src/mesh_geometry.rs`: non-primitive cast: `Vec<u32>` as `u32`
+- **E0609** `generated/candidates/flighthq-mesh/src/mesh_geometry.rs`: no field `webgl_data` on type `std::sync::MutexGuard<'_, flighthq_types::EntityRuntimeStorage>`
+- **E0609** `generated/candidates/flighthq-mesh/src/mesh_geometry.rs`: no field `webgpu_data` on type `std::sync::MutexGuard<'_, flighthq_types::EntityRuntimeStorage>`
+- **E0609** `generated/candidates/flighthq-mesh/src/mesh_geometry.rs`: no field `morph_bind_pose` on type `std::sync::MutexGuard<'_, flighthq_types::EntityRuntimeStorage>`
+- **E0609** `generated/candidates/flighthq-mesh/src/mesh_geometry.rs`: no field `skin_bind_pose` on type `std::sync::MutexGuard<'_, flighthq_types::EntityRuntimeStorage>`
+- **E0609** `generated/candidates/flighthq-mesh/src/mesh_geometry.rs`: no field `morph_bind_pose` on type `std::sync::MutexGuard<'_, flighthq_types::EntityRuntimeStorage>`
+- **E0609** `generated/candidates/flighthq-mesh/src/mesh_geometry.rs`: no field `skin_bind_pose` on type `std::sync::MutexGuard<'_, flighthq_types::EntityRuntimeStorage>`
+- **E0609** `generated/candidates/flighthq-mesh/src/mesh_geometry.rs`: no field `morph_bind_pose` on type `std::sync::MutexGuard<'_, flighthq_types::EntityRuntimeStorage>`
+- **E0609** `generated/candidates/flighthq-mesh/src/mesh_geometry.rs`: no field `skin_bind_pose` on type `std::sync::MutexGuard<'_, flighthq_types::EntityRuntimeStorage>`
+- **E0609** `generated/candidates/flighthq-mesh/src/mesh_geometry.rs`: no field `webgl_data` on type `std::sync::MutexGuard<'_, flighthq_types::EntityRuntimeStorage>`
+- **E0609** `generated/candidates/flighthq-mesh/src/mesh_geometry.rs`: no field `webgpu_data` on type `std::sync::MutexGuard<'_, flighthq_types::EntityRuntimeStorage>`
 - **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry.rs`: mismatched types
 - **E0615** `generated/candidates/flighthq-mesh/src/mesh_geometry_attributes.rs`: attempted to take value of method `starts_with` on type `std::string::String`
 - **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs`: arguments to this function are incorrect
 - **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs`: arguments to this function are incorrect
 - **E0282** `generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs`: type annotations needed
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs`: can't compare `std::string::String` with `&std::string::String`
 - **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs`: arguments to this function are incorrect
 - **E0308** `<rustc>/library/alloc/src/macros.rs`: mismatched types
 - **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs`: a value of type `Vec<Vec<f64>>` cannot be built from an iterator over elements of type `OpaqueHostValue`
 - **E0308** `<rustc>/library/alloc/src/macros.rs`: mismatched types
 - **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs`: a value of type `Vec<Vec<f64>>` cannot be built from an iterator over elements of type `OpaqueHostValue`
-- **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs`: can't compare `std::string::String` with `&std::string::String`
 - **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs`: arguments to this function are incorrect
 - **E0308** `generated/candidates/flighthq-mesh/src/mesh_geometry_builders.rs`: mismatched types
 - **E0277** `generated/candidates/flighthq-mesh/src/mesh_geometry_compute.rs`: cannot multiply `u32` by `f64`
@@ -1395,7 +1395,6 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: the type `str` cannot be indexed by `usize`
 - **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: the type `str` cannot be indexed by `usize`
 - **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: the type `str` cannot be indexed by `usize`
-- **E0609** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: no field `slice` on type `std::string::String`
 - **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: the type `str` cannot be indexed by `usize`
 - **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: the type `str` cannot be indexed by `usize`
 - **E0277** `generated/candidates/flighthq-path-formats/src/svg_path_data.rs`: the type `str` cannot be indexed by `usize`
@@ -1455,12 +1454,19 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **E0308** `<rustc>/library/alloc/src/macros.rs`: mismatched types
 - **E0277** `generated/candidates/flighthq-protocol/src/protocol.rs`: can't compare `OpaqueHostValue` with `std::string::String`
 - **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `index_of` on type `std::string::String`
+- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `to_lower_case` on type `std::string::String`
+- **E0615** `generated/candidates/flighthq-protocol/src/protocol.rs`: attempted to take value of method `starts_with` on type `std::string::String`
+- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `slice` on type `std::string::String`
+- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `index_of` on type `std::string::String`
+- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `index_of` on type `std::string::String`
+- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `length` on type `std::string::String`
+- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `slice` on type `std::string::String`
+- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `slice` on type `std::string::String`
+- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `index_of` on type `std::string::String`
 - **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `slice` on type `std::string::String`
 - **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `slice` on type `std::string::String`
 - **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `index_of` on type `std::string::String`
 - **E0070** `generated/candidates/flighthq-protocol/src/protocol.rs`: invalid left-hand side of assignment
-- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `slice` on type `std::string::String`
-- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `slice` on type `std::string::String`
 - **E0070** `generated/candidates/flighthq-protocol/src/protocol.rs`: invalid left-hand side of assignment
 - **E0308** `generated/candidates/flighthq-protocol/src/protocol.rs`: mismatched types
 
@@ -1625,7 +1631,7 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
 - **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `index_of` on type `String`
 - **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
-- **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `slice` on type `String`
+- **E0600** `generated/candidates/flighthq-xml/src/xml_parse.rs`: cannot apply unary operator `!` to type `String`
 - **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
 - **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
 - **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
@@ -1634,13 +1640,12 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
 - **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
 - **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
-- **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `slice` on type `String`
+- **E0615** `generated/candidates/flighthq-xml/src/xml_parse.rs`: attempted to take value of method `trim` on type `String`
 - **E0368** `generated/candidates/flighthq-xml/src/xml_parse.rs`: binary assignment operation `+=` cannot be applied to type `&str`
 - **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
 - **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
 - **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
 - **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
-- **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `slice` on type `String`
 - **E0599** `generated/candidates/flighthq-xml/src/xml_query.rs`: no method named `is_some` found for struct `String` in the current scope
 - **E0599** `generated/candidates/flighthq-xml/src/xml_query.rs`: no method named `is_none` found for struct `String` in the current scope
 - **E0425** `generated/candidates/flighthq-xml/src/xml_query.rs`: cannot find function `number` in this scope

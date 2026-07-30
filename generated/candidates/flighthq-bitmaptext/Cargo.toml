@@ -17,4 +17,4 @@ flighthq-materials = { path = "../flighthq-materials" }
 flighthq-node = { path = "../flighthq-node" }
 flighthq-sprite = { path = "../flighthq-sprite" }
 flighthq-textureatlas = { path = "../flighthq-textureatlas" }
-flighthq-types = { path = "../flighthq-types" }
+flighthq-types = { path = "../../crates/flighthq-types" }

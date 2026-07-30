@@ -145,7 +145,7 @@ pub fn get_wgpu_sampler(
         .unwrap()
         .sampler_cache
         .iter()
-        .find(|(key, _)| key == &key)
+        .find(|(key, _)| key == &(key).clone())
         .map(|(_, value)| value.clone());
     if (sampler).is_none() {
         let mut descriptor = GetWgpuSamplerSynthesizedRecord2686443658 {
@@ -165,7 +165,7 @@ pub fn get_wgpu_sampler(
             "host.createSampler",
         ));
         {
-            let __flight_key = key;
+            let __flight_key = (key).clone();
             let __flight_value = (sampler).clone().unwrap();
             if let Some((_, value)) = runtime
                 .inner

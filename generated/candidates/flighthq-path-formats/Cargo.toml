@@ -11,4 +11,4 @@ path = "src/lib.rs"
 
 [dependencies]
 flighthq-path = { path = "../flighthq-path" }
-flighthq-types = { path = "../flighthq-types" }
+flighthq-types = { path = "../../crates/flighthq-types" }

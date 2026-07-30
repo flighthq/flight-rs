@@ -431,6 +431,17 @@ describe('Rust emission', () => {
           await Promise.resolve();
           return true;
         }
+        export function nextMicrotask(listener: () => void): void {
+          const pending = Promise.resolve().then(() => listener());
+          void pending;
+        }
+        export function inertResult(): Promise<unknown> {
+          return Promise.resolve();
+        }
+        export function commandLineValue(arg: string, name: string): string | null {
+          const prefix = \`--\${name}=\`;
+          return arg.startsWith(prefix) ? arg.slice(prefix.length) : null;
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -446,6 +457,10 @@ describe('Rust emission', () => {
     expect(lowered.diagnostics).toEqual([]);
     expect(output).toContain('move |manager: Manager| -> ()');
     expect(output).toContain('crate::Promise::<()>::default()');
+    expect(output).toContain('pub fn inert_result() -> crate::Promise<crate::OpaqueHostValue>');
+    expect(output).toContain('String::from_utf16_lossy');
+    expect(output).toContain('.starts_with(');
+    expect(output).toContain('.as_str())');
     expect(output).toContain('pub fn request_manager() -> crate::Promise<bool> {\n  Default::default()');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
@@ -456,6 +471,7 @@ describe('Rust emission', () => {
         'pub struct Promise<T> { marker: std::marker::PhantomData<fn() -> T> }',
         'impl<T> Clone for Promise<T> { fn clone(&self) -> Self { Self { marker: std::marker::PhantomData } } }',
         'impl<T> Default for Promise<T> { fn default() -> Self { Self { marker: std::marker::PhantomData } } }',
+        '#[derive(Clone, Default)] pub struct OpaqueHostValue;',
         'mod generated;',
         '',
       ].join('\n'),

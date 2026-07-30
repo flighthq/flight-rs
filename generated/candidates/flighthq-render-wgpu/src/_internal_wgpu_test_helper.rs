@@ -690,29 +690,39 @@ impl PartialEq for MakeAdapterRecord3 {
 }
 
 #[derive(Clone)]
-struct MakeAdapterSynthesizedRecord3536430922 {
+struct MakeAdapterSynthesizedRecord3546639382 {
     __flight_identity: std::sync::Arc<()>,
     limits: MakeAdapterRecord3,
-    request_device: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> f64 + Send + 'static>>>,
+    request_device: std::sync::Arc<
+        std::sync::Mutex<
+            Box<dyn FnMut() -> crate::Promise<crate::OpaqueHostValue> + Send + 'static>,
+        >,
+    >,
 }
-impl PartialEq for MakeAdapterSynthesizedRecord3536430922 {
+impl PartialEq for MakeAdapterSynthesizedRecord3546639382 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 fn make_adapter() -> crate::OpaqueHostValue {
-    return MakeAdapterSynthesizedRecord3536430922 {
+    return MakeAdapterSynthesizedRecord3546639382 {
         __flight_identity: std::sync::Arc::new(()),
         limits: MakeAdapterRecord3 {
             __flight_identity: std::sync::Arc::new(()),
             max_bind_groups: 8.0_f64,
             min_uniform_buffer_offset_alignment: 256.0_f64,
         },
-        request_device: std::sync::Arc::new(std::sync::Mutex::new(Box::new(move || -> f64 {
-            crate::host_value::<f64>("host.resolve")
-        })
-            as Box<dyn FnMut() -> f64 + Send + 'static>)),
+        request_device: std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move || -> crate::Promise<crate::OpaqueHostValue> {
+                {
+                    let __flight_value = make_device();
+                    let _ = &__flight_value;
+                    crate::Promise::<crate::OpaqueHostValue>::default()
+                }
+            },
+        )
+            as Box<dyn FnMut() -> crate::Promise<crate::OpaqueHostValue> + Send + 'static>)),
     };
 }
 
@@ -757,14 +767,18 @@ impl PartialEq for InstallWgpuMockRecord5 {
 }
 
 #[derive(Clone)]
-struct InstallWgpuMockSynthesizedRecord744054393 {
+struct InstallWgpuMockSynthesizedRecord1664981611 {
     __flight_identity: std::sync::Arc<()>,
     get_preferred_canvas_format: std::sync::Arc<
         std::sync::Mutex<Box<dyn FnMut() -> crate::OpaqueHostValue + Send + 'static>>,
     >,
-    request_adapter: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> f64 + Send + 'static>>>,
+    request_adapter: std::sync::Arc<
+        std::sync::Mutex<
+            Box<dyn FnMut() -> crate::Promise<crate::OpaqueHostValue> + Send + 'static>,
+        >,
+    >,
 }
-impl PartialEq for InstallWgpuMockSynthesizedRecord744054393 {
+impl PartialEq for InstallWgpuMockSynthesizedRecord1664981611 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -772,7 +786,7 @@ impl PartialEq for InstallWgpuMockSynthesizedRecord744054393 {
 
 pub fn install_wgpu_mock() -> () {
     install_wgpu_constants();
-    let gpu = InstallWgpuMockSynthesizedRecord744054393 {
+    let gpu = InstallWgpuMockSynthesizedRecord1664981611 {
         __flight_identity: std::sync::Arc::new(()),
         get_preferred_canvas_format: std::sync::Arc::new(std::sync::Mutex::new(Box::new(
             move || -> crate::OpaqueHostValue {
@@ -780,10 +794,16 @@ pub fn install_wgpu_mock() -> () {
             },
         )
             as Box<dyn FnMut() -> crate::OpaqueHostValue + Send + 'static>)),
-        request_adapter: std::sync::Arc::new(std::sync::Mutex::new(Box::new(move || -> f64 {
-            crate::host_value::<f64>("host.resolve")
-        })
-            as Box<dyn FnMut() -> f64 + Send + 'static>)),
+        request_adapter: std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move || -> crate::Promise<crate::OpaqueHostValue> {
+                {
+                    let __flight_value = make_adapter();
+                    let _ = &__flight_value;
+                    crate::Promise::<crate::OpaqueHostValue>::default()
+                }
+            },
+        )
+            as Box<dyn FnMut() -> crate::Promise<crate::OpaqueHostValue> + Send + 'static>)),
     };
     if (crate::host_value::<Option<crate::OpaqueHostValue>>("host.navigator")).is_none() {
         crate::host_value::<()>("host.defineProperty");

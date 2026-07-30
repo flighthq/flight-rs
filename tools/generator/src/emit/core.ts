@@ -100,6 +100,13 @@ export interface AutomaticPackageSummary {
   sourceBlockers: number;
 }
 
+export interface CandidateCrateNode {
+  crate: string;
+  dependencies: Array<{ crate: string; package: string }>;
+  fullyPromotedTarget: boolean;
+  package: string;
+}
+
 export interface WasmFacadeReport {
   coreCrate: string;
   crate: string;
@@ -512,16 +519,13 @@ function materializeAutomaticCandidates(
   attempts: AutomaticPackageAttempt[],
   packages: AutomaticPackageReport[],
 ): AutomaticPackageReport[] {
+  validateCandidateCrateGraph(packages);
   const candidateRoot = path.join(workspaceDirectory, portConfig.generatedDirectory, 'candidates');
   if (!check) rmSync(candidateRoot, { force: true, recursive: true });
   const expected = new Set<string>();
   const packageByName = new Map(packages.map((item) => [item.package, item]));
   const attemptByPackage = new Map(attempts.map((item) => [item.report.package, item]));
   const dependencyReady = (item: AutomaticPackageReport, visiting: ReadonlySet<string> = new Set()): boolean => {
-    // Promoted crates and automatic candidates intentionally use separate crate graphs.
-    // Crossing that boundary can introduce two path sources with the same Cargo package
-    // identity, so keep the automatic package dependency-blocked until those graphs unify.
-    if (item.fullyPromotedTarget) return false;
     if (item.status !== 'emittable') return false;
     if (visiting.has(item.package)) return true;
     const next = new Set([...visiting, item.package]);
@@ -611,6 +615,42 @@ function materializeAutomaticCandidates(
   const compiled = compileAutomaticCandidates(workspaceDirectory, candidateRoot, materialized);
   verifyNoStaleOutputs(candidateRoot, expected, check);
   return compiled;
+}
+
+export function validateCandidateCrateGraph(packages: readonly CandidateCrateNode[]): void {
+  const packageByName = new Map<string, CandidateCrateNode>();
+  const packageByCrate = new Map<string, CandidateCrateNode>();
+  for (const item of packages) {
+    const duplicatePackage = packageByName.get(item.package);
+    if (duplicatePackage) {
+      throw new Error(`Duplicate candidate package resolution node: ${item.package}`);
+    }
+    const duplicateCrate = packageByCrate.get(item.crate);
+    if (duplicateCrate && duplicateCrate.package !== item.package) {
+      throw new Error(
+        `Duplicate candidate Cargo package identity ${item.crate}: ${duplicateCrate.package} and ${item.package}`,
+      );
+    }
+    packageByName.set(item.package, item);
+    packageByCrate.set(item.crate, item);
+  }
+
+  for (const item of packages) {
+    for (const dependency of item.dependencies) {
+      const resolved = packageByName.get(dependency.package);
+      if (!resolved) continue;
+      if (dependency.crate !== resolved.crate) {
+        throw new Error(
+          `Candidate dependency edge ${item.package} -> ${dependency.package} names ${dependency.crate}, but the resolution map selects ${resolved.crate}`,
+        );
+      }
+      if (item.fullyPromotedTarget && !resolved.fullyPromotedTarget) {
+        throw new Error(
+          `Fully promoted package ${item.package} depends on non-fully-promoted package ${dependency.package}`,
+        );
+      }
+    }
+  }
 }
 
 function emitCandidateCargoManifest(
@@ -924,7 +964,7 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
     }
     try {
       const localEntityRuntimeRoot =
-        Boolean(selectedDeclarations) &&
+        target.package === portConfig.typeLowering.entityRuntimeFamily.package &&
         declarations.some(
           (declaration) =>
             declaration.kind === 'type' &&
@@ -953,6 +993,7 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
       const emitted = formatRust(
         emitRustModule({
           declarations,
+          entityRuntimeAggregateAvailable: target.package === portConfig.typeLowering.entityRuntimeFamily.package,
           enumNames: [...collectTypeEnumNames(workspaceDirectory), ...importedSemanticTypes.enumNames],
           imports: collectRustImports(
             sourceFile,
