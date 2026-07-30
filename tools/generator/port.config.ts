@@ -34,7 +34,7 @@ export interface WasmFacadeTarget {
   rustTemplate: string;
 }
 
-export type PackageDisposition = 'cultivated' | 'excluded' | 'host-bound';
+export type PackageDisposition = 'cultivated' | 'excluded' | 'host-backend' | 'host-bound';
 
 export interface PackagePolicyRule {
   disposition: PackageDisposition;
@@ -93,6 +93,24 @@ export const portConfig = {
   },
   packagePolicy: [
     {
+      disposition: 'host-backend',
+      match: '@flighthq/*-canvas',
+      reason:
+        'Canvas backend packages mechanically emit against dynamic browser handles until typed backend-capability IR replaces their opaque native seam.',
+    },
+    {
+      disposition: 'host-backend',
+      match: '@flighthq/*-gl',
+      reason:
+        'WebGL backend packages mechanically emit against dynamic browser handles until typed backend-capability IR replaces their opaque native seam.',
+    },
+    {
+      disposition: 'host-backend',
+      match: '@flighthq/*-wgpu',
+      reason:
+        'WebGPU backend packages mechanically emit against dynamic browser handles until typed backend-capability IR replaces their opaque native seam.',
+    },
+    {
       disposition: 'cultivated',
       match: '@flighthq/surface',
       reason:
@@ -124,6 +142,85 @@ export const portConfig = {
       reason: 'DOM substrate packages remain host-bound; native hosts consume the generated substrate-neutral crates.',
     },
   ] satisfies PackagePolicyRule[],
+  // Grandfathered substrate-neutral opaque-source counts from the pass-23 report.
+  // Entries may shrink as typed lowering lands; growth requires a declared host-backend policy.
+  opaqueHostValueBaseline: {
+    '@flighthq/accessibility': 1,
+    '@flighthq/animation': 1,
+    '@flighthq/app': 1,
+    '@flighthq/application': 2,
+    '@flighthq/assets': 1,
+    '@flighthq/audio': 2,
+    '@flighthq/bitmapfont-formats': 3,
+    '@flighthq/bitmaptext': 2,
+    '@flighthq/capture': 1,
+    '@flighthq/clip': 1,
+    '@flighthq/connectivity': 1,
+    '@flighthq/debug': 1,
+    '@flighthq/device': 1,
+    '@flighthq/displayobject': 6,
+    '@flighthq/displayobject-canvas': 15,
+    '@flighthq/displayobject-gl': 15,
+    '@flighthq/displayobject-wgpu': 13,
+    '@flighthq/effects': 2,
+    '@flighthq/effects-canvas': 7,
+    '@flighthq/effects-gl': 8,
+    '@flighthq/effects-wgpu': 2,
+    '@flighthq/entity': 1,
+    '@flighthq/font': 1,
+    '@flighthq/glyphatlas': 2,
+    '@flighthq/image': 2,
+    '@flighthq/input': 1,
+    '@flighthq/interaction': 9,
+    '@flighthq/keyboard': 1,
+    '@flighthq/lifecycle': 1,
+    '@flighthq/materials': 1,
+    '@flighthq/media': 3,
+    '@flighthq/mesh': 2,
+    '@flighthq/movieclip': 2,
+    '@flighthq/node': 6,
+    '@flighthq/particleemitter': 10,
+    '@flighthq/particles': 1,
+    '@flighthq/particles-formats': 5,
+    '@flighthq/platform': 1,
+    '@flighthq/power': 1,
+    '@flighthq/protocol': 1,
+    '@flighthq/render': 10,
+    '@flighthq/render-gl': 15,
+    '@flighthq/render-wgpu': 9,
+    '@flighthq/scene': 7,
+    '@flighthq/scene-formats': 2,
+    '@flighthq/scene-gl': 24,
+    '@flighthq/scene-resources': 13,
+    '@flighthq/scene-wgpu': 18,
+    '@flighthq/screen': 1,
+    '@flighthq/shading': 2,
+    '@flighthq/shape': 2,
+    '@flighthq/shell': 1,
+    '@flighthq/skeleton3d': 2,
+    '@flighthq/snapshot': 4,
+    '@flighthq/socket': 1,
+    '@flighthq/sprite': 3,
+    '@flighthq/spritesheet': 4,
+    '@flighthq/spritesheet-formats': 7,
+    '@flighthq/text': 3,
+    '@flighthq/text-markup': 1,
+    '@flighthq/textinput': 4,
+    '@flighthq/textlayout': 1,
+    '@flighthq/textsegment': 1,
+    '@flighthq/textshaper': 1,
+    '@flighthq/textshaper-canvas': 1,
+    '@flighthq/textureatlas': 1,
+    '@flighthq/textureatlas-formats': 1,
+    '@flighthq/tilemap-formats': 2,
+    '@flighthq/tileset': 1,
+    '@flighthq/tween': 1,
+    '@flighthq/types': 76,
+    '@flighthq/useragent': 1,
+    '@flighthq/velocity': 2,
+    '@flighthq/video': 1,
+    '@flighthq/xml': 2,
+  } satisfies Record<string, number>,
   blessedFacades: [
     {
       package: '@flighthq/surface-rs',

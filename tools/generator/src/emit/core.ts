@@ -210,6 +210,7 @@ function attemptAutomaticPackage(
   packages: PackageInventory[],
 ): AutomaticPackageAttempt {
   const policy = resolvePackagePolicy(packageInventory.name);
+  const hostBackendPolicy = policy?.disposition === 'host-backend' ? policy : undefined;
   const dependencies = packageInventory.dependencies
     .flatMap((packageName) => {
       const dependency = packages.find((item) => item.name === packageName);
@@ -221,7 +222,7 @@ function attemptAutomaticPackage(
   const fullyPromotedTarget = Boolean(
     promoted && !promoted.sourceSelection && !promoted.declarationSelection && promoted.sourceExclusions.length === 0,
   );
-  if (policy) {
+  if (policy && policy.disposition !== 'host-backend') {
     return {
       modules: [],
       report: {
@@ -387,6 +388,34 @@ function attemptAutomaticPackage(
     }
   }
 
+  if (!hostBackendPolicy) {
+    const opaqueSources = emittedSources.filter((source) => source.usesOpaqueHostValues);
+    const baseline =
+      (portConfig.opaqueHostValueBaseline as Readonly<Record<string, number>>)[packageInventory.name] ?? 0;
+    if (opaqueSources.length > baseline) {
+      for (const opaqueSource of opaqueSources) {
+        blockers.push({
+          diagnostics: [],
+          fingerprint: sha256(readFileSync(path.join(workspaceDirectory, opaqueSource.source), 'utf8')),
+          reason: `Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (${String(opaqueSources.length)} opaque sources exceeds the approved baseline of ${String(baseline)}); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.`,
+          source: opaqueSource.source,
+          stage: 'emission',
+        });
+      }
+      const rejectedSources = new Set(opaqueSources.map((source) => source.source));
+      emittedSources.splice(
+        0,
+        emittedSources.length,
+        ...emittedSources.filter((source) => !rejectedSources.has(source.source)),
+      );
+      moduleOutputs.splice(
+        0,
+        moduleOutputs.length,
+        ...moduleOutputs.filter((output) => !rejectedSources.has(output.source)),
+      );
+    }
+  }
+
   const missingExports = packageInventory.exports
     .map((item) => item.name)
     .filter((name) => !generatedExports.has(name))
@@ -436,12 +465,13 @@ function attemptAutomaticPackage(
       crate: packageInventory.rustCrate,
       dependencies,
       directDependents: 0,
-      disposition: 'generated',
+      disposition: hostBackendPolicy?.disposition ?? 'generated',
       emittedSources,
       fullyPromotedTarget,
       generatedExports: [...generatedExports].sort(),
       missingExports,
       package: packageInventory.name,
+      ...(hostBackendPolicy ? { policyReason: hostBackendPolicy.reason } : {}),
       promotedTarget,
       requiredDependencies: dependencies.filter((item) => requiredDependencies.has(item.package)),
       status,
@@ -794,7 +824,7 @@ function summarizeAutomaticPackages(packages: AutomaticPackageReport[]): Automat
     candidateCompiled: packages.filter((item) => item.candidate.status === 'compiled').length,
     candidateDependencyBlocked: packages.filter((item) => item.candidate.status === 'dependency-blocked').length,
     cultivated: packages.filter((item) => item.status === 'cultivated').length,
-    eligible: packages.filter((item) => item.disposition === 'generated').length,
+    eligible: packages.filter((item) => item.disposition === 'generated' || item.disposition === 'host-backend').length,
     emittable: packages.filter((item) => item.status === 'emittable').length,
     excluded: packages.filter((item) => item.status === 'excluded').length,
     hostBound: packages.filter((item) => item.status === 'host-bound').length,

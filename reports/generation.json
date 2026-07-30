@@ -4017,213 +4017,19 @@
     {
       "apiExports": 15,
       "attemptedSources": 2,
-      "blockers": [],
+      "blockers": [
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:b7e593beaed5f0fc803ffdb1a5358e79f29323edf64392059561eca237893da2",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (1 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/dialog/src/dialog.ts",
+          "stage": "emission"
+        }
+      ],
       "candidate": {
-        "compileDiagnostics": [
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0599",
-            "message": "no method named `is_none` found for enum `OpaqueHostValue` in the current scope",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0599",
-            "message": "no method named `iter` found for enum `OpaqueHostValue` in the current scope",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0277",
-            "message": "`OpaqueHostValue` doesn't implement `std::fmt::Display`",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "<rustc>/library/alloc/src/macros.rs"
-          },
-          {
-            "code": "E0070",
-            "message": "invalid left-hand side of assignment",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0070",
-            "message": "invalid left-hand side of assignment",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0609",
-            "message": "no field `length` on type `()`",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0599",
-            "message": "no method named `is_none` found for enum `OpaqueHostValue` in the current scope",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0599",
-            "message": "no method named `iter` found for enum `OpaqueHostValue` in the current scope",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0615",
-            "message": "attempted to take value of method `join` on type `Vec<std::string::String>`",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0277",
-            "message": "can't compare `OpaqueHostValue` with `std::string::String`",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-dialog/src/dialog.rs"
-          }
-        ],
-        "path": "generated/candidates/flighthq-dialog",
-        "status": "compile-blocked",
-        "syntaxCheckedSources": 2,
+        "compileDiagnostics": [],
+        "status": "source-blocked",
+        "syntaxCheckedSources": 0,
         "unresolvedDependencies": []
       },
       "crate": "flighthq-dialog",
@@ -4237,52 +4043,10 @@
       "disposition": "generated",
       "emittedSources": [
         {
-          "declarationNames": [
-            "FileSystemAccessDirectoryPickerOptions",
-            "FileSystemAccessOpenPickerOptions",
-            "FileSystemAccessSavePickerOptions",
-            "FileSystemDirectoryHandle",
-            "FileSystemFileHandle",
-            "FileSystemWritableFileStream",
-            "WindowWithFileSystemAccess",
-            "_backend",
-            "_fileSystemDirectoryHandleRegistry",
-            "_fileSystemHandleRegistry",
-            "buildAcceptAttribute",
-            "buildFileSystemAccessTypes",
-            "createWebDialogBackend",
-            "getDialogBackend",
-            "getWebDirectorySystemHandle",
-            "getWebFileSystemHandle",
-            "openDirectoryPickerAccessApi",
-            "openFileSystemAccessPicker",
-            "openWebDirectoryDialog",
-            "openWebFileDialog",
-            "saveWebFile",
-            "setDialogBackend",
-            "showConfirmDialog",
-            "showErrorBox",
-            "showErrorDialog",
-            "showInfoDialog",
-            "showMessageDialog",
-            "showOpenDirectoryDialog",
-            "showOpenFileDialog",
-            "showPromptDialog",
-            "showSaveFileDialog",
-            "showWarningDialog",
-            "toFileSystemAccessStartIn"
-          ],
-          "declarations": 33,
-          "module": "dialog",
-          "outputSha256": "sha256:85392221c93690c93d611759a8b7883558a21cf7c5f15bffa544fa1aab7f1e9f",
-          "source": "upstream/packages/dialog/src/dialog.ts",
-          "usesOpaqueHostValues": true
-        },
-        {
           "declarationNames": [],
           "declarations": 0,
           "module": "_internal_index",
-          "outputSha256": "sha256:f6ef0741f6b06bf4b530ae9b411676ecd880a62eea09d317c54f2f116d3bf2db",
+          "outputSha256": "sha256:6e5ea294164f5129445cec250bb82fb1617966adb16bf7d1d1ff699eb8ca56ec",
           "source": "upstream/packages/dialog/src/index.ts",
           "usesOpaqueHostValues": false
         }
@@ -4314,7 +4078,7 @@
           "package": "@flighthq/types"
         }
       ],
-      "status": "emittable",
+      "status": "blocked",
       "transitiveDependents": 5
     },
     {
@@ -4711,7 +4475,7 @@
         }
       ],
       "directDependents": 5,
-      "disposition": "generated",
+      "disposition": "host-backend",
       "emittedSources": [
         {
           "declarationNames": [
@@ -5062,6 +4826,7 @@
         "setCanvasRenderTransform2D"
       ],
       "package": "@flighthq/displayobject-canvas",
+      "policyReason": "Canvas backend packages mechanically emit against dynamic browser handles until typed backend-capability IR replaces their opaque native seam.",
       "promotedTarget": false,
       "requiredDependencies": [
         {
@@ -5352,7 +5117,7 @@
         }
       ],
       "directDependents": 1,
-      "disposition": "generated",
+      "disposition": "host-backend",
       "emittedSources": [
         {
           "declarationNames": [
@@ -5837,6 +5602,7 @@
         "renderGlVelocity"
       ],
       "package": "@flighthq/displayobject-gl",
+      "policyReason": "WebGL backend packages mechanically emit against dynamic browser handles until typed backend-capability IR replaces their opaque native seam.",
       "promotedTarget": false,
       "requiredDependencies": [
         {
@@ -6010,7 +5776,7 @@
         }
       ],
       "directDependents": 1,
-      "disposition": "generated",
+      "disposition": "host-backend",
       "emittedSources": [
         {
           "declarationNames": [
@@ -6511,6 +6277,7 @@
         "renderWgpuVelocity"
       ],
       "package": "@flighthq/displayobject-wgpu",
+      "policyReason": "WebGPU backend packages mechanically emit against dynamic browser handles until typed backend-capability IR replaces their opaque native seam.",
       "promotedTarget": false,
       "requiredDependencies": [
         {
@@ -8410,7 +8177,7 @@
         }
       ],
       "directDependents": 1,
-      "disposition": "generated",
+      "disposition": "host-backend",
       "emittedSources": [
         {
           "declarationNames": [
@@ -8644,6 +8411,7 @@
         "defaultCanvasWhiteBalanceEffectRunner"
       ],
       "package": "@flighthq/effects-canvas",
+      "policyReason": "Canvas backend packages mechanically emit against dynamic browser handles until typed backend-capability IR replaces their opaque native seam.",
       "promotedTarget": false,
       "requiredDependencies": [
         {
@@ -9033,7 +8801,7 @@
         }
       ],
       "directDependents": 1,
-      "disposition": "generated",
+      "disposition": "host-backend",
       "emittedSources": [
         {
           "declarationNames": [
@@ -9341,6 +9109,7 @@
         "unregisterGlBlendEffectBackdrop"
       ],
       "package": "@flighthq/effects-gl",
+      "policyReason": "WebGL backend packages mechanically emit against dynamic browser handles until typed backend-capability IR replaces their opaque native seam.",
       "promotedTarget": false,
       "requiredDependencies": [
         {
@@ -9713,7 +9482,7 @@
         }
       ],
       "directDependents": 1,
-      "disposition": "generated",
+      "disposition": "host-backend",
       "emittedSources": [
         {
           "declarationNames": [],
@@ -10047,6 +9816,7 @@
         "defaultWgpuWhiteBalanceEffectRunner"
       ],
       "package": "@flighthq/effects-wgpu",
+      "policyReason": "WebGPU backend packages mechanically emit against dynamic browser handles until typed backend-capability IR replaces their opaque native seam.",
       "promotedTarget": false,
       "requiredDependencies": [
         {
@@ -18960,6 +18730,27 @@
         },
         {
           "diagnostics": [],
+          "fingerprint": "sha256:0891dbac93bd1040fc945a0c05a83a513e6bb9548c8760eefa490bc1928c3c13",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 5); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/particles-formats/src/detect.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:99a7e9f305ddae0e7e1e6279c5e04a0cb1e79cf567e16d698e8a62da325793ab",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 5); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/particles-formats/src/formatRegistry.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:23ae6c3423de8e567a168c7ba4ad03918222f1d5251719270fd246b53064217d",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 5); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/particles-formats/src/libgdxParse.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
           "fingerprint": "sha256:0b518dd4164d80fad443d4f5cfe3ecbfda2b57e697b90667e308ece058eeb912",
           "reason": "documentToText: spread Rust lowering is not implemented",
           "source": "upstream/packages/particles-formats/src/libgdxSerialize.ts",
@@ -18967,9 +18758,30 @@
         },
         {
           "diagnostics": [],
+          "fingerprint": "sha256:3c4a44bd82937b5161539b6fd90fa5d44d09918fc72c15ad5f1f409a3dd2ffc0",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 5); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/particles-formats/src/parseParticleConfig.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
           "fingerprint": "sha256:f6b76929c2ce6145b89dbe3614e12de3a960e697c9c0dd0b95b27b116efab6d9",
           "reason": "num: typeof operand has no inferred Rust type: {\"kind\":\"identifier\",\"name\":\"v\"}",
           "source": "upstream/packages/particles-formats/src/particleDesignerParse.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:893a814e01501d6b27f86fae890b8e199532dbf8f25dd14b6433b167995c5d12",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 5); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/particles-formats/src/pixiParse.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:447d60397b896885bcf33c00854a83cc6a2d66707ea0928b8c6a4cf04f02312b",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 5); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/particles-formats/src/spineParse.ts",
           "stage": "emission"
         },
         {
@@ -18984,6 +18796,13 @@
           "fingerprint": "sha256:04f4585504db857d501f2de54b7602ddc22759db9d6d64911a565a7857a4124b",
           "reason": "extractAttr: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object",
           "source": "upstream/packages/particles-formats/src/starlingPexParse.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:b0a8d31fbe855d5a1c96b0be88c9b72b5aafd0bcc699f1e2c78dce39f83433e2",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 5); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/particles-formats/src/unityParse.ts",
           "stage": "emission"
         },
         {
@@ -19015,67 +18834,12 @@
       "disposition": "generated",
       "emittedSources": [
         {
-          "declarationNames": [
-            "detectParticleFormat",
-            "hasMinMaxCurveMode",
-            "isRangeObject"
-          ],
-          "declarations": 3,
-          "module": "detect",
-          "outputSha256": "sha256:5a17af9f5f6603f3508348fad451cad02dcb5abfc539a8af4de615a9a2ada3ee",
-          "source": "upstream/packages/particles-formats/src/detect.ts",
-          "usesOpaqueHostValues": true
-        },
-        {
-          "declarationNames": [
-            "ParticleFormatCodec",
-            "_registry",
-            "detectRegisteredParticleFormat",
-            "getParticleFormatCodec",
-            "getRegisteredParticleFormats",
-            "parseRegisteredParticleFormat",
-            "registerParticleFormat",
-            "unregisterParticleFormat"
-          ],
-          "declarations": 8,
-          "module": "format_registry",
-          "outputSha256": "sha256:88e5d84e1616ae9bf062498e568ae7754ecb4cb64219352a1d7f0db49544503d",
-          "source": "upstream/packages/particles-formats/src/formatRegistry.ts",
-          "usesOpaqueHostValues": true
-        },
-        {
           "declarationNames": [],
           "declarations": 0,
           "module": "_internal_index",
           "outputSha256": "sha256:d9fe547a92e67b4ecd73736ad464b30247635bdca7db6df26a8083c588d4988f",
           "source": "upstream/packages/particles-formats/src/index.ts",
           "usesOpaqueHostValues": false
-        },
-        {
-          "declarationNames": [
-            "DEG2RAD",
-            "LibgdxParseOptions",
-            "LibgdxParseResult",
-            "LibgdxParsed",
-            "LibgdxSection",
-            "boolKey",
-            "collectLibgdxWarnings",
-            "documentToConfig",
-            "hexToRgb",
-            "numKey",
-            "parseLibgdxParticle",
-            "parseLibgdxParticleDocument",
-            "parseLibgdxText",
-            "rangeToMinMax",
-            "readRange",
-            "sectionsToDocument",
-            "strKey"
-          ],
-          "declarations": 17,
-          "module": "libgdx_parse",
-          "outputSha256": "sha256:bd6854449fd377b8bc8a6ff5feae649d9e35ff4b3db6bec2fba5d84774bd92f1",
-          "source": "upstream/packages/particles-formats/src/libgdxParse.ts",
-          "usesOpaqueHostValues": true
         },
         {
           "declarationNames": [
@@ -19087,19 +18851,6 @@
           "outputSha256": "sha256:61ac650fb6230ef40a2aa58e2d271c5cffc14345a042babdd4538b5940f3f1c3",
           "source": "upstream/packages/particles-formats/src/libgdxSchema.ts",
           "usesOpaqueHostValues": false
-        },
-        {
-          "declarationNames": [
-            "ParseParticleConfigOptions",
-            "ParticleConfigParseResult",
-            "parseParticleConfig",
-            "parseParticleConfigDocument"
-          ],
-          "declarations": 4,
-          "module": "parse_particle_config",
-          "outputSha256": "sha256:9d0cf6a582ea5ad4f2efa03b2c54fb55a6d5062aee3f4bdd7902dc62740603e2",
-          "source": "upstream/packages/particles-formats/src/parseParticleConfig.ts",
-          "usesOpaqueHostValues": true
         },
         {
           "declarationNames": [
@@ -19134,28 +18885,6 @@
         },
         {
           "declarationNames": [
-            "DEG2RAD",
-            "PixiParseResult",
-            "PixiParsed",
-            "PixiRaw",
-            "collectPixiWarnings",
-            "parsePixiJson",
-            "parsePixiParticle",
-            "parsePixiParticleDocument",
-            "rawToConfig",
-            "readColor",
-            "readStartEnd",
-            "rn",
-            "rs"
-          ],
-          "declarations": 13,
-          "module": "pixi_parse",
-          "outputSha256": "sha256:0796b4cb3b4403cc8ed225f65f648d57bd46da0f5b4d0f2fb9b32a09fb2c9ca0",
-          "source": "upstream/packages/particles-formats/src/pixiParse.ts",
-          "usesOpaqueHostValues": true
-        },
-        {
-          "declarationNames": [
             "ParticleSerializeResult"
           ],
           "declarations": 1,
@@ -19163,34 +18892,6 @@
           "outputSha256": "sha256:7504650966833561e12fb187c4aa6b10d688710a44316ed66d4e022dc2e9e17f",
           "source": "upstream/packages/particles-formats/src/serializeResult.ts",
           "usesOpaqueHostValues": false
-        },
-        {
-          "declarationNames": [
-            "DEG2RAD",
-            "SpineParsed",
-            "alphaKeyframesToCurve",
-            "collectSpineWarnings",
-            "firstAlpha",
-            "firstTintColor",
-            "hexToRgb",
-            "lastAlpha",
-            "lastTintColor",
-            "parseSpineJson",
-            "parseSpineParticle",
-            "parseSpineParticleDocument",
-            "rangeHigh",
-            "rangeLow",
-            "rangeMid",
-            "rawToConfig",
-            "rawToDocument",
-            "spineBlendMode",
-            "tintKeyframesToCurve"
-          ],
-          "declarations": 19,
-          "module": "spine_parse",
-          "outputSha256": "sha256:277c24b661e83f13d2eba76d1d00c5aefbbe59aceb809a766bae366864a5444e",
-          "source": "upstream/packages/particles-formats/src/spineParse.ts",
-          "usesOpaqueHostValues": true
         },
         {
           "declarationNames": [
@@ -19235,43 +18936,6 @@
           "outputSha256": "sha256:72fdf0e97bacc90117fbfc141ed25fb7f1a28fdf2036da4689e0ea4afb997225",
           "source": "upstream/packages/particles-formats/src/starlingPexSerialize.ts",
           "usesOpaqueHostValues": false
-        },
-        {
-          "declarationNames": [
-            "DEFAULT_GRAVITY",
-            "DEFAULT_PPU",
-            "DEG2RAD",
-            "UNSUPPORTED_UNITY_MODULES",
-            "UnityParseOptions",
-            "UnityParsed",
-            "alphaKeysToCurve",
-            "collectUnityWarnings",
-            "colorAt",
-            "colorKeysToCurve",
-            "mmHigh",
-            "mmLow",
-            "parseUnityJson",
-            "parseUnityParticle",
-            "parseUnityParticleDocument",
-            "rawToConfig",
-            "rawToDocument",
-            "rb",
-            "readColorLifetime",
-            "readEmission",
-            "readMinMax",
-            "readRotationLifetime",
-            "readShape",
-            "readSizeLifetime",
-            "rn",
-            "rs",
-            "sizeKeysToCurve",
-            "unityBlendMode"
-          ],
-          "declarations": 28,
-          "module": "unity_parse",
-          "outputSha256": "sha256:d2e2200628e41f705527a246120697bc1296e267341319b5a133b52b31eaffae",
-          "source": "upstream/packages/particles-formats/src/unityParse.ts",
-          "usesOpaqueHostValues": true
         },
         {
           "declarationNames": [
@@ -21298,7 +20962,7 @@
         }
       ],
       "directDependents": 4,
-      "disposition": "generated",
+      "disposition": "host-backend",
       "emittedSources": [
         {
           "declarationNames": [
@@ -21703,6 +21367,7 @@
         "invalidateGlRenderStateCache"
       ],
       "package": "@flighthq/render-gl",
+      "policyReason": "WebGL backend packages mechanically emit against dynamic browser handles until typed backend-capability IR replaces their opaque native seam.",
       "promotedTarget": false,
       "requiredDependencies": [
         {
@@ -21762,7 +21427,7 @@
         }
       ],
       "directDependents": 5,
-      "disposition": "generated",
+      "disposition": "host-backend",
       "emittedSources": [
         {
           "declarationNames": [],
@@ -22095,6 +21760,7 @@
       ],
       "missingExports": [],
       "package": "@flighthq/render-wgpu",
+      "policyReason": "WebGPU backend packages mechanically emit against dynamic browser handles until typed backend-capability IR replaces their opaque native seam.",
       "promotedTarget": false,
       "requiredDependencies": [
         {
@@ -22418,6 +22084,27 @@
         },
         {
           "diagnostics": [],
+          "fingerprint": "sha256:55b92e6ae177fe7b29c41b3430daee9248b24c78c8b7dcc2ccf8a76f7a649800",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/scene-formats/src/md5AnimParse.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:620e7fd4915e29773a3ec0960a1af3ed06c38f769c05560e34eedcbd9979ae5e",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/scene-formats/src/md5Parse.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:93ab673c578f342d5b853c5fbafcf14516ba6caa958793dfe0c5915bf4c943b4",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/scene-formats/src/objParse.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
           "fingerprint": "sha256:80f19a51336baec13e6ac3e08959db1e8151d0d08595d425e735b6fb156f8e7f",
           "reason": "findSceneSkeletonJoints: spread Rust lowering is not implemented",
           "source": "upstream/packages/scene-formats/src/shared.ts",
@@ -22565,51 +22252,6 @@
         },
         {
           "declarationNames": [
-            "DEFAULT_BASEFRAME",
-            "FLAG_QX",
-            "FLAG_QY",
-            "FLAG_QZ",
-            "FLAG_TX",
-            "FLAG_TY",
-            "FLAG_TZ",
-            "Md5AnimBaseframePose",
-            "Md5AnimHierarchyEntry",
-            "buildAnimationClip",
-            "parseBaseframeBlock",
-            "parseBaseframeLine",
-            "parseFrameBlock",
-            "parseHierarchyBlock",
-            "parseHierarchyLine",
-            "parseMd5Anim",
-            "skipBlock"
-          ],
-          "declarations": 17,
-          "module": "md5_anim_parse",
-          "outputSha256": "sha256:e48e9ff5e0b268af273f38f03c8d69643b5653ecb73e51619a921d01a4b985f9",
-          "source": "upstream/packages/scene-formats/src/md5AnimParse.ts",
-          "usesOpaqueHostValues": true
-        },
-        {
-          "declarationNames": [
-            "createSceneFromMd5Mesh",
-            "parseJointLine",
-            "parseJointsBlock",
-            "parseMeshBlock",
-            "parseTriLine",
-            "parseVertLine",
-            "parseWeightLine",
-            "quatRotateVec3X",
-            "quatRotateVec3Y",
-            "quatRotateVec3Z"
-          ],
-          "declarations": 10,
-          "module": "md5_parse",
-          "outputSha256": "sha256:a99d07243640021bcad14c446725c615bd290b826550abd0ca4d1a889c73432d",
-          "source": "upstream/packages/scene-formats/src/md5Parse.ts",
-          "usesOpaqueHostValues": true
-        },
-        {
-          "declarationNames": [
             "Md5Joint",
             "Md5Mesh",
             "Md5Vertex",
@@ -22633,25 +22275,6 @@
           "outputSha256": "sha256:471c7a2a4e57e57cfea3428976134d1bb4148d9c78faabcd7a97edc0e3ebde8c",
           "source": "upstream/packages/scene-formats/src/mtlParse.ts",
           "usesOpaqueHostValues": false
-        },
-        {
-          "declarationNames": [
-            "MaterialBucket",
-            "clampChannel",
-            "createSceneFromObj",
-            "externalObjTexture",
-            "flushGroup",
-            "getOrCreateBucket",
-            "objMaterialToBlinnPhong",
-            "packObjColor",
-            "parseFaceVertex",
-            "resolveObjMaterial"
-          ],
-          "declarations": 10,
-          "module": "obj_parse",
-          "outputSha256": "sha256:5908cba50199ec78992117ff485cb782660a698a2de2914375f32f9c4b29c94b",
-          "source": "upstream/packages/scene-formats/src/objParse.ts",
-          "usesOpaqueHostValues": true
         },
         {
           "declarationNames": [
@@ -22917,7 +22540,7 @@
         }
       ],
       "directDependents": 1,
-      "disposition": "generated",
+      "disposition": "host-backend",
       "emittedSources": [
         {
           "declarationNames": [
@@ -23916,6 +23539,7 @@
         "drawGlSceneParticleEmitters"
       ],
       "package": "@flighthq/scene-gl",
+      "policyReason": "WebGL backend packages mechanically emit against dynamic browser handles until typed backend-capability IR replaces their opaque native seam.",
       "promotedTarget": false,
       "requiredDependencies": [
         {
@@ -23987,9 +23611,107 @@
         },
         {
           "diagnostics": [],
+          "fingerprint": "sha256:00ca65d2a5f3e54874bef75cdd053cd8b6caf04d69a85e73d9e4953e53bd844c",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/scene-resources/src/getSceneResourceTextures.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:636229b92dc92e66f8b926986ecab1a830da3a6fcbaed409907d934e7da1c279",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/scene-resources/src/load3ds.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:df82440d9f91253147bda70173b1b49d3db531c14b91b2f2a5a73bae59f29e81",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/scene-resources/src/loadGltf.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:1bef44b1810ced1d81c827ff475c2f15ca492d6824fa5dd26baebdb5ceddc7ac",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/scene-resources/src/loadMd2.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:358036773f06c2d4d7e6d1b2211506a0146a17526c4524fc1b232c622058734a",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/scene-resources/src/loadMd5.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:9ef1295b8af00ee4b4650f52fd207d738ecf9e59d360efa1e54908b13c61c7db",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/scene-resources/src/loadObj.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:048f86278b77b255068744e7817500a59d33dd556d7158c17d8360ec83af3605",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/scene-resources/src/loadSceneFromAwd.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:9aaae0b6c097539d943b3ddc795e3d6675747182aecadc1d5e2bfa9169dc9656",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/scene-resources/src/loadSceneOptions.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:66093ea7c39ab2b192df734bc35f2b31f467b48769c2a7a72d8e5ea4453f7062",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/scene-resources/src/resolveSceneResources.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:f5ccd1acad3603819d696e5f94e044591a4d16d75a02957e87cb97d9abd325a1",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/scene-resources/src/resolveSceneResourcesAndWait.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:b72fb7baff5aa052dd6e9243da0f0bfb945d976bef647aa0424d84f0f308b8f1",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/scene-resources/src/revealSceneResourcesOnResolve.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:1bf8831d54f0595aadace3002630a8847e2645374bbd89c2759c908e192e9b30",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/scene-resources/src/sceneMaterialTextureRegistry.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
           "fingerprint": "sha256:b96d54a7ade0daa892cd708b4e8ea42c18bca2554f9f424c556a073b2161e261",
           "reason": "createWebSceneResourceFetch: await Rust lowering is not implemented",
           "source": "upstream/packages/scene-resources/src/sceneResourceFetch.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:f8cad77bded5524f5f07f3dcb1b10f90664995c8f7eb1f4f518066e0a035c55e",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/scene-resources/src/sceneResourceResolver.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:3716d3b35752c934ee62f906208b5a40b97c1d1b641ddc54c638067205b06bbe",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/scene-resources/src/sceneResourceSignals.ts",
           "stage": "emission"
         }
       ],
@@ -24038,182 +23760,12 @@
       "disposition": "generated",
       "emittedSources": [
         {
-          "declarationNames": [
-            "collectNodeResourceTextures",
-            "getSceneResourceTextures"
-          ],
-          "declarations": 2,
-          "module": "get_scene_resource_textures",
-          "outputSha256": "sha256:5d372186c9edca26f6661a2578e8fbd918817d1bf009adb3fd95c4e781497112",
-          "source": "upstream/packages/scene-resources/src/getSceneResourceTextures.ts",
-          "usesOpaqueHostValues": true
-        },
-        {
           "declarationNames": [],
           "declarations": 0,
           "module": "_internal_index",
           "outputSha256": "sha256:382f6a893f44e56012eb0951d4199a4b8e65b4ebbbfcb41249cb3b36013d8c94",
           "source": "upstream/packages/scene-resources/src/index.ts",
           "usesOpaqueHostValues": false
-        },
-        {
-          "declarationNames": [
-            "loadSceneFrom3ds"
-          ],
-          "declarations": 1,
-          "module": "load3ds",
-          "outputSha256": "sha256:bb241e3d64bb7799f0ac65d052c8756498ffee9132b2a963d6bd38322eaf50e0",
-          "source": "upstream/packages/scene-resources/src/load3ds.ts",
-          "usesOpaqueHostValues": true
-        },
-        {
-          "declarationNames": [
-            "loadSceneFromGlb",
-            "loadSceneFromGltf",
-            "loadScenesFromGlb",
-            "loadScenesFromGltf"
-          ],
-          "declarations": 4,
-          "module": "load_gltf",
-          "outputSha256": "sha256:964498edf65d3a3fa09d3db6d4fe7f1b2cca0f8ba107c226eefe2c00f66e2174",
-          "source": "upstream/packages/scene-resources/src/loadGltf.ts",
-          "usesOpaqueHostValues": true
-        },
-        {
-          "declarationNames": [
-            "loadSceneFromMd2"
-          ],
-          "declarations": 1,
-          "module": "load_md2",
-          "outputSha256": "sha256:7a3aa6db1d92bd42bfb0e480d336d4955f524ef6f5207f844dc27e826b7ce230",
-          "source": "upstream/packages/scene-resources/src/loadMd2.ts",
-          "usesOpaqueHostValues": true
-        },
-        {
-          "declarationNames": [
-            "loadSceneFromMd5Mesh"
-          ],
-          "declarations": 1,
-          "module": "load_md5",
-          "outputSha256": "sha256:d747654f132ee6a810fcf991fe390c058293e2182ee95ceb6c7aafcb32166169",
-          "source": "upstream/packages/scene-resources/src/loadMd5.ts",
-          "usesOpaqueHostValues": true
-        },
-        {
-          "declarationNames": [
-            "loadSceneFromObj"
-          ],
-          "declarations": 1,
-          "module": "load_obj",
-          "outputSha256": "sha256:28678dbb7f7abccdeef89aabe252576147e8364fbedc2d2a2e26612c79b5df04",
-          "source": "upstream/packages/scene-resources/src/loadObj.ts",
-          "usesOpaqueHostValues": true
-        },
-        {
-          "declarationNames": [
-            "loadSceneFromAwd"
-          ],
-          "declarations": 1,
-          "module": "load_scene_from_awd",
-          "outputSha256": "sha256:d8688faabc1a55acca704f7e9fbfa5abb44d4e654ab9e727a7cf4c2649aac6e8",
-          "source": "upstream/packages/scene-resources/src/loadSceneFromAwd.ts",
-          "usesOpaqueHostValues": true
-        },
-        {
-          "declarationNames": [
-            "LoadSceneOptions",
-            "resolveScenesWithOptions"
-          ],
-          "declarations": 2,
-          "module": "load_scene_options",
-          "outputSha256": "sha256:033b786890191369d2f939ce45febac4b95a568ce36fc9051f6260bc9dc50fd6",
-          "source": "upstream/packages/scene-resources/src/loadSceneOptions.ts",
-          "usesOpaqueHostValues": true
-        },
-        {
-          "declarationNames": [
-            "ResolveSceneResourcesOptions",
-            "_resolvedVoid",
-            "cancelDroppedResolutions",
-            "emitSceneResourceEvent",
-            "failSceneResourceResolution",
-            "finishSceneResourceResolution",
-            "requestWorkingResolutions",
-            "resolveOneSceneResourceTexture",
-            "resolveSceneResources"
-          ],
-          "declarations": 9,
-          "module": "resolve_scene_resources",
-          "outputSha256": "sha256:cd473a7e746bf798badfca410ad048f219aa6b6d51096e12c75f76a3baee4c10",
-          "source": "upstream/packages/scene-resources/src/resolveSceneResources.ts",
-          "usesOpaqueHostValues": true
-        },
-        {
-          "declarationNames": [
-            "resolveSceneResourcesAndWait"
-          ],
-          "declarations": 1,
-          "module": "resolve_scene_resources_and_wait",
-          "outputSha256": "sha256:6df3c9e9f1ced50574719d00bb77f805e5086314584af328ddb8e50a77bd7012",
-          "source": "upstream/packages/scene-resources/src/resolveSceneResourcesAndWait.ts",
-          "usesOpaqueHostValues": true
-        },
-        {
-          "declarationNames": [
-            "SceneResourceRevealOptions",
-            "collectPendingTextureOwners",
-            "revealSceneResourcesOnResolve"
-          ],
-          "declarations": 3,
-          "module": "reveal_scene_resources_on_resolve",
-          "outputSha256": "sha256:ff6017ec58b686067f31695a85655d7391e0e0fe7cdda1311dc92e9e53ed7163",
-          "source": "upstream/packages/scene-resources/src/revealSceneResourcesOnResolve.ts",
-          "usesOpaqueHostValues": true
-        },
-        {
-          "declarationNames": [
-            "SceneMaterialTextureLister",
-            "SceneMaterialTextureRegistry",
-            "createSceneMaterialTextureRegistry",
-            "getSceneMaterialTextures",
-            "listStandardPbrMaterialTextures",
-            "listUnlitMaterialTextures",
-            "registerBuiltInSceneMaterialTextures",
-            "registerSceneMaterialTextures"
-          ],
-          "declarations": 8,
-          "module": "scene_material_texture_registry",
-          "outputSha256": "sha256:6d2750b7c8acdf13b9fe65ce36f5123a7084cfb5aefee3f3080e27f436404610",
-          "source": "upstream/packages/scene-resources/src/sceneMaterialTextureRegistry.ts",
-          "usesOpaqueHostValues": true
-        },
-        {
-          "declarationNames": [
-            "SceneResourceInFlight",
-            "SceneResourceResolver",
-            "SceneResourceResolverOptions",
-            "createSceneResourceResolver",
-            "disposeSceneResourceResolver"
-          ],
-          "declarations": 5,
-          "module": "scene_resource_resolver",
-          "outputSha256": "sha256:b23f4efdd8846f1023f67e365b9906b3680515ed544598084e1a70af8d90db17",
-          "source": "upstream/packages/scene-resources/src/sceneResourceResolver.ts",
-          "usesOpaqueHostValues": true
-        },
-        {
-          "declarationNames": [
-            "SceneResourceEvent",
-            "SceneResourceSignals",
-            "createSceneResourceSignals",
-            "enableSceneResourceSignals",
-            "getSceneResourceSignals"
-          ],
-          "declarations": 5,
-          "module": "scene_resource_signals",
-          "outputSha256": "sha256:dd047df94b82c50710e2bbc54ecbb83ba53f0f7effbe60c7232b072f42c9c95a",
-          "source": "upstream/packages/scene-resources/src/sceneResourceSignals.ts",
-          "usesOpaqueHostValues": true
         }
       ],
       "fullyPromotedTarget": false,
@@ -24366,7 +23918,7 @@
         }
       ],
       "directDependents": 1,
-      "disposition": "generated",
+      "disposition": "host-backend",
       "emittedSources": [
         {
           "declarationNames": [
@@ -25179,6 +24731,7 @@
         "drawWgpuSceneParticleEmitters"
       ],
       "package": "@flighthq/scene-wgpu",
+      "policyReason": "WebGPU backend packages mechanically emit against dynamic browser handles until typed backend-capability IR replaces their opaque native seam.",
       "promotedTarget": false,
       "requiredDependencies": [
         {
@@ -32026,118 +31579,33 @@
     {
       "apiExports": 37,
       "attemptedSources": 17,
-      "blockers": [],
+      "blockers": [
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:178c9baa6cb0eb1d79d487a4f481b24286ce0d47422195b1e4f501fc40d2a8d5",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/shading/src/modifierRegistry.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:115e1acf340c683b2f4fa4d63df124332c48a8e6b1a412abf684fff7197fdc93",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/shading/src/orderModifierStack.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:88ad361bbdbd83358973f43fa3fdc07a0730fd81ba0aa369a0bb2d3520dd3113",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/shading/src/registerBuiltInModifiers.ts",
+          "stage": "emission"
+        }
+      ],
       "candidate": {
-        "compileDiagnostics": [
-          {
-            "code": "E0425",
-            "message": "cannot find type `EmissiveModifierFacing` in this scope",
-            "source": "generated/candidates/flighthq-shading/src/create_emissive_modifier.rs"
-          },
-          {
-            "code": "E0425",
-            "message": "cannot find type `FogModifierMode` in this scope",
-            "source": "generated/candidates/flighthq-shading/src/create_fog_modifier.rs"
-          },
-          {
-            "code": "E0422",
-            "message": "cannot find struct, variant or union type `ClosureSynthesizedRecord2984407717` in this scope",
-            "source": "generated/candidates/flighthq-shading/src/order_modifier_stack.rs"
-          },
-          {
-            "code": "E0425",
-            "message": "cannot find type `ModifierSlot` in this scope",
-            "source": "generated/candidates/flighthq-shading/src/order_modifier_stack.rs"
-          },
-          {
-            "code": "E0425",
-            "message": "cannot find type `ModifierSlot` in this scope",
-            "source": "generated/candidates/flighthq-shading/src/order_modifier_stack.rs"
-          },
-          {
-            "code": "E0425",
-            "message": "cannot find type `ModifierSlot` in this scope",
-            "source": "generated/candidates/flighthq-shading/src/order_modifier_stack.rs"
-          },
-          {
-            "code": "E0425",
-            "message": "cannot find type `ModifierSlot` in this scope",
-            "source": "generated/candidates/flighthq-shading/src/order_modifier_stack.rs"
-          },
-          {
-            "code": "E0063",
-            "message": "missing fields `alpha_cutoff`, `alpha_mode`, `alpha_type` and 14 other fields in initializer of `ShadedMaterial`",
-            "source": "generated/candidates/flighthq-shading/src/create_shaded_material.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "<rustc>/library/alloc/src/macros.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-shading/src/get_modifier_define_key.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-shading/src/get_modifier_define_key.rs"
-          },
-          {
-            "code": "E0593",
-            "message": "closure is expected to take 1 argument, but it takes 2 arguments",
-            "source": "generated/candidates/flighthq-shading/src/order_modifier_stack.rs"
-          },
-          {
-            "code": "E0609",
-            "message": "no field `map` on type `Modifier`",
-            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
-          },
-          {
-            "code": "E0368",
-            "message": "binary assignment operation `+=` cannot be applied to type `&str`",
-            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
-          },
-          {
-            "code": "E0368",
-            "message": "binary assignment operation `+=` cannot be applied to type `&str`",
-            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
-          }
-        ],
-        "path": "generated/candidates/flighthq-shading",
-        "status": "compile-blocked",
-        "syntaxCheckedSources": 17,
+        "compileDiagnostics": [],
+        "status": "source-blocked",
+        "syntaxCheckedSources": 0,
         "unresolvedDependencies": []
       },
       "crate": "flighthq-shading",
@@ -32161,7 +31629,7 @@
           ],
           "declarations": 2,
           "module": "create_animated_normal_modifier",
-          "outputSha256": "sha256:39291da67166700fba3ba137e48db439900c555bbc68c46b8dfd66e21a842abf",
+          "outputSha256": "sha256:e8c5c759cd1f06a1d211236ced1457fd8fa7bf505db9ab5ff762d7a1ef07d1fd",
           "source": "upstream/packages/shading/src/createAnimatedNormalModifier.ts",
           "usesOpaqueHostValues": false
         },
@@ -32172,7 +31640,7 @@
           ],
           "declarations": 2,
           "module": "create_dissolve_modifier",
-          "outputSha256": "sha256:fe48bcb4f49a76659649fe69453258aaed43ffbc53143947ad3c92d9166859da",
+          "outputSha256": "sha256:b66b3c4f3c4738297481118a1aa286d0d1f4135f8d56683211e29efec72794e4",
           "source": "upstream/packages/shading/src/createDissolveModifier.ts",
           "usesOpaqueHostValues": false
         },
@@ -32183,7 +31651,7 @@
           ],
           "declarations": 2,
           "module": "create_emissive_modifier",
-          "outputSha256": "sha256:12dc48b2b2bf8944c7a673f2df547c51748a57d0f20724efe77b966fe64d7a6f",
+          "outputSha256": "sha256:0d9295861488f9ba5f1f2487d796931d253cb18738f85f23a9292b2f322f0395",
           "source": "upstream/packages/shading/src/createEmissiveModifier.ts",
           "usesOpaqueHostValues": false
         },
@@ -32194,7 +31662,7 @@
           ],
           "declarations": 2,
           "module": "create_env_reflect_modifier",
-          "outputSha256": "sha256:ffc965735162119537d1f7723328f5156dc7293c2d2077a2af6f4764c556ebb1",
+          "outputSha256": "sha256:178af6fd0dd89a2aaad84ee701901c65dda6418a57a6282ce000a681ae67376c",
           "source": "upstream/packages/shading/src/createEnvReflectModifier.ts",
           "usesOpaqueHostValues": false
         },
@@ -32205,7 +31673,7 @@
           ],
           "declarations": 2,
           "module": "create_fog_modifier",
-          "outputSha256": "sha256:cb285ed4953ac3c8df29fdda8f85dab827d276f222724914fd16a96d012407a5",
+          "outputSha256": "sha256:27b37203ca9a98f83cbea65f46132875543cf002cfa3ede08f7ef5b31bcf639a",
           "source": "upstream/packages/shading/src/createFogModifier.ts",
           "usesOpaqueHostValues": false
         },
@@ -32216,7 +31684,7 @@
           ],
           "declarations": 2,
           "module": "create_rim_modifier",
-          "outputSha256": "sha256:e49a23cea98b40c9e042a09cd706cdcd5b46333a0c7a243c75d9edde5a1195d8",
+          "outputSha256": "sha256:8085b2f0c6b2462e00c9928424ec0329c2a2141186d966fd5aebfa7020e46aa6",
           "source": "upstream/packages/shading/src/createRimModifier.ts",
           "usesOpaqueHostValues": false
         },
@@ -32227,7 +31695,7 @@
           ],
           "declarations": 2,
           "module": "create_shaded_material",
-          "outputSha256": "sha256:d2a3eee05341adef3acbdfc5db8d5d47fad6b74ea1f0ba91168a8af322fcba31",
+          "outputSha256": "sha256:edf61ccb93ae7c032d7217b832536f43929450498dbe27aa773d3e73fb4e93bb",
           "source": "upstream/packages/shading/src/createShadedMaterial.ts",
           "usesOpaqueHostValues": false
         },
@@ -32238,7 +31706,7 @@
           ],
           "declarations": 2,
           "module": "create_toon_modifier",
-          "outputSha256": "sha256:7c0979d2b6e4d22b48dc045497beb50a5c1d3e1d12840924851b3a7c5e433ce2",
+          "outputSha256": "sha256:4e8b977fbff19920b3bf1b3175a498f921ef27913435e7da307979f0e29b28e4",
           "source": "upstream/packages/shading/src/createToonModifier.ts",
           "usesOpaqueHostValues": false
         },
@@ -32250,7 +31718,7 @@
           ],
           "declarations": 3,
           "module": "create_vertex_displace_modifier",
-          "outputSha256": "sha256:f6b37a03f6d139f04ee9ebb09351e6f47eddd288bceca9390aa0fae4d8a06d27",
+          "outputSha256": "sha256:972afb9c12effb1635dcff424429e854a03294f3a27130a3078972eb5ab5d572",
           "source": "upstream/packages/shading/src/createVertexDisplaceModifier.ts",
           "usesOpaqueHostValues": false
         },
@@ -32261,7 +31729,7 @@
           ],
           "declarations": 2,
           "module": "get_modifier_define_key",
-          "outputSha256": "sha256:49ac223dab6932b9856e8bf00c97fd9af5f6e98112a5e18582a68182c2874a2d",
+          "outputSha256": "sha256:9dbf0238018dbaa077da796404628b9d49f19952b185ec42fdfed4f943e6fd1b",
           "source": "upstream/packages/shading/src/getModifierDefineKey.ts",
           "usesOpaqueHostValues": false
         },
@@ -32271,7 +31739,7 @@
           ],
           "declarations": 1,
           "module": "get_unregistered_modifier_kinds",
-          "outputSha256": "sha256:ebf43f9dd4cb4b5890e4022bc1a74bf30d6bc49f9013b365dd80d8f6e96a1d2a",
+          "outputSha256": "sha256:0df3d4c8643d2b1e751b6283ec1feb757885e5416d49c552f9476d94e418a835",
           "source": "upstream/packages/shading/src/getUnregisteredModifierKinds.ts",
           "usesOpaqueHostValues": false
         },
@@ -32279,7 +31747,7 @@
           "declarationNames": [],
           "declarations": 0,
           "module": "_internal_index",
-          "outputSha256": "sha256:77e21ded3ff2d7a9c8f5661f1acd0c3b60a1c6f1dfd3d3adb31abdac6b752854",
+          "outputSha256": "sha256:93d77db110d6eb12f322d46c0d31c1e9af0cde91caa77a9fa95c745a6ca38383",
           "source": "upstream/packages/shading/src/index.ts",
           "usesOpaqueHostValues": false
         },
@@ -32290,7 +31758,7 @@
           ],
           "declarations": 2,
           "module": "is_built_in_modifier_slot",
-          "outputSha256": "sha256:a6ff510ae92fa3336937805ad93a7224293713c121bec1d166ca958b7abd16a0",
+          "outputSha256": "sha256:4957f6128d40fa4bc984667588cf4bdd52067209c9cf8d4e7b644c818f240ece",
           "source": "upstream/packages/shading/src/isBuiltInModifierSlot.ts",
           "usesOpaqueHostValues": false
         },
@@ -32300,53 +31768,9 @@
           ],
           "declarations": 1,
           "module": "is_modifier_stack_valid",
-          "outputSha256": "sha256:e10a3b13367fb8e9c7f62292e426648a9dc8c5d716d754389a113c28cf5b4264",
+          "outputSha256": "sha256:cd40a3cda1bfae3efa59fe24913fb594f2ab0a109e6bc1c1f7016d23db07eddf",
           "source": "upstream/packages/shading/src/isModifierStackValid.ts",
           "usesOpaqueHostValues": false
-        },
-        {
-          "declarationNames": [
-            "ModifierDefinition",
-            "ModifierRegistry",
-            "createModifierRegistry",
-            "registerModifier",
-            "resolveModifier"
-          ],
-          "declarations": 5,
-          "module": "modifier_registry",
-          "outputSha256": "sha256:512bf6780944b84c9e260aa9b05b2b391df6a6e04c8cfdad0f9463327856094f",
-          "source": "upstream/packages/shading/src/modifierRegistry.ts",
-          "usesOpaqueHostValues": true
-        },
-        {
-          "declarationNames": [
-            "SLOT_RANK",
-            "getModifierSlotRank",
-            "orderModifierStack"
-          ],
-          "declarations": 3,
-          "module": "order_modifier_stack",
-          "outputSha256": "sha256:b165d668d382b1381f27929edf6bfaf7f1eccd0d484b49f0afead116a93d15ac",
-          "source": "upstream/packages/shading/src/orderModifierStack.ts",
-          "usesOpaqueHostValues": true
-        },
-        {
-          "declarationNames": [
-            "animatedNormalModifierDefinition",
-            "dissolveModifierDefinition",
-            "emissiveModifierDefinition",
-            "envReflectModifierDefinition",
-            "fogModifierDefinition",
-            "registerBuiltInModifiers",
-            "rimModifierDefinition",
-            "toonModifierDefinition",
-            "vertexDisplaceModifierDefinition"
-          ],
-          "declarations": 9,
-          "module": "register_built_in_modifiers",
-          "outputSha256": "sha256:e76b06f974328d02bb1f157521709c2cca767c437de41317912a341c54f94d07",
-          "source": "upstream/packages/shading/src/registerBuiltInModifiers.ts",
-          "usesOpaqueHostValues": true
         }
       ],
       "fullyPromotedTarget": false,
@@ -32402,7 +31826,7 @@
           "package": "@flighthq/types"
         }
       ],
-      "status": "emittable",
+      "status": "blocked",
       "transitiveDependents": 2
     },
     {
@@ -36857,7 +36281,7 @@
         }
       ],
       "directDependents": 1,
-      "disposition": "generated",
+      "disposition": "host-backend",
       "emittedSources": [
         {
           "declarationNames": [
@@ -36891,6 +36315,7 @@
       ],
       "missingExports": [],
       "package": "@flighthq/textshaper-canvas",
+      "policyReason": "Canvas backend packages mechanically emit against dynamic browser handles until typed backend-capability IR replaces their opaque native seam.",
       "promotedTarget": false,
       "requiredDependencies": [
         {
@@ -37610,6 +37035,27 @@
           "reason": "boolField: typeof operand has no inferred Rust type: {\"kind\":\"identifier\",\"name\":\"value\"}",
           "source": "upstream/packages/tilemap-formats/src/tiledJsonParse.ts",
           "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:11ef4966503ceaf374067af0c8c1099ffdf29528b6305071140b59b4c136b3fa",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/tilemap-formats/src/tiledProject.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:c76121d7be99a4833b3849fe946e8464a05cd754411e7f51d0760745b5b5deb7",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/tilemap-formats/src/tiledTmxFormat.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:8bd4f5231c84d077dfc986895e296beb46ad0406b3415243bea312dca5b2f384",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/tilemap-formats/src/tiledXmlParse.ts",
+          "stage": "emission"
         }
       ],
       "candidate": {
@@ -37697,65 +37143,6 @@
           "outputSha256": "sha256:d2bfddf2a19614272b0c11f491cf7877556e502428f0036236d6565cc84779c4",
           "source": "upstream/packages/tilemap-formats/src/tiledOptions.ts",
           "usesOpaqueHostValues": false
-        },
-        {
-          "declarationNames": [
-            "TilesetGroup",
-            "buildTilemapLayersFromTiled"
-          ],
-          "declarations": 2,
-          "module": "tiled_project",
-          "outputSha256": "sha256:63c1a3709cd1e334eabaca9a35ef5f500e452a83399fdb5e7dbe87a2f8302bcf",
-          "source": "upstream/packages/tilemap-formats/src/tiledProject.ts",
-          "usesOpaqueHostValues": true
-        },
-        {
-          "declarationNames": [
-            "attr",
-            "escapeXml",
-            "formatLayerBaseAttrs",
-            "formatPoints",
-            "formatTiledTmx",
-            "writeLayer",
-            "writeObject",
-            "writeProperties",
-            "writeTileset",
-            "writeTilesetRef",
-            "writeTilesetTile"
-          ],
-          "declarations": 11,
-          "module": "tiled_tmx_format",
-          "outputSha256": "sha256:cb3e7a76093e605632915a837d280c11e212c7e26668317ae71b4658bb44c050",
-          "source": "upstream/packages/tilemap-formats/src/tiledTmxFormat.ts",
-          "usesOpaqueHostValues": true
-        },
-        {
-          "declarationNames": [
-            "asCompression",
-            "asOrientation",
-            "asPropertyType",
-            "asRenderOrder",
-            "attrBool",
-            "attrNumber",
-            "attrString",
-            "buildTiledLayerBaseFromXml",
-            "buildTiledLayerDataFromXml",
-            "buildTiledLayerFromXml",
-            "buildTiledObjectFromXml",
-            "buildTiledPropertiesFromXml",
-            "buildTiledTilesetFromXml",
-            "buildTiledTilesetRefFromXml",
-            "buildTiledTilesetTileFromXml",
-            "parsePropertyValue",
-            "parseTiledPoints",
-            "parseTiledTileset",
-            "parseTiledTmx"
-          ],
-          "declarations": 19,
-          "module": "tiled_xml_parse",
-          "outputSha256": "sha256:5196d68004906fb6b3bfa0b7612441df11e38e6b51520af19174a52360413c92",
-          "source": "upstream/packages/tilemap-formats/src/tiledXmlParse.ts",
-          "usesOpaqueHostValues": true
         }
       ],
       "fullyPromotedTarget": false,
@@ -38188,23 +37575,19 @@
     {
       "apiExports": 23,
       "attemptedSources": 2,
-      "blockers": [],
+      "blockers": [
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:84c5cb7fcc1b3ce12269f917830a22774b81828f5e34dfff56c255f06e987c59",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (1 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/tray/src/tray.ts",
+          "stage": "emission"
+        }
+      ],
       "candidate": {
-        "compileDiagnostics": [
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-tray/src/tray.rs"
-          },
-          {
-            "code": "E0277",
-            "message": "a value of type `Vec<TrayIcon>` cannot be built from an iterator over elements of type `OpaqueHostValue`",
-            "source": "generated/candidates/flighthq-tray/src/tray.rs"
-          }
-        ],
-        "path": "generated/candidates/flighthq-tray",
-        "status": "compile-blocked",
-        "syntaxCheckedSources": 2,
+        "compileDiagnostics": [],
+        "status": "source-blocked",
+        "syntaxCheckedSources": 0,
         "unresolvedDependencies": []
       },
       "crate": "flighthq-tray",
@@ -38221,43 +37604,9 @@
           "declarationNames": [],
           "declarations": 0,
           "module": "_internal_index",
-          "outputSha256": "sha256:fc0facf4b9edb7538e94b088e7d8456a7d5f8e80114194286178dbd637db22c9",
+          "outputSha256": "sha256:7ff049ecd0295b48671ddc68f3be8a292e7b45e2c8daf3f68de845b54ac363d8",
           "source": "upstream/packages/tray/src/index.ts",
           "usesOpaqueHostValues": false
-        },
-        {
-          "declarationNames": [
-            "WEB_CAPABILITIES",
-            "_backend",
-            "createTrayIcon",
-            "createWebTrayBackend",
-            "destroyTrayIcon",
-            "displayTrayBalloon",
-            "getTrayBackend",
-            "getTrayCapabilities",
-            "getTrayIconBounds",
-            "getTrayIconTitle",
-            "getTrayIconTooltip",
-            "getTrayIcons",
-            "isTrayDestroyed",
-            "onTrayEvent",
-            "popupTrayContextMenu",
-            "removeTrayBalloon",
-            "setTrayBackend",
-            "setTrayIcon",
-            "setTrayIconContextMenu",
-            "setTrayIconTemplate",
-            "setTrayIconTitle",
-            "setTrayIconTooltip",
-            "setTrayIgnoreDoubleClickEvents",
-            "setTrayPressedIcon",
-            "startTrayIconAnimation"
-          ],
-          "declarations": 25,
-          "module": "tray",
-          "outputSha256": "sha256:263505560d4412986246571433da372a318ac144cb65c2bb74e13318229f97f4",
-          "source": "upstream/packages/tray/src/tray.ts",
-          "usesOpaqueHostValues": true
         }
       ],
       "fullyPromotedTarget": false,
@@ -38295,25 +37644,40 @@
           "package": "@flighthq/types"
         }
       ],
-      "status": "emittable",
+      "status": "blocked",
       "transitiveDependents": 3
     },
     {
       "apiExports": 35,
       "attemptedSources": 9,
-      "blockers": [],
+      "blockers": [
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:7ae26ccaa3b45f7463cad5bbb4f574302697645a26b68aa02280c70c5710d57c",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 1); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/tween/src/timer.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:f7eaf693546fec24f28b40c6216dd4ea768a85efdf9a3cf94d6f8a96fd7f9c87",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 1); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/tween/src/tween.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:c63067e2f2ad364f435e21292966268ea54fb691e1767d6fde2e8dfa7485d3f3",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 1); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/tween/src/tweenProgress.ts",
+          "stage": "emission"
+        }
+      ],
       "candidate": {
         "compileDiagnostics": [],
-        "path": "generated/candidates/flighthq-tween",
-        "status": "dependency-blocked",
-        "syntaxCheckedSources": 9,
-        "unresolvedDependencies": [
-          {
-            "candidateStatus": "promoted",
-            "package": "@flighthq/easing",
-            "status": "emittable"
-          }
-        ]
+        "status": "source-blocked",
+        "syntaxCheckedSources": 0,
+        "unresolvedDependencies": []
       },
       "crate": "flighthq-tween",
       "dependencies": [
@@ -38340,7 +37704,7 @@
           ],
           "declarations": 2,
           "module": "color_tween",
-          "outputSha256": "sha256:6b361904bfa03c9d545e2c375bb7eafc16ccacbdcf58887c09c4c5ef2fe1c49d",
+          "outputSha256": "sha256:92c713ad4bdb25a7b39546dc017902453011d66463a8da0a1dc29b69fc12f86b",
           "source": "upstream/packages/tween/src/colorTween.ts",
           "usesOpaqueHostValues": false
         },
@@ -38348,7 +37712,7 @@
           "declarationNames": [],
           "declarations": 0,
           "module": "_internal_index",
-          "outputSha256": "sha256:16838733d7d7e447e3cc8cbd09d221807c3e6f1a5fbaeced92d13d71fc98e536",
+          "outputSha256": "sha256:7978c7a346fce85758c5e7a03739c5ce42f78fb697e1902d6bebf7d3d9750bce",
           "source": "upstream/packages/tween/src/index.ts",
           "usesOpaqueHostValues": false
         },
@@ -38358,47 +37722,9 @@
           ],
           "declarations": 1,
           "module": "_internal_internal",
-          "outputSha256": "sha256:e4c24908aa81cd1ec687ddccbbccefbf8eaca6997524bd5fd4afc55eb5326392",
+          "outputSha256": "sha256:f4593bc38466f54bec4d775437ffbee53c1db67f09c2eca34258c28c52b28ded",
           "source": "upstream/packages/tween/src/internal.ts",
           "usesOpaqueHostValues": false
-        },
-        {
-          "declarationNames": [
-            "createTweenTimer"
-          ],
-          "declarations": 1,
-          "module": "timer",
-          "outputSha256": "sha256:c947e61e130892933cd3410a0536c66a1700266c4d6b444ab4246cb16f602e8d",
-          "source": "upstream/packages/tween/src/timer.ts",
-          "usesOpaqueHostValues": true
-        },
-        {
-          "declarationNames": [
-            "applyTween",
-            "createTween",
-            "getActiveTweenCount",
-            "getTweensOf",
-            "hasTweensOf",
-            "isTweenManager",
-            "killTweensOfProperty",
-            "makeTween",
-            "pauseAllTweens",
-            "pauseTween",
-            "pauseTweens",
-            "registerTween",
-            "resetAllTweens",
-            "resumeAllTweens",
-            "resumeTween",
-            "resumeTweens",
-            "stopAllTweens",
-            "stopTween",
-            "stopTweens"
-          ],
-          "declarations": 19,
-          "module": "tween",
-          "outputSha256": "sha256:d773446b4bafb9ec4e857756eba54a945b043674449a5c073c586d03ca7f21d5",
-          "source": "upstream/packages/tween/src/tween.ts",
-          "usesOpaqueHostValues": true
         },
         {
           "declarationNames": [
@@ -38407,23 +37733,9 @@
           ],
           "declarations": 2,
           "module": "tween_manager",
-          "outputSha256": "sha256:97fd2772fd7c1e6172e5af1d4319ba9a0e3f27e1a3cacec7a843e98117cb9f96",
+          "outputSha256": "sha256:a6c6b2d12462f62e3289dbab9bb6479c405d3a1a4b37093151bcd17cfad8c9c9",
           "source": "upstream/packages/tween/src/tweenManager.ts",
           "usesOpaqueHostValues": false
-        },
-        {
-          "declarationNames": [
-            "getTweenProgress",
-            "invalidateTween",
-            "restartTween",
-            "seekTween",
-            "setTweenProgress"
-          ],
-          "declarations": 5,
-          "module": "tween_progress",
-          "outputSha256": "sha256:7e74ec86b40fe43e4c800bc58ac284fad5fac8b02bd07f0fb1725ad94618f57d",
-          "source": "upstream/packages/tween/src/tweenProgress.ts",
-          "usesOpaqueHostValues": true
         },
         {
           "declarationNames": [
@@ -38433,7 +37745,7 @@
           ],
           "declarations": 3,
           "module": "tween_stagger",
-          "outputSha256": "sha256:43ae5d69763fb9c1926d8b5ed1377fde97d7ec3d4b39ebbe7abbf7a05c966622",
+          "outputSha256": "sha256:9d0dcbbd6fea16363faa5dcedcde73a10f225e9ca6a6895f648156023f062c5a",
           "source": "upstream/packages/tween/src/tweenStagger.ts",
           "usesOpaqueHostValues": false
         },
@@ -38445,7 +37757,7 @@
           ],
           "declarations": 3,
           "module": "update_tweens",
-          "outputSha256": "sha256:290d9715dc5f5a0057921aee17c3e7ad3888f34d1237238b9f1e151f53acaf9f",
+          "outputSha256": "sha256:b9f27dbb1665759c956fe0cb7bd8cd34c3d1c5429e32eda16758a628056e5c7e",
           "source": "upstream/packages/tween/src/updateTweens.ts",
           "usesOpaqueHostValues": false
         }
@@ -38506,7 +37818,7 @@
           "package": "@flighthq/types"
         }
       ],
-      "status": "emittable",
+      "status": "blocked",
       "transitiveDependents": 2
     },
     {
@@ -46395,123 +45707,19 @@
     {
       "apiExports": 23,
       "attemptedSources": 2,
-      "blockers": [],
+      "blockers": [
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:4d0ab10d33fe213e79c5414d87d98c55c665aae618a032f583a4e71734844759",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (1 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "source": "upstream/packages/updater/src/updater.ts",
+          "stage": "emission"
+        }
+      ],
       "candidate": {
-        "compileDiagnostics": [
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-updater/src/updater.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-updater/src/updater.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-updater/src/updater.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-updater/src/updater.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-updater/src/updater.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-updater/src/updater.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-updater/src/updater.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-updater/src/updater.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-updater/src/updater.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-updater/src/updater.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-updater/src/updater.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-updater/src/updater.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-updater/src/updater.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-updater/src/updater.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-updater/src/updater.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-updater/src/updater.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-updater/src/updater.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-updater/src/updater.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-updater/src/updater.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-updater/src/updater.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-updater/src/updater.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-updater/src/updater.rs"
-          }
-        ],
-        "path": "generated/candidates/flighthq-updater",
-        "status": "compile-blocked",
-        "syntaxCheckedSources": 2,
+        "compileDiagnostics": [],
+        "status": "source-blocked",
+        "syntaxCheckedSources": 0,
         "unresolvedDependencies": []
       },
       "crate": "flighthq-updater",
@@ -46532,45 +45740,9 @@
           "declarationNames": [],
           "declarations": 0,
           "module": "_internal_index",
-          "outputSha256": "sha256:3b7606837e38becb639aca9641239a79197d19dea28e607f54643d57bd3a03db",
+          "outputSha256": "sha256:610f0acdd4da09bd084d454ee4192d8e2e774a3357622c869875cf43fb0fd214",
           "source": "upstream/packages/updater/src/index.ts",
           "usesOpaqueHostValues": false
-        },
-        {
-          "declarationNames": [
-            "_backend",
-            "_setState",
-            "_states",
-            "_subscriptions",
-            "attachAppUpdater",
-            "cancelAppUpdateDownload",
-            "checkAndDownloadAppUpdate",
-            "checkForAppUpdate",
-            "createAppUpdater",
-            "createUpdaterConfig",
-            "createUpdaterState",
-            "createWebUpdaterBackend",
-            "detachAppUpdater",
-            "disposeAppUpdater",
-            "downloadAppUpdate",
-            "getAppUpdaterState",
-            "getUpdaterBackend",
-            "getUpdaterChannel",
-            "getUpdaterConfig",
-            "isAppUpdateEligible",
-            "quitAndInstallUpdate",
-            "rollbackAppUpdate",
-            "setUpdaterBackend",
-            "setUpdaterChannel",
-            "setUpdaterConfig",
-            "setUpdaterFeedUrl",
-            "setUpdaterSignatureConfig"
-          ],
-          "declarations": 27,
-          "module": "updater",
-          "outputSha256": "sha256:e0187302ce16b6ae0eef089ae1f0fb18ab838ab38d0c4a911d5e0908376b65f4",
-          "source": "upstream/packages/updater/src/updater.ts",
-          "usesOpaqueHostValues": true
         }
       ],
       "fullyPromotedTarget": false,
@@ -46612,7 +45784,7 @@
           "package": "@flighthq/types"
         }
       ],
-      "status": "emittable",
+      "status": "blocked",
       "transitiveDependents": 2
     },
     {
@@ -47269,17 +46441,17 @@
   ],
   "schemaVersion": 3,
   "summary": {
-    "blocked": 51,
-    "candidateCompileBlocked": 28,
+    "blocked": 56,
+    "candidateCompileBlocked": 24,
     "candidateCompiled": 28,
-    "candidateDependencyBlocked": 17,
+    "candidateDependencyBlocked": 16,
     "cultivated": 1,
     "eligible": 125,
-    "emittable": 74,
+    "emittable": 69,
     "excluded": 1,
     "hostBound": 4,
     "packages": 131,
-    "sourceBlockers": 274
+    "sourceBlockers": 310
   },
   "targets": [
     {

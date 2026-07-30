@@ -6,15 +6,15 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | --- | ---: |
 | Inventoried packages | 131 |
 | Default-generated packages | 125 |
-| Emittable packages | 74 |
-| Blocked packages | 51 |
+| Emittable packages | 69 |
+| Blocked packages | 56 |
 | Compiled candidates | 28 |
-| Compile-blocked candidates | 28 |
-| Dependency-blocked candidates | 17 |
+| Compile-blocked candidates | 24 |
+| Dependency-blocked candidates | 16 |
 | Cultivated packages | 1 |
 | Host-bound packages | 4 |
 | Excluded packages | 1 |
-| Source/package blockers | 274 |
+| Source/package blockers | 310 |
 
 | Package | Disposition | Status | Candidate | Sources emitted/attempted | API generated/expected | Missing | Dependents direct/transitive | Opaque sources | Blockers | Target |
 | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
@@ -40,17 +40,17 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | `@flighthq/connectivity` | generated | emittable | compile-blocked | 2/2 | 14/14 | 0 | 2/2 | 1 | 0 | no |
 | `@flighthq/debug` | generated | blocked | source-blocked | 2/3 | 4/9 | 5 | 1/1 | 1 | 2 | no |
 | `@flighthq/device` | generated | emittable | compiled | 2/2 | 14/14 | 0 | 2/2 | 1 | 0 | no |
-| `@flighthq/dialog` | generated | emittable | compile-blocked | 2/2 | 15/15 | 0 | 5/5 | 1 | 0 | no |
+| `@flighthq/dialog` | generated | blocked | source-blocked | 1/2 | 15/15 | 0 | 5/5 | 0 | 1 | no |
 | `@flighthq/displayobject` | generated | blocked | source-blocked | 7/8 | 36/46 | 10 | 14/24 | 6 | 2 | no |
-| `@flighthq/displayobject-canvas` | generated | blocked | source-blocked | 18/31 | 56/94 | 38 | 5/5 | 16 | 14 | no |
+| `@flighthq/displayobject-canvas` | host-backend | blocked | source-blocked | 18/31 | 56/94 | 38 | 5/5 | 16 | 14 | no |
 | `@flighthq/displayobject-dom` | host-bound | host-bound | not-applicable | 0/0 | 0/58 | 58 | 1/1 | 0 | 0 | no |
-| `@flighthq/displayobject-gl` | generated | blocked | source-blocked | 25/28 | 79/89 | 12 | 1/1 | 16 | 4 | no |
-| `@flighthq/displayobject-wgpu` | generated | blocked | source-blocked | 26/29 | 84/95 | 12 | 1/1 | 17 | 4 | no |
+| `@flighthq/displayobject-gl` | host-backend | blocked | source-blocked | 25/28 | 79/89 | 12 | 1/1 | 16 | 4 | no |
+| `@flighthq/displayobject-wgpu` | host-backend | blocked | source-blocked | 26/29 | 84/95 | 12 | 1/1 | 17 | 4 | no |
 | `@flighthq/easing` | generated | emittable | promoted | 20/20 | 48/48 | 0 | 2/3 | 0 | 0 | full |
 | `@flighthq/effects` | generated | emittable | compile-blocked | 72/72 | 112/112 | 0 | 4/4 | 2 | 0 | no |
-| `@flighthq/effects-canvas` | generated | blocked | source-blocked | 9/48 | 29/102 | 78 | 1/1 | 7 | 40 | no |
-| `@flighthq/effects-gl` | generated | blocked | source-blocked | 11/58 | 31/135 | 104 | 1/1 | 8 | 48 | no |
-| `@flighthq/effects-wgpu` | generated | blocked | source-blocked | 12/56 | 37/128 | 91 | 1/1 | 4 | 45 | no |
+| `@flighthq/effects-canvas` | host-backend | blocked | source-blocked | 9/48 | 29/102 | 78 | 1/1 | 7 | 40 | no |
+| `@flighthq/effects-gl` | host-backend | blocked | source-blocked | 11/58 | 31/135 | 104 | 1/1 | 8 | 48 | no |
+| `@flighthq/effects-wgpu` | host-backend | blocked | source-blocked | 12/56 | 37/128 | 91 | 1/1 | 4 | 45 | no |
 | `@flighthq/entity` | generated | emittable | compiled | 6/6 | 12/12 | 0 | 20/61 | 1 | 0 | no |
 | `@flighthq/filesystem` | generated | blocked | source-blocked | 1/2 | 0/43 | 43 | 2/2 | 0 | 2 | no |
 | `@flighthq/flow` | generated | emittable | compiled | 10/10 | 9/9 | 0 | 1/1 | 0 | 0 | no |
@@ -86,7 +86,7 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | `@flighthq/notification` | generated | blocked | source-blocked | 1/2 | 0/26 | 26 | 4/4 | 0 | 2 | no |
 | `@flighthq/particleemitter` | generated | emittable | dependency-blocked | 11/11 | 51/51 | 0 | 1/1 | 10 | 0 | no |
 | `@flighthq/particles` | generated | emittable | compile-blocked | 11/11 | 50/50 | 0 | 3/3 | 1 | 0 | no |
-| `@flighthq/particles-formats` | generated | blocked | source-blocked | 16/21 | 62/79 | 17 | 1/1 | 7 | 6 | no |
+| `@flighthq/particles-formats` | generated | blocked | source-blocked | 9/21 | 62/79 | 17 | 1/1 | 0 | 13 | no |
 | `@flighthq/path` | generated | emittable | compiled | 23/23 | 50/50 | 0 | 8/8 | 0 | 0 | no |
 | `@flighthq/path-boolean` | generated | blocked | source-blocked | 7/8 | 12/12 | 1 | 1/1 | 0 | 2 | no |
 | `@flighthq/path-formats` | generated | emittable | compile-blocked | 2/2 | 3/3 | 0 | 1/1 | 0 | 0 | no |
@@ -96,17 +96,17 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | `@flighthq/power` | generated | emittable | compiled | 2/2 | 19/19 | 0 | 2/2 | 1 | 0 | no |
 | `@flighthq/protocol` | generated | emittable | compile-blocked | 2/2 | 20/20 | 0 | 2/2 | 1 | 0 | no |
 | `@flighthq/render` | generated | blocked | source-blocked | 14/17 | 39/63 | 24 | 9/13 | 10 | 4 | no |
-| `@flighthq/render-gl` | generated | blocked | source-blocked | 23/24 | 79/75 | 5 | 4/4 | 16 | 2 | no |
-| `@flighthq/render-wgpu` | generated | emittable | dependency-blocked | 18/18 | 68/68 | 0 | 5/5 | 15 | 0 | no |
+| `@flighthq/render-gl` | host-backend | blocked | source-blocked | 23/24 | 79/75 | 5 | 4/4 | 16 | 2 | no |
+| `@flighthq/render-wgpu` | host-backend | emittable | dependency-blocked | 18/18 | 68/68 | 0 | 5/5 | 15 | 0 | no |
 | `@flighthq/scene` | generated | blocked | source-blocked | 9/14 | 26/43 | 17 | 6/6 | 7 | 6 | no |
-| `@flighthq/scene-formats` | generated | blocked | source-blocked | 10/16 | 84/15 | 8 | 2/2 | 3 | 7 | no |
-| `@flighthq/scene-gl` | generated | blocked | source-blocked | 52/53 | 185/184 | 2 | 1/1 | 25 | 2 | no |
-| `@flighthq/scene-resources` | generated | blocked | source-blocked | 15/16 | 34/37 | 3 | 1/1 | 14 | 2 | no |
-| `@flighthq/scene-wgpu` | generated | blocked | source-blocked | 41/42 | 140/140 | 2 | 1/1 | 29 | 2 | no |
+| `@flighthq/scene-formats` | generated | blocked | source-blocked | 7/16 | 84/15 | 8 | 2/2 | 0 | 10 | no |
+| `@flighthq/scene-gl` | host-backend | blocked | source-blocked | 52/53 | 185/184 | 2 | 1/1 | 25 | 2 | no |
+| `@flighthq/scene-resources` | generated | blocked | source-blocked | 1/16 | 34/37 | 3 | 1/1 | 0 | 16 | no |
+| `@flighthq/scene-wgpu` | host-backend | blocked | source-blocked | 41/42 | 140/140 | 2 | 1/1 | 29 | 2 | no |
 | `@flighthq/screen` | generated | emittable | compiled | 2/2 | 31/31 | 0 | 2/2 | 1 | 0 | no |
 | `@flighthq/sdk` | generated | blocked | source-blocked | 14/14 | 0/5923 | 5923 | 0/0 | 0 | 1 | no |
 | `@flighthq/sensors` | generated | blocked | source-blocked | 1/2 | 0/32 | 32 | 1/1 | 0 | 2 | no |
-| `@flighthq/shading` | generated | emittable | compile-blocked | 17/17 | 37/37 | 0 | 2/2 | 3 | 0 | no |
+| `@flighthq/shading` | generated | blocked | source-blocked | 14/17 | 37/37 | 0 | 2/2 | 0 | 3 | no |
 | `@flighthq/shape` | generated | blocked | source-blocked | 6/7 | 32/42 | 10 | 7/8 | 2 | 2 | no |
 | `@flighthq/shape-formats` | generated | blocked | source-blocked | 1/2 | 0/5 | 5 | 1/1 | 0 | 2 | no |
 | `@flighthq/share` | generated | blocked | source-blocked | 1/2 | 0/14 | 14 | 2/2 | 0 | 2 | no |
@@ -131,19 +131,19 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | `@flighthq/textlayout` | generated | emittable | dependency-blocked | 13/13 | 51/47 | 0 | 9/11 | 1 | 0 | no |
 | `@flighthq/textsegment` | generated | emittable | compiled | 4/4 | 11/11 | 0 | 1/1 | 1 | 0 | no |
 | `@flighthq/textshaper` | generated | blocked | source-blocked | 8/9 | 30/31 | 3 | 3/12 | 1 | 2 | no |
-| `@flighthq/textshaper-canvas` | generated | emittable | dependency-blocked | 2/2 | 3/3 | 0 | 1/1 | 1 | 0 | no |
+| `@flighthq/textshaper-canvas` | host-backend | emittable | dependency-blocked | 2/2 | 3/3 | 0 | 1/1 | 1 | 0 | no |
 | `@flighthq/texture` | generated | emittable | compiled | 5/5 | 42/42 | 0 | 5/6 | 0 | 0 | no |
 | `@flighthq/texture-formats` | generated | blocked | source-blocked | 8/9 | 8/6 | 0 | 1/1 | 0 | 1 | no |
 | `@flighthq/textureatlas` | generated | emittable | dependency-blocked | 4/4 | 20/20 | 0 | 8/13 | 1 | 0 | no |
 | `@flighthq/textureatlas-formats` | generated | emittable | dependency-blocked | 8/8 | 29/29 | 0 | 2/2 | 1 | 0 | no |
-| `@flighthq/tilemap-formats` | generated | blocked | source-blocked | 8/9 | 16/16 | 0 | 1/1 | 3 | 1 | no |
+| `@flighthq/tilemap-formats` | generated | blocked | source-blocked | 5/9 | 16/16 | 0 | 1/1 | 0 | 4 | no |
 | `@flighthq/tileset` | generated | emittable | dependency-blocked | 3/3 | 9/9 | 0 | 3/8 | 1 | 0 | no |
 | `@flighthq/timeline` | generated | emittable | compile-blocked | 2/2 | 16/16 | 0 | 2/2 | 0 | 0 | no |
 | `@flighthq/tool-capture` | excluded | excluded | not-applicable | 0/0 | 0/57 | 57 | 0/0 | 0 | 0 | no |
-| `@flighthq/tray` | generated | emittable | compile-blocked | 2/2 | 23/23 | 0 | 3/3 | 1 | 0 | no |
-| `@flighthq/tween` | generated | emittable | dependency-blocked | 9/9 | 36/35 | 0 | 2/2 | 3 | 0 | no |
+| `@flighthq/tray` | generated | blocked | source-blocked | 1/2 | 23/23 | 0 | 3/3 | 0 | 1 | no |
+| `@flighthq/tween` | generated | blocked | source-blocked | 6/9 | 36/35 | 0 | 2/2 | 0 | 3 | no |
 | `@flighthq/types` | generated | emittable | compiled | 590/590 | 1261/1261 | 0 | 129/129 | 76 | 0 | partial |
-| `@flighthq/updater` | generated | emittable | compile-blocked | 2/2 | 23/23 | 0 | 2/2 | 1 | 0 | no |
+| `@flighthq/updater` | generated | blocked | source-blocked | 1/2 | 23/23 | 0 | 2/2 | 0 | 1 | no |
 | `@flighthq/useragent` | generated | emittable | compiled | 3/3 | 12/12 | 0 | 3/6 | 1 | 0 | no |
 | `@flighthq/velocity` | generated | emittable | dependency-blocked | 4/4 | 20/20 | 0 | 3/3 | 2 | 0 | no |
 | `@flighthq/video` | generated | blocked | source-blocked | 3/4 | 12/16 | 4 | 2/2 | 1 | 2 | no |
@@ -171,6 +171,10 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 - **package** `upstream/packages/debug/src`: Generated crate is missing 5 of 9 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/debug/src/debug.ts`: _collectDebugChannels: spread Rust lowering is not implemented
+
+### `@flighthq/dialog`
+
+- **emission** `upstream/packages/dialog/src/dialog.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (1 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 
 ### `@flighthq/displayobject`
 
@@ -433,10 +437,17 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 ### `@flighthq/particles-formats`
 
 - **package** `upstream/packages/particles-formats/src`: Generated crate is missing 17 of 79 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/particles-formats/src/detect.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 5); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/particles-formats/src/formatRegistry.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 5); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/particles-formats/src/libgdxParse.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 5); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 - **emission** `upstream/packages/particles-formats/src/libgdxSerialize.ts`: documentToText: spread Rust lowering is not implemented
+- **emission** `upstream/packages/particles-formats/src/parseParticleConfig.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 5); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 - **emission** `upstream/packages/particles-formats/src/particleDesignerParse.ts`: num: typeof operand has no inferred Rust type: {"kind":"identifier","name":"v"}
+- **emission** `upstream/packages/particles-formats/src/pixiParse.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 5); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/particles-formats/src/spineParse.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 5); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 - **emission** `upstream/packages/particles-formats/src/spineSerialize.ts`: serializeSpineParticle: JSON.stringify requires a portable scalar or structural array
 - **emission** `upstream/packages/particles-formats/src/starlingPexParse.ts`: extractAttr: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
+- **emission** `upstream/packages/particles-formats/src/unityParse.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 5); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 - **emission** `upstream/packages/particles-formats/src/unitySerialize.ts`: serializeUnityParticle: JSON.stringify requires a portable scalar or structural array
 
 ### `@flighthq/path-boolean`
@@ -482,6 +493,9 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **emission** `upstream/packages/scene-formats/src/gltfParse.ts`: readAccessor: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
 - **emission** `upstream/packages/scene-formats/src/gltfSchema.ts`: GltfNormalTextureInfo: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[{"name":"KHR_texture_transform","optional":true,"type":{"arguments":[],"kind":"named","name":"GltfTextureTransform"}}],"kind":"anonymous"}
 - **emission** `upstream/packages/scene-formats/src/md2Parse.ts`: createSceneFromMd2: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
+- **emission** `upstream/packages/scene-formats/src/md5AnimParse.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene-formats/src/md5Parse.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene-formats/src/objParse.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 - **emission** `upstream/packages/scene-formats/src/shared.ts`: findSceneSkeletonJoints: spread Rust lowering is not implemented
 - **emission** `upstream/packages/scene-formats/src/threeDsParse.ts`: createSceneFrom3ds: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
 
@@ -493,7 +507,21 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 ### `@flighthq/scene-resources`
 
 - **package** `upstream/packages/scene-resources/src`: Generated crate is missing 3 of 37 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/scene-resources/src/getSceneResourceTextures.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene-resources/src/load3ds.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene-resources/src/loadGltf.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene-resources/src/loadMd2.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene-resources/src/loadMd5.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene-resources/src/loadObj.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene-resources/src/loadSceneFromAwd.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene-resources/src/loadSceneOptions.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene-resources/src/resolveSceneResources.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene-resources/src/resolveSceneResourcesAndWait.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene-resources/src/revealSceneResourcesOnResolve.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene-resources/src/sceneMaterialTextureRegistry.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 - **emission** `upstream/packages/scene-resources/src/sceneResourceFetch.ts`: createWebSceneResourceFetch: await Rust lowering is not implemented
+- **emission** `upstream/packages/scene-resources/src/sceneResourceResolver.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene-resources/src/sceneResourceSignals.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 
 ### `@flighthq/scene-wgpu`
 
@@ -508,6 +536,12 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 - **package** `upstream/packages/sensors/src`: Generated crate is missing 32 of 32 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/sensors/src/sensors.ts`: createWebSensorsBackend: await Rust lowering is not implemented
+
+### `@flighthq/shading`
+
+- **emission** `upstream/packages/shading/src/modifierRegistry.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/shading/src/orderModifierStack.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/shading/src/registerBuiltInModifiers.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 
 ### `@flighthq/shape`
 
@@ -567,6 +601,23 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 ### `@flighthq/tilemap-formats`
 
 - **emission** `upstream/packages/tilemap-formats/src/tiledJsonParse.ts`: boolField: typeof operand has no inferred Rust type: {"kind":"identifier","name":"value"}
+- **emission** `upstream/packages/tilemap-formats/src/tiledProject.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/tilemap-formats/src/tiledTmxFormat.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/tilemap-formats/src/tiledXmlParse.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+
+### `@flighthq/tray`
+
+- **emission** `upstream/packages/tray/src/tray.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (1 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+
+### `@flighthq/tween`
+
+- **emission** `upstream/packages/tween/src/timer.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 1); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/tween/src/tween.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 1); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/tween/src/tweenProgress.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 1); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+
+### `@flighthq/updater`
+
+- **emission** `upstream/packages/updater/src/updater.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (1 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 
 ### `@flighthq/video`
 
@@ -791,49 +842,6 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **E0308** `generated/candidates/flighthq-connectivity/src/connectivity.rs`: mismatched types
 - **E0308** `generated/candidates/flighthq-connectivity/src/connectivity.rs`: mismatched types
 - **E0308** `generated/candidates/flighthq-connectivity/src/connectivity.rs`: mismatched types
-
-### `@flighthq/dialog`
-
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0599** `generated/candidates/flighthq-dialog/src/dialog.rs`: no method named `is_none` found for enum `OpaqueHostValue` in the current scope
-- **E0599** `generated/candidates/flighthq-dialog/src/dialog.rs`: no method named `iter` found for enum `OpaqueHostValue` in the current scope
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-dialog/src/dialog.rs`: `OpaqueHostValue` doesn't implement `std::fmt::Display`
-- **E0308** `<rustc>/library/alloc/src/macros.rs`: mismatched types
-- **E0070** `generated/candidates/flighthq-dialog/src/dialog.rs`: invalid left-hand side of assignment
-- **E0070** `generated/candidates/flighthq-dialog/src/dialog.rs`: invalid left-hand side of assignment
-- **E0609** `generated/candidates/flighthq-dialog/src/dialog.rs`: no field `length` on type `()`
-- **E0599** `generated/candidates/flighthq-dialog/src/dialog.rs`: no method named `is_none` found for enum `OpaqueHostValue` in the current scope
-- **E0599** `generated/candidates/flighthq-dialog/src/dialog.rs`: no method named `iter` found for enum `OpaqueHostValue` in the current scope
-- **E0615** `generated/candidates/flighthq-dialog/src/dialog.rs`: attempted to take value of method `join` on type `Vec<std::string::String>`
-- **E0277** `generated/candidates/flighthq-dialog/src/dialog.rs`: can't compare `OpaqueHostValue` with `std::string::String`
-- **E0308** `generated/candidates/flighthq-dialog/src/dialog.rs`: mismatched types
 
 ### `@flighthq/effects`
 
@@ -1456,30 +1464,6 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **E0070** `generated/candidates/flighthq-protocol/src/protocol.rs`: invalid left-hand side of assignment
 - **E0308** `generated/candidates/flighthq-protocol/src/protocol.rs`: mismatched types
 
-### `@flighthq/shading`
-
-- **E0425** `generated/candidates/flighthq-shading/src/create_emissive_modifier.rs`: cannot find type `EmissiveModifierFacing` in this scope
-- **E0425** `generated/candidates/flighthq-shading/src/create_fog_modifier.rs`: cannot find type `FogModifierMode` in this scope
-- **E0422** `generated/candidates/flighthq-shading/src/order_modifier_stack.rs`: cannot find struct, variant or union type `ClosureSynthesizedRecord2984407717` in this scope
-- **E0425** `generated/candidates/flighthq-shading/src/order_modifier_stack.rs`: cannot find type `ModifierSlot` in this scope
-- **E0425** `generated/candidates/flighthq-shading/src/order_modifier_stack.rs`: cannot find type `ModifierSlot` in this scope
-- **E0425** `generated/candidates/flighthq-shading/src/order_modifier_stack.rs`: cannot find type `ModifierSlot` in this scope
-- **E0425** `generated/candidates/flighthq-shading/src/order_modifier_stack.rs`: cannot find type `ModifierSlot` in this scope
-- **E0063** `generated/candidates/flighthq-shading/src/create_shaded_material.rs`: missing fields `alpha_cutoff`, `alpha_mode`, `alpha_type` and 14 other fields in initializer of `ShadedMaterial`
-- **E0308** `<rustc>/library/alloc/src/macros.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-shading/src/get_modifier_define_key.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-shading/src/get_modifier_define_key.rs`: mismatched types
-- **E0593** `generated/candidates/flighthq-shading/src/order_modifier_stack.rs`: closure is expected to take 1 argument, but it takes 2 arguments
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `map` on type `Modifier`
-- **E0368** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: binary assignment operation `+=` cannot be applied to type `&str`
-- **E0308** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: mismatched types
-- **E0368** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: binary assignment operation `+=` cannot be applied to type `&str`
-- **E0308** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: mismatched types
-
 ### `@flighthq/shell`
 
 - **E0308** `<rustc>/library/alloc/src/macros.rs`: mismatched types
@@ -1626,36 +1610,6 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **E0308** `generated/candidates/flighthq-timeline/src/timeline.rs`: mismatched types
 - **E0308** `generated/candidates/flighthq-timeline/src/timeline.rs`: mismatched types
 - **E0596** `generated/candidates/flighthq-timeline/src/timeline.rs`: cannot borrow `timeline.frame_scripts` as mutable, as it is behind a `&` reference
-
-### `@flighthq/tray`
-
-- **E0308** `generated/candidates/flighthq-tray/src/tray.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-tray/src/tray.rs`: a value of type `Vec<TrayIcon>` cannot be built from an iterator over elements of type `OpaqueHostValue`
-
-### `@flighthq/updater`
-
-- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-updater/src/updater.rs`: mismatched types
 
 ### `@flighthq/xml`
 
