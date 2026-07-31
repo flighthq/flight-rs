@@ -1099,13 +1099,6 @@ function reportTaskConstruction(construction: IrTaskConstruction, packageName: s
       `Task construction package mismatch: ${construction.origin.packageName} was lowered while generating ${packageName}`,
     );
   }
-  const compositionReason: Partial<Record<IrTaskConstructionKind, string>> = {
-    catch: 'taskCatch Rust lowering is reserved for Pass 27 Stage 4.',
-    finally: 'taskFinally Rust lowering is reserved for Pass 27 Stage 4.',
-    'join-all': 'taskAll Rust lowering is reserved for Pass 27 Stage 4.',
-    'join-all-settled': 'taskAllSettled Rust lowering is reserved for Pass 27 Stage 4.',
-    then: 'taskThen Rust lowering is reserved for Pass 27 Stage 4.',
-  };
   return {
     column: construction.origin.column,
     disposition: 'unsupported',
@@ -1116,12 +1109,31 @@ function reportTaskConstruction(construction: IrTaskConstruction, packageName: s
     output: construction.output,
     package: packageName,
     reason:
-      compositionReason[construction.kind] ??
+      taskCompositionReason(construction.kind) ??
       (irTypeContainsDynamic(construction.output)
         ? 'Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.'
         : PORTABLE_TASK_RUST_LOWERING_REASON),
     source: construction.origin.source,
   };
+}
+
+function taskCompositionReason(kind: IrTaskConstructionKind): string | undefined {
+  switch (kind) {
+    case 'catch':
+      return 'taskCatch Rust lowering is reserved for Pass 27 Stage 4.';
+    case 'finally':
+      return 'taskFinally Rust lowering is reserved for Pass 27 Stage 4.';
+    case 'join-all':
+      return 'taskAll Rust lowering is reserved for Pass 27 Stage 4.';
+    case 'join-all-settled':
+      return 'taskAllSettled Rust lowering is reserved for Pass 27 Stage 4.';
+    case 'then':
+      return 'taskThen Rust lowering is reserved for Pass 27 Stage 4.';
+    case 'async-scope':
+    case 'ready':
+    case 'reject':
+      return undefined;
+  }
 }
 
 function markExecutableTaskConstructions(
