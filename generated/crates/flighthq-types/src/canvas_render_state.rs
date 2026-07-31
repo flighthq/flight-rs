@@ -87,9 +87,16 @@ impl PartialEq for CanvasRenderStateRuntimeRecord1 {
 }
 
 #[doc(hidden)]
-#[derive(Default)]
 pub struct CanvasRenderStateRuntimeStorage {
     pub image_resource_element_cache: Option<Vec<(ImageResource, CanvasRenderStateRuntimeRecord1)>>,
     pub material_renderer_map: Option<Vec<(Kind, crate::OpaqueHostValue)>>,
+}
+impl Default for CanvasRenderStateRuntimeStorage {
+    fn default() -> Self {
+        Self {
+            image_resource_element_cache: Default::default(),
+            material_renderer_map: Default::default(),
+        }
+    }
 }
 pub type CanvasRenderStateRuntime = crate::EntityRuntime;

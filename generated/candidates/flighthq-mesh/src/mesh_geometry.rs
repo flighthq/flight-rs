@@ -340,12 +340,19 @@ fn create_mesh_geometry_runtime(fields: &MeshGeometry) -> MeshGeometry {
     let runtime: MeshGeometryRuntime = {
         let __flight_runtime = flighthq_types::EntityRuntime::default();
         {
-            let mut __flight_storage = __flight_runtime.inner.lock().unwrap();
-            __flight_storage.binding = None;
-            __flight_storage.morph_bind_pose = None;
-            __flight_storage.skin_bind_pose = None;
-            __flight_storage.webgl_data = None;
-            __flight_storage.webgpu_data = None;
+            __flight_runtime.inner.lock().unwrap().binding = None;
+        }
+        {
+            __flight_runtime.inner.lock().unwrap().morph_bind_pose = None;
+        }
+        {
+            __flight_runtime.inner.lock().unwrap().skin_bind_pose = None;
+        }
+        {
+            __flight_runtime.inner.lock().unwrap().webgl_data = None;
+        }
+        {
+            __flight_runtime.inner.lock().unwrap().webgpu_data = None;
         }
         __flight_runtime
     };

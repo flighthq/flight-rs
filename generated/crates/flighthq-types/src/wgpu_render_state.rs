@@ -122,7 +122,6 @@ impl PartialEq for WgpuColorAdjustmentFlush {
 
 // Source: upstream/packages/types/src/WgpuRenderState.ts:49 (sha256:152399c9dc63e027a8e5022e9fef13605940e46fd3c45f04d0d59efc783da472)
 #[doc(hidden)]
-#[derive(Default)]
 pub struct WgpuRenderStateRuntimeStorage {
     pub texture_cache: Vec<(crate::OpaqueHostValue, WgpuTextureEntry)>,
     pub image_resource_texture_cache: Vec<(ImageResource, WgpuImageResourceTextureEntry)>,
@@ -135,6 +134,23 @@ pub struct WgpuRenderStateRuntimeStorage {
     pub scissor_stack: Vec<WgpuScissorRect>,
     pub current_scissor_rect: Option<WgpuScissorRect>,
     pub render_target_viewport: Option<SharedStructuralRecord1>,
+}
+impl Default for WgpuRenderStateRuntimeStorage {
+    fn default() -> Self {
+        Self {
+            texture_cache: Default::default(),
+            image_resource_texture_cache: Default::default(),
+            default_bitmap_shader: Default::default(),
+            particle_instance_buffer: Default::default(),
+            particle_instance_data: Default::default(),
+            sprite_batch_material_renderer: Default::default(),
+            material_renderer_map: Default::default(),
+            scene_mesh_material_registry: Default::default(),
+            scissor_stack: Default::default(),
+            current_scissor_rect: Default::default(),
+            render_target_viewport: Default::default(),
+        }
+    }
 }
 pub type WgpuRenderStateRuntime = crate::EntityRuntime;
 

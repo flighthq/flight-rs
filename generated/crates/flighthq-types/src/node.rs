@@ -85,6 +85,28 @@ impl crate::FlightEntity for Node {
 }
 
 // Source: upstream/packages/types/src/Node.ts:23 (sha256:34bfde655eed1560880cd3bc97d772be061f0f244761b84782bcbe13bc77d0b0)
+#[doc(hidden)]
+pub struct NodeRuntimeStorage<Traits> {
+    pub can_add_child: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    >,
+    pub children: Option<Vec<Node>>,
+    pub traits: Option<NodeTraitsKey>,
+    pub parent: Option<Node>,
+    #[doc(hidden)]
+    pub __flight_marker: std::marker::PhantomData<Traits>,
+}
+impl<Traits> Default for NodeRuntimeStorage<Traits> {
+    fn default() -> Self {
+        Self {
+            can_add_child: Default::default(),
+            children: Default::default(),
+            traits: Default::default(),
+            parent: Default::default(),
+            __flight_marker: std::marker::PhantomData,
+        }
+    }
+}
 pub type NodeRuntime<Traits> =
     <std::marker::PhantomData<Traits> as crate::FlightEntityRuntimeMarker>::Runtime;
 

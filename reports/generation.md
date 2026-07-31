@@ -6,15 +6,15 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | --- | ---: |
 | Inventoried packages | 131 |
 | Default-generated packages | 125 |
-| Emittable packages | 69 |
-| Blocked packages | 56 |
+| Emittable packages | 71 |
+| Blocked packages | 54 |
 | Compiled candidates | 28 |
 | Compile-blocked candidates | 23 |
-| Dependency-blocked candidates | 16 |
+| Dependency-blocked candidates | 18 |
 | Cultivated packages | 1 |
 | Host-bound packages | 4 |
 | Excluded packages | 1 |
-| Source/package blockers | 310 |
+| Source/package blockers | 334 |
 
 | Package | Disposition | Status | Candidate | Sources emitted/attempted | API generated/expected | Missing | Dependents direct/transitive | Opaque sources | Blockers | Target |
 | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
@@ -41,11 +41,11 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | `@flighthq/debug` | generated | blocked | source-blocked | 2/3 | 4/9 | 5 | 1/1 | 1 | 2 | no |
 | `@flighthq/device` | generated | emittable | compiled | 2/2 | 14/14 | 0 | 2/2 | 1 | 0 | no |
 | `@flighthq/dialog` | generated | blocked | source-blocked | 1/2 | 15/15 | 0 | 5/5 | 0 | 1 | no |
-| `@flighthq/displayobject` | generated | blocked | source-blocked | 7/8 | 36/46 | 10 | 14/24 | 6 | 2 | no |
-| `@flighthq/displayobject-canvas` | host-backend | blocked | source-blocked | 18/31 | 56/94 | 38 | 5/5 | 16 | 14 | no |
+| `@flighthq/displayobject` | generated | blocked | source-blocked | 1/8 | 46/46 | 0 | 14/24 | 0 | 7 | no |
+| `@flighthq/displayobject-canvas` | host-backend | blocked | source-blocked | 19/31 | 59/94 | 35 | 5/5 | 17 | 13 | no |
 | `@flighthq/displayobject-dom` | host-bound | host-bound | not-applicable | 0/0 | 0/58 | 58 | 1/1 | 0 | 0 | no |
-| `@flighthq/displayobject-gl` | host-backend | blocked | source-blocked | 25/28 | 79/89 | 12 | 1/1 | 16 | 4 | no |
-| `@flighthq/displayobject-wgpu` | host-backend | blocked | source-blocked | 26/29 | 84/95 | 12 | 1/1 | 17 | 4 | no |
+| `@flighthq/displayobject-gl` | host-backend | blocked | source-blocked | 27/28 | 83/89 | 8 | 1/1 | 18 | 2 | no |
+| `@flighthq/displayobject-wgpu` | host-backend | blocked | source-blocked | 28/29 | 88/95 | 8 | 1/1 | 19 | 2 | no |
 | `@flighthq/easing` | generated | emittable | promoted | 20/20 | 48/48 | 0 | 2/3 | 0 | 0 | full |
 | `@flighthq/effects` | generated | emittable | compile-blocked | 72/72 | 112/112 | 0 | 4/4 | 2 | 0 | no |
 | `@flighthq/effects-canvas` | host-backend | blocked | source-blocked | 9/48 | 29/102 | 78 | 1/1 | 7 | 40 | no |
@@ -65,7 +65,7 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | `@flighthq/image` | generated | emittable | compile-blocked | 3/3 | 20/20 | 0 | 11/24 | 2 | 0 | partial |
 | `@flighthq/image-codec` | generated | blocked | source-blocked | 6/8 | 14/16 | 2 | 3/26 | 0 | 3 | no |
 | `@flighthq/input` | generated | emittable | compiled | 2/2 | 40/40 | 0 | 1/1 | 1 | 0 | no |
-| `@flighthq/interaction` | generated | blocked | source-blocked | 10/16 | 34/83 | 49 | 1/1 | 9 | 7 | no |
+| `@flighthq/interaction` | generated | blocked | source-blocked | 1/16 | 71/83 | 12 | 1/1 | 0 | 16 | no |
 | `@flighthq/intl` | generated | blocked | source-blocked | 1/8 | 0/14 | 14 | 1/1 | 0 | 8 | no |
 | `@flighthq/ipc` | generated | blocked | source-blocked | 1/2 | 0/17 | 17 | 2/2 | 0 | 2 | no |
 | `@flighthq/keyboard` | generated | emittable | compiled | 2/2 | 20/20 | 0 | 2/2 | 1 | 0 | no |
@@ -82,7 +82,7 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | `@flighthq/motionpath` | generated | emittable | compiled | 8/8 | 7/7 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/movieclip` | generated | emittable | dependency-blocked | 3/3 | 23/23 | 0 | 1/1 | 2 | 0 | no |
 | `@flighthq/net` | generated | blocked | source-blocked | 1/2 | 0/4 | 4 | 1/1 | 0 | 2 | no |
-| `@flighthq/node` | generated | blocked | source-blocked | 12/16 | 54/105 | 51 | 23/32 | 6 | 5 | no |
+| `@flighthq/node` | generated | blocked | source-blocked | 6/16 | 105/105 | 0 | 23/32 | 0 | 10 | no |
 | `@flighthq/notification` | generated | blocked | source-blocked | 1/2 | 0/26 | 26 | 4/4 | 0 | 2 | no |
 | `@flighthq/particleemitter` | generated | emittable | dependency-blocked | 11/11 | 51/51 | 0 | 1/1 | 10 | 0 | no |
 | `@flighthq/particles` | generated | emittable | compile-blocked | 11/11 | 50/50 | 0 | 3/3 | 1 | 0 | no |
@@ -91,18 +91,18 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | `@flighthq/path-boolean` | generated | blocked | source-blocked | 7/8 | 12/12 | 1 | 1/1 | 0 | 2 | no |
 | `@flighthq/path-formats` | generated | emittable | compile-blocked | 2/2 | 3/3 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/permissions` | generated | blocked | source-blocked | 1/2 | 0/5 | 5 | 1/1 | 0 | 2 | no |
-| `@flighthq/picking` | generated | blocked | source-blocked | 1/2 | 0/6 | 6 | 1/1 | 0 | 2 | no |
+| `@flighthq/picking` | generated | blocked | source-blocked | 1/2 | 6/6 | 0 | 1/1 | 0 | 1 | no |
 | `@flighthq/platform` | generated | emittable | compiled | 2/2 | 16/16 | 0 | 3/3 | 1 | 0 | no |
 | `@flighthq/power` | generated | emittable | compiled | 2/2 | 19/19 | 0 | 2/2 | 1 | 0 | no |
 | `@flighthq/protocol` | generated | emittable | compile-blocked | 2/2 | 20/20 | 0 | 2/2 | 1 | 0 | no |
-| `@flighthq/render` | generated | blocked | source-blocked | 14/17 | 39/63 | 24 | 9/13 | 10 | 4 | no |
+| `@flighthq/render` | generated | blocked | source-blocked | 4/17 | 63/63 | 0 | 9/13 | 0 | 13 | no |
 | `@flighthq/render-gl` | host-backend | blocked | source-blocked | 23/24 | 79/75 | 5 | 4/4 | 16 | 2 | no |
 | `@flighthq/render-wgpu` | host-backend | emittable | dependency-blocked | 18/18 | 68/68 | 0 | 5/5 | 15 | 0 | no |
-| `@flighthq/scene` | generated | blocked | source-blocked | 9/14 | 26/43 | 17 | 6/6 | 7 | 6 | no |
+| `@flighthq/scene` | generated | blocked | source-blocked | 2/14 | 43/43 | 0 | 6/6 | 0 | 12 | no |
 | `@flighthq/scene-formats` | generated | blocked | source-blocked | 7/16 | 84/15 | 8 | 2/2 | 0 | 10 | no |
-| `@flighthq/scene-gl` | host-backend | blocked | source-blocked | 52/53 | 185/184 | 2 | 1/1 | 25 | 2 | no |
+| `@flighthq/scene-gl` | host-backend | emittable | dependency-blocked | 53/53 | 187/184 | 0 | 1/1 | 26 | 0 | no |
 | `@flighthq/scene-resources` | generated | blocked | source-blocked | 1/16 | 34/37 | 3 | 1/1 | 0 | 16 | no |
-| `@flighthq/scene-wgpu` | host-backend | blocked | source-blocked | 41/42 | 140/140 | 2 | 1/1 | 29 | 2 | no |
+| `@flighthq/scene-wgpu` | host-backend | emittable | dependency-blocked | 42/42 | 142/140 | 0 | 1/1 | 30 | 0 | no |
 | `@flighthq/screen` | generated | emittable | compiled | 2/2 | 31/31 | 0 | 2/2 | 1 | 0 | no |
 | `@flighthq/sdk` | generated | blocked | source-blocked | 14/14 | 0/5923 | 5923 | 0/0 | 0 | 1 | no |
 | `@flighthq/sensors` | generated | blocked | source-blocked | 1/2 | 0/32 | 32 | 1/1 | 0 | 2 | no |
@@ -178,14 +178,18 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 ### `@flighthq/displayobject`
 
-- **package** `upstream/packages/displayobject/src`: Generated crate is missing 10 of 46 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/displayobject/src/displayObject.ts`: createDisplayObjectRuntime: entity runtime field traits is unavailable on static receiver DisplayObjectRuntime: entity runtime extension NodeRuntime field traits retains generic parameter Traits
+- **emission** `upstream/packages/displayobject/src/bitmap.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/displayobject/src/displayContainer.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/displayobject/src/displayObject.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/displayobject/src/htmlView.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/displayobject/src/renderView.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/displayobject/src/stage.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/displayobject/src/video.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 
 ### `@flighthq/displayobject-canvas`
 
-- **package** `upstream/packages/displayobject-canvas/src`: Generated crate is missing 38 of 94 upstream exports; re-export or declaration synthesis is required.
+- **package** `upstream/packages/displayobject-canvas/src`: Generated crate is missing 35 of 94 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/displayobject-canvas/src/canvasBitmap.ts`: drawCanvasBitmap: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"state"},"optional":false}
-- **emission** `upstream/packages/displayobject-canvas/src/canvasDisplayObject.ts`: renderCanvasDisplayObject: entity runtime field children is unavailable on static receiver DisplayObjectRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
 - **emission** `upstream/packages/displayobject-canvas/src/canvasParticleEmitter.ts`: drawCanvasParticleEmitter: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"state"},"optional":false}
 - **emission** `upstream/packages/displayobject-canvas/src/canvasQuadBatch.ts`: drawCanvasQuadBatch: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"state"},"optional":false}
 - **emission** `upstream/packages/displayobject-canvas/src/canvasRenderState.ts`: createCanvasRenderState: EntityRuntimeKey storage requires an aggregate native entity runtime representation; refusing to erase observable runtime state
@@ -200,16 +204,12 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 ### `@flighthq/displayobject-gl`
 
-- **package** `upstream/packages/displayobject-gl/src`: Generated crate is missing 12 of 89 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/displayobject-gl/src/glDisplayObject.ts`: renderGlDisplayObject: entity runtime field children is unavailable on static receiver DisplayObjectRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
-- **emission** `upstream/packages/displayobject-gl/src/glSprite.ts`: renderGlSprite: entity runtime field children is unavailable on static receiver DisplayObjectRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
+- **package** `upstream/packages/displayobject-gl/src`: Generated crate is missing 8 of 89 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/displayobject-gl/src/glVelocity.ts`: defaultGlDisplayObjectVelocityWriter: upstream/packages/displayobject-gl/src/glVelocity.ts: cannot infer return type for defaultGlDisplayObjectVelocityWriter
 
 ### `@flighthq/displayobject-wgpu`
 
-- **package** `upstream/packages/displayobject-wgpu/src`: Generated crate is missing 12 of 95 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuDisplayObject.ts`: renderWgpuDisplayObject: entity runtime field children is unavailable on static receiver DisplayObjectRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
-- **emission** `upstream/packages/displayobject-wgpu/src/wgpuSprite.ts`: renderWgpuSprite: entity runtime field children is unavailable on static receiver DisplayObjectRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
+- **package** `upstream/packages/displayobject-wgpu/src`: Generated crate is missing 8 of 95 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/displayobject-wgpu/src/wgpuVelocity.ts`: defaultWgpuDisplayObjectVelocityWriter: upstream/packages/displayobject-wgpu/src/wgpuVelocity.ts: cannot infer return type for defaultWgpuDisplayObjectVelocityWriter
 
 ### `@flighthq/effects-canvas`
@@ -372,13 +372,22 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 ### `@flighthq/interaction`
 
-- **package** `upstream/packages/interaction/src`: Generated crate is missing 49 of 83 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/interaction/src/enableInteractionGuards.ts`: hasEligibleNodeInSubtree: entity runtime field children is unavailable on static receiver NodeRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
-- **emission** `upstream/packages/interaction/src/focusManager.ts`: collectFocusStops: entity runtime field children is unavailable on static receiver NodeRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
-- **emission** `upstream/packages/interaction/src/hitTests.ts`: findFirstHit: entity runtime field children is unavailable on static receiver NodeRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
-- **emission** `upstream/packages/interaction/src/interactionManager.ts`: hasInteractionSignalSubscriberInGraph: entity runtime field children is unavailable on static receiver NodeRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
-- **emission** `upstream/packages/interaction/src/interactionSpatialIndex.ts`: collectSpatialCandidates: entity runtime field children is unavailable on static receiver NodeRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
-- **emission** `upstream/packages/interaction/src/spatialQuery.ts`: hitTestAreaQuery: entity runtime field children is unavailable on static receiver NodeRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
+- **package** `upstream/packages/interaction/src`: Generated crate is missing 12 of 83 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/interaction/src/cursorBackend.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/interaction/src/displayHitTests.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/interaction/src/displayObjectOverlap.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/interaction/src/enableInteractionGuards.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/interaction/src/focusManager.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/interaction/src/hitTests.ts`: hitAreaContainsPoint: in-operator requires a static property name or an opaque host receiver
+- **emission** `upstream/packages/interaction/src/interactionManager.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/interaction/src/interactionSpatialIndex.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/interaction/src/nodeInteractionState.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/interaction/src/registerBitmapHitTest.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/interaction/src/registerDefaultHitTests.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/interaction/src/registerShapeHitTest.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/interaction/src/registerTextHitTest.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/interaction/src/spatialQuery.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/interaction/src/spriteHitTests.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 
 ### `@flighthq/intl`
 
@@ -423,11 +432,16 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 ### `@flighthq/node`
 
-- **package** `upstream/packages/node/src`: Generated crate is missing 51 of 105 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/node/src/boundsRectangle.ts`: recomputeWorldBoundsRectangle: entity runtime field children is unavailable on static receiver NodeRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
-- **emission** `upstream/packages/node/src/hierarchy.ts`: addNodeChildAt: entity runtime field children is unavailable on static receiver NodeRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
-- **emission** `upstream/packages/node/src/node.ts`: createNodeRuntime: entity runtime field canAddChild is unavailable on static receiver NodeRuntime: entity runtime extension NodeRuntime field canAddChild retains generic parameter Traits
-- **emission** `upstream/packages/node/src/traversal.ts`: findNode: entity runtime field children is unavailable on static receiver NodeRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
+- **emission** `upstream/packages/node/src/boundsRectangle.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (10 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/node/src/hasBoundsRectangle.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (10 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/node/src/hasTransform2d.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (10 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/node/src/hierarchy.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (10 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/node/src/node.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (10 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/node/src/revision.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (10 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/node/src/transform2d.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (10 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/node/src/transform3d.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (10 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/node/src/traversal.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (10 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/node/src/viewport.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (10 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 
 ### `@flighthq/notification`
 
@@ -462,15 +476,23 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 ### `@flighthq/picking`
 
-- **package** `upstream/packages/picking/src`: Generated crate is missing 6 of 6 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/picking/src/pickScene.ts`: pickNode: entity runtime field children is unavailable on static receiver NodeRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
+- **emission** `upstream/packages/picking/src/pickScene.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (1 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 
 ### `@flighthq/render`
 
-- **package** `upstream/packages/render/src`: Generated crate is missing 24 of 63 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/render/src/renderProxy.ts`: walkNode: entity runtime field children is unavailable on static receiver NodeRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
-- **emission** `upstream/packages/render/src/renderQueue.ts`: buildRenderQueue: entity runtime field children is unavailable on static receiver NodeRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
-- **emission** `upstream/packages/render/src/sceneRender.ts`: collectVisibleMeshes: entity runtime field children is unavailable on static receiver NodeRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
+- **emission** `upstream/packages/render/src/enableColorAdjustmentGuards.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 10); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/render/src/explainDisplayObjectRender.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 10); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/render/src/renderAppearance.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 10); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/render/src/renderCache.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 10); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/render/src/renderColorTransform.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 10); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/render/src/renderer.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 10); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/render/src/renderProxy.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 10); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/render/src/renderProxyAdapter.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 10); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/render/src/renderQueue.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 10); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/render/src/renderTarget.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 10); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/render/src/renderTransform2d.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 10); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/render/src/renderViewport.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 10); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/render/src/sceneRender.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 10); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 
 ### `@flighthq/render-gl`
 
@@ -479,12 +501,18 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 ### `@flighthq/scene`
 
-- **package** `upstream/packages/scene/src`: Generated crate is missing 17 of 43 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/scene/src/billboardCamera.ts`: orientBillboardSubtree: entity runtime field children is unavailable on static receiver SceneNodeRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
-- **emission** `upstream/packages/scene/src/sceneNode.ts`: createSceneNodeRuntime: entity runtime field traits is unavailable on static receiver SceneNodeRuntime: entity runtime extension NodeRuntime field traits retains generic parameter Traits
-- **emission** `upstream/packages/scene/src/sceneNodeAppearance.ts`: ensureSceneNodeWorldAlpha: entity runtime field parent is unavailable on static receiver SceneNodeRuntime: entity runtime extension NodeRuntime field parent retains generic parameter Traits
-- **emission** `upstream/packages/scene/src/sceneNodeBounds.ts`: _accumulateWorldBounds: entity runtime field children is unavailable on static receiver NodeRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
-- **emission** `upstream/packages/scene/src/sceneNodeCulling.ts`: _cullNode: entity runtime field children is unavailable on static receiver NodeRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
+- **emission** `upstream/packages/scene/src/billboard.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (12 opaque sources exceeds the approved baseline of 7); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene/src/billboardCamera.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (12 opaque sources exceeds the approved baseline of 7); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene/src/mesh.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (12 opaque sources exceeds the approved baseline of 7); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene/src/scene.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (12 opaque sources exceeds the approved baseline of 7); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene/src/sceneAnimation.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (12 opaque sources exceeds the approved baseline of 7); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene/src/sceneMaterial.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (12 opaque sources exceeds the approved baseline of 7); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene/src/sceneNode.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (12 opaque sources exceeds the approved baseline of 7); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene/src/sceneNodeAppearance.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (12 opaque sources exceeds the approved baseline of 7); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene/src/sceneNodeBounds.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (12 opaque sources exceeds the approved baseline of 7); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene/src/sceneNodeCulling.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (12 opaque sources exceeds the approved baseline of 7); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene/src/sceneNodeDispose.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (12 opaque sources exceeds the approved baseline of 7); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene/src/sceneNodeTransform.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (12 opaque sources exceeds the approved baseline of 7); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 
 ### `@flighthq/scene-formats`
 
@@ -498,11 +526,6 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **emission** `upstream/packages/scene-formats/src/objParse.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 - **emission** `upstream/packages/scene-formats/src/shared.ts`: findSceneSkeletonJoints: spread Rust lowering is not implemented
 - **emission** `upstream/packages/scene-formats/src/threeDsParse.ts`: createSceneFrom3ds: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
-
-### `@flighthq/scene-gl`
-
-- **package** `upstream/packages/scene-gl/src`: Generated crate is missing 2 of 184 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/scene-gl/src/glParticleEmitter3D.ts`: collectParticleEmitter3DNodes: entity runtime field children is unavailable on static receiver NodeRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
 
 ### `@flighthq/scene-resources`
 
@@ -522,11 +545,6 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 - **emission** `upstream/packages/scene-resources/src/sceneResourceFetch.ts`: createWebSceneResourceFetch: await Rust lowering is not implemented
 - **emission** `upstream/packages/scene-resources/src/sceneResourceResolver.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 - **emission** `upstream/packages/scene-resources/src/sceneResourceSignals.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 13); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-
-### `@flighthq/scene-wgpu`
-
-- **package** `upstream/packages/scene-wgpu/src`: Generated crate is missing 2 of 140 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/scene-wgpu/src/wgpuParticleEmitter3D.ts`: collectParticleEmitter3DNodes: entity runtime field children is unavailable on static receiver NodeRuntime: entity runtime extension NodeRuntime field children retains generic parameter Traits
 
 ### `@flighthq/sdk`
 

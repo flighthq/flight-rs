@@ -148,7 +148,6 @@ impl PartialEq for GlRenderStateRuntimeRecord3 {
 }
 
 #[doc(hidden)]
-#[derive(Default)]
 pub struct GlRenderStateRuntimeStorage {
     pub default_bitmap_shader: Option<GlBitmapShader>,
     pub particle_instance_buffer: Option<crate::OpaqueHostValue>,
@@ -162,6 +161,24 @@ pub struct GlRenderStateRuntimeStorage {
     pub image_resource_texture_cache: Vec<(ImageResource, GlRenderStateRuntimeRecord2)>,
     pub video_texture_cache: Option<Vec<(VideoTexture, GlRenderStateRuntimeRecord3)>>,
     pub scissor_stack: Option<Vec<GlScissorRect>>,
+}
+impl Default for GlRenderStateRuntimeStorage {
+    fn default() -> Self {
+        Self {
+            default_bitmap_shader: Default::default(),
+            particle_instance_buffer: Default::default(),
+            particle_instance_data: Default::default(),
+            material_renderer_map: Default::default(),
+            scene_mesh_material_registry: Default::default(),
+            sprite_batch_material_renderer: Default::default(),
+            current_scissor_rect: Default::default(),
+            render_target_viewport: Default::default(),
+            texture_cache: Default::default(),
+            image_resource_texture_cache: Default::default(),
+            video_texture_cache: Default::default(),
+            scissor_stack: Default::default(),
+        }
+    }
 }
 pub type GlRenderStateRuntime = crate::EntityRuntime;
 

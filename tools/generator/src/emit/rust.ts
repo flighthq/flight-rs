@@ -51,6 +51,7 @@ interface EmitContext {
   entityRuntimeClosureError?: string | undefined;
   entityRuntimeAggregateAvailable: boolean;
   entityRuntimeFieldSlots: ReadonlyMap<string, string>;
+  entityRuntimeGenericSlotTypes: ReadonlySet<string>;
   entityRuntimeLateFields: ReadonlySet<string>;
   entityRuntimeSlotTypes: ReadonlySet<string>;
   entityRuntimeTypes: ReadonlySet<string>;
@@ -139,6 +140,7 @@ export function emitRustModule(module: RustModule): string {
     constantValues,
     continueEpilogue: [],
     entityRuntimeFieldSlots: new Map(),
+    entityRuntimeGenericSlotTypes: new Set(),
     entityRuntimeLateFields: new Set(),
     entityRuntimeSlotTypes: new Set(),
     entityRuntimeTypes: new Set(),
@@ -926,7 +928,11 @@ function emitFunctionDeclaration(declaration: IrFunctionDeclaration, context: Em
               ? `${parameter}: crate::FlightCallback`
               : nextContext.entityTypeParameters.has(parameter)
                 ? `${parameter}: Clone + ${entityTraitTypePath(nextContext)}`
-                : `${parameter}: Clone`,
+                : [...nextContext.entityRuntimeGenericSlotTypes].some((slot) =>
+                      new RegExp(`\\b${slot}<[^>]*\\b${parameter}\\b`, 'u').test(signature),
+                    )
+                  ? `${parameter}: Clone + Send + 'static`
+                  : `${parameter}: Clone`,
           )
           .join(', ')}>`
       : '';
@@ -3096,8 +3102,26 @@ function emitProperty(
         : emitPlaceExpression(expression.object, context);
     return `${owner}.iter().find(|(key, _)| key == &${key}).map(|(_, value)| value.clone()).expect("TypeScript Record key was absent")`;
   }
-  const place = emitPropertyPlace(expression, context);
   const type = inferIrExpressionType(expression, context) ?? expectedType;
+  const runtimeObjectType = inferIrExpressionType(expression.object, context);
+  const runtime = runtimeObjectType?.kind === 'nullable' ? runtimeObjectType.inner : runtimeObjectType;
+  if (runtime?.kind === 'named' && context.entityRuntimeTypes.has(runtime.name)) {
+    const slot = entityRuntimeFieldSlot(runtime.name, expression.name, context);
+    const genericStorage = entityRuntimeGenericSlotStorageType(runtime, slot, context);
+    if (genericStorage) {
+      const owner =
+        runtimeObjectType?.kind === 'nullable'
+          ? `${emitPlaceExpression(expression.object, context)}.as_ref().unwrap()`
+          : emitPlaceExpression(expression.object, context);
+      const stored = `__flight_storage.${safeName(expression.name)}`;
+      const value = context.entityRuntimeLateFields.has(`${slot}\0${expression.name}`)
+        ? `${stored}.as_ref().expect("entity runtime field ${expression.name} was read before initialization")`
+        : stored;
+      const result = type && !isCopyType(type, context) ? `${parenthesize(value)}.clone()` : value;
+      return `{ let __flight_slot = ${owner}.__flight_generic_slot::<${genericStorage}>(); let __flight_storage = __flight_slot.lock().unwrap(); ${result} }`;
+    }
+  }
+  const place = emitPropertyPlace(expression, context);
   return type && !isCopyType(type, context) ? `${parenthesize(place)}.clone()` : place;
 }
 
@@ -3158,6 +3182,19 @@ function emitPropertyPlace(expression: Extract<IrExpression, { kind: 'property' 
     const runtime = objectType.kind === 'nullable' ? objectType.inner : objectType;
     if (runtime.kind === 'named' && context.entityRuntimeTypes.has(runtime.name)) {
       const slot = entityRuntimeFieldSlot(runtime.name, expression.name, context);
+      const genericStorage = entityRuntimeGenericSlotStorageType(runtime, slot, context);
+      if (genericStorage) {
+        const fieldType = inferPropertyType(runtime, expression.name, context);
+        if (!fieldType) {
+          throw new RustEmissionError(`generic entity runtime property ${expression.name} has no inferred field type`);
+        }
+        const stored = `__flight_storage.${safeName(expression.name)}`;
+        const value = context.entityRuntimeLateFields.has(`${slot}\0${expression.name}`)
+          ? `${stored}.as_ref().expect("entity runtime field ${expression.name} was read before initialization")`
+          : stored;
+        const result = isCopyType(fieldType, context) ? value : `${parenthesize(value)}.clone()`;
+        return `{ let __flight_slot = ${owner}.__flight_generic_slot::<${genericStorage}>(); let __flight_storage = __flight_slot.lock().unwrap(); ${result} }`;
+      }
       const place = entityRuntimeStorageField(`${owner}.inner.lock().unwrap()`, slot, expression.name);
       if (context.entityRuntimeLateFields.has(`${slot}\0${expression.name}`)) {
         return `(*${place}.as_mut().expect("entity runtime field ${expression.name} was read before initialization"))`;
@@ -3216,6 +3253,18 @@ function emitOptionalProperty(
       objectType.inner.kind === 'named' && context.entityRuntimeTypes.has(objectType.inner.name)
         ? entityRuntimeFieldSlot(objectType.inner.name, expression.name, context)
         : undefined;
+    const genericStorage =
+      runtimeSlot && objectType.inner.kind === 'named'
+        ? entityRuntimeGenericSlotStorageType(objectType.inner, runtimeSlot, context)
+        : undefined;
+    if (runtimeSlot && genericStorage) {
+      const stored = `__flight_storage.${safeName(expression.name)}`;
+      const value = context.entityRuntimeLateFields.has(`${runtimeSlot}\0${expression.name}`)
+        ? `${stored}.as_ref().expect("entity runtime field ${expression.name} was read before initialization")`
+        : stored;
+      const body = isCopyType(fieldType, context) ? value : `${parenthesize(value)}.clone()`;
+      return `${owner}.as_ref().map(|value| { let __flight_slot = value.__flight_generic_slot::<${genericStorage}>(); let __flight_storage = __flight_slot.lock().unwrap(); ${body} })`;
+    }
     const storedValue = runtimeSlot
       ? entityRuntimeStorageField('value.inner.lock().unwrap()', runtimeSlot, expression.name)
       : `value.inner.lock().unwrap().${safeName(expression.name)}`;
@@ -3973,6 +4022,22 @@ function emitEntityRuntimeFieldAssignment(
       ? `Some(${emitExpression(expression.right, context, fieldType.inner)})`
       : emitExpression(expression.right, context, fieldType);
   const slot = entityRuntimeFieldSlot(runtime.name, expression.left.name, context);
+  const genericStorage = entityRuntimeGenericSlotStorageType(runtime, slot, context);
+  if (genericStorage) {
+    const storedField = `__flight_storage.${safeName(expression.left.name)}`;
+    const late = context.entityRuntimeLateFields.has(`${slot}\0${expression.left.name}`);
+    const field = late
+      ? `(*${storedField}.as_mut().expect("entity runtime field ${expression.left.name} was read before initialization"))`
+      : storedField;
+    const assigned =
+      expression.operator === '='
+        ? late
+          ? `${storedField} = Some(__flight_value.clone())`
+          : `${field} = __flight_value.clone()`
+        : emitAssignmentOperation(field, '__flight_value', expression.operator);
+    const result = returnValue ? ` ${expression.operator === '=' ? '__flight_value' : `${field}.clone()`}` : '';
+    return `{ let __flight_runtime = ${parenthesize(owner)}.clone(); let __flight_value = ${value}; let __flight_slot = __flight_runtime.__flight_generic_slot::<${genericStorage}>(); let mut __flight_storage = __flight_slot.lock().unwrap(); ${assigned};${result} }`;
+  }
   const storedField = entityRuntimeStorageField('__flight_storage', slot, expression.left.name);
   const late = context.entityRuntimeLateFields.has(`${slot}\0${expression.left.name}`);
   const field = late
@@ -4008,6 +4073,15 @@ function emitEntityRuntimeFieldUpdate(
       ? `${emitPlaceExpression(expression.operand.object, context)}.as_ref().unwrap()`
       : emitPlaceExpression(expression.operand.object, context);
   const slot = entityRuntimeFieldSlot(runtime.name, expression.operand.name, context);
+  const genericStorage = entityRuntimeGenericSlotStorageType(runtime, slot, context);
+  if (genericStorage) {
+    const storedField = `__flight_storage.${safeName(expression.operand.name)}`;
+    const field = context.entityRuntimeLateFields.has(`${slot}\0${expression.operand.name}`)
+      ? `(*${storedField}.as_mut().expect("entity runtime field ${expression.operand.name} was read before initialization"))`
+      : storedField;
+    const operator = expression.operator === '++' ? '+=' : '-=';
+    return `{ let __flight_runtime = ${parenthesize(owner)}.clone(); let __flight_slot = __flight_runtime.__flight_generic_slot::<${genericStorage}>(); let mut __flight_storage = __flight_slot.lock().unwrap(); ${field} ${operator} 1.0; ${field}.clone() }`;
+  }
   const storedField = entityRuntimeStorageField('__flight_storage', slot, expression.operand.name);
   const field = context.entityRuntimeLateFields.has(`${slot}\0${expression.operand.name}`)
     ? `(*${storedField}.as_mut().expect("entity runtime field ${expression.operand.name} was read before initialization"))`
@@ -4373,8 +4447,9 @@ function emitTypeDeclaration(
       );
     }
     const slot =
-      context.entityRuntimeSlotTypes.has(name) && type.kind === 'anonymous'
-        ? emitEntityRuntimeSlotDeclaration(name, exported, type, context)
+      (context.entityRuntimeSlotTypes.has(name) || context.entityRuntimeGenericSlotTypes.has(name)) &&
+      type.kind === 'anonymous'
+        ? emitEntityRuntimeSlotDeclaration(name, exported, type, context, typeParameters)
         : '';
     const marker = entityRuntimeMarkerType(typeParameters);
     const generics = typeParameters.length > 0 ? `<${typeParameters.join(', ')}>` : '';
@@ -4428,6 +4503,9 @@ function emitTypeDeclaration(
         .sort((left, right) => left.localeCompare(right))
         .map((owner) => `pub ${snakeCase(owner)}: crate::${owner}Storage,`),
     );
+    storageFields.push(
+      'pub generic_slots: std::collections::HashMap<std::any::TypeId, Box<dyn std::any::Any + Send>>,',
+    );
     return `${emitAnonymousDefinitions(structuralContext, exported)}${[
       '#[derive(Clone, Default)]',
       `${visibility}struct ${name} {`,
@@ -4440,6 +4518,14 @@ function emitTypeDeclaration(
       '}',
       `impl PartialEq for ${name} {`,
       '  fn eq(&self, other: &Self) -> bool { std::sync::Arc::ptr_eq(&self.inner, &other.inner) }',
+      '}',
+      `impl ${name} {`,
+      '  #[doc(hidden)]',
+      "  pub fn __flight_generic_slot<Slot: Default + Send + 'static>(&self) -> std::sync::Arc<std::sync::Mutex<Slot>> {",
+      '    let mut storage = self.inner.lock().unwrap();',
+      '    let slot = storage.generic_slots.entry(std::any::TypeId::of::<Slot>()).or_insert_with(|| Box::new(std::sync::Arc::new(std::sync::Mutex::new(Slot::default()))));',
+      '    slot.downcast_ref::<std::sync::Arc<std::sync::Mutex<Slot>>>().expect("entity runtime generic slot type identity collision").clone()',
+      '  }',
       '}',
       '#[doc(hidden)]',
       `${visibility}trait FlightEntityRuntimeMarker {`,
@@ -4538,9 +4624,13 @@ function emitEntityRuntimeSlotDeclaration(
   exported: boolean,
   type: Extract<IrType, { kind: 'anonymous' }>,
   context: EmitContext,
+  typeParameters: readonly string[] = [],
 ): string {
   const visibility = exported ? 'pub ' : '';
-  const structuralContext = typeDeclarationContext(context, name, type);
+  const structuralContext = {
+    ...typeDeclarationContext(context, name, type),
+    lexicalTypeParameters: new Set(typeParameters),
+  };
   const fields = type.fields.filter((field) => context.entityRuntimeFieldSlots.get(`${name}\0${field.name}`) === name);
   const emitted = fields.map((field) => {
     const fieldType =
@@ -4552,11 +4642,26 @@ function emitEntityRuntimeSlotDeclaration(
       : fieldType;
     return `pub ${safeName(field.name)}: ${storageType},`;
   });
+  const generics = typeParameters.length > 0 ? `<${typeParameters.join(', ')}>` : '';
+  const marker = entityRuntimeMarkerType(typeParameters);
+  if (marker) {
+    emitted.push('#[doc(hidden)]', `pub __flight_marker: std::marker::PhantomData<${marker}>,`);
+  }
+  const defaults = [
+    ...fields.map((field) => `      ${safeName(field.name)}: Default::default(),`),
+    ...(marker ? ['      __flight_marker: std::marker::PhantomData,'] : []),
+  ].join('\n');
   return `${emitAnonymousDefinitions(structuralContext, exported)}${[
     '#[doc(hidden)]',
-    '#[derive(Default)]',
-    `${visibility}struct ${name}Storage {`,
+    `${visibility}struct ${name}Storage${generics} {`,
     indent(emitted.join('\n')),
+    '}',
+    `impl${generics} Default for ${name}Storage${generics} {`,
+    '  fn default() -> Self {',
+    '    Self {',
+    defaults,
+    '    }',
+    '  }',
     '}',
   ].join('\n')}`;
 }
@@ -4680,6 +4785,7 @@ function registerEntityRuntimeFamilies(context: EmitContext): void {
   const originalContext: EmitContext = { ...context, namedTypes: new Map(namedTypes) };
   const occurrences = new Map<string, IrTypeField[]>();
   const unavailableFields = context.entityRuntimeUnavailableFields as Map<string, string>;
+  const genericSlotTypes = context.entityRuntimeGenericSlotTypes as Set<string>;
   for (const name of runtimeTypes) {
     const declaration = originalContext.namedTypes.get(name);
     if (declaration?.kind !== 'anonymous') continue;
@@ -4687,10 +4793,7 @@ function registerEntityRuntimeFamilies(context: EmitContext): void {
     for (const field of declaration.fields) {
       const lexical = parameters.find((parameter) => typeUsesNamedParameter(field.type, parameter));
       if (lexical) {
-        unavailableFields.set(
-          `${name}\0${field.name}`,
-          `entity runtime extension ${name} field ${field.name} retains generic parameter ${lexical}`,
-        );
+        genericSlotTypes.add(name);
         continue;
       }
       const fields = occurrences.get(field.name) ?? [];
@@ -4751,6 +4854,12 @@ function registerEntityRuntimeFamilies(context: EmitContext): void {
         }
       }
       for (const field of declaration.fields) {
+        const parameters = originalContext.namedTypeParameters.get(name) ?? [];
+        if (parameters.some((parameter) => typeUsesNamedParameter(field.type, parameter))) {
+          mapped.set(field.name, name);
+          unavailable.delete(field.name);
+          continue;
+        }
         const unavailableReason = unavailableFields.get(`${name}\0${field.name}`);
         if (unavailableReason) {
           mapped.delete(field.name);
@@ -4780,11 +4889,11 @@ function registerEntityRuntimeFamilies(context: EmitContext): void {
       (context.entityRuntimeLateFields as Set<string>).add(`EntityRuntime\0${field.name}`);
     }
   }
-  for (const owner of slotTypes) {
+  for (const owner of new Set([...slotTypes, ...genericSlotTypes])) {
     const declaration = originalContext.namedTypes.get(owner);
     if (declaration?.kind !== 'anonymous') continue;
     for (const field of declaration.fields) {
-      if (!slottedFields.has(field.name)) continue;
+      if (!slottedFields.has(field.name) && !genericSlotTypes.has(owner)) continue;
       if (!field.optional && !rustTypeSupportsDefault(field.type, originalContext)) {
         (context.entityRuntimeLateFields as Set<string>).add(`${owner}\0${field.name}`);
       }
@@ -6226,6 +6335,56 @@ function entityRuntimeStorageField(storage: string, slot: string, fieldName: str
   return `${owner}.${safeName(fieldName)}`;
 }
 
+function entityRuntimeGenericSlotStorageType(
+  runtime: Extract<IrType, { kind: 'named' }>,
+  slot: string,
+  context: EmitContext,
+): string | undefined {
+  if (!context.entityRuntimeGenericSlotTypes.has(slot)) return undefined;
+  const application = findEntityRuntimeApplication(runtime, slot, context);
+  if (!application) {
+    throw new RustEmissionError(
+      `generic entity runtime slot ${slot} has no concrete application from ${typeKey(runtime)}`,
+    );
+  }
+  const parameters = context.namedTypeParameters.get(slot) ?? [];
+  const arguments_ = parameters.map((parameter, index) =>
+    emitType(application.arguments[index] ?? { arguments: [], kind: 'named', name: parameter }, context),
+  );
+  return `crate::${slot}Storage${arguments_.length > 0 ? `<${arguments_.join(', ')}>` : ''}`;
+}
+
+function findEntityRuntimeApplication(
+  type: Extract<IrType, { kind: 'named' }>,
+  target: string,
+  context: EmitContext,
+  visited: ReadonlySet<string> = new Set(),
+): Extract<IrType, { kind: 'named' }> | undefined {
+  if (type.name === target) return type;
+  const key = typeKey(type);
+  if (visited.has(key)) return undefined;
+  const declaration = context.namedTypes.get(type.name);
+  if (!declaration) return undefined;
+  const parameters = context.namedTypeParameters.get(type.name) ?? [];
+  const substitutions = new Map<string, IrType>(
+    parameters.map(
+      (parameter, index) =>
+        [parameter, type.arguments[index] ?? { arguments: [], kind: 'named', name: parameter }] as const,
+    ),
+  );
+  const applied = substitutions.size > 0 ? substituteIrType(declaration, substitutions) : declaration;
+  if (applied.kind === 'named') {
+    return findEntityRuntimeApplication(applied, target, context, new Set([...visited, key]));
+  }
+  if (applied.kind !== 'anonymous') return undefined;
+  for (const base of applied.extends) {
+    if (base.kind !== 'named') continue;
+    const found = findEntityRuntimeApplication(base, target, context, new Set([...visited, key]));
+    if (found) return found;
+  }
+  return undefined;
+}
+
 function isCopyType(type: IrType, context: EmitContext): boolean {
   const resolved = resolveSemanticType(type, context);
   if (!resolved) return false;
@@ -6494,13 +6653,13 @@ function emitObject(
           ? `Some(${value})`
           : value;
       const slot = entityRuntimeFieldSlot(target.name, property.name, context);
-      return `${entityRuntimeStorageField('__flight_storage', slot, property.name)} = ${
-        context.entityRuntimeLateFields.has(`${slot}\0${property.name}`) ? `Some(${stored})` : stored
-      };`;
+      const assigned = context.entityRuntimeLateFields.has(`${slot}\0${property.name}`) ? `Some(${stored})` : stored;
+      const genericStorage = entityRuntimeGenericSlotStorageType(target, slot, context);
+      return genericStorage
+        ? `{ let __flight_slot = __flight_runtime.__flight_generic_slot::<${genericStorage}>(); __flight_slot.lock().unwrap().${safeName(property.name)} = ${assigned}; }`
+        : `{ __flight_runtime.inner.lock().unwrap().${entityRuntimeStorageField('', slot, property.name).replace(/^\./u, '')} = ${assigned}; }`;
     });
-    const value = `{ let __flight_runtime = ${entityRuntimeTypePath(context)}::default(); { let mut __flight_storage = __flight_runtime.inner.lock().unwrap(); ${assignments.join(
-      ' ',
-    )} } __flight_runtime }`;
+    const value = `{ let __flight_runtime = ${entityRuntimeTypePath(context)}::default(); ${assignments.join(' ')} __flight_runtime }`;
     return nullable ? `Some(${value})` : value;
   }
   const structuralSpreads = structuralExpression.properties.flatMap((property, index) => {

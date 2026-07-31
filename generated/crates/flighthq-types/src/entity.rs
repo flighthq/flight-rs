@@ -56,10 +56,28 @@ pub struct EntityRuntime {
 #[derive(Default)]
 pub struct EntityRuntimeStorage {
     pub binding: Option<crate::OpaqueHostValue>,
+    pub generic_slots: std::collections::HashMap<std::any::TypeId, Box<dyn std::any::Any + Send>>,
 }
 impl PartialEq for EntityRuntime {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.inner, &other.inner)
+    }
+}
+impl EntityRuntime {
+    #[doc(hidden)]
+    pub fn __flight_generic_slot<Slot: Default + Send + 'static>(
+        &self,
+    ) -> std::sync::Arc<std::sync::Mutex<Slot>> {
+        let mut storage = self.inner.lock().unwrap();
+        let slot = storage
+            .generic_slots
+            .entry(std::any::TypeId::of::<Slot>())
+            .or_insert_with(|| {
+                Box::new(std::sync::Arc::new(std::sync::Mutex::new(Slot::default())))
+            });
+        slot.downcast_ref::<std::sync::Arc<std::sync::Mutex<Slot>>>()
+            .expect("entity runtime generic slot type identity collision")
+            .clone()
     }
 }
 #[doc(hidden)]

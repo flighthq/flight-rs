@@ -1990,7 +1990,29 @@ describe('Rust emission', () => {
     ).not.toThrow();
   });
 
-  it('admits generic runtime aliases while scoping generic-dependent field blockers to their consumers', () => {
+  it('stores generic-dependent entity runtime fields in checked typed slots', () => {
+    const rootSource = ts.createSourceFile(
+      '/workspace/upstream/packages/types/src/entity.ts',
+      `
+        export interface Entity {}
+        export interface EntityRuntime {
+          binding?: string;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const loweredRoot = lowerTypeScriptSource(rootSource, '@flighthq/types', '/workspace');
+    const rootOutput = emitRustModule({
+      declarations: loweredRoot.declarations,
+      source: 'upstream/packages/types/src/entity.ts',
+      typeImports: [],
+    });
+    expect(loweredRoot.diagnostics).toEqual([]);
+    expect(rootOutput).toContain('generic_slots: std::collections::HashMap<std::any::TypeId');
+    expect(rootOutput).toContain('pub fn __flight_generic_slot<Slot: Default + Send');
+
     const typesSource = ts.createSourceFile(
       '/workspace/upstream/packages/types/src/generic-runtime.ts',
       `
@@ -2001,6 +2023,8 @@ describe('Rust emission', () => {
         export interface NodeRuntime<Traits> extends EntityRuntime {
           count: number;
           genericValue: Traits;
+          children: Traits[] | null;
+          traits?: Traits;
         }
         export function readCount(runtime: NodeRuntime<string>): number {
           return runtime.count;
@@ -2021,7 +2045,10 @@ describe('Rust emission', () => {
     expect(output).toContain('pub type NodeRuntime<Traits> =');
     expect(output).toContain('std::marker::PhantomData<Traits>');
     expect(output).toContain('pub count: f64');
-    expect(output).not.toContain('pub generic_value:');
+    expect(output).toContain('pub generic_value: Option<Traits>');
+    expect(output).toContain('pub __flight_marker: std::marker::PhantomData<Traits>');
+    expect(output).toContain('generic_slots: std::collections::HashMap<std::any::TypeId');
+    expect(output).toContain('downcast_ref::<std::sync::Arc<std::sync::Mutex<Slot>>>');
     expect(output).not.toContain('aggregate native entity runtime closure is unavailable');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-generic-runtime-'));
@@ -2050,6 +2077,17 @@ describe('Rust emission', () => {
         export function readGenericValue(runtime: NodeRuntime<string>): string {
           return runtime.genericValue;
         }
+        export function writeGenericValue(runtime: NodeRuntime<string>, value: string): void {
+          runtime.genericValue = value;
+          runtime.children = [value];
+          runtime.traits = value;
+        }
+        export function readFirstChild(runtime: NodeRuntime<string>): string {
+          return runtime.children![0];
+        }
+        export function readTraits(runtime: NodeRuntime<string>): string {
+          return runtime.traits!;
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -2058,17 +2096,41 @@ describe('Rust emission', () => {
     const loweredConsumer = lowerTypeScriptSource(consumerSource, '@flighthq/node', '/workspace');
 
     expect(loweredConsumer.diagnostics).toEqual([]);
-    expect(() =>
-      emitRustModule({
-        declarations: loweredConsumer.declarations,
-        semanticTypeParameters,
-        semanticTypes,
-        source: 'upstream/packages/node/src/generic-runtime.ts',
-        typeImports: [],
-      }),
-    ).toThrow(
-      'entity runtime field genericValue is unavailable on static receiver NodeRuntime: entity runtime extension NodeRuntime field genericValue retains generic parameter Traits',
+    const consumerOutput = emitRustModule({
+      declarations: loweredConsumer.declarations,
+      imports: [
+        {
+          module: 'crate',
+          names: [{ imported: 'NodeRuntime', kind: 'type', local: 'NodeRuntime' }],
+        },
+      ],
+      semanticTypeParameters,
+      semanticTypes,
+      source: 'upstream/packages/node/src/generic-runtime.ts',
+      typeImports: [],
+    });
+    expect(consumerOutput).toContain('__flight_generic_slot::<crate::NodeRuntimeStorage<String>>()');
+
+    writeFileSync(path.join(fixture, 'types.rs'), output);
+    writeFileSync(path.join(fixture, 'consumer.rs'), consumerOutput);
+    writeFileSync(
+      path.join(fixture, 'main.rs'),
+      [
+        'mod types;',
+        'pub use types::*;',
+        'mod consumer;',
+        'fn main() {',
+        '  let runtime = EntityRuntime::default();',
+        '  consumer::write_generic_value(runtime.clone(), "typed".to_owned());',
+        '  assert_eq!(consumer::read_generic_value(runtime.clone()), "typed");',
+        '  assert_eq!(consumer::read_first_child(runtime.clone()), "typed");',
+        '  assert_eq!(consumer::read_traits(runtime), "typed");',
+        '}',
+      ].join('\n'),
     );
+    const binary = path.join(fixture, 'generic-runtime');
+    expect(() => compileRustExecutable('main.rs', binary, fixture)).not.toThrow();
+    expect(() => execFileSync(binary, [], { cwd: fixture, stdio: 'pipe' })).not.toThrow();
   });
 
   it('compiles a promoted entity target with source-derived crate-root runtime support', () => {

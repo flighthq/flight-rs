@@ -79,9 +79,15 @@ impl PartialEq for DomRenderStateRuntimeRecord1 {
 }
 
 #[doc(hidden)]
-#[derive(Default)]
 pub struct DomRenderStateRuntimeStorage {
     pub image_resource_element_cache: Option<Vec<(ImageResource, DomRenderStateRuntimeRecord1)>>,
+}
+impl Default for DomRenderStateRuntimeStorage {
+    fn default() -> Self {
+        Self {
+            image_resource_element_cache: Default::default(),
+        }
+    }
 }
 pub type DomRenderStateRuntime = crate::EntityRuntime;
 

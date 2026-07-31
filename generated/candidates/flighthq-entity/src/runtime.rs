@@ -13,8 +13,7 @@ pub fn create_entity_runtime() -> EntityRuntime {
     return {
         let __flight_runtime = flighthq_types::EntityRuntime::default();
         {
-            let mut __flight_storage = __flight_runtime.inner.lock().unwrap();
-            __flight_storage.binding = None;
+            __flight_runtime.inner.lock().unwrap().binding = None;
         }
         __flight_runtime
     };
