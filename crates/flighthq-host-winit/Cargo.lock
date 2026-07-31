@@ -95,7 +95,6 @@ dependencies = [
 name = "flighthq-screen"
 version = "0.1.0"
 dependencies = [
- "flighthq-signals",
  "flighthq-types",
 ]
 

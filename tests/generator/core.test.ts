@@ -211,6 +211,16 @@ describe('compiler diagnostic source paths', () => {
           blocker.reason.includes('Portable task Rust lowering is not implemented.'),
       ),
     ).toBe(true);
+    const screenTarget = report.targets.find((item) => item.package === '@flighthq/screen');
+    expect(screenTarget?.emittedSources).toEqual([
+      expect.objectContaining({
+        declarationNames: ['_backend', 'setScreenBackend'],
+        source: 'upstream/packages/screen/src/screen.ts',
+      }),
+    ]);
+    expect(screenTarget?.deferredDeclarations.map((item) => item.name)).toEqual(
+      expect.arrayContaining(['getScreenDetailPermission', 'requestScreenDetails']),
+    );
     expect(report.conformance.summary).toMatchObject({
       passingCases: 45,
       passingTestFiles: 4,
@@ -230,6 +240,9 @@ describe('compiler diagnostic source paths', () => {
     ).toContain('// @generated from upstream @flighthq/math tests; do not edit.');
     expect(readFileSync(path.join(process.cwd(), 'crates/flighthq-host-winit/Cargo.toml'), 'utf8')).toContain(
       'flighthq-types = { path = "../../generated/crates/flighthq-types" }',
+    );
+    expect(readFileSync(path.join(process.cwd(), 'crates/flighthq-host-winit/Cargo.toml'), 'utf8')).toContain(
+      'flighthq-screen = { path = "../../generated/crates/flighthq-screen" }',
     );
   });
 });

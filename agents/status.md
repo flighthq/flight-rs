@@ -8,5 +8,6 @@
 - `@flighthq/types` and `@flighthq/easing` are fully promoted executable Rust generation targets.
 - `packages/surface-rs` and the surface source/declaration admission policy are cultivated. `flighthq-surface` is generated from that selection; surface remains the only planned standalone wasm package.
 - A cultivated `flighthq-host-winit` compile canary now links the generated application, lifecycle, input, keyboard, haptics, power, platform, device, and screen seams and installs their backends as one native bundle.
+- The canary's screen edge resolves a generated partial target containing only `_backend` and `setScreenBackend`; the automatic screen candidate remains source-blocked on both portable async declarations.
 - Node and assets now reach concrete Rust compilation instead of stopping at generic-constructor syntax. The remaining native-render frontier is log plus node/material/skeleton/render, followed by concrete winit event and renderer adapters.
 - `agents/generator-resume.md` is the durable resume playbook: it records the current matrix, generator invariants, validation loop, known traps, and acceptance criteria for passes 19–21.

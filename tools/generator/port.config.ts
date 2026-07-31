@@ -339,6 +339,27 @@ export const portConfig = {
       typeMappings: {},
     },
     {
+      crate: 'flighthq-screen',
+      declarationSelection: {
+        'screen.ts': {
+          names: ['_backend', 'setScreenBackend'],
+          reason:
+            'The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.',
+        },
+      },
+      dependencies: {
+        '@flighthq/types': { crate: 'flighthq-types' },
+      },
+      package: '@flighthq/screen',
+      sourceExclusions: [],
+      sourceSelection: {
+        sources: ['screen.ts'],
+        reason:
+          'The partial target preserves the synchronous native ScreenBackend installation seam without admitting or erasing either portable async declaration.',
+      },
+      typeMappings: {},
+    },
+    {
       conformanceTemplate: 'tools/generator/templates/surface_conformance.rs',
       crate: 'flighthq-surface',
       declarationSelection: {

@@ -32333,7 +32333,7 @@
         "setScreenBackend"
       ],
       "package": "@flighthq/screen",
-      "promotedTarget": false,
+      "promotedTarget": true,
       "requiredDependencies": [],
       "status": "blocked",
       "transitiveDependents": 2
@@ -60947,6 +60947,292 @@
         }
       ],
       "package": "@flighthq/image",
+      "sourceExclusions": [],
+      "unsupportedSources": [],
+      "typeMappings": {}
+    },
+    {
+      "crate": "flighthq-screen",
+      "deferredDeclarations": [
+        {
+          "fingerprint": "sha256:73604c011ae140a8578ea3a4bc8d91483155cadc9e970e79ffa1bbc94d2e2164",
+          "name": "_scratchPoint",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:6959a9457f8b332653a8f42fc2fff5e348cc9da6152f8664507ad27c7a56a0e6",
+          "name": "_signalSubscriptions",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:0bf7d851a1f9084064b501e6bbe4ddafb22f4fa14d980ad49aa442f539cbfd71",
+          "name": "attachScreenSignals",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:5f65aea7b8ef8174e95bc26b2ec39e3a671f58113b9bb90dfae71afb12b9dd0c",
+          "name": "copyScreenInfo",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:3245c9cd28c972bfdccb1e53247b4e70f21d69e62ea2247d9c7ebcb1c3389776",
+          "name": "createScreenInfo",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:2f53e195e8eeb299f3d2c020fd52f17423e785b033aea91d314fd9fcdc44e5eb",
+          "name": "createScreenMode",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:788cc83e9b1a826dbe5199fb1483764718a74db2c38a1a8c7c5d367a7eab57d1",
+          "name": "createScreenSignals",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:b12e330d2d697aef338fe81af6b883712ab54906ef44fb2b70581ccdcb767281",
+          "name": "createWebScreenBackend",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:173b6a22f2a1bb39de4996e96b4e86f93bc48f2a475bd828beca8544867e222b",
+          "name": "detachScreenSignals",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:d83acc8b99da7b9ec44425756ac1b6fd5a730cdd91823c815f16c475c528498c",
+          "name": "diffScreenInfo",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:b846264d9cd448d91ff804180d6efa756769962d770ed1f17845e7e720b7fbbb",
+          "name": "dipToScreenPoint",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:278a0b9d8d48626a11f8fbfbd7a5d54717c4c1bdcde4644d66c1a4a82d009fec",
+          "name": "dipToScreenRect",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:460d1de1e6249bba632cae61c7a959eb120eca9a55e2ef5b0d44b815b784c64d",
+          "name": "disposeScreenSignals",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:0a457b6569f799c8bfab6c1c1f93a3038cad745770a259eb3c775f72f8f4f560",
+          "name": "enableScreenSignals",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:abcc45780cc371ea2d6a67e273180d29c799a76b4a8d6b61371e3b8576b8ffd0",
+          "name": "fillDefaultScreenInfo",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:fed7cab052c25b38db7f90531fd4d666d27b2a3498dd2dc8dd5beec3ecf75b0a",
+          "name": "getPrimaryScreen",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:630ac4a06b2d318150fab4355fe4dbab2be09cc949263c8f3843f6c2efd892e4",
+          "name": "getScreenBackend",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:1699596e9d4cc803c6bcc1993c582b54d78fbacfa4fcf43f4abd96be80a026c3",
+          "name": "getScreenBounds",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:fa1f16b612cc9d5f48c70aab7d8f9d832a076f208dd43eb17b8b0e1d4125a457",
+          "name": "getScreenById",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:ee07c4b7ab11e0190cf9a5271aab8d69c37da431893281854ff5135834d2e6ba",
+          "name": "getScreenContainingRect",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:8501d304e7b24801c7947fa2955455db69aa7cb62dd8bfe2f5357c677b09ff9e",
+          "name": "getScreenCurrentMode",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:0a12423f918349fa3ba5ef09732af940e5c3650342955d71b9a56f0e6ec0a03d",
+          "name": "getScreenCursorPosition",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:be2a9b2f913f87a41259e57f4d2f61735e8043b828492838c5c3d5e0784cb8d2",
+          "name": "getScreenCursorScreen",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:d8cf40fc979d5a3f700e818acbaf83c4a8782cf0e2f81dbb95cae4928a164ea2",
+          "name": "getScreenDetailPermission",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:c89dfe8423ca73c894b254646993a68a641b914d62311412b9d782e960be8089",
+          "name": "getScreenModes",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:745c3bbef566870b9118277bfaf3d9745be4e0f9d58c0ed846ce51a7d5ebf0ab",
+          "name": "getScreenNearestPoint",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:fe2cd8ac2d3d002d5c7f7c414302c150294365b1100e2147e49d9a118863b3da",
+          "name": "getScreenNearestRect",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:57b2f23541faeac62df3c28435ae020a1f7831542a65a34492f6f18e699f7363",
+          "name": "getScreens",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:9bd513b6668c54ae3b05c49908e593b469de7c93e68441b54a0ed9f55a376771",
+          "name": "getScreenWorkArea",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:a0b9f8c0703f5df20c6683988a6a5e56c4b6d5189d32f75849b32ff4cff82674",
+          "name": "getWebColorSpace",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:ea18cebb7895dfc2644e420056a9feced456e68c688ba0802dd98fc2c5da4e06",
+          "name": "getWebIsHdr",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:4c2cb10dd0e30ef93aefbdb0a3379538b92ef52031ef2938498f6e6c9e80ba94",
+          "name": "getWebOrientation",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:fee49e70662f987d91152dd172832ff4d1972b552eb0c0cf1ecfc2fbfc7de418",
+          "name": "getWebRotation",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:9d54c7c81e3a45b71de47bad0122c6c29b3d660eba5b9a639fafaa18d7b1c6ae",
+          "name": "getWebScreenOrientationObject",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:830f07d42d0c685540f1d735d4e46a47947049bfd0a56ea2feb29d13be9b84ea",
+          "name": "onScreenChange",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:ed3ef35d9e5bc275e32db76390061efe0bf46d5522d2ec54cde48fc51d4bc6b8",
+          "name": "onScreenDetailPermissionChange",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:b22f7025653881bba5becb49d6754145df42e97147008daf415fb064207d394b",
+          "name": "refreshScreens",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:b0810a06330b382391847f094e14db0df4a90f6bac18db9fac03a59be8a83ff4",
+          "name": "requestScreenDetails",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:e60a29415022aae75d8c4a8c8bcab6086095712fe2e745602bceb7e5e56f89e6",
+          "name": "ScreenDetailed",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:1c972c21516f572a21aa598490cf68c4bea1a17935a1c6f4bc1b5e57d90774f3",
+          "name": "ScreenDetails",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:81d06e07b97fb5e0927de45fe4703065aaca7b145e872af5581a17e3d18707db",
+          "name": "screenToDipPoint",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:50a0bbe056f573cc0b0e69c7c5c21336534ae1e53e8ca538ac4e36438555f9af",
+          "name": "screenToDipRect",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        },
+        {
+          "fingerprint": "sha256:53fcc57f2524aab09a52e4b5c51cb6e54304aaed9704f40cd888a6df8e8e6058",
+          "name": "WebScreenOrientationObject",
+          "reason": "The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.",
+          "source": "upstream/packages/screen/src/screen.ts"
+        }
+      ],
+      "deferredSources": [
+        {
+          "fingerprint": "sha256:ee00426f5f825cdee350aab5d01127eb7c0398fd42a7b9436088dca9849679af",
+          "reason": "The partial target preserves the synchronous native ScreenBackend installation seam without admitting or erasing either portable async declaration.",
+          "source": "upstream/packages/screen/src/index.ts"
+        }
+      ],
+      "emittedSources": [
+        {
+          "declarationNames": [
+            "_backend",
+            "setScreenBackend"
+          ],
+          "declarations": 2,
+          "output": "generated/crates/flighthq-screen/src/screen.rs",
+          "outputSha256": "sha256:f747d80464664efd5d0353a8c37b2cc872ddc755c46cfb674f325acd33ca86ce",
+          "source": "upstream/packages/screen/src/screen.ts"
+        }
+      ],
+      "package": "@flighthq/screen",
       "sourceExclusions": [],
       "unsupportedSources": [],
       "typeMappings": {}

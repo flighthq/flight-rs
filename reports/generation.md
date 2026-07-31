@@ -110,7 +110,7 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | `@flighthq/scene-gl` | host-backend | emittable | dependency-blocked | 53/53 | 187/184 | 0 | 1/1 | 26 | 0 | no |
 | `@flighthq/scene-resources` | generated | blocked | source-blocked | 7/16 | 22/37 | 15 | 1/1 | 6 | 10 | no |
 | `@flighthq/scene-wgpu` | host-backend | emittable | dependency-blocked | 42/42 | 142/140 | 0 | 1/1 | 30 | 0 | no |
-| `@flighthq/screen` | generated | blocked | source-blocked | 1/2 | 0/31 | 31 | 2/2 | 0 | 2 | no |
+| `@flighthq/screen` | generated | blocked | source-blocked | 1/2 | 0/31 | 31 | 2/2 | 0 | 2 | partial |
 | `@flighthq/sdk` | generated | blocked | source-blocked | 14/14 | 0/5923 | 5923 | 0/0 | 0 | 1 | no |
 | `@flighthq/sensors` | generated | blocked | source-blocked | 1/2 | 0/32 | 32 | 1/1 | 0 | 2 | no |
 | `@flighthq/shading` | generated | blocked | source-blocked | 14/17 | 37/37 | 0 | 2/2 | 0 | 3 | no |
