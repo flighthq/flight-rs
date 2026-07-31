@@ -256,6 +256,19 @@ After passes 19–21, prioritize shared capabilities rather than raw diagnostic 
 
 The package-level “missing exports” blocker often shrinks automatically after the first emission blocker is fixed. Do not build a broad re-export workaround until regeneration proves the barrel/export graph itself is incomplete.
 
+## Pass 27 design checkpoint
+
+The implementation contract is [Future/task IR design](future-task-ir.md). Send and review that design before task-lowering code. Its critical invariants are:
+
+- every async scope is portable executable, an explicitly configured host placeholder, or source-blocked;
+- `Promise<T>` becomes target-neutral task IR with one compiler-runtime type across candidate and promoted graphs;
+- host placeholders never execute browser bodies or chained callbacks and never fabricate default output;
+- portable tasks preserve eager pre-suspension work, mandatory await yielding, shared one-time execution, typed rejection, and owned state across suspension;
+- unsupported Promise composition, detached work, and async iteration remain source-scoped blockers;
+- async-task disposition is diagnostic reporting, while exports, portable opacity, upstream conformance, and fully promoted packages remain the four parity metrics.
+
+At the design baseline, eligible generated packages contain 162 async scopes and 190 awaits across 40 non-test sources. The report exposes only seven await blockers in six packages because top-level async declarations are currently body-erased. Removing that silent path is the first code gate; do not interpret any resulting candidate-status correction as a behavioral regression without checking whether the old candidate ever executed its source body.
+
 ## Checkpoint discipline
 
 - Generated output is reviewed as evidence, never edited as input.

@@ -52,7 +52,7 @@ Cultivation is opt-in and package-specific. The surface policy's `cultivated` di
 
 Native hosts are cultivated adapters over generated package seams; they are not translations of the web default backend. The cultivated `flighthq-host-winit` compile canary installs generated application, lifecycle, keyboard, haptics, power, screen, platform, and device backends as one bundle and creates the generated input manager. Its concrete event-loop and rendering adapters remain handwritten host work.
 
-TypeScript `Promise<T>` currently lowers to an inert, typed placeholder when it occurs inside a web default backend. Chained callbacks are type-checked and captured but are not executed in native placeholder code. The native host must install its backend before that web-only path is used. Async functions needed by substrate-neutral code require a later Future/task IR rather than silently using this placeholder.
+TypeScript `Promise<T>` currently lowers to an inert, typed placeholder when it occurs inside a web default backend. Chained callbacks are type-checked and captured but are not executed in native placeholder code. The native host must install its backend before that web-only path is used. Portable async must not reuse that placeholder or erase source bodies. The Pass 27 [Future/task IR design](future-task-ir.md) defines explicit portable-task and host-placeholder dispositions, one canonical compiler-runtime identity across crate graphs, typed task outcomes, scheduler and ownership rules, complete async-scope reporting, and the acceptance gates required before an async package can count toward parity.
 
 Current native-host prerequisite frontier:
 
@@ -106,4 +106,4 @@ Entity runtime storage retains `Arc<Mutex<_>>` even though upstream execution is
 
 Package-wide exported-type catalogs drive discriminated open-interface discovery. A family is widened only when descendants explicitly redeclare `kind` and every widened member is safely default-materializable. This promotes the Light family without corrupting recursive trait hierarchies or callback-bearing families. Families that cannot satisfy that invariant need a tagged payload representation rather than unsafe zeroed/default storage.
 
-The next cross-cutting tasks are typed backend-capability IR for dynamic host objects, a tagged representation for non-defaultable open families, and Future/task lowering for genuinely portable async code.
+The next cross-cutting tasks are Future/task lowering under the design checkpoint, typed backend-capability IR for dynamic host objects, and a tagged representation for non-defaultable open families.
