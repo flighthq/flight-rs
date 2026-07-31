@@ -11,6 +11,7 @@ import {
   type RustTarget,
   type WasmFacadeTarget,
 } from '../../port.config.ts';
+import { harvestConformance, markConformancePassing, type ConformanceHarvestReport } from '../conformance/harvest.ts';
 import { sourcePathToImplementationModule, sourcePathToRustModule } from '../analyze/inventory.ts';
 import { lowerTypeScriptSource } from '../lower/typescript.ts';
 import type { PackageInventory, UpstreamInventory } from '../model/inventory.ts';
@@ -24,7 +25,8 @@ const CARGO_DIAGNOSTIC_BUFFER_BYTES = 64 * 1024 * 1024;
 export interface RustGenerationReport {
   automaticPackages: AutomaticPackageReport[];
   blessedFacades: typeof portConfig.blessedFacades;
-  schemaVersion: 3;
+  conformance: ConformanceHarvestReport;
+  schemaVersion: 4;
   summary: AutomaticPackageSummary;
   targets: RustTargetReport[];
   upstreamCommit: string;
@@ -186,12 +188,20 @@ export function generateRust(
   const attempts = inventory.packages.map((item) =>
     attemptAutomaticPackage(workspaceDirectory, item, inventory.packages),
   );
+  const conformanceHarvest = harvestConformance(
+    workspaceDirectory,
+    inventory.packages,
+    portConfig.conformanceHarvest,
+    inventory.summary.testFiles,
+  );
   const automaticPackages = materializeAutomaticCandidates(
     workspaceDirectory,
     check,
     attempts,
     annotateDependencyImpact(attempts.map((item) => item.report)),
+    conformanceHarvest.rustModules,
   );
+  const conformance = verifyAutomaticConformance(workspaceDirectory, automaticPackages, conformanceHarvest.report);
   const targets = portConfig.targets.map((target) => generateTarget(workspaceDirectory, target, check));
   const wasmFacades = portConfig.wasmFacades.map((facade) =>
     generateWasmFacade(workspaceDirectory, facade, targets, check),
@@ -199,7 +209,8 @@ export function generateRust(
   const report: RustGenerationReport = {
     automaticPackages,
     blessedFacades: portConfig.blessedFacades,
-    schemaVersion: 3,
+    conformance,
+    schemaVersion: 4,
     summary: summarizeAutomaticPackages(automaticPackages),
     targets,
     upstreamCommit: inventory.upstreamCommit,
@@ -518,6 +529,7 @@ function materializeAutomaticCandidates(
   check: boolean,
   attempts: AutomaticPackageAttempt[],
   packages: AutomaticPackageReport[],
+  conformanceRustModules: ReadonlyMap<string, string>,
 ): AutomaticPackageReport[] {
   validateCandidateCrateGraph(packages);
   const candidateRoot = path.join(workspaceDirectory, portConfig.generatedDirectory, 'candidates');
@@ -570,6 +582,11 @@ function materializeAutomaticCandidates(
       content: module.content,
       file: path.join(crateSourceDirectory, `${module.module}.rs`),
     }));
+    const conformance = conformanceRustModules.get(item.package);
+    const library = `${emitLibrary(
+      target,
+      attempt.modules.map((module) => module.module),
+    )}${conformance ? '\n#[cfg(test)]\nmod __flight_upstream_conformance;\n' : ''}`;
     outputs.push(
       {
         content: emitCandidateCargoManifest(
@@ -580,16 +597,16 @@ function materializeAutomaticCandidates(
         file: path.join(crateDirectory, 'Cargo.toml'),
       },
       {
-        content: formatRust(
-          emitLibrary(
-            target,
-            attempt.modules.map((module) => module.module),
-          ),
-          path.join(crateSourceDirectory, 'lib.rs'),
-        ),
+        content: formatRust(library, path.join(crateSourceDirectory, 'lib.rs')),
         file: path.join(crateSourceDirectory, 'lib.rs'),
       },
     );
+    if (conformance) {
+      outputs.push({
+        content: formatRust(conformance, path.join(crateSourceDirectory, '__flight_upstream_conformance.rs')),
+        file: path.join(crateSourceDirectory, '__flight_upstream_conformance.rs'),
+      });
+    }
     for (const output of outputs) {
       mkdirSync(path.dirname(output.file), { recursive: true });
       writeOrCheck(output.file, output.content, check);
@@ -615,6 +632,52 @@ function materializeAutomaticCandidates(
   const compiled = compileAutomaticCandidates(workspaceDirectory, candidateRoot, materialized);
   verifyNoStaleOutputs(candidateRoot, expected, check);
   return compiled;
+}
+
+function verifyAutomaticConformance(
+  workspaceDirectory: string,
+  packages: readonly AutomaticPackageReport[],
+  report: ConformanceHarvestReport,
+): ConformanceHarvestReport {
+  const selected = report.packages.filter((item) => item.translatedCases > 0);
+  if (selected.length === 0) return report;
+  for (const item of selected) {
+    const candidate = packages.find((candidate) => candidate.package === item.package);
+    if (candidate?.candidate.status !== 'compiled') {
+      throw new Error(
+        `Conformance harvest ${item.package} requires a compiled automatic candidate, got ${candidate?.candidate.status ?? 'missing'}.`,
+      );
+    }
+  }
+  const candidateRoot = path.join(workspaceDirectory, portConfig.generatedDirectory, 'candidates');
+  const manifest = path.join(candidateRoot, 'Cargo.toml');
+  const arguments_ = [
+    'test',
+    '--manifest-path',
+    manifest,
+    ...selected.flatMap((item) => ['-p', item.crate]),
+    '--lib',
+    '--quiet',
+  ];
+  try {
+    execFileSync('cargo', arguments_, {
+      cwd: workspaceDirectory,
+      encoding: 'utf8',
+      env: {
+        ...process.env,
+        CARGO_TARGET_DIR: path.join(workspaceDirectory, 'target', 'generator-candidates'),
+      },
+      maxBuffer: CARGO_DIAGNOSTIC_BUFFER_BYTES,
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+  } catch (error) {
+    const stdout = error && typeof error === 'object' && 'stdout' in error ? String(error.stdout) : '';
+    const stderr = error && typeof error === 'object' && 'stderr' in error ? String(error.stderr) : String(error);
+    throw new Error(`Generated upstream conformance tests failed.\n${stdout}${stderr}`);
+  } finally {
+    rmSync(path.join(candidateRoot, 'Cargo.lock'), { force: true });
+  }
+  return markConformancePassing(report);
 }
 
 export function validateCandidateCrateGraph(packages: readonly CandidateCrateNode[]): void {

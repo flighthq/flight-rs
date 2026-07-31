@@ -85,12 +85,15 @@ The generator now has these invariants. Preserve them with focused regression te
 - A family is widened only when descendants explicitly redeclare `kind` and every added field is safely default-materializable.
 - Open-family constructors and projections use struct update defaults. This promoted the lighting `Light` family without corrupting recursive node hierarchies or callback-bearing adjustment families.
 - `application`, `lifecycle`, `input`, `keyboard`, `haptics`, `power`, `platform`, `device`, and `screen` provide generated seams that can be linked by a cultivated native host.
+- Configured upstream test files are harvested from their TypeScript ASTs into candidate unit tests. Generation runs every translated assertion before it increments case coverage, and only completely translated files increment file coverage; all other in-scope files remain fingerprinted unsupported report entries.
 
 Primary implementation entry points:
 
 - `tools/generator/src/emit/core.ts`
   - `collectPackageSemanticTypes` creates the package-wide semantic catalog.
   - The package emission path merges this catalog before explicit semantic mappings.
+- `tools/generator/src/conformance/harvest.ts`
+  - Discovers package test files, translates the admitted pure assertion subset, fingerprints unsupported files, and produces the generated candidate test modules plus report data.
 - `tools/generator/src/emit/rust.ts`
   - `EmitContext.openInterfaceFields` records safe widened layouts.
   - `registerOpenInterfaceFamilies` discovers and validates open families.

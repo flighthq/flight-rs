@@ -15,6 +15,8 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | Host-bound packages | 4 |
 | Excluded packages | 1 |
 | Source/package blockers | 334 |
+| Upstream conformance files translated and passing | 4/1166 |
+| Generated conformance cases passing | 45/45 |
 
 | Package | Disposition | Status | Candidate | Sources emitted/attempted | API generated/expected | Missing | Dependents direct/transitive | Opaque sources | Blockers | Target |
 | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
@@ -149,6 +151,36 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | `@flighthq/video` | generated | blocked | source-blocked | 3/4 | 12/16 | 4 | 2/2 | 1 | 2 | no |
 | `@flighthq/webcam` | generated | blocked | source-blocked | 1/3 | 0/10 | 10 | 1/1 | 0 | 3 | no |
 | `@flighthq/xml` | generated | emittable | compile-blocked | 3/3 | 7/7 | 0 | 5/5 | 2 | 0 | no |
+
+## Generated upstream conformance
+
+| Package | Files translated/passing/in scope | Cases translated/passing | Unsupported files |
+| --- | ---: | ---: | ---: |
+| `@flighthq/math` | 3/3/15 | 39/39 | 12 |
+| `@flighthq/color` | 1/1/9 | 6/6 | 8 |
+
+### Unsupported in-scope upstream test files
+
+- `upstream/packages/math/src/angle.test.ts` (0/20 cases): Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted.
+- `upstream/packages/math/src/hash.test.ts` (0/16 cases): Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted.
+- `upstream/packages/math/src/interpolation.test.ts` (0/24 cases): Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted.
+- `upstream/packages/math/src/interpolationAdvanced.test.ts` (0/28 cases): Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted.
+- `upstream/packages/math/src/nextPowerOfTwo.test.ts` (0/17 cases): Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted.
+- `upstream/packages/math/src/numberTheory.test.ts` (0/21 cases): Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted.
+- `upstream/packages/math/src/random.test.ts` (0/4 cases): Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted.
+- `upstream/packages/math/src/randomDistributions.test.ts` (0/43 cases): Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted.
+- `upstream/packages/math/src/randomRange.test.ts` (0/14 cases): Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted.
+- `upstream/packages/math/src/rounding.test.ts` (0/21 cases): Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted.
+- `upstream/packages/math/src/scalar.test.ts` (0/13 cases): Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted.
+- `upstream/packages/math/src/statistics.test.ts` (0/18 cases): Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted.
+- `upstream/packages/color/src/colorFromKelvin.test.ts` (0/6 cases): Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted.
+- `upstream/packages/color/src/hslColor.test.ts` (0/9 cases): Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted.
+- `upstream/packages/color/src/hsvColor.test.ts` (0/8 cases): Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted.
+- `upstream/packages/color/src/lerpColor.test.ts` (0/9 cases): Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted.
+- `upstream/packages/color/src/luminance.test.ts` (0/9 cases): Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted.
+- `upstream/packages/color/src/oklab.test.ts` (0/4 cases): Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted.
+- `upstream/packages/color/src/packColor.test.ts` (0/23 cases): Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted.
+- `upstream/packages/color/src/premultiplyColorAlpha.test.ts` (0/7 cases): Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted.
 
 ## Blockers
 

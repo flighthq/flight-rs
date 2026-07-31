@@ -32,6 +32,8 @@ Flight package barrels and TypeScript sources
 
 The inventory covers every upstream package regardless of current Rust emission support. The generation report separately identifies translated, mapped, and unsupported sources.
 
+Upstream conformance is harvested from pinned TypeScript test ASTs rather than copied into handwritten Rust fixtures. Translation attempts are file-scoped and configured: generated Rust assertions are attached to the corresponding automatic candidate, and generation runs them before recording them as passing. Only a completely translated file increments file coverage; unselected or partially translated in-scope files remain explicit fingerprinted unsupported entries with a reason. The headline metric is translated-and-passing upstream test files over all inventoried upstream test files; generated assertion counts are reported separately so a large file cannot masquerade as broad package coverage.
+
 ## Rust API
 
 - `@flighthq/<name>` maps to crate `flighthq-<name>`.
@@ -75,7 +77,7 @@ The candidate graph resolves each package through one deterministic map:
 
 This merges the graphs incrementally as packages graduate without maintaining graph-specific copies. For the current `types`/`easing`/`tween` boundary, `@flighthq/types` must graduate from its partial target to the full already-compiling package before the fully promoted `@flighthq/easing` crate can enter the candidate graph. `@flighthq/tween` and its automatic `@flighthq/signals` dependency then both resolve `flighthq-types` to that promoted crate, while `flighthq-easing` reaches the same path through its own manifest. Cargo sees one `flighthq-types` identity throughout the graph.
 
-Two workspaces are the intended end state, not a temporary omission. The root workspace tests promoted shipping crates, while the generated candidate workspace separately checks the automatic graph. `cargo test --workspace` covers only the root; `npm run ci` must continue to check both graphs through deterministic generation/candidate compilation followed by root-workspace and host tests.
+Two workspaces are the intended end state, not a temporary omission. The root workspace tests promoted shipping crates, while the generated candidate workspace separately checks the automatic graph and executes admitted generated upstream conformance modules. `cargo test --workspace` covers only the root; `npm run ci` must continue to check both graphs through deterministic generation/candidate compilation and conformance execution followed by root-workspace and host tests.
 
 `@flighthq/image` is the deliberate permanent partial exception. Its promoted crate admits the portable image-resource slice needed by surface, while `imageResourceFrom.ts` browser element/load/decode behavior remains host-bound. The automatic candidate and promoted partial crates may therefore keep the same `flighthq-image` package name in their separate workspaces, but the resolution map must never admit both paths to one Cargo graph. This model mitigates cross-graph X1 collisions; it does not claim that duplicate package names disappear globally. Full promotion of image would violate the host boundary and is forbidden unless that policy itself changes.
 

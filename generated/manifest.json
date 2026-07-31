@@ -46331,7 +46331,315 @@
       "reason": "Curated JavaScript/wasm boundary for the generated @flighthq/surface implementation."
     }
   ],
-  "schemaVersion": 3,
+  "conformance": {
+    "packages": [
+      {
+        "crate": "flighthq-math",
+        "package": "@flighthq/math",
+        "passingCases": 39,
+        "passingTestFiles": 3,
+        "testFiles": [
+          {
+            "fingerprint": "2daf0ed8c03f10e2a5bf82687d21a404ac3a2350670a73b0bbbd9f543b7da219",
+            "source": "upstream/packages/math/src/angle.test.ts",
+            "status": "unsupported",
+            "testCases": 20,
+            "translatedCases": 0,
+            "unsupported": [
+              {
+                "reason": "Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted."
+              }
+            ]
+          },
+          {
+            "fingerprint": "4a87a63540c53862fec68b439bdbf467e0b561a52fc40a2fb9e59ae484250ad4",
+            "source": "upstream/packages/math/src/clamp.test.ts",
+            "status": "translated",
+            "testCases": 17,
+            "translatedCases": 17,
+            "unsupported": []
+          },
+          {
+            "fingerprint": "a7579116f59025e4c7ab42ab21d5e21d9379a82a89c6fc6600896b1f16e06789",
+            "source": "upstream/packages/math/src/comparison.test.ts",
+            "status": "translated",
+            "testCases": 14,
+            "translatedCases": 14,
+            "unsupported": []
+          },
+          {
+            "fingerprint": "b98ebca6b329ae00219027f2391cea571c58fdd8d2c84c2d7437f542d4e755f0",
+            "source": "upstream/packages/math/src/constants.test.ts",
+            "status": "translated",
+            "testCases": 8,
+            "translatedCases": 8,
+            "unsupported": []
+          },
+          {
+            "fingerprint": "f8859ced60a01d56ed8635c799efd9eed910dfa5dd407be9221372f7970b2869",
+            "source": "upstream/packages/math/src/hash.test.ts",
+            "status": "unsupported",
+            "testCases": 16,
+            "translatedCases": 0,
+            "unsupported": [
+              {
+                "reason": "Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted."
+              }
+            ]
+          },
+          {
+            "fingerprint": "0a7e45ff52d9a1456cb4d2bf7ddfa9c357ea1d1794c63e963df957d801dc04bc",
+            "source": "upstream/packages/math/src/interpolation.test.ts",
+            "status": "unsupported",
+            "testCases": 24,
+            "translatedCases": 0,
+            "unsupported": [
+              {
+                "reason": "Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted."
+              }
+            ]
+          },
+          {
+            "fingerprint": "7f46c1181d03a030bfc84bf83a6e20261b48a28c28f926ced2a16776855e58a1",
+            "source": "upstream/packages/math/src/interpolationAdvanced.test.ts",
+            "status": "unsupported",
+            "testCases": 28,
+            "translatedCases": 0,
+            "unsupported": [
+              {
+                "reason": "Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted."
+              }
+            ]
+          },
+          {
+            "fingerprint": "397ee730b553cbdfeaee98a0372321ed1ecadf12d0a5e9faf8e30e80f1f3deb2",
+            "source": "upstream/packages/math/src/nextPowerOfTwo.test.ts",
+            "status": "unsupported",
+            "testCases": 17,
+            "translatedCases": 0,
+            "unsupported": [
+              {
+                "reason": "Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted."
+              }
+            ]
+          },
+          {
+            "fingerprint": "37ef381eb13b2fad2c1827615ece6199e481f84db5a1dfb5ea6c9aa7608d22e6",
+            "source": "upstream/packages/math/src/numberTheory.test.ts",
+            "status": "unsupported",
+            "testCases": 21,
+            "translatedCases": 0,
+            "unsupported": [
+              {
+                "reason": "Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted."
+              }
+            ]
+          },
+          {
+            "fingerprint": "0850d0e528bd524a71464b1ac66d59eac48ccf3812026b0518e640c41e2053ba",
+            "source": "upstream/packages/math/src/random.test.ts",
+            "status": "unsupported",
+            "testCases": 4,
+            "translatedCases": 0,
+            "unsupported": [
+              {
+                "reason": "Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted."
+              }
+            ]
+          },
+          {
+            "fingerprint": "a61b93dbfdd015dab67708c3a1ec674dc6a0e8751b75db96ec1422171e5302e9",
+            "source": "upstream/packages/math/src/randomDistributions.test.ts",
+            "status": "unsupported",
+            "testCases": 43,
+            "translatedCases": 0,
+            "unsupported": [
+              {
+                "reason": "Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted."
+              }
+            ]
+          },
+          {
+            "fingerprint": "8f44e1a1de22bd01676cacde18f435defe1e0124806a880c8a2bb9fe52e21234",
+            "source": "upstream/packages/math/src/randomRange.test.ts",
+            "status": "unsupported",
+            "testCases": 14,
+            "translatedCases": 0,
+            "unsupported": [
+              {
+                "reason": "Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted."
+              }
+            ]
+          },
+          {
+            "fingerprint": "9593c62a8d428ad9848968db1e7cfe48cc57e0d2d647fd1ca53095aacc5051c1",
+            "source": "upstream/packages/math/src/rounding.test.ts",
+            "status": "unsupported",
+            "testCases": 21,
+            "translatedCases": 0,
+            "unsupported": [
+              {
+                "reason": "Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted."
+              }
+            ]
+          },
+          {
+            "fingerprint": "23cdce7ca1c653e09adeef1398a02c90e8b884f894eee97cadb09b967bd1bde7",
+            "source": "upstream/packages/math/src/scalar.test.ts",
+            "status": "unsupported",
+            "testCases": 13,
+            "translatedCases": 0,
+            "unsupported": [
+              {
+                "reason": "Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted."
+              }
+            ]
+          },
+          {
+            "fingerprint": "6e3aaef9f1ff19b4e934570c6671ece9b1d96843ef3f38186f8870acd7088203",
+            "source": "upstream/packages/math/src/statistics.test.ts",
+            "status": "unsupported",
+            "testCases": 18,
+            "translatedCases": 0,
+            "unsupported": [
+              {
+                "reason": "Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted."
+              }
+            ]
+          }
+        ],
+        "translatedCases": 39,
+        "translatedTestFiles": 3,
+        "unsupportedTestFiles": 12
+      },
+      {
+        "crate": "flighthq-color",
+        "package": "@flighthq/color",
+        "passingCases": 6,
+        "passingTestFiles": 1,
+        "testFiles": [
+          {
+            "fingerprint": "6fef355e89375414bf19cfdc0b2adf4ccf29c09f113d41d7d50be7e773e8df34",
+            "source": "upstream/packages/color/src/colorFromKelvin.test.ts",
+            "status": "unsupported",
+            "testCases": 6,
+            "translatedCases": 0,
+            "unsupported": [
+              {
+                "reason": "Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted."
+              }
+            ]
+          },
+          {
+            "fingerprint": "73c5eafefd06eead019bdd0b14ceb4d1614cb46a2e3fafe0017e24e5489bc815",
+            "source": "upstream/packages/color/src/hslColor.test.ts",
+            "status": "unsupported",
+            "testCases": 9,
+            "translatedCases": 0,
+            "unsupported": [
+              {
+                "reason": "Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted."
+              }
+            ]
+          },
+          {
+            "fingerprint": "3c7d7629bc579b1ea5dfb97419c0756cd2aed062234e1c6740f401800efb7aa5",
+            "source": "upstream/packages/color/src/hsvColor.test.ts",
+            "status": "unsupported",
+            "testCases": 8,
+            "translatedCases": 0,
+            "unsupported": [
+              {
+                "reason": "Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted."
+              }
+            ]
+          },
+          {
+            "fingerprint": "cccc39d481ea2105882f6e8ecc15f687acde1775bb4c25dad2c1776f3a00f6c3",
+            "source": "upstream/packages/color/src/lerpColor.test.ts",
+            "status": "unsupported",
+            "testCases": 9,
+            "translatedCases": 0,
+            "unsupported": [
+              {
+                "reason": "Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted."
+              }
+            ]
+          },
+          {
+            "fingerprint": "26fefdd0ab4e20a17e0c0af1ae7dd0c94f530795975d1755f13e3da28f69e669",
+            "source": "upstream/packages/color/src/luminance.test.ts",
+            "status": "unsupported",
+            "testCases": 9,
+            "translatedCases": 0,
+            "unsupported": [
+              {
+                "reason": "Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted."
+              }
+            ]
+          },
+          {
+            "fingerprint": "f272e868c74a65e49566ad6baec0db38b712043ecbf1c805e215d3b393e60de9",
+            "source": "upstream/packages/color/src/oklab.test.ts",
+            "status": "unsupported",
+            "testCases": 4,
+            "translatedCases": 0,
+            "unsupported": [
+              {
+                "reason": "Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted."
+              }
+            ]
+          },
+          {
+            "fingerprint": "73758eb762427865781f994b8d5f5cacf86e72218d9e1a99ea223bb8cb5ba3b8",
+            "source": "upstream/packages/color/src/packColor.test.ts",
+            "status": "unsupported",
+            "testCases": 23,
+            "translatedCases": 0,
+            "unsupported": [
+              {
+                "reason": "Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted."
+              }
+            ]
+          },
+          {
+            "fingerprint": "8342522d635594c94982a49ab9422bdbfce16370c75a598cb9a0b2c8391e88b0",
+            "source": "upstream/packages/color/src/premultiplyColorAlpha.test.ts",
+            "status": "unsupported",
+            "testCases": 7,
+            "translatedCases": 0,
+            "unsupported": [
+              {
+                "reason": "Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted."
+              }
+            ]
+          },
+          {
+            "fingerprint": "373610cc2011d8fe1d067a64bc4ee0bc6761eaafb016aa384b0ee58a6fc1ab85",
+            "source": "upstream/packages/color/src/srgbTransfer.test.ts",
+            "status": "translated",
+            "testCases": 6,
+            "translatedCases": 6,
+            "unsupported": []
+          }
+        ],
+        "translatedCases": 6,
+        "translatedTestFiles": 1,
+        "unsupportedTestFiles": 8
+      }
+    ],
+    "summary": {
+      "inScopeTestFiles": 24,
+      "outOfScopeTestFiles": 1142,
+      "passingCases": 45,
+      "passingTestFiles": 4,
+      "totalUpstreamTestFiles": 1166,
+      "translatedCases": 45,
+      "translatedTestFiles": 4,
+      "unsupportedTestFiles": 20
+    }
+  },
+  "schemaVersion": 4,
   "summary": {
     "blocked": 54,
     "candidateCompileBlocked": 23,

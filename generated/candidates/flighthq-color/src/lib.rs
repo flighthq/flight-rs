@@ -58,3 +58,6 @@ mod premultiply_color_alpha;
 pub use premultiply_color_alpha::*;
 mod srgb_transfer;
 pub use srgb_transfer::*;
+
+#[cfg(test)]
+mod __flight_upstream_conformance;

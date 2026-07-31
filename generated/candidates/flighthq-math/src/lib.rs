@@ -70,3 +70,6 @@ mod scalar;
 pub use scalar::*;
 mod statistics;
 pub use statistics::*;
+
+#[cfg(test)]
+mod __flight_upstream_conformance;

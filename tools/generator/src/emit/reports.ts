@@ -85,6 +85,8 @@ export function generationSummary(report: RustGenerationReport): string {
     `| Host-bound packages | ${report.summary.hostBound} |`,
     `| Excluded packages | ${report.summary.excluded} |`,
     `| Source/package blockers | ${report.summary.sourceBlockers} |`,
+    `| Upstream conformance files translated and passing | ${report.conformance.summary.passingTestFiles}/${report.conformance.summary.totalUpstreamTestFiles} |`,
+    `| Generated conformance cases passing | ${report.conformance.summary.passingCases}/${report.conformance.summary.translatedCases} |`,
     '',
     '| Package | Disposition | Status | Candidate | Sources emitted/attempted | API generated/expected | Missing | Dependents direct/transitive | Opaque sources | Blockers | Target |',
     '| --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |',
@@ -94,6 +96,29 @@ export function generationSummary(report: RustGenerationReport): string {
     lines.push(
       `| \`${item.package}\` | ${item.disposition} | ${item.status} | ${item.candidate.status} | ${item.emittedSources.length}/${item.attemptedSources} | ${item.generatedExports.length}/${item.apiExports} | ${item.missingExports.length} | ${item.directDependents}/${item.transitiveDependents} | ${opaqueSources} | ${item.blockers.length} | ${item.fullyPromotedTarget ? 'full' : item.promotedTarget ? 'partial' : 'no'} |`,
     );
+  }
+  lines.push(
+    '',
+    '## Generated upstream conformance',
+    '',
+    '| Package | Files translated/passing/in scope | Cases translated/passing | Unsupported files |',
+    '| --- | ---: | ---: | ---: |',
+  );
+  for (const item of report.conformance.packages) {
+    lines.push(
+      `| \`${item.package}\` | ${item.translatedTestFiles}/${item.passingTestFiles}/${item.testFiles.length} | ${item.translatedCases}/${item.passingCases} | ${item.unsupportedTestFiles} |`,
+    );
+  }
+  lines.push('', '### Unsupported in-scope upstream test files', '');
+  for (const item of report.conformance.packages) {
+    for (const file of item.testFiles.filter((candidate) => candidate.status !== 'translated')) {
+      const reasons = file.unsupported
+        .map((unsupported) =>
+          `${unsupported.test ? `${unsupported.test}: ` : ''}${unsupported.reason}`.replace(/\s+/gu, ' '),
+        )
+        .join('; ');
+      lines.push(`- \`${file.source}\` (${String(file.translatedCases)}/${String(file.testCases)} cases): ${reasons}`);
+    }
   }
   lines.push('', '## Blockers', '');
   for (const item of report.automaticPackages.filter((candidate) => candidate.blockers.length > 0)) {

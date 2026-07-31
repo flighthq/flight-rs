@@ -12,6 +12,12 @@ export interface NativeHostConstructor {
   resultType: string;
 }
 
+export interface ConformanceHarvestPackage {
+  package: string;
+  sources: string[];
+  unsupportedReason: string;
+}
+
 export interface RustTarget {
   conformanceTemplate?: string;
   crate: string;
@@ -43,6 +49,20 @@ export interface PackagePolicyRule {
 }
 
 export const portConfig = {
+  conformanceHarvest: [
+    {
+      package: '@flighthq/math',
+      sources: ['clamp.test.ts', 'comparison.test.ts', 'constants.test.ts'],
+      unsupportedReason:
+        'Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted.',
+    },
+    {
+      package: '@flighthq/color',
+      sources: ['srgbTransfer.test.ts'],
+      unsupportedReason:
+        'Outside the first pure scalar-expression harvest; translator support must be added before this upstream test file is admitted.',
+    },
+  ] satisfies ConformanceHarvestPackage[],
   generatedDirectory: 'generated',
   reportsDirectory: 'reports',
   upstreamDirectory: 'upstream',

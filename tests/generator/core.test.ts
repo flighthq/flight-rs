@@ -157,10 +157,23 @@ describe('compiler diagnostic source paths', () => {
       package: '@flighthq/types',
     });
     expect(report.summary.candidateCompiled).toBeGreaterThanOrEqual(28);
+    expect(report.conformance.summary).toMatchObject({
+      passingCases: 45,
+      passingTestFiles: 4,
+      totalUpstreamTestFiles: 1166,
+      translatedCases: 45,
+      translatedTestFiles: 4,
+    });
     expect(existsSync(path.join(process.cwd(), 'generated/candidates/flighthq-types'))).toBe(false);
     expect(
       readFileSync(path.join(process.cwd(), 'generated/candidates/flighthq-signals/Cargo.toml'), 'utf8'),
     ).toContain('flighthq-types = { path = "../../crates/flighthq-types" }');
+    expect(
+      readFileSync(
+        path.join(process.cwd(), 'generated/candidates/flighthq-math/src/__flight_upstream_conformance.rs'),
+        'utf8',
+      ),
+    ).toContain('// @generated from upstream @flighthq/math tests; do not edit.');
     expect(readFileSync(path.join(process.cwd(), 'crates/flighthq-host-winit/Cargo.toml'), 'utf8')).toContain(
       'flighthq-types = { path = "../../generated/crates/flighthq-types" }',
     );
