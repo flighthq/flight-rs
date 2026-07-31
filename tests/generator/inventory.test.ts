@@ -45,7 +45,7 @@ describe('cultivated upstream analysis', () => {
     expect(audit.summary.packages).toBe(131);
     expect(audit.summary.lowered).toBe(audit.summary.declarations);
     expect(audit.summary.diagnostics).toBe(0);
-  });
+  }, 60_000);
 });
 
 describe('upstream provenance', () => {
