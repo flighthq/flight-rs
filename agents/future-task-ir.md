@@ -4,6 +4,8 @@
 
 This is the design checkpoint for Pass 27. It defines the semantic boundary before implementation; it does not claim that portable async bodies execute yet.
 
+Stage 1 now implements the honesty boundary. Global `Promise<T>` references lower to target-neutral `task<T>` IR, every eligible async scope has a stable source and lexical identity, and the generated report partitions all 162 scopes as 0 portable executable + 0 configured host placeholder + 162 unsupported. Rust emission rejects those tasks with source-scoped diagnostics instead of replacing their bodies with defaults. The old generated tree contained 33 erased Promise-returning bodies; regeneration contains zero. `@flighthq/screen` consequently moved from compiled to source-blocked, so the current 27 compiled candidates represent executable synchronous bodies rather than preserved async stubs. Runtime execution remains Stage 2 work.
+
 The pinned upstream tree currently has async syntax in 25 eligible generated packages, spanning 40 non-test source files, 162 async scopes, 190 `await` expressions, and three `for await` loops. The generation report exposes only seven `await` emission blockers in six packages because the Rust emitter currently replaces top-level async function bodies with `Default::default()`. That replacement can make a candidate compile without running its source body. `@flighthq/screen`, for example, is reported compiled even though both of its async bodies are erased.
 
 Pass 27 is an honesty boundary as well as a lowering pass:

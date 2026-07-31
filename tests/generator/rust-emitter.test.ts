@@ -412,7 +412,7 @@ describe('Rust emission', () => {
     ).not.toThrow();
   });
 
-  it('types host-bound Promise callbacks while keeping the native placeholder inert', () => {
+  it('types synchronous Promise callbacks but blocks portable task execution instead of erasing its body', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/power/src/promise.ts',
       `
@@ -448,20 +448,38 @@ describe('Rust emission', () => {
       ts.ScriptKind.TS,
     );
     const lowered = lowerTypeScriptSource(source, '@flighthq/power', '/workspace');
+    expect(() =>
+      emitRustModule({
+        declarations: lowered.declarations,
+        source: 'upstream/packages/power/src/promise.ts',
+        typeImports: [],
+      }),
+    ).toThrow(
+      'requestManager: upstream/packages/power/src/promise.ts:13:9: portableTask requestManager: Portable task Rust lowering is not implemented.',
+    );
     const output = emitRustModule({
-      declarations: lowered.declarations,
+      declarations: lowered.declarations.filter(
+        (declaration) => declaration.kind !== 'function' || declaration.name !== 'requestManager',
+      ),
       source: 'upstream/packages/power/src/promise.ts',
       typeImports: [],
     });
 
     expect(lowered.diagnostics).toEqual([]);
+    expect(lowered.asyncTasks).toHaveLength(1);
+    expect(lowered.asyncTasks[0]).toMatchObject({
+      execution: { kind: 'portableTask', origin: { lexicalPath: 'requestManager' } },
+      operations: { awaits: 1, promiseResolve: 1 },
+      matchesLegacyErasurePath: true,
+    });
     expect(output).toContain('move |manager: Manager| -> ()');
     expect(output).toContain('crate::Promise::<()>::default()');
     expect(output).toContain('pub fn inert_result() -> crate::Promise<crate::OpaqueHostValue>');
     expect(output).toContain('String::from_utf16_lossy');
     expect(output).toContain('.starts_with(');
     expect(output).toContain('.as_str())');
-    expect(output).toContain('pub fn request_manager() -> crate::Promise<bool> {\n  Default::default()');
+    expect(output).not.toContain('request_manager');
+    expect(output).not.toMatch(/-> crate::Promise<[^>]+> \{\n\s+Default::default\(\)/u);
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
     writeFileSync(path.join(fixture, 'generated.rs'), output);

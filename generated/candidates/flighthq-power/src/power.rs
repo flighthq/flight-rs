@@ -866,11 +866,7 @@ struct WebWakeLockSentinel {
         >,
     >,
     pub release: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<dyn FnMut() -> crate::Promise<crate::OpaqueHostValue> + Send + 'static>,
-            >,
-        >,
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> crate::Promise<()> + Send + 'static>>>,
     >,
 }
 impl PartialEq for WebWakeLockSentinel {

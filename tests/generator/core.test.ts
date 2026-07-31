@@ -5,6 +5,7 @@ import { portConfig } from '../../tools/generator/port.config.ts';
 import {
   formatRust,
   normalizeDiagnosticSource,
+  validateAsyncTaskDispositionPartition,
   validateCandidateCrateGraph,
   type CandidateCrateNode,
   type RustGenerationReport,
@@ -72,6 +73,19 @@ describe('candidate crate resolution', () => {
       ]),
     ).toThrow(
       'Candidate dependency edge @flighthq/tween -> @flighthq/types names flighthq-renamed-types, but the resolution map selects flighthq-types',
+    );
+  });
+});
+
+describe('async task disposition reporting', () => {
+  it('rejects a scope without a disposition instead of dropping it from the partition', () => {
+    const report = JSON.parse(
+      readFileSync(path.join(process.cwd(), 'reports/generation.json'), 'utf8'),
+    ) as RustGenerationReport;
+    const scope = report.asyncTasks.packages.flatMap((item) => item.scopes)[0]!;
+
+    expect(() => validateAsyncTaskDispositionPartition([{ ...scope, disposition: undefined as never }])).toThrow(
+      'Async task disposition partition is incomplete.',
     );
   });
 });
@@ -156,7 +170,47 @@ describe('compiler diagnostic source paths', () => {
       crate: 'flighthq-types',
       package: '@flighthq/types',
     });
-    expect(report.summary.candidateCompiled).toBeGreaterThanOrEqual(28);
+    expect(report.summary.candidateCompiled).toBe(27);
+    expect(report.asyncTasks.summary).toMatchObject({
+      eligibleScopes: 162,
+      hostPlaceholderScopes: 0,
+      operations: {
+        asyncIterations: 3,
+        awaits: 190,
+      },
+      portableExecutableScopes: 0,
+      unsupportedScopes: 162,
+    });
+    expect(report.asyncTasks.summary.eligibleScopes).toBe(
+      report.asyncTasks.summary.portableExecutableScopes +
+        report.asyncTasks.summary.hostPlaceholderScopes +
+        report.asyncTasks.summary.unsupportedScopes,
+    );
+    const asyncScopes = report.asyncTasks.packages.flatMap((item) => item.scopes);
+    expect(asyncScopes).toHaveLength(162);
+    expect(
+      asyncScopes.every(
+        (scope) =>
+          scope.disposition === 'unsupported' &&
+          scope.package.length > 0 &&
+          scope.source.length > 0 &&
+          scope.lexicalPath.length > 0 &&
+          scope.line > 0 &&
+          scope.column > 0 &&
+          scope.reason === 'Portable task Rust lowering is not implemented.' &&
+          /^sha256:[0-9a-f]{64}$/u.test(scope.fingerprint),
+      ),
+    ).toBe(true);
+    const screen = report.automaticPackages.find((item) => item.package === '@flighthq/screen');
+    expect(screen?.candidate.status).toBe('source-blocked');
+    expect(screen?.asyncTasks).toHaveLength(2);
+    expect(
+      screen?.blockers.some(
+        (blocker) =>
+          blocker.source === 'upstream/packages/screen/src/screen.ts' &&
+          blocker.reason.includes('Portable task Rust lowering is not implemented.'),
+      ),
+    ).toBe(true);
     expect(report.conformance.summary).toMatchObject({
       passingCases: 45,
       passingTestFiles: 4,

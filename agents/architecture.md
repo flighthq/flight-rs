@@ -52,11 +52,11 @@ Cultivation is opt-in and package-specific. The surface policy's `cultivated` di
 
 Native hosts are cultivated adapters over generated package seams; they are not translations of the web default backend. The cultivated `flighthq-host-winit` compile canary installs generated application, lifecycle, keyboard, haptics, power, screen, platform, and device backends as one bundle and creates the generated input manager. Its concrete event-loop and rendering adapters remain handwritten host work.
 
-TypeScript `Promise<T>` currently lowers to an inert, typed placeholder when it occurs inside a web default backend. Chained callbacks are type-checked and captured but are not executed in native placeholder code. The native host must install its backend before that web-only path is used. Portable async must not reuse that placeholder or erase source bodies. The Pass 27 [Future/task IR design](future-task-ir.md) defines explicit portable-task and host-placeholder dispositions, one canonical compiler-runtime identity across crate graphs, typed task outcomes, scheduler and ownership rules, complete async-scope reporting, and the acceptance gates required before an async package can count toward parity.
+Global TypeScript `Promise<T>` types now lower to target-neutral task IR; a source-declared type that merely has the same name remains nominal. Every eligible async scope is inventoried with a stable lexical source identity. Until the canonical runtime lands, portable scopes are source-blocked during Rust emission rather than receiving an inert default body, and no scope is classified as a host placeholder without a configured boundary. Existing synchronous web-default Promise expressions remain typed inert placeholders only where the native host replaces that backend before use. The Pass 27 [Future/task IR design](future-task-ir.md) defines the canonical compiler-runtime identity across crate graphs, typed task outcomes, scheduler and ownership rules, and the remaining acceptance gates before an async package can count toward parity.
 
 Current native-host prerequisite frontier:
 
-- application, lifecycle, input, keyboard, haptics, power, platform, device, and screen compile as generated candidates;
+- application, lifecycle, input, keyboard, haptics, power, platform, and device compile as automatic candidates; screen's cultivated target seam still supports the host canary, while its automatic candidate is honestly source-blocked on two portable tasks;
 - the host-winit canary compiles those seams together in its own Cargo workspace;
 - the render stack waits on log plus the node/material/skeleton dependency frontier;
 - candidate and promoted crates share dependencies through the dependency-closed promotion model below;

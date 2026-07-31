@@ -5,8 +5,11 @@ import ts from 'typescript';
 
 import { portConfig } from '../../port.config.ts';
 import type {
+  IrAsyncTaskOperations,
+  IrAsyncTaskScope,
   IrDeclaration,
   IrExpression,
+  IrFunctionExecution,
   IrFunctionDeclaration,
   IrParameter,
   IrStatement,
@@ -338,6 +341,7 @@ export function lowerTypeScriptSource(
   const domDocumentBindingNames = collectGlobalRootNames(sourceFile, 'document');
   const domNavigatorBindingNames = collectGlobalRootNames(sourceFile, 'navigator');
   const context: LoweringContext = {
+    asyncTaskExecutions: new WeakMap(),
     canvasBindingNames,
     canvasElementBindingNames,
     classThis: false,
@@ -351,6 +355,7 @@ export function lowerTypeScriptSource(
     packageName,
     scopeBindings: new WeakMap(),
     sourceFile,
+    typeScopeBindings: new WeakMap(),
     temporaryIndex: 0,
     webGpuCanvasContextBindingNames,
     webGpuDeviceBindingNames,
@@ -359,6 +364,7 @@ export function lowerTypeScriptSource(
     webGlBindingNames,
     workspaceDirectory,
   };
+  const asyncTasks = collectAsyncTaskScopes(sourceFile, context);
 
   for (const statement of sourceFile.statements) {
     try {
@@ -444,7 +450,137 @@ export function lowerTypeScriptSource(
     }
   }
 
-  return { accountedDeclarations, declarations, diagnostics };
+  return { accountedDeclarations, asyncTasks, declarations, diagnostics };
+}
+
+function collectAsyncTaskScopes(sourceFile: ts.SourceFile, context: LoweringContext): IrAsyncTaskScope[] {
+  const scopes: IrAsyncTaskScope[] = [];
+  const visit = (node: ts.Node): void => {
+    if (isAsyncFunctionLike(node)) {
+      const sourceOrigin = origin(node, context);
+      const execution = {
+        kind: 'portableTask',
+        origin: {
+          ...sourceOrigin,
+          lexicalPath: asyncTaskLexicalPath(node, sourceFile, sourceOrigin.fingerprint),
+        },
+      } satisfies Extract<IrFunctionExecution, { kind: 'portableTask' }>;
+      context.asyncTaskExecutions.set(node, execution);
+      scopes.push({
+        execution,
+        matchesLegacyErasurePath:
+          ts.isFunctionDeclaration(node) && (ts.isSourceFile(node.parent) || ts.isModuleBlock(node.parent)),
+        operations: collectAsyncTaskOperations(node, context),
+      });
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(sourceFile);
+  return scopes.sort(
+    (left, right) =>
+      left.execution.origin.source.localeCompare(right.execution.origin.source) ||
+      left.execution.origin.line - right.execution.origin.line ||
+      left.execution.origin.column - right.execution.origin.column,
+  );
+}
+
+function isAsyncFunctionLike(
+  node: ts.Node,
+): node is ts.ArrowFunction | ts.FunctionDeclaration | ts.FunctionExpression | ts.MethodDeclaration {
+  return (
+    (ts.isArrowFunction(node) ||
+      ts.isFunctionDeclaration(node) ||
+      ts.isFunctionExpression(node) ||
+      ts.isMethodDeclaration(node)) &&
+    hasModifier(node, ts.SyntaxKind.AsyncKeyword)
+  );
+}
+
+function functionExecution(node: ts.Node, context: LoweringContext): IrFunctionExecution {
+  return context.asyncTaskExecutions.get(node) ?? { kind: 'sync' };
+}
+
+function asyncTaskLexicalPath(node: ts.Node, sourceFile: ts.SourceFile, fingerprint: string): string {
+  const labels: string[] = [];
+  let current: ts.Node | undefined = node;
+  while (current && !ts.isSourceFile(current)) {
+    const label = lexicalNodeLabel(current, sourceFile);
+    if (label && labels[0] !== label) labels.unshift(label);
+    current = current.parent;
+  }
+  if (!asyncTaskHasOwnLexicalLabel(node)) {
+    labels.push(`anonymous:${fingerprint.slice('sha256:'.length, 'sha256:'.length + 12)}`);
+  }
+  return labels.join('.');
+}
+
+function asyncTaskHasOwnLexicalLabel(node: ts.Node): boolean {
+  if ((ts.isFunctionDeclaration(node) || ts.isFunctionExpression(node)) && node.name) {
+    return true;
+  }
+  if (ts.isMethodDeclaration(node)) return true;
+  const parent = node.parent;
+  return (
+    (ts.isVariableDeclaration(parent) && parent.initializer === node && ts.isIdentifier(parent.name)) ||
+    (ts.isPropertyAssignment(parent) && parent.initializer === node)
+  );
+}
+
+function lexicalNodeLabel(node: ts.Node, sourceFile: ts.SourceFile): string | undefined {
+  if (ts.isClassDeclaration(node) || ts.isFunctionDeclaration(node) || ts.isFunctionExpression(node)) {
+    return node.name?.text;
+  }
+  if (ts.isMethodDeclaration(node) || ts.isPropertyAssignment(node)) {
+    return lexicalPropertyName(node.name, sourceFile);
+  }
+  if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name)) return node.name.text;
+  return undefined;
+}
+
+function lexicalPropertyName(node: ts.PropertyName, sourceFile: ts.SourceFile): string {
+  if (ts.isIdentifier(node) || ts.isStringLiteral(node) || ts.isNumericLiteral(node)) return node.text;
+  return node.getText(sourceFile).replace(/[^A-Za-z0-9_]/gu, '_');
+}
+
+function collectAsyncTaskOperations(
+  scope: ts.ArrowFunction | ts.FunctionDeclaration | ts.FunctionExpression | ts.MethodDeclaration,
+  context: LoweringContext,
+): IrAsyncTaskOperations {
+  const operations: IrAsyncTaskOperations = {
+    asyncIterations: 0,
+    awaits: 0,
+    promiseAll: 0,
+    promiseAllSettled: 0,
+    promiseCatch: 0,
+    promiseFinally: 0,
+    promiseReject: 0,
+    promiseResolve: 0,
+    promiseThen: 0,
+    voidExpressions: 0,
+  };
+  const visit = (node: ts.Node): void => {
+    if (node !== scope && isAsyncFunctionLike(node)) return;
+    if (ts.isAwaitExpression(node)) operations.awaits++;
+    if (ts.isForOfStatement(node) && node.awaitModifier) operations.asyncIterations++;
+    if (ts.isVoidExpression(node)) operations.voidExpressions++;
+    if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression)) {
+      const method = node.expression.name.text;
+      const owner = node.expression.expression;
+      if (ts.isIdentifier(owner) && owner.text === 'Promise' && !isLexicallyBound(owner, context)) {
+        if (method === 'all') operations.promiseAll++;
+        if (method === 'allSettled') operations.promiseAllSettled++;
+        if (method === 'reject') operations.promiseReject++;
+        if (method === 'resolve') operations.promiseResolve++;
+      } else {
+        if (method === 'then') operations.promiseThen++;
+        if (method === 'catch') operations.promiseCatch++;
+        if (method === 'finally') operations.promiseFinally++;
+      }
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(scope);
+  return operations;
 }
 
 function collectPlatformBindingNames(
@@ -653,6 +789,7 @@ function findEnclosingParameter(identifier: ts.Identifier): ts.ParameterDeclarat
 }
 
 interface LoweringContext {
+  asyncTaskExecutions: WeakMap<ts.Node, Extract<IrFunctionExecution, { kind: 'portableTask' }>>;
   canvasBindingNames: ReadonlySet<string>;
   canvasElementBindingNames: ReadonlySet<string>;
   classThis: boolean;
@@ -666,6 +803,7 @@ interface LoweringContext {
   packageName: string;
   scopeBindings: WeakMap<ts.Node, ReadonlySet<string>>;
   sourceFile: ts.SourceFile;
+  typeScopeBindings: WeakMap<ts.Node, ReadonlySet<string>>;
   temporaryIndex: number;
   webGpuCanvasContextBindingNames: ReadonlySet<string>;
   webGpuDeviceBindingNames: ReadonlySet<string>;
@@ -718,11 +856,11 @@ function lowerClass(node: ts.ClassDeclaration, context: LoweringContext) {
       if (!method.body) unsupported(method, context, 'method without a body');
       const loweredParameters = lowerParameterList(method.parameters, context);
       return {
-        async: hasModifier(method, ts.SyntaxKind.AsyncKeyword),
         body: [
           ...loweredParameters.prefix,
           ...method.body.statements.map((statement) => lowerStatement(statement, context)),
         ],
+        execution: functionExecution(method, context),
         name: propertyName(method.name, context),
         parameters: loweredParameters.parameters,
         public:
@@ -765,8 +903,8 @@ function lowerFunction(node: ts.FunctionDeclaration, context: LoweringContext): 
     ...node.body.statements.map((statement) => lowerStatement(statement, context)),
   ];
   return {
-    async: hasModifier(node, ts.SyntaxKind.AsyncKeyword),
     body,
+    execution: functionExecution(node, context),
     exported: hasModifier(node, ts.SyntaxKind.ExportKeyword),
     kind: 'function',
     name: node.name.text,
@@ -896,6 +1034,12 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
     const name = node.typeName.getText(context.sourceFile);
     const arguments_ = node.typeArguments?.map((argument) => lowerType(argument, context)) ?? [];
     if (context.erasedLocalTypes.has(name)) return { kind: 'dynamic' };
+    if (
+      (name === 'Promise' && ts.isIdentifier(node.typeName) && !isTypeNameLexicallyBound(node.typeName, context)) ||
+      name === 'globalThis.Promise'
+    ) {
+      return { kind: 'task', output: arguments_[0] ?? { kind: 'dynamic' } };
+    }
     if (name === 'Error') return { arguments: [], kind: 'named', name: 'PortError' };
     const portableType = portableTypeReferenceMap[name];
     if (portableType) return { arguments: [], kind: 'named', name: portableType };
@@ -959,13 +1103,6 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
     }
     if (['InstanceType', 'PropertyKey', 'ReturnType', 'ThisParameterType'].includes(name)) {
       return { kind: 'dynamic' };
-    }
-    if (name === 'Promise') {
-      const promiseType =
-        arguments_[0]?.kind === 'primitive' && arguments_[0].name === 'Void'
-          ? { arguments: [], kind: 'named' as const, name: 'Nothing' }
-          : (arguments_[0] ?? { kind: 'dynamic' as const });
-      return { arguments: [promiseType], kind: 'named', name: 'Promise' };
     }
     if (name === 'ArrayLike') {
       return { element: arguments_[0] ?? { kind: 'dynamic' }, kind: 'array' };
@@ -1554,11 +1691,11 @@ function lowerStatement(node: ts.Statement, context: LoweringContext): IrStateme
       declarations: [
         {
           initializer: {
-            async: hasModifier(node, ts.SyntaxKind.AsyncKeyword),
             body: [
               ...loweredParameters.prefix,
               ...node.body.statements.map((statement) => lowerStatement(statement, context)),
             ],
+            execution: functionExecution(node, context),
             kind: 'function',
             name: node.name.text,
             parameters,
@@ -1815,8 +1952,8 @@ function lowerExpression(node: ts.Expression, context: LoweringContext): IrExpre
           context.classThis = false;
           try {
             const value = {
-              async: hasModifier(property, ts.SyntaxKind.AsyncKeyword),
               body: property.body.statements.map((statement) => lowerStatement(statement, context)),
+              execution: functionExecution(property, context),
               kind: 'function' as const,
               parameters: property.parameters
                 .filter((parameter) => !isThisParameter(parameter))
@@ -2058,7 +2195,6 @@ function lowerExpression(node: ts.Expression, context: LoweringContext): IrExpre
       const loweredParameters = lowerParameterList(node.parameters, context);
       const expression = ts.isBlock(node.body) ? undefined : lowerExpression(node.body, context);
       return {
-        async: hasModifier(node, ts.SyntaxKind.AsyncKeyword),
         body: ts.isBlock(node.body)
           ? [
               ...loweredParameters.prefix,
@@ -2068,6 +2204,7 @@ function lowerExpression(node: ts.Expression, context: LoweringContext): IrExpre
             ? [...loweredParameters.prefix, { expression, kind: 'return' }]
             : [],
         expression: loweredParameters.prefix.length > 0 ? undefined : expression,
+        execution: functionExecution(node, context),
         kind: 'function',
         name: ts.isFunctionExpression(node) ? node.name?.text : undefined,
         parameters: loweredParameters.parameters,
@@ -2092,9 +2229,8 @@ function isThisParameter(node: ts.ParameterDeclaration): boolean {
 
 function promiseOfDynamic(): IrType {
   return {
-    kind: 'named',
-    name: 'Promise',
-    arguments: [{ kind: 'dynamic' }],
+    kind: 'task',
+    output: { kind: 'dynamic' },
   };
 }
 
@@ -2174,6 +2310,55 @@ function isLexicallyBound(identifier: ts.Identifier, context: LoweringContext): 
         }
         bindings = collected;
         context.scopeBindings.set(current, bindings);
+      }
+      if (bindings.has(identifier.text)) return true;
+    }
+    current = current.parent;
+  }
+  return false;
+}
+
+function isTypeNameLexicallyBound(identifier: ts.Identifier, context: LoweringContext): boolean {
+  let current: ts.Node | undefined = identifier.parent;
+  while (current) {
+    if (
+      'typeParameters' in current &&
+      Array.isArray(current.typeParameters) &&
+      (current.typeParameters as readonly ts.TypeParameterDeclaration[]).some(
+        (parameter) => parameter.name.text === identifier.text,
+      )
+    ) {
+      return true;
+    }
+    if (ts.isSourceFile(current) || ts.isModuleBlock(current) || ts.isBlock(current)) {
+      let bindings = context.typeScopeBindings.get(current);
+      if (!bindings) {
+        const collected = new Set<string>();
+        for (const statement of current.statements) {
+          if (
+            (ts.isClassDeclaration(statement) ||
+              ts.isEnumDeclaration(statement) ||
+              ts.isInterfaceDeclaration(statement) ||
+              ts.isTypeAliasDeclaration(statement)) &&
+            statement.name
+          ) {
+            collected.add(statement.name.text);
+          }
+          if (ts.isModuleDeclaration(statement) && ts.isIdentifier(statement.name)) {
+            collected.add(statement.name.text);
+          }
+          if (ts.isImportEqualsDeclaration(statement)) collected.add(statement.name.text);
+          if (ts.isImportDeclaration(statement) && statement.importClause) {
+            if (statement.importClause.name) collected.add(statement.importClause.name.text);
+            const bindings_ = statement.importClause.namedBindings;
+            if (bindings_ && ts.isNamespaceImport(bindings_)) collected.add(bindings_.name.text);
+            if (bindings_ && ts.isNamedImports(bindings_)) {
+              bindings_.elements.forEach((element) => collected.add(element.name.text));
+            }
+          }
+        }
+        bindings = collected;
+        context.typeScopeBindings.set(current, bindings);
       }
       if (bindings.has(identifier.text)) return true;
     }

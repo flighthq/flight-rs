@@ -1,6 +1,6 @@
 # Generator Resume Playbook
 
-This is the durable handoff for continuing the mechanical Flight TypeScript-to-Rust port. It describes the repository at generator checkpoint `294cf03` (`Promote screen lighting and native host canary`). Resume from repository `HEAD`; do not reconstruct earlier passes or edit generated Rust by hand.
+This is the durable handoff for continuing the mechanical Flight TypeScript-to-Rust port. It describes the repository after the Pass 27 Stage 1 async-honesty checkpoint. Resume from repository `HEAD`; do not reconstruct earlier passes or edit generated Rust by hand.
 
 ## Goal and policy
 
@@ -18,19 +18,19 @@ The pinned Flight revision is `5d24729f7360475e28a105ae0caeeaa2e1328260`. The ge
 
 ## Current checkpoint
 
-`reports/generation.json` is the machine-readable source of truth. At `294cf03` its summary is:
+`reports/generation.json` is the machine-readable source of truth. Its current summary is:
 
 | State                           | Count |
 | ------------------------------- | ----: |
 | Inventoried packages            |   131 |
 | Eligible automatic packages     |   125 |
-| Packages reaching Rust emission |    70 |
-| Compiled candidates             |    28 |
-| Compile-blocked candidates      |    22 |
-| Dependency-blocked candidates   |    19 |
-| Source-blocked packages         |    55 |
-| Source blockers                 |   294 |
-| Promoted generated packages     |     1 |
+| Packages reaching Rust emission |    61 |
+| Compiled candidates             |    27 |
+| Compile-blocked candidates      |    17 |
+| Dependency-blocked candidates   |    15 |
+| Source-blocked packages         |    64 |
+| Source blockers                 |   355 |
+| Promoted generated packages     |     2 |
 | Cultivated packages             |     1 |
 | Host-bound packages             |     4 |
 | Excluded packages               |     1 |
@@ -38,29 +38,28 @@ The pinned Flight revision is `5d24729f7360475e28a105ae0caeeaa2e1328260`. The ge
 Compiled candidates:
 
 ```text
-adjustments application bitmapfont camera camera2d color device entity flow
+adjustments app application bitmapfont camera camera2d color device entity flow
 geometry haptics input keyboard lifecycle lighting math motionpath path platform
-power screen signals spatial spring textsegment texture types useragent
+power signals spatial spring textsegment texture useragent
 ```
 
 Compile-blocked candidates, ordered roughly from smallest to largest compiler frontier:
 
 ```text
-app(5) socket(5) clock(7) connectivity(10) accessibility(12) assets(14)
-timeline(16) protocol(18) textbidi(19) animation(27) font(27) media(32)
-xml(33) audio(36) clip(37) effects(56) path-formats(62) snapshot(66)
-particles(118) mesh(130) materials(153) node(187)
+socket(5) clock(7) accessibility(12) timeline(16) textbidi(19) protocol(25)
+animation(27) media(32) xml(32) collision(36) clip(37) effects(56)
+path-formats(61) snapshot(67) particles(118) mesh(132) materials(150)
 ```
 
 Dependency-blocked candidates:
 
 ```text
-bitmapfont-formats bitmaptext displayobject glyphatlas movieclip particleemitter
-picking render scene skeleton3d sprite spritesheet textinput textlayout
-textshaper-canvas textureatlas textureatlas-formats tileset velocity
+bitmapfont-formats bitmaptext glyphatlas movieclip particleemitter scene-gl
+scene-wgpu skeleton3d sprite spritesheet textinput textlayout textshaper-canvas
+textureatlas-formats velocity
 ```
 
-`@flighthq/easing` is the first fully promoted executable generated target. Promotion is intentionally stricter than candidate compilation.
+`@flighthq/types` and `@flighthq/easing` are fully promoted executable generated targets. Promotion is intentionally stricter than candidate compilation.
 
 ## What passes 1–18 established
 
@@ -86,6 +85,7 @@ The generator now has these invariants. Preserve them with focused regression te
 - Open-family constructors and projections use struct update defaults. This promoted the lighting `Light` family without corrupting recursive node hierarchies or callback-bearing adjustment families.
 - `application`, `lifecycle`, `input`, `keyboard`, `haptics`, `power`, `platform`, `device`, and `screen` provide generated seams that can be linked by a cultivated native host.
 - Configured upstream test files are harvested from their TypeScript ASTs into candidate unit tests. Generation runs every translated assertion before it increments case coverage, and only completely translated files increment file coverage; all other in-scope files remain fingerprinted unsupported report entries.
+- Global `Promise<T>` types lower to target-neutral `task<T>` IR, while source-declared `Promise` names remain nominal. All 162 eligible async scopes have source, lexical path, and fingerprint identities in the generation report; Stage 1 classifies all 162 as unsupported and emits no default async bodies.
 
 Primary implementation entry points:
 
@@ -267,7 +267,9 @@ The implementation contract is [Future/task IR design](future-task-ir.md). Send 
 - unsupported Promise composition, detached work, and async iteration remain source-scoped blockers;
 - async-task disposition is diagnostic reporting, while exports, portable opacity, upstream conformance, and fully promoted packages remain the four parity metrics.
 
-At the design baseline, eligible generated packages contain 162 async scopes and 190 awaits across 40 non-test sources. The report exposes only seven await blockers in six packages because top-level async declarations are currently body-erased. Removing that silent path is the first code gate; do not interpret any resulting candidate-status correction as a behavioral regression without checking whether the old candidate ever executed its source body.
+At the design baseline, eligible generated packages contained 162 async scopes and 190 awaits across 40 non-test sources. The report exposed only seven await blockers in six packages because top-level async declarations were body-erased. Removing that silent path was the first code gate; do not interpret the resulting candidate-status correction as a behavioral regression without checking whether the old candidate ever executed its source body.
+
+Stage 1 removed that erasure path. The report now partitions 162 eligible scopes as 0 portable executable + 0 configured host placeholder + 162 unsupported, with 190 awaits and three async iterations. The pre-change generated tree had 33 erased bodies; the regenerated tree has zero. `screen` moved from compiled to source-blocked and compiled candidates therefore fell from 28 to 27. Before Stage 2 chooses `FlightTask<T>` output bounds, measure how many task outputs can satisfy `Clone + Send + 'static`; generated test targets must install the deterministic scheduler automatically.
 
 ## Checkpoint discipline
 

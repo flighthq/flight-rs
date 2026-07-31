@@ -6,6 +6,36 @@ export interface SourceOrigin {
   source: string;
 }
 
+export interface IrTaskOrigin extends SourceOrigin {
+  lexicalPath: string;
+}
+
+export const PORTABLE_TASK_RUST_LOWERING_REASON = 'Portable task Rust lowering is not implemented.';
+
+export type IrFunctionExecution =
+  | { kind: 'sync' }
+  | { kind: 'portableTask'; origin: IrTaskOrigin }
+  | { capability: string; kind: 'hostTaskPlaceholder'; origin: IrTaskOrigin; reason: string };
+
+export interface IrAsyncTaskOperations {
+  asyncIterations: number;
+  awaits: number;
+  promiseAll: number;
+  promiseAllSettled: number;
+  promiseCatch: number;
+  promiseFinally: number;
+  promiseReject: number;
+  promiseResolve: number;
+  promiseThen: number;
+  voidExpressions: number;
+}
+
+export interface IrAsyncTaskScope {
+  execution: Exclude<IrFunctionExecution, { kind: 'sync' }>;
+  matchesLegacyErasurePath: boolean;
+  operations: IrAsyncTaskOperations;
+}
+
 export type IrType =
   | { kind: 'anonymous'; fields: IrTypeField[]; extends: IrType[] }
   | { kind: 'array'; element: IrType }
@@ -14,6 +44,7 @@ export type IrType =
   | { kind: 'named'; arguments: IrType[]; name: string }
   | { kind: 'nullable'; inner: IrType }
   | { kind: 'primitive'; name: 'Bool' | 'Float' | 'Int' | 'String' | 'Void' }
+  | { kind: 'task'; output: IrType }
   | { kind: 'union'; variants: IrType[] };
 
 export interface IrTypeField {
@@ -51,7 +82,7 @@ export type IrExpression =
       webGlComputedDomain?: 'GlBlendEquation' | 'GlBlendFactor' | undefined;
     }
   | {
-      async?: boolean | undefined;
+      execution: IrFunctionExecution;
       kind: 'function';
       name?: string | undefined;
       parameters: IrParameter[];
@@ -147,8 +178,8 @@ export interface IrVariable {
 }
 
 export interface IrFunctionDeclaration {
-  async?: boolean | undefined;
   body: IrStatement[];
+  execution: IrFunctionExecution;
   exported: boolean;
   targetBody?: string | undefined;
   kind: 'function';
@@ -196,8 +227,8 @@ export interface IrClassField {
 }
 
 export interface IrClassMethod {
-  async?: boolean | undefined;
   body: IrStatement[];
+  execution: IrFunctionExecution;
   name: string;
   parameters: IrParameter[];
   public: boolean;
@@ -245,6 +276,7 @@ export interface LoweringDiagnostic {
 
 export interface LoweringResult {
   accountedDeclarations: number;
+  asyncTasks: IrAsyncTaskScope[];
   declarations: IrDeclaration[];
   diagnostics: LoweringDiagnostic[];
 }

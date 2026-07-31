@@ -15,7 +15,14 @@ import { harvestConformance, markConformancePassing, type ConformanceHarvestRepo
 import { sourcePathToImplementationModule, sourcePathToRustModule } from '../analyze/inventory.ts';
 import { lowerTypeScriptSource } from '../lower/typescript.ts';
 import type { PackageInventory, UpstreamInventory } from '../model/inventory.ts';
-import type { IrFunctionDeclaration, IrType, LoweringDiagnostic } from '../model/ir.ts';
+import {
+  PORTABLE_TASK_RUST_LOWERING_REASON,
+  type IrAsyncTaskOperations,
+  type IrAsyncTaskScope,
+  type IrFunctionDeclaration,
+  type IrType,
+  type LoweringDiagnostic,
+} from '../model/ir.ts';
 import { emitNativeHostCapabilityRuntime, nativeHostCapabilityExports } from './native-host.ts';
 import { RustEmissionError, emitRustModule, isNumericNamespaceInitializer, type RustImport } from './rust.ts';
 import { stableJson, writeOrCheck } from './reports.ts';
@@ -23,14 +30,50 @@ import { stableJson, writeOrCheck } from './reports.ts';
 const CARGO_DIAGNOSTIC_BUFFER_BYTES = 64 * 1024 * 1024;
 
 export interface RustGenerationReport {
+  asyncTasks: AsyncTaskReport;
   automaticPackages: AutomaticPackageReport[];
   blessedFacades: typeof portConfig.blessedFacades;
   conformance: ConformanceHarvestReport;
-  schemaVersion: 4;
+  schemaVersion: 5;
   summary: AutomaticPackageSummary;
   targets: RustTargetReport[];
   upstreamCommit: string;
   wasmFacades: WasmFacadeReport[];
+}
+
+export interface AsyncTaskScopeReport {
+  column: number;
+  disposition: 'host-placeholder' | 'portable-executable' | 'unsupported';
+  execution: 'hostTaskPlaceholder' | 'portableTask';
+  fingerprint: string;
+  lexicalPath: string;
+  line: number;
+  matchesLegacyErasurePath: boolean;
+  operations: IrAsyncTaskOperations;
+  package: string;
+  reason?: string;
+  source: string;
+}
+
+export interface AsyncTaskSummary {
+  eligibleScopes: number;
+  hostPlaceholderScopes: number;
+  legacyErasurePathScopes: number;
+  operations: IrAsyncTaskOperations;
+  portableExecutableScopes: number;
+  unsupportedReasons: Array<{ reason: string; scopes: number }>;
+  unsupportedScopes: number;
+}
+
+export interface AsyncTaskPackageReport {
+  package: string;
+  scopes: AsyncTaskScopeReport[];
+  summary: AsyncTaskSummary;
+}
+
+export interface AsyncTaskReport {
+  packages: AsyncTaskPackageReport[];
+  summary: AsyncTaskSummary;
 }
 
 export interface AutomaticPackageBlocker {
@@ -62,6 +105,7 @@ export interface AutomaticCandidateReport {
 
 export interface AutomaticPackageReport {
   apiExports: number;
+  asyncTasks: AsyncTaskScopeReport[];
   attemptedSources: number;
   blockers: AutomaticPackageBlocker[];
   candidate: AutomaticCandidateReport;
@@ -207,10 +251,11 @@ export function generateRust(
     generateWasmFacade(workspaceDirectory, facade, targets, check),
   );
   const report: RustGenerationReport = {
+    asyncTasks: summarizeAsyncTasks(automaticPackages),
     automaticPackages,
     blessedFacades: portConfig.blessedFacades,
     conformance,
-    schemaVersion: 4,
+    schemaVersion: 5,
     summary: summarizeAutomaticPackages(automaticPackages),
     targets,
     upstreamCommit: inventory.upstreamCommit,
@@ -245,6 +290,7 @@ function attemptAutomaticPackage(
       modules: [],
       report: {
         apiExports: packageInventory.exports.length,
+        asyncTasks: [],
         attemptedSources: 0,
         blockers: [],
         candidate: {
@@ -291,6 +337,7 @@ function attemptAutomaticPackage(
     ...collectSemanticTypes(workspaceDirectory, target),
   };
   const blockers: AutomaticPackageBlocker[] = [];
+  const asyncTasks: AsyncTaskScopeReport[] = [];
   const emittedSources: AutomaticPackageReport['emittedSources'] = [];
   const generatedExports = new Set<string>();
   const moduleOutputs: AutomaticPackageAttempt['modules'] = [];
@@ -320,6 +367,7 @@ function attemptAutomaticPackage(
     try {
       const sourceFile = parseTypeScriptFile(file);
       const lowered = lowerTypeScriptFile(file, packageInventory.name, workspaceDirectory);
+      asyncTasks.push(...lowered.asyncTasks.map((scope) => reportAsyncTaskScope(scope, packageInventory.name)));
       if (lowered.diagnostics.length > 0) {
         blockers.push({
           diagnostics: lowered.diagnostics,
@@ -448,6 +496,9 @@ function attemptAutomaticPackage(
     });
   }
   blockers.sort((left, right) => left.source.localeCompare(right.source) || left.reason.localeCompare(right.reason));
+  asyncTasks.sort(
+    (left, right) => left.source.localeCompare(right.source) || left.line - right.line || left.column - right.column,
+  );
   emittedSources.sort((left, right) => left.source.localeCompare(right.source));
   if (blockers.length === 0) {
     for (const output of moduleOutputs) {
@@ -472,6 +523,7 @@ function attemptAutomaticPackage(
     modules: status === 'emittable' ? moduleOutputs : [],
     report: {
       apiExports: packageInventory.exports.length,
+      asyncTasks,
       attemptedSources,
       blockers,
       candidate: {
@@ -936,6 +988,127 @@ function summarizeAutomaticPackages(packages: AutomaticPackageReport[]): Automat
   };
 }
 
+function reportAsyncTaskScope(scope: IrAsyncTaskScope, packageName: string): AsyncTaskScopeReport {
+  const { execution } = scope;
+  if (execution.origin.packageName !== packageName) {
+    throw new Error(
+      `Async task package mismatch: ${execution.origin.packageName} was lowered while generating ${packageName}`,
+    );
+  }
+  const common = {
+    column: execution.origin.column,
+    execution: execution.kind,
+    fingerprint: execution.origin.fingerprint,
+    lexicalPath: execution.origin.lexicalPath,
+    line: execution.origin.line,
+    matchesLegacyErasurePath: scope.matchesLegacyErasurePath,
+    operations: scope.operations,
+    package: packageName,
+    source: execution.origin.source,
+  };
+  if (execution.kind === 'hostTaskPlaceholder') {
+    return {
+      ...common,
+      disposition: 'host-placeholder',
+      reason: execution.reason,
+    };
+  }
+  return {
+    ...common,
+    disposition: 'unsupported',
+    reason: PORTABLE_TASK_RUST_LOWERING_REASON,
+  };
+}
+
+function summarizeAsyncTasks(packages: readonly AutomaticPackageReport[]): AsyncTaskReport {
+  const packageReports = packages
+    .filter((item) => item.asyncTasks.length > 0)
+    .map((item) => ({
+      package: item.package,
+      scopes: item.asyncTasks,
+      summary: summarizeAsyncTaskScopes(item.asyncTasks),
+    }));
+  const identities = new Set<string>();
+  for (const scope of packageReports.flatMap((item) => item.scopes)) {
+    const identity = `${scope.package}\0${scope.source}\0${scope.lexicalPath}`;
+    if (identities.has(identity)) throw new Error(`Duplicate async task lexical identity: ${identity}`);
+    identities.add(identity);
+  }
+  return {
+    packages: packageReports,
+    summary: summarizeAsyncTaskScopes(packageReports.flatMap((item) => item.scopes)),
+  };
+}
+
+function summarizeAsyncTaskScopes(scopes: readonly AsyncTaskScopeReport[]): AsyncTaskSummary {
+  const operations: IrAsyncTaskOperations = {
+    asyncIterations: 0,
+    awaits: 0,
+    promiseAll: 0,
+    promiseAllSettled: 0,
+    promiseCatch: 0,
+    promiseFinally: 0,
+    promiseReject: 0,
+    promiseResolve: 0,
+    promiseThen: 0,
+    voidExpressions: 0,
+  };
+  const unsupportedReasons = new Map<string, number>();
+  for (const scope of scopes) {
+    operations.asyncIterations += scope.operations.asyncIterations;
+    operations.awaits += scope.operations.awaits;
+    operations.promiseAll += scope.operations.promiseAll;
+    operations.promiseAllSettled += scope.operations.promiseAllSettled;
+    operations.promiseCatch += scope.operations.promiseCatch;
+    operations.promiseFinally += scope.operations.promiseFinally;
+    operations.promiseReject += scope.operations.promiseReject;
+    operations.promiseResolve += scope.operations.promiseResolve;
+    operations.promiseThen += scope.operations.promiseThen;
+    operations.voidExpressions += scope.operations.voidExpressions;
+    if (scope.disposition === 'unsupported') {
+      const reason = scope.reason ?? 'Unspecified async task blocker.';
+      unsupportedReasons.set(reason, (unsupportedReasons.get(reason) ?? 0) + 1);
+    }
+  }
+  const summary: AsyncTaskSummary = {
+    eligibleScopes: scopes.length,
+    hostPlaceholderScopes: scopes.filter((scope) => scope.disposition === 'host-placeholder').length,
+    legacyErasurePathScopes: scopes.filter((scope) => scope.matchesLegacyErasurePath).length,
+    operations,
+    portableExecutableScopes: scopes.filter((scope) => scope.disposition === 'portable-executable').length,
+    unsupportedReasons: [...unsupportedReasons]
+      .map(([reason, count]) => ({ reason, scopes: count }))
+      .sort((left, right) => left.reason.localeCompare(right.reason)),
+    unsupportedScopes: scopes.filter((scope) => scope.disposition === 'unsupported').length,
+  };
+  validateAsyncTaskDispositionPartition(scopes);
+  return summary;
+}
+
+export function validateAsyncTaskDispositionPartition(scopes: readonly AsyncTaskScopeReport[]): void {
+  for (const scope of scopes) {
+    if (
+      scope.package.length === 0 ||
+      scope.source.length === 0 ||
+      scope.lexicalPath.length === 0 ||
+      scope.line < 1 ||
+      scope.column < 1 ||
+      !/^sha256:[0-9a-f]{64}$/u.test(scope.fingerprint)
+    ) {
+      throw new Error('Async task scope is missing its stable source identity.');
+    }
+    if (scope.disposition === 'unsupported' && !scope.reason) {
+      throw new Error(`Unsupported async task ${scope.package}:${scope.source}:${scope.lexicalPath} has no reason.`);
+    }
+  }
+  const portableExecutableScopes = scopes.filter((scope) => scope.disposition === 'portable-executable').length;
+  const hostPlaceholderScopes = scopes.filter((scope) => scope.disposition === 'host-placeholder').length;
+  const unsupportedScopes = scopes.filter((scope) => scope.disposition === 'unsupported').length;
+  if (scopes.length !== portableExecutableScopes + hostPlaceholderScopes + unsupportedScopes) {
+    throw new Error('Async task disposition partition is incomplete.');
+  }
+}
+
 function generateTarget(workspaceDirectory: string, target: RustTarget, check: boolean): RustTargetReport {
   const packageDirectoryName = target.package.replace(/^@flighthq\//u, '');
   const sourceDirectory = path.join(
@@ -1364,6 +1537,9 @@ function collectNamedTypeReferences(type: IrType): ReadonlySet<string> {
         break;
       case 'nullable':
         visit(candidate.inner);
+        break;
+      case 'task':
+        visit(candidate.output);
         break;
       case 'union':
         candidate.variants.forEach(visit);
@@ -1854,8 +2030,8 @@ function asSemanticFunction(
     declaration.initializer.returns ?? (declaration.type?.kind === 'function' ? declaration.type.returns : undefined);
   if (!returns) return undefined;
   return {
-    async: declaration.initializer.async,
     body: declaration.initializer.body,
+    execution: declaration.initializer.execution,
     exported: declaration.exported,
     kind: 'function',
     name: declaration.name,

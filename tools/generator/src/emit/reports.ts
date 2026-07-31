@@ -85,6 +85,11 @@ export function generationSummary(report: RustGenerationReport): string {
     `| Host-bound packages | ${report.summary.hostBound} |`,
     `| Excluded packages | ${report.summary.excluded} |`,
     `| Source/package blockers | ${report.summary.sourceBlockers} |`,
+    `| Eligible async scopes | ${report.asyncTasks.summary.eligibleScopes} |`,
+    `| Portable executable async scopes | ${report.asyncTasks.summary.portableExecutableScopes} |`,
+    `| Host-placeholder async scopes | ${report.asyncTasks.summary.hostPlaceholderScopes} |`,
+    `| Unsupported async scopes | ${report.asyncTasks.summary.unsupportedScopes} |`,
+    `| Async scopes matching the legacy body-erasure path | ${report.asyncTasks.summary.legacyErasurePathScopes} |`,
     `| Upstream conformance files translated and passing | ${report.conformance.summary.passingTestFiles}/${report.conformance.summary.totalUpstreamTestFiles} |`,
     `| Generated conformance cases passing | ${report.conformance.summary.passingCases}/${report.conformance.summary.translatedCases} |`,
     '',
@@ -96,6 +101,41 @@ export function generationSummary(report: RustGenerationReport): string {
     lines.push(
       `| \`${item.package}\` | ${item.disposition} | ${item.status} | ${item.candidate.status} | ${item.emittedSources.length}/${item.attemptedSources} | ${item.generatedExports.length}/${item.apiExports} | ${item.missingExports.length} | ${item.directDependents}/${item.transitiveDependents} | ${opaqueSources} | ${item.blockers.length} | ${item.fullyPromotedTarget ? 'full' : item.promotedTarget ? 'partial' : 'no'} |`,
     );
+  }
+  lines.push(
+    '',
+    '## Async tasks',
+    '',
+    `Disposition partition: ${String(report.asyncTasks.summary.eligibleScopes)} eligible = ${String(report.asyncTasks.summary.portableExecutableScopes)} portable executable + ${String(report.asyncTasks.summary.hostPlaceholderScopes)} host placeholder + ${String(report.asyncTasks.summary.unsupportedScopes)} unsupported.`,
+    '',
+    '| Operation | Count |',
+    '| --- | ---: |',
+    `| Await expressions | ${report.asyncTasks.summary.operations.awaits} |`,
+    `| Async iterations | ${report.asyncTasks.summary.operations.asyncIterations} |`,
+    `| Promise.all | ${report.asyncTasks.summary.operations.promiseAll} |`,
+    `| Promise.allSettled | ${report.asyncTasks.summary.operations.promiseAllSettled} |`,
+    `| Promise.resolve | ${report.asyncTasks.summary.operations.promiseResolve} |`,
+    `| Promise.reject | ${report.asyncTasks.summary.operations.promiseReject} |`,
+    `| Promise.then | ${report.asyncTasks.summary.operations.promiseThen} |`,
+    `| Promise.catch | ${report.asyncTasks.summary.operations.promiseCatch} |`,
+    `| Promise.finally | ${report.asyncTasks.summary.operations.promiseFinally} |`,
+    `| Void expressions | ${report.asyncTasks.summary.operations.voidExpressions} |`,
+    '',
+    '| Package | Eligible | Portable executable | Host placeholder | Unsupported | Legacy erasure path |',
+    '| --- | ---: | ---: | ---: | ---: | ---: |',
+  );
+  for (const item of report.asyncTasks.packages) {
+    lines.push(
+      `| \`${item.package}\` | ${item.summary.eligibleScopes} | ${item.summary.portableExecutableScopes} | ${item.summary.hostPlaceholderScopes} | ${item.summary.unsupportedScopes} | ${item.summary.legacyErasurePathScopes} |`,
+    );
+  }
+  lines.push('', '### Unsupported async scopes', '');
+  for (const item of report.asyncTasks.packages) {
+    for (const scope of item.scopes.filter((candidate) => candidate.disposition === 'unsupported')) {
+      lines.push(
+        `- \`${scope.package}\` \`${scope.source}:${String(scope.line)}:${String(scope.column)}\` \`${scope.lexicalPath}\` (${scope.fingerprint}): ${scope.reason ?? 'Unspecified async task blocker.'}${scope.matchesLegacyErasurePath ? ' Matched the legacy body-erasure path.' : ''}`,
+      );
+    }
   }
   lines.push(
     '',

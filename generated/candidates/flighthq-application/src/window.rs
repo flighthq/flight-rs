@@ -905,14 +905,14 @@ pub fn dispose_application_window(win: &ApplicationWindow) -> () {
 }
 
 // Source: upstream/packages/application/src/window.ts:426 (sha256:63210f4392e35f58213aecc96f101c028fc8db618d5183f19de33281200a179a)
-pub fn exit_application_fullscreen() -> crate::Promise<crate::OpaqueHostValue> {
-    return crate::host_value::<crate::Promise<crate::OpaqueHostValue>>("host.exitFullscreen");
+pub fn exit_application_fullscreen() -> crate::Promise<()> {
+    return crate::host_value::<crate::Promise<()>>("host.exitFullscreen");
 }
 
 // Source: upstream/packages/application/src/window.ts:431 (sha256:5b581ba0ad01e7c4010b5b4ec3dd8ee53274ae7b8af731161a82c85904e3d70d)
-pub fn exit_application_pointer_lock() -> crate::Promise<crate::OpaqueHostValue> {
+pub fn exit_application_pointer_lock() -> crate::Promise<()> {
     {
-        return { crate::Promise::<crate::OpaqueHostValue>::default() };
+        return { crate::Promise::<()>::default() };
     }
 }
 
@@ -974,10 +974,8 @@ pub fn hide_window(win: &mut ApplicationWindow) -> () {
 }
 
 // Source: upstream/packages/application/src/window.ts:480 (sha256:449cebc4fb63fc9cc3223aeed83676489912c73ff9f5ce66a9ba290010a772b5)
-pub fn lock_application_pointer(
-    element: crate::OpaqueHostValue,
-) -> crate::Promise<crate::OpaqueHostValue> {
-    return { crate::Promise::<crate::OpaqueHostValue>::default() };
+pub fn lock_application_pointer(element: crate::OpaqueHostValue) -> crate::Promise<()> {
+    return { crate::Promise::<()>::default() };
 }
 
 // Source: upstream/packages/application/src/window.ts:488 (sha256:07aa885b72b80baaaf97f8cdfebdb6df04b3b387e9c8cf7a0e2826faed660f7f)
@@ -1120,10 +1118,8 @@ pub fn prepare_element_for_input(element: crate::OpaqueHostValue) -> () {
 }
 
 // Source: upstream/packages/application/src/window.ts:542 (sha256:a01a799371baf1484816b2b174eb69e019d120940240664550d013af5da11ffe)
-pub fn request_application_fullscreen(
-    element: crate::OpaqueHostValue,
-) -> crate::Promise<crate::OpaqueHostValue> {
-    return crate::host_value::<crate::Promise<crate::OpaqueHostValue>>("host.requestFullscreen");
+pub fn request_application_fullscreen(element: crate::OpaqueHostValue) -> crate::Promise<()> {
+    return crate::host_value::<crate::Promise<()>>("host.requestFullscreen");
 }
 
 // Source: upstream/packages/application/src/window.ts:547 (sha256:12155aaaac9bafee613742c944fcdfe0719dba3381b2c5ac5f53dfb09e23818d)

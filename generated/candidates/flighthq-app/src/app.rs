@@ -244,9 +244,7 @@ pub fn create_app_login_item() -> AppLoginItem {
 struct CreateWebAppBackendRecord1 {
     __flight_identity: std::sync::Arc<()>,
     set_app_badge: std::sync::Arc<
-        std::sync::Mutex<
-            Box<dyn FnMut(Option<f64>) -> crate::Promise<crate::OpaqueHostValue> + Send + 'static>,
-        >,
+        std::sync::Mutex<Box<dyn FnMut(Option<f64>) -> crate::Promise<()> + Send + 'static>>,
     >,
 }
 impl PartialEq for CreateWebAppBackendRecord1 {

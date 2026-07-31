@@ -4,6 +4,102 @@ import { portConfig } from '../../tools/generator/port.config.ts';
 import { lowerTypeScriptSource } from '../../tools/generator/src/lower/typescript.ts';
 
 describe('configured type lowering exceptions', () => {
+  it('assigns stable source identities and task types to every async scope', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/application/src/tasks.ts',
+      `
+        export async function load(value: number): Promise<number> {
+          await Promise.resolve(value);
+          const nested = async (): Promise<number> => {
+            await Promise.all([Promise.resolve(value)]);
+            return value;
+          };
+          const handlers = {
+            async run(): Promise<void> {
+              await nested();
+            },
+          };
+          [value].map(async (item) => {
+            await Promise.reject(item);
+          });
+          await handlers.run();
+          return nested();
+        }
+        export function pending(): Promise<void> {
+          return Promise.resolve();
+        }
+        export function qualified(value: number): globalThis.Promise<number> {
+          return Promise.resolve(value);
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/application', '/workspace');
+    const declaration = lowered.declarations.find((item) => item.kind === 'function' && item.name === 'load');
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(declaration).toMatchObject({
+      execution: {
+        kind: 'portableTask',
+        origin: {
+          lexicalPath: 'load',
+          packageName: '@flighthq/application',
+          source: 'upstream/packages/application/src/tasks.ts',
+        },
+      },
+      returns: { kind: 'task', output: { kind: 'primitive', name: 'Float' } },
+    });
+    expect(lowered.declarations.find((item) => item.kind === 'function' && item.name === 'pending')).toMatchObject({
+      returns: { kind: 'task', output: { kind: 'primitive', name: 'Void' } },
+    });
+    expect(lowered.declarations.find((item) => item.kind === 'function' && item.name === 'qualified')).toMatchObject({
+      returns: { kind: 'task', output: { kind: 'primitive', name: 'Float' } },
+    });
+    expect(lowered.asyncTasks.map((scope) => scope.execution.origin.lexicalPath)).toEqual([
+      'load',
+      'load.nested',
+      'load.handlers.run',
+      expect.stringMatching(/^load\.anonymous:[0-9a-f]{12}$/u),
+    ]);
+    expect(lowered.asyncTasks.map((scope) => scope.matchesLegacyErasurePath)).toEqual([true, false, false, false]);
+    expect(lowered.asyncTasks.map((scope) => scope.operations)).toMatchObject([
+      { awaits: 2, promiseResolve: 1 },
+      { awaits: 1, promiseAll: 1, promiseResolve: 1 },
+      { awaits: 1 },
+      { awaits: 1, promiseReject: 1 },
+    ]);
+    for (const scope of lowered.asyncTasks) {
+      expect(scope.execution.origin.fingerprint).toMatch(/^sha256:[0-9a-f]{64}$/u);
+    }
+  });
+
+  it('keeps a source-declared Promise nominal instead of treating its name as the global task type', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/types/src/promise.ts',
+      `
+        export interface Promise<T> {
+          value: T;
+        }
+        export function identity(value: Promise<number>): Promise<number> {
+          return value;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/types', '/workspace');
+    const identity = lowered.declarations.find((item) => item.kind === 'function' && item.name === 'identity');
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(identity).toMatchObject({
+      parameters: [{ type: { arguments: [{ kind: 'primitive', name: 'Float' }], kind: 'named', name: 'Promise' } }],
+      returns: { arguments: [{ kind: 'primitive', name: 'Float' }], kind: 'named', name: 'Promise' },
+    });
+  });
+
   it('distinguishes lexical type parameters from nominal types with generic-looking names', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/types/src/intersections.ts',

@@ -3,6 +3,7 @@ import type {
   IrDeclaration,
   IrEnumDeclaration,
   IrExpression,
+  IrFunctionExecution,
   IrFunctionDeclaration,
   IrParameter,
   IrStatement,
@@ -11,6 +12,7 @@ import type {
   IrVariable,
   IrVariableDeclaration,
 } from '../model/ir.ts';
+import { PORTABLE_TASK_RUST_LOWERING_REASON } from '../model/ir.ts';
 
 export interface RustModule {
   declarations: IrDeclaration[];
@@ -88,6 +90,15 @@ interface EmitContext {
 }
 
 export class RustEmissionError extends Error {}
+
+function rejectPortableTaskExecution(execution: IrFunctionExecution): void {
+  if (execution.kind === 'sync') return;
+  const { column, lexicalPath, line, source } = execution.origin;
+  const reason = execution.kind === 'hostTaskPlaceholder' ? execution.reason : PORTABLE_TASK_RUST_LOWERING_REASON;
+  throw new RustEmissionError(
+    `${source}:${String(line)}:${String(column)}: ${execution.kind} ${lexicalPath}: ${reason}`,
+  );
+}
 
 export function emitRustModule(module: RustModule): string {
   const constantNames = new Map([
@@ -851,6 +862,7 @@ function emitLiftedFunction(
   expression: Extract<IrExpression, { kind: 'function' }>,
   context: EmitContext,
 ): string {
+  rejectPortableTaskExecution(expression.execution);
   const callback = declaration.type?.kind === 'named' && context.callbackTypes.has(declaration.type.name);
   const returns = expression.returns ?? (callback ? primitive('Float') : undefined);
   if (!returns) {
@@ -869,8 +881,9 @@ function emitLiftedFunction(
 }
 
 function emitFunctionDeclaration(declaration: IrFunctionDeclaration, context: EmitContext): string {
+  rejectPortableTaskExecution(declaration.execution);
   const callbackTypeParameters = inferCallbackTypeParameters(declaration);
-  const reachableBody = declaration.async ? [] : staticallyReachableStatements(declaration.body, context);
+  const reachableBody = staticallyReachableStatements(declaration.body, context);
   const contextOwner = { ...declaration, body: reachableBody };
   const nextContext = {
     ...functionContext(context, declaration.name, contextOwner, declaration.returns),
@@ -889,7 +902,7 @@ function emitFunctionDeclaration(declaration: IrFunctionDeclaration, context: Em
   }
   registerParameters(declaration.parameters, nextContext);
   nextContext.entityTypeParameters = inferEntityTypeParameters(reachableBody, declaration.typeParameters, nextContext);
-  if (!declaration.async) registerLocalTypes(reachableBody, nextContext);
+  registerLocalTypes(reachableBody, nextContext);
   nextContext.entityTypeParameters = new Set([
     ...nextContext.entityTypeParameters,
     ...inferEntityTypeParameters(reachableBody, declaration.typeParameters, nextContext),
@@ -897,25 +910,19 @@ function emitFunctionDeclaration(declaration: IrFunctionDeclaration, context: Em
   const parameters = declaration.parameters.map((parameter) =>
     emitParameter(parameter, nextContext, undefined, declaration),
   );
-  const defaults = declaration.async
-    ? []
-    : declaration.parameters.flatMap((parameter) => {
-        if (!parameter.initializer) return [];
-        if (parameter.type.kind === 'nullable' && isNullishExpression(parameter.initializer)) return [];
-        const name = safeName(parameter.name);
-        return [
-          `let ${name} = ${name}.unwrap_or(${emitExpression(parameter.initializer, nextContext, parameter.type)});`,
-        ];
-      });
-  const body = declaration.async
-    ? '{\n  Default::default()\n}'
-    : emitStatementsAsBlock(
-        defaults.length > 0
-          ? [{ declarations: [], kind: 'variable' } as IrStatement, ...declaration.body]
-          : declaration.body,
-        nextContext,
-        defaults,
-      );
+  const defaults = declaration.parameters.flatMap((parameter) => {
+    if (!parameter.initializer) return [];
+    if (parameter.type.kind === 'nullable' && isNullishExpression(parameter.initializer)) return [];
+    const name = safeName(parameter.name);
+    return [`let ${name} = ${name}.unwrap_or(${emitExpression(parameter.initializer, nextContext, parameter.type)});`];
+  });
+  const body = emitStatementsAsBlock(
+    defaults.length > 0
+      ? [{ declarations: [], kind: 'variable' } as IrStatement, ...declaration.body]
+      : declaration.body,
+    nextContext,
+    defaults,
+  );
   const signature = [...parameters, emitType(declaration.returns, nextContext)].join(' ');
   const effectiveTypeParameters = declaration.typeParameters.filter((parameter) =>
     new RegExp(`\\b${parameter}\\b`, 'u').test(signature),
@@ -1626,6 +1633,7 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
         return emitClosure(
           {
             body: [],
+            execution: { kind: 'sync' },
             expression: {
               arguments: parameters.map((parameter) => ({ kind: 'identifier', name: parameter.name })),
               callee: expression,
@@ -1753,9 +1761,9 @@ function emitCall(
     const emittedPromise = promiseType(expectedType, context) ?? resolvedPromise;
     const value = expression.arguments[0];
     const observed = value
-      ? `let __flight_value = ${emitExpression(value, context, resolvedPromise.arguments[0])}; let _ = &__flight_value; `
+      ? `let __flight_value = ${emitExpression(value, context, resolvedPromise.output)}; let _ = &__flight_value; `
       : '';
-    return `{ ${observed}crate::Promise::<${emitType(emittedPromise.arguments[0] ?? primitive('Void'), context)}>::default() }`;
+    return `{ ${observed}crate::Promise::<${emitType(emittedPromise.output, context)}>::default() }`;
   }
   const promiseCall = emitPromiseCall(expression, context);
   if (promiseCall) return promiseCall;
@@ -2408,7 +2416,7 @@ function emitPromiseCall(
     expression.callee.name === 'then'
       ? {
           kind: 'function',
-          parameters: [promise.arguments[0] ?? { kind: 'dynamic' }],
+          parameters: [promise.output],
           returns: callbackReturns,
         }
       : {
@@ -2421,22 +2429,19 @@ function emitPromiseCall(
   if (expression.callee.name === 'catch') {
     return `{ let __flight_promise = ${owner}; let __flight_callback = ${callback}; let _ = &__flight_callback; __flight_promise.clone() }`;
   }
-  const result =
-    callbackReturns.kind === 'named' && callbackReturns.name === 'Promise'
-      ? (callbackReturns.arguments[0] ?? { kind: 'dynamic' as const })
-      : callbackReturns;
+  const result = callbackReturns.kind === 'task' ? callbackReturns.output : callbackReturns;
   return `{ let __flight_promise = ${owner}; let __flight_callback = ${callback}; let _ = (&__flight_promise, &__flight_callback); crate::Promise::<${emitType(result, context)}>::default() }`;
 }
 
-function promiseType(type: IrType | undefined, context: EmitContext): Extract<IrType, { kind: 'named' }> | undefined {
+function promiseType(type: IrType | undefined, context: EmitContext): Extract<IrType, { kind: 'task' }> | undefined {
   const resolved = resolveSemanticType(type?.kind === 'nullable' ? type.inner : type, context);
-  return resolved?.kind === 'named' && resolved.name === 'Promise' ? resolved : undefined;
+  return resolved?.kind === 'task' ? resolved : undefined;
 }
 
 function promiseResolveType(
   expression: Extract<IrExpression, { kind: 'call' }>,
   context: EmitContext,
-): Extract<IrType, { kind: 'named' }> | undefined {
+): Extract<IrType, { kind: 'task' }> | undefined {
   if (
     expression.callee.kind !== 'property' ||
     expression.callee.name !== 'resolve' ||
@@ -2445,13 +2450,10 @@ function promiseResolveType(
     return undefined;
   }
   return {
-    arguments: [
-      expression.arguments[0]
-        ? (inferIrExpressionType(expression.arguments[0], context) ?? { kind: 'dynamic' })
-        : primitive('Void'),
-    ],
-    kind: 'named',
-    name: 'Promise',
+    kind: 'task',
+    output: expression.arguments[0]
+      ? (inferIrExpressionType(expression.arguments[0], context) ?? { kind: 'dynamic' })
+      : primitive('Void'),
   };
 }
 
@@ -2581,6 +2583,7 @@ function emitStructuralFunctionInlineCall(
   const body = substituteIdentifiers(declaration.body, bindings);
   const closure: Extract<IrExpression, { kind: 'function' }> = {
     body,
+    execution: { kind: 'sync' },
     kind: 'function',
     parameters: [],
     returns: declaration.returns,
@@ -2616,6 +2619,8 @@ function typeContainsAnonymousRecord(type: IrType, context: EmitContext): boolea
       return resolved.arguments.some((argument) => typeContainsAnonymousRecord(argument, context));
     case 'nullable':
       return typeContainsAnonymousRecord(resolved.inner, context);
+    case 'task':
+      return typeContainsAnonymousRecord(resolved.output, context);
     case 'union':
       return resolved.variants.some((variant) => typeContainsAnonymousRecord(variant, context));
     case 'dynamic':
@@ -3377,7 +3382,7 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
     const constructor = runtimeConstructorType(expression.right);
     const candidate = leftType?.kind === 'nullable' ? leftType.inner : leftType;
     if (constructor === 'Promise') {
-      return candidate?.kind === 'named' && candidate.name === 'Promise'
+      return candidate?.kind === 'task'
         ? leftType?.kind === 'nullable'
           ? `${parenthesize(left)}.is_some()`
           : 'true'
@@ -4103,6 +4108,7 @@ function emitClosure(
   wrapFunction = true,
   moveClosure = wrapFunction,
 ): string {
+  rejectPortableTaskExecution(expression.execution);
   const resolvedExpected = resolveSemanticType(expectedType, context) ?? expectedType;
   const callbackTypeParameter =
     expectedType?.kind === 'named' && context.callbackTypeParameters.has(expectedType.name)
@@ -4305,9 +4311,6 @@ function emitType(type: IrType, context: EmitContext): string {
       if (type.name === 'RustU16') return 'u16';
       if (type.name === 'RustU32') return 'u32';
       if (type.name === 'ByteBuffer' || type.name === 'ArrayBufferView') return 'Vec<u8>';
-      if (type.name === 'Promise') {
-        return `crate::Promise<${emitType(type.arguments[0] ?? { kind: 'dynamic' }, context)}>`;
-      }
       if (type.name === 'RustMap') {
         return `Vec<(${emitType(type.arguments[0] ?? { kind: 'dynamic' }, context)}, ${emitType(type.arguments[1] ?? { kind: 'dynamic' }, context)})>`;
       }
@@ -4344,6 +4347,8 @@ function emitType(type: IrType, context: EmitContext): string {
         case 'Void':
           return '()';
       }
+    case 'task':
+      return `crate::Promise<${emitType(type.output, context)}>`;
     case 'union':
       return emitUnionType(type.variants, context);
   }
@@ -4961,6 +4966,9 @@ function runtimeStorageCanonicalType(
       kind: 'nullable',
     };
   }
+  if (type.kind === 'task') {
+    return { kind: 'task', output: runtimeStorageCanonicalType(type.output, context, visited) };
+  }
   if (type.kind === 'union') {
     return {
       kind: 'union',
@@ -5123,6 +5131,9 @@ function externalizeImportedNestedType(type: IrType, names: ReadonlyMap<string, 
   if (type.kind === 'nullable') {
     return { inner: externalizeImportedNestedType(type.inner, names), kind: 'nullable' };
   }
+  if (type.kind === 'task') {
+    return { kind: 'task', output: externalizeImportedNestedType(type.output, names) };
+  }
   if (type.kind === 'union') {
     return { kind: 'union', variants: type.variants.map((item) => externalizeImportedNestedType(item, names)) };
   }
@@ -5189,6 +5200,11 @@ function structurallyCompatibleTypes(
       );
     case 'primitive':
       return resolvedRight.kind === 'primitive' && resolvedLeft.name === resolvedRight.name;
+    case 'task':
+      return (
+        resolvedRight.kind === 'task' &&
+        structurallyCompatibleTypes(resolvedLeft.output, resolvedRight.output, context, nextVisited)
+      );
     case 'union':
       return (
         resolvedRight.kind === 'union' &&
@@ -5237,6 +5253,8 @@ function substituteIrType(type: IrType, substitutions: ReadonlyMap<string, IrTyp
         inner: substituteIrType(type.inner, substitutions),
         kind: 'nullable',
       };
+    case 'task':
+      return { kind: 'task', output: substituteIrType(type.output, substitutions) };
     case 'union':
       return {
         kind: 'union',
@@ -5265,6 +5283,8 @@ function typeUsesNamedParameter(type: IrType, name: string): boolean {
       return type.name === name || type.arguments.some((item) => typeUsesNamedParameter(item, name));
     case 'nullable':
       return typeUsesNamedParameter(type.inner, name);
+    case 'task':
+      return typeUsesNamedParameter(type.output, name);
     case 'union':
       return type.variants.some((item) => typeUsesNamedParameter(item, name));
     case 'dynamic':
@@ -5294,6 +5314,9 @@ function collectReferencedNamedTypes(type: IrType): ReadonlySet<string> {
         break;
       case 'nullable':
         visit(candidate.inner);
+        break;
+      case 'task':
+        visit(candidate.output);
         break;
       case 'union':
         candidate.variants.forEach(visit);
@@ -5332,6 +5355,8 @@ function inferCallbackTypeParameters(declaration: IrFunctionDeclaration): Readon
       }
       case 'nullable':
         return usesCallbackContainer(type.inner, parameter, insideCallback);
+      case 'task':
+        return usesCallbackContainer(type.output, parameter, insideCallback);
       case 'union':
         return type.variants.some((item) => usesCallbackContainer(item, parameter, insideCallback));
       case 'dynamic':
@@ -6213,6 +6238,7 @@ function isReferenceLike(type: IrType, context: EmitContext): boolean {
     resolved?.kind === 'anonymous' ||
     resolved?.kind === 'array' ||
     resolved?.kind === 'function' ||
+    resolved?.kind === 'task' ||
     resolved?.kind === 'union' ||
     (resolved?.kind === 'named' &&
       ['ArrayBufferView', 'ByteBuffer', 'FlightRegex', 'RustMap', 'RustSet'].includes(resolved.name)) ||
@@ -6399,7 +6425,7 @@ function rustTypeSupportsDefault(
   context: EmitContext,
   visited: ReadonlySet<string> = new Set(),
 ): boolean {
-  if (type.kind === 'array' || type.kind === 'nullable' || type.kind === 'dynamic') return true;
+  if (type.kind === 'array' || type.kind === 'nullable' || type.kind === 'dynamic' || type.kind === 'task') return true;
   if (type.kind === 'primitive') return true;
   if (type.kind === 'function' || type.kind === 'union') return false;
   if (type.kind === 'anonymous') {
@@ -6408,7 +6434,7 @@ function rustTypeSupportsDefault(
     );
   }
   if (
-    ['ByteBuffer', 'FlightCallbackArgs', 'Promise', 'RustMap', 'RustSet'].includes(type.name) ||
+    ['ByteBuffer', 'FlightCallbackArgs', 'RustMap', 'RustSet'].includes(type.name) ||
     Boolean(typedArrayType(type.name))
   ) {
     return true;
@@ -7143,9 +7169,7 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
             ? resolveSemanticType(inferIrExpressionType(expression.arguments[0], context), context)
             : undefined;
           const returns = callback?.kind === 'function' ? callback.returns : primitive('Void');
-          return returns.kind === 'named' && returns.name === 'Promise'
-            ? returns
-            : { arguments: [returns], kind: 'named', name: 'Promise' };
+          return returns.kind === 'task' ? returns : { kind: 'task', output: returns };
         }
       }
       const hostReturnType = inferOptionalHostCallReturnType(expression, context);
