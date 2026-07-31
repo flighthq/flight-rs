@@ -2,9 +2,11 @@
 
 ## Status and scope
 
-This is the design checkpoint for Pass 27. It defines the semantic boundary before implementation; it does not claim that portable async bodies execute yet.
+This is the design and implementation checkpoint for Pass 27. Stages 1 and 2 are implemented; composition, configured host-task boundaries, detach, and async iteration remain later stages.
 
-Stage 1 now implements the honesty boundary. Global `Promise<T>` references lower to target-neutral `task<T>` IR, every eligible async scope has a stable source and lexical identity, and the generated report partitions all 162 scopes as 0 portable executable + 0 configured host placeholder + 162 unsupported. Rust emission rejects those tasks with source-scoped diagnostics instead of replacing their bodies with defaults. The old generated tree contained 33 erased Promise-returning bodies; regeneration contains zero. `@flighthq/screen` consequently moved from compiled to source-blocked, so the current 27 compiled candidates represent executable synchronous bodies rather than preserved async stubs. A separately reported partial screen target admits only `_backend` and `setScreenBackend` so the cultivated native-host canary retains its synchronous installation seam without admitting either async declaration. Runtime execution remains Stage 2 work.
+Stage 1 established the honesty boundary: global `Promise<T>` references lower to target-neutral `task<T>` IR, every eligible async scope has a stable source and lexical identity, and Rust emission rejects unsupported tasks instead of replacing their bodies with defaults. Stage 2 generates one canonical `flighthq-runtime`, lowers typed ready/rejected tasks and straight-line async functions, and installs a deterministic scheduler in generated test targets. The report now partitions all 204 task constructions as 9 portable executable + 0 configured host placeholder + 195 unsupported, and all 162 async scopes as 3 + 0 + 159. The executable scopes are the three non-opaque `@flighthq/image-codec` scopes. Twenty otherwise typed scopes remain explicitly blocked because their source still requires `OpaqueHostValue`; this improves portable opacity from 167/1227 to 166/1226 instead of widening erasure.
+
+The pre-bound source measurement found all 162 outputs compatible with `Clone + Send + 'static`: 83 scopes carry explicit closed `Promise<T>` annotations and 79 are unannotated. Normalized IR is stricter than that syntactic split: 85 outputs contain dynamic data and only 77 are genuinely recovered. Dynamic outputs remain unsupported rather than becoming executable `FlightTask<OpaqueHostValue>`. Of the 77 recovered-output scopes, 20 are blocked by source opacity, 54 still need straight-line Rust lowering, and three execute.
 
 The pinned upstream tree has async syntax in 25 eligible generated packages, spanning 40 non-test source files, 162 async scopes, 190 `await` expressions, and three `for await` loops. Before Stage 1, the generation report exposed only seven `await` emission blockers in six packages because the Rust emitter replaced top-level async function bodies with `Default::default()`. That replacement could make a candidate compile without running its source body. `@flighthq/screen`, for example, was reported compiled even though both of its async bodies were erased.
 
@@ -182,6 +184,7 @@ Async iteration requires a canonical `FlightAsyncIterator<T>` protocol that prod
 
 Generation adds an `asyncTasks` section derived from the lowered IR, with package and aggregate counts for:
 
+- every task construction, including async scopes, ready/reject, composition, and joins;
 - eligible async scopes;
 - executable portable scopes;
 - configured host-placeholder scopes;
@@ -193,6 +196,7 @@ The invariant is:
 
 ```text
 eligible async scopes = portable executable + host placeholder + unsupported
+eligible task constructions = portable executable + host placeholder + unsupported
 ```
 
 Every entry carries package, source, lexical identity, and fingerprint. The report fails generation if an async scope has no disposition or if a configured host selector no longer matches.
@@ -210,8 +214,8 @@ Async upstream tests remain unsupported by the conformance harvester until the g
 
 The code follows this design in separate reviewable increments:
 
-1. **IR and honesty.** Add task types/execution forms and stable nested origins. Remove the async-body erasure path. Emit complete async-task inventory and blockers before changing package status.
-2. **Canonical runtime and straight-line tasks.** Generate the shared runtime crate. Support typed ready/rejected tasks, async functions, returns, and `await`, with owned suspension state and scheduling-order runtime fixtures.
+1. **IR and honesty (implemented).** Add task types/execution forms and stable nested origins. Remove the async-body erasure path. Emit complete async-task inventory and blockers before changing package status.
+2. **Canonical runtime and straight-line tasks (implemented).** Generate the shared runtime crate. Support typed ready/rejected tasks, async functions, returns, and `await`, with owned suspension state and scheduling-order runtime fixtures.
 3. **Host boundary and callbacks.** Add explicit configured host-task boundaries and typed `HostUnavailable` outcomes. Make async callbacks and installed backend task signatures use the canonical identity.
 4. **Composition and errors.** Add `then`, `catch`, `finally`, task flattening, `try`/`catch`/`finally`, `all`, and `allSettled` without panic or opaque rejection data.
 5. **Detached work and async iteration.** Add scheduler-owned detach and the typed async-iterator protocol, including cleanup on break and error.

@@ -7,6 +7,7 @@ import {
   normalizeDiagnosticSource,
   validateAsyncTaskDispositionPartition,
   validateCandidateCrateGraph,
+  validateTaskConstructionDispositionPartition,
   type CandidateCrateNode,
   type RustGenerationReport,
 } from '../../tools/generator/src/emit/core.ts';
@@ -87,6 +88,17 @@ describe('async task disposition reporting', () => {
     expect(() => validateAsyncTaskDispositionPartition([{ ...scope, disposition: undefined as never }])).toThrow(
       'Async task disposition partition is incomplete.',
     );
+  });
+
+  it('rejects an undisposed task construction instead of hiding a task value', () => {
+    const report = JSON.parse(
+      readFileSync(path.join(process.cwd(), 'reports/generation.json'), 'utf8'),
+    ) as RustGenerationReport;
+    const construction = report.asyncTasks.packages.flatMap((item) => item.constructions)[0]!;
+
+    expect(() =>
+      validateTaskConstructionDispositionPartition([{ ...construction, disposition: undefined as never }]),
+    ).toThrow('Task construction disposition partition is incomplete.');
   });
 });
 
@@ -170,45 +182,84 @@ describe('compiler diagnostic source paths', () => {
       crate: 'flighthq-types',
       package: '@flighthq/types',
     });
-    expect(report.summary.candidateCompiled).toBe(27);
+    expect(report.summary.candidateCompiled).toBe(23);
     expect(report.asyncTasks.summary).toMatchObject({
+      eligibleConstructions: 204,
       eligibleScopes: 162,
       hostPlaceholderScopes: 0,
       operations: {
         asyncIterations: 3,
         awaits: 190,
       },
-      portableExecutableScopes: 0,
-      unsupportedScopes: 162,
+      portableExecutableConstructions: 9,
+      portableExecutableScopes: 3,
+      unsupportedConstructions: 195,
+      unsupportedScopes: 159,
     });
     expect(report.asyncTasks.summary.eligibleScopes).toBe(
       report.asyncTasks.summary.portableExecutableScopes +
         report.asyncTasks.summary.hostPlaceholderScopes +
         report.asyncTasks.summary.unsupportedScopes,
     );
+    expect(report.asyncTasks.summary.eligibleConstructions).toBe(
+      report.asyncTasks.summary.portableExecutableConstructions +
+        report.asyncTasks.summary.hostPlaceholderConstructions +
+        report.asyncTasks.summary.unsupportedConstructions,
+    );
     const asyncScopes = report.asyncTasks.packages.flatMap((item) => item.scopes);
     expect(asyncScopes).toHaveLength(162);
     expect(
       asyncScopes.every(
         (scope) =>
-          scope.disposition === 'unsupported' &&
+          ['portable-executable', 'unsupported'].includes(scope.disposition) &&
           scope.package.length > 0 &&
           scope.source.length > 0 &&
           scope.lexicalPath.length > 0 &&
           scope.line > 0 &&
           scope.column > 0 &&
-          scope.reason === 'Portable task Rust lowering is not implemented.' &&
+          (scope.disposition === 'portable-executable' || Boolean(scope.reason)) &&
           /^sha256:[0-9a-f]{64}$/u.test(scope.fingerprint),
       ),
     ).toBe(true);
+    expect(
+      report.asyncTasks.summary.unsupportedReasons.find((item) =>
+        item.reason.startsWith('Async output type is not recovered'),
+      )?.scopes,
+    ).toBe(85);
+    expect(
+      report.asyncTasks.summary.unsupportedReasons.find((item) =>
+        item.reason.startsWith('Portable task source still requires'),
+      )?.scopes,
+    ).toBe(20);
+    const taskConstructions = report.asyncTasks.packages.flatMap((item) => item.constructions);
+    expect(taskConstructions).toHaveLength(204);
+    expect(taskConstructions.filter((item) => item.kind === 'ready')).toHaveLength(19);
+    expect(
+      taskConstructions.every(
+        (construction) =>
+          construction.package.length > 0 &&
+          construction.source.length > 0 &&
+          construction.lexicalPath.length > 0 &&
+          construction.line > 0 &&
+          construction.column > 0 &&
+          (construction.disposition === 'portable-executable' || Boolean(construction.reason)) &&
+          /^sha256:[0-9a-f]{64}$/u.test(construction.fingerprint),
+      ),
+    ).toBe(true);
+    const portableSources = report.automaticPackages
+      .filter((item) => item.disposition === 'generated')
+      .flatMap((item) => item.emittedSources);
+    const portableOpaqueSources = portableSources.filter((source) => source.usesOpaqueHostValues);
+    expect(portableSources).toHaveLength(1226);
+    expect(portableOpaqueSources).toHaveLength(166);
+    expect(portableOpaqueSources.length / portableSources.length).toBeLessThanOrEqual(167 / 1227);
     const screen = report.automaticPackages.find((item) => item.package === '@flighthq/screen');
     expect(screen?.candidate.status).toBe('source-blocked');
     expect(screen?.asyncTasks).toHaveLength(2);
     expect(
-      screen?.blockers.some(
-        (blocker) =>
-          blocker.source === 'upstream/packages/screen/src/screen.ts' &&
-          blocker.reason.includes('Portable task Rust lowering is not implemented.'),
+      screen?.asyncTasks.every(
+        (scope) =>
+          scope.disposition === 'unsupported' && scope.reason?.startsWith('Portable task source still requires'),
       ),
     ).toBe(true);
     const screenTarget = report.targets.find((item) => item.package === '@flighthq/screen');
@@ -233,16 +284,48 @@ describe('compiler diagnostic source paths', () => {
       readFileSync(path.join(process.cwd(), 'generated/candidates/flighthq-signals/Cargo.toml'), 'utf8'),
     ).toContain('flighthq-types = { path = "../../crates/flighthq-types" }');
     expect(
+      readFileSync(path.join(process.cwd(), 'generated/candidates/flighthq-signals/Cargo.toml'), 'utf8'),
+    ).toContain('flighthq-runtime = { path = "../../crates/flighthq-runtime" }');
+    expect(readFileSync(path.join(process.cwd(), 'generated/crates/flighthq-types/Cargo.toml'), 'utf8')).toContain(
+      'flighthq-runtime = { path = "../flighthq-runtime" }',
+    );
+    expect(
+      readFileSync(path.join(process.cwd(), 'generated/crates/flighthq-surface-wasm/Cargo.toml'), 'utf8'),
+    ).toContain('flighthq-runtime = { path = "../flighthq-runtime" }');
+    expect(
       readFileSync(
         path.join(process.cwd(), 'generated/candidates/flighthq-math/src/__flight_upstream_conformance.rs'),
         'utf8',
       ),
     ).toContain('// @generated from upstream @flighthq/math tests; do not edit.');
+    expect(
+      readFileSync(
+        path.join(process.cwd(), 'generated/candidates/flighthq-math/src/__flight_upstream_conformance.rs'),
+        'utf8',
+      ),
+    ).toContain('install_deterministic_flight_task_scheduler');
     expect(readFileSync(path.join(process.cwd(), 'crates/flighthq-host-winit/Cargo.toml'), 'utf8')).toContain(
       'flighthq-types = { path = "../../generated/crates/flighthq-types" }',
     );
     expect(readFileSync(path.join(process.cwd(), 'crates/flighthq-host-winit/Cargo.toml'), 'utf8')).toContain(
       'flighthq-screen = { path = "../../generated/crates/flighthq-screen" }',
+    );
+    for (const crate of ['application', 'input', 'power']) {
+      expect(readFileSync(path.join(process.cwd(), 'crates/flighthq-host-winit/Cargo.toml'), 'utf8')).toContain(
+        `flighthq-${crate} = { path = "../../generated/crates/flighthq-${crate}" }`,
+      );
+    }
+    expect(readFileSync(path.join(process.cwd(), 'generated/crates/flighthq-input/Cargo.toml'), 'utf8')).toContain(
+      'flighthq-host-signals = { path = "../flighthq-host-signals" }',
+    );
+    const runtimeSource = readFileSync(
+      path.join(process.cwd(), 'generated/crates/flighthq-runtime/src/lib.rs'),
+      'utf8',
+    );
+    expect(runtimeSource).toContain('#![forbid(unsafe_code)]');
+    expect(runtimeSource).not.toMatch(/\bunsafe\s*\{/u);
+    expect(readFileSync(path.join(process.cwd(), 'generated/crates/flighthq-types/src/lib.rs'), 'utf8')).not.toContain(
+      'pub struct Promise',
     );
   });
 });

@@ -13,6 +13,7 @@ import type {
   IrFunctionDeclaration,
   IrParameter,
   IrStatement,
+  IrTaskConstruction,
   IrType,
   IrVariable,
   LoweringDiagnostic,
@@ -357,6 +358,7 @@ export function lowerTypeScriptSource(
     sourceFile,
     typeScopeBindings: new WeakMap(),
     temporaryIndex: 0,
+    taskConstructions: [],
     webGpuCanvasContextBindingNames,
     webGpuDeviceBindingNames,
     webGpuLimitsBindingNames,
@@ -450,7 +452,18 @@ export function lowerTypeScriptSource(
     }
   }
 
-  return { accountedDeclarations, asyncTasks, declarations, diagnostics };
+  return {
+    accountedDeclarations,
+    asyncTasks,
+    declarations,
+    diagnostics,
+    taskConstructions: context.taskConstructions.sort(
+      (left, right) =>
+        left.origin.source.localeCompare(right.origin.source) ||
+        left.origin.line - right.origin.line ||
+        left.origin.column - right.origin.column,
+    ),
+  };
 }
 
 function collectAsyncTaskScopes(sourceFile: ts.SourceFile, context: LoweringContext): IrAsyncTaskScope[] {
@@ -466,12 +479,15 @@ function collectAsyncTaskScopes(sourceFile: ts.SourceFile, context: LoweringCont
         },
       } satisfies Extract<IrFunctionExecution, { kind: 'portableTask' }>;
       context.asyncTaskExecutions.set(node, execution);
+      const output = asyncTaskOutput(node, context);
       scopes.push({
         execution,
         matchesLegacyErasurePath:
           ts.isFunctionDeclaration(node) && (ts.isSourceFile(node.parent) || ts.isModuleBlock(node.parent)),
         operations: collectAsyncTaskOperations(node, context),
+        output,
       });
+      context.taskConstructions.push({ kind: 'async-scope', origin: execution.origin, output });
     }
     ts.forEachChild(node, visit);
   };
@@ -482,6 +498,14 @@ function collectAsyncTaskScopes(sourceFile: ts.SourceFile, context: LoweringCont
       left.execution.origin.line - right.execution.origin.line ||
       left.execution.origin.column - right.execution.origin.column,
   );
+}
+
+function asyncTaskOutput(
+  node: ts.ArrowFunction | ts.FunctionDeclaration | ts.FunctionExpression | ts.MethodDeclaration,
+  context: LoweringContext,
+): IrType {
+  const returns = node.type ? lowerType(node.type, context) : promiseOfDynamic();
+  return returns.kind === 'task' ? returns.output : { kind: 'dynamic' };
 }
 
 function isAsyncFunctionLike(
@@ -805,6 +829,7 @@ interface LoweringContext {
   sourceFile: ts.SourceFile;
   typeScopeBindings: WeakMap<ts.Node, ReadonlySet<string>>;
   temporaryIndex: number;
+  taskConstructions: IrTaskConstruction[];
   webGpuCanvasContextBindingNames: ReadonlySet<string>;
   webGpuDeviceBindingNames: ReadonlySet<string>;
   webGpuLimitsBindingNames: ReadonlySet<string>;
@@ -1860,6 +1885,7 @@ function lowerExpression(node: ts.Expression, context: LoweringContext): IrExpre
     return {
       expression: lowerExpression(node.expression, context),
       kind: 'await',
+      origin: taskExpressionOrigin(node, context, 'await'),
     };
   if (ts.isVoidExpression(node)) {
     return {
@@ -2085,6 +2111,41 @@ function lowerExpression(node: ts.Expression, context: LoweringContext): IrExpre
     };
   }
   if (ts.isCallExpression(node)) {
+    const promiseMethod = globalPromiseMethod(node, context);
+    if (promiseMethod === 'resolve') {
+      const value = node.arguments[0] ? lowerExpression(node.arguments[0], context) : undefined;
+      const output = taskFactoryOutput(node, value, context, true);
+      const origin = taskExpressionOrigin(node, context, 'ready');
+      context.taskConstructions.push({ kind: 'ready', origin, output });
+      return { kind: 'taskReady', origin, output, value };
+    }
+    if (promiseMethod === 'reject') {
+      const rejection = node.arguments[0];
+      if (!rejection) unsupported(node, context, 'Promise.reject without a rejection value');
+      const output = taskFactoryOutput(node, undefined, context, false);
+      const origin = taskExpressionOrigin(node, context, 'reject');
+      context.taskConstructions.push({ kind: 'reject', origin, output });
+      return { kind: 'taskReject', origin, output, rejection: lowerExpression(rejection, context) };
+    }
+    if (promiseMethod === 'all' || promiseMethod === 'allSettled') {
+      const output = taskFactoryOutput(node, undefined, context, false);
+      const kind = promiseMethod === 'all' ? 'join-all' : 'join-all-settled';
+      context.taskConstructions.push({
+        kind,
+        origin: taskExpressionOrigin(node, context, kind),
+        output,
+      });
+    } else if (
+      ts.isPropertyAccessExpression(node.expression) &&
+      ['then', 'catch', 'finally'].includes(node.expression.name.text)
+    ) {
+      const kind = node.expression.name.text as 'catch' | 'finally' | 'then';
+      context.taskConstructions.push({
+        kind,
+        origin: taskExpressionOrigin(node, context, kind),
+        output: taskFactoryOutput(node, undefined, context, false),
+      });
+    }
     return {
       arguments: node.arguments.map((argument) => lowerExpression(argument, context)),
       callee: lowerExpression(node.expression, context),
@@ -2221,6 +2282,60 @@ function lowerExpression(node: ts.Expression, context: LoweringContext): IrExpre
     }
   }
   return unsupported(node, context, `expression ${ts.SyntaxKind[node.kind] ?? node.kind}`);
+}
+
+function globalPromiseMethod(
+  node: ts.CallExpression,
+  context: LoweringContext,
+): 'all' | 'allSettled' | 'reject' | 'resolve' | undefined {
+  if (!ts.isPropertyAccessExpression(node.expression)) return undefined;
+  const method = node.expression.name.text;
+  if (!['all', 'allSettled', 'reject', 'resolve'].includes(method)) return undefined;
+  const receiver = node.expression.expression;
+  if (ts.isIdentifier(receiver)) {
+    return receiver.text === 'Promise' && !isLexicallyBound(receiver, context)
+      ? (method as 'all' | 'allSettled' | 'reject' | 'resolve')
+      : undefined;
+  }
+  return ts.isPropertyAccessExpression(receiver) &&
+    ts.isIdentifier(receiver.expression) &&
+    receiver.expression.text === 'globalThis' &&
+    receiver.name.text === 'Promise'
+    ? (method as 'all' | 'allSettled' | 'reject' | 'resolve')
+    : undefined;
+}
+
+function taskFactoryOutput(
+  node: ts.CallExpression,
+  value: IrExpression | undefined,
+  context: LoweringContext,
+  voidWhenAbsent: boolean,
+): IrType {
+  const typeArgument = node.typeArguments?.[0];
+  if (typeArgument) return lowerType(typeArgument, context);
+  if (!value) return voidWhenAbsent ? { kind: 'primitive', name: 'Void' } : { kind: 'dynamic' };
+  if (value.kind === 'cast') return value.type;
+  if (value.kind === 'literal') {
+    if (typeof value.value === 'boolean') return { kind: 'primitive', name: 'Bool' };
+    if (typeof value.value === 'number') return { kind: 'primitive', name: 'Float' };
+    if (typeof value.value === 'string') return { kind: 'primitive', name: 'String' };
+  }
+  if (value.kind === 'identifier' && value.name === 'Undefined') return { kind: 'primitive', name: 'Void' };
+  return { kind: 'dynamic' };
+}
+
+function taskExpressionOrigin(node: ts.Node, context: LoweringContext, operation: string) {
+  const sourceOrigin = origin(node, context);
+  const labels: string[] = [];
+  let current: ts.Node | undefined = node.parent;
+  while (current && !ts.isSourceFile(current)) {
+    const label = lexicalNodeLabel(current, context.sourceFile);
+    if (label && labels[0] !== label) labels.unshift(label);
+    current = current.parent;
+  }
+  const shortFingerprint = sourceOrigin.fingerprint.slice('sha256:'.length, 'sha256:'.length + 12);
+  labels.push(`${operation}:${String(sourceOrigin.line)}:${String(sourceOrigin.column)}:${shortFingerprint}`);
+  return { ...sourceOrigin, lexicalPath: labels.join('.') };
 }
 
 function isThisParameter(node: ts.ParameterDeclaration): boolean {

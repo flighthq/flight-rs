@@ -64,7 +64,7 @@ pub struct WebcamBackend {
     pub capture: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(WebcamCaptureOptions) -> crate::Promise<Option<WebcamPhoto>>
+                dyn FnMut(WebcamCaptureOptions) -> crate::FlightTask<Option<WebcamPhoto>>
                     + Send
                     + 'static,
             >,
@@ -73,14 +73,15 @@ pub struct WebcamBackend {
     pub capture_video: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(WebcamCaptureOptions) -> crate::Promise<Option<WebcamVideo>>
+                dyn FnMut(WebcamCaptureOptions) -> crate::FlightTask<Option<WebcamVideo>>
                     + Send
                     + 'static,
             >,
         >,
     >,
-    pub request_permission:
-        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> crate::Promise<bool> + Send + 'static>>>,
+    pub request_permission: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut() -> crate::FlightTask<bool> + Send + 'static>>,
+    >,
 }
 impl PartialEq for WebcamBackend {
     fn eq(&self, other: &Self) -> bool {

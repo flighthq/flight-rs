@@ -905,14 +905,24 @@ pub fn dispose_application_window(win: &ApplicationWindow) -> () {
 }
 
 // Source: upstream/packages/application/src/window.ts:426 (sha256:63210f4392e35f58213aecc96f101c028fc8db618d5183f19de33281200a179a)
-pub fn exit_application_fullscreen() -> crate::Promise<()> {
-    return crate::host_value::<crate::Promise<()>>("host.exitFullscreen");
+pub fn exit_application_fullscreen() -> crate::FlightTask<()> {
+    return crate::host_value::<crate::FlightTask<()>>("host.exitFullscreen");
 }
 
 // Source: upstream/packages/application/src/window.ts:431 (sha256:5b581ba0ad01e7c4010b5b4ec3dd8ee53274ae7b8af731161a82c85904e3d70d)
-pub fn exit_application_pointer_lock() -> crate::Promise<()> {
+pub fn exit_application_pointer_lock() -> crate::FlightTask<()> {
     {
-        return { crate::Promise::<()>::default() };
+        return crate::FlightTask::ready(
+            (),
+            crate::FlightTaskOrigin {
+                package: "@flighthq/application",
+                source: "upstream/packages/application/src/window.ts",
+                line: 433_u32,
+                column: 12_u32,
+                lexical_path: "exitApplicationPointerLock.ready:433:12:9b8874eb7ffe",
+                fingerprint: "sha256:9b8874eb7ffebcf300217391f3fb4a9d53d078bccf4ed67e3253de0dd1f14116",
+            },
+        );
     }
 }
 
@@ -974,8 +984,18 @@ pub fn hide_window(win: &mut ApplicationWindow) -> () {
 }
 
 // Source: upstream/packages/application/src/window.ts:480 (sha256:449cebc4fb63fc9cc3223aeed83676489912c73ff9f5ce66a9ba290010a772b5)
-pub fn lock_application_pointer(element: crate::OpaqueHostValue) -> crate::Promise<()> {
-    return { crate::Promise::<()>::default() };
+pub fn lock_application_pointer(element: crate::OpaqueHostValue) -> crate::FlightTask<()> {
+    return crate::FlightTask::ready(
+        (),
+        crate::FlightTaskOrigin {
+            package: "@flighthq/application",
+            source: "upstream/packages/application/src/window.ts",
+            line: 481_u32,
+            column: 64_u32,
+            lexical_path: "lockApplicationPointer.ready:481:64:9b8874eb7ffe",
+            fingerprint: "sha256:9b8874eb7ffebcf300217391f3fb4a9d53d078bccf4ed67e3253de0dd1f14116",
+        },
+    );
 }
 
 // Source: upstream/packages/application/src/window.ts:488 (sha256:07aa885b72b80baaaf97f8cdfebdb6df04b3b387e9c8cf7a0e2826faed660f7f)
@@ -1118,8 +1138,8 @@ pub fn prepare_element_for_input(element: crate::OpaqueHostValue) -> () {
 }
 
 // Source: upstream/packages/application/src/window.ts:542 (sha256:a01a799371baf1484816b2b174eb69e019d120940240664550d013af5da11ffe)
-pub fn request_application_fullscreen(element: crate::OpaqueHostValue) -> crate::Promise<()> {
-    return crate::host_value::<crate::Promise<()>>("host.requestFullscreen");
+pub fn request_application_fullscreen(element: crate::OpaqueHostValue) -> crate::FlightTask<()> {
+    return crate::host_value::<crate::FlightTask<()>>("host.requestFullscreen");
 }
 
 // Source: upstream/packages/application/src/window.ts:547 (sha256:12155aaaac9bafee613742c944fcdfe0719dba3381b2c5ac5f53dfb09e23818d)

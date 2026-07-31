@@ -12,5 +12,6 @@ path = "src/lib.rs"
 [dependencies]
 flighthq-displayobject = { path = "../flighthq-displayobject" }
 flighthq-node = { path = "../flighthq-node" }
+flighthq-runtime = { path = "../../crates/flighthq-runtime" }
 flighthq-timeline = { path = "../flighthq-timeline" }
 flighthq-types = { path = "../../crates/flighthq-types" }

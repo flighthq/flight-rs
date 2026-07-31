@@ -75,7 +75,8 @@ pub struct ConnectivityBackend {
                     dyn FnMut(
                             ConnectivityReachabilityOptions,
                             ConnectivityReachability,
-                        ) -> crate::Promise<ConnectivityReachability>
+                        )
+                            -> crate::FlightTask<ConnectivityReachability>
                         + Send
                         + 'static,
                 >,

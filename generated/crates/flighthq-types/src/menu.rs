@@ -45,7 +45,7 @@ pub struct MenuBackend {
     pub popup_context_menu: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(Vec<MenuItemTemplate>, f64, f64) -> crate::Promise<Option<String>>
+                dyn FnMut(Vec<MenuItemTemplate>, f64, f64) -> crate::FlightTask<Option<String>>
                     + Send
                     + 'static,
             >,

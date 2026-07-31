@@ -10,6 +10,7 @@ publish = false
 path = "src/lib.rs"
 
 [dependencies]
+flighthq-runtime = { path = "../../crates/flighthq-runtime" }
 flighthq-signals = { path = "../flighthq-signals" }
 flighthq-types = { path = "../../crates/flighthq-types" }
 regex = "1"

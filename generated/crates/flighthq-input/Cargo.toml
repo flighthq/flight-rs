@@ -1,0 +1,14 @@
+[package]
+name = "flighthq-input"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+flighthq-host-signals = { path = "../flighthq-host-signals" }
+flighthq-types = { path = "../flighthq-types" }
+flighthq-runtime = { path = "../flighthq-runtime" }

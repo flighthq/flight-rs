@@ -147,12 +147,12 @@ pub struct NotificationBackend {
     pub __flight_identity: std::sync::Arc<()>,
     pub notify: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(NotificationRequest) -> crate::Promise<String> + Send + 'static>,
+            Box<dyn FnMut(NotificationRequest) -> crate::FlightTask<String> + Send + 'static>,
         >,
     >,
     pub request_permission: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut() -> crate::Promise<crate::OpaqueHostValue> + Send + 'static>,
+            Box<dyn FnMut() -> crate::FlightTask<crate::OpaqueHostValue> + Send + 'static>,
         >,
     >,
     pub get_permission: std::sync::Arc<
@@ -164,23 +164,23 @@ pub struct NotificationBackend {
     >,
     pub get_launch_notification: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut() -> crate::Promise<Option<NotificationRequest>> + Send + 'static>,
+            Box<dyn FnMut() -> crate::FlightTask<Option<NotificationRequest>> + Send + 'static>,
         >,
     >,
     pub get_active_notifications: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut() -> crate::Promise<Vec<NotificationRequest>> + Send + 'static>,
+            Box<dyn FnMut() -> crate::FlightTask<Vec<NotificationRequest>> + Send + 'static>,
         >,
     >,
     pub get_pending_notifications: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut() -> crate::Promise<Vec<ScheduledNotification>> + Send + 'static>,
+            Box<dyn FnMut() -> crate::FlightTask<Vec<ScheduledNotification>> + Send + 'static>,
         >,
     >,
     pub schedule_notification: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(NotificationRequest, NotificationSchedule) -> crate::Promise<String>
+                dyn FnMut(NotificationRequest, NotificationSchedule) -> crate::FlightTask<String>
                     + Send
                     + 'static,
             >,
@@ -194,7 +194,9 @@ pub struct NotificationBackend {
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
     pub update_notification: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(String, FlightPartialRecord1) -> crate::Promise<bool> + Send + 'static>,
+            Box<
+                dyn FnMut(String, FlightPartialRecord1) -> crate::FlightTask<bool> + Send + 'static,
+            >,
         >,
     >,
     pub subscribe_click: std::sync::Arc<

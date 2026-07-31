@@ -158,13 +158,13 @@ pub struct DialogBackend {
     pub __flight_identity: std::sync::Arc<()>,
     pub confirm: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(MessageDialogOptions) -> crate::Promise<bool> + Send + 'static>,
+            Box<dyn FnMut(MessageDialogOptions) -> crate::FlightTask<bool> + Send + 'static>,
         >,
     >,
     pub message: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(MessageDialogOptions) -> crate::Promise<MessageDialogResult>
+                dyn FnMut(MessageDialogOptions) -> crate::FlightTask<MessageDialogResult>
                     + Send
                     + 'static,
             >,
@@ -173,7 +173,7 @@ pub struct DialogBackend {
     pub open_directory: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(OpenDirectoryDialogOptions) -> crate::Promise<Vec<FileDialogHandle>>
+                dyn FnMut(OpenDirectoryDialogOptions) -> crate::FlightTask<Vec<FileDialogHandle>>
                     + Send
                     + 'static,
             >,
@@ -182,7 +182,7 @@ pub struct DialogBackend {
     pub open_file: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(OpenFileDialogOptions) -> crate::Promise<Vec<FileDialogHandle>>
+                dyn FnMut(OpenFileDialogOptions) -> crate::FlightTask<Vec<FileDialogHandle>>
                     + Send
                     + 'static,
             >,
@@ -190,13 +190,17 @@ pub struct DialogBackend {
     >,
     pub prompt: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(PromptDialogOptions) -> crate::Promise<Option<String>> + Send + 'static>,
+            Box<
+                dyn FnMut(PromptDialogOptions) -> crate::FlightTask<Option<String>>
+                    + Send
+                    + 'static,
+            >,
         >,
     >,
     pub save_file: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(SaveFileDialogOptions) -> crate::Promise<Option<FileDialogHandle>>
+                dyn FnMut(SaveFileDialogOptions) -> crate::FlightTask<Option<FileDialogHandle>>
                     + Send
                     + 'static,
             >,

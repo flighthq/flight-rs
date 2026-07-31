@@ -20,21 +20,26 @@ import {
   type IrAsyncTaskOperations,
   type IrAsyncTaskScope,
   type IrFunctionDeclaration,
+  type IrTaskConstruction,
+  type IrTaskConstructionKind,
   type IrType,
   type LoweringDiagnostic,
 } from '../model/ir.ts';
 import { emitNativeHostCapabilityRuntime, nativeHostCapabilityExports } from './native-host.ts';
+import { emitFlightTaskRuntime, emitFlightTaskRuntimeManifest, FLIGHT_TASK_RUNTIME_CRATE } from './runtime.ts';
 import { RustEmissionError, emitRustModule, isNumericNamespaceInitializer, type RustImport } from './rust.ts';
 import { stableJson, writeOrCheck } from './reports.ts';
 
 const CARGO_DIAGNOSTIC_BUFFER_BYTES = 64 * 1024 * 1024;
+const PORTABLE_TASK_OPAQUE_SOURCE_REASON =
+  'Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.';
 
 export interface RustGenerationReport {
   asyncTasks: AsyncTaskReport;
   automaticPackages: AutomaticPackageReport[];
   blessedFacades: typeof portConfig.blessedFacades;
   conformance: ConformanceHarvestReport;
-  schemaVersion: 5;
+  schemaVersion: 6;
   summary: AutomaticPackageSummary;
   targets: RustTargetReport[];
   upstreamCommit: string;
@@ -50,22 +55,42 @@ export interface AsyncTaskScopeReport {
   line: number;
   matchesLegacyErasurePath: boolean;
   operations: IrAsyncTaskOperations;
+  output: IrType;
+  package: string;
+  reason?: string;
+  source: string;
+}
+
+export interface TaskConstructionReport {
+  column: number;
+  disposition: 'host-placeholder' | 'portable-executable' | 'unsupported';
+  fingerprint: string;
+  kind: IrTaskConstructionKind;
+  lexicalPath: string;
+  line: number;
+  output: IrType;
   package: string;
   reason?: string;
   source: string;
 }
 
 export interface AsyncTaskSummary {
+  eligibleConstructions: number;
   eligibleScopes: number;
   hostPlaceholderScopes: number;
   legacyErasurePathScopes: number;
   operations: IrAsyncTaskOperations;
   portableExecutableScopes: number;
+  portableExecutableConstructions: number;
+  hostPlaceholderConstructions: number;
+  unsupportedConstructions: number;
+  unsupportedConstructionReasons: Array<{ constructions: number; reason: string }>;
   unsupportedReasons: Array<{ reason: string; scopes: number }>;
   unsupportedScopes: number;
 }
 
 export interface AsyncTaskPackageReport {
+  constructions: TaskConstructionReport[];
   package: string;
   scopes: AsyncTaskScopeReport[];
   summary: AsyncTaskSummary;
@@ -106,6 +131,7 @@ export interface AutomaticCandidateReport {
 export interface AutomaticPackageReport {
   apiExports: number;
   asyncTasks: AsyncTaskScopeReport[];
+  taskConstructions: TaskConstructionReport[];
   attemptedSources: number;
   blockers: AutomaticPackageBlocker[];
   candidate: AutomaticCandidateReport;
@@ -229,6 +255,7 @@ export function generateRust(
   inventory: UpstreamInventory,
 ): RustGenerationReport {
   validatePackagePolicy(inventory.packages);
+  generateFlightTaskRuntime(workspaceDirectory, check);
   const attempts = inventory.packages.map((item) =>
     attemptAutomaticPackage(workspaceDirectory, item, inventory.packages),
   );
@@ -238,6 +265,9 @@ export function generateRust(
     portConfig.conformanceHarvest,
     inventory.summary.testFiles,
   );
+  // Promoted crates are path dependencies of automatic candidates. Generate them first so a clean or
+  // interrupted workspace does not make candidate compilation depend on stale generated output.
+  const targets = portConfig.targets.map((target) => generateTarget(workspaceDirectory, target, check));
   const automaticPackages = materializeAutomaticCandidates(
     workspaceDirectory,
     check,
@@ -246,7 +276,6 @@ export function generateRust(
     conformanceHarvest.rustModules,
   );
   const conformance = verifyAutomaticConformance(workspaceDirectory, automaticPackages, conformanceHarvest.report);
-  const targets = portConfig.targets.map((target) => generateTarget(workspaceDirectory, target, check));
   const wasmFacades = portConfig.wasmFacades.map((facade) =>
     generateWasmFacade(workspaceDirectory, facade, targets, check),
   );
@@ -255,7 +284,7 @@ export function generateRust(
     automaticPackages,
     blessedFacades: portConfig.blessedFacades,
     conformance,
-    schemaVersion: 5,
+    schemaVersion: 6,
     summary: summarizeAutomaticPackages(automaticPackages),
     targets,
     upstreamCommit: inventory.upstreamCommit,
@@ -265,6 +294,27 @@ export function generateRust(
   mkdirSync(generatedDirectory, { recursive: true });
   writeOrCheck(path.join(generatedDirectory, 'manifest.json'), stableJson(report), check);
   return report;
+}
+
+function generateFlightTaskRuntime(workspaceDirectory: string, check: boolean): void {
+  const crateDirectory = path.join(
+    workspaceDirectory,
+    portConfig.generatedDirectory,
+    'crates',
+    FLIGHT_TASK_RUNTIME_CRATE,
+  );
+  const outputs: PendingOutput[] = [
+    { content: emitFlightTaskRuntimeManifest(), file: path.join(crateDirectory, 'Cargo.toml') },
+    {
+      content: formatRust(emitFlightTaskRuntime(), path.join(crateDirectory, 'src', 'lib.rs')),
+      file: path.join(crateDirectory, 'src', 'lib.rs'),
+    },
+  ];
+  for (const output of outputs) {
+    mkdirSync(path.dirname(output.file), { recursive: true });
+    writeOrCheck(output.file, output.content, check);
+  }
+  verifyNoStaleOutputs(crateDirectory, new Set(outputs.map((output) => output.file)), check);
 }
 
 function attemptAutomaticPackage(
@@ -291,6 +341,7 @@ function attemptAutomaticPackage(
       report: {
         apiExports: packageInventory.exports.length,
         asyncTasks: [],
+        taskConstructions: [],
         attemptedSources: 0,
         blockers: [],
         candidate: {
@@ -338,6 +389,7 @@ function attemptAutomaticPackage(
   };
   const blockers: AutomaticPackageBlocker[] = [];
   const asyncTasks: AsyncTaskScopeReport[] = [];
+  const taskConstructions: TaskConstructionReport[] = [];
   const emittedSources: AutomaticPackageReport['emittedSources'] = [];
   const generatedExports = new Set<string>();
   const moduleOutputs: AutomaticPackageAttempt['modules'] = [];
@@ -367,7 +419,12 @@ function attemptAutomaticPackage(
     try {
       const sourceFile = parseTypeScriptFile(file);
       const lowered = lowerTypeScriptFile(file, packageInventory.name, workspaceDirectory);
-      asyncTasks.push(...lowered.asyncTasks.map((scope) => reportAsyncTaskScope(scope, packageInventory.name)));
+      const sourceAsyncTasks = lowered.asyncTasks.map((scope) => reportAsyncTaskScope(scope, packageInventory.name));
+      const sourceTaskConstructions = lowered.taskConstructions.map((construction) =>
+        reportTaskConstruction(construction, packageInventory.name),
+      );
+      asyncTasks.push(...sourceAsyncTasks);
+      taskConstructions.push(...sourceTaskConstructions);
       if (lowered.diagnostics.length > 0) {
         blockers.push({
           diagnostics: lowered.diagnostics,
@@ -421,6 +478,14 @@ function attemptAutomaticPackage(
         source,
         typeImports: [],
       });
+      if (
+        emitted.includes('OpaqueHostValue') &&
+        sourceAsyncTasks.some((scope) => scope.execution === 'portableTask' && !irTypeContainsDynamic(scope.output))
+      ) {
+        markOpaqueTaskSourceUnsupported(sourceAsyncTasks, sourceTaskConstructions);
+        throw new Error(PORTABLE_TASK_OPAQUE_SOURCE_REASON);
+      }
+      markExecutableTaskConstructions(sourceAsyncTasks, sourceTaskConstructions);
       emittedSources.push({
         declarationNames: lowered.declarations.map((declaration) => declaration.name).sort(),
         declarations: lowered.declarations.length,
@@ -499,6 +564,9 @@ function attemptAutomaticPackage(
   asyncTasks.sort(
     (left, right) => left.source.localeCompare(right.source) || left.line - right.line || left.column - right.column,
   );
+  taskConstructions.sort(
+    (left, right) => left.source.localeCompare(right.source) || left.line - right.line || left.column - right.column,
+  );
   emittedSources.sort((left, right) => left.source.localeCompare(right.source));
   if (blockers.length === 0) {
     for (const output of moduleOutputs) {
@@ -524,6 +592,7 @@ function attemptAutomaticPackage(
     report: {
       apiExports: packageInventory.exports.length,
       asyncTasks,
+      taskConstructions,
       attemptedSources,
       blockers,
       candidate: {
@@ -780,6 +849,7 @@ function emitCandidateCargoManifest(
       : `../${dependency.crate}`;
     return `${dependency.crate} = { path = "${dependencyPath}" }`;
   });
+  dependencies.push('flighthq-runtime = { path = "../../crates/flighthq-runtime" }');
   if (usesRegex) dependencies.push('regex = "1"');
   return [
     '# @generated candidate crate; do not edit.',
@@ -1003,6 +1073,7 @@ function reportAsyncTaskScope(scope: IrAsyncTaskScope, packageName: string): Asy
     line: execution.origin.line,
     matchesLegacyErasurePath: scope.matchesLegacyErasurePath,
     operations: scope.operations,
+    output: scope.output,
     package: packageName,
     source: execution.origin.source,
   };
@@ -1016,17 +1087,118 @@ function reportAsyncTaskScope(scope: IrAsyncTaskScope, packageName: string): Asy
   return {
     ...common,
     disposition: 'unsupported',
-    reason: PORTABLE_TASK_RUST_LOWERING_REASON,
+    reason: irTypeContainsDynamic(scope.output)
+      ? 'Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.'
+      : PORTABLE_TASK_RUST_LOWERING_REASON,
   };
+}
+
+function reportTaskConstruction(construction: IrTaskConstruction, packageName: string): TaskConstructionReport {
+  if (construction.origin.packageName !== packageName) {
+    throw new Error(
+      `Task construction package mismatch: ${construction.origin.packageName} was lowered while generating ${packageName}`,
+    );
+  }
+  const compositionReason: Partial<Record<IrTaskConstructionKind, string>> = {
+    catch: 'taskCatch Rust lowering is reserved for Pass 27 Stage 4.',
+    finally: 'taskFinally Rust lowering is reserved for Pass 27 Stage 4.',
+    'join-all': 'taskAll Rust lowering is reserved for Pass 27 Stage 4.',
+    'join-all-settled': 'taskAllSettled Rust lowering is reserved for Pass 27 Stage 4.',
+    then: 'taskThen Rust lowering is reserved for Pass 27 Stage 4.',
+  };
+  return {
+    column: construction.origin.column,
+    disposition: 'unsupported',
+    fingerprint: construction.origin.fingerprint,
+    kind: construction.kind,
+    lexicalPath: construction.origin.lexicalPath,
+    line: construction.origin.line,
+    output: construction.output,
+    package: packageName,
+    reason:
+      compositionReason[construction.kind] ??
+      (irTypeContainsDynamic(construction.output)
+        ? 'Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.'
+        : PORTABLE_TASK_RUST_LOWERING_REASON),
+    source: construction.origin.source,
+  };
+}
+
+function markExecutableTaskConstructions(
+  scopes: AsyncTaskScopeReport[],
+  constructions: TaskConstructionReport[],
+): void {
+  const executableOrigins = new Set<string>();
+  for (const construction of constructions) {
+    if (
+      (construction.kind === 'async-scope' || construction.kind === 'ready' || construction.kind === 'reject') &&
+      !irTypeContainsDynamic(construction.output)
+    ) {
+      construction.disposition = 'portable-executable';
+      delete construction.reason;
+      executableOrigins.add(`${construction.source}\0${construction.line}\0${construction.column}`);
+    }
+  }
+  for (const scope of scopes) {
+    if (executableOrigins.has(`${scope.source}\0${scope.line}\0${scope.column}`)) {
+      scope.disposition = 'portable-executable';
+      delete scope.reason;
+    }
+  }
+}
+
+function markOpaqueTaskSourceUnsupported(
+  scopes: AsyncTaskScopeReport[],
+  constructions: TaskConstructionReport[],
+): void {
+  for (const scope of scopes) {
+    if (scope.execution === 'portableTask' && !irTypeContainsDynamic(scope.output)) {
+      scope.disposition = 'unsupported';
+      scope.reason = PORTABLE_TASK_OPAQUE_SOURCE_REASON;
+    }
+  }
+  for (const construction of constructions) {
+    if (
+      (construction.kind === 'async-scope' || construction.kind === 'ready' || construction.kind === 'reject') &&
+      !irTypeContainsDynamic(construction.output)
+    ) {
+      construction.disposition = 'unsupported';
+      construction.reason = PORTABLE_TASK_OPAQUE_SOURCE_REASON;
+    }
+  }
+}
+
+function irTypeContainsDynamic(type: IrType): boolean {
+  switch (type.kind) {
+    case 'dynamic':
+      return true;
+    case 'anonymous':
+      return type.extends.some(irTypeContainsDynamic) || type.fields.some((field) => irTypeContainsDynamic(field.type));
+    case 'array':
+      return irTypeContainsDynamic(type.element);
+    case 'function':
+      return type.parameters.some(irTypeContainsDynamic) || irTypeContainsDynamic(type.returns);
+    case 'named':
+      return type.arguments.some(irTypeContainsDynamic);
+    case 'nullable':
+      return irTypeContainsDynamic(type.inner);
+    case 'task':
+      return irTypeContainsDynamic(type.output);
+    case 'union':
+      return type.variants.some(irTypeContainsDynamic);
+    case 'primitive':
+      return false;
+  }
 }
 
 function summarizeAsyncTasks(packages: readonly AutomaticPackageReport[]): AsyncTaskReport {
   const packageReports = packages
-    .filter((item) => item.asyncTasks.length > 0)
+    .filter((item) => item.asyncTasks.length > 0 || item.taskConstructions.length > 0)
     .map((item) => ({
+      constructions: item.taskConstructions,
       package: item.package,
       scopes: item.asyncTasks,
-      summary: summarizeAsyncTaskScopes(item.asyncTasks),
+      summary: summarizeAsyncTaskScopes(item.asyncTasks, item.taskConstructions),
     }));
   const identities = new Set<string>();
   for (const scope of packageReports.flatMap((item) => item.scopes)) {
@@ -1034,13 +1206,25 @@ function summarizeAsyncTasks(packages: readonly AutomaticPackageReport[]): Async
     if (identities.has(identity)) throw new Error(`Duplicate async task lexical identity: ${identity}`);
     identities.add(identity);
   }
+  const constructionIdentities = new Set<string>();
+  for (const construction of packageReports.flatMap((item) => item.constructions)) {
+    const identity = `${construction.package}\0${construction.source}\0${construction.line}\0${construction.column}\0${construction.kind}`;
+    if (constructionIdentities.has(identity)) throw new Error(`Duplicate task construction identity: ${identity}`);
+    constructionIdentities.add(identity);
+  }
   return {
     packages: packageReports,
-    summary: summarizeAsyncTaskScopes(packageReports.flatMap((item) => item.scopes)),
+    summary: summarizeAsyncTaskScopes(
+      packageReports.flatMap((item) => item.scopes),
+      packageReports.flatMap((item) => item.constructions),
+    ),
   };
 }
 
-function summarizeAsyncTaskScopes(scopes: readonly AsyncTaskScopeReport[]): AsyncTaskSummary {
+function summarizeAsyncTaskScopes(
+  scopes: readonly AsyncTaskScopeReport[],
+  constructions: readonly TaskConstructionReport[],
+): AsyncTaskSummary {
   const operations: IrAsyncTaskOperations = {
     asyncIterations: 0,
     awaits: 0,
@@ -1054,6 +1238,7 @@ function summarizeAsyncTaskScopes(scopes: readonly AsyncTaskScopeReport[]): Asyn
     voidExpressions: 0,
   };
   const unsupportedReasons = new Map<string, number>();
+  const unsupportedConstructionReasons = new Map<string, number>();
   for (const scope of scopes) {
     operations.asyncIterations += scope.operations.asyncIterations;
     operations.awaits += scope.operations.awaits;
@@ -1070,19 +1255,59 @@ function summarizeAsyncTaskScopes(scopes: readonly AsyncTaskScopeReport[]): Asyn
       unsupportedReasons.set(reason, (unsupportedReasons.get(reason) ?? 0) + 1);
     }
   }
+  for (const construction of constructions) {
+    if (construction.disposition !== 'unsupported') continue;
+    const reason = construction.reason ?? 'Unspecified task construction blocker.';
+    unsupportedConstructionReasons.set(reason, (unsupportedConstructionReasons.get(reason) ?? 0) + 1);
+  }
   const summary: AsyncTaskSummary = {
+    eligibleConstructions: constructions.length,
     eligibleScopes: scopes.length,
+    hostPlaceholderConstructions: constructions.filter((item) => item.disposition === 'host-placeholder').length,
     hostPlaceholderScopes: scopes.filter((scope) => scope.disposition === 'host-placeholder').length,
     legacyErasurePathScopes: scopes.filter((scope) => scope.matchesLegacyErasurePath).length,
     operations,
     portableExecutableScopes: scopes.filter((scope) => scope.disposition === 'portable-executable').length,
+    portableExecutableConstructions: constructions.filter((item) => item.disposition === 'portable-executable').length,
+    unsupportedConstructionReasons: [...unsupportedConstructionReasons]
+      .map(([reason, count]) => ({ constructions: count, reason }))
+      .sort((left, right) => left.reason.localeCompare(right.reason)),
+    unsupportedConstructions: constructions.filter((item) => item.disposition === 'unsupported').length,
     unsupportedReasons: [...unsupportedReasons]
       .map(([reason, count]) => ({ reason, scopes: count }))
       .sort((left, right) => left.reason.localeCompare(right.reason)),
     unsupportedScopes: scopes.filter((scope) => scope.disposition === 'unsupported').length,
   };
   validateAsyncTaskDispositionPartition(scopes);
+  validateTaskConstructionDispositionPartition(constructions);
   return summary;
+}
+
+export function validateTaskConstructionDispositionPartition(constructions: readonly TaskConstructionReport[]): void {
+  for (const construction of constructions) {
+    if (
+      construction.package.length === 0 ||
+      construction.source.length === 0 ||
+      construction.lexicalPath.length === 0 ||
+      construction.line < 1 ||
+      construction.column < 1 ||
+      !/^sha256:[0-9a-f]{64}$/u.test(construction.fingerprint)
+    ) {
+      throw new Error('Task construction is missing its stable source identity.');
+    }
+    if (construction.disposition === 'unsupported' && !construction.reason) {
+      throw new Error(
+        `Unsupported task construction ${construction.package}:${construction.source}:${construction.lexicalPath} has no reason.`,
+      );
+    }
+  }
+  const accounted = constructions.filter(
+    (construction) =>
+      construction.disposition === 'portable-executable' ||
+      construction.disposition === 'host-placeholder' ||
+      construction.disposition === 'unsupported',
+  ).length;
+  if (constructions.length !== accounted) throw new Error('Task construction disposition partition is incomplete.');
 }
 
 export function validateAsyncTaskDispositionPartition(scopes: readonly AsyncTaskScopeReport[]): void {
@@ -1303,7 +1528,10 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
   if (target.conformanceTemplate) {
     const template = path.join(workspaceDirectory, target.conformanceTemplate);
     const output = path.join(crateDirectory, 'tests', 'conformance.rs');
-    outputs.push({ content: formatRust(readFileSync(template, 'utf8'), template), file: output });
+    outputs.push({
+      content: formatRust(installDeterministicSchedulerInRustTests(readFileSync(template, 'utf8')), template),
+      file: output,
+    });
   }
   for (const output of outputs) {
     mkdirSync(path.dirname(output.file), { recursive: true });
@@ -1329,6 +1557,13 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
     unsupportedSources,
     typeMappings: target.typeMappings,
   };
+}
+
+function installDeterministicSchedulerInRustTests(source: string): string {
+  return source.replace(
+    /(#\[test\]\s*\nfn\s+[A-Za-z0-9_]+\s*\([^)]*\)\s*\{)/gu,
+    '$1\n    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();',
+  );
 }
 
 function verifyEntityRuntimeRootInvariant(target: RustTarget, outputs: readonly PendingOutput[]): void {
@@ -1387,6 +1622,7 @@ function generateWasmFacade(
     '',
     '[dependencies]',
     `${facade.coreCrate} = { path = "../${facade.coreCrate}" }`,
+    'flighthq-runtime = { path = "../flighthq-runtime" }',
     'flighthq-types = { path = "../flighthq-types" }',
     'wasm-bindgen = "0.2"',
     '',
@@ -1557,6 +1793,7 @@ function emitCargoManifest(target: RustTarget): string {
   const dependencies = Object.values(target.dependencies)
     .sort((left, right) => left.crate.localeCompare(right.crate))
     .map(({ crate }) => `${crate} = { path = "../${crate}" }`);
+  dependencies.push('flighthq-runtime = { path = "../flighthq-runtime" }');
   return [
     '[package]',
     `name = "${target.crate}"`,
@@ -1585,6 +1822,8 @@ function emitLibrary(target: RustTarget, modules: string[]): string {
   return [
     '// @generated by tools/generator; do not edit.',
     '#![forbid(unsafe_code)]',
+    '',
+    'pub use flighthq_runtime::{flight_task_yield, install_deterministic_flight_task_scheduler, install_flight_task_scheduler, DeterministicFlightTaskScheduler, FlightHostUnavailable, FlightRejection, FlightRuntimeUnavailable, FlightTask, FlightTaskError, FlightTaskOrigin, FlightTaskOutcome, FlightTaskScheduler, ScheduledFlightTask};',
     '',
     '/// Tagged storage for TypeScript values whose static type is unknown at the generated Rust boundary.',
     ...(sharedOpaqueHostValue
@@ -1734,18 +1973,6 @@ function emitLibrary(target: RustTarget, modules: string[]): string {
     'pub enum FlightUnion2<A, B> {',
     '  A(A),',
     '  B(B),',
-    '}',
-    '',
-    '/// Opaque placeholder for a TypeScript Promise until async lowering supplies a native Future.',
-    'pub struct Promise<T> {',
-    '  marker: std::marker::PhantomData<fn() -> T>,',
-    '  value: OpaqueHostValue,',
-    '}',
-    'impl<T> Clone for Promise<T> {',
-    '  fn clone(&self) -> Self { Self { marker: std::marker::PhantomData, value: self.value.clone() } }',
-    '}',
-    'impl<T> Default for Promise<T> {',
-    '  fn default() -> Self { Self { marker: std::marker::PhantomData, value: OpaqueHostValue::Undefined } }',
     '}',
     '',
     ...aliases.flatMap((alias) => [alias, '']),

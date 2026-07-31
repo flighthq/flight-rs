@@ -34,6 +34,23 @@ export interface IrAsyncTaskScope {
   execution: Exclude<IrFunctionExecution, { kind: 'sync' }>;
   matchesLegacyErasurePath: boolean;
   operations: IrAsyncTaskOperations;
+  output: IrType;
+}
+
+export type IrTaskConstructionKind =
+  | 'async-scope'
+  | 'catch'
+  | 'finally'
+  | 'join-all'
+  | 'join-all-settled'
+  | 'ready'
+  | 'reject'
+  | 'then';
+
+export interface IrTaskConstruction {
+  kind: IrTaskConstructionKind;
+  origin: IrTaskOrigin;
+  output: IrType;
 }
 
 export type IrType =
@@ -67,7 +84,7 @@ export type IrHostConstructorCapability = 'ImageData' | 'OffscreenCanvas' | 'URL
 
 export type IrExpression =
   | { kind: 'array'; elements: IrExpression[] }
-  | { kind: 'await'; expression: IrExpression }
+  | { kind: 'await'; expression: IrExpression; origin: IrTaskOrigin }
   | { kind: 'assignment'; left: IrExpression; operator: string; right: IrExpression }
   | { kind: 'binary'; left: IrExpression; operator: string; right: IrExpression }
   | { kind: 'call'; arguments: IrExpression[]; callee: IrExpression; optional?: boolean; typeArguments: IrType[] }
@@ -121,6 +138,8 @@ export type IrExpression =
       optional?: boolean | undefined;
     }
   | { flags: string; kind: 'regexp'; pattern: string }
+  | { kind: 'taskReady'; origin: IrTaskOrigin; output: IrType; value?: IrExpression | undefined }
+  | { kind: 'taskReject'; origin: IrTaskOrigin; output: IrType; rejection: IrExpression }
   | { kind: 'template'; parts: Array<IrExpression | string> }
   | { kind: 'spread'; expression: IrExpression }
   | { kind: 'unary'; operand: IrExpression; operator: string; postfix: boolean };
@@ -279,4 +298,5 @@ export interface LoweringResult {
   asyncTasks: IrAsyncTaskScope[];
   declarations: IrDeclaration[];
   diagnostics: LoweringDiagnostic[];
+  taskConstructions: IrTaskConstruction[];
 }

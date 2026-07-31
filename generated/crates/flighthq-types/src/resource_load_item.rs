@@ -16,7 +16,7 @@ pub struct ResourceLoadItem<T> {
     pub key: Option<String>,
     pub load: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(crate::OpaqueHostValue) -> crate::Promise<T> + Send + 'static>,
+            Box<dyn FnMut(crate::OpaqueHostValue) -> crate::FlightTask<T> + Send + 'static>,
         >,
     >,
     pub on_bytes_progress:

@@ -12,7 +12,7 @@ use crate::{DecodedImage, ImageDecodeOptions};
 pub type ImageDecoder = std::sync::Arc<
     std::sync::Mutex<
         Box<
-            dyn FnMut(Vec<u8>, Option<ImageDecodeOptions>) -> crate::Promise<DecodedImage>
+            dyn FnMut(Vec<u8>, Option<ImageDecodeOptions>) -> crate::FlightTask<DecodedImage>
                 + Send
                 + 'static,
         >,

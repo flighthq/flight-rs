@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_signals::{connect_signal, create_signal, disconnect_signal, emit_signal};
+use flighthq_host_signals::{connect_signal, create_signal, disconnect_signal, emit_signal};
 use flighthq_types::{
     AttachInputOptions, GAMEPAD_AXIS_KIND as gamepad_axis_kind_values_constant,
     GAMEPAD_BUTTON_KIND as gamepad_button_kind_values_constant, GamepadAxisKind, GamepadButtonKind,
@@ -1707,31 +1707,43 @@ pub fn release_input_pointer_capture(element: crate::OpaqueHostValue, pointer_id
 }
 
 // Source: upstream/packages/input/src/inputManager.ts:684 (sha256:fddeaa7d2196a8dfbfc055b2cf368b9f22f58ae07443530998152414ca132438)
-pub fn request_input_pointer_lock(element: crate::OpaqueHostValue) -> crate::Promise<bool> {
-    let __flight_try_return: Option<crate::Promise<bool>> = match std::panic::catch_unwind(
-        std::panic::AssertUnwindSafe(|| -> Option<crate::Promise<bool>> {
+pub fn request_input_pointer_lock(element: crate::OpaqueHostValue) -> crate::FlightTask<bool> {
+    let __flight_try_return: Option<crate::FlightTask<bool>> = match std::panic::catch_unwind(
+        std::panic::AssertUnwindSafe(|| -> Option<crate::FlightTask<bool>> {
             {
                 let result = crate::host_value::<()>("host.requestPointerLock");
                 if false {
-                    return Some(crate::host_value::<crate::Promise<bool>>("host.then"));
+                    return Some(crate::host_value::<crate::FlightTask<bool>>("host.then"));
                 }
-                return Some({
-                    let __flight_value = true;
-                    let _ = &__flight_value;
-                    crate::Promise::<bool>::default()
-                });
+                return Some(crate::FlightTask::ready(
+                    true,
+                    crate::FlightTaskOrigin {
+                        package: "@flighthq/input",
+                        source: "upstream/packages/input/src/inputManager.ts",
+                        line: 693_u32,
+                        column: 12_u32,
+                        lexical_path: "requestInputPointerLock.ready:693:12:1a7aba0165f0",
+                        fingerprint: "sha256:1a7aba0165f00509e11ac8dc73642aece499bb5941df4401f21b933076ae3787",
+                    },
+                ));
             }
             None
         }),
     ) {
         Ok(value) => value,
-        Err(_) => (|| -> Option<crate::Promise<bool>> {
+        Err(_) => (|| -> Option<crate::FlightTask<bool>> {
             {
-                return Some({
-                    let __flight_value = false;
-                    let _ = &__flight_value;
-                    crate::Promise::<bool>::default()
-                });
+                return Some(crate::FlightTask::ready(
+                    false,
+                    crate::FlightTaskOrigin {
+                        package: "@flighthq/input",
+                        source: "upstream/packages/input/src/inputManager.ts",
+                        line: 695_u32,
+                        column: 12_u32,
+                        lexical_path: "requestInputPointerLock.ready:695:12:a913f3cb1f97",
+                        fingerprint: "sha256:a913f3cb1f9734d159588904231d21b38dd02a4b990de3f76aaea042e535d166",
+                    },
+                ));
             }
             None
         })(),

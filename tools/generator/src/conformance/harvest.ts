@@ -304,6 +304,7 @@ function translateTest(
       `// ${source}:${String(test.line)} — ${displayName}`,
       '#[test]',
       `fn ${safeRustIdentifier(functionName)}() {`,
+      '  let _flight_task_scheduler = crate::install_deterministic_flight_task_scheduler();',
       ...statements.map((statement) => `  ${statement}`),
       '}',
     ].join('\n'),

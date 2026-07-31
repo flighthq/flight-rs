@@ -1,6 +1,6 @@
 # Generator Resume Playbook
 
-This is the durable handoff for continuing the mechanical Flight TypeScript-to-Rust port. It describes the repository after the Pass 27 Stage 1 async-honesty checkpoint. Resume from repository `HEAD`; do not reconstruct earlier passes or edit generated Rust by hand.
+This is the durable handoff for continuing the mechanical Flight TypeScript-to-Rust port. It describes the repository after the Pass 27 Stage 2 canonical task-runtime checkpoint. Resume from repository `HEAD`; do not reconstruct earlier passes or edit generated Rust by hand.
 
 ## Goal and policy
 
@@ -24,12 +24,12 @@ The pinned Flight revision is `5d24729f7360475e28a105ae0caeeaa2e1328260`. The ge
 | ------------------------------- | ----: |
 | Inventoried packages            |   131 |
 | Eligible automatic packages     |   125 |
-| Packages reaching Rust emission |    61 |
-| Compiled candidates             |    27 |
-| Compile-blocked candidates      |    17 |
+| Packages reaching Rust emission |    59 |
+| Compiled candidates             |    23 |
+| Compile-blocked candidates      |    19 |
 | Dependency-blocked candidates   |    15 |
-| Source-blocked packages         |    64 |
-| Source blockers                 |   355 |
+| Source-blocked packages         |    66 |
+| Source blockers                 |   358 |
 | Promoted generated packages     |     2 |
 | Cultivated packages             |     1 |
 | Host-bound packages             |     4 |
@@ -38,17 +38,16 @@ The pinned Flight revision is `5d24729f7360475e28a105ae0caeeaa2e1328260`. The ge
 Compiled candidates:
 
 ```text
-adjustments app application bitmapfont camera camera2d color device entity flow
-geometry haptics input keyboard lifecycle lighting math motionpath path platform
-power signals spatial spring textsegment texture useragent
+adjustments bitmapfont camera camera2d color device entity flow geometry haptics
+keyboard lifecycle lighting math motionpath path platform signals spatial spring
+textsegment texture useragent
 ```
 
 Compile-blocked candidates, ordered roughly from smallest to largest compiler frontier:
 
 ```text
-socket(5) clock(7) accessibility(12) timeline(16) textbidi(19) protocol(25)
-animation(27) media(32) xml(32) collision(36) clip(37) effects(56)
-path-formats(61) snapshot(67) particles(118) mesh(132) materials(150)
+socket clock accessibility timeline textbidi protocol animation media xml collision
+clip effects path-formats snapshot particles mesh materials application input
 ```
 
 Dependency-blocked candidates:
@@ -79,13 +78,13 @@ The generator now has these invariants. Preserve them with focused regression te
 - Shared typed-array/byte-buffer views, regex captures, string splitting/parsing, exhaustive switches, interval handles, and selected collection operations lower to native Rust.
 - Statically absent native host branches are pruned before their web-only expressions block emission.
 - Dynamic host reads, writes, and calls route through the explicit opaque host boundary.
-- Web-default `Promise<T>` paths can lower to typed inert placeholders. This is only valid for backend code that a native host replaces before use; it is not a portable async runtime.
+- No generated Promise path fabricates a default task. Web-default task paths that native code replaces are omitted only through explicit partial host targets until configured host-task placeholders land.
 - Discriminated open-interface families are discovered from a package-wide semantic type catalog.
 - A family is widened only when descendants explicitly redeclare `kind` and every added field is safely default-materializable.
 - Open-family constructors and projections use struct update defaults. This promoted the lighting `Light` family without corrupting recursive node hierarchies or callback-bearing adjustment families.
 - `application`, `lifecycle`, `input`, `keyboard`, `haptics`, `power`, `platform`, `device`, and `screen` provide generated seams that can be linked by a cultivated native host.
 - Configured upstream test files are harvested from their TypeScript ASTs into candidate unit tests. Generation runs every translated assertion before it increments case coverage, and only completely translated files increment file coverage; all other in-scope files remain fingerprinted unsupported report entries.
-- Global `Promise<T>` types lower to target-neutral `task<T>` IR, while source-declared `Promise` names remain nominal. All 162 eligible async scopes have source, lexical path, and fingerprint identities in the generation report; Stage 1 classifies all 162 as unsupported and emits no default async bodies.
+- Global `Promise<T>` types lower to target-neutral `task<T>` IR, while source-declared `Promise` names remain nominal. The report partitions all 204 task constructions and 162 async scopes; Stage 2 executes 9 constructions/3 non-opaque scopes and leaves 195/159 explicitly unsupported without default bodies.
 
 Primary implementation entry points:
 
@@ -106,7 +105,7 @@ Primary implementation entry points:
 
 `crates/flighthq-host-winit` is cultivated host code, not an automatically translated upstream package. It currently proves that the generated backend seams can coexist and link.
 
-- `NativeHostBackends` bundles application, lifecycle, keyboard, haptics, power, screen, platform, and device backends.
+- `NativeHostBackends` bundles application, lifecycle, keyboard, haptics, power, screen, platform, and device backends. Generated partial application/input/power/screen targets and a distinctly named host signal-constructor target avoid mixing duplicate automatic package identities in this graph.
 - `install_native_host` installs the bundle and creates the generated input manager.
 - The canary has compile/link assertions and one integration test.
 - It does not yet own a real winit event loop or renderer.
@@ -251,7 +250,7 @@ After passes 19–21, prioritize shared capabilities rather than raw diagnostic 
 - `@flighthq/image` has eleven direct dependents and is blocked by host `new ImageData` plus missing exports.
 - `@flighthq/text` has eight direct dependents and needs ordered multiple-object-spread lowering.
 - `@flighthq/shape` has seven direct dependents and needs spread/structural generic handling.
-- Portable async packages such as filesystem, notification, and image-codec need a real Future/task IR; do not expand the inert backend Promise placeholder into general async semantics.
+- Portable async packages such as filesystem and notification need contextual output recovery and later task operations; image-codec is the current non-opaque straight-line execution canary.
 - Dynamic WebGL/WebGPU object literals should eventually use typed backend-capability IR rather than giant opaque records.
 
 The package-level “missing exports” blocker often shrinks automatically after the first emission blocker is fixed. Do not build a broad re-export workaround until regeneration proves the barrel/export graph itself is incomplete.
@@ -269,7 +268,7 @@ The implementation contract is [Future/task IR design](future-task-ir.md). Send 
 
 At the design baseline, eligible generated packages contained 162 async scopes and 190 awaits across 40 non-test sources. The report exposed only seven await blockers in six packages because top-level async declarations were body-erased. Removing that silent path was the first code gate; do not interpret the resulting candidate-status correction as a behavioral regression without checking whether the old candidate ever executed its source body.
 
-Stage 1 removed that erasure path. The report now partitions 162 eligible scopes as 0 portable executable + 0 configured host placeholder + 162 unsupported, with 190 awaits and three async iterations. The pre-change generated tree had 33 erased bodies; the regenerated tree has zero. `screen` moved from compiled to source-blocked and compiled candidates therefore fell from 28 to 27. Its cultivated partial target admits only `_backend` and `setScreenBackend`, retaining the host-winit installation canary without admitting either async declaration. Before Stage 2 chooses `FlightTask<T>` output bounds, measure how many task outputs can satisfy `Clone + Send + 'static`; generated test targets must install the deterministic scheduler automatically.
+Stage 1 removed that erasure path. Stage 2 adds the canonical generated `flighthq-runtime`, typed ready/reject and straight-line async/await lowering, deterministic scheduler installation in generated tests, and construction-wide reporting. The syntactic bound audit found 83 explicitly annotated and 79 unannotated outputs, all representable by `Clone + Send + 'static`; normalized IR genuinely recovers only 77 and keeps 85 dynamic outputs blocked. The current partition is 9 executable + 0 host placeholder + 195 unsupported constructions and 3 + 0 + 159 scopes. Twenty recovered-output scopes remain blocked because their source still requires `OpaqueHostValue`, improving portable opacity from 167/1227 to 166/1226. Stage 2b should add contextual return inference; Stage 3 adds configured host-task boundaries; Stage 4 owns composition and must account for `catch_unwind` interactions in non-async task-returning functions.
 
 ## Checkpoint discipline
 

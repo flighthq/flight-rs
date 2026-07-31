@@ -412,35 +412,23 @@ describe('Rust emission', () => {
     ).not.toThrow();
   });
 
-  it('types synchronous Promise callbacks but blocks portable task execution instead of erasing its body', () => {
+  it('emits typed straight-line tasks and reports opaque output or composition instead of fabricating tasks', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/power/src/promise.ts',
       `
-        interface Manager {
-          level: number;
+        export async function echoAfterReady(input: string): Promise<string> {
+          const ready = Promise.resolve<string>(input);
+          const value = await ready;
+          return value;
         }
-        export function observeManager(promise: Promise<Manager> | null): void {
-          if (promise === null) return;
-          promise
-            .then((manager) => {
-              void manager.level;
-            })
-            .catch(() => {});
+        export async function adoptReady(input: string): Promise<string> {
+          return Promise.resolve<string>(input);
         }
-        export async function requestManager(): Promise<boolean> {
-          await Promise.resolve();
-          return true;
+        export function readyFlag(): Promise<boolean> {
+          return Promise.resolve(true);
         }
-        export function nextMicrotask(listener: () => void): void {
-          const pending = Promise.resolve().then(() => listener());
-          void pending;
-        }
-        export function inertResult(): Promise<unknown> {
-          return Promise.resolve();
-        }
-        export function commandLineValue(arg: string, name: string): string | null {
-          const prefix = \`--\${name}=\`;
-          return arg.startsWith(prefix) ? arg.slice(prefix.length) : null;
+        export function rejectedFlag(): Promise<boolean> {
+          return Promise.reject<boolean>('nope');
         }
       `,
       ts.ScriptTarget.Latest,
@@ -448,58 +436,114 @@ describe('Rust emission', () => {
       ts.ScriptKind.TS,
     );
     const lowered = lowerTypeScriptSource(source, '@flighthq/power', '/workspace');
-    expect(() =>
-      emitRustModule({
-        declarations: lowered.declarations,
-        source: 'upstream/packages/power/src/promise.ts',
-        typeImports: [],
-      }),
-    ).toThrow(
-      'requestManager: upstream/packages/power/src/promise.ts:13:9: portableTask requestManager: Portable task Rust lowering is not implemented.',
-    );
     const output = emitRustModule({
-      declarations: lowered.declarations.filter(
-        (declaration) => declaration.kind !== 'function' || declaration.name !== 'requestManager',
-      ),
+      declarations: lowered.declarations,
       source: 'upstream/packages/power/src/promise.ts',
       typeImports: [],
     });
 
     expect(lowered.diagnostics).toEqual([]);
-    expect(lowered.asyncTasks).toHaveLength(1);
+    expect(lowered.asyncTasks).toHaveLength(2);
     expect(lowered.asyncTasks[0]).toMatchObject({
-      execution: { kind: 'portableTask', origin: { lexicalPath: 'requestManager' } },
+      execution: { kind: 'portableTask', origin: { lexicalPath: 'echoAfterReady' } },
       operations: { awaits: 1, promiseResolve: 1 },
       matchesLegacyErasurePath: true,
+      output: { kind: 'primitive', name: 'String' },
     });
-    expect(output).toContain('move |manager: Manager| -> ()');
-    expect(output).toContain('crate::Promise::<()>::default()');
-    expect(output).toContain('pub fn inert_result() -> crate::Promise<crate::OpaqueHostValue>');
-    expect(output).toContain('String::from_utf16_lossy');
-    expect(output).toContain('.starts_with(');
-    expect(output).toContain('.as_str())');
-    expect(output).not.toContain('request_manager');
-    expect(output).not.toMatch(/-> crate::Promise<[^>]+> \{\n\s+Default::default\(\)/u);
+    expect(lowered.taskConstructions.map((item) => item.kind)).toEqual([
+      'async-scope',
+      'ready',
+      'async-scope',
+      'ready',
+      'ready',
+      'reject',
+    ]);
+    expect(output).toContain('pub fn echo_after_ready(input: String) -> crate::FlightTask<String>');
+    expect(output).toContain('crate::FlightTask::start(async move');
+    expect(output).toContain('.await?');
+    expect(output).toContain('pub fn adopt_ready(input: String) -> crate::FlightTask<String>');
+    expect(output).toContain('return crate::FlightTask::ready(');
+    expect(output).toContain('.await;');
+    expect(output).toContain('pub fn ready_flag() -> crate::FlightTask<bool>');
+    expect(output).toContain('pub fn rejected_flag() -> crate::FlightTask<bool>');
+    expect(output).toContain('crate::FlightRejection::String("nope".to_owned())');
+    expect(output).not.toContain('Promise');
+    expect(output).not.toContain('Default::default()');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
-    writeFileSync(path.join(fixture, 'generated.rs'), output);
+    mkdirSync(path.join(fixture, 'src'), { recursive: true });
+    writeFileSync(path.join(fixture, 'src', 'generated.rs'), output);
     writeFileSync(
-      path.join(fixture, 'lib.rs'),
+      path.join(fixture, 'src', 'lib.rs'),
       [
-        'pub struct Promise<T> { marker: std::marker::PhantomData<fn() -> T> }',
-        'impl<T> Clone for Promise<T> { fn clone(&self) -> Self { Self { marker: std::marker::PhantomData } } }',
-        'impl<T> Default for Promise<T> { fn default() -> Self { Self { marker: std::marker::PhantomData } } }',
-        '#[derive(Clone, Default)] pub struct OpaqueHostValue;',
+        'pub use flighthq_runtime::*;',
         'mod generated;',
+        'pub use generated::*;',
+        '#[cfg(test)] mod tests {',
+        '  use super::*;',
+        '  #[test] fn generated_task_preserves_owned_input_and_nested_await() {',
+        '    let scheduler = install_deterministic_flight_task_scheduler();',
+        '    let source = String::from("owned");',
+        '    let task = echo_after_ready(source);',
+        '    assert_eq!(scheduler.block_on(task), Ok(String::from("owned")));',
+        '    assert_eq!(scheduler.block_on(adopt_ready(String::from("adopted"))), Ok(String::from("adopted")));',
+        '    assert_eq!(scheduler.block_on(ready_flag()), Ok(true));',
+        '    assert_eq!(scheduler.block_on(rejected_flag()), Err(FlightTaskError::Rejection(FlightRejection::String(String::from("nope")))));',
+        '  }',
+        '}',
+        '',
+      ].join('\n'),
+    );
+    writeFileSync(
+      path.join(fixture, 'Cargo.toml'),
+      [
+        '[package]',
+        'name = "generated-task-fixture"',
+        'version = "0.0.0"',
+        'edition = "2024"',
+        '[dependencies]',
+        `flighthq-runtime = { path = ${JSON.stringify(path.join(process.cwd(), 'generated/crates/flighthq-runtime'))} }`,
         '',
       ].join('\n'),
     );
     expect(() =>
-      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', 'lib.rs'], {
+      execFileSync('cargo', ['test', '--quiet'], {
         cwd: fixture,
+        env: { ...process.env, CARGO_TARGET_DIR: path.join(fixture, 'target') },
         stdio: 'pipe',
       }),
     ).not.toThrow();
+
+    const opaque = lowerTypeScriptSource(
+      ts.createSourceFile(
+        '/workspace/upstream/packages/power/src/opaque.ts',
+        'export async function opaque() { return true; }',
+        ts.ScriptTarget.Latest,
+        true,
+        ts.ScriptKind.TS,
+      ),
+      '@flighthq/power',
+      '/workspace',
+    );
+    expect(() => emitRustModule({ declarations: opaque.declarations, source: 'opaque.ts', typeImports: [] })).toThrow(
+      'portableTask opaque: async output type is not recovered',
+    );
+
+    const composition = lowerTypeScriptSource(
+      ts.createSourceFile(
+        '/workspace/upstream/packages/power/src/composition.ts',
+        'export function next(listener: () => void): Promise<void> { return Promise.resolve().then(listener); }',
+        ts.ScriptTarget.Latest,
+        true,
+        ts.ScriptKind.TS,
+      ),
+      '@flighthq/power',
+      '/workspace',
+    );
+    expect(composition.taskConstructions.map((item) => item.kind)).toEqual(['then', 'ready']);
+    expect(() =>
+      emitRustModule({ declarations: composition.declarations, source: 'composition.ts', typeImports: [] }),
+    ).toThrow('taskThen Rust lowering is reserved for Pass 27 Stage 4');
   });
 
   it('lowers shared byte-buffer views, regex captures, and exhaustive switches', () => {

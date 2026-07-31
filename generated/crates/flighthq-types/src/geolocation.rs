@@ -70,7 +70,7 @@ pub struct GeolocationBackend {
     pub get_current_position: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(GeolocationRequestOptions) -> crate::Promise<Option<GeoPosition>>
+                dyn FnMut(GeolocationRequestOptions) -> crate::FlightTask<Option<GeoPosition>>
                     + Send
                     + 'static,
             >,
@@ -79,7 +79,7 @@ pub struct GeolocationBackend {
     pub get_current_position_result: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(GeolocationRequestOptions) -> crate::Promise<GeoPositionResult>
+                dyn FnMut(GeolocationRequestOptions) -> crate::FlightTask<GeoPositionResult>
                     + Send
                     + 'static,
             >,
@@ -87,7 +87,7 @@ pub struct GeolocationBackend {
     >,
     pub get_permission: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut() -> crate::Promise<GeolocationPermissionState> + Send + 'static>,
+            Box<dyn FnMut() -> crate::FlightTask<GeolocationPermissionState> + Send + 'static>,
         >,
     >,
     pub watch_position: std::sync::Arc<
@@ -112,8 +112,9 @@ pub struct GeolocationBackend {
         >,
     >,
     pub clear_watch: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64) -> () + Send + 'static>>>,
-    pub request_permission:
-        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> crate::Promise<bool> + Send + 'static>>>,
+    pub request_permission: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut() -> crate::FlightTask<bool> + Send + 'static>>,
+    >,
     pub subscribe_permission: std::sync::Arc<
         std::sync::Mutex<
             Box<

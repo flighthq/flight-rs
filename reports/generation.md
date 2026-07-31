@@ -6,19 +6,23 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | --- | ---: |
 | Inventoried packages | 131 |
 | Default-generated packages | 125 |
-| Emittable packages | 61 |
-| Blocked packages | 64 |
-| Compiled candidates | 27 |
-| Compile-blocked candidates | 17 |
+| Emittable packages | 59 |
+| Blocked packages | 66 |
+| Compiled candidates | 23 |
+| Compile-blocked candidates | 19 |
 | Dependency-blocked candidates | 15 |
 | Cultivated packages | 1 |
 | Host-bound packages | 4 |
 | Excluded packages | 1 |
-| Source/package blockers | 355 |
+| Source/package blockers | 358 |
+| Eligible task constructions | 204 |
+| Portable executable task constructions | 9 |
+| Host-placeholder task constructions | 0 |
+| Unsupported task constructions | 195 |
 | Eligible async scopes | 162 |
-| Portable executable async scopes | 0 |
+| Portable executable async scopes | 3 |
 | Host-placeholder async scopes | 0 |
-| Unsupported async scopes | 162 |
+| Unsupported async scopes | 159 |
 | Async scopes matching the legacy body-erasure path | 76 |
 | Upstream conformance files translated and passing | 4/1166 |
 | Generated conformance cases passing | 45/45 |
@@ -28,8 +32,8 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | `@flighthq/accessibility` | generated | emittable | compile-blocked | 2/2 | 8/8 | 0 | 1/1 | 1 | 0 | no |
 | `@flighthq/adjustments` | generated | emittable | compiled | 19/19 | 49/49 | 0 | 6/25 | 0 | 0 | no |
 | `@flighthq/animation` | generated | emittable | compile-blocked | 4/4 | 18/18 | 0 | 3/7 | 1 | 0 | no |
-| `@flighthq/app` | generated | emittable | compiled | 2/2 | 42/42 | 0 | 4/4 | 0 | 0 | no |
-| `@flighthq/application` | generated | emittable | compiled | 3/3 | 83/83 | 0 | 3/3 | 2 | 0 | no |
+| `@flighthq/app` | generated | blocked | source-blocked | 1/2 | 0/42 | 42 | 4/4 | 0 | 2 | no |
+| `@flighthq/application` | generated | emittable | compile-blocked | 3/3 | 83/83 | 0 | 3/3 | 2 | 0 | partial |
 | `@flighthq/assets` | generated | blocked | source-blocked | 1/2 | 0/10 | 10 | 1/1 | 0 | 2 | no |
 | `@flighthq/audio` | generated | blocked | source-blocked | 3/4 | 13/20 | 7 | 2/2 | 1 | 2 | no |
 | `@flighthq/binpack` | generated | blocked | source-blocked | 1/2 | 0/1 | 1 | 1/1 | 0 | 2 | no |
@@ -70,8 +74,8 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | `@flighthq/host-electron` | host-bound | host-bound | not-applicable | 0/0 | 0/57 | 57 | 0/0 | 0 | 0 | no |
 | `@flighthq/host-tauri` | host-bound | host-bound | not-applicable | 0/0 | 0/51 | 51 | 0/0 | 0 | 0 | no |
 | `@flighthq/image` | generated | blocked | source-blocked | 2/3 | 11/20 | 9 | 11/24 | 1 | 2 | partial |
-| `@flighthq/image-codec` | generated | blocked | source-blocked | 4/8 | 11/16 | 5 | 3/26 | 0 | 5 | no |
-| `@flighthq/input` | generated | emittable | compiled | 2/2 | 40/40 | 0 | 1/1 | 1 | 0 | no |
+| `@flighthq/image-codec` | generated | blocked | source-blocked | 6/8 | 14/16 | 2 | 3/26 | 0 | 3 | no |
+| `@flighthq/input` | generated | emittable | compile-blocked | 2/2 | 40/40 | 0 | 1/1 | 1 | 0 | partial |
 | `@flighthq/interaction` | generated | blocked | source-blocked | 1/16 | 71/83 | 12 | 1/1 | 0 | 16 | no |
 | `@flighthq/intl` | generated | blocked | source-blocked | 1/8 | 0/14 | 14 | 1/1 | 0 | 8 | no |
 | `@flighthq/ipc` | generated | blocked | source-blocked | 1/2 | 0/17 | 17 | 2/2 | 0 | 2 | no |
@@ -100,7 +104,7 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | `@flighthq/permissions` | generated | blocked | source-blocked | 1/2 | 0/5 | 5 | 1/1 | 0 | 2 | no |
 | `@flighthq/picking` | generated | blocked | source-blocked | 1/2 | 6/6 | 0 | 1/1 | 0 | 1 | no |
 | `@flighthq/platform` | generated | emittable | compiled | 2/2 | 16/16 | 0 | 3/3 | 1 | 0 | no |
-| `@flighthq/power` | generated | emittable | compiled | 2/2 | 19/19 | 0 | 2/2 | 0 | 0 | no |
+| `@flighthq/power` | generated | blocked | source-blocked | 1/2 | 0/19 | 19 | 2/2 | 0 | 2 | partial |
 | `@flighthq/protocol` | generated | emittable | compile-blocked | 2/2 | 20/20 | 0 | 2/2 | 1 | 0 | no |
 | `@flighthq/render` | generated | blocked | source-blocked | 4/17 | 63/63 | 0 | 9/13 | 0 | 13 | no |
 | `@flighthq/render-gl` | host-backend | blocked | source-blocked | 23/24 | 79/75 | 5 | 4/4 | 16 | 2 | no |
@@ -108,7 +112,7 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | `@flighthq/scene` | generated | blocked | source-blocked | 2/14 | 43/43 | 0 | 6/6 | 0 | 12 | no |
 | `@flighthq/scene-formats` | generated | blocked | source-blocked | 7/16 | 84/15 | 8 | 2/2 | 0 | 10 | no |
 | `@flighthq/scene-gl` | host-backend | emittable | dependency-blocked | 53/53 | 187/184 | 0 | 1/1 | 26 | 0 | no |
-| `@flighthq/scene-resources` | generated | blocked | source-blocked | 7/16 | 22/37 | 15 | 1/1 | 6 | 10 | no |
+| `@flighthq/scene-resources` | generated | blocked | source-blocked | 6/16 | 19/37 | 18 | 1/1 | 5 | 11 | no |
 | `@flighthq/scene-wgpu` | host-backend | emittable | dependency-blocked | 42/42 | 142/140 | 0 | 1/1 | 30 | 0 | no |
 | `@flighthq/screen` | generated | blocked | source-blocked | 1/2 | 0/31 | 31 | 2/2 | 0 | 2 | partial |
 | `@flighthq/sdk` | generated | blocked | source-blocked | 14/14 | 0/5923 | 5923 | 0/0 | 0 | 1 | no |
@@ -119,7 +123,7 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 | `@flighthq/share` | generated | blocked | source-blocked | 1/2 | 0/14 | 14 | 2/2 | 0 | 2 | no |
 | `@flighthq/shell` | generated | blocked | source-blocked | 1/2 | 0/14 | 14 | 3/3 | 0 | 2 | no |
 | `@flighthq/shortcut` | generated | blocked | source-blocked | 1/2 | 0/26 | 26 | 3/3 | 0 | 2 | no |
-| `@flighthq/signals` | generated | emittable | compiled | 6/6 | 15/14 | 0 | 42/72 | 0 | 0 | no |
+| `@flighthq/signals` | generated | emittable | compiled | 6/6 | 15/14 | 0 | 42/72 | 0 | 0 | partial |
 | `@flighthq/skeleton3d` | generated | emittable | dependency-blocked | 6/6 | 16/16 | 0 | 3/16 | 2 | 0 | no |
 | `@flighthq/snapshot` | generated | emittable | compile-blocked | 5/5 | 4/4 | 0 | 1/1 | 4 | 0 | no |
 | `@flighthq/socket` | generated | emittable | compile-blocked | 2/2 | 11/11 | 0 | 1/1 | 1 | 0 | no |
@@ -159,7 +163,9 @@ Upstream commit: `5d24729f7360475e28a105ae0caeeaa2e1328260`
 
 ## Async tasks
 
-Disposition partition: 162 eligible = 0 portable executable + 0 host placeholder + 162 unsupported.
+Construction disposition partition: 204 eligible = 9 portable executable + 0 host placeholder + 195 unsupported.
+
+Disposition partition: 162 eligible = 3 portable executable + 0 host placeholder + 159 unsupported.
 
 | Operation | Count |
 | --- | ---: |
@@ -174,33 +180,238 @@ Disposition partition: 162 eligible = 0 portable executable + 0 host placeholder
 | Promise.finally | 0 |
 | Void expressions | 5 |
 
-| Package | Eligible | Portable executable | Host placeholder | Unsupported | Legacy erasure path |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| `@flighthq/assets` | 1 | 0 | 0 | 1 | 1 |
-| `@flighthq/audio` | 5 | 0 | 0 | 5 | 5 |
-| `@flighthq/clipboard` | 22 | 0 | 0 | 22 | 1 |
-| `@flighthq/connectivity` | 2 | 0 | 0 | 2 | 1 |
-| `@flighthq/dialog` | 7 | 0 | 0 | 7 | 3 |
-| `@flighthq/filesystem` | 38 | 0 | 0 | 38 | 12 |
-| `@flighthq/font` | 9 | 0 | 0 | 9 | 9 |
-| `@flighthq/geolocation` | 2 | 0 | 0 | 2 | 0 |
-| `@flighthq/image` | 4 | 0 | 0 | 4 | 4 |
-| `@flighthq/image-codec` | 5 | 0 | 0 | 5 | 3 |
-| `@flighthq/loader` | 2 | 0 | 0 | 2 | 2 |
-| `@flighthq/net` | 3 | 0 | 0 | 3 | 2 |
-| `@flighthq/notification` | 16 | 0 | 0 | 16 | 0 |
-| `@flighthq/permissions` | 5 | 0 | 0 | 5 | 5 |
-| `@flighthq/render-wgpu` | 3 | 0 | 0 | 3 | 3 |
-| `@flighthq/scene-resources` | 12 | 0 | 0 | 12 | 11 |
-| `@flighthq/screen` | 2 | 0 | 0 | 2 | 2 |
-| `@flighthq/sensors` | 2 | 0 | 0 | 2 | 1 |
-| `@flighthq/share` | 3 | 0 | 0 | 3 | 1 |
-| `@flighthq/shell` | 8 | 0 | 0 | 8 | 0 |
-| `@flighthq/storage` | 1 | 0 | 0 | 1 | 1 |
-| `@flighthq/textureatlas` | 4 | 0 | 0 | 4 | 4 |
-| `@flighthq/tileset` | 4 | 0 | 0 | 4 | 4 |
-| `@flighthq/video` | 1 | 0 | 0 | 1 | 1 |
-| `@flighthq/webcam` | 1 | 0 | 0 | 1 | 0 |
+| Package | Constructions eligible/executable/host/unsupported | Scopes eligible/executable/host/unsupported | Legacy erasure path |
+| --- | ---: | ---: | ---: |
+| `@flighthq/app` | 2/0/0/2 | 0/0/0/0 | 0 |
+| `@flighthq/application` | 4/4/0/0 | 0/0/0/0 | 0 |
+| `@flighthq/assets` | 5/0/0/5 | 1/0/0/1 | 1 |
+| `@flighthq/audio` | 5/0/0/5 | 5/0/0/5 | 5 |
+| `@flighthq/clipboard` | 22/0/0/22 | 22/0/0/22 | 1 |
+| `@flighthq/connectivity` | 2/0/0/2 | 2/0/0/2 | 1 |
+| `@flighthq/dialog` | 9/0/0/9 | 7/0/0/7 | 3 |
+| `@flighthq/filesystem` | 38/0/0/38 | 38/0/0/38 | 12 |
+| `@flighthq/font` | 9/0/0/9 | 9/0/0/9 | 9 |
+| `@flighthq/geolocation` | 4/0/0/4 | 2/0/0/2 | 0 |
+| `@flighthq/image` | 4/0/0/4 | 4/0/0/4 | 4 |
+| `@flighthq/image-codec` | 5/3/0/2 | 5/3/0/2 | 3 |
+| `@flighthq/input` | 3/2/0/1 | 0/0/0/0 | 0 |
+| `@flighthq/ipc` | 2/0/0/2 | 0/0/0/0 | 0 |
+| `@flighthq/loader` | 4/0/0/4 | 2/0/0/2 | 2 |
+| `@flighthq/media` | 2/0/0/2 | 0/0/0/0 | 0 |
+| `@flighthq/menu` | 1/0/0/1 | 0/0/0/0 | 0 |
+| `@flighthq/net` | 3/0/0/3 | 3/0/0/3 | 2 |
+| `@flighthq/notification` | 16/0/0/16 | 16/0/0/16 | 0 |
+| `@flighthq/permissions` | 5/0/0/5 | 5/0/0/5 | 5 |
+| `@flighthq/power` | 7/0/0/7 | 0/0/0/0 | 0 |
+| `@flighthq/render-wgpu` | 5/0/0/5 | 3/0/0/3 | 3 |
+| `@flighthq/scene-resources` | 15/0/0/15 | 12/0/0/12 | 11 |
+| `@flighthq/screen` | 4/0/0/4 | 2/0/0/2 | 2 |
+| `@flighthq/sensors` | 2/0/0/2 | 2/0/0/2 | 1 |
+| `@flighthq/share` | 4/0/0/4 | 3/0/0/3 | 1 |
+| `@flighthq/shell` | 9/0/0/9 | 8/0/0/8 | 0 |
+| `@flighthq/storage` | 1/0/0/1 | 1/0/0/1 | 1 |
+| `@flighthq/textureatlas` | 4/0/0/4 | 4/0/0/4 | 4 |
+| `@flighthq/tileset` | 4/0/0/4 | 4/0/0/4 | 4 |
+| `@flighthq/video` | 3/0/0/3 | 1/0/0/1 | 1 |
+| `@flighthq/webcam` | 1/0/0/1 | 1/0/0/1 | 0 |
+
+### Unsupported task constructions
+
+- `@flighthq/app` `upstream/packages/app/src/app.ts:252:18` `createWebAppBackend.subscribeReady.id.then:252:18:1252317c8253` `then` (sha256:1252317c8253b97431cdd80643b0e94cc96694f61629466c7069f3a23557cd44): taskThen Rust lowering is reserved for Pass 27 Stage 4.
+- `@flighthq/app` `upstream/packages/app/src/app.ts:252:18` `createWebAppBackend.subscribeReady.id.ready:252:18:9b8874eb7ffe` `ready` (sha256:9b8874eb7ffebcf300217391f3fb4a9d53d078bccf4ed67e3253de0dd1f14116): Portable task Rust lowering is not implemented.
+- `@flighthq/assets` `upstream/packages/assets/src/assetLibrary.ts:23:12` `acquireAsset.reject:23:12:1a05cd43adad` `reject` (sha256:1a05cd43adadfae48de51c5d53c2e5a0602f95218c3f5db5538ec6dfb9c9f231): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/assets` `upstream/packages/assets/src/assetLibrary.ts:27:12` `acquireAsset.reject:27:12:a055a388c4d4` `reject` (sha256:a055a388c4d44416536b9e7b9a9b4a23f197a6e65000bfa176da515c3bb6d848): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/assets` `upstream/packages/assets/src/assetLibrary.ts:33:35` `acquireAsset.ready:33:35:214b55bb04b3` `ready` (sha256:214b55bb04b3e86f9178fbdccfafd0397bff3632f9f1d66fb98aa49194e1b6d8): Portable task Rust lowering is not implemented.
+- `@flighthq/assets` `upstream/packages/assets/src/assetLibrary.ts:40:23` `acquireAsset.loadPromise.then:40:23:dbb89f769433` `then` (sha256:dbb89f7694339a3198f7392cc5d205e0975aba37be8c61ab18bd1852d016ed74): taskThen Rust lowering is reserved for Pass 27 Stage 4.
+- `@flighthq/assets` `upstream/packages/assets/src/assetLibrary.ts:103:1` `loadAssetGroup` `async-scope` (sha256:f3bdc028a58d1524f00b1b963fb051844bec376d8010a26492a62cbd6dacea3b): Portable task Rust lowering is not implemented.
+- `@flighthq/audio` `upstream/packages/audio/src/audioResourceFrom.ts:24:1` `loadAudioResourceFromBase64` `async-scope` (sha256:f62565721d1676f6b065becc6e2abdd9e41b9d327d26c08664159eaf20e4e9fc): Portable task Rust lowering is not implemented.
+- `@flighthq/audio` `upstream/packages/audio/src/audioResourceFrom.ts:36:1` `loadAudioResourceFromBlob` `async-scope` (sha256:6f31ecce9820d5f8d705caee039a2579bafeb3dca51a82e47de6c043e688642e): Portable task Rust lowering is not implemented.
+- `@flighthq/audio` `upstream/packages/audio/src/audioResourceFrom.ts:48:1` `loadAudioResourceFromBytes` `async-scope` (sha256:d54dd5fbcc30d298fda7b249601018a99e88cb2048c29e17efd9bea7eb5110d5): Portable task Rust lowering is not implemented.
+- `@flighthq/audio` `upstream/packages/audio/src/audioResourceFrom.ts:60:1` `loadAudioResourceFromUrl` `async-scope` (sha256:0d18bb89086b9b42f5252d194365bd5f6bfd83020372e1b87f43a80ed4ce8cc4): Portable task Rust lowering is not implemented.
+- `@flighthq/audio` `upstream/packages/audio/src/audioResourceFrom.ts:75:1` `loadAudioResourceFromUrls` `async-scope` (sha256:f704e57788fe00ece2e8f7e0e8f89db8a63e3a17ca93c092fb6d1adf17df4c64): Portable task Rust lowering is not implemented.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:31:5` `createWebClipboardBackend.readFormat` `async-scope` (sha256:721317f182624551290a66cbbc88a82fb2c213c31c84039b3fbf7947bf397856): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:48:5` `createWebClipboardBackend.writeFormat` `async-scope` (sha256:06ec8c11ce5ed20c71af72322b5fe3d22c25749c4ee27b4fcffade76b202ef87): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:59:5` `createWebClipboardBackend.hasFormat` `async-scope` (sha256:0fe5c7789f000064e04648dbb2831f298a8726cae24bda2ef43f63b780a7eea6): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:63:5` `createWebClipboardBackend.getFormats` `async-scope` (sha256:ed75f7ccdf54735fec684a6a6ee69c47e91c5a0d3591169be8970cc8ad027266): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:79:5` `createWebClipboardBackend.writeItems` `async-scope` (sha256:bfe2ca1744d74e460bbb99f43395a8ad2eec6a0ed51212254ec322e9c93392e1): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:93:5` `createWebClipboardBackend.readItems` `async-scope` (sha256:04db96d1813aada66ce1c55a363f56cbd16734202877dcbaf231786cfe34c32b): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:112:5` `createWebClipboardBackend.readText` `async-scope` (sha256:1a5b9a58c3f16317df3446c1a66ef5114db31b5f6ee12f004359ae970ddb5f3e): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:121:5` `createWebClipboardBackend.writeText` `async-scope` (sha256:23eab1975987cd5de1f5dd408ae4fb2db6a4451dfebdc78c4ff5dcbf971da580): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:131:5` `createWebClipboardBackend.readHtml` `async-scope` (sha256:1a6c1714ae6b501d2713b397c6d79dc8049a767e5744a291718c2af37568fc6b): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:134:5` `createWebClipboardBackend.writeHtml` `async-scope` (sha256:5eb7aee33fabdabdf097fc74dbd79968d9b293cb97e42af1d1ea83d6c9a25060): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:137:5` `createWebClipboardBackend.hasText` `async-scope` (sha256:1d5b1f5d4457bd324170aa1e3866a3787d5c0b8719f36e18b9f20efb61c5411b): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:140:5` `createWebClipboardBackend.readImage` `async-scope` (sha256:51f9ad208bf3a315668eff8f6223c0c11e1b28431226790533ba02ed5d042d36): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:157:5` `createWebClipboardBackend.writeImage` `async-scope` (sha256:0d28b5751be206dc8174fd8d29ee8931217607ccc2bb598c881854d5574a5714): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:169:5` `createWebClipboardBackend.hasImage` `async-scope` (sha256:2a2c1863a814225bd6ae7583d0f099723f904138492d03cedea7727e7dc7e70e): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:172:5` `createWebClipboardBackend.readRTF` `async-scope` (sha256:a0f27e9f28118b12321c83624453b98f87dad2cfef71f630bb6c5e0c4131a165): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:175:5` `createWebClipboardBackend.writeRTF` `async-scope` (sha256:0e54cef02fdd6872e0a775fd27e741fc1bf97a54e7a9c7d8755a621a78e53a75): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:179:5` `createWebClipboardBackend.readBookmark` `async-scope` (sha256:78016ab7f76a0108d52c3f3ccee3c40d7161b80bb66cc8860faec4d5cc99f115): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:183:5` `createWebClipboardBackend.writeBookmark` `async-scope` (sha256:8cc982a2d45bee016f5baa8b6fa524db87eb0302c67f1a30e1fd4bbfc3ef66f4): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:187:5` `createWebClipboardBackend.readFiles` `async-scope` (sha256:540866183a941bfea5b304a70d7bff5ac1c2aa80da47e31cf2e894c29cde0ce6): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:191:5` `createWebClipboardBackend.writeFiles` `async-scope` (sha256:ff06a60769d4aece46e2761c73660884fed44831ad41a0b3903a1ba9f0b3c85d): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:194:5` `createWebClipboardBackend.clear` `async-scope` (sha256:34f107c7453a7d6158d4388d4f5c200844605acd824e1bc06de7f332dad9ee7c): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:368:1` `blobFromFormatData` `async-scope` (sha256:c1fb9e0ee718a360876a579fe9e1e5fdc16157f03db3dabc983b233c321466dd): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/connectivity` `upstream/packages/connectivity/src/connectivity.ts:82:5` `createWebConnectivityBackend.detectReachability` `async-scope` (sha256:694076bc4efb1a4cfa0e975d140e8cf6f2435a0fdd257300be3a958e3a2b5015): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/connectivity` `upstream/packages/connectivity/src/connectivity.ts:138:1` `detectConnectivityReachability` `async-scope` (sha256:599d1031e281368c595d7c67f9094c5325c5caf880d596a64a3c5d592178e52b): Portable task Rust lowering is not implemented.
+- `@flighthq/dialog` `upstream/packages/dialog/src/dialog.ts:19:5` `createWebDialogBackend.confirm` `async-scope` (sha256:9e0d435b7b04504a82aec0618dbb15c78815dffab42978a68f29044f5e6fcf78): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/dialog` `upstream/packages/dialog/src/dialog.ts:28:5` `createWebDialogBackend.message` `async-scope` (sha256:7c2e4513e6b2c9853b0c5bbf6a3f56fc25557127cde7c98c54a42e7b3820a77d): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/dialog` `upstream/packages/dialog/src/dialog.ts:48:5` `createWebDialogBackend.prompt` `async-scope` (sha256:c2ef3f3e409d36b6f50d673164d87f3da10c9811b4725fa58da7f7886e5b23b3): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/dialog` `upstream/packages/dialog/src/dialog.ts:56:5` `createWebDialogBackend.saveFile` `async-scope` (sha256:40414e87f9a0df2dbf9669cc34214ffee390112a4912d6d8a9648f7be2102d80): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/dialog` `upstream/packages/dialog/src/dialog.ts:205:12` `openWebDirectoryDialog.ready:205:12:24ebc2b22456` `ready` (sha256:24ebc2b22456a00e7226f082338fe750ae6c68db4f80640c991ac703374932d3): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/dialog` `upstream/packages/dialog/src/dialog.ts:246:1` `openDirectoryPickerAccessApi` `async-scope` (sha256:b899e4b9db2555d6330dd9e3cdf86a011e79a2f0355b05f846f7c7204dbae732): Portable task Rust lowering is not implemented.
+- `@flighthq/dialog` `upstream/packages/dialog/src/dialog.ts:284:12` `openWebFileDialog.ready:284:12:24ebc2b22456` `ready` (sha256:24ebc2b22456a00e7226f082338fe750ae6c68db4f80640c991ac703374932d3): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/dialog` `upstream/packages/dialog/src/dialog.ts:319:1` `openFileSystemAccessPicker` `async-scope` (sha256:0a2092597843117736235fd619c2d4f395e5ff517d455c075d5948fee291c1cc): Portable task Rust lowering is not implemented.
+- `@flighthq/dialog` `upstream/packages/dialog/src/dialog.ts:349:1` `saveWebFile` `async-scope` (sha256:e88949abb7c69f2698087c43c21543a34eaf2427cac71f67fccf397a0a8a7156): Portable task Rust lowering is not implemented.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:41:5` `createWebFileSystemBackend.readTextFile` `async-scope` (sha256:574171c1f78071a47b51fc4530a31a20df6cd2cef77438662dc248915ce18ff2): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:51:5` `createWebFileSystemBackend.writeTextFile` `async-scope` (sha256:eea5320063d5585ee7e7ec9354a30cd9217902159a9cfb617cfa9a2f088e6d9f): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:54:5` `createWebFileSystemBackend.readBinaryFile` `async-scope` (sha256:f8849adeb4063a8e366324baba2120d2e6789cec1ef89017cd25d86fe4063b0f): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:64:5` `createWebFileSystemBackend.readBinaryFileRange` `async-scope` (sha256:51679cf17403994237bec53b329aa9c371966174d4596140e957ed5656df9679): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:76:5` `createWebFileSystemBackend.writeBinaryFile` `async-scope` (sha256:a008f81798eccc1003aed0d9e903d42a763a22ea9cd9ea75ec66fef4e8c70011): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:81:5` `createWebFileSystemBackend.fileExists` `async-scope` (sha256:16edd4e2eeb397246605858dc6cc531b8e7375a6f7016a31bea39fdb86ed6f67): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:84:5` `createWebFileSystemBackend.directoryExists` `async-scope` (sha256:f46b834d739fc1ccecafc9af12e6d5f2ff98579406b192a7245d142e385fc659): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:89:5` `createWebFileSystemBackend.removeFile` `async-scope` (sha256:140b01563d3776aae563c30f2d6760391ae4a5e2a21c66732e9debd4e04740ac): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:92:5` `createWebFileSystemBackend.removeDirectory` `async-scope` (sha256:fdc2708c099a643b3d6cefa1ca4f560bcd3ca77f73e5351cb920d88a5f3889fb): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:107:5` `createWebFileSystemBackend.makeDirectory` `async-scope` (sha256:6f51bdc0b4150ea205900967a9b753947a8d07e2d2d5fe4cf4704de8ed954374): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:113:5` `createWebFileSystemBackend.readDirectory` `async-scope` (sha256:cf39347f679c2986d33af6374395320703ca8ec00f38d53648d13ef59b366b2a): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:130:5` `createWebFileSystemBackend.readDirectoryRecursive` `async-scope` (sha256:b9273fc96e399400fa069fdda02be9cdddc16bf6435aed16513e46684d4fcbd9): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:144:5` `createWebFileSystemBackend.statFile` `async-scope` (sha256:9f3ca243190b7dd20090bc636e833fcc518d4d27da3a62f50d9b0bf56343987c): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:167:5` `createWebFileSystemBackend.rename` `async-scope` (sha256:9e3228d2cb150076642cde946d5c8e0af12df36ddafd11d6f5d3a888fae1db64): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:172:5` `createWebFileSystemBackend.copy` `async-scope` (sha256:a8ab38a19dcb5e3fb20e8102c6231c614cbd4b237b975dc68a3094654c1c3ea8): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:185:5` `createWebFileSystemBackend.appendTextFile` `async-scope` (sha256:6b213fd0d23492209d078e56f40ac8ad6bb25bf23fdf0fcb61837aa18e7e5828): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:197:5` `createWebFileSystemBackend.openFileReadStream` `async-scope` (sha256:397d36c122ccf42160fd8c8d0b251d4e415f2caa9dc6a8e6d752f9d589e3b93a): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:207:5` `createWebFileSystemBackend.openFileWriteStream` `async-scope` (sha256:a1398c0c934e0b064752d3e88b8faf3fcceeb22c332ef48a527eebbcfe690500): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:216:5` `createWebFileSystemBackend.writeFileAtomic` `async-scope` (sha256:08338d01a7496bfb863bafb34ad143731f1825c05a980b1206a57d98ea8cb7a7): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:238:5` `createWebFileSystemBackend.createFileSymlink` `async-scope` (sha256:a7ec0965827a98018c26d6d389d77b43f2207b530026a721030f9711ce2fd2ba): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:242:5` `createWebFileSystemBackend.readFileSymlink` `async-scope` (sha256:f9aa63b08e2eb58e164feec37dc2c5e405773c1bfa1bc83cabe221db963a7c3e): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:246:5` `createWebFileSystemBackend.getFileRealPath` `async-scope` (sha256:c7c21015d70a979da0d7a21948807c11791069f7a6d31e5cedec80054c726aac): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:250:5` `createWebFileSystemBackend.getFilePermissions` `async-scope` (sha256:d5a528fd94e5ebdc23f72af0bda23fa3a3ff8f759a4785bf758cd588aae07224): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:254:5` `createWebFileSystemBackend.setFilePermissions` `async-scope` (sha256:a896a24d74069b5626a25ac32214db778d30f118359a34a1ccc8449cb63cf180): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:258:5` `createWebFileSystemBackend.canAccessFile` `async-scope` (sha256:044040117b7c5b060026f24b144f5a0799780f74f04d04c05e0fa674b7aea53c): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:278:5` `createWebFileSystemBackend.getFileSystemUsage` `async-scope` (sha256:415ecf42bf14245ab608395d0bc204940d14442436e0f4a855c24c92e1669a52): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:318:1` `findFiles` `async-scope` (sha256:086ee8f33aa2fc15cd2242768128432c33d546e7e1e07f6f180f639c3e741a06): Portable task Rust lowering is not implemented.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:437:1` `readDialogHandleBinaryFile` `async-scope` (sha256:168933b0fd5d152de69e33d8106ef967a6b88f971892b802c6682be962f5a682): Portable task Rust lowering is not implemented.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:459:1` `readDialogHandleTextFile` `async-scope` (sha256:ef1c5426a4503d00e890c0f0fa60cbb140d257532ba380cb12fc5086ed838cbd): Portable task Rust lowering is not implemented.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:548:1` `writeBinaryFileChunks` `async-scope` (sha256:3edaf0a0922e0acc7f59a89e6ff05bd4c376e657535b29c66f6e6b1607afc8df): Portable task Rust lowering is not implemented.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:571:1` `writeDialogHandleBinaryFile` `async-scope` (sha256:80e53fef3f1f97ef52a3ea87e4d071bda65a76fe2579d937716cab0aa01db411): Portable task Rust lowering is not implemented.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:594:1` `writeDialogHandleTextFile` `async-scope` (sha256:9080a9844f1f96cb71579d9cd83e47aff5e9c4ea4e145b7aed073f0411e8a076): Portable task Rust lowering is not implemented.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:625:1` `getWebRoot` `async-scope` (sha256:ef7f3d7015038a12b48081190128011dea066ed8d640e163d354dccba07a461f): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:636:1` `getWebDirectoryHandle` `async-scope` (sha256:7f0c9697a8fda8bf983894519de724aca66a1a9c03e449ffe09ddd4ae9c63f92): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:652:1` `getWebFileHandle` `async-scope` (sha256:81a545005c91ec665cdc44f2beb861a1922b104d011fcedd756fb8897428ae65): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:668:1` `walkWebDirectory` `async-scope` (sha256:6d1216dc9c5354ba256755b0451e1d3789557508dda88892e626011b93807eb4): Portable task Rust lowering is not implemented.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:687:1` `writeWebRemove` `async-scope` (sha256:1841fd4e7778e7dd8472360d0552f739a00f488b0961c21213eab5deafe197cf): Portable task Rust lowering is not implemented.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:707:1` `writeWebFile` `async-scope` (sha256:6e15f5efb9909a3d0e7c991013ac6cdfd764a902ed4e16f226efb7f32676e172): Portable task Rust lowering is not implemented.
+- `@flighthq/font` `upstream/packages/font/src/fontFrom.ts:7:1` `loadFontFromBytes` `async-scope` (sha256:f9c00f5f77010ba5fa7520c54e0f11bbd8b80a062e9cec2c0fd72b2d4df3c58f): Portable task Rust lowering is not implemented.
+- `@flighthq/font` `upstream/packages/font/src/fontFrom.ts:17:1` `loadFontFromName` `async-scope` (sha256:8c363bc40b1a4857571ae0a41e34757a523d789db59a76da91c10bcf425b9674): Portable task Rust lowering is not implemented.
+- `@flighthq/font` `upstream/packages/font/src/fontFrom.ts:22:1` `loadFontFromUrl` `async-scope` (sha256:53cbfccb56798f4aadb7562e6b83fa1f92bf7eccc05b8be04540142731cab6c6): Portable task Rust lowering is not implemented.
+- `@flighthq/font` `upstream/packages/font/src/fontFrom.ts:29:1` `loadFontFromUrls` `async-scope` (sha256:387f9e908381971d8780b4b4922a60ec9720966855b03befa295b3ab5430401f): Portable task Rust lowering is not implemented.
+- `@flighthq/font` `upstream/packages/font/src/fontResourceFrom.ts:6:1` `loadFontResourceFromBytes` `async-scope` (sha256:5bab0dfa03b6499764dc9fffab4e003cc96bbee7fac9e310d28a1f1198443d0f): Portable task Rust lowering is not implemented.
+- `@flighthq/font` `upstream/packages/font/src/fontResourceFrom.ts:17:1` `loadFontResourceFromName` `async-scope` (sha256:ca1a52299ca0e5197e44590ecce19f51dfdafb360c5d0d56ab601ed117e6484d): Portable task Rust lowering is not implemented.
+- `@flighthq/font` `upstream/packages/font/src/fontResourceFrom.ts:23:1` `loadFontResourceFromUrl` `async-scope` (sha256:442dc5b4effdd4fe6a53955dbd6fe687453982e638e8cc3e0e2c50ca770461dd): Portable task Rust lowering is not implemented.
+- `@flighthq/font` `upstream/packages/font/src/fontResourceFrom.ts:31:1` `loadFontResourceFromUrls` `async-scope` (sha256:448720b08044d844f77ccca5c73c1d49ac59b3d2d41d1fa4f0c958e27420b526): Portable task Rust lowering is not implemented.
+- `@flighthq/font` `upstream/packages/font/src/fontStatus.ts:7:1` `whenFontsReady` `async-scope` (sha256:a9a632e81b2b401d128497ca7e36252f671e86a84e7380d7ffa2915b10717660): Portable task Rust lowering is not implemented.
+- `@flighthq/geolocation` `upstream/packages/geolocation/src/geolocation.ts:80:5` `createWebGeolocationBackend.getPermission` `async-scope` (sha256:589424ae8a82b30bc0a05473e652fce3ea1e3d8dbf9d62047dec8eea751d9252): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/geolocation` `upstream/packages/geolocation/src/geolocation.ts:92:5` `createWebGeolocationBackend.requestPermission` `async-scope` (sha256:c1d7c01868b81a6d6a24327b828b629c16b4760c6743b681bf2244d5fc64db43): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/geolocation` `upstream/packages/geolocation/src/geolocation.ts:109:7` `createWebGeolocationBackend.subscribePermission.catch:109:7:1912fe908b14` `catch` (sha256:1912fe908b144e830d91a5460e49b68782f2d05cc475f706f410f2f64d8cfd4b): taskCatch Rust lowering is reserved for Pass 27 Stage 4.
+- `@flighthq/geolocation` `upstream/packages/geolocation/src/geolocation.ts:109:7` `createWebGeolocationBackend.subscribePermission.then:109:7:94366eb68bcc` `then` (sha256:94366eb68bccc368aac0b7d29a15142f8993f5806fe9d17ea272a0f8f2be0ca2): taskThen Rust lowering is reserved for Pass 27 Stage 4.
+- `@flighthq/image` `upstream/packages/image/src/imageResourceFrom.ts:70:1` `loadImageResourceFromBase64` `async-scope` (sha256:9766d6f1f595df39b0431b4aeebaf140d9cddbf13b4f4fb7212ce5980b7ace63): Portable task Rust lowering is not implemented.
+- `@flighthq/image` `upstream/packages/image/src/imageResourceFrom.ts:78:1` `loadImageResourceFromBlob` `async-scope` (sha256:789b648cfba73930add0a4f3468f72b94ce411b39d6860c22c04ab05e33590ee): Portable task Rust lowering is not implemented.
+- `@flighthq/image` `upstream/packages/image/src/imageResourceFrom.ts:87:1` `loadImageResourceFromBytes` `async-scope` (sha256:67e113685cfd158a0c49cf1757b7761013665ff96a364e34cf11a1e250391c42): Portable task Rust lowering is not implemented.
+- `@flighthq/image` `upstream/packages/image/src/imageResourceFrom.ts:100:1` `loadImageResourceFromUrl` `async-scope` (sha256:ff3642966e0506d5d9c68236e6fa44abfd7fa6721ee45db95b1683464c41b591): Portable task Rust lowering is not implemented.
+- `@flighthq/image-codec` `upstream/packages/image-codec/src/registerWebImageDecoders.ts:18:45` `decodeImageWithCanvas` `async-scope` (sha256:6c70f189d2b99fef85a6c33991e3174b6e7cfc147486162cdd1abee7f40fc943): Portable task Rust lowering is not implemented.
+- `@flighthq/image-codec` `upstream/packages/image-codec/src/registerWebImageEncoders.ts:16:10` `createCanvasImageEncoder.anonymous:7c4dbd1c1e56` `async-scope` (sha256:7c4dbd1c1e56dfb5d704a95587bc335ef9c42e20340743d59daacfb0eda450d3): Portable task Rust lowering is not implemented.
+- `@flighthq/input` `upstream/packages/input/src/inputManager.ts:688:14` `requestInputPointerLock.then:688:14:979622d7dcaf` `then` (sha256:979622d7dcaf403ca7e08ea1127034ff6852f8056b49a75c65fba7a4f4149e07): taskThen Rust lowering is reserved for Pass 27 Stage 4.
+- `@flighthq/ipc` `upstream/packages/ipc/src/ipc.ts:59:14` `createWebIpcBackend.invoke.ready:59:14:1c5c5ba35766` `ready` (sha256:1c5c5ba357669af58be4ccb70277a838ecedb8770bd77407ef56bfc2cdaf8630): Portable task Rust lowering is not implemented.
+- `@flighthq/ipc` `upstream/packages/ipc/src/ipc.ts:124:5` `invokeIpcWithTimeout.timeout.then:124:5:e07d69e12e57` `then` (sha256:e07d69e12e57d3a3c25f40b1e1f795590bc5e444c9675b158a9bdaafb6f323eb): taskThen Rust lowering is reserved for Pass 27 Stage 4.
+- `@flighthq/loader` `upstream/packages/loader/src/resourceLoader.ts:70:10` `_noopLoad.ready:70:10:1c5c5ba35766` `ready` (sha256:1c5c5ba357669af58be4ccb70277a838ecedb8770bd77407ef56bfc2cdaf8630): Portable task Rust lowering is not implemented.
+- `@flighthq/loader` `upstream/packages/loader/src/resourceLoader.ts:417:1` `drainQueue` `async-scope` (sha256:88082b65b0b72d5a7051045ab407875a77a7430ece259e4bf911600ef6289ed7): Portable task Rust lowering is not implemented.
+- `@flighthq/loader` `upstream/packages/loader/src/resourceLoader.ts:467:1` `runEntry` `async-scope` (sha256:0c2b39c567b706e46e9bf125fdf9a0804cfd3aa6296a892957ac630951e7b438): Portable task Rust lowering is not implemented.
+- `@flighthq/loader` `upstream/packages/loader/src/resourceLoader.ts:638:23` `delay.ready:638:23:9b8874eb7ffe` `ready` (sha256:9b8874eb7ffebcf300217391f3fb4a9d53d078bccf4ed67e3253de0dd1f14116): Portable task Rust lowering is not implemented.
+- `@flighthq/media` `upstream/packages/media/src/audioChannel.ts:184:5` `startAudioChannel.catch:184:5:4bba768dc182` `catch` (sha256:4bba768dc1829657001ce75f0cd08a229575a08088e325f7fd2ff2a2580bcbf5): taskCatch Rust lowering is reserved for Pass 27 Stage 4.
+- `@flighthq/media` `upstream/packages/media/src/videoChannel.ts:138:3` `startVideoChannel.catch:138:3:54047f8e30cd` `catch` (sha256:54047f8e30cd1c74054508775a0324f1c77b7c4ef152a3f775dc36ae697630b4): taskCatch Rust lowering is reserved for Pass 27 Stage 4.
+- `@flighthq/menu` `upstream/packages/menu/src/menu.ts:103:10` `showContextMenu.then:103:10:99862c2ab561` `then` (sha256:99862c2ab561446ce8c047db7fb8d540a8e7ad1c9d5c6c984f01c4eb7aa0faeb): taskThen Rust lowering is reserved for Pass 27 Stage 4.
+- `@flighthq/net` `upstream/packages/net/src/net.ts:21:5` `createWebNetBackend.sendNetRequest` `async-scope` (sha256:95718bdeab605b5c428496aed0ad940a09e148c6ffd1b690723a621d3089c453): Portable task Rust lowering is not implemented.
+- `@flighthq/net` `upstream/packages/net/src/net.ts:110:1` `_readNetResponseBody` `async-scope` (sha256:a65ec98271b1315b2d9f92bf7f23f3862fc0a2eefa19665fa73e7818af9bfc60): Portable task Rust lowering is not implemented.
+- `@flighthq/net` `upstream/packages/net/src/net.ts:133:1` `_readNetResponseWithProgress` `async-scope` (sha256:b695935644b73d37aea7c2af6c5ee8129d40d1a01cb334357c027ceadca38081): Portable task Rust lowering is not implemented.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:82:3` `createServiceWorkerNotificationBackend._show` `async-scope` (sha256:e00200853c5c516d6fb8f492b4d4a4936ad578f62c3c4c064339bd5fb6a4d072): Portable task Rust lowering is not implemented.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:120:5` `createServiceWorkerNotificationBackend.backend.closeAllNotifications` `async-scope` (sha256:52fa18d11686282d426bb5c4c47630bb80135c1b9e903717735b1eed8307c577): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:131:5` `createServiceWorkerNotificationBackend.backend.closeNotification` `async-scope` (sha256:6517e4505bd2c041ac811f8a05ba8353749846f946f30ac5ddfb2f22f7c88f0b): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:154:5` `createServiceWorkerNotificationBackend.backend.getLaunchNotification` `async-scope` (sha256:4f0b27a04899099e894c2a0d6f32f11acbeee1e340c8a13101f890b1fe7d68da): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:158:5` `createServiceWorkerNotificationBackend.backend.getActiveNotifications` `async-scope` (sha256:32b8787da01a2c016eff0505a0bdf6b9ea6a12c6ca23630e1755eeb54f07faa9): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:167:5` `createServiceWorkerNotificationBackend.backend.getPendingNotifications` `async-scope` (sha256:79e6ad239be0efd8c25c370a015d5579c20541e383a2e86b2c3b27bf5fd41d1e): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:182:5` `createServiceWorkerNotificationBackend.backend.requestPermission` `async-scope` (sha256:89dcfcb71df004f311498505a5c80f20a9a5338e1423d8e1f5dd2c482d61ce35): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:191:5` `createServiceWorkerNotificationBackend.backend.scheduleNotification` `async-scope` (sha256:13b016bea73a7da58bff9a988cede7621d76ce2183c21b6256e4dfd275bce1ab): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:249:5` `createServiceWorkerNotificationBackend.backend.updateNotification` `async-scope` (sha256:2796036fd76096b61157f020fcadbd3802fec28074380a61396a15221be36cd1): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:321:3` `createWebNotificationBackend._notify` `async-scope` (sha256:97462152a66b1c944e8a436b884c50a63ba0ba99f09da7b43c20889914a939bf): Portable task Rust lowering is not implemented.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:413:5` `createWebNotificationBackend.getLaunchNotification` `async-scope` (sha256:4f0b27a04899099e894c2a0d6f32f11acbeee1e340c8a13101f890b1fe7d68da): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:418:5` `createWebNotificationBackend.getActiveNotifications` `async-scope` (sha256:8fe4f259597f86d6f3ae693264b2764a1f2b204003b086bc88b1a2fa6f5d464c): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:422:5` `createWebNotificationBackend.getPendingNotifications` `async-scope` (sha256:79e6ad239be0efd8c25c370a015d5579c20541e383a2e86b2c3b27bf5fd41d1e): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:439:5` `createWebNotificationBackend.requestPermission` `async-scope` (sha256:50dc273ab49890f2d8ba5fce2bf96ff794063eaaf5f1fe32c5099b352c3cdb09): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:449:5` `createWebNotificationBackend.scheduleNotification` `async-scope` (sha256:837768d3e66af3adc2253422191d0a326d394f56b5590736e751f45e52532a00): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:510:5` `createWebNotificationBackend.updateNotification` `async-scope` (sha256:2a79742c4469437d9f0d3ea7fce31a4fa5562509765377722fa95700acbaa0eb): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/permissions` `upstream/packages/permissions/src/permission.ts:62:1` `readWebPermissionState` `async-scope` (sha256:92394438c09fe3ef27b9a9b1257f3a329ac1210b3a160a6e9d268193e7aec017): Portable task Rust lowering is not implemented.
+- `@flighthq/permissions` `upstream/packages/permissions/src/permission.ts:98:1` `requestWebMediaPermission` `async-scope` (sha256:f3ac94fd061a45ce63c7fd5c2f4f40b37199f1707959250ad5ad32eaf96908ac): Portable task Rust lowering is not implemented.
+- `@flighthq/permissions` `upstream/packages/permissions/src/permission.ts:110:1` `requestWebNotificationPermission` `async-scope` (sha256:7aaaa2831c88d31ed4fe57eab0b336f5d289962a28a0a65e1f1ae9372e67a59e): Portable task Rust lowering is not implemented.
+- `@flighthq/permissions` `upstream/packages/permissions/src/permission.ts:121:1` `requestWebPersistentStoragePermission` `async-scope` (sha256:b2c3b770762132c11047395b178d9ae70f9fdf81ef00291c52f1611c72fafd8b): Portable task Rust lowering is not implemented.
+- `@flighthq/permissions` `upstream/packages/permissions/src/permission.ts:131:1` `requestWebPermission` `async-scope` (sha256:4fed2d962ccdc737c9b377f468a05cb53fac3631c1e6d1b8adecfd8c6a8952eb): Portable task Rust lowering is not implemented.
+- `@flighthq/power` `upstream/packages/power/src/power.ts:171:11` `createWebPowerBackend.setKeepAwake.catch:171:11:7e74b1d0f24a` `catch` (sha256:7e74b1d0f24a40e776a00b50cb9c5feeffee9b0c1c70ad7a9add4a53d5103c49): taskCatch Rust lowering is reserved for Pass 27 Stage 4.
+- `@flighthq/power` `upstream/packages/power/src/power.ts:175:9` `createWebPowerBackend.setKeepAwake.catch:175:9:f421e0e4c8db` `catch` (sha256:f421e0e4c8db3f465f3b2cd7b30b7be1bd06d4deb829186814e5c86b02b00f76): taskCatch Rust lowering is reserved for Pass 27 Stage 4.
+- `@flighthq/power` `upstream/packages/power/src/power.ts:175:9` `createWebPowerBackend.setKeepAwake.then:175:9:b0876493542e` `then` (sha256:b0876493542e4286c60b68e9330940be179f1d24c8d239d70a11adc88a20f20c): taskThen Rust lowering is reserved for Pass 27 Stage 4.
+- `@flighthq/power` `upstream/packages/power/src/power.ts:183:17` `createWebPowerBackend.setKeepAwake.catch:183:17:55372bd53d79` `catch` (sha256:55372bd53d79841d64c76981d54c8b06bfc06341d2fa50c50eda51523c935c33): taskCatch Rust lowering is reserved for Pass 27 Stage 4.
+- `@flighthq/power` `upstream/packages/power/src/power.ts:183:17` `createWebPowerBackend.setKeepAwake.then:183:17:239c8a8483be` `then` (sha256:239c8a8483be286a24b3a480f268de52fcc63af5fb844a98c5587ba2914fbde2): taskThen Rust lowering is reserved for Pass 27 Stage 4.
+- `@flighthq/power` `upstream/packages/power/src/power.ts:225:7` `createWebPowerBackend.subscribe.catch:225:7:d037e8389b31` `catch` (sha256:d037e8389b31a850e8d20e180eed2d8a94b6aa5aea2552d21de6f362e557fe3c): taskCatch Rust lowering is reserved for Pass 27 Stage 4.
+- `@flighthq/power` `upstream/packages/power/src/power.ts:225:7` `createWebPowerBackend.subscribe.then:225:7:80f76a3c57af` `then` (sha256:80f76a3c57af4e029b93f32b9b7f98a01243a77b1ee100a7be9e17c10f0355d1): taskThen Rust lowering is reserved for Pass 27 Stage 4.
+- `@flighthq/render-wgpu` `upstream/packages/render-wgpu/src/wgpuRenderState.ts:16:1` `createWgpuRenderState` `async-scope` (sha256:f307b9234dd0ff4f3ad7ab31be9b51f27d12ccdca81862275abe1da0f7c54223): Portable task Rust lowering is not implemented.
+- `@flighthq/render-wgpu` `upstream/packages/render-wgpu/src/wgpuSurface.ts:42:1` `createSurfaceFromWgpuRenderState` `async-scope` (sha256:e104a245694e6ad30130cf83e51abcdd5ae2b9cee9c725396f948fc6b64ca994): Portable task Rust lowering is not implemented.
+- `@flighthq/render-wgpu` `upstream/packages/render-wgpu/src/wgpuTestHelper.ts:122:26` `makeAdapter.requestDevice.ready:122:26:1032cf04da7d` `ready` (sha256:1032cf04da7dc0f8b6cc484070458a19db13b6febfcc3bcf01cc29e523535688): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/render-wgpu` `upstream/packages/render-wgpu/src/wgpuTestHelper.ts:126:1` `createWgpuRenderStateForTest` `async-scope` (sha256:f9405bf588a520e76d9533461a24c2d89bdfa42ddb1e5a5481805c3e94c03d5a): Portable task Rust lowering is not implemented.
+- `@flighthq/render-wgpu` `upstream/packages/render-wgpu/src/wgpuTestHelper.ts:137:27` `installWgpuMock.gpu.requestAdapter.ready:137:27:a9139df35f60` `ready` (sha256:a9139df35f600afd1271b7134f0310444b168a68bbfd801dc3ba3df003bf654b): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/load3ds.ts:10:1` `loadSceneFrom3ds` `async-scope` (sha256:62b2b634bde65ac6779580bd1b61fe8e1792569b5483643ec23d59e6c9db6627): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
+- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/loadGltf.ts:15:1` `loadSceneFromGlb` `async-scope` (sha256:400507a514200080fcd85991bae9532f72a886de3a18b18bf97b65045bdbfcf3): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
+- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/loadGltf.ts:26:1` `loadSceneFromGltf` `async-scope` (sha256:e4e580f330d14c68b6e578d1c2b7d14d96ad54d0aa0bf1068fcbb0e0f4730700): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
+- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/loadGltf.ts:38:1` `loadScenesFromGlb` `async-scope` (sha256:a7a46d3671b3a3c6947a7d384f38c5192143f8a4c78213a457472d19b767e382): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
+- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/loadGltf.ts:49:1` `loadScenesFromGltf` `async-scope` (sha256:052e1ec05844e29919fc2d2f791c7fdd8a2c34fd3504133bc60f77cead54386a): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
+- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/loadMd2.ts:10:1` `loadSceneFromMd2` `async-scope` (sha256:ba309ecdccc4a085abc0de9298b5f85dce37a22e04ba3f5487e5706922da335a): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
+- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/loadMd5.ts:11:1` `loadSceneFromMd5Mesh` `async-scope` (sha256:78391bcc994260537e9fb1818bfb806390d32eae296f4e31d85e7e05eb42b346): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
+- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/loadObj.ts:11:1` `loadSceneFromObj` `async-scope` (sha256:02a9d0f93f83eaadeb6bd8fc039e36ffbe9c17e4777f31b13d2dad7c8201e494): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
+- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/loadSceneFromAwd.ts:11:1` `loadSceneFromAwd` `async-scope` (sha256:abb1d93ffbf72185621a1b9a65e7e14d47b57d4544431a40b37f1e012b6eb0c9): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
+- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/loadSceneOptions.ts:18:1` `resolveScenesWithOptions` `async-scope` (sha256:d497924e671808a5c6e0ea05abf7606e99edd904c0621946c20c2196dc7282f8): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
+- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/resolveSceneResources.ts:144:21` `requestWorkingResolutions.then:144:21:c1ae1180f474` `then` (sha256:c1ae1180f4742f7b228b5b2453db157dd9d2cac932b9a639e8a0a275bf28b3e2): taskThen Rust lowering is reserved for Pass 27 Stage 4.
+- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/resolveSceneResources.ts:152:38` `_resolvedVoid.ready:152:38:9b8874eb7ffe` `ready` (sha256:9b8874eb7ffebcf300217391f3fb4a9d53d078bccf4ed67e3253de0dd1f14116): Portable task Rust lowering is not implemented.
+- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/resolveSceneResourcesAndWait.ts:11:1` `resolveSceneResourcesAndWait` `async-scope` (sha256:01d4fb1834e22cdd854c87bb0f29be00c98c500fffead4ca98d313698e08ac4e): Portable task Rust lowering is not implemented.
+- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/resolveSceneResourcesAndWait.ts:19:9` `resolveSceneResourcesAndWait.join-all-settled:19:9:fbfa931863ef` `join-all-settled` (sha256:fbfa931863ef9e1b6320bb9ae20c8b9b8e7a620041f8d2a78ea4183d4c360d2f): taskAllSettled Rust lowering is reserved for Pass 27 Stage 4.
+- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/sceneResourceFetch.ts:16:10` `createWebSceneResourceFetch.anonymous:9f4b5cebcd53` `async-scope` (sha256:9f4b5cebcd5355501bc1019c4824f842685156f59193b13a88232009afe2adc2): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/screen` `upstream/packages/screen/src/screen.ts:530:1` `getScreenDetailPermission` `async-scope` (sha256:d8cf40fc979d5a3f700e818acbaf83c4a8782cf0e2f81dbb95cae4928a164ea2): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
+- `@flighthq/screen` `upstream/packages/screen/src/screen.ts:686:3` `onScreenDetailPermissionChange.catch:686:3:f9391dc21e33` `catch` (sha256:f9391dc21e337fc5b3e7f4e0ffa76f5007e9b8712530e7626e328e2074aef4f2): taskCatch Rust lowering is reserved for Pass 27 Stage 4.
+- `@flighthq/screen` `upstream/packages/screen/src/screen.ts:686:3` `onScreenDetailPermissionChange.then:686:3:8eeabb315a5a` `then` (sha256:8eeabb315a5a5409b03e7b97f684d1b41aae5a6844b0c58aaf724a8c4731fb83): taskThen Rust lowering is reserved for Pass 27 Stage 4.
+- `@flighthq/screen` `upstream/packages/screen/src/screen.ts:718:1` `requestScreenDetails` `async-scope` (sha256:b0810a06330b382391847f094e14db0df4a90f6bac18db9fac03a59be8a83ff4): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
+- `@flighthq/sensors` `upstream/packages/sensors/src/sensors.ts:347:5` `createWebSensorsBackend.requestPermission` `async-scope` (sha256:a6b3f78082562059ef4444a5887aa326b0045614089c9750aee6061cbb35e0b1): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/sensors` `upstream/packages/sensors/src/sensors.ts:734:1` `getWebSensorsPermissionState` `async-scope` (sha256:866595badad9bbaa0cb39468bdb48194a2b9d981244cb4e6c606ff225e7b0b56): Portable task Rust lowering is not implemented.
+- `@flighthq/share` `upstream/packages/share/src/share.ts:46:5` `createWebShareBackend.share` `async-scope` (sha256:4728f5341fa2d2ba2f77e4c2f40d7dec9804c802797d5c0dea14c9c428d2f5d3): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/share` `upstream/packages/share/src/share.ts:59:5` `createWebShareBackend.shareWithResult` `async-scope` (sha256:d92540756a8e0651e19dc368a8386c5e2cc648380251118f8741018a71be5c0b): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/share` `upstream/packages/share/src/share.ts:131:47` `shareContent.ready:131:47:a913f3cb1f97` `ready` (sha256:a913f3cb1f9734d159588904231d21b38dd02a4b990de3f76aaea042e535d166): Portable task Rust lowering is not implemented.
+- `@flighthq/share` `upstream/packages/share/src/share.ts:139:1` `shareContentWithResult` `async-scope` (sha256:ba76d368b1f5ebbefb52b037c617fa083585461ece2d83dddd0202f8f742a613): Portable task Rust lowering is not implemented.
+- `@flighthq/shell` `upstream/packages/shell/src/shell.ts:17:5` `createWebShellBackend.moveItemsToTrash` `async-scope` (sha256:de9261ef6b76c66d51f7895db3dfa0166804fa12b1736d08906a77f5182c1b87): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/shell` `upstream/packages/shell/src/shell.ts:21:5` `createWebShellBackend.moveToTrash` `async-scope` (sha256:d49f2ab1646329f228fd4dbcae8c7a83f7680f02e37bbc9a7634a08e37d42bb2): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/shell` `upstream/packages/shell/src/shell.ts:25:5` `createWebShellBackend.openExternal` `async-scope` (sha256:84df5b77ebd9b072e2cd26f7bff3a72cca839047849058809b421e0a81065f02): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/shell` `upstream/packages/shell/src/shell.ts:35:5` `createWebShellBackend.openPath` `async-scope` (sha256:717eb0cd4068de15dd3ed0c325d82ec9dfed0853bb8e991f90076d7c75a7d2da): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/shell` `upstream/packages/shell/src/shell.ts:39:5` `createWebShellBackend.openPathResult` `async-scope` (sha256:bdb09806443cc7816c45a1fec4a7f4e82c8492dc705a8ad8e5a4fb9311cc42af): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/shell` `upstream/packages/shell/src/shell.ts:43:5` `createWebShellBackend.readShortcutLink` `async-scope` (sha256:28ee120b9dd12b1d1bc09290ffe3c3841168d6a5fd616a57d0742ccd122fcdba): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/shell` `upstream/packages/shell/src/shell.ts:47:5` `createWebShellBackend.showItemInFolder` `async-scope` (sha256:37927761ccb0dd5a1883348de59ab8661eeee77fab2399832f77c3e33bcceb82): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/shell` `upstream/packages/shell/src/shell.ts:51:5` `createWebShellBackend.writeShortcutLink` `async-scope` (sha256:96c84cc788fa871527bacbf8f9a95bdb0218b2c55f5bca0890761378620eb3c6): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/shell` `upstream/packages/shell/src/shell.ts:94:39` `openShellExternalUrl.ready:94:39:a913f3cb1f97` `ready` (sha256:a913f3cb1f9734d159588904231d21b38dd02a4b990de3f76aaea042e535d166): Portable task Rust lowering is not implemented.
+- `@flighthq/storage` `upstream/packages/storage/src/storage.ts:309:1` `getStorageQuotaEstimate` `async-scope` (sha256:bb6e6e61ce277610234cf0eb3e4794ff7a72f5694637f41d5f9169471ac85241): Portable task Rust lowering is not implemented.
+- `@flighthq/textureatlas` `upstream/packages/textureatlas/src/textureAtlasFrom.ts:30:1` `loadTextureAtlasFromBase64` `async-scope` (sha256:c3b8831bbb577f82b4ecd77ec700c8eb9c03989c66a46b55c9a8dc00a57228c4): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
+- `@flighthq/textureatlas` `upstream/packages/textureatlas/src/textureAtlasFrom.ts:38:1` `loadTextureAtlasFromBlob` `async-scope` (sha256:7f84b1d162a9f648364d02ce2871669e570676045f31e732203694a2ca574321): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
+- `@flighthq/textureatlas` `upstream/packages/textureatlas/src/textureAtlasFrom.ts:42:1` `loadTextureAtlasFromBytes` `async-scope` (sha256:6ac6dc7033bfcd7d150920334b8cc158aa2fd830661a0084495ba72fdc98574b): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
+- `@flighthq/textureatlas` `upstream/packages/textureatlas/src/textureAtlasFrom.ts:50:1` `loadTextureAtlasFromUrl` `async-scope` (sha256:e7a6e6d985a77feeffa76d7f124f2033cf98759af424baec6ff02000912842ad): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
+- `@flighthq/tileset` `upstream/packages/tileset/src/tilesetFrom.ts:42:1` `loadTilesetFromBase64` `async-scope` (sha256:ace18fa5f17b2f42f62ad5efc04ce0728152e40de50ca09ad6d2f4e5fe2e982b): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
+- `@flighthq/tileset` `upstream/packages/tileset/src/tilesetFrom.ts:60:1` `loadTilesetFromBlob` `async-scope` (sha256:36a767bf7e046eb72890abb39757391b694908b4556fb161934e8c759b4b8fa7): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
+- `@flighthq/tileset` `upstream/packages/tileset/src/tilesetFrom.ts:77:1` `loadTilesetFromBytes` `async-scope` (sha256:3977b4718275eb6dd4585d28eebd7a18346623d8f300e108fbc55429e97473b1): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
+- `@flighthq/tileset` `upstream/packages/tileset/src/tilesetFrom.ts:95:1` `loadTilesetFromUrl` `async-scope` (sha256:a92858f561134da3392997d41a495f068693bf0f134207e5a37005b85e48d375): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
+- `@flighthq/video` `upstream/packages/video/src/videoResourceFrom.ts:16:1` `loadVideoResourceFromBlob` `async-scope` (sha256:cf1a5afd32e8d470ddd095cd5892c72e20beabfedc58404d1535e49d2fffad9b): Portable task Rust lowering is not implemented.
+- `@flighthq/video` `upstream/packages/video/src/videoResourceFrom.ts:34:31` `loadVideoResourceFromUrl.reject:34:31:cfdfb9bf7a98` `reject` (sha256:cfdfb9bf7a9819f2a26b91a03eb09e7426a1ca56476ae2bae4e4888ce1be90bf): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/video` `upstream/packages/video/src/videoResourceFrom.ts:80:33` `loadVideoResourceFromUrls.ready:80:33:8dc66a891dc0` `ready` (sha256:8dc66a891dc00c6da20c45026f4d2735b90d17e2fd3226f4db31818040badc46): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/webcam` `upstream/packages/webcam/src/webcam.ts:78:5` `createWebWebcamBackend.requestPermission` `async-scope` (sha256:9b066b5933be33c0c78cc297fd5270583ed6782749630182731a3b9979cd16cd): Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
 
 ### Unsupported async scopes
 
@@ -210,72 +421,72 @@ Disposition partition: 162 eligible = 0 portable executable + 0 host placeholder
 - `@flighthq/audio` `upstream/packages/audio/src/audioResourceFrom.ts:48:1` `loadAudioResourceFromBytes` (sha256:d54dd5fbcc30d298fda7b249601018a99e88cb2048c29e17efd9bea7eb5110d5): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
 - `@flighthq/audio` `upstream/packages/audio/src/audioResourceFrom.ts:60:1` `loadAudioResourceFromUrl` (sha256:0d18bb89086b9b42f5252d194365bd5f6bfd83020372e1b87f43a80ed4ce8cc4): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
 - `@flighthq/audio` `upstream/packages/audio/src/audioResourceFrom.ts:75:1` `loadAudioResourceFromUrls` (sha256:f704e57788fe00ece2e8f7e0e8f89db8a63e3a17ca93c092fb6d1adf17df4c64): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:31:5` `createWebClipboardBackend.readFormat` (sha256:721317f182624551290a66cbbc88a82fb2c213c31c84039b3fbf7947bf397856): Portable task Rust lowering is not implemented.
-- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:48:5` `createWebClipboardBackend.writeFormat` (sha256:06ec8c11ce5ed20c71af72322b5fe3d22c25749c4ee27b4fcffade76b202ef87): Portable task Rust lowering is not implemented.
-- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:59:5` `createWebClipboardBackend.hasFormat` (sha256:0fe5c7789f000064e04648dbb2831f298a8726cae24bda2ef43f63b780a7eea6): Portable task Rust lowering is not implemented.
-- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:63:5` `createWebClipboardBackend.getFormats` (sha256:ed75f7ccdf54735fec684a6a6ee69c47e91c5a0d3591169be8970cc8ad027266): Portable task Rust lowering is not implemented.
-- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:79:5` `createWebClipboardBackend.writeItems` (sha256:bfe2ca1744d74e460bbb99f43395a8ad2eec6a0ed51212254ec322e9c93392e1): Portable task Rust lowering is not implemented.
-- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:93:5` `createWebClipboardBackend.readItems` (sha256:04db96d1813aada66ce1c55a363f56cbd16734202877dcbaf231786cfe34c32b): Portable task Rust lowering is not implemented.
-- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:112:5` `createWebClipboardBackend.readText` (sha256:1a5b9a58c3f16317df3446c1a66ef5114db31b5f6ee12f004359ae970ddb5f3e): Portable task Rust lowering is not implemented.
-- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:121:5` `createWebClipboardBackend.writeText` (sha256:23eab1975987cd5de1f5dd408ae4fb2db6a4451dfebdc78c4ff5dcbf971da580): Portable task Rust lowering is not implemented.
-- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:131:5` `createWebClipboardBackend.readHtml` (sha256:1a6c1714ae6b501d2713b397c6d79dc8049a767e5744a291718c2af37568fc6b): Portable task Rust lowering is not implemented.
-- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:134:5` `createWebClipboardBackend.writeHtml` (sha256:5eb7aee33fabdabdf097fc74dbd79968d9b293cb97e42af1d1ea83d6c9a25060): Portable task Rust lowering is not implemented.
-- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:137:5` `createWebClipboardBackend.hasText` (sha256:1d5b1f5d4457bd324170aa1e3866a3787d5c0b8719f36e18b9f20efb61c5411b): Portable task Rust lowering is not implemented.
-- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:140:5` `createWebClipboardBackend.readImage` (sha256:51f9ad208bf3a315668eff8f6223c0c11e1b28431226790533ba02ed5d042d36): Portable task Rust lowering is not implemented.
-- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:157:5` `createWebClipboardBackend.writeImage` (sha256:0d28b5751be206dc8174fd8d29ee8931217607ccc2bb598c881854d5574a5714): Portable task Rust lowering is not implemented.
-- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:169:5` `createWebClipboardBackend.hasImage` (sha256:2a2c1863a814225bd6ae7583d0f099723f904138492d03cedea7727e7dc7e70e): Portable task Rust lowering is not implemented.
-- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:172:5` `createWebClipboardBackend.readRTF` (sha256:a0f27e9f28118b12321c83624453b98f87dad2cfef71f630bb6c5e0c4131a165): Portable task Rust lowering is not implemented.
-- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:175:5` `createWebClipboardBackend.writeRTF` (sha256:0e54cef02fdd6872e0a775fd27e741fc1bf97a54e7a9c7d8755a621a78e53a75): Portable task Rust lowering is not implemented.
-- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:179:5` `createWebClipboardBackend.readBookmark` (sha256:78016ab7f76a0108d52c3f3ccee3c40d7161b80bb66cc8860faec4d5cc99f115): Portable task Rust lowering is not implemented.
-- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:183:5` `createWebClipboardBackend.writeBookmark` (sha256:8cc982a2d45bee016f5baa8b6fa524db87eb0302c67f1a30e1fd4bbfc3ef66f4): Portable task Rust lowering is not implemented.
-- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:187:5` `createWebClipboardBackend.readFiles` (sha256:540866183a941bfea5b304a70d7bff5ac1c2aa80da47e31cf2e894c29cde0ce6): Portable task Rust lowering is not implemented.
-- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:191:5` `createWebClipboardBackend.writeFiles` (sha256:ff06a60769d4aece46e2761c73660884fed44831ad41a0b3903a1ba9f0b3c85d): Portable task Rust lowering is not implemented.
-- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:194:5` `createWebClipboardBackend.clear` (sha256:34f107c7453a7d6158d4388d4f5c200844605acd824e1bc06de7f332dad9ee7c): Portable task Rust lowering is not implemented.
-- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:368:1` `blobFromFormatData` (sha256:c1fb9e0ee718a360876a579fe9e1e5fdc16157f03db3dabc983b233c321466dd): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/connectivity` `upstream/packages/connectivity/src/connectivity.ts:82:5` `createWebConnectivityBackend.detectReachability` (sha256:694076bc4efb1a4cfa0e975d140e8cf6f2435a0fdd257300be3a958e3a2b5015): Portable task Rust lowering is not implemented.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:31:5` `createWebClipboardBackend.readFormat` (sha256:721317f182624551290a66cbbc88a82fb2c213c31c84039b3fbf7947bf397856): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:48:5` `createWebClipboardBackend.writeFormat` (sha256:06ec8c11ce5ed20c71af72322b5fe3d22c25749c4ee27b4fcffade76b202ef87): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:59:5` `createWebClipboardBackend.hasFormat` (sha256:0fe5c7789f000064e04648dbb2831f298a8726cae24bda2ef43f63b780a7eea6): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:63:5` `createWebClipboardBackend.getFormats` (sha256:ed75f7ccdf54735fec684a6a6ee69c47e91c5a0d3591169be8970cc8ad027266): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:79:5` `createWebClipboardBackend.writeItems` (sha256:bfe2ca1744d74e460bbb99f43395a8ad2eec6a0ed51212254ec322e9c93392e1): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:93:5` `createWebClipboardBackend.readItems` (sha256:04db96d1813aada66ce1c55a363f56cbd16734202877dcbaf231786cfe34c32b): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:112:5` `createWebClipboardBackend.readText` (sha256:1a5b9a58c3f16317df3446c1a66ef5114db31b5f6ee12f004359ae970ddb5f3e): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:121:5` `createWebClipboardBackend.writeText` (sha256:23eab1975987cd5de1f5dd408ae4fb2db6a4451dfebdc78c4ff5dcbf971da580): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:131:5` `createWebClipboardBackend.readHtml` (sha256:1a6c1714ae6b501d2713b397c6d79dc8049a767e5744a291718c2af37568fc6b): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:134:5` `createWebClipboardBackend.writeHtml` (sha256:5eb7aee33fabdabdf097fc74dbd79968d9b293cb97e42af1d1ea83d6c9a25060): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:137:5` `createWebClipboardBackend.hasText` (sha256:1d5b1f5d4457bd324170aa1e3866a3787d5c0b8719f36e18b9f20efb61c5411b): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:140:5` `createWebClipboardBackend.readImage` (sha256:51f9ad208bf3a315668eff8f6223c0c11e1b28431226790533ba02ed5d042d36): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:157:5` `createWebClipboardBackend.writeImage` (sha256:0d28b5751be206dc8174fd8d29ee8931217607ccc2bb598c881854d5574a5714): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:169:5` `createWebClipboardBackend.hasImage` (sha256:2a2c1863a814225bd6ae7583d0f099723f904138492d03cedea7727e7dc7e70e): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:172:5` `createWebClipboardBackend.readRTF` (sha256:a0f27e9f28118b12321c83624453b98f87dad2cfef71f630bb6c5e0c4131a165): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:175:5` `createWebClipboardBackend.writeRTF` (sha256:0e54cef02fdd6872e0a775fd27e741fc1bf97a54e7a9c7d8755a621a78e53a75): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:179:5` `createWebClipboardBackend.readBookmark` (sha256:78016ab7f76a0108d52c3f3ccee3c40d7161b80bb66cc8860faec4d5cc99f115): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:183:5` `createWebClipboardBackend.writeBookmark` (sha256:8cc982a2d45bee016f5baa8b6fa524db87eb0302c67f1a30e1fd4bbfc3ef66f4): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:187:5` `createWebClipboardBackend.readFiles` (sha256:540866183a941bfea5b304a70d7bff5ac1c2aa80da47e31cf2e894c29cde0ce6): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:191:5` `createWebClipboardBackend.writeFiles` (sha256:ff06a60769d4aece46e2761c73660884fed44831ad41a0b3903a1ba9f0b3c85d): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:194:5` `createWebClipboardBackend.clear` (sha256:34f107c7453a7d6158d4388d4f5c200844605acd824e1bc06de7f332dad9ee7c): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/clipboard` `upstream/packages/clipboard/src/clipboard.ts:368:1` `blobFromFormatData` (sha256:c1fb9e0ee718a360876a579fe9e1e5fdc16157f03db3dabc983b233c321466dd): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue. Matched the legacy body-erasure path.
+- `@flighthq/connectivity` `upstream/packages/connectivity/src/connectivity.ts:82:5` `createWebConnectivityBackend.detectReachability` (sha256:694076bc4efb1a4cfa0e975d140e8cf6f2435a0fdd257300be3a958e3a2b5015): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
 - `@flighthq/connectivity` `upstream/packages/connectivity/src/connectivity.ts:138:1` `detectConnectivityReachability` (sha256:599d1031e281368c595d7c67f9094c5325c5caf880d596a64a3c5d592178e52b): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/dialog` `upstream/packages/dialog/src/dialog.ts:19:5` `createWebDialogBackend.confirm` (sha256:9e0d435b7b04504a82aec0618dbb15c78815dffab42978a68f29044f5e6fcf78): Portable task Rust lowering is not implemented.
-- `@flighthq/dialog` `upstream/packages/dialog/src/dialog.ts:28:5` `createWebDialogBackend.message` (sha256:7c2e4513e6b2c9853b0c5bbf6a3f56fc25557127cde7c98c54a42e7b3820a77d): Portable task Rust lowering is not implemented.
-- `@flighthq/dialog` `upstream/packages/dialog/src/dialog.ts:48:5` `createWebDialogBackend.prompt` (sha256:c2ef3f3e409d36b6f50d673164d87f3da10c9811b4725fa58da7f7886e5b23b3): Portable task Rust lowering is not implemented.
-- `@flighthq/dialog` `upstream/packages/dialog/src/dialog.ts:56:5` `createWebDialogBackend.saveFile` (sha256:40414e87f9a0df2dbf9669cc34214ffee390112a4912d6d8a9648f7be2102d80): Portable task Rust lowering is not implemented.
+- `@flighthq/dialog` `upstream/packages/dialog/src/dialog.ts:19:5` `createWebDialogBackend.confirm` (sha256:9e0d435b7b04504a82aec0618dbb15c78815dffab42978a68f29044f5e6fcf78): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/dialog` `upstream/packages/dialog/src/dialog.ts:28:5` `createWebDialogBackend.message` (sha256:7c2e4513e6b2c9853b0c5bbf6a3f56fc25557127cde7c98c54a42e7b3820a77d): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/dialog` `upstream/packages/dialog/src/dialog.ts:48:5` `createWebDialogBackend.prompt` (sha256:c2ef3f3e409d36b6f50d673164d87f3da10c9811b4725fa58da7f7886e5b23b3): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/dialog` `upstream/packages/dialog/src/dialog.ts:56:5` `createWebDialogBackend.saveFile` (sha256:40414e87f9a0df2dbf9669cc34214ffee390112a4912d6d8a9648f7be2102d80): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
 - `@flighthq/dialog` `upstream/packages/dialog/src/dialog.ts:246:1` `openDirectoryPickerAccessApi` (sha256:b899e4b9db2555d6330dd9e3cdf86a011e79a2f0355b05f846f7c7204dbae732): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
 - `@flighthq/dialog` `upstream/packages/dialog/src/dialog.ts:319:1` `openFileSystemAccessPicker` (sha256:0a2092597843117736235fd619c2d4f395e5ff517d455c075d5948fee291c1cc): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
 - `@flighthq/dialog` `upstream/packages/dialog/src/dialog.ts:349:1` `saveWebFile` (sha256:e88949abb7c69f2698087c43c21543a34eaf2427cac71f67fccf397a0a8a7156): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:41:5` `createWebFileSystemBackend.readTextFile` (sha256:574171c1f78071a47b51fc4530a31a20df6cd2cef77438662dc248915ce18ff2): Portable task Rust lowering is not implemented.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:51:5` `createWebFileSystemBackend.writeTextFile` (sha256:eea5320063d5585ee7e7ec9354a30cd9217902159a9cfb617cfa9a2f088e6d9f): Portable task Rust lowering is not implemented.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:54:5` `createWebFileSystemBackend.readBinaryFile` (sha256:f8849adeb4063a8e366324baba2120d2e6789cec1ef89017cd25d86fe4063b0f): Portable task Rust lowering is not implemented.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:64:5` `createWebFileSystemBackend.readBinaryFileRange` (sha256:51679cf17403994237bec53b329aa9c371966174d4596140e957ed5656df9679): Portable task Rust lowering is not implemented.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:76:5` `createWebFileSystemBackend.writeBinaryFile` (sha256:a008f81798eccc1003aed0d9e903d42a763a22ea9cd9ea75ec66fef4e8c70011): Portable task Rust lowering is not implemented.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:81:5` `createWebFileSystemBackend.fileExists` (sha256:16edd4e2eeb397246605858dc6cc531b8e7375a6f7016a31bea39fdb86ed6f67): Portable task Rust lowering is not implemented.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:84:5` `createWebFileSystemBackend.directoryExists` (sha256:f46b834d739fc1ccecafc9af12e6d5f2ff98579406b192a7245d142e385fc659): Portable task Rust lowering is not implemented.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:89:5` `createWebFileSystemBackend.removeFile` (sha256:140b01563d3776aae563c30f2d6760391ae4a5e2a21c66732e9debd4e04740ac): Portable task Rust lowering is not implemented.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:92:5` `createWebFileSystemBackend.removeDirectory` (sha256:fdc2708c099a643b3d6cefa1ca4f560bcd3ca77f73e5351cb920d88a5f3889fb): Portable task Rust lowering is not implemented.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:107:5` `createWebFileSystemBackend.makeDirectory` (sha256:6f51bdc0b4150ea205900967a9b753947a8d07e2d2d5fe4cf4704de8ed954374): Portable task Rust lowering is not implemented.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:113:5` `createWebFileSystemBackend.readDirectory` (sha256:cf39347f679c2986d33af6374395320703ca8ec00f38d53648d13ef59b366b2a): Portable task Rust lowering is not implemented.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:130:5` `createWebFileSystemBackend.readDirectoryRecursive` (sha256:b9273fc96e399400fa069fdda02be9cdddc16bf6435aed16513e46684d4fcbd9): Portable task Rust lowering is not implemented.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:144:5` `createWebFileSystemBackend.statFile` (sha256:9f3ca243190b7dd20090bc636e833fcc518d4d27da3a62f50d9b0bf56343987c): Portable task Rust lowering is not implemented.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:167:5` `createWebFileSystemBackend.rename` (sha256:9e3228d2cb150076642cde946d5c8e0af12df36ddafd11d6f5d3a888fae1db64): Portable task Rust lowering is not implemented.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:172:5` `createWebFileSystemBackend.copy` (sha256:a8ab38a19dcb5e3fb20e8102c6231c614cbd4b237b975dc68a3094654c1c3ea8): Portable task Rust lowering is not implemented.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:185:5` `createWebFileSystemBackend.appendTextFile` (sha256:6b213fd0d23492209d078e56f40ac8ad6bb25bf23fdf0fcb61837aa18e7e5828): Portable task Rust lowering is not implemented.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:197:5` `createWebFileSystemBackend.openFileReadStream` (sha256:397d36c122ccf42160fd8c8d0b251d4e415f2caa9dc6a8e6d752f9d589e3b93a): Portable task Rust lowering is not implemented.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:207:5` `createWebFileSystemBackend.openFileWriteStream` (sha256:a1398c0c934e0b064752d3e88b8faf3fcceeb22c332ef48a527eebbcfe690500): Portable task Rust lowering is not implemented.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:216:5` `createWebFileSystemBackend.writeFileAtomic` (sha256:08338d01a7496bfb863bafb34ad143731f1825c05a980b1206a57d98ea8cb7a7): Portable task Rust lowering is not implemented.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:238:5` `createWebFileSystemBackend.createFileSymlink` (sha256:a7ec0965827a98018c26d6d389d77b43f2207b530026a721030f9711ce2fd2ba): Portable task Rust lowering is not implemented.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:242:5` `createWebFileSystemBackend.readFileSymlink` (sha256:f9aa63b08e2eb58e164feec37dc2c5e405773c1bfa1bc83cabe221db963a7c3e): Portable task Rust lowering is not implemented.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:246:5` `createWebFileSystemBackend.getFileRealPath` (sha256:c7c21015d70a979da0d7a21948807c11791069f7a6d31e5cedec80054c726aac): Portable task Rust lowering is not implemented.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:250:5` `createWebFileSystemBackend.getFilePermissions` (sha256:d5a528fd94e5ebdc23f72af0bda23fa3a3ff8f759a4785bf758cd588aae07224): Portable task Rust lowering is not implemented.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:254:5` `createWebFileSystemBackend.setFilePermissions` (sha256:a896a24d74069b5626a25ac32214db778d30f118359a34a1ccc8449cb63cf180): Portable task Rust lowering is not implemented.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:258:5` `createWebFileSystemBackend.canAccessFile` (sha256:044040117b7c5b060026f24b144f5a0799780f74f04d04c05e0fa674b7aea53c): Portable task Rust lowering is not implemented.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:278:5` `createWebFileSystemBackend.getFileSystemUsage` (sha256:415ecf42bf14245ab608395d0bc204940d14442436e0f4a855c24c92e1669a52): Portable task Rust lowering is not implemented.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:41:5` `createWebFileSystemBackend.readTextFile` (sha256:574171c1f78071a47b51fc4530a31a20df6cd2cef77438662dc248915ce18ff2): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:51:5` `createWebFileSystemBackend.writeTextFile` (sha256:eea5320063d5585ee7e7ec9354a30cd9217902159a9cfb617cfa9a2f088e6d9f): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:54:5` `createWebFileSystemBackend.readBinaryFile` (sha256:f8849adeb4063a8e366324baba2120d2e6789cec1ef89017cd25d86fe4063b0f): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:64:5` `createWebFileSystemBackend.readBinaryFileRange` (sha256:51679cf17403994237bec53b329aa9c371966174d4596140e957ed5656df9679): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:76:5` `createWebFileSystemBackend.writeBinaryFile` (sha256:a008f81798eccc1003aed0d9e903d42a763a22ea9cd9ea75ec66fef4e8c70011): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:81:5` `createWebFileSystemBackend.fileExists` (sha256:16edd4e2eeb397246605858dc6cc531b8e7375a6f7016a31bea39fdb86ed6f67): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:84:5` `createWebFileSystemBackend.directoryExists` (sha256:f46b834d739fc1ccecafc9af12e6d5f2ff98579406b192a7245d142e385fc659): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:89:5` `createWebFileSystemBackend.removeFile` (sha256:140b01563d3776aae563c30f2d6760391ae4a5e2a21c66732e9debd4e04740ac): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:92:5` `createWebFileSystemBackend.removeDirectory` (sha256:fdc2708c099a643b3d6cefa1ca4f560bcd3ca77f73e5351cb920d88a5f3889fb): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:107:5` `createWebFileSystemBackend.makeDirectory` (sha256:6f51bdc0b4150ea205900967a9b753947a8d07e2d2d5fe4cf4704de8ed954374): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:113:5` `createWebFileSystemBackend.readDirectory` (sha256:cf39347f679c2986d33af6374395320703ca8ec00f38d53648d13ef59b366b2a): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:130:5` `createWebFileSystemBackend.readDirectoryRecursive` (sha256:b9273fc96e399400fa069fdda02be9cdddc16bf6435aed16513e46684d4fcbd9): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:144:5` `createWebFileSystemBackend.statFile` (sha256:9f3ca243190b7dd20090bc636e833fcc518d4d27da3a62f50d9b0bf56343987c): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:167:5` `createWebFileSystemBackend.rename` (sha256:9e3228d2cb150076642cde946d5c8e0af12df36ddafd11d6f5d3a888fae1db64): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:172:5` `createWebFileSystemBackend.copy` (sha256:a8ab38a19dcb5e3fb20e8102c6231c614cbd4b237b975dc68a3094654c1c3ea8): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:185:5` `createWebFileSystemBackend.appendTextFile` (sha256:6b213fd0d23492209d078e56f40ac8ad6bb25bf23fdf0fcb61837aa18e7e5828): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:197:5` `createWebFileSystemBackend.openFileReadStream` (sha256:397d36c122ccf42160fd8c8d0b251d4e415f2caa9dc6a8e6d752f9d589e3b93a): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:207:5` `createWebFileSystemBackend.openFileWriteStream` (sha256:a1398c0c934e0b064752d3e88b8faf3fcceeb22c332ef48a527eebbcfe690500): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:216:5` `createWebFileSystemBackend.writeFileAtomic` (sha256:08338d01a7496bfb863bafb34ad143731f1825c05a980b1206a57d98ea8cb7a7): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:238:5` `createWebFileSystemBackend.createFileSymlink` (sha256:a7ec0965827a98018c26d6d389d77b43f2207b530026a721030f9711ce2fd2ba): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:242:5` `createWebFileSystemBackend.readFileSymlink` (sha256:f9aa63b08e2eb58e164feec37dc2c5e405773c1bfa1bc83cabe221db963a7c3e): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:246:5` `createWebFileSystemBackend.getFileRealPath` (sha256:c7c21015d70a979da0d7a21948807c11791069f7a6d31e5cedec80054c726aac): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:250:5` `createWebFileSystemBackend.getFilePermissions` (sha256:d5a528fd94e5ebdc23f72af0bda23fa3a3ff8f759a4785bf758cd588aae07224): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:254:5` `createWebFileSystemBackend.setFilePermissions` (sha256:a896a24d74069b5626a25ac32214db778d30f118359a34a1ccc8449cb63cf180): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:258:5` `createWebFileSystemBackend.canAccessFile` (sha256:044040117b7c5b060026f24b144f5a0799780f74f04d04c05e0fa674b7aea53c): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:278:5` `createWebFileSystemBackend.getFileSystemUsage` (sha256:415ecf42bf14245ab608395d0bc204940d14442436e0f4a855c24c92e1669a52): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
 - `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:318:1` `findFiles` (sha256:086ee8f33aa2fc15cd2242768128432c33d546e7e1e07f6f180f639c3e741a06): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
 - `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:437:1` `readDialogHandleBinaryFile` (sha256:168933b0fd5d152de69e33d8106ef967a6b88f971892b802c6682be962f5a682): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
 - `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:459:1` `readDialogHandleTextFile` (sha256:ef1c5426a4503d00e890c0f0fa60cbb140d257532ba380cb12fc5086ed838cbd): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
 - `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:548:1` `writeBinaryFileChunks` (sha256:3edaf0a0922e0acc7f59a89e6ff05bd4c376e657535b29c66f6e6b1607afc8df): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
 - `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:571:1` `writeDialogHandleBinaryFile` (sha256:80e53fef3f1f97ef52a3ea87e4d071bda65a76fe2579d937716cab0aa01db411): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
 - `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:594:1` `writeDialogHandleTextFile` (sha256:9080a9844f1f96cb71579d9cd83e47aff5e9c4ea4e145b7aed073f0411e8a076): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:625:1` `getWebRoot` (sha256:ef7f3d7015038a12b48081190128011dea066ed8d640e163d354dccba07a461f): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:636:1` `getWebDirectoryHandle` (sha256:7f0c9697a8fda8bf983894519de724aca66a1a9c03e449ffe09ddd4ae9c63f92): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:652:1` `getWebFileHandle` (sha256:81a545005c91ec665cdc44f2beb861a1922b104d011fcedd756fb8897428ae65): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:625:1` `getWebRoot` (sha256:ef7f3d7015038a12b48081190128011dea066ed8d640e163d354dccba07a461f): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue. Matched the legacy body-erasure path.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:636:1` `getWebDirectoryHandle` (sha256:7f0c9697a8fda8bf983894519de724aca66a1a9c03e449ffe09ddd4ae9c63f92): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue. Matched the legacy body-erasure path.
+- `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:652:1` `getWebFileHandle` (sha256:81a545005c91ec665cdc44f2beb861a1922b104d011fcedd756fb8897428ae65): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue. Matched the legacy body-erasure path.
 - `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:668:1` `walkWebDirectory` (sha256:6d1216dc9c5354ba256755b0451e1d3789557508dda88892e626011b93807eb4): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
 - `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:687:1` `writeWebRemove` (sha256:1841fd4e7778e7dd8472360d0552f739a00f488b0961c21213eab5deafe197cf): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
 - `@flighthq/filesystem` `upstream/packages/filesystem/src/filesystem.ts:707:1` `writeWebFile` (sha256:6e15f5efb9909a3d0e7c991013ac6cdfd764a902ed4e16f226efb7f32676e172): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
@@ -288,15 +499,12 @@ Disposition partition: 162 eligible = 0 portable executable + 0 host placeholder
 - `@flighthq/font` `upstream/packages/font/src/fontResourceFrom.ts:23:1` `loadFontResourceFromUrl` (sha256:442dc5b4effdd4fe6a53955dbd6fe687453982e638e8cc3e0e2c50ca770461dd): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
 - `@flighthq/font` `upstream/packages/font/src/fontResourceFrom.ts:31:1` `loadFontResourceFromUrls` (sha256:448720b08044d844f77ccca5c73c1d49ac59b3d2d41d1fa4f0c958e27420b526): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
 - `@flighthq/font` `upstream/packages/font/src/fontStatus.ts:7:1` `whenFontsReady` (sha256:a9a632e81b2b401d128497ca7e36252f671e86a84e7380d7ffa2915b10717660): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/geolocation` `upstream/packages/geolocation/src/geolocation.ts:80:5` `createWebGeolocationBackend.getPermission` (sha256:589424ae8a82b30bc0a05473e652fce3ea1e3d8dbf9d62047dec8eea751d9252): Portable task Rust lowering is not implemented.
-- `@flighthq/geolocation` `upstream/packages/geolocation/src/geolocation.ts:92:5` `createWebGeolocationBackend.requestPermission` (sha256:c1d7c01868b81a6d6a24327b828b629c16b4760c6743b681bf2244d5fc64db43): Portable task Rust lowering is not implemented.
+- `@flighthq/geolocation` `upstream/packages/geolocation/src/geolocation.ts:80:5` `createWebGeolocationBackend.getPermission` (sha256:589424ae8a82b30bc0a05473e652fce3ea1e3d8dbf9d62047dec8eea751d9252): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/geolocation` `upstream/packages/geolocation/src/geolocation.ts:92:5` `createWebGeolocationBackend.requestPermission` (sha256:c1d7c01868b81a6d6a24327b828b629c16b4760c6743b681bf2244d5fc64db43): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
 - `@flighthq/image` `upstream/packages/image/src/imageResourceFrom.ts:70:1` `loadImageResourceFromBase64` (sha256:9766d6f1f595df39b0431b4aeebaf140d9cddbf13b4f4fb7212ce5980b7ace63): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
 - `@flighthq/image` `upstream/packages/image/src/imageResourceFrom.ts:78:1` `loadImageResourceFromBlob` (sha256:789b648cfba73930add0a4f3468f72b94ce411b39d6860c22c04ab05e33590ee): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
 - `@flighthq/image` `upstream/packages/image/src/imageResourceFrom.ts:87:1` `loadImageResourceFromBytes` (sha256:67e113685cfd158a0c49cf1757b7761013665ff96a364e34cf11a1e250391c42): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
 - `@flighthq/image` `upstream/packages/image/src/imageResourceFrom.ts:100:1` `loadImageResourceFromUrl` (sha256:ff3642966e0506d5d9c68236e6fa44abfd7fa6721ee45db95b1683464c41b591): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/image-codec` `upstream/packages/image-codec/src/decodeImage.ts:9:1` `decodeImage` (sha256:835898f04f93b4828dfcfab5782814216b29704acbd682d2d83bad27eef1d24d): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/image-codec` `upstream/packages/image-codec/src/decodeImage.ts:17:1` `decodeImagePremultiplied` (sha256:d62260b672e380df16a5e004e25f9ef3df3e3d04c75d43d54b7ea1ce60d37b77): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/image-codec` `upstream/packages/image-codec/src/encodeImage.ts:7:1` `encodeImage` (sha256:281f0916aa8be200aef442b2004055ce963218f0743820416b04577092053f4f): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
 - `@flighthq/image-codec` `upstream/packages/image-codec/src/registerWebImageDecoders.ts:18:45` `decodeImageWithCanvas` (sha256:6c70f189d2b99fef85a6c33991e3174b6e7cfc147486162cdd1abee7f40fc943): Portable task Rust lowering is not implemented.
 - `@flighthq/image-codec` `upstream/packages/image-codec/src/registerWebImageEncoders.ts:16:10` `createCanvasImageEncoder.anonymous:7c4dbd1c1e56` (sha256:7c4dbd1c1e56dfb5d704a95587bc335ef9c42e20340743d59daacfb0eda450d3): Portable task Rust lowering is not implemented.
 - `@flighthq/loader` `upstream/packages/loader/src/resourceLoader.ts:417:1` `drainQueue` (sha256:88082b65b0b72d5a7051045ab407875a77a7430ece259e4bf911600ef6289ed7): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
@@ -305,21 +513,21 @@ Disposition partition: 162 eligible = 0 portable executable + 0 host placeholder
 - `@flighthq/net` `upstream/packages/net/src/net.ts:110:1` `_readNetResponseBody` (sha256:a65ec98271b1315b2d9f92bf7f23f3862fc0a2eefa19665fa73e7818af9bfc60): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
 - `@flighthq/net` `upstream/packages/net/src/net.ts:133:1` `_readNetResponseWithProgress` (sha256:b695935644b73d37aea7c2af6c5ee8129d40d1a01cb334357c027ceadca38081): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
 - `@flighthq/notification` `upstream/packages/notification/src/notification.ts:82:3` `createServiceWorkerNotificationBackend._show` (sha256:e00200853c5c516d6fb8f492b4d4a4936ad578f62c3c4c064339bd5fb6a4d072): Portable task Rust lowering is not implemented.
-- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:120:5` `createServiceWorkerNotificationBackend.backend.closeAllNotifications` (sha256:52fa18d11686282d426bb5c4c47630bb80135c1b9e903717735b1eed8307c577): Portable task Rust lowering is not implemented.
-- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:131:5` `createServiceWorkerNotificationBackend.backend.closeNotification` (sha256:6517e4505bd2c041ac811f8a05ba8353749846f946f30ac5ddfb2f22f7c88f0b): Portable task Rust lowering is not implemented.
-- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:154:5` `createServiceWorkerNotificationBackend.backend.getLaunchNotification` (sha256:4f0b27a04899099e894c2a0d6f32f11acbeee1e340c8a13101f890b1fe7d68da): Portable task Rust lowering is not implemented.
-- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:158:5` `createServiceWorkerNotificationBackend.backend.getActiveNotifications` (sha256:32b8787da01a2c016eff0505a0bdf6b9ea6a12c6ca23630e1755eeb54f07faa9): Portable task Rust lowering is not implemented.
-- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:167:5` `createServiceWorkerNotificationBackend.backend.getPendingNotifications` (sha256:79e6ad239be0efd8c25c370a015d5579c20541e383a2e86b2c3b27bf5fd41d1e): Portable task Rust lowering is not implemented.
-- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:182:5` `createServiceWorkerNotificationBackend.backend.requestPermission` (sha256:89dcfcb71df004f311498505a5c80f20a9a5338e1423d8e1f5dd2c482d61ce35): Portable task Rust lowering is not implemented.
-- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:191:5` `createServiceWorkerNotificationBackend.backend.scheduleNotification` (sha256:13b016bea73a7da58bff9a988cede7621d76ce2183c21b6256e4dfd275bce1ab): Portable task Rust lowering is not implemented.
-- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:249:5` `createServiceWorkerNotificationBackend.backend.updateNotification` (sha256:2796036fd76096b61157f020fcadbd3802fec28074380a61396a15221be36cd1): Portable task Rust lowering is not implemented.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:120:5` `createServiceWorkerNotificationBackend.backend.closeAllNotifications` (sha256:52fa18d11686282d426bb5c4c47630bb80135c1b9e903717735b1eed8307c577): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:131:5` `createServiceWorkerNotificationBackend.backend.closeNotification` (sha256:6517e4505bd2c041ac811f8a05ba8353749846f946f30ac5ddfb2f22f7c88f0b): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:154:5` `createServiceWorkerNotificationBackend.backend.getLaunchNotification` (sha256:4f0b27a04899099e894c2a0d6f32f11acbeee1e340c8a13101f890b1fe7d68da): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:158:5` `createServiceWorkerNotificationBackend.backend.getActiveNotifications` (sha256:32b8787da01a2c016eff0505a0bdf6b9ea6a12c6ca23630e1755eeb54f07faa9): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:167:5` `createServiceWorkerNotificationBackend.backend.getPendingNotifications` (sha256:79e6ad239be0efd8c25c370a015d5579c20541e383a2e86b2c3b27bf5fd41d1e): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:182:5` `createServiceWorkerNotificationBackend.backend.requestPermission` (sha256:89dcfcb71df004f311498505a5c80f20a9a5338e1423d8e1f5dd2c482d61ce35): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:191:5` `createServiceWorkerNotificationBackend.backend.scheduleNotification` (sha256:13b016bea73a7da58bff9a988cede7621d76ce2183c21b6256e4dfd275bce1ab): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:249:5` `createServiceWorkerNotificationBackend.backend.updateNotification` (sha256:2796036fd76096b61157f020fcadbd3802fec28074380a61396a15221be36cd1): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
 - `@flighthq/notification` `upstream/packages/notification/src/notification.ts:321:3` `createWebNotificationBackend._notify` (sha256:97462152a66b1c944e8a436b884c50a63ba0ba99f09da7b43c20889914a939bf): Portable task Rust lowering is not implemented.
-- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:413:5` `createWebNotificationBackend.getLaunchNotification` (sha256:4f0b27a04899099e894c2a0d6f32f11acbeee1e340c8a13101f890b1fe7d68da): Portable task Rust lowering is not implemented.
-- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:418:5` `createWebNotificationBackend.getActiveNotifications` (sha256:8fe4f259597f86d6f3ae693264b2764a1f2b204003b086bc88b1a2fa6f5d464c): Portable task Rust lowering is not implemented.
-- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:422:5` `createWebNotificationBackend.getPendingNotifications` (sha256:79e6ad239be0efd8c25c370a015d5579c20541e383a2e86b2c3b27bf5fd41d1e): Portable task Rust lowering is not implemented.
-- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:439:5` `createWebNotificationBackend.requestPermission` (sha256:50dc273ab49890f2d8ba5fce2bf96ff794063eaaf5f1fe32c5099b352c3cdb09): Portable task Rust lowering is not implemented.
-- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:449:5` `createWebNotificationBackend.scheduleNotification` (sha256:837768d3e66af3adc2253422191d0a326d394f56b5590736e751f45e52532a00): Portable task Rust lowering is not implemented.
-- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:510:5` `createWebNotificationBackend.updateNotification` (sha256:2a79742c4469437d9f0d3ea7fce31a4fa5562509765377722fa95700acbaa0eb): Portable task Rust lowering is not implemented.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:413:5` `createWebNotificationBackend.getLaunchNotification` (sha256:4f0b27a04899099e894c2a0d6f32f11acbeee1e340c8a13101f890b1fe7d68da): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:418:5` `createWebNotificationBackend.getActiveNotifications` (sha256:8fe4f259597f86d6f3ae693264b2764a1f2b204003b086bc88b1a2fa6f5d464c): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:422:5` `createWebNotificationBackend.getPendingNotifications` (sha256:79e6ad239be0efd8c25c370a015d5579c20541e383a2e86b2c3b27bf5fd41d1e): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:439:5` `createWebNotificationBackend.requestPermission` (sha256:50dc273ab49890f2d8ba5fce2bf96ff794063eaaf5f1fe32c5099b352c3cdb09): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:449:5` `createWebNotificationBackend.scheduleNotification` (sha256:837768d3e66af3adc2253422191d0a326d394f56b5590736e751f45e52532a00): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/notification` `upstream/packages/notification/src/notification.ts:510:5` `createWebNotificationBackend.updateNotification` (sha256:2a79742c4469437d9f0d3ea7fce31a4fa5562509765377722fa95700acbaa0eb): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
 - `@flighthq/permissions` `upstream/packages/permissions/src/permission.ts:62:1` `readWebPermissionState` (sha256:92394438c09fe3ef27b9a9b1257f3a329ac1210b3a160a6e9d268193e7aec017): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
 - `@flighthq/permissions` `upstream/packages/permissions/src/permission.ts:98:1` `requestWebMediaPermission` (sha256:f3ac94fd061a45ce63c7fd5c2f4f40b37199f1707959250ad5ad32eaf96908ac): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
 - `@flighthq/permissions` `upstream/packages/permissions/src/permission.ts:110:1` `requestWebNotificationPermission` (sha256:7aaaa2831c88d31ed4fe57eab0b336f5d289962a28a0a65e1f1ae9372e67a59e): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
@@ -328,44 +536,44 @@ Disposition partition: 162 eligible = 0 portable executable + 0 host placeholder
 - `@flighthq/render-wgpu` `upstream/packages/render-wgpu/src/wgpuRenderState.ts:16:1` `createWgpuRenderState` (sha256:f307b9234dd0ff4f3ad7ab31be9b51f27d12ccdca81862275abe1da0f7c54223): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
 - `@flighthq/render-wgpu` `upstream/packages/render-wgpu/src/wgpuSurface.ts:42:1` `createSurfaceFromWgpuRenderState` (sha256:e104a245694e6ad30130cf83e51abcdd5ae2b9cee9c725396f948fc6b64ca994): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
 - `@flighthq/render-wgpu` `upstream/packages/render-wgpu/src/wgpuTestHelper.ts:126:1` `createWgpuRenderStateForTest` (sha256:f9405bf588a520e76d9533461a24c2d89bdfa42ddb1e5a5481805c3e94c03d5a): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/load3ds.ts:10:1` `loadSceneFrom3ds` (sha256:62b2b634bde65ac6779580bd1b61fe8e1792569b5483643ec23d59e6c9db6627): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/loadGltf.ts:15:1` `loadSceneFromGlb` (sha256:400507a514200080fcd85991bae9532f72a886de3a18b18bf97b65045bdbfcf3): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/loadGltf.ts:26:1` `loadSceneFromGltf` (sha256:e4e580f330d14c68b6e578d1c2b7d14d96ad54d0aa0bf1068fcbb0e0f4730700): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/loadGltf.ts:38:1` `loadScenesFromGlb` (sha256:a7a46d3671b3a3c6947a7d384f38c5192143f8a4c78213a457472d19b767e382): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/loadGltf.ts:49:1` `loadScenesFromGltf` (sha256:052e1ec05844e29919fc2d2f791c7fdd8a2c34fd3504133bc60f77cead54386a): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/loadMd2.ts:10:1` `loadSceneFromMd2` (sha256:ba309ecdccc4a085abc0de9298b5f85dce37a22e04ba3f5487e5706922da335a): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/loadMd5.ts:11:1` `loadSceneFromMd5Mesh` (sha256:78391bcc994260537e9fb1818bfb806390d32eae296f4e31d85e7e05eb42b346): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/loadObj.ts:11:1` `loadSceneFromObj` (sha256:02a9d0f93f83eaadeb6bd8fc039e36ffbe9c17e4777f31b13d2dad7c8201e494): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/loadSceneFromAwd.ts:11:1` `loadSceneFromAwd` (sha256:abb1d93ffbf72185621a1b9a65e7e14d47b57d4544431a40b37f1e012b6eb0c9): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/loadSceneOptions.ts:18:1` `resolveScenesWithOptions` (sha256:d497924e671808a5c6e0ea05abf7606e99edd904c0621946c20c2196dc7282f8): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
+- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/load3ds.ts:10:1` `loadSceneFrom3ds` (sha256:62b2b634bde65ac6779580bd1b61fe8e1792569b5483643ec23d59e6c9db6627): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution. Matched the legacy body-erasure path.
+- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/loadGltf.ts:15:1` `loadSceneFromGlb` (sha256:400507a514200080fcd85991bae9532f72a886de3a18b18bf97b65045bdbfcf3): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution. Matched the legacy body-erasure path.
+- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/loadGltf.ts:26:1` `loadSceneFromGltf` (sha256:e4e580f330d14c68b6e578d1c2b7d14d96ad54d0aa0bf1068fcbb0e0f4730700): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution. Matched the legacy body-erasure path.
+- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/loadGltf.ts:38:1` `loadScenesFromGlb` (sha256:a7a46d3671b3a3c6947a7d384f38c5192143f8a4c78213a457472d19b767e382): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution. Matched the legacy body-erasure path.
+- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/loadGltf.ts:49:1` `loadScenesFromGltf` (sha256:052e1ec05844e29919fc2d2f791c7fdd8a2c34fd3504133bc60f77cead54386a): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution. Matched the legacy body-erasure path.
+- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/loadMd2.ts:10:1` `loadSceneFromMd2` (sha256:ba309ecdccc4a085abc0de9298b5f85dce37a22e04ba3f5487e5706922da335a): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution. Matched the legacy body-erasure path.
+- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/loadMd5.ts:11:1` `loadSceneFromMd5Mesh` (sha256:78391bcc994260537e9fb1818bfb806390d32eae296f4e31d85e7e05eb42b346): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution. Matched the legacy body-erasure path.
+- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/loadObj.ts:11:1` `loadSceneFromObj` (sha256:02a9d0f93f83eaadeb6bd8fc039e36ffbe9c17e4777f31b13d2dad7c8201e494): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution. Matched the legacy body-erasure path.
+- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/loadSceneFromAwd.ts:11:1` `loadSceneFromAwd` (sha256:abb1d93ffbf72185621a1b9a65e7e14d47b57d4544431a40b37f1e012b6eb0c9): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution. Matched the legacy body-erasure path.
+- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/loadSceneOptions.ts:18:1` `resolveScenesWithOptions` (sha256:d497924e671808a5c6e0ea05abf7606e99edd904c0621946c20c2196dc7282f8): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution. Matched the legacy body-erasure path.
 - `@flighthq/scene-resources` `upstream/packages/scene-resources/src/resolveSceneResourcesAndWait.ts:11:1` `resolveSceneResourcesAndWait` (sha256:01d4fb1834e22cdd854c87bb0f29be00c98c500fffead4ca98d313698e08ac4e): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/sceneResourceFetch.ts:16:10` `createWebSceneResourceFetch.anonymous:9f4b5cebcd53` (sha256:9f4b5cebcd5355501bc1019c4824f842685156f59193b13a88232009afe2adc2): Portable task Rust lowering is not implemented.
-- `@flighthq/screen` `upstream/packages/screen/src/screen.ts:530:1` `getScreenDetailPermission` (sha256:d8cf40fc979d5a3f700e818acbaf83c4a8782cf0e2f81dbb95cae4928a164ea2): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/screen` `upstream/packages/screen/src/screen.ts:718:1` `requestScreenDetails` (sha256:b0810a06330b382391847f094e14db0df4a90f6bac18db9fac03a59be8a83ff4): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/sensors` `upstream/packages/sensors/src/sensors.ts:347:5` `createWebSensorsBackend.requestPermission` (sha256:a6b3f78082562059ef4444a5887aa326b0045614089c9750aee6061cbb35e0b1): Portable task Rust lowering is not implemented.
+- `@flighthq/scene-resources` `upstream/packages/scene-resources/src/sceneResourceFetch.ts:16:10` `createWebSceneResourceFetch.anonymous:9f4b5cebcd53` (sha256:9f4b5cebcd5355501bc1019c4824f842685156f59193b13a88232009afe2adc2): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/screen` `upstream/packages/screen/src/screen.ts:530:1` `getScreenDetailPermission` (sha256:d8cf40fc979d5a3f700e818acbaf83c4a8782cf0e2f81dbb95cae4928a164ea2): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution. Matched the legacy body-erasure path.
+- `@flighthq/screen` `upstream/packages/screen/src/screen.ts:718:1` `requestScreenDetails` (sha256:b0810a06330b382391847f094e14db0df4a90f6bac18db9fac03a59be8a83ff4): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution. Matched the legacy body-erasure path.
+- `@flighthq/sensors` `upstream/packages/sensors/src/sensors.ts:347:5` `createWebSensorsBackend.requestPermission` (sha256:a6b3f78082562059ef4444a5887aa326b0045614089c9750aee6061cbb35e0b1): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
 - `@flighthq/sensors` `upstream/packages/sensors/src/sensors.ts:734:1` `getWebSensorsPermissionState` (sha256:866595badad9bbaa0cb39468bdb48194a2b9d981244cb4e6c606ff225e7b0b56): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/share` `upstream/packages/share/src/share.ts:46:5` `createWebShareBackend.share` (sha256:4728f5341fa2d2ba2f77e4c2f40d7dec9804c802797d5c0dea14c9c428d2f5d3): Portable task Rust lowering is not implemented.
-- `@flighthq/share` `upstream/packages/share/src/share.ts:59:5` `createWebShareBackend.shareWithResult` (sha256:d92540756a8e0651e19dc368a8386c5e2cc648380251118f8741018a71be5c0b): Portable task Rust lowering is not implemented.
+- `@flighthq/share` `upstream/packages/share/src/share.ts:46:5` `createWebShareBackend.share` (sha256:4728f5341fa2d2ba2f77e4c2f40d7dec9804c802797d5c0dea14c9c428d2f5d3): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/share` `upstream/packages/share/src/share.ts:59:5` `createWebShareBackend.shareWithResult` (sha256:d92540756a8e0651e19dc368a8386c5e2cc648380251118f8741018a71be5c0b): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
 - `@flighthq/share` `upstream/packages/share/src/share.ts:139:1` `shareContentWithResult` (sha256:ba76d368b1f5ebbefb52b037c617fa083585461ece2d83dddd0202f8f742a613): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/shell` `upstream/packages/shell/src/shell.ts:17:5` `createWebShellBackend.moveItemsToTrash` (sha256:de9261ef6b76c66d51f7895db3dfa0166804fa12b1736d08906a77f5182c1b87): Portable task Rust lowering is not implemented.
-- `@flighthq/shell` `upstream/packages/shell/src/shell.ts:21:5` `createWebShellBackend.moveToTrash` (sha256:d49f2ab1646329f228fd4dbcae8c7a83f7680f02e37bbc9a7634a08e37d42bb2): Portable task Rust lowering is not implemented.
-- `@flighthq/shell` `upstream/packages/shell/src/shell.ts:25:5` `createWebShellBackend.openExternal` (sha256:84df5b77ebd9b072e2cd26f7bff3a72cca839047849058809b421e0a81065f02): Portable task Rust lowering is not implemented.
-- `@flighthq/shell` `upstream/packages/shell/src/shell.ts:35:5` `createWebShellBackend.openPath` (sha256:717eb0cd4068de15dd3ed0c325d82ec9dfed0853bb8e991f90076d7c75a7d2da): Portable task Rust lowering is not implemented.
-- `@flighthq/shell` `upstream/packages/shell/src/shell.ts:39:5` `createWebShellBackend.openPathResult` (sha256:bdb09806443cc7816c45a1fec4a7f4e82c8492dc705a8ad8e5a4fb9311cc42af): Portable task Rust lowering is not implemented.
-- `@flighthq/shell` `upstream/packages/shell/src/shell.ts:43:5` `createWebShellBackend.readShortcutLink` (sha256:28ee120b9dd12b1d1bc09290ffe3c3841168d6a5fd616a57d0742ccd122fcdba): Portable task Rust lowering is not implemented.
-- `@flighthq/shell` `upstream/packages/shell/src/shell.ts:47:5` `createWebShellBackend.showItemInFolder` (sha256:37927761ccb0dd5a1883348de59ab8661eeee77fab2399832f77c3e33bcceb82): Portable task Rust lowering is not implemented.
-- `@flighthq/shell` `upstream/packages/shell/src/shell.ts:51:5` `createWebShellBackend.writeShortcutLink` (sha256:96c84cc788fa871527bacbf8f9a95bdb0218b2c55f5bca0890761378620eb3c6): Portable task Rust lowering is not implemented.
+- `@flighthq/shell` `upstream/packages/shell/src/shell.ts:17:5` `createWebShellBackend.moveItemsToTrash` (sha256:de9261ef6b76c66d51f7895db3dfa0166804fa12b1736d08906a77f5182c1b87): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/shell` `upstream/packages/shell/src/shell.ts:21:5` `createWebShellBackend.moveToTrash` (sha256:d49f2ab1646329f228fd4dbcae8c7a83f7680f02e37bbc9a7634a08e37d42bb2): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/shell` `upstream/packages/shell/src/shell.ts:25:5` `createWebShellBackend.openExternal` (sha256:84df5b77ebd9b072e2cd26f7bff3a72cca839047849058809b421e0a81065f02): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/shell` `upstream/packages/shell/src/shell.ts:35:5` `createWebShellBackend.openPath` (sha256:717eb0cd4068de15dd3ed0c325d82ec9dfed0853bb8e991f90076d7c75a7d2da): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/shell` `upstream/packages/shell/src/shell.ts:39:5` `createWebShellBackend.openPathResult` (sha256:bdb09806443cc7816c45a1fec4a7f4e82c8492dc705a8ad8e5a4fb9311cc42af): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/shell` `upstream/packages/shell/src/shell.ts:43:5` `createWebShellBackend.readShortcutLink` (sha256:28ee120b9dd12b1d1bc09290ffe3c3841168d6a5fd616a57d0742ccd122fcdba): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/shell` `upstream/packages/shell/src/shell.ts:47:5` `createWebShellBackend.showItemInFolder` (sha256:37927761ccb0dd5a1883348de59ab8661eeee77fab2399832f77c3e33bcceb82): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
+- `@flighthq/shell` `upstream/packages/shell/src/shell.ts:51:5` `createWebShellBackend.writeShortcutLink` (sha256:96c84cc788fa871527bacbf8f9a95bdb0218b2c55f5bca0890761378620eb3c6): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
 - `@flighthq/storage` `upstream/packages/storage/src/storage.ts:309:1` `getStorageQuotaEstimate` (sha256:bb6e6e61ce277610234cf0eb3e4794ff7a72f5694637f41d5f9169471ac85241): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/textureatlas` `upstream/packages/textureatlas/src/textureAtlasFrom.ts:30:1` `loadTextureAtlasFromBase64` (sha256:c3b8831bbb577f82b4ecd77ec700c8eb9c03989c66a46b55c9a8dc00a57228c4): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/textureatlas` `upstream/packages/textureatlas/src/textureAtlasFrom.ts:38:1` `loadTextureAtlasFromBlob` (sha256:7f84b1d162a9f648364d02ce2871669e570676045f31e732203694a2ca574321): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/textureatlas` `upstream/packages/textureatlas/src/textureAtlasFrom.ts:42:1` `loadTextureAtlasFromBytes` (sha256:6ac6dc7033bfcd7d150920334b8cc158aa2fd830661a0084495ba72fdc98574b): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/textureatlas` `upstream/packages/textureatlas/src/textureAtlasFrom.ts:50:1` `loadTextureAtlasFromUrl` (sha256:e7a6e6d985a77feeffa76d7f124f2033cf98759af424baec6ff02000912842ad): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/tileset` `upstream/packages/tileset/src/tilesetFrom.ts:42:1` `loadTilesetFromBase64` (sha256:ace18fa5f17b2f42f62ad5efc04ce0728152e40de50ca09ad6d2f4e5fe2e982b): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/tileset` `upstream/packages/tileset/src/tilesetFrom.ts:60:1` `loadTilesetFromBlob` (sha256:36a767bf7e046eb72890abb39757391b694908b4556fb161934e8c759b4b8fa7): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/tileset` `upstream/packages/tileset/src/tilesetFrom.ts:77:1` `loadTilesetFromBytes` (sha256:3977b4718275eb6dd4585d28eebd7a18346623d8f300e108fbc55429e97473b1): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/tileset` `upstream/packages/tileset/src/tilesetFrom.ts:95:1` `loadTilesetFromUrl` (sha256:a92858f561134da3392997d41a495f068693bf0f134207e5a37005b85e48d375): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
+- `@flighthq/textureatlas` `upstream/packages/textureatlas/src/textureAtlasFrom.ts:30:1` `loadTextureAtlasFromBase64` (sha256:c3b8831bbb577f82b4ecd77ec700c8eb9c03989c66a46b55c9a8dc00a57228c4): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution. Matched the legacy body-erasure path.
+- `@flighthq/textureatlas` `upstream/packages/textureatlas/src/textureAtlasFrom.ts:38:1` `loadTextureAtlasFromBlob` (sha256:7f84b1d162a9f648364d02ce2871669e570676045f31e732203694a2ca574321): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution. Matched the legacy body-erasure path.
+- `@flighthq/textureatlas` `upstream/packages/textureatlas/src/textureAtlasFrom.ts:42:1` `loadTextureAtlasFromBytes` (sha256:6ac6dc7033bfcd7d150920334b8cc158aa2fd830661a0084495ba72fdc98574b): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution. Matched the legacy body-erasure path.
+- `@flighthq/textureatlas` `upstream/packages/textureatlas/src/textureAtlasFrom.ts:50:1` `loadTextureAtlasFromUrl` (sha256:e7a6e6d985a77feeffa76d7f124f2033cf98759af424baec6ff02000912842ad): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution. Matched the legacy body-erasure path.
+- `@flighthq/tileset` `upstream/packages/tileset/src/tilesetFrom.ts:42:1` `loadTilesetFromBase64` (sha256:ace18fa5f17b2f42f62ad5efc04ce0728152e40de50ca09ad6d2f4e5fe2e982b): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution. Matched the legacy body-erasure path.
+- `@flighthq/tileset` `upstream/packages/tileset/src/tilesetFrom.ts:60:1` `loadTilesetFromBlob` (sha256:36a767bf7e046eb72890abb39757391b694908b4556fb161934e8c759b4b8fa7): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution. Matched the legacy body-erasure path.
+- `@flighthq/tileset` `upstream/packages/tileset/src/tilesetFrom.ts:77:1` `loadTilesetFromBytes` (sha256:3977b4718275eb6dd4585d28eebd7a18346623d8f300e108fbc55429e97473b1): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution. Matched the legacy body-erasure path.
+- `@flighthq/tileset` `upstream/packages/tileset/src/tilesetFrom.ts:95:1` `loadTilesetFromUrl` (sha256:a92858f561134da3392997d41a495f068693bf0f134207e5a37005b85e48d375): Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution. Matched the legacy body-erasure path.
 - `@flighthq/video` `upstream/packages/video/src/videoResourceFrom.ts:16:1` `loadVideoResourceFromBlob` (sha256:cf1a5afd32e8d470ddd095cd5892c72e20beabfedc58404d1535e49d2fffad9b): Portable task Rust lowering is not implemented. Matched the legacy body-erasure path.
-- `@flighthq/webcam` `upstream/packages/webcam/src/webcam.ts:78:5` `createWebWebcamBackend.requestPermission` (sha256:9b066b5933be33c0c78cc297fd5270583ed6782749630182731a3b9979cd16cd): Portable task Rust lowering is not implemented.
+- `@flighthq/webcam` `upstream/packages/webcam/src/webcam.ts:78:5` `createWebWebcamBackend.requestPermission` (sha256:9b066b5933be33c0c78cc297fd5270583ed6782749630182731a3b9979cd16cd): Async output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.
 
 ## Generated upstream conformance
 
@@ -399,15 +607,20 @@ Disposition partition: 162 eligible = 0 portable executable + 0 host placeholder
 
 ## Blockers
 
+### `@flighthq/app`
+
+- **package** `upstream/packages/app/src`: Generated crate is missing 42 of 42 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/app/src/app.ts`: createWebAppBackend: taskThen Rust lowering is reserved for Pass 27 Stage 4
+
 ### `@flighthq/assets`
 
 - **package** `upstream/packages/assets/src`: Generated crate is missing 10 of 10 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/assets/src/assetLibrary.ts`: loadAssetGroup: upstream/packages/assets/src/assetLibrary.ts:103:1: portableTask loadAssetGroup: Portable task Rust lowering is not implemented.
+- **emission** `upstream/packages/assets/src/assetLibrary.ts`: acquireAsset: taskThen Rust lowering is reserved for Pass 27 Stage 4
 
 ### `@flighthq/audio`
 
 - **package** `upstream/packages/audio/src`: Generated crate is missing 7 of 20 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/audio/src/audioResourceFrom.ts`: loadAudioResourceFromBase64: upstream/packages/audio/src/audioResourceFrom.ts:24:1: portableTask loadAudioResourceFromBase64: Portable task Rust lowering is not implemented.
+- **emission** `upstream/packages/audio/src/audioResourceFrom.ts`: loadAudioResourceFromBlob: upstream/packages/audio/src/audioResourceFrom.ts:41:23: await value type is not recovered
 
 ### `@flighthq/binpack`
 
@@ -625,9 +838,9 @@ Disposition partition: 162 eligible = 0 portable executable + 0 host placeholder
 ### `@flighthq/font`
 
 - **package** `upstream/packages/font/src`: Generated crate is missing 10 of 15 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/font/src/fontFrom.ts`: loadFontFromBytes: upstream/packages/font/src/fontFrom.ts:7:1: portableTask loadFontFromBytes: Portable task Rust lowering is not implemented.
-- **emission** `upstream/packages/font/src/fontResourceFrom.ts`: loadFontResourceFromBytes: upstream/packages/font/src/fontResourceFrom.ts:6:1: portableTask loadFontResourceFromBytes: Portable task Rust lowering is not implemented.
-- **emission** `upstream/packages/font/src/fontStatus.ts`: whenFontsReady: upstream/packages/font/src/fontStatus.ts:7:1: portableTask whenFontsReady: Portable task Rust lowering is not implemented.
+- **emission** `upstream/packages/font/src/fontFrom.ts`: loadFontFromBytes: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
+- **emission** `upstream/packages/font/src/fontResourceFrom.ts`: loadFontResourceFromBytes: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
+- **emission** `upstream/packages/font/src/fontStatus.ts`: whenFontsReady: upstream/packages/font/src/fontStatus.ts:8:3: await value type is not recovered
 
 ### `@flighthq/geolocation`
 
@@ -637,13 +850,11 @@ Disposition partition: 162 eligible = 0 portable executable + 0 host placeholder
 ### `@flighthq/image`
 
 - **package** `upstream/packages/image/src`: Generated crate is missing 9 of 20 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/image/src/imageResourceFrom.ts`: loadImageResourceFromBase64: upstream/packages/image/src/imageResourceFrom.ts:70:1: portableTask loadImageResourceFromBase64: Portable task Rust lowering is not implemented.
+- **emission** `upstream/packages/image/src/imageResourceFrom.ts`: loadImageResourceFromBlob: loadImageResourceFromBlob: portable task has a non-void output without a guaranteed return
 
 ### `@flighthq/image-codec`
 
-- **package** `upstream/packages/image-codec/src`: Generated crate is missing 5 of 16 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/image-codec/src/decodeImage.ts`: decodeImage: upstream/packages/image-codec/src/decodeImage.ts:9:1: portableTask decodeImage: Portable task Rust lowering is not implemented.
-- **emission** `upstream/packages/image-codec/src/encodeImage.ts`: encodeImage: upstream/packages/image-codec/src/encodeImage.ts:7:1: portableTask encodeImage: Portable task Rust lowering is not implemented.
+- **package** `upstream/packages/image-codec/src`: Generated crate is missing 2 of 16 upstream exports; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/image-codec/src/registerWebImageDecoders.ts`: decodeImageWithCanvas: upstream/packages/image-codec/src/registerWebImageDecoders.ts:18:45: portableTask decodeImageWithCanvas: Portable task Rust lowering is not implemented.
 - **emission** `upstream/packages/image-codec/src/registerWebImageEncoders.ts`: createCanvasImageEncoder: upstream/packages/image-codec/src/registerWebImageEncoders.ts:16:10: portableTask createCanvasImageEncoder.anonymous:7c4dbd1c1e56: Portable task Rust lowering is not implemented.
 
@@ -680,12 +891,12 @@ Disposition partition: 162 eligible = 0 portable executable + 0 host placeholder
 ### `@flighthq/ipc`
 
 - **package** `upstream/packages/ipc/src`: Generated crate is missing 17 of 17 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/ipc/src/ipc.ts`: invokeIpcWithTimeout: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
+- **emission** `upstream/packages/ipc/src/ipc.ts`: createWebIpcBackend: upstream/packages/ipc/src/ipc.ts:59:14: taskReady output type is not recovered
 
 ### `@flighthq/loader`
 
 - **package** `upstream/packages/loader/src`: Generated crate is missing 13 of 13 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/loader/src/resourceLoader.ts`: cancelResourceLoad: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
+- **emission** `upstream/packages/loader/src/resourceLoader.ts`: _noopLoad: upstream/packages/loader/src/resourceLoader.ts:70:10: taskReady output type is not recovered
 
 ### `@flighthq/log`
 
@@ -700,7 +911,7 @@ Disposition partition: 162 eligible = 0 portable executable + 0 host placeholder
 ### `@flighthq/menu`
 
 - **package** `upstream/packages/menu/src`: Generated crate is missing 11 of 17 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/menu/src/menu.ts`: showWebContextMenu: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
+- **emission** `upstream/packages/menu/src/menu.ts`: showContextMenu: taskThen Rust lowering is reserved for Pass 27 Stage 4
 
 ### `@flighthq/net`
 
@@ -749,11 +960,16 @@ Disposition partition: 162 eligible = 0 portable executable + 0 host placeholder
 ### `@flighthq/permissions`
 
 - **package** `upstream/packages/permissions/src`: Generated crate is missing 5 of 5 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/permissions/src/permission.ts`: readWebPermissionState: upstream/packages/permissions/src/permission.ts:62:1: portableTask readWebPermissionState: Portable task Rust lowering is not implemented.
+- **emission** `upstream/packages/permissions/src/permission.ts`: readWebPermissionState: portable task try/catch lowering is reserved for Pass 27 Stage 4
 
 ### `@flighthq/picking`
 
 - **emission** `upstream/packages/picking/src/pickScene.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (1 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+
+### `@flighthq/power`
+
+- **package** `upstream/packages/power/src`: Generated crate is missing 19 of 19 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/power/src/power.ts`: createWebPowerBackend: taskThen Rust lowering is reserved for Pass 27 Stage 4
 
 ### `@flighthq/render`
 
@@ -779,9 +995,9 @@ Disposition partition: 162 eligible = 0 portable executable + 0 host placeholder
 ### `@flighthq/render-wgpu`
 
 - **package** `upstream/packages/render-wgpu/src`: Generated crate is missing 10 of 68 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/render-wgpu/src/wgpuRenderState.ts`: createWgpuRenderState: upstream/packages/render-wgpu/src/wgpuRenderState.ts:16:1: portableTask createWgpuRenderState: Portable task Rust lowering is not implemented.
-- **emission** `upstream/packages/render-wgpu/src/wgpuSurface.ts`: createSurfaceFromWgpuRenderState: upstream/packages/render-wgpu/src/wgpuSurface.ts:42:1: portableTask createSurfaceFromWgpuRenderState: Portable task Rust lowering is not implemented.
-- **emission** `upstream/packages/render-wgpu/src/wgpuTestHelper.ts`: createWgpuRenderStateForTest: upstream/packages/render-wgpu/src/wgpuTestHelper.ts:126:1: portableTask createWgpuRenderStateForTest: Portable task Rust lowering is not implemented.
+- **emission** `upstream/packages/render-wgpu/src/wgpuRenderState.ts`: createWgpuRenderState: portable task throw/rejection lowering is reserved for Pass 27 Stage 4
+- **emission** `upstream/packages/render-wgpu/src/wgpuSurface.ts`: createSurfaceFromWgpuRenderState: portable task throw/rejection lowering is reserved for Pass 27 Stage 4
+- **emission** `upstream/packages/render-wgpu/src/wgpuTestHelper.ts`: makeAdapter: upstream/packages/render-wgpu/src/wgpuTestHelper.ts:122:26: taskReady output type is not recovered
 
 ### `@flighthq/scene`
 
@@ -813,21 +1029,22 @@ Disposition partition: 162 eligible = 0 portable executable + 0 host placeholder
 
 ### `@flighthq/scene-resources`
 
-- **package** `upstream/packages/scene-resources/src`: Generated crate is missing 15 of 37 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/scene-resources/src/load3ds.ts`: loadSceneFrom3ds: upstream/packages/scene-resources/src/load3ds.ts:10:1: portableTask loadSceneFrom3ds: Portable task Rust lowering is not implemented.
-- **emission** `upstream/packages/scene-resources/src/loadGltf.ts`: loadSceneFromGlb: upstream/packages/scene-resources/src/loadGltf.ts:15:1: portableTask loadSceneFromGlb: Portable task Rust lowering is not implemented.
-- **emission** `upstream/packages/scene-resources/src/loadMd2.ts`: loadSceneFromMd2: upstream/packages/scene-resources/src/loadMd2.ts:10:1: portableTask loadSceneFromMd2: Portable task Rust lowering is not implemented.
-- **emission** `upstream/packages/scene-resources/src/loadMd5.ts`: loadSceneFromMd5Mesh: upstream/packages/scene-resources/src/loadMd5.ts:11:1: portableTask loadSceneFromMd5Mesh: Portable task Rust lowering is not implemented.
-- **emission** `upstream/packages/scene-resources/src/loadObj.ts`: loadSceneFromObj: upstream/packages/scene-resources/src/loadObj.ts:11:1: portableTask loadSceneFromObj: Portable task Rust lowering is not implemented.
-- **emission** `upstream/packages/scene-resources/src/loadSceneFromAwd.ts`: loadSceneFromAwd: upstream/packages/scene-resources/src/loadSceneFromAwd.ts:11:1: portableTask loadSceneFromAwd: Portable task Rust lowering is not implemented.
-- **emission** `upstream/packages/scene-resources/src/loadSceneOptions.ts`: resolveScenesWithOptions: upstream/packages/scene-resources/src/loadSceneOptions.ts:18:1: portableTask resolveScenesWithOptions: Portable task Rust lowering is not implemented.
-- **emission** `upstream/packages/scene-resources/src/resolveSceneResourcesAndWait.ts`: resolveSceneResourcesAndWait: upstream/packages/scene-resources/src/resolveSceneResourcesAndWait.ts:11:1: portableTask resolveSceneResourcesAndWait: Portable task Rust lowering is not implemented.
+- **package** `upstream/packages/scene-resources/src`: Generated crate is missing 18 of 37 upstream exports; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/scene-resources/src/load3ds.ts`: Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
+- **emission** `upstream/packages/scene-resources/src/loadGltf.ts`: Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
+- **emission** `upstream/packages/scene-resources/src/loadMd2.ts`: Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
+- **emission** `upstream/packages/scene-resources/src/loadMd5.ts`: Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
+- **emission** `upstream/packages/scene-resources/src/loadObj.ts`: Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
+- **emission** `upstream/packages/scene-resources/src/loadSceneFromAwd.ts`: Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
+- **emission** `upstream/packages/scene-resources/src/loadSceneOptions.ts`: Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
+- **emission** `upstream/packages/scene-resources/src/resolveSceneResources.ts`: requestWorkingResolutions: taskThen Rust lowering is reserved for Pass 27 Stage 4
+- **emission** `upstream/packages/scene-resources/src/resolveSceneResourcesAndWait.ts`: resolveSceneResourcesAndWait: upstream/packages/scene-resources/src/resolveSceneResourcesAndWait.ts:19:3: await value type is not recovered
 - **emission** `upstream/packages/scene-resources/src/sceneResourceFetch.ts`: createWebSceneResourceFetch: upstream/packages/scene-resources/src/sceneResourceFetch.ts:16:10: portableTask createWebSceneResourceFetch.anonymous:9f4b5cebcd53: Portable task Rust lowering is not implemented.
 
 ### `@flighthq/screen`
 
 - **package** `upstream/packages/screen/src`: Generated crate is missing 31 of 31 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/screen/src/screen.ts`: getScreenDetailPermission: upstream/packages/screen/src/screen.ts:530:1: portableTask getScreenDetailPermission: Portable task Rust lowering is not implemented.
+- **emission** `upstream/packages/screen/src/screen.ts`: Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
 
 ### `@flighthq/sdk`
 
@@ -883,7 +1100,7 @@ Disposition partition: 162 eligible = 0 portable executable + 0 host placeholder
 ### `@flighthq/storage`
 
 - **package** `upstream/packages/storage/src`: Generated crate is missing 39 of 39 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/storage/src/storage.ts`: getStorageQuotaEstimate: upstream/packages/storage/src/storage.ts:309:1: portableTask getStorageQuotaEstimate: Portable task Rust lowering is not implemented.
+- **emission** `upstream/packages/storage/src/storage.ts`: setStorageJSON: JSON.stringify requires a portable scalar or structural array
 
 ### `@flighthq/text`
 
@@ -907,7 +1124,7 @@ Disposition partition: 162 eligible = 0 portable executable + 0 host placeholder
 ### `@flighthq/textureatlas`
 
 - **package** `upstream/packages/textureatlas/src`: Generated crate is missing 8 of 20 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/textureatlas/src/textureAtlasFrom.ts`: loadTextureAtlasFromBase64: upstream/packages/textureatlas/src/textureAtlasFrom.ts:30:1: portableTask loadTextureAtlasFromBase64: Portable task Rust lowering is not implemented.
+- **emission** `upstream/packages/textureatlas/src/textureAtlasFrom.ts`: Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
 
 ### `@flighthq/tilemap-formats`
 
@@ -919,7 +1136,7 @@ Disposition partition: 162 eligible = 0 portable executable + 0 host placeholder
 ### `@flighthq/tileset`
 
 - **package** `upstream/packages/tileset/src`: Generated crate is missing 6 of 9 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/tileset/src/tilesetFrom.ts`: loadTilesetFromBase64: upstream/packages/tileset/src/tilesetFrom.ts:42:1: portableTask loadTilesetFromBase64: Portable task Rust lowering is not implemented.
+- **emission** `upstream/packages/tileset/src/tilesetFrom.ts`: Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
 
 ### `@flighthq/tray`
 
@@ -938,7 +1155,7 @@ Disposition partition: 162 eligible = 0 portable executable + 0 host placeholder
 ### `@flighthq/video`
 
 - **package** `upstream/packages/video/src`: Generated crate is missing 4 of 16 upstream exports; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/video/src/videoResourceFrom.ts`: loadVideoResourceFromBlob: upstream/packages/video/src/videoResourceFrom.ts:16:1: portableTask loadVideoResourceFromBlob: Portable task Rust lowering is not implemented.
+- **emission** `upstream/packages/video/src/videoResourceFrom.ts`: loadVideoResourceFromBlob: loadVideoResourceFromBlob: portable task has a non-void output without a guaranteed return
 
 ### `@flighthq/webcam`
 
@@ -992,6 +1209,11 @@ Disposition partition: 162 eligible = 0 portable executable + 0 host placeholder
 - **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
 - **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
 - **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+
+### `@flighthq/application`
+
+- **E0277** `generated/candidates/flighthq-application/src/window.rs`: the trait bound `FlightTask<()>: Default` is not satisfied
+- **E0277** `generated/candidates/flighthq-application/src/window.rs`: the trait bound `FlightTask<()>: Default` is not satisfied
 
 ### `@flighthq/clip`
 
@@ -1140,6 +1362,11 @@ Disposition partition: 162 eligible = 0 portable executable + 0 host placeholder
 - **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
 - **E0599** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: no method named `iter` found for reference `&RenderEffect` in the current scope
 - **E0070** `generated/candidates/flighthq-effects/src/render_effect_interpolation.rs`: invalid left-hand side of assignment
+
+### `@flighthq/input`
+
+- **E0432** `generated/candidates/flighthq-input/src/input_manager.rs`: unresolved import `flighthq_host_signals`
+- **E0277** `generated/candidates/flighthq-input/src/input_manager.rs`: the trait bound `FlightTask<bool>: Default` is not satisfied
 
 ### `@flighthq/materials`
 
@@ -1802,31 +2029,31 @@ Disposition partition: 162 eligible = 0 portable executable + 0 host placeholder
 - **E0425** `generated/candidates/flighthq-xml/src/xml_parse.rs`: cannot find value `string` in this scope
 - **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
 - **E0599** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no method named `is_some` found for enum `OpaqueHostValue` in the current scope
-- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: can't compare `String` with `OpaqueHostValue`
+- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: can't compare `std::string::String` with `OpaqueHostValue`
 - **E0070** `generated/candidates/flighthq-xml/src/xml_parse.rs`: invalid left-hand side of assignment
 - **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
 - **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
 - **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
 - **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
-- **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `index_of` on type `String`
+- **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `index_of` on type `std::string::String`
 - **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
-- **E0600** `generated/candidates/flighthq-xml/src/xml_parse.rs`: cannot apply unary operator `!` to type `String`
+- **E0600** `generated/candidates/flighthq-xml/src/xml_parse.rs`: cannot apply unary operator `!` to type `std::string::String`
 - **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
 - **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
-- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
 - **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
 - **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
 - **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
-- **E0615** `generated/candidates/flighthq-xml/src/xml_parse.rs`: attempted to take value of method `trim` on type `String`
+- **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
+- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
+- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
+- **E0615** `generated/candidates/flighthq-xml/src/xml_parse.rs`: attempted to take value of method `trim` on type `std::string::String`
 - **E0368** `generated/candidates/flighthq-xml/src/xml_parse.rs`: binary assignment operation `+=` cannot be applied to type `&str`
 - **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
 - **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
 - **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
 - **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
-- **E0599** `generated/candidates/flighthq-xml/src/xml_query.rs`: no method named `is_some` found for struct `String` in the current scope
-- **E0599** `generated/candidates/flighthq-xml/src/xml_query.rs`: no method named `is_none` found for struct `String` in the current scope
+- **E0599** `generated/candidates/flighthq-xml/src/xml_query.rs`: no method named `is_some` found for struct `std::string::String` in the current scope
+- **E0599** `generated/candidates/flighthq-xml/src/xml_query.rs`: no method named `is_none` found for struct `std::string::String` in the current scope
 - **E0425** `generated/candidates/flighthq-xml/src/xml_query.rs`: cannot find function `number` in this scope
 - **E0609** `generated/candidates/flighthq-xml/src/xml_query.rs`: no field `filter` on type `Vec<xml_parse::XmlElement>`
 - **E0308** `generated/candidates/flighthq-xml/src/xml_query.rs`: mismatched types

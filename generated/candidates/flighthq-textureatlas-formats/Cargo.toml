@@ -10,6 +10,7 @@ publish = false
 path = "src/lib.rs"
 
 [dependencies]
+flighthq-runtime = { path = "../../crates/flighthq-runtime" }
 flighthq-textureatlas = { path = "../flighthq-textureatlas" }
 flighthq-types = { path = "../../crates/flighthq-types" }
 flighthq-xml = { path = "../flighthq-xml" }

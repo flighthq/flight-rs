@@ -10,4 +10,5 @@ publish = false
 path = "src/lib.rs"
 
 [dependencies]
+flighthq-runtime = { path = "../../crates/flighthq-runtime" }
 regex = "1"

@@ -9,14 +9,14 @@ publish = false
 path = "src/lib.rs"
 
 [dependencies]
-flighthq-application = { path = "../../generated/candidates/flighthq-application" }
+flighthq-application = { path = "../../generated/crates/flighthq-application" }
 flighthq-device = { path = "../../generated/candidates/flighthq-device" }
 flighthq-haptics = { path = "../../generated/candidates/flighthq-haptics" }
-flighthq-input = { path = "../../generated/candidates/flighthq-input" }
+flighthq-input = { path = "../../generated/crates/flighthq-input" }
 flighthq-keyboard = { path = "../../generated/candidates/flighthq-keyboard" }
 flighthq-lifecycle = { path = "../../generated/candidates/flighthq-lifecycle" }
 flighthq-platform = { path = "../../generated/candidates/flighthq-platform" }
-flighthq-power = { path = "../../generated/candidates/flighthq-power" }
+flighthq-power = { path = "../../generated/crates/flighthq-power" }
 flighthq-screen = { path = "../../generated/crates/flighthq-screen" }
 flighthq-types = { path = "../../generated/crates/flighthq-types" }
 

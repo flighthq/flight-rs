@@ -21,6 +21,7 @@ fn resource() -> ImageResource {
 
 #[test]
 fn portable_resource_queries_match_the_typescript_contract() {
+    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     let image = resource();
     assert!(has_image_resource_data(&image));
     assert!(has_image_resource_pixels(&image));
@@ -30,6 +31,7 @@ fn portable_resource_queries_match_the_typescript_contract() {
 
 #[test]
 fn mutation_uses_borrowed_identity_and_increments_version() {
+    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     let mut image = resource();
     invalidate_image_resource(&mut image);
     assert_eq!(image.version, 8.0);

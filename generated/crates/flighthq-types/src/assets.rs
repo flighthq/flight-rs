@@ -36,7 +36,7 @@ pub struct AssetLoaderAdapter<T> {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub load: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(AssetDescriptor) -> crate::Promise<T> + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut(AssetDescriptor) -> crate::FlightTask<T> + Send + 'static>>,
     >,
     pub dispose: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(T) -> () + Send + 'static>>>,
 }
@@ -53,7 +53,7 @@ pub struct AssetEntry {
     pub __flight_identity: std::sync::Arc<()>,
     pub value: crate::OpaqueHostValue,
     pub refcount: f64,
-    pub load_promise: Option<crate::Promise<crate::OpaqueHostValue>>,
+    pub load_promise: Option<crate::FlightTask<crate::OpaqueHostValue>>,
     pub resident: bool,
 }
 impl PartialEq for AssetEntry {

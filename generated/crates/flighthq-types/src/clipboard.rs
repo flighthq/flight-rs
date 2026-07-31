@@ -40,71 +40,80 @@ pub struct ClipboardBackend {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub read_text: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut() -> crate::Promise<String> + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut() -> crate::FlightTask<String> + Send + 'static>>,
     >,
     pub write_text: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String) -> crate::Promise<bool> + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut(String) -> crate::FlightTask<bool> + Send + 'static>>,
     >,
     pub read_html: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut() -> crate::Promise<String> + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut() -> crate::FlightTask<String> + Send + 'static>>,
     >,
     pub write_html: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String) -> crate::Promise<bool> + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut(String) -> crate::FlightTask<bool> + Send + 'static>>,
     >,
-    pub has_text:
-        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> crate::Promise<bool> + Send + 'static>>>,
+    pub has_text: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut() -> crate::FlightTask<bool> + Send + 'static>>,
+    >,
     pub read_image: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut() -> crate::Promise<String> + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut() -> crate::FlightTask<String> + Send + 'static>>,
     >,
     pub write_image: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String) -> crate::Promise<bool> + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut(String) -> crate::FlightTask<bool> + Send + 'static>>,
     >,
-    pub has_image:
-        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> crate::Promise<bool> + Send + 'static>>>,
+    pub has_image: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut() -> crate::FlightTask<bool> + Send + 'static>>,
+    >,
     pub read_rtf: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut() -> crate::Promise<String> + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut() -> crate::FlightTask<String> + Send + 'static>>,
     >,
     pub write_rtf: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String) -> crate::Promise<bool> + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut(String) -> crate::FlightTask<bool> + Send + 'static>>,
     >,
     pub read_bookmark: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut() -> crate::Promise<Option<ClipboardBookmark>> + Send + 'static>,
+            Box<dyn FnMut() -> crate::FlightTask<Option<ClipboardBookmark>> + Send + 'static>,
         >,
     >,
     pub write_bookmark: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String, String) -> crate::Promise<bool> + Send + 'static>>,
+        std::sync::Mutex<
+            Box<dyn FnMut(String, String) -> crate::FlightTask<bool> + Send + 'static>,
+        >,
     >,
     pub read_format: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String) -> crate::Promise<String> + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut(String) -> crate::FlightTask<String> + Send + 'static>>,
     >,
     pub write_format: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String, String) -> crate::Promise<bool> + Send + 'static>>,
+        std::sync::Mutex<
+            Box<dyn FnMut(String, String) -> crate::FlightTask<bool> + Send + 'static>,
+        >,
     >,
     pub has_format: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String) -> crate::Promise<bool> + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut(String) -> crate::FlightTask<bool> + Send + 'static>>,
     >,
     pub get_formats: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut() -> crate::Promise<Vec<String>> + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut() -> crate::FlightTask<Vec<String>> + Send + 'static>>,
     >,
     pub read_items: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(Vec<String>) -> crate::Promise<Vec<(String, String)>> + Send + 'static>,
+            Box<
+                dyn FnMut(Vec<String>) -> crate::FlightTask<Vec<(String, String)>> + Send + 'static,
+            >,
         >,
     >,
     pub write_items: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(Vec<ClipboardWriteItem>) -> crate::Promise<bool> + Send + 'static>,
+            Box<dyn FnMut(Vec<ClipboardWriteItem>) -> crate::FlightTask<bool> + Send + 'static>,
         >,
     >,
     pub read_files: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut() -> crate::Promise<Vec<String>> + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut() -> crate::FlightTask<Vec<String>> + Send + 'static>>,
     >,
     pub write_files: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(Vec<String>) -> crate::Promise<bool> + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut(Vec<String>) -> crate::FlightTask<bool> + Send + 'static>>,
     >,
-    pub clear:
-        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> crate::Promise<bool> + Send + 'static>>>,
+    pub clear: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut() -> crate::FlightTask<bool> + Send + 'static>>,
+    >,
     pub get_change_count:
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> f64 + Send + 'static>>>,
     pub subscribe_clipboard_change: std::sync::Arc<

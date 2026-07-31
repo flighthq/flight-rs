@@ -10,5 +10,5 @@ publish = false
 path = "src/lib.rs"
 
 [dependencies]
-flighthq-signals = { path = "../flighthq-signals" }
+flighthq-runtime = { path = "../../crates/flighthq-runtime" }
 flighthq-types = { path = "../../crates/flighthq-types" }

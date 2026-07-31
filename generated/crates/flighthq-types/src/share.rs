@@ -64,7 +64,7 @@ pub struct ShareBackend {
     pub share: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(ShareContent, Option<ShareOptions>) -> crate::Promise<bool>
+                dyn FnMut(ShareContent, Option<ShareOptions>) -> crate::FlightTask<bool>
                     + Send
                     + 'static,
             >,
@@ -73,7 +73,7 @@ pub struct ShareBackend {
     pub share_with_result: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(ShareContent, Option<ShareOptions>) -> crate::Promise<ShareResult>
+                dyn FnMut(ShareContent, Option<ShareOptions>) -> crate::FlightTask<ShareResult>
                     + Send
                     + 'static,
             >,

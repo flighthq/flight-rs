@@ -13,5 +13,6 @@ path = "src/lib.rs"
 flighthq-displayobject = { path = "../flighthq-displayobject" }
 flighthq-geometry = { path = "../flighthq-geometry" }
 flighthq-node = { path = "../flighthq-node" }
+flighthq-runtime = { path = "../../crates/flighthq-runtime" }
 flighthq-signals = { path = "../flighthq-signals" }
 flighthq-types = { path = "../../crates/flighthq-types" }

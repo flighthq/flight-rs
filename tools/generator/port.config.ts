@@ -300,6 +300,93 @@ export const portConfig = {
       typeMappings: {},
     },
     {
+      crate: 'flighthq-application',
+      declarationSelection: {
+        'application.ts': {
+          names: ['_loopBackend', 'setLoopBackend'],
+          reason: 'The native-host canary needs only the synchronous loop-backend installation seam.',
+        },
+        'window.ts': {
+          names: ['_windowBackend', 'setWindowBackend'],
+          reason: 'The native-host canary needs only the synchronous window-backend installation seam.',
+        },
+      },
+      dependencies: {
+        '@flighthq/types': { crate: 'flighthq-types' },
+      },
+      package: '@flighthq/application',
+      sourceExclusions: [],
+      sourceSelection: {
+        sources: ['application.ts', 'window.ts'],
+        reason:
+          'The cultivated host installs synchronous native backends without admitting the package web task factories or unresolved host-task calls.',
+      },
+      typeMappings: {},
+    },
+    {
+      crate: 'flighthq-host-signals',
+      declarationSelection: {
+        'signal.ts': {
+          names: ['createSignal'],
+          reason:
+            'The synchronous input-manager seam needs the source-derived signal constructor without admitting unrelated signal operators.',
+        },
+      },
+      dependencies: {
+        '@flighthq/types': { crate: 'flighthq-types' },
+      },
+      package: '@flighthq/signals',
+      sourceExclusions: [],
+      sourceSelection: {
+        sources: ['signal.ts'],
+        reason:
+          'The partial target supplies the typed signal constructor used by the cultivated native-host input seam.',
+      },
+      typeMappings: {},
+    },
+    {
+      crate: 'flighthq-input',
+      declarationSelection: {
+        'inputManager.ts': {
+          names: ['createInputManager', 'createInputSignals'],
+          reason:
+            'The native-host canary creates the generated synchronous input state machine; pointer-lock task helpers remain on the automatic frontier.',
+        },
+      },
+      dependencies: {
+        '@flighthq/signals': { crate: 'flighthq-host-signals' },
+        '@flighthq/types': { crate: 'flighthq-types' },
+      },
+      package: '@flighthq/input',
+      sourceExclusions: [],
+      sourceSelection: {
+        sources: ['inputManager.ts'],
+        reason:
+          'The partial target preserves synchronous input-manager construction without admitting DOM listeners or unresolved pointer-lock tasks.',
+      },
+      typeMappings: {},
+    },
+    {
+      crate: 'flighthq-power',
+      declarationSelection: {
+        'power.ts': {
+          names: ['_backend', 'setPowerBackend'],
+          reason: 'The native-host canary needs only the synchronous power-backend installation seam.',
+        },
+      },
+      dependencies: {
+        '@flighthq/types': { crate: 'flighthq-types' },
+      },
+      package: '@flighthq/power',
+      sourceExclusions: [],
+      sourceSelection: {
+        sources: ['power.ts'],
+        reason:
+          'The partial target preserves synchronous native power-backend installation without admitting web Promise composition.',
+      },
+      typeMappings: {},
+    },
+    {
       conformanceTemplate: 'tools/generator/templates/easing_conformance.rs',
       crate: 'flighthq-easing',
       dependencies: {
@@ -344,7 +431,7 @@ export const portConfig = {
         'screen.ts': {
           names: ['_backend', 'setScreenBackend'],
           reason:
-            'The cultivated native-host canary needs only the synchronous backend installation seam; portable permission tasks remain blocked in the automatic package until the canonical task runtime lands.',
+            'The cultivated native-host canary needs only the synchronous backend installation seam; the automatic package now exercises portable permission tasks through the canonical task runtime independently.',
         },
       },
       dependencies: {
@@ -355,7 +442,7 @@ export const portConfig = {
       sourceSelection: {
         sources: ['screen.ts'],
         reason:
-          'The partial target preserves the synchronous native ScreenBackend installation seam without admitting or erasing either portable async declaration.',
+          'The partial target preserves the synchronous native ScreenBackend installation seam used by the host canary; the automatic target separately emits both portable async declarations.',
       },
       typeMappings: {},
     },

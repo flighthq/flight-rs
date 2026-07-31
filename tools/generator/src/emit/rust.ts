@@ -7,6 +7,7 @@ import type {
   IrFunctionDeclaration,
   IrParameter,
   IrStatement,
+  IrTaskOrigin,
   IrType,
   IrTypeField,
   IrVariable,
@@ -86,6 +87,7 @@ interface EmitContext {
   sharedCaptureNames: ReadonlySet<string>;
   symbolTypes: Map<string, IrType>;
   timerHandleNames: ReadonlySet<string>;
+  taskOutputType?: IrType | undefined;
   unionNarrowings: Map<string, { index: number; unionName?: string | undefined; variants: readonly IrType[] }>;
 }
 
@@ -881,6 +883,9 @@ function emitLiftedFunction(
 }
 
 function emitFunctionDeclaration(declaration: IrFunctionDeclaration, context: EmitContext): string {
+  if (declaration.execution.kind === 'portableTask') {
+    return emitPortableTaskFunctionDeclaration(declaration, context);
+  }
   rejectPortableTaskExecution(declaration.execution);
   const callbackTypeParameters = inferCallbackTypeParameters(declaration);
   const reachableBody = staticallyReachableStatements(declaration.body, context);
@@ -944,6 +949,59 @@ function emitFunctionDeclaration(declaration: IrFunctionDeclaration, context: Em
           .join(', ')}>`
       : '';
   return `${emitAnonymousDefinitions(nextContext)}${declaration.exported ? 'pub ' : ''}fn ${snakeCase(declaration.name)}${generics}(${parameters.join(', ')}) -> ${emitType(declaration.returns, nextContext)} ${body}`;
+}
+
+function emitPortableTaskFunctionDeclaration(declaration: IrFunctionDeclaration, context: EmitContext): string {
+  const execution = declaration.execution;
+  if (execution.kind !== 'portableTask') {
+    throw new RustEmissionError(`${declaration.name}: expected portable task execution`);
+  }
+  if (declaration.returns.kind !== 'task') {
+    throw new RustEmissionError(`${declaration.name}: portable task execution requires a task return type`);
+  }
+  if (typeContainsDynamic(declaration.returns.output)) {
+    const { column, lexicalPath, line, source } = execution.origin;
+    throw new RustEmissionError(
+      `${source}:${String(line)}:${String(column)}: portableTask ${lexicalPath}: async output type is not recovered`,
+    );
+  }
+  if (declaration.typeParameters.length > 0) {
+    throw new RustEmissionError(`${declaration.name}: generic portable task lowering is not implemented`);
+  }
+  const output = declaration.returns.output;
+  const reachableBody = staticallyReachableStatements(declaration.body, context);
+  const contextOwner = { ...declaration, body: reachableBody };
+  const nextContext: EmitContext = {
+    ...functionContext(context, declaration.name, contextOwner, output),
+    lexicalTypeParameters: new Set(),
+    taskOutputType: output,
+  };
+  registerParameters(declaration.parameters, nextContext);
+  registerLocalTypes(reachableBody, nextContext);
+  const parameters = declaration.parameters.map((parameter) =>
+    emitParameter(parameter, nextContext, undefined, declaration, false),
+  );
+  const defaults = declaration.parameters.flatMap((parameter) => {
+    if (!parameter.initializer) return [];
+    if (parameter.type.kind === 'nullable' && isNullishExpression(parameter.initializer)) return [];
+    const name = safeName(parameter.name);
+    return [`let ${name} = ${name}.unwrap_or(${emitExpression(parameter.initializer, nextContext, parameter.type)});`];
+  });
+  if (output.kind !== 'primitive' || output.name !== 'Void') {
+    if (!reachableBody.some((statement) => statementAlwaysReturns(statement, nextContext))) {
+      throw new RustEmissionError(
+        `${declaration.name}: portable task has a non-void output without a guaranteed return`,
+      );
+    }
+  }
+  const prefix = [...defaults];
+  const bodyStatements = emitStatementsAsBlock(reachableBody, nextContext, prefix);
+  const body =
+    output.kind === 'primitive' && output.name === 'Void'
+      ? bodyStatements.replace(/\n\}$/u, '\n  Ok(())\n}')
+      : bodyStatements;
+  const origin = emitTaskOrigin(execution.origin);
+  return `${emitAnonymousDefinitions(nextContext)}${declaration.exported ? 'pub ' : ''}fn ${snakeCase(declaration.name)}(${parameters.join(', ')}) -> crate::FlightTask<${emitType(output, nextContext)}> {\n${indent(`crate::FlightTask::start(async move ${body}, ${origin})`)}\n}`;
 }
 
 function emitParameter(
@@ -1062,6 +1120,14 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
       return lines;
     }
     case 'return':
+      if (context.taskOutputType) {
+        if (!statement.expression) return ['return Ok(());'];
+        const actual = inferIrExpressionType(statement.expression, context);
+        const resolved = promiseType(actual, context);
+        return resolved
+          ? [`return ${emitExpression(statement.expression, context, resolved)}.await;`]
+          : [`return Ok(${emitExpression(statement.expression, context, context.taskOutputType)});`];
+      }
       return context.captureReturns
         ? [
             statement.expression
@@ -1072,8 +1138,14 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
     case 'switch':
       return emitSwitchStatement(statement, context);
     case 'throw':
+      if (context.taskOutputType) {
+        throw new RustEmissionError('portable task throw/rejection lowering is reserved for Pass 27 Stage 4');
+      }
       return [`panic!("{}", ${emitThrowMessage(statement.expression, context)});`];
     case 'try': {
+      if (context.taskOutputType && statement.catchBody) {
+        throw new RustEmissionError('portable task try/catch lowering is reserved for Pass 27 Stage 4');
+      }
       if (statement.catchBody) {
         if (
           ['break', 'continue'].some(
@@ -1547,8 +1619,19 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
     }
     case 'assignment':
       return emitAssignment(expression, context);
-    case 'await':
-      throw new RustEmissionError('await Rust lowering is not implemented');
+    case 'await': {
+      if (!context.taskOutputType) throw new RustEmissionError('await requires portable task execution');
+      const task = promiseType(inferIrExpressionType(expression.expression, context), context);
+      if (task) return `${parenthesize(emitExpression(expression.expression, context, task))}.await?`;
+      const valueType = inferIrExpressionType(expression.expression, context) ?? expectedType;
+      if (!valueType || typeContainsDynamic(valueType)) {
+        throw new RustEmissionError(
+          `${expression.origin.source}:${String(expression.origin.line)}:${String(expression.origin.column)}: await value type is not recovered`,
+        );
+      }
+      const value = emitExpression(expression.expression, context, valueType);
+      return `${parenthesize(`crate::FlightTask::ready(${value}, ${emitTaskOrigin(expression.origin)})`)}.await?`;
+    }
     case 'binary':
       return coerceExpression(emitBinary(expression, context), expectedType);
     case 'call':
@@ -1745,6 +1828,27 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
       throw new RustEmissionError('spread Rust lowering is not implemented');
     case 'template':
       return emitTemplate(expression, context);
+    case 'taskReady': {
+      const expectedTask = expectedType?.kind === 'task' ? expectedType : undefined;
+      const output = expectedTask?.output ?? expression.output;
+      if (typeContainsDynamic(output)) {
+        throw new RustEmissionError(
+          `${expression.origin.source}:${String(expression.origin.line)}:${String(expression.origin.column)}: taskReady output type is not recovered`,
+        );
+      }
+      const value = expression.value ? emitExpression(expression.value, context, output) : '()';
+      return `crate::FlightTask::ready(${value}, ${emitTaskOrigin(expression.origin)})`;
+    }
+    case 'taskReject': {
+      const expectedTask = expectedType?.kind === 'task' ? expectedType : undefined;
+      const output = expectedTask?.output ?? expression.output;
+      if (typeContainsDynamic(output)) {
+        throw new RustEmissionError(
+          `${expression.origin.source}:${String(expression.origin.line)}:${String(expression.origin.column)}: taskReject output type is not recovered`,
+        );
+      }
+      return `crate::FlightTask::<${emitType(output, context)}>::reject(${emitTaskRejection(expression.rejection, context)}, ${emitTaskOrigin(expression.origin)})`;
+    }
     case 'unary':
       return coerceExpression(emitUnary(expression, context), expectedType);
   }
@@ -1756,15 +1860,6 @@ function emitCall(
   expectedType?: IrType,
 ): string {
   if (expression.optional) return emitOptionalCall(expression, context);
-  const resolvedPromise = promiseResolveType(expression, context);
-  if (resolvedPromise) {
-    const emittedPromise = promiseType(expectedType, context) ?? resolvedPromise;
-    const value = expression.arguments[0];
-    const observed = value
-      ? `let __flight_value = ${emitExpression(value, context, resolvedPromise.output)}; let _ = &__flight_value; `
-      : '';
-    return `{ ${observed}crate::Promise::<${emitType(emittedPromise.output, context)}>::default() }`;
-  }
   const promiseCall = emitPromiseCall(expression, context);
   if (promiseCall) return promiseCall;
   const portableGlobal =
@@ -2426,35 +2521,72 @@ function emitPromiseCall(
         };
   const owner = emitExpression(expression.callee.object, context, promise);
   const callback = emitExpression(callbackExpression, context, callbackType);
-  if (expression.callee.name === 'catch') {
-    return `{ let __flight_promise = ${owner}; let __flight_callback = ${callback}; let _ = &__flight_callback; __flight_promise.clone() }`;
+  void owner;
+  void callback;
+  throw new RustEmissionError(
+    `${expression.callee.name === 'catch' ? 'taskCatch' : 'taskThen'} Rust lowering is reserved for Pass 27 Stage 4`,
+  );
+}
+
+function emitTaskOrigin(origin: IrTaskOrigin): string {
+  return [
+    'crate::FlightTaskOrigin {',
+    `package: ${emitRustStringLiteral(origin.packageName)},`,
+    `source: ${emitRustStringLiteral(origin.source)},`,
+    `line: ${String(origin.line)}_u32,`,
+    `column: ${String(origin.column)}_u32,`,
+    `lexical_path: ${emitRustStringLiteral(origin.lexicalPath)},`,
+    `fingerprint: ${emitRustStringLiteral(origin.fingerprint)},`,
+    '}',
+  ].join(' ');
+}
+
+function emitTaskRejection(expression: IrExpression, context: EmitContext): string {
+  if (expression.kind === 'literal') {
+    if (expression.value === null) return 'crate::FlightRejection::Null';
+    if (typeof expression.value === 'boolean') return `crate::FlightRejection::Bool(${String(expression.value)})`;
+    if (typeof expression.value === 'number') return `crate::FlightRejection::Number(${emitLiteral(expression.value)})`;
+    if (typeof expression.value === 'string') {
+      return `crate::FlightRejection::String(${emitRustStringLiteral(expression.value)}.to_owned())`;
+    }
   }
-  const result = callbackReturns.kind === 'task' ? callbackReturns.output : callbackReturns;
-  return `{ let __flight_promise = ${owner}; let __flight_callback = ${callback}; let _ = (&__flight_promise, &__flight_callback); crate::Promise::<${emitType(result, context)}>::default() }`;
+  if (
+    expression.kind === 'new' &&
+    expression.callee.kind === 'identifier' &&
+    expression.callee.name === 'Error' &&
+    expression.arguments[0]
+  ) {
+    return `crate::FlightRejection::Error { name: "Error".to_owned(), message: ${emitExpression(expression.arguments[0], context, { kind: 'primitive', name: 'String' })} }`;
+  }
+  throw new RustEmissionError('taskReject requires a typed null, boolean, number, string, or Error rejection');
+}
+
+function typeContainsDynamic(type: IrType): boolean {
+  switch (type.kind) {
+    case 'dynamic':
+      return true;
+    case 'anonymous':
+      return type.extends.some(typeContainsDynamic) || type.fields.some((field) => typeContainsDynamic(field.type));
+    case 'array':
+      return typeContainsDynamic(type.element);
+    case 'function':
+      return type.parameters.some(typeContainsDynamic) || typeContainsDynamic(type.returns);
+    case 'named':
+      return type.arguments.some(typeContainsDynamic);
+    case 'nullable':
+      return typeContainsDynamic(type.inner);
+    case 'task':
+      return typeContainsDynamic(type.output);
+    case 'union':
+      return type.variants.some(typeContainsDynamic);
+    case 'primitive':
+      return false;
+  }
 }
 
 function promiseType(type: IrType | undefined, context: EmitContext): Extract<IrType, { kind: 'task' }> | undefined {
   const resolved = resolveSemanticType(type?.kind === 'nullable' ? type.inner : type, context);
   return resolved?.kind === 'task' ? resolved : undefined;
-}
-
-function promiseResolveType(
-  expression: Extract<IrExpression, { kind: 'call' }>,
-  context: EmitContext,
-): Extract<IrType, { kind: 'task' }> | undefined {
-  if (
-    expression.callee.kind !== 'property' ||
-    expression.callee.name !== 'resolve' ||
-    runtimeGlobalType(expression.callee.object) !== 'Promise'
-  ) {
-    return undefined;
-  }
-  return {
-    kind: 'task',
-    output: expression.arguments[0]
-      ? (inferIrExpressionType(expression.arguments[0], context) ?? { kind: 'dynamic' })
-      : primitive('Void'),
-  };
 }
 
 function emitLockedCallbackCall(callback: string, arguments_: readonly string[]): string {
@@ -4348,7 +4480,7 @@ function emitType(type: IrType, context: EmitContext): string {
           return '()';
       }
     case 'task':
-      return `crate::Promise<${emitType(type.output, context)}>`;
+      return `crate::FlightTask<${emitType(type.output, context)}>`;
     case 'union':
       return emitUnionType(type.variants, context);
   }
@@ -6425,7 +6557,8 @@ function rustTypeSupportsDefault(
   context: EmitContext,
   visited: ReadonlySet<string> = new Set(),
 ): boolean {
-  if (type.kind === 'array' || type.kind === 'nullable' || type.kind === 'dynamic' || type.kind === 'task') return true;
+  if (type.kind === 'array' || type.kind === 'nullable' || type.kind === 'dynamic') return true;
+  if (type.kind === 'task') return false;
   if (type.kind === 'primitive') return true;
   if (type.kind === 'function' || type.kind === 'union') return false;
   if (type.kind === 'anonymous') {
@@ -7080,6 +7213,10 @@ function emitElementRead(
 
 function inferIrExpressionType(expression: IrExpression, context: EmitContext): IrType | undefined {
   switch (expression.kind) {
+    case 'await': {
+      const task = promiseType(inferIrExpressionType(expression.expression, context), context);
+      return task?.output ?? inferIrExpressionType(expression.expression, context);
+    }
     case 'identifier':
       if (expression.name === 'Infinity' || expression.name === 'NaN') return primitive('Float');
       return context.symbolTypes.get(expression.name);
@@ -7156,8 +7293,6 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
       if (portableGlobal === 'isNaN') {
         return primitive('Bool');
       }
-      const resolvedPromise = promiseResolveType(expression, context);
-      if (resolvedPromise) return resolvedPromise;
       if (
         expression.callee.kind === 'property' &&
         (expression.callee.name === 'then' || expression.callee.name === 'catch')
@@ -7395,6 +7530,9 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
     }
     case 'regexp':
       return { arguments: [], kind: 'named', name: 'FlightRegex' };
+    case 'taskReady':
+    case 'taskReject':
+      return { kind: 'task', output: expression.output };
     case 'unary':
       if (expression.operator === '!') return primitive('Bool');
       if (expression.operator === 'typeof') return primitive('String');

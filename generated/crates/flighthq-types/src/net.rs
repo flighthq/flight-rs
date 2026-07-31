@@ -106,7 +106,7 @@ pub struct NetBackend {
     pub send_net_request: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(NetRequest, Option<NetRequestOptions>) -> crate::Promise<NetResponse>
+                dyn FnMut(NetRequest, Option<NetRequestOptions>) -> crate::FlightTask<NetResponse>
                     + Send
                     + 'static,
             >,

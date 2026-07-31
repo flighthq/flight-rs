@@ -19,6 +19,7 @@ flighthq-mesh = { path = "../flighthq-mesh" }
 flighthq-node = { path = "../flighthq-node" }
 flighthq-render = { path = "../flighthq-render" }
 flighthq-render-gl = { path = "../flighthq-render-gl" }
+flighthq-runtime = { path = "../../crates/flighthq-runtime" }
 flighthq-scene = { path = "../flighthq-scene" }
 flighthq-shading = { path = "../flighthq-shading" }
 flighthq-texture = { path = "../flighthq-texture" }

@@ -18,6 +18,7 @@ checksum = "9330f8b2ff13f34540b44e946ef35111825727b38d33286ef986142615121801"
 name = "flighthq-easing"
 version = "0.1.0"
 dependencies = [
+ "flighthq-runtime",
  "flighthq-types",
 ]
 
@@ -25,14 +26,20 @@ dependencies = [
 name = "flighthq-image"
 version = "0.1.0"
 dependencies = [
+ "flighthq-runtime",
  "flighthq-types",
 ]
+
+[[package]]
+name = "flighthq-runtime"
+version = "0.1.0"
 
 [[package]]
 name = "flighthq-surface"
 version = "0.1.0"
 dependencies = [
  "flighthq-image",
+ "flighthq-runtime",
  "flighthq-types",
 ]
 
@@ -40,6 +47,7 @@ dependencies = [
 name = "flighthq-surface-wasm"
 version = "0.1.0"
 dependencies = [
+ "flighthq-runtime",
  "flighthq-surface",
  "flighthq-types",
  "wasm-bindgen",
@@ -48,6 +56,9 @@ dependencies = [
 [[package]]
 name = "flighthq-types"
 version = "0.1.0"
+dependencies = [
+ "flighthq-runtime",
+]
 
 [[package]]
 name = "once_cell"

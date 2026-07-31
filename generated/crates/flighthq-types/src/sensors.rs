@@ -176,7 +176,7 @@ pub struct SensorsBackend {
     pub get_permission_state: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(Option<String>) -> crate::Promise<SensorsPermissionState>
+                dyn FnMut(Option<String>) -> crate::FlightTask<SensorsPermissionState>
                     + Send
                     + 'static,
             >,
@@ -200,8 +200,9 @@ pub struct SensorsBackend {
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> bool + Send + 'static>>>,
     pub is_proximity_supported:
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> bool + Send + 'static>>>,
-    pub request_permission:
-        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> crate::Promise<bool> + Send + 'static>>>,
+    pub request_permission: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut() -> crate::FlightTask<bool> + Send + 'static>>,
+    >,
     pub subscribe_absolute_orientation: std::sync::Arc<
         std::sync::Mutex<
             Box<

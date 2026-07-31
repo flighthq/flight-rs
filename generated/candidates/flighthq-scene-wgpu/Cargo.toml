@@ -17,5 +17,6 @@ flighthq-image = { path = "../flighthq-image" }
 flighthq-node = { path = "../flighthq-node" }
 flighthq-render = { path = "../flighthq-render" }
 flighthq-render-wgpu = { path = "../flighthq-render-wgpu" }
+flighthq-runtime = { path = "../../crates/flighthq-runtime" }
 flighthq-texture = { path = "../flighthq-texture" }
 flighthq-types = { path = "../../crates/flighthq-types" }

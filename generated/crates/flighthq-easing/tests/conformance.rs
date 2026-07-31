@@ -24,6 +24,7 @@ fn close(actual: f64, expected: f64, epsilon: f64) {
 
 #[test]
 fn fixed_curves_preserve_endpoints_and_midpoints() {
+    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     close(ease_linear(0.0), 0.0, 0.0);
     close(ease_linear(1.0), 1.0, 0.0);
     close(ease_in_out_quadratic(0.5), 0.5, 1e-12);
@@ -33,6 +34,7 @@ fn fixed_curves_preserve_endpoints_and_midpoints() {
 
 #[test]
 fn generated_closures_capture_inputs() {
+    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     let cubic = ease_in_power(3.0);
     close(call(&cubic, 0.5), 0.125, 1e-12);
 
@@ -48,6 +50,7 @@ fn generated_closures_capture_inputs() {
 
 #[test]
 fn optional_defaults_and_derivatives_match_upstream_contracts() {
+    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     let steps = ease_steps(4.0, None);
     close(call(&steps, 0.0), 0.0, 0.0);
     close(call(&steps, 0.26), 0.25, 0.0);
@@ -62,6 +65,7 @@ fn optional_defaults_and_derivatives_match_upstream_contracts() {
 
 #[test]
 fn cubic_bezier_solver_handles_linear_curve() {
+    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     let linear_bezier = ease_cubic_bezier(0.0, 0.0, 1.0, 1.0);
     for sample in [0.0, 0.1, 0.25, 0.5, 0.9, 1.0] {
         close(call(&linear_bezier, sample), sample, 1e-6);
@@ -70,6 +74,7 @@ fn cubic_bezier_solver_handles_linear_curve() {
 
 #[test]
 fn typed_array_sampling_preserves_owned_output_and_f32_values() {
+    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     let out = vec![0.0_f32; 10];
     let allocation = out.as_ptr();
     let samples = create_easing_samples(callback(ease_linear), 5.9, Some(out));
@@ -83,6 +88,7 @@ fn typed_array_sampling_preserves_owned_output_and_f32_values() {
 
 #[test]
 fn structural_segments_lower_to_weighted_owned_records() {
+    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     let piecewise = ease_piecewise(vec![
         EasingSegment {
             __flight_identity: Arc::new(()),

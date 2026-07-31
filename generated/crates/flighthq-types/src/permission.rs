@@ -19,12 +19,12 @@ pub struct PermissionBackend {
     pub __flight_identity: std::sync::Arc<()>,
     pub get_state: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(PermissionName) -> crate::Promise<PermissionState> + Send + 'static>,
+            Box<dyn FnMut(PermissionName) -> crate::FlightTask<PermissionState> + Send + 'static>,
         >,
     >,
     pub request: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(PermissionName) -> crate::Promise<PermissionState> + Send + 'static>,
+            Box<dyn FnMut(PermissionName) -> crate::FlightTask<PermissionState> + Send + 'static>,
         >,
     >,
 }

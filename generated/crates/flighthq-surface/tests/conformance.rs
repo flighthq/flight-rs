@@ -39,6 +39,7 @@ fn region(surface: Surface) -> SurfaceRegion {
 
 #[test]
 fn packed_pixel_reads_match_rgba_layout() {
+    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     let image = surface(vec![0x11, 0x22, 0x33, 0x44], 1.0, 1.0);
     assert_eq!(get_surface_pixel(&image, 0.0, 0.0), 0x1122_3344_u32 as f64);
     assert_eq!(
@@ -50,6 +51,7 @@ fn packed_pixel_reads_match_rgba_layout() {
 
 #[test]
 fn packed_pixel_writes_inline_the_generated_invalidation_effect() {
+    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     let mut image = surface(vec![0, 0, 0, 0], 1.0, 1.0);
     set_surface_pixel(&mut image, 0.0, 0.0, 0x1122_3344_u32 as f64);
     assert_eq!(image.data, vec![0x11, 0x22, 0x33, 0x44]);
@@ -58,6 +60,7 @@ fn packed_pixel_writes_inline_the_generated_invalidation_effect() {
 
 #[test]
 fn coverage_observes_background_and_channel_tolerance() {
+    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     let image = surface(
         vec![0x11, 0x22, 0x33, 0x44, 0x11, 0x22, 0x33, 0x45],
         2.0,
@@ -75,6 +78,7 @@ fn coverage_observes_background_and_channel_tolerance() {
 
 #[test]
 fn identity_convolution_copies_the_selected_region() {
+    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     let source = region(surface(vec![10, 20, 30, 40, 50, 60, 70, 80], 2.0, 1.0));
     let options = SurfaceConvolutionOptions {
         __flight_identity: std::sync::Arc::new(()),
@@ -93,6 +97,7 @@ fn identity_convolution_copies_the_selected_region() {
 
 #[test]
 fn morphology_and_pixelation_match_small_neighborhoods() {
+    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     let source = region(surface(
         vec![10, 10, 10, 255, 100, 100, 100, 255, 20, 20, 20, 255],
         3.0,
@@ -113,6 +118,7 @@ fn morphology_and_pixelation_match_small_neighborhoods() {
 
 #[test]
 fn generated_color_matrix_builders_feed_the_generated_kernel() {
+    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     let source = region(surface(vec![10, 20, 30, 40], 1.0, 1.0));
     let mut matrix = vec![0.0; 20];
     build_surface_brightness_color_matrix(&mut matrix, 2.0);
@@ -123,6 +129,7 @@ fn generated_color_matrix_builders_feed_the_generated_kernel() {
 
 #[test]
 fn alpha_writers_mutate_borrowed_regions_and_invalidate_once() {
+    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     let mut target = region(surface(vec![10, 20, 30, 200, 40, 50, 60, 100], 2.0, 1.0));
     multiply_surface_alpha(&mut target, 0.5);
     assert_eq!(target.surface.data, vec![10, 20, 30, 100, 40, 50, 60, 50]);
@@ -134,6 +141,7 @@ fn alpha_writers_mutate_borrowed_regions_and_invalidate_once() {
 
 #[test]
 fn region_copy_preserves_source_and_invalidates_destination() {
+    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     let source = region(surface(vec![1, 2, 3, 4, 5, 6, 7, 8], 2.0, 1.0));
     let mut destination = region(surface(vec![0; 8], 2.0, 1.0));
     copy_surface_pixels(&mut destination, &source, None);
@@ -143,6 +151,7 @@ fn region_copy_preserves_source_and_invalidates_destination() {
 
 #[test]
 fn rectangle_fill_writes_packed_rgba_and_invalidates() {
+    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     let mut target = region(surface(vec![0; 8], 2.0, 1.0));
     target.x = 1.0;
     target.width = 1.0;
@@ -156,6 +165,7 @@ fn rectangle_fill_writes_packed_rgba_and_invalidates() {
 
 #[test]
 fn alpha_representation_round_trip_uses_raw_generated_kernels() {
+    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     let straight = vec![200, 100, 50, 128];
     let mut premultiplied = vec![0; 4];
     premultiply_surface_pixels(&mut premultiplied, &straight, 4.0);
@@ -168,6 +178,7 @@ fn alpha_representation_round_trip_uses_raw_generated_kernels() {
 
 #[test]
 fn deterministic_noise_skips_clipped_pixels_without_changing_the_field() {
+    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     let mut clipped = region(surface(vec![0; 8], 2.0, 1.0));
     clipped.x = -1.0;
     clipped.width = 3.0;
@@ -182,6 +193,7 @@ fn deterministic_noise_skips_clipped_pixels_without_changing_the_field() {
 
 #[test]
 fn color_bounds_returns_a_generated_rectangle_or_none() {
+    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     let source = region(surface(
         vec![0, 0, 0, 255, 10, 20, 30, 255, 10, 20, 30, 128],
         3.0,
@@ -211,6 +223,7 @@ fn color_bounds_returns_a_generated_rectangle_or_none() {
 
 #[test]
 fn histogram_counts_generated_channel_bins() {
+    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     let source = region(surface(vec![1, 2, 3, 4, 1, 8, 3, 9], 2.0, 1.0));
     let histogram = get_surface_histogram(&source);
     assert_eq!(histogram.red[1], 2.0);
@@ -223,6 +236,7 @@ fn histogram_counts_generated_channel_bins() {
 
 #[test]
 fn nullable_palette_maps_pass_through_unselected_channels() {
+    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     let source = region(surface(vec![10, 20, 30, 40], 1.0, 1.0));
     let mut destination = region(surface(vec![0; 4], 1.0, 1.0));
     let red = (0..256).map(|value| (255 - value) as f64).collect();
@@ -235,6 +249,7 @@ fn nullable_palette_maps_pass_through_unselected_channels() {
 
 #[test]
 fn compatible_typed_array_unions_drive_curve_and_levels_kernels() {
+    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     let source = region(surface(vec![10, 128, 240, 77], 1.0, 1.0));
     let mut curved = region(surface(vec![0; 4], 1.0, 1.0));
     let inverted = (0..256).map(|value| (255 - value) as u8).collect();
@@ -251,6 +266,7 @@ fn compatible_typed_array_unions_drive_curve_and_levels_kernels() {
 
 #[test]
 fn mismatch_summary_reports_tolerance_fraction_and_maximum_delta() {
+    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     let source = surface(vec![0, 0, 0, 255, 0, 0, 0, 255], 2.0, 1.0);
     let other = surface(vec![10, 0, 0, 255, 0, 128, 0, 255], 2.0, 1.0);
     let mismatch = get_surface_mismatch(&source, &other, Some(10.0));
@@ -263,6 +279,7 @@ fn mismatch_summary_reports_tolerance_fraction_and_maximum_delta() {
 
 #[test]
 fn channel_merge_reads_each_selected_source_channel() {
+    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     let red = region(surface(vec![10, 1, 2, 3], 1.0, 1.0));
     let green = region(surface(vec![4, 20, 5, 6], 1.0, 1.0));
     let blue = region(surface(vec![7, 8, 30, 9], 1.0, 1.0));
@@ -277,6 +294,7 @@ fn channel_merge_reads_each_selected_source_channel() {
 
 #[test]
 fn generated_fingerprints_compose_structural_records_and_typed_arrays() {
+    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     let first = surface(vec![0, 10, 20, 255, 100, 110, 120, 255], 2.0, 1.0);
     let mut second = first.clone();
     second.data[4] = 140;

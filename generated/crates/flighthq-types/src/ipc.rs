@@ -38,7 +38,7 @@ pub struct IpcBackend {
                 dyn FnMut(
                         String,
                         Vec<crate::OpaqueHostValue>,
-                    ) -> crate::Promise<crate::OpaqueHostValue>
+                    ) -> crate::FlightTask<crate::OpaqueHostValue>
                     + Send
                     + 'static,
             >,
@@ -75,7 +75,7 @@ pub struct IpcBackend {
                                             )
                                                 -> crate::FlightUnion2<
                                                 crate::OpaqueHostValue,
-                                                crate::Promise<crate::OpaqueHostValue>,
+                                                crate::FlightTask<crate::OpaqueHostValue>,
                                             > + Send
                                             + 'static,
                                     >,

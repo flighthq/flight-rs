@@ -85,6 +85,10 @@ export function generationSummary(report: RustGenerationReport): string {
     `| Host-bound packages | ${report.summary.hostBound} |`,
     `| Excluded packages | ${report.summary.excluded} |`,
     `| Source/package blockers | ${report.summary.sourceBlockers} |`,
+    `| Eligible task constructions | ${report.asyncTasks.summary.eligibleConstructions} |`,
+    `| Portable executable task constructions | ${report.asyncTasks.summary.portableExecutableConstructions} |`,
+    `| Host-placeholder task constructions | ${report.asyncTasks.summary.hostPlaceholderConstructions} |`,
+    `| Unsupported task constructions | ${report.asyncTasks.summary.unsupportedConstructions} |`,
     `| Eligible async scopes | ${report.asyncTasks.summary.eligibleScopes} |`,
     `| Portable executable async scopes | ${report.asyncTasks.summary.portableExecutableScopes} |`,
     `| Host-placeholder async scopes | ${report.asyncTasks.summary.hostPlaceholderScopes} |`,
@@ -106,6 +110,8 @@ export function generationSummary(report: RustGenerationReport): string {
     '',
     '## Async tasks',
     '',
+    `Construction disposition partition: ${String(report.asyncTasks.summary.eligibleConstructions)} eligible = ${String(report.asyncTasks.summary.portableExecutableConstructions)} portable executable + ${String(report.asyncTasks.summary.hostPlaceholderConstructions)} host placeholder + ${String(report.asyncTasks.summary.unsupportedConstructions)} unsupported.`,
+    '',
     `Disposition partition: ${String(report.asyncTasks.summary.eligibleScopes)} eligible = ${String(report.asyncTasks.summary.portableExecutableScopes)} portable executable + ${String(report.asyncTasks.summary.hostPlaceholderScopes)} host placeholder + ${String(report.asyncTasks.summary.unsupportedScopes)} unsupported.`,
     '',
     '| Operation | Count |',
@@ -121,13 +127,21 @@ export function generationSummary(report: RustGenerationReport): string {
     `| Promise.finally | ${report.asyncTasks.summary.operations.promiseFinally} |`,
     `| Void expressions | ${report.asyncTasks.summary.operations.voidExpressions} |`,
     '',
-    '| Package | Eligible | Portable executable | Host placeholder | Unsupported | Legacy erasure path |',
-    '| --- | ---: | ---: | ---: | ---: | ---: |',
+    '| Package | Constructions eligible/executable/host/unsupported | Scopes eligible/executable/host/unsupported | Legacy erasure path |',
+    '| --- | ---: | ---: | ---: |',
   );
   for (const item of report.asyncTasks.packages) {
     lines.push(
-      `| \`${item.package}\` | ${item.summary.eligibleScopes} | ${item.summary.portableExecutableScopes} | ${item.summary.hostPlaceholderScopes} | ${item.summary.unsupportedScopes} | ${item.summary.legacyErasurePathScopes} |`,
+      `| \`${item.package}\` | ${item.summary.eligibleConstructions}/${item.summary.portableExecutableConstructions}/${item.summary.hostPlaceholderConstructions}/${item.summary.unsupportedConstructions} | ${item.summary.eligibleScopes}/${item.summary.portableExecutableScopes}/${item.summary.hostPlaceholderScopes}/${item.summary.unsupportedScopes} | ${item.summary.legacyErasurePathScopes} |`,
     );
+  }
+  lines.push('', '### Unsupported task constructions', '');
+  for (const item of report.asyncTasks.packages) {
+    for (const construction of item.constructions.filter((candidate) => candidate.disposition === 'unsupported')) {
+      lines.push(
+        `- \`${construction.package}\` \`${construction.source}:${String(construction.line)}:${String(construction.column)}\` \`${construction.lexicalPath}\` \`${construction.kind}\` (${construction.fingerprint}): ${construction.reason ?? 'Unspecified task construction blocker.'}`,
+      );
+    }
   }
   lines.push('', '### Unsupported async scopes', '');
   for (const item of report.asyncTasks.packages) {

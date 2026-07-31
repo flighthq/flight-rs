@@ -106,57 +106,65 @@ pub struct FileSystemBackend {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub read_text_file: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String) -> crate::Promise<Option<String>> + Send + 'static>>,
+        std::sync::Mutex<
+            Box<dyn FnMut(String) -> crate::FlightTask<Option<String>> + Send + 'static>,
+        >,
     >,
     pub write_text_file: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String, String) -> crate::Promise<bool> + Send + 'static>>,
+        std::sync::Mutex<
+            Box<dyn FnMut(String, String) -> crate::FlightTask<bool> + Send + 'static>,
+        >,
     >,
     pub read_binary_file: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(String) -> crate::Promise<Option<Vec<u8>>> + Send + 'static>,
+            Box<dyn FnMut(String) -> crate::FlightTask<Option<Vec<u8>>> + Send + 'static>,
         >,
     >,
     pub read_binary_file_range: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(String, f64, f64) -> crate::Promise<Option<Vec<u8>>> + Send + 'static>,
+            Box<dyn FnMut(String, f64, f64) -> crate::FlightTask<Option<Vec<u8>>> + Send + 'static>,
         >,
     >,
     pub write_binary_file: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String, Vec<u8>) -> crate::Promise<bool> + Send + 'static>>,
+        std::sync::Mutex<
+            Box<dyn FnMut(String, Vec<u8>) -> crate::FlightTask<bool> + Send + 'static>,
+        >,
     >,
     pub write_file_atomic: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(String, crate::FlightUnion2<Vec<u8>, String>) -> crate::Promise<bool>
+                dyn FnMut(String, crate::FlightUnion2<Vec<u8>, String>) -> crate::FlightTask<bool>
                     + Send
                     + 'static,
             >,
         >,
     >,
     pub file_exists: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String) -> crate::Promise<bool> + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut(String) -> crate::FlightTask<bool> + Send + 'static>>,
     >,
     pub directory_exists: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String) -> crate::Promise<bool> + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut(String) -> crate::FlightTask<bool> + Send + 'static>>,
     >,
     pub remove_file: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String) -> crate::Promise<bool> + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut(String) -> crate::FlightTask<bool> + Send + 'static>>,
     >,
     pub remove_directory: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(String, Option<bool>) -> crate::Promise<bool> + Send + 'static>,
+            Box<dyn FnMut(String, Option<bool>) -> crate::FlightTask<bool> + Send + 'static>,
         >,
     >,
     pub make_directory: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String) -> crate::Promise<bool> + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut(String) -> crate::FlightTask<bool> + Send + 'static>>,
     >,
     pub read_directory: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String) -> crate::Promise<Vec<FileEntry>> + Send + 'static>>,
+        std::sync::Mutex<
+            Box<dyn FnMut(String) -> crate::FlightTask<Vec<FileEntry>> + Send + 'static>,
+        >,
     >,
     pub read_directory_recursive: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(String, Option<FileWalkOptions>) -> crate::Promise<Vec<FileEntry>>
+                dyn FnMut(String, Option<FileWalkOptions>) -> crate::FlightTask<Vec<FileEntry>>
                     + Send
                     + 'static,
             >,
@@ -164,22 +172,28 @@ pub struct FileSystemBackend {
     >,
     pub stat_file: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(String) -> crate::Promise<Option<FileStat>> + Send + 'static>,
+            Box<dyn FnMut(String) -> crate::FlightTask<Option<FileStat>> + Send + 'static>,
         >,
     >,
     pub rename: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String, String) -> crate::Promise<bool> + Send + 'static>>,
+        std::sync::Mutex<
+            Box<dyn FnMut(String, String) -> crate::FlightTask<bool> + Send + 'static>,
+        >,
     >,
     pub copy: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String, String) -> crate::Promise<bool> + Send + 'static>>,
+        std::sync::Mutex<
+            Box<dyn FnMut(String, String) -> crate::FlightTask<bool> + Send + 'static>,
+        >,
     >,
     pub append_text_file: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String, String) -> crate::Promise<bool> + Send + 'static>>,
+        std::sync::Mutex<
+            Box<dyn FnMut(String, String) -> crate::FlightTask<bool> + Send + 'static>,
+        >,
     >,
     pub open_file_read_stream: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(String) -> crate::Promise<Option<crate::OpaqueHostValue>>
+                dyn FnMut(String) -> crate::FlightTask<Option<crate::OpaqueHostValue>>
                     + Send
                     + 'static,
             >,
@@ -188,37 +202,45 @@ pub struct FileSystemBackend {
     pub open_file_write_stream: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(String) -> crate::Promise<Option<crate::OpaqueHostValue>>
+                dyn FnMut(String) -> crate::FlightTask<Option<crate::OpaqueHostValue>>
                     + Send
                     + 'static,
             >,
         >,
     >,
     pub create_file_symlink: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String, String) -> crate::Promise<bool> + Send + 'static>>,
+        std::sync::Mutex<
+            Box<dyn FnMut(String, String) -> crate::FlightTask<bool> + Send + 'static>,
+        >,
     >,
     pub read_file_symlink: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String) -> crate::Promise<Option<String>> + Send + 'static>>,
+        std::sync::Mutex<
+            Box<dyn FnMut(String) -> crate::FlightTask<Option<String>> + Send + 'static>,
+        >,
     >,
     pub get_file_real_path: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String) -> crate::Promise<Option<String>> + Send + 'static>>,
+        std::sync::Mutex<
+            Box<dyn FnMut(String) -> crate::FlightTask<Option<String>> + Send + 'static>,
+        >,
     >,
     pub get_file_permissions: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(String) -> crate::Promise<Option<FilePermissions>> + Send + 'static>,
+            Box<dyn FnMut(String) -> crate::FlightTask<Option<FilePermissions>> + Send + 'static>,
         >,
     >,
     pub set_file_permissions: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(String, FilePermissions) -> crate::Promise<bool> + Send + 'static>,
+            Box<dyn FnMut(String, FilePermissions) -> crate::FlightTask<bool> + Send + 'static>,
         >,
     >,
     pub can_access_file: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String, String) -> crate::Promise<bool> + Send + 'static>>,
+        std::sync::Mutex<
+            Box<dyn FnMut(String, String) -> crate::FlightTask<bool> + Send + 'static>,
+        >,
     >,
     pub get_file_system_usage: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut() -> crate::Promise<Option<crate::OpaqueHostValue>> + Send + 'static>,
+            Box<dyn FnMut() -> crate::FlightTask<Option<crate::OpaqueHostValue>> + Send + 'static>,
         >,
     >,
     pub watch: std::sync::Arc<

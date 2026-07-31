@@ -15,6 +15,7 @@ flighthq-displayobject = { path = "../flighthq-displayobject" }
 flighthq-geometry = { path = "../flighthq-geometry" }
 flighthq-materials = { path = "../flighthq-materials" }
 flighthq-node = { path = "../flighthq-node" }
+flighthq-runtime = { path = "../../crates/flighthq-runtime" }
 flighthq-sprite = { path = "../flighthq-sprite" }
 flighthq-textureatlas = { path = "../flighthq-textureatlas" }
 flighthq-types = { path = "../../crates/flighthq-types" }

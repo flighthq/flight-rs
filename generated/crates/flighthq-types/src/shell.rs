@@ -13,15 +13,17 @@ pub struct ShellBackend {
     pub __flight_identity: std::sync::Arc<()>,
     pub beep: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
     pub move_items_to_trash: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(Vec<String>) -> crate::Promise<Vec<bool>> + Send + 'static>>,
+        std::sync::Mutex<
+            Box<dyn FnMut(Vec<String>) -> crate::FlightTask<Vec<bool>> + Send + 'static>,
+        >,
     >,
     pub move_to_trash: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String) -> crate::Promise<bool> + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut(String) -> crate::FlightTask<bool> + Send + 'static>>,
     >,
     pub open_external: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(String, Option<ShellOpenExternalOptions>) -> crate::Promise<bool>
+                dyn FnMut(String, Option<ShellOpenExternalOptions>) -> crate::FlightTask<bool>
                     + Send
                     + 'static,
             >,
@@ -30,7 +32,7 @@ pub struct ShellBackend {
     pub open_path: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(String, Option<ShellOpenPathOptions>) -> crate::Promise<bool>
+                dyn FnMut(String, Option<ShellOpenPathOptions>) -> crate::FlightTask<bool>
                     + Send
                     + 'static,
             >,
@@ -39,7 +41,7 @@ pub struct ShellBackend {
     pub open_path_result: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(String, Option<ShellOpenPathOptions>) -> crate::Promise<String>
+                dyn FnMut(String, Option<ShellOpenPathOptions>) -> crate::FlightTask<String>
                     + Send
                     + 'static,
             >,
@@ -47,11 +49,11 @@ pub struct ShellBackend {
     >,
     pub read_shortcut_link: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(String) -> crate::Promise<Option<ShellShortcutLink>> + Send + 'static>,
+            Box<dyn FnMut(String) -> crate::FlightTask<Option<ShellShortcutLink>> + Send + 'static>,
         >,
     >,
     pub show_item_in_folder: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String) -> crate::Promise<bool> + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut(String) -> crate::FlightTask<bool> + Send + 'static>>,
     >,
     pub write_shortcut_link: std::sync::Arc<
         std::sync::Mutex<
@@ -60,7 +62,7 @@ pub struct ShellBackend {
                         String,
                         ShellShortcutLink,
                         Option<ShellShortcutWriteOperation>,
-                    ) -> crate::Promise<bool>
+                    ) -> crate::FlightTask<bool>
                     + Send
                     + 'static,
             >,

@@ -15,7 +15,7 @@ dependencies = [
 name = "flighthq-application"
 version = "0.1.0"
 dependencies = [
- "flighthq-signals",
+ "flighthq-runtime",
  "flighthq-types",
 ]
 
@@ -23,6 +23,7 @@ dependencies = [
 name = "flighthq-device"
 version = "0.1.0"
 dependencies = [
+ "flighthq-runtime",
  "flighthq-types",
  "flighthq-useragent",
  "regex",
@@ -32,6 +33,15 @@ dependencies = [
 name = "flighthq-haptics"
 version = "0.1.0"
 dependencies = [
+ "flighthq-runtime",
+ "flighthq-types",
+]
+
+[[package]]
+name = "flighthq-host-signals"
+version = "0.1.0"
+dependencies = [
+ "flighthq-runtime",
  "flighthq-types",
 ]
 
@@ -55,7 +65,8 @@ dependencies = [
 name = "flighthq-input"
 version = "0.1.0"
 dependencies = [
- "flighthq-signals",
+ "flighthq-host-signals",
+ "flighthq-runtime",
  "flighthq-types",
 ]
 
@@ -63,6 +74,7 @@ dependencies = [
 name = "flighthq-keyboard"
 version = "0.1.0"
 dependencies = [
+ "flighthq-runtime",
  "flighthq-signals",
  "flighthq-types",
 ]
@@ -71,6 +83,7 @@ dependencies = [
 name = "flighthq-lifecycle"
 version = "0.1.0"
 dependencies = [
+ "flighthq-runtime",
  "flighthq-signals",
  "flighthq-types",
 ]
@@ -79,6 +92,7 @@ dependencies = [
 name = "flighthq-platform"
 version = "0.1.0"
 dependencies = [
+ "flighthq-runtime",
  "flighthq-types",
  "flighthq-useragent",
 ]
@@ -87,14 +101,19 @@ dependencies = [
 name = "flighthq-power"
 version = "0.1.0"
 dependencies = [
- "flighthq-signals",
+ "flighthq-runtime",
  "flighthq-types",
 ]
+
+[[package]]
+name = "flighthq-runtime"
+version = "0.1.0"
 
 [[package]]
 name = "flighthq-screen"
 version = "0.1.0"
 dependencies = [
+ "flighthq-runtime",
  "flighthq-types",
 ]
 
@@ -102,17 +121,22 @@ dependencies = [
 name = "flighthq-signals"
 version = "0.1.0"
 dependencies = [
+ "flighthq-runtime",
  "flighthq-types",
 ]
 
 [[package]]
 name = "flighthq-types"
 version = "0.1.0"
+dependencies = [
+ "flighthq-runtime",
+]
 
 [[package]]
 name = "flighthq-useragent"
 version = "0.1.0"
 dependencies = [
+ "flighthq-runtime",
  "flighthq-types",
  "regex",
 ]

@@ -11,3 +11,4 @@ path = "src/lib.rs"
 [dependencies]
 flighthq-image = { path = "../flighthq-image" }
 flighthq-types = { path = "../flighthq-types" }
+flighthq-runtime = { path = "../flighthq-runtime" }
