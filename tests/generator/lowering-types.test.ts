@@ -4,6 +4,114 @@ import { portConfig } from '../../tools/generator/port.config.ts';
 import { lowerTypeScriptSource } from '../../tools/generator/src/lower/typescript.ts';
 
 describe('configured type lowering exceptions', () => {
+  it('recovers async outputs from declared sites, the semantic catalog, and synthesized records', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/application/src/contextual-tasks.ts',
+      `
+        interface DeclaredPayload {
+          value: number;
+        }
+        interface ReturnBackend {
+          fromReturn(): Promise<DeclaredPayload>;
+        }
+        interface CallBackend {
+          fromCall(): Promise<boolean>;
+        }
+        type Loader = () => Promise<DeclaredPayload>;
+        function install(_backend: CallBackend): void {}
+        export function returnBackend(): ReturnBackend {
+          return {
+            async fromReturn() {
+              return { value: 1 };
+            },
+          };
+        }
+        export function installBackend(): void {
+          install({
+            async fromCall() {
+              return true;
+            },
+          });
+        }
+        export function returnLoader(): Loader {
+          return async () => ({ value: 2 });
+        }
+        export const catalogBackend = {
+          async fromCatalog() {
+            return null;
+          },
+        };
+        export async function synthesized() {
+          return { count: 3, label: 'synthesized' };
+        }
+        export async function genuinelyDynamic(value: any) {
+          return value;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/application', '/workspace', {
+      types: {
+        CatalogBackend: {
+          extends: [],
+          fields: [
+            {
+              name: 'fromCatalog',
+              optional: false,
+              type: {
+                kind: 'function',
+                parameters: [],
+                returns: {
+                  kind: 'task',
+                  output: {
+                    inner: { arguments: [], kind: 'named', name: 'CatalogPayload' },
+                    kind: 'nullable',
+                  },
+                },
+              },
+            },
+          ],
+          kind: 'anonymous',
+        },
+        CatalogPayload: {
+          extends: [],
+          fields: [{ name: 'label', optional: false, type: { kind: 'primitive', name: 'String' } }],
+          kind: 'anonymous',
+        },
+      },
+    });
+    const outputs = Object.fromEntries(
+      lowered.asyncTasks.map((scope) => [scope.execution.origin.lexicalPath, scope.output]),
+    );
+    const loaderOutput = lowered.asyncTasks.find((scope) =>
+      scope.execution.origin.lexicalPath.startsWith('returnLoader.anonymous:'),
+    )?.output;
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(outputs['returnBackend.fromReturn']).toEqual({ arguments: [], kind: 'named', name: 'DeclaredPayload' });
+    expect(outputs['installBackend.fromCall']).toEqual({ kind: 'primitive', name: 'Bool' });
+    expect(loaderOutput).toEqual({
+      arguments: [],
+      kind: 'named',
+      name: 'DeclaredPayload',
+    });
+    expect(outputs['catalogBackend.fromCatalog']).toEqual({
+      inner: { arguments: [], kind: 'named', name: 'CatalogPayload' },
+      kind: 'nullable',
+    });
+    expect(outputs.synthesized).toEqual({
+      extends: [],
+      fields: [
+        { name: 'count', optional: false, type: { kind: 'primitive', name: 'Float' } },
+        { name: 'label', optional: false, type: { kind: 'primitive', name: 'String' } },
+      ],
+      kind: 'anonymous',
+    });
+    expect(outputs.genuinelyDynamic).toEqual({ kind: 'dynamic' });
+  });
+
   it('assigns stable source identities and task types to every async scope', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/application/src/tasks.ts',

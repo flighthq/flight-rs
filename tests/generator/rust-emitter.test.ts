@@ -424,6 +424,9 @@ describe('Rust emission', () => {
         export async function adoptReady(input: string): Promise<string> {
           return Promise.resolve<string>(input);
         }
+        export async function inferredFlag(input: boolean) {
+          return input;
+        }
         export function readyFlag(): Promise<boolean> {
           return Promise.resolve(true);
         }
@@ -443,7 +446,7 @@ describe('Rust emission', () => {
     });
 
     expect(lowered.diagnostics).toEqual([]);
-    expect(lowered.asyncTasks).toHaveLength(2);
+    expect(lowered.asyncTasks).toHaveLength(3);
     expect(lowered.asyncTasks[0]).toMatchObject({
       execution: { kind: 'portableTask', origin: { lexicalPath: 'echoAfterReady' } },
       operations: { awaits: 1, promiseResolve: 1 },
@@ -455,6 +458,7 @@ describe('Rust emission', () => {
       'ready',
       'async-scope',
       'ready',
+      'async-scope',
       'ready',
       'reject',
     ]);
@@ -464,6 +468,7 @@ describe('Rust emission', () => {
     expect(output).toContain('pub fn adopt_ready(input: String) -> crate::FlightTask<String>');
     expect(output).toContain('return crate::FlightTask::ready(');
     expect(output).toContain('.await;');
+    expect(output).toContain('pub fn inferred_flag(input: bool) -> crate::FlightTask<bool>');
     expect(output).toContain('pub fn ready_flag() -> crate::FlightTask<bool>');
     expect(output).toContain('pub fn rejected_flag() -> crate::FlightTask<bool>');
     expect(output).toContain('crate::FlightRejection::String("nope".to_owned())');
@@ -487,6 +492,7 @@ describe('Rust emission', () => {
         '    let task = echo_after_ready(source);',
         '    assert_eq!(scheduler.block_on(task), Ok(String::from("owned")));',
         '    assert_eq!(scheduler.block_on(adopt_ready(String::from("adopted"))), Ok(String::from("adopted")));',
+        '    assert_eq!(scheduler.block_on(inferred_flag(true)), Ok(true));',
         '    assert_eq!(scheduler.block_on(ready_flag()), Ok(true));',
         '    assert_eq!(scheduler.block_on(rejected_flag()), Err(FlightTaskError::Rejection(FlightRejection::String(String::from("nope")))));',
         '  }',
@@ -517,7 +523,7 @@ describe('Rust emission', () => {
     const opaque = lowerTypeScriptSource(
       ts.createSourceFile(
         '/workspace/upstream/packages/power/src/opaque.ts',
-        'export async function opaque() { return true; }',
+        'export async function opaque(value: any) { return value; }',
         ts.ScriptTarget.Latest,
         true,
         ts.ScriptKind.TS,

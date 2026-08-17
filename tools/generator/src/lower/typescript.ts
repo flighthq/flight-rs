@@ -15,6 +15,7 @@ import type {
   IrStatement,
   IrTaskConstruction,
   IrType,
+  IrTypeField,
   IrVariable,
   LoweringDiagnostic,
   LoweringResult,
@@ -272,10 +273,16 @@ const webGpuQueueMembers = new Set(['copyExternalImageToTexture', 'submit', 'wri
 const webGpuCanvasContextMembers = new Set(['configure', 'getCurrentTexture']);
 const webGpuLimitsMembers = new Set(['maxBindGroups', 'maxTextureDimension2D', 'minUniformBufferOffsetAlignment']);
 
+export interface TypeRecoveryCatalog {
+  functions?: readonly IrFunctionDeclaration[] | undefined;
+  types?: Readonly<Record<string, IrType>> | undefined;
+}
+
 export function lowerTypeScriptSource(
   sourceFile: ts.SourceFile,
   packageName: string,
   workspaceDirectory: string,
+  recoveryCatalog: TypeRecoveryCatalog = {},
 ): LoweringResult {
   const diagnostics: LoweringDiagnostic[] = [];
   const declarations: IrDeclaration[] = [];
@@ -354,6 +361,8 @@ export function lowerTypeScriptSource(
     externalValues,
     erasedLocalTypes,
     packageName,
+    recoveryFunctions: new Map(recoveryCatalog.functions?.map((declaration) => [declaration.name, declaration]) ?? []),
+    recoveryTypes: new Map(Object.entries(recoveryCatalog.types ?? {})),
     scopeBindings: new WeakMap(),
     sourceFile,
     typeScopeBindings: new WeakMap(),
@@ -366,6 +375,7 @@ export function lowerTypeScriptSource(
     webGlBindingNames,
     workspaceDirectory,
   };
+  collectLocalRecoveryTypes(context);
   const asyncTasks = collectAsyncTaskScopes(sourceFile, context);
 
   for (const statement of sourceFile.statements) {
@@ -504,8 +514,537 @@ function asyncTaskOutput(
   node: ts.ArrowFunction | ts.FunctionDeclaration | ts.FunctionExpression | ts.MethodDeclaration,
   context: LoweringContext,
 ): IrType {
-  const returns = node.type ? lowerType(node.type, context) : promiseOfDynamic();
-  return returns.kind === 'task' ? returns.output : { kind: 'dynamic' };
+  if (node.type) {
+    const returns = lowerType(node.type, context);
+    return returns.kind === 'task' ? returns.output : { kind: 'dynamic' };
+  }
+  const contextual = contextualAsyncTaskOutput(node, context);
+  if (contextual) return contextual;
+  return inferAsyncTaskOutput(node, context) ?? { kind: 'dynamic' };
+}
+
+function asyncTaskType(
+  node: ts.ArrowFunction | ts.FunctionDeclaration | ts.FunctionExpression | ts.MethodDeclaration,
+  context: LoweringContext,
+): IrType {
+  return { kind: 'task', output: asyncTaskOutput(node, context) };
+}
+
+function collectLocalRecoveryTypes(context: LoweringContext): void {
+  for (const statement of context.sourceFile.statements) {
+    const previousDiagnostics = context.diagnostics.length;
+    try {
+      if (ts.isInterfaceDeclaration(statement)) {
+        context.recoveryTypes.set(statement.name.text, {
+          extends:
+            statement.heritageClauses
+              ?.filter((clause) => clause.token === ts.SyntaxKind.ExtendsKeyword)
+              .flatMap((clause) => clause.types.map((item) => lowerExpressionWithTypeArguments(item, context))) ?? [],
+          fields: lowerTypeMembers(statement.members, context),
+          kind: 'anonymous',
+        });
+      } else if (ts.isTypeAliasDeclaration(statement)) {
+        context.recoveryTypes.set(statement.name.text, lowerType(statement.type, context));
+      }
+    } catch (error) {
+      if (!(error instanceof UnsupportedSyntaxError)) throw error;
+      context.diagnostics.splice(previousDiagnostics);
+    }
+  }
+}
+
+function contextualAsyncTaskOutput(
+  node: ts.ArrowFunction | ts.FunctionDeclaration | ts.FunctionExpression | ts.MethodDeclaration,
+  context: LoweringContext,
+): IrType | undefined {
+  const contextual = contextualFunctionType(node, context);
+  const resolved = contextual ? resolveRecoveryType(contextual, context) : undefined;
+  if (resolved?.kind !== 'function') return undefined;
+  return resolved.returns.kind === 'task' ? resolved.returns.output : undefined;
+}
+
+function contextualFunctionType(
+  node: ts.ArrowFunction | ts.FunctionDeclaration | ts.FunctionExpression | ts.MethodDeclaration,
+  context: LoweringContext,
+): IrType | undefined {
+  if (ts.isMethodDeclaration(node) && ts.isObjectLiteralExpression(node.parent)) {
+    return recoveryObjectFieldType(node.parent, propertyName(node.name, context), context);
+  }
+  if (ts.isArrowFunction(node) || ts.isFunctionExpression(node)) {
+    return contextualExpressionType(node, context, new Set());
+  }
+  return undefined;
+}
+
+function contextualExpressionType(
+  node: ts.Expression,
+  context: LoweringContext,
+  visited: Set<ts.Node>,
+): IrType | undefined {
+  if (visited.has(node)) return undefined;
+  visited.add(node);
+  const parent = node.parent;
+  if (ts.isParenthesizedExpression(parent) && parent.expression === node) {
+    return contextualExpressionType(parent, context, visited);
+  }
+  if ((ts.isAsExpression(parent) || ts.isTypeAssertionExpression(parent)) && parent.expression === node) {
+    return parent.type.kind === ts.SyntaxKind.ConstKeyword
+      ? contextualExpressionType(parent, context, visited)
+      : lowerType(parent.type, context);
+  }
+  if (ts.isSatisfiesExpression(parent) && parent.expression === node) return lowerType(parent.type, context);
+  if (ts.isVariableDeclaration(parent) && parent.initializer === node) {
+    return parent.type ? lowerType(parent.type, context) : undefined;
+  }
+  if (ts.isReturnStatement(parent) && parent.expression === node) {
+    const owner = findEnclosingFunction(parent);
+    if (!owner) return undefined;
+    const returns = declaredOrContextualFunctionReturn(owner, context);
+    return returns?.kind === 'task' && hasModifier(owner, ts.SyntaxKind.AsyncKeyword) ? returns.output : returns;
+  }
+  if (ts.isPropertyAssignment(parent) && parent.initializer === node && ts.isObjectLiteralExpression(parent.parent)) {
+    return recoveryObjectFieldType(parent.parent, propertyName(parent.name, context), context);
+  }
+  if (ts.isCallExpression(parent)) {
+    const index = parent.arguments.indexOf(node);
+    if (index >= 0) return recoveryCallParameterType(parent, index, context);
+  }
+  return undefined;
+}
+
+function declaredOrContextualFunctionReturn(
+  node: ts.FunctionLikeDeclaration,
+  context: LoweringContext,
+): IrType | undefined {
+  if (node.type) return lowerType(node.type, context);
+  if (ts.isArrowFunction(node) || ts.isFunctionExpression(node) || ts.isMethodDeclaration(node)) {
+    const contextual = contextualFunctionType(node, context);
+    const resolved = contextual ? resolveRecoveryType(contextual, context) : undefined;
+    return resolved?.kind === 'function' ? resolved.returns : undefined;
+  }
+  return undefined;
+}
+
+function recoveryObjectFieldType(
+  object: ts.ObjectLiteralExpression,
+  name: string,
+  context: LoweringContext,
+): IrType | undefined {
+  const declared = contextualExpressionType(object, context, new Set());
+  const target = declared && declared.kind !== 'dynamic' ? declared : inferCatalogObjectType(object, context);
+  return target ? recoveryFieldType(target, name, context, new Set()) : undefined;
+}
+
+function recoveryFieldType(
+  type: IrType,
+  name: string,
+  context: LoweringContext,
+  visited: Set<string>,
+): IrType | undefined {
+  if (type.kind === 'nullable') return recoveryFieldType(type.inner, name, context, visited);
+  if (type.kind === 'union') {
+    const candidates = type.variants.flatMap((variant) => {
+      const field = recoveryFieldType(variant, name, context, new Set(visited));
+      return field ? [field] : [];
+    });
+    const first = candidates[0];
+    return first && candidates.every((candidate) => recoveryTypeKey(candidate) === recoveryTypeKey(first))
+      ? first
+      : undefined;
+  }
+  if (type.kind === 'named') {
+    if (visited.has(type.name)) return undefined;
+    const declaration = context.recoveryTypes.get(type.name);
+    return declaration ? recoveryFieldType(declaration, name, context, new Set([...visited, type.name])) : undefined;
+  }
+  if (type.kind !== 'anonymous') return undefined;
+  const own = type.fields.find((field) => field.name === name);
+  if (own) return own.type;
+  const inherited = type.extends.flatMap((base) => {
+    const field = recoveryFieldType(base, name, context, new Set(visited));
+    return field ? [field] : [];
+  });
+  const first = inherited[0];
+  return first && inherited.every((field) => recoveryTypeKey(field) === recoveryTypeKey(first)) ? first : undefined;
+}
+
+function resolveRecoveryType(
+  type: IrType,
+  context: LoweringContext,
+  visited: Set<string> = new Set(),
+): IrType | undefined {
+  if (type.kind !== 'named') return type;
+  if (visited.has(type.name)) return type;
+  const declaration = context.recoveryTypes.get(type.name);
+  return declaration ? resolveRecoveryType(declaration, context, new Set([...visited, type.name])) : type;
+}
+
+function inferCatalogObjectType(object: ts.ObjectLiteralExpression, context: LoweringContext): IrType | undefined {
+  const names = objectLiteralRecoveryNames(object, context);
+  if (!names) return undefined;
+  const matches = [...context.recoveryTypes.entries()].flatMap(([name, type]) => {
+    const resolved = resolveRecoveryType(type, context);
+    if (resolved?.kind !== 'anonymous') return [];
+    const fields = flattenRecoveryFields(resolved, context, new Set([name]));
+    if (
+      [...names].some((fieldName) => !fields.some((field) => field.name === fieldName)) ||
+      fields.some((field) => !field.optional && !names.has(field.name))
+    ) {
+      return [];
+    }
+    return [
+      {
+        missing: fields.filter((field) => !names.has(field.name)).length,
+        type: { arguments: [], kind: 'named' as const, name },
+      },
+    ];
+  });
+  if (matches.length === 0) return undefined;
+  const bestScore = Math.min(...matches.map((match) => match.missing));
+  const best = matches.filter((match) => match.missing === bestScore);
+  const identities = new Map(
+    best.map((match) => [recoveryTypeKey(resolveRecoveryType(match.type, context) ?? match.type), match.type]),
+  );
+  return identities.size === 1 ? [...identities.values()][0] : undefined;
+}
+
+function objectLiteralRecoveryNames(
+  object: ts.ObjectLiteralExpression,
+  context: LoweringContext,
+): ReadonlySet<string> | undefined {
+  const names = new Set<string>();
+  for (const member of object.properties) {
+    if (ts.isSpreadAssignment(member) || ts.isComputedPropertyName(member.name)) return undefined;
+    if (
+      ts.isPropertyAssignment(member) ||
+      ts.isShorthandPropertyAssignment(member) ||
+      ts.isMethodDeclaration(member) ||
+      ts.isGetAccessorDeclaration(member) ||
+      ts.isSetAccessorDeclaration(member)
+    ) {
+      names.add(propertyName(member.name, context));
+      continue;
+    }
+    return undefined;
+  }
+  return names;
+}
+
+function flattenRecoveryFields(
+  type: Extract<IrType, { kind: 'anonymous' }>,
+  context: LoweringContext,
+  visited: Set<string>,
+): IrTypeField[] {
+  const fields = new Map(type.fields.map((field) => [field.name, field]));
+  for (const base of type.extends) {
+    if (base.kind === 'named' && visited.has(base.name)) continue;
+    const nextVisited = base.kind === 'named' ? new Set([...visited, base.name]) : new Set(visited);
+    const resolved = resolveRecoveryType(base, context);
+    if (resolved?.kind !== 'anonymous') continue;
+    for (const field of flattenRecoveryFields(resolved, context, nextVisited)) {
+      if (!fields.has(field.name)) fields.set(field.name, field);
+    }
+  }
+  return [...fields.values()];
+}
+
+function recoveryCallParameterType(
+  call: ts.CallExpression,
+  index: number,
+  context: LoweringContext,
+): IrType | undefined {
+  const signature = recoveryCallSignature(call.expression, context);
+  if (signature?.kind !== 'function') return undefined;
+  return signature.parameters[index] ?? signature.parameters.at(-1);
+}
+
+function recoveryCallSignature(
+  expression: ts.Expression,
+  context: LoweringContext,
+): Extract<IrType, { kind: 'function' }> | undefined {
+  if (ts.isIdentifier(expression)) {
+    const local = findLocalFunctionDeclaration(expression.text, expression, context.sourceFile);
+    if (local) {
+      return {
+        kind: 'function',
+        parameters: local.parameters.map((parameter) => lowerParameter(parameter, context).type),
+        returns: local.type ? lowerType(local.type, context) : { kind: 'dynamic' },
+      };
+    }
+    const semantic = context.recoveryFunctions.get(expression.text);
+    if (semantic) {
+      return {
+        kind: 'function',
+        parameters: semantic.parameters.map(callbackParameterType),
+        returns: semantic.returns,
+      };
+    }
+  }
+  const inferred = inferRecoveryExpressionType(expression, context, new Set());
+  const resolved = inferred ? resolveRecoveryType(inferred, context) : undefined;
+  return resolved?.kind === 'function' ? resolved : undefined;
+}
+
+function findLocalFunctionDeclaration(
+  name: string,
+  from: ts.Node,
+  sourceFile: ts.SourceFile,
+): ts.FunctionDeclaration | undefined {
+  for (let scope: ts.Node | undefined = from.parent; scope; scope = scope.parent) {
+    const statements = ts.isSourceFile(scope) || ts.isBlock(scope) ? scope.statements : undefined;
+    const declaration = statements?.find(
+      (statement): statement is ts.FunctionDeclaration =>
+        ts.isFunctionDeclaration(statement) && statement.name?.text === name,
+    );
+    if (declaration) return declaration;
+    if (scope === sourceFile) break;
+  }
+  return undefined;
+}
+
+function inferAsyncTaskOutput(
+  node: ts.ArrowFunction | ts.FunctionDeclaration | ts.FunctionExpression | ts.MethodDeclaration,
+  context: LoweringContext,
+): IrType | undefined {
+  const expressions: Array<ts.Expression | undefined> = [];
+  if (ts.isArrowFunction(node) && !ts.isBlock(node.body)) {
+    expressions.push(node.body);
+  } else if (node.body) {
+    const visit = (candidate: ts.Node): void => {
+      if (candidate !== node.body && ts.isFunctionLike(candidate)) return;
+      if (ts.isReturnStatement(candidate)) {
+        expressions.push(candidate.expression);
+        return;
+      }
+      ts.forEachChild(candidate, visit);
+    };
+    visit(node.body);
+  }
+  if (expressions.length === 0) return { kind: 'primitive', name: 'Void' };
+  if (expressions.some((expression) => !expression)) return undefined;
+  const types = expressions.flatMap((expression) => {
+    const inferred = expression ? inferRecoveryExpressionType(expression, context, new Set()) : undefined;
+    const output = inferred?.kind === 'task' ? inferred.output : inferred;
+    return output && !recoveryTypeContainsDynamic(output) ? [output] : [];
+  });
+  return types.length === expressions.length ? commonType(types) : undefined;
+}
+
+function inferRecoveryExpressionType(
+  node: ts.Expression,
+  context: LoweringContext,
+  visited: Set<ts.Node>,
+): IrType | undefined {
+  if (visited.has(node)) return undefined;
+  visited.add(node);
+  if (ts.isParenthesizedExpression(node) || ts.isNonNullExpression(node)) {
+    return inferRecoveryExpressionType(node.expression, context, visited);
+  }
+  if (ts.isAsExpression(node) || ts.isTypeAssertionExpression(node)) return lowerType(node.type, context);
+  if (ts.isSatisfiesExpression(node)) return lowerType(node.type, context);
+  if (ts.isAwaitExpression(node)) {
+    const awaited = inferRecoveryExpressionType(node.expression, context, visited);
+    return awaited?.kind === 'task' ? awaited.output : awaited;
+  }
+  if (ts.isNumericLiteral(node) || ts.isPostfixUnaryExpression(node)) {
+    return { kind: 'primitive', name: 'Float' };
+  }
+  if (ts.isPrefixUnaryExpression(node)) {
+    if (node.operator === ts.SyntaxKind.ExclamationToken) return { kind: 'primitive', name: 'Bool' };
+    return { kind: 'primitive', name: 'Float' };
+  }
+  if (ts.isTypeOfExpression(node)) return { kind: 'primitive', name: 'String' };
+  if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node) || ts.isTemplateExpression(node)) {
+    return { kind: 'primitive', name: 'String' };
+  }
+  if (node.kind === ts.SyntaxKind.TrueKeyword || node.kind === ts.SyntaxKind.FalseKeyword) {
+    return { kind: 'primitive', name: 'Bool' };
+  }
+  if (ts.isIdentifier(node)) return inferRecoveryIdentifierType(node, context, visited);
+  if (ts.isObjectLiteralExpression(node)) {
+    const semantic = inferCatalogObjectType(node, context);
+    if (semantic) return semantic;
+    const fields = node.properties.flatMap((member) => {
+      if (ts.isSpreadAssignment(member)) {
+        const spread = inferRecoveryExpressionType(member.expression, context, new Set(visited));
+        const resolved = spread ? resolveRecoveryType(spread, context) : undefined;
+        return resolved?.kind === 'anonymous' ? flattenRecoveryFields(resolved, context, new Set()) : [];
+      }
+      if (!ts.isPropertyAssignment(member) && !ts.isShorthandPropertyAssignment(member)) return [];
+      if (ts.isComputedPropertyName(member.name)) return [];
+      const value = ts.isShorthandPropertyAssignment(member) ? member.name : member.initializer;
+      const type = inferRecoveryExpressionType(value, context, new Set(visited));
+      return type && !recoveryTypeContainsDynamic(type)
+        ? [{ name: propertyName(member.name, context), optional: false, type }]
+        : [];
+    });
+    if (fields.length !== node.properties.length) return undefined;
+    return {
+      extends: [],
+      fields: fields.sort((left, right) => left.name.localeCompare(right.name)),
+      kind: 'anonymous',
+    };
+  }
+  if (ts.isArrayLiteralExpression(node)) {
+    if (node.elements.length === 0) return undefined;
+    const elements = node.elements.flatMap((element) => {
+      const type = inferRecoveryExpressionType(element, context, new Set(visited));
+      return type && !recoveryTypeContainsDynamic(type) ? [type] : [];
+    });
+    return elements.length === node.elements.length ? { element: commonType(elements), kind: 'array' } : undefined;
+  }
+  if (ts.isConditionalExpression(node)) {
+    const whenTrue = inferRecoveryExpressionType(node.whenTrue, context, new Set(visited));
+    const whenFalse = inferRecoveryExpressionType(node.whenFalse, context, new Set(visited));
+    if (node.whenTrue.kind === ts.SyntaxKind.NullKeyword && whenFalse) return { inner: whenFalse, kind: 'nullable' };
+    if (node.whenFalse.kind === ts.SyntaxKind.NullKeyword && whenTrue) return { inner: whenTrue, kind: 'nullable' };
+    return whenTrue && whenFalse ? commonType([whenTrue, whenFalse]) : undefined;
+  }
+  if (ts.isBinaryExpression(node)) {
+    const operator = node.operatorToken.kind;
+    if (
+      operator === ts.SyntaxKind.EqualsEqualsToken ||
+      operator === ts.SyntaxKind.EqualsEqualsEqualsToken ||
+      operator === ts.SyntaxKind.ExclamationEqualsToken ||
+      operator === ts.SyntaxKind.ExclamationEqualsEqualsToken ||
+      operator === ts.SyntaxKind.LessThanToken ||
+      operator === ts.SyntaxKind.LessThanEqualsToken ||
+      operator === ts.SyntaxKind.GreaterThanToken ||
+      operator === ts.SyntaxKind.GreaterThanEqualsToken
+    ) {
+      return { kind: 'primitive', name: 'Bool' };
+    }
+    const left = inferRecoveryExpressionType(node.left, context, new Set(visited));
+    const right = inferRecoveryExpressionType(node.right, context, new Set(visited));
+    return left && right ? commonType([left, right]) : (left ?? right);
+  }
+  if (ts.isCallExpression(node)) {
+    if (
+      ts.isPropertyAccessExpression(node.expression) &&
+      ts.isIdentifier(node.expression.expression) &&
+      node.expression.expression.text === 'Promise' &&
+      node.expression.name.text === 'resolve'
+    ) {
+      const value = node.arguments[0]
+        ? inferRecoveryExpressionType(node.arguments[0], context, new Set(visited))
+        : ({ kind: 'primitive', name: 'Void' } as const);
+      return value ? { kind: 'task', output: value } : undefined;
+    }
+    return recoveryCallSignature(node.expression, context)?.returns;
+  }
+  if (ts.isPropertyAccessExpression(node)) {
+    const object = inferRecoveryExpressionType(node.expression, context, new Set(visited));
+    return object ? recoveryFieldType(object, node.name.text, context, new Set()) : undefined;
+  }
+  if (ts.isNewExpression(node) && ts.isIdentifier(node.expression)) {
+    const lowered = lowerType(
+      ts.factory.createTypeReferenceNode(
+        node.expression.text,
+        node.typeArguments ? [...node.typeArguments] : undefined,
+      ),
+      context,
+    );
+    return recoveryTypeContainsDynamic(lowered) ? undefined : lowered;
+  }
+  return undefined;
+}
+
+function inferRecoveryIdentifierType(
+  identifier: ts.Identifier,
+  context: LoweringContext,
+  visited: Set<ts.Node>,
+): IrType | undefined {
+  if (identifier.text === 'undefined') return { kind: 'primitive', name: 'Void' };
+  for (let current: ts.Node | undefined = identifier.parent; current; current = current.parent) {
+    if (ts.isFunctionLike(current)) {
+      const parameter = current.parameters.find(
+        (candidate) => ts.isIdentifier(candidate.name) && candidate.name.text === identifier.text,
+      );
+      if (parameter) {
+        return parameter.type
+          ? lowerType(parameter.type, context)
+          : parameter.initializer
+            ? inferRecoveryExpressionType(parameter.initializer, context, new Set(visited))
+            : undefined;
+      }
+    }
+  }
+  let best: ts.VariableDeclaration | undefined;
+  const visit = (node: ts.Node): void => {
+    if (node !== context.sourceFile && ts.isFunctionLike(node)) {
+      if (!(node.pos <= identifier.pos && identifier.end <= node.end)) return;
+    }
+    if (
+      ts.isVariableDeclaration(node) &&
+      ts.isIdentifier(node.name) &&
+      node.name.text === identifier.text &&
+      node.pos < identifier.pos &&
+      (!best || node.pos > best.pos)
+    ) {
+      best = node;
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(context.sourceFile);
+  if (best) {
+    if (best.type) return lowerType(best.type, context);
+    if (best.initializer) return inferRecoveryExpressionType(best.initializer, context, new Set(visited));
+  }
+  const functionDeclaration = findLocalFunctionDeclaration(identifier.text, identifier, context.sourceFile);
+  if (functionDeclaration) {
+    return {
+      kind: 'function',
+      parameters: functionDeclaration.parameters.map((parameter) => lowerParameter(parameter, context).type),
+      returns: functionDeclaration.type ? lowerType(functionDeclaration.type, context) : { kind: 'dynamic' },
+    };
+  }
+  return undefined;
+}
+
+function findEnclosingFunction(
+  node: ts.Node,
+): ts.ArrowFunction | ts.FunctionDeclaration | ts.FunctionExpression | ts.MethodDeclaration | undefined {
+  for (let current: ts.Node | undefined = node.parent; current; current = current.parent) {
+    if (
+      ts.isArrowFunction(current) ||
+      ts.isFunctionDeclaration(current) ||
+      ts.isFunctionExpression(current) ||
+      ts.isMethodDeclaration(current)
+    ) {
+      return current;
+    }
+  }
+  return undefined;
+}
+
+function recoveryTypeContainsDynamic(type: IrType): boolean {
+  switch (type.kind) {
+    case 'dynamic':
+      return true;
+    case 'anonymous':
+      return (
+        type.extends.some(recoveryTypeContainsDynamic) ||
+        type.fields.some((field) => recoveryTypeContainsDynamic(field.type))
+      );
+    case 'array':
+      return recoveryTypeContainsDynamic(type.element);
+    case 'function':
+      return type.parameters.some(recoveryTypeContainsDynamic) || recoveryTypeContainsDynamic(type.returns);
+    case 'named':
+      return type.arguments.some(recoveryTypeContainsDynamic);
+    case 'nullable':
+      return recoveryTypeContainsDynamic(type.inner);
+    case 'task':
+      return recoveryTypeContainsDynamic(type.output);
+    case 'union':
+      return type.variants.some(recoveryTypeContainsDynamic);
+    case 'primitive':
+      return false;
+  }
+}
+
+function recoveryTypeKey(type: IrType): string {
+  return JSON.stringify(type);
 }
 
 function isAsyncFunctionLike(
@@ -825,6 +1364,8 @@ interface LoweringContext {
   externalValues: ReadonlyMap<string, { imported: string; specifier: string }>;
   erasedLocalTypes: ReadonlySet<string>;
   packageName: string;
+  recoveryFunctions: ReadonlyMap<string, IrFunctionDeclaration>;
+  recoveryTypes: Map<string, IrType>;
   scopeBindings: WeakMap<ts.Node, ReadonlySet<string>>;
   sourceFile: ts.SourceFile;
   typeScopeBindings: WeakMap<ts.Node, ReadonlySet<string>>;
@@ -890,10 +1431,10 @@ function lowerClass(node: ts.ClassDeclaration, context: LoweringContext) {
         parameters: loweredParameters.parameters,
         public:
           !hasModifier(method, ts.SyntaxKind.PrivateKeyword) && !hasModifier(method, ts.SyntaxKind.ProtectedKeyword),
-        returns: method.type
-          ? lowerType(method.type, context)
-          : hasModifier(method, ts.SyntaxKind.AsyncKeyword)
-            ? promiseOfDynamic()
+        returns: hasModifier(method, ts.SyntaxKind.AsyncKeyword)
+          ? asyncTaskType(method, context)
+          : method.type
+            ? lowerType(method.type, context)
             : hasReturnValue(method.body)
               ? ({ kind: 'dynamic' } satisfies IrType)
               : ({ kind: 'primitive', name: 'Void' } satisfies IrType),
@@ -935,10 +1476,10 @@ function lowerFunction(node: ts.FunctionDeclaration, context: LoweringContext): 
     name: node.name.text,
     origin: origin(node, context),
     parameters: loweredParameters.parameters,
-    returns: node.type
-      ? lowerType(node.type, context)
-      : hasModifier(node, ts.SyntaxKind.AsyncKeyword)
-        ? promiseOfDynamic()
+    returns: hasModifier(node, ts.SyntaxKind.AsyncKeyword)
+      ? asyncTaskType(node, context)
+      : node.type
+        ? lowerType(node.type, context)
         : hasReturnValue(node.body)
           ? (inferNativeHostFunctionReturnType(body) ?? { kind: 'dynamic' })
           : { kind: 'primitive', name: 'Void' },
@@ -1724,10 +2265,10 @@ function lowerStatement(node: ts.Statement, context: LoweringContext): IrStateme
             kind: 'function',
             name: node.name.text,
             parameters,
-            returns: node.type
-              ? lowerType(node.type, context)
-              : hasModifier(node, ts.SyntaxKind.AsyncKeyword)
-                ? promiseOfDynamic()
+            returns: hasModifier(node, ts.SyntaxKind.AsyncKeyword)
+              ? asyncTaskType(node, context)
+              : node.type
+                ? lowerType(node.type, context)
                 : hasReturnValue(node.body)
                   ? { kind: 'dynamic' }
                   : { kind: 'primitive', name: 'Void' },
@@ -1737,7 +2278,11 @@ function lowerStatement(node: ts.Statement, context: LoweringContext): IrStateme
           type: {
             kind: 'function',
             parameters: parameters.map(callbackParameterType),
-            returns: node.type ? lowerType(node.type, context) : { kind: 'dynamic' },
+            returns: hasModifier(node, ts.SyntaxKind.AsyncKeyword)
+              ? asyncTaskType(node, context)
+              : node.type
+                ? lowerType(node.type, context)
+                : { kind: 'dynamic' },
           },
         },
       ],
@@ -1984,11 +2529,7 @@ function lowerExpression(node: ts.Expression, context: LoweringContext): IrExpre
               parameters: property.parameters
                 .filter((parameter) => !isThisParameter(parameter))
                 .map((parameter) => lowerParameter(parameter, context)),
-              returns: hasModifier(property, ts.SyntaxKind.AsyncKeyword)
-                ? property.type
-                  ? lowerType(property.type, context)
-                  : promiseOfDynamic()
-                : undefined,
+              returns: hasModifier(property, ts.SyntaxKind.AsyncKeyword) ? asyncTaskType(property, context) : undefined,
             };
             if (ts.isComputedPropertyName(property.name)) {
               return {
@@ -2270,9 +2811,7 @@ function lowerExpression(node: ts.Expression, context: LoweringContext): IrExpre
         name: ts.isFunctionExpression(node) ? node.name?.text : undefined,
         parameters: loweredParameters.parameters,
         returns: hasModifier(node, ts.SyntaxKind.AsyncKeyword)
-          ? node.type
-            ? lowerType(node.type, context)
-            : promiseOfDynamic()
+          ? asyncTaskType(node, context)
           : node.type
             ? lowerType(node.type, context)
             : undefined,
@@ -2340,13 +2879,6 @@ function taskExpressionOrigin(node: ts.Node, context: LoweringContext, operation
 
 function isThisParameter(node: ts.ParameterDeclaration): boolean {
   return ts.isIdentifier(node.name) && node.name.text === 'this';
-}
-
-function promiseOfDynamic(): IrType {
-  return {
-    kind: 'task',
-    output: { kind: 'dynamic' },
-  };
 }
 
 function lowerIdentifier(name: string, context: LoweringContext, locallyBound = false): IrExpression {

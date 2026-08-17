@@ -13,7 +13,7 @@ import {
 } from '../../port.config.ts';
 import { harvestConformance, markConformancePassing, type ConformanceHarvestReport } from '../conformance/harvest.ts';
 import { sourcePathToImplementationModule, sourcePathToRustModule } from '../analyze/inventory.ts';
-import { lowerTypeScriptSource } from '../lower/typescript.ts';
+import { lowerTypeScriptSource, type TypeRecoveryCatalog } from '../lower/typescript.ts';
 import type { PackageInventory, UpstreamInventory } from '../model/inventory.ts';
 import {
   PORTABLE_TASK_RUST_LOWERING_REASON,
@@ -418,7 +418,11 @@ function attemptAutomaticPackage(
 
     try {
       const sourceFile = parseTypeScriptFile(file);
-      const lowered = lowerTypeScriptFile(file, packageInventory.name, workspaceDirectory);
+      const importedSemanticTypes = collectImportedSemanticTypes(sourceFile, workspaceDirectory);
+      const lowered = lowerTypeScriptFile(file, packageInventory.name, workspaceDirectory, {
+        functions: importedSemanticTypes.functions,
+        types: { ...semanticTypes, ...importedSemanticTypes.types },
+      });
       const sourceAsyncTasks = lowered.asyncTasks.map((scope) => reportAsyncTaskScope(scope, packageInventory.name));
       const sourceTaskConstructions = lowered.taskConstructions.map((construction) =>
         reportTaskConstruction(construction, packageInventory.name),
@@ -435,7 +439,6 @@ function attemptAutomaticPackage(
         });
         continue;
       }
-      const importedSemanticTypes = collectImportedSemanticTypes(sourceFile, workspaceDirectory);
       const localDeclarations = new Set(lowered.declarations.map((declaration) => declaration.name));
       const emitted = emitRustModule({
         declarations: lowered.declarations,
@@ -1372,6 +1375,7 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
   const modules: string[] = [];
   const outputs: PendingOutput[] = [];
   const entityRuntimeSemanticTypes = collectEntityRuntimeSemanticTypes(workspaceDirectory);
+  const packageSemanticTypes = collectPackageSemanticTypes(sourceDirectory, target.package, workspaceDirectory);
   const semanticTypes = {
     ...entityRuntimeSemanticTypes.types,
     ...collectSemanticTypes(workspaceDirectory, target),
@@ -1403,7 +1407,11 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
     const moduleName = sourcePathToRustModule(file);
     if (!moduleName) continue;
     const sourceFile = parseTypeScriptFile(file);
-    const lowered = lowerTypeScriptFile(file, target.package, workspaceDirectory);
+    const importedSemanticTypes = collectImportedSemanticTypes(sourceFile, workspaceDirectory);
+    const lowered = lowerTypeScriptFile(file, target.package, workspaceDirectory, {
+      functions: importedSemanticTypes.functions,
+      types: { ...packageSemanticTypes.types, ...semanticTypes, ...importedSemanticTypes.types },
+    });
     const declarationSelection = target.declarationSelection?.[sourceName];
     const selectedDeclarations = declarationSelection ? new Set(declarationSelection.names) : undefined;
     const declarations = selectedDeclarations
@@ -1426,7 +1434,6 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
         throw new Error(`Stale ${target.package} declaration selections in ${sourceName}: ${missing.join(', ')}`);
       }
     }
-    const importedSemanticTypes = collectImportedSemanticTypes(sourceFile, workspaceDirectory);
     if (lowered.diagnostics.length > 0) {
       unsupportedSources.push({
         diagnostics: lowered.diagnostics,
@@ -2388,11 +2395,12 @@ function lowerTypeScriptFile(
   file: string,
   packageName: string,
   workspaceDirectory: string,
+  recoveryCatalog?: TypeRecoveryCatalog,
 ): ReturnType<typeof lowerTypeScriptSource> {
-  const cacheKey = `${workspaceDirectory}\0${packageName}\0${file}`;
+  const cacheKey = `${workspaceDirectory}\0${packageName}\0${file}\0${recoveryCatalog ? 'contextual' : 'raw'}`;
   const cached = loweredSourceCache.get(cacheKey);
   if (cached) return cached;
-  const lowered = lowerTypeScriptSource(parseTypeScriptFile(file), packageName, workspaceDirectory);
+  const lowered = lowerTypeScriptSource(parseTypeScriptFile(file), packageName, workspaceDirectory, recoveryCatalog);
   loweredSourceCache.set(cacheKey, lowered);
   return lowered;
 }
