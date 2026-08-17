@@ -2,7 +2,7 @@
 
 - The original manual Rust port is archived outside the repository as a complete Git bundle.
 - Repository history was filtered to the curated `packages/surface-rs` path.
-- Upstream Flight is pinned at `5d24729f7360475e28a105ae0caeeaa2e1328260`, matching the cultivated `flight-hx` generator baseline.
+- Upstream Flight is pinned at `cad72aa3ea4e6e76a050918a403dcb10efdfcb0d`, matching `flight-hx` main at `27f4d0ee7ae04d64e66c996f99a0f270b09e12be`.
 - The generator inventory, neutral IR, and TypeScript lowering began from `flight-hx` commit `390a890c542f135278d89eee83f4f54e8fdbfd72`.
 - The compiler-driven automatic matrix currently compiles 23 generated package candidates. Pass 27 Stage 2 inventories all 204 task constructions and 162 async scopes, executes 9 constructions/3 non-opaque image-codec scopes through the canonical generated runtime, and leaves 195/159 explicitly unsupported; 59 packages reach Rust emission and there are 358 source/package blockers.
 - `@flighthq/types` and `@flighthq/easing` are fully promoted executable Rust generation targets.

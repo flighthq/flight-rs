@@ -14,7 +14,7 @@ The repository is a compiler project, not a collection of manually ported crates
 - Generated crates are ordinary native-capable Rust crates. Browser behavior belongs behind generated backend seams or cultivated host adapters.
 - Improve shared IR and emitter architecture. Never fix a candidate by directly editing `generated/`.
 
-The pinned Flight revision is `5d24729f7360475e28a105ae0caeeaa2e1328260`. The generator began from cultivated `flight-hx` revision `390a890c542f135278d89eee83f4f54e8fdbfd72`.
+The pinned Flight revision is `cad72aa3ea4e6e76a050918a403dcb10efdfcb0d`, matching `flight-hx` main at `27f4d0ee7ae04d64e66c996f99a0f270b09e12be`. The generator began from cultivated `flight-hx` revision `390a890c542f135278d89eee83f4f54e8fdbfd72`; subsequent compiler work should continue to use the newer `flight-hx` generator as its reference.
 
 ## Current checkpoint
 

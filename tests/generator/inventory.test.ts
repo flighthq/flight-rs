@@ -31,7 +31,7 @@ describe('cultivated upstream analysis', () => {
     const inventory = analyzeUpstream(path.resolve('.'));
     const geometry = inventory.packages.find((item) => item.name === '@flighthq/geometry');
 
-    expect(inventory.upstreamCommit).toBe('5d24729f7360475e28a105ae0caeeaa2e1328260');
+    expect(inventory.upstreamCommit).toBe('cad72aa3ea4e6e76a050918a403dcb10efdfcb0d');
     expect(inventory.summary.packages).toBe(131);
     expect(inventory.summary.sourceFiles).toBeGreaterThan(1_000);
     expect(inventory.summary.testFiles).toBeGreaterThan(1_000);
