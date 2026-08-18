@@ -12,7 +12,6 @@ import {
   sourcePathToImplementationModule,
   sourcePathToRustModule,
 } from '../../tools/generator/src/analyze/inventory.ts';
-import { auditLowering } from '../../tools/generator/src/analyze/lowering.ts';
 
 function git(directory: string, ...arguments_: string[]): string {
   return execFileSync('git', ['-C', directory, ...arguments_], {
@@ -63,14 +62,6 @@ describe('cultivated upstream analysis', () => {
     ]);
     expect(geometry.rustCrate).toBe('flighthq-geometry');
   });
-
-  it('retains zero-diagnostic lowering coverage from the cultivated generator', () => {
-    const audit = auditLowering(path.resolve('.'));
-
-    expect(audit.summary.packages).toBe(142);
-    expect(audit.summary.lowered).toBe(audit.summary.declarations);
-    expect(audit.summary.diagnostics).toBe(0);
-  }, 60_000);
 });
 
 describe('upstream provenance', () => {

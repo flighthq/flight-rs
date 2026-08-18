@@ -3,7 +3,7 @@ import path from 'node:path';
 
 import { portConfig } from '../port.config.ts';
 import { analyzeUpstream } from './analyze/inventory.ts';
-import { auditLowering } from './analyze/lowering.ts';
+import { assertCompleteLoweringAudit, auditLowering } from './analyze/lowering.ts';
 import { generateRust } from './emit/core.ts';
 import {
   createApiReport,
@@ -36,6 +36,9 @@ try {
 
     if (!inventoryOnly) {
       const lowering = auditLowering(workspaceDirectory);
+      // This is the exhaustive coverage gate. Keep it in the unbounded generator
+      // check instead of duplicating the full upstream traversal in a timed unit test.
+      if (check) assertCompleteLoweringAudit(lowering);
       const generation = generateRust(workspaceDirectory, check, inventory);
       reports.push(
         { content: stableJson(lowering), file: 'lowering.json' },

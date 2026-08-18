@@ -49,6 +49,27 @@ export function auditLowering(workspaceDirectory: string): LoweringAudit {
   };
 }
 
+export function assertCompleteLoweringAudit(audit: LoweringAudit): void {
+  if (audit.summary.lowered === audit.summary.declarations && audit.summary.diagnostics === 0) return;
+
+  const incomplete = audit.packages.filter((item) => item.lowered !== item.declarations || item.diagnostics.length > 0);
+  const packages = incomplete
+    .slice(0, 5)
+    .map(
+      (item) =>
+        `${item.packageName} (${String(item.lowered)}/${String(item.declarations)} lowered, ${quantity(item.diagnostics.length, 'diagnostic')})`,
+    )
+    .join(', ');
+  const remainder = incomplete.length > 5 ? `, and ${String(incomplete.length - 5)} more` : '';
+  throw new Error(
+    `Lowering coverage regression: ${String(audit.summary.lowered)}/${String(audit.summary.declarations)} declarations lowered with ${quantity(audit.summary.diagnostics, 'diagnostic')} across ${quantity(incomplete.length, 'package')}: ${packages}${remainder}`,
+  );
+}
+
+function quantity(count: number, singular: string): string {
+  return `${String(count)} ${singular}${count === 1 ? '' : 's'}`;
+}
+
 function isExcludedPackage(packageName: string): boolean {
   return portConfig.packagePolicy.some((rule) => {
     if (rule.disposition !== 'excluded') return false;
