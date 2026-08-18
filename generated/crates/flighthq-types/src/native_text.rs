@@ -30,7 +30,7 @@ impl PartialEq for NativeTextStyle {
     }
 }
 
-// Source: upstream/packages/types/src/NativeText.ts:24 (sha256:323707e2b26e1934faec2551d07b78cd93edc36d497ac9e4c967aaa9fe11128b)
+// Source: upstream/packages/types/src/NativeText.ts:24 (sha256:5e7d4b75130bdda69787b9c27ae02b9270e3c086f66849b6aecb864787210fd6)
 #[derive(Clone, Default)]
 pub struct NativeTextData {
     #[doc(hidden)]
@@ -48,10 +48,10 @@ impl PartialEq for NativeTextData {
     }
 }
 
-// Source: upstream/packages/types/src/NativeText.ts:37 (sha256:ffa5268de8737c98ecb432ac7edb206546da586c3017bc731709b5889c8ee2b7)
+// Source: upstream/packages/types/src/NativeText.ts:37 (sha256:a31ec0e776fefad7311e898f90401d6895f78c493ec129f623f6512f580a2a18)
 pub type NativeTextRuntime = crate::EntityRuntime;
 
-// Source: upstream/packages/types/src/NativeText.ts:49 (sha256:63fb798185b5c8be09651c9ed151fffceaa74a6e90ced42503e237507fe47ca0)
+// Source: upstream/packages/types/src/NativeText.ts:49 (sha256:88013e44c2b9873292c3001ef0df176f90cb4974f368d0820db78530ca328431)
 #[derive(Clone, Default)]
 pub struct NativeText {
     #[doc(hidden)]

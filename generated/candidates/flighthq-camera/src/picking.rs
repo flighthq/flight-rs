@@ -6,21 +6,21 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::get_camera_view_projection_matrix4;
+use crate::get_camera3_d_view_projection_matrix4;
 use flighthq_geometry::{
     create_matrix4, create_vector3, inverse_matrix4, normalize_vector3, subtract_vector3,
 };
-use flighthq_types::{Camera, Matrix4, Matrix4Like, Ray3DLike, Vector3, Vector3Like};
+use flighthq_types::{Camera3D, Matrix4, Matrix4Like, Ray3DLike, Vector3, Vector3Like};
 
-// Source: upstream/packages/camera/src/picking.ts:16 (sha256:d433108a9e90d9d15959567e9e3d7f9f1d905c02e0b9b7f0c9269b24e69fd28c)
-pub fn get_camera_screen_to_world_ray(
+// Source: upstream/packages/camera/src/picking.ts:22 (sha256:3880424ba27cd5b60e50d008a3f16a3042e9db69ffb375a352b8221e155f9274)
+pub fn get_camera3_d_screen_to_world_ray(
     out: &mut Ray3DLike,
-    camera: &Camera,
+    camera: &Camera3D,
     ndc_x: f64,
     ndc_y: f64,
     aspect: f64,
 ) -> bool {
-    get_camera_view_projection_matrix4(
+    get_camera3_d_view_projection_matrix4(
         &mut (*__SCRATCH_VIEW_PROJECTION.lock().unwrap()),
         camera,
         aspect,
@@ -135,14 +135,14 @@ pub fn get_camera_screen_to_world_ray(
     return true;
 }
 
-// Source: upstream/packages/camera/src/picking.ts:78 (sha256:83adf2b1b5de0eb0c07ebcacf049daa72f93e22e935b0ce6d53b3d9dfea87082)
-pub fn get_camera_world_to_screen(
+// Source: upstream/packages/camera/src/picking.ts:84 (sha256:bf8ca45258f1437d26754bbeeaff9b3e8a4b06bd00eb9fdcf0552ab51b5b8a9c)
+pub fn get_camera3_d_world_to_screen(
     out: &mut Vector3Like,
-    camera: &Camera,
+    camera: &Camera3D,
     world_point: &Vector3Like,
     aspect: f64,
 ) -> bool {
-    get_camera_view_projection_matrix4(
+    get_camera3_d_view_projection_matrix4(
         &mut (*__SCRATCH_VIEW_PROJECTION.lock().unwrap()),
         camera,
         aspect,
@@ -180,7 +180,7 @@ pub fn get_camera_world_to_screen(
     return true;
 }
 
-// Source: upstream/packages/camera/src/picking.ts:104 (sha256:ea1bce46bff5117486aa66f0bc0c33f5ba239247bd135b339e34f20358b60428)
+// Source: upstream/packages/camera/src/picking.ts:110 (sha256:ea1bce46bff5117486aa66f0bc0c33f5ba239247bd135b339e34f20358b60428)
 static __SCRATCH_VIEW_PROJECTION: std::sync::LazyLock<std::sync::Mutex<Matrix4>> =
     std::sync::LazyLock::new(|| {
         std::sync::Mutex::new(create_matrix4(
@@ -189,7 +189,7 @@ static __SCRATCH_VIEW_PROJECTION: std::sync::LazyLock<std::sync::Mutex<Matrix4>>
         ))
     });
 
-// Source: upstream/packages/camera/src/picking.ts:105 (sha256:9533d4b350fea262c12d05798919dbd7e09488baad44ff9ced667d0a21cfe6ff)
+// Source: upstream/packages/camera/src/picking.ts:111 (sha256:9533d4b350fea262c12d05798919dbd7e09488baad44ff9ced667d0a21cfe6ff)
 static __SCRATCH_INVERSE_VP: std::sync::LazyLock<std::sync::Mutex<Matrix4>> =
     std::sync::LazyLock::new(|| {
         std::sync::Mutex::new(create_matrix4(
@@ -198,14 +198,14 @@ static __SCRATCH_INVERSE_VP: std::sync::LazyLock<std::sync::Mutex<Matrix4>> =
         ))
     });
 
-// Source: upstream/packages/camera/src/picking.ts:106 (sha256:744e95910d21eaeb616e6b459dec7d0e200cd0cb6ecc7d6780a449d490dab0d4)
+// Source: upstream/packages/camera/src/picking.ts:112 (sha256:744e95910d21eaeb616e6b459dec7d0e200cd0cb6ecc7d6780a449d490dab0d4)
 static __SCRATCH_NEAR: std::sync::LazyLock<std::sync::Mutex<Vector3>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(create_vector3(None, None, None)));
 
-// Source: upstream/packages/camera/src/picking.ts:107 (sha256:507b197cd038c26584a0dfc58842e84347024fe0530e472fc9449e996e6862e9)
+// Source: upstream/packages/camera/src/picking.ts:113 (sha256:507b197cd038c26584a0dfc58842e84347024fe0530e472fc9449e996e6862e9)
 static __SCRATCH_FAR: std::sync::LazyLock<std::sync::Mutex<Vector3>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(create_vector3(None, None, None)));
 
-// Source: upstream/packages/camera/src/picking.ts:108 (sha256:dd60ed1ea48d08bc8c0df044acfd4467ebcc6485ec4d0accd2c7efe1ced96983)
+// Source: upstream/packages/camera/src/picking.ts:114 (sha256:dd60ed1ea48d08bc8c0df044acfd4467ebcc6485ec4d0accd2c7efe1ced96983)
 static __SCRATCH_DIR: std::sync::LazyLock<std::sync::Mutex<Vector3>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(create_vector3(None, None, None)));

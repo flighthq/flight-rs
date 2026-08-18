@@ -195,7 +195,7 @@ pub fn resume_spritesheet_player(player: &mut SpritesheetPlayer) -> () {
     player.paused = false;
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:126 (sha256:f2f6088f5661d5524a1a9bb22e7051b7ef1742edc0fe897ba9f9db0a5843ca1e)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:126 (sha256:fe05d9c137d0ebade35838eb19a5630223a7492c234b4ad6b68de2c2f00b1e84)
 pub fn seek_spritesheet_player_to_frame(player: &mut SpritesheetPlayer, frame_index: f64) -> () {
     let animation = (player.animation).clone();
     if ((animation).is_none()) || ((animation.as_ref().unwrap().frames.len() as f64) == 0.0_f64) {
@@ -204,10 +204,12 @@ pub fn seek_spritesheet_player_to_frame(player: &mut SpritesheetPlayer, frame_in
     let clamped = (0.0_f64)
         .max((frame_index).min(((animation.as_ref().unwrap().frames.len() as f64) - 1.0_f64)));
     player.frame_index = clamped;
-    player.elapsed = resolve_virtual_index_start_time(animation.as_ref().unwrap(), clamped);
+    let virtual_index =
+        resolve_display_index_to_first_virtual_index(animation.as_ref().unwrap(), clamped);
+    player.elapsed = resolve_virtual_index_start_time(animation.as_ref().unwrap(), virtual_index);
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:136 (sha256:ccc956a8d2a9290e2da714a354e13a5ca831edd50d23565edfcace178931fefe)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:135 (sha256:ccc956a8d2a9290e2da714a354e13a5ca831edd50d23565edfcace178931fefe)
 pub fn seek_spritesheet_player_to_time(player: &mut SpritesheetPlayer, time: f64) -> () {
     let animation = (player.animation).clone();
     if ((animation).is_none()) || ((animation.as_ref().unwrap().frames.len() as f64) == 0.0_f64) {
@@ -219,7 +221,7 @@ pub fn seek_spritesheet_player_to_time(player: &mut SpritesheetPlayer, time: f64
         resolve_frame_index_from_elapsed(animation.as_ref().unwrap(), player.elapsed);
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:144 (sha256:e58eb6d0ffc8d267cfb7dc16871520a81d93cd9262e357e6ae88a286d9f718b4)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:143 (sha256:e58eb6d0ffc8d267cfb7dc16871520a81d93cd9262e357e6ae88a286d9f718b4)
 pub fn stop_spritesheet_player(player: &mut SpritesheetPlayer) -> () {
     player.elapsed = 0.0_f64;
     player.frame_index = 0.0_f64;
@@ -227,7 +229,7 @@ pub fn stop_spritesheet_player(player: &mut SpritesheetPlayer) -> () {
     player.queue.clear();
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:151 (sha256:4570c7b97664a83b03bc39414e3fed9a4562b86753f1a6fb200f12dd055e3000)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:150 (sha256:246e26abdbbe61bd05443071069d7c87018de3f419aee19a8d0df5869c24dce8)
 pub fn update_spritesheet_player(player: &mut SpritesheetPlayer, delta_time: f64) -> bool {
     let animation = (player.animation).clone();
     if ((((animation).is_none()) || (player.complete)) || (player.paused))
@@ -236,11 +238,16 @@ pub fn update_spritesheet_player(player: &mut SpritesheetPlayer, delta_time: f64
         return false;
     }
     let __destructure5 = animation;
-    let loop_ = __destructure5.as_ref().unwrap().loop_;
+    let repeat_count = __destructure5.as_ref().unwrap().repeat_count;
     let total_time = resolve_animation_total_time(animation.as_ref().unwrap());
     let prev_loop_count = (player.elapsed / total_time).floor();
     player.elapsed += (delta_time * player.speed);
-    if (!loop_) && (player.elapsed >= total_time) {
+    let playback_time = if (repeat_count < 0.0_f64) {
+        f64::INFINITY
+    } else {
+        (total_time * (repeat_count + 1.0_f64))
+    };
+    if (player.elapsed >= playback_time) {
         if ((player.queue.len() as f64) > 0.0_f64) {
             let next = (player.queue.shift)();
             player.animation = Some(next);
@@ -248,7 +255,7 @@ pub fn update_spritesheet_player(player: &mut SpritesheetPlayer, delta_time: f64
             player.frame_index = 0.0_f64;
             return true;
         }
-        player.elapsed = total_time;
+        player.elapsed = playback_time;
         let last_vi = (resolve_virtual_frame_count(animation.as_ref().unwrap()) - 1.0_f64);
         player.frame_index =
             resolve_virtual_index_to_display_index(animation.as_ref().unwrap(), last_vi);
@@ -265,7 +272,41 @@ pub fn update_spritesheet_player(player: &mut SpritesheetPlayer, delta_time: f64
     return true;
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:183 (sha256:6d1828450ee9539b7547f927b461a2444ad7adb58cbd79445be7c97228066481)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:185 (sha256:358cb61eb1e96fd070ccf23280682d1944b5a11d1771b989ad72b42a7a702bf6)
+fn resolve_display_index_to_first_virtual_index(
+    animation: &SpritesheetAnimation,
+    display_index: f64,
+) -> f64 {
+    {
+        let __switch_value = (animation.direction).clone();
+        let __flight_case = if __switch_value == "forward" {
+            0_usize
+        } else if __switch_value == "pingpong" {
+            1_usize
+        } else if __switch_value == "reverse" {
+            2_usize
+        } else if __switch_value == "pingpong_reverse" {
+            3_usize
+        } else {
+            4_usize
+        };
+        '__flight_switch: {
+            if __flight_case <= 0_usize {}
+            if __flight_case <= 1_usize {
+                return display_index;
+            }
+            if __flight_case <= 2_usize {}
+            if __flight_case <= 3_usize {
+                return (((animation.frames.len() as f64) - 1.0_f64) - display_index);
+            }
+            if __flight_case <= 4_usize {
+                return display_index;
+            }
+        }
+    }
+}
+
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:203 (sha256:a9f619e74d5b534e4218f39ef9ea7713f7d18af1070f3d475f9248d21449cf6f)
 fn get_cumulative_durations(animation: &SpritesheetAnimation) -> Vec<f64> {
     let cached = (*CUMULATIVE_DURATIONS_CACHE.lock().unwrap())
         .iter()
@@ -276,7 +317,6 @@ fn get_cumulative_durations(animation: &SpritesheetAnimation) -> Vec<f64> {
     }
     let frame_duration = animation.frame_duration;
     let frame_durations = (animation.frame_durations).clone();
-    let n = (animation.frames.len() as f64);
     let virtual_count = resolve_virtual_frame_count(animation);
     let mut arr: Vec<f64> = vec![0.0_f64; (virtual_count + 1.0_f64) as usize];
     let mut t = 0.0_f64;
@@ -284,12 +324,8 @@ fn get_cumulative_durations(animation: &SpritesheetAnimation) -> Vec<f64> {
         let mut vi = 0.0_f64;
         while (vi < virtual_count) {
             arr[vi as usize] = t;
-            let fi = if (vi < n) {
-                vi
-            } else {
-                ((2.0_f64 * (n - 1.0_f64)) - vi)
-            };
-            t += frame_durations.as_ref().unwrap()[fi as usize].clone();
+            let display_index = resolve_virtual_index_to_display_index(animation, vi);
+            t += frame_durations.as_ref().unwrap()[display_index as usize].clone();
             {
                 vi += 1.0;
                 vi
@@ -312,7 +348,7 @@ fn get_cumulative_durations(animation: &SpritesheetAnimation) -> Vec<f64> {
     return arr;
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:204 (sha256:3dfbedac804471a0bfcf4076a98171721b64056c643553365388d4e6c31b78ea)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:223 (sha256:3dfbedac804471a0bfcf4076a98171721b64056c643553365388d4e6c31b78ea)
 fn resolve_animation_total_time(animation: &SpritesheetAnimation) -> f64 {
     let frame_duration = animation.frame_duration;
     let frame_durations = (animation.frame_durations).clone();
@@ -328,7 +364,7 @@ fn resolve_animation_total_time(animation: &SpritesheetAnimation) -> f64 {
     };
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:216 (sha256:586efc36ba013bc396181e2b1fa43675d59d79cb9a7d3636da2320251a06b1c3)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:235 (sha256:586efc36ba013bc396181e2b1fa43675d59d79cb9a7d3636da2320251a06b1c3)
 fn resolve_frame_index_from_elapsed(animation: &SpritesheetAnimation, elapsed: f64) -> f64 {
     let total_time = resolve_animation_total_time(animation);
     let time_in_loop = (elapsed % total_time);
@@ -336,7 +372,7 @@ fn resolve_frame_index_from_elapsed(animation: &SpritesheetAnimation, elapsed: f
     return resolve_virtual_index_to_display_index(animation, vi);
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:225 (sha256:5af18316f0e4425342a0804179ccea8c6b44d3c00788f21ef25125870d4add70)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:244 (sha256:5af18316f0e4425342a0804179ccea8c6b44d3c00788f21ef25125870d4add70)
 fn resolve_virtual_frame_count(animation: &SpritesheetAnimation) -> f64 {
     let n = (animation.frames.len() as f64);
     let is_pingpong = ((animation.direction).clone() == "pingpong")
@@ -347,7 +383,7 @@ fn resolve_virtual_frame_count(animation: &SpritesheetAnimation) -> f64 {
     return n;
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:234 (sha256:c7035f6a8845978643557eb8f95452c6f761ac513552e6a58a90222f03cea403)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:253 (sha256:c7035f6a8845978643557eb8f95452c6f761ac513552e6a58a90222f03cea403)
 fn resolve_virtual_index_from_time(animation: &SpritesheetAnimation, time_in_loop: f64) -> f64 {
     let frame_duration = animation.frame_duration;
     let frame_durations = (animation.frame_durations).clone();
@@ -370,7 +406,7 @@ fn resolve_virtual_index_from_time(animation: &SpritesheetAnimation, time_in_loo
     return ((time_in_loop / frame_duration).floor()).min((virtual_count - 1.0_f64));
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:257 (sha256:a9be8e40102778c51d88aa7eb532e32e5df5252edecffedeefa32a151cafeeed)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:276 (sha256:a9be8e40102778c51d88aa7eb532e32e5df5252edecffedeefa32a151cafeeed)
 fn resolve_virtual_index_start_time(animation: &SpritesheetAnimation, virtual_index: f64) -> f64 {
     let frame_duration = animation.frame_duration;
     let frame_durations = (animation.frame_durations).clone();
@@ -381,7 +417,7 @@ fn resolve_virtual_index_start_time(animation: &SpritesheetAnimation, virtual_in
     return (virtual_index * frame_duration);
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:268 (sha256:8220a77b748dc9d3bb57add872ccca2976b362536b56cd8e1d616a909a908b05)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:287 (sha256:8220a77b748dc9d3bb57add872ccca2976b362536b56cd8e1d616a909a908b05)
 fn resolve_virtual_index_to_display_index(
     animation: &SpritesheetAnimation,
     virtual_index: f64,
@@ -430,11 +466,11 @@ fn resolve_virtual_index_to_display_index(
     }
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:288 (sha256:81b485783a84d6aeb1957d7e8e71063a07ef663d6abe35942e49c4edd77f4b08)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:307 (sha256:81b485783a84d6aeb1957d7e8e71063a07ef663d6abe35942e49c4edd77f4b08)
 static PLAYER_POOL: std::sync::LazyLock<std::sync::Mutex<Vec<SpritesheetPlayer>>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(vec![]));
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:294 (sha256:89e7d6c15d1c6d28355c2714daca6ccea98cab9e5cf1620d5a77dcfffe517337)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:313 (sha256:89e7d6c15d1c6d28355c2714daca6ccea98cab9e5cf1620d5a77dcfffe517337)
 static CUMULATIVE_DURATIONS_CACHE: std::sync::LazyLock<
     std::sync::Mutex<Vec<(SpritesheetAnimation, Vec<f64>)>>,
 > = std::sync::LazyLock::new(|| std::sync::Mutex::new(Vec::new()));

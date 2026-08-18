@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{ScreenColorSpace, ScreenMode, ScreenOrientation};
+use crate::{ScreenChangeEvent, ScreenColorSpace, ScreenMode, ScreenOrientation};
 
 // Source: upstream/packages/types/src/Screen.ts:15 (sha256:8c0ce810ee2e74aaea03bb2fbd0ee5e0c2217e6884ce71d709afffa863c7141a)
 #[derive(Clone, Default)]
@@ -73,7 +73,7 @@ pub struct ScreenBackend {
                 dyn FnMut(
                         std::sync::Arc<
                             std::sync::Mutex<
-                                Box<dyn FnMut(crate::OpaqueHostValue) -> () + Send + 'static>,
+                                Box<dyn FnMut(ScreenChangeEvent) -> () + Send + 'static>,
                             >,
                         >,
                     ) -> std::sync::Arc<

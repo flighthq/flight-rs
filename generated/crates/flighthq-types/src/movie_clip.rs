@@ -8,7 +8,7 @@
 
 use crate::{BlendMode, ClipRegion, EntityRuntime, Kind, Material, MaterialData, Timeline};
 
-// Source: upstream/packages/types/src/MovieClip.ts:5 (sha256:844ebe6fe1ba72c2844947afcc9d7a7e8ed079b6b61270f799b0abc99e5098cf)
+// Source: upstream/packages/types/src/MovieClip.ts:5 (sha256:5aa6485af78fca2067f0720a27927c1e85e3c6481c8299dbe80ef2b73dd1d259)
 #[derive(Clone, Default)]
 pub struct MovieClipData {
     #[doc(hidden)]
@@ -21,10 +21,10 @@ impl PartialEq for MovieClipData {
     }
 }
 
-// Source: upstream/packages/types/src/MovieClip.ts:9 (sha256:5386662f90c427df70f9b3b82fca86921a3fe1eae777a323d15d43c80087a999)
+// Source: upstream/packages/types/src/MovieClip.ts:9 (sha256:93ad8c1e01c78d324e06bf994af95d6eb11382f602359148126000715706b82c)
 pub type MovieClipRuntime = crate::EntityRuntime;
 
-// Source: upstream/packages/types/src/MovieClip.ts:13 (sha256:9cc2d31b0acbcbef484fc61680c640e6d7dc44d735fc62fbf669952d5327347a)
+// Source: upstream/packages/types/src/MovieClip.ts:13 (sha256:b06e5e8a179445f6a2eb91c8067399211496d5d9c605bd9d0571aaf0096bd3cc)
 #[derive(Clone, Default)]
 pub struct MovieClip {
     #[doc(hidden)]

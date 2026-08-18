@@ -23,6 +23,7 @@ export interface RustTarget {
   crate: string;
   declarationSelection?: Record<string, { names: string[]; reason: string }>;
   dependencies: Record<string, { crate: string }>;
+  fullyPromoted?: boolean;
   inlineDependencies?: Record<string, { package: string; source: string }>;
   package: string;
   sourceSelection?: {
@@ -295,6 +296,7 @@ export const portConfig = {
     {
       crate: 'flighthq-types',
       dependencies: {},
+      fullyPromoted: true,
       package: '@flighthq/types',
       sourceExclusions: [],
       typeMappings: {},
@@ -392,8 +394,15 @@ export const portConfig = {
       dependencies: {
         '@flighthq/types': { crate: 'flighthq-types' },
       },
+      fullyPromoted: true,
       package: '@flighthq/easing',
-      sourceExclusions: [],
+      sourceExclusions: [
+        {
+          source: 'enableEasingGuards.ts',
+          reason:
+            'Upstream deliberately isolates this opt-in development guard so its @flighthq/log dependency stays outside the core easing graph; the generated core crate preserves the always-loaded portable surface.',
+        },
+      ],
       typeMappings: {},
     },
     {
@@ -485,6 +494,9 @@ export const portConfig = {
         },
         'bitmapPixel.ts': {
           names: [
+            'LUMA_B',
+            'LUMA_G',
+            'LUMA_R',
             'getBitmapPixel',
             'getBitmapPixelLuminance',
             'getBitmapPixelRgb',

@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::Signal;
+use crate::{ShortcutEvent, Signal};
 
 // Source: upstream/packages/types/src/ShortcutSignals.ts:6 (sha256:5130b8c1f92a27b3cbd08c9df044203693ef4199cfc6b4d774d6106c1471d378)
 #[derive(Clone)]
@@ -14,9 +14,7 @@ pub struct ShortcutSignals {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub on_trigger: Signal<
-        std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(crate::OpaqueHostValue) -> () + Send + 'static>>,
-        >,
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(ShortcutEvent) -> () + Send + 'static>>>,
     >,
 }
 impl PartialEq for ShortcutSignals {

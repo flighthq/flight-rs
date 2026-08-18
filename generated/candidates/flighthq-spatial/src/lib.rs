@@ -25,6 +25,12 @@ pub enum FlightUnion2<A, B> {
 
 mod _internal_index;
 pub use _internal_index::*;
+mod contract;
+pub use contract::*;
+mod explain_spatial_indexing;
+pub use explain_spatial_indexing::*;
+mod format_spatial_indexing_notice;
+pub use format_spatial_indexing_notice::*;
 mod spatial_index;
 pub use spatial_index::*;
 mod uniform_grid;

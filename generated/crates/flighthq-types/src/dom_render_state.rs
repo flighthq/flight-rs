@@ -7,11 +7,11 @@
 #![allow(unused_parens)]
 
 use crate::{
-    BlendMode, DisplayObjectClipHooks, DomStageRectangle, EntityRuntime, ImageResource, Matrix,
-    PathWinding, RenderProxy2D, SceneGraphSyncPolicy,
+    Bitmap, BlendMode, DomScene2DRectangle, EntityRuntime, Matrix, PathWinding, RenderProxy2D,
+    RenderRegistrySignals, Scene2DClipHooks, Scene3DGraphSyncPolicy,
 };
 
-// Source: upstream/packages/types/src/DomRenderState.ts:8 (sha256:7dd771caabb5913c54dc523f2804bfcdff548e84aca709060279660fb26ea9af)
+// Source: upstream/packages/types/src/DomRenderState.ts:11 (sha256:7dd771caabb5913c54dc523f2804bfcdff548e84aca709060279660fb26ea9af)
 #[derive(Clone, Default)]
 pub struct DomRenderState {
     #[doc(hidden)]
@@ -23,12 +23,12 @@ pub struct DomRenderState {
     pub background_color_rgba: Vec<f64>,
     pub background_color_string: String,
     pub current_clip_depth: f64,
-    pub display_object_clip_hooks: Option<DisplayObjectClipHooks>,
+    pub display_object_clip_hooks: Option<Scene2DClipHooks>,
     pub pixel_ratio: f64,
     pub render_alpha: f64,
     pub render_blend_mode: Option<BlendMode>,
     pub render_transform2_d: Option<Matrix>,
-    pub scene_graph_sync_policy: SceneGraphSyncPolicy,
+    pub scene_graph_sync_policy: Scene3DGraphSyncPolicy,
     pub round_pixels: bool,
     pub apply_blend_mode: Option<
         std::sync::Arc<
@@ -65,7 +65,7 @@ impl crate::FlightEntity for DomRenderState {
     }
 }
 
-// Source: upstream/packages/types/src/DomRenderState.ts:20 (sha256:95a2d3164f536c2bae6c8c55ccfe6be59858dcb9485508c252f453ccb8a8fceb)
+// Source: upstream/packages/types/src/DomRenderState.ts:23 (sha256:2fc485e81e3cee06d54afe96b9e729f984503a325de3c0fa9fb2eb466f01ed3b)
 #[derive(Clone, Default)]
 pub struct DomRenderStateRuntimeRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
@@ -78,20 +78,32 @@ impl PartialEq for DomRenderStateRuntimeRecord1 {
     }
 }
 
+#[derive(Clone)]
+pub struct DomRenderStateRuntimeRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub clear: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
+    pub signals: RenderRegistrySignals,
+}
+impl PartialEq for DomRenderStateRuntimeRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 #[doc(hidden)]
 pub struct DomRenderStateRuntimeStorage {
-    pub image_resource_element_cache: Option<Vec<(ImageResource, DomRenderStateRuntimeRecord1)>>,
+    pub bitmap_element_cache: Option<Vec<(Bitmap, DomRenderStateRuntimeRecord1)>>,
 }
 impl Default for DomRenderStateRuntimeStorage {
     fn default() -> Self {
         Self {
-            image_resource_element_cache: Default::default(),
+            bitmap_element_cache: Default::default(),
         }
     }
 }
 pub type DomRenderStateRuntime = crate::EntityRuntime;
 
-// Source: upstream/packages/types/src/DomRenderState.ts:49 (sha256:38fa448f3ab74d60dcd04814fef23fdd7681955b2281907978b8d6bc1f47c017)
+// Source: upstream/packages/types/src/DomRenderState.ts:56 (sha256:38fa448f3ab74d60dcd04814fef23fdd7681955b2281907978b8d6bc1f47c017)
 #[derive(Clone, Default)]
 pub struct DomClipContourEntry {
     #[doc(hidden)]
@@ -106,10 +118,10 @@ impl PartialEq for DomClipContourEntry {
     }
 }
 
-// Source: upstream/packages/types/src/DomRenderState.ts:59 (sha256:0157b8f85d24205cd3bc07aa3a9e2e2d1c01fbb0a6740d86be014c35bee41d65)
-pub type DomClipEntry = crate::FlightUnion2<DomClipContourEntry, DomStageRectangle>;
+// Source: upstream/packages/types/src/DomRenderState.ts:66 (sha256:36b4b685961078ec57e1899080a4a3acdcd42a8d1ccff62bd6e3259fa9b571cd)
+pub type DomClipEntry = crate::FlightUnion2<DomClipContourEntry, DomScene2DRectangle>;
 
-// Source: upstream/packages/types/src/DomRenderState.ts:64 (sha256:60fd7cdcf4fa1ac76ed25cb9780162dc456844bc2439b386623c4addf7067d88)
+// Source: upstream/packages/types/src/DomRenderState.ts:71 (sha256:60fd7cdcf4fa1ac76ed25cb9780162dc456844bc2439b386623c4addf7067d88)
 #[derive(Clone)]
 pub struct DomClipHooks {
     #[doc(hidden)]

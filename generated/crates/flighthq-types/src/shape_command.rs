@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{ImageResource, Matrix};
+use crate::{Matrix, Texture};
 
 // Source: upstream/packages/types/src/ShapeCommand.ts:4 (sha256:4296b59e30cf2f2065cbcc75e866f661ca9c7ed3d4a26124ac823be98385ffc1)
 pub type CapsStyle = String;
@@ -29,13 +29,12 @@ pub type LineScaleMode = String;
 // Source: upstream/packages/types/src/ShapeCommand.ts:16 (sha256:023e9c7b0bef77eb8c04171ba53ff3c5be45cef5f7de11f1405be050bc35699a)
 pub type SpreadMethod = String;
 
-// Source: upstream/packages/types/src/ShapeCommand.ts:19 (sha256:22fb7d1d443aab0e1b9a6696c74b267d14950c785bf7e614378a029c5dac6373)
+// Source: upstream/packages/types/src/ShapeCommand.ts:19 (sha256:37b3682a37e157b148313db2686c19681142364534a08e6870d7bc239944103c)
 #[derive(Clone, Default)]
 pub struct ShapeCommandRegistry {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub begin_bitmap_fill:
-        Vec<crate::FlightUnion2<ImageResource, crate::FlightUnion2<Option<Matrix>, bool>>>,
+    pub begin_texture_fill: Vec<crate::FlightUnion2<Texture, Option<Matrix>>>,
     pub begin_fill: Vec<f64>,
     pub begin_gradient_fill: Vec<
         crate::FlightUnion2<
@@ -60,8 +59,7 @@ pub struct ShapeCommandRegistry {
     pub draw_rectangle: Vec<f64>,
     pub draw_round_rectangle: Vec<f64>,
     pub end_fill: Vec<crate::OpaqueHostValue>,
-    pub line_bitmap_style:
-        Vec<crate::FlightUnion2<ImageResource, crate::FlightUnion2<Option<Matrix>, bool>>>,
+    pub line_texture_style: Vec<crate::FlightUnion2<Texture, Option<Matrix>>>,
     pub line_gradient_style: Vec<
         crate::FlightUnion2<
             GradientType,
@@ -98,12 +96,12 @@ impl PartialEq for ShapeCommandRegistry {
 // Source: upstream/packages/types/src/ShapeCommand.ts:79 (sha256:2c8f717c5aa0e004115771bf15c185753aea1973a179c06b8564a915549b1fd8)
 pub type ShapeCommandKey = ShapeCommandRegistry;
 
-// Source: upstream/packages/types/src/ShapeCommand.ts:88 (sha256:6493cf9e05ea30a04a520b32614a162041871a3e716e0bb68b7b187daf3124a7)
+// Source: upstream/packages/types/src/ShapeCommand.ts:88 (sha256:010f0cce99c11947eea01855cb9ebdc1bdb09dbd21805b51980dce6d1390254a)
 pub type ShapeCommandToken = Option<
     crate::FlightUnion2<
-        ImageResource,
+        Matrix,
         crate::FlightUnion2<
-            Matrix,
+            Texture,
             crate::FlightUnion2<
                 bool,
                 crate::FlightUnion2<f64, crate::FlightUnion2<Vec<f64>, String>>,
@@ -111,13 +109,3 @@ pub type ShapeCommandToken = Option<
         >,
     >,
 >;
-
-// Source: upstream/packages/types/src/ShapeCommand.ts:91 (sha256:6d82672b7e69c1f5c4413f383f6b58e5333c126d0d13257d981a3ed6a5f6c8cc)
-pub type ShapeCommandHitTest = std::sync::Arc<
-    std::sync::Mutex<
-        Box<dyn FnMut(f64, f64, Vec<ShapeCommandToken>, f64) -> bool + Send + 'static>,
-    >,
->;
-
-// Source: upstream/packages/types/src/ShapeCommand.ts:94 (sha256:7bebf4b9846d9fc89094e47d6447a8acae36543375609cd967c4129012452dbe)
-pub type ShapeHitTestCommand = crate::OpaqueHostValue;

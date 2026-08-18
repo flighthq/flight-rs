@@ -9,7 +9,7 @@
 use crate::{create_spring, is_spring_settled, update_spring};
 use flighthq_types::{Spring3D, SpringConfig};
 
-// Source: upstream/packages/spring/src/spring3D.ts:9 (sha256:e63c95968b368a2bf29be838595731363f2ff0227e8d2cfb7c80139e0b670ccc)
+// Source: upstream/packages/spring/src/spring3D.ts:7 (sha256:e63c95968b368a2bf29be838595731363f2ff0227e8d2cfb7c80139e0b670ccc)
 pub fn create_spring3_d(
     value_x: Option<f64>,
     value_y: Option<f64>,
@@ -32,7 +32,7 @@ pub fn create_spring3_d(
     };
 }
 
-// Source: upstream/packages/spring/src/spring3D.ts:26 (sha256:147240fa35bacf7ffa93ff7aaea2c3e6abe1f9344e4bbf2b1f63c83c29ebaf4e)
+// Source: upstream/packages/spring/src/spring3D.ts:24 (sha256:147240fa35bacf7ffa93ff7aaea2c3e6abe1f9344e4bbf2b1f63c83c29ebaf4e)
 pub fn is_spring3_d_settled(
     spring3_d: &Spring3D,
     target_x: f64,
@@ -59,7 +59,7 @@ pub fn is_spring3_d_settled(
     ));
 }
 
-// Source: upstream/packages/spring/src/spring3D.ts:43 (sha256:16d17faf58d366eaae2c3e71ff998929760565c70e04685b27913fcdd16bef22)
+// Source: upstream/packages/spring/src/spring3D.ts:41 (sha256:16d17faf58d366eaae2c3e71ff998929760565c70e04685b27913fcdd16bef22)
 pub fn update_spring3_d(
     spring3_d: &mut Spring3D,
     target_x: f64,

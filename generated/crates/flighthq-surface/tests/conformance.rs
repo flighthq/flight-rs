@@ -1,28 +1,41 @@
 use flighthq_surface::{
-    SurfaceConvolutionOptions, apply_surface_curve, apply_surface_levels,
-    apply_surface_palette_map, build_surface_brightness_color_matrix, color_matrix_surface,
-    compare_surface_fingerprints, convolve_surface, copy_surface_pixels,
-    create_surface_fingerprint, dilate_surface, erode_surface, fill_surface_noise,
-    fill_surface_rectangle, get_surface_color_bounds_rectangle, get_surface_coverage,
-    get_surface_histogram, get_surface_mismatch, get_surface_pixel, get_surface_pixel_luminance,
-    get_surface_pixel_rgb, merge_surface_channels, multiply_surface_alpha, pixelate_surface,
-    premultiply_surface_pixels, set_surface_alpha, set_surface_pixel, unpremultiply_surface_pixels,
+    apply_bitmap_curve as apply_surface_curve, apply_bitmap_levels as apply_surface_levels,
+    apply_bitmap_palette_map as apply_surface_palette_map,
+    build_bitmap_brightness_color_matrix as build_surface_brightness_color_matrix,
+    color_matrix_bitmap as color_matrix_surface,
+    compare_bitmap_fingerprints as compare_surface_fingerprints,
+    convolve_bitmap as convolve_surface, copy_bitmap_pixels as copy_surface_pixels,
+    create_bitmap_fingerprint as create_surface_fingerprint, dilate_bitmap as dilate_surface,
+    erode_bitmap as erode_surface, fill_bitmap_noise as fill_surface_noise,
+    fill_bitmap_rectangle as fill_surface_rectangle,
+    get_bitmap_color_bounds_rectangle as get_surface_color_bounds_rectangle,
+    get_bitmap_coverage as get_surface_coverage, get_bitmap_histogram as get_surface_histogram,
+    get_bitmap_mismatch as get_surface_mismatch, get_bitmap_pixel as get_surface_pixel,
+    get_bitmap_pixel_luminance as get_surface_pixel_luminance,
+    get_bitmap_pixel_rgb as get_surface_pixel_rgb, merge_bitmap_channels as merge_surface_channels,
+    multiply_bitmap_alpha as multiply_surface_alpha, pixelate_bitmap as pixelate_surface,
+    premultiply_bitmap_pixels as premultiply_surface_pixels, set_bitmap_alpha as set_surface_alpha,
+    set_bitmap_pixel as set_surface_pixel,
+    unpremultiply_bitmap_pixels as unpremultiply_surface_pixels,
 };
-use flighthq_types::{Surface, SurfaceRegion};
+use flighthq_types::{
+    Bitmap as Surface, BitmapConvolutionOptions as SurfaceConvolutionOptions,
+    BitmapRegion as SurfaceRegion, OpaqueHostValue,
+};
 
 fn surface(data: Vec<u8>, width: f64, height: f64) -> Surface {
     Surface {
         __flight_identity: std::sync::Arc::new(()),
         __flight_entity_runtime: Default::default(),
         alpha_type: "straight".to_owned(),
-        compressed: None,
         data,
         format: "rgba8unorm".to_owned(),
+        gamut: "srgb".to_owned(),
         height,
-        source: None,
+        kind: OpaqueHostValue::String("bitmap".to_owned()),
         version: 0.0,
         width,
-        color_space: "srgb".to_owned(),
+        ..Default::default()
     }
 }
 
@@ -31,7 +44,7 @@ fn region(surface: Surface) -> SurfaceRegion {
         __flight_identity: std::sync::Arc::new(()),
         width: surface.width,
         height: surface.height,
-        surface,
+        bitmap: surface,
         x: 0.0,
         y: 0.0,
     }
@@ -92,7 +105,7 @@ fn identity_convolution_copies_the_selected_region() {
     };
     let mut out = vec![0; 8];
     convolve_surface(&mut out, &source, &options);
-    assert_eq!(out, source.surface.data);
+    assert_eq!(out, source.bitmap.data);
 }
 
 #[test]
@@ -132,11 +145,11 @@ fn alpha_writers_mutate_borrowed_regions_and_invalidate_once() {
     let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     let mut target = region(surface(vec![10, 20, 30, 200, 40, 50, 60, 100], 2.0, 1.0));
     multiply_surface_alpha(&mut target, 0.5);
-    assert_eq!(target.surface.data, vec![10, 20, 30, 100, 40, 50, 60, 50]);
-    assert_eq!(target.surface.version, 1.0);
+    assert_eq!(target.bitmap.data, vec![10, 20, 30, 100, 40, 50, 60, 50]);
+    assert_eq!(target.bitmap.version, 1.0);
     set_surface_alpha(&mut target, 255.0);
-    assert_eq!(target.surface.data, vec![10, 20, 30, 255, 40, 50, 60, 255]);
-    assert_eq!(target.surface.version, 2.0);
+    assert_eq!(target.bitmap.data, vec![10, 20, 30, 255, 40, 50, 60, 255]);
+    assert_eq!(target.bitmap.version, 2.0);
 }
 
 #[test]
@@ -145,8 +158,8 @@ fn region_copy_preserves_source_and_invalidates_destination() {
     let source = region(surface(vec![1, 2, 3, 4, 5, 6, 7, 8], 2.0, 1.0));
     let mut destination = region(surface(vec![0; 8], 2.0, 1.0));
     copy_surface_pixels(&mut destination, &source, None);
-    assert_eq!(destination.surface.data, source.surface.data);
-    assert_eq!(destination.surface.version, 1.0);
+    assert_eq!(destination.bitmap.data, source.bitmap.data);
+    assert_eq!(destination.bitmap.version, 1.0);
 }
 
 #[test]
@@ -156,11 +169,8 @@ fn rectangle_fill_writes_packed_rgba_and_invalidates() {
     target.x = 1.0;
     target.width = 1.0;
     fill_surface_rectangle(&mut target, 0xaabb_ccdd_u32 as f64);
-    assert_eq!(
-        target.surface.data,
-        vec![0, 0, 0, 0, 0xaa, 0xbb, 0xcc, 0xdd]
-    );
-    assert_eq!(target.surface.version, 1.0);
+    assert_eq!(target.bitmap.data, vec![0, 0, 0, 0, 0xaa, 0xbb, 0xcc, 0xdd]);
+    assert_eq!(target.bitmap.version, 1.0);
 }
 
 #[test]
@@ -187,8 +197,8 @@ fn deterministic_noise_skips_clipped_pixels_without_changing_the_field() {
     let mut full = region(surface(vec![0; 12], 3.0, 1.0));
     fill_surface_noise(&mut full, 123.0, None, None, Some(true));
 
-    assert_eq!(clipped.surface.data, full.surface.data[4..]);
-    assert_eq!(clipped.surface.version, 1.0);
+    assert_eq!(clipped.bitmap.data, full.bitmap.data[4..]);
+    assert_eq!(clipped.bitmap.version, 1.0);
 }
 
 #[test]
@@ -243,8 +253,8 @@ fn nullable_palette_maps_pass_through_unselected_channels() {
 
     apply_surface_palette_map(&mut destination, &source, Some(red), None, None, None);
 
-    assert_eq!(destination.surface.data, vec![245, 20, 30, 40]);
-    assert_eq!(destination.surface.version, 1.0);
+    assert_eq!(destination.bitmap.data, vec![245, 20, 30, 40]);
+    assert_eq!(destination.bitmap.version, 1.0);
 }
 
 #[test]
@@ -255,13 +265,13 @@ fn compatible_typed_array_unions_drive_curve_and_levels_kernels() {
     let inverted = (0..256).map(|value| (255 - value) as u8).collect();
 
     apply_surface_curve(&mut curved, &source, Some(inverted), None, None, None);
-    assert_eq!(curved.surface.data, vec![245, 128, 240, 77]);
-    assert_eq!(curved.surface.version, 1.0);
+    assert_eq!(curved.bitmap.data, vec![245, 128, 240, 77]);
+    assert_eq!(curved.bitmap.version, 1.0);
 
     let mut leveled = region(surface(vec![0; 4], 1.0, 1.0));
     apply_surface_levels(&mut leveled, &source, Some(0.0), Some(255.0), Some(0.5));
-    assert_eq!(leveled.surface.data, vec![0, 64, 226, 77]);
-    assert_eq!(leveled.surface.version, 1.0);
+    assert_eq!(leveled.bitmap.data, vec![0, 64, 226, 77]);
+    assert_eq!(leveled.bitmap.version, 1.0);
 }
 
 #[test]
@@ -288,8 +298,8 @@ fn channel_merge_reads_each_selected_source_channel() {
 
     merge_surface_channels(&mut out, &red, &green, &blue, &alpha);
 
-    assert_eq!(out.surface.data, vec![10, 20, 30, 40]);
-    assert_eq!(out.surface.version, 1.0);
+    assert_eq!(out.bitmap.data, vec![10, 20, 30, 40]);
+    assert_eq!(out.bitmap.version, 1.0);
 }
 
 #[test]

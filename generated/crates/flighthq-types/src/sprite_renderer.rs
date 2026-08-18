@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{BatchFormat, RenderProxy2D, RenderState, RendererData, Sprite};
+use crate::{BatchFormat, RenderProxy2D, RenderState, Renderable, RendererData, Sprite};
 
 // Source: upstream/packages/types/src/SpriteRenderer.ts:7 (sha256:6c5c82e63871de2289003cf2c64d5554876fb51f355b187034bbfbd2f5e5d948)
 #[derive(Clone)]
@@ -22,6 +22,17 @@ pub struct SpriteRenderer {
     pub destroy_data: Option<
         std::sync::Arc<
             std::sync::Mutex<Box<dyn FnMut(RenderState, RendererData) -> () + Send + 'static>>,
+        >,
+    >,
+    pub is_dirty: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<
+                    dyn FnMut(RenderState, Renderable, Option<RendererData>) -> bool
+                        + Send
+                        + 'static,
+                >,
+            >,
         >,
     >,
     pub submit: std::sync::Arc<

@@ -6,7 +6,11 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_types::BokehDepthOfFieldEffect;
+use crate::register_render_effect_padding_resolver;
+use flighthq_types::{
+    BlendMode, BokehDepthOfFieldEffect, Matrix, RenderEffect, RenderEffectPadding, RenderState,
+    Scene2DClipHooks, Scene3DGraphSyncPolicy,
+};
 
 #[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
@@ -21,12 +25,34 @@ impl PartialEq for FlightOmitRecord1 {
     }
 }
 
-// Source: upstream/packages/effects/src/bokehDepthOfFieldEffect.ts:3 (sha256:0b78c1e4a0b23c1ecf901b3287c73a2234ea6f1d8c6d93ce36bd68c17f59d5c3)
 #[derive(Clone, Default)]
-struct CreateBokehDepthOfFieldEffectRecord2 {
+pub struct FlightPartialRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub allow_smoothing: Option<bool>,
+    pub background_color: Option<f64>,
+    pub background_color_rgba: Option<Vec<f64>>,
+    pub background_color_string: Option<String>,
+    pub current_clip_depth: Option<f64>,
+    pub display_object_clip_hooks: Option<Scene2DClipHooks>,
+    pub pixel_ratio: Option<f64>,
+    pub render_alpha: Option<f64>,
+    pub render_blend_mode: Option<BlendMode>,
+    pub render_transform2_d: Option<Matrix>,
+    pub scene_graph_sync_policy: Option<Scene3DGraphSyncPolicy>,
+    pub round_pixels: Option<bool>,
+}
+impl PartialEq for FlightPartialRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/effects/src/bokehDepthOfFieldEffect.ts:5 (sha256:0b78c1e4a0b23c1ecf901b3287c73a2234ea6f1d8c6d93ce36bd68c17f59d5c3)
+#[derive(Clone, Default)]
+struct CreateBokehDepthOfFieldEffectRecord3 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateBokehDepthOfFieldEffectRecord2 {
+impl PartialEq for CreateBokehDepthOfFieldEffectRecord3 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -52,4 +78,49 @@ pub fn create_bokeh_depth_of_field_effect(
             ..Default::default()
         }
     };
+}
+
+// Source: upstream/packages/effects/src/bokehDepthOfFieldEffect.ts:11 (sha256:26d21b6b2f2bcf091d3650ce48dc6a1204033523eb7821562f4a2028c74eed2a)
+pub fn get_bokeh_depth_of_field_effect_padding(
+    effect: &BokehDepthOfFieldEffect,
+) -> RenderEffectPadding {
+    let radius = ((0.0_f64).max((effect.max_blur).unwrap_or(4.0_f64))).ceil();
+    return RenderEffectPadding {
+        __flight_identity: std::sync::Arc::new(()),
+        bottom: radius,
+        left: radius,
+        right: radius,
+        top: radius,
+    };
+}
+
+// Source: upstream/packages/effects/src/bokehDepthOfFieldEffect.ts:16 (sha256:4167049d0739027950be87f34bafa92f788c2e5d716a80d02f985890c17d2a1c)
+pub fn register_bokeh_depth_of_field_effect_padding_resolver(state: &RenderState) -> () {
+    register_render_effect_padding_resolver(
+        state,
+        "BokehDepthOfFieldEffect".to_owned(),
+        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: RenderEffect| -> RenderEffectPadding {
+                resolve_bokeh_depth_of_field_effect_padding(&__flight_argument_0)
+            },
+        )
+            as Box<
+                dyn FnMut(RenderEffect) -> RenderEffectPadding + Send + 'static,
+            >))),
+    );
+}
+
+// Source: upstream/packages/effects/src/bokehDepthOfFieldEffect.ts:20 (sha256:86858b9caca52de548cb4fd98cc39e311bae2f0da0b21c6fbcf42428596d5744)
+fn resolve_bokeh_depth_of_field_effect_padding(effect: &RenderEffect) -> RenderEffectPadding {
+    return get_bokeh_depth_of_field_effect_padding(&{
+        let __flight_source = &((*effect).clone());
+        BokehDepthOfFieldEffect {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            kind: (__flight_source.kind).clone(),
+            focus_distance: __flight_source.focus_distance,
+            focus_range: __flight_source.focus_range,
+            max_blur: __flight_source.max_blur,
+            ..Default::default()
+        }
+    });
 }

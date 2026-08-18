@@ -9,12 +9,14 @@
 use crate::create_standard_pbr_material;
 use flighthq_color::get_color_luminance;
 use flighthq_types::{
-    AlphaType, BlendMode, Kind, MaterialAlphaMode, PhongMaterial, StandardPbrMaterial, Texture,
+    BlendMode, Kind, MaterialAlphaMode, PhongMaterial, StandardPbrMaterial,
+    StandardPbrMaterialProperties, Texture,
 };
 
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
+    pub alpha_map: Option<Texture>,
     pub base_color: Option<f64>,
     pub base_color_map: Option<Texture>,
     pub emissive: Option<f64>,
@@ -41,9 +43,10 @@ pub struct FlightPartialRecord2 {
     pub name: Option<String>,
     pub alpha_cutoff: Option<f64>,
     pub alpha_mode: Option<MaterialAlphaMode>,
-    pub alpha_type: Option<AlphaType>,
     pub blend_mode: Option<BlendMode>,
     pub double_sided: Option<bool>,
+    pub extensions: Option<Vec<PbrExtension>>,
+    pub standard: Option<StandardPbrMaterialProperties>,
     pub shader_key: Option<String>,
     pub textures: Option<Vec<(String, Texture)>>,
     pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
@@ -73,12 +76,14 @@ pub struct FlightPartialRecord3 {
     pub name: Option<String>,
     pub alpha_cutoff: Option<f64>,
     pub alpha_mode: Option<MaterialAlphaMode>,
-    pub alpha_type: Option<AlphaType>,
     pub blend_mode: Option<BlendMode>,
     pub double_sided: Option<bool>,
+    pub extensions: Option<Vec<PbrExtension>>,
+    pub standard: Option<StandardPbrMaterialProperties>,
     pub shader_key: Option<String>,
     pub textures: Option<Vec<(String, Texture)>>,
     pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
+    pub alpha_map: Option<Texture>,
     pub base_color: Option<f64>,
     pub base_color_map: Option<Texture>,
     pub emissive: Option<f64>,

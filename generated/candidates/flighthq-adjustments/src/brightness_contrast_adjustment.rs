@@ -20,7 +20,7 @@ impl PartialEq for FlightOmitRecord1 {
     }
 }
 
-// Source: upstream/packages/adjustments/src/brightnessContrastAdjustment.ts:10 (sha256:076aa1b0b6b9f74f032d3f8d445eb38f4934ff5691844e38cc37840962b869c4)
+// Source: upstream/packages/adjustments/src/brightnessContrastAdjustment.ts:10 (sha256:2c314e357f752df55d87c3779f22b2cd365c924b748e8aa483ccc49a48a0763c)
 #[derive(Clone, Default)]
 struct CreateBrightnessContrastAdjustmentRecord2 {
     __flight_identity: std::sync::Arc<()>,
@@ -42,7 +42,7 @@ pub fn create_brightness_contrast_adjustment(
     let brightness = (options.brightness).unwrap_or(0.0_f64);
     let contrast = (options.contrast).unwrap_or(1.0_f64);
     let s = contrast;
-    let o = (255.0_f64 * ((brightness * contrast) + (0.5_f64 * (1.0_f64 - contrast))));
+    let o = ((brightness * contrast) + (0.5_f64 * (1.0_f64 - contrast)));
     let color_matrix = vec![
         s, 0.0_f64, 0.0_f64, 0.0_f64, o, 0.0_f64, s, 0.0_f64, 0.0_f64, o, 0.0_f64, 0.0_f64, s,
         0.0_f64, o, 0.0_f64, 0.0_f64, 0.0_f64, 1.0_f64, 0.0_f64,

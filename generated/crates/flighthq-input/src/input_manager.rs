@@ -9,7 +9,7 @@
 use flighthq_host_signals::create_signal;
 use flighthq_types::{InputManager, InputSignals};
 
-// Source: upstream/packages/input/src/inputManager.ts:417 (sha256:0aa752968160d69181a564725ef4c7db5551e0f7e5230cbdc0104a5d2081bd0f)
+// Source: upstream/packages/input/src/inputManager.ts:427 (sha256:0aa752968160d69181a564725ef4c7db5551e0f7e5230cbdc0104a5d2081bd0f)
 pub fn create_input_manager() -> InputManager {
     return {
         let __flight_spread_0 = create_input_signals();
@@ -35,7 +35,7 @@ pub fn create_input_manager() -> InputManager {
     };
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:424 (sha256:28fd446928eacd2fe3821deb30d07e652b9a1bf7539a9c5964dddcad0f5dfa6a)
+// Source: upstream/packages/input/src/inputManager.ts:434 (sha256:28fd446928eacd2fe3821deb30d07e652b9a1bf7539a9c5964dddcad0f5dfa6a)
 pub fn create_input_signals() -> InputSignals {
     return InputSignals {
         __flight_identity: std::sync::Arc::new(()),

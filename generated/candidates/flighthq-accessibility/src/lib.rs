@@ -27,3 +27,5 @@ mod _internal_index;
 pub use _internal_index::*;
 mod accessibility;
 pub use accessibility::*;
+mod contract;
+pub use contract::*;

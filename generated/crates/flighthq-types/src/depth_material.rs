@@ -6,8 +6,8 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::Texture;
-use crate::{AlphaType, BlendMode, EntityRuntime, Kind, MaterialAlphaMode};
+use crate::{BlendMode, EntityRuntime, Kind, MaterialAlphaMode};
+use crate::{PbrExtension, StandardPbrMaterialProperties, Texture};
 
 // Source: upstream/packages/types/src/DepthMaterial.ts:6 (sha256:2b6e077b6b1679a2d911c05c53b37f74ef4d6522381ff80e683b663407c47559)
 #[derive(Clone, Default)]
@@ -20,9 +20,10 @@ pub struct DepthMaterial {
     pub name: Option<String>,
     pub alpha_cutoff: f64,
     pub alpha_mode: MaterialAlphaMode,
-    pub alpha_type: AlphaType,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub extensions: Vec<PbrExtension>,
+    pub standard: StandardPbrMaterialProperties,
     pub shader_key: String,
     pub textures: Option<Vec<(String, Texture)>>,
     pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,

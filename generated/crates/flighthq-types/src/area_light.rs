@@ -6,10 +6,10 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::CubeTexture;
+use crate::Texture;
 use crate::{EntityRuntime, Kind, Vector3};
 
-// Source: upstream/packages/types/src/AreaLight.ts:7 (sha256:9ea86c550f139c78db1e1e5f74465c7b5551ae23b4269fa6f342fabefe27471a)
+// Source: upstream/packages/types/src/AreaLight.ts:10 (sha256:9ea86c550f139c78db1e1e5f74465c7b5551ae23b4269fa6f342fabefe27471a)
 #[derive(Clone, Default)]
 pub struct AreaLight {
     #[doc(hidden)]
@@ -30,7 +30,7 @@ pub struct AreaLight {
     pub shadow_bias: f64,
     pub ground_color: f64,
     pub sky_color: f64,
-    pub environment: Option<CubeTexture>,
+    pub environment: Option<Texture>,
     pub right: Vector3,
     pub up: Vector3,
 }
@@ -55,5 +55,5 @@ impl crate::FlightEntity for AreaLight {
     }
 }
 
-// Source: upstream/packages/types/src/AreaLight.ts:22 (sha256:21690015a79821fc4547e0dc9f64d013890ae35719b1ac62b5204730b6e69d00)
+// Source: upstream/packages/types/src/AreaLight.ts:25 (sha256:21690015a79821fc4547e0dc9f64d013890ae35719b1ac62b5204730b6e69d00)
 pub const AREA_LIGHT_KIND: &'static str = "AreaLight";

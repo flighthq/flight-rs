@@ -33,6 +33,8 @@ mod comparison;
 pub use comparison::*;
 mod constants;
 pub use constants::*;
+mod contract;
+pub use contract::*;
 mod hash;
 pub use hash::*;
 mod interpolation;

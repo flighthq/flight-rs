@@ -8,10 +8,15 @@
 
 use flighthq_geometry::{contains_rectangle_point_xy, intersects_rectangle};
 use flighthq_types::{
-    RectangleLike, SpatialAabb, SpatialIndexBackend, SpatialObjectId, SpatialPair,
+    RectangleLike, SpatialAabb, SpatialDeclineReason, SpatialIndexBackend,
+    SpatialIndexingExplanation, SpatialIndexingGuard, SpatialIndexingMode, SpatialIndexingNotice,
+    SpatialIndexingOperation, SpatialIndexingReason, SpatialObjectId, SpatialPair,
 };
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:11 (sha256:4eef8a64503376262e3211942a5cd7f01ce0e699c52a0c992a5d484c82b02c19)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:31 (sha256:3436b79903acdb3a29ed03ace8cfbb58e4a7148e4de19d5659df39a42993f517)
+pub const MAX_INDEXED_CELLS_PER_OBJECT: f64 = 1024.0_f64;
+
+// Source: upstream/packages/spatial/src/uniformGrid.ts:46 (sha256:f769f2ae91537ed369c3a6c7df19b997aff2760c786c829b07e51eba977b91da)
 pub fn create_uniform_grid_spatial_backend(cell_size: f64) -> SpatialIndexBackend {
     let grid: std::sync::Arc<std::sync::Mutex<UniformGrid>> =
         std::sync::Arc::new(std::sync::Mutex::new(UniformGrid {
@@ -19,34 +24,61 @@ pub fn create_uniform_grid_spatial_backend(cell_size: f64) -> SpatialIndexBacken
             cell_size: cell_size,
             cells: Vec::new(),
             bounds: Vec::new(),
+            overflow: Vec::new(),
+            declined: Vec::new(),
             min_cell_x: 0.0_f64,
             min_cell_y: 0.0_f64,
             max_cell_x: 0.0_f64,
             max_cell_y: 0.0_f64,
-            empty: true,
             seen: Vec::new(),
+            pair_ids: vec![],
         }));
     return SpatialIndexBackend {
         __flight_identity: std::sync::Arc::new(()),
         insert_spatial_object: std::sync::Arc::new(std::sync::Mutex::new(Box::new({
             let mut grid = grid.clone();
-            move |id: SpatialObjectId, bounds: SpatialAabb| -> () {
-                _insert_into_grid(&mut (*grid.lock().unwrap()), id, &bounds);
+            move |id: SpatialObjectId, bounds: SpatialAabb| -> bool {
+                return _insert_into_grid(
+                    &mut (*grid.lock().unwrap()),
+                    id,
+                    &bounds,
+                    "insert".to_owned(),
+                );
             }
         })
-            as Box<dyn FnMut(SpatialObjectId, SpatialAabb) -> () + Send + 'static>)),
+            as Box<dyn FnMut(SpatialObjectId, SpatialAabb) -> bool + Send + 'static>)),
         update_spatial_object: std::sync::Arc::new(std::sync::Mutex::new(Box::new({
             let mut grid = grid.clone();
-            move |id: SpatialObjectId, bounds: SpatialAabb| -> () {
-                _remove_from_grid(&mut (*grid.lock().unwrap()), id);
-                _insert_into_grid(&mut (*grid.lock().unwrap()), id, &bounds);
+            move |id: SpatialObjectId, bounds: SpatialAabb| -> bool {
+                return _update_grid_object(&mut (*grid.lock().unwrap()), id, &bounds);
             }
         })
-            as Box<dyn FnMut(SpatialObjectId, SpatialAabb) -> () + Send + 'static>)),
+            as Box<dyn FnMut(SpatialObjectId, SpatialAabb) -> bool + Send + 'static>)),
         remove_spatial_object: std::sync::Arc::new(std::sync::Mutex::new(Box::new({
             let mut grid = grid.clone();
             move |id: SpatialObjectId| -> () {
+                let was_missing = (!(*grid.lock().unwrap())
+                    .bounds
+                    .iter()
+                    .any(|(key, _)| key == &id))
+                    && (!(*grid.lock().unwrap())
+                        .declined
+                        .iter()
+                        .any(|(key, _)| key == &id));
                 _remove_from_grid(&mut (*grid.lock().unwrap()), id);
+                if was_missing {
+                    _report_grid_indexing(
+                        &(*grid.lock().unwrap()),
+                        id,
+                        "absent".to_owned(),
+                        "remove".to_owned(),
+                        Some(
+                            (flighthq_types::SpatialIndexingReason::A("missing-id".to_owned()))
+                                .clone(),
+                        ),
+                        0.0_f64,
+                    );
+                }
             }
         })
             as Box<dyn FnMut(SpatialObjectId) -> () + Send + 'static>)),
@@ -55,15 +87,24 @@ pub fn create_uniform_grid_spatial_backend(cell_size: f64) -> SpatialIndexBacken
             move || -> () {
                 (*grid.lock().unwrap()).cells.clear();
                 (*grid.lock().unwrap()).bounds.clear();
+                (*grid.lock().unwrap()).overflow.clear();
+                (*grid.lock().unwrap()).declined.clear();
                 (*grid.lock().unwrap()).seen.clear();
-                (*grid.lock().unwrap()).empty = true;
+                (*grid.lock().unwrap()).pair_ids.clear();
             }
         })
             as Box<dyn FnMut() -> () + Send + 'static>)),
+        explain_spatial_indexing: std::sync::Arc::new(std::sync::Mutex::new(Box::new({
+            let mut grid = grid.clone();
+            move |id: SpatialObjectId| -> SpatialIndexingExplanation {
+                return _explain_grid_indexing(&(*grid.lock().unwrap()), id);
+            }
+        })
+            as Box<dyn FnMut(SpatialObjectId) -> SpatialIndexingExplanation + Send + 'static>)),
         query_spatial_pairs: std::sync::Arc::new(std::sync::Mutex::new(Box::new({
             let mut grid = grid.clone();
             move |mut out: Vec<SpatialPair>| -> () {
-                _query_grid_pairs(&(*grid.lock().unwrap()), &mut out);
+                _query_grid_pairs(&mut (*grid.lock().unwrap()), &mut out);
             }
         })
             as Box<dyn FnMut(Vec<SpatialPair>) -> () + Send + 'static>)),
@@ -91,7 +132,12 @@ pub fn create_uniform_grid_spatial_backend(cell_size: f64) -> SpatialIndexBacken
     };
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:58 (sha256:bf8ee7d148f40d101a35cf9e62d37751ed15b9b9ce6f5ad5dcbfcc8b44a4d9a1)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:101 (sha256:a7c50da57d96d2dc1fc6632b1a3cc89c156d199f2c3e75cb317e2e781ad58541)
+pub fn set_spatial_indexing_guard(guard: Option<SpatialIndexingGuard>) -> () {
+    (*_INDEXING_GUARD.lock().unwrap()) = (guard).clone();
+}
+
+// Source: upstream/packages/spatial/src/uniformGrid.ts:108 (sha256:bf8ee7d148f40d101a35cf9e62d37751ed15b9b9ce6f5ad5dcbfcc8b44a4d9a1)
 #[derive(Clone, Default)]
 struct GridCell {
     #[doc(hidden)]
@@ -106,7 +152,7 @@ impl PartialEq for GridCell {
     }
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:70 (sha256:57e8d887164f3090f0d102ec05909c147024674db43a35a732ab5894c59f7ae1)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:125 (sha256:e90f56c3b1aac98be60e2eb58913c88a1ff8872b19244b5042a5604f73e5d839)
 #[derive(Clone, Default)]
 struct UniformGrid {
     #[doc(hidden)]
@@ -114,12 +160,14 @@ struct UniformGrid {
     pub cell_size: f64,
     pub cells: Vec<(String, GridCell)>,
     pub bounds: Vec<(SpatialObjectId, SpatialAabb)>,
+    pub overflow: Vec<SpatialObjectId>,
+    pub declined: Vec<(SpatialObjectId, SpatialDeclineReason)>,
     pub min_cell_x: f64,
     pub min_cell_y: f64,
     pub max_cell_x: f64,
     pub max_cell_y: f64,
-    pub empty: bool,
     pub seen: Vec<SpatialObjectId>,
+    pub pair_ids: Vec<SpatialObjectId>,
 }
 impl PartialEq for UniformGrid {
     fn eq(&self, other: &Self) -> bool {
@@ -127,17 +175,17 @@ impl PartialEq for UniformGrid {
     }
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:84 (sha256:45dc8d4ede26d698e11710d2ab57bd04451e76c97cd4930c04a5008fa833df23)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:141 (sha256:45dc8d4ede26d698e11710d2ab57bd04451e76c97cd4930c04a5008fa833df23)
 fn _cell_index(coord: f64, cell_size: f64) -> f64 {
     return (coord / cell_size).floor();
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:90 (sha256:e8854bdbd64c484904fbf56d75556dd0d533af10ec478225ec75d36fa401f447)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:147 (sha256:e8854bdbd64c484904fbf56d75556dd0d533af10ec478225ec75d36fa401f447)
 fn _cell_key(cx: f64, cy: f64) -> String {
     return format!("{},{}", cx, cy);
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:98 (sha256:ce3c4ff15a7712b41d511998526502534dada38191dbf11e8b2eac09e9d621ba)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:154 (sha256:ce3c4ff15a7712b41d511998526502534dada38191dbf11e8b2eac09e9d621ba)
 fn _fill_rect_from_aabb(out: &mut RectangleLike, aabb: &SpatialAabb) -> () {
     out.x = aabb.min_x;
     out.y = aabb.min_y;
@@ -145,22 +193,185 @@ fn _fill_rect_from_aabb(out: &mut RectangleLike, aabb: &SpatialAabb) -> () {
     out.height = (aabb.max_y - aabb.min_y);
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:107 (sha256:3bfea023f430008a33e87dff5df45f90382d4998143bdea4660d1dc3a3a7b719)
-fn _insert_into_grid(grid: &mut UniformGrid, id: SpatialObjectId, bounds: &SpatialAabb) -> () {
+// Source: upstream/packages/spatial/src/uniformGrid.ts:162 (sha256:7cbb20339b0a28754d0a67d7f6a2a48e0c3689c564c0c486b26f74986929c4a9)
+fn _explain_grid_indexing(grid: &UniformGrid, id: SpatialObjectId) -> SpatialIndexingExplanation {
+    let decline_reason = grid
+        .declined
+        .iter()
+        .find(|(key, _)| key == &id)
+        .map(|(_, value)| value.clone());
+    if (decline_reason).is_some() {
+        return SpatialIndexingExplanation {
+            __flight_identity: std::sync::Arc::new(()),
+            bucket_count: 0.0_f64,
+            id: id,
+            mode: "declined".to_owned(),
+            reason: Some((decline_reason.as_ref().unwrap()).clone()),
+        };
+    }
+    if grid.overflow.iter().any(|item| item == &id) {
+        return SpatialIndexingExplanation {
+            __flight_identity: std::sync::Arc::new(()),
+            bucket_count: 0.0_f64,
+            id: id,
+            mode: "overflow".to_owned(),
+            reason: None,
+        };
+    }
+    let bounds = grid
+        .bounds
+        .iter()
+        .find(|(key, _)| key == &id)
+        .map(|(_, value)| value.clone());
+    if (bounds).is_none() {
+        return SpatialIndexingExplanation {
+            __flight_identity: std::sync::Arc::new(()),
+            bucket_count: 0.0_f64,
+            id: id,
+            mode: "absent".to_owned(),
+            reason: None,
+        };
+    }
+    return SpatialIndexingExplanation {
+        __flight_identity: std::sync::Arc::new(()),
+        bucket_count: _spanned_cell_count(grid.cell_size, &bounds.as_ref().unwrap()),
+        id: id,
+        mode: "cells".to_owned(),
+        reason: None,
+    };
+}
+
+// Source: upstream/packages/spatial/src/uniformGrid.ts:186 (sha256:6e1ec6e8760462dfd6f614479044719fdc13bd2b406deb2d7351933e7210fff2)
+fn _insert_into_grid(
+    grid: &mut UniformGrid,
+    id: SpatialObjectId,
+    bounds: &SpatialAabb,
+    operation: SpatialIndexingOperation,
+) -> bool {
+    if (((!(bounds.min_x).is_finite()) || (!(bounds.min_y).is_finite()))
+        || (!(bounds.max_x).is_finite()))
+        || (!(bounds.max_y).is_finite())
+    {
+        {
+            let __flight_key = id;
+            let __flight_value = "non-finite-bounds".to_owned();
+            if let Some((_, value)) = grid
+                .declined
+                .iter_mut()
+                .find(|(key, _)| key == &__flight_key)
+            {
+                *value = __flight_value;
+            } else {
+                grid.declined.push((__flight_key, __flight_value));
+            }
+        };
+        _report_grid_indexing(
+            grid,
+            id,
+            "declined".to_owned(),
+            (operation).clone(),
+            Some(
+                (flighthq_types::SpatialIndexingReason::A("non-finite-bounds".to_owned())).clone(),
+            ),
+            0.0_f64,
+        );
+        return false;
+    }
+    if (bounds.max_x < bounds.min_x) || (bounds.max_y < bounds.min_y) {
+        {
+            let __flight_key = id;
+            let __flight_value = "inverted-bounds".to_owned();
+            if let Some((_, value)) = grid
+                .declined
+                .iter_mut()
+                .find(|(key, _)| key == &__flight_key)
+            {
+                *value = __flight_value;
+            } else {
+                grid.declined.push((__flight_key, __flight_value));
+            }
+        };
+        _report_grid_indexing(
+            grid,
+            id,
+            "declined".to_owned(),
+            (operation).clone(),
+            Some((flighthq_types::SpatialIndexingReason::A("inverted-bounds".to_owned())).clone()),
+            0.0_f64,
+        );
+        return false;
+    }
     let cs = grid.cell_size;
-    let mut cx0 = _cell_index(bounds.min_x, cs);
-    let cx1 = _cell_index(bounds.max_x, cs);
-    let mut cy0 = _cell_index(bounds.min_y, cs);
-    let cy1 = _cell_index(bounds.max_y, cs);
+    let copy = SpatialAabb {
+        __flight_identity: std::sync::Arc::new(()),
+        min_x: bounds.min_x,
+        min_y: bounds.min_y,
+        max_x: bounds.max_x,
+        max_y: bounds.max_y,
+    };
+    if (!(cs > 0.0_f64) && ((cs).is_finite())) {
+        {
+            let __flight_key = id;
+            let __flight_value = (copy).clone();
+            if let Some((_, value)) = grid.bounds.iter_mut().find(|(key, _)| key == &__flight_key) {
+                *value = __flight_value;
+            } else {
+                grid.bounds.push((__flight_key, __flight_value));
+            }
+        };
+        {
+            let __flight_value = id;
+            if !grid.overflow.contains(&__flight_value) {
+                grid.overflow.push(__flight_value);
+            }
+        };
+        _report_grid_indexing(
+            grid,
+            id,
+            "overflow".to_owned(),
+            (operation).clone(),
+            Some(
+                (flighthq_types::SpatialIndexingReason::A("invalid-cell-size".to_owned())).clone(),
+            ),
+            0.0_f64,
+        );
+        return true;
+    }
+    let spanned = _spanned_cell_count(cs, &copy);
+    if (!(spanned <= MAX_INDEXED_CELLS_PER_OBJECT)) {
+        {
+            let __flight_key = id;
+            let __flight_value = (copy).clone();
+            if let Some((_, value)) = grid.bounds.iter_mut().find(|(key, _)| key == &__flight_key) {
+                *value = __flight_value;
+            } else {
+                grid.bounds.push((__flight_key, __flight_value));
+            }
+        };
+        {
+            let __flight_value = id;
+            if !grid.overflow.contains(&__flight_value) {
+                grid.overflow.push(__flight_value);
+            }
+        };
+        _report_grid_indexing(
+            grid,
+            id,
+            "overflow".to_owned(),
+            (operation).clone(),
+            None,
+            spanned,
+        );
+        return true;
+    }
+    let mut cx0 = _cell_index(copy.min_x, cs);
+    let cx1 = _cell_index(copy.max_x, cs);
+    let mut cy0 = _cell_index(copy.min_y, cs);
+    let cy1 = _cell_index(copy.max_y, cs);
+    let had_cells = ((grid.cells.len() as f64) != 0.0_f64);
     {
         let __flight_key = id;
-        let __flight_value = SpatialAabb {
-            __flight_identity: std::sync::Arc::new(()),
-            min_x: bounds.min_x,
-            min_y: bounds.min_y,
-            max_x: bounds.max_x,
-            max_y: bounds.max_y,
-        };
+        let __flight_value = (copy).clone();
         if let Some((_, value)) = grid.bounds.iter_mut().find(|(key, _)| key == &__flight_key) {
             *value = __flight_value;
         } else {
@@ -216,12 +427,11 @@ fn _insert_into_grid(grid: &mut UniformGrid, id: SpatialObjectId, bounds: &Spati
             };
         }
     }
-    if grid.empty {
+    if (!had_cells) {
         grid.min_cell_x = cx0;
         grid.max_cell_x = cx1;
         grid.min_cell_y = cy0;
         grid.max_cell_y = cy1;
-        grid.empty = false;
     } else {
         if (cx0 < grid.min_cell_x) {
             grid.min_cell_x = cx0;
@@ -236,15 +446,66 @@ fn _insert_into_grid(grid: &mut UniformGrid, id: SpatialObjectId, bounds: &Spati
             grid.max_cell_y = cy1;
         }
     }
+    return true;
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:140 (sha256:6e93e48516bee3191a99d57b52f08bae516d7aaa9db9b4a872b9cc7210e0c857)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:263 (sha256:a839e28dcf99cc1f15630c06947fe0b6b585757649f3ffd6827f178d43eef944)
+fn _update_grid_object(grid: &mut UniformGrid, id: SpatialObjectId, bounds: &SpatialAabb) -> bool {
+    let was_missing = (!grid.bounds.iter().any(|(key, _)| key == &id))
+        && (!grid.declined.iter().any(|(key, _)| key == &id));
+    let mut previous = grid
+        .bounds
+        .iter()
+        .find(|(key, _)| key == &id)
+        .map(|(_, value)| value.clone());
+    if ((((((((previous).is_some()) && (!grid.overflow.iter().any(|item| item == &id)))
+        && ((bounds.min_x).is_finite()))
+        && ((bounds.min_y).is_finite()))
+        && ((bounds.max_x).is_finite()))
+        && ((bounds.max_y).is_finite()))
+        && (bounds.min_x <= bounds.max_x))
+        && (bounds.min_y <= bounds.max_y)
+    {
+        let cs = grid.cell_size;
+        let spanned = _spanned_cell_count(cs, bounds);
+        if ((((spanned <= MAX_INDEXED_CELLS_PER_OBJECT)
+            && (_cell_index(previous.as_mut().unwrap().min_x, cs)
+                == _cell_index(bounds.min_x, cs)))
+            && (_cell_index(previous.as_mut().unwrap().min_y, cs)
+                == _cell_index(bounds.min_y, cs)))
+            && (_cell_index(previous.as_mut().unwrap().max_x, cs) == _cell_index(bounds.max_x, cs)))
+            && (_cell_index(previous.as_mut().unwrap().max_y, cs) == _cell_index(bounds.max_y, cs))
+        {
+            previous.as_mut().unwrap().min_x = bounds.min_x;
+            previous.as_mut().unwrap().min_y = bounds.min_y;
+            previous.as_mut().unwrap().max_x = bounds.max_x;
+            previous.as_mut().unwrap().max_y = bounds.max_y;
+            return true;
+        }
+    }
+    _remove_from_grid(grid, id);
+    let inserted = _insert_into_grid(grid, id, bounds, "update".to_owned());
+    if was_missing {
+        let explanation = _explain_grid_indexing(grid, id);
+        _report_grid_indexing(
+            grid,
+            id,
+            (explanation.mode).clone(),
+            "update".to_owned(),
+            Some((flighthq_types::SpatialIndexingReason::A("missing-id".to_owned())).clone()),
+            0.0_f64,
+        );
+    }
+    return inserted;
+}
+
+// Source: upstream/packages/spatial/src/uniformGrid.ts:302 (sha256:6e93e48516bee3191a99d57b52f08bae516d7aaa9db9b4a872b9cc7210e0c857)
 fn _is_spatial_aabb_contains_point(aabb: &SpatialAabb, x: f64, y: f64) -> bool {
     _fill_rect_from_aabb(&mut (*_SCRATCH_RECT_A.lock().unwrap()), aabb);
     return contains_rectangle_point_xy(&(*_SCRATCH_RECT_A.lock().unwrap()), x, y);
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:147 (sha256:53abc16610bfda3196d454eca1e9916a07e7fefd8a647d079e0517307e58c4df)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:309 (sha256:53abc16610bfda3196d454eca1e9916a07e7fefd8a647d079e0517307e58c4df)
 fn _is_spatial_aabb_overlapping(a: &SpatialAabb, b: &SpatialAabb) -> bool {
     _fill_rect_from_aabb(&mut (*_SCRATCH_RECT_A.lock().unwrap()), a);
     _fill_rect_from_aabb(&mut (*_SCRATCH_RECT_B.lock().unwrap()), b);
@@ -254,7 +515,7 @@ fn _is_spatial_aabb_overlapping(a: &SpatialAabb, b: &SpatialAabb) -> bool {
     );
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:156 (sha256:5449163cc46e76efa44514082dc0053eb0d733df81ff6a4e3a9910a95513c606)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:318 (sha256:5449163cc46e76efa44514082dc0053eb0d733df81ff6a4e3a9910a95513c606)
 fn _ray_box_entry_t(
     ox: f64,
     oy: f64,
@@ -313,14 +574,53 @@ fn _ray_box_entry_t(
     return if (tmin > 0.0_f64) { tmin } else { 0.0_f64 };
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:203 (sha256:81c45adcb3ee389e2e293edafca74462b32c0065d1271476172b3d22ae9aca32)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:367 (sha256:0cb1e297e85e9343d95a664ee22e439b5c0cc955fbefde284d664f6dc9676efa)
 fn _remove_from_grid(grid: &mut UniformGrid, id: SpatialObjectId) -> () {
+    {
+        let __flight_key = id;
+        if let Some(__flight_index) = grid
+            .declined
+            .iter()
+            .position(|(key, _)| key == &__flight_key)
+        {
+            grid.declined.remove(__flight_index);
+            true
+        } else {
+            false
+        }
+    };
     let bounds = grid
         .bounds
         .iter()
         .find(|(key, _)| key == &id)
         .map(|(_, value)| value.clone());
     if (bounds).is_none() {
+        return;
+    }
+    if {
+        let __flight_value = id;
+        if let Some(__flight_index) = grid
+            .overflow
+            .iter()
+            .position(|item| item == &__flight_value)
+        {
+            grid.overflow.remove(__flight_index);
+            true
+        } else {
+            false
+        }
+    } {
+        {
+            let __flight_key = id;
+            if let Some(__flight_index) =
+                grid.bounds.iter().position(|(key, _)| key == &__flight_key)
+            {
+                grid.bounds.remove(__flight_index);
+                true
+            } else {
+                false
+            }
+        };
         return;
     }
     let cs = grid.cell_size;
@@ -396,13 +696,50 @@ fn _remove_from_grid(grid: &mut UniformGrid, id: SpatialObjectId) -> () {
             false
         }
     };
-    if ((grid.bounds.len() as f64) == 0.0_f64) {
-        grid.empty = true;
+}
+
+// Source: upstream/packages/spatial/src/uniformGrid.ts:398 (sha256:09b882c0ea3d435f82ae51aa039af065b94171203651d284f481c9aeb2fb8447)
+fn _query_grid_overflow_pairs(grid: &UniformGrid, out: &mut Vec<SpatialPair>) -> () {
+    for id in ((grid.overflow).clone()).iter().cloned() {
+        let bounds = grid
+            .bounds
+            .iter()
+            .find(|(key, _)| key == &id)
+            .map(|(_, value)| value.clone());
+        if (bounds).is_none() {
+            continue;
+        }
+        for __iteration0 in ((grid.bounds).clone()).iter().cloned() {
+            let other_id = __iteration0[0.0_f64 as usize].clone();
+            let other_bounds = __iteration0[1.0_f64 as usize].clone();
+            if (other_id == id) {
+                continue;
+            }
+            if (grid.overflow.iter().any(|item| item == &other_id)) && (other_id < id) {
+                continue;
+            }
+            if (!_is_spatial_aabb_overlapping(bounds.as_ref().unwrap(), &other_bounds)) {
+                continue;
+            }
+            out.push(if (id < other_id) {
+                SpatialPair {
+                    __flight_identity: std::sync::Arc::new(()),
+                    a: id,
+                    b: other_id,
+                }
+            } else {
+                SpatialPair {
+                    __flight_identity: std::sync::Arc::new(()),
+                    a: other_id,
+                    b: id,
+                }
+            });
+        }
     }
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:229 (sha256:ea0efa48e00023e35a3fc58e6588a9bbf750e2cff3f3505d0e47e43cf701a1aa)
-fn _query_grid_pairs(grid: &UniformGrid, out: &mut Vec<SpatialPair>) -> () {
+// Source: upstream/packages/spatial/src/uniformGrid.ts:418 (sha256:677f4249db688911b2ed134c9d9b38826c3e71fc89c3f1204053832823b78c98)
+fn _query_grid_pairs(grid: &mut UniformGrid, out: &mut Vec<SpatialPair>) -> () {
     out.clear();
     let cs = grid.cell_size;
     for cell in (grid
@@ -416,23 +753,22 @@ fn _query_grid_pairs(grid: &UniformGrid, out: &mut Vec<SpatialPair>) -> () {
         if ((cell.ids.len() as f64) < 2.0_f64) {
             continue;
         }
-        let mut list = {
-            let mut __flight_array = Vec::new();
-            __flight_array.extend((cell.ids).iter().cloned());
-            __flight_array
-        };
+        grid.pair_ids.clear();
+        for id in (cell.ids).iter().cloned() {
+            grid.pair_ids.push(id);
+        }
         {
             let mut i = 0.0_f64;
-            while (i < (list.len() as f64)) {
+            while (i < (grid.pair_ids.len() as f64)) {
                 {
                     let mut j = (i + 1.0_f64);
-                    while (j < (list.len() as f64)) {
-                        let mut a = list[i as usize].clone();
-                        let mut b = list[j as usize].clone();
+                    while (j < (grid.pair_ids.len() as f64)) {
+                        let mut a = grid.pair_ids[i as usize].clone();
+                        let mut b = grid.pair_ids[j as usize].clone();
                         if (a > b) {
                             let t = a;
-                            a = (b).clone();
-                            b = (t).clone();
+                            a = b;
+                            b = t;
                         }
                         let ab = grid
                             .bounds
@@ -475,9 +811,66 @@ fn _query_grid_pairs(grid: &UniformGrid, out: &mut Vec<SpatialPair>) -> () {
             }
         }
     }
+    if ((grid.overflow.len() as f64) != 0.0_f64) {
+        _query_grid_overflow_pairs(grid, out);
+    }
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:258 (sha256:a86b5420e8606082bfc173ce20620d5250765b30c892988ed8d5497619f3058d)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:448 (sha256:7ef8d9b1f2cb0826f8c942cc22cce69a767dc403bf093d6753df7530e896f243)
+#[derive(Clone, Default)]
+struct ReportGridIndexingSynthesizedRecord2498162634 {
+    __flight_identity: std::sync::Arc<()>,
+    cell_size: f64,
+    id: SpatialObjectId,
+    mode: SpatialIndexingMode,
+    operation: SpatialIndexingOperation,
+    reason: Option<SpatialIndexingReason>,
+    would_occupy_bucket_count: f64,
+}
+impl PartialEq for ReportGridIndexingSynthesizedRecord2498162634 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+fn _report_grid_indexing(
+    grid: &UniformGrid,
+    id: SpatialObjectId,
+    mode: SpatialIndexingMode,
+    operation: SpatialIndexingOperation,
+    reason: Option<SpatialIndexingReason>,
+    would_occupy_bucket_count: f64,
+) -> () {
+    if ((*_INDEXING_GUARD.lock().unwrap()).clone()).is_none() {
+        return;
+    }
+    {
+        let __flight_callback = (_INDEXING_GUARD.as_ref().unwrap()).clone();
+        let __flight_result = __flight_callback.lock().unwrap()({
+            let __flight_source = &(ReportGridIndexingSynthesizedRecord2498162634 {
+                __flight_identity: std::sync::Arc::new(()),
+                cell_size: grid.cell_size,
+                id: id,
+                mode: (mode).clone(),
+                operation: (operation).clone(),
+                reason: (reason).clone(),
+                would_occupy_bucket_count: would_occupy_bucket_count,
+            });
+            SpatialIndexingNotice {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                cell_size: __flight_source.cell_size,
+                id: __flight_source.id,
+                mode: (__flight_source.mode).clone(),
+                operation: (__flight_source.operation).clone(),
+                would_occupy_bucket_count: __flight_source.would_occupy_bucket_count,
+                reason: (__flight_source.reason).clone(),
+            }
+        });
+        __flight_result
+    };
+}
+
+// Source: upstream/packages/spatial/src/uniformGrid.ts:464 (sha256:328856480673e52d18188cab1125aa4052d753f1995fafc145ba1bebf28c39df)
 fn _query_grid_point(grid: &UniformGrid, x: f64, y: f64, out: &mut Vec<SpatialObjectId>) -> () {
     out.clear();
     let cs = grid.cell_size;
@@ -486,10 +879,21 @@ fn _query_grid_point(grid: &UniformGrid, x: f64, y: f64, out: &mut Vec<SpatialOb
         .iter()
         .find(|(key, _)| key == &_cell_key(_cell_index(x, cs), _cell_index(y, cs)))
         .map(|(_, value)| value.clone());
-    if (cell).is_none() {
-        return;
+    if (cell).is_some() {
+        for id in ((cell.as_ref().unwrap().ids).clone()).iter().cloned() {
+            let bounds = grid
+                .bounds
+                .iter()
+                .find(|(key, _)| key == &id)
+                .map(|(_, value)| value.clone());
+            if ((bounds).is_some())
+                && (_is_spatial_aabb_contains_point(bounds.as_ref().unwrap(), x, y))
+            {
+                out.push(id);
+            }
+        }
     }
-    for id in ((cell.as_ref().unwrap().ids).clone()).iter().cloned() {
+    for id in ((grid.overflow).clone()).iter().cloned() {
         let bounds = grid
             .bounds
             .iter()
@@ -502,7 +906,7 @@ fn _query_grid_point(grid: &UniformGrid, x: f64, y: f64, out: &mut Vec<SpatialOb
     }
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:273 (sha256:9d39a6e2469dca1e020752a3241cf0cb8ed48907a688eccadd7f5f51c02d6413)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:484 (sha256:ff7406cdcac62d49a877dbbbf9f21580b03f65a6bdba4dfd00a0564fac7834aa)
 fn _query_grid_ray(
     grid: &mut UniformGrid,
     ox: f64,
@@ -512,13 +916,34 @@ fn _query_grid_ray(
     out: &mut Vec<SpatialObjectId>,
 ) -> () {
     out.clear();
-    if grid.empty {
-        return;
-    }
     let cs = grid.cell_size;
     grid.seen.clear();
     if (dx == 0.0_f64) && (dy == 0.0_f64) {
         _query_grid_point(grid, ox, oy, out);
+        return;
+    }
+    for id in ((grid.overflow).clone()).iter().cloned() {
+        let bounds = grid
+            .bounds
+            .iter()
+            .find(|(key, _)| key == &id)
+            .map(|(_, value)| value.clone());
+        if ((bounds).is_some())
+            && (_ray_box_entry_t(
+                ox,
+                oy,
+                dx,
+                dy,
+                bounds.as_ref().unwrap().min_x,
+                bounds.as_ref().unwrap().min_y,
+                bounds.as_ref().unwrap().max_x,
+                bounds.as_ref().unwrap().max_y,
+            ) >= 0.0_f64)
+        {
+            out.push(id);
+        }
+    }
+    if ((grid.cells.len() as f64) == 0.0_f64) {
         return;
     }
     let box_min_x = (grid.min_cell_x * cs);
@@ -640,7 +1065,7 @@ fn _query_grid_ray(
     }
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:349 (sha256:ff0c9b12edabe53115437e92903264e2c96bbcbe115da956d1c836434883d491)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:583 (sha256:c63d57b69a82eba3fcb411bf9ffa05a33116c6c73ea9f6fe0a6fa659f169d58b)
 fn _query_grid_region(
     grid: &mut UniformGrid,
     region: &SpatialAabb,
@@ -649,6 +1074,16 @@ fn _query_grid_region(
     out.clear();
     let cs = grid.cell_size;
     grid.seen.clear();
+    if (!(_spanned_cell_count(cs, region) <= (grid.cells.len() as f64))) {
+        for __iteration1 in ((grid.bounds).clone()).iter().cloned() {
+            let id = __iteration1[0.0_f64 as usize].clone();
+            let bounds = __iteration1[1.0_f64 as usize].clone();
+            if _is_spatial_aabb_overlapping(bounds.as_ref().unwrap(), region) {
+                out.push(id);
+            }
+        }
+        return;
+    }
     let mut cx0 = _cell_index(region.min_x, cs);
     let cx1 = _cell_index(region.max_x, cs);
     let mut cy0 = _cell_index(region.min_y, cs);
@@ -704,9 +1139,33 @@ fn _query_grid_region(
             };
         }
     }
+    for id in ((grid.overflow).clone()).iter().cloned() {
+        let bounds = grid
+            .bounds
+            .iter()
+            .find(|(key, _)| key == &id)
+            .map(|(_, value)| value.clone());
+        if ((bounds).is_some()) && (_is_spatial_aabb_overlapping(bounds.as_ref().unwrap(), region))
+        {
+            out.push(id);
+        }
+    }
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:375 (sha256:e53c83de77d981abb41109e9c2682fcd2a6930d40c2c91c37b2afaaebbc9eb79)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:622 (sha256:0edc315547c9c105649420254e5ac52c85ae60c636d2d599044a35fe3867185d)
+fn _spanned_cell_count(cell_size: f64, aabb: &SpatialAabb) -> f64 {
+    let cx0 = _cell_index(aabb.min_x, cell_size);
+    let cx1 = _cell_index(aabb.max_x, cell_size);
+    let cy0 = _cell_index(aabb.min_y, cell_size);
+    let cy1 = _cell_index(aabb.max_y, cell_size);
+    return (((cx1 - cx0) + 1.0_f64) * ((cy1 - cy0) + 1.0_f64));
+}
+
+// Source: upstream/packages/spatial/src/uniformGrid.ts:632 (sha256:e6864a197036faa67642beacf162e731f77ac0295548433db16db76e3f1cc9f1)
+static _INDEXING_GUARD: std::sync::LazyLock<std::sync::Mutex<Option<SpatialIndexingGuard>>> =
+    std::sync::LazyLock::new(|| std::sync::Mutex::new(None));
+
+// Source: upstream/packages/spatial/src/uniformGrid.ts:637 (sha256:e53c83de77d981abb41109e9c2682fcd2a6930d40c2c91c37b2afaaebbc9eb79)
 static _SCRATCH_RECT_A: std::sync::LazyLock<std::sync::Mutex<RectangleLike>> =
     std::sync::LazyLock::new(|| {
         std::sync::Mutex::new(RectangleLike {
@@ -719,7 +1178,7 @@ static _SCRATCH_RECT_A: std::sync::LazyLock<std::sync::Mutex<RectangleLike>> =
         })
     });
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:376 (sha256:27ab52f8e9c47f5e2ccd592369b83dc133972e262e313e3c499c245efa883daa)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:638 (sha256:27ab52f8e9c47f5e2ccd592369b83dc133972e262e313e3c499c245efa883daa)
 static _SCRATCH_RECT_B: std::sync::LazyLock<std::sync::Mutex<RectangleLike>> =
     std::sync::LazyLock::new(|| {
         std::sync::Mutex::new(RectangleLike {

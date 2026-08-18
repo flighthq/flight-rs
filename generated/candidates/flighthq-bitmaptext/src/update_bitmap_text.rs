@@ -6,19 +6,17 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_adjustments::create_color_transform_adjustment;
-use flighthq_displayobject::{get_display_object_runtime, set_display_object_color_adjustments};
-use flighthq_geometry::create_rectangle;
-use flighthq_materials::create_color_transform;
-use flighthq_node::{add_node_child, invalidate_node_local_bounds};
-use flighthq_sprite::{append_quad_batch_instance, clear_quad_batch, create_quad_batch};
+use flighthq_geometry::{create_rectangle, reserve_float32_array, reserve_uint16_array};
+use flighthq_node::invalidate_node_local_bounds;
+use flighthq_scene2d::get_node2_d_runtime;
+use flighthq_texture::{create_texture, set_texture_source};
 use flighthq_textureatlas::{add_texture_atlas_region, create_texture_atlas};
 use flighthq_types::{
-    Adjustment, AdjustmentKind, BitmapText, BitmapTextData, BitmapTextRuntime, BlendMode,
-    BoundsNodeAny, ClipRegion, ColorTransform, GlyphEntry, GlyphSource, ImageResource,
-    InteractionSignals, Kind, Material, MaterialData, Matrix, Matrix4, Node, NodeInteractionState,
-    NodeSignals, NodeTraitsKey, QuadBatch, QuadBatchData, QuadTransformType, Rectangle, Stage,
-    StageSignals, TextureAtlas, TextureAtlasRegion,
+    Adjustment, BitmapText, BitmapTextData, BitmapTextPage, BitmapTextRuntime, BlendMode,
+    BoundsNodeAny, ClipRegion, ColorScaleBias, GlyphEntry, GlyphSource, InteractionSignals, Kind,
+    Material, MaterialData, Matrix, Matrix4, Node, NodeInteractionState, NodeSignals,
+    NodeTraitsKey, Path, Rectangle, SamplerLike, Scene2D, Scene2DSignals, Texture, Texture2D,
+    TextureAtlasRegion, TextureFilter, TextureSource, TextureSourceKind, TextureWrap,
 };
 
 #[inline]
@@ -37,30 +35,19 @@ fn __flight_js_to_i32(value: f64) -> i32 {
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub alpha_multiplier: Option<f64>,
-    pub alpha_offset: Option<f64>,
-    pub blue_multiplier: Option<f64>,
-    pub blue_offset: Option<f64>,
-    pub green_multiplier: Option<f64>,
-    pub green_offset: Option<f64>,
-    pub red_multiplier: Option<f64>,
-    pub red_offset: Option<f64>,
-}
-impl PartialEq for FlightPartialRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord2 {
-    pub __flight_identity: std::sync::Arc<()>,
     pub anisotropy_ext: Option<crate::OpaqueHostValue>,
     pub appearance_id: Option<f64>,
-    pub binding: Option<crate::OpaqueHostValue>,
+    pub binding_cache_guard: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<dyn FnMut(GlRenderState, crate::OpaqueHostValue) -> () + Send + 'static>,
+            >,
+        >,
+    >,
     pub bounds_rectangle: Option<Rectangle>,
     pub bounds_using_local_bounds_id: Option<f64>,
     pub bounds_using_local_transform_id: Option<f64>,
+    pub bounds_version: Option<f64>,
     pub build_text_layout_params: Option<
         std::sync::Arc<
             std::sync::Mutex<
@@ -68,22 +55,36 @@ pub struct FlightPartialRecord2 {
             >,
         >,
     >,
+    pub canvas_blend_effect_backdrops: Option<Vec<(String, CanvasRenderTarget)>>,
+    pub canvas_render_effect_registry: Option<Vec<(String, CanvasRenderEffectRunner)>>,
+    pub canvas_shape_command_registry:
+        Option<Vec<(String, CanvasShapeCommand<crate::OpaqueHostValue>)>>,
+    pub canvas_texture_resolvers: Option<CanvasTextureResolvers>,
     pub canvas_texture_view: Option<crate::OpaqueHostValue>,
     pub canvas_view_cleared: Option<bool>,
+    pub children_id: Option<f64>,
     pub clip_contour_pipelines: Option<Vec<(crate::OpaqueHostValue, WgpuClipContourPipelines)>>,
     pub clip_contour_stack: Option<Vec<WgpuClipContourEntry>>,
     pub clip_forms: Option<Vec<String>>,
-    pub color_adjustment_channel_mixing_guard: Option<
+    pub color_adjustment_resolver: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<
+                    dyn FnMut(RenderState, RenderProxy, Option<RenderProxy>) -> () + Send + 'static,
+                >,
+            >,
+        >,
+    >,
+    pub color_adjustment_unsupported_guard: Option<
         std::sync::Arc<
             std::sync::Mutex<Box<dyn FnMut(RenderState, Renderable) -> () + Send + 'static>>,
         >,
     >,
-    pub color_adjustments: Option<Vec<Adjustment>>,
-    pub color_adjustments_channel_mixing: Option<bool>,
-    pub color_transform_instanced_shader: Option<GlColorTransformInstancedShader>,
+    pub color_matrix_instanced_shader: Option<GlColorScaleBiasInstancedShader>,
+    pub color_scale_bias_instanced_shader: Option<GlColorScaleBiasInstancedShader>,
+    pub color_tint_instanced_shader: Option<GlColorScaleBiasInstancedShader>,
     pub command_encoder: Option<crate::OpaqueHostValue>,
     pub compressed_texture_decoder: Option<GlCompressedTextureDecoder>,
-    pub compressed_texture_upload: Option<GlCompressedTextureUploader>,
     pub compute_local_bounds_rectangle: Option<
         std::sync::Arc<
             std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
@@ -95,8 +96,8 @@ pub struct FlightPartialRecord2 {
     pub current_frame_id: Option<f64>,
     pub current_mask_depth: Option<f64>,
     pub current_program: Option<crate::OpaqueHostValue>,
-    pub current_render_target: Option<GlRenderTarget>,
     pub current_texture: Option<crate::OpaqueHostValue>,
+    pub current_texture_straight_alpha: Option<bool>,
     pub depth_stencil_height: Option<f64>,
     pub depth_stencil_texture: Option<crate::OpaqueHostValue>,
     pub depth_stencil_view: Option<crate::OpaqueHostValue>,
@@ -108,7 +109,11 @@ pub struct FlightPartialRecord2 {
     pub dom_next_order_list: Option<Vec<RenderProxy2D>>,
     pub dom_order_length: Option<f64>,
     pub dom_order_list: Option<Vec<RenderProxy2D>>,
+    pub dom_texture_resolver_registry: Option<Vec<(TextureSourceKind, DomTextureResolver)>>,
     pub element: Option<crate::OpaqueHostValue>,
+    pub flush_pending_draws: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(GlRenderState) -> () + Send + 'static>>>,
+    >,
     pub frame_capture_buffer: Option<crate::OpaqueHostValue>,
     pub frame_capture_bytes_per_row: Option<f64>,
     pub frame_capture_enabled: Option<bool>,
@@ -116,21 +121,43 @@ pub struct FlightPartialRecord2 {
     pub frame_capture_texture: Option<crate::OpaqueHostValue>,
     pub frame_capture_width: Option<f64>,
     pub gl_blend_mode_registry: Option<Vec<(BlendMode, GlBlendRealization)>>,
-    pub gl_color_adjustment_fold: Option<GlColorAdjustmentFold>,
-    pub gl_color_adjustment_guard: Option<
+    pub gl_color_adjustment_material_feature: Option<GlColorAdjustmentMaterialFeature>,
+    pub gl_color_adjustment_material_feature_guard: Option<
         std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(GlRenderState, ColorTransform) -> () + Send + 'static>>,
+            std::sync::Mutex<
+                Box<
+                    dyn FnMut(
+                            GlRenderState,
+                            crate::FlightUnion2<
+                                ColorScaleBias,
+                                crate::FlightUnion2<TintMaterialData, Vec<f64>>,
+                            >,
+                        ) -> ()
+                        + Send
+                        + 'static,
+                >,
+            >,
         >,
     >,
+    pub gl_external_texture_cache: Option<Vec<(ExternalTexture, crate::OpaqueHostValue)>>,
+    pub gl_render_effect_registry: Option<Vec<(Kind, GlRenderEffectRunner)>>,
+    pub gl_render_texture_cache: Option<Vec<(RenderTexture, GlRenderTextureEntry)>>,
+    pub gl_render_texture_guard: Option<GlRenderTextureGuard>,
+    pub gl_texture_resolver_registry: Option<Vec<(TextureSourceKind, GlTextureResolver)>>,
     pub image_smoothing_enabled: Option<bool>,
     pub image_smoothing_quality: Option<crate::OpaqueHostValue>,
     pub input: Option<TextInputState>,
     pub instance_velocities: Option<Vec<f32>>,
     pub interaction_signals: Option<InteractionSignals>,
     pub interaction_state: Option<NodeInteractionState>,
+    pub is_local_bounds_rectangle_valid: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(BoundsNodeAny) -> bool + Send + 'static>>>,
+    >,
     pub linear_sampler: Option<crate::OpaqueHostValue>,
     pub local_bounds_id: Option<f64>,
     pub local_bounds_rectangle: Option<Rectangle>,
+    pub local_bounds_texture: Option<Texture>,
+    pub local_bounds_texture_version: Option<f64>,
     pub local_bounds_using_local_bounds_id: Option<f64>,
     pub local_content_id: Option<f64>,
     pub local_matrix: Option<Matrix>,
@@ -144,20 +171,42 @@ pub struct FlightPartialRecord2 {
     pub max_anisotropy: Option<f64>,
     pub measured_height: Option<f64>,
     pub measured_width: Option<f64>,
-    pub mipmap_bind_group_layout: Option<crate::OpaqueHostValue>,
+    pub media_stream: Option<crate::OpaqueHostValue>,
     pub mipmapped_textures: Option<Vec<crate::OpaqueHostValue>>,
-    pub mipmap_pipeline: Option<crate::OpaqueHostValue>,
     pub morph_bind_pose: Option<MeshMorphBindPose>,
+    pub morph_blended_weights: Option<Vec<f32>>,
     pub movie_clip_signals: Option<MovieClipSignals>,
     pub nearest_sampler: Option<crate::OpaqueHostValue>,
     pub node_signals: Option<NodeSignals>,
+    pub pages: Option<Vec<BitmapTextPage>>,
+    pub parent_reference_id: Option<f64>,
     pub particle_corner_buffer: Option<crate::OpaqueHostValue>,
     pub particle_instance_capacity: Option<f64>,
     pub particle_shader: Option<GlParticleShader>,
     pub pipeline_cache: Option<Vec<(String, crate::OpaqueHostValue)>>,
     pub quad_batch_corner_buffer: Option<crate::OpaqueHostValue>,
-    pub quad_batches: Option<Vec<QuadBatch>>,
     pub quad_batch_shader: Option<GlQuadBatchShader>,
+    pub quad_batch_writer_blend_mode: Option<BlendMode>,
+    pub quad_batch_writer_buffer_cursor: Option<f64>,
+    pub quad_batch_writer_buffer_pool: Option<Vec<WgpuQuadBatchWriterBufferSlot>>,
+    pub quad_batch_writer_color_matrix_data: Option<Vec<f32>>,
+    pub quad_batch_writer_color_scale_bias_buffer: Option<crate::OpaqueHostValue>,
+    pub quad_batch_writer_color_scale_bias_data: Option<Vec<f32>>,
+    pub quad_batch_writer_color_scale_bias_mode: Option<f64>,
+    pub quad_batch_writer_color_tint_data: Option<Vec<u32>>,
+    pub quad_batch_writer_count: Option<f64>,
+    pub quad_batch_writer_instance_buffer: Option<crate::OpaqueHostValue>,
+    pub quad_batch_writer_instance_data: Option<Vec<f32>>,
+    pub quad_batch_writer_material: Option<Material>,
+    pub quad_batch_writer_material_buffer: Option<crate::OpaqueHostValue>,
+    pub quad_batch_writer_material_data: Option<Vec<f32>>,
+    pub quad_batch_writer_material_floats: Option<f64>,
+    pub quad_batch_writer_sampler: Option<SamplerLike>,
+    pub quad_batch_writer_smoothing: Option<bool>,
+    pub quad_batch_writer_straight_alpha: Option<bool>,
+    pub quad_batch_writer_uniform_color_scale_bias: Option<
+        crate::FlightUnion2<ColorScaleBias, crate::FlightUnion2<TintMaterialData, Vec<f64>>>,
+    >,
     pub quad_index_buffer: Option<crate::OpaqueHostValue>,
     pub quad_vertex_buffer: Option<crate::OpaqueHostValue>,
     pub quad_vertex_data: Option<Vec<f32>>,
@@ -168,43 +217,44 @@ pub struct FlightPartialRecord2 {
             >,
         >,
     >,
+    pub render_effect_padding_resolver_registry: Option<Vec<(Kind, RenderEffectPaddingResolver)>>,
     pub renderer_map: Option<Vec<(Kind, Renderer)>>,
     pub renderer_map_id: Option<f64>,
     pub render_pass: Option<crate::OpaqueHostValue>,
     pub render_proxy_adapter_map: Option<Vec<(Renderable, RenderProxyAdapter)>>,
     pub render_proxy_map: Option<Vec<(Renderable, RenderProxy)>>,
+    pub render_proxy_sources: Option<Vec<Renderable>>,
+    pub render_root_guard: Option<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(RenderState, Renderable) -> () + Send + 'static>>,
+        >,
+    >,
     pub render_target_stack: Option<Vec<WgpuSavedPassState>>,
-    pub resolved_color_transform: Option<ColorTransform>,
     pub retired_buffers: Option<Vec<crate::OpaqueHostValue>>,
     pub rich_text_content: Option<RichTextContent>,
     pub rotation_angle: Option<f64>,
     pub rotation_cosine: Option<f64>,
     pub rotation_sine: Option<f64>,
-    pub sampler_cache: Option<Vec<(String, crate::OpaqueHostValue)>>,
+    pub sampler_cache: Option<Vec<(f64, crate::OpaqueHostValue)>>,
+    pub scene2d: Option<Scene2D>,
+    pub scene2d_signals: Option<Scene2DSignals>,
     pub scene_mesh_upload_cache: Option<Vec<(crate::OpaqueHostValue, crate::OpaqueHostValue)>>,
     pub selection_begin_index: Option<f64>,
     pub selection_end_index: Option<f64>,
     pub shader_loc: Option<GlShaderLocations>,
-    pub shape_mesh_color_transform_shader: Option<GlShapeMeshColorTransformShader>,
-    pub shape_mesh_pipelines: Option<Vec<(crate::OpaqueHostValue, WgpuShapeMeshPipeline)>>,
+    pub shape_mesh_color_matrix_shader: Option<GlShapeMeshColorScaleBiasShader>,
+    pub shape_mesh_color_scale_bias_shader: Option<GlShapeMeshColorScaleBiasShader>,
+    pub shape_mesh_pipelines: Option<Vec<(String, WgpuShapeMeshPipeline)>>,
+    pub shape_rasterizer: Option<ShapeRasterizer>,
     pub skin_bind_pose: Option<MeshSkinBindPose>,
-    pub sprite_batch_blend_mode: Option<BlendMode>,
-    pub sprite_batch_buffer_cursor: Option<f64>,
-    pub sprite_batch_buffer_pool: Option<Vec<WgpuSpriteBatchBufferSlot>>,
-    pub sprite_batch_color_transform_buffer: Option<crate::OpaqueHostValue>,
-    pub sprite_batch_color_transform_data: Option<Vec<f32>>,
-    pub sprite_batch_color_transform_mode: Option<f64>,
-    pub sprite_batch_count: Option<f64>,
-    pub sprite_batch_instance_buffer: Option<crate::OpaqueHostValue>,
-    pub sprite_batch_instance_data: Option<Vec<f32>>,
-    pub sprite_batch_material: Option<Material>,
-    pub sprite_batch_material_buffer: Option<crate::OpaqueHostValue>,
-    pub sprite_batch_material_data: Option<Vec<f32>>,
-    pub sprite_batch_material_floats: Option<f64>,
-    pub sprite_batch_texture: Option<ImageResource>,
-    pub sprite_batch_uniform_color_transform: Option<ColorTransform>,
-    pub stage: Option<Stage>,
-    pub stage_signals: Option<StageSignals>,
+    pub stroke_tessellator: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<dyn FnMut(Path, StrokeStyle, Option<f64>) -> Option<PathMesh> + Send + 'static>,
+            >,
+        >,
+    >,
+    pub tangent_smoothing_sources: Option<Vec<u32>>,
     pub temp_stack: Option<Vec<Renderable>>,
     pub text_field_signals: Option<TextFieldSignals>,
     pub text_layout: Option<TextLayoutResult>,
@@ -213,11 +263,12 @@ pub struct FlightPartialRecord2 {
     pub uniform_bind_group: Option<crate::OpaqueHostValue>,
     pub uniform_bind_group_layout: Option<crate::OpaqueHostValue>,
     pub uniform_buffer: Option<crate::OpaqueHostValue>,
-    pub uniform_color_transform_shader: Option<GlUniformColorTransformShader>,
+    pub uniform_color_scale_bias_shader: Option<GlUniformColorScaleBiasShader>,
     pub uniform_data: Option<Vec<f32>>,
     pub uniform_data_u32: Option<Vec<u32>>,
     pub uniform_offset: Option<f64>,
     pub uniform_stride: Option<f64>,
+    pub video_element: Option<crate::OpaqueHostValue>,
     pub webgl_data: Option<MeshGeometryGlData>,
     pub webgl_shader_binding_resolver: Option<
         std::sync::Arc<
@@ -234,14 +285,29 @@ pub struct FlightPartialRecord2 {
             >,
         >,
     >,
-    pub wgpu_color_adjustment_fold: Option<WgpuColorAdjustmentFold>,
-    pub wgpu_color_adjustment_guard: Option<
+    pub wgpu_color_adjustment_material_feature: Option<WgpuColorAdjustmentMaterialFeature>,
+    pub wgpu_color_adjustment_material_feature_guard: Option<
         std::sync::Arc<
             std::sync::Mutex<
-                Box<dyn FnMut(WgpuRenderState, ColorTransform) -> () + Send + 'static>,
+                Box<
+                    dyn FnMut(
+                            WgpuRenderState,
+                            crate::FlightUnion2<
+                                ColorScaleBias,
+                                crate::FlightUnion2<TintMaterialData, Vec<f64>>,
+                            >,
+                        ) -> ()
+                        + Send
+                        + 'static,
+                >,
             >,
         >,
     >,
+    pub wgpu_external_texture_cache: Option<Vec<(ExternalTexture, WgpuTextureEntry)>>,
+    pub wgpu_render_effect_registry: Option<Vec<(Kind, WgpuRenderEffectRunner)>>,
+    pub wgpu_render_texture_cache: Option<Vec<(RenderTexture, WgpuRenderTextureEntry)>>,
+    pub wgpu_render_texture_guard: Option<WgpuRenderTextureGuard>,
+    pub wgpu_texture_resolver_registry: Option<Vec<(TextureSourceKind, WgpuTextureResolver)>>,
     pub world_alpha: Option<f64>,
     pub world_alpha_using_appearance_id: Option<f64>,
     pub world_alpha_using_parent_appearance_id: Option<f64>,
@@ -254,6 +320,315 @@ pub struct FlightPartialRecord2 {
     pub world_transform_id: Option<f64>,
     pub world_transform_using_local_transform_id: Option<f64>,
     pub world_transform_using_parent_transform_id: Option<f64>,
+    pub color_adjustments: Option<Vec<Adjustment>>,
+    pub color_adjustments_unsupported: Option<bool>,
+    pub resolved_color_matrix: Option<Vec<f64>>,
+    pub resolved_color_scale_bias: Option<ColorScaleBias>,
+    pub can_add_child: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    >,
+    pub children: Option<Vec<Node>>,
+    pub traits: Option<NodeTraitsKey>,
+    pub parent: Option<Node>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub anisotropy_ext: Option<crate::OpaqueHostValue>,
+    pub appearance_id: Option<f64>,
+    pub binding_cache_guard: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<dyn FnMut(GlRenderState, crate::OpaqueHostValue) -> () + Send + 'static>,
+            >,
+        >,
+    >,
+    pub bounds_rectangle: Option<Rectangle>,
+    pub bounds_using_local_bounds_id: Option<f64>,
+    pub bounds_using_local_transform_id: Option<f64>,
+    pub bounds_version: Option<f64>,
+    pub build_text_layout_params: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<dyn FnMut(TextLabel, TextMeasureFunction) -> TextLayoutParams + Send + 'static>,
+            >,
+        >,
+    >,
+    pub canvas_blend_effect_backdrops: Option<Vec<(String, CanvasRenderTarget)>>,
+    pub canvas_render_effect_registry: Option<Vec<(String, CanvasRenderEffectRunner)>>,
+    pub canvas_shape_command_registry:
+        Option<Vec<(String, CanvasShapeCommand<crate::OpaqueHostValue>)>>,
+    pub canvas_texture_resolvers: Option<CanvasTextureResolvers>,
+    pub canvas_texture_view: Option<crate::OpaqueHostValue>,
+    pub canvas_view_cleared: Option<bool>,
+    pub children_id: Option<f64>,
+    pub clip_contour_pipelines: Option<Vec<(crate::OpaqueHostValue, WgpuClipContourPipelines)>>,
+    pub clip_contour_stack: Option<Vec<WgpuClipContourEntry>>,
+    pub clip_forms: Option<Vec<String>>,
+    pub color_adjustment_resolver: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<
+                    dyn FnMut(RenderState, RenderProxy, Option<RenderProxy>) -> () + Send + 'static,
+                >,
+            >,
+        >,
+    >,
+    pub color_adjustment_unsupported_guard: Option<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(RenderState, Renderable) -> () + Send + 'static>>,
+        >,
+    >,
+    pub color_matrix_instanced_shader: Option<GlColorScaleBiasInstancedShader>,
+    pub color_scale_bias_instanced_shader: Option<GlColorScaleBiasInstancedShader>,
+    pub color_tint_instanced_shader: Option<GlColorScaleBiasInstancedShader>,
+    pub command_encoder: Option<crate::OpaqueHostValue>,
+    pub compressed_texture_decoder: Option<GlCompressedTextureDecoder>,
+    pub compute_local_bounds_rectangle: Option<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
+        >,
+    >,
+    pub current_blend_mode: Option<BlendMode>,
+    pub current_color_format: Option<crate::OpaqueHostValue>,
+    pub current_framebuffer: Option<crate::OpaqueHostValue>,
+    pub current_frame_id: Option<f64>,
+    pub current_mask_depth: Option<f64>,
+    pub current_program: Option<crate::OpaqueHostValue>,
+    pub current_texture: Option<crate::OpaqueHostValue>,
+    pub current_texture_straight_alpha: Option<bool>,
+    pub depth_stencil_height: Option<f64>,
+    pub depth_stencil_texture: Option<crate::OpaqueHostValue>,
+    pub depth_stencil_view: Option<crate::OpaqueHostValue>,
+    pub depth_stencil_width: Option<f64>,
+    pub dom_clip_hooks: Option<DomClipHooks>,
+    pub dom_clip_stack: Option<Vec<DomClipEntry>>,
+    pub dom_current_element: Option<crate::OpaqueHostValue>,
+    pub dom_element_map: Option<Vec<(RenderProxy2D, crate::OpaqueHostValue)>>,
+    pub dom_next_order_list: Option<Vec<RenderProxy2D>>,
+    pub dom_order_length: Option<f64>,
+    pub dom_order_list: Option<Vec<RenderProxy2D>>,
+    pub dom_texture_resolver_registry: Option<Vec<(TextureSourceKind, DomTextureResolver)>>,
+    pub element: Option<crate::OpaqueHostValue>,
+    pub flush_pending_draws: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(GlRenderState) -> () + Send + 'static>>>,
+    >,
+    pub frame_capture_buffer: Option<crate::OpaqueHostValue>,
+    pub frame_capture_bytes_per_row: Option<f64>,
+    pub frame_capture_enabled: Option<bool>,
+    pub frame_capture_height: Option<f64>,
+    pub frame_capture_texture: Option<crate::OpaqueHostValue>,
+    pub frame_capture_width: Option<f64>,
+    pub gl_blend_mode_registry: Option<Vec<(BlendMode, GlBlendRealization)>>,
+    pub gl_color_adjustment_material_feature: Option<GlColorAdjustmentMaterialFeature>,
+    pub gl_color_adjustment_material_feature_guard: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<
+                    dyn FnMut(
+                            GlRenderState,
+                            crate::FlightUnion2<
+                                ColorScaleBias,
+                                crate::FlightUnion2<TintMaterialData, Vec<f64>>,
+                            >,
+                        ) -> ()
+                        + Send
+                        + 'static,
+                >,
+            >,
+        >,
+    >,
+    pub gl_external_texture_cache: Option<Vec<(ExternalTexture, crate::OpaqueHostValue)>>,
+    pub gl_render_effect_registry: Option<Vec<(Kind, GlRenderEffectRunner)>>,
+    pub gl_render_texture_cache: Option<Vec<(RenderTexture, GlRenderTextureEntry)>>,
+    pub gl_render_texture_guard: Option<GlRenderTextureGuard>,
+    pub gl_texture_resolver_registry: Option<Vec<(TextureSourceKind, GlTextureResolver)>>,
+    pub image_smoothing_enabled: Option<bool>,
+    pub image_smoothing_quality: Option<crate::OpaqueHostValue>,
+    pub input: Option<TextInputState>,
+    pub instance_velocities: Option<Vec<f32>>,
+    pub interaction_signals: Option<InteractionSignals>,
+    pub interaction_state: Option<NodeInteractionState>,
+    pub is_local_bounds_rectangle_valid: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(BoundsNodeAny) -> bool + Send + 'static>>>,
+    >,
+    pub linear_sampler: Option<crate::OpaqueHostValue>,
+    pub local_bounds_id: Option<f64>,
+    pub local_bounds_rectangle: Option<Rectangle>,
+    pub local_bounds_texture: Option<Texture>,
+    pub local_bounds_texture_version: Option<f64>,
+    pub local_bounds_using_local_bounds_id: Option<f64>,
+    pub local_content_id: Option<f64>,
+    pub local_matrix: Option<Matrix>,
+    pub local_matrix4: Option<Matrix4>,
+    pub local_matrix4_detached: Option<bool>,
+    pub local_transform_id: Option<f64>,
+    pub local_transform_using_local_transform_id: Option<f64>,
+    pub mask_write_mode: Option<bool>,
+    pub material_bitmap_shader_map: Option<Vec<(Kind, GlBitmapShader)>>,
+    pub matrix_array: Option<Vec<f32>>,
+    pub max_anisotropy: Option<f64>,
+    pub measured_height: Option<f64>,
+    pub measured_width: Option<f64>,
+    pub media_stream: Option<crate::OpaqueHostValue>,
+    pub mipmapped_textures: Option<Vec<crate::OpaqueHostValue>>,
+    pub morph_bind_pose: Option<MeshMorphBindPose>,
+    pub morph_blended_weights: Option<Vec<f32>>,
+    pub movie_clip_signals: Option<MovieClipSignals>,
+    pub nearest_sampler: Option<crate::OpaqueHostValue>,
+    pub node_signals: Option<NodeSignals>,
+    pub pages: Option<Vec<BitmapTextPage>>,
+    pub parent_reference_id: Option<f64>,
+    pub particle_corner_buffer: Option<crate::OpaqueHostValue>,
+    pub particle_instance_capacity: Option<f64>,
+    pub particle_shader: Option<GlParticleShader>,
+    pub pipeline_cache: Option<Vec<(String, crate::OpaqueHostValue)>>,
+    pub quad_batch_corner_buffer: Option<crate::OpaqueHostValue>,
+    pub quad_batch_shader: Option<GlQuadBatchShader>,
+    pub quad_batch_writer_blend_mode: Option<BlendMode>,
+    pub quad_batch_writer_buffer_cursor: Option<f64>,
+    pub quad_batch_writer_buffer_pool: Option<Vec<WgpuQuadBatchWriterBufferSlot>>,
+    pub quad_batch_writer_color_matrix_data: Option<Vec<f32>>,
+    pub quad_batch_writer_color_scale_bias_buffer: Option<crate::OpaqueHostValue>,
+    pub quad_batch_writer_color_scale_bias_data: Option<Vec<f32>>,
+    pub quad_batch_writer_color_scale_bias_mode: Option<f64>,
+    pub quad_batch_writer_color_tint_data: Option<Vec<u32>>,
+    pub quad_batch_writer_count: Option<f64>,
+    pub quad_batch_writer_instance_buffer: Option<crate::OpaqueHostValue>,
+    pub quad_batch_writer_instance_data: Option<Vec<f32>>,
+    pub quad_batch_writer_material: Option<Material>,
+    pub quad_batch_writer_material_buffer: Option<crate::OpaqueHostValue>,
+    pub quad_batch_writer_material_data: Option<Vec<f32>>,
+    pub quad_batch_writer_material_floats: Option<f64>,
+    pub quad_batch_writer_sampler: Option<SamplerLike>,
+    pub quad_batch_writer_smoothing: Option<bool>,
+    pub quad_batch_writer_straight_alpha: Option<bool>,
+    pub quad_batch_writer_uniform_color_scale_bias: Option<
+        crate::FlightUnion2<ColorScaleBias, crate::FlightUnion2<TintMaterialData, Vec<f64>>>,
+    >,
+    pub quad_index_buffer: Option<crate::OpaqueHostValue>,
+    pub quad_vertex_buffer: Option<crate::OpaqueHostValue>,
+    pub quad_vertex_data: Option<Vec<f32>>,
+    pub render_adapt_hook: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<dyn FnMut(RenderState, Renderable, RenderProxy2D) -> () + Send + 'static>,
+            >,
+        >,
+    >,
+    pub render_effect_padding_resolver_registry: Option<Vec<(Kind, RenderEffectPaddingResolver)>>,
+    pub renderer_map: Option<Vec<(Kind, Renderer)>>,
+    pub renderer_map_id: Option<f64>,
+    pub render_pass: Option<crate::OpaqueHostValue>,
+    pub render_proxy_adapter_map: Option<Vec<(Renderable, RenderProxyAdapter)>>,
+    pub render_proxy_map: Option<Vec<(Renderable, RenderProxy)>>,
+    pub render_proxy_sources: Option<Vec<Renderable>>,
+    pub render_root_guard: Option<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(RenderState, Renderable) -> () + Send + 'static>>,
+        >,
+    >,
+    pub render_target_stack: Option<Vec<WgpuSavedPassState>>,
+    pub retired_buffers: Option<Vec<crate::OpaqueHostValue>>,
+    pub rich_text_content: Option<RichTextContent>,
+    pub rotation_angle: Option<f64>,
+    pub rotation_cosine: Option<f64>,
+    pub rotation_sine: Option<f64>,
+    pub sampler_cache: Option<Vec<(f64, crate::OpaqueHostValue)>>,
+    pub scene2d: Option<Scene2D>,
+    pub scene2d_signals: Option<Scene2DSignals>,
+    pub scene_mesh_upload_cache: Option<Vec<(crate::OpaqueHostValue, crate::OpaqueHostValue)>>,
+    pub selection_begin_index: Option<f64>,
+    pub selection_end_index: Option<f64>,
+    pub shader_loc: Option<GlShaderLocations>,
+    pub shape_mesh_color_matrix_shader: Option<GlShapeMeshColorScaleBiasShader>,
+    pub shape_mesh_color_scale_bias_shader: Option<GlShapeMeshColorScaleBiasShader>,
+    pub shape_mesh_pipelines: Option<Vec<(String, WgpuShapeMeshPipeline)>>,
+    pub shape_rasterizer: Option<ShapeRasterizer>,
+    pub skin_bind_pose: Option<MeshSkinBindPose>,
+    pub stroke_tessellator: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<dyn FnMut(Path, StrokeStyle, Option<f64>) -> Option<PathMesh> + Send + 'static>,
+            >,
+        >,
+    >,
+    pub tangent_smoothing_sources: Option<Vec<u32>>,
+    pub temp_stack: Option<Vec<Renderable>>,
+    pub text_field_signals: Option<TextFieldSignals>,
+    pub text_layout: Option<TextLayoutResult>,
+    pub text_layout_using_content_id: Option<f64>,
+    pub texture_bind_group_layout: Option<crate::OpaqueHostValue>,
+    pub uniform_bind_group: Option<crate::OpaqueHostValue>,
+    pub uniform_bind_group_layout: Option<crate::OpaqueHostValue>,
+    pub uniform_buffer: Option<crate::OpaqueHostValue>,
+    pub uniform_color_scale_bias_shader: Option<GlUniformColorScaleBiasShader>,
+    pub uniform_data: Option<Vec<f32>>,
+    pub uniform_data_u32: Option<Vec<u32>>,
+    pub uniform_offset: Option<f64>,
+    pub uniform_stride: Option<f64>,
+    pub video_element: Option<crate::OpaqueHostValue>,
+    pub webgl_data: Option<MeshGeometryGlData>,
+    pub webgl_shader_binding_resolver: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<dyn FnMut(RenderProxy2D) -> Option<GlBitmapShader> + Send + 'static>,
+            >,
+        >,
+    >,
+    pub webgpu_data: Option<MeshGeometryWgpuData>,
+    pub webgpu_shader_binding_resolver: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<dyn FnMut(RenderProxy2D) -> Option<WgpuBitmapShader> + Send + 'static>,
+            >,
+        >,
+    >,
+    pub wgpu_color_adjustment_material_feature: Option<WgpuColorAdjustmentMaterialFeature>,
+    pub wgpu_color_adjustment_material_feature_guard: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<
+                    dyn FnMut(
+                            WgpuRenderState,
+                            crate::FlightUnion2<
+                                ColorScaleBias,
+                                crate::FlightUnion2<TintMaterialData, Vec<f64>>,
+                            >,
+                        ) -> ()
+                        + Send
+                        + 'static,
+                >,
+            >,
+        >,
+    >,
+    pub wgpu_external_texture_cache: Option<Vec<(ExternalTexture, WgpuTextureEntry)>>,
+    pub wgpu_render_effect_registry: Option<Vec<(Kind, WgpuRenderEffectRunner)>>,
+    pub wgpu_render_texture_cache: Option<Vec<(RenderTexture, WgpuRenderTextureEntry)>>,
+    pub wgpu_render_texture_guard: Option<WgpuRenderTextureGuard>,
+    pub wgpu_texture_resolver_registry: Option<Vec<(TextureSourceKind, WgpuTextureResolver)>>,
+    pub world_alpha: Option<f64>,
+    pub world_alpha_using_appearance_id: Option<f64>,
+    pub world_alpha_using_parent_appearance_id: Option<f64>,
+    pub world_appearance_id: Option<f64>,
+    pub world_bounds_rectangle: Option<Rectangle>,
+    pub world_bounds_using_local_bounds_id: Option<f64>,
+    pub world_bounds_using_world_transform_id: Option<f64>,
+    pub world_matrix: Option<Matrix>,
+    pub world_matrix4: Option<Matrix4>,
+    pub world_transform_id: Option<f64>,
+    pub world_transform_using_local_transform_id: Option<f64>,
+    pub world_transform_using_parent_transform_id: Option<f64>,
+    pub color_adjustments: Option<Vec<Adjustment>>,
+    pub color_adjustments_unsupported: Option<bool>,
+    pub resolved_color_matrix: Option<Vec<f64>>,
+    pub resolved_color_scale_bias: Option<ColorScaleBias>,
     pub can_add_child: Option<
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
     >,
@@ -270,211 +645,12 @@ impl PartialEq for FlightPartialRecord2 {
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub anisotropy_ext: Option<crate::OpaqueHostValue>,
-    pub appearance_id: Option<f64>,
-    pub binding: Option<crate::OpaqueHostValue>,
-    pub bounds_rectangle: Option<Rectangle>,
-    pub bounds_using_local_bounds_id: Option<f64>,
-    pub bounds_using_local_transform_id: Option<f64>,
-    pub build_text_layout_params: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<dyn FnMut(TextLabel, TextMeasureFunction) -> TextLayoutParams + Send + 'static>,
-            >,
-        >,
-    >,
-    pub canvas_texture_view: Option<crate::OpaqueHostValue>,
-    pub canvas_view_cleared: Option<bool>,
-    pub clip_contour_pipelines: Option<Vec<(crate::OpaqueHostValue, WgpuClipContourPipelines)>>,
-    pub clip_contour_stack: Option<Vec<WgpuClipContourEntry>>,
-    pub clip_forms: Option<Vec<String>>,
-    pub color_adjustment_channel_mixing_guard: Option<
-        std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(RenderState, Renderable) -> () + Send + 'static>>,
-        >,
-    >,
-    pub color_adjustments: Option<Vec<Adjustment>>,
-    pub color_adjustments_channel_mixing: Option<bool>,
-    pub color_transform_instanced_shader: Option<GlColorTransformInstancedShader>,
-    pub command_encoder: Option<crate::OpaqueHostValue>,
-    pub compressed_texture_decoder: Option<GlCompressedTextureDecoder>,
-    pub compressed_texture_upload: Option<GlCompressedTextureUploader>,
-    pub compute_local_bounds_rectangle: Option<
-        std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
-        >,
-    >,
-    pub current_blend_mode: Option<BlendMode>,
-    pub current_color_format: Option<crate::OpaqueHostValue>,
-    pub current_framebuffer: Option<crate::OpaqueHostValue>,
-    pub current_frame_id: Option<f64>,
-    pub current_mask_depth: Option<f64>,
-    pub current_program: Option<crate::OpaqueHostValue>,
-    pub current_render_target: Option<GlRenderTarget>,
-    pub current_texture: Option<crate::OpaqueHostValue>,
-    pub depth_stencil_height: Option<f64>,
-    pub depth_stencil_texture: Option<crate::OpaqueHostValue>,
-    pub depth_stencil_view: Option<crate::OpaqueHostValue>,
-    pub depth_stencil_width: Option<f64>,
-    pub dom_clip_hooks: Option<DomClipHooks>,
-    pub dom_clip_stack: Option<Vec<DomClipEntry>>,
-    pub dom_current_element: Option<crate::OpaqueHostValue>,
-    pub dom_element_map: Option<Vec<(RenderProxy2D, crate::OpaqueHostValue)>>,
-    pub dom_next_order_list: Option<Vec<RenderProxy2D>>,
-    pub dom_order_length: Option<f64>,
-    pub dom_order_list: Option<Vec<RenderProxy2D>>,
-    pub element: Option<crate::OpaqueHostValue>,
-    pub frame_capture_buffer: Option<crate::OpaqueHostValue>,
-    pub frame_capture_bytes_per_row: Option<f64>,
-    pub frame_capture_enabled: Option<bool>,
-    pub frame_capture_height: Option<f64>,
-    pub frame_capture_texture: Option<crate::OpaqueHostValue>,
-    pub frame_capture_width: Option<f64>,
-    pub gl_blend_mode_registry: Option<Vec<(BlendMode, GlBlendRealization)>>,
-    pub gl_color_adjustment_fold: Option<GlColorAdjustmentFold>,
-    pub gl_color_adjustment_guard: Option<
-        std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(GlRenderState, ColorTransform) -> () + Send + 'static>>,
-        >,
-    >,
-    pub image_smoothing_enabled: Option<bool>,
-    pub image_smoothing_quality: Option<crate::OpaqueHostValue>,
-    pub input: Option<TextInputState>,
-    pub instance_velocities: Option<Vec<f32>>,
-    pub interaction_signals: Option<InteractionSignals>,
-    pub interaction_state: Option<NodeInteractionState>,
-    pub linear_sampler: Option<crate::OpaqueHostValue>,
-    pub local_bounds_id: Option<f64>,
-    pub local_bounds_rectangle: Option<Rectangle>,
-    pub local_bounds_using_local_bounds_id: Option<f64>,
-    pub local_content_id: Option<f64>,
-    pub local_matrix: Option<Matrix>,
-    pub local_matrix4: Option<Matrix4>,
-    pub local_matrix4_detached: Option<bool>,
-    pub local_transform_id: Option<f64>,
-    pub local_transform_using_local_transform_id: Option<f64>,
-    pub mask_write_mode: Option<bool>,
-    pub material_bitmap_shader_map: Option<Vec<(Kind, GlBitmapShader)>>,
-    pub matrix_array: Option<Vec<f32>>,
-    pub max_anisotropy: Option<f64>,
-    pub measured_height: Option<f64>,
-    pub measured_width: Option<f64>,
-    pub mipmap_bind_group_layout: Option<crate::OpaqueHostValue>,
-    pub mipmapped_textures: Option<Vec<crate::OpaqueHostValue>>,
-    pub mipmap_pipeline: Option<crate::OpaqueHostValue>,
-    pub morph_bind_pose: Option<MeshMorphBindPose>,
-    pub movie_clip_signals: Option<MovieClipSignals>,
-    pub nearest_sampler: Option<crate::OpaqueHostValue>,
-    pub node_signals: Option<NodeSignals>,
-    pub particle_corner_buffer: Option<crate::OpaqueHostValue>,
-    pub particle_instance_capacity: Option<f64>,
-    pub particle_shader: Option<GlParticleShader>,
-    pub pipeline_cache: Option<Vec<(String, crate::OpaqueHostValue)>>,
-    pub quad_batch_corner_buffer: Option<crate::OpaqueHostValue>,
-    pub quad_batches: Option<Vec<QuadBatch>>,
-    pub quad_batch_shader: Option<GlQuadBatchShader>,
-    pub quad_index_buffer: Option<crate::OpaqueHostValue>,
-    pub quad_vertex_buffer: Option<crate::OpaqueHostValue>,
-    pub quad_vertex_data: Option<Vec<f32>>,
-    pub render_adapt_hook: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<dyn FnMut(RenderState, Renderable, RenderProxy2D) -> () + Send + 'static>,
-            >,
-        >,
-    >,
-    pub renderer_map: Option<Vec<(Kind, Renderer)>>,
-    pub renderer_map_id: Option<f64>,
-    pub render_pass: Option<crate::OpaqueHostValue>,
-    pub render_proxy_adapter_map: Option<Vec<(Renderable, RenderProxyAdapter)>>,
-    pub render_proxy_map: Option<Vec<(Renderable, RenderProxy)>>,
-    pub render_target_stack: Option<Vec<WgpuSavedPassState>>,
-    pub resolved_color_transform: Option<ColorTransform>,
-    pub retired_buffers: Option<Vec<crate::OpaqueHostValue>>,
-    pub rich_text_content: Option<RichTextContent>,
-    pub rotation_angle: Option<f64>,
-    pub rotation_cosine: Option<f64>,
-    pub rotation_sine: Option<f64>,
-    pub sampler_cache: Option<Vec<(String, crate::OpaqueHostValue)>>,
-    pub scene_mesh_upload_cache: Option<Vec<(crate::OpaqueHostValue, crate::OpaqueHostValue)>>,
-    pub selection_begin_index: Option<f64>,
-    pub selection_end_index: Option<f64>,
-    pub shader_loc: Option<GlShaderLocations>,
-    pub shape_mesh_color_transform_shader: Option<GlShapeMeshColorTransformShader>,
-    pub shape_mesh_pipelines: Option<Vec<(crate::OpaqueHostValue, WgpuShapeMeshPipeline)>>,
-    pub skin_bind_pose: Option<MeshSkinBindPose>,
-    pub sprite_batch_blend_mode: Option<BlendMode>,
-    pub sprite_batch_buffer_cursor: Option<f64>,
-    pub sprite_batch_buffer_pool: Option<Vec<WgpuSpriteBatchBufferSlot>>,
-    pub sprite_batch_color_transform_buffer: Option<crate::OpaqueHostValue>,
-    pub sprite_batch_color_transform_data: Option<Vec<f32>>,
-    pub sprite_batch_color_transform_mode: Option<f64>,
-    pub sprite_batch_count: Option<f64>,
-    pub sprite_batch_instance_buffer: Option<crate::OpaqueHostValue>,
-    pub sprite_batch_instance_data: Option<Vec<f32>>,
-    pub sprite_batch_material: Option<Material>,
-    pub sprite_batch_material_buffer: Option<crate::OpaqueHostValue>,
-    pub sprite_batch_material_data: Option<Vec<f32>>,
-    pub sprite_batch_material_floats: Option<f64>,
-    pub sprite_batch_texture: Option<ImageResource>,
-    pub sprite_batch_uniform_color_transform: Option<ColorTransform>,
-    pub stage: Option<Stage>,
-    pub stage_signals: Option<StageSignals>,
-    pub temp_stack: Option<Vec<Renderable>>,
-    pub text_field_signals: Option<TextFieldSignals>,
-    pub text_layout: Option<TextLayoutResult>,
-    pub text_layout_using_content_id: Option<f64>,
-    pub texture_bind_group_layout: Option<crate::OpaqueHostValue>,
-    pub uniform_bind_group: Option<crate::OpaqueHostValue>,
-    pub uniform_bind_group_layout: Option<crate::OpaqueHostValue>,
-    pub uniform_buffer: Option<crate::OpaqueHostValue>,
-    pub uniform_color_transform_shader: Option<GlUniformColorTransformShader>,
-    pub uniform_data: Option<Vec<f32>>,
-    pub uniform_data_u32: Option<Vec<u32>>,
-    pub uniform_offset: Option<f64>,
-    pub uniform_stride: Option<f64>,
-    pub webgl_data: Option<MeshGeometryGlData>,
-    pub webgl_shader_binding_resolver: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<dyn FnMut(RenderProxy2D) -> Option<GlBitmapShader> + Send + 'static>,
-            >,
-        >,
-    >,
-    pub webgpu_data: Option<MeshGeometryWgpuData>,
-    pub webgpu_shader_binding_resolver: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<dyn FnMut(RenderProxy2D) -> Option<WgpuBitmapShader> + Send + 'static>,
-            >,
-        >,
-    >,
-    pub wgpu_color_adjustment_fold: Option<WgpuColorAdjustmentFold>,
-    pub wgpu_color_adjustment_guard: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<dyn FnMut(WgpuRenderState, ColorTransform) -> () + Send + 'static>,
-            >,
-        >,
-    >,
-    pub world_alpha: Option<f64>,
-    pub world_alpha_using_appearance_id: Option<f64>,
-    pub world_alpha_using_parent_appearance_id: Option<f64>,
-    pub world_appearance_id: Option<f64>,
-    pub world_bounds_rectangle: Option<Rectangle>,
-    pub world_bounds_using_local_bounds_id: Option<f64>,
-    pub world_bounds_using_world_transform_id: Option<f64>,
-    pub world_matrix: Option<Matrix>,
-    pub world_matrix4: Option<Matrix4>,
-    pub world_transform_id: Option<f64>,
-    pub world_transform_using_local_transform_id: Option<f64>,
-    pub world_transform_using_parent_transform_id: Option<f64>,
-    pub can_add_child: Option<
-        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
-    >,
-    pub children: Option<Vec<Node>>,
-    pub traits: Option<NodeTraitsKey>,
-    pub parent: Option<Node>,
+    pub anisotropy: Option<f64>,
+    pub mag_filter: Option<TextureFilter>,
+    pub min_filter: Option<TextureFilter>,
+    pub mipmaps: Option<bool>,
+    pub wrap_u: Option<TextureWrap>,
+    pub wrap_v: Option<TextureWrap>,
 }
 impl PartialEq for FlightPartialRecord3 {
     fn eq(&self, other: &Self) -> bool {
@@ -485,12 +661,8 @@ impl PartialEq for FlightPartialRecord3 {
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord4 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub atlas: Option<TextureAtlas>,
-    pub ids: Option<Vec<u16>>,
-    pub instance_count: Option<f64>,
-    pub material_data: Option<Vec<Option<MaterialData>>>,
-    pub transforms: Option<Vec<f32>>,
-    pub transform_type: Option<QuadTransformType>,
+    pub texture: Option<Texture2D>,
+    pub regions: Option<Vec<TextureAtlasRegion>>,
 }
 impl PartialEq for FlightPartialRecord4 {
     fn eq(&self, other: &Self) -> bool {
@@ -500,18 +672,6 @@ impl PartialEq for FlightPartialRecord4 {
 
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord5 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub image: Option<ImageResource>,
-    pub regions: Option<Vec<TextureAtlasRegion>>,
-}
-impl PartialEq for FlightPartialRecord5 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord6 {
     pub __flight_identity: std::sync::Arc<()>,
     pub height: Option<f64>,
     pub id: Option<f64>,
@@ -528,6 +688,18 @@ pub struct FlightPartialRecord6 {
     pub y: Option<f64>,
     pub width: Option<f64>,
 }
+impl PartialEq for FlightPartialRecord5 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord6 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub alpha: Option<f64>,
+    pub visible: Option<bool>,
+}
 impl PartialEq for FlightPartialRecord6 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
@@ -537,9 +709,7 @@ impl PartialEq for FlightPartialRecord6 {
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord7 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub kind: Option<AdjustmentKind>,
-    pub color_matrix: Option<Vec<f64>>,
-    pub color_transform: Option<ColorTransform>,
+    pub blend_mode: Option<BlendMode>,
 }
 impl PartialEq for FlightPartialRecord7 {
     fn eq(&self, other: &Self) -> bool {
@@ -550,35 +720,19 @@ impl PartialEq for FlightPartialRecord7 {
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord8 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub alpha: Option<f64>,
-    pub visible: Option<bool>,
-}
-impl PartialEq for FlightPartialRecord8 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord9 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub blend_mode: Option<BlendMode>,
-}
-impl PartialEq for FlightPartialRecord9 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord10 {
-    pub __flight_identity: std::sync::Arc<()>,
     pub anisotropy_ext: Option<crate::OpaqueHostValue>,
     pub appearance_id: Option<f64>,
-    pub binding: Option<crate::OpaqueHostValue>,
+    pub binding_cache_guard: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<dyn FnMut(GlRenderState, crate::OpaqueHostValue) -> () + Send + 'static>,
+            >,
+        >,
+    >,
     pub bounds_rectangle: Option<Rectangle>,
     pub bounds_using_local_bounds_id: Option<f64>,
     pub bounds_using_local_transform_id: Option<f64>,
+    pub bounds_version: Option<f64>,
     pub build_text_layout_params: Option<
         std::sync::Arc<
             std::sync::Mutex<
@@ -586,22 +740,36 @@ pub struct FlightPartialRecord10 {
             >,
         >,
     >,
+    pub canvas_blend_effect_backdrops: Option<Vec<(String, CanvasRenderTarget)>>,
+    pub canvas_render_effect_registry: Option<Vec<(String, CanvasRenderEffectRunner)>>,
+    pub canvas_shape_command_registry:
+        Option<Vec<(String, CanvasShapeCommand<crate::OpaqueHostValue>)>>,
+    pub canvas_texture_resolvers: Option<CanvasTextureResolvers>,
     pub canvas_texture_view: Option<crate::OpaqueHostValue>,
     pub canvas_view_cleared: Option<bool>,
+    pub children_id: Option<f64>,
     pub clip_contour_pipelines: Option<Vec<(crate::OpaqueHostValue, WgpuClipContourPipelines)>>,
     pub clip_contour_stack: Option<Vec<WgpuClipContourEntry>>,
     pub clip_forms: Option<Vec<String>>,
-    pub color_adjustment_channel_mixing_guard: Option<
+    pub color_adjustment_resolver: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<
+                    dyn FnMut(RenderState, RenderProxy, Option<RenderProxy>) -> () + Send + 'static,
+                >,
+            >,
+        >,
+    >,
+    pub color_adjustment_unsupported_guard: Option<
         std::sync::Arc<
             std::sync::Mutex<Box<dyn FnMut(RenderState, Renderable) -> () + Send + 'static>>,
         >,
     >,
-    pub color_adjustments: Option<Vec<Adjustment>>,
-    pub color_adjustments_channel_mixing: Option<bool>,
-    pub color_transform_instanced_shader: Option<GlColorTransformInstancedShader>,
+    pub color_matrix_instanced_shader: Option<GlColorScaleBiasInstancedShader>,
+    pub color_scale_bias_instanced_shader: Option<GlColorScaleBiasInstancedShader>,
+    pub color_tint_instanced_shader: Option<GlColorScaleBiasInstancedShader>,
     pub command_encoder: Option<crate::OpaqueHostValue>,
     pub compressed_texture_decoder: Option<GlCompressedTextureDecoder>,
-    pub compressed_texture_upload: Option<GlCompressedTextureUploader>,
     pub compute_local_bounds_rectangle: Option<
         std::sync::Arc<
             std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
@@ -613,8 +781,8 @@ pub struct FlightPartialRecord10 {
     pub current_frame_id: Option<f64>,
     pub current_mask_depth: Option<f64>,
     pub current_program: Option<crate::OpaqueHostValue>,
-    pub current_render_target: Option<GlRenderTarget>,
     pub current_texture: Option<crate::OpaqueHostValue>,
+    pub current_texture_straight_alpha: Option<bool>,
     pub depth_stencil_height: Option<f64>,
     pub depth_stencil_texture: Option<crate::OpaqueHostValue>,
     pub depth_stencil_view: Option<crate::OpaqueHostValue>,
@@ -626,7 +794,11 @@ pub struct FlightPartialRecord10 {
     pub dom_next_order_list: Option<Vec<RenderProxy2D>>,
     pub dom_order_length: Option<f64>,
     pub dom_order_list: Option<Vec<RenderProxy2D>>,
+    pub dom_texture_resolver_registry: Option<Vec<(TextureSourceKind, DomTextureResolver)>>,
     pub element: Option<crate::OpaqueHostValue>,
+    pub flush_pending_draws: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(GlRenderState) -> () + Send + 'static>>>,
+    >,
     pub frame_capture_buffer: Option<crate::OpaqueHostValue>,
     pub frame_capture_bytes_per_row: Option<f64>,
     pub frame_capture_enabled: Option<bool>,
@@ -634,21 +806,43 @@ pub struct FlightPartialRecord10 {
     pub frame_capture_texture: Option<crate::OpaqueHostValue>,
     pub frame_capture_width: Option<f64>,
     pub gl_blend_mode_registry: Option<Vec<(BlendMode, GlBlendRealization)>>,
-    pub gl_color_adjustment_fold: Option<GlColorAdjustmentFold>,
-    pub gl_color_adjustment_guard: Option<
+    pub gl_color_adjustment_material_feature: Option<GlColorAdjustmentMaterialFeature>,
+    pub gl_color_adjustment_material_feature_guard: Option<
         std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(GlRenderState, ColorTransform) -> () + Send + 'static>>,
+            std::sync::Mutex<
+                Box<
+                    dyn FnMut(
+                            GlRenderState,
+                            crate::FlightUnion2<
+                                ColorScaleBias,
+                                crate::FlightUnion2<TintMaterialData, Vec<f64>>,
+                            >,
+                        ) -> ()
+                        + Send
+                        + 'static,
+                >,
+            >,
         >,
     >,
+    pub gl_external_texture_cache: Option<Vec<(ExternalTexture, crate::OpaqueHostValue)>>,
+    pub gl_render_effect_registry: Option<Vec<(Kind, GlRenderEffectRunner)>>,
+    pub gl_render_texture_cache: Option<Vec<(RenderTexture, GlRenderTextureEntry)>>,
+    pub gl_render_texture_guard: Option<GlRenderTextureGuard>,
+    pub gl_texture_resolver_registry: Option<Vec<(TextureSourceKind, GlTextureResolver)>>,
     pub image_smoothing_enabled: Option<bool>,
     pub image_smoothing_quality: Option<crate::OpaqueHostValue>,
     pub input: Option<TextInputState>,
     pub instance_velocities: Option<Vec<f32>>,
     pub interaction_signals: Option<InteractionSignals>,
     pub interaction_state: Option<NodeInteractionState>,
+    pub is_local_bounds_rectangle_valid: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(BoundsNodeAny) -> bool + Send + 'static>>>,
+    >,
     pub linear_sampler: Option<crate::OpaqueHostValue>,
     pub local_bounds_id: Option<f64>,
     pub local_bounds_rectangle: Option<Rectangle>,
+    pub local_bounds_texture: Option<Texture>,
+    pub local_bounds_texture_version: Option<f64>,
     pub local_bounds_using_local_bounds_id: Option<f64>,
     pub local_content_id: Option<f64>,
     pub local_matrix: Option<Matrix>,
@@ -662,20 +856,42 @@ pub struct FlightPartialRecord10 {
     pub max_anisotropy: Option<f64>,
     pub measured_height: Option<f64>,
     pub measured_width: Option<f64>,
-    pub mipmap_bind_group_layout: Option<crate::OpaqueHostValue>,
+    pub media_stream: Option<crate::OpaqueHostValue>,
     pub mipmapped_textures: Option<Vec<crate::OpaqueHostValue>>,
-    pub mipmap_pipeline: Option<crate::OpaqueHostValue>,
     pub morph_bind_pose: Option<MeshMorphBindPose>,
+    pub morph_blended_weights: Option<Vec<f32>>,
     pub movie_clip_signals: Option<MovieClipSignals>,
     pub nearest_sampler: Option<crate::OpaqueHostValue>,
     pub node_signals: Option<NodeSignals>,
+    pub pages: Option<Vec<BitmapTextPage>>,
+    pub parent_reference_id: Option<f64>,
     pub particle_corner_buffer: Option<crate::OpaqueHostValue>,
     pub particle_instance_capacity: Option<f64>,
     pub particle_shader: Option<GlParticleShader>,
     pub pipeline_cache: Option<Vec<(String, crate::OpaqueHostValue)>>,
     pub quad_batch_corner_buffer: Option<crate::OpaqueHostValue>,
-    pub quad_batches: Option<Vec<QuadBatch>>,
     pub quad_batch_shader: Option<GlQuadBatchShader>,
+    pub quad_batch_writer_blend_mode: Option<BlendMode>,
+    pub quad_batch_writer_buffer_cursor: Option<f64>,
+    pub quad_batch_writer_buffer_pool: Option<Vec<WgpuQuadBatchWriterBufferSlot>>,
+    pub quad_batch_writer_color_matrix_data: Option<Vec<f32>>,
+    pub quad_batch_writer_color_scale_bias_buffer: Option<crate::OpaqueHostValue>,
+    pub quad_batch_writer_color_scale_bias_data: Option<Vec<f32>>,
+    pub quad_batch_writer_color_scale_bias_mode: Option<f64>,
+    pub quad_batch_writer_color_tint_data: Option<Vec<u32>>,
+    pub quad_batch_writer_count: Option<f64>,
+    pub quad_batch_writer_instance_buffer: Option<crate::OpaqueHostValue>,
+    pub quad_batch_writer_instance_data: Option<Vec<f32>>,
+    pub quad_batch_writer_material: Option<Material>,
+    pub quad_batch_writer_material_buffer: Option<crate::OpaqueHostValue>,
+    pub quad_batch_writer_material_data: Option<Vec<f32>>,
+    pub quad_batch_writer_material_floats: Option<f64>,
+    pub quad_batch_writer_sampler: Option<SamplerLike>,
+    pub quad_batch_writer_smoothing: Option<bool>,
+    pub quad_batch_writer_straight_alpha: Option<bool>,
+    pub quad_batch_writer_uniform_color_scale_bias: Option<
+        crate::FlightUnion2<ColorScaleBias, crate::FlightUnion2<TintMaterialData, Vec<f64>>>,
+    >,
     pub quad_index_buffer: Option<crate::OpaqueHostValue>,
     pub quad_vertex_buffer: Option<crate::OpaqueHostValue>,
     pub quad_vertex_data: Option<Vec<f32>>,
@@ -686,43 +902,44 @@ pub struct FlightPartialRecord10 {
             >,
         >,
     >,
+    pub render_effect_padding_resolver_registry: Option<Vec<(Kind, RenderEffectPaddingResolver)>>,
     pub renderer_map: Option<Vec<(Kind, Renderer)>>,
     pub renderer_map_id: Option<f64>,
     pub render_pass: Option<crate::OpaqueHostValue>,
     pub render_proxy_adapter_map: Option<Vec<(Renderable, RenderProxyAdapter)>>,
     pub render_proxy_map: Option<Vec<(Renderable, RenderProxy)>>,
+    pub render_proxy_sources: Option<Vec<Renderable>>,
+    pub render_root_guard: Option<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(RenderState, Renderable) -> () + Send + 'static>>,
+        >,
+    >,
     pub render_target_stack: Option<Vec<WgpuSavedPassState>>,
-    pub resolved_color_transform: Option<ColorTransform>,
     pub retired_buffers: Option<Vec<crate::OpaqueHostValue>>,
     pub rich_text_content: Option<RichTextContent>,
     pub rotation_angle: Option<f64>,
     pub rotation_cosine: Option<f64>,
     pub rotation_sine: Option<f64>,
-    pub sampler_cache: Option<Vec<(String, crate::OpaqueHostValue)>>,
+    pub sampler_cache: Option<Vec<(f64, crate::OpaqueHostValue)>>,
+    pub scene2d: Option<Scene2D>,
+    pub scene2d_signals: Option<Scene2DSignals>,
     pub scene_mesh_upload_cache: Option<Vec<(crate::OpaqueHostValue, crate::OpaqueHostValue)>>,
     pub selection_begin_index: Option<f64>,
     pub selection_end_index: Option<f64>,
     pub shader_loc: Option<GlShaderLocations>,
-    pub shape_mesh_color_transform_shader: Option<GlShapeMeshColorTransformShader>,
-    pub shape_mesh_pipelines: Option<Vec<(crate::OpaqueHostValue, WgpuShapeMeshPipeline)>>,
+    pub shape_mesh_color_matrix_shader: Option<GlShapeMeshColorScaleBiasShader>,
+    pub shape_mesh_color_scale_bias_shader: Option<GlShapeMeshColorScaleBiasShader>,
+    pub shape_mesh_pipelines: Option<Vec<(String, WgpuShapeMeshPipeline)>>,
+    pub shape_rasterizer: Option<ShapeRasterizer>,
     pub skin_bind_pose: Option<MeshSkinBindPose>,
-    pub sprite_batch_blend_mode: Option<BlendMode>,
-    pub sprite_batch_buffer_cursor: Option<f64>,
-    pub sprite_batch_buffer_pool: Option<Vec<WgpuSpriteBatchBufferSlot>>,
-    pub sprite_batch_color_transform_buffer: Option<crate::OpaqueHostValue>,
-    pub sprite_batch_color_transform_data: Option<Vec<f32>>,
-    pub sprite_batch_color_transform_mode: Option<f64>,
-    pub sprite_batch_count: Option<f64>,
-    pub sprite_batch_instance_buffer: Option<crate::OpaqueHostValue>,
-    pub sprite_batch_instance_data: Option<Vec<f32>>,
-    pub sprite_batch_material: Option<Material>,
-    pub sprite_batch_material_buffer: Option<crate::OpaqueHostValue>,
-    pub sprite_batch_material_data: Option<Vec<f32>>,
-    pub sprite_batch_material_floats: Option<f64>,
-    pub sprite_batch_texture: Option<ImageResource>,
-    pub sprite_batch_uniform_color_transform: Option<ColorTransform>,
-    pub stage: Option<Stage>,
-    pub stage_signals: Option<StageSignals>,
+    pub stroke_tessellator: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<dyn FnMut(Path, StrokeStyle, Option<f64>) -> Option<PathMesh> + Send + 'static>,
+            >,
+        >,
+    >,
+    pub tangent_smoothing_sources: Option<Vec<u32>>,
     pub temp_stack: Option<Vec<Renderable>>,
     pub text_field_signals: Option<TextFieldSignals>,
     pub text_layout: Option<TextLayoutResult>,
@@ -731,11 +948,12 @@ pub struct FlightPartialRecord10 {
     pub uniform_bind_group: Option<crate::OpaqueHostValue>,
     pub uniform_bind_group_layout: Option<crate::OpaqueHostValue>,
     pub uniform_buffer: Option<crate::OpaqueHostValue>,
-    pub uniform_color_transform_shader: Option<GlUniformColorTransformShader>,
+    pub uniform_color_scale_bias_shader: Option<GlUniformColorScaleBiasShader>,
     pub uniform_data: Option<Vec<f32>>,
     pub uniform_data_u32: Option<Vec<u32>>,
     pub uniform_offset: Option<f64>,
     pub uniform_stride: Option<f64>,
+    pub video_element: Option<crate::OpaqueHostValue>,
     pub webgl_data: Option<MeshGeometryGlData>,
     pub webgl_shader_binding_resolver: Option<
         std::sync::Arc<
@@ -752,14 +970,29 @@ pub struct FlightPartialRecord10 {
             >,
         >,
     >,
-    pub wgpu_color_adjustment_fold: Option<WgpuColorAdjustmentFold>,
-    pub wgpu_color_adjustment_guard: Option<
+    pub wgpu_color_adjustment_material_feature: Option<WgpuColorAdjustmentMaterialFeature>,
+    pub wgpu_color_adjustment_material_feature_guard: Option<
         std::sync::Arc<
             std::sync::Mutex<
-                Box<dyn FnMut(WgpuRenderState, ColorTransform) -> () + Send + 'static>,
+                Box<
+                    dyn FnMut(
+                            WgpuRenderState,
+                            crate::FlightUnion2<
+                                ColorScaleBias,
+                                crate::FlightUnion2<TintMaterialData, Vec<f64>>,
+                            >,
+                        ) -> ()
+                        + Send
+                        + 'static,
+                >,
             >,
         >,
     >,
+    pub wgpu_external_texture_cache: Option<Vec<(ExternalTexture, WgpuTextureEntry)>>,
+    pub wgpu_render_effect_registry: Option<Vec<(Kind, WgpuRenderEffectRunner)>>,
+    pub wgpu_render_texture_cache: Option<Vec<(RenderTexture, WgpuRenderTextureEntry)>>,
+    pub wgpu_render_texture_guard: Option<WgpuRenderTextureGuard>,
+    pub wgpu_texture_resolver_registry: Option<Vec<(TextureSourceKind, WgpuTextureResolver)>>,
     pub world_alpha: Option<f64>,
     pub world_alpha_using_appearance_id: Option<f64>,
     pub world_alpha_using_parent_appearance_id: Option<f64>,
@@ -773,6 +1006,27 @@ pub struct FlightPartialRecord10 {
     pub world_transform_using_local_transform_id: Option<f64>,
     pub world_transform_using_parent_transform_id: Option<f64>,
 }
+impl PartialEq for FlightPartialRecord8 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord9 {
+    pub __flight_identity: std::sync::Arc<()>,
+}
+impl PartialEq for FlightPartialRecord9 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord10 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub clip: Option<ClipRegion>,
+}
 impl PartialEq for FlightPartialRecord10 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
@@ -782,6 +1036,8 @@ impl PartialEq for FlightPartialRecord10 {
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord11 {
     pub __flight_identity: std::sync::Arc<()>,
+    pub material: Option<Material>,
+    pub material_data: Option<MaterialData>,
 }
 impl PartialEq for FlightPartialRecord11 {
     fn eq(&self, other: &Self) -> bool {
@@ -791,29 +1047,6 @@ impl PartialEq for FlightPartialRecord11 {
 
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord12 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub clip: Option<ClipRegion>,
-}
-impl PartialEq for FlightPartialRecord12 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord13 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub material: Option<Material>,
-    pub material_data: Option<MaterialData>,
-}
-impl PartialEq for FlightPartialRecord13 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord14 {
     pub __flight_identity: std::sync::Arc<()>,
     pub pivot_x: Option<f64>,
     pub pivot_y: Option<f64>,
@@ -825,49 +1058,55 @@ pub struct FlightPartialRecord14 {
     pub x: Option<f64>,
     pub y: Option<f64>,
 }
-impl PartialEq for FlightPartialRecord14 {
+impl PartialEq for FlightPartialRecord12 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:20 (sha256:6092d0ea3715e74338136af9aad3fb871bc32e15dea783aa072633373219d2fe)
-const BITMAP_TEXT_DEFAULT_COLOR: f64 = 4294967295.0_f64;
+// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:16 (sha256:98a66b7283f76f6b66ced65175063259191b7b200ae9c10b40e5376aaca08dc0)
+const BITMAP_TEXT_TRANSFORM_STRIDE: f64 = 2.0_f64;
 
-// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:21 (sha256:945bc25bcb4a4dbbb1555bb1828c3a1d08003f223c5b9e79cdc1cce606986637)
+// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:17 (sha256:945bc25bcb4a4dbbb1555bb1828c3a1d08003f223c5b9e79cdc1cce606986637)
 const CARRIAGE_RETURN: f64 = 13.0_f64;
 
-// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:22 (sha256:111c1172e5ab8d948ad84285fdac7880dc972715f0b0a9c7da683887c231e300)
+// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:18 (sha256:111c1172e5ab8d948ad84285fdac7880dc972715f0b0a9c7da683887c231e300)
 const SPACE: f64 = 32.0_f64;
 
-// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:34 (sha256:50064fa2c76e353881909c6c12cf4b2525bf2e44ac6204da17ec036199a6aa95)
+// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:30 (sha256:bd2b06d994ae60462395ac35249381574ea63f8d43f23f9016a5118daab81e6a)
 pub fn update_bitmap_text(bitmap_text: &BitmapText) -> () {
     let mut runtime = {
-        let __flight_source = &(get_display_object_runtime(bitmap_text));
+        let __flight_source = &(get_node2_d_runtime(bitmap_text));
         BitmapTextRuntime {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
             anisotropy_ext: (__flight_source.anisotropy_ext).clone(),
             appearance_id: __flight_source.appearance_id,
-            binding: (__flight_source.binding).clone(),
+            binding_cache_guard: (__flight_source.binding_cache_guard).clone(),
             bounds_rectangle: (__flight_source.bounds_rectangle).clone(),
             bounds_using_local_bounds_id: __flight_source.bounds_using_local_bounds_id,
             bounds_using_local_transform_id: __flight_source.bounds_using_local_transform_id,
+            bounds_version: __flight_source.bounds_version,
             build_text_layout_params: (__flight_source.build_text_layout_params).clone(),
+            canvas_blend_effect_backdrops: (__flight_source.canvas_blend_effect_backdrops).clone(),
+            canvas_render_effect_registry: (__flight_source.canvas_render_effect_registry).clone(),
+            canvas_shape_command_registry: (__flight_source.canvas_shape_command_registry).clone(),
+            canvas_texture_resolvers: (__flight_source.canvas_texture_resolvers).clone(),
             canvas_texture_view: (__flight_source.canvas_texture_view).clone(),
             canvas_view_cleared: __flight_source.canvas_view_cleared,
+            children_id: __flight_source.children_id,
             clip_contour_pipelines: (__flight_source.clip_contour_pipelines).clone(),
             clip_contour_stack: (__flight_source.clip_contour_stack).clone(),
             clip_forms: (__flight_source.clip_forms).clone(),
-            color_adjustment_channel_mixing_guard: (__flight_source
-                .color_adjustment_channel_mixing_guard)
+            color_adjustment_resolver: (__flight_source.color_adjustment_resolver).clone(),
+            color_adjustment_unsupported_guard: (__flight_source
+                .color_adjustment_unsupported_guard)
                 .clone(),
-            color_adjustments: (__flight_source.color_adjustments).clone(),
-            color_adjustments_channel_mixing: __flight_source.color_adjustments_channel_mixing,
-            color_transform_instanced_shader: (__flight_source.color_transform_instanced_shader)
+            color_matrix_instanced_shader: (__flight_source.color_matrix_instanced_shader).clone(),
+            color_scale_bias_instanced_shader: (__flight_source.color_scale_bias_instanced_shader)
                 .clone(),
+            color_tint_instanced_shader: (__flight_source.color_tint_instanced_shader).clone(),
             command_encoder: (__flight_source.command_encoder).clone(),
             compressed_texture_decoder: (__flight_source.compressed_texture_decoder).clone(),
-            compressed_texture_upload: (__flight_source.compressed_texture_upload).clone(),
             compute_local_bounds_rectangle: (__flight_source.compute_local_bounds_rectangle)
                 .clone(),
             current_blend_mode: (__flight_source.current_blend_mode).clone(),
@@ -876,8 +1115,8 @@ pub fn update_bitmap_text(bitmap_text: &BitmapText) -> () {
             current_frame_id: __flight_source.current_frame_id,
             current_mask_depth: __flight_source.current_mask_depth,
             current_program: (__flight_source.current_program).clone(),
-            current_render_target: (__flight_source.current_render_target).clone(),
             current_texture: (__flight_source.current_texture).clone(),
+            current_texture_straight_alpha: __flight_source.current_texture_straight_alpha,
             depth_stencil_height: __flight_source.depth_stencil_height,
             depth_stencil_texture: (__flight_source.depth_stencil_texture).clone(),
             depth_stencil_view: (__flight_source.depth_stencil_view).clone(),
@@ -889,7 +1128,9 @@ pub fn update_bitmap_text(bitmap_text: &BitmapText) -> () {
             dom_next_order_list: (__flight_source.dom_next_order_list).clone(),
             dom_order_length: __flight_source.dom_order_length,
             dom_order_list: (__flight_source.dom_order_list).clone(),
+            dom_texture_resolver_registry: (__flight_source.dom_texture_resolver_registry).clone(),
             element: (__flight_source.element).clone(),
+            flush_pending_draws: (__flight_source.flush_pending_draws).clone(),
             frame_capture_buffer: (__flight_source.frame_capture_buffer).clone(),
             frame_capture_bytes_per_row: __flight_source.frame_capture_bytes_per_row,
             frame_capture_enabled: __flight_source.frame_capture_enabled,
@@ -897,17 +1138,30 @@ pub fn update_bitmap_text(bitmap_text: &BitmapText) -> () {
             frame_capture_texture: (__flight_source.frame_capture_texture).clone(),
             frame_capture_width: __flight_source.frame_capture_width,
             gl_blend_mode_registry: (__flight_source.gl_blend_mode_registry).clone(),
-            gl_color_adjustment_fold: (__flight_source.gl_color_adjustment_fold).clone(),
-            gl_color_adjustment_guard: (__flight_source.gl_color_adjustment_guard).clone(),
+            gl_color_adjustment_material_feature: (__flight_source
+                .gl_color_adjustment_material_feature)
+                .clone(),
+            gl_color_adjustment_material_feature_guard: (__flight_source
+                .gl_color_adjustment_material_feature_guard)
+                .clone(),
+            gl_external_texture_cache: (__flight_source.gl_external_texture_cache).clone(),
+            gl_render_effect_registry: (__flight_source.gl_render_effect_registry).clone(),
+            gl_render_texture_cache: (__flight_source.gl_render_texture_cache).clone(),
+            gl_render_texture_guard: (__flight_source.gl_render_texture_guard).clone(),
+            gl_texture_resolver_registry: (__flight_source.gl_texture_resolver_registry).clone(),
             image_smoothing_enabled: __flight_source.image_smoothing_enabled,
             image_smoothing_quality: (__flight_source.image_smoothing_quality).clone(),
             input: (__flight_source.input).clone(),
             instance_velocities: (__flight_source.instance_velocities).clone(),
             interaction_signals: (__flight_source.interaction_signals).clone(),
             interaction_state: (__flight_source.interaction_state).clone(),
+            is_local_bounds_rectangle_valid: (__flight_source.is_local_bounds_rectangle_valid)
+                .clone(),
             linear_sampler: (__flight_source.linear_sampler).clone(),
             local_bounds_id: __flight_source.local_bounds_id,
             local_bounds_rectangle: (__flight_source.local_bounds_rectangle).clone(),
+            local_bounds_texture: (__flight_source.local_bounds_texture).clone(),
+            local_bounds_texture_version: __flight_source.local_bounds_texture_version,
             local_bounds_using_local_bounds_id: __flight_source.local_bounds_using_local_bounds_id,
             local_content_id: __flight_source.local_content_id,
             local_matrix: (__flight_source.local_matrix).clone(),
@@ -922,67 +1176,91 @@ pub fn update_bitmap_text(bitmap_text: &BitmapText) -> () {
             max_anisotropy: __flight_source.max_anisotropy,
             measured_height: __flight_source.measured_height,
             measured_width: __flight_source.measured_width,
-            mipmap_bind_group_layout: (__flight_source.mipmap_bind_group_layout).clone(),
+            media_stream: (__flight_source.media_stream).clone(),
             mipmapped_textures: (__flight_source.mipmapped_textures).clone(),
-            mipmap_pipeline: (__flight_source.mipmap_pipeline).clone(),
             morph_bind_pose: (__flight_source.morph_bind_pose).clone(),
+            morph_blended_weights: (__flight_source.morph_blended_weights).clone(),
             movie_clip_signals: (__flight_source.movie_clip_signals).clone(),
             nearest_sampler: (__flight_source.nearest_sampler).clone(),
             node_signals: (__flight_source.node_signals).clone(),
+            pages: (__flight_source.pages).clone(),
+            parent_reference_id: __flight_source.parent_reference_id,
             particle_corner_buffer: (__flight_source.particle_corner_buffer).clone(),
             particle_instance_capacity: __flight_source.particle_instance_capacity,
             particle_shader: (__flight_source.particle_shader).clone(),
             pipeline_cache: (__flight_source.pipeline_cache).clone(),
             quad_batch_corner_buffer: (__flight_source.quad_batch_corner_buffer).clone(),
-            quad_batches: (__flight_source.quad_batches).clone(),
             quad_batch_shader: (__flight_source.quad_batch_shader).clone(),
+            quad_batch_writer_blend_mode: (__flight_source.quad_batch_writer_blend_mode).clone(),
+            quad_batch_writer_buffer_cursor: __flight_source.quad_batch_writer_buffer_cursor,
+            quad_batch_writer_buffer_pool: (__flight_source.quad_batch_writer_buffer_pool).clone(),
+            quad_batch_writer_color_matrix_data: (__flight_source
+                .quad_batch_writer_color_matrix_data)
+                .clone(),
+            quad_batch_writer_color_scale_bias_buffer: (__flight_source
+                .quad_batch_writer_color_scale_bias_buffer)
+                .clone(),
+            quad_batch_writer_color_scale_bias_data: (__flight_source
+                .quad_batch_writer_color_scale_bias_data)
+                .clone(),
+            quad_batch_writer_color_scale_bias_mode: __flight_source
+                .quad_batch_writer_color_scale_bias_mode,
+            quad_batch_writer_color_tint_data: (__flight_source.quad_batch_writer_color_tint_data)
+                .clone(),
+            quad_batch_writer_count: __flight_source.quad_batch_writer_count,
+            quad_batch_writer_instance_buffer: (__flight_source.quad_batch_writer_instance_buffer)
+                .clone(),
+            quad_batch_writer_instance_data: (__flight_source.quad_batch_writer_instance_data)
+                .clone(),
+            quad_batch_writer_material: (__flight_source.quad_batch_writer_material).clone(),
+            quad_batch_writer_material_buffer: (__flight_source.quad_batch_writer_material_buffer)
+                .clone(),
+            quad_batch_writer_material_data: (__flight_source.quad_batch_writer_material_data)
+                .clone(),
+            quad_batch_writer_material_floats: __flight_source.quad_batch_writer_material_floats,
+            quad_batch_writer_sampler: (__flight_source.quad_batch_writer_sampler).clone(),
+            quad_batch_writer_smoothing: __flight_source.quad_batch_writer_smoothing,
+            quad_batch_writer_straight_alpha: __flight_source.quad_batch_writer_straight_alpha,
+            quad_batch_writer_uniform_color_scale_bias: (__flight_source
+                .quad_batch_writer_uniform_color_scale_bias)
+                .clone(),
             quad_index_buffer: (__flight_source.quad_index_buffer).clone(),
             quad_vertex_buffer: (__flight_source.quad_vertex_buffer).clone(),
             quad_vertex_data: (__flight_source.quad_vertex_data).clone(),
             render_adapt_hook: (__flight_source.render_adapt_hook).clone(),
+            render_effect_padding_resolver_registry: (__flight_source
+                .render_effect_padding_resolver_registry)
+                .clone(),
             renderer_map: (__flight_source.renderer_map).clone(),
             renderer_map_id: __flight_source.renderer_map_id,
             render_pass: (__flight_source.render_pass).clone(),
             render_proxy_adapter_map: (__flight_source.render_proxy_adapter_map).clone(),
             render_proxy_map: (__flight_source.render_proxy_map).clone(),
+            render_proxy_sources: (__flight_source.render_proxy_sources).clone(),
+            render_root_guard: (__flight_source.render_root_guard).clone(),
             render_target_stack: (__flight_source.render_target_stack).clone(),
-            resolved_color_transform: (__flight_source.resolved_color_transform).clone(),
             retired_buffers: (__flight_source.retired_buffers).clone(),
             rich_text_content: (__flight_source.rich_text_content).clone(),
             rotation_angle: __flight_source.rotation_angle,
             rotation_cosine: __flight_source.rotation_cosine,
             rotation_sine: __flight_source.rotation_sine,
             sampler_cache: (__flight_source.sampler_cache).clone(),
+            scene2d: (__flight_source.scene2d).clone(),
+            scene2d_signals: (__flight_source.scene2d_signals).clone(),
             scene_mesh_upload_cache: (__flight_source.scene_mesh_upload_cache).clone(),
             selection_begin_index: __flight_source.selection_begin_index,
             selection_end_index: __flight_source.selection_end_index,
             shader_loc: (__flight_source.shader_loc).clone(),
-            shape_mesh_color_transform_shader: (__flight_source.shape_mesh_color_transform_shader)
+            shape_mesh_color_matrix_shader: (__flight_source.shape_mesh_color_matrix_shader)
+                .clone(),
+            shape_mesh_color_scale_bias_shader: (__flight_source
+                .shape_mesh_color_scale_bias_shader)
                 .clone(),
             shape_mesh_pipelines: (__flight_source.shape_mesh_pipelines).clone(),
+            shape_rasterizer: (__flight_source.shape_rasterizer).clone(),
             skin_bind_pose: (__flight_source.skin_bind_pose).clone(),
-            sprite_batch_blend_mode: (__flight_source.sprite_batch_blend_mode).clone(),
-            sprite_batch_buffer_cursor: __flight_source.sprite_batch_buffer_cursor,
-            sprite_batch_buffer_pool: (__flight_source.sprite_batch_buffer_pool).clone(),
-            sprite_batch_color_transform_buffer: (__flight_source
-                .sprite_batch_color_transform_buffer)
-                .clone(),
-            sprite_batch_color_transform_data: (__flight_source.sprite_batch_color_transform_data)
-                .clone(),
-            sprite_batch_color_transform_mode: __flight_source.sprite_batch_color_transform_mode,
-            sprite_batch_count: __flight_source.sprite_batch_count,
-            sprite_batch_instance_buffer: (__flight_source.sprite_batch_instance_buffer).clone(),
-            sprite_batch_instance_data: (__flight_source.sprite_batch_instance_data).clone(),
-            sprite_batch_material: (__flight_source.sprite_batch_material).clone(),
-            sprite_batch_material_buffer: (__flight_source.sprite_batch_material_buffer).clone(),
-            sprite_batch_material_data: (__flight_source.sprite_batch_material_data).clone(),
-            sprite_batch_material_floats: __flight_source.sprite_batch_material_floats,
-            sprite_batch_texture: (__flight_source.sprite_batch_texture).clone(),
-            sprite_batch_uniform_color_transform: (__flight_source
-                .sprite_batch_uniform_color_transform)
-                .clone(),
-            stage: (__flight_source.stage).clone(),
-            stage_signals: (__flight_source.stage_signals).clone(),
+            stroke_tessellator: (__flight_source.stroke_tessellator).clone(),
+            tangent_smoothing_sources: (__flight_source.tangent_smoothing_sources).clone(),
             temp_stack: (__flight_source.temp_stack).clone(),
             text_field_signals: (__flight_source.text_field_signals).clone(),
             text_layout: (__flight_source.text_layout).clone(),
@@ -991,19 +1269,30 @@ pub fn update_bitmap_text(bitmap_text: &BitmapText) -> () {
             uniform_bind_group: (__flight_source.uniform_bind_group).clone(),
             uniform_bind_group_layout: (__flight_source.uniform_bind_group_layout).clone(),
             uniform_buffer: (__flight_source.uniform_buffer).clone(),
-            uniform_color_transform_shader: (__flight_source.uniform_color_transform_shader)
+            uniform_color_scale_bias_shader: (__flight_source.uniform_color_scale_bias_shader)
                 .clone(),
             uniform_data: (__flight_source.uniform_data).clone(),
             uniform_data_u32: (__flight_source.uniform_data_u32).clone(),
             uniform_offset: __flight_source.uniform_offset,
             uniform_stride: __flight_source.uniform_stride,
+            video_element: (__flight_source.video_element).clone(),
             webgl_data: (__flight_source.webgl_data).clone(),
             webgl_shader_binding_resolver: (__flight_source.webgl_shader_binding_resolver).clone(),
             webgpu_data: (__flight_source.webgpu_data).clone(),
             webgpu_shader_binding_resolver: (__flight_source.webgpu_shader_binding_resolver)
                 .clone(),
-            wgpu_color_adjustment_fold: (__flight_source.wgpu_color_adjustment_fold).clone(),
-            wgpu_color_adjustment_guard: (__flight_source.wgpu_color_adjustment_guard).clone(),
+            wgpu_color_adjustment_material_feature: (__flight_source
+                .wgpu_color_adjustment_material_feature)
+                .clone(),
+            wgpu_color_adjustment_material_feature_guard: (__flight_source
+                .wgpu_color_adjustment_material_feature_guard)
+                .clone(),
+            wgpu_external_texture_cache: (__flight_source.wgpu_external_texture_cache).clone(),
+            wgpu_render_effect_registry: (__flight_source.wgpu_render_effect_registry).clone(),
+            wgpu_render_texture_cache: (__flight_source.wgpu_render_texture_cache).clone(),
+            wgpu_render_texture_guard: (__flight_source.wgpu_render_texture_guard).clone(),
+            wgpu_texture_resolver_registry: (__flight_source.wgpu_texture_resolver_registry)
+                .clone(),
             world_alpha: __flight_source.world_alpha,
             world_alpha_using_appearance_id: __flight_source.world_alpha_using_appearance_id,
             world_alpha_using_parent_appearance_id: __flight_source
@@ -1020,6 +1309,10 @@ pub fn update_bitmap_text(bitmap_text: &BitmapText) -> () {
                 .world_transform_using_local_transform_id,
             world_transform_using_parent_transform_id: __flight_source
                 .world_transform_using_parent_transform_id,
+            color_adjustments: (__flight_source.color_adjustments).clone(),
+            color_adjustments_unsupported: __flight_source.color_adjustments_unsupported,
+            resolved_color_matrix: (__flight_source.resolved_color_matrix).clone(),
+            resolved_color_scale_bias: (__flight_source.resolved_color_scale_bias).clone(),
             can_add_child: (__flight_source.can_add_child).clone(),
             children: (__flight_source.children).clone(),
             traits: (__flight_source.traits).clone(),
@@ -1027,15 +1320,12 @@ pub fn update_bitmap_text(bitmap_text: &BitmapText) -> () {
         }
     };
     let mut bounds = ensure_bounds_rectangle((runtime).clone());
-    for quad_batch in ((runtime.inner.lock().unwrap().quad_batches).clone())
+    for page in ((runtime.inner.lock().unwrap().pages).clone())
         .iter()
         .cloned()
     {
-        clear_quad_batch(&mut quad_batch);
-        if ((quad_batch.data.atlas).clone()).is_some() {
-            quad_batch.data.atlas.as_mut().unwrap().regions.clear();
-        }
-        apply_bitmap_text_color(&quad_batch, bitmap_text.data.color);
+        page.instance_count = 0.0_f64;
+        page.atlas.regions.clear();
     }
     let glyph_source = (bitmap_text.data.glyph_source).clone();
     if ((glyph_source).is_none())
@@ -1054,7 +1344,7 @@ pub fn update_bitmap_text(bitmap_text: &BitmapText) -> () {
         (((metrics.ascent + metrics.descent) + metrics.line_gap) * bitmap_text.data.line_height);
     let lines = layout_bitmap_text_lines(glyph_source.as_ref().unwrap(), &bitmap_text.data);
     let ref_width = (bitmap_text.data.wrap_width).unwrap_or(max_line_width(&lines));
-    let mut pages: Vec<(f64, BitmapTextPageBatch)> = Vec::new();
+    let mut pages: Vec<(f64, BitmapTextPageContext)> = Vec::new();
     let mut min_x = f64::INFINITY;
     let mut min_y = f64::INFINITY;
     let mut max_x = (-f64::INFINITY);
@@ -1091,20 +1381,18 @@ pub fn update_bitmap_text(bitmap_text: &BitmapText) -> () {
                     }
                     let word = line.words[wi as usize].clone();
                     for glyph in ((word.glyphs).clone()).iter().cloned() {
-                        let mut page = ensure_bitmap_text_page_batch(
-                            bitmap_text,
+                        let mut context = ensure_bitmap_text_page(
                             (runtime).clone(),
                             glyph_source.as_ref().unwrap(),
-                            bitmap_text.data.color,
                             &mut pages,
                             glyph.entry.page,
                         );
-                        if (page).is_none() {
+                        if (context).is_none() {
                             continue;
                         }
                         let quad_x = ((pen_x + glyph.pen_within_word) + glyph.entry.bearing_x);
                         let quad_y = (baseline_y - glyph.entry.bearing_y);
-                        let mut region_id = page
+                        let mut region_id = context
                             .as_mut()
                             .unwrap()
                             .region_by_codepoint
@@ -1113,7 +1401,7 @@ pub fn update_bitmap_text(bitmap_text: &BitmapText) -> () {
                             .map(|(_, value)| value.clone());
                         if (region_id).is_none() {
                             add_texture_atlas_region(
-                                &mut page.as_mut().unwrap().atlas,
+                                &mut context.as_mut().unwrap().page.atlas,
                                 glyph.entry.x,
                                 glyph.entry.y,
                                 glyph.entry.width,
@@ -1123,12 +1411,13 @@ pub fn update_bitmap_text(bitmap_text: &BitmapText) -> () {
                                 None,
                             );
                             region_id = Some(
-                                ((page.as_mut().unwrap().atlas.regions.len() as f64) - 1.0_f64),
+                                ((context.as_mut().unwrap().page.atlas.regions.len() as f64)
+                                    - 1.0_f64),
                             );
                             {
                                 let __flight_key = glyph.codepoint;
                                 let __flight_value = (region_id).clone().unwrap();
-                                if let Some((_, value)) = page
+                                if let Some((_, value)) = context
                                     .as_mut()
                                     .unwrap()
                                     .region_by_codepoint
@@ -1137,15 +1426,16 @@ pub fn update_bitmap_text(bitmap_text: &BitmapText) -> () {
                                 {
                                     *value = __flight_value;
                                 } else {
-                                    page.as_mut()
+                                    context
+                                        .as_mut()
                                         .unwrap()
                                         .region_by_codepoint
                                         .push((__flight_key, __flight_value));
                                 }
                             };
                         }
-                        append_quad_batch_instance(
-                            &mut page.as_mut().unwrap().quad_batch,
+                        append_bitmap_text_page_quad(
+                            &mut context.as_mut().unwrap().page,
                             (region_id).clone().unwrap(),
                             quad_x,
                             quad_y,
@@ -1187,47 +1477,27 @@ pub fn update_bitmap_text(bitmap_text: &BitmapText) -> () {
     invalidate_node_local_bounds(bitmap_text);
 }
 
-// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:116 (sha256:3ae1df5b1514f0d988011929cfbab2cccae11bc3e085653db3e58a62480dc212)
-fn apply_bitmap_text_color(quad_batch: &QuadBatch, color: f64) -> () {
-    if (color == BITMAP_TEXT_DEFAULT_COLOR) {
-        set_display_object_color_adjustments(quad_batch, None);
-        return;
-    }
-    let color_transform = create_color_transform(Some(FlightPartialRecord1 {
-        __flight_identity: std::sync::Arc::new(()),
-        red_multiplier: Some(
-            ((__flight_js_to_i32(
-                (__flight_js_to_u32(color) >> (__flight_js_to_u32(24.0_f64) & 31)) as f64,
-            ) & __flight_js_to_i32(255.0_f64)) as f64
-                / 255.0_f64),
-        ),
-        green_multiplier: Some(
-            ((__flight_js_to_i32(
-                (__flight_js_to_u32(color) >> (__flight_js_to_u32(16.0_f64) & 31)) as f64,
-            ) & __flight_js_to_i32(255.0_f64)) as f64
-                / 255.0_f64),
-        ),
-        blue_multiplier: Some(
-            ((__flight_js_to_i32(
-                (__flight_js_to_u32(color) >> (__flight_js_to_u32(8.0_f64) & 31)) as f64,
-            ) & __flight_js_to_i32(255.0_f64)) as f64
-                / 255.0_f64),
-        ),
-        alpha_multiplier: Some(
-            ((__flight_js_to_i32(color) & __flight_js_to_i32(255.0_f64)) as f64 / 255.0_f64),
-        ),
-        alpha_offset: None,
-        blue_offset: None,
-        green_offset: None,
-        red_offset: None,
-    }));
-    set_display_object_color_adjustments(
-        quad_batch,
-        Some((vec![create_color_transform_adjustment(&color_transform)]).clone()),
+// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:109 (sha256:15f88c93898029f3a56cee487e3f6b88d051520e28a4562a19dd8b555ab20548)
+fn append_bitmap_text_page_quad(page: &mut BitmapTextPage, id: f64, x: f64, y: f64) -> () {
+    let index = page.instance_count;
+    let capacity = (page.ids.len() as f64).min(
+        (__flight_js_to_i32(((page.transforms.len() as f64) / BITMAP_TEXT_TRANSFORM_STRIDE))
+            | __flight_js_to_i32(0.0_f64)) as f64,
     );
+    if (index >= capacity) {
+        let next = ((index + 1.0_f64).max((capacity * 2.0_f64))).max(8.0_f64);
+        page.ids = reserve_uint16_array(&page.ids, next);
+        page.transforms =
+            reserve_float32_array(&page.transforms, (next * BITMAP_TEXT_TRANSFORM_STRIDE));
+    }
+    page.ids[index as usize] = (id) as u16;
+    let o = (index * BITMAP_TEXT_TRANSFORM_STRIDE);
+    page.transforms[o as usize] = (x) as f32;
+    page.transforms[(o + 1.0_f64) as usize] = (y) as f32;
+    page.instance_count = (index + 1.0_f64);
 }
 
-// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:133 (sha256:4f3667584f9d957b98c2e77b16859c5a22f92185621203b3ac759aa1ee2e5efb)
+// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:127 (sha256:4f3667584f9d957b98c2e77b16859c5a22f92185621203b3ac759aa1ee2e5efb)
 fn build_bitmap_text_words(
     glyph_source: &GlyphSource,
     paragraph: String,
@@ -1335,15 +1605,25 @@ fn build_bitmap_text_words(
     return (*tokens.lock().unwrap()).clone();
 }
 
-// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:177 (sha256:6204caf477405079ed4f0f65be3ee86fe97d7be8e1103f06325b4fe3027cd8b5)
-fn ensure_bitmap_text_page_batch(
-    bitmap_text: &BitmapText,
+// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:169 (sha256:d1b21906289569a7ceb39d700792ecaefefd445962ffe405a8146983f6e4dcde)
+#[derive(Clone, Default)]
+struct EnsureBitmapTextPageSynthesizedRecord1990218478 {
+    __flight_identity: std::sync::Arc<()>,
+    dimension: String,
+    source: TextureSource,
+}
+impl PartialEq for EnsureBitmapTextPageSynthesizedRecord1990218478 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+fn ensure_bitmap_text_page(
     mut runtime: BitmapTextRuntime,
     glyph_source: &GlyphSource,
-    color: f64,
-    pages: &mut Vec<(f64, BitmapTextPageBatch)>,
+    pages: &mut Vec<(f64, BitmapTextPageContext)>,
     page: f64,
-) -> Option<BitmapTextPageBatch> {
+) -> Option<BitmapTextPageContext> {
     let cached = pages
         .iter()
         .find(|(key, _)| key == &page)
@@ -1359,46 +1639,48 @@ fn ensure_bitmap_text_page_batch(
     if (image).is_none() {
         return None;
     }
-    while ((runtime.inner.lock().unwrap().quad_batches.len() as f64) <= page) {
-        let created = create_quad_batch(Some(QuadBatch {
+    while ((runtime.inner.lock().unwrap().pages.len() as f64) <= page) {
+        runtime.inner.lock().unwrap().pages.push(BitmapTextPage {
             __flight_identity: std::sync::Arc::new(()),
-            __flight_entity_runtime: Default::default(),
-            data: QuadBatchData {
-                __flight_identity: std::sync::Arc::new(()),
-                atlas: Some(create_texture_atlas(None)),
-            },
-        }));
-        apply_bitmap_text_color(&created, color);
-        runtime
-            .inner
-            .lock()
-            .unwrap()
-            .quad_batches
-            .push(((created).clone()).clone());
-        add_node_child(bitmap_text, &created);
+            atlas: create_texture_atlas(None),
+            ids: vec![0_u16; (0.0_f64) as usize],
+            instance_count: 0.0_f64,
+            transforms: vec![0.0_f32; (0.0_f64) as usize],
+        });
     }
-    let mut quad_batch = runtime.inner.lock().unwrap().quad_batches[page as usize].clone();
-    let mut atlas = (quad_batch.data.atlas).clone();
-    atlas.as_mut().unwrap().image = Some((image.as_ref().unwrap()).clone());
-    let mut page_batch: BitmapTextPageBatch = BitmapTextPageBatch {
+    let mut page_data = runtime.inner.lock().unwrap().pages[page as usize].clone();
+    if ((page_data.atlas.texture).clone()).is_none() {
+        page_data.atlas.texture = Some(create_texture(Some(
+            EnsureBitmapTextPageSynthesizedRecord1990218478 {
+                __flight_identity: std::sync::Arc::new(()),
+                dimension: "2d".to_owned(),
+                source: (image.as_ref().unwrap()).clone(),
+            },
+        )));
+    } else {
+        set_texture_source(
+            ((page_data.atlas.texture).clone()).unwrap(),
+            Some(((image.as_ref().unwrap()).clone()).clone()),
+        );
+    }
+    let mut context: BitmapTextPageContext = BitmapTextPageContext {
         __flight_identity: std::sync::Arc::new(()),
-        atlas: (atlas).clone().unwrap(),
-        quad_batch: (quad_batch).clone(),
+        page: (page_data).clone(),
         region_by_codepoint: Vec::new(),
     };
     {
         let __flight_key = page;
-        let __flight_value = (page_batch).clone();
+        let __flight_value = (context).clone();
         if let Some((_, value)) = pages.iter_mut().find(|(key, _)| key == &__flight_key) {
             *value = __flight_value;
         } else {
             pages.push((__flight_key, __flight_value));
         }
     };
-    return Some((page_batch).clone());
+    return Some((context).clone());
 }
 
-// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:205 (sha256:3a3b63bd630db2bd5b2173e069198940411e4fa8618ab60eed8210d1ef0855cb)
+// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:200 (sha256:3a3b63bd630db2bd5b2173e069198940411e4fa8618ab60eed8210d1ef0855cb)
 fn ensure_bounds_rectangle(mut runtime: BitmapTextRuntime) -> Rectangle {
     if ((runtime.inner.lock().unwrap().local_bounds_rectangle).clone()).is_none() {
         {
@@ -1411,7 +1693,7 @@ fn ensure_bounds_rectangle(mut runtime: BitmapTextRuntime) -> Rectangle {
     return ((runtime.inner.lock().unwrap().local_bounds_rectangle).clone()).unwrap();
 }
 
-// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:213 (sha256:37a28d4828e8076d45bbf780947328d6faebfad02cf933c4140e5b2eed58534d)
+// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:208 (sha256:37a28d4828e8076d45bbf780947328d6faebfad02cf933c4140e5b2eed58534d)
 fn layout_bitmap_text_lines(
     glyph_source: &GlyphSource,
     data: &BitmapTextData,
@@ -1469,7 +1751,7 @@ fn layout_bitmap_text_lines(
     return lines;
 }
 
-// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:242 (sha256:d2a73c20d95a1a1512ff1f0278c6bd97e0108f4d220b7013c3ed2c4ffbff3066)
+// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:237 (sha256:d2a73c20d95a1a1512ff1f0278c6bd97e0108f4d220b7013c3ed2c4ffbff3066)
 fn max_line_width(lines: &Vec<BitmapTextLine>) -> f64 {
     let mut max = 0.0_f64;
     for line in (lines).iter().cloned() {
@@ -1480,7 +1762,7 @@ fn max_line_width(lines: &Vec<BitmapTextLine>) -> f64 {
     return max;
 }
 
-// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:248 (sha256:a394c69d44085bed7f8938b68dae56d8b1073fef074f7cca0b7872f173cda766)
+// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:243 (sha256:a394c69d44085bed7f8938b68dae56d8b1073fef074f7cca0b7872f173cda766)
 fn set_empty_rectangle(out: &mut Rectangle) -> () {
     out.x = 0.0_f64;
     out.y = 0.0_f64;
@@ -1488,7 +1770,7 @@ fn set_empty_rectangle(out: &mut Rectangle) -> () {
     out.height = 0.0_f64;
 }
 
-// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:257 (sha256:addde9091e717fe715e2337f95e4c64b535673b79412c3fccda76136eb05f90a)
+// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:252 (sha256:addde9091e717fe715e2337f95e4c64b535673b79412c3fccda76136eb05f90a)
 #[derive(Clone, Default)]
 struct BitmapTextGlyph {
     #[doc(hidden)]
@@ -1503,22 +1785,21 @@ impl PartialEq for BitmapTextGlyph {
     }
 }
 
-// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:265 (sha256:f6f1145192267bf5628b287995e2a28d9e834b5c7c96a7c9d16b90e38ccf38eb)
+// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:260 (sha256:aa105752080eae23030ab6b7e7cb099c5772109d43c47f1c571e606979dbaa1e)
 #[derive(Clone, Default)]
-struct BitmapTextPageBatch {
+struct BitmapTextPageContext {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub atlas: TextureAtlas,
-    pub quad_batch: QuadBatch,
+    pub page: BitmapTextPage,
     pub region_by_codepoint: Vec<(f64, f64)>,
 }
-impl PartialEq for BitmapTextPageBatch {
+impl PartialEq for BitmapTextPageContext {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:273 (sha256:e16d053098a238a17b8aff009c25ee0710c6f3819a3a825092cf06b4ed9783c0)
+// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:267 (sha256:e16d053098a238a17b8aff009c25ee0710c6f3819a3a825092cf06b4ed9783c0)
 #[derive(Clone, Default)]
 struct BitmapTextLine {
     #[doc(hidden)]
@@ -1534,7 +1815,7 @@ impl PartialEq for BitmapTextLine {
     }
 }
 
-// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:281 (sha256:2dafecf5ba6b88df3930aa9c085040985a8191db73398e385aacc144cc6698c4)
+// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:275 (sha256:2dafecf5ba6b88df3930aa9c085040985a8191db73398e385aacc144cc6698c4)
 #[derive(Clone, Default)]
 struct BitmapTextToken {
     #[doc(hidden)]
@@ -1548,7 +1829,7 @@ impl PartialEq for BitmapTextToken {
     }
 }
 
-// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:287 (sha256:3401bd7270b995d95bd0883e9b0104675fac441bbb5d1b368e2ff25dc110b1b9)
+// Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:281 (sha256:3401bd7270b995d95bd0883e9b0104675fac441bbb5d1b368e2ff25dc110b1b9)
 #[derive(Clone, Default)]
 struct BitmapTextWord {
     #[doc(hidden)]

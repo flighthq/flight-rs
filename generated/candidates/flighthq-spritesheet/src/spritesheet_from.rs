@@ -9,19 +9,22 @@
 use crate::{
     SpritesheetData, create_spritesheet, create_spritesheet_animation, create_spritesheet_frame,
 };
-use flighthq_textureatlas::{create_texture_atlas, create_texture_atlas_region};
+use flighthq_textureatlas::create_texture_atlas_from_grid;
 use flighthq_types::{
-    GridSliceOptions, ImageResource, Spritesheet, SpritesheetAnimation,
-    SpritesheetAnimationDirection, SpritesheetData, SpritesheetFrame, SpritesheetFrameData,
-    TextureAtlas, TextureAtlasRegion, Tileset,
+    GridSliceOptions, Spritesheet, SpritesheetAnimation, SpritesheetAnimationDirection,
+    SpritesheetData, SpritesheetFrame, SpritesheetFrameData, Texture2D, TextureAtlas,
+    TextureAtlasRegion, TextureFilter, TextureWrap,
 };
 
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub atlas: Option<TextureAtlas>,
-    pub animations: Option<Vec<(String, SpritesheetAnimation)>>,
-    pub frames: Option<Vec<SpritesheetFrame>>,
+    pub anisotropy: Option<f64>,
+    pub mag_filter: Option<TextureFilter>,
+    pub min_filter: Option<TextureFilter>,
+    pub mipmaps: Option<bool>,
+    pub wrap_u: Option<TextureWrap>,
+    pub wrap_v: Option<TextureWrap>,
 }
 impl PartialEq for FlightPartialRecord1 {
     fn eq(&self, other: &Self) -> bool {
@@ -32,13 +35,9 @@ impl PartialEq for FlightPartialRecord1 {
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub frames: Option<Vec<f64>>,
-    pub frame_duration: Option<f64>,
-    pub frame_durations: Option<Vec<f64>>,
-    pub direction: Option<SpritesheetAnimationDirection>,
-    pub loop_: Option<bool>,
-    pub origin_x: Option<f64>,
-    pub origin_y: Option<f64>,
+    pub atlas: Option<TextureAtlas>,
+    pub animations: Option<Vec<(String, SpritesheetAnimation)>>,
+    pub frames: Option<Vec<SpritesheetFrame>>,
 }
 impl PartialEq for FlightPartialRecord2 {
     fn eq(&self, other: &Self) -> bool {
@@ -49,12 +48,13 @@ impl PartialEq for FlightPartialRecord2 {
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub id: Option<f64>,
-    pub offset_x: Option<f64>,
-    pub offset_y: Option<f64>,
-    pub pivot_x: Option<f64>,
-    pub pivot_y: Option<f64>,
-    pub rotated: Option<bool>,
+    pub frames: Option<Vec<f64>>,
+    pub frame_duration: Option<f64>,
+    pub frame_durations: Option<Vec<f64>>,
+    pub direction: Option<SpritesheetAnimationDirection>,
+    pub repeat_count: Option<f64>,
+    pub origin_x: Option<f64>,
+    pub origin_y: Option<f64>,
 }
 impl PartialEq for FlightPartialRecord3 {
     fn eq(&self, other: &Self) -> bool {
@@ -65,8 +65,12 @@ impl PartialEq for FlightPartialRecord3 {
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord4 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub image: Option<ImageResource>,
-    pub regions: Option<Vec<TextureAtlasRegion>>,
+    pub id: Option<f64>,
+    pub offset_x: Option<f64>,
+    pub offset_y: Option<f64>,
+    pub pivot_x: Option<f64>,
+    pub pivot_y: Option<f64>,
+    pub rotated: Option<bool>,
 }
 impl PartialEq for FlightPartialRecord4 {
     fn eq(&self, other: &Self) -> bool {
@@ -76,6 +80,18 @@ impl PartialEq for FlightPartialRecord4 {
 
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord5 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub texture: Option<Texture2D>,
+    pub regions: Option<Vec<TextureAtlasRegion>>,
+}
+impl PartialEq for FlightPartialRecord5 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord6 {
     pub __flight_identity: std::sync::Arc<()>,
     pub height: Option<f64>,
     pub id: Option<f64>,
@@ -92,18 +108,18 @@ pub struct FlightPartialRecord5 {
     pub y: Option<f64>,
     pub width: Option<f64>,
 }
-impl PartialEq for FlightPartialRecord5 {
+impl PartialEq for FlightPartialRecord6 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetFrom.ts:13 (sha256:33ef5d8ef476265f6ac3a7ddd8dca509de6033265694e4ca7d508c9745be29cc)
+// Source: upstream/packages/spritesheet/src/spritesheetFrom.ts:13 (sha256:9cc3160e9580a744dda95e4989ab4e490e45fb2d04436697e0d86da273625547)
 #[derive(Clone, Default)]
-struct CreateSpritesheetFromDataRecord6 {
+struct CreateSpritesheetFromDataRecord7 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateSpritesheetFromDataRecord6 {
+impl PartialEq for CreateSpritesheetFromDataRecord7 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -142,7 +158,7 @@ pub fn create_spritesheet_from_data(data: &SpritesheetData, atlas: &TextureAtlas
                 } else {
                     index
                 };
-                return create_spritesheet_frame(Some(FlightPartialRecord3 {
+                return create_spritesheet_frame(Some(FlightPartialRecord4 {
                     __flight_identity: std::sync::Arc::new(()),
                     id: Some(region_id),
                     offset_x: Some(fd.offset_x),
@@ -208,18 +224,18 @@ pub fn create_spritesheet_from_data(data: &SpritesheetData, atlas: &TextureAtlas
             .find(|(key, _)| key == &(ad.name).clone())
             .map(|(_, value)| value)
             .expect("TypeScript Record key was absent") =
-            create_spritesheet_animation(Some(FlightPartialRecord2 {
+            create_spritesheet_animation(Some(FlightPartialRecord3 {
                 __flight_identity: std::sync::Arc::new(()),
                 direction: Some((ad.direction).clone()),
                 frame_duration: Some(ad.frame_duration),
                 frame_durations: (ad.frame_durations).clone(),
                 frames: Some(resolved_frames),
-                loop_: Some(ad.loop_),
                 origin_x: Some(ad.origin_x),
                 origin_y: Some(ad.origin_y),
+                repeat_count: Some(ad.repeat_count),
             }));
     }
-    return create_spritesheet(Some(FlightPartialRecord1 {
+    return create_spritesheet(Some(FlightPartialRecord2 {
         __flight_identity: std::sync::Arc::new(()),
         animations: Some((animations).clone()),
         atlas: Some((*atlas).clone()),
@@ -227,94 +243,14 @@ pub fn create_spritesheet_from_data(data: &SpritesheetData, atlas: &TextureAtlas
     }));
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetFrom.ts:65 (sha256:63f470e577dd9d26a96610dd29e78f9e9fb428cdfe347acf07b86fbff6a1c55a)
+// Source: upstream/packages/spritesheet/src/spritesheetFrom.ts:65 (sha256:d5f6eebcd2ad9fafa9272512bc91515debe4c3c1016754261127971d71811789)
 pub fn create_spritesheet_from_grid(options: &GridSliceOptions) -> Spritesheet {
-    let columns = options.columns;
-    let rows = options.rows;
-    let image_width = options.image_width;
-    let image_height = options.image_height;
-    let margin_x = (options.margin_x).unwrap_or(0.0_f64);
-    let margin_y = (options.margin_y).unwrap_or(0.0_f64);
-    let spacing_x = (options.spacing_x).unwrap_or(0.0_f64);
-    let spacing_y = (options.spacing_y).unwrap_or(0.0_f64);
-    let name_prefix = ((options.name_prefix).clone()).unwrap_or("frame_".to_owned());
-    let frame_width = (options.frame_width).unwrap_or(
-        (((image_width - (2.0_f64 * margin_x)) - (spacing_x * (columns - 1.0_f64))) / columns)
-            .floor(),
-    );
-    let frame_height = (options.frame_height).unwrap_or(
-        (((image_height - (2.0_f64 * margin_y)) - (spacing_y * (rows - 1.0_f64))) / rows).floor(),
-    );
-    let mut atlas = create_texture_atlas(None);
-    let mut frames = vec![];
-    let mut id = 0.0_f64;
-    {
-        let mut row = 0.0_f64;
-        while (row < rows) {
-            {
-                let mut col = 0.0_f64;
-                while (col < columns) {
-                    let x = (margin_x + (col * (frame_width + spacing_x)));
-                    let y = (margin_y + (row * (frame_height + spacing_y)));
-                    let mut region = create_texture_atlas_region(Some(FlightPartialRecord5 {
-                        __flight_identity: std::sync::Arc::new(()),
-                        height: Some(frame_height),
-                        id: Some(id),
-                        name: Some(format!("{}{}", name_prefix, id)),
-                        width: Some(frame_width),
-                        x: Some(x),
-                        y: Some(y),
-                        original_height: None,
-                        original_width: None,
-                        pivot_x: None,
-                        pivot_y: None,
-                        rotated: None,
-                        source_x: None,
-                        source_y: None,
-                        trimmed: None,
-                    }));
-                    atlas.regions.push(((region).clone()).clone());
-                    (frames.push)(create_spritesheet_frame(Some(FlightPartialRecord3 {
-                        __flight_identity: std::sync::Arc::new(()),
-                        id: Some(region.id),
-                        offset_x: None,
-                        offset_y: None,
-                        pivot_x: None,
-                        pivot_y: None,
-                        rotated: None,
-                    })));
-                    {
-                        region.id += 1.0;
-                        region.id
-                    };
-                    {
-                        col += 1.0;
-                        col
-                    };
-                }
-            }
-            {
-                row += 1.0;
-                row
-            };
-        }
-    }
-    return create_spritesheet(Some(FlightPartialRecord1 {
-        __flight_identity: std::sync::Arc::new(()),
-        atlas: Some((atlas).clone()),
-        frames: Some(frames),
-        animations: None,
-    }));
-}
-
-// Source: upstream/packages/spritesheet/src/spritesheetFrom.ts:102 (sha256:ac4f880dbddc40075f81e54111ba93b4a3947acb3b611a763b63dfc5bc6e2d6c)
-pub fn create_spritesheet_from_tileset(tileset: &Tileset) -> Spritesheet {
-    let atlas = (tileset.atlas).clone();
-    let frames = ((atlas.as_ref().map(|value| (value.regions).clone())).unwrap_or(vec![]))
+    let atlas = create_texture_atlas_from_grid(options, None);
+    let frames = ((atlas.regions).clone())
         .iter()
         .cloned()
         .map(|region: TextureAtlasRegion| -> crate::OpaqueHostValue {
-            create_spritesheet_frame(Some(FlightPartialRecord3 {
+            create_spritesheet_frame(Some(FlightPartialRecord4 {
                 __flight_identity: std::sync::Arc::new(()),
                 id: Some(region.id),
                 offset_x: None,
@@ -325,9 +261,9 @@ pub fn create_spritesheet_from_tileset(tileset: &Tileset) -> Spritesheet {
             }))
         })
         .collect();
-    return create_spritesheet(Some(FlightPartialRecord1 {
+    return create_spritesheet(Some(FlightPartialRecord2 {
         __flight_identity: std::sync::Arc::new(()),
-        atlas: (atlas).clone(),
+        atlas: Some((atlas).clone()),
         frames: Some(frames),
         animations: None,
     }));

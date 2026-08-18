@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{TextFormatAlign, TextFormatListMarker};
+use crate::{FontVariation, TextFormatAlign, TextFormatListMarker};
 
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
@@ -31,6 +31,7 @@ pub struct FlightPartialRecord1 {
     pub target: Option<String>,
     pub underline: Option<bool>,
     pub url: Option<String>,
+    pub variations: Option<Vec<FontVariation>>,
 }
 impl PartialEq for FlightPartialRecord1 {
     fn eq(&self, other: &Self) -> bool {

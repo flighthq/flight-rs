@@ -16,7 +16,7 @@ pub struct FlightPartialRecord1 {
     pub frame_duration: Option<f64>,
     pub frame_durations: Option<Vec<f64>>,
     pub direction: Option<SpritesheetAnimationDirection>,
-    pub loop_: Option<bool>,
+    pub repeat_count: Option<f64>,
     pub origin_x: Option<f64>,
     pub origin_y: Option<f64>,
 }
@@ -26,7 +26,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetAnimation.ts:4 (sha256:1282c8270af722534f5e7642ca2602d0539978fae0a9955e54f2ac9df674771f)
+// Source: upstream/packages/spritesheet/src/spritesheetAnimation.ts:4 (sha256:bc6618f2aaa7f6142dbbb81b978e2ef28b69d40895f56a74c1a4e57ded0228aa)
 pub fn create_spritesheet_animation(obj: Option<FlightPartialRecord1>) -> SpritesheetAnimation {
     return create_entity(Some(SpritesheetAnimation {
         __flight_identity: std::sync::Arc::new(()),
@@ -38,13 +38,13 @@ pub fn create_spritesheet_animation(obj: Option<FlightPartialRecord1>) -> Sprite
             .as_ref()
             .and_then(|value| (value.frame_durations).clone()),
         frames: (obj.as_ref().and_then(|value| (value.frames).clone())).unwrap_or(vec![]),
-        loop_: (obj.as_ref().and_then(|value| value.loop_)).unwrap_or(false),
         origin_x: (obj.as_ref().and_then(|value| value.origin_x)).unwrap_or(0.0_f64),
         origin_y: (obj.as_ref().and_then(|value| value.origin_y)).unwrap_or(0.0_f64),
+        repeat_count: (obj.as_ref().and_then(|value| value.repeat_count)).unwrap_or(0.0_f64),
     }));
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetAnimation.ts:20 (sha256:5b433336305c7011219ee9d6f25cc2c8d0dd98a56240dfbb02bd90e7c86bac8e)
+// Source: upstream/packages/spritesheet/src/spritesheetAnimation.ts:20 (sha256:f52f8c90eaf0d3e13c56099cfddd6f4e96866d7fe66df201c3d80d724e6064ba)
 pub fn create_spritesheet_animation_from_frame_names(
     spritesheet: &Spritesheet,
     pattern: &crate::FlightUnion2<String, crate::OpaqueHostValue>,
@@ -117,8 +117,8 @@ pub fn create_spritesheet_animation_from_frame_names(
             .as_ref()
             .and_then(|value| (value.frame_durations).clone()),
         frames: Some((matched_indices).clone()),
-        loop_: Some((options.as_ref().and_then(|value| value.loop_)).unwrap()),
         origin_x: Some((options.as_ref().and_then(|value| value.origin_x)).unwrap()),
         origin_y: Some((options.as_ref().and_then(|value| value.origin_y)).unwrap()),
+        repeat_count: Some((options.as_ref().and_then(|value| value.repeat_count)).unwrap()),
     })));
 }

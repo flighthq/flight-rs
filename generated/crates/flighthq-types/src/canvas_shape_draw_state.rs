@@ -6,13 +6,15 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::Matrix;
+use crate::{CanvasTextureResolvers, Matrix};
 
-// Source: upstream/packages/types/src/CanvasShapeDrawState.ts:3 (sha256:111455f0a80c8e3621d07bd7a906d671391ba9906e08fd916931c47d961c4cfb)
+// Source: upstream/packages/types/src/CanvasShapeDrawState.ts:4 (sha256:02c299290855d11a256afa1f89ac05ea04f2bd5c9cfbd95f9b8f313c8291d5dc)
 #[derive(Clone)]
 pub struct CanvasShapeDrawState {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    pub canvas_texture_resolvers: CanvasTextureResolvers,
+    pub allow_smoothing: bool,
     pub has_fill: bool,
     pub fill_style: crate::FlightUnion2<String, crate::OpaqueHostValue>,
     pub fill_matrix: Option<Matrix>,

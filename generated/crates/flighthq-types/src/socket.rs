@@ -138,7 +138,7 @@ impl PartialEq for SocketBackend {
     }
 }
 
-// Source: upstream/packages/types/src/Socket.ts:81 (sha256:7940256a4633f11cb9216d01300491a24e5452eef9bbc604fa695e6ecda42659)
+// Source: upstream/packages/types/src/Socket.ts:81 (sha256:84a5032e10a50972215d64097cb31bfcac6f4cb43baf03f7b651b7d72bc25864)
 #[derive(Clone, Default)]
 pub struct SocketRuntime {
     #[doc(hidden)]
@@ -147,6 +147,7 @@ pub struct SocketRuntime {
     pub signals: Option<SocketSignals>,
     pub ready_state: SocketReadyState,
     pub delivering: bool,
+    pub disposed: bool,
 }
 impl PartialEq for SocketRuntime {
     fn eq(&self, other: &Self) -> bool {
@@ -154,7 +155,7 @@ impl PartialEq for SocketRuntime {
     }
 }
 
-// Source: upstream/packages/types/src/Socket.ts:92 (sha256:b86755aef7f21cdbdf6fe0f9b1b5da2c48bbf6395e26a4466d9c7d69a153cfe6)
+// Source: upstream/packages/types/src/Socket.ts:95 (sha256:b86755aef7f21cdbdf6fe0f9b1b5da2c48bbf6395e26a4466d9c7d69a153cfe6)
 #[derive(Clone, Default)]
 pub struct Socket {
     #[doc(hidden)]
@@ -167,3 +168,37 @@ impl PartialEq for Socket {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+
+// Source: upstream/packages/types/src/Socket.ts:102 (sha256:11e33cada7d583fc63ef297f7db07195cb25b862cb7fe9efbda30809d56b0a81)
+#[derive(Clone)]
+pub struct SocketSendFailureExplanation {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub reason: String,
+    pub ready_state: crate::FlightUnion2<String, SocketReadyState>,
+    pub url: String,
+}
+impl PartialEq for SocketSendFailureExplanation {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/Socket.ts:113 (sha256:7d108c6da679b8725737f2dab8b4818ecaef2f4732a0c6db679e705a4837af25)
+#[derive(Clone, Default)]
+pub struct SocketGuardNotice {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub operation: String,
+    pub reason: String,
+    pub socket: Socket,
+}
+impl PartialEq for SocketGuardNotice {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/Socket.ts:125 (sha256:1131d4997c3a34632582600f4dc965166d26c04891b31cabdb6a4acea2c6b2d4)
+pub type SocketGuard =
+    std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(SocketGuardNotice) -> () + Send + 'static>>>;

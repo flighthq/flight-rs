@@ -8,7 +8,7 @@
 
 use crate::{EntityRuntime, Kind, NodeData, Quaternion, Vector3};
 
-// Source: upstream/packages/types/src/Group.ts:2 (sha256:915353b7c975ff8acc0de8188a6114cc3ba2c609c1f3f3f57944ca7a52dc0d30)
+// Source: upstream/packages/types/src/Group.ts:2 (sha256:36634dedc9bfe0fb5a50b9b59e0968a3a9ba3e5d973878b9aed0f41975152da8)
 #[derive(Clone, Default)]
 pub struct Group {
     #[doc(hidden)]
@@ -46,7 +46,7 @@ impl crate::FlightEntity for Group {
     }
 }
 
-// Source: upstream/packages/types/src/Group.ts:3 (sha256:338f4e0bc89b950accbef3a311594b904db99e7adeecbc682d95fc6af3ba88bb)
+// Source: upstream/packages/types/src/Group.ts:3 (sha256:97c2dc2e993b3e72b9ed59e96413cb2d738fdfacf9e9b5bf1ec458bab9fd667d)
 pub type GroupRuntime = crate::EntityRuntime;
 
 // Source: upstream/packages/types/src/Group.ts:4 (sha256:abeb23f5f4400780b2f81bdafad57f005072187637585f9ac6aa050ffd49b285)

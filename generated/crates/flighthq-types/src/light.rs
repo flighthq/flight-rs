@@ -6,8 +6,8 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{CubeTexture, Vector3};
 use crate::{EntityRuntime, Kind};
+use crate::{Texture, Vector3};
 
 // Source: upstream/packages/types/src/Light.ts:19 (sha256:11378cc025586905b984f2649a5cbdfc57d770ba6450991d9acb4714ea46dae7)
 #[derive(Clone, Default)]
@@ -30,7 +30,7 @@ pub struct Light {
     pub shadow_bias: f64,
     pub ground_color: f64,
     pub sky_color: f64,
-    pub environment: Option<CubeTexture>,
+    pub environment: Option<Texture>,
     pub right: Vector3,
     pub up: Vector3,
 }

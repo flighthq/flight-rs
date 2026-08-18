@@ -33,3 +33,26 @@ impl PartialEq for PermissionBackend {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+
+// Source: upstream/packages/types/src/Permission.ts:44 (sha256:7b0c7da21bcd342f14b2a0b827a5d2bfef3e6f22a25fad7b74af4cf5727e8632)
+pub type PermissionStateSource = String;
+
+// Source: upstream/packages/types/src/Permission.ts:46 (sha256:c2f95926f1ef42fb294a8577fe81ddf113198ab431294bdcd801d01b6caeb36b)
+#[derive(Clone, Default)]
+pub struct PermissionStateExplanation {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub name: PermissionName,
+    pub source: PermissionStateSource,
+    pub state: PermissionState,
+}
+impl PartialEq for PermissionStateExplanation {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/Permission.ts:54 (sha256:f13b4db38a8191513b1d06c3710936f07864b7830f28cd96b3623f9c6d355332)
+pub type PermissionRequestFallbackGuard = std::sync::Arc<
+    std::sync::Mutex<Box<dyn FnMut(PermissionName, PermissionState) -> () + Send + 'static>>,
+>;

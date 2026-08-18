@@ -6,18 +6,19 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{BlendMode, ClipRegion, EntityRuntime, GlyphSource, Kind, Material, MaterialData};
+use crate::{
+    BlendMode, ClipRegion, EntityRuntime, GlyphSource, Kind, Material, MaterialData, TextureAtlas,
+};
 
 // Source: upstream/packages/types/src/BitmapText.ts:9 (sha256:fb814b59647f58d51fc3eb28845ee76447c5c5b70f0cd7733f4325a6e519913f)
 pub type BitmapTextAlign = String;
 
-// Source: upstream/packages/types/src/BitmapText.ts:20 (sha256:1ce347f6ccf8f3976756b26f27a7aaf632a2a078faea3f71b7a73b0305ab6ccc)
+// Source: upstream/packages/types/src/BitmapText.ts:17 (sha256:63846610c575904018effbac806a0440c7a5eeadaee51b0834ffb45fbf7fd44b)
 #[derive(Clone, Default)]
 pub struct BitmapTextData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub align: BitmapTextAlign,
-    pub color: f64,
     pub glyph_source: Option<GlyphSource>,
     pub letter_spacing: f64,
     pub line_height: f64,
@@ -30,10 +31,26 @@ impl PartialEq for BitmapTextData {
     }
 }
 
-// Source: upstream/packages/types/src/BitmapText.ts:40 (sha256:750a82db9e8a5c3f07be88e895ce992c3c0093c2036fda39680353adfa4613f9)
+// Source: upstream/packages/types/src/BitmapText.ts:38 (sha256:d2115dbabb239acfc6288812800f14051a58f3141d2cff821ddea724af316ba8)
+#[derive(Clone, Default)]
+pub struct BitmapTextPage {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub atlas: TextureAtlas,
+    pub ids: Vec<u16>,
+    pub instance_count: f64,
+    pub transforms: Vec<f32>,
+}
+impl PartialEq for BitmapTextPage {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/BitmapText.ts:45 (sha256:d4322da6611176c711c3b0f309d5c790a93ca34a66a751617060eefc278bf549)
 pub type BitmapTextRuntime = crate::EntityRuntime;
 
-// Source: upstream/packages/types/src/BitmapText.ts:52 (sha256:58a2b715038e0386ac8f038f18f536356df7c840c61bd24fd4846f1d8cc04048)
+// Source: upstream/packages/types/src/BitmapText.ts:56 (sha256:9d0dd7c810abb4bb0279f61cd201ee7648448b026b33fd765828f8e9f89f242a)
 #[derive(Clone, Default)]
 pub struct BitmapText {
     #[doc(hidden)]
@@ -81,13 +98,12 @@ impl crate::FlightEntity for BitmapText {
     }
 }
 
-// Source: upstream/packages/types/src/BitmapText.ts:58 (sha256:30b3f8bb3e2d7fc885abd15048874ed6359a1c0c62dca87dbb12219b721bfea0)
+// Source: upstream/packages/types/src/BitmapText.ts:62 (sha256:d498abd168e1c80122abf6d9878ed5239800c1e17f258e062d23c201a293f3d8)
 #[derive(Clone, Default)]
 pub struct BitmapTextOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub align: Option<BitmapTextAlign>,
-    pub color: Option<f64>,
     pub letter_spacing: Option<f64>,
     pub line_height: Option<f64>,
     pub text: Option<String>,
@@ -99,5 +115,5 @@ impl PartialEq for BitmapTextOptions {
     }
 }
 
-// Source: upstream/packages/types/src/BitmapText.ts:67 (sha256:0407460c41722f239ace0d39d723460b0ccd154dcc53002ed4852bda8f9a8fcb)
+// Source: upstream/packages/types/src/BitmapText.ts:70 (sha256:0407460c41722f239ace0d39d723460b0ccd154dcc53002ed4852bda8f9a8fcb)
 pub const BITMAP_TEXT_KIND: &'static str = "BitmapText";

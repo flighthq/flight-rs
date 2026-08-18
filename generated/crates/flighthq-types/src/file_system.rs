@@ -240,7 +240,7 @@ pub struct FileSystemBackend {
     >,
     pub get_file_system_usage: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut() -> crate::FlightTask<Option<crate::OpaqueHostValue>> + Send + 'static>,
+            Box<dyn FnMut() -> crate::FlightTask<Option<FileSystemUsage>> + Send + 'static>,
         >,
     >,
     pub watch: std::sync::Arc<
@@ -249,9 +249,7 @@ pub struct FileSystemBackend {
                 dyn FnMut(
                         String,
                         std::sync::Arc<
-                            std::sync::Mutex<
-                                Box<dyn FnMut(crate::OpaqueHostValue) -> () + Send + 'static>,
-                            >,
+                            std::sync::Mutex<Box<dyn FnMut(FileWatchEvent) -> () + Send + 'static>>,
                         >,
                     ) -> std::sync::Arc<
                         std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>,
@@ -261,7 +259,7 @@ pub struct FileSystemBackend {
         >,
     >,
     pub get_path: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(crate::OpaqueHostValue) -> String + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut(FileSystemPathKind) -> String + Send + 'static>>,
     >,
 }
 impl PartialEq for FileSystemBackend {

@@ -6,9 +6,9 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::SceneGraphSyncPolicy;
+use crate::Scene3DGraphSyncPolicy;
 
-// Source: upstream/packages/types/src/DomRenderOptions.ts:2 (sha256:1701b24fbfde13aa4e2817401a96890ba1a6f52001f929abc32a1eaf8259cd47)
+// Source: upstream/packages/types/src/DomRenderOptions.ts:2 (sha256:dfec8f6f7ff8de47ae36a1d477b28bd8b3cf0638de999846b8917b9807b23276)
 #[derive(Clone, Default)]
 pub struct DomRenderOptions {
     #[doc(hidden)]
@@ -17,7 +17,7 @@ pub struct DomRenderOptions {
     pub image_smoothing_enabled: Option<bool>,
     pub pixel_ratio: Option<f64>,
     pub round_pixels: Option<bool>,
-    pub scene_graph_sync_policy: Option<SceneGraphSyncPolicy>,
+    pub scene_graph_sync_policy: Option<Scene3DGraphSyncPolicy>,
 }
 impl PartialEq for DomRenderOptions {
     fn eq(&self, other: &Self) -> bool {

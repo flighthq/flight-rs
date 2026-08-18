@@ -6,12 +6,12 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{BlendMode, DisplayObjectClipHooks, EntityRuntime, Matrix};
+use crate::{BlendMode, EntityRuntime, Matrix, RenderRegistrySignals, Scene2DClipHooks};
 
-// Source: upstream/packages/types/src/RenderState.ts:18 (sha256:40b439a7e330c14642efe20a24021547cc65e5abe1162e5479dc8ed5b45a1752)
-pub type SceneGraphSyncPolicy = String;
+// Source: upstream/packages/types/src/RenderState.ts:24 (sha256:774d9b5364bf64a92a4ee998bc4ef3d6effcacc87376b78caf211241fa145de9)
+pub type Scene3DGraphSyncPolicy = String;
 
-// Source: upstream/packages/types/src/RenderState.ts:20 (sha256:824f9ece3ebf65a6e609c2e05d8f066e4c5cec4b5983b2d84169f77ea69680fd)
+// Source: upstream/packages/types/src/RenderState.ts:26 (sha256:2f1b22ab88295c563dd5bc4c915601d3bfb0ceb7a0cf9390902bf8134147b6a3)
 #[derive(Clone, Default)]
 pub struct RenderState {
     #[doc(hidden)]
@@ -23,12 +23,12 @@ pub struct RenderState {
     pub background_color_rgba: Vec<f64>,
     pub background_color_string: String,
     pub current_clip_depth: f64,
-    pub display_object_clip_hooks: Option<DisplayObjectClipHooks>,
+    pub display_object_clip_hooks: Option<Scene2DClipHooks>,
     pub pixel_ratio: f64,
     pub render_alpha: f64,
     pub render_blend_mode: Option<BlendMode>,
     pub render_transform2_d: Option<Matrix>,
-    pub scene_graph_sync_policy: SceneGraphSyncPolicy,
+    pub scene_graph_sync_policy: Scene3DGraphSyncPolicy,
     pub round_pixels: bool,
 }
 impl PartialEq for RenderState {
@@ -52,5 +52,28 @@ impl crate::FlightEntity for RenderState {
     }
 }
 
-// Source: upstream/packages/types/src/RenderState.ts:42 (sha256:12eafb27ebd3efdcc20e516b8a329a06026b353134ab8badbafeedc31aba8220)
+// Source: upstream/packages/types/src/RenderState.ts:48 (sha256:b27249a8cd675e578a7deb9802c0ebbf90928b97b9000fc7b47a1165ad38f419)
+#[derive(Clone)]
+pub struct RenderStateRuntimeRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub clear: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
+    pub signals: RenderRegistrySignals,
+}
+impl PartialEq for RenderStateRuntimeRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[doc(hidden)]
+pub struct RenderStateRuntimeStorage {
+    pub registry_miss: Option<RenderStateRuntimeRecord1>,
+}
+impl Default for RenderStateRuntimeStorage {
+    fn default() -> Self {
+        Self {
+            registry_miss: Default::default(),
+        }
+    }
+}
 pub type RenderStateRuntime = crate::EntityRuntime;

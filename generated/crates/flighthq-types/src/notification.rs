@@ -152,11 +152,11 @@ pub struct NotificationBackend {
     >,
     pub request_permission: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut() -> crate::FlightTask<crate::OpaqueHostValue> + Send + 'static>,
+            Box<dyn FnMut() -> crate::FlightTask<NotificationPermission> + Send + 'static>,
         >,
     >,
     pub get_permission: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut() -> crate::OpaqueHostValue + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut() -> NotificationPermission + Send + 'static>>,
     >,
     pub is_supported: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> bool + Send + 'static>>>,
     pub get_capabilities: std::sync::Arc<

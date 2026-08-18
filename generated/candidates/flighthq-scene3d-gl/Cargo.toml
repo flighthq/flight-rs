@@ -1,0 +1,27 @@
+# @generated candidate crate; do not edit.
+[package]
+name = "flighthq-scene3d-gl"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+flighthq-camera = { path = "../flighthq-camera" }
+flighthq-color = { path = "../flighthq-color" }
+flighthq-geometry = { path = "../flighthq-geometry" }
+flighthq-lighting = { path = "../flighthq-lighting" }
+flighthq-log = { path = "../flighthq-log" }
+flighthq-mesh = { path = "../flighthq-mesh" }
+flighthq-node = { path = "../flighthq-node" }
+flighthq-render = { path = "../flighthq-render" }
+flighthq-render-gl = { path = "../flighthq-render-gl" }
+flighthq-runtime = { path = "../../crates/flighthq-runtime" }
+flighthq-scene3d = { path = "../flighthq-scene3d" }
+flighthq-shading = { path = "../flighthq-shading" }
+flighthq-texture = { path = "../flighthq-texture" }
+flighthq-types = { path = "../../crates/flighthq-types" }
+regex = "1"

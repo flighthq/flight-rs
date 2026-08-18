@@ -6,14 +6,14 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::ShortcutModifier;
+use crate::{ShortcutKeyName, ShortcutModifier};
 
-// Source: upstream/packages/types/src/ParsedAccelerator.ts:5 (sha256:e5a370a23deaa2973797ecbab7dda4326fc52ebf08a72fc55747a4ce9957c748)
-#[derive(Clone, Default)]
+// Source: upstream/packages/types/src/ParsedAccelerator.ts:13 (sha256:9922be3517531ac1f62eed3d778ca5c3e6e7c096c9ff910ca3ca3257fc02d223)
+#[derive(Clone)]
 pub struct ParsedAccelerator {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub key: String,
+    pub key: crate::FlightUnion2<ShortcutKeyName, String>,
     pub modifiers: Vec<ShortcutModifier>,
 }
 impl PartialEq for ParsedAccelerator {

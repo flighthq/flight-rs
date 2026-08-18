@@ -6,6 +6,8 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
+use crate::ShortcutEvent;
+
 // Source: upstream/packages/types/src/Shortcut.ts:6 (sha256:b9df7d16c8855374dfa5e55d916aa9c1392625dd0f070ff9421d5d322fbd3160)
 #[derive(Clone)]
 pub struct ShortcutBackend {
@@ -21,9 +23,7 @@ pub struct ShortcutBackend {
                 dyn FnMut(
                         String,
                         std::sync::Arc<
-                            std::sync::Mutex<
-                                Box<dyn FnMut(crate::OpaqueHostValue) -> () + Send + 'static>,
-                            >,
+                            std::sync::Mutex<Box<dyn FnMut(ShortcutEvent) -> () + Send + 'static>>,
                         >,
                     ) -> bool
                     + Send

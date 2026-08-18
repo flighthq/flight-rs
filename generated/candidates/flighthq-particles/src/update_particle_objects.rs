@@ -7,13 +7,14 @@
 #![allow(unused_parens)]
 
 use crate::{ensure_particle_objects_state_capacity, sample_particle_curve};
-use flighthq_types::{ParticleEmitterConfig, ParticleObjectsState};
-pub use flighthq_types::{ParticleObject, ParticleObjectsUpdateOptions};
+use flighthq_types::{
+    ParticleEmitterConfig, ParticleObject, ParticleObjectsState, ParticleObjectsUpdateOptions,
+};
 
-// Source: upstream/packages/particles/src/updateParticleObjects.ts:13 (sha256:eed66b9413dd1f3589bacb1e13051ec02a5deec60c911cd17bad429c276ac74b)
+// Source: upstream/packages/particles/src/updateParticleObjects.ts:11 (sha256:eed66b9413dd1f3589bacb1e13051ec02a5deec60c911cd17bad429c276ac74b)
 const TWO_PI: f64 = 6.283185307179586_f64;
 
-// Source: upstream/packages/particles/src/updateParticleObjects.ts:18 (sha256:ca6a6c8a65cde89ff473264c19ea104382fe800c00a5a26bd9aad4799c05dcb8)
+// Source: upstream/packages/particles/src/updateParticleObjects.ts:16 (sha256:ca6a6c8a65cde89ff473264c19ea104382fe800c00a5a26bd9aad4799c05dcb8)
 pub fn is_particle_objects_complete(
     objects: &Vec<ParticleObject>,
     state: &ParticleObjectsState,
@@ -40,7 +41,7 @@ pub fn is_particle_objects_complete(
     return true;
 }
 
-// Source: upstream/packages/particles/src/updateParticleObjects.ts:31 (sha256:334a4673e88fac352b19d03343995e3fdd2fd749b32027f53e562109a986c853)
+// Source: upstream/packages/particles/src/updateParticleObjects.ts:29 (sha256:334a4673e88fac352b19d03343995e3fdd2fd749b32027f53e562109a986c853)
 pub fn update_particle_objects(
     objects: &mut Vec<ParticleObject>,
     state: &mut ParticleObjectsState,

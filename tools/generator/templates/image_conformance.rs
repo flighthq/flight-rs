@@ -1,5 +1,5 @@
 use flighthq_image::is_image_resource_empty;
-use flighthq_types::Image;
+use flighthq_types::{Image, OpaqueHostValue};
 
 fn resource(width: f64, height: f64) -> Image {
     Image {
@@ -8,10 +8,11 @@ fn resource(width: f64, height: f64) -> Image {
         alpha_type: "straight".to_owned(),
         gamut: "srgb".to_owned(),
         height,
-        kind: "image".to_owned(),
+        kind: OpaqueHostValue::String("image".to_owned()),
         source: Default::default(),
         version: 7.0,
         width,
+        ..Default::default()
     }
 }
 

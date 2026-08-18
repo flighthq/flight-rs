@@ -11,7 +11,7 @@ use crate::{
     TextureAtlas,
 };
 
-// Source: upstream/packages/types/src/QuadBatch.ts:7 (sha256:1eb0802de4e5a5b34e6e585aa05bc5147a491e7e455d4719ac072ac9577c9caa)
+// Source: upstream/packages/types/src/QuadBatch.ts:7 (sha256:c5ddb66c3aa664642f434b204e28cd767990fb68dccd61d95ddce1217b271f85)
 #[derive(Clone, Default)]
 pub struct QuadBatchData {
     #[doc(hidden)]
@@ -29,10 +29,10 @@ impl PartialEq for QuadBatchData {
     }
 }
 
-// Source: upstream/packages/types/src/QuadBatch.ts:20 (sha256:75238ecb20b17ee00471a4ef63623e2e5b34bab0747cfd29e59d8662516e1942)
+// Source: upstream/packages/types/src/QuadBatch.ts:20 (sha256:e420cd628a1440e52a58f0ec478200b7597ac27f4757124600f5951f22965216)
 pub type QuadBatchRuntime = crate::EntityRuntime;
 
-// Source: upstream/packages/types/src/QuadBatch.ts:31 (sha256:51f21dd1261747ad4e3ecb0223ce247c09417a3ad79113123cf7bde455ecfb17)
+// Source: upstream/packages/types/src/QuadBatch.ts:31 (sha256:899537b7d2a81e3752bb2c1fc97d945d22692f778fc4c242542ee226df28fef4)
 #[derive(Clone, Default)]
 pub struct QuadBatch {
     #[doc(hidden)]

@@ -6,6 +6,8 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
+use flighthq_types::HslColor;
+
 #[inline]
 fn __flight_js_to_u32(value: f64) -> u32 {
     if !value.is_finite() || value == 0.0 {
@@ -19,15 +21,12 @@ fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
 }
 
-// Source: upstream/packages/color/src/hslColor.ts:3 (sha256:e58136bce73e62a332b21dced839e0364e3fa66518ae9b32870f3f87451c4d6d)
-pub type HslColor = Vec<f64>;
-
-// Source: upstream/packages/color/src/hslColor.ts:6 (sha256:462725e065278aabf7f530c7e79e41bc9fb9b100a867705c19feaa76e424b388)
-pub fn create_hsl_color() -> HslColor {
+// Source: upstream/packages/color/src/hslColor.ts:4 (sha256:9415f7c0ad7e87664bb5c3a282417f76dc20ab2a9b5b9b4b4d29167ceb99c7b9)
+pub fn allocate_hsl_color() -> HslColor {
     return vec![0.0_f64, 0.0_f64, 0.0_f64];
 }
 
-// Source: upstream/packages/color/src/hslColor.ts:13 (sha256:8da92d99442bf972bd6bd00ae37bd8a063cb014e19155590ad63c831996feac5)
+// Source: upstream/packages/color/src/hslColor.ts:11 (sha256:8da92d99442bf972bd6bd00ae37bd8a063cb014e19155590ad63c831996feac5)
 pub fn hsl_to_rgb(out: &mut Vec<f64>, h: f64, s: f64, l: f64) -> () {
     if (s == 0.0_f64) {
         {
@@ -95,7 +94,7 @@ pub fn hsl_to_rgb(out: &mut Vec<f64>, h: f64, s: f64, l: f64) -> () {
     };
 }
 
-// Source: upstream/packages/color/src/hslColor.ts:32 (sha256:25c545bfca80b1a63eeebf7bf49a4800ace1a2068414720527bd4f9642d1da85)
+// Source: upstream/packages/color/src/hslColor.ts:30 (sha256:25c545bfca80b1a63eeebf7bf49a4800ace1a2068414720527bd4f9642d1da85)
 pub fn rgb_to_hsl(out: &mut HslColor, color: f64) -> HslColor {
     let r = ((__flight_js_to_i32(
         (__flight_js_to_u32(color) >> (__flight_js_to_u32(24.0_f64) & 31)) as f64,
@@ -140,7 +139,7 @@ pub fn rgb_to_hsl(out: &mut HslColor, color: f64) -> HslColor {
     return out.clone();
 }
 
-// Source: upstream/packages/color/src/hslColor.ts:62 (sha256:71fddc9783b633cf28092d766bfed16fc19de8038904f30e64f8b64f9959b250)
+// Source: upstream/packages/color/src/hslColor.ts:60 (sha256:71fddc9783b633cf28092d766bfed16fc19de8038904f30e64f8b64f9959b250)
 fn hue_to_rgb_channel(p: f64, q: f64, t: f64) -> f64 {
     let tn = (((t % 1.0_f64) + 1.0_f64) % 1.0_f64);
     if (tn < (1.0_f64 / 6.0_f64)) {

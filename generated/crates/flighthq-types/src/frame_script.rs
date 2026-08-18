@@ -6,8 +6,8 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::DisplayObject;
+use crate::Node2D;
 
-// Source: upstream/packages/types/src/FrameScript.ts:5 (sha256:b6b35d6a74a18ef2879465a828b046c2242a8da63ac7777c6f06e79ad3b899e8)
+// Source: upstream/packages/types/src/FrameScript.ts:5 (sha256:1de0777829cda78138900e751c005f60769df863bb38121cebafd86413a0fefc)
 pub type FrameScript =
-    std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(DisplayObject, f64) -> () + Send + 'static>>>;
+    std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node2D, f64) -> () + Send + 'static>>>;

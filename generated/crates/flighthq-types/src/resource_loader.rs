@@ -8,7 +8,7 @@
 
 use crate::{ResourceLoadReport, Signal};
 
-// Source: upstream/packages/types/src/ResourceLoader.ts:4 (sha256:e3550276e310c2635b9749863ee0dcc64b1809e9ecee8dae906ecb6e6dd0fd03)
+// Source: upstream/packages/types/src/ResourceLoader.ts:4 (sha256:d464dbdb897420a48df91f33c33d1d29edfdae91f7295ae21b89c492ccf7e595)
 #[derive(Clone)]
 pub struct ResourceLoader {
     #[doc(hidden)]
@@ -27,7 +27,7 @@ pub struct ResourceLoader {
     >,
     pub on_pause: Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
     pub on_progress:
-        Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64, f64) -> () + Send + 'static>>>>,
+        Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64) -> () + Send + 'static>>>>,
     pub on_resume:
         Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
 }

@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::Signal;
+use crate::{Signal, TimelineFrameEvent};
 
 // Source: upstream/packages/types/src/TimelineSignals.ts:6 (sha256:c87cb1c6c826c9d4a5ac66245abd3b19328174cc315ae7f9153271c2700ce41c)
 #[derive(Clone)]
@@ -16,19 +16,13 @@ pub struct TimelineSignals {
     pub on_complete:
         Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
     pub on_enter_frame: Signal<
-        std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(crate::OpaqueHostValue) -> () + Send + 'static>>,
-        >,
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(TimelineFrameEvent) -> () + Send + 'static>>>,
     >,
     pub on_exit_frame: Signal<
-        std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(crate::OpaqueHostValue) -> () + Send + 'static>>,
-        >,
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(TimelineFrameEvent) -> () + Send + 'static>>>,
     >,
     pub on_frame_constructed: Signal<
-        std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(crate::OpaqueHostValue) -> () + Send + 'static>>,
-        >,
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(TimelineFrameEvent) -> () + Send + 'static>>>,
     >,
     pub on_loop: Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
 }

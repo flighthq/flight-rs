@@ -6,18 +6,35 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{EntityRuntime, Node, ViewportAlign, ViewportScaleMode};
+use crate::EntityRuntime;
 
-// Source: upstream/packages/types/src/Viewport.ts:8 (sha256:f22bef597526a4a97430496236312e76b67d38a2ed79e7314f5461b0d31da44c)
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub device_pixel_ratio: Option<f64>,
+    pub height: Option<f64>,
+    pub width: Option<f64>,
+    pub x: Option<f64>,
+    pub y: Option<f64>,
+}
+impl PartialEq for FlightPartialRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/Viewport.ts:9 (sha256:4469ff9b065da72e57da440a045907f3e0002cad6c1040d298d4bdd03720003d)
 #[derive(Clone, Default)]
 pub struct Viewport {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     #[doc(hidden)]
     pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
-    pub align: ViewportAlign,
-    pub root: Option<Node>,
-    pub scale_mode: ViewportScaleMode,
+    pub device_pixel_ratio: f64,
+    pub height: f64,
+    pub width: f64,
+    pub x: f64,
+    pub y: f64,
 }
 impl PartialEq for Viewport {
     fn eq(&self, other: &Self) -> bool {
@@ -39,3 +56,6 @@ impl crate::FlightEntity for Viewport {
         cloned
     }
 }
+
+// Source: upstream/packages/types/src/Viewport.ts:17 (sha256:1ac94634a380031f5d11e7d31bd2558eee42553ccbcaefc8f5d096dabe8b2749)
+pub type ViewportLike = FlightPartialRecord1;

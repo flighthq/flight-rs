@@ -7,9 +7,9 @@
 #![allow(unused_parens)]
 
 use crate::create_particle_emitter_config;
-pub use flighthq_types::ParticleConfigIssue;
 use flighthq_types::{
-    ParticleBlendMode, ParticleCurve, ParticleEmitterConfig, ParticleEmitterShape,
+    ParticleBlendMode, ParticleConfigIssue, ParticleCurve, ParticleEmitterConfig,
+    ParticleEmitterShape,
 };
 
 #[derive(Clone, Default)]
@@ -74,7 +74,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-// Source: upstream/packages/particles/src/validateParticleEmitterConfig.ts:9 (sha256:a63f7598f4378b6e361fbcca3aaac29501875667fdce4035b9c61271311bf5ce)
+// Source: upstream/packages/particles/src/validateParticleEmitterConfig.ts:7 (sha256:a63f7598f4378b6e361fbcca3aaac29501875667fdce4035b9c61271311bf5ce)
 static NUMERIC_FIELDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(|| {
     vec![
         "alphaEnd",
@@ -125,7 +125,7 @@ static NUMERIC_FIELDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::n
     ]
 });
 
-// Source: upstream/packages/particles/src/validateParticleEmitterConfig.ts:59 (sha256:882c6aa6341b8ae3425c504eab69c6aa411613da8b8353bd2de8d45d555bb66e)
+// Source: upstream/packages/particles/src/validateParticleEmitterConfig.ts:57 (sha256:882c6aa6341b8ae3425c504eab69c6aa411613da8b8353bd2de8d45d555bb66e)
 static NON_NEGATIVE_FIELDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(|| {
     vec![
         "burstCount",
@@ -148,7 +148,7 @@ static NON_NEGATIVE_FIELDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLo
     ]
 });
 
-// Source: upstream/packages/particles/src/validateParticleEmitterConfig.ts:85 (sha256:458e7d414d06d6f2468cb586896b90136b8aac0c5adb8a169f38b31fb14c9b22)
+// Source: upstream/packages/particles/src/validateParticleEmitterConfig.ts:83 (sha256:458e7d414d06d6f2468cb586896b90136b8aac0c5adb8a169f38b31fb14c9b22)
 pub fn normalize_particle_emitter_config(
     config: Option<FlightPartialRecord1>,
 ) -> ParticleEmitterConfig {
@@ -218,7 +218,7 @@ pub fn normalize_particle_emitter_config(
     };
 }
 
-// Source: upstream/packages/particles/src/validateParticleEmitterConfig.ts:130 (sha256:a18a08a4eee98a57f847bc012bb29a248fb41fa6234d854be5820852f66068d0)
+// Source: upstream/packages/particles/src/validateParticleEmitterConfig.ts:128 (sha256:a18a08a4eee98a57f847bc012bb29a248fb41fa6234d854be5820852f66068d0)
 #[derive(Clone, Default)]
 struct ValidateParticleEmitterConfigRecord2 {
     __flight_identity: std::sync::Arc<()>,
@@ -314,7 +314,7 @@ pub fn validate_particle_emitter_config(
     return issues;
 }
 
-// Source: upstream/packages/particles/src/validateParticleEmitterConfig.ts:184 (sha256:240fb75be0e4ecb4ddb72582c461f9119053b2a7ae5ebc33752483d6703ed0a0)
+// Source: upstream/packages/particles/src/validateParticleEmitterConfig.ts:182 (sha256:240fb75be0e4ecb4ddb72582c461f9119053b2a7ae5ebc33752483d6703ed0a0)
 fn is_finite_curve(curve: Option<Vec<f64>>) -> bool {
     if ((curve).is_none()) || ((curve.as_ref().unwrap().len() as f64) == 0.0_f64) {
         return false;
@@ -334,7 +334,7 @@ fn is_finite_curve(curve: Option<Vec<f64>>) -> bool {
     return true;
 }
 
-// Source: upstream/packages/particles/src/validateParticleEmitterConfig.ts:192 (sha256:ec6018485ce7aa3befb4ddf9c80567fe1a597599f8ec09c769e6aa16b82c0bf7)
+// Source: upstream/packages/particles/src/validateParticleEmitterConfig.ts:190 (sha256:ec6018485ce7aa3befb4ddf9c80567fe1a597599f8ec09c769e6aa16b82c0bf7)
 fn report_curve(
     issues: &mut Vec<ParticleConfigIssue>,
     curve: Option<Vec<f64>>,
@@ -386,7 +386,7 @@ fn report_curve(
     }
 }
 
-// Source: upstream/packages/particles/src/validateParticleEmitterConfig.ts:218 (sha256:56764c6b04aae3b47f34da76e9fddd0519876f809968345bdcfaae0de998e7c2)
+// Source: upstream/packages/particles/src/validateParticleEmitterConfig.ts:216 (sha256:56764c6b04aae3b47f34da76e9fddd0519876f809968345bdcfaae0de998e7c2)
 fn report_inverted_range(
     issues: &mut Vec<ParticleConfigIssue>,
     config: &ParticleEmitterConfig,
@@ -408,7 +408,7 @@ fn report_inverted_range(
     }
 }
 
-// Source: upstream/packages/particles/src/validateParticleEmitterConfig.ts:235 (sha256:fc726b54cf08ed2f9aecdd12527048ee8ef87cbbf792f07dae2d890bc95031d8)
+// Source: upstream/packages/particles/src/validateParticleEmitterConfig.ts:233 (sha256:fc726b54cf08ed2f9aecdd12527048ee8ef87cbbf792f07dae2d890bc95031d8)
 fn report_unit_range(
     issues: &mut Vec<ParticleConfigIssue>,
     config: &ParticleEmitterConfig,

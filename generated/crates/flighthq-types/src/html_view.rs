@@ -8,7 +8,7 @@
 
 use crate::{BlendMode, ClipRegion, EntityRuntime, Kind, Material, MaterialData};
 
-// Source: upstream/packages/types/src/HtmlView.ts:3 (sha256:bba194f0689423bf8577d59419ce7b6d25107d76feeea43c14bd296df846fd93)
+// Source: upstream/packages/types/src/HtmlView.ts:3 (sha256:1f958ef194404e34ddb923ccea83436361f131efc7aceca837b5870b44dd87c7)
 #[derive(Clone, Default)]
 pub struct HtmlViewData {
     #[doc(hidden)]
@@ -23,10 +23,10 @@ impl PartialEq for HtmlViewData {
     }
 }
 
-// Source: upstream/packages/types/src/HtmlView.ts:9 (sha256:56cbcce7ac4a7d3949a91bbd7c6ff19e5a5db0a8763036515002d9b3cbc9c661)
+// Source: upstream/packages/types/src/HtmlView.ts:9 (sha256:de2bc381cbd1d3922360a6a22f4ec3807c4718fa3f359162f20f14d639fd426f)
 pub type HtmlViewRuntime = crate::EntityRuntime;
 
-// Source: upstream/packages/types/src/HtmlView.ts:11 (sha256:384fc590d337ee16124dcab9b2c796a36cf6ebd5f72e6ecc6530a8d0851df17f)
+// Source: upstream/packages/types/src/HtmlView.ts:11 (sha256:adf46dafa5053a528e9580cf1a9889196170d6dda66b663119ffac11fb3b64a4)
 #[derive(Clone, Default)]
 pub struct HtmlView {
     #[doc(hidden)]

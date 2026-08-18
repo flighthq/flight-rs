@@ -4458,6 +4458,8 @@ function emitType(type: IrType, context: EmitContext): string {
       }
       if (type.name === 'FlightSymbol') return 'crate::FlightSymbol';
       if (type.name === 'FlightTimeout') return 'crate::FlightTimeout';
+      if (type.name === 'Date') return 'crate::OpaqueHostValue';
+      if (context.numericNamespaceNames.has(type.name)) return 'f64';
       if (nativeHostHandleTypes.has(type.name)) return `crate::${type.name}`;
       if (type.name === 'Nothing') return 'crate::OpaqueHostValue';
       if (type.name === 'FlightRegex') return 'regex::Regex';
@@ -4482,12 +4484,7 @@ function emitType(type: IrType, context: EmitContext): string {
       const parameters = context.namedTypeParameters.get(type.name) ?? [];
       const arguments_ = declarationType
         ? parameters.flatMap((parameter, index) => {
-            const used =
-              declarationType.kind === 'anonymous'
-                ? flattenStructFields(declarationType, context).some((field) =>
-                    typeUsesNamedParameter(field.type, parameter),
-                  )
-                : typeUsesNamedParameter(declarationType, parameter);
+            const used = emittedDeclarationUsesNamedParameter(type.name, declarationType, parameter, context);
             return used ? [type.arguments[index] ?? { kind: 'dynamic' as const }] : [];
           })
         : type.arguments;
@@ -4625,13 +4622,16 @@ function emitTypeDeclaration(
     return `${slot}${slot ? '\n' : ''}${visibility}type ${name}${generics} = ${runtime};`;
   }
   if (type.kind !== 'anonymous') {
-    const aliasContext = { ...context, lexicalTypeParameters: new Set(typeParameters) };
+    const aliasContext = {
+      ...typeDeclarationContext(context, name, type),
+      lexicalTypeParameters: new Set(typeParameters),
+    };
     const emittedType = emitType(type, aliasContext);
     const effectiveTypeParameters = typeParameters.filter((parameter) =>
       new RegExp(`\\b${parameter}\\b`, 'u').test(emittedType),
     );
     const generics = effectiveTypeParameters.length > 0 ? `<${effectiveTypeParameters.join(', ')}>` : '';
-    return `${visibility}type ${name}${generics} = ${emittedType};`;
+    return `${emitAnonymousDefinitions(aliasContext, exported)}${visibility}type ${name}${generics} = ${emittedType};`;
   }
   const structuralContext = {
     ...typeDeclarationContext(context, name, type),
@@ -4639,9 +4639,7 @@ function emitTypeDeclaration(
   };
   const fields = flattenStructFields(type, structuralContext);
   const effectiveTypeParameters = typeParameters.filter((parameter) =>
-    fields.some((field) =>
-      new RegExp(`\\b${parameter}\\b`, 'u').test(emitStructFieldType(field.type, name, structuralContext)),
-    ),
+    fields.some((field) => emittedTypeUsesNamedParameter(field.type, parameter, structuralContext)),
   );
   const generics = effectiveTypeParameters.length > 0 ? `<${effectiveTypeParameters.join(', ')}>` : '';
   if (context.entityRuntimeTypes.has(name)) {
@@ -4770,8 +4768,12 @@ function emitTypeDeclaration(
     );
   }
   if (entity && entityTrait) {
+    const cloneBoundGenerics =
+      effectiveTypeParameters.length > 0
+        ? `<${effectiveTypeParameters.map((parameter) => `${parameter}: Clone`).join(', ')}>`
+        : '';
     emitted.push(
-      `impl${generics} ${entityTrait} for ${name}${generics} {`,
+      `impl${cloneBoundGenerics} ${entityTrait} for ${name}${generics} {`,
       `  fn __flight_entity_runtime(&self) -> &std::sync::Arc<std::sync::Mutex<Option<${entityRuntime!}>>> { &self.__flight_entity_runtime }`,
       '  fn __flight_fresh_clone(&self) -> Self {',
       '    let mut cloned = self.clone();',
@@ -4783,6 +4785,69 @@ function emitTypeDeclaration(
     );
   }
   return `${emitAnonymousDefinitions(structuralContext, exported)}${emitted.join('\n')}`;
+}
+
+function emittedDeclarationUsesNamedParameter(
+  name: string,
+  declaration: IrType,
+  parameter: string,
+  context: EmitContext,
+  visited: ReadonlySet<string> = new Set(),
+): boolean {
+  const key = `${name}\0${parameter}`;
+  if (visited.has(key)) return true;
+  const next = new Set([...visited, key]);
+  if (declaration.kind === 'anonymous') {
+    return flattenStructFields(declaration, context).some((field) =>
+      emittedTypeUsesNamedParameter(field.type, parameter, context, next),
+    );
+  }
+  return emittedTypeUsesNamedParameter(declaration, parameter, context, next);
+}
+
+function emittedTypeUsesNamedParameter(
+  type: IrType,
+  parameter: string,
+  context: EmitContext,
+  visited: ReadonlySet<string> = new Set(),
+): boolean {
+  switch (type.kind) {
+    case 'anonymous':
+      return flattenStructFields(type, context).some((field) =>
+        emittedTypeUsesNamedParameter(field.type, parameter, context, visited),
+      );
+    case 'array':
+      return emittedTypeUsesNamedParameter(type.element, parameter, context, visited);
+    case 'function':
+      return (
+        type.parameters.some((item) => emittedTypeUsesNamedParameter(item, parameter, context, visited)) ||
+        emittedTypeUsesNamedParameter(type.returns, parameter, context, visited)
+      );
+    case 'named': {
+      if (type.name === parameter) return true;
+      const declaration = context.namedTypes.get(type.name);
+      const declarationParameters = context.namedTypeParameters.get(type.name) ?? [];
+      if (!declaration || declarationParameters.length === 0) {
+        return type.arguments.some((argument) => emittedTypeUsesNamedParameter(argument, parameter, context, visited));
+      }
+      return declarationParameters.some(
+        (declarationParameter, index) =>
+          emittedDeclarationUsesNamedParameter(type.name, declaration, declarationParameter, context, visited) &&
+          Boolean(
+            type.arguments[index] && emittedTypeUsesNamedParameter(type.arguments[index]!, parameter, context, visited),
+          ),
+      );
+    }
+    case 'nullable':
+      return emittedTypeUsesNamedParameter(type.inner, parameter, context, visited);
+    case 'task':
+      return emittedTypeUsesNamedParameter(type.output, parameter, context, visited);
+    case 'union':
+      return type.variants.some((variant) => emittedTypeUsesNamedParameter(variant, parameter, context, visited));
+    case 'dynamic':
+    case 'primitive':
+      return false;
+  }
 }
 
 function emitEntityRuntimeSlotDeclaration(
@@ -5896,14 +5961,10 @@ function collectInferredObjectTypes(value: unknown): IrType[] {
   return [...found.values()];
 }
 
-function typeDeclarationContext(
-  context: EmitContext,
-  ownerName: string,
-  type: Extract<IrType, { kind: 'anonymous' }>,
-): EmitContext {
+function typeDeclarationContext(context: EmitContext, ownerName: string, type: IrType): EmitContext {
   const anonymousTypes = new Map(context.anonymousTypes);
   let index = anonymousTypes.size + 1;
-  for (const nested of collectAnonymousTypes(type)) {
+  for (const nested of collectResolvedAnonymousTypes(type, context)) {
     const key = typeKey(nested);
     if (key === typeKey(type) || anonymousTypes.has(key)) continue;
     anonymousTypes.set(key, `${pascalCase(ownerName)}Record${String(index++)}`);
@@ -5913,6 +5974,21 @@ function typeDeclarationContext(
     anonymousTypes,
     inheritedAnonymousTypeKeys: new Set(context.anonymousTypes.keys()),
   };
+}
+
+function collectResolvedAnonymousTypes(type: IrType, context: EmitContext): IrType[] {
+  const found = new Map<string, IrType>();
+  const pending = collectAnonymousTypes(type);
+  while (pending.length > 0) {
+    const candidate = pending.pop()!;
+    const key = typeKey(candidate);
+    if (found.has(key) || candidate.kind !== 'anonymous') continue;
+    found.set(key, candidate);
+    for (const field of flattenStructFields(candidate, context)) {
+      pending.push(...collectAnonymousTypes(field.type));
+    }
+  }
+  return [...found.values()];
 }
 
 function registerParameters(parameters: IrParameter[], context: EmitContext, fallbackTypes: IrType[] = []): void {

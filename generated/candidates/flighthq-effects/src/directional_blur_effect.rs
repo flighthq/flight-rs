@@ -6,7 +6,11 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_types::DirectionalBlurEffect;
+use crate::register_render_effect_padding_resolver;
+use flighthq_types::{
+    BlendMode, DirectionalBlurEffect, Matrix, RenderEffect, RenderEffectPadding, RenderState,
+    Scene2DClipHooks, Scene3DGraphSyncPolicy,
+};
 
 #[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
@@ -21,12 +25,34 @@ impl PartialEq for FlightOmitRecord1 {
     }
 }
 
-// Source: upstream/packages/effects/src/directionalBlurEffect.ts:3 (sha256:401d47059c3e52d92662d0ebb64d0ca602ef23544159ab858bd9ef7d119d512c)
 #[derive(Clone, Default)]
-struct CreateDirectionalBlurEffectRecord2 {
+pub struct FlightPartialRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub allow_smoothing: Option<bool>,
+    pub background_color: Option<f64>,
+    pub background_color_rgba: Option<Vec<f64>>,
+    pub background_color_string: Option<String>,
+    pub current_clip_depth: Option<f64>,
+    pub display_object_clip_hooks: Option<Scene2DClipHooks>,
+    pub pixel_ratio: Option<f64>,
+    pub render_alpha: Option<f64>,
+    pub render_blend_mode: Option<BlendMode>,
+    pub render_transform2_d: Option<Matrix>,
+    pub scene_graph_sync_policy: Option<Scene3DGraphSyncPolicy>,
+    pub round_pixels: Option<bool>,
+}
+impl PartialEq for FlightPartialRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/effects/src/directionalBlurEffect.ts:5 (sha256:401d47059c3e52d92662d0ebb64d0ca602ef23544159ab858bd9ef7d119d512c)
+#[derive(Clone, Default)]
+struct CreateDirectionalBlurEffectRecord3 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateDirectionalBlurEffectRecord2 {
+impl PartialEq for CreateDirectionalBlurEffectRecord3 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -50,4 +76,60 @@ pub fn create_directional_blur_effect(options: Option<FlightOmitRecord1>) -> Dir
             ..Default::default()
         }
     };
+}
+
+// Source: upstream/packages/effects/src/directionalBlurEffect.ts:11 (sha256:09819816475204885beba4aea372f9e29bc82eb5fd0fb0ea6963ac158171b99a)
+pub fn get_directional_blur_effect_padding(effect: &DirectionalBlurEffect) -> RenderEffectPadding {
+    let angle = (effect.angle).unwrap_or(0.0_f64);
+    let half_length = ((0.0_f64).max((effect.length).unwrap_or(8.0_f64)) * 0.5_f64);
+    let projected_x = ((angle).cos() * half_length).abs();
+    let projected_y = ((angle).sin() * half_length).abs();
+    let horizontal = if (projected_x < 1e-10_f64) {
+        0.0_f64
+    } else {
+        (projected_x).ceil()
+    };
+    let vertical = if (projected_y < 1e-10_f64) {
+        0.0_f64
+    } else {
+        (projected_y).ceil()
+    };
+    return RenderEffectPadding {
+        __flight_identity: std::sync::Arc::new(()),
+        bottom: vertical,
+        left: horizontal,
+        right: horizontal,
+        top: vertical,
+    };
+}
+
+// Source: upstream/packages/effects/src/directionalBlurEffect.ts:21 (sha256:eabab599b02b269ae1bbf7674e94ba88262deb9f7ef034d3b25d09314ee02e20)
+pub fn register_directional_blur_effect_padding_resolver(state: &RenderState) -> () {
+    register_render_effect_padding_resolver(
+        state,
+        "DirectionalBlurEffect".to_owned(),
+        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: RenderEffect| -> RenderEffectPadding {
+                resolve_directional_blur_effect_padding(&__flight_argument_0)
+            },
+        )
+            as Box<
+                dyn FnMut(RenderEffect) -> RenderEffectPadding + Send + 'static,
+            >))),
+    );
+}
+
+// Source: upstream/packages/effects/src/directionalBlurEffect.ts:25 (sha256:503ab9621664634d8d734b5696249025d8913ea965108b9563f1fafb5c527c38)
+fn resolve_directional_blur_effect_padding(effect: &RenderEffect) -> RenderEffectPadding {
+    return get_directional_blur_effect_padding(&{
+        let __flight_source = &((*effect).clone());
+        DirectionalBlurEffect {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            kind: (__flight_source.kind).clone(),
+            angle: __flight_source.angle,
+            length: __flight_source.length,
+            samples: __flight_source.samples,
+            ..Default::default()
+        }
+    });
 }

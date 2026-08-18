@@ -12,26 +12,25 @@ use crate::{
 };
 use flighthq_types::{
     TextDirection, TextFormat, TextFormatRange, TextJustification, TextLayoutGroup,
-    TextVerticalAlign,
+    TextLayoutParams, TextLayoutResult, TextMeasureFunction, TextVerticalAlign,
 };
-pub use flighthq_types::{TextLayoutParams, TextLayoutResult, TextMeasureFunction};
 
-// Source: upstream/packages/textlayout/src/textLayout.ts:19 (sha256:7a3c85a761fcca811e5c5d5d387dafd74075ddb93b69ab5ab7e4baa514df6891)
+// Source: upstream/packages/textlayout/src/textLayout.ts:18 (sha256:7a3c85a761fcca811e5c5d5d387dafd74075ddb93b69ab5ab7e4baa514df6891)
 pub const TEXT_LAYOUT_GUTTER: f64 = 2.0_f64;
 
-// Source: upstream/packages/textlayout/src/textLayout.ts:21 (sha256:9b48a8b479bff422b9ca9c9d76cab39956bb0370c37fe4ad80cfb25cc4f471a9)
+// Source: upstream/packages/textlayout/src/textLayout.ts:20 (sha256:9b48a8b479bff422b9ca9c9d76cab39956bb0370c37fe4ad80cfb25cc4f471a9)
 static _LINE_BREAKS: std::sync::LazyLock<std::sync::Mutex<Vec<f64>>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(vec![]));
 
-// Source: upstream/packages/textlayout/src/textLayout.ts:22 (sha256:0a7e890c25e999f1e491257d483e1bbf71e077fb59b5792cbf7f3bfefb56787d)
+// Source: upstream/packages/textlayout/src/textLayout.ts:21 (sha256:0a7e890c25e999f1e491257d483e1bbf71e077fb59b5792cbf7f3bfefb56787d)
 static _CHAR_ADVANCES: std::sync::LazyLock<std::sync::Mutex<Vec<f64>>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(vec![]));
 
-// Source: upstream/packages/textlayout/src/textLayout.ts:25 (sha256:556dd483602d4707bf523a13dd724f98f739e18fc66b2766ea79dbb492c56d43)
+// Source: upstream/packages/textlayout/src/textLayout.ts:24 (sha256:556dd483602d4707bf523a13dd724f98f739e18fc66b2766ea79dbb492c56d43)
 static _PARAGRAPH_LAST_LINES: std::sync::LazyLock<std::sync::Mutex<Vec<f64>>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(Vec::new()));
 
-// Source: upstream/packages/textlayout/src/textLayout.ts:27 (sha256:ca540e4b34f38ee2dc29926f251dc88b9f376ca4062df6f391af16e00fba8801)
+// Source: upstream/packages/textlayout/src/textLayout.ts:26 (sha256:ca540e4b34f38ee2dc29926f251dc88b9f376ca4062df6f391af16e00fba8801)
 pub fn compute_text_layout(out: &mut TextLayoutResult, params: &mut TextLayoutParams) -> () {
     let mut text = (params.text).clone();
     let width = params.width;
@@ -100,7 +99,7 @@ pub fn compute_text_layout(out: &mut TextLayoutResult, params: &mut TextLayoutPa
     };
 }
 
-// Source: upstream/packages/textlayout/src/textLayout.ts:91 (sha256:166c4f8ff0313c00bf36e2b11758417d971dd08eeb354097095b7eccbb2a9d73)
+// Source: upstream/packages/textlayout/src/textLayout.ts:90 (sha256:166c4f8ff0313c00bf36e2b11758417d971dd08eeb354097095b7eccbb2a9d73)
 fn char_advances(
     out: &mut Vec<f64>,
     text: String,
@@ -163,7 +162,7 @@ fn char_advances(
     }
 }
 
-// Source: upstream/packages/textlayout/src/textLayout.ts:140 (sha256:4d6743b273bf54531c3505f3fac05a94f517d46a9ab43d17b53e7b6ee7dbe4bd)
+// Source: upstream/packages/textlayout/src/textLayout.ts:139 (sha256:4d6743b273bf54531c3505f3fac05a94f517d46a9ab43d17b53e7b6ee7dbe4bd)
 fn sum_advances(positions: &Vec<f64>) -> f64 {
     let mut total = 0.0_f64;
     for p in (positions).iter().cloned() {
@@ -172,7 +171,7 @@ fn sum_advances(positions: &Vec<f64>) -> f64 {
     return total;
 }
 
-// Source: upstream/packages/textlayout/src/textLayout.ts:146 (sha256:3a91afce7bc4b223eb4e6b65375f3fdae16e5594f0e7efc32e780af892dbb314)
+// Source: upstream/packages/textlayout/src/textLayout.ts:145 (sha256:3a91afce7bc4b223eb4e6b65375f3fdae16e5594f0e7efc32e780af892dbb314)
 fn get_tab_advance(
     current_x: f64,
     tab_stops: Option<Vec<f64>>,
@@ -196,7 +195,7 @@ fn get_tab_advance(
     return (tab_w - (current_x % tab_w));
 }
 
-// Source: upstream/packages/textlayout/src/textLayout.ts:167 (sha256:c3d8c03964f30c8e521a40add816ab8f7ed143b4731d6e95211160aeed283508)
+// Source: upstream/packages/textlayout/src/textLayout.ts:166 (sha256:c3d8c03964f30c8e521a40add816ab8f7ed143b4731d6e95211160aeed283508)
 #[derive(Clone, Default)]
 struct BuildGroupsRecord1 {
     __flight_identity: std::sync::Arc<()>,
@@ -1127,7 +1126,7 @@ fn build_groups(
     };
 }
 
-// Source: upstream/packages/textlayout/src/textLayout.ts:589 (sha256:27f547a87228a401d0c4bc5c5025318a4f77a84b3d5aab9cbca5f4af1df33577)
+// Source: upstream/packages/textlayout/src/textLayout.ts:588 (sha256:27f547a87228a401d0c4bc5c5025318a4f77a84b3d5aab9cbca5f4af1df33577)
 fn apply_alignment(
     groups: &Vec<TextLayoutGroup>,
     container_width: f64,
@@ -1181,7 +1180,7 @@ fn apply_alignment(
     );
 }
 
-// Source: upstream/packages/textlayout/src/textLayout.ts:639 (sha256:5f5d390dd91c859cedcdf98d95f686e35ac2230c3976cb95620dc0324aef9c29)
+// Source: upstream/packages/textlayout/src/textLayout.ts:638 (sha256:5f5d390dd91c859cedcdf98d95f686e35ac2230c3976cb95620dc0324aef9c29)
 fn apply_vertical_alignment(
     groups: &Vec<TextLayoutGroup>,
     container_height: f64,
@@ -1205,7 +1204,7 @@ fn apply_vertical_alignment(
     }
 }
 
-// Source: upstream/packages/textlayout/src/textLayout.ts:652 (sha256:9670a2e24ee163e958e7591e374e545eec76017f5a2099a9680ec64d465403b3)
+// Source: upstream/packages/textlayout/src/textLayout.ts:651 (sha256:2d6a21da78d4cf05054b043cb2424b51c38e532b49aecb73969723a63d4b2d58)
 fn justify_lines(
     groups: &Vec<TextLayoutGroup>,
     container_width: f64,
@@ -1293,15 +1292,22 @@ fn justify_lines(
             } else {
                 let mut space_count = 0.0_f64;
                 for g in (line_groups).iter().cloned() {
+                    let mut text_index = g.start_index;
                     {
                         let mut ci = 0.0_f64;
-                        while (ci < (g.positions.len() as f64)) {
-                            if ((text.char_code_at)((g.start_index + ci)) == 32.0_f64) {
+                        while (ci < (g.positions.len() as f64)) && (text_index < g.end_index) {
+                            let codepoint = (text.code_point_at)(text_index);
+                            if (codepoint == 32.0_f64) {
                                 {
                                     space_count += 1.0;
                                     space_count
                                 };
                             }
+                            text_index += if (codepoint > 65535.0_f64) {
+                                2.0_f64
+                            } else {
+                                1.0_f64
+                            };
                             {
                                 ci += 1.0;
                                 ci
@@ -1321,14 +1327,21 @@ fn justify_lines(
                 for g in (line_groups).iter().cloned() {
                     g.offset_x += accumulated;
                     let mut group_extra = 0.0_f64;
+                    let mut text_index = g.start_index;
                     {
                         let mut ci = 0.0_f64;
-                        while (ci < (g.positions.len() as f64)) {
-                            if ((text.char_code_at)((g.start_index + ci)) == 32.0_f64) {
+                        while (ci < (g.positions.len() as f64)) && (text_index < g.end_index) {
+                            let codepoint = (text.code_point_at)(text_index);
+                            if (codepoint == 32.0_f64) {
                                 g.positions[ci as usize] += extra_per_space;
                                 accumulated += extra_per_space;
                                 group_extra += extra_per_space;
                             }
+                            text_index += if (codepoint > 65535.0_f64) {
+                                2.0_f64
+                            } else {
+                                1.0_f64
+                            };
                             {
                                 ci += 1.0;
                                 ci
@@ -1346,7 +1359,7 @@ fn justify_lines(
     }
 }
 
-// Source: upstream/packages/textlayout/src/textLayout.ts:729 (sha256:91963c0726ef60424115ef85615d94ece3fe37852fc3c7fb1167989749ccd27b)
+// Source: upstream/packages/textlayout/src/textLayout.ts:734 (sha256:91963c0726ef60424115ef85615d94ece3fe37852fc3c7fb1167989749ccd27b)
 fn write_line_metrics(out: &mut TextLayoutResult, groups: &Vec<TextLayoutGroup>) -> () {
     out.line_ascents.clear();
     out.line_descents.clear();
@@ -1432,7 +1445,7 @@ fn write_line_metrics(out: &mut TextLayoutResult, groups: &Vec<TextLayoutGroup>)
     }
 }
 
-// Source: upstream/packages/textlayout/src/textLayout.ts:770 (sha256:ef9aee364d575119a00353d0e0fa467b68ced5b306de669536c8eb98c8beae77)
+// Source: upstream/packages/textlayout/src/textLayout.ts:775 (sha256:ef9aee364d575119a00353d0e0fa467b68ced5b306de669536c8eb98c8beae77)
 pub fn create_text_layout_result() -> TextLayoutResult {
     return TextLayoutResult {
         __flight_identity: std::sync::Arc::new(()),
@@ -1448,7 +1461,7 @@ pub fn create_text_layout_result() -> TextLayoutResult {
     };
 }
 
-// Source: upstream/packages/textlayout/src/textLayout.ts:784 (sha256:29eef70d4b82cb8c4cafec5bfa991e6143190a4f2930489fe2dd028bec3c0193)
+// Source: upstream/packages/textlayout/src/textLayout.ts:789 (sha256:29eef70d4b82cb8c4cafec5bfa991e6143190a4f2930489fe2dd028bec3c0193)
 pub fn is_text_layout_truncated(layout: &TextLayoutResult, params: &TextLayoutParams) -> bool {
     if ((params.max_lines).is_none())
         || ((params.max_lines)

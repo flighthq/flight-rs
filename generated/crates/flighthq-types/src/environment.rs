@@ -7,9 +7,9 @@
 #![allow(unused_parens)]
 
 use crate::Vector3;
-use crate::{CubeTexture, EntityRuntime, Kind};
+use crate::{EntityRuntime, Kind, Texture};
 
-// Source: upstream/packages/types/src/Environment.ts:6 (sha256:37d6730ce4b1aa4065299ff5ae1ab3d22a8d91deca205f4b503605f00ff3a1ed)
+// Source: upstream/packages/types/src/Environment.ts:6 (sha256:f734896a8ad625c226b086f12710cd6b34af41902b729c2c340dc983d3e1ab2e)
 #[derive(Clone, Default)]
 pub struct Environment {
     #[doc(hidden)]
@@ -30,7 +30,7 @@ pub struct Environment {
     pub shadow_bias: f64,
     pub ground_color: f64,
     pub sky_color: f64,
-    pub environment: Option<CubeTexture>,
+    pub environment: Option<Texture>,
     pub right: Vector3,
     pub up: Vector3,
 }

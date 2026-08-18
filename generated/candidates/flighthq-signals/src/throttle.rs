@@ -7,23 +7,9 @@
 #![allow(unused_parens)]
 
 use crate::{connect_signal, disconnect_signal};
-use flighthq_types::Signal;
+use flighthq_types::{Signal, SignalThrottleOptions};
 
-// Source: upstream/packages/signals/src/throttle.ts:10 (sha256:9ff1029d5c3091e092ff0d59362f51d66eed27c820470f270b0a384f0b0e01b6)
-#[derive(Clone, Default)]
-pub struct SignalThrottleOptions {
-    #[doc(hidden)]
-    pub __flight_identity: std::sync::Arc<()>,
-    pub leading: Option<bool>,
-    pub trailing: Option<bool>,
-}
-impl PartialEq for SignalThrottleOptions {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-// Source: upstream/packages/signals/src/throttle.ts:33 (sha256:3c572a4d71215f45d79f857e4fd661d328f47f70a50cbf19f6c5ad140d453e78)
+// Source: upstream/packages/signals/src/throttle.ts:20 (sha256:3c572a4d71215f45d79f857e4fd661d328f47f70a50cbf19f6c5ad140d453e78)
 pub fn connect_signal_at_frame_rate(
     mut source: Signal<
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64) -> () + Send + 'static>>>,
@@ -61,7 +47,7 @@ pub fn connect_signal_at_frame_rate(
         as Box<dyn FnMut() -> () + Send + 'static>));
 }
 
-// Source: upstream/packages/signals/src/throttle.ts:63 (sha256:8db3fa3451b5f328f628a3d5552b18f0402c1c1106209ac5a525be1b0c006231)
+// Source: upstream/packages/signals/src/throttle.ts:50 (sha256:8db3fa3451b5f328f628a3d5552b18f0402c1c1106209ac5a525be1b0c006231)
 pub fn connect_signal_debounced<T: crate::FlightCallback>(
     mut source: Signal<T>,
     delay_ms: f64,
@@ -147,7 +133,7 @@ pub fn connect_signal_debounced<T: crate::FlightCallback>(
         as Box<dyn FnMut() -> () + Send + 'static>));
 }
 
-// Source: upstream/packages/signals/src/throttle.ts:115 (sha256:ab31c8b9283784b537ad87203af0ffca4815b2e7a959e9a1cda9b0e8dfce80fa)
+// Source: upstream/packages/signals/src/throttle.ts:102 (sha256:ab31c8b9283784b537ad87203af0ffca4815b2e7a959e9a1cda9b0e8dfce80fa)
 pub fn connect_signal_throttled<T: crate::FlightCallback>(
     mut source: Signal<T>,
     interval_ms: f64,

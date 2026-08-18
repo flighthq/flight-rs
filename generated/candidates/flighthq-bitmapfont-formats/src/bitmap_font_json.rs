@@ -6,13 +6,13 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{
-    BitmapFontCharRecord, BitmapFontKerningRecord, BitmapFontPageRecord, BitmapFontRecord,
-    build_bitmap_font_from_record,
+use crate::build_bitmap_font_from_record;
+use flighthq_types::{
+    BitmapFont, BitmapFontCharRecord, BitmapFontEncoding, BitmapFontKerningRecord,
+    BitmapFontPageRecord, BitmapFontParseOptions, BitmapFontRecord,
 };
-use flighthq_types::{BitmapFont, BitmapFontEncoding, BitmapFontParseOptions};
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontJson.ts:18 (sha256:cc453da65142f339e1ecf8afede794050e2cb67c40cf35465fe2cfc49a92ec0c)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontJson.ts:20 (sha256:cc453da65142f339e1ecf8afede794050e2cb67c40cf35465fe2cfc49a92ec0c)
 pub fn parse_bitmap_font_json(
     text: String,
     options: Option<BitmapFontParseOptions>,
@@ -27,7 +27,7 @@ pub fn parse_bitmap_font_json(
     );
 }
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontJson.ts:26 (sha256:d8df9aca4d6336dcc908229d5895c67dee600988664fcb94621f4d820a77d9e6)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontJson.ts:28 (sha256:d8df9aca4d6336dcc908229d5895c67dee600988664fcb94621f4d820a77d9e6)
 fn parse_bitmap_font_json_record(text: String) -> Option<BitmapFontRecord> {
     let mut root: crate::OpaqueHostValue;
     let __flight_try_return: Option<Option<BitmapFontRecord>> = match std::panic::catch_unwind(
@@ -131,7 +131,7 @@ fn parse_bitmap_font_json_record(text: String) -> Option<BitmapFontRecord> {
     });
 }
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontJson.ts:69 (sha256:66636d3c94d03704e09c7fa198f1c90a1d05a0826fbb0e13f35270cd137ac31a)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontJson.ts:71 (sha256:66636d3c94d03704e09c7fa198f1c90a1d05a0826fbb0e13f35270cd137ac31a)
 fn is_object(value: crate::OpaqueHostValue) -> bool {
     return ((match &(value) {
         crate::OpaqueHostValue::Undefined => "undefined",
@@ -144,7 +144,7 @@ fn is_object(value: crate::OpaqueHostValue) -> bool {
         && (!false);
 }
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontJson.ts:73 (sha256:2c43614aab520677cd8862d1077ddd6189c2090a04062b507efbb1b3195de053)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontJson.ts:75 (sha256:2c43614aab520677cd8862d1077ddd6189c2090a04062b507efbb1b3195de053)
 fn read_json_char(raw: crate::OpaqueHostValue) -> Option<BitmapFontCharRecord> {
     if (!is_object((raw).clone())) {
         return None;
@@ -180,7 +180,7 @@ fn read_json_char(raw: crate::OpaqueHostValue) -> Option<BitmapFontCharRecord> {
     });
 }
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontJson.ts:100 (sha256:7f649aa5d20242c9a7859dbd556b4dedf2366f9e3bbdf94c83514953040eaf8a)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontJson.ts:102 (sha256:7f649aa5d20242c9a7859dbd556b4dedf2366f9e3bbdf94c83514953040eaf8a)
 fn read_json_encoding(distance_field: crate::OpaqueHostValue) -> BitmapFontEncoding {
     if is_object((distance_field).clone()) {
         let field_type = crate::host_value::<crate::OpaqueHostValue>("host.fieldType");
@@ -191,7 +191,7 @@ fn read_json_encoding(distance_field: crate::OpaqueHostValue) -> BitmapFontEncod
     return "raster".to_owned();
 }
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontJson.ts:108 (sha256:22bc29f4d4a1fbda3c55d75a345267908a61b3a093cec3b5426d6bb44428c6b9)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontJson.ts:110 (sha256:22bc29f4d4a1fbda3c55d75a345267908a61b3a093cec3b5426d6bb44428c6b9)
 fn read_json_kerning(raw: crate::OpaqueHostValue) -> Option<BitmapFontKerningRecord> {
     if (!is_object((raw).clone())) {
         return None;
@@ -210,7 +210,7 @@ fn read_json_kerning(raw: crate::OpaqueHostValue) -> Option<BitmapFontKerningRec
     });
 }
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontJson.ts:117 (sha256:3a349797c1268183a7048ca6ab1ee6f48958c971159db4a2cbacf46a838877d5)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontJson.ts:119 (sha256:3a349797c1268183a7048ca6ab1ee6f48958c971159db4a2cbacf46a838877d5)
 fn read_json_number(value: crate::OpaqueHostValue) -> Option<f64> {
     return if (match &(value) {
         crate::OpaqueHostValue::Undefined => "undefined",

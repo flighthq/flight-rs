@@ -7,10 +7,11 @@
 #![allow(unused_parens)]
 
 use crate::{
-    EntityRuntime, Kind, Material, MeshGeometry, MeshMorph, NodeData, Quaternion, Skin, Vector3,
+    Aabb, EntityRuntime, Kind, Material, MeshGeometry, MeshMorph, NodeData, Quaternion, Skin,
+    Vector3,
 };
 
-// Source: upstream/packages/types/src/Mesh.ts:25 (sha256:9d1fc386d6d46d295994508c69ed48afe084c7671e04527565640f98f319b627)
+// Source: upstream/packages/types/src/Mesh.ts:26 (sha256:7706a57bd2ba7e0313a79f3f77ee6031a1740fc17da12c42efc4657bbd66b507)
 #[derive(Clone, Default)]
 pub struct Mesh {
     #[doc(hidden)]
@@ -52,8 +53,21 @@ impl crate::FlightEntity for Mesh {
     }
 }
 
-// Source: upstream/packages/types/src/Mesh.ts:32 (sha256:9660a362828281d9d02e797dc5269a17867a46e13d811c7cdfdcb91529eab499)
+// Source: upstream/packages/types/src/Mesh.ts:48 (sha256:309789facdca8259b69791b1d2d86ca8fe8f35b14f6cc88f314f08ba78fc465b)
+#[derive(Clone, Default)]
+pub struct MeshDeformRuntime {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub deformed_local_bounds: Option<Aabb>,
+}
+impl PartialEq for MeshDeformRuntime {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/Mesh.ts:52 (sha256:11b601c164d5cf768ec952596383dfe3f29bb1929edc700cea4c4abc977c50dd)
 pub type MeshRuntime = crate::EntityRuntime;
 
-// Source: upstream/packages/types/src/Mesh.ts:34 (sha256:a8f5349b3e25c2229bba5168e8dd9eded0976e020eec223a302de6e83425c9e4)
+// Source: upstream/packages/types/src/Mesh.ts:54 (sha256:a8f5349b3e25c2229bba5168e8dd9eded0976e020eec223a302de6e83425c9e4)
 pub const MESH_KIND: &'static str = "Mesh";

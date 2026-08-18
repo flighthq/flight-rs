@@ -6,8 +6,8 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{CubeTexture, Vector3};
 use crate::{EntityRuntime, Kind};
+use crate::{Texture, Vector3};
 
 // Source: upstream/packages/types/src/HemisphereLight.ts:5 (sha256:68701c0cc28dd9805f8d8fb3d66e5ef450aebc299ed1638873ae1bef483dc713)
 #[derive(Clone, Default)]
@@ -30,7 +30,7 @@ pub struct HemisphereLight {
     pub shadow_bias: f64,
     pub ground_color: f64,
     pub sky_color: f64,
-    pub environment: Option<CubeTexture>,
+    pub environment: Option<Texture>,
     pub right: Vector3,
     pub up: Vector3,
 }

@@ -103,7 +103,7 @@ pub fn get_advanced_blend_rgb(
     out[2.0_f64 as usize] = b;
 }
 
-// Source: upstream/packages/effects/src/blendModeMath.ts:88 (sha256:0b8560a071fb2848d05fec394ff6e481ad6d04c4febac439881074c5fea744fd)
+// Source: upstream/packages/effects/src/blendModeMath.ts:88 (sha256:d6bbf33a79bcb7d4cf7e79d9ae1618dc44fe19cef69dfc71af36f21c07dceb87)
 pub fn get_separable_blend_channel(mode: AdvancedBlendMode, cb: f64, cs: f64) -> f64 {
     {
         let __switch_value = mode;
@@ -113,16 +113,20 @@ pub fn get_separable_blend_channel(mode: AdvancedBlendMode, cb: f64, cs: f64) ->
             1_usize
         } else if __switch_value == advanced_blend_mode_constant.soft_light {
             2_usize
-        } else if __switch_value == advanced_blend_mode_constant.difference {
+        } else if __switch_value == advanced_blend_mode_constant.darken {
             3_usize
-        } else if __switch_value == advanced_blend_mode_constant.exclusion {
+        } else if __switch_value == advanced_blend_mode_constant.difference {
             4_usize
-        } else if __switch_value == advanced_blend_mode_constant.color_dodge {
+        } else if __switch_value == advanced_blend_mode_constant.exclusion {
             5_usize
-        } else if __switch_value == advanced_blend_mode_constant.color_burn {
+        } else if __switch_value == advanced_blend_mode_constant.color_dodge {
             6_usize
-        } else {
+        } else if __switch_value == advanced_blend_mode_constant.lighten {
             7_usize
+        } else if __switch_value == advanced_blend_mode_constant.color_burn {
+            8_usize
+        } else {
+            9_usize
         };
         '__flight_switch: {
             if __flight_case <= 0_usize {
@@ -154,12 +158,15 @@ pub fn get_separable_blend_channel(mode: AdvancedBlendMode, cb: f64, cs: f64) ->
                 }
             }
             if __flight_case <= 3_usize {
-                return (cb - cs).abs();
+                return (cb).min(cs);
             }
             if __flight_case <= 4_usize {
-                return ((cb + cs) - ((2.0_f64 * cb) * cs));
+                return (cb - cs).abs();
             }
             if __flight_case <= 5_usize {
+                return ((cb + cs) - ((2.0_f64 * cb) * cs));
+            }
+            if __flight_case <= 6_usize {
                 if (cb <= 0.0_f64) {
                     return 0.0_f64;
                 }
@@ -168,7 +175,10 @@ pub fn get_separable_blend_channel(mode: AdvancedBlendMode, cb: f64, cs: f64) ->
                 }
                 return (1.0_f64).min((cb / (1.0_f64 - cs)));
             }
-            if __flight_case <= 6_usize {
+            if __flight_case <= 7_usize {
+                return (cb).max(cs);
+            }
+            if __flight_case <= 8_usize {
                 if (cb >= 1.0_f64) {
                     return 1.0_f64;
                 }
@@ -177,7 +187,7 @@ pub fn get_separable_blend_channel(mode: AdvancedBlendMode, cb: f64, cs: f64) ->
                 }
                 return (1.0_f64 - (1.0_f64).min(((1.0_f64 - cb) / cs)));
             }
-            if __flight_case <= 7_usize {
+            if __flight_case <= 9_usize {
                 return cs;
             }
             unreachable!("exhaustive TypeScript switch completed without returning");
@@ -185,7 +195,7 @@ pub fn get_separable_blend_channel(mode: AdvancedBlendMode, cb: f64, cs: f64) ->
     }
 }
 
-// Source: upstream/packages/effects/src/blendModeMath.ts:120 (sha256:4be93976d04aad2e1d12f1d98bd449ee2b9e2bf7f15a90d4f54b620a4a59d09b)
+// Source: upstream/packages/effects/src/blendModeMath.ts:124 (sha256:4be93976d04aad2e1d12f1d98bd449ee2b9e2bf7f15a90d4f54b620a4a59d09b)
 pub fn is_non_separable_blend_mode(mode: AdvancedBlendMode) -> bool {
     return (((mode == advanced_blend_mode_constant.hue)
         || (mode == advanced_blend_mode_constant.saturation))
@@ -193,17 +203,17 @@ pub fn is_non_separable_blend_mode(mode: AdvancedBlendMode) -> bool {
         || (mode == advanced_blend_mode_constant.luminosity);
 }
 
-// Source: upstream/packages/effects/src/blendModeMath.ts:130 (sha256:443d6cadca0ac7d73a27748b698259ead53ed14183143ed9a9a2c58feb93b5c8)
+// Source: upstream/packages/effects/src/blendModeMath.ts:134 (sha256:443d6cadca0ac7d73a27748b698259ead53ed14183143ed9a9a2c58feb93b5c8)
 fn blend_luminosity(r: f64, g: f64, b: f64) -> f64 {
     return (((0.3_f64 * r) + (0.59_f64 * g)) + (0.11_f64 * b));
 }
 
-// Source: upstream/packages/effects/src/blendModeMath.ts:135 (sha256:37fdd7e60ca73ddd2e4ad9a6f9ac21f6145006d743ab0912a81f691c4ccfa2d7)
+// Source: upstream/packages/effects/src/blendModeMath.ts:139 (sha256:37fdd7e60ca73ddd2e4ad9a6f9ac21f6145006d743ab0912a81f691c4ccfa2d7)
 fn blend_saturation(r: f64, g: f64, b: f64) -> f64 {
     return (((r).max(g)).max(b) - ((r).min(g)).min(b));
 }
 
-// Source: upstream/packages/effects/src/blendModeMath.ts:141 (sha256:013d17202e913c6bbb3d4a0aad3667cafa920f25f2094f208f07bace7e98a751)
+// Source: upstream/packages/effects/src/blendModeMath.ts:145 (sha256:013d17202e913c6bbb3d4a0aad3667cafa920f25f2094f208f07bace7e98a751)
 fn clip_blend_color(r: f64, g: f64, b: f64) -> Vec<f64> {
     let l = blend_luminosity(r, g, b);
     let min = ((r).min(g)).min(b);
@@ -226,13 +236,13 @@ fn clip_blend_color(r: f64, g: f64, b: f64) -> Vec<f64> {
     return vec![cr, cg, cb];
 }
 
-// Source: upstream/packages/effects/src/blendModeMath.ts:164 (sha256:ede08854234aeb529a3ea3c7b215dfe13feab0927620805f9fa11aa3f35c3c78)
+// Source: upstream/packages/effects/src/blendModeMath.ts:168 (sha256:ede08854234aeb529a3ea3c7b215dfe13feab0927620805f9fa11aa3f35c3c78)
 fn set_blend_luminosity(r: f64, g: f64, b: f64, target: f64) -> Vec<f64> {
     let d = (target - blend_luminosity(r, g, b));
     return clip_blend_color((r + d), (g + d), (b + d));
 }
 
-// Source: upstream/packages/effects/src/blendModeMath.ts:171 (sha256:f71a3267ff673fd73226b212b678f5ca387764b2a83759af40f2dfbe42e607e1)
+// Source: upstream/packages/effects/src/blendModeMath.ts:175 (sha256:f71a3267ff673fd73226b212b678f5ca387764b2a83759af40f2dfbe42e607e1)
 fn set_blend_saturation(r: f64, g: f64, b: f64, target: f64) -> Vec<f64> {
     let mut out: Vec<f64> = vec![r, g, b];
     let mut i_min = 0.0_f64;

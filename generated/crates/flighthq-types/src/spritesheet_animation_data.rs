@@ -8,7 +8,7 @@
 
 use crate::SpritesheetAnimationDirection;
 
-// Source: upstream/packages/types/src/SpritesheetAnimationData.ts:3 (sha256:dfe210ac4871351e75459a262cd969098d4ff4081e39eeb4de236436b5a71976)
+// Source: upstream/packages/types/src/SpritesheetAnimationData.ts:3 (sha256:8aafff09324b8e1fbc04f89ce45cae82cde358425e32da980649bcdc12a999c4)
 #[derive(Clone, Default)]
 pub struct SpritesheetAnimationData {
     #[doc(hidden)]
@@ -17,7 +17,7 @@ pub struct SpritesheetAnimationData {
     pub frame_duration: f64,
     pub frame_durations: Option<Vec<f64>>,
     pub frame_names: Vec<String>,
-    pub loop_: bool,
+    pub repeat_count: f64,
     pub name: String,
     pub origin_x: f64,
     pub origin_y: f64,

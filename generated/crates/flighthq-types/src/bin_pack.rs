@@ -42,7 +42,7 @@ impl PartialEq for PackedRectangle {
     }
 }
 
-// Source: upstream/packages/types/src/BinPack.ts:33 (sha256:2ce3c70c7b5ec3d8a6559fbd1d31675efc82b30a5c1d78f8c43af58fa83e2ef7)
+// Source: upstream/packages/types/src/BinPack.ts:33 (sha256:02827650530a05814ac7db8af8205eebd86ecf1ccd58d1a4f06180b57fd558f5)
 #[derive(Clone, Default)]
 pub struct BinPackOptions {
     #[doc(hidden)]
@@ -54,6 +54,7 @@ pub struct BinPackOptions {
     pub power_of_two: Option<bool>,
     pub square: Option<bool>,
     pub allow_rotation: Option<bool>,
+    pub heuristic: Option<BinPackHeuristic>,
     pub growable: Option<bool>,
 }
 impl PartialEq for BinPackOptions {
@@ -62,7 +63,7 @@ impl PartialEq for BinPackOptions {
     }
 }
 
-// Source: upstream/packages/types/src/BinPack.ts:61 (sha256:9a7fcfb77a423785d0d90037d8ab0662fd34dfc628dbea27c2b7f862914d4699)
+// Source: upstream/packages/types/src/BinPack.ts:70 (sha256:9a7fcfb77a423785d0d90037d8ab0662fd34dfc628dbea27c2b7f862914d4699)
 #[derive(Clone, Default)]
 pub struct PackResult {
     #[doc(hidden)]
@@ -73,6 +74,28 @@ pub struct PackResult {
     pub unpacked: Vec<RectangleId>,
 }
 impl PartialEq for PackResult {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/BinPack.ts:81 (sha256:5ec6b8bc563362a6b85216ae7f5e24000b34456b537de576959ca668086f21e3)
+pub type BinPackHeuristic = String;
+
+// Source: upstream/packages/types/src/BinPack.ts:92 (sha256:7af9f6f32ceb939b8ca8d15b66aebf815bdb32f84310639682ce4392cc0403ce)
+pub type UnpackedRectangleReason = String;
+
+// Source: upstream/packages/types/src/BinPack.ts:94 (sha256:176e320195bd990ea5470d020fa86425782cd3e3b8bb7ab8e3b4d15288b81532)
+#[derive(Clone)]
+pub struct UnpackedRectangleExplanation {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub id: RectangleId,
+    pub reason: UnpackedRectangleReason,
+    pub usable_width: f64,
+    pub usable_height: f64,
+}
+impl PartialEq for UnpackedRectangleExplanation {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

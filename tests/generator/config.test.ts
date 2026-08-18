@@ -54,4 +54,25 @@ describe('cultivated generator configuration', () => {
       }
     }
   });
+
+  it('makes full promotion explicit and permits only source-level reasoned exclusions', () => {
+    const workspace = path.resolve('.');
+    const fullyPromoted = portConfig.targets.filter((target) => target.fullyPromoted);
+
+    expect(fullyPromoted.map((target) => target.package)).toEqual(['@flighthq/types', '@flighthq/easing']);
+    for (const target of fullyPromoted) {
+      expect(target.sourceSelection, target.package).toBeUndefined();
+      expect(target.declarationSelection, target.package).toBeUndefined();
+      const packageDirectory = target.package.replace(/^@flighthq\//u, '');
+      for (const exclusion of target.sourceExclusions) {
+        expect(exclusion.reason.trim().length, `${target.package}:${exclusion.source} reason`).toBeGreaterThan(0);
+        expect(
+          existsSync(
+            path.join(workspace, portConfig.upstreamDirectory, 'packages', packageDirectory, 'src', exclusion.source),
+          ),
+          `${target.package} excluded source ${exclusion.source}`,
+        ).toBe(true);
+      }
+    }
+  });
 });

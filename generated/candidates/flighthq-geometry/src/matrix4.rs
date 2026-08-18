@@ -1440,7 +1440,7 @@ pub fn set_orthographic_matrix4(
     out.m[15.0_f64 as usize] = (1.0_f64) as f32;
 }
 
-// Source: upstream/packages/geometry/src/matrix4.ts:1170 (sha256:657013889eecda4931bba766af03072c35e91158b8ecaa1646a9ca6d2411dead)
+// Source: upstream/packages/geometry/src/matrix4.ts:1170 (sha256:60107dcc55378b6fd6a47efb4260ddfad763778e5f7af0767923cf4c078db410)
 pub fn set_perspective_matrix4(
     out: &mut Matrix4Like,
     fov: f64,
@@ -1465,15 +1465,23 @@ pub fn set_perspective_matrix4(
     out.m[7.0_f64 as usize] = (0.0_f64) as f32;
     out.m[8.0_f64 as usize] = ((right + left) / (right - left)) as f32;
     out.m[9.0_f64 as usize] = ((top + bottom) / (top - bottom)) as f32;
-    out.m[10.0_f64 as usize] = ((-(z_far + z_near)) / (z_far - z_near)) as f32;
+    out.m[10.0_f64 as usize] = if (z_far == f64::INFINITY) {
+        (-1.0_f64) as f32
+    } else {
+        ((-(z_far + z_near)) / (z_far - z_near)) as f32
+    };
     out.m[11.0_f64 as usize] = (-1.0_f64) as f32;
     out.m[12.0_f64 as usize] = (0.0_f64) as f32;
     out.m[13.0_f64 as usize] = (0.0_f64) as f32;
-    out.m[14.0_f64 as usize] = ((((-2.0_f64) * z_far) * z_near) / (z_far - z_near)) as f32;
+    out.m[14.0_f64 as usize] = if (z_far == f64::INFINITY) {
+        ((-2.0_f64) * z_near) as f32
+    } else {
+        ((((-2.0_f64) * z_far) * z_near) / (z_far - z_near)) as f32
+    };
     out.m[15.0_f64 as usize] = (0.0_f64) as f32;
 }
 
-// Source: upstream/packages/geometry/src/matrix4.ts:1216 (sha256:a897da6c0d0d7cd9f1e4adefd07784e4dad4d62baf48722653d3d499cee85f68)
+// Source: upstream/packages/geometry/src/matrix4.ts:1218 (sha256:a897da6c0d0d7cd9f1e4adefd07784e4dad4d62baf48722653d3d499cee85f68)
 pub fn translate_matrix4(
     out: &mut Matrix4Like,
     source: &Matrix4Like,
@@ -1506,7 +1514,7 @@ pub fn translate_matrix4(
         + (source.m[14.0_f64 as usize] as f64)) as f32;
 }
 
-// Source: upstream/packages/geometry/src/matrix4.ts:1231 (sha256:672eeb100267f08899737e7e436b6ec65bf807abd2c95f95021294dcdf6c6cbf)
+// Source: upstream/packages/geometry/src/matrix4.ts:1233 (sha256:672eeb100267f08899737e7e436b6ec65bf807abd2c95f95021294dcdf6c6cbf)
 pub fn transpose_matrix4(out: &mut Matrix4Like, source: &Matrix4Like) -> () {
     if (out != source) {
         {
@@ -1527,7 +1535,7 @@ pub fn transpose_matrix4(out: &mut Matrix4Like, source: &Matrix4Like) -> () {
     __swap(out, source, 11.0_f64, 14.0_f64);
 }
 
-// Source: upstream/packages/geometry/src/matrix4.ts:1257 (sha256:cdf0eac9cdfe188a44bf56631ea3252ea6c3b48087232708e0eaf74c551130c4)
+// Source: upstream/packages/geometry/src/matrix4.ts:1259 (sha256:cdf0eac9cdfe188a44bf56631ea3252ea6c3b48087232708e0eaf74c551130c4)
 pub fn write_matrix4_to_float32_array(out: &mut Vec<f32>, offset: f64, source: &Matrix4Like) -> () {
     {
         let __flight_offset = (offset) as usize;
@@ -1540,7 +1548,7 @@ pub fn write_matrix4_to_float32_array(out: &mut Vec<f32>, offset: f64, source: &
     };
 }
 
-// Source: upstream/packages/geometry/src/matrix4.ts:1261 (sha256:62354f2479aa0c172003863549adbc5615308cc4a28eb4ff2998faf950d93c11)
+// Source: upstream/packages/geometry/src/matrix4.ts:1263 (sha256:62354f2479aa0c172003863549adbc5615308cc4a28eb4ff2998faf950d93c11)
 fn __get_axis_rotation(out: &mut Matrix4Like, x: f64, y: f64, z: f64, radians: f64) -> () {
     let mut ax = x;
     let mut ay = y;
@@ -1566,14 +1574,14 @@ fn __get_axis_rotation(out: &mut Matrix4Like, x: f64, y: f64, z: f64, radians: f
     out.m[6.0_f64 as usize] = (tmp1 - tmp2) as f32;
 }
 
-// Source: upstream/packages/geometry/src/matrix4.ts:1292 (sha256:c6f4dc8735038d620895aaffe8175ed6e1d8f8043b59c790d83e9574b5284304)
+// Source: upstream/packages/geometry/src/matrix4.ts:1294 (sha256:c6f4dc8735038d620895aaffe8175ed6e1d8f8043b59c790d83e9574b5284304)
 fn __swap(out: &mut Matrix4Like, source: &Matrix4Like, a: f64, b: f64) -> () {
     let temp = (source.m[a as usize] as f64);
     out.m[a as usize] = (source.m[b as usize] as f64) as f32;
     out.m[b as usize] = ((temp).clone()) as f32;
 }
 
-// Source: upstream/packages/geometry/src/matrix4.ts:1298 (sha256:e79bc457d8148decc8e86243e73d0d44fd479e39ddf30653815e30d123ecedd5)
+// Source: upstream/packages/geometry/src/matrix4.ts:1300 (sha256:e79bc457d8148decc8e86243e73d0d44fd479e39ddf30653815e30d123ecedd5)
 static __IDENTITY: std::sync::LazyLock<Vec<f32>> = std::sync::LazyLock::new(|| {
     (vec![
         1.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 1.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64,

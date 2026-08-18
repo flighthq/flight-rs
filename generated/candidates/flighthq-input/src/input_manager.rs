@@ -620,7 +620,7 @@ pub fn attach_wheel_input(
     );
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:283 (sha256:5b8feafbb29ea43bf7e6ff18428de27639ed34074bc945ab8f5719bd2d756e46)
+// Source: upstream/packages/input/src/inputManager.ts:283 (sha256:ada32cffd3993edc7dec0adecd235e8ca8b614fb9721c12a6d28fbc7482563d3)
 pub fn connect_input_state_to_input_manager(
     mut state: InputState,
     mut manager: InputManager,
@@ -630,29 +630,18 @@ pub fn connect_input_state_to_input_manager(
     > = std::sync::Arc::new(std::sync::Mutex::new(Box::new({
         let mut state = state.clone();
         move |data: InputKeyboardData| -> () {
+            if (!state.keys_down.iter().any(|item| item == &data.key_code)) {
+                {
+                    let __flight_value = data.key_code;
+                    if !state.just_pressed_keys.contains(&__flight_value) {
+                        state.just_pressed_keys.push(__flight_value);
+                    }
+                };
+            }
             {
                 let __flight_value = data.key_code;
                 if !state.keys_down.contains(&__flight_value) {
                     state.keys_down.push(__flight_value);
-                }
-            };
-            {
-                let __flight_value = data.key_code;
-                if !state.just_pressed_keys.contains(&__flight_value) {
-                    state.just_pressed_keys.push(__flight_value);
-                }
-            };
-            {
-                let __flight_value = data.key_code;
-                if let Some(__flight_index) = state
-                    .just_released_keys
-                    .iter()
-                    .position(|item| item == &__flight_value)
-                {
-                    state.just_released_keys.remove(__flight_index);
-                    true
-                } else {
-                    false
                 }
             };
         }
@@ -680,19 +669,6 @@ pub fn connect_input_state_to_input_manager(
                 let __flight_value = data.key_code;
                 if !state.just_released_keys.contains(&__flight_value) {
                     state.just_released_keys.push(__flight_value);
-                }
-            };
-            {
-                let __flight_value = data.key_code;
-                if let Some(__flight_index) = state
-                    .just_pressed_keys
-                    .iter()
-                    .position(|item| item == &__flight_value)
-                {
-                    state.just_pressed_keys.remove(__flight_index);
-                    true
-                } else {
-                    false
                 }
             };
         }
@@ -810,29 +786,18 @@ pub fn connect_input_state_to_input_manager(
         let mut state = state.clone();
         move |data: InputGamepadButtonData| -> () {
             let key = ((data.gamepad * MAX_GAMEPAD_BUTTONS) + data.button);
+            if (!state.gamepad_buttons_down.iter().any(|item| item == &key)) {
+                {
+                    let __flight_value = key;
+                    if !state.just_pressed_gamepad_buttons.contains(&__flight_value) {
+                        state.just_pressed_gamepad_buttons.push(__flight_value);
+                    }
+                };
+            }
             {
                 let __flight_value = key;
                 if !state.gamepad_buttons_down.contains(&__flight_value) {
                     state.gamepad_buttons_down.push(__flight_value);
-                }
-            };
-            {
-                let __flight_value = key;
-                if !state.just_pressed_gamepad_buttons.contains(&__flight_value) {
-                    state.just_pressed_gamepad_buttons.push(__flight_value);
-                }
-            };
-            {
-                let __flight_value = key;
-                if let Some(__flight_index) = state
-                    .just_released_gamepad_buttons
-                    .iter()
-                    .position(|item| item == &__flight_value)
-                {
-                    state.just_released_gamepad_buttons.remove(__flight_index);
-                    true
-                } else {
-                    false
                 }
             };
         }
@@ -864,19 +829,6 @@ pub fn connect_input_state_to_input_manager(
                     .contains(&__flight_value)
                 {
                     state.just_released_gamepad_buttons.push(__flight_value);
-                }
-            };
-            {
-                let __flight_value = key;
-                if let Some(__flight_index) = state
-                    .just_pressed_gamepad_buttons
-                    .iter()
-                    .position(|item| item == &__flight_value)
-                {
-                    state.just_pressed_gamepad_buttons.remove(__flight_index);
-                    true
-                } else {
-                    false
                 }
             };
         }
@@ -1142,7 +1094,7 @@ pub fn connect_input_state_to_input_manager(
         as Box<dyn FnMut() -> () + Send + 'static>));
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:394 (sha256:90c42c4afc94ec852b083a75587f12dc5d9b51cc83c4171a632049535b3957e4)
+// Source: upstream/packages/input/src/inputManager.ts:404 (sha256:90c42c4afc94ec852b083a75587f12dc5d9b51cc83c4171a632049535b3957e4)
 pub fn create_input_key_repeat_timer(options: InputKeyRepeatOptions) -> InputKeyRepeatTimer {
     let delay_id: std::sync::Arc<std::sync::Mutex<Option<crate::FlightTimeout>>> =
         std::sync::Arc::new(std::sync::Mutex::new(None));
@@ -1231,7 +1183,7 @@ pub fn create_input_key_repeat_timer(options: InputKeyRepeatOptions) -> InputKey
     };
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:417 (sha256:0aa752968160d69181a564725ef4c7db5551e0f7e5230cbdc0104a5d2081bd0f)
+// Source: upstream/packages/input/src/inputManager.ts:427 (sha256:0aa752968160d69181a564725ef4c7db5551e0f7e5230cbdc0104a5d2081bd0f)
 pub fn create_input_manager() -> InputManager {
     return {
         let __flight_spread_0 = create_input_signals();
@@ -1257,7 +1209,7 @@ pub fn create_input_manager() -> InputManager {
     };
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:424 (sha256:28fd446928eacd2fe3821deb30d07e652b9a1bf7539a9c5964dddcad0f5dfa6a)
+// Source: upstream/packages/input/src/inputManager.ts:434 (sha256:28fd446928eacd2fe3821deb30d07e652b9a1bf7539a9c5964dddcad0f5dfa6a)
 pub fn create_input_signals() -> InputSignals {
     return InputSignals {
         __flight_identity: std::sync::Arc::new(()),
@@ -1279,7 +1231,7 @@ pub fn create_input_signals() -> InputSignals {
     };
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:450 (sha256:441cf45f7800fc6117250e0f7ecdd82823a66096c43474e0588da5d3d635799e)
+// Source: upstream/packages/input/src/inputManager.ts:460 (sha256:441cf45f7800fc6117250e0f7ecdd82823a66096c43474e0588da5d3d635799e)
 #[derive(Clone, Default)]
 struct CreateInputStateRecord2 {
     __flight_identity: std::sync::Arc<()>,
@@ -1312,22 +1264,22 @@ pub fn create_input_state() -> InputState {
     };
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:463 (sha256:66b36f89561316a3951d6c87fe7f6c2ae7073a236622a5c68b8d21305ace13e1)
+// Source: upstream/packages/input/src/inputManager.ts:473 (sha256:66b36f89561316a3951d6c87fe7f6c2ae7073a236622a5c68b8d21305ace13e1)
 pub fn detach_gamepad_input(manager: &InputManager, target: crate::OpaqueHostValue) -> () {
     clear_input_binding(manager, (target).clone(), *K_GAMEPAD_INPUT);
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:467 (sha256:d5b8c3900d26a5eb7d6ca5eb7457f25a81741bd75f2934058f9d1c32d51721e7)
+// Source: upstream/packages/input/src/inputManager.ts:477 (sha256:d5b8c3900d26a5eb7d6ca5eb7457f25a81741bd75f2934058f9d1c32d51721e7)
 pub fn detach_keyboard_input(manager: &InputManager, target: crate::OpaqueHostValue) -> () {
     clear_input_binding(manager, (target).clone(), *K_KEYBOARD_INPUT);
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:471 (sha256:ced7ac3c2f9c07f910292178baa85ecf195dede98d0343a97e1dbcf6769a118a)
+// Source: upstream/packages/input/src/inputManager.ts:481 (sha256:ced7ac3c2f9c07f910292178baa85ecf195dede98d0343a97e1dbcf6769a118a)
 pub fn detach_pointer_input(manager: &InputManager, element: crate::OpaqueHostValue) -> () {
     clear_input_binding(manager, (element).clone(), *K_POINTER_INPUT);
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:475 (sha256:c4068d67cb43ca3ff3b50edf82848ff9e99b018b69d5f9a88453cdde81577fd6)
+// Source: upstream/packages/input/src/inputManager.ts:485 (sha256:c4068d67cb43ca3ff3b50edf82848ff9e99b018b69d5f9a88453cdde81577fd6)
 pub fn detach_relative_pointer_input(
     manager: &InputManager,
     element: crate::OpaqueHostValue,
@@ -1335,17 +1287,17 @@ pub fn detach_relative_pointer_input(
     clear_input_binding(manager, (element).clone(), *K_RELATIVE_POINTER_INPUT);
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:479 (sha256:1083ecadaa9bf72e80f626a5d8ecbb8d5c8fc0a64ae288f34c20cf5c7e3eec05)
+// Source: upstream/packages/input/src/inputManager.ts:489 (sha256:1083ecadaa9bf72e80f626a5d8ecbb8d5c8fc0a64ae288f34c20cf5c7e3eec05)
 pub fn detach_text_input(manager: &InputManager, element: crate::OpaqueHostValue) -> () {
     clear_input_binding(manager, (element).clone(), *K_TEXT_INPUT);
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:483 (sha256:4510e29911583595c35c77710497969fc3d24856a627d66e56a4dc5e80b43dc0)
+// Source: upstream/packages/input/src/inputManager.ts:493 (sha256:4510e29911583595c35c77710497969fc3d24856a627d66e56a4dc5e80b43dc0)
 pub fn detach_wheel_input(manager: &InputManager, element: crate::OpaqueHostValue) -> () {
     clear_input_binding(manager, (element).clone(), *K_WHEEL_INPUT);
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:493 (sha256:62c3cee4a9a441a44a6e05892e37eb56d9f281561d6940b39564e6ea9ac768f3)
+// Source: upstream/packages/input/src/inputManager.ts:503 (sha256:62c3cee4a9a441a44a6e05892e37eb56d9f281561d6940b39564e6ea9ac768f3)
 pub fn end_input_state_frame(state: &mut InputState) -> () {
     state.just_pressed_keys.clear();
     state.just_released_keys.clear();
@@ -1353,7 +1305,7 @@ pub fn end_input_state_frame(state: &mut InputState) -> () {
     state.just_released_gamepad_buttons.clear();
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:504 (sha256:b0e8e54a187375456c63f06547c688a9b96c1d871f166fa3b77adc1320bea706)
+// Source: upstream/packages/input/src/inputManager.ts:514 (sha256:b0e8e54a187375456c63f06547c688a9b96c1d871f166fa3b77adc1320bea706)
 pub fn exit_input_pointer_lock() -> () {
     if match &(crate::host_value::<crate::OpaqueHostValue>("host.exitPointerLock")) {
         crate::OpaqueHostValue::Undefined | crate::OpaqueHostValue::Null => false,
@@ -1366,7 +1318,7 @@ pub fn exit_input_pointer_lock() -> () {
     }
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:519 (sha256:ea357580bbf34d829d260e34eef2cf6061080fc037b231ca5b8912db5f601758)
+// Source: upstream/packages/input/src/inputManager.ts:529 (sha256:ea357580bbf34d829d260e34eef2cf6061080fc037b231ca5b8912db5f601758)
 pub fn get_coalesced_input_pointer_events(
     event: crate::OpaqueHostValue,
     callback: &mut impl FnMut(InputPointerData) -> (),
@@ -1383,7 +1335,7 @@ pub fn get_coalesced_input_pointer_events(
     }
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:540 (sha256:e8d36ceb5c77b295dc1490db8b25584a70321ab0b26e492acfc90a29740c3c51)
+// Source: upstream/packages/input/src/inputManager.ts:550 (sha256:e8d36ceb5c77b295dc1490db8b25584a70321ab0b26e492acfc90a29740c3c51)
 pub fn get_gamepad_axis_name(mapping: GamepadMappingKind, index: f64) -> Option<GamepadAxisKind> {
     if (mapping != "standard") {
         return None;
@@ -1391,7 +1343,7 @@ pub fn get_gamepad_axis_name(mapping: GamepadMappingKind, index: f64) -> Option<
     return _STANDARD_AXIS_NAMES[index as usize].clone();
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:550 (sha256:12c52e4b463da3aa621c12dc6bb73400de93c1fe3bc9857c7474cb1becf4aa3b)
+// Source: upstream/packages/input/src/inputManager.ts:560 (sha256:12c52e4b463da3aa621c12dc6bb73400de93c1fe3bc9857c7474cb1becf4aa3b)
 pub fn get_gamepad_button_name(
     mapping: GamepadMappingKind,
     index: f64,
@@ -1402,7 +1354,7 @@ pub fn get_gamepad_button_name(
     return _STANDARD_BUTTON_NAMES[index as usize].clone();
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:559 (sha256:3238dbf90b348d67d363c9e668848ead648deab6796beafa80490a64cf88efad)
+// Source: upstream/packages/input/src/inputManager.ts:569 (sha256:3238dbf90b348d67d363c9e668848ead648deab6796beafa80490a64cf88efad)
 pub fn get_input_gamepad_axis(state: &InputState, gamepad: f64, axis: f64) -> f64 {
     return (state
         .axis_values
@@ -1412,7 +1364,7 @@ pub fn get_input_gamepad_axis(state: &InputState, gamepad: f64, axis: f64) -> f6
     .unwrap_or(0.0_f64);
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:563 (sha256:6322b4324c1ed1744f5965e54719abaa3da6a7f2d8a1ee72cb5d30f6f39c532f)
+// Source: upstream/packages/input/src/inputManager.ts:573 (sha256:6322b4324c1ed1744f5965e54719abaa3da6a7f2d8a1ee72cb5d30f6f39c532f)
 pub fn get_key_code_from_dom_keyboard_event(event: crate::OpaqueHostValue) -> f64 {
     let code = get_key_code_from_dom_keyboard_code(
         crate::host_value::<String>("host.code"),
@@ -1432,7 +1384,7 @@ pub fn get_key_code_from_dom_keyboard_event(event: crate::OpaqueHostValue) -> f6
         .clone();
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:570 (sha256:8bb4b63cf36a75fad481d7886f69db5e02d1de022cc2ca3580802c252dee0474)
+// Source: upstream/packages/input/src/inputManager.ts:580 (sha256:8bb4b63cf36a75fad481d7886f69db5e02d1de022cc2ca3580802c252dee0474)
 pub fn get_key_modifier_from_dom_keyboard_event(event: crate::OpaqueHostValue) -> f64 {
     let mut modifier = KeyModifier::NONE;
     if match &(crate::host_value::<crate::OpaqueHostValue>("host.altKey")) {
@@ -1518,7 +1470,7 @@ pub fn get_key_modifier_from_dom_keyboard_event(event: crate::OpaqueHostValue) -
     return modifier;
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:588 (sha256:090ca68d3668c36765ea7dd8180d9a3c7c8f2f10784d2b641c49ae8948515a54)
+// Source: upstream/packages/input/src/inputManager.ts:598 (sha256:090ca68d3668c36765ea7dd8180d9a3c7c8f2f10784d2b641c49ae8948515a54)
 pub fn get_mouse_wheel_mode_from_dom_wheel_event(event: crate::OpaqueHostValue) -> MouseWheelMode {
     if (crate::host_value::<crate::OpaqueHostValue>("host.deltaMode")
         == crate::host_value::<crate::OpaqueHostValue>("host.DOM_DELTA_PIXEL"))
@@ -1538,13 +1490,13 @@ pub fn get_mouse_wheel_mode_from_dom_wheel_event(event: crate::OpaqueHostValue) 
     return "unknown".to_owned();
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:598 (sha256:5ad2cbeaa23397e4827f4ba47fc0aaf28eb27a85617e7cd6e86e8984ef32acf7)
+// Source: upstream/packages/input/src/inputManager.ts:608 (sha256:5ad2cbeaa23397e4827f4ba47fc0aaf28eb27a85617e7cd6e86e8984ef32acf7)
 pub fn has_input_pointer_lock() -> bool {
     return (crate::host_value::<Option<crate::OpaqueHostValue>>("host.pointerLockElement"))
         .is_some();
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:606 (sha256:d927dcd51a3a70e13037227050648a1592dcf23ea1964f3017b0c965da8a6cae)
+// Source: upstream/packages/input/src/inputManager.ts:616 (sha256:d927dcd51a3a70e13037227050648a1592dcf23ea1964f3017b0c965da8a6cae)
 pub fn is_input_gamepad_button_down(state: &InputState, gamepad: f64, button: f64) -> bool {
     return state
         .gamepad_buttons_down
@@ -1552,12 +1504,12 @@ pub fn is_input_gamepad_button_down(state: &InputState, gamepad: f64, button: f6
         .any(|item| item == &((gamepad * MAX_GAMEPAD_BUTTONS) + button));
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:613 (sha256:6d7f88fbc380d7172c07cb7191aaf013b0052c41e1211f27ce9055ad2ce38f7c)
+// Source: upstream/packages/input/src/inputManager.ts:623 (sha256:6d7f88fbc380d7172c07cb7191aaf013b0052c41e1211f27ce9055ad2ce38f7c)
 pub fn is_input_key_down(state: &InputState, key_code: f64) -> bool {
     return state.keys_down.iter().any(|item| item == &key_code);
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:621 (sha256:7185bc6004109ad1c07574ab6d5f53e475c20a75ef4e6524cad9e345265891bf)
+// Source: upstream/packages/input/src/inputManager.ts:631 (sha256:7185bc6004109ad1c07574ab6d5f53e475c20a75ef4e6524cad9e345265891bf)
 pub fn is_input_pointer_button_down(state: &InputState, pointer_id: f64, button: f64) -> bool {
     return ((__flight_js_to_i32(
         (state
@@ -1572,7 +1524,7 @@ pub fn is_input_pointer_button_down(state: &InputState, pointer_id: f64, button:
         != 0.0_f64);
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:625 (sha256:d597a9a5a2cb16b6ff0e355fb6b92d80b1ca6acb8bb1154b2a48a5964e9120c3)
+// Source: upstream/packages/input/src/inputManager.ts:635 (sha256:d597a9a5a2cb16b6ff0e355fb6b92d80b1ca6acb8bb1154b2a48a5964e9120c3)
 pub fn poll_gamepad_input(manager: &InputManager) -> () {
     if (!manager.enabled) || ("function" != "function") {
         return;
@@ -1696,7 +1648,7 @@ pub fn poll_gamepad_input(manager: &InputManager) -> () {
     }
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:671 (sha256:d9865171e25134e43ba58ab9893d56d2c53f6885931d530ac6760a1fc39d60c9)
+// Source: upstream/packages/input/src/inputManager.ts:681 (sha256:d9865171e25134e43ba58ab9893d56d2c53f6885931d530ac6760a1fc39d60c9)
 pub fn release_input_pointer_capture(element: crate::OpaqueHostValue, pointer_id: f64) -> () {
     match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
         crate::host_value::<()>("host.releasePointerCapture");
@@ -1706,7 +1658,7 @@ pub fn release_input_pointer_capture(element: crate::OpaqueHostValue, pointer_id
     }
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:684 (sha256:fddeaa7d2196a8dfbfc055b2cf368b9f22f58ae07443530998152414ca132438)
+// Source: upstream/packages/input/src/inputManager.ts:694 (sha256:fddeaa7d2196a8dfbfc055b2cf368b9f22f58ae07443530998152414ca132438)
 pub fn request_input_pointer_lock(element: crate::OpaqueHostValue) -> crate::FlightTask<bool> {
     let __flight_try_return: Option<crate::FlightTask<bool>> = match std::panic::catch_unwind(
         std::panic::AssertUnwindSafe(|| -> Option<crate::FlightTask<bool>> {
@@ -1720,9 +1672,9 @@ pub fn request_input_pointer_lock(element: crate::OpaqueHostValue) -> crate::Fli
                     crate::FlightTaskOrigin {
                         package: "@flighthq/input",
                         source: "upstream/packages/input/src/inputManager.ts",
-                        line: 693_u32,
+                        line: 703_u32,
                         column: 12_u32,
-                        lexical_path: "requestInputPointerLock.ready:693:12:1a7aba0165f0",
+                        lexical_path: "requestInputPointerLock.ready:703:12:1a7aba0165f0",
                         fingerprint: "sha256:1a7aba0165f00509e11ac8dc73642aece499bb5941df4401f21b933076ae3787",
                     },
                 ));
@@ -1738,9 +1690,9 @@ pub fn request_input_pointer_lock(element: crate::OpaqueHostValue) -> crate::Fli
                     crate::FlightTaskOrigin {
                         package: "@flighthq/input",
                         source: "upstream/packages/input/src/inputManager.ts",
-                        line: 695_u32,
+                        line: 705_u32,
                         column: 12_u32,
-                        lexical_path: "requestInputPointerLock.ready:695:12:a913f3cb1f97",
+                        lexical_path: "requestInputPointerLock.ready:705:12:a913f3cb1f97",
                         fingerprint: "sha256:a913f3cb1f9734d159588904231d21b38dd02a4b990de3f76aaea042e535d166",
                     },
                 ));
@@ -1751,12 +1703,12 @@ pub fn request_input_pointer_lock(element: crate::OpaqueHostValue) -> crate::Fli
     return __flight_try_return.expect("TypeScript try/catch completed without returning");
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:704 (sha256:1dfebf0bf8c055f63dcbff30aa18a098b528db1080a250015c7f66e20c281b04)
+// Source: upstream/packages/input/src/inputManager.ts:714 (sha256:1dfebf0bf8c055f63dcbff30aa18a098b528db1080a250015c7f66e20c281b04)
 pub fn set_input_pointer_capture(element: crate::OpaqueHostValue, pointer_id: f64) -> () {
     crate::host_value::<()>("host.setPointerCapture");
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:713 (sha256:6b9b431bc0a5aa662e0c1eef8d9104f8c374133131aaf7d247b3438c9e973e8a)
+// Source: upstream/packages/input/src/inputManager.ts:723 (sha256:6b9b431bc0a5aa662e0c1eef8d9104f8c374133131aaf7d247b3438c9e973e8a)
 pub fn was_input_gamepad_button_pressed(state: &InputState, gamepad: f64, button: f64) -> bool {
     return state
         .just_pressed_gamepad_buttons
@@ -1764,7 +1716,7 @@ pub fn was_input_gamepad_button_pressed(state: &InputState, gamepad: f64, button
         .any(|item| item == &((gamepad * MAX_GAMEPAD_BUTTONS) + button));
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:722 (sha256:62eadb4fb5dd9d10cf361cae0525eb6af3c6595c94601c2b95a37229a1e93f80)
+// Source: upstream/packages/input/src/inputManager.ts:732 (sha256:62eadb4fb5dd9d10cf361cae0525eb6af3c6595c94601c2b95a37229a1e93f80)
 pub fn was_input_gamepad_button_released(state: &InputState, gamepad: f64, button: f64) -> bool {
     return state
         .just_released_gamepad_buttons
@@ -1772,12 +1724,12 @@ pub fn was_input_gamepad_button_released(state: &InputState, gamepad: f64, butto
         .any(|item| item == &((gamepad * MAX_GAMEPAD_BUTTONS) + button));
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:730 (sha256:68f1833b2a1a1963e7e50ecfa9a65a0d7c961e8a3fa44a3c43221fae3bfadfed)
+// Source: upstream/packages/input/src/inputManager.ts:740 (sha256:68f1833b2a1a1963e7e50ecfa9a65a0d7c961e8a3fa44a3c43221fae3bfadfed)
 pub fn was_input_key_pressed(state: &InputState, key_code: f64) -> bool {
     return state.just_pressed_keys.iter().any(|item| item == &key_code);
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:738 (sha256:89eda631688c9a03f610cf3f9af447cb258dec426db2e6e2fac397449b6535c7)
+// Source: upstream/packages/input/src/inputManager.ts:748 (sha256:89eda631688c9a03f610cf3f9af447cb258dec426db2e6e2fac397449b6535c7)
 pub fn was_input_key_released(state: &InputState, key_code: f64) -> bool {
     return state
         .just_released_keys
@@ -1785,7 +1737,7 @@ pub fn was_input_key_released(state: &InputState, key_code: f64) -> bool {
         .any(|item| item == &key_code);
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:742 (sha256:cc9a775df4f4bbbd6043540597797cb0b55fc8f23d5a8ad5f14c6cef55e4b82e)
+// Source: upstream/packages/input/src/inputManager.ts:752 (sha256:cc9a775df4f4bbbd6043540597797cb0b55fc8f23d5a8ad5f14c6cef55e4b82e)
 fn get_key_code_from_dom_keyboard_code(code: String, location: f64) -> f64 {
     if (location == crate::host_value::<f64>("host.DOM_KEY_LOCATION_NUMPAD"))
         && ({
@@ -1810,19 +1762,21 @@ fn get_key_code_from_dom_keyboard_code(code: String, location: f64) -> f64 {
         .clone();
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:749 (sha256:40ca75bc1bd4bfd77ec9b3bbaf7470427dbec0de9c3cc45156b4da748285bbd8)
-fn get_pointer_type_from_dom_pointer_event(event: crate::OpaqueHostValue) -> String {
+// Source: upstream/packages/input/src/inputManager.ts:759 (sha256:40ca75bc1bd4bfd77ec9b3bbaf7470427dbec0de9c3cc45156b4da748285bbd8)
+fn get_pointer_type_from_dom_pointer_event(
+    event: crate::OpaqueHostValue,
+) -> crate::OpaqueHostValue {
     return if ((crate::host_value::<String>("host.pointerType") == "mouse")
         || (crate::host_value::<String>("host.pointerType") == "pen"))
         || (crate::host_value::<String>("host.pointerType") == "touch")
     {
-        crate::host_value::<String>("host.pointerType")
+        crate::host_value::<crate::OpaqueHostValue>("host.pointerType")
     } else {
-        "unknown".to_owned()
+        crate::OpaqueHostValue::String("unknown".to_owned())
     };
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:755 (sha256:05999ef21f0a13c109c2b1b7a63d75b7fa006d9ca93a3429730edeecb15eddee)
+// Source: upstream/packages/input/src/inputManager.ts:765 (sha256:05999ef21f0a13c109c2b1b7a63d75b7fa006d9ca93a3429730edeecb15eddee)
 fn set_input_keyboard_data(out: &mut InputKeyboardData, event: crate::OpaqueHostValue) -> () {
     let modifier = get_key_modifier_from_dom_keyboard_event((event).clone());
     out.alt_key = crate::host_value::<bool>("host.altKey");
@@ -1844,7 +1798,7 @@ fn set_input_keyboard_data(out: &mut InputKeyboardData, event: crate::OpaqueHost
     out.time_stamp = crate::host_value::<f64>("host.timeStamp");
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:772 (sha256:b71b84e0464aa0c5c1646f3383784c6cf567c5b1c1b98213d71d63fff42fc607)
+// Source: upstream/packages/input/src/inputManager.ts:782 (sha256:b71b84e0464aa0c5c1646f3383784c6cf567c5b1c1b98213d71d63fff42fc607)
 fn set_input_pointer_data(
     out: &mut InputPointerData,
     event: crate::OpaqueHostValue,
@@ -1910,7 +1864,7 @@ fn set_input_pointer_data(
     out.y = crate::host_value::<f64>("host.clientY");
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:802 (sha256:374bdd0870bcb6c604033c20be13c0460a5a0d89a0e4304ce55eaafddf580b2e)
+// Source: upstream/packages/input/src/inputManager.ts:812 (sha256:374bdd0870bcb6c604033c20be13c0460a5a0d89a0e4304ce55eaafddf580b2e)
 static _STANDARD_BUTTON_NAMES: std::sync::LazyLock<Vec<Option<GamepadButtonKind>>> =
     std::sync::LazyLock::new(|| {
         vec![
@@ -1935,7 +1889,7 @@ static _STANDARD_BUTTON_NAMES: std::sync::LazyLock<Vec<Option<GamepadButtonKind>
         ]
     });
 
-// Source: upstream/packages/input/src/inputManager.ts:824 (sha256:2cc9fdc0389d35de9c933a25ac0636c096c81c916622a99e8088aee49589332d)
+// Source: upstream/packages/input/src/inputManager.ts:834 (sha256:2cc9fdc0389d35de9c933a25ac0636c096c81c916622a99e8088aee49589332d)
 static _STANDARD_AXIS_NAMES: std::sync::LazyLock<Vec<Option<GamepadAxisKind>>> =
     std::sync::LazyLock::new(|| {
         vec![
@@ -1946,7 +1900,7 @@ static _STANDARD_AXIS_NAMES: std::sync::LazyLock<Vec<Option<GamepadAxisKind>>> =
         ]
     });
 
-// Source: upstream/packages/input/src/inputManager.ts:833 (sha256:0f4337acae92099459a68ae1f92e940ed8756e81d2a0fe32542bb626d6e8c910)
+// Source: upstream/packages/input/src/inputManager.ts:843 (sha256:0f4337acae92099459a68ae1f92e940ed8756e81d2a0fe32542bb626d6e8c910)
 static KEY_CODES_BY_CODE: std::sync::LazyLock<Vec<(String, f64)>> =
     std::sync::LazyLock::new(|| {
         let mut __flight_record = Vec::new();
@@ -2044,7 +1998,7 @@ static KEY_CODES_BY_CODE: std::sync::LazyLock<Vec<(String, f64)>> =
         __flight_record
     });
 
-// Source: upstream/packages/input/src/inputManager.ts:925 (sha256:104c63197539a394c06522f31880f2f39c73eb2241a9a0ebd27f049f1c6cb401)
+// Source: upstream/packages/input/src/inputManager.ts:935 (sha256:104c63197539a394c06522f31880f2f39c73eb2241a9a0ebd27f049f1c6cb401)
 static KEY_CODES_BY_KEY: std::sync::LazyLock<Vec<(String, f64)>> = std::sync::LazyLock::new(|| {
     let mut __flight_record = Vec::new();
     __flight_record.push(("Alt".to_owned(), KeyCode::LEFT_ALT));
@@ -2122,7 +2076,7 @@ static KEY_CODES_BY_KEY: std::sync::LazyLock<Vec<(String, f64)>> = std::sync::La
     __flight_record
 });
 
-// Source: upstream/packages/input/src/inputManager.ts:1002 (sha256:825f4855a53f591e09fdfd48ca553b39c25649c7c83f3786c147e51bc9403307)
+// Source: upstream/packages/input/src/inputManager.ts:1012 (sha256:825f4855a53f591e09fdfd48ca553b39c25649c7c83f3786c147e51bc9403307)
 static NUMPAD_KEY_CODES_BY_CODE: std::sync::LazyLock<Vec<(String, f64)>> =
     std::sync::LazyLock::new(|| {
         let mut __flight_record = Vec::new();
@@ -2167,7 +2121,7 @@ static NUMPAD_KEY_CODES_BY_CODE: std::sync::LazyLock<Vec<(String, f64)>> =
         __flight_record
     });
 
-// Source: upstream/packages/input/src/inputManager.ts:1034 (sha256:13031aa1c37080dea531aeab043951b436a9b88717d3cace3ed6a55f4b8ffdaf)
+// Source: upstream/packages/input/src/inputManager.ts:1044 (sha256:13031aa1c37080dea531aeab043951b436a9b88717d3cace3ed6a55f4b8ffdaf)
 static _KEYBOARD_DATA: std::sync::LazyLock<std::sync::Mutex<InputKeyboardData>> =
     std::sync::LazyLock::new(|| {
         std::sync::Mutex::new(InputKeyboardData {
@@ -2188,7 +2142,7 @@ static _KEYBOARD_DATA: std::sync::LazyLock<std::sync::Mutex<InputKeyboardData>> 
         })
     });
 
-// Source: upstream/packages/input/src/inputManager.ts:1050 (sha256:58d0831b34643f8d09eae0844356fb502da25699b0329e5d192815f8412d6e18)
+// Source: upstream/packages/input/src/inputManager.ts:1060 (sha256:58d0831b34643f8d09eae0844356fb502da25699b0329e5d192815f8412d6e18)
 static _POINTER_DATA: std::sync::LazyLock<std::sync::Mutex<InputPointerData>> =
     std::sync::LazyLock::new(|| {
         std::sync::Mutex::new(InputPointerData {
@@ -2217,7 +2171,7 @@ static _POINTER_DATA: std::sync::LazyLock<std::sync::Mutex<InputPointerData>> =
         })
     });
 
-// Source: upstream/packages/input/src/inputManager.ts:1074 (sha256:9f3dbd8b669fb6a7fd83cc1bf3c3749626b19ea3b5c946a2f056c87585c419bb)
+// Source: upstream/packages/input/src/inputManager.ts:1084 (sha256:9f3dbd8b669fb6a7fd83cc1bf3c3749626b19ea3b5c946a2f056c87585c419bb)
 static _TEXT_DATA: std::sync::LazyLock<std::sync::Mutex<InputTextData>> =
     std::sync::LazyLock::new(|| {
         std::sync::Mutex::new(InputTextData {
@@ -2227,7 +2181,7 @@ static _TEXT_DATA: std::sync::LazyLock<std::sync::Mutex<InputTextData>> =
         })
     });
 
-// Source: upstream/packages/input/src/inputManager.ts:1079 (sha256:6e924387b115045da35088047ded4d9cf1c8158783d45c1589373965f017fda9)
+// Source: upstream/packages/input/src/inputManager.ts:1089 (sha256:6e924387b115045da35088047ded4d9cf1c8158783d45c1589373965f017fda9)
 #[derive(Clone, Default)]
 struct GamepadPollState {
     #[doc(hidden)]
@@ -2241,12 +2195,12 @@ impl PartialEq for GamepadPollState {
     }
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:1084 (sha256:3c2a3f3bf7710b9b6ff8da2602f2f75927af5b0a27e6eb89ea56f012003c18b0)
+// Source: upstream/packages/input/src/inputManager.ts:1094 (sha256:3c2a3f3bf7710b9b6ff8da2602f2f75927af5b0a27e6eb89ea56f012003c18b0)
 static _GAMEPAD_POLL_STATES: std::sync::LazyLock<
     std::sync::Mutex<Vec<(InputManager, GamepadPollState)>>,
 > = std::sync::LazyLock::new(|| std::sync::Mutex::new(Vec::new()));
 
-// Source: upstream/packages/input/src/inputManager.ts:1086 (sha256:febd3f8de482fabe4ce53f7b882b9e135ca44a9db5ff610eb19c02d6a609556b)
+// Source: upstream/packages/input/src/inputManager.ts:1096 (sha256:febd3f8de482fabe4ce53f7b882b9e135ca44a9db5ff610eb19c02d6a609556b)
 #[derive(Clone, Default)]
 struct GetOrCreateGamepadPollStateRecord2 {
     __flight_identity: std::sync::Arc<()>,
@@ -2286,7 +2240,7 @@ fn get_or_create_gamepad_poll_state(manager: &InputManager) -> GamepadPollState 
     return ((state).clone().unwrap()).clone();
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:1095 (sha256:2096e547be6d6693db0e48fc33c645052551a8e19119772ea738eebbe1d97276)
+// Source: upstream/packages/input/src/inputManager.ts:1105 (sha256:2096e547be6d6693db0e48fc33c645052551a8e19119772ea738eebbe1d97276)
 static _AXIS_DATA: std::sync::LazyLock<std::sync::Mutex<InputGamepadAxisData>> =
     std::sync::LazyLock::new(|| {
         std::sync::Mutex::new(InputGamepadAxisData {
@@ -2298,7 +2252,7 @@ static _AXIS_DATA: std::sync::LazyLock<std::sync::Mutex<InputGamepadAxisData>> =
         })
     });
 
-// Source: upstream/packages/input/src/inputManager.ts:1096 (sha256:34b1a8814af92987ef63aae37ce961448fb61cb032977801c17b3ec6eca13b14)
+// Source: upstream/packages/input/src/inputManager.ts:1106 (sha256:34b1a8814af92987ef63aae37ce961448fb61cb032977801c17b3ec6eca13b14)
 static _BUTTON_DATA: std::sync::LazyLock<std::sync::Mutex<InputGamepadButtonData>> =
     std::sync::LazyLock::new(|| {
         std::sync::Mutex::new(InputGamepadButtonData {
@@ -2310,7 +2264,7 @@ static _BUTTON_DATA: std::sync::LazyLock<std::sync::Mutex<InputGamepadButtonData
         })
     });
 
-// Source: upstream/packages/input/src/inputManager.ts:1097 (sha256:497c555f5e599225a283f9f664c574557ada2adf00b20b9c3fe0c8ef1fff503b)
+// Source: upstream/packages/input/src/inputManager.ts:1107 (sha256:497c555f5e599225a283f9f664c574557ada2adf00b20b9c3fe0c8ef1fff503b)
 static _CONNECT_DATA: std::sync::LazyLock<std::sync::Mutex<InputGamepadConnectData>> =
     std::sync::LazyLock::new(|| {
         std::sync::Mutex::new(InputGamepadConnectData {
@@ -2321,31 +2275,31 @@ static _CONNECT_DATA: std::sync::LazyLock<std::sync::Mutex<InputGamepadConnectDa
         })
     });
 
-// Source: upstream/packages/input/src/inputManager.ts:1103 (sha256:7c30850d86a43ccb069340985677781b99391ec53f07516fe7c884bc2663b163)
+// Source: upstream/packages/input/src/inputManager.ts:1113 (sha256:7c30850d86a43ccb069340985677781b99391ec53f07516fe7c884bc2663b163)
 static K_GAMEPAD_INPUT: std::sync::LazyLock<crate::FlightSymbol> =
     std::sync::LazyLock::new(|| crate::FlightSymbol::new());
 
-// Source: upstream/packages/input/src/inputManager.ts:1104 (sha256:7d114a1bd548815b37ecd6604f60dafdb0a05f26813a3369dcb36465ed6fdbeb)
+// Source: upstream/packages/input/src/inputManager.ts:1114 (sha256:7d114a1bd548815b37ecd6604f60dafdb0a05f26813a3369dcb36465ed6fdbeb)
 static K_KEYBOARD_INPUT: std::sync::LazyLock<crate::FlightSymbol> =
     std::sync::LazyLock::new(|| crate::FlightSymbol::new());
 
-// Source: upstream/packages/input/src/inputManager.ts:1105 (sha256:5cda7bc62922d557dcd8693203743d9e1b7c691d195d6e8db83ae375fb369139)
+// Source: upstream/packages/input/src/inputManager.ts:1115 (sha256:5cda7bc62922d557dcd8693203743d9e1b7c691d195d6e8db83ae375fb369139)
 static K_POINTER_INPUT: std::sync::LazyLock<crate::FlightSymbol> =
     std::sync::LazyLock::new(|| crate::FlightSymbol::new());
 
-// Source: upstream/packages/input/src/inputManager.ts:1106 (sha256:355a9d473d96204a6ffdf0ffec52bb4587067adfb4ac1f9937524c286677491c)
+// Source: upstream/packages/input/src/inputManager.ts:1116 (sha256:355a9d473d96204a6ffdf0ffec52bb4587067adfb4ac1f9937524c286677491c)
 static K_RELATIVE_POINTER_INPUT: std::sync::LazyLock<crate::FlightSymbol> =
     std::sync::LazyLock::new(|| crate::FlightSymbol::new());
 
-// Source: upstream/packages/input/src/inputManager.ts:1107 (sha256:1496d5e97f320acfbdf96b43c41e3daa10452eedc009a4e495fd72c4284a290c)
+// Source: upstream/packages/input/src/inputManager.ts:1117 (sha256:1496d5e97f320acfbdf96b43c41e3daa10452eedc009a4e495fd72c4284a290c)
 static K_TEXT_INPUT: std::sync::LazyLock<crate::FlightSymbol> =
     std::sync::LazyLock::new(|| crate::FlightSymbol::new());
 
-// Source: upstream/packages/input/src/inputManager.ts:1108 (sha256:1c5869e4a8d26c235be779b1b25cb32761cf04b8c2b00098461f8ce6a4ba6c17)
+// Source: upstream/packages/input/src/inputManager.ts:1118 (sha256:1c5869e4a8d26c235be779b1b25cb32761cf04b8c2b00098461f8ce6a4ba6c17)
 static K_WHEEL_INPUT: std::sync::LazyLock<crate::FlightSymbol> =
     std::sync::LazyLock::new(|| crate::FlightSymbol::new());
 
-// Source: upstream/packages/input/src/inputManager.ts:1110 (sha256:b95ac9198a94aaf9009a445f55266d2d1d2a3e481e14df95fa224e68b00100cf)
+// Source: upstream/packages/input/src/inputManager.ts:1120 (sha256:b95ac9198a94aaf9009a445f55266d2d1d2a3e481e14df95fa224e68b00100cf)
 static _INPUT_BINDINGS: std::sync::LazyLock<
     std::sync::Mutex<
         Vec<(
@@ -2361,7 +2315,7 @@ static _INPUT_BINDINGS: std::sync::LazyLock<
     >,
 > = std::sync::LazyLock::new(|| std::sync::Mutex::new(Vec::new()));
 
-// Source: upstream/packages/input/src/inputManager.ts:1112 (sha256:9ed6326a6b2dcdb45fbcc4bf39edcc94adeeb70a345aa99b49cdd4e14bcdc56a)
+// Source: upstream/packages/input/src/inputManager.ts:1122 (sha256:9ed6326a6b2dcdb45fbcc4bf39edcc94adeeb70a345aa99b49cdd4e14bcdc56a)
 fn clear_input_binding(
     manager: &InputManager,
     target: crate::OpaqueHostValue,
@@ -2406,7 +2360,7 @@ fn clear_input_binding(
     };
 }
 
-// Source: upstream/packages/input/src/inputManager.ts:1120 (sha256:6a125f6438126aa6ba940b682f59d207a2ddf46a3da012b1555440d23e42507f)
+// Source: upstream/packages/input/src/inputManager.ts:1130 (sha256:6a125f6438126aa6ba940b682f59d207a2ddf46a3da012b1555440d23e42507f)
 fn set_input_binding(
     manager: &InputManager,
     target: crate::OpaqueHostValue,

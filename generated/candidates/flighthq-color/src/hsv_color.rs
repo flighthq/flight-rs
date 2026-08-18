@@ -6,6 +6,8 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
+use flighthq_types::HsvColor;
+
 #[inline]
 fn __flight_js_to_u32(value: f64) -> u32 {
     if !value.is_finite() || value == 0.0 {
@@ -19,15 +21,12 @@ fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
 }
 
-// Source: upstream/packages/color/src/hsvColor.ts:3 (sha256:47f8d7072d3885e805d1b565eefc4ae443e9a8630a16eafb5b318e1b09f64608)
-pub type HsvColor = Vec<f64>;
-
-// Source: upstream/packages/color/src/hsvColor.ts:6 (sha256:a14e88a239c00646cb22327f11b1dd315345dc4841a4f69c26dc8c5f823dee1a)
-pub fn create_hsv_color() -> HsvColor {
+// Source: upstream/packages/color/src/hsvColor.ts:4 (sha256:31b255e04f31fe7cdf5a7a30cfe887978dd0ec43f6645d87db002e09d612e84d)
+pub fn allocate_hsv_color() -> HsvColor {
     return vec![0.0_f64, 0.0_f64, 0.0_f64];
 }
 
-// Source: upstream/packages/color/src/hsvColor.ts:12 (sha256:fe38a13db423ff703451b988227e0b65f38d7c6973bedb0e86d456fc031c2f57)
+// Source: upstream/packages/color/src/hsvColor.ts:10 (sha256:fe38a13db423ff703451b988227e0b65f38d7c6973bedb0e86d456fc031c2f57)
 pub fn hsv_to_rgb(out: &mut Vec<f64>, h: f64, s: f64, v: f64) -> () {
     if (s == 0.0_f64) {
         {
@@ -265,7 +264,7 @@ pub fn hsv_to_rgb(out: &mut Vec<f64>, h: f64, s: f64, v: f64) -> () {
     }
 }
 
-// Source: upstream/packages/color/src/hsvColor.ts:62 (sha256:7b07e3570c335a91069bf29fe3a2b40b37ae6c72a27944bcd859da4a92236c83)
+// Source: upstream/packages/color/src/hsvColor.ts:60 (sha256:7b07e3570c335a91069bf29fe3a2b40b37ae6c72a27944bcd859da4a92236c83)
 pub fn rgb_to_hsv(out: &mut HsvColor, color: f64) -> HsvColor {
     let r = ((__flight_js_to_i32(
         (__flight_js_to_u32(color) >> (__flight_js_to_u32(24.0_f64) & 31)) as f64,

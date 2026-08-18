@@ -23,6 +23,8 @@ pub enum FlightUnion2<A, B> {
     B(B),
 }
 
+mod contract;
+pub use contract::*;
 mod create_easing_samples;
 pub use create_easing_samples::*;
 mod ease_back;
@@ -37,6 +39,8 @@ mod ease_cubic;
 pub use ease_cubic::*;
 mod ease_cubic_bezier;
 pub use ease_cubic_bezier::*;
+mod ease_damped_sine;
+pub use ease_damped_sine::*;
 mod ease_elastic;
 pub use ease_elastic::*;
 mod ease_exponential;

@@ -6,18 +6,18 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::get_camera_view_projection_matrix4;
+use crate::get_camera3_d_view_projection_matrix4;
 use flighthq_geometry::{
     create_frustum, create_matrix4, is_frustum_containing_point, is_frustum_intersecting_aabb,
     is_frustum_intersecting_sphere, set_frustum_from_matrix4,
 };
 use flighthq_types::{
-    AabbLike, BoundingSphereLike, Camera, Frustum, FrustumLike, Matrix4, Matrix4Like, Vector3Like,
+    AabbLike, BoundingSphereLike, Camera3D, Frustum, FrustumLike, Matrix4, Matrix4Like, Vector3Like,
 };
 
-// Source: upstream/packages/camera/src/culling.ts:21 (sha256:927424ddad6dba1a635d11a42320bf21b3ec61f4084231f35fa1496b6b14371c)
-pub fn get_camera_frustum(out: &mut FrustumLike, camera: &Camera, aspect: f64) -> () {
-    get_camera_view_projection_matrix4(
+// Source: upstream/packages/camera/src/culling.ts:21 (sha256:c3ab00b6457993b3ee74d7f20738277e4436ede744875fa9e79cf04207285baa)
+pub fn get_camera3_d_frustum(out: &mut FrustumLike, camera: &Camera3D, aspect: f64) -> () {
+    get_camera3_d_view_projection_matrix4(
         &mut (*__SCRATCH_VIEW_PROJECTION.lock().unwrap()),
         camera,
         aspect,
@@ -34,9 +34,9 @@ pub fn get_camera_frustum(out: &mut FrustumLike, camera: &Camera, aspect: f64) -
     });
 }
 
-// Source: upstream/packages/camera/src/culling.ts:31 (sha256:19732ddfd668b7f56edc1cb23148fab601a5fac2a96f686d6ad53dd868c530c8)
-pub fn is_box_in_camera_frustum(camera: &Camera, aabb: &AabbLike, aspect: f64) -> bool {
-    get_camera_frustum(&mut (*__SCRATCH_FRUSTUM.lock().unwrap()), camera, aspect);
+// Source: upstream/packages/camera/src/culling.ts:31 (sha256:3ffbf9f063ded81083fcb7f409a1c75a57a567f5170aa093d559dd245bbb9ac0)
+pub fn is_box_in_camera3_d_frustum(camera: &Camera3D, aabb: &AabbLike, aspect: f64) -> bool {
+    get_camera3_d_frustum(&mut (*__SCRATCH_FRUSTUM.lock().unwrap()), camera, aspect);
     return is_frustum_intersecting_aabb(
         &{
             let __flight_source = &(*__SCRATCH_FRUSTUM.lock().unwrap());
@@ -57,9 +57,9 @@ pub fn is_box_in_camera_frustum(camera: &Camera, aabb: &AabbLike, aspect: f64) -
     );
 }
 
-// Source: upstream/packages/camera/src/culling.ts:38 (sha256:3938a42db748223a167ca9c3394decad53ae4514b440a74c1dadc4ae84ef6f4d)
-pub fn is_point_in_camera_frustum(camera: &Camera, point: &Vector3Like, aspect: f64) -> bool {
-    get_camera_frustum(&mut (*__SCRATCH_FRUSTUM.lock().unwrap()), camera, aspect);
+// Source: upstream/packages/camera/src/culling.ts:38 (sha256:d6a0971345b7dfffb298d7c93cfd89f15183e1aa604c8b1923d96e773909caba)
+pub fn is_point_in_camera3_d_frustum(camera: &Camera3D, point: &Vector3Like, aspect: f64) -> bool {
+    get_camera3_d_frustum(&mut (*__SCRATCH_FRUSTUM.lock().unwrap()), camera, aspect);
     return is_frustum_containing_point(
         &{
             let __flight_source = &(*__SCRATCH_FRUSTUM.lock().unwrap());
@@ -80,13 +80,13 @@ pub fn is_point_in_camera_frustum(camera: &Camera, point: &Vector3Like, aspect: 
     );
 }
 
-// Source: upstream/packages/camera/src/culling.ts:49 (sha256:607f59f982f52b5045d38d09f73890e08dd3cfacdf20ab36c48da80108069e88)
-pub fn is_sphere_in_camera_frustum(
-    camera: &Camera,
+// Source: upstream/packages/camera/src/culling.ts:49 (sha256:f25ca5bf02754beb4795d241d4b86b30342454cc1e53e3d87eebcf67544722a0)
+pub fn is_sphere_in_camera3_d_frustum(
+    camera: &Camera3D,
     sphere: &BoundingSphereLike,
     aspect: f64,
 ) -> bool {
-    get_camera_frustum(&mut (*__SCRATCH_FRUSTUM.lock().unwrap()), camera, aspect);
+    get_camera3_d_frustum(&mut (*__SCRATCH_FRUSTUM.lock().unwrap()), camera, aspect);
     return is_frustum_intersecting_sphere(
         &{
             let __flight_source = &(*__SCRATCH_FRUSTUM.lock().unwrap());

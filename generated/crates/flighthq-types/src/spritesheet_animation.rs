@@ -8,7 +8,7 @@
 
 use crate::{EntityRuntime, SpritesheetAnimationDirection};
 
-// Source: upstream/packages/types/src/SpritesheetAnimation.ts:4 (sha256:8ac0c9d0f7a4d1503d6f2ba9bdb34706ca82ef0ab0b9c75b5d02cacf528d77e2)
+// Source: upstream/packages/types/src/SpritesheetAnimation.ts:4 (sha256:a8aba6298250843bd72a0183b1a130e800af4018a239ef5825bef0aeb370e758)
 #[derive(Clone, Default)]
 pub struct SpritesheetAnimation {
     #[doc(hidden)]
@@ -19,7 +19,7 @@ pub struct SpritesheetAnimation {
     pub frame_duration: f64,
     pub frame_durations: Option<Vec<f64>>,
     pub direction: SpritesheetAnimationDirection,
-    pub loop_: bool,
+    pub repeat_count: f64,
     pub origin_x: f64,
     pub origin_y: f64,
 }

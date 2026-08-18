@@ -4,6 +4,36 @@ import { portConfig } from '../../tools/generator/port.config.ts';
 import { lowerTypeScriptSource } from '../../tools/generator/src/lower/typescript.ts';
 
 describe('configured type lowering exceptions', () => {
+  it('keeps imported Flight types whose names collide with platform globals nominal', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/image/src/imageResource.ts',
+      `
+        import type { Image } from '@flighthq/types/contract';
+        export function width(resource: Readonly<Image>): number {
+          return resource.width;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/image', '/workspace', {
+      types: {
+        Image: {
+          extends: [],
+          fields: [{ name: 'width', optional: false, type: { kind: 'primitive', name: 'Float' } }],
+          kind: 'anonymous',
+        },
+      },
+    });
+    const width = lowered.declarations.find((item) => item.kind === 'function' && item.name === 'width');
+
+    expect(width).toMatchObject({
+      parameters: [{ name: 'resource', type: { arguments: [], kind: 'named', name: 'Image' } }],
+      returns: { kind: 'primitive', name: 'Float' },
+    });
+  });
+
   it('recovers async outputs from declared sites, the semantic catalog, and synthesized records', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/application/src/contextual-tasks.ts',

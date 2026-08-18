@@ -6,18 +6,36 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::AnimationChannel;
+use crate::{AnimationChannel, AnimationClipEvent, EntityRuntime};
 
-// Source: upstream/packages/types/src/AnimationClip.ts:6 (sha256:b540e4865821c497739d7bba0d83302f5ebabca6dc06b33ff3efb5a1aa82218a)
+// Source: upstream/packages/types/src/AnimationClip.ts:8 (sha256:b4ef98339386a65aa95df9391022e592c17fa27eba0526d57ef5e7a6bdefce92)
 #[derive(Clone, Default)]
 pub struct AnimationClip {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
     pub channels: Vec<AnimationChannel>,
     pub duration: f64,
+    pub events: Vec<AnimationClipEvent>,
 }
 impl PartialEq for AnimationClip {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for AnimationClip {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }

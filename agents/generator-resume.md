@@ -16,20 +16,22 @@ The repository is a compiler project, not a collection of manually ported crates
 
 The pinned Flight revision is `cad72aa3ea4e6e76a050918a403dcb10efdfcb0d`, matching `flight-hx` main at `27f4d0ee7ae04d64e66c996f99a0f270b09e12be`. The generator began from cultivated `flight-hx` revision `390a890c542f135278d89eee83f4f54e8fdbfd72`; subsequent compiler work should continue to use the newer `flight-hx` generator as its reference.
 
+The pinned Flight commit is no longer advertised as a direct ref by the configured submodule remote. In a fresh clone, `git fetch origin cad72aa3ea4e6e76a050918a403dcb10efdfcb0d` may fail; fetch the remote's full reachable history (`git fetch --all`) before checking out the recorded gitlink.
+
 ## Current checkpoint
 
-`reports/inventory.json` is current for the pinned upstream revision. `reports/generation.json` is the last successful full-generation checkpoint at upstream `5d24729f7360475e28a105ae0caeeaa2e1328260`; regenerate it with Rust/rustfmt installed before using its compiled-candidate counts as current. That checkpoint summary is:
+`reports/inventory.json`, `generated/manifest.json`, and `reports/generation.json` are current for the pinned upstream revision. That checkpoint summary is:
 
 | State                           | Count |
 | ------------------------------- | ----: |
 | Inventoried packages            |   143 |
-| Eligible automatic packages     |   125 |
-| Packages reaching Rust emission |    59 |
-| Compiled candidates             |    23 |
-| Compile-blocked candidates      |    19 |
-| Dependency-blocked candidates   |    15 |
-| Source-blocked packages         |    66 |
-| Source blockers                 |   358 |
+| Eligible automatic packages     |   137 |
+| Packages reaching Rust emission |    43 |
+| Compiled candidates             |    13 |
+| Compile-blocked candidates      |     9 |
+| Dependency-blocked candidates   |    19 |
+| Source-blocked packages         |    94 |
+| Source blockers                 |   460 |
 | Promoted generated packages     |     2 |
 | Cultivated packages             |     1 |
 | Host-bound packages             |     4 |
@@ -38,27 +40,25 @@ The pinned Flight revision is `cad72aa3ea4e6e76a050918a403dcb10efdfcb0d`, matchi
 Compiled candidates:
 
 ```text
-adjustments bitmapfont camera camera2d color device entity flow geometry haptics
-keyboard lifecycle lighting math motionpath path platform signals spatial spring
-textsegment texture useragent
+color device flow haptics keyboard lifecycle math platform screen signals spring textsegment
+useragent
 ```
 
 Compile-blocked candidates, ordered roughly from smallest to largest compiler frontier:
 
 ```text
-socket clock accessibility timeline textbidi protocol animation media xml collision
-clip effects path-formats snapshot particles mesh materials application input
+accessibility adjustments clock importdiagnostics input protocol textbidi timeline xml
 ```
 
 Dependency-blocked candidates:
 
 ```text
-bitmapfont-formats bitmaptext glyphatlas movieclip particleemitter scene-gl
-scene-wgpu skeleton3d sprite spritesheet textinput textlayout textshaper-canvas
-textureatlas-formats velocity
+application-gl bitmapfont-formats bitmaptext camera effects geometry lighting materials
+motionpath particleemitter particles path-formats scene3d-gl spatial spritesheet textinput
+textlayout textshaper-canvas velocity
 ```
 
-`@flighthq/types` and `@flighthq/easing` are fully promoted executable generated targets. Promotion is intentionally stricter than candidate compilation.
+`@flighthq/types` and `@flighthq/easing` are fully promoted executable generated targets. Promotion is intentionally stricter than candidate compilation and is closed over emitted Rust dependencies. Easing deliberately omits the upstream opt-in `enableEasingGuards.ts` development module, with its logging-boundary rationale and fingerprint recorded as a target exclusion.
 
 ## What passes 1–18 established
 
@@ -84,7 +84,8 @@ The generator now has these invariants. Preserve them with focused regression te
 - Open-family constructors and projections use struct update defaults. This promoted the lighting `Light` family without corrupting recursive node hierarchies or callback-bearing adjustment families.
 - `application`, `lifecycle`, `input`, `keyboard`, `haptics`, `power`, `platform`, `device`, and `screen` provide generated seams that can be linked by a cultivated native host.
 - Configured upstream test files are harvested from their TypeScript ASTs into candidate unit tests. Generation runs every translated assertion before it increments case coverage, and only completely translated files increment file coverage; all other in-scope files remain fingerprinted unsupported report entries.
-- Global `Promise<T>` types lower to target-neutral `task<T>` IR, while source-declared `Promise` names remain nominal. The report partitions all 204 task constructions and 162 async scopes; Stage 2 executes 9 constructions/3 non-opaque scopes and leaves 195/159 explicitly unsupported without default bodies.
+- Global `Promise<T>` types lower to target-neutral `task<T>` IR, while source-declared `Promise` names remain nominal. The report partitions all 225 task constructions and 173 async scopes; 19 constructions/13 non-opaque scopes execute and 206/160 remain explicitly unsupported without default bodies.
+- Imported Flight types stay nominal when their local names collide with browser globals such as `Image`; unshadowed platform types still lower through the explicit host boundary.
 
 Primary implementation entry points:
 
@@ -266,9 +267,9 @@ The implementation contract is [Future/task IR design](future-task-ir.md). Send 
 - unsupported Promise composition, detached work, and async iteration remain source-scoped blockers;
 - async-task disposition is diagnostic reporting, while exports, portable opacity, upstream conformance, and fully promoted packages remain the four parity metrics.
 
-At the design baseline, eligible generated packages contained 162 async scopes and 190 awaits across 40 non-test sources. The report exposed only seven await blockers in six packages because top-level async declarations were body-erased. Removing that silent path was the first code gate; do not interpret the resulting candidate-status correction as a behavioral regression without checking whether the old candidate ever executed its source body.
+At the design baseline, eligible generated packages contained 162 async scopes and 190 awaits across 40 non-test sources. At the current upstream pin the inventory contains 173 scopes and 205 awaits. The old report exposed only seven await blockers in six packages because top-level async declarations were body-erased. Removing that silent path was the first code gate; do not interpret the resulting candidate-status correction as a behavioral regression without checking whether the old candidate ever executed its source body.
 
-Stage 1 removed that erasure path. Stage 2 adds the canonical generated `flighthq-runtime`, typed ready/reject and straight-line async/await lowering, deterministic scheduler installation in generated tests, and construction-wide reporting. The syntactic bound audit found 83 explicitly annotated and 79 unannotated outputs, all representable by `Clone + Send + 'static`; normalized IR genuinely recovers only 77 and keeps 85 dynamic outputs blocked. The current partition is 9 executable + 0 host placeholder + 195 unsupported constructions and 3 + 0 + 159 scopes. Twenty recovered-output scopes remain blocked because their source still requires `OpaqueHostValue`, improving portable opacity from 167/1227 to 166/1226. Stage 2b should add contextual return inference; Stage 3 adds configured host-task boundaries; Stage 4 owns composition and must account for `catch_unwind` interactions in non-async task-returning functions.
+Stage 1 removed that erasure path. Stage 2 adds the canonical generated `flighthq-runtime`, typed ready/reject and straight-line async/await lowering, deterministic scheduler installation in generated tests, and construction-wide reporting. The current partition is 19 executable + 0 host placeholder + 206 unsupported constructions and 13 + 0 + 160 scopes. Ten recovered-output scopes remain blocked because their source still requires `OpaqueHostValue`; 66 of 1,544 emitted automatic sources currently require opaque host values. Stage 2b should add contextual return inference; Stage 3 adds configured host-task boundaries; Stage 4 owns composition and must account for `catch_unwind` interactions in non-async task-returning functions.
 
 ## Checkpoint discipline
 

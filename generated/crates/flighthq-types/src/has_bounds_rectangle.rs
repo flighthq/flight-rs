@@ -37,10 +37,10 @@ impl crate::FlightEntity for HasBoundsRectangle {
     }
 }
 
-// Source: upstream/packages/types/src/HasBoundsRectangle.ts:8 (sha256:a19ae57a4710bd355d13a39e58afc3849abd973976923d88c704c6d487ab6e26)
+// Source: upstream/packages/types/src/HasBoundsRectangle.ts:8 (sha256:b56a46f014e81039abc738422a3d6728b3b0c0269d1286a35a21cf1e10a99358)
 pub type HasBoundsRectangleRuntime = crate::EntityRuntime;
 
-// Source: upstream/packages/types/src/HasBoundsRectangle.ts:15 (sha256:8fddb53399dce104a81ccb3922daaad01147fa43545a5ab9705329b6ee7c44f3)
+// Source: upstream/packages/types/src/HasBoundsRectangle.ts:19 (sha256:8fddb53399dce104a81ccb3922daaad01147fa43545a5ab9705329b6ee7c44f3)
 #[derive(Clone, Default)]
 pub struct BoundsNode {
     #[doc(hidden)]
@@ -73,7 +73,7 @@ impl crate::FlightEntity for BoundsNode {
     }
 }
 
-// Source: upstream/packages/types/src/HasBoundsRectangle.ts:16 (sha256:d5830d1d56f8a58a70a0fca0439a5f76e222af81496c1a33fa0321d3c45855c6)
+// Source: upstream/packages/types/src/HasBoundsRectangle.ts:20 (sha256:d5830d1d56f8a58a70a0fca0439a5f76e222af81496c1a33fa0321d3c45855c6)
 #[derive(Clone, Default)]
 pub struct BoundsNodeAny {
     #[doc(hidden)]
@@ -106,7 +106,7 @@ impl crate::FlightEntity for BoundsNodeAny {
     }
 }
 
-// Source: upstream/packages/types/src/HasBoundsRectangle.ts:18 (sha256:fd7d412c542ae8c3de6675e94131f1b2b5d5387ab2f73f83b3cb7b4f4fa7affe)
+// Source: upstream/packages/types/src/HasBoundsRectangle.ts:22 (sha256:fd7d412c542ae8c3de6675e94131f1b2b5d5387ab2f73f83b3cb7b4f4fa7affe)
 #[derive(Clone, Default)]
 pub struct Spatial2DNode {
     #[doc(hidden)]

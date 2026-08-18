@@ -8,7 +8,7 @@
 
 use crate::{EntityRuntime, Kind, ParticleBlendMode, ParticleEmitterData, Quaternion, Vector3};
 
-// Source: upstream/packages/types/src/ParticleEmitter3D.ts:5 (sha256:d66b6f092414db98431d68c37d08a251ff2e6ebfbec95b5e3e3d038794e94ae5)
+// Source: upstream/packages/types/src/ParticleEmitter3D.ts:5 (sha256:64e20d991efa3af3e4d7ea369d2494215759ec7b97040fd164291220452e4e3d)
 #[derive(Clone, Default)]
 pub struct ParticleEmitter3D {
     #[doc(hidden)]
@@ -47,7 +47,7 @@ impl crate::FlightEntity for ParticleEmitter3D {
     }
 }
 
-// Source: upstream/packages/types/src/ParticleEmitter3D.ts:13 (sha256:e20ec3b85ad5a39e40ce41eaa87bc07cc0a9c2c3c19c45f70ca492674f04cdc1)
+// Source: upstream/packages/types/src/ParticleEmitter3D.ts:13 (sha256:5b5854dee4462374b30dabf5c0b3dc5494051b3627707ccfc7970c684fb8cac0)
 pub type ParticleEmitter3DRuntime = crate::EntityRuntime;
 
 // Source: upstream/packages/types/src/ParticleEmitter3D.ts:15 (sha256:353010cff3c09a3d101a72c968869edbda5e245192be162cece34fa3828f8ac1)

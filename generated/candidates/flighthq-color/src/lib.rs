@@ -27,6 +27,8 @@ mod _internal_index;
 pub use _internal_index::*;
 mod color_from_kelvin;
 pub use color_from_kelvin::*;
+mod contract;
+pub use contract::*;
 mod hsl_color;
 pub use hsl_color::*;
 mod hsv_color;

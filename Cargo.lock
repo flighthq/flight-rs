@@ -38,7 +38,6 @@ version = "0.1.0"
 name = "flighthq-surface"
 version = "0.1.0"
 dependencies = [
- "flighthq-image",
  "flighthq-runtime",
  "flighthq-types",
 ]

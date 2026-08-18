@@ -8,7 +8,7 @@
 
 use crate::{BatchFormat, RenderProxy, RenderState, Renderable, RendererData};
 
-// Source: upstream/packages/types/src/Renderer.ts:7 (sha256:1e0a00a374e0c6c378f0486a35e66b87e2c0ae90105ea5a59d66c211c6c381fe)
+// Source: upstream/packages/types/src/Renderer.ts:7 (sha256:2c2aa988b1ba8b33e663de85bf001da0a7769676b02a6000baed218622687043)
 #[derive(Clone)]
 pub struct Renderer {
     #[doc(hidden)]
@@ -22,6 +22,17 @@ pub struct Renderer {
     pub destroy_data: Option<
         std::sync::Arc<
             std::sync::Mutex<Box<dyn FnMut(RenderState, RendererData) -> () + Send + 'static>>,
+        >,
+    >,
+    pub is_dirty: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<
+                    dyn FnMut(RenderState, Renderable, Option<RendererData>) -> bool
+                        + Send
+                        + 'static,
+                >,
+            >,
         >,
     >,
     pub submit: std::sync::Arc<

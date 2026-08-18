@@ -11,7 +11,7 @@ use crate::{
     TextVerticalAlign,
 };
 
-// Source: upstream/packages/types/src/TextLabel.ts:7 (sha256:3f6682b750d0898585b3453f5d4b9d32cacb0721f0e3e4ce087020840c0ef768)
+// Source: upstream/packages/types/src/TextLabel.ts:7 (sha256:d94505d93827743797a2c6724668ebc639ebab71ea755df4bdc4fee0ae7971e5)
 #[derive(Clone, Default)]
 pub struct TextLabelData {
     #[doc(hidden)]
@@ -29,10 +29,10 @@ impl PartialEq for TextLabelData {
     }
 }
 
-// Source: upstream/packages/types/src/TextLabel.ts:18 (sha256:6795acda2aa36d88e003498810c2d72cf123d5046fbeab982770ec4810321cc6)
+// Source: upstream/packages/types/src/TextLabel.ts:18 (sha256:db7e05906a3f2b5f6884a839980220d5bdfa14ef1bb5a1d9e1899983f004d07f)
 pub type TextLabelRuntime = crate::EntityRuntime;
 
-// Source: upstream/packages/types/src/TextLabel.ts:31 (sha256:6e6f193698f819105eae685200bdded28eb20248352584c28b2b560109d65e09)
+// Source: upstream/packages/types/src/TextLabel.ts:31 (sha256:f0658231700532c1d5a1d52e203c8f41115d1e60669fa2fd9a98bad1aacb4416)
 #[derive(Clone, Default)]
 pub struct TextLabel {
     #[doc(hidden)]

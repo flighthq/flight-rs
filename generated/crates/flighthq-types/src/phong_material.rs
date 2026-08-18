@@ -6,7 +6,8 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{AlphaType, BlendMode, EntityRuntime, Kind, MaterialAlphaMode, Texture};
+use crate::{BlendMode, EntityRuntime, Kind, MaterialAlphaMode, Texture};
+use crate::{PbrExtension, StandardPbrMaterialProperties};
 
 // Source: upstream/packages/types/src/PhongMaterial.ts:7 (sha256:64e437f2e5a0160d04bbc20e190fa582580cd6407ac92088e8b008e8c8d4aa9b)
 #[derive(Clone, Default)]
@@ -19,9 +20,10 @@ pub struct PhongMaterial {
     pub name: Option<String>,
     pub alpha_cutoff: f64,
     pub alpha_mode: MaterialAlphaMode,
-    pub alpha_type: AlphaType,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub extensions: Vec<PbrExtension>,
+    pub standard: StandardPbrMaterialProperties,
     pub shader_key: String,
     pub textures: Option<Vec<(String, Texture)>>,
     pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,

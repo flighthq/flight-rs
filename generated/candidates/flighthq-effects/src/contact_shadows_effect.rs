@@ -6,7 +6,11 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_types::ContactShadowsEffect;
+use crate::register_render_effect_padding_resolver;
+use flighthq_types::{
+    BlendMode, ContactShadowsEffect, Matrix, RenderEffect, RenderEffectPadding, RenderState,
+    Scene2DClipHooks, Scene3DGraphSyncPolicy,
+};
 
 #[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
@@ -22,12 +26,34 @@ impl PartialEq for FlightOmitRecord1 {
     }
 }
 
-// Source: upstream/packages/effects/src/contactShadowsEffect.ts:3 (sha256:4bc30aa21b51ac6d1144ef6e52410b9010dfd548130f08c88f4b071dbdaa3dd3)
 #[derive(Clone, Default)]
-struct CreateContactShadowsEffectRecord2 {
+pub struct FlightPartialRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub allow_smoothing: Option<bool>,
+    pub background_color: Option<f64>,
+    pub background_color_rgba: Option<Vec<f64>>,
+    pub background_color_string: Option<String>,
+    pub current_clip_depth: Option<f64>,
+    pub display_object_clip_hooks: Option<Scene2DClipHooks>,
+    pub pixel_ratio: Option<f64>,
+    pub render_alpha: Option<f64>,
+    pub render_blend_mode: Option<BlendMode>,
+    pub render_transform2_d: Option<Matrix>,
+    pub scene_graph_sync_policy: Option<Scene3DGraphSyncPolicy>,
+    pub round_pixels: Option<bool>,
+}
+impl PartialEq for FlightPartialRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/effects/src/contactShadowsEffect.ts:5 (sha256:4bc30aa21b51ac6d1144ef6e52410b9010dfd548130f08c88f4b071dbdaa3dd3)
+#[derive(Clone, Default)]
+struct CreateContactShadowsEffectRecord3 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateContactShadowsEffectRecord2 {
+impl PartialEq for CreateContactShadowsEffectRecord3 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -53,4 +79,61 @@ pub fn create_contact_shadows_effect(options: Option<FlightOmitRecord1>) -> Cont
             ..Default::default()
         }
     };
+}
+
+// Source: upstream/packages/effects/src/contactShadowsEffect.ts:12 (sha256:ba29f48595bb0a5adf3447f4e643460f9bb3259ec40ccff504004f3031955dc7)
+#[derive(Clone, Default)]
+struct GetContactShadowsEffectPaddingRecord3 {
+    __flight_identity: std::sync::Arc<()>,
+    bottom: f64,
+    left: f64,
+    right: f64,
+    top: f64,
+}
+impl PartialEq for GetContactShadowsEffectPaddingRecord3 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+pub fn get_contact_shadows_effect_padding(_effect: &ContactShadowsEffect) -> RenderEffectPadding {
+    return RenderEffectPadding {
+        __flight_identity: std::sync::Arc::new(()),
+        bottom: 0.0_f64,
+        left: 0.0_f64,
+        right: 0.0_f64,
+        top: 0.0_f64,
+    };
+}
+
+// Source: upstream/packages/effects/src/contactShadowsEffect.ts:16 (sha256:8da31227e4448d2dea0905421d910eabbc7a5595d257a03868182566caf3a4bb)
+pub fn register_contact_shadows_effect_padding_resolver(state: &RenderState) -> () {
+    register_render_effect_padding_resolver(
+        state,
+        "ContactShadowsEffect".to_owned(),
+        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: RenderEffect| -> RenderEffectPadding {
+                resolve_contact_shadows_effect_padding(&__flight_argument_0)
+            },
+        )
+            as Box<
+                dyn FnMut(RenderEffect) -> RenderEffectPadding + Send + 'static,
+            >))),
+    );
+}
+
+// Source: upstream/packages/effects/src/contactShadowsEffect.ts:20 (sha256:835df9ef0639539de6a73f48e3553eeedb0d8b8c366436c14982e223bc4c7a03)
+fn resolve_contact_shadows_effect_padding(effect: &RenderEffect) -> RenderEffectPadding {
+    return get_contact_shadows_effect_padding(&{
+        let __flight_source = &((*effect).clone());
+        ContactShadowsEffect {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            kind: (__flight_source.kind).clone(),
+            distance: __flight_source.distance,
+            opacity: __flight_source.opacity,
+            samples: __flight_source.samples,
+            smoothness: __flight_source.smoothness,
+            ..Default::default()
+        }
+    });
 }

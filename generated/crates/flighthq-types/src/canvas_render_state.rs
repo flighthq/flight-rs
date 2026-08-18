@@ -7,11 +7,11 @@
 #![allow(unused_parens)]
 
 use crate::{
-    BlendMode, DisplayObjectClipHooks, EntityRuntime, ImageResource, Kind, Matrix, RenderProxy2D,
-    SceneGraphSyncPolicy,
+    BlendMode, CanvasMaterialRenderer, EntityRuntime, Kind, Matrix, RenderProxy2D,
+    RenderRegistrySignals, Scene2DClipHooks, Scene3DGraphSyncPolicy,
 };
 
-// Source: upstream/packages/types/src/CanvasRenderState.ts:8 (sha256:2d3ed80aeffa1af698defe21cc96fededc24c5de7d4a233df2684315565006c5)
+// Source: upstream/packages/types/src/CanvasRenderState.ts:10 (sha256:2d3ed80aeffa1af698defe21cc96fededc24c5de7d4a233df2684315565006c5)
 #[derive(Clone, Default)]
 pub struct CanvasRenderState {
     #[doc(hidden)]
@@ -23,28 +23,24 @@ pub struct CanvasRenderState {
     pub background_color_rgba: Vec<f64>,
     pub background_color_string: String,
     pub current_clip_depth: f64,
-    pub display_object_clip_hooks: Option<DisplayObjectClipHooks>,
+    pub display_object_clip_hooks: Option<Scene2DClipHooks>,
     pub pixel_ratio: f64,
     pub render_alpha: f64,
     pub render_blend_mode: Option<BlendMode>,
     pub render_transform2_d: Option<Matrix>,
-    pub scene_graph_sync_policy: SceneGraphSyncPolicy,
+    pub scene_graph_sync_policy: Scene3DGraphSyncPolicy,
     pub round_pixels: bool,
     pub apply_blend_mode: Option<
         std::sync::Arc<
             std::sync::Mutex<
-                Box<dyn FnMut(crate::OpaqueHostValue, Option<BlendMode>) -> () + Send + 'static>,
+                Box<dyn FnMut(CanvasRenderState, Option<BlendMode>) -> () + Send + 'static>,
             >,
         >,
     >,
     pub canvas_css_filter_resolver: Option<
         std::sync::Arc<
             std::sync::Mutex<
-                Box<
-                    dyn FnMut(crate::OpaqueHostValue, RenderProxy2D) -> Option<String>
-                        + Send
-                        + 'static,
-                >,
+                Box<dyn FnMut(CanvasRenderState, RenderProxy2D) -> Option<String> + Send + 'static>,
             >,
         >,
     >,
@@ -73,12 +69,12 @@ impl crate::FlightEntity for CanvasRenderState {
     }
 }
 
-// Source: upstream/packages/types/src/CanvasRenderState.ts:23 (sha256:b889957a28ba70a783459bf89658abe277f2c59e9dc40952d4b934de00035ed8)
-#[derive(Clone, Default)]
+// Source: upstream/packages/types/src/CanvasRenderState.ts:25 (sha256:be617f3f8f9f830df9da893eee28eeb9740c2f15a2e4462f451c6d3191c0ca99)
+#[derive(Clone)]
 pub struct CanvasRenderStateRuntimeRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub element: crate::OpaqueHostValue,
-    pub version: f64,
+    pub clear: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
+    pub signals: RenderRegistrySignals,
 }
 impl PartialEq for CanvasRenderStateRuntimeRecord1 {
     fn eq(&self, other: &Self) -> bool {
@@ -88,13 +84,11 @@ impl PartialEq for CanvasRenderStateRuntimeRecord1 {
 
 #[doc(hidden)]
 pub struct CanvasRenderStateRuntimeStorage {
-    pub image_resource_element_cache: Option<Vec<(ImageResource, CanvasRenderStateRuntimeRecord1)>>,
-    pub material_renderer_map: Option<Vec<(Kind, crate::OpaqueHostValue)>>,
+    pub material_renderer_map: Option<Vec<(Kind, CanvasMaterialRenderer)>>,
 }
 impl Default for CanvasRenderStateRuntimeStorage {
     fn default() -> Self {
         Self {
-            image_resource_element_cache: Default::default(),
             material_renderer_map: Default::default(),
         }
     }

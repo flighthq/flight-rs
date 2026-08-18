@@ -6,16 +6,16 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{EntityRuntime, ImageResource, TextureAtlasRegion};
+use crate::{EntityRuntime, Texture2D, TextureAtlasRegion};
 
-// Source: upstream/packages/types/src/TextureAtlas.ts:5 (sha256:f215053afab83d6cdfa985eb7c2bc5cd2fb0a3433082d3536dca6f3c923cd03c)
+// Source: upstream/packages/types/src/TextureAtlas.ts:5 (sha256:82accec157e1cba266ddf7c2202f59135764ce2864659921cc32f5aa45ad8ac4)
 #[derive(Clone, Default)]
 pub struct TextureAtlas {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     #[doc(hidden)]
     pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
-    pub image: Option<ImageResource>,
+    pub texture: Option<Texture2D>,
     pub regions: Vec<TextureAtlasRegion>,
 }
 impl PartialEq for TextureAtlas {

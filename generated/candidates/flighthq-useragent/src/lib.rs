@@ -25,6 +25,8 @@ pub enum FlightUnion2<A, B> {
 
 mod _internal_index;
 pub use _internal_index::*;
+mod contract;
+pub use contract::*;
 mod user_agent;
 pub use user_agent::*;
 mod user_agent_parse;

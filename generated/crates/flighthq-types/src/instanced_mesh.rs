@@ -8,7 +8,7 @@
 
 use crate::{EntityRuntime, Kind, Material, Matrix4, MeshGeometry, NodeData, Quaternion, Vector3};
 
-// Source: upstream/packages/types/src/InstancedMesh.ts:5 (sha256:4f4896f9cd96c723d6c18c6df5a192c8a1afec0d5c9d3bee2524ab37607ab205)
+// Source: upstream/packages/types/src/InstancedMesh.ts:5 (sha256:fc19257d964eee709bcf7fe8343c6d0f90d037f7772f7c8c9ff55e2b37fe4fb2)
 #[derive(Clone, Default)]
 pub struct InstancedMesh {
     #[doc(hidden)]
@@ -51,7 +51,7 @@ impl crate::FlightEntity for InstancedMesh {
     }
 }
 
-// Source: upstream/packages/types/src/InstancedMesh.ts:12 (sha256:c04bff99a0216c5367c6862c96ffd3dc91f3604baeded3e4d6188698a4044992)
+// Source: upstream/packages/types/src/InstancedMesh.ts:12 (sha256:afdb316830da07b5dca13b153fbd7dba94fb6d8d6793d0bc89f4405d99e4dd08)
 pub type InstancedMeshRuntime = crate::EntityRuntime;
 
 // Source: upstream/packages/types/src/InstancedMesh.ts:13 (sha256:3b16f50f0d50be0e7776dd017914d125dea366a0073f49b884831fc999793fb9)

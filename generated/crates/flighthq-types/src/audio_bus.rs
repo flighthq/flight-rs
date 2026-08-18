@@ -65,3 +65,11 @@ impl PartialEq for AudioMixerOptions {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+
+// Source: upstream/packages/types/src/AudioBus.ts:23 (sha256:fc14fcea83c62f469d5047fcc81a43216dfaa7f96c0546d9b1cd9519a0f0c03d)
+pub type AudioBusMixerOperation = String;
+
+// Source: upstream/packages/types/src/AudioBus.ts:28 (sha256:b064a6dce85e4b719fa9f26686386f4becf4ffa93ea32aeb21f3b0715a000cbf)
+pub type AudioBusMixerGuard = std::sync::Arc<
+    std::sync::Mutex<Box<dyn FnMut(AudioBusMixerOperation, AudioBus) -> () + Send + 'static>>,
+>;

@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 use crate::{
-    BlendMode, ColorTransform, EntityRuntime, Kind, Material, MaterialData, Matrix, RenderProxy,
+    BlendMode, ColorScaleBias, EntityRuntime, Kind, Material, MaterialData, Matrix, RenderProxy,
     Renderable, Renderer, RendererData,
 };
 
@@ -24,12 +24,15 @@ pub struct RenderProxy2D {
     pub alpha: f64,
     pub appearance_frame_id: f64,
     pub blend_mode: Option<BlendMode>,
-    pub color_transform: Option<ColorTransform>,
+    pub color_scale_bias: Option<ColorScaleBias>,
+    pub color_matrix: Option<Vec<f64>>,
     pub material: Option<Material>,
     pub material_data: Option<MaterialData>,
     pub last_appearance_id: f64,
+    pub last_children_id: f64,
     pub last_local_content_id: f64,
     pub last_local_transform_id: f64,
+    pub last_parent_reference_id: f64,
     pub name: Option<String>,
     pub renderer: Option<Renderer>,
     pub renderer_data: Option<RendererData>,

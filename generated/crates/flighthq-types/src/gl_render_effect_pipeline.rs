@@ -34,7 +34,33 @@ pub type GlRenderEffectRunner = std::sync::Arc<
     std::sync::Mutex<Box<dyn FnMut(GlRenderEffectContext, RenderEffect) -> () + Send + 'static>>,
 >;
 
-// Source: upstream/packages/types/src/GlRenderEffectPipeline.ts:29 (sha256:4a319c9f224ad0ea33a1150b24214c3f6c6c7c49f71d4b2018541d137eb2d3d0)
+// Source: upstream/packages/types/src/GlRenderEffectPipeline.ts:43 (sha256:38669b83aab86a47661e1e12f33c80550379c3f0b7543cb86f88409f7a250ddf)
+pub type GlRenderEffectApplicationStatus = String;
+
+// Source: upstream/packages/types/src/GlRenderEffectPipeline.ts:51 (sha256:15e53d2503c0496748f20338561a40b594875934b0cd93d9ea5cf712d7b4bbe4)
+#[derive(Clone, Default)]
+pub struct GlRenderEffectApplicationExplanation {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub registered_count: f64,
+    pub requested_count: f64,
+    pub status: GlRenderEffectApplicationStatus,
+    pub unregistered_kinds: Vec<String>,
+}
+impl PartialEq for GlRenderEffectApplicationExplanation {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/GlRenderEffectPipeline.ts:58 (sha256:12b35a91d9190b8cfc94d382998304d41cb7ea0f43988651a47c8cde753c94e0)
+pub type GlRenderEffectApplicationGuard = std::sync::Arc<
+    std::sync::Mutex<
+        Box<dyn FnMut(GlRenderState, GlRenderEffectApplicationExplanation) -> () + Send + 'static>,
+    >,
+>;
+
+// Source: upstream/packages/types/src/GlRenderEffectPipeline.ts:63 (sha256:4a319c9f224ad0ea33a1150b24214c3f6c6c7c49f71d4b2018541d137eb2d3d0)
 #[derive(Clone, Default)]
 pub struct RenderEffectPipelineOptions {
     #[doc(hidden)]
@@ -49,7 +75,7 @@ impl PartialEq for RenderEffectPipelineOptions {
     }
 }
 
-// Source: upstream/packages/types/src/GlRenderEffectPipeline.ts:41 (sha256:ea1b2223d50df5b640545106804895714d12cb99a7838ab014ed2e3816d701a9)
+// Source: upstream/packages/types/src/GlRenderEffectPipeline.ts:75 (sha256:ea1b2223d50df5b640545106804895714d12cb99a7838ab014ed2e3816d701a9)
 #[derive(Clone, Default)]
 pub struct GlRenderEffectPipeline {
     #[doc(hidden)]

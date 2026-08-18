@@ -27,3 +27,5 @@ mod _internal_index;
 pub use _internal_index::*;
 mod canvas_text_shaper;
 pub use canvas_text_shaper::*;
+mod contract;
+pub use contract::*;

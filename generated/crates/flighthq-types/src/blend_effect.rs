@@ -8,7 +8,7 @@
 
 use crate::{AdvancedBlendMode, Kind};
 
-// Source: upstream/packages/types/src/BlendEffect.ts:12 (sha256:d63118c410116509a903cf1414b9561e31bee6107c718e648d79b5c96fb3fd3b)
+// Source: upstream/packages/types/src/BlendEffect.ts:13 (sha256:d63118c410116509a903cf1414b9561e31bee6107c718e648d79b5c96fb3fd3b)
 #[derive(Clone, Default)]
 pub struct BlendEffect {
     #[doc(hidden)]

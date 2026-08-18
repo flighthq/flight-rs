@@ -6,18 +6,14 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{
-    BlendMode, ClipRegion, EntityRuntime, Kind, Material, MaterialData, Rectangle, TextureAtlas,
-};
+use crate::{BlendMode, ClipRegion, EntityRuntime, Kind, Material, MaterialData, Texture};
 
-// Source: upstream/packages/types/src/Sprite.ts:5 (sha256:417d847384b11dc6fde6e0c4683e3e4bbc271e82de90a2a6369c16d776657111)
+// Source: upstream/packages/types/src/Sprite.ts:4 (sha256:0a192307a03c8542e477cc8b64353c3b5de08c6cde73bec89ca39694c56943b4)
 #[derive(Clone, Default)]
 pub struct SpriteData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub atlas: Option<TextureAtlas>,
-    pub id: f64,
-    pub rect: Option<Rectangle>,
+    pub texture: Option<Texture>,
 }
 impl PartialEq for SpriteData {
     fn eq(&self, other: &Self) -> bool {
@@ -25,10 +21,10 @@ impl PartialEq for SpriteData {
     }
 }
 
-// Source: upstream/packages/types/src/Sprite.ts:11 (sha256:d4a64ca8109b8797b1b25a7b5a47513a6506c9bc3d308365b04da0ef1e38345b)
+// Source: upstream/packages/types/src/Sprite.ts:8 (sha256:65d02f91307d74bea839eda6dba3a93ed11e89d64e3788d0bce0b9dafd7a2173)
 pub type SpriteRuntime = crate::EntityRuntime;
 
-// Source: upstream/packages/types/src/Sprite.ts:13 (sha256:ebe1fffa076c256cc6d00a80e625c780e8a0f9b262cab3c8b645b094107d72fb)
+// Source: upstream/packages/types/src/Sprite.ts:13 (sha256:d7459435d0471453f1a562948d6fa63807ac8d1381c6ea5874b6f8299eb1b9c2)
 #[derive(Clone, Default)]
 pub struct Sprite {
     #[doc(hidden)]

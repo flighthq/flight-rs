@@ -25,17 +25,7 @@ pub enum FlightUnion2<A, B> {
 
 mod _internal_index;
 pub use _internal_index::*;
-mod create_motion_path;
-pub use create_motion_path::*;
-mod get_motion_path_heading;
-pub use get_motion_path_heading::*;
-mod get_motion_path_position;
-pub use get_motion_path_position::*;
-mod get_motion_path_progress;
-pub use get_motion_path_progress::*;
-mod set_motion_path_distance;
-pub use set_motion_path_distance::*;
-mod set_motion_path_progress;
-pub use set_motion_path_progress::*;
-mod update_motion_path;
-pub use update_motion_path::*;
+mod contract;
+pub use contract::*;
+mod motion_path;
+pub use motion_path::*;

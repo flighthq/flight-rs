@@ -1622,7 +1622,7 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
     if (nativeHostConstructor) {
       return { arguments: [], kind: 'named', name: nativeHostConstructor.resultType };
     }
-    if (
+    const platformType =
       platformDynamicTypes.has(name) ||
       name.startsWith('GPU') ||
       name.startsWith('HTML') ||
@@ -1636,8 +1636,8 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
       name.startsWith('Performance') ||
       name.endsWith('Event') ||
       name.endsWith('EventListener') ||
-      ['BodyInit', 'CSSStyleDeclaration', 'RegExpExecArray', 'TextEncoder', 'WindowEventMap'].includes(name)
-    ) {
+      ['BodyInit', 'CSSStyleDeclaration', 'RegExpExecArray', 'TextEncoder', 'WindowEventMap'].includes(name);
+    if (platformType && (!ts.isIdentifier(node.typeName) || !isTypeNameLexicallyBound(node.typeName, context))) {
       return { kind: 'dynamic' };
     }
     const utilityArgument = arguments_[0];

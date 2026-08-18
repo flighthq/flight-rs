@@ -19,8 +19,8 @@ fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
 }
 
-// Source: upstream/packages/color/src/colorFromKelvin.ts:8 (sha256:a560a4115d973fe9ccd272a3f1fc6b5305ff6fe52a693d414a78633546f3dccc)
-pub fn create_color_from_kelvin(kelvin: f64) -> f64 {
+// Source: upstream/packages/color/src/colorFromKelvin.ts:8 (sha256:e23de2c1a3722fab384f91e3a2b5c9db1f13eacf1baea08993653a34406f6cbe)
+pub fn color_from_kelvin(kelvin: f64) -> f64 {
     let temp = ((1000.0_f64).max((40000.0_f64).min(kelvin)) / 100.0_f64);
     let mut r: f64;
     let mut g: f64;

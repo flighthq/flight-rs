@@ -5,3 +5,5 @@
 #![allow(unused_imports)]
 #![allow(unused_mut)]
 #![allow(unused_parens)]
+
+pub use crate::{append_svg_path_data, format_svg_path_data, parse_svg_path_data};

@@ -6,15 +6,15 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{ImageResource, Surface};
+use crate::{Bitmap, TextureSource};
 
-// Source: upstream/packages/types/src/GlyphSource.ts:15 (sha256:620fb139146de60e01d255de5d3f0c7beff4e8627770f3bcc76d5eec3d1aa3a2)
+// Source: upstream/packages/types/src/GlyphSource.ts:15 (sha256:a56e3b8bc0ff437f5e9e09aaf5066e2be6dd10ceb3b0795577a2adb4d652ec8a)
 #[derive(Clone)]
 pub struct GlyphSource {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub get_glyph_atlas_image: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(Option<f64>) -> Option<ImageResource> + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut(Option<f64>) -> Option<TextureSource> + Send + 'static>>,
     >,
     pub get_glyph_entry: std::sync::Arc<
         std::sync::Mutex<Box<dyn FnMut(f64) -> Option<GlyphEntry> + Send + 'static>>,
@@ -99,7 +99,7 @@ impl PartialEq for GlyphRasterizeOptions {
     }
 }
 
-// Source: upstream/packages/types/src/GlyphSource.ts:81 (sha256:48735754c6f79d36f0da82d8f760d14bde9e75339b7c5fecf8e2a486129c5b5a)
+// Source: upstream/packages/types/src/GlyphSource.ts:81 (sha256:6db05fccf12d3c09fc7e6a70221a3d48ef7c9810396b06aabd100e440d9ff9d9)
 #[derive(Clone)]
 pub struct GlyphRasterizerBackend {
     #[doc(hidden)]
@@ -113,6 +113,13 @@ pub struct GlyphRasterizerBackend {
             >,
         >,
     >,
+    pub measure_metrics: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<dyn FnMut(GlyphRasterizeOptions) -> Option<GlyphMetrics> + Send + 'static>,
+            >,
+        >,
+    >,
 }
 impl PartialEq for GlyphRasterizerBackend {
     fn eq(&self, other: &Self) -> bool {
@@ -120,16 +127,21 @@ impl PartialEq for GlyphRasterizerBackend {
     }
 }
 
-// Source: upstream/packages/types/src/GlyphSource.ts:88 (sha256:0e4e882c018edcf42950aa1ffa8e7c33e117c5021bf9aaf9df71ea1547866b3c)
+// Source: upstream/packages/types/src/GlyphSource.ts:93 (sha256:32b1ac2345ad54479c45fff6fd902fe8912cbdd147767fe9864d7ab565e1342f)
 #[derive(Clone, Default)]
 pub struct GlyphAtlasOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub font_family: String,
     pub font_size: f64,
+    pub font_style: Option<String>,
+    pub font_weight: Option<String>,
     pub height: f64,
+    pub max_area: Option<f64>,
+    pub max_bytes: Option<f64>,
     pub max_glyphs: Option<f64>,
     pub padding: Option<f64>,
+    pub rasterizer_backend: Option<GlyphRasterizerBackend>,
     pub width: f64,
 }
 impl PartialEq for GlyphAtlasOptions {
@@ -138,7 +150,7 @@ impl PartialEq for GlyphAtlasOptions {
     }
 }
 
-// Source: upstream/packages/types/src/GlyphSource.ts:99 (sha256:dc15e695a4ce542d6a7bf3906d5ca2b88fa4114d6404823a05cb8eb49a786bfc)
+// Source: upstream/packages/types/src/GlyphSource.ts:121 (sha256:dc15e695a4ce542d6a7bf3906d5ca2b88fa4114d6404823a05cb8eb49a786bfc)
 #[derive(Clone, Default)]
 pub struct GlyphAtlasShelf {
     #[doc(hidden)]
@@ -153,8 +165,8 @@ impl PartialEq for GlyphAtlasShelf {
     }
 }
 
-// Source: upstream/packages/types/src/GlyphSource.ts:109 (sha256:93ed7ab4507aab5b5f68c6ccd4bc3dadbdcc4563a8fb382623d12c8cc3195291)
-#[derive(Clone, Default)]
+// Source: upstream/packages/types/src/GlyphSource.ts:131 (sha256:3ef83b4b6d0ad8ffc83ef2348a77fec59fe2d5a883a7bbad4ee57b101d44aa87)
+#[derive(Clone)]
 pub struct GlyphAtlasRuntime {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -165,14 +177,19 @@ pub struct GlyphAtlasRuntime {
     pub dirty_min_x: f64,
     pub dirty_min_y: f64,
     pub entries: Vec<(f64, GlyphEntry)>,
-    pub lru: Vec<f64>,
+    pub lru: Vec<(f64, bool)>,
+    pub max_area: f64,
+    pub max_bytes: f64,
     pub max_glyphs: f64,
+    pub occupied_area: f64,
+    pub retained_bytes: f64,
     pub metrics: GlyphMetrics,
     pub pack_bottom: f64,
     pub padding: f64,
+    pub rasterizer_backend: GlyphRasterizerBackend,
     pub rasterize_options: GlyphRasterizeOptions,
     pub shelves: Vec<GlyphAtlasShelf>,
-    pub surface: Surface,
+    pub bitmap: Bitmap,
 }
 impl PartialEq for GlyphAtlasRuntime {
     fn eq(&self, other: &Self) -> bool {
@@ -180,8 +197,8 @@ impl PartialEq for GlyphAtlasRuntime {
     }
 }
 
-// Source: upstream/packages/types/src/GlyphSource.ts:131 (sha256:8e4d8aabe5261fd2a81059c9e8298e9eef9beea41daee9fbb92c9c0e4b57d96d)
-#[derive(Clone, Default)]
+// Source: upstream/packages/types/src/GlyphSource.ts:166 (sha256:8e4d8aabe5261fd2a81059c9e8298e9eef9beea41daee9fbb92c9c0e4b57d96d)
+#[derive(Clone)]
 pub struct GlyphAtlas {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

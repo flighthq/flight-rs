@@ -20,7 +20,7 @@ impl PartialEq for FlightOmitRecord1 {
     }
 }
 
-// Source: upstream/packages/adjustments/src/channelMixerAdjustment.ts:9 (sha256:9cc9895ee668e174188dd1fa6483a16626d324d8d10b009d95cba5b40e1da4a8)
+// Source: upstream/packages/adjustments/src/channelMixerAdjustment.ts:9 (sha256:73017b1b1832d883021e26b089c22bc01fe18a46cecd55813e86b60e764616e2)
 pub fn create_channel_mixer_adjustment(
     options: Option<FlightOmitRecord1>,
 ) -> ChannelMixerAdjustment {
@@ -90,11 +90,11 @@ pub fn create_channel_mixer_adjustment(
     );
     {
         let __flight_index = (4.0_f64) as usize;
-        let __flight_value = ({
+        let __flight_value = {
             let __flight_callback = (m).clone();
             let __flight_result = __flight_callback.lock().unwrap()(3.0_f64);
             __flight_result
-        } * 255.0_f64);
+        };
         if __flight_index == color_matrix.len() {
             color_matrix.push(__flight_value);
         } else {
@@ -103,11 +103,11 @@ pub fn create_channel_mixer_adjustment(
     };
     {
         let __flight_index = (9.0_f64) as usize;
-        let __flight_value = ({
+        let __flight_value = {
             let __flight_callback = (m).clone();
             let __flight_result = __flight_callback.lock().unwrap()(7.0_f64);
             __flight_result
-        } * 255.0_f64);
+        };
         if __flight_index == color_matrix.len() {
             color_matrix.push(__flight_value);
         } else {
@@ -116,11 +116,11 @@ pub fn create_channel_mixer_adjustment(
     };
     {
         let __flight_index = (14.0_f64) as usize;
-        let __flight_value = ({
+        let __flight_value = {
             let __flight_callback = (m).clone();
             let __flight_result = __flight_callback.lock().unwrap()(11.0_f64);
             __flight_result
-        } * 255.0_f64);
+        };
         if __flight_index == color_matrix.len() {
             color_matrix.push(__flight_value);
         } else {

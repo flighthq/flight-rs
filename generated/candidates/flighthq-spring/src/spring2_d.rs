@@ -9,7 +9,7 @@
 use crate::{create_spring, is_spring_settled, update_spring};
 use flighthq_types::{Spring2D, SpringConfig};
 
-// Source: upstream/packages/spring/src/spring2D.ts:9 (sha256:e7a66857916f0e01030467f8a74f796aa21d69f0cbb1a9556b9da8a27ede4560)
+// Source: upstream/packages/spring/src/spring2D.ts:7 (sha256:e7a66857916f0e01030467f8a74f796aa21d69f0cbb1a9556b9da8a27ede4560)
 pub fn create_spring2_d(
     value_x: Option<f64>,
     value_y: Option<f64>,
@@ -27,7 +27,7 @@ pub fn create_spring2_d(
     };
 }
 
-// Source: upstream/packages/spring/src/spring2D.ts:20 (sha256:21d177fe51890c0e040f69d32d67786beae49d53c99e7d6269f387cff75cdd1b)
+// Source: upstream/packages/spring/src/spring2D.ts:18 (sha256:21d177fe51890c0e040f69d32d67786beae49d53c99e7d6269f387cff75cdd1b)
 pub fn is_spring2_d_settled(
     spring2_d: &Spring2D,
     target_x: f64,
@@ -48,7 +48,7 @@ pub fn is_spring2_d_settled(
     ));
 }
 
-// Source: upstream/packages/spring/src/spring2D.ts:36 (sha256:0f9ad297213840451af063ea6c55e381e7df9daacc603f38c20c44f3a916d31d)
+// Source: upstream/packages/spring/src/spring2D.ts:34 (sha256:0f9ad297213840451af063ea6c55e381e7df9daacc603f38c20c44f3a916d31d)
 pub fn update_spring2_d(
     spring2_d: &mut Spring2D,
     target_x: f64,

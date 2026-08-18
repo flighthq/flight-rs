@@ -6,16 +6,25 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{AnimationClip, AnimationLoopMode, Signal};
+use crate::{AnimationClip, AnimationClipEvent, AnimationLoopMode, EntityRuntime, Signal};
 
-// Source: upstream/packages/types/src/AnimationPlayer.ts:15 (sha256:0b9d7f9fbe702a6f038b3e5be956635e807a756ca48b0dd3b883bbea575664d3)
+// Source: upstream/packages/types/src/AnimationPlayer.ts:18 (sha256:7737db1e82e8f1bf7d07b4ebd21bd0f18946927b22ba3b0216c93a3d85241c6d)
 #[derive(Clone, Default)]
 pub struct AnimationPlayer {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
     pub clip: AnimationClip,
     pub loop_: bool,
     pub loop_mode: Option<AnimationLoopMode>,
+    pub on_event: Option<
+        Signal<
+            std::sync::Arc<
+                std::sync::Mutex<Box<dyn FnMut(AnimationClipEvent) -> () + Send + 'static>>,
+            >,
+        >,
+    >,
     pub on_finished:
         Option<Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>>,
     pub on_looped:
@@ -28,5 +37,20 @@ pub struct AnimationPlayer {
 impl PartialEq for AnimationPlayer {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for AnimationPlayer {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }

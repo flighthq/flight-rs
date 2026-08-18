@@ -20,7 +20,7 @@ impl PartialEq for FlightOmitRecord1 {
     }
 }
 
-// Source: upstream/packages/effects/src/blendEffect.ts:9 (sha256:757aecefa83975696363ffae04cff0201f7889f8dc06ca59c5d88e81d1e4a7c9)
+// Source: upstream/packages/effects/src/blendEffect.ts:10 (sha256:757aecefa83975696363ffae04cff0201f7889f8dc06ca59c5d88e81d1e4a7c9)
 #[derive(Clone, Default)]
 struct CreateBlendEffectRecord2 {
     __flight_identity: std::sync::Arc<()>,

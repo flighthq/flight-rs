@@ -9,6 +9,84 @@ import { emitRustModule } from '../../tools/generator/src/emit/rust.ts';
 import { lowerTypeScriptSource } from '../../tools/generator/src/lower/typescript.ts';
 
 describe('Rust emission', () => {
+  it('aligns host, numeric namespace, and erased generic field types with emitted Rust', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/types/src/schema-types.ts',
+      `
+        export const WireCode = { One: 1, Two: 2 } as const;
+        export type WireCode = (typeof WireCode)[keyof typeof WireCode];
+        export interface Phantom<Value> { count: number; }
+        export interface Holder<Value> { phantom: Phantom<Value>; }
+        export interface Schedule { at?: Date; code: WireCode; }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/types', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/types/src/schema-types.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('pub struct Phantom {');
+    expect(output).toContain('pub struct Holder {');
+    expect(output).toContain('pub phantom: Phantom,');
+    expect(output).toContain('pub at: Option<crate::OpaqueHostValue>,');
+    expect(output).toContain('pub code: f64,');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-schema-types-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output.replace('// Source:', '#[derive(Clone)] pub struct OpaqueHostValue;\n// Source:'));
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('synthesizes records nested through inherited fields and union intersections', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/types/src/nested-aliases.ts',
+      `
+        export interface BaseRecord {
+          metadata?: { label: string };
+        }
+        export interface ExtendedRecord extends BaseRecord {
+          value: number;
+        }
+        export type VariantRecord = BaseRecord | (BaseRecord & { values: readonly number[] });
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/types', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/types/src/nested-aliases.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('pub type VariantRecord = crate::FlightUnion2<');
+    expect(output).toMatch(/pub struct ExtendedRecordRecord\d+/u);
+    expect(output).toMatch(/pub struct VariantRecordRecord\d+/u);
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-nested-aliases-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, `${output}\n#[derive(Clone, PartialEq)] pub enum FlightUnion2<A, B> { A(A), B(B) }\n`);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
   it('emits typed record for-in loops while rejecting dynamic enumeration', () => {
     const lower = (body: string) =>
       lowerTypeScriptSource(
@@ -2285,6 +2363,9 @@ describe('Rust emission', () => {
         export interface PlainSurface {
           width: number;
         }
+        export interface GenericSurface<State> extends Entity {
+          state: State;
+        }
         export function readSurface(surface: SurfaceLike): number {
           return surface.width;
         }
@@ -2319,6 +2400,7 @@ describe('Rust emission', () => {
     expect(entityOutput).toContain('pub struct EntityRuntimeStorage');
     expect(entityOutput).toContain('pub trait FlightEntity');
     expect(promotedOutput).toContain('impl crate::FlightEntity for Surface');
+    expect(promotedOutput).toContain('impl<State: Clone> crate::FlightEntity for GenericSurface<State>');
     expect(promotedOutput).toContain('__flight_entity_runtime: Default::default()');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-promoted-entity-'));

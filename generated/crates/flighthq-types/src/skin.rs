@@ -6,15 +6,15 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{SceneNode, Skeleton3D};
+use crate::{Node3D, Skeleton3D};
 
-// Source: upstream/packages/types/src/Skin.ts:13 (sha256:4237493d27e6444829b2009db82e94785c1ed46e5e9d134ec1b288566e759151)
+// Source: upstream/packages/types/src/Skin.ts:13 (sha256:b7e8ad399e4c8c4380cafd3c1a2f3e74211782882d88f21901a89e54cd5628e8)
 #[derive(Clone, Default)]
 pub struct Skin {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub skeleton: Skeleton3D,
-    pub skeleton_root: Option<SceneNode>,
+    pub skeleton_root: Option<Node3D>,
 }
 impl PartialEq for Skin {
     fn eq(&self, other: &Self) -> bool {

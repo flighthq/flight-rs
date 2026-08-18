@@ -7,10 +7,10 @@
 #![allow(unused_parens)]
 
 use crate::{
-    TEXT_BOUNDS_GUTTER as text_bounds_gutter_constant, TextBoundsSpec, compute_text_bounds_height,
+    TEXT_BOUNDS_GUTTER as text_bounds_gutter_constant, compute_text_bounds_height,
     compute_text_bounds_width,
 };
-use flighthq_types::{RichTextData, TextLayoutResult};
+use flighthq_types::{RichTextData, TextBoundsSpec, TextLayoutResult};
 
 // Source: upstream/packages/textlayout/src/richTextMetrics.ts:5 (sha256:b2900d13dd2754a4d8bac797e963c1203224c0c21cf21c5f67e7955afeb262c9)
 pub fn compute_rich_text_bottom_scroll_v(data: &RichTextData, layout: &TextLayoutResult) -> f64 {

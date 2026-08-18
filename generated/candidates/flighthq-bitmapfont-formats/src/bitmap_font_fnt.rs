@@ -6,32 +6,28 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{
-    BitmapFontCharRecord, BitmapFontKerningRecord, BitmapFontPageRecord, BitmapFontRecord,
-    build_bitmap_font_from_record,
+use crate::build_bitmap_font_from_record;
+use flighthq_bitmapfont::{get_bitmap_font_metrics, unpack_bitmap_font_kerning_key};
+use flighthq_types::{
+    BitmapFont, BitmapFontCharRecord, BitmapFontKerningPair, BitmapFontKerningRecord,
+    BitmapFontPageRecord, BitmapFontParseOptions, BitmapFontRecord,
 };
-use flighthq_bitmapfont::get_bitmap_font_metrics;
-use flighthq_types::{BitmapFont, BitmapFontParseOptions};
 
-#[inline]
-fn __flight_js_to_u32(value: f64) -> u32 {
-    if !value.is_finite() || value == 0.0 {
-        return 0;
-    }
-    value.trunc().rem_euclid(4294967296.0_f64) as u32
-}
-
-#[inline]
-fn __flight_js_to_i32(value: f64) -> i32 {
-    __flight_js_to_u32(value) as i32
-}
-
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:20 (sha256:c243209a8b6c2bcd530f5103f375256a88d1b51b9b9b9864b74fbad3c64e3f0e)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:23 (sha256:9066ea98917c13dfc3e2172f24e9617d31bb81e32d11fd5a2e19c658190d933d)
 pub fn format_bitmap_font_fnt(font: &BitmapFont) -> String {
     let metrics = get_bitmap_font_metrics(font);
     let line_height = ((metrics.ascent + metrics.descent) + metrics.line_gap);
     let base = metrics.ascent;
-    let primary_image = (font.pages[0.0_f64 as usize].image).clone();
+    let primary_texture = (font.pages[0.0_f64 as usize].texture).clone();
+    let primary_image = if (primary_texture
+        .as_ref()
+        .map(|value| (value.dimension).clone()))
+        == Some("2d".to_owned())
+    {
+        (primary_texture.as_ref().unwrap().source).clone()
+    } else {
+        None
+    };
     let scale_w = if (primary_image).is_some() {
         primary_image.as_ref().unwrap().width
     } else {
@@ -109,17 +105,18 @@ pub fn format_bitmap_font_fnt(font: &BitmapFont) -> String {
             .iter()
             .find(|(key, _)| key == &key)
             .map(|(_, value)| value.clone());
-        let first = (__flight_js_to_u32(key) >> (__flight_js_to_u32(16.0_f64) & 31)) as f64;
-        let second = (__flight_js_to_i32(key) & __flight_js_to_i32(65535.0_f64)) as f64;
+        unpack_bitmap_font_kerning_key((key).clone(), &mut (*_KERNING_PAIR.lock().unwrap()));
         lines.push(format!(
             "kerning first={} second={} amount={}",
-            first, second, amount
+            (*_KERNING_PAIR.lock().unwrap()).left,
+            (*_KERNING_PAIR.lock().unwrap()).right,
+            amount
         ));
     }
     return ((lines.join)("\n") + "\n");
 }
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:67 (sha256:c42d4ad04ba342517df76eb8c8859fdc40889dc37715254b4a79eff0307298ea)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:70 (sha256:c42d4ad04ba342517df76eb8c8859fdc40889dc37715254b4a79eff0307298ea)
 pub fn parse_bitmap_font_fnt(
     text: String,
     options: Option<BitmapFontParseOptions>,
@@ -134,7 +131,7 @@ pub fn parse_bitmap_font_fnt(
     );
 }
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:76 (sha256:e23c8a29db1a156d98532613a4ef71de7976db5eab0a5670f19d3c07e321f640)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:79 (sha256:e23c8a29db1a156d98532613a4ef71de7976db5eab0a5670f19d3c07e321f640)
 fn parse_bitmap_font_fnt_record(text: String) -> Option<BitmapFontRecord> {
     let mut line_height: Option<f64> = None;
     let mut base: Option<f64> = None;
@@ -251,7 +248,7 @@ fn parse_bitmap_font_fnt_record(text: String) -> Option<BitmapFontRecord> {
     });
 }
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:111 (sha256:220544cc241ccf8ae5b74176f788cd6e3b1b2fd0cfe8fa87b012c9a310e21bc1)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:114 (sha256:220544cc241ccf8ae5b74176f788cd6e3b1b2fd0cfe8fa87b012c9a310e21bc1)
 #[derive(Clone, Default)]
 struct ParseFntFieldsRecord1 {
     __flight_identity: std::sync::Arc<()>,
@@ -306,7 +303,7 @@ fn parse_fnt_fields(rest: String) -> Vec<(String, String)> {
     return fields;
 }
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:121 (sha256:e9ec04962c1833deb51d449cae0e2ac62efddcc46ec756b1c89c5d2c713d5de0)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:124 (sha256:e9ec04962c1833deb51d449cae0e2ac62efddcc46ec756b1c89c5d2c713d5de0)
 fn read_fnt_char(fields: &Vec<(String, String)>) -> Option<BitmapFontCharRecord> {
     let id = read_fnt_number(Some(
         (fields
@@ -402,7 +399,7 @@ fn read_fnt_char(fields: &Vec<(String, String)>) -> Option<BitmapFontCharRecord>
     });
 }
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:145 (sha256:163dd9f2cc4b00d747ce9e81b378c96d30f120670dc9661243b8de447c50cb8a)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:148 (sha256:163dd9f2cc4b00d747ce9e81b378c96d30f120670dc9661243b8de447c50cb8a)
 fn read_fnt_kerning(fields: &Vec<(String, String)>) -> Option<BitmapFontKerningRecord> {
     let first = read_fnt_number(Some(
         (fields
@@ -439,7 +436,7 @@ fn read_fnt_kerning(fields: &Vec<(String, String)>) -> Option<BitmapFontKerningR
     });
 }
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:155 (sha256:061d1555bcce0612a142320f51716accd695dcd24345b46d2f9dc0143fad2697)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:158 (sha256:061d1555bcce0612a142320f51716accd695dcd24345b46d2f9dc0143fad2697)
 fn read_fnt_number(value: Option<String>) -> Option<f64> {
     if ((value).is_none()) || ((value).trim().to_owned() == "") {
         return None;
@@ -451,3 +448,13 @@ fn read_fnt_number(value: Option<String>) -> Option<f64> {
         None
     };
 }
+
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:166 (sha256:cac4787060332e3ffccce6a1df878b38cee7320de3329eba61bb6c8a79036bb3)
+static _KERNING_PAIR: std::sync::LazyLock<std::sync::Mutex<BitmapFontKerningPair>> =
+    std::sync::LazyLock::new(|| {
+        std::sync::Mutex::new(BitmapFontKerningPair {
+            __flight_identity: std::sync::Arc::new(()),
+            left: 0.0_f64,
+            right: 0.0_f64,
+        })
+    });

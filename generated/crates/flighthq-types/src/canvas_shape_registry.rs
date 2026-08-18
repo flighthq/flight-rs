@@ -6,13 +6,15 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
+use crate::CanvasShapeDrawState;
+
 // Source: upstream/packages/types/src/CanvasShapeRegistry.ts:5 (sha256:70412d87857775922177c1a5fde48cd3fb8f8baf66ac245c4b4198e388ecd145)
 pub type CanvasShapeHandler = std::sync::Arc<
     std::sync::Mutex<
         Box<
             dyn FnMut(
                     crate::OpaqueHostValue,
-                    crate::OpaqueHostValue,
+                    CanvasShapeDrawState,
                     Vec<crate::OpaqueHostValue>,
                     f64,
                 ) -> ()
@@ -28,7 +30,7 @@ pub struct CanvasShapeCommand<K> {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub key: K,
-    pub draw: crate::OpaqueHostValue,
+    pub draw: CanvasShapeHandler,
 }
 impl<K> PartialEq for CanvasShapeCommand<K> {
     fn eq(&self, other: &Self) -> bool {

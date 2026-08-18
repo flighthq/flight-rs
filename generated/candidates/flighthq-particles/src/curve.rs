@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-pub use flighthq_types::{ColorKeyframe, CurveKeyframe, ParticleCurve};
+use flighthq_types::{ColorKeyframe, CurveKeyframe, ParticleCurve};
 
 #[inline]
 fn __flight_js_to_u32(value: f64) -> u32 {
@@ -54,7 +54,7 @@ impl PartialEq for SharedStructuralRecord3 {
     }
 }
 
-// Source: upstream/packages/particles/src/curve.ts:6 (sha256:783ff7a690c8c841b486c92aa530da277279f483891265bc824bbb646fbf97ce)
+// Source: upstream/packages/particles/src/curve.ts:4 (sha256:783ff7a690c8c841b486c92aa530da277279f483891265bc824bbb646fbf97ce)
 pub fn build_particle_color_curve(
     f: &mut impl FnMut(f64) -> Vec<f64>,
     samples: Option<f64>,
@@ -105,7 +105,7 @@ pub fn build_particle_color_curve(
     return lut;
 }
 
-// Source: upstream/packages/particles/src/curve.ts:19 (sha256:c16328d38b188b611eb9bf96e02bade98f8027d9c20be610f9317d0b35a19a44)
+// Source: upstream/packages/particles/src/curve.ts:17 (sha256:c16328d38b188b611eb9bf96e02bade98f8027d9c20be610f9317d0b35a19a44)
 pub fn build_particle_curve(
     f: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64) -> f64 + Send + 'static>>>,
     samples: Option<f64>,
@@ -138,7 +138,7 @@ pub fn build_particle_curve(
     return lut;
 }
 
-// Source: upstream/packages/particles/src/curve.ts:28 (sha256:2d3a5c547e45933a4028ee26d0c2c55a60c44b074cbf46e22a56f0e09562b540)
+// Source: upstream/packages/particles/src/curve.ts:26 (sha256:2d3a5c547e45933a4028ee26d0c2c55a60c44b074cbf46e22a56f0e09562b540)
 pub fn lerp_hsv_direct(
     out: &mut crate::FlightUnion2<Vec<f32>, Vec<f64>>,
     offset: f64,
@@ -179,7 +179,7 @@ pub fn lerp_hsv_direct(
     out[(offset + 2.0_f64) as usize] = b;
 }
 
-// Source: upstream/packages/particles/src/curve.ts:52 (sha256:7c936f8f88bc7b7098dc9374cffe9ffed54e343105ca991e817354c944458110)
+// Source: upstream/packages/particles/src/curve.ts:50 (sha256:7c936f8f88bc7b7098dc9374cffe9ffed54e343105ca991e817354c944458110)
 pub fn lerp_hsv_in_place(
     colors_out: &mut crate::FlightUnion2<Vec<f32>, Vec<f64>>,
     offset: f64,
@@ -200,7 +200,7 @@ pub fn lerp_hsv_in_place(
     );
 }
 
-// Source: upstream/packages/particles/src/curve.ts:74 (sha256:ec995439038deda264344784bb5d95a0528ee293b0d0abcfa3cd124ffdd1d4c5)
+// Source: upstream/packages/particles/src/curve.ts:72 (sha256:ec995439038deda264344784bb5d95a0528ee293b0d0abcfa3cd124ffdd1d4c5)
 pub fn particle_color_curve_from_keyframes(
     keys: &mut Vec<ColorKeyframe>,
     samples: Option<f64>,
@@ -245,7 +245,7 @@ pub fn particle_color_curve_from_keyframes(
     );
 }
 
-// Source: upstream/packages/particles/src/curve.ts:88 (sha256:bfcf16be19906a5be170adefe9905f0abe1c8ac14995174a56c16c9997d4f47a)
+// Source: upstream/packages/particles/src/curve.ts:86 (sha256:bfcf16be19906a5be170adefe9905f0abe1c8ac14995174a56c16c9997d4f47a)
 pub fn particle_color_curve_to_keyframes(lut: &ParticleCurve) -> Vec<ColorKeyframe> {
     let n = (lut.length / 3.0_f64).floor();
     if (n == 0.0_f64) {
@@ -288,7 +288,7 @@ pub fn particle_color_curve_to_keyframes(lut: &ParticleCurve) -> Vec<ColorKeyfra
     return keys;
 }
 
-// Source: upstream/packages/particles/src/curve.ts:100 (sha256:cc9e7c9b98ab1da548a15786de0b264e61e4cc7c8dfe97a7cdca0e7e0cce849b)
+// Source: upstream/packages/particles/src/curve.ts:98 (sha256:cc9e7c9b98ab1da548a15786de0b264e61e4cc7c8dfe97a7cdca0e7e0cce849b)
 pub fn particle_curve_from_keyframes(
     keys: &mut Vec<CurveKeyframe>,
     samples: Option<f64>,
@@ -321,7 +321,7 @@ pub fn particle_curve_from_keyframes(
     );
 }
 
-// Source: upstream/packages/particles/src/curve.ts:109 (sha256:b3beb7b5b8224995369d409cf3715319f965f886b22b376f7851aaa0d4127c2f)
+// Source: upstream/packages/particles/src/curve.ts:107 (sha256:b3beb7b5b8224995369d409cf3715319f965f886b22b376f7851aaa0d4127c2f)
 pub fn particle_curve_to_keyframes(lut: &ParticleCurve) -> Vec<CurveKeyframe> {
     let n = lut.length;
     if (n == 0.0_f64) {
@@ -360,7 +360,7 @@ pub fn particle_curve_to_keyframes(lut: &ParticleCurve) -> Vec<CurveKeyframe> {
     return keys;
 }
 
-// Source: upstream/packages/particles/src/curve.ts:119 (sha256:2bc6b7fe45a1b3570b160a6c2ccd33245f2938eac3c2959e58a79d8b3bbd934e)
+// Source: upstream/packages/particles/src/curve.ts:117 (sha256:2bc6b7fe45a1b3570b160a6c2ccd33245f2938eac3c2959e58a79d8b3bbd934e)
 fn hsv_to_rgb(h: f64, s: f64, v: f64) -> Vec<f64> {
     let c = (v * s);
     let x = (c * (1.0_f64 - (((h * 6.0_f64) % 2.0_f64) - 1.0_f64).abs()));
@@ -426,7 +426,7 @@ fn hsv_to_rgb(h: f64, s: f64, v: f64) -> Vec<f64> {
     return vec![(r + m), (g + m), (b + m)];
 }
 
-// Source: upstream/packages/particles/src/curve.ts:162 (sha256:f8249bf1d6f2f7f93ae47f2339963831d9730ba016a67060c864af0676c66945)
+// Source: upstream/packages/particles/src/curve.ts:160 (sha256:f8249bf1d6f2f7f93ae47f2339963831d9730ba016a67060c864af0676c66945)
 fn interp_keyframe(sorted: &Vec<CurveKeyframe>, t: f64) -> f64 {
     let seg = locate_keyframe(sorted, t);
     if (seg.f == 0.0_f64) {
@@ -437,7 +437,7 @@ fn interp_keyframe(sorted: &Vec<CurveKeyframe>, t: f64) -> f64 {
     return (a + ((b - a) * seg.f));
 }
 
-// Source: upstream/packages/particles/src/curve.ts:172 (sha256:51e0bc24bd5b3d4de372d255864ad4cd7140fbe32de9a647dccf4bb261bb0ae1)
+// Source: upstream/packages/particles/src/curve.ts:170 (sha256:51e0bc24bd5b3d4de372d255864ad4cd7140fbe32de9a647dccf4bb261bb0ae1)
 fn locate_keyframe(sorted: &Vec<SharedStructuralRecord1>, t: f64) -> SharedStructuralRecord2 {
     let n = (sorted.len() as f64);
     if (t <= sorted[0.0_f64 as usize].time) {
@@ -484,7 +484,7 @@ fn locate_keyframe(sorted: &Vec<SharedStructuralRecord1>, t: f64) -> SharedStruc
     };
 }
 
-// Source: upstream/packages/particles/src/curve.ts:188 (sha256:16443d3a99585a2bdfdf4f3eeb1c686d3faf9bc7a880d81e408ce0c170e8af72)
+// Source: upstream/packages/particles/src/curve.ts:186 (sha256:16443d3a99585a2bdfdf4f3eeb1c686d3faf9bc7a880d81e408ce0c170e8af72)
 fn rgb_to_hsv(r: f64, g: f64, b: f64) -> Vec<f64> {
     let max = ((r).max(g)).max(b);
     let min = ((r).min(g)).min(b);
@@ -516,7 +516,7 @@ fn rgb_to_hsv(r: f64, g: f64, b: f64) -> Vec<f64> {
     ];
 }
 
-// Source: upstream/packages/particles/src/curve.ts:205 (sha256:3452760874a3ff7d3f0fcc1950e46641661c7dd60e111240f3559e0ebb0357ff)
+// Source: upstream/packages/particles/src/curve.ts:203 (sha256:3452760874a3ff7d3f0fcc1950e46641661c7dd60e111240f3559e0ebb0357ff)
 pub fn sample_particle_color_curve(
     out: &mut SharedStructuralRecord3,
     offset: f64,
@@ -560,7 +560,7 @@ pub fn sample_particle_color_curve(
         + ((lut[(b + 2.0_f64) as usize].clone() - lut[(a + 2.0_f64) as usize].clone()) * f));
 }
 
-// Source: upstream/packages/particles/src/curve.ts:244 (sha256:a3c267546bba9017a4cd5cd4eceb5cecf4acdb9fc668708ed22f5e436741a123)
+// Source: upstream/packages/particles/src/curve.ts:242 (sha256:a3c267546bba9017a4cd5cd4eceb5cecf4acdb9fc668708ed22f5e436741a123)
 pub fn sample_particle_curve(lut: &ParticleCurve, t: f64) -> f64 {
     let n = lut.length;
     if (n == 0.0_f64) {

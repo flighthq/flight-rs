@@ -6,7 +6,11 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_types::{DropShadowEffect, EffectSourceMode};
+use crate::{get_directional_render_effect_padding, register_render_effect_padding_resolver};
+use flighthq_types::{
+    BlendMode, DropShadowEffect, EffectSourceMode, Matrix, RenderEffect, RenderEffectPadding,
+    RenderState, Scene2DClipHooks, Scene3DGraphSyncPolicy,
+};
 
 #[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
@@ -27,12 +31,34 @@ impl PartialEq for FlightOmitRecord1 {
     }
 }
 
-// Source: upstream/packages/effects/src/dropShadowEffect.ts:4 (sha256:3ab0759bb38792b708d22eb5f5a8d8352d1d2ba3181a9bd200650c5d0a6f40d9)
 #[derive(Clone, Default)]
-struct CreateDropShadowEffectRecord2 {
+pub struct FlightPartialRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub allow_smoothing: Option<bool>,
+    pub background_color: Option<f64>,
+    pub background_color_rgba: Option<Vec<f64>>,
+    pub background_color_string: Option<String>,
+    pub current_clip_depth: Option<f64>,
+    pub display_object_clip_hooks: Option<Scene2DClipHooks>,
+    pub pixel_ratio: Option<f64>,
+    pub render_alpha: Option<f64>,
+    pub render_blend_mode: Option<BlendMode>,
+    pub render_transform2_d: Option<Matrix>,
+    pub scene_graph_sync_policy: Option<Scene3DGraphSyncPolicy>,
+    pub round_pixels: Option<bool>,
+}
+impl PartialEq for FlightPartialRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/effects/src/dropShadowEffect.ts:6 (sha256:3ab0759bb38792b708d22eb5f5a8d8352d1d2ba3181a9bd200650c5d0a6f40d9)
+#[derive(Clone, Default)]
+struct CreateDropShadowEffectRecord3 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateDropShadowEffectRecord2 {
+impl PartialEq for CreateDropShadowEffectRecord3 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -68,4 +94,53 @@ pub fn create_drop_shadow_effect(options: Option<FlightOmitRecord1>) -> DropShad
             ..Default::default()
         }
     };
+}
+
+// Source: upstream/packages/effects/src/dropShadowEffect.ts:10 (sha256:c9f9ecca08a780d61bd15fe6520ae22032da29f3bf0150caf8e6bc11cbdbee0e)
+pub fn get_drop_shadow_effect_padding(effect: &DropShadowEffect) -> RenderEffectPadding {
+    let angle = (((effect.angle).unwrap_or(45.0_f64) * std::f64::consts::PI) / 180.0_f64);
+    let distance = (effect.distance).unwrap_or(4.0_f64);
+    return get_directional_render_effect_padding(
+        (effect.blur_x).unwrap_or(4.0_f64),
+        (effect.blur_y).unwrap_or(4.0_f64),
+        ((angle).cos() * distance),
+        ((angle).sin() * distance),
+    );
+}
+
+// Source: upstream/packages/effects/src/dropShadowEffect.ts:21 (sha256:d3c08dd7b2f27b8287de5cf6b982cbfd03b368b1556d6357089eec518060c8d3)
+pub fn register_drop_shadow_effect_padding_resolver(state: &RenderState) -> () {
+    register_render_effect_padding_resolver(
+        state,
+        "DropShadowEffect".to_owned(),
+        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: RenderEffect| -> RenderEffectPadding {
+                resolve_drop_shadow_effect_padding(&__flight_argument_0)
+            },
+        )
+            as Box<
+                dyn FnMut(RenderEffect) -> RenderEffectPadding + Send + 'static,
+            >))),
+    );
+}
+
+// Source: upstream/packages/effects/src/dropShadowEffect.ts:25 (sha256:b33e3c4058ffa81bff4e1e12931286fc1c05de941855ea40d501ae5d8ed15ed5)
+fn resolve_drop_shadow_effect_padding(effect: &RenderEffect) -> RenderEffectPadding {
+    return get_drop_shadow_effect_padding(&{
+        let __flight_source = &((*effect).clone());
+        DropShadowEffect {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            kind: (__flight_source.kind).clone(),
+            alpha: __flight_source.alpha,
+            angle: __flight_source.angle,
+            blur_x: __flight_source.blur_x,
+            blur_y: __flight_source.blur_y,
+            color: __flight_source.color,
+            distance: __flight_source.distance,
+            quality: __flight_source.quality,
+            source_mode: (__flight_source.source_mode).clone(),
+            strength: __flight_source.strength,
+            ..Default::default()
+        }
+    });
 }

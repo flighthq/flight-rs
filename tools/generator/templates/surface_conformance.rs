@@ -1,5 +1,4 @@
 use flighthq_surface::{
-    BitmapConvolutionOptions as SurfaceConvolutionOptions,
     apply_bitmap_curve as apply_surface_curve, apply_bitmap_levels as apply_surface_levels,
     apply_bitmap_palette_map as apply_surface_palette_map,
     build_bitmap_brightness_color_matrix as build_surface_brightness_color_matrix,
@@ -21,7 +20,10 @@ use flighthq_surface::{
     set_bitmap_alpha as set_surface_alpha, set_bitmap_pixel as set_surface_pixel,
     unpremultiply_bitmap_pixels as unpremultiply_surface_pixels,
 };
-use flighthq_types::{Bitmap as Surface, BitmapRegion as SurfaceRegion};
+use flighthq_types::{
+    Bitmap as Surface, BitmapConvolutionOptions as SurfaceConvolutionOptions,
+    BitmapRegion as SurfaceRegion, OpaqueHostValue,
+};
 
 fn surface(data: Vec<u8>, width: f64, height: f64) -> Surface {
     Surface {
@@ -32,9 +34,10 @@ fn surface(data: Vec<u8>, width: f64, height: f64) -> Surface {
         format: "rgba8unorm".to_owned(),
         gamut: "srgb".to_owned(),
         height,
-        kind: "bitmap".to_owned(),
+        kind: OpaqueHostValue::String("bitmap".to_owned()),
         version: 0.0,
         width,
+        ..Default::default()
     }
 }
 

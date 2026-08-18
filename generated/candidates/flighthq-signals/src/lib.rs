@@ -27,6 +27,8 @@ mod _internal_index;
 pub use _internal_index::*;
 mod _internal_internal;
 pub use _internal_internal::*;
+mod contract;
+pub use contract::*;
 mod emitter;
 pub use emitter::*;
 mod signal;

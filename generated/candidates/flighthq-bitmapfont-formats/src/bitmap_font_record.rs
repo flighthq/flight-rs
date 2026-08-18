@@ -8,79 +8,11 @@
 
 use flighthq_bitmapfont::create_bitmap_font;
 use flighthq_types::{
-    BitmapFont, BitmapFontData, BitmapFontEncoding, BitmapFontGlyphData, BitmapFontKerningData,
-    BitmapFontParseOptions, GlyphMetrics, TextureAtlas,
+    BitmapFont, BitmapFontCharRecord, BitmapFontData, BitmapFontGlyphData, BitmapFontKerningData,
+    BitmapFontKerningRecord, BitmapFontParseOptions, BitmapFontRecord, GlyphMetrics, TextureAtlas,
 };
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontRecord.ts:16 (sha256:182ceaddee1847336c2926bdbcbd220df1fad5ad725ec3b0cc21f45dd02da713)
-#[derive(Clone, Default)]
-pub struct BitmapFontCharRecord {
-    #[doc(hidden)]
-    pub __flight_identity: std::sync::Arc<()>,
-    pub height: f64,
-    pub id: f64,
-    pub page: f64,
-    pub width: f64,
-    pub x: f64,
-    pub xadvance: f64,
-    pub xoffset: f64,
-    pub y: f64,
-    pub yoffset: f64,
-}
-impl PartialEq for BitmapFontCharRecord {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontRecord.ts:30 (sha256:4f116fa26e71d8730c5448413eb7005c1f0f4539e88c6d0da93c80091aa64f8d)
-#[derive(Clone, Default)]
-pub struct BitmapFontKerningRecord {
-    #[doc(hidden)]
-    pub __flight_identity: std::sync::Arc<()>,
-    pub amount: f64,
-    pub first: f64,
-    pub second: f64,
-}
-impl PartialEq for BitmapFontKerningRecord {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontRecord.ts:38 (sha256:90e36dee9bbb4651c12cb4465b07b9039fbe398c4ca8975e052c6179e700355c)
-#[derive(Clone, Default)]
-pub struct BitmapFontPageRecord {
-    #[doc(hidden)]
-    pub __flight_identity: std::sync::Arc<()>,
-    pub file: String,
-    pub id: f64,
-}
-impl PartialEq for BitmapFontPageRecord {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontRecord.ts:48 (sha256:ae30b6e490fa58d911ccf7d6ad417734cdf4bcb81f934892511ccb503ffd7231)
-#[derive(Clone, Default)]
-pub struct BitmapFontRecord {
-    #[doc(hidden)]
-    pub __flight_identity: std::sync::Arc<()>,
-    pub base: f64,
-    pub chars: Vec<BitmapFontCharRecord>,
-    pub encoding: BitmapFontEncoding,
-    pub kernings: Vec<BitmapFontKerningRecord>,
-    pub line_height: f64,
-    pub pages: Vec<BitmapFontPageRecord>,
-}
-impl PartialEq for BitmapFontRecord {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontRecord.ts:68 (sha256:e1e716b298a1cf4d381df73304608996c45a4e4f0169125fdb7637c9e1fc57a5)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontRecord.ts:23 (sha256:e1e716b298a1cf4d381df73304608996c45a4e4f0169125fdb7637c9e1fc57a5)
 pub fn build_bitmap_font_from_record(
     record: BitmapFontRecord,
     options: Option<BitmapFontParseOptions>,

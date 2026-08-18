@@ -6,17 +6,17 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::get_camera_view_projection_matrix4;
+use crate::get_camera3_d_view_projection_matrix4;
 use flighthq_geometry::{create_matrix4, inverse_matrix4};
-use flighthq_types::{Camera, Matrix4, Matrix4Like, Vector3Like};
+use flighthq_types::{Camera3D, Matrix4, Matrix4Like, Vector3Like};
 
-// Source: upstream/packages/camera/src/frustumCorners.ts:22 (sha256:84e8e374cdb6014b2346b9ab7daad1b43da5454de01f39233945b8e260915b39)
-pub fn get_camera_frustum_corners(
+// Source: upstream/packages/camera/src/frustumCorners.ts:22 (sha256:00525553409f9581ace91bc6863cceafd1696aaa872966eb556c5b524b319eee)
+pub fn get_camera3_d_frustum_corners(
     out: &mut Vec<Vector3Like>,
-    camera: &Camera,
+    camera: &Camera3D,
     aspect: f64,
 ) -> bool {
-    get_camera_view_projection_matrix4(
+    get_camera3_d_view_projection_matrix4(
         &mut (*__SCRATCH_VIEW_PROJECTION.lock().unwrap()),
         camera,
         aspect,

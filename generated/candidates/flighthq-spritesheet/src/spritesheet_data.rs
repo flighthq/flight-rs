@@ -16,7 +16,7 @@ pub struct FlightPartialRecord1 {
     pub frame_duration: Option<f64>,
     pub frame_durations: Option<Vec<f64>>,
     pub frame_names: Option<Vec<String>>,
-    pub loop_: Option<bool>,
+    pub repeat_count: Option<f64>,
     pub name: Option<String>,
     pub origin_x: Option<f64>,
     pub origin_y: Option<f64>,
@@ -65,7 +65,7 @@ impl PartialEq for FlightPartialRecord3 {
     }
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetData.ts:7 (sha256:71f3c52b04d2a42ddc3fc08f427916f2820328dac2e6ecb102a84fdb2782a5a5)
+// Source: upstream/packages/spritesheet/src/spritesheetData.ts:7 (sha256:52dd45a91a3f0addb7b0e0830cb137c47c6d9a52dfa97b3b50aa4791a1e70c8f)
 pub fn create_spritesheet_animation_data(
     obj: Option<FlightPartialRecord1>,
 ) -> SpritesheetAnimationData {
@@ -78,10 +78,10 @@ pub fn create_spritesheet_animation_data(
             .as_ref()
             .and_then(|value| (value.frame_durations).clone()),
         frame_names: (obj.as_ref().and_then(|value| (value.frame_names).clone())).unwrap_or(vec![]),
-        loop_: (obj.as_ref().and_then(|value| value.loop_)).unwrap_or(true),
         name: (obj.as_ref().and_then(|value| (value.name).clone())).unwrap_or("".to_owned()),
         origin_x: (obj.as_ref().and_then(|value| value.origin_x)).unwrap_or(0.0_f64),
         origin_y: (obj.as_ref().and_then(|value| value.origin_y)).unwrap_or(0.0_f64),
+        repeat_count: (obj.as_ref().and_then(|value| value.repeat_count)).unwrap_or((-1.0_f64)),
     };
 }
 

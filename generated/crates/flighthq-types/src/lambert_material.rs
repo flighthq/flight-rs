@@ -6,7 +6,8 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{AlphaType, BlendMode, EntityRuntime, Kind, MaterialAlphaMode, Texture};
+use crate::{BlendMode, EntityRuntime, Kind, MaterialAlphaMode, Texture};
+use crate::{PbrExtension, StandardPbrMaterialProperties};
 
 // Source: upstream/packages/types/src/LambertMaterial.ts:6 (sha256:2d0f9e3abe6c598f4700dd1dcfca1aa30bc6c7bff1a53bd74e2cbd646349b722)
 #[derive(Clone, Default)]
@@ -19,9 +20,10 @@ pub struct LambertMaterial {
     pub name: Option<String>,
     pub alpha_cutoff: f64,
     pub alpha_mode: MaterialAlphaMode,
-    pub alpha_type: AlphaType,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub extensions: Vec<PbrExtension>,
+    pub standard: StandardPbrMaterialProperties,
     pub shader_key: String,
     pub textures: Option<Vec<(String, Texture)>>,
     pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,

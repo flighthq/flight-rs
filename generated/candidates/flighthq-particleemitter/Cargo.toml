@@ -10,10 +10,10 @@ publish = false
 path = "src/lib.rs"
 
 [dependencies]
-flighthq-displayobject = { path = "../flighthq-displayobject" }
 flighthq-geometry = { path = "../flighthq-geometry" }
 flighthq-node = { path = "../flighthq-node" }
 flighthq-particles = { path = "../flighthq-particles" }
 flighthq-runtime = { path = "../../crates/flighthq-runtime" }
-flighthq-scene = { path = "../flighthq-scene" }
+flighthq-scene2d = { path = "../flighthq-scene2d" }
+flighthq-scene3d = { path = "../flighthq-scene3d" }
 flighthq-types = { path = "../../crates/flighthq-types" }

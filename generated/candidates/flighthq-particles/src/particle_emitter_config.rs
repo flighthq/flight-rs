@@ -6,8 +6,9 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_types::ParticleCurve;
-pub use flighthq_types::{ParticleBlendMode, ParticleEmitterConfig, ParticleEmitterShape};
+use flighthq_types::{
+    ParticleBlendMode, ParticleCurve, ParticleEmitterConfig, ParticleEmitterShape,
+};
 
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
@@ -71,7 +72,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-// Source: upstream/packages/particles/src/particleEmitterConfig.ts:5 (sha256:abb2ffb0f022c9535292c6b263f485ec1255b9f3d59984a190504d18e5894724)
+// Source: upstream/packages/particles/src/particleEmitterConfig.ts:3 (sha256:abb2ffb0f022c9535292c6b263f485ec1255b9f3d59984a190504d18e5894724)
 pub fn create_particle_emitter_config(
     config: Option<FlightPartialRecord1>,
 ) -> ParticleEmitterConfig {

@@ -86,7 +86,7 @@ impl PartialEq for TrayEventData {
     }
 }
 
-// Source: upstream/packages/types/src/Tray.ts:63 (sha256:0405b464300168d7dafcea1b461230700cd66bf5675627bd2a5979f7245b49d8)
+// Source: upstream/packages/types/src/Tray.ts:69 (sha256:0405b464300168d7dafcea1b461230700cd66bf5675627bd2a5979f7245b49d8)
 #[derive(Clone, Default)]
 pub struct TrayIcon {
     #[doc(hidden)]
@@ -99,7 +99,7 @@ impl PartialEq for TrayIcon {
     }
 }
 
-// Source: upstream/packages/types/src/Tray.ts:67 (sha256:3ddc26c60494351a4b40d3f0286d9a715b6f7fe37264e95dd15f2f3529545bbb)
+// Source: upstream/packages/types/src/Tray.ts:73 (sha256:3ddc26c60494351a4b40d3f0286d9a715b6f7fe37264e95dd15f2f3529545bbb)
 #[derive(Clone)]
 pub struct TrayBackend {
     #[doc(hidden)]

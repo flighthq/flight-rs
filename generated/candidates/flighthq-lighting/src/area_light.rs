@@ -8,32 +8,11 @@
 
 use flighthq_entity::create_entity;
 use flighthq_geometry::{clone_vector3, create_vector3, normalize_vector3, set_vector3};
-use flighthq_types::{AREA_LIGHT_KIND as area_light_kind_constant, AreaLight, Vector3Like};
+use flighthq_types::{
+    AREA_LIGHT_KIND as area_light_kind_constant, AreaLight, AreaLightOptions, Vector3Like,
+};
 
-// Source: upstream/packages/lighting/src/areaLight.ts:6 (sha256:2692ed3168285d890bf7abb2054c889a2ddeeaf73b7ed333349c732c3705c662)
-#[derive(Clone, Default)]
-pub struct AreaLightOptions {
-    #[doc(hidden)]
-    pub __flight_identity: std::sync::Arc<()>,
-    pub casts_shadow: Option<bool>,
-    pub color: Option<f64>,
-    pub direction: Option<Vector3Like>,
-    pub intensity: Option<f64>,
-    pub normal_bias: Option<f64>,
-    pub pcf_radius: Option<f64>,
-    pub position: Option<Vector3Like>,
-    pub range: Option<f64>,
-    pub right: Option<Vector3Like>,
-    pub shadow_bias: Option<f64>,
-    pub up: Option<Vector3Like>,
-}
-impl PartialEq for AreaLightOptions {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-// Source: upstream/packages/lighting/src/areaLight.ts:23 (sha256:70d550d01e6432cb6441f4771d6b2ae4230de0070b9698929f3fe6b7bf345235)
+// Source: upstream/packages/lighting/src/areaLight.ts:7 (sha256:70d550d01e6432cb6441f4771d6b2ae4230de0070b9698929f3fe6b7bf345235)
 pub fn clone_area_light(source: &AreaLight) -> AreaLight {
     return create_entity(Some(AreaLight {
         __flight_identity: std::sync::Arc::new(()),
@@ -98,7 +77,7 @@ pub fn clone_area_light(source: &AreaLight) -> AreaLight {
     }));
 }
 
-// Source: upstream/packages/lighting/src/areaLight.ts:44 (sha256:619be895075278116bbc3aac51eb5362c6c167bcb2d0e246486bf17e72e7e842)
+// Source: upstream/packages/lighting/src/areaLight.ts:28 (sha256:619be895075278116bbc3aac51eb5362c6c167bcb2d0e246486bf17e72e7e842)
 pub fn create_area_light(options: Option<AreaLightOptions>) -> AreaLight {
     let position = options.as_ref().and_then(|value| (value.position).clone());
     let direction = options.as_ref().and_then(|value| (value.direction).clone());
@@ -139,7 +118,7 @@ pub fn create_area_light(options: Option<AreaLightOptions>) -> AreaLight {
     }));
 }
 
-// Source: upstream/packages/lighting/src/areaLight.ts:70 (sha256:afc815a570839e4d778a618b2859079fddb8ed1c12efc31de1fe5979f1ef686b)
+// Source: upstream/packages/lighting/src/areaLight.ts:54 (sha256:afc815a570839e4d778a618b2859079fddb8ed1c12efc31de1fe5979f1ef686b)
 pub fn set_area_light_orientation(
     out: &mut AreaLight,
     direction: &Vector3Like,

@@ -8,7 +8,7 @@
 
 use crate::{GlRenderState, RenderProxy2D};
 
-// Source: upstream/packages/types/src/GlShaderLocations.ts:3 (sha256:a325101a93776ff6cf403aaf8ccb7ce58d8b7c489527809358af07d486f1a2b8)
+// Source: upstream/packages/types/src/GlShaderLocations.ts:3 (sha256:966bcc46298e490b6b57b9ed4eba613df279e74d504470ba591c2ac8163e5f94)
 #[derive(Clone, Default)]
 pub struct GlShaderLocations {
     #[doc(hidden)]
@@ -18,9 +18,9 @@ pub struct GlShaderLocations {
     pub loc_tex_coord: f64,
     pub loc_matrix: crate::OpaqueHostValue,
     pub loc_alpha: crate::OpaqueHostValue,
-    pub loc_color_multiplier: Option<crate::OpaqueHostValue>,
-    pub loc_color_offset: Option<crate::OpaqueHostValue>,
-    pub loc_has_color_transform: Option<crate::OpaqueHostValue>,
+    pub loc_color_scale: Option<crate::OpaqueHostValue>,
+    pub loc_color_bias: Option<crate::OpaqueHostValue>,
+    pub loc_has_color_scale_bias: Option<crate::OpaqueHostValue>,
     pub loc_texture: crate::OpaqueHostValue,
 }
 impl PartialEq for GlShaderLocations {

@@ -7,11 +7,11 @@
 #![allow(unused_parens)]
 
 use crate::{
-    BlendMode, ColorTransform, EntityRuntime, Kind, Material, MaterialData, Renderable, Renderer,
+    BlendMode, ColorScaleBias, EntityRuntime, Kind, Material, MaterialData, Renderable, Renderer,
     RendererData,
 };
 
-// Source: upstream/packages/types/src/RenderProxy.ts:9 (sha256:a83fce0a440eb87068d75b87cbb845c0ec6b4938505e891b25a907b5cceb1e82)
+// Source: upstream/packages/types/src/RenderProxy.ts:9 (sha256:f0d40c25ffe0591e6ea74f08dd22ec61859b14d72b08dbf54d2b642fd68e5cb9)
 #[derive(Clone)]
 pub struct RenderProxy {
     #[doc(hidden)]
@@ -24,12 +24,15 @@ pub struct RenderProxy {
     pub alpha: f64,
     pub appearance_frame_id: f64,
     pub blend_mode: Option<BlendMode>,
-    pub color_transform: Option<ColorTransform>,
+    pub color_scale_bias: Option<ColorScaleBias>,
+    pub color_matrix: Option<Vec<f64>>,
     pub material: Option<Material>,
     pub material_data: Option<MaterialData>,
     pub last_appearance_id: f64,
+    pub last_children_id: f64,
     pub last_local_content_id: f64,
     pub last_local_transform_id: f64,
+    pub last_parent_reference_id: f64,
     pub name: Option<String>,
     pub renderer: Option<Renderer>,
     pub renderer_data: Option<RendererData>,

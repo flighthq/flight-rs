@@ -14,7 +14,7 @@ pub type MenuItemType = String;
 // Source: upstream/packages/types/src/Menu.ts:17 (sha256:7b2d8ece52899dd8323a11ea129b3d1a423606c124a9ecebb9edc4d05987cf04)
 pub type MenuItemRole = crate::FlightUnion2<WellKnownMenuItemRoleValue, String>;
 
-// Source: upstream/packages/types/src/Menu.ts:19 (sha256:49f11b531fed1394d5111d3dfa9d6f94036b76ec1cf83854645794700bb4419a)
+// Source: upstream/packages/types/src/Menu.ts:19 (sha256:e21b9e7a11fef01e2c657165cbe9d2b6bd967ade2ce23641b0b431c272bdfa8b)
 #[derive(Clone, Default)]
 pub struct MenuItemTemplate {
     #[doc(hidden)]
@@ -26,6 +26,9 @@ pub struct MenuItemTemplate {
     pub accelerator: Option<String>,
     pub enabled: Option<bool>,
     pub checked: Option<bool>,
+    pub visible: Option<bool>,
+    pub sublabel: Option<String>,
+    pub tool_tip: Option<String>,
     pub submenu: Option<Vec<MenuItemTemplate>>,
 }
 impl PartialEq for MenuItemTemplate {
@@ -34,7 +37,7 @@ impl PartialEq for MenuItemTemplate {
     }
 }
 
-// Source: upstream/packages/types/src/Menu.ts:34 (sha256:416b8b754887247676cd99dfa518e99708e4ec04d55ff90308da3c1004524620)
+// Source: upstream/packages/types/src/Menu.ts:42 (sha256:416b8b754887247676cd99dfa518e99708e4ec04d55ff90308da3c1004524620)
 #[derive(Clone)]
 pub struct MenuBackend {
     #[doc(hidden)]

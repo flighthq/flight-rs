@@ -27,5 +27,7 @@ mod _internal_index;
 pub use _internal_index::*;
 mod bitmap_text;
 pub use bitmap_text::*;
+mod contract;
+pub use contract::*;
 mod update_bitmap_text;
 pub use update_bitmap_text::*;

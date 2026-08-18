@@ -31,6 +31,8 @@ mod bounding_sphere;
 pub use bounding_sphere::*;
 mod capsule;
 pub use capsule::*;
+mod contract;
+pub use contract::*;
 mod frustum;
 pub use frustum::*;
 mod matrix;

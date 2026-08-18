@@ -29,6 +29,8 @@ mod apply_particle_collisions;
 pub use apply_particle_collisions::*;
 mod apply_particle_forces;
 pub use apply_particle_forces::*;
+mod contract;
+pub use contract::*;
 mod curve;
 pub use curve::*;
 mod particle_emitter_config;

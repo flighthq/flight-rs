@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::XmlElement;
+use flighthq_types::XmlElement;
 
 // Source: upstream/packages/xml/src/xmlQuery.ts:8 (sha256:04ad11a478cb8161a5f12d68585eee4444c7ff8c6375551503f78d84c8666389)
 pub fn get_xml_element_attribute(element: &XmlElement, name: String) -> Option<String> {

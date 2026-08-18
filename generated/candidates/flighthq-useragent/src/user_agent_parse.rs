@@ -16,7 +16,7 @@ use flighthq_types::{
     DEVICE_FORM_FACTOR_WATCH as device_form_factor_watch_constant, DeviceFormFactor,
 };
 
-// Source: upstream/packages/useragent/src/userAgentParse.ts:22 (sha256:e6d7c8ee8d6242f09621e9fa6f31be404e05731280e2093aec27b41474b895a1)
+// Source: upstream/packages/useragent/src/userAgentParse.ts:22 (sha256:f7210a3e1ddc8cdbc92e1db75d9eef49df892d24975cbe9894e0970233f5d9fb)
 pub fn parse_user_agent_form_factor(ua: String, max_touch_points: f64) -> DeviceFormFactor {
     if (regex::RegexBuilder::new("android auto|car browser|automotive")
         .case_insensitive(true)
@@ -99,6 +99,17 @@ pub fn parse_user_agent_form_factor(ua: String, max_touch_points: f64) -> Device
     {
         return (device_form_factor_phone_constant).to_owned();
     }
+    if (max_touch_points > 1.0_f64)
+        && ((regex::RegexBuilder::new("macintosh|mac os x")
+            .case_insensitive(true)
+            .multi_line(false)
+            .dot_matches_new_line(false)
+            .build()
+            .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
+        .is_match(&(ua)))
+    {
+        return (device_form_factor_tablet_constant).to_owned();
+    }
     if (regex::RegexBuilder::new("win(?:dows)?nt|macintosh|mac os x|linux(?!.*android)|x11")
         .case_insensitive(true)
         .multi_line(false)
@@ -115,7 +126,7 @@ pub fn parse_user_agent_form_factor(ua: String, max_touch_points: f64) -> Device
     return (device_form_factor_unknown_constant).to_owned();
 }
 
-// Source: upstream/packages/useragent/src/userAgentParse.ts:50 (sha256:30282dc1ccb3eb64badca066b2e824450bc3626941e673c624c86ec34113007e)
+// Source: upstream/packages/useragent/src/userAgentParse.ts:57 (sha256:30282dc1ccb3eb64badca066b2e824450bc3626941e673c624c86ec34113007e)
 pub fn parse_user_agent_os_name(ua: String) -> String {
     if (regex::RegexBuilder::new("android")
         .case_insensitive(true)
@@ -220,7 +231,7 @@ pub fn parse_user_agent_os_name(ua: String) -> String {
     return "".to_owned();
 }
 
-// Source: upstream/packages/useragent/src/userAgentParse.ts:66 (sha256:0734439e3ba3affde4953ec382dcbabee352bc2500bbac86b93ca1a0436739b1)
+// Source: upstream/packages/useragent/src/userAgentParse.ts:86 (sha256:0734439e3ba3affde4953ec382dcbabee352bc2500bbac86b93ca1a0436739b1)
 pub fn parse_user_agent_os_version(ua: String) -> String {
     let android = {
         let __flight_regex = regex::RegexBuilder::new("android\\s+([\\d.]+)")

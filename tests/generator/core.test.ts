@@ -4,6 +4,7 @@ import path from 'node:path';
 import { portConfig } from '../../tools/generator/port.config.ts';
 import {
   formatRust,
+  classifyImportedRustBinding,
   normalizeDiagnosticSource,
   rustDependencyForSpecifier,
   validateAsyncTaskDispositionPartition,
@@ -36,28 +37,51 @@ describe('manifest-lane dependency resolution', () => {
     expect(rustDependencyForSpecifier(bitmap, '@flighthq/types/contract')).toEqual({ crate: 'flighthq-types' });
     expect(rustDependencyForSpecifier(bitmap, '@flighthq/entity/contract')).toBeUndefined();
   });
+
+  it('classifies relative barrel re-exports from their defining declarations', () => {
+    const workspace = process.cwd();
+    const importer = path.join(workspace, 'upstream/packages/math/src/index.ts');
+
+    expect(classifyImportedRustBinding(importer, './contract', 'approxEqual', workspace)).toBe('function');
+    expect(classifyImportedRustBinding(importer, './contract', 'DEG_TO_RAD', workspace)).toBe('constant');
+    expect(classifyImportedRustBinding(importer, './contract', 'RandomSource', workspace)).toBe('type');
+  });
 });
 
 describe('candidate crate resolution', () => {
   const candidateTypes = {
     crate: 'flighthq-types',
-    dependencies: [],
     fullyPromotedTarget: false,
     package: '@flighthq/types',
+    requiredDependencies: [],
   } satisfies CandidateCrateNode;
 
-  it('rejects a fully promoted package whose dependency closure is not fully promoted', () => {
+  it('rejects a fully promoted package whose emitted dependency closure is not fully promoted', () => {
     expect(() =>
       validateCandidateCrateGraph([
         candidateTypes,
         {
           crate: 'flighthq-easing',
-          dependencies: [{ crate: 'flighthq-types', package: '@flighthq/types' }],
           fullyPromotedTarget: true,
           package: '@flighthq/easing',
+          requiredDependencies: [{ crate: 'flighthq-types', package: '@flighthq/types' }],
         },
       ]),
     ).toThrow('Fully promoted package @flighthq/easing depends on non-fully-promoted package @flighthq/types');
+  });
+
+  it('allows a promoted package to declare a dependency that its emitted crate does not reference', () => {
+    expect(() =>
+      validateCandidateCrateGraph([
+        candidateTypes,
+        {
+          crate: 'flighthq-easing',
+          fullyPromotedTarget: true,
+          package: '@flighthq/easing',
+          requiredDependencies: [],
+        },
+      ]),
+    ).not.toThrow();
   });
 
   it('rejects duplicate Cargo identities and dependency edges that disagree with the resolution map', () => {
@@ -66,9 +90,9 @@ describe('candidate crate resolution', () => {
         candidateTypes,
         {
           crate: 'flighthq-types',
-          dependencies: [],
           fullyPromotedTarget: false,
           package: '@flighthq/other-types',
+          requiredDependencies: [],
         },
       ]),
     ).toThrow('Duplicate candidate Cargo package identity flighthq-types: @flighthq/types and @flighthq/other-types');
@@ -78,9 +102,9 @@ describe('candidate crate resolution', () => {
         candidateTypes,
         {
           crate: 'flighthq-tween',
-          dependencies: [{ crate: 'flighthq-renamed-types', package: '@flighthq/types' }],
           fullyPromotedTarget: false,
           package: '@flighthq/tween',
+          requiredDependencies: [{ crate: 'flighthq-renamed-types', package: '@flighthq/types' }],
         },
       ]),
     ).toThrow(
@@ -193,19 +217,19 @@ describe('compiler diagnostic source paths', () => {
       crate: 'flighthq-types',
       package: '@flighthq/types',
     });
-    expect(report.summary.candidateCompiled).toBe(23);
+    expect(report.summary.candidateCompiled).toBe(13);
     expect(report.asyncTasks.summary).toMatchObject({
-      eligibleConstructions: 204,
-      eligibleScopes: 162,
+      eligibleConstructions: 225,
+      eligibleScopes: 173,
       hostPlaceholderScopes: 0,
       operations: {
         asyncIterations: 3,
-        awaits: 190,
+        awaits: 205,
       },
-      portableExecutableConstructions: 9,
-      portableExecutableScopes: 3,
-      unsupportedConstructions: 195,
-      unsupportedScopes: 159,
+      portableExecutableConstructions: 19,
+      portableExecutableScopes: 13,
+      unsupportedConstructions: 206,
+      unsupportedScopes: 160,
     });
     expect(report.asyncTasks.summary.eligibleScopes).toBe(
       report.asyncTasks.summary.portableExecutableScopes +
@@ -218,7 +242,7 @@ describe('compiler diagnostic source paths', () => {
         report.asyncTasks.summary.unsupportedConstructions,
     );
     const asyncScopes = report.asyncTasks.packages.flatMap((item) => item.scopes);
-    expect(asyncScopes).toHaveLength(162);
+    expect(asyncScopes).toHaveLength(173);
     expect(
       asyncScopes.every(
         (scope) =>
@@ -236,15 +260,15 @@ describe('compiler diagnostic source paths', () => {
       report.asyncTasks.summary.unsupportedReasons.find((item) =>
         item.reason.startsWith('Async output type is not recovered'),
       )?.scopes,
-    ).toBe(85);
+    ).toBe(8);
     expect(
       report.asyncTasks.summary.unsupportedReasons.find((item) =>
         item.reason.startsWith('Portable task source still requires'),
       )?.scopes,
-    ).toBe(20);
+    ).toBe(10);
     const taskConstructions = report.asyncTasks.packages.flatMap((item) => item.constructions);
-    expect(taskConstructions).toHaveLength(204);
-    expect(taskConstructions.filter((item) => item.kind === 'ready')).toHaveLength(19);
+    expect(taskConstructions).toHaveLength(225);
+    expect(taskConstructions.filter((item) => item.kind === 'ready')).toHaveLength(21);
     expect(
       taskConstructions.every(
         (construction) =>
@@ -261,18 +285,13 @@ describe('compiler diagnostic source paths', () => {
       .filter((item) => item.disposition === 'generated')
       .flatMap((item) => item.emittedSources);
     const portableOpaqueSources = portableSources.filter((source) => source.usesOpaqueHostValues);
-    expect(portableSources).toHaveLength(1226);
-    expect(portableOpaqueSources).toHaveLength(166);
+    expect(portableSources).toHaveLength(1544);
+    expect(portableOpaqueSources).toHaveLength(66);
     expect(portableOpaqueSources.length / portableSources.length).toBeLessThanOrEqual(167 / 1227);
     const screen = report.automaticPackages.find((item) => item.package === '@flighthq/screen');
-    expect(screen?.candidate.status).toBe('source-blocked');
+    expect(screen?.candidate.status).toBe('compiled');
     expect(screen?.asyncTasks).toHaveLength(2);
-    expect(
-      screen?.asyncTasks.every(
-        (scope) =>
-          scope.disposition === 'unsupported' && scope.reason?.startsWith('Portable task source still requires'),
-      ),
-    ).toBe(true);
+    expect(screen?.asyncTasks.every((scope) => scope.disposition === 'portable-executable')).toBe(true);
     const screenTarget = report.targets.find((item) => item.package === '@flighthq/screen');
     expect(screenTarget?.emittedSources).toEqual([
       expect.objectContaining({
@@ -286,7 +305,7 @@ describe('compiler diagnostic source paths', () => {
     expect(report.conformance.summary).toMatchObject({
       passingCases: 45,
       passingTestFiles: 4,
-      totalUpstreamTestFiles: 1166,
+      totalUpstreamTestFiles: 1419,
       translatedCases: 45,
       translatedTestFiles: 4,
     });

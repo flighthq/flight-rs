@@ -6,16 +6,18 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{BlendMode, ClipRegion, EntityRuntime, Kind, Material, MaterialData, Tileset};
+use crate::{BlendMode, ClipRegion, EntityRuntime, Kind, Material, MaterialData, TextureAtlas};
 
-// Source: upstream/packages/types/src/Tilemap.ts:5 (sha256:566599ce0525cecc527b700162a16b1d22b913e37ba55d06083adf975852aa1c)
+// Source: upstream/packages/types/src/Tilemap.ts:5 (sha256:24320b83bfd5874be2f12540bc06d3b54f1f6d2611c4c7652b684095843ad56b)
 #[derive(Clone, Default)]
 pub struct TilemapData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub tileset: Option<Tileset>,
+    pub atlas: Option<TextureAtlas>,
     pub columns: f64,
     pub rows: f64,
+    pub tile_height: f64,
+    pub tile_width: f64,
     pub tiles: Vec<i16>,
     pub material_data: Option<Vec<Option<MaterialData>>>,
 }
@@ -25,10 +27,10 @@ impl PartialEq for TilemapData {
     }
 }
 
-// Source: upstream/packages/types/src/Tilemap.ts:15 (sha256:f874667906594d578d67434836527cfbf0d2b6698b49f52f359e7fecee47af82)
+// Source: upstream/packages/types/src/Tilemap.ts:17 (sha256:cd698df65d0c63e2e3ec329ca3f6e690cd93310a356a89f93983b2ce3ecb5bf3)
 pub type TilemapRuntime = crate::EntityRuntime;
 
-// Source: upstream/packages/types/src/Tilemap.ts:17 (sha256:07492065cf96f90ceaa42389cb8a5707074488d0ff08275fdf0a289f4ed61cf9)
+// Source: upstream/packages/types/src/Tilemap.ts:19 (sha256:baaa0bd15356d53492d909bb22e420d309e45d951731b185dddd284a4bfe42b1)
 #[derive(Clone, Default)]
 pub struct Tilemap {
     #[doc(hidden)]
@@ -76,5 +78,5 @@ impl crate::FlightEntity for Tilemap {
     }
 }
 
-// Source: upstream/packages/types/src/Tilemap.ts:21 (sha256:62481eb694aea171dfe962d6b52ba7db3a8a9d130002f7e9f0f7acc217dc7cd3)
+// Source: upstream/packages/types/src/Tilemap.ts:23 (sha256:62481eb694aea171dfe962d6b52ba7db3a8a9d130002f7e9f0f7acc217dc7cd3)
 pub const TILEMAP_KIND: &'static str = "Tilemap";

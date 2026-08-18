@@ -8,7 +8,7 @@
 
 use crate::create_surface_material;
 use flighthq_types::{
-    AlphaType, BlendMode, CUSTOM_SHADER_MATERIAL_KIND as custom_shader_material_kind_constant,
+    BlendMode, CUSTOM_SHADER_MATERIAL_KIND as custom_shader_material_kind_constant,
     CustomShaderMaterial, Kind, MaterialAlphaMode, Texture,
 };
 
@@ -19,9 +19,10 @@ pub struct FlightPartialRecord1 {
     pub name: Option<String>,
     pub alpha_cutoff: Option<f64>,
     pub alpha_mode: Option<MaterialAlphaMode>,
-    pub alpha_type: Option<AlphaType>,
     pub blend_mode: Option<BlendMode>,
     pub double_sided: Option<bool>,
+    pub extensions: Option<Vec<PbrExtension>>,
+    pub standard: Option<StandardPbrMaterialProperties>,
     pub shader_key: Option<String>,
     pub textures: Option<Vec<(String, Texture)>>,
     pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
@@ -32,11 +33,13 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-// Source: upstream/packages/materials/src/customShaderMaterial.ts:11 (sha256:a643450772789ace081e49e752691665df01a1db56b29a85c016fed23fb5a3ad)
+// Source: upstream/packages/materials/src/customShaderMaterial.ts:10 (sha256:3374da3795413d8a2eb1a87d9b4c61fa7b6076e9c136ad053adcb0500ff2fb88)
 pub fn create_custom_shader_material(opts: Option<FlightPartialRecord1>) -> CustomShaderMaterial {
     let mut material = {
-        let __flight_source =
-            &(create_surface_material((custom_shader_material_kind_constant).to_owned()));
+        let __flight_source = &(create_surface_material(
+            (custom_shader_material_kind_constant).to_owned(),
+            Some(((opts).clone().unwrap()).clone()),
+        ));
         CustomShaderMaterial {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
             __flight_entity_runtime: std::sync::Arc::clone(
@@ -46,9 +49,10 @@ pub fn create_custom_shader_material(opts: Option<FlightPartialRecord1>) -> Cust
             name: (__flight_source.name).clone(),
             alpha_cutoff: __flight_source.alpha_cutoff,
             alpha_mode: (__flight_source.alpha_mode).clone(),
-            alpha_type: (__flight_source.alpha_type).clone(),
             blend_mode: (__flight_source.blend_mode).clone(),
             double_sided: __flight_source.double_sided,
+            extensions: (__flight_source.extensions).clone(),
+            standard: (__flight_source.standard).clone(),
             shader_key: (__flight_source.shader_key).clone(),
             textures: (__flight_source.textures).clone(),
             uniforms: (__flight_source.uniforms).clone(),

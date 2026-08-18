@@ -91,3 +91,10 @@ impl<Marker> FlightEntityRuntimeMarker for std::marker::PhantomData<Marker> {
 // Source: upstream/packages/types/src/Entity.ts:9 (sha256:9f3e8b58b7216dc7038f2b87e275302645d5d4dce805b89b90c83f9094f1f048)
 pub static ENTITY_RUNTIME_KEY: std::sync::LazyLock<crate::FlightSymbol> =
     std::sync::LazyLock::new(|| crate::FlightSymbol::for_name(&("EntityRuntime".to_owned())));
+
+// Source: upstream/packages/types/src/Entity.ts:14 (sha256:929a5f15b0c7c6b7b0cb672f025e08849e334bf2197eb2f4efa8eb82b7ffc737)
+pub type EntityRuntimeWriteSlot = String;
+
+// Source: upstream/packages/types/src/Entity.ts:16 (sha256:51c03a672942f55be8338c5ca21b7f4942edabbaa51ba55f61efdcdde74ab4c5)
+pub type EntityRuntimeWriteGuard =
+    std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(EntityRuntimeWriteSlot) -> () + Send + 'static>>>;

@@ -8,7 +8,7 @@
 
 use crate::ShareFile;
 
-// Source: upstream/packages/types/src/Share.ts:8 (sha256:899bb63cf41c77e3ac2f6eb0b8bb40a741677907ea1d9a313634713185401ef3)
+// Source: upstream/packages/types/src/Share.ts:8 (sha256:4d6c92afe429ca5b7973fbcc23fbfb48b866aabcb2a66ca7ababa25b8a9e51f0)
 #[derive(Clone, Default)]
 pub struct ShareContent {
     #[doc(hidden)]
@@ -24,7 +24,7 @@ impl PartialEq for ShareContent {
     }
 }
 
-// Source: upstream/packages/types/src/Share.ts:18 (sha256:a0ca18e785ad84e681b4558039731aab27c833c90dae6585aae3e9336c25e4e9)
+// Source: upstream/packages/types/src/Share.ts:20 (sha256:a0ca18e785ad84e681b4558039731aab27c833c90dae6585aae3e9336c25e4e9)
 #[derive(Clone, Default)]
 pub struct ShareOptions {
     #[doc(hidden)]
@@ -38,7 +38,7 @@ impl PartialEq for ShareOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Share.ts:28 (sha256:4ad57cec0c278f2921a223a6bdec550daf82a2c2bafa0e67d32f8f21150b757b)
+// Source: upstream/packages/types/src/Share.ts:30 (sha256:4ad57cec0c278f2921a223a6bdec550daf82a2c2bafa0e67d32f8f21150b757b)
 #[derive(Clone, Default)]
 pub struct ShareResult {
     #[doc(hidden)]
@@ -53,7 +53,7 @@ impl PartialEq for ShareResult {
     }
 }
 
-// Source: upstream/packages/types/src/Share.ts:34 (sha256:00d172569cb2b46c400978e64d87164d0b7ec57265a4771ab5c6523dc7091f8a)
+// Source: upstream/packages/types/src/Share.ts:36 (sha256:00d172569cb2b46c400978e64d87164d0b7ec57265a4771ab5c6523dc7091f8a)
 #[derive(Clone)]
 pub struct ShareBackend {
     #[doc(hidden)]

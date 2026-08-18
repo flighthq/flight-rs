@@ -578,13 +578,18 @@ pub fn set_transform_matrix(
     out.ty = ty;
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:587 (sha256:342e6ba9e2ae8f9095029c1f8a73499d0584af1d6c20c22ad592a5d9dc8fa5b5)
+// Source: upstream/packages/geometry/src/matrix.ts:587 (sha256:8b0f25b23728c8e60a55a6fafa3f9048b6fb29fe85cfd6c035084b64353b908c)
 pub fn translate_matrix(out: &mut MatrixLike, source: &MatrixLike, dx: f64, dy: f64) -> () {
-    out.tx = (source.tx + dx);
-    out.ty = (source.ty + dy);
+    let a = source.a;
+    let b = source.b;
+    let c = source.c;
+    let d = source.d;
+    let tx = source.tx;
+    let ty = source.ty;
+    set_matrix(out, a, b, c, d, (tx + dx), (ty + dy));
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:595 (sha256:d15418396ab926bbc0fb0cef2fa663d39c4b653203d2f3656dab1cc66468d489)
+// Source: upstream/packages/geometry/src/matrix.ts:595 (sha256:7a37aac5684c9937b7dde91a8d2a85dd8a6efe609e0cf85f39e89e99d283eda8)
 pub fn translate_matrix_by_vector(
     out: &mut MatrixLike,
     matrix: &MatrixLike,
@@ -593,18 +598,31 @@ pub fn translate_matrix_by_vector(
     translate_matrix_by_vector_xy(out, matrix, vector.x, vector.y);
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:599 (sha256:ed4685c468d2fdd4131642d0c19047aa26a8ebae4ef322aa3d4490bb79a52b6a)
+// Source: upstream/packages/geometry/src/matrix.ts:603 (sha256:b52f3edb76b09c9f94d12da13f5d7cf0f8f44a7e7f340e3c6db63c14e8c7ecc4)
 pub fn translate_matrix_by_vector_xy(
     out: &mut MatrixLike,
     source: &MatrixLike,
     x: f64,
     y: f64,
 ) -> () {
-    out.tx = ((source.tx + (source.a * x)) + (source.c * y));
-    out.ty = ((source.ty + (source.b * x)) + (source.d * y));
+    let a = source.a;
+    let b = source.b;
+    let c = source.c;
+    let d = source.d;
+    let tx = source.tx;
+    let ty = source.ty;
+    set_matrix(
+        out,
+        a,
+        b,
+        c,
+        d,
+        ((tx + (a * x)) + (c * y)),
+        ((ty + (b * x)) + (d * y)),
+    );
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:604 (sha256:c3ef28cb3fc57f071dd65fbe87d806d870eec6652dbf7fb223dc08b9cda4cb71)
+// Source: upstream/packages/geometry/src/matrix.ts:608 (sha256:c3ef28cb3fc57f071dd65fbe87d806d870eec6652dbf7fb223dc08b9cda4cb71)
 pub fn write_matrix_to_float32_array(out: &mut Vec<f32>, offset: f64, source: &MatrixLike) -> () {
     out[offset as usize] = (source.a) as f32;
     out[(offset + 1.0_f64) as usize] = (source.b) as f32;

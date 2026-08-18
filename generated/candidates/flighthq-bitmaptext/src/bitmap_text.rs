@@ -6,27 +6,24 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_displayobject::{
-    create_display_object_generic, create_display_object_runtime, get_display_object_runtime,
+use flighthq_geometry::{
+    copy_rectangle, create_rectangle, reserve_float32_array, reserve_uint16_array,
 };
-use flighthq_geometry::{copy_rectangle, create_rectangle};
-use flighthq_node::add_node_child;
-use flighthq_sprite::{create_quad_batch, reserve_quad_batch};
+use flighthq_scene2d::{create_node2_d, create_node2_d_runtime, get_node2_d_runtime};
 use flighthq_textureatlas::create_texture_atlas;
 use flighthq_types::{
-    Adjustment, AdjustmentKind, BITMAP_TEXT_KIND as bitmap_text_kind_constant, BitmapText,
-    BitmapTextAlign, BitmapTextData, BitmapTextOptions, BitmapTextRuntime, BlendMode,
-    BoundsNodeAny, ClipRegion, ColorTransform, DisplayObjectData, GlyphSource, ImageResource,
-    InteractionSignals, Kind, Material, MaterialData, Matrix, Matrix4, Node, NodeInteractionState,
-    NodeSignals, NodeTraitsKey, QuadBatch, QuadBatchData, QuadTransformType, Rectangle,
-    RectangleLike, Stage, StageSignals, TextureAtlas, TextureAtlasRegion,
+    Adjustment, BITMAP_TEXT_KIND as bitmap_text_kind_constant, BitmapText, BitmapTextAlign,
+    BitmapTextData, BitmapTextOptions, BitmapTextPage, BitmapTextRuntime, BlendMode, BoundsNodeAny,
+    ClipRegion, ColorScaleBias, GlyphSource, InteractionSignals, Kind, Material, MaterialData,
+    Matrix, Matrix4, Node, Node2DData, NodeInteractionState, NodeSignals, NodeTraitsKey, Path,
+    Rectangle, RectangleLike, SamplerLike, Scene2D, Scene2DSignals, Texture, Texture2D,
+    TextureAtlasRegion, TextureSourceKind,
 };
 
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub align: Option<BitmapTextAlign>,
-    pub color: Option<f64>,
     pub glyph_source: Option<GlyphSource>,
     pub letter_spacing: Option<f64>,
     pub line_height: Option<f64>,
@@ -44,10 +41,17 @@ pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub anisotropy_ext: Option<crate::OpaqueHostValue>,
     pub appearance_id: Option<f64>,
-    pub binding: Option<crate::OpaqueHostValue>,
+    pub binding_cache_guard: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<dyn FnMut(GlRenderState, crate::OpaqueHostValue) -> () + Send + 'static>,
+            >,
+        >,
+    >,
     pub bounds_rectangle: Option<Rectangle>,
     pub bounds_using_local_bounds_id: Option<f64>,
     pub bounds_using_local_transform_id: Option<f64>,
+    pub bounds_version: Option<f64>,
     pub build_text_layout_params: Option<
         std::sync::Arc<
             std::sync::Mutex<
@@ -55,22 +59,36 @@ pub struct FlightPartialRecord2 {
             >,
         >,
     >,
+    pub canvas_blend_effect_backdrops: Option<Vec<(String, CanvasRenderTarget)>>,
+    pub canvas_render_effect_registry: Option<Vec<(String, CanvasRenderEffectRunner)>>,
+    pub canvas_shape_command_registry:
+        Option<Vec<(String, CanvasShapeCommand<crate::OpaqueHostValue>)>>,
+    pub canvas_texture_resolvers: Option<CanvasTextureResolvers>,
     pub canvas_texture_view: Option<crate::OpaqueHostValue>,
     pub canvas_view_cleared: Option<bool>,
+    pub children_id: Option<f64>,
     pub clip_contour_pipelines: Option<Vec<(crate::OpaqueHostValue, WgpuClipContourPipelines)>>,
     pub clip_contour_stack: Option<Vec<WgpuClipContourEntry>>,
     pub clip_forms: Option<Vec<String>>,
-    pub color_adjustment_channel_mixing_guard: Option<
+    pub color_adjustment_resolver: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<
+                    dyn FnMut(RenderState, RenderProxy, Option<RenderProxy>) -> () + Send + 'static,
+                >,
+            >,
+        >,
+    >,
+    pub color_adjustment_unsupported_guard: Option<
         std::sync::Arc<
             std::sync::Mutex<Box<dyn FnMut(RenderState, Renderable) -> () + Send + 'static>>,
         >,
     >,
-    pub color_adjustments: Option<Vec<Adjustment>>,
-    pub color_adjustments_channel_mixing: Option<bool>,
-    pub color_transform_instanced_shader: Option<GlColorTransformInstancedShader>,
+    pub color_matrix_instanced_shader: Option<GlColorScaleBiasInstancedShader>,
+    pub color_scale_bias_instanced_shader: Option<GlColorScaleBiasInstancedShader>,
+    pub color_tint_instanced_shader: Option<GlColorScaleBiasInstancedShader>,
     pub command_encoder: Option<crate::OpaqueHostValue>,
     pub compressed_texture_decoder: Option<GlCompressedTextureDecoder>,
-    pub compressed_texture_upload: Option<GlCompressedTextureUploader>,
     pub compute_local_bounds_rectangle: Option<
         std::sync::Arc<
             std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
@@ -82,8 +100,8 @@ pub struct FlightPartialRecord2 {
     pub current_frame_id: Option<f64>,
     pub current_mask_depth: Option<f64>,
     pub current_program: Option<crate::OpaqueHostValue>,
-    pub current_render_target: Option<GlRenderTarget>,
     pub current_texture: Option<crate::OpaqueHostValue>,
+    pub current_texture_straight_alpha: Option<bool>,
     pub depth_stencil_height: Option<f64>,
     pub depth_stencil_texture: Option<crate::OpaqueHostValue>,
     pub depth_stencil_view: Option<crate::OpaqueHostValue>,
@@ -95,7 +113,11 @@ pub struct FlightPartialRecord2 {
     pub dom_next_order_list: Option<Vec<RenderProxy2D>>,
     pub dom_order_length: Option<f64>,
     pub dom_order_list: Option<Vec<RenderProxy2D>>,
+    pub dom_texture_resolver_registry: Option<Vec<(TextureSourceKind, DomTextureResolver)>>,
     pub element: Option<crate::OpaqueHostValue>,
+    pub flush_pending_draws: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(GlRenderState) -> () + Send + 'static>>>,
+    >,
     pub frame_capture_buffer: Option<crate::OpaqueHostValue>,
     pub frame_capture_bytes_per_row: Option<f64>,
     pub frame_capture_enabled: Option<bool>,
@@ -103,21 +125,43 @@ pub struct FlightPartialRecord2 {
     pub frame_capture_texture: Option<crate::OpaqueHostValue>,
     pub frame_capture_width: Option<f64>,
     pub gl_blend_mode_registry: Option<Vec<(BlendMode, GlBlendRealization)>>,
-    pub gl_color_adjustment_fold: Option<GlColorAdjustmentFold>,
-    pub gl_color_adjustment_guard: Option<
+    pub gl_color_adjustment_material_feature: Option<GlColorAdjustmentMaterialFeature>,
+    pub gl_color_adjustment_material_feature_guard: Option<
         std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(GlRenderState, ColorTransform) -> () + Send + 'static>>,
+            std::sync::Mutex<
+                Box<
+                    dyn FnMut(
+                            GlRenderState,
+                            crate::FlightUnion2<
+                                ColorScaleBias,
+                                crate::FlightUnion2<TintMaterialData, Vec<f64>>,
+                            >,
+                        ) -> ()
+                        + Send
+                        + 'static,
+                >,
+            >,
         >,
     >,
+    pub gl_external_texture_cache: Option<Vec<(ExternalTexture, crate::OpaqueHostValue)>>,
+    pub gl_render_effect_registry: Option<Vec<(Kind, GlRenderEffectRunner)>>,
+    pub gl_render_texture_cache: Option<Vec<(RenderTexture, GlRenderTextureEntry)>>,
+    pub gl_render_texture_guard: Option<GlRenderTextureGuard>,
+    pub gl_texture_resolver_registry: Option<Vec<(TextureSourceKind, GlTextureResolver)>>,
     pub image_smoothing_enabled: Option<bool>,
     pub image_smoothing_quality: Option<crate::OpaqueHostValue>,
     pub input: Option<TextInputState>,
     pub instance_velocities: Option<Vec<f32>>,
     pub interaction_signals: Option<InteractionSignals>,
     pub interaction_state: Option<NodeInteractionState>,
+    pub is_local_bounds_rectangle_valid: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(BoundsNodeAny) -> bool + Send + 'static>>>,
+    >,
     pub linear_sampler: Option<crate::OpaqueHostValue>,
     pub local_bounds_id: Option<f64>,
     pub local_bounds_rectangle: Option<Rectangle>,
+    pub local_bounds_texture: Option<Texture>,
+    pub local_bounds_texture_version: Option<f64>,
     pub local_bounds_using_local_bounds_id: Option<f64>,
     pub local_content_id: Option<f64>,
     pub local_matrix: Option<Matrix>,
@@ -131,20 +175,42 @@ pub struct FlightPartialRecord2 {
     pub max_anisotropy: Option<f64>,
     pub measured_height: Option<f64>,
     pub measured_width: Option<f64>,
-    pub mipmap_bind_group_layout: Option<crate::OpaqueHostValue>,
+    pub media_stream: Option<crate::OpaqueHostValue>,
     pub mipmapped_textures: Option<Vec<crate::OpaqueHostValue>>,
-    pub mipmap_pipeline: Option<crate::OpaqueHostValue>,
     pub morph_bind_pose: Option<MeshMorphBindPose>,
+    pub morph_blended_weights: Option<Vec<f32>>,
     pub movie_clip_signals: Option<MovieClipSignals>,
     pub nearest_sampler: Option<crate::OpaqueHostValue>,
     pub node_signals: Option<NodeSignals>,
+    pub pages: Option<Vec<BitmapTextPage>>,
+    pub parent_reference_id: Option<f64>,
     pub particle_corner_buffer: Option<crate::OpaqueHostValue>,
     pub particle_instance_capacity: Option<f64>,
     pub particle_shader: Option<GlParticleShader>,
     pub pipeline_cache: Option<Vec<(String, crate::OpaqueHostValue)>>,
     pub quad_batch_corner_buffer: Option<crate::OpaqueHostValue>,
-    pub quad_batches: Option<Vec<QuadBatch>>,
     pub quad_batch_shader: Option<GlQuadBatchShader>,
+    pub quad_batch_writer_blend_mode: Option<BlendMode>,
+    pub quad_batch_writer_buffer_cursor: Option<f64>,
+    pub quad_batch_writer_buffer_pool: Option<Vec<WgpuQuadBatchWriterBufferSlot>>,
+    pub quad_batch_writer_color_matrix_data: Option<Vec<f32>>,
+    pub quad_batch_writer_color_scale_bias_buffer: Option<crate::OpaqueHostValue>,
+    pub quad_batch_writer_color_scale_bias_data: Option<Vec<f32>>,
+    pub quad_batch_writer_color_scale_bias_mode: Option<f64>,
+    pub quad_batch_writer_color_tint_data: Option<Vec<u32>>,
+    pub quad_batch_writer_count: Option<f64>,
+    pub quad_batch_writer_instance_buffer: Option<crate::OpaqueHostValue>,
+    pub quad_batch_writer_instance_data: Option<Vec<f32>>,
+    pub quad_batch_writer_material: Option<Material>,
+    pub quad_batch_writer_material_buffer: Option<crate::OpaqueHostValue>,
+    pub quad_batch_writer_material_data: Option<Vec<f32>>,
+    pub quad_batch_writer_material_floats: Option<f64>,
+    pub quad_batch_writer_sampler: Option<SamplerLike>,
+    pub quad_batch_writer_smoothing: Option<bool>,
+    pub quad_batch_writer_straight_alpha: Option<bool>,
+    pub quad_batch_writer_uniform_color_scale_bias: Option<
+        crate::FlightUnion2<ColorScaleBias, crate::FlightUnion2<TintMaterialData, Vec<f64>>>,
+    >,
     pub quad_index_buffer: Option<crate::OpaqueHostValue>,
     pub quad_vertex_buffer: Option<crate::OpaqueHostValue>,
     pub quad_vertex_data: Option<Vec<f32>>,
@@ -155,43 +221,44 @@ pub struct FlightPartialRecord2 {
             >,
         >,
     >,
+    pub render_effect_padding_resolver_registry: Option<Vec<(Kind, RenderEffectPaddingResolver)>>,
     pub renderer_map: Option<Vec<(Kind, Renderer)>>,
     pub renderer_map_id: Option<f64>,
     pub render_pass: Option<crate::OpaqueHostValue>,
     pub render_proxy_adapter_map: Option<Vec<(Renderable, RenderProxyAdapter)>>,
     pub render_proxy_map: Option<Vec<(Renderable, RenderProxy)>>,
+    pub render_proxy_sources: Option<Vec<Renderable>>,
+    pub render_root_guard: Option<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(RenderState, Renderable) -> () + Send + 'static>>,
+        >,
+    >,
     pub render_target_stack: Option<Vec<WgpuSavedPassState>>,
-    pub resolved_color_transform: Option<ColorTransform>,
     pub retired_buffers: Option<Vec<crate::OpaqueHostValue>>,
     pub rich_text_content: Option<RichTextContent>,
     pub rotation_angle: Option<f64>,
     pub rotation_cosine: Option<f64>,
     pub rotation_sine: Option<f64>,
-    pub sampler_cache: Option<Vec<(String, crate::OpaqueHostValue)>>,
+    pub sampler_cache: Option<Vec<(f64, crate::OpaqueHostValue)>>,
+    pub scene2d: Option<Scene2D>,
+    pub scene2d_signals: Option<Scene2DSignals>,
     pub scene_mesh_upload_cache: Option<Vec<(crate::OpaqueHostValue, crate::OpaqueHostValue)>>,
     pub selection_begin_index: Option<f64>,
     pub selection_end_index: Option<f64>,
     pub shader_loc: Option<GlShaderLocations>,
-    pub shape_mesh_color_transform_shader: Option<GlShapeMeshColorTransformShader>,
-    pub shape_mesh_pipelines: Option<Vec<(crate::OpaqueHostValue, WgpuShapeMeshPipeline)>>,
+    pub shape_mesh_color_matrix_shader: Option<GlShapeMeshColorScaleBiasShader>,
+    pub shape_mesh_color_scale_bias_shader: Option<GlShapeMeshColorScaleBiasShader>,
+    pub shape_mesh_pipelines: Option<Vec<(String, WgpuShapeMeshPipeline)>>,
+    pub shape_rasterizer: Option<ShapeRasterizer>,
     pub skin_bind_pose: Option<MeshSkinBindPose>,
-    pub sprite_batch_blend_mode: Option<BlendMode>,
-    pub sprite_batch_buffer_cursor: Option<f64>,
-    pub sprite_batch_buffer_pool: Option<Vec<WgpuSpriteBatchBufferSlot>>,
-    pub sprite_batch_color_transform_buffer: Option<crate::OpaqueHostValue>,
-    pub sprite_batch_color_transform_data: Option<Vec<f32>>,
-    pub sprite_batch_color_transform_mode: Option<f64>,
-    pub sprite_batch_count: Option<f64>,
-    pub sprite_batch_instance_buffer: Option<crate::OpaqueHostValue>,
-    pub sprite_batch_instance_data: Option<Vec<f32>>,
-    pub sprite_batch_material: Option<Material>,
-    pub sprite_batch_material_buffer: Option<crate::OpaqueHostValue>,
-    pub sprite_batch_material_data: Option<Vec<f32>>,
-    pub sprite_batch_material_floats: Option<f64>,
-    pub sprite_batch_texture: Option<ImageResource>,
-    pub sprite_batch_uniform_color_transform: Option<ColorTransform>,
-    pub stage: Option<Stage>,
-    pub stage_signals: Option<StageSignals>,
+    pub stroke_tessellator: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<dyn FnMut(Path, StrokeStyle, Option<f64>) -> Option<PathMesh> + Send + 'static>,
+            >,
+        >,
+    >,
+    pub tangent_smoothing_sources: Option<Vec<u32>>,
     pub temp_stack: Option<Vec<Renderable>>,
     pub text_field_signals: Option<TextFieldSignals>,
     pub text_layout: Option<TextLayoutResult>,
@@ -200,11 +267,12 @@ pub struct FlightPartialRecord2 {
     pub uniform_bind_group: Option<crate::OpaqueHostValue>,
     pub uniform_bind_group_layout: Option<crate::OpaqueHostValue>,
     pub uniform_buffer: Option<crate::OpaqueHostValue>,
-    pub uniform_color_transform_shader: Option<GlUniformColorTransformShader>,
+    pub uniform_color_scale_bias_shader: Option<GlUniformColorScaleBiasShader>,
     pub uniform_data: Option<Vec<f32>>,
     pub uniform_data_u32: Option<Vec<u32>>,
     pub uniform_offset: Option<f64>,
     pub uniform_stride: Option<f64>,
+    pub video_element: Option<crate::OpaqueHostValue>,
     pub webgl_data: Option<MeshGeometryGlData>,
     pub webgl_shader_binding_resolver: Option<
         std::sync::Arc<
@@ -221,14 +289,29 @@ pub struct FlightPartialRecord2 {
             >,
         >,
     >,
-    pub wgpu_color_adjustment_fold: Option<WgpuColorAdjustmentFold>,
-    pub wgpu_color_adjustment_guard: Option<
+    pub wgpu_color_adjustment_material_feature: Option<WgpuColorAdjustmentMaterialFeature>,
+    pub wgpu_color_adjustment_material_feature_guard: Option<
         std::sync::Arc<
             std::sync::Mutex<
-                Box<dyn FnMut(WgpuRenderState, ColorTransform) -> () + Send + 'static>,
+                Box<
+                    dyn FnMut(
+                            WgpuRenderState,
+                            crate::FlightUnion2<
+                                ColorScaleBias,
+                                crate::FlightUnion2<TintMaterialData, Vec<f64>>,
+                            >,
+                        ) -> ()
+                        + Send
+                        + 'static,
+                >,
             >,
         >,
     >,
+    pub wgpu_external_texture_cache: Option<Vec<(ExternalTexture, WgpuTextureEntry)>>,
+    pub wgpu_render_effect_registry: Option<Vec<(Kind, WgpuRenderEffectRunner)>>,
+    pub wgpu_render_texture_cache: Option<Vec<(RenderTexture, WgpuRenderTextureEntry)>>,
+    pub wgpu_render_texture_guard: Option<WgpuRenderTextureGuard>,
+    pub wgpu_texture_resolver_registry: Option<Vec<(TextureSourceKind, WgpuTextureResolver)>>,
     pub world_alpha: Option<f64>,
     pub world_alpha_using_appearance_id: Option<f64>,
     pub world_alpha_using_parent_appearance_id: Option<f64>,
@@ -241,6 +324,10 @@ pub struct FlightPartialRecord2 {
     pub world_transform_id: Option<f64>,
     pub world_transform_using_local_transform_id: Option<f64>,
     pub world_transform_using_parent_transform_id: Option<f64>,
+    pub color_adjustments: Option<Vec<Adjustment>>,
+    pub color_adjustments_unsupported: Option<bool>,
+    pub resolved_color_matrix: Option<Vec<f64>>,
+    pub resolved_color_scale_bias: Option<ColorScaleBias>,
     pub can_add_child: Option<
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
     >,
@@ -257,14 +344,301 @@ impl PartialEq for FlightPartialRecord2 {
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub alpha_multiplier: Option<f64>,
-    pub alpha_offset: Option<f64>,
-    pub blue_multiplier: Option<f64>,
-    pub blue_offset: Option<f64>,
-    pub green_multiplier: Option<f64>,
-    pub green_offset: Option<f64>,
-    pub red_multiplier: Option<f64>,
-    pub red_offset: Option<f64>,
+    pub anisotropy_ext: Option<crate::OpaqueHostValue>,
+    pub appearance_id: Option<f64>,
+    pub binding_cache_guard: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<dyn FnMut(GlRenderState, crate::OpaqueHostValue) -> () + Send + 'static>,
+            >,
+        >,
+    >,
+    pub bounds_rectangle: Option<Rectangle>,
+    pub bounds_using_local_bounds_id: Option<f64>,
+    pub bounds_using_local_transform_id: Option<f64>,
+    pub bounds_version: Option<f64>,
+    pub build_text_layout_params: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<dyn FnMut(TextLabel, TextMeasureFunction) -> TextLayoutParams + Send + 'static>,
+            >,
+        >,
+    >,
+    pub canvas_blend_effect_backdrops: Option<Vec<(String, CanvasRenderTarget)>>,
+    pub canvas_render_effect_registry: Option<Vec<(String, CanvasRenderEffectRunner)>>,
+    pub canvas_shape_command_registry:
+        Option<Vec<(String, CanvasShapeCommand<crate::OpaqueHostValue>)>>,
+    pub canvas_texture_resolvers: Option<CanvasTextureResolvers>,
+    pub canvas_texture_view: Option<crate::OpaqueHostValue>,
+    pub canvas_view_cleared: Option<bool>,
+    pub children_id: Option<f64>,
+    pub clip_contour_pipelines: Option<Vec<(crate::OpaqueHostValue, WgpuClipContourPipelines)>>,
+    pub clip_contour_stack: Option<Vec<WgpuClipContourEntry>>,
+    pub clip_forms: Option<Vec<String>>,
+    pub color_adjustment_resolver: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<
+                    dyn FnMut(RenderState, RenderProxy, Option<RenderProxy>) -> () + Send + 'static,
+                >,
+            >,
+        >,
+    >,
+    pub color_adjustment_unsupported_guard: Option<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(RenderState, Renderable) -> () + Send + 'static>>,
+        >,
+    >,
+    pub color_matrix_instanced_shader: Option<GlColorScaleBiasInstancedShader>,
+    pub color_scale_bias_instanced_shader: Option<GlColorScaleBiasInstancedShader>,
+    pub color_tint_instanced_shader: Option<GlColorScaleBiasInstancedShader>,
+    pub command_encoder: Option<crate::OpaqueHostValue>,
+    pub compressed_texture_decoder: Option<GlCompressedTextureDecoder>,
+    pub compute_local_bounds_rectangle: Option<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
+        >,
+    >,
+    pub current_blend_mode: Option<BlendMode>,
+    pub current_color_format: Option<crate::OpaqueHostValue>,
+    pub current_framebuffer: Option<crate::OpaqueHostValue>,
+    pub current_frame_id: Option<f64>,
+    pub current_mask_depth: Option<f64>,
+    pub current_program: Option<crate::OpaqueHostValue>,
+    pub current_texture: Option<crate::OpaqueHostValue>,
+    pub current_texture_straight_alpha: Option<bool>,
+    pub depth_stencil_height: Option<f64>,
+    pub depth_stencil_texture: Option<crate::OpaqueHostValue>,
+    pub depth_stencil_view: Option<crate::OpaqueHostValue>,
+    pub depth_stencil_width: Option<f64>,
+    pub dom_clip_hooks: Option<DomClipHooks>,
+    pub dom_clip_stack: Option<Vec<DomClipEntry>>,
+    pub dom_current_element: Option<crate::OpaqueHostValue>,
+    pub dom_element_map: Option<Vec<(RenderProxy2D, crate::OpaqueHostValue)>>,
+    pub dom_next_order_list: Option<Vec<RenderProxy2D>>,
+    pub dom_order_length: Option<f64>,
+    pub dom_order_list: Option<Vec<RenderProxy2D>>,
+    pub dom_texture_resolver_registry: Option<Vec<(TextureSourceKind, DomTextureResolver)>>,
+    pub element: Option<crate::OpaqueHostValue>,
+    pub flush_pending_draws: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(GlRenderState) -> () + Send + 'static>>>,
+    >,
+    pub frame_capture_buffer: Option<crate::OpaqueHostValue>,
+    pub frame_capture_bytes_per_row: Option<f64>,
+    pub frame_capture_enabled: Option<bool>,
+    pub frame_capture_height: Option<f64>,
+    pub frame_capture_texture: Option<crate::OpaqueHostValue>,
+    pub frame_capture_width: Option<f64>,
+    pub gl_blend_mode_registry: Option<Vec<(BlendMode, GlBlendRealization)>>,
+    pub gl_color_adjustment_material_feature: Option<GlColorAdjustmentMaterialFeature>,
+    pub gl_color_adjustment_material_feature_guard: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<
+                    dyn FnMut(
+                            GlRenderState,
+                            crate::FlightUnion2<
+                                ColorScaleBias,
+                                crate::FlightUnion2<TintMaterialData, Vec<f64>>,
+                            >,
+                        ) -> ()
+                        + Send
+                        + 'static,
+                >,
+            >,
+        >,
+    >,
+    pub gl_external_texture_cache: Option<Vec<(ExternalTexture, crate::OpaqueHostValue)>>,
+    pub gl_render_effect_registry: Option<Vec<(Kind, GlRenderEffectRunner)>>,
+    pub gl_render_texture_cache: Option<Vec<(RenderTexture, GlRenderTextureEntry)>>,
+    pub gl_render_texture_guard: Option<GlRenderTextureGuard>,
+    pub gl_texture_resolver_registry: Option<Vec<(TextureSourceKind, GlTextureResolver)>>,
+    pub image_smoothing_enabled: Option<bool>,
+    pub image_smoothing_quality: Option<crate::OpaqueHostValue>,
+    pub input: Option<TextInputState>,
+    pub instance_velocities: Option<Vec<f32>>,
+    pub interaction_signals: Option<InteractionSignals>,
+    pub interaction_state: Option<NodeInteractionState>,
+    pub is_local_bounds_rectangle_valid: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(BoundsNodeAny) -> bool + Send + 'static>>>,
+    >,
+    pub linear_sampler: Option<crate::OpaqueHostValue>,
+    pub local_bounds_id: Option<f64>,
+    pub local_bounds_rectangle: Option<Rectangle>,
+    pub local_bounds_texture: Option<Texture>,
+    pub local_bounds_texture_version: Option<f64>,
+    pub local_bounds_using_local_bounds_id: Option<f64>,
+    pub local_content_id: Option<f64>,
+    pub local_matrix: Option<Matrix>,
+    pub local_matrix4: Option<Matrix4>,
+    pub local_matrix4_detached: Option<bool>,
+    pub local_transform_id: Option<f64>,
+    pub local_transform_using_local_transform_id: Option<f64>,
+    pub mask_write_mode: Option<bool>,
+    pub material_bitmap_shader_map: Option<Vec<(Kind, GlBitmapShader)>>,
+    pub matrix_array: Option<Vec<f32>>,
+    pub max_anisotropy: Option<f64>,
+    pub measured_height: Option<f64>,
+    pub measured_width: Option<f64>,
+    pub media_stream: Option<crate::OpaqueHostValue>,
+    pub mipmapped_textures: Option<Vec<crate::OpaqueHostValue>>,
+    pub morph_bind_pose: Option<MeshMorphBindPose>,
+    pub morph_blended_weights: Option<Vec<f32>>,
+    pub movie_clip_signals: Option<MovieClipSignals>,
+    pub nearest_sampler: Option<crate::OpaqueHostValue>,
+    pub node_signals: Option<NodeSignals>,
+    pub pages: Option<Vec<BitmapTextPage>>,
+    pub parent_reference_id: Option<f64>,
+    pub particle_corner_buffer: Option<crate::OpaqueHostValue>,
+    pub particle_instance_capacity: Option<f64>,
+    pub particle_shader: Option<GlParticleShader>,
+    pub pipeline_cache: Option<Vec<(String, crate::OpaqueHostValue)>>,
+    pub quad_batch_corner_buffer: Option<crate::OpaqueHostValue>,
+    pub quad_batch_shader: Option<GlQuadBatchShader>,
+    pub quad_batch_writer_blend_mode: Option<BlendMode>,
+    pub quad_batch_writer_buffer_cursor: Option<f64>,
+    pub quad_batch_writer_buffer_pool: Option<Vec<WgpuQuadBatchWriterBufferSlot>>,
+    pub quad_batch_writer_color_matrix_data: Option<Vec<f32>>,
+    pub quad_batch_writer_color_scale_bias_buffer: Option<crate::OpaqueHostValue>,
+    pub quad_batch_writer_color_scale_bias_data: Option<Vec<f32>>,
+    pub quad_batch_writer_color_scale_bias_mode: Option<f64>,
+    pub quad_batch_writer_color_tint_data: Option<Vec<u32>>,
+    pub quad_batch_writer_count: Option<f64>,
+    pub quad_batch_writer_instance_buffer: Option<crate::OpaqueHostValue>,
+    pub quad_batch_writer_instance_data: Option<Vec<f32>>,
+    pub quad_batch_writer_material: Option<Material>,
+    pub quad_batch_writer_material_buffer: Option<crate::OpaqueHostValue>,
+    pub quad_batch_writer_material_data: Option<Vec<f32>>,
+    pub quad_batch_writer_material_floats: Option<f64>,
+    pub quad_batch_writer_sampler: Option<SamplerLike>,
+    pub quad_batch_writer_smoothing: Option<bool>,
+    pub quad_batch_writer_straight_alpha: Option<bool>,
+    pub quad_batch_writer_uniform_color_scale_bias: Option<
+        crate::FlightUnion2<ColorScaleBias, crate::FlightUnion2<TintMaterialData, Vec<f64>>>,
+    >,
+    pub quad_index_buffer: Option<crate::OpaqueHostValue>,
+    pub quad_vertex_buffer: Option<crate::OpaqueHostValue>,
+    pub quad_vertex_data: Option<Vec<f32>>,
+    pub render_adapt_hook: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<dyn FnMut(RenderState, Renderable, RenderProxy2D) -> () + Send + 'static>,
+            >,
+        >,
+    >,
+    pub render_effect_padding_resolver_registry: Option<Vec<(Kind, RenderEffectPaddingResolver)>>,
+    pub renderer_map: Option<Vec<(Kind, Renderer)>>,
+    pub renderer_map_id: Option<f64>,
+    pub render_pass: Option<crate::OpaqueHostValue>,
+    pub render_proxy_adapter_map: Option<Vec<(Renderable, RenderProxyAdapter)>>,
+    pub render_proxy_map: Option<Vec<(Renderable, RenderProxy)>>,
+    pub render_proxy_sources: Option<Vec<Renderable>>,
+    pub render_root_guard: Option<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(RenderState, Renderable) -> () + Send + 'static>>,
+        >,
+    >,
+    pub render_target_stack: Option<Vec<WgpuSavedPassState>>,
+    pub retired_buffers: Option<Vec<crate::OpaqueHostValue>>,
+    pub rich_text_content: Option<RichTextContent>,
+    pub rotation_angle: Option<f64>,
+    pub rotation_cosine: Option<f64>,
+    pub rotation_sine: Option<f64>,
+    pub sampler_cache: Option<Vec<(f64, crate::OpaqueHostValue)>>,
+    pub scene2d: Option<Scene2D>,
+    pub scene2d_signals: Option<Scene2DSignals>,
+    pub scene_mesh_upload_cache: Option<Vec<(crate::OpaqueHostValue, crate::OpaqueHostValue)>>,
+    pub selection_begin_index: Option<f64>,
+    pub selection_end_index: Option<f64>,
+    pub shader_loc: Option<GlShaderLocations>,
+    pub shape_mesh_color_matrix_shader: Option<GlShapeMeshColorScaleBiasShader>,
+    pub shape_mesh_color_scale_bias_shader: Option<GlShapeMeshColorScaleBiasShader>,
+    pub shape_mesh_pipelines: Option<Vec<(String, WgpuShapeMeshPipeline)>>,
+    pub shape_rasterizer: Option<ShapeRasterizer>,
+    pub skin_bind_pose: Option<MeshSkinBindPose>,
+    pub stroke_tessellator: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<dyn FnMut(Path, StrokeStyle, Option<f64>) -> Option<PathMesh> + Send + 'static>,
+            >,
+        >,
+    >,
+    pub tangent_smoothing_sources: Option<Vec<u32>>,
+    pub temp_stack: Option<Vec<Renderable>>,
+    pub text_field_signals: Option<TextFieldSignals>,
+    pub text_layout: Option<TextLayoutResult>,
+    pub text_layout_using_content_id: Option<f64>,
+    pub texture_bind_group_layout: Option<crate::OpaqueHostValue>,
+    pub uniform_bind_group: Option<crate::OpaqueHostValue>,
+    pub uniform_bind_group_layout: Option<crate::OpaqueHostValue>,
+    pub uniform_buffer: Option<crate::OpaqueHostValue>,
+    pub uniform_color_scale_bias_shader: Option<GlUniformColorScaleBiasShader>,
+    pub uniform_data: Option<Vec<f32>>,
+    pub uniform_data_u32: Option<Vec<u32>>,
+    pub uniform_offset: Option<f64>,
+    pub uniform_stride: Option<f64>,
+    pub video_element: Option<crate::OpaqueHostValue>,
+    pub webgl_data: Option<MeshGeometryGlData>,
+    pub webgl_shader_binding_resolver: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<dyn FnMut(RenderProxy2D) -> Option<GlBitmapShader> + Send + 'static>,
+            >,
+        >,
+    >,
+    pub webgpu_data: Option<MeshGeometryWgpuData>,
+    pub webgpu_shader_binding_resolver: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<dyn FnMut(RenderProxy2D) -> Option<WgpuBitmapShader> + Send + 'static>,
+            >,
+        >,
+    >,
+    pub wgpu_color_adjustment_material_feature: Option<WgpuColorAdjustmentMaterialFeature>,
+    pub wgpu_color_adjustment_material_feature_guard: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<
+                    dyn FnMut(
+                            WgpuRenderState,
+                            crate::FlightUnion2<
+                                ColorScaleBias,
+                                crate::FlightUnion2<TintMaterialData, Vec<f64>>,
+                            >,
+                        ) -> ()
+                        + Send
+                        + 'static,
+                >,
+            >,
+        >,
+    >,
+    pub wgpu_external_texture_cache: Option<Vec<(ExternalTexture, WgpuTextureEntry)>>,
+    pub wgpu_render_effect_registry: Option<Vec<(Kind, WgpuRenderEffectRunner)>>,
+    pub wgpu_render_texture_cache: Option<Vec<(RenderTexture, WgpuRenderTextureEntry)>>,
+    pub wgpu_render_texture_guard: Option<WgpuRenderTextureGuard>,
+    pub wgpu_texture_resolver_registry: Option<Vec<(TextureSourceKind, WgpuTextureResolver)>>,
+    pub world_alpha: Option<f64>,
+    pub world_alpha_using_appearance_id: Option<f64>,
+    pub world_alpha_using_parent_appearance_id: Option<f64>,
+    pub world_appearance_id: Option<f64>,
+    pub world_bounds_rectangle: Option<Rectangle>,
+    pub world_bounds_using_local_bounds_id: Option<f64>,
+    pub world_bounds_using_world_transform_id: Option<f64>,
+    pub world_matrix: Option<Matrix>,
+    pub world_matrix4: Option<Matrix4>,
+    pub world_transform_id: Option<f64>,
+    pub world_transform_using_local_transform_id: Option<f64>,
+    pub world_transform_using_parent_transform_id: Option<f64>,
+    pub color_adjustments: Option<Vec<Adjustment>>,
+    pub color_adjustments_unsupported: Option<bool>,
+    pub resolved_color_matrix: Option<Vec<f64>>,
+    pub resolved_color_scale_bias: Option<ColorScaleBias>,
+    pub can_add_child: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
+    >,
+    pub children: Option<Vec<Node>>,
+    pub traits: Option<NodeTraitsKey>,
+    pub parent: Option<Node>,
 }
 impl PartialEq for FlightPartialRecord3 {
     fn eq(&self, other: &Self) -> bool {
@@ -275,211 +649,8 @@ impl PartialEq for FlightPartialRecord3 {
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord4 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub anisotropy_ext: Option<crate::OpaqueHostValue>,
-    pub appearance_id: Option<f64>,
-    pub binding: Option<crate::OpaqueHostValue>,
-    pub bounds_rectangle: Option<Rectangle>,
-    pub bounds_using_local_bounds_id: Option<f64>,
-    pub bounds_using_local_transform_id: Option<f64>,
-    pub build_text_layout_params: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<dyn FnMut(TextLabel, TextMeasureFunction) -> TextLayoutParams + Send + 'static>,
-            >,
-        >,
-    >,
-    pub canvas_texture_view: Option<crate::OpaqueHostValue>,
-    pub canvas_view_cleared: Option<bool>,
-    pub clip_contour_pipelines: Option<Vec<(crate::OpaqueHostValue, WgpuClipContourPipelines)>>,
-    pub clip_contour_stack: Option<Vec<WgpuClipContourEntry>>,
-    pub clip_forms: Option<Vec<String>>,
-    pub color_adjustment_channel_mixing_guard: Option<
-        std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(RenderState, Renderable) -> () + Send + 'static>>,
-        >,
-    >,
-    pub color_adjustments: Option<Vec<Adjustment>>,
-    pub color_adjustments_channel_mixing: Option<bool>,
-    pub color_transform_instanced_shader: Option<GlColorTransformInstancedShader>,
-    pub command_encoder: Option<crate::OpaqueHostValue>,
-    pub compressed_texture_decoder: Option<GlCompressedTextureDecoder>,
-    pub compressed_texture_upload: Option<GlCompressedTextureUploader>,
-    pub compute_local_bounds_rectangle: Option<
-        std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
-        >,
-    >,
-    pub current_blend_mode: Option<BlendMode>,
-    pub current_color_format: Option<crate::OpaqueHostValue>,
-    pub current_framebuffer: Option<crate::OpaqueHostValue>,
-    pub current_frame_id: Option<f64>,
-    pub current_mask_depth: Option<f64>,
-    pub current_program: Option<crate::OpaqueHostValue>,
-    pub current_render_target: Option<GlRenderTarget>,
-    pub current_texture: Option<crate::OpaqueHostValue>,
-    pub depth_stencil_height: Option<f64>,
-    pub depth_stencil_texture: Option<crate::OpaqueHostValue>,
-    pub depth_stencil_view: Option<crate::OpaqueHostValue>,
-    pub depth_stencil_width: Option<f64>,
-    pub dom_clip_hooks: Option<DomClipHooks>,
-    pub dom_clip_stack: Option<Vec<DomClipEntry>>,
-    pub dom_current_element: Option<crate::OpaqueHostValue>,
-    pub dom_element_map: Option<Vec<(RenderProxy2D, crate::OpaqueHostValue)>>,
-    pub dom_next_order_list: Option<Vec<RenderProxy2D>>,
-    pub dom_order_length: Option<f64>,
-    pub dom_order_list: Option<Vec<RenderProxy2D>>,
-    pub element: Option<crate::OpaqueHostValue>,
-    pub frame_capture_buffer: Option<crate::OpaqueHostValue>,
-    pub frame_capture_bytes_per_row: Option<f64>,
-    pub frame_capture_enabled: Option<bool>,
-    pub frame_capture_height: Option<f64>,
-    pub frame_capture_texture: Option<crate::OpaqueHostValue>,
-    pub frame_capture_width: Option<f64>,
-    pub gl_blend_mode_registry: Option<Vec<(BlendMode, GlBlendRealization)>>,
-    pub gl_color_adjustment_fold: Option<GlColorAdjustmentFold>,
-    pub gl_color_adjustment_guard: Option<
-        std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(GlRenderState, ColorTransform) -> () + Send + 'static>>,
-        >,
-    >,
-    pub image_smoothing_enabled: Option<bool>,
-    pub image_smoothing_quality: Option<crate::OpaqueHostValue>,
-    pub input: Option<TextInputState>,
-    pub instance_velocities: Option<Vec<f32>>,
-    pub interaction_signals: Option<InteractionSignals>,
-    pub interaction_state: Option<NodeInteractionState>,
-    pub linear_sampler: Option<crate::OpaqueHostValue>,
-    pub local_bounds_id: Option<f64>,
-    pub local_bounds_rectangle: Option<Rectangle>,
-    pub local_bounds_using_local_bounds_id: Option<f64>,
-    pub local_content_id: Option<f64>,
-    pub local_matrix: Option<Matrix>,
-    pub local_matrix4: Option<Matrix4>,
-    pub local_matrix4_detached: Option<bool>,
-    pub local_transform_id: Option<f64>,
-    pub local_transform_using_local_transform_id: Option<f64>,
-    pub mask_write_mode: Option<bool>,
-    pub material_bitmap_shader_map: Option<Vec<(Kind, GlBitmapShader)>>,
-    pub matrix_array: Option<Vec<f32>>,
-    pub max_anisotropy: Option<f64>,
-    pub measured_height: Option<f64>,
-    pub measured_width: Option<f64>,
-    pub mipmap_bind_group_layout: Option<crate::OpaqueHostValue>,
-    pub mipmapped_textures: Option<Vec<crate::OpaqueHostValue>>,
-    pub mipmap_pipeline: Option<crate::OpaqueHostValue>,
-    pub morph_bind_pose: Option<MeshMorphBindPose>,
-    pub movie_clip_signals: Option<MovieClipSignals>,
-    pub nearest_sampler: Option<crate::OpaqueHostValue>,
-    pub node_signals: Option<NodeSignals>,
-    pub particle_corner_buffer: Option<crate::OpaqueHostValue>,
-    pub particle_instance_capacity: Option<f64>,
-    pub particle_shader: Option<GlParticleShader>,
-    pub pipeline_cache: Option<Vec<(String, crate::OpaqueHostValue)>>,
-    pub quad_batch_corner_buffer: Option<crate::OpaqueHostValue>,
-    pub quad_batches: Option<Vec<QuadBatch>>,
-    pub quad_batch_shader: Option<GlQuadBatchShader>,
-    pub quad_index_buffer: Option<crate::OpaqueHostValue>,
-    pub quad_vertex_buffer: Option<crate::OpaqueHostValue>,
-    pub quad_vertex_data: Option<Vec<f32>>,
-    pub render_adapt_hook: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<dyn FnMut(RenderState, Renderable, RenderProxy2D) -> () + Send + 'static>,
-            >,
-        >,
-    >,
-    pub renderer_map: Option<Vec<(Kind, Renderer)>>,
-    pub renderer_map_id: Option<f64>,
-    pub render_pass: Option<crate::OpaqueHostValue>,
-    pub render_proxy_adapter_map: Option<Vec<(Renderable, RenderProxyAdapter)>>,
-    pub render_proxy_map: Option<Vec<(Renderable, RenderProxy)>>,
-    pub render_target_stack: Option<Vec<WgpuSavedPassState>>,
-    pub resolved_color_transform: Option<ColorTransform>,
-    pub retired_buffers: Option<Vec<crate::OpaqueHostValue>>,
-    pub rich_text_content: Option<RichTextContent>,
-    pub rotation_angle: Option<f64>,
-    pub rotation_cosine: Option<f64>,
-    pub rotation_sine: Option<f64>,
-    pub sampler_cache: Option<Vec<(String, crate::OpaqueHostValue)>>,
-    pub scene_mesh_upload_cache: Option<Vec<(crate::OpaqueHostValue, crate::OpaqueHostValue)>>,
-    pub selection_begin_index: Option<f64>,
-    pub selection_end_index: Option<f64>,
-    pub shader_loc: Option<GlShaderLocations>,
-    pub shape_mesh_color_transform_shader: Option<GlShapeMeshColorTransformShader>,
-    pub shape_mesh_pipelines: Option<Vec<(crate::OpaqueHostValue, WgpuShapeMeshPipeline)>>,
-    pub skin_bind_pose: Option<MeshSkinBindPose>,
-    pub sprite_batch_blend_mode: Option<BlendMode>,
-    pub sprite_batch_buffer_cursor: Option<f64>,
-    pub sprite_batch_buffer_pool: Option<Vec<WgpuSpriteBatchBufferSlot>>,
-    pub sprite_batch_color_transform_buffer: Option<crate::OpaqueHostValue>,
-    pub sprite_batch_color_transform_data: Option<Vec<f32>>,
-    pub sprite_batch_color_transform_mode: Option<f64>,
-    pub sprite_batch_count: Option<f64>,
-    pub sprite_batch_instance_buffer: Option<crate::OpaqueHostValue>,
-    pub sprite_batch_instance_data: Option<Vec<f32>>,
-    pub sprite_batch_material: Option<Material>,
-    pub sprite_batch_material_buffer: Option<crate::OpaqueHostValue>,
-    pub sprite_batch_material_data: Option<Vec<f32>>,
-    pub sprite_batch_material_floats: Option<f64>,
-    pub sprite_batch_texture: Option<ImageResource>,
-    pub sprite_batch_uniform_color_transform: Option<ColorTransform>,
-    pub stage: Option<Stage>,
-    pub stage_signals: Option<StageSignals>,
-    pub temp_stack: Option<Vec<Renderable>>,
-    pub text_field_signals: Option<TextFieldSignals>,
-    pub text_layout: Option<TextLayoutResult>,
-    pub text_layout_using_content_id: Option<f64>,
-    pub texture_bind_group_layout: Option<crate::OpaqueHostValue>,
-    pub uniform_bind_group: Option<crate::OpaqueHostValue>,
-    pub uniform_bind_group_layout: Option<crate::OpaqueHostValue>,
-    pub uniform_buffer: Option<crate::OpaqueHostValue>,
-    pub uniform_color_transform_shader: Option<GlUniformColorTransformShader>,
-    pub uniform_data: Option<Vec<f32>>,
-    pub uniform_data_u32: Option<Vec<u32>>,
-    pub uniform_offset: Option<f64>,
-    pub uniform_stride: Option<f64>,
-    pub webgl_data: Option<MeshGeometryGlData>,
-    pub webgl_shader_binding_resolver: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<dyn FnMut(RenderProxy2D) -> Option<GlBitmapShader> + Send + 'static>,
-            >,
-        >,
-    >,
-    pub webgpu_data: Option<MeshGeometryWgpuData>,
-    pub webgpu_shader_binding_resolver: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<dyn FnMut(RenderProxy2D) -> Option<WgpuBitmapShader> + Send + 'static>,
-            >,
-        >,
-    >,
-    pub wgpu_color_adjustment_fold: Option<WgpuColorAdjustmentFold>,
-    pub wgpu_color_adjustment_guard: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<dyn FnMut(WgpuRenderState, ColorTransform) -> () + Send + 'static>,
-            >,
-        >,
-    >,
-    pub world_alpha: Option<f64>,
-    pub world_alpha_using_appearance_id: Option<f64>,
-    pub world_alpha_using_parent_appearance_id: Option<f64>,
-    pub world_appearance_id: Option<f64>,
-    pub world_bounds_rectangle: Option<Rectangle>,
-    pub world_bounds_using_local_bounds_id: Option<f64>,
-    pub world_bounds_using_world_transform_id: Option<f64>,
-    pub world_matrix: Option<Matrix>,
-    pub world_matrix4: Option<Matrix4>,
-    pub world_transform_id: Option<f64>,
-    pub world_transform_using_local_transform_id: Option<f64>,
-    pub world_transform_using_parent_transform_id: Option<f64>,
-    pub can_add_child: Option<
-        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
-    >,
-    pub children: Option<Vec<Node>>,
-    pub traits: Option<NodeTraitsKey>,
-    pub parent: Option<Node>,
+    pub texture: Option<Texture2D>,
+    pub regions: Option<Vec<TextureAtlasRegion>>,
 }
 impl PartialEq for FlightPartialRecord4 {
     fn eq(&self, other: &Self) -> bool {
@@ -490,12 +661,8 @@ impl PartialEq for FlightPartialRecord4 {
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord5 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub atlas: Option<TextureAtlas>,
-    pub ids: Option<Vec<u16>>,
-    pub instance_count: Option<f64>,
-    pub material_data: Option<Vec<Option<MaterialData>>>,
-    pub transforms: Option<Vec<f32>>,
-    pub transform_type: Option<QuadTransformType>,
+    pub alpha: Option<f64>,
+    pub visible: Option<bool>,
 }
 impl PartialEq for FlightPartialRecord5 {
     fn eq(&self, other: &Self) -> bool {
@@ -506,8 +673,7 @@ impl PartialEq for FlightPartialRecord5 {
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord6 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub image: Option<ImageResource>,
-    pub regions: Option<Vec<TextureAtlasRegion>>,
+    pub blend_mode: Option<BlendMode>,
 }
 impl PartialEq for FlightPartialRecord6 {
     fn eq(&self, other: &Self) -> bool {
@@ -518,48 +684,19 @@ impl PartialEq for FlightPartialRecord6 {
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord7 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub kind: Option<AdjustmentKind>,
-    pub color_matrix: Option<Vec<f64>>,
-    pub color_transform: Option<ColorTransform>,
-}
-impl PartialEq for FlightPartialRecord7 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord8 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub alpha: Option<f64>,
-    pub visible: Option<bool>,
-}
-impl PartialEq for FlightPartialRecord8 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord9 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub blend_mode: Option<BlendMode>,
-}
-impl PartialEq for FlightPartialRecord9 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord10 {
-    pub __flight_identity: std::sync::Arc<()>,
     pub anisotropy_ext: Option<crate::OpaqueHostValue>,
     pub appearance_id: Option<f64>,
-    pub binding: Option<crate::OpaqueHostValue>,
+    pub binding_cache_guard: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<dyn FnMut(GlRenderState, crate::OpaqueHostValue) -> () + Send + 'static>,
+            >,
+        >,
+    >,
     pub bounds_rectangle: Option<Rectangle>,
     pub bounds_using_local_bounds_id: Option<f64>,
     pub bounds_using_local_transform_id: Option<f64>,
+    pub bounds_version: Option<f64>,
     pub build_text_layout_params: Option<
         std::sync::Arc<
             std::sync::Mutex<
@@ -567,22 +704,36 @@ pub struct FlightPartialRecord10 {
             >,
         >,
     >,
+    pub canvas_blend_effect_backdrops: Option<Vec<(String, CanvasRenderTarget)>>,
+    pub canvas_render_effect_registry: Option<Vec<(String, CanvasRenderEffectRunner)>>,
+    pub canvas_shape_command_registry:
+        Option<Vec<(String, CanvasShapeCommand<crate::OpaqueHostValue>)>>,
+    pub canvas_texture_resolvers: Option<CanvasTextureResolvers>,
     pub canvas_texture_view: Option<crate::OpaqueHostValue>,
     pub canvas_view_cleared: Option<bool>,
+    pub children_id: Option<f64>,
     pub clip_contour_pipelines: Option<Vec<(crate::OpaqueHostValue, WgpuClipContourPipelines)>>,
     pub clip_contour_stack: Option<Vec<WgpuClipContourEntry>>,
     pub clip_forms: Option<Vec<String>>,
-    pub color_adjustment_channel_mixing_guard: Option<
+    pub color_adjustment_resolver: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<
+                    dyn FnMut(RenderState, RenderProxy, Option<RenderProxy>) -> () + Send + 'static,
+                >,
+            >,
+        >,
+    >,
+    pub color_adjustment_unsupported_guard: Option<
         std::sync::Arc<
             std::sync::Mutex<Box<dyn FnMut(RenderState, Renderable) -> () + Send + 'static>>,
         >,
     >,
-    pub color_adjustments: Option<Vec<Adjustment>>,
-    pub color_adjustments_channel_mixing: Option<bool>,
-    pub color_transform_instanced_shader: Option<GlColorTransformInstancedShader>,
+    pub color_matrix_instanced_shader: Option<GlColorScaleBiasInstancedShader>,
+    pub color_scale_bias_instanced_shader: Option<GlColorScaleBiasInstancedShader>,
+    pub color_tint_instanced_shader: Option<GlColorScaleBiasInstancedShader>,
     pub command_encoder: Option<crate::OpaqueHostValue>,
     pub compressed_texture_decoder: Option<GlCompressedTextureDecoder>,
-    pub compressed_texture_upload: Option<GlCompressedTextureUploader>,
     pub compute_local_bounds_rectangle: Option<
         std::sync::Arc<
             std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
@@ -594,8 +745,8 @@ pub struct FlightPartialRecord10 {
     pub current_frame_id: Option<f64>,
     pub current_mask_depth: Option<f64>,
     pub current_program: Option<crate::OpaqueHostValue>,
-    pub current_render_target: Option<GlRenderTarget>,
     pub current_texture: Option<crate::OpaqueHostValue>,
+    pub current_texture_straight_alpha: Option<bool>,
     pub depth_stencil_height: Option<f64>,
     pub depth_stencil_texture: Option<crate::OpaqueHostValue>,
     pub depth_stencil_view: Option<crate::OpaqueHostValue>,
@@ -607,7 +758,11 @@ pub struct FlightPartialRecord10 {
     pub dom_next_order_list: Option<Vec<RenderProxy2D>>,
     pub dom_order_length: Option<f64>,
     pub dom_order_list: Option<Vec<RenderProxy2D>>,
+    pub dom_texture_resolver_registry: Option<Vec<(TextureSourceKind, DomTextureResolver)>>,
     pub element: Option<crate::OpaqueHostValue>,
+    pub flush_pending_draws: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(GlRenderState) -> () + Send + 'static>>>,
+    >,
     pub frame_capture_buffer: Option<crate::OpaqueHostValue>,
     pub frame_capture_bytes_per_row: Option<f64>,
     pub frame_capture_enabled: Option<bool>,
@@ -615,21 +770,43 @@ pub struct FlightPartialRecord10 {
     pub frame_capture_texture: Option<crate::OpaqueHostValue>,
     pub frame_capture_width: Option<f64>,
     pub gl_blend_mode_registry: Option<Vec<(BlendMode, GlBlendRealization)>>,
-    pub gl_color_adjustment_fold: Option<GlColorAdjustmentFold>,
-    pub gl_color_adjustment_guard: Option<
+    pub gl_color_adjustment_material_feature: Option<GlColorAdjustmentMaterialFeature>,
+    pub gl_color_adjustment_material_feature_guard: Option<
         std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(GlRenderState, ColorTransform) -> () + Send + 'static>>,
+            std::sync::Mutex<
+                Box<
+                    dyn FnMut(
+                            GlRenderState,
+                            crate::FlightUnion2<
+                                ColorScaleBias,
+                                crate::FlightUnion2<TintMaterialData, Vec<f64>>,
+                            >,
+                        ) -> ()
+                        + Send
+                        + 'static,
+                >,
+            >,
         >,
     >,
+    pub gl_external_texture_cache: Option<Vec<(ExternalTexture, crate::OpaqueHostValue)>>,
+    pub gl_render_effect_registry: Option<Vec<(Kind, GlRenderEffectRunner)>>,
+    pub gl_render_texture_cache: Option<Vec<(RenderTexture, GlRenderTextureEntry)>>,
+    pub gl_render_texture_guard: Option<GlRenderTextureGuard>,
+    pub gl_texture_resolver_registry: Option<Vec<(TextureSourceKind, GlTextureResolver)>>,
     pub image_smoothing_enabled: Option<bool>,
     pub image_smoothing_quality: Option<crate::OpaqueHostValue>,
     pub input: Option<TextInputState>,
     pub instance_velocities: Option<Vec<f32>>,
     pub interaction_signals: Option<InteractionSignals>,
     pub interaction_state: Option<NodeInteractionState>,
+    pub is_local_bounds_rectangle_valid: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(BoundsNodeAny) -> bool + Send + 'static>>>,
+    >,
     pub linear_sampler: Option<crate::OpaqueHostValue>,
     pub local_bounds_id: Option<f64>,
     pub local_bounds_rectangle: Option<Rectangle>,
+    pub local_bounds_texture: Option<Texture>,
+    pub local_bounds_texture_version: Option<f64>,
     pub local_bounds_using_local_bounds_id: Option<f64>,
     pub local_content_id: Option<f64>,
     pub local_matrix: Option<Matrix>,
@@ -643,20 +820,42 @@ pub struct FlightPartialRecord10 {
     pub max_anisotropy: Option<f64>,
     pub measured_height: Option<f64>,
     pub measured_width: Option<f64>,
-    pub mipmap_bind_group_layout: Option<crate::OpaqueHostValue>,
+    pub media_stream: Option<crate::OpaqueHostValue>,
     pub mipmapped_textures: Option<Vec<crate::OpaqueHostValue>>,
-    pub mipmap_pipeline: Option<crate::OpaqueHostValue>,
     pub morph_bind_pose: Option<MeshMorphBindPose>,
+    pub morph_blended_weights: Option<Vec<f32>>,
     pub movie_clip_signals: Option<MovieClipSignals>,
     pub nearest_sampler: Option<crate::OpaqueHostValue>,
     pub node_signals: Option<NodeSignals>,
+    pub pages: Option<Vec<BitmapTextPage>>,
+    pub parent_reference_id: Option<f64>,
     pub particle_corner_buffer: Option<crate::OpaqueHostValue>,
     pub particle_instance_capacity: Option<f64>,
     pub particle_shader: Option<GlParticleShader>,
     pub pipeline_cache: Option<Vec<(String, crate::OpaqueHostValue)>>,
     pub quad_batch_corner_buffer: Option<crate::OpaqueHostValue>,
-    pub quad_batches: Option<Vec<QuadBatch>>,
     pub quad_batch_shader: Option<GlQuadBatchShader>,
+    pub quad_batch_writer_blend_mode: Option<BlendMode>,
+    pub quad_batch_writer_buffer_cursor: Option<f64>,
+    pub quad_batch_writer_buffer_pool: Option<Vec<WgpuQuadBatchWriterBufferSlot>>,
+    pub quad_batch_writer_color_matrix_data: Option<Vec<f32>>,
+    pub quad_batch_writer_color_scale_bias_buffer: Option<crate::OpaqueHostValue>,
+    pub quad_batch_writer_color_scale_bias_data: Option<Vec<f32>>,
+    pub quad_batch_writer_color_scale_bias_mode: Option<f64>,
+    pub quad_batch_writer_color_tint_data: Option<Vec<u32>>,
+    pub quad_batch_writer_count: Option<f64>,
+    pub quad_batch_writer_instance_buffer: Option<crate::OpaqueHostValue>,
+    pub quad_batch_writer_instance_data: Option<Vec<f32>>,
+    pub quad_batch_writer_material: Option<Material>,
+    pub quad_batch_writer_material_buffer: Option<crate::OpaqueHostValue>,
+    pub quad_batch_writer_material_data: Option<Vec<f32>>,
+    pub quad_batch_writer_material_floats: Option<f64>,
+    pub quad_batch_writer_sampler: Option<SamplerLike>,
+    pub quad_batch_writer_smoothing: Option<bool>,
+    pub quad_batch_writer_straight_alpha: Option<bool>,
+    pub quad_batch_writer_uniform_color_scale_bias: Option<
+        crate::FlightUnion2<ColorScaleBias, crate::FlightUnion2<TintMaterialData, Vec<f64>>>,
+    >,
     pub quad_index_buffer: Option<crate::OpaqueHostValue>,
     pub quad_vertex_buffer: Option<crate::OpaqueHostValue>,
     pub quad_vertex_data: Option<Vec<f32>>,
@@ -667,43 +866,44 @@ pub struct FlightPartialRecord10 {
             >,
         >,
     >,
+    pub render_effect_padding_resolver_registry: Option<Vec<(Kind, RenderEffectPaddingResolver)>>,
     pub renderer_map: Option<Vec<(Kind, Renderer)>>,
     pub renderer_map_id: Option<f64>,
     pub render_pass: Option<crate::OpaqueHostValue>,
     pub render_proxy_adapter_map: Option<Vec<(Renderable, RenderProxyAdapter)>>,
     pub render_proxy_map: Option<Vec<(Renderable, RenderProxy)>>,
+    pub render_proxy_sources: Option<Vec<Renderable>>,
+    pub render_root_guard: Option<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(RenderState, Renderable) -> () + Send + 'static>>,
+        >,
+    >,
     pub render_target_stack: Option<Vec<WgpuSavedPassState>>,
-    pub resolved_color_transform: Option<ColorTransform>,
     pub retired_buffers: Option<Vec<crate::OpaqueHostValue>>,
     pub rich_text_content: Option<RichTextContent>,
     pub rotation_angle: Option<f64>,
     pub rotation_cosine: Option<f64>,
     pub rotation_sine: Option<f64>,
-    pub sampler_cache: Option<Vec<(String, crate::OpaqueHostValue)>>,
+    pub sampler_cache: Option<Vec<(f64, crate::OpaqueHostValue)>>,
+    pub scene2d: Option<Scene2D>,
+    pub scene2d_signals: Option<Scene2DSignals>,
     pub scene_mesh_upload_cache: Option<Vec<(crate::OpaqueHostValue, crate::OpaqueHostValue)>>,
     pub selection_begin_index: Option<f64>,
     pub selection_end_index: Option<f64>,
     pub shader_loc: Option<GlShaderLocations>,
-    pub shape_mesh_color_transform_shader: Option<GlShapeMeshColorTransformShader>,
-    pub shape_mesh_pipelines: Option<Vec<(crate::OpaqueHostValue, WgpuShapeMeshPipeline)>>,
+    pub shape_mesh_color_matrix_shader: Option<GlShapeMeshColorScaleBiasShader>,
+    pub shape_mesh_color_scale_bias_shader: Option<GlShapeMeshColorScaleBiasShader>,
+    pub shape_mesh_pipelines: Option<Vec<(String, WgpuShapeMeshPipeline)>>,
+    pub shape_rasterizer: Option<ShapeRasterizer>,
     pub skin_bind_pose: Option<MeshSkinBindPose>,
-    pub sprite_batch_blend_mode: Option<BlendMode>,
-    pub sprite_batch_buffer_cursor: Option<f64>,
-    pub sprite_batch_buffer_pool: Option<Vec<WgpuSpriteBatchBufferSlot>>,
-    pub sprite_batch_color_transform_buffer: Option<crate::OpaqueHostValue>,
-    pub sprite_batch_color_transform_data: Option<Vec<f32>>,
-    pub sprite_batch_color_transform_mode: Option<f64>,
-    pub sprite_batch_count: Option<f64>,
-    pub sprite_batch_instance_buffer: Option<crate::OpaqueHostValue>,
-    pub sprite_batch_instance_data: Option<Vec<f32>>,
-    pub sprite_batch_material: Option<Material>,
-    pub sprite_batch_material_buffer: Option<crate::OpaqueHostValue>,
-    pub sprite_batch_material_data: Option<Vec<f32>>,
-    pub sprite_batch_material_floats: Option<f64>,
-    pub sprite_batch_texture: Option<ImageResource>,
-    pub sprite_batch_uniform_color_transform: Option<ColorTransform>,
-    pub stage: Option<Stage>,
-    pub stage_signals: Option<StageSignals>,
+    pub stroke_tessellator: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<dyn FnMut(Path, StrokeStyle, Option<f64>) -> Option<PathMesh> + Send + 'static>,
+            >,
+        >,
+    >,
+    pub tangent_smoothing_sources: Option<Vec<u32>>,
     pub temp_stack: Option<Vec<Renderable>>,
     pub text_field_signals: Option<TextFieldSignals>,
     pub text_layout: Option<TextLayoutResult>,
@@ -712,11 +912,12 @@ pub struct FlightPartialRecord10 {
     pub uniform_bind_group: Option<crate::OpaqueHostValue>,
     pub uniform_bind_group_layout: Option<crate::OpaqueHostValue>,
     pub uniform_buffer: Option<crate::OpaqueHostValue>,
-    pub uniform_color_transform_shader: Option<GlUniformColorTransformShader>,
+    pub uniform_color_scale_bias_shader: Option<GlUniformColorScaleBiasShader>,
     pub uniform_data: Option<Vec<f32>>,
     pub uniform_data_u32: Option<Vec<u32>>,
     pub uniform_offset: Option<f64>,
     pub uniform_stride: Option<f64>,
+    pub video_element: Option<crate::OpaqueHostValue>,
     pub webgl_data: Option<MeshGeometryGlData>,
     pub webgl_shader_binding_resolver: Option<
         std::sync::Arc<
@@ -733,14 +934,29 @@ pub struct FlightPartialRecord10 {
             >,
         >,
     >,
-    pub wgpu_color_adjustment_fold: Option<WgpuColorAdjustmentFold>,
-    pub wgpu_color_adjustment_guard: Option<
+    pub wgpu_color_adjustment_material_feature: Option<WgpuColorAdjustmentMaterialFeature>,
+    pub wgpu_color_adjustment_material_feature_guard: Option<
         std::sync::Arc<
             std::sync::Mutex<
-                Box<dyn FnMut(WgpuRenderState, ColorTransform) -> () + Send + 'static>,
+                Box<
+                    dyn FnMut(
+                            WgpuRenderState,
+                            crate::FlightUnion2<
+                                ColorScaleBias,
+                                crate::FlightUnion2<TintMaterialData, Vec<f64>>,
+                            >,
+                        ) -> ()
+                        + Send
+                        + 'static,
+                >,
             >,
         >,
     >,
+    pub wgpu_external_texture_cache: Option<Vec<(ExternalTexture, WgpuTextureEntry)>>,
+    pub wgpu_render_effect_registry: Option<Vec<(Kind, WgpuRenderEffectRunner)>>,
+    pub wgpu_render_texture_cache: Option<Vec<(RenderTexture, WgpuRenderTextureEntry)>>,
+    pub wgpu_render_texture_guard: Option<WgpuRenderTextureGuard>,
+    pub wgpu_texture_resolver_registry: Option<Vec<(TextureSourceKind, WgpuTextureResolver)>>,
     pub world_alpha: Option<f64>,
     pub world_alpha_using_appearance_id: Option<f64>,
     pub world_alpha_using_parent_appearance_id: Option<f64>,
@@ -754,6 +970,39 @@ pub struct FlightPartialRecord10 {
     pub world_transform_using_local_transform_id: Option<f64>,
     pub world_transform_using_parent_transform_id: Option<f64>,
 }
+impl PartialEq for FlightPartialRecord7 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord8 {
+    pub __flight_identity: std::sync::Arc<()>,
+}
+impl PartialEq for FlightPartialRecord8 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord9 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub clip: Option<ClipRegion>,
+}
+impl PartialEq for FlightPartialRecord9 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord10 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub material: Option<Material>,
+    pub material_data: Option<MaterialData>,
+}
 impl PartialEq for FlightPartialRecord10 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
@@ -762,39 +1011,6 @@ impl PartialEq for FlightPartialRecord10 {
 
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord11 {
-    pub __flight_identity: std::sync::Arc<()>,
-}
-impl PartialEq for FlightPartialRecord11 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord12 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub clip: Option<ClipRegion>,
-}
-impl PartialEq for FlightPartialRecord12 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord13 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub material: Option<Material>,
-    pub material_data: Option<MaterialData>,
-}
-impl PartialEq for FlightPartialRecord13 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord14 {
     pub __flight_identity: std::sync::Arc<()>,
     pub pivot_x: Option<f64>,
     pub pivot_y: Option<f64>,
@@ -806,43 +1022,49 @@ pub struct FlightPartialRecord14 {
     pub x: Option<f64>,
     pub y: Option<f64>,
 }
-impl PartialEq for FlightPartialRecord14 {
+impl PartialEq for FlightPartialRecord11 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-// Source: upstream/packages/bitmaptext/src/bitmapText.ts:25 (sha256:6092d0ea3715e74338136af9aad3fb871bc32e15dea783aa072633373219d2fe)
-const BITMAP_TEXT_DEFAULT_COLOR: f64 = 4294967295.0_f64;
+// Source: upstream/packages/bitmaptext/src/bitmapText.ts:20 (sha256:98a66b7283f76f6b66ced65175063259191b7b200ae9c10b40e5376aaca08dc0)
+const BITMAP_TEXT_TRANSFORM_STRIDE: f64 = 2.0_f64;
 
-// Source: upstream/packages/bitmaptext/src/bitmapText.ts:29 (sha256:5a66105373f19ad8ce0c004a477bc8541626e945b9dd4b6f872c70be422a7635)
+// Source: upstream/packages/bitmaptext/src/bitmapText.ts:24 (sha256:74345c09b6118d995cb94c502521f9f903abb86f6daf73a7906935cfe65324da)
 pub fn compute_bitmap_text_local_bounds_rectangle(out: &mut Rectangle, source: &BitmapText) -> () {
     let runtime = {
-        let __flight_source = &(get_display_object_runtime(source));
+        let __flight_source = &(get_node2_d_runtime(source));
         BitmapTextRuntime {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
             anisotropy_ext: (__flight_source.anisotropy_ext).clone(),
             appearance_id: __flight_source.appearance_id,
-            binding: (__flight_source.binding).clone(),
+            binding_cache_guard: (__flight_source.binding_cache_guard).clone(),
             bounds_rectangle: (__flight_source.bounds_rectangle).clone(),
             bounds_using_local_bounds_id: __flight_source.bounds_using_local_bounds_id,
             bounds_using_local_transform_id: __flight_source.bounds_using_local_transform_id,
+            bounds_version: __flight_source.bounds_version,
             build_text_layout_params: (__flight_source.build_text_layout_params).clone(),
+            canvas_blend_effect_backdrops: (__flight_source.canvas_blend_effect_backdrops).clone(),
+            canvas_render_effect_registry: (__flight_source.canvas_render_effect_registry).clone(),
+            canvas_shape_command_registry: (__flight_source.canvas_shape_command_registry).clone(),
+            canvas_texture_resolvers: (__flight_source.canvas_texture_resolvers).clone(),
             canvas_texture_view: (__flight_source.canvas_texture_view).clone(),
             canvas_view_cleared: __flight_source.canvas_view_cleared,
+            children_id: __flight_source.children_id,
             clip_contour_pipelines: (__flight_source.clip_contour_pipelines).clone(),
             clip_contour_stack: (__flight_source.clip_contour_stack).clone(),
             clip_forms: (__flight_source.clip_forms).clone(),
-            color_adjustment_channel_mixing_guard: (__flight_source
-                .color_adjustment_channel_mixing_guard)
+            color_adjustment_resolver: (__flight_source.color_adjustment_resolver).clone(),
+            color_adjustment_unsupported_guard: (__flight_source
+                .color_adjustment_unsupported_guard)
                 .clone(),
-            color_adjustments: (__flight_source.color_adjustments).clone(),
-            color_adjustments_channel_mixing: __flight_source.color_adjustments_channel_mixing,
-            color_transform_instanced_shader: (__flight_source.color_transform_instanced_shader)
+            color_matrix_instanced_shader: (__flight_source.color_matrix_instanced_shader).clone(),
+            color_scale_bias_instanced_shader: (__flight_source.color_scale_bias_instanced_shader)
                 .clone(),
+            color_tint_instanced_shader: (__flight_source.color_tint_instanced_shader).clone(),
             command_encoder: (__flight_source.command_encoder).clone(),
             compressed_texture_decoder: (__flight_source.compressed_texture_decoder).clone(),
-            compressed_texture_upload: (__flight_source.compressed_texture_upload).clone(),
             compute_local_bounds_rectangle: (__flight_source.compute_local_bounds_rectangle)
                 .clone(),
             current_blend_mode: (__flight_source.current_blend_mode).clone(),
@@ -851,8 +1073,8 @@ pub fn compute_bitmap_text_local_bounds_rectangle(out: &mut Rectangle, source: &
             current_frame_id: __flight_source.current_frame_id,
             current_mask_depth: __flight_source.current_mask_depth,
             current_program: (__flight_source.current_program).clone(),
-            current_render_target: (__flight_source.current_render_target).clone(),
             current_texture: (__flight_source.current_texture).clone(),
+            current_texture_straight_alpha: __flight_source.current_texture_straight_alpha,
             depth_stencil_height: __flight_source.depth_stencil_height,
             depth_stencil_texture: (__flight_source.depth_stencil_texture).clone(),
             depth_stencil_view: (__flight_source.depth_stencil_view).clone(),
@@ -864,7 +1086,9 @@ pub fn compute_bitmap_text_local_bounds_rectangle(out: &mut Rectangle, source: &
             dom_next_order_list: (__flight_source.dom_next_order_list).clone(),
             dom_order_length: __flight_source.dom_order_length,
             dom_order_list: (__flight_source.dom_order_list).clone(),
+            dom_texture_resolver_registry: (__flight_source.dom_texture_resolver_registry).clone(),
             element: (__flight_source.element).clone(),
+            flush_pending_draws: (__flight_source.flush_pending_draws).clone(),
             frame_capture_buffer: (__flight_source.frame_capture_buffer).clone(),
             frame_capture_bytes_per_row: __flight_source.frame_capture_bytes_per_row,
             frame_capture_enabled: __flight_source.frame_capture_enabled,
@@ -872,17 +1096,30 @@ pub fn compute_bitmap_text_local_bounds_rectangle(out: &mut Rectangle, source: &
             frame_capture_texture: (__flight_source.frame_capture_texture).clone(),
             frame_capture_width: __flight_source.frame_capture_width,
             gl_blend_mode_registry: (__flight_source.gl_blend_mode_registry).clone(),
-            gl_color_adjustment_fold: (__flight_source.gl_color_adjustment_fold).clone(),
-            gl_color_adjustment_guard: (__flight_source.gl_color_adjustment_guard).clone(),
+            gl_color_adjustment_material_feature: (__flight_source
+                .gl_color_adjustment_material_feature)
+                .clone(),
+            gl_color_adjustment_material_feature_guard: (__flight_source
+                .gl_color_adjustment_material_feature_guard)
+                .clone(),
+            gl_external_texture_cache: (__flight_source.gl_external_texture_cache).clone(),
+            gl_render_effect_registry: (__flight_source.gl_render_effect_registry).clone(),
+            gl_render_texture_cache: (__flight_source.gl_render_texture_cache).clone(),
+            gl_render_texture_guard: (__flight_source.gl_render_texture_guard).clone(),
+            gl_texture_resolver_registry: (__flight_source.gl_texture_resolver_registry).clone(),
             image_smoothing_enabled: __flight_source.image_smoothing_enabled,
             image_smoothing_quality: (__flight_source.image_smoothing_quality).clone(),
             input: (__flight_source.input).clone(),
             instance_velocities: (__flight_source.instance_velocities).clone(),
             interaction_signals: (__flight_source.interaction_signals).clone(),
             interaction_state: (__flight_source.interaction_state).clone(),
+            is_local_bounds_rectangle_valid: (__flight_source.is_local_bounds_rectangle_valid)
+                .clone(),
             linear_sampler: (__flight_source.linear_sampler).clone(),
             local_bounds_id: __flight_source.local_bounds_id,
             local_bounds_rectangle: (__flight_source.local_bounds_rectangle).clone(),
+            local_bounds_texture: (__flight_source.local_bounds_texture).clone(),
+            local_bounds_texture_version: __flight_source.local_bounds_texture_version,
             local_bounds_using_local_bounds_id: __flight_source.local_bounds_using_local_bounds_id,
             local_content_id: __flight_source.local_content_id,
             local_matrix: (__flight_source.local_matrix).clone(),
@@ -897,67 +1134,91 @@ pub fn compute_bitmap_text_local_bounds_rectangle(out: &mut Rectangle, source: &
             max_anisotropy: __flight_source.max_anisotropy,
             measured_height: __flight_source.measured_height,
             measured_width: __flight_source.measured_width,
-            mipmap_bind_group_layout: (__flight_source.mipmap_bind_group_layout).clone(),
+            media_stream: (__flight_source.media_stream).clone(),
             mipmapped_textures: (__flight_source.mipmapped_textures).clone(),
-            mipmap_pipeline: (__flight_source.mipmap_pipeline).clone(),
             morph_bind_pose: (__flight_source.morph_bind_pose).clone(),
+            morph_blended_weights: (__flight_source.morph_blended_weights).clone(),
             movie_clip_signals: (__flight_source.movie_clip_signals).clone(),
             nearest_sampler: (__flight_source.nearest_sampler).clone(),
             node_signals: (__flight_source.node_signals).clone(),
+            pages: (__flight_source.pages).clone(),
+            parent_reference_id: __flight_source.parent_reference_id,
             particle_corner_buffer: (__flight_source.particle_corner_buffer).clone(),
             particle_instance_capacity: __flight_source.particle_instance_capacity,
             particle_shader: (__flight_source.particle_shader).clone(),
             pipeline_cache: (__flight_source.pipeline_cache).clone(),
             quad_batch_corner_buffer: (__flight_source.quad_batch_corner_buffer).clone(),
-            quad_batches: (__flight_source.quad_batches).clone(),
             quad_batch_shader: (__flight_source.quad_batch_shader).clone(),
+            quad_batch_writer_blend_mode: (__flight_source.quad_batch_writer_blend_mode).clone(),
+            quad_batch_writer_buffer_cursor: __flight_source.quad_batch_writer_buffer_cursor,
+            quad_batch_writer_buffer_pool: (__flight_source.quad_batch_writer_buffer_pool).clone(),
+            quad_batch_writer_color_matrix_data: (__flight_source
+                .quad_batch_writer_color_matrix_data)
+                .clone(),
+            quad_batch_writer_color_scale_bias_buffer: (__flight_source
+                .quad_batch_writer_color_scale_bias_buffer)
+                .clone(),
+            quad_batch_writer_color_scale_bias_data: (__flight_source
+                .quad_batch_writer_color_scale_bias_data)
+                .clone(),
+            quad_batch_writer_color_scale_bias_mode: __flight_source
+                .quad_batch_writer_color_scale_bias_mode,
+            quad_batch_writer_color_tint_data: (__flight_source.quad_batch_writer_color_tint_data)
+                .clone(),
+            quad_batch_writer_count: __flight_source.quad_batch_writer_count,
+            quad_batch_writer_instance_buffer: (__flight_source.quad_batch_writer_instance_buffer)
+                .clone(),
+            quad_batch_writer_instance_data: (__flight_source.quad_batch_writer_instance_data)
+                .clone(),
+            quad_batch_writer_material: (__flight_source.quad_batch_writer_material).clone(),
+            quad_batch_writer_material_buffer: (__flight_source.quad_batch_writer_material_buffer)
+                .clone(),
+            quad_batch_writer_material_data: (__flight_source.quad_batch_writer_material_data)
+                .clone(),
+            quad_batch_writer_material_floats: __flight_source.quad_batch_writer_material_floats,
+            quad_batch_writer_sampler: (__flight_source.quad_batch_writer_sampler).clone(),
+            quad_batch_writer_smoothing: __flight_source.quad_batch_writer_smoothing,
+            quad_batch_writer_straight_alpha: __flight_source.quad_batch_writer_straight_alpha,
+            quad_batch_writer_uniform_color_scale_bias: (__flight_source
+                .quad_batch_writer_uniform_color_scale_bias)
+                .clone(),
             quad_index_buffer: (__flight_source.quad_index_buffer).clone(),
             quad_vertex_buffer: (__flight_source.quad_vertex_buffer).clone(),
             quad_vertex_data: (__flight_source.quad_vertex_data).clone(),
             render_adapt_hook: (__flight_source.render_adapt_hook).clone(),
+            render_effect_padding_resolver_registry: (__flight_source
+                .render_effect_padding_resolver_registry)
+                .clone(),
             renderer_map: (__flight_source.renderer_map).clone(),
             renderer_map_id: __flight_source.renderer_map_id,
             render_pass: (__flight_source.render_pass).clone(),
             render_proxy_adapter_map: (__flight_source.render_proxy_adapter_map).clone(),
             render_proxy_map: (__flight_source.render_proxy_map).clone(),
+            render_proxy_sources: (__flight_source.render_proxy_sources).clone(),
+            render_root_guard: (__flight_source.render_root_guard).clone(),
             render_target_stack: (__flight_source.render_target_stack).clone(),
-            resolved_color_transform: (__flight_source.resolved_color_transform).clone(),
             retired_buffers: (__flight_source.retired_buffers).clone(),
             rich_text_content: (__flight_source.rich_text_content).clone(),
             rotation_angle: __flight_source.rotation_angle,
             rotation_cosine: __flight_source.rotation_cosine,
             rotation_sine: __flight_source.rotation_sine,
             sampler_cache: (__flight_source.sampler_cache).clone(),
+            scene2d: (__flight_source.scene2d).clone(),
+            scene2d_signals: (__flight_source.scene2d_signals).clone(),
             scene_mesh_upload_cache: (__flight_source.scene_mesh_upload_cache).clone(),
             selection_begin_index: __flight_source.selection_begin_index,
             selection_end_index: __flight_source.selection_end_index,
             shader_loc: (__flight_source.shader_loc).clone(),
-            shape_mesh_color_transform_shader: (__flight_source.shape_mesh_color_transform_shader)
+            shape_mesh_color_matrix_shader: (__flight_source.shape_mesh_color_matrix_shader)
+                .clone(),
+            shape_mesh_color_scale_bias_shader: (__flight_source
+                .shape_mesh_color_scale_bias_shader)
                 .clone(),
             shape_mesh_pipelines: (__flight_source.shape_mesh_pipelines).clone(),
+            shape_rasterizer: (__flight_source.shape_rasterizer).clone(),
             skin_bind_pose: (__flight_source.skin_bind_pose).clone(),
-            sprite_batch_blend_mode: (__flight_source.sprite_batch_blend_mode).clone(),
-            sprite_batch_buffer_cursor: __flight_source.sprite_batch_buffer_cursor,
-            sprite_batch_buffer_pool: (__flight_source.sprite_batch_buffer_pool).clone(),
-            sprite_batch_color_transform_buffer: (__flight_source
-                .sprite_batch_color_transform_buffer)
-                .clone(),
-            sprite_batch_color_transform_data: (__flight_source.sprite_batch_color_transform_data)
-                .clone(),
-            sprite_batch_color_transform_mode: __flight_source.sprite_batch_color_transform_mode,
-            sprite_batch_count: __flight_source.sprite_batch_count,
-            sprite_batch_instance_buffer: (__flight_source.sprite_batch_instance_buffer).clone(),
-            sprite_batch_instance_data: (__flight_source.sprite_batch_instance_data).clone(),
-            sprite_batch_material: (__flight_source.sprite_batch_material).clone(),
-            sprite_batch_material_buffer: (__flight_source.sprite_batch_material_buffer).clone(),
-            sprite_batch_material_data: (__flight_source.sprite_batch_material_data).clone(),
-            sprite_batch_material_floats: __flight_source.sprite_batch_material_floats,
-            sprite_batch_texture: (__flight_source.sprite_batch_texture).clone(),
-            sprite_batch_uniform_color_transform: (__flight_source
-                .sprite_batch_uniform_color_transform)
-                .clone(),
-            stage: (__flight_source.stage).clone(),
-            stage_signals: (__flight_source.stage_signals).clone(),
+            stroke_tessellator: (__flight_source.stroke_tessellator).clone(),
+            tangent_smoothing_sources: (__flight_source.tangent_smoothing_sources).clone(),
             temp_stack: (__flight_source.temp_stack).clone(),
             text_field_signals: (__flight_source.text_field_signals).clone(),
             text_layout: (__flight_source.text_layout).clone(),
@@ -966,19 +1227,30 @@ pub fn compute_bitmap_text_local_bounds_rectangle(out: &mut Rectangle, source: &
             uniform_bind_group: (__flight_source.uniform_bind_group).clone(),
             uniform_bind_group_layout: (__flight_source.uniform_bind_group_layout).clone(),
             uniform_buffer: (__flight_source.uniform_buffer).clone(),
-            uniform_color_transform_shader: (__flight_source.uniform_color_transform_shader)
+            uniform_color_scale_bias_shader: (__flight_source.uniform_color_scale_bias_shader)
                 .clone(),
             uniform_data: (__flight_source.uniform_data).clone(),
             uniform_data_u32: (__flight_source.uniform_data_u32).clone(),
             uniform_offset: __flight_source.uniform_offset,
             uniform_stride: __flight_source.uniform_stride,
+            video_element: (__flight_source.video_element).clone(),
             webgl_data: (__flight_source.webgl_data).clone(),
             webgl_shader_binding_resolver: (__flight_source.webgl_shader_binding_resolver).clone(),
             webgpu_data: (__flight_source.webgpu_data).clone(),
             webgpu_shader_binding_resolver: (__flight_source.webgpu_shader_binding_resolver)
                 .clone(),
-            wgpu_color_adjustment_fold: (__flight_source.wgpu_color_adjustment_fold).clone(),
-            wgpu_color_adjustment_guard: (__flight_source.wgpu_color_adjustment_guard).clone(),
+            wgpu_color_adjustment_material_feature: (__flight_source
+                .wgpu_color_adjustment_material_feature)
+                .clone(),
+            wgpu_color_adjustment_material_feature_guard: (__flight_source
+                .wgpu_color_adjustment_material_feature_guard)
+                .clone(),
+            wgpu_external_texture_cache: (__flight_source.wgpu_external_texture_cache).clone(),
+            wgpu_render_effect_registry: (__flight_source.wgpu_render_effect_registry).clone(),
+            wgpu_render_texture_cache: (__flight_source.wgpu_render_texture_cache).clone(),
+            wgpu_render_texture_guard: (__flight_source.wgpu_render_texture_guard).clone(),
+            wgpu_texture_resolver_registry: (__flight_source.wgpu_texture_resolver_registry)
+                .clone(),
             world_alpha: __flight_source.world_alpha,
             world_alpha_using_appearance_id: __flight_source.world_alpha_using_appearance_id,
             world_alpha_using_parent_appearance_id: __flight_source
@@ -995,6 +1267,10 @@ pub fn compute_bitmap_text_local_bounds_rectangle(out: &mut Rectangle, source: &
                 .world_transform_using_local_transform_id,
             world_transform_using_parent_transform_id: __flight_source
                 .world_transform_using_parent_transform_id,
+            color_adjustments: (__flight_source.color_adjustments).clone(),
+            color_adjustments_unsupported: __flight_source.color_adjustments_unsupported,
+            resolved_color_matrix: (__flight_source.resolved_color_matrix).clone(),
+            resolved_color_scale_bias: (__flight_source.resolved_color_scale_bias).clone(),
             can_add_child: (__flight_source.can_add_child).clone(),
             children: (__flight_source.children).clone(),
             traits: (__flight_source.traits).clone(),
@@ -1024,21 +1300,21 @@ pub fn compute_bitmap_text_local_bounds_rectangle(out: &mut Rectangle, source: &
     });
 }
 
-// Source: upstream/packages/bitmaptext/src/bitmapText.ts:48 (sha256:9ae99b607504937177e17558023ec62201669c98fc99d2efc27270f6a21924ca)
+// Source: upstream/packages/bitmaptext/src/bitmapText.ts:44 (sha256:6f07b3ab25b39914170c6b46b5359489f5a586293575259a551ffd1ee9b4f37c)
 pub fn create_bitmap_text(
     glyph_source: Option<GlyphSource>,
     options: Option<BitmapTextOptions>,
 ) -> BitmapText {
-    let mut bitmap_text = create_display_object_generic(
+    let mut bitmap_text = create_node2_d(
         (bitmap_text_kind_constant).to_owned(),
         Some(undefined),
         Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-            move |__flight_argument_0: Option<FlightPartialRecord11>| -> DisplayObjectData {
+            move |__flight_argument_0: Option<FlightPartialRecord8>| -> Node2DData {
                 create_bitmap_text_data(Some(((__flight_argument_0).clone().unwrap()).clone()))
             },
         )
             as Box<
-                dyn FnMut(Option<FlightPartialRecord11>) -> DisplayObjectData + Send + 'static,
+                dyn FnMut(Option<FlightPartialRecord8>) -> Node2DData + Send + 'static,
             >))),
         Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
             move |__flight_argument_0: Option<R>| -> R { create_bitmap_text_runtime() },
@@ -1049,40 +1325,38 @@ pub fn create_bitmap_text(
     if (options).is_some() {
         apply_bitmap_text_options(&mut bitmap_text.data, &options.as_ref().unwrap());
     }
-    let quad_batch = create_quad_batch(Some(QuadBatch {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_runtime: Default::default(),
-        data: QuadBatchData {
-            __flight_identity: std::sync::Arc::new(()),
-            atlas: Some(create_texture_atlas(None)),
-        },
-    }));
     let mut runtime = {
-        let __flight_source = &(get_display_object_runtime(&bitmap_text));
+        let __flight_source = &(get_node2_d_runtime(&bitmap_text));
         BitmapTextRuntime {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
             anisotropy_ext: (__flight_source.anisotropy_ext).clone(),
             appearance_id: __flight_source.appearance_id,
-            binding: (__flight_source.binding).clone(),
+            binding_cache_guard: (__flight_source.binding_cache_guard).clone(),
             bounds_rectangle: (__flight_source.bounds_rectangle).clone(),
             bounds_using_local_bounds_id: __flight_source.bounds_using_local_bounds_id,
             bounds_using_local_transform_id: __flight_source.bounds_using_local_transform_id,
+            bounds_version: __flight_source.bounds_version,
             build_text_layout_params: (__flight_source.build_text_layout_params).clone(),
+            canvas_blend_effect_backdrops: (__flight_source.canvas_blend_effect_backdrops).clone(),
+            canvas_render_effect_registry: (__flight_source.canvas_render_effect_registry).clone(),
+            canvas_shape_command_registry: (__flight_source.canvas_shape_command_registry).clone(),
+            canvas_texture_resolvers: (__flight_source.canvas_texture_resolvers).clone(),
             canvas_texture_view: (__flight_source.canvas_texture_view).clone(),
             canvas_view_cleared: __flight_source.canvas_view_cleared,
+            children_id: __flight_source.children_id,
             clip_contour_pipelines: (__flight_source.clip_contour_pipelines).clone(),
             clip_contour_stack: (__flight_source.clip_contour_stack).clone(),
             clip_forms: (__flight_source.clip_forms).clone(),
-            color_adjustment_channel_mixing_guard: (__flight_source
-                .color_adjustment_channel_mixing_guard)
+            color_adjustment_resolver: (__flight_source.color_adjustment_resolver).clone(),
+            color_adjustment_unsupported_guard: (__flight_source
+                .color_adjustment_unsupported_guard)
                 .clone(),
-            color_adjustments: (__flight_source.color_adjustments).clone(),
-            color_adjustments_channel_mixing: __flight_source.color_adjustments_channel_mixing,
-            color_transform_instanced_shader: (__flight_source.color_transform_instanced_shader)
+            color_matrix_instanced_shader: (__flight_source.color_matrix_instanced_shader).clone(),
+            color_scale_bias_instanced_shader: (__flight_source.color_scale_bias_instanced_shader)
                 .clone(),
+            color_tint_instanced_shader: (__flight_source.color_tint_instanced_shader).clone(),
             command_encoder: (__flight_source.command_encoder).clone(),
             compressed_texture_decoder: (__flight_source.compressed_texture_decoder).clone(),
-            compressed_texture_upload: (__flight_source.compressed_texture_upload).clone(),
             compute_local_bounds_rectangle: (__flight_source.compute_local_bounds_rectangle)
                 .clone(),
             current_blend_mode: (__flight_source.current_blend_mode).clone(),
@@ -1091,8 +1365,8 @@ pub fn create_bitmap_text(
             current_frame_id: __flight_source.current_frame_id,
             current_mask_depth: __flight_source.current_mask_depth,
             current_program: (__flight_source.current_program).clone(),
-            current_render_target: (__flight_source.current_render_target).clone(),
             current_texture: (__flight_source.current_texture).clone(),
+            current_texture_straight_alpha: __flight_source.current_texture_straight_alpha,
             depth_stencil_height: __flight_source.depth_stencil_height,
             depth_stencil_texture: (__flight_source.depth_stencil_texture).clone(),
             depth_stencil_view: (__flight_source.depth_stencil_view).clone(),
@@ -1104,7 +1378,9 @@ pub fn create_bitmap_text(
             dom_next_order_list: (__flight_source.dom_next_order_list).clone(),
             dom_order_length: __flight_source.dom_order_length,
             dom_order_list: (__flight_source.dom_order_list).clone(),
+            dom_texture_resolver_registry: (__flight_source.dom_texture_resolver_registry).clone(),
             element: (__flight_source.element).clone(),
+            flush_pending_draws: (__flight_source.flush_pending_draws).clone(),
             frame_capture_buffer: (__flight_source.frame_capture_buffer).clone(),
             frame_capture_bytes_per_row: __flight_source.frame_capture_bytes_per_row,
             frame_capture_enabled: __flight_source.frame_capture_enabled,
@@ -1112,17 +1388,30 @@ pub fn create_bitmap_text(
             frame_capture_texture: (__flight_source.frame_capture_texture).clone(),
             frame_capture_width: __flight_source.frame_capture_width,
             gl_blend_mode_registry: (__flight_source.gl_blend_mode_registry).clone(),
-            gl_color_adjustment_fold: (__flight_source.gl_color_adjustment_fold).clone(),
-            gl_color_adjustment_guard: (__flight_source.gl_color_adjustment_guard).clone(),
+            gl_color_adjustment_material_feature: (__flight_source
+                .gl_color_adjustment_material_feature)
+                .clone(),
+            gl_color_adjustment_material_feature_guard: (__flight_source
+                .gl_color_adjustment_material_feature_guard)
+                .clone(),
+            gl_external_texture_cache: (__flight_source.gl_external_texture_cache).clone(),
+            gl_render_effect_registry: (__flight_source.gl_render_effect_registry).clone(),
+            gl_render_texture_cache: (__flight_source.gl_render_texture_cache).clone(),
+            gl_render_texture_guard: (__flight_source.gl_render_texture_guard).clone(),
+            gl_texture_resolver_registry: (__flight_source.gl_texture_resolver_registry).clone(),
             image_smoothing_enabled: __flight_source.image_smoothing_enabled,
             image_smoothing_quality: (__flight_source.image_smoothing_quality).clone(),
             input: (__flight_source.input).clone(),
             instance_velocities: (__flight_source.instance_velocities).clone(),
             interaction_signals: (__flight_source.interaction_signals).clone(),
             interaction_state: (__flight_source.interaction_state).clone(),
+            is_local_bounds_rectangle_valid: (__flight_source.is_local_bounds_rectangle_valid)
+                .clone(),
             linear_sampler: (__flight_source.linear_sampler).clone(),
             local_bounds_id: __flight_source.local_bounds_id,
             local_bounds_rectangle: (__flight_source.local_bounds_rectangle).clone(),
+            local_bounds_texture: (__flight_source.local_bounds_texture).clone(),
+            local_bounds_texture_version: __flight_source.local_bounds_texture_version,
             local_bounds_using_local_bounds_id: __flight_source.local_bounds_using_local_bounds_id,
             local_content_id: __flight_source.local_content_id,
             local_matrix: (__flight_source.local_matrix).clone(),
@@ -1137,67 +1426,91 @@ pub fn create_bitmap_text(
             max_anisotropy: __flight_source.max_anisotropy,
             measured_height: __flight_source.measured_height,
             measured_width: __flight_source.measured_width,
-            mipmap_bind_group_layout: (__flight_source.mipmap_bind_group_layout).clone(),
+            media_stream: (__flight_source.media_stream).clone(),
             mipmapped_textures: (__flight_source.mipmapped_textures).clone(),
-            mipmap_pipeline: (__flight_source.mipmap_pipeline).clone(),
             morph_bind_pose: (__flight_source.morph_bind_pose).clone(),
+            morph_blended_weights: (__flight_source.morph_blended_weights).clone(),
             movie_clip_signals: (__flight_source.movie_clip_signals).clone(),
             nearest_sampler: (__flight_source.nearest_sampler).clone(),
             node_signals: (__flight_source.node_signals).clone(),
+            pages: (__flight_source.pages).clone(),
+            parent_reference_id: __flight_source.parent_reference_id,
             particle_corner_buffer: (__flight_source.particle_corner_buffer).clone(),
             particle_instance_capacity: __flight_source.particle_instance_capacity,
             particle_shader: (__flight_source.particle_shader).clone(),
             pipeline_cache: (__flight_source.pipeline_cache).clone(),
             quad_batch_corner_buffer: (__flight_source.quad_batch_corner_buffer).clone(),
-            quad_batches: (__flight_source.quad_batches).clone(),
             quad_batch_shader: (__flight_source.quad_batch_shader).clone(),
+            quad_batch_writer_blend_mode: (__flight_source.quad_batch_writer_blend_mode).clone(),
+            quad_batch_writer_buffer_cursor: __flight_source.quad_batch_writer_buffer_cursor,
+            quad_batch_writer_buffer_pool: (__flight_source.quad_batch_writer_buffer_pool).clone(),
+            quad_batch_writer_color_matrix_data: (__flight_source
+                .quad_batch_writer_color_matrix_data)
+                .clone(),
+            quad_batch_writer_color_scale_bias_buffer: (__flight_source
+                .quad_batch_writer_color_scale_bias_buffer)
+                .clone(),
+            quad_batch_writer_color_scale_bias_data: (__flight_source
+                .quad_batch_writer_color_scale_bias_data)
+                .clone(),
+            quad_batch_writer_color_scale_bias_mode: __flight_source
+                .quad_batch_writer_color_scale_bias_mode,
+            quad_batch_writer_color_tint_data: (__flight_source.quad_batch_writer_color_tint_data)
+                .clone(),
+            quad_batch_writer_count: __flight_source.quad_batch_writer_count,
+            quad_batch_writer_instance_buffer: (__flight_source.quad_batch_writer_instance_buffer)
+                .clone(),
+            quad_batch_writer_instance_data: (__flight_source.quad_batch_writer_instance_data)
+                .clone(),
+            quad_batch_writer_material: (__flight_source.quad_batch_writer_material).clone(),
+            quad_batch_writer_material_buffer: (__flight_source.quad_batch_writer_material_buffer)
+                .clone(),
+            quad_batch_writer_material_data: (__flight_source.quad_batch_writer_material_data)
+                .clone(),
+            quad_batch_writer_material_floats: __flight_source.quad_batch_writer_material_floats,
+            quad_batch_writer_sampler: (__flight_source.quad_batch_writer_sampler).clone(),
+            quad_batch_writer_smoothing: __flight_source.quad_batch_writer_smoothing,
+            quad_batch_writer_straight_alpha: __flight_source.quad_batch_writer_straight_alpha,
+            quad_batch_writer_uniform_color_scale_bias: (__flight_source
+                .quad_batch_writer_uniform_color_scale_bias)
+                .clone(),
             quad_index_buffer: (__flight_source.quad_index_buffer).clone(),
             quad_vertex_buffer: (__flight_source.quad_vertex_buffer).clone(),
             quad_vertex_data: (__flight_source.quad_vertex_data).clone(),
             render_adapt_hook: (__flight_source.render_adapt_hook).clone(),
+            render_effect_padding_resolver_registry: (__flight_source
+                .render_effect_padding_resolver_registry)
+                .clone(),
             renderer_map: (__flight_source.renderer_map).clone(),
             renderer_map_id: __flight_source.renderer_map_id,
             render_pass: (__flight_source.render_pass).clone(),
             render_proxy_adapter_map: (__flight_source.render_proxy_adapter_map).clone(),
             render_proxy_map: (__flight_source.render_proxy_map).clone(),
+            render_proxy_sources: (__flight_source.render_proxy_sources).clone(),
+            render_root_guard: (__flight_source.render_root_guard).clone(),
             render_target_stack: (__flight_source.render_target_stack).clone(),
-            resolved_color_transform: (__flight_source.resolved_color_transform).clone(),
             retired_buffers: (__flight_source.retired_buffers).clone(),
             rich_text_content: (__flight_source.rich_text_content).clone(),
             rotation_angle: __flight_source.rotation_angle,
             rotation_cosine: __flight_source.rotation_cosine,
             rotation_sine: __flight_source.rotation_sine,
             sampler_cache: (__flight_source.sampler_cache).clone(),
+            scene2d: (__flight_source.scene2d).clone(),
+            scene2d_signals: (__flight_source.scene2d_signals).clone(),
             scene_mesh_upload_cache: (__flight_source.scene_mesh_upload_cache).clone(),
             selection_begin_index: __flight_source.selection_begin_index,
             selection_end_index: __flight_source.selection_end_index,
             shader_loc: (__flight_source.shader_loc).clone(),
-            shape_mesh_color_transform_shader: (__flight_source.shape_mesh_color_transform_shader)
+            shape_mesh_color_matrix_shader: (__flight_source.shape_mesh_color_matrix_shader)
+                .clone(),
+            shape_mesh_color_scale_bias_shader: (__flight_source
+                .shape_mesh_color_scale_bias_shader)
                 .clone(),
             shape_mesh_pipelines: (__flight_source.shape_mesh_pipelines).clone(),
+            shape_rasterizer: (__flight_source.shape_rasterizer).clone(),
             skin_bind_pose: (__flight_source.skin_bind_pose).clone(),
-            sprite_batch_blend_mode: (__flight_source.sprite_batch_blend_mode).clone(),
-            sprite_batch_buffer_cursor: __flight_source.sprite_batch_buffer_cursor,
-            sprite_batch_buffer_pool: (__flight_source.sprite_batch_buffer_pool).clone(),
-            sprite_batch_color_transform_buffer: (__flight_source
-                .sprite_batch_color_transform_buffer)
-                .clone(),
-            sprite_batch_color_transform_data: (__flight_source.sprite_batch_color_transform_data)
-                .clone(),
-            sprite_batch_color_transform_mode: __flight_source.sprite_batch_color_transform_mode,
-            sprite_batch_count: __flight_source.sprite_batch_count,
-            sprite_batch_instance_buffer: (__flight_source.sprite_batch_instance_buffer).clone(),
-            sprite_batch_instance_data: (__flight_source.sprite_batch_instance_data).clone(),
-            sprite_batch_material: (__flight_source.sprite_batch_material).clone(),
-            sprite_batch_material_buffer: (__flight_source.sprite_batch_material_buffer).clone(),
-            sprite_batch_material_data: (__flight_source.sprite_batch_material_data).clone(),
-            sprite_batch_material_floats: __flight_source.sprite_batch_material_floats,
-            sprite_batch_texture: (__flight_source.sprite_batch_texture).clone(),
-            sprite_batch_uniform_color_transform: (__flight_source
-                .sprite_batch_uniform_color_transform)
-                .clone(),
-            stage: (__flight_source.stage).clone(),
-            stage_signals: (__flight_source.stage_signals).clone(),
+            stroke_tessellator: (__flight_source.stroke_tessellator).clone(),
+            tangent_smoothing_sources: (__flight_source.tangent_smoothing_sources).clone(),
             temp_stack: (__flight_source.temp_stack).clone(),
             text_field_signals: (__flight_source.text_field_signals).clone(),
             text_layout: (__flight_source.text_layout).clone(),
@@ -1206,19 +1519,30 @@ pub fn create_bitmap_text(
             uniform_bind_group: (__flight_source.uniform_bind_group).clone(),
             uniform_bind_group_layout: (__flight_source.uniform_bind_group_layout).clone(),
             uniform_buffer: (__flight_source.uniform_buffer).clone(),
-            uniform_color_transform_shader: (__flight_source.uniform_color_transform_shader)
+            uniform_color_scale_bias_shader: (__flight_source.uniform_color_scale_bias_shader)
                 .clone(),
             uniform_data: (__flight_source.uniform_data).clone(),
             uniform_data_u32: (__flight_source.uniform_data_u32).clone(),
             uniform_offset: __flight_source.uniform_offset,
             uniform_stride: __flight_source.uniform_stride,
+            video_element: (__flight_source.video_element).clone(),
             webgl_data: (__flight_source.webgl_data).clone(),
             webgl_shader_binding_resolver: (__flight_source.webgl_shader_binding_resolver).clone(),
             webgpu_data: (__flight_source.webgpu_data).clone(),
             webgpu_shader_binding_resolver: (__flight_source.webgpu_shader_binding_resolver)
                 .clone(),
-            wgpu_color_adjustment_fold: (__flight_source.wgpu_color_adjustment_fold).clone(),
-            wgpu_color_adjustment_guard: (__flight_source.wgpu_color_adjustment_guard).clone(),
+            wgpu_color_adjustment_material_feature: (__flight_source
+                .wgpu_color_adjustment_material_feature)
+                .clone(),
+            wgpu_color_adjustment_material_feature_guard: (__flight_source
+                .wgpu_color_adjustment_material_feature_guard)
+                .clone(),
+            wgpu_external_texture_cache: (__flight_source.wgpu_external_texture_cache).clone(),
+            wgpu_render_effect_registry: (__flight_source.wgpu_render_effect_registry).clone(),
+            wgpu_render_texture_cache: (__flight_source.wgpu_render_texture_cache).clone(),
+            wgpu_render_texture_guard: (__flight_source.wgpu_render_texture_guard).clone(),
+            wgpu_texture_resolver_registry: (__flight_source.wgpu_texture_resolver_registry)
+                .clone(),
             world_alpha: __flight_source.world_alpha,
             world_alpha_using_appearance_id: __flight_source.world_alpha_using_appearance_id,
             world_alpha_using_parent_appearance_id: __flight_source
@@ -1235,6 +1559,10 @@ pub fn create_bitmap_text(
                 .world_transform_using_local_transform_id,
             world_transform_using_parent_transform_id: __flight_source
                 .world_transform_using_parent_transform_id,
+            color_adjustments: (__flight_source.color_adjustments).clone(),
+            color_adjustments_unsupported: __flight_source.color_adjustments_unsupported,
+            resolved_color_matrix: (__flight_source.resolved_color_matrix).clone(),
+            resolved_color_scale_bias: (__flight_source.resolved_color_scale_bias).clone(),
             can_add_child: (__flight_source.can_add_child).clone(),
             children: (__flight_source.children).clone(),
             traits: (__flight_source.traits).clone(),
@@ -1245,18 +1573,16 @@ pub fn create_bitmap_text(
         .inner
         .lock()
         .unwrap()
-        .quad_batches
-        .push(((quad_batch).clone()).clone());
-    add_node_child(&bitmap_text, &quad_batch);
+        .pages
+        .push(create_bitmap_text_page());
     return bitmap_text;
 }
 
-// Source: upstream/packages/bitmaptext/src/bitmapText.ts:65 (sha256:652b9b9decde0da5b6ec262d3fa215cdbabc38279b594e72639ef8075e765e5d)
+// Source: upstream/packages/bitmaptext/src/bitmapText.ts:59 (sha256:01913cbf4c72f6782b6f38c10dadbd46eff16e3a791c99bcd4c696a6f75b371c)
 pub fn create_bitmap_text_data(data: Option<FlightPartialRecord1>) -> BitmapTextData {
     return BitmapTextData {
         __flight_identity: std::sync::Arc::new(()),
         align: (data.as_ref().and_then(|value| (value.align).clone())).unwrap_or("left".to_owned()),
-        color: (data.as_ref().and_then(|value| value.color)).unwrap_or(BITMAP_TEXT_DEFAULT_COLOR),
         glyph_source: data.as_ref().and_then(|value| (value.glyph_source).clone()),
         letter_spacing: (data.as_ref().and_then(|value| value.letter_spacing)).unwrap_or(0.0_f64),
         line_height: (data.as_ref().and_then(|value| value.line_height)).unwrap_or(1.0_f64),
@@ -1265,35 +1591,40 @@ pub fn create_bitmap_text_data(data: Option<FlightPartialRecord1>) -> BitmapText
     };
 }
 
-// Source: upstream/packages/bitmaptext/src/bitmapText.ts:77 (sha256:99eea2265fed47ad3c08dceb9dd1d2ff08555854102b821b8465dc89f02a12ad)
+// Source: upstream/packages/bitmaptext/src/bitmapText.ts:70 (sha256:0493418e9be43f909b3424628930cd73bbd0b87e0b5f4488453693440a21a796)
 pub fn create_bitmap_text_runtime() -> BitmapTextRuntime {
     let mut runtime = {
-        let __flight_source =
-            &(create_display_object_runtime(Some(((*DEFAULT_METHODS).clone()).clone())));
+        let __flight_source = &(create_node2_d_runtime(Some(((*DEFAULT_METHODS).clone()).clone())));
         BitmapTextRuntime {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
             anisotropy_ext: (__flight_source.anisotropy_ext).clone(),
             appearance_id: __flight_source.appearance_id,
-            binding: (__flight_source.binding).clone(),
+            binding_cache_guard: (__flight_source.binding_cache_guard).clone(),
             bounds_rectangle: (__flight_source.bounds_rectangle).clone(),
             bounds_using_local_bounds_id: __flight_source.bounds_using_local_bounds_id,
             bounds_using_local_transform_id: __flight_source.bounds_using_local_transform_id,
+            bounds_version: __flight_source.bounds_version,
             build_text_layout_params: (__flight_source.build_text_layout_params).clone(),
+            canvas_blend_effect_backdrops: (__flight_source.canvas_blend_effect_backdrops).clone(),
+            canvas_render_effect_registry: (__flight_source.canvas_render_effect_registry).clone(),
+            canvas_shape_command_registry: (__flight_source.canvas_shape_command_registry).clone(),
+            canvas_texture_resolvers: (__flight_source.canvas_texture_resolvers).clone(),
             canvas_texture_view: (__flight_source.canvas_texture_view).clone(),
             canvas_view_cleared: __flight_source.canvas_view_cleared,
+            children_id: __flight_source.children_id,
             clip_contour_pipelines: (__flight_source.clip_contour_pipelines).clone(),
             clip_contour_stack: (__flight_source.clip_contour_stack).clone(),
             clip_forms: (__flight_source.clip_forms).clone(),
-            color_adjustment_channel_mixing_guard: (__flight_source
-                .color_adjustment_channel_mixing_guard)
+            color_adjustment_resolver: (__flight_source.color_adjustment_resolver).clone(),
+            color_adjustment_unsupported_guard: (__flight_source
+                .color_adjustment_unsupported_guard)
                 .clone(),
-            color_adjustments: (__flight_source.color_adjustments).clone(),
-            color_adjustments_channel_mixing: __flight_source.color_adjustments_channel_mixing,
-            color_transform_instanced_shader: (__flight_source.color_transform_instanced_shader)
+            color_matrix_instanced_shader: (__flight_source.color_matrix_instanced_shader).clone(),
+            color_scale_bias_instanced_shader: (__flight_source.color_scale_bias_instanced_shader)
                 .clone(),
+            color_tint_instanced_shader: (__flight_source.color_tint_instanced_shader).clone(),
             command_encoder: (__flight_source.command_encoder).clone(),
             compressed_texture_decoder: (__flight_source.compressed_texture_decoder).clone(),
-            compressed_texture_upload: (__flight_source.compressed_texture_upload).clone(),
             compute_local_bounds_rectangle: (__flight_source.compute_local_bounds_rectangle)
                 .clone(),
             current_blend_mode: (__flight_source.current_blend_mode).clone(),
@@ -1302,8 +1633,8 @@ pub fn create_bitmap_text_runtime() -> BitmapTextRuntime {
             current_frame_id: __flight_source.current_frame_id,
             current_mask_depth: __flight_source.current_mask_depth,
             current_program: (__flight_source.current_program).clone(),
-            current_render_target: (__flight_source.current_render_target).clone(),
             current_texture: (__flight_source.current_texture).clone(),
+            current_texture_straight_alpha: __flight_source.current_texture_straight_alpha,
             depth_stencil_height: __flight_source.depth_stencil_height,
             depth_stencil_texture: (__flight_source.depth_stencil_texture).clone(),
             depth_stencil_view: (__flight_source.depth_stencil_view).clone(),
@@ -1315,7 +1646,9 @@ pub fn create_bitmap_text_runtime() -> BitmapTextRuntime {
             dom_next_order_list: (__flight_source.dom_next_order_list).clone(),
             dom_order_length: __flight_source.dom_order_length,
             dom_order_list: (__flight_source.dom_order_list).clone(),
+            dom_texture_resolver_registry: (__flight_source.dom_texture_resolver_registry).clone(),
             element: (__flight_source.element).clone(),
+            flush_pending_draws: (__flight_source.flush_pending_draws).clone(),
             frame_capture_buffer: (__flight_source.frame_capture_buffer).clone(),
             frame_capture_bytes_per_row: __flight_source.frame_capture_bytes_per_row,
             frame_capture_enabled: __flight_source.frame_capture_enabled,
@@ -1323,17 +1656,30 @@ pub fn create_bitmap_text_runtime() -> BitmapTextRuntime {
             frame_capture_texture: (__flight_source.frame_capture_texture).clone(),
             frame_capture_width: __flight_source.frame_capture_width,
             gl_blend_mode_registry: (__flight_source.gl_blend_mode_registry).clone(),
-            gl_color_adjustment_fold: (__flight_source.gl_color_adjustment_fold).clone(),
-            gl_color_adjustment_guard: (__flight_source.gl_color_adjustment_guard).clone(),
+            gl_color_adjustment_material_feature: (__flight_source
+                .gl_color_adjustment_material_feature)
+                .clone(),
+            gl_color_adjustment_material_feature_guard: (__flight_source
+                .gl_color_adjustment_material_feature_guard)
+                .clone(),
+            gl_external_texture_cache: (__flight_source.gl_external_texture_cache).clone(),
+            gl_render_effect_registry: (__flight_source.gl_render_effect_registry).clone(),
+            gl_render_texture_cache: (__flight_source.gl_render_texture_cache).clone(),
+            gl_render_texture_guard: (__flight_source.gl_render_texture_guard).clone(),
+            gl_texture_resolver_registry: (__flight_source.gl_texture_resolver_registry).clone(),
             image_smoothing_enabled: __flight_source.image_smoothing_enabled,
             image_smoothing_quality: (__flight_source.image_smoothing_quality).clone(),
             input: (__flight_source.input).clone(),
             instance_velocities: (__flight_source.instance_velocities).clone(),
             interaction_signals: (__flight_source.interaction_signals).clone(),
             interaction_state: (__flight_source.interaction_state).clone(),
+            is_local_bounds_rectangle_valid: (__flight_source.is_local_bounds_rectangle_valid)
+                .clone(),
             linear_sampler: (__flight_source.linear_sampler).clone(),
             local_bounds_id: __flight_source.local_bounds_id,
             local_bounds_rectangle: (__flight_source.local_bounds_rectangle).clone(),
+            local_bounds_texture: (__flight_source.local_bounds_texture).clone(),
+            local_bounds_texture_version: __flight_source.local_bounds_texture_version,
             local_bounds_using_local_bounds_id: __flight_source.local_bounds_using_local_bounds_id,
             local_content_id: __flight_source.local_content_id,
             local_matrix: (__flight_source.local_matrix).clone(),
@@ -1348,67 +1694,91 @@ pub fn create_bitmap_text_runtime() -> BitmapTextRuntime {
             max_anisotropy: __flight_source.max_anisotropy,
             measured_height: __flight_source.measured_height,
             measured_width: __flight_source.measured_width,
-            mipmap_bind_group_layout: (__flight_source.mipmap_bind_group_layout).clone(),
+            media_stream: (__flight_source.media_stream).clone(),
             mipmapped_textures: (__flight_source.mipmapped_textures).clone(),
-            mipmap_pipeline: (__flight_source.mipmap_pipeline).clone(),
             morph_bind_pose: (__flight_source.morph_bind_pose).clone(),
+            morph_blended_weights: (__flight_source.morph_blended_weights).clone(),
             movie_clip_signals: (__flight_source.movie_clip_signals).clone(),
             nearest_sampler: (__flight_source.nearest_sampler).clone(),
             node_signals: (__flight_source.node_signals).clone(),
+            pages: (__flight_source.pages).clone(),
+            parent_reference_id: __flight_source.parent_reference_id,
             particle_corner_buffer: (__flight_source.particle_corner_buffer).clone(),
             particle_instance_capacity: __flight_source.particle_instance_capacity,
             particle_shader: (__flight_source.particle_shader).clone(),
             pipeline_cache: (__flight_source.pipeline_cache).clone(),
             quad_batch_corner_buffer: (__flight_source.quad_batch_corner_buffer).clone(),
-            quad_batches: (__flight_source.quad_batches).clone(),
             quad_batch_shader: (__flight_source.quad_batch_shader).clone(),
+            quad_batch_writer_blend_mode: (__flight_source.quad_batch_writer_blend_mode).clone(),
+            quad_batch_writer_buffer_cursor: __flight_source.quad_batch_writer_buffer_cursor,
+            quad_batch_writer_buffer_pool: (__flight_source.quad_batch_writer_buffer_pool).clone(),
+            quad_batch_writer_color_matrix_data: (__flight_source
+                .quad_batch_writer_color_matrix_data)
+                .clone(),
+            quad_batch_writer_color_scale_bias_buffer: (__flight_source
+                .quad_batch_writer_color_scale_bias_buffer)
+                .clone(),
+            quad_batch_writer_color_scale_bias_data: (__flight_source
+                .quad_batch_writer_color_scale_bias_data)
+                .clone(),
+            quad_batch_writer_color_scale_bias_mode: __flight_source
+                .quad_batch_writer_color_scale_bias_mode,
+            quad_batch_writer_color_tint_data: (__flight_source.quad_batch_writer_color_tint_data)
+                .clone(),
+            quad_batch_writer_count: __flight_source.quad_batch_writer_count,
+            quad_batch_writer_instance_buffer: (__flight_source.quad_batch_writer_instance_buffer)
+                .clone(),
+            quad_batch_writer_instance_data: (__flight_source.quad_batch_writer_instance_data)
+                .clone(),
+            quad_batch_writer_material: (__flight_source.quad_batch_writer_material).clone(),
+            quad_batch_writer_material_buffer: (__flight_source.quad_batch_writer_material_buffer)
+                .clone(),
+            quad_batch_writer_material_data: (__flight_source.quad_batch_writer_material_data)
+                .clone(),
+            quad_batch_writer_material_floats: __flight_source.quad_batch_writer_material_floats,
+            quad_batch_writer_sampler: (__flight_source.quad_batch_writer_sampler).clone(),
+            quad_batch_writer_smoothing: __flight_source.quad_batch_writer_smoothing,
+            quad_batch_writer_straight_alpha: __flight_source.quad_batch_writer_straight_alpha,
+            quad_batch_writer_uniform_color_scale_bias: (__flight_source
+                .quad_batch_writer_uniform_color_scale_bias)
+                .clone(),
             quad_index_buffer: (__flight_source.quad_index_buffer).clone(),
             quad_vertex_buffer: (__flight_source.quad_vertex_buffer).clone(),
             quad_vertex_data: (__flight_source.quad_vertex_data).clone(),
             render_adapt_hook: (__flight_source.render_adapt_hook).clone(),
+            render_effect_padding_resolver_registry: (__flight_source
+                .render_effect_padding_resolver_registry)
+                .clone(),
             renderer_map: (__flight_source.renderer_map).clone(),
             renderer_map_id: __flight_source.renderer_map_id,
             render_pass: (__flight_source.render_pass).clone(),
             render_proxy_adapter_map: (__flight_source.render_proxy_adapter_map).clone(),
             render_proxy_map: (__flight_source.render_proxy_map).clone(),
+            render_proxy_sources: (__flight_source.render_proxy_sources).clone(),
+            render_root_guard: (__flight_source.render_root_guard).clone(),
             render_target_stack: (__flight_source.render_target_stack).clone(),
-            resolved_color_transform: (__flight_source.resolved_color_transform).clone(),
             retired_buffers: (__flight_source.retired_buffers).clone(),
             rich_text_content: (__flight_source.rich_text_content).clone(),
             rotation_angle: __flight_source.rotation_angle,
             rotation_cosine: __flight_source.rotation_cosine,
             rotation_sine: __flight_source.rotation_sine,
             sampler_cache: (__flight_source.sampler_cache).clone(),
+            scene2d: (__flight_source.scene2d).clone(),
+            scene2d_signals: (__flight_source.scene2d_signals).clone(),
             scene_mesh_upload_cache: (__flight_source.scene_mesh_upload_cache).clone(),
             selection_begin_index: __flight_source.selection_begin_index,
             selection_end_index: __flight_source.selection_end_index,
             shader_loc: (__flight_source.shader_loc).clone(),
-            shape_mesh_color_transform_shader: (__flight_source.shape_mesh_color_transform_shader)
+            shape_mesh_color_matrix_shader: (__flight_source.shape_mesh_color_matrix_shader)
+                .clone(),
+            shape_mesh_color_scale_bias_shader: (__flight_source
+                .shape_mesh_color_scale_bias_shader)
                 .clone(),
             shape_mesh_pipelines: (__flight_source.shape_mesh_pipelines).clone(),
+            shape_rasterizer: (__flight_source.shape_rasterizer).clone(),
             skin_bind_pose: (__flight_source.skin_bind_pose).clone(),
-            sprite_batch_blend_mode: (__flight_source.sprite_batch_blend_mode).clone(),
-            sprite_batch_buffer_cursor: __flight_source.sprite_batch_buffer_cursor,
-            sprite_batch_buffer_pool: (__flight_source.sprite_batch_buffer_pool).clone(),
-            sprite_batch_color_transform_buffer: (__flight_source
-                .sprite_batch_color_transform_buffer)
-                .clone(),
-            sprite_batch_color_transform_data: (__flight_source.sprite_batch_color_transform_data)
-                .clone(),
-            sprite_batch_color_transform_mode: __flight_source.sprite_batch_color_transform_mode,
-            sprite_batch_count: __flight_source.sprite_batch_count,
-            sprite_batch_instance_buffer: (__flight_source.sprite_batch_instance_buffer).clone(),
-            sprite_batch_instance_data: (__flight_source.sprite_batch_instance_data).clone(),
-            sprite_batch_material: (__flight_source.sprite_batch_material).clone(),
-            sprite_batch_material_buffer: (__flight_source.sprite_batch_material_buffer).clone(),
-            sprite_batch_material_data: (__flight_source.sprite_batch_material_data).clone(),
-            sprite_batch_material_floats: __flight_source.sprite_batch_material_floats,
-            sprite_batch_texture: (__flight_source.sprite_batch_texture).clone(),
-            sprite_batch_uniform_color_transform: (__flight_source
-                .sprite_batch_uniform_color_transform)
-                .clone(),
-            stage: (__flight_source.stage).clone(),
-            stage_signals: (__flight_source.stage_signals).clone(),
+            stroke_tessellator: (__flight_source.stroke_tessellator).clone(),
+            tangent_smoothing_sources: (__flight_source.tangent_smoothing_sources).clone(),
             temp_stack: (__flight_source.temp_stack).clone(),
             text_field_signals: (__flight_source.text_field_signals).clone(),
             text_layout: (__flight_source.text_layout).clone(),
@@ -1417,19 +1787,30 @@ pub fn create_bitmap_text_runtime() -> BitmapTextRuntime {
             uniform_bind_group: (__flight_source.uniform_bind_group).clone(),
             uniform_bind_group_layout: (__flight_source.uniform_bind_group_layout).clone(),
             uniform_buffer: (__flight_source.uniform_buffer).clone(),
-            uniform_color_transform_shader: (__flight_source.uniform_color_transform_shader)
+            uniform_color_scale_bias_shader: (__flight_source.uniform_color_scale_bias_shader)
                 .clone(),
             uniform_data: (__flight_source.uniform_data).clone(),
             uniform_data_u32: (__flight_source.uniform_data_u32).clone(),
             uniform_offset: __flight_source.uniform_offset,
             uniform_stride: __flight_source.uniform_stride,
+            video_element: (__flight_source.video_element).clone(),
             webgl_data: (__flight_source.webgl_data).clone(),
             webgl_shader_binding_resolver: (__flight_source.webgl_shader_binding_resolver).clone(),
             webgpu_data: (__flight_source.webgpu_data).clone(),
             webgpu_shader_binding_resolver: (__flight_source.webgpu_shader_binding_resolver)
                 .clone(),
-            wgpu_color_adjustment_fold: (__flight_source.wgpu_color_adjustment_fold).clone(),
-            wgpu_color_adjustment_guard: (__flight_source.wgpu_color_adjustment_guard).clone(),
+            wgpu_color_adjustment_material_feature: (__flight_source
+                .wgpu_color_adjustment_material_feature)
+                .clone(),
+            wgpu_color_adjustment_material_feature_guard: (__flight_source
+                .wgpu_color_adjustment_material_feature_guard)
+                .clone(),
+            wgpu_external_texture_cache: (__flight_source.wgpu_external_texture_cache).clone(),
+            wgpu_render_effect_registry: (__flight_source.wgpu_render_effect_registry).clone(),
+            wgpu_render_texture_cache: (__flight_source.wgpu_render_texture_cache).clone(),
+            wgpu_render_texture_guard: (__flight_source.wgpu_render_texture_guard).clone(),
+            wgpu_texture_resolver_registry: (__flight_source.wgpu_texture_resolver_registry)
+                .clone(),
             world_alpha: __flight_source.world_alpha,
             world_alpha_using_appearance_id: __flight_source.world_alpha_using_appearance_id,
             world_alpha_using_parent_appearance_id: __flight_source
@@ -1446,6 +1827,10 @@ pub fn create_bitmap_text_runtime() -> BitmapTextRuntime {
                 .world_transform_using_local_transform_id,
             world_transform_using_parent_transform_id: __flight_source
                 .world_transform_using_parent_transform_id,
+            color_adjustments: (__flight_source.color_adjustments).clone(),
+            color_adjustments_unsupported: __flight_source.color_adjustments_unsupported,
+            resolved_color_matrix: (__flight_source.resolved_color_matrix).clone(),
+            resolved_color_scale_bias: (__flight_source.resolved_color_scale_bias).clone(),
             can_add_child: (__flight_source.can_add_child).clone(),
             children: (__flight_source.children).clone(),
             traits: (__flight_source.traits).clone(),
@@ -1462,46 +1847,52 @@ pub fn create_bitmap_text_runtime() -> BitmapTextRuntime {
         let __flight_runtime = runtime;
         let __flight_value = vec![];
         let mut __flight_storage = __flight_runtime.inner.lock().unwrap();
-        __flight_storage.quad_batches = __flight_value;
+        __flight_storage.pages = __flight_value;
     };
     return runtime;
 }
 
-// Source: upstream/packages/bitmaptext/src/bitmapText.ts:86 (sha256:beb2063df494c0cf5820839f49241ce13a95548f488d2e11f0cd9133bea028f2)
+// Source: upstream/packages/bitmaptext/src/bitmapText.ts:79 (sha256:beb2063df494c0cf5820839f49241ce13a95548f488d2e11f0cd9133bea028f2)
 pub fn get_bitmap_text_bounds(source: &BitmapText) -> Rectangle {
     let mut out = create_rectangle(None, None, None, None);
     compute_bitmap_text_local_bounds_rectangle(&mut out, source);
     return out;
 }
 
-// Source: upstream/packages/bitmaptext/src/bitmapText.ts:94 (sha256:9e24e8e7989101781f47989d6ec78853ea00bae1ca1c2488985d26f552e208da)
-pub fn get_bitmap_text_quad_batches(source: &BitmapText) -> Vec<QuadBatch> {
+// Source: upstream/packages/bitmaptext/src/bitmapText.ts:87 (sha256:0207075e815b656dfcfdaf8e0b711ab3e401f34380a4242456cf4cfcd3c0049b)
+pub fn get_bitmap_text_pages(source: &BitmapText) -> Vec<BitmapTextPage> {
     return ({
-        let __flight_source = &(get_display_object_runtime(source));
+        let __flight_source = &(get_node2_d_runtime(source));
         BitmapTextRuntime {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
             anisotropy_ext: (__flight_source.anisotropy_ext).clone(),
             appearance_id: __flight_source.appearance_id,
-            binding: (__flight_source.binding).clone(),
+            binding_cache_guard: (__flight_source.binding_cache_guard).clone(),
             bounds_rectangle: (__flight_source.bounds_rectangle).clone(),
             bounds_using_local_bounds_id: __flight_source.bounds_using_local_bounds_id,
             bounds_using_local_transform_id: __flight_source.bounds_using_local_transform_id,
+            bounds_version: __flight_source.bounds_version,
             build_text_layout_params: (__flight_source.build_text_layout_params).clone(),
+            canvas_blend_effect_backdrops: (__flight_source.canvas_blend_effect_backdrops).clone(),
+            canvas_render_effect_registry: (__flight_source.canvas_render_effect_registry).clone(),
+            canvas_shape_command_registry: (__flight_source.canvas_shape_command_registry).clone(),
+            canvas_texture_resolvers: (__flight_source.canvas_texture_resolvers).clone(),
             canvas_texture_view: (__flight_source.canvas_texture_view).clone(),
             canvas_view_cleared: __flight_source.canvas_view_cleared,
+            children_id: __flight_source.children_id,
             clip_contour_pipelines: (__flight_source.clip_contour_pipelines).clone(),
             clip_contour_stack: (__flight_source.clip_contour_stack).clone(),
             clip_forms: (__flight_source.clip_forms).clone(),
-            color_adjustment_channel_mixing_guard: (__flight_source
-                .color_adjustment_channel_mixing_guard)
+            color_adjustment_resolver: (__flight_source.color_adjustment_resolver).clone(),
+            color_adjustment_unsupported_guard: (__flight_source
+                .color_adjustment_unsupported_guard)
                 .clone(),
-            color_adjustments: (__flight_source.color_adjustments).clone(),
-            color_adjustments_channel_mixing: __flight_source.color_adjustments_channel_mixing,
-            color_transform_instanced_shader: (__flight_source.color_transform_instanced_shader)
+            color_matrix_instanced_shader: (__flight_source.color_matrix_instanced_shader).clone(),
+            color_scale_bias_instanced_shader: (__flight_source.color_scale_bias_instanced_shader)
                 .clone(),
+            color_tint_instanced_shader: (__flight_source.color_tint_instanced_shader).clone(),
             command_encoder: (__flight_source.command_encoder).clone(),
             compressed_texture_decoder: (__flight_source.compressed_texture_decoder).clone(),
-            compressed_texture_upload: (__flight_source.compressed_texture_upload).clone(),
             compute_local_bounds_rectangle: (__flight_source.compute_local_bounds_rectangle)
                 .clone(),
             current_blend_mode: (__flight_source.current_blend_mode).clone(),
@@ -1510,8 +1901,8 @@ pub fn get_bitmap_text_quad_batches(source: &BitmapText) -> Vec<QuadBatch> {
             current_frame_id: __flight_source.current_frame_id,
             current_mask_depth: __flight_source.current_mask_depth,
             current_program: (__flight_source.current_program).clone(),
-            current_render_target: (__flight_source.current_render_target).clone(),
             current_texture: (__flight_source.current_texture).clone(),
+            current_texture_straight_alpha: __flight_source.current_texture_straight_alpha,
             depth_stencil_height: __flight_source.depth_stencil_height,
             depth_stencil_texture: (__flight_source.depth_stencil_texture).clone(),
             depth_stencil_view: (__flight_source.depth_stencil_view).clone(),
@@ -1523,7 +1914,9 @@ pub fn get_bitmap_text_quad_batches(source: &BitmapText) -> Vec<QuadBatch> {
             dom_next_order_list: (__flight_source.dom_next_order_list).clone(),
             dom_order_length: __flight_source.dom_order_length,
             dom_order_list: (__flight_source.dom_order_list).clone(),
+            dom_texture_resolver_registry: (__flight_source.dom_texture_resolver_registry).clone(),
             element: (__flight_source.element).clone(),
+            flush_pending_draws: (__flight_source.flush_pending_draws).clone(),
             frame_capture_buffer: (__flight_source.frame_capture_buffer).clone(),
             frame_capture_bytes_per_row: __flight_source.frame_capture_bytes_per_row,
             frame_capture_enabled: __flight_source.frame_capture_enabled,
@@ -1531,17 +1924,30 @@ pub fn get_bitmap_text_quad_batches(source: &BitmapText) -> Vec<QuadBatch> {
             frame_capture_texture: (__flight_source.frame_capture_texture).clone(),
             frame_capture_width: __flight_source.frame_capture_width,
             gl_blend_mode_registry: (__flight_source.gl_blend_mode_registry).clone(),
-            gl_color_adjustment_fold: (__flight_source.gl_color_adjustment_fold).clone(),
-            gl_color_adjustment_guard: (__flight_source.gl_color_adjustment_guard).clone(),
+            gl_color_adjustment_material_feature: (__flight_source
+                .gl_color_adjustment_material_feature)
+                .clone(),
+            gl_color_adjustment_material_feature_guard: (__flight_source
+                .gl_color_adjustment_material_feature_guard)
+                .clone(),
+            gl_external_texture_cache: (__flight_source.gl_external_texture_cache).clone(),
+            gl_render_effect_registry: (__flight_source.gl_render_effect_registry).clone(),
+            gl_render_texture_cache: (__flight_source.gl_render_texture_cache).clone(),
+            gl_render_texture_guard: (__flight_source.gl_render_texture_guard).clone(),
+            gl_texture_resolver_registry: (__flight_source.gl_texture_resolver_registry).clone(),
             image_smoothing_enabled: __flight_source.image_smoothing_enabled,
             image_smoothing_quality: (__flight_source.image_smoothing_quality).clone(),
             input: (__flight_source.input).clone(),
             instance_velocities: (__flight_source.instance_velocities).clone(),
             interaction_signals: (__flight_source.interaction_signals).clone(),
             interaction_state: (__flight_source.interaction_state).clone(),
+            is_local_bounds_rectangle_valid: (__flight_source.is_local_bounds_rectangle_valid)
+                .clone(),
             linear_sampler: (__flight_source.linear_sampler).clone(),
             local_bounds_id: __flight_source.local_bounds_id,
             local_bounds_rectangle: (__flight_source.local_bounds_rectangle).clone(),
+            local_bounds_texture: (__flight_source.local_bounds_texture).clone(),
+            local_bounds_texture_version: __flight_source.local_bounds_texture_version,
             local_bounds_using_local_bounds_id: __flight_source.local_bounds_using_local_bounds_id,
             local_content_id: __flight_source.local_content_id,
             local_matrix: (__flight_source.local_matrix).clone(),
@@ -1556,67 +1962,91 @@ pub fn get_bitmap_text_quad_batches(source: &BitmapText) -> Vec<QuadBatch> {
             max_anisotropy: __flight_source.max_anisotropy,
             measured_height: __flight_source.measured_height,
             measured_width: __flight_source.measured_width,
-            mipmap_bind_group_layout: (__flight_source.mipmap_bind_group_layout).clone(),
+            media_stream: (__flight_source.media_stream).clone(),
             mipmapped_textures: (__flight_source.mipmapped_textures).clone(),
-            mipmap_pipeline: (__flight_source.mipmap_pipeline).clone(),
             morph_bind_pose: (__flight_source.morph_bind_pose).clone(),
+            morph_blended_weights: (__flight_source.morph_blended_weights).clone(),
             movie_clip_signals: (__flight_source.movie_clip_signals).clone(),
             nearest_sampler: (__flight_source.nearest_sampler).clone(),
             node_signals: (__flight_source.node_signals).clone(),
+            pages: (__flight_source.pages).clone(),
+            parent_reference_id: __flight_source.parent_reference_id,
             particle_corner_buffer: (__flight_source.particle_corner_buffer).clone(),
             particle_instance_capacity: __flight_source.particle_instance_capacity,
             particle_shader: (__flight_source.particle_shader).clone(),
             pipeline_cache: (__flight_source.pipeline_cache).clone(),
             quad_batch_corner_buffer: (__flight_source.quad_batch_corner_buffer).clone(),
-            quad_batches: (__flight_source.quad_batches).clone(),
             quad_batch_shader: (__flight_source.quad_batch_shader).clone(),
+            quad_batch_writer_blend_mode: (__flight_source.quad_batch_writer_blend_mode).clone(),
+            quad_batch_writer_buffer_cursor: __flight_source.quad_batch_writer_buffer_cursor,
+            quad_batch_writer_buffer_pool: (__flight_source.quad_batch_writer_buffer_pool).clone(),
+            quad_batch_writer_color_matrix_data: (__flight_source
+                .quad_batch_writer_color_matrix_data)
+                .clone(),
+            quad_batch_writer_color_scale_bias_buffer: (__flight_source
+                .quad_batch_writer_color_scale_bias_buffer)
+                .clone(),
+            quad_batch_writer_color_scale_bias_data: (__flight_source
+                .quad_batch_writer_color_scale_bias_data)
+                .clone(),
+            quad_batch_writer_color_scale_bias_mode: __flight_source
+                .quad_batch_writer_color_scale_bias_mode,
+            quad_batch_writer_color_tint_data: (__flight_source.quad_batch_writer_color_tint_data)
+                .clone(),
+            quad_batch_writer_count: __flight_source.quad_batch_writer_count,
+            quad_batch_writer_instance_buffer: (__flight_source.quad_batch_writer_instance_buffer)
+                .clone(),
+            quad_batch_writer_instance_data: (__flight_source.quad_batch_writer_instance_data)
+                .clone(),
+            quad_batch_writer_material: (__flight_source.quad_batch_writer_material).clone(),
+            quad_batch_writer_material_buffer: (__flight_source.quad_batch_writer_material_buffer)
+                .clone(),
+            quad_batch_writer_material_data: (__flight_source.quad_batch_writer_material_data)
+                .clone(),
+            quad_batch_writer_material_floats: __flight_source.quad_batch_writer_material_floats,
+            quad_batch_writer_sampler: (__flight_source.quad_batch_writer_sampler).clone(),
+            quad_batch_writer_smoothing: __flight_source.quad_batch_writer_smoothing,
+            quad_batch_writer_straight_alpha: __flight_source.quad_batch_writer_straight_alpha,
+            quad_batch_writer_uniform_color_scale_bias: (__flight_source
+                .quad_batch_writer_uniform_color_scale_bias)
+                .clone(),
             quad_index_buffer: (__flight_source.quad_index_buffer).clone(),
             quad_vertex_buffer: (__flight_source.quad_vertex_buffer).clone(),
             quad_vertex_data: (__flight_source.quad_vertex_data).clone(),
             render_adapt_hook: (__flight_source.render_adapt_hook).clone(),
+            render_effect_padding_resolver_registry: (__flight_source
+                .render_effect_padding_resolver_registry)
+                .clone(),
             renderer_map: (__flight_source.renderer_map).clone(),
             renderer_map_id: __flight_source.renderer_map_id,
             render_pass: (__flight_source.render_pass).clone(),
             render_proxy_adapter_map: (__flight_source.render_proxy_adapter_map).clone(),
             render_proxy_map: (__flight_source.render_proxy_map).clone(),
+            render_proxy_sources: (__flight_source.render_proxy_sources).clone(),
+            render_root_guard: (__flight_source.render_root_guard).clone(),
             render_target_stack: (__flight_source.render_target_stack).clone(),
-            resolved_color_transform: (__flight_source.resolved_color_transform).clone(),
             retired_buffers: (__flight_source.retired_buffers).clone(),
             rich_text_content: (__flight_source.rich_text_content).clone(),
             rotation_angle: __flight_source.rotation_angle,
             rotation_cosine: __flight_source.rotation_cosine,
             rotation_sine: __flight_source.rotation_sine,
             sampler_cache: (__flight_source.sampler_cache).clone(),
+            scene2d: (__flight_source.scene2d).clone(),
+            scene2d_signals: (__flight_source.scene2d_signals).clone(),
             scene_mesh_upload_cache: (__flight_source.scene_mesh_upload_cache).clone(),
             selection_begin_index: __flight_source.selection_begin_index,
             selection_end_index: __flight_source.selection_end_index,
             shader_loc: (__flight_source.shader_loc).clone(),
-            shape_mesh_color_transform_shader: (__flight_source.shape_mesh_color_transform_shader)
+            shape_mesh_color_matrix_shader: (__flight_source.shape_mesh_color_matrix_shader)
+                .clone(),
+            shape_mesh_color_scale_bias_shader: (__flight_source
+                .shape_mesh_color_scale_bias_shader)
                 .clone(),
             shape_mesh_pipelines: (__flight_source.shape_mesh_pipelines).clone(),
+            shape_rasterizer: (__flight_source.shape_rasterizer).clone(),
             skin_bind_pose: (__flight_source.skin_bind_pose).clone(),
-            sprite_batch_blend_mode: (__flight_source.sprite_batch_blend_mode).clone(),
-            sprite_batch_buffer_cursor: __flight_source.sprite_batch_buffer_cursor,
-            sprite_batch_buffer_pool: (__flight_source.sprite_batch_buffer_pool).clone(),
-            sprite_batch_color_transform_buffer: (__flight_source
-                .sprite_batch_color_transform_buffer)
-                .clone(),
-            sprite_batch_color_transform_data: (__flight_source.sprite_batch_color_transform_data)
-                .clone(),
-            sprite_batch_color_transform_mode: __flight_source.sprite_batch_color_transform_mode,
-            sprite_batch_count: __flight_source.sprite_batch_count,
-            sprite_batch_instance_buffer: (__flight_source.sprite_batch_instance_buffer).clone(),
-            sprite_batch_instance_data: (__flight_source.sprite_batch_instance_data).clone(),
-            sprite_batch_material: (__flight_source.sprite_batch_material).clone(),
-            sprite_batch_material_buffer: (__flight_source.sprite_batch_material_buffer).clone(),
-            sprite_batch_material_data: (__flight_source.sprite_batch_material_data).clone(),
-            sprite_batch_material_floats: __flight_source.sprite_batch_material_floats,
-            sprite_batch_texture: (__flight_source.sprite_batch_texture).clone(),
-            sprite_batch_uniform_color_transform: (__flight_source
-                .sprite_batch_uniform_color_transform)
-                .clone(),
-            stage: (__flight_source.stage).clone(),
-            stage_signals: (__flight_source.stage_signals).clone(),
+            stroke_tessellator: (__flight_source.stroke_tessellator).clone(),
+            tangent_smoothing_sources: (__flight_source.tangent_smoothing_sources).clone(),
             temp_stack: (__flight_source.temp_stack).clone(),
             text_field_signals: (__flight_source.text_field_signals).clone(),
             text_layout: (__flight_source.text_layout).clone(),
@@ -1625,19 +2055,30 @@ pub fn get_bitmap_text_quad_batches(source: &BitmapText) -> Vec<QuadBatch> {
             uniform_bind_group: (__flight_source.uniform_bind_group).clone(),
             uniform_bind_group_layout: (__flight_source.uniform_bind_group_layout).clone(),
             uniform_buffer: (__flight_source.uniform_buffer).clone(),
-            uniform_color_transform_shader: (__flight_source.uniform_color_transform_shader)
+            uniform_color_scale_bias_shader: (__flight_source.uniform_color_scale_bias_shader)
                 .clone(),
             uniform_data: (__flight_source.uniform_data).clone(),
             uniform_data_u32: (__flight_source.uniform_data_u32).clone(),
             uniform_offset: __flight_source.uniform_offset,
             uniform_stride: __flight_source.uniform_stride,
+            video_element: (__flight_source.video_element).clone(),
             webgl_data: (__flight_source.webgl_data).clone(),
             webgl_shader_binding_resolver: (__flight_source.webgl_shader_binding_resolver).clone(),
             webgpu_data: (__flight_source.webgpu_data).clone(),
             webgpu_shader_binding_resolver: (__flight_source.webgpu_shader_binding_resolver)
                 .clone(),
-            wgpu_color_adjustment_fold: (__flight_source.wgpu_color_adjustment_fold).clone(),
-            wgpu_color_adjustment_guard: (__flight_source.wgpu_color_adjustment_guard).clone(),
+            wgpu_color_adjustment_material_feature: (__flight_source
+                .wgpu_color_adjustment_material_feature)
+                .clone(),
+            wgpu_color_adjustment_material_feature_guard: (__flight_source
+                .wgpu_color_adjustment_material_feature_guard)
+                .clone(),
+            wgpu_external_texture_cache: (__flight_source.wgpu_external_texture_cache).clone(),
+            wgpu_render_effect_registry: (__flight_source.wgpu_render_effect_registry).clone(),
+            wgpu_render_texture_cache: (__flight_source.wgpu_render_texture_cache).clone(),
+            wgpu_render_texture_guard: (__flight_source.wgpu_render_texture_guard).clone(),
+            wgpu_texture_resolver_registry: (__flight_source.wgpu_texture_resolver_registry)
+                .clone(),
             world_alpha: __flight_source.world_alpha,
             world_alpha_using_appearance_id: __flight_source.world_alpha_using_appearance_id,
             world_alpha_using_parent_appearance_id: __flight_source
@@ -1654,6 +2095,10 @@ pub fn get_bitmap_text_quad_batches(source: &BitmapText) -> Vec<QuadBatch> {
                 .world_transform_using_local_transform_id,
             world_transform_using_parent_transform_id: __flight_source
                 .world_transform_using_parent_transform_id,
+            color_adjustments: (__flight_source.color_adjustments).clone(),
+            color_adjustments_unsupported: __flight_source.color_adjustments_unsupported,
+            resolved_color_matrix: (__flight_source.resolved_color_matrix).clone(),
+            resolved_color_scale_bias: (__flight_source.resolved_color_scale_bias).clone(),
             can_add_child: (__flight_source.can_add_child).clone(),
             children: (__flight_source.children).clone(),
             traits: (__flight_source.traits).clone(),
@@ -1663,38 +2108,44 @@ pub fn get_bitmap_text_quad_batches(source: &BitmapText) -> Vec<QuadBatch> {
     .inner
     .lock()
     .unwrap()
-    .quad_batches)
+    .pages)
         .clone();
 }
 
-// Source: upstream/packages/bitmaptext/src/bitmapText.ts:101 (sha256:dd245b6880d4bebde7f723053d5c9bc0018a35a4f0bb5885b484c0919249847d)
+// Source: upstream/packages/bitmaptext/src/bitmapText.ts:94 (sha256:75b6933233dd86f11f7940d0ecdfb2cbd3cd885458532122caf7093427ccfc45)
 pub fn reserve_bitmap_text(target: &BitmapText, glyph_capacity: f64) -> () {
     let runtime = {
-        let __flight_source = &(get_display_object_runtime(target));
+        let __flight_source = &(get_node2_d_runtime(target));
         BitmapTextRuntime {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
             anisotropy_ext: (__flight_source.anisotropy_ext).clone(),
             appearance_id: __flight_source.appearance_id,
-            binding: (__flight_source.binding).clone(),
+            binding_cache_guard: (__flight_source.binding_cache_guard).clone(),
             bounds_rectangle: (__flight_source.bounds_rectangle).clone(),
             bounds_using_local_bounds_id: __flight_source.bounds_using_local_bounds_id,
             bounds_using_local_transform_id: __flight_source.bounds_using_local_transform_id,
+            bounds_version: __flight_source.bounds_version,
             build_text_layout_params: (__flight_source.build_text_layout_params).clone(),
+            canvas_blend_effect_backdrops: (__flight_source.canvas_blend_effect_backdrops).clone(),
+            canvas_render_effect_registry: (__flight_source.canvas_render_effect_registry).clone(),
+            canvas_shape_command_registry: (__flight_source.canvas_shape_command_registry).clone(),
+            canvas_texture_resolvers: (__flight_source.canvas_texture_resolvers).clone(),
             canvas_texture_view: (__flight_source.canvas_texture_view).clone(),
             canvas_view_cleared: __flight_source.canvas_view_cleared,
+            children_id: __flight_source.children_id,
             clip_contour_pipelines: (__flight_source.clip_contour_pipelines).clone(),
             clip_contour_stack: (__flight_source.clip_contour_stack).clone(),
             clip_forms: (__flight_source.clip_forms).clone(),
-            color_adjustment_channel_mixing_guard: (__flight_source
-                .color_adjustment_channel_mixing_guard)
+            color_adjustment_resolver: (__flight_source.color_adjustment_resolver).clone(),
+            color_adjustment_unsupported_guard: (__flight_source
+                .color_adjustment_unsupported_guard)
                 .clone(),
-            color_adjustments: (__flight_source.color_adjustments).clone(),
-            color_adjustments_channel_mixing: __flight_source.color_adjustments_channel_mixing,
-            color_transform_instanced_shader: (__flight_source.color_transform_instanced_shader)
+            color_matrix_instanced_shader: (__flight_source.color_matrix_instanced_shader).clone(),
+            color_scale_bias_instanced_shader: (__flight_source.color_scale_bias_instanced_shader)
                 .clone(),
+            color_tint_instanced_shader: (__flight_source.color_tint_instanced_shader).clone(),
             command_encoder: (__flight_source.command_encoder).clone(),
             compressed_texture_decoder: (__flight_source.compressed_texture_decoder).clone(),
-            compressed_texture_upload: (__flight_source.compressed_texture_upload).clone(),
             compute_local_bounds_rectangle: (__flight_source.compute_local_bounds_rectangle)
                 .clone(),
             current_blend_mode: (__flight_source.current_blend_mode).clone(),
@@ -1703,8 +2154,8 @@ pub fn reserve_bitmap_text(target: &BitmapText, glyph_capacity: f64) -> () {
             current_frame_id: __flight_source.current_frame_id,
             current_mask_depth: __flight_source.current_mask_depth,
             current_program: (__flight_source.current_program).clone(),
-            current_render_target: (__flight_source.current_render_target).clone(),
             current_texture: (__flight_source.current_texture).clone(),
+            current_texture_straight_alpha: __flight_source.current_texture_straight_alpha,
             depth_stencil_height: __flight_source.depth_stencil_height,
             depth_stencil_texture: (__flight_source.depth_stencil_texture).clone(),
             depth_stencil_view: (__flight_source.depth_stencil_view).clone(),
@@ -1716,7 +2167,9 @@ pub fn reserve_bitmap_text(target: &BitmapText, glyph_capacity: f64) -> () {
             dom_next_order_list: (__flight_source.dom_next_order_list).clone(),
             dom_order_length: __flight_source.dom_order_length,
             dom_order_list: (__flight_source.dom_order_list).clone(),
+            dom_texture_resolver_registry: (__flight_source.dom_texture_resolver_registry).clone(),
             element: (__flight_source.element).clone(),
+            flush_pending_draws: (__flight_source.flush_pending_draws).clone(),
             frame_capture_buffer: (__flight_source.frame_capture_buffer).clone(),
             frame_capture_bytes_per_row: __flight_source.frame_capture_bytes_per_row,
             frame_capture_enabled: __flight_source.frame_capture_enabled,
@@ -1724,17 +2177,30 @@ pub fn reserve_bitmap_text(target: &BitmapText, glyph_capacity: f64) -> () {
             frame_capture_texture: (__flight_source.frame_capture_texture).clone(),
             frame_capture_width: __flight_source.frame_capture_width,
             gl_blend_mode_registry: (__flight_source.gl_blend_mode_registry).clone(),
-            gl_color_adjustment_fold: (__flight_source.gl_color_adjustment_fold).clone(),
-            gl_color_adjustment_guard: (__flight_source.gl_color_adjustment_guard).clone(),
+            gl_color_adjustment_material_feature: (__flight_source
+                .gl_color_adjustment_material_feature)
+                .clone(),
+            gl_color_adjustment_material_feature_guard: (__flight_source
+                .gl_color_adjustment_material_feature_guard)
+                .clone(),
+            gl_external_texture_cache: (__flight_source.gl_external_texture_cache).clone(),
+            gl_render_effect_registry: (__flight_source.gl_render_effect_registry).clone(),
+            gl_render_texture_cache: (__flight_source.gl_render_texture_cache).clone(),
+            gl_render_texture_guard: (__flight_source.gl_render_texture_guard).clone(),
+            gl_texture_resolver_registry: (__flight_source.gl_texture_resolver_registry).clone(),
             image_smoothing_enabled: __flight_source.image_smoothing_enabled,
             image_smoothing_quality: (__flight_source.image_smoothing_quality).clone(),
             input: (__flight_source.input).clone(),
             instance_velocities: (__flight_source.instance_velocities).clone(),
             interaction_signals: (__flight_source.interaction_signals).clone(),
             interaction_state: (__flight_source.interaction_state).clone(),
+            is_local_bounds_rectangle_valid: (__flight_source.is_local_bounds_rectangle_valid)
+                .clone(),
             linear_sampler: (__flight_source.linear_sampler).clone(),
             local_bounds_id: __flight_source.local_bounds_id,
             local_bounds_rectangle: (__flight_source.local_bounds_rectangle).clone(),
+            local_bounds_texture: (__flight_source.local_bounds_texture).clone(),
+            local_bounds_texture_version: __flight_source.local_bounds_texture_version,
             local_bounds_using_local_bounds_id: __flight_source.local_bounds_using_local_bounds_id,
             local_content_id: __flight_source.local_content_id,
             local_matrix: (__flight_source.local_matrix).clone(),
@@ -1749,67 +2215,91 @@ pub fn reserve_bitmap_text(target: &BitmapText, glyph_capacity: f64) -> () {
             max_anisotropy: __flight_source.max_anisotropy,
             measured_height: __flight_source.measured_height,
             measured_width: __flight_source.measured_width,
-            mipmap_bind_group_layout: (__flight_source.mipmap_bind_group_layout).clone(),
+            media_stream: (__flight_source.media_stream).clone(),
             mipmapped_textures: (__flight_source.mipmapped_textures).clone(),
-            mipmap_pipeline: (__flight_source.mipmap_pipeline).clone(),
             morph_bind_pose: (__flight_source.morph_bind_pose).clone(),
+            morph_blended_weights: (__flight_source.morph_blended_weights).clone(),
             movie_clip_signals: (__flight_source.movie_clip_signals).clone(),
             nearest_sampler: (__flight_source.nearest_sampler).clone(),
             node_signals: (__flight_source.node_signals).clone(),
+            pages: (__flight_source.pages).clone(),
+            parent_reference_id: __flight_source.parent_reference_id,
             particle_corner_buffer: (__flight_source.particle_corner_buffer).clone(),
             particle_instance_capacity: __flight_source.particle_instance_capacity,
             particle_shader: (__flight_source.particle_shader).clone(),
             pipeline_cache: (__flight_source.pipeline_cache).clone(),
             quad_batch_corner_buffer: (__flight_source.quad_batch_corner_buffer).clone(),
-            quad_batches: (__flight_source.quad_batches).clone(),
             quad_batch_shader: (__flight_source.quad_batch_shader).clone(),
+            quad_batch_writer_blend_mode: (__flight_source.quad_batch_writer_blend_mode).clone(),
+            quad_batch_writer_buffer_cursor: __flight_source.quad_batch_writer_buffer_cursor,
+            quad_batch_writer_buffer_pool: (__flight_source.quad_batch_writer_buffer_pool).clone(),
+            quad_batch_writer_color_matrix_data: (__flight_source
+                .quad_batch_writer_color_matrix_data)
+                .clone(),
+            quad_batch_writer_color_scale_bias_buffer: (__flight_source
+                .quad_batch_writer_color_scale_bias_buffer)
+                .clone(),
+            quad_batch_writer_color_scale_bias_data: (__flight_source
+                .quad_batch_writer_color_scale_bias_data)
+                .clone(),
+            quad_batch_writer_color_scale_bias_mode: __flight_source
+                .quad_batch_writer_color_scale_bias_mode,
+            quad_batch_writer_color_tint_data: (__flight_source.quad_batch_writer_color_tint_data)
+                .clone(),
+            quad_batch_writer_count: __flight_source.quad_batch_writer_count,
+            quad_batch_writer_instance_buffer: (__flight_source.quad_batch_writer_instance_buffer)
+                .clone(),
+            quad_batch_writer_instance_data: (__flight_source.quad_batch_writer_instance_data)
+                .clone(),
+            quad_batch_writer_material: (__flight_source.quad_batch_writer_material).clone(),
+            quad_batch_writer_material_buffer: (__flight_source.quad_batch_writer_material_buffer)
+                .clone(),
+            quad_batch_writer_material_data: (__flight_source.quad_batch_writer_material_data)
+                .clone(),
+            quad_batch_writer_material_floats: __flight_source.quad_batch_writer_material_floats,
+            quad_batch_writer_sampler: (__flight_source.quad_batch_writer_sampler).clone(),
+            quad_batch_writer_smoothing: __flight_source.quad_batch_writer_smoothing,
+            quad_batch_writer_straight_alpha: __flight_source.quad_batch_writer_straight_alpha,
+            quad_batch_writer_uniform_color_scale_bias: (__flight_source
+                .quad_batch_writer_uniform_color_scale_bias)
+                .clone(),
             quad_index_buffer: (__flight_source.quad_index_buffer).clone(),
             quad_vertex_buffer: (__flight_source.quad_vertex_buffer).clone(),
             quad_vertex_data: (__flight_source.quad_vertex_data).clone(),
             render_adapt_hook: (__flight_source.render_adapt_hook).clone(),
+            render_effect_padding_resolver_registry: (__flight_source
+                .render_effect_padding_resolver_registry)
+                .clone(),
             renderer_map: (__flight_source.renderer_map).clone(),
             renderer_map_id: __flight_source.renderer_map_id,
             render_pass: (__flight_source.render_pass).clone(),
             render_proxy_adapter_map: (__flight_source.render_proxy_adapter_map).clone(),
             render_proxy_map: (__flight_source.render_proxy_map).clone(),
+            render_proxy_sources: (__flight_source.render_proxy_sources).clone(),
+            render_root_guard: (__flight_source.render_root_guard).clone(),
             render_target_stack: (__flight_source.render_target_stack).clone(),
-            resolved_color_transform: (__flight_source.resolved_color_transform).clone(),
             retired_buffers: (__flight_source.retired_buffers).clone(),
             rich_text_content: (__flight_source.rich_text_content).clone(),
             rotation_angle: __flight_source.rotation_angle,
             rotation_cosine: __flight_source.rotation_cosine,
             rotation_sine: __flight_source.rotation_sine,
             sampler_cache: (__flight_source.sampler_cache).clone(),
+            scene2d: (__flight_source.scene2d).clone(),
+            scene2d_signals: (__flight_source.scene2d_signals).clone(),
             scene_mesh_upload_cache: (__flight_source.scene_mesh_upload_cache).clone(),
             selection_begin_index: __flight_source.selection_begin_index,
             selection_end_index: __flight_source.selection_end_index,
             shader_loc: (__flight_source.shader_loc).clone(),
-            shape_mesh_color_transform_shader: (__flight_source.shape_mesh_color_transform_shader)
+            shape_mesh_color_matrix_shader: (__flight_source.shape_mesh_color_matrix_shader)
+                .clone(),
+            shape_mesh_color_scale_bias_shader: (__flight_source
+                .shape_mesh_color_scale_bias_shader)
                 .clone(),
             shape_mesh_pipelines: (__flight_source.shape_mesh_pipelines).clone(),
+            shape_rasterizer: (__flight_source.shape_rasterizer).clone(),
             skin_bind_pose: (__flight_source.skin_bind_pose).clone(),
-            sprite_batch_blend_mode: (__flight_source.sprite_batch_blend_mode).clone(),
-            sprite_batch_buffer_cursor: __flight_source.sprite_batch_buffer_cursor,
-            sprite_batch_buffer_pool: (__flight_source.sprite_batch_buffer_pool).clone(),
-            sprite_batch_color_transform_buffer: (__flight_source
-                .sprite_batch_color_transform_buffer)
-                .clone(),
-            sprite_batch_color_transform_data: (__flight_source.sprite_batch_color_transform_data)
-                .clone(),
-            sprite_batch_color_transform_mode: __flight_source.sprite_batch_color_transform_mode,
-            sprite_batch_count: __flight_source.sprite_batch_count,
-            sprite_batch_instance_buffer: (__flight_source.sprite_batch_instance_buffer).clone(),
-            sprite_batch_instance_data: (__flight_source.sprite_batch_instance_data).clone(),
-            sprite_batch_material: (__flight_source.sprite_batch_material).clone(),
-            sprite_batch_material_buffer: (__flight_source.sprite_batch_material_buffer).clone(),
-            sprite_batch_material_data: (__flight_source.sprite_batch_material_data).clone(),
-            sprite_batch_material_floats: __flight_source.sprite_batch_material_floats,
-            sprite_batch_texture: (__flight_source.sprite_batch_texture).clone(),
-            sprite_batch_uniform_color_transform: (__flight_source
-                .sprite_batch_uniform_color_transform)
-                .clone(),
-            stage: (__flight_source.stage).clone(),
-            stage_signals: (__flight_source.stage_signals).clone(),
+            stroke_tessellator: (__flight_source.stroke_tessellator).clone(),
+            tangent_smoothing_sources: (__flight_source.tangent_smoothing_sources).clone(),
             temp_stack: (__flight_source.temp_stack).clone(),
             text_field_signals: (__flight_source.text_field_signals).clone(),
             text_layout: (__flight_source.text_layout).clone(),
@@ -1818,19 +2308,30 @@ pub fn reserve_bitmap_text(target: &BitmapText, glyph_capacity: f64) -> () {
             uniform_bind_group: (__flight_source.uniform_bind_group).clone(),
             uniform_bind_group_layout: (__flight_source.uniform_bind_group_layout).clone(),
             uniform_buffer: (__flight_source.uniform_buffer).clone(),
-            uniform_color_transform_shader: (__flight_source.uniform_color_transform_shader)
+            uniform_color_scale_bias_shader: (__flight_source.uniform_color_scale_bias_shader)
                 .clone(),
             uniform_data: (__flight_source.uniform_data).clone(),
             uniform_data_u32: (__flight_source.uniform_data_u32).clone(),
             uniform_offset: __flight_source.uniform_offset,
             uniform_stride: __flight_source.uniform_stride,
+            video_element: (__flight_source.video_element).clone(),
             webgl_data: (__flight_source.webgl_data).clone(),
             webgl_shader_binding_resolver: (__flight_source.webgl_shader_binding_resolver).clone(),
             webgpu_data: (__flight_source.webgpu_data).clone(),
             webgpu_shader_binding_resolver: (__flight_source.webgpu_shader_binding_resolver)
                 .clone(),
-            wgpu_color_adjustment_fold: (__flight_source.wgpu_color_adjustment_fold).clone(),
-            wgpu_color_adjustment_guard: (__flight_source.wgpu_color_adjustment_guard).clone(),
+            wgpu_color_adjustment_material_feature: (__flight_source
+                .wgpu_color_adjustment_material_feature)
+                .clone(),
+            wgpu_color_adjustment_material_feature_guard: (__flight_source
+                .wgpu_color_adjustment_material_feature_guard)
+                .clone(),
+            wgpu_external_texture_cache: (__flight_source.wgpu_external_texture_cache).clone(),
+            wgpu_render_effect_registry: (__flight_source.wgpu_render_effect_registry).clone(),
+            wgpu_render_texture_cache: (__flight_source.wgpu_render_texture_cache).clone(),
+            wgpu_render_texture_guard: (__flight_source.wgpu_render_texture_guard).clone(),
+            wgpu_texture_resolver_registry: (__flight_source.wgpu_texture_resolver_registry)
+                .clone(),
             world_alpha: __flight_source.world_alpha,
             world_alpha_using_appearance_id: __flight_source.world_alpha_using_appearance_id,
             world_alpha_using_parent_appearance_id: __flight_source
@@ -1847,31 +2348,34 @@ pub fn reserve_bitmap_text(target: &BitmapText, glyph_capacity: f64) -> () {
                 .world_transform_using_local_transform_id,
             world_transform_using_parent_transform_id: __flight_source
                 .world_transform_using_parent_transform_id,
+            color_adjustments: (__flight_source.color_adjustments).clone(),
+            color_adjustments_unsupported: __flight_source.color_adjustments_unsupported,
+            resolved_color_matrix: (__flight_source.resolved_color_matrix).clone(),
+            resolved_color_scale_bias: (__flight_source.resolved_color_scale_bias).clone(),
             can_add_child: (__flight_source.can_add_child).clone(),
             children: (__flight_source.children).clone(),
             traits: (__flight_source.traits).clone(),
             parent: (__flight_source.parent).clone(),
         }
     };
-    for quad_batch in ((runtime.inner.lock().unwrap().quad_batches).clone())
+    for page in ((runtime.inner.lock().unwrap().pages).clone())
         .iter()
         .cloned()
     {
-        reserve_quad_batch(&mut quad_batch, glyph_capacity);
+        page.ids = reserve_uint16_array(&page.ids, glyph_capacity);
+        page.transforms = reserve_float32_array(
+            &page.transforms,
+            (glyph_capacity * BITMAP_TEXT_TRANSFORM_STRIDE),
+        );
     }
 }
 
-// Source: upstream/packages/bitmaptext/src/bitmapText.ts:107 (sha256:86964ba65f3f4396e7ffef7642d63385d310454ca142fe20064743c04b44f7fc)
+// Source: upstream/packages/bitmaptext/src/bitmapText.ts:103 (sha256:86964ba65f3f4396e7ffef7642d63385d310454ca142fe20064743c04b44f7fc)
 pub fn set_bitmap_text_align(target: &mut BitmapText, align: BitmapTextAlign) -> () {
     target.data.align = (align).clone();
 }
 
-// Source: upstream/packages/bitmaptext/src/bitmapText.ts:111 (sha256:0ce08cafc8e5bf48ba7bb97a82beddb955ea2f3b4e3bc5e0cce033864701df6d)
-pub fn set_bitmap_text_color(target: &mut BitmapText, color: f64) -> () {
-    target.data.color = color;
-}
-
-// Source: upstream/packages/bitmaptext/src/bitmapText.ts:115 (sha256:f3979369c293d3771fc2e96a8d8dfb6ba5251701b4afc9a02b5e1fe11752ae7e)
+// Source: upstream/packages/bitmaptext/src/bitmapText.ts:107 (sha256:f3979369c293d3771fc2e96a8d8dfb6ba5251701b4afc9a02b5e1fe11752ae7e)
 pub fn set_bitmap_text_glyph_source(
     target: &mut BitmapText,
     glyph_source: Option<GlyphSource>,
@@ -1879,33 +2383,30 @@ pub fn set_bitmap_text_glyph_source(
     target.data.glyph_source = (glyph_source).clone();
 }
 
-// Source: upstream/packages/bitmaptext/src/bitmapText.ts:119 (sha256:2248db62f27e90cd43fff4588f3775db6d8cac400b6addd2ae87914f04ce47c7)
+// Source: upstream/packages/bitmaptext/src/bitmapText.ts:111 (sha256:2248db62f27e90cd43fff4588f3775db6d8cac400b6addd2ae87914f04ce47c7)
 pub fn set_bitmap_text_letter_spacing(target: &mut BitmapText, letter_spacing: f64) -> () {
     target.data.letter_spacing = letter_spacing;
 }
 
-// Source: upstream/packages/bitmaptext/src/bitmapText.ts:123 (sha256:eba236685e316a1bd57865a42ab1ce5479dafd9e2964cb1309691861e538bb9e)
+// Source: upstream/packages/bitmaptext/src/bitmapText.ts:115 (sha256:eba236685e316a1bd57865a42ab1ce5479dafd9e2964cb1309691861e538bb9e)
 pub fn set_bitmap_text_line_height(target: &mut BitmapText, line_height: f64) -> () {
     target.data.line_height = line_height;
 }
 
-// Source: upstream/packages/bitmaptext/src/bitmapText.ts:127 (sha256:72271f9f1f7e6213b541cc3731589dabb4a1674ee6c7472c0a249f2230b25f1a)
+// Source: upstream/packages/bitmaptext/src/bitmapText.ts:119 (sha256:72271f9f1f7e6213b541cc3731589dabb4a1674ee6c7472c0a249f2230b25f1a)
 pub fn set_bitmap_text_text(target: &mut BitmapText, text: String) -> () {
     target.data.text = (text).clone();
 }
 
-// Source: upstream/packages/bitmaptext/src/bitmapText.ts:131 (sha256:909454d4aa245693104ad943c8572177af39c646c872ef9c17a8044509b922ea)
+// Source: upstream/packages/bitmaptext/src/bitmapText.ts:123 (sha256:909454d4aa245693104ad943c8572177af39c646c872ef9c17a8044509b922ea)
 pub fn set_bitmap_text_wrap_width(target: &mut BitmapText, wrap_width: Option<f64>) -> () {
     target.data.wrap_width = wrap_width;
 }
 
-// Source: upstream/packages/bitmaptext/src/bitmapText.ts:135 (sha256:814a6a2d91cf6fc5683ef3b949c7e76c423d15c39af9c02939e45696c55d0e39)
+// Source: upstream/packages/bitmaptext/src/bitmapText.ts:127 (sha256:432c34b0b4afaa00cd14997f44872fdb1df731599a7b8d11fcfd6099413ecd19)
 fn apply_bitmap_text_options(data: &mut BitmapTextData, options: &BitmapTextOptions) -> () {
     if ((options.align).clone()).is_some() {
         data.align = ((options.align).clone()).unwrap();
-    }
-    if (options.color).is_some() {
-        data.color = (options.color).unwrap();
     }
     if (options.letter_spacing).is_some() {
         data.letter_spacing = (options.letter_spacing).unwrap();
@@ -1921,34 +2422,40 @@ fn apply_bitmap_text_options(data: &mut BitmapTextData, options: &BitmapTextOpti
     }
 }
 
-// Source: upstream/packages/bitmaptext/src/bitmapText.ts:144 (sha256:b5db92c66924ee72ef0e4f17d590cc803773c9681c5ac1c7cef2a33dd5481a1f)
+// Source: upstream/packages/bitmaptext/src/bitmapText.ts:135 (sha256:1ae29f9a6dd898a30f79df0e3b823e567acff9d21a407686a608ad0558066db2)
 fn copy_local_bounds_rectangle(out: &mut Rectangle, source: &Node) -> () {
     let runtime = {
-        let __flight_source = &(get_display_object_runtime(&source));
+        let __flight_source = &(get_node2_d_runtime(&source));
         BitmapTextRuntime {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
             anisotropy_ext: (__flight_source.anisotropy_ext).clone(),
             appearance_id: __flight_source.appearance_id,
-            binding: (__flight_source.binding).clone(),
+            binding_cache_guard: (__flight_source.binding_cache_guard).clone(),
             bounds_rectangle: (__flight_source.bounds_rectangle).clone(),
             bounds_using_local_bounds_id: __flight_source.bounds_using_local_bounds_id,
             bounds_using_local_transform_id: __flight_source.bounds_using_local_transform_id,
+            bounds_version: __flight_source.bounds_version,
             build_text_layout_params: (__flight_source.build_text_layout_params).clone(),
+            canvas_blend_effect_backdrops: (__flight_source.canvas_blend_effect_backdrops).clone(),
+            canvas_render_effect_registry: (__flight_source.canvas_render_effect_registry).clone(),
+            canvas_shape_command_registry: (__flight_source.canvas_shape_command_registry).clone(),
+            canvas_texture_resolvers: (__flight_source.canvas_texture_resolvers).clone(),
             canvas_texture_view: (__flight_source.canvas_texture_view).clone(),
             canvas_view_cleared: __flight_source.canvas_view_cleared,
+            children_id: __flight_source.children_id,
             clip_contour_pipelines: (__flight_source.clip_contour_pipelines).clone(),
             clip_contour_stack: (__flight_source.clip_contour_stack).clone(),
             clip_forms: (__flight_source.clip_forms).clone(),
-            color_adjustment_channel_mixing_guard: (__flight_source
-                .color_adjustment_channel_mixing_guard)
+            color_adjustment_resolver: (__flight_source.color_adjustment_resolver).clone(),
+            color_adjustment_unsupported_guard: (__flight_source
+                .color_adjustment_unsupported_guard)
                 .clone(),
-            color_adjustments: (__flight_source.color_adjustments).clone(),
-            color_adjustments_channel_mixing: __flight_source.color_adjustments_channel_mixing,
-            color_transform_instanced_shader: (__flight_source.color_transform_instanced_shader)
+            color_matrix_instanced_shader: (__flight_source.color_matrix_instanced_shader).clone(),
+            color_scale_bias_instanced_shader: (__flight_source.color_scale_bias_instanced_shader)
                 .clone(),
+            color_tint_instanced_shader: (__flight_source.color_tint_instanced_shader).clone(),
             command_encoder: (__flight_source.command_encoder).clone(),
             compressed_texture_decoder: (__flight_source.compressed_texture_decoder).clone(),
-            compressed_texture_upload: (__flight_source.compressed_texture_upload).clone(),
             compute_local_bounds_rectangle: (__flight_source.compute_local_bounds_rectangle)
                 .clone(),
             current_blend_mode: (__flight_source.current_blend_mode).clone(),
@@ -1957,8 +2464,8 @@ fn copy_local_bounds_rectangle(out: &mut Rectangle, source: &Node) -> () {
             current_frame_id: __flight_source.current_frame_id,
             current_mask_depth: __flight_source.current_mask_depth,
             current_program: (__flight_source.current_program).clone(),
-            current_render_target: (__flight_source.current_render_target).clone(),
             current_texture: (__flight_source.current_texture).clone(),
+            current_texture_straight_alpha: __flight_source.current_texture_straight_alpha,
             depth_stencil_height: __flight_source.depth_stencil_height,
             depth_stencil_texture: (__flight_source.depth_stencil_texture).clone(),
             depth_stencil_view: (__flight_source.depth_stencil_view).clone(),
@@ -1970,7 +2477,9 @@ fn copy_local_bounds_rectangle(out: &mut Rectangle, source: &Node) -> () {
             dom_next_order_list: (__flight_source.dom_next_order_list).clone(),
             dom_order_length: __flight_source.dom_order_length,
             dom_order_list: (__flight_source.dom_order_list).clone(),
+            dom_texture_resolver_registry: (__flight_source.dom_texture_resolver_registry).clone(),
             element: (__flight_source.element).clone(),
+            flush_pending_draws: (__flight_source.flush_pending_draws).clone(),
             frame_capture_buffer: (__flight_source.frame_capture_buffer).clone(),
             frame_capture_bytes_per_row: __flight_source.frame_capture_bytes_per_row,
             frame_capture_enabled: __flight_source.frame_capture_enabled,
@@ -1978,17 +2487,30 @@ fn copy_local_bounds_rectangle(out: &mut Rectangle, source: &Node) -> () {
             frame_capture_texture: (__flight_source.frame_capture_texture).clone(),
             frame_capture_width: __flight_source.frame_capture_width,
             gl_blend_mode_registry: (__flight_source.gl_blend_mode_registry).clone(),
-            gl_color_adjustment_fold: (__flight_source.gl_color_adjustment_fold).clone(),
-            gl_color_adjustment_guard: (__flight_source.gl_color_adjustment_guard).clone(),
+            gl_color_adjustment_material_feature: (__flight_source
+                .gl_color_adjustment_material_feature)
+                .clone(),
+            gl_color_adjustment_material_feature_guard: (__flight_source
+                .gl_color_adjustment_material_feature_guard)
+                .clone(),
+            gl_external_texture_cache: (__flight_source.gl_external_texture_cache).clone(),
+            gl_render_effect_registry: (__flight_source.gl_render_effect_registry).clone(),
+            gl_render_texture_cache: (__flight_source.gl_render_texture_cache).clone(),
+            gl_render_texture_guard: (__flight_source.gl_render_texture_guard).clone(),
+            gl_texture_resolver_registry: (__flight_source.gl_texture_resolver_registry).clone(),
             image_smoothing_enabled: __flight_source.image_smoothing_enabled,
             image_smoothing_quality: (__flight_source.image_smoothing_quality).clone(),
             input: (__flight_source.input).clone(),
             instance_velocities: (__flight_source.instance_velocities).clone(),
             interaction_signals: (__flight_source.interaction_signals).clone(),
             interaction_state: (__flight_source.interaction_state).clone(),
+            is_local_bounds_rectangle_valid: (__flight_source.is_local_bounds_rectangle_valid)
+                .clone(),
             linear_sampler: (__flight_source.linear_sampler).clone(),
             local_bounds_id: __flight_source.local_bounds_id,
             local_bounds_rectangle: (__flight_source.local_bounds_rectangle).clone(),
+            local_bounds_texture: (__flight_source.local_bounds_texture).clone(),
+            local_bounds_texture_version: __flight_source.local_bounds_texture_version,
             local_bounds_using_local_bounds_id: __flight_source.local_bounds_using_local_bounds_id,
             local_content_id: __flight_source.local_content_id,
             local_matrix: (__flight_source.local_matrix).clone(),
@@ -2003,67 +2525,91 @@ fn copy_local_bounds_rectangle(out: &mut Rectangle, source: &Node) -> () {
             max_anisotropy: __flight_source.max_anisotropy,
             measured_height: __flight_source.measured_height,
             measured_width: __flight_source.measured_width,
-            mipmap_bind_group_layout: (__flight_source.mipmap_bind_group_layout).clone(),
+            media_stream: (__flight_source.media_stream).clone(),
             mipmapped_textures: (__flight_source.mipmapped_textures).clone(),
-            mipmap_pipeline: (__flight_source.mipmap_pipeline).clone(),
             morph_bind_pose: (__flight_source.morph_bind_pose).clone(),
+            morph_blended_weights: (__flight_source.morph_blended_weights).clone(),
             movie_clip_signals: (__flight_source.movie_clip_signals).clone(),
             nearest_sampler: (__flight_source.nearest_sampler).clone(),
             node_signals: (__flight_source.node_signals).clone(),
+            pages: (__flight_source.pages).clone(),
+            parent_reference_id: __flight_source.parent_reference_id,
             particle_corner_buffer: (__flight_source.particle_corner_buffer).clone(),
             particle_instance_capacity: __flight_source.particle_instance_capacity,
             particle_shader: (__flight_source.particle_shader).clone(),
             pipeline_cache: (__flight_source.pipeline_cache).clone(),
             quad_batch_corner_buffer: (__flight_source.quad_batch_corner_buffer).clone(),
-            quad_batches: (__flight_source.quad_batches).clone(),
             quad_batch_shader: (__flight_source.quad_batch_shader).clone(),
+            quad_batch_writer_blend_mode: (__flight_source.quad_batch_writer_blend_mode).clone(),
+            quad_batch_writer_buffer_cursor: __flight_source.quad_batch_writer_buffer_cursor,
+            quad_batch_writer_buffer_pool: (__flight_source.quad_batch_writer_buffer_pool).clone(),
+            quad_batch_writer_color_matrix_data: (__flight_source
+                .quad_batch_writer_color_matrix_data)
+                .clone(),
+            quad_batch_writer_color_scale_bias_buffer: (__flight_source
+                .quad_batch_writer_color_scale_bias_buffer)
+                .clone(),
+            quad_batch_writer_color_scale_bias_data: (__flight_source
+                .quad_batch_writer_color_scale_bias_data)
+                .clone(),
+            quad_batch_writer_color_scale_bias_mode: __flight_source
+                .quad_batch_writer_color_scale_bias_mode,
+            quad_batch_writer_color_tint_data: (__flight_source.quad_batch_writer_color_tint_data)
+                .clone(),
+            quad_batch_writer_count: __flight_source.quad_batch_writer_count,
+            quad_batch_writer_instance_buffer: (__flight_source.quad_batch_writer_instance_buffer)
+                .clone(),
+            quad_batch_writer_instance_data: (__flight_source.quad_batch_writer_instance_data)
+                .clone(),
+            quad_batch_writer_material: (__flight_source.quad_batch_writer_material).clone(),
+            quad_batch_writer_material_buffer: (__flight_source.quad_batch_writer_material_buffer)
+                .clone(),
+            quad_batch_writer_material_data: (__flight_source.quad_batch_writer_material_data)
+                .clone(),
+            quad_batch_writer_material_floats: __flight_source.quad_batch_writer_material_floats,
+            quad_batch_writer_sampler: (__flight_source.quad_batch_writer_sampler).clone(),
+            quad_batch_writer_smoothing: __flight_source.quad_batch_writer_smoothing,
+            quad_batch_writer_straight_alpha: __flight_source.quad_batch_writer_straight_alpha,
+            quad_batch_writer_uniform_color_scale_bias: (__flight_source
+                .quad_batch_writer_uniform_color_scale_bias)
+                .clone(),
             quad_index_buffer: (__flight_source.quad_index_buffer).clone(),
             quad_vertex_buffer: (__flight_source.quad_vertex_buffer).clone(),
             quad_vertex_data: (__flight_source.quad_vertex_data).clone(),
             render_adapt_hook: (__flight_source.render_adapt_hook).clone(),
+            render_effect_padding_resolver_registry: (__flight_source
+                .render_effect_padding_resolver_registry)
+                .clone(),
             renderer_map: (__flight_source.renderer_map).clone(),
             renderer_map_id: __flight_source.renderer_map_id,
             render_pass: (__flight_source.render_pass).clone(),
             render_proxy_adapter_map: (__flight_source.render_proxy_adapter_map).clone(),
             render_proxy_map: (__flight_source.render_proxy_map).clone(),
+            render_proxy_sources: (__flight_source.render_proxy_sources).clone(),
+            render_root_guard: (__flight_source.render_root_guard).clone(),
             render_target_stack: (__flight_source.render_target_stack).clone(),
-            resolved_color_transform: (__flight_source.resolved_color_transform).clone(),
             retired_buffers: (__flight_source.retired_buffers).clone(),
             rich_text_content: (__flight_source.rich_text_content).clone(),
             rotation_angle: __flight_source.rotation_angle,
             rotation_cosine: __flight_source.rotation_cosine,
             rotation_sine: __flight_source.rotation_sine,
             sampler_cache: (__flight_source.sampler_cache).clone(),
+            scene2d: (__flight_source.scene2d).clone(),
+            scene2d_signals: (__flight_source.scene2d_signals).clone(),
             scene_mesh_upload_cache: (__flight_source.scene_mesh_upload_cache).clone(),
             selection_begin_index: __flight_source.selection_begin_index,
             selection_end_index: __flight_source.selection_end_index,
             shader_loc: (__flight_source.shader_loc).clone(),
-            shape_mesh_color_transform_shader: (__flight_source.shape_mesh_color_transform_shader)
+            shape_mesh_color_matrix_shader: (__flight_source.shape_mesh_color_matrix_shader)
+                .clone(),
+            shape_mesh_color_scale_bias_shader: (__flight_source
+                .shape_mesh_color_scale_bias_shader)
                 .clone(),
             shape_mesh_pipelines: (__flight_source.shape_mesh_pipelines).clone(),
+            shape_rasterizer: (__flight_source.shape_rasterizer).clone(),
             skin_bind_pose: (__flight_source.skin_bind_pose).clone(),
-            sprite_batch_blend_mode: (__flight_source.sprite_batch_blend_mode).clone(),
-            sprite_batch_buffer_cursor: __flight_source.sprite_batch_buffer_cursor,
-            sprite_batch_buffer_pool: (__flight_source.sprite_batch_buffer_pool).clone(),
-            sprite_batch_color_transform_buffer: (__flight_source
-                .sprite_batch_color_transform_buffer)
-                .clone(),
-            sprite_batch_color_transform_data: (__flight_source.sprite_batch_color_transform_data)
-                .clone(),
-            sprite_batch_color_transform_mode: __flight_source.sprite_batch_color_transform_mode,
-            sprite_batch_count: __flight_source.sprite_batch_count,
-            sprite_batch_instance_buffer: (__flight_source.sprite_batch_instance_buffer).clone(),
-            sprite_batch_instance_data: (__flight_source.sprite_batch_instance_data).clone(),
-            sprite_batch_material: (__flight_source.sprite_batch_material).clone(),
-            sprite_batch_material_buffer: (__flight_source.sprite_batch_material_buffer).clone(),
-            sprite_batch_material_data: (__flight_source.sprite_batch_material_data).clone(),
-            sprite_batch_material_floats: __flight_source.sprite_batch_material_floats,
-            sprite_batch_texture: (__flight_source.sprite_batch_texture).clone(),
-            sprite_batch_uniform_color_transform: (__flight_source
-                .sprite_batch_uniform_color_transform)
-                .clone(),
-            stage: (__flight_source.stage).clone(),
-            stage_signals: (__flight_source.stage_signals).clone(),
+            stroke_tessellator: (__flight_source.stroke_tessellator).clone(),
+            tangent_smoothing_sources: (__flight_source.tangent_smoothing_sources).clone(),
             temp_stack: (__flight_source.temp_stack).clone(),
             text_field_signals: (__flight_source.text_field_signals).clone(),
             text_layout: (__flight_source.text_layout).clone(),
@@ -2072,19 +2618,30 @@ fn copy_local_bounds_rectangle(out: &mut Rectangle, source: &Node) -> () {
             uniform_bind_group: (__flight_source.uniform_bind_group).clone(),
             uniform_bind_group_layout: (__flight_source.uniform_bind_group_layout).clone(),
             uniform_buffer: (__flight_source.uniform_buffer).clone(),
-            uniform_color_transform_shader: (__flight_source.uniform_color_transform_shader)
+            uniform_color_scale_bias_shader: (__flight_source.uniform_color_scale_bias_shader)
                 .clone(),
             uniform_data: (__flight_source.uniform_data).clone(),
             uniform_data_u32: (__flight_source.uniform_data_u32).clone(),
             uniform_offset: __flight_source.uniform_offset,
             uniform_stride: __flight_source.uniform_stride,
+            video_element: (__flight_source.video_element).clone(),
             webgl_data: (__flight_source.webgl_data).clone(),
             webgl_shader_binding_resolver: (__flight_source.webgl_shader_binding_resolver).clone(),
             webgpu_data: (__flight_source.webgpu_data).clone(),
             webgpu_shader_binding_resolver: (__flight_source.webgpu_shader_binding_resolver)
                 .clone(),
-            wgpu_color_adjustment_fold: (__flight_source.wgpu_color_adjustment_fold).clone(),
-            wgpu_color_adjustment_guard: (__flight_source.wgpu_color_adjustment_guard).clone(),
+            wgpu_color_adjustment_material_feature: (__flight_source
+                .wgpu_color_adjustment_material_feature)
+                .clone(),
+            wgpu_color_adjustment_material_feature_guard: (__flight_source
+                .wgpu_color_adjustment_material_feature_guard)
+                .clone(),
+            wgpu_external_texture_cache: (__flight_source.wgpu_external_texture_cache).clone(),
+            wgpu_render_effect_registry: (__flight_source.wgpu_render_effect_registry).clone(),
+            wgpu_render_texture_cache: (__flight_source.wgpu_render_texture_cache).clone(),
+            wgpu_render_texture_guard: (__flight_source.wgpu_render_texture_guard).clone(),
+            wgpu_texture_resolver_registry: (__flight_source.wgpu_texture_resolver_registry)
+                .clone(),
             world_alpha: __flight_source.world_alpha,
             world_alpha_using_appearance_id: __flight_source.world_alpha_using_appearance_id,
             world_alpha_using_parent_appearance_id: __flight_source
@@ -2101,6 +2658,10 @@ fn copy_local_bounds_rectangle(out: &mut Rectangle, source: &Node) -> () {
                 .world_transform_using_local_transform_id,
             world_transform_using_parent_transform_id: __flight_source
                 .world_transform_using_parent_transform_id,
+            color_adjustments: (__flight_source.color_adjustments).clone(),
+            color_adjustments_unsupported: __flight_source.color_adjustments_unsupported,
+            resolved_color_matrix: (__flight_source.resolved_color_matrix).clone(),
+            resolved_color_scale_bias: (__flight_source.resolved_color_scale_bias).clone(),
             can_add_child: (__flight_source.can_add_child).clone(),
             children: (__flight_source.children).clone(),
             traits: (__flight_source.traits).clone(),
@@ -2121,7 +2682,18 @@ fn copy_local_bounds_rectangle(out: &mut Rectangle, source: &Node) -> () {
     }
 }
 
-// Source: upstream/packages/bitmaptext/src/bitmapText.ts:149 (sha256:8a9b089bd51cc37c07cebbbfddf583d54c250e80e084a008dab75e82e397a0d0)
+// Source: upstream/packages/bitmaptext/src/bitmapText.ts:141 (sha256:4a58cea3bf3bf3fd72fee4662c084a9e6cea15bf7f1f26351a58153f6003d324)
+fn create_bitmap_text_page() -> BitmapTextPage {
+    return BitmapTextPage {
+        __flight_identity: std::sync::Arc::new(()),
+        atlas: create_texture_atlas(None),
+        ids: vec![0_u16; (0.0_f64) as usize],
+        instance_count: 0.0_f64,
+        transforms: vec![0.0_f32; (0.0_f64) as usize],
+    };
+}
+
+// Source: upstream/packages/bitmaptext/src/bitmapText.ts:145 (sha256:8a9b089bd51cc37c07cebbbfddf583d54c250e80e084a008dab75e82e397a0d0)
 static DEFAULT_METHODS: std::sync::LazyLock<FlightPartialRecord2> =
     std::sync::LazyLock::new(|| FlightPartialRecord2 {
         __flight_identity: std::sync::Arc::new(()),
@@ -2147,31 +2719,37 @@ static DEFAULT_METHODS: std::sync::LazyLock<FlightPartialRecord2> =
             as Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>))),
         anisotropy_ext: None,
         appearance_id: None,
-        binding: None,
+        binding_cache_guard: None,
         bounds_rectangle: None,
         bounds_using_local_bounds_id: None,
         bounds_using_local_transform_id: None,
+        bounds_version: None,
         build_text_layout_params: None,
+        canvas_blend_effect_backdrops: None,
+        canvas_render_effect_registry: None,
+        canvas_shape_command_registry: None,
+        canvas_texture_resolvers: None,
         canvas_texture_view: None,
         canvas_view_cleared: None,
+        children_id: None,
         clip_contour_pipelines: None,
         clip_contour_stack: None,
         clip_forms: None,
-        color_adjustment_channel_mixing_guard: None,
-        color_adjustments: None,
-        color_adjustments_channel_mixing: None,
-        color_transform_instanced_shader: None,
+        color_adjustment_resolver: None,
+        color_adjustment_unsupported_guard: None,
+        color_matrix_instanced_shader: None,
+        color_scale_bias_instanced_shader: None,
+        color_tint_instanced_shader: None,
         command_encoder: None,
         compressed_texture_decoder: None,
-        compressed_texture_upload: None,
         current_blend_mode: None,
         current_color_format: None,
         current_framebuffer: None,
         current_frame_id: None,
         current_mask_depth: None,
         current_program: None,
-        current_render_target: None,
         current_texture: None,
+        current_texture_straight_alpha: None,
         depth_stencil_height: None,
         depth_stencil_texture: None,
         depth_stencil_view: None,
@@ -2183,7 +2761,9 @@ static DEFAULT_METHODS: std::sync::LazyLock<FlightPartialRecord2> =
         dom_next_order_list: None,
         dom_order_length: None,
         dom_order_list: None,
+        dom_texture_resolver_registry: None,
         element: None,
+        flush_pending_draws: None,
         frame_capture_buffer: None,
         frame_capture_bytes_per_row: None,
         frame_capture_enabled: None,
@@ -2191,17 +2771,25 @@ static DEFAULT_METHODS: std::sync::LazyLock<FlightPartialRecord2> =
         frame_capture_texture: None,
         frame_capture_width: None,
         gl_blend_mode_registry: None,
-        gl_color_adjustment_fold: None,
-        gl_color_adjustment_guard: None,
+        gl_color_adjustment_material_feature: None,
+        gl_color_adjustment_material_feature_guard: None,
+        gl_external_texture_cache: None,
+        gl_render_effect_registry: None,
+        gl_render_texture_cache: None,
+        gl_render_texture_guard: None,
+        gl_texture_resolver_registry: None,
         image_smoothing_enabled: None,
         image_smoothing_quality: None,
         input: None,
         instance_velocities: None,
         interaction_signals: None,
         interaction_state: None,
+        is_local_bounds_rectangle_valid: None,
         linear_sampler: None,
         local_bounds_id: None,
         local_bounds_rectangle: None,
+        local_bounds_texture: None,
+        local_bounds_texture_version: None,
         local_bounds_using_local_bounds_id: None,
         local_content_id: None,
         local_matrix: None,
@@ -2215,61 +2803,72 @@ static DEFAULT_METHODS: std::sync::LazyLock<FlightPartialRecord2> =
         max_anisotropy: None,
         measured_height: None,
         measured_width: None,
-        mipmap_bind_group_layout: None,
+        media_stream: None,
         mipmapped_textures: None,
-        mipmap_pipeline: None,
         morph_bind_pose: None,
+        morph_blended_weights: None,
         movie_clip_signals: None,
         nearest_sampler: None,
         node_signals: None,
+        pages: None,
+        parent_reference_id: None,
         particle_corner_buffer: None,
         particle_instance_capacity: None,
         particle_shader: None,
         pipeline_cache: None,
         quad_batch_corner_buffer: None,
-        quad_batches: None,
         quad_batch_shader: None,
+        quad_batch_writer_blend_mode: None,
+        quad_batch_writer_buffer_cursor: None,
+        quad_batch_writer_buffer_pool: None,
+        quad_batch_writer_color_matrix_data: None,
+        quad_batch_writer_color_scale_bias_buffer: None,
+        quad_batch_writer_color_scale_bias_data: None,
+        quad_batch_writer_color_scale_bias_mode: None,
+        quad_batch_writer_color_tint_data: None,
+        quad_batch_writer_count: None,
+        quad_batch_writer_instance_buffer: None,
+        quad_batch_writer_instance_data: None,
+        quad_batch_writer_material: None,
+        quad_batch_writer_material_buffer: None,
+        quad_batch_writer_material_data: None,
+        quad_batch_writer_material_floats: None,
+        quad_batch_writer_sampler: None,
+        quad_batch_writer_smoothing: None,
+        quad_batch_writer_straight_alpha: None,
+        quad_batch_writer_uniform_color_scale_bias: None,
         quad_index_buffer: None,
         quad_vertex_buffer: None,
         quad_vertex_data: None,
         render_adapt_hook: None,
+        render_effect_padding_resolver_registry: None,
         renderer_map: None,
         renderer_map_id: None,
         render_pass: None,
         render_proxy_adapter_map: None,
         render_proxy_map: None,
+        render_proxy_sources: None,
+        render_root_guard: None,
         render_target_stack: None,
-        resolved_color_transform: None,
         retired_buffers: None,
         rich_text_content: None,
         rotation_angle: None,
         rotation_cosine: None,
         rotation_sine: None,
         sampler_cache: None,
+        scene2d: None,
+        scene2d_signals: None,
         scene_mesh_upload_cache: None,
         selection_begin_index: None,
         selection_end_index: None,
         shader_loc: None,
-        shape_mesh_color_transform_shader: None,
+        shape_mesh_color_matrix_shader: None,
+        shape_mesh_color_scale_bias_shader: None,
         shape_mesh_pipelines: None,
+        shape_rasterizer: None,
         skin_bind_pose: None,
-        sprite_batch_blend_mode: None,
-        sprite_batch_buffer_cursor: None,
-        sprite_batch_buffer_pool: None,
-        sprite_batch_color_transform_buffer: None,
-        sprite_batch_color_transform_data: None,
-        sprite_batch_color_transform_mode: None,
-        sprite_batch_count: None,
-        sprite_batch_instance_buffer: None,
-        sprite_batch_instance_data: None,
-        sprite_batch_material: None,
-        sprite_batch_material_buffer: None,
-        sprite_batch_material_data: None,
-        sprite_batch_material_floats: None,
-        sprite_batch_texture: None,
-        sprite_batch_uniform_color_transform: None,
-        stage: None,
-        stage_signals: None,
+        stroke_tessellator: None,
+        tangent_smoothing_sources: None,
         temp_stack: None,
         text_field_signals: None,
         text_layout: None,
@@ -2278,17 +2877,23 @@ static DEFAULT_METHODS: std::sync::LazyLock<FlightPartialRecord2> =
         uniform_bind_group: None,
         uniform_bind_group_layout: None,
         uniform_buffer: None,
-        uniform_color_transform_shader: None,
+        uniform_color_scale_bias_shader: None,
         uniform_data: None,
         uniform_data_u32: None,
         uniform_offset: None,
         uniform_stride: None,
+        video_element: None,
         webgl_data: None,
         webgl_shader_binding_resolver: None,
         webgpu_data: None,
         webgpu_shader_binding_resolver: None,
-        wgpu_color_adjustment_fold: None,
-        wgpu_color_adjustment_guard: None,
+        wgpu_color_adjustment_material_feature: None,
+        wgpu_color_adjustment_material_feature_guard: None,
+        wgpu_external_texture_cache: None,
+        wgpu_render_effect_registry: None,
+        wgpu_render_texture_cache: None,
+        wgpu_render_texture_guard: None,
+        wgpu_texture_resolver_registry: None,
         world_alpha: None,
         world_alpha_using_appearance_id: None,
         world_alpha_using_parent_appearance_id: None,
@@ -2301,6 +2906,10 @@ static DEFAULT_METHODS: std::sync::LazyLock<FlightPartialRecord2> =
         world_transform_id: None,
         world_transform_using_local_transform_id: None,
         world_transform_using_parent_transform_id: None,
+        color_adjustments: None,
+        color_adjustments_unsupported: None,
+        resolved_color_matrix: None,
+        resolved_color_scale_bias: None,
         can_add_child: None,
         children: None,
         traits: None,

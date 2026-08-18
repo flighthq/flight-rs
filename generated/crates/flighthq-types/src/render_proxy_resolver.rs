@@ -6,20 +6,16 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{DisplayObject, RenderProxy2D, RenderState};
+use crate::{Node2D, RenderProxy2D, RenderState};
 
-// Source: upstream/packages/types/src/RenderProxyResolver.ts:5 (sha256:2ad36164449672ef6ac056b03fbb5d5c7760916655c5055bcb09f7ae544c12f5)
+// Source: upstream/packages/types/src/RenderProxyResolver.ts:5 (sha256:5e7da443f4d5ef0f399e84292de8463bdc75544ffdea4248d5b3f2265a9a5b61)
 #[derive(Clone)]
 pub struct RenderProxyResolver {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub resolve: std::sync::Arc<
         std::sync::Mutex<
-            Box<
-                dyn FnMut(RenderState, DisplayObject, RenderProxy2D) -> Option<bool>
-                    + Send
-                    + 'static,
-            >,
+            Box<dyn FnMut(RenderState, Node2D, RenderProxy2D) -> Option<bool> + Send + 'static>,
         >,
     >,
 }

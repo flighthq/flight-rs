@@ -89,8 +89,7 @@ pub fn bake_color_lut_for_run(
                                     + (matrix.as_ref().unwrap()[1.0_f64 as usize].clone() * g))
                                     + (matrix.as_ref().unwrap()[2.0_f64 as usize].clone() * b))
                                     + matrix.as_ref().unwrap()[3.0_f64 as usize].clone())
-                                    + (matrix.as_ref().unwrap()[4.0_f64 as usize].clone()
-                                        / 255.0_f64));
+                                    + matrix.as_ref().unwrap()[4.0_f64 as usize].clone());
                                 if __flight_index == out.len() {
                                     out.push(__flight_value);
                                 } else {
@@ -106,8 +105,7 @@ pub fn bake_color_lut_for_run(
                                     + (matrix.as_ref().unwrap()[6.0_f64 as usize].clone() * g))
                                     + (matrix.as_ref().unwrap()[7.0_f64 as usize].clone() * b))
                                     + matrix.as_ref().unwrap()[8.0_f64 as usize].clone())
-                                    + (matrix.as_ref().unwrap()[9.0_f64 as usize].clone()
-                                        / 255.0_f64));
+                                    + matrix.as_ref().unwrap()[9.0_f64 as usize].clone());
                                 if __flight_index == out.len() {
                                     out.push(__flight_value);
                                 } else {
@@ -123,8 +121,7 @@ pub fn bake_color_lut_for_run(
                                     + (matrix.as_ref().unwrap()[11.0_f64 as usize].clone() * g))
                                     + (matrix.as_ref().unwrap()[12.0_f64 as usize].clone() * b))
                                     + matrix.as_ref().unwrap()[13.0_f64 as usize].clone())
-                                    + (matrix.as_ref().unwrap()[14.0_f64 as usize].clone()
-                                        / 255.0_f64));
+                                    + matrix.as_ref().unwrap()[14.0_f64 as usize].clone());
                                 if __flight_index == out.len() {
                                     out.push(__flight_value);
                                 } else {

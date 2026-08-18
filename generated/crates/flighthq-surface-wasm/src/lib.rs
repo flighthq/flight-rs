@@ -2,20 +2,36 @@
 #![forbid(unsafe_code)]
 
 use flighthq_surface::{
-    SurfaceConvolutionOptions, apply_surface_curve, apply_surface_levels,
-    apply_surface_palette_map, build_surface_brightness_color_matrix,
-    build_surface_contrast_color_matrix, build_surface_grayscale_color_matrix,
-    build_surface_hue_rotation_color_matrix, build_surface_invert_color_matrix,
-    build_surface_saturation_color_matrix, build_surface_sepia_color_matrix, color_matrix_surface,
-    compare_surface_fingerprints, concat_surface_color_matrix, convolve_surface,
-    copy_surface_alpha, copy_surface_pixels, create_surface_fingerprint, dilate_surface,
-    erode_surface, fill_surface_noise, fill_surface_perlin_noise, fill_surface_rectangle,
-    fill_surface_turbulence, get_surface_color_bounds_rectangle, get_surface_coverage,
-    get_surface_histogram, get_surface_mismatch, merge_surface_channels, multiply_surface_alpha,
-    pixelate_surface, premultiply_surface_pixels, set_surface_alpha,
-    set_surface_color_matrix_identity, unpremultiply_surface_pixels,
+    apply_bitmap_curve as apply_surface_curve, apply_bitmap_levels as apply_surface_levels,
+    apply_bitmap_palette_map as apply_surface_palette_map,
+    build_bitmap_brightness_color_matrix as build_surface_brightness_color_matrix,
+    build_bitmap_contrast_color_matrix as build_surface_contrast_color_matrix,
+    build_bitmap_grayscale_color_matrix as build_surface_grayscale_color_matrix,
+    build_bitmap_hue_rotation_color_matrix as build_surface_hue_rotation_color_matrix,
+    build_bitmap_invert_color_matrix as build_surface_invert_color_matrix,
+    build_bitmap_saturation_color_matrix as build_surface_saturation_color_matrix,
+    build_bitmap_sepia_color_matrix as build_surface_sepia_color_matrix,
+    color_matrix_bitmap as color_matrix_surface,
+    compare_bitmap_fingerprints as compare_surface_fingerprints,
+    concat_bitmap_color_matrix as concat_surface_color_matrix, convolve_bitmap as convolve_surface,
+    copy_bitmap_alpha as copy_surface_alpha, copy_bitmap_pixels as copy_surface_pixels,
+    create_bitmap_fingerprint as create_surface_fingerprint, dilate_bitmap as dilate_surface,
+    erode_bitmap as erode_surface, fill_bitmap_noise as fill_surface_noise,
+    fill_bitmap_perlin_noise as fill_surface_perlin_noise,
+    fill_bitmap_rectangle as fill_surface_rectangle,
+    fill_bitmap_turbulence as fill_surface_turbulence,
+    get_bitmap_color_bounds_rectangle as get_surface_color_bounds_rectangle,
+    get_bitmap_coverage as get_surface_coverage, get_bitmap_histogram as get_surface_histogram,
+    get_bitmap_mismatch as get_surface_mismatch, merge_bitmap_channels as merge_surface_channels,
+    multiply_bitmap_alpha as multiply_surface_alpha, pixelate_bitmap as pixelate_surface,
+    premultiply_bitmap_pixels as premultiply_surface_pixels, set_bitmap_alpha as set_surface_alpha,
+    set_bitmap_color_matrix_identity as set_surface_color_matrix_identity,
+    unpremultiply_bitmap_pixels as unpremultiply_surface_pixels,
 };
-use flighthq_types::{Surface, SurfaceFingerprint, SurfaceRegion};
+use flighthq_types::{
+    Bitmap as Surface, BitmapConvolutionOptions as SurfaceConvolutionOptions,
+    BitmapFingerprint as SurfaceFingerprint, BitmapRegion as SurfaceRegion, OpaqueHostValue,
+};
 use wasm_bindgen::prelude::*;
 
 fn surface(data: &[u8], width: f64, height: f64) -> Surface {
@@ -23,14 +39,14 @@ fn surface(data: &[u8], width: f64, height: f64) -> Surface {
         __flight_identity: std::sync::Arc::new(()),
         __flight_entity_runtime: Default::default(),
         alpha_type: "straight".to_owned(),
-        compressed: None,
         data: data.to_vec(),
         format: "rgba8unorm".to_owned(),
+        gamut: "srgb".to_owned(),
         height,
-        source: None,
+        kind: OpaqueHostValue::String("bitmap".to_owned()),
         version: 0.0,
         width,
-        color_space: "srgb".to_owned(),
+        ..Default::default()
     }
 }
 
@@ -42,7 +58,7 @@ fn region(data: &[u8], descriptor: &[f64]) -> SurfaceRegion {
     );
     SurfaceRegion {
         __flight_identity: std::sync::Arc::new(()),
-        surface: surface(data, descriptor[0], descriptor[1]),
+        bitmap: surface(data, descriptor[0], descriptor[1]),
         x: descriptor[2],
         y: descriptor[3],
         width: descriptor[4],
@@ -106,7 +122,7 @@ pub fn apply_surface_curve_wasm(
         optional_byte_channel_map(blue_lut),
         optional_byte_channel_map(alpha_lut),
     );
-    copy_u8_output(dest_data, &dest.surface.data);
+    copy_u8_output(dest_data, &dest.bitmap.data);
 }
 
 #[wasm_bindgen]
@@ -129,7 +145,7 @@ pub fn apply_surface_levels_wasm(
         Some(white_point),
         Some(gamma),
     );
-    copy_u8_output(dest_data, &dest.surface.data);
+    copy_u8_output(dest_data, &dest.bitmap.data);
 }
 
 #[wasm_bindgen]
@@ -154,7 +170,7 @@ pub fn apply_surface_palette_map_wasm(
         optional_channel_map(blue_map),
         optional_channel_map(alpha_map),
     );
-    copy_u8_output(dest_data, &dest.surface.data);
+    copy_u8_output(dest_data, &dest.bitmap.data);
 }
 
 #[wasm_bindgen]
@@ -306,7 +322,7 @@ pub fn copy_surface_pixels_wasm(
     let mut dest = region(dest_data, dest_descriptor);
     let source = region(source_data, source_descriptor);
     copy_surface_pixels(&mut dest, &source, Some(composite));
-    copy_u8_output(dest_data, &dest.surface.data);
+    copy_u8_output(dest_data, &dest.bitmap.data);
 }
 
 #[wasm_bindgen]
@@ -319,28 +335,28 @@ pub fn copy_surface_alpha_wasm(
     let mut dest = region(dest_data, dest_descriptor);
     let source = region(source_data, source_descriptor);
     copy_surface_alpha(&mut dest, &source);
-    copy_u8_output(dest_data, &dest.surface.data);
+    copy_u8_output(dest_data, &dest.bitmap.data);
 }
 
 #[wasm_bindgen]
 pub fn multiply_surface_alpha_wasm(data: &mut [u8], descriptor: &[f64], factor: f64) {
     let mut target = region(data, descriptor);
     multiply_surface_alpha(&mut target, factor);
-    copy_u8_output(data, &target.surface.data);
+    copy_u8_output(data, &target.bitmap.data);
 }
 
 #[wasm_bindgen]
 pub fn set_surface_alpha_wasm(data: &mut [u8], descriptor: &[f64], alpha: f64) {
     let mut target = region(data, descriptor);
     set_surface_alpha(&mut target, alpha);
-    copy_u8_output(data, &target.surface.data);
+    copy_u8_output(data, &target.bitmap.data);
 }
 
 #[wasm_bindgen]
 pub fn fill_surface_rectangle_wasm(data: &mut [u8], descriptor: &[f64], color: f64) {
     let mut target = region(data, descriptor);
     fill_surface_rectangle(&mut target, color);
-    copy_u8_output(data, &target.surface.data);
+    copy_u8_output(data, &target.bitmap.data);
 }
 
 #[wasm_bindgen]
@@ -354,7 +370,7 @@ pub fn fill_surface_noise_wasm(
 ) {
     let mut target = region(data, descriptor);
     fill_surface_noise(&mut target, seed, Some(low), Some(high), Some(gray_scale));
-    copy_u8_output(data, &target.surface.data);
+    copy_u8_output(data, &target.bitmap.data);
 }
 
 #[wasm_bindgen]
@@ -381,7 +397,7 @@ pub fn fill_surface_perlin_noise_wasm(
         Some(stitch),
         Some(channel_options),
     );
-    copy_u8_output(data, &target.surface.data);
+    copy_u8_output(data, &target.bitmap.data);
 }
 
 #[wasm_bindgen]
@@ -408,7 +424,7 @@ pub fn fill_surface_turbulence_wasm(
         Some(stitch),
         Some(channel_options),
     );
-    copy_u8_output(data, &target.surface.data);
+    copy_u8_output(data, &target.bitmap.data);
 }
 
 #[wasm_bindgen]
@@ -561,5 +577,5 @@ pub fn merge_surface_channels_wasm(
     let blue = region(blue_data, blue_descriptor);
     let alpha = region(alpha_data, alpha_descriptor);
     merge_surface_channels(&mut out, &red, &green, &blue, &alpha);
-    copy_u8_output(out_data, &out.surface.data);
+    copy_u8_output(out_data, &out.bitmap.data);
 }

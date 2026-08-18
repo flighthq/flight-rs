@@ -6,7 +6,11 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_types::{EffectSourceMode, GradientGlowEffect};
+use crate::{get_gaussian_render_effect_padding, register_render_effect_padding_resolver};
+use flighthq_types::{
+    BlendMode, EffectSourceMode, GradientGlowEffect, Matrix, RenderEffect, RenderEffectPadding,
+    RenderState, Scene2DClipHooks, Scene3DGraphSyncPolicy,
+};
 
 #[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
@@ -26,7 +30,29 @@ impl PartialEq for FlightOmitRecord1 {
     }
 }
 
-// Source: upstream/packages/effects/src/gradientGlowEffect.ts:4 (sha256:156011c5d67f1c2c702b7a6a7438ffb0bcb8c11b33c0424e0d96193ce6833158)
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub allow_smoothing: Option<bool>,
+    pub background_color: Option<f64>,
+    pub background_color_rgba: Option<Vec<f64>>,
+    pub background_color_string: Option<String>,
+    pub current_clip_depth: Option<f64>,
+    pub display_object_clip_hooks: Option<Scene2DClipHooks>,
+    pub pixel_ratio: Option<f64>,
+    pub render_alpha: Option<f64>,
+    pub render_blend_mode: Option<BlendMode>,
+    pub render_transform2_d: Option<Matrix>,
+    pub scene_graph_sync_policy: Option<Scene3DGraphSyncPolicy>,
+    pub round_pixels: Option<bool>,
+}
+impl PartialEq for FlightPartialRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/effects/src/gradientGlowEffect.ts:6 (sha256:156011c5d67f1c2c702b7a6a7438ffb0bcb8c11b33c0424e0d96193ce6833158)
 pub fn create_gradient_glow_effect(options: &FlightOmitRecord1) -> GradientGlowEffect {
     return {
         let __flight_spread_1 = options;
@@ -44,4 +70,48 @@ pub fn create_gradient_glow_effect(options: &FlightOmitRecord1) -> GradientGlowE
             ..Default::default()
         }
     };
+}
+
+// Source: upstream/packages/effects/src/gradientGlowEffect.ts:10 (sha256:dfb433f5cabfccd588c04da5b3cba2b9413601b34e39d5ca866241a9a4692dd1)
+pub fn get_gradient_glow_effect_padding(effect: &GradientGlowEffect) -> RenderEffectPadding {
+    return get_gaussian_render_effect_padding(
+        (effect.blur_x).unwrap_or(6.0_f64),
+        (effect.blur_y).unwrap_or(6.0_f64),
+    );
+}
+
+// Source: upstream/packages/effects/src/gradientGlowEffect.ts:14 (sha256:9e19515807271cea73e96d1dc084b7d884e4ef176f3618693af12bd9c2083560)
+pub fn register_gradient_glow_effect_padding_resolver(state: &RenderState) -> () {
+    register_render_effect_padding_resolver(
+        state,
+        "GradientGlowEffect".to_owned(),
+        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: RenderEffect| -> RenderEffectPadding {
+                resolve_gradient_glow_effect_padding(&__flight_argument_0)
+            },
+        )
+            as Box<
+                dyn FnMut(RenderEffect) -> RenderEffectPadding + Send + 'static,
+            >))),
+    );
+}
+
+// Source: upstream/packages/effects/src/gradientGlowEffect.ts:18 (sha256:98be64089837cdf7820dcbfb95b737ab82a4fb2e46a3140b16ba0f56b0e76a39)
+fn resolve_gradient_glow_effect_padding(effect: &RenderEffect) -> RenderEffectPadding {
+    return get_gradient_glow_effect_padding(&{
+        let __flight_source = &((*effect).clone());
+        GradientGlowEffect {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            kind: (__flight_source.kind).clone(),
+            alphas: (__flight_source.alphas).clone(),
+            blur_x: __flight_source.blur_x,
+            blur_y: __flight_source.blur_y,
+            colors: (__flight_source.colors).clone(),
+            quality: __flight_source.quality,
+            ratios: (__flight_source.ratios).clone(),
+            source_mode: (__flight_source.source_mode).clone(),
+            strength: __flight_source.strength,
+            ..Default::default()
+        }
+    });
 }

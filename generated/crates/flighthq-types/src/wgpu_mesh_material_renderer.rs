@@ -6,9 +6,11 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{Camera, Material, MeshGeometry, SceneLightBlock, SceneRenderProxy, WgpuRenderState};
+use crate::{
+    Camera3D, Material, MeshGeometry, Scene3DLightBlock, Scene3DRenderProxy, WgpuRenderState,
+};
 
-// Source: upstream/packages/types/src/WgpuMeshMaterialRenderer.ts:25 (sha256:aaa91ed37d2e09b15e0b863d8959ba7237700fa37044cebe68c81ce99182eff3)
+// Source: upstream/packages/types/src/WgpuMeshMaterialRenderer.ts:25 (sha256:4bf374dfff501c605c32e2ac9ac275016db035dbf3c676e31faa554243ee19ae)
 #[derive(Clone)]
 pub struct WgpuMeshMaterialRenderer {
     #[doc(hidden)]
@@ -16,7 +18,7 @@ pub struct WgpuMeshMaterialRenderer {
     pub bind: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(WgpuRenderState, Option<Material>, SceneLightBlock, Camera) -> ()
+                dyn FnMut(WgpuRenderState, Option<Material>, Scene3DLightBlock, Camera3D) -> ()
                     + Send
                     + 'static,
             >,
@@ -24,7 +26,9 @@ pub struct WgpuMeshMaterialRenderer {
     >,
     pub draw: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(WgpuRenderState, SceneRenderProxy, MeshGeometry) -> () + Send + 'static>,
+            Box<
+                dyn FnMut(WgpuRenderState, Scene3DRenderProxy, MeshGeometry) -> () + Send + 'static,
+            >,
         >,
     >,
 }

@@ -23,3 +23,7 @@ impl PartialEq for ClipRegion {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+
+// Source: upstream/packages/types/src/ClipRegion.ts:31 (sha256:6c511de0c14602672dd1c83729f1a59405f3ebbae160c52232c3273ce0ab59c6)
+pub type ClipRegionReleaseGuard =
+    std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(ClipRegion) -> () + Send + 'static>>>;

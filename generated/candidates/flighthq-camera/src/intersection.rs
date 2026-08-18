@@ -6,20 +6,20 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{get_camera_screen_to_world_ray, get_camera_world_to_screen};
-use flighthq_types::{BoundingSphereLike, Camera, PlaneLike, Ray3DLike, Vector3Like};
+use crate::{get_camera3_d_screen_to_world_ray, get_camera3_d_world_to_screen};
+use flighthq_types::{BoundingSphereLike, Camera3D, PlaneLike, Ray3DLike, Vector3Like};
 
-// Source: upstream/packages/camera/src/intersection.ts:18 (sha256:68f4d156a03213ed5d809975f13afd1f11bb24d2f9131758352ac0d2d021ba91)
-pub fn get_camera_ray_through_bounding_sphere(
+// Source: upstream/packages/camera/src/intersection.ts:18 (sha256:b03a87669cf8b308f90d195eca7b58093bc82983590856eb96f4965116a67027)
+pub fn get_camera3_d_ray_through_bounding_sphere(
     out: &mut Ray3DLike,
-    camera: &Camera,
+    camera: &Camera3D,
     sphere: &BoundingSphereLike,
     aspect: f64,
 ) -> bool {
     if (sphere.radius < 0.0_f64) {
         return false;
     }
-    if (!get_camera_world_to_screen(
+    if (!get_camera3_d_world_to_screen(
         &mut (*__SCRATCH_NDC.lock().unwrap()),
         camera,
         &{
@@ -38,7 +38,7 @@ pub fn get_camera_ray_through_bounding_sphere(
     )) {
         return false;
     }
-    return get_camera_screen_to_world_ray(
+    return get_camera3_d_screen_to_world_ray(
         out,
         camera,
         (*__SCRATCH_NDC.lock().unwrap()).x,
@@ -47,8 +47,8 @@ pub fn get_camera_ray_through_bounding_sphere(
     );
 }
 
-// Source: upstream/packages/camera/src/intersection.ts:49 (sha256:d6e3c96ca65a61d8bf5758f803a98dcf25e449edf00869f32665b5f8e84c6d79)
-pub fn intersect_camera_ray_with_plane(
+// Source: upstream/packages/camera/src/intersection.ts:49 (sha256:4b0f791c678575c2b50ae0b1d62674409afb704ea8b6c74644376eeba8df3a32)
+pub fn intersect_camera3_d_ray_with_plane(
     out: &mut Vector3Like,
     ray: &Ray3DLike,
     plane: &PlaneLike,

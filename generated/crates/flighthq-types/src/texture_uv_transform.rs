@@ -8,11 +8,13 @@
 
 use crate::Vector2;
 
-// Source: upstream/packages/types/src/TextureUvTransform.ts:8 (sha256:c7d84fc63c4e42f7111351d57c474737b772fb184ba51740fbace05a822640f6)
+// Source: upstream/packages/types/src/TextureUvTransform.ts:13 (sha256:e4f1a08e4ac64e7cadca1d54e3ee9dca2556c520ef326531ed1fff222705f2d0)
 #[derive(Clone, Default)]
 pub struct TextureUvTransform {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    pub flip_x: bool,
+    pub flip_y: bool,
     pub uv_offset: Vector2,
     pub uv_rotation: f64,
     pub uv_scale: Vector2,

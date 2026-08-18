@@ -6,17 +6,17 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{
-    BitmapFontCharRecord, BitmapFontKerningRecord, BitmapFontPageRecord, BitmapFontRecord,
-    build_bitmap_font_from_record,
+use crate::build_bitmap_font_from_record;
+use flighthq_types::{
+    BitmapFont, BitmapFontCharRecord, BitmapFontKerningRecord, BitmapFontPageRecord,
+    BitmapFontParseOptions, BitmapFontRecord, XmlElement,
 };
-use flighthq_types::{BitmapFont, BitmapFontParseOptions};
 use flighthq_xml::{
-    XmlElement, get_xml_element_attribute, get_xml_element_attribute_number,
-    get_xml_element_child_by_name, get_xml_element_children_by_name, parse_xml_document,
+    get_xml_element_attribute, get_xml_element_attribute_number, get_xml_element_child_by_name,
+    get_xml_element_children_by_name, parse_xml_document,
 };
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontXml.ts:24 (sha256:9a68c1623f2e120a120699af01da091963a308ad494eb6fd8d5f7213d04c25f3)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontXml.ts:25 (sha256:9a68c1623f2e120a120699af01da091963a308ad494eb6fd8d5f7213d04c25f3)
 pub fn parse_bitmap_font_xml(
     text: String,
     options: Option<BitmapFontParseOptions>,
@@ -31,7 +31,7 @@ pub fn parse_bitmap_font_xml(
     );
 }
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontXml.ts:32 (sha256:acc65f2c3182bcac1f536aacb47b497f1a12f7e3b5cbbc3259dfb8310f7bdf34)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontXml.ts:33 (sha256:acc65f2c3182bcac1f536aacb47b497f1a12f7e3b5cbbc3259dfb8310f7bdf34)
 fn parse_bitmap_font_xml_record(text: String) -> Option<BitmapFontRecord> {
     let root = parse_xml_document((text).clone());
     if ((root).is_none()) || ((root.as_ref().unwrap().name).clone() != "font") {
@@ -111,7 +111,7 @@ fn parse_bitmap_font_xml_record(text: String) -> Option<BitmapFontRecord> {
     });
 }
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontXml.ts:73 (sha256:04c5fb153376910e243deab138af00e02091efd913c14ffe7d834fe400181fa5)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontXml.ts:74 (sha256:04c5fb153376910e243deab138af00e02091efd913c14ffe7d834fe400181fa5)
 fn read_xml_char(element: &XmlElement) -> Option<BitmapFontCharRecord> {
     let id = get_xml_element_attribute_number(element, "id".to_owned());
     let x = get_xml_element_attribute_number(element, "x".to_owned());
@@ -143,7 +143,7 @@ fn read_xml_char(element: &XmlElement) -> Option<BitmapFontCharRecord> {
     });
 }
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontXml.ts:107 (sha256:ace4fc1703698b38e6f2359ba6f0f3af2adeac0b5f8c9f0602490e626783e93e)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontXml.ts:108 (sha256:ace4fc1703698b38e6f2359ba6f0f3af2adeac0b5f8c9f0602490e626783e93e)
 fn read_xml_kerning(element: &XmlElement) -> Option<BitmapFontKerningRecord> {
     let first = get_xml_element_attribute_number(element, "first".to_owned());
     let second = get_xml_element_attribute_number(element, "second".to_owned());

@@ -6,10 +6,10 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-// Source: upstream/packages/types/src/AnimationTrackValidationDiagnostic.ts:4 (sha256:6e162ff26c996de3d7920242456c5993a64fc6046f3f5a54f9e7caac530dd16c)
+// Source: upstream/packages/types/src/AnimationTrackValidationDiagnostic.ts:4 (sha256:b99c64d082039e5401a40fb8746c41ad24fb0092dc6751a6e12562534becdc27)
 pub type AnimationTrackValidationCode = String;
 
-// Source: upstream/packages/types/src/AnimationTrackValidationDiagnostic.ts:8 (sha256:f69ccacd70f068caceeaabfaa792b8a1e9ccb6913c87a4cea6f9322515abb218)
+// Source: upstream/packages/types/src/AnimationTrackValidationDiagnostic.ts:11 (sha256:f69ccacd70f068caceeaabfaa792b8a1e9ccb6913c87a4cea6f9322515abb218)
 #[derive(Clone, Default)]
 pub struct AnimationTrackValidationDiagnostic {
     #[doc(hidden)]

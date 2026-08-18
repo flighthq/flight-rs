@@ -6,7 +6,8 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{AlphaType, BlendMode, EntityRuntime, Kind, MaterialAlphaMode, Texture};
+use crate::{BlendMode, EntityRuntime, Kind, MaterialAlphaMode, Texture};
+use crate::{PbrExtension, StandardPbrMaterialProperties};
 
 // Source: upstream/packages/types/src/MatcapMaterial.ts:7 (sha256:8b4467696325ff69cdbe538077a2259a9bd9f7007df08e3a49a165bf267de4e8)
 #[derive(Clone, Default)]
@@ -19,9 +20,10 @@ pub struct MatcapMaterial {
     pub name: Option<String>,
     pub alpha_cutoff: f64,
     pub alpha_mode: MaterialAlphaMode,
-    pub alpha_type: AlphaType,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub extensions: Vec<PbrExtension>,
+    pub standard: StandardPbrMaterialProperties,
     pub shader_key: String,
     pub textures: Option<Vec<(String, Texture)>>,
     pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,

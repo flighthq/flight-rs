@@ -22,7 +22,7 @@ impl PartialEq for LodLevel {
     }
 }
 
-// Source: upstream/packages/types/src/LodMesh.ts:7 (sha256:f20298e4daa6fca2ab54b6ee21e6f74a40612b8e57a3a28744270fcf0a4666c4)
+// Source: upstream/packages/types/src/LodMesh.ts:7 (sha256:8278a6eef11a26e8d7f9edb0096080c4a1d2e04222097804093fcb7f2a78247c)
 #[derive(Clone, Default)]
 pub struct LodMesh {
     #[doc(hidden)]
@@ -62,7 +62,7 @@ impl crate::FlightEntity for LodMesh {
     }
 }
 
-// Source: upstream/packages/types/src/LodMesh.ts:11 (sha256:a786ee9098356714a4072e39afe89f5bdf4f8d0df9b7fa58b45d84ecc9687a64)
+// Source: upstream/packages/types/src/LodMesh.ts:11 (sha256:60287a96e475211f1b5acb3399fe6057d3096897d5553ad2ef8d1794adb98228)
 pub type LodMeshRuntime = crate::EntityRuntime;
 
 // Source: upstream/packages/types/src/LodMesh.ts:12 (sha256:50ee97b4167eb730b791b333b6af2cb82bc02054b0d604e71702fd80de52fd90)

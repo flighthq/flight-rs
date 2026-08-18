@@ -178,9 +178,9 @@ export interface AutomaticPackageSummary {
 
 export interface CandidateCrateNode {
   crate: string;
-  dependencies: Array<{ crate: string; package: string }>;
   fullyPromotedTarget: boolean;
   package: string;
+  requiredDependencies: Array<{ crate: string; package: string }>;
 }
 
 export interface WasmFacadeReport {
@@ -238,6 +238,11 @@ interface AutomaticPackageAttempt {
   report: AutomaticPackageReport;
 }
 
+interface GeneratedRustTarget {
+  report: RustTargetReport;
+  requiredDependencies: Array<{ crate: string; package: string }>;
+}
+
 interface ImportedSemanticTypes {
   enumNames: readonly string[];
   functions: readonly IrFunctionDeclaration[];
@@ -260,6 +265,18 @@ export function generateRust(
 ): RustGenerationReport {
   validatePackagePolicy(inventory.packages);
   generateFlightTaskRuntime(workspaceDirectory, check);
+  // Promoted crates are path dependencies of automatic candidates. Generate them first so a clean or
+  // interrupted workspace does not make candidate compilation depend on stale generated output.
+  const generatedTargets = portConfig.targets.map((target) => generateTarget(workspaceDirectory, target, check));
+  for (const target of generatedTargets) {
+    const configured = portConfig.targets.find((item) => item.package === target.report.package);
+    if (!configured?.fullyPromoted || target.report.unsupportedSources.length === 0) continue;
+    throw new Error(
+      `Fully promoted target ${target.report.package} has unsupported sources: ${target.report.unsupportedSources
+        .map((source) => `${source.source}: ${source.reason}`)
+        .join('; ')}`,
+    );
+  }
   const attempts = inventory.packages.map((item) =>
     attemptAutomaticPackage(workspaceDirectory, item, inventory.packages),
   );
@@ -269,14 +286,39 @@ export function generateRust(
     portConfig.conformanceHarvest,
     inventory.summary.testFiles,
   );
-  // Promoted crates are path dependencies of automatic candidates. Generate them first so a clean or
-  // interrupted workspace does not make candidate compilation depend on stale generated output.
-  const targets = portConfig.targets.map((target) => generateTarget(workspaceDirectory, target, check));
+  const targets = generatedTargets.map((target) => target.report);
+  const automaticPackageReports = attempts.map((attempt) => {
+    if (!attempt.report.fullyPromotedTarget) return attempt.report;
+    const target = generatedTargets.find((item) => item.report.package === attempt.report.package);
+    if (!target) throw new Error(`Missing fully promoted target for ${attempt.report.package}`);
+    const targetDeclarations = new Set(target.report.emittedSources.flatMap((source) => source.declarationNames));
+    const generatedExports = attempt.report.generatedExports.filter((name) => targetDeclarations.has(name));
+    return {
+      ...attempt.report,
+      blockers: [],
+      candidate: {
+        compileDiagnostics: [],
+        status: 'promoted' as const,
+        syntaxCheckedSources: target.report.emittedSources.length,
+        unresolvedDependencies: [],
+      },
+      generatedExports,
+      missingExports: [
+        ...new Set(
+          attempt.report.missingExports.concat(
+            attempt.report.generatedExports.filter((name) => !targetDeclarations.has(name)),
+          ),
+        ),
+      ].sort(),
+      requiredDependencies: target.requiredDependencies,
+      status: 'emittable' as const,
+    };
+  });
   const automaticPackages = materializeAutomaticCandidates(
     workspaceDirectory,
     check,
     attempts,
-    annotateDependencyImpact(attempts.map((item) => item.report)),
+    annotateDependencyImpact(automaticPackageReports),
     conformanceHarvest.rustModules,
   );
   const conformance = verifyAutomaticConformance(workspaceDirectory, automaticPackages, conformanceHarvest.report);
@@ -359,9 +401,7 @@ function attemptAutomaticPackage(
     .sort((left, right) => left.package.localeCompare(right.package));
   const promoted = portConfig.targets.find((target) => target.package === packageInventory.name);
   const promotedTarget = Boolean(promoted);
-  const fullyPromotedTarget = Boolean(
-    promoted && !promoted.sourceSelection && !promoted.declarationSelection && promoted.sourceExclusions.length === 0,
-  );
+  const fullyPromotedTarget = promoted?.fullyPromoted === true;
   if (policy && policy.disposition !== 'host-backend') {
     return {
       modules: [],
@@ -689,6 +729,7 @@ function materializeAutomaticCandidates(
   const packageByName = new Map(packages.map((item) => [item.package, item]));
   const attemptByPackage = new Map(attempts.map((item) => [item.report.package, item]));
   const dependencyReady = (item: AutomaticPackageReport, visiting: ReadonlySet<string> = new Set()): boolean => {
+    if (item.fullyPromotedTarget) return true;
     if (item.status !== 'emittable') return false;
     if (visiting.has(item.package)) return true;
     const next = new Set([...visiting, item.package]);
@@ -795,8 +836,17 @@ function verifyAutomaticConformance(
   for (const item of selected) {
     const candidate = packages.find((candidate) => candidate.package === item.package);
     if (candidate?.candidate.status !== 'compiled') {
+      const details = [
+        ...(candidate?.candidate.unresolvedDependencies ?? []).map(
+          (dependency) => `${dependency.package} (${dependency.status}/${dependency.candidateStatus})`,
+        ),
+        ...(candidate?.candidate.compileDiagnostics ?? []).map(
+          (diagnostic) =>
+            `${diagnostic.code ? `${diagnostic.code}: ` : ''}${diagnostic.message}${diagnostic.source ? ` (${diagnostic.source})` : ''}`,
+        ),
+      ];
       throw new Error(
-        `Conformance harvest ${item.package} requires a compiled automatic candidate, got ${candidate?.candidate.status ?? 'missing'}.`,
+        `Conformance harvest ${item.package} requires a compiled automatic candidate, got ${candidate?.candidate.status ?? 'missing'}${details.length > 0 ? `: ${details.join('; ')}` : ''}.`,
       );
     }
   }
@@ -850,7 +900,7 @@ export function validateCandidateCrateGraph(packages: readonly CandidateCrateNod
   }
 
   for (const item of packages) {
-    for (const dependency of item.dependencies) {
+    for (const dependency of item.requiredDependencies) {
       const resolved = packageByName.get(dependency.package);
       if (!resolved) continue;
       if (dependency.crate !== resolved.crate) {
@@ -1376,7 +1426,10 @@ export function validateAsyncTaskDispositionPartition(scopes: readonly AsyncTask
   }
 }
 
-function generateTarget(workspaceDirectory: string, target: RustTarget, check: boolean): RustTargetReport {
+function generateTarget(workspaceDirectory: string, target: RustTarget, check: boolean): GeneratedRustTarget {
+  if (target.fullyPromoted && (target.sourceSelection || target.declarationSelection)) {
+    throw new Error(`Fully promoted target ${target.package} cannot select sources or declarations.`);
+  }
   const packageDirectoryName = target.package.replace(/^@flighthq\//u, '');
   const sourceDirectory = path.join(
     workspaceDirectory,
@@ -1593,15 +1646,24 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
   sourceExclusions.sort((left, right) => left.source.localeCompare(right.source));
   unsupportedSources.sort((left, right) => left.source.localeCompare(right.source));
   return {
-    crate: target.crate,
-    deferredDeclarations,
-    deferredSources,
-    emittedSources,
-    inlineDependencies: target.inlineDependencies,
-    package: target.package,
-    sourceExclusions,
-    unsupportedSources,
-    typeMappings: target.typeMappings,
+    report: {
+      crate: target.crate,
+      deferredDeclarations,
+      deferredSources,
+      emittedSources,
+      inlineDependencies: target.inlineDependencies,
+      package: target.package,
+      sourceExclusions,
+      unsupportedSources,
+      typeMappings: target.typeMappings,
+    },
+    requiredDependencies: Object.entries(target.dependencies)
+      .flatMap(([packageName, dependency]) =>
+        outputs.some((output) => output.content.includes(`use ${dependency.crate.replaceAll('-', '_')}::`))
+          ? [{ crate: dependency.crate, package: packageName }]
+          : [],
+      )
+      .sort((left, right) => left.package.localeCompare(right.package)),
   };
 }
 
@@ -2164,7 +2226,7 @@ function collectInferredTopLevelTypeImports(
   return [...new Set(names)].sort();
 }
 
-function classifyImportedRustBinding(
+export function classifyImportedRustBinding(
   importer: string,
   specifier: string,
   name: string,
@@ -2176,7 +2238,56 @@ function classifyImportedRustBinding(
       ? findPackageDeclarationSource(workspaceDirectory, specifier, name)
       : undefined;
   if (!source) return 'value';
-  const statement = parseTypeScriptFile(source).statements.find((candidate) => {
+  const binding = findTypeScriptBindingDeclaration(source, name);
+  if (binding?.kind) return binding.kind;
+  const statement = binding?.statement;
+  const bindingSource = binding?.source ?? source;
+  const bindingName = binding?.name ?? name;
+  if (statement && ts.isFunctionDeclaration(statement)) return 'function';
+  if (statement && ts.isVariableStatement(statement)) {
+    const declaration = statement.declarationList.declarations.find(
+      (candidate) => ts.isIdentifier(candidate.name) && candidate.name.text === bindingName,
+    );
+    if (
+      declaration?.initializer &&
+      (ts.isArrowFunction(declaration.initializer) || ts.isFunctionExpression(declaration.initializer))
+    ) {
+      return 'function';
+    }
+    const loweredDeclaration = declaration
+      ? lowerTypeScriptFile(
+          bindingSource,
+          specifier.startsWith('@flighthq/') ? specifier : '@flighthq/internal',
+          workspaceDirectory,
+        ).declarations.find((item) => item.kind === 'variable' && item.name === bindingName)
+      : undefined;
+    if (loweredDeclaration?.kind === 'variable' && isNumericNamespaceInitializer(loweredDeclaration.initializer)) {
+      return 'type';
+    }
+    return 'constant';
+  }
+  if (
+    statement &&
+    (ts.isClassDeclaration(statement) ||
+      ts.isInterfaceDeclaration(statement) ||
+      ts.isTypeAliasDeclaration(statement) ||
+      ts.isEnumDeclaration(statement))
+  ) {
+    return 'type';
+  }
+  return 'value';
+}
+
+function findTypeScriptBindingDeclaration(
+  source: string,
+  name: string,
+  visited: ReadonlySet<string> = new Set(),
+): { kind?: 'type'; name: string; source: string; statement: ts.Statement } | undefined {
+  const key = `${source}\0${name}`;
+  if (visited.has(key)) return undefined;
+  const next = new Set([...visited, key]);
+  const sourceFile = parseTypeScriptFile(source);
+  const direct = sourceFile.statements.find((candidate) => {
     if (
       (ts.isFunctionDeclaration(candidate) ||
         ts.isClassDeclaration(candidate) ||
@@ -2194,39 +2305,43 @@ function classifyImportedRustBinding(
       )
     );
   });
-  if (statement && ts.isFunctionDeclaration(statement)) return 'function';
-  if (statement && ts.isVariableStatement(statement)) {
-    const declaration = statement.declarationList.declarations.find(
-      (candidate) => ts.isIdentifier(candidate.name) && candidate.name.text === name,
-    );
+  if (direct) return { name, source, statement: direct };
+  for (const statement of sourceFile.statements) {
     if (
-      declaration?.initializer &&
-      (ts.isArrowFunction(declaration.initializer) || ts.isFunctionExpression(declaration.initializer))
+      !ts.isExportDeclaration(statement) ||
+      statement.moduleSpecifier ||
+      !statement.exportClause ||
+      !ts.isNamedExports(statement.exportClause)
     ) {
-      return 'function';
+      continue;
     }
-    const loweredDeclaration = declaration
-      ? lowerTypeScriptFile(
-          source,
-          specifier.startsWith('@flighthq/') ? specifier : '@flighthq/internal',
-          workspaceDirectory,
-        ).declarations.find((item) => item.kind === 'variable' && item.name === name)
-      : undefined;
-    if (loweredDeclaration?.kind === 'variable' && isNumericNamespaceInitializer(loweredDeclaration.initializer)) {
-      return 'type';
+    const element = statement.exportClause.elements.find((candidate) => candidate.name.text === name);
+    if (element && (statement.isTypeOnly || element.isTypeOnly)) {
+      return { kind: 'type', name: element.propertyName?.text ?? element.name.text, source, statement };
     }
-    return 'constant';
   }
-  if (
-    statement &&
-    (ts.isClassDeclaration(statement) ||
-      ts.isInterfaceDeclaration(statement) ||
-      ts.isTypeAliasDeclaration(statement) ||
-      ts.isEnumDeclaration(statement))
-  ) {
-    return 'type';
+  for (const statement of sourceFile.statements) {
+    if (
+      !ts.isExportDeclaration(statement) ||
+      !statement.moduleSpecifier ||
+      !ts.isStringLiteral(statement.moduleSpecifier) ||
+      !statement.moduleSpecifier.text.startsWith('.')
+    ) {
+      continue;
+    }
+    let importedName = name;
+    if (statement.exportClause) {
+      if (!ts.isNamedExports(statement.exportClause)) continue;
+      const element = statement.exportClause.elements.find((candidate) => candidate.name.text === name);
+      if (!element) continue;
+      importedName = element.propertyName?.text ?? element.name.text;
+    }
+    const target = resolveRelativeTypeScriptSource(source, statement.moduleSpecifier.text);
+    if (!target) continue;
+    const resolved = findTypeScriptBindingDeclaration(target, importedName, next);
+    if (resolved) return resolved;
   }
-  return 'value';
+  return undefined;
 }
 
 function collectImportedSemanticTypes(sourceFile: ts.SourceFile, workspaceDirectory: string): ImportedSemanticTypes {

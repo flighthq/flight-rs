@@ -8,46 +8,12 @@
 
 use flighthq_entity::create_entity;
 use flighthq_geometry::{clone_vector3, create_vector3, set_vector3};
-use flighthq_types::{SPOT_LIGHT_KIND as spot_light_kind_constant, SpotLight, Vector3Like};
+use flighthq_types::{
+    SPOT_LIGHT_KIND as spot_light_kind_constant, SpotLight, SpotLightConeAngles, SpotLightOptions,
+    Vector3Like,
+};
 
-// Source: upstream/packages/lighting/src/spotLight.ts:6 (sha256:568f8b40451fc552029c1d925406e49260d65cb59925a33e673446d908ae2c3a)
-#[derive(Clone, Default)]
-pub struct SpotLightConeAngles {
-    #[doc(hidden)]
-    pub __flight_identity: std::sync::Arc<()>,
-    pub inner_degrees: f64,
-    pub outer_degrees: f64,
-}
-impl PartialEq for SpotLightConeAngles {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-// Source: upstream/packages/lighting/src/spotLight.ts:11 (sha256:d0bf1578d5df68cbb0e862e25e3ac2b9d7a0141cb8461c4a9226d61baecee179)
-#[derive(Clone, Default)]
-pub struct SpotLightOptions {
-    #[doc(hidden)]
-    pub __flight_identity: std::sync::Arc<()>,
-    pub casts_shadow: Option<bool>,
-    pub color: Option<f64>,
-    pub direction: Option<Vector3Like>,
-    pub inner_cone_degrees: Option<f64>,
-    pub intensity: Option<f64>,
-    pub normal_bias: Option<f64>,
-    pub outer_cone_degrees: Option<f64>,
-    pub pcf_radius: Option<f64>,
-    pub position: Option<Vector3Like>,
-    pub range: Option<f64>,
-    pub shadow_bias: Option<f64>,
-}
-impl PartialEq for SpotLightOptions {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-// Source: upstream/packages/lighting/src/spotLight.ts:28 (sha256:a98520291f8293be3b4fa9e54616e175ae0bb6288b13080c7b015546194e2a0c)
+// Source: upstream/packages/lighting/src/spotLight.ts:7 (sha256:a98520291f8293be3b4fa9e54616e175ae0bb6288b13080c7b015546194e2a0c)
 pub fn clone_spot_light(source: &SpotLight) -> SpotLight {
     return create_entity(Some(SpotLight {
         __flight_identity: std::sync::Arc::new(()),
@@ -90,7 +56,7 @@ pub fn clone_spot_light(source: &SpotLight) -> SpotLight {
     }));
 }
 
-// Source: upstream/packages/lighting/src/spotLight.ts:49 (sha256:1655c5b3871af75a1b788c591c2e85c99e3a6520ea38857d141c2a13442f2240)
+// Source: upstream/packages/lighting/src/spotLight.ts:28 (sha256:1655c5b3871af75a1b788c591c2e85c99e3a6520ea38857d141c2a13442f2240)
 pub fn create_spot_light(options: Option<SpotLightOptions>) -> SpotLight {
     let position = options.as_ref().and_then(|value| (value.position).clone());
     let direction = options.as_ref().and_then(|value| (value.direction).clone());
@@ -127,19 +93,19 @@ pub fn create_spot_light(options: Option<SpotLightOptions>) -> SpotLight {
     return light;
 }
 
-// Source: upstream/packages/lighting/src/spotLight.ts:73 (sha256:8251cdf5a4d2a71d75f5e5bf39d147e89960443cb1686b27ff5ee7a0b7bb4cd9)
+// Source: upstream/packages/lighting/src/spotLight.ts:52 (sha256:8251cdf5a4d2a71d75f5e5bf39d147e89960443cb1686b27ff5ee7a0b7bb4cd9)
 pub fn get_spot_light_cone_degrees(out: &mut SpotLightConeAngles, source: &SpotLight) -> () {
     out.inner_degrees = (((source.inner_cone_cos).acos() * 180.0_f64) / std::f64::consts::PI);
     out.outer_degrees = (((source.outer_cone_cos).acos() * 180.0_f64) / std::f64::consts::PI);
 }
 
-// Source: upstream/packages/lighting/src/spotLight.ts:81 (sha256:ebbee4f86889f9665ab8006d66401756585a69beb9ab7a6482ca055499321442)
+// Source: upstream/packages/lighting/src/spotLight.ts:60 (sha256:ebbee4f86889f9665ab8006d66401756585a69beb9ab7a6482ca055499321442)
 pub fn set_spot_light_cone(out: &mut SpotLight, inner_degrees: f64, outer_degrees: f64) -> () {
     out.inner_cone_cos = ((inner_degrees * std::f64::consts::PI) / 180.0_f64).cos();
     out.outer_cone_cos = ((outer_degrees * std::f64::consts::PI) / 180.0_f64).cos();
 }
 
-// Source: upstream/packages/lighting/src/spotLight.ts:88 (sha256:7adfcf885cf7e71c2d712e2183136d84ca36938a65b8c22f61e56e7f0a1237ca)
+// Source: upstream/packages/lighting/src/spotLight.ts:67 (sha256:7adfcf885cf7e71c2d712e2183136d84ca36938a65b8c22f61e56e7f0a1237ca)
 pub fn set_spot_light_direction(out: &mut SpotLight, x: f64, y: f64, z: f64) -> () {
     let lx = x;
     let ly = y;
@@ -150,7 +116,7 @@ pub fn set_spot_light_direction(out: &mut SpotLight, x: f64, y: f64, z: f64) -> 
     }
 }
 
-// Source: upstream/packages/lighting/src/spotLight.ts:101 (sha256:077f213b02aa1b86187ca1f1617c37390916d7574e4b56175c0f46b95e3171a8)
+// Source: upstream/packages/lighting/src/spotLight.ts:80 (sha256:077f213b02aa1b86187ca1f1617c37390916d7574e4b56175c0f46b95e3171a8)
 pub fn set_spot_light_target(
     out: &mut SpotLight,
     target_x: f64,

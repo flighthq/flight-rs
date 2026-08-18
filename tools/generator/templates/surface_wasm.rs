@@ -2,7 +2,6 @@
 #![forbid(unsafe_code)]
 
 use flighthq_surface::{
-    BitmapConvolutionOptions as SurfaceConvolutionOptions,
     apply_bitmap_curve as apply_surface_curve, apply_bitmap_levels as apply_surface_levels,
     apply_bitmap_palette_map as apply_surface_palette_map,
     build_bitmap_brightness_color_matrix as build_surface_brightness_color_matrix,
@@ -34,7 +33,8 @@ use flighthq_surface::{
     unpremultiply_bitmap_pixels as unpremultiply_surface_pixels,
 };
 use flighthq_types::{
-    Bitmap as Surface, BitmapFingerprint as SurfaceFingerprint, BitmapRegion as SurfaceRegion,
+    Bitmap as Surface, BitmapConvolutionOptions as SurfaceConvolutionOptions,
+    BitmapFingerprint as SurfaceFingerprint, BitmapRegion as SurfaceRegion, OpaqueHostValue,
 };
 use wasm_bindgen::prelude::*;
 
@@ -47,9 +47,10 @@ fn surface(data: &[u8], width: f64, height: f64) -> Surface {
         format: "rgba8unorm".to_owned(),
         gamut: "srgb".to_owned(),
         height,
-        kind: "bitmap".to_owned(),
+        kind: OpaqueHostValue::String("bitmap".to_owned()),
         version: 0.0,
         width,
+        ..Default::default()
     }
 }
 

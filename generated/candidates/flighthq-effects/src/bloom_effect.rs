@@ -6,7 +6,11 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_types::BloomEffect;
+use crate::{get_gaussian_render_effect_padding, register_render_effect_padding_resolver};
+use flighthq_types::{
+    BlendMode, BloomEffect, Matrix, RenderEffect, RenderEffectPadding, RenderState,
+    Scene2DClipHooks, Scene3DGraphSyncPolicy,
+};
 
 #[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
@@ -22,27 +26,49 @@ impl PartialEq for FlightOmitRecord1 {
     }
 }
 
-// Source: upstream/packages/effects/src/bloomEffect.ts:7 (sha256:f34073dbd363e96e331b2a1ba428bb190daccbacf4c0dbd957021b90b65025fd)
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub allow_smoothing: Option<bool>,
+    pub background_color: Option<f64>,
+    pub background_color_rgba: Option<Vec<f64>>,
+    pub background_color_string: Option<String>,
+    pub current_clip_depth: Option<f64>,
+    pub display_object_clip_hooks: Option<Scene2DClipHooks>,
+    pub pixel_ratio: Option<f64>,
+    pub render_alpha: Option<f64>,
+    pub render_blend_mode: Option<BlendMode>,
+    pub render_transform2_d: Option<Matrix>,
+    pub scene_graph_sync_policy: Option<Scene3DGraphSyncPolicy>,
+    pub round_pixels: Option<bool>,
+}
+impl PartialEq for FlightPartialRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/effects/src/bloomEffect.ts:9 (sha256:f34073dbd363e96e331b2a1ba428bb190daccbacf4c0dbd957021b90b65025fd)
 pub fn compute_bloom_blur_radius(effect: &BloomEffect) -> f64 {
     return (0.0_f64).max((effect.radius).unwrap_or(8.0_f64));
 }
 
-// Source: upstream/packages/effects/src/bloomEffect.ts:11 (sha256:4a39a4516008094d20a658965d4a461ad85821a29fc50ae8aeecc9a69bd381f7)
+// Source: upstream/packages/effects/src/bloomEffect.ts:13 (sha256:4a39a4516008094d20a658965d4a461ad85821a29fc50ae8aeecc9a69bd381f7)
 pub fn compute_bloom_intensity(effect: &BloomEffect) -> f64 {
     return (effect.intensity).unwrap_or(1.0_f64);
 }
 
-// Source: upstream/packages/effects/src/bloomEffect.ts:15 (sha256:cd461a958a93139b3234d1695ca5bfc70a5c93c0989ea26a312389baa4929218)
+// Source: upstream/packages/effects/src/bloomEffect.ts:17 (sha256:cd461a958a93139b3234d1695ca5bfc70a5c93c0989ea26a312389baa4929218)
 pub fn compute_bloom_threshold(effect: &BloomEffect) -> f64 {
     return (effect.threshold).unwrap_or(0.8_f64);
 }
 
-// Source: upstream/packages/effects/src/bloomEffect.ts:19 (sha256:617321597270316572516fdf538933545aea4fa2d8cd22b426fc4e882207e95f)
+// Source: upstream/packages/effects/src/bloomEffect.ts:21 (sha256:617321597270316572516fdf538933545aea4fa2d8cd22b426fc4e882207e95f)
 #[derive(Clone, Default)]
-struct CreateBloomEffectRecord2 {
+struct CreateBloomEffectRecord3 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateBloomEffectRecord2 {
+impl PartialEq for CreateBloomEffectRecord3 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -68,4 +94,42 @@ pub fn create_bloom_effect(options: Option<FlightOmitRecord1>) -> BloomEffect {
             ..Default::default()
         }
     };
+}
+
+// Source: upstream/packages/effects/src/bloomEffect.ts:25 (sha256:c9fb4dc9d651e5014aa8e911a2b6a0e80a8bf8b72712df17b40a98fce86d6b53)
+pub fn get_bloom_effect_padding(effect: &BloomEffect) -> RenderEffectPadding {
+    let radius = compute_bloom_blur_radius(effect);
+    return get_gaussian_render_effect_padding(radius, radius);
+}
+
+// Source: upstream/packages/effects/src/bloomEffect.ts:30 (sha256:305453f734590afb0432ace0f882949597ccc7507288ed813ea898955244bb0d)
+pub fn register_bloom_effect_padding_resolver(state: &RenderState) -> () {
+    register_render_effect_padding_resolver(
+        state,
+        "BloomEffect".to_owned(),
+        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: RenderEffect| -> RenderEffectPadding {
+                resolve_bloom_effect_padding(&__flight_argument_0)
+            },
+        )
+            as Box<
+                dyn FnMut(RenderEffect) -> RenderEffectPadding + Send + 'static,
+            >))),
+    );
+}
+
+// Source: upstream/packages/effects/src/bloomEffect.ts:34 (sha256:606e073b1a36007b715d4d7d371602364970101a663b297a791b6c12a5c13217)
+fn resolve_bloom_effect_padding(effect: &RenderEffect) -> RenderEffectPadding {
+    return get_bloom_effect_padding(&{
+        let __flight_source = &((*effect).clone());
+        BloomEffect {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            kind: (__flight_source.kind).clone(),
+            threshold: __flight_source.threshold,
+            intensity: __flight_source.intensity,
+            radius: __flight_source.radius,
+            passes: __flight_source.passes,
+            ..Default::default()
+        }
+    });
 }

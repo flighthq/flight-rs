@@ -60,17 +60,15 @@ pub struct TextFieldSignals {
     pub __flight_identity: std::sync::Arc<()>,
     pub on_text_field_change: Signal<
         std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(crate::OpaqueHostValue) -> () + Send + 'static>>,
+            std::sync::Mutex<Box<dyn FnMut(TextFieldChangeEvent) -> () + Send + 'static>>,
         >,
     >,
     pub on_text_field_link: Signal<
-        std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(crate::OpaqueHostValue) -> () + Send + 'static>>,
-        >,
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(TextFieldLinkEvent) -> () + Send + 'static>>>,
     >,
     pub on_text_field_scroll: Signal<
         std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(crate::OpaqueHostValue) -> () + Send + 'static>>,
+            std::sync::Mutex<Box<dyn FnMut(TextFieldScrollEvent) -> () + Send + 'static>>,
         >,
     >,
 }

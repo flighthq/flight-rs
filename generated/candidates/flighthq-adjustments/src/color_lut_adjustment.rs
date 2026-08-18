@@ -76,7 +76,7 @@ pub fn is_color_lut_adjustment(operation: &SharedStructuralRecord1) -> bool {
         == "function");
 }
 
-// Source: upstream/packages/adjustments/src/colorLutAdjustment.ts:27 (sha256:653f829c8320921dd0e21c19733fb780fd327720e40b8fa9e742a4e9e5105e95)
+// Source: upstream/packages/adjustments/src/colorLutAdjustment.ts:27 (sha256:4b8b6191dcc732ab6f8a638e02033ad876d3297f4590c82beb66539098f98427)
 fn color_matrix_transform(m: Vec<f64>) -> ColorTransformFunction {
     return std::sync::Arc::new(std::sync::Mutex::new(Box::new({
         let m = m.clone();
@@ -87,7 +87,7 @@ fn color_matrix_transform(m: Vec<f64>) -> ColorTransformFunction {
                     + (m[1.0_f64 as usize].clone() * g))
                     + (m[2.0_f64 as usize].clone() * b))
                     + m[3.0_f64 as usize].clone())
-                    + (m[4.0_f64 as usize].clone() / 255.0_f64));
+                    + m[4.0_f64 as usize].clone());
                 if __flight_index == out.len() {
                     out.push(__flight_value);
                 } else {
@@ -100,7 +100,7 @@ fn color_matrix_transform(m: Vec<f64>) -> ColorTransformFunction {
                     + (m[6.0_f64 as usize].clone() * g))
                     + (m[7.0_f64 as usize].clone() * b))
                     + m[8.0_f64 as usize].clone())
-                    + (m[9.0_f64 as usize].clone() / 255.0_f64));
+                    + m[9.0_f64 as usize].clone());
                 if __flight_index == out.len() {
                     out.push(__flight_value);
                 } else {
@@ -113,7 +113,7 @@ fn color_matrix_transform(m: Vec<f64>) -> ColorTransformFunction {
                     + (m[11.0_f64 as usize].clone() * g))
                     + (m[12.0_f64 as usize].clone() * b))
                     + m[13.0_f64 as usize].clone())
-                    + (m[14.0_f64 as usize].clone() / 255.0_f64));
+                    + m[14.0_f64 as usize].clone());
                 if __flight_index == out.len() {
                     out.push(__flight_value);
                 } else {

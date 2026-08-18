@@ -6,7 +6,8 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{AlphaType, BlendMode, EntityRuntime, Kind, MaterialAlphaMode, Texture};
+use crate::{BlendMode, EntityRuntime, Kind, MaterialAlphaMode, Texture};
+use crate::{PbrExtension, StandardPbrMaterialProperties};
 
 // Source: upstream/packages/types/src/SpecularGlossinessPbrMaterial.ts:8 (sha256:0507be5be486444087da384892e2e4cc933f986b96fce65dc8cae8f6304a069f)
 #[derive(Clone, Default)]
@@ -19,9 +20,10 @@ pub struct SpecularGlossinessPbrMaterial {
     pub name: Option<String>,
     pub alpha_cutoff: f64,
     pub alpha_mode: MaterialAlphaMode,
-    pub alpha_type: AlphaType,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub extensions: Vec<PbrExtension>,
+    pub standard: StandardPbrMaterialProperties,
     pub shader_key: String,
     pub textures: Option<Vec<(String, Texture)>>,
     pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,

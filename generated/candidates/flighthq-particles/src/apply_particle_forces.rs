@@ -7,10 +7,10 @@
 #![allow(unused_parens)]
 
 use crate::PARTICLE_VELOCITY_STRIDE as particle_velocity_stride_constant;
-pub use flighthq_types::{
-    AttractorForce, DragForce, ForceFalloff, ParticleForce, TurbulenceForce, VortexForce, WindForce,
+use flighthq_types::{
+    AttractorForce, DragForce, ForceFalloff, ParticleEmitter2D, ParticleEmitterState,
+    ParticleForce, ParticleObject, ParticleObjectsState, TurbulenceForce, VortexForce, WindForce,
 };
-use flighthq_types::{ParticleEmitter, ParticleEmitterState, ParticleObject, ParticleObjectsState};
 
 #[inline]
 fn __flight_js_to_u32(value: f64) -> u32 {
@@ -25,13 +25,13 @@ fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
 }
 
-// Source: upstream/packages/particles/src/applyParticleForces.ts:20 (sha256:304b720129965b0734ea48c99769b9cb85145765bb3409e378ff6dcd9f36f047)
+// Source: upstream/packages/particles/src/applyParticleForces.ts:13 (sha256:304b720129965b0734ea48c99769b9cb85145765bb3409e378ff6dcd9f36f047)
 static ACCEL: std::sync::LazyLock<std::sync::Mutex<Vec<f64>>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(vec![0.0_f64, 0.0_f64, 0.0_f64]));
 
-// Source: upstream/packages/particles/src/applyParticleForces.ts:29 (sha256:0a7f60b1300422af25720caef7189e8bf9eb6fc0ee3a41a74cdc17c4f76acbbc)
+// Source: upstream/packages/particles/src/applyParticleForces.ts:22 (sha256:2c099f93103fc399fd5a56a88f1d2ee137d4a16968e3cb9881961c153bfb5aa3)
 pub fn apply_particle_forces(
-    emitter: &ParticleEmitter,
+    emitter: &ParticleEmitter2D,
     state: &mut ParticleEmitterState,
     forces: &Vec<ParticleForce>,
     delta_time: f64,
@@ -100,7 +100,7 @@ pub fn apply_particle_forces(
     }
 }
 
-// Source: upstream/packages/particles/src/applyParticleForces.ts:66 (sha256:ff1bad45e2a6ebe0fb5a360290b4702f6bbb8465d53782cd9d0b19be31b4bc6d)
+// Source: upstream/packages/particles/src/applyParticleForces.ts:59 (sha256:ff1bad45e2a6ebe0fb5a360290b4702f6bbb8465d53782cd9d0b19be31b4bc6d)
 pub fn apply_particle_object_forces(
     objects: &Vec<ParticleObject>,
     state: &mut ParticleObjectsState,
@@ -169,7 +169,7 @@ pub fn apply_particle_object_forces(
     }
 }
 
-// Source: upstream/packages/particles/src/applyParticleForces.ts:87 (sha256:ae5eab2a2e8a425781585c2145303028d440bdfcb6ad0df00e325396cc2e815e)
+// Source: upstream/packages/particles/src/applyParticleForces.ts:80 (sha256:ae5eab2a2e8a425781585c2145303028d440bdfcb6ad0df00e325396cc2e815e)
 fn accumulate_forces(
     forces: &Vec<ParticleForce>,
     px: f64,
@@ -294,7 +294,7 @@ fn accumulate_forces(
     }
 }
 
-// Source: upstream/packages/particles/src/applyParticleForces.ts:158 (sha256:f4308d680e0d146e014c6de02dd91d8a4050b61a0d31a5899f98fe18c31c36a8)
+// Source: upstream/packages/particles/src/applyParticleForces.ts:151 (sha256:f4308d680e0d146e014c6de02dd91d8a4050b61a0d31a5899f98fe18c31c36a8)
 fn falloff_factor(falloff: Option<ForceFalloff>, dist: f64, radius: Option<f64>) -> f64 {
     if (((radius).is_some()) && ((radius).as_ref().is_some_and(|value| *value > 0.0_f64)))
         && (dist > radius)
@@ -334,7 +334,7 @@ fn falloff_factor(falloff: Option<ForceFalloff>, dist: f64, radius: Option<f64>)
     }
 }
 
-// Source: upstream/packages/particles/src/applyParticleForces.ts:174 (sha256:cef6aab2d9a0aba6ba2edc2833904b55659a315f2abd7b8c4ccef85560f10246)
+// Source: upstream/packages/particles/src/applyParticleForces.ts:167 (sha256:cef6aab2d9a0aba6ba2edc2833904b55659a315f2abd7b8c4ccef85560f10246)
 fn value_noise(x: f64, y: f64, seed: f64) -> f64 {
     let x0 = (x).floor();
     let y0 = (y).floor();
@@ -351,7 +351,7 @@ fn value_noise(x: f64, y: f64, seed: f64) -> f64 {
     return (nx0 + ((nx1 - nx0) * uy));
 }
 
-// Source: upstream/packages/particles/src/applyParticleForces.ts:190 (sha256:3e7699a23edb19be608018a48f20a81f2ee0988f1e145efda10a0defb7ef4d41)
+// Source: upstream/packages/particles/src/applyParticleForces.ts:183 (sha256:3e7699a23edb19be608018a48f20a81f2ee0988f1e145efda10a0defb7ef4d41)
 fn hash2(x: f64, y: f64, seed: f64) -> f64 {
     let mut h = (__flight_js_to_i32(
         (__flight_js_to_i32(

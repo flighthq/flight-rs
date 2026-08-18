@@ -6,9 +6,9 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{Matrix, SceneGraphSyncPolicy};
+use crate::{Matrix, Scene3DGraphSyncPolicy};
 
-// Source: upstream/packages/types/src/CanvasRenderOptions.ts:4 (sha256:11d2b4fc4d995793ae8fce447563e9b4d4eef417364ba3290f680e23dce49c59)
+// Source: upstream/packages/types/src/CanvasRenderOptions.ts:4 (sha256:742d7acb3aa90e8039a21854757bd4536423f1f7d0cf44236befccaad70af785)
 #[derive(Clone, Default)]
 pub struct CanvasRenderOptions {
     #[doc(hidden)]
@@ -20,7 +20,7 @@ pub struct CanvasRenderOptions {
     pub pixel_ratio: Option<f64>,
     pub render_transform: Option<Matrix>,
     pub round_pixels: Option<bool>,
-    pub scene_graph_sync_policy: Option<SceneGraphSyncPolicy>,
+    pub scene_graph_sync_policy: Option<Scene3DGraphSyncPolicy>,
 }
 impl PartialEq for CanvasRenderOptions {
     fn eq(&self, other: &Self) -> bool {

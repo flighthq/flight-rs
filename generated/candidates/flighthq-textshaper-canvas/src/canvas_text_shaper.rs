@@ -7,17 +7,19 @@
 #![allow(unused_parens)]
 
 use flighthq_text::compute_text_format_font_string;
-use flighthq_types::{
-    FontMetrics, GlyphExtents, ShapeRunOptions, ShapedRun, TextFormat, TextMeasureFunction,
-};
+use flighthq_types::{CanvasTextShaperBackend, FontMetrics, TextFormat};
 
 // Source: upstream/packages/textshaper-canvas/src/canvasTextShaper.ts:8 (sha256:557072965dcccd1613f98f320372f780382b2ea829124dfb36ac3a23cb78a658)
-pub fn clear_canvas_text_shaper_backend_cache(backend: crate::OpaqueHostValue) -> () {
-    crate::host_value::<()>("host.clearCache");
+pub fn clear_canvas_text_shaper_backend_cache(backend: &CanvasTextShaperBackend) -> () {
+    {
+        let __flight_callback = (backend.clear_cache).clone();
+        let __flight_result = __flight_callback.lock().unwrap()();
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/textshaper-canvas/src/canvasTextShaper.ts:30 (sha256:68588e035d46e30f2a6fbbadcbc2078cdca2fea98e06a87aaa2d6eb55947f8f1)
-pub fn create_canvas_text_shaper_backend() -> crate::OpaqueHostValue {
+pub fn create_canvas_text_shaper_backend() -> CanvasTextShaperBackend {
     let ctx: std::sync::Arc<std::sync::Mutex<Option<crate::OpaqueHostValue>>> =
         std::sync::Arc::new(std::sync::Mutex::new(_create_context()));
     if ((*ctx.lock().unwrap()).clone()).is_none() {
@@ -28,7 +30,7 @@ pub fn create_canvas_text_shaper_backend() -> crate::OpaqueHostValue {
     let supports_direction = false;
     let cache: std::sync::Arc<std::sync::Mutex<Vec<(String, f64)>>> =
         std::sync::Arc::new(std::sync::Mutex::new(Vec::new()));
-    let backend = CanvasTextShaperBackend {
+    let backend: CanvasTextShaperBackend = CanvasTextShaperBackend {
         __flight_identity: std::sync::Arc::new(()),
         clear_cache: std::sync::Arc::new(std::sync::Mutex::new(Box::new({
             let mut cache = cache.clone();
@@ -156,57 +158,16 @@ pub fn create_canvas_text_shaper_backend() -> crate::OpaqueHostValue {
     return backend;
 }
 
-// Source: upstream/packages/textshaper-canvas/src/canvasTextShaper.ts:137 (sha256:ec2a8d741282e07b096884af35aee292291e75a93866bb04de5340201244a43b)
-#[derive(Clone)]
-pub struct CanvasTextShaperBackend {
-    #[doc(hidden)]
-    pub __flight_identity: std::sync::Arc<()>,
-    pub get_code_point_for_glyph:
-        Option<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64) -> f64 + Send + 'static>>>>,
-    pub get_font_metrics: Option<
-        std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(TextFormat) -> Option<FontMetrics> + Send + 'static>>,
-        >,
-    >,
-    pub get_glyph_extents: Option<
-        std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(f64) -> Option<GlyphExtents> + Send + 'static>>,
-        >,
-    >,
-    pub get_glyph_index_for_code_point:
-        Option<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64) -> f64 + Send + 'static>>>>,
-    pub get_glyph_name:
-        Option<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64) -> String + Send + 'static>>>>,
-    pub measure_text: TextMeasureFunction,
-    pub shape_run: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<
-                    dyn FnMut(String, TextFormat, Option<ShapeRunOptions>) -> ShapedRun
-                        + Send
-                        + 'static,
-                >,
-            >,
-        >,
-    >,
-    pub clear_cache: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
-}
-impl PartialEq for CanvasTextShaperBackend {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-// Source: upstream/packages/textshaper-canvas/src/canvasTextShaper.ts:147 (sha256:ebaf12403f6fd8bd27cdb698faaf46149bca12720a2d9b28e65b71ef3d36c2d3)
+// Source: upstream/packages/textshaper-canvas/src/canvasTextShaper.ts:139 (sha256:ebaf12403f6fd8bd27cdb698faaf46149bca12720a2d9b28e65b71ef3d36c2d3)
 const _CACHE_MAX_SIZE: f64 = 512.0_f64;
 
-// Source: upstream/packages/textshaper-canvas/src/canvasTextShaper.ts:152 (sha256:fd74a1590efbac3b577f590046f79072aeb18c2cca863829b8b83e205fc31c52)
+// Source: upstream/packages/textshaper-canvas/src/canvasTextShaper.ts:144 (sha256:fd74a1590efbac3b577f590046f79072aeb18c2cca863829b8b83e205fc31c52)
 fn _create_context() -> Option<crate::OpaqueHostValue> {
     return None;
 }
 
-// Source: upstream/packages/textshaper-canvas/src/canvasTextShaper.ts:179 (sha256:38b021866b9acc7793383ebf1f7f76034cf8a3d37b6c47b063f64cefdacf3c70)
-fn _create_sentinel_backend() -> crate::OpaqueHostValue {
+// Source: upstream/packages/textshaper-canvas/src/canvasTextShaper.ts:171 (sha256:38b021866b9acc7793383ebf1f7f76034cf8a3d37b6c47b063f64cefdacf3c70)
+fn _create_sentinel_backend() -> CanvasTextShaperBackend {
     return CanvasTextShaperBackend {
         __flight_identity: std::sync::Arc::new(()),
         clear_cache: std::sync::Arc::new(std::sync::Mutex::new(

@@ -22,37 +22,40 @@ fn __flight_js_to_i32(value: f64) -> i32 {
 // Source: upstream/packages/adjustments/src/colorMatrixMath.ts:20 (sha256:ba3b8edd31726e45d54f425825ee34acb048ab60f3f8c8c4aa312325a2d04df4)
 pub const COLOR_MATRIX_LENGTH: f64 = 20.0_f64;
 
-// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:27 (sha256:18af6c4d4b98f1173d98bf7e73723b368e2a04de4556c7795b4845c74d823646)
+// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:27 (sha256:5db8fcee54424c14387a6bfd8af1442bb126c7a04dcea04c0acb815e56137b6c)
 pub fn apply_color_matrix_to_color(matrix: &Vec<f64>, packed_rgba: f64) -> f64 {
-    let r = (__flight_js_to_i32(
+    let r = ((__flight_js_to_i32(
         (__flight_js_to_u32(packed_rgba) >> (__flight_js_to_u32(24.0_f64) & 31)) as f64,
-    ) & __flight_js_to_i32(255.0_f64)) as f64;
-    let g = (__flight_js_to_i32(
+    ) & __flight_js_to_i32(255.0_f64)) as f64
+        / 255.0_f64);
+    let g = ((__flight_js_to_i32(
         (__flight_js_to_u32(packed_rgba) >> (__flight_js_to_u32(16.0_f64) & 31)) as f64,
-    ) & __flight_js_to_i32(255.0_f64)) as f64;
-    let b = (__flight_js_to_i32(
+    ) & __flight_js_to_i32(255.0_f64)) as f64
+        / 255.0_f64);
+    let b = ((__flight_js_to_i32(
         (__flight_js_to_u32(packed_rgba) >> (__flight_js_to_u32(8.0_f64) & 31)) as f64,
-    ) & __flight_js_to_i32(255.0_f64)) as f64;
-    let a = (__flight_js_to_i32(packed_rgba) & __flight_js_to_i32(255.0_f64)) as f64;
-    let r_out = clamp_byte(
+    ) & __flight_js_to_i32(255.0_f64)) as f64
+        / 255.0_f64);
+    let a = ((__flight_js_to_i32(packed_rgba) & __flight_js_to_i32(255.0_f64)) as f64 / 255.0_f64);
+    let r_out = clamp_normalized_byte(
         (((((matrix[0.0_f64 as usize].clone() * r) + (matrix[1.0_f64 as usize].clone() * g))
             + (matrix[2.0_f64 as usize].clone() * b))
             + (matrix[3.0_f64 as usize].clone() * a))
             + matrix[4.0_f64 as usize].clone()),
     );
-    let g_out = clamp_byte(
+    let g_out = clamp_normalized_byte(
         (((((matrix[5.0_f64 as usize].clone() * r) + (matrix[6.0_f64 as usize].clone() * g))
             + (matrix[7.0_f64 as usize].clone() * b))
             + (matrix[8.0_f64 as usize].clone() * a))
             + matrix[9.0_f64 as usize].clone()),
     );
-    let b_out = clamp_byte(
+    let b_out = clamp_normalized_byte(
         (((((matrix[10.0_f64 as usize].clone() * r) + (matrix[11.0_f64 as usize].clone() * g))
             + (matrix[12.0_f64 as usize].clone() * b))
             + (matrix[13.0_f64 as usize].clone() * a))
             + matrix[14.0_f64 as usize].clone()),
     );
-    let a_out = clamp_byte(
+    let a_out = clamp_normalized_byte(
         (((((matrix[15.0_f64 as usize].clone() * r) + (matrix[16.0_f64 as usize].clone() * g))
             + (matrix[17.0_f64 as usize].clone() * b))
             + (matrix[18.0_f64 as usize].clone() * a))
@@ -80,7 +83,7 @@ pub fn concat_color_matrix(target: &Vec<f64>, source: &Vec<f64>) -> () {
     multiply_color_matrix(target, source, Some(((*target).clone()).clone()));
 }
 
-// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:53 (sha256:7db2ab588e394f0d596229b0cd87ed27c4e07c9e6dad93d808d1f9b00fcad8ff)
+// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:52 (sha256:7db2ab588e394f0d596229b0cd87ed27c4e07c9e6dad93d808d1f9b00fcad8ff)
 pub fn create_brightness_color_matrix(amount: f64) -> Vec<f64> {
     return vec![
         1.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, amount, 0.0_f64, 1.0_f64, 0.0_f64, 0.0_f64, amount,
@@ -88,7 +91,7 @@ pub fn create_brightness_color_matrix(amount: f64) -> Vec<f64> {
     ];
 }
 
-// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:71 (sha256:29f50d554a2148ae661ff1c1faaf4660c4699d2bc1d9425b50cc77361fb991f8)
+// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:70 (sha256:29f50d554a2148ae661ff1c1faaf4660c4699d2bc1d9425b50cc77361fb991f8)
 pub fn create_channel_mixer_color_matrix(
     red_out: &Vec<f64>,
     green_out: &Vec<f64>,
@@ -118,13 +121,13 @@ pub fn create_channel_mixer_color_matrix(
     ];
 }
 
-// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:96 (sha256:289f24615aeb450a9ed5c1416474e730a3e32050d8ebc072d88b861c9519b5d6)
+// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:95 (sha256:2c3d9730b2a9a4f8ddcbcce5287db3c626e51bc7f0848262d7fac7df718a14c6)
 pub fn create_color_balance_color_matrix(
     shadows: &Vec<f64>,
     midtones: &Vec<f64>,
     highlights: &Vec<f64>,
 ) -> Vec<f64> {
-    let scale = (255.0_f64 / 100.0_f64);
+    let scale = (1.0_f64 / 100.0_f64);
     let r_off = ((((shadows[0.0_f64 as usize].clone() * 0.25_f64)
         + (midtones[0.0_f64 as usize].clone() * 0.5_f64))
         + (highlights[0.0_f64 as usize].clone() * 0.25_f64))
@@ -143,19 +146,22 @@ pub fn create_color_balance_color_matrix(
     ];
 }
 
-// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:121 (sha256:eb6a30a2c71b8aa5b6a2804dedc00654b9e56223bcb8ab21945d6fdd93b77424)
+// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:120 (sha256:92ae2764b6a39d2089e73ce3514dce510a096c49f2c5da92890191cc7f613961)
 pub fn create_color_matrix_from_tint(packed_rgba: f64, amount: f64) -> Vec<f64> {
-    let tr = ((__flight_js_to_i32(
+    let tr = (((__flight_js_to_i32(
         (__flight_js_to_u32(packed_rgba) >> (__flight_js_to_u32(24.0_f64) & 31)) as f64,
     ) & __flight_js_to_i32(255.0_f64)) as f64
+        / 255.0_f64)
         * amount);
-    let tg = ((__flight_js_to_i32(
+    let tg = (((__flight_js_to_i32(
         (__flight_js_to_u32(packed_rgba) >> (__flight_js_to_u32(16.0_f64) & 31)) as f64,
     ) & __flight_js_to_i32(255.0_f64)) as f64
+        / 255.0_f64)
         * amount);
-    let tb = ((__flight_js_to_i32(
+    let tb = (((__flight_js_to_i32(
         (__flight_js_to_u32(packed_rgba) >> (__flight_js_to_u32(8.0_f64) & 31)) as f64,
     ) & __flight_js_to_i32(255.0_f64)) as f64
+        / 255.0_f64)
         * amount);
     let keep = (1.0_f64 - amount);
     return vec![
@@ -164,21 +170,21 @@ pub fn create_color_matrix_from_tint(packed_rgba: f64, amount: f64) -> Vec<f64> 
     ];
 }
 
-// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:139 (sha256:726e0686898ad8aff31063cd7404548c50674af6d6d7b01f314757567bfb0926)
+// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:138 (sha256:bd9b9825fb9a7d186b0134ef462a4ccd9fa272cf378d87e3f6ca9e25ee58178c)
 pub fn create_contrast_color_matrix(amount: f64) -> Vec<f64> {
-    let offset = (128.0_f64 * (1.0_f64 - amount));
+    let offset = (0.5_f64 * (1.0_f64 - amount));
     return vec![
         amount, 0.0_f64, 0.0_f64, 0.0_f64, offset, 0.0_f64, amount, 0.0_f64, 0.0_f64, offset,
         0.0_f64, 0.0_f64, amount, 0.0_f64, offset, 0.0_f64, 0.0_f64, 0.0_f64, 1.0_f64, 0.0_f64,
     ];
 }
 
-// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:155 (sha256:c5c343dbd1b2e6e1062c853b5abc22286c23783c12599943cb885dc00afec8b1)
+// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:154 (sha256:c5c343dbd1b2e6e1062c853b5abc22286c23783c12599943cb885dc00afec8b1)
 pub fn create_desaturate_color_matrix(amount: f64) -> Vec<f64> {
     return create_saturation_color_matrix((1.0_f64 - amount));
 }
 
-// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:163 (sha256:836d9ceb761e896ee4ce639422d1596abfa15df76ba193c22263de11c94f0677)
+// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:162 (sha256:836d9ceb761e896ee4ce639422d1596abfa15df76ba193c22263de11c94f0677)
 pub fn create_grayscale_color_matrix() -> Vec<f64> {
     let r = 0.299_f64;
     let g = 0.587_f64;
@@ -189,7 +195,7 @@ pub fn create_grayscale_color_matrix() -> Vec<f64> {
     ];
 }
 
-// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:180 (sha256:d056bd688b2779b70022e7e32897d868449ce34428de60929415fdf58521e44e)
+// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:179 (sha256:d056bd688b2779b70022e7e32897d868449ce34428de60929415fdf58521e44e)
 pub fn create_hue_rotate_color_matrix(degrees: f64) -> Vec<f64> {
     let rad = ((degrees * std::f64::consts::PI) / 180.0_f64);
     let cos = (rad).cos();
@@ -221,7 +227,7 @@ pub fn create_hue_rotate_color_matrix(degrees: f64) -> Vec<f64> {
     ];
 }
 
-// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:201 (sha256:a960da5918de3f281a916deebf24bf376e2471ead946284c63f58e7dd2860766)
+// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:200 (sha256:a960da5918de3f281a916deebf24bf376e2471ead946284c63f58e7dd2860766)
 pub fn create_identity_color_matrix() -> Vec<f64> {
     return vec![
         1.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 1.0_f64, 0.0_f64, 0.0_f64, 0.0_f64,
@@ -229,24 +235,24 @@ pub fn create_identity_color_matrix() -> Vec<f64> {
     ];
 }
 
-// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:215 (sha256:af59b45668e62a301a0c3f58d851bce8ebc6146d5c6c4fac853937cc9441e056)
+// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:214 (sha256:85543c3c0502d46c7014f092f2a76ccd37ae91b7e2d880c40f8bbd19f3fccef9)
 pub fn create_invert_color_matrix() -> Vec<f64> {
     return vec![
         (-1.0_f64),
         0.0_f64,
         0.0_f64,
         0.0_f64,
-        255.0_f64,
+        1.0_f64,
         0.0_f64,
         (-1.0_f64),
         0.0_f64,
         0.0_f64,
-        255.0_f64,
+        1.0_f64,
         0.0_f64,
         0.0_f64,
         (-1.0_f64),
         0.0_f64,
-        255.0_f64,
+        1.0_f64,
         0.0_f64,
         0.0_f64,
         0.0_f64,
@@ -255,7 +261,7 @@ pub fn create_invert_color_matrix() -> Vec<f64> {
     ];
 }
 
-// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:236 (sha256:1d4a754ba8dea8799fd793a71a5e955df180cb8ab57cbdd794cbc4fa78c6ac6d)
+// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:235 (sha256:1d4a754ba8dea8799fd793a71a5e955df180cb8ab57cbdd794cbc4fa78c6ac6d)
 pub fn create_levels_color_matrix(
     in_black: f64,
     in_white: f64,
@@ -301,7 +307,7 @@ pub fn create_levels_color_matrix(
     ];
 }
 
-// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:262 (sha256:da03ad0a9038e18cf4b387c5c3bd9522814759456c51918a3f06528974b259a5)
+// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:261 (sha256:da03ad0a9038e18cf4b387c5c3bd9522814759456c51918a3f06528974b259a5)
 pub fn create_opacity_color_matrix(alpha: f64) -> Vec<f64> {
     return vec![
         1.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 1.0_f64, 0.0_f64, 0.0_f64, 0.0_f64,
@@ -309,24 +315,24 @@ pub fn create_opacity_color_matrix(alpha: f64) -> Vec<f64> {
     ];
 }
 
-// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:277 (sha256:0bd944e51e9a46fcb7238204e0759fe5ff713d2d3e2e5e1edd0f3952aed5aa1e)
+// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:276 (sha256:06821379e8b98024909f2dbe1e5f2845005c18f36f22456fb453ffdad487d33f)
 pub fn create_polaroid_color_matrix() -> Vec<f64> {
     return vec![
         1.438_f64,
         (-0.062_f64),
         (-0.062_f64),
         0.0_f64,
-        (-31.8_f64),
+        ((-31.8_f64) / 255.0_f64),
         (-0.122_f64),
         1.378_f64,
         (-0.122_f64),
         0.0_f64,
-        16.2_f64,
+        (16.2_f64 / 255.0_f64),
         (-0.016_f64),
         (-0.016_f64),
         1.484_f64,
         0.0_f64,
-        (-47.6_f64),
+        ((-47.6_f64) / 255.0_f64),
         0.0_f64,
         0.0_f64,
         0.0_f64,
@@ -335,7 +341,7 @@ pub fn create_polaroid_color_matrix() -> Vec<f64> {
     ];
 }
 
-// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:292 (sha256:6196e1dd49e6f66ab59265b74e433927c913c77f9ca2e1bece2734291265b05c)
+// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:291 (sha256:6196e1dd49e6f66ab59265b74e433927c913c77f9ca2e1bece2734291265b05c)
 pub fn create_saturation_color_matrix(amount: f64) -> Vec<f64> {
     let r = (0.299_f64 * (1.0_f64 - amount));
     let g = (0.587_f64 * (1.0_f64 - amount));
@@ -364,7 +370,7 @@ pub fn create_saturation_color_matrix(amount: f64) -> Vec<f64> {
     ];
 }
 
-// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:308 (sha256:932a1d57bee0664ef2f25067d4f878d9ca97f0019945cbc277e3d893db5d5c44)
+// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:307 (sha256:932a1d57bee0664ef2f25067d4f878d9ca97f0019945cbc277e3d893db5d5c44)
 pub fn create_sepia_color_matrix() -> Vec<f64> {
     return vec![
         0.393_f64, 0.769_f64, 0.189_f64, 0.0_f64, 0.0_f64, 0.349_f64, 0.686_f64, 0.168_f64,
@@ -373,24 +379,24 @@ pub fn create_sepia_color_matrix() -> Vec<f64> {
     ];
 }
 
-// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:323 (sha256:04e99b43c3216638f23499de3e1efbffd8fee7be83db1131ee62eb49d34ec1a9)
+// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:322 (sha256:6fd4e9cf29d8ba2ce80b5c610dcb637b3e0efde3f5c50bf07d57f943d6f7cc3e)
 pub fn create_technicolor_color_matrix() -> Vec<f64> {
     return vec![
         1.9126_f64,
         (-0.8_f64),
         (-0.09_f64),
         0.0_f64,
-        11.79_f64,
+        (11.79_f64 / 255.0_f64),
         (-0.2_f64),
         1.7_f64,
         (-0.27_f64),
         0.0_f64,
-        (-14.69_f64),
+        ((-14.69_f64) / 255.0_f64),
         (-0.14_f64),
         (-0.21_f64),
         1.62_f64,
         0.0_f64,
-        (-3.38_f64),
+        ((-3.38_f64) / 255.0_f64),
         0.0_f64,
         0.0_f64,
         0.0_f64,
@@ -399,16 +405,33 @@ pub fn create_technicolor_color_matrix() -> Vec<f64> {
     ];
 }
 
-// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:338 (sha256:0fc204c518478c2a460e958a2c1b5757110052aadcf0d05f73da8c4d433b1016)
+// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:337 (sha256:93e18e170eb8550421673743aee18fe585d1293b065beaea8e5eae1fa54a0af7)
 pub fn create_vintage_color_matrix() -> Vec<f64> {
     return vec![
-        0.9_f64, 0.05_f64, 0.05_f64, 0.0_f64, 10.0_f64, 0.0_f64, 0.85_f64, 0.0_f64, 0.0_f64,
-        5.0_f64, 0.0_f64, 0.0_f64, 0.75_f64, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 1.0_f64,
+        0.9_f64,
+        0.05_f64,
+        0.05_f64,
+        0.0_f64,
+        (10.0_f64 / 255.0_f64),
+        0.0_f64,
+        0.85_f64,
+        0.0_f64,
+        0.0_f64,
+        (5.0_f64 / 255.0_f64),
+        0.0_f64,
+        0.0_f64,
+        0.75_f64,
+        0.0_f64,
+        0.0_f64,
+        0.0_f64,
+        0.0_f64,
+        0.0_f64,
+        1.0_f64,
         0.0_f64,
     ];
 }
 
-// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:357 (sha256:b93baef9ef6aa956f1a22971df3019a13744f7e9bbe3165eb34ba1745d603fb5)
+// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:356 (sha256:b93baef9ef6aa956f1a22971df3019a13744f7e9bbe3165eb34ba1745d603fb5)
 pub fn create_white_balance_color_matrix(temperature: f64, tint: f64) -> Vec<f64> {
     let temp_scale = (temperature / 100.0_f64);
     let tint_scale = (tint / 100.0_f64);
@@ -421,7 +444,7 @@ pub fn create_white_balance_color_matrix(temperature: f64, tint: f64) -> Vec<f64
     ];
 }
 
-// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:381 (sha256:b341621d7bd834eaa545334aeb5c7f3bfb4a150a96409ce54ab4aa65b1f7cca9)
+// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:380 (sha256:b341621d7bd834eaa545334aeb5c7f3bfb4a150a96409ce54ab4aa65b1f7cca9)
 pub fn fuse_color_matrices(matrices: &Vec<Vec<f64>>) -> Vec<f64> {
     if ((matrices.len() as f64) == 0.0_f64) {
         return create_identity_color_matrix();
@@ -440,7 +463,7 @@ pub fn fuse_color_matrices(matrices: &Vec<Vec<f64>>) -> Vec<f64> {
     return out;
 }
 
-// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:393 (sha256:477a25b07bbc715a2201905557dad93c44e863152b5294bff2476e8681d66e7c)
+// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:392 (sha256:477a25b07bbc715a2201905557dad93c44e863152b5294bff2476e8681d66e7c)
 pub fn multiply_color_matrix(a: &Vec<f64>, b: &Vec<f64>, out: Option<Vec<f64>>) -> Vec<f64> {
     let a0 = a[0.0_f64 as usize].clone();
     let a1 = a[1.0_f64 as usize].clone();
@@ -666,7 +689,7 @@ pub fn multiply_color_matrix(a: &Vec<f64>, b: &Vec<f64>, out: Option<Vec<f64>>) 
     return result;
 }
 
-// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:463 (sha256:54307b8c58c723ac0cc3c83e20c8fc21ec4c6dc30fa4eb85d07c76320fbb77f9)
-fn clamp_byte(v: f64) -> f64 {
-    return (0.0_f64).max((255.0_f64).min((v).round()));
+// Source: upstream/packages/adjustments/src/colorMatrixMath.ts:462 (sha256:f56e39fa3f8713bb4c4c45cf9d752fa5d11714f4d18acec4b35017e79455ebb8)
+fn clamp_normalized_byte(v: f64) -> f64 {
+    return (0.0_f64).max((255.0_f64).min((v * 255.0_f64).round()));
 }

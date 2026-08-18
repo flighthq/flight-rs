@@ -7,7 +7,6 @@
 #![allow(unused_parens)]
 
 pub use crate::{
-    XmlElement, get_xml_element_attribute, get_xml_element_attribute_number,
-    get_xml_element_child_by_name, get_xml_element_children_by_name, parse_xml_attributes,
-    parse_xml_document,
+    get_xml_element_attribute, get_xml_element_attribute_number, get_xml_element_child_by_name,
+    get_xml_element_children_by_name, parse_xml_attributes, parse_xml_document,
 };

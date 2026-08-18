@@ -25,5 +25,7 @@ pub enum FlightUnion2<A, B> {
 
 mod _internal_index;
 pub use _internal_index::*;
+mod contract;
+pub use contract::*;
 mod keyboard;
 pub use keyboard::*;

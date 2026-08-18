@@ -6,13 +6,13 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::Texture;
-use crate::{AlphaType, BlendMode, EntityRuntime, Kind};
+use crate::{BlendMode, EntityRuntime, Kind};
+use crate::{PbrExtension, StandardPbrMaterialProperties, Texture};
 
-// Source: upstream/packages/types/src/SurfaceMaterial.ts:8 (sha256:8b0ef03700d2be8726531d72c46a83974f88b1df8e6918a4709cc196cee2d32f)
+// Source: upstream/packages/types/src/SurfaceMaterial.ts:7 (sha256:8b0ef03700d2be8726531d72c46a83974f88b1df8e6918a4709cc196cee2d32f)
 pub type MaterialAlphaMode = String;
 
-// Source: upstream/packages/types/src/SurfaceMaterial.ts:15 (sha256:38a674859bb34f75042080d1aa542c108f3b1477eb602f27aeb3a54e6b580fc4)
+// Source: upstream/packages/types/src/SurfaceMaterial.ts:18 (sha256:ad4981fb8d04361edb9e7e958ecc08e26e759a9934fb583584440ff0296f4f4a)
 #[derive(Clone, Default)]
 pub struct SurfaceMaterial {
     #[doc(hidden)]
@@ -23,9 +23,10 @@ pub struct SurfaceMaterial {
     pub name: Option<String>,
     pub alpha_cutoff: f64,
     pub alpha_mode: MaterialAlphaMode,
-    pub alpha_type: AlphaType,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub extensions: Vec<PbrExtension>,
+    pub standard: StandardPbrMaterialProperties,
     pub shader_key: String,
     pub textures: Option<Vec<(String, Texture)>>,
     pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,

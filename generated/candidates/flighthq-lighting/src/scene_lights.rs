@@ -6,8 +6,9 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
+use flighthq_entity::create_entity;
 use flighthq_types::{
-    AmbientLight, DirectionalLight, HemisphereLight, PointLight, SceneLights, SpotLight,
+    AmbientLight, DirectionalLight, HemisphereLight, PointLight, Scene3DLights, SpotLight,
 };
 
 #[derive(Clone, Default)]
@@ -25,10 +26,11 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-// Source: upstream/packages/lighting/src/sceneLights.ts:13 (sha256:2adbef4ccf600811480476a0d0aa3c9a4315bd3dc171d0f19ef264123089219d)
-pub fn create_scene_lights(options: Option<FlightPartialRecord1>) -> SceneLights {
-    return SceneLights {
+// Source: upstream/packages/lighting/src/sceneLights.ts:13 (sha256:6561c692f70a5977ed3104ebf86a2dcfaee5eb1ddd067d15207232d6d40b0418)
+pub fn create_scene3_d_lights(options: Option<FlightPartialRecord1>) -> Scene3DLights {
+    return create_entity(Some(Scene3DLights {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_runtime: Default::default(),
         ambient: options.as_ref().and_then(|value| (value.ambient).clone()),
         directional: options
             .as_ref()
@@ -41,5 +43,5 @@ pub fn create_scene_lights(options: Option<FlightPartialRecord1>) -> SceneLights
         ),
         point: Some((options.as_ref().and_then(|value| (value.point).clone())).unwrap_or(vec![])),
         spot: Some((options.as_ref().and_then(|value| (value.spot).clone())).unwrap_or(vec![])),
-    };
+    }));
 }

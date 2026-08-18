@@ -27,6 +27,8 @@ mod _internal_index;
 pub use _internal_index::*;
 mod bidi_class_backend;
 pub use bidi_class_backend::*;
+mod contract;
+pub use contract::*;
 mod get_bidi_runs;
 pub use get_bidi_runs::*;
 mod reorder_bidi_line;

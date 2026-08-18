@@ -6,9 +6,9 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{ColorTransform, EntityRuntime};
+use crate::{ColorScaleBias, EntityRuntime};
 
-// Source: upstream/packages/types/src/ParticleObject.ts:5 (sha256:0cbee5ecbcb67d6d1a2432ec072bea4fbced4c50b41852989623aeba41020e1b)
+// Source: upstream/packages/types/src/ParticleObject.ts:5 (sha256:18070de799c4d72851ada3c5f2a2c67e0d2ffc6d09749fc966710e21c6b51ae9)
 #[derive(Clone, Default)]
 pub struct ParticleObject {
     #[doc(hidden)]
@@ -26,7 +26,7 @@ pub struct ParticleObject {
     pub y: f64,
     pub alpha: f64,
     pub visible: bool,
-    pub color_transform: Option<ColorTransform>,
+    pub color_scale_bias: Option<ColorScaleBias>,
 }
 impl PartialEq for ParticleObject {
     fn eq(&self, other: &Self) -> bool {

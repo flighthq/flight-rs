@@ -8,7 +8,7 @@
 
 use crate::Path;
 
-// Source: upstream/packages/types/src/ShapeFillRegion.ts:7 (sha256:9583984fbeadff5cb76c66d1ce347f6b68a1e9d0ded4e7ebb19cb84d578c2d3d)
+// Source: upstream/packages/types/src/ShapeFillRegion.ts:6 (sha256:9583984fbeadff5cb76c66d1ce347f6b68a1e9d0ded4e7ebb19cb84d578c2d3d)
 #[derive(Clone, Default)]
 pub struct ShapeFillRegion {
     #[doc(hidden)]

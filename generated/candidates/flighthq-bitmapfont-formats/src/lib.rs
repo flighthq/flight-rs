@@ -33,3 +33,5 @@ mod bitmap_font_record;
 pub use bitmap_font_record::*;
 mod bitmap_font_xml;
 pub use bitmap_font_xml::*;
+mod contract;
+pub use contract::*;

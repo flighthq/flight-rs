@@ -6,5 +6,5 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-// Source: upstream/packages/types/src/TextureContainerFormat.ts:14 (sha256:80b015d235f41cebb2f63bfcd4d3c1d2b678fe040bfba52ec2643b624eff5754)
+// Source: upstream/packages/types/src/TextureContainerFormat.ts:13 (sha256:80b015d235f41cebb2f63bfcd4d3c1d2b678fe040bfba52ec2643b624eff5754)
 pub type TextureContainerFormat = String;

@@ -7,19 +7,19 @@
 #![allow(unused_parens)]
 
 use crate::PARTICLE_VELOCITY_STRIDE as particle_velocity_stride_constant;
-pub use flighthq_types::{
-    CircleCollider, ParticleCollider, PlaneCollider, RectangleCollider, SphereCollider,
+use flighthq_types::{
+    CircleCollider, ParticleCollider, ParticleEmitter2D, ParticleEmitterState, ParticleObject,
+    ParticleObjectsState, PlaneCollider, RectangleCollider, SphereCollider,
 };
-use flighthq_types::{ParticleEmitter, ParticleEmitterState, ParticleObject, ParticleObjectsState};
 
-// Source: upstream/packages/particles/src/applyParticleCollisions.ts:18 (sha256:b0504d79fada24e50ed4f4fbdbeda39c8489d8e4e07759c08a78a6ed97085477)
+// Source: upstream/packages/particles/src/applyParticleCollisions.ts:16 (sha256:b0504d79fada24e50ed4f4fbdbeda39c8489d8e4e07759c08a78a6ed97085477)
 static S: std::sync::LazyLock<std::sync::Mutex<Vec<f64>>> = std::sync::LazyLock::new(|| {
     std::sync::Mutex::new(vec![0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64])
 });
 
-// Source: upstream/packages/particles/src/applyParticleCollisions.ts:26 (sha256:be10efda81166d53f1567496bb462b85f09236553ff3b7d07df60a27c2270773)
+// Source: upstream/packages/particles/src/applyParticleCollisions.ts:24 (sha256:c521242097ffb6d6f97a08e41ab8d4f4a88e91895efd1babefd351a553193d5e)
 pub fn apply_particle_collisions(
-    emitter: &mut ParticleEmitter,
+    emitter: &mut ParticleEmitter2D,
     state: &mut ParticleEmitterState,
     colliders: &Vec<ParticleCollider>,
 ) -> () {
@@ -109,7 +109,7 @@ pub fn apply_particle_collisions(
     }
 }
 
-// Source: upstream/packages/particles/src/applyParticleCollisions.ts:58 (sha256:b8d637498e7e6315c456d72a3ebc5c48de4c1ccd03e31d269bf45f0b40d97f45)
+// Source: upstream/packages/particles/src/applyParticleCollisions.ts:56 (sha256:b8d637498e7e6315c456d72a3ebc5c48de4c1ccd03e31d269bf45f0b40d97f45)
 pub fn apply_particle_object_collisions(
     objects: &mut Vec<ParticleObject>,
     state: &mut ParticleObjectsState,
@@ -197,7 +197,7 @@ pub fn apply_particle_object_collisions(
     }
 }
 
-// Source: upstream/packages/particles/src/applyParticleCollisions.ts:84 (sha256:d50f926b7f60766da2638bdb2ea2ae1b1bb36986bf631dabc24ebb73232992d8)
+// Source: upstream/packages/particles/src/applyParticleCollisions.ts:82 (sha256:d50f926b7f60766da2638bdb2ea2ae1b1bb36986bf631dabc24ebb73232992d8)
 fn resolve_colliders(colliders: &Vec<ParticleCollider>, p: &mut Vec<f64>) -> bool {
     let mut hit = false;
     {
@@ -245,7 +245,7 @@ fn resolve_colliders(colliders: &Vec<ParticleCollider>, p: &mut Vec<f64>) -> boo
     return hit;
 }
 
-// Source: upstream/packages/particles/src/applyParticleCollisions.ts:109 (sha256:2f7629357555182b9698fe333030d6fc59746e9b88fb8ee25d10c575812bc5f9)
+// Source: upstream/packages/particles/src/applyParticleCollisions.ts:107 (sha256:2f7629357555182b9698fe333030d6fc59746e9b88fb8ee25d10c575812bc5f9)
 fn resolve_plane(c: &PlaneCollider, p: &mut Vec<f64>) -> bool {
     let nz = (c.nz).unwrap_or(0.0_f64);
     let depth = ((((c.nx * p[0.0_f64 as usize].clone()) + (c.ny * p[1.0_f64 as usize].clone()))
@@ -268,7 +268,7 @@ fn resolve_plane(c: &PlaneCollider, p: &mut Vec<f64>) -> bool {
     return true;
 }
 
-// Source: upstream/packages/particles/src/applyParticleCollisions.ts:120 (sha256:abfc6f0860a1f50d9f69f48f9dac1b72355dbc858b348234b5600222ea363bba)
+// Source: upstream/packages/particles/src/applyParticleCollisions.ts:118 (sha256:abfc6f0860a1f50d9f69f48f9dac1b72355dbc858b348234b5600222ea363bba)
 fn resolve_circle(c: &CircleCollider, p: &mut Vec<f64>) -> bool {
     let dx = (p[0.0_f64 as usize].clone() - c.x);
     let dy = (p[1.0_f64 as usize].clone() - c.y);
@@ -349,7 +349,7 @@ fn resolve_circle(c: &CircleCollider, p: &mut Vec<f64>) -> bool {
     return true;
 }
 
-// Source: upstream/packages/particles/src/applyParticleCollisions.ts:143 (sha256:6a8f8e64aa64d75f4b21bb36fdd45500a272fa077c782492190344e7a0ba9fa2)
+// Source: upstream/packages/particles/src/applyParticleCollisions.ts:141 (sha256:6a8f8e64aa64d75f4b21bb36fdd45500a272fa077c782492190344e7a0ba9fa2)
 fn resolve_rect(c: &RectangleCollider, p: &mut Vec<f64>) -> bool {
     let hw = (c.width / 2.0_f64);
     let hh = (c.height / 2.0_f64);
@@ -480,7 +480,7 @@ fn resolve_rect(c: &RectangleCollider, p: &mut Vec<f64>) -> bool {
     return true;
 }
 
-// Source: upstream/packages/particles/src/applyParticleCollisions.ts:199 (sha256:accd0258cfb57476868e77990de8724615063eb9ef0725dfe6653011585fbdcb)
+// Source: upstream/packages/particles/src/applyParticleCollisions.ts:197 (sha256:accd0258cfb57476868e77990de8724615063eb9ef0725dfe6653011585fbdcb)
 fn resolve_sphere(c: &SphereCollider, p: &mut Vec<f64>) -> bool {
     let dx = (p[0.0_f64 as usize].clone() - c.x);
     let dy = (p[1.0_f64 as usize].clone() - c.y);
@@ -586,7 +586,7 @@ fn resolve_sphere(c: &SphereCollider, p: &mut Vec<f64>) -> bool {
     return true;
 }
 
-// Source: upstream/packages/particles/src/applyParticleCollisions.ts:230 (sha256:6c7ea9f94c234b8385254ede2cb81e22d5bc06c60b4c69eccd2874f370660383)
+// Source: upstream/packages/particles/src/applyParticleCollisions.ts:228 (sha256:6c7ea9f94c234b8385254ede2cb81e22d5bc06c60b4c69eccd2874f370660383)
 fn reflect3(p: &mut Vec<f64>, nx: f64, ny: f64, nz: f64, restitution: f64, friction: f64) -> () {
     let vn = (((p[3.0_f64 as usize].clone() * nx) + (p[4.0_f64 as usize].clone() * ny))
         + (p[5.0_f64 as usize].clone() * nz));

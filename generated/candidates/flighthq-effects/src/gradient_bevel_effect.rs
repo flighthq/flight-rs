@@ -6,7 +6,11 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_types::{EffectSourceMode, GradientBevelEffect};
+use crate::{get_directional_render_effect_padding, register_render_effect_padding_resolver};
+use flighthq_types::{
+    BlendMode, EffectSourceMode, GradientBevelEffect, Matrix, RenderEffect, RenderEffectPadding,
+    RenderState, Scene2DClipHooks, Scene3DGraphSyncPolicy,
+};
 
 #[derive(Clone, Default)]
 pub struct FlightOmitRecord1 {
@@ -29,7 +33,29 @@ impl PartialEq for FlightOmitRecord1 {
     }
 }
 
-// Source: upstream/packages/effects/src/gradientBevelEffect.ts:4 (sha256:4cb3bdc0dcad1e5c16719a827a7acf1156d9de60481d2bf162759e64514596d6)
+#[derive(Clone, Default)]
+pub struct FlightPartialRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub allow_smoothing: Option<bool>,
+    pub background_color: Option<f64>,
+    pub background_color_rgba: Option<Vec<f64>>,
+    pub background_color_string: Option<String>,
+    pub current_clip_depth: Option<f64>,
+    pub display_object_clip_hooks: Option<Scene2DClipHooks>,
+    pub pixel_ratio: Option<f64>,
+    pub render_alpha: Option<f64>,
+    pub render_blend_mode: Option<BlendMode>,
+    pub render_transform2_d: Option<Matrix>,
+    pub scene_graph_sync_policy: Option<Scene3DGraphSyncPolicy>,
+    pub round_pixels: Option<bool>,
+}
+impl PartialEq for FlightPartialRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/effects/src/gradientBevelEffect.ts:6 (sha256:4cb3bdc0dcad1e5c16719a827a7acf1156d9de60481d2bf162759e64514596d6)
 pub fn create_gradient_bevel_effect(options: &FlightOmitRecord1) -> GradientBevelEffect {
     return {
         let __flight_spread_1 = options;
@@ -50,4 +76,55 @@ pub fn create_gradient_bevel_effect(options: &FlightOmitRecord1) -> GradientBeve
             ..Default::default()
         }
     };
+}
+
+// Source: upstream/packages/effects/src/gradientBevelEffect.ts:10 (sha256:fea1ca0f12e8320993a77d4c55ead18dddd15cce04058ac0d513e5ac51efb501)
+pub fn get_gradient_bevel_effect_padding(effect: &GradientBevelEffect) -> RenderEffectPadding {
+    let angle = (((effect.angle).unwrap_or(45.0_f64) * std::f64::consts::PI) / 180.0_f64);
+    let distance = (effect.distance).unwrap_or(4.0_f64);
+    return get_directional_render_effect_padding(
+        (effect.blur_x).unwrap_or(4.0_f64),
+        (effect.blur_y).unwrap_or(4.0_f64),
+        ((angle).cos() * distance),
+        ((angle).sin() * distance),
+    );
+}
+
+// Source: upstream/packages/effects/src/gradientBevelEffect.ts:21 (sha256:0a4dcba0559e8d83a9c948b2be2e3f7c7d106eb5d5454bfd68e281a65319415c)
+pub fn register_gradient_bevel_effect_padding_resolver(state: &RenderState) -> () {
+    register_render_effect_padding_resolver(
+        state,
+        "GradientBevelEffect".to_owned(),
+        Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+            move |__flight_argument_0: RenderEffect| -> RenderEffectPadding {
+                resolve_gradient_bevel_effect_padding(&__flight_argument_0)
+            },
+        )
+            as Box<
+                dyn FnMut(RenderEffect) -> RenderEffectPadding + Send + 'static,
+            >))),
+    );
+}
+
+// Source: upstream/packages/effects/src/gradientBevelEffect.ts:25 (sha256:9b07cb1a4bc2552f69f592db88d58b84171a64d12cf7811039382e06d7fe2959)
+fn resolve_gradient_bevel_effect_padding(effect: &RenderEffect) -> RenderEffectPadding {
+    return get_gradient_bevel_effect_padding(&{
+        let __flight_source = &((*effect).clone());
+        GradientBevelEffect {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            kind: (__flight_source.kind).clone(),
+            alphas: (__flight_source.alphas).clone(),
+            angle: __flight_source.angle,
+            bevel_type: (__flight_source.bevel_type).clone(),
+            blur_x: __flight_source.blur_x,
+            blur_y: __flight_source.blur_y,
+            colors: (__flight_source.colors).clone(),
+            distance: __flight_source.distance,
+            quality: __flight_source.quality,
+            ratios: (__flight_source.ratios).clone(),
+            source_mode: (__flight_source.source_mode).clone(),
+            strength: __flight_source.strength,
+            ..Default::default()
+        }
+    });
 }

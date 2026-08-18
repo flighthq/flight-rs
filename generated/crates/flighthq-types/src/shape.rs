@@ -10,7 +10,7 @@ use crate::{
     BlendMode, ClipRegion, EntityRuntime, Kind, Material, MaterialData, ShapeCommandToken,
 };
 
-// Source: upstream/packages/types/src/Shape.ts:4 (sha256:013919eaba4c67e9fda790d47ff75aaf2af424e067fec2b548ba5faa6781d20f)
+// Source: upstream/packages/types/src/Shape.ts:4 (sha256:c3677e835bf0844d2df50b06f28145cdeebf386b4c0f584f8296158a84558aa4)
 #[derive(Clone, Default)]
 pub struct ShapeData {
     #[doc(hidden)]
@@ -23,10 +23,10 @@ impl PartialEq for ShapeData {
     }
 }
 
-// Source: upstream/packages/types/src/Shape.ts:8 (sha256:3254d9457243cbf5dd1751f0b33f4abfd00c422ee45a896fe0d6d0042b410639)
+// Source: upstream/packages/types/src/Shape.ts:8 (sha256:de83fd4f0a2f021daf48183b706c012a4091bbe7d6343a3675067f6d0902e7e6)
 pub type ShapeRuntime = crate::EntityRuntime;
 
-// Source: upstream/packages/types/src/Shape.ts:10 (sha256:ddef9a6d87db4f5c30a8e3f6b7a3c913911ebbaf2f83aff9861ea80582c0e02f)
+// Source: upstream/packages/types/src/Shape.ts:10 (sha256:2b31b5b9c65d277eeeeb327a2e2fcb4452dfbc7cb3117508c5bafbdd7d741f34)
 #[derive(Clone, Default)]
 pub struct Shape {
     #[doc(hidden)]

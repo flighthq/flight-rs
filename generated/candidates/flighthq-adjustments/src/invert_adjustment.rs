@@ -19,7 +19,7 @@ impl PartialEq for FlightOmitRecord1 {
     }
 }
 
-// Source: upstream/packages/adjustments/src/invertAdjustment.ts:6 (sha256:d16be5a43825d22ec95f513b635f5e8a8f26441525c5b2aee10ed8895edb2ac5)
+// Source: upstream/packages/adjustments/src/invertAdjustment.ts:6 (sha256:f0cece1b700cc75703c05ccd0a1038b0ffede4d98335b96e8a981fb13ab494bb)
 #[derive(Clone, Default)]
 struct CreateInvertAdjustmentRecord2 {
     __flight_identity: std::sync::Arc<()>,
@@ -37,7 +37,7 @@ pub fn create_invert_adjustment(options: Option<FlightOmitRecord1>) -> InvertAdj
     });
     let intensity = (options.intensity).unwrap_or(1.0_f64);
     let s = (1.0_f64 - (2.0_f64 * intensity));
-    let o = (255.0_f64 * intensity);
+    let o = intensity;
     let color_matrix = vec![
         s, 0.0_f64, 0.0_f64, 0.0_f64, o, 0.0_f64, s, 0.0_f64, 0.0_f64, o, 0.0_f64, 0.0_f64, s,
         0.0_f64, o, 0.0_f64, 0.0_f64, 0.0_f64, 1.0_f64, 0.0_f64,
