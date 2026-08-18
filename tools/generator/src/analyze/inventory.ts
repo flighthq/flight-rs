@@ -8,7 +8,10 @@ import type {
   ExportConflict,
   ExportKind,
   ExportRecord,
+  PackageExportCondition,
+  PackageExportLane,
   PackageInventory,
+  SdkExposure,
   UpstreamInventory,
 } from '../model/inventory.ts';
 
@@ -16,6 +19,13 @@ interface PackageDescriptor {
   directory: string;
   name: string;
   version: string;
+}
+
+export interface PackageExportDescriptor {
+  conditions: PackageExportCondition[];
+  entry: string;
+  source: string;
+  specifier: string;
 }
 
 interface ParsedSource {
@@ -68,27 +78,41 @@ export function analyzeUpstream(workspaceDirectory: string): UpstreamInventory {
   const packageByName = new Map(packages.map((item) => [item.name, item]));
   const parsedSources = new Map<string, ParsedSource>();
   const resolvedExports = new Map<string, Map<string, ExportRecord>>();
-  const sdkPackages = readSdkPackages(packageByName.get('@flighthq/sdk'));
+  const exportDescriptors = new Map(
+    packages.map((descriptor) => [descriptor.name, readPackageExportDescriptors(descriptor)]),
+  );
 
-  const packageInventories = packages.map((descriptor) => {
+  const packageInventories: PackageInventory[] = packages.map((descriptor) => {
     const sourceDirectory = path.join(descriptor.directory, 'src');
     const sourceFiles = walkFiles(sourceDirectory, (file) => isSourceFile(file));
     const testFiles = walkFiles(sourceDirectory, (file) => isTestFile(file));
-    const entry = path.join(sourceDirectory, 'index.ts');
-    const exports = existsSync(entry)
-      ? [...resolveExports(entry, packageByName, parsedSources, resolvedExports, new Set()).values()]
-      : [];
-    const { conflicts, uniqueExports } = deduplicateExports(exports);
+    const exportLanes = (exportDescriptors.get(descriptor.name) ?? []).map((entry) => {
+      const resolved = [
+        ...resolveExports(entry.source, packageByName, parsedSources, resolvedExports, new Set()).values(),
+      ];
+      const { conflicts, uniqueExports } = deduplicateExports(resolved);
+      return {
+        conditions: entry.conditions,
+        entry: entry.entry,
+        exportConflicts: conflicts,
+        exports: uniqueExports.sort(compareExports),
+        source: path.relative(process.cwd(), entry.source),
+        specifier: entry.specifier,
+      } satisfies PackageExportLane;
+    });
+    const root = packageRootExportLane({ exportLanes, name: descriptor.name });
     const packageJson = readJson(path.join(descriptor.directory, 'package.json'));
 
     return {
       dependencies: collectDependencies(packageJson),
       directory: path.relative(workspaceDirectory, descriptor.directory),
-      exportConflicts: conflicts,
-      exports: uniqueExports.sort(compareExports),
+      exportConflicts: root.exportConflicts,
+      exportLanes,
+      exports: root.exports,
       rustCrate: packageNameToRustCrate(descriptor.name),
       name: descriptor.name,
-      sdkIncluded: sdkPackages.has(descriptor.name),
+      sdkExposures: [],
+      sdkIncluded: false,
       sourceFiles: sourceFiles.length,
       testFiles: testFiles.length,
       version: descriptor.version,
@@ -96,19 +120,65 @@ export function analyzeUpstream(workspaceDirectory: string): UpstreamInventory {
   });
 
   packageInventories.sort((left, right) => left.name.localeCompare(right.name));
+  const inventoryByName = new Map(packageInventories.map((item) => [item.name, item]));
+  const sdkExposures = readSdkExposures(
+    packageByName.get('@flighthq/sdk'),
+    inventoryByName,
+    parsedSources,
+    exportDescriptors,
+  );
+  for (const item of packageInventories) {
+    item.sdkExposures = sdkExposures.get(item.name) ?? [];
+    item.sdkIncluded = item.sdkExposures.length > 0;
+  }
 
   return {
     packages: packageInventories,
-    schemaVersion: 1,
+    schemaVersion: 2,
     summary: {
-      exportConflicts: sum(packageInventories, (item) => item.exportConflicts.length),
-      exports: sum(packageInventories, (item) => item.exports.length),
+      exportConflicts: sum(packageInventories, (item) => sum(item.exportLanes, (lane) => lane.exportConflicts.length)),
+      exportLanes: sum(packageInventories, (item) => item.exportLanes.length),
+      exports: sum(packageInventories, (item) => sum(item.exportLanes, (lane) => lane.exports.length)),
       packages: packageInventories.length,
+      rootExports: sum(packageInventories, (item) => item.exports.length),
       sourceFiles: sum(packageInventories, (item) => item.sourceFiles),
       testFiles: sum(packageInventories, (item) => item.testFiles),
     },
     upstreamCommit: readUpstreamCommit(upstreamDirectory),
   };
+}
+
+export function packageRootExportLane(inventory: Pick<PackageInventory, 'exportLanes' | 'name'>): PackageExportLane {
+  const lane = inventory.exportLanes.find((candidate) => candidate.entry === '.');
+  if (!lane) throw new Error(`Package manifest has no root export lane: ${inventory.name}`);
+  return lane;
+}
+
+export function resolvePackageExportLane(
+  inventoryByName: ReadonlyMap<string, PackageInventory>,
+  specifier: string,
+): PackageExportLane {
+  const match = /^(@flighthq\/[^/]+)(?<subpath>\/.*)?$/u.exec(specifier);
+  const packageName = match?.[1];
+  if (!packageName) throw new Error(`Unsupported Flight package specifier: ${specifier}`);
+  const inventory = inventoryByName.get(packageName);
+  if (!inventory) throw new Error(`Unknown Flight package in public import: ${packageName}`);
+  const entry = match.groups?.subpath ? `.${match.groups.subpath}` : '.';
+  const lane = inventory.exportLanes.find((candidate) => candidate.entry === entry);
+  if (!lane) throw new Error(`Package import uses an unaccounted export lane: ${specifier}`);
+  return lane;
+}
+
+export function readPackageExportManifest(packageDirectory: string): PackageExportDescriptor[] {
+  const packageJson = readJson(path.join(packageDirectory, 'package.json'));
+  if (typeof packageJson.name !== 'string' || typeof packageJson.version !== 'string') {
+    throw new Error(`Invalid package metadata: ${path.relative(process.cwd(), packageDirectory)}`);
+  }
+  return readPackageExportDescriptors({
+    directory: packageDirectory,
+    name: packageJson.name,
+    version: packageJson.version,
+  });
 }
 
 function collectDependencies(packageJson: Record<string, unknown>): string[] {
@@ -317,23 +387,106 @@ function readJson(file: string): Record<string, unknown> {
   return JSON.parse(readFileSync(file, 'utf8')) as Record<string, unknown>;
 }
 
-function readSdkPackages(sdk: PackageDescriptor | undefined): Set<string> {
-  if (!sdk) return new Set();
-  const index = path.join(sdk.directory, 'src', 'index.ts');
-  const text = readFileSync(index, 'utf8').replace(/^\uFEFF/u, '');
-  const source = ts.createSourceFile(index, text, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
-  const packages = new Set<string>();
-  for (const statement of source.statements) {
-    if (
-      !ts.isExportDeclaration(statement) ||
-      !statement.moduleSpecifier ||
-      !ts.isStringLiteral(statement.moduleSpecifier)
-    ) {
-      continue;
-    }
-    if (statement.moduleSpecifier.text.startsWith('@flighthq/')) packages.add(statement.moduleSpecifier.text);
+function readPackageExportDescriptors(descriptor: PackageDescriptor): PackageExportDescriptor[] {
+  const packageJson = readJson(path.join(descriptor.directory, 'package.json'));
+  const manifestExports = packageJson.exports;
+  if (!manifestExports || typeof manifestExports !== 'object' || Array.isArray(manifestExports)) {
+    throw new Error(`Package manifest has no export map: ${descriptor.name}`);
   }
-  return packages;
+  const descriptors = Object.entries(manifestExports).map(([entry, rawConditions]) => {
+    if (entry !== '.' && !/^\.\/[A-Za-z0-9][A-Za-z0-9._/-]*$/u.test(entry)) {
+      throw new Error(`Unsupported package export lane '${entry}' in ${descriptor.name}`);
+    }
+    if (!rawConditions || typeof rawConditions !== 'object' || Array.isArray(rawConditions)) {
+      throw new Error(`Package export lane ${descriptor.name}${entry.slice(1)} has no condition map`);
+    }
+    const conditionsRecord = rawConditions as Record<string, unknown>;
+    const typesTarget = conditionsRecord.types;
+    const defaultTarget = conditionsRecord.default;
+    if (typeof typesTarget !== 'string' || typeof defaultTarget !== 'string') {
+      throw new Error(`Package export lane ${descriptor.name}${entry.slice(1)} needs types and default targets`);
+    }
+    const conditions = Object.entries(conditionsRecord)
+      .map(([condition, target]) => {
+        if (typeof target !== 'string') {
+          throw new Error(
+            `Package export condition ${descriptor.name}${entry.slice(1)} [${condition}] is not a string target`,
+          );
+        }
+        return {
+          condition,
+          source: path.relative(process.cwd(), sourceForExportTarget(descriptor, entry, condition, target)),
+          target,
+        } satisfies PackageExportCondition;
+      })
+      .sort((left, right) => left.condition.localeCompare(right.condition));
+    return {
+      conditions,
+      entry,
+      source: sourceForExportTarget(descriptor, entry, 'types', typesTarget),
+      specifier: entry === '.' ? descriptor.name : `${descriptor.name}${entry.slice(1)}`,
+    } satisfies PackageExportDescriptor;
+  });
+  if (!descriptors.some((entry) => entry.entry === '.')) {
+    throw new Error(`Package manifest has no root export lane: ${descriptor.name}`);
+  }
+  return descriptors.sort((left, right) => left.entry.localeCompare(right.entry));
+}
+
+function readSdkExposures(
+  sdk: PackageDescriptor | undefined,
+  inventoryByName: ReadonlyMap<string, PackageInventory>,
+  parsedSources: Map<string, ParsedSource>,
+  exportDescriptors: ReadonlyMap<string, PackageExportDescriptor[]>,
+): Map<string, SdkExposure[]> {
+  if (!sdk) throw new Error('Expected @flighthq/sdk package while deriving SDK exposure');
+  const exposures = new Map<string, SdkExposure[]>();
+  for (const sdkLane of exportDescriptors.get(sdk.name) ?? []) {
+    const parsed = parseSource(sdkLane.source, parsedSources);
+    for (const declaration of parsed.exportDeclarations) {
+      if (!declaration.moduleSpecifier || !ts.isStringLiteral(declaration.moduleSpecifier)) continue;
+      const target = declaration.moduleSpecifier.text;
+      if (!target.startsWith('@flighthq/')) continue;
+      resolvePackageExportLane(inventoryByName, target);
+      const packageName = /^(@flighthq\/[^/]+)/u.exec(target)?.[1];
+      if (!packageName) throw new Error(`Cannot identify SDK target package: ${target}`);
+      const packageExposures = exposures.get(packageName) ?? [];
+      packageExposures.push({ sdkLane: sdkLane.specifier, target });
+      exposures.set(packageName, packageExposures);
+    }
+  }
+  for (const [packageName, packageExposures] of exposures) {
+    const unique = new Map(packageExposures.map((exposure) => [`${exposure.sdkLane}\0${exposure.target}`, exposure]));
+    exposures.set(
+      packageName,
+      [...unique.values()].sort(
+        (left, right) => left.sdkLane.localeCompare(right.sdkLane) || left.target.localeCompare(right.target),
+      ),
+    );
+  }
+  return exposures;
+}
+
+function sourceForExportTarget(
+  descriptor: PackageDescriptor,
+  entry: string,
+  condition: string,
+  target: string,
+): string {
+  const match = /^\.\/dist\/(?<stem>.+?)\.(?:d\.ts|[cm]?js)$/u.exec(target);
+  const stem = match?.groups?.stem;
+  if (!stem || stem.split('/').some((segment) => segment === '.' || segment === '..' || segment === '')) {
+    throw new Error(
+      `Package export condition ${descriptor.name}${entry.slice(1)} [${condition}] has an unaccounted target: ${target}`,
+    );
+  }
+  const sourceBase = path.join(descriptor.directory, 'src', ...stem.split('/'));
+  for (const source of [`${sourceBase}.ts`, `${sourceBase}.tsx`]) {
+    if (existsSync(source) && statSync(source).isFile()) return source;
+  }
+  throw new Error(
+    `Package export condition ${descriptor.name}${entry.slice(1)} [${condition}] has no source barrel for ${target}`,
+  );
 }
 
 export function readUpstreamCommit(upstreamDirectory: string): string {

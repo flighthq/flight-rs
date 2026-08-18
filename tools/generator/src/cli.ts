@@ -58,7 +58,7 @@ try {
         writeOrCheck(path.join(reportsDirectory, report.file), report.content, check);
       }
       process.stdout.write(
-        `${check ? 'Verified' : 'Inventoried'} ${inventory.summary.packages} packages and ${inventory.summary.exports} public exports.\n`,
+        `${check ? 'Verified' : 'Inventoried'} ${inventory.summary.packages} packages, ${inventory.summary.exportLanes} public lanes, ${inventory.summary.exports} export records, and ${inventory.summary.testFiles} tests.\n`,
       );
     }
   }

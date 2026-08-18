@@ -7,11 +7,13 @@ const mocks = vi.hoisted(() => ({
 vi.mock('../../tools/generator/src/analyze/inventory.ts', () => ({
   analyzeUpstream: () => ({
     packages: [],
-    schemaVersion: 1,
+    schemaVersion: 2,
     summary: {
       exportConflicts: 0,
+      exportLanes: 0,
       exports: 0,
       packages: 0,
+      rootExports: 0,
       sourceFiles: 0,
       testFiles: 0,
     },

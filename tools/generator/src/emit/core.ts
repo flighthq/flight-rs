@@ -12,9 +12,13 @@ import {
   type WasmFacadeTarget,
 } from '../../port.config.ts';
 import { harvestConformance, markConformancePassing, type ConformanceHarvestReport } from '../conformance/harvest.ts';
-import { sourcePathToImplementationModule, sourcePathToRustModule } from '../analyze/inventory.ts';
+import {
+  packageRootExportLane,
+  sourcePathToImplementationModule,
+  sourcePathToRustModule,
+} from '../analyze/inventory.ts';
 import { lowerTypeScriptSource, type TypeRecoveryCatalog } from '../lower/typescript.ts';
-import type { PackageInventory, UpstreamInventory } from '../model/inventory.ts';
+import type { ExportRecord, PackageInventory, UpstreamInventory } from '../model/inventory.ts';
 import {
   PORTABLE_TASK_RUST_LOWERING_REASON,
   type IrAsyncTaskOperations,
@@ -317,11 +321,34 @@ function generateFlightTaskRuntime(workspaceDirectory: string, check: boolean): 
   verifyNoStaleOutputs(crateDirectory, new Set(outputs.map((output) => output.file)), check);
 }
 
+function packagePublicExports(inventory: PackageInventory): ExportRecord[] {
+  packageRootExportLane(inventory);
+  const exportsByName = new Map<string, ExportRecord>();
+  for (const lane of inventory.exportLanes) {
+    for (const record of lane.exports) {
+      const existing = exportsByName.get(record.name);
+      if (
+        existing &&
+        (existing.source !== record.source ||
+          existing.fingerprint !== record.fingerprint ||
+          existing.kind !== record.kind)
+      ) {
+        throw new Error(
+          `Rust crate ${inventory.rustCrate} cannot unify manifest export ${record.name} from both ${existing.source} and ${record.source}.`,
+        );
+      }
+      exportsByName.set(record.name, record);
+    }
+  }
+  return [...exportsByName.values()].sort((left, right) => left.name.localeCompare(right.name));
+}
+
 function attemptAutomaticPackage(
   workspaceDirectory: string,
   packageInventory: PackageInventory,
   packages: PackageInventory[],
 ): AutomaticPackageAttempt {
+  const publicExports = packagePublicExports(packageInventory);
   const policy = resolvePackagePolicy(packageInventory.name);
   const hostBackendPolicy = policy?.disposition === 'host-backend' ? policy : undefined;
   const dependencies = packageInventory.dependencies
@@ -339,7 +366,7 @@ function attemptAutomaticPackage(
     return {
       modules: [],
       report: {
-        apiExports: packageInventory.exports.length,
+        apiExports: publicExports.length,
         asyncTasks: [],
         taskConstructions: [],
         attemptedSources: 0,
@@ -357,7 +384,7 @@ function attemptAutomaticPackage(
         emittedSources: [],
         fullyPromotedTarget,
         generatedExports: [],
-        missingExports: packageInventory.exports.map((item) => item.name),
+        missingExports: publicExports.map((item) => item.name),
         package: packageInventory.name,
         policyReason: policy.reason,
         promotedTarget,
@@ -550,7 +577,7 @@ function attemptAutomaticPackage(
     }
   }
 
-  const missingExports = packageInventory.exports
+  const missingExports = publicExports
     .map((item) => item.name)
     .filter((name) => !generatedExports.has(name))
     .sort();
@@ -558,7 +585,7 @@ function attemptAutomaticPackage(
     blockers.push({
       diagnostics: [],
       fingerprint: sha256(missingExports.join('\0')),
-      reason: `Generated crate is missing ${String(missingExports.length)} of ${String(packageInventory.exports.length)} upstream exports; re-export or declaration synthesis is required.`,
+      reason: `Generated crate is missing ${String(missingExports.length)} of ${String(publicExports.length)} upstream exports across ${String(packageInventory.exportLanes.length)} manifest lanes; re-export or declaration synthesis is required.`,
       source: `${packageInventory.directory}/src`,
       stage: 'package',
     });
@@ -593,7 +620,7 @@ function attemptAutomaticPackage(
   return {
     modules: status === 'emittable' ? moduleOutputs : [],
     report: {
-      apiExports: packageInventory.exports.length,
+      apiExports: publicExports.length,
       asyncTasks,
       taskConstructions,
       attemptedSources,
@@ -2024,7 +2051,7 @@ function collectRustImports(
   for (const statement of sourceFile.statements) {
     if (!ts.isImportDeclaration(statement) || !ts.isStringLiteral(statement.moduleSpecifier)) continue;
     const specifier = statement.moduleSpecifier.text;
-    const dependency = target.dependencies[specifier];
+    const dependency = rustDependencyForSpecifier(target, specifier);
     const module = specifier.startsWith('.') ? 'crate' : dependency?.crate.replaceAll('-', '_');
     if (!module) continue;
     const bindings = statement.importClause?.namedBindings;
@@ -2063,7 +2090,7 @@ function collectRustImports(
       continue;
     }
     const specifier = statement.moduleSpecifier.text;
-    const dependency = target.dependencies[specifier];
+    const dependency = rustDependencyForSpecifier(target, specifier);
     const module = specifier.startsWith('.') ? 'crate' : dependency?.crate.replaceAll('-', '_');
     if (!module) continue;
     const names = groups.get(module) ?? [];
@@ -2106,6 +2133,16 @@ function collectRustImports(
     groups.set('flighthq_types', names);
   }
   return [...groups].map(([module, names]) => ({ module, names }));
+}
+
+export function rustDependencyForSpecifier(
+  target: Pick<RustTarget, 'dependencies'>,
+  specifier: string,
+): RustTarget['dependencies'][string] | undefined {
+  const exact = target.dependencies[specifier];
+  if (exact) return exact;
+  const packageName = /^@flighthq\/[^/]+/u.exec(specifier)?.[0];
+  return packageName ? target.dependencies[packageName] : undefined;
 }
 
 function collectInferredTopLevelTypeImports(
@@ -2299,15 +2336,16 @@ function findPackageDeclarationSource(
   packageName: string,
   name: string,
 ): string | undefined {
-  if (packageName === '@flighthq/types') return findTypeDeclarationSource(workspaceDirectory, name);
-  const cacheKey = `${workspaceDirectory}\0${packageName}`;
+  const rootPackageName = /^@flighthq\/[^/]+/u.exec(packageName)?.[0] ?? packageName;
+  if (rootPackageName === '@flighthq/types') return findTypeDeclarationSource(workspaceDirectory, name);
+  const cacheKey = `${workspaceDirectory}\0${rootPackageName}`;
   let index = packageDeclarationIndexCache.get(cacheKey);
   if (!index) {
     const directory = path.join(
       workspaceDirectory,
       portConfig.upstreamDirectory,
       'packages',
-      packageName.replace(/^@flighthq\//u, ''),
+      rootPackageName.replace(/^@flighthq\//u, ''),
       'src',
     );
     const declarations = new Map<string, string>();

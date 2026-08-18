@@ -5,6 +5,7 @@ import { portConfig } from '../../tools/generator/port.config.ts';
 import {
   formatRust,
   normalizeDiagnosticSource,
+  rustDependencyForSpecifier,
   validateAsyncTaskDispositionPartition,
   validateCandidateCrateGraph,
   validateTaskConstructionDispositionPartition,
@@ -24,6 +25,16 @@ describe('generator prerequisites', () => {
       if (path === undefined) delete process.env.PATH;
       else process.env.PATH = path;
     }
+  });
+});
+
+describe('manifest-lane dependency resolution', () => {
+  it('maps public subpath imports to the configured package crate', () => {
+    const bitmap = portConfig.targets.find((target) => target.package === '@flighthq/bitmap');
+    if (!bitmap) throw new Error('Expected cultivated bitmap target');
+
+    expect(rustDependencyForSpecifier(bitmap, '@flighthq/types/contract')).toEqual({ crate: 'flighthq-types' });
+    expect(rustDependencyForSpecifier(bitmap, '@flighthq/entity/contract')).toBeUndefined();
   });
 });
 

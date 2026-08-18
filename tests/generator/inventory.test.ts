@@ -6,7 +6,9 @@ import path from 'node:path';
 import {
   analyzeUpstream,
   packageNameToRustCrate,
+  packageRootExportLane,
   readUpstreamCommit,
+  resolvePackageExportLane,
   sourcePathToImplementationModule,
   sourcePathToRustModule,
 } from '../../tools/generator/src/analyze/inventory.ts';
@@ -29,20 +31,43 @@ function commitFile(directory: string, file: string, content: string): string {
 describe('cultivated upstream analysis', () => {
   it('accounts for every package and representative export', () => {
     const inventory = analyzeUpstream(path.resolve('.'));
+    const inventoryByName = new Map(inventory.packages.map((item) => [item.name, item]));
     const geometry = inventory.packages.find((item) => item.name === '@flighthq/geometry');
+    if (!geometry) throw new Error('Expected @flighthq/geometry');
+    const geometryRoot = resolvePackageExportLane(inventoryByName, '@flighthq/geometry');
+    const geometryContract = resolvePackageExportLane(inventoryByName, '@flighthq/geometry/contract');
 
     expect(inventory.upstreamCommit).toBe('cad72aa3ea4e6e76a050918a403dcb10efdfcb0d');
-    expect(inventory.summary.packages).toBe(131);
-    expect(inventory.summary.sourceFiles).toBeGreaterThan(1_000);
-    expect(inventory.summary.testFiles).toBeGreaterThan(1_000);
-    expect(geometry?.exports.some((item) => item.name === 'createVector2')).toBe(true);
-    expect(geometry?.rustCrate).toBe('flighthq-geometry');
+    expect(inventory.summary.packages).toBe(143);
+    expect(inventory.summary.exportLanes).toBe(299);
+    expect(inventory.summary.exports).toBe(32_998);
+    expect(inventory.summary.rootExports).toBe(12_782);
+    expect(inventory.summary.sourceFiles).toBe(2_544);
+    expect(inventory.summary.testFiles).toBe(1_419);
+    expect(geometry.exports.some((item) => item.name === 'createVector2')).toBe(true);
+    expect(geometry.exportLanes.map((lane) => lane.specifier)).toEqual([
+      '@flighthq/geometry',
+      '@flighthq/geometry/contract',
+    ]);
+    expect(packageRootExportLane(geometry)).toBe(geometryRoot);
+    expect(geometryContract.exports.find((item) => item.name === 'createVector2')).toEqual(
+      geometryRoot.exports.find((item) => item.name === 'createVector2'),
+    );
+    expect(() => resolvePackageExportLane(inventoryByName, '@flighthq/geometry/private')).toThrow(
+      'Package import uses an unaccounted export lane: @flighthq/geometry/private',
+    );
+    expect(geometry.sdkExposures.map((exposure) => exposure.sdkLane)).toEqual([
+      '@flighthq/sdk',
+      '@flighthq/sdk/contract',
+      '@flighthq/sdk/core',
+    ]);
+    expect(geometry.rustCrate).toBe('flighthq-geometry');
   });
 
   it('retains zero-diagnostic lowering coverage from the cultivated generator', () => {
     const audit = auditLowering(path.resolve('.'));
 
-    expect(audit.summary.packages).toBe(131);
+    expect(audit.summary.packages).toBe(142);
     expect(audit.summary.lowered).toBe(audit.summary.declarations);
     expect(audit.summary.diagnostics).toBe(0);
   }, 60_000);

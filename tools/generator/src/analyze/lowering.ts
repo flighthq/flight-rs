@@ -2,6 +2,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import ts from 'typescript';
 
+import { portConfig } from '../../port.config.ts';
 import { lowerTypeScriptSource } from '../lower/typescript.ts';
 import type { LoweringDiagnostic } from '../model/ir.ts';
 
@@ -31,6 +32,7 @@ export function auditLowering(workspaceDirectory: string): LoweringAudit {
     .filter((entry) => entry.isDirectory())
     .map((entry) => path.join(packagesDirectory, entry.name))
     .map((directory) => ({ directory, metadata: readPackageMetadata(directory) }))
+    .filter(({ metadata }) => !isExcludedPackage(metadata.name))
     .sort((left, right) => left.metadata.name.localeCompare(right.metadata.name))
     .map(({ directory, metadata }) => auditPackage(directory, metadata.name, workspaceDirectory));
 
@@ -45,6 +47,17 @@ export function auditLowering(workspaceDirectory: string): LoweringAudit {
       packages: packages.length,
     },
   };
+}
+
+function isExcludedPackage(packageName: string): boolean {
+  return portConfig.packagePolicy.some((rule) => {
+    if (rule.disposition !== 'excluded') return false;
+    const expression = rule.match
+      .split('*')
+      .map((part) => part.replace(/[\\^$.*+?()[\]{}|]/gu, '\\$&'))
+      .join('.*');
+    return new RegExp(`^${expression}$`, 'u').test(packageName);
+  });
 }
 
 function auditPackage(directory: string, packageName: string, workspaceDirectory: string): PackageLoweringAudit {
