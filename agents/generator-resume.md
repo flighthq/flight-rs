@@ -7,8 +7,8 @@ This is the durable handoff for continuing the mechanical Flight TypeScript-to-R
 The repository is a compiler project, not a collection of manually ported crates.
 
 - A small, explicit set of packages may be cultivated by hand.
-- `packages/surface-rs` and the configured surface source/declaration selections are cultivated. The `flighthq-surface` crate is generated from those selections and must not be edited by hand.
-- Surface is the only package planned as a standalone wasm package.
+- `packages/surface-rs` is the compatibility-named cultivated facade for upstream `@flighthq/bitmap`. Its bitmap source/declaration selections are explicit; the `flighthq-surface` crate is generated from those selections and must not be edited by hand.
+- This bitmap facade is the only package planned as a standalone wasm package.
 - Selected host packages, build tools such as `tool-capture`, and `*-dom` packages may be host-bound or excluded by explicit policy.
 - All other upstream packages enter generation by default. A failure must appear as a source, compile, or dependency blocker in the generation report.
 - Generated crates are ordinary native-capable Rust crates. Browser behavior belongs behind generated backend seams or cultivated host adapters.
@@ -22,7 +22,7 @@ The pinned Flight revision is `cad72aa3ea4e6e76a050918a403dcb10efdfcb0d`, matchi
 
 | State                           | Count |
 | ------------------------------- | ----: |
-| Inventoried packages            |   131 |
+| Inventoried packages            |   143 |
 | Eligible automatic packages     |   125 |
 | Packages reaching Rust emission |    59 |
 | Compiled candidates             |    23 |

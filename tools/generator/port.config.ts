@@ -132,9 +132,9 @@ export const portConfig = {
     },
     {
       disposition: 'cultivated',
-      match: '@flighthq/surface',
+      match: '@flighthq/bitmap',
       reason:
-        'The TypeScript/wasm facade and its explicit source/declaration admission policy are cultivated; flighthq-surface itself is generated from those selections.',
+        'The TypeScript/wasm facade and its explicit source/declaration admission policy are cultivated; the compatibility-named flighthq-surface crate is generated from the upstream bitmap replacement.',
     },
     {
       disposition: 'excluded',
@@ -245,7 +245,7 @@ export const portConfig = {
     {
       package: '@flighthq/surface-rs',
       path: 'packages/surface-rs',
-      reason: 'Curated JavaScript/wasm boundary for the generated @flighthq/surface implementation.',
+      reason: 'Curated JavaScript/wasm compatibility boundary for the generated @flighthq/bitmap implementation.',
     },
   ],
   wasmFacades: [
@@ -253,40 +253,40 @@ export const portConfig = {
       coreCrate: 'flighthq-surface',
       crate: 'flighthq-surface-wasm',
       exports: [
-        'applySurfaceCurve',
-        'applySurfaceLevels',
-        'applySurfacePaletteMap',
-        'buildSurfaceBrightnessColorMatrix',
-        'buildSurfaceContrastColorMatrix',
-        'buildSurfaceGrayscaleColorMatrix',
-        'buildSurfaceHueRotationColorMatrix',
-        'buildSurfaceInvertColorMatrix',
-        'buildSurfaceSaturationColorMatrix',
-        'buildSurfaceSepiaColorMatrix',
-        'colorMatrixSurface',
-        'compareSurfaceFingerprints',
-        'concatSurfaceColorMatrix',
-        'convolveSurface',
-        'copySurfaceAlpha',
-        'copySurfacePixels',
-        'createSurfaceFingerprint',
-        'dilateSurface',
-        'erodeSurface',
-        'fillSurfaceNoise',
-        'fillSurfacePerlinNoise',
-        'fillSurfaceRectangle',
-        'fillSurfaceTurbulence',
-        'getSurfaceColorBoundsRectangle',
-        'getSurfaceCoverage',
-        'getSurfaceHistogram',
-        'getSurfaceMismatch',
-        'mergeSurfaceChannels',
-        'multiplySurfaceAlpha',
-        'pixelateSurface',
-        'premultiplySurfacePixels',
-        'setSurfaceAlpha',
-        'setSurfaceColorMatrixIdentity',
-        'unpremultiplySurfacePixels',
+        'applyBitmapCurve',
+        'applyBitmapLevels',
+        'applyBitmapPaletteMap',
+        'buildBitmapBrightnessColorMatrix',
+        'buildBitmapContrastColorMatrix',
+        'buildBitmapGrayscaleColorMatrix',
+        'buildBitmapHueRotationColorMatrix',
+        'buildBitmapInvertColorMatrix',
+        'buildBitmapSaturationColorMatrix',
+        'buildBitmapSepiaColorMatrix',
+        'colorMatrixBitmap',
+        'compareBitmapFingerprints',
+        'concatBitmapColorMatrix',
+        'convolveBitmap',
+        'copyBitmapAlpha',
+        'copyBitmapPixels',
+        'createBitmapFingerprint',
+        'dilateBitmap',
+        'erodeBitmap',
+        'fillBitmapNoise',
+        'fillBitmapPerlinNoise',
+        'fillBitmapRectangle',
+        'fillBitmapTurbulence',
+        'getBitmapColorBoundsRectangle',
+        'getBitmapCoverage',
+        'getBitmapHistogram',
+        'getBitmapMismatch',
+        'mergeBitmapChannels',
+        'multiplyBitmapAlpha',
+        'pixelateBitmap',
+        'premultiplyBitmapPixels',
+        'setBitmapAlpha',
+        'setBitmapColorMatrixIdentity',
+        'unpremultiplyBitmapPixels',
       ],
       rustTemplate: 'tools/generator/templates/surface_wasm.rs',
     },
@@ -401,16 +401,9 @@ export const portConfig = {
       crate: 'flighthq-image',
       declarationSelection: {
         'imageResource.ts': {
-          names: [
-            'disposeImageResource',
-            'hasImageResourceData',
-            'hasImageResourcePixels',
-            'hasImageResourceSource',
-            'invalidateImageResource',
-            'isImageResourceEmpty',
-          ],
+          names: ['isImageResourceEmpty'],
           reason:
-            'Host-element construction and cloning remain on the TypeScript side; the selected portable resource-state operations are generated for the surface dependency path.',
+            'Host-element construction, cloning, resizing, and invalidation remain on the TypeScript side; the dimension-only emptiness query is independently portable.',
         },
       },
       dependencies: {
@@ -420,7 +413,7 @@ export const portConfig = {
       sourceSelection: {
         sources: ['imageResource.ts'],
         reason:
-          'Browser element/load/decode operations in imageResourceFrom.ts are host-bound and remain in the blessed TypeScript boundary.',
+          'Browser element/load/decode operations and host-source invalidation are host-bound and remain in the TypeScript boundary.',
       },
       sourceExclusions: [],
       typeMappings: {},
@@ -450,90 +443,86 @@ export const portConfig = {
       conformanceTemplate: 'tools/generator/templates/surface_conformance.rs',
       crate: 'flighthq-surface',
       declarationSelection: {
-        'surfaceCompare.ts': {
-          names: ['getSurfaceMismatch'],
+        'bitmap.ts': {
+          names: ['invalidateBitmap'],
           reason:
-            'Diff-surface construction remains at the TypeScript boundary; the allocation-free mismatch summary is independently portable.',
+            'The selected bitmap kernels retain their source-derived invalidation helper without admitting allocation through the entity package.',
         },
-        'surfaceChannel.ts': {
-          names: ['mergeSurfaceChannels'],
+        'bitmapCompare.ts': {
+          names: ['getBitmapMismatch'],
           reason:
-            'Surface allocation through the entity package remains at the TypeScript boundary; the region-based merge kernel is independently portable.',
+            'Diff-bitmap construction remains at the TypeScript boundary; the allocation-free mismatch summary is independently portable.',
         },
-        'surfaceCopy.ts': {
-          names: ['copySurfacePixels'],
+        'bitmapChannel.ts': {
+          names: ['mergeBitmapChannels'],
+          reason:
+            'Bitmap allocation through the entity package remains at the TypeScript boundary; the region-based merge kernel is independently portable.',
+        },
+        'bitmapCopy.ts': {
+          names: ['copyBitmapPixels'],
           reason:
             'Channel-specific copying joins with the generated ImageChannel type and relative re-export resolution.',
         },
-        'surfaceFill.ts': {
-          names: ['fillSurfaceRectangle'],
+        'bitmapFill.ts': {
+          names: ['fillBitmapRectangle'],
           reason:
             'Flood fill joins after reusable module-level scratch buffers lower to generated Rust synchronization primitives.',
         },
-        'surfaceFingerprint.ts': {
-          names: ['compareSurfaceFingerprints', 'createSurfaceFingerprint'],
+        'bitmapFingerprint.ts': {
+          names: ['compareBitmapFingerprints', 'createBitmapFingerprint'],
           reason:
             'String slicing and numeric text parsing remain at the TypeScript boundary; typed-array fingerprint construction and comparison are independently portable.',
         },
-        'surfaceFormat.ts': {
-          names: ['premultiplySurfacePixels', 'unpremultiplySurfacePixels'],
+        'bitmapFormat.ts': {
+          names: ['premultiplyBitmapPixels', 'unpremultiplyBitmapPixels'],
           reason:
             'Pixel-order conversion joins after tuple destructuring and typed-array subarray/set methods lower without losing alias safety.',
         },
-        'surfaceHistogram.ts': {
-          names: ['getSurfaceHistogram'],
+        'bitmapHistogram.ts': {
+          names: ['getBitmapHistogram'],
           reason:
-            'Histogram equalization joins after its palette-map dependency enters the generated surface slice; the allocation-only histogram query is independently portable.',
+            'Histogram equalization joins after its palette-map dependency enters the generated bitmap slice; the allocation-only histogram query is independently portable.',
         },
-        'surfacePixel.ts': {
+        'bitmapPixel.ts': {
           names: [
-            'LUMA_B',
-            'LUMA_G',
-            'LUMA_R',
-            'getSurfacePixel',
-            'getSurfacePixelLuminance',
-            'getSurfacePixelRgb',
-            'setSurfacePixel',
-            'setSurfacePixelRgb',
+            'getBitmapPixel',
+            'getBitmapPixelLuminance',
+            'getBitmapPixelRgb',
+            'setBitmapPixel',
+            'setBitmapPixelRgb',
           ],
           reason:
             'The ImageChannel-parameterized reader joins when relative TypeScript re-export imports resolve directly to their generated dependency crate.',
         },
       },
       dependencies: {
-        '@flighthq/image': { crate: 'flighthq-image' },
         '@flighthq/types': { crate: 'flighthq-types' },
       },
-      inlineDependencies: {
-        invalidateImageResource: {
-          package: '@flighthq/image',
-          source: 'upstream/packages/image/src/imageResource.ts',
-        },
-      },
-      package: '@flighthq/surface',
+      package: '@flighthq/bitmap',
       sourceSelection: {
         sources: [
-          'surfaceAlpha.ts',
-          'surfaceChannel.ts',
-          'surfaceColorMatrix.ts',
-          'surfaceCompare.ts',
-          'surfaceConvolution.ts',
-          'surfaceCopy.ts',
-          'surfaceCoverage.ts',
-          'surfaceFill.ts',
-          'surfaceFingerprint.ts',
-          'surfaceFormat.ts',
-          'surfaceHistogram.ts',
-          'surfaceMorphological.ts',
-          'surfaceNoise.ts',
-          'surfacePaletteMap.ts',
-          'surfacePixel.ts',
-          'surfacePixelate.ts',
-          'surfaceQuery.ts',
-          'surfaceTone.ts',
+          'bitmap.ts',
+          'bitmapAlpha.ts',
+          'bitmapChannel.ts',
+          'bitmapColorMatrix.ts',
+          'bitmapCompare.ts',
+          'bitmapConvolution.ts',
+          'bitmapCopy.ts',
+          'bitmapCoverage.ts',
+          'bitmapFill.ts',
+          'bitmapFingerprint.ts',
+          'bitmapFormat.ts',
+          'bitmapHistogram.ts',
+          'bitmapMorphological.ts',
+          'bitmapNoise.ts',
+          'bitmapPaletteMap.ts',
+          'bitmapPixel.ts',
+          'bitmapPixelate.ts',
+          'bitmapQuery.ts',
+          'bitmapTone.ts',
         ],
         reason:
-          'Initial compiled surface kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.',
+          'Compatibility-named compiled bitmap kernel slice; remaining portable modules are admitted as their required emitter constructs and alias rules compile.',
       },
       sourceExclusions: [],
       typeMappings: {},

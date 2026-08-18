@@ -9,12 +9,8 @@ export default defineConfig({
   resolve: {
     alias: [
       {
-        find: /^@flighthq\/image$/u,
-        replacement: path.join(upstream, 'image/src/index.ts'),
-      },
-      {
-        find: /^@flighthq\/surface$/u,
-        replacement: path.join(upstream, 'surface/src/index.ts'),
+        find: /^@flighthq\/bitmap$/u,
+        replacement: path.join(upstream, 'bitmap/src/index.ts'),
       },
       {
         find: /^@flighthq\/types$/u,

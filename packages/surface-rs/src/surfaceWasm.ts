@@ -1,12 +1,12 @@
-import { invalidateImageResource } from '@flighthq/image';
-import type { SurfaceConvolutionOptions } from '@flighthq/surface';
+import { invalidateBitmap } from '@flighthq/bitmap';
+import type { BitmapConvolutionOptions } from '@flighthq/bitmap';
 import type {
   RectangleLike,
-  Surface,
-  SurfaceFingerprint,
-  SurfaceHistogram,
-  SurfaceMismatch,
-  SurfaceRegion,
+  Bitmap,
+  BitmapFingerprint,
+  BitmapHistogram,
+  BitmapMismatch,
+  BitmapRegion,
 } from '@flighthq/types';
 
 import {
@@ -53,110 +53,110 @@ const EMPTY_CHANNEL_MAP = new Float64Array();
 const EMPTY_BYTE_CHANNEL_MAP = new Uint8Array();
 
 /**
- * Eagerly instantiates the mechanically generated surface module. Every
+ * Eagerly instantiates the mechanically generated bitmap module. Every
  * overridden operation also initializes it lazily, so calling this is optional.
  */
-export function initSurfaceWasm(): void {
-  ensureSurfaceWasm();
+export function initBitmapWasm(): void {
+  ensureBitmapWasm();
 }
 
-export function applySurfaceCurve(
-  out: Readonly<SurfaceRegion>,
-  source: Readonly<SurfaceRegion>,
+export function applyBitmapCurve(
+  out: Readonly<BitmapRegion>,
+  source: Readonly<BitmapRegion>,
   redLut: Readonly<Uint8Array | Uint8ClampedArray | null>,
   greenLut: Readonly<Uint8Array | Uint8ClampedArray | null>,
   blueLut: Readonly<Uint8Array | Uint8ClampedArray | null>,
   alphaLut: Readonly<Uint8Array | Uint8ClampedArray | null> = null,
 ): void {
-  ensureSurfaceWasm();
+  ensureBitmapWasm();
   apply_surface_curve_wasm(
-    asUint8(out.surface.data),
+    asUint8(out.bitmap.data),
     descriptorOf(out),
-    asUint8(source.surface.data),
+    asUint8(source.bitmap.data),
     descriptorOf(source),
     byteChannelMap(redLut),
     byteChannelMap(greenLut),
     byteChannelMap(blueLut),
     byteChannelMap(alphaLut),
   );
-  invalidateImageResource(out.surface);
+  invalidateBitmap(out.bitmap);
 }
 
-export function applySurfaceLevels(
-  out: Readonly<SurfaceRegion>,
-  source: Readonly<SurfaceRegion>,
+export function applyBitmapLevels(
+  out: Readonly<BitmapRegion>,
+  source: Readonly<BitmapRegion>,
   blackPoint: number = 0,
   whitePoint: number = 255,
   gamma: number = 1,
 ): void {
-  ensureSurfaceWasm();
+  ensureBitmapWasm();
   apply_surface_levels_wasm(
-    asUint8(out.surface.data),
+    asUint8(out.bitmap.data),
     descriptorOf(out),
-    asUint8(source.surface.data),
+    asUint8(source.bitmap.data),
     descriptorOf(source),
     blackPoint,
     whitePoint,
     gamma,
   );
-  invalidateImageResource(out.surface);
+  invalidateBitmap(out.bitmap);
 }
 
-export function applySurfacePaletteMap(
-  dest: Readonly<SurfaceRegion>,
-  source: Readonly<SurfaceRegion>,
+export function applyBitmapPaletteMap(
+  dest: Readonly<BitmapRegion>,
+  source: Readonly<BitmapRegion>,
   redMap: ReadonlyArray<number> | null,
   greenMap: ReadonlyArray<number> | null,
   blueMap: ReadonlyArray<number> | null,
   alphaMap: ReadonlyArray<number> | null,
 ): void {
-  ensureSurfaceWasm();
+  ensureBitmapWasm();
   apply_surface_palette_map_wasm(
-    asUint8(dest.surface.data),
+    asUint8(dest.bitmap.data),
     descriptorOf(dest),
-    asUint8(source.surface.data),
+    asUint8(source.bitmap.data),
     descriptorOf(source),
     channelMap(redMap),
     channelMap(greenMap),
     channelMap(blueMap),
     channelMap(alphaMap),
   );
-  invalidateImageResource(dest.surface);
+  invalidateBitmap(dest.bitmap);
 }
 
-export function buildSurfaceBrightnessColorMatrix(out: number[], amount: number): void {
+export function buildBitmapBrightnessColorMatrix(out: number[], amount: number): void {
   runMatrixWriter(out, (typed) => build_surface_brightness_color_matrix_wasm(typed, amount));
 }
 
-export function buildSurfaceContrastColorMatrix(out: number[], amount: number): void {
+export function buildBitmapContrastColorMatrix(out: number[], amount: number): void {
   runMatrixWriter(out, (typed) => build_surface_contrast_color_matrix_wasm(typed, amount));
 }
 
-export function buildSurfaceGrayscaleColorMatrix(out: number[]): void {
+export function buildBitmapGrayscaleColorMatrix(out: number[]): void {
   runMatrixWriter(out, build_surface_grayscale_color_matrix_wasm);
 }
 
-export function buildSurfaceHueRotationColorMatrix(out: number[], degrees: number): void {
+export function buildBitmapHueRotationColorMatrix(out: number[], degrees: number): void {
   runMatrixWriter(out, (typed) => build_surface_hue_rotation_color_matrix_wasm(typed, degrees));
 }
 
-export function buildSurfaceInvertColorMatrix(out: number[]): void {
+export function buildBitmapInvertColorMatrix(out: number[]): void {
   runMatrixWriter(out, build_surface_invert_color_matrix_wasm);
 }
 
-export function buildSurfaceSaturationColorMatrix(out: number[], amount: number): void {
+export function buildBitmapSaturationColorMatrix(out: number[], amount: number): void {
   runMatrixWriter(out, (typed) => build_surface_saturation_color_matrix_wasm(typed, amount));
 }
 
-export function buildSurfaceSepiaColorMatrix(out: number[]): void {
+export function buildBitmapSepiaColorMatrix(out: number[]): void {
   runMatrixWriter(out, build_surface_sepia_color_matrix_wasm);
 }
 
-export function setSurfaceColorMatrixIdentity(out: number[]): void {
+export function setBitmapColorMatrixIdentity(out: number[]): void {
   runMatrixWriter(out, set_surface_color_matrix_identity_wasm);
 }
 
-export function concatSurfaceColorMatrix(
+export function concatBitmapColorMatrix(
   out: number[],
   first: ReadonlyArray<number>,
   second: ReadonlyArray<number>,
@@ -166,25 +166,20 @@ export function concatSurfaceColorMatrix(
   );
 }
 
-export function colorMatrixSurface(
+export function colorMatrixBitmap(
   out: Uint8ClampedArray,
-  source: Readonly<SurfaceRegion>,
+  source: Readonly<BitmapRegion>,
   matrix: ReadonlyArray<number>,
 ): void {
-  ensureSurfaceWasm();
-  color_matrix_surface_wasm(
-    asUint8(out),
-    asUint8(source.surface.data),
-    descriptorOf(source),
-    Float64Array.from(matrix),
-  );
+  ensureBitmapWasm();
+  color_matrix_surface_wasm(asUint8(out), asUint8(source.bitmap.data), descriptorOf(source), Float64Array.from(matrix));
 }
 
-export function compareSurfaceFingerprints(
-  first: Readonly<SurfaceFingerprint>,
-  second: Readonly<SurfaceFingerprint>,
+export function compareBitmapFingerprints(
+  first: Readonly<BitmapFingerprint>,
+  second: Readonly<BitmapFingerprint>,
 ): number {
-  ensureSurfaceWasm();
+  ensureBitmapWasm();
   return compare_surface_fingerprints_wasm(
     asUint8(first.cells),
     first.gridSize,
@@ -193,22 +188,22 @@ export function compareSurfaceFingerprints(
   );
 }
 
-export function createSurfaceFingerprint(source: Readonly<Surface>, gridSize: number = 16): SurfaceFingerprint {
-  ensureSurfaceWasm();
+export function createBitmapFingerprint(source: Readonly<Bitmap>, gridSize: number = 16): BitmapFingerprint {
+  ensureBitmapWasm();
   const cells = new Uint8Array(gridSize * gridSize * 3);
   create_surface_fingerprint_wasm(cells, asUint8(source.data), source.width, source.height, gridSize);
   return { cells, gridSize };
 }
 
-export function convolveSurface(
+export function convolveBitmap(
   out: Uint8ClampedArray,
-  source: Readonly<SurfaceRegion>,
-  options: Readonly<SurfaceConvolutionOptions>,
+  source: Readonly<BitmapRegion>,
+  options: Readonly<BitmapConvolutionOptions>,
 ): void {
-  ensureSurfaceWasm();
+  ensureBitmapWasm();
   convolve_surface_wasm(
     asUint8(out),
-    asUint8(source.surface.data),
+    asUint8(source.bitmap.data),
     descriptorOf(source),
     Float64Array.from(options.matrix),
     options.matrixX,
@@ -220,65 +215,65 @@ export function convolveSurface(
   );
 }
 
-export function copySurfacePixels(
-  dest: Readonly<SurfaceRegion>,
-  source: Readonly<SurfaceRegion>,
+export function copyBitmapPixels(
+  dest: Readonly<BitmapRegion>,
+  source: Readonly<BitmapRegion>,
   composite: boolean = false,
 ): void {
-  ensureSurfaceWasm();
+  ensureBitmapWasm();
   copy_surface_pixels_wasm(
-    asUint8(dest.surface.data),
+    asUint8(dest.bitmap.data),
     descriptorOf(dest),
-    asUint8(source.surface.data),
+    asUint8(source.bitmap.data),
     descriptorOf(source),
     composite,
   );
-  invalidateImageResource(dest.surface);
+  invalidateBitmap(dest.bitmap);
 }
 
-export function copySurfaceAlpha(dest: Readonly<SurfaceRegion>, source: Readonly<SurfaceRegion>): void {
-  ensureSurfaceWasm();
+export function copyBitmapAlpha(dest: Readonly<BitmapRegion>, source: Readonly<BitmapRegion>): void {
+  ensureBitmapWasm();
   copy_surface_alpha_wasm(
-    asUint8(dest.surface.data),
+    asUint8(dest.bitmap.data),
     descriptorOf(dest),
-    asUint8(source.surface.data),
+    asUint8(source.bitmap.data),
     descriptorOf(source),
   );
-  invalidateImageResource(dest.surface);
+  invalidateBitmap(dest.bitmap);
 }
 
-export function multiplySurfaceAlpha(out: Readonly<SurfaceRegion>, factor: number): void {
-  ensureSurfaceWasm();
-  multiply_surface_alpha_wasm(asUint8(out.surface.data), descriptorOf(out), factor);
-  invalidateImageResource(out.surface);
+export function multiplyBitmapAlpha(out: Readonly<BitmapRegion>, factor: number): void {
+  ensureBitmapWasm();
+  multiply_surface_alpha_wasm(asUint8(out.bitmap.data), descriptorOf(out), factor);
+  invalidateBitmap(out.bitmap);
 }
 
-export function setSurfaceAlpha(out: Readonly<SurfaceRegion>, alpha: number): void {
-  ensureSurfaceWasm();
-  set_surface_alpha_wasm(asUint8(out.surface.data), descriptorOf(out), alpha);
-  invalidateImageResource(out.surface);
+export function setBitmapAlpha(out: Readonly<BitmapRegion>, alpha: number): void {
+  ensureBitmapWasm();
+  set_surface_alpha_wasm(asUint8(out.bitmap.data), descriptorOf(out), alpha);
+  invalidateBitmap(out.bitmap);
 }
 
-export function fillSurfaceRectangle(dest: Readonly<SurfaceRegion>, color: number): void {
-  ensureSurfaceWasm();
-  fill_surface_rectangle_wasm(asUint8(dest.surface.data), descriptorOf(dest), color);
-  invalidateImageResource(dest.surface);
+export function fillBitmapRectangle(dest: Readonly<BitmapRegion>, color: number): void {
+  ensureBitmapWasm();
+  fill_surface_rectangle_wasm(asUint8(dest.bitmap.data), descriptorOf(dest), color);
+  invalidateBitmap(dest.bitmap);
 }
 
-export function fillSurfaceNoise(
-  dest: Readonly<SurfaceRegion>,
+export function fillBitmapNoise(
+  dest: Readonly<BitmapRegion>,
   seed: number,
   low: number = 0,
   high: number = 255,
   grayScale: boolean = false,
 ): void {
-  ensureSurfaceWasm();
-  fill_surface_noise_wasm(asUint8(dest.surface.data), descriptorOf(dest), seed, low, high, grayScale);
-  invalidateImageResource(dest.surface);
+  ensureBitmapWasm();
+  fill_surface_noise_wasm(asUint8(dest.bitmap.data), descriptorOf(dest), seed, low, high, grayScale);
+  invalidateBitmap(dest.bitmap);
 }
 
-export function fillSurfacePerlinNoise(
-  dest: Readonly<SurfaceRegion>,
+export function fillBitmapPerlinNoise(
+  dest: Readonly<BitmapRegion>,
   baseX: number,
   baseY: number,
   octaves: number,
@@ -287,9 +282,9 @@ export function fillSurfacePerlinNoise(
   stitch: boolean = false,
   channelOptions: number = 0x7,
 ): void {
-  ensureSurfaceWasm();
+  ensureBitmapWasm();
   fill_surface_perlin_noise_wasm(
-    asUint8(dest.surface.data),
+    asUint8(dest.bitmap.data),
     descriptorOf(dest),
     baseX,
     baseY,
@@ -299,11 +294,11 @@ export function fillSurfacePerlinNoise(
     stitch,
     channelOptions,
   );
-  invalidateImageResource(dest.surface);
+  invalidateBitmap(dest.bitmap);
 }
 
-export function fillSurfaceTurbulence(
-  dest: Readonly<SurfaceRegion>,
+export function fillBitmapTurbulence(
+  dest: Readonly<BitmapRegion>,
   baseX: number,
   baseY: number,
   octaves: number,
@@ -312,9 +307,9 @@ export function fillSurfaceTurbulence(
   stitch: boolean = false,
   channelOptions: number = 0x7,
 ): void {
-  ensureSurfaceWasm();
+  ensureBitmapWasm();
   fill_surface_turbulence_wasm(
-    asUint8(dest.surface.data),
+    asUint8(dest.bitmap.data),
     descriptorOf(dest),
     baseX,
     baseY,
@@ -324,48 +319,48 @@ export function fillSurfaceTurbulence(
     stitch,
     channelOptions,
   );
-  invalidateImageResource(dest.surface);
+  invalidateBitmap(dest.bitmap);
 }
 
-export function dilateSurface(out: Uint8ClampedArray, source: Readonly<SurfaceRegion>, radius: number): void {
-  ensureSurfaceWasm();
-  dilate_surface_wasm(asUint8(out), asUint8(source.surface.data), descriptorOf(source), radius);
+export function dilateBitmap(out: Uint8ClampedArray, source: Readonly<BitmapRegion>, radius: number): void {
+  ensureBitmapWasm();
+  dilate_surface_wasm(asUint8(out), asUint8(source.bitmap.data), descriptorOf(source), radius);
 }
 
-export function erodeSurface(out: Uint8ClampedArray, source: Readonly<SurfaceRegion>, radius: number): void {
-  ensureSurfaceWasm();
-  erode_surface_wasm(asUint8(out), asUint8(source.surface.data), descriptorOf(source), radius);
+export function erodeBitmap(out: Uint8ClampedArray, source: Readonly<BitmapRegion>, radius: number): void {
+  ensureBitmapWasm();
+  erode_surface_wasm(asUint8(out), asUint8(source.bitmap.data), descriptorOf(source), radius);
 }
 
-export function pixelateSurface(out: Uint8ClampedArray, source: Readonly<SurfaceRegion>, blockSize: number): void {
-  ensureSurfaceWasm();
-  pixelate_surface_wasm(asUint8(out), asUint8(source.surface.data), descriptorOf(source), blockSize);
+export function pixelateBitmap(out: Uint8ClampedArray, source: Readonly<BitmapRegion>, blockSize: number): void {
+  ensureBitmapWasm();
+  pixelate_surface_wasm(asUint8(out), asUint8(source.bitmap.data), descriptorOf(source), blockSize);
 }
 
-export function premultiplySurfacePixels(
+export function premultiplyBitmapPixels(
   out: Uint8ClampedArray,
   source: Readonly<Uint8ClampedArray>,
   length: number,
 ): void {
-  ensureSurfaceWasm();
+  ensureBitmapWasm();
   premultiply_surface_pixels_wasm(asUint8(out), asUint8(source), length);
 }
 
-export function unpremultiplySurfacePixels(
+export function unpremultiplyBitmapPixels(
   out: Uint8ClampedArray,
   source: Readonly<Uint8ClampedArray>,
   length: number,
 ): void {
-  ensureSurfaceWasm();
+  ensureBitmapWasm();
   unpremultiply_surface_pixels_wasm(asUint8(out), asUint8(source), length);
 }
 
-export function getSurfaceCoverage(
-  source: Readonly<Surface>,
+export function getBitmapCoverage(
+  source: Readonly<Bitmap>,
   backgroundColor: number,
   channelTolerance: number = 0,
 ): number {
-  ensureSurfaceWasm();
+  ensureBitmapWasm();
   return get_surface_coverage_wasm(
     asUint8(source.data),
     source.width,
@@ -375,17 +370,17 @@ export function getSurfaceCoverage(
   );
 }
 
-export function getSurfaceColorBoundsRectangle(
-  source: Readonly<SurfaceRegion>,
+export function getBitmapColorBoundsRectangle(
+  source: Readonly<BitmapRegion>,
   mask: number,
   color: number,
   findColor: boolean = true,
 ): RectangleLike | null {
-  ensureSurfaceWasm();
+  ensureBitmapWasm();
   const rectangle = new Float64Array(4);
   const found = get_surface_color_bounds_rectangle_wasm(
     rectangle,
-    asUint8(source.surface.data),
+    asUint8(source.bitmap.data),
     descriptorOf(source),
     mask,
     color,
@@ -401,10 +396,10 @@ export function getSurfaceColorBoundsRectangle(
     : null;
 }
 
-export function getSurfaceHistogram(source: Readonly<SurfaceRegion>): SurfaceHistogram {
-  ensureSurfaceWasm();
+export function getBitmapHistogram(source: Readonly<BitmapRegion>): BitmapHistogram {
+  ensureBitmapWasm();
   const histogram = new Float64Array(1024);
-  get_surface_histogram_wasm(histogram, asUint8(source.surface.data), descriptorOf(source));
+  get_surface_histogram_wasm(histogram, asUint8(source.bitmap.data), descriptorOf(source));
   return {
     red: Array.from(histogram.subarray(0, 256)),
     green: Array.from(histogram.subarray(256, 512)),
@@ -413,12 +408,12 @@ export function getSurfaceHistogram(source: Readonly<SurfaceRegion>): SurfaceHis
   };
 }
 
-export function getSurfaceMismatch(
-  source: Readonly<Surface>,
-  other: Readonly<Surface>,
+export function getBitmapMismatch(
+  source: Readonly<Bitmap>,
+  other: Readonly<Bitmap>,
   channelTolerance: number = 0,
-): SurfaceMismatch {
-  ensureSurfaceWasm();
+): BitmapMismatch {
+  ensureBitmapWasm();
   const mismatch = new Float64Array(4);
   get_surface_mismatch_wasm(
     mismatch,
@@ -438,37 +433,37 @@ export function getSurfaceMismatch(
   };
 }
 
-export function mergeSurfaceChannels(
-  out: Readonly<SurfaceRegion>,
-  red: Readonly<SurfaceRegion>,
-  green: Readonly<SurfaceRegion>,
-  blue: Readonly<SurfaceRegion>,
-  alpha: Readonly<SurfaceRegion>,
+export function mergeBitmapChannels(
+  out: Readonly<BitmapRegion>,
+  red: Readonly<BitmapRegion>,
+  green: Readonly<BitmapRegion>,
+  blue: Readonly<BitmapRegion>,
+  alpha: Readonly<BitmapRegion>,
 ): void {
-  ensureSurfaceWasm();
+  ensureBitmapWasm();
   merge_surface_channels_wasm(
-    asUint8(out.surface.data),
+    asUint8(out.bitmap.data),
     descriptorOf(out),
-    asUint8(red.surface.data),
+    asUint8(red.bitmap.data),
     descriptorOf(red),
-    asUint8(green.surface.data),
+    asUint8(green.bitmap.data),
     descriptorOf(green),
-    asUint8(blue.surface.data),
+    asUint8(blue.bitmap.data),
     descriptorOf(blue),
-    asUint8(alpha.surface.data),
+    asUint8(alpha.bitmap.data),
     descriptorOf(alpha),
   );
-  invalidateImageResource(out.surface);
+  invalidateBitmap(out.bitmap);
 }
 
-function ensureSurfaceWasm(): void {
+function ensureBitmapWasm(): void {
   if (initialized) return;
   initSync({ module: surfaceWasmBytes });
   initialized = true;
 }
 
 function runMatrixWriter(out: number[], operation: (typed: Float64Array) => void): void {
-  ensureSurfaceWasm();
+  ensureBitmapWasm();
   const typed = Float64Array.from(out);
   operation(typed);
   for (let index = 0; index < typed.length; index += 1) out[index] = typed[index]!;
@@ -479,8 +474,8 @@ function asUint8(data: Readonly<Uint8Array | Uint8ClampedArray>): Uint8Array {
   return new Uint8Array(view.buffer, view.byteOffset, view.byteLength);
 }
 
-function descriptorOf(region: Readonly<SurfaceRegion>): Float64Array {
-  return Float64Array.of(region.surface.width, region.surface.height, region.x, region.y, region.width, region.height);
+function descriptorOf(region: Readonly<BitmapRegion>): Float64Array {
+  return Float64Array.of(region.bitmap.width, region.bitmap.height, region.x, region.y, region.width, region.height);
 }
 
 function channelMap(values: ReadonlyArray<number> | null): Float64Array {

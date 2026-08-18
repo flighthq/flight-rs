@@ -4,7 +4,7 @@
 // buildable without compiling the complete upstream monorepo.
 
 declare module '@flighthq/types' {
-  export interface Surface {
+  export interface Bitmap {
     readonly data: Uint8ClampedArray<ArrayBuffer>;
     height: number;
     version: number;
@@ -18,27 +18,27 @@ declare module '@flighthq/types' {
     y: number;
   }
 
-  export interface SurfaceFingerprint {
+  export interface BitmapFingerprint {
     readonly cells: Uint8Array;
     readonly gridSize: number;
   }
 
-  export interface SurfaceRegion {
+  export interface BitmapRegion {
     height: number;
-    surface: Surface;
+    bitmap: Bitmap;
     width: number;
     x: number;
     y: number;
   }
 
-  export interface SurfaceHistogram {
+  export interface BitmapHistogram {
     alpha: number[];
     blue: number[];
     green: number[];
     red: number[];
   }
 
-  export interface SurfaceMismatch {
+  export interface BitmapMismatch {
     fraction: number;
     maxChannelDelta: number;
     mismatchedPixels: number;
@@ -46,14 +46,11 @@ declare module '@flighthq/types' {
   }
 }
 
-declare module '@flighthq/image' {
-  import type { Surface } from '@flighthq/types';
+declare module '@flighthq/bitmap' {
+  import type { Bitmap } from '@flighthq/types';
 
-  export function invalidateImageResource(resource: Surface): void;
-}
-
-declare module '@flighthq/surface' {
-  export interface SurfaceConvolutionOptions {
+  export function invalidateBitmap(bitmap: Bitmap): void;
+  export interface BitmapConvolutionOptions {
     bias?: number;
     edge?: 'clamp' | 'mirror' | 'transparent' | 'wrap';
     divisor?: number;

@@ -28,17 +28,16 @@
     "clean:dist": "tsx ../../scripts/clean-package-dist.ts"
   },
   "dependencies": {
-    "@flighthq/image": "*",
-    "@flighthq/surface": "*",
+    "@flighthq/bitmap": "*",
     "@flighthq/types": "*"
   },
   "devDependencies": {
     "typescript": "^5.3.0"
   },
-  "description": "wasm-backed drop-in for @flighthq/surface: identical API, bulk pixel ops run in Rust",
+  "description": "wasm-backed drop-in for @flighthq/bitmap: identical API, bulk pixel ops run in Rust",
   "sideEffects": false,
   "flightRsSubstitute": {
-    "authoritativePackage": "@flighthq/surface",
+    "authoritativePackage": "@flighthq/bitmap",
     "crate": "flighthq-surface",
     "kind": "rust-wasm",
     "rustBacked": true,
