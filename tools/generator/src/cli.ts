@@ -13,6 +13,7 @@ import {
   stableJson,
   writeOrCheck,
 } from './emit/reports.ts';
+import { assertSurfaceWasmArtifactFresh } from './wasm-artifact.ts';
 
 const argumentsSet = new Set(process.argv.slice(2));
 const check = argumentsSet.has('--check');
@@ -46,6 +47,7 @@ try {
       for (const report of reports) {
         writeOrCheck(path.join(reportsDirectory, report.file), report.content, check);
       }
+      if (check) assertSurfaceWasmArtifactFresh(workspaceDirectory);
       const emitted = generation.targets.reduce((total, target) => total + target.emittedSources.length, 0);
       const excluded = generation.targets.reduce((total, target) => total + target.sourceExclusions.length, 0);
       const unsupported = generation.targets.reduce((total, target) => total + target.unsupportedSources.length, 0);

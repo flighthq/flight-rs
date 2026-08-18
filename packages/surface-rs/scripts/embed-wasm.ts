@@ -7,11 +7,13 @@ import { readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { renderSurfaceWasmBytes } from '../../../tools/generator/src/wasm-artifact.ts';
+
 const here = dirname(fileURLToPath(import.meta.url));
+const workspace = join(here, '../../..');
 const wasmDir = join(here, '..', 'src', 'wasm');
 
 const bytes = readFileSync(join(wasmDir, 'surface_wasm_bg.wasm'));
-const base64 = bytes.toString('base64');
 
 // wasm-pack scaffolds the out-dir as if it were its own publishable package,
 // dropping a `package.json` and a `.gitignore` (`*`). This dir is generated
@@ -22,21 +24,4 @@ for (const scaffold of ['package.json', '.gitignore', 'surface_wasm_bg.wasm', 's
   rmSync(join(wasmDir, scaffold), { force: true });
 }
 
-const module = `// GENERATED — do not edit by hand. Produced by scripts/embed-wasm.ts from
-// crates/flighthq-surface-wasm. Holds the wasm module as base64 so init is
-// synchronous and needs no file read or network fetch in any environment.
-
-const base64 =
-  '${base64}';
-
-function decodeBase64(value: string): Uint8Array {
-  const binary = atob(value);
-  const out = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i += 1) out[i] = binary.charCodeAt(i);
-  return out;
-}
-
-export const surfaceWasmBytes: Uint8Array = decodeBase64(base64);
-`;
-
-writeFileSync(join(wasmDir, 'surfaceWasmBytes.ts'), module);
+writeFileSync(join(wasmDir, 'surfaceWasmBytes.ts'), renderSurfaceWasmBytes(workspace, bytes));
