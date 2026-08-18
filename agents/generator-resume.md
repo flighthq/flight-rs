@@ -18,7 +18,7 @@ The pinned Flight revision is `cad72aa3ea4e6e76a050918a403dcb10efdfcb0d`, matchi
 
 ## Current checkpoint
 
-`reports/generation.json` is the machine-readable source of truth. Its current summary is:
+`reports/inventory.json` is current for the pinned upstream revision. `reports/generation.json` is the last successful full-generation checkpoint at upstream `5d24729f7360475e28a105ae0caeeaa2e1328260`; regenerate it with Rust/rustfmt installed before using its compiled-candidate counts as current. That checkpoint summary is:
 
 | State                           | Count |
 | ------------------------------- | ----: |
