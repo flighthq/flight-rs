@@ -448,6 +448,8 @@ export const portConfig = {
       },
       typeMappings: {},
     },
+    // Temporary X1 naming exception: this cultivated selection retains the shipped flighthq-surface
+    // compatibility name. agents/architecture.md records the invariant and flighthq-bitmap migration path.
     {
       conformanceTemplate: 'tools/generator/templates/surface_conformance.rs',
       crate: 'flighthq-surface',

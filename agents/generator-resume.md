@@ -7,7 +7,7 @@ This is the durable handoff for continuing the mechanical Flight TypeScript-to-R
 The repository is a compiler project, not a collection of manually ported crates.
 
 - A small, explicit set of packages may be cultivated by hand.
-- `packages/surface-rs` is the compatibility-named cultivated facade for upstream `@flighthq/bitmap`. Its bitmap source/declaration selections are explicit; the `flighthq-surface` crate is generated from those selections and must not be edited by hand.
+- `packages/surface-rs` is the compatibility-named cultivated facade for upstream `@flighthq/bitmap`. Its bitmap source/declaration selections are explicit; the `flighthq-surface` crate is generated from those selections and must not be edited by hand. This is the one temporary crate-naming exception: inventory retains canonical `flighthq-bitmap`, bitmap must remain cultivated/not-applicable while the exception exists, and no automatic bitmap candidate may share a graph with the compatibility-generated definitions. Migrate by generating the selection as `flighthq-bitmap`, rewiring the wasm facade, and retaining `flighthq-surface` only as a thin re-export adapter if compatibility requires it.
 - This bitmap facade is the only package planned as a standalone wasm package.
 - Selected host packages, build tools such as `tool-capture`, and `*-dom` packages may be host-bound or excluded by explicit policy.
 - All other upstream packages enter generation by default. A failure must appear as a source, compile, or dependency blocker in the generation report.
