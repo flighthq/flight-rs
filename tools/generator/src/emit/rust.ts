@@ -1106,6 +1106,35 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
       )}\n}`;
       return [`for ${safeName(statement.variable)} in ${iterablePlace}.iter().cloned() ${body}`];
     }
+    case 'forIn': {
+      if (statement.enumeration !== 'direct-record') {
+        throw new RustEmissionError('dynamic for-in Rust enumeration is not implemented');
+      }
+      const objectType = inferIrExpressionType(statement.object, context);
+      const resolved = objectType ? (resolveSemanticType(objectType, context) ?? objectType) : undefined;
+      if (resolved?.kind !== 'named' || resolved.name !== 'RustMap') {
+        throw new RustEmissionError('direct for-in Rust enumeration requires a string-keyed record');
+      }
+      const object = emitExpression(statement.object, context);
+      const loopContext: EmitContext = {
+        ...context,
+        continueEpilogue: [],
+        placeAliases: new Map(context.placeAliases),
+        symbolTypes: new Map(context.symbolTypes),
+      };
+      loopContext.symbolTypes.set(statement.variable, { kind: 'primitive', name: 'String' });
+      const body = emitStatementAsBlock(statement.body, loopContext);
+      return [
+        '{',
+        indent(
+          [
+            `let __flight_keys: Vec<String> = ${parenthesize(object)}.iter().map(|(key, _)| key.clone()).collect();`,
+            `for ${safeName(statement.variable)} in __flight_keys ${body}`,
+          ].join('\n'),
+        ),
+        '}',
+      ];
+    }
     case 'if': {
       const constant = evaluateStaticBoolean(statement.condition, context);
       if (constant === true) return emitStatement(statement.consequent, context);

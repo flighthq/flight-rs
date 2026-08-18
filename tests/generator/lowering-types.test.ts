@@ -310,4 +310,37 @@ describe('configured type lowering exceptions', () => {
       true,
     );
   });
+
+  it('classifies for-in enumeration without pretending dynamic objects are portable records', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/example/src/for-in.ts',
+      `
+        type Values = Readonly<Record<string, number>>;
+        export function recordKeys(values: Values): string[] {
+          const result: string[] = [];
+          for (const key in values) result.push(key);
+          return result;
+        }
+        export function dynamicKeys(values: any): string[] {
+          const result: string[] = [];
+          for (const key in values) result.push(key);
+          return result;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/example', '/workspace');
+    const loop = (name: string) => {
+      const declaration = lowered.declarations.find((item) => item.kind === 'function' && item.name === name);
+      return declaration?.kind === 'function'
+        ? declaration.body.find((statement) => statement.kind === 'forIn')
+        : undefined;
+    };
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(loop('recordKeys')).toMatchObject({ enumeration: 'direct-record', kind: 'forIn', variable: 'key' });
+    expect(loop('dynamicKeys')).toMatchObject({ enumeration: 'runtime', kind: 'forIn', variable: 'key' });
+  });
 });

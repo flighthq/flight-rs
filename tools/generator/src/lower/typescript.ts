@@ -2221,6 +2221,22 @@ function lowerStatement(node: ts.Statement, context: LoweringContext): IrStateme
       variable,
     };
   }
+  if (ts.isForInStatement(node)) {
+    if (!ts.isVariableDeclarationList(node.initializer) || node.initializer.declarations.length !== 1) {
+      return unsupported(node.initializer, context, 'for-in initializer');
+    }
+    const declaration = node.initializer.declarations[0]!;
+    if (!ts.isIdentifier(declaration.name)) {
+      return unsupported(declaration.name, context, 'for-in initializer');
+    }
+    return {
+      body: lowerStatement(node.statement, context),
+      enumeration: isStringIndexedRecordExpression(node.expression, context) ? 'direct-record' : 'runtime',
+      kind: 'forIn',
+      object: lowerExpression(node.expression, context),
+      variable: declaration.name.text,
+    };
+  }
   if (ts.isTypeAliasDeclaration(node)) return { kind: 'block', statements: [] };
   if (ts.isThrowStatement(node))
     return {
@@ -2291,6 +2307,77 @@ function lowerStatement(node: ts.Statement, context: LoweringContext): IrStateme
   }
   if (ts.isEmptyStatement(node)) return { kind: 'block', statements: [] };
   return unsupported(node, context, `statement ${ts.SyntaxKind[node.kind] ?? node.kind}`);
+}
+
+function isStringIndexedRecordExpression(node: ts.Expression, context: LoweringContext): boolean {
+  if (!ts.isIdentifier(node)) return false;
+  const parameter = findEnclosingParameter(node);
+  if (parameter?.type && isStringIndexedRecordType(parameter.type, context, new Set())) return true;
+  let current: ts.Node | undefined = node;
+  while (current) {
+    for (const child of current.getChildren(context.sourceFile)) {
+      if (
+        ts.isVariableDeclaration(child) &&
+        ts.isIdentifier(child.name) &&
+        child.name.text === node.text &&
+        child.type &&
+        isStringIndexedRecordType(child.type, context, new Set())
+      ) {
+        return true;
+      }
+    }
+    current = current.parent;
+  }
+  return false;
+}
+
+function isStringIndexedRecordType(node: ts.TypeNode, context: LoweringContext, visited: Set<string>): boolean {
+  if (ts.isParenthesizedTypeNode(node)) return isStringIndexedRecordType(node.type, context, visited);
+  if (ts.isUnionTypeNode(node) || ts.isIntersectionTypeNode(node)) {
+    return node.types.length > 0 && node.types.every((item) => isStringIndexedRecordType(item, context, visited));
+  }
+  if (ts.isTypeLiteralNode(node)) {
+    return node.members.some(
+      (member) =>
+        ts.isIndexSignatureDeclaration(member) && member.parameters[0]?.type?.kind === ts.SyntaxKind.StringKeyword,
+    );
+  }
+  if (!ts.isTypeReferenceNode(node) || !ts.isIdentifier(node.typeName)) return false;
+  const name = node.typeName.text;
+  if (name === 'Readonly' && node.typeArguments?.[0]) {
+    return isStringIndexedRecordType(node.typeArguments[0], context, visited);
+  }
+  if (name === 'Record') {
+    const key = node.typeArguments?.[0];
+    return key?.kind === ts.SyntaxKind.StringKeyword;
+  }
+  return isStringIndexedRecordDeclaration(name, context, visited);
+}
+
+function isStringIndexedRecordDeclaration(name: string, context: LoweringContext, visited: Set<string>): boolean {
+  if (visited.has(name)) return false;
+  const declaration = context.sourceFile.statements.find(
+    (statement): statement is ts.InterfaceDeclaration | ts.TypeAliasDeclaration =>
+      (ts.isInterfaceDeclaration(statement) || ts.isTypeAliasDeclaration(statement)) && statement.name.text === name,
+  );
+  if (!declaration) return false;
+  const nextVisited = new Set([...visited, name]);
+  if (ts.isTypeAliasDeclaration(declaration)) {
+    return isStringIndexedRecordType(declaration.type, context, nextVisited);
+  }
+  return (
+    declaration.members.some(
+      (member) =>
+        ts.isIndexSignatureDeclaration(member) && member.parameters[0]?.type?.kind === ts.SyntaxKind.StringKeyword,
+    ) ||
+    declaration.heritageClauses?.some((clause) =>
+      clause.types.some(
+        (type) =>
+          ts.isIdentifier(type.expression) &&
+          isStringIndexedRecordDeclaration(type.expression.text, context, nextVisited),
+      ),
+    ) === true
+  );
 }
 
 function callbackParameterType(parameter: IrParameter): IrType {

@@ -9,6 +9,51 @@ import { emitRustModule } from '../../tools/generator/src/emit/rust.ts';
 import { lowerTypeScriptSource } from '../../tools/generator/src/lower/typescript.ts';
 
 describe('Rust emission', () => {
+  it('emits typed record for-in loops while rejecting dynamic enumeration', () => {
+    const lower = (body: string) =>
+      lowerTypeScriptSource(
+        ts.createSourceFile(
+          '/workspace/upstream/packages/example/src/for-in.ts',
+          body,
+          ts.ScriptTarget.Latest,
+          true,
+          ts.ScriptKind.TS,
+        ),
+        '@flighthq/example',
+        '/workspace',
+      );
+    const typed = lower(`
+      export function recordKeys(values: Record<string, number>): string[] {
+        const result: string[] = [];
+        for (const key in values) result.push(key);
+        return result;
+      }
+    `);
+    const dynamic = lower(`
+      export function dynamicKeys(values: any): string[] {
+        const result: string[] = [];
+        for (const key in values) result.push(key);
+        return result;
+      }
+    `);
+    const output = emitRustModule({
+      declarations: typed.declarations,
+      source: 'upstream/packages/example/src/for-in.ts',
+      typeImports: [],
+    });
+
+    expect(typed.diagnostics).toEqual([]);
+    expect(output).toContain('let __flight_keys: Vec<String> = (values).iter().map(|(key, _)| key.clone()).collect();');
+    expect(output).toContain('for key in __flight_keys');
+    expect(() =>
+      emitRustModule({
+        declarations: dynamic.declarations,
+        source: 'upstream/packages/example/src/for-in.ts',
+        typeImports: [],
+      }),
+    ).toThrow('dynamic for-in Rust enumeration is not implemented');
+  });
+
   it('deterministically emits and compiles numeric control flow and closures', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/math/src/sample.ts',
