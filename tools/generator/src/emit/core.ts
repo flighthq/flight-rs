@@ -183,6 +183,12 @@ export interface CandidateCrateNode {
   requiredDependencies: Array<{ crate: string; package: string }>;
 }
 
+export interface RustCrateIdentityNode {
+  crate: string;
+  disposition: 'generated' | PackageDisposition;
+  package: string;
+}
+
 export interface WasmFacadeReport {
   coreCrate: string;
   crate: string;
@@ -264,6 +270,14 @@ export function generateRust(
   inventory: UpstreamInventory,
 ): RustGenerationReport {
   validatePackagePolicy(inventory.packages);
+  validateCompatibilityCrateTargets(
+    inventory.packages.map((item) => ({
+      crate: item.rustCrate,
+      disposition: resolvePackagePolicy(item.name)?.disposition ?? 'generated',
+      package: item.name,
+    })),
+    portConfig.targets,
+  );
   generateFlightTaskRuntime(workspaceDirectory, check);
   // Promoted crates are path dependencies of automatic candidates. Generate them first so a clean or
   // interrupted workspace does not make candidate compilation depend on stale generated output.
@@ -917,6 +931,39 @@ export function validateCandidateCrateGraph(packages: readonly CandidateCrateNod
           `Fully promoted package ${item.package} depends on non-fully-promoted package ${dependency.package}`,
         );
       }
+    }
+  }
+}
+
+export function validateCompatibilityCrateTargets(
+  packages: readonly RustCrateIdentityNode[],
+  targets: readonly Pick<RustTarget, 'compatibilityForCrate' | 'crate' | 'fullyPromoted' | 'package'>[],
+): void {
+  const packageByName = new Map(packages.map((item) => [item.package, item]));
+  for (const target of targets) {
+    const canonicalCrate = target.compatibilityForCrate;
+    if (!canonicalCrate) continue;
+    const packageIdentity = packageByName.get(target.package);
+    if (!packageIdentity) {
+      throw new Error(`Compatibility crate ${target.crate} references missing upstream package ${target.package}`);
+    }
+    if (canonicalCrate !== packageIdentity.crate) {
+      throw new Error(
+        `Compatibility crate ${target.crate} declares canonical crate ${canonicalCrate} for ${target.package}, but inventory selects ${packageIdentity.crate}`,
+      );
+    }
+    if (target.crate === canonicalCrate) {
+      throw new Error(`Compatibility crate ${target.crate} must differ from canonical crate ${canonicalCrate}`);
+    }
+    if (target.fullyPromoted) {
+      throw new Error(
+        `Compatibility crate ${target.crate} cannot fully promote ${target.package} under non-canonical identity ${target.crate}`,
+      );
+    }
+    if (packageIdentity.disposition === 'generated' || packageIdentity.disposition === 'host-backend') {
+      throw new Error(
+        `Compatibility crate ${target.crate} contains ${target.package} definitions while automatic candidate ${canonicalCrate} is enabled; only one may materialize`,
+      );
     }
   }
 }

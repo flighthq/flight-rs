@@ -19,6 +19,7 @@ export interface ConformanceHarvestPackage {
 }
 
 export interface RustTarget {
+  compatibilityForCrate?: string;
   conformanceTemplate?: string;
   crate: string;
   declarationSelection?: Record<string, { names: string[]; reason: string }>;
@@ -451,6 +452,7 @@ export const portConfig = {
     // Temporary X1 naming exception: this cultivated selection retains the shipped flighthq-surface
     // compatibility name. agents/architecture.md records the invariant and flighthq-bitmap migration path.
     {
+      compatibilityForCrate: 'flighthq-bitmap',
       conformanceTemplate: 'tools/generator/templates/surface_conformance.rs',
       crate: 'flighthq-surface',
       declarationSelection: {

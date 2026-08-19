@@ -9,6 +9,7 @@ import {
   rustDependencyForSpecifier,
   validateAsyncTaskDispositionPartition,
   validateCandidateCrateGraph,
+  validateCompatibilityCrateTargets,
   validateTaskConstructionDispositionPartition,
   type CandidateCrateNode,
   type RustGenerationReport,
@@ -109,6 +110,35 @@ describe('candidate crate resolution', () => {
       ]),
     ).toThrow(
       'Candidate dependency edge @flighthq/tween -> @flighthq/types names flighthq-renamed-types, but the resolution map selects flighthq-types',
+    );
+  });
+
+  it('rejects an automatic candidate beside a compatibility crate containing the same package definitions', () => {
+    const bitmap = portConfig.targets.find((target) => target.package === '@flighthq/bitmap');
+    if (!bitmap) throw new Error('Expected cultivated bitmap target');
+
+    expect(bitmap.compatibilityForCrate).toBe('flighthq-bitmap');
+    expect(() =>
+      validateCompatibilityCrateTargets(
+        [{ crate: 'flighthq-bitmap', disposition: 'generated', package: '@flighthq/bitmap' }],
+        [bitmap],
+      ),
+    ).toThrow(
+      'Compatibility crate flighthq-surface contains @flighthq/bitmap definitions while automatic candidate flighthq-bitmap is enabled; only one may materialize',
+    );
+    expect(() =>
+      validateCompatibilityCrateTargets(
+        [{ crate: 'flighthq-bitmap', disposition: 'cultivated', package: '@flighthq/bitmap' }],
+        [bitmap],
+      ),
+    ).not.toThrow();
+    expect(() =>
+      validateCompatibilityCrateTargets(
+        [{ crate: 'flighthq-bitmap-v2', disposition: 'cultivated', package: '@flighthq/bitmap' }],
+        [bitmap],
+      ),
+    ).toThrow(
+      'Compatibility crate flighthq-surface declares canonical crate flighthq-bitmap for @flighthq/bitmap, but inventory selects flighthq-bitmap-v2',
     );
   });
 });
