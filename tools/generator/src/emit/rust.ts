@@ -1740,7 +1740,7 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
         )?.kind === 'dynamic' &&
         isDynamicHostCastTarget(expression.type, context)
       ) {
-        return `crate::host_value::<${emitType(expression.type, context)}>("host.cast")`;
+        return emitHostValueExpression(expression.type, '"host.cast"', context);
       }
       return emitExpression(
         expression.expression,
@@ -1929,6 +1929,14 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
   }
 }
 
+function emitHostValueExpression(type: IrType, operation: string, context: EmitContext): string {
+  const resolved = resolveSemanticType(type, context) ?? type;
+  if (resolved.kind === 'task') {
+    return `crate::host_task::<${emitType(resolved.output, context)}>(${operation})`;
+  }
+  return `crate::host_value::<${emitType(type, context)}>(${operation})`;
+}
+
 function emitCall(
   expression: Extract<IrExpression, { kind: 'call' }>,
   context: EmitContext,
@@ -1959,7 +1967,7 @@ function emitCall(
   }
   const knownHostReturnType = inferKnownHostCallReturnType(expression, context);
   if (knownHostReturnType) {
-    return `crate::host_value::<${emitType(expectedType ?? knownHostReturnType, context)}>("host.call")`;
+    return emitHostValueExpression(expectedType ?? knownHostReturnType, '"host.call"', context);
   }
   if (isSymbolConstruction(expression)) {
     if (expression.callee.kind === 'property' && expression.callee.name === 'for' && expression.arguments[0]) {
@@ -2092,7 +2100,7 @@ function emitCall(
         (resolveSemanticType(expectedType, context) ?? expectedType)?.kind === 'array'
           ? expectedType!
           : ({ element: { kind: 'dynamic' }, kind: 'array' } as const);
-      return `crate::host_value::<${emitType(result, context)}>("host.Array.from")`;
+      return emitHostValueExpression(result, '"host.Array.from"', context);
     }
     if (owner === 'Math') {
       return emitMathCall(
@@ -2128,7 +2136,7 @@ function emitCall(
         : emitCollectionPlace(expression.callee.object, context);
     if (collectionType?.kind === 'dynamic' || isNativeHostHandleType(collectionType)) {
       const result = expectedType ?? primitive('Void');
-      return `crate::host_value::<${emitType(result, context)}>(${emitRustStringLiteral(`host.${method}`)})`;
+      return emitHostValueExpression(result, emitRustStringLiteral(`host.${method}`), context);
     }
     if (collectionType?.kind === 'named' && collectionType.name === 'RustMap') {
       const keyType = collectionType.arguments[0];
@@ -2556,7 +2564,7 @@ function emitCall(
   }
   if (calleeType?.kind === 'dynamic') {
     const result = expectedType ?? primitive('Void');
-    return `crate::host_value::<${emitType(result, context)}>("host.call")`;
+    return emitHostValueExpression(result, '"host.call"', context);
   }
   const arguments_ = expression.arguments.map((argument) =>
     argument.kind === 'spread' ? emitExpression(argument.expression, context) : emitExpression(argument, context),
@@ -3287,7 +3295,7 @@ function emitProperty(
   const resolvedReceiver = resolvedObject?.kind === 'nullable' ? resolvedObject.inner : resolvedObject;
   if (resolvedReceiver?.kind === 'dynamic' || isNativeHostHandleType(resolvedReceiver)) {
     const result = expectedType ?? inferDynamicHostPropertyType(expression.name) ?? { kind: 'dynamic' };
-    return `crate::host_value::<${emitType(result, context)}>(${emitRustStringLiteral(`host.${expression.name}`)})`;
+    return emitHostValueExpression(result, emitRustStringLiteral(`host.${expression.name}`), context);
   }
   if (objectType?.kind === 'array' && expression.name === 'length') {
     return `(${emitCollectionPlace(expression.object, context)}.len() as f64)`;
@@ -3464,7 +3472,7 @@ function emitOptionalProperty(
   if (inner.kind === 'dynamic' || isNativeHostHandleType(inner)) {
     const result =
       expectedType?.kind === 'nullable' ? expectedType : ({ inner: expectedType ?? inner, kind: 'nullable' } as const);
-    return `crate::host_value::<${emitType(result, context)}>(${emitRustStringLiteral(`host.${expression.name}`)})`;
+    return emitHostValueExpression(result, emitRustStringLiteral(`host.${expression.name}`), context);
   }
   const owner = emitPlaceExpression(expression.object, context);
   if (
@@ -7596,7 +7604,7 @@ function emitElementRead(
 ): string {
   if (isDynamicHostTree(expression.object, context)) {
     const result = expectedType ?? inferDynamicHostElementType(expression.object, context) ?? { kind: 'dynamic' };
-    return `crate::host_value::<${emitType(result, context)}>("host.index")`;
+    return emitHostValueExpression(result, '"host.index"', context);
   }
   const place = emitElement(expression, context);
   if (expression.optional) return place;

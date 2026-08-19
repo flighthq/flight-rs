@@ -10755,43 +10755,36 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:36c84da157708553d096c7fbe08b4f4963e6199b0985b26af2c36741373723fc",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 1); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (5 opaque sources exceeds the approved baseline of 1); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/animation/src/animationBlendTree.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:c9f6d90793ced50d98f834824c49cf94ffaf8a87613afd5f8861279dffd653b2",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 1); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (5 opaque sources exceeds the approved baseline of 1); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/animation/src/animationClip.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:ef7825c12d50c1ecbe4408c1d271efd9ae4f0bfdb1c7cde163e5e79c14503cd2",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 1); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (5 opaque sources exceeds the approved baseline of 1); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/animation/src/animationCrossfade.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:d4e55fcf46986c2d645b1051e6bbe753806027d52352ea28bd11a915253e1b06",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 1); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (5 opaque sources exceeds the approved baseline of 1); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/animation/src/animationLayerStack.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:108aec5980519a8221d7cd51347f8b0f02240e05cb1ece69dc2e9ea6553be3e2",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 1); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (5 opaque sources exceeds the approved baseline of 1); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/animation/src/animationStateMachine.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:6af2587c8abf3bb8ab76c1a213ea5aea6aa7681f0f47ecf809208daa31e21df3",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 1); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
-          "source": "upstream/packages/animation/src/animationTrack.ts",
           "stage": "emission"
         }
       ],
@@ -10897,6 +10890,27 @@
           "module": "animation_state_machine_advance",
           "outputSha256": "sha256:b6933c82f1469af15298ba139d98e70d4779e2ef9718327adf52b59471be9e4e",
           "source": "upstream/packages/animation/src/animationStateMachineAdvance.ts",
+          "usesOpaqueHostValues": false
+        },
+        {
+          "declarationNames": [
+            "cloneAnimationTrack",
+            "cloneNumberBuffer",
+            "copyKeyframeValue",
+            "createAnimationTrack",
+            "keyframeStride",
+            "keyframeValueOffset",
+            "normalizeFlatQuaternion",
+            "sampleAnimationTrack",
+            "sampleCubicSegment",
+            "slerpFlatQuaternion",
+            "trimAnimationTrack",
+            "validateAnimationTrack"
+          ],
+          "declarations": 12,
+          "module": "animation_track",
+          "outputSha256": "sha256:1120f200424dcd1935b4f5711eb5879741657d3f2acc4e471e67a588612ea51a",
+          "source": "upstream/packages/animation/src/animationTrack.ts",
           "usesOpaqueHostValues": false
         },
         {
@@ -11372,7 +11386,7 @@
           ],
           "declarations": 74,
           "module": "window",
-          "outputSha256": "sha256:4d00bd3c055ced7274b1348e384f979e6d6cf8395677a17cc132270f12627b87",
+          "outputSha256": "sha256:c9ec5cb444f01c42a6591103da1c293d13447409578a08f2dbac6403c2dc8021",
           "source": "upstream/packages/application/src/window.ts",
           "usesOpaqueHostValues": true
         }
@@ -25264,25 +25278,9 @@
       "attemptedSources": 3,
       "blockers": [],
       "candidate": {
-        "compileDiagnostics": [
-          {
-            "code": "E0432",
-            "message": "unresolved import `flighthq_host_signals`",
-            "source": "generated/candidates/flighthq-input/src/input_manager.rs"
-          },
-          {
-            "code": "E0277",
-            "message": "the trait bound `FlightTask<bool>: Default` is not satisfied",
-            "source": "generated/candidates/flighthq-input/src/input_manager.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-input/src/input_manager.rs"
-          }
-        ],
+        "compileDiagnostics": [],
         "path": "generated/candidates/flighthq-input",
-        "status": "compile-blocked",
+        "status": "compiled",
         "syntaxCheckedSources": 3,
         "unresolvedDependencies": []
       },
@@ -25390,7 +25388,7 @@
           ],
           "declarations": 69,
           "module": "input_manager",
-          "outputSha256": "sha256:3cf82eb7bf2d2b3b8f629ff583331b108a9bbbf6784dedd2365171a25a9269b0",
+          "outputSha256": "sha256:d60572bcececb258f1fc93c45b4db4df63b5193e1713afbfa75812003b3d58f9",
           "source": "upstream/packages/input/src/inputManager.ts",
           "usesOpaqueHostValues": true
         }
@@ -25442,6 +25440,10 @@
       "package": "@flighthq/input",
       "promotedTarget": true,
       "requiredDependencies": [
+        {
+          "crate": "flighthq-signals",
+          "package": "@flighthq/signals"
+        },
         {
           "crate": "flighthq-types",
           "package": "@flighthq/types"
@@ -30900,13 +30902,6 @@
       "blockers": [
         {
           "diagnostics": [],
-          "fingerprint": "sha256:920db906d6704c7affea8dd5c6591d2b237727bd1be30bbd4dea1d49b5be3e56",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (1 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
-          "source": "upstream/packages/path/src/pathMorphGeometry.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
           "fingerprint": "sha256:4215f7518a977069e270401fb1a946080eacec6a3751954d0b09dbb6cfeff747",
           "reason": "appendRoundCap: spread Rust lowering is not implemented",
           "source": "upstream/packages/path/src/tessellateStrokePath.ts",
@@ -31222,6 +31217,42 @@
           "module": "path_morph",
           "outputSha256": "sha256:2f498860405fdf47aeb093c6e08d9a69aaf7b6d434afb8346f048654fe24c4ef",
           "source": "upstream/packages/path/src/pathMorph.ts",
+          "usesOpaqueHostValues": false
+        },
+        {
+          "declarationNames": [
+            "CubicContour",
+            "CubicSegment",
+            "PathMorphBuildResult",
+            "PathMorphIssueContourClosednessMismatch",
+            "PathMorphIssueContourCountMismatch",
+            "PathMorphIssueContourOrientationMismatch",
+            "PathMorphIssueNone",
+            "PathMorphIssueWindingMismatch",
+            "alignClosedCubicContour",
+            "appendCubicContourPair",
+            "appendCubicSegment",
+            "appendLineAsCubic",
+            "appendQuadraticAsCubic",
+            "buildPathMorph",
+            "closeCubicContour",
+            "createCubicContour",
+            "cubicControlPolygonLength",
+            "decodeCubicContours",
+            "equalizeCubicContourSegments",
+            "getCubicContourOrientation",
+            "getCubicContourSignedArea",
+            "getCubicPowerCoefficients",
+            "normalizeCubicContourOrientations",
+            "pointDistance",
+            "reverseClosedCubicContour",
+            "splitCubicSegment",
+            "subdivideCubicSegments"
+          ],
+          "declarations": 27,
+          "module": "path_morph_geometry",
+          "outputSha256": "sha256:223589f20ae5dafcfb583805740c923523eb7a28bad2465a8a2357853ccce061",
+          "source": "upstream/packages/path/src/pathMorphGeometry.ts",
           "usesOpaqueHostValues": false
         },
         {
@@ -51996,43 +52027,36 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:3e88196d1d9982f7c9eb285d4c1c60d0a73c57e8716482d54949f0663fd017f5",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (5 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/skeleton2d/src/deformAnimationTarget2D.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:9b5eb7c73c4fa2a87aae232094862f25209ba340183c8e620209017eaef17e7e",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (5 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/skeleton2d/src/enableSkeleton2DGuards.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:11b75158ef95f4a45f095ab0fbde570d9b67c3993c1b3bf85b09b2c0372a5744",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (5 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/skeleton2d/src/skeleton2d.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:abf29ecf122d55c1d1d5b9f24ba9b35adf9e64e3382a3fc6fec2ea966479b7dd",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (5 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/skeleton2d/src/skeleton2dAnimationTarget.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:5dfa252e192ffd4c73c330e5b056e0327d77cb337dc85f48d435b329f5cbe477",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (5 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/skeleton2d/src/skeleton2dDrawOrderTarget.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:1456dd8c02f82e12665b1f6ff66ac0519ab0af421d55aef6254d451a50997c8c",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
-          "source": "upstream/packages/skeleton2d/src/slotDeform2D.ts",
           "stage": "emission"
         }
       ],
@@ -52278,6 +52302,17 @@
           "module": "skin_attachment2_d_points",
           "outputSha256": "sha256:b37a3fde9161bb8160a310bc014e4ca5e00a288970cf341b1afed35d5d88d30c",
           "source": "upstream/packages/skeleton2d/src/skinAttachment2DPoints.ts",
+          "usesOpaqueHostValues": false
+        },
+        {
+          "declarationNames": [
+            "getSkeleton2DSlotDeformOffsets",
+            "setSkeleton2DSlotDeform"
+          ],
+          "declarations": 2,
+          "module": "slot_deform2_d",
+          "outputSha256": "sha256:2cbcd19f6e31f032cf836abaa89feee4d64a4b1dc933bb0af38b64e04be991fd",
+          "source": "upstream/packages/skeleton2d/src/slotDeform2D.ts",
           "usesOpaqueHostValues": false
         },
         {
@@ -55638,7 +55673,7 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:1cf0a5a7c66716c19ceeeaf07ef09d29eccfc81d080ca5261f8e3675a27730a4",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 1); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (2 opaque sources exceeds the approved baseline of 1); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/textshaper/src/enableTextShaperGuards.ts",
           "stage": "emission"
         },
@@ -55652,15 +55687,8 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:820c533f873ae76c1efaa269caf7eb4f9f008386ab445674aa60a39db8c83fef",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 1); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (2 opaque sources exceeds the approved baseline of 1); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/textshaper/src/textShaperCache.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:4ec701987840a57f8c0a9bf859783090e0bff10e7a65ef7798f2416c34f8a8eb",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 1); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
-          "source": "upstream/packages/textshaper/src/textShaperItemize.ts",
           "stage": "emission"
         }
       ],
@@ -55725,6 +55753,19 @@
           "module": "text_shaper_cluster",
           "outputSha256": "sha256:51378bde8aa5cd37bb43765efeb1d3f2d818c6cafa7ba66415952b46f9e41fab",
           "source": "upstream/packages/textshaper/src/textShaperCluster.ts",
+          "usesOpaqueHostValues": false
+        },
+        {
+          "declarationNames": [
+            "getCodePointBidiClass",
+            "getCodePointScript",
+            "itemizeText",
+            "shapeTextRuns"
+          ],
+          "declarations": 4,
+          "module": "text_shaper_itemize",
+          "outputSha256": "sha256:b58fa9979399d1e9e331e09be22b62062117e1962493ed15122b62a6c16b2b56",
+          "source": "upstream/packages/textshaper/src/textShaperItemize.ts",
           "usesOpaqueHostValues": false
         },
         {
@@ -56132,36 +56173,29 @@
         },
         {
           "diagnostics": [],
-          "fingerprint": "sha256:d7e7713ffecb2ba6a1c06893f84cd793b8ec1743ff70af9d55a8b6db33d6f5ef",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (5 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
-          "source": "upstream/packages/texture-formats/src/explainTextureContainerParse.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
           "fingerprint": "sha256:4c2da7d778e2b0bb744ab61bcfddde7ad07a6b0fae5b5c73be5aaa0d002a94d0",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (5 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (4 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/texture-formats/src/parseAtf.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:de390b79c5271860858de595e2fa5919665f92d192f85abad865d98b79023b0b",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (5 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (4 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/texture-formats/src/parseBasis.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:e410f3f22bceb50b98c590c15ba2aba82f4f4ab5daeb62449a68fdc750462872",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (5 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (4 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/texture-formats/src/parseDds.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:d57415ed1466b1f874d41c25045173bd5b99c0469bf8dd72104bc202af996d27",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (5 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (4 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/texture-formats/src/parseKtx2.ts",
           "stage": "emission"
         }
@@ -56200,6 +56234,17 @@
           "module": "detect_texture_container",
           "outputSha256": "sha256:b6c921d199ccbc9ea1436314ee8052f0287c825da14d89d1d90dc775840b4233",
           "source": "upstream/packages/texture-formats/src/detectTextureContainer.ts",
+          "usesOpaqueHostValues": false
+        },
+        {
+          "declarationNames": [
+            "explainTextureContainerParse",
+            "getParseFailureReason"
+          ],
+          "declarations": 2,
+          "module": "explain_texture_container_parse",
+          "outputSha256": "sha256:729ff811805984fa56aa5ab7d281259943bad08f1e50eaded76f31771bad07c9",
+          "source": "upstream/packages/texture-formats/src/explainTextureContainerParse.ts",
           "usesOpaqueHostValues": false
         },
         {
@@ -69421,8 +69466,8 @@
   "schemaVersion": 6,
   "summary": {
     "blocked": 94,
-    "candidateCompileBlocked": 7,
-    "candidateCompiled": 15,
+    "candidateCompileBlocked": 6,
+    "candidateCompiled": 16,
     "candidateDependencyBlocked": 19,
     "cultivated": 1,
     "eligible": 137,
@@ -69430,7 +69475,7 @@
     "excluded": 1,
     "hostBound": 4,
     "packages": 143,
-    "sourceBlockers": 460
+    "sourceBlockers": 455
   },
   "targets": [
     {

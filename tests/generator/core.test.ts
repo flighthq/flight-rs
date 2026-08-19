@@ -217,7 +217,7 @@ describe('compiler diagnostic source paths', () => {
       crate: 'flighthq-types',
       package: '@flighthq/types',
     });
-    expect(report.summary.candidateCompiled).toBe(15);
+    expect(report.summary.candidateCompiled).toBe(16);
     expect(report.asyncTasks.summary).toMatchObject({
       eligibleConstructions: 225,
       eligibleScopes: 173,
@@ -285,7 +285,7 @@ describe('compiler diagnostic source paths', () => {
       .filter((item) => item.disposition === 'generated')
       .flatMap((item) => item.emittedSources);
     const portableOpaqueSources = portableSources.filter((source) => source.usesOpaqueHostValues);
-    expect(portableSources).toHaveLength(1544);
+    expect(portableSources).toHaveLength(1549);
     expect(portableOpaqueSources).toHaveLength(66);
     expect(portableOpaqueSources.length / portableSources.length).toBeLessThanOrEqual(167 / 1227);
     const screen = report.automaticPackages.find((item) => item.package === '@flighthq/screen');
@@ -316,6 +316,12 @@ describe('compiler diagnostic source paths', () => {
     expect(
       readFileSync(path.join(process.cwd(), 'generated/candidates/flighthq-signals/Cargo.toml'), 'utf8'),
     ).toContain('flighthq-runtime = { path = "../../crates/flighthq-runtime" }');
+    expect(readFileSync(path.join(process.cwd(), 'generated/candidates/flighthq-input/Cargo.toml'), 'utf8')).toContain(
+      'flighthq-signals = { path = "../flighthq-signals" }',
+    );
+    expect(
+      readFileSync(path.join(process.cwd(), 'generated/candidates/flighthq-input/src/input_manager.rs'), 'utf8'),
+    ).toContain('use flighthq_signals::{connect_signal, create_signal, disconnect_signal, emit_signal};');
     expect(readFileSync(path.join(process.cwd(), 'generated/crates/flighthq-types/Cargo.toml'), 'utf8')).toContain(
       'flighthq-runtime = { path = "../flighthq-runtime" }',
     );

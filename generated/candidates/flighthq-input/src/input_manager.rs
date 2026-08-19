@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_host_signals::{connect_signal, create_signal, disconnect_signal, emit_signal};
+use flighthq_signals::{connect_signal, create_signal, disconnect_signal, emit_signal};
 use flighthq_types::{
     AttachInputOptions, GAMEPAD_AXIS_KIND as gamepad_axis_kind_values_constant,
     GAMEPAD_BUTTON_KIND as gamepad_button_kind_values_constant, GamepadAxisKind, GamepadButtonKind,
@@ -1667,7 +1667,7 @@ pub fn request_input_pointer_lock(element: crate::OpaqueHostValue) -> crate::Fli
             {
                 let result = crate::host_value::<()>("host.requestPointerLock");
                 if false {
-                    return Some(crate::host_value::<crate::FlightTask<bool>>("host.then"));
+                    return Some(crate::host_task::<bool>("host.then"));
                 }
                 return Some(crate::FlightTask::ready(
                     true,
@@ -1765,16 +1765,14 @@ fn get_key_code_from_dom_keyboard_code(code: String, location: f64) -> f64 {
 }
 
 // Source: upstream/packages/input/src/inputManager.ts:759 (sha256:40ca75bc1bd4bfd77ec9b3bbaf7470427dbec0de9c3cc45156b4da748285bbd8)
-fn get_pointer_type_from_dom_pointer_event(
-    event: crate::OpaqueHostValue,
-) -> crate::OpaqueHostValue {
+fn get_pointer_type_from_dom_pointer_event(event: crate::OpaqueHostValue) -> String {
     return if ((crate::host_value::<String>("host.pointerType") == "mouse")
         || (crate::host_value::<String>("host.pointerType") == "pen"))
         || (crate::host_value::<String>("host.pointerType") == "touch")
     {
-        crate::host_value::<crate::OpaqueHostValue>("host.pointerType")
+        crate::host_value::<String>("host.pointerType")
     } else {
-        crate::OpaqueHostValue::String("unknown".to_owned())
+        "unknown".to_owned()
     };
 }
 

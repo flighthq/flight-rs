@@ -27,11 +27,11 @@ The pinned Flight commit is no longer advertised as a direct ref by the configur
 | Inventoried packages            |   143 |
 | Eligible automatic packages     |   137 |
 | Packages reaching Rust emission |    43 |
-| Compiled candidates             |    15 |
-| Compile-blocked candidates      |     7 |
+| Compiled candidates             |    16 |
+| Compile-blocked candidates      |     6 |
 | Dependency-blocked candidates   |    19 |
 | Source-blocked packages         |    94 |
-| Source blockers                 |   460 |
+| Source blockers                 |   455 |
 | Promoted generated packages     |     2 |
 | Cultivated packages             |     1 |
 | Host-bound packages             |     4 |
@@ -40,14 +40,14 @@ The pinned Flight commit is no longer advertised as a direct ref by the configur
 Compiled candidates:
 
 ```text
-adjustments color device flow haptics keyboard lifecycle math platform screen signals spring textbidi
+adjustments color device flow haptics input keyboard lifecycle math platform screen signals spring textbidi
 textsegment useragent
 ```
 
 Compile-blocked candidates, ordered roughly from smallest to largest compiler frontier:
 
 ```text
-accessibility clock importdiagnostics input protocol timeline xml
+accessibility clock importdiagnostics protocol timeline xml
 ```
 
 Dependency-blocked candidates:
@@ -83,6 +83,8 @@ The generator now has these invariants. Preserve them with focused regression te
 - Shared typed-array/byte-buffer views, regex captures, string splitting/parsing, exhaustive switches, interval handles, and selected collection operations lower to native Rust.
 - Statically absent native host branches are pruned before their web-only expressions block emission.
 - Dynamic host reads, writes, and calls route through the explicit opaque host boundary.
+- Automatic candidates resolve package dependencies only to automatic Cargo identities; a differently named partial cultivated crate cannot leak into that graph. Public Flight subpaths such as `/contract` resolve type declarations from the owning package source, including indexed-access return types.
+- A dynamically supplied typed task becomes a rejected `HostUnavailable` task without requiring `Default` or fabricating an output value; executable runtime tests cover a non-`Default` output type.
 - No generated Promise path fabricates a default task. Web-default task paths that native code replaces are omitted only through explicit partial host targets until configured host-task placeholders land.
 - Discriminated open-interface families are discovered from a package-wide semantic type catalog.
 - A family is widened only when descendants explicitly redeclare `kind` and every added field is safely default-materializable.
@@ -274,7 +276,7 @@ The implementation contract is [Future/task IR design](future-task-ir.md). Send 
 
 At the design baseline, eligible generated packages contained 162 async scopes and 190 awaits across 40 non-test sources. At the current upstream pin the inventory contains 173 scopes and 205 awaits. The old report exposed only seven await blockers in six packages because top-level async declarations were body-erased. Removing that silent path was the first code gate; do not interpret the resulting candidate-status correction as a behavioral regression without checking whether the old candidate ever executed its source body.
 
-Stage 1 removed that erasure path. Stage 2 adds the canonical generated `flighthq-runtime`, typed ready/reject and straight-line async/await lowering, deterministic scheduler installation in generated tests, and construction-wide reporting. The current partition is 19 executable + 0 host placeholder + 206 unsupported constructions and 13 + 0 + 160 scopes. Ten recovered-output scopes remain blocked because their source still requires `OpaqueHostValue`; 66 of 1,544 emitted automatic sources currently require opaque host values. Stage 2b should add contextual return inference; Stage 3 adds configured host-task boundaries; Stage 4 owns composition and must account for `catch_unwind` interactions in non-async task-returning functions.
+Stage 1 removed that erasure path. Stage 2 adds the canonical generated `flighthq-runtime`, typed ready/reject and straight-line async/await lowering, deterministic scheduler installation in generated tests, and construction-wide reporting. The current partition is 19 executable + 0 host placeholder + 206 unsupported constructions and 13 + 0 + 160 scopes. Ten recovered-output scopes remain blocked because their source still requires `OpaqueHostValue`; 66 of 1,549 emitted automatic sources currently require opaque host values. Stage 2b should add contextual return inference; Stage 3 adds configured host-task boundaries; Stage 4 owns composition and must account for `catch_unwind` interactions in non-async task-returning functions.
 
 ## Checkpoint discipline
 

@@ -1887,12 +1887,13 @@ function resolveImportedTypeSource(
     if (!binding) continue;
     const imported = binding.propertyName?.text ?? binding.name.text;
     const specifier = statement.moduleSpecifier.text;
+    const flightPackage = /^(@flighthq\/[^/]+)/u.exec(specifier)?.[1];
     const base = specifier.startsWith('@flighthq/')
       ? path.join(
           context.workspaceDirectory,
           'upstream',
           'packages',
-          specifier.slice('@flighthq/'.length),
+          flightPackage!.slice('@flighthq/'.length),
           'src',
           imported,
         )
@@ -1906,7 +1907,7 @@ function resolveImportedTypeSource(
     if (!source) return undefined;
     return {
       imported,
-      packageName: specifier.startsWith('@flighthq/') ? specifier : context.packageName,
+      packageName: flightPackage ?? context.packageName,
       source,
     };
   }

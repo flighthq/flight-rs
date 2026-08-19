@@ -77,10 +77,7 @@ impl<T> Clone for FlightTask<T> {
     }
 }
 
-impl<T> FlightTask<T>
-where
-    T: Clone + Send + 'static,
-{
+impl<T> FlightTask<T> {
     pub fn ready(value: T, _origin: FlightTaskOrigin) -> Self {
         Self::settled(Ok(value))
     }
@@ -98,6 +95,22 @@ where
         )))
     }
 
+    fn settled(outcome: FlightTaskOutcome<T>) -> Self {
+        Self {
+            shared: Arc::new(Mutex::new(FlightTaskState {
+                driver: None,
+                observers: Vec::new(),
+                outcome: Some(outcome),
+            })),
+            yielded: false,
+        }
+    }
+}
+
+impl<T> FlightTask<T>
+where
+    T: Clone + Send + 'static,
+{
     pub fn start<Work>(work: Work, origin: FlightTaskOrigin) -> Self
     where
         Work: Future<Output = FlightTaskOutcome<T>> + Send + 'static,
@@ -121,17 +134,21 @@ where
             yielded: false,
         }
     }
+}
 
-    fn settled(outcome: FlightTaskOutcome<T>) -> Self {
-        Self {
-            shared: Arc::new(Mutex::new(FlightTaskState {
-                driver: None,
-                observers: Vec::new(),
-                outcome: Some(outcome),
-            })),
-            yielded: false,
-        }
-    }
+const DYNAMIC_HOST_TASK_ORIGIN: FlightTaskOrigin = FlightTaskOrigin {
+    package: "@flighthq/runtime",
+    source: "generated/runtime/host-task",
+    line: 0,
+    column: 0,
+    lexical_path: "dynamic-host-task",
+    fingerprint: "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+};
+
+/// Typed fallback for a task supplied by a host capability that is unavailable natively.
+/// The task settles as an error without requiring or fabricating an output value.
+pub fn host_task<T>(capability: impl Into<String>) -> FlightTask<T> {
+    FlightTask::host_unavailable(capability, DYNAMIC_HOST_TASK_ORIGIN)
 }
 
 impl<T> Future for FlightTask<T>
@@ -473,6 +490,22 @@ mod tests {
             Err(FlightTaskError::Rejection(FlightRejection::String(
                 String::from("nope")
             )))
+        );
+    }
+
+    #[test]
+    fn represents_unavailable_host_tasks_without_default_output() {
+        #[derive(Clone, Debug, PartialEq)]
+        struct NoDefault;
+
+        let scheduler = install_deterministic_flight_task_scheduler();
+        let task = host_task::<NoDefault>("host.then");
+        assert_eq!(
+            scheduler.block_on(task),
+            Err(FlightTaskError::HostUnavailable(FlightHostUnavailable {
+                capability: String::from("host.then"),
+                origin: DYNAMIC_HOST_TASK_ORIGIN,
+            }))
         );
     }
 }

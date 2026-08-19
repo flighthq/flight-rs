@@ -4,7 +4,7 @@
 pub use flighthq_runtime::{
     DeterministicFlightTaskScheduler, FlightHostUnavailable, FlightRejection,
     FlightRuntimeUnavailable, FlightTask, FlightTaskError, FlightTaskOrigin, FlightTaskOutcome,
-    FlightTaskScheduler, ScheduledFlightTask, flight_task_yield,
+    FlightTaskScheduler, ScheduledFlightTask, flight_task_yield, host_task,
     install_deterministic_flight_task_scheduler, install_flight_task_scheduler,
 };
 

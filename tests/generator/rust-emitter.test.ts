@@ -767,6 +767,61 @@ describe('Rust emission', () => {
     ).toThrow('taskThen Rust lowering is reserved for Pass 27 Stage 4');
   });
 
+  it('represents typed dynamic host tasks without requiring a default output value', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/input/src/hostTask.ts',
+      'export function load(host: any): Promise<string> { return host.load(); }',
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/input', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/input/src/hostTask.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('pub fn load(host: crate::OpaqueHostValue) -> crate::FlightTask<String>');
+    expect(output).toContain('crate::host_task::<String>("host.load")');
+    expect(output).not.toContain('host_value::<crate::FlightTask<String>>');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
+    mkdirSync(path.join(fixture, 'src'), { recursive: true });
+    writeFileSync(path.join(fixture, 'src', 'generated.rs'), output);
+    writeFileSync(
+      path.join(fixture, 'src', 'lib.rs'),
+      [
+        'pub use flighthq_runtime::*;',
+        '#[derive(Clone, Default)] pub struct OpaqueHostValue;',
+        'pub fn host_value<T: Default>(_: &str) -> T { T::default() }',
+        'mod generated;',
+        'pub use generated::*;',
+        '',
+      ].join('\n'),
+    );
+    writeFileSync(
+      path.join(fixture, 'Cargo.toml'),
+      [
+        '[package]',
+        'name = "generated-host-task-fixture"',
+        'version = "0.0.0"',
+        'edition = "2024"',
+        '[dependencies]',
+        `flighthq-runtime = { path = ${JSON.stringify(path.join(process.cwd(), 'generated/crates/flighthq-runtime'))} }`,
+        '',
+      ].join('\n'),
+    );
+    expect(() =>
+      execFileSync('cargo', ['check', '--quiet'], {
+        cwd: fixture,
+        env: { ...process.env, CARGO_TARGET_DIR: path.join(fixture, 'target') },
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
   it('lowers shared byte-buffer views, regex captures, and exhaustive switches', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/useragent/src/portable.ts',
@@ -1876,7 +1931,7 @@ describe('Rust emission', () => {
     const source = ts.createSourceFile(
       inputSource,
       `
-        import type { InputPointerData } from '@flighthq/types';
+        import type { InputPointerData } from '@flighthq/types/contract';
         export function readPointerType(event: any): InputPointerData['pointerType'] {
           return event.pointerType;
         }
