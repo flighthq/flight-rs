@@ -217,7 +217,7 @@ describe('compiler diagnostic source paths', () => {
       crate: 'flighthq-types',
       package: '@flighthq/types',
     });
-    expect(report.summary.candidateCompiled).toBe(13);
+    expect(report.summary.candidateCompiled).toBe(15);
     expect(report.asyncTasks.summary).toMatchObject({
       eligibleConstructions: 225,
       eligibleScopes: 173,
