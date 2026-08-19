@@ -311,7 +311,10 @@ pub fn is_valid_protocol_scheme(scheme: String) -> bool {
         return false;
     }
     let lower = (scheme).to_lowercase();
-    if _RESERVED_SCHEMES.iter().any(|item| item == &lower) {
+    if _RESERVED_SCHEMES
+        .iter()
+        .any(|item| item == &(lower).clone())
+    {
         return false;
     }
     return ((*_SCHEME_PATTERN).clone()).is_match(&(lower));
@@ -405,7 +408,7 @@ pub fn parse_protocol_url(url: String) -> Option<ParsedProtocolUrl> {
                 }
             } else {
                 let k = _safe_decode(String::from_utf16_lossy(
-                    &(pair)
+                    &((pair).clone())
                         .encode_utf16()
                         .skip((0.0_f64) as usize)
                         .take(((eq_idx) as usize).saturating_sub((0.0_f64) as usize))
@@ -418,7 +421,7 @@ pub fn parse_protocol_url(url: String) -> Option<ParsedProtocolUrl> {
                         .map(|(_, value)| value)
                         .expect("TypeScript Record key was absent") =
                         _safe_decode(String::from_utf16_lossy(
-                            &(pair)
+                            &((pair).clone())
                                 .encode_utf16()
                                 .skip((eq_idx + 1.0_f64) as usize)
                                 .collect::<Vec<u16>>(),

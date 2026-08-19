@@ -1057,7 +1057,7 @@ pub fn disable_text_input(node: &RichText) -> () {
 pub fn enable_text_input(node: &RichText, options: Option<TextInputOptions>) -> TextInputState {
     let mut runtime = get_rich_text_runtime(node);
     let mut state = (runtime.inner.lock().unwrap().input).clone();
-    if (state).is_none() {
+    if ((state).clone()).is_none() {
         state = Some(create_text_input_state(Some(
             ((options).clone().unwrap()).clone(),
         )));

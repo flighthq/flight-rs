@@ -395,8 +395,8 @@ fn visit_transform_velocity(field: &mut VelocityField, node: &Transform2DNode) -
                 },
                 i,
             );
-            if (child).is_some() {
-                visit_transform_velocity(field, &child.as_ref().unwrap());
+            if ((child).clone()).is_some() {
+                visit_transform_velocity(field, &(child.as_ref().unwrap()).clone());
             }
             {
                 i += 1.0;

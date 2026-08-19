@@ -1469,22 +1469,22 @@ pub fn compute_particle_emitter2_d_local_bounds_rectangle(
             let py = (source.data.transforms[(tt + 1.0_f64) as usize] as f64);
             let rotation = (source.data.transforms[(tt + 2.0_f64) as usize] as f64);
             let scale = (source.data.transforms[(tt + 3.0_f64) as usize] as f64);
-            let cos_r = ((rotation).cos() * scale);
-            let sin_r = ((rotation).sin() * scale);
+            let cos_r = (((rotation).clone()).cos() * scale);
+            let sin_r = (((rotation).clone()).sin() * scale);
             let w = region.width;
             let h = region.height;
-            let x0 = px;
-            let y0 = py;
-            let x1 = ((cos_r * w) + px);
-            let y1 = ((sin_r * w) + py);
-            let x2 = (((cos_r * w) - (sin_r * h)) + px);
-            let y2 = (((sin_r * w) + (cos_r * h)) + py);
-            let x3 = (((-sin_r) * h) + px);
-            let y3 = ((cos_r * h) + py);
-            let q_min_x = (((x0).min(x1)).min(x2)).min(x3);
-            let q_min_y = (((y0).min(y1)).min(y2)).min(y3);
-            let q_max_x = (((x0).max(x1)).max(x2)).max(x3);
-            let q_max_y = (((y0).max(y1)).max(y2)).max(y3);
+            let x0 = (px).clone();
+            let y0 = (py).clone();
+            let x1 = ((cos_r * w) + (px).clone());
+            let y1 = ((sin_r * w) + (py).clone());
+            let x2 = (((cos_r * w) - (sin_r * h)) + (px).clone());
+            let y2 = (((sin_r * w) + (cos_r * h)) + (py).clone());
+            let x3 = (((-sin_r) * h) + (px).clone());
+            let y3 = ((cos_r * h) + (py).clone());
+            let q_min_x = ((((x0).clone()).min(x1)).min(x2)).min(x3);
+            let q_min_y = ((((y0).clone()).min(y1)).min(y2)).min(y3);
+            let q_max_x = ((((x0).clone()).max(x1)).max(x2)).max(x3);
+            let q_max_y = ((((y0).clone()).max(y1)).max(y2)).max(y3);
             if (q_min_x < min_x) {
                 min_x = q_min_x;
             }

@@ -414,12 +414,12 @@ pub fn bake_gl_environment_ibl(state: &mut GlRenderState, environment: &Environm
     crate::host_value::<()>("host.disable");
     let irradiance_cube = bake_gl_irradiance(
         state,
-        ((fbo).clone().unwrap()).clone(),
+        (((fbo).clone()).clone().unwrap()).clone(),
         (source_cube.as_ref().unwrap()).clone(),
     );
     let __destructure0 = bake_gl_prefiltered(
         state,
-        ((fbo).clone().unwrap()).clone(),
+        (((fbo).clone()).clone().unwrap()).clone(),
         (source_cube.as_ref().unwrap()).clone(),
     );
     let prefiltered_cube = (__destructure0.prefiltered_cube).clone();
@@ -688,11 +688,11 @@ fn ensure_gl_bake_program(state: &GlRenderState, key: String, fragment: String) 
         .iter()
         .find(|(key, _)| key == &(*state).clone())
         .map(|(_, value)| value.clone());
-    if (by_state).is_none() {
+    if ((by_state).clone()).is_none() {
         by_state = Some(Vec::new());
         {
             let __flight_key = (*state).clone();
-            let __flight_value = (by_state).clone().unwrap();
+            let __flight_value = ((by_state).clone()).clone().unwrap();
             if let Some((_, value)) = (*_BAKE_PROGRAMS.lock().unwrap())
                 .iter_mut()
                 .find(|(key, _)| key == &__flight_key)
@@ -709,7 +709,7 @@ fn ensure_gl_bake_program(state: &GlRenderState, key: String, fragment: String) 
         .iter()
         .find(|(key, _)| key == &(key).clone())
         .map(|(_, value)| value.clone());
-    if (baked).is_some() {
+    if ((baked).clone()).is_some() {
         return ((baked.as_mut().unwrap()).clone()).clone();
     }
     let program = link_gl_bake_program((gl).clone(), (fragment).clone());
@@ -742,7 +742,7 @@ fn ensure_gl_bake_program(state: &GlRenderState, key: String, fragment: String) 
     });
     {
         let __flight_key = (key).clone();
-        let __flight_value = (baked).clone().unwrap();
+        let __flight_value = ((baked).clone()).clone().unwrap();
         if let Some((_, value)) = by_state
             .as_mut()
             .unwrap()

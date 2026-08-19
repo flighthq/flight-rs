@@ -390,7 +390,7 @@ fn _insert_into_grid(
                         .iter()
                         .find(|(key, _)| key == &(key).clone())
                         .map(|(_, value)| value.clone());
-                    if (cell).is_none() {
+                    if ((cell).clone()).is_none() {
                         cell = Some(GridCell {
                             __flight_identity: std::sync::Arc::new(()),
                             cx: cx,
@@ -399,7 +399,7 @@ fn _insert_into_grid(
                         });
                         {
                             let __flight_key = (key).clone();
-                            let __flight_value = (cell).clone().unwrap();
+                            let __flight_value = ((cell).clone()).clone().unwrap();
                             if let Some((_, value)) =
                                 grid.cells.iter_mut().find(|(key, _)| key == &__flight_key)
                             {
@@ -706,7 +706,7 @@ fn _query_grid_overflow_pairs(grid: &UniformGrid, out: &mut Vec<SpatialPair>) ->
             .iter()
             .find(|(key, _)| key == &id)
             .map(|(_, value)| value.clone());
-        if (bounds).is_none() {
+        if ((bounds).clone()).is_none() {
             continue;
         }
         for __iteration0 in ((grid.bounds).clone()).iter().cloned() {
@@ -886,7 +886,7 @@ fn _query_grid_point(grid: &UniformGrid, x: f64, y: f64, out: &mut Vec<SpatialOb
                 .iter()
                 .find(|(key, _)| key == &id)
                 .map(|(_, value)| value.clone());
-            if ((bounds).is_some())
+            if (((bounds).clone()).is_some())
                 && (_is_spatial_aabb_contains_point(bounds.as_ref().unwrap(), x, y))
             {
                 out.push(id);
@@ -899,7 +899,8 @@ fn _query_grid_point(grid: &UniformGrid, x: f64, y: f64, out: &mut Vec<SpatialOb
             .iter()
             .find(|(key, _)| key == &id)
             .map(|(_, value)| value.clone());
-        if ((bounds).is_some()) && (_is_spatial_aabb_contains_point(bounds.as_ref().unwrap(), x, y))
+        if (((bounds).clone()).is_some())
+            && (_is_spatial_aabb_contains_point(bounds.as_ref().unwrap(), x, y))
         {
             out.push(id);
         }
@@ -1121,7 +1122,7 @@ fn _query_grid_region(
                             .iter()
                             .find(|(key, _)| key == &id)
                             .map(|(_, value)| value.clone());
-                        if ((bounds).is_some())
+                        if (((bounds).clone()).is_some())
                             && (_is_spatial_aabb_overlapping(bounds.as_ref().unwrap(), region))
                         {
                             out.push(id);
@@ -1145,7 +1146,8 @@ fn _query_grid_region(
             .iter()
             .find(|(key, _)| key == &id)
             .map(|(_, value)| value.clone());
-        if ((bounds).is_some()) && (_is_spatial_aabb_overlapping(bounds.as_ref().unwrap(), region))
+        if (((bounds).clone()).is_some())
+            && (_is_spatial_aabb_overlapping(bounds.as_ref().unwrap(), region))
         {
             out.push(id);
         }

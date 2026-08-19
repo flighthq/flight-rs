@@ -549,7 +549,7 @@ fn bind_gl_blinn_phong_material_uniforms(
     crate::host_value::<()>("host.uniform1f");
     crate::host_value::<()>("host.uniform1f");
     let diffuse_map = (material.as_ref().unwrap().diffuse_map).clone();
-    if (diffuse_map).is_some() {
+    if ((diffuse_map).clone()).is_some() {
         crate::host_value::<()>("host.activeTexture");
         if (resolve_gl_texture(state, (diffuse_map.as_ref().unwrap()).clone(), None, None))
             .is_some()

@@ -30,7 +30,7 @@ pub fn build_bitmap_font_from_record(
                     __flight_callback.lock().unwrap()(page.id, (page.file).clone());
                 __flight_result
             };
-            if (atlas).is_some() {
+            if ((atlas).clone()).is_some() {
                 {
                     let __flight_key = page.id;
                     let __flight_value = (atlas.as_ref().unwrap()).clone();
@@ -64,7 +64,7 @@ pub fn build_bitmap_font_from_record(
                 .iter()
                 .find(|(key, _)| key == &id)
                 .map(|(_, value)| value.clone());
-            if (atlas).is_some() {
+            if ((atlas).clone()).is_some() {
                 {
                     let __flight_index = (id) as usize;
                     let __flight_value = (atlas.as_ref().unwrap()).clone();

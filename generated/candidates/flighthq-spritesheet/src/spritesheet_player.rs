@@ -237,7 +237,7 @@ pub fn update_spritesheet_player(player: &mut SpritesheetPlayer, delta_time: f64
     {
         return false;
     }
-    let __destructure5 = animation;
+    let __destructure5 = (animation).clone();
     let repeat_count = __destructure5.as_ref().unwrap().repeat_count;
     let total_time = resolve_animation_total_time(animation.as_ref().unwrap());
     let prev_loop_count = (player.elapsed / total_time).floor();

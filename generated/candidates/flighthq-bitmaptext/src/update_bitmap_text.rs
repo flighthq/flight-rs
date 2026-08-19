@@ -1572,7 +1572,7 @@ fn build_bitmap_text_words(
             let __flight_result = __flight_callback.lock().unwrap()(codepoint);
             __flight_result
         };
-        if (entry).is_none() {
+        if ((entry).clone()).is_none() {
             continue;
         }
         if ((*previous_codepoint.lock().unwrap()).clone() >= 0.0_f64) {
@@ -1589,7 +1589,7 @@ fn build_bitmap_text_words(
             (*glyphs.lock().unwrap()).push(BitmapTextGlyph {
                 __flight_identity: std::sync::Arc::new(()),
                 codepoint: codepoint,
-                entry: (entry).clone().unwrap(),
+                entry: ((entry).clone()).clone().unwrap(),
                 pen_within_word: (*pen.lock().unwrap()).clone(),
             });
         }

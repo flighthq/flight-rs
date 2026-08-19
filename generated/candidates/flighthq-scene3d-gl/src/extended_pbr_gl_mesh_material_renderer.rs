@@ -402,7 +402,7 @@ pub static EXTENDED_PBR_GL_MESH_MATERIAL_RENDERER: std::sync::LazyLock<GlMeshMat
                     let __flight_argument_1 = (build_gl_pbr_standard_define_key(
                         &state,
                         (extended.as_ref().map(|value| (value.standard).clone())).clone(),
-                        (extended).clone(),
+                        ((extended).clone()).clone(),
                     ))
                     .clone();
                     ensure_gl_pbr_program(

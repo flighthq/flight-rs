@@ -579,7 +579,7 @@ fn bind_gl_toon_material_uniforms(
     crate::host_value::<()>("host.uniform1f");
     crate::host_value::<()>("host.uniform1f");
     let base_color_map = (material.as_ref().unwrap().base_color_map).clone();
-    if (base_color_map).is_some() {
+    if ((base_color_map).clone()).is_some() {
         crate::host_value::<()>("host.activeTexture");
         if (resolve_gl_texture(
             state,

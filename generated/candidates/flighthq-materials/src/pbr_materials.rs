@@ -172,7 +172,7 @@ pub fn create_specular_glossiness_pbr_material(
 ) -> SpecularGlossinessPbrMaterial {
     let mut material = create_surface_material(
         (specular_glossiness_pbr_material_kind_constant).to_owned(),
-        Some(((opts).clone().unwrap()).clone()),
+        Some((((opts).clone()).clone().unwrap()).clone()),
     );
     material.diffuse = (opts.as_ref().and_then(|value| value.diffuse)).unwrap_or(4294967295.0_f64);
     material.diffuse_map = opts.as_ref().and_then(|value| (value.diffuse_map).clone());
@@ -200,7 +200,7 @@ pub fn create_specular_glossiness_pbr_material(
 pub fn create_standard_pbr_material(opts: Option<FlightPartialRecord2>) -> StandardPbrMaterial {
     let mut material = create_surface_material(
         (standard_pbr_material_kind_constant).to_owned(),
-        Some(((opts).clone().unwrap()).clone()),
+        Some((((opts).clone()).clone().unwrap()).clone()),
     );
     assign_standard_pbr_material_properties(&mut material, Some(((opts).clone().unwrap()).clone()));
     return material;

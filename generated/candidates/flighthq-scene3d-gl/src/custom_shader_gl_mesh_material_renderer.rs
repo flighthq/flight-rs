@@ -543,11 +543,11 @@ pub fn register_gl_custom_material_shader(
         .iter()
         .find(|(key, _)| key == &(*state).clone())
         .map(|(_, value)| value.clone());
-    if (registry).is_none() {
+    if ((registry).clone()).is_none() {
         registry = Some(Vec::new());
         {
             let __flight_key = (*state).clone();
-            let __flight_value = (registry).clone().unwrap();
+            let __flight_value = ((registry).clone()).clone().unwrap();
             if let Some((_, value)) = (*_CUSTOM_MATERIAL_SHADERS.lock().unwrap())
                 .iter_mut()
                 .find(|(key, _)| key == &__flight_key)
@@ -639,7 +639,7 @@ fn upload_custom_shader_material_uniforms(
     }
     for name in (crate::host_value::<()>("host.keys")).iter().cloned() {
         let location = crate::host_value::<()>("host.getUniformLocation");
-        if (location).is_none() {
+        if ((location).clone()).is_none() {
             continue;
         }
         let value = uniforms
@@ -650,7 +650,7 @@ fn upload_custom_shader_material_uniforms(
             .map(|(_, value)| value)
             .expect("TypeScript Record key was absent")
             .clone();
-        if (match &(value) {
+        if (match &((value).clone()) {
             crate::FlightUnion2::A(_) => "number",
             crate::FlightUnion2::B(value) => "object",
         } == "number")
@@ -719,7 +719,7 @@ fn upload_custom_shader_material_textures(
             .expect("TypeScript Record key was absent")
             .clone();
         let location = crate::host_value::<()>("host.getUniformLocation");
-        if (location).is_none() {
+        if ((location).clone()).is_none() {
             continue;
         }
         crate::host_value::<()>("host.activeTexture");

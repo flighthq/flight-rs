@@ -134,7 +134,7 @@ pub fn bake_color_lut_for_run(
                 })())
             };
         })();
-        if (transform).is_some() {
+        if ((transform).clone()).is_some() {
             transforms.push(((transform.as_ref().unwrap()).clone()).clone());
         }
     }

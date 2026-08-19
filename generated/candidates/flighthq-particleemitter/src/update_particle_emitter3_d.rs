@@ -1124,7 +1124,7 @@ pub fn update_particle_emitter3_d(
     if (delta_time <= 0.0_f64) {
         return;
     }
-    let origin_m = if (world_m).is_some() {
+    let origin_m = if ((world_m).clone()).is_some() {
         (world_m.as_ref().unwrap()).clone()
     } else {
         (get_node_local_matrix4(&{
@@ -1212,9 +1212,9 @@ pub fn update_particle_emitter3_d(
                 let dz = (emitter.data.positions_z[i as usize] as f64);
                 {
                     let __flight_callback = on_death;
-                    __flight_callback
-                        .as_ref()
-                        .map(|callback| callback.lock().unwrap()(dx, dy, dz))
+                    __flight_callback.as_ref().map(|callback| {
+                        callback.lock().unwrap()((dx).clone(), (dy).clone(), (dz).clone())
+                    })
                 };
                 {
                     let __flight_callback = signals
@@ -1227,7 +1227,8 @@ pub fn update_particle_emitter3_d(
                         .as_ref()
                         .unwrap()
                         .clone();
-                    let __flight_result = __flight_callback.lock().unwrap()(dx, dy, dz);
+                    let __flight_result =
+                        __flight_callback.lock().unwrap()((dx).clone(), (dy).clone(), (dz).clone());
                     __flight_result
                 };
             }
@@ -1425,9 +1426,21 @@ pub fn update_particle_emitter3_d(
             0.0_f64
         };
         let do_trail = ((world_m).is_some()) && (!(state.prev_x).is_nan());
-        let prev_path_x = if do_trail { state.prev_x } else { track_x };
-        let prev_path_y = if do_trail { state.prev_y } else { track_y };
-        let prev_path_z = if do_trail { state.prev_z } else { track_z };
+        let prev_path_x = if do_trail {
+            state.prev_x
+        } else {
+            (track_x).clone()
+        };
+        let prev_path_y = if do_trail {
+            state.prev_y
+        } else {
+            (track_y).clone()
+        };
+        let prev_path_z = if do_trail {
+            state.prev_z
+        } else {
+            (track_z).clone()
+        };
         {
             let mut s_idx = 0.0_f64;
             while (s_idx < to_spawn) {
@@ -1631,15 +1644,15 @@ pub fn update_particle_emitter3_d(
                         }
                     }
                 }
-                if (world_m).is_some() {
+                if ((world_m).clone()).is_some() {
                     let t = if (to_spawn > 1.0_f64) {
                         (s_idx / (to_spawn - 1.0_f64))
                     } else {
                         1.0_f64
                     };
-                    let origin_x = (prev_path_x + ((track_x - prev_path_x) * t));
-                    let origin_y = (prev_path_y + ((track_y - prev_path_y) * t));
-                    let origin_z = (prev_path_z + ((track_z - prev_path_z) * t));
+                    let origin_x = (prev_path_x + (((track_x).clone() - prev_path_x) * t));
+                    let origin_y = (prev_path_y + (((track_y).clone() - prev_path_y) * t));
+                    let origin_z = (prev_path_z + (((track_z).clone() - prev_path_z) * t));
                     let px = (((((world_m.as_ref().unwrap()[0.0_f64 as usize] as f64) * spawn_x)
                         + ((world_m.as_ref().unwrap()[4.0_f64 as usize] as f64) * spawn_y))
                         + ((world_m.as_ref().unwrap()[8.0_f64 as usize] as f64) * spawn_z))

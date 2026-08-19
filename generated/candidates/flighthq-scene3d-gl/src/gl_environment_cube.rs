@@ -377,7 +377,7 @@ pub fn ensure_gl_environment_source_cube(
         return (runtime.environment_source_cube).clone();
     }
     let cube = (environment.environment).clone();
-    if (((cube).is_none()) || (cube.as_ref().unwrap().dimension != "cube"))
+    if ((((cube).clone()).is_none()) || (cube.as_ref().unwrap().dimension != "cube"))
         || (!has_gl_cube_face_pixels(cube.as_ref().unwrap()))
     {
         return None;
@@ -398,7 +398,7 @@ pub fn ensure_gl_environment_source_cube(
                 (gl).clone(),
                 get_gl_cube_face_target((gl).clone(), face),
                 &sources[face as usize],
-                Some((internal_format).clone()),
+                Some(((internal_format).clone()).clone()),
             );
             {
                 face += 1.0;

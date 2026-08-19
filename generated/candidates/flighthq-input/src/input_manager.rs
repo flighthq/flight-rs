@@ -721,9 +721,11 @@ pub fn connect_input_state_to_input_manager(
             .unwrap_or(0.0_f64);
             let next = (__flight_js_to_i32(prev)
                 & __flight_js_to_i32(
-                    (!__flight_js_to_i32(1.0_f64)
-                        .wrapping_shl((__flight_js_to_u32(data.button) & 31))
-                        as f64),
+                    (!__flight_js_to_i32(
+                        __flight_js_to_i32(1.0_f64)
+                            .wrapping_shl((__flight_js_to_u32(data.button) & 31))
+                            as f64,
+                    )) as f64,
                 )) as f64;
             if (next == 0.0_f64) {
                 {
@@ -2218,7 +2220,7 @@ fn get_or_create_gamepad_poll_state(manager: &InputManager) -> GamepadPollState 
         .iter()
         .find(|(key, _)| key == &(*manager).clone())
         .map(|(_, value)| value.clone());
-    if (state).is_none() {
+    if ((state).clone()).is_none() {
         state = Some(GamepadPollState {
             __flight_identity: std::sync::Arc::new(()),
             axes: Vec::new(),
@@ -2226,7 +2228,7 @@ fn get_or_create_gamepad_poll_state(manager: &InputManager) -> GamepadPollState 
         });
         {
             let __flight_key = (*manager).clone();
-            let __flight_value = (state).clone().unwrap();
+            let __flight_value = ((state).clone()).clone().unwrap();
             if let Some((_, value)) = (*_GAMEPAD_POLL_STATES.lock().unwrap())
                 .iter_mut()
                 .find(|(key, _)| key == &__flight_key)
@@ -2371,11 +2373,11 @@ fn set_input_binding(
         .iter()
         .find(|(key, _)| key == &(*manager).clone())
         .map(|(_, value)| value.clone());
-    if (by_target).is_none() {
+    if ((by_target).clone()).is_none() {
         by_target = Some(Vec::new());
         {
             let __flight_key = (*manager).clone();
-            let __flight_value = (by_target).clone().unwrap();
+            let __flight_value = ((by_target).clone()).clone().unwrap();
             if let Some((_, value)) = (*_INPUT_BINDINGS.lock().unwrap())
                 .iter_mut()
                 .find(|(key, _)| key == &__flight_key)
@@ -2392,11 +2394,11 @@ fn set_input_binding(
         .iter()
         .find(|(key, _)| key == &(target).clone())
         .map(|(_, value)| value.clone());
-    if (by_kind).is_none() {
+    if ((by_kind).clone()).is_none() {
         by_kind = Some(Vec::new());
         {
             let __flight_key = (target).clone();
-            let __flight_value = (by_kind).clone().unwrap();
+            let __flight_value = ((by_kind).clone()).clone().unwrap();
             if let Some((_, value)) = by_target
                 .as_mut()
                 .unwrap()

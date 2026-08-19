@@ -11,7 +11,7 @@ use flighthq_types::{EasingFunction, EasingStepsGuard, StepPosition};
 // Source: upstream/packages/easing/src/easeSteps.ts:16 (sha256:c3162b18bf5d93fcdd7b7dee613223e1e9503f981a4355658553affaf3876435)
 pub fn ease_steps(count: f64, position: Option<StepPosition>) -> EasingFunction {
     let position = position.unwrap_or("jumpEnd".to_owned());
-    if (position == "jumpNone") && (count < 2.0_f64) {
+    if ((position).clone() == "jumpNone") && (count < 2.0_f64) {
         {
             let __flight_callback = (*_STEPS_GUARD.lock().unwrap()).clone();
             __flight_callback

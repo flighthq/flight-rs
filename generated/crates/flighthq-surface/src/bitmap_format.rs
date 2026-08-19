@@ -32,13 +32,13 @@ pub fn unpremultiply_bitmap_pixels(out: &mut Vec<u8>, source: &Vec<u8>, length: 
         let mut i = 0.0_f64;
         while (i < length) {
             let a = (source[(i + 3.0_f64) as usize] as f64);
-            if (a == 0.0_f64) {
+            if ((a).clone() == 0.0_f64) {
                 out[i as usize] = (0.0_f64) as u8;
                 out[(i + 1.0_f64) as usize] = (0.0_f64) as u8;
                 out[(i + 2.0_f64) as usize] = (0.0_f64) as u8;
                 out[(i + 3.0_f64) as usize] = (0.0_f64) as u8;
             } else {
-                let inv = (255.0_f64 / a);
+                let inv = (255.0_f64 / (a).clone());
                 out[i as usize] =
                     ((255.0_f64).min(((source[i as usize] as f64) * inv).round())) as u8;
                 out[(i + 1.0_f64) as usize] = ((255.0_f64)

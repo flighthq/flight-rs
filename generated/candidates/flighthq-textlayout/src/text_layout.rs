@@ -110,6 +110,7 @@ fn char_advances(
     start_x: Option<f64>,
 ) -> () {
     let start_x = start_x.unwrap_or(0.0_f64);
+    let __flight_utf16_text: Vec<u16> = text.encode_utf16().collect();
     out.clear();
     let letter_spacing = (format.letter_spacing).unwrap_or(0.0_f64);
     let tab_stops = (format.tab_stops).clone();
@@ -117,7 +118,41 @@ fn char_advances(
     let mut current_x = start_x;
     let mut i = start;
     while (i < end) {
-        let cp = (text.code_point_at)(i);
+        let cp = {
+            let __flight_units: &[u16] = &__flight_utf16_text;
+            let __flight_raw_index = i;
+            let __flight_index = if __flight_raw_index.is_nan() {
+                0_i64
+            } else if __flight_raw_index.is_finite() {
+                __flight_raw_index.trunc() as i64
+            } else {
+                -1_i64
+            };
+            if __flight_index < 0 {
+                f64::NAN
+            } else if let Some(&__flight_first) = __flight_units.get(__flight_index as usize) {
+                let __flight_first = u32::from(__flight_first);
+                if (0xD800_u32..=0xDBFF_u32).contains(&__flight_first) {
+                    if let Some(&__flight_second) = __flight_units.get(__flight_index as usize + 1)
+                    {
+                        let __flight_second = u32::from(__flight_second);
+                        if (0xDC00_u32..=0xDFFF_u32).contains(&__flight_second) {
+                            (((__flight_first - 0xD800_u32) << 10)
+                                + (__flight_second - 0xDC00_u32)
+                                + 0x10000_u32) as f64
+                        } else {
+                            __flight_first as f64
+                        }
+                    } else {
+                        __flight_first as f64
+                    }
+                } else {
+                    __flight_first as f64
+                }
+            } else {
+                f64::NAN
+            }
+        };
         let char_len = if (cp > 65535.0_f64) { 2.0_f64 } else { 1.0_f64 };
         let char = String::from_utf16_lossy(
             &(text)
@@ -137,7 +172,42 @@ fn char_advances(
         let next_start = (i + char_len);
         if ((kerning_enabled) && (next_start < end)) && ((text.char_code_at)(next_start) != 9.0_f64)
         {
-            let next_cp = (text.code_point_at)(next_start);
+            let next_cp = {
+                let __flight_units: &[u16] = &__flight_utf16_text;
+                let __flight_raw_index = next_start;
+                let __flight_index = if __flight_raw_index.is_nan() {
+                    0_i64
+                } else if __flight_raw_index.is_finite() {
+                    __flight_raw_index.trunc() as i64
+                } else {
+                    -1_i64
+                };
+                if __flight_index < 0 {
+                    f64::NAN
+                } else if let Some(&__flight_first) = __flight_units.get(__flight_index as usize) {
+                    let __flight_first = u32::from(__flight_first);
+                    if (0xD800_u32..=0xDBFF_u32).contains(&__flight_first) {
+                        if let Some(&__flight_second) =
+                            __flight_units.get(__flight_index as usize + 1)
+                        {
+                            let __flight_second = u32::from(__flight_second);
+                            if (0xDC00_u32..=0xDFFF_u32).contains(&__flight_second) {
+                                (((__flight_first - 0xD800_u32) << 10)
+                                    + (__flight_second - 0xDC00_u32)
+                                    + 0x10000_u32) as f64
+                            } else {
+                                __flight_first as f64
+                            }
+                        } else {
+                            __flight_first as f64
+                        }
+                    } else {
+                        __flight_first as f64
+                    }
+                } else {
+                    f64::NAN
+                }
+            };
             let next_len = if (next_cp > 65535.0_f64) {
                 2.0_f64
             } else {
@@ -221,6 +291,7 @@ fn build_groups(
     max_lines: f64,
     truncation_character: String,
 ) -> () {
+    let __flight_utf16_text: Vec<u16> = text.encode_utf16().collect();
     out.clear();
     let range_index: std::sync::Arc<std::sync::Mutex<f64>> =
         std::sync::Arc::new(std::sync::Mutex::new(0.0_f64));
@@ -773,7 +844,7 @@ fn build_groups(
                             }) + sum_advances(&all_positions)),
                         ),
                     );
-                    for p in (_CHAR_ADVANCES).iter().cloned() {
+                    for p in ((_CHAR_ADVANCES).clone()).iter().cloned() {
                         all_positions.push(p);
                     }
                     idx = range_end;
@@ -860,7 +931,45 @@ fn build_groups(
                 let mut w = 0.0_f64;
                 let mut i = remaining;
                 while (i < end) && (count < (_CHAR_ADVANCES.lock().unwrap().len() as f64)) {
-                    let cp = (text.code_point_at)(i);
+                    let cp = {
+                        let __flight_units: &[u16] = &__flight_utf16_text;
+                        let __flight_raw_index = i;
+                        let __flight_index = if __flight_raw_index.is_nan() {
+                            0_i64
+                        } else if __flight_raw_index.is_finite() {
+                            __flight_raw_index.trunc() as i64
+                        } else {
+                            -1_i64
+                        };
+                        if __flight_index < 0 {
+                            f64::NAN
+                        } else if let Some(&__flight_first) =
+                            __flight_units.get(__flight_index as usize)
+                        {
+                            let __flight_first = u32::from(__flight_first);
+                            if (0xD800_u32..=0xDBFF_u32).contains(&__flight_first) {
+                                if let Some(&__flight_second) =
+                                    __flight_units.get(__flight_index as usize + 1)
+                                {
+                                    let __flight_second = u32::from(__flight_second);
+                                    if (0xDC00_u32..=0xDFFF_u32).contains(&__flight_second) {
+                                        (((__flight_first - 0xD800_u32) << 10)
+                                            + (__flight_second - 0xDC00_u32)
+                                            + 0x10000_u32)
+                                            as f64
+                                    } else {
+                                        __flight_first as f64
+                                    }
+                                } else {
+                                    __flight_first as f64
+                                }
+                            } else {
+                                __flight_first as f64
+                            }
+                        } else {
+                            f64::NAN
+                        }
+                    };
                     let cp_len = if (cp > 65535.0_f64) { 2.0_f64 } else { 1.0_f64 };
                     if ((((*offset_x.lock().unwrap()).clone() + w)
                         + _CHAR_ADVANCES[count as usize].clone())
@@ -881,7 +990,45 @@ fn build_groups(
                     i += cp_len;
                 }
                 if (char_count == 0.0_f64) {
-                    let cp = (text.code_point_at)(remaining);
+                    let cp = {
+                        let __flight_units: &[u16] = &__flight_utf16_text;
+                        let __flight_raw_index = remaining;
+                        let __flight_index = if __flight_raw_index.is_nan() {
+                            0_i64
+                        } else if __flight_raw_index.is_finite() {
+                            __flight_raw_index.trunc() as i64
+                        } else {
+                            -1_i64
+                        };
+                        if __flight_index < 0 {
+                            f64::NAN
+                        } else if let Some(&__flight_first) =
+                            __flight_units.get(__flight_index as usize)
+                        {
+                            let __flight_first = u32::from(__flight_first);
+                            if (0xD800_u32..=0xDBFF_u32).contains(&__flight_first) {
+                                if let Some(&__flight_second) =
+                                    __flight_units.get(__flight_index as usize + 1)
+                                {
+                                    let __flight_second = u32::from(__flight_second);
+                                    if (0xDC00_u32..=0xDFFF_u32).contains(&__flight_second) {
+                                        (((__flight_first - 0xD800_u32) << 10)
+                                            + (__flight_second - 0xDC00_u32)
+                                            + 0x10000_u32)
+                                            as f64
+                                    } else {
+                                        __flight_first as f64
+                                    }
+                                } else {
+                                    __flight_first as f64
+                                }
+                            } else {
+                                __flight_first as f64
+                            }
+                        } else {
+                            f64::NAN
+                        }
+                    };
                     char_count = if (cp > 65535.0_f64) { 2.0_f64 } else { 1.0_f64 };
                 }
                 {
@@ -917,7 +1064,7 @@ fn build_groups(
         let __flight_result = __flight_callback.lock().unwrap()();
         __flight_result
     };
-    while ((*text_index.lock().unwrap()).clone() <= (text.encode_utf16().count() as f64)) {
+    while ((*text_index.lock().unwrap()).clone() <= (__flight_utf16_text.len() as f64)) {
         if (*truncated.lock().unwrap()).clone() {
             break;
         }
@@ -1070,14 +1217,14 @@ fn build_groups(
                 };
                 space_index = (text.index_of)(" ", word_end);
             } else {
-                if ((*text_index.lock().unwrap()).clone() >= (text.encode_utf16().count() as f64)) {
+                if ((*text_index.lock().unwrap()).clone() >= (__flight_utf16_text.len() as f64)) {
                     break;
                 }
                 if (word_wrap) && (container_width >= (TEXT_LAYOUT_GUTTER * 2.0_f64)) {
                     {
                         let __flight_callback = (break_long_word).clone();
                         let __flight_result =
-                            __flight_callback.lock().unwrap()((text.encode_utf16().count() as f64));
+                            __flight_callback.lock().unwrap()((__flight_utf16_text.len() as f64));
                         __flight_result
                     };
                 } else {
@@ -1085,7 +1232,7 @@ fn build_groups(
                         let __flight_callback = (place_span).clone();
                         let __flight_result = __flight_callback.lock().unwrap()(
                             (*text_index.lock().unwrap()).clone(),
-                            (text.encode_utf16().count() as f64),
+                            (__flight_utf16_text.len() as f64),
                         );
                         __flight_result
                     };
@@ -1140,21 +1287,21 @@ fn apply_alignment(
         let line_w = line_widths[g.line_index as usize].clone();
         let align = ((g.format.align).clone()).unwrap_or("left".to_owned());
         let mut shift = 0.0_f64;
-        let resolved = if (align == "start") {
+        let resolved = if ((align).clone() == "start") {
             if (direction == "RightToLeft") {
                 "right".to_owned()
             } else {
                 "left".to_owned()
             }
         } else {
-            if (align == "end") {
+            if ((align).clone() == "end") {
                 if (direction == "RightToLeft") {
                     "left".to_owned()
                 } else {
                     "right".to_owned()
                 }
             } else {
-                align
+                (align).clone()
             }
         };
         if (resolved == "right") {
@@ -1213,6 +1360,7 @@ fn justify_lines(
     paragraph_last_lines: &Vec<f64>,
     text: String,
 ) -> () {
+    let __flight_utf16_text: Vec<u16> = text.encode_utf16().collect();
     if (justification == "none") {
         return;
     }
@@ -1270,7 +1418,7 @@ fn justify_lines(
                 for g in (line_groups).iter().cloned() {
                     g.offset_x += accumulated;
                     let mut group_extra = 0.0_f64;
-                    let last_pos = if (g == last_group) {
+                    let last_pos = if ((g).clone() == last_group) {
                         ((g.positions.len() as f64) - 1.0_f64)
                     } else {
                         (g.positions.len() as f64)
@@ -1296,7 +1444,46 @@ fn justify_lines(
                     {
                         let mut ci = 0.0_f64;
                         while (ci < (g.positions.len() as f64)) && (text_index < g.end_index) {
-                            let codepoint = (text.code_point_at)(text_index);
+                            let codepoint = {
+                                let __flight_units: &[u16] = &__flight_utf16_text;
+                                let __flight_raw_index = text_index;
+                                let __flight_index = if __flight_raw_index.is_nan() {
+                                    0_i64
+                                } else if __flight_raw_index.is_finite() {
+                                    __flight_raw_index.trunc() as i64
+                                } else {
+                                    -1_i64
+                                };
+                                if __flight_index < 0 {
+                                    f64::NAN
+                                } else if let Some(&__flight_first) =
+                                    __flight_units.get(__flight_index as usize)
+                                {
+                                    let __flight_first = u32::from(__flight_first);
+                                    if (0xD800_u32..=0xDBFF_u32).contains(&__flight_first) {
+                                        if let Some(&__flight_second) =
+                                            __flight_units.get(__flight_index as usize + 1)
+                                        {
+                                            let __flight_second = u32::from(__flight_second);
+                                            if (0xDC00_u32..=0xDFFF_u32).contains(&__flight_second)
+                                            {
+                                                (((__flight_first - 0xD800_u32) << 10)
+                                                    + (__flight_second - 0xDC00_u32)
+                                                    + 0x10000_u32)
+                                                    as f64
+                                            } else {
+                                                __flight_first as f64
+                                            }
+                                        } else {
+                                            __flight_first as f64
+                                        }
+                                    } else {
+                                        __flight_first as f64
+                                    }
+                                } else {
+                                    f64::NAN
+                                }
+                            };
                             if (codepoint == 32.0_f64) {
                                 {
                                     space_count += 1.0;
@@ -1331,7 +1518,46 @@ fn justify_lines(
                     {
                         let mut ci = 0.0_f64;
                         while (ci < (g.positions.len() as f64)) && (text_index < g.end_index) {
-                            let codepoint = (text.code_point_at)(text_index);
+                            let codepoint = {
+                                let __flight_units: &[u16] = &__flight_utf16_text;
+                                let __flight_raw_index = text_index;
+                                let __flight_index = if __flight_raw_index.is_nan() {
+                                    0_i64
+                                } else if __flight_raw_index.is_finite() {
+                                    __flight_raw_index.trunc() as i64
+                                } else {
+                                    -1_i64
+                                };
+                                if __flight_index < 0 {
+                                    f64::NAN
+                                } else if let Some(&__flight_first) =
+                                    __flight_units.get(__flight_index as usize)
+                                {
+                                    let __flight_first = u32::from(__flight_first);
+                                    if (0xD800_u32..=0xDBFF_u32).contains(&__flight_first) {
+                                        if let Some(&__flight_second) =
+                                            __flight_units.get(__flight_index as usize + 1)
+                                        {
+                                            let __flight_second = u32::from(__flight_second);
+                                            if (0xDC00_u32..=0xDFFF_u32).contains(&__flight_second)
+                                            {
+                                                (((__flight_first - 0xD800_u32) << 10)
+                                                    + (__flight_second - 0xDC00_u32)
+                                                    + 0x10000_u32)
+                                                    as f64
+                                            } else {
+                                                __flight_first as f64
+                                            }
+                                        } else {
+                                            __flight_first as f64
+                                        }
+                                    } else {
+                                        __flight_first as f64
+                                    }
+                                } else {
+                                    f64::NAN
+                                }
+                            };
                             if (codepoint == 32.0_f64) {
                                 g.positions[ci as usize] += extra_per_space;
                                 accumulated += extra_per_space;

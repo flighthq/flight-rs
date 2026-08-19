@@ -140,7 +140,7 @@ pub fn create_canvas_text_shaper_backend() -> CanvasTextShaperBackend {
                 }
                 {
                     let __flight_key = (cache_key).clone();
-                    let __flight_value = width;
+                    let __flight_value = (width).clone();
                     if let Some((_, value)) = (*cache.lock().unwrap())
                         .iter_mut()
                         .find(|(key, _)| key == &__flight_key)

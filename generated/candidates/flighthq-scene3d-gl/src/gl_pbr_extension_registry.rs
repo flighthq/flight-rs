@@ -696,8 +696,13 @@ fn create_gl_pbr_extension_bind_context(
                     return false;
                 }
                 crate::host_value::<()>("host.activeTexture");
-                if (resolve_gl_texture(&state, ((texture).clone().unwrap()).clone(), None, None))
-                    .is_none()
+                if (resolve_gl_texture(
+                    &state,
+                    (((texture).clone()).clone().unwrap()).clone(),
+                    None,
+                    None,
+                ))
+                .is_none()
                 {
                     return false;
                 }

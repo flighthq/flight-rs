@@ -588,14 +588,15 @@ pub fn draw_gl_scene3_d(
                     let material = resolve_subset_material(&mesh, s);
                     let renderer =
                         resolve_gl_mesh_material_renderer(state, ((material).clone()).clone());
-                    if (renderer).is_none() {
+                    if ((renderer).clone()).is_none() {
                         {
                             s += 1.0;
                             s
                         };
                         continue;
                     }
-                    let resolved_material = (material).unwrap_or((*DEFAULT_MATERIAL).clone());
+                    let resolved_material =
+                        ((material).clone()).unwrap_or((*DEFAULT_MATERIAL).clone());
                     let is_blended =
                         (is_blended_material(&resolved_material)) || (object_alpha < 1.0_f64);
                     let mut entry = acquire_draw_entry(&mut if is_blended {
@@ -605,18 +606,18 @@ pub fn draw_gl_scene3_d(
                     });
                     entry.alpha = object_alpha;
                     entry.clip_w = clip_w;
-                    entry.color_matrix = color_matrix;
-                    entry.color_scale_bias = color_scale_bias;
+                    entry.color_matrix = (color_matrix).clone();
+                    entry.color_scale_bias = (color_scale_bias).clone();
                     entry.light_block = if has_prepared_forward_lights {
                         forward_lights.as_ref().unwrap().mesh_light_blocks[m as usize].clone()
                     } else {
                         (list.lights).clone()
                     };
-                    entry.mesh = mesh;
-                    entry.material = resolved_material;
-                    entry.renderer = (renderer).clone().unwrap();
+                    entry.mesh = (mesh).clone();
+                    entry.material = (resolved_material).clone();
+                    entry.renderer = ((renderer).clone()).clone().unwrap();
                     entry.subset = mesh.geometry.subsets[s as usize].clone();
-                    entry.world_matrix = world_matrix;
+                    entry.world_matrix = (world_matrix).clone();
                     if is_blended {
                         runtime.blended_draw_list.push(((entry).clone()).clone());
                     } else {

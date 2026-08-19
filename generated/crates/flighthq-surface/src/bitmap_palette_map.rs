@@ -55,22 +55,22 @@ pub fn apply_bitmap_palette_map(
                     let b = (source.bitmap.data[(si + 2.0_f64) as usize] as f64);
                     let a = (source.bitmap.data[(si + 3.0_f64) as usize] as f64);
                     dest.bitmap.data[di as usize] = if (red_map).is_some() {
-                        (red_map.as_ref().unwrap()[r as usize].clone()) as u8
+                        (red_map.as_ref().unwrap()[(r).clone() as usize].clone()) as u8
                     } else {
                         ((r).clone()) as u8
                     };
                     dest.bitmap.data[(di + 1.0_f64) as usize] = if (green_map).is_some() {
-                        (green_map.as_ref().unwrap()[g as usize].clone()) as u8
+                        (green_map.as_ref().unwrap()[(g).clone() as usize].clone()) as u8
                     } else {
                         ((g).clone()) as u8
                     };
                     dest.bitmap.data[(di + 2.0_f64) as usize] = if (blue_map).is_some() {
-                        (blue_map.as_ref().unwrap()[b as usize].clone()) as u8
+                        (blue_map.as_ref().unwrap()[(b).clone() as usize].clone()) as u8
                     } else {
                         ((b).clone()) as u8
                     };
                     dest.bitmap.data[(di + 3.0_f64) as usize] = if (alpha_map).is_some() {
-                        (alpha_map.as_ref().unwrap()[a as usize].clone()) as u8
+                        (alpha_map.as_ref().unwrap()[(a).clone() as usize].clone()) as u8
                     } else {
                         ((a).clone()) as u8
                     };

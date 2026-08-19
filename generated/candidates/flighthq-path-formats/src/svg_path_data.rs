@@ -234,9 +234,9 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                     break;
                 }
             }
-            let relative = (active >= "a");
+            let relative = ((active).clone() >= "a");
             let upper = if relative {
-                (active).to_uppercase()
+                ((active).clone()).to_uppercase()
             } else {
                 (active).clone()
             };
@@ -306,9 +306,9 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                             return false;
                         }
                         current_x = if relative {
-                            (current_x + nx)
+                            (current_x + *(nx.as_ref().unwrap()))
                         } else {
-                            (nx).clone().unwrap()
+                            *(nx.as_ref().unwrap())
                         };
                         append_path_line_to(path, current_x, current_y);
                         last_kind = "L".to_owned();
@@ -323,9 +323,9 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                                 return false;
                             }
                             current_y = if relative {
-                                (current_y + ny)
+                                (current_y + *(ny.as_ref().unwrap()))
                             } else {
-                                (ny).clone().unwrap()
+                                *(ny.as_ref().unwrap())
                             };
                             append_path_line_to(path, current_x, current_y);
                             last_kind = "L".to_owned();
@@ -368,41 +368,25 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                                 {
                                     return false;
                                 }
-                                let c1x = if relative {
-                                    (current_x + x1)
-                                } else {
-                                    (x1).clone().unwrap()
-                                };
-                                let c1y = if relative {
-                                    (current_y + y1)
-                                } else {
-                                    (y1).clone().unwrap()
-                                };
-                                let c2x = if relative {
-                                    (current_x + x2)
-                                } else {
-                                    (x2).clone().unwrap()
-                                };
-                                let c2y = if relative {
-                                    (current_y + y2)
-                                } else {
-                                    (y2).clone().unwrap()
-                                };
-                                let ax = if relative {
-                                    (current_x + x)
-                                } else {
-                                    (x).clone().unwrap()
-                                };
-                                let ay = if relative {
-                                    (current_y + y)
-                                } else {
-                                    (y).clone().unwrap()
-                                };
-                                append_path_cubic_curve_to(path, c1x, c1y, c2x, c2y, ax, ay);
-                                last_control2_x = c2x;
-                                last_control2_y = c2y;
-                                current_x = ax;
-                                current_y = ay;
+                                let c1x = if relative { Some((current_x + x1)) } else { x1 };
+                                let c1y = if relative { Some((current_y + y1)) } else { y1 };
+                                let c2x = if relative { Some((current_x + x2)) } else { x2 };
+                                let c2y = if relative { Some((current_y + y2)) } else { y2 };
+                                let ax = if relative { Some((current_x + x)) } else { x };
+                                let ay = if relative { Some((current_y + y)) } else { y };
+                                append_path_cubic_curve_to(
+                                    path,
+                                    (c1x).clone().unwrap(),
+                                    (c1y).clone().unwrap(),
+                                    (c2x).clone().unwrap(),
+                                    (c2y).clone().unwrap(),
+                                    (ax).clone().unwrap(),
+                                    (ay).clone().unwrap(),
+                                );
+                                last_control2_x = (c2x).clone().unwrap();
+                                last_control2_y = (c2y).clone().unwrap();
+                                current_x = (ax).clone().unwrap();
+                                current_y = (ay).clone().unwrap();
                                 last_kind = "C".to_owned();
                             } else {
                                 if (upper == "S") {
@@ -442,31 +426,23 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                                     } else {
                                         current_y
                                     };
-                                    let c2x = if relative {
-                                        (current_x + x2)
-                                    } else {
-                                        (x2).clone().unwrap()
-                                    };
-                                    let c2y = if relative {
-                                        (current_y + y2)
-                                    } else {
-                                        (y2).clone().unwrap()
-                                    };
-                                    let ax = if relative {
-                                        (current_x + x)
-                                    } else {
-                                        (x).clone().unwrap()
-                                    };
-                                    let ay = if relative {
-                                        (current_y + y)
-                                    } else {
-                                        (y).clone().unwrap()
-                                    };
-                                    append_path_cubic_curve_to(path, c1x, c1y, c2x, c2y, ax, ay);
-                                    last_control2_x = c2x;
-                                    last_control2_y = c2y;
-                                    current_x = ax;
-                                    current_y = ay;
+                                    let c2x = if relative { Some((current_x + x2)) } else { x2 };
+                                    let c2y = if relative { Some((current_y + y2)) } else { y2 };
+                                    let ax = if relative { Some((current_x + x)) } else { x };
+                                    let ay = if relative { Some((current_y + y)) } else { y };
+                                    append_path_cubic_curve_to(
+                                        path,
+                                        c1x,
+                                        c1y,
+                                        (c2x).clone().unwrap(),
+                                        (c2y).clone().unwrap(),
+                                        (ax).clone().unwrap(),
+                                        (ay).clone().unwrap(),
+                                    );
+                                    last_control2_x = (c2x).clone().unwrap();
+                                    last_control2_y = (c2y).clone().unwrap();
+                                    current_x = (ax).clone().unwrap();
+                                    current_y = (ay).clone().unwrap();
                                     last_kind = "S".to_owned();
                                 } else {
                                     if (upper == "Q") {
@@ -500,31 +476,21 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                                         {
                                             return false;
                                         }
-                                        let cx = if relative {
-                                            (current_x + x1)
-                                        } else {
-                                            (x1).clone().unwrap()
-                                        };
-                                        let cy = if relative {
-                                            (current_y + y1)
-                                        } else {
-                                            (y1).clone().unwrap()
-                                        };
-                                        let ax = if relative {
-                                            (current_x + x)
-                                        } else {
-                                            (x).clone().unwrap()
-                                        };
-                                        let ay = if relative {
-                                            (current_y + y)
-                                        } else {
-                                            (y).clone().unwrap()
-                                        };
-                                        append_path_curve_to(path, cx, cy, ax, ay);
-                                        last_quad_control_x = cx;
-                                        last_quad_control_y = cy;
-                                        current_x = ax;
-                                        current_y = ay;
+                                        let cx = if relative { Some((current_x + x1)) } else { x1 };
+                                        let cy = if relative { Some((current_y + y1)) } else { y1 };
+                                        let ax = if relative { Some((current_x + x)) } else { x };
+                                        let ay = if relative { Some((current_y + y)) } else { y };
+                                        append_path_curve_to(
+                                            path,
+                                            (cx).clone().unwrap(),
+                                            (cy).clone().unwrap(),
+                                            (ax).clone().unwrap(),
+                                            (ay).clone().unwrap(),
+                                        );
+                                        last_quad_control_x = (cx).clone().unwrap();
+                                        last_quad_control_y = (cy).clone().unwrap();
+                                        current_x = (ax).clone().unwrap();
+                                        current_y = (ay).clone().unwrap();
                                         last_kind = "Q".to_owned();
                                     } else {
                                         if (upper == "T") {
@@ -554,21 +520,21 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                                             } else {
                                                 current_y
                                             };
-                                            let ax = if relative {
-                                                (current_x + x)
-                                            } else {
-                                                (x).clone().unwrap()
-                                            };
-                                            let ay = if relative {
-                                                (current_y + y)
-                                            } else {
-                                                (y).clone().unwrap()
-                                            };
-                                            append_path_curve_to(path, cx, cy, ax, ay);
+                                            let ax =
+                                                if relative { Some((current_x + x)) } else { x };
+                                            let ay =
+                                                if relative { Some((current_y + y)) } else { y };
+                                            append_path_curve_to(
+                                                path,
+                                                cx,
+                                                cy,
+                                                (ax).clone().unwrap(),
+                                                (ay).clone().unwrap(),
+                                            );
                                             last_quad_control_x = cx;
                                             last_quad_control_y = cy;
-                                            current_x = ax;
-                                            current_y = ay;
+                                            current_x = (ax).clone().unwrap();
+                                            current_y = (ay).clone().unwrap();
                                             last_kind = "T".to_owned();
                                         } else {
                                             if (upper == "A") {
@@ -624,14 +590,14 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                                                     return false;
                                                 }
                                                 let ax = if relative {
-                                                    (current_x + x)
+                                                    Some((current_x + x))
                                                 } else {
-                                                    (x).clone().unwrap()
+                                                    x
                                                 };
                                                 let ay = if relative {
-                                                    (current_y + y)
+                                                    Some((current_y + y))
                                                 } else {
-                                                    (y).clone().unwrap()
+                                                    y
                                                 };
                                                 append_path_arc_to(
                                                     path,
@@ -641,11 +607,11 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                                                         / 180.0_f64),
                                                     (large_arc) == Some(1.0_f64),
                                                     (sweep) == Some(1.0_f64),
-                                                    ax,
-                                                    ay,
+                                                    (ax).clone().unwrap(),
+                                                    (ay).clone().unwrap(),
                                                 );
-                                                current_x = ax;
-                                                current_y = ay;
+                                                current_x = (ax).clone().unwrap();
+                                                current_y = (ay).clone().unwrap();
                                                 last_kind = "A".to_owned();
                                             } else {
                                                 return false;
@@ -659,10 +625,10 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                 }
             }
             first = false;
-            if (active == "M") {
+            if ((active).clone() == "M") {
                 active = "L".to_owned();
             } else {
-                if (active == "m") {
+                if ((active).clone() == "m") {
                     active = "l".to_owned();
                 }
             }

@@ -176,7 +176,7 @@ pub fn create_spritesheet_from_data(data: &SpritesheetData, atlas: &TextureAtlas
         let mut i = 0.0_f64;
         while (i < (data.frames.len() as f64)) {
             let name = (data.frames[i as usize].name).clone();
-            if (name != "") {
+            if ((name).clone() != "") {
                 {
                     let __flight_key = (name).clone();
                     let __flight_value = i;
@@ -229,7 +229,7 @@ pub fn create_spritesheet_from_data(data: &SpritesheetData, atlas: &TextureAtlas
                 direction: Some((ad.direction).clone()),
                 frame_duration: Some(ad.frame_duration),
                 frame_durations: (ad.frame_durations).clone(),
-                frames: Some(resolved_frames),
+                frames: Some((resolved_frames).clone()),
                 origin_x: Some(ad.origin_x),
                 origin_y: Some(ad.origin_y),
                 repeat_count: Some(ad.repeat_count),

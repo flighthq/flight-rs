@@ -86,14 +86,14 @@ pub fn create_web_accessibility_backend(
                     .iter()
                     .find(|(key, _)| key == &(node.id).clone())
                     .map(|(_, value)| value.clone());
-                if (element).is_none() {
+                if ((element).clone()).is_none() {
                     element = Some(crate::host_value::<crate::OpaqueHostValue>(
                         "host.createElement",
                     ));
                     crate::host_value::<()>("host.setAttribute");
                     {
                         let __flight_key = (node.id).clone();
-                        let __flight_value = (element).clone().unwrap();
+                        let __flight_value = ((element).clone()).clone().unwrap();
                         if let Some((_, value)) = (*elements.lock().unwrap())
                             .iter_mut()
                             .find(|(key, _)| key == &__flight_key)
@@ -105,7 +105,7 @@ pub fn create_web_accessibility_backend(
                     };
                 }
                 _apply_accessibility_element_attributes(
-                    ((element).clone().unwrap()).clone(),
+                    (((element).clone()).clone().unwrap()).clone(),
                     &node,
                 );
                 _reparent_accessibility_element(
@@ -389,7 +389,7 @@ fn _get_accessibility_live_region(
         .iter()
         .find(|(key, _)| key == &(liveness).clone())
         .map(|(_, value)| value.clone());
-    if ((region).is_none())
+    if (((region).clone()).is_none())
         || ((crate::host_value::<Option<crate::OpaqueHostValue>>("host.parentNode")).is_none())
     {
         region = Some(crate::host_value::<crate::OpaqueHostValue>(
@@ -400,7 +400,7 @@ fn _get_accessibility_live_region(
         crate::host_value::<()>("host.setAttribute");
         {
             let __flight_key = (liveness).clone();
-            let __flight_value = (region).clone().unwrap();
+            let __flight_value = ((region).clone()).clone().unwrap();
             if let Some((_, value)) = live_regions
                 .iter_mut()
                 .find(|(key, _)| key == &__flight_key)
@@ -483,13 +483,15 @@ fn _set_accessibility_element_value_text(
 ) -> () {
     let mut first = crate::host_value::<crate::OpaqueHostValue>("host.firstChild");
     if (value).is_none() {
-        if ((first).is_some()) && (crate::host_value::<f64>("host.nodeType") == _TEXT_NODE) {
+        if (((first).clone()).is_some())
+            && (crate::host_value::<f64>("host.nodeType") == _TEXT_NODE)
+        {
             crate::host_value::<()>("host.removeChild");
         }
         return;
     }
     if ((first).is_some()) && (crate::host_value::<f64>("host.nodeType") == _TEXT_NODE) {
-        crate::host_set("host.nodeValue", value.as_ref().unwrap());
+        crate::host_set("host.nodeValue", (value.as_ref().unwrap()).clone());
         return;
     }
     crate::host_value::<()>("host.insertBefore");

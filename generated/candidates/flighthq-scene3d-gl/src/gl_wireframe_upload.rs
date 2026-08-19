@@ -383,11 +383,11 @@ pub fn ensure_gl_wireframe_upload(
         .iter()
         .find(|(key, _)| key == &(*state).clone())
         .map(|(_, value)| value.clone());
-    if (per_state).is_none() {
+    if ((per_state).clone()).is_none() {
         per_state = Some(Vec::new());
         {
             let __flight_key = (*state).clone();
-            let __flight_value = (per_state).clone().unwrap();
+            let __flight_value = ((per_state).clone()).clone().unwrap();
             if let Some((_, value)) = (*WIREFRAME_UPLOADS.lock().unwrap())
                 .iter_mut()
                 .find(|(key, _)| key == &__flight_key)
@@ -404,9 +404,9 @@ pub fn ensure_gl_wireframe_upload(
         .iter()
         .find(|(key, _)| key == &(*geometry).clone())
         .map(|(_, value)| value.clone());
-    if ((upload).is_some()) && (upload.as_mut().unwrap().version == geometry.version) {
+    if (((upload).clone()).is_some()) && (upload.as_mut().unwrap().version == geometry.version) {
         crate::host_value::<()>("host.bindVertexArray");
-        return ((upload).clone().unwrap()).clone();
+        return (((upload).clone()).clone().unwrap()).clone();
     }
     let line_indices = build_line_indices(geometry);
     let index_type = if true {
@@ -414,17 +414,17 @@ pub fn ensure_gl_wireframe_upload(
     } else {
         crate::host_value::<crate::OpaqueHostValue>("host.UNSIGNED_SHORT")
     };
-    if (upload).is_none() {
+    if ((upload).clone()).is_none() {
         upload = Some(GlWireframeUpload {
             __flight_identity: std::sync::Arc::new(()),
-            index_type: index_type,
+            index_type: (index_type).clone(),
             line_index_buffer: crate::host_value::<crate::OpaqueHostValue>("host.createBuffer"),
             vao: crate::host_value::<crate::OpaqueHostValue>("host.createVertexArray"),
             version: (-1.0_f64),
         });
         {
             let __flight_key = (*geometry).clone();
-            let __flight_value = (upload).clone().unwrap();
+            let __flight_value = ((upload).clone()).clone().unwrap();
             if let Some((_, value)) = per_state
                 .as_mut()
                 .unwrap()

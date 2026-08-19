@@ -383,9 +383,12 @@ pub static STANDARD_PBR_GL_MESH_MATERIAL_RENDERER: std::sync::LazyLock<GlMeshMat
                 let gl = (state.gl).clone();
                 let pbr = material;
                 let mut program = {
-                    let __flight_argument_1 =
-                        (build_gl_pbr_standard_define_key(&state, (pbr).clone(), (pbr).clone()))
-                            .clone();
+                    let __flight_argument_1 = (build_gl_pbr_standard_define_key(
+                        &state,
+                        ((pbr).clone()).clone(),
+                        ((pbr).clone()).clone(),
+                    ))
+                    .clone();
                     ensure_gl_pbr_program((state).clone(), &__flight_argument_1, None)
                 };
                 begin_gl_mesh_draw(
@@ -481,7 +484,7 @@ pub static STANDARD_PBR_GL_MESH_MATERIAL_RENDERER: std::sync::LazyLock<GlMeshMat
                     },
                     &lights,
                 );
-                bind_gl_pbr_standard_block(&state, &mut program, (pbr).clone());
+                bind_gl_pbr_standard_block(&state, &mut program, ((pbr).clone()).clone());
                 crate::host_value::<()>("host.uniform1f");
             },
         )

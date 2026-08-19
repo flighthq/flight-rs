@@ -476,13 +476,13 @@ fn ensure_particle3_d_shader(state: &GlRenderState) -> GlParticle3DShader {
         .iter()
         .find(|(key, _)| key == &(*state).clone())
         .map(|(_, value)| value.clone());
-    if (shader).is_some() {
+    if ((shader).clone()).is_some() {
         return ((shader.as_mut().unwrap()).clone()).clone();
     }
     shader = Some(compile_particle3_d_shader((state.gl).clone()));
     {
         let __flight_key = (*state).clone();
-        let __flight_value = (shader).clone().unwrap();
+        let __flight_value = ((shader).clone()).clone().unwrap();
         if let Some((_, value)) = (*SHADER_CACHE.lock().unwrap())
             .iter_mut()
             .find(|(key, _)| key == &__flight_key)
@@ -646,12 +646,12 @@ fn draw_particle_emitter3_d_node(
     }
     ensure_instance_capacity(shader, (gl).clone(), particle_count);
     let atlas_texture = atlas.as_ref().and_then(|value| (value.texture).clone());
-    let resolved_atlas = if ((atlas_texture).is_some())
-        && (has_texture_source(((atlas_texture).clone().unwrap()).clone()))
+    let resolved_atlas = if (((atlas_texture).clone()).is_some())
+        && (has_texture_source((((atlas_texture).clone()).clone().unwrap()).clone()))
     {
         resolve_gl_texture(
             state,
-            ((atlas_texture).clone().unwrap()).clone(),
+            (((atlas_texture).clone()).clone().unwrap()).clone(),
             Some(true),
             None,
         )
@@ -672,7 +672,7 @@ fn draw_particle_emitter3_d_node(
     let iw = if has_atlas {
         (1.0_f64
             / (1.0_f64).max(get_texture_width(
-                ((atlas_texture).clone().unwrap()).clone(),
+                (((atlas_texture).clone()).clone().unwrap()).clone(),
             )))
     } else {
         0.0_f64
@@ -725,29 +725,29 @@ fn draw_particle_emitter3_d_node(
             let wx = if world_space {
                 ((lx).clone()) as f32
             } else {
-                (((((world_matrix.m[0.0_f64 as usize] as f64) * lx)
-                    + ((world_matrix.m[4.0_f64 as usize] as f64) * ly))
-                    + ((world_matrix.m[8.0_f64 as usize] as f64) * lz))
+                (((((world_matrix.m[0.0_f64 as usize] as f64) * (lx).clone())
+                    + ((world_matrix.m[4.0_f64 as usize] as f64) * (ly).clone()))
+                    + ((world_matrix.m[8.0_f64 as usize] as f64) * (lz).clone()))
                     + (world_matrix.m[12.0_f64 as usize] as f64)) as f32
             };
             let wy = if world_space {
                 ((ly).clone()) as f32
             } else {
-                (((((world_matrix.m[1.0_f64 as usize] as f64) * lx)
-                    + ((world_matrix.m[5.0_f64 as usize] as f64) * ly))
-                    + ((world_matrix.m[9.0_f64 as usize] as f64) * lz))
+                (((((world_matrix.m[1.0_f64 as usize] as f64) * (lx).clone())
+                    + ((world_matrix.m[5.0_f64 as usize] as f64) * (ly).clone()))
+                    + ((world_matrix.m[9.0_f64 as usize] as f64) * (lz).clone()))
                     + (world_matrix.m[13.0_f64 as usize] as f64)) as f32
             };
             let wz = if world_space {
                 ((lz).clone()) as f32
             } else {
-                (((((world_matrix.m[2.0_f64 as usize] as f64) * lx)
-                    + ((world_matrix.m[6.0_f64 as usize] as f64) * ly))
-                    + ((world_matrix.m[10.0_f64 as usize] as f64) * lz))
+                (((((world_matrix.m[2.0_f64 as usize] as f64) * (lx).clone())
+                    + ((world_matrix.m[6.0_f64 as usize] as f64) * (ly).clone()))
+                    + ((world_matrix.m[10.0_f64 as usize] as f64) * (lz).clone()))
                     + (world_matrix.m[14.0_f64 as usize] as f64)) as f32
             };
-            let cos_r = ((rotation).cos() * scale);
-            let sin_r = ((rotation).sin() * scale);
+            let cos_r = (((rotation).clone()).cos() * scale);
+            let sin_r = (((rotation).clone()).sin() * scale);
             let ct = (i * 3.0_f64);
             let has_colors = ((emitter.data.colors).is_some())
                 && ((emitter.data.colors.len() as f64) > (ct + 2.0_f64));

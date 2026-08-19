@@ -8,8 +8,8 @@ Upstream commit: `cad72aa3ea4e6e76a050918a403dcb10efdfcb0d`
 | Default-generated packages | 137 |
 | Emittable packages | 43 |
 | Blocked packages | 94 |
-| Compiled candidates | 14 |
-| Compile-blocked candidates | 8 |
+| Compiled candidates | 15 |
+| Compile-blocked candidates | 7 |
 | Dependency-blocked candidates | 19 |
 | Cultivated packages | 1 |
 | Host-bound packages | 4 |
@@ -149,7 +149,7 @@ Upstream commit: `cad72aa3ea4e6e76a050918a403dcb10efdfcb0d`
 | `@flighthq/swf` | generated | blocked | source-blocked | 3/13 | 18/11 | 0 | 1/1 | 0 | 10 | no |
 | `@flighthq/text` | generated | blocked | source-blocked | 6/7 | 83/86 | 3 | 10/12 | 3 | 2 | no |
 | `@flighthq/text-markup` | generated | blocked | source-blocked | 5/6 | 8/8 | 0 | 2/2 | 1 | 1 | no |
-| `@flighthq/textbidi` | generated | emittable | compile-blocked | 6/6 | 6/6 | 0 | 1/1 | 0 | 0 | no |
+| `@flighthq/textbidi` | generated | emittable | compiled | 6/6 | 6/6 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/textinput` | generated | emittable | dependency-blocked | 6/6 | 55/55 | 0 | 5/6 | 4 | 0 | no |
 | `@flighthq/textlayout` | generated | emittable | dependency-blocked | 14/14 | 47/47 | 0 | 10/14 | 1 | 0 | no |
 | `@flighthq/textsegment` | generated | emittable | compiled | 5/5 | 11/11 | 0 | 1/1 | 1 | 0 | no |
@@ -1405,7 +1405,7 @@ Disposition partition: 173 eligible = 13 portable executable + 0 host placeholde
 - **E0308** `generated/candidates/flighthq-importdiagnostics/src/import_diagnostic_collector.rs`: mismatched types
 - **E0609** `generated/candidates/flighthq-importdiagnostics/src/import_diagnostic_text.rs`: no field `sort` on type `()`
 - **E0277** `generated/candidates/flighthq-importdiagnostics/src/import_diagnostic_text.rs`: can't compare `std::string::String` with `&std::string::String`
-- **E0277** `generated/candidates/flighthq-importdiagnostics/src/import_diagnostic_text.rs`: `flighthq_types::FlightUnion2<bool, flighthq_types::FlightUnion2<f64, std::string::String>>` doesn't implement `std::fmt::Display`
+- **E0277** `generated/candidates/flighthq-importdiagnostics/src/import_diagnostic_text.rs`: `FlightUnion2<bool, ...>` doesn't implement `std::fmt::Display`
 - **E0368** `generated/candidates/flighthq-importdiagnostics/src/import_diagnostic_text.rs`: binary assignment operation `+=` cannot be applied to type `&str`
 - **E0277** `generated/candidates/flighthq-importdiagnostics/src/import_diagnostic_text.rs`: `OpaqueHostValue` doesn't implement `std::fmt::Display`
 
@@ -1443,41 +1443,19 @@ Disposition partition: 173 eligible = 13 portable executable + 0 host placeholde
 - **E0070** `generated/candidates/flighthq-protocol/src/protocol.rs`: invalid left-hand side of assignment
 - **E0308** `generated/candidates/flighthq-protocol/src/protocol.rs`: mismatched types
 
-### `@flighthq/textbidi`
-
-- **E0369** `generated/candidates/flighthq-textbidi/src/bidi_class_backend.rs`: cannot subtract `f64` from `LazyLock<f64>`
-- **E0609** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: no field `code_point_at` on type `std::string::String`
-- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: arguments to this function are incorrect
-- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: arguments to this function are incorrect
-- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: mismatched types
-- **E0600** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: cannot apply unary operator `!` to type `f64`
-- **E0382** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: use of moved value: `sos`
-- **E0382** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: use of moved value: `sos`
-- **E0382** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: borrow of moved value: `sos`
-- **E0382** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: borrow of moved value: `eos`
-- **E0382** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: use of moved value: `embedding_dir`
-- **E0382** `generated/candidates/flighthq-textbidi/src/resolve_bidi_levels.rs`: use of moved value: `resolved`
-
 ### `@flighthq/timeline`
 
 - **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)
 - **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be applied to values that implement `Try`
 - **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)
 - **E0070** `generated/candidates/flighthq-timeline/src/timeline.rs`: invalid left-hand side of assignment
-- **E0609** `generated/candidates/flighthq-timeline/src/timeline.rs`: no field `set` on type `Option<Vec<(f64, Arc<std::sync::Mutex<Box<(dyn FnMut(Node2D, f64) + Send + 'static)>>>)>>`
+- **E0609** `generated/candidates/flighthq-timeline/src/timeline.rs`: no field `set` on type `Option<Vec<(f64, Arc<Mutex<Box<...>>>)>>`
 - **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)
 - **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be applied to values that implement `Try`
 - **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)
 - **E0070** `generated/candidates/flighthq-timeline/src/timeline.rs`: invalid left-hand side of assignment
 - **E0308** `generated/candidates/flighthq-timeline/src/timeline.rs`: mismatched types
-- **E0599** `generated/candidates/flighthq-timeline/src/timeline.rs`: no method named `unwrap` found for reference `&std::sync::Mutex<Box<(dyn FnMut(Node2D, f64) + Send + 'static)>>` in the current scope
+- **E0599** `generated/candidates/flighthq-timeline/src/timeline.rs`: no method named `unwrap` found for reference `&Mutex<Box<dyn FnMut(..., f64) + Send>>` in the current scope
 - **E0308** `generated/candidates/flighthq-timeline/src/timeline.rs`: mismatched types
 - **E0596** `generated/candidates/flighthq-timeline/src/timeline.rs`: cannot borrow `timeline.frame_scripts` as mutable, as it is behind a `&` reference
 - **E0596** `generated/candidates/flighthq-timeline/src/timeline.rs`: cannot borrow `timeline.frame_scripts` as mutable, as it is behind a `&` reference

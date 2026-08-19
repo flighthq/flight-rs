@@ -387,7 +387,7 @@ fn fire_construct_frame(timeline: &mut Timeline) -> bool {
             ((frame_event).clone(),),
         );
     }
-    if (target).is_some() {
+    if ((target).clone()).is_some() {
         {
             let __flight_callback = timeline
                 .source

@@ -1143,9 +1143,9 @@ pub fn update_particle_emitter2_d(
                 let dy = (emitter.data.transforms[(tt + 1.0_f64) as usize] as f64);
                 {
                     let __flight_callback = on_death;
-                    __flight_callback
-                        .as_ref()
-                        .map(|callback| callback.lock().unwrap()(dx, dy, 0.0_f64))
+                    __flight_callback.as_ref().map(|callback| {
+                        callback.lock().unwrap()((dx).clone(), (dy).clone(), 0.0_f64)
+                    })
                 };
                 {
                     let __flight_callback = signals
@@ -1158,7 +1158,8 @@ pub fn update_particle_emitter2_d(
                         .as_ref()
                         .unwrap()
                         .clone();
-                    let __flight_result = __flight_callback.lock().unwrap()(dx, dy, 0.0_f64);
+                    let __flight_result =
+                        __flight_callback.lock().unwrap()((dx).clone(), (dy).clone(), 0.0_f64);
                     __flight_result
                 };
             }
@@ -1561,7 +1562,7 @@ pub fn update_particle_emitter2_d(
                         }
                     }
                 }
-                if (world_transform).is_some() {
+                if ((world_transform).clone()).is_some() {
                     let t = if (to_spawn > 1.0_f64) {
                         (s_idx / (to_spawn - 1.0_f64))
                     } else {

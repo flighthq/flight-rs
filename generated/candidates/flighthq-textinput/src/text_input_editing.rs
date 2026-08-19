@@ -2421,9 +2421,9 @@ fn restrict_text_input(text: String, restrict: String) -> String {
     let mut out = "";
     for char in (text).iter().cloned() {
         let accepted_match =
-            (accepted == "") || (matches_restrict_ranges(char, (accepted).clone()));
+            ((accepted).clone() == "") || (matches_restrict_ranges(char, (accepted).clone()));
         let declined_match =
-            (declined != "") && (matches_restrict_ranges(char, (declined).clone()));
+            ((declined).clone() != "") && (matches_restrict_ranges(char, (declined).clone()));
         if (accepted_match) && (!declined_match) {
             out += char;
         }

@@ -12,6 +12,19 @@ use flighthq_types::{
     Scene3DForwardLightSelection, Scene3DLightsLike, SpotLight,
 };
 
+#[inline]
+fn __flight_js_to_u32(value: f64) -> u32 {
+    if !value.is_finite() || value == 0.0 {
+        return 0;
+    }
+    value.trunc().rem_euclid(4294967296.0_f64) as u32
+}
+
+#[inline]
+fn __flight_js_to_i32(value: f64) -> i32 {
+    __flight_js_to_u32(value) as i32
+}
+
 // Source: upstream/packages/lighting/src/sceneForwardLights.ts:20 (sha256:7d1e98287c7aadf7cb5571b4d34ea8c75615e2001f56a6182a8b6654b7258ce4)
 pub fn select_scene3_d_forward_lights(
     out: &mut Scene3DForwardLightSelection,
@@ -53,8 +66,11 @@ pub fn select_scene3_d_forward_lights(
     {
         let mut i = 0.0_f64;
         while (i < spot_count) {
-            out.indices
-                .push((!((*SCRATCH_SELECTED_SPOT_INDICES.lock().unwrap())[i as usize] as f64)));
+            out.indices.push(
+                (!__flight_js_to_i32(
+                    ((*SCRATCH_SELECTED_SPOT_INDICES.lock().unwrap())[i as usize] as f64),
+                )) as f64,
+            );
             out.spot
                 .push((*SCRATCH_SELECTED_SPOT_LIGHTS.lock().unwrap())[i as usize].clone());
             {

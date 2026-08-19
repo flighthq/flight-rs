@@ -55,7 +55,7 @@ pub fn compute_render_effect_padding(
         .clone();
     if (emit_miss).is_some() {
         for kind in ((explanation.missing_kinds).clone()).iter().cloned() {
-            emit_miss.as_ref().unwrap()(RenderRegistry::EffectPaddingResolver, kind);
+            emit_miss.as_ref().unwrap()(RenderRegistry::EffectPaddingResolver, (kind).clone());
         }
     }
     return (explanation.padding).clone();

@@ -503,10 +503,10 @@ pub fn draw_gl_scene3_d_shadow_map(
             } else {
                 (rigid_program).clone()
             };
-            if (program != (*bound_program.lock().unwrap()).clone()) {
+            if ((program).clone() != (*bound_program.lock().unwrap()).clone()) {
                 crate::host_value::<()>("host.useProgram");
                 crate::host_value::<()>("host.uniformMatrix4fv");
-                (*bound_program.lock().unwrap()) = Some(program);
+                (*bound_program.lock().unwrap()) = Some((program).clone());
             }
             crate::host_value::<()>("host.uniformMatrix4fv");
             if skinned {

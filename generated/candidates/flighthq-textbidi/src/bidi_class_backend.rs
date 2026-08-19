@@ -54,7 +54,7 @@ static _BACKEND: std::sync::LazyLock<std::sync::Mutex<Option<BidiClassBackend>>>
 // Source: upstream/packages/textbidi/src/bidiClassBackend.ts:37 (sha256:aabce4c51e2e09322743e8a20e791edde02c0c4627a31c2b9d3f7c1490e63169)
 fn get_compact_bidi_class(codepoint: f64) -> BidiClass {
     let mut lo = 0.0_f64;
-    let mut hi = (_RANGE_COUNT - 1.0_f64);
+    let mut hi = (*_RANGE_COUNT - 1.0_f64);
     while (lo <= hi) {
         let mid = (__flight_js_to_i32((lo + hi)) >> (__flight_js_to_u32(1.0_f64) & 31)) as f64;
         let base = (mid * 3.0_f64);

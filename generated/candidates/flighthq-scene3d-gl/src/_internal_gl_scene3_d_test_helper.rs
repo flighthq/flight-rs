@@ -1153,7 +1153,7 @@ pub fn make_fake_gl2(options: Option<SharedStructuralRecord2>) -> FakeGl2 {
                     (*calls.lock().unwrap()).push(SharedStructuralRecord1 {
                         __flight_identity: std::sync::Arc::new(()),
                         name: "getUniformLocation".to_owned(),
-                        args: vec![name],
+                        args: vec![(name).clone()],
                     });
                     return Font {
                         __flight_identity: std::sync::Arc::new(()),

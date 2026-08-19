@@ -154,6 +154,9 @@ describe('Rust emission', () => {
         export function hex(value: number): string {
           return (value & 255).toString(16).padStart(2, '0');
         }
+        export function nextEven(value: number): number {
+          return (value + 2) & ~1;
+        }
         export function cacheKey(value: string): string {
           return \`\${value}\\u0000end\`;
         }
@@ -203,6 +206,7 @@ describe('Rust emission', () => {
     expect(output).toContain('(y).atan2(x)');
     expect(output).toContain('fn __flight_number_to_string');
     expect(output).toContain('fn __flight_pad_start');
+    expect(output).toContain('!__flight_js_to_i32(1.0_f64)');
     expect(output).toContain('\\u{0000}');
     expect(output).toContain('value.encode_utf16().count() as f64');
     expect(output).toContain('utf16_length((value).clone())');
@@ -255,6 +259,9 @@ describe('Rust emission', () => {
         export interface PositionedValue extends BasePosition {
           label: string;
         }
+        type Direction = 'L' | 'R';
+        const lookup = [1, 2, 3];
+        const lookupCount = lookup.length;
         export interface AdjustmentOptions {
           kind: string;
           colorMatrix: readonly number[];
@@ -301,6 +308,36 @@ describe('Rust emission', () => {
           const bins = new Array<number>(256).fill(0);
           for (const value of values) bins[value]++;
           return bins;
+        }
+        export function fillBytes(values: Uint8Array, value: number): Uint8Array {
+          return values.fill(value);
+        }
+        export function prefillInts(length: number): Int32Array {
+          return new Int32Array(length).fill(length);
+        }
+        export function lastLookupIndex(): number {
+          return lookupCount - 1;
+        }
+        export function optionalDirection(code: number): Direction | null {
+          return code === 1 ? 'R' : code === 2 ? 'L' : null;
+        }
+        export function reuseDirection(seed: Direction): Direction {
+          let current: Direction = seed;
+          current = seed;
+          for (let index = 0; index < 2; index++) current = seed;
+          return current;
+        }
+        export function firstPresentDirection(values: (Direction | null)[]): Direction {
+          if (values[0] !== null) return values[0] as Direction;
+          return 'L';
+        }
+        export function switchDirection(direction: Direction): Direction {
+          switch (direction) {
+            case 'L':
+              return direction;
+            default:
+              return 'R';
+          }
         }
         export function copyLookup(
           out: Uint8Array,
@@ -409,6 +446,17 @@ describe('Rust emission', () => {
     expect(output).toContain('Vec<f32>');
     expect(output).toContain('Some(Bounds {');
     expect(output).toContain('vec![0.0_f64; (256.0_f64) as usize]');
+    expect(output).toContain('let __flight_value = (value) as u8; let __flight_collection = &mut *values;');
+    expect(output).toContain('__flight_collection.fill(__flight_value);');
+    expect(output).toContain('let mut __flight_collection = vec![0_i32; (length) as usize];');
+    expect(output).toContain('let __flight_value = (length) as i32; __flight_collection.fill(__flight_value);');
+    expect(output).toContain('static LOOKUP_COUNT: std::sync::LazyLock<f64>');
+    expect(output).toContain('return (*LOOKUP_COUNT - 1.0_f64);');
+    expect(output).toContain('if (code == 1.0_f64) { Some("R".to_owned()) }');
+    expect(output).toContain('let mut current: Direction = (seed).clone();');
+    expect(output).toContain('current = (seed).clone();');
+    expect(output).toContain('return values[0.0_f64 as usize].clone().unwrap();');
+    expect(output).toContain('let __switch_value = (direction).clone();');
     expect(output).toContain('values: Option<Vec<u8>>');
     expect(output).toContain('copy_lookup(out, Some(');
     expect(output).toContain('pub names: Option<Vec<String>>');
@@ -444,6 +492,50 @@ describe('Rust emission', () => {
         stdio: 'pipe',
       }),
     ).not.toThrow();
+  });
+
+  it('compiles and runs UTF-16 code-point indexing through one hoisted Rust view', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/textbidi/src/code-points.ts',
+      `
+        export function inspectCodePoint(value: string, index: number): number[] {
+          return [value.length, value.codePointAt(index) as number];
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/textbidi', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/textbidi/src/code-points.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('let __flight_utf16_value: Vec<u16> = value.encode_utf16().collect();');
+    expect(output).toContain('(__flight_utf16_value.len() as f64)');
+    expect(output.match(/value\.encode_utf16\(\)\.collect/gu)).toHaveLength(1);
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-utf16-code-point-'));
+    const binary = path.join(fixture, 'utf16-code-point');
+    writeFileSync(path.join(fixture, 'generated.rs'), output);
+    writeFileSync(
+      path.join(fixture, 'main.rs'),
+      [
+        'mod generated;',
+        'fn main() {',
+        '  assert_eq!(generated::inspect_code_point("A😀Z".to_owned(), 1.0), vec![4.0, 0x1F600_u32 as f64]);',
+        '  assert_eq!(generated::inspect_code_point("A😀Z".to_owned(), 2.0), vec![4.0, 0xDE00_u32 as f64]);',
+        '  assert_eq!(generated::inspect_code_point("A😀Z".to_owned(), f64::NAN), vec![4.0, 65.0]);',
+        '  assert!(generated::inspect_code_point("A😀Z".to_owned(), 4.0)[1].is_nan());',
+        '}',
+        '',
+      ].join('\n'),
+    );
+    expect(() => compileRustExecutable('main.rs', binary, fixture)).not.toThrow();
+    expect(() => execFileSync(binary, [], { cwd: fixture, stdio: 'pipe' })).not.toThrow();
   });
 
   it('narrows discriminated unions and wraps named union assignments', () => {

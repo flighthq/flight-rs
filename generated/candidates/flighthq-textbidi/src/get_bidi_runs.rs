@@ -25,7 +25,7 @@ pub fn get_bidi_runs(text: String, base_direction: BidiDirection) -> Vec<BidiRun
                     start: start,
                     end: i,
                     level: (level).clone(),
-                    direction: if ((level % 2.0_f64) == 0.0_f64) {
+                    direction: if (((level).clone() % 2.0_f64) == 0.0_f64) {
                         "ltr".to_owned()
                     } else {
                         "rtl".to_owned()

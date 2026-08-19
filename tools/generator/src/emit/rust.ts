@@ -70,6 +70,7 @@ interface EmitContext {
   inlineFunctions: ReadonlyMap<string, IrFunctionDeclaration>;
   knownNullNames: Set<string>;
   lexicalTypeParameters: ReadonlySet<string>;
+  lazyScalarNames: ReadonlySet<string>;
   localFunctionNames: ReadonlySet<string>;
   localTypeNames: ReadonlySet<string>;
   mutexCollectionNames: ReadonlySet<string>;
@@ -90,6 +91,7 @@ interface EmitContext {
   timerHandleNames: ReadonlySet<string>;
   taskOutputType?: IrType | undefined;
   unionNarrowings: Map<string, { index: number; unionName?: string | undefined; variants: readonly IrType[] }>;
+  utf16ViewNames: ReadonlyMap<string, string>;
 }
 
 export class RustEmissionError extends Error {}
@@ -196,6 +198,7 @@ export function emitRustModule(module: RustModule): string {
     inlineFunctions,
     knownNullNames: new Set(),
     lexicalTypeParameters: new Set(),
+    lazyScalarNames: new Set(),
     localFunctionNames: new Set(
       module.declarations
         .filter((declaration): declaration is IrFunctionDeclaration => declaration.kind === 'function')
@@ -267,6 +270,7 @@ export function emitRustModule(module: RustModule): string {
     ),
     timerHandleNames: new Set(),
     unionNarrowings: new Map(),
+    utf16ViewNames: new Map(),
   };
   registerEntityRuntimeFamilies(context);
   registerOpenInterfaceFamilies(context);
@@ -290,6 +294,22 @@ export function emitRustModule(module: RustModule): string {
       context.symbolTypes.set(declaration.name, { arguments: [], kind: 'named', name: recordName });
     } else if (inferred) {
       context.symbolTypes.set(declaration.name, inferred);
+    }
+  }
+  for (const declaration of module.declarations) {
+    if (
+      declaration.kind !== 'variable' ||
+      !declaration.initializer ||
+      declaration.initializer.kind === 'function' ||
+      moduleMutatedNames.has(declaration.name) ||
+      constantValues.has(declaration.name) ||
+      isRustConstExpression(declaration.initializer)
+    ) {
+      continue;
+    }
+    const type = resolveSemanticType(context.symbolTypes.get(declaration.name), context);
+    if (type?.kind === 'primitive' && isCopyType(type, context)) {
+      (context.lazyScalarNames as Set<string>).add(declaration.name);
     }
   }
   registerSharedModuleAnonymousTypes(module.declarations, context);
@@ -875,12 +895,13 @@ function emitLiftedFunction(
   const nextContext = functionContext(context, declaration.name, expression, returns);
   registerParameters(expression.parameters, nextContext, callback ? [primitive('Float')] : []);
   registerLocalTypes(expression.body, nextContext);
+  const utf16Views = prepareParameterUtf16Views(expression.parameters, expression.body, nextContext);
   const parameters = expression.parameters.map((parameter) =>
     emitParameter(parameter, nextContext, callback ? primitive('Float') : undefined, expression),
   );
   const body = expression.expression
-    ? `{\n${indent(`return ${emitExpression(expression.expression, nextContext, returns)};`)}\n}`
-    : emitStatementsAsBlock(expression.body, nextContext);
+    ? `{\n${indent([...utf16Views, `return ${emitExpression(expression.expression, nextContext, returns)};`].join('\n'))}\n}`
+    : emitStatementsAsBlock(expression.body, nextContext, utf16Views);
   return `${emitAnonymousDefinitions(nextContext)}${declaration.exported ? 'pub ' : ''}fn ${snakeCase(declaration.name)}(${parameters.join(', ')}) -> ${emitType(returns, nextContext)} ${body}`;
 }
 
@@ -923,12 +944,13 @@ function emitFunctionDeclaration(declaration: IrFunctionDeclaration, context: Em
     const name = safeName(parameter.name);
     return [`let ${name} = ${name}.unwrap_or(${emitExpression(parameter.initializer, nextContext, parameter.type)});`];
   });
+  const utf16Views = prepareParameterUtf16Views(declaration.parameters, reachableBody, nextContext);
   const body = emitStatementsAsBlock(
     defaults.length > 0
       ? [{ declarations: [], kind: 'variable' } as IrStatement, ...declaration.body]
       : declaration.body,
     nextContext,
-    defaults,
+    [...defaults, ...utf16Views],
   );
   const signature = [...parameters, emitType(declaration.returns, nextContext)].join(' ');
   const effectiveTypeParameters = declaration.typeParameters.filter((parameter) =>
@@ -989,6 +1011,7 @@ function emitPortableTaskFunctionDeclaration(declaration: IrFunctionDeclaration,
     const name = safeName(parameter.name);
     return [`let ${name} = ${name}.unwrap_or(${emitExpression(parameter.initializer, nextContext, parameter.type)});`];
   });
+  const utf16Views = prepareParameterUtf16Views(declaration.parameters, reachableBody, nextContext);
   if (output.kind !== 'primitive' || output.name !== 'Void') {
     if (!reachableBody.some((statement) => statementAlwaysReturns(statement, nextContext))) {
       throw new RustEmissionError(
@@ -996,7 +1019,7 @@ function emitPortableTaskFunctionDeclaration(declaration: IrFunctionDeclaration,
       );
     }
   }
-  const prefix = [...defaults];
+  const prefix = [...defaults, ...utf16Views];
   const bodyStatements = emitStatementsAsBlock(reachableBody, nextContext, prefix);
   const body =
     output.kind === 'primitive' && output.name === 'Void'
@@ -1045,20 +1068,32 @@ function emitParameter(
   return `${name}: ${borrowed ? `${assigned ? '&mut ' : '&'}${storage}` : storage}`;
 }
 
-function emitStatementsAsBlock(statements: IrStatement[], context: EmitContext, prefix: string[] = []): string {
+function emitStatementsAsBlock(
+  statements: IrStatement[],
+  context: EmitContext,
+  prefix: string[] = [],
+  suffix: string[] = [],
+): string {
   const lines = [...prefix];
+  const namesUsedLater = identifierNamesUsedLater(statements);
   let activeContext = context;
-  for (const statement of statements) {
-    lines.push(...emitStatement(statement, activeContext));
-    if (statementAlwaysReturns(statement, activeContext)) break;
+  for (const [index, statement] of statements.entries()) {
+    const statementContext = contextPreservingReferencedNames(
+      statement,
+      namesUsedLater[index] ?? new Set(),
+      activeContext,
+    );
+    lines.push(...emitStatement(statement, statementContext));
+    if (statementAlwaysReturns(statement, statementContext)) break;
     if (
       statement.kind === 'if' &&
       !statement.otherwise &&
-      statementAlwaysReturns(statement.consequent, activeContext)
+      statementAlwaysReturns(statement.consequent, statementContext)
     ) {
       activeContext = narrowTypeofContexts(statement.condition, activeContext).whenFalse;
     }
   }
+  lines.push(...suffix);
   return `{\n${indent(lines.join('\n'))}\n}`;
 }
 
@@ -1071,10 +1106,11 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
     case 'continue':
       return [...context.continueEpilogue, 'continue;'];
     case 'do': {
-      const condition = emitCondition(statement.condition, context);
+      const loopContext = contextPreservingLoopReads(statement, context);
+      const condition = emitCondition(statement.condition, loopContext);
       const conditionCheck = `if !(${condition}) { break; }`;
-      const loopContext = { ...context, continueEpilogue: [conditionCheck] };
-      return ['loop {', indent(emitStatement(statement.body, loopContext).join('\n')), indent(conditionCheck), '}'];
+      const bodyContext = { ...loopContext, continueEpilogue: [conditionCheck] };
+      return ['loop {', indent(emitStatement(statement.body, bodyContext).join('\n')), indent(conditionCheck), '}'];
     }
     case 'expression':
       return [
@@ -1095,7 +1131,7 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
           ? `${parenthesize(iterable)}.as_ref().expect("TypeScript nullable iterable was not narrowed")`
           : parenthesize(iterable);
       const loopContext: EmitContext = {
-        ...context,
+        ...contextPreservingLoopReads(statement.body, context),
         continueEpilogue: [],
         placeAliases: new Map(context.placeAliases),
         symbolTypes: new Map(context.symbolTypes),
@@ -1119,7 +1155,7 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
       }
       const object = emitExpression(statement.object, context);
       const loopContext: EmitContext = {
-        ...context,
+        ...contextPreservingLoopReads(statement.body, context),
         continueEpilogue: [],
         placeAliases: new Map(context.placeAliases),
         symbolTypes: new Map(context.symbolTypes),
@@ -1245,13 +1281,15 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
     }
     case 'variable':
       return statement.declarations.flatMap((variable) => emitLocalVariable(variable, context));
-    case 'while':
+    case 'while': {
+      const loopContext = contextPreservingLoopReads(statement, context);
       return [
-        `while ${emitCondition(statement.condition, context)} ${emitStatementAsBlock(statement.body, {
-          ...context,
+        `while ${emitCondition(statement.condition, loopContext)} ${emitStatementAsBlock(statement.body, {
+          ...loopContext,
           continueEpilogue: [],
         })}`,
       ];
+    }
   }
 }
 
@@ -1328,7 +1366,12 @@ function emitNullableValue(
 }
 
 function emitSwitchStatement(statement: Extract<IrStatement, { kind: 'switch' }>, context: EmitContext): string[] {
-  const value = emitExpression(statement.expression, context);
+  const root = expressionRootIdentifier(statement.expression);
+  const reusedInCase = root && statement.cases.some((switchCase) => containsIdentifier(switchCase.statements, root));
+  const valueContext = reusedInCase
+    ? { ...context, preservedNames: new Set([...context.preservedNames, root]) }
+    : context;
+  const value = emitExpression(statement.expression, valueContext);
   const defaultIndex = statement.cases.findIndex((switchCase) => !switchCase.expression);
   const selections: string[] = [];
   statement.cases.forEach((switchCase, index) => {
@@ -1382,16 +1425,17 @@ function emitSwitchCaseStatement(statement: IrStatement, context: EmitContext): 
 }
 
 function emitForStatement(statement: Extract<IrStatement, { kind: 'for' }>, context: EmitContext): string[] {
+  const loopContext = contextPreservingLoopReads(statement, context);
   const initializer = Array.isArray(statement.initializer)
     ? statement.initializer.flatMap((variable) => emitLocalVariable(variable, context))
     : statement.initializer
       ? [`${emitExpression(statement.initializer, context)};`]
       : [];
-  const condition = statement.condition ? emitCondition(statement.condition, context) : 'true';
-  const increment = statement.increment ? `${emitExpression(statement.increment, context)};` : undefined;
+  const condition = statement.condition ? emitCondition(statement.condition, loopContext) : 'true';
+  const increment = statement.increment ? `${emitExpression(statement.increment, loopContext)};` : undefined;
   const body = emitStatementAsBlock(
     statement.body,
-    { ...context, continueEpilogue: increment ? [increment] : [] },
+    { ...loopContext, continueEpilogue: increment ? [increment] : [] },
     statement.increment,
   );
   return ['{', indent([...initializer, `while ${condition} ${body}`].join('\n')), '}'];
@@ -1403,9 +1447,7 @@ function emitStatementAsBlock(
   increment?: IrExpression | undefined,
 ): string {
   const statements = statement.kind === 'block' ? statement.statements : [statement];
-  const lines = statements.flatMap((item) => emitStatement(item, context));
-  if (increment) lines.push(`${emitExpression(increment, context)};`);
-  return `{\n${indent(lines.join('\n'))}\n}`;
+  return emitStatementsAsBlock(statements, context, [], increment ? [`${emitExpression(increment, context)};`] : []);
 }
 
 function emitLocalVariable(variable: IrVariable, context: EmitContext): string[] {
@@ -2161,6 +2203,17 @@ function emitCall(
     }
     if (collectionType?.kind === 'primitive' && collectionType.name === 'String') {
       const argument = expression.arguments[0];
+      if (method === 'codePointAt') {
+        if (!argument) throw new RustEmissionError('String.codePointAt requires an index argument');
+        const view =
+          expression.callee.object.kind === 'identifier'
+            ? context.utf16ViewNames.get(expression.callee.object.name)
+            : undefined;
+        return emitUtf16CodePointAt(
+          view ? `&${view}` : `&${parenthesize(owner)}.encode_utf16().collect::<Vec<u16>>()`,
+          emitExpression(argument, context, primitive('Float')),
+        );
+      }
       if (argument?.kind === 'regexp') {
         const regex = emitRegexp(argument);
         if (method === 'match') return emitRegexCaptures(regex, owner);
@@ -2271,7 +2324,15 @@ function emitCall(
       if (!value) throw new RustEmissionError('Array.fill requires a value');
       const element =
         collectionType.kind === 'array' ? collectionType.element : typedArrayElementType(collectionType.name);
-      return `${ownerPlace}.fill(${emitExpression(value, context, element)})`;
+      const emittedValue = emitExpression(value, context, element);
+      if (isRustPlaceExpression(expression.callee.object)) {
+        const ownerReference =
+          expression.callee.object.kind === 'identifier' && context.borrowedNames.has(expression.callee.object.name)
+            ? `&mut *${ownerPlace}`
+            : `&mut ${ownerPlace}`;
+        return `{ let __flight_value = ${emittedValue}; let __flight_collection = ${ownerReference}; __flight_collection.fill(__flight_value); __flight_collection.clone() }`;
+      }
+      return `{ let mut __flight_collection = ${owner}; let __flight_value = ${emittedValue}; __flight_collection.fill(__flight_value); __flight_collection }`;
     }
     if (collectionType?.kind === 'named' && typedArrayType(collectionType.name) && method === 'set') {
       const sourceExpression = expression.arguments[0];
@@ -3235,6 +3296,9 @@ function emitProperty(
     return `(${emitPlaceExpression(expression.object, context)}.len() as f64)`;
   }
   if (resolvedReceiver?.kind === 'primitive' && resolvedReceiver.name === 'String' && expression.name === 'length') {
+    const view =
+      expression.object.kind === 'identifier' ? context.utf16ViewNames.get(expression.object.name) : undefined;
+    if (view) return `(${view}.len() as f64)`;
     const receiver =
       resolvedObject?.kind === 'nullable'
         ? `${emitPlaceExpression(expression.object, context)}.as_ref().unwrap()`
@@ -3468,6 +3532,30 @@ function emitPlaceExpression(expression: IrExpression, context: EmitContext): st
     default:
       return emitExpression(expression, context);
   }
+}
+
+function isRustPlaceExpression(expression: IrExpression): boolean {
+  if (expression.kind === 'cast') return isRustPlaceExpression(expression.expression);
+  return expression.kind === 'identifier' || expression.kind === 'property' || expression.kind === 'element';
+}
+
+function emitUtf16CodePointAt(units: string, index: string): string {
+  return [
+    '{',
+    `let __flight_units: &[u16] = ${units};`,
+    `let __flight_raw_index = ${index};`,
+    'let __flight_index = if __flight_raw_index.is_nan() { 0_i64 } else if __flight_raw_index.is_finite() { __flight_raw_index.trunc() as i64 } else { -1_i64 };',
+    'if __flight_index < 0 { f64::NAN } else if let Some(&__flight_first) = __flight_units.get(__flight_index as usize) {',
+    'let __flight_first = u32::from(__flight_first);',
+    'if (0xD800_u32..=0xDBFF_u32).contains(&__flight_first) {',
+    'if let Some(&__flight_second) = __flight_units.get(__flight_index as usize + 1) {',
+    'let __flight_second = u32::from(__flight_second);',
+    'if (0xDC00_u32..=0xDFFF_u32).contains(&__flight_second) { (((__flight_first - 0xD800_u32) << 10) + (__flight_second - 0xDC00_u32) + 0x10000_u32) as f64 } else { __flight_first as f64 }',
+    '} else { __flight_first as f64 }',
+    '} else { __flight_first as f64 }',
+    '} else { f64::NAN }',
+    '}',
+  ].join(' ');
 }
 
 function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, context: EmitContext): string {
@@ -4003,7 +4091,11 @@ function emitUnary(expression: Extract<IrExpression, { kind: 'unary' }>, context
   if (expression.operator === 'delete') {
     throw new RustEmissionError('delete Rust lowering is not implemented');
   }
-  if (expression.operator === '~') return `(!${operand})`;
+  if (expression.operator === '~') {
+    return operandType?.kind === 'named' && context.enumNames.has(operandType.name)
+      ? `(!${operand})`
+      : `(!__flight_js_to_i32(${operand})) as f64`;
+  }
   return `(${expression.operator}${operand})`;
 }
 
@@ -5778,6 +5870,10 @@ function functionContext(context: EmitContext, ownerName: string, owner: unknown
     ...context.sharedCaptureNames,
     ...collectSharedMutableLocals(owner, context.mutatingFunctions),
   ]);
+  const utf16ViewNames = new Map(context.utf16ViewNames);
+  if (owner && typeof owner === 'object' && 'parameters' in owner && Array.isArray(owner.parameters)) {
+    for (const parameter of owner.parameters as IrParameter[]) utf16ViewNames.delete(parameter.name);
+  }
   return {
     ...context,
     anonymousTypeOwner: ownerName,
@@ -5798,7 +5894,53 @@ function functionContext(context: EmitContext, ownerName: string, owner: unknown
     symbolTypes: new Map(context.symbolTypes),
     timerHandleNames: new Set([...context.timerHandleNames, ...collectTimerHandleNames(owner)]),
     unionNarrowings: new Map(),
+    utf16ViewNames,
   };
+}
+
+function prepareParameterUtf16Views(parameters: readonly IrParameter[], body: unknown, context: EmitContext): string[] {
+  const views = context.utf16ViewNames as Map<string, string>;
+  return parameters.flatMap((parameter) => {
+    const resolved = resolveSemanticType(parameter.type, context);
+    if (
+      resolved?.kind !== 'primitive' ||
+      resolved.name !== 'String' ||
+      (parameter.optional && !parameter.initializer) ||
+      !usesStringCodePointAt(body, parameter.name)
+    ) {
+      return [];
+    }
+    const view = `__flight_utf16_${safeName(parameter.name)}`;
+    views.set(parameter.name, view);
+    return [`let ${view}: Vec<u16> = ${safeName(parameter.name)}.encode_utf16().collect();`];
+  });
+}
+
+function usesStringCodePointAt(value: unknown, name: string): boolean {
+  if (!value || typeof value !== 'object') return false;
+  if (
+    'kind' in value &&
+    value.kind === 'call' &&
+    'callee' in value &&
+    value.callee &&
+    typeof value.callee === 'object' &&
+    'kind' in value.callee &&
+    value.callee.kind === 'property' &&
+    'name' in value.callee &&
+    value.callee.name === 'codePointAt' &&
+    'object' in value.callee &&
+    value.callee.object &&
+    typeof value.callee.object === 'object' &&
+    'kind' in value.callee.object &&
+    value.callee.object.kind === 'identifier' &&
+    'name' in value.callee.object &&
+    value.callee.object.name === name
+  ) {
+    return true;
+  }
+  return Object.values(value).some((child) =>
+    Array.isArray(child) ? child.some((item) => usesStringCodePointAt(item, name)) : usesStringCodePointAt(child, name),
+  );
 }
 
 function collectTimerHandleNames(owner: unknown): ReadonlySet<string> {
@@ -7103,7 +7245,7 @@ function emitObject(
 }
 
 function contextsPreservingNamesUsedLater(values: readonly unknown[], context: EmitContext): EmitContext[] {
-  const contexts = new Array<EmitContext>(values.length);
+  const contexts = Array.from({ length: values.length }, () => context);
   const namesUsedLater = new Set<string>();
   for (let index = values.length - 1; index >= 0; index--) {
     const namesUsedNow = new Set<string>();
@@ -7117,6 +7259,101 @@ function contextsPreservingNamesUsedLater(values: readonly unknown[], context: E
     namesUsedNow.forEach((name) => namesUsedLater.add(name));
   }
   return contexts;
+}
+
+function identifierNamesUsedLater(values: readonly unknown[]): ReadonlySet<string>[] {
+  const result = Array.from<unknown, ReadonlySet<string>>({ length: values.length }, () => new Set());
+  const names = new Set<string>();
+  for (let index = values.length - 1; index >= 0; index--) {
+    result[index] = new Set(names);
+    collectIdentifierNames(values[index], names);
+  }
+  return result;
+}
+
+function contextPreservingReferencedNames(
+  value: unknown,
+  namesUsedLater: ReadonlySet<string>,
+  context: EmitContext,
+): EmitContext {
+  const namesConsumedNow = new Set<string>();
+  collectConsumedIdentifierNames(value, namesConsumedNow);
+  const preservedNames = new Set([
+    ...context.preservedNames,
+    ...[...namesConsumedNow].filter((name) => namesUsedLater.has(name)),
+  ]);
+  return preservedNames.size === context.preservedNames.size ? context : { ...context, preservedNames };
+}
+
+function contextPreservingLoopReads(value: unknown, context: EmitContext): EmitContext {
+  const names = new Set<string>();
+  collectConsumedIdentifierNames(value, names);
+  const preservedNames = new Set([...context.preservedNames, ...names]);
+  return preservedNames.size === context.preservedNames.size ? context : { ...context, preservedNames };
+}
+
+function collectConsumedIdentifierNames(value: unknown, names: Set<string>, consumed = false): void {
+  if (!value || typeof value !== 'object') return;
+  if ('kind' in value && value.kind === 'identifier') {
+    if (consumed && 'name' in value && typeof value.name === 'string') names.add(value.name);
+    return;
+  }
+  if ('kind' in value) {
+    switch (value.kind) {
+      case 'array':
+        if ('elements' in value && Array.isArray(value.elements)) {
+          value.elements.forEach((item) => collectConsumedIdentifierNames(item, names, true));
+        }
+        return;
+      case 'assignment':
+        if ('left' in value) collectConsumedIdentifierNames(value.left, names);
+        if ('right' in value) collectConsumedIdentifierNames(value.right, names, true);
+        return;
+      case 'await':
+      case 'cast':
+      case 'spread':
+        if ('expression' in value) collectConsumedIdentifierNames(value.expression, names, consumed);
+        return;
+      case 'call':
+      case 'new':
+        if ('callee' in value) collectConsumedIdentifierNames(value.callee, names);
+        if ('arguments' in value && Array.isArray(value.arguments)) {
+          value.arguments.forEach((argument) => collectConsumedIdentifierNames(argument, names, true));
+        }
+        return;
+      case 'conditional':
+        if ('condition' in value) collectConsumedIdentifierNames(value.condition, names);
+        if ('whenTrue' in value) collectConsumedIdentifierNames(value.whenTrue, names, consumed);
+        if ('whenFalse' in value) collectConsumedIdentifierNames(value.whenFalse, names, consumed);
+        return;
+      case 'object':
+        if ('properties' in value && Array.isArray(value.properties)) {
+          for (const property of value.properties) {
+            if (!property || typeof property !== 'object') continue;
+            if ('value' in property) collectConsumedIdentifierNames(property.value, names, true);
+            if ('expression' in property) collectConsumedIdentifierNames(property.expression, names, true);
+          }
+        }
+        return;
+      case 'return':
+      case 'throw':
+        if ('expression' in value) collectConsumedIdentifierNames(value.expression, names, true);
+        return;
+      case 'variable':
+        if ('declarations' in value && Array.isArray(value.declarations)) {
+          for (const declaration of value.declarations) {
+            if (declaration && typeof declaration === 'object' && 'initializer' in declaration) {
+              collectConsumedIdentifierNames(declaration.initializer, names, true);
+            }
+          }
+        }
+        return;
+    }
+  }
+  for (const child of Object.values(value)) {
+    if (Array.isArray(child)) child.forEach((item) => collectConsumedIdentifierNames(item, names));
+    else collectConsumedIdentifierNames(child, names);
+  }
 }
 
 function directlyConsumedObjectPropertyIdentifier(value: unknown): string | undefined {
@@ -7364,6 +7601,16 @@ function emitElementRead(
   const place = emitElement(expression, context);
   if (expression.optional) return place;
   const objectType = inferIrExpressionType(expression.object, context);
+  const collectionType = objectType?.kind === 'nullable' ? objectType.inner : objectType;
+  const elementType = collectionType?.kind === 'array' ? collectionType.element : undefined;
+  if (
+    elementType?.kind === 'nullable' &&
+    expectedType?.kind !== 'nullable' &&
+    expectedType &&
+    semanticTypesEqual(elementType.inner, expectedType, context)
+  ) {
+    return `${place}.clone().unwrap()`;
+  }
   return objectType?.kind === 'named' && typedArrayType(objectType.name) ? `(${place} as f64)` : `${place}.clone()`;
 }
 
@@ -7419,10 +7666,10 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
         return whenTrue.kind === 'nullable' ? whenTrue : { inner: whenTrue, kind: 'nullable' };
       }
       if (whenTrue?.kind === 'nullable' && whenFalse && typeKey(whenTrue.inner) === typeKey(whenFalse)) {
-        return whenFalse;
+        return whenTrue;
       }
       if (whenFalse?.kind === 'nullable' && whenTrue && typeKey(whenFalse.inner) === typeKey(whenTrue)) {
-        return whenTrue;
+        return whenFalse;
       }
       return whenTrue ?? whenFalse;
     }
@@ -7577,7 +7824,9 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
         }
         if (collection?.kind === 'primitive' && collection.name === 'String') {
           if (['startsWith', 'endsWith', 'includes'].includes(expression.callee.name)) return primitive('Bool');
-          if (expression.callee.name === 'search') return primitive('Float');
+          if (expression.callee.name === 'codePointAt' || expression.callee.name === 'search') {
+            return primitive('Float');
+          }
           if (expression.callee.name === 'replace') return primitive('String');
           if (expression.callee.name === 'match' && expression.arguments[0]?.kind === 'regexp') {
             return regexCaptureType();
@@ -8021,6 +8270,7 @@ function emitIdentifier(name: string, context: EmitContext): string {
   if (context.constantNames.has(name) && type?.kind === 'named' && type.name === 'FlightSymbol') {
     return `*${emitted}`;
   }
+  if (context.lazyScalarNames.has(name)) return `*${emitted}`;
   if (context.nonNullableNames.has(name)) {
     const value = `${emitted}.${context.mutatedNames.has(name) ? 'as_mut' : 'as_ref'}().unwrap()`;
     return type && isCopyType(type, context) ? `*${parenthesize(value)}` : value;

@@ -506,7 +506,7 @@ fn ensure_prepared_block(
     index: f64,
 ) -> PreparedForwardLightBlock {
     let mut block = prepared.blocks[index as usize].clone();
-    if (block).is_none() {
+    if ((block).clone()).is_none() {
         block = PreparedForwardLightBlock {
             __flight_identity: std::sync::Arc::new(()),
             indices: vec![],
@@ -533,7 +533,7 @@ fn ensure_prepared_gl_scene3_d_forward_lights(
         .iter()
         .find(|(key, _)| key == &(*state).clone())
         .map(|(_, value)| value.clone());
-    if (prepared).is_none() {
+    if ((prepared).clone()).is_none() {
         prepared = Some(PreparedGlScene3DForwardLights {
             __flight_identity: std::sync::Arc::new(()),
             block_count: 0.0_f64,
@@ -552,7 +552,7 @@ fn ensure_prepared_gl_scene3_d_forward_lights(
         });
         {
             let __flight_key = (*state).clone();
-            let __flight_value = (prepared).clone().unwrap();
+            let __flight_value = ((prepared).clone()).clone().unwrap();
             if let Some((_, value)) = (*PREPARED_GL_SCENE3_D_FORWARD_LIGHTS.lock().unwrap())
                 .iter_mut()
                 .find(|(key, _)| key == &__flight_key)

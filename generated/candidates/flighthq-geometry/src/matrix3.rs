@@ -191,7 +191,12 @@ pub fn inverse_matrix3(out: &mut Matrix3Like, source: &Matrix3Like) -> bool {
     if is_affine_matrix3(source) {
         let det = ((a00 * a11) - (a01 * a10));
         if (det == 0.0_f64) {
-            out.m.fill((f64::NAN) as f32);
+            {
+                let __flight_value = (f64::NAN) as f32;
+                let __flight_collection = &mut out.m;
+                __flight_collection.fill(__flight_value);
+                __flight_collection.clone()
+            };
             return false;
         }
         let inv_det = (1.0_f64 / det);
@@ -213,7 +218,12 @@ pub fn inverse_matrix3(out: &mut Matrix3Like, source: &Matrix3Like) -> bool {
     let det = (((a00 * ((a11 * a22) - (a12 * a21))) - (a01 * ((a10 * a22) - (a12 * a20))))
         + (a02 * ((a10 * a21) - (a11 * a20))));
     if (det == 0.0_f64) {
-        out.m.fill((f64::NAN) as f32);
+        {
+            let __flight_value = (f64::NAN) as f32;
+            let __flight_collection = &mut out.m;
+            __flight_collection.fill(__flight_value);
+            __flight_collection.clone()
+        };
         return false;
     }
     let inv = (1.0_f64 / det);

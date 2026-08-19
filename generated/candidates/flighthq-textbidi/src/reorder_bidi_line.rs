@@ -28,11 +28,11 @@ pub fn reorder_bidi_line(levels: &Vec<u8>, start: f64, end: f64, out: &mut Vec<f
                     out[__flight_index] = __flight_value;
                 }
             };
-            if (level > highest) {
-                highest = level;
+            if ((level).clone() > highest) {
+                highest = (level).clone();
             }
-            if ((level % 2.0_f64) == 1.0_f64) && (level < lowest_odd) {
-                lowest_odd = level;
+            if (((level).clone() % 2.0_f64) == 1.0_f64) && ((level).clone() < lowest_odd) {
+                lowest_odd = (level).clone();
             }
             {
                 i += 1.0;

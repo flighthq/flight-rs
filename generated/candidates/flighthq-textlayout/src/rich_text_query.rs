@@ -353,7 +353,7 @@ fn get_group_containing_index(
 ) -> crate::OpaqueHostValue {
     for group in ((layout.groups).clone()).iter().cloned() {
         if (char_index >= group.start_index) && (char_index < group.end_index) {
-            return group;
+            return (group).clone();
         }
     }
     return crate::OpaqueHostValue::Null;

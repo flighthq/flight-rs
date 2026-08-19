@@ -24,7 +24,7 @@ pub fn parse_user_agent_form_factor(ua: String, max_touch_points: f64) -> Device
         .dot_matches_new_line(false)
         .build()
         .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-    .is_match(&(ua))
+    .is_match(&((ua).clone()))
     {
         return (device_form_factor_car_constant).to_owned();
     }
@@ -36,7 +36,7 @@ pub fn parse_user_agent_form_factor(ua: String, max_touch_points: f64) -> Device
     .dot_matches_new_line(false)
     .build()
     .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-    .is_match(&(ua))
+    .is_match(&((ua).clone()))
     {
         return (device_form_factor_tv_constant).to_owned();
     }
@@ -46,7 +46,7 @@ pub fn parse_user_agent_form_factor(ua: String, max_touch_points: f64) -> Device
         .dot_matches_new_line(false)
         .build()
         .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-    .is_match(&(ua))
+    .is_match(&((ua).clone()))
     {
         return (device_form_factor_watch_constant).to_owned();
     }
@@ -56,7 +56,7 @@ pub fn parse_user_agent_form_factor(ua: String, max_touch_points: f64) -> Device
         .dot_matches_new_line(false)
         .build()
         .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-    .is_match(&(ua))
+    .is_match(&((ua).clone()))
     {
         return (device_form_factor_tablet_constant).to_owned();
     }
@@ -66,14 +66,14 @@ pub fn parse_user_agent_form_factor(ua: String, max_touch_points: f64) -> Device
         .dot_matches_new_line(false)
         .build()
         .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-    .is_match(&(ua)))
+    .is_match(&((ua).clone())))
         && (!(regex::RegexBuilder::new("mobile")
             .case_insensitive(true)
             .multi_line(false)
             .dot_matches_new_line(false)
             .build()
             .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-        .is_match(&(ua)))
+        .is_match(&((ua).clone())))
     {
         return (device_form_factor_tablet_constant).to_owned();
     }
@@ -83,7 +83,7 @@ pub fn parse_user_agent_form_factor(ua: String, max_touch_points: f64) -> Device
         .dot_matches_new_line(false)
         .build()
         .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-    .is_match(&(ua))
+    .is_match(&((ua).clone()))
     {
         return (device_form_factor_tablet_constant).to_owned();
     }
@@ -95,7 +95,7 @@ pub fn parse_user_agent_form_factor(ua: String, max_touch_points: f64) -> Device
     .dot_matches_new_line(false)
     .build()
     .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-    .is_match(&(ua))
+    .is_match(&((ua).clone()))
     {
         return (device_form_factor_phone_constant).to_owned();
     }
@@ -106,7 +106,7 @@ pub fn parse_user_agent_form_factor(ua: String, max_touch_points: f64) -> Device
             .dot_matches_new_line(false)
             .build()
             .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-        .is_match(&(ua)))
+        .is_match(&((ua).clone())))
     {
         return (device_form_factor_tablet_constant).to_owned();
     }
@@ -134,7 +134,7 @@ pub fn parse_user_agent_os_name(ua: String) -> String {
         .dot_matches_new_line(false)
         .build()
         .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-    .is_match(&(ua))
+    .is_match(&((ua).clone()))
     {
         return "Android".to_owned();
     }
@@ -144,7 +144,7 @@ pub fn parse_user_agent_os_name(ua: String) -> String {
         .dot_matches_new_line(false)
         .build()
         .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-    .is_match(&(ua))
+    .is_match(&((ua).clone()))
     {
         return "iPadOS".to_owned();
     }
@@ -154,7 +154,7 @@ pub fn parse_user_agent_os_name(ua: String) -> String {
         .dot_matches_new_line(false)
         .build()
         .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-    .is_match(&(ua))
+    .is_match(&((ua).clone()))
     {
         return "iOS".to_owned();
     }
@@ -164,7 +164,7 @@ pub fn parse_user_agent_os_name(ua: String) -> String {
         .dot_matches_new_line(false)
         .build()
         .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-    .is_match(&(ua))
+    .is_match(&((ua).clone()))
     {
         return "ChromeOS".to_owned();
     }
@@ -174,7 +174,7 @@ pub fn parse_user_agent_os_name(ua: String) -> String {
         .dot_matches_new_line(false)
         .build()
         .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-    .is_match(&(ua))
+    .is_match(&((ua).clone()))
     {
         return "Windows".to_owned();
     }
@@ -184,7 +184,7 @@ pub fn parse_user_agent_os_name(ua: String) -> String {
         .dot_matches_new_line(false)
         .build()
         .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-    .is_match(&(ua))
+    .is_match(&((ua).clone()))
     {
         return "macOS".to_owned();
     }
@@ -194,7 +194,7 @@ pub fn parse_user_agent_os_name(ua: String) -> String {
         .dot_matches_new_line(false)
         .build()
         .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-    .is_match(&(ua))
+    .is_match(&((ua).clone()))
     {
         return "FreeBSD".to_owned();
     }
@@ -204,7 +204,7 @@ pub fn parse_user_agent_os_name(ua: String) -> String {
         .dot_matches_new_line(false)
         .build()
         .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-    .is_match(&(ua))
+    .is_match(&((ua).clone()))
     {
         return "OpenBSD".to_owned();
     }
@@ -214,7 +214,7 @@ pub fn parse_user_agent_os_name(ua: String) -> String {
         .dot_matches_new_line(false)
         .build()
         .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-    .is_match(&(ua))
+    .is_match(&((ua).clone()))
     {
         return "NetBSD".to_owned();
     }

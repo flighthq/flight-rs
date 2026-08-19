@@ -113,7 +113,7 @@ pub fn validate_spritesheet_data(
               __flight_identity: std::sync::Arc::new(()),
               animation_name: Some((ad.name).clone()),
               frame_index: Some(ai),
-              message: format!("Animation \"{}\" references frame name \"{}\" which is not present in the data frame list.", (ad.name).clone(), fname),
+              message: format!("Animation \"{}\" references frame name \"{}\" which is not present in the data frame list.", (ad.name).clone(), (fname).clone()),
               severity: "error".to_owned(),
             });
                     }

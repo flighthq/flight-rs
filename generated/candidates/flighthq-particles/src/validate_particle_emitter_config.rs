@@ -237,23 +237,27 @@ pub fn validate_particle_emitter_config(
 ) -> Vec<ParticleConfigIssue> {
     let mut issues: Vec<ParticleConfigIssue> = vec![];
     for field in ((*NUMERIC_FIELDS).clone()).iter().cloned() {
-        let value = config[field as usize].clone();
+        let value = config[(field).clone() as usize].clone();
         if (!(value).is_finite()) {
             issues.push(ParticleConfigIssue {
                 __flight_identity: std::sync::Arc::new(()),
                 field: (field).clone(),
-                message: format!("{} must be a finite number (got {})", field, string(value)),
+                message: format!(
+                    "{} must be a finite number (got {})",
+                    (field).clone(),
+                    string(value)
+                ),
                 severity: "error".to_owned(),
             });
         }
     }
     for field in ((*NON_NEGATIVE_FIELDS).clone()).iter().cloned() {
-        let value = config[field as usize].clone();
+        let value = config[(field).clone() as usize].clone();
         if ((value).is_finite()) && (value < 0.0_f64) {
             issues.push(ParticleConfigIssue {
                 __flight_identity: std::sync::Arc::new(()),
                 field: (field).clone(),
-                message: format!("{} must not be negative (got {})", field, value),
+                message: format!("{} must not be negative (got {})", (field).clone(), value),
                 severity: "warning".to_owned(),
             });
         }

@@ -1031,13 +1031,13 @@ pub fn prewarm_particle_emitter2_d(
     };
     let mut elapsed = 0.0_f64;
     while (elapsed < duration) {
-        let delta_time = (step).min((duration - elapsed));
+        let delta_time = ((step).clone()).min((duration - elapsed));
         update_particle_emitter2_d(
             emitter,
             state,
             config,
             delta_time,
-            Some(((callbacks).clone().unwrap()).clone()),
+            Some((((callbacks).clone()).clone().unwrap()).clone()),
         );
         elapsed += delta_time;
     }

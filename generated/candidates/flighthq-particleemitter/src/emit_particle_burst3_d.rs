@@ -1125,7 +1125,7 @@ pub fn emit_particle_burst3_d(
         ) & __flight_js_to_i32(255.0_f64)) as f64
             / 255.0_f64)
     } else {
-        1.0_f64
+        Some(1.0_f64)
     };
     let tint_g = if has_tint {
         ((__flight_js_to_i32(
@@ -1133,7 +1133,7 @@ pub fn emit_particle_burst3_d(
         ) & __flight_js_to_i32(255.0_f64)) as f64
             / 255.0_f64)
     } else {
-        1.0_f64
+        Some(1.0_f64)
     };
     let tint_b = if has_tint {
         ((__flight_js_to_i32(
@@ -1141,12 +1141,12 @@ pub fn emit_particle_burst3_d(
         ) & __flight_js_to_i32(255.0_f64)) as f64
             / 255.0_f64)
     } else {
-        1.0_f64
+        Some(1.0_f64)
     };
     let tint_a = if has_tint {
         ((__flight_js_to_i32(tint) & __flight_js_to_i32(255.0_f64)) as f64 / 255.0_f64)
     } else {
-        1.0_f64
+        Some(1.0_f64)
     };
     let dir_len = (((config.direction_x * config.direction_x)
         + (config.direction_y * config.direction_y))
@@ -1472,17 +1472,21 @@ pub fn emit_particle_burst3_d(
                 }
             }
             if has_tint {
-                emitter.data.colors[ct as usize] *= (tint_r) as f32;
-                emitter.data.colors[(ct + 1.0_f64) as usize] *= (tint_g) as f32;
-                emitter.data.colors[(ct + 2.0_f64) as usize] *= (tint_b) as f32;
-                emitter.data.alphas[idx as usize] *= (tint_a) as f32;
+                emitter.data.colors[ct as usize] *= ((tint_r).clone().unwrap()) as f32;
+                emitter.data.colors[(ct + 1.0_f64) as usize] *= ((tint_g).clone().unwrap()) as f32;
+                emitter.data.colors[(ct + 2.0_f64) as usize] *= ((tint_b).clone().unwrap()) as f32;
+                emitter.data.alphas[idx as usize] *= ((tint_a).clone().unwrap()) as f32;
                 if has_color_variance {
-                    state.color_birth[ct as usize] *= (tint_r) as f32;
-                    state.color_birth[(ct + 1.0_f64) as usize] *= (tint_g) as f32;
-                    state.color_birth[(ct + 2.0_f64) as usize] *= (tint_b) as f32;
-                    state.color_death[ct as usize] *= (tint_r) as f32;
-                    state.color_death[(ct + 1.0_f64) as usize] *= (tint_g) as f32;
-                    state.color_death[(ct + 2.0_f64) as usize] *= (tint_b) as f32;
+                    state.color_birth[ct as usize] *= ((tint_r).clone().unwrap()) as f32;
+                    state.color_birth[(ct + 1.0_f64) as usize] *=
+                        ((tint_g).clone().unwrap()) as f32;
+                    state.color_birth[(ct + 2.0_f64) as usize] *=
+                        ((tint_b).clone().unwrap()) as f32;
+                    state.color_death[ct as usize] *= ((tint_r).clone().unwrap()) as f32;
+                    state.color_death[(ct + 1.0_f64) as usize] *=
+                        ((tint_g).clone().unwrap()) as f32;
+                    state.color_death[(ct + 2.0_f64) as usize] *=
+                        ((tint_b).clone().unwrap()) as f32;
                 }
             }
             emitter.data.ids[idx as usize] = (region_id_min

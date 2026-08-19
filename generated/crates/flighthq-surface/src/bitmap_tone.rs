@@ -55,22 +55,22 @@ pub fn apply_bitmap_curve(
                     let b = (source.bitmap.data[(si + 2.0_f64) as usize] as f64);
                     let a = (source.bitmap.data[(si + 3.0_f64) as usize] as f64);
                     out.bitmap.data[oi as usize] = if (red_lut).is_some() {
-                        (red_lut.as_ref().unwrap()[r as usize] as f64) as u8
+                        (red_lut.as_ref().unwrap()[(r).clone() as usize] as f64) as u8
                     } else {
                         ((r).clone()) as u8
                     };
                     out.bitmap.data[(oi + 1.0_f64) as usize] = if (green_lut).is_some() {
-                        (green_lut.as_ref().unwrap()[g as usize] as f64) as u8
+                        (green_lut.as_ref().unwrap()[(g).clone() as usize] as f64) as u8
                     } else {
                         ((g).clone()) as u8
                     };
                     out.bitmap.data[(oi + 2.0_f64) as usize] = if (blue_lut).is_some() {
-                        (blue_lut.as_ref().unwrap()[b as usize] as f64) as u8
+                        (blue_lut.as_ref().unwrap()[(b).clone() as usize] as f64) as u8
                     } else {
                         ((b).clone()) as u8
                     };
                     out.bitmap.data[(oi + 3.0_f64) as usize] = if (alpha_lut).is_some() {
-                        (alpha_lut.as_ref().unwrap()[a as usize] as f64) as u8
+                        (alpha_lut.as_ref().unwrap()[(a).clone() as usize] as f64) as u8
                     } else {
                         ((a).clone()) as u8
                     };

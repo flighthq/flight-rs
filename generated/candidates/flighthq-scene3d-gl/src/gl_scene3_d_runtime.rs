@@ -432,7 +432,7 @@ pub fn destroy_gl_scene3_d_runtime(state: &GlRenderState) -> () {
 pub fn ensure_gl_skin_palette(state: &mut GlRenderState) -> GlSkinPaletteTexture {
     let mut scene = get_gl_scene3_d_runtime(state);
     let mut palette = (scene.skin_palette).clone();
-    if (palette).is_none() {
+    if ((palette).clone()).is_none() {
         palette = Some(create_gl_skin_palette_texture((state.gl).clone()));
         scene.skin_palette = (palette).clone();
     }
@@ -454,7 +454,7 @@ pub fn get_gl_scene3_d_runtime(state: &mut GlRenderState) -> GlScene3DRuntime {
         .iter()
         .find(|(key, _)| key == &(*state).clone())
         .map(|(_, value)| value.clone());
-    if (scene).is_none() {
+    if ((scene).clone()).is_none() {
         scene = Some(GlScene3DRuntime {
             __flight_identity: std::sync::Arc::new(()),
             active_color_adjustment_run: false,
@@ -488,7 +488,7 @@ pub fn get_gl_scene3_d_runtime(state: &mut GlRenderState) -> GlScene3DRuntime {
         });
         {
             let __flight_key = (*state).clone();
-            let __flight_value = (scene).clone().unwrap();
+            let __flight_value = ((scene).clone()).clone().unwrap();
             if let Some((_, value)) = (*SCENE_RUNTIMES.lock().unwrap())
                 .iter_mut()
                 .find(|(key, _)| key == &__flight_key)

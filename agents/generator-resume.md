@@ -27,8 +27,8 @@ The pinned Flight commit is no longer advertised as a direct ref by the configur
 | Inventoried packages            |   143 |
 | Eligible automatic packages     |   137 |
 | Packages reaching Rust emission |    43 |
-| Compiled candidates             |    13 |
-| Compile-blocked candidates      |     9 |
+| Compiled candidates             |    15 |
+| Compile-blocked candidates      |     7 |
 | Dependency-blocked candidates   |    19 |
 | Source-blocked packages         |    94 |
 | Source blockers                 |   460 |
@@ -40,14 +40,14 @@ The pinned Flight commit is no longer advertised as a direct ref by the configur
 Compiled candidates:
 
 ```text
-adjustments color device flow haptics keyboard lifecycle math platform screen signals spring textsegment
-useragent
+adjustments color device flow haptics keyboard lifecycle math platform screen signals spring textbidi
+textsegment useragent
 ```
 
 Compile-blocked candidates, ordered roughly from smallest to largest compiler frontier:
 
 ```text
-accessibility clock importdiagnostics input protocol textbidi timeline xml
+accessibility clock importdiagnostics input protocol timeline xml
 ```
 
 Dependency-blocked candidates:
@@ -71,6 +71,10 @@ The generator now has these invariants. Preserve them with focused regression te
 - Imported nested-record provenance survives lowering.
 - Anonymous records can project across nominal Rust records while evaluating owned values once.
 - Ordered object fields preserve a non-Copy local that is consumed before a later field reads it, even across source aliases with one Rust representation.
+- Rust consumption liveness preserves non-Copy values across sequential statements, loop back-edges, and reused switch discriminants without cloning comparison-only reads.
+- Receiver-returning collection mutation preserves JavaScript expression results for both addressable and temporary Rust collections.
+- Reused string parameters receive one UTF-16 code-unit view shared by `.length` and `codePointAt`; astral and trailing-surrogate behavior is compile-and-runtime tested.
+- Nullable ternaries join as `Option` per branch, contextually non-null indexed reads unwrap matching option elements, computed Copy `LazyLock` scalars dereference at use sites, and numeric `~` applies JavaScript `ToInt32` while nominal bitflag enums retain Rust `Not`.
 - Function signature records remain canonical even when a shape occurs only once.
 - Generic structural constructors use Rust turbofish syntax.
 - A module-global canonical record never captures an unbound generic type parameter.

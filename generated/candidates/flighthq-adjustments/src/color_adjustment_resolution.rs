@@ -67,10 +67,10 @@ pub fn resolve_color_adjustments_color_matrix(
                     None
                 };
             })();
-            if (matrix).is_none() {
+            if ((matrix).clone()).is_none() {
                 return None;
             }
-            matrices.push(((matrix).clone().unwrap()).clone());
+            matrices.push(((matrix.as_ref().unwrap()).clone()).clone());
             {
                 i += 1.0;
                 i
@@ -103,7 +103,7 @@ pub fn resolve_color_adjustments_color_scale_bias(
                     None
                 };
             })();
-            if (matrix).is_none() {
+            if ((matrix).clone()).is_none() {
                 inlineable = false;
             } else {
                 matrices.push(((matrix.as_ref().unwrap()).clone()).clone());

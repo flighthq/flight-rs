@@ -70,12 +70,16 @@ pub fn format_bitmap_font_fnt(font: &BitmapFont) -> String {
         let glyph = font
             .glyphs
             .iter()
-            .find(|(key, _)| key == &codepoint)
+            .find(|(key, _)| key == &(codepoint).clone())
             .map(|(_, value)| value.clone());
         lines.push(
             (format!(
                 "char id={} x={} y={} width={} height={} ",
-                codepoint, glyph.x, glyph.y, glyph.width, glyph.height
+                (codepoint).clone(),
+                glyph.x,
+                glyph.y,
+                glyph.width,
+                glyph.height
             ) + format!(
                 "xoffset={} yoffset={} xadvance={} page={} chnl=15",
                 glyph.bearing_x,
@@ -103,7 +107,7 @@ pub fn format_bitmap_font_fnt(font: &BitmapFont) -> String {
         let amount = font
             .kerning
             .iter()
-            .find(|(key, _)| key == &key)
+            .find(|(key, _)| key == &(key).clone())
             .map(|(_, value)| value.clone());
         unpack_bitmap_font_kerning_key((key).clone(), &mut (*_KERNING_PAIR.lock().unwrap()));
         lines.push(format!(
@@ -151,7 +155,7 @@ fn parse_bitmap_font_fnt_record(text: String) -> Option<BitmapFontRecord> {
     .cloned()
     {
         let line = (raw_line).trim().to_owned();
-        if (line == "") {
+        if ((line).clone() == "") {
             continue;
         }
         let space_at = (regex::RegexBuilder::new("\\s")
@@ -160,13 +164,13 @@ fn parse_bitmap_font_fnt_record(text: String) -> Option<BitmapFontRecord> {
             .dot_matches_new_line(false)
             .build()
             .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-        .find(&(line))
+        .find(&((line).clone()))
         .map_or(-1.0_f64, |matched| matched.start() as f64);
         let tag = if (space_at < 0.0_f64) {
             (line).clone()
         } else {
             String::from_utf16_lossy(
-                &(line)
+                &((line).clone())
                     .encode_utf16()
                     .skip((0.0_f64) as usize)
                     .take(((space_at) as usize).saturating_sub((0.0_f64) as usize))
@@ -174,7 +178,7 @@ fn parse_bitmap_font_fnt_record(text: String) -> Option<BitmapFontRecord> {
             )
         };
         let fields = parse_fnt_fields(String::from_utf16_lossy(
-            &(line)
+            &((line).clone())
                 .encode_utf16()
                 .skip((tag.encode_utf16().count() as f64) as usize)
                 .collect::<Vec<u16>>(),
@@ -220,13 +224,13 @@ fn parse_bitmap_font_fnt_record(text: String) -> Option<BitmapFontRecord> {
             } else {
                 if (tag == "char") {
                     let char = read_fnt_char(&fields);
-                    if (char).is_some() {
+                    if ((char).clone()).is_some() {
                         chars.push(((char.as_ref().unwrap()).clone()).clone());
                     }
                 } else {
                     if (tag == "kerning") {
                         let kerning = read_fnt_kerning(&fields);
-                        if (kerning).is_some() {
+                        if ((kerning).clone()).is_some() {
                             kernings.push(((kerning.as_ref().unwrap()).clone()).clone());
                         }
                     }

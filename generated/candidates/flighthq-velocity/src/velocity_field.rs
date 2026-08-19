@@ -124,7 +124,7 @@ pub fn ensure_velocity_sample(
         .iter()
         .find(|(key, _)| key == &(source).clone())
         .map(|(_, value)| value.clone());
-    if (sample).is_none() {
+    if ((sample).clone()).is_none() {
         sample = Some(VelocitySample {
             __flight_identity: std::sync::Arc::new(()),
             previous_world_transform: None,
@@ -138,7 +138,7 @@ pub fn ensure_velocity_sample(
         });
         {
             let __flight_key = (source).clone();
-            let __flight_value = (sample).clone().unwrap();
+            let __flight_value = ((sample).clone()).clone().unwrap();
             if let Some((_, value)) = field
                 .samples
                 .iter_mut()

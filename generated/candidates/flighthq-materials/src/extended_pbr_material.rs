@@ -129,7 +129,7 @@ pub fn create_extended_pbr_material(opts: Option<FlightPartialRecord1>) -> Exten
     let mut material = {
         let __flight_source = &(create_surface_material(
             (extended_pbr_material_kind_constant).to_owned(),
-            Some(((opts).clone().unwrap()).clone()),
+            Some((((opts).clone()).clone().unwrap()).clone()),
         ));
         ExtendedPbrMaterial {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),

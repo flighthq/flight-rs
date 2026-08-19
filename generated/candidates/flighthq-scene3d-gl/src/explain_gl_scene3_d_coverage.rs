@@ -457,7 +457,7 @@ fn collect_gl_scene3_d_coverage_gaps(
                 out.as_mut().unwrap().push(SceneCoverageEntry {
                     __flight_identity: std::sync::Arc::new(()),
                     coverage: (scene_coverage_constant.satisfied).clone(),
-                    kind: kind,
+                    kind: (kind).clone(),
                     registry: RenderRegistry::TextureResolver,
                 });
                 {
@@ -473,7 +473,7 @@ fn collect_gl_scene3_d_coverage_gaps(
             out.as_mut().unwrap().push(SceneCoverageEntry {
                 __flight_identity: std::sync::Arc::new(()),
                 coverage: (scene_coverage_constant.missing).clone(),
-                kind: kind,
+                kind: (kind).clone(),
                 registry: RenderRegistry::TextureResolver,
             });
             {
@@ -487,7 +487,7 @@ fn collect_gl_scene3_d_coverage_gaps(
         let mut i = 0.0_f64;
         while (i < (usage.modifier_kinds.len() as f64)) {
             let kind = usage.modifier_kinds[i as usize].clone();
-            if ((snippets).is_some())
+            if (((snippets).clone()).is_some())
                 && ((resolve_modifier(snippets.as_ref().unwrap(), (kind).clone())).is_some())
             {
                 out.as_mut().unwrap().push(SceneCoverageEntry {

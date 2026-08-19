@@ -70,7 +70,7 @@ fn parse_bitmap_font_json_record(text: String) -> Option<BitmapFontRecord> {
     let mut chars: Vec<BitmapFontCharRecord> = vec![];
     for raw in (raw_chars).iter().cloned() {
         let char = read_json_char(raw);
-        if (char).is_some() {
+        if ((char).clone()).is_some() {
             chars.push(((char.as_ref().unwrap()).clone()).clone());
         }
     }
@@ -85,7 +85,7 @@ fn parse_bitmap_font_json_record(text: String) -> Option<BitmapFontRecord> {
                 let file = crate::host_value::<crate::OpaqueHostValue>("host.index");
                 pages.push(BitmapFontPageRecord {
                     __flight_identity: std::sync::Arc::new(()),
-                    file: if (match &(file) {
+                    file: if (match &((file).clone()) {
                         crate::OpaqueHostValue::Undefined => "undefined",
                         crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
                         crate::OpaqueHostValue::Bool(_) => "boolean",
@@ -93,7 +93,7 @@ fn parse_bitmap_font_json_record(text: String) -> Option<BitmapFontRecord> {
                         crate::OpaqueHostValue::String(_) => "string",
                     } == "string")
                     {
-                        file
+                        (file).clone()
                     } else {
                         "".to_owned()
                     },
@@ -113,7 +113,7 @@ fn parse_bitmap_font_json_record(text: String) -> Option<BitmapFontRecord> {
             .cloned()
         {
             let kerning = read_json_kerning(raw);
-            if (kerning).is_some() {
+            if ((kerning).clone()).is_some() {
                 kernings.push(((kerning.as_ref().unwrap()).clone()).clone());
             }
         }

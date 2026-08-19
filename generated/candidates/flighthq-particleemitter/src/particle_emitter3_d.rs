@@ -1278,7 +1278,7 @@ pub fn compute_particle_emitter3_d_local_bounds_aabb(
 pub fn create_particle_emitter3_d(obj: Option<ParticleEmitter3D>) -> ParticleEmitter3D {
     let mut node = create_node3_d(
         Some((particle_emitter3_d_kind_constant).to_owned()),
-        Some(((obj).clone().unwrap()).clone()),
+        Some((((obj).clone()).clone().unwrap()).clone()),
     );
     node.data = create_particle_emitter_data(Some(
         (obj.as_ref().map(|value| (value.data).clone())).clone(),

@@ -409,7 +409,7 @@ pub fn ensure_gl_mesh_upload(
     } else {
         None
     };
-    if ((upload).is_some())
+    if (((upload).clone()).is_some())
         && (if (bind_pose).is_some() {
             (upload.as_mut().unwrap().skin_bind_uploaded) == Some(true)
         } else {
@@ -418,9 +418,9 @@ pub fn ensure_gl_mesh_upload(
     {
         upload.as_mut().unwrap().primitive_mode = primitive_mode;
         crate::host_value::<()>("host.bindVertexArray");
-        return ((upload).clone().unwrap()).clone();
+        return (((upload).clone()).clone().unwrap()).clone();
     }
-    if (upload).is_none() {
+    if ((upload).clone()).is_none() {
         upload = Some(GlMeshUpload {
             __flight_identity: std::sync::Arc::new(()),
             index_buffer: None,
@@ -434,7 +434,7 @@ pub fn ensure_gl_mesh_upload(
         });
         {
             let __flight_key = (*geometry).clone();
-            let __flight_value = (upload).clone().unwrap();
+            let __flight_value = ((upload).clone()).clone().unwrap();
             if let Some((_, value)) = get_gl_scene3_d_runtime(state)
                 .upload_cache
                 .iter_mut()

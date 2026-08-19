@@ -156,7 +156,7 @@ static XML_ENTITIES: std::sync::LazyLock<Vec<(String, String)>> = std::sync::Laz
 
 // Source: upstream/packages/xml/src/xmlParse.ts:71 (sha256:63809e1d1109649f96670ef219d1f6f45fb2a9e67901329f0b5aa17534397655)
 fn expand_xml_entities(src: String, entities: Vec<(String, String)>) -> String {
-    let mut output = src;
+    let mut output = (src).clone();
     let budget =
         (((src.encode_utf16().count() as f64) * MAX_XML_ENTITY_GROWTH) + MAX_XML_ENTITY_BUDGET);
     {
@@ -186,7 +186,7 @@ fn expand_xml_entities(src: String, entities: Vec<(String, String)>) -> String {
                     .expect(
                         "upstream TypeScript regular expression must be valid Rust regex syntax",
                     ))
-                .replace_all(&(output), |captures: &regex::Captures<'_>| {
+                .replace_all(&((output).clone()), |captures: &regex::Captures<'_>| {
                     __flight_replace(
                         captures
                             .get(0)
@@ -367,14 +367,14 @@ fn parse_element(src: String, state: &mut ParseState) -> Option<XmlElement> {
                     };
                 }
                 let decoded = decode_xml_entities(String::from_utf16_lossy(
-                    &(src)
+                    &((src).clone())
                         .encode_utf16()
                         .skip((text_start) as usize)
                         .take(((state.pos) as usize).saturating_sub((text_start) as usize))
                         .collect::<Vec<u16>>(),
                 ));
-                text += (decoded).trim().to_owned();
-                if (decoded != "") {
+                text += ((decoded).clone()).trim().to_owned();
+                if ((decoded).clone() != "") {
                     content.push(
                         (crate::FlightUnion2::<String, XmlElement>::A((decoded).clone())).clone(),
                     );
@@ -382,7 +382,7 @@ fn parse_element(src: String, state: &mut ParseState) -> Option<XmlElement> {
                 continue;
             }
             if (String::from_utf16_lossy(
-                &(src)
+                &((src).clone())
                     .encode_utf16()
                     .skip((state.pos) as usize)
                     .take(((state.pos + 9.0_f64) as usize).saturating_sub((state.pos) as usize))
@@ -397,7 +397,7 @@ fn parse_element(src: String, state: &mut ParseState) -> Option<XmlElement> {
                     (src.encode_utf16().count() as f64)
                 };
                 let cdata = String::from_utf16_lossy(
-                    &(src)
+                    &((src).clone())
                         .encode_utf16()
                         .skip((cdata_start) as usize)
                         .take(((content_end) as usize).saturating_sub((cdata_start) as usize))
@@ -430,7 +430,7 @@ fn parse_element(src: String, state: &mut ParseState) -> Option<XmlElement> {
                 break;
             }
             let child = parse_element((src).clone(), state);
-            if (child).is_some() {
+            if ((child).clone()).is_some() {
                 children.push(((child.as_ref().unwrap()).clone()).clone());
                 content.push(
                     (crate::FlightUnion2::<String, XmlElement>::B(

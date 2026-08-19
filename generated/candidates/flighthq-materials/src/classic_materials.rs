@@ -99,7 +99,7 @@ impl PartialEq for FlightPartialRecord3 {
 pub fn create_blinn_phong_material(opts: Option<FlightPartialRecord1>) -> BlinnPhongMaterial {
     let mut material = create_surface_material(
         (blinn_phong_material_kind_constant).to_owned(),
-        Some(((opts).clone().unwrap()).clone()),
+        Some((((opts).clone()).clone().unwrap()).clone()),
     );
     material.alpha_map = opts.as_ref().and_then(|value| (value.alpha_map).clone());
     material.diffuse = (opts.as_ref().and_then(|value| value.diffuse)).unwrap_or(4294967295.0_f64);
@@ -117,7 +117,7 @@ pub fn create_blinn_phong_material(opts: Option<FlightPartialRecord1>) -> BlinnP
 pub fn create_lambert_material(opts: Option<FlightPartialRecord2>) -> LambertMaterial {
     let mut material = create_surface_material(
         (lambert_material_kind_constant).to_owned(),
-        Some(((opts).clone().unwrap()).clone()),
+        Some((((opts).clone()).clone().unwrap()).clone()),
     );
     material.diffuse = (opts.as_ref().and_then(|value| value.diffuse)).unwrap_or(4294967295.0_f64);
     material.diffuse_map = opts.as_ref().and_then(|value| (value.diffuse_map).clone());
@@ -130,7 +130,7 @@ pub fn create_lambert_material(opts: Option<FlightPartialRecord2>) -> LambertMat
 pub fn create_phong_material(opts: Option<FlightPartialRecord3>) -> PhongMaterial {
     let mut material = create_surface_material(
         (phong_material_kind_constant).to_owned(),
-        Some(((opts).clone().unwrap()).clone()),
+        Some((((opts).clone()).clone().unwrap()).clone()),
     );
     material.diffuse = (opts.as_ref().and_then(|value| value.diffuse)).unwrap_or(4294967295.0_f64);
     material.diffuse_map = opts.as_ref().and_then(|value| (value.diffuse_map).clone());

@@ -750,14 +750,15 @@ fn dedupe_gl_shaded_declarations(declarations: String) -> String {
     .cloned()
     {
         let trimmed = (line).trim().to_owned();
-        let is_shared_declaration = ((trimmed).starts_with(("uniform ".to_owned()).as_str()))
+        let is_shared_declaration = (((trimmed).clone())
+            .starts_with(("uniform ".to_owned()).as_str()))
             && (!(regex::RegexBuilder::new("_\\d+\\b")
                 .case_insensitive(false)
                 .multi_line(false)
                 .dot_matches_new_line(false)
                 .build()
                 .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-            .is_match(&(trimmed)));
+            .is_match(&((trimmed).clone())));
         if is_shared_declaration {
             if seen.iter().any(|item| item == &(trimmed).clone()) {
                 continue;

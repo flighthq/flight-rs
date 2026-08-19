@@ -24,7 +24,8 @@ fn __flight_js_to_i32(value: f64) -> i32 {
 
 // Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:22 (sha256:ff3bb02a6da9b247009d289bc8ab14be1f5a42e0893d6ed6131852f8c934690a)
 pub fn resolve_bidi_levels(text: String, base_direction: BidiDirection) -> Vec<u8> {
-    let length = (text.encode_utf16().count() as f64);
+    let __flight_utf16_text: Vec<u16> = text.encode_utf16().collect();
+    let length = (__flight_utf16_text.len() as f64);
     let mut levels: Vec<u8> = vec![0_u8; (length) as usize];
     if (length == 0.0_f64) {
         return levels;
@@ -34,7 +35,42 @@ pub fn resolve_bidi_levels(text: String, base_direction: BidiDirection) -> Vec<u
     {
         let mut i = 0.0_f64;
         while (i < length) {
-            let codepoint = (text.code_point_at)(i);
+            let codepoint = {
+                let __flight_units: &[u16] = &__flight_utf16_text;
+                let __flight_raw_index = i;
+                let __flight_index = if __flight_raw_index.is_nan() {
+                    0_i64
+                } else if __flight_raw_index.is_finite() {
+                    __flight_raw_index.trunc() as i64
+                } else {
+                    -1_i64
+                };
+                if __flight_index < 0 {
+                    f64::NAN
+                } else if let Some(&__flight_first) = __flight_units.get(__flight_index as usize) {
+                    let __flight_first = u32::from(__flight_first);
+                    if (0xD800_u32..=0xDBFF_u32).contains(&__flight_first) {
+                        if let Some(&__flight_second) =
+                            __flight_units.get(__flight_index as usize + 1)
+                        {
+                            let __flight_second = u32::from(__flight_second);
+                            if (0xDC00_u32..=0xDFFF_u32).contains(&__flight_second) {
+                                (((__flight_first - 0xD800_u32) << 10)
+                                    + (__flight_second - 0xDC00_u32)
+                                    + 0x10000_u32) as f64
+                            } else {
+                                __flight_first as f64
+                            }
+                        } else {
+                            __flight_first as f64
+                        }
+                    } else {
+                        __flight_first as f64
+                    }
+                } else {
+                    f64::NAN
+                }
+            };
             let cls = {
                 let __flight_callback = (backend.get_bidi_class).clone();
                 let __flight_result = __flight_callback.lock().unwrap()(codepoint);
@@ -79,8 +115,18 @@ pub fn resolve_bidi_levels(text: String, base_direction: BidiDirection) -> Vec<u
             compute_paragraph_level(&original, 0.0_f64, length)
         }
     };
-    let mut matching_pdi = vec![0_i32; (length) as usize].fill((length) as i32);
-    let mut matching_initiator = vec![0_i32; (length) as usize].fill((-1.0_f64) as i32);
+    let mut matching_pdi = {
+        let mut __flight_collection = vec![0_i32; (length) as usize];
+        let __flight_value = (length) as i32;
+        __flight_collection.fill(__flight_value);
+        __flight_collection
+    };
+    let mut matching_initiator = {
+        let mut __flight_collection = vec![0_i32; (length) as usize];
+        let __flight_value = (-1.0_f64) as i32;
+        __flight_collection.fill(__flight_value);
+        __flight_collection
+    };
     pair_isolates(&original, &mut matching_pdi, &mut matching_initiator);
     let mut working = (original).clone();
     let mut level_array: Vec<f64> = vec![Default::default(); (length) as usize];
@@ -204,7 +250,7 @@ fn apply_explicit_levels(
             let t = original[i as usize].clone();
             let top = ((stack_level.len() as f64) - 1.0_f64);
             {
-                let __switch_value = t;
+                let __switch_value = (t).clone();
                 let __flight_case = if __switch_value == "RLE" {
                     0_usize
                 } else if __switch_value == "LRE" {
@@ -264,11 +310,15 @@ fn apply_explicit_levels(
                             {
                                 {
                                     stack_level.push(new_level);
-                                    stack_override.push(Some(if (t == "RLO") {
-                                        "R".to_owned()
+                                    stack_override.push(if (t == "RLO") {
+                                        Some("R".to_owned())
                                     } else {
-                                        if (t == "LRO") { "L".to_owned() } else { None }
-                                    }));
+                                        if (t == "LRO") {
+                                            Some("L".to_owned())
+                                        } else {
+                                            None
+                                        }
+                                    });
                                     stack_isolate.push(false);
                                 }
                             } else {
@@ -300,7 +350,8 @@ fn apply_explicit_levels(
                             if !(stack_override.get((top) as usize).is_none()) {
                                 {
                                     let __flight_index = (i) as usize;
-                                    let __flight_value = stack_override[top as usize].clone();
+                                    let __flight_value =
+                                        stack_override[top as usize].clone().unwrap();
                                     if __flight_index == working.len() {
                                         working.push(__flight_value);
                                     } else {
@@ -400,7 +451,8 @@ fn apply_explicit_levels(
                             if !(stack_override.get((new_top) as usize).is_none()) {
                                 {
                                     let __flight_index = (i) as usize;
-                                    let __flight_value = stack_override[new_top as usize].clone();
+                                    let __flight_value =
+                                        stack_override[new_top as usize].clone().unwrap();
                                     if __flight_index == working.len() {
                                         working.push(__flight_value);
                                     } else {
@@ -512,7 +564,8 @@ fn apply_explicit_levels(
                             if !(stack_override.get((top) as usize).is_none()) {
                                 {
                                     let __flight_index = (i) as usize;
-                                    let __flight_value = stack_override[top as usize].clone();
+                                    let __flight_value =
+                                        stack_override[top as usize].clone().unwrap();
                                     if __flight_index == working.len() {
                                         working.push(__flight_value);
                                     } else {
@@ -759,16 +812,17 @@ fn resolve_sequence(
             };
         }
     }
-    let mut prev: BidiClass = sos;
+    let mut prev: BidiClass = (sos).clone();
     {
         let mut k = 0.0_f64;
         while (k < len) {
             if (ty[k as usize].clone() == "NSM") {
                 {
                     let __flight_index = (k) as usize;
-                    let __flight_value = if (((prev == "LRI") || (prev == "RLI"))
-                        || (prev == "FSI"))
-                        || (prev == "PDI")
+                    let __flight_value = if ((((prev).clone() == "LRI")
+                        || ((prev).clone() == "RLI"))
+                        || ((prev).clone() == "FSI"))
+                        || ((prev).clone() == "PDI")
                     {
                         "ON".to_owned()
                     } else {
@@ -788,15 +842,15 @@ fn resolve_sequence(
             };
         }
     }
-    let mut strong: BidiClass = sos;
+    let mut strong: BidiClass = (sos).clone();
     {
         let mut k = 0.0_f64;
         while (k < len) {
             let c = ty[k as usize].clone();
-            if ((c == "L") || (c == "R")) || (c == "AL") {
+            if (((c).clone() == "L") || ((c).clone() == "R")) || ((c).clone() == "AL") {
                 strong = (c).clone();
             } else {
-                if (c == "EN") && (strong == "AL") {
+                if ((c).clone() == "EN") && (strong == "AL") {
                     {
                         let __flight_index = (k) as usize;
                         let __flight_value = "AN".to_owned();
@@ -901,12 +955,12 @@ fn resolve_sequence(
                 let before = if (k > 0.0_f64) {
                     ty[(k - 1.0_f64) as usize].clone()
                 } else {
-                    sos
+                    (sos).clone()
                 };
                 let after = if (j < len) {
                     ty[j as usize].clone()
                 } else {
-                    eos
+                    (eos).clone()
                 };
                 if (before == "EN") || (after == "EN") {
                     {
@@ -959,15 +1013,15 @@ fn resolve_sequence(
             };
         }
     }
-    strong = sos;
+    strong = (sos).clone();
     {
         let mut k = 0.0_f64;
         while (k < len) {
             let c = ty[k as usize].clone();
-            if (c == "L") || (c == "R") {
+            if ((c).clone() == "L") || ((c).clone() == "R") {
                 strong = (c).clone();
             } else {
-                if (c == "EN") && (strong == "L") {
+                if ((c).clone() == "EN") && (strong == "L") {
                     {
                         let __flight_index = (k) as usize;
                         let __flight_value = "L".to_owned();
@@ -1011,17 +1065,17 @@ fn resolve_sequence(
                 } else {
                     (eos).clone()
                 };
-                let resolved = if (before == after) {
+                let resolved = if ((before).clone() == after) {
                     (before).clone()
                 } else {
-                    embedding_dir
+                    (embedding_dir).clone()
                 };
                 {
                     let mut m = k;
                     while (m < j) {
                         {
                             let __flight_index = (m) as usize;
-                            let __flight_value = resolved;
+                            let __flight_value = (resolved).clone();
                             if __flight_index == ty.len() {
                                 ty.push(__flight_value);
                             } else {
@@ -1176,7 +1230,8 @@ fn neutral_direction(t: BidiClass) -> String {
 
 // Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:438 (sha256:156a19df64b8916c5a4606f79d87089f011d31d0bd9ef5ef110b67ad4bf09fc1)
 fn next_even(level: f64) -> f64 {
-    return (__flight_js_to_i32((level + 2.0_f64)) & __flight_js_to_i32((!1.0_f64))) as f64;
+    return (__flight_js_to_i32((level + 2.0_f64))
+        & __flight_js_to_i32((!__flight_js_to_i32(1.0_f64)) as f64)) as f64;
 }
 
 // Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:443 (sha256:fb3af4f5d8c26d90b7d3e3936d855f595067be72016359059516acfc60e69eb3)

@@ -99,8 +99,8 @@ fn copy_material_fields(dst: &mut Material, src: &Material, kind: Kind) -> () {
             .map(|(_, value)| value)
             .expect("TypeScript Record key was absent")
             .clone();
-        if ((key == "standard") && ((value).is_some()))
-            && (match &(value) {
+        if ((key == "standard") && (((value).clone()).is_some()))
+            && (match &((value).clone()) {
                 crate::OpaqueHostValue::Undefined => "undefined",
                 crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
                 crate::OpaqueHostValue::Bool(_) => "boolean",

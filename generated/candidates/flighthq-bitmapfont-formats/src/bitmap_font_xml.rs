@@ -75,7 +75,7 @@ fn parse_bitmap_font_xml_record(text: String) -> Option<BitmapFontRecord> {
                 .cloned()
         {
             let char = read_xml_char(&char_element);
-            if (char).is_some() {
+            if ((char).clone()).is_some() {
                 chars.push(((char.as_ref().unwrap()).clone()).clone());
             }
         }
@@ -95,7 +95,7 @@ fn parse_bitmap_font_xml_record(text: String) -> Option<BitmapFontRecord> {
         .cloned()
         {
             let kerning = read_xml_kerning(&kerning_element);
-            if (kerning).is_some() {
+            if ((kerning).clone()).is_some() {
                 kernings.push(((kerning.as_ref().unwrap()).clone()).clone());
             }
         }

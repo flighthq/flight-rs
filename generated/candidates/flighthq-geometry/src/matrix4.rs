@@ -753,7 +753,12 @@ pub fn inverse_matrix4(out: &mut Matrix4Like, source: &Matrix4Like) -> bool {
     let eps = 0.000001_f64;
     let invertable = ((d).abs() > eps);
     if (!invertable) {
-        out.m.fill((f64::NAN) as f32);
+        {
+            let __flight_value = (f64::NAN) as f32;
+            let __flight_collection = &mut out.m;
+            __flight_collection.fill(__flight_value);
+            __flight_collection.clone()
+        };
         return false;
     }
     d = (1.0_f64 / d);

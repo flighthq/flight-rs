@@ -413,7 +413,7 @@ pub fn bind_gl_uv_transform(
     texture: Option<TextureLike>,
 ) -> () {
     let mut loc = (program.loc_uv_transform).clone();
-    if (loc).is_none() {
+    if ((loc).clone()).is_none() {
         loc = Some(crate::host_value::<crate::OpaqueHostValue>(
             "host.getUniformLocation",
         ));
@@ -467,7 +467,7 @@ pub fn draw_gl_mesh_subset(
     let color_scale_bias = (proxy.color_scale_bias).clone();
     if (color_matrix).is_some() {
         let mut loc0 = (program.loc_color_matrix0).clone();
-        if (loc0).is_none() {
+        if ((loc0).clone()).is_none() {
             loc0 = Some(crate::host_value::<crate::OpaqueHostValue>(
                 "host.getUniformLocation",
             ));
@@ -497,7 +497,7 @@ pub fn draw_gl_mesh_subset(
         if (color_scale_bias).is_some() {
             let mut loc_color_scale = (program.loc_color_scale).clone();
             let mut loc_color_bias = (program.loc_color_bias).clone();
-            if (loc_color_scale).is_none() {
+            if ((loc_color_scale).clone()).is_none() {
                 loc_color_scale = Some(crate::host_value::<crate::OpaqueHostValue>(
                     "host.getUniformLocation",
                 ));
@@ -553,11 +553,11 @@ pub fn ensure_gl_scene3_d_program<T: Clone>(
         .iter()
         .find(|(key, _)| key == &(key).clone())
         .map(|(_, value)| value.clone());
-    if (program).is_none() {
+    if ((program).clone()).is_none() {
         program = Some(compile((state.gl).clone()));
         {
             let __flight_key = (key).clone();
-            let __flight_value = (program).clone().unwrap();
+            let __flight_value = ((program).clone()).clone().unwrap();
             if let Some((_, value)) = runtime
                 .program_cache
                 .iter_mut()
@@ -629,7 +629,7 @@ pub fn upload_gl_mesh_draw_alpha(
     material: Option<Material>,
 ) -> () {
     let mut location = (program.loc_object_alpha).clone();
-    if (location).is_none() {
+    if ((location).clone()).is_none() {
         location = Some(crate::host_value::<crate::OpaqueHostValue>(
             "host.getUniformLocation",
         ));
@@ -639,7 +639,7 @@ pub fn upload_gl_mesh_draw_alpha(
         crate::host_value::<()>("host.uniform1f");
     }
     let mut coverage_location = (program.loc_alpha_is_coverage).clone();
-    if (coverage_location).is_none() {
+    if ((coverage_location).clone()).is_none() {
         coverage_location = Some(crate::host_value::<crate::OpaqueHostValue>(
             "host.getUniformLocation",
         ));

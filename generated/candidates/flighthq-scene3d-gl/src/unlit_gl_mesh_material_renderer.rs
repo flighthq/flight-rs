@@ -488,9 +488,14 @@ fn define_key_for_material(
     let color_map = material
         .as_ref()
         .and_then(|value| (value.base_color_map).clone());
-    let color_map_ready = ((color_map).is_some())
-        && ((resolve_gl_texture(state, ((color_map).clone().unwrap()).clone(), None, None))
-            .is_some());
+    let color_map_ready = (((color_map).clone()).is_some())
+        && ((resolve_gl_texture(
+            state,
+            (((color_map).clone()).clone().unwrap()).clone(),
+            None,
+            None,
+        ))
+        .is_some());
     return GlUnlitDefineKey {
         __flight_identity: std::sync::Arc::new(()),
         alpha_mask_enabled: ((material).is_some())

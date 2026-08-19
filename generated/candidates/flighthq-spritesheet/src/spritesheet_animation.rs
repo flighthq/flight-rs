@@ -68,7 +68,7 @@ pub fn create_spritesheet_animation_from_frame_names(
                 continue;
             }
             let name = (region.name).clone();
-            if (name).is_none() {
+            if ((name).clone()).is_none() {
                 {
                     i += 1.0;
                     i
@@ -80,12 +80,12 @@ pub fn create_spritesheet_animation_from_frame_names(
                 crate::FlightUnion2::B(value) => "object",
             } == "string")
             {
-                ((name)
+                (((name).clone())
                     == Some(match (*pattern).clone() {
                         crate::FlightUnion2::A(value) => value,
                         crate::FlightUnion2::B(_) => panic!("TypeScript union narrowing failed"),
                     }))
-                    || ((name).starts_with(
+                    || (((name).clone()).starts_with(
                         (match (*pattern).clone() {
                             crate::FlightUnion2::A(value) => value,
                             crate::FlightUnion2::B(_) => {

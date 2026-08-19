@@ -196,7 +196,7 @@ pub fn create_web_device_backend() -> DeviceBackend {
                 out.logical_height = (-1.0_f64);
                 out.logical_width = (-1.0_f64);
                 let pixel_ratio = (-1.0_f64);
-                out.pixel_ratio = pixel_ratio;
+                out.pixel_ratio = (pixel_ratio).clone();
                 out.physical_width = (-1.0_f64);
                 out.physical_height = (-1.0_f64);
                 return out;
@@ -238,7 +238,7 @@ pub fn create_web_device_backend() -> DeviceBackend {
                 out.board_name = "".to_owned();
                 out.color_gamut = "".to_owned();
                 let cores = (-1.0_f64);
-                out.cpu_cores = cores;
+                out.cpu_cores = (cores).clone();
                 out.font_scale = (-1.0_f64);
                 out.form_factor = parse_user_agent_form_factor((ua).clone(), (-1.0_f64));
                 let gpu_info = read_web_gpu_info();

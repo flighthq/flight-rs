@@ -511,7 +511,7 @@ fn ensure_gl_ibl_placeholders(state: &GlRenderState) -> GlIblPlaceholders {
         .iter()
         .find(|(key, _)| key == &(*state).clone())
         .map(|(_, value)| value.clone());
-    if (placeholders).is_some() {
+    if ((placeholders).clone()).is_some() {
         return ((placeholders.as_mut().unwrap()).clone()).clone();
     }
     let gl = (state.gl).clone();
@@ -546,7 +546,7 @@ fn ensure_gl_ibl_placeholders(state: &GlRenderState) -> GlIblPlaceholders {
     });
     {
         let __flight_key = (*state).clone();
-        let __flight_value = (placeholders).clone().unwrap();
+        let __flight_value = ((placeholders).clone()).clone().unwrap();
         if let Some((_, value)) = (*_IBL_PLACEHOLDERS.lock().unwrap())
             .iter_mut()
             .find(|(key, _)| key == &__flight_key)

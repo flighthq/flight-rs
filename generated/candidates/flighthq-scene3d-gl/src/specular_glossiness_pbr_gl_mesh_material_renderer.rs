@@ -401,7 +401,7 @@ pub static SPECULAR_GLOSSINESS_PBR_GL_MESH_MATERIAL_RENDERER: std::sync::LazyLoc
               -> () {
             let gl = (state.gl).clone();
             let spec_gloss = material;
-            let standard = if (spec_gloss).is_some() {
+            let standard = if ((spec_gloss).clone()).is_some() {
                 Some(convert_specular_glossiness_to_standard(
                     &spec_gloss.as_ref().unwrap(),
                 ))
@@ -412,7 +412,7 @@ pub static SPECULAR_GLOSSINESS_PBR_GL_MESH_MATERIAL_RENDERER: std::sync::LazyLoc
                 let __flight_argument_1 = (build_gl_pbr_standard_define_key(
                     &state,
                     ((standard).clone()).clone(),
-                    (spec_gloss).clone(),
+                    ((spec_gloss).clone()).clone(),
                 ))
                 .clone();
                 ensure_gl_pbr_program((state).clone(), &__flight_argument_1, None)

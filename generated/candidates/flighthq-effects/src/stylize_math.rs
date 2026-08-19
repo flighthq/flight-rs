@@ -129,7 +129,10 @@ pub fn create_bayer_matrix(order: f64, out: &mut Vec<f32>) -> f64 {
         }
         {
             let __flight_offset = (0.0_f64) as usize;
-            let __flight_values: Vec<f32> = (tmp).iter().map(|value| (*value) as f32).collect();
+            let __flight_values: Vec<f32> = ((tmp).clone())
+                .iter()
+                .map(|value| (*value) as f32)
+                .collect();
             raw[__flight_offset..__flight_offset + __flight_values.len()]
                 .copy_from_slice(&__flight_values);
         };

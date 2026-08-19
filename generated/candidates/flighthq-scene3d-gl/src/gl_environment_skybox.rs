@@ -426,7 +426,7 @@ fn ensure_gl_skybox(state: &GlRenderState) -> GlSkybox {
         .iter()
         .find(|(key, _)| key == &(*state).clone())
         .map(|(_, value)| value.clone());
-    if (sky).is_some() {
+    if ((sky).clone()).is_some() {
         return ((sky.as_mut().unwrap()).clone()).clone();
     }
     let program = link_gl_skybox_program((gl).clone());
@@ -454,7 +454,7 @@ fn ensure_gl_skybox(state: &GlRenderState) -> GlSkybox {
     });
     {
         let __flight_key = (*state).clone();
-        let __flight_value = (sky).clone().unwrap();
+        let __flight_value = ((sky).clone()).clone().unwrap();
         if let Some((_, value)) = (*_SKYBOXES.lock().unwrap())
             .iter_mut()
             .find(|(key, _)| key == &__flight_key)
