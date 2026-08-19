@@ -25129,7 +25129,7 @@
           },
           {
             "code": "E0277",
-            "message": "`FlightUnion2<bool, ...>` doesn't implement `std::fmt::Display`",
+            "message": "`flighthq_types::FlightUnion2<bool, flighthq_types::FlightUnion2<f64, std::string::String>>` doesn't implement `std::fmt::Display`",
             "source": "generated/candidates/flighthq-importdiagnostics/src/import_diagnostic_text.rs"
           },
           {
@@ -57086,7 +57086,7 @@
           },
           {
             "code": "E0609",
-            "message": "no field `set` on type `Option<Vec<(f64, Arc<Mutex<Box<...>>>)>>`",
+            "message": "no field `set` on type `Option<Vec<(f64, Arc<std::sync::Mutex<Box<(dyn FnMut(Node2D, f64) + Send + 'static)>>>)>>`",
             "source": "generated/candidates/flighthq-timeline/src/timeline.rs"
           },
           {
@@ -57116,7 +57116,7 @@
           },
           {
             "code": "E0599",
-            "message": "no method named `unwrap` found for reference `&Mutex<Box<dyn FnMut(..., f64) + Send>>` in the current scope",
+            "message": "no method named `unwrap` found for reference `&std::sync::Mutex<Box<(dyn FnMut(Node2D, f64) + Send + 'static)>>` in the current scope",
             "source": "generated/candidates/flighthq-timeline/src/timeline.rs"
           },
           {
