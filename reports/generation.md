@@ -8,8 +8,8 @@ Upstream commit: `cad72aa3ea4e6e76a050918a403dcb10efdfcb0d`
 | Default-generated packages | 137 |
 | Emittable packages | 43 |
 | Blocked packages | 94 |
-| Compiled candidates | 13 |
-| Compile-blocked candidates | 9 |
+| Compiled candidates | 14 |
+| Compile-blocked candidates | 8 |
 | Dependency-blocked candidates | 19 |
 | Cultivated packages | 1 |
 | Host-bound packages | 4 |
@@ -31,7 +31,7 @@ Upstream commit: `cad72aa3ea4e6e76a050918a403dcb10efdfcb0d`
 | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
 | `@flighthq/abc` | generated | blocked | source-blocked | 3/4 | 2/2 | 0 | 2/2 | 0 | 1 | no |
 | `@flighthq/accessibility` | generated | emittable | compile-blocked | 3/3 | 8/8 | 0 | 1/1 | 1 | 0 | no |
-| `@flighthq/adjustments` | generated | emittable | compile-blocked | 21/21 | 52/52 | 0 | 9/42 | 0 | 0 | no |
+| `@flighthq/adjustments` | generated | emittable | compiled | 21/21 | 52/52 | 0 | 9/42 | 0 | 0 | no |
 | `@flighthq/animation` | generated | blocked | source-blocked | 7/13 | 54/52 | 0 | 8/36 | 0 | 6 | no |
 | `@flighthq/app` | generated | blocked | source-blocked | 2/3 | 39/42 | 3 | 4/4 | 0 | 2 | no |
 | `@flighthq/application` | generated | blocked | source-blocked | 4/5 | 87/87 | 0 | 4/4 | 2 | 1 | partial |
@@ -1389,10 +1389,6 @@ Disposition partition: 173 eligible = 13 portable executable + 0 host placeholde
 - **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
 - **E0599** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: no method named `is_some` found for enum `OpaqueHostValue` in the current scope
 - **E0599** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: no method named `is_some` found for enum `OpaqueHostValue` in the current scope
-
-### `@flighthq/adjustments`
-
-- **E0382** `generated/candidates/flighthq-adjustments/src/color_scale_bias_adjustment.rs`: use of moved value: `value`
 
 ### `@flighthq/clock`
 

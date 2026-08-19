@@ -1398,6 +1398,53 @@ describe('Rust emission', () => {
     ).not.toThrow();
   });
 
+  it('preserves a local across ordered fields with equivalent Rust alias types', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/adjustments/src/ordered-alias-fields.ts',
+      `
+        interface Shape {
+          readonly label: string;
+          readonly count: number;
+        }
+        type ShapeLike = Shape;
+        type OwnedShape = Shape;
+        interface Result {
+          readonly value: OwnedShape;
+          readonly label: string;
+        }
+        export function createResult(input: Readonly<ShapeLike>): Result {
+          const value: ShapeLike = { ...input };
+          return {
+            value,
+            label: value.label,
+          };
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/adjustments', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/adjustments/src/ordered-alias-fields.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('value: (value).clone()');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-ordered-alias-fields-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
   it('keeps mutated numeric records as mutex-backed state instead of value namespaces', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/input/src/state.ts',

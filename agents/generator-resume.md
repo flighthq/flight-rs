@@ -40,14 +40,14 @@ The pinned Flight commit is no longer advertised as a direct ref by the configur
 Compiled candidates:
 
 ```text
-color device flow haptics keyboard lifecycle math platform screen signals spring textsegment
+adjustments color device flow haptics keyboard lifecycle math platform screen signals spring textsegment
 useragent
 ```
 
 Compile-blocked candidates, ordered roughly from smallest to largest compiler frontier:
 
 ```text
-accessibility adjustments clock importdiagnostics input protocol textbidi timeline xml
+accessibility clock importdiagnostics input protocol textbidi timeline xml
 ```
 
 Dependency-blocked candidates:
@@ -70,6 +70,7 @@ The generator now has these invariants. Preserve them with focused regression te
 - Structural records are canonicalized by resolved schema at module signatures.
 - Imported nested-record provenance survives lowering.
 - Anonymous records can project across nominal Rust records while evaluating owned values once.
+- Ordered object fields preserve a non-Copy local that is consumed before a later field reads it, even across source aliases with one Rust representation.
 - Function signature records remain canonical even when a shape occurs only once.
 - Generic structural constructors use Rust turbofish syntax.
 - A module-global canonical record never captures an unbound generic type parameter.

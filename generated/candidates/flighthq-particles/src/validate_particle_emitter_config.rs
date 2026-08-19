@@ -241,7 +241,7 @@ pub fn validate_particle_emitter_config(
         if (!(value).is_finite()) {
             issues.push(ParticleConfigIssue {
                 __flight_identity: std::sync::Arc::new(()),
-                field: field,
+                field: (field).clone(),
                 message: format!("{} must be a finite number (got {})", field, string(value)),
                 severity: "error".to_owned(),
             });
@@ -252,7 +252,7 @@ pub fn validate_particle_emitter_config(
         if ((value).is_finite()) && (value < 0.0_f64) {
             issues.push(ParticleConfigIssue {
                 __flight_identity: std::sync::Arc::new(()),
-                field: field,
+                field: (field).clone(),
                 message: format!("{} must not be negative (got {})", field, value),
                 severity: "warning".to_owned(),
             });

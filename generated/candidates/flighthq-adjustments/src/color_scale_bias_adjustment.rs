@@ -29,7 +29,7 @@ pub fn create_color_scale_bias_adjustment(
     return ColorScaleBiasAdjustment {
         __flight_identity: std::sync::Arc::new(()),
         kind: "ColorScaleBiasAdjustment".to_owned(),
-        color_scale_bias: value,
+        color_scale_bias: (value).clone(),
         color_matrix: vec![
             value.red_scale,
             0.0_f64,

@@ -10410,15 +10410,9 @@
       "attemptedSources": 21,
       "blockers": [],
       "candidate": {
-        "compileDiagnostics": [
-          {
-            "code": "E0382",
-            "message": "use of moved value: `value`",
-            "source": "generated/candidates/flighthq-adjustments/src/color_scale_bias_adjustment.rs"
-          }
-        ],
+        "compileDiagnostics": [],
         "path": "generated/candidates/flighthq-adjustments",
-        "status": "compile-blocked",
+        "status": "compiled",
         "syntaxCheckedSources": 21,
         "unresolvedDependencies": []
       },
@@ -10579,7 +10573,7 @@
           ],
           "declarations": 1,
           "module": "color_scale_bias_adjustment",
-          "outputSha256": "sha256:3f5c7d25a1388d851632becf9e3ea3505bb76fa678f0738b5554573b06e9ad29",
+          "outputSha256": "sha256:e370ddbcd7192124f4b4599cb3a2c55a325483894514e256a0fbd4d0d20b2abb",
           "source": "upstream/packages/adjustments/src/colorScaleBiasAdjustment.ts",
           "usesOpaqueHostValues": false
         },
@@ -30620,7 +30614,7 @@
           ],
           "declarations": 8,
           "module": "validate_particle_emitter_config",
-          "outputSha256": "sha256:ac30be321cd56cdf660bb194e5f8ac59aa11b7cd336830b63e1c9f043562cee0",
+          "outputSha256": "sha256:3987fa625c20d516ac86f4c14f3e9351f508d0b8b580b262fdbd085cc9c951be",
           "source": "upstream/packages/particles/src/validateParticleEmitterConfig.ts",
           "usesOpaqueHostValues": false
         }
@@ -54973,7 +54967,7 @@
           ],
           "declarations": 1,
           "module": "get_bidi_runs",
-          "outputSha256": "sha256:8ca253e9085ab0fef1efcadab08e11cbbf068d9cad19a44b6fa1c5c24a54d93c",
+          "outputSha256": "sha256:4d2c790aba3182d8da6c03c2bfaaf456855b8c5a6c09796c2158292139451637",
           "source": "upstream/packages/textbidi/src/getBidiRuns.ts",
           "usesOpaqueHostValues": false
         },
@@ -69523,8 +69517,8 @@
   "schemaVersion": 6,
   "summary": {
     "blocked": 94,
-    "candidateCompileBlocked": 9,
-    "candidateCompiled": 13,
+    "candidateCompileBlocked": 8,
+    "candidateCompiled": 14,
     "candidateDependencyBlocked": 19,
     "cultivated": 1,
     "eligible": 137,

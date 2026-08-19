@@ -82,6 +82,7 @@ interface EmitContext {
   numericNamespaceNames: ReadonlySet<string>;
   openInterfaceFields: ReadonlyMap<string, ReadonlySet<string>>;
   placeAliases: Map<string, IrExpression>;
+  preservedNames: ReadonlySet<string>;
   rawClosureNames: Set<string>;
   recursiveClosureSlots: ReadonlyMap<string, string>;
   sharedCaptureNames: ReadonlySet<string>;
@@ -251,6 +252,7 @@ export function emitRustModule(module: RustModule): string {
     ),
     openInterfaceFields: new Map(),
     placeAliases: new Map(),
+    preservedNames: new Set(),
     rawClosureNames: new Set(),
     recursiveClosureSlots: new Map(),
     sharedCaptureNames: new Set(),
@@ -1811,7 +1813,9 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
         actualType &&
         !context.borrowedNames.has(expression.name) &&
         !context.rawClosureNames.has(expression.name) &&
-        ((!isCopyType(actualType, context) && expectedType && typeKey(actualType) === typeKey(expectedType)) ||
+        ((!isCopyType(actualType, context) &&
+          ((expectedType && typeKey(actualType) === typeKey(expectedType)) ||
+            context.preservedNames.has(expression.name))) ||
           context.sharedCaptureNames.has(expression.name) ||
           resolvedActual?.kind === 'function' ||
           isSharedHandleType(actualType, context) ||
@@ -5787,6 +5791,7 @@ function functionContext(context: EmitContext, ownerName: string, owner: unknown
     mutatedNames: collectMutatedNames(owner, context.mutatingFunctions),
     nonNullableNames: new Set(context.nonNullableNames),
     placeAliases: new Map(),
+    preservedNames: new Set(),
     rawClosureNames: new Set(context.rawClosureNames),
     recursiveClosureSlots: new Map(context.recursiveClosureSlots),
     sharedCaptureNames,
@@ -7027,12 +7032,14 @@ function emitObject(
     const value = `${name}::new(${arguments_.join(', ')})`;
     return nullable ? `Some(${value})` : value;
   }
-  const properties = structuralExpression.properties.flatMap((property) => {
+  const orderedPropertyContexts = contextsPreservingNamesUsedLater(structuralExpression.properties, context);
+  const properties = structuralExpression.properties.flatMap((property, index) => {
+    const propertyContext = orderedPropertyContexts[index] ?? context;
     if (property.kind === 'spread') {
       spreads.push(
         property === entitySpreadProperty
           ? '..__flight_entity_spread.clone()'
-          : `..${parenthesize(emitExpression(property.expression, context, target))}.clone()`,
+          : `..${parenthesize(emitExpression(property.expression, propertyContext, target))}.clone()`,
       );
       return [];
     }
@@ -7042,7 +7049,7 @@ function emitObject(
     const field = fields.get(property.name);
     if (!field) throw new RustEmissionError(`object field ${property.name} is not present in structural type`);
     initialized.add(property.name);
-    const value = emitExpression(property.value, context, field.type);
+    const value = emitExpression(property.value, propertyContext, field.type);
     return [
       `${safeName(property.name)}: ${
         field.optional && field.type.kind !== 'nullable' && !isNullishExpression(property.value)
@@ -7093,6 +7100,50 @@ function emitObject(
     [...properties, ...spreads, ...(openFields && spreads.length === 0 ? ['..Default::default()'] : [])].join('\n'),
   )}\n}${entitySpreadProperty?.kind === 'spread' ? ' }' : ''}`;
   return nullable ? `Some(${value})` : value;
+}
+
+function contextsPreservingNamesUsedLater(values: readonly unknown[], context: EmitContext): EmitContext[] {
+  const contexts = new Array<EmitContext>(values.length);
+  const namesUsedLater = new Set<string>();
+  for (let index = values.length - 1; index >= 0; index--) {
+    const namesUsedNow = new Set<string>();
+    collectIdentifierNames(values[index], namesUsedNow);
+    const consumedName = directlyConsumedObjectPropertyIdentifier(values[index]);
+    const preservedNames = new Set([
+      ...context.preservedNames,
+      ...(consumedName && namesUsedLater.has(consumedName) ? [consumedName] : []),
+    ]);
+    contexts[index] = preservedNames.size === context.preservedNames.size ? context : { ...context, preservedNames };
+    namesUsedNow.forEach((name) => namesUsedLater.add(name));
+  }
+  return contexts;
+}
+
+function directlyConsumedObjectPropertyIdentifier(value: unknown): string | undefined {
+  if (
+    !value ||
+    typeof value !== 'object' ||
+    !('kind' in value) ||
+    value.kind !== 'property' ||
+    !('value' in value) ||
+    !value.value ||
+    typeof value.value !== 'object'
+  ) {
+    return undefined;
+  }
+  const expression = unwrapCasts(value.value as IrExpression);
+  return expression.kind === 'identifier' ? expression.name : undefined;
+}
+
+function collectIdentifierNames(value: unknown, names: Set<string>): void {
+  if (!value || typeof value !== 'object') return;
+  if ('kind' in value && value.kind === 'identifier' && 'name' in value && typeof value.name === 'string') {
+    names.add(value.name);
+  }
+  for (const child of Object.values(value)) {
+    if (Array.isArray(child)) child.forEach((item) => collectIdentifierNames(item, names));
+    else collectIdentifierNames(child, names);
+  }
 }
 
 function inferNamedStructuralObjectType(

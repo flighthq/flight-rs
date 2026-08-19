@@ -24,7 +24,7 @@ pub fn get_bidi_runs(text: String, base_direction: BidiDirection) -> Vec<BidiRun
                     __flight_identity: std::sync::Arc::new(()),
                     start: start,
                     end: i,
-                    level: level,
+                    level: (level).clone(),
                     direction: if ((level % 2.0_f64) == 0.0_f64) {
                         "ltr".to_owned()
                     } else {
