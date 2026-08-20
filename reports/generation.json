@@ -32158,7 +32158,7 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:91bab8b2539f1053ebf1a454ea919f0a485f01fb4bd21ab497f6bd634c6f0957",
-          "reason": "explainPermissionState: portable task try/catch lowering is reserved for Pass 27 Stage 4",
+          "reason": "explainPermissionState: upstream/packages/permissions/src/permission.ts:44:20: await value type is not recovered",
           "source": "upstream/packages/permissions/src/permission.ts",
           "stage": "emission"
         }
@@ -34719,14 +34719,14 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:bd805e8719fbf0bcb57672968d6c47504753d18cffd8924a7ab4ea02698d2329",
-          "reason": "createWgpuRenderState: portable task throw/rejection lowering is reserved for Pass 27 Stage 4",
+          "reason": "createWgpuRenderState: upstream/packages/render-wgpu/src/wgpuRenderState.ts:82:19: await value type is not recovered",
           "source": "upstream/packages/render-wgpu/src/wgpuRenderState.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:f61e56864e5169d08e7bc058ef2c5d1e0cc6f50e58a06850a31cc83a0f82f85e",
-          "reason": "createBitmapFromWgpuRenderState: portable task throw/rejection lowering is reserved for Pass 27 Stage 4",
+          "reason": "mapWgpuCaptureBuffer: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object",
           "source": "upstream/packages/render-wgpu/src/wgpuSurface.ts",
           "stage": "emission"
         },
@@ -41598,14 +41598,14 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:e0af23a9b9655d0e9257c00dd40892d76c4faef940c9167a529b0a5d9e4c1ac7",
-          "reason": "loadScene3DDocumentFromGltfUrl: portable task try/catch lowering is reserved for Pass 27 Stage 4",
+          "reason": "loadGltfExternalBuffers: upstream/packages/scene3d-resources/src/gltfLoad.ts:60:23: taskAll output type is not recovered",
           "source": "upstream/packages/scene3d-resources/src/gltfLoad.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:807f6d10f079580c3b66acc297ad7936a7837342a8c59a1a8794e197b7ee0a28",
-          "reason": "fetchWebImageResource: portable task try/catch lowering is reserved for Pass 27 Stage 4",
+          "reason": "fetchWebImageResource: upstream/packages/scene3d-resources/src/imageResourceFetch.ts:12:3: portable task catch bindings are not implemented",
           "source": "upstream/packages/scene3d-resources/src/imageResourceFetch.ts",
           "stage": "emission"
         },
@@ -68631,7 +68631,7 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:6966aed0f9e0290cfa32e84e51a5b6ffeeb922cda3aebcaa29b7768da347a07a",
-          "reason": "loadVideoResourceFromBlob: portable task try/catch lowering is reserved for Pass 27 Stage 4",
+          "reason": "loadVideoResourceFromBlob: upstream/packages/video/src/videoResourceFrom.ts:29:3: portable task catch bindings are not implemented",
           "source": "upstream/packages/video/src/videoResourceFrom.ts",
           "stage": "emission"
         }

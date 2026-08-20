@@ -999,7 +999,7 @@ Disposition partition: 173 eligible = 13 portable executable + 0 host placeholde
 
 - **package** `upstream/packages/permissions/src`: Generated crate is missing 4 of 11 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/permissions/src/enablePermissionGuards.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (1 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/permissions/src/permission.ts`: explainPermissionState: portable task try/catch lowering is reserved for Pass 27 Stage 4
+- **emission** `upstream/packages/permissions/src/permission.ts`: explainPermissionState: upstream/packages/permissions/src/permission.ts:44:20: await value type is not recovered
 
 ### `@flighthq/physics2d`
 
@@ -1057,8 +1057,8 @@ Disposition partition: 173 eligible = 13 portable executable + 0 host placeholde
 - **package** `upstream/packages/render-wgpu/src`: Generated crate is missing 9 of 108 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/render-wgpu/src/wgpuExternalImageSource.ts`: isWgpuExternalImageSourceUnavailableError: instanceof Rust lowering requires a portable typed-array constructor
 - **emission** `upstream/packages/render-wgpu/src/wgpuMaterialRegistry.ts`: resolveWgpuMaterialRenderer: optional call requires an inferred nullable function: {"kind":"property","name":"registryMiss","object":{"kind":"identifier","name":"runtime"},"optional":false}
-- **emission** `upstream/packages/render-wgpu/src/wgpuRenderState.ts`: createWgpuRenderState: portable task throw/rejection lowering is reserved for Pass 27 Stage 4
-- **emission** `upstream/packages/render-wgpu/src/wgpuSurface.ts`: createBitmapFromWgpuRenderState: portable task throw/rejection lowering is reserved for Pass 27 Stage 4
+- **emission** `upstream/packages/render-wgpu/src/wgpuRenderState.ts`: createWgpuRenderState: upstream/packages/render-wgpu/src/wgpuRenderState.ts:82:19: await value type is not recovered
+- **emission** `upstream/packages/render-wgpu/src/wgpuSurface.ts`: mapWgpuCaptureBuffer: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
 - **emission** `upstream/packages/render-wgpu/src/wgpuTestHelper.ts`: makeAdapter: upstream/packages/render-wgpu/src/wgpuTestHelper.ts:124:26: taskReady output type is not recovered
 - **emission** `upstream/packages/render-wgpu/src/wgpuTextureResolver.ts`: resolveWgpuTexture: optional call requires an inferred nullable function: {"kind":"property","name":"registryMiss","object":{"kind":"identifier","name":"runtime"},"optional":false}
 
@@ -1163,8 +1163,8 @@ Disposition partition: 173 eligible = 13 portable executable + 0 host placeholde
 
 - **emission** `upstream/packages/scene3d-resources/src/awd2Load.ts`: Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
 - **emission** `upstream/packages/scene3d-resources/src/enableScene3DResourceFailureGuards.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene3d-resources/src/gltfLoad.ts`: loadScene3DDocumentFromGltfUrl: portable task try/catch lowering is reserved for Pass 27 Stage 4
-- **emission** `upstream/packages/scene3d-resources/src/imageResourceFetch.ts`: fetchWebImageResource: portable task try/catch lowering is reserved for Pass 27 Stage 4
+- **emission** `upstream/packages/scene3d-resources/src/gltfLoad.ts`: loadGltfExternalBuffers: upstream/packages/scene3d-resources/src/gltfLoad.ts:60:23: taskAll output type is not recovered
+- **emission** `upstream/packages/scene3d-resources/src/imageResourceFetch.ts`: fetchWebImageResource: upstream/packages/scene3d-resources/src/imageResourceFetch.ts:12:3: portable task catch bindings are not implemented
 - **emission** `upstream/packages/scene3d-resources/src/loadScene3DResources.ts`: loadScene3DResources: upstream/packages/scene3d-resources/src/loadScene3DResources.ts:46:3: await value type is not recovered
 - **emission** `upstream/packages/scene3d-resources/src/md2Load.ts`: Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
 - **emission** `upstream/packages/scene3d-resources/src/md5Load.ts`: Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
@@ -1360,7 +1360,7 @@ Disposition partition: 173 eligible = 13 portable executable + 0 host placeholde
 
 ### `@flighthq/video`
 
-- **emission** `upstream/packages/video/src/videoResourceFrom.ts`: loadVideoResourceFromBlob: portable task try/catch lowering is reserved for Pass 27 Stage 4
+- **emission** `upstream/packages/video/src/videoResourceFrom.ts`: loadVideoResourceFromBlob: upstream/packages/video/src/videoResourceFrom.ts:29:3: portable task catch bindings are not implemented
 
 ### `@flighthq/webcam`
 
