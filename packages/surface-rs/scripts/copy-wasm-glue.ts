@@ -6,14 +6,27 @@
 // shipped.
 
 import { copyFileSync, mkdirSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const here = dirname(fileURLToPath(import.meta.url));
-const srcWasm = join(here, '..', 'src', 'wasm');
-const distWasm = join(here, '..', 'dist', 'wasm');
+/**
+ * Every file the built `dist` needs that `tsc -b` will not emit for it. Exported so the packaging
+ * test can prove this list still covers each non-TypeScript module `src` imports: a glue file that
+ * is imported but not copied produces a tarball that installs and then fails at import time.
+ */
+export const wasmGlueFiles = ['surface_wasm.js', 'surface_wasm.d.ts'] as const;
 
-mkdirSync(distWasm, { recursive: true });
-for (const file of ['surface_wasm.js', 'surface_wasm.d.ts']) {
-  copyFileSync(join(srcWasm, file), join(distWasm, file));
+const scriptPath = fileURLToPath(import.meta.url);
+
+export function copyWasmGlue(): void {
+  const here = dirname(scriptPath);
+  const srcWasm = join(here, '..', 'src', 'wasm');
+  const distWasm = join(here, '..', 'dist', 'wasm');
+
+  mkdirSync(distWasm, { recursive: true });
+  for (const file of wasmGlueFiles) {
+    copyFileSync(join(srcWasm, file), join(distWasm, file));
+  }
 }
+
+if (resolve(process.argv[1] ?? '') === resolve(scriptPath)) copyWasmGlue();
