@@ -1,6 +1,6 @@
 # Status
 
-- The original manual Rust port is archived outside the repository as a complete Git bundle.
+- The original manual Rust port is preserved read-only at `flighthq/flight-rs-archive`. It is history, not a generation input.
 - Repository history was filtered to the curated `packages/surface-rs` path.
 - Upstream Flight is pinned at `cad72aa3ea4e6e76a050918a403dcb10efdfcb0d`, matching `flight-hx` main at `27f4d0ee7ae04d64e66c996f99a0f270b09e12be`.
 - The schema-2 inventory and schema-6 generation reports are current for that pin: 143 packages, 299 manifest export lanes, 32,998 export records, and 1,419 upstream test files.

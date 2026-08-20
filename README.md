@@ -29,8 +29,8 @@ The compiled target set includes the fully promoted `@flighthq/easing` target, t
 
 ## Preserved manual port
 
-The pre-filter handwritten Rust lineage is preserved separately as `manual-rust-port-b9022b67.bundle` (SHA-256 `8d3886c00175b97cdb43d4b629e112a242473f5c129d4ed01cc9f175c4a3717c`). It is an archive, not an input to generation. Restore it into a disposable repository with:
+This repository replaced a handwritten Rust port of the same SDK, preserved read-only at [`flighthq/flight-rs-archive`](https://github.com/flighthq/flight-rs-archive).
 
-```sh
-git clone manual-rust-port-b9022b67.bundle archived-flight-rs
-```
+That port reached a higher runtime finish than the generated output has today, but it could not be reproduced: every upstream release reopened the whole translation by hand, and stabilizing one area tended to disturb another. This repository trades that finish for repeatability — a mechanical port starts further back and catches up by rule rather than by effort.
+
+The archive is history, not an input to generation. Nothing here reads from it, and a rule that cannot be derived from `upstream/` does not belong in `tools/generator/` because the archive happened to solve it a particular way.
