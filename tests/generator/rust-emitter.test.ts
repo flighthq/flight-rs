@@ -637,7 +637,7 @@ describe('Rust emission', () => {
           return value;
         }
         export async function adoptReady(input: string): Promise<string> {
-          return Promise.resolve<string>(input);
+          return Promise.resolve(input);
         }
         export async function inferredFlag(input: boolean) {
           return input;
@@ -646,7 +646,7 @@ describe('Rust emission', () => {
           return Promise.resolve(true);
         }
         export function rejectedFlag(): Promise<boolean> {
-          return Promise.reject<boolean>('nope');
+          return Promise.reject('nope');
         }
       `,
       ts.ScriptTarget.Latest,
@@ -677,6 +677,7 @@ describe('Rust emission', () => {
       'ready',
       'reject',
     ]);
+    expect(lowered.taskConstructions.at(-1)?.output).toEqual({ kind: 'primitive', name: 'Bool' });
     expect(output).toContain('pub fn echo_after_ready(input: String) -> crate::FlightTask<String>');
     expect(output).toContain('crate::FlightTask::start(async move');
     expect(output).toContain('.await?');

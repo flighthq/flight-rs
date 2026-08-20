@@ -599,8 +599,10 @@ function contextualExpressionType(
   if (ts.isReturnStatement(parent) && parent.expression === node) {
     const owner = findEnclosingFunction(parent);
     if (!owner) return undefined;
-    const returns = declaredOrContextualFunctionReturn(owner, context);
-    return returns?.kind === 'task' && hasModifier(owner, ts.SyntaxKind.AsyncKeyword) ? returns.output : returns;
+    return contextualReturnExpressionType(owner, context);
+  }
+  if (ts.isArrowFunction(parent) && parent.body === node) {
+    return contextualReturnExpressionType(parent, context);
   }
   if (ts.isPropertyAssignment(parent) && parent.initializer === node && ts.isObjectLiteralExpression(parent.parent)) {
     return recoveryObjectFieldType(parent.parent, propertyName(parent.name, context), context);
@@ -610,6 +612,14 @@ function contextualExpressionType(
     if (index >= 0) return recoveryCallParameterType(parent, index, context);
   }
   return undefined;
+}
+
+function contextualReturnExpressionType(
+  node: ts.FunctionLikeDeclaration,
+  context: LoweringContext,
+): IrType | undefined {
+  const returns = declaredOrContextualFunctionReturn(node, context);
+  return returns?.kind === 'task' && hasModifier(node, ts.SyntaxKind.AsyncKeyword) ? returns.output : returns;
 }
 
 function declaredOrContextualFunctionReturn(
@@ -2940,6 +2950,19 @@ function taskFactoryOutput(
 ): IrType {
   const typeArgument = node.typeArguments?.[0];
   if (typeArgument) return lowerType(typeArgument, context);
+  const contextual = contextualExpressionType(node, context, new Set());
+  const contextualOutput =
+    contextual?.kind === 'task'
+      ? contextual.output
+      : contextual && isAsyncReturnExpression(node)
+        ? contextual
+        : undefined;
+  if (contextualOutput && !recoveryTypeContainsDynamic(contextualOutput)) return contextualOutput;
+  if (voidWhenAbsent && node.arguments[0]) {
+    const inferred = inferRecoveryExpressionType(node.arguments[0], context, new Set());
+    const inferredOutput = inferred?.kind === 'task' ? inferred.output : inferred;
+    if (inferredOutput && !recoveryTypeContainsDynamic(inferredOutput)) return inferredOutput;
+  }
   if (!value) return voidWhenAbsent ? { kind: 'primitive', name: 'Void' } : { kind: 'dynamic' };
   if (value.kind === 'cast') return value.type;
   if (value.kind === 'literal') {
@@ -2949,6 +2972,28 @@ function taskFactoryOutput(
   }
   if (value.kind === 'identifier' && value.name === 'Undefined') return { kind: 'primitive', name: 'Void' };
   return { kind: 'dynamic' };
+}
+
+function isAsyncReturnExpression(node: ts.Expression): boolean {
+  let current: ts.Expression = node;
+  for (;;) {
+    const parent = current.parent;
+    if (
+      (ts.isParenthesizedExpression(parent) ||
+        ts.isAsExpression(parent) ||
+        ts.isTypeAssertionExpression(parent) ||
+        ts.isSatisfiesExpression(parent)) &&
+      parent.expression === current
+    ) {
+      current = parent;
+      continue;
+    }
+    if (ts.isReturnStatement(parent) && parent.expression === current) {
+      const owner = findEnclosingFunction(parent);
+      return Boolean(owner && hasModifier(owner, ts.SyntaxKind.AsyncKeyword));
+    }
+    return ts.isArrowFunction(parent) && parent.body === current && hasModifier(parent, ts.SyntaxKind.AsyncKeyword);
+  }
 }
 
 function taskExpressionOrigin(node: ts.Node, context: LoweringContext, operation: string) {

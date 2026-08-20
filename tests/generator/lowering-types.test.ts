@@ -74,6 +74,14 @@ describe('configured type lowering exceptions', () => {
         export async function synthesized() {
           return { count: 3, label: 'synthesized' };
         }
+        type ContextualTask = () => Promise<DeclaredPayload>;
+        export const contextualReady: ContextualTask = () => Promise.resolve({ value: 4 });
+        export function contextualReject(): Promise<DeclaredPayload> {
+          return Promise.reject(new Error('nope'));
+        }
+        export function stillDynamic(value: any): Promise<unknown> {
+          return Promise.resolve(value);
+        }
         export async function genuinelyDynamic(value: any) {
           return value;
         }
@@ -140,6 +148,15 @@ describe('configured type lowering exceptions', () => {
       kind: 'anonymous',
     });
     expect(outputs.genuinelyDynamic).toEqual({ kind: 'dynamic' });
+    expect(
+      lowered.taskConstructions
+        .filter((construction) => construction.kind === 'ready' || construction.kind === 'reject')
+        .map((construction) => ({ kind: construction.kind, output: construction.output })),
+    ).toEqual([
+      { kind: 'ready', output: { arguments: [], kind: 'named', name: 'DeclaredPayload' } },
+      { kind: 'reject', output: { arguments: [], kind: 'named', name: 'DeclaredPayload' } },
+      { kind: 'ready', output: { kind: 'dynamic' } },
+    ]);
   });
 
   it('assigns stable source identities and task types to every async scope', () => {
