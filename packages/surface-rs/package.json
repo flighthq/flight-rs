@@ -9,6 +9,9 @@
     "directory": "packages/surface-rs"
   },
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {

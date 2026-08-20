@@ -117,6 +117,19 @@ describe('blessed facade packaging', () => {
     }
   });
 
+  it('differentially tests every function it ships against the upstream implementation', () => {
+    const implementation = parse(path.join(facadeDirectory, 'src/surfaceWasm.ts'));
+    const parityTest = readFileSync(path.join(facadeDirectory, 'src/surfaceWasm.test.ts'), 'utf8');
+
+    // The whole claim of this package is that the Rust kernels are indistinguishable from the
+    // TypeScript ones. An export nobody compares against `reference` ships that claim untested.
+    for (const name of exportedFunctionNames(implementation)) {
+      expect(new RegExp(`\\brs\\.${name}\\b`, 'u').test(parityTest), `${name} is exercised by the parity suite`).toBe(
+        true,
+      );
+    }
+  });
+
   it('copies every non-TypeScript module the facade imports into dist', () => {
     const implementation = parse(path.join(facadeDirectory, 'src/surfaceWasm.ts'));
     const copied = new Set<string>(wasmGlueFiles);
@@ -136,6 +149,14 @@ describe('blessed facade packaging', () => {
       expect(manifest[field], `package.json ${field}`).toBeTruthy();
     }
     expect(manifest.private, 'a published package must not be private').toBeUndefined();
+
+    // npm defaults a scoped package to restricted, which fails the publish outright on a free
+    // account. Upstream passes `--access public` from its publish script; this repository has no
+    // such script, so the manifest is the only place that knowledge can live.
+    if (String(manifest.name).startsWith('@')) {
+      expect((manifest.publishConfig as { access?: string } | undefined)?.access).toBe('public');
+    }
+
     expect(existsSync(path.join(facadeDirectory, 'README.md'))).toBe(true);
     expect(existsSync(path.join(facadeDirectory, 'LICENSE.md'))).toBe(true);
 
