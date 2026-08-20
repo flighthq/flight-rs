@@ -4182,17 +4182,17 @@ function emitUnary(expression: Extract<IrExpression, { kind: 'unary' }>, context
   if (expression.operator === 'typeof') {
     const hostTag = inferHostPropertyTypeofTag(expression.operand, context);
     if (hostTag) return emitRustStringLiteral(hostTag);
-    if (operandType?.kind === 'union') {
+    const resolved = resolveSemanticType(operandType, context) ?? operandType;
+    if (resolved?.kind === 'union') {
       const operand = emitExpression(expression.operand, context);
-      return emitUnionTypeof(`&${parenthesize(operand)}`, operandType.variants, context);
+      return emitUnionTypeof(`&${parenthesize(operand)}`, resolved.variants, context);
     }
-    if (operandType?.kind === 'nullable') {
+    if (resolved?.kind === 'nullable') {
       const operand = emitExpression(expression.operand, context);
       return `${parenthesize(operand)}.as_ref().map_or("undefined", |_| ${emitRustStringLiteral(
-        typeOfTag(operandType.inner, context),
+        typeOfTag(resolved.inner, context),
       )})`;
     }
-    const resolved = resolveSemanticType(operandType, context);
     if (resolved?.kind === 'primitive') {
       return emitRustStringLiteral(
         resolved.name === 'Bool'
@@ -7136,6 +7136,7 @@ function emitObject(
     selectDeclaredObjectType(structuralExpression, contextualTarget, context) ??
     (nativeEntitySpread ? onlySpreadType : undefined) ??
     inferNamedStructuralObjectType(structuralExpression, context) ??
+    inferObjectSpreadMapType(structuralExpression, context) ??
     synthesizeObjectLiteralType(structuralExpression, context);
   if (target?.kind === 'anonymous') registerInferredObjectType(target, context);
   const resolved = resolveSemanticType(target, context);
@@ -7155,22 +7156,40 @@ function emitObject(
   if (resolved?.kind === 'named' && resolved.name === 'RustMap') {
     const keyType = resolved.arguments[0] ?? primitive('String');
     const valueType = resolved.arguments[1] ?? { kind: 'dynamic' };
-    const entries: string[] = [];
-    const spreads: string[] = [];
-    for (const property of expression.properties) {
+    if (!expression.properties.some((property) => property.kind === 'spread')) {
+      const entries = expression.properties.map((property) => {
+        if (property.kind === 'spread') throw new RustEmissionError('unreachable record spread');
+        const key =
+          property.kind === 'computedProperty'
+            ? emitExpression(property.key, context, keyType)
+            : emitExpression({ kind: 'literal', value: property.name }, context, keyType);
+        return `__flight_record.push((${key}, ${emitExpression(property.value, context, valueType)}));`;
+      });
+      const value = `{ let mut __flight_record = Vec::new(); ${entries.join(' ')} __flight_record }`;
+      return nullable ? `Some(${value})` : value;
+    }
+    const propertyContexts = contextsPreservingNamesUsedLater(expression.properties, context);
+    const operations: string[] = [];
+    for (const [index, property] of expression.properties.entries()) {
+      const propertyContext = propertyContexts[index] ?? context;
       if (property.kind === 'spread') {
-        spreads.push(
-          `__flight_record.extend(${parenthesize(emitExpression(property.expression, context, target))}.iter().cloned());`,
+        const spread = `__flight_spread_${String(index)}`;
+        operations.push(
+          `let ${spread} = ${emitExpression(property.expression, propertyContext, target)}; for (__flight_key, __flight_value) in ${spread}.iter().cloned() { if let Some((_, __flight_existing)) = __flight_record.iter_mut().find(|(key, _)| key == &__flight_key) { *__flight_existing = __flight_value; } else { __flight_record.push((__flight_key, __flight_value)); } }`,
         );
         continue;
       }
       const key =
         property.kind === 'computedProperty'
-          ? emitExpression(property.key, context, keyType)
-          : emitExpression({ kind: 'literal', value: property.name }, context, keyType);
-      entries.push(`__flight_record.push((${key}, ${emitExpression(property.value, context, valueType)}));`);
+          ? emitExpression(property.key, propertyContext, keyType)
+          : emitExpression({ kind: 'literal', value: property.name }, propertyContext, keyType);
+      const keyName = `__flight_key_${String(index)}`;
+      const valueName = `__flight_value_${String(index)}`;
+      operations.push(
+        `let ${keyName} = ${key}; let ${valueName} = ${emitExpression(property.value, propertyContext, valueType)}; if let Some((_, __flight_existing)) = __flight_record.iter_mut().find(|(key, _)| key == &${keyName}) { *__flight_existing = ${valueName}; } else { __flight_record.push((${keyName}, ${valueName})); }`,
+      );
     }
-    const value = `{ let mut __flight_record = Vec::new(); ${[...entries, ...spreads].join(' ')} __flight_record }`;
+    const value = `{ let mut __flight_record = Vec::new(); ${operations.join(' ')} __flight_record }`;
     return nullable ? `Some(${value})` : value;
   }
   if (expression.properties.length === 0 && (!target || resolved?.kind === 'dynamic')) {
@@ -7569,7 +7588,48 @@ function inferContextualObjectType(
   if (contextual) return contextual;
   const semantic = inferNamedStructuralObjectType(expression, context);
   if (semantic) return semantic;
+  const map = inferObjectSpreadMapType(expression, context);
+  if (map) return map;
   return synthesizeObjectLiteralType(expression, context);
+}
+
+function inferObjectSpreadMapType(
+  expression: Extract<IrExpression, { kind: 'object' }>,
+  context: EmitContext,
+): Extract<IrType, { kind: 'named' }> | undefined {
+  const spreadTypes = expression.properties.flatMap((property) => {
+    if (property.kind !== 'spread') return [];
+    const type = inferIrExpressionType(property.expression, context);
+    const resolved = resolveSemanticType(type, context) ?? type;
+    return resolved?.kind === 'named' && resolved.name === 'RustMap' ? [resolved] : [];
+  });
+  const spreadCount = expression.properties.filter((property) => property.kind === 'spread').length;
+  const target = spreadTypes[0];
+  if (!target || spreadTypes.length !== spreadCount) return undefined;
+  if (!spreadTypes.every((type) => semanticTypesEqual(type, target, context))) return undefined;
+
+  const keyType = target.arguments[0] ?? primitive('String');
+  const valueType = target.arguments[1] ?? { kind: 'dynamic' as const };
+  const resolvedKey = resolveSemanticType(keyType, context) ?? keyType;
+  const resolvedValue = resolveSemanticType(valueType, context) ?? valueType;
+  for (const property of expression.properties) {
+    if (property.kind === 'spread') continue;
+    if (property.kind === 'computedProperty') {
+      const actualKey = inferIrExpressionType(property.key, context);
+      if (!actualKey || (resolvedKey.kind !== 'dynamic' && !semanticTypesEqual(actualKey, keyType, context))) {
+        return undefined;
+      }
+    } else if (
+      !(resolvedKey.kind === 'dynamic' || (resolvedKey.kind === 'primitive' && resolvedKey.name === 'String'))
+    ) {
+      return undefined;
+    }
+    const actualValue = inferIrExpressionType(property.value, context);
+    if (!actualValue || (resolvedValue.kind !== 'dynamic' && !semanticTypesEqual(actualValue, valueType, context))) {
+      return undefined;
+    }
+  }
+  return target;
 }
 
 function selectDeclaredObjectType(
@@ -7774,7 +7834,7 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
     case 'template':
       return primitive('String');
     case 'object':
-      return synthesizeObjectLiteralType(expression, context);
+      return inferObjectSpreadMapType(expression, context) ?? synthesizeObjectLiteralType(expression, context);
     case 'array':
       return expression.elements[0]
         ? {

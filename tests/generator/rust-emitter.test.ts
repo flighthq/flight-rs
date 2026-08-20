@@ -1473,6 +1473,55 @@ describe('Rust emission', () => {
     ).not.toThrow();
   });
 
+  it('resolves named union aliases before emitting typeof matches', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/log/src/typeof-union.ts',
+      `
+        export type LogData = string | Readonly<Record<string, unknown>>;
+        export function isLogString(data: LogData): boolean {
+          return typeof data === 'string';
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/log', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/log/src/typeof-union.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain(
+      'match &(data) { crate::FlightUnion2::A(_) => "string", crate::FlightUnion2::B(value) => "object" }',
+    );
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-typeof-union-'));
+    const binary = path.join(fixture, 'typeof-union');
+    writeFileSync(path.join(fixture, 'generated.rs'), output);
+    writeFileSync(
+      path.join(fixture, 'main.rs'),
+      [
+        '#[derive(Clone)]',
+        'pub enum OpaqueHostValue { String(String) }',
+        '#[derive(Clone)]',
+        'pub enum FlightUnion2<A, B> { A(A), B(B) }',
+        'mod generated;',
+        'fn main() {',
+        '  let text = FlightUnion2::A("hello".to_owned());',
+        '  let record = FlightUnion2::B(vec![("message".to_owned(), OpaqueHostValue::String("hello".to_owned()))]);',
+        '  assert!(generated::is_log_string(&text));',
+        '  assert!(!generated::is_log_string(&record));',
+        '}',
+        '',
+      ].join('\n'),
+    );
+    expect(() => compileRustExecutable('main.rs', binary, fixture)).not.toThrow();
+    expect(() => execFileSync(binary, [], { cwd: fixture, stdio: 'pipe' })).not.toThrow();
+  });
+
   it('preserves for and do-while updates when continue is lowered', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/math/src/loops.ts',
@@ -1791,6 +1840,69 @@ describe('Rust emission', () => {
         stdio: 'pipe',
       }),
     ).not.toThrow();
+  });
+
+  it('infers spread records and preserves ordered JavaScript overwrite semantics', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/log/src/ordered-record-spreads.ts',
+      `
+        export function mergeRecords(
+          parent: Readonly<Record<string, unknown>>,
+          fields: Readonly<Record<string, unknown>>,
+        ): Record<string, unknown> {
+          const merged = {
+            first: 'first',
+            ...parent,
+            middle: 'middle',
+            ...fields,
+            shared: 'final',
+          };
+          return merged;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/log', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/log/src/ordered-record-spreads.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('let __flight_spread_1 = (*parent).clone();');
+    expect(output).toContain('let __flight_spread_3 = (*fields).clone();');
+    expect(output).toContain('__flight_record.iter_mut().find');
+    expect(output.indexOf('let __flight_key_0')).toBeLessThan(output.indexOf('let __flight_spread_1'));
+    expect(output.indexOf('let __flight_spread_1')).toBeLessThan(output.indexOf('let __flight_key_2'));
+    expect(output.indexOf('let __flight_key_2')).toBeLessThan(output.indexOf('let __flight_spread_3'));
+    expect(output.indexOf('let __flight_spread_3')).toBeLessThan(output.indexOf('let __flight_key_4'));
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-record-spreads-'));
+    const binary = path.join(fixture, 'record-spreads');
+    writeFileSync(path.join(fixture, 'generated.rs'), output);
+    writeFileSync(
+      path.join(fixture, 'main.rs'),
+      [
+        '#[derive(Clone, Debug, PartialEq)]',
+        'pub enum OpaqueHostValue { String(String) }',
+        'mod generated;',
+        'fn value(text: &str) -> OpaqueHostValue { OpaqueHostValue::String(text.to_owned()) }',
+        'fn main() {',
+        '  let parent = vec![("shared".to_owned(), value("parent")), ("parent".to_owned(), value("parent"))];',
+        '  let fields = vec![("shared".to_owned(), value("child")), ("child".to_owned(), value("child"))];',
+        '  let merged = generated::merge_records(&parent, &fields);',
+        '  let keys: Vec<&str> = merged.iter().map(|(key, _)| key.as_str()).collect();',
+        '  assert_eq!(keys, vec!["first", "shared", "parent", "middle", "child"]);',
+        '  assert_eq!(merged.iter().find(|(key, _)| key == "shared").map(|(_, value)| value), Some(&value("final")));',
+        '}',
+        '',
+      ].join('\n'),
+    );
+    expect(() => compileRustExecutable('main.rs', binary, fixture)).not.toThrow();
+    expect(() => execFileSync(binary, [], { cwd: fixture, stdio: 'pipe' })).not.toThrow();
   });
 
   it('preserves a local across ordered fields with equivalent Rust alias types', () => {
