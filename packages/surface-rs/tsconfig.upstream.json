@@ -1,0 +1,29 @@
+// Typechecks the facade against the REAL pinned upstream sources instead of the
+// local `src/upstream-contract.d.ts` shim. The shim exists so `tsc -b` can build
+// this package standalone in a filtered checkout; it is a hand-written subset and
+// nothing else proves it still matches upstream. This configuration closes that
+// gap: if the shim drifts from `upstream/packages/*`, the facade stops compiling
+// here even though the standalone build still succeeds.
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "noEmit": true,
+    "sourceMap": false,
+    "rootDir": "../..",
+    "baseUrl": "../..",
+    "paths": {
+      "@flighthq/*/contract": ["upstream/packages/*/src/contract.ts"],
+      "@flighthq/*": ["upstream/packages/*/src/index.ts"]
+    },
+    // `@webgpu/types` mirrors the devDependency upstream's own `@flighthq/types`
+    // declares; without it upstream's `Wgpu*.ts` sources cannot resolve `GPU*`
+    // and flood this check with diagnostics that are not about the facade.
+    "types": ["node", "vitest/globals", "@webgpu/types"],
+    "lib": ["ES2022", "DOM"]
+  },
+  "include": ["src"],
+  "exclude": ["src/upstream-contract.d.ts"]
+}

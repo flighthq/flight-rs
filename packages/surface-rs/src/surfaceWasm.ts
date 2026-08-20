@@ -1,8 +1,8 @@
 import { invalidateBitmap } from '@flighthq/bitmap';
-import type { BitmapConvolutionOptions } from '@flighthq/bitmap';
 import type {
   RectangleLike,
   Bitmap,
+  BitmapConvolutionOptions,
   BitmapFingerprint,
   BitmapHistogram,
   BitmapMismatch,

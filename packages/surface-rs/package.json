@@ -1,6 +1,13 @@
 {
   "name": "@flighthq/surface-rs",
-  "version": "1.0.0",
+  "version": "0.3.0",
+  "author": "Joshua Granick and other contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/flighthq/flight-rs.git",
+    "directory": "packages/surface-rs"
+  },
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,8 +35,8 @@
     "clean:dist": "tsx ../../scripts/clean-package-dist.ts"
   },
   "dependencies": {
-    "@flighthq/bitmap": "*",
-    "@flighthq/types": "*"
+    "@flighthq/bitmap": "^0.3.0",
+    "@flighthq/types": "^0.3.0"
   },
   "devDependencies": {
     "typescript": "^5.3.0"
