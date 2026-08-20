@@ -1243,7 +1243,9 @@ function reportTaskConstruction(construction: IrTaskConstruction, packageName: s
       taskCompositionReason(construction.kind) ??
       (irTypeContainsDynamic(construction.output)
         ? 'Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.'
-        : PORTABLE_TASK_RUST_LOWERING_REASON),
+        : construction.kind === 'join-all'
+          ? 'taskAll Rust lowering is implemented, but its containing source did not emit.'
+          : PORTABLE_TASK_RUST_LOWERING_REASON),
     source: construction.origin.source,
   };
 }
@@ -1254,13 +1256,12 @@ function taskCompositionReason(kind: IrTaskConstructionKind): string | undefined
       return 'taskCatch Rust lowering is reserved for Pass 27 Stage 4.';
     case 'finally':
       return 'taskFinally Rust lowering is reserved for Pass 27 Stage 4.';
-    case 'join-all':
-      return 'taskAll Rust lowering is reserved for Pass 27 Stage 4.';
     case 'join-all-settled':
       return 'taskAllSettled Rust lowering is reserved for Pass 27 Stage 4.';
     case 'then':
       return 'taskThen Rust lowering is reserved for Pass 27 Stage 4.';
     case 'async-scope':
+    case 'join-all':
     case 'ready':
     case 'reject':
       return undefined;
@@ -1274,7 +1275,10 @@ function markExecutableTaskConstructions(
   const executableOrigins = new Set<string>();
   for (const construction of constructions) {
     if (
-      (construction.kind === 'async-scope' || construction.kind === 'ready' || construction.kind === 'reject') &&
+      (construction.kind === 'async-scope' ||
+        construction.kind === 'join-all' ||
+        construction.kind === 'ready' ||
+        construction.kind === 'reject') &&
       !irTypeContainsDynamic(construction.output)
     ) {
       construction.disposition = 'portable-executable';

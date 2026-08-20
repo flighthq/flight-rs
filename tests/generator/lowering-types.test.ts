@@ -230,6 +230,76 @@ describe('configured type lowering exceptions', () => {
     }
   });
 
+  it('lowers Promise.all to an explicit target-neutral taskAll expression', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/permissions/src/task-all.ts',
+      `
+        export function gather(value: string): Promise<string[]> {
+          return Promise.all([Promise.resolve(value), Promise.resolve('tail')]);
+        }
+        export function gatherMapped(values: string[]): Promise<string[]> {
+          return Promise.all(values.map((value) => Promise.resolve(value)));
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/permissions', '/workspace');
+    const declaration = lowered.declarations.find((item) => item.kind === 'function' && item.name === 'gather');
+    const mapped = lowered.declarations.find((item) => item.kind === 'function' && item.name === 'gatherMapped');
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(declaration).toMatchObject({
+      body: [
+        {
+          expression: {
+            kind: 'taskAll',
+            origin: { lexicalPath: expect.stringContaining('gather.join-all') },
+            output: { element: { kind: 'primitive', name: 'String' }, kind: 'array' },
+            tasks: { kind: 'array' },
+          },
+          kind: 'return',
+        },
+      ],
+      returns: {
+        kind: 'task',
+        output: { element: { kind: 'primitive', name: 'String' }, kind: 'array' },
+      },
+    });
+    expect(mapped).toMatchObject({
+      body: [
+        {
+          expression: {
+            kind: 'taskAll',
+            output: { element: { kind: 'primitive', name: 'String' }, kind: 'array' },
+            tasks: {
+              arguments: [
+                {
+                  expression: {
+                    kind: 'taskReady',
+                    output: { kind: 'primitive', name: 'String' },
+                  },
+                  kind: 'function',
+                  parameters: [{ type: { kind: 'primitive', name: 'String' } }],
+                },
+              ],
+              kind: 'call',
+            },
+          },
+          kind: 'return',
+        },
+      ],
+    });
+    expect(lowered.taskConstructions.map((construction) => construction.kind)).toEqual([
+      'join-all',
+      'ready',
+      'ready',
+      'join-all',
+      'ready',
+    ]);
+  });
+
   it('keeps a source-declared Promise nominal instead of treating its name as the global task type', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/types/src/promise.ts',

@@ -138,6 +138,7 @@ export type IrExpression =
       optional?: boolean | undefined;
     }
   | { flags: string; kind: 'regexp'; pattern: string }
+  | { kind: 'taskAll'; origin: IrTaskOrigin; output: IrType; tasks: IrExpression }
   | { kind: 'taskReady'; origin: IrTaskOrigin; output: IrType; value?: IrExpression | undefined }
   | { kind: 'taskReject'; origin: IrTaskOrigin; output: IrType; rejection: IrExpression }
   | { kind: 'template'; parts: Array<IrExpression | string> }

@@ -571,9 +571,36 @@ function contextualFunctionType(
     return recoveryObjectFieldType(node.parent, propertyName(node.name, context), context);
   }
   if (ts.isArrowFunction(node) || ts.isFunctionExpression(node)) {
+    const arrayMap = contextualArrayMapCallbackType(node, context);
+    if (arrayMap) return arrayMap;
     return contextualExpressionType(node, context, new Set());
   }
   return undefined;
+}
+
+function contextualArrayMapCallbackType(
+  node: ts.ArrowFunction | ts.FunctionExpression,
+  context: LoweringContext,
+): IrType | undefined {
+  const call = node.parent;
+  if (
+    !ts.isCallExpression(call) ||
+    call.arguments[0] !== node ||
+    !ts.isPropertyAccessExpression(call.expression) ||
+    call.expression.name.text !== 'map'
+  ) {
+    return undefined;
+  }
+  const input = inferRecoveryExpressionType(call.expression.expression, context, new Set());
+  const resolvedInput = input ? resolveRecoveryType(input, context) : undefined;
+  const output = contextualExpressionType(call, context, new Set());
+  const resolvedOutput = output ? resolveRecoveryType(output, context) : undefined;
+  if (resolvedInput?.kind !== 'array' || resolvedOutput?.kind !== 'array') return undefined;
+  return {
+    kind: 'function',
+    parameters: [resolvedInput.element, { kind: 'primitive', name: 'Float' }, resolvedInput],
+    returns: resolvedOutput.element,
+  };
 }
 
 function contextualExpressionType(
@@ -609,7 +636,16 @@ function contextualExpressionType(
   }
   if (ts.isCallExpression(parent)) {
     const index = parent.arguments.indexOf(node);
-    if (index >= 0) return recoveryCallParameterType(parent, index, context);
+    if (index >= 0) {
+      if (globalPromiseMethod(parent, context) === 'all' && index === 0) {
+        const contextual = contextualExpressionType(parent, context, visited);
+        const output = contextual?.kind === 'task' ? contextual.output : contextual;
+        if (output?.kind === 'array') {
+          return { element: { kind: 'task', output: output.element }, kind: 'array' };
+        }
+      }
+      return recoveryCallParameterType(parent, index, context);
+    }
   }
   return undefined;
 }
@@ -975,7 +1011,7 @@ function inferRecoveryIdentifierType(
           ? lowerType(parameter.type, context)
           : parameter.initializer
             ? inferRecoveryExpressionType(parameter.initializer, context, new Set(visited))
-            : undefined;
+            : contextualParameterType(parameter, context);
       }
     }
   }
@@ -1506,8 +1542,20 @@ function lowerParameter(node: ts.ParameterDeclaration, context: LoweringContext)
     rest: Boolean(node.dotDotDotToken),
     type: node.type
       ? lowerType(node.type, context)
-      : (inferParameterTypeFromInitializer(node.initializer) ?? { kind: 'dynamic' }),
+      : (contextualParameterType(node, context) ??
+        inferParameterTypeFromInitializer(node.initializer) ?? { kind: 'dynamic' }),
   };
+}
+
+function contextualParameterType(node: ts.ParameterDeclaration, context: LoweringContext): IrType | undefined {
+  const owner = node.parent;
+  if (!ts.isArrowFunction(owner) && !ts.isFunctionExpression(owner) && !ts.isMethodDeclaration(owner)) {
+    return undefined;
+  }
+  const contextual = contextualFunctionType(owner, context);
+  const resolved = contextual ? resolveRecoveryType(contextual, context) : undefined;
+  const index = owner.parameters.indexOf(node);
+  return resolved?.kind === 'function' && index >= 0 ? resolved.parameters[index] : undefined;
 }
 
 function inferParameterTypeFromInitializer(node: ts.Expression | undefined): IrType | undefined {
@@ -2766,12 +2814,19 @@ function lowerExpression(node: ts.Expression, context: LoweringContext): IrExpre
       context.taskConstructions.push({ kind: 'reject', origin, output });
       return { kind: 'taskReject', origin, output, rejection: lowerExpression(rejection, context) };
     }
-    if (promiseMethod === 'all' || promiseMethod === 'allSettled') {
+    if (promiseMethod === 'all') {
+      const tasks = node.arguments[0];
+      if (!tasks) unsupported(node, context, 'Promise.all without a task collection');
       const output = taskFactoryOutput(node, undefined, context, false);
-      const kind = promiseMethod === 'all' ? 'join-all' : 'join-all-settled';
+      const origin = taskExpressionOrigin(node, context, 'join-all');
+      context.taskConstructions.push({ kind: 'join-all', origin, output });
+      return { kind: 'taskAll', origin, output, tasks: lowerExpression(tasks, context) };
+    }
+    if (promiseMethod === 'allSettled') {
+      const output = taskFactoryOutput(node, undefined, context, false);
       context.taskConstructions.push({
-        kind,
-        origin: taskExpressionOrigin(node, context, kind),
+        kind: 'join-all-settled',
+        origin: taskExpressionOrigin(node, context, 'join-all-settled'),
         output,
       });
     } else if (

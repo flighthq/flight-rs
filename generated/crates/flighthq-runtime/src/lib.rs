@@ -2,7 +2,7 @@
 #![forbid(unsafe_code)]
 
 use std::collections::VecDeque;
-use std::future::Future;
+use std::future::{Future, poll_fn};
 use std::pin::Pin;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex, OnceLock};
@@ -133,6 +133,48 @@ where
             shared,
             yielded: false,
         }
+    }
+
+    /// Joins a homogeneous task collection without serializing observation by input order.
+    /// Input tasks have already started eagerly; polling every unsettled handle in each turn
+    /// preserves result order while allowing any observed error to settle the join immediately.
+    pub fn all(tasks: Vec<Self>, origin: FlightTaskOrigin) -> FlightTask<Vec<T>> {
+        let mut tasks = tasks.into_iter().map(Some).collect::<Vec<_>>();
+        let mut outputs = vec![None; tasks.len()];
+        let mut remaining = tasks.len();
+        FlightTask::start(
+            async move {
+                poll_fn(move |context| {
+                    for index in 0..tasks.len() {
+                        let Some(task) = tasks[index].as_mut() else {
+                            continue;
+                        };
+                        match Pin::new(task).poll(context) {
+                            Poll::Ready(Ok(value)) => {
+                                outputs[index] = Some(value);
+                                tasks[index] = None;
+                                remaining -= 1;
+                            }
+                            Poll::Ready(Err(error)) => return Poll::Ready(Err(error)),
+                            Poll::Pending => {}
+                        }
+                    }
+                    if remaining != 0 {
+                        return Poll::Pending;
+                    }
+                    Poll::Ready(Ok(outputs
+                        .iter_mut()
+                        .map(|output| {
+                            output
+                                .take()
+                                .expect("completed taskAll slot must contain output")
+                        })
+                        .collect()))
+                })
+                .await
+            },
+            origin,
+        )
     }
 }
 
@@ -489,6 +531,49 @@ mod tests {
             scheduler.block_on(task),
             Err(FlightTaskError::Rejection(FlightRejection::String(
                 String::from("nope")
+            )))
+        );
+    }
+
+    #[test]
+    fn task_all_preserves_input_order_across_different_completion_turns() {
+        let scheduler = install_deterministic_flight_task_scheduler();
+        assert_eq!(
+            scheduler.block_on(FlightTask::<String>::all(Vec::new(), ORIGIN)),
+            Ok(Vec::new())
+        );
+        let slow_first = FlightTask::start(
+            async move {
+                flight_task_yield().await;
+                Ok(String::from("first"))
+            },
+            ORIGIN,
+        );
+        let ready_second = FlightTask::ready(String::from("second"), ORIGIN);
+        assert_eq!(
+            scheduler.block_on(FlightTask::all(vec![slow_first, ready_second], ORIGIN)),
+            Ok(vec![String::from("first"), String::from("second")])
+        );
+    }
+
+    #[test]
+    fn task_all_observes_a_later_error_without_waiting_for_an_earlier_slot() {
+        let scheduler = install_deterministic_flight_task_scheduler();
+        let never = FlightTask::start(
+            async move {
+                std::future::pending::<()>().await;
+                Ok(1_u32)
+            },
+            ORIGIN,
+        );
+        let rejected = FlightTask::<u32>::reject(
+            FlightRejection::String(String::from("later slot rejected")),
+            ORIGIN,
+        );
+        assert_eq!(
+            scheduler.block_on(FlightTask::all(vec![never, rejected], ORIGIN)),
+            Err(FlightTaskError::Rejection(FlightRejection::String(
+                String::from("later slot rejected")
             )))
         );
     }

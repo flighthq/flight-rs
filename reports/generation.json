@@ -6732,7 +6732,7 @@
               "kind": "array"
             },
             "package": "@flighthq/permissions",
-            "reason": "taskAll Rust lowering is reserved for Pass 27 Stage 4.",
+            "reason": "taskAll Rust lowering is implemented, but its containing source did not emit.",
             "source": "upstream/packages/permissions/src/permission.ts"
           },
           {
@@ -7110,7 +7110,7 @@
             },
             {
               "constructions": 1,
-              "reason": "taskAll Rust lowering is reserved for Pass 27 Stage 4."
+              "reason": "taskAll Rust lowering is implemented, but its containing source did not emit."
             }
           ],
           "unsupportedConstructions": 9,
@@ -7560,7 +7560,7 @@
               "kind": "dynamic"
             },
             "package": "@flighthq/scene2d-resources",
-            "reason": "taskAll Rust lowering is reserved for Pass 27 Stage 4.",
+            "reason": "Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.",
             "source": "upstream/packages/scene2d-resources/src/loadScene2DAudioResources.ts"
           },
           {
@@ -7628,7 +7628,7 @@
               "kind": "dynamic"
             },
             "package": "@flighthq/scene2d-resources",
-            "reason": "taskAll Rust lowering is reserved for Pass 27 Stage 4.",
+            "reason": "Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.",
             "source": "upstream/packages/scene2d-resources/src/loadScene2DImageResources.ts"
           },
           {
@@ -7877,7 +7877,7 @@
             },
             {
               "constructions": 2,
-              "reason": "taskAll Rust lowering is reserved for Pass 27 Stage 4."
+              "reason": "Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue."
             }
           ],
           "unsupportedConstructions": 9,
@@ -7993,7 +7993,7 @@
               "kind": "dynamic"
             },
             "package": "@flighthq/scene3d-resources",
-            "reason": "taskAll Rust lowering is reserved for Pass 27 Stage 4.",
+            "reason": "Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.",
             "source": "upstream/packages/scene3d-resources/src/gltfLoad.ts"
           },
           {
@@ -8681,7 +8681,7 @@
             },
             {
               "constructions": 1,
-              "reason": "taskAll Rust lowering is reserved for Pass 27 Stage 4."
+              "reason": "Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue."
             },
             {
               "constructions": 2,
@@ -10142,12 +10142,12 @@
           "reason": "Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution."
         },
         {
-          "constructions": 10,
+          "constructions": 13,
           "reason": "Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue."
         },
         {
-          "constructions": 4,
-          "reason": "taskAll Rust lowering is reserved for Pass 27 Stage 4."
+          "constructions": 1,
+          "reason": "taskAll Rust lowering is implemented, but its containing source did not emit."
         },
         {
           "constructions": 3,
@@ -23935,7 +23935,7 @@
           ],
           "declarations": 1,
           "module": "glyph_source",
-          "outputSha256": "sha256:5076c99d905914bf557bd530bcb6109f6208088907e475a0a09f65d7145e5f0b",
+          "outputSha256": "sha256:6133f79fdfc00e59e68c06a3961081da510610c7f49abf0f134dc2074b72bb30",
           "source": "upstream/packages/glyphatlas/src/glyphSource.ts",
           "usesOpaqueHostValues": false
         },
@@ -32023,7 +32023,7 @@
             "kind": "array"
           },
           "package": "@flighthq/permissions",
-          "reason": "taskAll Rust lowering is reserved for Pass 27 Stage 4.",
+          "reason": "taskAll Rust lowering is implemented, but its containing source did not emit.",
           "source": "upstream/packages/permissions/src/permission.ts"
         },
         {
@@ -37586,7 +37586,7 @@
             "kind": "dynamic"
           },
           "package": "@flighthq/scene2d-resources",
-          "reason": "taskAll Rust lowering is reserved for Pass 27 Stage 4.",
+          "reason": "Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.",
           "source": "upstream/packages/scene2d-resources/src/loadScene2DAudioResources.ts"
         },
         {
@@ -37654,7 +37654,7 @@
             "kind": "dynamic"
           },
           "package": "@flighthq/scene2d-resources",
-          "reason": "taskAll Rust lowering is reserved for Pass 27 Stage 4.",
+          "reason": "Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.",
           "source": "upstream/packages/scene2d-resources/src/loadScene2DImageResources.ts"
         },
         {
@@ -37727,14 +37727,14 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:21dfa92499b789bba90db89e6d60e05d684604400016ada509cd1c569442570c",
-          "reason": "loadScene2DAudioResources: upstream/packages/scene2d-resources/src/loadScene2DAudioResources.ts:27:21: await value type is not recovered",
+          "reason": "loadScene2DAudioResources: upstream/packages/scene2d-resources/src/loadScene2DAudioResources.ts:27:27: taskAll output type is not recovered",
           "source": "upstream/packages/scene2d-resources/src/loadScene2DAudioResources.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:cb203aeff15ff4bee3ffcbce85d4d6e0e8455ff38ac3b191c69d7ba367d1d362",
-          "reason": "loadScene2DImageResources: upstream/packages/scene2d-resources/src/loadScene2DImageResources.ts:27:18: await value type is not recovered",
+          "reason": "loadScene2DImageResources: upstream/packages/scene2d-resources/src/loadScene2DImageResources.ts:27:24: taskAll output type is not recovered",
           "source": "upstream/packages/scene2d-resources/src/loadScene2DImageResources.ts",
           "stage": "emission"
         },
@@ -41342,7 +41342,7 @@
             "kind": "dynamic"
           },
           "package": "@flighthq/scene3d-resources",
-          "reason": "taskAll Rust lowering is reserved for Pass 27 Stage 4.",
+          "reason": "Task output type is not recovered; portable tasks may not erase their output to OpaqueHostValue.",
           "source": "upstream/packages/scene3d-resources/src/gltfLoad.ts"
         },
         {
@@ -42405,7 +42405,7 @@
           ],
           "declarations": 13,
           "module": "wgpu_classic_prelude",
-          "outputSha256": "sha256:d984e82d87b3b09b7fe75ec250d19508b966ae2b5ed0cfb159a6b2447a59489c",
+          "outputSha256": "sha256:cdf3ef744f3f2d95be70ab8c263c775a17eca9efa7b1dbb5cbc51aae52a3634d",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuClassicPrelude.ts",
           "usesOpaqueHostValues": true
         },
@@ -42434,7 +42434,7 @@
           ],
           "declarations": 9,
           "module": "wgpu_debug_prelude",
-          "outputSha256": "sha256:60fcf2928437b6d6d1a1398c9a6ea20b772448fe8b26437c1c31a5344222df7c",
+          "outputSha256": "sha256:4019e4c4b9add1d67ab10d99959e329d49030bc52afcbe9c430eb5f8b29aeb38",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuDebugPrelude.ts",
           "usesOpaqueHostValues": true
         },
@@ -42517,7 +42517,7 @@
           ],
           "declarations": 8,
           "module": "wgpu_matcap_prelude",
-          "outputSha256": "sha256:8001dea6f691dd571d7d9dbcdd25b0c0d3c7c1d74cd71062d0f21f03d94c50d2",
+          "outputSha256": "sha256:32113cbc22b6815ab8479f3c4a3752fb941ebbb4476379b0ea18e9801f8db852",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuMatcapPrelude.ts",
           "usesOpaqueHostValues": true
         },
@@ -42593,7 +42593,7 @@
           ],
           "declarations": 2,
           "module": "wgpu_pbr_pipeline_cache",
-          "outputSha256": "sha256:6431dcfbd6f76939aa9fb3e19d017ee54f1db50a889f9d28ff0910550a159dcd",
+          "outputSha256": "sha256:afc12ca2abe8788db8dc338f023f37b5366f8034aecdbf0b88bd53aa26060c02",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuPbrPipelineCache.ts",
           "usesOpaqueHostValues": true
         },
@@ -42695,7 +42695,7 @@
           ],
           "declarations": 31,
           "module": "wgpu_shaded_prelude",
-          "outputSha256": "sha256:3ab945d8744782e6c6950b317b99b1d6110779e0c3967568ecf3602fcdfbc92f",
+          "outputSha256": "sha256:df846055823ac745150445667a11ae577a3c5bf00dede55187e4e7e8fbd6f543",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuShadedPrelude.ts",
           "usesOpaqueHostValues": true
         },
@@ -42752,7 +42752,7 @@
           ],
           "declarations": 8,
           "module": "wgpu_toon_prelude",
-          "outputSha256": "sha256:0673b5a2b535608984bf98717be25a861fd96f7c5d4a9cd34353519add81fb31",
+          "outputSha256": "sha256:d4a5a6f9e81eef496d2e79278cfd022116973de24ead86fea73980ee04d8e15e",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuToonPrelude.ts",
           "usesOpaqueHostValues": true
         },
@@ -42773,7 +42773,7 @@
           ],
           "declarations": 12,
           "module": "wgpu_unlit_prelude",
-          "outputSha256": "sha256:3df139fe687e961d53f1452eaa3f43fd896428e525b0de974c607c90e385b50d",
+          "outputSha256": "sha256:efcf009432e05d11da3a8148ee115059512dee5d167dea4efc5a0b2da0d47031",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuUnlitPrelude.ts",
           "usesOpaqueHostValues": true
         },
@@ -42789,7 +42789,7 @@
           ],
           "declarations": 7,
           "module": "wgpu_wireframe_prelude",
-          "outputSha256": "sha256:affd57ab7b6439d53da53281b56719b9fd3984744ad4048b10b485a187233b60",
+          "outputSha256": "sha256:8f5ec33d1209082bd5f674e40a14ca80aa9bd03f6db638d477b094a860640bfd",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuWireframePrelude.ts",
           "usesOpaqueHostValues": true
         },

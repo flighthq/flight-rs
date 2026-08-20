@@ -848,6 +848,10 @@ function inferStaticExpressionType(expression: IrExpression): IrType | undefined
       return isSymbolConstruction(expression) ? { arguments: [], kind: 'named', name: 'FlightSymbol' } : undefined;
     case 'hostConstruct':
       return { arguments: [], kind: 'named', name: expression.resultType };
+    case 'taskAll':
+    case 'taskReady':
+    case 'taskReject':
+      return { kind: 'task', output: expression.output };
     case 'new': {
       const name = runtimeConstructorType(expression.callee);
       if (name === 'Map' || name === 'WeakMap') {
@@ -1903,6 +1907,43 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
       throw new RustEmissionError('spread Rust lowering is not implemented');
     case 'template':
       return emitTemplate(expression, context);
+    case 'taskAll': {
+      const expectedTask = expectedType?.kind === 'task' ? expectedType : undefined;
+      const output = expectedTask?.output ?? expression.output;
+      if (typeContainsDynamic(output)) {
+        throw new RustEmissionError(
+          `${expression.origin.source}:${String(expression.origin.line)}:${String(expression.origin.column)}: taskAll output type is not recovered`,
+        );
+      }
+      const resolvedOutput = resolveSemanticType(output, context) ?? output;
+      if (resolvedOutput.kind !== 'array') {
+        throw new RustEmissionError(
+          `${expression.origin.source}:${String(expression.origin.line)}:${String(expression.origin.column)}: taskAll currently requires a homogeneous array output`,
+        );
+      }
+      const collection = resolveSemanticType(inferIrExpressionType(expression.tasks, context), context);
+      const inputTask = collection?.kind === 'array' ? promiseType(collection.element, context) : undefined;
+      const resolvedInput = inputTask
+        ? (resolveSemanticType(inputTask.output, context) ?? inputTask.output)
+        : undefined;
+      const resolvedElement = resolveSemanticType(resolvedOutput.element, context) ?? resolvedOutput.element;
+      const literalInputs =
+        expression.tasks.kind === 'array'
+          ? expression.tasks.elements.every((task) =>
+              Boolean(promiseType(inferIrExpressionType(task, context), context)),
+            )
+          : true;
+      if (!inputTask || !resolvedInput || typeKey(resolvedInput) !== typeKey(resolvedElement) || !literalInputs) {
+        throw new RustEmissionError(
+          `${expression.origin.source}:${String(expression.origin.line)}:${String(expression.origin.column)}: taskAll currently requires homogeneous task inputs matching its array output`,
+        );
+      }
+      const tasksType: IrType = {
+        element: { kind: 'task', output: resolvedOutput.element },
+        kind: 'array',
+      };
+      return `crate::FlightTask::all(${emitExpression(expression.tasks, context, tasksType)}, ${emitTaskOrigin(expression.origin)})`;
+    }
     case 'taskReady': {
       const expectedTask = expectedType?.kind === 'task' ? expectedType : undefined;
       const output = expectedTask?.output ?? expression.output;
@@ -7943,6 +7984,7 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
     }
     case 'regexp':
       return { arguments: [], kind: 'named', name: 'FlightRegex' };
+    case 'taskAll':
     case 'taskReady':
     case 'taskReject':
       return { kind: 'task', output: expression.output };

@@ -768,6 +768,92 @@ describe('Rust emission', () => {
     ).toThrow('taskThen Rust lowering is reserved for Pass 27 Stage 4');
   });
 
+  it('emits homogeneous taskAll joins and rejects mixed task/value collections', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/permissions/src/task-all.ts',
+      `
+        export function gather(value: string): Promise<string[]> {
+          return Promise.all([Promise.resolve(value), Promise.resolve('tail')]);
+        }
+        export function gatherMapped(values: string[]): Promise<string[]> {
+          return Promise.all(values.map((value) => Promise.resolve(value)));
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/permissions', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/permissions/src/task-all.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('pub fn gather(value: String) -> crate::FlightTask<Vec<String>>');
+    expect(output).toContain('pub fn gather_mapped(values: &Vec<String>) -> crate::FlightTask<Vec<String>>');
+    expect(output).toContain('crate::FlightTask::all(vec![');
+    expect(output).not.toContain('Promise');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-task-all-'));
+    mkdirSync(path.join(fixture, 'src'), { recursive: true });
+    writeFileSync(path.join(fixture, 'src', 'generated.rs'), output);
+    writeFileSync(
+      path.join(fixture, 'src', 'lib.rs'),
+      [
+        'pub use flighthq_runtime::*;',
+        'mod generated;',
+        'pub use generated::*;',
+        '#[cfg(test)] mod tests {',
+        '  use super::*;',
+        '  #[test] fn generated_task_all_preserves_input_order() {',
+        '    let scheduler = install_deterministic_flight_task_scheduler();',
+        '    assert_eq!(scheduler.block_on(gather(String::from("head"))), Ok(vec![String::from("head"), String::from("tail")]));',
+        '    assert_eq!(scheduler.block_on(gather_mapped(&vec![String::from("first"), String::from("second")])), Ok(vec![String::from("first"), String::from("second")]));',
+        '  }',
+        '}',
+        '',
+      ].join('\n'),
+    );
+    writeFileSync(
+      path.join(fixture, 'Cargo.toml'),
+      [
+        '[package]',
+        'name = "generated-task-all-fixture"',
+        'version = "0.0.0"',
+        'edition = "2024"',
+        '[dependencies]',
+        `flighthq-runtime = { path = ${JSON.stringify(path.join(process.cwd(), 'generated/crates/flighthq-runtime'))} }`,
+        '',
+      ].join('\n'),
+    );
+    expect(() =>
+      execFileSync('cargo', ['test', '--quiet'], {
+        cwd: fixture,
+        env: { ...process.env, CARGO_TARGET_DIR: path.join(fixture, 'target') },
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+
+    const mixed = lowerTypeScriptSource(
+      ts.createSourceFile(
+        '/workspace/upstream/packages/permissions/src/mixed-task-all.ts',
+        `export function mixed(): Promise<string[]> {
+          return Promise.all([Promise.resolve('task'), 'value']);
+        }`,
+        ts.ScriptTarget.Latest,
+        true,
+        ts.ScriptKind.TS,
+      ),
+      '@flighthq/permissions',
+      '/workspace',
+    );
+    expect(() =>
+      emitRustModule({ declarations: mixed.declarations, source: 'mixed-task-all.ts', typeImports: [] }),
+    ).toThrow('taskAll currently requires homogeneous task inputs matching its array output');
+  });
+
   it('represents typed dynamic host tasks without requiring a default output value', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/input/src/hostTask.ts',

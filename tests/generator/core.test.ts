@@ -300,6 +300,11 @@ describe('compiler diagnostic source paths', () => {
     expect(taskConstructions).toHaveLength(225);
     expect(taskConstructions.filter((item) => item.kind === 'ready')).toHaveLength(21);
     expect(
+      report.asyncTasks.summary.unsupportedConstructionReasons.find((item) =>
+        item.reason.startsWith('taskAll Rust lowering is implemented'),
+      )?.constructions,
+    ).toBe(1);
+    expect(
       taskConstructions.every(
         (construction) =>
           construction.package.length > 0 &&
