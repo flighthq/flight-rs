@@ -300,6 +300,44 @@ describe('configured type lowering exceptions', () => {
     ]);
   });
 
+  it('records whether try recovery executes inside a portable task', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/permissions/src/task-try.ts',
+      `
+        export async function recover(): Promise<string> {
+          try {
+            return await Promise.reject<string>('nope');
+          } catch {
+            return 'recovered';
+          }
+        }
+        export function recoverSync(): string {
+          try {
+            throw new Error('nope');
+          } catch {
+            return 'recovered';
+          }
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/permissions', '/workspace');
+    const recover = lowered.declarations.find((item) => item.kind === 'function' && item.name === 'recover');
+    const recoverSync = lowered.declarations.find((item) => item.kind === 'function' && item.name === 'recoverSync');
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(recover).toMatchObject({
+      body: [{ execution: 'portableTask', kind: 'try' }],
+      execution: { kind: 'portableTask' },
+    });
+    expect(recoverSync).toMatchObject({
+      body: [{ execution: 'sync', kind: 'try' }],
+      execution: { kind: 'sync' },
+    });
+  });
+
   it('keeps a source-declared Promise nominal instead of treating its name as the global task type', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/types/src/promise.ts',

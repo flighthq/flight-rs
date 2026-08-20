@@ -1192,12 +1192,15 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
     }
     case 'return':
       if (context.taskOutputType) {
-        if (!statement.expression) return ['return Ok(());'];
+        if (!statement.expression) return [context.captureReturns ? 'return Ok(Some(()));' : 'return Ok(());'];
         const actual = inferIrExpressionType(statement.expression, context);
         const resolved = promiseType(actual, context);
-        return resolved
-          ? [`return ${emitExpression(statement.expression, context, resolved)}.await;`]
-          : [`return Ok(${emitExpression(statement.expression, context, context.taskOutputType)});`];
+        if (resolved) {
+          const task = emitExpression(statement.expression, context, resolved);
+          return [context.captureReturns ? `return ${task}.await.map(Some);` : `return ${task}.await;`];
+        }
+        const value = emitExpression(statement.expression, context, context.taskOutputType);
+        return [context.captureReturns ? `return Ok(Some(${value}));` : `return Ok(${value});`];
       }
       return context.captureReturns
         ? [
@@ -1210,12 +1213,15 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
       return emitSwitchStatement(statement, context);
     case 'throw':
       if (context.taskOutputType) {
-        throw new RustEmissionError('portable task throw/rejection lowering is reserved for Pass 27 Stage 4');
+        return [`return Err(crate::FlightTaskError::Rejection(${emitTaskRejection(statement.expression, context)}));`];
       }
       return [`panic!("{}", ${emitThrowMessage(statement.expression, context)});`];
     case 'try': {
-      if (context.taskOutputType && statement.catchBody) {
-        throw new RustEmissionError('portable task try/catch lowering is reserved for Pass 27 Stage 4');
+      if (statement.execution === 'portableTask') {
+        if (!context.taskOutputType) {
+          throw portableTaskTryError(statement, 'portable task try/catch requires portable task execution');
+        }
+        return emitPortableTaskTryStatement(statement, context);
       }
       if (statement.catchBody) {
         if (
@@ -1295,6 +1301,83 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
       ];
     }
   }
+}
+
+function emitPortableTaskTryStatement(
+  statement: Extract<IrStatement, { kind: 'try' }>,
+  context: EmitContext,
+): string[] {
+  if (!statement.catchBody) {
+    throw portableTaskTryError(statement, 'portable task try/finally lowering is not implemented');
+  }
+  if (statement.catchName) {
+    throw portableTaskTryError(statement, 'portable task catch bindings are not implemented');
+  }
+  if (statement.finallyBody) {
+    throw portableTaskTryError(statement, 'portable task try/catch/finally lowering is not implemented');
+  }
+  if (
+    ['break', 'continue'].some(
+      (kind) =>
+        containsRegionStatementKind(statement.tryBody, kind as IrStatement['kind']) ||
+        containsRegionStatementKind(statement.catchBody!, kind as IrStatement['kind']),
+    )
+  ) {
+    throw portableTaskTryError(statement, 'portable task try/catch with escaping loop control is not implemented');
+  }
+
+  const tryAlwaysReturns = statementAlwaysReturns(statement.tryBody, context);
+  const catchAlwaysReturns = statementAlwaysReturns(statement.catchBody, context);
+  if (tryAlwaysReturns && catchAlwaysReturns) {
+    const tryBody = emitStatement(statement.tryBody, { ...context, captureReturns: false }).join('\n');
+    const catchBody = emitStatement(statement.catchBody, { ...context, captureReturns: false }).join('\n');
+    return [
+      [
+        'return match (async {',
+        indent(tryBody),
+        '}).await {',
+        indent('Ok(__flight_value) => Ok(__flight_value),'),
+        indent(`Err(crate::FlightTaskError::Rejection(_)) => (async {\n${indent(catchBody)}\n}).await,`),
+        indent('Err(__flight_error) => Err(__flight_error),'),
+        '};',
+      ].join('\n'),
+    ];
+  }
+
+  const capturesReturn =
+    containsRegionStatementKind(statement.tryBody, 'return') ||
+    containsRegionStatementKind(statement.catchBody, 'return');
+  const tryContext: EmitContext = { ...context, captureReturns: capturesReturn };
+  const catchContext: EmitContext = { ...context, captureReturns: capturesReturn };
+  const tryBody = emitStatement(statement.tryBody, tryContext).join('\n');
+  const catchBody = emitStatement(statement.catchBody, catchContext).join('\n');
+  const returnType = context.currentReturnType;
+  if (capturesReturn && !returnType) {
+    throw portableTaskTryError(statement, 'portable task try/catch return capture requires an inferred output type');
+  }
+  const regionType = capturesReturn ? `Option<${emitType(returnType!, context)}>` : '()';
+  const fallthrough = `Ok::<${regionType}, crate::FlightTaskError>(${capturesReturn ? 'None' : '()'})`;
+  const caught = [
+    capturesReturn ? `let __flight_try_return: ${regionType} = match (async {` : 'match (async {',
+    indent([tryBody, fallthrough].join('\n')),
+    '}).await {',
+    indent(`Ok(__flight_value) => __flight_value,`),
+    indent(
+      `Err(crate::FlightTaskError::Rejection(_)) => (async {\n${indent(
+        [catchBody, fallthrough].join('\n'),
+      )}\n}).await?,`,
+    ),
+    indent('Err(__flight_error) => return Err(__flight_error),'),
+    '};',
+  ].join('\n');
+  return capturesReturn
+    ? [caught, 'if let Some(__flight_return) = __flight_try_return { return Ok(__flight_return); }']
+    : [caught];
+}
+
+function portableTaskTryError(statement: Extract<IrStatement, { kind: 'try' }>, reason: string): RustEmissionError {
+  const { column, line, source } = statement.origin;
+  return new RustEmissionError(`${source}:${String(line)}:${String(column)}: ${reason}`);
 }
 
 function emitReturnExpression(expression: IrExpression, context: EmitContext): string {
@@ -6649,6 +6732,17 @@ function containsStatementKind(value: unknown, kind: IrStatement['kind']): boole
   if ('kind' in value && value.kind === kind) return true;
   return Object.values(value).some((item) =>
     Array.isArray(item) ? item.some((child) => containsStatementKind(child, kind)) : containsStatementKind(item, kind),
+  );
+}
+
+function containsRegionStatementKind(value: unknown, kind: IrStatement['kind']): boolean {
+  if (!value || typeof value !== 'object') return false;
+  if ('kind' in value && value.kind === 'function') return false;
+  if ('kind' in value && value.kind === kind) return true;
+  return Object.values(value).some((item) =>
+    Array.isArray(item)
+      ? item.some((child) => containsRegionStatementKind(child, kind))
+      : containsRegionStatementKind(item, kind),
   );
 }
 

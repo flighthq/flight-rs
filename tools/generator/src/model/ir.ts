@@ -185,8 +185,10 @@ export type IrStatement =
   | {
       catchBody?: IrStatement | undefined;
       catchName?: string | undefined;
+      execution: 'portableTask' | 'sync';
       finallyBody?: IrStatement | undefined;
       kind: 'try';
+      origin: SourceOrigin;
       tryBody: IrStatement;
     }
   | { kind: 'variable'; declarations: IrVariable[] }

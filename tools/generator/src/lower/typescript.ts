@@ -2317,11 +2317,14 @@ function lowerStatement(node: ts.Statement, context: LoweringContext): IrStateme
   if (ts.isTryStatement(node)) {
     const catchName = node.catchClause?.variableDeclaration?.name;
     if (catchName && !ts.isIdentifier(catchName)) unsupported(catchName, context, 'catch binding pattern');
+    const owner = findEnclosingFunction(node);
     return {
       catchBody: node.catchClause ? lowerStatement(node.catchClause.block, context) : undefined,
       catchName: catchName?.text,
+      execution: owner && functionExecution(owner, context).kind === 'portableTask' ? 'portableTask' : 'sync',
       finallyBody: node.finallyBlock ? lowerStatement(node.finallyBlock, context) : undefined,
       kind: 'try',
+      origin: origin(node, context),
       tryBody: lowerStatement(node.tryBlock, context),
     };
   }

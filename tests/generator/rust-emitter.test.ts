@@ -854,6 +854,167 @@ describe('Rust emission', () => {
     ).toThrow('taskAll currently requires homogeneous task inputs matching its array output');
   });
 
+  it('emits task-aware try/catch without catching host boundary failures', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/permissions/src/task-try.ts',
+      `
+        export function unavailable(host: any): Promise<string> {
+          return host.load();
+        }
+        export async function recover(input: string): Promise<string> {
+          try {
+            await Promise.reject<void>('nope');
+            return 'missed';
+          } catch {
+            return Promise.resolve(input);
+          }
+        }
+        export async function preserve(input: string): Promise<string> {
+          try {
+            return await Promise.resolve(input);
+          } catch {
+            return 'unexpected';
+          }
+        }
+        export async function recoverAndContinue(input: string, reject: boolean): Promise<string> {
+          try {
+            if (reject) {
+              await Promise.reject<void>('nope');
+            }
+            if (input === 'return') {
+              return input;
+            }
+          } catch {}
+          return 'continued';
+        }
+        export async function preserveBoundary(host: any): Promise<string> {
+          try {
+            return await unavailable(host);
+          } catch {
+            return 'incorrectly caught';
+          }
+        }
+        export async function makeRuntimeUnavailable(input: string): Promise<string> {
+          return await Promise.resolve(input);
+        }
+        export async function preserveRuntimeBoundary(task: Promise<string>): Promise<string> {
+          try {
+            return await task;
+          } catch {
+            return 'incorrectly caught';
+          }
+        }
+        export async function throwAndRecover(): Promise<string> {
+          try {
+            throw new Error('boom');
+          } catch {
+            return 'recovered';
+          }
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/permissions', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/permissions/src/task-try.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('Err(crate::FlightTaskError::Rejection(_))');
+    expect(output).toContain('Err(__flight_error) => Err(__flight_error)');
+    expect(output).toContain('if let Some(__flight_return) = __flight_try_return');
+    expect(output).not.toContain('catch_unwind');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-task-try-'));
+    mkdirSync(path.join(fixture, 'src'), { recursive: true });
+    writeFileSync(path.join(fixture, 'src', 'generated.rs'), output);
+    writeFileSync(
+      path.join(fixture, 'src', 'lib.rs'),
+      [
+        'pub use flighthq_runtime::*;',
+        '#[derive(Clone, Default)] pub struct OpaqueHostValue;',
+        'pub fn host_value<T: Default>(_: &str) -> T { T::default() }',
+        'mod generated;',
+        'pub use generated::*;',
+        '#[cfg(test)] mod tests {',
+        '  use super::*;',
+        '  #[test] fn generated_task_try_recovers_only_source_rejections() {',
+        '    let runtime_failure = make_runtime_unavailable(String::from("unavailable"));',
+        '    let scheduler = install_deterministic_flight_task_scheduler();',
+        '    assert_eq!(scheduler.block_on(recover(String::from("recovered"))), Ok(String::from("recovered")));',
+        '    assert_eq!(scheduler.block_on(preserve(String::from("preserved"))), Ok(String::from("preserved")));',
+        '    assert_eq!(scheduler.block_on(recover_and_continue(String::from("return"), false)), Ok(String::from("return")));',
+        '    assert_eq!(scheduler.block_on(recover_and_continue(String::from("ignored"), true)), Ok(String::from("continued")));',
+        '    assert_eq!(scheduler.block_on(throw_and_recover()), Ok(String::from("recovered")));',
+        '    assert!(matches!(scheduler.block_on(preserve_boundary(OpaqueHostValue)), Err(FlightTaskError::HostUnavailable(_))));',
+        '    assert!(matches!(scheduler.block_on(preserve_runtime_boundary(runtime_failure)), Err(FlightTaskError::RuntimeUnavailable(_))));',
+        '  }',
+        '}',
+        '',
+      ].join('\n'),
+    );
+    writeFileSync(
+      path.join(fixture, 'Cargo.toml'),
+      [
+        '[package]',
+        'name = "generated-task-try-fixture"',
+        'version = "0.0.0"',
+        'edition = "2024"',
+        '[dependencies]',
+        `flighthq-runtime = { path = ${JSON.stringify(path.join(process.cwd(), 'generated/crates/flighthq-runtime'))} }`,
+        '',
+      ].join('\n'),
+    );
+    const catchBinding = lowerTypeScriptSource(
+      ts.createSourceFile(
+        '/workspace/upstream/packages/permissions/src/task-catch-binding.ts',
+        `export async function unsupported(): Promise<string> {
+          try { return await Promise.reject<string>('nope'); }
+          catch (error) { return String(error); }
+        }`,
+        ts.ScriptTarget.Latest,
+        true,
+        ts.ScriptKind.TS,
+      ),
+      '@flighthq/permissions',
+      '/workspace',
+    );
+    expect(() =>
+      emitRustModule({ declarations: catchBinding.declarations, source: 'task-catch-binding.ts', typeImports: [] }),
+    ).toThrow(/task-catch-binding\.ts:\d+:\d+: portable task catch bindings are not implemented/u);
+
+    const finallyBlock = lowerTypeScriptSource(
+      ts.createSourceFile(
+        '/workspace/upstream/packages/permissions/src/task-finally.ts',
+        `export async function unsupported(): Promise<string> {
+          try { return await Promise.resolve('value'); }
+          catch { return 'recovered'; }
+          finally { Promise.resolve(); }
+        }`,
+        ts.ScriptTarget.Latest,
+        true,
+        ts.ScriptKind.TS,
+      ),
+      '@flighthq/permissions',
+      '/workspace',
+    );
+    expect(() =>
+      emitRustModule({ declarations: finallyBlock.declarations, source: 'task-finally.ts', typeImports: [] }),
+    ).toThrow(/task-finally\.ts:\d+:\d+: portable task try\/catch\/finally lowering is not implemented/u);
+
+    expect(() =>
+      execFileSync('cargo', ['test', '--quiet'], {
+        cwd: fixture,
+        env: { ...process.env, CARGO_TARGET_DIR: path.join(fixture, 'target') },
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
   it('represents typed dynamic host tasks without requiring a default output value', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/input/src/hostTask.ts',
