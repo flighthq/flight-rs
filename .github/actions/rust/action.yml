@@ -1,0 +1,24 @@
+name: Rust toolchain
+description: Installs the toolchain pinned by rust-toolchain.toml and makes it usable outside the repository.
+
+runs:
+  using: composite
+  steps:
+    - name: Install the pinned toolchain
+      shell: bash
+      # `rust-toolchain.toml` already pins the version, profile, components, and targets, so
+      # `rustup show` inside the checkout installs exactly that and nothing here restates it.
+      #
+      # The `default` line is the part that is easy to omit and expensive to debug. The toolchain
+      # file only applies inside the repository, but the generator tests compile fixtures in temp
+      # directories; out there rustup has no toolchain to choose and every one of those tests fails
+      # with "rustup could not choose a version of rustc to run". That reads exactly like a real
+      # regression and is not one.
+      run: |
+        rustup show
+        rustup default "$(rustup show active-toolchain | cut -d' ' -f1)"
+        rustc --version
+        rustfmt --version
+        (cd "$(mktemp -d)" && rustc --version)
+
+    - uses: Swatinem/rust-cache@v2

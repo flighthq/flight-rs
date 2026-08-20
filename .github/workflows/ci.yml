@@ -1,0 +1,82 @@
+name: CI
+
+# `npm run ci` is the repository's own definition of green, but running it as one step serializes
+# a ~30 minute regeneration behind a two minute lint. The legs below are exactly that script's
+# contents, split so they run concurrently and so a failure names itself: a red `Generate` means
+# the emitter drifted, a red `Quality` means the TypeScript did, a red `Rust` means the output
+# stopped compiling. Keep the three in sync with the `ci` script when it changes.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    name: Generate
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # upstream/ is the generator's only input. Without the submodule every generator job
+          # fails on a missing source tree rather than on anything about the change.
+          submodules: recursive
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: ./.github/actions/rust
+      - run: npm ci
+      # Regenerates all 143 packages and byte-compares against the committed tree, so this is also
+      # where cross-machine determinism gets proven: the runner is neither developer's machine.
+      - run: npm run generate:check
+
+  quality:
+    name: Quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      # The generator tests compile Rust fixtures, so this leg needs the toolchain too.
+      - uses: ./.github/actions/rust
+      - run: npm ci
+      - run: npm run typecheck
+      # Compiles the published facade against the real upstream sources rather than the local
+      # declaration shim, which is what keeps the two from drifting apart silently.
+      - run: npm run typecheck:upstream
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run test
+
+  rust:
+    name: Rust
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: ./.github/actions/rust
+      - run: npm ci
+      - run: cargo test --workspace
+      # A separate workspace, so `--workspace` above does not reach it.
+      - run: npm run test:host-winit
