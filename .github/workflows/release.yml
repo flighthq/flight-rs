@@ -1,0 +1,89 @@
+name: Release
+
+# Publishes @flighthq/surface-rs, the only package here intended for consumers.
+#
+# Two lanes, both ending in `npm run release`:
+#   Snapshot  every push to main publishes <upstream>-edge.<count>.<sha> under the `edge` dist-tag,
+#             so `latest` is never touched by an untagged build.
+#   Stable    a bare numeric tag publishes that version under `latest`. Cut one with:
+#               npm run version:packages 0.3.0 && git commit -am "release: 0.3.0"
+#               git tag 0.3.0 && git push --tags
+#
+# The version is borrowed from the pinned upstream rather than chosen here — see
+# scripts/flight-version.ts. Both lanes stamp the manifest before publishing, so a tarball's version
+# and its dist-tag always agree.
+
+on:
+  push:
+    branches: [main]
+    # Bare numeric version tags, no "v" prefix.
+    tags: ['[0-9]*.[0-9]*.[0-9]*']
+  workflow_dispatch:
+
+concurrency:
+  # Serialize publishes; never cancel one midway, which could leave a dist-tag half-moved.
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write # npm provenance
+
+jobs:
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The submodule carries the version this port borrows, and fetch-depth: 0 feeds the
+          # snapshot build count, which is `git rev-list --count`.
+          submodules: recursive
+          fetch-depth: 0
+      - name: Fetch upstream tags
+        # A submodule checkout does not necessarily bring tags, and scripts/flight-version.ts fails
+        # loudly without one rather than guessing a version. Fetching here keeps that failure out of
+        # the publish step, where it would be far more confusing.
+        run: git -C upstream fetch --tags --force
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          # Writes an .npmrc pointing at public npm and wires NODE_AUTH_TOKEN for the publish.
+          registry-url: https://registry.npmjs.org
+      - uses: ./.github/actions/rust
+      - run: npm ci
+
+      - name: Resolve version and dist-tag
+        id: resolve
+        # A tag publishes itself to `latest`; anything else is a snapshot on its channel. This calls
+        # tsx directly rather than through `npm run`, because npm prints a banner to stdout that
+        # would land in $GITHUB_OUTPUT and corrupt it.
+        run: |
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            printf 'version=%s\ntag=latest\n' "${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          else
+            npx tsx scripts/edge-version.ts "${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Stamp the manifest
+        run: npx tsx scripts/version-packages.ts "${{ steps.resolve.outputs.version }}"
+
+      # Publishing is skipped rather than failed when no token is configured, so this workflow does
+      # not report red on every push before the secret exists. It starts publishing on its own once
+      # the secret is added, with no edit here. The dry run still exercises the whole path — build,
+      # pack, and the registry guards — so the lane is proven before it is ever armed.
+      - name: Publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: 'true'
+        # `prepack` runs the full wasm build, so the tarball carries a module built from this commit
+        # rather than whatever happened to be committed.
+        run: |
+          if [ -z "${NODE_AUTH_TOKEN}" ]; then
+            echo "::notice::NPM_TOKEN is not configured; running a dry run instead of publishing."
+            npm run release -- --dry-run --tag "${{ steps.resolve.outputs.tag }}"
+          else
+            npm run release -- --tag "${{ steps.resolve.outputs.tag }}"
+          fi
