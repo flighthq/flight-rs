@@ -1943,12 +1943,12 @@ function emitLocalVariable(variable: IrVariable, context: EmitContext): string[]
     (evaluatesToNullish(variable.initializer, context)
       ? ({ inner: { kind: 'dynamic' }, kind: 'nullable' } as const)
       : undefined);
-  const nullCheckedMapElement = context.nullCheckedNames.has(variable.name)
-    ? inferMapElementLookup(variable.initializer, context)
+  const nullCheckedElement = context.nullCheckedNames.has(variable.name)
+    ? inferNullableElementLookup(variable.initializer, context)
     : undefined;
   const inferred =
-    nullCheckedMapElement && nullCheckedMapElement.type.kind !== 'nullable'
-      ? ({ inner: nullCheckedMapElement.type, kind: 'nullable' } as const)
+    nullCheckedElement && nullCheckedElement.type.kind !== 'nullable'
+      ? ({ inner: nullCheckedElement.type, kind: 'nullable' } as const)
       : inferredValue;
   if (inferred?.kind === 'anonymous') registerInferredObjectType(inferred, context);
   const forwardCaptureSlot = context.forwardClosureCaptureNames.has(variable.name)
@@ -2005,8 +2005,8 @@ function emitLocalVariable(variable: IrVariable, context: EmitContext): string[]
     context.placeAliases.set(variable.name, variable.initializer);
     return [];
   }
-  const initializer = nullCheckedMapElement
-    ? emitElement(nullCheckedMapElement.expression, context)
+  const initializer = nullCheckedElement
+    ? emitNullableElementLookup(nullCheckedElement, context)
     : emitExpression(
         entitySpreadType ? unwrapCasts(variable.initializer) : variable.initializer,
         context,
@@ -2024,7 +2024,7 @@ function emitLocalVariable(variable: IrVariable, context: EmitContext): string[]
     context.knownNullNames.add(variable.name);
   }
   const annotationType =
-    (nullCheckedMapElement ? inferred : expected) ??
+    (nullCheckedElement ? inferred : expected) ??
     (variable.initializer.kind === 'function' ||
     variable.initializer.kind === 'new' ||
     evaluatesToNullish(variable.initializer, context)
@@ -10541,16 +10541,37 @@ function emitElement(expression: Extract<IrExpression, { kind: 'element' }>, con
   return `${object}[${emitExpression(expression.index, context)} as usize]`;
 }
 
-function inferMapElementLookup(
+interface NullableElementLookup {
+  expression: Extract<IrExpression, { kind: 'element' }>;
+  kind: 'array' | 'map' | 'typed-array';
+  type: IrType;
+}
+
+function inferNullableElementLookup(
   expression: IrExpression,
   context: EmitContext,
-): { expression: Extract<IrExpression, { kind: 'element' }>; type: IrType } | undefined {
+): NullableElementLookup | undefined {
   if (expression.kind !== 'element') return undefined;
   const objectType = inferIrExpressionType(expression.object, context);
   const candidate = objectType?.kind === 'nullable' ? objectType.inner : objectType;
   const collection = resolveSemanticType(candidate, context) ?? candidate;
+  if (collection?.kind === 'array') return { expression, kind: 'array', type: collection.element };
+  if (collection?.kind === 'named' && typedArrayType(collection.name)) {
+    return { expression, kind: 'typed-array', type: primitive('Float') };
+  }
   const type = collection?.kind === 'named' && collection.name === 'RustMap' ? collection.arguments[1] : undefined;
-  return type ? { expression, type } : undefined;
+  return type ? { expression, kind: 'map', type } : undefined;
+}
+
+function emitNullableElementLookup(lookup: NullableElementLookup, context: EmitContext): string {
+  if (lookup.kind === 'map') return emitElement(lookup.expression, context);
+  const objectType = inferIrExpressionType(lookup.expression.object, context);
+  const owner = emitPlaceExpression(lookup.expression.object, context);
+  const index = emitExpression(lookup.expression.index, context, primitive('Float'));
+  const value = objectType?.kind === 'nullable'
+    ? `${owner}.as_ref().and_then(|values| values.get(${index} as usize).cloned())`
+    : `${owner}.get(${index} as usize).cloned()`;
+  return lookup.kind === 'typed-array' ? `${value}.map(|item| item as f64)` : value;
 }
 
 function emitElementRead(

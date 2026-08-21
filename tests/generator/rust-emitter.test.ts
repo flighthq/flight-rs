@@ -2459,6 +2459,16 @@ describe('Rust emission', () => {
           if (value === undefined || value.trim() === '') return null;
           return Number(value);
         }
+        export function readEntry(entries: readonly Entry[], index: number): string | null {
+          const entry = entries[index];
+          if (entry === undefined) return null;
+          return entry.data;
+        }
+        export function readSample(samples: Float32Array, index: number): number | null {
+          const sample = samples[index];
+          if (sample === undefined) return null;
+          return sample;
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -2476,6 +2486,8 @@ describe('Rust emission', () => {
     expect(output).toContain('(value).is_some()');
     expect(output).toContain('(value).is_none()');
     expect(output).not.toContain('TypeScript Record key was absent');
+    expect(output).toContain('entries.get(index as usize).cloned()');
+    expect(output).toContain('samples.get(index as usize).cloned().map(|item| item as f64)');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-contextual-object-'));
     const sourceFile = path.join(fixture, 'lib.rs');
