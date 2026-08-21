@@ -1630,6 +1630,8 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
   // Rust's `String` enforces the TypeScript pattern (for example `${string}.${string}`).
   if (ts.isTemplateLiteralTypeNode(node)) return { kind: 'primitive', name: 'String' };
   if (ts.isIndexedAccessTypeNode(node)) {
+    const parameterType = inferIndexedParameterType(node, context);
+    if (parameterType) return parameterType;
     const namespaceType = inferValueNamespaceType(node, context);
     if (namespaceType) return namespaceType;
     const propertyType = inferIndexedPropertyType(node, context);
@@ -1811,6 +1813,92 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
     }
   }
   return unsupported(node, context, `type ${ts.SyntaxKind[node.kind] ?? node.kind}`);
+}
+
+function inferIndexedParameterType(node: ts.IndexedAccessTypeNode, context: LoweringContext): IrType | undefined {
+  let objectType = node.objectType;
+  while (ts.isParenthesizedTypeNode(objectType)) objectType = objectType.type;
+  let indexType = node.indexType;
+  while (ts.isParenthesizedTypeNode(indexType)) indexType = indexType.type;
+  if (
+    !ts.isTypeReferenceNode(objectType) ||
+    !ts.isIdentifier(objectType.typeName) ||
+    objectType.typeName.text !== 'Parameters' ||
+    !objectType.typeArguments?.[0] ||
+    !ts.isLiteralTypeNode(indexType) ||
+    !ts.isNumericLiteral(indexType.literal)
+  ) {
+    return undefined;
+  }
+  const index = Number(indexType.literal.text);
+  if (!Number.isSafeInteger(index) || index < 0) return undefined;
+  const callback = resolveCallbackTypeNode(objectType.typeArguments[0], context, new Set());
+  return callback?.parameters[index];
+}
+
+function resolveCallbackTypeNode(
+  node: ts.TypeNode,
+  context: LoweringContext,
+  visited: Set<string>,
+): Extract<IrType, { kind: 'function' }> | undefined {
+  while (ts.isParenthesizedTypeNode(node)) node = node.type;
+  if (ts.isUnionTypeNode(node)) {
+    for (const member of node.types.filter((candidate) => !isNullishType(candidate))) {
+      const resolved = resolveCallbackTypeNode(member, context, visited);
+      if (resolved) return resolved;
+    }
+    return undefined;
+  }
+  if (
+    ts.isTypeReferenceNode(node) &&
+    ts.isIdentifier(node.typeName) &&
+    node.typeName.text === 'NonNullable' &&
+    node.typeArguments?.[0]
+  ) {
+    return resolveCallbackTypeNode(node.typeArguments[0], context, visited);
+  }
+  if (ts.isTypeQueryNode(node) && ts.isIdentifier(node.exprName)) {
+    const valueType = resolveValueTypeNode(node.exprName.text, context);
+    return valueType ? resolveCallbackTypeNode(valueType.node, valueType.context, visited) : undefined;
+  }
+  if (ts.isTypeReferenceNode(node) && ts.isIdentifier(node.typeName) && !node.typeArguments?.length) {
+    const resolved = resolveTypeDeclaration(node.typeName.text, context);
+    if (!resolved || !ts.isTypeAliasDeclaration(resolved.declaration)) return undefined;
+    const key = `${resolved.context.sourceFile.fileName}\0${node.typeName.text}`;
+    if (visited.has(key)) return undefined;
+    visited.add(key);
+    return resolveCallbackTypeNode(resolved.declaration.type, resolved.context, visited);
+  }
+  const lowered = lowerType(node, context);
+  return lowered.kind === 'function' ? lowered : undefined;
+}
+
+function resolveValueTypeNode(
+  name: string,
+  context: LoweringContext,
+): { context: LoweringContext; node: ts.TypeNode } | undefined {
+  const find = (sourceFile: ts.SourceFile): ts.TypeNode | undefined =>
+    sourceFile.statements
+      .filter(ts.isVariableStatement)
+      .flatMap((statement) => [...statement.declarationList.declarations])
+      .find((declaration) => ts.isIdentifier(declaration.name) && declaration.name.text === name)?.type;
+  const local = find(context.sourceFile);
+  if (local) return { context, node: local };
+  const imported = resolveImportedTypeSource(name, context);
+  if (!imported) return undefined;
+  const sourceFile = ts.createSourceFile(
+    imported.source,
+    readFileSync(imported.source, 'utf8'),
+    ts.ScriptTarget.Latest,
+    true,
+    imported.source.endsWith('.tsx') ? ts.ScriptKind.TSX : ts.ScriptKind.TS,
+  );
+  const nextContext = { ...context, packageName: imported.packageName, sourceFile };
+  const importedType = sourceFile.statements
+    .filter(ts.isVariableStatement)
+    .flatMap((statement) => [...statement.declarationList.declarations])
+    .find((declaration) => ts.isIdentifier(declaration.name) && declaration.name.text === imported.imported)?.type;
+  return importedType ? { context: nextContext, node: importedType } : undefined;
 }
 
 function isTypeParameterReference(node: ts.TypeNode): boolean {

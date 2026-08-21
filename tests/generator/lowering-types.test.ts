@@ -504,4 +504,36 @@ describe('configured type lowering exceptions', () => {
     expect(loop('recordKeys')).toMatchObject({ enumeration: 'direct-record', kind: 'forIn', variable: 'key' });
     expect(loop('dynamicKeys')).toMatchObject({ enumeration: 'runtime', kind: 'forIn', variable: 'key' });
   });
+
+  it('recovers indexed Parameters from nullable value-query callback aliases', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/geometry/src/callback-parameter.ts',
+      `
+        type ReleaseFunction = 'releaseOne' | 'releaseTwo';
+        type ReleaseGuard = (releaseFunction: ReleaseFunction) => void;
+        const releaseGuard: ReleaseGuard | null = null;
+        type DerivedReleaseFunction = Parameters<NonNullable<typeof releaseGuard>>[0];
+        export function releaseName(releaseFunction: DerivedReleaseFunction): string {
+          return releaseFunction;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/geometry', '/workspace');
+    const releaseName = lowered.declarations.find(
+      (declaration) => declaration.kind === 'function' && declaration.name === 'releaseName',
+    );
+    const derived = lowered.declarations.find(
+      (declaration) => declaration.kind === 'type' && declaration.name === 'DerivedReleaseFunction',
+    );
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(releaseName).toMatchObject({
+      parameters: [{ name: 'releaseFunction', type: { kind: 'named', name: 'DerivedReleaseFunction' } }],
+      returns: { kind: 'primitive', name: 'String' },
+    });
+    expect(derived).toMatchObject({ type: { kind: 'named', name: 'ReleaseFunction' } });
+  });
 });

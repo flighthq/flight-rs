@@ -3053,6 +3053,15 @@ function emitCall(
     }
     if (collectionType?.kind === 'array' && method === 'push') {
       if (expression.arguments.length === 0) throw new RustEmissionError('Array.push requires an argument');
+      if (expression.arguments.some((argument) => argument.kind === 'spread')) {
+        const operations = expression.arguments.map((argument) => {
+          if (argument.kind === 'spread') {
+            return `${ownerPlace}.extend(${parenthesize(emitExpression(argument.expression, context))}.iter().cloned());`;
+          }
+          return `${ownerPlace}.push(${emitExpression(argument, context, collectionType.element)});`;
+        });
+        return `{ ${operations.join(' ')} ${ownerPlace}.len() as f64 }`;
+      }
       const values = expression.arguments.map((argument) => {
         const emitted = emitExpression(argument, context, collectionType.element);
         const actualType = inferIrExpressionType(argument, context);

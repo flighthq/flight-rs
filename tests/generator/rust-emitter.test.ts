@@ -1800,6 +1800,9 @@ describe('Rust emission', () => {
         export function requiredValue(values: Map<string, string>): string {
           return values.get('key')!;
         }
+        export function appendSpread(values: number[], interior: readonly number[]): number {
+          return values.push(1, ...interior, 2);
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -1840,6 +1843,9 @@ describe('Rust emission', () => {
         '  generated::mutate_nested(&mut record);',
         '  assert_eq!(record[0].1, FlightValue::Record(vec![("changed".to_owned(), FlightValue::String("yes".to_owned()))]));',
         '  assert_eq!(generated::required_value(&vec![("key".to_owned(), "value".to_owned())]), "value");',
+        '  let mut values = vec![0.0];',
+        '  assert_eq!(generated::append_spread(&mut values, &vec![3.0, 4.0]), 5.0);',
+        '  assert_eq!(values, vec![0.0, 1.0, 3.0, 4.0, 2.0]);',
         '}',
         '',
       ].join('\n'),
