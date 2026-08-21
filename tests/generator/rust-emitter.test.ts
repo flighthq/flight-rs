@@ -2337,6 +2337,9 @@ describe('Rust emission', () => {
         export function log(data: LogData | LogDataProvider): void {
           void data;
         }
+        export function fields(data: LogData): Readonly<Record<string, unknown>> {
+          return typeof data === 'string' ? { message: data } : (data as Record<string, unknown>);
+        }
         export function warn(): void {
           log({ message: 'generated warning' });
         }
@@ -2356,6 +2359,7 @@ describe('Rust emission', () => {
     expect(output).toContain(
       'crate::FlightUnion2::<LogData, LogDataProvider>::A(crate::FlightUnion2::<String, Vec<(String, crate::FlightValue)>>::B(',
     );
+    expect(output).not.toContain('crate::OpaqueHostValue');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
     writeFileSync(path.join(fixture, 'generated.rs'), output);

@@ -2241,7 +2241,7 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
         }
         const unionSourceType = actualType?.kind === 'nullable' ? actualType.inner : actualType;
         const unionSource = resolveSemanticType(unionSourceType, context) ?? unionSourceType;
-        if (unionSource?.kind === 'union') {
+        if (unionSource?.kind === 'union' && !typeContainsAnyDynamic(expression.type)) {
           const variantIndex = unionSource.variants.findIndex((variant) =>
             semanticTypesEqual(variant, expression.type, context),
           );
@@ -3557,6 +3557,31 @@ function typeContainsDynamic(type: IrType): boolean {
   }
 }
 
+function typeContainsAnyDynamic(type: IrType): boolean {
+  switch (type.kind) {
+    case 'dynamic':
+      return true;
+    case 'anonymous':
+      return (
+        type.extends.some(typeContainsAnyDynamic) || type.fields.some((field) => typeContainsAnyDynamic(field.type))
+      );
+    case 'array':
+      return typeContainsAnyDynamic(type.element);
+    case 'function':
+      return type.parameters.some(typeContainsAnyDynamic) || typeContainsAnyDynamic(type.returns);
+    case 'named':
+      return type.arguments.some(typeContainsAnyDynamic);
+    case 'nullable':
+      return typeContainsAnyDynamic(type.inner);
+    case 'task':
+      return typeContainsAnyDynamic(type.output);
+    case 'union':
+      return type.variants.some(typeContainsAnyDynamic);
+    case 'primitive':
+      return false;
+  }
+}
+
 function promiseType(type: IrType | undefined, context: EmitContext): Extract<IrType, { kind: 'task' }> | undefined {
   const resolved = resolveSemanticType(type?.kind === 'nullable' ? type.inner : type, context);
   return resolved?.kind === 'task' ? resolved : undefined;
@@ -4133,15 +4158,27 @@ function emitKnownFunctionArgument(
       return `${value}.${mutable ? 'as_mut' : 'as_ref'}().unwrap()`;
     }
     const resolvedArgument = resolveSemanticType(argumentType, context) ?? argumentType;
-    const structuralProjection =
-      !mutable && argument.kind !== 'object' && argumentType
-        ? emitStructuralProjectionArgument(
-            resolvedArgument?.kind === 'union' ? emitExpression(argument, context, argumentType) : value,
-            argumentType,
-            expectedType,
-            context,
-          )
-        : undefined;
+    let structuralProjection: string | undefined;
+    if (!mutable && argument.kind !== 'object' && argumentType) {
+      if (resolvedArgument?.kind === 'union') {
+        const probe = emitStructuralProjectionArgument(
+          '__flight_union_projection',
+          argumentType,
+          expectedType,
+          context,
+        );
+        structuralProjection = probe
+          ? emitStructuralProjectionArgument(
+              emitExpression(argument, context, argumentType),
+              argumentType,
+              expectedType,
+              context,
+            )
+          : undefined;
+      } else {
+        structuralProjection = emitStructuralProjectionArgument(value, argumentType, expectedType, context);
+      }
+    }
     if (structuralProjection) return `&${structuralProjection}`;
     return argument.kind === 'identifier' && root && context.borrowedNames.has(root)
       ? value
