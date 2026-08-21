@@ -3234,8 +3234,9 @@ function emitKnownFunctionArgument(
   owned = false,
 ): string {
   const argumentType = inferIrExpressionType(argument, context);
-  const nullableParameter = parameter.type.kind === 'nullable';
-  const expectedType = parameter.type.kind === 'nullable' ? parameter.type.inner : parameter.type;
+  const resolvedParameterType = resolveSemanticType(parameter.type, context) ?? parameter.type;
+  const nullableParameter = resolvedParameterType.kind === 'nullable';
+  const expectedType = nullableParameter ? resolvedParameterType.inner : parameter.type;
   const resolvedExpectedType = resolveSemanticType(expectedType, context);
   if (
     resolvedExpectedType?.kind === 'anonymous' &&
@@ -3244,7 +3245,26 @@ function emitKnownFunctionArgument(
     registerContextualAnonymousTypes(resolvedExpectedType, context, parameter.name);
   }
   const optionalParameter = Boolean(parameter.optional || parameter.initializer) && !nullableParameter;
-  if (argument.kind === 'literal' && argument.value === null) return 'None';
+  const borrowedNullableReference =
+    nullableParameter &&
+    !owned &&
+    !isSharedHandleType(expectedType, context) &&
+    !(expectedType.kind === 'named' && expectedType.name === 'Signal' && !mutable) &&
+    isReferenceLike(expectedType, context);
+  if (argument.kind === 'literal' && argument.value === null && !borrowedNullableReference) return 'None';
+  if (borrowedNullableReference) {
+    const root = expressionRootIdentifier(argument);
+    const value =
+      argumentType?.kind === 'nullable' && isRustPlaceExpression(argument)
+        ? emitPlaceExpression(argument, context)
+        : emitExpression(argument, context, parameter.type);
+    return argumentType?.kind === 'nullable' &&
+      argument.kind === 'identifier' &&
+      root &&
+      context.borrowedNames.has(root)
+      ? value
+      : `${mutable ? '&mut ' : '&'}${parenthesize(value)}`;
+  }
   if (!nullableParameter && !optionalParameter && expectedType.kind === 'union') {
     return `&${parenthesize(emitExpression(argument, context, expectedType))}`;
   }

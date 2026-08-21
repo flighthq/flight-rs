@@ -37,6 +37,10 @@ describe('Rust emission', () => {
           if (values === undefined) return;
           values.push('next');
         }
+        export function hasOptional(values: Readonly<Record<string, string>> | null): boolean {
+          return values !== null;
+        }
+        export function hasNoValues(): boolean { return hasOptional(null); }
         export interface Schedule { at?: Date; code: WireCode; }
         export type VendorKind = \`\${string}.\${string}\`;
         export function sameNumber(left: number, right: number): boolean { return Object.is(left, right); }
@@ -67,6 +71,7 @@ describe('Rust emission', () => {
     expect(output).toContain('.find(|(entry_key, _)| entry_key == &(key).clone())');
     expect(output).toContain('text.push_str(&');
     expect(output).toContain('pub fn append_optional(values: &mut Option<Vec<String>>)');
+    expect(output).toContain('return has_optional(&(None));');
     expect(output).toContain('pub at: Option<crate::OpaqueHostValue>,');
     expect(output).toContain('pub code: f64,');
     expect(output).toContain('pub type VendorKind = String;');
@@ -510,8 +515,8 @@ describe('Rust emission', () => {
     expect(output).toContain('current = (seed).clone();');
     expect(output).toContain('return values[0.0_f64 as usize].clone().unwrap();');
     expect(output).toContain('let __switch_value = (direction).clone();');
-    expect(output).toContain('values: Option<Vec<u8>>');
-    expect(output).toContain('copy_lookup(out, Some(');
+    expect(output).toContain('values: &Option<Vec<u8>>');
+    expect(output).toContain('copy_lookup(out, &(Some(');
     expect(output).toContain('pub names: Option<Vec<String>>');
     expect(output).toContain('.iter().map(|value| (*value) as f32).collect()');
     expect(output).toContain('let copy: Vec<f32>');
@@ -3594,7 +3599,7 @@ describe('Rust emission', () => {
         '  let pixels = vec![1, 2, 3, 4];',
         '  let image = generated::image_from_optional_height(&pixels, 1.0, None);',
         '  assert_eq!(image.downcast_ref::<String>().map(String::as_str), Some("pixels:4:1:None"));',
-        '  let dimensions = generated::image_from_nullable_pixels(None, 2.0, 3.0);',
+        '  let dimensions = generated::image_from_nullable_pixels(&None, 2.0, 3.0);',
         '  assert_eq!(dimensions.downcast_ref::<String>().map(String::as_str), Some("dimensions:2:3"));',
         '  let canvas = generated::create_canvas(4.0, 8.0);',
         '  assert_eq!(canvas.downcast_ref::<String>().map(String::as_str), Some("canvas:4:8"));',
