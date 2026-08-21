@@ -18,7 +18,7 @@ const inputHashPattern = /^\/\/ wasm-input-sha256: ([a-f\d]{64})$/mu;
 const outputHashPattern = /^\/\/ wasm-output-sha256: ([a-f\d]{64})$/mu;
 const base64Pattern = /const base64 =\s*\n\s*'([A-Za-z\d+/]*={0,2})';/u;
 
-export function computeSurfaceWasmInputHash(workspace: string): string {
+export function computeBitmapWasmInputHash(workspace: string): string {
   const files = new Set<string>();
   for (const input of buildInputs) {
     const absolute = path.join(workspace, input);
@@ -56,8 +56,8 @@ export function computeSurfaceWasmInputHash(workspace: string): string {
   return hash.digest('hex');
 }
 
-export function renderSurfaceWasmBytes(workspace: string, bytes: Uint8Array): string {
-  return renderEmbeddedWasm(computeSurfaceWasmInputHash(workspace), bytes);
+export function renderBitmapWasmBytes(workspace: string, bytes: Uint8Array): string {
+  return renderEmbeddedWasm(computeBitmapWasmInputHash(workspace), bytes);
 }
 
 function renderEmbeddedWasm(inputHash: string, bytes: Uint8Array): string {
@@ -83,7 +83,7 @@ export const bitmapWasmBytes: Uint8Array = decodeBase64(base64);
 `;
 }
 
-export function assertSurfaceWasmArtifactFresh(workspace: string): void {
+export function assertBitmapWasmArtifactFresh(workspace: string): void {
   const file = path.join(workspace, artifactPath);
   if (!existsSync(file)) throw staleArtifactError('is missing');
 
@@ -95,7 +95,7 @@ export function assertSurfaceWasmArtifactFresh(workspace: string): void {
     throw staleArtifactError('does not contain valid freshness metadata');
   }
 
-  const currentInputHash = computeSurfaceWasmInputHash(workspace);
+  const currentInputHash = computeBitmapWasmInputHash(workspace);
   if (recordedInputHash !== currentInputHash) {
     throw staleArtifactError('was built from stale Rust or packaging inputs');
   }

@@ -5,14 +5,14 @@ import type { Bitmap, BitmapRegion } from '@flighthq/types';
 import * as rs from './bitmapWasm';
 
 function paintBitmap(width: number, height: number): Bitmap {
-  const surface = createBitmap(width, height, 0);
+  const bitmap = createBitmap(width, height, 0);
   for (let index = 0; index < width * height; index += 1) {
-    surface.data[index * 4] = (index * 37 + 11) & 0xff;
-    surface.data[index * 4 + 1] = (index * 53 + 7) & 0xff;
-    surface.data[index * 4 + 2] = (index * 97 + 3) & 0xff;
-    surface.data[index * 4 + 3] = (index * 17 + 1) & 0xff;
+    bitmap.data[index * 4] = (index * 37 + 11) & 0xff;
+    bitmap.data[index * 4 + 1] = (index * 53 + 7) & 0xff;
+    bitmap.data[index * 4 + 2] = (index * 97 + 3) & 0xff;
+    bitmap.data[index * 4 + 3] = (index * 17 + 1) & 0xff;
   }
-  return surface;
+  return bitmap;
 }
 
 function fullRegion(bitmap: Bitmap): BitmapRegion {

@@ -26,7 +26,7 @@ const authoritativePackage = substitute.authoritativePackage ?? '@flighthq/bitma
 // The facade names the crate it is built from; that is the row of `wasmFacades` whose export list
 // this package must mirror. Looking it up by name rather than position keeps the two in step if a
 // second wasm facade is ever added.
-const surfaceFacade = portConfig.wasmFacades.find((facade) => facade.coreCrate === substitute.crate);
+const bitmapFacade = portConfig.wasmFacades.find((facade) => facade.coreCrate === substitute.crate);
 
 function parse(file: string): ts.SourceFile {
   return ts.createSourceFile(file, readFileSync(file, 'utf8'), ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
@@ -81,7 +81,7 @@ function relativeImportSpecifiers(sourceFile: ts.SourceFile): string[] {
 describe('blessed facade packaging', () => {
   it('is built from a wasm facade the generator declares', () => {
     expect(substitute.crate, 'package.json flightWasmSubstitute.crate').toBeTruthy();
-    expect(surfaceFacade, `port.config wasmFacades entry for ${String(substitute.crate)}`).toBeDefined();
+    expect(bitmapFacade, `port.config wasmFacades entry for ${String(substitute.crate)}`).toBeDefined();
   });
 
   it('is named after the upstream package it substitutes, plus -wasm', () => {
@@ -107,7 +107,7 @@ describe('blessed facade packaging', () => {
     // `initBitmapWasm` is the facade's own entry point rather than an upstream name, so it is the
     // one addition the generated export set does not account for.
     expect(shadowed.filter((name) => name !== 'initBitmapWasm').sort()).toEqual(
-      [...(surfaceFacade?.exports ?? [])].sort(),
+      [...(bitmapFacade?.exports ?? [])].sort(),
     );
     expect(shadowed).toContain('initBitmapWasm');
 
@@ -129,7 +129,7 @@ describe('blessed facade packaging', () => {
       ...exportedFunctionNames(upstreamIndex),
     ]);
 
-    for (const name of surfaceFacade?.exports ?? []) {
+    for (const name of bitmapFacade?.exports ?? []) {
       expect(upstreamExports.has(name), `${name} is exported by upstream ${authoritativePackage}`).toBe(true);
     }
   });
