@@ -855,6 +855,10 @@ describe('Rust emission', () => {
         export interface Ordinal<T> { shape: 'ordinal'; registry: string; ordinal: number; value: T; }
         export interface Slot<T> { shape: 'slot'; registry: string; slot: number; value: T; }
         export type Table<T> = Keyed<T> | Ordinal<T> | Slot<T>;
+        export const EntryState = { Bound: 'bound', Tombstoned: 'tombstoned' } as const;
+        export type Entry<T> =
+          | { state: typeof EntryState.Bound; value: T }
+          | { state: typeof EntryState.Tombstoned };
         export function readTable<T>(table: Table<T>): number {
           if (table.shape === 'keyed') return table.keyed;
           if (table.shape === 'slot') return table.slot;
@@ -869,6 +873,16 @@ describe('Rust emission', () => {
         }
         export function makeSlot<T>(value: T): Table<T> {
           return { shape: 'slot', registry: 'main', slot: 3, value };
+        }
+        export function makeBound<T>(value: T): Entry<T> {
+          return { state: EntryState.Bound, value };
+        }
+        export function makeTombstone<T>(): Entry<T> {
+          return { state: EntryState.Tombstoned };
+        }
+        export function readEntry<T>(entry: Entry<T>): T | null {
+          if (entry.state === EntryState.Bound) return entry.value;
+          return null;
         }
       `,
       ts.ScriptTarget.Latest,
@@ -886,6 +900,7 @@ describe('Rust emission', () => {
     expect(output).toContain('Table::<T>::A(_)');
     expect(output).toContain('crate::FlightUnion2::B(crate::FlightUnion2::B(_))');
     expect(output).toContain('.registry.clone()');
+    expect(output).toContain('pub type Entry<T> = crate::FlightUnion2<');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-three-way-union-'));
     writeFileSync(path.join(fixture, 'generated.rs'), output);
@@ -903,6 +918,8 @@ describe('Rust emission', () => {
         '  assert_eq!(generated::read_table(&ordinal), 2.0);',
         '  assert_eq!(generated::read_table(&slot), 3.0);',
         '  assert_eq!(generated::table_registry(&keyed), "main");',
+        '  assert_eq!(generated::read_entry(&generated::make_bound("bound".to_owned())), Some("bound".to_owned()));',
+        '  assert_eq!(generated::read_entry(&generated::make_tombstone::<String>()), None);',
         '}',
         '',
       ].join('\n'),

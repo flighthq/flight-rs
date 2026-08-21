@@ -40,6 +40,7 @@ export interface RustImport {
 
 interface EmitContext {
   anonymousTypeOwner: string;
+  anonymousTypeParameters: ReadonlyMap<string, readonly string[]>;
   anonymousTypes: ReadonlyMap<string, string>;
   atomicBoolNames: ReadonlySet<string>;
   borrowedNames: Set<string>;
@@ -48,6 +49,7 @@ interface EmitContext {
   callbackTypes: ReadonlySet<string>;
   captureReturns: boolean;
   constantNames: ReadonlyMap<string, string>;
+  constantPropertyValues: ReadonlyMap<string, boolean | number | string>;
   constantValues: ReadonlyMap<string, number>;
   continueEpilogue: readonly string[];
   currentReturnType?: IrType | undefined;
@@ -130,12 +132,25 @@ export function emitRustModule(module: RustModule): string {
     ),
   ]);
   const constantValues = new Map<string, number>();
+  const constantPropertyValues = new Map<string, boolean | number | string>();
   for (const declaration of module.declarations) {
     if (declaration.kind !== 'variable' || !declaration.initializer || declaration.initializer.kind === 'function') {
       continue;
     }
     const value = evaluateConstant(declaration.initializer, constantValues);
     if (value !== undefined) constantValues.set(declaration.name, value);
+    const object = unwrapCasts(declaration.initializer);
+    if (object.kind === 'object') {
+      for (const property of object.properties) {
+        if (
+          property.kind === 'property' &&
+          property.value.kind === 'literal' &&
+          property.value.value !== null
+        ) {
+          constantPropertyValues.set(`${declaration.name}.${property.name}`, property.value.value);
+        }
+      }
+    }
   }
   const inlineFunctions = new Map((module.inlineFunctions ?? []).map((declaration) => [declaration.name, declaration]));
   const mutatingFunctions = collectMutatingFunctionParameters([
@@ -146,6 +161,7 @@ export function emitRustModule(module: RustModule): string {
   const moduleMutatedNames = collectMutatedNames(module.declarations, mutatingFunctions);
   const context: EmitContext = {
     anonymousTypeOwner: 'Module',
+    anonymousTypeParameters: new Map(),
     anonymousTypes: new Map(),
     atomicBoolNames: new Set(
       module.declarations.flatMap((declaration) =>
@@ -163,6 +179,7 @@ export function emitRustModule(module: RustModule): string {
     callbackTypes: new Set(['EasingFunction', 'ScalarRemap']),
     captureReturns: false,
     constantNames,
+    constantPropertyValues,
     constantValues,
     continueEpilogue: [],
     entityRuntimeFieldSlots: new Map(),
@@ -356,6 +373,7 @@ export function emitRustModule(module: RustModule): string {
   }
   registerSharedModuleAnonymousTypes(module.declarations, context);
   registerGlobalResolvedAnonymousTypes([...module.declarations, ...(module.semanticFunctions ?? [])], context);
+  registerTypeDeclarationAnonymousTypes(module.declarations, context);
   registerNestedAnonymousTypes(context);
   const declarationBodies = module.declarations
     .map((declaration) => {
@@ -6000,7 +6018,8 @@ function emitType(type: IrType, context: EmitContext): string {
       if (!name) {
         throw new RustEmissionError(`anonymous structural type has no synthesized Rust identity: ${typeKey(type)}`);
       }
-      return name;
+      const parameters = anonymousTypeParameterNames(type, context);
+      return parameters.length > 0 ? `${name}<${parameters.join(', ')}>` : name;
     }
     case 'array':
       return `Vec<${emitType(type.element, context)}>`;
@@ -7735,6 +7754,26 @@ function registerSharedModuleAnonymousTypes(declarations: readonly IrDeclaration
   }
 }
 
+function registerTypeDeclarationAnonymousTypes(
+  declarations: readonly IrDeclaration[],
+  context: EmitContext,
+): void {
+  const anonymousTypes = context.anonymousTypes as Map<string, string>;
+  const anonymousTypeParameters = context.anonymousTypeParameters as Map<string, readonly string[]>;
+  for (const declaration of declarations) {
+    if (declaration.kind !== 'type' || declaration.typeParameters.length === 0) continue;
+    let index = 1;
+    for (const type of collectResolvedAnonymousTypes(declaration.type, context)) {
+      const key = typeKey(type);
+      if (key === typeKey(declaration.type)) continue;
+      if (!anonymousTypes.has(key)) anonymousTypes.set(key, `${pascalCase(declaration.name)}Record${String(index)}`);
+      const parameters = declaration.typeParameters.filter((parameter) => typeUsesNamedParameter(type, parameter));
+      if (parameters.length > 0) anonymousTypeParameters.set(key, parameters);
+      index++;
+    }
+  }
+}
+
 function registerNestedAnonymousTypes(context: EmitContext): void {
   for (const key of [...context.anonymousTypes.keys()]) {
     const type = JSON.parse(key) as IrType;
@@ -7867,10 +7906,12 @@ function emitAnonymousDefinitions(context: EmitContext, exported = false): strin
       const type = JSON.parse(key) as IrType;
       if (type.kind !== 'anonymous') throw new RustEmissionError(`invalid anonymous type identity ${name}`);
       const fields = flattenStructFields(type, context);
+      const parameters = anonymousTypeParameterNames(type, context);
+      const generics = parameters.length > 0 ? `<${parameters.join(', ')}>` : '';
       const derivesDefault = fields.every((field) => field.optional || rustTypeSupportsDefault(field.type, context));
       return [
         `#[derive(Clone${derivesDefault ? ', Default' : ''})]`,
-        `${exported ? 'pub ' : ''}struct ${name} {`,
+        `${exported ? 'pub ' : ''}struct ${name}${generics} {`,
         indent(
           [
             `${exported ? 'pub ' : ''}__flight_identity: std::sync::Arc<()>,`,
@@ -7885,13 +7926,20 @@ function emitAnonymousDefinitions(context: EmitContext, exported = false): strin
           ].join('\n'),
         ),
         '}',
-        `impl PartialEq for ${name} {`,
+        `impl${generics} PartialEq for ${name}${generics} {`,
         '  fn eq(&self, other: &Self) -> bool { std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity) }',
         '}',
       ].join('\n');
     });
   if (definitions.length === 0) return '';
   return `${definitions.join('\n\n')}\n\n`;
+}
+
+function anonymousTypeParameterNames(type: Extract<IrType, { kind: 'anonymous' }>, context: EmitContext): string[] {
+  return [
+    ...(context.anonymousTypeParameters.get(typeKey(type)) ??
+      [...context.lexicalTypeParameters].filter((parameter) => typeUsesNamedParameter(type, parameter))),
+  ];
 }
 
 function collectAnonymousTypes(value: unknown): IrType[] {
@@ -10157,26 +10205,24 @@ function discriminatedUnionComparison(
   if (expression.kind !== 'binary' || !['===', '!==', '==', '!='].includes(expression.operator)) {
     return undefined;
   }
-  const property =
-    expression.left.kind === 'property' &&
-    expression.left.object.kind === 'identifier' &&
-    expression.right.kind === 'literal' &&
-    expression.right.value !== null
-      ? {
-          literal: expression.right.value,
-          name: expression.left.object.name,
-          propertyName: expression.left.name,
-        }
-      : expression.right.kind === 'property' &&
-          expression.right.object.kind === 'identifier' &&
-          expression.left.kind === 'literal' &&
-          expression.left.value !== null
-        ? {
-            literal: expression.left.value,
-            name: expression.right.object.name,
-            propertyName: expression.right.name,
-          }
-        : undefined;
+  const constantValue = (candidate: IrExpression): boolean | number | string | undefined => {
+    if (candidate.kind === 'literal' && candidate.value !== null) return candidate.value;
+    if (candidate.kind === 'property' && candidate.object.kind === 'identifier') {
+      return context.constantPropertyValues.get(`${candidate.object.name}.${candidate.name}`);
+    }
+    return undefined;
+  };
+  const comparison = (
+    candidate: IrExpression,
+    value: IrExpression,
+  ): { literal: boolean | number | string; name: string; propertyName: string } | undefined => {
+    if (candidate.kind !== 'property' || candidate.object.kind !== 'identifier') return undefined;
+    const literal = constantValue(value);
+    return literal === undefined
+      ? undefined
+      : { literal, name: candidate.object.name, propertyName: candidate.name };
+  };
+  const property = comparison(expression.left, expression.right) ?? comparison(expression.right, expression.left);
   if (!property) return undefined;
   const name = property.name;
   const sourceType = context.symbolTypes.get(name);

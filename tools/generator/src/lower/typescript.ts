@@ -1624,7 +1624,13 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
   }
   if (ts.isArrayTypeNode(node)) return { element: lowerType(node.elementType, context), kind: 'array' };
   if (ts.isTypeOperatorNode(node)) return lowerType(node.type, context);
-  if (ts.isTypeQueryNode(node)) return { kind: 'dynamic' };
+  if (ts.isTypeQueryNode(node)) {
+    const value = constObjectPropertyLiteralValue(node, context);
+    if (typeof value === 'boolean') return { kind: 'primitive', name: 'Bool' };
+    if (typeof value === 'number') return { kind: 'primitive', name: 'Float' };
+    if (typeof value === 'string') return { kind: 'primitive', name: 'String' };
+    return { kind: 'dynamic' };
+  }
   // Template-literal types constrain which JavaScript strings are accepted statically, but they do
   // not introduce a distinct runtime representation. Preserve the value category without pretending
   // Rust's `String` enforces the TypeScript pattern (for example `${string}.${string}`).
@@ -2128,7 +2134,7 @@ function lowerTypeMember(node: ts.TypeElement, context: LoweringContext) {
       contextualParameters: ts.isFunctionTypeNode(node.type)
         ? lowerParameterList(node.type.parameters, context).parameters
         : undefined,
-      discriminantValue: literalTypeValue(node.type),
+      discriminantValue: literalTypeValue(node.type, context),
       name: propertyName(node.name, context),
       optional: Boolean(node.questionToken),
       type: lowerType(node.type, context),
@@ -2158,7 +2164,9 @@ function lowerTypeMember(node: ts.TypeElement, context: LoweringContext) {
   return unsupported(node, context, `type member ${ts.SyntaxKind[node.kind] ?? node.kind}`);
 }
 
-function literalTypeValue(node: ts.TypeNode): boolean | number | string | undefined {
+function literalTypeValue(node: ts.TypeNode, context: LoweringContext): boolean | number | string | undefined {
+  const constant = constObjectPropertyLiteralValue(node, context);
+  if (constant !== undefined) return constant;
   if (!ts.isLiteralTypeNode(node)) return undefined;
   if (ts.isStringLiteral(node.literal) || ts.isNumericLiteral(node.literal)) {
     return ts.isStringLiteral(node.literal) ? node.literal.text : Number(node.literal.text);
@@ -2175,6 +2183,54 @@ function literalTypeValue(node: ts.TypeNode): boolean | number | string | undefi
   return undefined;
 }
 
+function constObjectPropertyLiteralValue(
+  node: ts.TypeNode,
+  context: LoweringContext,
+): boolean | number | string | undefined {
+  if (
+    !ts.isTypeQueryNode(node) ||
+    !ts.isQualifiedName(node.exprName) ||
+    !ts.isIdentifier(node.exprName.left)
+  ) {
+    return undefined;
+  }
+  const namespace = node.exprName.left.text;
+  const member = node.exprName.right.text;
+  const declaration = context.sourceFile.statements
+    .filter(ts.isVariableStatement)
+    .flatMap((statement) => [...statement.declarationList.declarations])
+    .find((candidate) => ts.isIdentifier(candidate.name) && candidate.name.text === namespace);
+  if (!declaration?.initializer) return undefined;
+  let initializer = declaration.initializer;
+  while (
+    ts.isParenthesizedExpression(initializer) ||
+    ts.isAsExpression(initializer) ||
+    ts.isTypeAssertionExpression(initializer) ||
+    ts.isSatisfiesExpression(initializer)
+  ) {
+    initializer = initializer.expression;
+  }
+  if (!ts.isObjectLiteralExpression(initializer)) return undefined;
+  const property = initializer.properties.find(
+    (candidate): candidate is ts.PropertyAssignment =>
+      ts.isPropertyAssignment(candidate) && propertyName(candidate.name, context) === member,
+  );
+  if (!property) return undefined;
+  const value = property.initializer;
+  if (ts.isStringLiteral(value) || ts.isNoSubstitutionTemplateLiteral(value)) return value.text;
+  if (ts.isNumericLiteral(value)) return Number(value.text);
+  if (value.kind === ts.SyntaxKind.TrueKeyword) return true;
+  if (value.kind === ts.SyntaxKind.FalseKeyword) return false;
+  if (
+    ts.isPrefixUnaryExpression(value) &&
+    value.operator === ts.SyntaxKind.MinusToken &&
+    ts.isNumericLiteral(value.operand)
+  ) {
+    return -Number(value.operand.text);
+  }
+  return undefined;
+}
+
 function literalStringTypeValues(node: ts.TypeNode): string[] {
   if (ts.isParenthesizedTypeNode(node)) return literalStringTypeValues(node.type);
   if (ts.isUnionTypeNode(node)) return node.types.flatMap(literalStringTypeValues);
@@ -2187,6 +2243,14 @@ function commonType(types: IrType[]): IrType {
   if (types.every((item) => JSON.stringify(item) === JSON.stringify(first))) return first;
   if (types.every((item) => item.kind === 'anonymous')) {
     const anonymous = types as Array<Extract<IrType, { kind: 'anonymous' }>>;
+    const discriminated = anonymous[0]!.fields.some((field) => {
+      if (field.discriminantValue === undefined) return false;
+      const values = anonymous.map((item) =>
+        item.fields.find((candidate) => candidate.name === field.name)?.discriminantValue,
+      );
+      return values.every((value) => value !== undefined) && new Set(values).size === anonymous.length;
+    });
+    if (discriminated) return { kind: 'union', variants: anonymous };
     const fieldNames = new Set(anonymous.flatMap((item) => item.fields.map((field) => field.name)));
     return {
       extends: [],
