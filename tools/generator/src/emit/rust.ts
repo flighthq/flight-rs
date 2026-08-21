@@ -2679,11 +2679,12 @@ function emitCall(
               parameters: replacement.parameters.map((_, index) => (index === 0 ? stringType : optionalStringType)),
               returns: stringType,
             };
-            const callbackArguments = replacement.parameters.map((_, index) =>
-              index === 0
-                ? 'captures.get(0).map_or("", |matched| matched.as_str()).to_owned()'
-                : `captures.get(${String(index)}).map(|matched| matched.as_str().to_owned())`,
-            );
+            const callbackArguments = replacement.parameters.map((parameter, index) => {
+              const contextual = parameter.type.kind === 'dynamic' ? callbackType.parameters[index] : parameter.type;
+              return index === 0 || contextual?.kind !== 'nullable'
+                ? `captures.get(${String(index)}).map_or("", |matched| matched.as_str()).to_owned()`
+                : `captures.get(${String(index)}).map(|matched| matched.as_str().to_owned())`;
+            });
             return `{ let mut __flight_replace = ${emitClosure(replacement, context, callbackType, false)}; ${parenthesize(regex)}.${replaceMethod}(&${parenthesize(owner)}, |captures: &regex::Captures<'_>| __flight_replace(${callbackArguments.join(', ')})).into_owned() }`;
           }
           return `${parenthesize(regex)}.${replaceMethod}(&${parenthesize(owner)}, ${emitExpression(replacement, context, primitive('String'))}).into_owned()`;
@@ -2896,7 +2897,7 @@ function emitCall(
           parameters: [collectionType.element],
           returns,
         };
-        return `${parenthesize(owner)}.iter().cloned().map(${emitClosure(callback, context, closureType, false)}).collect()`;
+        return `${parenthesize(owner)}.iter().cloned().map(${emitClosure(callback, context, closureType, false)}).collect::<Vec<_>>()`;
       }
       if (callback.kind === 'identifier') {
         const declaration = context.functions.get(callback.name);
@@ -2914,7 +2915,7 @@ function emitCall(
             kind: 'call',
             typeArguments: [],
           };
-          return `${parenthesize(owner)}.iter().cloned().map(|${itemName}| ${emitCall(call, callbackContext)}).collect()`;
+          return `${parenthesize(owner)}.iter().cloned().map(|${itemName}| ${emitCall(call, callbackContext)}).collect::<Vec<_>>()`;
         }
       }
       throw new RustEmissionError('Array.map requires an inline or inferred named callback');
@@ -4574,9 +4575,9 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
   if (expression.operator === '??' || expression.operator === '??undefined') {
     if (leftType?.kind !== 'nullable' && resolvedLeft?.kind !== 'dynamic') return left;
     if (leftType?.kind === 'nullable' && rightType?.kind === 'nullable') {
-      return `${parenthesize(left)}.or(${right})`;
+      return `${parenthesize(left)}.clone().or(${right})`;
     }
-    return `${parenthesize(left)}.unwrap_or(${right})`;
+    return `${parenthesize(left)}.clone().unwrap_or(${right})`;
   }
   if (
     (expression.operator === '&&' || expression.operator === '||') &&
