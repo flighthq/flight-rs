@@ -6806,6 +6806,8 @@ function registerEntityRuntimeFamilies(context: EmitContext): void {
     ...context,
     namedTypes: new Map(namedTypes),
   };
+  const rootFields = flattenStructFields(root, originalContext);
+  const rootFieldNames = new Set(rootFields.map((field) => field.name));
   const occurrences = new Map<string, IrTypeField[]>();
   const unavailableFields = context.entityRuntimeUnavailableFields as Map<string, string>;
   const genericSlotTypes = context.entityRuntimeGenericSlotTypes as Set<string>;
@@ -6846,12 +6848,14 @@ function registerEntityRuntimeFamilies(context: EmitContext): void {
     });
   }
   aggregateFields.sort((left, right) => left.name.localeCompare(right.name));
+  const rootStorageFields = [...rootFields, ...aggregateFields.filter((field) => !rootFieldNames.has(field.name))].sort(
+    (left, right) => left.name.localeCompare(right.name),
+  );
   namedTypes.set('EntityRuntime', {
     extends: [],
-    fields: aggregateFields,
+    fields: rootStorageFields,
     kind: 'anonymous',
   });
-  const rootFieldNames = new Set(flattenStructFields(root, originalContext).map((field) => field.name));
   const addedFields = aggregateFields.filter((field) => !rootFieldNames.has(field.name)).map((field) => field.name);
   (context.openInterfaceFields as Map<string, ReadonlySet<string>>).set('EntityRuntime', new Set(addedFields));
 
@@ -6909,9 +6913,9 @@ function registerEntityRuntimeFamilies(context: EmitContext): void {
       unavailableFields.set(`${name}\0${field}`, reason);
     }
   }
-  for (const field of aggregateFields) fieldSlots.set(`EntityRuntime\0${field.name}`, 'EntityRuntime');
+  for (const field of rootStorageFields) fieldSlots.set(`EntityRuntime\0${field.name}`, 'EntityRuntime');
 
-  for (const field of aggregateFields) {
+  for (const field of rootStorageFields) {
     if (!field.optional && !rustTypeSupportsDefault(field.type, context)) {
       (context.entityRuntimeLateFields as Set<string>).add(`EntityRuntime\0${field.name}`);
     }

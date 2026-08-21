@@ -3631,6 +3631,52 @@ describe('Rust emission', () => {
     ).not.toThrow();
   });
 
+  it('retains canonical entity runtime fields when an imported runtime specializes them', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/entity/src/runtime.ts',
+      `
+        import type { EntityRuntime } from '@flighthq/types/contract';
+        export function createEntityRuntime(): EntityRuntime {
+          return { binding: null };
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const entityRuntime = {
+      extends: [],
+      fields: [
+        {
+          name: 'binding',
+          optional: false,
+          type: { inner: { kind: 'dynamic' as const }, kind: 'nullable' as const },
+        },
+      ],
+      kind: 'anonymous' as const,
+    };
+    const semanticTypes = {
+      EntityRuntime: entityRuntime,
+      WebcamStreamRuntime: {
+        extends: [{ arguments: [], kind: 'named' as const, name: 'EntityRuntime' }],
+        fields: [{ name: 'binding', optional: false, type: { kind: 'dynamic' as const } }],
+        kind: 'anonymous' as const,
+      },
+    };
+    const lowered = lowerTypeScriptSource(source, '@flighthq/entity', '/workspace', {
+      types: semanticTypes,
+    });
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      semanticTypes,
+      source: 'upstream/packages/entity/src/runtime.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('__flight_runtime.inner.lock().unwrap().binding = None');
+  });
+
   it('stores generic-dependent entity runtime fields in checked typed slots', () => {
     const rootSource = ts.createSourceFile(
       '/workspace/upstream/packages/types/src/entity.ts',
