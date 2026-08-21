@@ -86,6 +86,7 @@ interface EmitContext {
   namedTypeParameters: ReadonlyMap<string, readonly string[]>;
   namedTypes: ReadonlyMap<string, IrType>;
   nonNullableNames: ReadonlySet<string>;
+  nullCheckedNames: ReadonlySet<string>;
   numericNamespaceNames: ReadonlySet<string>;
   openInterfaceFields: ReadonlyMap<string, ReadonlySet<string>>;
   placeAliases: Map<string, IrExpression>;
@@ -301,6 +302,7 @@ export function emitRustModule(module: RustModule): string {
         .map((declaration) => [declaration.name, declaration.type] as const),
     ]),
     nonNullableNames: new Set(),
+    nullCheckedNames: new Set(),
     numericNamespaceNames: new Set(
       module.declarations.flatMap((declaration) =>
         declaration.kind === 'variable' &&
@@ -1376,7 +1378,9 @@ function emitStatementsAsBlock(
 ): string {
   const lines = [...prefix];
   const namesUsedLater = identifierNamesUsedLater(statements);
-  let activeContext = context;
+  const nullCheckedNames = new Set(context.nullCheckedNames);
+  collectNullCheckedIdentifierNames(statements, nullCheckedNames);
+  let activeContext: EmitContext = { ...context, nullCheckedNames };
   for (const [index, statement] of statements.entries()) {
     const statementContext = contextPreservingReferencedNames(
       statement,
@@ -1931,7 +1935,7 @@ function emitLocalVariable(variable: IrVariable, context: EmitContext): string[]
   const entitySpreadType = inferEntitySpreadType(variable.initializer, context);
   const object = unwrapCasts(variable.initializer);
   const contextualObject = object.kind === 'object' ? inferContextualObjectType(object, context, expected) : undefined;
-  const inferred =
+  const inferredValue =
     (expected?.kind === 'dynamic' ? contextualObject : expected) ??
     contextualObject ??
     entitySpreadType ??
@@ -1939,6 +1943,13 @@ function emitLocalVariable(variable: IrVariable, context: EmitContext): string[]
     (evaluatesToNullish(variable.initializer, context)
       ? ({ inner: { kind: 'dynamic' }, kind: 'nullable' } as const)
       : undefined);
+  const nullCheckedMapElement = context.nullCheckedNames.has(variable.name)
+    ? inferMapElementLookup(variable.initializer, context)
+    : undefined;
+  const inferred =
+    nullCheckedMapElement && nullCheckedMapElement.type.kind !== 'nullable'
+      ? ({ inner: nullCheckedMapElement.type, kind: 'nullable' } as const)
+      : inferredValue;
   if (inferred?.kind === 'anonymous') registerInferredObjectType(inferred, context);
   const forwardCaptureSlot = context.forwardClosureCaptureNames.has(variable.name)
     ? context.recursiveClosureSlots.get(variable.name)
@@ -1994,24 +2005,26 @@ function emitLocalVariable(variable: IrVariable, context: EmitContext): string[]
     context.placeAliases.set(variable.name, variable.initializer);
     return [];
   }
-  const initializer = emitExpression(
-    entitySpreadType ? unwrapCasts(variable.initializer) : variable.initializer,
-    context,
-    (expected?.kind === 'dynamic' ? inferred : expected) ??
-      (inferred?.kind === 'nullable' && variable.initializer.kind === 'call'
-        ? inferred
-        : mutable && inferred?.kind === 'primitive' && inferred.name === 'String'
-          ? inferred
-          : variable.initializer.kind === 'function' || containsObjectLiteral(variable.initializer)
+  const initializer = nullCheckedMapElement
+    ? emitElement(nullCheckedMapElement.expression, context)
+    : emitExpression(
+        entitySpreadType ? unwrapCasts(variable.initializer) : variable.initializer,
+        context,
+        (expected?.kind === 'dynamic' ? inferred : expected) ??
+          (inferred?.kind === 'nullable' && variable.initializer.kind === 'call'
             ? inferred
-            : undefined),
-  );
+            : mutable && inferred?.kind === 'primitive' && inferred.name === 'String'
+              ? inferred
+              : variable.initializer.kind === 'function' || containsObjectLiteral(variable.initializer)
+                ? inferred
+                : undefined),
+      );
   if (inferred) context.symbolTypes.set(variable.name, inferred);
   if (!mutable && evaluatesToNullish(variable.initializer, context)) {
     context.knownNullNames.add(variable.name);
   }
   const annotationType =
-    expected ??
+    (nullCheckedMapElement ? inferred : expected) ??
     (variable.initializer.kind === 'function' ||
     variable.initializer.kind === 'new' ||
     evaluatesToNullish(variable.initializer, context)
@@ -3279,8 +3292,8 @@ function emitCall(
         );
         const returns =
           declaredReturns ??
-          (inferredReturns?.kind === 'dynamic' ? undefined : inferredReturns) ??
           contextualElement ??
+          (inferredReturns?.kind === 'dynamic' ? undefined : inferredReturns) ??
           ({ kind: 'dynamic' } as const);
         const closureType: IrType = {
           kind: 'function',
@@ -8720,6 +8733,25 @@ function containsIdentifier(value: unknown, name: string): boolean {
   );
 }
 
+function collectNullCheckedIdentifierNames(value: unknown, names: Set<string>): void {
+  if (!value || typeof value !== 'object') return;
+  if ('kind' in value && value.kind === 'binary' && 'operator' in value) {
+    const expression = value as Extract<IrExpression, { kind: 'binary' }>;
+    if (['===', '!==', '==', '!='].includes(expression.operator)) {
+      if (expression.left.kind === 'identifier' && isNullishExpression(expression.right)) {
+        names.add(expression.left.name);
+      }
+      if (expression.right.kind === 'identifier' && isNullishExpression(expression.left)) {
+        names.add(expression.right.name);
+      }
+    }
+  }
+  for (const child of Object.values(value)) {
+    if (Array.isArray(child)) child.forEach((item) => collectNullCheckedIdentifierNames(item, names));
+    else collectNullCheckedIdentifierNames(child, names);
+  }
+}
+
 function evaluateStaticBoolean(expression: IrExpression, context: EmitContext): boolean | undefined {
   if (expression.kind === 'cast') return evaluateStaticBoolean(expression.expression, context);
   if (expression.kind === 'literal' && typeof expression.value === 'boolean') return expression.value;
@@ -10237,6 +10269,18 @@ function emitElement(expression: Extract<IrExpression, { kind: 'element' }>, con
     ? `${emitPlaceExpression(expression.object, context)}.${root && context.mutatedNames.has(root) ? 'as_mut' : 'as_ref'}().unwrap()`
     : emitPlaceExpression(expression.object, context);
   return `${object}[${emitExpression(expression.index, context)} as usize]`;
+}
+
+function inferMapElementLookup(
+  expression: IrExpression,
+  context: EmitContext,
+): { expression: Extract<IrExpression, { kind: 'element' }>; type: IrType } | undefined {
+  if (expression.kind !== 'element') return undefined;
+  const objectType = inferIrExpressionType(expression.object, context);
+  const candidate = objectType?.kind === 'nullable' ? objectType.inner : objectType;
+  const collection = resolveSemanticType(candidate, context) ?? candidate;
+  const type = collection?.kind === 'named' && collection.name === 'RustMap' ? collection.arguments[1] : undefined;
+  return type ? { expression, type } : undefined;
 }
 
 function emitElementRead(

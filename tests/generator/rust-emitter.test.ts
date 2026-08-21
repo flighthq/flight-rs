@@ -2447,6 +2447,18 @@ describe('Rust emission', () => {
         export function report(level: number): void {
           emit({ data: 'ready', level });
         }
+        export function entries(levels: readonly number[]): readonly Entry[] {
+          return levels.map((level) => ({ data: 'ready', level }));
+        }
+        export function readField(entries: Readonly<Record<string, string>>, name: string): string | null {
+          const value = entries[name];
+          return value !== undefined ? value : null;
+        }
+        export function readNumber(entries: Readonly<Record<string, string>>, name: string): number | null {
+          const value = entries[name];
+          if (value === undefined || value.trim() === '') return null;
+          return Number(value);
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -2461,6 +2473,9 @@ describe('Rust emission', () => {
 
     expect(lowered.diagnostics).toEqual([]);
     expect(output).not.toContain('SynthesizedRecord');
+    expect(output).toContain('(value).is_some()');
+    expect(output).toContain('(value).is_none()');
+    expect(output).not.toContain('TypeScript Record key was absent');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-contextual-object-'));
     const sourceFile = path.join(fixture, 'lib.rs');
