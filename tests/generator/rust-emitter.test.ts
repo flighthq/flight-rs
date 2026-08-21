@@ -2573,6 +2573,26 @@ describe('Rust emission', () => {
           if (gamepad === null) return false;
           return gamepad.buttons[index].pressed;
         }
+        export function containsNode(element: any, other: any): boolean {
+          return element.contains(other);
+        }
+        export function createChild(document: any): any {
+          const child = document.createElement('div');
+          return child;
+        }
+        export function firstChildIsText(element: any): boolean {
+          const first = element.firstChild;
+          return first !== null && first.nodeType === 3;
+        }
+        export function isActive(document: any, element: any | null): boolean {
+          if (element === null) return false;
+          return document.activeElement === element;
+        }
+        export function preserveNullable(value: any | null): any | null {
+          const stored = value ?? null;
+          const present = value !== null;
+          return present ? stored : null;
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -2603,6 +2623,13 @@ describe('Rust emission', () => {
     expect(output).toContain('expect("TypeScript nullable iterable was not narrowed").iter().cloned()');
     expect(output).toContain('crate::host_value::<f64>("host.index")');
     expect(output).toContain('crate::host_value::<bool>("host.pressed")');
+    expect(output).toContain(
+      'pub fn contains_node(element: crate::OpaqueHostValue, other: crate::OpaqueHostValue) -> bool {\n  return crate::host_value::<bool>("host.call");',
+    );
+    expect(output).toContain('let child = crate::host_value::<crate::OpaqueHostValue>("host.call");');
+    expect(output).toContain('crate::host_value::<Option<crate::OpaqueHostValue>>("host.firstChild")');
+    expect(output).toContain('crate::host_value::<Option<crate::OpaqueHostValue>>("host.activeElement")');
+    expect(output).toContain('let stored = (value).clone();');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
     const sourceFile = path.join(fixture, 'lib.rs');
@@ -2611,7 +2638,7 @@ describe('Rust emission', () => {
       output.replace(
         '// Source:',
         `
-        #[derive(Clone, Default)]
+        #[derive(Clone, Default, PartialEq)]
         pub struct OpaqueHostValue;
         pub fn host_value<T: Default>(_: &str) -> T { T::default() }
         pub fn host_set<T>(_: &str, value: T) -> T { value }

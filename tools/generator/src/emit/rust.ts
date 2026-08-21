@@ -3258,7 +3258,14 @@ function inferKnownHostCallReturnType(
     return undefined;
   }
   if (['charCodeAt', 'now'].includes(expression.callee.name)) return primitive('Float');
+  if (expression.callee.name === 'contains') return primitive('Bool');
   if (['toLowerCase', 'toUpperCase', 'trim'].includes(expression.callee.name)) return primitive('String');
+  if (
+    expression.callee.binding !== 'DomDocumentBackend' &&
+    ['createElement', 'createTextNode'].includes(expression.callee.name)
+  ) {
+    return { kind: 'dynamic' };
+  }
   if (['getCoalescedEvents', 'segment'].includes(expression.callee.name)) {
     return { element: { kind: 'dynamic' }, kind: 'array' };
   }
@@ -8550,6 +8557,20 @@ function collectConsumedIdentifierNames(value: unknown, names: Set<string>, cons
         if ('left' in value) collectConsumedIdentifierNames(value.left, names);
         if ('right' in value) collectConsumedIdentifierNames(value.right, names, true);
         return;
+      case 'binary':
+        if (
+          'operator' in value &&
+          typeof value.operator === 'string' &&
+          (value.operator === '??' || value.operator === '??undefined') &&
+          'right' in value &&
+          value.right &&
+          typeof value.right === 'object' &&
+          isNullishExpression(value.right as IrExpression)
+        ) {
+          if ('left' in value) collectConsumedIdentifierNames(value.left, names, true);
+          return;
+        }
+        break;
       case 'await':
       case 'cast':
       case 'spread':
@@ -9781,6 +9802,19 @@ function inferDynamicHostPropertyType(name: string): IrType | undefined {
   if (['index', 'length'].includes(name)) return primitive('Float');
   if (name === 'isWordLike') return primitive('Bool');
   if (name === 'segment') return primitive('String');
+  if (
+    [
+      'activeElement',
+      'firstChild',
+      'lastChild',
+      'nextSibling',
+      'parentElement',
+      'parentNode',
+      'previousSibling',
+    ].includes(name)
+  ) {
+    return { inner: { kind: 'dynamic' }, kind: 'nullable' };
+  }
   return undefined;
 }
 
