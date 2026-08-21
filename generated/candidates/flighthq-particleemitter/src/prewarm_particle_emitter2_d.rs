@@ -20,6 +20,7 @@ pub struct FlightPartialRecord1 {
     pub anisotropy_ext: Option<crate::OpaqueHostValue>,
     pub appearance_id: Option<f64>,
     pub apply_blend_mode_parent: Option<WgpuRenderState>,
+    pub binding: Option<crate::OpaqueHostValue>,
     pub binding_cache_guard: Option<
         std::sync::Arc<
             std::sync::Mutex<
@@ -281,6 +282,7 @@ pub struct FlightPartialRecord2 {
     pub anisotropy_ext: Option<crate::OpaqueHostValue>,
     pub appearance_id: Option<f64>,
     pub apply_blend_mode_parent: Option<WgpuRenderState>,
+    pub binding: Option<crate::OpaqueHostValue>,
     pub binding_cache_guard: Option<
         std::sync::Arc<
             std::sync::Mutex<
@@ -584,6 +586,7 @@ pub struct FlightPartialRecord6 {
     pub anisotropy_ext: Option<crate::OpaqueHostValue>,
     pub appearance_id: Option<f64>,
     pub apply_blend_mode_parent: Option<WgpuRenderState>,
+    pub binding: Option<crate::OpaqueHostValue>,
     pub binding_cache_guard: Option<
         std::sync::Arc<
             std::sync::Mutex<

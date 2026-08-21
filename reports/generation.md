@@ -6,15 +6,15 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | --- | ---: |
 | Inventoried packages | 150 |
 | Default-generated packages | 144 |
-| Emittable packages | 54 |
-| Blocked packages | 90 |
-| Compiled candidates | 30 |
-| Compile-blocked candidates | 0 |
-| Dependency-blocked candidates | 22 |
+| Emittable packages | 55 |
+| Blocked packages | 89 |
+| Compiled candidates | 31 |
+| Compile-blocked candidates | 3 |
+| Dependency-blocked candidates | 19 |
 | Cultivated packages | 1 |
 | Host-bound packages | 4 |
 | Excluded packages | 1 |
-| Source/package blockers | 448 |
+| Source/package blockers | 444 |
 | Eligible task constructions | 229 |
 | Portable executable task constructions | 26 |
 | Host-placeholder task constructions | 0 |
@@ -61,13 +61,13 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/effects-canvas` | host-backend | blocked | source-blocked | 11/29 | 69/82 | 18 | 1/1 | 5 | 19 | no |
 | `@flighthq/effects-gl` | host-backend | blocked | source-blocked | 13/60 | 124/180 | 56 | 1/1 | 10 | 48 | no |
 | `@flighthq/effects-wgpu` | host-backend | blocked | source-blocked | 14/58 | 123/177 | 54 | 2/2 | 6 | 45 | no |
-| `@flighthq/entity` | generated | blocked | source-blocked | 7/8 | 12/15 | 3 | 30/75 | 1 | 2 | no |
+| `@flighthq/entity` | generated | emittable | compiled | 8/8 | 15/15 | 0 | 30/75 | 1 | 0 | no |
 | `@flighthq/filesystem` | generated | blocked | source-blocked | 2/3 | 40/43 | 3 | 2/2 | 0 | 2 | no |
 | `@flighthq/flow` | generated | emittable | compiled | 3/3 | 9/9 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/font` | generated | blocked | source-blocked | 9/11 | 16/16 | 0 | 2/2 | 0 | 2 | no |
 | `@flighthq/font-formats` | generated | blocked | source-blocked | 3/17 | 46/46 | 0 | 1/1 | 0 | 14 | no |
 | `@flighthq/geolocation` | generated | blocked | source-blocked | 2/3 | 9/12 | 3 | 2/2 | 0 | 2 | no |
-| `@flighthq/geometry` | generated | emittable | dependency-blocked | 30/30 | 382/380 | 0 | 44/62 | 0 | 0 | no |
+| `@flighthq/geometry` | generated | emittable | compile-blocked | 30/30 | 382/380 | 0 | 44/62 | 0 | 0 | no |
 | `@flighthq/glyphatlas` | generated | emittable | dependency-blocked | 10/10 | 18/18 | 0 | 1/1 | 2 | 0 | no |
 | `@flighthq/haptics` | generated | emittable | compiled | 3/3 | 13/13 | 0 | 2/2 | 0 | 0 | no |
 | `@flighthq/host-capacitor` | host-bound | host-bound | not-applicable | 0/0 | 0/13 | 13 | 0/0 | 0 | 0 | no |
@@ -86,12 +86,12 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/lighting` | generated | emittable | dependency-blocked | 13/13 | 31/31 | 0 | 5/8 | 0 | 0 | no |
 | `@flighthq/loader` | generated | blocked | source-blocked | 2/3 | 15/15 | 0 | 3/3 | 0 | 1 | no |
 | `@flighthq/log` | generated | emittable | compiled | 3/3 | 63/63 | 0 | 41/90 | 0 | 0 | no |
-| `@flighthq/materials` | generated | emittable | dependency-blocked | 22/22 | 79/79 | 0 | 8/42 | 0 | 0 | no |
+| `@flighthq/materials` | generated | emittable | compile-blocked | 22/22 | 79/79 | 0 | 8/42 | 0 | 0 | no |
 | `@flighthq/math` | generated | emittable | compiled | 17/17 | 74/74 | 0 | 16/71 | 0 | 0 | no |
 | `@flighthq/media` | generated | emittable | compiled | 6/6 | 45/45 | 0 | 1/1 | 3 | 0 | no |
 | `@flighthq/mediasession` | generated | blocked | source-blocked | 2/3 | 7/10 | 3 | 1/1 | 0 | 2 | no |
 | `@flighthq/menu` | generated | blocked | source-blocked | 3/4 | 14/17 | 3 | 3/3 | 0 | 2 | no |
-| `@flighthq/mesh` | generated | blocked | source-blocked | 12/16 | 88/84 | 0 | 7/24 | 1 | 4 | no |
+| `@flighthq/mesh` | generated | blocked | source-blocked | 13/16 | 88/84 | 0 | 7/24 | 2 | 3 | no |
 | `@flighthq/motionpath` | generated | emittable | dependency-blocked | 3/3 | 7/7 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/movieclip` | generated | blocked | source-blocked | 2/5 | 28/28 | 0 | 2/2 | 0 | 3 | no |
 | `@flighthq/net` | generated | blocked | source-blocked | 2/3 | 1/4 | 3 | 2/2 | 0 | 2 | no |
@@ -118,7 +118,7 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/render-gl` | host-backend | blocked | source-blocked | 28/32 | 114/118 | 8 | 5/5 | 22 | 5 | no |
 | `@flighthq/render-wgpu` | host-backend | blocked | source-blocked | 22/28 | 110/121 | 11 | 5/5 | 17 | 7 | no |
 | `@flighthq/requirements` | generated | blocked | source-blocked | 3/4 | 5/5 | 0 | 1/1 | 0 | 1 | no |
-| `@flighthq/scene2d` | generated | blocked | source-blocked | 2/9 | 30/33 | 3 | 18/29 | 0 | 8 | no |
+| `@flighthq/scene2d` | generated | blocked | source-blocked | 2/9 | 33/33 | 0 | 18/29 | 0 | 7 | no |
 | `@flighthq/scene2d-canvas` | host-backend | blocked | source-blocked | 37/41 | 109/119 | 10 | 5/5 | 28 | 5 | no |
 | `@flighthq/scene2d-dom` | host-bound | host-bound | not-applicable | 0/0 | 0/61 | 61 | 1/1 | 0 | 0 | no |
 | `@flighthq/scene2d-formats` | generated | blocked | source-blocked | 11/23 | 25/11 | 0 | 2/3 | 0 | 12 | no |
@@ -133,7 +133,7 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/screen` | generated | emittable | compiled | 3/3 | 31/31 | 0 | 2/2 | 1 | 0 | partial |
 | `@flighthq/sdk` | generated | blocked | source-blocked | 15/15 | 0/6549 | 6549 | 0/0 | 0 | 1 | no |
 | `@flighthq/sensors` | generated | blocked | source-blocked | 2/3 | 22/32 | 10 | 1/1 | 0 | 2 | no |
-| `@flighthq/shading` | generated | emittable | dependency-blocked | 18/18 | 26/26 | 0 | 4/5 | 2 | 0 | no |
+| `@flighthq/shading` | generated | emittable | compile-blocked | 18/18 | 26/26 | 0 | 4/5 | 2 | 0 | no |
 | `@flighthq/shape` | generated | blocked | source-blocked | 11/19 | 77/87 | 15 | 9/11 | 0 | 9 | no |
 | `@flighthq/shape-formats` | generated | blocked | source-blocked | 2/3 | 2/2 | 0 | 1/1 | 0 | 1 | no |
 | `@flighthq/share` | generated | blocked | source-blocked | 2/3 | 12/15 | 3 | 2/2 | 0 | 2 | no |
@@ -821,11 +821,6 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 - **emission** `upstream/packages/effects-wgpu/src/wgpuVignetteEffect.ts`: defaultWgpuVignetteEffectRunner: upstream/packages/effects-wgpu/src/wgpuVignetteEffect.ts: cannot infer return type for defaultWgpuVignetteEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuWhiteBalanceEffect.ts`: defaultWgpuWhiteBalanceEffectRunner: upstream/packages/effects-wgpu/src/wgpuWhiteBalanceEffect.ts: cannot infer return type for defaultWgpuWhiteBalanceEffectRunner
 
-### `@flighthq/entity`
-
-- **package** `upstream/packages/entity/src`: Generated crate is missing 3 of 15 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/entity/src/runtime.ts`: createEntityRuntime: entity runtime field binding is not in the source closure
-
 ### `@flighthq/filesystem`
 
 - **package** `upstream/packages/filesystem/src`: Generated crate is missing 3 of 43 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
@@ -925,7 +920,6 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 
 ### `@flighthq/mesh`
 
-- **emission** `upstream/packages/mesh/src/meshGeometry.ts`: createMeshGeometryRuntime: entity runtime field binding is not in the source closure
 - **emission** `upstream/packages/mesh/src/meshGeometryAttributes.ts`: getAttributeByteLocation: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
 - **emission** `upstream/packages/mesh/src/meshGeometryBuilders.ts`: faceSphericalU: spread Rust lowering is not implemented
 - **emission** `upstream/packages/mesh/src/meshGeometryLayout.ts`: convertMeshGeometryLayout: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
@@ -1060,14 +1054,13 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 
 ### `@flighthq/scene2d`
 
-- **package** `upstream/packages/scene2d/src`: Generated crate is missing 3 of 33 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/scene2d/src/displayContainer.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene2d/src/displayObject.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene2d/src/displayObjectAnimation.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene2d/src/htmlView.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene2d/src/scene2d.ts`: createScene2DRuntime: entity runtime field binding is not in the source closure
-- **emission** `upstream/packages/scene2d/src/sceneKindUsage.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene2d/src/sprite.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene2d/src/displayContainer.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene2d/src/displayObject.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene2d/src/displayObjectAnimation.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene2d/src/htmlView.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene2d/src/scene2d.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene2d/src/sceneKindUsage.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene2d/src/sprite.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 
 ### `@flighthq/scene2d-canvas`
 
@@ -1353,3 +1346,281 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 - **emission** `upstream/packages/webcam/src/webcamStream.ts`: createWebcamStreamEntity: EntityRuntimeKey storage requires an aggregate native entity runtime representation; refusing to erase observable runtime state
 
 ## Candidate compile blockers
+
+### `@flighthq/geometry`
+
+- **E0599** `generated/candidates/flighthq-geometry/src/enable_geometry_pool_guards.rs`: no method named `is_some` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>` in the current scope
+- **E0599** `generated/candidates/flighthq-geometry/src/matrix3_pool.rs`: no method named `is_some` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>` in the current scope
+- **E0618** `generated/candidates/flighthq-geometry/src/matrix3_pool.rs`: expected function, found `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>`
+- **E0599** `generated/candidates/flighthq-geometry/src/matrix4_pool.rs`: no method named `is_some` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>` in the current scope
+- **E0618** `generated/candidates/flighthq-geometry/src/matrix4_pool.rs`: expected function, found `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>`
+- **E0599** `generated/candidates/flighthq-geometry/src/matrix_pool.rs`: no method named `is_some` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>` in the current scope
+- **E0618** `generated/candidates/flighthq-geometry/src/matrix_pool.rs`: expected function, found `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>`
+- **E0599** `generated/candidates/flighthq-geometry/src/quaternion_pool.rs`: no method named `is_some` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>` in the current scope
+- **E0618** `generated/candidates/flighthq-geometry/src/quaternion_pool.rs`: expected function, found `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>`
+- **E0599** `generated/candidates/flighthq-geometry/src/rectangle_pool.rs`: no method named `is_some` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>` in the current scope
+- **E0618** `generated/candidates/flighthq-geometry/src/rectangle_pool.rs`: expected function, found `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>`
+- **E0599** `generated/candidates/flighthq-geometry/src/vector2_pool.rs`: no method named `is_some` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>` in the current scope
+- **E0618** `generated/candidates/flighthq-geometry/src/vector2_pool.rs`: expected function, found `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>`
+- **E0599** `generated/candidates/flighthq-geometry/src/vector3_pool.rs`: no method named `is_some` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>` in the current scope
+- **E0618** `generated/candidates/flighthq-geometry/src/vector3_pool.rs`: expected function, found `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>`
+- **E0599** `generated/candidates/flighthq-geometry/src/vector4_pool.rs`: no method named `is_some` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>` in the current scope
+- **E0618** `generated/candidates/flighthq-geometry/src/vector4_pool.rs`: expected function, found `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>`
+- **E0381** `generated/candidates/flighthq-geometry/src/obb.rs`: used binding `lx` is possibly-uninitialized
+- **E0381** `generated/candidates/flighthq-geometry/src/obb.rs`: used binding `ly` is possibly-uninitialized
+- **E0381** `generated/candidates/flighthq-geometry/src/obb.rs`: used binding `lz` is possibly-uninitialized
+
+### `@flighthq/materials`
+
+- **E0432** `generated/candidates/flighthq-materials/src/standard_material.rs`: unresolved import `flighthq_types::STANDARD_MATERIAL_KIND`
+- **E0425** `generated/candidates/flighthq-materials/src/classic_materials.rs`: cannot find type `PbrExtension` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/classic_materials.rs`: cannot find type `StandardPbrMaterialProperties` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/classic_materials.rs`: cannot find type `PbrExtension` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/classic_materials.rs`: cannot find type `StandardPbrMaterialProperties` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/classic_materials.rs`: cannot find type `PbrExtension` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/classic_materials.rs`: cannot find type `StandardPbrMaterialProperties` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/custom_shader_material.rs`: cannot find type `PbrExtension` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/custom_shader_material.rs`: cannot find type `StandardPbrMaterialProperties` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: cannot find type `PbrExtension` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: cannot find type `PbrExtension` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/phong_to_pbr.rs`: cannot find type `PbrExtension` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/phong_to_pbr.rs`: cannot find type `PbrExtension` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/standard_material.rs`: cannot find type `StandardMaterialKind` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/standard_material.rs`: cannot find type `MaterialAlphaMode` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/standard_material.rs`: cannot find type `BlendMode` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/standard_material.rs`: cannot find type `PbrExtension` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/standard_material.rs`: cannot find type `StandardPbrMaterialProperties` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/standard_material.rs`: cannot find type `Texture` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `PbrExtension` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `StandardPbrMaterialProperties` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `PbrExtension` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `StandardPbrMaterialProperties` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `PbrExtension` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `StandardPbrMaterialProperties` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `PbrExtension` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `StandardPbrMaterialProperties` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `PbrExtension` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `StandardPbrMaterialProperties` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `PbrExtension` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `StandardPbrMaterialProperties` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `PbrExtension` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `StandardPbrMaterialProperties` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `PbrExtension` in this scope
+- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `StandardPbrMaterialProperties` in this scope
+- **E0308** `generated/candidates/flighthq-materials/src/classic_materials.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `alpha_map` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `diffuse` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `diffuse_map` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `normal_map` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `normal_scale` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `shininess` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `specular` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `specular_map` on type `SurfaceMaterial`
+- **E0308** `generated/candidates/flighthq-materials/src/classic_materials.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/classic_materials.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `diffuse` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `diffuse_map` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `emissive` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `emissive_map` on type `SurfaceMaterial`
+- **E0308** `generated/candidates/flighthq-materials/src/classic_materials.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/classic_materials.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `diffuse` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `diffuse_map` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `normal_map` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `normal_scale` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `shininess` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `specular` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `specular_map` on type `SurfaceMaterial`
+- **E0308** `generated/candidates/flighthq-materials/src/classic_materials.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/color_scale_bias.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/custom_shader_material.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/extended_pbr_material.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/material.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: mismatched types
+- **E0608** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
+- **E0608** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
+- **E0608** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
+- **E0308** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: mismatched types
+- **E0608** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
+- **E0608** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
+- **E0608** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
+- **E0608** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
+- **E0308** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `diffuse` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `diffuse_map` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `emissive` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `emissive_map` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `emissive_strength` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `glossiness` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `normal_map` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `normal_scale` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `occlusion_map` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `occlusion_strength` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `specular` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `specular_glossiness_map` on type `SurfaceMaterial`
+- **E0308** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: mismatched types
+- **E0063** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: missing fields `alpha_map`, `base_color`, `base_color_map` and 10 other fields in initializer of `StandardPbrMaterialProperties`
+- **E0308** `generated/candidates/flighthq-materials/src/phong_to_pbr.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/phong_to_pbr.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/surface_material.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `far` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `near` on type `SurfaceMaterial`
+- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `emissive` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `emissive_map` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `emissive_strength` on type `SurfaceMaterial`
+- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `matcap` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `tint` on type `SurfaceMaterial`
+- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `normal_map` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `normal_scale` on type `SurfaceMaterial`
+- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `base_color` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `base_color_map` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `ramp` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `steps` on type `SurfaceMaterial`
+- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `base_color` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `base_color_map` on type `SurfaceMaterial`
+- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `tint` on type `SurfaceMaterial`
+- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `color` on type `SurfaceMaterial`
+- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `thickness` on type `SurfaceMaterial`
+- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
+
+### `@flighthq/shading`
+
+- **E0425** `generated/candidates/flighthq-shading/src/order_modifier_stack.rs`: cannot find type `ModifierSlot` in this scope
+- **E0425** `generated/candidates/flighthq-shading/src/order_modifier_stack.rs`: cannot find type `ModifierSlot` in this scope
+- **E0425** `generated/candidates/flighthq-shading/src/order_modifier_stack.rs`: cannot find type `ModifierSlot` in this scope
+- **E0425** `generated/candidates/flighthq-shading/src/order_modifier_stack.rs`: cannot find type `ModifierSlot` in this scope
+- **E0063** `generated/candidates/flighthq-shading/src/create_shaded_material.rs`: missing fields `alpha_cutoff`, `alpha_mode`, `blend_mode` and 15 other fields in initializer of `ShadedMaterial`
+- **E0593** `generated/candidates/flighthq-shading/src/order_modifier_stack.rs`: closure is expected to take 1 argument, but it takes 2 arguments
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `map` on type `Modifier`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `secondary_map` on type `Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `EmissiveModifier` has no field named `source`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `source` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `EmissiveModifier` has no field named `amplitude`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `amplitude` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `EmissiveModifier` has no field named `axis`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `axis` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `EmissiveModifier` has no field named `frequency`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `frequency` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `EmissiveModifier` has no field named `speed`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `speed` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `EmissiveModifier` has no field named `direction`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `direction` on type `&Modifier`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `color` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `EmissiveModifier` has no field named `mode`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `mode` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `EmissiveModifier` has no field named `near`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `near` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `EmissiveModifier` has no field named `far`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `far` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `EmissiveModifier` has no field named `density`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `density` on type `&Modifier`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `strength` on type `&Modifier`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `mask` on type `&Modifier`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `facing` on type `&Modifier`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `facing_softness` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `EmissiveModifier` has no field named `scroll`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `scroll` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `EmissiveModifier` has no field named `secondary_map`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `secondary_map` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `EmissiveModifier` has no field named `secondary_scroll`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `secondary_scroll` on type `&Modifier`
+- **E0308** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: mismatched types
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `FogModifier` has no field named `source`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `source` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `FogModifier` has no field named `amplitude`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `amplitude` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `FogModifier` has no field named `axis`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `axis` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `FogModifier` has no field named `frequency`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `frequency` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `FogModifier` has no field named `speed`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `speed` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `FogModifier` has no field named `direction`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `direction` on type `&Modifier`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `color` on type `&Modifier`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `mode` on type `&Modifier`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `near` on type `&Modifier`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `far` on type `&Modifier`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `density` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `FogModifier` has no field named `strength`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `strength` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `FogModifier` has no field named `mask`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `mask` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `FogModifier` has no field named `facing`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `facing` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `FogModifier` has no field named `facing_softness`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `facing_softness` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `FogModifier` has no field named `scroll`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `scroll` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `FogModifier` has no field named `secondary_map`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `secondary_map` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `FogModifier` has no field named `secondary_scroll`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `secondary_scroll` on type `&Modifier`
+- **E0308** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `source` on type `&Modifier`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `amplitude` on type `&Modifier`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `axis` on type `&Modifier`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `frequency` on type `&Modifier`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `speed` on type `&Modifier`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `direction` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `VertexDisplaceModifier` has no field named `color`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `color` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `VertexDisplaceModifier` has no field named `mode`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `mode` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `VertexDisplaceModifier` has no field named `near`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `near` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `VertexDisplaceModifier` has no field named `far`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `far` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `VertexDisplaceModifier` has no field named `density`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `density` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `VertexDisplaceModifier` has no field named `strength`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `strength` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `VertexDisplaceModifier` has no field named `mask`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `mask` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `VertexDisplaceModifier` has no field named `facing`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `facing` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `VertexDisplaceModifier` has no field named `facing_softness`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `facing_softness` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `VertexDisplaceModifier` has no field named `scroll`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `scroll` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `VertexDisplaceModifier` has no field named `secondary_map`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `secondary_map` on type `&Modifier`
+- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `VertexDisplaceModifier` has no field named `secondary_scroll`
+- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `secondary_scroll` on type `&Modifier`

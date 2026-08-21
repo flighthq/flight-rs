@@ -41,6 +41,7 @@ pub struct FlightPartialRecord2 {
     pub anisotropy_ext: Option<crate::OpaqueHostValue>,
     pub appearance_id: Option<f64>,
     pub apply_blend_mode_parent: Option<WgpuRenderState>,
+    pub binding: Option<crate::OpaqueHostValue>,
     pub binding_cache_guard: Option<
         std::sync::Arc<
             std::sync::Mutex<
@@ -302,6 +303,7 @@ pub struct FlightPartialRecord3 {
     pub anisotropy_ext: Option<crate::OpaqueHostValue>,
     pub appearance_id: Option<f64>,
     pub apply_blend_mode_parent: Option<WgpuRenderState>,
+    pub binding: Option<crate::OpaqueHostValue>,
     pub binding_cache_guard: Option<
         std::sync::Arc<
             std::sync::Mutex<
@@ -598,6 +600,7 @@ pub struct FlightPartialRecord7 {
     pub anisotropy_ext: Option<crate::OpaqueHostValue>,
     pub appearance_id: Option<f64>,
     pub apply_blend_mode_parent: Option<WgpuRenderState>,
+    pub binding: Option<crate::OpaqueHostValue>,
     pub binding_cache_guard: Option<
         std::sync::Arc<
             std::sync::Mutex<
@@ -907,6 +910,7 @@ pub fn compute_bitmap_text_local_bounds_rectangle(out: &mut Rectangle, source: &
             anisotropy_ext: (__flight_source.anisotropy_ext).clone(),
             appearance_id: __flight_source.appearance_id,
             apply_blend_mode_parent: (__flight_source.apply_blend_mode_parent).clone(),
+            binding: (__flight_source.binding).clone(),
             binding_cache_guard: (__flight_source.binding_cache_guard).clone(),
             bounds_rectangle: (__flight_source.bounds_rectangle).clone(),
             bounds_using_local_bounds_id: __flight_source.bounds_using_local_bounds_id,
@@ -1186,6 +1190,7 @@ pub fn create_bitmap_text(
             anisotropy_ext: (__flight_source.anisotropy_ext).clone(),
             appearance_id: __flight_source.appearance_id,
             apply_blend_mode_parent: (__flight_source.apply_blend_mode_parent).clone(),
+            binding: (__flight_source.binding).clone(),
             binding_cache_guard: (__flight_source.binding_cache_guard).clone(),
             bounds_rectangle: (__flight_source.bounds_rectangle).clone(),
             bounds_using_local_bounds_id: __flight_source.bounds_using_local_bounds_id,
@@ -1449,6 +1454,7 @@ pub fn create_bitmap_text_runtime() -> BitmapTextRuntime {
             anisotropy_ext: (__flight_source.anisotropy_ext).clone(),
             appearance_id: __flight_source.appearance_id,
             apply_blend_mode_parent: (__flight_source.apply_blend_mode_parent).clone(),
+            binding: (__flight_source.binding).clone(),
             binding_cache_guard: (__flight_source.binding_cache_guard).clone(),
             bounds_rectangle: (__flight_source.bounds_rectangle).clone(),
             bounds_using_local_bounds_id: __flight_source.bounds_using_local_bounds_id,
@@ -1704,6 +1710,7 @@ pub fn get_bitmap_text_pages(source: &BitmapText) -> Vec<BitmapTextPage> {
             anisotropy_ext: (__flight_source.anisotropy_ext).clone(),
             appearance_id: __flight_source.appearance_id,
             apply_blend_mode_parent: (__flight_source.apply_blend_mode_parent).clone(),
+            binding: (__flight_source.binding).clone(),
             binding_cache_guard: (__flight_source.binding_cache_guard).clone(),
             bounds_rectangle: (__flight_source.bounds_rectangle).clone(),
             bounds_using_local_bounds_id: __flight_source.bounds_using_local_bounds_id,
@@ -1944,6 +1951,7 @@ pub fn reserve_bitmap_text(target: &BitmapText, glyph_capacity: f64) -> () {
             anisotropy_ext: (__flight_source.anisotropy_ext).clone(),
             appearance_id: __flight_source.appearance_id,
             apply_blend_mode_parent: (__flight_source.apply_blend_mode_parent).clone(),
+            binding: (__flight_source.binding).clone(),
             binding_cache_guard: (__flight_source.binding_cache_guard).clone(),
             bounds_rectangle: (__flight_source.bounds_rectangle).clone(),
             bounds_using_local_bounds_id: __flight_source.bounds_using_local_bounds_id,
@@ -2241,6 +2249,7 @@ fn copy_local_bounds_rectangle(out: &mut Rectangle, source: &Node) -> () {
             anisotropy_ext: (__flight_source.anisotropy_ext).clone(),
             appearance_id: __flight_source.appearance_id,
             apply_blend_mode_parent: (__flight_source.apply_blend_mode_parent).clone(),
+            binding: (__flight_source.binding).clone(),
             binding_cache_guard: (__flight_source.binding_cache_guard).clone(),
             bounds_rectangle: (__flight_source.bounds_rectangle).clone(),
             bounds_using_local_bounds_id: __flight_source.bounds_using_local_bounds_id,
@@ -2517,6 +2526,7 @@ static DEFAULT_METHODS: std::sync::LazyLock<FlightPartialRecord2> =
         anisotropy_ext: None,
         appearance_id: None,
         apply_blend_mode_parent: None,
+        binding: None,
         binding_cache_guard: None,
         bounds_rectangle: None,
         bounds_using_local_bounds_id: None,

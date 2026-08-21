@@ -11756,7 +11756,7 @@
           ],
           "declarations": 4,
           "module": "gl_application_render_view",
-          "outputSha256": "sha256:35d407a2ead09fc6f67b99d327e3a3d7c2a8c9bb783841a2783748d3144293ea",
+          "outputSha256": "sha256:fe97661bcdad10ee775cfba3b686b793582d6fcfb2d8a7ecd0af5536aa9dc34d",
           "source": "upstream/packages/application-gl/src/glApplicationRenderView.ts",
           "usesOpaqueHostValues": true
         },
@@ -13105,11 +13105,6 @@
         "syntaxCheckedSources": 4,
         "unresolvedDependencies": [
           {
-            "candidateStatus": "dependency-blocked",
-            "package": "@flighthq/geometry",
-            "status": "emittable"
-          },
-          {
             "candidateStatus": "source-blocked",
             "package": "@flighthq/node",
             "status": "blocked"
@@ -13184,7 +13179,7 @@
           ],
           "declarations": 18,
           "module": "bitmap_text",
-          "outputSha256": "sha256:27bd77d7438fc9edcf931154845782149ae74174e8480372974ff8425bd2740d",
+          "outputSha256": "sha256:86f04132ff1717e22ae0dabeedeb40a7c6d0405bef19ebb5833892f1b2abf1c3",
           "source": "upstream/packages/bitmaptext/src/bitmapText.ts",
           "usesOpaqueHostValues": true
         },
@@ -13225,7 +13220,7 @@
           ],
           "declarations": 16,
           "module": "update_bitmap_text",
-          "outputSha256": "sha256:d04c3fb6b624f9d69cbaa458a0c327ac0a580867b3046c6b37c3105bf3b0f4e1",
+          "outputSha256": "sha256:86a14c35bb9a757468b0f8e5b50463d26f6a99fe9eca73d1e194dc8d7d7d1220",
           "source": "upstream/packages/bitmaptext/src/updateBitmapText.ts",
           "usesOpaqueHostValues": true
         }
@@ -13292,12 +13287,7 @@
         "syntaxCheckedSources": 19,
         "unresolvedDependencies": [
           {
-            "candidateStatus": "source-blocked",
-            "package": "@flighthq/entity",
-            "status": "blocked"
-          },
-          {
-            "candidateStatus": "dependency-blocked",
+            "candidateStatus": "compile-blocked",
             "package": "@flighthq/geometry",
             "status": "emittable"
           }
@@ -13931,7 +13921,7 @@
         "syntaxCheckedSources": 4,
         "unresolvedDependencies": [
           {
-            "candidateStatus": "dependency-blocked",
+            "candidateStatus": "compile-blocked",
             "package": "@flighthq/geometry",
             "status": "emittable"
           }
@@ -18541,7 +18531,7 @@
           ],
           "declarations": 1,
           "module": "canvas_render_texture_effect",
-          "outputSha256": "sha256:2964a3c01b8b9012ddf41ef939082d6cf9a78be0ef916abc19957017b7ddbfbc",
+          "outputSha256": "sha256:099be783d0431c40bc6f26d1cc5d021652e4faf16b4ec647e39bee3ed56ce6ab",
           "source": "upstream/packages/effects-canvas/src/canvasRenderTextureEffect.ts",
           "usesOpaqueHostValues": true
         },
@@ -19101,7 +19091,7 @@
           ],
           "declarations": 8,
           "module": "enable_gl_render_effect_guards",
-          "outputSha256": "sha256:76fc0cf5a2f0dc9bd264f1184fbcd3ed21d3b94b0b6060dd7d94b0c2216f6961",
+          "outputSha256": "sha256:5bf1d2748a9f4a79cb6dd5a3d31b18511a7da54b01e8aec45158e379717c586d",
           "source": "upstream/packages/effects-gl/src/enableGlRenderEffectGuards.ts",
           "usesOpaqueHostValues": true
         },
@@ -19226,7 +19216,7 @@
           ],
           "declarations": 10,
           "module": "gl_render_effect_pipeline",
-          "outputSha256": "sha256:ea5455cbe189139ece531a096a82bac6c2768a3aa0465a4549f3d95b9cb5f769",
+          "outputSha256": "sha256:abfa16013fdeacfe00bd3326d5cbc5af7623b1a19c800153cf09e85beb57e645",
           "source": "upstream/packages/effects-gl/src/glRenderEffectPipeline.ts",
           "usesOpaqueHostValues": true
         },
@@ -19253,7 +19243,7 @@
           ],
           "declarations": 5,
           "module": "gl_render_texture_effect",
-          "outputSha256": "sha256:6dac583281b8b1f2a941ff8c3422122d3e119726ad4d41b993bfeb3406e7e7bb",
+          "outputSha256": "sha256:0cf7e487e7ec20f583c9116ec56c42d35b2e320b90647f5f0101add8e6d807b8",
           "source": "upstream/packages/effects-gl/src/glRenderTextureEffect.ts",
           "usesOpaqueHostValues": true
         },
@@ -19874,7 +19864,7 @@
           ],
           "declarations": 8,
           "module": "enable_wgpu_render_effect_guards",
-          "outputSha256": "sha256:1b5335c9de008f6b501c426b5d596add0434afdd2748262261229d16a057bfbc",
+          "outputSha256": "sha256:9839b905d28aa5fe91ab435cd0c8bd0ba275c15f4061b2096ff61259c4d17079",
           "source": "upstream/packages/effects-wgpu/src/enableWgpuRenderEffectGuards.ts",
           "usesOpaqueHostValues": true
         },
@@ -20071,7 +20061,7 @@
           ],
           "declarations": 6,
           "module": "wgpu_render_texture_effect",
-          "outputSha256": "sha256:622de4f986551f2c0eb3c18db5f124041f36f7ca39dfa1cbaec918d0ec323489",
+          "outputSha256": "sha256:9e3d3984abff8e01cc6b813252ba154735cc958be5b0de52543650adfbed29b7",
           "source": "upstream/packages/effects-wgpu/src/wgpuRenderTextureEffect.ts",
           "usesOpaqueHostValues": true
         }
@@ -20299,26 +20289,12 @@
       "asyncTasks": [],
       "taskConstructions": [],
       "attemptedSources": 8,
-      "blockers": [
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:4713e50876c36446d2e5acebaee3a5206a4ed0049cb6a7005ce8c66a0674a4dd",
-          "reason": "Generated crate is missing 3 of 15 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.",
-          "source": "upstream/packages/entity/src",
-          "stage": "package"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:09f8b8e9e5c7ae9d6de28655cf3d65bae5af564f73b8109e127365a78af679dc",
-          "reason": "createEntityRuntime: entity runtime field binding is not in the source closure",
-          "source": "upstream/packages/entity/src/runtime.ts",
-          "stage": "emission"
-        }
-      ],
+      "blockers": [],
       "candidate": {
         "compileDiagnostics": [],
-        "status": "source-blocked",
-        "syntaxCheckedSources": 0,
+        "path": "generated/candidates/flighthq-entity",
+        "status": "compiled",
+        "syntaxCheckedSources": 8,
         "unresolvedDependencies": []
       },
       "crate": "flighthq-entity",
@@ -20342,7 +20318,7 @@
           ],
           "declarations": 2,
           "module": "binding",
-          "outputSha256": "sha256:411d87d5a045a7212a7456060a650082044b74021effc16760eb980f18ec9943",
+          "outputSha256": "sha256:597946cfdd609d6a8f14ef81fa3e15787a71c1f9aa00f70e7083822ea51194e5",
           "source": "upstream/packages/entity/src/binding.ts",
           "usesOpaqueHostValues": true
         },
@@ -20353,7 +20329,7 @@
           ],
           "declarations": 2,
           "module": "clone",
-          "outputSha256": "sha256:e29689a75f7357c75dbfab6244f3cb3b1a57f712f75cbbc5a3ed6a6031b396ad",
+          "outputSha256": "sha256:e85f10172744470a11e6348cf5b68cf88925d94e61b6ff55a139a28e7b5aa017",
           "source": "upstream/packages/entity/src/clone.ts",
           "usesOpaqueHostValues": false
         },
@@ -20361,7 +20337,7 @@
           "declarationNames": [],
           "declarations": 0,
           "module": "contract",
-          "outputSha256": "sha256:b51456914c465ac2f2bcbef01baf129110d7dba2789851aa40006b1f3e4b178e",
+          "outputSha256": "sha256:dffac3c47ef2c5d360dc56ded7a21b6db2934207e20b289044557c7cf571aa6d",
           "source": "upstream/packages/entity/src/contract.ts",
           "usesOpaqueHostValues": false
         },
@@ -20373,7 +20349,7 @@
           ],
           "declarations": 3,
           "module": "enable_entity_runtime_guards",
-          "outputSha256": "sha256:ab7df108ce1109a4546cc3b24e76b8f41e8e8e9215c102f08ea0e6d80296765a",
+          "outputSha256": "sha256:048944f9d4ae8bf1f2bb679b93803886762174953f3f097cb049bac7a586b44b",
           "source": "upstream/packages/entity/src/enableEntityRuntimeGuards.ts",
           "usesOpaqueHostValues": false
         },
@@ -20383,7 +20359,7 @@
           ],
           "declarations": 1,
           "module": "entity",
-          "outputSha256": "sha256:ef936444c15f797e62dffb9b3e10b760e2d20feea2504d560ac3872c149f3cd5",
+          "outputSha256": "sha256:5f8a882996d0af85bca8473f2cb749aacb60d222a7d60bbf3cb18c536680eec4",
           "source": "upstream/packages/entity/src/entity.ts",
           "usesOpaqueHostValues": false
         },
@@ -20399,7 +20375,7 @@
           ],
           "declarations": 7,
           "module": "guards",
-          "outputSha256": "sha256:2ed7a3bcf68d24b3675e6f969fbfe64ba448087d4718365e232422ded3411b7e",
+          "outputSha256": "sha256:c86a7a8488b957080908ee885f4c03ddd8a07bc0e2214d5ef55296c7e63abd21",
           "source": "upstream/packages/entity/src/guards.ts",
           "usesOpaqueHostValues": false
         },
@@ -20407,8 +20383,20 @@
           "declarationNames": [],
           "declarations": 0,
           "module": "_internal_index",
-          "outputSha256": "sha256:fa5d62235564f121e0071f17d94d1c8a399e255fe9a1df61277b0a8d7c5c9d2d",
+          "outputSha256": "sha256:813184ab3182f85e017ab732ff1b451d1cccc35491b5cf27a58e6c0c7c5df7c8",
           "source": "upstream/packages/entity/src/index.ts",
+          "usesOpaqueHostValues": false
+        },
+        {
+          "declarationNames": [
+            "createEntityRuntime",
+            "getEntityRuntime",
+            "hasEntityRuntime"
+          ],
+          "declarations": 3,
+          "module": "runtime",
+          "outputSha256": "sha256:6f6041c841451bfa5f77fd05166f38f7243d3144befd9f6dec962168d6170100",
+          "source": "upstream/packages/entity/src/runtime.ts",
           "usesOpaqueHostValues": false
         }
       ],
@@ -20418,20 +20406,19 @@
         "attachEntityBinding",
         "cloneEntity",
         "createEntity",
+        "createEntityRuntime",
         "createGuardedEntity",
         "createGuardedEntityRuntime",
         "disableEntityRuntimeGuards",
         "enableEntityRuntimeGuards",
         "getEntityBinding",
+        "getEntityRuntime",
+        "hasEntityRuntime",
         "setEntityRuntimeGuardMode",
         "setEntityRuntimeWriteGuard",
         "stripEntityRuntime"
       ],
-      "missingExports": [
-        "createEntityRuntime",
-        "getEntityRuntime",
-        "hasEntityRuntime"
-      ],
+      "missingExports": [],
       "package": "@flighthq/entity",
       "promotedTarget": false,
       "requiredDependencies": [
@@ -20444,7 +20431,7 @@
           "package": "@flighthq/types"
         }
       ],
-      "status": "blocked",
+      "status": "emittable",
       "transitiveDependents": 75
     },
     {
@@ -23490,17 +23477,112 @@
       "attemptedSources": 30,
       "blockers": [],
       "candidate": {
-        "compileDiagnostics": [],
-        "path": "generated/candidates/flighthq-geometry",
-        "status": "dependency-blocked",
-        "syntaxCheckedSources": 30,
-        "unresolvedDependencies": [
+        "compileDiagnostics": [
           {
-            "candidateStatus": "source-blocked",
-            "package": "@flighthq/entity",
-            "status": "blocked"
+            "code": "E0599",
+            "message": "no method named `is_some` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>` in the current scope",
+            "source": "generated/candidates/flighthq-geometry/src/enable_geometry_pool_guards.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "no method named `is_some` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>` in the current scope",
+            "source": "generated/candidates/flighthq-geometry/src/matrix3_pool.rs"
+          },
+          {
+            "code": "E0618",
+            "message": "expected function, found `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>`",
+            "source": "generated/candidates/flighthq-geometry/src/matrix3_pool.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "no method named `is_some` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>` in the current scope",
+            "source": "generated/candidates/flighthq-geometry/src/matrix4_pool.rs"
+          },
+          {
+            "code": "E0618",
+            "message": "expected function, found `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>`",
+            "source": "generated/candidates/flighthq-geometry/src/matrix4_pool.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "no method named `is_some` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>` in the current scope",
+            "source": "generated/candidates/flighthq-geometry/src/matrix_pool.rs"
+          },
+          {
+            "code": "E0618",
+            "message": "expected function, found `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>`",
+            "source": "generated/candidates/flighthq-geometry/src/matrix_pool.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "no method named `is_some` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>` in the current scope",
+            "source": "generated/candidates/flighthq-geometry/src/quaternion_pool.rs"
+          },
+          {
+            "code": "E0618",
+            "message": "expected function, found `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>`",
+            "source": "generated/candidates/flighthq-geometry/src/quaternion_pool.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "no method named `is_some` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>` in the current scope",
+            "source": "generated/candidates/flighthq-geometry/src/rectangle_pool.rs"
+          },
+          {
+            "code": "E0618",
+            "message": "expected function, found `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>`",
+            "source": "generated/candidates/flighthq-geometry/src/rectangle_pool.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "no method named `is_some` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>` in the current scope",
+            "source": "generated/candidates/flighthq-geometry/src/vector2_pool.rs"
+          },
+          {
+            "code": "E0618",
+            "message": "expected function, found `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>`",
+            "source": "generated/candidates/flighthq-geometry/src/vector2_pool.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "no method named `is_some` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>` in the current scope",
+            "source": "generated/candidates/flighthq-geometry/src/vector3_pool.rs"
+          },
+          {
+            "code": "E0618",
+            "message": "expected function, found `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>`",
+            "source": "generated/candidates/flighthq-geometry/src/vector3_pool.rs"
+          },
+          {
+            "code": "E0599",
+            "message": "no method named `is_some` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>` in the current scope",
+            "source": "generated/candidates/flighthq-geometry/src/vector4_pool.rs"
+          },
+          {
+            "code": "E0618",
+            "message": "expected function, found `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>`",
+            "source": "generated/candidates/flighthq-geometry/src/vector4_pool.rs"
+          },
+          {
+            "code": "E0381",
+            "message": "used binding `lx` is possibly-uninitialized",
+            "source": "generated/candidates/flighthq-geometry/src/obb.rs"
+          },
+          {
+            "code": "E0381",
+            "message": "used binding `ly` is possibly-uninitialized",
+            "source": "generated/candidates/flighthq-geometry/src/obb.rs"
+          },
+          {
+            "code": "E0381",
+            "message": "used binding `lz` is possibly-uninitialized",
+            "source": "generated/candidates/flighthq-geometry/src/obb.rs"
           }
-        ]
+        ],
+        "path": "generated/candidates/flighthq-geometry",
+        "status": "compile-blocked",
+        "syntaxCheckedSources": 30,
+        "unresolvedDependencies": []
       },
       "crate": "flighthq-geometry",
       "dependencies": [
@@ -23605,7 +23687,7 @@
           ],
           "declarations": 6,
           "module": "enable_geometry_pool_guards",
-          "outputSha256": "sha256:bfbdff98eba7453b9116b116976a1b08bdb88316ebd116f72339aedad7445e59",
+          "outputSha256": "sha256:ff55850ec85b928aba39f01f2bfa2df93a77a260b4563c6f48d0774564591842",
           "source": "upstream/packages/geometry/src/enableGeometryPoolGuards.ts",
           "usesOpaqueHostValues": false
         },
@@ -24624,11 +24706,6 @@
             "candidateStatus": "not-applicable",
             "package": "@flighthq/bitmap",
             "status": "cultivated"
-          },
-          {
-            "candidateStatus": "dependency-blocked",
-            "package": "@flighthq/geometry",
-            "status": "emittable"
           }
         ]
       },
@@ -27381,12 +27458,7 @@
         "syntaxCheckedSources": 13,
         "unresolvedDependencies": [
           {
-            "candidateStatus": "source-blocked",
-            "package": "@flighthq/entity",
-            "status": "blocked"
-          },
-          {
-            "candidateStatus": "dependency-blocked",
+            "candidateStatus": "compile-blocked",
             "package": "@flighthq/geometry",
             "status": "emittable"
           }
@@ -28057,17 +28129,742 @@
       "attemptedSources": 22,
       "blockers": [],
       "candidate": {
-        "compileDiagnostics": [],
-        "path": "generated/candidates/flighthq-materials",
-        "status": "dependency-blocked",
-        "syntaxCheckedSources": 22,
-        "unresolvedDependencies": [
+        "compileDiagnostics": [
           {
-            "candidateStatus": "source-blocked",
-            "package": "@flighthq/entity",
-            "status": "blocked"
+            "code": "E0432",
+            "message": "unresolved import `flighthq_types::STANDARD_MATERIAL_KIND`",
+            "source": "generated/candidates/flighthq-materials/src/standard_material.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `PbrExtension` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `StandardPbrMaterialProperties` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `PbrExtension` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `StandardPbrMaterialProperties` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `PbrExtension` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `StandardPbrMaterialProperties` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `PbrExtension` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/custom_shader_material.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `StandardPbrMaterialProperties` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/custom_shader_material.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `PbrExtension` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `PbrExtension` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `PbrExtension` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/phong_to_pbr.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `PbrExtension` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/phong_to_pbr.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `StandardMaterialKind` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/standard_material.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `MaterialAlphaMode` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/standard_material.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `BlendMode` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/standard_material.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `PbrExtension` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/standard_material.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `StandardPbrMaterialProperties` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/standard_material.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `Texture` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/standard_material.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `PbrExtension` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `StandardPbrMaterialProperties` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `PbrExtension` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `StandardPbrMaterialProperties` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `PbrExtension` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `StandardPbrMaterialProperties` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `PbrExtension` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `StandardPbrMaterialProperties` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `PbrExtension` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `StandardPbrMaterialProperties` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `PbrExtension` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `StandardPbrMaterialProperties` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `PbrExtension` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `StandardPbrMaterialProperties` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `PbrExtension` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `StandardPbrMaterialProperties` in this scope",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `alpha_map` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `diffuse` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `diffuse_map` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `normal_map` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `normal_scale` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `shininess` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `specular` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `specular_map` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `diffuse` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `diffuse_map` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `emissive` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `emissive_map` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `diffuse` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `diffuse_map` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `normal_map` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `normal_scale` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `shininess` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `specular` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `specular_map` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/classic_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/color_scale_bias.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/custom_shader_material.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/extended_pbr_material.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/material.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/material_presets.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/material_presets.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/material_presets.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/material_presets.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/material_presets.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/material_presets.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/material_presets.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/material_presets.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/material_presets.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/material_presets.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/material_presets.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/material_presets.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/material_presets.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/material_presets.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/material_presets.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/material_presets.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/material_presets.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0608",
+            "message": "cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0608",
+            "message": "cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0608",
+            "message": "cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0608",
+            "message": "cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0608",
+            "message": "cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0608",
+            "message": "cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0608",
+            "message": "cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `diffuse` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `diffuse_map` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `emissive` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `emissive_map` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `emissive_strength` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `glossiness` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `normal_map` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `normal_scale` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `occlusion_map` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `occlusion_strength` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `specular` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `specular_glossiness_map` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0063",
+            "message": "missing fields `alpha_map`, `base_color`, `base_color_map` and 10 other fields in initializer of `StandardPbrMaterialProperties`",
+            "source": "generated/candidates/flighthq-materials/src/pbr_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/phong_to_pbr.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/phong_to_pbr.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/surface_material.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `far` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `near` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `emissive` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `emissive_map` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `emissive_strength` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `matcap` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `tint` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `normal_map` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `normal_scale` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `base_color` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `base_color_map` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `ramp` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `steps` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `base_color` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `base_color_map` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `tint` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `color` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `thickness` on type `SurfaceMaterial`",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-materials/src/unlit_materials.rs"
           }
-        ]
+        ],
+        "path": "generated/candidates/flighthq-materials",
+        "status": "compile-blocked",
+        "syntaxCheckedSources": 22,
+        "unresolvedDependencies": []
       },
       "crate": "flighthq-materials",
       "dependencies": [
@@ -29282,13 +30079,6 @@
       "blockers": [
         {
           "diagnostics": [],
-          "fingerprint": "sha256:c2d738996e5f24f70c4b8f1e86eb31b1b17ef781516e693b841f46b3f58d6990",
-          "reason": "createMeshGeometryRuntime: entity runtime field binding is not in the source closure",
-          "source": "upstream/packages/mesh/src/meshGeometry.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
           "fingerprint": "sha256:e7fecdae26c271723c98b632a0810e95d5f66bf5e941f54bea2a8672ec4da1d9",
           "reason": "getAttributeByteLocation: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object",
           "source": "upstream/packages/mesh/src/meshGeometryAttributes.ts",
@@ -29348,6 +30138,32 @@
           "outputSha256": "sha256:131e60441ad73e0096798066f552e2e3901651f08e2a6a3fd8ebafa85a8f4795",
           "source": "upstream/packages/mesh/src/index.ts",
           "usesOpaqueHostValues": false
+        },
+        {
+          "declarationNames": [
+            "UINT16_INDEX_CEILING",
+            "cloneMeshGeometry",
+            "cloneMeshGeometryMetadata",
+            "createMeshGeometry",
+            "createMeshGeometryRuntime",
+            "destroyMeshGeometryGlData",
+            "destroyMeshGeometryWgpuData",
+            "getMeshGeometryIndexCount",
+            "getMeshGeometryMorphBindPose",
+            "getMeshGeometrySkinBindPose",
+            "getMeshGeometryVertexCount",
+            "getVertexCountFromLayout",
+            "hasMeshGeometrySkin",
+            "invalidateMeshGeometry",
+            "promoteIndices",
+            "setMeshGeometryMorphBindPose",
+            "setMeshGeometrySkinBindPose"
+          ],
+          "declarations": 17,
+          "module": "mesh_geometry",
+          "outputSha256": "sha256:02fc523dc7fac60709871fc5fb55d4b4dbf0ee15745b242b6da54d8d34c842fb",
+          "source": "upstream/packages/mesh/src/meshGeometry.ts",
+          "usesOpaqueHostValues": true
         },
         {
           "declarationNames": [
@@ -29605,6 +30421,10 @@
       "promotedTarget": false,
       "requiredDependencies": [
         {
+          "crate": "flighthq-entity",
+          "package": "@flighthq/entity"
+        },
+        {
           "crate": "flighthq-geometry",
           "package": "@flighthq/geometry"
         },
@@ -29629,7 +30449,7 @@
         "syntaxCheckedSources": 3,
         "unresolvedDependencies": [
           {
-            "candidateStatus": "dependency-blocked",
+            "candidateStatus": "compile-blocked",
             "package": "@flighthq/geometry",
             "status": "emittable"
           }
@@ -31313,19 +32133,9 @@
         "syntaxCheckedSources": 12,
         "unresolvedDependencies": [
           {
-            "candidateStatus": "dependency-blocked",
-            "package": "@flighthq/geometry",
-            "status": "emittable"
-          },
-          {
             "candidateStatus": "source-blocked",
             "package": "@flighthq/node",
             "status": "blocked"
-          },
-          {
-            "candidateStatus": "dependency-blocked",
-            "package": "@flighthq/particles",
-            "status": "emittable"
           },
           {
             "candidateStatus": "source-blocked",
@@ -31386,7 +32196,7 @@
           ],
           "declarations": 4,
           "module": "emit_particle_burst2_d",
-          "outputSha256": "sha256:ad2f2c98bd9c236e5f008fe31df93f1d2fccb39275073ecfcd7d676afabbd183",
+          "outputSha256": "sha256:611fbdc21c2e1a09e3a3fb4deac42b8081c94f08994de501e2dac7157cd2a8b5",
           "source": "upstream/packages/particleemitter/src/emitParticleBurst2D.ts",
           "usesOpaqueHostValues": true
         },
@@ -31401,7 +32211,7 @@
           ],
           "declarations": 6,
           "module": "emit_particle_burst3_d",
-          "outputSha256": "sha256:61aa5755944f53b4588fc065bb19bdfa83a02db40239ba9ce6a31425b2676783",
+          "outputSha256": "sha256:5d3b1d9673983b42c0036410c84cb443d87544de4a64ed39ed31bf86dfbcfd44",
           "source": "upstream/packages/particleemitter/src/emitParticleBurst3D.ts",
           "usesOpaqueHostValues": true
         },
@@ -31444,7 +32254,7 @@
           ],
           "declarations": 26,
           "module": "particle_emitter",
-          "outputSha256": "sha256:af92c75c363e348c4b5338ee90fbef4ec3d2c711ae440fc76bfc66d1eafc921f",
+          "outputSha256": "sha256:e80a4e5a64d6b319f9df783202bb43ccdc55f5b0891bd7c85b5d783182365c89",
           "source": "upstream/packages/particleemitter/src/particleEmitter.ts",
           "usesOpaqueHostValues": true
         },
@@ -31478,7 +32288,7 @@
           ],
           "declarations": 25,
           "module": "particle_emitter3_d",
-          "outputSha256": "sha256:32775f70e8dd5384403cb73d20320d0fce345bd777afb5cf502d0460b58210b6",
+          "outputSha256": "sha256:a6e33857e68d474cd45c99e36d237410032a6010f66acee37cd1ece38a835e49",
           "source": "upstream/packages/particleemitter/src/particleEmitter3D.ts",
           "usesOpaqueHostValues": true
         },
@@ -31488,7 +32298,7 @@
           ],
           "declarations": 1,
           "module": "prewarm_particle_emitter2_d",
-          "outputSha256": "sha256:df5977eb7a98925fb9aa8419ba1cb3cf31cf79e9afd76e657d308630f65c7ef8",
+          "outputSha256": "sha256:ba8be9e5f3c1488de3121371e359bc83b17ec27f3c9a70aab9203c4a93c93504",
           "source": "upstream/packages/particleemitter/src/prewarmParticleEmitter2D.ts",
           "usesOpaqueHostValues": true
         },
@@ -31498,7 +32308,7 @@
           ],
           "declarations": 1,
           "module": "prewarm_particle_emitter3_d",
-          "outputSha256": "sha256:4b54899da302fc79a593b3802f2d6d65bec7e07c4f7b489da36aa922c205cf7a",
+          "outputSha256": "sha256:a3b5a0a4242d7c4aa36a32786f603c7a21f237be3ffe3f99e7effd3f5c53c959",
           "source": "upstream/packages/particleemitter/src/prewarmParticleEmitter3D.ts",
           "usesOpaqueHostValues": true
         },
@@ -31508,7 +32318,7 @@
           ],
           "declarations": 1,
           "module": "step_particle_emitter2_d",
-          "outputSha256": "sha256:25f08d2251d9349fc4b3e4e74ae60d281d172c0a7db478e8fdc302ecb6dbb4ce",
+          "outputSha256": "sha256:46d736ed4f2b453b8e14e9cc7081ea9b45f2fa2bd4dfa4932344cbb0bf5db2ae",
           "source": "upstream/packages/particleemitter/src/stepParticleEmitter2D.ts",
           "usesOpaqueHostValues": true
         },
@@ -31518,7 +32328,7 @@
           ],
           "declarations": 1,
           "module": "step_particle_emitter3_d",
-          "outputSha256": "sha256:61237ee4316c59a09b25c15fc33799466854857b02e30fd81736c04d71658089",
+          "outputSha256": "sha256:64ee5ce47426dc7036e26acfc865f674fa1d01faec9a2c1f76cf84fd7f96bbc6",
           "source": "upstream/packages/particleemitter/src/stepParticleEmitter3D.ts",
           "usesOpaqueHostValues": true
         },
@@ -31535,7 +32345,7 @@
           ],
           "declarations": 8,
           "module": "update_particle_emitter2_d",
-          "outputSha256": "sha256:f433aff24ea91b2e93ee2992b24889ad4cbfb7b4b09e3cbad254fa912dfeb3b9",
+          "outputSha256": "sha256:a3de7b14289b5a6a63a6ae926f772faf560acefe2f0c3ce43fb059aff5f8e68a",
           "source": "upstream/packages/particleemitter/src/updateParticleEmitter2D.ts",
           "usesOpaqueHostValues": true
         },
@@ -31552,7 +32362,7 @@
           ],
           "declarations": 8,
           "module": "update_particle_emitter3_d",
-          "outputSha256": "sha256:9cf9958b547f691eb8cb4af58fd1cff2ad88feb033e23cfee59d99266b70822c",
+          "outputSha256": "sha256:2b2a33e1e1c7bde7d29750a4c4e5a5aeff6e38a9dfe88bed9e551a025f22db2c",
           "source": "upstream/packages/particleemitter/src/updateParticleEmitter3D.ts",
           "usesOpaqueHostValues": true
         }
@@ -31657,7 +32467,7 @@
         "syntaxCheckedSources": 12,
         "unresolvedDependencies": [
           {
-            "candidateStatus": "dependency-blocked",
+            "candidateStatus": "compile-blocked",
             "package": "@flighthq/geometry",
             "status": "emittable"
           }
@@ -35967,7 +36777,7 @@
           ],
           "declarations": 5,
           "module": "enable_gl_render_texture_guards",
-          "outputSha256": "sha256:8fa085101cb29634452572b7930c7299060aac4297b30c78535565e2cc5461de",
+          "outputSha256": "sha256:b89d4a3141ead54638c8924d102e8a3c04b0bead353ea63de6f9c2df38ff86f6",
           "source": "upstream/packages/render-gl/src/enableGlRenderTextureGuards.ts",
           "usesOpaqueHostValues": true
         },
@@ -36080,7 +36890,7 @@
           ],
           "declarations": 4,
           "module": "gl_external_texture",
-          "outputSha256": "sha256:0945a9c04d93eb48f9222d18811e39f428473cc409d584e0b9f21d370da2c4e6",
+          "outputSha256": "sha256:461bd1015d630b69f98c21fe8261c6d07b8b1ce3082b38ae7bfaaaea73410134",
           "source": "upstream/packages/render-gl/src/glExternalTexture.ts",
           "usesOpaqueHostValues": true
         },
@@ -36194,7 +37004,7 @@
           ],
           "declarations": 20,
           "module": "gl_render_target",
-          "outputSha256": "sha256:ef5dcd92d02982f5a384f38538596ff20961afbc2d298b89fc55aca3aeb22d5c",
+          "outputSha256": "sha256:54931cf022b47b69dbfbd9e3f51f93743c0fb2c7544db75280631eefd19c5dc5",
           "source": "upstream/packages/render-gl/src/glRenderTarget.ts",
           "usesOpaqueHostValues": true
         },
@@ -36208,7 +37018,7 @@
           ],
           "declarations": 5,
           "module": "gl_render_target_pool",
-          "outputSha256": "sha256:72194865f69e34c14a95081292dc44a9683dbeb1de88d1a24c6571ff7399524f",
+          "outputSha256": "sha256:84fe224c81492c013fc66c2fc40ff679f6bb5c89bcd25ac320e2467715e21f1b",
           "source": "upstream/packages/render-gl/src/glRenderTargetPool.ts",
           "usesOpaqueHostValues": true
         },
@@ -36233,7 +37043,7 @@
           ],
           "declarations": 16,
           "module": "gl_render_texture",
-          "outputSha256": "sha256:a81bd130f37c35e5191ae0ebf0f598add8a0c61a35a9fa23b75388eb67dcfeb4",
+          "outputSha256": "sha256:5463d67c22789e0e2068bd02e16bda3511f46ddca7998f9d5459cb9948a5fc12",
           "source": "upstream/packages/render-gl/src/glRenderTexture.ts",
           "usesOpaqueHostValues": true
         },
@@ -36250,7 +37060,7 @@
           ],
           "declarations": 8,
           "module": "gl_render_texture_pool",
-          "outputSha256": "sha256:347c2cd090f71665b1998a9e5960002d99c84975ca8d16283dab37f4e5d387b5",
+          "outputSha256": "sha256:5551e538a6840a13059c17fd09a82338d92b6597a1ce31a1d85958ffdddf881d",
           "source": "upstream/packages/render-gl/src/glRenderTexturePool.ts",
           "usesOpaqueHostValues": true
         },
@@ -36285,7 +37095,7 @@
           ],
           "declarations": 6,
           "module": "gl_shader_binding",
-          "outputSha256": "sha256:8545a5da4c3fb329e63af33d1f17e9d67d2492715897a5ae74edd74ee2191169",
+          "outputSha256": "sha256:525444290cbda45ad11c73869bd99c96ed4894ea2088f92c85cffb8faba0f7d3",
           "source": "upstream/packages/render-gl/src/glShaderBinding.ts",
           "usesOpaqueHostValues": true
         },
@@ -37011,7 +37821,7 @@
           ],
           "declarations": 5,
           "module": "wgpu_external_texture",
-          "outputSha256": "sha256:107acd67528900941420b057db1d90dd787c5da82a25ca7610e75e723ba1d3ea",
+          "outputSha256": "sha256:c6c430caff8a7a3ad01356f5a125a09c6b8d997e21dd4c767968e7e491ec4506",
           "source": "upstream/packages/render-wgpu/src/wgpuExternalTexture.ts",
           "usesOpaqueHostValues": true
         },
@@ -37096,7 +37906,7 @@
           ],
           "declarations": 13,
           "module": "wgpu_render_texture",
-          "outputSha256": "sha256:23ac413b2b4d225fb00e157bf3c6c0cc051357af4400be9d64019b9092eaba31",
+          "outputSha256": "sha256:8e86601bdf7c5464a1d5b583a8ff502bf61b8a017f9cb95f665b8e539657cc9d",
           "source": "upstream/packages/render-wgpu/src/wgpuRenderTexture.ts",
           "usesOpaqueHostValues": true
         },
@@ -37113,7 +37923,7 @@
           ],
           "declarations": 8,
           "module": "wgpu_render_texture_pool",
-          "outputSha256": "sha256:7bbe2ba21316d36855699cf5f132fcc3472444f4f612d0535638b051f9a92375",
+          "outputSha256": "sha256:f57588738fddcafb63552ed0a3b2a460953eabf7de026faa66b65d1afcdffed0",
           "source": "upstream/packages/render-wgpu/src/wgpuRenderTexturePool.ts",
           "usesOpaqueHostValues": true
         },
@@ -37164,7 +37974,7 @@
           ],
           "declarations": 4,
           "module": "wgpu_shader_binding",
-          "outputSha256": "sha256:9283faaf8f10212ec590323f6a64f236898db37445d8b0d3700a319096c739a3",
+          "outputSha256": "sha256:431126ec40cc609f2eb84bee38d2073f8ed3ccab8922d5ea49c98e2b20addc2f",
           "source": "upstream/packages/render-wgpu/src/wgpuShaderBinding.ts",
           "usesOpaqueHostValues": true
         },
@@ -37439,57 +38249,50 @@
       "blockers": [
         {
           "diagnostics": [],
-          "fingerprint": "sha256:15b088d07df604bebbcc3ba4fc9c96712e15ca58b2db240ea8637294c2e8187a",
-          "reason": "Generated crate is missing 3 of 33 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.",
-          "source": "upstream/packages/scene2d/src",
-          "stage": "package"
-        },
-        {
-          "diagnostics": [],
           "fingerprint": "sha256:bd4ec07dbf95922ce38711368e4832dee493ea460d901771d668d5282f6a6b3b",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/scene2d/src/displayContainer.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:39981d5a08c5782ada9b48b7c2b5fbe5de309e6c6f3c212a3d0d4e00ebd52aea",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/scene2d/src/displayObject.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:4d8f31d584d1e82e4cdbbe74e497b057aaf23003e52a6f1cfc1eec4ac0a3131b",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/scene2d/src/displayObjectAnimation.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:6d8b2733364350f585dd60ea746d282894dacbf752c7da967c0869d3f976502d",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/scene2d/src/htmlView.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:d28cb17a2c8155c60018c7410a6354eb34cf707e7ab973d1e1c526bee256798c",
-          "reason": "createScene2DRuntime: entity runtime field binding is not in the source closure",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/scene2d/src/scene2d.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:a82c424756b95ebd84024fe3d89b23c80c38c36607dc0850544498356fdc522f",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/scene2d/src/sceneKindUsage.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:1cb0b59c3dc9f70ddd7f808b94fc2b2ab01d7a65ce38ba2f038d241c17e732b4",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/scene2d/src/sprite.ts",
           "stage": "emission"
         }
@@ -37574,6 +38377,8 @@
         "createNode2DRuntime",
         "createScene2D",
         "createScene2DKindUsage",
+        "createScene2DRuntime",
+        "createScene2DSignals",
         "createSprite",
         "createSpriteData",
         "createSpriteRendererData",
@@ -37584,6 +38389,7 @@
         "getNode2DRuntime",
         "getScene2DKindUsage",
         "getScene2DRoot",
+        "getScene2DRuntime",
         "getScene2DSignals",
         "getSpriteRuntime",
         "isNode2D",
@@ -37592,11 +38398,7 @@
         "setNode2DClip",
         "setScene2DSize"
       ],
-      "missingExports": [
-        "createScene2DRuntime",
-        "createScene2DSignals",
-        "getScene2DRuntime"
-      ],
+      "missingExports": [],
       "package": "@flighthq/scene2d",
       "promotedTarget": false,
       "requiredDependencies": [
@@ -37611,6 +38413,10 @@
         {
           "crate": "flighthq-node",
           "package": "@flighthq/node"
+        },
+        {
+          "crate": "flighthq-signals",
+          "package": "@flighthq/signals"
         },
         {
           "crate": "flighthq-texture",
@@ -37759,7 +38565,7 @@
           ],
           "declarations": 2,
           "module": "canvas_bitmap_text",
-          "outputSha256": "sha256:9a3ee85c785de516e2f599d88690992572f44edaf86eccc63bc6baacb211275e",
+          "outputSha256": "sha256:153f236ceb6091e1e0d89440202e5343fdefba8b9a8d639347220d96d0d6d281",
           "source": "upstream/packages/scene2d-canvas/src/canvasBitmapText.ts",
           "usesOpaqueHostValues": true
         },
@@ -37796,7 +38602,7 @@
           ],
           "declarations": 17,
           "module": "canvas_cache",
-          "outputSha256": "sha256:addb46c882c02589f58f1181c1713d9aaa48ae9e641a05c5d076959fc3c658c4",
+          "outputSha256": "sha256:81882ef735ffe295b5436407afda62a47eb950c40f29e27160a89356590710ed",
           "source": "upstream/packages/scene2d-canvas/src/canvasCache.ts",
           "usesOpaqueHostValues": true
         },
@@ -37833,7 +38639,7 @@
           ],
           "declarations": 5,
           "module": "canvas_css_filter_binding",
-          "outputSha256": "sha256:f323af5aad753eb8113a8606d23332c78e0a4e30872b20d981169f1cbdfc06b8",
+          "outputSha256": "sha256:ffbcb882d1b30af740cd91aff19413a24735c3d8953038bc1e025dc9f480e1a2",
           "source": "upstream/packages/scene2d-canvas/src/canvasCSSFilterBinding.ts",
           "usesOpaqueHostValues": true
         },
@@ -37921,7 +38727,7 @@
           ],
           "declarations": 3,
           "module": "canvas_node2_d",
-          "outputSha256": "sha256:0a39fb90a71c3c2236c30a66230d73ca06a782f26ca012338046b7d366b9b80f",
+          "outputSha256": "sha256:a3cad8fec81ccddaff1579f8f6c65d4a1409a384c856f436bb2dbfca3c22cc45",
           "source": "upstream/packages/scene2d-canvas/src/canvasNode2D.ts",
           "usesOpaqueHostValues": true
         },
@@ -37964,7 +38770,7 @@
           ],
           "declarations": 12,
           "module": "canvas_render_texture",
-          "outputSha256": "sha256:e835a6f1c0c4a73a44b7ec94c3794006dfe883fe388ec4bda01999d5370db08f",
+          "outputSha256": "sha256:70f6e0a1742fad36b545efca6a54bab235378caad8d27937f03134d15a41144a",
           "source": "upstream/packages/scene2d-canvas/src/canvasRenderTexture.ts",
           "usesOpaqueHostValues": true
         },
@@ -37981,7 +38787,7 @@
           ],
           "declarations": 8,
           "module": "canvas_render_texture_pool",
-          "outputSha256": "sha256:01088a8f3a5456d15877ee9ef58fc1762cffededd8b82bf1e657f1d32f738f09",
+          "outputSha256": "sha256:edc427849d8807536c515b091e672d9ff5d0ce6ef2b7c13bd5f6a6ed53642e9a",
           "source": "upstream/packages/scene2d-canvas/src/canvasRenderTexturePool.ts",
           "usesOpaqueHostValues": true
         },
@@ -37991,7 +38797,7 @@
           ],
           "declarations": 1,
           "module": "canvas_render_texture_resolver",
-          "outputSha256": "sha256:b39ee398ce71e1c70277ce3decbf8baa4fbf2c295ea9200a6e45cfe69e06b33c",
+          "outputSha256": "sha256:77b114e859e0f64dcd9503129918213b8cf2e254d2847f6c1686adf3c4ea595c",
           "source": "upstream/packages/scene2d-canvas/src/canvasRenderTextureResolver.ts",
           "usesOpaqueHostValues": true
         },
@@ -38011,7 +38817,7 @@
           ],
           "declarations": 11,
           "module": "canvas_rich_text",
-          "outputSha256": "sha256:e198ee9c75dad7ac84727386b488a724782fd4981c399b5a33211b4451f989b4",
+          "outputSha256": "sha256:48be0a71c6d547ff74003c7c914abb62e79cfb204206e7b1c1ea4cb3dfec72f5",
           "source": "upstream/packages/scene2d-canvas/src/canvasRichText.ts",
           "usesOpaqueHostValues": true
         },
@@ -38036,7 +38842,7 @@
           ],
           "declarations": 4,
           "module": "canvas_scale9_shape",
-          "outputSha256": "sha256:da507b3a1118f73d58de0f076b92e51bbaa50351c8f0906df093b3b9b84520b6",
+          "outputSha256": "sha256:d611255050d093cfc64ae8f105aa71284b6acffce5d3fb1bb29e7b0380d14f50",
           "source": "upstream/packages/scene2d-canvas/src/canvasScale9Shape.ts",
           "usesOpaqueHostValues": true
         },
@@ -38075,7 +38881,7 @@
           ],
           "declarations": 1,
           "module": "canvas_shape_rasterizer",
-          "outputSha256": "sha256:e3daffd5284cdeb57286fa992b6b40cbac3210789b65fcac9e77709e4569d496",
+          "outputSha256": "sha256:8ffcb77ff93530b0e0b5d036a108cc8bdc09ce9cca5c532d275cfcdbb7754c37",
           "source": "upstream/packages/scene2d-canvas/src/canvasShapeRasterizer.ts",
           "usesOpaqueHostValues": true
         },
@@ -38098,7 +38904,7 @@
           ],
           "declarations": 2,
           "module": "canvas_sprite",
-          "outputSha256": "sha256:cc9b99523aa55783354718e2dfe63854110d9c3de6169ecca50f48e309031cdd",
+          "outputSha256": "sha256:5b10621b50eaab2a15b430a7dab295857d4155fd3ffc5af3ec276b15b66126b7",
           "source": "upstream/packages/scene2d-canvas/src/canvasSprite.ts",
           "usesOpaqueHostValues": true
         },
@@ -38117,7 +38923,7 @@
           ],
           "declarations": 10,
           "module": "canvas_text_input",
-          "outputSha256": "sha256:e7460befd9884a4275102bc22be372c89e6346e38bf66bd0a8cf121cafc86697",
+          "outputSha256": "sha256:40c36cbebc9cd6f24dcab87d9fc8031d58ac259289a3bd69da414a31f14ffdaa",
           "source": "upstream/packages/scene2d-canvas/src/canvasTextInput.ts",
           "usesOpaqueHostValues": true
         },
@@ -38128,7 +38934,7 @@
           ],
           "declarations": 2,
           "module": "canvas_text_label",
-          "outputSha256": "sha256:b3a9ce4b68a6a317fdbfb0d17df7db87a38c04f0294bba9cab00019cab85568f",
+          "outputSha256": "sha256:98e01c093903991b9161db63ec878e8ca38d8303b725d943819eb5690749ba1d",
           "source": "upstream/packages/scene2d-canvas/src/canvasTextLabel.ts",
           "usesOpaqueHostValues": true
         },
@@ -39252,7 +40058,7 @@
           ],
           "declarations": 3,
           "module": "gl_bitmap_text",
-          "outputSha256": "sha256:5e886bf3cd746391f3b8672f66a3ca8c6ee35b2f67e1a584f4daeba43681d34b",
+          "outputSha256": "sha256:ef6a8c37711b3194eb5e5148e1e7e3e527ef6f24331793ada4d13a62a63afe1a",
           "source": "upstream/packages/scene2d-gl/src/glBitmapText.ts",
           "usesOpaqueHostValues": true
         },
@@ -39276,7 +40082,7 @@
           ],
           "declarations": 15,
           "module": "gl_cache",
-          "outputSha256": "sha256:3da3381fb313684fd22a1c2810fed03546a94b4cd6e6f64b6a7463c96eb1434f",
+          "outputSha256": "sha256:e38a3efa7998e62187c6fb1ee16c771e5f8d86218f04bb26f95aceb352b0c213",
           "source": "upstream/packages/scene2d-gl/src/glCache.ts",
           "usesOpaqueHostValues": true
         },
@@ -39335,7 +40141,7 @@
           ],
           "declarations": 3,
           "module": "gl_node2_d",
-          "outputSha256": "sha256:557da54613e43e39996e17c8e8668e1ef3a21316036699d694cfe55b514b44f0",
+          "outputSha256": "sha256:9e392f507c42cda9499e778397801650849e20542cf93410818c428d5b06a6a9",
           "source": "upstream/packages/scene2d-gl/src/glNode2D.ts",
           "usesOpaqueHostValues": true
         },
@@ -39353,7 +40159,7 @@
           ],
           "declarations": 9,
           "module": "gl_particle_emitter2_d",
-          "outputSha256": "sha256:66da07f9bd4fe890029b7000335f87818546150796fc6468ca01c888ed6344e6",
+          "outputSha256": "sha256:636af61dd24d878ffe3fb0e31e40e19e249d27d65ce7c22cb30150b5b8a18342",
           "source": "upstream/packages/scene2d-gl/src/glParticleEmitter2D.ts",
           "usesOpaqueHostValues": true
         },
@@ -39365,7 +40171,7 @@
           ],
           "declarations": 3,
           "module": "gl_quad_batch",
-          "outputSha256": "sha256:e259a7e4f2d04bf9f4b1a0bdb4aea520ad2894cb27de3e779ebc748aad08144c",
+          "outputSha256": "sha256:592c678342217e3542530f6bb8a53fff9c5270cb85078f6292e01b0c523cfbfd",
           "source": "upstream/packages/scene2d-gl/src/glQuadBatch.ts",
           "usesOpaqueHostValues": true
         },
@@ -39410,7 +40216,7 @@
           ],
           "declarations": 13,
           "module": "gl_rich_text",
-          "outputSha256": "sha256:3bf0b85a41513ff396788c6598a5ad420dde04ce36d7ce867a22f9124fc651b5",
+          "outputSha256": "sha256:b0f4907492a6dc2c9d4ca64c131ea74b1b34c35f88b48e19d004cfef9ffe5546",
           "source": "upstream/packages/scene2d-gl/src/glRichText.ts",
           "usesOpaqueHostValues": true
         },
@@ -39433,7 +40239,7 @@
           ],
           "declarations": 3,
           "module": "gl_shape",
-          "outputSha256": "sha256:e59323f0e972d218f06efcbf28b537284518c27635f504eae613e2d948357500",
+          "outputSha256": "sha256:d011eb9bc7aa16dcf9bf9741402f4a69dbe9d24b4345cc12dd4c4f76e91776ab",
           "source": "upstream/packages/scene2d-gl/src/glShape.ts",
           "usesOpaqueHostValues": true
         },
@@ -39486,7 +40292,7 @@
           ],
           "declarations": 2,
           "module": "gl_sprite",
-          "outputSha256": "sha256:b8a4b3c3f5929050cb4f11173b69854999dc38781b225ef6ab112a4007722c41",
+          "outputSha256": "sha256:0f97eec5c94750d1d87ad72ded1028730b49a571e298addab9f8b2318460ebfc",
           "source": "upstream/packages/scene2d-gl/src/glSprite.ts",
           "usesOpaqueHostValues": true
         },
@@ -39522,7 +40328,7 @@
           ],
           "declarations": 6,
           "module": "gl_text_input",
-          "outputSha256": "sha256:d32ed4ca6ec35894ce8e658e5aec63edbcf7f1be3604d428b2022a793cb51541",
+          "outputSha256": "sha256:525909bee41c730fa6d09961f2065d6ee6ccec41d7d61eb940baacf67a2d1782",
           "source": "upstream/packages/scene2d-gl/src/glTextInput.ts",
           "usesOpaqueHostValues": true
         },
@@ -39538,7 +40344,7 @@
           ],
           "declarations": 7,
           "module": "gl_text_label",
-          "outputSha256": "sha256:05c3658bdc45a416d751522869f4b67ed7c096bdf919209ba15d30f9c2360636",
+          "outputSha256": "sha256:6dfdb1e791862b1ef48969764454b080ce1f8f776cc36d8d0a779a7093c6d22a",
           "source": "upstream/packages/scene2d-gl/src/glTextLabel.ts",
           "usesOpaqueHostValues": true
         },
@@ -39550,7 +40356,7 @@
           ],
           "declarations": 3,
           "module": "gl_tilemap",
-          "outputSha256": "sha256:f55327bb79f359241b0cf714f48de588a4bfcd7e1d1ecaeb83e07dd951e29c31",
+          "outputSha256": "sha256:106bf7e24338b0a118d0c8687c42d5706a8fd990c75a3ffffed718c167613bcd",
           "source": "upstream/packages/scene2d-gl/src/glTilemap.ts",
           "usesOpaqueHostValues": true
         },
@@ -40393,7 +41199,7 @@
           ],
           "declarations": 3,
           "module": "wgpu_bitmap_text",
-          "outputSha256": "sha256:34c12e2b643eb8eefd86207f0c0009a5432fa165da21afd366d71d90b721d102",
+          "outputSha256": "sha256:cd2a488b4c5311b3bf60407ab34f20bbb9c549a7c3690e5d613259b0a4e84e09",
           "source": "upstream/packages/scene2d-wgpu/src/wgpuBitmapText.ts",
           "usesOpaqueHostValues": true
         },
@@ -40419,7 +41225,7 @@
           ],
           "declarations": 17,
           "module": "wgpu_cache",
-          "outputSha256": "sha256:8e523a91017c473ec22c58df5819aaf7951443840393fd7a55470ca0607f438e",
+          "outputSha256": "sha256:9823d3f0e98feb6ff252412610cf8439de411374dbe2852dc7a4964f1e6b5812",
           "source": "upstream/packages/scene2d-wgpu/src/wgpuCache.ts",
           "usesOpaqueHostValues": true
         },
@@ -40472,7 +41278,7 @@
           ],
           "declarations": 3,
           "module": "wgpu_node2_d",
-          "outputSha256": "sha256:19cbb0f9e4c273ddaba9cd52ed317ae98a949fa0d1b4c17fcc1f8b13f272475e",
+          "outputSha256": "sha256:527f249ce52b7c0ae8d5de16aa2e048c9a7655cd817536c3dd5e4e78c6dfa701",
           "source": "upstream/packages/scene2d-wgpu/src/wgpuNode2D.ts",
           "usesOpaqueHostValues": true
         },
@@ -40491,7 +41297,7 @@
           ],
           "declarations": 10,
           "module": "wgpu_particle_emitter2_d",
-          "outputSha256": "sha256:64edc91efe6ac7074b56216ace7e06b7775214d77cd06d8f51dad6ee478331a8",
+          "outputSha256": "sha256:c7c8351984276d80dfca434894ab101bea909eb87f3814ffb11fd5a64f0dd08e",
           "source": "upstream/packages/scene2d-wgpu/src/wgpuParticleEmitter2D.ts",
           "usesOpaqueHostValues": true
         },
@@ -40503,7 +41309,7 @@
           ],
           "declarations": 3,
           "module": "wgpu_quad_batch",
-          "outputSha256": "sha256:1ebc27882c87c82174c22c85f209d2af71cd7d98ad72f06b09c0e63aa08016b3",
+          "outputSha256": "sha256:6ff3288a0aa07ecfc4ab238ead72ceee184a9fee3b0d3ab50c047f60236bcfcb",
           "source": "upstream/packages/scene2d-wgpu/src/wgpuQuadBatch.ts",
           "usesOpaqueHostValues": true
         },
@@ -40578,7 +41384,7 @@
           ],
           "declarations": 13,
           "module": "wgpu_rich_text",
-          "outputSha256": "sha256:6b7e61fd802ec5eb7a0cb9cfed9ee9a03b5f2295e54ed1de219dbd3daf5c85a0",
+          "outputSha256": "sha256:febee61bd1ed83d63cdc5fdaa6befdd78874e4b1415356deb5b14472ba928f58",
           "source": "upstream/packages/scene2d-wgpu/src/wgpuRichText.ts",
           "usesOpaqueHostValues": true
         },
@@ -40601,7 +41407,7 @@
           ],
           "declarations": 3,
           "module": "wgpu_shape",
-          "outputSha256": "sha256:819197f3cd946f758379b2c496432cd69f30269d8a4fed9345225db82ac3c2e4",
+          "outputSha256": "sha256:06927c151b75c878b7861560478a08000ee91c7a9250916dd00ee35908a58a87",
           "source": "upstream/packages/scene2d-wgpu/src/wgpuShape.ts",
           "usesOpaqueHostValues": true
         },
@@ -40658,7 +41464,7 @@
           ],
           "declarations": 2,
           "module": "wgpu_sprite",
-          "outputSha256": "sha256:1f814f086b2e6a2c38ec30ad9cb71607ae0892f9b87018369c3f961ea4a463b4",
+          "outputSha256": "sha256:706134ddf50a9ab1a6f8fcb64acc3a1c06e44c0ca1bffefb11e0e88e30e992a4",
           "source": "upstream/packages/scene2d-wgpu/src/wgpuSprite.ts",
           "usesOpaqueHostValues": true
         },
@@ -40686,7 +41492,7 @@
           ],
           "declarations": 6,
           "module": "wgpu_text_input",
-          "outputSha256": "sha256:4be0865e6603e403ef93b18b5c569c63d64d86298647344d12fa16a853a2f828",
+          "outputSha256": "sha256:6f0acf569f87bd9e5072c9c10512ffa6d3267baf0f417ad3217004dfc25ecdf2",
           "source": "upstream/packages/scene2d-wgpu/src/wgpuTextInput.ts",
           "usesOpaqueHostValues": true
         },
@@ -40700,7 +41506,7 @@
           ],
           "declarations": 5,
           "module": "wgpu_text_label",
-          "outputSha256": "sha256:d6f8f9904e2f551040a3b53f96eeda5d261b8dd623118c31d0c1112aa1b6a447",
+          "outputSha256": "sha256:9291ca55748bec9f5435003968529df04ea6019e59d867ecd30edd27f44a9478",
           "source": "upstream/packages/scene2d-wgpu/src/wgpuTextLabel.ts",
           "usesOpaqueHostValues": true
         },
@@ -40712,7 +41518,7 @@
           ],
           "declarations": 3,
           "module": "wgpu_tilemap",
-          "outputSha256": "sha256:e054fc0b560506ed9bb874e394563f87b44a906d3bd5c9bd144582fec18f3da8",
+          "outputSha256": "sha256:846ba950a7d0bae2afbcd6d1344aa001f78805fa924c20dc6b044fe504b4611b",
           "source": "upstream/packages/scene2d-wgpu/src/wgpuTilemap.ts",
           "usesOpaqueHostValues": true
         }
@@ -41935,7 +42741,7 @@
           ],
           "declarations": 2,
           "module": "anisotropy_pbr_gl_extension",
-          "outputSha256": "sha256:1a9c1dc710a67a30fd80b199641b2744c396b45b9dfeaeeed0c24855840922f9",
+          "outputSha256": "sha256:d2e5a40159deaaafab47f912f05ce0931600b7c98694778ab5607a34ad20b2be",
           "source": "upstream/packages/scene3d-gl/src/anisotropyPbrGlExtension.ts",
           "usesOpaqueHostValues": true
         },
@@ -41949,7 +42755,7 @@
           ],
           "declarations": 5,
           "module": "blinn_phong_gl_mesh_material_renderer",
-          "outputSha256": "sha256:866ffd4efdb457ec5fea2d3dccd4536c9ffbfd9f6b57bbbe574b996f9b9d389f",
+          "outputSha256": "sha256:a2ed9c2e46ba11c7c6b0137c6435241968ece35128959318d1061abb7784b497",
           "source": "upstream/packages/scene3d-gl/src/blinnPhongGlMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -41963,7 +42769,7 @@
           ],
           "declarations": 5,
           "module": "clearcoat_pbr_gl_extension",
-          "outputSha256": "sha256:18be8e77db5a60c66dc479b153dad101b54d2b5c458ed8b7c12cf2730fdf2110",
+          "outputSha256": "sha256:3abaa88c9430f6cff87337ca4bdc5033dd0284e6ac27d0507f0cc0838e59d563",
           "source": "upstream/packages/scene3d-gl/src/clearcoatPbrGlExtension.ts",
           "usesOpaqueHostValues": true
         },
@@ -41989,7 +42795,7 @@
           ],
           "declarations": 9,
           "module": "custom_shader_gl_mesh_material_renderer",
-          "outputSha256": "sha256:65d4074778d2f4f7558a034204693a81d10ccb487a545e45421f594b759117d3",
+          "outputSha256": "sha256:bc94b5e1587056d1d71c3a7cf6aa76af2086a17003f27595119e746360bcfc19",
           "source": "upstream/packages/scene3d-gl/src/customShaderGlMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -42000,7 +42806,7 @@
           ],
           "declarations": 2,
           "module": "depth_gl_mesh_material_renderer",
-          "outputSha256": "sha256:2af6c79060a4c90112e187303dadef097fe730692614fed798682bf0daa3d88c",
+          "outputSha256": "sha256:fb83adc1b867801e9f33d7da95791512627b523467c2622526cbade1fee809e9",
           "source": "upstream/packages/scene3d-gl/src/depthGlMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -42023,7 +42829,7 @@
           ],
           "declarations": 14,
           "module": "draw_gl_scene3_d",
-          "outputSha256": "sha256:004490bf0784582e19ea94380b3d25176e7842d64a7183df1149e8e87a47b798",
+          "outputSha256": "sha256:c0b9bbfaa4f5df8faa0780231da73f19b940c3cbbd21e17888133bf8ead9fbfc",
           "source": "upstream/packages/scene3d-gl/src/drawGlScene3D.ts",
           "usesOpaqueHostValues": true
         },
@@ -42037,7 +42843,7 @@
           ],
           "declarations": 5,
           "module": "emissive_gl_mesh_material_renderer",
-          "outputSha256": "sha256:97278679abe174f00b614f7afd0f55bac881da37793959f889d8eacd583235b1",
+          "outputSha256": "sha256:36e94d5f3fec68d65ab431d173576f94ff502b0a7eb79cb8160ca726003ce98f",
           "source": "upstream/packages/scene3d-gl/src/emissiveGlMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -42050,7 +42856,7 @@
           ],
           "declarations": 4,
           "module": "enable_gl_pbr_extension_guards",
-          "outputSha256": "sha256:c9321bcc047b8e224537b826ff7dc5f38622e6d8f4a2f1e27edf8c6236650f15",
+          "outputSha256": "sha256:b1617684a233314f53d6a9a38a42d3d45eae5e51aad591d361d0f09fc45352b5",
           "source": "upstream/packages/scene3d-gl/src/enableGlPbrExtensionGuards.ts",
           "usesOpaqueHostValues": true
         },
@@ -42062,7 +42868,7 @@
           ],
           "declarations": 3,
           "module": "enable_gl_scene3_d_color_space_guards",
-          "outputSha256": "sha256:8abddb09a2eea39f3e42f7fcf308d9d2e934cbcc7464e73d9d080d50e60cba97",
+          "outputSha256": "sha256:7df9914ceb5a947bead6c5ad707185af660e69191177cca7448a7d19b2a655a9",
           "source": "upstream/packages/scene3d-gl/src/enableGlScene3DColorSpaceGuards.ts",
           "usesOpaqueHostValues": true
         },
@@ -42076,7 +42882,7 @@
           ],
           "declarations": 5,
           "module": "enable_gl_scene3_d_custom_shader_guards",
-          "outputSha256": "sha256:b3349901536d4376bebbd926488bf6eb99562059b397f5f6b41b84d9a4eb5b18",
+          "outputSha256": "sha256:036741c40c228ca91e4f73f9d5107f7c74a8ed9afbceaca4c4673b4b2c70bac5",
           "source": "upstream/packages/scene3d-gl/src/enableGlScene3DCustomShaderGuards.ts",
           "usesOpaqueHostValues": true
         },
@@ -42088,7 +42894,7 @@
           ],
           "declarations": 3,
           "module": "enable_gl_scene3_d_deform_guards",
-          "outputSha256": "sha256:d70602568f9bac6ac6034bae804b28b9927ad82f5c105b58aab4fc97d088bd39",
+          "outputSha256": "sha256:52e6b6fe0e9b4b48aca0777d285e4e8976de610ccb9490cf896d32c234f1dd96",
           "source": "upstream/packages/scene3d-gl/src/enableGlScene3DDeformGuards.ts",
           "usesOpaqueHostValues": true
         },
@@ -42100,7 +42906,7 @@
           ],
           "declarations": 3,
           "module": "enable_gl_scene3_d_forward_light_selection_guards",
-          "outputSha256": "sha256:61e4651311af69e9bce721ce34e5ca530680cdf53b5edffa61be0e116b3ffa59",
+          "outputSha256": "sha256:0224b1f0ea1b93756c05cff6b5847d90d701835b9755ed7933f45fd63d43ab34",
           "source": "upstream/packages/scene3d-gl/src/enableGlScene3DForwardLightSelectionGuards.ts",
           "usesOpaqueHostValues": true
         },
@@ -42135,7 +42941,7 @@
           ],
           "declarations": 2,
           "module": "extended_pbr_gl_mesh_material_renderer",
-          "outputSha256": "sha256:1e5be8b0ac7b7efbb0bc56f1f16eb1338e41b5e245c0f41a79d632a623731b38",
+          "outputSha256": "sha256:9b4fb0041d8442e7521679ae33995c38a40fc42815ad9e0145cd43100d39e920",
           "source": "upstream/packages/scene3d-gl/src/extendedPbrGlMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -42154,7 +42960,7 @@
           ],
           "declarations": 10,
           "module": "gl_classic_prelude",
-          "outputSha256": "sha256:11b6f0f0eeab008dcfdf570b1df8668de7163415e9823703e408c77239b964fe",
+          "outputSha256": "sha256:448270c127e4225a46e638029ee2e6466d793320fb01b77b4e0190084017aa90",
           "source": "upstream/packages/scene3d-gl/src/glClassicPrelude.ts",
           "usesOpaqueHostValues": true
         },
@@ -42173,7 +42979,7 @@
           ],
           "declarations": 10,
           "module": "gl_debug_prelude",
-          "outputSha256": "sha256:5dda6e83891f79447a3c4751449af6239b36c9e47616f4a580b4425398ff3e91",
+          "outputSha256": "sha256:d886d603daa4129dc944d8e1d6cb41b586ad361a9adb69a6b4436b5efd9043e6",
           "source": "upstream/packages/scene3d-gl/src/glDebugPrelude.ts",
           "usesOpaqueHostValues": true
         },
@@ -42187,7 +42993,7 @@
           ],
           "declarations": 5,
           "module": "gl_environment_cube",
-          "outputSha256": "sha256:59a38af2af97e612b037756e626e0bf336e1826f2814dde481c5e4b4905cf697",
+          "outputSha256": "sha256:9546eaaea26b97a7f28205a0ee4d7ed732ff77a03816fd67f5f69826a1eaafb5",
           "source": "upstream/packages/scene3d-gl/src/glEnvironmentCube.ts",
           "usesOpaqueHostValues": true
         },
@@ -42220,7 +43026,7 @@
           ],
           "declarations": 24,
           "module": "gl_environment_ibl_bake",
-          "outputSha256": "sha256:61f3be6abceffbe6627293c2dc4f4506baf97ae6f889e85b786d699e66c563ff",
+          "outputSha256": "sha256:06fda7e4e434bde32c85861d9dd0bf232cbf189fe79e3c086be0e073e1e7de76",
           "source": "upstream/packages/scene3d-gl/src/glEnvironmentIblBake.ts",
           "usesOpaqueHostValues": true
         },
@@ -42237,7 +43043,7 @@
           ],
           "declarations": 8,
           "module": "gl_environment_skybox",
-          "outputSha256": "sha256:f33d1b02ed55d448babd19128a0cf20ba7e2eec7d0645e5aa289404a62f0abfd",
+          "outputSha256": "sha256:18a700e4efdfedbf20d6e0a342ff49a4dcb4e3fed0cbafa0de2db031add51302",
           "source": "upstream/packages/scene3d-gl/src/glEnvironmentSkybox.ts",
           "usesOpaqueHostValues": true
         },
@@ -42259,7 +43065,7 @@
           ],
           "declarations": 13,
           "module": "gl_lit_program",
-          "outputSha256": "sha256:69e6021c7ea14462c2b3bbd1efee8693273d789cdcb72218cf486d9587d5c167",
+          "outputSha256": "sha256:058cb88836179f6a8f580f4dce4d7932fb8800b80c4451e048ed7bbc9e751d1c",
           "source": "upstream/packages/scene3d-gl/src/glLitProgram.ts",
           "usesOpaqueHostValues": true
         },
@@ -42277,7 +43083,7 @@
           ],
           "declarations": 9,
           "module": "gl_matcap_prelude",
-          "outputSha256": "sha256:6c5c780aacbeefb507c89f1b5522f6a8c326a5d57c732cc5ad3afdc33312e890",
+          "outputSha256": "sha256:c0872e24e03acf16cef3c1a25ae7c8ac237ac67bd7570e6b59a35c9b22e190d3",
           "source": "upstream/packages/scene3d-gl/src/glMatcapPrelude.ts",
           "usesOpaqueHostValues": true
         },
@@ -42329,7 +43135,7 @@
           ],
           "declarations": 20,
           "module": "gl_mesh_program",
-          "outputSha256": "sha256:a531f54bc70cc84f95de572d200d5b3a99f9c2ca7f5a5b18fa8e97505466b297",
+          "outputSha256": "sha256:73041008215b08cc9fe58ffc312c2a9006cb0eb2591a8976f2aeb318b8c5d9ca",
           "source": "upstream/packages/scene3d-gl/src/glMeshProgram.ts",
           "usesOpaqueHostValues": true
         },
@@ -42346,7 +43152,7 @@
           ],
           "declarations": 8,
           "module": "gl_mesh_upload",
-          "outputSha256": "sha256:1594f59695ce8d81f62c9226003fb6412d32980f739397eaf97d067c35f73112",
+          "outputSha256": "sha256:73b53e4becced542ffa9678aee0162b5200ec0e885aeb7650941a7357bf5c8fb",
           "source": "upstream/packages/scene3d-gl/src/glMeshUpload.ts",
           "usesOpaqueHostValues": true
         },
@@ -42371,7 +43177,7 @@
           ],
           "declarations": 16,
           "module": "gl_particle_emitter3_d",
-          "outputSha256": "sha256:7a24074a6f3d1cdc48871b3b99cf96a9bd6159cecb17f21c37b55a1524943d64",
+          "outputSha256": "sha256:22784cb124dd326164fc3c5d70c0ffc94b2561b9adf6d0f651028d8558be173d",
           "source": "upstream/packages/scene3d-gl/src/glParticleEmitter3D.ts",
           "usesOpaqueHostValues": true
         },
@@ -42390,7 +43196,7 @@
           ],
           "declarations": 10,
           "module": "gl_pbr_extension_registry",
-          "outputSha256": "sha256:827294acf52e268c0883614dc455d6bbf641605b22fda9803917e9519f7da4eb",
+          "outputSha256": "sha256:56776dc92625ce7d3a7d229f9fb5bc1c53099ae394312e09c178b192b8ff64f2",
           "source": "upstream/packages/scene3d-gl/src/glPbrExtensionRegistry.ts",
           "usesOpaqueHostValues": true
         },
@@ -42414,7 +43220,7 @@
           ],
           "declarations": 15,
           "module": "gl_pbr_prelude",
-          "outputSha256": "sha256:51bdf0bb56558bfc1fff9873cf318abc3524cd16210e1ba48c21b7fb518548df",
+          "outputSha256": "sha256:795f48e20c77a32394569f7a364838d0f4e0899928cc19334733d76523cadb93",
           "source": "upstream/packages/scene3d-gl/src/glPbrPrelude.ts",
           "usesOpaqueHostValues": true
         },
@@ -42425,7 +43231,7 @@
           ],
           "declarations": 2,
           "module": "gl_pbr_program_cache",
-          "outputSha256": "sha256:48fe4047d94809f50f8c6d3bdff34b078679b270428f640dbb359688c7706e07",
+          "outputSha256": "sha256:1361af7b7b45edf53838e77ee14432139dc6c436f81a76523a9cf8517afd45b6",
           "source": "upstream/packages/scene3d-gl/src/glPbrProgramCache.ts",
           "usesOpaqueHostValues": true
         },
@@ -42446,7 +43252,7 @@
           ],
           "declarations": 12,
           "module": "gl_pbr_standard_block",
-          "outputSha256": "sha256:25131161b4a85bc7f79d84c2726e43dc754155f8e342f73353777da3a55cc1c1",
+          "outputSha256": "sha256:1bb7073a064747045fb197e49c12e2a10e38bd9a6733dc193b6a5bd65ac31db7",
           "source": "upstream/packages/scene3d-gl/src/glPbrStandardBlock.ts",
           "usesOpaqueHostValues": true
         },
@@ -42456,7 +43262,7 @@
           ],
           "declarations": 1,
           "module": "gl_pbr_transmission_scene_color",
-          "outputSha256": "sha256:14a52bd160ec51ad6102f7c161e7b777303244d8093991263490e6561214e7f1",
+          "outputSha256": "sha256:77cf94f05c6c374aa9b6d53af366fc9afbda3288e57b65e43e999d52a27ca876",
           "source": "upstream/packages/scene3d-gl/src/glPbrTransmissionSceneColor.ts",
           "usesOpaqueHostValues": true
         },
@@ -42470,7 +43276,7 @@
           ],
           "declarations": 5,
           "module": "gl_scene3_d_runtime",
-          "outputSha256": "sha256:e23a35fbcda9a421aa307a5f113b2e20759027c49f1717ec1e6a969d32d73786",
+          "outputSha256": "sha256:4be63c4af2fefba521ad9b2d0961bb513719b983b82efbec72dae91918112f54",
           "source": "upstream/packages/scene3d-gl/src/glScene3DRuntime.ts",
           "usesOpaqueHostValues": true
         },
@@ -42496,7 +43302,7 @@
           ],
           "declarations": 17,
           "module": "_internal_gl_scene3_d_test_helper",
-          "outputSha256": "sha256:509f6fdcc89d71f4237b7270a86dd964f9a22255a1ab27795bda3113642151d3",
+          "outputSha256": "sha256:8823bd2137f19fad74b1d3690450ae70b5c6079c391d45e693a5a3c9c8a22597",
           "source": "upstream/packages/scene3d-gl/src/glScene3DTestHelper.ts",
           "usesOpaqueHostValues": true
         },
@@ -42507,7 +43313,7 @@
           ],
           "declarations": 2,
           "module": "gl_scene3_d_time",
-          "outputSha256": "sha256:a1b6e816cfeb608b4bfe7adece27103f81c97fd2ca67a4b3a1bd56f773f4cc8b",
+          "outputSha256": "sha256:021e4b264d9f1ae9e551a31b412ca56066b994a0c80cd7fc197327607e153377",
           "source": "upstream/packages/scene3d-gl/src/glScene3DTime.ts",
           "usesOpaqueHostValues": true
         },
@@ -42528,7 +43334,7 @@
           ],
           "declarations": 12,
           "module": "gl_shaded_built_in_modifiers",
-          "outputSha256": "sha256:3a214a7860fa6d50da6a24cef95fe41ce4ee6dc60732571c82d04bb0211bbf6d",
+          "outputSha256": "sha256:df8cf6a26212528aa1d9e32c61b59efd3b47a55ce88b9df55920dcd6b3eca18a",
           "source": "upstream/packages/scene3d-gl/src/glShadedBuiltInModifiers.ts",
           "usesOpaqueHostValues": true
         },
@@ -42555,7 +43361,7 @@
           ],
           "declarations": 7,
           "module": "gl_shadow_map",
-          "outputSha256": "sha256:5fc576d11e06aff4f5619abcb6de190f1c603e11fecdbee5112d5b0ddb0a3d6d",
+          "outputSha256": "sha256:1410eb9d8043dab0377a4cc4148585bdb68b2dbd73b65d4f345f736d3c787383",
           "source": "upstream/packages/scene3d-gl/src/glShadowMap.ts",
           "usesOpaqueHostValues": true
         },
@@ -42572,7 +43378,7 @@
           ],
           "declarations": 8,
           "module": "gl_toon_prelude",
-          "outputSha256": "sha256:49a0ede69114635f6d6483fb0acb769e855cdf3b9e0d1f02562df939cabb1274",
+          "outputSha256": "sha256:5bc8a36083949fad20039e8a51e145b5a78defe81c33382e86dc05d085492f23",
           "source": "upstream/packages/scene3d-gl/src/glToonPrelude.ts",
           "usesOpaqueHostValues": true
         },
@@ -42590,7 +43396,7 @@
           ],
           "declarations": 9,
           "module": "gl_unlit_prelude",
-          "outputSha256": "sha256:b19608c327fa953aded5406e32682e0ac3e62306a2967d9066501cc20872d641",
+          "outputSha256": "sha256:ccb5a20da7cb9f2e8199c9a030f3c909c04d29e65e05aadd7821388372334990",
           "source": "upstream/packages/scene3d-gl/src/glUnlitPrelude.ts",
           "usesOpaqueHostValues": true
         },
@@ -42615,7 +43421,7 @@
           ],
           "declarations": 6,
           "module": "gl_wireframe_prelude",
-          "outputSha256": "sha256:f4773b9c5a9ef3cf4396e294a315d4aecfa5b979c14e4c85fc077538db937d89",
+          "outputSha256": "sha256:3119577d3b50beac6f035140f29d8ebc6ba1fcc990558f8bacf6ea7eb4ecccf4",
           "source": "upstream/packages/scene3d-gl/src/glWireframePrelude.ts",
           "usesOpaqueHostValues": true
         },
@@ -42628,7 +43434,7 @@
           ],
           "declarations": 4,
           "module": "gl_wireframe_upload",
-          "outputSha256": "sha256:d1ee4f6693e6578484372507c22440ed6c0434883ee634ad7f2a6a45e5d81b48",
+          "outputSha256": "sha256:3d6541be3542fbd98caa7cd44dae0ff19a96f00ffa678748cdc1a700c2fe2d9c",
           "source": "upstream/packages/scene3d-gl/src/glWireframeUpload.ts",
           "usesOpaqueHostValues": true
         },
@@ -42647,7 +43453,7 @@
           ],
           "declarations": 2,
           "module": "iridescence_pbr_gl_extension",
-          "outputSha256": "sha256:68f5e1b398b3deb574b3f8724e4114e139da462aacad43138aba7968bdbd764b",
+          "outputSha256": "sha256:275c608436b8ee1745d34199d8efe116d30301b76ad6b91c5414a991e57758f2",
           "source": "upstream/packages/scene3d-gl/src/iridescencePbrGlExtension.ts",
           "usesOpaqueHostValues": true
         },
@@ -42661,7 +43467,7 @@
           ],
           "declarations": 5,
           "module": "lambert_gl_mesh_material_renderer",
-          "outputSha256": "sha256:431e064c3dbae20136cdfa4877943c7791d64350c60e0c6bcefb04443e734bd2",
+          "outputSha256": "sha256:fc27bce847add65da91bfce80aa40674a6ff688a16f1c5e429c2f34076662eac",
           "source": "upstream/packages/scene3d-gl/src/lambertGlMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -42675,7 +43481,7 @@
           ],
           "declarations": 5,
           "module": "matcap_gl_mesh_material_renderer",
-          "outputSha256": "sha256:a5384fb3f11cc5d2f25b3f1ac9eb00d0e6d2b2d3c5b4e670a5aaed52ba2a0a3b",
+          "outputSha256": "sha256:43a8f748f6a7ab170c823a6313737f3dc83827c9ac0b3edfb5e02406d0f53c75",
           "source": "upstream/packages/scene3d-gl/src/matcapGlMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -42686,7 +43492,7 @@
           ],
           "declarations": 2,
           "module": "normal_gl_mesh_material_renderer",
-          "outputSha256": "sha256:ecf7036f67971b8a5ef2bb4ac441dd092313811ff849878482c95ca1e9698187",
+          "outputSha256": "sha256:18851c8bf92925833f125b37ca3dd6be506075f78b9f9f2ef6e6756a79dd3367",
           "source": "upstream/packages/scene3d-gl/src/normalGlMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -42700,7 +43506,7 @@
           ],
           "declarations": 5,
           "module": "phong_gl_mesh_material_renderer",
-          "outputSha256": "sha256:79c3ec89df3a482bb5176879ba913ceea8e10f1bba542c460dd2b88a82953fa3",
+          "outputSha256": "sha256:5340e331faabc415d520c31d662af46a48a57944878e5a6c1f8dd4d7bb8882cf",
           "source": "upstream/packages/scene3d-gl/src/phongGlMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -42722,7 +43528,7 @@
           ],
           "declarations": 13,
           "module": "prepare_gl_scene3_d_forward_lights",
-          "outputSha256": "sha256:7854194b8a2ac5aee95bf8fc7a7da94a73d9827905f9c3aed5f5ed218c3a3fbd",
+          "outputSha256": "sha256:d19e01f3c19b4202b7399acc27726a7d96c5f1bb6a1e72fc1304818826f0b76d",
           "source": "upstream/packages/scene3d-gl/src/prepareGlScene3DForwardLights.ts",
           "usesOpaqueHostValues": true
         },
@@ -42732,7 +43538,7 @@
           ],
           "declarations": 1,
           "module": "present_gl_scene3_d",
-          "outputSha256": "sha256:7cebb8a0c26f575e4ca06c63d273e5ecaf328800f48e39e96508b6b5785441fa",
+          "outputSha256": "sha256:120089f061d2611375c15fd59dbe467ac5adcb0ddf7617669716cc94ca9a351d",
           "source": "upstream/packages/scene3d-gl/src/presentGlScene3D.ts",
           "usesOpaqueHostValues": true
         },
@@ -42742,7 +43548,7 @@
           ],
           "declarations": 1,
           "module": "register_gl_standard_pbr_material",
-          "outputSha256": "sha256:dd9826b57298f5459f89d0295c16eca602521afce2c8edcad0e72623f06689f1",
+          "outputSha256": "sha256:19f3784e3867e003039e9f590e2c8c4a2cf1d40c13f61eef8fa9a969402757e3",
           "source": "upstream/packages/scene3d-gl/src/registerGlStandardPbrMaterial.ts",
           "usesOpaqueHostValues": true
         },
@@ -42760,7 +43566,7 @@
           ],
           "declarations": 9,
           "module": "shaded_gl_mesh_material_renderer",
-          "outputSha256": "sha256:915834aa60030e58d09c88f6e925df3ccbe40aabb25ee62fd6ad5a27e515d62c",
+          "outputSha256": "sha256:41d0f1ed41f87f65b5c2389e2573767375c0bc79fbe45517e9634547725dcd65",
           "source": "upstream/packages/scene3d-gl/src/shadedGlMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -42771,7 +43577,7 @@
           ],
           "declarations": 2,
           "module": "sheen_pbr_gl_extension",
-          "outputSha256": "sha256:4eac95017b5c925a203deedc0cb15178b2956e81aafd480c53f26d1610535816",
+          "outputSha256": "sha256:f0f09e87e3f27603d2025d79c57d60ed0486e083fd58f97a1718c2c7f2c93891",
           "source": "upstream/packages/scene3d-gl/src/sheenPbrGlExtension.ts",
           "usesOpaqueHostValues": true
         },
@@ -42789,7 +43595,7 @@
           ],
           "declarations": 9,
           "module": "specular_glossiness_pbr_gl_mesh_material_renderer",
-          "outputSha256": "sha256:0650de8f0ec1906ffaeebd17fd50db0d4356adc20042fc0bf4ff7b96e5c67681",
+          "outputSha256": "sha256:630628d525f26fb4577b1938fd5d8a6ba1eefb77529e2360c4be52cbc61c072e",
           "source": "upstream/packages/scene3d-gl/src/specularGlossinessPbrGlMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -42800,7 +43606,7 @@
           ],
           "declarations": 2,
           "module": "specular_pbr_gl_extension",
-          "outputSha256": "sha256:05e28932b89bbebdf141a1c5a88af2c94cd44626d223dd1bb31de9a0e63c49a9",
+          "outputSha256": "sha256:456949df8678c13def6468f734f8afa6fe3d941b73ca0816c17be8ed722d6864",
           "source": "upstream/packages/scene3d-gl/src/specularPbrGlExtension.ts",
           "usesOpaqueHostValues": true
         },
@@ -42810,7 +43616,7 @@
           ],
           "declarations": 1,
           "module": "standard_pbr_gl_mesh_material_renderer",
-          "outputSha256": "sha256:fd5cf2f8a6311902e0b101ffd5c995317b8f204724d8e311cf0014ac9bc0e2c6",
+          "outputSha256": "sha256:f4d91b26239d2f5a053e1e460ca892a3e3860e11943b589a4baa04e3a3f9dd05",
           "source": "upstream/packages/scene3d-gl/src/standardPbrGlMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -42824,7 +43630,7 @@
           ],
           "declarations": 5,
           "module": "toon_gl_mesh_material_renderer",
-          "outputSha256": "sha256:cc20289789769ea02c387fd5809084012df2c220b19aaea0fcf4cf8c247dff40",
+          "outputSha256": "sha256:d2e26df820b137031ffcf7b2927a9cd30b3a253082ba0f89a5e49b6ba519f479",
           "source": "upstream/packages/scene3d-gl/src/toonGlMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -42835,7 +43641,7 @@
           ],
           "declarations": 2,
           "module": "transmission_volume_pbr_gl_extension",
-          "outputSha256": "sha256:5ee0e1d3b1075aeac1b04706fb86b66b0663d68763cd1732f026c220494903b7",
+          "outputSha256": "sha256:df7acf09ae4b8c32a113c6710e6ff2dd5ca883b15e9426536631bc654f84785e",
           "source": "upstream/packages/scene3d-gl/src/transmissionVolumePbrGlExtension.ts",
           "usesOpaqueHostValues": true
         },
@@ -42849,7 +43655,7 @@
           ],
           "declarations": 5,
           "module": "unlit_gl_mesh_material_renderer",
-          "outputSha256": "sha256:d90395e3fc306d33c727b4790bfa29b66acbb122b462e8b6849d934825f02e31",
+          "outputSha256": "sha256:f12b5d50b241f16dcbb75bf431da189afb901360ec6e8af00be85ce05fffb371",
           "source": "upstream/packages/scene3d-gl/src/unlitGlMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -42863,7 +43669,7 @@
           ],
           "declarations": 5,
           "module": "vertex_color_gl_mesh_material_renderer",
-          "outputSha256": "sha256:6251dbc9571435a5cdf0fdfb7126cf9894f5fd46e9eeca77940fde1c7d3d7d9f",
+          "outputSha256": "sha256:b35c2462a7c7a39a549cdd2af23ac728a0ae99f8a5e563f6a5fc1204bb64519e",
           "source": "upstream/packages/scene3d-gl/src/vertexColorGlMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -42875,7 +43681,7 @@
           ],
           "declarations": 3,
           "module": "wireframe_gl_mesh_material_renderer",
-          "outputSha256": "sha256:5be5f59cfb5f704b5fac19469e609cec14f29050ebe75d1d437595f671fd3a3f",
+          "outputSha256": "sha256:6795b70717822c0e7f317f1ecec0b092a74af9c96f6abcb8d5467e49a5783f51",
           "source": "upstream/packages/scene3d-gl/src/wireframeGlMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -42886,7 +43692,7 @@
           ],
           "declarations": 2,
           "module": "wrapped_diffuse_pbr_gl_extension",
-          "outputSha256": "sha256:b5135d84995fed29a7b7b4a7063c1137ac137debf510546f4c4763a1c37985a7",
+          "outputSha256": "sha256:4a83385290912179c5f0910fe27d6f163573c4c79f55a41e1e92da481ef02055",
           "source": "upstream/packages/scene3d-gl/src/wrappedDiffusePbrGlExtension.ts",
           "usesOpaqueHostValues": true
         }
@@ -44423,7 +45229,7 @@
           ],
           "declarations": 7,
           "module": "blinn_phong_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:f858aeb4d4af23fef1e7276accd03542dd4d2ee07b3b14dd176b1c37c8339d9c",
+          "outputSha256": "sha256:5d29f05682b13766c03c6eb077c78e169eb2c6f77b438a28a174e50aafefa7e6",
           "source": "upstream/packages/scene3d-wgpu/src/blinnPhongWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -44443,7 +45249,7 @@
           ],
           "declarations": 3,
           "module": "depth_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:9af83d0c2b904b03bb7a12a21a0edce3587b922367c92bc753f539131e9a8cf7",
+          "outputSha256": "sha256:504f9f5378fa8d5dd9ede33b7a5a18b7dba8763c53147d1c9619643463c69e53",
           "source": "upstream/packages/scene3d-wgpu/src/depthWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -44467,7 +45273,7 @@
           ],
           "declarations": 15,
           "module": "draw_wgpu_scene3_d",
-          "outputSha256": "sha256:23396274c999d1502774ae480ad0afef3119264113fa39a127ba88f8f667b073",
+          "outputSha256": "sha256:6a395f0d37abd9917b57bc041b68fcd09eea63df6576f3b698e733a3e28101e0",
           "source": "upstream/packages/scene3d-wgpu/src/drawWgpuScene3D.ts",
           "usesOpaqueHostValues": true
         },
@@ -44482,7 +45288,7 @@
           ],
           "declarations": 6,
           "module": "emissive_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:f1bf6c54c1575d43bf0ebd0fb3ebf2b5a8b1b74bd92fca0fe305b569db999881",
+          "outputSha256": "sha256:f21d60dd3a755f4313a9bfc112e8ccdff4d77a152d40d6787001d5f447932f0e",
           "source": "upstream/packages/scene3d-wgpu/src/emissiveWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -44541,7 +45347,7 @@
           ],
           "declarations": 6,
           "module": "lambert_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:d7247b5560bcadf450625d3d2d5a6e8bddc2986ebf1bf333e35e012a957b4704",
+          "outputSha256": "sha256:3e36c120782ca2467709cb56183d5bc18dd61c6ff62b7e9cd7b3d4eb68bfdc04",
           "source": "upstream/packages/scene3d-wgpu/src/lambertWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -44556,7 +45362,7 @@
           ],
           "declarations": 6,
           "module": "matcap_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:1fbd52898e74526dd186f6a85f7c9f5f67594c0b09b8d6ba65f81539040e9c77",
+          "outputSha256": "sha256:5dfb2543ba057cc3885eed3f5084138ca09046e2c914fae58a34a276c09ab5bb",
           "source": "upstream/packages/scene3d-wgpu/src/matcapWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -44568,7 +45374,7 @@
           ],
           "declarations": 3,
           "module": "normal_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:4a2d9536a1c36516dfcb860e7e6a8c96c23c18a264aaadce592d979938e33a43",
+          "outputSha256": "sha256:30baa99aed79d3a42a22878ca8789202180a7007ad6b36b2fd160e44a31d8b1b",
           "source": "upstream/packages/scene3d-wgpu/src/normalWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -44584,7 +45390,7 @@
           ],
           "declarations": 7,
           "module": "phong_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:f108edbd2bc3becd13a0953629614ac94ab216f6a2a08f2e4c0b59385c56f482",
+          "outputSha256": "sha256:03e09bab6d6d8d73387f8721eaf3edc764c7a6b7d42a0f41ca06b9e5c874d57b",
           "source": "upstream/packages/scene3d-wgpu/src/phongWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -44606,7 +45412,7 @@
           ],
           "declarations": 13,
           "module": "prepare_wgpu_scene3_d_forward_lights",
-          "outputSha256": "sha256:6968324f572f883dc332a816238d1e18b820b8b125986ccb0432600b82a89091",
+          "outputSha256": "sha256:bd860995578c87f701eda0490eeaf73e3a7039abea018e631aebb90dc1a01a94",
           "source": "upstream/packages/scene3d-wgpu/src/prepareWgpuScene3DForwardLights.ts",
           "usesOpaqueHostValues": true
         },
@@ -44616,7 +45422,7 @@
           ],
           "declarations": 1,
           "module": "register_wgpu_standard_pbr_material",
-          "outputSha256": "sha256:b2d62412e6e9f4f90a94c01f0e3142a10c2a15fb4c9ff2c214450fbfaa4b046e",
+          "outputSha256": "sha256:08ffa82cb855130c83bb83295eac87b9659770a9ca003a116bc0b0ffcca3a98a",
           "source": "upstream/packages/scene3d-wgpu/src/registerWgpuStandardPbrMaterial.ts",
           "usesOpaqueHostValues": true
         },
@@ -44630,7 +45436,7 @@
           ],
           "declarations": 5,
           "module": "shaded_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:05bd2a7cd6b6d31af81b7411f9c554880b0e77ee72292586adda0112065f41f1",
+          "outputSha256": "sha256:6508bb5b6945d16d2f5a88e6ce37452ca2afe833e1e8c7fe3ff8bcaf07fabeec",
           "source": "upstream/packages/scene3d-wgpu/src/shadedWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -44649,7 +45455,7 @@
           ],
           "declarations": 10,
           "module": "specular_glossiness_pbr_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:12fe9175044fa98a3a89c8cde89e243aca9323e16665c4eb212bd5571fcf13ed",
+          "outputSha256": "sha256:07b6a821e663ce77b7bc5220ac42569c6026cde6bb0fcd9f343a7a04d61bcaeb",
           "source": "upstream/packages/scene3d-wgpu/src/specularGlossinessPbrWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -44670,7 +45476,7 @@
           ],
           "declarations": 12,
           "module": "standard_pbr_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:307f0626968058ecdef438b6bbcd49bfcdf40f43786ddf7abece5d13429d21d4",
+          "outputSha256": "sha256:d8b36a91dc37854b1224131ef51e38b4e296d9851c62accedfab2c6033f41a1b",
           "source": "upstream/packages/scene3d-wgpu/src/standardPbrWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -44685,7 +45491,7 @@
           ],
           "declarations": 6,
           "module": "toon_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:516bf364fa8644b8bf459f86b8a44c2ec1982279ac91422ce60b1442a41c54d4",
+          "outputSha256": "sha256:a3af506a6ebbc3ff2d3b1911e90c8b794631b770e5aebfa592e7c4459ae33524",
           "source": "upstream/packages/scene3d-wgpu/src/toonWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -44700,7 +45506,7 @@
           ],
           "declarations": 6,
           "module": "unlit_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:35f88129a7b3cd8842f13480058d30272209a680fa27c6b19e7caf6e762f61f2",
+          "outputSha256": "sha256:f3a4f0282d885a4f6fc924f177e8f1837a0bf9a35acec1955c96db5b58834032",
           "source": "upstream/packages/scene3d-wgpu/src/unlitWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -44715,7 +45521,7 @@
           ],
           "declarations": 6,
           "module": "vertex_color_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:59a7e07716e80a5918459df90117b17dbc4131d6a961728815cbd1f7e0681848",
+          "outputSha256": "sha256:4c65b2edc1ed625ea0580f9ed6bdd408909e276c8eb0a39ecfba42a76541f300",
           "source": "upstream/packages/scene3d-wgpu/src/vertexColorWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         },
@@ -44737,7 +45543,7 @@
           ],
           "declarations": 13,
           "module": "wgpu_classic_prelude",
-          "outputSha256": "sha256:281dbc731df29f25cf9a509c29b18c96bfbd78e5479b92608dd348aca8b2cae2",
+          "outputSha256": "sha256:d8cf2ea13d19e45ed799fe7bb29b9af6e4bf24f91ad9df06eea355b10be90758",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuClassicPrelude.ts",
           "usesOpaqueHostValues": true
         },
@@ -44766,7 +45572,7 @@
           ],
           "declarations": 9,
           "module": "wgpu_debug_prelude",
-          "outputSha256": "sha256:a22983c48b8b6c4e44a1747db18c65d3a8f3f69191f7883fb0f8b10954c435c1",
+          "outputSha256": "sha256:5ac6bb88801114fa8a014e91cb3d724c6a07052bda3f32f98802f04a63021a21",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuDebugPrelude.ts",
           "usesOpaqueHostValues": true
         },
@@ -44849,7 +45655,7 @@
           ],
           "declarations": 8,
           "module": "wgpu_matcap_prelude",
-          "outputSha256": "sha256:290563b167a91fd2b2c757b47ce68f66dd542fa28cec0c91a72500f20efb3f08",
+          "outputSha256": "sha256:045ba38fc69b5d2d94fd4a1b26abd372f897715add4ca7be0b66b578f08ebebe",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuMatcapPrelude.ts",
           "usesOpaqueHostValues": true
         },
@@ -44916,7 +45722,7 @@
           ],
           "declarations": 23,
           "module": "wgpu_particle_emitter3_d",
-          "outputSha256": "sha256:9177855b54b3896d2569bcde247c5f90b600f24a4f1e700fc6f9c045d514dca9",
+          "outputSha256": "sha256:e8b4004443785f2d126a06099e749797e717802b14056d5593a90a00203c5fe9",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuParticleEmitter3D.ts",
           "usesOpaqueHostValues": true
         },
@@ -44927,7 +45733,7 @@
           ],
           "declarations": 2,
           "module": "wgpu_pbr_pipeline_cache",
-          "outputSha256": "sha256:ebd399acca2ea8856e9d2dc956614e2758a503fa33fa82b448a9f2534d574dbd",
+          "outputSha256": "sha256:426582fbb71ce3faf321dd82d9561416fd7d642e7d6abd09bb837074e4607a21",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuPbrPipelineCache.ts",
           "usesOpaqueHostValues": true
         },
@@ -44941,7 +45747,7 @@
           ],
           "declarations": 5,
           "module": "wgpu_pbr_prelude",
-          "outputSha256": "sha256:fc5ef405cecc81864ccc281a8212de25f5a262d4c438afb36664ff4c14f29d01",
+          "outputSha256": "sha256:9da5ef0d367df8c9c54ccf16b488a2589175dd9772d1c3c47a1f749d86e19ce4",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuPbrPrelude.ts",
           "usesOpaqueHostValues": true
         },
@@ -44993,7 +45799,7 @@
           ],
           "declarations": 8,
           "module": "wgpu_shadow_map",
-          "outputSha256": "sha256:e146400aae1cef3460868398ebac6018097cd2805dc56c5eca379d5fa9667db4",
+          "outputSha256": "sha256:67db031c00d19ca499a39a8ef80f29b5a4182c1e1e898cb72a46060a71af02f7",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuShadowMap.ts",
           "usesOpaqueHostValues": true
         },
@@ -45043,7 +45849,7 @@
           ],
           "declarations": 8,
           "module": "wgpu_toon_prelude",
-          "outputSha256": "sha256:c5cad2f129fafdd482c22e91aeeadde4d3134ddf1d39f03280fb2eff8a331116",
+          "outputSha256": "sha256:fa54e2b66dba27dd1bf2c6e5f877fcd89f3caa442a3f423302ac619dd35cbe5b",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuToonPrelude.ts",
           "usesOpaqueHostValues": true
         },
@@ -45064,7 +45870,7 @@
           ],
           "declarations": 12,
           "module": "wgpu_unlit_prelude",
-          "outputSha256": "sha256:1bf9f8f11fa9561831e0d4d994134d1e66ac02441e74fa60b72b9d45ac5cdb87",
+          "outputSha256": "sha256:1e632c87ae632d9a8b1fa3a42a4cd6d85a638eb864d010eb3742fb2d4914f96e",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuUnlitPrelude.ts",
           "usesOpaqueHostValues": true
         },
@@ -45080,7 +45886,7 @@
           ],
           "declarations": 7,
           "module": "wgpu_wireframe_prelude",
-          "outputSha256": "sha256:5295299ec508fbd39e5577bdb4caec44163749a96b792bc08a2841d61c4ca0ef",
+          "outputSha256": "sha256:51c48a778e969d9b5c37714137791e413887bd6d9e4ddc3c7e0d67988a992eb2",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuWireframePrelude.ts",
           "usesOpaqueHostValues": true
         },
@@ -45108,7 +45914,7 @@
           ],
           "declarations": 6,
           "module": "wireframe_wgpu_mesh_material_renderer",
-          "outputSha256": "sha256:cf8f05b96fd7656ceddbf8b38f0341853b6a2de43c7ad9c8befcb78a7fe73827",
+          "outputSha256": "sha256:5ba6a140156c0b44bcda4440a52a0d5b71ed7475be0f72efa710267c31d8ebe5",
           "source": "upstream/packages/scene3d-wgpu/src/wireframeWgpuMeshMaterialRenderer.ts",
           "usesOpaqueHostValues": true
         }
@@ -53079,17 +53885,527 @@
       "attemptedSources": 18,
       "blockers": [],
       "candidate": {
-        "compileDiagnostics": [],
-        "path": "generated/candidates/flighthq-shading",
-        "status": "dependency-blocked",
-        "syntaxCheckedSources": 18,
-        "unresolvedDependencies": [
+        "compileDiagnostics": [
           {
-            "candidateStatus": "source-blocked",
-            "package": "@flighthq/entity",
-            "status": "blocked"
+            "code": "E0425",
+            "message": "cannot find type `ModifierSlot` in this scope",
+            "source": "generated/candidates/flighthq-shading/src/order_modifier_stack.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `ModifierSlot` in this scope",
+            "source": "generated/candidates/flighthq-shading/src/order_modifier_stack.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `ModifierSlot` in this scope",
+            "source": "generated/candidates/flighthq-shading/src/order_modifier_stack.rs"
+          },
+          {
+            "code": "E0425",
+            "message": "cannot find type `ModifierSlot` in this scope",
+            "source": "generated/candidates/flighthq-shading/src/order_modifier_stack.rs"
+          },
+          {
+            "code": "E0063",
+            "message": "missing fields `alpha_cutoff`, `alpha_mode`, `blend_mode` and 15 other fields in initializer of `ShadedMaterial`",
+            "source": "generated/candidates/flighthq-shading/src/create_shaded_material.rs"
+          },
+          {
+            "code": "E0593",
+            "message": "closure is expected to take 1 argument, but it takes 2 arguments",
+            "source": "generated/candidates/flighthq-shading/src/order_modifier_stack.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `map` on type `Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `secondary_map` on type `Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `EmissiveModifier` has no field named `source`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `source` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `EmissiveModifier` has no field named `amplitude`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `amplitude` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `EmissiveModifier` has no field named `axis`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `axis` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `EmissiveModifier` has no field named `frequency`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `frequency` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `EmissiveModifier` has no field named `speed`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `speed` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `EmissiveModifier` has no field named `direction`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `direction` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `color` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `EmissiveModifier` has no field named `mode`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `mode` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `EmissiveModifier` has no field named `near`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `near` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `EmissiveModifier` has no field named `far`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `far` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `EmissiveModifier` has no field named `density`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `density` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `strength` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `mask` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `facing` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `facing_softness` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `EmissiveModifier` has no field named `scroll`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `scroll` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `EmissiveModifier` has no field named `secondary_map`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `secondary_map` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `EmissiveModifier` has no field named `secondary_scroll`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `secondary_scroll` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `FogModifier` has no field named `source`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `source` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `FogModifier` has no field named `amplitude`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `amplitude` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `FogModifier` has no field named `axis`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `axis` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `FogModifier` has no field named `frequency`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `frequency` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `FogModifier` has no field named `speed`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `speed` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `FogModifier` has no field named `direction`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `direction` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `color` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `mode` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `near` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `far` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `density` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `FogModifier` has no field named `strength`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `strength` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `FogModifier` has no field named `mask`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `mask` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `FogModifier` has no field named `facing`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `facing` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `FogModifier` has no field named `facing_softness`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `facing_softness` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `FogModifier` has no field named `scroll`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `scroll` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `FogModifier` has no field named `secondary_map`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `secondary_map` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `FogModifier` has no field named `secondary_scroll`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `secondary_scroll` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `source` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `amplitude` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `axis` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `frequency` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `speed` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `direction` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `VertexDisplaceModifier` has no field named `color`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `color` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `VertexDisplaceModifier` has no field named `mode`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `mode` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `VertexDisplaceModifier` has no field named `near`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `near` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `VertexDisplaceModifier` has no field named `far`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `far` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `VertexDisplaceModifier` has no field named `density`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `density` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `VertexDisplaceModifier` has no field named `strength`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `strength` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `VertexDisplaceModifier` has no field named `mask`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `mask` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `VertexDisplaceModifier` has no field named `facing`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `facing` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `VertexDisplaceModifier` has no field named `facing_softness`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `facing_softness` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `VertexDisplaceModifier` has no field named `scroll`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `scroll` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `VertexDisplaceModifier` has no field named `secondary_map`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `secondary_map` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0560",
+            "message": "struct `VertexDisplaceModifier` has no field named `secondary_scroll`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
+          },
+          {
+            "code": "E0609",
+            "message": "no field `secondary_scroll` on type `&Modifier`",
+            "source": "generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs"
           }
-        ]
+        ],
+        "path": "generated/candidates/flighthq-shading",
+        "status": "compile-blocked",
+        "syntaxCheckedSources": 18,
+        "unresolvedDependencies": []
       },
       "crate": "flighthq-shading",
       "dependencies": [
@@ -56128,11 +57444,6 @@
         "unresolvedDependencies": [
           {
             "candidateStatus": "source-blocked",
-            "package": "@flighthq/entity",
-            "status": "blocked"
-          },
-          {
-            "candidateStatus": "source-blocked",
             "package": "@flighthq/textureatlas",
             "status": "blocked"
           }
@@ -57472,7 +58783,7 @@
           ],
           "declarations": 58,
           "module": "rich_text",
-          "outputSha256": "sha256:45d37d256bd06b99830ca8b05c3703cb26ee0232462a49e9b757a4c91461f590",
+          "outputSha256": "sha256:603bdff64fa00043e475c949743b901dabfc69c6597506398228634b1e354482",
           "source": "upstream/packages/text/src/richText.ts",
           "usesOpaqueHostValues": true
         },
@@ -57508,7 +58819,7 @@
           ],
           "declarations": 17,
           "module": "text_label",
-          "outputSha256": "sha256:fa80f5c3f6bd1ef25421305d4020219a64615c7e7588d04ece65f17bc048c623",
+          "outputSha256": "sha256:5cbd3fb05b153bd94eb9cd84b515fb9fb5d983cdff257263f028c930a455228d",
           "source": "upstream/packages/text/src/textLabel.ts",
           "usesOpaqueHostValues": true
         },
@@ -57520,7 +58831,7 @@
           ],
           "declarations": 3,
           "module": "text_label_layout",
-          "outputSha256": "sha256:f3ac59da5ac4146696a6129217af05a46afc3ba2d50202fc834df56684f5b831",
+          "outputSha256": "sha256:28f07f0883ebb077d7b4a1c60024d2202a22b2fd90b1d94c628d4b1bc1541092",
           "source": "upstream/packages/text/src/textLabelLayout.ts",
           "usesOpaqueHostValues": true
         }
@@ -58003,7 +59314,7 @@
           ],
           "declarations": 9,
           "module": "selectable_rich_text_manager",
-          "outputSha256": "sha256:191eedbed5cab8abb26278857115cc152709a5dd7e629ba8ac9ab34eb71623ee",
+          "outputSha256": "sha256:ad22944959c82bf645bff5acf1914d388b54defb6ef2372ae16503d893be73a3",
           "source": "upstream/packages/textinput/src/selectableRichTextManager.ts",
           "usesOpaqueHostValues": true
         },
@@ -58018,7 +59329,7 @@
           ],
           "declarations": 6,
           "module": "text_input",
-          "outputSha256": "sha256:5db888be53ed47594aa4ad6faf79342ff65b7dd4cd9dc3bb65d17bc6e3d5c982",
+          "outputSha256": "sha256:5c84f4df7fef4491ebdef114f3fbf367697d883b6209674a4cf0c5b1ac67faa6",
           "source": "upstream/packages/textinput/src/textInput.ts",
           "usesOpaqueHostValues": true
         },
@@ -58084,7 +59395,7 @@
           ],
           "declarations": 57,
           "module": "text_input_editing",
-          "outputSha256": "sha256:02f63c0a94d4001514952e01fb4855a2aea212215e32af2dc34e2e36c42927eb",
+          "outputSha256": "sha256:3512f6ca7fd6485e928de6c31eca90d8b30e39d17399995e0bcddf2053c54bbb",
           "source": "upstream/packages/textinput/src/textInputEditing.ts",
           "usesOpaqueHostValues": true
         },
@@ -58104,7 +59415,7 @@
           ],
           "declarations": 11,
           "module": "text_input_manager",
-          "outputSha256": "sha256:6f4ed1a215f206228c8594f284c31d1fb4f90b99fa71c3a8b703d60dddcae939",
+          "outputSha256": "sha256:295911e8c2f3fb105192c2df1d5e51e048daa6483a878d43cabd6788d722fd5e",
           "source": "upstream/packages/textinput/src/textInputManager.ts",
           "usesOpaqueHostValues": true
         }
@@ -60003,7 +61314,7 @@
           ],
           "declarations": 2,
           "module": "tiled_project",
-          "outputSha256": "sha256:643a3f25198d466e2c94e7d2a1c03ad8ac52228a8cdfb39668834022e7dae2fa",
+          "outputSha256": "sha256:d32fbf773211899370586e9c5c8567ca03c6a7af663d4e639f8d653c51ec9599",
           "source": "upstream/packages/tilemap-formats/src/tiledProject.ts",
           "usesOpaqueHostValues": true
         },
@@ -72222,11 +73533,6 @@
         "syntaxCheckedSources": 5,
         "unresolvedDependencies": [
           {
-            "candidateStatus": "dependency-blocked",
-            "package": "@flighthq/geometry",
-            "status": "emittable"
-          },
-          {
             "candidateStatus": "source-blocked",
             "package": "@flighthq/node",
             "status": "blocked"
@@ -72274,7 +73580,7 @@
           ],
           "declarations": 2,
           "module": "transform_velocity",
-          "outputSha256": "sha256:32f0fa72e524c5c6ada319e752a73ba387f53ada0f459d2209e2a855616398c4",
+          "outputSha256": "sha256:65f6b8f9b9fb09093afebfc0a0800b13d1ccd65316b5a604c326b39170e9e071",
           "source": "upstream/packages/velocity/src/transformVelocity.ts",
           "usesOpaqueHostValues": true
         },
@@ -73104,17 +74410,17 @@
   },
   "schemaVersion": 6,
   "summary": {
-    "blocked": 90,
-    "candidateCompileBlocked": 0,
-    "candidateCompiled": 30,
-    "candidateDependencyBlocked": 22,
+    "blocked": 89,
+    "candidateCompileBlocked": 3,
+    "candidateCompiled": 31,
+    "candidateDependencyBlocked": 19,
     "cultivated": 1,
     "eligible": 144,
-    "emittable": 54,
+    "emittable": 55,
     "excluded": 1,
     "hostBound": 4,
     "packages": 150,
-    "sourceBlockers": 448
+    "sourceBlockers": 444
   },
   "targets": [
     {

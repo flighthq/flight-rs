@@ -54,6 +54,7 @@ pub struct FlightPartialRecord2 {
     pub appearance_id: Option<f64>,
     pub apply_blend_mode_parent: Option<WgpuRenderState>,
     pub attached: Option<bool>,
+    pub binding: Option<crate::OpaqueHostValue>,
     pub binding_cache_guard: Option<
         std::sync::Arc<
             std::sync::Mutex<

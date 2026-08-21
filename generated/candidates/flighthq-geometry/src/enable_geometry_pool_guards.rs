@@ -14,7 +14,7 @@ use flighthq_log::log_once;
 use flighthq_types::{LogData, LogDataProvider, LogLevel};
 
 // Source: upstream/packages/geometry/src/enableGeometryPoolGuards.ts:6 (sha256:a3e7168c341bab86e1d462fa6f5e0ba4418ed2e5fc0e0585ee910182fe76f6b2)
-pub(crate) type GeometryPoolReleaseFunction = GeometryPoolReleaseFunction;
+pub(crate) type GeometryPoolReleaseFunction = String;
 
 // Source: upstream/packages/geometry/src/enableGeometryPoolGuards.ts:8 (sha256:53f3a8bf013823df90d13d3ca73d6ee3f34dfd2ed391ff40211a21fddd75bcc5)
 pub fn are_geometry_pool_guards_enabled() -> bool {
@@ -79,35 +79,35 @@ static ACQUIRE_FUNCTIONS_BY_RELEASE_FUNCTION: std::sync::LazyLock<
 > = std::sync::LazyLock::new(|| {
     let mut __flight_record = Vec::new();
     __flight_record.push((
-        "releaseMatrix",
+        "releaseMatrix".to_owned(),
         "acquireMatrix or acquireIdentityMatrix".to_owned(),
     ));
     __flight_record.push((
-        "releaseMatrix3",
+        "releaseMatrix3".to_owned(),
         "acquireMatrix3 or acquireIdentityMatrix3".to_owned(),
     ));
     __flight_record.push((
-        "releaseMatrix4",
+        "releaseMatrix4".to_owned(),
         "acquireMatrix4 or acquireIdentityMatrix4".to_owned(),
     ));
     __flight_record.push((
-        "releaseQuaternion",
+        "releaseQuaternion".to_owned(),
         "acquireQuaternion or acquireIdentityQuaternion".to_owned(),
     ));
     __flight_record.push((
-        "releaseRectangle",
+        "releaseRectangle".to_owned(),
         "acquireRectangle or acquireEmptyRectangle".to_owned(),
     ));
     __flight_record.push((
-        "releaseVector2",
+        "releaseVector2".to_owned(),
         "acquireVector2 or acquireEmptyVector2".to_owned(),
     ));
     __flight_record.push((
-        "releaseVector3",
+        "releaseVector3".to_owned(),
         "acquireVector3 or acquireEmptyVector3".to_owned(),
     ));
     __flight_record.push((
-        "releaseVector4",
+        "releaseVector4".to_owned(),
         "acquireVector4 or acquireEmptyVector4".to_owned(),
     ));
     __flight_record
