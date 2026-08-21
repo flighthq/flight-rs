@@ -1023,11 +1023,17 @@ pub fn prewarm_particle_emitter2_d(
     step_delta_time: Option<crate::OpaqueHostValue>,
     callbacks: Option<ParticleEmitterCallbacks>,
 ) -> () {
-    let step_delta_time = step_delta_time.unwrap_or((1.0_f64 / 60.0_f64));
+    let step_delta_time = step_delta_time.unwrap_or({
+        let __flight_portable_source = (1.0_f64 / 60.0_f64);
+        crate::FlightValue::Number(*(&__flight_portable_source) as f64)
+    });
     let step = if (step_delta_time > 0.0_f64) {
         (step_delta_time).clone()
     } else {
-        duration
+        {
+            let __flight_portable_source = duration;
+            crate::FlightValue::Number(*(&__flight_portable_source) as f64)
+        }
     };
     let mut elapsed = 0.0_f64;
     while (elapsed < duration) {

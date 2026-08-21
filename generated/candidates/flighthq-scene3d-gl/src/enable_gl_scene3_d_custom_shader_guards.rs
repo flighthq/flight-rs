@@ -499,7 +499,7 @@ fn warn_gl_custom_shader_uniform_types(
                     Vec<(String, crate::OpaqueHostValue)>,
                 >::B({
                     let mut __flight_record = Vec::new();
-                    __flight_record.push(("message".to_owned(), format!("customShaderGlMeshMaterialRenderer: shader \"{}\" declares {} as {} but the renderer uploads it as {} — the mismatched upload raises a silent GL_INVALID_OPERATION and the draw is dropped. Declare '{} {}' in the shader.", shader_key, crate::host_value::<crate::OpaqueHostValue>("host.name"), gl_uniform_type_name((gl).clone(), crate::host_value::<f64>("host.type")), gl_uniform_type_name((gl).clone(), (want).clone().unwrap()), gl_uniform_type_name((gl).clone(), (want).clone().unwrap()), crate::host_value::<crate::OpaqueHostValue>("host.name"))));
+                    __flight_record.push(("message".to_owned(), { let __flight_portable_source = format!("customShaderGlMeshMaterialRenderer: shader \"{}\" declares {} as {} but the renderer uploads it as {} — the mismatched upload raises a silent GL_INVALID_OPERATION and the draw is dropped. Declare '{} {}' in the shader.", shader_key, crate::host_value::<crate::OpaqueHostValue>("host.name"), gl_uniform_type_name((gl).clone(), crate::host_value::<f64>("host.type")), gl_uniform_type_name((gl).clone(), (want).clone().unwrap()), gl_uniform_type_name((gl).clone(), (want).clone().unwrap()), crate::host_value::<crate::OpaqueHostValue>("host.name")); crate::FlightValue::String((&__flight_portable_source).clone()) }));
                     __flight_record
                 }))),
                 Some(("scene-gl".to_owned()).clone()),

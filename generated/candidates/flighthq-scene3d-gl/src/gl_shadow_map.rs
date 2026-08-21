@@ -545,7 +545,13 @@ pub fn draw_gl_scene3_d_shadow_map(
             directional_light.as_ref().unwrap().pcf_radius,
         ),
         shadow_bias: directional_light.as_ref().unwrap().shadow_bias,
-        texture: ((target.as_ref().unwrap().depth_texture).clone()).unwrap(),
+        texture: {
+            let __flight_portable_source = (target.as_ref().unwrap().depth_texture).clone();
+            match (&__flight_portable_source).as_ref() {
+                Some(value) => (value).clone(),
+                None => crate::FlightValue::Null,
+            }
+        },
     });
 }
 

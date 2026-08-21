@@ -615,9 +615,55 @@ pub fn draw_gl_scene3_d(
                     };
                     entry.mesh = (mesh).clone();
                     entry.material = (resolved_material).clone();
-                    entry.renderer = ((renderer).clone()).clone().unwrap();
-                    entry.subset = mesh.geometry.subsets[s as usize].clone();
-                    entry.world_matrix = (world_matrix).clone();
+                    entry.renderer = {
+                        let __flight_portable_source = (renderer).clone();
+                        match (&__flight_portable_source).as_ref() {
+                            Some(value) => crate::FlightValue::Record({
+                                let mut __flight_record = Vec::new();
+                                __flight_record
+                                    .push(("bind".to_owned(), crate::FlightValue::Function));
+                                __flight_record
+                                    .push(("draw".to_owned(), crate::FlightValue::Function));
+                                __flight_record
+                            }),
+                            None => crate::FlightValue::Null,
+                        }
+                    };
+                    entry.subset = {
+                        let __flight_portable_source = mesh.geometry.subsets[s as usize].clone();
+                        crate::FlightValue::Record({
+                            let mut __flight_record = Vec::new();
+                            __flight_record.push((
+                                "indexCount".to_owned(),
+                                crate::FlightValue::Number(
+                                    *(&((&__flight_portable_source).index_count)) as f64,
+                                ),
+                            ));
+                            __flight_record.push((
+                                "indexOffset".to_owned(),
+                                crate::FlightValue::Number(
+                                    *(&((&__flight_portable_source).index_offset)) as f64,
+                                ),
+                            ));
+                            __flight_record
+                        })
+                    };
+                    entry.world_matrix = {
+                        let __flight_portable_source = (world_matrix).clone();
+                        crate::FlightValue::Record({
+                            let mut __flight_record = Vec::new();
+                            __flight_record.push((
+                                "m".to_owned(),
+                                crate::FlightValue::Array(
+                                    (&((&__flight_portable_source).m))
+                                        .iter()
+                                        .map(|value| crate::FlightValue::Number((*value) as f64))
+                                        .collect(),
+                                ),
+                            ));
+                            __flight_record
+                        })
+                    };
                     if is_blended {
                         runtime.blended_draw_list.push(((entry).clone()).clone());
                     } else {
@@ -993,18 +1039,68 @@ fn create_draw_entry() -> GlScene3DDrawEntry {
         color_matrix: None,
         color_scale_bias: None,
         light_block: None,
-        material: (*DEFAULT_MATERIAL).clone(),
-        mesh: crate::OpaqueHostValue::Null,
-        renderer: crate::OpaqueHostValue::Null,
-        subset: MeshSubset {
-            __flight_identity: std::sync::Arc::new(()),
-            index_count: 0.0_f64,
-            index_offset: 0.0_f64,
+        material: {
+            let __flight_portable_source = ((*DEFAULT_MATERIAL).clone()).clone();
+            crate::FlightValue::Record({
+                let mut __flight_record = Vec::new();
+                __flight_record.push((
+                    "kind".to_owned(),
+                    (&((&__flight_portable_source).kind)).clone(),
+                ));
+                __flight_record
+            })
         },
-        world_matrix: create_matrix4(
-            None, None, None, None, None, None, None, None, None, None, None, None, None, None,
-            None, None,
-        ),
+        mesh: crate::FlightValue::Null,
+        renderer: crate::FlightValue::Null,
+        subset: crate::FlightValue::Record({
+            let mut __flight_record = Vec::new();
+            let __flight_key_0 = "indexCount".to_owned();
+            let __flight_value_0 = {
+                let __flight_portable_source = 0.0_f64;
+                crate::FlightValue::Number(*(&__flight_portable_source) as f64)
+            };
+            if let Some((_, __flight_existing)) = __flight_record
+                .iter_mut()
+                .find(|(existing, _)| existing == &__flight_key_0)
+            {
+                *__flight_existing = __flight_value_0;
+            } else {
+                __flight_record.push((__flight_key_0, __flight_value_0));
+            }
+            let __flight_key_1 = "indexOffset".to_owned();
+            let __flight_value_1 = {
+                let __flight_portable_source = 0.0_f64;
+                crate::FlightValue::Number(*(&__flight_portable_source) as f64)
+            };
+            if let Some((_, __flight_existing)) = __flight_record
+                .iter_mut()
+                .find(|(existing, _)| existing == &__flight_key_1)
+            {
+                *__flight_existing = __flight_value_1;
+            } else {
+                __flight_record.push((__flight_key_1, __flight_value_1));
+            }
+            __flight_record
+        }),
+        world_matrix: {
+            let __flight_portable_source = create_matrix4(
+                None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+                None, None,
+            );
+            crate::FlightValue::Record({
+                let mut __flight_record = Vec::new();
+                __flight_record.push((
+                    "m".to_owned(),
+                    crate::FlightValue::Array(
+                        (&((&__flight_portable_source).m))
+                            .iter()
+                            .map(|value| crate::FlightValue::Number((*value) as f64))
+                            .collect(),
+                    ),
+                ));
+                __flight_record
+            })
+        },
     };
 }
 

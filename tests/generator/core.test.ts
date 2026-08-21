@@ -295,7 +295,7 @@ describe('compiler diagnostic source paths', () => {
       report.asyncTasks.summary.unsupportedReasons.find((item) =>
         item.reason.startsWith('Portable task source still requires'),
       )?.scopes,
-    ).toBe(10);
+    ).toBe(11);
     const taskConstructions = report.asyncTasks.packages.flatMap((item) => item.constructions);
     expect(taskConstructions).toHaveLength(225);
     expect(taskConstructions.filter((item) => item.kind === 'ready')).toHaveLength(21);

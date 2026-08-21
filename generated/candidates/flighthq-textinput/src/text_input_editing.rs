@@ -1828,7 +1828,149 @@ pub fn replace_text_input(
                 .collect::<Vec<u16>>(),
         ));
     {
-        let __flight_argument_1 = (source.data.default_text_format).clone();
+        let __flight_argument_1 = {
+            let __flight_portable_source = (source.data.default_text_format).clone();
+            crate::FlightValue::Record({
+                let mut __flight_record = Vec::new();
+                if let Some(value) = (&__flight_portable_source).align.as_ref() {
+                    __flight_record.push((
+                        "align".to_owned(),
+                        crate::FlightValue::String((value).clone()),
+                    ));
+                }
+                if let Some(value) = (&__flight_portable_source).block_indent.as_ref() {
+                    __flight_record.push((
+                        "blockIndent".to_owned(),
+                        crate::FlightValue::Number(*(value) as f64),
+                    ));
+                }
+                if let Some(value) = (&__flight_portable_source).bold.as_ref() {
+                    __flight_record.push(("bold".to_owned(), crate::FlightValue::Bool(*(value))));
+                }
+                if let Some(value) = (&__flight_portable_source).bullet.as_ref() {
+                    __flight_record.push(("bullet".to_owned(), crate::FlightValue::Bool(*(value))));
+                }
+                if let Some(value) = (&__flight_portable_source).color.as_ref() {
+                    __flight_record.push((
+                        "color".to_owned(),
+                        crate::FlightValue::Number(*(value) as f64),
+                    ));
+                }
+                if let Some(value) = (&__flight_portable_source).font.as_ref() {
+                    __flight_record.push((
+                        "font".to_owned(),
+                        crate::FlightValue::String((value).clone()),
+                    ));
+                }
+                if let Some(value) = (&__flight_portable_source).indent.as_ref() {
+                    __flight_record.push((
+                        "indent".to_owned(),
+                        crate::FlightValue::Number(*(value) as f64),
+                    ));
+                }
+                if let Some(value) = (&__flight_portable_source).italic.as_ref() {
+                    __flight_record.push(("italic".to_owned(), crate::FlightValue::Bool(*(value))));
+                }
+                if let Some(value) = (&__flight_portable_source).kerning.as_ref() {
+                    __flight_record
+                        .push(("kerning".to_owned(), crate::FlightValue::Bool(*(value))));
+                }
+                if let Some(value) = (&__flight_portable_source).leading.as_ref() {
+                    __flight_record.push((
+                        "leading".to_owned(),
+                        crate::FlightValue::Number(*(value) as f64),
+                    ));
+                }
+                if let Some(value) = (&__flight_portable_source).left_margin.as_ref() {
+                    __flight_record.push((
+                        "leftMargin".to_owned(),
+                        crate::FlightValue::Number(*(value) as f64),
+                    ));
+                }
+                if let Some(value) = (&__flight_portable_source).letter_spacing.as_ref() {
+                    __flight_record.push((
+                        "letterSpacing".to_owned(),
+                        crate::FlightValue::Number(*(value) as f64),
+                    ));
+                }
+                if let Some(value) = (&__flight_portable_source).list_marker.as_ref() {
+                    __flight_record.push((
+                        "listMarker".to_owned(),
+                        crate::FlightValue::String((value).clone()),
+                    ));
+                }
+                if let Some(value) = (&__flight_portable_source).right_margin.as_ref() {
+                    __flight_record.push((
+                        "rightMargin".to_owned(),
+                        crate::FlightValue::Number(*(value) as f64),
+                    ));
+                }
+                if let Some(value) = (&__flight_portable_source).size.as_ref() {
+                    __flight_record.push((
+                        "size".to_owned(),
+                        crate::FlightValue::Number(*(value) as f64),
+                    ));
+                }
+                if let Some(value) = (&__flight_portable_source).strikethrough.as_ref() {
+                    __flight_record.push((
+                        "strikethrough".to_owned(),
+                        crate::FlightValue::Bool(*(value)),
+                    ));
+                }
+                if let Some(value) = (&__flight_portable_source).tab_stops.as_ref() {
+                    __flight_record.push((
+                        "tabStops".to_owned(),
+                        crate::FlightValue::Array(
+                            (value)
+                                .iter()
+                                .map(|value| crate::FlightValue::Number(*(value) as f64))
+                                .collect(),
+                        ),
+                    ));
+                }
+                if let Some(value) = (&__flight_portable_source).target.as_ref() {
+                    __flight_record.push((
+                        "target".to_owned(),
+                        crate::FlightValue::String((value).clone()),
+                    ));
+                }
+                if let Some(value) = (&__flight_portable_source).underline.as_ref() {
+                    __flight_record
+                        .push(("underline".to_owned(), crate::FlightValue::Bool(*(value))));
+                }
+                if let Some(value) = (&__flight_portable_source).url.as_ref() {
+                    __flight_record.push((
+                        "url".to_owned(),
+                        crate::FlightValue::String((value).clone()),
+                    ));
+                }
+                if let Some(value) = (&__flight_portable_source).variations.as_ref() {
+                    __flight_record.push((
+                        "variations".to_owned(),
+                        crate::FlightValue::Array(
+                            (value)
+                                .iter()
+                                .map(|value| {
+                                    crate::FlightValue::Record({
+                                        let mut __flight_record = Vec::new();
+                                        __flight_record.push((
+                                            "axis".to_owned(),
+                                            crate::FlightValue::String((&((value).axis)).clone()),
+                                        ));
+                                        __flight_record.push((
+                                            "value".to_owned(),
+                                            crate::FlightValue::Number(*(&((value).value)) as f64),
+                                        ));
+                                        __flight_record
+                                    })
+                                })
+                                .collect(),
+                        ),
+                    ));
+                }
+                __flight_record
+            })
+        };
         adjust_text_format_ranges(
             &mut source.data.text_format_ranges,
             __flight_argument_1,

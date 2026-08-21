@@ -505,7 +505,10 @@ pub fn ensure_gl_pbr_program(
         .cloned()
         .map(
             |contribution: GlPbrExtensionShaderContribution| -> crate::OpaqueHostValue {
-                (contribution.key).clone()
+                {
+                    let __flight_portable_source = (contribution.key).clone();
+                    crate::FlightValue::String((&__flight_portable_source).clone())
+                }
             },
         )
         .collect()

@@ -406,7 +406,7 @@ fn warn_gl_scene3_d_mesh_drawn_undeformed(mesh: &Mesh) -> () {
                 Vec<(String, crate::OpaqueHostValue)>,
             >::B({
                 let mut __flight_record = Vec::new();
-                __flight_record.push(("message".to_owned(), crate::OpaqueHostValue::String("drawGlScene3D: a morphed mesh reached the draw un-blended (it will draw the bind pose) — call prepareScene3DMorph(scene) before prepareScene3DRender.".to_owned())));
+                __flight_record.push(("message".to_owned(), { let __flight_portable_source = "drawGlScene3D: a morphed mesh reached the draw un-blended (it will draw the bind pose) — call prepareScene3DMorph(scene) before prepareScene3DRender.".to_owned(); crate::FlightValue::String((&__flight_portable_source).clone()) }));
                 __flight_record
             }))),
             Some(("scene-gl".to_owned()).clone()),
@@ -709,7 +709,7 @@ fn warn_gl_scene3_d_mesh_drawn_undeformed(mesh: &Mesh) -> () {
                     Vec<(String, crate::OpaqueHostValue)>,
                 >::B({
                     let mut __flight_record = Vec::new();
-                    __flight_record.push(("message".to_owned(), crate::OpaqueHostValue::String("drawGlScene3D: a GPU-skinned mesh reached the draw un-posed (its joint palette is uncomputed, collapsing it to the origin) — call prepareScene3DSkinning(scene) before prepareScene3DRender.".to_owned())));
+                    __flight_record.push(("message".to_owned(), { let __flight_portable_source = "drawGlScene3D: a GPU-skinned mesh reached the draw un-posed (its joint palette is uncomputed, collapsing it to the origin) — call prepareScene3DSkinning(scene) before prepareScene3DRender.".to_owned(); crate::FlightValue::String((&__flight_portable_source).clone()) }));
                     __flight_record
                 }))),
                 Some(("scene-gl".to_owned()).clone()),

@@ -1314,7 +1314,11 @@ pub fn exit_input_pointer_lock() -> () {
         crate::OpaqueHostValue::Bool(value) => *value,
         crate::OpaqueHostValue::Number(value) => *value != 0.0_f64 && !value.is_nan(),
         crate::OpaqueHostValue::String(value) => !value.is_empty(),
-        crate::OpaqueHostValue::Object => true,
+        crate::OpaqueHostValue::Array(_)
+        | crate::OpaqueHostValue::Record(_)
+        | crate::OpaqueHostValue::Function
+        | crate::OpaqueHostValue::Symbol
+        | crate::OpaqueHostValue::Object => true,
     } {
         crate::host_value::<()>("host.exitPointerLock");
     }
@@ -1394,7 +1398,11 @@ pub fn get_key_modifier_from_dom_keyboard_event(event: crate::OpaqueHostValue) -
         crate::OpaqueHostValue::Bool(value) => *value,
         crate::OpaqueHostValue::Number(value) => *value != 0.0_f64 && !value.is_nan(),
         crate::OpaqueHostValue::String(value) => !value.is_empty(),
-        crate::OpaqueHostValue::Object => true,
+        crate::OpaqueHostValue::Array(_)
+        | crate::OpaqueHostValue::Record(_)
+        | crate::OpaqueHostValue::Function
+        | crate::OpaqueHostValue::Symbol
+        | crate::OpaqueHostValue::Object => true,
     } {
         modifier = (__flight_js_to_i32(modifier)
             | __flight_js_to_i32(
@@ -1412,7 +1420,11 @@ pub fn get_key_modifier_from_dom_keyboard_event(event: crate::OpaqueHostValue) -
         crate::OpaqueHostValue::Bool(value) => *value,
         crate::OpaqueHostValue::Number(value) => *value != 0.0_f64 && !value.is_nan(),
         crate::OpaqueHostValue::String(value) => !value.is_empty(),
-        crate::OpaqueHostValue::Object => true,
+        crate::OpaqueHostValue::Array(_)
+        | crate::OpaqueHostValue::Record(_)
+        | crate::OpaqueHostValue::Function
+        | crate::OpaqueHostValue::Symbol
+        | crate::OpaqueHostValue::Object => true,
     } {
         modifier = (__flight_js_to_i32(modifier)
             | __flight_js_to_i32(
@@ -1430,7 +1442,11 @@ pub fn get_key_modifier_from_dom_keyboard_event(event: crate::OpaqueHostValue) -
         crate::OpaqueHostValue::Bool(value) => *value,
         crate::OpaqueHostValue::Number(value) => *value != 0.0_f64 && !value.is_nan(),
         crate::OpaqueHostValue::String(value) => !value.is_empty(),
-        crate::OpaqueHostValue::Object => true,
+        crate::OpaqueHostValue::Array(_)
+        | crate::OpaqueHostValue::Record(_)
+        | crate::OpaqueHostValue::Function
+        | crate::OpaqueHostValue::Symbol
+        | crate::OpaqueHostValue::Object => true,
     } {
         modifier = (__flight_js_to_i32(modifier)
             | __flight_js_to_i32(
@@ -1448,7 +1464,11 @@ pub fn get_key_modifier_from_dom_keyboard_event(event: crate::OpaqueHostValue) -
         crate::OpaqueHostValue::Bool(value) => *value,
         crate::OpaqueHostValue::Number(value) => *value != 0.0_f64 && !value.is_nan(),
         crate::OpaqueHostValue::String(value) => !value.is_empty(),
-        crate::OpaqueHostValue::Object => true,
+        crate::OpaqueHostValue::Array(_)
+        | crate::OpaqueHostValue::Record(_)
+        | crate::OpaqueHostValue::Function
+        | crate::OpaqueHostValue::Symbol
+        | crate::OpaqueHostValue::Object => true,
     } {
         modifier = (__flight_js_to_i32(modifier)
             | __flight_js_to_i32(
@@ -1606,7 +1626,11 @@ pub fn poll_gamepad_input(manager: &InputManager) -> () {
                             *value != 0.0_f64 && !value.is_nan()
                         }
                         crate::OpaqueHostValue::String(value) => !value.is_empty(),
-                        crate::OpaqueHostValue::Object => true,
+                        crate::OpaqueHostValue::Array(_)
+                        | crate::OpaqueHostValue::Record(_)
+                        | crate::OpaqueHostValue::Function
+                        | crate::OpaqueHostValue::Symbol
+                        | crate::OpaqueHostValue::Object => true,
                     } {
                         emit_signal(
                             (manager.on_gamepad_button_down).clone(),

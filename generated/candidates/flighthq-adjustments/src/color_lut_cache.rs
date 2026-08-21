@@ -155,14 +155,30 @@ pub fn create_color_lut_cache() -> ColorLutCache {
 
 // Source: upstream/packages/adjustments/src/colorLutCache.ts:48 (sha256:15cbc958713f0e9b3b31ba476d3c5cb73ef8c6673ab1b45d8837bed603377581)
 fn color_lut_run_signature(run: &Vec<SharedStructuralRecord1>, size: f64) -> String {
-    return format!("{}\n{}", size, {
-        let __flight_items = (run)
-            .iter()
-            .map(|value| {
-                let __flight_fields = vec![format!("{}{:?}", "\"kind\":", value.kind)];
-                format!("{{{}}}", __flight_fields.join(","))
+    return format!(
+        "{}\n{}",
+        size,
+        crate::flight_json_stringify(
+            &({
+                let __flight_portable_source = (*run).clone();
+                crate::FlightValue::Array(
+                    (&__flight_portable_source)
+                        .iter()
+                        .map(|value| {
+                            crate::FlightValue::Record({
+                                let mut __flight_record = Vec::new();
+                                __flight_record.push((
+                                    "kind".to_owned(),
+                                    crate::FlightValue::String((&((value).kind)).clone()),
+                                ));
+                                __flight_record
+                            })
+                        })
+                        .collect(),
+                )
             })
-            .collect::<Vec<_>>();
-        format!("[{}]", __flight_items.join(","))
-    });
+        )
+        .expect("JSON.stringify encountered an opaque host object")
+        .expect("JSON.stringify returned undefined where Rust requires String")
+    );
 }

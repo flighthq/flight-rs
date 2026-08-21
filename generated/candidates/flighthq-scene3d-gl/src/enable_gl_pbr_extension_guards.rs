@@ -449,12 +449,18 @@ fn warn_gl_pbr_extension_issues(state: &mut GlRenderState, extensions: &Vec<PbrE
                     Vec<(String, crate::OpaqueHostValue)>,
                 >::B({
                     let mut __flight_record = Vec::new();
-                    __flight_record.push(("code".to_owned(), (issue.code).clone()));
-                    __flight_record.push(("kind".to_owned(), (issue.kind).clone()));
-                    __flight_record.push((
-                        "message".to_owned(),
-                        get_gl_pbr_extension_issue_message(&issue),
-                    ));
+                    __flight_record.push(("code".to_owned(), {
+                        let __flight_portable_source = (issue.code).clone();
+                        crate::FlightValue::String((&__flight_portable_source).clone())
+                    }));
+                    __flight_record.push(("kind".to_owned(), {
+                        let __flight_portable_source = (issue.kind).clone();
+                        crate::FlightValue::String((&__flight_portable_source).clone())
+                    }));
+                    __flight_record.push(("message".to_owned(), {
+                        let __flight_portable_source = get_gl_pbr_extension_issue_message(&issue);
+                        crate::FlightValue::String((&__flight_portable_source).clone())
+                    }));
                     __flight_record
                 }))),
                 Some(("scene-gl".to_owned()).clone()),

@@ -102,17 +102,65 @@ fn copy_material_fields(dst: &mut Material, src: &Material, kind: Kind) -> () {
         if ((key == "standard") && (((value).clone()).is_some()))
             && (match &((value).clone()) {
                 crate::OpaqueHostValue::Undefined => "undefined",
-                crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
+                crate::OpaqueHostValue::Null
+                | crate::OpaqueHostValue::Array(_)
+                | crate::OpaqueHostValue::Record(_)
+                | crate::OpaqueHostValue::Object => "object",
                 crate::OpaqueHostValue::Bool(_) => "boolean",
                 crate::OpaqueHostValue::Number(_) => "number",
                 crate::OpaqueHostValue::String(_) => "string",
+                crate::OpaqueHostValue::Function => "function",
+                crate::OpaqueHostValue::Symbol => "symbol",
             } == "object")
         {
             dst_fields
                 .iter()
                 .find(|(key, _)| key == &key)
                 .map(|(_, value)| value)
-                .expect("TypeScript Record key was absent") = ((value).clone()).clone();
+                .expect("TypeScript Record key was absent") = crate::FlightValue::Record({
+                let mut __flight_record = Vec::new();
+                let __flight_spread_0 = (value).clone();
+                match __flight_spread_0 {
+                    crate::FlightValue::Record(entries) => {
+                        for (__flight_key, __flight_value) in entries {
+                            if let Some((_, __flight_existing)) = __flight_record
+                                .iter_mut()
+                                .find(|(existing, _)| existing == &__flight_key)
+                            {
+                                *__flight_existing = __flight_value;
+                            } else {
+                                __flight_record.push((__flight_key, __flight_value));
+                            }
+                        }
+                    }
+                    crate::FlightValue::Array(values) => {
+                        for (__flight_index, __flight_value) in values.into_iter().enumerate() {
+                            let __flight_key = __flight_index.to_string();
+                            if let Some((_, __flight_existing)) = __flight_record
+                                .iter_mut()
+                                .find(|(existing, _)| existing == &__flight_key)
+                            {
+                                *__flight_existing = __flight_value;
+                            } else {
+                                __flight_record.push((__flight_key, __flight_value));
+                            }
+                        }
+                    }
+                    crate::FlightValue::Undefined
+                    | crate::FlightValue::Null
+                    | crate::FlightValue::Bool(_)
+                    | crate::FlightValue::Number(_)
+                    | crate::FlightValue::Function
+                    | crate::FlightValue::Symbol => {}
+                    crate::FlightValue::String(_) => panic!(
+                        "portable object spread of strings requires UTF-16 property lowering"
+                    ),
+                    crate::FlightValue::Object => {
+                        panic!("portable object spread cannot inspect an opaque host object")
+                    }
+                }
+                __flight_record
+            });
         } else {
             dst_fields
                 .iter()
@@ -125,5 +173,8 @@ fn copy_material_fields(dst: &mut Material, src: &Material, kind: Kind) -> () {
         .iter()
         .find(|(key, _)| key == &"kind".to_owned())
         .map(|(_, value)| value)
-        .expect("TypeScript Record key was absent") = kind;
+        .expect("TypeScript Record key was absent") = {
+        let __flight_portable_source = (kind).clone();
+        crate::FlightValue::String((&__flight_portable_source).clone())
+    };
 }

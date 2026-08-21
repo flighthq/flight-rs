@@ -9610,7 +9610,7 @@
               "kind": "nullable"
             },
             "package": "@flighthq/storage",
-            "reason": "Portable task Rust lowering is not implemented.",
+            "reason": "Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.",
             "source": "upstream/packages/storage/src/storage.ts"
           }
         ],
@@ -9646,7 +9646,7 @@
             "package": "@flighthq/storage",
             "source": "upstream/packages/storage/src/storage.ts",
             "disposition": "unsupported",
-            "reason": "Portable task Rust lowering is not implemented."
+            "reason": "Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution."
           }
         ],
         "summary": {
@@ -9672,13 +9672,13 @@
           "unsupportedConstructionReasons": [
             {
               "constructions": 1,
-              "reason": "Portable task Rust lowering is not implemented."
+              "reason": "Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution."
             }
           ],
           "unsupportedConstructions": 1,
           "unsupportedReasons": [
             {
-              "reason": "Portable task Rust lowering is not implemented.",
+              "reason": "Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.",
               "scopes": 1
             }
           ],
@@ -10134,11 +10134,11 @@
       "portableExecutableConstructions": 19,
       "unsupportedConstructionReasons": [
         {
-          "constructions": 158,
+          "constructions": 157,
           "reason": "Portable task Rust lowering is not implemented."
         },
         {
-          "constructions": 10,
+          "constructions": 11,
           "reason": "Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution."
         },
         {
@@ -10170,11 +10170,11 @@
         },
         {
           "reason": "Portable task Rust lowering is not implemented.",
-          "scopes": 142
+          "scopes": 141
         },
         {
           "reason": "Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.",
-          "scopes": 10
+          "scopes": 11
         }
       ],
       "unsupportedScopes": 160
@@ -10278,12 +10278,32 @@
         "compileDiagnostics": [
           {
             "code": "E0608",
-            "message": "cannot index into a value of type `(std::string::String, OpaqueHostValue)`",
+            "message": "cannot index into a value of type `(std::string::String, FlightValue)`",
             "source": "generated/candidates/flighthq-accessibility/src/accessibility.rs"
           },
           {
             "code": "E0608",
-            "message": "cannot index into a value of type `(std::string::String, OpaqueHostValue)`",
+            "message": "cannot index into a value of type `(std::string::String, FlightValue)`",
+            "source": "generated/candidates/flighthq-accessibility/src/accessibility.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-accessibility/src/accessibility.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-accessibility/src/accessibility.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-accessibility/src/accessibility.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
             "source": "generated/candidates/flighthq-accessibility/src/accessibility.rs"
           },
           {
@@ -10328,12 +10348,12 @@
           },
           {
             "code": "E0599",
-            "message": "no method named `is_some` found for enum `OpaqueHostValue` in the current scope",
+            "message": "no method named `is_some` found for enum `FlightValue` in the current scope",
             "source": "generated/candidates/flighthq-accessibility/src/accessibility.rs"
           },
           {
             "code": "E0599",
-            "message": "no method named `is_some` found for enum `OpaqueHostValue` in the current scope",
+            "message": "no method named `is_some` found for enum `FlightValue` in the current scope",
             "source": "generated/candidates/flighthq-accessibility/src/accessibility.rs"
           }
         ],
@@ -10377,7 +10397,7 @@
           ],
           "declarations": 20,
           "module": "accessibility",
-          "outputSha256": "sha256:a74ebf452567781ddbdef53ffb899359a30dd75d987b10b62949f47aafd58d8a",
+          "outputSha256": "sha256:ea8c6460a8b4a4c397aa1101f249f721377cb753eae30f82989c57491f1b57f3",
           "source": "upstream/packages/accessibility/src/accessibility.ts",
           "usesOpaqueHostValues": true
         },
@@ -10536,7 +10556,7 @@
           ],
           "declarations": 3,
           "module": "color_lut_cache",
-          "outputSha256": "sha256:b5958c4e650b33780fb896c63e13e81f705cf322bee56abf10fa865d38ab0e61",
+          "outputSha256": "sha256:4e223a09b2656873c328dcd98131c1831aacbc0a8773b021c13a905aaa65f3ec",
           "source": "upstream/packages/adjustments/src/colorLutCache.ts",
           "usesOpaqueHostValues": false
         },
@@ -11305,7 +11325,7 @@
           ],
           "declarations": 39,
           "module": "application",
-          "outputSha256": "sha256:9e5c811a10aa2864612ac1c5f56b0a147d731412d8d62355daab5d0836801f82",
+          "outputSha256": "sha256:36edfef54bfcc67f07ba21f887477393477628d17de24303f518297e3d2c4117",
           "source": "upstream/packages/application/src/application.ts",
           "usesOpaqueHostValues": true
         },
@@ -11404,7 +11424,7 @@
           ],
           "declarations": 74,
           "module": "window",
-          "outputSha256": "sha256:c9ec5cb444f01c42a6591103da1c293d13447409578a08f2dbac6403c2dc8021",
+          "outputSha256": "sha256:beca8cfa5f2684b58dda76549377c288e9ade6b81b1ed9c5624361f590dce9f5",
           "source": "upstream/packages/application/src/window.ts",
           "usesOpaqueHostValues": true
         }
@@ -11813,7 +11833,7 @@
           ],
           "declarations": 4,
           "module": "enable_asset_guards",
-          "outputSha256": "sha256:3fbe4fd080e4bd489716e42a01239446534b4fd0f641470e131ada03bf8874a4",
+          "outputSha256": "sha256:de7ea446a4a15cdd632719f895e89a8cec89d0bfb1ff1a70c3ce2c88efc6d7a0",
           "source": "upstream/packages/assets/src/enableAssetGuards.ts",
           "usesOpaqueHostValues": true
         },
@@ -12815,7 +12835,7 @@
           ],
           "declarations": 7,
           "module": "bitmap_font_json",
-          "outputSha256": "sha256:ffbe1134bc41e6d6bf1734ea53454c18857cf1be67d4274a1228e32ef7befd6f",
+          "outputSha256": "sha256:d4116b677188feeb3518db0912fa19c92252360ad19072541b648fd2a54f4f4c",
           "source": "upstream/packages/bitmapfont-formats/src/bitmapFontJson.ts",
           "usesOpaqueHostValues": true
         },
@@ -12825,7 +12845,7 @@
           ],
           "declarations": 1,
           "module": "bitmap_font_record",
-          "outputSha256": "sha256:ce52f6d6cda812431ebbc9db3e22ddcfd70574def485ed32f89537e36b54a214",
+          "outputSha256": "sha256:b36d7e60cc1fa9733836d427b8409143e1c209187fbb921f6749d61a880c0ae3",
           "source": "upstream/packages/bitmapfont-formats/src/bitmapFontRecord.ts",
           "usesOpaqueHostValues": true
         },
@@ -13020,7 +13040,7 @@
           ],
           "declarations": 16,
           "module": "update_bitmap_text",
-          "outputSha256": "sha256:699f91711f665620c07f410708dd2b07a6ece87838836c27936fab08f22443fb",
+          "outputSha256": "sha256:c8822bdebae839a23a859cf1d117bd3fb1d0f7845b31e1e5d895e75fb8e95e84",
           "source": "upstream/packages/bitmaptext/src/updateBitmapText.ts",
           "usesOpaqueHostValues": true
         }
@@ -13572,7 +13592,7 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:59d0863d4ee52e2197fd7d36664ebabc7744ac6e9a3d7ce4e593f7845d4d8730",
-          "reason": "formatCaptureBaseline: JSON.stringify requires a portable scalar or structural array",
+          "reason": "formatCaptureBaseline: JSON.stringify replacer and spacing arguments are not implemented",
           "source": "upstream/packages/capture/src/captureBaseline.ts",
           "stage": "emission"
         }
@@ -13607,7 +13627,7 @@
           ],
           "declarations": 5,
           "module": "capture_comparison",
-          "outputSha256": "sha256:70f87e9f942885005b9734f2e279201288eda92889682857c3b04cf0e663e0f0",
+          "outputSha256": "sha256:d514110e412ff62b93af274bf995d74e8a70cf9c471ce9ffcc4c19ce34551068",
           "source": "upstream/packages/capture/src/captureComparison.ts",
           "usesOpaqueHostValues": true
         },
@@ -15881,7 +15901,7 @@
           ],
           "declarations": 5,
           "module": "debug_timing",
-          "outputSha256": "sha256:ae6d3db896f658a83f988efc99fe2a6f2033f7807732c8988c4c05d53ca67988",
+          "outputSha256": "sha256:8d418f00d50a3affdac8f835b1edad6ac851ccfcbbc9f1daf306f1529698df48",
           "source": "upstream/packages/debug/src/debugTiming.ts",
           "usesOpaqueHostValues": true
         },
@@ -17516,7 +17536,7 @@
           ],
           "declarations": 3,
           "module": "render_effect_defaults",
-          "outputSha256": "sha256:29147386b045302ed29625eb3b62d32e5d130bc75b4cd18af54203488d0f607b",
+          "outputSha256": "sha256:e7ca708b5da11f36f1ad898e244fbbce3f13f065f48b494c7f65f1c8b922aa13",
           "source": "upstream/packages/effects/src/renderEffectDefaults.ts",
           "usesOpaqueHostValues": true
         },
@@ -17540,7 +17560,7 @@
           ],
           "declarations": 2,
           "module": "render_effect_interpolation",
-          "outputSha256": "sha256:02149d0320793188601da0de7c624d17e362379c0582fa361c9e5d6f20c00bbe",
+          "outputSha256": "sha256:70ca704d9648fc2a35f0e2f997c16154172e28f57d95fb873cb25d2374948b55",
           "source": "upstream/packages/effects/src/renderEffectInterpolation.ts",
           "usesOpaqueHostValues": true
         },
@@ -18089,7 +18109,7 @@
           ],
           "declarations": 4,
           "module": "canvas_effect_compositing",
-          "outputSha256": "sha256:8d7589957b39346ae60a5b42158ade07c108263dd1f11e515551ba998a001625",
+          "outputSha256": "sha256:c7d2197dc39e532ef5300d6c63f0f985b5f849d99077976f2a0e48a8bd308fcc",
           "source": "upstream/packages/effects-canvas/src/canvasEffectCompositing.ts",
           "usesOpaqueHostValues": true
         },
@@ -18166,7 +18186,7 @@
           ],
           "declarations": 6,
           "module": "canvas_source_mode_compositing",
-          "outputSha256": "sha256:a5035cf72331733bc352bf6dede957ad2b3191e2c08e2603820a31da2258858a",
+          "outputSha256": "sha256:78cf4b3ec4ae6c1aec8e23ace14a4158bb98dfcb1589c0cf22d1cef87f46b9fd",
           "source": "upstream/packages/effects-canvas/src/canvasSourceModeCompositing.ts",
           "usesOpaqueHostValues": true
         },
@@ -18681,7 +18701,7 @@
           ],
           "declarations": 6,
           "module": "enable_gl_render_effect_guards",
-          "outputSha256": "sha256:f43d2d1f12cec04bc7275d8dd480ad1bb816b3c2bf6af47d5ae3caf29bcb60b2",
+          "outputSha256": "sha256:c8899f4b6910ef2aa7d6dab67e35eb537316f858a75b6e96b9c27ec4d2f7f118",
           "source": "upstream/packages/effects-gl/src/enableGlRenderEffectGuards.ts",
           "usesOpaqueHostValues": true
         },
@@ -18694,7 +18714,7 @@
           ],
           "declarations": 4,
           "module": "gl_color_lut_pass",
-          "outputSha256": "sha256:4bdb96f3d1a5fa93c270b63a99966d3881488784b88e2f5965eb7a1112d582b0",
+          "outputSha256": "sha256:9145b7e987de0a3cf620569aee992ea9833eb67b0515d246e04ba792d3893a90",
           "source": "upstream/packages/effects-gl/src/glColorLutPass.ts",
           "usesOpaqueHostValues": true
         },
@@ -18828,7 +18848,7 @@
           ],
           "declarations": 5,
           "module": "gl_render_texture_effect",
-          "outputSha256": "sha256:2fba2b5c38ad155590c8f51c250671ef99eaca14cc598fa23812e4d35f43cf25",
+          "outputSha256": "sha256:2c1a8dc8f0bf4607a2c3eb4ce9b9944d45043313b0db7a33766e75403f9518cb",
           "source": "upstream/packages/effects-gl/src/glRenderTextureEffect.ts",
           "usesOpaqueHostValues": true
         },
@@ -19434,7 +19454,7 @@
           ],
           "declarations": 9,
           "module": "wgpu_color_lut_pass",
-          "outputSha256": "sha256:ebf1c7f6f887d304e91e4571820034df8d1a2f606386233aec72b2fb5f6c5003",
+          "outputSha256": "sha256:58718626815a63e047cd8df7c4b72306e40f88c57223943cf36f4f74e7641360",
           "source": "upstream/packages/effects-wgpu/src/wgpuColorLutPass.ts",
           "usesOpaqueHostValues": true
         },
@@ -19494,7 +19514,7 @@
           ],
           "declarations": 4,
           "module": "wgpu_effect_gradient_ramp",
-          "outputSha256": "sha256:c2dad952b01b20a8c960e9db461d4d69b4c2c2280730b44f62ebe8b0bbdb1bba",
+          "outputSha256": "sha256:f9cbd6f66f7e56b61b6c5387c6ea5c38f2cfc7de4aee99e96d9db03afac8e4cf",
           "source": "upstream/packages/effects-wgpu/src/wgpuEffectGradientRamp.ts",
           "usesOpaqueHostValues": true
         },
@@ -19522,7 +19542,7 @@
           ],
           "declarations": 19,
           "module": "wgpu_effect_pass",
-          "outputSha256": "sha256:487d1bb888abfd21f2d26d4dc1f86f1c92d00bba788dfe7eb1b2c18d7696f0c8",
+          "outputSha256": "sha256:aa11858f6698a3d76ac4d59750a8ac612c0117683aff8e25563af4aaf42b0d95",
           "source": "upstream/packages/effects-wgpu/src/wgpuEffectPass.ts",
           "usesOpaqueHostValues": true
         },
@@ -19573,7 +19593,7 @@
           ],
           "declarations": 9,
           "module": "wgpu_render_effect_pipeline",
-          "outputSha256": "sha256:ccba73689b3204c8a9f679e54780a7cefe990f5888886f83c0b6ec4c04da816e",
+          "outputSha256": "sha256:e907bdc2f77a1ffab8687873f4cef551e31f80f19529fe9d1890918d8248e176",
           "source": "upstream/packages/effects-wgpu/src/wgpuRenderEffectPipeline.ts",
           "usesOpaqueHostValues": true
         },
@@ -19595,7 +19615,7 @@
           ],
           "declarations": 1,
           "module": "wgpu_render_texture_effect",
-          "outputSha256": "sha256:ff019b27bd0e02ad7f840722e74886ffa9c068c0ddd0bf0a3a5bdc79cda4024e",
+          "outputSha256": "sha256:61eb09abf2be07b4eb1a7d9269a3f46cacd2f82312ea1757f0214565e3fbbc7e",
           "source": "upstream/packages/effects-wgpu/src/wgpuRenderTextureEffect.ts",
           "usesOpaqueHostValues": true
         }
@@ -25171,7 +25191,7 @@
           },
           {
             "code": "E0277",
-            "message": "`flighthq_types::FlightUnion2<bool, flighthq_types::FlightUnion2<f64, std::string::String>>` doesn't implement `std::fmt::Display`",
+            "message": "`FlightUnion2<bool, ...>` doesn't implement `std::fmt::Display`",
             "source": "generated/candidates/flighthq-importdiagnostics/src/import_diagnostic_text.rs"
           },
           {
@@ -25181,7 +25201,7 @@
           },
           {
             "code": "E0277",
-            "message": "`OpaqueHostValue` doesn't implement `std::fmt::Display`",
+            "message": "`FlightValue` doesn't implement `std::fmt::Display`",
             "source": "generated/candidates/flighthq-importdiagnostics/src/import_diagnostic_text.rs"
           }
         ],
@@ -25417,7 +25437,7 @@
           ],
           "declarations": 69,
           "module": "input_manager",
-          "outputSha256": "sha256:d60572bcececb258f1fc93c45b4db4df63b5193e1713afbfa75812003b3d58f9",
+          "outputSha256": "sha256:242188fc657d5f3b4595cc94f7d8e83820a73c5991ca4e7f5ae8766c52bc0bbe",
           "source": "upstream/packages/input/src/inputManager.ts",
           "usesOpaqueHostValues": true
         }
@@ -25490,35 +25510,35 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:f1d7b0ba18e5abc9e49ef3324c9937f9b3d4e3cc5bf8a0e667c309841187d365",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/interaction/src/cursorBackend.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:d8f280b08b1bd67700c718bf942ce5ed7c5e8a8e8a5d7a50d3624f28433021bc",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/interaction/src/displayHitTests.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:8a43a0daa72c5f35043c3e6b01fc37c18554cba8c5d26eb4429479df64269625",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/interaction/src/displayObjectOverlap.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:4d435e425bfe199df4d93914a1a1bb071246951bbe1757eb8d364fc00198f66b",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/interaction/src/enableInteractionGuards.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:092bc3f23209cc803a053ef7e98d6370dd912eb8615f32944ad9d2b58cef0fc8",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/interaction/src/focusManager.ts",
           "stage": "emission"
         },
@@ -25532,63 +25552,63 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:71daa080327353aebdc66543cf1b65118080f9574300979af9c0c76d795fa76a",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/interaction/src/interactionManager.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:a26e8468d6590d1c4362540770c5a471cfdc223c990f7a408b901da2f37b4012",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "findSpatialInteractionTarget: portable record conversion requires string map keys",
           "source": "upstream/packages/interaction/src/interactionSpatialIndex.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:9da9043a414b407b49469c528ceebe737a0157aea92b19517a7d0aaa08cbd6a9",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/interaction/src/nodeInteractionState.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:18d4aceb1af50ffd85b51d964a35b63efcb539e08369399e329205033385abb3",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/interaction/src/registerDefaultHitTests.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:c7b240feca4ce0a50a67d551ac75c6ca6f2058edd82dfc512d0cb674600af478",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/interaction/src/registerShapeHitTest.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:69eea38cd58224261039b15e15ba06855455b8420fe9b308c960cb6ba779189f",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/interaction/src/registerSpriteHitTest.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:f7f6fe60c969a1cf2cd9605d645f3aabf0cbf6e549d93c3093a4fa0c0fa8f431",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/interaction/src/registerTextHitTest.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:bc5dabfeabea8f9d5ad0370e368188362bf7ef12f86c68373b518f3b2e033283",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/interaction/src/spatialQuery.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:26a72bea8c6face104c08df9a746d26aaa320922bbbe9429fe7f2614462b689f",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (14 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/interaction/src/spriteHitTests.ts",
           "stage": "emission"
         }
@@ -25784,10 +25804,6 @@
           "package": "@flighthq/signals"
         },
         {
-          "crate": "flighthq-spatial",
-          "package": "@flighthq/spatial"
-        },
-        {
           "crate": "flighthq-text",
           "package": "@flighthq/text"
         },
@@ -25812,7 +25828,7 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:ed23feb112df18511be621ac58780267cfcceed5042f50e00108e48e51e40d42",
-          "reason": "getCacheKey: JSON.stringify requires a portable scalar or structural array",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (1 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/intl/src/cache.ts",
           "stage": "emission"
         },
@@ -25840,14 +25856,14 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:f71082bc9b03c743bfb3f36ccc9a7e706fb08eefade7b61bf2e365ede294b8ce",
-          "reason": "formatCompactNumber: object literal requires an inferred structural type (target=unknown, properties=notation,spread)",
+          "reason": "formatCompactNumber: portable object spread 1 requires a structural source",
           "source": "upstream/packages/intl/src/number.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:9a3b0647e7557c93be6041a84f168b26b228749f514223775bb0de9c067f5074",
-          "reason": "selectOrdinalCategory: object literal requires an inferred structural type (target=unknown, properties=type,spread)",
+          "reason": "selectOrdinalCategory: portable object spread 1 requires a structural source",
           "source": "upstream/packages/intl/src/plural.ts",
           "stage": "emission"
         },
@@ -25905,6 +25921,8 @@
         "formatRelativeTime",
         "formatTime",
         "formatUnit",
+        "getCacheKey",
+        "getCached",
         "selectOrdinalCategory",
         "selectPluralCategory",
         "sortStrings"
@@ -25912,7 +25930,12 @@
       "missingExports": [],
       "package": "@flighthq/intl",
       "promotedTarget": false,
-      "requiredDependencies": [],
+      "requiredDependencies": [
+        {
+          "crate": "flighthq-types",
+          "package": "@flighthq/types"
+        }
+      ],
       "status": "blocked",
       "transitiveDependents": 1
     },
@@ -26243,7 +26266,7 @@
           ],
           "declarations": 6,
           "module": "resolve_layout_tree",
-          "outputSha256": "sha256:4afd5f05cf163740a254e07651bde32d89994ec6d8ce3ad26a728f0baacb4157",
+          "outputSha256": "sha256:71f6d08b49565751f1354fb45fdb91b6066ddb8aa08c855b35922ae8962c9898",
           "source": "upstream/packages/layout/src/resolveLayoutTree.ts",
           "usesOpaqueHostValues": false
         }
@@ -26843,7 +26866,7 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:7e2aa8ce1d0f261a978f58e677827f1be0d5cb9c6785d192594f51f8b890dcb8",
-          "reason": "createJsonLogFormatter: JSON.stringify requires a portable scalar or structural array",
+          "reason": "serializeLogError: instanceof Rust lowering requires a portable typed-array constructor",
           "source": "upstream/packages/log/src/log.ts",
           "stage": "emission"
         }
@@ -27113,7 +27136,7 @@
           ],
           "declarations": 6,
           "module": "material",
-          "outputSha256": "sha256:701cfe33d0a328be91f239e70578fc5a511a2ac7820d4df44fa5779bdc8c42c8",
+          "outputSha256": "sha256:51cf5cc768da9d8e6c2b3cd1217a4f38ca97f0a3ffa06574a116e0d10e4068e5",
           "source": "upstream/packages/materials/src/material.ts",
           "usesOpaqueHostValues": true
         },
@@ -28202,7 +28225,7 @@
           ],
           "declarations": 32,
           "module": "mesh_geometry_builders",
-          "outputSha256": "sha256:a132e6d3229fa708d17d2c64dc7751ca2474dbed987f6e2d8439911b073890f6",
+          "outputSha256": "sha256:0ac7c7ed5dd67f07fb63602df003f3ce4b4d919d687f6dd15eab2f3073d91923",
           "source": "upstream/packages/mesh/src/meshGeometryBuilders.ts",
           "usesOpaqueHostValues": true
         },
@@ -30298,7 +30321,7 @@
           ],
           "declarations": 1,
           "module": "prewarm_particle_emitter2_d",
-          "outputSha256": "sha256:06fc6802712f9a91c79fe20f780a7efbd61139751f2f301bf7cae424a6d8a3c3",
+          "outputSha256": "sha256:a060d8227702d1fc67eea8db1d6f0a33a920a544d1dad58e10651a7067972523",
           "source": "upstream/packages/particleemitter/src/prewarmParticleEmitter2D.ts",
           "usesOpaqueHostValues": true
         },
@@ -30308,7 +30331,7 @@
           ],
           "declarations": 1,
           "module": "prewarm_particle_emitter3_d",
-          "outputSha256": "sha256:8dee7ae87068707a2bb0947dfb72ef7534f103cf76fde9de09012a08e56b631b",
+          "outputSha256": "sha256:7ce9b1e1049c0792907e4c14765d873ce32441fb8681411f052a2a12a4ee6546",
           "source": "upstream/packages/particleemitter/src/prewarmParticleEmitter3D.ts",
           "usesOpaqueHostValues": true
         },
@@ -30766,7 +30789,7 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:b51ff68eb1d944e0f67f37fd7e5a0ccb39e14fd9cc54fab6a28d16abdb4a5ed3",
-          "reason": "serializeSpineParticle: JSON.stringify requires a portable scalar or structural array",
+          "reason": "serializeSpineParticle: JSON.stringify replacer and spacing arguments are not implemented",
           "source": "upstream/packages/particles-formats/src/spineSerialize.ts",
           "stage": "emission"
         },
@@ -30787,7 +30810,7 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:bc20a0dc2a13038166fbb2932d4b9804ccb468c41f14ba309ddf1b5243f51d13",
-          "reason": "serializeUnityParticle: JSON.stringify requires a portable scalar or structural array",
+          "reason": "serializeUnityParticle: JSON.stringify replacer and spacing arguments are not implemented",
           "source": "upstream/packages/particles-formats/src/unitySerialize.ts",
           "stage": "emission"
         }
@@ -33082,7 +33105,7 @@
           },
           {
             "code": "E0609",
-            "message": "no field `length` on type `OpaqueHostValue`",
+            "message": "no field `length` on type `FlightValue`",
             "source": "generated/candidates/flighthq-protocol/src/protocol.rs"
           },
           {
@@ -33107,7 +33130,7 @@
           },
           {
             "code": "E0277",
-            "message": "can't compare `OpaqueHostValue` with `std::string::String`",
+            "message": "can't compare `FlightValue` with `std::string::String`",
             "source": "generated/candidates/flighthq-protocol/src/protocol.rs"
           },
           {
@@ -33909,7 +33932,7 @@
           ],
           "declarations": 5,
           "module": "enable_gl_render_state_guards",
-          "outputSha256": "sha256:61aa8e21078d7fbe9151b387847991a9a3e619e1aedeeccbe5133d63af4e4534",
+          "outputSha256": "sha256:052a4a02b2fbd804bce1fea802671b9d069647646f261ae673137fab22c7cd7a",
           "source": "upstream/packages/render-gl/src/enableGlRenderStateGuards.ts",
           "usesOpaqueHostValues": true
         },
@@ -33923,7 +33946,7 @@
           ],
           "declarations": 5,
           "module": "enable_gl_render_texture_guards",
-          "outputSha256": "sha256:d983371ee07677b1532d6e05e9c0cf5400db6d354522b5e8cc7285d371b6aada",
+          "outputSha256": "sha256:226261efbaa810694694e8508bdf658e50f43d6103adfb8dda022852475cca9e",
           "source": "upstream/packages/render-gl/src/enableGlRenderTextureGuards.ts",
           "usesOpaqueHostValues": true
         },
@@ -34013,7 +34036,7 @@
           ],
           "declarations": 29,
           "module": "gl_draw",
-          "outputSha256": "sha256:e6b53888c8c32163e6477dbd0591603022b35a3457497a0493cc2613b114adb7",
+          "outputSha256": "sha256:34166526bb85dc4cd9f00f5a372ed3990c913e76f999fb197beacb53467a361c",
           "source": "upstream/packages/render-gl/src/glDraw.ts",
           "usesOpaqueHostValues": true
         },
@@ -34023,7 +34046,7 @@
           ],
           "declarations": 1,
           "module": "gl_element",
-          "outputSha256": "sha256:39b73146fe0f4d811ddb84e89619ff50166a9fb9907a566124d916411da60907",
+          "outputSha256": "sha256:dd76db56218440364340fe571ebb3c36b1db93338c1905868570b9eb94bb5a90",
           "source": "upstream/packages/render-gl/src/glElement.ts",
           "usesOpaqueHostValues": true
         },
@@ -34051,7 +34074,7 @@
           ],
           "declarations": 6,
           "module": "gl_fullscreen_pass",
-          "outputSha256": "sha256:d9efdf7b78c42099e5d3ef85506b4c34e28bfc160d0a397df0edacb14bdfa889",
+          "outputSha256": "sha256:d40b23e5003094f21c887124aed52a64bbd8d14d09ca8e2128e19f07bcd34ae8",
           "source": "upstream/packages/render-gl/src/glFullscreenPass.ts",
           "usesOpaqueHostValues": true
         },
@@ -34119,7 +34142,7 @@
           ],
           "declarations": 9,
           "module": "gl_render_state_bracket",
-          "outputSha256": "sha256:aa5d08be5f1580b5e78c6e983dc2762295f3b3f46c96c038e9d91426b756be7c",
+          "outputSha256": "sha256:b489ed321157203481619e67848056016106a72ab9e494eb4137ee7745a827ac",
           "source": "upstream/packages/render-gl/src/glRenderStateBracket.ts",
           "usesOpaqueHostValues": true
         },
@@ -34148,7 +34171,7 @@
           ],
           "declarations": 20,
           "module": "gl_render_target",
-          "outputSha256": "sha256:2aa2b400acc9da3f5e7e390e0835ed0d99ecde3460a4d0398b9d9701b787fba4",
+          "outputSha256": "sha256:a8ddf7b096154236ca611b77aadf378b943a2d1430cc672e5d1bca5575f671de",
           "source": "upstream/packages/render-gl/src/glRenderTarget.ts",
           "usesOpaqueHostValues": true
         },
@@ -34187,7 +34210,7 @@
           ],
           "declarations": 16,
           "module": "gl_render_texture",
-          "outputSha256": "sha256:a55d762aec9976fe55f450376413157b6c0cf7f0c317ab1cb6b4b56cea8d270f",
+          "outputSha256": "sha256:c79c35c070edc12f7cf2687fd1b0ea17b8040ac174d11e8872d82036491f72a7",
           "source": "upstream/packages/render-gl/src/glRenderTexture.ts",
           "usesOpaqueHostValues": true
         },
@@ -34272,7 +34295,7 @@
           ],
           "declarations": 3,
           "module": "_internal_gl_test_helper",
-          "outputSha256": "sha256:6e123dde01fefb413e94674c350e639c07bc466c6615063cd3597bf36d7d60c0",
+          "outputSha256": "sha256:26eea0fced4863b21c67571950c53112bc5042eee90436e9d958348d812fb4dd",
           "source": "upstream/packages/render-gl/src/glTestHelper.ts",
           "usesOpaqueHostValues": true
         },
@@ -34294,7 +34317,7 @@
           ],
           "declarations": 1,
           "module": "gl_texture_video_upload",
-          "outputSha256": "sha256:bce2552c6df35d2a375f13a735f6e6f143e9fd0e25c9b80279c6b97579ae0793",
+          "outputSha256": "sha256:8499a564d716ddf3992e337d72a80662359bcc550414518dc5fb9e89167214bb",
           "source": "upstream/packages/render-gl/src/glTextureVideoUpload.ts",
           "usesOpaqueHostValues": true
         },
@@ -34729,7 +34752,7 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:f5fba90486b89b6f3f4396f8650109c8bbc0a3d7db36ec7251b6d3d02ec3c2bb",
-          "reason": "makeAdapter: upstream/packages/render-wgpu/src/wgpuTestHelper.ts:124:26: taskReady output type is not recovered",
+          "reason": "installWgpuMock: upstream/packages/render-wgpu/src/wgpuTestHelper.ts:154:27: taskReady output type is not recovered",
           "source": "upstream/packages/render-wgpu/src/wgpuTestHelper.ts",
           "stage": "emission"
         },
@@ -34873,7 +34896,7 @@
           ],
           "declarations": 15,
           "module": "wgpu_compressed_texture",
-          "outputSha256": "sha256:60ee5300b664064e084ea475759ca14a29de3c65ae1100ff1b4bec52e7e3d977",
+          "outputSha256": "sha256:19554047415458ed86535512b237b27691ef6f6e303ff688ebb225e3c1eede36",
           "source": "upstream/packages/render-wgpu/src/wgpuCompressedTexture.ts",
           "usesOpaqueHostValues": true
         },
@@ -34908,7 +34931,7 @@
           ],
           "declarations": 26,
           "module": "wgpu_draw",
-          "outputSha256": "sha256:2732f4ac4b1374e8e04a6826745c9530c387db6a2bfccb02701cd6ac1b1c50eb",
+          "outputSha256": "sha256:6777d954470bf7df350451db34b74bd30bf26035d96c0dfce2f1b51529261ce1",
           "source": "upstream/packages/render-wgpu/src/wgpuDraw.ts",
           "usesOpaqueHostValues": true
         },
@@ -34918,7 +34941,7 @@
           ],
           "declarations": 1,
           "module": "wgpu_element",
-          "outputSha256": "sha256:b2ed4e7a53331b88f2f20683ad935c0c1ea5e7f02402188597173db7eb998acf",
+          "outputSha256": "sha256:4f368fa4301317f5ccfe300e30685cf9edde4ed104d9eb9aa297d12e0be70b0c",
           "source": "upstream/packages/render-wgpu/src/wgpuElement.ts",
           "usesOpaqueHostValues": true
         },
@@ -34932,7 +34955,7 @@
           ],
           "declarations": 5,
           "module": "wgpu_external_texture",
-          "outputSha256": "sha256:18c1d8a318e721bee26babf9c9fbc27ab38c0615733aee58f1e6c66495e7d397",
+          "outputSha256": "sha256:23edd181c89090b8f3df8ac9d5539e0ba99ccc55568638897e409deb5f1ff2b6",
           "source": "upstream/packages/render-wgpu/src/wgpuExternalTexture.ts",
           "usesOpaqueHostValues": true
         },
@@ -34978,7 +35001,7 @@
           ],
           "declarations": 11,
           "module": "wgpu_render_target",
-          "outputSha256": "sha256:2c9e6621e68316208e8ea91fa194d20ed93980f3f017537b3afd8c55b2b0856f",
+          "outputSha256": "sha256:63a37907c18570ccf8da389061c30590fb01f786a8783e146bac13c639c4767d",
           "source": "upstream/packages/render-wgpu/src/wgpuRenderTarget.ts",
           "usesOpaqueHostValues": true
         },
@@ -35013,7 +35036,7 @@
           ],
           "declarations": 13,
           "module": "wgpu_render_texture",
-          "outputSha256": "sha256:15c05002f3e36abe1e64b549bfb16f1ffc69da3b57abc30154de751602d7794c",
+          "outputSha256": "sha256:1d308e742510634064a1c6bdacbbd31e8aca8c97e412a7a1ad05cf66966ddec5",
           "source": "upstream/packages/render-wgpu/src/wgpuRenderTexture.ts",
           "usesOpaqueHostValues": true
         },
@@ -35067,7 +35090,7 @@
           ],
           "declarations": 16,
           "module": "wgpu_shader",
-          "outputSha256": "sha256:82c11a09c73f13ed4de9580e63301c83420e0dd358dca572242933a095edb559",
+          "outputSha256": "sha256:bfc81c534b2db08a49ec4fb173e61bac6632ced614cd321f498cebfb4647f7c7",
           "source": "upstream/packages/render-wgpu/src/wgpuShader.ts",
           "usesOpaqueHostValues": true
         },
@@ -35102,7 +35125,7 @@
           ],
           "declarations": 3,
           "module": "wgpu_texture_upload",
-          "outputSha256": "sha256:ec9bb969ea48f26661c86dbb2be0ad9e7138bdacefaefe65f9694e6891e9dac0",
+          "outputSha256": "sha256:1948f6717e9987db85f32ddc4b55a9a5a922ea51ce31ba5561582bbd58b4f0d4",
           "source": "upstream/packages/render-wgpu/src/wgpuTextureUpload.ts",
           "usesOpaqueHostValues": true
         }
@@ -35557,7 +35580,7 @@
           ],
           "declarations": 1,
           "module": "canvas_background",
-          "outputSha256": "sha256:d5ca986cde375577f75c807c8062d8c44fde07bab28cbf7d291f46a0f5b715e3",
+          "outputSha256": "sha256:ee7c7b04fc9481cc2d372baa0584adae4a8dbf1550c1e5f46b1f9f802e2a870e",
           "source": "upstream/packages/scene2d-canvas/src/canvasBackground.ts",
           "usesOpaqueHostValues": true
         },
@@ -35605,7 +35628,7 @@
           ],
           "declarations": 17,
           "module": "canvas_cache",
-          "outputSha256": "sha256:0d9ea9aa8b974c18260c42186d638ecb526519ea0e673f4e30fd954c7fef794f",
+          "outputSha256": "sha256:d947cbbc829c3461da306a099099c0fd29e96f261111ab7c399abc88525017a3",
           "source": "upstream/packages/scene2d-canvas/src/canvasCache.ts",
           "usesOpaqueHostValues": true
         },
@@ -35652,7 +35675,7 @@
           ],
           "declarations": 1,
           "module": "canvas_element",
-          "outputSha256": "sha256:f9d61afbef29c5f8e8eeea7dd27d3d8a9a3e4f878eee2331d8b42ab037d57081",
+          "outputSha256": "sha256:1e8e5cdb2dde66b41166c099c2cd5ad0c85598b0554d990fb20fa32d3bd4b482",
           "source": "upstream/packages/scene2d-canvas/src/canvasElement.ts",
           "usesOpaqueHostValues": true
         },
@@ -35718,7 +35741,7 @@
           ],
           "declarations": 3,
           "module": "canvas_materials",
-          "outputSha256": "sha256:f05c70eddc134e1b3ded925e0463a9b15778f356db1888b5b81a0127444bdf9b",
+          "outputSha256": "sha256:d6daf8d35a9c64561dfc5679ccb01f18c6174f098ab2bea9431b1dd82697b700",
           "source": "upstream/packages/scene2d-canvas/src/canvasMaterials.ts",
           "usesOpaqueHostValues": true
         },
@@ -35730,7 +35753,7 @@
           ],
           "declarations": 3,
           "module": "canvas_node2_d",
-          "outputSha256": "sha256:273abdfa08bae3c5694ce5fda14300466688cf9713945057cab7338f5543c9df",
+          "outputSha256": "sha256:8ecd1f4726d3f9ce7e7d319a6d25e422ce1274063aa34b34c5e4fa66e92aa316",
           "source": "upstream/packages/scene2d-canvas/src/canvasNode2D.ts",
           "usesOpaqueHostValues": true
         },
@@ -35874,7 +35897,7 @@
           ],
           "declarations": 20,
           "module": "canvas_shape_commands",
-          "outputSha256": "sha256:91084ea9fa5d11d1ff29c978bcc9c8ad5082f2f80479242e7613aa3b412a860a",
+          "outputSha256": "sha256:b41987dba1484e8c7b4cf1278d85668835dc5f8c948bf716d21af9fff4b0c805",
           "source": "upstream/packages/scene2d-canvas/src/canvasShapeCommands.ts",
           "usesOpaqueHostValues": true
         },
@@ -35947,7 +35970,7 @@
           ],
           "declarations": 1,
           "module": "canvas_text_measure",
-          "outputSha256": "sha256:800073a36f4b39da8e30ab1da23ba8d4cab631288d393a85d726c49c0b608215",
+          "outputSha256": "sha256:a3fbae25a9724deb52fe51d9dd750b906a3fdb6a186653c6912aa66b2882f0a2",
           "source": "upstream/packages/scene2d-canvas/src/canvasTextMeasure.ts",
           "usesOpaqueHostValues": false
         },
@@ -35957,7 +35980,7 @@
           ],
           "declarations": 1,
           "module": "canvas_texture_window_source",
-          "outputSha256": "sha256:ea86b77c89e4e7c2d8ad77fa47abd7c62edbe690476e12f3df5fa0697f8aaefa",
+          "outputSha256": "sha256:472df6d0c778ec9bf84634831397b4bdb40ab9159d7093eff8b0b12aadfd9355",
           "source": "upstream/packages/scene2d-canvas/src/canvasTextureWindowSource.ts",
           "usesOpaqueHostValues": true
         },
@@ -36375,14 +36398,14 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:7ba2ab43ffec812d860bb0ef4295c30f02f3c429cfa166cb4d33944293440fce",
-          "reason": "createLottieTrack: spread Rust lowering is not implemented",
+          "reason": "applyVectorProperty: portable field name cannot distinguish an omitted property from explicit null",
           "source": "upstream/packages/scene2d-formats/src/lottieDocument.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:c2f8b987b8a65610d61f7439152973f4ddf35f6bca34d68b4e38946508a8c34f",
-          "reason": "createRiveTypedChannel: spread Rust lowering is not implemented",
+          "reason": "createRiveAnimationClip: portable field name cannot distinguish an omitted property from explicit null",
           "source": "upstream/packages/scene2d-formats/src/riveAnimation.ts",
           "stage": "emission"
         },
@@ -36751,7 +36774,7 @@
           ],
           "declarations": 1,
           "module": "_internal_test_helper",
-          "outputSha256": "sha256:8089fc8211ac26ce91c9f0e25b65ef6a4fc1986ff11f4f3c045250326ba9fdc8",
+          "outputSha256": "sha256:b14b381db7f18a949803a05f7c7176e2672aaa1946110cc66bc41687dca2096c",
           "source": "upstream/packages/scene2d-formats/src/testHelper.ts",
           "usesOpaqueHostValues": false
         }
@@ -36996,7 +37019,7 @@
           ],
           "declarations": 3,
           "module": "enable_gl_color_adjustment_guards",
-          "outputSha256": "sha256:a87f0ce787fc0e1c9bd935c34b66101963a973ec782b0b031e168a53341d8b26",
+          "outputSha256": "sha256:05d5cd6debee385562275a5b5e2dda97a7d2af5f281b0d3edda41f25a9fff0f9",
           "source": "upstream/packages/scene2d-gl/src/enableGlColorAdjustmentGuards.ts",
           "usesOpaqueHostValues": true
         },
@@ -37030,7 +37053,7 @@
           ],
           "declarations": 3,
           "module": "gl_bitmap_text",
-          "outputSha256": "sha256:68492dbad3c2b288cb8a45b778219ded65617a82aa29bfd578eda779e8dc3543",
+          "outputSha256": "sha256:b1f278971af6d4e4f11489e8a1a50566c212f325b3d94fe452348f3e8e336d1a",
           "source": "upstream/packages/scene2d-gl/src/glBitmapText.ts",
           "usesOpaqueHostValues": true
         },
@@ -37131,7 +37154,7 @@
           ],
           "declarations": 9,
           "module": "gl_particle_emitter2_d",
-          "outputSha256": "sha256:be12dc6a927860a40d7226a9119d40adfd5c3d0e08fc1dfb1f8f03579e8ef837",
+          "outputSha256": "sha256:3dd71612153d687d610d2f8a242bf184afc12b6bd2ea346abe27017e58e7d3e5",
           "source": "upstream/packages/scene2d-gl/src/glParticleEmitter2D.ts",
           "usesOpaqueHostValues": true
         },
@@ -37143,7 +37166,7 @@
           ],
           "declarations": 3,
           "module": "gl_quad_batch",
-          "outputSha256": "sha256:ffd57d4e2d3249d07364ca774a666d72a5bd35f210032ed4501e1771555ffec0",
+          "outputSha256": "sha256:a54094c39941b3eb1fed997c8a4e75a85becde7395e5e417b3c68b499548a187",
           "source": "upstream/packages/scene2d-gl/src/glQuadBatch.ts",
           "usesOpaqueHostValues": true
         },
@@ -37166,7 +37189,7 @@
           ],
           "declarations": 14,
           "module": "gl_quad_batch_writer",
-          "outputSha256": "sha256:239f463d7192c4cc258804ed48b0c1667a83aaf095ff031cdf77d76b98619dee",
+          "outputSha256": "sha256:5c3712aa18cd2c424e610c8e1cdd915ec4e1823b16e643566cf490cf8a3ea711",
           "source": "upstream/packages/scene2d-gl/src/glQuadBatchWriter.ts",
           "usesOpaqueHostValues": true
         },
@@ -37188,7 +37211,7 @@
           ],
           "declarations": 13,
           "module": "gl_rich_text",
-          "outputSha256": "sha256:4a7f133d2e2fdc91983128014adb4f822b480a0da15796e394d09cb51af4671a",
+          "outputSha256": "sha256:dc47ed21b241564e80703a6c4c5b5f22b198d05ebfbc1515117df5d435257484",
           "source": "upstream/packages/scene2d-gl/src/glRichText.ts",
           "usesOpaqueHostValues": true
         },
@@ -37225,7 +37248,7 @@
           ],
           "declarations": 5,
           "module": "gl_shape_data",
-          "outputSha256": "sha256:5f262ba588fa3bb13ba736b0fb68e46a95e8a680a8150e6ce7690dc677c8d85b",
+          "outputSha256": "sha256:dd76122d94efc7a0bb1f2418130317d6614d4d0241b7b8180a5eb6e081419268",
           "source": "upstream/packages/scene2d-gl/src/glShapeData.ts",
           "usesOpaqueHostValues": true
         },
@@ -37285,7 +37308,7 @@
           ],
           "declarations": 1,
           "module": "_internal_gl_test_helper",
-          "outputSha256": "sha256:cf2f578d66bf5f52363efccc29e3ccd10f67b55e54ded59e5f3c75ecdaad8164",
+          "outputSha256": "sha256:650f17357a81fd047dbcedc8e079bebf024b841a1a519759b813108700ff0ab2",
           "source": "upstream/packages/scene2d-gl/src/glTestHelper.ts",
           "usesOpaqueHostValues": true
         },
@@ -37316,7 +37339,7 @@
           ],
           "declarations": 7,
           "module": "gl_text_label",
-          "outputSha256": "sha256:347b275890e6a388bd3aafc080615a35154d4d6569caefa97c38ed0d412b62a3",
+          "outputSha256": "sha256:aa2207205ab3fe35e7c9ae4348220911a5b566f7f9ca6ced893d1e69f89bfa05",
           "source": "upstream/packages/scene2d-gl/src/glTextLabel.ts",
           "usesOpaqueHostValues": true
         },
@@ -37328,7 +37351,7 @@
           ],
           "declarations": 3,
           "module": "gl_tilemap",
-          "outputSha256": "sha256:48811b385bf0e8a418ce6a5b55bd3e2e7d33c1f2b9e86a2ab64f14bf7573b1a5",
+          "outputSha256": "sha256:880e20cab614226a444445ba91bdf67a74d95136910e640d7422e0842662546d",
           "source": "upstream/packages/scene2d-gl/src/glTilemap.ts",
           "usesOpaqueHostValues": true
         },
@@ -38148,7 +38171,7 @@
           ],
           "declarations": 3,
           "module": "enable_wgpu_color_adjustment_guards",
-          "outputSha256": "sha256:7eb782dd94aa2544b9cd04745f0d00e1de574d16894b08c45db1d74839ddd5e3",
+          "outputSha256": "sha256:5217492bfcc1c955516b82ebf6f6b0fd3fa9b18d5dbfc3a41646b01adc716b79",
           "source": "upstream/packages/scene2d-wgpu/src/enableWgpuColorAdjustmentGuards.ts",
           "usesOpaqueHostValues": true
         },
@@ -38188,7 +38211,7 @@
           ],
           "declarations": 3,
           "module": "wgpu_bitmap_text",
-          "outputSha256": "sha256:57e8e79dc359f402db86bc0f578353e79f70d079438e12f0448c2bd5df9a93cc",
+          "outputSha256": "sha256:e6e00b3972d02622e57b2c6ea6c3760e59e83bd17e77c0adc55933e0b342d846",
           "source": "upstream/packages/scene2d-wgpu/src/wgpuBitmapText.ts",
           "usesOpaqueHostValues": true
         },
@@ -38242,7 +38265,7 @@
           ],
           "declarations": 7,
           "module": "wgpu_clip_contours",
-          "outputSha256": "sha256:8015e4a1bc1ffde9f01778f4523fb1d285435245a679cd7ccde19ebc2bab8cd5",
+          "outputSha256": "sha256:2f6c694edd7004dd0691ee832807a2f9ed360713659cc0f69e3657b29b3106d1",
           "source": "upstream/packages/scene2d-wgpu/src/wgpuClipContours.ts",
           "usesOpaqueHostValues": true
         },
@@ -38286,7 +38309,7 @@
           ],
           "declarations": 10,
           "module": "wgpu_particle_emitter2_d",
-          "outputSha256": "sha256:365260fb081d49a7b97be19247fc62bc1b7329c50caa6b7f8bea0228df894ab8",
+          "outputSha256": "sha256:6e8b0cfbb4ea394a72138f4018bf58743250540ed03ee9a9c599791eeb76b320",
           "source": "upstream/packages/scene2d-wgpu/src/wgpuParticleEmitter2D.ts",
           "usesOpaqueHostValues": true
         },
@@ -38298,7 +38321,7 @@
           ],
           "declarations": 3,
           "module": "wgpu_quad_batch",
-          "outputSha256": "sha256:424b0b71b0ef8e2c97bd9c7fec781f85572a4590a5891f5607145c58db0e9b5f",
+          "outputSha256": "sha256:53b67b3f6ec0132b5bb0b866b8398227c81be108ebf04d9974f4fccd22ebe54f",
           "source": "upstream/packages/scene2d-wgpu/src/wgpuQuadBatch.ts",
           "usesOpaqueHostValues": true
         },
@@ -38324,7 +38347,7 @@
           ],
           "declarations": 17,
           "module": "wgpu_quad_batch_writer",
-          "outputSha256": "sha256:735a059bb06d5fa59a161d89971a26759c197e564bef2855061d15e6ae048ede",
+          "outputSha256": "sha256:db1603fda7a2ca871ff3b61d40cefd6331bc17688b181b82f4b44d0068ff5f1e",
           "source": "upstream/packages/scene2d-wgpu/src/wgpuQuadBatchWriter.ts",
           "usesOpaqueHostValues": true
         },
@@ -38351,7 +38374,7 @@
           ],
           "declarations": 7,
           "module": "wgpu_render_stats",
-          "outputSha256": "sha256:073e919c0c778f9d727c000389cf5a9dd811bb2d37e8b03e6e8ab36650ceadfa",
+          "outputSha256": "sha256:200532cebd693c594f60b6af2fc13d2fe29d1ed82c854a2f84038c7121438dbb",
           "source": "upstream/packages/scene2d-wgpu/src/wgpuRenderStats.ts",
           "usesOpaqueHostValues": true
         },
@@ -38373,7 +38396,7 @@
           ],
           "declarations": 13,
           "module": "wgpu_rich_text",
-          "outputSha256": "sha256:e62409c2cbb8dda2968cc5293d9b9dc9c35c1a08a95e600ec7e25159c95f2a50",
+          "outputSha256": "sha256:aae14d6e8157f2d95786f38957677bb73059a10ba4360d22ab28049f5f5f541b",
           "source": "upstream/packages/scene2d-wgpu/src/wgpuRichText.ts",
           "usesOpaqueHostValues": true
         },
@@ -38409,7 +38432,7 @@
           ],
           "declarations": 4,
           "module": "wgpu_shape_data",
-          "outputSha256": "sha256:45c265505041123e89e2404a5c00155ccaa08f7f544ae5a086ba13396dcc5db1",
+          "outputSha256": "sha256:9ce0c68069a29819bdf51531854ea3edebd3b940990fe6d6aad64c566a1c03eb",
           "source": "upstream/packages/scene2d-wgpu/src/wgpuShapeData.ts",
           "usesOpaqueHostValues": true
         },
@@ -38431,7 +38454,7 @@
           ],
           "declarations": 13,
           "module": "wgpu_shape_mesh",
-          "outputSha256": "sha256:b4e2680a9097f160176d5db275aae4ee2f0ac4eda8778c6b10fd34ef4e7852d2",
+          "outputSha256": "sha256:7edfc68d2e5f0952b049ad80282a0f5a2bf7622049e5514d64439bc69da14483",
           "source": "upstream/packages/scene2d-wgpu/src/wgpuShapeMesh.ts",
           "usesOpaqueHostValues": true
         },
@@ -38495,7 +38518,7 @@
           ],
           "declarations": 5,
           "module": "wgpu_text_label",
-          "outputSha256": "sha256:2219ddf81d3b46406a01216545df10da396ab1d51389716930c6b72accddba0c",
+          "outputSha256": "sha256:bcea61f114ecc32426b49ce55c735634c87b03a24247ce12aa4b2d58e77e8c87",
           "source": "upstream/packages/scene2d-wgpu/src/wgpuTextLabel.ts",
           "usesOpaqueHostValues": true
         },
@@ -38507,7 +38530,7 @@
           ],
           "declarations": 3,
           "module": "wgpu_tilemap",
-          "outputSha256": "sha256:0ee14602f104bc84caa8205a0305b951bdcc6b3f7b4cc64294dc4ffdc009fdbe",
+          "outputSha256": "sha256:9d38b04bb837411f90b09456075fea086edb09c98b561d46665571cd1d258f57",
           "source": "upstream/packages/scene2d-wgpu/src/wgpuTilemap.ts",
           "usesOpaqueHostValues": true
         }
@@ -38982,21 +39005,21 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:a22d709b1f28b4bd709179b4bf9cbdcbe7ddc4ebccce194ebceadb091fb6ddb9",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "buildAnimationClip: portable value conversion requires a statically recoverable source type",
           "source": "upstream/packages/scene3d-formats/src/md5AnimParse.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:e1b070b3e0881db5bb74766176bfb7859a5e4caa8e4993d1b0a5f142a4d7f9fa",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (2 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/scene3d-formats/src/md5Parse.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:7db33cd3a4098e19262e0d3675f9e3c2c9050c8e4f89b6f256b74580b7947651",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (2 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/scene3d-formats/src/objParse.ts",
           "stage": "emission"
         },
@@ -39554,10 +39577,6 @@
       "promotedTarget": false,
       "requiredDependencies": [
         {
-          "crate": "flighthq-animation",
-          "package": "@flighthq/animation"
-        },
-        {
           "crate": "flighthq-color",
           "package": "@flighthq/color"
         },
@@ -39832,7 +39851,7 @@
           ],
           "declarations": 14,
           "module": "draw_gl_scene3_d",
-          "outputSha256": "sha256:cf9a86db738f4c2f9f6ed86f17f644aa2a0e387bbe89be224776a0af5eab40f2",
+          "outputSha256": "sha256:d8341a1e8b9f3394686e7811f58df54ceebd7aa1d477df7dc841bb7415b629ca",
           "source": "upstream/packages/scene3d-gl/src/drawGlScene3D.ts",
           "usesOpaqueHostValues": true
         },
@@ -39859,7 +39878,7 @@
           ],
           "declarations": 4,
           "module": "enable_gl_pbr_extension_guards",
-          "outputSha256": "sha256:85aebc7e33da7ff3cedb267dc1c033c974a373c2c3ee1d320c3b484faf24c713",
+          "outputSha256": "sha256:2922fec9bdb6a81e9efa07dfd969d5f11720b96f3972abf63f2f5d7949f6770a",
           "source": "upstream/packages/scene3d-gl/src/enableGlPbrExtensionGuards.ts",
           "usesOpaqueHostValues": true
         },
@@ -39871,7 +39890,7 @@
           ],
           "declarations": 3,
           "module": "enable_gl_scene3_d_color_space_guards",
-          "outputSha256": "sha256:d633fa5e48e922495da5ef89591e433239df10efb704e1c3ca2b9f08b46140ce",
+          "outputSha256": "sha256:33c5893372b0f767f2784c669138110e8e1fad790cf8dbc01420d33b758a2e5c",
           "source": "upstream/packages/scene3d-gl/src/enableGlScene3DColorSpaceGuards.ts",
           "usesOpaqueHostValues": true
         },
@@ -39885,7 +39904,7 @@
           ],
           "declarations": 5,
           "module": "enable_gl_scene3_d_custom_shader_guards",
-          "outputSha256": "sha256:3a572049e7694ea4684d8a638d725919ead839b58bbfcfd6131a1b1708e812e1",
+          "outputSha256": "sha256:2e65feeb3e857d309feeef0ed2f8c8752f8921aac022f00a669964090b995a25",
           "source": "upstream/packages/scene3d-gl/src/enableGlScene3DCustomShaderGuards.ts",
           "usesOpaqueHostValues": true
         },
@@ -39897,7 +39916,7 @@
           ],
           "declarations": 3,
           "module": "enable_gl_scene3_d_deform_guards",
-          "outputSha256": "sha256:46a5bd5ecba2902d75a2f551e1f5a0b9f5f5719c3f0e242447280b8053b8186f",
+          "outputSha256": "sha256:3256a47412503f6096b2acc19ac16826ffb3a739f417dd63cf1201d313c760e7",
           "source": "upstream/packages/scene3d-gl/src/enableGlScene3DDeformGuards.ts",
           "usesOpaqueHostValues": true
         },
@@ -39909,7 +39928,7 @@
           ],
           "declarations": 3,
           "module": "enable_gl_scene3_d_forward_light_selection_guards",
-          "outputSha256": "sha256:0895868a4ef5afe85ef9e6204eecf750910b6900d447db3c307ffc1cb172ce6c",
+          "outputSha256": "sha256:9fe33ca2af01f9624c0c42c960b6b894a326e929c84c0e0bb177aa9ebaceda4c",
           "source": "upstream/packages/scene3d-gl/src/enableGlScene3DForwardLightSelectionGuards.ts",
           "usesOpaqueHostValues": true
         },
@@ -40027,7 +40046,7 @@
           ],
           "declarations": 24,
           "module": "gl_environment_ibl_bake",
-          "outputSha256": "sha256:abefa2cba7498d2bd9955123200dc54a51ea201044006db27ff42570c4eaffaf",
+          "outputSha256": "sha256:292cf7beb82759dbea4fdfca73c32fa42e3752d365a9a582eab2f885c504122c",
           "source": "upstream/packages/scene3d-gl/src/glEnvironmentIblBake.ts",
           "usesOpaqueHostValues": true
         },
@@ -40134,7 +40153,7 @@
           ],
           "declarations": 18,
           "module": "gl_mesh_program",
-          "outputSha256": "sha256:50cb9e2617620a7dedefaa615cfd9be71a2d9ff6e268cb4230aea6a7c10c2b83",
+          "outputSha256": "sha256:6c5be0b9f87d5c5a65690ec8d0725c9d1f0a211be9b3b6b6af0e6121772d5f5c",
           "source": "upstream/packages/scene3d-gl/src/glMeshProgram.ts",
           "usesOpaqueHostValues": true
         },
@@ -40176,7 +40195,7 @@
           ],
           "declarations": 16,
           "module": "gl_particle_emitter3_d",
-          "outputSha256": "sha256:3f98f06be9e590432308290ca9a80ccafd183a789ac444fea89cb5f8e82e0ec1",
+          "outputSha256": "sha256:70d6e92ac879536478432d6c85f6decef07fa5aba3cf35c5c891136b3c2c7359",
           "source": "upstream/packages/scene3d-gl/src/glParticleEmitter3D.ts",
           "usesOpaqueHostValues": true
         },
@@ -40219,7 +40238,7 @@
           ],
           "declarations": 15,
           "module": "gl_pbr_prelude",
-          "outputSha256": "sha256:f442bab949b09c619f1556d5a224bd01bab898fee61056b78fbb91ab75817e29",
+          "outputSha256": "sha256:4d823b8bd5a8ed50b05a7fa1b13564a233cafdd5df7fd5c5a70785259961a39f",
           "source": "upstream/packages/scene3d-gl/src/glPbrPrelude.ts",
           "usesOpaqueHostValues": true
         },
@@ -40230,7 +40249,7 @@
           ],
           "declarations": 2,
           "module": "gl_pbr_program_cache",
-          "outputSha256": "sha256:1eeda028f3d923409fd892d3357831e220515c3ee830b5db7b9bc4219d544d81",
+          "outputSha256": "sha256:4fe575d198e0730ca70ec4915e77da89dca9521131a1fa5e9466e3311a5debb5",
           "source": "upstream/packages/scene3d-gl/src/glPbrProgramCache.ts",
           "usesOpaqueHostValues": true
         },
@@ -40286,7 +40305,7 @@
           ],
           "declarations": 3,
           "module": "_internal_gl_scene3_d_test_helper",
-          "outputSha256": "sha256:3410d3237c7336ee1d6d4988b087321e7494da25755bc69b59632444ec89c568",
+          "outputSha256": "sha256:9015a73dfe99d8827a0a4ffdd599518949f28088d9fea784f50daa33199081d9",
           "source": "upstream/packages/scene3d-gl/src/glScene3DTestHelper.ts",
           "usesOpaqueHostValues": true
         },
@@ -40364,7 +40383,7 @@
           ],
           "declarations": 7,
           "module": "gl_shadow_map",
-          "outputSha256": "sha256:2c850eeaf9dfdaf31464967a4decc712773e4051ee3008c38e5cb33632dcf2de",
+          "outputSha256": "sha256:2c5ed927d1f82c160987dd09e4b22841cd771deb6ec550b1fbf0f35d2aaf0c1d",
           "source": "upstream/packages/scene3d-gl/src/glShadowMap.ts",
           "usesOpaqueHostValues": true
         },
@@ -42109,8 +42128,8 @@
       "blockers": [
         {
           "diagnostics": [],
-          "fingerprint": "sha256:548eb57ba2e1dde55b97b76cfee781d6696de5d2c964b58aedf114416fc04bdf",
-          "reason": "Generated crate is missing 32 of 157 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.",
+          "fingerprint": "sha256:57a41fba7edff37fb85aa721cf636cc2472b586213a1e55fb42ad3f073ed2aca",
+          "reason": "Generated crate is missing 44 of 157 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.",
           "source": "upstream/packages/scene3d-wgpu/src",
           "stage": "package"
         },
@@ -42133,6 +42152,13 @@
           "fingerprint": "sha256:45adefccc8bf70b81850604dbaf3b03604553b404f33eda6f438e7dc0bbf922f",
           "reason": "stashWgpuUvTransform: in-operator requires a static property name or an opaque host receiver",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuMeshPipeline.ts",
+          "stage": "emission"
+        },
+        {
+          "diagnostics": [],
+          "fingerprint": "sha256:0169ed952f8da43bfbcb21b28c8fc08c07d93cbd3fe516311090148d85344d94",
+          "reason": "createShadedBinding: portable value conversion requires a statically recoverable source type",
+          "source": "upstream/packages/scene3d-wgpu/src/wgpuShadedPrelude.ts",
           "stage": "emission"
         }
       ],
@@ -42260,7 +42286,7 @@
           ],
           "declarations": 15,
           "module": "draw_wgpu_scene3_d",
-          "outputSha256": "sha256:170e6852ee165d1eda66b12fdfbba777bbad62d03cab786de012d0e5174bed9f",
+          "outputSha256": "sha256:7f47b9abf2ffaf19f66e2521783f88eee55b05fd1b9f218442fbe74e1ae01e39",
           "source": "upstream/packages/scene3d-wgpu/src/drawWgpuScene3D.ts",
           "usesOpaqueHostValues": true
         },
@@ -42287,7 +42313,7 @@
           ],
           "declarations": 3,
           "module": "enable_wgpu_scene3_d_forward_light_selection_guards",
-          "outputSha256": "sha256:bfb8d66a0fd31f3316cf92ebf74eff8a371b0ed111c4ebc2451752bfbd9c1fe5",
+          "outputSha256": "sha256:d1f9d88441e209f9d26d970dc923f9d1c0bde7242d2c808f5be233b8a0eb2603",
           "source": "upstream/packages/scene3d-wgpu/src/enableWgpuScene3DForwardLightSelectionGuards.ts",
           "usesOpaqueHostValues": true
         },
@@ -42570,7 +42596,7 @@
           ],
           "declarations": 4,
           "module": "wgpu_environment_cube",
-          "outputSha256": "sha256:8e004d345320a3eb334409060493698ccd11af7d649dda425eb3f61129590aa8",
+          "outputSha256": "sha256:36d36de4f7857611ad2747aeee4ee5403a527e88792adc09f7a47ed83affe1ed",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuEnvironmentCube.ts",
           "usesOpaqueHostValues": true
         },
@@ -42623,7 +42649,7 @@
           ],
           "declarations": 10,
           "module": "wgpu_environment_skybox",
-          "outputSha256": "sha256:f40fa1c326dfd16c00bc6f8b600a52478026a0def345881fd81edc479c7c4957",
+          "outputSha256": "sha256:ae1c8ee447eb41452b138f6e23936655a12cfd036a56606dcd3523114f193584",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuEnvironmentSkybox.ts",
           "usesOpaqueHostValues": true
         },
@@ -42673,9 +42699,9 @@
           ],
           "declarations": 2,
           "module": "wgpu_mesh_upload",
-          "outputSha256": "sha256:ed353033bf6b3480e29fb13e1a83f926e2b133abcb3cbf2c90a3d34bc2dedbec",
+          "outputSha256": "sha256:0e87c2a701f11cc10ecb00452d27f92a2dec7149f58b24c83f68ce12c1851df3",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuMeshUpload.ts",
-          "usesOpaqueHostValues": true
+          "usesOpaqueHostValues": false
         },
         {
           "declarationNames": [
@@ -42705,7 +42731,7 @@
           ],
           "declarations": 23,
           "module": "wgpu_particle_emitter3_d",
-          "outputSha256": "sha256:02ad3af8183b3e0424ffa4dea8b943d77119c7aab34791186d01a5196896e613",
+          "outputSha256": "sha256:9a470f809d1620ef6e4a4e0af2e486cc437102bb989721e06e76bf43c8160be6",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuParticleEmitter3D.ts",
           "usesOpaqueHostValues": true
         },
@@ -42755,7 +42781,7 @@
           ],
           "declarations": 4,
           "module": "_internal_wgpu_scene3_d_test_helper",
-          "outputSha256": "sha256:6f89c7a7d882eea34ca56b87309be327ccd52b295533e4659fd5f8518b8d6260",
+          "outputSha256": "sha256:022a514adddc8c6f1f45874c9696d5eee2d03bccdf5a3d8b822fcd901e38d471",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuScene3DTestHelper.ts",
           "usesOpaqueHostValues": true
         },
@@ -42784,46 +42810,6 @@
         },
         {
           "declarationNames": [
-            "CachedShadedPlan",
-            "EMPTY_MODIFIER_REGISTRY",
-            "MODIFIER_FLOATS",
-            "ShadedBinding",
-            "ShadedModifierPlan",
-            "VALUE_NOISE_WGSL",
-            "_color",
-            "animatedNormalWgpuModifierSnippet",
-            "assembleWgpuShadedModuleSource",
-            "bindWgpuShadedSurface",
-            "buildModifierPlan",
-            "buildWgpuShadedCacheKey",
-            "copyColorRgb",
-            "createShadedBinding",
-            "delimitContribution",
-            "dissolveWgpuModifierSnippet",
-            "emissiveWgpuModifierSnippet",
-            "ensureWgpuShadedPipeline",
-            "envReflectWgpuModifierSnippet",
-            "fogWgpuModifierSnippet",
-            "getCachedModifierPlan",
-            "getModifierRegistry",
-            "getWgpuShadedModuleSource",
-            "hasCurrentSnippets",
-            "indent",
-            "registerBuiltInWgpuModifierSnippets",
-            "rimWgpuModifierSnippet",
-            "textureEntryIndex",
-            "toonWgpuModifierSnippet",
-            "vertexDisplaceWgpuModifierSnippet",
-            "writeModifierUniforms"
-          ],
-          "declarations": 31,
-          "module": "wgpu_shaded_prelude",
-          "outputSha256": "sha256:df846055823ac745150445667a11ae577a3c5bf00dede55187e4e7e8fbd6f543",
-          "source": "upstream/packages/scene3d-wgpu/src/wgpuShadedPrelude.ts",
-          "usesOpaqueHostValues": true
-        },
-        {
-          "declarationNames": [
             "SHADOW_DEPTH_WGSL",
             "SHADOW_VERTEX_BUFFER_LAYOUTS",
             "_dynamicOffsets",
@@ -42835,7 +42821,7 @@
           ],
           "declarations": 8,
           "module": "wgpu_shadow_map",
-          "outputSha256": "sha256:0e59eef922c15894b41fdb5e9b7f11834c14bee196b63b0fe0f3e344cd4910bb",
+          "outputSha256": "sha256:b6ac46c11a3e4247e016398d2431b4c372ccd8f489607ef26cb62556a3c9e070",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuShadowMap.ts",
           "usesOpaqueHostValues": true
         },
@@ -42858,7 +42844,7 @@
           ],
           "declarations": 14,
           "module": "wgpu_skin_palette",
-          "outputSha256": "sha256:06481caf7e80f6eef64354183e514c97c719f44d008e25d4ea0edd1c2cdaec7c",
+          "outputSha256": "sha256:40f276e908814e57315f1687254da65754927b429e4ec50db0a35b365ff188c1",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuSkinPalette.ts",
           "usesOpaqueHostValues": true
         },
@@ -42912,7 +42898,7 @@
           ],
           "declarations": 7,
           "module": "wgpu_wireframe_prelude",
-          "outputSha256": "sha256:8f5ec33d1209082bd5f674e40a14ca80aa9bd03f6db638d477b094a860640bfd",
+          "outputSha256": "sha256:0bd452757065179b1e1228c8956ab03812246d66f0678458b1138e1ff2b061cc",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuWireframePrelude.ts",
           "usesOpaqueHostValues": true
         },
@@ -42925,9 +42911,9 @@
           ],
           "declarations": 4,
           "module": "wgpu_wireframe_upload",
-          "outputSha256": "sha256:be56b6d03105222394b71ea5bc530eac26025faddb2818c5dc8b7d1405d0053f",
+          "outputSha256": "sha256:3126e88b6b501cb1f529d6d0e6db185617fb0cc6e4f7ef00e109df3908ff4374",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuWireframeUpload.ts",
-          "usesOpaqueHostValues": true
+          "usesOpaqueHostValues": false
         },
         {
           "declarationNames": [
@@ -42952,14 +42938,12 @@
         "WGPU_CUSTOM_SHADER_USER_VEC4_CAPACITY",
         "WGPU_MESH_FRAGMENT_TAIL",
         "WGPU_PBR_MATERIAL_UNIFORM_FLOATS",
-        "animatedNormalWgpuModifierSnippet",
         "areWgpuScene3DForwardLightSelectionGuardsEnabled",
         "bakeWgpuEnvironmentIbl",
         "beginWgpuMeshDraw",
         "bindWgpuClassicSurface",
         "bindWgpuDebugSurface",
         "bindWgpuMatcapSurface",
-        "bindWgpuShadedSurface",
         "bindWgpuToonSurface",
         "bindWgpuUnlitSurface",
         "bindWgpuUnlitVideoSurface",
@@ -42971,7 +42955,6 @@
         "buildWgpuPbrDefineKey",
         "buildWgpuPbrDefineSource",
         "buildWgpuPbrStandardDefineKey",
-        "buildWgpuShadedCacheKey",
         "buildWgpuToonDefineKey",
         "buildWgpuUnlitDefineKey",
         "compileWgpuClassicPipeline",
@@ -42986,13 +42969,11 @@
         "destroyWgpuScene3DIbl",
         "destroyWgpuScene3DShadow",
         "destroyWgpuSkinPalette",
-        "dissolveWgpuModifierSnippet",
         "drawWgpuEnvironmentSkybox",
         "drawWgpuScene3D",
         "drawWgpuScene3DParticleEmitter3Ds",
         "drawWgpuScene3DShadowMap",
         "emissiveWgpuMeshMaterialRenderer",
-        "emissiveWgpuModifierSnippet",
         "enableWgpuScene3DForwardLightSelectionGuards",
         "ensureWgpuClassicPipeline",
         "ensureWgpuDebugPipeline",
@@ -43001,7 +42982,6 @@
         "ensureWgpuMeshUpload",
         "ensureWgpuPbrMaterialBindGroup",
         "ensureWgpuPbrPipeline",
-        "ensureWgpuShadedPipeline",
         "ensureWgpuShadowSampleLayout",
         "ensureWgpuSkinDrawBindGroup",
         "ensureWgpuSkinDrawLayout",
@@ -43009,10 +42989,8 @@
         "ensureWgpuUnlitPipeline",
         "ensureWgpuWireframePipeline",
         "ensureWgpuWireframeUpload",
-        "envReflectWgpuModifierSnippet",
         "explainWgpuScene3DCoverage",
         "explainWgpuScene3DForwardLightSelection",
-        "fogWgpuModifierSnippet",
         "getWgpuClassicModuleSourceForKey",
         "getWgpuClassicSharedSamplerModuleSourceForKey",
         "getWgpuDebugModuleSourceForKey",
@@ -43024,7 +43002,6 @@
         "getWgpuScene3DRuntime",
         "getWgpuScene3DTime",
         "getWgpuShadedBaseFlags",
-        "getWgpuShadedModuleSource",
         "getWgpuSkinningAdapter",
         "getWgpuToonModuleSourceForKey",
         "getWgpuUnlitModuleSourceForKey",
@@ -43060,18 +43037,15 @@
         "registerWgpuWireframeMaterial",
         "resolveWgpuMeshMaterialRenderer",
         "resolveWgpuModifierSnippet",
-        "rimWgpuModifierSnippet",
         "setWgpuScene3DTime",
         "shadedWgpuMeshMaterialRenderer",
         "specularGlossinessPbrWgpuMeshMaterialRenderer",
         "standardPbrWgpuMeshMaterialRenderer",
         "toonWgpuMeshMaterialRenderer",
-        "toonWgpuModifierSnippet",
         "unlitWgpuMeshMaterialRenderer",
         "updateWgpuEnvironmentCubeFace",
         "uploadWgpuSkinPalette",
         "vertexColorWgpuMeshMaterialRenderer",
-        "vertexDisplaceWgpuModifierSnippet",
         "wireframeWgpuMeshMaterialRenderer",
         "writeWgpuDrawUniform",
         "writeWgpuPbrMaterialUniform",
@@ -43081,12 +43055,17 @@
         "SHADOW_DEPTH_FORMAT",
         "WGPU_DIRECTIONAL_SHADOW_WGSL",
         "WGPU_MESH_PRELUDE_WGSL",
+        "animatedNormalWgpuModifierSnippet",
         "areWgpuScene3DCustomShaderGuardsEnabled",
+        "bindWgpuShadedSurface",
         "buildWgpuMaterialBindGroup",
         "buildWgpuPerMapMaterialBindGroup",
+        "buildWgpuShadedCacheKey",
         "createWgpuMeshPipeline",
         "customShaderWgpuMeshMaterialRenderer",
+        "dissolveWgpuModifierSnippet",
         "drawWgpuMeshSubset",
+        "emissiveWgpuModifierSnippet",
         "enableWgpuScene3DCustomShaderGuards",
         "ensureWgpuFrameBindGroup",
         "ensureWgpuIblSampleBindGroup",
@@ -43098,16 +43077,23 @@
         "ensureWgpuPlaceholderTextureView",
         "ensureWgpuScene3DLayouts",
         "ensureWgpuScene3DPipeline",
+        "ensureWgpuShadedPipeline",
         "ensureWgpuShadowSampleBindGroup",
+        "envReflectWgpuModifierSnippet",
+        "fogWgpuModifierSnippet",
         "getWgpuCustomMaterialShaderSource",
         "getWgpuMaterialSampler",
         "getWgpuMeshPreludeWgsl",
+        "getWgpuShadedModuleSource",
         "isWgpuMaterialBindGroupRebuildNeeded",
         "isWgpuTextureReady",
         "resolveWgpuMaterialTextureView",
+        "rimWgpuModifierSnippet",
         "runWgpuCustomShaderGuards",
         "spliceWgpuColorAdjustmentPrelude",
         "stashWgpuUvTransform",
+        "toonWgpuModifierSnippet",
+        "vertexDisplaceWgpuModifierSnippet",
         "wgpuPerMapMaterialBindGroupNeedsRebuild",
         "writeWgpuFrameUniform"
       ],
@@ -51188,7 +51174,7 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:8ea081df761851caeac2d030545e41367801b362d4dda1c581e3e100e72360fd",
-          "reason": "formatShapeJson: JSON.stringify requires a portable scalar or structural array",
+          "reason": "formatShapeJson: portable value conversion requires a statically recoverable source type",
           "source": "upstream/packages/shape-formats/src/shapeJson.ts",
           "stage": "emission"
         }
@@ -52197,36 +52183,43 @@
       "blockers": [
         {
           "diagnostics": [],
+          "fingerprint": "sha256:1870fa23cd3b65a78eec9eb14c34bfb631dc82c65d7e9486500da151468e0b98",
+          "reason": "Generated crate is missing 2 of 55 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.",
+          "source": "upstream/packages/skeleton2d/src",
+          "stage": "package"
+        },
+        {
+          "diagnostics": [],
           "fingerprint": "sha256:3e88196d1d9982f7c9eb285d4c1c60d0a73c57e8716482d54949f0663fd017f5",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (5 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (4 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/skeleton2d/src/deformAnimationTarget2D.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:9b5eb7c73c4fa2a87aae232094862f25209ba340183c8e620209017eaef17e7e",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (5 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (4 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/skeleton2d/src/enableSkeleton2DGuards.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:11b75158ef95f4a45f095ab0fbde570d9b67c3993c1b3bf85b09b2c0372a5744",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (5 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "cloneSkeleton2D: portable field name cannot distinguish an omitted property from explicit null",
           "source": "upstream/packages/skeleton2d/src/skeleton2d.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:abf29ecf122d55c1d1d5b9f24ba9b35adf9e64e3382a3fc6fec2ea966479b7dd",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (5 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (4 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/skeleton2d/src/skeleton2dAnimationTarget.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:5dfa252e192ffd4c73c330e5b056e0327d77cb337dc85f48d435b329f5cbe477",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (5 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (4 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/skeleton2d/src/skeleton2dDrawOrderTarget.ts",
           "stage": "emission"
         }
@@ -52281,7 +52274,7 @@
           ],
           "declarations": 1,
           "module": "apply_animation_clip_to_skeleton2_d",
-          "outputSha256": "sha256:47ed77fc934d9ac0ef91bcc2a25ee319f41dbf714658c79c30e615907b65064f",
+          "outputSha256": "sha256:790ae125c77a6ee1013f67f4e5e4219974c2c303054a42afe97f3dc077abfb8d",
           "source": "upstream/packages/skeleton2d/src/applyAnimationClipToSkeleton2D.ts",
           "usesOpaqueHostValues": false
         },
@@ -52533,7 +52526,6 @@
         "getSkeleton2DBoneWorldMatrix",
         "getSkeleton2DClippingAttachmentSlotRange",
         "getSkeleton2DConstraintSolver",
-        "getSkeleton2DSkin",
         "getSkeleton2DSlotDeformOffsets",
         "isSkeleton2DSteppedChannelSubject",
         "registerSkeleton2DAnimationTargetBinder",
@@ -52548,7 +52540,6 @@
         "setSkeleton2DBindPose",
         "setSkeleton2DCoercedInterpolationGuard",
         "setSkeleton2DDeformLengthGuard",
-        "setSkeleton2DSkin",
         "setSkeleton2DSlotDeform",
         "skinSkeleton2DAttachmentPoints",
         "solveSkeleton2DConstraints",
@@ -52560,17 +52551,16 @@
         "unregisterSkeleton2DDrawOrderAnimationBinder",
         "validateSkeleton2D"
       ],
-      "missingExports": [],
+      "missingExports": [
+        "getSkeleton2DSkin",
+        "setSkeleton2DSkin"
+      ],
       "package": "@flighthq/skeleton2d",
       "promotedTarget": false,
       "requiredDependencies": [
         {
           "crate": "flighthq-animation",
           "package": "@flighthq/animation"
-        },
-        {
-          "crate": "flighthq-entity",
-          "package": "@flighthq/entity"
         },
         {
           "crate": "flighthq-geometry",
@@ -52961,7 +52951,7 @@
           ],
           "declarations": 4,
           "module": "capture_snapshot",
-          "outputSha256": "sha256:2c2dfe75bfc8e2cbebcf92845aa15510207c69af6354ed6951ffe209af666c22",
+          "outputSha256": "sha256:f8bc86c6fe1ab35f5eb801da6cd8039756541d1824637fe26c8ce99b323d2970",
           "source": "upstream/packages/snapshot/src/captureSnapshot.ts",
           "usesOpaqueHostValues": true
         },
@@ -52980,7 +52970,7 @@
           ],
           "declarations": 2,
           "module": "equals_snapshot",
-          "outputSha256": "sha256:7547c675616f65b151c5a0aa4f7e3b61ffe16e2e76914b728a3e3d626ba6adcd",
+          "outputSha256": "sha256:e0f0b17811541c2f1d807a3c1a5021fba77cc0c668b50ce4cf7fca0e6c77d6f8",
           "source": "upstream/packages/snapshot/src/equalsSnapshot.ts",
           "usesOpaqueHostValues": true
         },
@@ -53002,7 +52992,7 @@
           ],
           "declarations": 5,
           "module": "interpolate_snapshots",
-          "outputSha256": "sha256:a457fdb8ba3c8049d9cf84a6f8957db65cacd3871eb1e0e81304964fb4b15d78",
+          "outputSha256": "sha256:e2a9a2a94d9fc6d53ce09e76f8e5c6778920c011f852faaaf84df679b489fc9d",
           "source": "upstream/packages/snapshot/src/interpolateSnapshots.ts",
           "usesOpaqueHostValues": true
         },
@@ -53014,7 +53004,7 @@
           ],
           "declarations": 3,
           "module": "restore_snapshot",
-          "outputSha256": "sha256:6dc41b432cf2c76d5eebd179aa583e84158cf252bf67560f0483ab86602fa0fc",
+          "outputSha256": "sha256:e525c96e34345f99603fff8e24edb5f5ece87a05a8f8114498d7bce7540eb9c7",
           "source": "upstream/packages/snapshot/src/restoreSnapshot.ts",
           "usesOpaqueHostValues": true
         }
@@ -53507,7 +53497,7 @@
           ],
           "declarations": 3,
           "module": "spritesheet",
-          "outputSha256": "sha256:640c8eda7f6af5fbe156c6d811cc439b493b4e0f635485d4c376df01b1a1ca2b",
+          "outputSha256": "sha256:d903e73bbb85f4dd66f3ce7ef7171c4f62eff09ac8dc6f7f41937608facef65e",
           "source": "upstream/packages/spritesheet/src/spritesheet.ts",
           "usesOpaqueHostValues": true
         },
@@ -53551,7 +53541,7 @@
           ],
           "declarations": 2,
           "module": "spritesheet_from",
-          "outputSha256": "sha256:6ac1bd0765166e817a58438751ce3d9984cd3c40a250069ae82e8bda893973b5",
+          "outputSha256": "sha256:0e53f8608e707273b1ac503ae89a7c8b533e9b588483e9d302690f8e5412bb8c",
           "source": "upstream/packages/spritesheet/src/spritesheetFrom.ts",
           "usesOpaqueHostValues": true
         },
@@ -53668,14 +53658,14 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:114ee2c9a13424efaedea062770885c834614364d91fc42e567494b27631c230",
-          "reason": "serializeAsepriteSpritesheet: JSON.stringify requires a portable scalar or structural array",
+          "reason": "serializeAsepriteSpritesheet: JSON.stringify replacer and spacing arguments are not implemented",
           "source": "upstream/packages/spritesheet-formats/src/asepriteSerialize.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:89338385e799a3c4e29a238562620847e1ebcf868e078cb29791ff0864d7b107",
-          "reason": "serializeTexturePackerSpritesheet: JSON.stringify requires a portable scalar or structural array",
+          "reason": "serializeTexturePackerSpritesheet: JSON.stringify replacer and spacing arguments are not implemented",
           "source": "upstream/packages/spritesheet-formats/src/texturePackerSerialize.ts",
           "stage": "emission"
         }
@@ -53724,7 +53714,7 @@
           ],
           "declarations": 7,
           "module": "aseprite_parse",
-          "outputSha256": "sha256:fd1b20758009433738ab659df4e6c357207cbbc2484139dbb6d2633778b3eeb9",
+          "outputSha256": "sha256:15bf5104d33dab38ee52fd24b5ce0c6942271473dd24d8fb7f0392494ad55c9d",
           "source": "upstream/packages/spritesheet-formats/src/asepriteParse.ts",
           "usesOpaqueHostValues": true
         },
@@ -53791,7 +53781,7 @@
           ],
           "declarations": 8,
           "module": "libgdx_atlas_parse",
-          "outputSha256": "sha256:2491f77f5c63460e2decc8b68f9b637cdb32d6bf54f063bca1858099810bb956",
+          "outputSha256": "sha256:6220e4bb86916a8a25bea21c00b06a200f5f9750f55f56865d3ff3f6b65f493f",
           "source": "upstream/packages/spritesheet-formats/src/libgdxAtlasParse.ts",
           "usesOpaqueHostValues": true
         },
@@ -53843,7 +53833,7 @@
           ],
           "declarations": 4,
           "module": "starling_serialize",
-          "outputSha256": "sha256:39f2520b83f7e997fc383e0b3e41e2e9e053593e6ff3a80d82a106eaed75d1b1",
+          "outputSha256": "sha256:6f63b406834c6f76939eddcc46f0966d66665a3cb193d2065b03d25104e3c114",
           "source": "upstream/packages/spritesheet-formats/src/starlingSerialize.ts",
           "usesOpaqueHostValues": true
         },
@@ -53859,7 +53849,7 @@
           ],
           "declarations": 7,
           "module": "texture_packer_parse",
-          "outputSha256": "sha256:750aee677bfaf28201687b33b5c515752a1caa9f99aac62bbd5dbc00c66a6062",
+          "outputSha256": "sha256:c83af8e01e319cbec59903cbcf00394527d57a06ff14916482f1472a5a8c8b1b",
           "source": "upstream/packages/spritesheet-formats/src/texturePackerParse.ts",
           "usesOpaqueHostValues": true
         }
@@ -54143,7 +54133,7 @@
           "package": "@flighthq/storage",
           "source": "upstream/packages/storage/src/storage.ts",
           "disposition": "unsupported",
-          "reason": "Portable task Rust lowering is not implemented."
+          "reason": "Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution."
         }
       ],
       "taskConstructions": [
@@ -54163,7 +54153,7 @@
             "kind": "nullable"
           },
           "package": "@flighthq/storage",
-          "reason": "Portable task Rust lowering is not implemented.",
+          "reason": "Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.",
           "source": "upstream/packages/storage/src/storage.ts"
         }
       ],
@@ -54179,7 +54169,7 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:653d87178fbe9fbc51041b4b2da01e65d51325174bac7cf0054695f616c7937d",
-          "reason": "setStorageJSON: JSON.stringify requires a portable scalar or structural array",
+          "reason": "Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.",
           "source": "upstream/packages/storage/src/storage.ts",
           "stage": "emission"
         }
@@ -54704,7 +54694,7 @@
           ],
           "declarations": 58,
           "module": "rich_text",
-          "outputSha256": "sha256:6a804340cce8f6040845ce9adfd76b14a45b85cbaed25eaaa25fb404731fe9fe",
+          "outputSha256": "sha256:4a7651c052b11fa145edb6a7f5d004c7a8362f7e6c907c0f786afff279e648f1",
           "source": "upstream/packages/text/src/richText.ts",
           "usesOpaqueHostValues": true
         },
@@ -55308,7 +55298,7 @@
           ],
           "declarations": 57,
           "module": "text_input_editing",
-          "outputSha256": "sha256:c7052b3ae64ace7d2985028fa7a3347f2100af74b52266f6951baf2f7fe706ff",
+          "outputSha256": "sha256:5d2e2a469162ae3d2e6c9211dcf6c87dfd981d717bb7fcf7a9cf9c2d8f8ba2c4",
           "source": "upstream/packages/textinput/src/textInputEditing.ts",
           "usesOpaqueHostValues": true
         },
@@ -55527,7 +55517,7 @@
           ],
           "declarations": 15,
           "module": "rich_text_query",
-          "outputSha256": "sha256:e034e17568e01a5e204abc6dd1245b36691a81c3b555e8eff6176828a88e2ce8",
+          "outputSha256": "sha256:2d5069f0ef9fb05cb1e0842c3194a6105dec4733e4be2f41bf4b519d2420eac1",
           "source": "upstream/packages/textlayout/src/richTextQuery.ts",
           "usesOpaqueHostValues": true
         },
@@ -56097,7 +56087,7 @@
           ],
           "declarations": 5,
           "module": "canvas_text_shaper",
-          "outputSha256": "sha256:9dd61e8c04ef0bc4157ac3a0b81edb12fcdfd5d9c786397874da2535df261e59",
+          "outputSha256": "sha256:05ba9b0c6ee02c0b6deaaceb8f9b0d5ce5dedef31e26bd20e72cf2a956ed8688",
           "source": "upstream/packages/textshaper-canvas/src/canvasTextShaper.ts",
           "usesOpaqueHostValues": true
         },
@@ -56731,7 +56721,7 @@
           ],
           "declarations": 5,
           "module": "enable_texture_atlas_guards",
-          "outputSha256": "sha256:7ad3b3637bb85a476acfe79fc5a73f6a8197ff7b8c2d2318abaa0033b9a20aa4",
+          "outputSha256": "sha256:b69ace57a269f2cc4c19f5637f410f65a462aaa481d431f0e24a301b66c471ab",
           "source": "upstream/packages/textureatlas/src/enableTextureAtlasGuards.ts",
           "usesOpaqueHostValues": true
         },
@@ -56799,7 +56789,7 @@
           ],
           "declarations": 29,
           "module": "texture_atlas_region",
-          "outputSha256": "sha256:b297a1e75bcbdd16e85cad0dab74d3ee26bccaa018a161aa99977f893efab87d",
+          "outputSha256": "sha256:e5d9faa49dfb39b7615f1a04a9a373d5ccd901a70ebf55f92239786dfd97931a",
           "source": "upstream/packages/textureatlas/src/textureAtlasRegion.ts",
           "usesOpaqueHostValues": false
         }
@@ -56950,7 +56940,7 @@
           ],
           "declarations": 16,
           "module": "texture_atlas_detect",
-          "outputSha256": "sha256:5bbfc1346d964cc580c7aba572568cf6a3fa98b26b3afea9388075bc47d3f32b",
+          "outputSha256": "sha256:973289eaa784881493516febb4cb0a329b06f2d043dc01a6c6443dc6df1620fc",
           "source": "upstream/packages/textureatlas-formats/src/textureAtlasDetect.ts",
           "usesOpaqueHostValues": true
         },
@@ -57302,7 +57292,7 @@
           },
           {
             "code": "E0609",
-            "message": "no field `set` on type `Option<Vec<(f64, Arc<std::sync::Mutex<Box<(dyn FnMut(Node2D, f64) + Send + 'static)>>>)>>`",
+            "message": "no field `set` on type `Option<Vec<(f64, Arc<Mutex<Box<...>>>)>>`",
             "source": "generated/candidates/flighthq-timeline/src/timeline.rs"
           },
           {
@@ -57332,7 +57322,7 @@
           },
           {
             "code": "E0599",
-            "message": "no method named `unwrap` found for reference `&std::sync::Mutex<Box<(dyn FnMut(Node2D, f64) + Send + 'static)>>` in the current scope",
+            "message": "no method named `unwrap` found for reference `&Mutex<Box<dyn FnMut(..., f64) + Send>>` in the current scope",
             "source": "generated/candidates/flighthq-timeline/src/timeline.rs"
           },
           {
@@ -68472,7 +68462,7 @@
           ],
           "declarations": 9,
           "module": "user_agent",
-          "outputSha256": "sha256:0317e6a406c45e0919c94de08b08e946c9f8ce16f69becbfb8a5cbb727f6c2aa",
+          "outputSha256": "sha256:b8c23a8c98be2f9a568ac6495277784929135566b38345d0f83b633397d66125",
           "source": "upstream/packages/useragent/src/userAgent.ts",
           "usesOpaqueHostValues": true
         },
@@ -69004,12 +68994,12 @@
           },
           {
             "code": "E0599",
-            "message": "no method named `is_some` found for enum `OpaqueHostValue` in the current scope",
+            "message": "no method named `is_some` found for enum `FlightValue` in the current scope",
             "source": "generated/candidates/flighthq-xml/src/xml_parse.rs"
           },
           {
             "code": "E0277",
-            "message": "can't compare `std::string::String` with `OpaqueHostValue`",
+            "message": "can't compare `std::string::String` with `FlightValue`",
             "source": "generated/candidates/flighthq-xml/src/xml_parse.rs"
           },
           {
@@ -69650,7 +69640,7 @@
     "excluded": 1,
     "hostBound": 4,
     "packages": 143,
-    "sourceBlockers": 449
+    "sourceBlockers": 451
   },
   "targets": [
     {

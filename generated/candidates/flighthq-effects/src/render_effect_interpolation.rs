@@ -47,17 +47,27 @@ pub fn lerp_render_effect(
             .clone();
         if (match &(va) {
             crate::OpaqueHostValue::Undefined => "undefined",
-            crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
+            crate::OpaqueHostValue::Null
+            | crate::OpaqueHostValue::Array(_)
+            | crate::OpaqueHostValue::Record(_)
+            | crate::OpaqueHostValue::Object => "object",
             crate::OpaqueHostValue::Bool(_) => "boolean",
             crate::OpaqueHostValue::Number(_) => "number",
             crate::OpaqueHostValue::String(_) => "string",
+            crate::OpaqueHostValue::Function => "function",
+            crate::OpaqueHostValue::Symbol => "symbol",
         } == "number")
             || (match &(vb) {
                 crate::OpaqueHostValue::Undefined => "undefined",
-                crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
+                crate::OpaqueHostValue::Null
+                | crate::OpaqueHostValue::Array(_)
+                | crate::OpaqueHostValue::Record(_)
+                | crate::OpaqueHostValue::Object => "object",
                 crate::OpaqueHostValue::Bool(_) => "boolean",
                 crate::OpaqueHostValue::Number(_) => "number",
                 crate::OpaqueHostValue::String(_) => "string",
+                crate::OpaqueHostValue::Function => "function",
+                crate::OpaqueHostValue::Symbol => "symbol",
             } == "number")
         {
             {
@@ -69,17 +79,27 @@ pub fn lerp_render_effect(
         } else {
             if (match &(va) {
                 crate::OpaqueHostValue::Undefined => "undefined",
-                crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
+                crate::OpaqueHostValue::Null
+                | crate::OpaqueHostValue::Array(_)
+                | crate::OpaqueHostValue::Record(_)
+                | crate::OpaqueHostValue::Object => "object",
                 crate::OpaqueHostValue::Bool(_) => "boolean",
                 crate::OpaqueHostValue::Number(_) => "number",
                 crate::OpaqueHostValue::String(_) => "string",
+                crate::OpaqueHostValue::Function => "function",
+                crate::OpaqueHostValue::Symbol => "symbol",
             } == "boolean")
                 || (match &(vb) {
                     crate::OpaqueHostValue::Undefined => "undefined",
-                    crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
+                    crate::OpaqueHostValue::Null
+                    | crate::OpaqueHostValue::Array(_)
+                    | crate::OpaqueHostValue::Record(_)
+                    | crate::OpaqueHostValue::Object => "object",
                     crate::OpaqueHostValue::Bool(_) => "boolean",
                     crate::OpaqueHostValue::Number(_) => "number",
                     crate::OpaqueHostValue::String(_) => "string",
+                    crate::OpaqueHostValue::Function => "function",
+                    crate::OpaqueHostValue::Symbol => "symbol",
                 } == "boolean")
             {
                 {
@@ -91,17 +111,27 @@ pub fn lerp_render_effect(
             } else {
                 if (match &(va) {
                     crate::OpaqueHostValue::Undefined => "undefined",
-                    crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
+                    crate::OpaqueHostValue::Null
+                    | crate::OpaqueHostValue::Array(_)
+                    | crate::OpaqueHostValue::Record(_)
+                    | crate::OpaqueHostValue::Object => "object",
                     crate::OpaqueHostValue::Bool(_) => "boolean",
                     crate::OpaqueHostValue::Number(_) => "number",
                     crate::OpaqueHostValue::String(_) => "string",
+                    crate::OpaqueHostValue::Function => "function",
+                    crate::OpaqueHostValue::Symbol => "symbol",
                 } == "string")
                     || (match &(vb) {
                         crate::OpaqueHostValue::Undefined => "undefined",
-                        crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
+                        crate::OpaqueHostValue::Null
+                        | crate::OpaqueHostValue::Array(_)
+                        | crate::OpaqueHostValue::Record(_)
+                        | crate::OpaqueHostValue::Object => "object",
                         crate::OpaqueHostValue::Bool(_) => "boolean",
                         crate::OpaqueHostValue::Number(_) => "number",
                         crate::OpaqueHostValue::String(_) => "string",
+                        crate::OpaqueHostValue::Function => "function",
+                        crate::OpaqueHostValue::Symbol => "symbol",
                     } == "string")
                 {
                     {
@@ -130,10 +160,15 @@ pub fn lerp_render_effect(
                 .clone();
             if (match &(vb) {
                 crate::OpaqueHostValue::Undefined => "undefined",
-                crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
+                crate::OpaqueHostValue::Null
+                | crate::OpaqueHostValue::Array(_)
+                | crate::OpaqueHostValue::Record(_)
+                | crate::OpaqueHostValue::Object => "object",
                 crate::OpaqueHostValue::Bool(_) => "boolean",
                 crate::OpaqueHostValue::Number(_) => "number",
                 crate::OpaqueHostValue::String(_) => "string",
+                crate::OpaqueHostValue::Function => "function",
+                crate::OpaqueHostValue::Symbol => "symbol",
             } == "number")
             {
                 {
@@ -145,10 +180,15 @@ pub fn lerp_render_effect(
             } else {
                 if (match &(vb) {
                     crate::OpaqueHostValue::Undefined => "undefined",
-                    crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
+                    crate::OpaqueHostValue::Null
+                    | crate::OpaqueHostValue::Array(_)
+                    | crate::OpaqueHostValue::Record(_)
+                    | crate::OpaqueHostValue::Object => "object",
                     crate::OpaqueHostValue::Bool(_) => "boolean",
                     crate::OpaqueHostValue::Number(_) => "number",
                     crate::OpaqueHostValue::String(_) => "string",
+                    crate::OpaqueHostValue::Function => "function",
+                    crate::OpaqueHostValue::Symbol => "symbol",
                 } == "boolean")
                 {
                     {
@@ -160,10 +200,15 @@ pub fn lerp_render_effect(
                 } else {
                     if (match &(vb) {
                         crate::OpaqueHostValue::Undefined => "undefined",
-                        crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
+                        crate::OpaqueHostValue::Null
+                        | crate::OpaqueHostValue::Array(_)
+                        | crate::OpaqueHostValue::Record(_)
+                        | crate::OpaqueHostValue::Object => "object",
                         crate::OpaqueHostValue::Bool(_) => "boolean",
                         crate::OpaqueHostValue::Number(_) => "number",
                         crate::OpaqueHostValue::String(_) => "string",
+                        crate::OpaqueHostValue::Function => "function",
+                        crate::OpaqueHostValue::Symbol => "symbol",
                     } == "string")
                     {
                         {
@@ -196,16 +241,24 @@ pub fn lerp_render_effect(
                 .iter()
                 .find(|(key, _)| key == &key)
                 .map(|(_, value)| value)
-                .expect("TypeScript Record key was absent") = (va + ((vb - va) * tc));
+                .expect("TypeScript Record key was absent") = {
+                let __flight_portable_source = (va + ((vb - va) * tc));
+                match (&__flight_portable_source).as_ref() {
+                    Some(value) => crate::FlightValue::Number(*(value) as f64),
+                    None => crate::FlightValue::Null,
+                }
+            };
         } else {
             out_record
                 .iter()
                 .find(|(key, _)| key == &key)
                 .map(|(_, value)| value)
-                .expect("TypeScript Record key was absent") = if (tc < 0.5_f64) {
-                (va).clone().unwrap()
-            } else {
-                (vb).clone().unwrap()
+                .expect("TypeScript Record key was absent") = {
+                let __flight_portable_source = if (tc < 0.5_f64) { va } else { vb };
+                match (&__flight_portable_source).as_ref() {
+                    Some(value) => crate::FlightValue::Number(*(value) as f64),
+                    None => crate::FlightValue::Null,
+                }
             };
         }
     }

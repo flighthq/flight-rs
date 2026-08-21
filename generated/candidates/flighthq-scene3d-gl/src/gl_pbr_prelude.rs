@@ -552,7 +552,10 @@ fn compose_gl_pbr_extension_source(
             .cloned()
             .map(
                 |value: GlPbrExtensionShaderContribution| -> crate::OpaqueHostValue {
-                    (value.fragment_declarations).clone()
+                    {
+                        let __flight_portable_source = (value.fragment_declarations).clone();
+                        crate::FlightValue::String((&__flight_portable_source).clone())
+                    }
                 },
             )
             .collect()
@@ -565,7 +568,10 @@ fn compose_gl_pbr_extension_source(
             .cloned()
             .map(
                 |value: GlPbrExtensionShaderContribution| -> crate::OpaqueHostValue {
-                    (value.fragment_functions).clone()
+                    {
+                        let __flight_portable_source = (value.fragment_functions).clone();
+                        crate::FlightValue::String((&__flight_portable_source).clone())
+                    }
                 },
             )
             .collect()
@@ -578,7 +584,10 @@ fn compose_gl_pbr_extension_source(
             .cloned()
             .map(
                 |value: GlPbrExtensionShaderContribution| -> crate::OpaqueHostValue {
-                    (value.apply_surface).clone()
+                    {
+                        let __flight_portable_source = (value.apply_surface).clone();
+                        crate::FlightValue::String((&__flight_portable_source).clone())
+                    }
                 },
             )
             .collect()
@@ -591,7 +600,10 @@ fn compose_gl_pbr_extension_source(
             .cloned()
             .map(
                 |value: GlPbrExtensionShaderContribution| -> crate::OpaqueHostValue {
-                    (value.contribute_punctual).clone()
+                    {
+                        let __flight_portable_source = (value.contribute_punctual).clone();
+                        crate::FlightValue::String((&__flight_portable_source).clone())
+                    }
                 },
             )
             .collect()
@@ -604,7 +616,10 @@ fn compose_gl_pbr_extension_source(
             .cloned()
             .map(
                 |value: GlPbrExtensionShaderContribution| -> crate::OpaqueHostValue {
-                    (value.contribute_ibl).clone()
+                    {
+                        let __flight_portable_source = (value.contribute_ibl).clone();
+                        crate::FlightValue::String((&__flight_portable_source).clone())
+                    }
                 },
             )
             .collect()
@@ -617,7 +632,10 @@ fn compose_gl_pbr_extension_source(
             .cloned()
             .map(
                 |value: GlPbrExtensionShaderContribution| -> crate::OpaqueHostValue {
-                    (value.finalize).clone()
+                    {
+                        let __flight_portable_source = (value.finalize).clone();
+                        crate::FlightValue::String((&__flight_portable_source).clone())
+                    }
                 },
             )
             .collect()

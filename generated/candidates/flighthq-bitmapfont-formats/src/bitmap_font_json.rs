@@ -87,10 +87,15 @@ fn parse_bitmap_font_json_record(text: String) -> Option<BitmapFontRecord> {
                     __flight_identity: std::sync::Arc::new(()),
                     file: if (match &((file).clone()) {
                         crate::OpaqueHostValue::Undefined => "undefined",
-                        crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
+                        crate::OpaqueHostValue::Null
+                        | crate::OpaqueHostValue::Array(_)
+                        | crate::OpaqueHostValue::Record(_)
+                        | crate::OpaqueHostValue::Object => "object",
                         crate::OpaqueHostValue::Bool(_) => "boolean",
                         crate::OpaqueHostValue::Number(_) => "number",
                         crate::OpaqueHostValue::String(_) => "string",
+                        crate::OpaqueHostValue::Function => "function",
+                        crate::OpaqueHostValue::Symbol => "symbol",
                     } == "string")
                     {
                         (file).clone()
@@ -135,10 +140,15 @@ fn parse_bitmap_font_json_record(text: String) -> Option<BitmapFontRecord> {
 fn is_object(value: crate::OpaqueHostValue) -> bool {
     return ((match &(value) {
         crate::OpaqueHostValue::Undefined => "undefined",
-        crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
+        crate::OpaqueHostValue::Null
+        | crate::OpaqueHostValue::Array(_)
+        | crate::OpaqueHostValue::Record(_)
+        | crate::OpaqueHostValue::Object => "object",
         crate::OpaqueHostValue::Bool(_) => "boolean",
         crate::OpaqueHostValue::Number(_) => "number",
         crate::OpaqueHostValue::String(_) => "string",
+        crate::OpaqueHostValue::Function => "function",
+        crate::OpaqueHostValue::Symbol => "symbol",
     } == "object")
         && ((value).is_some()))
         && (!false);
@@ -214,10 +224,15 @@ fn read_json_kerning(raw: crate::OpaqueHostValue) -> Option<BitmapFontKerningRec
 fn read_json_number(value: crate::OpaqueHostValue) -> Option<f64> {
     return if (match &(value) {
         crate::OpaqueHostValue::Undefined => "undefined",
-        crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object",
+        crate::OpaqueHostValue::Null
+        | crate::OpaqueHostValue::Array(_)
+        | crate::OpaqueHostValue::Record(_)
+        | crate::OpaqueHostValue::Object => "object",
         crate::OpaqueHostValue::Bool(_) => "boolean",
         crate::OpaqueHostValue::Number(_) => "number",
         crate::OpaqueHostValue::String(_) => "string",
+        crate::OpaqueHostValue::Function => "function",
+        crate::OpaqueHostValue::Symbol => "symbol",
     } == "number")
         && ((value).is_finite())
     {

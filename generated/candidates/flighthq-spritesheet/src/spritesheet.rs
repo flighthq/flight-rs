@@ -45,15 +45,56 @@ pub fn clone_spritesheet(spritesheet: &Spritesheet) -> Spritesheet {
         .iter()
         .cloned()
         .map(|f: SpritesheetFrame| -> crate::OpaqueHostValue {
-            create_spritesheet_frame(Some(FlightPartialRecord2 {
-                __flight_identity: std::sync::Arc::new(()),
-                id: Some(f.id),
-                offset_x: Some(f.offset_x),
-                offset_y: Some(f.offset_y),
-                pivot_x: f.pivot_x,
-                pivot_y: f.pivot_y,
-                rotated: Some(f.rotated),
-            }))
+            {
+                let __flight_portable_source =
+                    create_spritesheet_frame(Some(FlightPartialRecord2 {
+                        __flight_identity: std::sync::Arc::new(()),
+                        id: Some(f.id),
+                        offset_x: Some(f.offset_x),
+                        offset_y: Some(f.offset_y),
+                        pivot_x: f.pivot_x,
+                        pivot_y: f.pivot_y,
+                        rotated: Some(f.rotated),
+                    }));
+                crate::FlightValue::Record({
+                    let mut __flight_record = Vec::new();
+                    __flight_record.push((
+                        "id".to_owned(),
+                        crate::FlightValue::Number(*(&((&__flight_portable_source).id)) as f64),
+                    ));
+                    __flight_record.push((
+                        "offsetX".to_owned(),
+                        crate::FlightValue::Number(
+                            *(&((&__flight_portable_source).offset_x)) as f64,
+                        ),
+                    ));
+                    __flight_record.push((
+                        "offsetY".to_owned(),
+                        crate::FlightValue::Number(
+                            *(&((&__flight_portable_source).offset_y)) as f64,
+                        ),
+                    ));
+                    __flight_record.push((
+                        "pivotX".to_owned(),
+                        match (&((&__flight_portable_source).pivot_x)).as_ref() {
+                            Some(value) => crate::FlightValue::Number(*(value) as f64),
+                            None => crate::FlightValue::Null,
+                        },
+                    ));
+                    __flight_record.push((
+                        "pivotY".to_owned(),
+                        match (&((&__flight_portable_source).pivot_y)).as_ref() {
+                            Some(value) => crate::FlightValue::Number(*(value) as f64),
+                            None => crate::FlightValue::Null,
+                        },
+                    ));
+                    __flight_record.push((
+                        "rotated".to_owned(),
+                        crate::FlightValue::Bool(*(&((&__flight_portable_source).rotated))),
+                    ));
+                    __flight_record
+                })
+            }
         })
         .collect();
     return create_entity(Some(Spritesheet {

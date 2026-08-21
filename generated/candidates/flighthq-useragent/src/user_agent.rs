@@ -425,7 +425,11 @@ pub fn parse_user_agent_runtime(
             crate::OpaqueHostValue::Bool(value) => *value,
             crate::OpaqueHostValue::Number(value) => *value != 0.0_f64 && !value.is_nan(),
             crate::OpaqueHostValue::String(value) => !value.is_empty(),
-            crate::OpaqueHostValue::Object => true,
+            crate::OpaqueHostValue::Array(_)
+            | crate::OpaqueHostValue::Record(_)
+            | crate::OpaqueHostValue::Function
+            | crate::OpaqueHostValue::Symbol
+            | crate::OpaqueHostValue::Object => true,
         })
     {
         return "electron".to_owned();
@@ -442,7 +446,11 @@ pub fn parse_user_agent_runtime(
         crate::OpaqueHostValue::Bool(value) => *value,
         crate::OpaqueHostValue::Number(value) => *value != 0.0_f64 && !value.is_nan(),
         crate::OpaqueHostValue::String(value) => !value.is_empty(),
-        crate::OpaqueHostValue::Object => true,
+        crate::OpaqueHostValue::Array(_)
+        | crate::OpaqueHostValue::Record(_)
+        | crate::OpaqueHostValue::Function
+        | crate::OpaqueHostValue::Symbol
+        | crate::OpaqueHostValue::Object => true,
     } {
         return "tauri".to_owned();
     }
@@ -458,7 +466,11 @@ pub fn parse_user_agent_runtime(
         crate::OpaqueHostValue::Bool(value) => *value,
         crate::OpaqueHostValue::Number(value) => *value != 0.0_f64 && !value.is_nan(),
         crate::OpaqueHostValue::String(value) => !value.is_empty(),
-        crate::OpaqueHostValue::Object => true,
+        crate::OpaqueHostValue::Array(_)
+        | crate::OpaqueHostValue::Record(_)
+        | crate::OpaqueHostValue::Function
+        | crate::OpaqueHostValue::Symbol
+        | crate::OpaqueHostValue::Object => true,
     } {
         return "capacitor".to_owned();
     }

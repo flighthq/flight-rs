@@ -1659,7 +1659,120 @@ fn ensure_bitmap_text_page(
         )));
     } else {
         set_texture_source(
-            ((page_data.atlas.texture).clone()).unwrap(),
+            {
+                let __flight_portable_source = (page_data.atlas.texture).clone();
+                match (&__flight_portable_source).as_ref() {
+                    Some(value) => crate::FlightValue::Record({
+                        let mut __flight_record = Vec::new();
+                        __flight_record.push((
+                            "flipX".to_owned(),
+                            crate::FlightValue::Bool(*(&((value).flip_x))),
+                        ));
+                        __flight_record.push((
+                            "flipY".to_owned(),
+                            crate::FlightValue::Bool(*(&((value).flip_y))),
+                        ));
+                        __flight_record.push((
+                            "uvOffset".to_owned(),
+                            crate::FlightValue::Record({
+                                let mut __flight_record = Vec::new();
+                                __flight_record.push((
+                                    "x".to_owned(),
+                                    crate::FlightValue::Number(
+                                        *(&((&((value).uv_offset)).x)) as f64,
+                                    ),
+                                ));
+                                __flight_record.push((
+                                    "y".to_owned(),
+                                    crate::FlightValue::Number(
+                                        *(&((&((value).uv_offset)).y)) as f64,
+                                    ),
+                                ));
+                                __flight_record
+                            }),
+                        ));
+                        __flight_record.push((
+                            "uvRotation".to_owned(),
+                            crate::FlightValue::Number(*(&((value).uv_rotation)) as f64),
+                        ));
+                        __flight_record.push((
+                            "uvScale".to_owned(),
+                            crate::FlightValue::Record({
+                                let mut __flight_record = Vec::new();
+                                __flight_record.push((
+                                    "x".to_owned(),
+                                    crate::FlightValue::Number(
+                                        *(&((&((value).uv_scale)).x)) as f64,
+                                    ),
+                                ));
+                                __flight_record.push((
+                                    "y".to_owned(),
+                                    crate::FlightValue::Number(
+                                        *(&((&((value).uv_scale)).y)) as f64,
+                                    ),
+                                ));
+                                __flight_record
+                            }),
+                        ));
+                        __flight_record.push((
+                            "colorSpace".to_owned(),
+                            crate::FlightValue::String((&((value).color_space)).clone()),
+                        ));
+                        __flight_record.push((
+                            "sampler".to_owned(),
+                            crate::FlightValue::Record({
+                                let mut __flight_record = Vec::new();
+                                __flight_record.push((
+                                    "anisotropy".to_owned(),
+                                    crate::FlightValue::Number(
+                                        *(&((&((value).sampler)).anisotropy)) as f64,
+                                    ),
+                                ));
+                                __flight_record.push((
+                                    "magFilter".to_owned(),
+                                    crate::FlightValue::String(
+                                        (&((&((value).sampler)).mag_filter)).clone(),
+                                    ),
+                                ));
+                                __flight_record.push((
+                                    "minFilter".to_owned(),
+                                    crate::FlightValue::String(
+                                        (&((&((value).sampler)).min_filter)).clone(),
+                                    ),
+                                ));
+                                __flight_record.push((
+                                    "mipmaps".to_owned(),
+                                    crate::FlightValue::Bool(*(&((&((value).sampler)).mipmaps))),
+                                ));
+                                __flight_record.push((
+                                    "wrapU".to_owned(),
+                                    crate::FlightValue::String(
+                                        (&((&((value).sampler)).wrap_u)).clone(),
+                                    ),
+                                ));
+                                __flight_record.push((
+                                    "wrapV".to_owned(),
+                                    crate::FlightValue::String(
+                                        (&((&((value).sampler)).wrap_v)).clone(),
+                                    ),
+                                ));
+                                __flight_record
+                            }),
+                        ));
+                        __flight_record.push((
+                            "version".to_owned(),
+                            crate::FlightValue::Number(*(&((value).version)) as f64),
+                        ));
+                        __flight_record.push((
+                            "dimension".to_owned(),
+                            crate::FlightValue::String((&((value).dimension)).clone()),
+                        ));
+                        __flight_record.push(("source".to_owned(), match (&((value).source)).as_ref() { Some(value) => crate::FlightValue::Record({ let mut __flight_record = Vec::new(); __flight_record.push(("alphaType".to_owned(), crate::FlightValue::String((&((value).alpha_type)).clone()))); __flight_record.push(("gamut".to_owned(), crate::FlightValue::String((&((value).gamut)).clone()))); __flight_record.push(("height".to_owned(), crate::FlightValue::Number(*(&((value).height)) as f64))); __flight_record.push(("kind".to_owned(), crate::FlightValue::String((&((value).kind)).clone()))); __flight_record.push(("version".to_owned(), crate::FlightValue::Number(*(&((value).version)) as f64))); __flight_record.push(("width".to_owned(), crate::FlightValue::Number(*(&((value).width)) as f64))); __flight_record.push(("format".to_owned(), crate::FlightValue::String((&((value).format)).clone()))); if let Some(value) = (value).color_attachments.as_ref() { __flight_record.push(("colorAttachments".to_owned(), crate::FlightValue::Number(*(value) as f64))); } if let Some(value) = (value).color_formats.as_ref() { __flight_record.push(("colorFormats".to_owned(), crate::FlightValue::Array((value).iter().map(|value| crate::FlightValue::String((value).clone())).collect()))); } if let Some(value) = (value).sample_count.as_ref() { __flight_record.push(("sampleCount".to_owned(), crate::FlightValue::Number(*(value) as f64))); } if let Some(value) = (value).color_space.as_ref() { __flight_record.push(("colorSpace".to_owned(), crate::FlightValue::String((value).clone()))); } if let Some(value) = (value).clear_colors.as_ref() { __flight_record.push(("clearColors".to_owned(), crate::FlightValue::Array((value).iter().map(|value| crate::FlightValue::Number(*(value) as f64)).collect()))); } if let Some(value) = (value).clear_depth.as_ref() { __flight_record.push(("clearDepth".to_owned(), crate::FlightValue::Number(*(value) as f64))); } __flight_record.push(("source".to_owned(), (&((value).source)).clone())); __flight_record.push(("compressed".to_owned(), crate::FlightValue::Record({ let mut __flight_record = Vec::new(); __flight_record.push(("container".to_owned(), crate::FlightValue::Record({ let mut __flight_record = Vec::new(); __flight_record.push(("format".to_owned(), crate::FlightValue::String((&((&((&((value).compressed)).container)).format)).clone()))); __flight_record.push(("width".to_owned(), crate::FlightValue::Number(*(&((&((&((value).compressed)).container)).width)) as f64))); __flight_record.push(("height".to_owned(), crate::FlightValue::Number(*(&((&((&((value).compressed)).container)).height)) as f64))); __flight_record.push(("depth".to_owned(), crate::FlightValue::Number(*(&((&((&((value).compressed)).container)).depth)) as f64))); __flight_record.push(("mipLevels".to_owned(), crate::FlightValue::Number(*(&((&((&((value).compressed)).container)).mip_levels)) as f64))); __flight_record.push(("layers".to_owned(), crate::FlightValue::Number(*(&((&((&((value).compressed)).container)).layers)) as f64))); __flight_record.push(("faces".to_owned(), crate::FlightValue::Number(*(&((&((&((value).compressed)).container)).faces)) as f64))); __flight_record.push(("supercompression".to_owned(), crate::FlightValue::String((&((&((&((value).compressed)).container)).supercompression)).clone()))); __flight_record.push(("levels".to_owned(), crate::FlightValue::Array((&((&((&((value).compressed)).container)).levels)).iter().map(|value| crate::FlightValue::Record({ let mut __flight_record = Vec::new(); __flight_record.push(("byteOffset".to_owned(), crate::FlightValue::Number(*(&((value).byte_offset)) as f64))); __flight_record.push(("byteLength".to_owned(), crate::FlightValue::Number(*(&((value).byte_length)) as f64))); __flight_record.push(("width".to_owned(), crate::FlightValue::Number(*(&((value).width)) as f64))); __flight_record.push(("height".to_owned(), crate::FlightValue::Number(*(&((value).height)) as f64))); __flight_record })).collect()))); __flight_record }))); __flight_record.push(("payload".to_owned(), crate::FlightValue::Array((&((&((value).compressed)).payload)).iter().map(|value| crate::FlightValue::Number((*value) as f64)).collect()))); __flight_record }))); __flight_record }), None => crate::FlightValue::Null }));
+                        __flight_record
+                    }),
+                    None => crate::FlightValue::Null,
+                }
+            },
             Some(((image.as_ref().unwrap()).clone()).clone()),
         );
     }

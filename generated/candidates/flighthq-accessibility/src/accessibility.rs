@@ -93,7 +93,13 @@ pub fn create_web_accessibility_backend(
                     crate::host_value::<()>("host.setAttribute");
                     {
                         let __flight_key = (node.id).clone();
-                        let __flight_value = ((element).clone()).clone().unwrap();
+                        let __flight_value = {
+                            let __flight_portable_source = (element).clone();
+                            match (&__flight_portable_source).as_ref() {
+                                Some(value) => (value).clone(),
+                                None => crate::FlightValue::Null,
+                            }
+                        };
                         if let Some((_, value)) = (*elements.lock().unwrap())
                             .iter_mut()
                             .find(|(key, _)| key == &__flight_key)
@@ -105,11 +111,25 @@ pub fn create_web_accessibility_backend(
                     };
                 }
                 _apply_accessibility_element_attributes(
-                    (((element).clone()).clone().unwrap()).clone(),
+                    ({
+                        let __flight_portable_source = (element).clone();
+                        match (&__flight_portable_source).as_ref() {
+                            Some(value) => (value).clone(),
+                            None => crate::FlightValue::Null,
+                        }
+                    })
+                    .clone(),
                     &node,
                 );
                 _reparent_accessibility_element(
-                    ((element).clone().unwrap()).clone(),
+                    ({
+                        let __flight_portable_source = (element).clone();
+                        match (&__flight_portable_source).as_ref() {
+                            Some(value) => (value).clone(),
+                            None => crate::FlightValue::Null,
+                        }
+                    })
+                    .clone(),
                     ((node.parent_id).clone()).clone(),
                     &(*elements.lock().unwrap()),
                     (overlay_root.as_mut().unwrap()).clone(),
@@ -137,7 +157,11 @@ pub fn create_web_accessibility_backend(
                             *value != 0.0_f64 && !value.is_nan()
                         }
                         crate::OpaqueHostValue::String(value) => !value.is_empty(),
-                        crate::OpaqueHostValue::Object => true,
+                        crate::OpaqueHostValue::Array(_)
+                        | crate::OpaqueHostValue::Record(_)
+                        | crate::OpaqueHostValue::Function
+                        | crate::OpaqueHostValue::Symbol
+                        | crate::OpaqueHostValue::Object => true,
                     } {
                         {
                             let __flight_key = key;
@@ -400,7 +424,13 @@ fn _get_accessibility_live_region(
         crate::host_value::<()>("host.setAttribute");
         {
             let __flight_key = (liveness).clone();
-            let __flight_value = ((region).clone()).clone().unwrap();
+            let __flight_value = {
+                let __flight_portable_source = (region).clone();
+                match (&__flight_portable_source).as_ref() {
+                    Some(value) => (value).clone(),
+                    None => crate::FlightValue::Null,
+                }
+            };
             if let Some((_, value)) = live_regions
                 .iter_mut()
                 .find(|(key, _)| key == &__flight_key)
@@ -412,7 +442,14 @@ fn _get_accessibility_live_region(
         };
         crate::host_value::<()>("host.appendChild");
     }
-    return ((region).clone().unwrap()).clone();
+    return ({
+        let __flight_portable_source = (region).clone();
+        match (&__flight_portable_source).as_ref() {
+            Some(value) => (value).clone(),
+            None => crate::FlightValue::Null,
+        }
+    })
+    .clone();
 }
 
 // Source: upstream/packages/accessibility/src/accessibility.ts:199 (sha256:480632ebc019a08ca06de4543ce0b6940dd580b5ab7a289fe465adda12203b8d)

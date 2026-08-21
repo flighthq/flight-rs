@@ -574,7 +574,17 @@ pub fn ensure_gl_scene3_d_program<T: Clone>(
 
 // Source: upstream/packages/scene3d-gl/src/glMeshProgram.ts:196 (sha256:1716342fb8f589bd4ce1c2b9aeb5bcd3bee64ba088206e973b704206c57e1c60)
 pub fn has_gl_uv_transform(texture: Option<TextureLike>) -> bool {
-    return (((texture).is_some()) && (has_texture_source(((texture).clone().unwrap()).clone())))
+    return (((texture).is_some())
+        && (has_texture_source(
+            ({
+                let __flight_portable_source = (texture).clone();
+                match (&__flight_portable_source).as_ref() {
+                    Some(value) => (value).clone(),
+                    None => crate::FlightValue::Null,
+                }
+            })
+            .clone(),
+        )))
         && (has_texture_uv_transform(&texture));
 }
 

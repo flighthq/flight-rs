@@ -98,24 +98,31 @@ pub fn create_canvas_text_shaper_backend() -> CanvasTextShaperBackend {
                         .iter()
                         .find(|(key, _)| key == &"letterSpacing".to_owned())
                         .map(|(_, value)| value)
-                        .expect("TypeScript Record key was absent") =
-                        format!("{}px", (format.letter_spacing).unwrap_or(0.0_f64));
+                        .expect("TypeScript Record key was absent") = {
+                        let __flight_portable_source =
+                            format!("{}px", (format.letter_spacing).unwrap_or(0.0_f64));
+                        crate::FlightValue::String((&__flight_portable_source).clone())
+                    };
                 }
                 if supports_word_spacing {
                     crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast")
                         .iter()
                         .find(|(key, _)| key == &"wordSpacing".to_owned())
                         .map(|(_, value)| value)
-                        .expect("TypeScript Record key was absent") =
-                        crate::OpaqueHostValue::String("0px".to_owned());
+                        .expect("TypeScript Record key was absent") = {
+                        let __flight_portable_source = "0px".to_owned();
+                        crate::FlightValue::String((&__flight_portable_source).clone())
+                    };
                 }
                 if supports_direction {
                     crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast")
                         .iter()
                         .find(|(key, _)| key == &"direction".to_owned())
                         .map(|(_, value)| value)
-                        .expect("TypeScript Record key was absent") =
-                        crate::OpaqueHostValue::String("ltr".to_owned());
+                        .expect("TypeScript Record key was absent") = {
+                        let __flight_portable_source = "ltr".to_owned();
+                        crate::FlightValue::String((&__flight_portable_source).clone())
+                    };
                 }
                 let width = crate::host_value::<crate::OpaqueHostValue>("host.width");
                 if (((*cache.lock().unwrap()).len() as f64) >= _CACHE_MAX_SIZE) {

@@ -158,15 +158,56 @@ pub fn create_spritesheet_from_data(data: &SpritesheetData, atlas: &TextureAtlas
                 } else {
                     index
                 };
-                return create_spritesheet_frame(Some(FlightPartialRecord4 {
-                    __flight_identity: std::sync::Arc::new(()),
-                    id: Some(region_id),
-                    offset_x: Some(fd.offset_x),
-                    offset_y: Some(fd.offset_y),
-                    pivot_x: fd.pivot_x,
-                    pivot_y: fd.pivot_y,
-                    rotated: Some(fd.rotated),
-                }));
+                return {
+                    let __flight_portable_source =
+                        create_spritesheet_frame(Some(FlightPartialRecord4 {
+                            __flight_identity: std::sync::Arc::new(()),
+                            id: Some(region_id),
+                            offset_x: Some(fd.offset_x),
+                            offset_y: Some(fd.offset_y),
+                            pivot_x: fd.pivot_x,
+                            pivot_y: fd.pivot_y,
+                            rotated: Some(fd.rotated),
+                        }));
+                    crate::FlightValue::Record({
+                        let mut __flight_record = Vec::new();
+                        __flight_record.push((
+                            "id".to_owned(),
+                            crate::FlightValue::Number(*(&((&__flight_portable_source).id)) as f64),
+                        ));
+                        __flight_record.push((
+                            "offsetX".to_owned(),
+                            crate::FlightValue::Number(
+                                *(&((&__flight_portable_source).offset_x)) as f64,
+                            ),
+                        ));
+                        __flight_record.push((
+                            "offsetY".to_owned(),
+                            crate::FlightValue::Number(
+                                *(&((&__flight_portable_source).offset_y)) as f64,
+                            ),
+                        ));
+                        __flight_record.push((
+                            "pivotX".to_owned(),
+                            match (&((&__flight_portable_source).pivot_x)).as_ref() {
+                                Some(value) => crate::FlightValue::Number(*(value) as f64),
+                                None => crate::FlightValue::Null,
+                            },
+                        ));
+                        __flight_record.push((
+                            "pivotY".to_owned(),
+                            match (&((&__flight_portable_source).pivot_y)).as_ref() {
+                                Some(value) => crate::FlightValue::Number(*(value) as f64),
+                                None => crate::FlightValue::Null,
+                            },
+                        ));
+                        __flight_record.push((
+                            "rotated".to_owned(),
+                            crate::FlightValue::Bool(*(&((&__flight_portable_source).rotated))),
+                        ));
+                        __flight_record
+                    })
+                };
             },
         )
         .collect();
@@ -206,10 +247,16 @@ pub fn create_spritesheet_from_data(data: &SpritesheetData, atlas: &TextureAtlas
                 .iter()
                 .cloned()
                 .map(|n: String| -> crate::OpaqueHostValue {
-                    (*frame_name_to_index.lock().unwrap())
-                        .iter()
-                        .find(|(key, _)| key == &(n).clone())
-                        .map(|(_, value)| value.clone())
+                    {
+                        let __flight_portable_source = (*frame_name_to_index.lock().unwrap())
+                            .iter()
+                            .find(|(key, _)| key == &(n).clone())
+                            .map(|(_, value)| value.clone());
+                        match (&__flight_portable_source).as_ref() {
+                            Some(value) => crate::FlightValue::Number(*(value) as f64),
+                            None => crate::FlightValue::Null,
+                        }
+                    }
                 })
                 .collect()
                 .filter)(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
@@ -250,15 +297,56 @@ pub fn create_spritesheet_from_grid(options: &GridSliceOptions) -> Spritesheet {
         .iter()
         .cloned()
         .map(|region: TextureAtlasRegion| -> crate::OpaqueHostValue {
-            create_spritesheet_frame(Some(FlightPartialRecord4 {
-                __flight_identity: std::sync::Arc::new(()),
-                id: Some(region.id),
-                offset_x: None,
-                offset_y: None,
-                pivot_x: None,
-                pivot_y: None,
-                rotated: None,
-            }))
+            {
+                let __flight_portable_source =
+                    create_spritesheet_frame(Some(FlightPartialRecord4 {
+                        __flight_identity: std::sync::Arc::new(()),
+                        id: Some(region.id),
+                        offset_x: None,
+                        offset_y: None,
+                        pivot_x: None,
+                        pivot_y: None,
+                        rotated: None,
+                    }));
+                crate::FlightValue::Record({
+                    let mut __flight_record = Vec::new();
+                    __flight_record.push((
+                        "id".to_owned(),
+                        crate::FlightValue::Number(*(&((&__flight_portable_source).id)) as f64),
+                    ));
+                    __flight_record.push((
+                        "offsetX".to_owned(),
+                        crate::FlightValue::Number(
+                            *(&((&__flight_portable_source).offset_x)) as f64,
+                        ),
+                    ));
+                    __flight_record.push((
+                        "offsetY".to_owned(),
+                        crate::FlightValue::Number(
+                            *(&((&__flight_portable_source).offset_y)) as f64,
+                        ),
+                    ));
+                    __flight_record.push((
+                        "pivotX".to_owned(),
+                        match (&((&__flight_portable_source).pivot_x)).as_ref() {
+                            Some(value) => crate::FlightValue::Number(*(value) as f64),
+                            None => crate::FlightValue::Null,
+                        },
+                    ));
+                    __flight_record.push((
+                        "pivotY".to_owned(),
+                        match (&((&__flight_portable_source).pivot_y)).as_ref() {
+                            Some(value) => crate::FlightValue::Number(*(value) as f64),
+                            None => crate::FlightValue::Null,
+                        },
+                    ));
+                    __flight_record.push((
+                        "rotated".to_owned(),
+                        crate::FlightValue::Bool(*(&((&__flight_portable_source).rotated))),
+                    ));
+                    __flight_record
+                })
+            }
         })
         .collect();
     return create_spritesheet(Some(FlightPartialRecord2 {

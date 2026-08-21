@@ -8,6 +8,137 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex, OnceLock};
 use std::task::{Context, Poll, Wake, Waker};
 
+#[derive(Clone, Debug, PartialEq)]
+pub enum FlightValue {
+    Undefined,
+    Null,
+    Bool(bool),
+    Number(f64),
+    String(String),
+    Array(Vec<FlightValue>),
+    Record(Vec<(String, FlightValue)>),
+    Function,
+    Symbol,
+    Object,
+}
+
+impl Default for FlightValue {
+    fn default() -> Self {
+        Self::Undefined
+    }
+}
+
+/// Compatibility name for generated boundaries whose TypeScript type remains unrecovered.
+pub type OpaqueHostValue = FlightValue;
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum FlightJsonError {
+    OpaqueHostObject,
+}
+
+impl std::fmt::Display for FlightJsonError {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::OpaqueHostObject => {
+                formatter.write_str("an opaque host object cannot be serialized as portable JSON")
+            }
+        }
+    }
+}
+
+impl std::error::Error for FlightJsonError {}
+
+pub fn flight_json_stringify(value: &FlightValue) -> Result<Option<String>, FlightJsonError> {
+    flight_json_fragment(value)
+}
+
+fn flight_json_fragment(value: &FlightValue) -> Result<Option<String>, FlightJsonError> {
+    match value {
+        FlightValue::Undefined | FlightValue::Function | FlightValue::Symbol => Ok(None),
+        FlightValue::Null => Ok(Some("null".to_owned())),
+        FlightValue::Bool(value) => Ok(Some(value.to_string())),
+        FlightValue::Number(value) => Ok(Some(flight_json_number(*value))),
+        FlightValue::String(value) => Ok(Some(flight_json_quote(value))),
+        FlightValue::Array(values) => {
+            let items = values
+                .iter()
+                .map(|value| {
+                    flight_json_fragment(value)
+                        .map(|value| value.unwrap_or_else(|| "null".to_owned()))
+                })
+                .collect::<Result<Vec<_>, _>>()?;
+            Ok(Some(format!("[{}]", items.join(","))))
+        }
+        FlightValue::Record(values) => {
+            let mut properties: Vec<(&str, &FlightValue)> = Vec::new();
+            for (key, value) in values {
+                if let Some((_, previous)) = properties
+                    .iter_mut()
+                    .find(|(previous, _)| previous == &key.as_str())
+                {
+                    *previous = value;
+                } else {
+                    properties.push((key, value));
+                }
+            }
+            let fields = properties
+                .into_iter()
+                .filter_map(|(key, value)| match flight_json_fragment(value) {
+                    Ok(Some(value)) => Some(Ok(format!("{}:{}", flight_json_quote(key), value))),
+                    Ok(None) => None,
+                    Err(error) => Some(Err(error)),
+                })
+                .collect::<Result<Vec<_>, _>>()?;
+            Ok(Some(format!("{{{}}}", fields.join(","))))
+        }
+        FlightValue::Object => Err(FlightJsonError::OpaqueHostObject),
+    }
+}
+
+fn flight_json_number(value: f64) -> String {
+    if !value.is_finite() {
+        return "null".to_owned();
+    }
+    if value == 0.0_f64 {
+        return "0".to_owned();
+    }
+    let magnitude = value.abs();
+    if !(1.0e-6_f64..1.0e21_f64).contains(&magnitude) {
+        let scientific = format!("{value:e}");
+        let (significand, exponent) = scientific
+            .split_once('e')
+            .expect("Rust scientific number formatting must contain an exponent");
+        return if exponent.starts_with('-') {
+            scientific
+        } else {
+            format!("{significand}e+{exponent}")
+        };
+    }
+    value.to_string()
+}
+
+fn flight_json_quote(value: &str) -> String {
+    let mut escaped = String::with_capacity(value.len() + 2);
+    escaped.push('"');
+    for character in value.chars() {
+        match character {
+            '"' => escaped.push_str("\\\""),
+            '\\' => escaped.push_str("\\\\"),
+            character if character == char::from(8) => escaped.push_str("\\b"),
+            character if character == char::from(9) => escaped.push_str("\\t"),
+            character if character == char::from(10) => escaped.push_str("\\n"),
+            character if character == char::from(12) => escaped.push_str("\\f"),
+            character if character == char::from(13) => escaped.push_str("\\r"),
+            character if character <= char::from(31) => {
+                escaped.push_str(&format!("\\u{:04x}", character as u32))
+            }
+            character => escaped.push(character),
+        }
+    }
+    escaped.push('"');
+    escaped
+}
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct FlightTaskOrigin {
     pub package: &'static str,
@@ -449,6 +580,62 @@ mod tests {
         lexical_path: "fixture",
         fingerprint: "sha256:0000000000000000000000000000000000000000000000000000000000000000",
     };
+
+    #[test]
+    fn serializes_recursive_portable_values_with_javascript_container_semantics() {
+        let value = FlightValue::Record(vec![
+            (String::from("first"), FlightValue::Number(1.0_f64)),
+            (String::from("omitted"), FlightValue::Undefined),
+            (
+                String::from("nested"),
+                FlightValue::Record(vec![(
+                    String::from("quoted\"key"),
+                    FlightValue::String(String::from("line\nfeed")),
+                )]),
+            ),
+            (
+                String::from("array"),
+                FlightValue::Array(vec![
+                    FlightValue::Undefined,
+                    FlightValue::Number(f64::NAN),
+                    FlightValue::Function,
+                ]),
+            ),
+            (
+                String::from("first"),
+                FlightValue::String(String::from("last")),
+            ),
+        ]);
+        assert_eq!(
+            flight_json_stringify(&value),
+            Ok(Some(String::from(
+                "{\"first\":\"last\",\"nested\":{\"quoted\\\"key\":\"line\\nfeed\"},\"array\":[null,null,null]}"
+            )))
+        );
+        assert_eq!(flight_json_stringify(&FlightValue::Undefined), Ok(None));
+        assert_eq!(
+            flight_json_stringify(&FlightValue::Object),
+            Err(FlightJsonError::OpaqueHostObject)
+        );
+    }
+
+    #[test]
+    fn formats_json_numbers_at_ecmascript_decimal_boundaries() {
+        let value = FlightValue::Array(vec![
+            FlightValue::Number(-0.0_f64),
+            FlightValue::Number(1.0e-7_f64),
+            FlightValue::Number(1.0e-6_f64),
+            FlightValue::Number(1.0e20_f64),
+            FlightValue::Number(1.0e21_f64),
+            FlightValue::Number(1.23e-7_f64),
+        ]);
+        assert_eq!(
+            flight_json_stringify(&value),
+            Ok(Some(String::from(
+                "[0,1e-7,0.000001,100000000000000000000,1e+21,1.23e-7]",
+            ))),
+        );
+    }
 
     #[test]
     fn preserves_eager_prefix_and_mandatory_yield() {

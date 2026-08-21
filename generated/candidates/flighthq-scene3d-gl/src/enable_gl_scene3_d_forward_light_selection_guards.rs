@@ -392,15 +392,17 @@ fn warn_gl_scene3_d_forward_light_selection_required(lights: &Scene3DLightsLike)
             Vec<(String, crate::OpaqueHostValue)>,
         >::B({
             let mut __flight_record = Vec::new();
-            __flight_record.push(("message".to_owned(), crate::OpaqueHostValue::String("drawGlScene3D: punctual lights exceed MAX_FORWARD_LIGHTS and will be input-order truncated — call prepareGlScene3DForwardLights after prepareScene3DRender and pass its result to drawGlScene3D.".to_owned())));
-            __flight_record.push((
-                "pointLightCount".to_owned(),
-                (lights.point.as_ref().map(|value| value.len() as f64)).unwrap_or(0.0_f64),
-            ));
-            __flight_record.push((
-                "spotLightCount".to_owned(),
-                (lights.spot.as_ref().map(|value| value.len() as f64)).unwrap_or(0.0_f64),
-            ));
+            __flight_record.push(("message".to_owned(), { let __flight_portable_source = "drawGlScene3D: punctual lights exceed MAX_FORWARD_LIGHTS and will be input-order truncated — call prepareGlScene3DForwardLights after prepareScene3DRender and pass its result to drawGlScene3D.".to_owned(); crate::FlightValue::String((&__flight_portable_source).clone()) }));
+            __flight_record.push(("pointLightCount".to_owned(), {
+                let __flight_portable_source =
+                    (lights.point.as_ref().map(|value| value.len() as f64)).unwrap_or(0.0_f64);
+                crate::FlightValue::Number(*(&__flight_portable_source) as f64)
+            }));
+            __flight_record.push(("spotLightCount".to_owned(), {
+                let __flight_portable_source =
+                    (lights.spot.as_ref().map(|value| value.len() as f64)).unwrap_or(0.0_f64);
+                crate::FlightValue::Number(*(&__flight_portable_source) as f64)
+            }));
             __flight_record
         }))),
         Some(("scene-gl".to_owned()).clone()),

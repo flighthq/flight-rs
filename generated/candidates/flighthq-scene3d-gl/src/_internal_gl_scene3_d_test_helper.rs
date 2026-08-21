@@ -931,7 +931,14 @@ pub fn make_fake_gl2(options: Option<SharedStructuralRecord2>) -> FakeGl2 {
                         name: (name).clone(),
                         args: (args).clone(),
                     });
-                    return ((result).clone().unwrap()).clone();
+                    return ({
+                        let __flight_portable_source = (result).clone();
+                        match (&__flight_portable_source).as_ref() {
+                            Some(value) => (value).clone(),
+                            None => crate::FlightValue::Null,
+                        }
+                    })
+                    .clone();
                 }
             })
                 as Box<
@@ -1031,7 +1038,7 @@ pub fn make_fake_gl2(options: Option<SharedStructuralRecord2>) -> FakeGl2 {
                 let __flight_callback = (record).clone();
                 let __flight_result = __flight_callback.lock().unwrap()(
                     "getExtension".to_owned(),
-                    crate::OpaqueHostValue::Null,
+                    crate::FlightValue::Null,
                 );
                 __flight_result
             },
@@ -1039,9 +1046,10 @@ pub fn make_fake_gl2(options: Option<SharedStructuralRecord2>) -> FakeGl2 {
                 let __flight_callback = (record).clone();
                 let __flight_result = __flight_callback.lock().unwrap()(
                     "createShader".to_owned(),
-                    MakeFakeGl2Record10 {
-                        __flight_identity: std::sync::Arc::new(()),
-                    },
+                    crate::FlightValue::Record({
+                        let mut __flight_record = Vec::new();
+                        __flight_record
+                    }),
                 );
                 __flight_result
             },
@@ -1058,15 +1066,19 @@ pub fn make_fake_gl2(options: Option<SharedStructuralRecord2>) -> FakeGl2 {
             get_shader_parameter: {
                 let __flight_callback = (record).clone();
                 let __flight_result =
-                    __flight_callback.lock().unwrap()("getShaderParameter".to_owned(), compile_ok);
+                    __flight_callback.lock().unwrap()("getShaderParameter".to_owned(), {
+                        let __flight_portable_source = compile_ok;
+                        crate::FlightValue::Bool(*(&__flight_portable_source))
+                    });
                 __flight_result
             },
             get_shader_info_log: {
                 let __flight_callback = (record).clone();
-                let __flight_result = __flight_callback.lock().unwrap()(
-                    "getShaderInfoLog".to_owned(),
-                    crate::OpaqueHostValue::String("".to_owned()),
-                );
+                let __flight_result =
+                    __flight_callback.lock().unwrap()("getShaderInfoLog".to_owned(), {
+                        let __flight_portable_source = "".to_owned();
+                        crate::FlightValue::String((&__flight_portable_source).clone())
+                    });
                 __flight_result
             },
             delete_shader: {
@@ -1078,9 +1090,10 @@ pub fn make_fake_gl2(options: Option<SharedStructuralRecord2>) -> FakeGl2 {
                 let __flight_callback = (record).clone();
                 let __flight_result = __flight_callback.lock().unwrap()(
                     "createProgram".to_owned(),
-                    MakeFakeGl2Record10 {
-                        __flight_identity: std::sync::Arc::new(()),
-                    },
+                    crate::FlightValue::Record({
+                        let mut __flight_record = Vec::new();
+                        __flight_record
+                    }),
                 );
                 __flight_result
             },
@@ -1101,7 +1114,10 @@ pub fn make_fake_gl2(options: Option<SharedStructuralRecord2>) -> FakeGl2 {
                     (*calls.lock().unwrap()).push(SharedStructuralRecord1 {
                         __flight_identity: std::sync::Arc::new(()),
                         name: "getProgramParameter".to_owned(),
-                        args: vec![pname],
+                        args: vec![{
+                            let __flight_portable_source = pname;
+                            crate::FlightValue::Number(*(&__flight_portable_source) as f64)
+                        }],
                     });
                     return if (pname == 35718.0_f64) {
                         (active_uniforms.len() as f64)
@@ -1118,7 +1134,10 @@ pub fn make_fake_gl2(options: Option<SharedStructuralRecord2>) -> FakeGl2 {
                     (*calls.lock().unwrap()).push(SharedStructuralRecord1 {
                         __flight_identity: std::sync::Arc::new(()),
                         name: "getActiveUniform".to_owned(),
-                        args: vec![index],
+                        args: vec![{
+                            let __flight_portable_source = index;
+                            crate::FlightValue::Number(*(&__flight_portable_source) as f64)
+                        }],
                     });
                     let info = active_uniforms[index as usize].clone();
                     return if (info).is_none() {
@@ -1136,10 +1155,11 @@ pub fn make_fake_gl2(options: Option<SharedStructuralRecord2>) -> FakeGl2 {
                 as Box<dyn FnMut(crate::OpaqueHostValue, f64) -> () + Send + 'static>)),
             get_program_info_log: {
                 let __flight_callback = (record).clone();
-                let __flight_result = __flight_callback.lock().unwrap()(
-                    "getProgramInfoLog".to_owned(),
-                    crate::OpaqueHostValue::String("".to_owned()),
-                );
+                let __flight_result =
+                    __flight_callback.lock().unwrap()("getProgramInfoLog".to_owned(), {
+                        let __flight_portable_source = "".to_owned();
+                        crate::FlightValue::String((&__flight_portable_source).clone())
+                    });
                 __flight_result
             },
             use_program: {
@@ -1153,7 +1173,10 @@ pub fn make_fake_gl2(options: Option<SharedStructuralRecord2>) -> FakeGl2 {
                     (*calls.lock().unwrap()).push(SharedStructuralRecord1 {
                         __flight_identity: std::sync::Arc::new(()),
                         name: "getUniformLocation".to_owned(),
-                        args: vec![(name).clone()],
+                        args: vec![{
+                            let __flight_portable_source = (name).clone();
+                            crate::FlightValue::String((&__flight_portable_source).clone())
+                        }],
                     });
                     return Font {
                         __flight_identity: std::sync::Arc::new(()),
@@ -1167,9 +1190,10 @@ pub fn make_fake_gl2(options: Option<SharedStructuralRecord2>) -> FakeGl2 {
                 let __flight_callback = (record).clone();
                 let __flight_result = __flight_callback.lock().unwrap()(
                     "createBuffer".to_owned(),
-                    MakeFakeGl2Record10 {
-                        __flight_identity: std::sync::Arc::new(()),
-                    },
+                    crate::FlightValue::Record({
+                        let mut __flight_record = Vec::new();
+                        __flight_record
+                    }),
                 );
                 __flight_result
             },
@@ -1187,9 +1211,10 @@ pub fn make_fake_gl2(options: Option<SharedStructuralRecord2>) -> FakeGl2 {
                 let __flight_callback = (record).clone();
                 let __flight_result = __flight_callback.lock().unwrap()(
                     "createVertexArray".to_owned(),
-                    MakeFakeGl2Record10 {
-                        __flight_identity: std::sync::Arc::new(()),
-                    },
+                    crate::FlightValue::Record({
+                        let mut __flight_record = Vec::new();
+                        __flight_record
+                    }),
                 );
                 __flight_result
             },
@@ -1240,10 +1265,11 @@ pub fn make_fake_gl2(options: Option<SharedStructuralRecord2>) -> FakeGl2 {
             },
             get_attrib_location: {
                 let __flight_callback = (record).clone();
-                let __flight_result = __flight_callback.lock().unwrap()(
-                    "getAttribLocation".to_owned(),
-                    crate::OpaqueHostValue::Number(0.0_f64),
-                );
+                let __flight_result =
+                    __flight_callback.lock().unwrap()("getAttribLocation".to_owned(), {
+                        let __flight_portable_source = 0.0_f64;
+                        crate::FlightValue::Number(*(&__flight_portable_source) as f64)
+                    });
                 __flight_result
             },
             vertex_attrib_pointer: {
@@ -1381,9 +1407,10 @@ pub fn make_fake_gl2(options: Option<SharedStructuralRecord2>) -> FakeGl2 {
                 let __flight_callback = (record).clone();
                 let __flight_result = __flight_callback.lock().unwrap()(
                     "createTexture".to_owned(),
-                    MakeFakeGl2Record10 {
-                        __flight_identity: std::sync::Arc::new(()),
-                    },
+                    crate::FlightValue::Record({
+                        let mut __flight_record = Vec::new();
+                        __flight_record
+                    }),
                 );
                 __flight_result
             },

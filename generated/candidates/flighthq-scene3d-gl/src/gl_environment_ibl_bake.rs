@@ -414,18 +414,42 @@ pub fn bake_gl_environment_ibl(state: &mut GlRenderState, environment: &Environm
     crate::host_value::<()>("host.disable");
     let irradiance_cube = bake_gl_irradiance(
         state,
-        (((fbo).clone()).clone().unwrap()).clone(),
+        ({
+            let __flight_portable_source = (fbo).clone();
+            match (&__flight_portable_source).as_ref() {
+                Some(value) => (value).clone(),
+                None => crate::FlightValue::Null,
+            }
+        })
+        .clone(),
         (source_cube.as_ref().unwrap()).clone(),
     );
     let __destructure0 = bake_gl_prefiltered(
         state,
-        (((fbo).clone()).clone().unwrap()).clone(),
+        ({
+            let __flight_portable_source = (fbo).clone();
+            match (&__flight_portable_source).as_ref() {
+                Some(value) => (value).clone(),
+                None => crate::FlightValue::Null,
+            }
+        })
+        .clone(),
         (source_cube.as_ref().unwrap()).clone(),
     );
     let prefiltered_cube = (__destructure0.prefiltered_cube).clone();
     let prefiltered_mip_count = __destructure0.prefiltered_mip_count;
-    let brdf_lut = (runtime.ibl.as_ref().map(|value| (value.brdf_lut).clone()))
-        .unwrap_or(bake_gl_brdf_lut(state, ((fbo).clone().unwrap()).clone()));
+    let brdf_lut =
+        (runtime.ibl.as_ref().map(|value| (value.brdf_lut).clone())).unwrap_or(bake_gl_brdf_lut(
+            state,
+            ({
+                let __flight_portable_source = (fbo).clone();
+                match (&__flight_portable_source).as_ref() {
+                    Some(value) => (value).clone(),
+                    None => crate::FlightValue::Null,
+                }
+            })
+            .clone(),
+        ));
     crate::host_value::<()>("host.bindFramebuffer");
     crate::host_value::<()>("host.viewport");
     crate::host_value::<()>("host.bindVertexArray");

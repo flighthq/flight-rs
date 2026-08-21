@@ -401,7 +401,7 @@ fn warn_gl_scene3_d_drawn_to_canvas() -> () {
             Vec<(String, crate::OpaqueHostValue)>,
         >::B({
             let mut __flight_record = Vec::new();
-            __flight_record.push(("message".to_owned(), crate::OpaqueHostValue::String("drawGlScene3D: scene drawn directly to the canvas — linear radiance is not sRGB-encoded (output will be dark). Render into a target and present with presentGlScene3D, or draw through the effect pipeline.".to_owned())));
+            __flight_record.push(("message".to_owned(), { let __flight_portable_source = "drawGlScene3D: scene drawn directly to the canvas — linear radiance is not sRGB-encoded (output will be dark). Render into a target and present with presentGlScene3D, or draw through the effect pipeline.".to_owned(); crate::FlightValue::String((&__flight_portable_source).clone()) }));
             __flight_record
         }))),
         Some(("scene-gl".to_owned()).clone()),
