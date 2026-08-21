@@ -2964,6 +2964,9 @@ describe('Rust emission', () => {
             intervalId = 0;
           };
         }
+        export function createTypedTimer(): ReturnType<typeof setInterval> {
+          return setInterval(() => {}, 10);
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -2981,6 +2984,7 @@ describe('Rust emission', () => {
     expect(output).toContain('crate::set_interval');
     expect(output).toContain('crate::clear_interval');
     expect(output).toContain('= None');
+    expect(output).toContain('pub fn create_typed_timer() -> crate::FlightTimeout');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
     const sourceFile = path.join(fixture, 'lib.rs');

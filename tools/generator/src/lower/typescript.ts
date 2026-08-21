@@ -1734,7 +1734,10 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
     if (name === 'Parameters' && arguments_[0]) {
       return { arguments: [arguments_[0]], kind: 'named', name: 'FlightCallbackArgs' };
     }
-    if (name === 'ReturnType' && node.typeArguments?.[0]?.getText(context.sourceFile).includes('setTimeout')) {
+    if (
+      name === 'ReturnType' &&
+      /\bset(?:Interval|Timeout)\b/u.test(node.typeArguments?.[0]?.getText(context.sourceFile) ?? '')
+    ) {
       return { arguments: [], kind: 'named', name: 'FlightTimeout' };
     }
     if (['InstanceType', 'PropertyKey', 'ReturnType', 'ThisParameterType'].includes(name)) {
