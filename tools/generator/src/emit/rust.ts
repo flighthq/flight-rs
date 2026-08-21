@@ -3110,7 +3110,9 @@ function emitCall(
       const callback = expression.arguments[0];
       if (!callback) throw new RustEmissionError('Array.map requires a callback');
       if (callback.kind === 'function') {
-        const returns = inferFunctionExpressionReturnType(callback) ?? {
+        const contextualCollection = resolveSemanticType(expectedType, context) ?? expectedType;
+        const contextualElement = contextualCollection?.kind === 'array' ? contextualCollection.element : undefined;
+        const returns = callback.returns ?? inferFunctionExpressionReturnType(callback) ?? contextualElement ?? {
           kind: 'dynamic',
         };
         const closureType: IrType = {

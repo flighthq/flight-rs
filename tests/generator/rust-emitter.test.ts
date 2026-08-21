@@ -1806,6 +1806,9 @@ describe('Rust emission', () => {
         export function concatValues(values: readonly number[], middle: readonly number[]): number[] {
           return values.concat(middle, 5);
         }
+        export function emptyValues<T>(keys: readonly string[]): (T | null)[] {
+          return keys.map(() => null);
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -1851,6 +1854,7 @@ describe('Rust emission', () => {
         '  assert_eq!(values, vec![0.0, 1.0, 3.0, 4.0, 2.0]);',
         '  assert_eq!(generated::concat_values(&values, &vec![6.0, 7.0]), vec![0.0, 1.0, 3.0, 4.0, 2.0, 6.0, 7.0, 5.0]);',
         '  assert_eq!(values, vec![0.0, 1.0, 3.0, 4.0, 2.0]);',
+        '  assert_eq!(generated::empty_values::<String>(&vec!["a".to_owned(), "b".to_owned()]), vec![None, None]);',
         '}',
         '',
       ].join('\n'),
