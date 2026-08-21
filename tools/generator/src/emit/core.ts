@@ -1766,7 +1766,7 @@ function verifyEntityRuntimeRootInvariant(target: RustTarget, outputs: readonly 
   const requiredDefinitions = [
     ['EntityRuntime', 'pub struct EntityRuntime {'],
     ['EntityRuntimeStorage', 'pub struct EntityRuntimeStorage {'],
-    ['FlightEntity', 'pub trait FlightEntity {'],
+    ['FlightEntity', 'pub trait FlightEntity'],
   ] as const;
   const missing = requiredDefinitions.flatMap(([name, definition]) =>
     modules.some((content) => content.includes(definition)) ? [] : [name],

@@ -3763,6 +3763,17 @@ describe('Rust emission', () => {
           value.detail = 2;
           return value;
         }
+        export function eraseDerivedEntity(source: DerivedEntity): BaseEntity {
+          return source;
+        }
+        export function recoverDerivedEntity<Type extends BaseEntity>(source: BaseEntity): Type {
+          return source as Type;
+        }
+        export function roundTripDetail(source: DerivedEntity): number {
+          const erased = eraseDerivedEntity(source);
+          const recovered: DerivedEntity = recoverDerivedEntity<DerivedEntity>(erased);
+          return recovered.detail;
+        }
         export function attachRuntime<Type>(source: Type, runtime: NodeRuntime<string>): Type {
           source[EntityRuntimeKey] = runtime;
           return source;
@@ -3847,6 +3858,12 @@ describe('Rust emission', () => {
     expect(output).toContain('.wgpu_node_runtime.backend_state');
     expect(output).toContain('pub trait FlightEntity');
     expect(output).toContain('__flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<EntityRuntime>>>');
+    expect(output).toContain('__flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>');
+    expect(output).toContain('FlightEntity::__flight_downcast::<Type>');
+    expect(output).toContain(
+      '__flight_entity_snapshot.clone().or_else(|| Some(std::sync::Arc::new((*__flight_source).clone())))',
+    );
+    expect(output).toContain('pub fn recover_derived_entity<Type: Clone + FlightEntity>');
     expect(output).toContain('Type: Clone + FlightEntity');
     expect(output).toContain('pub fn has_generic_runtime<Type: Clone + FlightEntity>');
     expect(output).toContain('pub fn clone_without_runtime<Type: Clone + FlightEntity>');
@@ -3873,13 +3890,18 @@ describe('Rust emission', () => {
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-entity-runtime-'));
     const sourceFile = path.join(fixture, 'lib.rs');
-    writeFileSync(sourceFile, output);
-    expect(() =>
-      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+    const testBinary = path.join(fixture, 'entity-runtime-test');
+    writeFileSync(
+      sourceFile,
+      `${output}\n#[cfg(test)]\nmod tests {\n  use super::*;\n  #[test]\n  fn concrete_entity_snapshot_round_trip() {\n    let source = create_derived_entity();\n    assert_eq!(round_trip_detail(&source), 2.0_f64);\n  }\n}\n`,
+    );
+    expect(() => {
+      execFileSync('rustc', ['--test', '--edition', '2024', sourceFile, '-o', testBinary], {
         cwd: fixture,
         stdio: 'pipe',
-      }),
-    ).not.toThrow();
+      });
+      execFileSync(testBinary, [], { cwd: fixture, stdio: 'pipe' });
+    }).not.toThrow();
   });
 
   it('retains canonical entity runtime fields when an imported runtime specializes them', () => {
@@ -4147,7 +4169,9 @@ describe('Rust emission', () => {
     expect(entityOutput).toContain('pub struct EntityRuntimeStorage');
     expect(entityOutput).toContain('pub trait FlightEntity');
     expect(promotedOutput).toContain('impl crate::FlightEntity for Surface');
-    expect(promotedOutput).toContain('impl<State: Clone> crate::FlightEntity for GenericSurface<State>');
+    expect(promotedOutput).toContain(
+      "impl<State: Clone + Send + Sync + 'static> crate::FlightEntity for GenericSurface<State>",
+    );
     expect(promotedOutput).toContain('__flight_entity_runtime: Default::default()');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-promoted-entity-'));

@@ -2239,6 +2239,16 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
         ) {
           return `${emitExpression(value, context, actualType)}.unwrap()`;
         }
+        const entitySourceType = actualType?.kind === 'nullable' ? actualType.inner : actualType;
+        if (
+          expression.type.kind === 'named' &&
+          context.entityTypeParameters.has(expression.type.name) &&
+          entitySourceType &&
+          isNativeEntityType(entitySourceType, context)
+        ) {
+          const source = emitExpression(value, context, entitySourceType);
+          return `${entityTraitTypePath(context)}::__flight_downcast::<${expression.type.name}>(&${parenthesize(source)}).expect("TypeScript entity cast lost its concrete Rust snapshot")`;
+        }
         if (actual?.kind === 'dynamic' && actual.portable && target) {
           const portable = emitExpression(value, context, actualType);
           const valuePath = dynamicValuePath(actual);
@@ -6565,7 +6575,10 @@ function emitTypeDeclaration(
       [
         '#[doc(hidden)] pub __flight_identity: std::sync::Arc<()>,',
         ...(entityRuntime
-          ? [`#[doc(hidden)] pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<${entityRuntime}>>>,`]
+          ? [
+              `#[doc(hidden)] pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<${entityRuntime}>>>,`,
+              '#[doc(hidden)] pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,',
+            ]
           : []),
         ...fields.map(
           (field) =>
@@ -6586,7 +6599,12 @@ function emitTypeDeclaration(
           '  fn default() -> Self {',
           '    Self {',
           '      __flight_identity: Default::default(),',
-          ...(entityRuntime ? ['      __flight_entity_runtime: Default::default(),'] : []),
+          ...(entityRuntime
+            ? [
+                '      __flight_entity_runtime: Default::default(),',
+                '      __flight_entity_snapshot: Default::default(),',
+              ]
+            : []),
           ...fields.map((field) => `      ${safeName(field.name)}: Default::default(),`),
           '    }',
           '  }',
@@ -6600,8 +6618,15 @@ function emitTypeDeclaration(
   if (entity && name === 'Entity') {
     emitted.push(
       '#[doc(hidden)]',
-      `${visibility}trait FlightEntity {`,
+      `${visibility}trait FlightEntity: std::any::Any + Send + Sync {`,
       `  fn __flight_entity_runtime(&self) -> &std::sync::Arc<std::sync::Mutex<Option<${entityRuntime!}>>>;`,
+      '  fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>;',
+      "  fn __flight_downcast<T: Clone + 'static>(&self) -> Option<T> where Self: Sized {",
+      '    if let Some(snapshot) = self.__flight_entity_snapshot() {',
+      '      if let Some(value) = snapshot.downcast_ref::<T>() { return Some(value.clone()); }',
+      '    }',
+      '    (self as &dyn std::any::Any).downcast_ref::<T>().cloned()',
+      '  }',
       '  fn __flight_fresh_clone(&self) -> Self where Self: Sized;',
       '}',
     );
@@ -6609,11 +6634,12 @@ function emitTypeDeclaration(
   if (entity && entityTrait) {
     const cloneBoundGenerics =
       effectiveTypeParameters.length > 0
-        ? `<${effectiveTypeParameters.map((parameter) => `${parameter}: Clone`).join(', ')}>`
+        ? `<${effectiveTypeParameters.map((parameter) => `${parameter}: Clone + Send + Sync + 'static`).join(', ')}>`
         : '';
     emitted.push(
       `impl${cloneBoundGenerics} ${entityTrait} for ${name}${generics} {`,
       `  fn __flight_entity_runtime(&self) -> &std::sync::Arc<std::sync::Mutex<Option<${entityRuntime!}>>> { &self.__flight_entity_runtime }`,
+      '  fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> { &self.__flight_entity_snapshot }',
       '  fn __flight_fresh_clone(&self) -> Self {',
       '    let mut cloned = self.clone();',
       '    cloned.__flight_identity = std::sync::Arc::new(());',
@@ -7574,6 +7600,16 @@ function inferEntityTypeParameters(
   collectAliases(owner);
   const visit = (value: unknown): void => {
     if (!value || typeof value !== 'object') return;
+    if ('kind' in value && value.kind === 'cast') {
+      const expression = value as Extract<IrExpression, { kind: 'cast' }>;
+      if (expression.type.kind === 'named' && lexical.has(expression.type.name)) {
+        const sourceType = inferIrExpressionType(unwrapCasts(expression.expression), context);
+        const sourceEntityType = sourceType?.kind === 'nullable' ? sourceType.inner : sourceType;
+        if (sourceEntityType && isNativeEntityType(sourceEntityType, context)) {
+          found.add(expression.type.name);
+        }
+      }
+    }
     if ('kind' in value && value.kind === 'element') {
       const expression = value as Extract<IrExpression, { kind: 'element' }>;
       if (isErasedEntityRuntimeAccess(expression)) {
@@ -8871,6 +8907,15 @@ function emitStructuralProjectionArgument(
             sharesEntityRuntime
               ? '__flight_entity_runtime: std::sync::Arc::clone(&' + owner + '.__flight_entity_runtime),'
               : '__flight_entity_runtime: Default::default(),',
+            sharesEntityRuntime
+              ? expandsEntity
+                ? '__flight_entity_snapshot: ' + owner + '.__flight_entity_snapshot.clone(),'
+                : '__flight_entity_snapshot: ' +
+                  owner +
+                  '.__flight_entity_snapshot.clone().or_else(|| Some(std::sync::Arc::new((*' +
+                  owner +
+                  ').clone()))),'
+              : '__flight_entity_snapshot: Default::default(),',
           ]
         : []),
       ...fields,
@@ -9411,7 +9456,8 @@ function emitObject(
     });
     const entitySpread = structuralSpreads.find((spread) => {
       const sourceType = inferIrExpressionType(spread.property.expression, context);
-      return sourceType?.kind === 'named' && context.entityTypes.has(sourceType.name);
+      const sourceEntityType = sourceType?.kind === 'nullable' ? sourceType.inner : sourceType;
+      return Boolean(sourceEntityType && isNativeEntityType(sourceEntityType, context));
     });
     const entityRuntimeInitializer =
       target.kind === 'named' && context.entityTypes.has(target.name)
@@ -9425,10 +9471,28 @@ function emitObject(
             ? `std::sync::Arc::new(std::sync::Mutex::new(${entitySpread.name}.__flight_entity_runtime.lock().unwrap().clone()))`
             : 'Default::default()'
         : undefined;
+    const entitySnapshotInitializer =
+      target.kind === 'named' && context.entityTypes.has(target.name)
+        ? entitySpread
+          ? (() => {
+              const sourceType = inferIrExpressionType(entitySpread.property.expression, context);
+              const sourceEntityType = sourceType?.kind === 'nullable' ? sourceType.inner : sourceType;
+              const expandsEntity =
+                sourceEntityType?.kind === 'named' &&
+                target.name !== sourceEntityType.name &&
+                Boolean(findEntityRuntimeApplication(target, sourceEntityType.name, context));
+              const snapshot = `${entitySpread.name}.__flight_entity_snapshot.clone()`;
+              return expandsEntity
+                ? snapshot
+                : `${snapshot}.or_else(|| Some(std::sync::Arc::new(${entitySpread.name}.clone())))`;
+            })()
+          : 'Default::default()'
+        : undefined;
     const value = `{ ${bindings.join(' ')} ${name} {\n${indent(
       [
         '__flight_identity: std::sync::Arc::new(()),',
         ...(entityRuntimeInitializer ? [`__flight_entity_runtime: ${entityRuntimeInitializer},`] : []),
+        ...(entitySnapshotInitializer ? [`__flight_entity_snapshot: ${entitySnapshotInitializer},`] : []),
         ...properties.filter((property): property is string => Boolean(property)),
         ...(openFields ? ['..Default::default()'] : []),
       ].join('\n'),
@@ -9507,6 +9571,11 @@ function emitObject(
   if (spreads.length > 1) throw new RustEmissionError('multiple object spreads require ordered Rust lowering');
   if (spreads.length === 1 && target.kind === 'named' && context.entityTypes.has(target.name)) {
     properties.unshift('__flight_identity: std::sync::Arc::new(()),');
+    properties.unshift(
+      entitySpreadProperty?.kind === 'spread'
+        ? '__flight_entity_snapshot: __flight_entity_spread.__flight_entity_snapshot.clone(),'
+        : '__flight_entity_snapshot: Default::default(),',
+    );
     if (entityRuntimeProperty?.kind === 'computedProperty') {
       properties.unshift(
         `__flight_entity_runtime: std::sync::Arc::new(std::sync::Mutex::new(Some(${emitExpression(
@@ -9526,6 +9595,7 @@ function emitObject(
       '__flight_identity: std::sync::Arc::new(()),',
       ...(target.kind === 'named' && context.entityTypes.has(target.name)
         ? [
+            '__flight_entity_snapshot: Default::default(),',
             entityRuntimeProperty?.kind === 'computedProperty'
               ? `__flight_entity_runtime: std::sync::Arc::new(std::sync::Mutex::new(Some(${emitExpression(
                   entityRuntimeProperty.value,
