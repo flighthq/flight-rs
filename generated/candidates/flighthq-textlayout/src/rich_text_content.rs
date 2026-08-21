@@ -41,7 +41,8 @@ pub fn compute_rich_text_content(
     );
     {
         let __flight_argument_1 = (out.text.encode_utf16().count() as f64);
-        clamp_ranges(&mut out.format_ranges, __flight_argument_1)
+        let __flight_result = clamp_ranges(&mut out.format_ranges, __flight_argument_1);
+        __flight_result
     };
     apply_text_format_ranges(out, &data.text_format_ranges);
 }
@@ -117,7 +118,9 @@ fn append_text(
     out.text.push_str(&((value).clone()));
     {
         let __flight_argument_3 = (out.text.encode_utf16().count() as f64);
-        write_format_range(&mut out.format_ranges, format, start, __flight_argument_3)
+        let __flight_result =
+            write_format_range(&mut out.format_ranges, format, start, __flight_argument_3);
+        __flight_result
     };
 }
 

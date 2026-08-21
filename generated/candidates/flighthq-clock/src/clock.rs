@@ -11,13 +11,23 @@ use flighthq_types::{Clock, ClockOptions};
 
 // Source: upstream/packages/clock/src/clock.ts:6 (sha256:67ae767fcb7f925e8bdcc584678906522628b2d6627f52cd42fb5de3d302297e)
 pub fn add_clock_child(parent: &mut Clock, child: &mut Clock) -> () {
-    if ((child.parent).clone()) == Some((*parent).clone()) {
+    if ((child.parent).as_deref().cloned()) == Some((*parent).clone()) {
         return;
     }
-    if ((child.parent).clone()).is_some() {
-        remove_clock_child(child.parent.as_mut().unwrap(), child);
+    if ((child.parent).as_deref().cloned()).is_some() {
+        {
+            let mut __flight_argument_0 = child
+                .parent
+                .replace(Box::new(Default::default()))
+                .expect("narrowed recursive field was absent");
+            let __flight_result = remove_clock_child(&mut *__flight_argument_0, child);
+            if child.parent.is_some() {
+                child.parent = Some(__flight_argument_0);
+            }
+            __flight_result
+        };
     }
-    child.parent = Some((*parent).clone());
+    child.parent = Some(Box::new((*parent).clone()));
     parent.children.push(((*child).clone()).clone());
 }
 
@@ -68,8 +78,18 @@ pub fn create_clock(options: Option<ClockOptions>) -> Clock {
 
 // Source: upstream/packages/clock/src/clock.ts:56 (sha256:d654ecb7d75778d2bc4b2fbc2fe90c930a32e598a4639a4a91b284c11985718c)
 pub fn dispose_clock(clock: &mut Clock) -> () {
-    if ((clock.parent).clone()).is_some() {
-        remove_clock_child(clock.parent.as_mut().unwrap(), clock);
+    if ((clock.parent).as_deref().cloned()).is_some() {
+        {
+            let mut __flight_argument_0 = clock
+                .parent
+                .replace(Box::new(Default::default()))
+                .expect("narrowed recursive field was absent");
+            let __flight_result = remove_clock_child(&mut *__flight_argument_0, clock);
+            if clock.parent.is_some() {
+                clock.parent = Some(__flight_argument_0);
+            }
+            __flight_result
+        };
     }
     {
         let mut i = 0.0_f64;
@@ -83,24 +103,24 @@ pub fn dispose_clock(clock: &mut Clock) -> () {
     }
     clock.children.clear();
     if ((clock.on_tick).clone()).is_some() {
-        clear_signal(&mut clock.on_tick);
+        clear_signal(clock.on_tick.as_mut().unwrap());
     }
 }
 
 // Source: upstream/packages/clock/src/clock.ts:69 (sha256:117a788cea03f0d05b139bdaf6200843d508a8b743234552ac899617eebb73ed)
 pub fn get_clock_effective_scale(clock: &mut Clock) -> f64 {
     let mut scale = clock.scale;
-    let mut current: Option<Clock> = (clock.parent).clone();
+    let mut current: Option<Clock> = (clock.parent).as_deref().cloned();
     while (current).is_some() {
         scale *= current.as_mut().unwrap().scale;
-        current = (current.as_mut().unwrap().parent).clone();
+        current = (current.as_mut().unwrap().parent).as_deref().cloned();
     }
     return scale;
 }
 
 // Source: upstream/packages/clock/src/clock.ts:81 (sha256:63fab6c43184be1e74ebf0e90578139752db73173af703fd4feb5554cc79242e)
 pub fn get_clock_parent(clock: &Clock) -> Option<Clock> {
-    return (clock.parent).clone();
+    return (clock.parent).as_deref().cloned();
 }
 
 // Source: upstream/packages/clock/src/clock.ts:87 (sha256:94d1d81f53c1df88a647fb9f771812bec263d9a53a8c84b6554ca25f3bf79f40)
@@ -110,7 +130,7 @@ pub fn is_clock_effectively_paused(clock: &mut Clock) -> bool {
         if current.as_mut().unwrap().paused {
             return true;
         }
-        current = (current.as_mut().unwrap().parent).clone();
+        current = (current.as_mut().unwrap().parent).as_deref().cloned();
     }
     return false;
 }

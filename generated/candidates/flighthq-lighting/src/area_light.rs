@@ -150,12 +150,13 @@ pub fn set_area_light_orientation(
                 let __flight_argument_1 = (out.right.x * existing_right_len);
                 let __flight_argument_2 = (out.right.y * existing_right_len);
                 let __flight_argument_3 = (out.right.z * existing_right_len);
-                set_vector3(
+                let __flight_result = set_vector3(
                     &mut out.right,
                     __flight_argument_1,
                     __flight_argument_2,
                     __flight_argument_3,
-                )
+                );
+                __flight_result
             };
         }
     }
@@ -171,12 +172,13 @@ pub fn set_area_light_orientation(
                 let __flight_argument_1 = (out.up.x * existing_up_len);
                 let __flight_argument_2 = (out.up.y * existing_up_len);
                 let __flight_argument_3 = (out.up.z * existing_up_len);
-                set_vector3(
+                let __flight_result = set_vector3(
                     &mut out.up,
                     __flight_argument_1,
                     __flight_argument_2,
                     __flight_argument_3,
-                )
+                );
+                __flight_result
             };
         }
     }

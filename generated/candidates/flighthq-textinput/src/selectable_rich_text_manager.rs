@@ -1085,7 +1085,9 @@ pub fn dispatch_selectable_rich_text_wheel(
     }
     {
         let __flight_argument_1 = (target.as_mut().unwrap().data.scroll_v + (delta_lines).round());
-        set_rich_text_scroll_v(&mut target.as_mut().unwrap(), __flight_argument_1, None)
+        let __flight_result =
+            set_rich_text_scroll_v(&mut target.as_mut().unwrap(), __flight_argument_1, None);
+        __flight_result
     };
 }
 

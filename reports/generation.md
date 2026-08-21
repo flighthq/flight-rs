@@ -8,8 +8,8 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | Default-generated packages | 144 |
 | Emittable packages | 40 |
 | Blocked packages | 104 |
-| Compiled candidates | 18 |
-| Compile-blocked candidates | 5 |
+| Compiled candidates | 19 |
+| Compile-blocked candidates | 4 |
 | Dependency-blocked candidates | 15 |
 | Cultivated packages | 1 |
 | Host-bound packages | 4 |
@@ -48,7 +48,7 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/capture` | generated | blocked | source-blocked | 3/4 | 10/12 | 2 | 2/2 | 1 | 2 | no |
 | `@flighthq/clip` | generated | blocked | source-blocked | 2/4 | 26/26 | 0 | 3/4 | 0 | 2 | no |
 | `@flighthq/clipboard` | generated | blocked | source-blocked | 2/3 | 29/32 | 3 | 4/4 | 0 | 2 | no |
-| `@flighthq/clock` | generated | emittable | compile-blocked | 4/4 | 14/14 | 0 | 1/1 | 0 | 0 | no |
+| `@flighthq/clock` | generated | emittable | compiled | 4/4 | 14/14 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/collision` | generated | blocked | source-blocked | 16/20 | 60/54 | 0 | 2/2 | 0 | 4 | no |
 | `@flighthq/color` | generated | emittable | compiled | 11/11 | 31/31 | 0 | 19/45 | 0 | 0 | no |
 | `@flighthq/compression` | generated | blocked | source-blocked | 3/4 | 6/6 | 0 | 4/5 | 0 | 1 | no |
@@ -1479,16 +1479,6 @@ Disposition partition: 177 eligible = 14 portable executable + 0 host placeholde
 - **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
 - **E0599** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: no method named `is_some` found for enum `FlightValue` in the current scope
 - **E0599** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: no method named `is_some` found for enum `FlightValue` in the current scope
-
-### `@flighthq/clock`
-
-- **E0308** `generated/candidates/flighthq-clock/src/clock.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-clock/src/clock.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-clock/src/clock.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-clock/src/clock.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-clock/src/clock.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-clock/src/clock.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-clock/src/clock.rs`: mismatched types
 
 ### `@flighthq/protocol`
 

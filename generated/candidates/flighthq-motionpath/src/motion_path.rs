@@ -34,12 +34,13 @@ pub fn create_motion_path(
 pub fn get_motion_path_heading(mp: &mut MotionPath) -> f64 {
     {
         let __flight_argument_0 = (mp.path).clone();
-        get_path_tangent_at_distance(
+        let __flight_result = get_path_tangent_at_distance(
             &__flight_argument_0,
             mp.distance,
             &mut (*SCRATCH_TANGENT.lock().unwrap()),
             None,
-        )
+        );
+        __flight_result
     };
     return ((*SCRATCH_TANGENT.lock().unwrap()).y).atan2((*SCRATCH_TANGENT.lock().unwrap()).x);
 }
@@ -56,13 +57,14 @@ pub fn get_motion_path_position(
 ) -> bool {
     return {
         let __flight_argument_0 = (mp.path).clone();
-        get_path_position_at_distance(
+        let __flight_result = get_path_position_at_distance(
             &__flight_argument_0,
             mp.distance,
             point_out,
             tangent_out,
             None,
-        )
+        );
+        __flight_result
     };
 }
 

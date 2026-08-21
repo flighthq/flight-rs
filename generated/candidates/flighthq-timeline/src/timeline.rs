@@ -196,7 +196,8 @@ pub fn goto_and_play_timeline(
     play_timeline(timeline);
     {
         let __flight_argument_1 = resolve_frame(timeline, &((*frame).clone()));
-        seek_timeline(timeline, __flight_argument_1)
+        let __flight_result = seek_timeline(timeline, __flight_argument_1);
+        __flight_result
     };
 }
 
@@ -208,7 +209,8 @@ pub fn goto_and_stop_timeline(
     stop_timeline(timeline);
     {
         let __flight_argument_1 = resolve_frame(timeline, &((*frame).clone()));
-        seek_timeline(timeline, __flight_argument_1)
+        let __flight_result = seek_timeline(timeline, __flight_argument_1);
+        __flight_result
     };
 }
 
@@ -217,7 +219,8 @@ pub fn next_frame_timeline(timeline: &mut Timeline) -> () {
     stop_timeline(timeline);
     {
         let __flight_argument_1 = (timeline.current_frame + 1.0_f64);
-        seek_timeline(timeline, __flight_argument_1)
+        let __flight_result = seek_timeline(timeline, __flight_argument_1);
+        __flight_result
     };
 }
 
@@ -235,7 +238,8 @@ pub fn prev_frame_timeline(timeline: &mut Timeline) -> () {
     stop_timeline(timeline);
     {
         let __flight_argument_1 = (timeline.current_frame - 1.0_f64);
-        seek_timeline(timeline, __flight_argument_1)
+        let __flight_result = seek_timeline(timeline, __flight_argument_1);
+        __flight_result
     };
 }
 

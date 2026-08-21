@@ -937,13 +937,14 @@ pub fn append_text_input(source: &mut RichText, text: String) -> () {
     {
         let __flight_argument_1 = (source.data.text.encode_utf16().count() as f64);
         let __flight_argument_2 = (source.data.text.encode_utf16().count() as f64);
-        replace_text_input(
+        let __flight_result = replace_text_input(
             source,
             __flight_argument_1,
             __flight_argument_2,
             (text).clone(),
             None,
-        )
+        );
+        __flight_result
     };
 }
 
@@ -1635,13 +1636,14 @@ pub fn replace_selected_text_input(
     {
         let __flight_argument_1 = get_text_input_selection_begin_index(source);
         let __flight_argument_2 = get_text_input_selection_end_index(source);
-        replace_text_input(
+        let __flight_result = replace_text_input(
             source,
             __flight_argument_1,
             __flight_argument_2,
             (text).clone(),
             Some(((options).clone().unwrap()).clone()),
-        )
+        );
+        __flight_result
     };
 }
 
@@ -1838,13 +1840,14 @@ pub fn replace_text_input(
                 __flight_record
             })
         };
-        adjust_text_format_ranges(
+        let __flight_result = adjust_text_format_ranges(
             &mut source.data.text_format_ranges,
             __flight_argument_1,
             start,
             end,
             (value.encode_utf16().count() as f64),
-        )
+        );
+        __flight_result
     };
     state.desired_caret_x = DESIRED_CARET_X_UNSET;
     set_text_input_selection(

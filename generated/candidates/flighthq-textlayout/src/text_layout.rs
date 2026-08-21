@@ -72,7 +72,8 @@ pub fn compute_text_layout(out: &mut TextLayoutResult, params: &mut TextLayoutPa
     );
     {
         let __flight_argument_1 = (out.groups).clone();
-        write_line_metrics(out, &__flight_argument_1)
+        let __flight_result = write_line_metrics(out, &__flight_argument_1);
+        __flight_result
     };
     apply_alignment(
         &out.groups,

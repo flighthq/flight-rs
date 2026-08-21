@@ -375,27 +375,41 @@ pub fn create_gl_application_render_view(
         x: None,
         y: None,
     }));
-    return create_application_render_view(
-        (window).clone(),
-        (render_state).clone(),
-        ((render_target).clone().unwrap()).clone(),
-        (viewport).clone(),
-        std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-            move |__flight_argument_0: State,
-                  __flight_argument_1: Target,
-                  __flight_argument_2: f64,
-                  __flight_argument_3: f64|
-                  -> () {
-                resize_gl_application_render_view(
-                    &mut __flight_argument_0,
-                    &mut __flight_argument_1,
-                    __flight_argument_2,
-                    __flight_argument_3,
-                )
-            },
-        )
-            as Box<dyn FnMut(State, Target, f64, f64) -> () + Send + 'static>)),
-    );
+    return {
+        let __flight_source = &(create_application_render_view(
+            (window).clone(),
+            (render_state).clone(),
+            ((render_target).clone().unwrap()).clone(),
+            (viewport).clone(),
+            std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+                move |mut __flight_argument_0: GlRenderState,
+                      mut __flight_argument_1: GlRenderTarget,
+                      __flight_argument_2: f64,
+                      __flight_argument_3: f64|
+                      -> () {
+                    resize_gl_application_render_view(
+                        &mut __flight_argument_0,
+                        &mut __flight_argument_1,
+                        __flight_argument_2,
+                        __flight_argument_3,
+                    )
+                },
+            )
+                as Box<
+                    dyn FnMut(GlRenderState, GlRenderTarget, f64, f64) -> () + Send + 'static,
+                >)),
+        ));
+        GlApplicationRenderView {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            __flight_entity_runtime: std::sync::Arc::clone(
+                &__flight_source.__flight_entity_runtime,
+            ),
+            render_state: (__flight_source.render_state).clone(),
+            render_target: (__flight_source.render_target).clone(),
+            viewport: (__flight_source.viewport).clone(),
+            window: (__flight_source.window).clone(),
+        }
+    };
 }
 
 // Source: upstream/packages/application-gl/src/glApplicationRenderView.ts:51 (sha256:b6260e30c8ee9793dadea96ea612fb08ac6c69b87764d4250d91cce4ad757e90)
