@@ -197,7 +197,7 @@ pub fn parse_bitmap_font_fnt(
     }
     return build_bitmap_font_from_record(
         (record.as_ref().unwrap()).clone(),
-        Some(((options).clone().unwrap()).clone()),
+        ((options).clone()).clone(),
     );
 }
 

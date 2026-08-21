@@ -8,12 +8,11 @@
 
 use crate::{get_gaussian_render_effect_padding, register_render_effect_padding_resolver};
 use flighthq_types::{
-    BlendMode, EffectSourceMode, Matrix, OuterGlowEffect, RenderEffect, RenderEffectPadding,
-    RenderState, Scene2DClipHooks, Scene3DGraphSyncPolicy,
+    EffectSourceMode, OuterGlowEffect, RenderEffect, RenderEffectPadding, RenderState,
 };
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord3817894418 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha: Option<f64>,
     pub blur_x: Option<f64>,
@@ -23,29 +22,7 @@ pub struct FlightOmitRecord1 {
     pub source_mode: Option<EffectSourceMode>,
     pub strength: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord2 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub allow_smoothing: Option<bool>,
-    pub background_color: Option<f64>,
-    pub background_color_rgba: Option<Vec<f64>>,
-    pub background_color_string: Option<String>,
-    pub current_clip_depth: Option<f64>,
-    pub display_object_clip_hooks: Option<Scene2DClipHooks>,
-    pub pixel_ratio: Option<f64>,
-    pub render_alpha: Option<f64>,
-    pub render_blend_mode: Option<BlendMode>,
-    pub render_transform2_d: Option<Matrix>,
-    pub scene_graph_sync_policy: Option<Scene3DGraphSyncPolicy>,
-    pub round_pixels: Option<bool>,
-}
-impl PartialEq for FlightPartialRecord2 {
+impl PartialEq for FlightOmitRecord3817894418 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -53,17 +30,17 @@ impl PartialEq for FlightPartialRecord2 {
 
 // Source: upstream/packages/effects/src/outerGlowEffect.ts:6 (sha256:9e9b60be5f480a66fef755ca2d03553cc8be4a2e4ef7b2029ffd4663a8a3762c)
 #[derive(Clone, Default)]
-struct CreateOuterGlowEffectRecord11 {
+struct CreateOuterGlowEffectRecord10 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateOuterGlowEffectRecord11 {
+impl PartialEq for CreateOuterGlowEffectRecord10 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-pub fn create_outer_glow_effect(options: Option<FlightOmitRecord1>) -> OuterGlowEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_outer_glow_effect(options: Option<FlightOmitRecord3817894418>) -> OuterGlowEffect {
+    let options = options.unwrap_or(FlightOmitRecord3817894418 {
         __flight_identity: std::sync::Arc::new(()),
         alpha: None,
         blur_x: None,
@@ -74,7 +51,7 @@ pub fn create_outer_glow_effect(options: Option<FlightOmitRecord1>) -> OuterGlow
         strength: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         OuterGlowEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "OuterGlowEffect".to_owned(),

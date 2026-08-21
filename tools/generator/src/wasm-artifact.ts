@@ -2,8 +2,8 @@ import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 
-const artifactPath = 'packages/bitmap-rs/src/wasm/surfaceWasmBytes.ts';
-const wasmCrateManifest = 'generated/crates/flighthq-surface-wasm/Cargo.toml';
+const artifactPath = 'packages/bitmap-rs/src/wasm/bitmapWasmBytes.ts';
+const wasmCrateManifest = 'generated/crates/flighthq-bitmap-wasm/Cargo.toml';
 const buildInputs = [
   'Cargo.lock',
   'Cargo.toml',
@@ -64,7 +64,7 @@ function renderEmbeddedWasm(inputHash: string, bytes: Uint8Array): string {
   const outputHash = sha256(bytes);
   const base64 = Buffer.from(bytes).toString('base64');
   return `// GENERATED — do not edit by hand. Produced by scripts/embed-wasm.ts from
-// generated/crates/flighthq-surface-wasm. Holds the wasm module as base64 so init is
+// generated/crates/flighthq-bitmap-wasm. Holds the wasm module as base64 so init is
 // synchronous and needs no file read or network fetch in any environment.
 // wasm-input-sha256: ${inputHash}
 // wasm-output-sha256: ${outputHash}
@@ -79,7 +79,7 @@ function decodeBase64(value: string): Uint8Array {
   return out;
 }
 
-export const surfaceWasmBytes: Uint8Array = decodeBase64(base64);
+export const bitmapWasmBytes: Uint8Array = decodeBase64(base64);
 `;
 }
 

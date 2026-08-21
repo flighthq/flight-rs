@@ -9,12 +9,12 @@
 use flighthq_types::HalftoneEffect;
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord1456389143 {
     pub __flight_identity: std::sync::Arc<()>,
     pub scale: Option<f64>,
     pub angle: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord1456389143 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -31,14 +31,14 @@ impl PartialEq for CreateHalftoneEffectRecord2 {
     }
 }
 
-pub fn create_halftone_effect(options: Option<FlightOmitRecord1>) -> HalftoneEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_halftone_effect(options: Option<FlightOmitRecord1456389143>) -> HalftoneEffect {
+    let options = options.unwrap_or(FlightOmitRecord1456389143 {
         __flight_identity: std::sync::Arc::new(()),
         scale: None,
         angle: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         HalftoneEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "HalftoneEffect".to_owned(),

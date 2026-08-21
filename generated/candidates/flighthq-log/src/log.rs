@@ -596,15 +596,12 @@ pub fn create_json_log_formatter() -> LogFormatter {
                     }
                     let __flight_key_2 = "level".to_owned();
                     let __flight_value_2 = {
-                        let __flight_portable_source = _LEVEL_NAMES
+                        let __flight_portable_source = (_LEVEL_NAMES
                             .iter()
                             .find(|(entry_key, _)| entry_key == &level)
-                            .map(|(_, value)| value.clone())
-                            .clone();
-                        match (&__flight_portable_source).as_ref() {
-                            Some(value) => crate::FlightValue::String((value).clone()),
-                            None => crate::FlightValue::Null,
-                        }
+                            .map(|(_, value)| value.clone()))
+                        .expect("TypeScript Record key was absent");
+                        crate::FlightValue::String((&__flight_portable_source).clone())
                     };
                     if let Some((_, __flight_existing)) = __flight_record
                         .iter_mut()
@@ -888,10 +885,8 @@ pub fn create_text_log_formatter(options: Option<SharedStructuralRecord4>) -> Lo
                     (_LEVEL_NAMES
                         .iter()
                         .find(|(entry_key, _)| entry_key == &level)
-                        .map(|(_, value)| value.clone())
-                        .clone())
-                    .clone()
-                    .unwrap_or("unknown".to_owned()),
+                        .map(|(_, value)| value.clone()))
+                    .expect("TypeScript Record key was absent"),
                 );
             }
             parts.push(if (channel).is_some() {
@@ -1152,10 +1147,8 @@ pub fn get_log_level_name(level: LogLevel) -> String {
     return (_LEVEL_NAMES
         .iter()
         .find(|(entry_key, _)| entry_key == &level)
-        .map(|(_, value)| value.clone())
-        .clone())
-    .clone()
-    .unwrap_or("unknown".to_owned());
+        .map(|(_, value)| value.clone()))
+    .expect("TypeScript Record key was absent");
 }
 
 // Source: upstream/packages/log/src/log.ts:396 (sha256:2966a53ba71e6e4b24da3e0fe6e4b77d6872a7dca6fe47e958c664b5618d56e5)
@@ -2239,27 +2232,24 @@ fn _redact_path(obj: &mut Vec<(String, crate::FlightValue)>, parts: &Vec<String>
         };
         return;
     }
-    let next = obj
+    let next = (obj
         .iter()
         .find(|(entry_key, _)| entry_key == &(key).clone())
-        .map(|(_, value)| value.clone())
-        .clone();
-    if (((next).is_some())
-        && ((match (next).as_ref() {
-            None => "undefined",
-            Some(value) => match value {
-                crate::FlightValue::Undefined => "undefined",
-                crate::FlightValue::Null
-                | crate::FlightValue::Array(_)
-                | crate::FlightValue::Record(_)
-                | crate::FlightValue::Error { .. }
-                | crate::FlightValue::Object => "object",
-                crate::FlightValue::Bool(_) => "boolean",
-                crate::FlightValue::Number(_) => "number",
-                crate::FlightValue::String(_) => "string",
-                crate::FlightValue::Function => "function",
-                crate::FlightValue::Symbol => "symbol",
-            },
+        .map(|(_, value)| value.clone()))
+    .expect("TypeScript Record key was absent");
+    if ((!(matches!(&(next), crate::FlightValue::Null)))
+        && ((match &(next) {
+            crate::FlightValue::Undefined => "undefined",
+            crate::FlightValue::Null
+            | crate::FlightValue::Array(_)
+            | crate::FlightValue::Record(_)
+            | crate::FlightValue::Error { .. }
+            | crate::FlightValue::Object => "object",
+            crate::FlightValue::Bool(_) => "boolean",
+            crate::FlightValue::Number(_) => "number",
+            crate::FlightValue::String(_) => "string",
+            crate::FlightValue::Function => "function",
+            crate::FlightValue::Symbol => "symbol",
         })
         .to_owned()
             == "object"))
@@ -2270,7 +2260,7 @@ fn _redact_path(obj: &mut Vec<(String, crate::FlightValue)>, parts: &Vec<String>
             let __flight_value = crate::FlightValue::Record({
                 let mut __flight_record = Vec::new();
                 let __flight_spread_0 = {
-                    let __flight_portable_source = match (next.as_ref().unwrap()).clone() {
+                    let __flight_portable_source = match (next).clone() {
                         crate::FlightValue::Record(entries) => entries,
                         _ => panic!("TypeScript Record cast received a non-record portable value"),
                     };
@@ -2623,15 +2613,12 @@ fn _default_json_formatter(entry: &LogEntry) -> String {
             }
             let __flight_key_2 = "level".to_owned();
             let __flight_value_2 = {
-                let __flight_portable_source = _LEVEL_NAMES
+                let __flight_portable_source = (_LEVEL_NAMES
                     .iter()
                     .find(|(entry_key, _)| entry_key == &level)
-                    .map(|(_, value)| value.clone())
-                    .clone();
-                match (&__flight_portable_source).as_ref() {
-                    Some(value) => crate::FlightValue::String((value).clone()),
-                    None => crate::FlightValue::Null,
-                }
+                    .map(|(_, value)| value.clone()))
+                .expect("TypeScript Record key was absent");
+                crate::FlightValue::String((&__flight_portable_source).clone())
             };
             if let Some((_, __flight_existing)) = __flight_record
                 .iter_mut()

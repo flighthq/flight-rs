@@ -7,40 +7,15 @@
 #![allow(unused_parens)]
 
 use crate::{get_gaussian_render_effect_padding, register_render_effect_padding_resolver};
-use flighthq_types::{
-    BlendMode, BlurEffect, Matrix, RenderEffect, RenderEffectPadding, RenderState,
-    Scene2DClipHooks, Scene3DGraphSyncPolicy,
-};
+use flighthq_types::{BlurEffect, RenderEffect, RenderEffectPadding, RenderState};
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord2484562537 {
     pub __flight_identity: std::sync::Arc<()>,
     pub blur_x: Option<f64>,
     pub blur_y: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord2 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub allow_smoothing: Option<bool>,
-    pub background_color: Option<f64>,
-    pub background_color_rgba: Option<Vec<f64>>,
-    pub background_color_string: Option<String>,
-    pub current_clip_depth: Option<f64>,
-    pub display_object_clip_hooks: Option<Scene2DClipHooks>,
-    pub pixel_ratio: Option<f64>,
-    pub render_alpha: Option<f64>,
-    pub render_blend_mode: Option<BlendMode>,
-    pub render_transform2_d: Option<Matrix>,
-    pub scene_graph_sync_policy: Option<Scene3DGraphSyncPolicy>,
-    pub round_pixels: Option<bool>,
-}
-impl PartialEq for FlightPartialRecord2 {
+impl PartialEq for FlightOmitRecord2484562537 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -48,23 +23,23 @@ impl PartialEq for FlightPartialRecord2 {
 
 // Source: upstream/packages/effects/src/blurEffect.ts:8 (sha256:c201dc944b5cc997ed7759922a210418e3312ca5fa5dc98527912545d52f144e)
 #[derive(Clone, Default)]
-struct CreateBlurEffectRecord11 {
+struct CreateBlurEffectRecord10 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateBlurEffectRecord11 {
+impl PartialEq for CreateBlurEffectRecord10 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-pub fn create_blur_effect(options: Option<FlightOmitRecord1>) -> BlurEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_blur_effect(options: Option<FlightOmitRecord2484562537>) -> BlurEffect {
+    let options = options.unwrap_or(FlightOmitRecord2484562537 {
         __flight_identity: std::sync::Arc::new(()),
         blur_x: None,
         blur_y: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         BlurEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "BlurEffect".to_owned(),

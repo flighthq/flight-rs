@@ -9,14 +9,14 @@
 use flighthq_types::VignetteEffect;
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord1667963307 {
     pub __flight_identity: std::sync::Arc<()>,
     pub intensity: Option<f64>,
     pub radius: Option<f64>,
     pub softness: Option<f64>,
     pub color: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord1667963307 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -33,8 +33,8 @@ impl PartialEq for CreateVignetteEffectRecord2 {
     }
 }
 
-pub fn create_vignette_effect(options: Option<FlightOmitRecord1>) -> VignetteEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_vignette_effect(options: Option<FlightOmitRecord1667963307>) -> VignetteEffect {
+    let options = options.unwrap_or(FlightOmitRecord1667963307 {
         __flight_identity: std::sync::Arc::new(()),
         intensity: None,
         radius: None,
@@ -42,7 +42,7 @@ pub fn create_vignette_effect(options: Option<FlightOmitRecord1>) -> VignetteEff
         color: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         VignetteEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "VignetteEffect".to_owned(),

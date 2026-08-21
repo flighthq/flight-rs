@@ -9,14 +9,14 @@
 use flighthq_types::FilmEmulationEffect;
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord2425118314 {
     pub __flight_identity: std::sync::Arc<()>,
     pub gate_weave: Option<f64>,
     pub grain_intensity: Option<f64>,
     pub halation_radius: Option<f64>,
     pub halation_strength: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord2425118314 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -33,8 +33,10 @@ impl PartialEq for CreateFilmEmulationEffectRecord2 {
     }
 }
 
-pub fn create_film_emulation_effect(options: Option<FlightOmitRecord1>) -> FilmEmulationEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_film_emulation_effect(
+    options: Option<FlightOmitRecord2425118314>,
+) -> FilmEmulationEffect {
+    let options = options.unwrap_or(FlightOmitRecord2425118314 {
         __flight_identity: std::sync::Arc::new(()),
         gate_weave: None,
         grain_intensity: None,
@@ -42,7 +44,7 @@ pub fn create_film_emulation_effect(options: Option<FlightOmitRecord1>) -> FilmE
         halation_strength: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         FilmEmulationEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "FilmEmulationEffect".to_owned(),

@@ -38,5 +38,5 @@ export {
   setBitmapAlpha,
   setBitmapColorMatrixIdentity,
   unpremultiplyBitmapPixels,
-} from './surfaceWasm';
+} from './bitmapWasm';
 export * from '@flighthq/bitmap';

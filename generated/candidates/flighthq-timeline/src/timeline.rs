@@ -30,7 +30,7 @@ impl PartialEq for SharedStructuralRecord1 {
 }
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord2 {
+pub struct FlightPartialRecord1338338174 {
     pub __flight_identity: std::sync::Arc<()>,
     pub source: Option<TimelineSource>,
     pub target: Option<Node2D>,
@@ -43,7 +43,7 @@ pub struct FlightPartialRecord2 {
     pub play_mode: Option<TimelinePlayMode>,
     pub signals: Option<TimelineSignals>,
 }
-impl PartialEq for FlightPartialRecord2 {
+impl PartialEq for FlightPartialRecord1338338174 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -86,7 +86,7 @@ pub fn clear_timeline_frame_scripts(timeline: &mut Timeline) -> () {
 }
 
 // Source: upstream/packages/timeline/src/timeline.ts:22 (sha256:6e0c755667cddc3c06b596bc843d40f250047d500f1d3a6adc25b36018eeeedd)
-pub fn create_timeline(obj: Option<FlightPartialRecord2>) -> Timeline {
+pub fn create_timeline(obj: Option<FlightPartialRecord1338338174>) -> Timeline {
     return Timeline {
         __flight_identity: std::sync::Arc::new(()),
         source: obj.as_ref().and_then(|value| (value.source).clone()),

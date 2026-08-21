@@ -57,7 +57,7 @@ pub fn advance_clock(clock: &mut Clock, delta_seconds: f64) -> () {
 
 // Source: upstream/packages/clock/src/clock.ts:32 (sha256:827988cde163cc0a8c19ea99806fa81cc5522fcb1c54a74cd7c970613566273a)
 pub fn create_child_clock(parent: &mut Clock, options: Option<ClockOptions>) -> Clock {
-    let mut child = create_clock(Some(((options).clone().unwrap()).clone()));
+    let mut child = create_clock(((options).clone()).clone());
     add_clock_child(parent, &mut child);
     return child;
 }

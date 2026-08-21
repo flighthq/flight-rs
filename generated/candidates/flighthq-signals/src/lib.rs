@@ -17,17 +17,17 @@ pub use flighthq_types::{
     install_native_host_constructors, set_interval, set_timeout,
 };
 
-mod _internal_index;
+pub mod _internal_index;
 pub use _internal_index::*;
-mod _internal_internal;
+pub mod _internal_internal;
 pub use _internal_internal::*;
-mod contract;
+pub mod contract;
 pub use contract::*;
-mod emitter;
+pub mod emitter;
 pub use emitter::*;
-mod signal;
+pub mod signal;
 pub use signal::*;
-mod slot;
+pub mod slot;
 pub use slot::*;
-mod throttle;
+pub mod throttle;
 pub use throttle::*;

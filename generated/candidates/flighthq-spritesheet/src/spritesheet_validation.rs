@@ -18,17 +18,12 @@ pub fn validate_spritesheet(
     let mut diagnostics: Vec<SpritesheetValidationDiagnostic> = vec![];
     let atlas = (spritesheet.atlas).clone();
     if (atlas).is_some() {
-        let region_ids: Vec<crate::OpaqueHostValue> = {
+        let region_ids: Vec<f64> = {
             let mut __flight_set = Vec::new();
             for __flight_value in ((atlas.as_ref().unwrap().regions).clone())
                 .iter()
                 .cloned()
-                .map(|r: TextureAtlasRegion| -> crate::OpaqueHostValue {
-                    {
-                        let __flight_portable_source = r.id;
-                        crate::FlightValue::Number(*(&__flight_portable_source) as f64)
-                    }
-                })
+                .map(|r: TextureAtlasRegion| -> f64 { r.id })
                 .collect::<Vec<_>>()
             {
                 if !__flight_set.contains(&__flight_value) {
@@ -40,12 +35,10 @@ pub fn validate_spritesheet(
         {
             let mut fi = 0.0_f64;
             while (fi < (spritesheet.frames.len() as f64)) {
-                if (!region_ids.iter().any(|item| {
-                    item == &{
-                        let __flight_portable_source = spritesheet.frames[fi as usize].id;
-                        crate::FlightValue::Number(*(&__flight_portable_source) as f64)
-                    }
-                })) {
+                if (!region_ids
+                    .iter()
+                    .any(|item| item == &spritesheet.frames[fi as usize].id))
+                {
                     diagnostics.push(SpritesheetValidationDiagnostic {
             __flight_identity: std::sync::Arc::new(()),
             animation_name: None,

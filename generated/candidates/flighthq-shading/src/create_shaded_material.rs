@@ -18,6 +18,14 @@ pub fn create_shaded_material(options: Option<ShadedMaterialOptions>) -> ShadedM
         __flight_identity: std::sync::Arc::new(()),
         __flight_entity_runtime: Default::default(),
         kind: (shaded_material_kind_constant).to_owned(),
+        diffuse: Default::default(),
+        diffuse_map: Default::default(),
+        modifiers: Default::default(),
+        normal_map: Default::default(),
+        normal_scale: Default::default(),
+        shininess: Default::default(),
+        specular: Default::default(),
+        specular_map: Default::default(),
     }));
     material.alpha_cutoff = (options.as_ref().and_then(|value| value.alpha_cutoff))
         .clone()

@@ -8,13 +8,10 @@
 
 use crate::create_standard_pbr_material;
 use flighthq_color::get_color_luminance;
-use flighthq_types::{
-    BlendMode, Kind, MaterialAlphaMode, PhongMaterial, StandardPbrMaterial,
-    StandardPbrMaterialProperties, Texture,
-};
+use flighthq_types::{PhongMaterial, StandardPbrMaterial, Texture};
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord1 {
+pub struct FlightPartialRecord3905749610 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha_map: Option<Texture>,
     pub base_color: Option<f64>,
@@ -30,74 +27,7 @@ pub struct FlightPartialRecord1 {
     pub occlusion_strength: Option<f64>,
     pub roughness: Option<f64>,
 }
-impl PartialEq for FlightPartialRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord2 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub kind: Option<Kind>,
-    pub name: Option<String>,
-    pub alpha_cutoff: Option<f64>,
-    pub alpha_mode: Option<MaterialAlphaMode>,
-    pub blend_mode: Option<BlendMode>,
-    pub double_sided: Option<bool>,
-    pub extensions: Option<Vec<PbrExtension>>,
-    pub standard: Option<StandardPbrMaterialProperties>,
-    pub shader_key: Option<String>,
-    pub textures: Option<Vec<(String, Texture)>>,
-    pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
-    pub diffuse: Option<f64>,
-    pub diffuse_map: Option<Texture>,
-    pub emissive: Option<f64>,
-    pub emissive_map: Option<Texture>,
-    pub emissive_strength: Option<f64>,
-    pub glossiness: Option<f64>,
-    pub normal_map: Option<Texture>,
-    pub normal_scale: Option<f64>,
-    pub occlusion_map: Option<Texture>,
-    pub occlusion_strength: Option<f64>,
-    pub specular: Option<f64>,
-    pub specular_glossiness_map: Option<Texture>,
-}
-impl PartialEq for FlightPartialRecord2 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord3 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub kind: Option<Kind>,
-    pub name: Option<String>,
-    pub alpha_cutoff: Option<f64>,
-    pub alpha_mode: Option<MaterialAlphaMode>,
-    pub blend_mode: Option<BlendMode>,
-    pub double_sided: Option<bool>,
-    pub extensions: Option<Vec<PbrExtension>>,
-    pub standard: Option<StandardPbrMaterialProperties>,
-    pub shader_key: Option<String>,
-    pub textures: Option<Vec<(String, Texture)>>,
-    pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
-    pub alpha_map: Option<Texture>,
-    pub base_color: Option<f64>,
-    pub base_color_map: Option<Texture>,
-    pub emissive: Option<f64>,
-    pub emissive_map: Option<Texture>,
-    pub emissive_strength: Option<f64>,
-    pub metallic: Option<f64>,
-    pub metallic_roughness_map: Option<Texture>,
-    pub normal_map: Option<Texture>,
-    pub normal_scale: Option<f64>,
-    pub occlusion_map: Option<Texture>,
-    pub occlusion_strength: Option<f64>,
-    pub roughness: Option<f64>,
-}
-impl PartialEq for FlightPartialRecord3 {
+impl PartialEq for FlightPartialRecord3905749610 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -106,19 +36,37 @@ impl PartialEq for FlightPartialRecord3 {
 // Source: upstream/packages/materials/src/phongToPbr.ts:17 (sha256:4f0ee09a628abe5b3f48687b2bbca15325445116f4b5e22318de1aa8cadd0c92)
 pub fn convert_phong_to_standard_pbr_material(
     phong: &PhongMaterial,
-    opts: Option<FlightPartialRecord1>,
+    opts: Option<FlightPartialRecord3905749610>,
 ) -> StandardPbrMaterial {
-    return create_standard_pbr_material(Some(FlightPartialRecord3 {
-        base_color: Some(phong.diffuse),
-        base_color_map: (phong.diffuse_map).clone(),
-        metallic: Some(get_pbr_metallic_from_phong_specular(
-            phong.specular,
-            phong.diffuse,
-        )),
-        normal_map: (phong.normal_map).clone(),
-        normal_scale: Some(phong.normal_scale),
-        roughness: Some(get_pbr_roughness_from_phong_shininess(phong.shininess)),
-        ..((opts).clone().unwrap()).clone()
+    return create_standard_pbr_material(Some({
+        let __flight_spread_6 = ((opts).clone()).unwrap_or_default();
+        crate::pbr_materials::FlightPartialRecord3584171057 {
+            __flight_identity: std::sync::Arc::new(()),
+            kind: None,
+            name: None,
+            alpha_cutoff: None,
+            alpha_mode: None,
+            blend_mode: None,
+            double_sided: None,
+            extensions: None,
+            standard: None,
+            shader_key: None,
+            textures: None,
+            uniforms: None,
+            alpha_map: (__flight_spread_6.alpha_map).clone(),
+            base_color: __flight_spread_6.base_color,
+            base_color_map: (__flight_spread_6.base_color_map).clone(),
+            emissive: __flight_spread_6.emissive,
+            emissive_map: (__flight_spread_6.emissive_map).clone(),
+            emissive_strength: __flight_spread_6.emissive_strength,
+            metallic: __flight_spread_6.metallic,
+            metallic_roughness_map: (__flight_spread_6.metallic_roughness_map).clone(),
+            normal_map: (__flight_spread_6.normal_map).clone(),
+            normal_scale: __flight_spread_6.normal_scale,
+            occlusion_map: (__flight_spread_6.occlusion_map).clone(),
+            occlusion_strength: __flight_spread_6.occlusion_strength,
+            roughness: __flight_spread_6.roughness,
+        }
     }));
 }
 

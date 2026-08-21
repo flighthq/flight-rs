@@ -10,11 +10,12 @@ use crate::create_surface_material;
 use flighthq_types::{
     BLINN_PHONG_MATERIAL_KIND as blinn_phong_material_kind_constant, BlendMode, BlinnPhongMaterial,
     Kind, LAMBERT_MATERIAL_KIND as lambert_material_kind_constant, LambertMaterial,
-    MaterialAlphaMode, PHONG_MATERIAL_KIND as phong_material_kind_constant, PhongMaterial, Texture,
+    MaterialAlphaMode, PHONG_MATERIAL_KIND as phong_material_kind_constant, PbrExtension,
+    PhongMaterial, StandardPbrMaterialProperties, SurfaceMaterialOptions, Texture,
 };
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord1 {
+pub struct FlightPartialRecord2948987033 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<Kind>,
     pub name: Option<String>,
@@ -36,14 +37,14 @@ pub struct FlightPartialRecord1 {
     pub specular: Option<f64>,
     pub specular_map: Option<Texture>,
 }
-impl PartialEq for FlightPartialRecord1 {
+impl PartialEq for FlightPartialRecord2948987033 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord2 {
+pub struct FlightPartialRecord1398741691 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<Kind>,
     pub name: Option<String>,
@@ -61,14 +62,14 @@ pub struct FlightPartialRecord2 {
     pub emissive: Option<f64>,
     pub emissive_map: Option<Texture>,
 }
-impl PartialEq for FlightPartialRecord2 {
+impl PartialEq for FlightPartialRecord1398741691 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord3 {
+pub struct FlightPartialRecord2317694896 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<Kind>,
     pub name: Option<String>,
@@ -89,18 +90,56 @@ pub struct FlightPartialRecord3 {
     pub specular: Option<f64>,
     pub specular_map: Option<Texture>,
 }
-impl PartialEq for FlightPartialRecord3 {
+impl PartialEq for FlightPartialRecord2317694896 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 // Source: upstream/packages/materials/src/classicMaterials.ts:8 (sha256:7045d34755592ea9e13fccfcdad918a9931c1da687e3c570e52bbc69bbb40a7c)
-pub fn create_blinn_phong_material(opts: Option<FlightPartialRecord1>) -> BlinnPhongMaterial {
-    let mut material = create_surface_material(
-        (blinn_phong_material_kind_constant).to_owned(),
-        Some((((opts).clone()).clone().unwrap()).clone()),
-    );
+pub fn create_blinn_phong_material(
+    opts: Option<FlightPartialRecord2948987033>,
+) -> BlinnPhongMaterial {
+    let mut material = {
+        let __flight_source = &(create_surface_material(
+            (blinn_phong_material_kind_constant).to_owned(),
+            ((opts).clone()).as_ref().map(|__flight_value| {
+                let __flight_source = &(__flight_value);
+                SurfaceMaterialOptions {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    alpha_cutoff: __flight_source.alpha_cutoff,
+                    alpha_mode: (__flight_source.alpha_mode).clone(),
+                    blend_mode: (__flight_source.blend_mode).clone(),
+                    double_sided: __flight_source.double_sided,
+                }
+            }),
+        ));
+        BlinnPhongMaterial {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            __flight_entity_runtime: std::sync::Arc::clone(
+                &__flight_source.__flight_entity_runtime,
+            ),
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+            alpha_cutoff: __flight_source.alpha_cutoff,
+            alpha_mode: (__flight_source.alpha_mode).clone(),
+            blend_mode: (__flight_source.blend_mode).clone(),
+            double_sided: __flight_source.double_sided,
+            extensions: (__flight_source.extensions).clone(),
+            standard: (__flight_source.standard).clone(),
+            shader_key: (__flight_source.shader_key).clone(),
+            textures: (__flight_source.textures).clone(),
+            uniforms: (__flight_source.uniforms).clone(),
+            alpha_map: Default::default(),
+            diffuse: Default::default(),
+            diffuse_map: Default::default(),
+            normal_map: Default::default(),
+            normal_scale: Default::default(),
+            shininess: Default::default(),
+            specular: Default::default(),
+            specular_map: Default::default(),
+        }
+    };
     material.alpha_map = opts.as_ref().and_then(|value| (value.alpha_map).clone());
     material.diffuse = (opts.as_ref().and_then(|value| value.diffuse))
         .clone()
@@ -121,11 +160,43 @@ pub fn create_blinn_phong_material(opts: Option<FlightPartialRecord1>) -> BlinnP
 }
 
 // Source: upstream/packages/materials/src/classicMaterials.ts:23 (sha256:d79c4aa376c8c331d20a3019e39f21fa01aa6a8ccdfbcd9990f7187bf35506b3)
-pub fn create_lambert_material(opts: Option<FlightPartialRecord2>) -> LambertMaterial {
-    let mut material = create_surface_material(
-        (lambert_material_kind_constant).to_owned(),
-        Some((((opts).clone()).clone().unwrap()).clone()),
-    );
+pub fn create_lambert_material(opts: Option<FlightPartialRecord1398741691>) -> LambertMaterial {
+    let mut material = {
+        let __flight_source = &(create_surface_material(
+            (lambert_material_kind_constant).to_owned(),
+            ((opts).clone()).as_ref().map(|__flight_value| {
+                let __flight_source = &(__flight_value);
+                SurfaceMaterialOptions {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    alpha_cutoff: __flight_source.alpha_cutoff,
+                    alpha_mode: (__flight_source.alpha_mode).clone(),
+                    blend_mode: (__flight_source.blend_mode).clone(),
+                    double_sided: __flight_source.double_sided,
+                }
+            }),
+        ));
+        LambertMaterial {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            __flight_entity_runtime: std::sync::Arc::clone(
+                &__flight_source.__flight_entity_runtime,
+            ),
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+            alpha_cutoff: __flight_source.alpha_cutoff,
+            alpha_mode: (__flight_source.alpha_mode).clone(),
+            blend_mode: (__flight_source.blend_mode).clone(),
+            double_sided: __flight_source.double_sided,
+            extensions: (__flight_source.extensions).clone(),
+            standard: (__flight_source.standard).clone(),
+            shader_key: (__flight_source.shader_key).clone(),
+            textures: (__flight_source.textures).clone(),
+            uniforms: (__flight_source.uniforms).clone(),
+            diffuse: Default::default(),
+            diffuse_map: Default::default(),
+            emissive: Default::default(),
+            emissive_map: Default::default(),
+        }
+    };
     material.diffuse = (opts.as_ref().and_then(|value| value.diffuse))
         .clone()
         .unwrap_or(4294967295.0_f64);
@@ -138,11 +209,46 @@ pub fn create_lambert_material(opts: Option<FlightPartialRecord2>) -> LambertMat
 }
 
 // Source: upstream/packages/materials/src/classicMaterials.ts:34 (sha256:d18bc4d13e57839d2e8579c260c27e2adc809be5702c7b7f1def49cfc5801768)
-pub fn create_phong_material(opts: Option<FlightPartialRecord3>) -> PhongMaterial {
-    let mut material = create_surface_material(
-        (phong_material_kind_constant).to_owned(),
-        Some((((opts).clone()).clone().unwrap()).clone()),
-    );
+pub fn create_phong_material(opts: Option<FlightPartialRecord2317694896>) -> PhongMaterial {
+    let mut material = {
+        let __flight_source = &(create_surface_material(
+            (phong_material_kind_constant).to_owned(),
+            ((opts).clone()).as_ref().map(|__flight_value| {
+                let __flight_source = &(__flight_value);
+                SurfaceMaterialOptions {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    alpha_cutoff: __flight_source.alpha_cutoff,
+                    alpha_mode: (__flight_source.alpha_mode).clone(),
+                    blend_mode: (__flight_source.blend_mode).clone(),
+                    double_sided: __flight_source.double_sided,
+                }
+            }),
+        ));
+        PhongMaterial {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            __flight_entity_runtime: std::sync::Arc::clone(
+                &__flight_source.__flight_entity_runtime,
+            ),
+            kind: (__flight_source.kind).clone(),
+            name: (__flight_source.name).clone(),
+            alpha_cutoff: __flight_source.alpha_cutoff,
+            alpha_mode: (__flight_source.alpha_mode).clone(),
+            blend_mode: (__flight_source.blend_mode).clone(),
+            double_sided: __flight_source.double_sided,
+            extensions: (__flight_source.extensions).clone(),
+            standard: (__flight_source.standard).clone(),
+            shader_key: (__flight_source.shader_key).clone(),
+            textures: (__flight_source.textures).clone(),
+            uniforms: (__flight_source.uniforms).clone(),
+            diffuse: Default::default(),
+            diffuse_map: Default::default(),
+            normal_map: Default::default(),
+            normal_scale: Default::default(),
+            shininess: Default::default(),
+            specular: Default::default(),
+            specular_map: Default::default(),
+        }
+    };
     material.diffuse = (opts.as_ref().and_then(|value| value.diffuse))
         .clone()
         .unwrap_or(4294967295.0_f64);

@@ -40,7 +40,7 @@ impl crate::FlightEntity for RenderCache {
 }
 
 // Source: upstream/packages/types/src/RenderCache.ts:20 (sha256:6635360182c2b3057df34a9155f11d6864b7b9058b15348f25c4f2386261f1c5)
-// TypeScript value namespace RenderCacheKind is represented by its generated Rust type.
+pub const RENDER_CACHE_KIND: &'static str = "RenderCache";
 
 // Source: upstream/packages/types/src/RenderCache.ts:21 (sha256:75a6755c719fdd03031052d9f81e51047022ed1aa09dfe2d66745548a451beeb)
-pub type RenderCacheKind = crate::OpaqueHostValue;
+pub type RenderCacheKind = String;

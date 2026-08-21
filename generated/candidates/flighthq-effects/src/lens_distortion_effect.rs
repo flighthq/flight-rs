@@ -9,12 +9,12 @@
 use flighthq_types::LensDistortionEffect;
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord1694725934 {
     pub __flight_identity: std::sync::Arc<()>,
     pub amount: Option<f64>,
     pub scale: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord1694725934 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -31,14 +31,16 @@ impl PartialEq for CreateLensDistortionEffectRecord2 {
     }
 }
 
-pub fn create_lens_distortion_effect(options: Option<FlightOmitRecord1>) -> LensDistortionEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_lens_distortion_effect(
+    options: Option<FlightOmitRecord1694725934>,
+) -> LensDistortionEffect {
+    let options = options.unwrap_or(FlightOmitRecord1694725934 {
         __flight_identity: std::sync::Arc::new(()),
         amount: None,
         scale: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         LensDistortionEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "LensDistortionEffect".to_owned(),

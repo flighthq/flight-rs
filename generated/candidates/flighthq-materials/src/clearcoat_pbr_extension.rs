@@ -14,7 +14,7 @@ use flighthq_types::{
 };
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord1 {
+pub struct FlightPartialRecord1825521990 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<Kind>,
     pub thickness: Option<f64>,
@@ -64,14 +64,16 @@ pub struct FlightPartialRecord1 {
     pub anisotropy_rotation: Option<f64>,
     pub anisotropy_strength: Option<f64>,
 }
-impl PartialEq for FlightPartialRecord1 {
+impl PartialEq for FlightPartialRecord1825521990 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 // Source: upstream/packages/materials/src/clearcoatPbrExtension.ts:8 (sha256:d237062b2ff6d794eb60ec116d9e4b98dd7c6c78022c87a6af00893f3ffcf9c3)
-pub fn create_clearcoat_pbr_extension(opts: Option<FlightPartialRecord1>) -> ClearcoatPbrExtension {
+pub fn create_clearcoat_pbr_extension(
+    opts: Option<FlightPartialRecord1825521990>,
+) -> ClearcoatPbrExtension {
     return create_entity(Some(ClearcoatPbrExtension {
         __flight_identity: std::sync::Arc::new(()),
         __flight_entity_runtime: Default::default(),

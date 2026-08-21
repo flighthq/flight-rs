@@ -17,5 +17,5 @@ pub use flighthq_types::{
     install_native_host_constructors, set_interval, set_timeout,
 };
 
-mod screen;
+pub mod screen;
 pub use screen::*;

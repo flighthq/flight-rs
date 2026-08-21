@@ -9,7 +9,7 @@
 use flighthq_signals::{create_signal, emit_signal};
 use flighthq_types::{
     RectangleLike, ScreenBackend, ScreenChangeEvent, ScreenChangedMetrics, ScreenColorSpace,
-    ScreenInfo, ScreenMode, ScreenOrientation, ScreenSignals, Vector2Like,
+    ScreenInfo, ScreenMode, ScreenOrientation, ScreenSignals, Vector2, Vector2Like,
 };
 
 #[derive(Clone, Default)]
@@ -705,7 +705,9 @@ pub fn get_screen_cursor_screen(out: &mut ScreenInfo) -> ScreenInfo {
             let __flight_source = &(_SCRATCH_POINT);
             Vector2Like {
                 __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
-                __flight_entity_runtime: Default::default(),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
                 x: __flight_source.x,
                 y: __flight_source.y,
             }
@@ -942,25 +944,12 @@ static _SIGNAL_SUBSCRIPTIONS: std::sync::LazyLock<
 > = std::sync::LazyLock::new(|| std::sync::Mutex::new(Vec::new()));
 
 // Source: upstream/packages/screen/src/screen.ts:774 (sha256:73604c011ae140a8578ea3a4bc8d91483155cadc9e970e79ffa1bbc94d2e2164)
-#[derive(Clone, Default)]
-pub(crate) struct ScratchPoint {
-    #[doc(hidden)]
-    pub __flight_identity: std::sync::Arc<()>,
-    pub x: f64,
-    pub y: f64,
-}
-impl PartialEq for ScratchPoint {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-static _SCRATCH_POINT: std::sync::LazyLock<ScratchPoint> =
-    std::sync::LazyLock::new(|| ScratchPoint {
-        __flight_identity: std::sync::Arc::new(()),
-        x: 0.0_f64,
-        y: 0.0_f64,
-    });
+static _SCRATCH_POINT: std::sync::LazyLock<Vector2> = std::sync::LazyLock::new(|| Vector2 {
+    __flight_identity: std::sync::Arc::new(()),
+    __flight_entity_runtime: Default::default(),
+    x: 0.0_f64,
+    y: 0.0_f64,
+});
 
 // Source: upstream/packages/screen/src/screen.ts:777 (sha256:5f65aea7b8ef8174e95bc26b2ec39e3a671f58113b9bb90dfae71afb12b9dd0c)
 fn copy_screen_info(src: &ScreenInfo, dst: &mut ScreenInfo) -> () {

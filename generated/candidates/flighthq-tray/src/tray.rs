@@ -220,6 +220,17 @@ pub fn get_tray_icon_bounds(tray: &TrayIcon) -> Option<RectangleLike> {
 }
 
 // Source: upstream/packages/tray/src/tray.ts:140 (sha256:a1b9ca170ae37495e197a95b7a1886a843f091f8875f7e8eefccae2adaf1964f)
+#[derive(Clone, Default)]
+struct ClosureContextRecord1 {
+    __flight_identity: std::sync::Arc<()>,
+    id: f64,
+}
+impl PartialEq for ClosureContextRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 pub fn get_tray_icons() -> Vec<TrayIcon> {
     return ({
         let __flight_callback = (get_tray_backend().list_ids).clone();
@@ -228,8 +239,8 @@ pub fn get_tray_icons() -> Vec<TrayIcon> {
     })
     .iter()
     .cloned()
-    .map(|id: f64| -> TrayIcon {
-        TrayIcon {
+    .map(|id: f64| -> ClosureContextRecord1 {
+        ClosureContextRecord1 {
             __flight_identity: std::sync::Arc::new(()),
             id: id,
         }

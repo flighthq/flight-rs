@@ -9,12 +9,12 @@
 use flighthq_types::PanniniProjectionEffect;
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord4170192038 {
     pub __flight_identity: std::sync::Arc<()>,
     pub compression: Option<f64>,
     pub crop: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord4170192038 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -32,15 +32,15 @@ impl PartialEq for CreatePanniniProjectionEffectRecord2 {
 }
 
 pub fn create_pannini_projection_effect(
-    options: Option<FlightOmitRecord1>,
+    options: Option<FlightOmitRecord4170192038>,
 ) -> PanniniProjectionEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+    let options = options.unwrap_or(FlightOmitRecord4170192038 {
         __flight_identity: std::sync::Arc::new(()),
         compression: None,
         crop: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         PanniniProjectionEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "PanniniProjectionEffect".to_owned(),

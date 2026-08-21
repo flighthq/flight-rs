@@ -265,10 +265,8 @@ fn decode_html_entities(value: String) -> String {
             return (NAMED_ENTITIES
                 .iter()
                 .find(|(entry_key, _)| entry_key == &(lower).clone())
-                .map(|(_, value)| value.clone())
-                .clone())
-            .clone()
-            .unwrap_or(format!("&{};", (entity).clone()));
+                .map(|(_, value)| value.clone()))
+            .expect("TypeScript Record key was absent");
         };
         (regex::RegexBuilder::new("&(#x[0-9a-f]+|#[0-9]+|[a-z]+);")
             .case_insensitive(true)

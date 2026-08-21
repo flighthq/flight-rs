@@ -17,5 +17,5 @@ pub use flighthq_types::{
     install_native_host_constructors, set_interval, set_timeout,
 };
 
-mod image_resource;
+pub mod image_resource;
 pub use image_resource::*;

@@ -16,7 +16,7 @@ pub fn compute_linear_sampled_gaussian(
 ) -> Vec<f64> {
     let size = get_gaussian_kernel_size(sigma);
     let radius = ((size - 1.0_f64) / 2.0_f64);
-    compute_gaussian_kernel_weights(sigma, &mut SCRATCH_WEIGHTS);
+    compute_gaussian_kernel_weights(sigma, &mut (*SCRATCH_WEIGHTS.lock().unwrap()));
     let tap_count = get_linear_sampled_gaussian_tap_count(sigma);
     out_weights.truncate((tap_count) as usize);
     out_offsets.truncate((tap_count) as usize);
@@ -26,8 +26,8 @@ pub fn compute_linear_sampled_gaussian(
             let i = (tap * 2.0_f64);
             let pos_a = (i - radius);
             if ((i + 1.0_f64) < size) {
-                let weight_a = SCRATCH_WEIGHTS[i as usize].clone();
-                let weight_b = SCRATCH_WEIGHTS[(i + 1.0_f64) as usize].clone();
+                let weight_a = (*SCRATCH_WEIGHTS.lock().unwrap())[i as usize].clone();
+                let weight_b = (*SCRATCH_WEIGHTS.lock().unwrap())[(i + 1.0_f64) as usize].clone();
                 let combined = (weight_a + weight_b);
                 {
                     let __flight_index = (tap) as usize;
@@ -54,7 +54,7 @@ pub fn compute_linear_sampled_gaussian(
             } else {
                 {
                     let __flight_index = (tap) as usize;
-                    let __flight_value = SCRATCH_WEIGHTS[i as usize].clone();
+                    let __flight_value = (*SCRATCH_WEIGHTS.lock().unwrap())[i as usize].clone();
                     if __flight_index == out_weights.len() {
                         out_weights.push(__flight_value);
                     } else {

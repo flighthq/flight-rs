@@ -20,7 +20,7 @@ pub fn create_web_text_segmenter_backend() -> TextSegmenterBackend {
                 segment_with_intl_segmenter(
                     (__flight_argument_0).clone(),
                     (__flight_argument_1).clone(),
-                    Some(((__flight_argument_2).clone().unwrap()).clone()),
+                    ((__flight_argument_2).clone()).clone(),
                 )
             },
         )

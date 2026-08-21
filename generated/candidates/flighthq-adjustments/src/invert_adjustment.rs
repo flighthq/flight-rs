@@ -9,11 +9,11 @@
 use flighthq_types::InvertAdjustment;
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord3829523378 {
     pub __flight_identity: std::sync::Arc<()>,
     pub intensity: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord3829523378 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -30,8 +30,8 @@ impl PartialEq for CreateInvertAdjustmentRecord2 {
     }
 }
 
-pub fn create_invert_adjustment(options: Option<FlightOmitRecord1>) -> InvertAdjustment {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_invert_adjustment(options: Option<FlightOmitRecord3829523378>) -> InvertAdjustment {
+    let options = options.unwrap_or(FlightOmitRecord3829523378 {
         __flight_identity: std::sync::Arc::new(()),
         intensity: None,
     });
@@ -43,7 +43,7 @@ pub fn create_invert_adjustment(options: Option<FlightOmitRecord1>) -> InvertAdj
         0.0_f64, o, 0.0_f64, 0.0_f64, 0.0_f64, 1.0_f64, 0.0_f64,
     ];
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         InvertAdjustment {
             __flight_identity: std::sync::Arc::new(()),
             kind: "InvertAdjustment".to_owned(),

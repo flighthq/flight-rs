@@ -39,11 +39,64 @@ pub fn get_camera3_d_inverse_view_projection_matrix4(
     camera: &Camera3D,
     aspect: f64,
 ) -> bool {
-    get_camera3_d_view_projection_matrix4(
-        &mut (*__SCRATCH_VIEW_PROJECTION.lock().unwrap()),
-        camera,
-        aspect,
-    );
+    (|| -> () {
+        set_projection_matrix4(
+            &mut (*__SCRATCH_PROJECTION.lock().unwrap()),
+            &camera.projection,
+            aspect,
+            camera.near,
+            camera.far,
+        );
+        (|| -> () {
+            (*__SCRATCH_PROJECTION.lock().unwrap()).m[0.0_f64 as usize] += (camera.jitter.x
+                * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[3.0_f64 as usize] as f64))
+                as f32;
+            (*__SCRATCH_PROJECTION.lock().unwrap()).m[4.0_f64 as usize] += (camera.jitter.x
+                * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[7.0_f64 as usize] as f64))
+                as f32;
+            (*__SCRATCH_PROJECTION.lock().unwrap()).m[8.0_f64 as usize] += (camera.jitter.x
+                * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[11.0_f64 as usize] as f64))
+                as f32;
+            (*__SCRATCH_PROJECTION.lock().unwrap()).m[12.0_f64 as usize] += (camera.jitter.x
+                * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[15.0_f64 as usize] as f64))
+                as f32;
+            (*__SCRATCH_PROJECTION.lock().unwrap()).m[1.0_f64 as usize] += (camera.jitter.y
+                * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[3.0_f64 as usize] as f64))
+                as f32;
+            (*__SCRATCH_PROJECTION.lock().unwrap()).m[5.0_f64 as usize] += (camera.jitter.y
+                * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[7.0_f64 as usize] as f64))
+                as f32;
+            (*__SCRATCH_PROJECTION.lock().unwrap()).m[9.0_f64 as usize] += (camera.jitter.y
+                * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[11.0_f64 as usize] as f64))
+                as f32;
+            (*__SCRATCH_PROJECTION.lock().unwrap()).m[13.0_f64 as usize] += (camera.jitter.y
+                * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[15.0_f64 as usize] as f64))
+                as f32;
+        })();
+        multiply_matrix4(
+            &mut (*__SCRATCH_VIEW_PROJECTION.lock().unwrap()),
+            &{
+                let __flight_source = &(*__SCRATCH_PROJECTION.lock().unwrap());
+                Matrix4Like {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    __flight_entity_runtime: std::sync::Arc::clone(
+                        &__flight_source.__flight_entity_runtime,
+                    ),
+                    m: (__flight_source.m).clone(),
+                }
+            },
+            &{
+                let __flight_source = &(camera.view);
+                Matrix4Like {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    __flight_entity_runtime: std::sync::Arc::clone(
+                        &__flight_source.__flight_entity_runtime,
+                    ),
+                    m: (__flight_source.m).clone(),
+                }
+            },
+        );
+    })();
     return inverse_matrix4(out, &{
         let __flight_source = &(*__SCRATCH_VIEW_PROJECTION.lock().unwrap());
         Matrix4Like {
@@ -69,11 +122,32 @@ pub fn get_camera3_d_view_projection_matrix4(
         camera.near,
         camera.far,
     );
-    apply_camera3_d_projection_jitter(
-        &mut (*__SCRATCH_PROJECTION.lock().unwrap()),
-        camera.jitter.x,
-        camera.jitter.y,
-    );
+    (|| -> () {
+        (*__SCRATCH_PROJECTION.lock().unwrap()).m[0.0_f64 as usize] += (camera.jitter.x
+            * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[3.0_f64 as usize] as f64))
+            as f32;
+        (*__SCRATCH_PROJECTION.lock().unwrap()).m[4.0_f64 as usize] += (camera.jitter.x
+            * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[7.0_f64 as usize] as f64))
+            as f32;
+        (*__SCRATCH_PROJECTION.lock().unwrap()).m[8.0_f64 as usize] += (camera.jitter.x
+            * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[11.0_f64 as usize] as f64))
+            as f32;
+        (*__SCRATCH_PROJECTION.lock().unwrap()).m[12.0_f64 as usize] += (camera.jitter.x
+            * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[15.0_f64 as usize] as f64))
+            as f32;
+        (*__SCRATCH_PROJECTION.lock().unwrap()).m[1.0_f64 as usize] += (camera.jitter.y
+            * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[3.0_f64 as usize] as f64))
+            as f32;
+        (*__SCRATCH_PROJECTION.lock().unwrap()).m[5.0_f64 as usize] += (camera.jitter.y
+            * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[7.0_f64 as usize] as f64))
+            as f32;
+        (*__SCRATCH_PROJECTION.lock().unwrap()).m[9.0_f64 as usize] += (camera.jitter.y
+            * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[11.0_f64 as usize] as f64))
+            as f32;
+        (*__SCRATCH_PROJECTION.lock().unwrap()).m[13.0_f64 as usize] += (camera.jitter.y
+            * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[15.0_f64 as usize] as f64))
+            as f32;
+    })();
     multiply_matrix4(
         out,
         &{
@@ -167,11 +241,80 @@ pub fn set_camera3_d_view_matrix4_from_matrix4(camera: &mut Camera3D, view: &Mat
 
 // Source: upstream/packages/camera/src/camera.ts:124 (sha256:aba0c8297b05d3db0a1586783d6cd8b5caa3ac4353d3cff7db19632f419cd778)
 pub fn update_camera3_d_inverse_view_projection(camera: &mut Camera3D, aspect: f64) -> bool {
-    let ok = get_camera3_d_inverse_view_projection_matrix4(
-        &mut (*__SCRATCH_INVERSE.lock().unwrap()),
-        camera,
-        aspect,
-    );
+    let ok = (|| -> bool {
+        (|| -> () {
+            set_projection_matrix4(
+                &mut (*__SCRATCH_PROJECTION.lock().unwrap()),
+                &camera.projection,
+                aspect,
+                camera.near,
+                camera.far,
+            );
+            (|| -> () {
+                (*__SCRATCH_PROJECTION.lock().unwrap()).m[0.0_f64 as usize] += (camera.jitter.x
+                    * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[3.0_f64 as usize] as f64))
+                    as f32;
+                (*__SCRATCH_PROJECTION.lock().unwrap()).m[4.0_f64 as usize] += (camera.jitter.x
+                    * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[7.0_f64 as usize] as f64))
+                    as f32;
+                (*__SCRATCH_PROJECTION.lock().unwrap()).m[8.0_f64 as usize] += (camera.jitter.x
+                    * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[11.0_f64 as usize] as f64))
+                    as f32;
+                (*__SCRATCH_PROJECTION.lock().unwrap()).m[12.0_f64 as usize] += (camera.jitter.x
+                    * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[15.0_f64 as usize] as f64))
+                    as f32;
+                (*__SCRATCH_PROJECTION.lock().unwrap()).m[1.0_f64 as usize] += (camera.jitter.y
+                    * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[3.0_f64 as usize] as f64))
+                    as f32;
+                (*__SCRATCH_PROJECTION.lock().unwrap()).m[5.0_f64 as usize] += (camera.jitter.y
+                    * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[7.0_f64 as usize] as f64))
+                    as f32;
+                (*__SCRATCH_PROJECTION.lock().unwrap()).m[9.0_f64 as usize] += (camera.jitter.y
+                    * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[11.0_f64 as usize] as f64))
+                    as f32;
+                (*__SCRATCH_PROJECTION.lock().unwrap()).m[13.0_f64 as usize] += (camera.jitter.y
+                    * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[15.0_f64 as usize] as f64))
+                    as f32;
+            })();
+            multiply_matrix4(
+                &mut (*__SCRATCH_VIEW_PROJECTION.lock().unwrap()),
+                &{
+                    let __flight_source = &(*__SCRATCH_PROJECTION.lock().unwrap());
+                    Matrix4Like {
+                        __flight_identity: std::sync::Arc::clone(
+                            &__flight_source.__flight_identity,
+                        ),
+                        __flight_entity_runtime: std::sync::Arc::clone(
+                            &__flight_source.__flight_entity_runtime,
+                        ),
+                        m: (__flight_source.m).clone(),
+                    }
+                },
+                &{
+                    let __flight_source = &(camera.view);
+                    Matrix4Like {
+                        __flight_identity: std::sync::Arc::clone(
+                            &__flight_source.__flight_identity,
+                        ),
+                        __flight_entity_runtime: std::sync::Arc::clone(
+                            &__flight_source.__flight_entity_runtime,
+                        ),
+                        m: (__flight_source.m).clone(),
+                    }
+                },
+            );
+        })();
+        return inverse_matrix4(&mut (*__SCRATCH_INVERSE.lock().unwrap()), &{
+            let __flight_source = &(*__SCRATCH_VIEW_PROJECTION.lock().unwrap());
+            Matrix4Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
+                m: (__flight_source.m).clone(),
+            }
+        });
+    })();
     if ok {
         {
             let __flight_offset = (0.0_f64) as usize;

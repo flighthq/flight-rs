@@ -42,7 +42,7 @@ pub fn release_rectangle(r: &mut Rectangle) -> () {
     if false {
         return;
     }
-    if ((geometry_pool_release_guard_constant).is_some())
+    if (((*geometry_pool_release_guard_constant.lock().unwrap()).clone()).is_some())
         && ({
             let __flight_value = (*r).clone();
             (POOL.lock().unwrap())
@@ -50,7 +50,12 @@ pub fn release_rectangle(r: &mut Rectangle) -> () {
                 .any(|item| item == &__flight_value)
         })
     {
-        geometry_pool_release_guard_constant("releaseRectangle");
+        {
+            let __flight_callback = (*geometry_pool_release_guard_constant.lock().unwrap())
+                .clone()
+                .unwrap();
+            __flight_callback.lock().unwrap()("releaseRectangle".to_owned())
+        };
     }
     *flighthq_types::FlightEntity::__flight_entity_runtime(r)
         .lock()

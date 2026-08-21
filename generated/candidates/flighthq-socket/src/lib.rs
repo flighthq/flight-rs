@@ -17,13 +17,13 @@ pub use flighthq_types::{
     install_native_host_constructors, set_interval, set_timeout,
 };
 
-mod _internal_index;
+pub mod _internal_index;
 pub use _internal_index::*;
-mod contract;
+pub mod contract;
 pub use contract::*;
-mod enable_socket_guards;
+pub mod enable_socket_guards;
 pub use enable_socket_guards::*;
-mod explain_socket_send_failure;
+pub mod explain_socket_send_failure;
 pub use explain_socket_send_failure::*;
-mod socket;
+pub mod socket;
 pub use socket::*;

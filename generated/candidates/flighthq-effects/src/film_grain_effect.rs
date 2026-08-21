@@ -9,13 +9,13 @@
 use flighthq_types::FilmGrainEffect;
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord99688098 {
     pub __flight_identity: std::sync::Arc<()>,
     pub intensity: Option<f64>,
     pub size: Option<f64>,
     pub seed: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord99688098 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -32,15 +32,15 @@ impl PartialEq for CreateFilmGrainEffectRecord2 {
     }
 }
 
-pub fn create_film_grain_effect(options: Option<FlightOmitRecord1>) -> FilmGrainEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_film_grain_effect(options: Option<FlightOmitRecord99688098>) -> FilmGrainEffect {
+    let options = options.unwrap_or(FlightOmitRecord99688098 {
         __flight_identity: std::sync::Arc::new(()),
         intensity: None,
         size: None,
         seed: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         FilmGrainEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "FilmGrainEffect".to_owned(),

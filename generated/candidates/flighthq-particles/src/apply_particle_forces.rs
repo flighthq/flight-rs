@@ -85,13 +85,14 @@ pub fn apply_particle_forces(
                 (state.velocities[vt as usize] as f64),
                 (state.velocities[(vt + 1.0_f64) as usize] as f64),
                 (state.velocities[(vt + 2.0_f64) as usize] as f64),
-                &mut ACCEL,
+                &mut (*ACCEL.lock().unwrap()),
             );
-            state.velocities[vt as usize] += (ACCEL[0.0_f64 as usize].clone() * delta_time) as f32;
+            state.velocities[vt as usize] +=
+                ((*ACCEL.lock().unwrap())[0.0_f64 as usize].clone() * delta_time) as f32;
             state.velocities[(vt + 1.0_f64) as usize] +=
-                (ACCEL[1.0_f64 as usize].clone() * delta_time) as f32;
+                ((*ACCEL.lock().unwrap())[1.0_f64 as usize].clone() * delta_time) as f32;
             state.velocities[(vt + 2.0_f64) as usize] +=
-                (ACCEL[2.0_f64 as usize].clone() * delta_time) as f32;
+                ((*ACCEL.lock().unwrap())[2.0_f64 as usize].clone() * delta_time) as f32;
             {
                 i += 1.0;
                 i
@@ -156,11 +157,12 @@ pub fn apply_particle_object_forces(
                 (state.velocities[vt as usize] as f64),
                 (state.velocities[(vt + 1.0_f64) as usize] as f64),
                 0.0_f64,
-                &mut ACCEL,
+                &mut (*ACCEL.lock().unwrap()),
             );
-            state.velocities[vt as usize] += (ACCEL[0.0_f64 as usize].clone() * delta_time) as f32;
+            state.velocities[vt as usize] +=
+                ((*ACCEL.lock().unwrap())[0.0_f64 as usize].clone() * delta_time) as f32;
             state.velocities[(vt + 1.0_f64) as usize] +=
-                (ACCEL[1.0_f64 as usize].clone() * delta_time) as f32;
+                ((*ACCEL.lock().unwrap())[1.0_f64 as usize].clone() * delta_time) as f32;
             {
                 i += 1.0;
                 i

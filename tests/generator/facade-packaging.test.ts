@@ -85,7 +85,7 @@ describe('blessed facade packaging', () => {
 
   it('shadows exactly the wasm exports the generator built, over a complete upstream re-export', () => {
     const index = parse(path.join(facadeDirectory, 'src/index.ts'));
-    const shadowed = reexportedNames(index, './surfaceWasm');
+    const shadowed = reexportedNames(index, './bitmapWasm');
 
     // `initBitmapWasm` is the facade's own entry point rather than an upstream name, so it is the
     // one addition the generated export set does not account for.
@@ -98,7 +98,7 @@ describe('blessed facade packaging', () => {
     // slice would remove it from the facade instead of falling back to the TypeScript original.
     expect(hasStarReexport(index, authoritativePackage)).toBe(true);
 
-    const implementation = parse(path.join(facadeDirectory, 'src/surfaceWasm.ts'));
+    const implementation = parse(path.join(facadeDirectory, 'src/bitmapWasm.ts'));
     expect(exportedFunctionNames(implementation).sort()).toEqual(shadowed.slice().sort());
   });
 
@@ -118,8 +118,8 @@ describe('blessed facade packaging', () => {
   });
 
   it('differentially tests every function it ships against the upstream implementation', () => {
-    const implementation = parse(path.join(facadeDirectory, 'src/surfaceWasm.ts'));
-    const parityTest = readFileSync(path.join(facadeDirectory, 'src/surfaceWasm.test.ts'), 'utf8');
+    const implementation = parse(path.join(facadeDirectory, 'src/bitmapWasm.ts'));
+    const parityTest = readFileSync(path.join(facadeDirectory, 'src/bitmapWasm.test.ts'), 'utf8');
 
     // The whole claim of this package is that the Rust kernels are indistinguishable from the
     // TypeScript ones. An export nobody compares against `reference` ships that claim untested.
@@ -131,7 +131,7 @@ describe('blessed facade packaging', () => {
   });
 
   it('copies every non-TypeScript module the facade imports into dist', () => {
-    const implementation = parse(path.join(facadeDirectory, 'src/surfaceWasm.ts'));
+    const implementation = parse(path.join(facadeDirectory, 'src/bitmapWasm.ts'));
     const copied = new Set<string>(wasmGlueFiles);
 
     for (const specifier of relativeImportSpecifiers(implementation)) {

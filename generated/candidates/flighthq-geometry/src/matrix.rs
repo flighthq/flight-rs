@@ -14,7 +14,22 @@ use flighthq_types::{
 // Source: upstream/packages/geometry/src/matrix.ts:12 (sha256:223003a4ea40b7e755dceb8e680fb160423275d8e153f5291242decc27161cde)
 pub fn clone_matrix(source: &MatrixLike) -> Matrix {
     let mut m = create_matrix(None, None, None, None, None, None);
-    copy_matrix(&mut m, source);
+    (|| -> () {
+        let a = source.a;
+        let b = source.b;
+        let c = source.c;
+        let d = source.d;
+        let tx = source.tx;
+        let ty = source.ty;
+        (|| -> () {
+            m.a = a;
+            m.b = b;
+            m.c = c;
+            m.d = d;
+            m.tx = tx;
+            m.ty = ty;
+        })();
+    })();
     return m;
 }
 
@@ -220,7 +235,23 @@ pub fn create_gradient_transform_matrix(
     let tx = tx.unwrap_or(0.0_f64);
     let ty = ty.unwrap_or(0.0_f64);
     let mut out = create_matrix(None, None, None, None, None, None);
-    set_gradient_transform_matrix(&mut out, width, height, Some(rotation), Some(tx), Some(ty));
+    (|| -> () {
+        out.a = (width / 1638.4_f64);
+        out.d = (height / 1638.4_f64);
+        if (rotation != 0.0_f64) {
+            let cos = (rotation).cos();
+            let sin = (rotation).sin();
+            out.b = (sin * out.d);
+            out.c = ((-sin) * out.a);
+            out.a *= cos;
+            out.d *= cos;
+        } else {
+            out.b = 0.0_f64;
+            out.c = 0.0_f64;
+        }
+        out.tx = (tx + (width / 2.0_f64));
+        out.ty = (ty + (height / 2.0_f64));
+    })();
     return out;
 }
 
@@ -257,14 +288,23 @@ pub fn create_transform_matrix(
     let tx = tx.unwrap_or(0.0_f64);
     let ty = ty.unwrap_or(0.0_f64);
     let mut out = create_matrix(None, None, None, None, None, None);
-    set_transform_matrix(
-        &mut out,
-        scale_x,
-        scale_y,
-        Some(rotation),
-        Some(tx),
-        Some(ty),
-    );
+    (|| -> () {
+        if (rotation != 0.0_f64) {
+            let cos = (rotation).cos();
+            let sin = (rotation).sin();
+            out.a = (cos * scale_x);
+            out.b = (sin * scale_y);
+            out.c = ((-sin) * scale_x);
+            out.d = (cos * scale_y);
+        } else {
+            out.a = scale_x;
+            out.b = 0.0_f64;
+            out.c = 0.0_f64;
+            out.d = scale_y;
+        }
+        out.tx = tx;
+        out.ty = ty;
+    })();
     return out;
 }
 

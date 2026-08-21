@@ -5,8 +5,8 @@ import path from 'node:path';
 
 const workspace = path.resolve(import.meta.dirname, '../../..');
 const output = path.join(workspace, 'packages/bitmap-rs/src/wasm');
-const crate = 'flighthq-surface-wasm';
-const artifact = path.join(workspace, 'target/wasm32-unknown-unknown/release/flighthq_surface_wasm.wasm');
+const crate = 'flighthq-bitmap-wasm';
+const artifact = path.join(workspace, 'target/wasm32-unknown-unknown/release/flighthq_bitmap_wasm.wasm');
 const toolRoot = path.join(workspace, 'target/tools/wasm-bindgen');
 const localWasmBindgen = path.join(toolRoot, 'bin', process.platform === 'win32' ? 'wasm-bindgen.exe' : 'wasm-bindgen');
 
@@ -43,7 +43,7 @@ if (toolVersion(wasmBindgen) !== `wasm-bindgen ${version}`) {
   }
 }
 
-run(wasmBindgen, [artifact, '--target', 'web', '--out-dir', output, '--out-name', 'surface_wasm']);
+run(wasmBindgen, [artifact, '--target', 'web', '--out-dir', output, '--out-name', 'bitmap_wasm']);
 run('tsx', [path.join(workspace, 'packages/bitmap-rs/scripts/embed-wasm.ts')]);
 
 function toolVersion(command: string): string {

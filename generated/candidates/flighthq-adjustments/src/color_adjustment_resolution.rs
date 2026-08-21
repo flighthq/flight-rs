@@ -6,20 +6,8 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::fuse_color_matrices;
-use flighthq_types::{Adjustment, AdjustmentKind, ColorScaleBias};
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord1 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub kind: Option<AdjustmentKind>,
-    pub color_matrix: Option<Vec<f64>>,
-}
-impl PartialEq for FlightPartialRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
+use crate::{fuse_color_matrices, get_adjustment_color_matrix};
+use flighthq_types::{Adjustment, ColorScaleBias};
 
 // Source: upstream/packages/adjustments/src/colorAdjustmentResolution.ts:7 (sha256:0d9005b392e96e7e3bf5396796623af018d5f60bd48d2cd29325d7eba60a0f03)
 pub const COLOR_ADJUSTMENT_NONE: f64 = 0.0_f64;

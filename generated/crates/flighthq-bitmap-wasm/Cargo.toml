@@ -1,0 +1,16 @@
+[package]
+name = "flighthq-bitmap-wasm"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+path = "src/lib.rs"
+
+[dependencies]
+flighthq-bitmap = { path = "../flighthq-bitmap" }
+flighthq-runtime = { path = "../flighthq-runtime" }
+flighthq-types = { path = "../flighthq-types" }
+wasm-bindgen = "0.2"

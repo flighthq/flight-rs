@@ -17,19 +17,19 @@ pub use flighthq_types::{
     install_native_host_constructors, set_interval, set_timeout,
 };
 
-mod _internal_index;
+pub mod _internal_index;
 pub use _internal_index::*;
-mod binding;
+pub mod binding;
 pub use binding::*;
-mod clone;
+pub mod clone;
 pub use clone::*;
-mod contract;
+pub mod contract;
 pub use contract::*;
-mod enable_entity_runtime_guards;
+pub mod enable_entity_runtime_guards;
 pub use enable_entity_runtime_guards::*;
-mod entity;
+pub mod entity;
 pub use entity::*;
-mod guards;
+pub mod guards;
 pub use guards::*;
-mod runtime;
+pub mod runtime;
 pub use runtime::*;

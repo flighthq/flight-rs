@@ -9,7 +9,7 @@
 use crate::{BlendMode, Kind, MaterialAlphaMode, PbrUvSet, Texture};
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord1 {
+pub struct FlightPartialRecord3905749610 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha_map: Option<Texture>,
     pub base_color: Option<f64>,
@@ -25,14 +25,14 @@ pub struct FlightPartialRecord1 {
     pub occlusion_strength: Option<f64>,
     pub roughness: Option<f64>,
 }
-impl PartialEq for FlightPartialRecord1 {
+impl PartialEq for FlightPartialRecord3905749610 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord2 {
+pub struct FlightPartialRecord2066421274 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<Kind>,
     pub thickness: Option<f64>,
@@ -82,7 +82,7 @@ pub struct FlightPartialRecord2 {
     pub anisotropy_rotation: Option<f64>,
     pub anisotropy_strength: Option<f64>,
 }
-impl PartialEq for FlightPartialRecord2 {
+impl PartialEq for FlightPartialRecord2066421274 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -97,8 +97,8 @@ pub struct GlassExtendedPbrMaterialOptions {
     pub alpha_mode: Option<MaterialAlphaMode>,
     pub blend_mode: Option<BlendMode>,
     pub double_sided: Option<bool>,
-    pub standard: Option<FlightPartialRecord1>,
-    pub transmission_volume: Option<FlightPartialRecord2>,
+    pub standard: Option<FlightPartialRecord3905749610>,
+    pub transmission_volume: Option<FlightPartialRecord2066421274>,
 }
 impl PartialEq for GlassExtendedPbrMaterialOptions {
     fn eq(&self, other: &Self) -> bool {

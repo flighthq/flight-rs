@@ -9,11 +9,11 @@
 use flighthq_types::PosterizeEffect;
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord2751102098 {
     pub __flight_identity: std::sync::Arc<()>,
     pub levels: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord2751102098 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -30,13 +30,13 @@ impl PartialEq for CreatePosterizeEffectRecord2 {
     }
 }
 
-pub fn create_posterize_effect(options: Option<FlightOmitRecord1>) -> PosterizeEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_posterize_effect(options: Option<FlightOmitRecord2751102098>) -> PosterizeEffect {
+    let options = options.unwrap_or(FlightOmitRecord2751102098 {
         __flight_identity: std::sync::Arc::new(()),
         levels: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         PosterizeEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "PosterizeEffect".to_owned(),

@@ -1,5 +1,5 @@
-// Regenerates src/wasm/surfaceWasmBytes.ts by base64-embedding the wasm-pack
-// output (src/wasm/surface_wasm_bg.wasm). Run as the second half of `npm run
+// Regenerates src/wasm/bitmapWasmBytes.ts by base64-embedding the wasm-pack
+// output (src/wasm/bitmap_wasm_bg.wasm). Run as the second half of `npm run
 // wasm`, after wasm-pack. Embedding keeps init synchronous and free of any file
 // read or network fetch, so the shim is a true drop-in across environments.
 
@@ -24,4 +24,4 @@ for (const scaffold of ['package.json', '.gitignore', 'surface_wasm_bg.wasm', 's
   rmSync(join(wasmDir, scaffold), { force: true });
 }
 
-writeFileSync(join(wasmDir, 'surfaceWasmBytes.ts'), renderSurfaceWasmBytes(workspace, bytes));
+writeFileSync(join(wasmDir, 'bitmapWasmBytes.ts'), renderSurfaceWasmBytes(workspace, bytes));

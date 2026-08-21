@@ -17,10 +17,7 @@ pub fn get_modifier_define_key(
     let ordered = order_modifier_stack(stack);
     let mut key = "".to_owned();
     for modifier in (ordered).iter().cloned() {
-        let signature = get_define_signature(
-            &modifier,
-            Some((((registry).clone()).clone().unwrap()).clone()),
-        );
+        let signature = get_define_signature(&modifier, ((registry).clone()).clone());
         let token = if ((signature.encode_utf16().count() as f64) > 0.0_f64) {
             format!("{}:{}", (modifier.kind).clone(), (signature).clone())
         } else {

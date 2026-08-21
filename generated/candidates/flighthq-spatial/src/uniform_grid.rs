@@ -851,7 +851,7 @@ fn _report_grid_indexing(
     }
     {
         let __flight_callback = ((*_INDEXING_GUARD.lock().unwrap()).as_ref().unwrap()).clone();
-        let __flight_result = __flight_callback.lock().unwrap()({
+        __flight_callback.lock().unwrap()({
             let __flight_source = &(ReportGridIndexingSynthesizedRecord2498162634 {
                 __flight_identity: std::sync::Arc::new(()),
                 cell_size: grid.cell_size,
@@ -870,8 +870,7 @@ fn _report_grid_indexing(
                 would_occupy_bucket_count: __flight_source.would_occupy_bucket_count,
                 reason: (__flight_source.reason).clone(),
             }
-        });
-        __flight_result
+        })
     };
 }
 

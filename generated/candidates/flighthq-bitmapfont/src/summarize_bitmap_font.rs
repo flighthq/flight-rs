@@ -7,19 +7,7 @@
 #![allow(unused_parens)]
 
 use flighthq_textureatlas::get_texture_atlas_byte_size;
-use flighthq_types::{BitmapFont, BitmapFontSummary, Texture2D, TextureAtlasRegion};
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord1 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub texture: Option<Texture2D>,
-    pub regions: Option<Vec<TextureAtlasRegion>>,
-}
-impl PartialEq for FlightPartialRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
+use flighthq_types::{BitmapFont, BitmapFontSummary};
 
 // Source: upstream/packages/bitmapfont/src/summarizeBitmapFont.ts:15 (sha256:6d8701f68ebed960e032d89571fffafe00ee872eb0234544769c9cd9123f0c73)
 pub fn summarize_bitmap_font(font: &BitmapFont) -> BitmapFontSummary {

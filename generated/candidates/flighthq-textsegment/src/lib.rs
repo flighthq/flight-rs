@@ -17,13 +17,13 @@ pub use flighthq_types::{
     install_native_host_constructors, set_interval, set_timeout,
 };
 
-mod _internal_index;
+pub mod _internal_index;
 pub use _internal_index::*;
-mod contract;
+pub mod contract;
 pub use contract::*;
-mod text_segment;
+pub mod text_segment;
 pub use text_segment::*;
-mod text_segment_boundary;
+pub mod text_segment_boundary;
 pub use text_segment_boundary::*;
-mod text_segmenter_backend;
+pub mod text_segmenter_backend;
 pub use text_segmenter_backend::*;

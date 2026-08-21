@@ -9,69 +9,42 @@
 use flighthq_types::{MODIFIER_SLOT as modifier_slot_constant, Modifier};
 
 // Source: upstream/packages/shading/src/orderModifierStack.ts:16 (sha256:f9ea12475ca98f27d30fc292f28ee1675ac01a1c2a3e846c801cf3f7bbd60fa3)
+#[derive(Clone, Default)]
+struct ClosureContextRecord1 {
+    __flight_identity: std::sync::Arc<()>,
+    index: crate::OpaqueHostValue,
+    modifier: Modifier,
+}
+impl PartialEq for ClosureContextRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 pub fn order_modifier_stack(stack: &mut Vec<Modifier>) -> Vec<Modifier> {
     let mut indexed = (stack)
         .iter()
         .cloned()
         .map(
-            |modifier: Modifier, index: crate::OpaqueHostValue| -> crate::OpaqueHostValue {
-                crate::FlightValue::Record({
-                    let mut __flight_record = Vec::new();
-                    let __flight_key_0 = "index".to_owned();
-                    let __flight_value_0 = (index).clone();
-                    if let Some((_, __flight_existing)) = __flight_record
-                        .iter_mut()
-                        .find(|(existing, _)| existing == &__flight_key_0)
-                    {
-                        *__flight_existing = __flight_value_0;
-                    } else {
-                        __flight_record.push((__flight_key_0, __flight_value_0));
-                    }
-                    let __flight_key_1 = "modifier".to_owned();
-                    let __flight_value_1 = {
-                        let __flight_portable_source = (modifier).clone();
-                        crate::FlightValue::Record({
-                            let mut __flight_record = Vec::new();
-                            __flight_record.push((
-                                "kind".to_owned(),
-                                crate::FlightValue::String(
-                                    (&((&__flight_portable_source).kind)).clone(),
-                                ),
-                            ));
-                            __flight_record.push((
-                                "slot".to_owned(),
-                                crate::FlightValue::String(
-                                    (&((&__flight_portable_source).slot)).clone(),
-                                ),
-                            ));
-                            __flight_record
-                        })
-                    };
-                    if let Some((_, __flight_existing)) = __flight_record
-                        .iter_mut()
-                        .find(|(existing, _)| existing == &__flight_key_1)
-                    {
-                        *__flight_existing = __flight_value_1;
-                    } else {
-                        __flight_record.push((__flight_key_1, __flight_value_1));
-                    }
-                    __flight_record
-                })
+            |modifier: Modifier, index: crate::OpaqueHostValue| -> ClosureContextRecord1 {
+                ClosureContextRecord1 {
+                    __flight_identity: std::sync::Arc::new(()),
+                    index: (index).clone(),
+                    modifier: (modifier).clone(),
+                }
             },
         )
         .collect::<Vec<_>>();
     {
         let mut __flight_values = indexed;
         __flight_values.sort_by(|left, right| {
-            let __flight_order = (|a: crate::OpaqueHostValue, b: crate::OpaqueHostValue| -> f64 {
-                let rank_delta =
-                    (get_modifier_slot_rank(crate::host_value::<ModifierSlot>("host.slot"))
-                        - get_modifier_slot_rank(crate::host_value::<ModifierSlot>("host.slot")));
+            let __flight_order = (|a: ClosureContextRecord1, b: ClosureContextRecord1| -> f64 {
+                let rank_delta = (get_modifier_slot_rank((a.modifier.slot).clone())
+                    - get_modifier_slot_rank((b.modifier.slot).clone()));
                 return if (rank_delta != 0.0_f64) {
                     rank_delta
                 } else {
-                    (crate::host_value::<f64>("host.index")
-                        - crate::host_value::<f64>("host.index"))
+                    ((a.index).clone() - (b.index).clone())
                 };
             })(left.clone(), right.clone());
             __flight_order
@@ -83,9 +56,7 @@ pub fn order_modifier_stack(stack: &mut Vec<Modifier>) -> Vec<Modifier> {
     return (indexed)
         .iter()
         .cloned()
-        .map(|entry: crate::OpaqueHostValue| -> Modifier {
-            crate::host_value::<Modifier>("host.modifier")
-        })
+        .map(|entry: ClosureContextRecord1| -> Modifier { (entry.modifier).clone() })
         .collect::<Vec<_>>();
 }
 

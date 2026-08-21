@@ -7,41 +7,16 @@
 #![allow(unused_parens)]
 
 use crate::register_render_effect_padding_resolver;
-use flighthq_types::{
-    BlendMode, BokehDepthOfFieldEffect, Matrix, RenderEffect, RenderEffectPadding, RenderState,
-    Scene2DClipHooks, Scene3DGraphSyncPolicy,
-};
+use flighthq_types::{BokehDepthOfFieldEffect, RenderEffect, RenderEffectPadding, RenderState};
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord3186256068 {
     pub __flight_identity: std::sync::Arc<()>,
     pub focus_distance: Option<f64>,
     pub focus_range: Option<f64>,
     pub max_blur: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord2 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub allow_smoothing: Option<bool>,
-    pub background_color: Option<f64>,
-    pub background_color_rgba: Option<Vec<f64>>,
-    pub background_color_string: Option<String>,
-    pub current_clip_depth: Option<f64>,
-    pub display_object_clip_hooks: Option<Scene2DClipHooks>,
-    pub pixel_ratio: Option<f64>,
-    pub render_alpha: Option<f64>,
-    pub render_blend_mode: Option<BlendMode>,
-    pub render_transform2_d: Option<Matrix>,
-    pub scene_graph_sync_policy: Option<Scene3DGraphSyncPolicy>,
-    pub round_pixels: Option<bool>,
-}
-impl PartialEq for FlightPartialRecord2 {
+impl PartialEq for FlightOmitRecord3186256068 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -49,26 +24,26 @@ impl PartialEq for FlightPartialRecord2 {
 
 // Source: upstream/packages/effects/src/bokehDepthOfFieldEffect.ts:5 (sha256:0b78c1e4a0b23c1ecf901b3287c73a2234ea6f1d8c6d93ce36bd68c17f59d5c3)
 #[derive(Clone, Default)]
-struct CreateBokehDepthOfFieldEffectRecord11 {
+struct CreateBokehDepthOfFieldEffectRecord10 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateBokehDepthOfFieldEffectRecord11 {
+impl PartialEq for CreateBokehDepthOfFieldEffectRecord10 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 pub fn create_bokeh_depth_of_field_effect(
-    options: Option<FlightOmitRecord1>,
+    options: Option<FlightOmitRecord3186256068>,
 ) -> BokehDepthOfFieldEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+    let options = options.unwrap_or(FlightOmitRecord3186256068 {
         __flight_identity: std::sync::Arc::new(()),
         focus_distance: None,
         focus_range: None,
         max_blur: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         BokehDepthOfFieldEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "BokehDepthOfFieldEffect".to_owned(),

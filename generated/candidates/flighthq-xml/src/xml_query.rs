@@ -44,14 +44,14 @@ fn __flight_number_from_string(value: &str) -> f64 {
 
 // Source: upstream/packages/xml/src/xmlQuery.ts:8 (sha256:04ad11a478cb8161a5f12d68585eee4444c7ff8c6375551503f78d84c8666389)
 pub fn get_xml_element_attribute(element: &XmlElement, name: String) -> Option<String> {
-    let value = element
+    let value = (element
         .attributes
         .iter()
         .find(|(entry_key, _)| entry_key == &(name).clone())
-        .map(|(_, value)| value.clone())
-        .clone();
+        .map(|(_, value)| value.clone()))
+    .expect("TypeScript Record key was absent");
     return if (value).is_some() {
-        (value).clone()
+        Some((value).clone())
     } else {
         None
     };
@@ -59,16 +59,16 @@ pub fn get_xml_element_attribute(element: &XmlElement, name: String) -> Option<S
 
 // Source: upstream/packages/xml/src/xmlQuery.ts:15 (sha256:8e632156f6b6895e26bb60763596f61a051eebf21cbb055740fe7673e4fe5069)
 pub fn get_xml_element_attribute_number(element: &XmlElement, name: String) -> Option<f64> {
-    let value = element
+    let value = (element
         .attributes
         .iter()
         .find(|(entry_key, _)| entry_key == &(name).clone())
-        .map(|(_, value)| value.clone())
-        .clone();
-    if ((value).is_none()) || ((value.as_ref().unwrap()).trim().to_owned() == "") {
+        .map(|(_, value)| value.clone()))
+    .expect("TypeScript Record key was absent");
+    if ((value).is_none()) || ((value).trim().to_owned() == "") {
         return None;
     }
-    let parsed = __flight_number_from_string(&((value.as_ref().unwrap()).clone()));
+    let parsed = __flight_number_from_string(&((value).clone()));
     return if (parsed).is_finite() {
         Some(parsed)
     } else {

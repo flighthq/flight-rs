@@ -17,19 +17,19 @@ pub use flighthq_types::{
     install_native_host_constructors, set_interval, set_timeout,
 };
 
-mod _internal_index;
+pub mod _internal_index;
 pub use _internal_index::*;
-mod bitmap_font;
+pub mod bitmap_font;
 pub use bitmap_font::*;
-mod bitmap_font_from_glyph_atlas;
+pub mod bitmap_font_from_glyph_atlas;
 pub use bitmap_font_from_glyph_atlas::*;
-mod bitmap_font_glyph_source;
+pub mod bitmap_font_glyph_source;
 pub use bitmap_font_glyph_source::*;
-mod contract;
+pub mod contract;
 pub use contract::*;
-mod enable_bitmap_font_guards;
+pub mod enable_bitmap_font_guards;
 pub use enable_bitmap_font_guards::*;
-mod explain_bitmap_font_glyph;
+pub mod explain_bitmap_font_glyph;
 pub use explain_bitmap_font_glyph::*;
-mod summarize_bitmap_font;
+pub mod summarize_bitmap_font;
 pub use summarize_bitmap_font::*;

@@ -17,15 +17,15 @@ pub use flighthq_types::{
     install_native_host_constructors, set_interval, set_timeout,
 };
 
-mod _internal_index;
+pub mod _internal_index;
 pub use _internal_index::*;
-mod contract;
+pub mod contract;
 pub use contract::*;
-mod selectable_rich_text_manager;
+pub mod selectable_rich_text_manager;
 pub use selectable_rich_text_manager::*;
-mod text_input;
+pub mod text_input;
 pub use text_input::*;
-mod text_input_editing;
+pub mod text_input_editing;
 pub use text_input_editing::*;
-mod text_input_manager;
+pub mod text_input_manager;
 pub use text_input_manager::*;

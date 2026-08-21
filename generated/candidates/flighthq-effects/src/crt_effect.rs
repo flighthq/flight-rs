@@ -9,14 +9,14 @@
 use flighthq_types::CrtEffect;
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord3006546976 {
     pub __flight_identity: std::sync::Arc<()>,
     pub curvature: Option<f64>,
     pub scanline_intensity: Option<f64>,
     pub vignette: Option<f64>,
     pub aberration: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord3006546976 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -33,8 +33,8 @@ impl PartialEq for CreateCrtEffectRecord2 {
     }
 }
 
-pub fn create_crt_effect(options: Option<FlightOmitRecord1>) -> CrtEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_crt_effect(options: Option<FlightOmitRecord3006546976>) -> CrtEffect {
+    let options = options.unwrap_or(FlightOmitRecord3006546976 {
         __flight_identity: std::sync::Arc::new(()),
         curvature: None,
         scanline_intensity: None,
@@ -42,7 +42,7 @@ pub fn create_crt_effect(options: Option<FlightOmitRecord1>) -> CrtEffect {
         aberration: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         CrtEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "CrtEffect".to_owned(),

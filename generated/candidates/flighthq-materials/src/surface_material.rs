@@ -43,7 +43,7 @@ pub fn create_surface_material(
         .unwrap_or(DEFAULT_ALPHA_CUTOFF);
     material.alpha_mode = (opts.as_ref().and_then(|value| (value.alpha_mode).clone()))
         .clone()
-        .unwrap_or((DEFAULT_ALPHA_MODE).clone());
+        .unwrap_or(((DEFAULT_ALPHA_MODE).clone()).to_owned());
     material.blend_mode = (opts.as_ref().and_then(|value| (value.blend_mode).clone()))
         .clone()
         .unwrap_or((blend_mode_constant.normal).clone());

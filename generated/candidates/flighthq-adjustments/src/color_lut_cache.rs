@@ -6,8 +6,11 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{COLOR_LUT_DEFAULT_SIZE as color_lut_default_size_constant, bake_color_lut};
-use flighthq_types::{AdjustmentKind, ColorLut, ColorLutCache, ColorTransformFunction};
+use crate::{
+    COLOR_LUT_DEFAULT_SIZE as color_lut_default_size_constant, bake_color_lut,
+    get_adjustment_color_transform,
+};
+use flighthq_types::{ColorLut, ColorLutCache, ColorTransformFunction};
 
 #[derive(Clone, Default)]
 pub struct SharedStructuralRecord1 {
@@ -15,30 +18,6 @@ pub struct SharedStructuralRecord1 {
     pub kind: String,
 }
 impl PartialEq for SharedStructuralRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord2 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub kind: Option<AdjustmentKind>,
-    pub color_matrix: Option<Vec<f64>>,
-}
-impl PartialEq for FlightPartialRecord2 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord3 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub kind: Option<AdjustmentKind>,
-    pub transform: Option<ColorTransformFunction>,
-}
-impl PartialEq for FlightPartialRecord3 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

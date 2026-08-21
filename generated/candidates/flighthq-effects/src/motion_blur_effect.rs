@@ -9,12 +9,12 @@
 use flighthq_types::MotionBlurEffect;
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord3488095672 {
     pub __flight_identity: std::sync::Arc<()>,
     pub intensity: Option<f64>,
     pub samples: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord3488095672 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -31,14 +31,14 @@ impl PartialEq for CreateMotionBlurEffectRecord2 {
     }
 }
 
-pub fn create_motion_blur_effect(options: Option<FlightOmitRecord1>) -> MotionBlurEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_motion_blur_effect(options: Option<FlightOmitRecord3488095672>) -> MotionBlurEffect {
+    let options = options.unwrap_or(FlightOmitRecord3488095672 {
         __flight_identity: std::sync::Arc::new(()),
         intensity: None,
         samples: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         MotionBlurEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "MotionBlurEffect".to_owned(),

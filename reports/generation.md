@@ -6,15 +6,15 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | --- | ---: |
 | Inventoried packages | 150 |
 | Default-generated packages | 144 |
-| Emittable packages | 55 |
-| Blocked packages | 89 |
-| Compiled candidates | 31 |
-| Compile-blocked candidates | 3 |
+| Emittable packages | 56 |
+| Blocked packages | 88 |
+| Compiled candidates | 29 |
+| Compile-blocked candidates | 6 |
 | Dependency-blocked candidates | 19 |
 | Cultivated packages | 1 |
 | Host-bound packages | 4 |
 | Excluded packages | 1 |
-| Source/package blockers | 444 |
+| Source/package blockers | 389 |
 | Eligible task constructions | 229 |
 | Portable executable task constructions | 26 |
 | Host-placeholder task constructions | 0 |
@@ -32,7 +32,7 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/abc` | generated | blocked | source-blocked | 3/4 | 2/2 | 0 | 2/2 | 0 | 1 | no |
 | `@flighthq/accessibility` | generated | emittable | compiled | 3/3 | 8/8 | 0 | 1/1 | 1 | 0 | no |
 | `@flighthq/adjustments` | generated | emittable | compiled | 21/21 | 52/52 | 0 | 9/42 | 0 | 0 | no |
-| `@flighthq/animation` | generated | blocked | source-blocked | 11/13 | 54/52 | 0 | 8/36 | 0 | 2 | no |
+| `@flighthq/animation` | generated | emittable | compile-blocked | 13/13 | 54/52 | 0 | 8/36 | 1 | 0 | no |
 | `@flighthq/app` | generated | blocked | source-blocked | 2/3 | 39/42 | 3 | 4/4 | 0 | 2 | no |
 | `@flighthq/application` | generated | blocked | source-blocked | 4/5 | 87/87 | 0 | 4/4 | 2 | 1 | partial |
 | `@flighthq/application-gl` | host-backend | emittable | dependency-blocked | 3/3 | 2/2 | 0 | 1/1 | 1 | 0 | no |
@@ -42,11 +42,11 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/bitmap` | cultivated | cultivated | not-applicable | 0/0 | 0/110 | 110 | 7/10 | 0 | 0 | partial |
 | `@flighthq/bitmapfont` | generated | emittable | dependency-blocked | 8/8 | 16/16 | 0 | 2/2 | 0 | 0 | no |
 | `@flighthq/bitmapfont-formats` | generated | emittable | dependency-blocked | 6/6 | 6/4 | 0 | 1/1 | 1 | 0 | no |
-| `@flighthq/bitmaptext` | generated | emittable | dependency-blocked | 4/4 | 14/14 | 0 | 1/1 | 2 | 0 | no |
+| `@flighthq/bitmaptext` | generated | blocked | source-blocked | 3/4 | 12/14 | 2 | 1/1 | 0 | 2 | no |
 | `@flighthq/camera` | generated | emittable | dependency-blocked | 19/19 | 44/44 | 0 | 5/5 | 0 | 0 | no |
 | `@flighthq/camera-controls` | generated | blocked | source-blocked | 5/6 | 22/22 | 0 | 1/1 | 0 | 1 | no |
 | `@flighthq/capture` | generated | blocked | source-blocked | 3/4 | 10/12 | 2 | 2/2 | 1 | 2 | no |
-| `@flighthq/clip` | generated | emittable | dependency-blocked | 4/4 | 26/26 | 0 | 3/4 | 1 | 0 | no |
+| `@flighthq/clip` | generated | emittable | dependency-blocked | 4/4 | 26/26 | 0 | 3/4 | 0 | 0 | no |
 | `@flighthq/clipboard` | generated | blocked | source-blocked | 2/3 | 29/32 | 3 | 4/4 | 0 | 2 | no |
 | `@flighthq/clock` | generated | emittable | compiled | 4/4 | 14/14 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/collision` | generated | blocked | source-blocked | 17/20 | 60/54 | 0 | 2/2 | 0 | 3 | no |
@@ -58,9 +58,9 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/dialog` | generated | blocked | source-blocked | 2/3 | 12/15 | 3 | 5/5 | 0 | 2 | no |
 | `@flighthq/easing` | generated | emittable | promoted | 23/23 | 52/54 | 2 | 4/7 | 0 | 0 | full |
 | `@flighthq/effects` | generated | emittable | dependency-blocked | 74/74 | 153/153 | 0 | 5/6 | 0 | 0 | no |
-| `@flighthq/effects-canvas` | host-backend | blocked | source-blocked | 11/29 | 69/82 | 18 | 1/1 | 5 | 19 | no |
-| `@flighthq/effects-gl` | host-backend | blocked | source-blocked | 13/60 | 124/180 | 56 | 1/1 | 10 | 48 | no |
-| `@flighthq/effects-wgpu` | host-backend | blocked | source-blocked | 14/58 | 123/177 | 54 | 2/2 | 6 | 45 | no |
+| `@flighthq/effects-canvas` | host-backend | blocked | source-blocked | 10/29 | 65/82 | 22 | 1/1 | 3 | 20 | no |
+| `@flighthq/effects-gl` | host-backend | blocked | source-blocked | 12/60 | 122/180 | 58 | 1/1 | 8 | 49 | no |
+| `@flighthq/effects-wgpu` | host-backend | blocked | source-blocked | 13/58 | 120/177 | 57 | 2/2 | 4 | 46 | no |
 | `@flighthq/entity` | generated | emittable | compiled | 8/8 | 15/15 | 0 | 30/75 | 1 | 0 | no |
 | `@flighthq/filesystem` | generated | blocked | source-blocked | 2/3 | 40/43 | 3 | 2/2 | 0 | 2 | no |
 | `@flighthq/flow` | generated | emittable | compiled | 3/3 | 9/9 | 0 | 1/1 | 0 | 0 | no |
@@ -77,7 +77,7 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/image-codec` | generated | blocked | source-blocked | 10/12 | 26/26 | 0 | 4/29 | 0 | 2 | no |
 | `@flighthq/importdiagnostics` | generated | emittable | compiled | 4/4 | 3/3 | 0 | 9/11 | 0 | 0 | no |
 | `@flighthq/input` | generated | emittable | compiled | 3/3 | 40/40 | 0 | 1/1 | 1 | 0 | partial |
-| `@flighthq/interaction` | generated | blocked | source-blocked | 2/17 | 78/78 | 0 | 1/1 | 0 | 15 | no |
+| `@flighthq/interaction` | generated | blocked | source-blocked | 15/17 | 78/78 | 0 | 1/1 | 2 | 2 | no |
 | `@flighthq/intl` | generated | blocked | source-blocked | 2/9 | 16/14 | 0 | 1/1 | 0 | 7 | no |
 | `@flighthq/ipc` | generated | blocked | source-blocked | 2/3 | 13/17 | 4 | 2/2 | 0 | 2 | no |
 | `@flighthq/keyboard` | generated | emittable | compiled | 3/3 | 20/20 | 0 | 2/2 | 1 | 0 | no |
@@ -93,11 +93,11 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/menu` | generated | blocked | source-blocked | 3/4 | 14/17 | 3 | 3/3 | 0 | 2 | no |
 | `@flighthq/mesh` | generated | blocked | source-blocked | 13/16 | 88/84 | 0 | 7/24 | 2 | 3 | no |
 | `@flighthq/motionpath` | generated | emittable | dependency-blocked | 3/3 | 7/7 | 0 | 1/1 | 0 | 0 | no |
-| `@flighthq/movieclip` | generated | blocked | source-blocked | 2/5 | 28/28 | 0 | 2/2 | 0 | 3 | no |
+| `@flighthq/movieclip` | generated | blocked | source-blocked | 4/5 | 25/28 | 3 | 2/2 | 0 | 2 | no |
 | `@flighthq/net` | generated | blocked | source-blocked | 2/3 | 1/4 | 3 | 2/2 | 0 | 2 | no |
-| `@flighthq/node` | generated | blocked | source-blocked | 8/21 | 130/130 | 0 | 29/41 | 0 | 13 | no |
+| `@flighthq/node` | generated | blocked | source-blocked | 14/21 | 130/130 | 0 | 29/41 | 0 | 7 | no |
 | `@flighthq/notification` | generated | blocked | source-blocked | 2/3 | 21/26 | 5 | 4/4 | 0 | 2 | no |
-| `@flighthq/particleemitter` | generated | emittable | dependency-blocked | 12/12 | 52/52 | 0 | 1/1 | 10 | 0 | no |
+| `@flighthq/particleemitter` | generated | blocked | source-blocked | 11/12 | 48/52 | 4 | 1/1 | 2 | 2 | no |
 | `@flighthq/particles` | generated | emittable | dependency-blocked | 12/12 | 28/28 | 0 | 3/3 | 1 | 0 | no |
 | `@flighthq/particles-formats` | generated | blocked | source-blocked | 5/16 | 31/31 | 0 | 1/1 | 0 | 11 | no |
 | `@flighthq/path` | generated | emittable | compiled | 30/30 | 73/60 | 0 | 13/20 | 0 | 0 | no |
@@ -106,57 +106,57 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/permissions` | generated | blocked | source-blocked | 3/4 | 7/11 | 4 | 1/1 | 0 | 2 | no |
 | `@flighthq/physics2d` | generated | blocked | source-blocked | 16/21 | 96/83 | 0 | 1/1 | 0 | 5 | no |
 | `@flighthq/physics3d` | generated | blocked | source-blocked | 20/22 | 131/83 | 10 | 1/1 | 0 | 3 | no |
-| `@flighthq/picking` | generated | blocked | source-blocked | 2/4 | 11/11 | 0 | 1/1 | 0 | 2 | no |
+| `@flighthq/picking` | generated | emittable | dependency-blocked | 4/4 | 11/11 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/platform` | generated | emittable | compiled | 3/3 | 16/16 | 0 | 3/3 | 1 | 0 | no |
 | `@flighthq/power` | generated | blocked | source-blocked | 2/3 | 14/19 | 5 | 2/2 | 0 | 2 | partial |
 | `@flighthq/protocol` | generated | emittable | compiled | 3/3 | 20/20 | 0 | 2/2 | 0 | 0 | no |
-| `@flighthq/quadbatch` | generated | blocked | source-blocked | 2/3 | 31/31 | 0 | 2/3 | 0 | 1 | no |
+| `@flighthq/quadbatch` | generated | blocked | source-blocked | 2/3 | 26/31 | 5 | 2/3 | 0 | 2 | no |
 | `@flighthq/registry` | generated | emittable | compiled | 3/3 | 11/11 | 0 | 17/24 | 0 | 0 | no |
 | `@flighthq/registry-catalog` | generated | blocked | source-blocked | 3/4 | 6/6 | 0 | 3/3 | 0 | 1 | no |
 | `@flighthq/registry-codegen` | generated | emittable | dependency-blocked | 3/3 | 1/1 | 0 | 1/1 | 0 | 0 | no |
-| `@flighthq/render` | generated | blocked | source-blocked | 9/23 | 62/74 | 12 | 11/17 | 0 | 15 | no |
-| `@flighthq/render-gl` | host-backend | blocked | source-blocked | 28/32 | 114/118 | 8 | 5/5 | 22 | 5 | no |
-| `@flighthq/render-wgpu` | host-backend | blocked | source-blocked | 22/28 | 110/121 | 11 | 5/5 | 17 | 7 | no |
+| `@flighthq/render` | generated | blocked | source-blocked | 21/23 | 61/74 | 13 | 11/17 | 5 | 3 | no |
+| `@flighthq/render-gl` | host-backend | blocked | source-blocked | 28/32 | 114/118 | 8 | 5/5 | 21 | 5 | no |
+| `@flighthq/render-wgpu` | host-backend | blocked | source-blocked | 22/28 | 110/121 | 11 | 5/5 | 16 | 7 | no |
 | `@flighthq/requirements` | generated | blocked | source-blocked | 3/4 | 5/5 | 0 | 1/1 | 0 | 1 | no |
-| `@flighthq/scene2d` | generated | blocked | source-blocked | 2/9 | 33/33 | 0 | 18/29 | 0 | 7 | no |
-| `@flighthq/scene2d-canvas` | host-backend | blocked | source-blocked | 37/41 | 109/119 | 10 | 5/5 | 28 | 5 | no |
+| `@flighthq/scene2d` | generated | blocked | source-blocked | 6/9 | 25/33 | 8 | 18/29 | 0 | 4 | no |
+| `@flighthq/scene2d-canvas` | host-backend | blocked | source-blocked | 29/41 | 99/119 | 20 | 5/5 | 16 | 13 | no |
 | `@flighthq/scene2d-dom` | host-bound | host-bound | not-applicable | 0/0 | 0/61 | 61 | 1/1 | 0 | 0 | no |
-| `@flighthq/scene2d-formats` | generated | blocked | source-blocked | 11/23 | 25/11 | 0 | 2/3 | 0 | 12 | no |
-| `@flighthq/scene2d-gl` | host-backend | blocked | source-blocked | 26/31 | 89/97 | 9 | 1/1 | 17 | 6 | no |
-| `@flighthq/scene2d-resources` | generated | blocked | source-blocked | 3/10 | 14/14 | 0 | 2/2 | 0 | 7 | no |
-| `@flighthq/scene2d-wgpu` | host-backend | blocked | source-blocked | 26/31 | 90/99 | 9 | 1/1 | 17 | 6 | no |
-| `@flighthq/scene3d` | generated | blocked | source-blocked | 3/19 | 44/44 | 0 | 7/7 | 0 | 16 | no |
-| `@flighthq/scene3d-formats` | generated | blocked | source-blocked | 19/27 | 145/40 | 0 | 2/2 | 0 | 8 | no |
-| `@flighthq/scene3d-gl` | host-backend | blocked | source-blocked | 64/65 | 183/180 | 3 | 1/1 | 57 | 2 | no |
-| `@flighthq/scene3d-resources` | generated | blocked | source-blocked | 13/28 | 49/49 | 0 | 1/1 | 0 | 15 | no |
-| `@flighthq/scene3d-wgpu` | host-backend | blocked | source-blocked | 44/49 | 117/160 | 44 | 1/1 | 33 | 6 | no |
+| `@flighthq/scene2d-formats` | generated | blocked | source-blocked | 13/23 | 25/11 | 0 | 2/3 | 0 | 10 | no |
+| `@flighthq/scene2d-gl` | host-backend | blocked | source-blocked | 26/31 | 89/97 | 9 | 1/1 | 13 | 6 | no |
+| `@flighthq/scene2d-resources` | generated | blocked | source-blocked | 5/10 | 14/14 | 0 | 2/2 | 0 | 5 | no |
+| `@flighthq/scene2d-wgpu` | host-backend | blocked | source-blocked | 26/31 | 90/99 | 9 | 1/1 | 14 | 6 | no |
+| `@flighthq/scene3d` | generated | blocked | source-blocked | 14/19 | 43/44 | 1 | 7/7 | 0 | 6 | no |
+| `@flighthq/scene3d-formats` | generated | blocked | source-blocked | 22/27 | 145/40 | 0 | 2/2 | 0 | 5 | no |
+| `@flighthq/scene3d-gl` | host-backend | blocked | source-blocked | 64/65 | 183/180 | 3 | 1/1 | 24 | 2 | no |
+| `@flighthq/scene3d-resources` | generated | blocked | source-blocked | 19/28 | 49/49 | 0 | 1/1 | 0 | 9 | no |
+| `@flighthq/scene3d-wgpu` | host-backend | blocked | source-blocked | 44/49 | 117/160 | 44 | 1/1 | 28 | 6 | no |
 | `@flighthq/screen` | generated | emittable | compiled | 3/3 | 31/31 | 0 | 2/2 | 1 | 0 | partial |
 | `@flighthq/sdk` | generated | blocked | source-blocked | 15/15 | 0/6549 | 6549 | 0/0 | 0 | 1 | no |
 | `@flighthq/sensors` | generated | blocked | source-blocked | 2/3 | 22/32 | 10 | 1/1 | 0 | 2 | no |
 | `@flighthq/shading` | generated | emittable | compile-blocked | 18/18 | 26/26 | 0 | 4/5 | 2 | 0 | no |
-| `@flighthq/shape` | generated | blocked | source-blocked | 11/19 | 77/87 | 15 | 9/11 | 0 | 9 | no |
+| `@flighthq/shape` | generated | blocked | source-blocked | 15/19 | 68/87 | 24 | 9/11 | 1 | 5 | no |
 | `@flighthq/shape-formats` | generated | blocked | source-blocked | 2/3 | 2/2 | 0 | 1/1 | 0 | 1 | no |
 | `@flighthq/share` | generated | blocked | source-blocked | 2/3 | 12/15 | 3 | 2/2 | 0 | 2 | no |
 | `@flighthq/shell` | generated | blocked | source-blocked | 2/3 | 11/14 | 3 | 3/3 | 0 | 2 | no |
 | `@flighthq/shortcut` | generated | blocked | source-blocked | 3/5 | 29/33 | 4 | 3/3 | 0 | 3 | no |
 | `@flighthq/signals` | generated | emittable | compiled | 7/7 | 12/11 | 0 | 50/112 | 0 | 0 | partial |
-| `@flighthq/skeleton2d` | generated | blocked | source-blocked | 22/23 | 56/56 | 0 | 3/5 | 0 | 1 | no |
+| `@flighthq/skeleton2d` | generated | emittable | dependency-blocked | 23/23 | 56/56 | 0 | 3/5 | 0 | 0 | no |
 | `@flighthq/skeleton2d-formats` | generated | blocked | source-blocked | 3/8 | 8/8 | 1 | 1/1 | 0 | 6 | no |
-| `@flighthq/skeleton3d` | generated | blocked | source-blocked | 5/10 | 26/26 | 0 | 2/3 | 0 | 5 | no |
+| `@flighthq/skeleton3d` | generated | blocked | source-blocked | 9/10 | 26/26 | 0 | 2/3 | 0 | 1 | no |
 | `@flighthq/snapshot` | generated | blocked | source-blocked | 6/7 | 7/7 | 0 | 1/1 | 2 | 1 | no |
 | `@flighthq/socket` | generated | emittable | compiled | 5/5 | 16/16 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/spatial` | generated | emittable | compiled | 6/6 | 14/14 | 0 | 3/3 | 0 | 0 | no |
 | `@flighthq/spring` | generated | emittable | compiled | 6/6 | 12/12 | 0 | 1/1 | 0 | 0 | no |
-| `@flighthq/spritesheet` | generated | emittable | dependency-blocked | 9/9 | 31/31 | 0 | 2/2 | 4 | 0 | no |
-| `@flighthq/spritesheet-formats` | generated | blocked | source-blocked | 9/12 | 19/19 | 0 | 1/1 | 6 | 3 | no |
+| `@flighthq/spritesheet` | generated | emittable | dependency-blocked | 9/9 | 31/31 | 0 | 2/2 | 2 | 0 | no |
+| `@flighthq/spritesheet-formats` | generated | blocked | source-blocked | 9/12 | 19/19 | 0 | 1/1 | 4 | 3 | no |
 | `@flighthq/statechart` | generated | blocked | source-blocked | 3/5 | 15/15 | 0 | 1/1 | 0 | 2 | no |
 | `@flighthq/statusbar` | generated | blocked | source-blocked | 2/3 | 14/18 | 4 | 2/2 | 0 | 2 | no |
 | `@flighthq/storage` | generated | blocked | source-blocked | 2/3 | 39/39 | 0 | 2/2 | 0 | 1 | no |
-| `@flighthq/swf` | generated | blocked | source-blocked | 5/15 | 22/13 | 0 | 1/1 | 0 | 10 | no |
-| `@flighthq/text` | generated | blocked | source-blocked | 6/7 | 83/86 | 3 | 10/12 | 3 | 2 | no |
+| `@flighthq/swf` | generated | blocked | source-blocked | 8/15 | 22/13 | 0 | 1/1 | 0 | 7 | no |
+| `@flighthq/text` | generated | blocked | source-blocked | 4/7 | 76/86 | 10 | 10/12 | 0 | 4 | no |
 | `@flighthq/text-markup` | generated | blocked | source-blocked | 5/6 | 8/8 | 0 | 2/2 | 1 | 1 | no |
 | `@flighthq/textbidi` | generated | emittable | compiled | 6/6 | 6/6 | 0 | 1/1 | 0 | 0 | no |
-| `@flighthq/textinput` | generated | emittable | dependency-blocked | 6/6 | 55/55 | 0 | 5/6 | 4 | 0 | no |
+| `@flighthq/textinput` | generated | emittable | dependency-blocked | 6/6 | 55/55 | 0 | 5/6 | 1 | 0 | no |
 | `@flighthq/textlayout` | generated | emittable | dependency-blocked | 14/14 | 47/47 | 0 | 10/14 | 1 | 0 | no |
 | `@flighthq/textsegment` | generated | emittable | compiled | 5/5 | 11/11 | 0 | 1/1 | 1 | 0 | no |
 | `@flighthq/textshaper` | generated | blocked | source-blocked | 10/11 | 33/33 | 2 | 3/15 | 1 | 2 | no |
@@ -165,20 +165,20 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/texture-formats` | generated | blocked | source-blocked | 6/11 | 13/9 | 0 | 1/1 | 0 | 5 | no |
 | `@flighthq/textureatlas` | generated | blocked | source-blocked | 6/7 | 37/37 | 0 | 8/14 | 0 | 1 | no |
 | `@flighthq/textureatlas-formats` | generated | blocked | source-blocked | 4/7 | 12/12 | 0 | 2/2 | 0 | 3 | no |
-| `@flighthq/tilemap` | generated | blocked | source-blocked | 2/3 | 22/22 | 0 | 2/2 | 0 | 1 | no |
+| `@flighthq/tilemap` | generated | blocked | source-blocked | 2/3 | 18/22 | 4 | 2/2 | 0 | 2 | no |
 | `@flighthq/tilemap-formats` | generated | blocked | source-blocked | 8/9 | 12/12 | 0 | 1/1 | 2 | 1 | no |
 | `@flighthq/timeline` | generated | emittable | compiled | 3/3 | 19/19 | 0 | 2/3 | 0 | 0 | no |
 | `@flighthq/tool-capture` | excluded | excluded | not-applicable | 0/0 | 0/141 | 141 | 0/0 | 0 | 0 | no |
 | `@flighthq/tool-registry` | generated | blocked | source-blocked | 3/4 | 0/2 | 2 | 0/0 | 0 | 2 | no |
-| `@flighthq/tray` | generated | emittable | compiled | 4/4 | 28/28 | 0 | 3/3 | 0 | 0 | no |
+| `@flighthq/tray` | generated | emittable | compile-blocked | 4/4 | 28/28 | 0 | 3/3 | 0 | 0 | no |
 | `@flighthq/tween` | generated | blocked | source-blocked | 7/10 | 29/28 | 0 | 2/2 | 0 | 3 | no |
-| `@flighthq/types` | generated | emittable | promoted | 770/879 | 2372/2372 | 0 | 148/149 | 0 | 0 | full |
+| `@flighthq/types` | generated | emittable | promoted | 774/879 | 2372/2372 | 0 | 148/149 | 0 | 0 | full |
 | `@flighthq/updater` | generated | blocked | source-blocked | 2/3 | 23/23 | 0 | 2/2 | 0 | 1 | no |
 | `@flighthq/useragent` | generated | emittable | compiled | 4/4 | 12/12 | 0 | 3/6 | 0 | 0 | no |
-| `@flighthq/velocity` | generated | emittable | dependency-blocked | 5/5 | 20/20 | 0 | 3/3 | 2 | 0 | no |
+| `@flighthq/velocity` | generated | emittable | dependency-blocked | 5/5 | 20/20 | 0 | 3/3 | 1 | 0 | no |
 | `@flighthq/video` | generated | blocked | source-blocked | 4/5 | 16/16 | 0 | 2/2 | 1 | 1 | no |
 | `@flighthq/webcam` | generated | blocked | source-blocked | 2/4 | 5/9 | 4 | 1/1 | 0 | 3 | no |
-| `@flighthq/xml` | generated | emittable | compiled | 4/4 | 6/6 | 0 | 6/8 | 0 | 0 | no |
+| `@flighthq/xml` | generated | emittable | compile-blocked | 4/4 | 6/6 | 0 | 6/8 | 0 | 0 | no |
 
 ## Async tasks
 
@@ -638,11 +638,6 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 
 - **emission** `upstream/packages/abc/src/abcFile.ts`: readAbcFile: new-expression Rust lowering is not implemented: abc_reader
 
-### `@flighthq/animation`
-
-- **emission** `upstream/packages/animation/src/animationClip.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (2 opaque sources exceeds the approved baseline of 1); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/animation/src/animationLayerStack.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (2 opaque sources exceeds the approved baseline of 1); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-
 ### `@flighthq/app`
 
 - **package** `upstream/packages/app/src`: Generated crate is missing 3 of 42 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
@@ -665,6 +660,11 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 ### `@flighthq/binpack`
 
 - **emission** `upstream/packages/binpack/src/packRectangles.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (1 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+
+### `@flighthq/bitmaptext`
+
+- **package** `upstream/packages/bitmaptext/src`: Generated crate is missing 2 of 14 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/bitmaptext/src/bitmapText.ts`: createBitmapText: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[],"kind":"anonymous"}
 
 ### `@flighthq/camera-controls`
 
@@ -702,7 +702,7 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 
 ### `@flighthq/effects-canvas`
 
-- **package** `upstream/packages/effects-canvas/src`: Generated crate is missing 18 of 82 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
+- **package** `upstream/packages/effects-canvas/src`: Generated crate is missing 22 of 82 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/effects-canvas/src/canvasBevelEffect.ts`: defaultCanvasBevelEffectRunner: upstream/packages/effects-canvas/src/canvasBevelEffect.ts: cannot infer return type for defaultCanvasBevelEffectRunner
 - **emission** `upstream/packages/effects-canvas/src/canvasBlendEffect.ts`: defaultCanvasBlendEffectRunner: upstream/packages/effects-canvas/src/canvasBlendEffect.ts: cannot infer return type for defaultCanvasBlendEffectRunner
 - **emission** `upstream/packages/effects-canvas/src/canvasBloomEffect.ts`: defaultCanvasBloomEffectRunner: upstream/packages/effects-canvas/src/canvasBloomEffect.ts: cannot infer return type for defaultCanvasBloomEffectRunner
@@ -718,13 +718,14 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 - **emission** `upstream/packages/effects-canvas/src/canvasOuterGlowEffect.ts`: defaultCanvasOuterGlowEffectRunner: upstream/packages/effects-canvas/src/canvasOuterGlowEffect.ts: cannot infer return type for defaultCanvasOuterGlowEffectRunner
 - **emission** `upstream/packages/effects-canvas/src/canvasPixelateEffect.ts`: defaultCanvasPixelateEffectRunner: upstream/packages/effects-canvas/src/canvasPixelateEffect.ts: cannot infer return type for defaultCanvasPixelateEffectRunner
 - **emission** `upstream/packages/effects-canvas/src/canvasPosterizeEffect.ts`: defaultCanvasPosterizeEffectRunner: upstream/packages/effects-canvas/src/canvasPosterizeEffect.ts: cannot infer return type for defaultCanvasPosterizeEffectRunner
+- **emission** `upstream/packages/effects-canvas/src/canvasRenderEffectPipeline.ts`: endCanvasRenderEffectPipeline: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[{"name":"kind","optional":true,"type":{"arguments":[],"kind":"named","name":"AdjustmentKind"}},{"name":"colorMatrix","optional":true,"type":{"element":{"kind":"primitive","name":"Float"},"kind":"array"}}],"kind":"anonymous"}
 - **emission** `upstream/packages/effects-canvas/src/canvasScanlinesEffect.ts`: defaultCanvasScanlinesEffectRunner: upstream/packages/effects-canvas/src/canvasScanlinesEffect.ts: cannot infer return type for defaultCanvasScanlinesEffectRunner
 - **emission** `upstream/packages/effects-canvas/src/canvasTiltShiftEffect.ts`: defaultCanvasTiltShiftEffectRunner: upstream/packages/effects-canvas/src/canvasTiltShiftEffect.ts: cannot infer return type for defaultCanvasTiltShiftEffectRunner
 - **emission** `upstream/packages/effects-canvas/src/canvasVignetteEffect.ts`: defaultCanvasVignetteEffectRunner: upstream/packages/effects-canvas/src/canvasVignetteEffect.ts: cannot infer return type for defaultCanvasVignetteEffectRunner
 
 ### `@flighthq/effects-gl`
 
-- **package** `upstream/packages/effects-gl/src`: Generated crate is missing 56 of 180 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
+- **package** `upstream/packages/effects-gl/src`: Generated crate is missing 58 of 180 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/effects-gl/src/glBevelEffect.ts`: defaultGlBevelEffectRunner: upstream/packages/effects-gl/src/glBevelEffect.ts: cannot infer return type for defaultGlBevelEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glBlendEffect.ts`: defaultGlBlendEffectRunner: upstream/packages/effects-gl/src/glBlendEffect.ts: cannot infer return type for defaultGlBlendEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glBloomEffect.ts`: defaultGlBloomEffectRunner: upstream/packages/effects-gl/src/glBloomEffect.ts: cannot infer return type for defaultGlBloomEffectRunner
@@ -761,6 +762,7 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 - **emission** `upstream/packages/effects-gl/src/glPixelateEffect.ts`: defaultGlPixelateEffectRunner: upstream/packages/effects-gl/src/glPixelateEffect.ts: cannot infer return type for defaultGlPixelateEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glPosterizeEffect.ts`: defaultGlPosterizeEffectRunner: upstream/packages/effects-gl/src/glPosterizeEffect.ts: cannot infer return type for defaultGlPosterizeEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glRadialBlurEffect.ts`: defaultGlRadialBlurEffectRunner: upstream/packages/effects-gl/src/glRadialBlurEffect.ts: cannot infer return type for defaultGlRadialBlurEffectRunner
+- **emission** `upstream/packages/effects-gl/src/glRenderEffectPipeline.ts`: endGlRenderEffectPipeline: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[{"name":"kind","optional":true,"type":{"arguments":[],"kind":"named","name":"AdjustmentKind"}},{"name":"colorMatrix","optional":true,"type":{"element":{"kind":"primitive","name":"Float"},"kind":"array"}}],"kind":"anonymous"}
 - **emission** `upstream/packages/effects-gl/src/glScanlinesEffect.ts`: defaultGlScanlinesEffectRunner: upstream/packages/effects-gl/src/glScanlinesEffect.ts: cannot infer return type for defaultGlScanlinesEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glScreenSpaceFogEffect.ts`: defaultGlScreenSpaceFogEffectRunner: upstream/packages/effects-gl/src/glScreenSpaceFogEffect.ts: cannot infer return type for defaultGlScreenSpaceFogEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glShaderTestHelper.ts`: evaluateGlslScalarExpression: new-expression Rust lowering is not implemented: function
@@ -775,7 +777,7 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 
 ### `@flighthq/effects-wgpu`
 
-- **package** `upstream/packages/effects-wgpu/src`: Generated crate is missing 54 of 177 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
+- **package** `upstream/packages/effects-wgpu/src`: Generated crate is missing 57 of 177 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/effects-wgpu/src/wgpuBevelEffect.ts`: defaultWgpuBevelEffectRunner: upstream/packages/effects-wgpu/src/wgpuBevelEffect.ts: cannot infer return type for defaultWgpuBevelEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuBlendEffect.ts`: defaultWgpuBlendEffectRunner: upstream/packages/effects-wgpu/src/wgpuBlendEffect.ts: cannot infer return type for defaultWgpuBlendEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuBloomEffect.ts`: defaultWgpuBloomEffectRunner: upstream/packages/effects-wgpu/src/wgpuBloomEffect.ts: cannot infer return type for defaultWgpuBloomEffectRunner
@@ -810,6 +812,7 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 - **emission** `upstream/packages/effects-wgpu/src/wgpuPixelateEffect.ts`: defaultWgpuPixelateEffectRunner: upstream/packages/effects-wgpu/src/wgpuPixelateEffect.ts: cannot infer return type for defaultWgpuPixelateEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuPosterizeEffect.ts`: defaultWgpuPosterizeEffectRunner: upstream/packages/effects-wgpu/src/wgpuPosterizeEffect.ts: cannot infer return type for defaultWgpuPosterizeEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuRadialBlurEffect.ts`: defaultWgpuRadialBlurEffectRunner: upstream/packages/effects-wgpu/src/wgpuRadialBlurEffect.ts: cannot infer return type for defaultWgpuRadialBlurEffectRunner
+- **emission** `upstream/packages/effects-wgpu/src/wgpuRenderEffectPipeline.ts`: endWgpuRenderEffectPipeline: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[{"name":"kind","optional":true,"type":{"arguments":[],"kind":"named","name":"AdjustmentKind"}},{"name":"colorMatrix","optional":true,"type":{"element":{"kind":"primitive","name":"Float"},"kind":"array"}}],"kind":"anonymous"}
 - **emission** `upstream/packages/effects-wgpu/src/wgpuScanlinesEffect.ts`: defaultWgpuScanlinesEffectRunner: upstream/packages/effects-wgpu/src/wgpuScanlinesEffect.ts: cannot infer return type for defaultWgpuScanlinesEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuScreenSpaceFogEffect.ts`: defaultWgpuScreenSpaceFogEffectRunner: upstream/packages/effects-wgpu/src/wgpuScreenSpaceFogEffect.ts: cannot infer return type for defaultWgpuScreenSpaceFogEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuSharpenEffect.ts`: defaultWgpuSharpenEffectRunner: upstream/packages/effects-wgpu/src/wgpuSharpenEffect.ts: cannot infer return type for defaultWgpuSharpenEffectRunner
@@ -867,21 +870,8 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 
 ### `@flighthq/interaction`
 
-- **emission** `upstream/packages/interaction/src/cursorBackend.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/interaction/src/displayHitTests.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/interaction/src/displayObjectOverlap.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/interaction/src/enableInteractionGuards.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/interaction/src/focusManager.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 - **emission** `upstream/packages/interaction/src/hitTests.ts`: hitAreaContainsPoint: in-operator requires a static property name or an opaque host receiver
-- **emission** `upstream/packages/interaction/src/interactionManager.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 - **emission** `upstream/packages/interaction/src/interactionSpatialIndex.ts`: findSpatialInteractionTarget: portable record conversion requires string map keys
-- **emission** `upstream/packages/interaction/src/nodeInteractionState.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/interaction/src/registerDefaultHitTests.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/interaction/src/registerShapeHitTest.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/interaction/src/registerSpriteHitTest.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/interaction/src/registerTextHitTest.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/interaction/src/spatialQuery.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/interaction/src/spriteHitTests.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 9); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 
 ### `@flighthq/intl`
 
@@ -926,9 +916,8 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 
 ### `@flighthq/movieclip`
 
-- **emission** `upstream/packages/movieclip/src/enableMovieClipGuards.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/movieclip/src/movieClip.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/movieclip/src/spritesheetTimelineSource.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **package** `upstream/packages/movieclip/src`: Generated crate is missing 3 of 28 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/movieclip/src/movieClip.ts`: createMovieClip: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[],"kind":"anonymous"}
 
 ### `@flighthq/net`
 
@@ -937,24 +926,23 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 
 ### `@flighthq/node`
 
-- **emission** `upstream/packages/node/src/boundsRectangle.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/node/src/enableNodeGuards.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/node/src/hasBoundsRectangle.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/node/src/hasTransform2d.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/node/src/hierarchy.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/node/src/node.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/node/src/nodeColorAdjustment.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/node/src/nodeOrderList.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/node/src/nodeTransform2d.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/node/src/nodeTransform3d.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/node/src/revision.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/node/src/stageFit.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/node/src/traversal.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/node/src/boundsRectangle.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/node/src/hasBoundsRectangle.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/node/src/hasTransform2d.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/node/src/node.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/node/src/nodeTransform2d.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/node/src/nodeTransform3d.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/node/src/stageFit.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 
 ### `@flighthq/notification`
 
 - **package** `upstream/packages/notification/src`: Generated crate is missing 5 of 26 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/notification/src/notification.ts`: createServiceWorkerNotificationBackend: upstream/packages/notification/src/notification.ts:81:3: portableTask createServiceWorkerNotificationBackend._show: Portable task Rust lowering is not implemented.
+
+### `@flighthq/particleemitter`
+
+- **package** `upstream/packages/particleemitter/src`: Generated crate is missing 4 of 52 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/particleemitter/src/particleEmitter.ts`: createParticleEmitter2D: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[],"kind":"anonymous"}
 
 ### `@flighthq/particles-formats`
 
@@ -994,11 +982,6 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 - **emission** `upstream/packages/physics3d/src/step.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (1 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 - **emission** `upstream/packages/physics3d/src/stepValidation.ts`: isPhysics3DContactValid: dynamic for-in Rust enumeration is not implemented
 
-### `@flighthq/picking`
-
-- **emission** `upstream/packages/picking/src/pickScene3D.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (2 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/picking/src/sceneHitAttributes.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (2 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-
 ### `@flighthq/power`
 
 - **package** `upstream/packages/power/src`: Generated crate is missing 5 of 19 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
@@ -1006,7 +989,8 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 
 ### `@flighthq/quadbatch`
 
-- **emission** `upstream/packages/quadbatch/src/quadBatch.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (1 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **package** `upstream/packages/quadbatch/src`: Generated crate is missing 5 of 31 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/quadbatch/src/quadBatch.ts`: createQuadBatch: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[],"kind":"anonymous"}
 
 ### `@flighthq/registry-catalog`
 
@@ -1014,21 +998,9 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 
 ### `@flighthq/render`
 
-- **package** `upstream/packages/render/src`: Generated crate is missing 12 of 74 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/render/src/enableColorAdjustments.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 10); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/render/src/enableSceneRenderGuards.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 10); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/render/src/explainScene2DCoverage.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 10); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/render/src/explainScene2DRender.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 10); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/render/src/renderAppearance.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 10); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/render/src/renderCache.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 10); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **package** `upstream/packages/render/src`: Generated crate is missing 13 of 74 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/render/src/renderProxy.ts`: resolveRenderProxyRenderer: optional call requires an inferred nullable function: {"kind":"property","name":"registryMiss","object":{"kind":"identifier","name":"runtime"},"optional":false}
-- **emission** `upstream/packages/render/src/renderProxyAdapter.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 10); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/render/src/renderQueue.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 10); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/render/src/renderRegistrySignals.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 10); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/render/src/renderTarget.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 10); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/render/src/renderTransform2d.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 10); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/render/src/renderViewport.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 10); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/render/src/sceneRender.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (13 opaque sources exceeds the approved baseline of 10); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/render/src/sceneRender.ts`: Maximum call stack size exceeded
 
 ### `@flighthq/render-gl`
 
@@ -1054,35 +1026,38 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 
 ### `@flighthq/scene2d`
 
-- **emission** `upstream/packages/scene2d/src/displayContainer.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene2d/src/displayObject.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene2d/src/displayObjectAnimation.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene2d/src/htmlView.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene2d/src/scene2d.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene2d/src/sceneKindUsage.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene2d/src/sprite.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **package** `upstream/packages/scene2d/src`: Generated crate is missing 8 of 33 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/scene2d/src/displayObject.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (1 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene2d/src/htmlView.ts`: createHtmlView: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[],"kind":"anonymous"}
+- **emission** `upstream/packages/scene2d/src/sprite.ts`: createSprite: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[],"kind":"anonymous"}
 
 ### `@flighthq/scene2d-canvas`
 
-- **package** `upstream/packages/scene2d-canvas/src`: Generated crate is missing 10 of 119 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
+- **package** `upstream/packages/scene2d-canvas/src`: Generated crate is missing 20 of 119 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/scene2d-canvas/src/canvasBitmapText.ts`: defaultCanvasBitmapTextRenderer: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"__flight_argument_0"},"optional":false}
+- **emission** `upstream/packages/scene2d-canvas/src/canvasParticleEmitter2D.ts`: defaultCanvasParticleEmitter2DRenderer: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"__flight_argument_0"},"optional":false}
+- **emission** `upstream/packages/scene2d-canvas/src/canvasQuadBatch.ts`: defaultCanvasQuadBatchRenderer: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"__flight_argument_0"},"optional":false}
 - **emission** `upstream/packages/scene2d-canvas/src/canvasRenderState.ts`: createCanvasRenderState: optional call requires an inferred nullable function: {"kind":"property","name":"registryMiss","object":{"kind":"identifier","name":"runtime"},"optional":false}
 - **emission** `upstream/packages/scene2d-canvas/src/canvasRenderTarget.ts`: beginCanvasRenderPass: optional element access requires an inferred nullable collection
+- **emission** `upstream/packages/scene2d-canvas/src/canvasRichText.ts`: defaultCanvasRichTextRenderer: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"__flight_argument_0"},"optional":false}
+- **emission** `upstream/packages/scene2d-canvas/src/canvasScale9Shape.ts`: defaultCanvasScale9ShapeRenderer: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"__flight_argument_0"},"optional":false}
 - **emission** `upstream/packages/scene2d-canvas/src/canvasShape.ts`: renderCanvasShapeCommands: optional call requires an inferred nullable function: {"kind":"property","name":"registryMiss","object":{"arguments":[{"kind":"identifier","name":"state"}],"callee":{"kind":"identifier","name":"getRenderStateRuntime"},"kind":"call","optional":false,"typeArguments":[]},"optional":false}
+- **emission** `upstream/packages/scene2d-canvas/src/canvasSprite.ts`: defaultCanvasSpriteRenderer: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"__flight_argument_0"},"optional":false}
+- **emission** `upstream/packages/scene2d-canvas/src/canvasTextLabel.ts`: defaultCanvasTextLabelRenderer: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"__flight_argument_0"},"optional":false}
 - **emission** `upstream/packages/scene2d-canvas/src/canvasTextureResolver.ts`: connectCanvasTextureResolverMisses: optional call requires an inferred nullable function: {"kind":"property","name":"registryMiss","object":{"kind":"identifier","name":"runtime"},"optional":false}
+- **emission** `upstream/packages/scene2d-canvas/src/canvasTilemap.ts`: defaultCanvasTilemapRenderer: optional call requires an inferred nullable function: {"kind":"property","name":"applyBlendMode","object":{"kind":"identifier","name":"__flight_argument_0"},"optional":false}
 
 ### `@flighthq/scene2d-formats`
 
-- **emission** `upstream/packages/scene2d-formats/src/lottieDocument.ts`: applyVectorProperty: portable field name cannot distinguish an omitted property from explicit null
+- **emission** `upstream/packages/scene2d-formats/src/lottieDocument.ts`: createLottieLayerNode: portable field name cannot distinguish an omitted property from explicit null
 - **emission** `upstream/packages/scene2d-formats/src/riveAnimation.ts`: createRiveAnimationClip: portable field name cannot distinguish an omitted property from explicit null
 - **emission** `upstream/packages/scene2d-formats/src/riveDocument.ts`: _floatView: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
-- **emission** `upstream/packages/scene2d-formats/src/riveDrawOrder.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (8 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene2d-formats/src/riveLayout.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (8 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene2d-formats/src/riveScene2D.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (8 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene2d-formats/src/riveScene2DDocument.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (8 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene2d-formats/src/riveShapePaint.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (8 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene2d-formats/src/riveShapePath.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (8 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene2d-formats/src/riveSolo.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (8 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene2d-formats/src/riveText.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (8 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene2d-formats/src/riveDrawOrder.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene2d-formats/src/riveLayout.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene2d-formats/src/riveScene2DDocument.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene2d-formats/src/riveShapePaint.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene2d-formats/src/riveShapePath.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene2d-formats/src/riveSolo.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 - **emission** `upstream/packages/scene2d-formats/src/svgDocument.ts`: createSvgTextNode: object field enabled is not initialized by its structural spreads
 
 ### `@flighthq/scene2d-gl`
@@ -1099,10 +1074,8 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 - **emission** `upstream/packages/scene2d-resources/src/builtInScene2DDocumentImporters.ts`: _decoder: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
 - **emission** `upstream/packages/scene2d-resources/src/loadScene2DAudioResources.ts`: loadScene2DAudioResources: upstream/packages/scene2d-resources/src/loadScene2DAudioResources.ts:27:27: taskAll output type is not recovered
 - **emission** `upstream/packages/scene2d-resources/src/loadScene2DImageResources.ts`: loadScene2DImageResources: upstream/packages/scene2d-resources/src/loadScene2DImageResources.ts:27:25: taskAll output type is not recovered
-- **emission** `upstream/packages/scene2d-resources/src/resolveScene2DResources.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (2 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 - **emission** `upstream/packages/scene2d-resources/src/scene2DDocumentImporterRegistry.ts`: registerScene2DDocumentImporter: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[{"name":"importDocument","optional":false,"type":{"arguments":[],"kind":"named","name":"Scene2DDocumentImporter"}},{"name":"kind","optional":false,"type":{"kind":"primitive","name":"String"}},{"name":"matches","optional":false,"type":{"arguments":[],"kind":"named","name":"Scene2DDocumentImporterMatcher"}}],"kind":"anonymous"}
 - **emission** `upstream/packages/scene2d-resources/src/scene2DDocumentSource.ts`: Portable task source still requires OpaqueHostValue; recover every value crossing the task boundary before execution.
-- **emission** `upstream/packages/scene2d-resources/src/scene2DSlotReference.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (2 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 
 ### `@flighthq/scene2d-wgpu`
 
@@ -1115,22 +1088,12 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 
 ### `@flighthq/scene3d`
 
-- **emission** `upstream/packages/scene3d/src/billboard.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (16 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene3d/src/billboardCamera.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (16 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene3d/src/enableScene3DGuards.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (16 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene3d/src/mesh.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (16 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene3d/src/prepareScene3DMorph.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (16 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene3d/src/scene.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (16 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene3d/src/sceneAnimation.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (16 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene3d/src/sceneDocument.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (16 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene3d/src/sceneKindUsage.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (16 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene3d/src/sceneMaterial.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (16 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene3d/src/sceneNode.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (16 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene3d/src/sceneNodeAppearance.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (16 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene3d/src/sceneNodeBounds.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (16 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene3d/src/sceneNodeCulling.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (16 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene3d/src/sceneNodeDispose.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (16 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene3d/src/sceneNodeTransform.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (16 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **package** `upstream/packages/scene3d/src`: Generated crate is missing 1 of 44 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/scene3d/src/billboardCamera.ts`: orientBillboardSubtree: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[{"name":"data","optional":true,"type":{"inner":{"arguments":[],"kind":"named","name":"NodeData"},"kind":"nullable"}},{"name":"enabled","optional":true,"type":{"kind":"primitive","name":"Bool"}},{"name":"kind","optional":true,"type":{"arguments":[],"kind":"named","name":"Kind"}},{"name":"name","optional":true,"type":{"inner":{"kind":"primitive","name":"String"},"kind":"nullable"}},{"name":"alpha","optional":true,"type":{"kind":"primitive","name":"Float"}},{"name":"visible","optional":true,"type":{"kind":"primitive","name":"Bool"}},{"name":"position","optional":true,"type":{"arguments":[],"kind":"named","name":"Vector3"}},{"name":"rotation","optional":true,"type":{"arguments":[],"kind":"named","name":"Quaternion"}},{"name":"scale","optional":true,"type":{"arguments":[],"kind":"named","name":"Vector3"}},{"name":"geometry","optional":true,"type":{"arguments":[],"kind":"named","name":"MeshGeometry"}},{"name":"materials","optional":true,"type":{"element":{"inner":{"arguments":[],"kind":"named","name":"Material"},"kind":"nullable"},"kind":"array"}},{"name":"mode","optional":true,"type":{"arguments":[],"kind":"named","name":"BillboardMode"}}],"kind":"anonymous"}
+- **emission** `upstream/packages/scene3d/src/enableScene3DGuards.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene3d/src/mesh.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene3d/src/prepareScene3DMorph.ts`: Maximum call stack size exceeded
+- **emission** `upstream/packages/scene3d/src/sceneDocument.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 
 ### `@flighthq/scene3d-formats`
 
@@ -1138,9 +1101,6 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 - **emission** `upstream/packages/scene3d-formats/src/gltfParse.ts`: readAccessor: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
 - **emission** `upstream/packages/scene3d-formats/src/md2Parse.ts`: parseMd2: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
 - **emission** `upstream/packages/scene3d-formats/src/md5AnimParse.ts`: buildAnimationClip: portable value conversion requires a statically recoverable source type
-- **emission** `upstream/packages/scene3d-formats/src/md5Parse.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene3d-formats/src/objParse.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene3d-formats/src/sceneSkeleton.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 - **emission** `upstream/packages/scene3d-formats/src/threeDsParse.ts`: parse3ds: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
 
 ### `@flighthq/scene3d-gl`
@@ -1150,21 +1110,15 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 
 ### `@flighthq/scene3d-resources`
 
-- **emission** `upstream/packages/scene3d-resources/src/awd2Load.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (9 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene3d-resources/src/enableScene3DResourceFailureGuards.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (9 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene3d-resources/src/explainScene3DResourceCoverage.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (9 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene3d-resources/src/enableScene3DResourceFailureGuards.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene3d-resources/src/explainScene3DResourceCoverage.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 - **emission** `upstream/packages/scene3d-resources/src/gltfLoad.ts`: loadGltfExternalBuffers: upstream/packages/scene3d-resources/src/gltfLoad.ts:60:23: taskAll output type is not recovered
 - **emission** `upstream/packages/scene3d-resources/src/imageResourceFetch.ts`: fetchWebImageResource: upstream/packages/scene3d-resources/src/imageResourceFetch.ts:12:3: portable task catch bindings are not implemented
 - **emission** `upstream/packages/scene3d-resources/src/loadScene3DResources.ts`: loadScene3DResources: upstream/packages/scene3d-resources/src/loadScene3DResources.ts:46:3: await value type is not recovered
-- **emission** `upstream/packages/scene3d-resources/src/md2Load.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (9 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene3d-resources/src/md5Load.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (9 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene3d-resources/src/objLoad.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (9 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 - **emission** `upstream/packages/scene3d-resources/src/resolveScene3DResources.ts`: requestWorkingResolutions: taskThen Rust lowering is reserved for Pass 27 Stage 4
-- **emission** `upstream/packages/scene3d-resources/src/revealScene3DResourcesOnResolve.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (9 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 - **emission** `upstream/packages/scene3d-resources/src/sceneDocumentSource.ts`: loadScene3DDocumentBytesFromUrl: instanceof Rust lowering requires a portable typed-array constructor
-- **emission** `upstream/packages/scene3d-resources/src/sceneMaterialTextureRegistry.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (9 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene3d-resources/src/sceneMaterialTextureRegistry.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 - **emission** `upstream/packages/scene3d-resources/src/sceneResourceResolver.ts`: createScene3DResourceResolver: object literal requires an inferred structural type (target=unknown, properties=fetch,registry,computedProperty)
-- **emission** `upstream/packages/scene3d-resources/src/threeDsLoad.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (9 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 
 ### `@flighthq/scene3d-wgpu`
 
@@ -1186,15 +1140,11 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 
 ### `@flighthq/shape`
 
-- **package** `upstream/packages/shape/src`: Generated crate is missing 15 of 87 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/shape/src/morphShape.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/shape/src/morphShapeAnimation.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/shape/src/morphShapePaint.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/shape/src/scale9Shape.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/shape/src/shape.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **package** `upstream/packages/shape/src`: Generated crate is missing 24 of 87 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/shape/src/morphShape.ts`: createMorphShape: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[],"kind":"anonymous"}
+- **emission** `upstream/packages/shape/src/scale9Shape.ts`: createScale9Shape: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[],"kind":"anonymous"}
+- **emission** `upstream/packages/shape/src/shape.ts`: createShape: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[],"kind":"anonymous"}
 - **lowering** `upstream/packages/shape/src/shapeBounds.ts`: TypeScript lowering produced diagnostics.
-- **emission** `upstream/packages/shape/src/shapeBoundsRegistry.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/shape/src/shapeCommands.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 
 ### `@flighthq/shape-formats`
 
@@ -1216,10 +1166,6 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 - **emission** `upstream/packages/shortcut/src/explainGlobalShortcutRegistration.ts`: explainGlobalShortcutRegistration: in-operator requires a static property name or an opaque host receiver
 - **emission** `upstream/packages/shortcut/src/shortcut.ts`: parseAcceleratorDetailed: in-operator requires a static property name or an opaque host receiver
 
-### `@flighthq/skeleton2d`
-
-- **emission** `upstream/packages/skeleton2d/src/skeleton2dDrawOrderTarget.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (1 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-
 ### `@flighthq/skeleton2d-formats`
 
 - **package** `upstream/packages/skeleton2d-formats/src`: Generated crate is missing 1 of 8 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
@@ -1231,11 +1177,7 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 
 ### `@flighthq/skeleton3d`
 
-- **emission** `upstream/packages/skeleton3d/src/enableSkeleton3DGuards.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (5 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/skeleton3d/src/prepareScene3DSkinning.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (5 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/skeleton3d/src/skeleton3d.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (5 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/skeleton3d/src/updateMeshDeformation.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (5 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/skeleton3d/src/updateMeshSkin.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (5 opaque sources exceeds the approved baseline of 2); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/skeleton3d/src/prepareScene3DSkinning.ts`: Maximum call stack size exceeded
 
 ### `@flighthq/snapshot`
 
@@ -1243,9 +1185,9 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 
 ### `@flighthq/spritesheet-formats`
 
-- **emission** `upstream/packages/spritesheet-formats/src/asepriteSerialize.ts`: dataToMeta: portable value conversion requires a statically recoverable source type
+- **emission** `upstream/packages/spritesheet-formats/src/asepriteSerialize.ts`: dataToHashDocument: object field scale is not initialized and has no Rust default
 - **emission** `upstream/packages/spritesheet-formats/src/spritesheetDetect.ts`: getSpritesheetFormat: optional property entry has no inferred receiver field
-- **emission** `upstream/packages/spritesheet-formats/src/texturePackerSerialize.ts`: serializeTexturePackerSpritesheet: JSON.stringify replacer and spacing arguments are not implemented
+- **emission** `upstream/packages/spritesheet-formats/src/texturePackerSerialize.ts`: dataToHashDocument: object field scale is not initialized and has no Rust default
 
 ### `@flighthq/statechart`
 
@@ -1264,24 +1206,23 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 ### `@flighthq/swf`
 
 - **emission** `upstream/packages/swf/src/swfDocument.ts`: readSwfFile: new-expression Rust lowering is not implemented: swf_reader
-- **emission** `upstream/packages/swf/src/swfEditText.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (4 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/swf/src/swfFilter.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (4 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/swf/src/swfFrameAction.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (4 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/swf/src/swfFilter.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (1 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 - **emission** `upstream/packages/swf/src/swfFrameActionTestHelper.ts`: buildFrameScriptAbc: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
 - **emission** `upstream/packages/swf/src/swfMorphShape.ts`: createSwfMorphShape: new-expression Rust lowering is not implemented: swf_reader
 - **emission** `upstream/packages/swf/src/swfReader.ts`: SwfReader: upstream/packages/swf/src/swfReader.ts:5: class methods and static fields are not implemented for SwfReader
-- **emission** `upstream/packages/swf/src/swfShape.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (4 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 - **emission** `upstream/packages/swf/src/swfShapeTestHelper.ts`: ShapeWriter: upstream/packages/swf/src/swfShapeTestHelper.ts:5: class methods and static fields are not implemented for ShapeWriter
 - **emission** `upstream/packages/swf/src/swfText.ts`: readSwfFontGlyphOutlineSource: new-expression Rust lowering is not implemented: swf_reader
 
 ### `@flighthq/text`
 
-- **package** `upstream/packages/text/src`: Generated crate is missing 3 of 86 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/text/src/nativeText.ts`: patchNativeTextStyle: multiple object spreads require ordered Rust lowering
+- **package** `upstream/packages/text/src`: Generated crate is missing 10 of 86 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/text/src/nativeText.ts`: createNativeText: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[],"kind":"anonymous"}
+- **emission** `upstream/packages/text/src/richText.ts`: createRichText: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[],"kind":"anonymous"}
+- **emission** `upstream/packages/text/src/textLabel.ts`: createTextLabel: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[],"kind":"anonymous"}
 
 ### `@flighthq/text-markup`
 
-- **emission** `upstream/packages/text-markup/src/textMarkup.ts`: handleMarkupToken: multiple object spreads require ordered Rust lowering
+- **emission** `upstream/packages/text-markup/src/textMarkup.ts`: normalizeMarkupTagResult: in-operator requires a static property name or an opaque host receiver
 
 ### `@flighthq/textshaper`
 
@@ -1290,9 +1231,9 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 
 ### `@flighthq/texture`
 
-- **emission** `upstream/packages/texture/src/cubeTexture.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (1 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/texture/src/cubeTexture.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (2 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 - **emission** `upstream/packages/texture/src/texture.ts`: createTexture: optional property dimension has no inferred receiver field
-- **emission** `upstream/packages/texture/src/videoTexture.ts`: createVideoTexture: object literal requires an inferred structural type (target=unknown, properties=spread,dimension,source,version)
+- **emission** `upstream/packages/texture/src/videoTexture.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (2 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 
 ### `@flighthq/texture-formats`
 
@@ -1314,7 +1255,8 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 
 ### `@flighthq/tilemap`
 
-- **emission** `upstream/packages/tilemap/src/tilemap.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (1 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **package** `upstream/packages/tilemap/src`: Generated crate is missing 4 of 22 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/tilemap/src/tilemap.ts`: createTilemap: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[],"kind":"anonymous"}
 
 ### `@flighthq/tilemap-formats`
 
@@ -1347,186 +1289,170 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 
 ## Candidate compile blockers
 
+### `@flighthq/animation`
+
+- **E0609** `generated/candidates/flighthq-animation/src/animation_blend.rs`: no field `length` on type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0308** `generated/candidates/flighthq-animation/src/animation_blend.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-animation/src/animation_blend.rs`: no field `length` on type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_blend.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0609** `generated/candidates/flighthq-animation/src/animation_blend.rs`: no field `length` on type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0308** `generated/candidates/flighthq-animation/src/animation_blend.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-animation/src/animation_blend.rs`: no field `length` on type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_blend.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0609** `generated/candidates/flighthq-animation/src/animation_blend.rs`: no field `length` on type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0308** `generated/candidates/flighthq-animation/src/animation_blend.rs`: mismatched types
+- **E0608** `generated/candidates/flighthq-animation/src/animation_blend.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0308** `generated/candidates/flighthq-animation/src/animation_blend.rs`: mismatched types
+- **E0608** `generated/candidates/flighthq-animation/src/animation_blend.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_blend.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_blend.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_blend.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_blend.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_blend.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_blend.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_blend.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0308** `generated/candidates/flighthq-animation/src/animation_blend.rs`: arguments to this function are incorrect
+- **E0605** `generated/candidates/flighthq-animation/src/animation_blend_tree.rs`: non-primitive cast: `Option<f64>` as `usize`
+- **E0308** `generated/candidates/flighthq-animation/src/animation_blend_tree.rs`: mismatched types
+- **E0599** `generated/candidates/flighthq-animation/src/animation_blend_tree.rs`: no method named `is_none` found for struct `AnimationBlendTreeChannel` in the current scope
+- **E0308** `generated/candidates/flighthq-animation/src/animation_blend_tree.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_blend_tree.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_blend_tree.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_blend_tree.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_blend_tree.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_blend_tree.rs`: arguments to this function are incorrect
+- **E0599** `generated/candidates/flighthq-animation/src/animation_blend_tree.rs`: no method named `is_none` found for struct `AnimationBlendTreeInput` in the current scope
+- **E0609** `generated/candidates/flighthq-animation/src/animation_blend_tree.rs`: no field `length` on type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_blend_tree.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_blend_tree.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0308** `generated/candidates/flighthq-animation/src/animation_clip.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_crossfade.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_crossfade.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_crossfade.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_crossfade.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_crossfade.rs`: arguments to this function are incorrect
+- **E0605** `generated/candidates/flighthq-animation/src/animation_crossfade.rs`: non-primitive cast: `Option<f64>` as `usize`
+- **E0605** `generated/candidates/flighthq-animation/src/animation_crossfade.rs`: non-primitive cast: `Option<f64>` as `usize`
+- **E0605** `generated/candidates/flighthq-animation/src/animation_crossfade.rs`: non-primitive cast: `Option<f64>` as `usize`
+- **E0605** `generated/candidates/flighthq-animation/src/animation_crossfade.rs`: non-primitive cast: `Option<f64>` as `usize`
+- **E0605** `generated/candidates/flighthq-animation/src/animation_crossfade.rs`: non-primitive cast: `Option<f64>` as `usize`
+- **E0605** `generated/candidates/flighthq-animation/src/animation_crossfade.rs`: non-primitive cast: `Option<f64>` as `usize`
+- **E0593** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: closure is expected to take 1 argument, but it takes 2 arguments
+- **E0605** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: non-primitive cast: `Option<f64>` as `usize`
+- **E0308** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: mismatched types
+- **E0599** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: no method named `is_none` found for struct `AnimationLayerStackChannel` in the current scope
+- **E0308** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: arguments to this function are incorrect
+- **E0308** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: arguments to this function are incorrect
+- **E0308** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: arguments to this function are incorrect
+- **E0599** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: no method named `is_none` found for struct `AnimationLayer` in the current scope
+- **E0609** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: no field `length` on type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0308** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: no field `length` on type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0308** `generated/candidates/flighthq-animation/src/animation_player.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: arguments to this function are incorrect
+- **E0609** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: no field `length` on type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: arguments to this function are incorrect
+- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: arguments to this function are incorrect
+- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: arguments to this function are incorrect
+- **E0609** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: no field `length` on type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: mismatched types
+- **E0609** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: no field `length` on type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: arguments to this function are incorrect
+- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: arguments to this function are incorrect
+- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: mismatched types
+- **E0608** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0308** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: mismatched types
+- **E0599** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: no method named `is_none` found for struct `AnimationStateMachineChannel` in the current scope
+- **E0308** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: arguments to this function are incorrect
+- **E0609** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: no field `length` on type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0605** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: non-primitive cast: `Option<f64>` as `usize`
+- **E0605** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: non-primitive cast: `Option<f64>` as `usize`
+- **E0308** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: mismatched types
+- **E0605** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: non-primitive cast: `Option<f64>` as `usize`
+- **E0282** `generated/candidates/flighthq-animation/src/animation_track.rs`: type annotations needed
+- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
+- **E0599** `generated/candidates/flighthq-animation/src/animation_track.rs`: no method named `lock` found for enum `Option<T>` in the current scope
+- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
+- **E0499** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: cannot borrow `*machine` as mutable more than once at a time
+- **E0499** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: cannot borrow `machine.advance_scratch` as mutable more than once at a time
+
 ### `@flighthq/geometry`
 
-- **E0599** `generated/candidates/flighthq-geometry/src/enable_geometry_pool_guards.rs`: no method named `is_some` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>` in the current scope
-- **E0599** `generated/candidates/flighthq-geometry/src/matrix3_pool.rs`: no method named `is_some` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>` in the current scope
-- **E0618** `generated/candidates/flighthq-geometry/src/matrix3_pool.rs`: expected function, found `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>`
-- **E0599** `generated/candidates/flighthq-geometry/src/matrix4_pool.rs`: no method named `is_some` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>` in the current scope
-- **E0618** `generated/candidates/flighthq-geometry/src/matrix4_pool.rs`: expected function, found `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>`
-- **E0599** `generated/candidates/flighthq-geometry/src/matrix_pool.rs`: no method named `is_some` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>` in the current scope
-- **E0618** `generated/candidates/flighthq-geometry/src/matrix_pool.rs`: expected function, found `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>`
-- **E0599** `generated/candidates/flighthq-geometry/src/quaternion_pool.rs`: no method named `is_some` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>` in the current scope
-- **E0618** `generated/candidates/flighthq-geometry/src/quaternion_pool.rs`: expected function, found `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>`
-- **E0599** `generated/candidates/flighthq-geometry/src/rectangle_pool.rs`: no method named `is_some` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>` in the current scope
-- **E0618** `generated/candidates/flighthq-geometry/src/rectangle_pool.rs`: expected function, found `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>`
-- **E0599** `generated/candidates/flighthq-geometry/src/vector2_pool.rs`: no method named `is_some` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>` in the current scope
-- **E0618** `generated/candidates/flighthq-geometry/src/vector2_pool.rs`: expected function, found `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>`
-- **E0599** `generated/candidates/flighthq-geometry/src/vector3_pool.rs`: no method named `is_some` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>` in the current scope
-- **E0618** `generated/candidates/flighthq-geometry/src/vector3_pool.rs`: expected function, found `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>`
-- **E0599** `generated/candidates/flighthq-geometry/src/vector4_pool.rs`: no method named `is_some` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>` in the current scope
-- **E0618** `generated/candidates/flighthq-geometry/src/vector4_pool.rs`: expected function, found `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(String) + Send>>>>>>`
-- **E0381** `generated/candidates/flighthq-geometry/src/obb.rs`: used binding `lx` is possibly-uninitialized
-- **E0381** `generated/candidates/flighthq-geometry/src/obb.rs`: used binding `ly` is possibly-uninitialized
-- **E0381** `generated/candidates/flighthq-geometry/src/obb.rs`: used binding `lz` is possibly-uninitialized
+- **E0425** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot find value `p` in this scope
+- **E0425** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot find value `p` in this scope
+- **E0425** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot find value `p` in this scope
+- **E0425** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot find value `p` in this scope
+- **E0425** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot find value `p` in this scope
+- **E0425** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot find value `p` in this scope
+- **E0425** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot find value `p` in this scope
+- **E0425** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot find value `p` in this scope
+- **E0425** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot find value `p` in this scope
+- **E0425** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot find value `p` in this scope
+- **E0425** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot find value `p` in this scope
+- **E0425** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot find value `p` in this scope
+- **E0594** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot assign to `tx`, as it is not declared as mutable
+- **E0594** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot assign to `ty`, as it is not declared as mutable
 
 ### `@flighthq/materials`
 
-- **E0432** `generated/candidates/flighthq-materials/src/standard_material.rs`: unresolved import `flighthq_types::STANDARD_MATERIAL_KIND`
-- **E0425** `generated/candidates/flighthq-materials/src/classic_materials.rs`: cannot find type `PbrExtension` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/classic_materials.rs`: cannot find type `StandardPbrMaterialProperties` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/classic_materials.rs`: cannot find type `PbrExtension` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/classic_materials.rs`: cannot find type `StandardPbrMaterialProperties` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/classic_materials.rs`: cannot find type `PbrExtension` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/classic_materials.rs`: cannot find type `StandardPbrMaterialProperties` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/custom_shader_material.rs`: cannot find type `PbrExtension` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/custom_shader_material.rs`: cannot find type `StandardPbrMaterialProperties` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: cannot find type `PbrExtension` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: cannot find type `PbrExtension` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/phong_to_pbr.rs`: cannot find type `PbrExtension` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/phong_to_pbr.rs`: cannot find type `PbrExtension` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/standard_material.rs`: cannot find type `StandardMaterialKind` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/standard_material.rs`: cannot find type `MaterialAlphaMode` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/standard_material.rs`: cannot find type `BlendMode` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/standard_material.rs`: cannot find type `PbrExtension` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/standard_material.rs`: cannot find type `StandardPbrMaterialProperties` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/standard_material.rs`: cannot find type `Texture` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `PbrExtension` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `StandardPbrMaterialProperties` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `PbrExtension` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `StandardPbrMaterialProperties` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `PbrExtension` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `StandardPbrMaterialProperties` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `PbrExtension` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `StandardPbrMaterialProperties` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `PbrExtension` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `StandardPbrMaterialProperties` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `PbrExtension` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `StandardPbrMaterialProperties` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `PbrExtension` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `StandardPbrMaterialProperties` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `PbrExtension` in this scope
-- **E0425** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: cannot find type `StandardPbrMaterialProperties` in this scope
-- **E0308** `generated/candidates/flighthq-materials/src/classic_materials.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `alpha_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `diffuse` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `diffuse_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `normal_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `normal_scale` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `shininess` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `specular` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `specular_map` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/classic_materials.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/classic_materials.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `diffuse` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `diffuse_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `emissive` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `emissive_map` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/classic_materials.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/classic_materials.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `diffuse` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `diffuse_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `normal_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `normal_scale` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `shininess` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `specular` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/classic_materials.rs`: no field `specular_map` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/classic_materials.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/color_scale_bias.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/custom_shader_material.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/extended_pbr_material.rs`: mismatched types
 - **E0308** `generated/candidates/flighthq-materials/src/material.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/material_presets.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: mismatched types
-- **E0608** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0608** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0608** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0308** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: mismatched types
-- **E0608** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0608** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0608** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0608** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: cannot index into a value of type `LazyLock<std::sync::Mutex<Vec<f64>>>`
-- **E0308** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `diffuse` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `diffuse_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `emissive` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `emissive_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `emissive_strength` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `glossiness` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `normal_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `normal_scale` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `occlusion_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `occlusion_strength` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `specular` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: no field `specular_glossiness_map` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: mismatched types
-- **E0063** `generated/candidates/flighthq-materials/src/pbr_materials.rs`: missing fields `alpha_map`, `base_color`, `base_color_map` and 10 other fields in initializer of `StandardPbrMaterialProperties`
-- **E0308** `generated/candidates/flighthq-materials/src/phong_to_pbr.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/phong_to_pbr.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/surface_material.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `far` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `near` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `emissive` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `emissive_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `emissive_strength` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `matcap` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `tint` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `normal_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `normal_scale` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `base_color` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `base_color_map` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `ramp` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `steps` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `base_color` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `base_color_map` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `tint` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `color` on type `SurfaceMaterial`
-- **E0609** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: no field `thickness` on type `SurfaceMaterial`
-- **E0308** `generated/candidates/flighthq-materials/src/unlit_materials.rs`: mismatched types
 
 ### `@flighthq/shading`
 
 - **E0425** `generated/candidates/flighthq-shading/src/order_modifier_stack.rs`: cannot find type `ModifierSlot` in this scope
 - **E0425** `generated/candidates/flighthq-shading/src/order_modifier_stack.rs`: cannot find type `ModifierSlot` in this scope
-- **E0425** `generated/candidates/flighthq-shading/src/order_modifier_stack.rs`: cannot find type `ModifierSlot` in this scope
-- **E0425** `generated/candidates/flighthq-shading/src/order_modifier_stack.rs`: cannot find type `ModifierSlot` in this scope
-- **E0063** `generated/candidates/flighthq-shading/src/create_shaded_material.rs`: missing fields `alpha_cutoff`, `alpha_mode`, `blend_mode` and 15 other fields in initializer of `ShadedMaterial`
+- **E0063** `generated/candidates/flighthq-shading/src/create_shaded_material.rs`: missing fields `alpha_cutoff`, `alpha_mode`, `blend_mode` and 7 other fields in initializer of `ShadedMaterial`
 - **E0593** `generated/candidates/flighthq-shading/src/order_modifier_stack.rs`: closure is expected to take 1 argument, but it takes 2 arguments
+- **E0369** `generated/candidates/flighthq-shading/src/order_modifier_stack.rs`: cannot subtract `FlightValue` from `FlightValue`
 - **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `map` on type `Modifier`
 - **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `secondary_map` on type `Modifier`
 - **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `EmissiveModifier` has no field named `source`
@@ -1624,3 +1550,13 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 - **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `secondary_map` on type `&Modifier`
 - **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `VertexDisplaceModifier` has no field named `secondary_scroll`
 - **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `secondary_scroll` on type `&Modifier`
+
+### `@flighthq/tray`
+
+- **E0308** `generated/candidates/flighthq-tray/src/tray.rs`: mismatched types
+
+### `@flighthq/xml`
+
+- **E0599** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no method named `is_none` found for struct `std::string::String` in the current scope
+- **E0599** `generated/candidates/flighthq-xml/src/xml_query.rs`: no method named `is_some` found for struct `std::string::String` in the current scope
+- **E0599** `generated/candidates/flighthq-xml/src/xml_query.rs`: no method named `is_none` found for struct `std::string::String` in the current scope

@@ -23,7 +23,7 @@ fn __flight_js_to_i32(value: f64) -> i32 {
 }
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord1 {
+pub struct FlightPartialRecord2155237004 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha_scale: Option<f64>,
     pub alpha_bias: Option<f64>,
@@ -34,7 +34,7 @@ pub struct FlightPartialRecord1 {
     pub red_scale: Option<f64>,
     pub red_bias: Option<f64>,
 }
-impl PartialEq for FlightPartialRecord1 {
+impl PartialEq for FlightPartialRecord2155237004 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -42,7 +42,20 @@ impl PartialEq for FlightPartialRecord1 {
 
 // Source: upstream/packages/materials/src/colorScaleBias.ts:4 (sha256:300ff59cddc7c7664bf9073551a533c27847abd7fe2c5e650983f307c7abe5fa)
 pub fn clone_color_scale_bias(source: &ColorScaleBiasLike) -> ColorScaleBias {
-    return create_color_scale_bias(Some((source).clone()));
+    return create_color_scale_bias(Some({
+        let __flight_source = &((*source).clone());
+        FlightPartialRecord2155237004 {
+            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+            alpha_scale: Some(__flight_source.alpha_scale),
+            alpha_bias: Some(__flight_source.alpha_bias),
+            blue_scale: Some(__flight_source.blue_scale),
+            blue_bias: Some(__flight_source.blue_bias),
+            green_scale: Some(__flight_source.green_scale),
+            green_bias: Some(__flight_source.green_bias),
+            red_scale: Some(__flight_source.red_scale),
+            red_bias: Some(__flight_source.red_bias),
+        }
+    }));
 }
 
 // Source: upstream/packages/materials/src/colorScaleBias.ts:8 (sha256:7f718e4370340702a83a4cebd2df8cb7dfb2aafe9475e6755aee88f40870b076)
@@ -154,7 +167,7 @@ pub fn copy_color_scale_bias_to_arrays(
 }
 
 // Source: upstream/packages/materials/src/colorScaleBias.ts:49 (sha256:c4b5331c7b20f14f99a43fb9910b9181ae308655fe5dfa1b8a9cacdc1ca9b1dd)
-pub fn create_color_scale_bias(opts: Option<FlightPartialRecord1>) -> ColorScaleBias {
+pub fn create_color_scale_bias(opts: Option<FlightPartialRecord2155237004>) -> ColorScaleBias {
     return create_entity(Some(ColorScaleBias {
         __flight_identity: std::sync::Arc::new(()),
         __flight_entity_runtime: Default::default(),
@@ -388,9 +401,16 @@ pub fn set_color_scale_bias_bias_rgba(out: &mut ColorScaleBiasLike, value: f64) 
 
 // Source: upstream/packages/materials/src/colorScaleBias.ts:172 (sha256:eec65f3b731660a3f6af839a364b180b37529dba0649340dff0c9d7ea026514a)
 pub fn set_color_scale_bias_identity(out: &mut ColorScaleBias) -> () {
-    set_color_scale_bias(
-        out, 1.0_f64, 1.0_f64, 1.0_f64, 1.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64,
-    );
+    (|| -> () {
+        out.red_scale = 1.0_f64;
+        out.green_scale = 1.0_f64;
+        out.blue_scale = 1.0_f64;
+        out.alpha_scale = 1.0_f64;
+        out.red_bias = 0.0_f64;
+        out.green_bias = 0.0_f64;
+        out.blue_bias = 0.0_f64;
+        out.alpha_bias = 0.0_f64;
+    })();
 }
 
 // Source: upstream/packages/materials/src/colorScaleBias.ts:176 (sha256:446724a7984be7aed29fb9732c2e9edc32186a3f70c837ee71601ce9bb2148df)

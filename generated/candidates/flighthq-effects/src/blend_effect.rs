@@ -9,12 +9,12 @@
 use flighthq_types::{AdvancedBlendMode, BlendEffect};
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord12108883 {
     pub __flight_identity: std::sync::Arc<()>,
     pub backdrop_key: Option<String>,
     pub opacity: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord12108883 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -33,15 +33,15 @@ impl PartialEq for CreateBlendEffectRecord2 {
 
 pub fn create_blend_effect(
     mode: AdvancedBlendMode,
-    options: Option<FlightOmitRecord1>,
+    options: Option<FlightOmitRecord12108883>,
 ) -> BlendEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+    let options = options.unwrap_or(FlightOmitRecord12108883 {
         __flight_identity: std::sync::Arc::new(()),
         backdrop_key: None,
         opacity: None,
     });
     return {
-        let __flight_spread_2 = options;
+        let __flight_spread_2 = (options).clone();
         BlendEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "BlendEffect".to_owned(),

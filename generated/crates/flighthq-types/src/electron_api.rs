@@ -45,14 +45,14 @@ impl PartialEq for SharedStructuralRecord3 {
 }
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord4 {
+pub struct FlightPartialRecord1135797624 {
     pub __flight_identity: std::sync::Arc<()>,
     pub x: Option<f64>,
     pub y: Option<f64>,
     pub width: Option<f64>,
     pub height: Option<f64>,
 }
-impl PartialEq for FlightPartialRecord4 {
+impl PartialEq for FlightPartialRecord1135797624 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -900,7 +900,7 @@ pub struct ElectronBrowserWindow {
     pub get_bounds:
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> ElectronRectangle + Send + 'static>>>,
     pub set_bounds: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(FlightPartialRecord4) -> () + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut(FlightPartialRecord1135797624) -> () + Send + 'static>>,
     >,
     pub minimize: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
     pub maximize: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,

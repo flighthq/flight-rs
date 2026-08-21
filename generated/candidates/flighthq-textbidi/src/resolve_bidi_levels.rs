@@ -575,6 +575,7 @@ fn apply_explicit_levels(
                             break '__flight_switch;
                         }
                     }
+                    unreachable!("exhaustive TypeScript switch completed without exiting");
                 }
             }
             {

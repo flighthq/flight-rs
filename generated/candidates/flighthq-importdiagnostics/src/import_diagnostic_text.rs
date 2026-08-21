@@ -38,10 +38,8 @@ pub fn format_import_diagnostic(diagnostic: &ImportDiagnostic) -> String {
                         .unwrap()
                         .iter()
                         .find(|(entry_key, _)| entry_key == &(key).clone())
-                        .map(|(_, value)| value.clone())
-                        .clone())
-                    .as_ref()
-                    .map_or_else(|| "undefined".to_owned(), |value| value.to_string())
+                        .map(|(_, value)| value.clone()))
+                    .expect("TypeScript Record key was absent")
                 )),
             );
         }

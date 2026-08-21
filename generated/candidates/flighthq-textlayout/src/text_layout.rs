@@ -105,14 +105,14 @@ pub fn compute_text_layout(out: &mut TextLayoutResult, params: &mut TextLayoutPa
         out.text_width = 0.0_f64;
         return;
     }
-    get_text_line_breaks(&mut _LINE_BREAKS, (text).clone());
+    get_text_line_breaks(&mut (*_LINE_BREAKS.lock().unwrap()), (text).clone());
     (*_PARAGRAPH_LAST_LINES.lock().unwrap()).clear();
     build_groups(
         &mut out.groups,
         &mut (*_PARAGRAPH_LAST_LINES.lock().unwrap()),
         (text).clone(),
         (params.format_ranges).clone(),
-        &_LINE_BREAKS,
+        &(*_LINE_BREAKS.lock().unwrap()),
         width,
         (params.measure).clone(),
         word_wrap,
@@ -910,7 +910,7 @@ fn build_groups(
                 let range_end = (end).min((*format_range.lock().unwrap()).end);
                 if (idx < range_end) {
                     char_advances(
-                        &mut _CHAR_ADVANCES,
+                        &mut (*_CHAR_ADVANCES.lock().unwrap()),
                         (text).clone(),
                         &(*current_format.lock().unwrap()),
                         idx,
@@ -972,7 +972,7 @@ fn build_groups(
                     return;
                 }
                 char_advances(
-                    &mut _CHAR_ADVANCES,
+                    &mut (*_CHAR_ADVANCES.lock().unwrap()),
                     (text).clone(),
                     &(*current_format.lock().unwrap()),
                     remaining,
@@ -986,7 +986,7 @@ fn build_groups(
                         }),
                     ),
                 );
-                let total_w = sum_advances(&_CHAR_ADVANCES);
+                let total_w = sum_advances(&(*_CHAR_ADVANCES.lock().unwrap()));
                 if (((*offset_x.lock().unwrap()).clone() + total_w) <= {
                     let __flight_callback = (wrap_width).clone();
                     let __flight_result = __flight_callback.lock().unwrap()();
@@ -1045,7 +1045,7 @@ fn build_groups(
                     };
                     let cp_len = if (cp > 65535.0_f64) { 2.0_f64 } else { 1.0_f64 };
                     if ((((*offset_x.lock().unwrap()).clone() + w)
-                        + _CHAR_ADVANCES[count as usize].clone())
+                        + (*_CHAR_ADVANCES.lock().unwrap())[count as usize].clone())
                         > {
                             let __flight_callback = (wrap_width).clone();
                             let __flight_result = __flight_callback.lock().unwrap()();
@@ -1054,7 +1054,7 @@ fn build_groups(
                     {
                         break;
                     }
-                    w += _CHAR_ADVANCES[count as usize].clone();
+                    w += (*_CHAR_ADVANCES.lock().unwrap())[count as usize].clone();
                     {
                         count += 1.0;
                         count

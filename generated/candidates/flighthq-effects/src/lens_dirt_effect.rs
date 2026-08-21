@@ -9,13 +9,13 @@
 use flighthq_types::LensDirtEffect;
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord651454342 {
     pub __flight_identity: std::sync::Arc<()>,
     pub intensity: Option<f64>,
     pub threshold: Option<f64>,
     pub seed: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord651454342 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -32,15 +32,15 @@ impl PartialEq for CreateLensDirtEffectRecord2 {
     }
 }
 
-pub fn create_lens_dirt_effect(options: Option<FlightOmitRecord1>) -> LensDirtEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_lens_dirt_effect(options: Option<FlightOmitRecord651454342>) -> LensDirtEffect {
+    let options = options.unwrap_or(FlightOmitRecord651454342 {
         __flight_identity: std::sync::Arc::new(()),
         intensity: None,
         threshold: None,
         seed: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         LensDirtEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "LensDirtEffect".to_owned(),

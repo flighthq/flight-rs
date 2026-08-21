@@ -1,10 +1,20 @@
 name: CI
 
-# `npm run ci` is the repository's own definition of green, but running it as one step serializes
-# a ~30 minute regeneration behind a two minute lint. The legs below are exactly that script's
-# contents, split so they run concurrently and so a failure names itself: a red `Generate` means
-# the emitter drifted, a red `Quality` means the TypeScript did, a red `Rust` means the output
-# stopped compiling. Keep the three in sync with the `ci` script when it changes.
+# Five independent lanes. None of them `needs:` another, deliberately — they answer different
+# questions and one being red must not hide the others.
+#
+#   Generate   Is the committed output reproducible, and does it clear the coverage ratchets?
+#   Quality    Do the TypeScript sources typecheck, lint, and format?
+#   Tests      Does the whole suite pass, generator bookkeeping included?
+#   Package    Does the shippable wasm package build and behave?
+#   Rust       Does the generated Rust compile and pass its own tests?
+#
+# `Generate` runs `generate:check`, which carries the ratchets — exhaustive lowering coverage, golden
+# counts, report freshness. Those move when UPSTREAM changes: a package this port does not touch can
+# arrive and turn the lane red through no fault of anything here. That is a useful signal and worth
+# gating a merge on, but it is NOT the question "can we still ship". `Package` answers that one on its
+# own, so a red ratchet no longer hides whether the artifact builds — and a green Package with a red
+# Generate is a legible, actionable state rather than a mystery.
 
 on:
   push:
@@ -36,7 +46,7 @@ jobs:
           cache: npm
       - uses: ./.github/actions/rust
       - run: npm ci
-      # Regenerates all 143 packages and byte-compares against the committed tree, so this is also
+      # Regenerates all 150 packages and byte-compares against the committed tree, so this is also
       # where cross-machine determinism gets proven: the runner is neither developer's machine.
       - run: npm run generate:check
 
@@ -52,8 +62,6 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      # The generator tests compile Rust fixtures, so this leg needs the toolchain too.
-      - uses: ./.github/actions/rust
       - run: npm ci
       - run: npm run typecheck
       # Compiles the published facade against the real upstream sources rather than the local
@@ -61,7 +69,64 @@ jobs:
       - run: npm run typecheck:upstream
       - run: npm run lint
       - run: npm run format:check
+
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      # The generator tests compile Rust fixtures, so this lane needs the toolchain.
+      - uses: ./.github/actions/rust
+      - run: npm ci
       - run: npm run test
+
+  package:
+    name: Package
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: ./.github/actions/rust
+      - run: npm ci
+
+      # `npm run wasm` regenerates in WRITE mode, which does not run the coverage ratchet — so this
+      # lane reaches the compiler even when `Generate` is red. It is the step that would have caught
+      # `flighthq-bitmap` failing to compile, which `generate:check` never reported because the
+      # ratchet fires first and stops the run.
+      - name: Build the wasm module
+        run: npm run wasm
+
+      # Parity against the module just built, plus the packaging invariants and version logic.
+      - name: Verify the artifact
+        run: npm run test:release
+
+      # Assembles the real tarball. The two remaining halves of `npm run build` are run directly
+      # rather than through the script, because `build` starts with `npm run wasm` and the step above
+      # already did that — invoking it again costs another full wasm compile. `--ignore-scripts` then
+      # skips `prepack` for the same reason.
+      #
+      # This is the step that catches a `files` or glue-copy mistake: a tarball that installs and
+      # then fails at import time is invisible to every unit test.
+      - name: Pack the tarball
+        working-directory: packages/bitmap-rs
+        run: |
+          npx tsc -b
+          npx tsx ./scripts/copy-wasm-glue.ts
+          npm pack --ignore-scripts --pack-destination /tmp
+          ls -l /tmp/*.tgz
 
   rust:
     name: Rust

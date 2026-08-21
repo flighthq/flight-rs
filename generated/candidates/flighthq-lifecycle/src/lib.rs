@@ -17,9 +17,9 @@ pub use flighthq_types::{
     install_native_host_constructors, set_interval, set_timeout,
 };
 
-mod _internal_index;
+pub mod _internal_index;
 pub use _internal_index::*;
-mod contract;
+pub mod contract;
 pub use contract::*;
-mod lifecycle;
+pub mod lifecycle;
 pub use lifecycle::*;

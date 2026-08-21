@@ -34,11 +34,7 @@ fn __flight_js_to_i32(value: f64) -> i32 {
 
 // Source: upstream/packages/clip/src/clipRegion.ts:32 (sha256:9bd8a98dcb93e1f3dafd093011d6275b352395814339f972aff4b903dff5fe15)
 pub fn acquire_clip_region() -> ClipRegion {
-    let mut region = CLIP_REGION_POOL
-        .lock()
-        .unwrap()
-        .pop()
-        .expect("TypeScript Array.pop returned undefined");
+    let mut region = CLIP_REGION_POOL.lock().unwrap().pop();
     if (region).is_some() {
         region.as_mut().unwrap().rect.x = 0.0_f64;
         region.as_mut().unwrap().rect.y = 0.0_f64;
@@ -146,23 +142,13 @@ pub fn clone_clip_region(clip: &ClipRegion) -> ClipRegion {
             (clip.contours.as_ref().unwrap())
                 .iter()
                 .cloned()
-                .map(|c: Vec<f64>| -> crate::OpaqueHostValue {
-                    {
-                        let __flight_portable_source = (c).clone();
-                        crate::FlightValue::Array(
-                            (&__flight_portable_source)
-                                .iter()
-                                .map(|value| crate::FlightValue::Number(*(value) as f64))
-                                .collect(),
-                        )
-                    }
-                })
+                .map(|c: Vec<f64>| -> Vec<f64> { (c).clone() })
                 .collect::<Vec<_>>(),
         )
     };
     return ClipRegion {
         __flight_identity: std::sync::Arc::new(()),
-        contours: contours,
+        contours: (contours).clone(),
         rect: (rect).clone(),
         version: clip.version,
         winding: (clip.winding).clone(),
@@ -350,25 +336,64 @@ pub fn create_clip_region_from_contours(
     winding: PathWinding,
 ) -> ClipRegion {
     let mut rect = create_rectangle(None, None, None, None);
-    set_rectangle_to_contours_bounds(&mut rect, contours);
+    (|| -> () {
+        let mut min_x = f64::INFINITY;
+        let mut min_y = f64::INFINITY;
+        let mut max_x = (-f64::INFINITY);
+        let mut max_y = (-f64::INFINITY);
+        {
+            let mut c = 0.0_f64;
+            while (c < (contours.len() as f64)) {
+                let contour = contours[c as usize].clone();
+                {
+                    let mut i = 0.0_f64;
+                    while (i < (contour.len() as f64)) {
+                        let x = contour[i as usize].clone();
+                        let y = contour[(i + 1.0_f64) as usize].clone();
+                        if (x < min_x) {
+                            min_x = x;
+                        }
+                        if (x > max_x) {
+                            max_x = x;
+                        }
+                        if (y < min_y) {
+                            min_y = y;
+                        }
+                        if (y > max_y) {
+                            max_y = y;
+                        }
+                        {
+                            i += 2.0_f64;
+                            i.clone()
+                        };
+                    }
+                }
+                {
+                    c += 1.0;
+                    c
+                };
+            }
+        }
+        if (min_x > max_x) {
+            rect.x = 0.0_f64;
+            rect.y = 0.0_f64;
+            rect.width = 0.0_f64;
+            rect.height = 0.0_f64;
+            return;
+        }
+        rect.x = min_x;
+        rect.y = min_y;
+        rect.width = (max_x - min_x);
+        rect.height = (max_y - min_y);
+    })();
     let owned = (contours)
         .iter()
         .cloned()
-        .map(|c: Vec<f64>| -> crate::OpaqueHostValue {
-            {
-                let __flight_portable_source = (c).clone();
-                crate::FlightValue::Array(
-                    (&__flight_portable_source)
-                        .iter()
-                        .map(|value| crate::FlightValue::Number(*(value) as f64))
-                        .collect(),
-                )
-            }
-        })
+        .map(|c: Vec<f64>| -> Vec<f64> { (c).clone() })
         .collect::<Vec<_>>();
     return ClipRegion {
         __flight_identity: std::sync::Arc::new(()),
-        contours: Some(owned),
+        contours: Some((owned).clone()),
         rect: (rect).clone(),
         version: 0.0_f64,
         winding: (winding).clone(),
@@ -397,7 +422,56 @@ pub fn create_clip_region_from_path(path: &Path, tolerance: Option<f64>) -> Clip
     let tolerance = tolerance.unwrap_or(0.25_f64);
     let contours = flatten_path(path, Some(tolerance));
     let mut rect = create_rectangle(None, None, None, None);
-    set_rectangle_to_contours_bounds(&mut rect, &contours);
+    (|| -> () {
+        let mut min_x = f64::INFINITY;
+        let mut min_y = f64::INFINITY;
+        let mut max_x = (-f64::INFINITY);
+        let mut max_y = (-f64::INFINITY);
+        {
+            let mut c = 0.0_f64;
+            while (c < (contours.len() as f64)) {
+                let contour = contours[c as usize].clone();
+                {
+                    let mut i = 0.0_f64;
+                    while (i < (contour.len() as f64)) {
+                        let x = contour[i as usize].clone();
+                        let y = contour[(i + 1.0_f64) as usize].clone();
+                        if (x < min_x) {
+                            min_x = x;
+                        }
+                        if (x > max_x) {
+                            max_x = x;
+                        }
+                        if (y < min_y) {
+                            min_y = y;
+                        }
+                        if (y > max_y) {
+                            max_y = y;
+                        }
+                        {
+                            i += 2.0_f64;
+                            i.clone()
+                        };
+                    }
+                }
+                {
+                    c += 1.0;
+                    c
+                };
+            }
+        }
+        if (min_x > max_x) {
+            rect.x = 0.0_f64;
+            rect.y = 0.0_f64;
+            rect.width = 0.0_f64;
+            rect.height = 0.0_f64;
+            return;
+        }
+        rect.x = min_x;
+        rect.y = min_y;
+        rect.width = (max_x - min_x);
+        rect.height = (max_y - min_y);
+    })();
     return ClipRegion {
         __flight_identity: std::sync::Arc::new(()),
         contours: Some((contours).clone()),
@@ -746,8 +820,7 @@ pub fn release_clip_region(clip: &ClipRegion) -> () {
     {
         {
             let __flight_callback = ((*_RELEASE_GUARD.lock().unwrap()).as_ref().unwrap()).clone();
-            let __flight_result = __flight_callback.lock().unwrap()((*clip).clone());
-            __flight_result
+            __flight_callback.lock().unwrap()((*clip).clone())
         };
     }
     CLIP_REGION_POOL
@@ -818,7 +891,56 @@ pub fn transform_clip_region(out: &mut ClipRegion, clip: &ClipRegion, matrix: &M
             let quad = vec![tl_x, tl_y, tr_x, tr_y, br_x, br_y, bl_x, bl_y];
             out.contours = Some(vec![(quad).clone()]);
             out.winding = "nonZero".to_owned();
-            set_rectangle_to_contours_bounds(&mut out.rect, &vec![(quad).clone()]);
+            (|| -> () {
+                let mut min_x = f64::INFINITY;
+                let mut min_y = f64::INFINITY;
+                let mut max_x = (-f64::INFINITY);
+                let mut max_y = (-f64::INFINITY);
+                {
+                    let mut c = 0.0_f64;
+                    while (c < (vec![(quad).clone()].len() as f64)) {
+                        let contour = vec![(quad).clone()][c as usize].clone();
+                        {
+                            let mut i = 0.0_f64;
+                            while (i < (contour.len() as f64)) {
+                                let x = contour[i as usize].clone();
+                                let y = contour[(i + 1.0_f64) as usize].clone();
+                                if (x < min_x) {
+                                    min_x = x;
+                                }
+                                if (x > max_x) {
+                                    max_x = x;
+                                }
+                                if (y < min_y) {
+                                    min_y = y;
+                                }
+                                if (y > max_y) {
+                                    max_y = y;
+                                }
+                                {
+                                    i += 2.0_f64;
+                                    i.clone()
+                                };
+                            }
+                        }
+                        {
+                            c += 1.0;
+                            c
+                        };
+                    }
+                }
+                if (min_x > max_x) {
+                    out.rect.x = 0.0_f64;
+                    out.rect.y = 0.0_f64;
+                    out.rect.width = 0.0_f64;
+                    out.rect.height = 0.0_f64;
+                    return;
+                }
+                out.rect.x = min_x;
+                out.rect.y = min_y;
+                out.rect.width = (max_x - min_x);
+                out.rect.height = (max_y - min_y);
+            })();
         }
     } else {
         let mut new_contours: Vec<Vec<f64>> =
@@ -874,7 +996,56 @@ pub fn transform_clip_region(out: &mut ClipRegion, clip: &ClipRegion, matrix: &M
         }
         out.contours = Some((new_contours).clone());
         out.winding = (in_winding).clone();
-        set_rectangle_to_contours_bounds(&mut out.rect, &new_contours);
+        (|| -> () {
+            let mut min_x = f64::INFINITY;
+            let mut min_y = f64::INFINITY;
+            let mut max_x = (-f64::INFINITY);
+            let mut max_y = (-f64::INFINITY);
+            {
+                let mut c = 0.0_f64;
+                while (c < (new_contours.len() as f64)) {
+                    let contour = new_contours[c as usize].clone();
+                    {
+                        let mut i = 0.0_f64;
+                        while (i < (contour.len() as f64)) {
+                            let x = contour[i as usize].clone();
+                            let y = contour[(i + 1.0_f64) as usize].clone();
+                            if (x < min_x) {
+                                min_x = x;
+                            }
+                            if (x > max_x) {
+                                max_x = x;
+                            }
+                            if (y < min_y) {
+                                min_y = y;
+                            }
+                            if (y > max_y) {
+                                max_y = y;
+                            }
+                            {
+                                i += 2.0_f64;
+                                i.clone()
+                            };
+                        }
+                    }
+                    {
+                        c += 1.0;
+                        c
+                    };
+                }
+            }
+            if (min_x > max_x) {
+                out.rect.x = 0.0_f64;
+                out.rect.y = 0.0_f64;
+                out.rect.width = 0.0_f64;
+                out.rect.height = 0.0_f64;
+                return;
+            }
+            out.rect.x = min_x;
+            out.rect.y = min_y;
+            out.rect.width = (max_x - min_x);
+            out.rect.height = (max_y - min_y);
+        })();
     }
     out.version =
         (__flight_js_to_u32((out.version + 1.0_f64)) >> (__flight_js_to_u32(0.0_f64) & 31)) as f64;

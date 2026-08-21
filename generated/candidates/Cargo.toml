@@ -3,6 +3,7 @@
 members = [
   "flighthq-accessibility",
   "flighthq-adjustments",
+  "flighthq-animation",
   "flighthq-camera",
   "flighthq-clip",
   "flighthq-clock",

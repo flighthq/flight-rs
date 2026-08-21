@@ -16,6 +16,38 @@ use flighthq_types::{
 };
 
 // Source: upstream/packages/bitmapfont-formats/src/bitmapFontRecord.ts:26 (sha256:e1e716b298a1cf4d381df73304608996c45a4e4f0169125fdb7637c9e1fc57a5)
+#[derive(Clone, Default)]
+struct ClosureContextRecord4 {
+    __flight_identity: std::sync::Arc<()>,
+    advance: f64,
+    bearing_x: f64,
+    bearing_y: f64,
+    codepoint: f64,
+    height: f64,
+    page: f64,
+    width: f64,
+    x: f64,
+    y: f64,
+}
+impl PartialEq for ClosureContextRecord4 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+struct ClosureContextRecord5 {
+    __flight_identity: std::sync::Arc<()>,
+    amount: f64,
+    left: f64,
+    right: f64,
+}
+impl PartialEq for ClosureContextRecord5 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 pub fn build_bitmap_font_from_record(
     record: BitmapFontRecord,
     options: Option<BitmapFontParseOptions>,
@@ -90,15 +122,15 @@ pub fn build_bitmap_font_from_record(
     let glyphs: Vec<BitmapFontGlyphData> = ((record.chars).clone())
         .iter()
         .cloned()
-        .map(|char: BitmapFontCharRecord| -> BitmapFontGlyphData {
-            BitmapFontGlyphData {
+        .map(|char: BitmapFontCharRecord| -> ClosureContextRecord4 {
+            ClosureContextRecord4 {
                 __flight_identity: std::sync::Arc::new(()),
                 advance: char.xadvance,
                 bearing_x: char.xoffset,
                 bearing_y: (record.base - char.yoffset),
                 codepoint: char.id,
                 height: char.height,
-                page: Some(char.page),
+                page: char.page,
                 width: char.width,
                 x: char.x,
                 y: char.y,
@@ -108,8 +140,8 @@ pub fn build_bitmap_font_from_record(
     let kerning: Vec<BitmapFontKerningData> = ((record.kernings).clone())
         .iter()
         .cloned()
-        .map(|pair: BitmapFontKerningRecord| -> BitmapFontKerningData {
-            BitmapFontKerningData {
+        .map(|pair: BitmapFontKerningRecord| -> ClosureContextRecord5 {
+            ClosureContextRecord5 {
                 __flight_identity: std::sync::Arc::new(()),
                 amount: pair.amount,
                 left: pair.first,

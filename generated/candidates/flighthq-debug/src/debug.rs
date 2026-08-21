@@ -12,31 +12,8 @@ use flighthq_log::{
 };
 use flighthq_render::{enable_color_adjustment_guards, enable_render_registry_guards};
 use flighthq_types::{
-    BlendMode, DebugOptions, DebugSubsystemHooks, DebugSubsystemName, LogLevel, LogSink, Matrix,
-    RenderState, Scene2DClipHooks, Scene3DGraphSyncPolicy,
+    DebugOptions, DebugSubsystemHooks, DebugSubsystemName, LogLevel, LogSink, RenderState,
 };
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord1 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub allow_smoothing: Option<bool>,
-    pub background_color: Option<f64>,
-    pub background_color_rgba: Option<Vec<f64>>,
-    pub background_color_string: Option<String>,
-    pub current_clip_depth: Option<f64>,
-    pub display_object_clip_hooks: Option<Scene2DClipHooks>,
-    pub pixel_ratio: Option<f64>,
-    pub render_alpha: Option<f64>,
-    pub render_blend_mode: Option<BlendMode>,
-    pub render_transform2_d: Option<Matrix>,
-    pub scene_graph_sync_policy: Option<Scene3DGraphSyncPolicy>,
-    pub round_pixels: Option<bool>,
-}
-impl PartialEq for FlightPartialRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
 
 // Source: upstream/packages/debug/src/debug.ts:24 (sha256:db7c1086c01a5a0e0ff577301df07c656f8e538a6150f8e50b19d3127f90cd23)
 pub fn disable_debug() -> () {
@@ -59,10 +36,10 @@ pub fn disable_debug() -> () {
 
 // Source: upstream/packages/debug/src/debug.ts:40 (sha256:397fe717277e7fb721cb4084d879a25046317cc91bf3c87c0682b0eeed22b965)
 #[derive(Clone, Default)]
-struct EnableDebugRecord10 {
+struct EnableDebugRecord9 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for EnableDebugRecord10 {
+impl PartialEq for EnableDebugRecord9 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

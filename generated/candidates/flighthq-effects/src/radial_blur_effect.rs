@@ -9,14 +9,14 @@
 use flighthq_types::RadialBlurEffect;
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord4165725971 {
     pub __flight_identity: std::sync::Arc<()>,
     pub center_x: Option<f64>,
     pub center_y: Option<f64>,
     pub strength: Option<f64>,
     pub samples: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord4165725971 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -33,8 +33,8 @@ impl PartialEq for CreateRadialBlurEffectRecord2 {
     }
 }
 
-pub fn create_radial_blur_effect(options: Option<FlightOmitRecord1>) -> RadialBlurEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_radial_blur_effect(options: Option<FlightOmitRecord4165725971>) -> RadialBlurEffect {
+    let options = options.unwrap_or(FlightOmitRecord4165725971 {
         __flight_identity: std::sync::Arc::new(()),
         center_x: None,
         center_y: None,
@@ -42,7 +42,7 @@ pub fn create_radial_blur_effect(options: Option<FlightOmitRecord1>) -> RadialBl
         samples: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         RadialBlurEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "RadialBlurEffect".to_owned(),

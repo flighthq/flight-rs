@@ -14,7 +14,7 @@ pub fn get_next_grapheme_boundary(text: String, index: f64, locale: Option<Strin
     let __flight_utf16_text: std::sync::Arc<Vec<u16>> =
         std::sync::Arc::new(text.encode_utf16().collect());
     return next_segment_boundary(
-        &segment_graphemes((text).clone(), Some(((locale).clone().unwrap()).clone())),
+        &segment_graphemes((text).clone(), ((locale).clone()).clone()),
         index,
         (__flight_utf16_text.len() as f64),
     );
@@ -25,7 +25,7 @@ pub fn get_next_word_boundary(text: String, index: f64, locale: Option<String>) 
     let __flight_utf16_text: std::sync::Arc<Vec<u16>> =
         std::sync::Arc::new(text.encode_utf16().collect());
     return next_segment_boundary(
-        &segment_words((text).clone(), Some(((locale).clone().unwrap()).clone())),
+        &segment_words((text).clone(), ((locale).clone()).clone()),
         index,
         (__flight_utf16_text.len() as f64),
     );
@@ -34,7 +34,7 @@ pub fn get_next_word_boundary(text: String, index: f64, locale: Option<String>) 
 // Source: upstream/packages/textsegment/src/textSegmentBoundary.ts:22 (sha256:b27ae99940226f7908e4ef1290216d470eceae33b7e7a155359155f98fe58b15)
 pub fn get_previous_grapheme_boundary(text: String, index: f64, locale: Option<String>) -> f64 {
     return previous_segment_boundary(
-        &segment_graphemes((text).clone(), Some(((locale).clone().unwrap()).clone())),
+        &segment_graphemes((text).clone(), ((locale).clone()).clone()),
         index,
     );
 }
@@ -42,7 +42,7 @@ pub fn get_previous_grapheme_boundary(text: String, index: f64, locale: Option<S
 // Source: upstream/packages/textsegment/src/textSegmentBoundary.ts:28 (sha256:f609c082d8e7b78f4dafa99bb0aaf11c20d4852ff70dfc1bb008e73311b7e6c3)
 pub fn get_previous_word_boundary(text: String, index: f64, locale: Option<String>) -> f64 {
     return previous_segment_boundary(
-        &segment_words((text).clone(), Some(((locale).clone().unwrap()).clone())),
+        &segment_words((text).clone(), ((locale).clone()).clone()),
         index,
     );
 }
@@ -64,7 +64,7 @@ pub fn get_word_range_at(
     } else {
         clamped
     };
-    let segments = segment_words((text).clone(), Some(((locale).clone().unwrap()).clone()));
+    let segments = segment_words((text).clone(), ((locale).clone()).clone());
     for segment in (segments).iter().cloned() {
         if (lookup >= segment.start) && (lookup < segment.end) {
             return if (segment.is_word_like) == Some(true) {

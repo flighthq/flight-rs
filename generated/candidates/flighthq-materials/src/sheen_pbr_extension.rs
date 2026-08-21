@@ -14,7 +14,7 @@ use flighthq_types::{
 };
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord1 {
+pub struct FlightPartialRecord1860699151 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<Kind>,
     pub thickness: Option<f64>,
@@ -64,14 +64,16 @@ pub struct FlightPartialRecord1 {
     pub anisotropy_rotation: Option<f64>,
     pub anisotropy_strength: Option<f64>,
 }
-impl PartialEq for FlightPartialRecord1 {
+impl PartialEq for FlightPartialRecord1860699151 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 // Source: upstream/packages/materials/src/sheenPbrExtension.ts:8 (sha256:bad19531bcb91e470292c790b19a1b294e8d7fb3b615d82a6fd3635ee7d93a45)
-pub fn create_sheen_pbr_extension(opts: Option<FlightPartialRecord1>) -> SheenPbrExtension {
+pub fn create_sheen_pbr_extension(
+    opts: Option<FlightPartialRecord1860699151>,
+) -> SheenPbrExtension {
     return create_entity(Some(SheenPbrExtension {
         __flight_identity: std::sync::Arc::new(()),
         __flight_entity_runtime: Default::default(),

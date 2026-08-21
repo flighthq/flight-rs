@@ -18,7 +18,7 @@ pub(crate) type GeometryPoolReleaseFunction = String;
 
 // Source: upstream/packages/geometry/src/enableGeometryPoolGuards.ts:8 (sha256:53f3a8bf013823df90d13d3ca73d6ee3f34dfd2ed391ff40211a21fddd75bcc5)
 pub fn are_geometry_pool_guards_enabled() -> bool {
-    return (geometry_pool_release_guard_constant).is_some();
+    return ((*geometry_pool_release_guard_constant.lock().unwrap()).clone()).is_some();
 }
 
 // Source: upstream/packages/geometry/src/enableGeometryPoolGuards.ts:12 (sha256:333e34cc0dba2cf47b8f9e9848139002d86fbbf8efe4ebd4f4603e6fbfc1b7ea)
@@ -53,11 +53,11 @@ impl PartialEq for WarnOnDoubleReleaseRecord1 {
 }
 
 fn warn_on_double_release(release_function: GeometryPoolReleaseFunction) -> () {
-    let acquire_functions = ACQUIRE_FUNCTIONS_BY_RELEASE_FUNCTION
+    let acquire_functions = (ACQUIRE_FUNCTIONS_BY_RELEASE_FUNCTION
         .iter()
         .find(|(entry_key, _)| entry_key == &(release_function).clone())
-        .map(|(_, value)| value.clone())
-        .clone();
+        .map(|(_, value)| value.clone()))
+    .expect("TypeScript Record key was absent");
     log_once(
         format!("geometry:double-release:{}", (release_function).clone()),
         LogLevel::Warn,
@@ -66,7 +66,7 @@ fn warn_on_double_release(release_function: GeometryPoolReleaseFunction) -> () {
             Vec<(String, crate::FlightValue)>,
         >::B({
             let mut __flight_record = Vec::new();
-            __flight_record.push(("message".to_owned(), { let __flight_portable_source = format!("{}: this value is already in its pool, so it is being released twice. Two later matching acquire calls will hand back the same object and unrelated owners will alias each other. Every {} call pairs with exactly one {} call, and the value must not be used after release.", (release_function).clone(), ((acquire_functions).clone()).as_ref().map_or_else(|| "undefined".to_owned(), |value| value.to_string()), (release_function).clone()); crate::FlightValue::String((&__flight_portable_source).clone()) }));
+            __flight_record.push(("message".to_owned(), { let __flight_portable_source = format!("{}: this value is already in its pool, so it is being released twice. Two later matching acquire calls will hand back the same object and unrelated owners will alias each other. Every {} call pairs with exactly one {} call, and the value must not be used after release.", (release_function).clone(), (acquire_functions).clone(), (release_function).clone()); crate::FlightValue::String((&__flight_portable_source).clone()) }));
             __flight_record
         }))),
         Some(("geometry".to_owned()).clone()),

@@ -25,7 +25,7 @@ fn __flight_js_to_i32(value: f64) -> i32 {
 }
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord1 {
+pub struct FlightPartialRecord4043335526 {
     pub __flight_identity: std::sync::Arc<()>,
     pub animation: Option<SpritesheetAnimation>,
     pub complete: Option<bool>,
@@ -39,7 +39,7 @@ pub struct FlightPartialRecord1 {
         Option<Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>>,
     pub queue: Option<Vec<SpritesheetAnimation>>,
 }
-impl PartialEq for FlightPartialRecord1 {
+impl PartialEq for FlightPartialRecord4043335526 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -48,11 +48,7 @@ impl PartialEq for FlightPartialRecord1 {
 // Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:4 (sha256:e66ce9c760beb40f555bed7ad4b6d99d8157b80986f3d23f1c510c866c8d8779)
 pub fn acquire_spritesheet_player() -> SpritesheetPlayer {
     if ((PLAYER_POOL.lock().unwrap().len() as f64) > 0.0_f64) {
-        let mut p = PLAYER_POOL
-            .lock()
-            .unwrap()
-            .pop()
-            .expect("TypeScript Array.pop returned undefined");
+        let mut p = PLAYER_POOL.lock().unwrap().pop();
         p.as_mut().unwrap().animation = None;
         p.as_mut().unwrap().complete = true;
         p.as_mut().unwrap().elapsed = 0.0_f64;
@@ -86,7 +82,7 @@ pub fn clone_spritesheet_player(player: &SpritesheetPlayer) -> SpritesheetPlayer
 }
 
 // Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:34 (sha256:367882272258fe1ac565e85e6cf5f8623fa9c3b7d64c5c998a686eadea8994ef)
-pub fn create_spritesheet_player(obj: Option<FlightPartialRecord1>) -> SpritesheetPlayer {
+pub fn create_spritesheet_player(obj: Option<FlightPartialRecord4043335526>) -> SpritesheetPlayer {
     return SpritesheetPlayer {
         __flight_identity: std::sync::Arc::new(()),
         animation: obj.as_ref().and_then(|value| (value.animation).clone()),
@@ -315,6 +311,7 @@ fn resolve_display_index_to_first_virtual_index(
             if __flight_case <= 4_usize {
                 return display_index;
             }
+            unreachable!("exhaustive TypeScript switch completed without exiting");
         }
     }
 }

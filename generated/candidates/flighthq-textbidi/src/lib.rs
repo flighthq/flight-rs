@@ -17,15 +17,15 @@ pub use flighthq_types::{
     install_native_host_constructors, set_interval, set_timeout,
 };
 
-mod _internal_index;
+pub mod _internal_index;
 pub use _internal_index::*;
-mod bidi_class_backend;
+pub mod bidi_class_backend;
 pub use bidi_class_backend::*;
-mod contract;
+pub mod contract;
 pub use contract::*;
-mod get_bidi_runs;
+pub mod get_bidi_runs;
 pub use get_bidi_runs::*;
-mod reorder_bidi_line;
+pub mod reorder_bidi_line;
 pub use reorder_bidi_line::*;
-mod resolve_bidi_levels;
+pub mod resolve_bidi_levels;
 pub use resolve_bidi_levels::*;

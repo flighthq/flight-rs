@@ -9,7 +9,7 @@
 use flighthq_types::GodRaysEffect;
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord2075458950 {
     pub __flight_identity: std::sync::Arc<()>,
     pub center_x: Option<f64>,
     pub center_y: Option<f64>,
@@ -19,7 +19,7 @@ pub struct FlightOmitRecord1 {
     pub exposure: Option<f64>,
     pub samples: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord2075458950 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -36,8 +36,8 @@ impl PartialEq for CreateGodRaysEffectRecord2 {
     }
 }
 
-pub fn create_god_rays_effect(options: Option<FlightOmitRecord1>) -> GodRaysEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_god_rays_effect(options: Option<FlightOmitRecord2075458950>) -> GodRaysEffect {
+    let options = options.unwrap_or(FlightOmitRecord2075458950 {
         __flight_identity: std::sync::Arc::new(()),
         center_x: None,
         center_y: None,
@@ -48,7 +48,7 @@ pub fn create_god_rays_effect(options: Option<FlightOmitRecord1>) -> GodRaysEffe
         samples: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         GodRaysEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "GodRaysEffect".to_owned(),

@@ -9,7 +9,7 @@
 use flighthq_types::VolumetricLightEffect;
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord1348030891 {
     pub __flight_identity: std::sync::Arc<()>,
     pub density: Option<f64>,
     pub light_color: Option<f64>,
@@ -18,7 +18,7 @@ pub struct FlightOmitRecord1 {
     pub samples: Option<f64>,
     pub scattering: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord1348030891 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -35,8 +35,10 @@ impl PartialEq for CreateVolumetricLightEffectRecord2 {
     }
 }
 
-pub fn create_volumetric_light_effect(options: Option<FlightOmitRecord1>) -> VolumetricLightEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_volumetric_light_effect(
+    options: Option<FlightOmitRecord1348030891>,
+) -> VolumetricLightEffect {
+    let options = options.unwrap_or(FlightOmitRecord1348030891 {
         __flight_identity: std::sync::Arc::new(()),
         density: None,
         light_color: None,
@@ -46,7 +48,7 @@ pub fn create_volumetric_light_effect(options: Option<FlightOmitRecord1>) -> Vol
         scattering: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         VolumetricLightEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "VolumetricLightEffect".to_owned(),

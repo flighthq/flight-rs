@@ -11,32 +11,9 @@ use flighthq_registry::{
 };
 use flighthq_render::get_render_state_runtime;
 use flighthq_types::{
-    BlendMode, Kind, Matrix, REGISTRY_ENTRY_STATE as registry_entry_state_constant, RenderEffect,
-    RenderEffectPadding, RenderEffectPaddingExplanation, RenderEffectPaddingResolver,
-    RenderRegistry, RenderState, Scene2DClipHooks, Scene3DGraphSyncPolicy,
+    Kind, REGISTRY_ENTRY_STATE as registry_entry_state_constant, RenderEffect, RenderEffectPadding,
+    RenderEffectPaddingExplanation, RenderEffectPaddingResolver, RenderRegistry, RenderState,
 };
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord1 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub allow_smoothing: Option<bool>,
-    pub background_color: Option<f64>,
-    pub background_color_rgba: Option<Vec<f64>>,
-    pub background_color_string: Option<String>,
-    pub current_clip_depth: Option<f64>,
-    pub display_object_clip_hooks: Option<Scene2DClipHooks>,
-    pub pixel_ratio: Option<f64>,
-    pub render_alpha: Option<f64>,
-    pub render_blend_mode: Option<BlendMode>,
-    pub render_transform2_d: Option<Matrix>,
-    pub scene_graph_sync_policy: Option<Scene3DGraphSyncPolicy>,
-    pub round_pixels: Option<bool>,
-}
-impl PartialEq for FlightPartialRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
 
 // Source: upstream/packages/effects/src/renderEffectPadding.ts:16 (sha256:46c1cf81e3c6877cb9d40d3ad64c16546d6dfea285e5b4dc439ea714675f748c)
 pub fn compute_render_effect_padding(

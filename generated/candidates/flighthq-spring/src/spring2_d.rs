@@ -38,13 +38,13 @@ pub fn is_spring2_d_settled(
     return (is_spring_settled(
         &spring2_d.x,
         target_x,
-        Some((position_epsilon).clone().unwrap()),
-        Some((velocity_epsilon).clone().unwrap()),
+        (position_epsilon).clone(),
+        (velocity_epsilon).clone(),
     )) && (is_spring_settled(
         &spring2_d.y,
         target_y,
-        Some((position_epsilon).clone().unwrap()),
-        Some((velocity_epsilon).clone().unwrap()),
+        (position_epsilon).clone(),
+        (velocity_epsilon).clone(),
     ));
 }
 

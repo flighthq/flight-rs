@@ -36,7 +36,23 @@ pub fn get_camera3_d_frustum(out: &mut FrustumLike, camera: &Camera3D, aspect: f
 
 // Source: upstream/packages/camera/src/culling.ts:31 (sha256:3ffbf9f063ded81083fcb7f409a1c75a57a567f5170aa093d559dd245bbb9ac0)
 pub fn is_box_in_camera3_d_frustum(camera: &Camera3D, aabb: &AabbLike, aspect: f64) -> bool {
-    get_camera3_d_frustum(&mut (*__SCRATCH_FRUSTUM.lock().unwrap()), camera, aspect);
+    (|| -> () {
+        get_camera3_d_view_projection_matrix4(
+            &mut (*__SCRATCH_VIEW_PROJECTION.lock().unwrap()),
+            &camera,
+            aspect,
+        );
+        set_frustum_from_matrix4(&mut (*__SCRATCH_FRUSTUM.lock().unwrap()), &{
+            let __flight_source = &(*__SCRATCH_VIEW_PROJECTION.lock().unwrap());
+            Matrix4Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
+                m: (__flight_source.m).clone(),
+            }
+        });
+    })();
     return is_frustum_intersecting_aabb(
         &{
             let __flight_source = &(*__SCRATCH_FRUSTUM.lock().unwrap());
@@ -59,7 +75,23 @@ pub fn is_box_in_camera3_d_frustum(camera: &Camera3D, aabb: &AabbLike, aspect: f
 
 // Source: upstream/packages/camera/src/culling.ts:38 (sha256:d6a0971345b7dfffb298d7c93cfd89f15183e1aa604c8b1923d96e773909caba)
 pub fn is_point_in_camera3_d_frustum(camera: &Camera3D, point: &Vector3Like, aspect: f64) -> bool {
-    get_camera3_d_frustum(&mut (*__SCRATCH_FRUSTUM.lock().unwrap()), camera, aspect);
+    (|| -> () {
+        get_camera3_d_view_projection_matrix4(
+            &mut (*__SCRATCH_VIEW_PROJECTION.lock().unwrap()),
+            &camera,
+            aspect,
+        );
+        set_frustum_from_matrix4(&mut (*__SCRATCH_FRUSTUM.lock().unwrap()), &{
+            let __flight_source = &(*__SCRATCH_VIEW_PROJECTION.lock().unwrap());
+            Matrix4Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
+                m: (__flight_source.m).clone(),
+            }
+        });
+    })();
     return is_frustum_containing_point(
         &{
             let __flight_source = &(*__SCRATCH_FRUSTUM.lock().unwrap());
@@ -86,7 +118,23 @@ pub fn is_sphere_in_camera3_d_frustum(
     sphere: &BoundingSphereLike,
     aspect: f64,
 ) -> bool {
-    get_camera3_d_frustum(&mut (*__SCRATCH_FRUSTUM.lock().unwrap()), camera, aspect);
+    (|| -> () {
+        get_camera3_d_view_projection_matrix4(
+            &mut (*__SCRATCH_VIEW_PROJECTION.lock().unwrap()),
+            &camera,
+            aspect,
+        );
+        set_frustum_from_matrix4(&mut (*__SCRATCH_FRUSTUM.lock().unwrap()), &{
+            let __flight_source = &(*__SCRATCH_VIEW_PROJECTION.lock().unwrap());
+            Matrix4Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
+                m: (__flight_source.m).clone(),
+            }
+        });
+    })();
     return is_frustum_intersecting_sphere(
         &{
             let __flight_source = &(*__SCRATCH_FRUSTUM.lock().unwrap());

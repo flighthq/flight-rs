@@ -32,7 +32,7 @@ pub fn enable_particle_emitter_signals(state: crate::OpaqueHostValue) -> Particl
         {
             s.iter()
                 .find(|(entry_key, _)| entry_key == &*SIGNALS_SLOT)
-                .map(|(_, value)| value.clone()) = Some(Some(create_particle_emitter_signals()));
+                .map(|(_, value)| value.clone()) = Some(create_particle_emitter_signals());
         }
         s.iter()
             .find(|(entry_key, _)| entry_key == &*SIGNALS_SLOT)

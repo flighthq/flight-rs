@@ -1,8 +1,8 @@
 // Copies the wasm-bindgen JS glue (and its types) from src/wasm into dist/wasm
-// after `tsc -b`. tsc resolves `./wasm/surface_wasm.js` to its sibling .d.ts for
+// after `tsc -b`. tsc resolves `./wasm/bitmap_wasm.js` to its sibling .d.ts for
 // types but does not emit the .js itself (it is not a TypeScript source), so the
 // built dist needs the glue placed alongside the compiled shim. The wasm bytes
-// are embedded in surfaceWasmBytes (compiled by tsc), so the raw .wasm is not
+// are embedded in bitmapWasmBytes (compiled by tsc), so the raw .wasm is not
 // shipped.
 
 import { copyFileSync, mkdirSync } from 'node:fs';
@@ -14,7 +14,7 @@ import { fileURLToPath } from 'node:url';
  * test can prove this list still covers each non-TypeScript module `src` imports: a glue file that
  * is imported but not copied produces a tarball that installs and then fails at import time.
  */
-export const wasmGlueFiles = ['surface_wasm.js', 'surface_wasm.d.ts'] as const;
+export const wasmGlueFiles = ['bitmap_wasm.js', 'bitmap_wasm.d.ts'] as const;
 
 const scriptPath = fileURLToPath(import.meta.url);
 

@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{explainCamera3DView, set_camera2_d_visible_bounds_guard, set_camera3_d_view_guard};
+use crate::{explain_camera3_d_view, set_camera2_d_visible_bounds_guard, set_camera3_d_view_guard};
 use flighthq_log::log_once;
 use flighthq_types::{Camera2D, Camera3D, LogData, LogDataProvider, LogLevel};
 

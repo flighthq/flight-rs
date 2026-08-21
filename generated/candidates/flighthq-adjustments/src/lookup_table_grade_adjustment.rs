@@ -10,12 +10,12 @@ use crate::sample_color_lut;
 use flighthq_types::{ColorLut, ColorTransformFunction, LookupTableGradeAdjustment};
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord64912180 {
     pub __flight_identity: std::sync::Arc<()>,
     pub lut: Option<ColorLut>,
     pub strength: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord64912180 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -33,9 +33,9 @@ impl PartialEq for CreateLookupTableGradeAdjustmentRecord2 {
 }
 
 pub fn create_lookup_table_grade_adjustment(
-    options: Option<FlightOmitRecord1>,
+    options: Option<FlightOmitRecord64912180>,
 ) -> LookupTableGradeAdjustment {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+    let options = options.unwrap_or(FlightOmitRecord64912180 {
         __flight_identity: std::sync::Arc::new(()),
         lut: None,
         strength: None,
@@ -105,7 +105,7 @@ pub fn create_lookup_table_grade_adjustment(
         }) as Box<dyn FnMut(Vec<f64>, f64, f64, f64) -> () + Send + 'static>,
     ));
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         LookupTableGradeAdjustment {
             __flight_identity: std::sync::Arc::new(()),
             kind: "LookupTableGradeAdjustment".to_owned(),

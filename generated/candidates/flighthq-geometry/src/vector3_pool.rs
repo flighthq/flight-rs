@@ -39,7 +39,7 @@ pub fn release_vector3(v: &mut Vector3) -> () {
     if false {
         return;
     }
-    if ((geometry_pool_release_guard_constant).is_some())
+    if (((*geometry_pool_release_guard_constant.lock().unwrap()).clone()).is_some())
         && ({
             let __flight_value = (*v).clone();
             (POOL.lock().unwrap())
@@ -47,7 +47,12 @@ pub fn release_vector3(v: &mut Vector3) -> () {
                 .any(|item| item == &__flight_value)
         })
     {
-        geometry_pool_release_guard_constant("releaseVector3");
+        {
+            let __flight_callback = (*geometry_pool_release_guard_constant.lock().unwrap())
+                .clone()
+                .unwrap();
+            __flight_callback.lock().unwrap()("releaseVector3".to_owned())
+        };
     }
     *flighthq_types::FlightEntity::__flight_entity_runtime(v)
         .lock()

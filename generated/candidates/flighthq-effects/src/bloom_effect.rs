@@ -7,42 +7,17 @@
 #![allow(unused_parens)]
 
 use crate::{get_gaussian_render_effect_padding, register_render_effect_padding_resolver};
-use flighthq_types::{
-    BlendMode, BloomEffect, Matrix, RenderEffect, RenderEffectPadding, RenderState,
-    Scene2DClipHooks, Scene3DGraphSyncPolicy,
-};
+use flighthq_types::{BloomEffect, RenderEffect, RenderEffectPadding, RenderState};
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord537432717 {
     pub __flight_identity: std::sync::Arc<()>,
     pub threshold: Option<f64>,
     pub intensity: Option<f64>,
     pub radius: Option<f64>,
     pub passes: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord2 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub allow_smoothing: Option<bool>,
-    pub background_color: Option<f64>,
-    pub background_color_rgba: Option<Vec<f64>>,
-    pub background_color_string: Option<String>,
-    pub current_clip_depth: Option<f64>,
-    pub display_object_clip_hooks: Option<Scene2DClipHooks>,
-    pub pixel_ratio: Option<f64>,
-    pub render_alpha: Option<f64>,
-    pub render_blend_mode: Option<BlendMode>,
-    pub render_transform2_d: Option<Matrix>,
-    pub scene_graph_sync_policy: Option<Scene3DGraphSyncPolicy>,
-    pub round_pixels: Option<bool>,
-}
-impl PartialEq for FlightPartialRecord2 {
+impl PartialEq for FlightOmitRecord537432717 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -65,17 +40,17 @@ pub fn compute_bloom_threshold(effect: &BloomEffect) -> f64 {
 
 // Source: upstream/packages/effects/src/bloomEffect.ts:21 (sha256:617321597270316572516fdf538933545aea4fa2d8cd22b426fc4e882207e95f)
 #[derive(Clone, Default)]
-struct CreateBloomEffectRecord11 {
+struct CreateBloomEffectRecord10 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateBloomEffectRecord11 {
+impl PartialEq for CreateBloomEffectRecord10 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-pub fn create_bloom_effect(options: Option<FlightOmitRecord1>) -> BloomEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_bloom_effect(options: Option<FlightOmitRecord537432717>) -> BloomEffect {
+    let options = options.unwrap_or(FlightOmitRecord537432717 {
         __flight_identity: std::sync::Arc::new(()),
         threshold: None,
         intensity: None,
@@ -83,7 +58,7 @@ pub fn create_bloom_effect(options: Option<FlightOmitRecord1>) -> BloomEffect {
         passes: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         BloomEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "BloomEffect".to_owned(),

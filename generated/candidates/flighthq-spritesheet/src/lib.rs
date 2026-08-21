@@ -17,21 +17,21 @@ pub use flighthq_types::{
     install_native_host_constructors, set_interval, set_timeout,
 };
 
-mod _internal_index;
+pub mod _internal_index;
 pub use _internal_index::*;
-mod contract;
+pub mod contract;
 pub use contract::*;
-mod spritesheet;
+pub mod spritesheet;
 pub use spritesheet::*;
-mod spritesheet_animation;
+pub mod spritesheet_animation;
 pub use spritesheet_animation::*;
-mod spritesheet_data;
+pub mod spritesheet_data;
 pub use spritesheet_data::*;
-mod spritesheet_frame;
+pub mod spritesheet_frame;
 pub use spritesheet_frame::*;
-mod spritesheet_from;
+pub mod spritesheet_from;
 pub use spritesheet_from::*;
-mod spritesheet_player;
+pub mod spritesheet_player;
 pub use spritesheet_player::*;
-mod spritesheet_validation;
+pub mod spritesheet_validation;
 pub use spritesheet_validation::*;

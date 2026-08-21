@@ -9,7 +9,7 @@
 use crate::EntityRuntime;
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord1 {
+pub struct FlightPartialRecord3023763650 {
     pub __flight_identity: std::sync::Arc<()>,
     pub device_pixel_ratio: Option<f64>,
     pub height: Option<f64>,
@@ -17,7 +17,7 @@ pub struct FlightPartialRecord1 {
     pub x: Option<f64>,
     pub y: Option<f64>,
 }
-impl PartialEq for FlightPartialRecord1 {
+impl PartialEq for FlightPartialRecord3023763650 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -58,4 +58,4 @@ impl crate::FlightEntity for Viewport {
 }
 
 // Source: upstream/packages/types/src/Viewport.ts:17 (sha256:1ac94634a380031f5d11e7d31bd2558eee42553ccbcaefc8f5d096dabe8b2749)
-pub type ViewportLike = FlightPartialRecord1;
+pub type ViewportLike = FlightPartialRecord3023763650;

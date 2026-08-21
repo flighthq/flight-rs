@@ -661,9 +661,7 @@ fn report_unmixed_bus(bus: &AudioBus, operation: AudioBusMixerOperation) -> () {
         {
             let __flight_callback =
                 ((*_UNMIXED_BUS_GUARD.lock().unwrap()).as_ref().unwrap()).clone();
-            let __flight_result =
-                __flight_callback.lock().unwrap()((operation).clone(), (*bus).clone());
-            __flight_result
+            __flight_callback.lock().unwrap()((operation).clone(), (*bus).clone())
         };
     }
 }

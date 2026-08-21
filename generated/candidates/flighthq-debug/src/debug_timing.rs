@@ -8,31 +8,7 @@
 
 use crate::is_debug_enabled;
 use flighthq_log::{end_log_timer, log_debug, start_log_timer};
-use flighthq_types::{
-    BlendMode, LogData, LogDataProvider, LogTimer, Matrix, Scene2DClipHooks, Scene3DGraphSyncPolicy,
-};
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord1 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub allow_smoothing: Option<bool>,
-    pub background_color: Option<f64>,
-    pub background_color_rgba: Option<Vec<f64>>,
-    pub background_color_string: Option<String>,
-    pub current_clip_depth: Option<f64>,
-    pub display_object_clip_hooks: Option<Scene2DClipHooks>,
-    pub pixel_ratio: Option<f64>,
-    pub render_alpha: Option<f64>,
-    pub render_blend_mode: Option<BlendMode>,
-    pub render_transform2_d: Option<Matrix>,
-    pub scene_graph_sync_policy: Option<Scene3DGraphSyncPolicy>,
-    pub round_pixels: Option<bool>,
-}
-impl PartialEq for FlightPartialRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
+use flighthq_types::{LogData, LogDataProvider, LogTimer};
 
 // Source: upstream/packages/debug/src/debugTiming.ts:11 (sha256:46fa671b6e7598c2290adaaaddfadaa8186eb56ad30b61072ef3897923350d47)
 pub fn begin_debug_span(name: String, channel: Option<String>) -> Option<LogTimer> {

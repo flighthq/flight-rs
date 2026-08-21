@@ -140,32 +140,54 @@ describe('candidate crate resolution', () => {
     );
   });
 
-  it('rejects an automatic candidate beside a compatibility crate containing the same package definitions', () => {
-    const bitmap = portConfig.targets.find((target) => target.package === '@flighthq/bitmap');
-    if (!bitmap) throw new Error('Expected cultivated bitmap target');
+  it('has no compatibility-named target left: bitmap generates under its canonical crate', () => {
+    // Upstream renamed `surface` to `bitmap`, and this repository carried `flighthq-surface` for a
+    // while so the shipped facade kept working. That migration is finished, so no target should
+    // declare the exception any more — a reappearance means someone reintroduced a divergent crate
+    // name without the migration path architecture.md requires.
+    for (const target of portConfig.targets) {
+      // Read through a widening cast on purpose: with no target declaring it, the literal's inferred
+      // union no longer carries the optional property at all, and `target.compatibilityForCrate`
+      // stops compiling. That absence is exactly what this asserts, so the cast keeps the assertion
+      // meaningful — and it starts failing again the moment someone reintroduces the field.
+      const declared = (target as { compatibilityForCrate?: string }).compatibilityForCrate;
+      expect(declared, `${target.package} declares no naming exception`).toBeUndefined();
+    }
+  });
 
-    expect(bitmap.compatibilityForCrate).toBe('flighthq-bitmap');
+  it('still rejects an automatic candidate beside a compatibility crate for the same package', () => {
+    // The validator outlives the exception it was written for: it is what any FUTURE compatibility
+    // crate would be held to. Exercised with a synthetic target rather than a live one, so removing
+    // the last real exception does not delete the guard with it.
+    const compatibility = {
+      compatibilityForCrate: 'flighthq-widget',
+      crate: 'flighthq-widget-compat',
+      package: '@flighthq/widget',
+    };
+
     expect(() =>
       validateCompatibilityCrateTargets(
-        [{ crate: 'flighthq-bitmap', disposition: 'generated', package: '@flighthq/bitmap' }],
-        [bitmap],
+        [{ crate: 'flighthq-widget', disposition: 'generated', package: '@flighthq/widget' }],
+        [compatibility],
       ),
     ).toThrow(
-      'Compatibility crate flighthq-surface contains @flighthq/bitmap definitions while automatic candidate flighthq-bitmap is enabled; only one may materialize',
+      'Compatibility crate flighthq-widget-compat contains @flighthq/widget definitions while automatic candidate flighthq-widget is enabled; only one may materialize',
     );
+
     expect(() =>
       validateCompatibilityCrateTargets(
-        [{ crate: 'flighthq-bitmap', disposition: 'cultivated', package: '@flighthq/bitmap' }],
-        [bitmap],
+        [{ crate: 'flighthq-widget', disposition: 'cultivated', package: '@flighthq/widget' }],
+        [compatibility],
       ),
     ).not.toThrow();
+
     expect(() =>
       validateCompatibilityCrateTargets(
-        [{ crate: 'flighthq-bitmap-v2', disposition: 'cultivated', package: '@flighthq/bitmap' }],
-        [bitmap],
+        [{ crate: 'flighthq-widget-v2', disposition: 'cultivated', package: '@flighthq/widget' }],
+        [compatibility],
       ),
     ).toThrow(
-      'Compatibility crate flighthq-surface declares canonical crate flighthq-bitmap for @flighthq/bitmap, but inventory selects flighthq-bitmap-v2',
+      'Compatibility crate flighthq-widget-compat declares canonical crate flighthq-widget for @flighthq/widget, but inventory selects flighthq-widget-v2',
     );
   });
 });
@@ -388,7 +410,7 @@ describe('compiler diagnostic source paths', () => {
       'flighthq-runtime = { path = "../flighthq-runtime" }',
     );
     expect(
-      readFileSync(path.join(process.cwd(), 'generated/crates/flighthq-surface-wasm/Cargo.toml'), 'utf8'),
+      readFileSync(path.join(process.cwd(), 'generated/crates/flighthq-bitmap-wasm/Cargo.toml'), 'utf8'),
     ).toContain('flighthq-runtime = { path = "../flighthq-runtime" }');
     expect(
       readFileSync(

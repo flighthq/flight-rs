@@ -13,17 +13,24 @@ pub fn create_color_scale_bias_adjustment(
     color_scale_bias: &ColorScaleBiasLike,
 ) -> ColorScaleBiasAdjustment {
     let value = {
-        let __flight_entity_spread = color_scale_bias;
+        let __flight_spread_0 = (*color_scale_bias).clone();
         ColorScaleBias {
+            __flight_identity: std::sync::Arc::new(()),
             __flight_entity_runtime: std::sync::Arc::new(std::sync::Mutex::new(
-                __flight_entity_spread
+                __flight_spread_0
                     .__flight_entity_runtime
                     .lock()
                     .unwrap()
                     .clone(),
             )),
-            __flight_identity: std::sync::Arc::new(()),
-            ..__flight_entity_spread.clone()
+            alpha_scale: __flight_spread_0.alpha_scale,
+            alpha_bias: __flight_spread_0.alpha_bias,
+            blue_scale: __flight_spread_0.blue_scale,
+            blue_bias: __flight_spread_0.blue_bias,
+            green_scale: __flight_spread_0.green_scale,
+            green_bias: __flight_spread_0.green_bias,
+            red_scale: __flight_spread_0.red_scale,
+            red_bias: __flight_spread_0.red_bias,
         }
     };
     return ColorScaleBiasAdjustment {

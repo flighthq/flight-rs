@@ -10,7 +10,7 @@ use flighthq_entity::create_entity;
 use flighthq_types::{Spritesheet, SpritesheetAnimation, SpritesheetAnimationDirection};
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord1 {
+pub struct FlightPartialRecord1490253840 {
     pub __flight_identity: std::sync::Arc<()>,
     pub frames: Option<Vec<f64>>,
     pub frame_duration: Option<f64>,
@@ -20,14 +20,16 @@ pub struct FlightPartialRecord1 {
     pub origin_x: Option<f64>,
     pub origin_y: Option<f64>,
 }
-impl PartialEq for FlightPartialRecord1 {
+impl PartialEq for FlightPartialRecord1490253840 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 // Source: upstream/packages/spritesheet/src/spritesheetAnimation.ts:4 (sha256:bc6618f2aaa7f6142dbbb81b978e2ef28b69d40895f56a74c1a4e57ded0228aa)
-pub fn create_spritesheet_animation(obj: Option<FlightPartialRecord1>) -> SpritesheetAnimation {
+pub fn create_spritesheet_animation(
+    obj: Option<FlightPartialRecord1490253840>,
+) -> SpritesheetAnimation {
     return create_entity(Some(SpritesheetAnimation {
         __flight_identity: std::sync::Arc::new(()),
         __flight_entity_runtime: Default::default(),
@@ -59,7 +61,7 @@ pub fn create_spritesheet_animation(obj: Option<FlightPartialRecord1>) -> Sprite
 pub fn create_spritesheet_animation_from_frame_names(
     spritesheet: &Spritesheet,
     pattern: &crate::FlightUnion2<String, crate::OpaqueHostValue>,
-    options: Option<FlightPartialRecord1>,
+    options: Option<FlightPartialRecord1490253840>,
 ) -> Option<SpritesheetAnimation> {
     let atlas = (spritesheet.atlas).clone();
     if (atlas).is_none() {
@@ -122,16 +124,22 @@ pub fn create_spritesheet_animation_from_frame_names(
     if ((matched_indices.len() as f64) == 0.0_f64) {
         return None;
     }
-    return Some(create_spritesheet_animation(Some(FlightPartialRecord1 {
-        __flight_identity: std::sync::Arc::new(()),
-        direction: Some((options.as_ref().and_then(|value| (value.direction).clone())).unwrap()),
-        frame_duration: Some((options.as_ref().and_then(|value| value.frame_duration)).unwrap()),
-        frame_durations: options
-            .as_ref()
-            .and_then(|value| (value.frame_durations).clone()),
-        frames: Some((matched_indices).clone()),
-        origin_x: Some((options.as_ref().and_then(|value| value.origin_x)).unwrap()),
-        origin_y: Some((options.as_ref().and_then(|value| value.origin_y)).unwrap()),
-        repeat_count: Some((options.as_ref().and_then(|value| value.repeat_count)).unwrap()),
-    })));
+    return Some(create_spritesheet_animation(Some(
+        FlightPartialRecord1490253840 {
+            __flight_identity: std::sync::Arc::new(()),
+            direction: Some(
+                (options.as_ref().and_then(|value| (value.direction).clone())).unwrap(),
+            ),
+            frame_duration: Some(
+                (options.as_ref().and_then(|value| value.frame_duration)).unwrap(),
+            ),
+            frame_durations: options
+                .as_ref()
+                .and_then(|value| (value.frame_durations).clone()),
+            frames: Some((matched_indices).clone()),
+            origin_x: Some((options.as_ref().and_then(|value| value.origin_x)).unwrap()),
+            origin_y: Some((options.as_ref().and_then(|value| value.origin_y)).unwrap()),
+            repeat_count: Some((options.as_ref().and_then(|value| value.repeat_count)).unwrap()),
+        },
+    )));
 }

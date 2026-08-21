@@ -9,12 +9,12 @@
 use flighthq_types::ChromaticAberrationEffect;
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord1277959374 {
     pub __flight_identity: std::sync::Arc<()>,
     pub intensity: Option<f64>,
     pub radial: Option<bool>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord1277959374 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -32,15 +32,15 @@ impl PartialEq for CreateChromaticAberrationEffectRecord2 {
 }
 
 pub fn create_chromatic_aberration_effect(
-    options: Option<FlightOmitRecord1>,
+    options: Option<FlightOmitRecord1277959374>,
 ) -> ChromaticAberrationEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+    let options = options.unwrap_or(FlightOmitRecord1277959374 {
         __flight_identity: std::sync::Arc::new(()),
         intensity: None,
         radial: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         ChromaticAberrationEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "ChromaticAberrationEffect".to_owned(),

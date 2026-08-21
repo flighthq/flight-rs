@@ -9,11 +9,11 @@
 use flighthq_types::ExposureAdjustment;
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord3067845412 {
     pub __flight_identity: std::sync::Arc<()>,
     pub exposure: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord3067845412 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -30,8 +30,10 @@ impl PartialEq for CreateExposureAdjustmentRecord2 {
     }
 }
 
-pub fn create_exposure_adjustment(options: Option<FlightOmitRecord1>) -> ExposureAdjustment {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_exposure_adjustment(
+    options: Option<FlightOmitRecord3067845412>,
+) -> ExposureAdjustment {
+    let options = options.unwrap_or(FlightOmitRecord3067845412 {
         __flight_identity: std::sync::Arc::new(()),
         exposure: None,
     });
@@ -41,7 +43,7 @@ pub fn create_exposure_adjustment(options: Option<FlightOmitRecord1>) -> Exposur
         0.0_f64, m, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 1.0_f64, 0.0_f64,
     ];
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         ExposureAdjustment {
             __flight_identity: std::sync::Arc::new(()),
             kind: "ExposureAdjustment".to_owned(),

@@ -6,6 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
+use crate::null_signal_emit;
 use flighthq_types::{Signal, SignalConnectOptions, SignalData};
 
 // Source: upstream/packages/signals/src/slot.ts:7 (sha256:45811039b54e4f3299e78de23cdf80c2c1f8a8158edb7ffa3c483cc000dc1d33)

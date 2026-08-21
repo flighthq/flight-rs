@@ -9,12 +9,12 @@
 use flighthq_types::BrightnessContrastAdjustment;
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord3237347851 {
     pub __flight_identity: std::sync::Arc<()>,
     pub brightness: Option<f64>,
     pub contrast: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord3237347851 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -32,9 +32,9 @@ impl PartialEq for CreateBrightnessContrastAdjustmentRecord2 {
 }
 
 pub fn create_brightness_contrast_adjustment(
-    options: Option<FlightOmitRecord1>,
+    options: Option<FlightOmitRecord3237347851>,
 ) -> BrightnessContrastAdjustment {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+    let options = options.unwrap_or(FlightOmitRecord3237347851 {
         __flight_identity: std::sync::Arc::new(()),
         brightness: None,
         contrast: None,
@@ -48,7 +48,7 @@ pub fn create_brightness_contrast_adjustment(
         0.0_f64, o, 0.0_f64, 0.0_f64, 0.0_f64, 1.0_f64, 0.0_f64,
     ];
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         BrightnessContrastAdjustment {
             __flight_identity: std::sync::Arc::new(()),
             kind: "BrightnessContrastAdjustment".to_owned(),

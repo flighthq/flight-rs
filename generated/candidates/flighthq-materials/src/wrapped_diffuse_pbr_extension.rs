@@ -15,7 +15,7 @@ use flighthq_types::{
 };
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord1 {
+pub struct FlightPartialRecord921319859 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<Kind>,
     pub thickness: Option<f64>,
@@ -65,7 +65,7 @@ pub struct FlightPartialRecord1 {
     pub anisotropy_rotation: Option<f64>,
     pub anisotropy_strength: Option<f64>,
 }
-impl PartialEq for FlightPartialRecord1 {
+impl PartialEq for FlightPartialRecord921319859 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -73,7 +73,7 @@ impl PartialEq for FlightPartialRecord1 {
 
 // Source: upstream/packages/materials/src/wrappedDiffusePbrExtension.ts:8 (sha256:c6e8035da988862d1515d790b67df42698adcfd6267651c922bcaf25d8a37bd3)
 pub fn create_wrapped_diffuse_pbr_extension(
-    opts: Option<FlightPartialRecord1>,
+    opts: Option<FlightPartialRecord921319859>,
 ) -> WrappedDiffusePbrExtension {
     return create_entity(Some(WrappedDiffusePbrExtension {
         __flight_identity: std::sync::Arc::new(()),

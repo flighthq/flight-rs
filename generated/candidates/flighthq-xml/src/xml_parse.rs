@@ -238,16 +238,16 @@ fn expand_xml_entities(src: String, entities: Vec<(String, String)>) -> String {
                 std::sync::Arc::new(std::sync::Mutex::new(false));
             let next = {
                 let mut __flight_replace = |reference: String, name: String| -> String {
-                    let replacement = entities
+                    let replacement = (entities
                         .iter()
                         .find(|(entry_key, _)| entry_key == &(name).clone())
-                        .map(|(_, value)| value.clone())
-                        .clone();
+                        .map(|(_, value)| value.clone()))
+                    .expect("TypeScript Record key was absent");
                     if (replacement).is_none() {
                         return reference;
                     }
                     (*expanded.lock().unwrap()) = true;
-                    return ((replacement.as_ref().unwrap()).clone()).clone();
+                    return replacement;
                 };
                 (regex::RegexBuilder::new("&([\\w:.-]+);")
                     .case_insensitive(false)
@@ -312,10 +312,8 @@ fn decode_xml_entities(s: String) -> String {
             return (XML_ENTITIES
                 .iter()
                 .find(|(entry_key, _)| entry_key == &(name).clone().unwrap())
-                .map(|(_, value)| value.clone())
-                .clone())
-            .clone()
-            .unwrap_or((reference).clone());
+                .map(|(_, value)| value.clone()))
+            .expect("TypeScript Record key was absent");
         };
         (regex::RegexBuilder::new("&(?:#(\\d+)|#x([\\da-fA-F]+)|(\\w+));")
             .case_insensitive(false)

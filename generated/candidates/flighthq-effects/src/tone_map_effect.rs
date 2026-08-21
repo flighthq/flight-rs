@@ -9,13 +9,13 @@
 use flighthq_types::{ToneMapEffect, ToneMapOperator};
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord1217980883 {
     pub __flight_identity: std::sync::Arc<()>,
     pub operator: Option<ToneMapOperator>,
     pub exposure: Option<f64>,
     pub white: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord1217980883 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -32,15 +32,15 @@ impl PartialEq for CreateToneMapEffectRecord2 {
     }
 }
 
-pub fn create_tone_map_effect(options: Option<FlightOmitRecord1>) -> ToneMapEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_tone_map_effect(options: Option<FlightOmitRecord1217980883>) -> ToneMapEffect {
+    let options = options.unwrap_or(FlightOmitRecord1217980883 {
         __flight_identity: std::sync::Arc::new(()),
         operator: None,
         exposure: None,
         white: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         ToneMapEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "ToneMapEffect".to_owned(),

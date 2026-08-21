@@ -17,39 +17,39 @@ pub use flighthq_types::{
     install_native_host_constructors, set_interval, set_timeout,
 };
 
-mod _internal_index;
+pub mod _internal_index;
 pub use _internal_index::*;
-mod angle;
+pub mod angle;
 pub use angle::*;
-mod clamp;
+pub mod clamp;
 pub use clamp::*;
-mod comparison;
+pub mod comparison;
 pub use comparison::*;
-mod constants;
+pub mod constants;
 pub use constants::*;
-mod contract;
+pub mod contract;
 pub use contract::*;
-mod hash;
+pub mod hash;
 pub use hash::*;
-mod interpolation;
+pub mod interpolation;
 pub use interpolation::*;
-mod interpolation_advanced;
+pub mod interpolation_advanced;
 pub use interpolation_advanced::*;
-mod next_power_of_two;
+pub mod next_power_of_two;
 pub use next_power_of_two::*;
-mod number_theory;
+pub mod number_theory;
 pub use number_theory::*;
-mod random;
+pub mod random;
 pub use random::*;
-mod random_distributions;
+pub mod random_distributions;
 pub use random_distributions::*;
-mod random_range;
+pub mod random_range;
 pub use random_range::*;
-mod rounding;
+pub mod rounding;
 pub use rounding::*;
-mod scalar;
+pub mod scalar;
 pub use scalar::*;
-mod statistics;
+pub mod statistics;
 pub use statistics::*;
 
 #[cfg(test)]

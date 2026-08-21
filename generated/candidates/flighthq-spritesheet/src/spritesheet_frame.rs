@@ -9,7 +9,7 @@
 use flighthq_types::SpritesheetFrame;
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord1 {
+pub struct FlightPartialRecord3721705896 {
     pub __flight_identity: std::sync::Arc<()>,
     pub id: Option<f64>,
     pub offset_x: Option<f64>,
@@ -18,14 +18,14 @@ pub struct FlightPartialRecord1 {
     pub pivot_y: Option<f64>,
     pub rotated: Option<bool>,
 }
-impl PartialEq for FlightPartialRecord1 {
+impl PartialEq for FlightPartialRecord3721705896 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 // Source: upstream/packages/spritesheet/src/spritesheetFrame.ts:3 (sha256:10e55620f60192ae87bac3c53615f221d2e81c348c8138a1763ca17768ecac74)
-pub fn create_spritesheet_frame(obj: Option<FlightPartialRecord1>) -> SpritesheetFrame {
+pub fn create_spritesheet_frame(obj: Option<FlightPartialRecord3721705896>) -> SpritesheetFrame {
     return SpritesheetFrame {
         __flight_identity: std::sync::Arc::new(()),
         id: (obj.as_ref().and_then(|value| value.id))

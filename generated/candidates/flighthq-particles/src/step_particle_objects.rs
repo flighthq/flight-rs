@@ -32,7 +32,7 @@ pub fn step_particle_objects(
         state,
         config,
         delta_time,
-        Some(((update_options).clone().unwrap()).clone()),
+        ((update_options).clone()).clone(),
     );
     if ((colliders).is_some()) && ((colliders.as_ref().unwrap().len() as f64) > 0.0_f64) {
         apply_particle_object_collisions(objects, state, &colliders.as_ref().unwrap());

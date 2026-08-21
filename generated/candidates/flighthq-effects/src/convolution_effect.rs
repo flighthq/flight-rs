@@ -7,13 +7,10 @@
 #![allow(unused_parens)]
 
 use crate::register_render_effect_padding_resolver;
-use flighthq_types::{
-    BlendMode, ConvolutionEffect, Matrix, RenderEffect, RenderEffectPadding, RenderState,
-    Scene2DClipHooks, Scene3DGraphSyncPolicy,
-};
+use flighthq_types::{ConvolutionEffect, RenderEffect, RenderEffectPadding, RenderState};
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord2253184701 {
     pub __flight_identity: std::sync::Arc<()>,
     pub matrix: Vec<f64>,
     pub matrix_x: f64,
@@ -24,38 +21,16 @@ pub struct FlightOmitRecord1 {
     pub divisor: Option<f64>,
     pub preserve_alpha: Option<bool>,
 }
-impl PartialEq for FlightOmitRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord2 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub allow_smoothing: Option<bool>,
-    pub background_color: Option<f64>,
-    pub background_color_rgba: Option<Vec<f64>>,
-    pub background_color_string: Option<String>,
-    pub current_clip_depth: Option<f64>,
-    pub display_object_clip_hooks: Option<Scene2DClipHooks>,
-    pub pixel_ratio: Option<f64>,
-    pub render_alpha: Option<f64>,
-    pub render_blend_mode: Option<BlendMode>,
-    pub render_transform2_d: Option<Matrix>,
-    pub scene_graph_sync_policy: Option<Scene3DGraphSyncPolicy>,
-    pub round_pixels: Option<bool>,
-}
-impl PartialEq for FlightPartialRecord2 {
+impl PartialEq for FlightOmitRecord2253184701 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 // Source: upstream/packages/effects/src/convolutionEffect.ts:5 (sha256:da09ff4b411a344966534cbd0fa54eea272b20411116ef4f0c27b20f6052566c)
-pub fn create_convolution_effect(options: &FlightOmitRecord1) -> ConvolutionEffect {
+pub fn create_convolution_effect(options: &FlightOmitRecord2253184701) -> ConvolutionEffect {
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (*options).clone();
         ConvolutionEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "ConvolutionEffect".to_owned(),

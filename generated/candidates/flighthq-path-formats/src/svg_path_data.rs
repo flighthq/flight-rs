@@ -1025,7 +1025,7 @@ pub fn format_svg_path_data(path: &Path, options: Option<SharedStructuralRecord1
                             panic!("TypeScript union narrowing failed"),
                     })
                     .x,
-                    Some((precision).clone().unwrap())
+                    (precision).clone()
                 ),
                 format_svg_number(
                     (match (segment).clone() {
@@ -1034,7 +1034,7 @@ pub fn format_svg_path_data(path: &Path, options: Option<SharedStructuralRecord1
                             panic!("TypeScript union narrowing failed"),
                     })
                     .y,
-                    Some((precision).clone().unwrap())
+                    (precision).clone()
                 )
             ));
         } else {
@@ -1055,7 +1055,7 @@ pub fn format_svg_path_data(path: &Path, options: Option<SharedStructuralRecord1
                             },
                         })
                         .x,
-                        Some((precision).clone().unwrap())
+                        (precision).clone()
                     ),
                     format_svg_number(
                         (match (segment).clone() {
@@ -1068,7 +1068,7 @@ pub fn format_svg_path_data(path: &Path, options: Option<SharedStructuralRecord1
                             },
                         })
                         .y,
-                        Some((precision).clone().unwrap())
+                        (precision).clone()
                     )
                 ));
             } else {
@@ -1095,7 +1095,7 @@ pub fn format_svg_path_data(path: &Path, options: Option<SharedStructuralRecord1
                                     },
                                 })
                                 .control_x,
-                                Some((precision).clone().unwrap())
+                                (precision).clone()
                             ),
                             format_svg_number(
                                 (match (segment).clone() {
@@ -1112,7 +1112,7 @@ pub fn format_svg_path_data(path: &Path, options: Option<SharedStructuralRecord1
                                     },
                                 })
                                 .control_y,
-                                Some((precision).clone().unwrap())
+                                (precision).clone()
                             )
                         ),
                         format!(
@@ -1132,7 +1132,7 @@ pub fn format_svg_path_data(path: &Path, options: Option<SharedStructuralRecord1
                                     },
                                 })
                                 .x,
-                                Some((precision).clone().unwrap())
+                                (precision).clone()
                             ),
                             format_svg_number(
                                 (match (segment).clone() {
@@ -1149,7 +1149,7 @@ pub fn format_svg_path_data(path: &Path, options: Option<SharedStructuralRecord1
                                     },
                                 })
                                 .y,
-                                Some((precision).clone().unwrap())
+                                (precision).clone()
                             )
                         )
                     ));
@@ -1186,7 +1186,7 @@ pub fn format_svg_path_data(path: &Path, options: Option<SharedStructuralRecord1
                                             },
                                         })
                                         .control1_x,
-                                        Some((precision).clone().unwrap())
+                                        (precision).clone()
                                     ),
                                     format_svg_number(
                                         (match (segment).clone() {
@@ -1208,7 +1208,7 @@ pub fn format_svg_path_data(path: &Path, options: Option<SharedStructuralRecord1
                                             },
                                         })
                                         .control1_y,
-                                        Some((precision).clone().unwrap())
+                                        (precision).clone()
                                     )
                                 ),
                                 format!(
@@ -1233,7 +1233,7 @@ pub fn format_svg_path_data(path: &Path, options: Option<SharedStructuralRecord1
                                             },
                                         })
                                         .control2_x,
-                                        Some((precision).clone().unwrap())
+                                        (precision).clone()
                                     ),
                                     format_svg_number(
                                         (match (segment).clone() {
@@ -1255,7 +1255,7 @@ pub fn format_svg_path_data(path: &Path, options: Option<SharedStructuralRecord1
                                             },
                                         })
                                         .control2_y,
-                                        Some((precision).clone().unwrap())
+                                        (precision).clone()
                                     )
                                 )
                             ),
@@ -1280,7 +1280,7 @@ pub fn format_svg_path_data(path: &Path, options: Option<SharedStructuralRecord1
                                         },
                                     })
                                     .x,
-                                    Some((precision).clone().unwrap())
+                                    (precision).clone()
                                 ),
                                 format_svg_number(
                                     (match (segment).clone() {
@@ -1301,7 +1301,7 @@ pub fn format_svg_path_data(path: &Path, options: Option<SharedStructuralRecord1
                                         },
                                     })
                                     .y,
-                                    Some((precision).clone().unwrap())
+                                    (precision).clone()
                                 )
                             )
                         ));

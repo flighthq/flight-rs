@@ -48,7 +48,7 @@
   "sideEffects": false,
   "flightRsSubstitute": {
     "authoritativePackage": "@flighthq/bitmap",
-    "crate": "flighthq-surface",
+    "crate": "flighthq-bitmap",
     "kind": "rust-wasm",
     "rustBacked": true,
     "supportLevel": "experimental"

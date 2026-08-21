@@ -136,7 +136,7 @@ export const portConfig = {
       disposition: 'cultivated',
       match: '@flighthq/bitmap',
       reason:
-        'The TypeScript/wasm facade and its explicit source/declaration admission policy are cultivated; the compatibility-named flighthq-surface crate is generated from the upstream bitmap replacement.',
+        'The TypeScript/wasm facade and its explicit source/declaration admission policy are cultivated; the compatibility-named flighthq-bitmap crate is generated from the upstream bitmap replacement.',
     },
     {
       disposition: 'excluded',
@@ -252,8 +252,8 @@ export const portConfig = {
   ],
   wasmFacades: [
     {
-      coreCrate: 'flighthq-surface',
-      crate: 'flighthq-surface-wasm',
+      coreCrate: 'flighthq-bitmap',
+      crate: 'flighthq-bitmap-wasm',
       exports: [
         'applyBitmapCurve',
         'applyBitmapLevels',
@@ -290,7 +290,7 @@ export const portConfig = {
         'setBitmapColorMatrixIdentity',
         'unpremultiplyBitmapPixels',
       ],
-      rustTemplate: 'tools/generator/templates/surface_wasm.rs',
+      rustTemplate: 'tools/generator/templates/bitmap_wasm.rs',
     },
   ] satisfies WasmFacadeTarget[],
   targets: [
@@ -449,12 +449,13 @@ export const portConfig = {
       },
       typeMappings: {},
     },
-    // Temporary X1 naming exception: this cultivated selection retains the shipped flighthq-surface
-    // compatibility name. agents/architecture.md records the invariant and flighthq-bitmap migration path.
+    // The cultivated bitmap selection, generated under its canonical crate identity. This carried a
+    // temporary `compatibilityForCrate` exception while the crate was still named flighthq-surface
+    // after upstream's pre-rename package; the crate now matches the inventory's canonical name, so
+    // the exception — and the validator case it existed for — no longer apply.
     {
-      compatibilityForCrate: 'flighthq-bitmap',
-      conformanceTemplate: 'tools/generator/templates/surface_conformance.rs',
-      crate: 'flighthq-surface',
+      conformanceTemplate: 'tools/generator/templates/bitmap_conformance.rs',
+      crate: 'flighthq-bitmap',
       declarationSelection: {
         'bitmap.ts': {
           names: ['invalidateBitmap'],

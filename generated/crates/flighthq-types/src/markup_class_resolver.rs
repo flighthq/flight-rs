@@ -9,7 +9,7 @@
 use crate::{FontVariation, TextFormatAlign, TextFormatListMarker};
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord1 {
+pub struct FlightPartialRecord2825584428 {
     pub __flight_identity: std::sync::Arc<()>,
     pub align: Option<TextFormatAlign>,
     pub block_indent: Option<f64>,
@@ -33,7 +33,7 @@ pub struct FlightPartialRecord1 {
     pub url: Option<String>,
     pub variations: Option<Vec<FontVariation>>,
 }
-impl PartialEq for FlightPartialRecord1 {
+impl PartialEq for FlightPartialRecord2825584428 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -41,5 +41,7 @@ impl PartialEq for FlightPartialRecord1 {
 
 // Source: upstream/packages/types/src/MarkupClassResolver.ts:9 (sha256:c052e7b035ddc0f1752c791c0cf69bcccee961e0005304d3c3b41c35f8ebe5ff)
 pub type MarkupClassResolver = std::sync::Arc<
-    std::sync::Mutex<Box<dyn FnMut(String) -> Option<FlightPartialRecord1> + Send + 'static>>,
+    std::sync::Mutex<
+        Box<dyn FnMut(String) -> Option<FlightPartialRecord2825584428> + Send + 'static>,
+    >,
 >;

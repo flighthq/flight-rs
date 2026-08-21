@@ -230,10 +230,7 @@ pub fn create_web_device_backend() -> DeviceBackend {
                 let nav: Option<crate::OpaqueHostValue> = None;
                 let ua = (None::<String>).clone().unwrap_or("".to_owned());
                 let uad_platform: Option<String> = None::<String>;
-                out.arch = parse_user_agent_arch(
-                    (ua).clone(),
-                    Some(((uad_platform).clone().unwrap()).clone()),
-                );
+                out.arch = parse_user_agent_arch((ua).clone(), ((uad_platform).clone()).clone());
                 out.available_memory = (-1.0_f64);
                 out.board_name = "".to_owned();
                 out.color_gamut = "".to_owned();

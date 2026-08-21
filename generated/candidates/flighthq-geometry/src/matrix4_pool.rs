@@ -43,7 +43,7 @@ pub fn release_matrix4(m: &mut Matrix4) -> () {
     if false {
         return;
     }
-    if ((geometry_pool_release_guard_constant).is_some())
+    if (((*geometry_pool_release_guard_constant.lock().unwrap()).clone()).is_some())
         && ({
             let __flight_value = (*m).clone();
             (POOL.lock().unwrap())
@@ -51,7 +51,12 @@ pub fn release_matrix4(m: &mut Matrix4) -> () {
                 .any(|item| item == &__flight_value)
         })
     {
-        geometry_pool_release_guard_constant("releaseMatrix4");
+        {
+            let __flight_callback = (*geometry_pool_release_guard_constant.lock().unwrap())
+                .clone()
+                .unwrap();
+            __flight_callback.lock().unwrap()("releaseMatrix4".to_owned())
+        };
     }
     *flighthq_types::FlightEntity::__flight_entity_runtime(m)
         .lock()

@@ -9,13 +9,13 @@
 use flighthq_types::SsrEffect;
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord3905770745 {
     pub __flight_identity: std::sync::Arc<()>,
     pub max_distance: Option<f64>,
     pub resolution: Option<f64>,
     pub steps: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord3905770745 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -32,15 +32,15 @@ impl PartialEq for CreateSsrEffectRecord2 {
     }
 }
 
-pub fn create_ssr_effect(options: Option<FlightOmitRecord1>) -> SsrEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_ssr_effect(options: Option<FlightOmitRecord3905770745>) -> SsrEffect {
+    let options = options.unwrap_or(FlightOmitRecord3905770745 {
         __flight_identity: std::sync::Arc::new(()),
         max_distance: None,
         resolution: None,
         steps: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         SsrEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "SsrEffect".to_owned(),

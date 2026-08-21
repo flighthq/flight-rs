@@ -17,11 +17,11 @@ pub use flighthq_types::{
     install_native_host_constructors, set_interval, set_timeout,
 };
 
-mod _internal_index;
+pub mod _internal_index;
 pub use _internal_index::*;
-mod clip_region;
+pub mod clip_region;
 pub use clip_region::*;
-mod contract;
+pub mod contract;
 pub use contract::*;
-mod enable_clip_guards;
+pub mod enable_clip_guards;
 pub use enable_clip_guards::*;

@@ -23,7 +23,7 @@ pub fn create_motion_path(
         __flight_identity: std::sync::Arc::new(()),
         direction: 1.0_f64,
         distance: 0.0_f64,
-        length: get_path_length(path, Some((tolerance).clone().unwrap())),
+        length: get_path_length(path, (tolerance).clone()),
         loop_mode: (loop_mode).clone(),
         path: (*path).clone(),
         speed: speed,

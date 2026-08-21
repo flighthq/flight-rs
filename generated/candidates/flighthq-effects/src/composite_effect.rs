@@ -9,11 +9,11 @@
 use flighthq_types::{CompositeEffect, CompositeOperator};
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord3137009543 {
     pub __flight_identity: std::sync::Arc<()>,
     pub backdrop_key: Option<String>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord3137009543 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -32,14 +32,14 @@ impl PartialEq for CreateCompositeEffectRecord2 {
 
 pub fn create_composite_effect(
     operator: CompositeOperator,
-    options: Option<FlightOmitRecord1>,
+    options: Option<FlightOmitRecord3137009543>,
 ) -> CompositeEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+    let options = options.unwrap_or(FlightOmitRecord3137009543 {
         __flight_identity: std::sync::Arc::new(()),
         backdrop_key: None,
     });
     return {
-        let __flight_spread_2 = options;
+        let __flight_spread_2 = (options).clone();
         CompositeEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "CompositeEffect".to_owned(),

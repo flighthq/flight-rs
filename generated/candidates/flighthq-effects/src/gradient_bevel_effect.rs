@@ -8,12 +8,11 @@
 
 use crate::{get_directional_render_effect_padding, register_render_effect_padding_resolver};
 use flighthq_types::{
-    BlendMode, EffectSourceMode, GradientBevelEffect, Matrix, RenderEffect, RenderEffectPadding,
-    RenderState, Scene2DClipHooks, Scene3DGraphSyncPolicy,
+    EffectSourceMode, GradientBevelEffect, RenderEffect, RenderEffectPadding, RenderState,
 };
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord1682838785 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alphas: Vec<f64>,
     pub angle: Option<f64>,
@@ -27,38 +26,16 @@ pub struct FlightOmitRecord1 {
     pub source_mode: Option<EffectSourceMode>,
     pub strength: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord2 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub allow_smoothing: Option<bool>,
-    pub background_color: Option<f64>,
-    pub background_color_rgba: Option<Vec<f64>>,
-    pub background_color_string: Option<String>,
-    pub current_clip_depth: Option<f64>,
-    pub display_object_clip_hooks: Option<Scene2DClipHooks>,
-    pub pixel_ratio: Option<f64>,
-    pub render_alpha: Option<f64>,
-    pub render_blend_mode: Option<BlendMode>,
-    pub render_transform2_d: Option<Matrix>,
-    pub scene_graph_sync_policy: Option<Scene3DGraphSyncPolicy>,
-    pub round_pixels: Option<bool>,
-}
-impl PartialEq for FlightPartialRecord2 {
+impl PartialEq for FlightOmitRecord1682838785 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 // Source: upstream/packages/effects/src/gradientBevelEffect.ts:6 (sha256:4cb3bdc0dcad1e5c16719a827a7acf1156d9de60481d2bf162759e64514596d6)
-pub fn create_gradient_bevel_effect(options: &FlightOmitRecord1) -> GradientBevelEffect {
+pub fn create_gradient_bevel_effect(options: &FlightOmitRecord1682838785) -> GradientBevelEffect {
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (*options).clone();
         GradientBevelEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "GradientBevelEffect".to_owned(),

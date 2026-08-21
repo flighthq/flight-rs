@@ -9,11 +9,11 @@
 use flighthq_types::TaaEffect;
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord1886340154 {
     pub __flight_identity: std::sync::Arc<()>,
     pub feedback: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord1886340154 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -30,13 +30,13 @@ impl PartialEq for CreateTaaEffectRecord2 {
     }
 }
 
-pub fn create_taa_effect(options: Option<FlightOmitRecord1>) -> TaaEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_taa_effect(options: Option<FlightOmitRecord1886340154>) -> TaaEffect {
+    let options = options.unwrap_or(FlightOmitRecord1886340154 {
         __flight_identity: std::sync::Arc::new(()),
         feedback: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         TaaEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "TaaEffect".to_owned(),

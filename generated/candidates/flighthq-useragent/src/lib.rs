@@ -17,11 +17,11 @@ pub use flighthq_types::{
     install_native_host_constructors, set_interval, set_timeout,
 };
 
-mod _internal_index;
+pub mod _internal_index;
 pub use _internal_index::*;
-mod contract;
+pub mod contract;
 pub use contract::*;
-mod user_agent;
+pub mod user_agent;
 pub use user_agent::*;
-mod user_agent_parse;
+pub mod user_agent_parse;
 pub use user_agent_parse::*;

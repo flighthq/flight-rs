@@ -30,8 +30,8 @@ pub fn get_camera2_d_visible_bounds(camera: &Camera2D, out: &mut RectangleLike) 
     })) {
         out.x = *UNBOUNDED_ORIGIN;
         out.y = *UNBOUNDED_ORIGIN;
-        out.width = UNBOUNDED_EXTENT;
-        out.height = UNBOUNDED_EXTENT;
+        out.width = *UNBOUNDED_EXTENT;
+        out.height = *UNBOUNDED_EXTENT;
         {
             let __flight_callback = (*DEGENERATE_VISIBLE_BOUNDS_GUARD.lock().unwrap()).clone();
             __flight_callback
@@ -74,11 +74,11 @@ pub fn set_camera2_d_visible_bounds_guard(
 }
 
 // Source: upstream/packages/camera/src/visibleBounds.ts:45 (sha256:fe1df067ae72b070f8eefe7927c49a15156cd5f1265f37f70c3b4a6c7cb298eb)
-const UNBOUNDED_EXTENT: f64 = number.max_value;
+static UNBOUNDED_EXTENT: std::sync::LazyLock<f64> = std::sync::LazyLock::new(|| f64::MAX);
 
 // Source: upstream/packages/camera/src/visibleBounds.ts:46 (sha256:c9b44dad173d8b82b7aecc2f127619626b94222aa9bdf8615b5d5b864ad2ec94)
 static UNBOUNDED_ORIGIN: std::sync::LazyLock<f64> =
-    std::sync::LazyLock::new(|| ((-number.max_value) / 2.0_f64));
+    std::sync::LazyLock::new(|| ((-f64::MAX) / 2.0_f64));
 
 // Source: upstream/packages/camera/src/visibleBounds.ts:48 (sha256:66c3402002d6d9e174035f625959c44a130d6816837e32a09e6e2d86e0e721ce)
 static DEGENERATE_VISIBLE_BOUNDS_GUARD: std::sync::LazyLock<

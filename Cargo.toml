@@ -3,8 +3,8 @@ members = [
   "generated/crates/flighthq-easing",
   "generated/crates/flighthq-image",
   "generated/crates/flighthq-runtime",
-  "generated/crates/flighthq-surface",
-  "generated/crates/flighthq-surface-wasm",
+  "generated/crates/flighthq-bitmap",
+  "generated/crates/flighthq-bitmap-wasm",
   "generated/crates/flighthq-types",
 ]
 resolver = "3"

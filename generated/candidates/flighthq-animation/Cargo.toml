@@ -1,0 +1,16 @@
+# @generated candidate crate; do not edit.
+[package]
+name = "flighthq-animation"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+flighthq-entity = { path = "../flighthq-entity" }
+flighthq-runtime = { path = "../../crates/flighthq-runtime" }
+flighthq-signals = { path = "../flighthq-signals" }
+flighthq-types = { path = "../../crates/flighthq-types" }

@@ -13,7 +13,17 @@ use flighthq_types::{Matrix3, Matrix3Like, Matrix4Like, MatrixLike, Vector3Like}
 // Source: upstream/packages/geometry/src/matrix3.ts:6 (sha256:a9b9d47db5c559e5ec5f20bfa50929539a09552866311bce152180885cf1c46b)
 pub fn clone_matrix3(source: &Matrix3Like) -> Matrix3 {
     let mut m = create_matrix3(None, None, None, None, None, None, None, None, None);
-    copy_matrix3(&mut m, source);
+    (|| -> () {
+        {
+            let __flight_offset = (0.0_f64) as usize;
+            let __flight_values: Vec<f32> = ((source.m).clone())
+                .iter()
+                .map(|value| (*value) as f32)
+                .collect();
+            m.m[__flight_offset..__flight_offset + __flight_values.len()]
+                .copy_from_slice(&__flight_values);
+        };
+    })();
     return m;
 }
 
@@ -65,6 +75,7 @@ pub fn copy_matrix3_column_from_vector3(
             if __flight_case <= 3_usize {
                 panic!("{}", "generated Flight function threw");
             }
+            unreachable!("exhaustive TypeScript switch completed without exiting");
         }
     }
 }
@@ -104,6 +115,7 @@ pub fn copy_matrix3_column_to_vector3(
             if __flight_case <= 3_usize {
                 panic!("{}", "generated Flight function threw");
             }
+            unreachable!("exhaustive TypeScript switch completed without exiting");
         }
     }
 }
@@ -136,6 +148,7 @@ pub fn copy_matrix3_row_from_vector3(out: &mut Matrix3Like, row: f64, source: &V
             if __flight_case <= 3_usize {
                 panic!("{}", "generated Flight function threw");
             }
+            unreachable!("exhaustive TypeScript switch completed without exiting");
         }
     }
 }
@@ -170,6 +183,7 @@ pub fn copy_matrix3_row_to_vector3(out: &mut Vector3Like, row: f64, source: &Mat
             if __flight_case <= 3_usize {
                 panic!("{}", "generated Flight function threw");
             }
+            unreachable!("exhaustive TypeScript switch completed without exiting");
         }
     }
 }
@@ -514,12 +528,86 @@ pub fn set_matrix3_identity(out: &mut Matrix3Like) -> () {
 // Source: upstream/packages/geometry/src/matrix3.ts:438 (sha256:5bec6f1e9f3009e83c5e43c532e35f32aa108baeb50f83addf6a5af08dedc3cd)
 pub fn set_matrix3_normal_from_matrix4(out: &mut Matrix3Like, source: &Matrix4Like) -> () {
     let mut scratch = acquire_matrix3();
-    set_matrix3_from_matrix4(&mut scratch, source);
-    {
-        let __flight_argument_1 = (scratch).clone();
-        let __flight_result = inverse_matrix3(&mut scratch, &__flight_argument_1);
-        __flight_result
-    };
+    (|| -> () {
+        scratch.m[0.0_f64 as usize] = (source.m[0.0_f64 as usize] as f64) as f32;
+        scratch.m[1.0_f64 as usize] = (source.m[1.0_f64 as usize] as f64) as f32;
+        scratch.m[2.0_f64 as usize] = (source.m[2.0_f64 as usize] as f64) as f32;
+        scratch.m[3.0_f64 as usize] = (source.m[4.0_f64 as usize] as f64) as f32;
+        scratch.m[4.0_f64 as usize] = (source.m[5.0_f64 as usize] as f64) as f32;
+        scratch.m[5.0_f64 as usize] = (source.m[6.0_f64 as usize] as f64) as f32;
+        scratch.m[6.0_f64 as usize] = (source.m[8.0_f64 as usize] as f64) as f32;
+        scratch.m[7.0_f64 as usize] = (source.m[9.0_f64 as usize] as f64) as f32;
+        scratch.m[8.0_f64 as usize] = (source.m[10.0_f64 as usize] as f64) as f32;
+    })();
+    (|| -> bool {
+        let a00 = (scratch.m[0.0_f64 as usize] as f64);
+        let a10 = (scratch.m[1.0_f64 as usize] as f64);
+        let a20 = (scratch.m[2.0_f64 as usize] as f64);
+        let a01 = (scratch.m[3.0_f64 as usize] as f64);
+        let a11 = (scratch.m[4.0_f64 as usize] as f64);
+        let a21 = (scratch.m[5.0_f64 as usize] as f64);
+        let a02 = (scratch.m[6.0_f64 as usize] as f64);
+        let a12 = (scratch.m[7.0_f64 as usize] as f64);
+        let a22 = (scratch.m[8.0_f64 as usize] as f64);
+        if is_affine_matrix3(&{
+            let __flight_source = &(scratch);
+            Matrix3Like {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
+                m: (__flight_source.m).clone(),
+            }
+        }) {
+            let det = ((a00 * a11) - (a01 * a10));
+            if (det == 0.0_f64) {
+                {
+                    let __flight_value = (f64::NAN) as f32;
+                    let __flight_collection = &mut scratch.m;
+                    __flight_collection.fill(__flight_value);
+                    __flight_collection.clone()
+                };
+                return false;
+            }
+            let inv_det = (1.0_f64 / det);
+            let i00 = (a11 * inv_det);
+            let i01 = ((-a01) * inv_det);
+            let i10 = ((-a10) * inv_det);
+            let i11 = (a00 * inv_det);
+            scratch.m[0.0_f64 as usize] = (i00) as f32;
+            scratch.m[1.0_f64 as usize] = (i10) as f32;
+            scratch.m[2.0_f64 as usize] = (0.0_f64) as f32;
+            scratch.m[3.0_f64 as usize] = (i01) as f32;
+            scratch.m[4.0_f64 as usize] = (i11) as f32;
+            scratch.m[5.0_f64 as usize] = (0.0_f64) as f32;
+            scratch.m[6.0_f64 as usize] = (-((i00 * a02) + (i01 * a12))) as f32;
+            scratch.m[7.0_f64 as usize] = (-((i10 * a02) + (i11 * a12))) as f32;
+            scratch.m[8.0_f64 as usize] = (1.0_f64) as f32;
+            return true;
+        }
+        let det = (((a00 * ((a11 * a22) - (a12 * a21))) - (a01 * ((a10 * a22) - (a12 * a20))))
+            + (a02 * ((a10 * a21) - (a11 * a20))));
+        if (det == 0.0_f64) {
+            {
+                let __flight_value = (f64::NAN) as f32;
+                let __flight_collection = &mut scratch.m;
+                __flight_collection.fill(__flight_value);
+                __flight_collection.clone()
+            };
+            return false;
+        }
+        let inv = (1.0_f64 / det);
+        scratch.m[0.0_f64 as usize] = (((a11 * a22) - (a12 * a21)) * inv) as f32;
+        scratch.m[1.0_f64 as usize] = (((a12 * a20) - (a10 * a22)) * inv) as f32;
+        scratch.m[2.0_f64 as usize] = (((a10 * a21) - (a11 * a20)) * inv) as f32;
+        scratch.m[3.0_f64 as usize] = (((a02 * a21) - (a01 * a22)) * inv) as f32;
+        scratch.m[4.0_f64 as usize] = (((a00 * a22) - (a02 * a20)) * inv) as f32;
+        scratch.m[5.0_f64 as usize] = (((a01 * a20) - (a00 * a21)) * inv) as f32;
+        scratch.m[6.0_f64 as usize] = (((a01 * a12) - (a02 * a11)) * inv) as f32;
+        scratch.m[7.0_f64 as usize] = (((a02 * a10) - (a00 * a12)) * inv) as f32;
+        scratch.m[8.0_f64 as usize] = (((a00 * a11) - (a01 * a10)) * inv) as f32;
+        return true;
+    })();
     transpose_matrix3(out, &{
         let __flight_source = &(scratch);
         Matrix3Like {

@@ -11,29 +11,13 @@ use flighthq_entity::create_entity;
 use flighthq_types::{Spritesheet, SpritesheetAnimation, SpritesheetFrame, TextureAtlas};
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord1 {
+pub struct FlightPartialRecord2119237179 {
     pub __flight_identity: std::sync::Arc<()>,
     pub atlas: Option<TextureAtlas>,
     pub animations: Option<Vec<(String, SpritesheetAnimation)>>,
     pub frames: Option<Vec<SpritesheetFrame>>,
 }
-impl PartialEq for FlightPartialRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord2 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub id: Option<f64>,
-    pub offset_x: Option<f64>,
-    pub offset_y: Option<f64>,
-    pub pivot_x: Option<f64>,
-    pub pivot_y: Option<f64>,
-    pub rotated: Option<bool>,
-}
-impl PartialEq for FlightPartialRecord2 {
+impl PartialEq for FlightPartialRecord2119237179 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -44,57 +28,18 @@ pub fn clone_spritesheet(spritesheet: &Spritesheet) -> Spritesheet {
     let frames = ((spritesheet.frames).clone())
         .iter()
         .cloned()
-        .map(|f: SpritesheetFrame| -> crate::OpaqueHostValue {
-            {
-                let __flight_portable_source =
-                    create_spritesheet_frame(Some(FlightPartialRecord2 {
-                        __flight_identity: std::sync::Arc::new(()),
-                        id: Some(f.id),
-                        offset_x: Some(f.offset_x),
-                        offset_y: Some(f.offset_y),
-                        pivot_x: f.pivot_x,
-                        pivot_y: f.pivot_y,
-                        rotated: Some(f.rotated),
-                    }));
-                crate::FlightValue::Record({
-                    let mut __flight_record = Vec::new();
-                    __flight_record.push((
-                        "id".to_owned(),
-                        crate::FlightValue::Number(*(&((&__flight_portable_source).id)) as f64),
-                    ));
-                    __flight_record.push((
-                        "offsetX".to_owned(),
-                        crate::FlightValue::Number(
-                            *(&((&__flight_portable_source).offset_x)) as f64,
-                        ),
-                    ));
-                    __flight_record.push((
-                        "offsetY".to_owned(),
-                        crate::FlightValue::Number(
-                            *(&((&__flight_portable_source).offset_y)) as f64,
-                        ),
-                    ));
-                    __flight_record.push((
-                        "pivotX".to_owned(),
-                        match (&((&__flight_portable_source).pivot_x)).as_ref() {
-                            Some(value) => crate::FlightValue::Number(*(value) as f64),
-                            None => crate::FlightValue::Null,
-                        },
-                    ));
-                    __flight_record.push((
-                        "pivotY".to_owned(),
-                        match (&((&__flight_portable_source).pivot_y)).as_ref() {
-                            Some(value) => crate::FlightValue::Number(*(value) as f64),
-                            None => crate::FlightValue::Null,
-                        },
-                    ));
-                    __flight_record.push((
-                        "rotated".to_owned(),
-                        crate::FlightValue::Bool(*(&((&__flight_portable_source).rotated))),
-                    ));
-                    __flight_record
-                })
-            }
+        .map(|f: SpritesheetFrame| -> SpritesheetFrame {
+            create_spritesheet_frame(Some(
+                crate::spritesheet_frame::FlightPartialRecord3721705896 {
+                    __flight_identity: std::sync::Arc::new(()),
+                    id: Some(f.id),
+                    offset_x: Some(f.offset_x),
+                    offset_y: Some(f.offset_y),
+                    pivot_x: f.pivot_x,
+                    pivot_y: f.pivot_y,
+                    rotated: Some(f.rotated),
+                },
+            ))
         })
         .collect::<Vec<_>>();
     return create_entity(Some(Spritesheet {
@@ -102,7 +47,7 @@ pub fn clone_spritesheet(spritesheet: &Spritesheet) -> Spritesheet {
         __flight_entity_runtime: Default::default(),
         atlas: (spritesheet.atlas).clone(),
         animations: ((spritesheet.animations).clone()).clone(),
-        frames: frames,
+        frames: (frames).clone(),
     }));
 }
 
@@ -117,7 +62,7 @@ impl PartialEq for CreateSpritesheetRecord6 {
     }
 }
 
-pub fn create_spritesheet(obj: Option<FlightPartialRecord1>) -> Spritesheet {
+pub fn create_spritesheet(obj: Option<FlightPartialRecord2119237179>) -> Spritesheet {
     return create_entity(Some(Spritesheet {
         __flight_identity: std::sync::Arc::new(()),
         __flight_entity_runtime: Default::default(),
@@ -139,10 +84,12 @@ pub fn get_spritesheet_animation(
     spritesheet: &Spritesheet,
     label: String,
 ) -> Option<SpritesheetAnimation> {
-    return spritesheet
-        .animations
-        .iter()
-        .find(|(entry_key, _)| entry_key == &(label).clone())
-        .map(|(_, value)| value.clone())
-        .clone();
+    return Some(
+        (spritesheet
+            .animations
+            .iter()
+            .find(|(entry_key, _)| entry_key == &(label).clone())
+            .map(|(_, value)| value.clone()))
+        .expect("TypeScript Record key was absent"),
+    );
 }

@@ -9,13 +9,13 @@
 use flighthq_types::{ColorTransformFunction, HueSaturationAdjustment};
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord2048576670 {
     pub __flight_identity: std::sync::Arc<()>,
     pub hue: Option<f64>,
     pub saturation: Option<f64>,
     pub lightness: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord2048576670 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -33,9 +33,9 @@ impl PartialEq for CreateHueSaturationAdjustmentRecord2 {
 }
 
 pub fn create_hue_saturation_adjustment(
-    options: Option<FlightOmitRecord1>,
+    options: Option<FlightOmitRecord2048576670>,
 ) -> HueSaturationAdjustment {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+    let options = options.unwrap_or(FlightOmitRecord2048576670 {
         __flight_identity: std::sync::Arc::new(()),
         hue: None,
         saturation: None,
@@ -138,7 +138,7 @@ pub fn create_hue_saturation_adjustment(
         }) as Box<dyn FnMut(Vec<f64>, f64, f64, f64) -> () + Send + 'static>,
     ));
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         HueSaturationAdjustment {
             __flight_identity: std::sync::Arc::new(()),
             kind: "HueSaturationAdjustment".to_owned(),

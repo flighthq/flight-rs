@@ -12,7 +12,7 @@ use flighthq_types::{
 };
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord1 {
+pub struct FlightPartialRecord1933629006 {
     pub __flight_identity: std::sync::Arc<()>,
     pub ambient: Option<AmbientLight>,
     pub directional: Option<DirectionalLight>,
@@ -20,14 +20,14 @@ pub struct FlightPartialRecord1 {
     pub point: Option<Vec<PointLight>>,
     pub spot: Option<Vec<SpotLight>>,
 }
-impl PartialEq for FlightPartialRecord1 {
+impl PartialEq for FlightPartialRecord1933629006 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 // Source: upstream/packages/lighting/src/sceneLights.ts:13 (sha256:6561c692f70a5977ed3104ebf86a2dcfaee5eb1ddd067d15207232d6d40b0418)
-pub fn create_scene3_d_lights(options: Option<FlightPartialRecord1>) -> Scene3DLights {
+pub fn create_scene3_d_lights(options: Option<FlightPartialRecord1933629006>) -> Scene3DLights {
     return create_entity(Some(Scene3DLights {
         __flight_identity: std::sync::Arc::new(()),
         __flight_entity_runtime: Default::default(),

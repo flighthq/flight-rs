@@ -17,15 +17,15 @@ pub use flighthq_types::{
     install_native_host_constructors, set_interval, set_timeout,
 };
 
-mod _internal_index;
+pub mod _internal_index;
 pub use _internal_index::*;
-mod audio_channel;
+pub mod audio_channel;
 pub use audio_channel::*;
-mod audio_mixer;
+pub mod audio_mixer;
 pub use audio_mixer::*;
-mod contract;
+pub mod contract;
 pub use contract::*;
-mod enable_audio_mixer_guards;
+pub mod enable_audio_mixer_guards;
 pub use enable_audio_mixer_guards::*;
-mod video_channel;
+pub mod video_channel;
 pub use video_channel::*;

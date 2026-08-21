@@ -421,6 +421,7 @@ fn hsv_to_rgb(h: f64, s: f64, v: f64) -> Vec<f64> {
                 b = x;
                 break '__flight_switch;
             }
+            unreachable!("exhaustive TypeScript switch completed without exiting");
         }
     }
     return vec![(r + m), (g + m), (b + m)];

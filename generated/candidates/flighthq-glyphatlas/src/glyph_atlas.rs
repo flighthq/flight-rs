@@ -60,6 +60,7 @@ pub fn create_glyph_atlas(options: &GlyphAtlasOptions) -> GlyphAtlas {
         } else {
             CreateGlyphAtlasSynthesizedRecord773034950 {
                 __flight_identity: std::sync::Arc::new(()),
+                font_style: Default::default(),
             }
         };
         let __flight_spread_3 = if ((options.font_weight).clone()).is_some() {
@@ -70,6 +71,7 @@ pub fn create_glyph_atlas(options: &GlyphAtlasOptions) -> GlyphAtlas {
         } else {
             CreateGlyphAtlasSynthesizedRecord3400484059 {
                 __flight_identity: std::sync::Arc::new(()),
+                font_weight: Default::default(),
             }
         };
         GlyphRasterizeOptions {

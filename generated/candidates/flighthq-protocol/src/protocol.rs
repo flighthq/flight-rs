@@ -99,14 +99,14 @@ fn __flight_decode_uri_component(value: &str) -> String {
 }
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord1 {
+pub struct FlightPartialRecord458042621 {
     pub __flight_identity: std::sync::Arc<()>,
     pub scheme: Option<String>,
     pub host: Option<String>,
     pub path: Option<String>,
     pub query: Option<Vec<(String, String)>>,
 }
-impl PartialEq for FlightPartialRecord1 {
+impl PartialEq for FlightPartialRecord458042621 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -160,7 +160,7 @@ pub fn create_protocol_handler() -> ProtocolHandler {
 }
 
 // Source: upstream/packages/protocol/src/protocol.ts:30 (sha256:26195253814f0fc0b4a2631049f6906ebedecb01aebec722307c617dd34640c9)
-pub fn create_protocol_url(parts: &FlightPartialRecord1) -> String {
+pub fn create_protocol_url(parts: &FlightPartialRecord458042621) -> String {
     let scheme = ((parts.scheme).clone())
         .clone()
         .unwrap_or("unknown".to_owned());

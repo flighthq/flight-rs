@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord1 {
+pub struct FlightPartialRecord1805580541 {
     pub __flight_identity: std::sync::Arc<()>,
     pub title: Option<String>,
     pub id: Option<String>,
@@ -26,7 +26,7 @@ pub struct FlightPartialRecord1 {
     pub vibrate: Option<Vec<f64>>,
     pub data: Option<crate::FlightValue>,
 }
-impl PartialEq for FlightPartialRecord1 {
+impl PartialEq for FlightPartialRecord1805580541 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -195,7 +195,9 @@ pub struct NotificationBackend {
     pub update_notification: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(String, FlightPartialRecord1) -> crate::FlightTask<bool> + Send + 'static,
+                dyn FnMut(String, FlightPartialRecord1805580541) -> crate::FlightTask<bool>
+                    + Send
+                    + 'static,
             >,
         >,
     >,

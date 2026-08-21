@@ -17,13 +17,13 @@ pub use flighthq_types::{
     install_native_host_constructors, set_interval, set_timeout,
 };
 
-mod _internal_index;
+pub mod _internal_index;
 pub use _internal_index::*;
-mod contract;
+pub mod contract;
 pub use contract::*;
-mod transform_velocity;
+pub mod transform_velocity;
 pub use transform_velocity::*;
-mod velocity_field;
+pub mod velocity_field;
 pub use velocity_field::*;
-mod velocity_sample;
+pub mod velocity_sample;
 pub use velocity_sample::*;

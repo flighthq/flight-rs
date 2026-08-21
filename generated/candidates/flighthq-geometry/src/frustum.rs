@@ -468,48 +468,108 @@ pub fn set_frustum_from_matrix4(out: &mut FrustumLike, view_projection: &Matrix4
     let r31 = (view_projection.m[7.0_f64 as usize] as f64);
     let r32 = (view_projection.m[11.0_f64 as usize] as f64);
     let r33 = (view_projection.m[15.0_f64 as usize] as f64);
-    __set_plane(
-        &mut out.left,
-        (r30 + r00),
-        (r31 + r01),
-        (r32 + r02),
-        (r33 + r03),
-    );
-    __set_plane(
-        &mut out.right,
-        (r30 - r00),
-        (r31 - r01),
-        (r32 - r02),
-        (r33 - r03),
-    );
-    __set_plane(
-        &mut out.bottom,
-        (r30 + r10),
-        (r31 + r11),
-        (r32 + r12),
-        (r33 + r13),
-    );
-    __set_plane(
-        &mut out.top,
-        (r30 - r10),
-        (r31 - r11),
-        (r32 - r12),
-        (r33 - r13),
-    );
-    __set_plane(
-        &mut out.near,
-        (r30 + r20),
-        (r31 + r21),
-        (r32 + r22),
-        (r33 + r23),
-    );
-    __set_plane(
-        &mut out.far,
-        (r30 - r20),
-        (r31 - r21),
-        (r32 - r22),
-        (r33 - r23),
-    );
+    (|| -> () {
+        let l = ((((r30 + r00) * (r30 + r00)) + ((r31 + r01) * (r31 + r01)))
+            + ((r32 + r02) * (r32 + r02)))
+            .sqrt();
+        if (l != 0.0_f64) {
+            let inv = (1.0_f64 / l);
+            out.left.a = ((r30 + r00) * inv);
+            out.left.b = ((r31 + r01) * inv);
+            out.left.c = ((r32 + r02) * inv);
+            out.left.d = ((r33 + r03) * inv);
+        } else {
+            out.left.a = (r30 + r00);
+            out.left.b = (r31 + r01);
+            out.left.c = (r32 + r02);
+            out.left.d = (r33 + r03);
+        }
+    })();
+    (|| -> () {
+        let l = ((((r30 - r00) * (r30 - r00)) + ((r31 - r01) * (r31 - r01)))
+            + ((r32 - r02) * (r32 - r02)))
+            .sqrt();
+        if (l != 0.0_f64) {
+            let inv = (1.0_f64 / l);
+            out.right.a = ((r30 - r00) * inv);
+            out.right.b = ((r31 - r01) * inv);
+            out.right.c = ((r32 - r02) * inv);
+            out.right.d = ((r33 - r03) * inv);
+        } else {
+            out.right.a = (r30 - r00);
+            out.right.b = (r31 - r01);
+            out.right.c = (r32 - r02);
+            out.right.d = (r33 - r03);
+        }
+    })();
+    (|| -> () {
+        let l = ((((r30 + r10) * (r30 + r10)) + ((r31 + r11) * (r31 + r11)))
+            + ((r32 + r12) * (r32 + r12)))
+            .sqrt();
+        if (l != 0.0_f64) {
+            let inv = (1.0_f64 / l);
+            out.bottom.a = ((r30 + r10) * inv);
+            out.bottom.b = ((r31 + r11) * inv);
+            out.bottom.c = ((r32 + r12) * inv);
+            out.bottom.d = ((r33 + r13) * inv);
+        } else {
+            out.bottom.a = (r30 + r10);
+            out.bottom.b = (r31 + r11);
+            out.bottom.c = (r32 + r12);
+            out.bottom.d = (r33 + r13);
+        }
+    })();
+    (|| -> () {
+        let l = ((((r30 - r10) * (r30 - r10)) + ((r31 - r11) * (r31 - r11)))
+            + ((r32 - r12) * (r32 - r12)))
+            .sqrt();
+        if (l != 0.0_f64) {
+            let inv = (1.0_f64 / l);
+            out.top.a = ((r30 - r10) * inv);
+            out.top.b = ((r31 - r11) * inv);
+            out.top.c = ((r32 - r12) * inv);
+            out.top.d = ((r33 - r13) * inv);
+        } else {
+            out.top.a = (r30 - r10);
+            out.top.b = (r31 - r11);
+            out.top.c = (r32 - r12);
+            out.top.d = (r33 - r13);
+        }
+    })();
+    (|| -> () {
+        let l = ((((r30 + r20) * (r30 + r20)) + ((r31 + r21) * (r31 + r21)))
+            + ((r32 + r22) * (r32 + r22)))
+            .sqrt();
+        if (l != 0.0_f64) {
+            let inv = (1.0_f64 / l);
+            out.near.a = ((r30 + r20) * inv);
+            out.near.b = ((r31 + r21) * inv);
+            out.near.c = ((r32 + r22) * inv);
+            out.near.d = ((r33 + r23) * inv);
+        } else {
+            out.near.a = (r30 + r20);
+            out.near.b = (r31 + r21);
+            out.near.c = (r32 + r22);
+            out.near.d = (r33 + r23);
+        }
+    })();
+    (|| -> () {
+        let l = ((((r30 - r20) * (r30 - r20)) + ((r31 - r21) * (r31 - r21)))
+            + ((r32 - r22) * (r32 - r22)))
+            .sqrt();
+        if (l != 0.0_f64) {
+            let inv = (1.0_f64 / l);
+            out.far.a = ((r30 - r20) * inv);
+            out.far.b = ((r31 - r21) * inv);
+            out.far.c = ((r32 - r22) * inv);
+            out.far.d = ((r33 - r23) * inv);
+        } else {
+            out.far.a = (r30 - r20);
+            out.far.b = (r31 - r21);
+            out.far.c = (r32 - r22);
+            out.far.d = (r33 - r23);
+        }
+    })();
 }
 
 // Source: upstream/packages/geometry/src/frustum.ts:165 (sha256:ef03575556c4decc84d17785e2278df853cd02a8d00e53b1ecc96286a498666c)

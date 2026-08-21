@@ -9,7 +9,7 @@
 use crate::{FontVariation, TextFormatAlign, TextFormatListMarker};
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord1 {
+pub struct FlightPartialRecord2825584428 {
     pub __flight_identity: std::sync::Arc<()>,
     pub align: Option<TextFormatAlign>,
     pub block_indent: Option<f64>,
@@ -33,14 +33,14 @@ pub struct FlightPartialRecord1 {
     pub url: Option<String>,
     pub variations: Option<Vec<FontVariation>>,
 }
-impl PartialEq for FlightPartialRecord1 {
+impl PartialEq for FlightPartialRecord2825584428 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 // Source: upstream/packages/types/src/MarkupTagHandler.ts:14 (sha256:c0609467d747c51440ccdb9e1a0db9afedf742cae51c8e3f8f571cfb061e08ae)
-pub type MarkupTagResult = crate::FlightUnion2<FlightPartialRecord1, MarkupTagEffect>;
+pub type MarkupTagResult = crate::FlightUnion2<FlightPartialRecord2825584428, MarkupTagEffect>;
 
 // Source: upstream/packages/types/src/MarkupTagHandler.ts:16 (sha256:7b8cbeecd35b9e04b3c14957a910b0b80f82dfe3f2c265b9d531aae186772ceb)
 #[derive(Clone, Default)]
@@ -48,7 +48,7 @@ pub struct MarkupTagEffect {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub break_before: Option<bool>,
-    pub format: Option<FlightPartialRecord1>,
+    pub format: Option<FlightPartialRecord2825584428>,
     pub text: Option<String>,
 }
 impl PartialEq for MarkupTagEffect {

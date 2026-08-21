@@ -12,7 +12,7 @@ use crate::{
 };
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord617336933 {
     pub __flight_identity: std::sync::Arc<()>,
     pub format: Option<RenderTargetFormat>,
     pub color_attachments: Option<f64>,
@@ -23,7 +23,7 @@ pub struct FlightOmitRecord1 {
     pub clear_colors: Option<Vec<f64>>,
     pub clear_depth: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord617336933 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -68,7 +68,7 @@ pub type ApplicationRenderViewResize<State, Target> = std::sync::Arc<
 >;
 
 // Source: upstream/packages/types/src/ApplicationRenderView.ts:30 (sha256:eb8525a5d9222472fb5869c534132ba50a6ccdd3268184201c9fe95b1b5a2e3b)
-pub type ApplicationRenderViewTargetOptions = FlightOmitRecord1;
+pub type ApplicationRenderViewTargetOptions = FlightOmitRecord617336933;
 
 // Source: upstream/packages/types/src/ApplicationRenderView.ts:32 (sha256:ecfc5fe6a47a84cd8f0e0d73b48b65b08ebc0545af89d726550bc678a4020b69)
 #[derive(Clone, Default)]

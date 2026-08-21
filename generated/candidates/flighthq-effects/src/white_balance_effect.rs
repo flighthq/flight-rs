@@ -9,12 +9,12 @@
 use flighthq_types::WhiteBalanceEffect;
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord3367034417 {
     pub __flight_identity: std::sync::Arc<()>,
     pub temperature: Option<f64>,
     pub tint: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord3367034417 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -31,14 +31,16 @@ impl PartialEq for CreateWhiteBalanceEffectRecord2 {
     }
 }
 
-pub fn create_white_balance_effect(options: Option<FlightOmitRecord1>) -> WhiteBalanceEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_white_balance_effect(
+    options: Option<FlightOmitRecord3367034417>,
+) -> WhiteBalanceEffect {
+    let options = options.unwrap_or(FlightOmitRecord3367034417 {
         __flight_identity: std::sync::Arc::new(()),
         temperature: None,
         tint: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         WhiteBalanceEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "WhiteBalanceEffect".to_owned(),

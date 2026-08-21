@@ -7,41 +7,16 @@
 #![allow(unused_parens)]
 
 use crate::register_render_effect_padding_resolver;
-use flighthq_types::{
-    BlendMode, Matrix, OutlineEffect, RenderEffect, RenderEffectPadding, RenderState,
-    Scene2DClipHooks, Scene3DGraphSyncPolicy,
-};
+use flighthq_types::{OutlineEffect, RenderEffect, RenderEffectPadding, RenderState};
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord3030666237 {
     pub __flight_identity: std::sync::Arc<()>,
     pub threshold: Option<f64>,
     pub thickness: Option<f64>,
     pub color: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord2 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub allow_smoothing: Option<bool>,
-    pub background_color: Option<f64>,
-    pub background_color_rgba: Option<Vec<f64>>,
-    pub background_color_string: Option<String>,
-    pub current_clip_depth: Option<f64>,
-    pub display_object_clip_hooks: Option<Scene2DClipHooks>,
-    pub pixel_ratio: Option<f64>,
-    pub render_alpha: Option<f64>,
-    pub render_blend_mode: Option<BlendMode>,
-    pub render_transform2_d: Option<Matrix>,
-    pub scene_graph_sync_policy: Option<Scene3DGraphSyncPolicy>,
-    pub round_pixels: Option<bool>,
-}
-impl PartialEq for FlightPartialRecord2 {
+impl PartialEq for FlightOmitRecord3030666237 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -49,24 +24,24 @@ impl PartialEq for FlightPartialRecord2 {
 
 // Source: upstream/packages/effects/src/outlineEffect.ts:5 (sha256:f7d12c4a36e281c4b105db315466a95bd7146bfe1235db79e3ac2ac54022e1b8)
 #[derive(Clone, Default)]
-struct CreateOutlineEffectRecord11 {
+struct CreateOutlineEffectRecord10 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateOutlineEffectRecord11 {
+impl PartialEq for CreateOutlineEffectRecord10 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-pub fn create_outline_effect(options: Option<FlightOmitRecord1>) -> OutlineEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_outline_effect(options: Option<FlightOmitRecord3030666237>) -> OutlineEffect {
+    let options = options.unwrap_or(FlightOmitRecord3030666237 {
         __flight_identity: std::sync::Arc::new(()),
         threshold: None,
         thickness: None,
         color: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         OutlineEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "OutlineEffect".to_owned(),

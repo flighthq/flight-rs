@@ -7,72 +7,7 @@
 #![allow(unused_parens)]
 
 use crate::create_particle_emitter_config;
-use flighthq_types::{
-    ParticleBlendMode, ParticleConfigIssue, ParticleCurve, ParticleEmitterConfig,
-    ParticleEmitterShape,
-};
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord1 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub alpha_end: Option<f64>,
-    pub alpha_start: Option<f64>,
-    pub blend_mode: Option<ParticleBlendMode>,
-    pub color_end_b: Option<f64>,
-    pub color_end_g: Option<f64>,
-    pub color_end_r: Option<f64>,
-    pub color_end_variance_b: Option<f64>,
-    pub color_end_variance_g: Option<f64>,
-    pub color_end_variance_r: Option<f64>,
-    pub color_start_b: Option<f64>,
-    pub color_start_g: Option<f64>,
-    pub color_start_r: Option<f64>,
-    pub color_start_variance_b: Option<f64>,
-    pub color_start_variance_g: Option<f64>,
-    pub color_start_variance_r: Option<f64>,
-    pub direction_x: Option<f64>,
-    pub direction_y: Option<f64>,
-    pub direction_z: Option<f64>,
-    pub gravity_x: Option<f64>,
-    pub gravity_y: Option<f64>,
-    pub gravity_z: Option<f64>,
-    pub emitter_cone_angle: Option<f64>,
-    pub emitter_depth: Option<f64>,
-    pub emitter_height: Option<f64>,
-    pub emitter_radius: Option<f64>,
-    pub emitter_shape: Option<ParticleEmitterShape>,
-    pub emitter_width: Option<f64>,
-    pub burst_count: Option<f64>,
-    pub burst_interval: Option<f64>,
-    pub duration: Option<f64>,
-    pub loop_: Option<bool>,
-    pub frame_count: Option<f64>,
-    pub frame_rate: Option<f64>,
-    pub lifetime_max: Option<f64>,
-    pub lifetime_min: Option<f64>,
-    pub max_particles: Option<f64>,
-    pub region_id_max: Option<f64>,
-    pub region_id_min: Option<f64>,
-    pub scale_end: Option<f64>,
-    pub scale_max: Option<f64>,
-    pub scale_min: Option<f64>,
-    pub speed_max: Option<f64>,
-    pub speed_min: Option<f64>,
-    pub spawn_rate: Option<f64>,
-    pub spread: Option<f64>,
-    pub rotation_speed_max: Option<f64>,
-    pub rotation_speed_min: Option<f64>,
-    pub velocity_inheritance: Option<f64>,
-    pub alpha_curve: Option<ParticleCurve>,
-    pub color_curve: Option<ParticleCurve>,
-    pub scale_curve: Option<ParticleCurve>,
-    pub world_space: Option<bool>,
-}
-impl PartialEq for FlightPartialRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
+use flighthq_types::{ParticleConfigIssue, ParticleEmitterConfig};
 
 // Source: upstream/packages/particles/src/validateParticleEmitterConfig.ts:7 (sha256:a63f7598f4378b6e361fbcca3aaac29501875667fdce4035b9c61271311bf5ce)
 static NUMERIC_FIELDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(|| {
@@ -150,28 +85,85 @@ static NON_NEGATIVE_FIELDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLo
 
 // Source: upstream/packages/particles/src/validateParticleEmitterConfig.ts:83 (sha256:458e7d414d06d6f2468cb586896b90136b8aac0c5adb8a169f38b31fb14c9b22)
 pub fn normalize_particle_emitter_config(
-    config: Option<FlightPartialRecord1>,
+    config: Option<crate::particle_emitter_config::FlightPartialRecord603063107>,
 ) -> ParticleEmitterConfig {
-    let mut out = create_particle_emitter_config(Some(((config).clone().unwrap()).clone()));
+    let mut out =
+        create_particle_emitter_config(((config).clone()).as_ref().map(|__flight_value| {
+            let __flight_source = &(__flight_value);
+            crate::particle_emitter_config::FlightPartialRecord603063107 {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                alpha_end: __flight_source.alpha_end,
+                alpha_start: __flight_source.alpha_start,
+                blend_mode: (__flight_source.blend_mode).clone(),
+                color_end_b: __flight_source.color_end_b,
+                color_end_g: __flight_source.color_end_g,
+                color_end_r: __flight_source.color_end_r,
+                color_end_variance_b: __flight_source.color_end_variance_b,
+                color_end_variance_g: __flight_source.color_end_variance_g,
+                color_end_variance_r: __flight_source.color_end_variance_r,
+                color_start_b: __flight_source.color_start_b,
+                color_start_g: __flight_source.color_start_g,
+                color_start_r: __flight_source.color_start_r,
+                color_start_variance_b: __flight_source.color_start_variance_b,
+                color_start_variance_g: __flight_source.color_start_variance_g,
+                color_start_variance_r: __flight_source.color_start_variance_r,
+                direction_x: __flight_source.direction_x,
+                direction_y: __flight_source.direction_y,
+                direction_z: __flight_source.direction_z,
+                gravity_x: __flight_source.gravity_x,
+                gravity_y: __flight_source.gravity_y,
+                gravity_z: __flight_source.gravity_z,
+                emitter_cone_angle: __flight_source.emitter_cone_angle,
+                emitter_depth: __flight_source.emitter_depth,
+                emitter_height: __flight_source.emitter_height,
+                emitter_radius: __flight_source.emitter_radius,
+                emitter_shape: (__flight_source.emitter_shape).clone(),
+                emitter_width: __flight_source.emitter_width,
+                burst_count: __flight_source.burst_count,
+                burst_interval: __flight_source.burst_interval,
+                duration: __flight_source.duration,
+                loop_: __flight_source.loop_,
+                frame_count: __flight_source.frame_count,
+                frame_rate: __flight_source.frame_rate,
+                lifetime_max: __flight_source.lifetime_max,
+                lifetime_min: __flight_source.lifetime_min,
+                max_particles: __flight_source.max_particles,
+                region_id_max: __flight_source.region_id_max,
+                region_id_min: __flight_source.region_id_min,
+                scale_end: __flight_source.scale_end,
+                scale_max: __flight_source.scale_max,
+                scale_min: __flight_source.scale_min,
+                speed_max: __flight_source.speed_max,
+                speed_min: __flight_source.speed_min,
+                spawn_rate: __flight_source.spawn_rate,
+                spread: __flight_source.spread,
+                rotation_speed_max: __flight_source.rotation_speed_max,
+                rotation_speed_min: __flight_source.rotation_speed_min,
+                velocity_inheritance: __flight_source.velocity_inheritance,
+                alpha_curve: (__flight_source.alpha_curve).clone(),
+                color_curve: (__flight_source.color_curve).clone(),
+                scale_curve: (__flight_source.scale_curve).clone(),
+                world_space: __flight_source.world_space,
+            }
+        }));
     let defaults = create_particle_emitter_config(None);
     let mut mutable = crate::host_value::<Vec<(String, f64)>>("host.cast");
     let defaults_rec = crate::host_value::<Vec<(String, f64)>>("host.cast");
     for field in ((*NUMERIC_FIELDS).clone()).iter().cloned() {
-        if (!(mutable
+        if (!((mutable
             .iter()
             .find(|(entry_key, _)| entry_key == &(field).clone())
-            .map(|(_, value)| value.clone())
-            .clone())
+            .map(|(_, value)| value.clone()))
+        .expect("TypeScript Record key was absent"))
         .is_finite())
         {
             {
                 let __flight_key = (field).clone();
-                let __flight_value = defaults_rec
+                let __flight_value = (defaults_rec
                     .iter()
                     .find(|(entry_key, _)| entry_key == &(field).clone())
-                    .map(|(_, value)| value.clone())
-                    .clone()
-                    .unwrap();
+                    .map(|(_, value)| value.clone()))
+                .expect("TypeScript Record key was absent");
                 if let Some((_, value)) = mutable.iter_mut().find(|(key, _)| key == &__flight_key) {
                     *value = __flight_value;
                 } else {
@@ -180,44 +172,76 @@ pub fn normalize_particle_emitter_config(
             };
         }
     }
-    return ParticleEmitterConfig {
-        alpha_curve: if is_finite_curve(&(out.alpha_curve)) {
-            (out.alpha_curve).clone()
-        } else {
-            None
-        },
-        color_curve: if is_finite_curve(&(out.color_curve)) {
-            (out.color_curve).clone()
-        } else {
-            None
-        },
-        scale_curve: if is_finite_curve(&(out.scale_curve)) {
-            (out.scale_curve).clone()
-        } else {
-            None
-        },
-        max_particles: (0.0_f64).max((out.max_particles).floor()),
-        burst_count: (0.0_f64).max((out.burst_count).floor()),
-        burst_interval: (0.0_f64).max(out.burst_interval),
-        duration: (0.0_f64).max(out.duration),
-        frame_count: (1.0_f64).max((out.frame_count).floor()),
-        frame_rate: (0.0_f64).max(out.frame_rate),
-        region_id_min: (0.0_f64).max((out.region_id_min).floor()),
-        region_id_max: ((0.0_f64).max((out.region_id_min).floor()))
-            .max((out.region_id_max).floor()),
-        spawn_rate: (0.0_f64).max(out.spawn_rate),
-        lifetime_min: (0.0_f64).max(out.lifetime_min),
-        lifetime_max: (0.0_f64).max(out.lifetime_max),
-        speed_min: (0.0_f64).max(out.speed_min),
-        speed_max: (0.0_f64).max(out.speed_max),
-        scale_min: (0.0_f64).max(out.scale_min),
-        scale_max: (0.0_f64).max(out.scale_max),
-        emitter_cone_angle: (0.0_f64).max(out.emitter_cone_angle),
-        emitter_depth: (0.0_f64).max(out.emitter_depth),
-        emitter_radius: (0.0_f64).max(out.emitter_radius),
-        emitter_width: (0.0_f64).max(out.emitter_width),
-        emitter_height: (0.0_f64).max(out.emitter_height),
-        ..((out).clone()).clone()
+    return {
+        let __flight_spread_0 = (out).clone();
+        ParticleEmitterConfig {
+            __flight_identity: std::sync::Arc::new(()),
+            alpha_end: __flight_spread_0.alpha_end,
+            alpha_start: __flight_spread_0.alpha_start,
+            blend_mode: (__flight_spread_0.blend_mode).clone(),
+            color_end_b: __flight_spread_0.color_end_b,
+            color_end_g: __flight_spread_0.color_end_g,
+            color_end_r: __flight_spread_0.color_end_r,
+            color_end_variance_b: __flight_spread_0.color_end_variance_b,
+            color_end_variance_g: __flight_spread_0.color_end_variance_g,
+            color_end_variance_r: __flight_spread_0.color_end_variance_r,
+            color_start_b: __flight_spread_0.color_start_b,
+            color_start_g: __flight_spread_0.color_start_g,
+            color_start_r: __flight_spread_0.color_start_r,
+            color_start_variance_b: __flight_spread_0.color_start_variance_b,
+            color_start_variance_g: __flight_spread_0.color_start_variance_g,
+            color_start_variance_r: __flight_spread_0.color_start_variance_r,
+            direction_x: __flight_spread_0.direction_x,
+            direction_y: __flight_spread_0.direction_y,
+            direction_z: __flight_spread_0.direction_z,
+            gravity_x: __flight_spread_0.gravity_x,
+            gravity_y: __flight_spread_0.gravity_y,
+            gravity_z: __flight_spread_0.gravity_z,
+            emitter_cone_angle: (0.0_f64).max(out.emitter_cone_angle),
+            emitter_depth: (0.0_f64).max(out.emitter_depth),
+            emitter_height: (0.0_f64).max(out.emitter_height),
+            emitter_radius: (0.0_f64).max(out.emitter_radius),
+            emitter_shape: (__flight_spread_0.emitter_shape).clone(),
+            emitter_width: (0.0_f64).max(out.emitter_width),
+            burst_count: (0.0_f64).max((out.burst_count).floor()),
+            burst_interval: (0.0_f64).max(out.burst_interval),
+            duration: (0.0_f64).max(out.duration),
+            loop_: __flight_spread_0.loop_,
+            frame_count: (1.0_f64).max((out.frame_count).floor()),
+            frame_rate: (0.0_f64).max(out.frame_rate),
+            lifetime_max: (0.0_f64).max(out.lifetime_max),
+            lifetime_min: (0.0_f64).max(out.lifetime_min),
+            max_particles: (0.0_f64).max((out.max_particles).floor()),
+            region_id_max: ((0.0_f64).max((out.region_id_min).floor()))
+                .max((out.region_id_max).floor()),
+            region_id_min: (0.0_f64).max((out.region_id_min).floor()),
+            scale_end: __flight_spread_0.scale_end,
+            scale_max: (0.0_f64).max(out.scale_max),
+            scale_min: (0.0_f64).max(out.scale_min),
+            speed_max: (0.0_f64).max(out.speed_max),
+            speed_min: (0.0_f64).max(out.speed_min),
+            spawn_rate: (0.0_f64).max(out.spawn_rate),
+            spread: __flight_spread_0.spread,
+            rotation_speed_max: __flight_spread_0.rotation_speed_max,
+            rotation_speed_min: __flight_spread_0.rotation_speed_min,
+            velocity_inheritance: __flight_spread_0.velocity_inheritance,
+            alpha_curve: if is_finite_curve(&(out.alpha_curve)) {
+                (out.alpha_curve).clone()
+            } else {
+                None
+            },
+            color_curve: if is_finite_curve(&(out.color_curve)) {
+                (out.color_curve).clone()
+            } else {
+                None
+            },
+            scale_curve: if is_finite_curve(&(out.scale_curve)) {
+                (out.scale_curve).clone()
+            } else {
+                None
+            },
+            world_space: __flight_spread_0.world_space,
+        }
     };
 }
 

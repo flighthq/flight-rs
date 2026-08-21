@@ -11,7 +11,7 @@ use flighthq_types::{
 };
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord1 {
+pub struct FlightPartialRecord603063107 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha_end: Option<f64>,
     pub alpha_start: Option<f64>,
@@ -66,7 +66,7 @@ pub struct FlightPartialRecord1 {
     pub scale_curve: Option<ParticleCurve>,
     pub world_space: Option<bool>,
 }
-impl PartialEq for FlightPartialRecord1 {
+impl PartialEq for FlightPartialRecord603063107 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -74,7 +74,7 @@ impl PartialEq for FlightPartialRecord1 {
 
 // Source: upstream/packages/particles/src/particleEmitterConfig.ts:3 (sha256:abb2ffb0f022c9535292c6b263f485ec1255b9f3d59984a190504d18e5894724)
 pub fn create_particle_emitter_config(
-    config: Option<FlightPartialRecord1>,
+    config: Option<FlightPartialRecord603063107>,
 ) -> ParticleEmitterConfig {
     return ParticleEmitterConfig {
         __flight_identity: std::sync::Arc::new(()),

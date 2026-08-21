@@ -17,7 +17,7 @@ pub use flighthq_types::{
     install_native_host_constructors, set_interval, set_timeout,
 };
 
-mod application;
+pub mod application;
 pub use application::*;
-mod window;
+pub mod window;
 pub use window::*;

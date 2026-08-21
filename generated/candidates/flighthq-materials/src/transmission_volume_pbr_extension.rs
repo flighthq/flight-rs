@@ -15,7 +15,7 @@ use flighthq_types::{
 };
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord1 {
+pub struct FlightPartialRecord2066421274 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<Kind>,
     pub thickness: Option<f64>,
@@ -65,7 +65,7 @@ pub struct FlightPartialRecord1 {
     pub anisotropy_rotation: Option<f64>,
     pub anisotropy_strength: Option<f64>,
 }
-impl PartialEq for FlightPartialRecord1 {
+impl PartialEq for FlightPartialRecord2066421274 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -73,7 +73,7 @@ impl PartialEq for FlightPartialRecord1 {
 
 // Source: upstream/packages/materials/src/transmissionVolumePbrExtension.ts:8 (sha256:29c4c367f9c43e3f766ccd805cb3b5ecc12bf73f22aa0d0419dde501c76be9f8)
 pub fn create_transmission_volume_pbr_extension(
-    opts: Option<FlightPartialRecord1>,
+    opts: Option<FlightPartialRecord2066421274>,
 ) -> TransmissionVolumePbrExtension {
     return create_entity(Some(TransmissionVolumePbrExtension {
         __flight_identity: std::sync::Arc::new(()),

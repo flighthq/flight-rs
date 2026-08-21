@@ -8,12 +8,11 @@
 
 use crate::{get_gaussian_render_effect_padding, register_render_effect_padding_resolver};
 use flighthq_types::{
-    BlendMode, EffectSourceMode, GradientGlowEffect, Matrix, RenderEffect, RenderEffectPadding,
-    RenderState, Scene2DClipHooks, Scene3DGraphSyncPolicy,
+    EffectSourceMode, GradientGlowEffect, RenderEffect, RenderEffectPadding, RenderState,
 };
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord2348048241 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alphas: Vec<f64>,
     pub blur_x: Option<f64>,
@@ -24,38 +23,16 @@ pub struct FlightOmitRecord1 {
     pub source_mode: Option<EffectSourceMode>,
     pub strength: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord2 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub allow_smoothing: Option<bool>,
-    pub background_color: Option<f64>,
-    pub background_color_rgba: Option<Vec<f64>>,
-    pub background_color_string: Option<String>,
-    pub current_clip_depth: Option<f64>,
-    pub display_object_clip_hooks: Option<Scene2DClipHooks>,
-    pub pixel_ratio: Option<f64>,
-    pub render_alpha: Option<f64>,
-    pub render_blend_mode: Option<BlendMode>,
-    pub render_transform2_d: Option<Matrix>,
-    pub scene_graph_sync_policy: Option<Scene3DGraphSyncPolicy>,
-    pub round_pixels: Option<bool>,
-}
-impl PartialEq for FlightPartialRecord2 {
+impl PartialEq for FlightOmitRecord2348048241 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 // Source: upstream/packages/effects/src/gradientGlowEffect.ts:6 (sha256:156011c5d67f1c2c702b7a6a7438ffb0bcb8c11b33c0424e0d96193ce6833158)
-pub fn create_gradient_glow_effect(options: &FlightOmitRecord1) -> GradientGlowEffect {
+pub fn create_gradient_glow_effect(options: &FlightOmitRecord2348048241) -> GradientGlowEffect {
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (*options).clone();
         GradientGlowEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "GradientGlowEffect".to_owned(),

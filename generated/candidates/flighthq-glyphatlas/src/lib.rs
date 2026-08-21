@@ -17,23 +17,23 @@ pub use flighthq_types::{
     install_native_host_constructors, set_interval, set_timeout,
 };
 
-mod _internal_index;
+pub mod _internal_index;
 pub use _internal_index::*;
-mod contract;
+pub mod contract;
 pub use contract::*;
-mod enable_glyph_atlas_guards;
+pub mod enable_glyph_atlas_guards;
 pub use enable_glyph_atlas_guards::*;
-mod explain_glyph_atlas_entry;
+pub mod explain_glyph_atlas_entry;
 pub use explain_glyph_atlas_entry::*;
-mod glyph_atlas;
+pub mod glyph_atlas;
 pub use glyph_atlas::*;
-mod glyph_atlas_dirty;
+pub mod glyph_atlas_dirty;
 pub use glyph_atlas_dirty::*;
-mod glyph_atlas_entry;
+pub mod glyph_atlas_entry;
 pub use glyph_atlas_entry::*;
-mod glyph_atlas_metrics;
+pub mod glyph_atlas_metrics;
 pub use glyph_atlas_metrics::*;
-mod glyph_rasterizer_backend;
+pub mod glyph_rasterizer_backend;
 pub use glyph_rasterizer_backend::*;
-mod glyph_source;
+pub mod glyph_source;
 pub use glyph_source::*;

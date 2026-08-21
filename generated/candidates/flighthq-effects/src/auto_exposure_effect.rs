@@ -9,14 +9,14 @@
 use flighthq_types::AutoExposureEffect;
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord418680031 {
     pub __flight_identity: std::sync::Arc<()>,
     pub adaptation_speed: Option<f64>,
     pub exposure_compensation: Option<f64>,
     pub max_exposure: Option<f64>,
     pub min_exposure: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord418680031 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -33,8 +33,10 @@ impl PartialEq for CreateAutoExposureEffectRecord2 {
     }
 }
 
-pub fn create_auto_exposure_effect(options: Option<FlightOmitRecord1>) -> AutoExposureEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_auto_exposure_effect(
+    options: Option<FlightOmitRecord418680031>,
+) -> AutoExposureEffect {
+    let options = options.unwrap_or(FlightOmitRecord418680031 {
         __flight_identity: std::sync::Arc::new(()),
         adaptation_speed: None,
         exposure_compensation: None,
@@ -42,7 +44,7 @@ pub fn create_auto_exposure_effect(options: Option<FlightOmitRecord1>) -> AutoEx
         min_exposure: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         AutoExposureEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "AutoExposureEffect".to_owned(),

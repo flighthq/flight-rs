@@ -10,7 +10,7 @@ use flighthq_types::SpritesheetAnimationDirection;
 pub use flighthq_types::{SpritesheetAnimationData, SpritesheetData, SpritesheetFrameData};
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord1 {
+pub struct FlightPartialRecord1910057007 {
     pub __flight_identity: std::sync::Arc<()>,
     pub direction: Option<SpritesheetAnimationDirection>,
     pub frame_duration: Option<f64>,
@@ -21,14 +21,14 @@ pub struct FlightPartialRecord1 {
     pub origin_x: Option<f64>,
     pub origin_y: Option<f64>,
 }
-impl PartialEq for FlightPartialRecord1 {
+impl PartialEq for FlightPartialRecord1910057007 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord2 {
+pub struct FlightPartialRecord1317866477 {
     pub __flight_identity: std::sync::Arc<()>,
     pub animations: Option<Vec<SpritesheetAnimationData>>,
     pub frames: Option<Vec<SpritesheetFrameData>>,
@@ -37,14 +37,14 @@ pub struct FlightPartialRecord2 {
     pub image_width: Option<f64>,
     pub scale: Option<f64>,
 }
-impl PartialEq for FlightPartialRecord2 {
+impl PartialEq for FlightPartialRecord1317866477 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord3 {
+pub struct FlightPartialRecord3557983918 {
     pub __flight_identity: std::sync::Arc<()>,
     pub height: Option<f64>,
     pub name: Option<String>,
@@ -59,7 +59,7 @@ pub struct FlightPartialRecord3 {
     pub x: Option<f64>,
     pub y: Option<f64>,
 }
-impl PartialEq for FlightPartialRecord3 {
+impl PartialEq for FlightPartialRecord3557983918 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -67,7 +67,7 @@ impl PartialEq for FlightPartialRecord3 {
 
 // Source: upstream/packages/spritesheet/src/spritesheetData.ts:7 (sha256:52dd45a91a3f0addb7b0e0830cb137c47c6d9a52dfa97b3b50aa4791a1e70c8f)
 pub fn create_spritesheet_animation_data(
-    obj: Option<FlightPartialRecord1>,
+    obj: Option<FlightPartialRecord1910057007>,
 ) -> SpritesheetAnimationData {
     return SpritesheetAnimationData {
         __flight_identity: std::sync::Arc::new(()),
@@ -99,7 +99,7 @@ pub fn create_spritesheet_animation_data(
 }
 
 // Source: upstream/packages/spritesheet/src/spritesheetData.ts:20 (sha256:c3f2395387d416958ff29d606d0e46ff9b0f75d1bb0a3433bf488022d426346b)
-pub fn create_spritesheet_data(obj: Option<FlightPartialRecord2>) -> SpritesheetData {
+pub fn create_spritesheet_data(obj: Option<FlightPartialRecord1317866477>) -> SpritesheetData {
     return SpritesheetData {
         __flight_identity: std::sync::Arc::new(()),
         animations: (obj.as_ref().and_then(|value| (value.animations).clone()))
@@ -124,7 +124,9 @@ pub fn create_spritesheet_data(obj: Option<FlightPartialRecord2>) -> Spritesheet
 }
 
 // Source: upstream/packages/spritesheet/src/spritesheetData.ts:31 (sha256:9d05562850066d821bd2a4150f42908eb93905565400bc28524d18c1d11af51b)
-pub fn create_spritesheet_frame_data(obj: Option<FlightPartialRecord3>) -> SpritesheetFrameData {
+pub fn create_spritesheet_frame_data(
+    obj: Option<FlightPartialRecord3557983918>,
+) -> SpritesheetFrameData {
     return SpritesheetFrameData {
         __flight_identity: std::sync::Arc::new(()),
         height: (obj.as_ref().and_then(|value| value.height))

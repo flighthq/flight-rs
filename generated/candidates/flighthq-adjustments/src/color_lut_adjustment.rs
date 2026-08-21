@@ -6,6 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
+use crate::get_adjustment_color_matrix;
 use flighthq_types::{AdjustmentKind, ColorTransformFunction};
 
 #[derive(Clone, Default)]
@@ -20,24 +21,12 @@ impl PartialEq for SharedStructuralRecord1 {
 }
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord2 {
+pub struct FlightPartialRecord2398472694 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<AdjustmentKind>,
     pub transform: Option<ColorTransformFunction>,
 }
-impl PartialEq for FlightPartialRecord2 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord3 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub kind: Option<AdjustmentKind>,
-    pub color_matrix: Option<Vec<f64>>,
-}
-impl PartialEq for FlightPartialRecord3 {
+impl PartialEq for FlightPartialRecord2398472694 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

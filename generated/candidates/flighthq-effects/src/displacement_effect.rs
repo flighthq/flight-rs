@@ -7,41 +7,16 @@
 #![allow(unused_parens)]
 
 use crate::register_render_effect_padding_resolver;
-use flighthq_types::{
-    BlendMode, DisplacementEffect, Matrix, RenderEffect, RenderEffectPadding, RenderState,
-    Scene2DClipHooks, Scene3DGraphSyncPolicy,
-};
+use flighthq_types::{DisplacementEffect, RenderEffect, RenderEffectPadding, RenderState};
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord1487511957 {
     pub __flight_identity: std::sync::Arc<()>,
     pub intensity: Option<f64>,
     pub frequency: Option<f64>,
     pub seed: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord2 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub allow_smoothing: Option<bool>,
-    pub background_color: Option<f64>,
-    pub background_color_rgba: Option<Vec<f64>>,
-    pub background_color_string: Option<String>,
-    pub current_clip_depth: Option<f64>,
-    pub display_object_clip_hooks: Option<Scene2DClipHooks>,
-    pub pixel_ratio: Option<f64>,
-    pub render_alpha: Option<f64>,
-    pub render_blend_mode: Option<BlendMode>,
-    pub render_transform2_d: Option<Matrix>,
-    pub scene_graph_sync_policy: Option<Scene3DGraphSyncPolicy>,
-    pub round_pixels: Option<bool>,
-}
-impl PartialEq for FlightPartialRecord2 {
+impl PartialEq for FlightOmitRecord1487511957 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -49,24 +24,26 @@ impl PartialEq for FlightPartialRecord2 {
 
 // Source: upstream/packages/effects/src/displacementEffect.ts:5 (sha256:afd4c94e0ffcb042de03804d5b8d728e4525beb0996e75687a5259ff6e585183)
 #[derive(Clone, Default)]
-struct CreateDisplacementEffectRecord11 {
+struct CreateDisplacementEffectRecord10 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateDisplacementEffectRecord11 {
+impl PartialEq for CreateDisplacementEffectRecord10 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-pub fn create_displacement_effect(options: Option<FlightOmitRecord1>) -> DisplacementEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_displacement_effect(
+    options: Option<FlightOmitRecord1487511957>,
+) -> DisplacementEffect {
+    let options = options.unwrap_or(FlightOmitRecord1487511957 {
         __flight_identity: std::sync::Arc::new(()),
         intensity: None,
         frequency: None,
         seed: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         DisplacementEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "DisplacementEffect".to_owned(),

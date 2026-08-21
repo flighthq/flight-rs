@@ -64,6 +64,7 @@ pub fn blend_non_separable_rgb(
                 b = cs_b;
                 break '__flight_switch;
             }
+            unreachable!("exhaustive TypeScript switch completed without exiting");
         }
     }
     out[0.0_f64 as usize] = r;

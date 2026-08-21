@@ -90,16 +90,21 @@ pub fn apply_particle_collisions(
                     S.lock().unwrap()[__flight_index] = __flight_value;
                 }
             };
-            if resolve_colliders(colliders, &mut S) {
-                emitter.data.transforms[tt as usize] = (S[0.0_f64 as usize].clone()) as f32;
+            if resolve_colliders(colliders, &mut (*S.lock().unwrap())) {
+                emitter.data.transforms[tt as usize] =
+                    ((*S.lock().unwrap())[0.0_f64 as usize].clone()) as f32;
                 emitter.data.transforms[(tt + 1.0_f64) as usize] =
-                    (S[1.0_f64 as usize].clone()) as f32;
+                    ((*S.lock().unwrap())[1.0_f64 as usize].clone()) as f32;
                 if ((emitter.data.positions_z.len() as f64) > i) {
-                    emitter.data.positions_z[i as usize] = (S[2.0_f64 as usize].clone()) as f32;
+                    emitter.data.positions_z[i as usize] =
+                        ((*S.lock().unwrap())[2.0_f64 as usize].clone()) as f32;
                 }
-                state.velocities[vt as usize] = (S[3.0_f64 as usize].clone()) as f32;
-                state.velocities[(vt + 1.0_f64) as usize] = (S[4.0_f64 as usize].clone()) as f32;
-                state.velocities[(vt + 2.0_f64) as usize] = (S[5.0_f64 as usize].clone()) as f32;
+                state.velocities[vt as usize] =
+                    ((*S.lock().unwrap())[3.0_f64 as usize].clone()) as f32;
+                state.velocities[(vt + 1.0_f64) as usize] =
+                    ((*S.lock().unwrap())[4.0_f64 as usize].clone()) as f32;
+                state.velocities[(vt + 2.0_f64) as usize] =
+                    ((*S.lock().unwrap())[5.0_f64 as usize].clone()) as f32;
             }
             {
                 i += 1.0;
@@ -183,11 +188,13 @@ pub fn apply_particle_object_collisions(
                     S.lock().unwrap()[__flight_index] = __flight_value;
                 }
             };
-            if resolve_colliders(colliders, &mut S) {
-                objects[i as usize].x = S[0.0_f64 as usize].clone();
-                objects[i as usize].y = S[1.0_f64 as usize].clone();
-                state.velocities[vt as usize] = (S[3.0_f64 as usize].clone()) as f32;
-                state.velocities[(vt + 1.0_f64) as usize] = (S[4.0_f64 as usize].clone()) as f32;
+            if resolve_colliders(colliders, &mut (*S.lock().unwrap())) {
+                objects[i as usize].x = (*S.lock().unwrap())[0.0_f64 as usize].clone();
+                objects[i as usize].y = (*S.lock().unwrap())[1.0_f64 as usize].clone();
+                state.velocities[vt as usize] =
+                    ((*S.lock().unwrap())[3.0_f64 as usize].clone()) as f32;
+                state.velocities[(vt + 1.0_f64) as usize] =
+                    ((*S.lock().unwrap())[4.0_f64 as usize].clone()) as f32;
             }
             {
                 i += 1.0;

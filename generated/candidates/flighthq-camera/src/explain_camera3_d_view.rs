@@ -9,24 +9,34 @@
 use flighthq_types::{Camera3D, Camera3DViewExplanation};
 
 // Source: upstream/packages/camera/src/explainCamera3DView.ts:13 (sha256:12f14c34d9ade920c7e77dbe8c74eb2acbed3ad639ca380db2874480b7454f36)
+#[derive(Clone, Default)]
+struct ExplainCamera3DViewSynthesizedRecord1964856985 {
+    __flight_identity: std::sync::Arc<()>,
+    x: f64,
+    y: f64,
+    z: f64,
+}
+impl PartialEq for ExplainCamera3DViewSynthesizedRecord1964856985 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 pub fn explain_camera3_d_view(camera: &Camera3D) -> Camera3DViewExplanation {
-    let x = Vector3 {
+    let x = ExplainCamera3DViewSynthesizedRecord1964856985 {
         __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_runtime: Default::default(),
         x: (camera.view.m[0.0_f64 as usize] as f64),
         y: (camera.view.m[1.0_f64 as usize] as f64),
         z: (camera.view.m[2.0_f64 as usize] as f64),
     };
-    let y = Vector3 {
+    let y = ExplainCamera3DViewSynthesizedRecord1964856985 {
         __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_runtime: Default::default(),
         x: (camera.view.m[4.0_f64 as usize] as f64),
         y: (camera.view.m[5.0_f64 as usize] as f64),
         z: (camera.view.m[6.0_f64 as usize] as f64),
     };
-    let z = Vector3 {
+    let z = ExplainCamera3DViewSynthesizedRecord1964856985 {
         __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_runtime: Default::default(),
         x: (camera.view.m[8.0_f64 as usize] as f64),
         y: (camera.view.m[9.0_f64 as usize] as f64),
         z: (camera.view.m[10.0_f64 as usize] as f64),

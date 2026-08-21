@@ -17,27 +17,27 @@ pub use flighthq_types::{
     install_native_host_constructors, set_interval, set_timeout,
 };
 
-mod _internal_index;
+pub mod _internal_index;
 pub use _internal_index::*;
-mod color_from_kelvin;
+pub mod color_from_kelvin;
 pub use color_from_kelvin::*;
-mod contract;
+pub mod contract;
 pub use contract::*;
-mod hsl_color;
+pub mod hsl_color;
 pub use hsl_color::*;
-mod hsv_color;
+pub mod hsv_color;
 pub use hsv_color::*;
-mod lerp_color;
+pub mod lerp_color;
 pub use lerp_color::*;
-mod luminance;
+pub mod luminance;
 pub use luminance::*;
-mod oklab;
+pub mod oklab;
 pub use oklab::*;
-mod pack_color;
+pub mod pack_color;
 pub use pack_color::*;
-mod premultiply_color_alpha;
+pub mod premultiply_color_alpha;
 pub use premultiply_color_alpha::*;
-mod srgb_transfer;
+pub mod srgb_transfer;
 pub use srgb_transfer::*;
 
 #[cfg(test)]

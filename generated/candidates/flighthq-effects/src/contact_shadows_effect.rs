@@ -7,42 +7,17 @@
 #![allow(unused_parens)]
 
 use crate::register_render_effect_padding_resolver;
-use flighthq_types::{
-    BlendMode, ContactShadowsEffect, Matrix, RenderEffect, RenderEffectPadding, RenderState,
-    Scene2DClipHooks, Scene3DGraphSyncPolicy,
-};
+use flighthq_types::{ContactShadowsEffect, RenderEffect, RenderEffectPadding, RenderState};
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord3390735950 {
     pub __flight_identity: std::sync::Arc<()>,
     pub distance: Option<f64>,
     pub opacity: Option<f64>,
     pub samples: Option<f64>,
     pub smoothness: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct FlightPartialRecord2 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub allow_smoothing: Option<bool>,
-    pub background_color: Option<f64>,
-    pub background_color_rgba: Option<Vec<f64>>,
-    pub background_color_string: Option<String>,
-    pub current_clip_depth: Option<f64>,
-    pub display_object_clip_hooks: Option<Scene2DClipHooks>,
-    pub pixel_ratio: Option<f64>,
-    pub render_alpha: Option<f64>,
-    pub render_blend_mode: Option<BlendMode>,
-    pub render_transform2_d: Option<Matrix>,
-    pub scene_graph_sync_policy: Option<Scene3DGraphSyncPolicy>,
-    pub round_pixels: Option<bool>,
-}
-impl PartialEq for FlightPartialRecord2 {
+impl PartialEq for FlightOmitRecord3390735950 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -50,17 +25,19 @@ impl PartialEq for FlightPartialRecord2 {
 
 // Source: upstream/packages/effects/src/contactShadowsEffect.ts:5 (sha256:4bc30aa21b51ac6d1144ef6e52410b9010dfd548130f08c88f4b071dbdaa3dd3)
 #[derive(Clone, Default)]
-struct CreateContactShadowsEffectRecord11 {
+struct CreateContactShadowsEffectRecord10 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateContactShadowsEffectRecord11 {
+impl PartialEq for CreateContactShadowsEffectRecord10 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-pub fn create_contact_shadows_effect(options: Option<FlightOmitRecord1>) -> ContactShadowsEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_contact_shadows_effect(
+    options: Option<FlightOmitRecord3390735950>,
+) -> ContactShadowsEffect {
+    let options = options.unwrap_or(FlightOmitRecord3390735950 {
         __flight_identity: std::sync::Arc::new(()),
         distance: None,
         opacity: None,
@@ -68,7 +45,7 @@ pub fn create_contact_shadows_effect(options: Option<FlightOmitRecord1>) -> Cont
         smoothness: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         ContactShadowsEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "ContactShadowsEffect".to_owned(),
@@ -83,14 +60,14 @@ pub fn create_contact_shadows_effect(options: Option<FlightOmitRecord1>) -> Cont
 
 // Source: upstream/packages/effects/src/contactShadowsEffect.ts:12 (sha256:ba29f48595bb0a5adf3447f4e643460f9bb3259ec40ccff504004f3031955dc7)
 #[derive(Clone, Default)]
-struct GetContactShadowsEffectPaddingRecord11 {
+struct GetContactShadowsEffectPaddingRecord10 {
     __flight_identity: std::sync::Arc<()>,
     bottom: f64,
     left: f64,
     right: f64,
     top: f64,
 }
-impl PartialEq for GetContactShadowsEffectPaddingRecord11 {
+impl PartialEq for GetContactShadowsEffectPaddingRecord10 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

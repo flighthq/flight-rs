@@ -1397,10 +1397,8 @@ pub fn get_key_code_from_dom_keyboard_event(event: crate::OpaqueHostValue) -> f6
     return (KEY_CODES_BY_KEY
         .iter()
         .find(|(entry_key, _)| entry_key == &crate::host_value::<String>("host.key"))
-        .map(|(_, value)| value.clone())
-        .clone())
-    .clone()
-    .unwrap_or(KeyCode::UNKNOWN);
+        .map(|(_, value)| value.clone()))
+    .expect("TypeScript Record key was absent");
 }
 
 // Source: upstream/packages/input/src/inputManager.ts:580 (sha256:8bb4b63cf36a75fad481d7886f69db5e02d1de022cc2ca3580802c252dee0474)
@@ -1794,20 +1792,17 @@ fn get_key_code_from_dom_keyboard_code(code: String, location: f64) -> f64 {
                 .any(|(key, _)| key == &__flight_key)
         })
     {
-        return NUMPAD_KEY_CODES_BY_CODE
+        return (NUMPAD_KEY_CODES_BY_CODE
             .iter()
             .find(|(entry_key, _)| entry_key == &(code).clone())
-            .map(|(_, value)| value.clone())
-            .clone()
-            .unwrap();
+            .map(|(_, value)| value.clone()))
+        .expect("TypeScript Record key was absent");
     }
     return (KEY_CODES_BY_CODE
         .iter()
         .find(|(entry_key, _)| entry_key == &(code).clone())
-        .map(|(_, value)| value.clone())
-        .clone())
-    .clone()
-    .unwrap_or(KeyCode::UNKNOWN);
+        .map(|(_, value)| value.clone()))
+    .expect("TypeScript Record key was absent");
 }
 
 // Source: upstream/packages/input/src/inputManager.ts:759 (sha256:40ca75bc1bd4bfd77ec9b3bbaf7470427dbec0de9c3cc45156b4da748285bbd8)

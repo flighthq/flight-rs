@@ -260,6 +260,7 @@ pub fn hsv_to_rgb(out: &mut Vec<f64>, h: f64, s: f64, v: f64) -> () {
                 };
                 break '__flight_switch;
             }
+            unreachable!("exhaustive TypeScript switch completed without exiting");
         }
     }
 }

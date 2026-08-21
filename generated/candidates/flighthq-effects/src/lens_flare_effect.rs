@@ -9,14 +9,14 @@
 use flighthq_types::LensFlareEffect;
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord1883484336 {
     pub __flight_identity: std::sync::Arc<()>,
     pub threshold: Option<f64>,
     pub intensity: Option<f64>,
     pub ghosts: Option<f64>,
     pub halo: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord1883484336 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -33,8 +33,8 @@ impl PartialEq for CreateLensFlareEffectRecord2 {
     }
 }
 
-pub fn create_lens_flare_effect(options: Option<FlightOmitRecord1>) -> LensFlareEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_lens_flare_effect(options: Option<FlightOmitRecord1883484336>) -> LensFlareEffect {
+    let options = options.unwrap_or(FlightOmitRecord1883484336 {
         __flight_identity: std::sync::Arc::new(()),
         threshold: None,
         intensity: None,
@@ -42,7 +42,7 @@ pub fn create_lens_flare_effect(options: Option<FlightOmitRecord1>) -> LensFlare
         halo: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         LensFlareEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "LensFlareEffect".to_owned(),

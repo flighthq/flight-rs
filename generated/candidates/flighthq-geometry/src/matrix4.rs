@@ -26,66 +26,197 @@ pub fn append_rotation_matrix4(
     pivot_point: Option<Vector4Like>,
 ) -> () {
     let mut m = acquire_identity_matrix4();
-    __get_axis_rotation(&mut m, axis.x, axis.y, axis.z, radians);
+    (|| -> () {
+        let mut ax = axis.x;
+        let mut ay = axis.y;
+        let mut az = axis.z;
+        let rad = (-radians);
+        let c = (rad).cos();
+        let s = (rad).sin();
+        let t = (1.0_f64 - c);
+        m.m[0.0_f64 as usize] = (c + ((ax * ax) * t)) as f32;
+        m.m[5.0_f64 as usize] = (c + ((ay * ay) * t)) as f32;
+        m.m[10.0_f64 as usize] = (c + ((az * az) * t)) as f32;
+        let mut tmp1 = ((ax * ay) * t);
+        let mut tmp2 = (az * s);
+        m.m[4.0_f64 as usize] = (tmp1 + tmp2) as f32;
+        m.m[1.0_f64 as usize] = (tmp1 - tmp2) as f32;
+        tmp1 = ((ax * az) * t);
+        tmp2 = (ay * s);
+        m.m[8.0_f64 as usize] = (tmp1 - tmp2) as f32;
+        m.m[2.0_f64 as usize] = (tmp1 + tmp2) as f32;
+        tmp1 = ((ay * az) * t);
+        tmp2 = (ax * s);
+        m.m[9.0_f64 as usize] = (tmp1 + tmp2) as f32;
+        m.m[6.0_f64 as usize] = (tmp1 - tmp2) as f32;
+    })();
     if (pivot_point).is_some() {
         let mut t1 = acquire_identity_matrix4();
         let mut t2 = acquire_identity_matrix4();
-        {
-            let __flight_argument_1 = (t1).clone();
-            let __flight_result = append_translation_matrix4(
-                &mut t1,
-                &__flight_argument_1,
-                (-pivot_point.as_ref().unwrap().x),
-                (-pivot_point.as_ref().unwrap().y),
-                (-pivot_point.as_ref().unwrap().z),
-            );
-            __flight_result
-        };
-        {
-            let __flight_argument_1 = (t2).clone();
-            let __flight_result = append_translation_matrix4(
-                &mut t2,
-                &__flight_argument_1,
-                pivot_point.as_ref().unwrap().x,
-                pivot_point.as_ref().unwrap().y,
-                pivot_point.as_ref().unwrap().z,
-            );
-            __flight_result
-        };
-        {
-            let __flight_argument_1 = (m).clone();
-            let __flight_result = multiply_matrix4(&mut m, &__flight_argument_1, &{
-                let __flight_source = &(t1);
-                Matrix4Like {
-                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
-                    __flight_entity_runtime: std::sync::Arc::clone(
-                        &__flight_source.__flight_entity_runtime,
-                    ),
-                    m: (__flight_source.m).clone(),
-                }
-            });
-            __flight_result
-        };
-        {
-            let __flight_argument_2 = (m).clone();
-            let __flight_result = multiply_matrix4(
-                &mut m,
-                &{
-                    let __flight_source = &(t2);
-                    Matrix4Like {
-                        __flight_identity: std::sync::Arc::clone(
-                            &__flight_source.__flight_identity,
-                        ),
-                        __flight_entity_runtime: std::sync::Arc::clone(
-                            &__flight_source.__flight_entity_runtime,
-                        ),
-                        m: (__flight_source.m).clone(),
-                    }
-                },
-                &__flight_argument_2,
-            );
-            __flight_result
-        };
+        (|| -> () {
+            if (t1 != t1) {
+                {
+                    let __flight_offset = (0.0_f64) as usize;
+                    let __flight_values: Vec<f32> = ((t1.m).clone())
+                        .iter()
+                        .map(|value| (*value) as f32)
+                        .collect();
+                    t1.m[__flight_offset..__flight_offset + __flight_values.len()]
+                        .copy_from_slice(&__flight_values);
+                };
+            }
+            t1.m[12.0_f64 as usize] = ((t1.m[12.0_f64 as usize] as f64) + (-p.x)) as f32;
+            t1.m[13.0_f64 as usize] = ((t1.m[13.0_f64 as usize] as f64) + (-p.y)) as f32;
+            t1.m[14.0_f64 as usize] = ((t1.m[14.0_f64 as usize] as f64) + (-p.z)) as f32;
+        })();
+        (|| -> () {
+            if (t2 != t2) {
+                {
+                    let __flight_offset = (0.0_f64) as usize;
+                    let __flight_values: Vec<f32> = ((t2.m).clone())
+                        .iter()
+                        .map(|value| (*value) as f32)
+                        .collect();
+                    t2.m[__flight_offset..__flight_offset + __flight_values.len()]
+                        .copy_from_slice(&__flight_values);
+                };
+            }
+            t2.m[12.0_f64 as usize] = ((t2.m[12.0_f64 as usize] as f64) + p.x) as f32;
+            t2.m[13.0_f64 as usize] = ((t2.m[13.0_f64 as usize] as f64) + p.y) as f32;
+            t2.m[14.0_f64 as usize] = ((t2.m[14.0_f64 as usize] as f64) + p.z) as f32;
+        })();
+        (|| -> () {
+            let m111 = (m.m[0.0_f64 as usize] as f64);
+            let m121 = (m.m[4.0_f64 as usize] as f64);
+            let m131 = (m.m[8.0_f64 as usize] as f64);
+            let m141 = (m.m[12.0_f64 as usize] as f64);
+            let m112 = (m.m[1.0_f64 as usize] as f64);
+            let m122 = (m.m[5.0_f64 as usize] as f64);
+            let m132 = (m.m[9.0_f64 as usize] as f64);
+            let m142 = (m.m[13.0_f64 as usize] as f64);
+            let m113 = (m.m[2.0_f64 as usize] as f64);
+            let m123 = (m.m[6.0_f64 as usize] as f64);
+            let m133 = (m.m[10.0_f64 as usize] as f64);
+            let m143 = (m.m[14.0_f64 as usize] as f64);
+            let m114 = (m.m[3.0_f64 as usize] as f64);
+            let m124 = (m.m[7.0_f64 as usize] as f64);
+            let m134 = (m.m[11.0_f64 as usize] as f64);
+            let m144 = (m.m[15.0_f64 as usize] as f64);
+            let m211 = (t1.m[0.0_f64 as usize] as f64);
+            let m221 = (t1.m[4.0_f64 as usize] as f64);
+            let m231 = (t1.m[8.0_f64 as usize] as f64);
+            let m241 = (t1.m[12.0_f64 as usize] as f64);
+            let m212 = (t1.m[1.0_f64 as usize] as f64);
+            let m222 = (t1.m[5.0_f64 as usize] as f64);
+            let m232 = (t1.m[9.0_f64 as usize] as f64);
+            let m242 = (t1.m[13.0_f64 as usize] as f64);
+            let m213 = (t1.m[2.0_f64 as usize] as f64);
+            let m223 = (t1.m[6.0_f64 as usize] as f64);
+            let m233 = (t1.m[10.0_f64 as usize] as f64);
+            let m243 = (t1.m[14.0_f64 as usize] as f64);
+            let m214 = (t1.m[3.0_f64 as usize] as f64);
+            let m224 = (t1.m[7.0_f64 as usize] as f64);
+            let m234 = (t1.m[11.0_f64 as usize] as f64);
+            let m244 = (t1.m[15.0_f64 as usize] as f64);
+            m.m[0.0_f64 as usize] =
+                ((((m211 * m111) + (m212 * m121)) + (m213 * m131)) + (m214 * m141)) as f32;
+            m.m[1.0_f64 as usize] =
+                ((((m211 * m112) + (m212 * m122)) + (m213 * m132)) + (m214 * m142)) as f32;
+            m.m[2.0_f64 as usize] =
+                ((((m211 * m113) + (m212 * m123)) + (m213 * m133)) + (m214 * m143)) as f32;
+            m.m[3.0_f64 as usize] =
+                ((((m211 * m114) + (m212 * m124)) + (m213 * m134)) + (m214 * m144)) as f32;
+            m.m[4.0_f64 as usize] =
+                ((((m221 * m111) + (m222 * m121)) + (m223 * m131)) + (m224 * m141)) as f32;
+            m.m[5.0_f64 as usize] =
+                ((((m221 * m112) + (m222 * m122)) + (m223 * m132)) + (m224 * m142)) as f32;
+            m.m[6.0_f64 as usize] =
+                ((((m221 * m113) + (m222 * m123)) + (m223 * m133)) + (m224 * m143)) as f32;
+            m.m[7.0_f64 as usize] =
+                ((((m221 * m114) + (m222 * m124)) + (m223 * m134)) + (m224 * m144)) as f32;
+            m.m[8.0_f64 as usize] =
+                ((((m231 * m111) + (m232 * m121)) + (m233 * m131)) + (m234 * m141)) as f32;
+            m.m[9.0_f64 as usize] =
+                ((((m231 * m112) + (m232 * m122)) + (m233 * m132)) + (m234 * m142)) as f32;
+            m.m[10.0_f64 as usize] =
+                ((((m231 * m113) + (m232 * m123)) + (m233 * m133)) + (m234 * m143)) as f32;
+            m.m[11.0_f64 as usize] =
+                ((((m231 * m114) + (m232 * m124)) + (m233 * m134)) + (m234 * m144)) as f32;
+            m.m[12.0_f64 as usize] =
+                ((((m241 * m111) + (m242 * m121)) + (m243 * m131)) + (m244 * m141)) as f32;
+            m.m[13.0_f64 as usize] =
+                ((((m241 * m112) + (m242 * m122)) + (m243 * m132)) + (m244 * m142)) as f32;
+            m.m[14.0_f64 as usize] =
+                ((((m241 * m113) + (m242 * m123)) + (m243 * m133)) + (m244 * m143)) as f32;
+            m.m[15.0_f64 as usize] =
+                ((((m241 * m114) + (m242 * m124)) + (m243 * m134)) + (m244 * m144)) as f32;
+        })();
+        (|| -> () {
+            let m111 = (t2.m[0.0_f64 as usize] as f64);
+            let m121 = (t2.m[4.0_f64 as usize] as f64);
+            let m131 = (t2.m[8.0_f64 as usize] as f64);
+            let m141 = (t2.m[12.0_f64 as usize] as f64);
+            let m112 = (t2.m[1.0_f64 as usize] as f64);
+            let m122 = (t2.m[5.0_f64 as usize] as f64);
+            let m132 = (t2.m[9.0_f64 as usize] as f64);
+            let m142 = (t2.m[13.0_f64 as usize] as f64);
+            let m113 = (t2.m[2.0_f64 as usize] as f64);
+            let m123 = (t2.m[6.0_f64 as usize] as f64);
+            let m133 = (t2.m[10.0_f64 as usize] as f64);
+            let m143 = (t2.m[14.0_f64 as usize] as f64);
+            let m114 = (t2.m[3.0_f64 as usize] as f64);
+            let m124 = (t2.m[7.0_f64 as usize] as f64);
+            let m134 = (t2.m[11.0_f64 as usize] as f64);
+            let m144 = (t2.m[15.0_f64 as usize] as f64);
+            let m211 = (m.m[0.0_f64 as usize] as f64);
+            let m221 = (m.m[4.0_f64 as usize] as f64);
+            let m231 = (m.m[8.0_f64 as usize] as f64);
+            let m241 = (m.m[12.0_f64 as usize] as f64);
+            let m212 = (m.m[1.0_f64 as usize] as f64);
+            let m222 = (m.m[5.0_f64 as usize] as f64);
+            let m232 = (m.m[9.0_f64 as usize] as f64);
+            let m242 = (m.m[13.0_f64 as usize] as f64);
+            let m213 = (m.m[2.0_f64 as usize] as f64);
+            let m223 = (m.m[6.0_f64 as usize] as f64);
+            let m233 = (m.m[10.0_f64 as usize] as f64);
+            let m243 = (m.m[14.0_f64 as usize] as f64);
+            let m214 = (m.m[3.0_f64 as usize] as f64);
+            let m224 = (m.m[7.0_f64 as usize] as f64);
+            let m234 = (m.m[11.0_f64 as usize] as f64);
+            let m244 = (m.m[15.0_f64 as usize] as f64);
+            m.m[0.0_f64 as usize] =
+                ((((m211 * m111) + (m212 * m121)) + (m213 * m131)) + (m214 * m141)) as f32;
+            m.m[1.0_f64 as usize] =
+                ((((m211 * m112) + (m212 * m122)) + (m213 * m132)) + (m214 * m142)) as f32;
+            m.m[2.0_f64 as usize] =
+                ((((m211 * m113) + (m212 * m123)) + (m213 * m133)) + (m214 * m143)) as f32;
+            m.m[3.0_f64 as usize] =
+                ((((m211 * m114) + (m212 * m124)) + (m213 * m134)) + (m214 * m144)) as f32;
+            m.m[4.0_f64 as usize] =
+                ((((m221 * m111) + (m222 * m121)) + (m223 * m131)) + (m224 * m141)) as f32;
+            m.m[5.0_f64 as usize] =
+                ((((m221 * m112) + (m222 * m122)) + (m223 * m132)) + (m224 * m142)) as f32;
+            m.m[6.0_f64 as usize] =
+                ((((m221 * m113) + (m222 * m123)) + (m223 * m133)) + (m224 * m143)) as f32;
+            m.m[7.0_f64 as usize] =
+                ((((m221 * m114) + (m222 * m124)) + (m223 * m134)) + (m224 * m144)) as f32;
+            m.m[8.0_f64 as usize] =
+                ((((m231 * m111) + (m232 * m121)) + (m233 * m131)) + (m234 * m141)) as f32;
+            m.m[9.0_f64 as usize] =
+                ((((m231 * m112) + (m232 * m122)) + (m233 * m132)) + (m234 * m142)) as f32;
+            m.m[10.0_f64 as usize] =
+                ((((m231 * m113) + (m232 * m123)) + (m233 * m133)) + (m234 * m143)) as f32;
+            m.m[11.0_f64 as usize] =
+                ((((m231 * m114) + (m232 * m124)) + (m233 * m134)) + (m234 * m144)) as f32;
+            m.m[12.0_f64 as usize] =
+                ((((m241 * m111) + (m242 * m121)) + (m243 * m131)) + (m244 * m141)) as f32;
+            m.m[13.0_f64 as usize] =
+                ((((m241 * m112) + (m242 * m122)) + (m243 * m132)) + (m244 * m142)) as f32;
+            m.m[14.0_f64 as usize] =
+                ((((m241 * m113) + (m242 * m123)) + (m243 * m133)) + (m244 * m143)) as f32;
+            m.m[15.0_f64 as usize] =
+                ((((m241 * m114) + (m242 * m124)) + (m243 * m134)) + (m244 * m144)) as f32;
+        })();
         release_matrix4(&mut t1);
         release_matrix4(&mut t2);
     }
@@ -111,10 +242,24 @@ pub fn append_scale_matrix4(
     z_scale: f64,
 ) -> () {
     let mut m = acquire_matrix4();
-    set_matrix4(
-        &mut m, x_scale, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, y_scale, 0.0_f64, 0.0_f64, 0.0_f64,
-        0.0_f64, z_scale, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 1.0_f64,
-    );
+    (|| -> () {
+        m.m[0.0_f64 as usize] = (x_scale) as f32;
+        m.m[1.0_f64 as usize] = (0.0_f64) as f32;
+        m.m[2.0_f64 as usize] = (0.0_f64) as f32;
+        m.m[3.0_f64 as usize] = (0.0_f64) as f32;
+        m.m[4.0_f64 as usize] = (0.0_f64) as f32;
+        m.m[5.0_f64 as usize] = (y_scale) as f32;
+        m.m[6.0_f64 as usize] = (0.0_f64) as f32;
+        m.m[7.0_f64 as usize] = (0.0_f64) as f32;
+        m.m[8.0_f64 as usize] = (0.0_f64) as f32;
+        m.m[9.0_f64 as usize] = (0.0_f64) as f32;
+        m.m[10.0_f64 as usize] = (z_scale) as f32;
+        m.m[11.0_f64 as usize] = (0.0_f64) as f32;
+        m.m[12.0_f64 as usize] = (0.0_f64) as f32;
+        m.m[13.0_f64 as usize] = (0.0_f64) as f32;
+        m.m[14.0_f64 as usize] = (0.0_f64) as f32;
+        m.m[15.0_f64 as usize] = (1.0_f64) as f32;
+    })();
     append_matrix4(out, source, &{
         let __flight_source = &(m);
         Matrix4Like {
@@ -158,7 +303,17 @@ pub fn clone_matrix4(source: &Matrix4Like) -> Matrix4 {
         None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
         None,
     );
-    copy_matrix4(&mut m, source);
+    (|| -> () {
+        {
+            let __flight_offset = (0.0_f64) as usize;
+            let __flight_values: Vec<f32> = ((source.m).clone())
+                .iter()
+                .map(|value| (*value) as f32)
+                .collect();
+            m.m[__flight_offset..__flight_offset + __flight_values.len()]
+                .copy_from_slice(&__flight_values);
+        };
+    })();
     return m;
 }
 
@@ -270,6 +425,7 @@ pub fn copy_matrix4_column_from_vector4(
             if __flight_case <= 4_usize {
                 panic!("{}", "generated Flight function threw");
             }
+            unreachable!("exhaustive TypeScript switch completed without exiting");
         }
     }
 }
@@ -325,6 +481,7 @@ pub fn copy_matrix4_column_to_vector4(
             if __flight_case <= 4_usize {
                 panic!("{}", "generated Flight function threw");
             }
+            unreachable!("exhaustive TypeScript switch completed without exiting");
         }
     }
 }
@@ -376,6 +533,7 @@ pub fn copy_matrix4_row_from_vector4(out: &mut Matrix4Like, row: f64, source: &V
             if __flight_case <= 4_usize {
                 panic!("{}", "generated Flight function threw");
             }
+            unreachable!("exhaustive TypeScript switch completed without exiting");
         }
     }
 }
@@ -427,6 +585,7 @@ pub fn copy_matrix4_row_to_vector4(out: &mut Vector4Like, row: f64, source: &Mat
             if __flight_case <= 4_usize {
                 panic!("{}", "generated Flight function threw");
             }
+            unreachable!("exhaustive TypeScript switch completed without exiting");
         }
     }
 }
@@ -523,15 +682,26 @@ pub fn create_matrix4_from2_d(
         None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
         None,
     );
-    set_matrix4_from2_d(
-        &mut out,
-        a,
-        b,
-        c,
-        d,
-        Some((tx).clone().unwrap()),
-        Some((ty).clone().unwrap()),
-    );
+    (|| -> () {
+        tx = Some((tx).clone().unwrap_or(0.0_f64));
+        ty = Some((ty).clone().unwrap_or(0.0_f64));
+        out.m[0.0_f64 as usize] = (a) as f32;
+        out.m[1.0_f64 as usize] = (b) as f32;
+        out.m[2.0_f64 as usize] = (0.0_f64) as f32;
+        out.m[3.0_f64 as usize] = (0.0_f64) as f32;
+        out.m[4.0_f64 as usize] = (c) as f32;
+        out.m[5.0_f64 as usize] = (d) as f32;
+        out.m[6.0_f64 as usize] = (0.0_f64) as f32;
+        out.m[7.0_f64 as usize] = (0.0_f64) as f32;
+        out.m[8.0_f64 as usize] = (0.0_f64) as f32;
+        out.m[9.0_f64 as usize] = (0.0_f64) as f32;
+        out.m[10.0_f64 as usize] = (1.0_f64) as f32;
+        out.m[11.0_f64 as usize] = (0.0_f64) as f32;
+        out.m[12.0_f64 as usize] = ((tx).clone().unwrap()) as f32;
+        out.m[13.0_f64 as usize] = ((ty).clone().unwrap()) as f32;
+        out.m[14.0_f64 as usize] = (0.0_f64) as f32;
+        out.m[15.0_f64 as usize] = (1.0_f64) as f32;
+    })();
     return out;
 }
 
@@ -548,7 +718,27 @@ pub fn create_orthographic_matrix4(
         None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
         None,
     );
-    set_orthographic_matrix4(&mut out, left, right, bottom, top, z_near, z_far);
+    (|| -> () {
+        let sx = (1.0_f64 / (right - left));
+        let sy = (1.0_f64 / (top - bottom));
+        let sz = (1.0_f64 / (z_far - z_near));
+        out.m[0.0_f64 as usize] = (2.0_f64 * sx) as f32;
+        out.m[1.0_f64 as usize] = (0.0_f64) as f32;
+        out.m[2.0_f64 as usize] = (0.0_f64) as f32;
+        out.m[3.0_f64 as usize] = (0.0_f64) as f32;
+        out.m[4.0_f64 as usize] = (0.0_f64) as f32;
+        out.m[5.0_f64 as usize] = (2.0_f64 * sy) as f32;
+        out.m[6.0_f64 as usize] = (0.0_f64) as f32;
+        out.m[7.0_f64 as usize] = (0.0_f64) as f32;
+        out.m[8.0_f64 as usize] = (0.0_f64) as f32;
+        out.m[9.0_f64 as usize] = (0.0_f64) as f32;
+        out.m[10.0_f64 as usize] = ((-2.0_f64) * sz) as f32;
+        out.m[11.0_f64 as usize] = (0.0_f64) as f32;
+        out.m[12.0_f64 as usize] = ((-(left + right)) * sx) as f32;
+        out.m[13.0_f64 as usize] = ((-(bottom + top)) * sy) as f32;
+        out.m[14.0_f64 as usize] = ((-(z_near + z_far)) * sz) as f32;
+        out.m[15.0_f64 as usize] = (1.0_f64) as f32;
+    })();
     return out;
 }
 
@@ -558,7 +748,39 @@ pub fn create_perspective_matrix4(fov: f64, aspect: f64, z_near: f64, z_far: f64
         None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
         None,
     );
-    set_perspective_matrix4(&mut out, fov, aspect, z_near, z_far);
+    (|| -> () {
+        if (aspect > (-1e-7_f64)) && (aspect < 1e-7_f64) {
+            panic!("{}", "Aspect ratio may not be 0");
+        }
+        let top = (fov * z_near);
+        let bottom = (-top);
+        let right = (top * aspect);
+        let left = (-right);
+        out.m[0.0_f64 as usize] = ((2.0_f64 * z_near) / (right - left)) as f32;
+        out.m[1.0_f64 as usize] = (0.0_f64) as f32;
+        out.m[2.0_f64 as usize] = (0.0_f64) as f32;
+        out.m[3.0_f64 as usize] = (0.0_f64) as f32;
+        out.m[4.0_f64 as usize] = (0.0_f64) as f32;
+        out.m[5.0_f64 as usize] = ((2.0_f64 * z_near) / (top - bottom)) as f32;
+        out.m[6.0_f64 as usize] = (0.0_f64) as f32;
+        out.m[7.0_f64 as usize] = (0.0_f64) as f32;
+        out.m[8.0_f64 as usize] = ((right + left) / (right - left)) as f32;
+        out.m[9.0_f64 as usize] = ((top + bottom) / (top - bottom)) as f32;
+        out.m[10.0_f64 as usize] = if (z_far == f64::INFINITY) {
+            (-1.0_f64) as f32
+        } else {
+            ((-(z_far + z_near)) / (z_far - z_near)) as f32
+        };
+        out.m[11.0_f64 as usize] = (-1.0_f64) as f32;
+        out.m[12.0_f64 as usize] = (0.0_f64) as f32;
+        out.m[13.0_f64 as usize] = (0.0_f64) as f32;
+        out.m[14.0_f64 as usize] = if (z_far == f64::INFINITY) {
+            ((-2.0_f64) * z_near) as f32
+        } else {
+            ((((-2.0_f64) * z_far) * z_near) / (z_far - z_near)) as f32
+        };
+        out.m[15.0_f64 as usize] = (0.0_f64) as f32;
+    })();
     return out;
 }
 
@@ -1004,66 +1226,197 @@ pub fn prepend_rotation_matrix4(
     pivot_point: Option<Vector4Like>,
 ) -> () {
     let mut m = acquire_identity_matrix4();
-    __get_axis_rotation(&mut m, axis.x, axis.y, axis.z, radians);
+    (|| -> () {
+        let mut ax = axis.x;
+        let mut ay = axis.y;
+        let mut az = axis.z;
+        let rad = (-radians);
+        let c = (rad).cos();
+        let s = (rad).sin();
+        let t = (1.0_f64 - c);
+        m.m[0.0_f64 as usize] = (c + ((ax * ax) * t)) as f32;
+        m.m[5.0_f64 as usize] = (c + ((ay * ay) * t)) as f32;
+        m.m[10.0_f64 as usize] = (c + ((az * az) * t)) as f32;
+        let mut tmp1 = ((ax * ay) * t);
+        let mut tmp2 = (az * s);
+        m.m[4.0_f64 as usize] = (tmp1 + tmp2) as f32;
+        m.m[1.0_f64 as usize] = (tmp1 - tmp2) as f32;
+        tmp1 = ((ax * az) * t);
+        tmp2 = (ay * s);
+        m.m[8.0_f64 as usize] = (tmp1 - tmp2) as f32;
+        m.m[2.0_f64 as usize] = (tmp1 + tmp2) as f32;
+        tmp1 = ((ay * az) * t);
+        tmp2 = (ax * s);
+        m.m[9.0_f64 as usize] = (tmp1 + tmp2) as f32;
+        m.m[6.0_f64 as usize] = (tmp1 - tmp2) as f32;
+    })();
     if (pivot_point).is_some() {
         let mut t1 = acquire_identity_matrix4();
         let mut t2 = acquire_identity_matrix4();
-        {
-            let __flight_argument_1 = (t1).clone();
-            let __flight_result = append_translation_matrix4(
-                &mut t1,
-                &__flight_argument_1,
-                (-pivot_point.as_ref().unwrap().x),
-                (-pivot_point.as_ref().unwrap().y),
-                (-pivot_point.as_ref().unwrap().z),
-            );
-            __flight_result
-        };
-        {
-            let __flight_argument_1 = (t2).clone();
-            let __flight_result = append_translation_matrix4(
-                &mut t2,
-                &__flight_argument_1,
-                pivot_point.as_ref().unwrap().x,
-                pivot_point.as_ref().unwrap().y,
-                pivot_point.as_ref().unwrap().z,
-            );
-            __flight_result
-        };
-        {
-            let __flight_argument_1 = (m).clone();
-            let __flight_result = multiply_matrix4(&mut m, &__flight_argument_1, &{
-                let __flight_source = &(t1);
-                Matrix4Like {
-                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
-                    __flight_entity_runtime: std::sync::Arc::clone(
-                        &__flight_source.__flight_entity_runtime,
-                    ),
-                    m: (__flight_source.m).clone(),
-                }
-            });
-            __flight_result
-        };
-        {
-            let __flight_argument_2 = (m).clone();
-            let __flight_result = multiply_matrix4(
-                &mut m,
-                &{
-                    let __flight_source = &(t2);
-                    Matrix4Like {
-                        __flight_identity: std::sync::Arc::clone(
-                            &__flight_source.__flight_identity,
-                        ),
-                        __flight_entity_runtime: std::sync::Arc::clone(
-                            &__flight_source.__flight_entity_runtime,
-                        ),
-                        m: (__flight_source.m).clone(),
-                    }
-                },
-                &__flight_argument_2,
-            );
-            __flight_result
-        };
+        (|| -> () {
+            if (t1 != t1) {
+                {
+                    let __flight_offset = (0.0_f64) as usize;
+                    let __flight_values: Vec<f32> = ((t1.m).clone())
+                        .iter()
+                        .map(|value| (*value) as f32)
+                        .collect();
+                    t1.m[__flight_offset..__flight_offset + __flight_values.len()]
+                        .copy_from_slice(&__flight_values);
+                };
+            }
+            t1.m[12.0_f64 as usize] = ((t1.m[12.0_f64 as usize] as f64) + (-p.x)) as f32;
+            t1.m[13.0_f64 as usize] = ((t1.m[13.0_f64 as usize] as f64) + (-p.y)) as f32;
+            t1.m[14.0_f64 as usize] = ((t1.m[14.0_f64 as usize] as f64) + (-p.z)) as f32;
+        })();
+        (|| -> () {
+            if (t2 != t2) {
+                {
+                    let __flight_offset = (0.0_f64) as usize;
+                    let __flight_values: Vec<f32> = ((t2.m).clone())
+                        .iter()
+                        .map(|value| (*value) as f32)
+                        .collect();
+                    t2.m[__flight_offset..__flight_offset + __flight_values.len()]
+                        .copy_from_slice(&__flight_values);
+                };
+            }
+            t2.m[12.0_f64 as usize] = ((t2.m[12.0_f64 as usize] as f64) + p.x) as f32;
+            t2.m[13.0_f64 as usize] = ((t2.m[13.0_f64 as usize] as f64) + p.y) as f32;
+            t2.m[14.0_f64 as usize] = ((t2.m[14.0_f64 as usize] as f64) + p.z) as f32;
+        })();
+        (|| -> () {
+            let m111 = (m.m[0.0_f64 as usize] as f64);
+            let m121 = (m.m[4.0_f64 as usize] as f64);
+            let m131 = (m.m[8.0_f64 as usize] as f64);
+            let m141 = (m.m[12.0_f64 as usize] as f64);
+            let m112 = (m.m[1.0_f64 as usize] as f64);
+            let m122 = (m.m[5.0_f64 as usize] as f64);
+            let m132 = (m.m[9.0_f64 as usize] as f64);
+            let m142 = (m.m[13.0_f64 as usize] as f64);
+            let m113 = (m.m[2.0_f64 as usize] as f64);
+            let m123 = (m.m[6.0_f64 as usize] as f64);
+            let m133 = (m.m[10.0_f64 as usize] as f64);
+            let m143 = (m.m[14.0_f64 as usize] as f64);
+            let m114 = (m.m[3.0_f64 as usize] as f64);
+            let m124 = (m.m[7.0_f64 as usize] as f64);
+            let m134 = (m.m[11.0_f64 as usize] as f64);
+            let m144 = (m.m[15.0_f64 as usize] as f64);
+            let m211 = (t1.m[0.0_f64 as usize] as f64);
+            let m221 = (t1.m[4.0_f64 as usize] as f64);
+            let m231 = (t1.m[8.0_f64 as usize] as f64);
+            let m241 = (t1.m[12.0_f64 as usize] as f64);
+            let m212 = (t1.m[1.0_f64 as usize] as f64);
+            let m222 = (t1.m[5.0_f64 as usize] as f64);
+            let m232 = (t1.m[9.0_f64 as usize] as f64);
+            let m242 = (t1.m[13.0_f64 as usize] as f64);
+            let m213 = (t1.m[2.0_f64 as usize] as f64);
+            let m223 = (t1.m[6.0_f64 as usize] as f64);
+            let m233 = (t1.m[10.0_f64 as usize] as f64);
+            let m243 = (t1.m[14.0_f64 as usize] as f64);
+            let m214 = (t1.m[3.0_f64 as usize] as f64);
+            let m224 = (t1.m[7.0_f64 as usize] as f64);
+            let m234 = (t1.m[11.0_f64 as usize] as f64);
+            let m244 = (t1.m[15.0_f64 as usize] as f64);
+            m.m[0.0_f64 as usize] =
+                ((((m211 * m111) + (m212 * m121)) + (m213 * m131)) + (m214 * m141)) as f32;
+            m.m[1.0_f64 as usize] =
+                ((((m211 * m112) + (m212 * m122)) + (m213 * m132)) + (m214 * m142)) as f32;
+            m.m[2.0_f64 as usize] =
+                ((((m211 * m113) + (m212 * m123)) + (m213 * m133)) + (m214 * m143)) as f32;
+            m.m[3.0_f64 as usize] =
+                ((((m211 * m114) + (m212 * m124)) + (m213 * m134)) + (m214 * m144)) as f32;
+            m.m[4.0_f64 as usize] =
+                ((((m221 * m111) + (m222 * m121)) + (m223 * m131)) + (m224 * m141)) as f32;
+            m.m[5.0_f64 as usize] =
+                ((((m221 * m112) + (m222 * m122)) + (m223 * m132)) + (m224 * m142)) as f32;
+            m.m[6.0_f64 as usize] =
+                ((((m221 * m113) + (m222 * m123)) + (m223 * m133)) + (m224 * m143)) as f32;
+            m.m[7.0_f64 as usize] =
+                ((((m221 * m114) + (m222 * m124)) + (m223 * m134)) + (m224 * m144)) as f32;
+            m.m[8.0_f64 as usize] =
+                ((((m231 * m111) + (m232 * m121)) + (m233 * m131)) + (m234 * m141)) as f32;
+            m.m[9.0_f64 as usize] =
+                ((((m231 * m112) + (m232 * m122)) + (m233 * m132)) + (m234 * m142)) as f32;
+            m.m[10.0_f64 as usize] =
+                ((((m231 * m113) + (m232 * m123)) + (m233 * m133)) + (m234 * m143)) as f32;
+            m.m[11.0_f64 as usize] =
+                ((((m231 * m114) + (m232 * m124)) + (m233 * m134)) + (m234 * m144)) as f32;
+            m.m[12.0_f64 as usize] =
+                ((((m241 * m111) + (m242 * m121)) + (m243 * m131)) + (m244 * m141)) as f32;
+            m.m[13.0_f64 as usize] =
+                ((((m241 * m112) + (m242 * m122)) + (m243 * m132)) + (m244 * m142)) as f32;
+            m.m[14.0_f64 as usize] =
+                ((((m241 * m113) + (m242 * m123)) + (m243 * m133)) + (m244 * m143)) as f32;
+            m.m[15.0_f64 as usize] =
+                ((((m241 * m114) + (m242 * m124)) + (m243 * m134)) + (m244 * m144)) as f32;
+        })();
+        (|| -> () {
+            let m111 = (t2.m[0.0_f64 as usize] as f64);
+            let m121 = (t2.m[4.0_f64 as usize] as f64);
+            let m131 = (t2.m[8.0_f64 as usize] as f64);
+            let m141 = (t2.m[12.0_f64 as usize] as f64);
+            let m112 = (t2.m[1.0_f64 as usize] as f64);
+            let m122 = (t2.m[5.0_f64 as usize] as f64);
+            let m132 = (t2.m[9.0_f64 as usize] as f64);
+            let m142 = (t2.m[13.0_f64 as usize] as f64);
+            let m113 = (t2.m[2.0_f64 as usize] as f64);
+            let m123 = (t2.m[6.0_f64 as usize] as f64);
+            let m133 = (t2.m[10.0_f64 as usize] as f64);
+            let m143 = (t2.m[14.0_f64 as usize] as f64);
+            let m114 = (t2.m[3.0_f64 as usize] as f64);
+            let m124 = (t2.m[7.0_f64 as usize] as f64);
+            let m134 = (t2.m[11.0_f64 as usize] as f64);
+            let m144 = (t2.m[15.0_f64 as usize] as f64);
+            let m211 = (m.m[0.0_f64 as usize] as f64);
+            let m221 = (m.m[4.0_f64 as usize] as f64);
+            let m231 = (m.m[8.0_f64 as usize] as f64);
+            let m241 = (m.m[12.0_f64 as usize] as f64);
+            let m212 = (m.m[1.0_f64 as usize] as f64);
+            let m222 = (m.m[5.0_f64 as usize] as f64);
+            let m232 = (m.m[9.0_f64 as usize] as f64);
+            let m242 = (m.m[13.0_f64 as usize] as f64);
+            let m213 = (m.m[2.0_f64 as usize] as f64);
+            let m223 = (m.m[6.0_f64 as usize] as f64);
+            let m233 = (m.m[10.0_f64 as usize] as f64);
+            let m243 = (m.m[14.0_f64 as usize] as f64);
+            let m214 = (m.m[3.0_f64 as usize] as f64);
+            let m224 = (m.m[7.0_f64 as usize] as f64);
+            let m234 = (m.m[11.0_f64 as usize] as f64);
+            let m244 = (m.m[15.0_f64 as usize] as f64);
+            m.m[0.0_f64 as usize] =
+                ((((m211 * m111) + (m212 * m121)) + (m213 * m131)) + (m214 * m141)) as f32;
+            m.m[1.0_f64 as usize] =
+                ((((m211 * m112) + (m212 * m122)) + (m213 * m132)) + (m214 * m142)) as f32;
+            m.m[2.0_f64 as usize] =
+                ((((m211 * m113) + (m212 * m123)) + (m213 * m133)) + (m214 * m143)) as f32;
+            m.m[3.0_f64 as usize] =
+                ((((m211 * m114) + (m212 * m124)) + (m213 * m134)) + (m214 * m144)) as f32;
+            m.m[4.0_f64 as usize] =
+                ((((m221 * m111) + (m222 * m121)) + (m223 * m131)) + (m224 * m141)) as f32;
+            m.m[5.0_f64 as usize] =
+                ((((m221 * m112) + (m222 * m122)) + (m223 * m132)) + (m224 * m142)) as f32;
+            m.m[6.0_f64 as usize] =
+                ((((m221 * m113) + (m222 * m123)) + (m223 * m133)) + (m224 * m143)) as f32;
+            m.m[7.0_f64 as usize] =
+                ((((m221 * m114) + (m222 * m124)) + (m223 * m134)) + (m224 * m144)) as f32;
+            m.m[8.0_f64 as usize] =
+                ((((m231 * m111) + (m232 * m121)) + (m233 * m131)) + (m234 * m141)) as f32;
+            m.m[9.0_f64 as usize] =
+                ((((m231 * m112) + (m232 * m122)) + (m233 * m132)) + (m234 * m142)) as f32;
+            m.m[10.0_f64 as usize] =
+                ((((m231 * m113) + (m232 * m123)) + (m233 * m133)) + (m234 * m143)) as f32;
+            m.m[11.0_f64 as usize] =
+                ((((m231 * m114) + (m232 * m124)) + (m233 * m134)) + (m234 * m144)) as f32;
+            m.m[12.0_f64 as usize] =
+                ((((m241 * m111) + (m242 * m121)) + (m243 * m131)) + (m244 * m141)) as f32;
+            m.m[13.0_f64 as usize] =
+                ((((m241 * m112) + (m242 * m122)) + (m243 * m132)) + (m244 * m142)) as f32;
+            m.m[14.0_f64 as usize] =
+                ((((m241 * m113) + (m242 * m123)) + (m243 * m133)) + (m244 * m143)) as f32;
+            m.m[15.0_f64 as usize] =
+                ((((m241 * m114) + (m242 * m124)) + (m243 * m134)) + (m244 * m144)) as f32;
+        })();
         release_matrix4(&mut t1);
         release_matrix4(&mut t2);
     }
@@ -1089,10 +1442,24 @@ pub fn prepend_scale_matrix4(
     z_scale: f64,
 ) -> () {
     let mut m = acquire_matrix4();
-    set_matrix4(
-        &mut m, x_scale, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, y_scale, 0.0_f64, 0.0_f64, 0.0_f64,
-        0.0_f64, z_scale, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 1.0_f64,
-    );
+    (|| -> () {
+        m.m[0.0_f64 as usize] = (x_scale) as f32;
+        m.m[1.0_f64 as usize] = (0.0_f64) as f32;
+        m.m[2.0_f64 as usize] = (0.0_f64) as f32;
+        m.m[3.0_f64 as usize] = (0.0_f64) as f32;
+        m.m[4.0_f64 as usize] = (0.0_f64) as f32;
+        m.m[5.0_f64 as usize] = (y_scale) as f32;
+        m.m[6.0_f64 as usize] = (0.0_f64) as f32;
+        m.m[7.0_f64 as usize] = (0.0_f64) as f32;
+        m.m[8.0_f64 as usize] = (0.0_f64) as f32;
+        m.m[9.0_f64 as usize] = (0.0_f64) as f32;
+        m.m[10.0_f64 as usize] = (z_scale) as f32;
+        m.m[11.0_f64 as usize] = (0.0_f64) as f32;
+        m.m[12.0_f64 as usize] = (0.0_f64) as f32;
+        m.m[13.0_f64 as usize] = (0.0_f64) as f32;
+        m.m[14.0_f64 as usize] = (0.0_f64) as f32;
+        m.m[15.0_f64 as usize] = (1.0_f64) as f32;
+    })();
     prepend_matrix4(out, source, &{
         let __flight_source = &(m);
         Matrix4Like {
@@ -1115,11 +1482,31 @@ pub fn prepend_translation_matrix4(
     z: f64,
 ) -> () {
     let mut m = acquire_identity_matrix4();
-    {
-        let __flight_argument_1 = (m).clone();
-        let __flight_result = translate_matrix4(&mut m, &__flight_argument_1, x, y, z);
-        __flight_result
-    };
+    (|| -> () {
+        if (m != m) {
+            {
+                let __flight_offset = (0.0_f64) as usize;
+                let __flight_values: Vec<f32> = ((m.m).clone())
+                    .iter()
+                    .map(|value| (*value) as f32)
+                    .collect();
+                m.m[__flight_offset..__flight_offset + __flight_values.len()]
+                    .copy_from_slice(&__flight_values);
+            };
+        }
+        m.m[12.0_f64 as usize] = (((((m.m[0.0_f64 as usize] as f64) * x)
+            + ((m.m[4.0_f64 as usize] as f64) * y))
+            + ((m.m[8.0_f64 as usize] as f64) * z))
+            + (m.m[12.0_f64 as usize] as f64)) as f32;
+        m.m[13.0_f64 as usize] = (((((m.m[1.0_f64 as usize] as f64) * x)
+            + ((m.m[5.0_f64 as usize] as f64) * y))
+            + ((m.m[9.0_f64 as usize] as f64) * z))
+            + (m.m[13.0_f64 as usize] as f64)) as f32;
+        m.m[14.0_f64 as usize] = (((((m.m[2.0_f64 as usize] as f64) * x)
+            + ((m.m[6.0_f64 as usize] as f64) * y))
+            + ((m.m[10.0_f64 as usize] as f64) * z))
+            + (m.m[14.0_f64 as usize] as f64)) as f32;
+    })();
     prepend_matrix4(out, source, &{
         let __flight_source = &(m);
         Matrix4Like {
@@ -1141,7 +1528,30 @@ pub fn rotate_matrix4(
     radians: f64,
 ) -> () {
     let mut m = acquire_identity_matrix4();
-    __get_axis_rotation(&mut m, axis.x, axis.y, axis.z, radians);
+    (|| -> () {
+        let mut ax = axis.x;
+        let mut ay = axis.y;
+        let mut az = axis.z;
+        let rad = (-radians);
+        let c = (rad).cos();
+        let s = (rad).sin();
+        let t = (1.0_f64 - c);
+        m.m[0.0_f64 as usize] = (c + ((ax * ax) * t)) as f32;
+        m.m[5.0_f64 as usize] = (c + ((ay * ay) * t)) as f32;
+        m.m[10.0_f64 as usize] = (c + ((az * az) * t)) as f32;
+        let mut tmp1 = ((ax * ay) * t);
+        let mut tmp2 = (az * s);
+        m.m[4.0_f64 as usize] = (tmp1 + tmp2) as f32;
+        m.m[1.0_f64 as usize] = (tmp1 - tmp2) as f32;
+        tmp1 = ((ax * az) * t);
+        tmp2 = (ay * s);
+        m.m[8.0_f64 as usize] = (tmp1 - tmp2) as f32;
+        m.m[2.0_f64 as usize] = (tmp1 + tmp2) as f32;
+        tmp1 = ((ay * az) * t);
+        tmp2 = (ax * s);
+        m.m[9.0_f64 as usize] = (tmp1 + tmp2) as f32;
+        m.m[6.0_f64 as usize] = (tmp1 - tmp2) as f32;
+    })();
     multiply_matrix4(out, source, &{
         let __flight_source = &(m);
         Matrix4Like {

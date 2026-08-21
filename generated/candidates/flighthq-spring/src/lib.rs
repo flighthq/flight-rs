@@ -17,15 +17,15 @@ pub use flighthq_types::{
     install_native_host_constructors, set_interval, set_timeout,
 };
 
-mod _internal_index;
+pub mod _internal_index;
 pub use _internal_index::*;
-mod contract;
+pub mod contract;
 pub use contract::*;
-mod spring;
+pub mod spring;
 pub use spring::*;
-mod spring2_d;
+pub mod spring2_d;
 pub use spring2_d::*;
-mod spring3_d;
+pub mod spring3_d;
 pub use spring3_d::*;
-mod spring_config;
+pub mod spring_config;
 pub use spring_config::*;

@@ -77,7 +77,7 @@ pub fn explain_bitmap_font_glyph(font: &BitmapFont, codepoint: f64) -> BitmapFon
         };
     }
     return {
-        let __flight_spread_0 = shared;
+        let __flight_spread_0 = (shared).clone();
         BitmapFontGlyphExplanation {
             __flight_identity: std::sync::Arc::new(()),
             renderable: true,

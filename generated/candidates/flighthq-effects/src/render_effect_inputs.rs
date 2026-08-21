@@ -13,10 +13,8 @@ pub fn get_render_effect_inputs(effect: &RenderEffect) -> Vec<RenderEffectInput>
     return (RENDER_EFFECT_INPUTS
         .iter()
         .find(|(entry_key, _)| entry_key == &(effect.kind).clone())
-        .map(|(_, value)| value.clone())
-        .clone())
-    .clone()
-    .unwrap_or(vec![]);
+        .map(|(_, value)| value.clone()))
+    .expect("TypeScript Record key was absent");
 }
 
 // Source: upstream/packages/effects/src/renderEffectInputs.ts:12 (sha256:db943485909439bf70566b8da8fd95459f9bbd14193b2f378bd10082031894fd)

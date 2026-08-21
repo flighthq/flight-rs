@@ -646,6 +646,7 @@ fn obb_sat_separated(
                         lz = ((ax2 * by2) - (ay2 * bx2));
                         break '__flight_switch;
                     }
+                    unreachable!("exhaustive TypeScript switch completed without exiting");
                 }
             }
             let len_sq = (((lx * lx) + (ly * ly)) + (lz * lz));

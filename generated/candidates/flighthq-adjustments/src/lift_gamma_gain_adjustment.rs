@@ -22,13 +22,13 @@ fn __flight_js_to_i32(value: f64) -> i32 {
 }
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord2651849460 {
     pub __flight_identity: std::sync::Arc<()>,
     pub lift: Option<f64>,
     pub gamma: Option<f64>,
     pub gain: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord2651849460 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -46,9 +46,9 @@ impl PartialEq for CreateLiftGammaGainAdjustmentRecord2 {
 }
 
 pub fn create_lift_gamma_gain_adjustment(
-    options: Option<FlightOmitRecord1>,
+    options: Option<FlightOmitRecord2651849460>,
 ) -> LiftGammaGainAdjustment {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+    let options = options.unwrap_or(FlightOmitRecord2651849460 {
         __flight_identity: std::sync::Arc::new(()),
         lift: None,
         gamma: None,
@@ -114,7 +114,7 @@ pub fn create_lift_gamma_gain_adjustment(
         })
             as Box<dyn FnMut(Vec<f64>, f64, f64, f64) -> () + Send + 'static>));
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         LiftGammaGainAdjustment {
             __flight_identity: std::sync::Arc::new(()),
             kind: "LiftGammaGainAdjustment".to_owned(),

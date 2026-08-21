@@ -39,19 +39,32 @@ pub fn lerp_render_effect(
         if ((key).clone() == "kind") {
             continue;
         }
-        let va = a_rec
+        let va = (a_rec
             .iter()
             .find(|(entry_key, _)| entry_key == &(key).clone())
-            .map(|(_, value)| value.clone())
-            .clone();
-        let vb = b_rec
+            .map(|(_, value)| value.clone()))
+        .expect("TypeScript Record key was absent");
+        let vb = (b_rec
             .iter()
             .find(|(entry_key, _)| entry_key == &(key).clone())
-            .map(|(_, value)| value.clone())
-            .clone();
-        if ((match (va).as_ref() {
-            None => "undefined",
-            Some(value) => match value {
+            .map(|(_, value)| value.clone()))
+        .expect("TypeScript Record key was absent");
+        if ((match &(va) {
+            crate::FlightValue::Undefined => "undefined",
+            crate::FlightValue::Null
+            | crate::FlightValue::Array(_)
+            | crate::FlightValue::Record(_)
+            | crate::FlightValue::Error { .. }
+            | crate::FlightValue::Object => "object",
+            crate::FlightValue::Bool(_) => "boolean",
+            crate::FlightValue::Number(_) => "number",
+            crate::FlightValue::String(_) => "string",
+            crate::FlightValue::Function => "function",
+            crate::FlightValue::Symbol => "symbol",
+        })
+        .to_owned()
+            == "number")
+            || ((match &(vb) {
                 crate::FlightValue::Undefined => "undefined",
                 crate::FlightValue::Null
                 | crate::FlightValue::Array(_)
@@ -63,25 +76,6 @@ pub fn lerp_render_effect(
                 crate::FlightValue::String(_) => "string",
                 crate::FlightValue::Function => "function",
                 crate::FlightValue::Symbol => "symbol",
-            },
-        })
-        .to_owned()
-            == "number")
-            || ((match (vb).as_ref() {
-                None => "undefined",
-                Some(value) => match value {
-                    crate::FlightValue::Undefined => "undefined",
-                    crate::FlightValue::Null
-                    | crate::FlightValue::Array(_)
-                    | crate::FlightValue::Record(_)
-                    | crate::FlightValue::Error { .. }
-                    | crate::FlightValue::Object => "object",
-                    crate::FlightValue::Bool(_) => "boolean",
-                    crate::FlightValue::Number(_) => "number",
-                    crate::FlightValue::String(_) => "string",
-                    crate::FlightValue::Function => "function",
-                    crate::FlightValue::Symbol => "symbol",
-                },
             })
             .to_owned()
                 == "number")
@@ -93,9 +87,22 @@ pub fn lerp_render_effect(
                 }
             };
         } else {
-            if ((match (va).as_ref() {
-                None => "undefined",
-                Some(value) => match value {
+            if ((match &(va) {
+                crate::FlightValue::Undefined => "undefined",
+                crate::FlightValue::Null
+                | crate::FlightValue::Array(_)
+                | crate::FlightValue::Record(_)
+                | crate::FlightValue::Error { .. }
+                | crate::FlightValue::Object => "object",
+                crate::FlightValue::Bool(_) => "boolean",
+                crate::FlightValue::Number(_) => "number",
+                crate::FlightValue::String(_) => "string",
+                crate::FlightValue::Function => "function",
+                crate::FlightValue::Symbol => "symbol",
+            })
+            .to_owned()
+                == "boolean")
+                || ((match &(vb) {
                     crate::FlightValue::Undefined => "undefined",
                     crate::FlightValue::Null
                     | crate::FlightValue::Array(_)
@@ -107,25 +114,6 @@ pub fn lerp_render_effect(
                     crate::FlightValue::String(_) => "string",
                     crate::FlightValue::Function => "function",
                     crate::FlightValue::Symbol => "symbol",
-                },
-            })
-            .to_owned()
-                == "boolean")
-                || ((match (vb).as_ref() {
-                    None => "undefined",
-                    Some(value) => match value {
-                        crate::FlightValue::Undefined => "undefined",
-                        crate::FlightValue::Null
-                        | crate::FlightValue::Array(_)
-                        | crate::FlightValue::Record(_)
-                        | crate::FlightValue::Error { .. }
-                        | crate::FlightValue::Object => "object",
-                        crate::FlightValue::Bool(_) => "boolean",
-                        crate::FlightValue::Number(_) => "number",
-                        crate::FlightValue::String(_) => "string",
-                        crate::FlightValue::Function => "function",
-                        crate::FlightValue::Symbol => "symbol",
-                    },
                 })
                 .to_owned()
                     == "boolean")
@@ -137,9 +125,22 @@ pub fn lerp_render_effect(
                     }
                 };
             } else {
-                if ((match (va).as_ref() {
-                    None => "undefined",
-                    Some(value) => match value {
+                if ((match &(va) {
+                    crate::FlightValue::Undefined => "undefined",
+                    crate::FlightValue::Null
+                    | crate::FlightValue::Array(_)
+                    | crate::FlightValue::Record(_)
+                    | crate::FlightValue::Error { .. }
+                    | crate::FlightValue::Object => "object",
+                    crate::FlightValue::Bool(_) => "boolean",
+                    crate::FlightValue::Number(_) => "number",
+                    crate::FlightValue::String(_) => "string",
+                    crate::FlightValue::Function => "function",
+                    crate::FlightValue::Symbol => "symbol",
+                })
+                .to_owned()
+                    == "string")
+                    || ((match &(vb) {
                         crate::FlightValue::Undefined => "undefined",
                         crate::FlightValue::Null
                         | crate::FlightValue::Array(_)
@@ -151,25 +152,6 @@ pub fn lerp_render_effect(
                         crate::FlightValue::String(_) => "string",
                         crate::FlightValue::Function => "function",
                         crate::FlightValue::Symbol => "symbol",
-                    },
-                })
-                .to_owned()
-                    == "string")
-                    || ((match (vb).as_ref() {
-                        None => "undefined",
-                        Some(value) => match value {
-                            crate::FlightValue::Undefined => "undefined",
-                            crate::FlightValue::Null
-                            | crate::FlightValue::Array(_)
-                            | crate::FlightValue::Record(_)
-                            | crate::FlightValue::Error { .. }
-                            | crate::FlightValue::Object => "object",
-                            crate::FlightValue::Bool(_) => "boolean",
-                            crate::FlightValue::Number(_) => "number",
-                            crate::FlightValue::String(_) => "string",
-                            crate::FlightValue::Function => "function",
-                            crate::FlightValue::Symbol => "symbol",
-                        },
                     })
                     .to_owned()
                         == "string")
@@ -198,26 +180,23 @@ pub fn lerp_render_effect(
             && (!boolean_keys.iter().any(|item| item == &(key).clone())))
             && (!string_keys.iter().any(|item| item == &(key).clone()))
         {
-            let vb = b_rec
+            let vb = (b_rec
                 .iter()
                 .find(|(entry_key, _)| entry_key == &(key).clone())
-                .map(|(_, value)| value.clone())
-                .clone();
-            if ((match (vb).as_ref() {
-                None => "undefined",
-                Some(value) => match value {
-                    crate::FlightValue::Undefined => "undefined",
-                    crate::FlightValue::Null
-                    | crate::FlightValue::Array(_)
-                    | crate::FlightValue::Record(_)
-                    | crate::FlightValue::Error { .. }
-                    | crate::FlightValue::Object => "object",
-                    crate::FlightValue::Bool(_) => "boolean",
-                    crate::FlightValue::Number(_) => "number",
-                    crate::FlightValue::String(_) => "string",
-                    crate::FlightValue::Function => "function",
-                    crate::FlightValue::Symbol => "symbol",
-                },
+                .map(|(_, value)| value.clone()))
+            .expect("TypeScript Record key was absent");
+            if ((match &(vb) {
+                crate::FlightValue::Undefined => "undefined",
+                crate::FlightValue::Null
+                | crate::FlightValue::Array(_)
+                | crate::FlightValue::Record(_)
+                | crate::FlightValue::Error { .. }
+                | crate::FlightValue::Object => "object",
+                crate::FlightValue::Bool(_) => "boolean",
+                crate::FlightValue::Number(_) => "number",
+                crate::FlightValue::String(_) => "string",
+                crate::FlightValue::Function => "function",
+                crate::FlightValue::Symbol => "symbol",
             })
             .to_owned()
                 == "number")
@@ -229,21 +208,18 @@ pub fn lerp_render_effect(
                     }
                 };
             } else {
-                if ((match (vb).as_ref() {
-                    None => "undefined",
-                    Some(value) => match value {
-                        crate::FlightValue::Undefined => "undefined",
-                        crate::FlightValue::Null
-                        | crate::FlightValue::Array(_)
-                        | crate::FlightValue::Record(_)
-                        | crate::FlightValue::Error { .. }
-                        | crate::FlightValue::Object => "object",
-                        crate::FlightValue::Bool(_) => "boolean",
-                        crate::FlightValue::Number(_) => "number",
-                        crate::FlightValue::String(_) => "string",
-                        crate::FlightValue::Function => "function",
-                        crate::FlightValue::Symbol => "symbol",
-                    },
+                if ((match &(vb) {
+                    crate::FlightValue::Undefined => "undefined",
+                    crate::FlightValue::Null
+                    | crate::FlightValue::Array(_)
+                    | crate::FlightValue::Record(_)
+                    | crate::FlightValue::Error { .. }
+                    | crate::FlightValue::Object => "object",
+                    crate::FlightValue::Bool(_) => "boolean",
+                    crate::FlightValue::Number(_) => "number",
+                    crate::FlightValue::String(_) => "string",
+                    crate::FlightValue::Function => "function",
+                    crate::FlightValue::Symbol => "symbol",
                 })
                 .to_owned()
                     == "boolean")
@@ -255,21 +231,18 @@ pub fn lerp_render_effect(
                         }
                     };
                 } else {
-                    if ((match (vb).as_ref() {
-                        None => "undefined",
-                        Some(value) => match value {
-                            crate::FlightValue::Undefined => "undefined",
-                            crate::FlightValue::Null
-                            | crate::FlightValue::Array(_)
-                            | crate::FlightValue::Record(_)
-                            | crate::FlightValue::Error { .. }
-                            | crate::FlightValue::Object => "object",
-                            crate::FlightValue::Bool(_) => "boolean",
-                            crate::FlightValue::Number(_) => "number",
-                            crate::FlightValue::String(_) => "string",
-                            crate::FlightValue::Function => "function",
-                            crate::FlightValue::Symbol => "symbol",
-                        },
+                    if ((match &(vb) {
+                        crate::FlightValue::Undefined => "undefined",
+                        crate::FlightValue::Null
+                        | crate::FlightValue::Array(_)
+                        | crate::FlightValue::Record(_)
+                        | crate::FlightValue::Error { .. }
+                        | crate::FlightValue::Object => "object",
+                        crate::FlightValue::Bool(_) => "boolean",
+                        crate::FlightValue::Number(_) => "number",
+                        crate::FlightValue::String(_) => "string",
+                        crate::FlightValue::Function => "function",
+                        crate::FlightValue::Symbol => "symbol",
                     })
                     .to_owned()
                         == "string")
@@ -347,29 +320,17 @@ pub fn lerp_render_effect(
         {
             let __flight_key = (key).clone();
             let __flight_value = if (tc < 0.5_f64) {
-                {
-                    let __flight_portable_source = a_rec
-                        .iter()
-                        .find(|(entry_key, _)| entry_key == &(key).clone())
-                        .map(|(_, value)| value.clone())
-                        .clone();
-                    match (&__flight_portable_source).as_ref() {
-                        Some(value) => (value).clone(),
-                        None => crate::FlightValue::Null,
-                    }
-                }
+                (a_rec
+                    .iter()
+                    .find(|(entry_key, _)| entry_key == &(key).clone())
+                    .map(|(_, value)| value.clone()))
+                .expect("TypeScript Record key was absent")
             } else {
-                {
-                    let __flight_portable_source = b_rec
-                        .iter()
-                        .find(|(entry_key, _)| entry_key == &(key).clone())
-                        .map(|(_, value)| value.clone())
-                        .clone();
-                    match (&__flight_portable_source).as_ref() {
-                        Some(value) => (value).clone(),
-                        None => crate::FlightValue::Null,
-                    }
-                }
+                (b_rec
+                    .iter()
+                    .find(|(entry_key, _)| entry_key == &(key).clone())
+                    .map(|(_, value)| value.clone()))
+                .expect("TypeScript Record key was absent")
             };
             if let Some((_, value)) = out_record.iter_mut().find(|(key, _)| key == &__flight_key) {
                 *value = __flight_value;
@@ -382,29 +343,17 @@ pub fn lerp_render_effect(
         {
             let __flight_key = (key).clone();
             let __flight_value = if (tc < 0.5_f64) {
-                {
-                    let __flight_portable_source = a_rec
-                        .iter()
-                        .find(|(entry_key, _)| entry_key == &(key).clone())
-                        .map(|(_, value)| value.clone())
-                        .clone();
-                    match (&__flight_portable_source).as_ref() {
-                        Some(value) => (value).clone(),
-                        None => crate::FlightValue::Null,
-                    }
-                }
+                (a_rec
+                    .iter()
+                    .find(|(entry_key, _)| entry_key == &(key).clone())
+                    .map(|(_, value)| value.clone()))
+                .expect("TypeScript Record key was absent")
             } else {
-                {
-                    let __flight_portable_source = b_rec
-                        .iter()
-                        .find(|(entry_key, _)| entry_key == &(key).clone())
-                        .map(|(_, value)| value.clone())
-                        .clone();
-                    match (&__flight_portable_source).as_ref() {
-                        Some(value) => (value).clone(),
-                        None => crate::FlightValue::Null,
-                    }
-                }
+                (b_rec
+                    .iter()
+                    .find(|(entry_key, _)| entry_key == &(key).clone())
+                    .map(|(_, value)| value.clone()))
+                .expect("TypeScript Record key was absent")
             };
             if let Some((_, value)) = out_record.iter_mut().find(|(key, _)| key == &__flight_key) {
                 *value = __flight_value;

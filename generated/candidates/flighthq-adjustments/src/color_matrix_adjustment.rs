@@ -21,12 +21,12 @@ impl PartialEq for SharedStructuralRecord1 {
 }
 
 #[derive(Clone, Default)]
-pub struct FlightPartialRecord2 {
+pub struct FlightPartialRecord182769320 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Option<AdjustmentKind>,
     pub color_matrix: Option<Vec<f64>>,
 }
-impl PartialEq for FlightPartialRecord2 {
+impl PartialEq for FlightPartialRecord182769320 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

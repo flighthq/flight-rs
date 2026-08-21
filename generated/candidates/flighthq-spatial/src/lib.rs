@@ -17,15 +17,15 @@ pub use flighthq_types::{
     install_native_host_constructors, set_interval, set_timeout,
 };
 
-mod _internal_index;
+pub mod _internal_index;
 pub use _internal_index::*;
-mod contract;
+pub mod contract;
 pub use contract::*;
-mod explain_spatial_indexing2_d;
+pub mod explain_spatial_indexing2_d;
 pub use explain_spatial_indexing2_d::*;
-mod format_spatial_indexing_notice;
+pub mod format_spatial_indexing_notice;
 pub use format_spatial_indexing_notice::*;
-mod spatial_index;
+pub mod spatial_index;
 pub use spatial_index::*;
-mod uniform_grid;
+pub mod uniform_grid;
 pub use uniform_grid::*;

@@ -1,0 +1,22 @@
+# @generated candidate crate; do not edit.
+[package]
+name = "flighthq-skeleton2d"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+flighthq-animation = { path = "../flighthq-animation" }
+flighthq-entity = { path = "../flighthq-entity" }
+flighthq-geometry = { path = "../flighthq-geometry" }
+flighthq-log = { path = "../flighthq-log" }
+flighthq-math = { path = "../flighthq-math" }
+flighthq-node = { path = "../flighthq-node" }
+flighthq-path = { path = "../flighthq-path" }
+flighthq-registry = { path = "../flighthq-registry" }
+flighthq-runtime = { path = "../../crates/flighthq-runtime" }
+flighthq-types = { path = "../../crates/flighthq-types" }

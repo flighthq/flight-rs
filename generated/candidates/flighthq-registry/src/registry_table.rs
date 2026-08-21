@@ -170,6 +170,7 @@ pub fn concat_registry_table<T: Clone>(
                         return panic!("TypeScript never value was reached");
                     }
                 }
+                unreachable!("exhaustive TypeScript switch completed without exiting");
             }
         }
     }

@@ -22,7 +22,7 @@ fn __flight_js_to_i32(value: f64) -> i32 {
 }
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord1550996253 {
     pub __flight_identity: std::sync::Arc<()>,
     pub exposure: Option<f64>,
     pub brightness: Option<f64>,
@@ -34,7 +34,7 @@ pub struct FlightOmitRecord1 {
     pub gamma: Option<f64>,
     pub gain: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord1550996253 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -51,8 +51,10 @@ impl PartialEq for CreateColorGradeAdjustmentRecord2 {
     }
 }
 
-pub fn create_color_grade_adjustment(options: Option<FlightOmitRecord1>) -> ColorGradeAdjustment {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_color_grade_adjustment(
+    options: Option<FlightOmitRecord1550996253>,
+) -> ColorGradeAdjustment {
+    let options = options.unwrap_or(FlightOmitRecord1550996253 {
         __flight_identity: std::sync::Arc::new(()),
         exposure: None,
         brightness: None,
@@ -137,7 +139,7 @@ pub fn create_color_grade_adjustment(options: Option<FlightOmitRecord1>) -> Colo
         })
             as Box<dyn FnMut(Vec<f64>, f64, f64, f64) -> () + Send + 'static>));
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         ColorGradeAdjustment {
             __flight_identity: std::sync::Arc::new(()),
             kind: "ColorGradeAdjustment".to_owned(),

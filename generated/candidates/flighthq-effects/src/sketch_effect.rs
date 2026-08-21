@@ -9,11 +9,11 @@
 use flighthq_types::SketchEffect;
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord1 {
+pub struct FlightOmitRecord1079198900 {
     pub __flight_identity: std::sync::Arc<()>,
     pub strength: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord1 {
+impl PartialEq for FlightOmitRecord1079198900 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -30,13 +30,13 @@ impl PartialEq for CreateSketchEffectRecord2 {
     }
 }
 
-pub fn create_sketch_effect(options: Option<FlightOmitRecord1>) -> SketchEffect {
-    let options = options.unwrap_or(FlightOmitRecord1 {
+pub fn create_sketch_effect(options: Option<FlightOmitRecord1079198900>) -> SketchEffect {
+    let options = options.unwrap_or(FlightOmitRecord1079198900 {
         __flight_identity: std::sync::Arc::new(()),
         strength: None,
     });
     return {
-        let __flight_spread_1 = options;
+        let __flight_spread_1 = (options).clone();
         SketchEffect {
             __flight_identity: std::sync::Arc::new(()),
             kind: "SketchEffect".to_owned(),
