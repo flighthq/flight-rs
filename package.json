@@ -29,7 +29,6 @@
   "devDependencies": {
     "@types/node": "22.19.7",
     "@vitest/coverage-v8": "4.1.10",
-    "@webgpu/types": "0.1.72",
     "oxfmt": "0.57.0",
     "oxlint": "1.72.0",
     "tsx": "4.22.4",

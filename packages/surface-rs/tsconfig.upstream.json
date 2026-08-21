@@ -18,12 +18,12 @@
       "@flighthq/*/contract": ["upstream/packages/*/src/contract.ts"],
       "@flighthq/*": ["upstream/packages/*/src/index.ts"]
     },
-    // `@webgpu/types` mirrors the devDependency upstream's own `@flighthq/types`
-    // declares; without it upstream's `Wgpu*.ts` sources cannot resolve `GPU*`
-    // and flood this check with diagnostics that are not about the facade.
-    "types": ["node", "vitest/globals", "@webgpu/types"],
+    "types": ["node", "vitest/globals"],
     "lib": ["ES2022", "DOM"]
   },
-  "include": ["src"],
+  // `upstream-webgpu.d.ts` supplies the `GPU*` names upstream's `Wgpu*.ts` modules reference. They
+  // are declared locally rather than pulled from `@webgpu/types` so this check still runs in a
+  // checkout with no registry access — see the file for why that matters.
+  "include": ["src", "upstream-webgpu.d.ts"],
   "exclude": ["src/upstream-contract.d.ts"]
 }
