@@ -2947,9 +2947,6 @@ function emitCall(
     }
     if (collectionType?.kind === 'array' && method === 'join') {
       const element = resolveSemanticType(collectionType.element, context) ?? collectionType.element;
-      if (element.kind !== 'primitive' || element.name !== 'String') {
-        throw new RustEmissionError('Array.join currently requires string elements');
-      }
       const separator = expression.arguments[0];
       const separatorType = separator ? inferIrExpressionType(separator, context) : undefined;
       const emittedSeparator = !separator
@@ -2957,7 +2954,11 @@ function emitCall(
         : separatorType?.kind === 'nullable'
           ? `${parenthesize(emitExpression(separator, context, separatorType))}.as_deref().unwrap_or(",")`
           : `${parenthesize(emitExpression(separator, context, primitive('String')))}.as_str()`;
-      return `${parenthesize(owner)}.join(${emittedSeparator})`;
+      const item =
+        element.kind === 'nullable'
+          ? 'value.as_ref().map_or_else(String::new, |value| value.to_string())'
+          : 'value.to_string()';
+      return `${parenthesize(owner)}.iter().map(|value| ${item}).collect::<Vec<_>>().join(${emittedSeparator})`;
     }
     if (collectionType?.kind === 'array' && method === 'find') {
       const callback = expression.arguments[0];
@@ -4829,11 +4830,11 @@ function emitNullishAssignment(
     throw new RustEmissionError('nullish assignment requires a Rust place expression');
   }
   const leftType = inferIrExpressionType(expression.left, context);
+  const place = emitPlaceExpression(expression.left, assignmentPlaceContext(expression.left, context));
   if (leftType?.kind !== 'nullable') {
-    throw new RustEmissionError('nullish assignment requires nullable storage');
+    return returnValue ? `${place}.clone()` : '{}';
   }
   const rightType = inferIrExpressionType(expression.right, context);
-  const place = emitPlaceExpression(expression.left, assignmentPlaceContext(expression.left, context));
   const value =
     rightType?.kind === 'nullable'
       ? emitExpression(expression.right, context, leftType)

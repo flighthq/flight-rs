@@ -640,6 +640,9 @@ describe('Rust emission', () => {
         export function joinEntries(values: string[], separator?: string): string {
           return values.join(separator);
         }
+        export function joinNumbers(values: number[]): string {
+          return values.join(',');
+        }
         export function normalizeEntries(values: Record<string, string>): string[] {
           values['added'] = 'yes';
           return Object.entries(values)
@@ -686,6 +689,13 @@ describe('Rust emission', () => {
         }
         export function initializeOptional(value?: string): string {
           return (value ??= 'default');
+        }
+        export interface RequiredValue {
+          value: number;
+        }
+        export function retainRequired(value: RequiredValue): number {
+          value.value ??= 3;
+          return value.value;
         }
         export interface OptionalRunner {
           run?: (value: string) => void;
@@ -740,6 +750,7 @@ describe('Rust emission', () => {
         '  assert!(generated::has_string("value".to_owned()));',
         '  assert_eq!(generated::join_strings("left".to_owned(), "right".to_owned()), "leftright");',
         '  assert_eq!(generated::join_entries(&vec!["a".to_owned(), "b".to_owned()], Some(" / ".to_owned())), "a / b");',
+        '  assert_eq!(generated::join_numbers(&vec![1.0, 2.5]), "1,2.5");',
         '  let mut entries = vec![("first".to_owned(), "1".to_owned())];',
         '  assert_eq!(generated::normalize_entries(&mut entries), vec!["first=1".to_owned(), "added=yes".to_owned()]);',
         '  assert!(generated::is_allowed("alpha".to_owned()));',
@@ -762,6 +773,7 @@ describe('Rust emission', () => {
         '  assert_eq!(generated::read_registry(&generated::Registry::default(), "missing".to_owned()), "");',
         '  assert_eq!(generated::initialize_optional(None), "default");',
         '  assert_eq!(generated::initialize_optional(Some("kept".to_owned())), "kept");',
+        '  assert_eq!(generated::retain_required(&mut generated::RequiredValue::default()), 0.0);',
         '  generated::run_optional(&mut generated::OptionalRunner::default(), "ignored".to_owned());',
         '}',
         '',
