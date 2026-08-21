@@ -1840,14 +1840,15 @@ function inferIndexedParameterType(node: ts.IndexedAccessTypeNode, context: Lowe
   const index = Number(indexType.literal.text);
   if (!Number.isSafeInteger(index) || index < 0) return undefined;
   const callback = resolveCallbackTypeNode(objectType.typeArguments[0], context, new Set());
-  return callback?.parameters[index];
+  const parameter = callback?.type.parameters[index];
+  return parameter ? resolveCallbackParameterAlias(parameter, callback.context, new Set()) : undefined;
 }
 
 function resolveCallbackTypeNode(
   node: ts.TypeNode,
   context: LoweringContext,
   visited: Set<string>,
-): Extract<IrType, { kind: 'function' }> | undefined {
+): { context: LoweringContext; type: Extract<IrType, { kind: 'function' }> } | undefined {
   while (ts.isParenthesizedTypeNode(node)) node = node.type;
   if (ts.isUnionTypeNode(node)) {
     for (const member of node.types.filter((candidate) => !isNullishType(candidate))) {
@@ -1877,7 +1878,21 @@ function resolveCallbackTypeNode(
     return resolveCallbackTypeNode(resolved.declaration.type, resolved.context, visited);
   }
   const lowered = lowerType(node, context);
-  return lowered.kind === 'function' ? lowered : undefined;
+  return lowered.kind === 'function' ? { context, type: lowered } : undefined;
+}
+
+function resolveCallbackParameterAlias(type: IrType, context: LoweringContext, visited: Set<string>): IrType {
+  if (type.kind !== 'named' || type.arguments.length > 0) return type;
+  const resolved = resolveTypeDeclaration(type.name, context);
+  if (!resolved || !ts.isTypeAliasDeclaration(resolved.declaration)) return type;
+  const key = `${resolved.context.sourceFile.fileName}\0${type.name}`;
+  if (visited.has(key)) return type;
+  visited.add(key);
+  return resolveCallbackParameterAlias(
+    lowerType(resolved.declaration.type, resolved.context),
+    resolved.context,
+    visited,
+  );
 }
 
 function resolveValueTypeNode(
@@ -2188,11 +2203,7 @@ function constObjectPropertyLiteralValue(
   node: ts.TypeNode,
   context: LoweringContext,
 ): boolean | number | string | undefined {
-  if (
-    !ts.isTypeQueryNode(node) ||
-    !ts.isQualifiedName(node.exprName) ||
-    !ts.isIdentifier(node.exprName.left)
-  ) {
+  if (!ts.isTypeQueryNode(node) || !ts.isQualifiedName(node.exprName) || !ts.isIdentifier(node.exprName.left)) {
     return undefined;
   }
   const namespace = node.exprName.left.text;
@@ -2246,8 +2257,8 @@ function commonType(types: IrType[]): IrType {
     const anonymous = types as Array<Extract<IrType, { kind: 'anonymous' }>>;
     const discriminated = anonymous[0]!.fields.some((field) => {
       if (field.discriminantValue === undefined) return false;
-      const values = anonymous.map((item) =>
-        item.fields.find((candidate) => candidate.name === field.name)?.discriminantValue,
+      const values = anonymous.map(
+        (item) => item.fields.find((candidate) => candidate.name === field.name)?.discriminantValue,
       );
       return values.every((value) => value !== undefined) && new Set(values).size === anonymous.length;
     });

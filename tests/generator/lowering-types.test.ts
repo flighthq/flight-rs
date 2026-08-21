@@ -534,6 +534,6 @@ describe('configured type lowering exceptions', () => {
       parameters: [{ name: 'releaseFunction', type: { kind: 'named', name: 'DerivedReleaseFunction' } }],
       returns: { kind: 'primitive', name: 'String' },
     });
-    expect(derived).toMatchObject({ type: { kind: 'named', name: 'ReleaseFunction' } });
+    expect(derived).toMatchObject({ type: { kind: 'primitive', name: 'String' } });
   });
 });
