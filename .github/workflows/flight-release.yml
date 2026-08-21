@@ -1,18 +1,19 @@
 name: Flight release bridge
 
-# Publishes @flighthq/bitmap-rs when FLIGHT publishes, so the two land together.
+# Publishes @flighthq/bitmap-rs whenever FLIGHT publishes, at the version Flight released.
 #
-# This package is only meaningful paired with one Flight release: it is a drop-in for
-# `@flighthq/bitmap@X` and declares `^X` as a dependency, so publishing it before Flight publishes X
-# ships something that cannot be installed. Releasing on our own schedule cannot fix that — only
-# Flight knows when X exists.
+# Flight uses locked versioning: every package ships at the family version whether or not it changed.
+# This package is part of that family, so it ships too, and the version Flight names is authoritative.
+# The submodule pin is incidental to that — it records which source the Rust was generated from, not
+# which release this package belongs to, and it routinely lags the released commit by commits that
+# never touched bitmap.
 #
-# So Flight's release job calls this one. See docs/release-bridge.md for the sending side.
+# So the gate is behavioral, not identity-based: install the `@flighthq/bitmap` Flight just published
+# and run the parity suite against IT. That answers the question a consumer actually has — are the
+# Rust kernels still indistinguishable from the package this claims to be a drop-in for — where a
+# commit comparison only ever answered it by proxy. A pin difference is reported and does not block.
 #
-# This lane VERIFIES the pin rather than moving it. Flight names the commit it released; if our
-# submodule points somewhere else, the port under this tree is of a different source and the run
-# fails loudly. Moving the pin regenerates every crate and report and needs the full check suite —
-# that belongs in a reviewed pull request, not in an unattended release.
+# See docs/release-bridge.md for the sending side.
 
 on:
   repository_dispatch:
@@ -23,8 +24,8 @@ on:
         description: The Flight release to publish against (e.g. 0.4.0)
         required: true
       commit:
-        description: The Flight commit that release was cut from
-        required: true
+        description: The Flight commit that release was cut from (optional, reported only)
+        required: false
 
 concurrency:
   group: release
@@ -55,16 +56,6 @@ jobs:
       - name: Fetch upstream tags
         run: git -C upstream fetch --tags --force
 
-      - name: Check the pin matches the released commit
-        run: |
-          pinned="$(git -C upstream rev-parse HEAD)"
-          if [ "${pinned}" != "${FLIGHT_COMMIT}" ]; then
-            echo "::error::Flight released ${FLIGHT_VERSION} at ${FLIGHT_COMMIT}, but upstream/ is pinned at ${pinned}."
-            echo "::error::Move the pin to ${FLIGHT_COMMIT} in a reviewed pull request, then re-run this workflow."
-            exit 1
-          fi
-          echo "pin matches ${FLIGHT_COMMIT}"
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -73,26 +64,58 @@ jobs:
       - uses: ./.github/actions/rust
       - run: npm ci
 
-      - name: Check the derived version matches the release
-        # scripts/flight-version.ts derives which Flight release the pin belongs to. If that disagrees
-        # with the version Flight says it published, one of the two is wrong and publishing either
-        # number would be a lie about what this tarball contains.
+      - name: Report how this port relates to the release
+        # Informational only. A lagging pin is the normal case under locked versioning, and the
+        # parity run below is what decides whether it matters. Recording it in the run's summary
+        # means a later "which source was 0.4.0 built from" question has an answer.
         run: |
-          derived="$(npx tsx scripts/flight-version.ts)"
-          if [ "${derived}" != "${FLIGHT_VERSION}" ]; then
-            echo "::error::Flight released ${FLIGHT_VERSION}, but this pin derives ${derived}."
-            exit 1
+          pinned="$(git -C upstream rev-parse HEAD)"
+          derived="$(npx tsx scripts/flight-version.ts || echo unknown)"
+          {
+            echo "### Flight release ${FLIGHT_VERSION}"
+            echo ""
+            echo "| | |"
+            echo "| --- | --- |"
+            echo "| Released commit | \`${FLIGHT_COMMIT:-not supplied}\` |"
+            echo "| Pinned commit | \`${pinned}\` |"
+            echo "| Version derived from the pin | \`${derived}\` |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ -n "${FLIGHT_COMMIT}" ] && [ "${pinned}" != "${FLIGHT_COMMIT}" ]; then
+            echo "::notice::Pinned at ${pinned}, Flight released ${FLIGHT_COMMIT}. Expected under locked versioning; parity against the published package decides whether it matters."
           fi
-          echo "derived version matches ${FLIGHT_VERSION}"
+          if [ "${derived}" != "${FLIGHT_VERSION}" ]; then
+            echo "::notice::This pin derives ${derived}; publishing as ${FLIGHT_VERSION} because Flight releases the whole family together."
+          fi
+
+      - name: Install the Flight packages being released
+        # npm can take a moment to serve a version the publish just created, so this retries rather
+        # than failing the release on propagation.
+        run: |
+          for attempt in 1 2 3 4 5; do
+            if npm install --no-save \
+              "@flighthq/bitmap@${FLIGHT_VERSION}" "@flighthq/types@${FLIGHT_VERSION}"; then
+              exit 0
+            fi
+            echo "attempt ${attempt} failed; waiting for the registry"
+            sleep 30
+          done
+          echo "::error::@flighthq/bitmap@${FLIGHT_VERSION} did not become installable."
+          exit 1
+
+      - name: Verify parity against the released package
+        # The real gate. If the Rust kernels no longer match the TypeScript being released, this
+        # package would be a drop-in that silently computes different pixels — worse for a consumer
+        # than a version briefly missing from the family. Fix and re-run via workflow_dispatch.
+        run: npx vitest run --config packages/bitmap-rs/vitest.config.published.ts
 
       - name: Stamp the manifest
-        run: npx tsx scripts/version-packages.ts "${FLIGHT_VERSION}"
+        # The dependency range moves with the version because the step above just demonstrated
+        # compatibility with exactly those packages.
+        run: npx tsx scripts/version-packages.ts "${FLIGHT_VERSION}" --flight "${FLIGHT_VERSION}"
 
-      # A published version cannot be withdrawn, only deprecated, so the suite that covers what ships
-      # runs first: differential parity against the TypeScript implementation, packaging invariants,
-      # and the version logic.
-      - name: Verify what is about to ship
-        run: npm run test
+      - name: Verify the packaging invariants
+        run: npx vitest run tests/generator/facade-packaging.test.ts
 
       - name: Publish
         env:

@@ -1,6 +1,6 @@
 # Release bridge
 
-`@flighthq/bitmap-rs` is a drop-in for `@flighthq/bitmap@X` and declares `^X` as a dependency. It is therefore only installable once Flight has published X, and only _correct_ when it was generated from the commit X was cut from. Releasing on an independent schedule cannot satisfy either condition, so Flight drives the release and this repository verifies and publishes.
+Flight uses locked versioning: every package ships at the family version whether or not it changed. `@flighthq/bitmap-rs` belongs to that family — it is a drop-in for `@flighthq/bitmap@X` and declares `^X` — so it ships when Flight ships, at the version Flight names. Releasing on an independent schedule would publish a package depending on a version that does not exist yet, so Flight drives the release and this repository verifies and publishes.
 
 The dependency stays one-directional. Flight does not pin, clone, or build this repository — it sends one notification. Everything about how the Rust port is built stays here, where the toolchain, the submodule, and the parity suite already live.
 
@@ -28,24 +28,27 @@ The call returns as soon as GitHub accepts it — Flight's release does not wait
 
 ## Receiving side — `.github/workflows/flight-release.yml`
 
-Four gates before anything is published:
+The gate is **behavioral, not identity-based**. The workflow installs the `@flighthq/bitmap` Flight just published and runs the parity suite against it, using `packages/bitmap-rs/vitest.config.published.ts` — the same tests as the normal suite, resolved against `node_modules` instead of the pinned sources.
 
-1. **The pin matches the released commit.** Flight names the commit; if `upstream/` points elsewhere, the port under this tree is of a different source. The run fails and names both commits.
-2. **The derived version matches the release.** `scripts/flight-version.ts` works out which Flight release the pin belongs to. If that disagrees with what Flight says it published, one of the two is wrong and either number would misdescribe the tarball.
-3. **The suite passes** — differential parity against the TypeScript implementation, packaging invariants, version logic.
-4. **`prepack` rebuilds the wasm** from this commit, so the tarball never carries a stale module.
+That answers the question a consumer actually has: are the Rust kernels still indistinguishable from the package this claims to substitute? Comparing commits only ever answered it by proxy, and answered it wrongly — under locked versioning the pin routinely lags the released commit by commits that never touched `bitmap`, which is a difference with no consequence.
 
-Gate 1 is why this lane verifies rather than moves the pin. Moving it regenerates every crate and report, which needs the full check suite and human review — a pull request, not an unattended release.
+In order:
+
+1. **Report the relationship.** Released commit, pinned commit, and the version derived from the pin go into the run summary. Differences are `::notice::`, never failures.
+2. **Install the released packages** at the version Flight named, retrying while the registry propagates.
+3. **Parity against those packages.** A failure blocks: a drop-in that silently computes different pixels is worse for a consumer than a version briefly missing from the family. Fix and re-run through `workflow_dispatch`.
+4. **Stamp version and dependency range** to the released version — the range moves only because step 3 just demonstrated compatibility with exactly those packages.
+5. **Packaging invariants**, then publish. `prepack` rebuilds the wasm from this commit, so the tarball never carries a stale module.
+
+The pin is never moved here. Moving it regenerates every crate and report, which needs the full check suite and human review — a pull request, not an unattended release.
 
 ## What that implies for sequencing
 
-The pin move is ordinary reviewed work that happens **before** Flight's release, not as part of it:
+Moving the pin is ordinary reviewed work on its own schedule, **not** a prerequisite for a release. A release publishes whatever the port currently is, at Flight's version, provided it still behaves as a drop-in — exactly as an unchanged Flight package ships at the family version.
 
-1. Flight cuts a release branch or otherwise settles the commit it will release from.
-2. Here: a pull request moves `upstream/` to that commit, regenerates, and updates the `@flighthq/*` dependency ranges to `^<new version>`. CI proves the port still holds. `tests/generator/publishing.test.ts` fails until the ranges and the golden version agree with the new pin, so this cannot be forgotten.
-3. Flight publishes and dispatches. This repository verifies its pin already matches, and publishes.
+So the pin moves when there is a reason: new upstream sources worth generating, a lowering fix that needs newer input, or drift the parity run has started to warn about. `tests/generator/publishing.test.ts` holds the in-repo dependency range and the golden derived version to whatever the pin currently is, so a pin move updates them in the same reviewed pull request.
 
-Between steps 2 and 3 the declared dependency names a version npm does not have yet. That is expected and does not break anything here: nothing in this repository installs its own facade, and pushes to `main` continue to publish `edge` snapshots. It resolves the moment Flight publishes.
+The release lane does not read those in-repo values. It stamps both from the version Flight released, after proving parity against it.
 
 ## Manual paths
 

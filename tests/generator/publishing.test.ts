@@ -126,6 +126,40 @@ describe('publishable set', () => {
     }
   });
 
+  it('stamps the Flight dependency range independently of the package version', () => {
+    const sandbox = mkdtempSync(path.join(tmpdir(), 'flight-rs-flightrange-'));
+    try {
+      write(sandbox, 'packages/facade/package.json', {
+        dependencies: { '@flighthq/bitmap': '^0.3.0', '@flighthq/types': '^0.3.0', 'left-pad': '^1.0.0' },
+        name: '@scope/facade',
+        version: '0.0.0',
+      });
+
+      // The release bridge stamps both from the Flight version it just proved parity against.
+      stampVersion('0.4.0', sandbox, '0.4.0');
+      let manifest = readFullManifest(sandbox, 'packages/facade/package.json');
+      expect(manifest.version).toBe('0.4.0');
+      expect(manifest.dependencies['@flighthq/bitmap']).toBe('^0.4.0');
+      // A non-Flight dependency is left alone; this stamps a family, not every range.
+      expect(manifest.dependencies['left-pad']).toBe('^1.0.0');
+
+      // A port-only fix moves the package version while the Flight it targets stays put, so the two
+      // must not be wired together.
+      stampVersion('0.4.1', sandbox, '0.4.0');
+      manifest = readFullManifest(sandbox, 'packages/facade/package.json');
+      expect(manifest.version).toBe('0.4.1');
+      expect(manifest.dependencies['@flighthq/bitmap']).toBe('^0.4.0');
+
+      // Omitting the flag leaves ranges untouched, which is the snapshot and tag path.
+      stampVersion('0.5.0', sandbox);
+      manifest = readFullManifest(sandbox, 'packages/facade/package.json');
+      expect(manifest.version).toBe('0.5.0');
+      expect(manifest.dependencies['@flighthq/bitmap']).toBe('^0.4.0');
+    } finally {
+      rmSync(sandbox, { force: true, recursive: true });
+    }
+  });
+
   it('rejects a version that is not a version', () => {
     // The stamp is what a workflow writes into a manifest from a shell variable, so an empty or
     // flag-shaped value must fail here rather than reach the registry.
@@ -149,6 +183,13 @@ function write(root: string, relative: string, manifest: Record<string, unknown>
   const file = path.join(root, relative);
   mkdirSync(path.dirname(file), { recursive: true });
   writeFileSync(file, `${JSON.stringify(manifest, null, 2)}\n`);
+}
+
+function readFullManifest(root: string, relative: string): { dependencies: Record<string, string>; version: string } {
+  return JSON.parse(readFileSync(path.join(root, relative), 'utf8')) as {
+    dependencies: Record<string, string>;
+    version: string;
+  };
 }
 
 function readManifest(root: string, relative: string): { version: string } {
