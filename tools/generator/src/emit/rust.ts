@@ -2684,6 +2684,12 @@ function emitCall(
     const declaration = context.functions.get(expression.callee.name);
     if (declaration) {
       if (
+        context.localFunctionNames.has(declaration.name) &&
+        requiresMutableStructuralInlining(expression, declaration, context)
+      ) {
+        return emitStructuralFunctionInlineCall(expression, declaration, context, true);
+      }
+      if (
         !context.localFunctionNames.has(declaration.name) &&
         ((!declaration.exported && !containsIdentifier(declaration.body, declaration.name)) ||
           (declaration.parameters.some((parameter) => typeContainsAnonymousRecord(parameter.type, context)) &&
@@ -3648,9 +3654,12 @@ function emitStructuralFunctionInlineCall(
   expression: Extract<IrExpression, { kind: 'call' }>,
   declaration: IrFunctionDeclaration,
   context: EmitContext,
+  allowMutations = false,
 ): string {
   if (
-    declaration.parameters.some((parameter) => parameter.rest || collectMutatedNames(declaration).has(parameter.name))
+    declaration.parameters.some(
+      (parameter) => parameter.rest || (!allowMutations && collectMutatedNames(declaration).has(parameter.name)),
+    )
   ) {
     return emitKnownFunctionCall(expression, declaration, context);
   }
@@ -3687,6 +3696,22 @@ function emitStructuralFunctionInlineCall(
       false,
     ),
   )}()`;
+}
+
+function requiresMutableStructuralInlining(
+  expression: Extract<IrExpression, { kind: 'call' }>,
+  declaration: IrFunctionDeclaration,
+  context: EmitContext,
+): boolean {
+  const mutated = collectMutatedNames(declaration, context.mutatingFunctions);
+  return declaration.parameters.some((parameter, index) => {
+    if (!mutated.has(parameter.name)) return false;
+    const argument = expression.arguments[index];
+    if (!argument || !isRustPlaceExpression(argument)) return false;
+    const actualType = inferIrExpressionType(argument, context);
+    if (!actualType || emitType(actualType, context) === emitType(parameter.type, context)) return false;
+    return Boolean(emitStructuralProjectionArgument('__flight_inline_probe', actualType, parameter.type, context));
+  });
 }
 
 function typeContainsAnonymousRecord(type: IrType, context: EmitContext): boolean {
@@ -9315,10 +9340,14 @@ function emitObject(
     if (property.kind !== 'spread') return [];
     const sourceType = inferIrExpressionType(property.expression, context);
     const resolvedSource = resolveSemanticType(sourceType, context) ?? sourceType;
-    return resolvedSource?.kind === 'anonymous'
+    const structuralSource =
+      resolvedSource?.kind === 'nullable'
+        ? (resolveSemanticType(resolvedSource.inner, context) ?? resolvedSource.inner)
+        : resolvedSource;
+    return structuralSource?.kind === 'anonymous'
       ? [
           {
-            fields: new Set(flattenStructFields(resolvedSource, context).map((field) => field.name)),
+            fields: new Set(flattenStructFields(structuralSource, context).map((field) => field.name)),
             index,
             name: `__flight_spread_${String(index)}`,
             property,
@@ -9372,9 +9401,14 @@ function emitObject(
       const place = `${value.name}.${safeName(field.name)}`;
       return `${safeName(field.name)}: ${isCopyType(value.field.type, context) ? place : `${parenthesize(place)}.clone()`},`;
     });
-    const bindings = structuralSpreads.map(
-      (spread) => `let ${spread.name} = ${emitExpression(spread.property.expression, context)};`,
-    );
+    const bindings = structuralSpreads.map((spread) => {
+      const sourceType = inferIrExpressionType(spread.property.expression, context);
+      const resolvedSource = resolveSemanticType(sourceType, context) ?? sourceType;
+      const source = emitExpression(spread.property.expression, context, sourceType);
+      return `let ${spread.name} = ${
+        resolvedSource?.kind === 'nullable' ? `${parenthesize(source)}.unwrap_or_default()` : source
+      };`;
+    });
     const entitySpread = structuralSpreads.find((spread) => {
       const sourceType = inferIrExpressionType(spread.property.expression, context);
       return sourceType?.kind === 'named' && context.entityTypes.has(sourceType.name);

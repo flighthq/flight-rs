@@ -2676,6 +2676,12 @@ describe('Rust emission', () => {
           other?: number;
           value?: number;
         }
+        interface MutableBase {
+          value: number;
+        }
+        interface MutableDerived extends MutableBase {
+          detail: number;
+        }
         function createResult(options?: Partial<Options>): Result {
           const result = {} as Result;
           result.label = options?.label;
@@ -2688,14 +2694,20 @@ describe('Rust emission', () => {
         function readTarget(options?: Partial<TargetOptions>): number {
           return options?.value ?? 0;
         }
+        function assignBase(target: MutableBase, value: number): void {
+          target.value = value;
+        }
         export function cloneResult(source: Options): Result {
           return createResult(source);
         }
         export function collectBase(): Base[] {
           return [createDerived()];
         }
-        export function forwardSpread(source: Partial<Options>): number {
+        export function forwardSpread(source?: Partial<Options>): number {
           return readTarget({ extra: 2, ...source });
+        }
+        export function updateDerived(target: MutableDerived): void {
+          assignBase(target, 3);
         }
       `,
       ts.ScriptTarget.Latest,
@@ -2714,6 +2726,8 @@ describe('Rust emission', () => {
     expect(output).toContain('Some({ let __flight_source');
     expect(output).toContain('Base {');
     expect(output).toContain('other: None');
+    expect(output).not.toContain('assign_base(&mut target');
+    expect(output).toContain('target.value = 3.0_f64');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-structural-boundaries-'));
     const sourceFile = path.join(fixture, 'lib.rs');
