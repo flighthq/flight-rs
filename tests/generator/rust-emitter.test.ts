@@ -677,6 +677,21 @@ describe('Rust emission', () => {
         export function numberValue(value: string): number {
           return Number(value);
         }
+        export function formatNumber(value: number, digits: number, pattern: string, count: number): string {
+          return value.toFixed(digits) + ':' + pattern.repeat(count);
+        }
+        const globalValues: string[] = [];
+        export function rotateGlobal(values: string[]): string {
+          globalValues.length = 0;
+          for (const value of values) globalValues.push(value);
+          if (!globalValues.includes('b')) return '';
+          const removed = globalValues.splice(1, 1);
+          let output = '';
+          for (const value of globalValues) output += value;
+          for (const value of removed) output += value;
+          const position = globalValues.indexOf('c');
+          return (position === 1 ? '1' : 'other') + ':' + output;
+        }
         export interface Registry {
           values?: Map<string, string>;
         }
@@ -725,6 +740,8 @@ describe('Rust emission', () => {
     expect(output).toContain('__flight_encode_uri_component');
     expect(output).toContain('__flight_decode_uri_component');
     expect(output).toContain('__flight_number_from_string');
+    expect(output).toContain('__flight_number_to_fixed');
+    expect(output).toContain('__flight_string_repeat');
     expect(output).toContain('!(value).is_empty()');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-utf16-code-point-'));
@@ -767,6 +784,9 @@ describe('Rust emission', () => {
         '  assert_eq!(generated::number_value(" 42.5 ".to_owned()), 42.5);',
         '  assert_eq!(generated::number_value("0x10".to_owned()), 16.0);',
         '  assert!(generated::number_value("not a number".to_owned()).is_nan());',
+        '  assert_eq!(generated::format_number(12.345, 2.0, "ab".to_owned(), 2.0), "12.35:abab");',
+        '  assert_eq!(generated::format_number(-0.0, 2.0, "x".to_owned(), 0.0), "0.00:");',
+        '  assert_eq!(generated::rotate_global(&vec!["a".to_owned(), "b".to_owned(), "c".to_owned()]), "1:acb");',
         '  let mut registry = generated::Registry::default();',
         '  assert_eq!(generated::put_registry(&mut registry, "key".to_owned(), "value".to_owned()), "value");',
         '  assert_eq!(generated::read_registry(&registry, "key".to_owned()), "value");',

@@ -458,6 +458,23 @@ export function emitRustModule(module: RustModule): string {
           '}',
         ]
       : []),
+    ...(declarations.includes('__flight_number_to_fixed(')
+      ? [
+          '#[inline]',
+          'fn __flight_number_to_fixed(value: f64, digits: f64) -> String {',
+          indent(
+            [
+              'assert!(digits.is_finite() && digits.fract() == 0.0_f64 && (0.0_f64..=100.0_f64).contains(&digits), "Number.toFixed digits must be between 0 and 100");',
+              'if value.is_nan() { return "NaN".to_owned(); }',
+              'if value == f64::INFINITY { return "Infinity".to_owned(); }',
+              'if value == f64::NEG_INFINITY { return "-Infinity".to_owned(); }',
+              'let value = if value == 0.0_f64 { 0.0_f64 } else { value };',
+              'format!("{:.*}", digits as usize, value)',
+            ].join('\n'),
+          ),
+          '}',
+        ]
+      : []),
     ...(declarations.includes('__flight_pad_start(')
       ? [
           '#[inline]',
@@ -506,6 +523,19 @@ export function emitRustModule(module: RustModule): string {
               'let start = relative(start);',
               'let end = end.map_or(length, relative);',
               'String::from_utf16_lossy(&value[start..end.max(start)])',
+            ].join('\n'),
+          ),
+          '}',
+        ]
+      : []),
+    ...(declarations.includes('__flight_string_repeat(')
+      ? [
+          '#[inline]',
+          'fn __flight_string_repeat(value: &str, count: f64) -> String {',
+          indent(
+            [
+              'assert!(count.is_finite() && count >= 0.0_f64, "String.repeat count must be finite and non-negative");',
+              'value.repeat(count.trunc() as usize)',
             ].join('\n'),
           ),
           '}',
@@ -1306,7 +1336,10 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
                 name: 'RustTuple2',
               } as const)
             : undefined;
-      const iterable = emitExpression(statement.iterable, context);
+      const iterable =
+        statement.iterable.kind === 'identifier' && context.mutexCollectionNames.has(statement.iterable.name)
+          ? emitCollectionPlace(statement.iterable, context)
+          : emitExpression(statement.iterable, context);
       const iterablePlace =
         iterableType?.kind === 'nullable'
           ? `${parenthesize(iterable)}.as_ref().expect("TypeScript nullable iterable was not narrowed")`
@@ -2750,6 +2783,18 @@ function emitCall(
         const pad = expression.arguments[1] ?? ({ kind: 'literal', value: ' ' } as const);
         return `__flight_pad_start(${owner}, ${emitExpression(width, context, primitive('Float'))}, ${emitExpression(pad, context, primitive('String'))})`;
       }
+      if (method === 'repeat') {
+        if (!argument) throw new RustEmissionError('String.repeat requires a count argument');
+        return `__flight_string_repeat(&${parenthesize(owner)}, ${emitExpression(argument, context, primitive('Float'))})`;
+      }
+    }
+    if (
+      collectionType?.kind === 'primitive' &&
+      (collectionType.name === 'Float' || collectionType.name === 'Int') &&
+      method === 'toFixed'
+    ) {
+      const digits = expression.arguments[0] ?? ({ kind: 'literal', value: 0 } as const);
+      return `__flight_number_to_fixed(${owner}, ${emitExpression(digits, context, primitive('Float'))})`;
     }
     if (
       collectionType?.kind === 'primitive' &&
@@ -2794,7 +2839,7 @@ function emitCall(
       const inserted = expression.arguments
         .slice(2)
         .map((argument) => emitExpression(argument, context, collectionType.element));
-      return `${ownerPlace}.splice(${parenthesize(startValue)} as usize..(${parenthesize(startValue)} + ${parenthesize(count)}) as usize, vec![${inserted.join(', ')}])`;
+      return `${ownerPlace}.splice(${parenthesize(startValue)} as usize..(${parenthesize(startValue)} + ${parenthesize(count)}) as usize, vec![${inserted.join(', ')}]).collect::<Vec<_>>()`;
     }
     if (
       (collectionType?.kind === 'array' ||
@@ -2834,7 +2879,7 @@ function emitCall(
       const argument = expression.arguments[0];
       if (!argument) throw new RustEmissionError('Array.indexOf requires an argument');
       const collection =
-        ownerType?.kind === 'nullable' ? `${parenthesize(owner)}.as_ref().unwrap()` : parenthesize(owner);
+        ownerType?.kind === 'nullable' ? `${parenthesize(owner)}.as_ref().unwrap()` : parenthesize(ownerRead);
       const value = emitExpression(argument, context, collectionType.element);
       const equality =
         collectionType.element.kind === 'named' && context.callbackTypeParameters.has(collectionType.element.name)
@@ -2846,7 +2891,7 @@ function emitCall(
       const argument = expression.arguments[0];
       if (!argument) throw new RustEmissionError('Array.includes requires an argument');
       const collection =
-        ownerType?.kind === 'nullable' ? `${parenthesize(owner)}.as_ref().unwrap()` : parenthesize(owner);
+        ownerType?.kind === 'nullable' ? `${parenthesize(owner)}.as_ref().unwrap()` : parenthesize(ownerRead);
       const value = emitExpression(argument, context, collectionType.element);
       const equality =
         collectionType.element.kind === 'named' && context.callbackTypeParameters.has(collectionType.element.name)
@@ -9323,14 +9368,14 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
           if (expression.callee.name === 'split') {
             return { element: primitive('String'), kind: 'array' };
           }
-          if (['padStart', 'toLowerCase', 'toUpperCase', 'trim'].includes(expression.callee.name)) {
+          if (['padStart', 'repeat', 'toLowerCase', 'toUpperCase', 'trim'].includes(expression.callee.name)) {
             return primitive('String');
           }
         }
         if (
           collection?.kind === 'primitive' &&
           (collection.name === 'Float' || collection.name === 'Int') &&
-          expression.callee.name === 'toString'
+          (expression.callee.name === 'toFixed' || expression.callee.name === 'toString')
         ) {
           return primitive('String');
         }
