@@ -1,6 +1,6 @@
 # Generator Resume Playbook
 
-This is the durable handoff for continuing the mechanical Flight TypeScript-to-Rust port. It describes the repository after the Pass 27 Stage 2 canonical task-runtime checkpoint. Resume from repository `HEAD`; do not reconstruct earlier passes or edit generated Rust by hand.
+This is the durable handoff for continuing the mechanical Flight TypeScript-to-Rust port. It describes the repository after the Pass 27 canonical task-runtime and ordered record-spread checkpoints. Resume from repository `HEAD`; do not reconstruct earlier passes or edit generated Rust by hand.
 
 ## Goal and policy
 
@@ -31,7 +31,7 @@ The pinned Flight commit is no longer advertised as a direct ref by the configur
 | Compile-blocked candidates      |     6 |
 | Dependency-blocked candidates   |    19 |
 | Source-blocked packages         |    94 |
-| Source blockers                 |   455 |
+| Source blockers                 |   449 |
 | Promoted generated packages     |     2 |
 | Cultivated packages             |     1 |
 | Host-bound packages             |     4 |
@@ -70,6 +70,8 @@ The generator now has these invariants. Preserve them with focused regression te
 - Structural records are canonicalized by resolved schema at module signatures.
 - Imported nested-record provenance survives lowering.
 - Anonymous records can project across nominal Rust records while evaluating owned values once.
+- Homogeneous record object literals recover their `RustMap` type from compatible typed spreads. Rust evaluates every spread, computed key, and value once in source order; later writes replace the value without moving the key's first insertion position.
+- `typeof` resolves named semantic aliases before selecting union, nullable, primitive, or structural Rust behavior.
 - Ordered object fields preserve a non-Copy local that is consumed before a later field reads it, even across source aliases with one Rust representation.
 - Rust consumption liveness preserves non-Copy values across sequential statements, loop back-edges, and reused switch discriminants without cloning comparison-only reads.
 - Receiver-returning collection mutation preserves JavaScript expression results for both addressable and temporary Rust collections.
@@ -254,14 +256,16 @@ Acceptance:
 
 After passes 19–21, prioritize shared capabilities rather than raw diagnostic count:
 
-- `@flighthq/log` has seven direct dependents and is source-blocked by a two-spread structural object plus package export coverage.
+- `@flighthq/log` has 33 direct and 88 transitive dependents. Its ordered record spread now emits; `log.ts` next stops at structural `JSON.stringify`, and its three missing transport exports remain coupled to that whole-file emission failure.
 - `@flighthq/image` has eleven direct dependents and is blocked by host `new ImageData` plus missing exports.
 - `@flighthq/text` has eight direct dependents and needs ordered multiple-object-spread lowering.
 - `@flighthq/shape` has seven direct dependents and needs spread/structural generic handling.
 - Portable async packages such as filesystem and notification need contextual output recovery and later task operations; image-codec is the current non-opaque straight-line execution canary.
 - Dynamic WebGL/WebGPU object literals should eventually use typed backend-capability IR rather than giant opaque records.
 
-The package-level “missing exports” blocker often shrinks automatically after the first emission blocker is fixed. Do not build a broad re-export workaround until regeneration proves the barrel/export graph itself is incomplete.
+The package-level “missing exports” blocker often shrinks automatically after the first emission blocker is fixed. Alias-aware `typeof` cleared those blockers for `@flighthq/binpack` and `@flighthq/scene2d-formats` without export-specific code. Do not build a broad re-export workaround until regeneration proves the barrel/export graph itself is incomplete.
+
+The next logging prerequisite is a recursive substrate-neutral value representation, not a `JSON.stringify` special case. The current unit-like `OpaqueHostValue::Object` cannot retain arbitrary nested records or arrays, so it cannot produce truthful JSON for `Record<string, unknown>`. Introduce portable array/record payloads and define JavaScript-compatible string escaping, non-finite number handling, object-field omission, array `null` substitution, and insertion order before extending structural JSON emission. Do not serialize the opaque object sentinel as `{}` or route synchronous formatting through a fabricated host result.
 
 ## Pass 27 design checkpoint
 
