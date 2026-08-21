@@ -7769,7 +7769,12 @@ function registerTypeDeclarationAnonymousTypes(
   const anonymousTypes = context.anonymousTypes as Map<string, string>;
   const anonymousTypeParameters = context.anonymousTypeParameters as Map<string, readonly string[]>;
   for (const declaration of declarations) {
-    if (declaration.kind !== 'type' || declaration.typeParameters.length === 0) continue;
+    if (
+      declaration.kind !== 'type' ||
+      (declaration.typeParameters.length === 0 && declaration.type.kind !== 'union')
+    ) {
+      continue;
+    }
     let index = 1;
     for (const type of collectResolvedAnonymousTypes(declaration.type, context)) {
       const key = typeKey(type);
@@ -7832,7 +7837,7 @@ function collectInferredObjectTypes(value: unknown): IrType[] {
 
 function typeDeclarationContext(context: EmitContext, ownerName: string, type: IrType): EmitContext {
   const anonymousTypes = new Map(context.anonymousTypes);
-  let index = anonymousTypes.size + 1;
+  let index = 1;
   for (const nested of collectResolvedAnonymousTypes(type, context)) {
     const key = typeKey(nested);
     if (key === typeKey(type) || anonymousTypes.has(key)) continue;

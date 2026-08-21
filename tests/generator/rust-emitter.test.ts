@@ -139,8 +139,9 @@ describe('Rust emission', () => {
 
     expect(lowered.diagnostics).toEqual([]);
     expect(output).toContain('pub type VariantRecord = crate::FlightUnion2<');
-    expect(output).toMatch(/pub struct ExtendedRecordRecord\d+/u);
-    expect(output).toMatch(/pub struct VariantRecordRecord\d+/u);
+    expect(output).toContain('pub struct VariantRecordRecord1');
+    expect(output).toContain('pub struct VariantRecordRecord2');
+    expect(output).toContain('metadata: Option<VariantRecordRecord2>');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-nested-aliases-'));
     const sourceFile = path.join(fixture, 'lib.rs');
