@@ -93,7 +93,7 @@ npm run release -- --dry-run --tag latest                               # pack +
 
 The `npm ci` in the trap matters as much as the checkout: `--no-save` leaves the released `@flighthq/*` packages in `node_modules`, and anything that regenerates afterwards resolves upstream's own imports through them.
 
-**Never commit a stamped manifest.** The in-repo range names the Flight _family_ the pin targets (`^0.4.0`); the stamp is a release-time value that may be a specific prerelease (`^0.4.0-next.1811.dde7eb1`). `publishing.test.ts` fails on the latter deliberately.
+**The committed range must be installable.** Most Flight releases are prereleases (`0.4.0-next.<count>.<sha>`), and under semver a plain `^0.4.0` does **not** satisfy `0.4.0-next.…` — so committing the stable form while npm only carries prereleases produces a package that cannot resolve. Commit the range that actually resolves today; `publishing.test.ts` checks only that it is a caret range in the same major.minor family as the pin, which is the part that must not drift.
 
 **2. Drive the real workflow without publishing.** Actions → **Flight release bridge** → Run workflow, supplying `version` and `commit`. With no `NPM_TOKEN` configured it dry-runs and reports what it would have published, so checkout, submodule, toolchain, parity, stamp and pack all run for real. Nothing is committed, so this cannot leave a stamped manifest behind — it is the safer way to rehearse.
 

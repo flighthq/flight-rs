@@ -39,20 +39,44 @@ describe('published version borrows the upstream release', () => {
     expect(applyBump('1.4.2', 'fix')).toBe('1.4.3');
   });
 
-  it('keeps the published dependency range on the upstream version it was generated from', () => {
-    // bitmap-rs substitutes @flighthq/bitmap, so a range that drifts from the derived upstream
-    // version would pair the wasm kernels with an upstream they were never differentially tested
-    // against. Both sides move together or this fails.
-    const [surface] = publishablePackages(workspace).filter((item) => item.manifest.name === '@flighthq/bitmap-rs');
-    expect(surface, '@flighthq/bitmap-rs is publishable').toBeDefined();
+  it('keeps the published dependency range in the upstream family it was generated from', () => {
+    // bitmap-rs substitutes @flighthq/bitmap, so a range that drifts to a different upstream family
+    // would pair the wasm kernels with an upstream they were never differentially tested against.
+    //
+    // The family is all this checks. The exact range is a RELEASE-time value and Flight names it:
+    // most Flight releases are prereleases (`0.4.0-next.<count>.<sha>`), and the release lane stamps
+    // whatever version it was handed. Pinning this to `^<major>.<minor>.0` would reject the ordinary
+    // case — and worse, `^0.4.0` does not satisfy `0.4.0-next.…` at all under semver, so demanding
+    // the stable form produces a package that cannot resolve until Flight ships a stable release.
+    const [facade] = publishablePackages(workspace).filter((item) => item.manifest.name === '@flighthq/bitmap-rs');
+    expect(facade, '@flighthq/bitmap-rs is publishable').toBeDefined();
 
     const flight = readFlightVersion(workspace);
     const [major, minor] = flight.split('.');
-    const dependencies = (surface?.manifest.dependencies ?? {}) as Record<string, string>;
+    const dependencies = (facade?.manifest.dependencies ?? {}) as Record<string, string>;
+
     for (const [name, range] of Object.entries(dependencies)) {
       if (!name.startsWith('@flighthq/')) continue;
-      expect(range, `${name} tracks upstream ${flight}`).toBe(`^${major}.${minor}.0`);
+      const parsed = /^\^(\d+)\.(\d+)\.\d+(?:-[0-9A-Za-z.-]+)?$/u.exec(range);
+      expect(parsed, `${name} range "${range}" is a caret range over a full version`).not.toBeNull();
+      expect(`${parsed?.[1]}.${parsed?.[2]}`, `${name} tracks the ${flight} family`).toBe(`${major}.${minor}`);
     }
+  });
+
+  it('accepts the prerelease ranges Flight actually publishes', () => {
+    // Guards the rule above against being tightened back to the stable form. Flight releases the
+    // whole family at one arbitrary version, commonly a `-next` prerelease, and this port has to be
+    // able to match it.
+    const family = /^\^(\d+)\.(\d+)\.\d+(?:-[0-9A-Za-z.-]+)?$/u;
+
+    expect(family.exec('^0.4.0')?.slice(1, 3)).toEqual(['0', '4']);
+    expect(family.exec('^0.4.0-next.1811.dde7eb1')?.slice(1, 3)).toEqual(['0', '4']);
+    expect(family.exec('^0.4.0-edge.12.abc1234')?.slice(1, 3)).toEqual(['0', '4']);
+
+    // Still rejects the shapes that would silently break resolution.
+    expect(family.exec('^0.4')).toBeNull();
+    expect(family.exec('*')).toBeNull();
+    expect(family.exec('latest')).toBeNull();
   });
 });
 
