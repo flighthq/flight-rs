@@ -2400,7 +2400,7 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
           (actualType.kind === 'named' && actualType.name === 'FlightCallbackArgs') ||
           (actualType.kind === 'named' && context.callbackTypeParameters.has(actualType.name)))
           ? `${parenthesize(borrowedOwnedValue)}.clone()`
-          : context.mutexValueNames.has(expression.name)
+          : context.mutexValueNames.has(expression.name) || context.mutexCollectionNames.has(expression.name)
             ? `${parenthesize(borrowedOwnedValue)}.clone()`
             : borrowedOwnedValue;
       const narrowed =
@@ -3952,6 +3952,14 @@ function emitKnownFunctionArgument(
       context.borrowedNames.has(root)
       ? value
       : `${mutable ? '&mut ' : '&'}${parenthesize(value)}`;
+  }
+  if (optionalParameter && argumentType?.kind === 'nullable') {
+    const value = emitExpression(argument, context, argumentType);
+    const projected = emitStructuralProjectionArgument('__flight_value', argumentType.inner, expectedType, context);
+    if (projected) {
+      return `${parenthesize(value)}.as_ref().map(|__flight_value| ${projected})`;
+    }
+    if (semanticTypesEqual(argumentType.inner, expectedType, context)) return `${parenthesize(value)}.clone()`;
   }
   if (!nullableParameter && !optionalParameter && expectedType.kind === 'union') {
     return `&${parenthesize(emitExpression(argument, context, expectedType))}`;
@@ -8698,11 +8706,22 @@ function emitStructuralProjectionArgument(
   const actualFields = new Map(semanticStructFields(actualType, context).map((field) => [field.name, field]));
   const expectedFields = semanticStructFields(expectedType, context);
   const openFields = expectedType.kind === 'named' ? context.openInterfaceFields.get(expectedType.name) : undefined;
+  const expectedEntity = isNativeEntityType(expectedType, context);
+  const sharesEntityRuntime = expectedEntity && isNativeEntityType(actualType, context);
+  const expandsEntity =
+    sharesEntityRuntime &&
+    expectedType.kind === 'named' &&
+    actualType.kind === 'named' &&
+    expectedType.name !== actualType.name &&
+    Boolean(findEntityRuntimeApplication(expectedType, actualType.name, context));
   if (
     expectedFields.some((field) => {
       const actualField = actualFields.get(field.name);
       return (
-        (!actualField && !field.optional && !openFields?.has(field.name)) ||
+        (!actualField &&
+          !field.optional &&
+          !openFields?.has(field.name) &&
+          !(expandsEntity && rustTypeSupportsDefault(field.type, context))) ||
         Boolean(actualField && !field.optional && actualField.optional) ||
         Boolean(actualField && !structurallyCompatibleTypes(actualField.type, field.type, context))
       );
@@ -8714,7 +8733,13 @@ function emitStructuralProjectionArgument(
   const fields = expectedFields.flatMap((field) => {
     const actualField = actualFields.get(field.name);
     if (!actualField && openFields?.has(field.name)) return [];
-    if (!actualField) return [`${safeName(field.name)}: None,`];
+    if (!actualField) {
+      if (field.optional) return [`${safeName(field.name)}: None,`];
+      if (expandsEntity && rustTypeSupportsDefault(field.type, context)) {
+        return [`${safeName(field.name)}: Default::default(),`];
+      }
+      throw new RustEmissionError(`structural projection is missing required field ${field.name}`);
+    }
     const place = `${owner}.${safeName(field.name)}`;
     const actualFieldType = resolveSemanticType(actualField.type, context) ?? actualField.type;
     const expectedFieldType = resolveSemanticType(field.type, context) ?? field.type;
@@ -8732,8 +8757,6 @@ function emitStructuralProjectionArgument(
       },`,
     ];
   });
-  const expectedEntity = isNativeEntityType(expectedType, context);
-  const sharesEntityRuntime = expectedEntity && isNativeEntityType(actualType, context);
   return `{ let ${owner} = &${parenthesize(source)}; ${emitStructConstructorType(expectedType, context)} {\n${indent(
     [
       '__flight_identity: std::sync::Arc::clone(&' + owner + '.__flight_identity),',
@@ -10718,6 +10741,7 @@ function emitIdentifier(name: string, context: EmitContext): string {
     return type && isCopyType(type, context) ? `*${parenthesize(value)}` : value;
   }
   if (context.sharedCaptureNames.has(name)) return `(*${emitted}.lock().unwrap())`;
+  if (context.mutexCollectionNames.has(name)) return `(*${emitted}.lock().unwrap())`;
   if (context.mutexValueNames.has(name)) return `(*${emitted}.lock().unwrap())`;
   return context.atomicBoolNames.has(name) ? `${emitted}.load(std::sync::atomic::Ordering::Relaxed)` : emitted;
 }

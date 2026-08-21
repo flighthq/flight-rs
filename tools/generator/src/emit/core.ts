@@ -552,7 +552,10 @@ function attemptAutomaticPackage(
                   (name) =>
                     !localDeclarations.has(name) && Boolean(findTypeDeclarationSource(workspaceDirectory, name)),
                 ),
-                ...Object.keys(entityRuntimeSemanticTypes.types).filter(
+                ...collectReachableSemanticTypeNames(lowered.declarations, {
+                  ...semanticTypes,
+                  ...importedSemanticTypes.types,
+                }).filter(
                   (name) =>
                     !localDeclarations.has(name) && Boolean(findTypeDeclarationSource(workspaceDirectory, name)),
                 ),
@@ -1644,7 +1647,7 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
                       !declarations.some((declaration) => declaration.name === name) &&
                       Boolean(findTypeDeclarationSource(workspaceDirectory, name)),
                   ),
-                  ...Object.keys(entityRuntimeSemanticTypes.types).filter(
+                  ...collectReachableSemanticTypeNames(declarations, moduleSemanticTypes).filter(
                     (name) =>
                       !declarations.some((declaration) => declaration.name === name) &&
                       Boolean(findTypeDeclarationSource(workspaceDirectory, name)),
@@ -1967,6 +1970,43 @@ function collectNamedTypeReferences(type: IrType): ReadonlySet<string> {
   };
   visit(type);
   return names;
+}
+
+function collectReachableSemanticTypeNames(
+  declarations: ReturnType<typeof lowerTypeScriptSource>['declarations'],
+  semanticTypes: Readonly<Record<string, IrType>>,
+): string[] {
+  const names = new Set<string>();
+  const collect = (value: unknown): void => {
+    if (!value || typeof value !== 'object') return;
+    if (
+      'kind' in value &&
+      value.kind === 'named' &&
+      'name' in value &&
+      typeof value.name === 'string' &&
+      'arguments' in value &&
+      Array.isArray(value.arguments)
+    ) {
+      names.add(value.name);
+    }
+    for (const child of Object.values(value)) {
+      if (Array.isArray(child)) child.forEach(collect);
+      else collect(child);
+    }
+  };
+  collect(declarations);
+  const pending = [...names];
+  while (pending.length > 0) {
+    const name = pending.pop()!;
+    const type = semanticTypes[name];
+    if (!type) continue;
+    for (const referenced of collectNamedTypeReferences(type)) {
+      if (names.has(referenced)) continue;
+      names.add(referenced);
+      pending.push(referenced);
+    }
+  }
+  return [...names].sort((left, right) => left.localeCompare(right));
 }
 
 function emitCargoManifest(target: RustTarget): string {

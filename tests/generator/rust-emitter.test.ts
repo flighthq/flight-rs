@@ -733,6 +733,9 @@ describe('Rust emission', () => {
           return value.toFixed(digits) + ':' + pattern.repeat(count);
         }
         const globalValues: string[] = [];
+        export function firstGlobal(): string {
+          return globalValues[0] ?? '';
+        }
         export function rotateGlobal(values: string[]): string {
           globalValues.length = 0;
           for (const value of values) globalValues.push(value);
@@ -793,6 +796,7 @@ describe('Rust emission', () => {
     expect(output).toContain('__flight_string_from_code_point');
     expect(output).toContain('__flight_encode_uri_component');
     expect(output).toContain('__flight_decode_uri_component');
+    expect(output).toContain('(*GLOBAL_VALUES.lock().unwrap())[0.0_f64 as usize]');
     expect(output).toContain('__flight_number_from_string');
     expect(output).toContain('fn __flight_parse_float(value: &str) -> f64');
     expect(output).toContain('__flight_number_to_fixed');
@@ -2200,6 +2204,18 @@ describe('Rust emission', () => {
         export function getPointRange(point: PointLight): number {
           return getRange(point);
         }
+        interface BaseOptions {
+          shared?: number;
+        }
+        interface DerivedOptions extends BaseOptions {
+          extra?: number;
+        }
+        function readShared(options?: BaseOptions): number {
+          return options?.shared ?? 0;
+        }
+        export function readDerivedShared(options?: DerivedOptions): number {
+          return readShared(options);
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -2215,6 +2231,7 @@ describe('Rust emission', () => {
     expect(lowered.diagnostics).toEqual([]);
     expect(output).toMatch(/pub struct Light \{[\s\S]*pub range: f64,/u);
     expect(output).toContain('..Default::default()');
+    expect(output).toContain('.as_ref().map(|__flight_value|');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
     const sourceFile = path.join(fixture, 'lib.rs');
@@ -3534,6 +3551,14 @@ describe('Rust emission', () => {
         export interface Node extends Entity {
           name: string;
         }
+        export interface BaseEntity extends Entity {
+          kind: string;
+          shared: number;
+        }
+        export interface DerivedEntity extends BaseEntity {
+          detail: number;
+          label?: string;
+        }
         export interface NodeRuntime<Traits> extends EntityRuntime {
           callback: () => void;
           count: number;
@@ -3555,6 +3580,14 @@ describe('Rust emission', () => {
         }
         export function createNode(runtime: NodeRuntime<string>): Node {
           return { name: 'node', [EntityRuntimeKey]: runtime };
+        }
+        export function createBaseEntity(): BaseEntity {
+          return { kind: 'Derived', shared: 1 };
+        }
+        export function createDerivedEntity(): DerivedEntity {
+          const value = createBaseEntity() as DerivedEntity;
+          value.detail = 2;
+          return value;
         }
         export function attachRuntime<Type>(source: Type, runtime: NodeRuntime<string>): Type {
           source[EntityRuntimeKey] = runtime;
@@ -3649,6 +3682,7 @@ describe('Rust emission', () => {
     expect(output).toContain('.lock().unwrap().is_some()');
     expect(output).toContain('let __flight_value = Some((binding).clone())');
     expect(output).toContain('__flight_entity_runtime: std::sync::Arc::clone(');
+    expect(output).toMatch(/let mut value = \{[\s\S]*DerivedEntity \{[\s\S]*detail: Default::default\(\),/u);
     expect(output).toContain(
       'std::sync::Arc::new(std::sync::Mutex::new(__flight_entity_spread.__flight_entity_runtime.lock().unwrap().clone()))',
     );
