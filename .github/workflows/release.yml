@@ -1,6 +1,6 @@
 name: Release
 
-# Publishes @flighthq/surface-rs, the only package here intended for consumers.
+# Publishes @flighthq/bitmap-rs, the only package here intended for consumers.
 #
 # Two lanes, both ending in `npm run release`:
 #   Snapshot  every push to main publishes <upstream>-edge.<count>.<sha> under the `edge` dist-tag,

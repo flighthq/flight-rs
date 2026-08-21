@@ -1,4 +1,4 @@
-// Publishes this repository's publishable packages to npm — today that is `@flighthq/surface-rs`
+// Publishes this repository's publishable packages to npm — today that is `@flighthq/bitmap-rs`
 // alone (see publishable-packages.ts).
 //
 // Two guards make a re-run safe, which matters because a publish that fails halfway is otherwise

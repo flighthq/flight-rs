@@ -1,12 +1,12 @@
 {
-  "name": "@flighthq/surface-rs",
+  "name": "@flighthq/bitmap-rs",
   "version": "0.3.0",
   "author": "Joshua Granick and other contributors",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/flighthq/flight-rs.git",
-    "directory": "packages/surface-rs"
+    "directory": "packages/bitmap-rs"
   },
   "type": "module",
   "publishConfig": {

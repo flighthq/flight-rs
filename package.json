@@ -18,10 +18,10 @@
     "lint": "oxlint --max-warnings=0",
     "lint:fix": "oxlint --fix --max-warnings=0",
     "release": "tsx scripts/publish-packages.ts",
-    "test": "vitest run && vitest run --config packages/surface-rs/vitest.config.ts",
+    "test": "vitest run && vitest run --config packages/bitmap-rs/vitest.config.ts",
     "test:host-winit": "cargo test --manifest-path crates/flighthq-host-winit/Cargo.toml",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "typecheck:upstream": "tsc -p packages/surface-rs/tsconfig.upstream.json",
+    "typecheck:upstream": "tsc -p packages/bitmap-rs/tsconfig.upstream.json",
     "upstream:latest": "tsx scripts/upstream-latest.ts",
     "version:packages": "tsx scripts/version-packages.ts",
     "wasm": "tsx tools/generator/src/build-wasm.ts"

@@ -7,7 +7,7 @@ This repository mechanically translates the Flight TypeScript SDK in [`upstream/
 - `upstream/` is read-only generator input.
 - `tools/generator/` contains the analyzer, target-neutral intermediate representation, Rust emitter, semantic mappings, and drift checks.
 - `generated/` is disposable Rust output. Never fix a problem by editing it directly.
-- `packages/` contains explicitly blessed TypeScript facades. `packages/surface-rs` is currently the only blessed facade.
+- `packages/` contains explicitly blessed TypeScript facades. `packages/bitmap-rs` is currently the only blessed facade.
 - `reports/` records inventory, lowering, generation coverage, exclusions, and source fingerprints.
 - `tests/` covers generator rules and compiled generated output.
 

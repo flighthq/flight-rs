@@ -4,13 +4,13 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 
 const workspace = path.resolve(import.meta.dirname, '../../..');
-const output = path.join(workspace, 'packages/surface-rs/src/wasm');
+const output = path.join(workspace, 'packages/bitmap-rs/src/wasm');
 const crate = 'flighthq-surface-wasm';
 const artifact = path.join(workspace, 'target/wasm32-unknown-unknown/release/flighthq_surface_wasm.wasm');
 const toolRoot = path.join(workspace, 'target/tools/wasm-bindgen');
 const localWasmBindgen = path.join(toolRoot, 'bin', process.platform === 'win32' ? 'wasm-bindgen.exe' : 'wasm-bindgen');
 
-// This module is embedded verbatim in the published @flighthq/surface-rs, so its bytes must depend
+// This module is embedded verbatim in the published @flighthq/bitmap-rs, so its bytes must depend
 // on the sources alone. rustc otherwise records the absolute path of each panicking source file —
 // including dependency sources under CARGO_HOME — which bakes a build-machine path into a published
 // artifact and makes the output differ between clones. Nothing downstream catches that: the
@@ -44,7 +44,7 @@ if (toolVersion(wasmBindgen) !== `wasm-bindgen ${version}`) {
 }
 
 run(wasmBindgen, [artifact, '--target', 'web', '--out-dir', output, '--out-name', 'surface_wasm']);
-run('tsx', [path.join(workspace, 'packages/surface-rs/scripts/embed-wasm.ts')]);
+run('tsx', [path.join(workspace, 'packages/bitmap-rs/scripts/embed-wasm.ts')]);
 
 function toolVersion(command: string): string {
   try {

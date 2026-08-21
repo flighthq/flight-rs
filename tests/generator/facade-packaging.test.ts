@@ -2,16 +2,16 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import ts from 'typescript';
 
-import { wasmGlueFiles } from '../../packages/surface-rs/scripts/copy-wasm-glue.ts';
+import { wasmGlueFiles } from '../../packages/bitmap-rs/scripts/copy-wasm-glue.ts';
 import { portConfig } from '../../tools/generator/port.config.ts';
 
-// `packages/surface-rs` is the only package in this repository published to npm. `config.test.ts`
+// `packages/bitmap-rs` is the only package in this repository published to npm. `config.test.ts`
 // already proves each wasm facade export exists as a declaration in its core crate; these cover the
 // other half of the boundary — that the TypeScript facade exposes exactly that set, that the set is
 // genuinely a drop-in for upstream, and that the manifest can actually be published.
 
 const workspace = path.resolve('.');
-const facadeDirectory = path.join(workspace, 'packages/surface-rs');
+const facadeDirectory = path.join(workspace, 'packages/bitmap-rs');
 
 const manifest = JSON.parse(readFileSync(path.join(facadeDirectory, 'package.json'), 'utf8')) as {
   dependencies?: Record<string, string>;

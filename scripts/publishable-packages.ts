@@ -1,7 +1,7 @@
 // Which packages under `packages/` are published to npm.
 //
 // The set is derived rather than listed: a package is publishable unless it marks itself
-// `"private": true`. Today that resolves to exactly `@flighthq/surface-rs`, the only blessed facade
+// `"private": true`. Today that resolves to exactly `@flighthq/bitmap-rs`, the only blessed facade
 // and the only artifact here intended for consumers — `generated/` crates are all `publish = false`
 // and are consumed through this repository, not from a registry.
 //

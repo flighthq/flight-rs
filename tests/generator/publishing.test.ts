@@ -37,11 +37,11 @@ describe('published version borrows the upstream release', () => {
   });
 
   it('keeps the published dependency range on the upstream version it was generated from', () => {
-    // surface-rs substitutes @flighthq/bitmap, so a range that drifts from the derived upstream
+    // bitmap-rs substitutes @flighthq/bitmap, so a range that drifts from the derived upstream
     // version would pair the wasm kernels with an upstream they were never differentially tested
     // against. Both sides move together or this fails.
-    const [surface] = publishablePackages(workspace).filter((item) => item.manifest.name === '@flighthq/surface-rs');
-    expect(surface, '@flighthq/surface-rs is publishable').toBeDefined();
+    const [surface] = publishablePackages(workspace).filter((item) => item.manifest.name === '@flighthq/bitmap-rs');
+    expect(surface, '@flighthq/bitmap-rs is publishable').toBeDefined();
 
     const flight = readFlightVersion(workspace);
     const [major, minor] = flight.split('.');
@@ -100,7 +100,7 @@ describe('dist-tag ordering guard', () => {
 
 describe('publishable set', () => {
   it('is exactly the blessed facade', () => {
-    expect(publishablePackages(workspace).map((item) => item.manifest.name)).toEqual(['@flighthq/surface-rs']);
+    expect(publishablePackages(workspace).map((item) => item.manifest.name)).toEqual(['@flighthq/bitmap-rs']);
   });
 
   it('excludes a package that marks itself private, and stamps only what it includes', () => {
