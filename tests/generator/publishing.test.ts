@@ -40,7 +40,7 @@ describe('published version borrows the upstream release', () => {
   });
 
   it('keeps the published dependency range in the upstream family it was generated from', () => {
-    // bitmap-rs substitutes @flighthq/bitmap, so a range that drifts to a different upstream family
+    // bitmap-wasm substitutes @flighthq/bitmap, so a range that drifts to a different upstream family
     // would pair the wasm kernels with an upstream they were never differentially tested against.
     //
     // The family is all this checks. The exact range is a RELEASE-time value and Flight names it:
@@ -48,8 +48,8 @@ describe('published version borrows the upstream release', () => {
     // whatever version it was handed. Pinning this to `^<major>.<minor>.0` would reject the ordinary
     // case — and worse, `^0.4.0` does not satisfy `0.4.0-next.…` at all under semver, so demanding
     // the stable form produces a package that cannot resolve until Flight ships a stable release.
-    const [facade] = publishablePackages(workspace).filter((item) => item.manifest.name === '@flighthq/bitmap-rs');
-    expect(facade, '@flighthq/bitmap-rs is publishable').toBeDefined();
+    const [facade] = publishablePackages(workspace).filter((item) => item.manifest.name === '@flighthq/bitmap-wasm');
+    expect(facade, '@flighthq/bitmap-wasm is publishable').toBeDefined();
 
     const flight = readFlightVersion(workspace);
     const [major, minor] = flight.split('.');
@@ -127,7 +127,7 @@ describe('dist-tag ordering guard', () => {
 
 describe('publishable set', () => {
   it('is exactly the blessed facade', () => {
-    expect(publishablePackages(workspace).map((item) => item.manifest.name)).toEqual(['@flighthq/bitmap-rs']);
+    expect(publishablePackages(workspace).map((item) => item.manifest.name)).toEqual(['@flighthq/bitmap-wasm']);
   });
 
   it('excludes a package that marks itself private, and stamps only what it includes', () => {

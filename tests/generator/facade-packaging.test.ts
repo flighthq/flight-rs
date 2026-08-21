@@ -2,24 +2,24 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import ts from 'typescript';
 
-import { wasmGlueFiles } from '../../packages/bitmap-rs/scripts/copy-wasm-glue.ts';
+import { wasmGlueFiles } from '../../packages/bitmap-wasm/scripts/copy-wasm-glue.ts';
 import { portConfig } from '../../tools/generator/port.config.ts';
 
-// `packages/bitmap-rs` is the only package in this repository published to npm. `config.test.ts`
+// `packages/bitmap-wasm` is the only package in this repository published to npm. `config.test.ts`
 // already proves each wasm facade export exists as a declaration in its core crate; these cover the
 // other half of the boundary — that the TypeScript facade exposes exactly that set, that the set is
 // genuinely a drop-in for upstream, and that the manifest can actually be published.
 
 const workspace = path.resolve('.');
-const facadeDirectory = path.join(workspace, 'packages/bitmap-rs');
+const facadeDirectory = path.join(workspace, 'packages/bitmap-wasm');
 
 const manifest = JSON.parse(readFileSync(path.join(facadeDirectory, 'package.json'), 'utf8')) as {
   dependencies?: Record<string, string>;
-  flightRsSubstitute?: { authoritativePackage?: string; crate?: string };
+  flightWasmSubstitute?: { authoritativePackage?: string; crate?: string };
   scripts?: Record<string, string>;
 } & Record<string, unknown>;
 
-const substitute = manifest.flightRsSubstitute ?? {};
+const substitute = manifest.flightWasmSubstitute ?? {};
 const authoritativePackage = substitute.authoritativePackage ?? '@flighthq/bitmap';
 
 // The facade names the crate it is built from; that is the row of `wasmFacades` whose export list
@@ -79,7 +79,7 @@ function relativeImportSpecifiers(sourceFile: ts.SourceFile): string[] {
 
 describe('blessed facade packaging', () => {
   it('is built from a wasm facade the generator declares', () => {
-    expect(substitute.crate, 'package.json flightRsSubstitute.crate').toBeTruthy();
+    expect(substitute.crate, 'package.json flightWasmSubstitute.crate').toBeTruthy();
     expect(surfaceFacade, `port.config wasmFacades entry for ${String(substitute.crate)}`).toBeDefined();
   });
 

@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 
-const artifactPath = 'packages/bitmap-rs/src/wasm/bitmapWasmBytes.ts';
+const artifactPath = 'packages/bitmap-wasm/src/wasm/bitmapWasmBytes.ts';
 const wasmCrateManifest = 'generated/crates/flighthq-bitmap-wasm/Cargo.toml';
 const buildInputs = [
   'Cargo.lock',
@@ -12,7 +12,7 @@ const buildInputs = [
   '.cargo/config',
   '.cargo/config.toml',
   'tools/generator/src/build-wasm.ts',
-  'packages/bitmap-rs/scripts/embed-wasm.ts',
+  'packages/bitmap-wasm/scripts/embed-wasm.ts',
 ] as const;
 const inputHashPattern = /^\/\/ wasm-input-sha256: ([a-f\d]{64})$/mu;
 const outputHashPattern = /^\/\/ wasm-output-sha256: ([a-f\d]{64})$/mu;

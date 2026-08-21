@@ -121,7 +121,7 @@ jobs:
       # This is the step that catches a `files` or glue-copy mistake: a tarball that installs and
       # then fails at import time is invisible to every unit test.
       - name: Pack the tarball
-        working-directory: packages/bitmap-rs
+        working-directory: packages/bitmap-wasm
         run: |
           npx tsc -b
           npx tsx ./scripts/copy-wasm-glue.ts

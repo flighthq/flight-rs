@@ -1,6 +1,6 @@
 # Release bridge
 
-Flight uses locked versioning: every package ships at the family version whether or not it changed. `@flighthq/bitmap-rs` belongs to that family — it is a drop-in for `@flighthq/bitmap@X` and declares `^X` — so it ships when Flight ships, at the version Flight names. Releasing on an independent schedule would publish a package depending on a version that does not exist yet, so Flight drives the release and this repository verifies and publishes.
+Flight uses locked versioning: every package ships at the family version whether or not it changed. `@flighthq/bitmap-wasm` belongs to that family — it is a drop-in for `@flighthq/bitmap@X` and declares `^X` — so it ships when Flight ships, at the version Flight names. Releasing on an independent schedule would publish a package depending on a version that does not exist yet, so Flight drives the release and this repository verifies and publishes.
 
 The dependency stays one-directional. Flight does not pin, clone, or build this repository — it sends one notification. Everything about how the Rust port is built stays here, where the toolchain, the submodule, and the parity suite already live.
 
@@ -30,7 +30,7 @@ The call returns as soon as GitHub accepts it. Flight's release does not wait fo
 
 ## Receiving side — `.github/workflows/flight-release.yml`
 
-The gate is **behavioral, not identity-based**. The workflow installs the `@flighthq/bitmap` Flight just published and runs the parity suite against it, using `packages/bitmap-rs/vitest.config.published.ts` — the same tests as the normal suite, resolved against `node_modules` instead of the pinned sources.
+The gate is **behavioral, not identity-based**. The workflow installs the `@flighthq/bitmap` Flight just published and runs the parity suite against it, using `packages/bitmap-wasm/vitest.config.published.ts` — the same tests as the normal suite, resolved against `node_modules` instead of the pinned sources.
 
 That answers the question a consumer actually has: are the Rust kernels still indistinguishable from the package this claims to substitute? Comparing commits only ever answered it by proxy, and answered it wrongly — under locked versioning the pin routinely lags the released commit by commits that never touched `bitmap`, which is a difference with no consequence.
 
@@ -81,10 +81,10 @@ The stamp mutates a tracked file, so the cleanup runs from a `trap` — an inter
 
 ```sh
 VERSION=0.3.0
-trap 'git checkout -- packages/bitmap-rs/package.json; npm ci' EXIT
+trap 'git checkout -- packages/bitmap-wasm/package.json; npm ci' EXIT
 
 npm install --no-save "@flighthq/bitmap@$VERSION" "@flighthq/types@$VERSION"
-npx vitest run --config packages/bitmap-rs/vitest.config.published.ts   # parity vs the release
+npx vitest run --config packages/bitmap-wasm/vitest.config.published.ts   # parity vs the release
 npm run test:release                                                    # artifact gate
 npx tsx scripts/version-packages.ts "$VERSION" --flight "$VERSION"      # stamp
 npx vitest run tests/generator/facade-packaging.test.ts                 # post-stamp check

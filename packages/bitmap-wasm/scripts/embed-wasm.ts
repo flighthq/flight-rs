@@ -17,7 +17,7 @@ const bytes = readFileSync(join(wasmDir, 'surface_wasm_bg.wasm'));
 
 // wasm-pack scaffolds the out-dir as if it were its own publishable package,
 // dropping a `package.json` and a `.gitignore` (`*`). This dir is generated
-// output inside @flighthq/bitmap-rs, not a package: the stray manifest would
+// output inside @flighthq/bitmap-wasm, not a package: the stray manifest would
 // register as a phantom workspace, and the whole dir is git-ignored anyway.
 // Strip both so every bake leaves src/wasm holding only the artifacts.
 for (const scaffold of ['package.json', '.gitignore', 'surface_wasm_bg.wasm', 'surface_wasm_bg.wasm.d.ts']) {

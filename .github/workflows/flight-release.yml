@@ -1,6 +1,6 @@
 name: Flight release bridge
 
-# Publishes @flighthq/bitmap-rs whenever FLIGHT publishes, at the version Flight released.
+# Publishes @flighthq/bitmap-wasm whenever FLIGHT publishes, at the version Flight released.
 #
 # Flight uses locked versioning: every package ships at the family version whether or not it changed.
 # This package is part of that family, so it ships too, and the version Flight names is authoritative.
@@ -107,7 +107,7 @@ jobs:
         # The real gate. If the Rust kernels no longer match the TypeScript being released, this
         # package would be a drop-in that silently computes different pixels — worse for a consumer
         # than a version briefly missing from the family. Fix and re-run via workflow_dispatch.
-        run: npx vitest run --config packages/bitmap-rs/vitest.config.published.ts
+        run: npx vitest run --config packages/bitmap-wasm/vitest.config.published.ts
 
       # Scoped to the artifact, not the repository. The full suite also carries generator
       # bookkeeping — compiled-candidate counts, lowering coverage, conformance shape — which moves

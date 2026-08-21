@@ -1,6 +1,6 @@
 name: Release
 
-# The MANUAL release path for @flighthq/bitmap-rs. Ordinary releases do not come through here —
+# The MANUAL release path for @flighthq/bitmap-wasm. Ordinary releases do not come through here —
 # flight-release.yml publishes when Flight publishes, which is the only moment the dependency this
 # package declares is guaranteed to exist.
 #

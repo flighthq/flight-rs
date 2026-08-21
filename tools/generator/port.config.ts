@@ -245,8 +245,8 @@ export const portConfig = {
   } satisfies Record<string, number>,
   blessedFacades: [
     {
-      package: '@flighthq/bitmap-rs',
-      path: 'packages/bitmap-rs',
+      package: '@flighthq/bitmap-wasm',
+      path: 'packages/bitmap-wasm',
       reason: 'Curated JavaScript/wasm compatibility boundary for the generated @flighthq/bitmap implementation.',
     },
   ],

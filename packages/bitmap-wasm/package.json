@@ -1,12 +1,12 @@
 {
-  "name": "@flighthq/bitmap-rs",
+  "name": "@flighthq/bitmap-wasm",
   "version": "0.3.0",
   "author": "Joshua Granick and other contributors",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/flighthq/flight-rs.git",
-    "directory": "packages/bitmap-rs"
+    "directory": "packages/bitmap-wasm"
   },
   "type": "module",
   "publishConfig": {
@@ -46,7 +46,7 @@
   },
   "description": "wasm-backed drop-in for @flighthq/bitmap: identical API, bulk pixel ops run in Rust",
   "sideEffects": false,
-  "flightRsSubstitute": {
+  "flightWasmSubstitute": {
     "authoritativePackage": "@flighthq/bitmap",
     "crate": "flighthq-bitmap",
     "kind": "rust-wasm",

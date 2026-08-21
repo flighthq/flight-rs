@@ -13,7 +13,7 @@
 // test first:
 //
 //   npm install --no-save @flighthq/bitmap@<version> @flighthq/types@<version>
-//   npx vitest run --config packages/bitmap-rs/vitest.config.published.ts
+//   npx vitest run --config packages/bitmap-wasm/vitest.config.published.ts
 
 import { defineConfig } from 'vitest/config';
 

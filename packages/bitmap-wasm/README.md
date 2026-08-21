@@ -1,23 +1,23 @@
-# @flighthq/bitmap-rs
+# @flighthq/bitmap-wasm
 
 A wasm-backed drop-in for [`@flighthq/bitmap`](https://www.npmjs.com/package/@flighthq/bitmap). The API is identical; the bulk pixel kernels run in Rust compiled to WebAssembly instead of TypeScript.
 
 ```sh
-npm install @flighthq/bitmap-rs
+npm install @flighthq/bitmap-wasm
 ```
 
 Swap the import and nothing else changes:
 
 ```diff
 -import { convolveBitmap, getBitmapHistogram } from '@flighthq/bitmap';
-+import { convolveBitmap, getBitmapHistogram } from '@flighthq/bitmap-rs';
++import { convolveBitmap, getBitmapHistogram } from '@flighthq/bitmap-wasm';
 ```
 
 Call `initBitmapWasm()` once before the first pixel operation, or let the first call initialize lazily. Initialization is synchronous: the module is embedded as base64 in the bundle, so there is no `fetch`, no separate `.wasm` asset to host, and no `await` in your startup path.
 
 ```ts
 import { createBitmap, createBitmapRegion } from '@flighthq/bitmap';
-import { getBitmapHistogram, initBitmapWasm } from '@flighthq/bitmap-rs';
+import { getBitmapHistogram, initBitmapWasm } from '@flighthq/bitmap-wasm';
 
 initBitmapWasm();
 const bitmap = createBitmap(256, 256, 0xff102030);
