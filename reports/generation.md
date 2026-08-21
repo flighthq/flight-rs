@@ -14,7 +14,7 @@ Upstream commit: `cad72aa3ea4e6e76a050918a403dcb10efdfcb0d`
 | Cultivated packages | 1 |
 | Host-bound packages | 4 |
 | Excluded packages | 1 |
-| Source/package blockers | 455 |
+| Source/package blockers | 449 |
 | Eligible task constructions | 225 |
 | Portable executable task constructions | 19 |
 | Host-placeholder task constructions | 0 |
@@ -38,7 +38,7 @@ Upstream commit: `cad72aa3ea4e6e76a050918a403dcb10efdfcb0d`
 | `@flighthq/application-gl` | host-backend | emittable | dependency-blocked | 3/3 | 2/2 | 0 | 1/1 | 1 | 0 | no |
 | `@flighthq/assets` | generated | blocked | source-blocked | 4/5 | 17/18 | 1 | 1/1 | 1 | 2 | no |
 | `@flighthq/audio` | generated | blocked | source-blocked | 5/7 | 34/34 | 0 | 4/4 | 1 | 2 | no |
-| `@flighthq/binpack` | generated | blocked | source-blocked | 2/4 | 3/4 | 1 | 1/1 | 0 | 3 | no |
+| `@flighthq/binpack` | generated | blocked | source-blocked | 2/4 | 4/4 | 0 | 1/1 | 0 | 2 | no |
 | `@flighthq/bitmap` | cultivated | cultivated | not-applicable | 0/0 | 0/109 | 109 | 7/10 | 0 | 0 | partial |
 | `@flighthq/bitmapfont` | generated | blocked | source-blocked | 7/8 | 16/16 | 0 | 2/2 | 0 | 1 | no |
 | `@flighthq/bitmapfont-formats` | generated | emittable | dependency-blocked | 6/6 | 5/4 | 0 | 1/1 | 3 | 0 | no |
@@ -115,7 +115,7 @@ Upstream commit: `cad72aa3ea4e6e76a050918a403dcb10efdfcb0d`
 | `@flighthq/scene2d` | generated | blocked | source-blocked | 2/9 | 25/33 | 8 | 18/29 | 0 | 8 | no |
 | `@flighthq/scene2d-canvas` | host-backend | blocked | source-blocked | 37/41 | 109/119 | 10 | 5/5 | 29 | 5 | no |
 | `@flighthq/scene2d-dom` | host-bound | host-bound | not-applicable | 0/0 | 0/61 | 61 | 1/1 | 0 | 0 | no |
-| `@flighthq/scene2d-formats` | generated | blocked | source-blocked | 6/23 | 16/11 | 2 | 2/3 | 0 | 18 | no |
+| `@flighthq/scene2d-formats` | generated | blocked | source-blocked | 10/23 | 24/11 | 0 | 2/3 | 0 | 13 | no |
 | `@flighthq/scene2d-gl` | host-backend | blocked | source-blocked | 27/32 | 90/97 | 9 | 1/1 | 17 | 6 | no |
 | `@flighthq/scene2d-resources` | generated | blocked | source-blocked | 3/10 | 14/14 | 0 | 2/2 | 0 | 7 | no |
 | `@flighthq/scene2d-wgpu` | host-backend | blocked | source-blocked | 27/32 | 91/99 | 9 | 1/1 | 18 | 6 | no |
@@ -664,9 +664,8 @@ Disposition partition: 173 eligible = 13 portable executable + 0 host placeholde
 
 ### `@flighthq/binpack`
 
-- **package** `upstream/packages/binpack/src`: Generated crate is missing 1 of 4 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/binpack/src/explainUnpackedRectangles.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (1 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/binpack/src/packRectangles.ts`: compareRectangleId: typeof operand has no inferred Rust type: {"kind":"identifier","name":"a"}
+- **emission** `upstream/packages/binpack/src/explainUnpackedRectangles.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (2 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/binpack/src/packRectangles.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (2 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 
 ### `@flighthq/bitmapfont`
 
@@ -889,7 +888,7 @@ Disposition partition: 173 eligible = 13 portable executable + 0 host placeholde
 
 ### `@flighthq/intl`
 
-- **emission** `upstream/packages/intl/src/cache.ts`: getCacheKey: typeof operand has no inferred Rust type: {"kind":"identifier","name":"locale"}
+- **emission** `upstream/packages/intl/src/cache.ts`: getCacheKey: JSON.stringify requires a portable scalar or structural array
 - **emission** `upstream/packages/intl/src/collator.ts`: getCollator: new-expression Rust lowering is not implemented: crate::host_value::<crate::OpaqueHostValue>("host.Collator")
 - **emission** `upstream/packages/intl/src/datetime.ts`: formatDateValue: new-expression Rust lowering is not implemented: crate::host_value::<crate::OpaqueHostValue>("host.DateTimeFormat")
 - **emission** `upstream/packages/intl/src/list.ts`: formatList: new-expression Rust lowering is not implemented: crate::host_value::<crate::OpaqueHostValue>("host.ListFormat")
@@ -915,7 +914,7 @@ Disposition partition: 173 eligible = 13 portable executable + 0 host placeholde
 ### `@flighthq/log`
 
 - **package** `upstream/packages/log/src`: Generated crate is missing 3 of 62 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/log/src/log.ts`: createChildLogContext: object literal requires an inferred structural type (target=unknown, properties=spread,spread)
+- **emission** `upstream/packages/log/src/log.ts`: createJsonLogFormatter: JSON.stringify requires a portable scalar or structural array
 
 ### `@flighthq/media`
 
@@ -1083,23 +1082,18 @@ Disposition partition: 173 eligible = 13 portable executable + 0 host placeholde
 
 ### `@flighthq/scene2d-formats`
 
-- **package** `upstream/packages/scene2d-formats/src`: Generated crate is missing 2 of 11 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/scene2d-formats/src/lottieDocument.ts`: createLottieTrack: spread Rust lowering is not implemented
 - **emission** `upstream/packages/scene2d-formats/src/riveAnimation.ts`: createRiveTypedChannel: spread Rust lowering is not implemented
-- **emission** `upstream/packages/scene2d-formats/src/riveAssets.ts`: readRiveNumber: typeof operand has no inferred Rust type: {"kind":"property","name":"value","object":{"kind":"identifier","name":"property"},"optional":false}
-- **emission** `upstream/packages/scene2d-formats/src/riveClipping.ts`: readRiveNumber: typeof operand has no inferred Rust type: {"kind":"property","name":"value","object":{"kind":"identifier","name":"property"},"optional":false}
 - **emission** `upstream/packages/scene2d-formats/src/riveDocument.ts`: _floatView: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
-- **emission** `upstream/packages/scene2d-formats/src/riveDrawOrder.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene2d-formats/src/riveLayout.ts`: findRiveLayoutComponents: typeof operand has no inferred Rust type: {"kind":"property","name":"value","object":{"kind":"identifier","name":"styleProperty"},"optional":false}
-- **emission** `upstream/packages/scene2d-formats/src/riveScene2D.ts`: readRiveNumber: typeof operand has no inferred Rust type: {"kind":"property","name":"value","object":{"kind":"identifier","name":"property"},"optional":false}
-- **emission** `upstream/packages/scene2d-formats/src/riveScene2DDocument.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene2d-formats/src/riveDrawOrder.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (8 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene2d-formats/src/riveLayout.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (8 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene2d-formats/src/riveScene2D.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (8 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene2d-formats/src/riveScene2DDocument.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (8 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 - **emission** `upstream/packages/scene2d-formats/src/riveShapePaint.ts`: trimRivePaths: spread Rust lowering is not implemented
-- **emission** `upstream/packages/scene2d-formats/src/riveShapePath.ts`: readRiveDouble: typeof operand has no inferred Rust type: {"kind":"property","name":"value","object":{"kind":"identifier","name":"property"},"optional":false}
-- **emission** `upstream/packages/scene2d-formats/src/riveSkeleton.ts`: readRiveNumber: typeof operand has no inferred Rust type: {"kind":"property","name":"value","object":{"kind":"identifier","name":"property"},"optional":false}
-- **emission** `upstream/packages/scene2d-formats/src/riveSkin.ts`: readRiveNumber: typeof operand has no inferred Rust type: {"kind":"property","name":"value","object":{"kind":"identifier","name":"property"},"optional":false}
-- **emission** `upstream/packages/scene2d-formats/src/riveSolo.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene2d-formats/src/riveStateMachine.ts`: readRiveNumber: typeof operand has no inferred Rust type: {"kind":"property","name":"value","object":{"kind":"identifier","name":"property"},"optional":false}
-- **emission** `upstream/packages/scene2d-formats/src/riveText.ts`: readRiveNumber: typeof operand has no inferred Rust type: {"kind":"property","name":"value","object":{"kind":"identifier","name":"property"},"optional":false}
+- **emission** `upstream/packages/scene2d-formats/src/riveShapePath.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (8 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene2d-formats/src/riveSkeleton.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (8 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene2d-formats/src/riveSolo.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (8 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene2d-formats/src/riveText.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (8 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 - **emission** `upstream/packages/scene2d-formats/src/svgDocument.ts`: createSvgTextNode: object field enabled is not initialized by its structural spreads
 
 ### `@flighthq/scene2d-gl`

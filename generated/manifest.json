@@ -11813,7 +11813,7 @@
           ],
           "declarations": 4,
           "module": "enable_asset_guards",
-          "outputSha256": "sha256:74fa608133b8bab24b8572264f58c02e900850240081afed5b5575f3767d7788",
+          "outputSha256": "sha256:3fbe4fd080e4bd489716e42a01239446534b4fd0f641470e131ada03bf8874a4",
           "source": "upstream/packages/assets/src/enableAssetGuards.ts",
           "usesOpaqueHostValues": true
         },
@@ -12362,22 +12362,15 @@
       "blockers": [
         {
           "diagnostics": [],
-          "fingerprint": "sha256:7a6174bfd74668575c7e0a106a1f2a3c4a1281432db038f1f26c2eab481fb357",
-          "reason": "Generated crate is missing 1 of 4 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.",
-          "source": "upstream/packages/binpack/src",
-          "stage": "package"
-        },
-        {
-          "diagnostics": [],
           "fingerprint": "sha256:4b2c589f9ff8b1439fa53e70e92c9398e84b7c00227d2e80505e01b7034a521b",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (1 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (2 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/binpack/src/explainUnpackedRectangles.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:010a7df6806ea8692b3a056b67f24ea1a9ed8f25096787527eceef7d76dc554a",
-          "reason": "compareRectangleId: typeof operand has no inferred Rust type: {\"kind\":\"identifier\",\"name\":\"a\"}",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (2 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/binpack/src/packRectangles.ts",
           "stage": "emission"
         }
@@ -12421,16 +12414,19 @@
       ],
       "fullyPromotedTarget": false,
       "generatedExports": [
+        "BIN_PACK_DEFAULT_MAX_EXTENT",
         "explainUnpackedRectangles",
         "getPackResultOccupancy",
         "packRectangles"
       ],
-      "missingExports": [
-        "BIN_PACK_DEFAULT_MAX_EXTENT"
-      ],
+      "missingExports": [],
       "package": "@flighthq/binpack",
       "promotedTarget": false,
       "requiredDependencies": [
+        {
+          "crate": "flighthq-geometry",
+          "package": "@flighthq/geometry"
+        },
         {
           "crate": "flighthq-types",
           "package": "@flighthq/types"
@@ -25816,7 +25812,7 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:ed23feb112df18511be621ac58780267cfcceed5042f50e00108e48e51e40d42",
-          "reason": "getCacheKey: typeof operand has no inferred Rust type: {\"kind\":\"identifier\",\"name\":\"locale\"}",
+          "reason": "getCacheKey: JSON.stringify requires a portable scalar or structural array",
           "source": "upstream/packages/intl/src/cache.ts",
           "stage": "emission"
         },
@@ -26847,7 +26843,7 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:7e2aa8ce1d0f261a978f58e677827f1be0d5cb9c6785d192594f51f8b890dcb8",
-          "reason": "createChildLogContext: object literal requires an inferred structural type (target=unknown, properties=spread,spread)",
+          "reason": "createJsonLogFormatter: JSON.stringify requires a portable scalar or structural array",
           "source": "upstream/packages/log/src/log.ts",
           "stage": "emission"
         }
@@ -36378,13 +36374,6 @@
       "blockers": [
         {
           "diagnostics": [],
-          "fingerprint": "sha256:035f7174ee09a01c6ee53a9b3a46fb927d00d5d255b90904d0b6bbad27b4505d",
-          "reason": "Generated crate is missing 2 of 11 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.",
-          "source": "upstream/packages/scene2d-formats/src",
-          "stage": "package"
-        },
-        {
-          "diagnostics": [],
           "fingerprint": "sha256:7ba2ab43ffec812d860bb0ef4295c30f02f3c429cfa166cb4d33944293440fce",
           "reason": "createLottieTrack: spread Rust lowering is not implemented",
           "source": "upstream/packages/scene2d-formats/src/lottieDocument.ts",
@@ -36399,20 +36388,6 @@
         },
         {
           "diagnostics": [],
-          "fingerprint": "sha256:58722a0ff5077a4d1b4dd9a401b1587a80f15c1c9ae0d520c7500426502c38b0",
-          "reason": "readRiveNumber: typeof operand has no inferred Rust type: {\"kind\":\"property\",\"name\":\"value\",\"object\":{\"kind\":\"identifier\",\"name\":\"property\"},\"optional\":false}",
-          "source": "upstream/packages/scene2d-formats/src/riveAssets.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
-          "fingerprint": "sha256:690aad36e0b5d005641dd859d627fb7f89bbda51b027d0fa409c0f3c8271ccbe",
-          "reason": "readRiveNumber: typeof operand has no inferred Rust type: {\"kind\":\"property\",\"name\":\"value\",\"object\":{\"kind\":\"identifier\",\"name\":\"property\"},\"optional\":false}",
-          "source": "upstream/packages/scene2d-formats/src/riveClipping.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
           "fingerprint": "sha256:53781d168e6b0382ff3a8494266f73500cc1b185b099435ebdf700a29c0e024c",
           "reason": "_floatView: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object",
           "source": "upstream/packages/scene2d-formats/src/riveDocument.ts",
@@ -36421,28 +36396,28 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:df682d5ce3de6f7c7f830f37642b7c5d38ba037d3e3e669b048e4e711a56c659",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (8 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/scene2d-formats/src/riveDrawOrder.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:690a92f78a659c34f9505871112f184ca65af83222e264ae01d8884193719dc6",
-          "reason": "findRiveLayoutComponents: typeof operand has no inferred Rust type: {\"kind\":\"property\",\"name\":\"value\",\"object\":{\"kind\":\"identifier\",\"name\":\"styleProperty\"},\"optional\":false}",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (8 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/scene2d-formats/src/riveLayout.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:07fd262b1716e75cfcbda9ac4640327f8085455f11e8149328d85550711362f7",
-          "reason": "readRiveNumber: typeof operand has no inferred Rust type: {\"kind\":\"property\",\"name\":\"value\",\"object\":{\"kind\":\"identifier\",\"name\":\"property\"},\"optional\":false}",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (8 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/scene2d-formats/src/riveScene2D.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:4458eeb654edf8aac15da0449b1a9f59619d734a79331581ca256ec243a12514",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (8 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/scene2d-formats/src/riveScene2DDocument.ts",
           "stage": "emission"
         },
@@ -36456,42 +36431,28 @@
         {
           "diagnostics": [],
           "fingerprint": "sha256:9aeb0a9c5e380033ada8daf155883b9a98ea506835fba4598aa0b30a7b3c61f7",
-          "reason": "readRiveDouble: typeof operand has no inferred Rust type: {\"kind\":\"property\",\"name\":\"value\",\"object\":{\"kind\":\"identifier\",\"name\":\"property\"},\"optional\":false}",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (8 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/scene2d-formats/src/riveShapePath.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
           "fingerprint": "sha256:72c3bd83cbea4cff4545b9bb456fd4f0005a28f4305a8cf62386bddf64ce54e1",
-          "reason": "readRiveNumber: typeof operand has no inferred Rust type: {\"kind\":\"property\",\"name\":\"value\",\"object\":{\"kind\":\"identifier\",\"name\":\"property\"},\"optional\":false}",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (8 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/scene2d-formats/src/riveSkeleton.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
-          "fingerprint": "sha256:6213db485a5dfca959c0e038640bcd1710c7bcae4f5e2e62c2b8e424e2d121af",
-          "reason": "readRiveNumber: typeof operand has no inferred Rust type: {\"kind\":\"property\",\"name\":\"value\",\"object\":{\"kind\":\"identifier\",\"name\":\"property\"},\"optional\":false}",
-          "source": "upstream/packages/scene2d-formats/src/riveSkin.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
           "fingerprint": "sha256:51de1ecd51921484c110a51e24c2da3a02202db1c6ac1dd7a48dffcb1972f79b",
-          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (8 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/scene2d-formats/src/riveSolo.ts",
           "stage": "emission"
         },
         {
           "diagnostics": [],
-          "fingerprint": "sha256:7c4ba91f7a09298c428e4c4ddf6e5d4050d405005d07effe90c36e0407bfbb1e",
-          "reason": "readRiveNumber: typeof operand has no inferred Rust type: {\"kind\":\"property\",\"name\":\"value\",\"object\":{\"kind\":\"identifier\",\"name\":\"property\"},\"optional\":false}",
-          "source": "upstream/packages/scene2d-formats/src/riveStateMachine.ts",
-          "stage": "emission"
-        },
-        {
-          "diagnostics": [],
           "fingerprint": "sha256:948d2912fcbdab6d8f6cf02534f8ddecc49b8f16a98c74ec30035ae17b59b106",
-          "reason": "readRiveNumber: typeof operand has no inferred Rust type: {\"kind\":\"property\",\"name\":\"value\",\"object\":{\"kind\":\"identifier\",\"name\":\"property\"},\"optional\":false}",
+          "reason": "Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (8 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.",
           "source": "upstream/packages/scene2d-formats/src/riveText.ts",
           "stage": "emission"
         },
@@ -36613,6 +36574,54 @@
         },
         {
           "declarationNames": [
+            "RIVE_ASSET_BYTES",
+            "RIVE_ASSET_CDN_BASE_URL",
+            "RIVE_ASSET_HEIGHT",
+            "RIVE_ASSET_NAME",
+            "RIVE_ASSET_WIDTH",
+            "RIVE_FILE_ASSET",
+            "RIVE_FILE_ASSET_CONTENTS",
+            "createRiveFileAssets",
+            "readRiveBytes",
+            "readRiveNumber",
+            "readRiveText"
+          ],
+          "declarations": 11,
+          "module": "rive_assets",
+          "outputSha256": "sha256:f05926ae14b5a3b458692b420e25298a95e0e63b7f0d6ec3cfedf16f56a2f0f0",
+          "source": "upstream/packages/scene2d-formats/src/riveAssets.ts",
+          "usesOpaqueHostValues": false
+        },
+        {
+          "declarationNames": [
+            "RIVE_CLIPPING_SHAPE",
+            "RIVE_CLIP_FILL_RULE",
+            "RIVE_CLIP_IS_VISIBLE",
+            "RIVE_CLIP_SOURCE_ID",
+            "RIVE_NODE_TYPE_KEY",
+            "RIVE_ROTATION",
+            "RIVE_SCALE_X",
+            "RIVE_SCALE_Y",
+            "RIVE_X",
+            "RIVE_X_LEGACY",
+            "RIVE_Y",
+            "RIVE_Y_LEGACY",
+            "applyRiveClipping",
+            "createRiveClipPath",
+            "createRiveLocalMatrix",
+            "createRiveRelativeTransforms",
+            "readRiveFlag",
+            "readRiveNumber",
+            "reportRiveClipDrop"
+          ],
+          "declarations": 19,
+          "module": "rive_clipping",
+          "outputSha256": "sha256:dbb381f52da242e05233a372d84cb4007fbcc8108b9cc151b2f0a693a09cdaef",
+          "source": "upstream/packages/scene2d-formats/src/riveClipping.ts",
+          "usesOpaqueHostValues": false
+        },
+        {
+          "declarationNames": [
             "RIVE_BYTES_PROPERTY_KEYS",
             "RIVE_COLOR_PROPERTY_KEYS",
             "RIVE_DOUBLE_PROPERTY_KEYS",
@@ -36665,6 +36674,79 @@
         },
         {
           "declarationNames": [
+            "RIVE_CUBIC_WEIGHT",
+            "RIVE_IDENTITY_BONE_SLOT",
+            "RIVE_INFLUENCES_PER_WEIGHT",
+            "RIVE_MATRIX_TX_OFFSET",
+            "RIVE_MATRIX_TY_OFFSET",
+            "RIVE_SKIN",
+            "RIVE_SKIN_XX",
+            "RIVE_SKIN_XY",
+            "RIVE_SKIN_YX",
+            "RIVE_SKIN_YY",
+            "RIVE_TENDON",
+            "RIVE_TENDON_BONE_ID",
+            "RIVE_TENDON_XX",
+            "RIVE_TENDON_XY",
+            "RIVE_TENDON_YX",
+            "RIVE_TENDON_YY",
+            "RIVE_WEIGHT",
+            "RIVE_WEIGHT_INDICES",
+            "RIVE_WEIGHT_IN_INDICES",
+            "RIVE_WEIGHT_IN_VALUES",
+            "RIVE_WEIGHT_OUT_INDICES",
+            "RIVE_WEIGHT_OUT_VALUES",
+            "RIVE_WEIGHT_SCALE",
+            "RIVE_WEIGHT_VALUES",
+            "RiveTendonBone",
+            "_bindSpace",
+            "_boneSpace",
+            "collectRiveTendonBones",
+            "createRiveSkin2D",
+            "findRiveSkin",
+            "findRiveWeight",
+            "readRiveMatrix",
+            "readRiveNumber",
+            "readRivePackedByte",
+            "readRiveWeightSlots"
+          ],
+          "declarations": 35,
+          "module": "rive_skin",
+          "outputSha256": "sha256:51551d8a483a0a819db0cb094cde1a3c3248ba3b0414183c6720148af99c6b99",
+          "source": "upstream/packages/scene2d-formats/src/riveSkin.ts",
+          "usesOpaqueHostValues": false
+        },
+        {
+          "declarationNames": [
+            "RIVE_ANIMATION_NAME",
+            "RIVE_INPUT_BOOL_VALUE",
+            "RIVE_INPUT_NUMBER_VALUE",
+            "RIVE_LAYER_STATE",
+            "RIVE_SM_NAME",
+            "RIVE_STATE_ANIMATION_ID",
+            "RIVE_STATE_MACHINE",
+            "RIVE_STATE_MACHINE_BOOL",
+            "RIVE_STATE_MACHINE_INPUT",
+            "RIVE_STATE_MACHINE_LAYER",
+            "RIVE_STATE_MACHINE_NUMBER",
+            "RIVE_STATE_TRANSITION",
+            "RIVE_TRANSITION_DURATION",
+            "RIVE_TRANSITION_EXIT_TIME",
+            "RIVE_TRANSITION_FLAGS",
+            "RIVE_TRANSITION_STATE_TO_ID",
+            "createRiveStateMachineInput",
+            "createRiveStateMachines",
+            "readRiveNumber",
+            "readRiveText"
+          ],
+          "declarations": 20,
+          "module": "rive_state_machine",
+          "outputSha256": "sha256:d135e89c95edc4fea67a5e2ea2dd528fa353fb185fc34bbbd1df44206595e0c6",
+          "source": "upstream/packages/scene2d-formats/src/riveStateMachine.ts",
+          "usesOpaqueHostValues": false
+        },
+        {
+          "declarationNames": [
             "createReadyImageResourceForTest"
           ],
           "declarations": 1,
@@ -36677,11 +36759,19 @@
       "fullyPromotedTarget": false,
       "generatedExports": [
         "applyAnimationClipToLottieDocument",
+        "applyRiveClipping",
         "applyRiveDrawOrder",
         "applyRiveSolo",
         "createReadyImageResourceForTest",
+        "createRiveFileAssets",
         "createRiveImageSprite",
+        "createRiveLayoutImports",
         "createRiveObjectGraph",
+        "createRivePath",
+        "createRiveRichText",
+        "createRiveSkeleton2D",
+        "createRiveSkin2D",
+        "createRiveStateMachines",
         "createScene2DDocumentFromRiveDocument",
         "createScene2DFromLottieDocument",
         "createScene2DFromRiveDocument",
@@ -36693,13 +36783,22 @@
         "markRiveNestedArtboard",
         "parseRiveDocument"
       ],
-      "missingExports": [
-        "createRiveSkeleton2D",
-        "createRiveSkin2D"
-      ],
+      "missingExports": [],
       "package": "@flighthq/scene2d-formats",
       "promotedTarget": false,
       "requiredDependencies": [
+        {
+          "crate": "flighthq-clip",
+          "package": "@flighthq/clip"
+        },
+        {
+          "crate": "flighthq-color",
+          "package": "@flighthq/color"
+        },
+        {
+          "crate": "flighthq-geometry",
+          "package": "@flighthq/geometry"
+        },
         {
           "crate": "flighthq-image",
           "package": "@flighthq/image"
@@ -36709,12 +36808,36 @@
           "package": "@flighthq/importdiagnostics"
         },
         {
+          "crate": "flighthq-math",
+          "package": "@flighthq/math"
+        },
+        {
           "crate": "flighthq-node",
           "package": "@flighthq/node"
         },
         {
+          "crate": "flighthq-path",
+          "package": "@flighthq/path"
+        },
+        {
+          "crate": "flighthq-path-boolean",
+          "package": "@flighthq/path-boolean"
+        },
+        {
           "crate": "flighthq-scene2d",
           "package": "@flighthq/scene2d"
+        },
+        {
+          "crate": "flighthq-shape",
+          "package": "@flighthq/shape"
+        },
+        {
+          "crate": "flighthq-skeleton2d",
+          "package": "@flighthq/skeleton2d"
+        },
+        {
+          "crate": "flighthq-text",
+          "package": "@flighthq/text"
         },
         {
           "crate": "flighthq-texture",
@@ -39146,7 +39269,7 @@
           ],
           "declarations": 4,
           "module": "gltf_punctual_lights",
-          "outputSha256": "sha256:934206360041fae71062825a945d870f6dd5add35f30e3ef45c6a8f643ce4b34",
+          "outputSha256": "sha256:13dca862d56914ae12f0a9177cb903ab48f43813f89f33cde7244225f9e88512",
           "source": "upstream/packages/scene3d-formats/src/gltfPunctualLights.ts",
           "usesOpaqueHostValues": false
         },
@@ -39244,7 +39367,7 @@
           ],
           "declarations": 7,
           "module": "mtl_parse",
-          "outputSha256": "sha256:6cef2f0988c90286328527e0f5d4ff0eef08668aaed13c60ba12c6a20f034004",
+          "outputSha256": "sha256:e102b8255eafec056f17cf0094265b07d455a1c6eea50104eb7a9842e74b1dd8",
           "source": "upstream/packages/scene3d-formats/src/mtlParse.ts",
           "usesOpaqueHostValues": false
         },
@@ -69527,7 +69650,7 @@
     "excluded": 1,
     "hostBound": 4,
     "packages": 143,
-    "sourceBlockers": 455
+    "sourceBlockers": 449
   },
   "targets": [
     {
