@@ -1,5 +1,5 @@
 use flighthq_bitmap::{
-    apply_bitmap_curve, apply_bitmap_levels, apply_bitmap_palette_map,
+    BitmapComparisonSource, apply_bitmap_curve, apply_bitmap_levels, apply_bitmap_palette_map,
     build_bitmap_brightness_color_matrix, color_matrix_bitmap, compare_bitmap_fingerprints,
     convolve_bitmap, copy_bitmap_pixels, create_bitmap_fingerprint, dilate_bitmap, erode_bitmap,
     fill_bitmap_noise, fill_bitmap_rectangle, get_bitmap_color_bounds_rectangle,
@@ -23,6 +23,15 @@ fn bitmap(data: Vec<u8>, width: f64, height: f64) -> Bitmap {
         version: 0.0,
         width,
         ..Default::default()
+    }
+}
+
+fn comparison_source(data: Vec<u8>, width: f64, height: f64) -> BitmapComparisonSource {
+    BitmapComparisonSource {
+        __flight_identity: std::sync::Arc::new(()),
+        width,
+        height,
+        data: data.into_iter().map(f64::from).collect(),
     }
 }
 
@@ -221,7 +230,7 @@ fn nullable_palette_maps_pass_through_unselected_channels() {
     let mut destination = region(bitmap(vec![0; 4], 1.0, 1.0));
     let red = (0..256).map(|value| (255 - value) as f64).collect();
 
-    apply_bitmap_palette_map(&mut destination, &source, Some(red), None, None, None);
+    apply_bitmap_palette_map(&mut destination, &source, &Some(red), &None, &None, &None);
 
     assert_eq!(destination.bitmap.data, vec![245, 20, 30, 40]);
     assert_eq!(destination.bitmap.version, 1.0);
@@ -233,7 +242,7 @@ fn compatible_typed_array_unions_drive_curve_and_levels_kernels() {
     let mut curved = region(bitmap(vec![0; 4], 1.0, 1.0));
     let inverted = (0..256).map(|value| (255 - value) as u8).collect();
 
-    apply_bitmap_curve(&mut curved, &source, Some(inverted), None, None, None);
+    apply_bitmap_curve(&mut curved, &source, &Some(inverted), &None, &None, None);
     assert_eq!(curved.bitmap.data, vec![245, 128, 240, 77]);
     assert_eq!(curved.bitmap.version, 1.0);
 
@@ -245,8 +254,8 @@ fn compatible_typed_array_unions_drive_curve_and_levels_kernels() {
 
 #[test]
 fn mismatch_summary_reports_tolerance_fraction_and_maximum_delta() {
-    let source = bitmap(vec![0, 0, 0, 255, 0, 0, 0, 255], 2.0, 1.0);
-    let other = bitmap(vec![10, 0, 0, 255, 0, 128, 0, 255], 2.0, 1.0);
+    let source = comparison_source(vec![0, 0, 0, 255, 0, 0, 0, 255], 2.0, 1.0);
+    let other = comparison_source(vec![10, 0, 0, 255, 0, 128, 0, 255], 2.0, 1.0);
     let mismatch = get_bitmap_mismatch(&source, &other, Some(10.0));
 
     assert_eq!(mismatch.mismatched_pixels, 1.0);

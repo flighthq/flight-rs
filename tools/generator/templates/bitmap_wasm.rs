@@ -2,7 +2,7 @@
 #![forbid(unsafe_code)]
 
 use flighthq_bitmap::{
-    apply_bitmap_curve, apply_bitmap_levels, apply_bitmap_palette_map,
+    BitmapComparisonSource, apply_bitmap_curve, apply_bitmap_levels, apply_bitmap_palette_map,
     build_bitmap_brightness_color_matrix, build_bitmap_contrast_color_matrix,
     build_bitmap_grayscale_color_matrix, build_bitmap_hue_rotation_color_matrix,
     build_bitmap_invert_color_matrix, build_bitmap_saturation_color_matrix,
@@ -33,6 +33,15 @@ fn bitmap(data: &[u8], width: f64, height: f64) -> Bitmap {
         version: 0.0,
         width,
         ..Default::default()
+    }
+}
+
+fn comparison_source(data: &[u8], width: f64, height: f64) -> BitmapComparisonSource {
+    BitmapComparisonSource {
+        __flight_identity: std::sync::Arc::new(()),
+        width,
+        height,
+        data: data.iter().map(|value| f64::from(*value)).collect(),
     }
 }
 
@@ -103,9 +112,9 @@ pub fn apply_bitmap_curve_wasm(
     apply_bitmap_curve(
         &mut dest,
         &source,
-        optional_byte_channel_map(red_lut),
-        optional_byte_channel_map(green_lut),
-        optional_byte_channel_map(blue_lut),
+        &optional_byte_channel_map(red_lut),
+        &optional_byte_channel_map(green_lut),
+        &optional_byte_channel_map(blue_lut),
         optional_byte_channel_map(alpha_lut),
     );
     copy_u8_output(dest_data, &dest.bitmap.data);
@@ -151,10 +160,10 @@ pub fn apply_bitmap_palette_map_wasm(
     apply_bitmap_palette_map(
         &mut dest,
         &source,
-        optional_channel_map(red_map),
-        optional_channel_map(green_map),
-        optional_channel_map(blue_map),
-        optional_channel_map(alpha_map),
+        &optional_channel_map(red_map),
+        &optional_channel_map(green_map),
+        &optional_channel_map(blue_map),
+        &optional_channel_map(alpha_map),
     );
     copy_u8_output(dest_data, &dest.bitmap.data);
 }
@@ -528,8 +537,8 @@ pub fn get_bitmap_mismatch_wasm(
 ) {
     assert_eq!(out.len(), 4, "mismatch output must contain four metrics");
     let mismatch = get_bitmap_mismatch(
-        &bitmap(source_data, source_width, source_height),
-        &bitmap(other_data, other_width, other_height),
+        &comparison_source(source_data, source_width, source_height),
+        &comparison_source(other_data, other_width, other_height),
         Some(channel_tolerance),
     );
     out.copy_from_slice(&[
