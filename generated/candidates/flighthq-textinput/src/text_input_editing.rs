@@ -1153,7 +1153,7 @@ pub fn get_text_input_character_index_at_point(
     }
     let mut line_start = (source.data.text.encode_utf16().count() as f64);
     let mut line_end = 0.0_f64;
-    for group in ((layout.groups).clone()).iter().cloned() {
+    for mut group in ((layout.groups).clone()).iter().cloned() {
         if (group.line_index != closest_line_index) {
             continue;
         }

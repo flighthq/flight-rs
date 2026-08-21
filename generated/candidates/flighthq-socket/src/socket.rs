@@ -322,13 +322,38 @@ fn to_socket_message(data: crate::FlightValue) -> SocketMessage {
     {
         return SocketMessage {
             __flight_identity: std::sync::Arc::new(()),
-            data: (data).clone(),
+            data: match (data).clone() {
+                crate::FlightValue::String(value) => {
+                    crate::FlightUnion2::<String, Vec<u8>>::A(value)
+                }
+                crate::FlightValue::Array(values) => crate::FlightUnion2::<String, Vec<u8>>::B(
+                    values
+                        .into_iter()
+                        .map(|value| match value {
+                            crate::FlightValue::Number(value) => value as u8,
+                            _ => {
+                                panic!("TypeScript typed-array cast received a non-numeric element")
+                            }
+                        })
+                        .collect::<Vec<_>>(),
+                ),
+                _ => panic!("TypeScript union cast received an incompatible portable value"),
+            },
             binary: false,
         };
     }
     return SocketMessage {
         __flight_identity: std::sync::Arc::new(()),
-        data: crate::FlightUnion2::<String, Vec<u8>>::B(data),
+        data: crate::FlightUnion2::<String, Vec<u8>>::B(match (data).clone() {
+            crate::FlightValue::Array(values) => values
+                .into_iter()
+                .map(|value| match value {
+                    crate::FlightValue::Number(value) => value as u8,
+                    _ => panic!("TypeScript typed-array cast received a non-numeric element"),
+                })
+                .collect::<Vec<_>>(),
+            _ => panic!("TypeScript typed-array cast received a non-array portable value"),
+        }),
         binary: true,
     };
 }

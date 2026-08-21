@@ -32,15 +32,15 @@ pub fn add_audio_bus_to_mixer(mixer: &AudioMixer, bus: &AudioBus) -> () {
     {
         return;
     }
-    let mut gain_node = crate::host_value::<()>("host.createGain");
-    gain_node.gain.value = if bus.muted { 0.0_f64 } else { bus.gain };
+    let mut gain_node = crate::host_value::<crate::OpaqueHostValue>("host.call");
+    crate::host_set("host.value", if bus.muted { 0.0_f64 } else { bus.gain });
     let mut panner_node: Option<crate::OpaqueHostValue> = None;
     {
-        (gain_node.connect)((runtime.as_mut().unwrap().master_gain_node).clone());
+        crate::host_value::<()>("host.connect");
     }
     {
         let __flight_key = (*bus).clone();
-        let __flight_value = gain_node;
+        let __flight_value = (gain_node).clone();
         if let Some((_, value)) = runtime
             .as_mut()
             .unwrap()
@@ -124,7 +124,7 @@ pub fn create_audio_mixer(
     context: crate::OpaqueHostValue,
     options: Option<AudioMixerOptions>,
 ) -> AudioMixer {
-    let mut master_gain_node = crate::host_value::<()>("host.createGain");
+    let mut master_gain_node = crate::host_value::<crate::OpaqueHostValue>("host.call");
     crate::host_set(
         "host.value",
         (options.as_ref().and_then(|value| value.master_gain))
@@ -175,7 +175,7 @@ pub fn destroy_audio_mixer(mixer: &AudioMixer) -> () {
     if (runtime).is_none() {
         return;
     }
-    for channel in ((runtime.as_mut().unwrap().active_channels).clone())
+    for mut channel in ((runtime.as_mut().unwrap().active_channels).clone())
         .iter()
         .cloned()
     {
@@ -247,12 +247,8 @@ pub fn fade_audio_bus_gain(
         .iter()
         .find(|(entry_key, _)| entry_key == &(*mixer).clone())
         .map(|(_, value)| value.clone());
-    let gain_node = runtime
-        .as_ref()
-        .unwrap()
-        .bus_gain_nodes
-        .as_ref()
-        .and_then(|entries| {
+    let gain_node =
+        (runtime.as_ref().map(|value| (value.bus_gain_nodes).clone())).and_then(|entries| {
             entries
                 .iter()
                 .find(|(entry_key, _)| entry_key == &(*bus).clone())
@@ -262,7 +258,7 @@ pub fn fade_audio_bus_gain(
         bus.gain = target_gain;
         return;
     }
-    let now = crate::host_value::<crate::OpaqueHostValue>("host.currentTime");
+    let now = crate::host_value::<f64>("host.currentTime");
     crate::host_value::<()>("host.cancelScheduledValues");
     crate::host_value::<()>("host.setValueAtTime");
     crate::host_value::<()>("host.linearRampToValueAtTime");
@@ -290,16 +286,16 @@ pub fn pause_all_audio_mixer_channels(mixer: &AudioMixer) -> () {
     if (runtime).is_none() {
         return;
     }
-    for channel in ((runtime.as_mut().unwrap().active_channels).clone())
+    for mut channel in ((runtime.as_mut().unwrap().active_channels).clone())
         .iter()
         .cloned()
     {
-        if (channel.state != "playing") {
+        if ((channel.state).clone() != "playing") {
             continue;
         }
         pause_audio_channel(&mut channel);
         {
-            let __flight_value = channel;
+            let __flight_value = (channel).clone();
             if !runtime
                 .as_mut()
                 .unwrap()
@@ -325,11 +321,11 @@ pub fn resume_all_audio_mixer_channels(mixer: &AudioMixer) -> () {
     if (runtime).is_none() {
         return;
     }
-    for channel in ((runtime.as_mut().unwrap().channels_paused_by_mixer).clone())
+    for mut channel in ((runtime.as_mut().unwrap().channels_paused_by_mixer).clone())
         .iter()
         .cloned()
     {
-        if (channel.state == "paused") {
+        if ((channel.state).clone() == "paused") {
             resume_audio_channel(&mut channel);
         }
     }
@@ -433,17 +429,10 @@ pub fn set_audio_mixer_master_gain(mixer: &mut AudioMixer, value: f64) -> f64 {
         .find(|(entry_key, _)| entry_key == &(*mixer).clone())
         .map(|(_, value)| value.clone());
     if (runtime).is_some() {
-        runtime.as_mut().unwrap().master_gain_node.gain.value = if mixer.master_muted {
-            {
-                let __flight_portable_source = 0.0_f64;
-                crate::FlightValue::Number(*(&__flight_portable_source) as f64)
-            }
-        } else {
-            {
-                let __flight_portable_source = value;
-                crate::FlightValue::Number(*(&__flight_portable_source) as f64)
-            }
-        };
+        crate::host_set(
+            "host.value",
+            if mixer.master_muted { 0.0_f64 } else { value },
+        );
     }
     return mixer.master_gain;
 }
@@ -456,17 +445,10 @@ pub fn set_audio_mixer_master_muted(mixer: &mut AudioMixer, muted: bool) -> bool
         .find(|(entry_key, _)| entry_key == &(*mixer).clone())
         .map(|(_, value)| value.clone());
     if (runtime).is_some() {
-        runtime.as_mut().unwrap().master_gain_node.gain.value = if muted {
-            {
-                let __flight_portable_source = 0.0_f64;
-                crate::FlightValue::Number(*(&__flight_portable_source) as f64)
-            }
-        } else {
-            {
-                let __flight_portable_source = mixer.master_gain;
-                crate::FlightValue::Number(*(&__flight_portable_source) as f64)
-            }
-        };
+        crate::host_set(
+            "host.value",
+            if muted { 0.0_f64 } else { mixer.master_gain },
+        );
     }
     return mixer.master_muted;
 }
@@ -480,11 +462,11 @@ pub fn stop_all_audio_mixer_channels(mixer: &AudioMixer) -> () {
     if (runtime).is_none() {
         return;
     }
-    for channel in ((runtime.as_mut().unwrap().active_channels).clone())
+    for mut channel in ((runtime.as_mut().unwrap().active_channels).clone())
         .iter()
         .cloned()
     {
-        channel.state = "stopped";
+        channel.state = "stopped".to_owned();
         channel.current_time = 0.0_f64;
     }
     runtime.as_mut().unwrap().active_channels.clear();
@@ -699,10 +681,14 @@ fn update_bus_gain_node(bus: &AudioBus) -> () {
     if (runtimes).is_none() {
         return;
     }
-    for runtime in (runtimes.as_ref().unwrap()).iter().cloned() {
-        let mut gain_node = (runtime.bus_gain_nodes.get)(bus);
+    for mut runtime in (runtimes.as_ref().unwrap()).iter().cloned() {
+        let mut gain_node = runtime
+            .bus_gain_nodes
+            .iter()
+            .find(|(entry_key, _)| entry_key == &(*bus).clone())
+            .map(|(_, value)| value.clone());
         if (gain_node).is_some() {
-            gain_node.gain.value = if bus.muted { 0.0_f64 } else { bus.gain };
+            crate::host_set("host.value", if bus.muted { 0.0_f64 } else { bus.gain });
         }
     }
 }
@@ -716,10 +702,14 @@ fn update_bus_panner_node(bus: &AudioBus) -> () {
     if (runtimes).is_none() {
         return;
     }
-    for runtime in (runtimes.as_ref().unwrap()).iter().cloned() {
-        let mut panner_node = (runtime.bus_output_nodes.get)(bus);
+    for mut runtime in (runtimes.as_ref().unwrap()).iter().cloned() {
+        let mut panner_node = runtime
+            .bus_output_nodes
+            .iter()
+            .find(|(entry_key, _)| entry_key == &(*bus).clone())
+            .map(|(_, value)| value.clone());
         if ((panner_node).is_some()) && (false) {
-            panner_node.pan.value = bus.pan;
+            crate::host_set("host.value", bus.pan);
         }
     }
 }

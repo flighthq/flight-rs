@@ -8,8 +8,8 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | Default-generated packages | 144 |
 | Emittable packages | 48 |
 | Blocked packages | 96 |
-| Compiled candidates | 24 |
-| Compile-blocked candidates | 2 |
+| Compiled candidates | 26 |
+| Compile-blocked candidates | 0 |
 | Dependency-blocked candidates | 20 |
 | Cultivated packages | 1 |
 | Host-bound packages | 4 |
@@ -88,7 +88,7 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/log` | generated | emittable | compiled | 3/3 | 63/63 | 0 | 41/90 | 0 | 0 | no |
 | `@flighthq/materials` | generated | emittable | dependency-blocked | 22/22 | 79/79 | 0 | 8/42 | 0 | 0 | no |
 | `@flighthq/math` | generated | emittable | compiled | 17/17 | 74/74 | 0 | 16/71 | 0 | 0 | no |
-| `@flighthq/media` | generated | emittable | compile-blocked | 6/6 | 45/45 | 0 | 1/1 | 3 | 0 | no |
+| `@flighthq/media` | generated | emittable | compiled | 6/6 | 45/45 | 0 | 1/1 | 3 | 0 | no |
 | `@flighthq/mediasession` | generated | blocked | source-blocked | 2/3 | 7/10 | 3 | 1/1 | 0 | 2 | no |
 | `@flighthq/menu` | generated | blocked | source-blocked | 3/4 | 14/17 | 3 | 3/3 | 0 | 2 | no |
 | `@flighthq/mesh` | generated | blocked | source-blocked | 12/16 | 88/84 | 0 | 7/24 | 1 | 4 | no |
@@ -144,7 +144,7 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/skeleton2d-formats` | generated | blocked | source-blocked | 3/8 | 8/8 | 1 | 1/1 | 0 | 6 | no |
 | `@flighthq/skeleton3d` | generated | blocked | source-blocked | 5/10 | 26/26 | 0 | 2/3 | 0 | 5 | no |
 | `@flighthq/snapshot` | generated | blocked | source-blocked | 6/7 | 7/7 | 0 | 1/1 | 2 | 1 | no |
-| `@flighthq/socket` | generated | emittable | compile-blocked | 5/5 | 16/16 | 0 | 1/1 | 0 | 0 | no |
+| `@flighthq/socket` | generated | emittable | compiled | 5/5 | 16/16 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/spatial` | generated | emittable | compiled | 6/6 | 14/14 | 0 | 3/3 | 0 | 0 | no |
 | `@flighthq/spring` | generated | emittable | compiled | 6/6 | 12/12 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/spritesheet` | generated | emittable | dependency-blocked | 9/9 | 31/31 | 0 | 2/2 | 4 | 0 | no |
@@ -1388,43 +1388,3 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 - **emission** `upstream/packages/webcam/src/webcamStream.ts`: createWebcamStreamEntity: EntityRuntimeKey storage requires an aggregate native entity runtime representation; refusing to erase observable runtime state
 
 ## Candidate compile blockers
-
-### `@flighthq/media`
-
-- **E0369** `generated/candidates/flighthq-media/src/audio_channel.rs`: cannot subtract `f64` from `FlightValue`
-- **E0369** `generated/candidates/flighthq-media/src/audio_channel.rs`: cannot multiply `FlightValue` by `f64`
-- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `gain` on type `&mut FlightValue`
-- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `playback_rate` on type `&mut FlightValue`
-- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `buffer` on type `()`
-- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `playback_rate` on type `()`
-- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `gain` on type `()`
-- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `connect` on type `()`
-- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `connect` on type `()`
-- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `onended` on type `()`
-- **E0308** `generated/candidates/flighthq-media/src/audio_channel.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-media/src/audio_channel.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-media/src/audio_channel.rs`: mismatched types
-- **E0369** `generated/candidates/flighthq-media/src/audio_channel.rs`: cannot subtract `f64` from `FlightValue`
-- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `start` on type `()`
-- **E0609** `generated/candidates/flighthq-media/src/audio_channel.rs`: no field `catch` on type `()`
-- **E0609** `generated/candidates/flighthq-media/src/audio_mixer.rs`: no field `gain` on type `()`
-- **E0609** `generated/candidates/flighthq-media/src/audio_mixer.rs`: no field `connect` on type `()`
-- **E0308** `generated/candidates/flighthq-media/src/audio_mixer.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-media/src/audio_mixer.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-media/src/audio_mixer.rs`: mismatched types
-- **E0282** `generated/candidates/flighthq-media/src/audio_mixer.rs`: type annotations needed
-- **E0609** `generated/candidates/flighthq-media/src/audio_mixer.rs`: no field `gain` on type `FlightValue`
-- **E0609** `generated/candidates/flighthq-media/src/audio_mixer.rs`: no field `gain` on type `FlightValue`
-- **E0308** `generated/candidates/flighthq-media/src/audio_mixer.rs`: mismatched types
-- **E0615** `generated/candidates/flighthq-media/src/audio_mixer.rs`: attempted to take value of method `get` on type `Vec<(AudioBus, FlightValue)>`
-- **E0615** `generated/candidates/flighthq-media/src/audio_mixer.rs`: attempted to take value of method `get` on type `Vec<(AudioBus, FlightValue)>`
-- **E0369** `generated/candidates/flighthq-media/src/video_channel.rs`: cannot multiply `FlightValue` by `f64`
-- **E0369** `generated/candidates/flighthq-media/src/video_channel.rs`: cannot multiply `FlightValue` by `f64`
-- **E0596** `generated/candidates/flighthq-media/src/audio_mixer.rs`: cannot borrow `channel` as mutable, as it is not declared as mutable
-- **E0596** `generated/candidates/flighthq-media/src/audio_mixer.rs`: cannot borrow `channel` as mutable, as it is not declared as mutable
-- **E0596** `generated/candidates/flighthq-media/src/audio_mixer.rs`: cannot borrow `channel` as mutable, as it is not declared as mutable
-
-### `@flighthq/socket`
-
-- **E0308** `generated/candidates/flighthq-socket/src/socket.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-socket/src/socket.rs`: mismatched types

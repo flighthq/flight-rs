@@ -1344,7 +1344,7 @@ fn apply_alignment(
     paragraph_last_lines: &Vec<f64>,
     text: String,
 ) -> () {
-    for g in (groups).iter().cloned() {
+    for mut g in (groups).iter().cloned() {
         let line_w = line_widths[g.line_index as usize].clone();
         let align = ((g.format.align).clone())
             .clone()
@@ -1409,7 +1409,7 @@ fn apply_vertical_alignment(
     } else {
         slack
     };
-    for g in (groups).iter().cloned() {
+    for mut g in (groups).iter().cloned() {
         g.offset_y += shift;
     }
 }
@@ -1478,7 +1478,7 @@ fn justify_lines(
                 let mut accumulated = 0.0_f64;
                 let last_group =
                     line_groups[((line_groups.len() as f64) - 1.0_f64) as usize].clone();
-                for g in (line_groups).iter().cloned() {
+                for mut g in (line_groups).iter().cloned() {
                     g.offset_x += accumulated;
                     let mut group_extra = 0.0_f64;
                     let last_pos = if ((g).clone() == last_group) {
@@ -1502,7 +1502,7 @@ fn justify_lines(
                 }
             } else {
                 let mut space_count = 0.0_f64;
-                for g in (line_groups).iter().cloned() {
+                for mut g in (line_groups).iter().cloned() {
                     let mut text_index = g.start_index;
                     {
                         let mut ci = 0.0_f64;
@@ -1574,7 +1574,7 @@ fn justify_lines(
                 }
                 let extra_per_space = (residual / space_count);
                 let mut accumulated = 0.0_f64;
-                for g in (line_groups).iter().cloned() {
+                for mut g in (line_groups).iter().cloned() {
                     g.offset_x += accumulated;
                     let mut group_extra = 0.0_f64;
                     let mut text_index = g.start_index;

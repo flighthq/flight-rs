@@ -1175,7 +1175,7 @@ pub fn update_bitmap_text(bitmap_text: &BitmapText) -> () {
         }
     };
     let mut bounds = ensure_bounds_rectangle((runtime).clone());
-    for page in ((runtime.inner.lock().unwrap().pages).clone())
+    for mut page in ((runtime.inner.lock().unwrap().pages).clone())
         .iter()
         .cloned()
     {

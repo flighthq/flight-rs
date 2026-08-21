@@ -289,17 +289,17 @@ pub fn lerp_render_effect(
     for key in (numeric_keys).iter().cloned() {
         let va = a_rec
             .iter()
-            .find(|(entry_key, _)| entry_key == &key)
+            .find(|(entry_key, _)| entry_key == &(key).clone())
             .map(|(_, value)| value.clone())
             .clone();
         let vb = b_rec
             .iter()
-            .find(|(entry_key, _)| entry_key == &key)
+            .find(|(entry_key, _)| entry_key == &(key).clone())
             .map(|(_, value)| value.clone())
             .clone();
         if ((va).is_some()) && ((vb).is_some()) {
             {
-                let __flight_key = key;
+                let __flight_key = (key).clone();
                 let __flight_value = {
                     let __flight_portable_source = (*(va.as_ref().unwrap())
                         + ((*(vb.as_ref().unwrap()) - *(va.as_ref().unwrap())) * tc));
@@ -315,7 +315,7 @@ pub fn lerp_render_effect(
             };
         } else {
             {
-                let __flight_key = key;
+                let __flight_key = (key).clone();
                 let __flight_value = if (tc < 0.5_f64) {
                     {
                         let __flight_portable_source = va;
@@ -345,12 +345,12 @@ pub fn lerp_render_effect(
     }
     for key in (boolean_keys).iter().cloned() {
         {
-            let __flight_key = key;
+            let __flight_key = (key).clone();
             let __flight_value = if (tc < 0.5_f64) {
                 {
                     let __flight_portable_source = a_rec
                         .iter()
-                        .find(|(entry_key, _)| entry_key == &key)
+                        .find(|(entry_key, _)| entry_key == &(key).clone())
                         .map(|(_, value)| value.clone())
                         .clone();
                     match (&__flight_portable_source).as_ref() {
@@ -362,7 +362,7 @@ pub fn lerp_render_effect(
                 {
                     let __flight_portable_source = b_rec
                         .iter()
-                        .find(|(entry_key, _)| entry_key == &key)
+                        .find(|(entry_key, _)| entry_key == &(key).clone())
                         .map(|(_, value)| value.clone())
                         .clone();
                     match (&__flight_portable_source).as_ref() {
@@ -380,12 +380,12 @@ pub fn lerp_render_effect(
     }
     for key in (string_keys).iter().cloned() {
         {
-            let __flight_key = key;
+            let __flight_key = (key).clone();
             let __flight_value = if (tc < 0.5_f64) {
                 {
                     let __flight_portable_source = a_rec
                         .iter()
-                        .find(|(entry_key, _)| entry_key == &key)
+                        .find(|(entry_key, _)| entry_key == &(key).clone())
                         .map(|(_, value)| value.clone())
                         .clone();
                     match (&__flight_portable_source).as_ref() {
@@ -397,7 +397,7 @@ pub fn lerp_render_effect(
                 {
                     let __flight_portable_source = b_rec
                         .iter()
-                        .find(|(entry_key, _)| entry_key == &key)
+                        .find(|(entry_key, _)| entry_key == &(key).clone())
                         .map(|(_, value)| value.clone())
                         .clone();
                     match (&__flight_portable_source).as_ref() {

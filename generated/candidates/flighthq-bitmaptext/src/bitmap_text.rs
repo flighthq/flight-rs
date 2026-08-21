@@ -2168,7 +2168,7 @@ pub fn reserve_bitmap_text(target: &BitmapText, glyph_capacity: f64) -> () {
             parent: (__flight_source.parent).clone(),
         }
     };
-    for page in ((runtime.inner.lock().unwrap().pages).clone())
+    for mut page in ((runtime.inner.lock().unwrap().pages).clone())
         .iter()
         .cloned()
     {

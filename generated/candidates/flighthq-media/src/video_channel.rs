@@ -15,7 +15,7 @@ pub fn get_video_channel_current_time(channel: &VideoChannel) -> f64 {
     if ((element).is_none()) || ((channel.state).clone() != "playing") {
         return channel.current_time;
     }
-    return (crate::host_value::<crate::OpaqueHostValue>("host.currentTime") * 1000.0_f64);
+    return (crate::host_value::<f64>("host.currentTime") * 1000.0_f64);
 }
 
 // Source: upstream/packages/media/src/videoChannel.ts:10 (sha256:623ecce17487c660f8b12a5095879f60d9fb747c1ed2c5e25368d5f54e168ea4)
@@ -90,7 +90,7 @@ pub fn play_video_resource(
             length: if (crate::host_value::<f64>("host.duration")).is_nan() {
                 0.0_f64
             } else {
-                (crate::host_value::<crate::OpaqueHostValue>("host.duration") * 1000.0_f64)
+                (crate::host_value::<f64>("host.duration") * 1000.0_f64)
             },
             loops: (options.as_ref().and_then(|value| value.loops))
                 .clone()

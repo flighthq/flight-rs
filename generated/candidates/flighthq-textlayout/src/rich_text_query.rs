@@ -101,7 +101,7 @@ pub fn compute_rich_text_char_index_at_point(layout: &TextLayoutResult, x: f64, 
         0.0_f64
     };
     let mut line_end = 0.0_f64;
-    for group in ((layout.groups).clone()).iter().cloned() {
+    for mut group in ((layout.groups).clone()).iter().cloned() {
         if (group.line_index != closest_line_index) {
             continue;
         }
@@ -183,7 +183,7 @@ pub fn get_rich_text_char_boundaries(
         return false;
     }
     let mut x = crate::host_value::<crate::OpaqueHostValue>("host.offsetX");
-    let limit = (char_index - crate::host_value::<crate::OpaqueHostValue>("host.startIndex"))
+    let limit = (char_index - crate::host_value::<f64>("host.startIndex"))
         .min(crate::host_value::<f64>("host.length"));
     {
         let mut i = 0.0_f64;
@@ -369,7 +369,7 @@ pub fn get_rich_text_selection_rectangles(
     }
     let start = (begin_index).min(end_index);
     let end = (begin_index).max(end_index);
-    for group in ((layout.groups).clone()).iter().cloned() {
+    for mut group in ((layout.groups).clone()).iter().cloned() {
         let group_start = (start).max(group.start_index);
         let group_end = (end).min(group.end_index);
         if (group_start >= group_end) {
