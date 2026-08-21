@@ -13,15 +13,18 @@ const workspace = path.resolve('.');
 
 describe('published version borrows the upstream release', () => {
   it('derives the Flight version the pin belongs to, not the version stamped in its manifest', () => {
-    // The pinned submodule stamps 0.2.0 but sits well past that tag, and Flight published 0.3.0 from
-    // that line. Asserting the derived value against the real published version is the whole point:
-    // it is what makes "borrowed from upstream" checkable rather than a claim in a comment.
-    expect(readFlightVersion(workspace)).toBe('0.3.0');
-
+    // Flight stamps `version` only at release time, so between releases the submodule's manifest names
+    // the PREVIOUS release while its commits are already working toward the next one. Publishing on
+    // the stamped value would claim a version whose API this port does not have.
+    //
+    // These are golden values for the CURRENT pin, and updating them is meant to be a deliberate step
+    // when the pin moves — the failure is the prompt to confirm which Flight release the new pin
+    // belongs to, rather than letting the published version drift silently.
     const stamped = JSON.parse(readFileSync(path.join(workspace, 'upstream/packages/sdk/package.json'), 'utf8')) as {
       version: string;
     };
-    expect(stamped.version).toBe('0.2.0');
+    expect(stamped.version).toBe('0.3.0');
+    expect(readFlightVersion(workspace)).toBe('0.4.0');
   });
 
   it('bumps by conventional-commit level in the lane the base major selects', () => {

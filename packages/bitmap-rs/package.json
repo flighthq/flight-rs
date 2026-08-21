@@ -38,8 +38,8 @@
     "clean:dist": "tsx ../../scripts/clean-package-dist.ts"
   },
   "dependencies": {
-    "@flighthq/bitmap": "^0.3.0",
-    "@flighthq/types": "^0.3.0"
+    "@flighthq/bitmap": "^0.4.0",
+    "@flighthq/types": "^0.4.0"
   },
   "devDependencies": {
     "typescript": "^5.3.0"

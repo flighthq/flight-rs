@@ -1,0 +1,107 @@
+name: Flight release bridge
+
+# Publishes @flighthq/bitmap-rs when FLIGHT publishes, so the two land together.
+#
+# This package is only meaningful paired with one Flight release: it is a drop-in for
+# `@flighthq/bitmap@X` and declares `^X` as a dependency, so publishing it before Flight publishes X
+# ships something that cannot be installed. Releasing on our own schedule cannot fix that — only
+# Flight knows when X exists.
+#
+# So Flight's release job calls this one. See docs/release-bridge.md for the sending side.
+#
+# This lane VERIFIES the pin rather than moving it. Flight names the commit it released; if our
+# submodule points somewhere else, the port under this tree is of a different source and the run
+# fails loudly. Moving the pin regenerates every crate and report and needs the full check suite —
+# that belongs in a reviewed pull request, not in an unattended release.
+
+on:
+  repository_dispatch:
+    types: [flight-release]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: The Flight release to publish against (e.g. 0.4.0)
+        required: true
+      commit:
+        description: The Flight commit that release was cut from
+        required: true
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write # npm provenance
+
+jobs:
+  publish:
+    name: Publish at the Flight release version
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    env:
+      # `client_payload` is attacker-controllable in principle: anyone who can call the dispatch API
+      # sets it. Passing it through `env` keeps it out of the shell's parse step, so a crafted value
+      # is data rather than a command. Never interpolate these directly into a `run:` block.
+      FLIGHT_VERSION: ${{ github.event.client_payload.version || inputs.version }}
+      FLIGHT_COMMIT: ${{ github.event.client_payload.commit || inputs.commit }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - name: Fetch upstream tags
+        run: git -C upstream fetch --tags --force
+
+      - name: Check the pin matches the released commit
+        run: |
+          pinned="$(git -C upstream rev-parse HEAD)"
+          if [ "${pinned}" != "${FLIGHT_COMMIT}" ]; then
+            echo "::error::Flight released ${FLIGHT_VERSION} at ${FLIGHT_COMMIT}, but upstream/ is pinned at ${pinned}."
+            echo "::error::Move the pin to ${FLIGHT_COMMIT} in a reviewed pull request, then re-run this workflow."
+            exit 1
+          fi
+          echo "pin matches ${FLIGHT_COMMIT}"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: https://registry.npmjs.org
+      - uses: ./.github/actions/rust
+      - run: npm ci
+
+      - name: Check the derived version matches the release
+        # scripts/flight-version.ts derives which Flight release the pin belongs to. If that disagrees
+        # with the version Flight says it published, one of the two is wrong and publishing either
+        # number would be a lie about what this tarball contains.
+        run: |
+          derived="$(npx tsx scripts/flight-version.ts)"
+          if [ "${derived}" != "${FLIGHT_VERSION}" ]; then
+            echo "::error::Flight released ${FLIGHT_VERSION}, but this pin derives ${derived}."
+            exit 1
+          fi
+          echo "derived version matches ${FLIGHT_VERSION}"
+
+      - name: Stamp the manifest
+        run: npx tsx scripts/version-packages.ts "${FLIGHT_VERSION}"
+
+      # A published version cannot be withdrawn, only deprecated, so the suite that covers what ships
+      # runs first: differential parity against the TypeScript implementation, packaging invariants,
+      # and the version logic.
+      - name: Verify what is about to ship
+        run: npm run test
+
+      - name: Publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: ${{ vars.NPM_PROVENANCE != 'false' }}
+        run: |
+          if [ -z "${NODE_AUTH_TOKEN}" ]; then
+            echo "::notice::NPM_TOKEN is not configured; running a dry run instead of publishing."
+            npm run release -- --dry-run --tag latest
+          else
+            npm run release -- --tag latest
+          fi
