@@ -22,6 +22,17 @@ describe('Rust emission', () => {
         export interface Registry<Value> { entries: readonly OptionalValue<Value>[]; }
         export interface CallbackRegistries { callbacks: Registry<(value: string) => void>; }
         export interface BinaryView { buffer: ArrayBufferLike; }
+        export const Severity = { Drop: 'Drop', Skip: 'Skip' } as const;
+        export type Severity = (typeof Severity)[keyof typeof Severity];
+        export interface Diagnostic { detail?: Readonly<Record<string, boolean | number | string>>; severity: Severity; }
+        export function detailText(diagnostic: Diagnostic): string {
+          let text = '';
+          if (diagnostic.detail !== undefined) {
+            const keys = Object.keys(diagnostic.detail).sort();
+            for (const key of keys) text += \` \${key}=\${diagnostic.detail[key]}\`;
+          }
+          return text;
+        }
         export interface Schedule { at?: Date; code: WireCode; }
         export type VendorKind = \`\${string}.\${string}\`;
         export function sameNumber(left: number, right: number): boolean { return Object.is(left, right); }
@@ -47,16 +58,36 @@ describe('Rust emission', () => {
       "pub callbacks: Registry<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(String) -> () + Send + 'static>>>>,",
     );
     expect(output).toContain('pub buffer: Vec<u8>,');
+    expect(output).toContain('pub type Severity = String;');
+    expect(output).toContain('.iter().map(|(entry_key, _)| entry_key.clone()).collect::<Vec<_>>()');
+    expect(output).toContain('.find(|(entry_key, _)| entry_key == &(key).clone())');
+    expect(output).toContain('text.push_str(&');
     expect(output).toContain('pub at: Option<crate::OpaqueHostValue>,');
     expect(output).toContain('pub code: f64,');
     expect(output).toContain('pub type VendorKind = String;');
     expect(output).toContain(
       '__flight_left.to_bits() == __flight_right.to_bits() || (__flight_left.is_nan() && __flight_right.is_nan())',
     );
+    expect(emitFlightTaskRuntime()).toContain('pub enum FlightUnion2<A, B>');
+    expect(emitFlightTaskRuntime()).toContain('std::fmt::Display for FlightUnion2<A, B>');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-schema-types-'));
     const sourceFile = path.join(fixture, 'lib.rs');
-    writeFileSync(sourceFile, output.replace('// Source:', '#[derive(Clone)] pub struct OpaqueHostValue;\n// Source:'));
+    writeFileSync(
+      sourceFile,
+      output.replace(
+        '// Source:',
+        `
+        #[derive(Clone)] pub struct OpaqueHostValue;
+        #[derive(Clone)] pub enum FlightUnion2<A, B> { A(A), B(B) }
+        impl<A: std::fmt::Display, B: std::fmt::Display> std::fmt::Display for FlightUnion2<A, B> {
+          fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+            match self { Self::A(value) => value.fmt(formatter), Self::B(value) => value.fmt(formatter) }
+          }
+        }
+        // Source:`,
+      ),
+    );
     expect(() =>
       execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
         cwd: fixture,

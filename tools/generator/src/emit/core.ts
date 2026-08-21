@@ -1987,7 +1987,7 @@ function emitLibrary(target: RustTarget, modules: string[]): string {
     '#![forbid(unsafe_code)]',
     '',
     '/// Canonical recursive storage for TypeScript values at the generated Rust boundary.',
-    'pub use flighthq_runtime::{flight_json_stringify, flight_task_yield, host_task, install_deterministic_flight_task_scheduler, install_flight_task_scheduler, DeterministicFlightTaskScheduler, FlightHostUnavailable, FlightJsonError, FlightRejection, FlightRuntimeUnavailable, FlightTask, FlightTaskError, FlightTaskOrigin, FlightTaskOutcome, FlightTaskScheduler, FlightValue, OpaqueHostValue, ScheduledFlightTask};',
+    'pub use flighthq_runtime::{flight_json_stringify, flight_task_yield, host_task, install_deterministic_flight_task_scheduler, install_flight_task_scheduler, DeterministicFlightTaskScheduler, FlightHostUnavailable, FlightJsonError, FlightRejection, FlightRuntimeUnavailable, FlightTask, FlightTaskError, FlightTaskOrigin, FlightTaskOutcome, FlightTaskScheduler, FlightUnion2, FlightValue, OpaqueHostValue, ScheduledFlightTask};',
     '',
     ...(sharedOpaqueHostValue
       ? [
@@ -2117,13 +2117,6 @@ function emitLibrary(target: RustTarget, modules: string[]): string {
           '    .as_secs_f64() * 1000.0',
           '}',
         ]),
-    '',
-    '/// Mechanical representation for TypeScript unions whose variants need distinct native storage.',
-    '#[derive(Clone)]',
-    'pub enum FlightUnion2<A, B> {',
-    '  A(A),',
-    '  B(B),',
-    '}',
     '',
     ...aliases.flatMap((alias) => [alias, '']),
     ...declarations,

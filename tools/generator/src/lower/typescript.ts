@@ -1828,13 +1828,23 @@ function inferValueNamespaceType(node: ts.IndexedAccessTypeNode, context: Loweri
     .filter(ts.isVariableStatement)
     .flatMap((statement) => [...statement.declarationList.declarations])
     .find((candidate) => ts.isIdentifier(candidate.name) && candidate.name.text === namespace);
-  if (!declaration?.initializer || !ts.isObjectLiteralExpression(declaration.initializer)) return undefined;
-  const types = declaration.initializer.properties.flatMap((property): IrType[] => {
+  if (!declaration?.initializer) return undefined;
+  let initializer = declaration.initializer;
+  while (
+    ts.isParenthesizedExpression(initializer) ||
+    ts.isAsExpression(initializer) ||
+    ts.isTypeAssertionExpression(initializer) ||
+    ts.isSatisfiesExpression(initializer)
+  ) {
+    initializer = initializer.expression;
+  }
+  if (!ts.isObjectLiteralExpression(initializer)) return undefined;
+  const types = initializer.properties.flatMap((property): IrType[] => {
     if (!ts.isPropertyAssignment(property)) return [];
     const inferred = inferParameterTypeFromInitializer(property.initializer);
     return inferred ? [inferred] : [];
   });
-  if (types.length !== declaration.initializer.properties.length) return undefined;
+  if (types.length !== initializer.properties.length) return undefined;
   return commonType(types);
 }
 

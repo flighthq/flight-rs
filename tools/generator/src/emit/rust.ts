@@ -1637,7 +1637,11 @@ function emitLocalVariable(variable: IrVariable, context: EmitContext): string[]
     entitySpreadType ? unwrapCasts(variable.initializer) : variable.initializer,
     context,
     (expected?.kind === 'dynamic' ? inferred : expected) ??
-      (variable.initializer.kind === 'function' || containsObjectLiteral(variable.initializer) ? inferred : undefined),
+      (mutable && inferred?.kind === 'primitive' && inferred.name === 'String'
+        ? inferred
+        : variable.initializer.kind === 'function' || containsObjectLiteral(variable.initializer)
+          ? inferred
+          : undefined),
   );
   if (inferred) context.symbolTypes.set(variable.name, inferred);
   if (!mutable && evaluatesToNullish(variable.initializer, context)) {
@@ -2292,6 +2296,20 @@ function emitCall(
       }
       return emitHostValueExpression(primitive('Bool'), '"host.Object.is"', context);
     }
+    if (owner === 'Object' && method === 'keys') {
+      const value = expression.arguments[0];
+      if (!value) throw new RustEmissionError('Object.keys requires a value');
+      const valueType = inferIrExpressionType(value, context);
+      const collectionType = valueType?.kind === 'nullable' ? valueType.inner : valueType;
+      if (collectionType?.kind === 'named' && collectionType.name === 'RustMap') {
+        const collection =
+          valueType?.kind === 'nullable'
+            ? `${emitPlaceExpression(value, assignmentPlaceContext(value, context))}.as_ref().unwrap()`
+            : emitCollectionPlace(value, context);
+        return `${collection}.iter().map(|(entry_key, _)| entry_key.clone()).collect::<Vec<_>>()`;
+      }
+      return emitHostValueExpression({ element: primitive('String'), kind: 'array' }, '"host.Object.keys"', context);
+    }
     if (owner === 'Date' && method === 'now') return 'crate::flight_now_millis()';
     if (owner === '_Runtime' && method === 'typeofGlobal') return '"undefined"';
   }
@@ -2329,10 +2347,10 @@ function emitCall(
       if (!keyExpression) throw new RustEmissionError(`Map.${method} requires a key argument`);
       const key = emitExpression(keyExpression, context, keyType);
       if (method === 'get') {
-        return `${ownerPlace}.iter().find(|(key, _)| key == &${key}).map(|(_, value)| value.clone())`;
+        return `${ownerPlace}.iter().find(|(entry_key, _)| entry_key == &${key}).map(|(_, value)| value.clone())`;
       }
       if (method === 'has') {
-        return `${ownerPlace}.iter().any(|(key, _)| key == &${key})`;
+        return `${ownerPlace}.iter().any(|(entry_key, _)| entry_key == &${key})`;
       }
       if (method === 'delete') {
         return `{ let __flight_key = ${key}; if let Some(__flight_index) = ${ownerPlace}.iter().position(|(key, _)| key == &__flight_key) { ${ownerPlace}.remove(__flight_index); true } else { false } }`;
@@ -3756,7 +3774,7 @@ function emitProperty(
       objectType?.kind === 'nullable'
         ? `${emitPlaceExpression(expression.object, context)}.as_ref().unwrap()`
         : emitPlaceExpression(expression.object, context);
-    return `${owner}.iter().find(|(key, _)| key == &${key}).map(|(_, value)| value.clone()).expect("TypeScript Record key was absent")`;
+    return `${owner}.iter().find(|(entry_key, _)| entry_key == &${key}).map(|(_, value)| value.clone()).expect("TypeScript Record key was absent")`;
   }
   const type = inferIrExpressionType(expression, context) ?? expectedType;
   const runtimeObjectType = inferIrExpressionType(expression.object, context);
@@ -3898,7 +3916,7 @@ function emitOptionalProperty(
   if (inner.kind === 'named' && inner.name === 'RustMap') {
     const keyType = inner.arguments[0] ?? primitive('String');
     const key = emitExpression({ kind: 'literal', value: expression.name }, context, keyType);
-    return `${owner}.as_ref().and_then(|entries| entries.iter().find(|(key, _)| key == &${key}).map(|(_, value)| value.clone()))`;
+    return `${owner}.as_ref().and_then(|entries| entries.iter().find(|(entry_key, _)| entry_key == &${key}).map(|(_, value)| value.clone()))`;
   }
   if (isSharedHandleType(objectType.inner, context)) {
     const fieldType = inferPropertyType(objectType.inner, expression.name, context);
@@ -4269,7 +4287,11 @@ function emitAssignment(expression: Extract<IrExpression, { kind: 'assignment' }
     leftType?.kind === 'nullable' && rightType?.kind !== 'nullable' && !isNullishExpression(expression.right)
       ? `Some(${sharedCopy ?? emitExpression(expression.right, context, leftType.inner)})`
       : emittedRight;
-  const assignment = emitAssignmentOperation(left, right, expression.operator);
+  const resolvedLeft = resolveSemanticType(leftType, context) ?? leftType;
+  const assignment =
+    expression.operator === '+=' && resolvedLeft?.kind === 'primitive' && resolvedLeft.name === 'String'
+      ? `${left}.push_str(&${parenthesize(right)})`
+      : emitAssignmentOperation(left, right, expression.operator);
   return `{ ${assignment}; ${left} }`;
 }
 
@@ -4331,7 +4353,10 @@ function emitAssignmentStatement(
     leftType?.kind === 'nullable' && rightType?.kind !== 'nullable' && !isNullishExpression(expression.right)
       ? `Some(${emitExpression(expression.right, context, leftType.inner)})`
       : emittedRight;
-  return emitAssignmentOperation(left, right, expression.operator);
+  const resolvedLeft = resolveSemanticType(leftType, context) ?? leftType;
+  return expression.operator === '+=' && resolvedLeft?.kind === 'primitive' && resolvedLeft.name === 'String'
+    ? `${left}.push_str(&${parenthesize(right)})`
+    : emitAssignmentOperation(left, right, expression.operator);
 }
 
 function assignmentPlaceContext(expression: IrExpression, context: EmitContext): EmitContext {
@@ -8076,7 +8101,7 @@ function emitElement(expression: Extract<IrExpression, { kind: 'element' }>, con
       const keyType = objectType.inner.arguments[0] ?? { kind: 'dynamic' };
       const owner = emitPlaceExpression(expression.object, context);
       const key = emitExpression(expression.index, context, keyType);
-      return `${owner}.as_ref().and_then(|entries| entries.iter().find(|(key, _)| key == &${key}).map(|(_, value)| value.clone()))`;
+      return `${owner}.as_ref().and_then(|entries| entries.iter().find(|(entry_key, _)| entry_key == &${key}).map(|(_, value)| value.clone()))`;
     }
     throw new RustEmissionError('optional element access requires an inferred nullable collection');
   }
@@ -8088,7 +8113,7 @@ function emitElement(expression: Extract<IrExpression, { kind: 'element' }>, con
         ? `${emitPlaceExpression(expression.object, context)}.as_ref().unwrap()`
         : emitPlaceExpression(expression.object, context);
     const key = emitExpression(expression.index, context, keyType);
-    return `${owner}.iter().find(|(key, _)| key == &${key}).map(|(_, value)| value).expect("TypeScript Record key was absent")`;
+    return `${owner}.iter().find(|(entry_key, _)| entry_key == &${key}).map(|(_, value)| value).expect("TypeScript Record key was absent")`;
   }
   const nullableCollection =
     objectType?.kind === 'nullable' &&
@@ -8215,6 +8240,23 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
         expression.callee.name === 'is'
       ) {
         return primitive('Bool');
+      }
+      if (
+        expression.callee.kind === 'property' &&
+        ((expression.callee.object.kind === 'identifier' && expression.callee.object.name === 'Object') ||
+          runtimeGlobalType(expression.callee.object) === 'Object') &&
+        expression.callee.name === 'keys'
+      ) {
+        const value = expression.arguments[0];
+        const valueType = value ? inferIrExpressionType(value, context) : undefined;
+        const collection = valueType?.kind === 'nullable' ? valueType.inner : valueType;
+        return {
+          element:
+            collection?.kind === 'named' && collection.name === 'RustMap'
+              ? (collection.arguments[0] ?? primitive('String'))
+              : primitive('String'),
+          kind: 'array',
+        };
       }
       if (
         expression.callee.kind === 'property' &&

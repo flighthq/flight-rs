@@ -50,6 +50,22 @@ impl Default for FlightValue {
 /// Compatibility name for generated boundaries whose TypeScript type remains unrecovered.
 pub type OpaqueHostValue = FlightValue;
 
+/// Canonical storage for TypeScript unions shared across generated crate boundaries.
+#[derive(Clone, Debug, PartialEq)]
+pub enum FlightUnion2<A, B> {
+    A(A),
+    B(B),
+}
+
+impl<A: std::fmt::Display, B: std::fmt::Display> std::fmt::Display for FlightUnion2<A, B> {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::A(value) => value.fmt(formatter),
+            Self::B(value) => value.fmt(formatter),
+        }
+    }
+}
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum FlightJsonError {
     OpaqueHostObject,
