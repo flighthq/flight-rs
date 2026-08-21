@@ -320,7 +320,7 @@ describe('compiler diagnostic source paths', () => {
       .filter((item) => item.disposition === 'generated')
       .flatMap((item) => item.emittedSources);
     const portableOpaqueSources = portableSources.filter((source) => source.usesOpaqueHostValues);
-    expect(portableSources).toHaveLength(1549);
+    expect(portableSources).toHaveLength(1553);
     expect(portableOpaqueSources).toHaveLength(66);
     expect(portableOpaqueSources.length / portableSources.length).toBeLessThanOrEqual(167 / 1227);
     const screen = report.automaticPackages.find((item) => item.package === '@flighthq/screen');
