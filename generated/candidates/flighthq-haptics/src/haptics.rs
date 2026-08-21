@@ -29,7 +29,8 @@ pub fn create_web_haptics_backend() -> HapticsBackend {
             as Box<dyn FnMut() -> bool + Send + 'static>)),
         capabilities: std::sync::Arc::new(std::sync::Mutex::new(Box::new(
             move |mut out: HapticsCapabilities| -> HapticsCapabilities {
-                let supported = ("undefined" != "undefined") && ("function" == "function");
+                let supported =
+                    ("undefined" != "undefined") && ("function".to_owned() == "function");
                 out.amplitude_control = false;
                 out.custom_events = false;
                 out.intensity = false;
@@ -64,7 +65,7 @@ pub fn create_web_haptics_backend() -> HapticsBackend {
         )
             as Box<dyn FnMut(HapticImpactStyle, Option<f64>) -> bool + Send + 'static>)),
         is_supported: std::sync::Arc::new(std::sync::Mutex::new(Box::new(move || -> bool {
-            return ("undefined" != "undefined") && ("function" == "function");
+            return ("undefined" != "undefined") && ("function".to_owned() == "function");
         })
             as Box<dyn FnMut() -> bool + Send + 'static>)),
         notification: std::sync::Arc::new(std::sync::Mutex::new(Box::new(

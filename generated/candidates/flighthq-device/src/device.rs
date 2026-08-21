@@ -372,9 +372,10 @@ pub fn refresh_device_info() -> () {
             refresh: None,
         }
     };
-    if (((maybe_refreshable.refresh).clone())
+    if ((((maybe_refreshable.refresh).clone())
         .as_ref()
-        .map_or("undefined", |_| "function")
+        .map_or("undefined", |_| "function"))
+    .to_owned()
         == "function")
     {
         {

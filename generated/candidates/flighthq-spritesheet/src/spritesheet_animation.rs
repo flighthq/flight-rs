@@ -86,10 +86,12 @@ pub fn create_spritesheet_animation_from_frame_names(
                 };
                 continue;
             }
-            let matches = if (match &(pattern) {
+            let matches = if ((match &(pattern) {
                 crate::FlightUnion2::A(_) => "string",
                 crate::FlightUnion2::B(value) => "object",
-            } == "string")
+            })
+            .to_owned()
+                == "string")
             {
                 (((name).clone())
                     == Some(match (*pattern).clone() {

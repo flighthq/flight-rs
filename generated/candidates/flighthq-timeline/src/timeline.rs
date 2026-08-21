@@ -471,10 +471,12 @@ fn get_timeline_total_frames(timeline: &Timeline) -> f64 {
 
 // Source: upstream/packages/timeline/src/timeline.ts:247 (sha256:0e0439f4984d5a48d92ecb29abcf9bab94ff0e2c10d5f9345b9d759dffb115bb)
 fn resolve_frame(timeline: &Timeline, frame: &crate::FlightUnion2<f64, String>) -> f64 {
-    if (match &(frame) {
+    if ((match &(frame) {
         crate::FlightUnion2::A(_) => "number",
         crate::FlightUnion2::B(value) => "string",
-    } == "number")
+    })
+    .to_owned()
+        == "number")
     {
         return match (*frame).clone() {
             crate::FlightUnion2::A(value) => value,

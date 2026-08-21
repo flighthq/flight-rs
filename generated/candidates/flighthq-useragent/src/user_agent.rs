@@ -424,6 +424,7 @@ pub fn parse_user_agent_runtime(
             crate::OpaqueHostValue::String(value) => !value.is_empty(),
             crate::OpaqueHostValue::Array(_)
             | crate::OpaqueHostValue::Record(_)
+            | crate::OpaqueHostValue::Error { .. }
             | crate::OpaqueHostValue::Function
             | crate::OpaqueHostValue::Symbol
             | crate::OpaqueHostValue::Object => true,
@@ -445,6 +446,7 @@ pub fn parse_user_agent_runtime(
         crate::OpaqueHostValue::String(value) => !value.is_empty(),
         crate::OpaqueHostValue::Array(_)
         | crate::OpaqueHostValue::Record(_)
+        | crate::OpaqueHostValue::Error { .. }
         | crate::OpaqueHostValue::Function
         | crate::OpaqueHostValue::Symbol
         | crate::OpaqueHostValue::Object => true,
@@ -465,6 +467,7 @@ pub fn parse_user_agent_runtime(
         crate::OpaqueHostValue::String(value) => !value.is_empty(),
         crate::OpaqueHostValue::Array(_)
         | crate::OpaqueHostValue::Record(_)
+        | crate::OpaqueHostValue::Error { .. }
         | crate::OpaqueHostValue::Function
         | crate::OpaqueHostValue::Symbol
         | crate::OpaqueHostValue::Object => true,

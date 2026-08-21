@@ -48,7 +48,7 @@ pub fn get_adjustment_color_transform(
     operation: &SharedStructuralRecord1,
 ) -> Option<ColorTransformFunction> {
     let transform = None::<ColorTransformFunction>;
-    if ((transform).as_ref().map_or("undefined", |_| "function") == "function") {
+    if (((transform).as_ref().map_or("undefined", |_| "function")).to_owned() == "function") {
         return (transform).clone();
     }
     let matrix = (|| -> Option<Vec<f64>> {
@@ -70,9 +70,10 @@ pub fn get_adjustment_color_transform(
 
 // Source: upstream/packages/adjustments/src/colorLutAdjustment.ts:20 (sha256:a3555604ecbc722928c2d782499cbed67c36de37dd76a702f84c347c44554b3d)
 pub fn is_color_lut_adjustment(operation: &SharedStructuralRecord1) -> bool {
-    return ((None::<ColorTransformFunction>)
+    return (((None::<ColorTransformFunction>)
         .as_ref()
-        .map_or("undefined", |_| "function")
+        .map_or("undefined", |_| "function"))
+    .to_owned()
         == "function");
 }
 

@@ -109,7 +109,8 @@ fn copy_material_fields(dst: &mut Material, src: &Material, kind: Kind) -> () {
             .map(|(_, value)| value.clone())
             .clone();
         if ((key == "standard") && (((value).clone()).is_some()))
-            && (((value).clone()).as_ref().map_or("undefined", |_| "object") == "object")
+            && ((((value).clone()).as_ref().map_or("undefined", |_| "object")).to_owned()
+                == "object")
         {
             {
                 let __flight_key = (key).clone();
@@ -151,7 +152,7 @@ fn copy_material_fields(dst: &mut Material, src: &Material, kind: Kind) -> () {
                         crate::FlightValue::String(_) => panic!(
                             "portable object spread of strings requires UTF-16 property lowering"
                         ),
-                        crate::FlightValue::Object => {
+                        crate::FlightValue::Error { .. } | crate::FlightValue::Object => {
                             panic!("portable object spread cannot inspect an opaque host object")
                         }
                     }

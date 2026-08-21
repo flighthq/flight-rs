@@ -1326,6 +1326,7 @@ pub fn exit_input_pointer_lock() -> () {
         crate::OpaqueHostValue::String(value) => !value.is_empty(),
         crate::OpaqueHostValue::Array(_)
         | crate::OpaqueHostValue::Record(_)
+        | crate::OpaqueHostValue::Error { .. }
         | crate::OpaqueHostValue::Function
         | crate::OpaqueHostValue::Symbol
         | crate::OpaqueHostValue::Object => true,
@@ -1412,6 +1413,7 @@ pub fn get_key_modifier_from_dom_keyboard_event(event: crate::OpaqueHostValue) -
         crate::OpaqueHostValue::String(value) => !value.is_empty(),
         crate::OpaqueHostValue::Array(_)
         | crate::OpaqueHostValue::Record(_)
+        | crate::OpaqueHostValue::Error { .. }
         | crate::OpaqueHostValue::Function
         | crate::OpaqueHostValue::Symbol
         | crate::OpaqueHostValue::Object => true,
@@ -1434,6 +1436,7 @@ pub fn get_key_modifier_from_dom_keyboard_event(event: crate::OpaqueHostValue) -
         crate::OpaqueHostValue::String(value) => !value.is_empty(),
         crate::OpaqueHostValue::Array(_)
         | crate::OpaqueHostValue::Record(_)
+        | crate::OpaqueHostValue::Error { .. }
         | crate::OpaqueHostValue::Function
         | crate::OpaqueHostValue::Symbol
         | crate::OpaqueHostValue::Object => true,
@@ -1456,6 +1459,7 @@ pub fn get_key_modifier_from_dom_keyboard_event(event: crate::OpaqueHostValue) -
         crate::OpaqueHostValue::String(value) => !value.is_empty(),
         crate::OpaqueHostValue::Array(_)
         | crate::OpaqueHostValue::Record(_)
+        | crate::OpaqueHostValue::Error { .. }
         | crate::OpaqueHostValue::Function
         | crate::OpaqueHostValue::Symbol
         | crate::OpaqueHostValue::Object => true,
@@ -1478,6 +1482,7 @@ pub fn get_key_modifier_from_dom_keyboard_event(event: crate::OpaqueHostValue) -
         crate::OpaqueHostValue::String(value) => !value.is_empty(),
         crate::OpaqueHostValue::Array(_)
         | crate::OpaqueHostValue::Record(_)
+        | crate::OpaqueHostValue::Error { .. }
         | crate::OpaqueHostValue::Function
         | crate::OpaqueHostValue::Symbol
         | crate::OpaqueHostValue::Object => true,
@@ -1561,7 +1566,7 @@ pub fn is_input_pointer_button_down(state: &InputState, pointer_id: f64, button:
 
 // Source: upstream/packages/input/src/inputManager.ts:635 (sha256:d597a9a5a2cb16b6ff0e355fb6b92d80b1ca6acb8bb1154b2a48a5964e9120c3)
 pub fn poll_gamepad_input(manager: &InputManager) -> () {
-    if (!manager.enabled) || ("function" != "function") {
+    if (!manager.enabled) || ("function".to_owned() != "function") {
         return;
     }
     let now = crate::host_value::<f64>("host.call");
@@ -1643,6 +1648,7 @@ pub fn poll_gamepad_input(manager: &InputManager) -> () {
                         crate::OpaqueHostValue::String(value) => !value.is_empty(),
                         crate::OpaqueHostValue::Array(_)
                         | crate::OpaqueHostValue::Record(_)
+                        | crate::OpaqueHostValue::Error { .. }
                         | crate::OpaqueHostValue::Function
                         | crate::OpaqueHostValue::Symbol
                         | crate::OpaqueHostValue::Object => true,

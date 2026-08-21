@@ -97,18 +97,21 @@ fn parse_bitmap_font_json_record(
                 let file = crate::host_value::<crate::OpaqueHostValue>("host.index");
                 pages.push(BitmapFontPageRecord {
                     __flight_identity: std::sync::Arc::new(()),
-                    file: if (match &((file).clone()) {
+                    file: if ((match &((file).clone()) {
                         crate::OpaqueHostValue::Undefined => "undefined",
                         crate::OpaqueHostValue::Null
                         | crate::OpaqueHostValue::Array(_)
                         | crate::OpaqueHostValue::Record(_)
+                        | crate::OpaqueHostValue::Error { .. }
                         | crate::OpaqueHostValue::Object => "object",
                         crate::OpaqueHostValue::Bool(_) => "boolean",
                         crate::OpaqueHostValue::Number(_) => "number",
                         crate::OpaqueHostValue::String(_) => "string",
                         crate::OpaqueHostValue::Function => "function",
                         crate::OpaqueHostValue::Symbol => "symbol",
-                    } == "string")
+                    })
+                    .to_owned()
+                        == "string")
                     {
                         (file).clone()
                     } else {
@@ -162,18 +165,21 @@ fn parse_bitmap_font_json_record(
 
 // Source: upstream/packages/bitmapfont-formats/src/bitmapFontJson.ts:84 (sha256:66636d3c94d03704e09c7fa198f1c90a1d05a0826fbb0e13f35270cd137ac31a)
 fn is_object(value: crate::OpaqueHostValue) -> bool {
-    return ((match &(value) {
+    return (((match &(value) {
         crate::OpaqueHostValue::Undefined => "undefined",
         crate::OpaqueHostValue::Null
         | crate::OpaqueHostValue::Array(_)
         | crate::OpaqueHostValue::Record(_)
+        | crate::OpaqueHostValue::Error { .. }
         | crate::OpaqueHostValue::Object => "object",
         crate::OpaqueHostValue::Bool(_) => "boolean",
         crate::OpaqueHostValue::Number(_) => "number",
         crate::OpaqueHostValue::String(_) => "string",
         crate::OpaqueHostValue::Function => "function",
         crate::OpaqueHostValue::Symbol => "symbol",
-    } == "object")
+    })
+    .to_owned()
+        == "object")
         && ((value).is_some()))
         && (!false);
 }
@@ -247,18 +253,21 @@ fn read_json_kerning(raw: crate::OpaqueHostValue) -> Option<BitmapFontKerningRec
 
 // Source: upstream/packages/bitmapfont-formats/src/bitmapFontJson.ts:132 (sha256:3a349797c1268183a7048ca6ab1ee6f48958c971159db4a2cbacf46a838877d5)
 fn read_json_number(value: crate::OpaqueHostValue) -> Option<f64> {
-    return if (match &(value) {
+    return if ((match &(value) {
         crate::OpaqueHostValue::Undefined => "undefined",
         crate::OpaqueHostValue::Null
         | crate::OpaqueHostValue::Array(_)
         | crate::OpaqueHostValue::Record(_)
+        | crate::OpaqueHostValue::Error { .. }
         | crate::OpaqueHostValue::Object => "object",
         crate::OpaqueHostValue::Bool(_) => "boolean",
         crate::OpaqueHostValue::Number(_) => "number",
         crate::OpaqueHostValue::String(_) => "string",
         crate::OpaqueHostValue::Function => "function",
         crate::OpaqueHostValue::Symbol => "symbol",
-    } == "number")
+    })
+    .to_owned()
+        == "number")
         && ((value).is_finite())
     {
         Some(value)

@@ -61,7 +61,8 @@ pub fn bake_color_lut_for_run(
     for operation in (run).iter().cloned() {
         let transform = (|| -> Option<ColorTransformFunction> {
             let transform = None::<ColorTransformFunction>;
-            if ((transform).as_ref().map_or("undefined", |_| "function") == "function") {
+            if (((transform).as_ref().map_or("undefined", |_| "function")).to_owned() == "function")
+            {
                 return (transform).clone();
             }
             let matrix = (|| -> Option<Vec<f64>> {

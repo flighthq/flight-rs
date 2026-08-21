@@ -14,7 +14,7 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | Cultivated packages | 1 |
 | Host-bound packages | 4 |
 | Excluded packages | 1 |
-| Source/package blockers | 503 |
+| Source/package blockers | 502 |
 | Eligible task constructions | 229 |
 | Portable executable task constructions | 20 |
 | Host-placeholder task constructions | 0 |
@@ -85,7 +85,7 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/lifecycle` | generated | emittable | compiled | 3/3 | 13/13 | 0 | 1/1 | 1 | 0 | no |
 | `@flighthq/lighting` | generated | emittable | dependency-blocked | 13/13 | 31/31 | 0 | 5/8 | 0 | 0 | no |
 | `@flighthq/loader` | generated | blocked | source-blocked | 2/3 | 15/15 | 0 | 3/3 | 0 | 1 | no |
-| `@flighthq/log` | generated | blocked | source-blocked | 2/3 | 60/63 | 3 | 41/90 | 0 | 2 | no |
+| `@flighthq/log` | generated | blocked | source-blocked | 2/3 | 63/63 | 0 | 41/90 | 0 | 1 | no |
 | `@flighthq/materials` | generated | emittable | dependency-blocked | 22/22 | 79/79 | 0 | 8/42 | 1 | 0 | no |
 | `@flighthq/math` | generated | emittable | compiled | 17/17 | 74/74 | 0 | 16/71 | 0 | 0 | no |
 | `@flighthq/media` | generated | blocked | source-blocked | 2/6 | 45/45 | 0 | 1/1 | 0 | 4 | no |
@@ -675,7 +675,7 @@ Disposition partition: 177 eligible = 14 portable executable + 0 host placeholde
 ### `@flighthq/audio`
 
 - **emission** `upstream/packages/audio/src/audioResourceFrom.ts`: loadAudioResourceFromBlob: upstream/packages/audio/src/audioResourceFrom.ts:41:23: await value type is not recovered
-- **emission** `upstream/packages/audio/src/audioResourceReference.ts`: createAudioResourceFailure: instanceof Rust lowering requires a portable typed-array constructor
+- **emission** `upstream/packages/audio/src/audioResourceReference.ts`: resolveAudioResourceReference: upstream/packages/audio/src/audioResourceReference.ts:118:3: portable task catch bindings are not implemented
 
 ### `@flighthq/binpack`
 
@@ -908,7 +908,7 @@ Disposition partition: 177 eligible = 14 portable executable + 0 host placeholde
 - **package** `upstream/packages/image/src`: Generated crate is missing 3 of 25 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/image/src/imageBackend.ts`: createWebImageBackend: upstream/packages/image/src/imageBackend.ts:15:5: portableTask createWebImageBackend.loadImageFromUrl: Portable task Rust lowering is not implemented.
 - **emission** `upstream/packages/image/src/imageResourceFrom.ts`: loadImageResourceFromBlob: loadImageResourceFromBlob: portable task has a non-void output without a guaranteed return
-- **emission** `upstream/packages/image/src/imageResourceReference.ts`: createImageResourceFailure: instanceof Rust lowering requires a portable typed-array constructor
+- **emission** `upstream/packages/image/src/imageResourceReference.ts`: resolveImageResourceReference: upstream/packages/image/src/imageResourceReference.ts:170:3: portable task catch bindings are not implemented
 
 ### `@flighthq/image-codec`
 
@@ -961,8 +961,7 @@ Disposition partition: 177 eligible = 14 portable executable + 0 host placeholde
 
 ### `@flighthq/log`
 
-- **package** `upstream/packages/log/src`: Generated crate is missing 3 of 63 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/log/src/log.ts`: serializeLogError: instanceof Rust lowering requires a portable typed-array constructor
+- **emission** `upstream/packages/log/src/log.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (1 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 
 ### `@flighthq/media`
 

@@ -355,7 +355,8 @@ pub fn create_web_screen_backend() -> ScreenBackend {
                 (index == primary_index) || ((sd.is_primary).clone().unwrap_or((index == 0.0_f64)));
             out.rotation = get_web_rotation();
             out.orientation = get_web_orientation();
-            out.refresh_rate = if ((sd.refresh_rate).as_ref().map_or("undefined", |_| "number")
+            out.refresh_rate = if (((sd.refresh_rate).as_ref().map_or("undefined", |_| "number"))
+                .to_owned()
                 == "number")
                 && ((sd.refresh_rate)
                     .as_ref()
@@ -1115,7 +1116,7 @@ fn get_web_orientation() -> ScreenOrientation {
 fn get_web_rotation() -> f64 {
     let obj = get_web_screen_orientation_object();
     let angle = obj.as_ref().and_then(|value| value.angle);
-    if ((angle).as_ref().map_or("undefined", |_| "number") == "number") {
+    if (((angle).as_ref().map_or("undefined", |_| "number")).to_owned() == "number") {
         return (angle).clone().unwrap();
     }
     return (-1.0_f64);

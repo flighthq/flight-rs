@@ -49,8 +49,8 @@ pub fn lerp_render_effect(
             .find(|(entry_key, _)| entry_key == &(key).clone())
             .map(|(_, value)| value.clone())
             .clone();
-        if ((va).as_ref().map_or("undefined", |_| "object") == "number")
-            || ((vb).as_ref().map_or("undefined", |_| "object") == "number")
+        if (((va).as_ref().map_or("undefined", |_| "object")).to_owned() == "number")
+            || (((vb).as_ref().map_or("undefined", |_| "object")).to_owned() == "number")
         {
             {
                 let __flight_value = (key).clone();
@@ -59,8 +59,8 @@ pub fn lerp_render_effect(
                 }
             };
         } else {
-            if ((va).as_ref().map_or("undefined", |_| "object") == "boolean")
-                || ((vb).as_ref().map_or("undefined", |_| "object") == "boolean")
+            if (((va).as_ref().map_or("undefined", |_| "object")).to_owned() == "boolean")
+                || (((vb).as_ref().map_or("undefined", |_| "object")).to_owned() == "boolean")
             {
                 {
                     let __flight_value = (key).clone();
@@ -69,8 +69,8 @@ pub fn lerp_render_effect(
                     }
                 };
             } else {
-                if ((va).as_ref().map_or("undefined", |_| "object") == "string")
-                    || ((vb).as_ref().map_or("undefined", |_| "object") == "string")
+                if (((va).as_ref().map_or("undefined", |_| "object")).to_owned() == "string")
+                    || (((vb).as_ref().map_or("undefined", |_| "object")).to_owned() == "string")
                 {
                     {
                         let __flight_value = (key).clone();
@@ -101,7 +101,7 @@ pub fn lerp_render_effect(
                 .find(|(entry_key, _)| entry_key == &(key).clone())
                 .map(|(_, value)| value.clone())
                 .clone();
-            if ((vb).as_ref().map_or("undefined", |_| "object") == "number") {
+            if (((vb).as_ref().map_or("undefined", |_| "object")).to_owned() == "number") {
                 {
                     let __flight_value = (key).clone();
                     if !numeric_keys.contains(&__flight_value) {
@@ -109,7 +109,7 @@ pub fn lerp_render_effect(
                     }
                 };
             } else {
-                if ((vb).as_ref().map_or("undefined", |_| "object") == "boolean") {
+                if (((vb).as_ref().map_or("undefined", |_| "object")).to_owned() == "boolean") {
                     {
                         let __flight_value = (key).clone();
                         if !boolean_keys.contains(&__flight_value) {
@@ -117,7 +117,7 @@ pub fn lerp_render_effect(
                         }
                     };
                 } else {
-                    if ((vb).as_ref().map_or("undefined", |_| "object") == "string") {
+                    if (((vb).as_ref().map_or("undefined", |_| "object")).to_owned() == "string") {
                         {
                             let __flight_value = (key).clone();
                             if !string_keys.contains(&__flight_value) {
