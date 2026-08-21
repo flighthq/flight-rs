@@ -6069,6 +6069,7 @@ function emitType(type: IrType, context: EmitContext): string {
         const callback = type.arguments[0] ?? { kind: 'dynamic' };
         return `<${emitType(callback, context)} as crate::FlightCallback>::Args`;
       }
+      if (type.name === 'FlightNever') return 'std::convert::Infallible';
       if (type.name === 'FlightSymbol') return 'crate::FlightSymbol';
       if (type.name === 'FlightTimeout') return 'crate::FlightTimeout';
       if (type.name === 'Date') return 'crate::OpaqueHostValue';

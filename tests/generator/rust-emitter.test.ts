@@ -900,6 +900,9 @@ describe('Rust emission', () => {
         export type Step =
           | { kind: 'move'; x: number; y: number }
           | { kind: 'line'; x: number; y: number };
+        export interface EmptyExtension {
+          values?: Record<string, never>;
+        }
         export function visitMove(visitor: (step: Step) => void): void {
           visitor({ kind: 'move', x: 4, y: 5 });
         }
@@ -921,6 +924,7 @@ describe('Rust emission', () => {
     expect(output).toContain('.registry.clone()');
     expect(output).toContain('pub type Entry<T> = crate::FlightUnion2<');
     expect(output).toContain('panic!("TypeScript never value was reached")');
+    expect(output).toContain('Vec<(String, std::convert::Infallible)>');
     expect(output).toContain('visitor(Step::A(');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-three-way-union-'));
