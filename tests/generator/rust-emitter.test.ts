@@ -903,6 +903,19 @@ describe('Rust emission', () => {
         export interface EmptyExtension {
           values?: Record<string, never>;
         }
+        interface InternalResult {
+          value: number;
+        }
+        export function createInternalResult(): InternalResult {
+          return { value: 7 };
+        }
+        interface StepEnvelope {
+          step: Step;
+        }
+        export function nestedMoveX(): number {
+          const envelope: StepEnvelope = { step: { kind: 'move', x: 4, y: 5 } };
+          return envelope.step.x;
+        }
         export function visitMove(visitor: (step: Step) => void): void {
           visitor({ kind: 'move', x: 4, y: 5 });
         }
@@ -926,6 +939,7 @@ describe('Rust emission', () => {
     expect(output).toContain('panic!("TypeScript never value was reached")');
     expect(output).toContain('Vec<(String, std::convert::Infallible)>');
     expect(output).toContain('visitor(Step::A(');
+    expect(output).toContain('pub(crate) struct InternalResult');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-three-way-union-'));
     writeFileSync(path.join(fixture, 'generated.rs'), output);
@@ -951,6 +965,7 @@ describe('Rust emission', () => {
         '  let mut visited = Vec::new();',
         '  generated::visit_move(&mut |step| visited.push(step));',
         '  assert!(matches!(visited.as_slice(), [generated::Step::A(value)] if value.kind == "move" && value.x == 4.0 && value.y == 5.0));',
+        '  assert_eq!(generated::nested_move_x(), 4.0);',
         '}',
         '',
       ].join('\n'),
@@ -3353,6 +3368,16 @@ describe('Rust emission', () => {
         export function createTypedTimer(): ReturnType<typeof setInterval> {
           return setInterval(() => {}, 10);
         }
+        export function clearTypedTimer(timer: ReturnType<typeof setInterval> | undefined): void {
+          if (timer === undefined) return;
+          clearInterval(timer);
+        }
+        export function sameTypedTimer(
+          left: ReturnType<typeof setInterval>,
+          right: ReturnType<typeof setInterval>,
+        ): boolean {
+          return left === right;
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -3371,6 +3396,7 @@ describe('Rust emission', () => {
     expect(output).toContain('crate::clear_interval');
     expect(output).toContain('= None');
     expect(output).toContain('pub fn create_typed_timer() -> crate::FlightTimeout');
+    expect(output).toContain('crate::clear_interval((timer.as_ref().unwrap()).clone())');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
     const sourceFile = path.join(fixture, 'lib.rs');
@@ -3379,7 +3405,7 @@ describe('Rust emission', () => {
       output.replace(
         '// Source:',
         `
-        #[derive(Clone)]
+        #[derive(Clone, PartialEq)]
         pub struct FlightTimeout;
         pub fn set_interval<F: FnMut() + Send + 'static>(_: F, _: f64) -> FlightTimeout { FlightTimeout }
         pub fn clear_interval(_: FlightTimeout) {}

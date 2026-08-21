@@ -1874,9 +1874,7 @@ function emitLocalVariable(variable: IrVariable, context: EmitContext): string[]
   }
   if (variable.type?.kind === 'named' && variable.type.name === 'FlightNever') {
     context.symbolTypes.set(variable.name, variable.type);
-    return [
-      `let ${safeName(variable.name)} = panic!("TypeScript never value was reached");`,
-    ];
+    return [];
   }
   const callbackStorage = context.callbackArgumentStorage.get(variable.name);
   const expected: IrType | undefined = callbackStorage
@@ -2264,6 +2262,10 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
       return emitHostConstruct(expression, context);
     case 'identifier': {
       const resolvedExpected = resolveSemanticType(expectedType, context) ?? expectedType;
+      const declaredType = context.symbolTypes.get(expression.name);
+      if (declaredType?.kind === 'named' && declaredType.name === 'FlightNever') {
+        return 'panic!("TypeScript never value was reached")';
+      }
       const functionDeclaration = context.functions.get(expression.name);
       if (resolvedExpected?.kind === 'function' && functionDeclaration) {
         const parameters = resolvedExpected.parameters.map(
@@ -2541,7 +2543,7 @@ function emitCall(
       const timer = expression.arguments[0];
       if (!timer) throw new RustEmissionError('clearTimeout requires a timer handle');
       const timerType = inferIrExpressionType(timer, context);
-      const value = emitExpression(timer, context);
+      const value = emitExpression(timer, context, timerType);
       return timerType?.kind === 'nullable'
         ? `if let Some(__flight_timer) = ${parenthesize(value)}.clone() { crate::clear_timeout(__flight_timer); }`
         : `crate::clear_timeout(${value})`;
@@ -2550,7 +2552,7 @@ function emitCall(
       const timer = expression.arguments[0];
       if (!timer) throw new RustEmissionError('clearInterval requires a timer handle');
       const timerType = inferIrExpressionType(timer, context);
-      const value = emitExpression(timer, context);
+      const value = emitExpression(timer, context, timerType);
       return timerType?.kind === 'nullable'
         ? `if let Some(__flight_timer) = ${parenthesize(value)}.clone() { crate::clear_interval(__flight_timer); }`
         : `crate::clear_interval(${value})`;
@@ -4428,6 +4430,13 @@ function emitProperty(
   const resolvedReceiver = resolvedObject?.kind === 'nullable' ? resolvedObject.inner : resolvedObject;
   const unionProperty = emitUnionPropertyRead(expression, context);
   if (unionProperty !== undefined) return unionProperty;
+  const unionOwner =
+    expression.object.kind === 'property' ? emitUnionPropertyRead(expression.object, context) : undefined;
+  if (unionOwner !== undefined) {
+    const type = inferIrExpressionType(expression, context) ?? expectedType;
+    const value = `${parenthesize(unionOwner)}.${safeName(expression.name)}`;
+    return type && !isCopyType(type, context) ? `${parenthesize(value)}.clone()` : value;
+  }
   if (resolvedReceiver?.kind === 'dynamic' || isNativeHostHandleType(resolvedReceiver)) {
     const result = expectedType ?? inferDynamicHostPropertyType(expression.name) ?? { kind: 'dynamic' };
     return emitHostValueExpression(result, emitRustStringLiteral(`host.${expression.name}`), context);
@@ -6223,7 +6232,7 @@ function emitTypeDeclaration(
   context: EmitContext,
   typeParameters: readonly string[] = [],
 ): string {
-  const visibility = exported ? 'pub ' : '';
+  const visibility = exported ? 'pub ' : 'pub(crate) ';
   if (name !== 'EntityRuntime' && context.entityRuntimeTypes.has(name)) {
     if (context.entityRuntimeClosureError) {
       throw new RustEmissionError(
@@ -6252,7 +6261,7 @@ function emitTypeDeclaration(
       new RegExp(`\\b${parameter}\\b`, 'u').test(emittedType),
     );
     const generics = effectiveTypeParameters.length > 0 ? `<${effectiveTypeParameters.join(', ')}>` : '';
-    return `${emitAnonymousDefinitions(aliasContext, exported)}${visibility}type ${name}${generics} = ${emittedType};`;
+    return `${emitAnonymousDefinitions(aliasContext, exported, !exported)}${visibility}type ${name}${generics} = ${emittedType};`;
   }
   const structuralContext = {
     ...typeDeclarationContext(context, name, type),
@@ -6291,7 +6300,7 @@ function emitTypeDeclaration(
     storageFields.push(
       'pub generic_slots: std::collections::HashMap<std::any::TypeId, Box<dyn std::any::Any + Send>>,',
     );
-    return `${emitAnonymousDefinitions(structuralContext, exported)}${[
+    return `${emitAnonymousDefinitions(structuralContext, exported, !exported)}${[
       '#[derive(Clone, Default)]',
       `${visibility}struct ${name} {`,
       `  #[doc(hidden)] pub inner: std::sync::Arc<std::sync::Mutex<${storageName}>>,`,
@@ -6424,7 +6433,7 @@ function emitTypeDeclaration(
       '}',
     );
   }
-  return `${emitAnonymousDefinitions(structuralContext, exported)}${emitted.join('\n')}`;
+  return `${emitAnonymousDefinitions(structuralContext, exported, !exported)}${emitted.join('\n')}`;
 }
 
 function emittedDeclarationUsesNamedParameter(
@@ -6497,7 +6506,7 @@ function emitEntityRuntimeSlotDeclaration(
   context: EmitContext,
   typeParameters: readonly string[] = [],
 ): string {
-  const visibility = exported ? 'pub ' : '';
+  const visibility = exported ? 'pub ' : 'pub(crate) ';
   const structuralContext = {
     ...typeDeclarationContext(context, name, type),
     lexicalTypeParameters: new Set(typeParameters),
@@ -6522,7 +6531,7 @@ function emitEntityRuntimeSlotDeclaration(
     ...fields.map((field) => `      ${safeName(field.name)}: Default::default(),`),
     ...(marker ? ['      __flight_marker: std::marker::PhantomData,'] : []),
   ].join('\n');
-  return `${emitAnonymousDefinitions(structuralContext, exported)}${[
+  return `${emitAnonymousDefinitions(structuralContext, exported, !exported)}${[
     '#[doc(hidden)]',
     `${visibility}struct ${name}Storage${generics} {`,
     indent(emitted.join('\n')),
@@ -7952,7 +7961,7 @@ function registerLocalTypes(statements: readonly IrStatement[], context: EmitCon
   }
 }
 
-function emitAnonymousDefinitions(context: EmitContext, exported = false): string {
+function emitAnonymousDefinitions(context: EmitContext, exported = false, packageVisible = false): string {
   if (context.anonymousTypes.size === 0) return '';
   const definitions = [...context.anonymousTypes.entries()]
     .filter(([key]) => !context.inheritedAnonymousTypeKeys.has(key))
@@ -7963,15 +7972,16 @@ function emitAnonymousDefinitions(context: EmitContext, exported = false): strin
       const parameters = anonymousTypeParameterNames(type, context);
       const generics = parameters.length > 0 ? `<${parameters.join(', ')}>` : '';
       const derivesDefault = fields.every((field) => field.optional || rustTypeSupportsDefault(field.type, context));
+      const visibility = exported ? 'pub ' : packageVisible ? 'pub(crate) ' : '';
       return [
         `#[derive(Clone${derivesDefault ? ', Default' : ''})]`,
-        `${exported ? 'pub ' : ''}struct ${name}${generics} {`,
+        `${visibility}struct ${name}${generics} {`,
         indent(
           [
-            `${exported ? 'pub ' : ''}__flight_identity: std::sync::Arc<()>,`,
+            `${visibility}__flight_identity: std::sync::Arc<()>,`,
             ...fields.map(
               (field) =>
-                `${exported ? 'pub ' : ''}${safeName(field.name)}: ${
+                `${visibility}${safeName(field.name)}: ${
                   field.optional && field.type.kind !== 'nullable'
                     ? `Option<${emitType(field.type, context)}>`
                     : emitType(field.type, context)
