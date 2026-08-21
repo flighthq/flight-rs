@@ -2576,7 +2576,9 @@ describe('Rust emission', () => {
       `
         export type Handler = (value: string) => void;
         export interface Handle { readonly handler: Handler; }
+        export enum Level { None = 0, Info = 1 }
         const handlers: Handler[] = [];
+        const defaultHandler: Handler = (_value: string): void => {};
         export function addHandler(handler: Handler): void {
           if (!handlers.includes(handler)) handlers.push(handler);
         }
@@ -2588,6 +2590,15 @@ describe('Rust emission', () => {
         }
         export function callHandler(handler: Handler, value: string): void {
           handler(value);
+        }
+        export function selectHandler(handler?: Handler): Handler {
+          return handler ?? defaultHandler;
+        }
+        export function passesLevel(level: Level, gate?: Level): boolean {
+          return level <= gate;
+        }
+        export function drain(state: { buf: string[] }): string[] {
+          return state.buf.splice(0);
         }
         function consumeHandle(_handle: Handle): void {}
         export function createHandle(): Handle {
@@ -2611,6 +2622,8 @@ describe('Rust emission', () => {
     expect(output).toContain('pub fn add_handler(handler: Handler)');
     expect(output).toContain('pub fn remove_handler(handler: Handler)');
     expect(output).toContain('pub fn call_handler(handler: Handler, value: String)');
+    expect(output).toContain('.as_ref().is_some_and(|value| level <= *value)');
+    expect(output).toContain('(state.buf.len() as f64) - __flight_start');
     expect(output).toContain('let __flight_forward_handle: std::sync::Arc<std::sync::Mutex<Option<Handle>>>');
     expect(output).toContain('*__flight_forward_handle.lock().unwrap() = Some(handle.clone())');
     expect(output).not.toContain('impl FnMut(String)');

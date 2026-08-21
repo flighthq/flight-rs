@@ -199,6 +199,28 @@ export function emitRustModule(module: RustModule): string {
         ...module.declarations.filter(
           (declaration): declaration is IrFunctionDeclaration => declaration.kind === 'function',
         ),
+        ...module.declarations.flatMap((declaration): IrFunctionDeclaration[] => {
+          if (
+            declaration.kind !== 'variable' ||
+            declaration.initializer?.kind !== 'function' ||
+            !declaration.initializer.returns
+          ) {
+            return [];
+          }
+          return [
+            {
+              body: declaration.initializer.body,
+              execution: declaration.initializer.execution,
+              exported: declaration.exported,
+              kind: 'function',
+              name: declaration.name,
+              origin: declaration.origin,
+              parameters: declaration.initializer.parameters,
+              returns: declaration.initializer.returns,
+              typeParameters: [],
+            },
+          ];
+        }),
       ].map((declaration) => [declaration.name, declaration]),
     ),
     inheritedAnonymousTypeKeys: new Set(),
@@ -211,9 +233,12 @@ export function emitRustModule(module: RustModule): string {
     lexicalTypeParameters: new Set(),
     lazyScalarNames: new Set(),
     localFunctionNames: new Set(
-      module.declarations
-        .filter((declaration): declaration is IrFunctionDeclaration => declaration.kind === 'function')
-        .map((declaration) => declaration.name),
+      module.declarations.flatMap((declaration) =>
+        declaration.kind === 'function' ||
+        (declaration.kind === 'variable' && declaration.initializer?.kind === 'function')
+          ? [declaration.name]
+          : [],
+      ),
     ),
     localTypeNames: new Set(
       module.declarations.filter((declaration) => declaration.kind === 'type').map((declaration) => declaration.name),
@@ -2906,11 +2931,11 @@ function emitCall(
       const startValue = emitExpression(start, context);
       const count = expression.arguments[1]
         ? emitExpression(expression.arguments[1], context)
-        : `((${ownerPlace}.len() as f64) - ${parenthesize(startValue)})`;
+        : `((${ownerPlace}.len() as f64) - __flight_start)`;
       const inserted = expression.arguments
         .slice(2)
         .map((argument) => emitExpression(argument, context, collectionType.element));
-      return `${ownerPlace}.splice(${parenthesize(startValue)} as usize..(${parenthesize(startValue)} + ${parenthesize(count)}) as usize, vec![${inserted.join(', ')}]).collect::<Vec<_>>()`;
+      return `{ let __flight_start = ${parenthesize(startValue)}; let __flight_count = ${parenthesize(count)}; ${ownerPlace}.splice((__flight_start) as usize..(__flight_start + __flight_count) as usize, vec![${inserted.join(', ')}]).collect::<Vec<_>>() }`;
     }
     if (
       (collectionType?.kind === 'array' ||
@@ -4824,6 +4849,18 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
     (nullableNumericLeft.name === 'Float' || nullableNumericLeft.name === 'Int')
   ) {
     return `${parenthesize(left)}.as_ref().is_some_and(|value| *value ${expression.operator} ${right})`;
+  }
+  const nullableCopyRight =
+    rightType?.kind === 'nullable' ? (resolveSemanticType(rightType.inner, context) ?? rightType.inner) : undefined;
+  if (
+    ['<', '<=', '>', '>='].includes(expression.operator) &&
+    leftType &&
+    rightType?.kind === 'nullable' &&
+    nullableCopyRight &&
+    isCopyType(rightType.inner, context) &&
+    semanticTypesEqual(leftType, rightType.inner, context)
+  ) {
+    return `${parenthesize(right)}.as_ref().is_some_and(|value| ${left} ${expression.operator} *value)`;
   }
   const callbackTypeParameter =
     inferCallbackTypeParameter(expression.left, context) ?? inferCallbackTypeParameter(expression.right, context);
@@ -8360,7 +8397,8 @@ function isCopyType(type: IrType, context: EmitContext): boolean {
   if (!resolved) return false;
   if (resolved.kind === 'primitive') return resolved.name !== 'String';
   if (resolved.kind === 'nullable') return isCopyType(resolved.inner, context);
-  if (resolved.kind === 'named' && resolved.name === 'FlightSymbol') return true;
+  if (resolved.kind === 'named' && (resolved.name === 'FlightSymbol' || context.enumNames.has(resolved.name)))
+    return true;
   return false;
 }
 

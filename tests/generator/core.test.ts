@@ -5,6 +5,7 @@ import { portConfig } from '../../tools/generator/port.config.ts';
 import {
   formatRust,
   classifyImportedRustBinding,
+  emittedPortableTaskUsesOpaqueHostValue,
   normalizeDiagnosticSource,
   rustDependencyForSpecifier,
   validateAsyncTaskDispositionPartition,
@@ -27,6 +28,27 @@ describe('generator prerequisites', () => {
       if (path === undefined) delete process.env.PATH;
       else process.env.PATH = path;
     }
+  });
+});
+
+describe('portable task host-value boundaries', () => {
+  it('only attributes opaque host storage to the task declaration that contains it', () => {
+    const syncOpaque = [
+      '// Source: fixture.ts:1',
+      'fn sync_host_value() -> crate::OpaqueHostValue { crate::OpaqueHostValue::Object }',
+      '// Source: fixture.ts:2',
+      'pub fn portable() -> crate::FlightTask<String> { crate::FlightTask::ready("ok".to_owned()) }',
+    ].join('\n');
+    const taskOpaque = [
+      '// Source: fixture.ts:1',
+      'pub fn portable() -> crate::FlightTask<String> {',
+      '  let value = crate::OpaqueHostValue::Object;',
+      '  crate::FlightTask::ready(value.to_string())',
+      '}',
+    ].join('\n');
+
+    expect(emittedPortableTaskUsesOpaqueHostValue(syncOpaque)).toBe(false);
+    expect(emittedPortableTaskUsesOpaqueHostValue(taskOpaque)).toBe(true);
   });
 });
 

@@ -567,7 +567,7 @@ function attemptAutomaticPackage(
         typeImports: [],
       });
       if (
-        emitted.includes('OpaqueHostValue') &&
+        emittedPortableTaskUsesOpaqueHostValue(emitted) &&
         sourceAsyncTasks.some((scope) => scope.execution === 'portableTask' && !irTypeContainsDynamic(scope.output))
       ) {
         markOpaqueTaskSourceUnsupported(sourceAsyncTasks, sourceTaskConstructions);
@@ -1313,6 +1313,12 @@ function markOpaqueTaskSourceUnsupported(
       construction.reason = PORTABLE_TASK_OPAQUE_SOURCE_REASON;
     }
   }
+}
+
+export function emittedPortableTaskUsesOpaqueHostValue(emitted: string): boolean {
+  return emitted
+    .split(/\n(?=\/\/ Source: )/u)
+    .some((declaration) => declaration.includes('-> crate::FlightTask<') && declaration.includes('OpaqueHostValue'));
 }
 
 function irTypeContainsDynamic(type: IrType): boolean {
