@@ -13,6 +13,36 @@ use flighthq_types::{
     RateLimitedLogSink,
 };
 
+#[inline]
+
+fn __flight_number_to_fixed(value: f64, digits: f64) -> String {
+    assert!(
+        digits.is_finite() && digits.fract() == 0.0_f64 && (0.0_f64..=100.0_f64).contains(&digits),
+        "Number.toFixed digits must be between 0 and 100"
+    );
+    if value.is_nan() {
+        return "NaN".to_owned();
+    }
+    if value == f64::INFINITY {
+        return "Infinity".to_owned();
+    }
+    if value == f64::NEG_INFINITY {
+        return "-Infinity".to_owned();
+    }
+    let value = if value == 0.0_f64 { 0.0_f64 } else { value };
+    format!("{:.*}", digits as usize, value)
+}
+
+#[inline]
+
+fn __flight_string_repeat(value: &str, count: f64) -> String {
+    assert!(
+        count.is_finite() && count >= 0.0_f64,
+        "String.repeat count must be finite and non-negative"
+    );
+    value.repeat(count.trunc() as usize)
+}
+
 #[derive(Clone, Default)]
 pub struct SharedStructuralRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
@@ -66,7 +96,9 @@ impl PartialEq for SharedStructuralRecord4 {
 pub fn add_log_sink(sink: &mut impl FnMut(LogEntry) -> ()) -> () {
     if {
         let __flight_value = (*sink).clone();
-        (_SINKS).iter().any(|item| item == &__flight_value)
+        (_SINKS.lock().unwrap())
+            .iter()
+            .any(|item| item == &__flight_value)
     } {
         return;
     }
@@ -182,12 +214,17 @@ pub fn create_buffered_log_sink(
                 if ((state.as_mut().unwrap().buf.len() as f64) == 0.0_f64) {
                     return;
                 }
-                let batch = state.as_mut().unwrap().buf.splice(
-                    (0.0_f64) as usize
-                        ..((0.0_f64) + ((state.as_mut().unwrap().buf.len() as f64) - (0.0_f64)))
-                            as usize,
-                    vec![],
-                );
+                let batch = state
+                    .as_mut()
+                    .unwrap()
+                    .buf
+                    .splice(
+                        (0.0_f64) as usize
+                            ..((0.0_f64) + ((state.as_mut().unwrap().buf.len() as f64) - (0.0_f64)))
+                                as usize,
+                        vec![],
+                    )
+                    .collect::<Vec<_>>();
                 for entry in (batch).iter().cloned() {
                     {
                         let __flight_callback = (target).clone();
@@ -804,7 +841,10 @@ pub fn create_text_log_formatter(options: Option<SharedStructuralRecord4>) -> Lo
             let channel = (entry.channel).clone();
             let mut parts: Vec<String> = vec![];
             if (options.timestamp).unwrap_or(false) {
-                parts.push(format!("t={}", (_timestamp().to_fixed)(2.0_f64)));
+                parts.push(format!(
+                    "t={}",
+                    __flight_number_to_fixed(_timestamp(), 2.0_f64)
+                ));
             }
             if (options.level_prefix).unwrap_or(false) {
                 parts.push(
@@ -825,7 +865,10 @@ pub fn create_text_log_formatter(options: Option<SharedStructuralRecord4>) -> Lo
             if ((options.indent_groups).unwrap_or(false))
                 && ((*_GROUP_DEPTH.lock().unwrap()).clone() > 0.0_f64)
             {
-                parts.push(("  ".repeat)((*_GROUP_DEPTH.lock().unwrap()).clone()));
+                parts.push(__flight_string_repeat(
+                    &("  "),
+                    (*_GROUP_DEPTH.lock().unwrap()).clone(),
+                ));
             }
             if ((match &(entry.data) {
                 crate::FlightUnion2::A(_) => "string",
@@ -1009,7 +1052,7 @@ pub fn enter_log_span(span: &LogSpan) -> () {
 pub fn exit_log_span(span: &LogSpan) -> () {
     let idx = {
         let __flight_value = (*span).clone();
-        (_SPAN_STACK)
+        (_SPAN_STACK.lock().unwrap())
             .iter()
             .position(|item| item == &__flight_value)
             .map_or(-1.0_f64, |index| index as f64)
@@ -1018,7 +1061,8 @@ pub fn exit_log_span(span: &LogSpan) -> () {
         _SPAN_STACK
             .lock()
             .unwrap()
-            .splice((idx) as usize..((idx) + (1.0_f64)) as usize, vec![]);
+            .splice((idx) as usize..((idx) + (1.0_f64)) as usize, vec![])
+            .collect::<Vec<_>>();
     }
 }
 
@@ -1679,7 +1723,7 @@ pub fn register_log_serializer(
 pub fn remove_log_sink(sink: &mut impl FnMut(LogEntry) -> ()) -> bool {
     let idx = {
         let __flight_value = (*sink).clone();
-        (_SINKS)
+        (_SINKS.lock().unwrap())
             .iter()
             .position(|item| item == &__flight_value)
             .map_or(-1.0_f64, |index| index as f64)
@@ -1690,7 +1734,8 @@ pub fn remove_log_sink(sink: &mut impl FnMut(LogEntry) -> ()) -> bool {
     _SINKS
         .lock()
         .unwrap()
-        .splice((idx) as usize..((idx) + (1.0_f64)) as usize, vec![]);
+        .splice((idx) as usize..((idx) + (1.0_f64)) as usize, vec![])
+        .collect::<Vec<_>>();
     return true;
 }
 
@@ -1733,40 +1778,53 @@ pub fn serialize_log_error(value: crate::FlightValue) -> Vec<(String, crate::Fli
     })
     .is_some()
     {
-        result.stack = {
-            let __flight_portable_source = match &(value) {
-                crate::FlightValue::Error { stack, .. } => stack.clone(),
-                _ => unreachable!("instanceof Error narrowing must contain an Error value"),
+        {
+            let __flight_key = "stack".to_owned();
+            let __flight_value = {
+                let __flight_portable_source = match &(value) {
+                    crate::FlightValue::Error { stack, .. } => stack.clone(),
+                    _ => unreachable!("instanceof Error narrowing must contain an Error value"),
+                };
+                match (&__flight_portable_source).as_ref() {
+                    Some(value) => crate::FlightValue::String((value).clone()),
+                    None => crate::FlightValue::Null,
+                }
             };
-            match (&__flight_portable_source).as_ref() {
-                Some(value) => crate::FlightValue::String((value).clone()),
-                None => crate::FlightValue::Null,
+            if let Some((_, value)) = result.iter_mut().find(|(key, _)| key == &__flight_key) {
+                *value = __flight_value;
+            } else {
+                result.push((__flight_key, __flight_value));
             }
         };
     }
     if (match &(value) {
-        crate::FlightValue::Error { cause, .. } => cause
-            .as_deref()
-            .cloned()
-            .unwrap_or(crate::FlightValue::Undefined),
+        crate::FlightValue::Error { cause, .. } => cause.as_deref().cloned(),
         _ => unreachable!("instanceof Error narrowing must contain an Error value"),
     })
     .is_some()
     {
-        result.cause = {
-            let __flight_portable_source = serialize_log_error(match &(value) {
-                crate::FlightValue::Error { cause, .. } => cause
-                    .as_deref()
-                    .cloned()
+        {
+            let __flight_key = "cause".to_owned();
+            let __flight_value = {
+                let __flight_portable_source = serialize_log_error(
+                    (match &(value) {
+                        crate::FlightValue::Error { cause, .. } => cause.as_deref().cloned(),
+                        _ => unreachable!("instanceof Error narrowing must contain an Error value"),
+                    })
                     .unwrap_or(crate::FlightValue::Undefined),
-                _ => unreachable!("instanceof Error narrowing must contain an Error value"),
-            });
-            crate::FlightValue::Record(
-                (&__flight_portable_source)
-                    .iter()
-                    .map(|(key, value)| (key.clone(), (value).clone()))
-                    .collect(),
-            )
+                );
+                crate::FlightValue::Record(
+                    (&__flight_portable_source)
+                        .iter()
+                        .map(|(key, value)| (key.clone(), (value).clone()))
+                        .collect(),
+                )
+            };
+            if let Some((_, value)) = result.iter_mut().find(|(key, _)| key == &__flight_key) {
+                *value = __flight_value;
+            } else {
+                result.push((__flight_key, __flight_value));
+            }
         };
     }
     return result;
@@ -2074,7 +2132,7 @@ fn _apply_serializers(
 // Source: upstream/packages/log/src/log.ts:699 (sha256:81eb779db390901d7bead526a299029a68af484f606cbc13807defc4f4ceb131)
 fn _apply_redaction(data: &Vec<(String, crate::FlightValue)>) -> Vec<(String, crate::FlightValue)> {
     let mut result = (data).clone();
-    for path in (_REDACTION_PATHS).iter().cloned() {
+    for path in (_REDACTION_PATHS.lock().unwrap()).iter().cloned() {
         let parts = (path)
             .split(".".to_owned().as_str())
             .map(|part| part.to_owned())
@@ -2192,7 +2250,7 @@ fn _redact_path(obj: &mut Vec<(String, crate::FlightValue)>, parts: &Vec<String>
 
 // Source: upstream/packages/log/src/log.ts:724 (sha256:5687a087982a83a17d7f858b4d859883ad8675360b262fbcd80bed9a938e6c77)
 fn _emit_to_sinks(entry: &LogEntry) -> () {
-    for sink in (_SINKS).iter().cloned() {
+    for sink in (_SINKS.lock().unwrap()).iter().cloned() {
         {
             let __flight_callback = (sink).clone();
             let __flight_result = __flight_callback.lock().unwrap()((*entry).clone());
@@ -2324,7 +2382,7 @@ fn _merge_span_fields(data: &LogData, _channel: Option<String>) -> LogData {
         let mut __flight_record = Vec::new();
         __flight_record
     };
-    for span in (_SPAN_STACK).iter().cloned() {
+    for span in (_SPAN_STACK.lock().unwrap()).iter().cloned() {
         crate::host_value::<()>("host.assign");
     }
     if ((span_fields

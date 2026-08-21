@@ -789,7 +789,7 @@ pub fn release_clip_region(clip: &ClipRegion) -> () {
     if (((*_RELEASE_GUARD.lock().unwrap()).clone()).is_some())
         && ({
             let __flight_value = (*clip).clone();
-            (CLIP_REGION_POOL)
+            (CLIP_REGION_POOL.lock().unwrap())
                 .iter()
                 .any(|item| item == &__flight_value)
         })

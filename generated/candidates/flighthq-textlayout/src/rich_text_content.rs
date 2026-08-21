@@ -30,6 +30,16 @@ fn __flight_string_slice(value: &str, start: f64, end: Option<f64>) -> String {
 
 #[inline]
 
+fn __flight_string_repeat(value: &str, count: f64) -> String {
+    assert!(
+        count.is_finite() && count >= 0.0_f64,
+        "String.repeat count must be finite and non-negative"
+    );
+    value.repeat(count.trunc() as usize)
+}
+
+#[inline]
+
 fn __flight_string_from_code_point(value: f64) -> String {
     assert!(
         value.is_finite()
@@ -203,7 +213,9 @@ fn clamp_ranges(ranges: &mut Vec<TextFormatRange>, length: f64) -> () {
         while (i >= 0.0_f64) {
             let mut range = ranges[i as usize].clone();
             if (range.start >= length) {
-                ranges.splice((i) as usize..((i) + (1.0_f64)) as usize, vec![]);
+                ranges
+                    .splice((i) as usize..((i) + (1.0_f64)) as usize, vec![])
+                    .collect::<Vec<_>>();
             } else {
                 if (range.end > length) {
                     range.end = length;
@@ -283,7 +295,7 @@ fn get_renderable_source(data: &RichTextData, password_character: Option<String>
     } else {
         "•".to_owned()
     };
-    return (mask.repeat)((data.text.encode_utf16().count() as f64));
+    return __flight_string_repeat(&(mask), (data.text.encode_utf16().count() as f64));
 }
 
 // Source: upstream/packages/textlayout/src/richTextContent.ts:139 (sha256:29e6bd354a194abe1d36111a87bc0a8e9728d443c9b9c2b05e169be762ffb718)

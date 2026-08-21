@@ -41,6 +41,16 @@ fn __flight_string_slice(value: &str, start: f64, end: Option<f64>) -> String {
     String::from_utf16_lossy(&value[start..end.max(start)])
 }
 
+#[inline]
+
+fn __flight_string_repeat(value: &str, count: f64) -> String {
+    assert!(
+        count.is_finite() && count >= 0.0_f64,
+        "String.repeat count must be finite and non-negative"
+    );
+    value.repeat(count.trunc() as usize)
+}
+
 #[derive(Clone, Default)]
 pub struct SharedStructuralRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
@@ -1175,7 +1185,10 @@ pub fn get_text_input_display_text(source: &RichText) -> String {
     } else {
         "•".to_owned()
     };
-    return (password_character.repeat)((source.data.text.encode_utf16().count() as f64));
+    return __flight_string_repeat(
+        &(password_character),
+        (source.data.text.encode_utf16().count() as f64),
+    );
 }
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:180 (sha256:6b955d3b8c3ce332cbfce64fe58488f118427ef712bf4ef362d76ef72235ffec)
@@ -2100,18 +2113,20 @@ fn adjust_text_format_ranges(
                             range.end += offset;
                         } else {
                             if (range.start >= begin_index) && (range.end <= end_index) {
-                                ranges.splice(
-                                    ({
-                                        i -= 1.0;
-                                        i
-                                    }) as usize..(({
-                                        i -= 1.0;
-                                        i
-                                    })
-                                        + (1.0_f64))
-                                        as usize,
-                                    vec![],
-                                );
+                                ranges
+                                    .splice(
+                                        ({
+                                            i -= 1.0;
+                                            i
+                                        }) as usize..(({
+                                            i -= 1.0;
+                                            i
+                                        })
+                                            + (1.0_f64))
+                                            as usize,
+                                        vec![],
+                                    )
+                                    .collect::<Vec<_>>();
                             } else {
                                 if ((range.end > end_index) && (range.start > begin_index))
                                     && (range.start <= end_index)
@@ -2140,7 +2155,9 @@ fn adjust_text_format_ranges(
         let mut i = ((ranges.len() as f64) - 1.0_f64);
         while (i >= 0.0_f64) {
             if (ranges[i as usize].start >= ranges[i as usize].end) {
-                ranges.splice((i) as usize..((i) + (1.0_f64)) as usize, vec![]);
+                ranges
+                    .splice((i) as usize..((i) + (1.0_f64)) as usize, vec![])
+                    .collect::<Vec<_>>();
             }
             {
                 i -= 1.0;
@@ -2417,10 +2434,13 @@ fn record_text_input_edit(
     state.history_index = ((state.history.len() as f64) - 1.0_f64);
     if ((state.history.len() as f64) > state.history_limit) {
         let overflow = ((state.history.len() as f64) - state.history_limit);
-        state.history.splice(
-            (0.0_f64) as usize..((0.0_f64) + (overflow)) as usize,
-            vec![],
-        );
+        state
+            .history
+            .splice(
+                (0.0_f64) as usize..((0.0_f64) + (overflow)) as usize,
+                vec![],
+            )
+            .collect::<Vec<_>>();
         state.history_index = ((state.history.len() as f64) - 1.0_f64);
     }
 }

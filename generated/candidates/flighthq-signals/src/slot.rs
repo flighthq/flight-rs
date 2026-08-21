@@ -43,24 +43,33 @@ pub fn connect_signal<T: crate::FlightCallback>(
             if (priority
                 > data.as_ref().unwrap().inner.lock().unwrap().priorities[i as usize].clone())
             {
-                data.as_ref().unwrap().inner.lock().unwrap().slots.splice(
-                    (i) as usize..((i) + (0.0_f64)) as usize,
-                    vec![(slot).clone()],
-                );
+                data.as_ref()
+                    .unwrap()
+                    .inner
+                    .lock()
+                    .unwrap()
+                    .slots
+                    .splice(
+                        (i) as usize..((i) + (0.0_f64)) as usize,
+                        vec![(slot).clone()],
+                    )
+                    .collect::<Vec<_>>();
                 data.as_ref()
                     .unwrap()
                     .inner
                     .lock()
                     .unwrap()
                     .priorities
-                    .splice((i) as usize..((i) + (0.0_f64)) as usize, vec![priority]);
+                    .splice((i) as usize..((i) + (0.0_f64)) as usize, vec![priority])
+                    .collect::<Vec<_>>();
                 data.as_ref()
                     .unwrap()
                     .inner
                     .lock()
                     .unwrap()
                     .repeat
-                    .splice((i) as usize..((i) + (0.0_f64)) as usize, vec![repeat]);
+                    .splice((i) as usize..((i) + (0.0_f64)) as usize, vec![repeat])
+                    .collect::<Vec<_>>();
                 return;
             }
             {
@@ -114,21 +123,24 @@ pub fn disconnect_signal<T: crate::FlightCallback>(signal: &mut Signal<T>, slot:
                 .lock()
                 .unwrap()
                 .slots
-                .splice((i) as usize..((i) + (1.0_f64)) as usize, vec![]);
+                .splice((i) as usize..((i) + (1.0_f64)) as usize, vec![])
+                .collect::<Vec<_>>();
             data.as_mut()
                 .unwrap()
                 .inner
                 .lock()
                 .unwrap()
                 .priorities
-                .splice((i) as usize..((i) + (1.0_f64)) as usize, vec![]);
+                .splice((i) as usize..((i) + (1.0_f64)) as usize, vec![])
+                .collect::<Vec<_>>();
             data.as_mut()
                 .unwrap()
                 .inner
                 .lock()
                 .unwrap()
                 .repeat
-                .splice((i) as usize..((i) + (1.0_f64)) as usize, vec![]);
+                .splice((i) as usize..((i) + (1.0_f64)) as usize, vec![])
+                .collect::<Vec<_>>();
         }
     }
     if ((data.as_mut().unwrap().inner.lock().unwrap().slots.len() as f64) == 0.0_f64) {
@@ -167,7 +179,7 @@ pub fn is_slot_connected<T: crate::FlightCallback>(signal: Signal<T>, slot: T) -
     return (((signal.data).clone()).is_some())
         && ({
             let __flight_value = (slot).clone();
-            ((signal.data.as_ref().unwrap().inner.lock().unwrap().slots).clone())
+            (signal.data.as_ref().unwrap().inner.lock().unwrap().slots)
                 .iter()
                 .position(|item| crate::FlightCallback::flight_same(item, &__flight_value))
                 .map_or(-1.0_f64, |index| index as f64)
@@ -194,17 +206,20 @@ fn make_dispatch<T: crate::FlightCallback>(mut data: SignalData<T>) -> T {
                         .lock()
                         .unwrap()
                         .slots
-                        .splice((i) as usize..((i) + (1.0_f64)) as usize, vec![]);
+                        .splice((i) as usize..((i) + (1.0_f64)) as usize, vec![])
+                        .collect::<Vec<_>>();
                     data.inner
                         .lock()
                         .unwrap()
                         .priorities
-                        .splice((i) as usize..((i) + (1.0_f64)) as usize, vec![]);
+                        .splice((i) as usize..((i) + (1.0_f64)) as usize, vec![])
+                        .collect::<Vec<_>>();
                     data.inner
                         .lock()
                         .unwrap()
                         .repeat
-                        .splice((i) as usize..((i) + (1.0_f64)) as usize, vec![]);
+                        .splice((i) as usize..((i) + (1.0_f64)) as usize, vec![])
+                        .collect::<Vec<_>>();
                 } else {
                     {
                         i += 1.0;

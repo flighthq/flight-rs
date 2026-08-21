@@ -251,14 +251,15 @@ pub fn create_web_protocol_backend() -> ProtocolBackend {
             move |scheme: String| -> bool {
                 let idx = {
                     let __flight_value = (scheme).clone();
-                    ((*_registered_schemes.lock().unwrap()).clone())
+                    (*_registered_schemes.lock().unwrap())
                         .iter()
                         .position(|item| item == &__flight_value)
                         .map_or(-1.0_f64, |index| index as f64)
                 };
                 if (idx >= 0.0_f64) {
                     (*_registered_schemes.lock().unwrap())
-                        .splice((idx) as usize..((idx) + (1.0_f64)) as usize, vec![]);
+                        .splice((idx) as usize..((idx) + (1.0_f64)) as usize, vec![])
+                        .collect::<Vec<_>>();
                 }
                 return false;
             }

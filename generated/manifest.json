@@ -11508,7 +11508,7 @@
           ],
           "declarations": 45,
           "module": "application",
-          "outputSha256": "sha256:a183b6041919d7dd10f295d85d00cddb4be1ab2351623fe67a69b874f68025df",
+          "outputSha256": "sha256:f2941ff068d1ab0b46e276e1979fc0a0057a547af60e0a315bae5f1c7d2ee35a",
           "source": "upstream/packages/application/src/application.ts",
           "usesOpaqueHostValues": true
         },
@@ -14036,7 +14036,7 @@
           ],
           "declarations": 33,
           "module": "clip_region",
-          "outputSha256": "sha256:61a87beefe021dc9dbfdc2580bdcdd8411d701328711858d5f0aa79b449baecd",
+          "outputSha256": "sha256:1e3adbda4327d267108cd0d26827c7da7cdf774ba0dac7fb8068f7b7bb28abbc",
           "source": "upstream/packages/clip/src/clipRegion.ts",
           "usesOpaqueHostValues": true
         },
@@ -15258,7 +15258,7 @@
           ],
           "declarations": 13,
           "module": "clock",
-          "outputSha256": "sha256:c52b2b3fdebe578aafcc21c588e36f7eddbf4d4e5ae6f70ebf8f79635e6369e5",
+          "outputSha256": "sha256:f942bab8a77c02ad6cf514d2906548f15a1d7c500dee29639edfc318cceb8fbf",
           "source": "upstream/packages/clock/src/clock.ts",
           "usesOpaqueHostValues": false
         },
@@ -18502,7 +18502,7 @@
           ],
           "declarations": 3,
           "module": "canvas_effect_drop_shadow_css",
-          "outputSha256": "sha256:ad827af6c781a00848f8afae7dbecbcfdffa1701c778811d8505a18f562eb4f8",
+          "outputSha256": "sha256:ecc02b034343a12917d7b3cd9796caa62942664cf8203d75f7dafb2e79a09127",
           "source": "upstream/packages/effects-canvas/src/canvasEffectDropShadowCss.ts",
           "usesOpaqueHostValues": false
         },
@@ -18530,7 +18530,7 @@
           ],
           "declarations": 8,
           "module": "canvas_render_effect_pipeline",
-          "outputSha256": "sha256:de3474c8706edc58bc0530642174fe0d7c4911d374758a0fb5a4849117ba6f8f",
+          "outputSha256": "sha256:074eae4fa01b86fdcace3fb2bb0d3bea4a17b015f6a0f963cbe13d9f46ce52e1",
           "source": "upstream/packages/effects-canvas/src/canvasRenderEffectPipeline.ts",
           "usesOpaqueHostValues": true
         },
@@ -23735,7 +23735,7 @@
           ],
           "declarations": 5,
           "module": "matrix3_pool",
-          "outputSha256": "sha256:be31965bc5c80bc175c301f5d8c02a42689e26ca2c1d0f006f4c72d71f389faa",
+          "outputSha256": "sha256:cefcab5c119d0dd7d4e10ddf47b73748953e7e98f0843b66fa8ad4ba10972531",
           "source": "upstream/packages/geometry/src/matrix3Pool.ts",
           "usesOpaqueHostValues": false
         },
@@ -23809,7 +23809,7 @@
           ],
           "declarations": 5,
           "module": "matrix4_pool",
-          "outputSha256": "sha256:f930d8068198e82dbdadd185ff1e990b3b884546cdd0a8dbdb6bab09a26cca5e",
+          "outputSha256": "sha256:8967add9bae23e7b262f523b48ad2bbc802b14ef15f8dd9a671e62231067238c",
           "source": "upstream/packages/geometry/src/matrix4Pool.ts",
           "usesOpaqueHostValues": false
         },
@@ -23823,7 +23823,7 @@
           ],
           "declarations": 5,
           "module": "matrix_pool",
-          "outputSha256": "sha256:83e39781f3e853635f9591b510472eda56f304407fa6eda6f4dd8917d6afecd4",
+          "outputSha256": "sha256:9e5c1ed430f02f200ef0e02efe66f52613fef51cac73bc5804d1914656c6363c",
           "source": "upstream/packages/geometry/src/matrixPool.ts",
           "usesOpaqueHostValues": false
         },
@@ -23903,7 +23903,7 @@
           ],
           "declarations": 5,
           "module": "quaternion_pool",
-          "outputSha256": "sha256:ff4dfc4cc1f2cd4e9665931e980868ea1cbba41f817245534b5f86290242b4ae",
+          "outputSha256": "sha256:2dab95f7f67f8d4995cf5104c6aab251a3fa48eed91c59da75a12fd72fbcac78",
           "source": "upstream/packages/geometry/src/quaternionPool.ts",
           "usesOpaqueHostValues": false
         },
@@ -23984,7 +23984,7 @@
           ],
           "declarations": 5,
           "module": "rectangle_pool",
-          "outputSha256": "sha256:f083eb20ed9152b96c0d035af543249c906c741bbd9badc5fcb4431fa052a7fd",
+          "outputSha256": "sha256:aa4a55230bf596c52fd5d09ceee394498e8f4da96fc19d8173412f96ac2b3439",
           "source": "upstream/packages/geometry/src/rectanglePool.ts",
           "usesOpaqueHostValues": false
         },
@@ -24075,7 +24075,7 @@
           ],
           "declarations": 5,
           "module": "vector2_pool",
-          "outputSha256": "sha256:593ebbbdfc20dc0955b01c06474b022b6ee20eaaf4c5e106723aee71ac6c4d9b",
+          "outputSha256": "sha256:0ae35b8ced44335bad78b76a5805bc3fd7dc1aa04d2e5333c3a8eccfec430bcc",
           "source": "upstream/packages/geometry/src/vector2Pool.ts",
           "usesOpaqueHostValues": false
         },
@@ -24135,7 +24135,7 @@
           ],
           "declarations": 5,
           "module": "vector3_pool",
-          "outputSha256": "sha256:ffdd4a069251c31ca2812e6b73ffbb011414f79184092eacd45370ae0048fec1",
+          "outputSha256": "sha256:b0e9f056c23c7aa906781b4cf7b42a0235e942edfa4674c852191ea7ee29589c",
           "source": "upstream/packages/geometry/src/vector3Pool.ts",
           "usesOpaqueHostValues": false
         },
@@ -24191,7 +24191,7 @@
           ],
           "declarations": 5,
           "module": "vector4_pool",
-          "outputSha256": "sha256:65707705dfdf6afc5389d1cfaf6a4299aad1dc42eeb9c8a298073833a8d55980",
+          "outputSha256": "sha256:9add41e42fad871bd6e81df42c0ef489ab9f8ac7cf2876e0b94bf8242feb510e",
           "source": "upstream/packages/geometry/src/vector4Pool.ts",
           "usesOpaqueHostValues": false
         }
@@ -27847,72 +27847,27 @@
           },
           {
             "code": "E0599",
-            "message": "no method named `iter` found for struct `LazyLock<Mutex<Vec<Arc<Mutex<Box<dyn FnMut(LogEntry) + Send>>>>>>` in the current scope",
+            "message": "no method named `clone` found for type parameter `impl FnMut(LogEntry) -> ()` in the current scope",
+            "source": "generated/candidates/flighthq-log/src/log.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-log/src/log.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
+            "source": "generated/candidates/flighthq-log/src/log.rs"
+          },
+          {
+            "code": "E0308",
+            "message": "mismatched types",
             "source": "generated/candidates/flighthq-log/src/log.rs"
           },
           {
             "code": "E0599",
             "message": "no method named `clone` found for type parameter `impl FnMut(LogEntry) -> ()` in the current scope",
-            "source": "generated/candidates/flighthq-log/src/log.rs"
-          },
-          {
-            "code": "E0599",
-            "message": "no method named `iter` found for struct `std::vec::Splice<'a, I, A>` in the current scope",
-            "source": "generated/candidates/flighthq-log/src/log.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-log/src/log.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-log/src/log.rs"
-          },
-          {
-            "code": "E0610",
-            "message": "`f64` is a primitive type and therefore doesn't have fields",
-            "source": "generated/candidates/flighthq-log/src/log.rs"
-          },
-          {
-            "code": "E0615",
-            "message": "attempted to take value of method `repeat` on type `&'static str`",
-            "source": "generated/candidates/flighthq-log/src/log.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-log/src/log.rs"
-          },
-          {
-            "code": "E0599",
-            "message": "no method named `iter` found for struct `LazyLock<std::sync::Mutex<Vec<LogSpan>>>` in the current scope",
-            "source": "generated/candidates/flighthq-log/src/log.rs"
-          },
-          {
-            "code": "E0599",
-            "message": "no method named `clone` found for type parameter `impl FnMut(LogEntry) -> ()` in the current scope",
-            "source": "generated/candidates/flighthq-log/src/log.rs"
-          },
-          {
-            "code": "E0599",
-            "message": "no method named `iter` found for struct `LazyLock<Mutex<Vec<Arc<Mutex<Box<dyn FnMut(LogEntry) + Send>>>>>>` in the current scope",
-            "source": "generated/candidates/flighthq-log/src/log.rs"
-          },
-          {
-            "code": "E0609",
-            "message": "no field `stack` on type `Vec<(std::string::String, FlightValue)>`",
-            "source": "generated/candidates/flighthq-log/src/log.rs"
-          },
-          {
-            "code": "E0599",
-            "message": "no method named `is_some` found for enum `FlightValue` in the current scope",
-            "source": "generated/candidates/flighthq-log/src/log.rs"
-          },
-          {
-            "code": "E0609",
-            "message": "no field `cause` on type `Vec<(std::string::String, FlightValue)>`",
             "source": "generated/candidates/flighthq-log/src/log.rs"
           },
           {
@@ -27931,28 +27886,13 @@
             "source": "generated/candidates/flighthq-log/src/log.rs"
           },
           {
-            "code": "E0599",
-            "message": "no method named `iter` found for struct `LazyLock<std::sync::Mutex<Vec<std::string::String>>>` in the current scope",
-            "source": "generated/candidates/flighthq-log/src/log.rs"
-          },
-          {
             "code": "E0308",
             "message": "mismatched types",
             "source": "generated/candidates/flighthq-log/src/log.rs"
           },
           {
             "code": "E0599",
-            "message": "no method named `iter` found for struct `LazyLock<Mutex<Vec<Arc<Mutex<Box<dyn FnMut(LogEntry) + Send>>>>>>` in the current scope",
-            "source": "generated/candidates/flighthq-log/src/log.rs"
-          },
-          {
-            "code": "E0599",
             "message": "no method named `iter` found for reference `&FlightUnion2<std::string::String, Vec<(std::string::String, FlightValue)>>` in the current scope",
-            "source": "generated/candidates/flighthq-log/src/log.rs"
-          },
-          {
-            "code": "E0599",
-            "message": "no method named `iter` found for struct `LazyLock<std::sync::Mutex<Vec<LogSpan>>>` in the current scope",
             "source": "generated/candidates/flighthq-log/src/log.rs"
           },
           {
@@ -28103,7 +28043,7 @@
           ],
           "declarations": 92,
           "module": "log",
-          "outputSha256": "sha256:4db067c922959b9c266cbc8c570ac0befa6d62923b0d4c6d917a5e6baff1d1dd",
+          "outputSha256": "sha256:7f4325749518cce1ef9c263d95192f7aa2f0cdc571044a19d50c9ff8bb866a57",
           "source": "upstream/packages/log/src/log.ts",
           "usesOpaqueHostValues": false
         }
@@ -32724,7 +32664,7 @@
           ],
           "declarations": 4,
           "module": "tessellate_path",
-          "outputSha256": "sha256:fd73bcbc056fb3105a411b0bfdbf6061ee93fdad2dbbfa3d3803809fc9829909",
+          "outputSha256": "sha256:024fef622f99439df4b7b475a1738cbc954b53c195e0dd2b15f0431e10b1ec69",
           "source": "upstream/packages/path/src/tessellatePath.ts",
           "usesOpaqueHostValues": false
         },
@@ -33812,7 +33752,7 @@
           ],
           "declarations": 7,
           "module": "joint_registry",
-          "outputSha256": "sha256:a5182e53bdfd3357c1a2530f3d5ec40b92d08316241a964795b06746c28582c3",
+          "outputSha256": "sha256:6234c0a75ddec50da7f997be70c48f8511bc2045ca81dbc4e09d4690cf3b7d20",
           "source": "upstream/packages/physics2d/src/jointRegistry.ts",
           "usesOpaqueHostValues": false
         },
@@ -34245,7 +34185,7 @@
           ],
           "declarations": 8,
           "module": "joint_registry",
-          "outputSha256": "sha256:9b58f418c81ae0d10ed86cd98a40547b62f30683f62940e44d136239017fb338",
+          "outputSha256": "sha256:80bd09ad17beaf8e2f0e117f4b4318aeb9a97c57e733882910583a8e6b92fa94",
           "source": "upstream/packages/physics3d/src/jointRegistry.ts",
           "usesOpaqueHostValues": false
         },
@@ -34506,7 +34446,7 @@
           ],
           "declarations": 20,
           "module": "world",
-          "outputSha256": "sha256:a1380d18c664e8b4c5908aa8f01ec6822d03fedab1108fbadb0e71e30c57227c",
+          "outputSha256": "sha256:6ce5776e545ce7191d3e7bcfca74cbbcfb62934ce6be10cc32c236cf9cdafcbc",
           "source": "upstream/packages/physics3d/src/world.ts",
           "usesOpaqueHostValues": false
         }
@@ -35167,7 +35107,7 @@
           ],
           "declarations": 25,
           "module": "protocol",
-          "outputSha256": "sha256:3ac60552d6460f46bf0d7500b8c162bad061e04ec106d0e28fe2d7a0d15b412e",
+          "outputSha256": "sha256:5a9decad179e6eebc21c6e0b09d6a5cb4ab2dc2072b16e8ec766b2ea5030fe35",
           "source": "upstream/packages/protocol/src/protocol.ts",
           "usesOpaqueHostValues": false
         }
@@ -36317,7 +36257,7 @@
           ],
           "declarations": 5,
           "module": "gl_render_target_pool",
-          "outputSha256": "sha256:2122137c082765e049b57e14c8beb0aba24f7e5d10a0bb94d816c8d138808cf7",
+          "outputSha256": "sha256:2f855ac5692d23cd719c463709bab57176e663e0bbe84002c1a21613d04ad4b8",
           "source": "upstream/packages/render-gl/src/glRenderTargetPool.ts",
           "usesOpaqueHostValues": true
         },
@@ -37183,7 +37123,7 @@
           ],
           "declarations": 4,
           "module": "wgpu_render_target_pool",
-          "outputSha256": "sha256:50d06a226e277b70bd6d66eb19d681d1494050ca0ef9e50c93d47eb21e150ebc",
+          "outputSha256": "sha256:7cf5844f8b6765715b6d7971e136e72a4e0b0b6cd23f6fd81bcbad3a0ee0dda7",
           "source": "upstream/packages/render-wgpu/src/wgpuRenderTargetPool.ts",
           "usesOpaqueHostValues": true
         },
@@ -38120,7 +38060,7 @@
           ],
           "declarations": 11,
           "module": "canvas_rich_text",
-          "outputSha256": "sha256:7fa6d8e0c0056d28894c2b2ac56c7356b46d587349aa23db87565e74900d9485",
+          "outputSha256": "sha256:4add9c7ae8df025aec2ece5e18f522b70856c5317374480f8981ed1c23758228",
           "source": "upstream/packages/scene2d-canvas/src/canvasRichText.ts",
           "usesOpaqueHostValues": true
         },
@@ -38226,7 +38166,7 @@
           ],
           "declarations": 10,
           "module": "canvas_text_input",
-          "outputSha256": "sha256:7099b16a90a6c068e535eba53e69922d2ba8c656d7b9373c313e15c11f7a0ffe",
+          "outputSha256": "sha256:cf4f9829ad3a6a26be3cc842944524514fe67f81e7bf5919853ac5ef3189df29",
           "source": "upstream/packages/scene2d-canvas/src/canvasTextInput.ts",
           "usesOpaqueHostValues": true
         },
@@ -38939,7 +38879,7 @@
           ],
           "declarations": 9,
           "module": "rive_core_properties",
-          "outputSha256": "sha256:f3b1aa7003c836ed131d00febaa1990ac70be59e92b1a35bb9689ac001fd0ce7",
+          "outputSha256": "sha256:3bbd443e0083543089e3055741c97291426b3dd621986dfc6f5660b7df109169",
           "source": "upstream/packages/scene2d-formats/src/riveCoreProperties.ts",
           "usesOpaqueHostValues": false
         },
@@ -39613,7 +39553,7 @@
           ],
           "declarations": 6,
           "module": "gl_text_input",
-          "outputSha256": "sha256:85ecbf39c1e254b46b1282d2e2b6d276dd318555258659153676268ba7a67696",
+          "outputSha256": "sha256:0ef9cbb4bf167c5e3e69e7143b383cf4dec0354cbacf7e56593557249457ca60",
           "source": "upstream/packages/scene2d-gl/src/glTextInput.ts",
           "usesOpaqueHostValues": true
         },
@@ -40781,7 +40721,7 @@
           ],
           "declarations": 6,
           "module": "wgpu_text_input",
-          "outputSha256": "sha256:51e650815082c617120b01265499bc2cbabd736bfd413600b2de1036f01d941b",
+          "outputSha256": "sha256:2261998977c5948c055682f0b2aae5aaae458cc0d79e7c07198978146cc3e4da",
           "source": "upstream/packages/scene2d-wgpu/src/wgpuTextInput.ts",
           "usesOpaqueHostValues": true
         },
@@ -54816,7 +54756,7 @@
           ],
           "declarations": 7,
           "module": "slot",
-          "outputSha256": "sha256:bb4ea6c943d362aad749e276f6d61700c7eab6068f607639539d6725c5de0ccf",
+          "outputSha256": "sha256:fbfb4950575de04ec03943c2326c86764818b48ca0148516e0086913a8cbe781",
           "source": "upstream/packages/signals/src/slot.ts",
           "usesOpaqueHostValues": false
         },
@@ -57537,7 +57477,7 @@
           ],
           "declarations": 58,
           "module": "rich_text",
-          "outputSha256": "sha256:15ffcc3e2948fa81c9b88c9ad9afaab691c8ab51e5337eb61ff835fb13f94e2d",
+          "outputSha256": "sha256:4586460e29318efdb8787e5f68e7504f7fe012cd26d3d7af82fad372317f8e60",
           "source": "upstream/packages/text/src/richText.ts",
           "usesOpaqueHostValues": true
         },
@@ -58149,7 +58089,7 @@
           ],
           "declarations": 57,
           "module": "text_input_editing",
-          "outputSha256": "sha256:6e933d84ba3c46d358a217c9c074d91f014775df11fe31c691a7b88f2bd0916d",
+          "outputSha256": "sha256:6387df4aae5a783f40424500fc0b95ea46525341ea181290012e71e1c7b573d6",
           "source": "upstream/packages/textinput/src/textInputEditing.ts",
           "usesOpaqueHostValues": true
         },
@@ -58327,7 +58267,7 @@
           ],
           "declarations": 13,
           "module": "rich_text_content",
-          "outputSha256": "sha256:8cb4033e91ab2d3710f2eebb20aca64da30995f515fe5fdf7f090513b91e3fe2",
+          "outputSha256": "sha256:f5aac28bf2daa5743e15359ccec39c1e981ca768a3b1b1df65a5c763016ce18d",
           "source": "upstream/packages/textlayout/src/richTextContent.ts",
           "usesOpaqueHostValues": false
         },
@@ -58431,7 +58371,7 @@
           ],
           "declarations": 15,
           "module": "text_layout",
-          "outputSha256": "sha256:cd72686fec5bf4664b60405fbe5ac9c3d13defb4910535574f133547a534a145",
+          "outputSha256": "sha256:08c3e9fc612ad82b1c90a75df2a8b375d22740db12ec02d1d4085c3407a2954c",
           "source": "upstream/packages/textlayout/src/textLayout.ts",
           "usesOpaqueHostValues": false
         },
@@ -59653,7 +59593,7 @@
           ],
           "declarations": 29,
           "module": "texture_atlas_region",
-          "outputSha256": "sha256:8713fd3f2f3e7dbb097f56fdf81da174857ec749cce7573d10b8a70c37db375e",
+          "outputSha256": "sha256:11e2d9ba7f891b4ece5defabd2ac83520fabe36ca1a9f66c1f8805d5f44c55de",
           "source": "upstream/packages/textureatlas/src/textureAtlasRegion.ts",
           "usesOpaqueHostValues": false
         }
@@ -60736,7 +60676,7 @@
           ],
           "declarations": 3,
           "module": "update_tweens",
-          "outputSha256": "sha256:314be432db24a1b226d8db103cc5258f0f375c12054b70329cb46e5223ecc6e5",
+          "outputSha256": "sha256:07359f3befaf7db3f42bc659458934ec845cff9105c6a3306d998319542e0486",
           "source": "upstream/packages/tween/src/updateTweens.ts",
           "usesOpaqueHostValues": false
         }

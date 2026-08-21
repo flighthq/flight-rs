@@ -148,7 +148,7 @@ pub fn pause_clock(clock: &mut Clock) -> () {
 pub fn remove_clock_child(parent: &mut Clock, child: &mut Clock) -> () {
     let index = {
         let __flight_value = (*child).clone();
-        ((parent.children).clone())
+        (parent.children)
             .iter()
             .position(|item| item == &__flight_value)
             .map_or(-1.0_f64, |index| index as f64)
@@ -158,7 +158,8 @@ pub fn remove_clock_child(parent: &mut Clock, child: &mut Clock) -> () {
     }
     parent
         .children
-        .splice((index) as usize..((index) + (1.0_f64)) as usize, vec![]);
+        .splice((index) as usize..((index) + (1.0_f64)) as usize, vec![])
+        .collect::<Vec<_>>();
     child.parent = None;
 }
 

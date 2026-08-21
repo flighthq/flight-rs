@@ -898,7 +898,7 @@ fn build_groups(
                             }) + sum_advances(&all_positions)),
                         ),
                     );
-                    for p in ((_CHAR_ADVANCES).clone()).iter().cloned() {
+                    for p in (_CHAR_ADVANCES.lock().unwrap()).iter().cloned() {
                         all_positions.push(p);
                     }
                     idx = range_end;
