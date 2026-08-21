@@ -2930,6 +2930,20 @@ function emitCall(
       };
       return `{ let mut __flight_filter = ${emitClosure(callback, context, closureType, false)}; ${parenthesize(owner)}.iter().cloned().filter(|value| __flight_filter(value.clone())).collect::<Vec<_>>() }`;
     }
+    if (collectionType?.kind === 'array' && method === 'join') {
+      const element = resolveSemanticType(collectionType.element, context) ?? collectionType.element;
+      if (element.kind !== 'primitive' || element.name !== 'String') {
+        throw new RustEmissionError('Array.join currently requires string elements');
+      }
+      const separator = expression.arguments[0];
+      const separatorType = separator ? inferIrExpressionType(separator, context) : undefined;
+      const emittedSeparator = !separator
+        ? '","'
+        : separatorType?.kind === 'nullable'
+          ? `${parenthesize(emitExpression(separator, context, separatorType))}.as_deref().unwrap_or(",")`
+          : `${parenthesize(emitExpression(separator, context, primitive('String')))}.as_str()`;
+      return `${parenthesize(owner)}.join(${emittedSeparator})`;
+    }
     if (collectionType?.kind === 'array' && method === 'find') {
       const callback = expression.arguments[0];
       if (callback?.kind !== 'function') throw new RustEmissionError('Array.find requires a callback');
@@ -9065,6 +9079,7 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
         const collection = owner?.kind === 'nullable' ? owner.inner : owner;
         if (collection?.kind === 'array') {
           if (['filter', 'slice', 'sort'].includes(expression.callee.name)) return collection;
+          if (expression.callee.name === 'join') return primitive('String');
           if (expression.callee.name === 'find' || expression.callee.name === 'pop') {
             return { inner: collection.element, kind: 'nullable' };
           }

@@ -637,6 +637,9 @@ describe('Rust emission', () => {
         export function joinStrings(left: string, right: string): string {
           return left + right;
         }
+        export function joinEntries(values: string[], separator?: string): string {
+          return values.join(separator);
+        }
         export function normalizeEntries(values: Record<string, string>): string[] {
           values['added'] = 'yes';
           return Object.entries(values)
@@ -717,6 +720,7 @@ describe('Rust emission', () => {
         '  assert!(!generated::has_string(String::new()));',
         '  assert!(generated::has_string("value".to_owned()));',
         '  assert_eq!(generated::join_strings("left".to_owned(), "right".to_owned()), "leftright");',
+        '  assert_eq!(generated::join_entries(&vec!["a".to_owned(), "b".to_owned()], Some(" / ".to_owned())), "a / b");',
         '  let mut entries = vec![("first".to_owned(), "1".to_owned())];',
         '  assert_eq!(generated::normalize_entries(&mut entries), vec!["first=1".to_owned(), "added=yes".to_owned()]);',
         '  assert!(generated::is_allowed("alpha".to_owned()));',
