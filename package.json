@@ -22,6 +22,7 @@
     "test:host-winit": "cargo test --manifest-path crates/flighthq-host-winit/Cargo.toml",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "typecheck:upstream": "tsc -p packages/surface-rs/tsconfig.upstream.json",
+    "upstream:latest": "tsx scripts/upstream-latest.ts",
     "version:packages": "tsx scripts/version-packages.ts",
     "wasm": "tsx tools/generator/src/build-wasm.ts"
   },
