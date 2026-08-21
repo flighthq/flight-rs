@@ -2239,6 +2239,19 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
         ) {
           return `${emitExpression(value, context, actualType)}.unwrap()`;
         }
+        const unionSourceType = actualType?.kind === 'nullable' ? actualType.inner : actualType;
+        const unionSource = resolveSemanticType(unionSourceType, context) ?? unionSourceType;
+        if (unionSource?.kind === 'union') {
+          const variantIndex = unionSource.variants.findIndex((variant) =>
+            semanticTypesEqual(variant, expression.type, context),
+          );
+          if (variantIndex >= 0) {
+            const source = emitExpression(value, context, unionSourceType);
+            const unionName =
+              unionSourceType?.kind === 'named' ? emitNamedUnionConstructor(unionSourceType, context) : undefined;
+            return unwrapUnionValue(source, unionSource.variants, variantIndex, unionName);
+          }
+        }
         const entitySourceType = actualType?.kind === 'nullable' ? actualType.inner : actualType;
         if (
           expression.type.kind === 'named' &&
@@ -4028,6 +4041,16 @@ function emitKnownFunctionArgument(
     isReferenceLike(expectedType, context);
   if (argument.kind === 'literal' && argument.value === null && !borrowedNullableReference) return 'None';
   if (borrowedNullableReference) {
+    const projected =
+      !mutable && argumentType
+        ? emitCollectionProjectionArgument(
+            emitExpression(argument, context, argumentType),
+            argumentType,
+            parameter.type,
+            context,
+          )
+        : undefined;
+    if (projected) return `&${parenthesize(projected)}`;
     const root = expressionRootIdentifier(argument);
     const value =
       argumentType?.kind === 'nullable' && isRustPlaceExpression(argument)
@@ -4096,12 +4119,28 @@ function emitKnownFunctionArgument(
           : isRustPlaceExpression(argument)
             ? emitPlaceExpression(argument, context)
             : emitExpression(argument, context, expectedType);
+    const collectionProjection =
+      !mutable && argumentType
+        ? emitCollectionProjectionArgument(
+            emitExpression(argument, context, argumentType),
+            argumentType,
+            expectedType,
+            context,
+          )
+        : undefined;
+    if (collectionProjection) return `&${parenthesize(collectionProjection)}`;
     if (argumentType?.kind === 'nullable' && semanticTypesEqual(argumentType.inner, expectedType, context)) {
       return `${value}.${mutable ? 'as_mut' : 'as_ref'}().unwrap()`;
     }
+    const resolvedArgument = resolveSemanticType(argumentType, context) ?? argumentType;
     const structuralProjection =
       !mutable && argument.kind !== 'object' && argumentType
-        ? emitStructuralProjectionArgument(value, argumentType, expectedType, context)
+        ? emitStructuralProjectionArgument(
+            resolvedArgument?.kind === 'union' ? emitExpression(argument, context, argumentType) : value,
+            argumentType,
+            expectedType,
+            context,
+          )
         : undefined;
     if (structuralProjection) return `&${structuralProjection}`;
     return argument.kind === 'identifier' && root && context.borrowedNames.has(root)
@@ -8878,6 +8917,25 @@ function emitStructuralProjectionArgument(
 ): string | undefined {
   const actual = resolveSemanticType(actualType, context);
   const expected = resolveSemanticType(expectedType, context);
+  if (actual?.kind === 'union' && expected?.kind === 'anonymous') {
+    const projections = actual.variants.map((variant) =>
+      emitStructuralProjectionArgument('value', variant, expectedType, context),
+    );
+    if (projections.some((projection) => !projection)) return undefined;
+    const constructor =
+      actualType.kind === 'named' ? emitNamedUnionConstructor(actualType, context) : 'crate::FlightUnion2';
+    const matchVariant = (variants: readonly IrType[], offset: number, currentConstructor: string): string => {
+      const projection = projections[offset]!;
+      if (variants.length <= 1) return projection;
+      const rest = variants.slice(1);
+      return `${currentConstructor}::A(value) => ${projection}, ${currentConstructor}::B(value) => ${
+        rest.length === 1
+          ? projections[offset + 1]!
+          : `match value { ${matchVariant(rest, offset + 1, 'crate::FlightUnion2')} }`
+      }`;
+    };
+    return `match ${parenthesize(source)} { ${matchVariant(actual.variants, 0, constructor)} }`;
+  }
   if (actual?.kind !== 'anonymous' || expected?.kind !== 'anonymous') return undefined;
   if (
     emitType(actualType, context) === emitType(expectedType, context) &&
@@ -8963,6 +9021,44 @@ function emitStructuralProjectionArgument(
       ...(openFields ? ['..Default::default()'] : []),
     ].join('\n'),
   )}\n} }`;
+}
+
+function emitCollectionProjectionArgument(
+  source: string,
+  actualType: IrType,
+  expectedType: IrType,
+  context: EmitContext,
+): string | undefined {
+  const actual = resolveSemanticType(actualType, context) ?? actualType;
+  const expected = resolveSemanticType(expectedType, context) ?? expectedType;
+  if (actual.kind === 'nullable' && expected.kind === 'nullable') {
+    const projected = emitCollectionProjectionArgument('__flight_value', actual.inner, expected.inner, context);
+    return projected ? `${parenthesize(source)}.as_ref().map(|__flight_value| ${projected})` : undefined;
+  }
+  if (actual.kind !== 'array' || expected.kind !== 'array') return undefined;
+  const expectedElement = resolveSemanticType(expected.element, context) ?? expected.element;
+  const actualElement = resolveSemanticType(actual.element, context) ?? actual.element;
+  let projectedElement: string | undefined;
+  if (expectedElement.kind === 'union' && actualElement.kind !== 'union') {
+    const variantIndex = expectedElement.variants.findIndex((variant) =>
+      semanticTypesEqual(variant, actual.element, context),
+    );
+    if (variantIndex >= 0) {
+      const unionName =
+        expected.element.kind === 'named' ? emitNamedUnionConstructor(expected.element, context) : undefined;
+      projectedElement = wrapUnionValue(
+        '(__flight_value).clone()',
+        expectedElement.variants,
+        variantIndex,
+        context,
+        unionName,
+      );
+    }
+  }
+  projectedElement ??= emitStructuralProjectionArgument('__flight_value', actual.element, expected.element, context);
+  return projectedElement
+    ? `${parenthesize(source)}.iter().map(|__flight_value| ${projectedElement}).collect::<Vec<_>>()`
+    : undefined;
 }
 
 function emitStructuralFunctionAdapter(

@@ -63,6 +63,12 @@ pub enum FlightUnion2<A, B> {
     B(B),
 }
 
+impl<A: Default, B> Default for FlightUnion2<A, B> {
+    fn default() -> Self {
+        Self::A(A::default())
+    }
+}
+
 impl<A: std::fmt::Display, B: std::fmt::Display> std::fmt::Display for FlightUnion2<A, B> {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {

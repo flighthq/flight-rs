@@ -110,6 +110,7 @@ describe('Rust emission', () => {
       '__flight_left.to_bits() == __flight_right.to_bits() || (__flight_left.is_nan() && __flight_right.is_nan())',
     );
     expect(emitFlightTaskRuntime()).toContain('pub enum FlightUnion2<A, B>');
+    expect(emitFlightTaskRuntime()).toContain('impl<A: Default, B> Default for FlightUnion2<A, B>');
     expect(emitFlightTaskRuntime()).toContain('std::fmt::Display for FlightUnion2<A, B>');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-schema-types-'));
@@ -2426,6 +2427,68 @@ describe('Rust emission', () => {
     );
     expect(() => compileRustExecutable('main.rs', binary, fixture)).not.toThrow();
     expect(() => execFileSync(binary, [], { cwd: fixture, stdio: 'pipe' })).not.toThrow();
+  });
+
+  it('projects unions through shared structural and collection boundaries', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/lighting/src/union-boundaries.ts',
+      `
+        interface Base {
+          kind: string;
+          value: number;
+        }
+        interface Left extends Base {
+          kind: 'left';
+          left: number;
+        }
+        interface Right extends Base {
+          kind: 'right';
+          right: number;
+        }
+        function readBase(value: Base): number {
+          return value.value;
+        }
+        function readMany(values: readonly (Left | Right)[] | undefined): number {
+          if (values === undefined) return 0;
+          return readBase(values[0]);
+        }
+        const scratch: (Left | Right)[] = new Array(2);
+        export function widen(values?: readonly Left[]): number {
+          return readMany(values);
+        }
+        export function recoverLeft(): Left {
+          return scratch[0] as Left;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/lighting', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/lighting/src/union-boundaries.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('.iter().map(|__flight_value| crate::FlightUnion2::<Left, Right>::A(');
+    expect(output).toContain('read_base(&match (');
+    expect(output).toContain('crate::FlightUnion2::A(value) => { let __flight_source = &(value); Base {');
+    expect(output).toContain('panic!("TypeScript union narrowing failed")');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-union-boundaries-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(
+      sourceFile,
+      `${output}\n#[derive(Clone, PartialEq)] pub enum FlightUnion2<A, B> { A(A), B(B) }\nimpl<A: Default, B> Default for FlightUnion2<A, B> { fn default() -> Self { Self::A(A::default()) } }\n`,
+    );
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
   });
 
   it('preserves for and do-while updates when continue is lowered', () => {
