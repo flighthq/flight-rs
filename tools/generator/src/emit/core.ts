@@ -2090,7 +2090,7 @@ function emitLibrary(target: RustTarget, modules: string[]): string {
       ([name, mapping]) =>
         `/// Generated semantic mapping for ${mapping.source}.\n/// ${mapping.reason}\n${mapping.rustDefinition ?? `pub type ${name} = ${mapping.rust};`}`,
     );
-  const declarations = modules.sort().map((moduleName) => `mod ${moduleName};\npub use ${moduleName}::*;`);
+  const declarations = modules.sort().map((moduleName) => `pub mod ${moduleName};\npub use ${moduleName}::*;`);
   const sharedOpaqueHostValue =
     target.package !== '@flighthq/types' && Object.hasOwn(target.dependencies, '@flighthq/types');
   return [

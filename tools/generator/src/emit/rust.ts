@@ -376,7 +376,8 @@ export function emitRustModule(module: RustModule): string {
     }
   }
   registerSharedModuleAnonymousTypes(module.declarations, context);
-  registerGlobalResolvedAnonymousTypes([...module.declarations, ...(module.semanticFunctions ?? [])], context);
+  registerGlobalResolvedAnonymousTypes(module.declarations, context);
+  registerImportedFunctionAnonymousTypes(module.semanticFunctions ?? [], context);
   registerTypeDeclarationAnonymousTypes(module.declarations, context);
   registerImportedTypeAnonymousTypes(context);
   registerNestedAnonymousTypes(context);
@@ -7912,7 +7913,7 @@ function registerGlobalResolvedAnonymousTypes(value: unknown, context: EmitConte
         if (!anonymousTypes.has(key)) {
           const prefix =
             (item as Extract<IrType, { kind: 'named' }>).name === 'FlightPartial' ? 'FlightPartial' : 'FlightOmit';
-          anonymousTypes.set(key, `${prefix}Record${String(anonymousTypes.size + 1)}`);
+          anonymousTypes.set(key, `${prefix}Record${stableTypeIdentity(key)}`);
         }
       }
     }
@@ -7922,6 +7923,65 @@ function registerGlobalResolvedAnonymousTypes(value: unknown, context: EmitConte
     }
   };
   visit(value);
+}
+
+function registerImportedFunctionAnonymousTypes(
+  declarations: readonly IrFunctionDeclaration[],
+  context: EmitContext,
+): void {
+  const anonymousTypes = context.anonymousTypes as Map<string, string>;
+  const inherited = context.inheritedAnonymousTypeKeys as Set<string>;
+  for (const declaration of [...declarations].sort(
+    (left, right) =>
+      left.origin.packageName.localeCompare(right.origin.packageName) ||
+      left.origin.source.localeCompare(right.origin.source) ||
+      left.name.localeCompare(right.name),
+  )) {
+    const crate = context.importedModules.get(declaration.name);
+    if (!crate) continue;
+    const module = implementationModuleName(declaration.origin.source);
+    const prefix = crate === 'crate' ? `crate::${module}` : `${crate}::${module}`;
+    const visit = (value: unknown): void => {
+      if (!value || typeof value !== 'object') return;
+      if (
+        'kind' in value &&
+        value.kind === 'named' &&
+        'name' in value &&
+        isStructuralUtilityType(value as IrType) &&
+        'arguments' in value
+      ) {
+        const utility = value as Extract<IrType, { kind: 'named' }>;
+        const resolved = resolveSemanticType(utility, context);
+        if (resolved?.kind === 'anonymous') {
+          const key = typeKey(resolved);
+          const name = utility.name === 'FlightPartial' ? 'FlightPartial' : 'FlightOmit';
+          anonymousTypes.set(key, `${prefix}::${name}Record${stableTypeIdentity(key)}`);
+          inherited.add(key);
+        }
+      }
+      for (const child of Object.values(value)) {
+        if (Array.isArray(child)) child.forEach(visit);
+        else visit(child);
+      }
+    };
+    visit({ parameters: declaration.parameters, returns: declaration.returns });
+  }
+}
+
+function implementationModuleName(source: string): string {
+  const filename =
+    source
+      .split(/[\\/]/u)
+      .at(-1)
+      ?.replace(/\.tsx?$/u, '') ?? source;
+  if (
+    filename.toLowerCase() === 'index' ||
+    filename.toLowerCase() === 'internal' ||
+    /test(?:helper|util)/iu.test(filename)
+  ) {
+    return `_internal_${snakeCase(filename).replace(/^_+/u, '')}`;
+  }
+  return snakeCase(filename);
 }
 
 function registerSharedModuleAnonymousTypes(declarations: readonly IrDeclaration[], context: EmitContext): void {

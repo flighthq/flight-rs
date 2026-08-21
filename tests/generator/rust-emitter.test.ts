@@ -637,8 +637,8 @@ describe('Rust emission', () => {
     expect(output).toContain('measure: std::sync::Arc::new(std::sync::Mutex::new(Box::new(');
     expect(output).toContain('count: Some(2.0_f64)');
     expect(output).toContain('name: None');
-    expect(output).toContain('pub struct FlightOmitRecord2');
-    expect(output).toContain('options: Option<FlightOmitRecord2>');
+    expect(output).toMatch(/pub struct FlightOmitRecord\d+/u);
+    expect(output).toMatch(/options: Option<FlightOmitRecord\d+>/u);
     expect(output).toContain('.iter().cloned().all(|value: Option<f64>| -> bool');
     expect(output).toContain('.iter().cloned().any(|__flight_item| is_positive(__flight_item))');
     expect(output).toContain('crate::flight_json_stringify');
@@ -1716,6 +1716,88 @@ describe('Rust emission', () => {
     );
     expect(() =>
       execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', 'lib.rs'], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('uses the defining module identity for imported structural utility parameters', () => {
+    const provider = ts.createSourceFile(
+      '/workspace/upstream/packages/materials/src/provider.ts',
+      `
+        export interface Options {
+          label?: string;
+          value?: number;
+        }
+        export function readOptions(options?: Partial<Options>): number {
+          return options?.value ?? 0;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const consumer = ts.createSourceFile(
+      '/workspace/upstream/packages/materials/src/consumer.ts',
+      `
+        interface Options {
+          label?: string;
+          value?: number;
+        }
+        export function forwardOptions(options?: Partial<Options>): number {
+          return readOptions(options);
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const loweredProvider = lowerTypeScriptSource(provider, '@flighthq/materials', '/workspace');
+    const loweredConsumer = lowerTypeScriptSource(consumer, '@flighthq/materials', '/workspace');
+    const providerFunction = loweredProvider.declarations
+      .filter((declaration) => declaration.kind === 'function')
+      .find((declaration) => declaration.name === 'readOptions');
+    expect(providerFunction).toBeDefined();
+    const providerOutput = emitRustModule({
+      declarations: loweredProvider.declarations,
+      source: 'upstream/packages/materials/src/provider.ts',
+      typeImports: [],
+    });
+    const record = /pub struct (FlightPartialRecord\d+)/u.exec(providerOutput)?.[1];
+    expect(record).toBeDefined();
+    const consumerOutput = emitRustModule({
+      declarations: loweredConsumer.declarations,
+      imports: [
+        {
+          module: 'crate',
+          names: [{ imported: 'readOptions', kind: 'function', local: 'readOptions' }],
+        },
+      ],
+      semanticFunctions: providerFunction ? [providerFunction] : [],
+      source: 'upstream/packages/materials/src/consumer.ts',
+      typeImports: [],
+    });
+
+    expect(loweredProvider.diagnostics).toEqual([]);
+    expect(loweredConsumer.diagnostics).toEqual([]);
+    expect(consumerOutput).toContain(`Option<crate::provider::${record}>`);
+    expect(consumerOutput).not.toContain('pub struct FlightPartialRecord');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-structural-abi-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(
+      sourceFile,
+      [
+        `pub mod provider { ${providerOutput} }`,
+        'pub use provider::*;',
+        `pub mod consumer { ${consumerOutput} }`,
+        'pub use consumer::*;',
+        '',
+      ].join('\n'),
+    );
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
         cwd: fixture,
         stdio: 'pipe',
       }),
