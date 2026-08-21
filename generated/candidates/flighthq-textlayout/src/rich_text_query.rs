@@ -209,7 +209,8 @@ pub fn get_rich_text_char_boundaries(
 
 // Source: upstream/packages/textlayout/src/richTextQuery.ts:109 (sha256:0298d7186f72dc2b349928f8c31fc22aac7dce5366ecbc2061dd1567d0ae3484)
 pub fn get_rich_text_first_char_in_paragraph(text: String, char_index: f64) -> f64 {
-    let __flight_utf16_text: Vec<u16> = text.encode_utf16().collect();
+    let __flight_utf16_text: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(text.encode_utf16().collect());
     let clamped = (0.0_f64).max((__flight_utf16_text.len() as f64).min(char_index));
     {
         let mut i = (clamped - 1.0_f64);
@@ -346,10 +347,12 @@ pub fn get_rich_text_link_at_point(layout: &TextLayoutResult, x: f64, y: f64) ->
 
 // Source: upstream/packages/textlayout/src/richTextQuery.ts:181 (sha256:cef0a11727296f4dc4f8de3196eb01f49fd68c7e8500a6711291396728d6e545)
 pub fn get_rich_text_paragraph_length(text: String, char_index: f64) -> f64 {
+    let __flight_utf16_text: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(text.encode_utf16().collect());
     let start = get_rich_text_first_char_in_paragraph((text).clone(), char_index);
     let newline = __flight_string_index_of(&(text), &("\n".to_owned()), start);
     let end = if (newline == (-1.0_f64)) {
-        (text.encode_utf16().count() as f64)
+        (__flight_utf16_text.len() as f64)
     } else {
         (newline + 1.0_f64)
     };

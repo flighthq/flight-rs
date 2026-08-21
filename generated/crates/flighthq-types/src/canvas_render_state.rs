@@ -9,9 +9,8 @@
 use crate::{
     BlendMode, CanvasMaterialRenderer, CanvasRenderEffectRunner, CanvasShapeCommand,
     ColorAdjustmentUnsupportedGuard, EntityRuntime, KeyedTable, Matrix, Path, PathMesh,
-    RenderEffectPaddingResolver, RenderProxy, RenderProxy2D, RenderRegistrySignals,
-    RenderRootGuard, RenderState, Renderer, Scene2DClipHooks, Scene3DGraphSyncPolicy, SlotTable,
-    StrokeStyle,
+    RenderEffectPaddingResolver, RenderProxy, RenderProxy2D, RenderRootGuard, RenderState,
+    Renderer, Scene2DClipHooks, Scene3DGraphSyncPolicy, SlotTable, StrokeStyle,
 };
 
 // Source: upstream/packages/types/src/CanvasRenderState.ts:10 (sha256:2d3ed80aeffa1af698defe21cc96fededc24c5de7d4a233df2684315565006c5)
@@ -112,18 +111,6 @@ impl PartialEq for CanvasRenderRegistries {
 }
 
 // Source: upstream/packages/types/src/CanvasRenderState.ts:34 (sha256:5af720d86a9638ad751e184c1a7db541300dcdce38e6e5e5168e2c0fe5b00421)
-#[derive(Clone)]
-pub struct CanvasRenderStateRuntimeRecord1 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub clear: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
-    pub signals: RenderRegistrySignals,
-}
-impl PartialEq for CanvasRenderStateRuntimeRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
 #[doc(hidden)]
 pub struct CanvasRenderStateRuntimeStorage {
     pub registries: CanvasRenderRegistries,

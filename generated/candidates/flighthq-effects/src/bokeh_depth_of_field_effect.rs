@@ -49,10 +49,10 @@ impl PartialEq for FlightPartialRecord2 {
 
 // Source: upstream/packages/effects/src/bokehDepthOfFieldEffect.ts:5 (sha256:0b78c1e4a0b23c1ecf901b3287c73a2234ea6f1d8c6d93ce36bd68c17f59d5c3)
 #[derive(Clone, Default)]
-struct CreateBokehDepthOfFieldEffectRecord3 {
+struct CreateBokehDepthOfFieldEffectRecord11 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateBokehDepthOfFieldEffectRecord3 {
+impl PartialEq for CreateBokehDepthOfFieldEffectRecord11 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

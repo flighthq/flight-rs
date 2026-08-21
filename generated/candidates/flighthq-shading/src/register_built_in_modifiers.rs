@@ -53,11 +53,11 @@ pub static DISSOLVE_MODIFIER_DEFINITION: std::sync::LazyLock<ModifierDefinition>
         slot: (modifier_slot_constant.effect).clone(),
         get_define_signature: Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new({
             #[derive(Clone, Default)]
-            struct ClosureRecord1 {
+            struct ClosureRecord4 {
                 __flight_identity: std::sync::Arc<()>,
                 map: Option<crate::FlightValue>,
             }
-            impl PartialEq for ClosureRecord1 {
+            impl PartialEq for ClosureRecord4 {
                 fn eq(&self, other: &Self) -> bool {
                     std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
                 }

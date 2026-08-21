@@ -47,10 +47,10 @@ impl PartialEq for FlightPartialRecord2 {
 
 // Source: upstream/packages/effects/src/medianEffect.ts:5 (sha256:242f61ead3733bc4a73a7602e314a77353bb6dff116c0b4df976d02486f19625)
 #[derive(Clone, Default)]
-struct CreateMedianEffectRecord3 {
+struct CreateMedianEffectRecord11 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateMedianEffectRecord3 {
+impl PartialEq for CreateMedianEffectRecord11 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

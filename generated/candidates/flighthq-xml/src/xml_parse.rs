@@ -188,7 +188,7 @@ pub fn parse_xml_document(xml: String) -> Option<XmlElement> {
 
 // Source: upstream/packages/xml/src/xmlParse.ts:42 (sha256:d7c842382121a49f2a2bc98fa36aa2bb36359af6c889578171aa6ca444505e68)
 #[derive(Clone, Default)]
-struct ParseState {
+pub(crate) struct ParseState {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub depth: f64,
@@ -226,9 +226,11 @@ static XML_ENTITIES: std::sync::LazyLock<Vec<(String, String)>> = std::sync::Laz
 
 // Source: upstream/packages/xml/src/xmlParse.ts:77 (sha256:63809e1d1109649f96670ef219d1f6f45fb2a9e67901329f0b5aa17534397655)
 fn expand_xml_entities(src: String, entities: Vec<(String, String)>) -> String {
+    let __flight_utf16_src: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(src.encode_utf16().collect());
     let mut output = (src).clone();
     let budget =
-        (((src.encode_utf16().count() as f64) * MAX_XML_ENTITY_GROWTH) + MAX_XML_ENTITY_BUDGET);
+        (((__flight_utf16_src.len() as f64) * MAX_XML_ENTITY_GROWTH) + MAX_XML_ENTITY_BUDGET);
     {
         let mut pass = 0.0_f64;
         while (pass < MAX_XML_ENTITY_PASSES) {
@@ -338,7 +340,8 @@ fn decode_xml_entities(s: String) -> String {
 
 // Source: upstream/packages/xml/src/xmlParse.ts:106 (sha256:c7ece3c90f4a0fee6fba779e7752d8831ec8b4a0734d8f2da72f995992043c22)
 fn parse_element(src: String, state: &mut ParseState) -> Option<XmlElement> {
-    let __flight_utf16_src: Vec<u16> = src.encode_utf16().collect();
+    let __flight_utf16_src: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(src.encode_utf16().collect());
     if (state.depth >= MAX_XML_ELEMENT_DEPTH) {
         state.depth_exceeded = true;
         return None;
@@ -654,7 +657,8 @@ fn parse_element(src: String, state: &mut ParseState) -> Option<XmlElement> {
 
 // Source: upstream/packages/xml/src/xmlParse.ts:206 (sha256:8b165c706b68384ac4307222e85dcc19e0a696891ec44a55efdb1a50dacdcbda)
 fn skip_whitespace(src: String, state: &mut ParseState) -> () {
-    let __flight_utf16_src: Vec<u16> = src.encode_utf16().collect();
+    let __flight_utf16_src: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(src.encode_utf16().collect());
     while (state.pos < (__flight_utf16_src.len() as f64))
         && ((regex::RegexBuilder::new("\\s")
             .case_insensitive(false)
@@ -688,16 +692,18 @@ fn skip_whitespace(src: String, state: &mut ParseState) -> () {
 
 // Source: upstream/packages/xml/src/xmlParse.ts:210 (sha256:7a46a3c2689e4a2acfb51e54dcb2ace37d130350ae6633e3a86b6ed6c9360711)
 fn strip_xml_comments(xml: String) -> String {
+    let __flight_utf16_xml: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(xml.encode_utf16().collect());
     let mut copy_start = 0.0_f64;
     let mut output = "".to_owned();
     let mut pos = 0.0_f64;
-    while (pos < (xml.encode_utf16().count() as f64)) {
+    while (pos < (__flight_utf16_xml.len() as f64)) {
         if (__flight_string_slice(&(xml), pos, Some((pos + 9.0_f64))) == "<![CDATA[") {
             let cdata_end = __flight_string_index_of(&(xml), &("]]>".to_owned()), (pos + 9.0_f64));
             pos = if (cdata_end >= 0.0_f64) {
                 (cdata_end + 3.0_f64)
             } else {
-                (xml.encode_utf16().count() as f64)
+                (__flight_utf16_xml.len() as f64)
             };
             continue;
         }
@@ -713,7 +719,7 @@ fn strip_xml_comments(xml: String) -> String {
         pos = if (comment_end >= 0.0_f64) {
             (comment_end + 3.0_f64)
         } else {
-            (xml.encode_utf16().count() as f64)
+            (__flight_utf16_xml.len() as f64)
         };
         copy_start = pos;
     }
@@ -726,7 +732,8 @@ fn strip_xml_comments(xml: String) -> String {
 
 // Source: upstream/packages/xml/src/xmlParse.ts:242 (sha256:954be5d30230e6ab51775a59a19d79af69864b0600682453ef64b8b2a0741f71)
 fn strip_xml_doctypes(xml: String, out: &mut Vec<(String, String)>) -> String {
-    let __flight_utf16_xml: Vec<u16> = xml.encode_utf16().collect();
+    let __flight_utf16_xml: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(xml.encode_utf16().collect());
     let mut copy_start = 0.0_f64;
     let mut output = "".to_owned();
     let mut pos = 0.0_f64;

@@ -246,12 +246,12 @@ impl PartialEq for ElectronDock {
 
 // Source: upstream/packages/types/src/ElectronApi.ts:95 (sha256:8b6ae0274cb46ed328c34840202b2ace336bc12f73a8e73b89a9ebe447757776)
 #[derive(Clone, Default)]
-pub struct ElectronClipboardRecord5 {
+pub struct ElectronClipboardRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub title: String,
     pub url: String,
 }
-impl PartialEq for ElectronClipboardRecord5 {
+impl PartialEq for ElectronClipboardRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -268,7 +268,7 @@ pub struct ElectronClipboard {
     pub read_rtf: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> String + Send + 'static>>>,
     pub write_rtf: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(String) -> () + Send + 'static>>>,
     pub read_bookmark: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut() -> ElectronClipboardRecord5 + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut() -> ElectronClipboardRecord1 + Send + 'static>>,
     >,
     pub write_bookmark:
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(String, String) -> () + Send + 'static>>>,
@@ -362,36 +362,36 @@ impl PartialEq for ElectronShortcutDetails {
 
 // Source: upstream/packages/types/src/ElectronApi.ts:145 (sha256:95a800bbf1d57a449fccd7abfeb872c00f6159899cf1252f6edcd7aab5ac2e34)
 #[derive(Clone, Default)]
-pub struct ElectronDialogRecord5 {
+pub struct ElectronDialogRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub response: f64,
     pub checkbox_checked: bool,
 }
-impl PartialEq for ElectronDialogRecord5 {
+impl PartialEq for ElectronDialogRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 #[derive(Clone, Default)]
-pub struct ElectronDialogRecord6 {
+pub struct ElectronDialogRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub canceled: bool,
     pub file_path: Option<String>,
 }
-impl PartialEq for ElectronDialogRecord6 {
+impl PartialEq for ElectronDialogRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 #[derive(Clone, Default)]
-pub struct ElectronDialogRecord7 {
+pub struct ElectronDialogRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub canceled: bool,
     pub file_paths: Vec<String>,
 }
-impl PartialEq for ElectronDialogRecord7 {
+impl PartialEq for ElectronDialogRecord3 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -407,7 +407,7 @@ pub struct ElectronDialog {
                 dyn FnMut(
                         Option<ElectronBrowserWindow>,
                         ElectronOpenDialogOptions,
-                    ) -> crate::FlightTask<ElectronDialogRecord7>
+                    ) -> crate::FlightTask<ElectronDialogRecord3>
                     + Send
                     + 'static,
             >,
@@ -419,7 +419,7 @@ pub struct ElectronDialog {
                 dyn FnMut(
                         Option<ElectronBrowserWindow>,
                         ElectronSaveDialogOptions,
-                    ) -> crate::FlightTask<ElectronDialogRecord6>
+                    ) -> crate::FlightTask<ElectronDialogRecord2>
                     + Send
                     + 'static,
             >,
@@ -431,7 +431,7 @@ pub struct ElectronDialog {
                 dyn FnMut(
                         Option<ElectronBrowserWindow>,
                         ElectronMessageBoxOptions,
-                    ) -> crate::FlightTask<ElectronDialogRecord5>
+                    ) -> crate::FlightTask<ElectronDialogRecord1>
                     + Send
                     + 'static,
             >,
@@ -759,11 +759,11 @@ impl PartialEq for ElectronIpcMain {
 
 // Source: upstream/packages/types/src/ElectronApi.ts:238 (sha256:54269dc5a75480759f27567c41437ada927e78a88231111f2d1e04784437df7b)
 #[derive(Clone, Default)]
-pub struct ElectronAutoUpdaterRecord5 {
+pub struct ElectronAutoUpdaterRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub url: String,
 }
-impl PartialEq for ElectronAutoUpdaterRecord5 {
+impl PartialEq for ElectronAutoUpdaterRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -774,7 +774,7 @@ pub struct ElectronAutoUpdater {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub set_feed_url: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(ElectronAutoUpdaterRecord5) -> () + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut(ElectronAutoUpdaterRecord1) -> () + Send + 'static>>,
     >,
     pub check_for_updates:
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
@@ -994,12 +994,12 @@ impl PartialEq for ElectronMenuConstructor {
 
 // Source: upstream/packages/types/src/ElectronApi.ts:327 (sha256:0274aea886bef8b32ee3250ce1253c4c6bd44762e30ea3b78d96754109f0d941)
 #[derive(Clone, Default)]
-pub struct ElectronMenuRecord5 {
+pub struct ElectronMenuRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub x: Option<f64>,
     pub y: Option<f64>,
 }
-impl PartialEq for ElectronMenuRecord5 {
+impl PartialEq for ElectronMenuRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -1010,7 +1010,7 @@ pub struct ElectronMenu {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub popup: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(Option<ElectronMenuRecord5>) -> () + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut(Option<ElectronMenuRecord1>) -> () + Send + 'static>>,
     >,
 }
 impl PartialEq for ElectronMenu {
@@ -1151,12 +1151,12 @@ impl PartialEq for ElectronNotificationConstructor {
 
 // Source: upstream/packages/types/src/ElectronApi.ts:378 (sha256:1b95a52f1c24b6ca8a3475b028e62868cb15895af5d51341029041199f8a9a66)
 #[derive(Clone, Default)]
-pub struct ElectronNotificationOptionsRecord5 {
+pub struct ElectronNotificationOptionsRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub type_: String,
     pub text: String,
 }
-impl PartialEq for ElectronNotificationOptionsRecord5 {
+impl PartialEq for ElectronNotificationOptionsRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -1170,7 +1170,7 @@ pub struct ElectronNotificationOptions {
     pub body: Option<String>,
     pub icon: Option<String>,
     pub silent: Option<bool>,
-    pub actions: Option<Vec<ElectronNotificationOptionsRecord5>>,
+    pub actions: Option<Vec<ElectronNotificationOptionsRecord1>>,
 }
 impl PartialEq for ElectronNotificationOptions {
     fn eq(&self, other: &Self) -> bool {

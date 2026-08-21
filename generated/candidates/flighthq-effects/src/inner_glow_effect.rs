@@ -53,10 +53,10 @@ impl PartialEq for FlightPartialRecord2 {
 
 // Source: upstream/packages/effects/src/innerGlowEffect.ts:6 (sha256:8ffdefb7949478edf386983ea702db37c25697510f18477650ed5fbecc1b3946)
 #[derive(Clone, Default)]
-struct CreateInnerGlowEffectRecord3 {
+struct CreateInnerGlowEffectRecord11 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateInnerGlowEffectRecord3 {
+impl PartialEq for CreateInnerGlowEffectRecord11 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

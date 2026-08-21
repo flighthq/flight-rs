@@ -8,36 +8,6 @@
 
 use crate::{Kind, RenderRegistry, RequirementFacet};
 
-#[derive(Clone)]
-pub struct SharedStructuralRecord1 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub facet: RequirementFacet,
-    pub kind: Kind,
-    pub registry: RenderRegistry,
-    pub coverage: crate::OpaqueHostValue,
-}
-impl PartialEq for SharedStructuralRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone)]
-pub struct SharedStructuralRecord2 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub facet: RequirementFacet,
-    pub kind: Kind,
-    pub registry: RenderRegistry,
-    pub module: String,
-    pub registrar: String,
-    pub coverage: crate::OpaqueHostValue,
-}
-impl PartialEq for SharedStructuralRecord2 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
 // Source: upstream/packages/types/src/SceneCoverageEntry.ts:8 (sha256:5c4dac21fc1d5e2bc900207560760ac7f645377fdc521885f615c9166c4fadae)
 #[derive(Clone, Default)]
 pub struct SceneCoverageValues {
@@ -70,7 +40,7 @@ pub type SceneCoverage = String;
 
 // Source: upstream/packages/types/src/SceneCoverageEntry.ts:31 (sha256:924b771a0cedb874d826c2c9763d173d2ca878030ed5fc5e97c6640ef3d4edaf)
 #[derive(Clone)]
-struct SceneCoverageEntryBase {
+pub(crate) struct SceneCoverageEntryBase {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub facet: RequirementFacet,
@@ -85,7 +55,7 @@ impl PartialEq for SceneCoverageEntryBase {
 
 // Source: upstream/packages/types/src/SceneCoverageEntry.ts:37 (sha256:9b70606f4c375a4c867163868c21b4bcb39aaca6641c92f830ac17f524d73ef4)
 #[derive(Clone, Default)]
-struct SceneCoverageRemedy {
+pub(crate) struct SceneCoverageRemedy {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub module: String,
@@ -105,7 +75,7 @@ pub struct SatisfiedSceneCoverageEntry {
     pub facet: RequirementFacet,
     pub kind: Kind,
     pub registry: RenderRegistry,
-    pub coverage: crate::OpaqueHostValue,
+    pub coverage: String,
 }
 impl PartialEq for SatisfiedSceneCoverageEntry {
     fn eq(&self, other: &Self) -> bool {
@@ -123,7 +93,7 @@ pub struct UnregisteredSceneCoverageEntry {
     pub registry: RenderRegistry,
     pub module: String,
     pub registrar: String,
-    pub coverage: crate::OpaqueHostValue,
+    pub coverage: String,
 }
 impl PartialEq for UnregisteredSceneCoverageEntry {
     fn eq(&self, other: &Self) -> bool {
@@ -139,7 +109,7 @@ pub struct UnavailableSceneCoverageEntry {
     pub facet: RequirementFacet,
     pub kind: Kind,
     pub registry: RenderRegistry,
-    pub coverage: crate::OpaqueHostValue,
+    pub coverage: String,
 }
 impl PartialEq for UnavailableSceneCoverageEntry {
     fn eq(&self, other: &Self) -> bool {
@@ -157,7 +127,7 @@ pub struct FallbackRemediableSceneCoverageEntry {
     pub registry: RenderRegistry,
     pub module: String,
     pub registrar: String,
-    pub coverage: crate::OpaqueHostValue,
+    pub coverage: String,
 }
 impl PartialEq for FallbackRemediableSceneCoverageEntry {
     fn eq(&self, other: &Self) -> bool {
@@ -173,7 +143,7 @@ pub struct FallbackUnavailableSceneCoverageEntry {
     pub facet: RequirementFacet,
     pub kind: Kind,
     pub registry: RenderRegistry,
-    pub coverage: crate::OpaqueHostValue,
+    pub coverage: String,
 }
 impl PartialEq for FallbackUnavailableSceneCoverageEntry {
     fn eq(&self, other: &Self) -> bool {

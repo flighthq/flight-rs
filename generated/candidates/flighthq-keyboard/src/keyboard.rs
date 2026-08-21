@@ -435,7 +435,7 @@ static _SUBSCRIPTIONS: std::sync::LazyLock<
 
 // Source: upstream/packages/keyboard/src/keyboard.ts:233 (sha256:d6daf7877b2414bc1e63170e00bb97a5bdac8df5fda4e8dffe13e5662763cebf)
 #[derive(Clone)]
-struct VirtualKeyboard {
+pub(crate) struct VirtualKeyboard {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub bounding_rect: crate::OpaqueHostValue,
@@ -456,7 +456,7 @@ fn get_virtual_keyboard() -> Option<VirtualKeyboard> {
 
 // Source: upstream/packages/keyboard/src/keyboard.ts:246 (sha256:e7187dd15738a3ec74992e267cb3d5a884aa121faa5649de8cfe7529d2ce8038)
 #[derive(Clone, Default)]
-struct WebKeyboardGeometry {
+pub(crate) struct WebKeyboardGeometry {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub height: f64,

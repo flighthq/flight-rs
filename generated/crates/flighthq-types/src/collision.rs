@@ -21,6 +21,91 @@ impl PartialEq for SharedStructuralRecord1 {
     }
 }
 
+#[derive(Clone, Default)]
+pub struct CollisionBuiltInShape2DRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub x: f64,
+    pub y: f64,
+    pub kind: String,
+}
+impl PartialEq for CollisionBuiltInShape2DRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct CollisionBuiltInShape2DRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub x0: f64,
+    pub y0: f64,
+    pub x1: f64,
+    pub y1: f64,
+    pub kind: String,
+}
+impl PartialEq for CollisionBuiltInShape2DRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct CollisionBuiltInShape2DRecord3 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub points: Vec<f64>,
+    pub kind: String,
+}
+impl PartialEq for CollisionBuiltInShape2DRecord3 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct CollisionBuiltInShape2DRecord4 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub x: f64,
+    pub y: f64,
+    pub half_w: f64,
+    pub half_h: f64,
+    pub rotation: f64,
+    pub kind: String,
+}
+impl PartialEq for CollisionBuiltInShape2DRecord4 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct CollisionBuiltInShape2DRecord5 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub min_x: f64,
+    pub min_y: f64,
+    pub max_x: f64,
+    pub max_y: f64,
+    pub kind: String,
+}
+impl PartialEq for CollisionBuiltInShape2DRecord5 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct CollisionBuiltInShape2DRecord6 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub x: f64,
+    pub y: f64,
+    pub radius: f64,
+    pub kind: String,
+}
+impl PartialEq for CollisionBuiltInShape2DRecord6 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 // Source: upstream/packages/types/src/Collision.ts:30 (sha256:7db462c203a8326feaa3b6f077253c1486b1160636f9b2ca4703d869a6f4722a)
 pub type CollisionShapeKind2D = String;
 
@@ -116,17 +201,19 @@ impl PartialEq for CollisionPoint2D {
 }
 
 // Source: upstream/packages/types/src/Collision.ts:83 (sha256:e07cbb0b2cdcd24bbc5c4afc84ac4cd3696b65ff71704b44708cf6e1ff95470f)
-#[derive(Clone, Default)]
-pub struct CollisionBuiltInShape2D {
-    #[doc(hidden)]
-    pub __flight_identity: std::sync::Arc<()>,
-    pub kind: String,
-}
-impl PartialEq for CollisionBuiltInShape2D {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
+pub type CollisionBuiltInShape2D = crate::FlightUnion2<
+    CollisionBuiltInShape2DRecord6,
+    crate::FlightUnion2<
+        CollisionBuiltInShape2DRecord5,
+        crate::FlightUnion2<
+            CollisionBuiltInShape2DRecord4,
+            crate::FlightUnion2<
+                CollisionBuiltInShape2DRecord3,
+                crate::FlightUnion2<CollisionBuiltInShape2DRecord2, CollisionBuiltInShape2DRecord1>,
+            >,
+        >,
+    >,
+>;
 
 // Source: upstream/packages/types/src/Collision.ts:106 (sha256:4878fb53ade5143836a7e1877e9b6afac6536bc81e9faa1baea2d70bbe401802)
 #[derive(Clone, Default)]

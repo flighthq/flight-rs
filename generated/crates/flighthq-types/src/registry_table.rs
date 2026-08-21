@@ -8,31 +8,35 @@
 
 use crate::Kind;
 
-// Source: upstream/packages/types/src/RegistryTable.ts:5 (sha256:afec52b2cf6bdb293adac880cbcbeb72af88397062e1443ab14d56170def7dd5)
-pub type RegistryId = String;
-
-// Source: upstream/packages/types/src/RegistryTable.ts:19 (sha256:d5b90ddb30ab0884f16eb15de021929e5c837aee59e1ba8f0ba57a6220806dd9)
-#[derive(Clone)]
-pub struct RegistryTableEntry<T> {
-    #[doc(hidden)]
+#[derive(Clone, Default)]
+pub struct RegistryTableEntryRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub state: crate::OpaqueHostValue,
-    pub value: Option<T>,
+    pub state: String,
 }
-impl<T> Default for RegistryTableEntry<T> {
-    fn default() -> Self {
-        Self {
-            __flight_identity: Default::default(),
-            state: Default::default(),
-            value: Default::default(),
-        }
-    }
-}
-impl<T> PartialEq for RegistryTableEntry<T> {
+impl PartialEq for RegistryTableEntryRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+
+#[derive(Clone)]
+pub struct RegistryTableEntryRecord2<T> {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub state: String,
+    pub value: T,
+}
+impl<T> PartialEq for RegistryTableEntryRecord2<T> {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/RegistryTable.ts:5 (sha256:afec52b2cf6bdb293adac880cbcbeb72af88397062e1443ab14d56170def7dd5)
+pub type RegistryId = String;
+
+// Source: upstream/packages/types/src/RegistryTable.ts:19 (sha256:d5b90ddb30ab0884f16eb15de021929e5c837aee59e1ba8f0ba57a6220806dd9)
+pub type RegistryTableEntry<T> =
+    crate::FlightUnion2<RegistryTableEntryRecord2<T>, RegistryTableEntryRecord1>;
 
 // Source: upstream/packages/types/src/RegistryTable.ts:27 (sha256:2de2100ef8f8ec3ddee7524960494a73dec90beb10a6e543dce9c52d4303770e)
 #[derive(Clone, Default)]

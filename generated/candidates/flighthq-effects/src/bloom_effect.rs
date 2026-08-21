@@ -65,10 +65,10 @@ pub fn compute_bloom_threshold(effect: &BloomEffect) -> f64 {
 
 // Source: upstream/packages/effects/src/bloomEffect.ts:21 (sha256:617321597270316572516fdf538933545aea4fa2d8cd22b426fc4e882207e95f)
 #[derive(Clone, Default)]
-struct CreateBloomEffectRecord3 {
+struct CreateBloomEffectRecord11 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateBloomEffectRecord3 {
+impl PartialEq for CreateBloomEffectRecord11 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

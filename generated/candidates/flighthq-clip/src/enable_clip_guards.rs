@@ -29,11 +29,11 @@ pub fn enable_clip_guards() -> () {
 
 // Source: upstream/packages/clip/src/enableClipGuards.ts:23 (sha256:7b1e4c88ed3f25bff54d5e51cd748bb7e09999f411ff1a5b64a6f61cc47eb339)
 #[derive(Clone, Default)]
-struct WarnOnDoubleReleaseRecord1 {
+struct WarnOnDoubleReleaseRecord4 {
     __flight_identity: std::sync::Arc<()>,
     message: String,
 }
-impl PartialEq for WarnOnDoubleReleaseRecord1 {
+impl PartialEq for WarnOnDoubleReleaseRecord4 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

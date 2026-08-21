@@ -12,9 +12,9 @@ use crate::{
     GlCustomMaterialShaderSource, GlMaterialRenderer, GlMeshMaterialRenderer, GlModifierSnippet,
     GlPbrExtensionRegistration, GlRenderEffectRegistration, GlRenderTarget, GlShapeMesh,
     GlTextureResolver, GlVelocityWriter, Image, KeyedTable, Matrix, Path, PathMesh,
-    RenderEffectPaddingResolver, RenderProxy, RenderProxy2D, RenderRegistrySignals,
-    RenderRootGuard, RenderState, Renderer, Scene2DClipHooks, Scene3DGraphSyncPolicy,
-    ShapeRasterizer, SlotTable, StrokeStyle, TextureSource, TintMaterialData,
+    RenderEffectPaddingResolver, RenderProxy, RenderProxy2D, RenderRootGuard, RenderState,
+    Renderer, Scene2DClipHooks, Scene3DGraphSyncPolicy, ShapeRasterizer, SlotTable, StrokeStyle,
+    TextureSource, TintMaterialData,
 };
 
 #[derive(Clone, Default)]
@@ -215,36 +215,24 @@ pub type GlColorAdjustmentMaterialFeatureGuard = std::sync::Arc<
 
 // Source: upstream/packages/types/src/GlRenderState.ts:116 (sha256:42e9530ec685e1f00cc45e3695ffe475266047164f10002bcb41a8ad935d17e6)
 #[derive(Clone, Default)]
-pub struct GlRenderStateRuntimeRecord2 {
+pub struct GlRenderStateRuntimeRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub texture: crate::OpaqueHostValue,
     pub uploaded_version: f64,
 }
-impl PartialEq for GlRenderStateRuntimeRecord2 {
+impl PartialEq for GlRenderStateRuntimeRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 #[derive(Clone, Default)]
-pub struct GlRenderStateRuntimeRecord3 {
+pub struct GlRenderStateRuntimeRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub texture: crate::OpaqueHostValue,
     pub version: f64,
 }
-impl PartialEq for GlRenderStateRuntimeRecord3 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone)]
-pub struct GlRenderStateRuntimeRecord4 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub clear: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
-    pub signals: RenderRegistrySignals,
-}
-impl PartialEq for GlRenderStateRuntimeRecord4 {
+impl PartialEq for GlRenderStateRuntimeRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -263,14 +251,14 @@ pub struct GlRenderStateRuntimeStorage {
     pub render_target_viewport: Option<GlViewportRect>,
     pub texture_cache: Vec<(crate::OpaqueHostValue, crate::OpaqueHostValue)>,
     pub texture_source_premultiplied_texture_cache:
-        Vec<(TextureSource, GlRenderStateRuntimeRecord3)>,
+        Vec<(TextureSource, GlRenderStateRuntimeRecord2)>,
     pub texture_source_premultiplied_srgb_texture_cache:
-        Vec<(TextureSource, GlRenderStateRuntimeRecord3)>,
-    pub texture_source_straight_texture_cache: Vec<(TextureSource, GlRenderStateRuntimeRecord3)>,
+        Vec<(TextureSource, GlRenderStateRuntimeRecord2)>,
+    pub texture_source_straight_texture_cache: Vec<(TextureSource, GlRenderStateRuntimeRecord2)>,
     pub texture_source_straight_srgb_texture_cache:
-        Vec<(TextureSource, GlRenderStateRuntimeRecord3)>,
-    pub video_texture_cache: Option<Vec<(Image, GlRenderStateRuntimeRecord2)>>,
-    pub video_srgb_texture_cache: Option<Vec<(Image, GlRenderStateRuntimeRecord2)>>,
+        Vec<(TextureSource, GlRenderStateRuntimeRecord2)>,
+    pub video_texture_cache: Option<Vec<(Image, GlRenderStateRuntimeRecord1)>>,
+    pub video_srgb_texture_cache: Option<Vec<(Image, GlRenderStateRuntimeRecord1)>>,
     pub scissor_stack: Option<Vec<GlScissorRect>>,
 }
 impl Default for GlRenderStateRuntimeStorage {

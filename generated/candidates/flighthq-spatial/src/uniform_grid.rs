@@ -137,7 +137,7 @@ pub fn set_spatial_indexing_guard(guard: &Option<SpatialIndexingGuard>) -> () {
 
 // Source: upstream/packages/spatial/src/uniformGrid.ts:106 (sha256:bf8ee7d148f40d101a35cf9e62d37751ed15b9b9ce6f5ad5dcbfcc8b44a4d9a1)
 #[derive(Clone, Default)]
-struct GridCell {
+pub(crate) struct GridCell {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub cx: f64,
@@ -152,7 +152,7 @@ impl PartialEq for GridCell {
 
 // Source: upstream/packages/spatial/src/uniformGrid.ts:123 (sha256:b250d19f277e6a68ba96f3acceaa4ab14f4153ce4c0834635c978ed262f4cc23)
 #[derive(Clone, Default)]
-struct UniformGrid {
+pub(crate) struct UniformGrid {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub cell_size: f64,

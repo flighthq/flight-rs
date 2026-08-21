@@ -58,9 +58,11 @@ pub fn get_text_line_break_index(line_breaks: &Vec<f64>, start_index: Option<f64
 
 // Source: upstream/packages/textlayout/src/textLineBreaks.ts:23 (sha256:b6b1ce39a3c10d6c4a788e4cbc5baf4a3adf959363adea1434916632c865eef0)
 pub fn get_text_line_breaks(out: &mut Vec<f64>, text: String) -> () {
+    let __flight_utf16_text: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(text.encode_utf16().collect());
     out.clear();
     let mut index = (-1.0_f64);
-    while (index < (text.encode_utf16().count() as f64)) {
+    while (index < (__flight_utf16_text.len() as f64)) {
         let lf = __flight_string_index_of(&(text), &("\n".to_owned()), (index + 1.0_f64));
         let cr = __flight_string_index_of(&(text), &("\r".to_owned()), (index + 1.0_f64));
         if (lf == (-1.0_f64)) && (cr == (-1.0_f64)) {

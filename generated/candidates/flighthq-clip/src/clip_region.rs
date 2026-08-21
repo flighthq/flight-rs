@@ -322,17 +322,7 @@ pub fn copy_clip_region(out: &mut ClipRegion, source: &ClipRegion) -> () {
             (source.contours.as_ref().unwrap())
                 .iter()
                 .cloned()
-                .map(|c: Vec<f64>| -> crate::OpaqueHostValue {
-                    {
-                        let __flight_portable_source = (c).clone();
-                        crate::FlightValue::Array(
-                            (&__flight_portable_source)
-                                .iter()
-                                .map(|value| crate::FlightValue::Number(*(value) as f64))
-                                .collect(),
-                        )
-                    }
-                })
+                .map(|c: Vec<f64>| -> Vec<f64> { (c).clone() })
                 .collect::<Vec<_>>(),
         )
     };
@@ -553,17 +543,7 @@ pub fn intersect_clip_regions(out: &mut ClipRegion, a: &ClipRegion, b: &ClipRegi
                 (a_contours.as_ref().unwrap())
                     .iter()
                     .cloned()
-                    .map(|c: Vec<f64>| -> crate::OpaqueHostValue {
-                        {
-                            let __flight_portable_source = (c).clone();
-                            crate::FlightValue::Array(
-                                (&__flight_portable_source)
-                                    .iter()
-                                    .map(|value| crate::FlightValue::Number(*(value) as f64))
-                                    .collect(),
-                            )
-                        }
-                    })
+                    .map(|c: Vec<f64>| -> Vec<f64> { (c).clone() })
                     .collect::<Vec<_>>(),
             );
             out.winding = (a_winding).clone();
@@ -573,17 +553,7 @@ pub fn intersect_clip_regions(out: &mut ClipRegion, a: &ClipRegion, b: &ClipRegi
                     (b_contours.as_ref().unwrap())
                         .iter()
                         .cloned()
-                        .map(|c: Vec<f64>| -> crate::OpaqueHostValue {
-                            {
-                                let __flight_portable_source = (c).clone();
-                                crate::FlightValue::Array(
-                                    (&__flight_portable_source)
-                                        .iter()
-                                        .map(|value| crate::FlightValue::Number(*(value) as f64))
-                                        .collect(),
-                                )
-                            }
-                        })
+                        .map(|c: Vec<f64>| -> Vec<f64> { (c).clone() })
                         .collect::<Vec<_>>(),
                 );
                 out.winding = (b_winding).clone();
@@ -600,17 +570,7 @@ pub fn intersect_clip_regions(out: &mut ClipRegion, a: &ClipRegion, b: &ClipRegi
                     .unwrap())
                     .iter()
                     .cloned()
-                    .map(|c: Vec<f64>| -> crate::OpaqueHostValue {
-                        {
-                            let __flight_portable_source = (c).clone();
-                            crate::FlightValue::Array(
-                                (&__flight_portable_source)
-                                    .iter()
-                                    .map(|value| crate::FlightValue::Number(*(value) as f64))
-                                    .collect(),
-                            )
-                        }
-                    })
+                    .map(|c: Vec<f64>| -> Vec<f64> { (c).clone() })
                     .collect::<Vec<_>>(),
                 );
                 out.winding = if keep_a {
@@ -766,17 +726,7 @@ pub fn normalize_clip_region(out: &mut ClipRegion, clip: &ClipRegion) -> () {
         (in_contours.as_ref().unwrap())
             .iter()
             .cloned()
-            .map(|c: Vec<f64>| -> crate::OpaqueHostValue {
-                {
-                    let __flight_portable_source = (c).clone();
-                    crate::FlightValue::Array(
-                        (&__flight_portable_source)
-                            .iter()
-                            .map(|value| crate::FlightValue::Number(*(value) as f64))
-                            .collect(),
-                    )
-                }
-            })
+            .map(|c: Vec<f64>| -> Vec<f64> { (c).clone() })
             .collect::<Vec<_>>(),
     );
     out.winding = (in_winding).clone();
@@ -974,17 +924,7 @@ pub fn union_clip_regions(out: &mut ClipRegion, a: &ClipRegion, b: &ClipRegion) 
                 (a_contours.as_ref().unwrap())
                     .iter()
                     .cloned()
-                    .map(|c: Vec<f64>| -> crate::OpaqueHostValue {
-                        {
-                            let __flight_portable_source = (c).clone();
-                            crate::FlightValue::Array(
-                                (&__flight_portable_source)
-                                    .iter()
-                                    .map(|value| crate::FlightValue::Number(*(value) as f64))
-                                    .collect(),
-                            )
-                        }
-                    })
+                    .map(|c: Vec<f64>| -> Vec<f64> { (c).clone() })
                     .collect::<Vec<_>>(),
             );
             out.winding = (a_winding).clone();
@@ -994,17 +934,7 @@ pub fn union_clip_regions(out: &mut ClipRegion, a: &ClipRegion, b: &ClipRegion) 
                     (b_contours.as_ref().unwrap())
                         .iter()
                         .cloned()
-                        .map(|c: Vec<f64>| -> crate::OpaqueHostValue {
-                            {
-                                let __flight_portable_source = (c).clone();
-                                crate::FlightValue::Array(
-                                    (&__flight_portable_source)
-                                        .iter()
-                                        .map(|value| crate::FlightValue::Number(*(value) as f64))
-                                        .collect(),
-                                )
-                            }
-                        })
+                        .map(|c: Vec<f64>| -> Vec<f64> { (c).clone() })
                         .collect::<Vec<_>>(),
                 );
                 out.winding = (b_winding).clone();
@@ -1021,17 +951,7 @@ pub fn union_clip_regions(out: &mut ClipRegion, a: &ClipRegion, b: &ClipRegion) 
                     .unwrap())
                     .iter()
                     .cloned()
-                    .map(|c: Vec<f64>| -> crate::OpaqueHostValue {
-                        {
-                            let __flight_portable_source = (c).clone();
-                            crate::FlightValue::Array(
-                                (&__flight_portable_source)
-                                    .iter()
-                                    .map(|value| crate::FlightValue::Number(*(value) as f64))
-                                    .collect(),
-                            )
-                        }
-                    })
+                    .map(|c: Vec<f64>| -> Vec<f64> { (c).clone() })
                     .collect::<Vec<_>>(),
                 );
                 out.winding = if keep_a {

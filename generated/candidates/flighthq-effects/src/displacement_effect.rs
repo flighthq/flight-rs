@@ -49,10 +49,10 @@ impl PartialEq for FlightPartialRecord2 {
 
 // Source: upstream/packages/effects/src/displacementEffect.ts:5 (sha256:afd4c94e0ffcb042de03804d5b8d728e4525beb0996e75687a5259ff6e585183)
 #[derive(Clone, Default)]
-struct CreateDisplacementEffectRecord3 {
+struct CreateDisplacementEffectRecord11 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateDisplacementEffectRecord3 {
+impl PartialEq for CreateDisplacementEffectRecord11 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

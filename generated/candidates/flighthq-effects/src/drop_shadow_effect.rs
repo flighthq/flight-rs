@@ -55,10 +55,10 @@ impl PartialEq for FlightPartialRecord2 {
 
 // Source: upstream/packages/effects/src/dropShadowEffect.ts:6 (sha256:3ab0759bb38792b708d22eb5f5a8d8352d1d2ba3181a9bd200650c5d0a6f40d9)
 #[derive(Clone, Default)]
-struct CreateDropShadowEffectRecord3 {
+struct CreateDropShadowEffectRecord11 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateDropShadowEffectRecord3 {
+impl PartialEq for CreateDropShadowEffectRecord11 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

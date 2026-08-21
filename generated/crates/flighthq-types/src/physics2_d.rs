@@ -42,7 +42,7 @@ impl PartialEq for Physics2DCollisionFilter {
 }
 
 // Source: upstream/packages/types/src/Physics2D.ts:65 (sha256:c4157b990247a1cf3e358e8ddae5bef9ee4b2d0acebc1f3630e6e3594369951c)
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct Physics2DCollider {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -883,7 +883,7 @@ impl PartialEq for Physics2DContactEvents {
 }
 
 // Source: upstream/packages/types/src/Physics2D.ts:666 (sha256:170b608b1adbe4f5d5adbf9037aae861cd32250fda3110f11bf5dde9eb8b0832)
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct Physics2DQueryHit {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -930,7 +930,7 @@ impl PartialEq for Physics2DQueryFilter {
 }
 
 // Source: upstream/packages/types/src/Physics2D.ts:691 (sha256:9094ab4baa041a3973eb2471908827999044b59892109431e6ce46c93436a483)
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct Physics2DRayHit {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,

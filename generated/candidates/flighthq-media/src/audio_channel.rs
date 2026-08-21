@@ -221,7 +221,7 @@ pub fn stop_audio_channel(channel: &mut AudioChannel) -> () {
 
 // Source: upstream/packages/media/src/audioChannel.ts:124 (sha256:c397ad8edeb6bd3d33d363442549a95a27d6117328d9a0a296655467762d40cc)
 #[derive(Clone, Default)]
-struct AudioChannelRuntime {
+pub(crate) struct AudioChannelRuntime {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub context: crate::OpaqueHostValue,

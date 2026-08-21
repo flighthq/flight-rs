@@ -1,0 +1,16 @@
+# @generated candidate crate; do not edit.
+[package]
+name = "flighthq-debug"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+flighthq-log = { path = "../flighthq-log" }
+flighthq-render = { path = "../flighthq-render" }
+flighthq-runtime = { path = "../../crates/flighthq-runtime" }
+flighthq-types = { path = "../../crates/flighthq-types" }

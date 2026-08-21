@@ -58,10 +58,10 @@ impl PartialEq for FlightPartialRecord2 {
 
 // Source: upstream/packages/effects/src/bevelEffect.ts:6 (sha256:14b78e6e86a452b7dd16a5c6bb5194e2f2d6a40a72cc2350199439881dc149e2)
 #[derive(Clone, Default)]
-struct CreateBevelEffectRecord3 {
+struct CreateBevelEffectRecord11 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateBevelEffectRecord3 {
+impl PartialEq for CreateBevelEffectRecord11 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

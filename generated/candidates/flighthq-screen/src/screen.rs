@@ -188,7 +188,7 @@ pub fn create_screen_signals() -> ScreenSignals {
 
 // Source: upstream/packages/screen/src/screen.ts:90 (sha256:e60a29415022aae75d8c4a8c8bcab6086095712fe2e745602bceb7e5e56f89e6)
 #[derive(Clone, Default)]
-struct ScreenDetailed {
+pub(crate) struct ScreenDetailed {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub avail_left: f64,
@@ -216,7 +216,7 @@ impl PartialEq for ScreenDetailed {
 
 // Source: upstream/packages/screen/src/screen.ts:109 (sha256:1c972c21516f572a21aa598490cf68c4bea1a17935a1c6f4bc1b5e57d90774f3)
 #[derive(Clone)]
-struct ScreenDetails {
+pub(crate) struct ScreenDetails {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub current_screen: ScreenDetailed,
@@ -943,7 +943,7 @@ static _SIGNAL_SUBSCRIPTIONS: std::sync::LazyLock<
 
 // Source: upstream/packages/screen/src/screen.ts:774 (sha256:73604c011ae140a8578ea3a4bc8d91483155cadc9e970e79ffa1bbc94d2e2164)
 #[derive(Clone, Default)]
-struct ScratchPoint {
+pub(crate) struct ScratchPoint {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub x: f64,
@@ -1043,7 +1043,7 @@ fn fill_default_screen_info(out: &mut ScreenInfo) -> () {
 
 // Source: upstream/packages/screen/src/screen.ts:850 (sha256:53fcc57f2524aab09a52e4b5c51cb6e54304aaed9704f40cd888a6df8e8e6058)
 #[derive(Clone, Default)]
-struct WebScreenOrientationObject {
+pub(crate) struct WebScreenOrientationObject {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub angle: Option<f64>,

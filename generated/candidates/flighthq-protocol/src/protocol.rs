@@ -421,7 +421,9 @@ pub fn is_protocol_scheme_registered(scheme: String) -> bool {
 
 // Source: upstream/packages/protocol/src/protocol.ts:166 (sha256:6ae6c76401417f2cfe6ec13b993ab35cbfaf6007e2a07e1fba3d42ee474cbdfd)
 pub fn is_valid_protocol_scheme(scheme: String) -> bool {
-    if ("string".to_owned() != "string") || ((scheme.encode_utf16().count() as f64) == 0.0_f64) {
+    let __flight_utf16_scheme: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(scheme.encode_utf16().collect());
+    if ("string".to_owned() != "string") || ((__flight_utf16_scheme.len() as f64) == 0.0_f64) {
         return false;
     }
     let lower = (scheme).to_lowercase();
@@ -446,7 +448,9 @@ impl PartialEq for ParseProtocolUrlRecord2 {
 }
 
 pub fn parse_protocol_url(url: String) -> Option<ParsedProtocolUrl> {
-    if ("string".to_owned() != "string") || ((url.encode_utf16().count() as f64) == 0.0_f64) {
+    let __flight_utf16_url: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(url.encode_utf16().collect());
+    if ("string".to_owned() != "string") || ((__flight_utf16_url.len() as f64) == 0.0_f64) {
         return None;
     }
     let colon_idx = __flight_string_index_of(&(url), &(":".to_owned()), 0.0_f64);

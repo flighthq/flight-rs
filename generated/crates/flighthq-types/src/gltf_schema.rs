@@ -212,7 +212,7 @@ pub struct GltfMaterialRecord1 {
     pub khr_materials_iridescence: Option<GltfMaterialsIridescence>,
     pub khr_materials_pbr_specular_glossiness: Option<GltfMaterialsPbrSpecularGlossiness>,
     pub khr_materials_sheen: Option<GltfMaterialsSheen>,
-    pub khr_materials_unlit: Option<Vec<(String, crate::OpaqueHostValue)>>,
+    pub khr_materials_unlit: Option<Vec<(String, std::convert::Infallible)>>,
     pub khr_materials_specular: Option<GltfMaterialsSpecular>,
     pub khr_materials_transmission: Option<GltfMaterialsTransmission>,
     pub khr_materials_volume: Option<GltfMaterialsVolume>,

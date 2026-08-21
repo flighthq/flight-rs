@@ -49,10 +49,10 @@ impl PartialEq for FlightPartialRecord2 {
 
 // Source: upstream/packages/effects/src/tiltShiftEffect.ts:5 (sha256:2ff62cd921c5f37d54bffaed6b7d2015ef8107f8a5f8ca2c084ded52800c023d)
 #[derive(Clone, Default)]
-struct CreateTiltShiftEffectRecord3 {
+struct CreateTiltShiftEffectRecord11 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateTiltShiftEffectRecord3 {
+impl PartialEq for CreateTiltShiftEffectRecord11 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

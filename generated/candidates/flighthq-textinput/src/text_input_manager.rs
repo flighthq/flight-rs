@@ -975,8 +975,10 @@ pub fn create_text_input_manager() -> TextInputManager {
 
 // Source: upstream/packages/textinput/src/textInputManager.ts:47 (sha256:71866e07667c1624b5639beadcaa833b2deb09241a9cf49147e55c33cdf50948)
 pub fn dispatch_text_input(manager: &TextInputManager, text: String) -> bool {
+    let __flight_utf16_text: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(text.encode_utf16().collect());
     let mut target = get_text_input_focus_target(manager);
-    if ((target).is_none()) || ((text.encode_utf16().count() as f64) == 0.0_f64) {
+    if ((target).is_none()) || ((__flight_utf16_text.len() as f64) == 0.0_f64) {
         return false;
     }
     insert_text_input(&mut target.as_mut().unwrap(), (text).clone());

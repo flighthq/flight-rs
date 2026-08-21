@@ -108,10 +108,10 @@ pub fn clone_spritesheet(spritesheet: &Spritesheet) -> Spritesheet {
 
 // Source: upstream/packages/spritesheet/src/spritesheet.ts:24 (sha256:98a6a5f0626783039851024b48235bdace564ed9b1c823cf7f811c6c94568bb4)
 #[derive(Clone, Default)]
-struct CreateSpritesheetRecord3 {
+struct CreateSpritesheetRecord6 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateSpritesheetRecord3 {
+impl PartialEq for CreateSpritesheetRecord6 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

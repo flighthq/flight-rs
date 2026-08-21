@@ -9,9 +9,8 @@
 use crate::{
     Bitmap, BlendMode, CanvasShapeCommand, ColorAdjustmentUnsupportedGuard, DomScene2DRectangle,
     DomTextureResolver, EntityRuntime, KeyedTable, Matrix, Path, PathMesh, PathWinding,
-    RenderEffectPaddingResolver, RenderProxy, RenderProxy2D, RenderRegistrySignals,
-    RenderRootGuard, RenderState, Renderer, Scene2DClipHooks, Scene3DGraphSyncPolicy,
-    ShapeRasterizer, SlotTable, StrokeStyle,
+    RenderEffectPaddingResolver, RenderProxy, RenderProxy2D, RenderRootGuard, RenderState,
+    Renderer, Scene2DClipHooks, Scene3DGraphSyncPolicy, ShapeRasterizer, SlotTable, StrokeStyle,
 };
 
 // Source: upstream/packages/types/src/DomRenderState.ts:11 (sha256:7dd771caabb5913c54dc523f2804bfcdff548e84aca709060279660fb26ea9af)
@@ -108,34 +107,10 @@ impl PartialEq for DomRenderRegistries {
 }
 
 // Source: upstream/packages/types/src/DomRenderState.ts:30 (sha256:0a8d83da2d0248649e6b7200c1cef7462b9438b5ae01577f4efa27d8fb957109)
-#[derive(Clone, Default)]
-pub struct DomRenderStateRuntimeRecord1 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub element: crate::OpaqueHostValue,
-    pub version: f64,
-}
-impl PartialEq for DomRenderStateRuntimeRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone)]
-pub struct DomRenderStateRuntimeRecord2 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub clear: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
-    pub signals: RenderRegistrySignals,
-}
-impl PartialEq for DomRenderStateRuntimeRecord2 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
 #[doc(hidden)]
 pub struct DomRenderStateRuntimeStorage {
     pub registries: DomRenderRegistries,
-    pub bitmap_element_cache: Option<Vec<(Bitmap, DomRenderStateRuntimeRecord1)>>,
+    pub bitmap_element_cache: Option<Vec<(Bitmap, crate::CanvasTextureResolversRecord2)>>,
 }
 impl Default for DomRenderStateRuntimeStorage {
     fn default() -> Self {

@@ -9,7 +9,7 @@
 use crate::{
     BlendMode, CanvasShapeCommand, ColorAdjustmentUnsupportedGuard, ColorScaleBias, EntityRuntime,
     Image, KeyedTable, Matrix, Path, PathMesh, RenderEffectPaddingResolver, RenderProxy,
-    RenderProxy2D, RenderRegistrySignals, RenderRootGuard, RenderState, Renderer, Scene2DClipHooks,
+    RenderProxy2D, RenderRootGuard, RenderState, Renderer, Scene2DClipHooks,
     Scene3DGraphSyncPolicy, ShapeRasterizer, SlotTable, StrokeStyle, TextureSource,
     TintMaterialData, WgpuCompressedTextureDecoder, WgpuCompressedTextureUploader,
     WgpuCustomMaterialShaderSource, WgpuMaterialRenderer, WgpuMeshMaterialRenderer,
@@ -222,24 +222,12 @@ impl PartialEq for WgpuColorAdjustmentFlush {
 
 // Source: upstream/packages/types/src/WgpuRenderState.ts:107 (sha256:9cc616216457e3fabf5cc18316b36ac4a679a51a51daa3184ff23ab653ca7b92)
 #[derive(Clone, Default)]
-pub struct WgpuRenderStateRuntimeRecord2 {
+pub struct WgpuRenderStateRuntimeRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub bind_group_layout: crate::OpaqueHostValue,
     pub pipeline: crate::OpaqueHostValue,
 }
-impl PartialEq for WgpuRenderStateRuntimeRecord2 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone)]
-pub struct WgpuRenderStateRuntimeRecord3 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub clear: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
-    pub signals: RenderRegistrySignals,
-}
-impl PartialEq for WgpuRenderStateRuntimeRecord3 {
+impl PartialEq for WgpuRenderStateRuntimeRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -248,7 +236,7 @@ impl PartialEq for WgpuRenderStateRuntimeRecord3 {
 #[doc(hidden)]
 pub struct WgpuRenderStateRuntimeStorage {
     pub registries: WgpuRenderRegistries,
-    pub mipmap_pipeline_cache: Vec<(crate::OpaqueHostValue, WgpuRenderStateRuntimeRecord2)>,
+    pub mipmap_pipeline_cache: Vec<(crate::OpaqueHostValue, WgpuRenderStateRuntimeRecord1)>,
     pub texture_cache: Vec<(crate::OpaqueHostValue, WgpuTextureEntry)>,
     pub texture_source_premultiplied_texture_cache:
         Vec<(TextureSource, WgpuTextureSourceTextureEntry)>,
@@ -297,11 +285,11 @@ pub type WgpuRenderStateRuntime = crate::EntityRuntime;
 
 // Source: upstream/packages/types/src/WgpuRenderState.ts:331 (sha256:e003cc095073ba6707274c00e75dcf6b990c0b298fb4057aa462e70bf224260d)
 #[derive(Clone, Default)]
-pub struct WgpuBitmapShaderRecord2 {
+pub struct WgpuBitmapShaderRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha: f64,
 }
-impl PartialEq for WgpuBitmapShaderRecord2 {
+impl PartialEq for WgpuBitmapShaderRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -314,7 +302,7 @@ pub struct WgpuBitmapShader {
     pub pipeline: crate::OpaqueHostValue,
     pub bind: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(WgpuRenderState, WgpuBitmapShaderRecord2) -> () + Send + 'static>,
+            Box<dyn FnMut(WgpuRenderState, WgpuBitmapShaderRecord1) -> () + Send + 'static>,
         >,
     >,
 }

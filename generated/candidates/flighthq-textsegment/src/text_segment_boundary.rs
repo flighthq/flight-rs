@@ -11,19 +11,23 @@ use flighthq_types::{TextSegment, TextSegmentRange};
 
 // Source: upstream/packages/textsegment/src/textSegmentBoundary.ts:8 (sha256:9b261149a3b16b1c07aa338d8f15b6ec1c8296c9a5550e7f6742efc0defad87e)
 pub fn get_next_grapheme_boundary(text: String, index: f64, locale: Option<String>) -> f64 {
+    let __flight_utf16_text: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(text.encode_utf16().collect());
     return next_segment_boundary(
         &segment_graphemes((text).clone(), Some(((locale).clone().unwrap()).clone())),
         index,
-        (text.encode_utf16().count() as f64),
+        (__flight_utf16_text.len() as f64),
     );
 }
 
 // Source: upstream/packages/textsegment/src/textSegmentBoundary.ts:15 (sha256:187329cb86ebec5e2203fcf8c28f5c57477922e46b8ebff0722630023f9eff13)
 pub fn get_next_word_boundary(text: String, index: f64, locale: Option<String>) -> f64 {
+    let __flight_utf16_text: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(text.encode_utf16().collect());
     return next_segment_boundary(
         &segment_words((text).clone(), Some(((locale).clone().unwrap()).clone())),
         index,
-        (text.encode_utf16().count() as f64),
+        (__flight_utf16_text.len() as f64),
     );
 }
 
@@ -49,12 +53,14 @@ pub fn get_word_range_at(
     index: f64,
     locale: Option<String>,
 ) -> Option<TextSegmentRange> {
-    if ((text.encode_utf16().count() as f64) == 0.0_f64) {
+    let __flight_utf16_text: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(text.encode_utf16().collect());
+    if ((__flight_utf16_text.len() as f64) == 0.0_f64) {
         return None;
     }
-    let clamped = clamp_index(index, (text.encode_utf16().count() as f64));
-    let lookup = if (clamped == (text.encode_utf16().count() as f64)) {
-        ((text.encode_utf16().count() as f64) - 1.0_f64)
+    let clamped = clamp_index(index, (__flight_utf16_text.len() as f64));
+    let lookup = if (clamped == (__flight_utf16_text.len() as f64)) {
+        ((__flight_utf16_text.len() as f64) - 1.0_f64)
     } else {
         clamped
     };

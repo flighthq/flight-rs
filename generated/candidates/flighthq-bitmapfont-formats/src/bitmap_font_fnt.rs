@@ -341,10 +341,10 @@ fn parse_bitmap_font_fnt_record(
 
 // Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:128 (sha256:220544cc241ccf8ae5b74176f788cd6e3b1b2fd0cfe8fa87b012c9a310e21bc1)
 #[derive(Clone, Default)]
-struct ParseFntFieldsRecord1 {
+struct ParseFntFieldsRecord4 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for ParseFntFieldsRecord1 {
+impl PartialEq for ParseFntFieldsRecord4 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

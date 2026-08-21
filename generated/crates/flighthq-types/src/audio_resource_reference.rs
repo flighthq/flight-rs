@@ -73,7 +73,7 @@ impl PartialEq for AudioResourceFailure {
 
 // Source: upstream/packages/types/src/AudioResourceReference.ts:47 (sha256:7d5c0bf0e17b2508a4b0f6b32c0d762b37e045b839c912a9b103e8254ae186bd)
 #[derive(Clone, Default)]
-struct AudioResourceReferenceBase {
+pub(crate) struct AudioResourceReferenceBase {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub failure: Option<AudioResourceFailure>,

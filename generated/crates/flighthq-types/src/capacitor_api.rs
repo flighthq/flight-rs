@@ -114,11 +114,11 @@ impl PartialEq for CapacitorPluginListenerHandle {
 
 // Source: upstream/packages/types/src/CapacitorApi.ts:54 (sha256:e11411a1666fe330b1f7854ca3b29243a6f5b45d0f66da14bc14415e4b23c0ea)
 #[derive(Clone, Default)]
-pub struct CapacitorAppPluginRecord7 {
+pub struct CapacitorAppPluginRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub url: String,
 }
-impl PartialEq for CapacitorAppPluginRecord7 {
+impl PartialEq for CapacitorAppPluginRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -135,7 +135,7 @@ pub struct CapacitorAppPlugin {
                         String,
                         std::sync::Arc<
                             std::sync::Mutex<
-                                Box<dyn FnMut(CapacitorAppPluginRecord7) -> () + Send + 'static>,
+                                Box<dyn FnMut(CapacitorAppPluginRecord1) -> () + Send + 'static>,
                             >,
                         >,
                     ) -> crate::FlightTask<CapacitorPluginListenerHandle>
@@ -664,11 +664,11 @@ impl PartialEq for CapacitorFilesystemStatResult {
 
 // Source: upstream/packages/types/src/CapacitorApi.ts:240 (sha256:a86bf654693b542e7ec591600f87d0662786357ba272899149f296e6e277b4a5)
 #[derive(Clone, Default)]
-pub struct CapacitorGeolocationPluginRecord7 {
+pub struct CapacitorGeolocationPluginRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub id: String,
 }
-impl PartialEq for CapacitorGeolocationPluginRecord7 {
+impl PartialEq for CapacitorGeolocationPluginRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -690,7 +690,7 @@ pub struct CapacitorGeolocationPlugin {
     pub clear_watch: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(CapacitorGeolocationPluginRecord7) -> crate::FlightTask<()>
+                dyn FnMut(CapacitorGeolocationPluginRecord1) -> crate::FlightTask<()>
                     + Send
                     + 'static,
             >,
@@ -826,22 +826,22 @@ impl PartialEq for CapacitorPositionCoords {
 
 // Source: upstream/packages/types/src/CapacitorApi.ts:287 (sha256:ea348912addde09fac9a5e0f72a4001f050b515030ef74d30393168e7cc84bf6)
 #[derive(Clone, Default)]
-pub struct CapacitorHapticsPluginRecord7 {
+pub struct CapacitorHapticsPluginRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub duration: Option<f64>,
 }
-impl PartialEq for CapacitorHapticsPluginRecord7 {
+impl PartialEq for CapacitorHapticsPluginRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 #[derive(Clone, Default)]
-pub struct CapacitorHapticsPluginRecord8 {
+pub struct CapacitorHapticsPluginRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub type_: String,
 }
-impl PartialEq for CapacitorHapticsPluginRecord8 {
+impl PartialEq for CapacitorHapticsPluginRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -858,7 +858,7 @@ pub struct CapacitorHapticsPlugin {
     >,
     pub notification: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(CapacitorHapticsPluginRecord8) -> crate::FlightTask<()> + Send + 'static>,
+            Box<dyn FnMut(CapacitorHapticsPluginRecord2) -> crate::FlightTask<()> + Send + 'static>,
         >,
     >,
     pub selection_changed: std::sync::Arc<
@@ -872,7 +872,7 @@ pub struct CapacitorHapticsPlugin {
     >,
     pub vibrate: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(CapacitorHapticsPluginRecord7) -> crate::FlightTask<()> + Send + 'static>,
+            Box<dyn FnMut(CapacitorHapticsPluginRecord1) -> crate::FlightTask<()> + Send + 'static>,
         >,
     >,
 }
@@ -884,33 +884,33 @@ impl PartialEq for CapacitorHapticsPlugin {
 
 // Source: upstream/packages/types/src/CapacitorApi.ts:300 (sha256:fff044a83d168a6809a484c061e0684813c82c806faa97a32f7ebace4acf609c)
 #[derive(Clone, Default)]
-pub struct CapacitorKeyboardPluginRecord7 {
+pub struct CapacitorKeyboardPluginRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub is_disabled: bool,
 }
-impl PartialEq for CapacitorKeyboardPluginRecord7 {
+impl PartialEq for CapacitorKeyboardPluginRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 #[derive(Clone, Default)]
-pub struct CapacitorKeyboardPluginRecord8 {
+pub struct CapacitorKeyboardPluginRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub mode: String,
 }
-impl PartialEq for CapacitorKeyboardPluginRecord8 {
+impl PartialEq for CapacitorKeyboardPluginRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 #[derive(Clone, Default)]
-pub struct CapacitorKeyboardPluginRecord9 {
+pub struct CapacitorKeyboardPluginRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
     pub is_visible: bool,
 }
-impl PartialEq for CapacitorKeyboardPluginRecord9 {
+impl PartialEq for CapacitorKeyboardPluginRecord3 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -938,21 +938,21 @@ pub struct CapacitorKeyboardPlugin {
     pub set_accessory_bar_visible: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(CapacitorKeyboardPluginRecord9) -> crate::FlightTask<()> + Send + 'static,
+                dyn FnMut(CapacitorKeyboardPluginRecord3) -> crate::FlightTask<()> + Send + 'static,
             >,
         >,
     >,
     pub set_resize_mode: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(CapacitorKeyboardPluginRecord8) -> crate::FlightTask<()> + Send + 'static,
+                dyn FnMut(CapacitorKeyboardPluginRecord2) -> crate::FlightTask<()> + Send + 'static,
             >,
         >,
     >,
     pub set_scroll: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(CapacitorKeyboardPluginRecord7) -> crate::FlightTask<()> + Send + 'static,
+                dyn FnMut(CapacitorKeyboardPluginRecord1) -> crate::FlightTask<()> + Send + 'static,
             >,
         >,
     >,
@@ -1049,11 +1049,11 @@ impl PartialEq for CapacitorLocalNotificationsPlugin {
 
 // Source: upstream/packages/types/src/CapacitorApi.ts:334 (sha256:baa47ad08e9c56c783c2d9b377c8922be7df7c180343834b02b08078127136a7)
 #[derive(Clone, Default)]
-pub struct CapacitorLocalNotificationSchemaRecord7 {
+pub struct CapacitorLocalNotificationSchemaRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub at: Option<crate::OpaqueHostValue>,
 }
-impl PartialEq for CapacitorLocalNotificationSchemaRecord7 {
+impl PartialEq for CapacitorLocalNotificationSchemaRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -1065,7 +1065,7 @@ pub struct CapacitorLocalNotificationSchema {
     pub __flight_identity: std::sync::Arc<()>,
     pub body: Option<String>,
     pub id: f64,
-    pub schedule: Option<CapacitorLocalNotificationSchemaRecord7>,
+    pub schedule: Option<CapacitorLocalNotificationSchemaRecord1>,
     pub title: String,
 }
 impl PartialEq for CapacitorLocalNotificationSchema {
@@ -1245,22 +1245,22 @@ impl PartialEq for CapacitorShareResult {
 
 // Source: upstream/packages/types/src/CapacitorApi.ts:402 (sha256:4821d82621c498f3712e2272f121760de426296038da6fda9032644c9d9e8578)
 #[derive(Clone, Default)]
-pub struct CapacitorStatusBarPluginRecord7 {
+pub struct CapacitorStatusBarPluginRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub overlay: bool,
 }
-impl PartialEq for CapacitorStatusBarPluginRecord7 {
+impl PartialEq for CapacitorStatusBarPluginRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
 #[derive(Clone, Default)]
-pub struct CapacitorStatusBarPluginRecord8 {
+pub struct CapacitorStatusBarPluginRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub color: String,
 }
-impl PartialEq for CapacitorStatusBarPluginRecord8 {
+impl PartialEq for CapacitorStatusBarPluginRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -1281,7 +1281,7 @@ pub struct CapacitorStatusBarPlugin {
     pub set_background_color: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(CapacitorStatusBarPluginRecord8) -> crate::FlightTask<()>
+                dyn FnMut(CapacitorStatusBarPluginRecord2) -> crate::FlightTask<()>
                     + Send
                     + 'static,
             >,
@@ -1290,7 +1290,7 @@ pub struct CapacitorStatusBarPlugin {
     pub set_overlays_web_view: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(CapacitorStatusBarPluginRecord7) -> crate::FlightTask<()>
+                dyn FnMut(CapacitorStatusBarPluginRecord1) -> crate::FlightTask<()>
                     + Send
                     + 'static,
             >,

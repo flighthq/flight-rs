@@ -8,6 +8,71 @@
 
 use crate::Signal;
 
+#[derive(Clone, Default)]
+pub struct SocketSendFailureExplanationRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub reason: String,
+    pub ready_state: SocketReadyState,
+    pub url: String,
+}
+impl PartialEq for SocketSendFailureExplanationRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct SocketSendFailureExplanationRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub reason: String,
+    pub ready_state: SocketReadyState,
+    pub url: String,
+}
+impl PartialEq for SocketSendFailureExplanationRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct SocketSendFailureExplanationRecord3 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub reason: String,
+    pub ready_state: String,
+    pub url: String,
+}
+impl PartialEq for SocketSendFailureExplanationRecord3 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct SocketGuardNoticeRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub operation: String,
+    pub reason: String,
+    pub socket: Socket,
+}
+impl PartialEq for SocketGuardNoticeRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct SocketGuardNoticeRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub operation: String,
+    pub reason: String,
+    pub socket: Socket,
+}
+impl PartialEq for SocketGuardNoticeRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 // Source: upstream/packages/types/src/Socket.ts:13 (sha256:4a92d8460f684d30b2a722a73cd2d73940bcb08dcbbc92d8c93581798d4df661)
 pub type SocketReadyState = String;
 
@@ -170,34 +235,14 @@ impl PartialEq for Socket {
 }
 
 // Source: upstream/packages/types/src/Socket.ts:102 (sha256:11e33cada7d583fc63ef297f7db07195cb25b862cb7fe9efbda30809d56b0a81)
-#[derive(Clone)]
-pub struct SocketSendFailureExplanation {
-    #[doc(hidden)]
-    pub __flight_identity: std::sync::Arc<()>,
-    pub reason: String,
-    pub ready_state: crate::FlightUnion2<String, SocketReadyState>,
-    pub url: String,
-}
-impl PartialEq for SocketSendFailureExplanation {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
+pub type SocketSendFailureExplanation = crate::FlightUnion2<
+    SocketSendFailureExplanationRecord3,
+    crate::FlightUnion2<SocketSendFailureExplanationRecord2, SocketSendFailureExplanationRecord1>,
+>;
 
 // Source: upstream/packages/types/src/Socket.ts:113 (sha256:7d108c6da679b8725737f2dab8b4818ecaef2f4732a0c6db679e705a4837af25)
-#[derive(Clone, Default)]
-pub struct SocketGuardNotice {
-    #[doc(hidden)]
-    pub __flight_identity: std::sync::Arc<()>,
-    pub operation: String,
-    pub reason: String,
-    pub socket: Socket,
-}
-impl PartialEq for SocketGuardNotice {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
+pub type SocketGuardNotice =
+    crate::FlightUnion2<SocketGuardNoticeRecord2, SocketGuardNoticeRecord1>;
 
 // Source: upstream/packages/types/src/Socket.ts:125 (sha256:1131d4997c3a34632582600f4dc965166d26c04891b31cabdb6a4acea2c6b2d4)
 pub type SocketGuard =

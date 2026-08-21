@@ -161,7 +161,8 @@ fn char_advances(
     start_x: Option<f64>,
 ) -> () {
     let start_x = start_x.unwrap_or(0.0_f64);
-    let __flight_utf16_text: Vec<u16> = text.encode_utf16().collect();
+    let __flight_utf16_text: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(text.encode_utf16().collect());
     out.clear();
     let letter_spacing = (format.letter_spacing).clone().unwrap_or(0.0_f64);
     let tab_stops = (format.tab_stops).clone();
@@ -215,7 +216,25 @@ fn char_advances(
             continue;
         }
         let next_start = (i + char_len);
-        if ((kerning_enabled) && (next_start < end)) && ((text.char_code_at)(next_start) != 9.0_f64)
+        if ((kerning_enabled) && (next_start < end))
+            && ({
+                let __flight_units: &[u16] = &__flight_utf16_text;
+                let __flight_raw_index = next_start;
+                let __flight_index = if __flight_raw_index.is_nan() {
+                    0_i64
+                } else if __flight_raw_index.is_finite() {
+                    __flight_raw_index.trunc() as i64
+                } else {
+                    -1_i64
+                };
+                if __flight_index < 0 {
+                    f64::NAN
+                } else {
+                    __flight_units
+                        .get(__flight_index as usize)
+                        .map_or(f64::NAN, |unit| f64::from(*unit))
+                }
+            } != 9.0_f64)
         {
             let next_cp = {
                 let __flight_units: &[u16] = &__flight_utf16_text;
@@ -348,7 +367,10 @@ fn build_groups(
     max_lines: f64,
     truncation_character: String,
 ) -> () {
-    let __flight_utf16_text: Vec<u16> = text.encode_utf16().collect();
+    let __flight_utf16_text: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(text.encode_utf16().collect());
+    let __flight_utf16_truncation_character: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(truncation_character.encode_utf16().collect());
     out.clear();
     let range_index: std::sync::Arc<std::sync::Mutex<f64>> =
         std::sync::Arc::new(std::sync::Mutex::new(0.0_f64));
@@ -585,6 +607,7 @@ fn build_groups(
     let mut check_truncation: std::sync::Arc<
         std::sync::Mutex<Box<dyn FnMut() -> bool + Send + 'static>>,
     > = std::sync::Arc::new(std::sync::Mutex::new(Box::new({
+        let __flight_utf16_truncation_character = __flight_utf16_truncation_character.clone();
         let mut groups = groups.clone();
         let mut line_index = line_index.clone();
         let measure = measure.clone();
@@ -595,7 +618,7 @@ fn build_groups(
                 return false;
             }
             let last_line_index = ((*line_index.lock().unwrap()).clone() - 1.0_f64);
-            if ((truncation_character.encode_utf16().count() as f64) > 0.0_f64)
+            if ((__flight_utf16_truncation_character.len() as f64) > 0.0_f64)
                 && (((*groups.lock().unwrap()).len() as f64) > 0.0_f64)
             {
                 let mut last_group: Option<TextLayoutGroup> = None;
@@ -931,6 +954,7 @@ fn build_groups(
     let mut break_long_word: std::sync::Arc<
         std::sync::Mutex<Box<dyn FnMut(f64) -> () + Send + 'static>>,
     > = std::sync::Arc::new(std::sync::Mutex::new(Box::new({
+        let __flight_utf16_text = __flight_utf16_text.clone();
         let base_x = base_x.clone();
         let check_truncation = check_truncation.clone();
         let commit_line = commit_line.clone();
@@ -1261,7 +1285,25 @@ fn build_groups(
                     } {
                         break;
                     }
-                    if ((text.char_code_at)((*text_index.lock().unwrap()).clone()) == 32.0_f64) {
+                    if ({
+                        let __flight_units: &[u16] = &__flight_utf16_text;
+                        let __flight_raw_index = (*text_index.lock().unwrap()).clone();
+                        let __flight_index = if __flight_raw_index.is_nan() {
+                            0_i64
+                        } else if __flight_raw_index.is_finite() {
+                            __flight_raw_index.trunc() as i64
+                        } else {
+                            -1_i64
+                        };
+                        if __flight_index < 0 {
+                            f64::NAN
+                        } else {
+                            __flight_units
+                                .get(__flight_index as usize)
+                                .map_or(f64::NAN, |unit| f64::from(*unit))
+                        }
+                    } == 32.0_f64)
+                    {
                         {
                             (*text_index.lock().unwrap()) += 1.0;
                             (*text_index.lock().unwrap())
@@ -1423,7 +1465,8 @@ fn justify_lines(
     paragraph_last_lines: &Vec<f64>,
     text: String,
 ) -> () {
-    let __flight_utf16_text: Vec<u16> = text.encode_utf16().collect();
+    let __flight_utf16_text: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(text.encode_utf16().collect());
     if (justification == "none") {
         return;
     }

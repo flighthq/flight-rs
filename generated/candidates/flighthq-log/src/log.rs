@@ -1943,7 +1943,7 @@ pub fn start_log_timer(label: String, channel: Option<String>) -> LogTimer {
 
 // Source: upstream/packages/log/src/log.ts:623 (sha256:2d30bcd0c02cb95e44da4c77e655cdbca357993f9cbd63938f7a0ef9bc025b01)
 #[derive(Clone)]
-struct BufferedLogSinkState {
+pub(crate) struct BufferedLogSinkState {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub buf: Vec<LogEntry>,
@@ -1958,7 +1958,7 @@ impl PartialEq for BufferedLogSinkState {
 
 // Source: upstream/packages/log/src/log.ts:629 (sha256:abe9820eb043acba87b1347446bcf11fd02111471bce49830812564752792d85)
 #[derive(Clone, Default)]
-struct MemoryLogSinkState {
+pub(crate) struct MemoryLogSinkState {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub buf: Vec<LogEntry>,
@@ -2008,7 +2008,16 @@ static _LEVEL_NAMES: std::sync::LazyLock<Vec<(LogLevel, String)>> =
 
 // Source: upstream/packages/log/src/log.ts:655 (sha256:e562f7e98e8298fddc43dda0f1976be92914f3355267275a3f7197f193ab1a1b)
 static _LEVEL_BY_NAME: std::sync::LazyLock<Vec<(String, LogLevel)>> =
-    std::sync::LazyLock::new(|| Vec::new());
+    std::sync::LazyLock::new(|| {
+        vec![
+            ("none".to_owned(), LogLevel::None),
+            ("error".to_owned(), LogLevel::Error),
+            ("warn".to_owned(), LogLevel::Warn),
+            ("info".to_owned(), LogLevel::Info),
+            ("debug".to_owned(), LogLevel::Debug),
+            ("verbose".to_owned(), LogLevel::Verbose),
+        ]
+    });
 
 // Source: upstream/packages/log/src/log.ts:664 (sha256:4b4faac93218a491ebbfb8954f69bf28685a1498dac5e3e76a16c1d77a8434ef)
 static _CHANNEL_LEVELS: std::sync::LazyLock<std::sync::Mutex<Vec<(String, LogLevel)>>> =

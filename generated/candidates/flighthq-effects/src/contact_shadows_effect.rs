@@ -50,10 +50,10 @@ impl PartialEq for FlightPartialRecord2 {
 
 // Source: upstream/packages/effects/src/contactShadowsEffect.ts:5 (sha256:4bc30aa21b51ac6d1144ef6e52410b9010dfd548130f08c88f4b071dbdaa3dd3)
 #[derive(Clone, Default)]
-struct CreateContactShadowsEffectRecord3 {
+struct CreateContactShadowsEffectRecord11 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateContactShadowsEffectRecord3 {
+impl PartialEq for CreateContactShadowsEffectRecord11 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -83,14 +83,14 @@ pub fn create_contact_shadows_effect(options: Option<FlightOmitRecord1>) -> Cont
 
 // Source: upstream/packages/effects/src/contactShadowsEffect.ts:12 (sha256:ba29f48595bb0a5adf3447f4e643460f9bb3259ec40ccff504004f3031955dc7)
 #[derive(Clone, Default)]
-struct GetContactShadowsEffectPaddingRecord3 {
+struct GetContactShadowsEffectPaddingRecord11 {
     __flight_identity: std::sync::Arc<()>,
     bottom: f64,
     left: f64,
     right: f64,
     top: f64,
 }
-impl PartialEq for GetContactShadowsEffectPaddingRecord3 {
+impl PartialEq for GetContactShadowsEffectPaddingRecord11 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

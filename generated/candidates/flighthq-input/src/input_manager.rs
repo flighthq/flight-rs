@@ -570,11 +570,11 @@ pub fn attach_text_input(
 
 // Source: upstream/packages/input/src/inputManager.ts:258 (sha256:513ffb107d07d9857dd4f46e44b67703d14d913038b19d8fb88c7a6fd2dfbd74)
 #[derive(Clone, Default)]
-struct AttachWheelInputRecord2 {
+struct AttachWheelInputRecord5 {
     __flight_identity: std::sync::Arc<()>,
     passive: bool,
 }
-impl PartialEq for AttachWheelInputRecord2 {
+impl PartialEq for AttachWheelInputRecord5 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -1245,7 +1245,7 @@ pub fn create_input_signals() -> InputSignals {
 
 // Source: upstream/packages/input/src/inputManager.ts:460 (sha256:441cf45f7800fc6117250e0f7ecdd82823a66096c43474e0588da5d3d635799e)
 #[derive(Clone, Default)]
-struct CreateInputStateRecord2 {
+struct CreateInputStateRecord5 {
     __flight_identity: std::sync::Arc<()>,
     axis_values: Vec<(crate::OpaqueHostValue, crate::OpaqueHostValue)>,
     gamepad_buttons_down: Vec<crate::OpaqueHostValue>,
@@ -1256,7 +1256,7 @@ struct CreateInputStateRecord2 {
     keys_down: Vec<crate::OpaqueHostValue>,
     pointer_buttons_down: Vec<(crate::OpaqueHostValue, crate::OpaqueHostValue)>,
 }
-impl PartialEq for CreateInputStateRecord2 {
+impl PartialEq for CreateInputStateRecord5 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -2229,7 +2229,7 @@ static _TEXT_DATA: std::sync::LazyLock<std::sync::Mutex<InputTextData>> =
 
 // Source: upstream/packages/input/src/inputManager.ts:1089 (sha256:6e924387b115045da35088047ded4d9cf1c8158783d45c1589373965f017fda9)
 #[derive(Clone, Default)]
-struct GamepadPollState {
+pub(crate) struct GamepadPollState {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub axes: Vec<(f64, Vec<f64>)>,
@@ -2248,12 +2248,12 @@ static _GAMEPAD_POLL_STATES: std::sync::LazyLock<
 
 // Source: upstream/packages/input/src/inputManager.ts:1096 (sha256:febd3f8de482fabe4ce53f7b882b9e135ca44a9db5ff610eb19c02d6a609556b)
 #[derive(Clone, Default)]
-struct GetOrCreateGamepadPollStateRecord2 {
+struct GetOrCreateGamepadPollStateRecord5 {
     __flight_identity: std::sync::Arc<()>,
     axes: Vec<(crate::OpaqueHostValue, crate::OpaqueHostValue)>,
     buttons: Vec<(crate::OpaqueHostValue, crate::OpaqueHostValue)>,
 }
-impl PartialEq for GetOrCreateGamepadPollStateRecord2 {
+impl PartialEq for GetOrCreateGamepadPollStateRecord5 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

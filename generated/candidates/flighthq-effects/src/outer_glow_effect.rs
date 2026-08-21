@@ -53,10 +53,10 @@ impl PartialEq for FlightPartialRecord2 {
 
 // Source: upstream/packages/effects/src/outerGlowEffect.ts:6 (sha256:9e9b60be5f480a66fef755ca2d03553cc8be4a2e4ef7b2029ffd4663a8a3762c)
 #[derive(Clone, Default)]
-struct CreateOuterGlowEffectRecord3 {
+struct CreateOuterGlowEffectRecord11 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateOuterGlowEffectRecord3 {
+impl PartialEq for CreateOuterGlowEffectRecord11 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

@@ -52,6 +52,57 @@ fn __flight_string_slice(value: &str, start: f64, end: Option<f64>) -> String {
     String::from_utf16_lossy(&value[start..end.max(start)])
 }
 
+#[inline]
+
+fn __flight_parse_float(value: &str) -> f64 {
+    let value = value.trim_start();
+    if value.starts_with("Infinity") || value.starts_with("+Infinity") {
+        return f64::INFINITY;
+    }
+    if value.starts_with("-Infinity") {
+        return f64::NEG_INFINITY;
+    }
+    let bytes = value.as_bytes();
+    let mut index = usize::from(matches!(bytes.first(), Some(b'+' | b'-')));
+    let mut digits = 0_usize;
+    while matches!(bytes.get(index), Some(b'0'..=b'9')) {
+        index += 1;
+        digits += 1;
+    }
+    if bytes.get(index) == Some(&b'.') {
+        index += 1;
+        while matches!(bytes.get(index), Some(b'0'..=b'9')) {
+            index += 1;
+            digits += 1;
+        }
+    }
+    if digits == 0 {
+        return f64::NAN;
+    }
+    let mantissa_end = index;
+    if matches!(bytes.get(index), Some(b'e' | b'E')) {
+        let exponent_start = index;
+        index += 1;
+        if matches!(bytes.get(index), Some(b'+' | b'-')) {
+            index += 1;
+        }
+        let exponent_digits = index;
+        while matches!(bytes.get(index), Some(b'0'..=b'9')) {
+            index += 1;
+        }
+        if index == exponent_digits {
+            index = exponent_start;
+        }
+    }
+    value[..if index > mantissa_end {
+        index
+    } else {
+        mantissa_end
+    }]
+        .parse::<f64>()
+        .unwrap_or(f64::NAN)
+}
+
 #[derive(Clone, Default)]
 pub struct SharedStructuralRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
@@ -65,7 +116,8 @@ impl PartialEq for SharedStructuralRecord1 {
 
 // Source: upstream/packages/path-formats/src/svgPathData.ts:26 (sha256:47740f889abfd44be81e63395000f16345b23c75821a0adc73f58ce86f7c11e3)
 pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
-    let __flight_utf16_d: Vec<u16> = d.encode_utf16().collect();
+    let __flight_utf16_d: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(d.encode_utf16().collect());
     let length = (__flight_utf16_d.len() as f64);
     let pos: std::sync::Arc<std::sync::Mutex<f64>> =
         std::sync::Arc::new(std::sync::Mutex::new(0.0_f64));
@@ -81,10 +133,28 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
     let mut skip_separators: std::sync::Arc<
         std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>,
     > = std::sync::Arc::new(std::sync::Mutex::new(Box::new({
+        let __flight_utf16_d = __flight_utf16_d.clone();
         let mut pos = pos.clone();
         move || -> () {
             while ((*pos.lock().unwrap()).clone() < length) {
-                let c = (d.char_code_at)((*pos.lock().unwrap()).clone());
+                let c = {
+                    let __flight_units: &[u16] = &__flight_utf16_d;
+                    let __flight_raw_index = (*pos.lock().unwrap()).clone();
+                    let __flight_index = if __flight_raw_index.is_nan() {
+                        0_i64
+                    } else if __flight_raw_index.is_finite() {
+                        __flight_raw_index.trunc() as i64
+                    } else {
+                        -1_i64
+                    };
+                    if __flight_index < 0 {
+                        f64::NAN
+                    } else {
+                        __flight_units
+                            .get(__flight_index as usize)
+                            .map_or(f64::NAN, |unit| f64::from(*unit))
+                    }
+                };
                 if (((((c == 32.0_f64) || (c == 9.0_f64)) || (c == 10.0_f64)) || (c == 13.0_f64))
                     || (c == 12.0_f64))
                     || (c == 44.0_f64)
@@ -103,6 +173,7 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
     let mut read_number: std::sync::Arc<
         std::sync::Mutex<Box<dyn FnMut() -> Option<f64> + Send + 'static>>,
     > = std::sync::Arc::new(std::sync::Mutex::new(Box::new({
+        let __flight_utf16_d = __flight_utf16_d.clone();
         let mut pos = pos.clone();
         let skip_separators = skip_separators.clone();
         move || -> Option<f64> {
@@ -162,7 +233,7 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                     } else {
                         String::new()
                     }
-                } >= "0"))
+                } >= "0".to_owned()))
                 && ({
                     let __flight_units: &[u16] = &__flight_utf16_d;
                     let __flight_raw_index = (*pos.lock().unwrap()).clone();
@@ -176,7 +247,7 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                     } else {
                         String::new()
                     }
-                } <= "9")
+                } <= "9".to_owned())
             {
                 {
                     (*pos.lock().unwrap()) += 1.0;
@@ -218,7 +289,7 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                         } else {
                             String::new()
                         }
-                    } >= "0"))
+                    } >= "0".to_owned()))
                     && ({
                         let __flight_units: &[u16] = &__flight_utf16_d;
                         let __flight_raw_index = (*pos.lock().unwrap()).clone();
@@ -232,7 +303,7 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                         } else {
                             String::new()
                         }
-                    } <= "9")
+                    } <= "9".to_owned())
                 {
                     {
                         (*pos.lock().unwrap()) += 1.0;
@@ -332,7 +403,7 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                         } else {
                             String::new()
                         }
-                    } >= "0"))
+                    } >= "0".to_owned()))
                     && ({
                         let __flight_units: &[u16] = &__flight_utf16_d;
                         let __flight_raw_index = (*pos.lock().unwrap()).clone();
@@ -346,7 +417,7 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                         } else {
                             String::new()
                         }
-                    } <= "9")
+                    } <= "9".to_owned())
                 {
                     {
                         (*pos.lock().unwrap()) += 1.0;
@@ -358,11 +429,9 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                     (*pos.lock().unwrap()) = exp_start;
                 }
             }
-            let value = (number.parse_float)(__flight_string_slice(
-                &(d),
-                start,
-                Some((*pos.lock().unwrap()).clone()),
-            ));
+            let value = __flight_parse_float(
+                &(__flight_string_slice(&(d), start, Some((*pos.lock().unwrap()).clone()))),
+            );
             return if (value).is_finite() {
                 Some(value)
             } else {
@@ -374,6 +443,7 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
     let mut read_flag: std::sync::Arc<
         std::sync::Mutex<Box<dyn FnMut() -> Option<f64> + Send + 'static>>,
     > = std::sync::Arc::new(std::sync::Mutex::new(Box::new({
+        let __flight_utf16_d = __flight_utf16_d.clone();
         let mut pos = pos.clone();
         let skip_separators = skip_separators.clone();
         move || -> Option<f64> {
@@ -501,7 +571,7 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                     break;
                 }
             }
-            let relative = ((active).clone() >= "a");
+            let relative = ((active).clone() >= "a".to_owned());
             let upper = if relative {
                 ((active).clone()).to_uppercase()
             } else {
@@ -945,48 +1015,151 @@ pub fn format_svg_path_data(path: &Path, options: Option<SharedStructuralRecord1
     let parts: std::sync::Arc<std::sync::Mutex<Vec<String>>> =
         std::sync::Arc::new(std::sync::Mutex::new(vec![]));
     for_each_path_segment(path, &mut |segment: PathSegment| -> () {
-        if ((segment.kind).clone() == "moveTo") {
+        if matches!(&(segment), flighthq_types::PathSegment::A(_)) {
             (*parts.lock().unwrap()).push(format!(
                 "M{} {}",
-                format_svg_number((segment.x).unwrap(), Some((precision).clone().unwrap())),
-                format_svg_number((segment.y).unwrap(), Some((precision).clone().unwrap()))
+                format_svg_number(
+                    (match (segment).clone() {
+                        flighthq_types::PathSegment::A(value) => value,
+                        flighthq_types::PathSegment::B(_) =>
+                            panic!("TypeScript union narrowing failed"),
+                    })
+                    .x,
+                    Some((precision).clone().unwrap())
+                ),
+                format_svg_number(
+                    (match (segment).clone() {
+                        flighthq_types::PathSegment::A(value) => value,
+                        flighthq_types::PathSegment::B(_) =>
+                            panic!("TypeScript union narrowing failed"),
+                    })
+                    .y,
+                    Some((precision).clone().unwrap())
+                )
             ));
         } else {
-            if ((segment.kind).clone() == "lineTo") {
+            if matches!(
+                &(segment),
+                crate::FlightUnion2::B(crate::FlightUnion2::A(_))
+            ) {
                 (*parts.lock().unwrap()).push(format!(
                     "L{} {}",
-                    format_svg_number((segment.x).unwrap(), Some((precision).clone().unwrap())),
-                    format_svg_number((segment.y).unwrap(), Some((precision).clone().unwrap()))
+                    format_svg_number(
+                        (match (segment).clone() {
+                            flighthq_types::PathSegment::A(_) =>
+                                panic!("TypeScript union narrowing failed"),
+                            flighthq_types::PathSegment::B(value) => match value {
+                                crate::FlightUnion2::A(value) => value,
+                                crate::FlightUnion2::B(_) =>
+                                    panic!("TypeScript union narrowing failed"),
+                            },
+                        })
+                        .x,
+                        Some((precision).clone().unwrap())
+                    ),
+                    format_svg_number(
+                        (match (segment).clone() {
+                            flighthq_types::PathSegment::A(_) =>
+                                panic!("TypeScript union narrowing failed"),
+                            flighthq_types::PathSegment::B(value) => match value {
+                                crate::FlightUnion2::A(value) => value,
+                                crate::FlightUnion2::B(_) =>
+                                    panic!("TypeScript union narrowing failed"),
+                            },
+                        })
+                        .y,
+                        Some((precision).clone().unwrap())
+                    )
                 ));
             } else {
-                if ((segment.kind).clone() == "curveTo") {
+                if matches!(
+                    &(segment),
+                    crate::FlightUnion2::B(crate::FlightUnion2::B(crate::FlightUnion2::A(_)))
+                ) {
                     (*parts.lock().unwrap()).push(format!(
                         "{}{}",
                         format!(
                             "Q{} {} ",
                             format_svg_number(
-                                (segment.control_x).unwrap(),
+                                (match (segment).clone() {
+                                    flighthq_types::PathSegment::A(_) =>
+                                        panic!("TypeScript union narrowing failed"),
+                                    flighthq_types::PathSegment::B(value) => match value {
+                                        crate::FlightUnion2::A(_) =>
+                                            panic!("TypeScript union narrowing failed"),
+                                        crate::FlightUnion2::B(value) => match value {
+                                            crate::FlightUnion2::A(value) => value,
+                                            crate::FlightUnion2::B(_) =>
+                                                panic!("TypeScript union narrowing failed"),
+                                        },
+                                    },
+                                })
+                                .control_x,
                                 Some((precision).clone().unwrap())
                             ),
                             format_svg_number(
-                                (segment.control_y).unwrap(),
+                                (match (segment).clone() {
+                                    flighthq_types::PathSegment::A(_) =>
+                                        panic!("TypeScript union narrowing failed"),
+                                    flighthq_types::PathSegment::B(value) => match value {
+                                        crate::FlightUnion2::A(_) =>
+                                            panic!("TypeScript union narrowing failed"),
+                                        crate::FlightUnion2::B(value) => match value {
+                                            crate::FlightUnion2::A(value) => value,
+                                            crate::FlightUnion2::B(_) =>
+                                                panic!("TypeScript union narrowing failed"),
+                                        },
+                                    },
+                                })
+                                .control_y,
                                 Some((precision).clone().unwrap())
                             )
                         ),
                         format!(
                             "{} {}",
                             format_svg_number(
-                                (segment.x).unwrap(),
+                                (match (segment).clone() {
+                                    flighthq_types::PathSegment::A(_) =>
+                                        panic!("TypeScript union narrowing failed"),
+                                    flighthq_types::PathSegment::B(value) => match value {
+                                        crate::FlightUnion2::A(_) =>
+                                            panic!("TypeScript union narrowing failed"),
+                                        crate::FlightUnion2::B(value) => match value {
+                                            crate::FlightUnion2::A(value) => value,
+                                            crate::FlightUnion2::B(_) =>
+                                                panic!("TypeScript union narrowing failed"),
+                                        },
+                                    },
+                                })
+                                .x,
                                 Some((precision).clone().unwrap())
                             ),
                             format_svg_number(
-                                (segment.y).unwrap(),
+                                (match (segment).clone() {
+                                    flighthq_types::PathSegment::A(_) =>
+                                        panic!("TypeScript union narrowing failed"),
+                                    flighthq_types::PathSegment::B(value) => match value {
+                                        crate::FlightUnion2::A(_) =>
+                                            panic!("TypeScript union narrowing failed"),
+                                        crate::FlightUnion2::B(value) => match value {
+                                            crate::FlightUnion2::A(value) => value,
+                                            crate::FlightUnion2::B(_) =>
+                                                panic!("TypeScript union narrowing failed"),
+                                        },
+                                    },
+                                })
+                                .y,
                                 Some((precision).clone().unwrap())
                             )
                         )
                     ));
                 } else {
-                    if ((segment.kind).clone() == "cubicCurveTo") {
+                    if matches!(
+                        &(segment),
+                        crate::FlightUnion2::B(crate::FlightUnion2::B(crate::FlightUnion2::B(
+                            crate::FlightUnion2::A(_)
+                        )))
+                    ) {
                         (*parts.lock().unwrap()).push(format!(
                             "{}{}",
                             format!(
@@ -994,22 +1167,94 @@ pub fn format_svg_path_data(path: &Path, options: Option<SharedStructuralRecord1
                                 format!(
                                     "C{} {} ",
                                     format_svg_number(
-                                        (segment.control1_x).unwrap(),
+                                        (match (segment).clone() {
+                                            flighthq_types::PathSegment::A(_) =>
+                                                panic!("TypeScript union narrowing failed"),
+                                            flighthq_types::PathSegment::B(value) => match value {
+                                                crate::FlightUnion2::A(_) =>
+                                                    panic!("TypeScript union narrowing failed"),
+                                                crate::FlightUnion2::B(value) => match value {
+                                                    crate::FlightUnion2::A(_) =>
+                                                        panic!("TypeScript union narrowing failed"),
+                                                    crate::FlightUnion2::B(value) => match value {
+                                                        crate::FlightUnion2::A(value) => value,
+                                                        crate::FlightUnion2::B(_) => panic!(
+                                                            "TypeScript union narrowing failed"
+                                                        ),
+                                                    },
+                                                },
+                                            },
+                                        })
+                                        .control1_x,
                                         Some((precision).clone().unwrap())
                                     ),
                                     format_svg_number(
-                                        (segment.control1_y).unwrap(),
+                                        (match (segment).clone() {
+                                            flighthq_types::PathSegment::A(_) =>
+                                                panic!("TypeScript union narrowing failed"),
+                                            flighthq_types::PathSegment::B(value) => match value {
+                                                crate::FlightUnion2::A(_) =>
+                                                    panic!("TypeScript union narrowing failed"),
+                                                crate::FlightUnion2::B(value) => match value {
+                                                    crate::FlightUnion2::A(_) =>
+                                                        panic!("TypeScript union narrowing failed"),
+                                                    crate::FlightUnion2::B(value) => match value {
+                                                        crate::FlightUnion2::A(value) => value,
+                                                        crate::FlightUnion2::B(_) => panic!(
+                                                            "TypeScript union narrowing failed"
+                                                        ),
+                                                    },
+                                                },
+                                            },
+                                        })
+                                        .control1_y,
                                         Some((precision).clone().unwrap())
                                     )
                                 ),
                                 format!(
                                     "{} {} ",
                                     format_svg_number(
-                                        (segment.control2_x).unwrap(),
+                                        (match (segment).clone() {
+                                            flighthq_types::PathSegment::A(_) =>
+                                                panic!("TypeScript union narrowing failed"),
+                                            flighthq_types::PathSegment::B(value) => match value {
+                                                crate::FlightUnion2::A(_) =>
+                                                    panic!("TypeScript union narrowing failed"),
+                                                crate::FlightUnion2::B(value) => match value {
+                                                    crate::FlightUnion2::A(_) =>
+                                                        panic!("TypeScript union narrowing failed"),
+                                                    crate::FlightUnion2::B(value) => match value {
+                                                        crate::FlightUnion2::A(value) => value,
+                                                        crate::FlightUnion2::B(_) => panic!(
+                                                            "TypeScript union narrowing failed"
+                                                        ),
+                                                    },
+                                                },
+                                            },
+                                        })
+                                        .control2_x,
                                         Some((precision).clone().unwrap())
                                     ),
                                     format_svg_number(
-                                        (segment.control2_y).unwrap(),
+                                        (match (segment).clone() {
+                                            flighthq_types::PathSegment::A(_) =>
+                                                panic!("TypeScript union narrowing failed"),
+                                            flighthq_types::PathSegment::B(value) => match value {
+                                                crate::FlightUnion2::A(_) =>
+                                                    panic!("TypeScript union narrowing failed"),
+                                                crate::FlightUnion2::B(value) => match value {
+                                                    crate::FlightUnion2::A(_) =>
+                                                        panic!("TypeScript union narrowing failed"),
+                                                    crate::FlightUnion2::B(value) => match value {
+                                                        crate::FlightUnion2::A(value) => value,
+                                                        crate::FlightUnion2::B(_) => panic!(
+                                                            "TypeScript union narrowing failed"
+                                                        ),
+                                                    },
+                                                },
+                                            },
+                                        })
+                                        .control2_y,
                                         Some((precision).clone().unwrap())
                                     )
                                 )
@@ -1017,17 +1262,75 @@ pub fn format_svg_path_data(path: &Path, options: Option<SharedStructuralRecord1
                             format!(
                                 "{} {}",
                                 format_svg_number(
-                                    (segment.x).unwrap(),
+                                    (match (segment).clone() {
+                                        flighthq_types::PathSegment::A(_) =>
+                                            panic!("TypeScript union narrowing failed"),
+                                        flighthq_types::PathSegment::B(value) => match value {
+                                            crate::FlightUnion2::A(_) =>
+                                                panic!("TypeScript union narrowing failed"),
+                                            crate::FlightUnion2::B(value) => match value {
+                                                crate::FlightUnion2::A(_) =>
+                                                    panic!("TypeScript union narrowing failed"),
+                                                crate::FlightUnion2::B(value) => match value {
+                                                    crate::FlightUnion2::A(value) => value,
+                                                    crate::FlightUnion2::B(_) =>
+                                                        panic!("TypeScript union narrowing failed"),
+                                                },
+                                            },
+                                        },
+                                    })
+                                    .x,
                                     Some((precision).clone().unwrap())
                                 ),
                                 format_svg_number(
-                                    (segment.y).unwrap(),
+                                    (match (segment).clone() {
+                                        flighthq_types::PathSegment::A(_) =>
+                                            panic!("TypeScript union narrowing failed"),
+                                        flighthq_types::PathSegment::B(value) => match value {
+                                            crate::FlightUnion2::A(_) =>
+                                                panic!("TypeScript union narrowing failed"),
+                                            crate::FlightUnion2::B(value) => match value {
+                                                crate::FlightUnion2::A(_) =>
+                                                    panic!("TypeScript union narrowing failed"),
+                                                crate::FlightUnion2::B(value) => match value {
+                                                    crate::FlightUnion2::A(value) => value,
+                                                    crate::FlightUnion2::B(_) =>
+                                                        panic!("TypeScript union narrowing failed"),
+                                                },
+                                            },
+                                        },
+                                    })
+                                    .y,
                                     Some((precision).clone().unwrap())
                                 )
                             )
                         ));
                     } else {
-                        if ((segment.kind).clone() == "close") {
+                        if (((match (segment).clone() {
+                            flighthq_types::PathSegment::A(_) => {
+                                panic!("TypeScript union narrowing failed")
+                            }
+                            flighthq_types::PathSegment::B(value) => match value {
+                                crate::FlightUnion2::A(_) => {
+                                    panic!("TypeScript union narrowing failed")
+                                }
+                                crate::FlightUnion2::B(value) => match value {
+                                    crate::FlightUnion2::A(_) => {
+                                        panic!("TypeScript union narrowing failed")
+                                    }
+                                    crate::FlightUnion2::B(value) => match value {
+                                        crate::FlightUnion2::A(_) => {
+                                            panic!("TypeScript union narrowing failed")
+                                        }
+                                        crate::FlightUnion2::B(value) => value,
+                                    },
+                                },
+                            },
+                        })
+                        .kind)
+                            .clone()
+                            == "close")
+                        {
                             (*parts.lock().unwrap()).push("Z".to_owned());
                         }
                     }

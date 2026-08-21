@@ -8,6 +8,41 @@
 
 use crate::ViewportAlign;
 
+#[derive(Clone, Default)]
+pub struct GridLayoutTrackRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub fraction: f64,
+    pub kind: String,
+}
+impl PartialEq for GridLayoutTrackRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct GridLayoutTrackRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub kind: String,
+    pub size: f64,
+}
+impl PartialEq for GridLayoutTrackRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct GridLayoutTrackRecord3 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub kind: String,
+}
+impl PartialEq for GridLayoutTrackRecord3 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 // Source: upstream/packages/types/src/Layout.ts:3 (sha256:8fa4afdbda1b61e66bd23676c0935757f5f62bed41b55ab9f2973c81ebab842a)
 pub const ANCHOR_LAYOUT_KIND: &'static str = "AnchorLayout";
 
@@ -86,19 +121,10 @@ impl PartialEq for FlexLayoutItemStyle {
 }
 
 // Source: upstream/packages/types/src/Layout.ts:43 (sha256:bd4c212d95fae6345541d2b9cf0d215ae231bb0064585c3057e7332e7042a5b9)
-#[derive(Clone, Default)]
-pub struct GridLayoutTrack {
-    #[doc(hidden)]
-    pub __flight_identity: std::sync::Arc<()>,
-    pub kind: String,
-    pub size: Option<f64>,
-    pub fraction: Option<f64>,
-}
-impl PartialEq for GridLayoutTrack {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
+pub type GridLayoutTrack = crate::FlightUnion2<
+    GridLayoutTrackRecord3,
+    crate::FlightUnion2<GridLayoutTrackRecord2, GridLayoutTrackRecord1>,
+>;
 
 // Source: upstream/packages/types/src/Layout.ts:48 (sha256:78050e9ba3748198db8d9131d8715a72bf672fea63c11235c39e823659d4cdf7)
 #[derive(Clone, Default)]

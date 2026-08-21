@@ -185,7 +185,19 @@ fn accumulate_forces(
         while (f < (forces.len() as f64)) {
             let force = forces[f as usize].clone();
             {
-                let __switch_value = force.kind;
+                let __switch_value = match &((force).clone()) {
+                    crate::FlightUnion2::A(value) => (value).kind.clone(),
+                    crate::FlightUnion2::B(value) => match value {
+                        crate::FlightUnion2::A(value) => (value).kind.clone(),
+                        crate::FlightUnion2::B(value) => match value {
+                            crate::FlightUnion2::A(value) => (value).kind.clone(),
+                            crate::FlightUnion2::B(value) => match value {
+                                crate::FlightUnion2::A(value) => (value).kind.clone(),
+                                crate::FlightUnion2::B(value) => (value).kind.clone(),
+                            },
+                        },
+                    },
+                };
                 let __flight_case = if __switch_value == "WindForce" {
                     0_usize
                 } else if __switch_value == "DragForce" {

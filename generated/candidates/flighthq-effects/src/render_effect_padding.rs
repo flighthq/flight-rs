@@ -106,15 +106,7 @@ pub fn explain_render_effect_padding(
             }
             continue;
         }
-        let padding = {
-            let __flight_callback = (entry.as_ref().unwrap().value)
-                .clone()
-                .as_ref()
-                .unwrap()
-                .clone();
-            let __flight_result = __flight_callback.lock().unwrap()(effect);
-            __flight_result
-        };
+        let padding = (entry.as_ref().unwrap().value)(effect);
         bottom += sanitize_padding(padding.bottom);
         left += sanitize_padding(padding.left);
         right += sanitize_padding(padding.right);

@@ -1744,7 +1744,7 @@ fn set_empty_rectangle(out: &mut Rectangle) -> () {
 
 // Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:252 (sha256:addde9091e717fe715e2337f95e4c64b535673b79412c3fccda76136eb05f90a)
 #[derive(Clone, Default)]
-struct BitmapTextGlyph {
+pub(crate) struct BitmapTextGlyph {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub codepoint: f64,
@@ -1759,7 +1759,7 @@ impl PartialEq for BitmapTextGlyph {
 
 // Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:260 (sha256:aa105752080eae23030ab6b7e7cb099c5772109d43c47f1c571e606979dbaa1e)
 #[derive(Clone, Default)]
-struct BitmapTextPageContext {
+pub(crate) struct BitmapTextPageContext {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub page: BitmapTextPage,
@@ -1773,7 +1773,7 @@ impl PartialEq for BitmapTextPageContext {
 
 // Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:267 (sha256:e16d053098a238a17b8aff009c25ee0710c6f3819a3a825092cf06b4ed9783c0)
 #[derive(Clone, Default)]
-struct BitmapTextLine {
+pub(crate) struct BitmapTextLine {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub gaps: Vec<f64>,
@@ -1789,7 +1789,7 @@ impl PartialEq for BitmapTextLine {
 
 // Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:275 (sha256:2dafecf5ba6b88df3930aa9c085040985a8191db73398e385aacc144cc6698c4)
 #[derive(Clone, Default)]
-struct BitmapTextToken {
+pub(crate) struct BitmapTextToken {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub gap: f64,
@@ -1803,7 +1803,7 @@ impl PartialEq for BitmapTextToken {
 
 // Source: upstream/packages/bitmaptext/src/updateBitmapText.ts:281 (sha256:3401bd7270b995d95bd0883e9b0104675fac441bbb5d1b368e2ff25dc110b1b9)
 #[derive(Clone, Default)]
-struct BitmapTextWord {
+pub(crate) struct BitmapTextWord {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub glyphs: Vec<BitmapTextGlyph>,

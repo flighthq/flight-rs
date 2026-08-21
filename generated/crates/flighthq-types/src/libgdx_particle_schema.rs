@@ -40,10 +40,23 @@ impl PartialEq for LibgdxRangeValue {
 
 // Source: upstream/packages/types/src/LibgdxParticleSchema.ts:29 (sha256:44841875728358dde010fbe1aa767543f369c73224a17296a46ad138ed712dcc)
 #[derive(Clone, Default)]
-pub struct LibgdxParticleDocumentRecord2 {
+pub struct LibgdxParticleDocumentRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub colors: Vec<String>,
     pub timeline: Vec<f64>,
+}
+impl PartialEq for LibgdxParticleDocumentRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct LibgdxParticleDocumentRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub shape: String,
+    pub edges: bool,
+    pub side: String,
 }
 impl PartialEq for LibgdxParticleDocumentRecord2 {
     fn eq(&self, other: &Self) -> bool {
@@ -54,19 +67,6 @@ impl PartialEq for LibgdxParticleDocumentRecord2 {
 #[derive(Clone, Default)]
 pub struct LibgdxParticleDocumentRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub shape: String,
-    pub edges: bool,
-    pub side: String,
-}
-impl PartialEq for LibgdxParticleDocumentRecord3 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct LibgdxParticleDocumentRecord4 {
-    pub __flight_identity: std::sync::Arc<()>,
     pub low_min: f64,
     pub low_max: f64,
     pub high_min: f64,
@@ -76,7 +76,7 @@ pub struct LibgdxParticleDocumentRecord4 {
     pub timeline: Vec<f64>,
     pub active: bool,
 }
-impl PartialEq for LibgdxParticleDocumentRecord4 {
+impl PartialEq for LibgdxParticleDocumentRecord3 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -91,23 +91,23 @@ pub struct LibgdxParticleDocument {
     pub max_particle_count: f64,
     pub additive: bool,
     pub premultiplied_alpha: bool,
-    pub delay: LibgdxParticleDocumentRecord4,
+    pub delay: LibgdxParticleDocumentRecord3,
     pub duration: LibgdxRangeValue,
     pub emission: LibgdxRangeValue,
     pub life: LibgdxRangeValue,
-    pub life_offset: LibgdxParticleDocumentRecord4,
-    pub x_offset: LibgdxParticleDocumentRecord4,
-    pub y_offset: LibgdxParticleDocumentRecord4,
-    pub spawn_shape: LibgdxParticleDocumentRecord3,
+    pub life_offset: LibgdxParticleDocumentRecord3,
+    pub x_offset: LibgdxParticleDocumentRecord3,
+    pub y_offset: LibgdxParticleDocumentRecord3,
+    pub spawn_shape: LibgdxParticleDocumentRecord2,
     pub spawn_width: LibgdxRangeValue,
     pub spawn_height: LibgdxRangeValue,
     pub scale: LibgdxRangeValue,
-    pub velocity: LibgdxParticleDocumentRecord4,
-    pub angle: LibgdxParticleDocumentRecord4,
-    pub rotation: LibgdxParticleDocumentRecord4,
-    pub wind: LibgdxParticleDocumentRecord4,
-    pub gravity: LibgdxParticleDocumentRecord4,
-    pub tint: LibgdxParticleDocumentRecord2,
+    pub velocity: LibgdxParticleDocumentRecord3,
+    pub angle: LibgdxParticleDocumentRecord3,
+    pub rotation: LibgdxParticleDocumentRecord3,
+    pub wind: LibgdxParticleDocumentRecord3,
+    pub gravity: LibgdxParticleDocumentRecord3,
+    pub tint: LibgdxParticleDocumentRecord1,
     pub transparency: LibgdxRangeValue,
     pub image_count: f64,
     pub image_path: String,

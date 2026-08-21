@@ -1,0 +1,15 @@
+# @generated candidate crate; do not edit.
+[package]
+name = "flighthq-registry-codegen"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+flighthq-registry-catalog = { path = "../flighthq-registry-catalog" }
+flighthq-runtime = { path = "../../crates/flighthq-runtime" }
+flighthq-types = { path = "../../crates/flighthq-types" }

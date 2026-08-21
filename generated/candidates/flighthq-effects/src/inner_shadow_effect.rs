@@ -55,10 +55,10 @@ impl PartialEq for FlightPartialRecord2 {
 
 // Source: upstream/packages/effects/src/innerShadowEffect.ts:6 (sha256:0fb9b1b51145317d567bd88695272e999cc3a21df22ed8d3c1868eb3615d8fb7)
 #[derive(Clone, Default)]
-struct CreateInnerShadowEffectRecord3 {
+struct CreateInnerShadowEffectRecord11 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateInnerShadowEffectRecord3 {
+impl PartialEq for CreateInnerShadowEffectRecord11 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

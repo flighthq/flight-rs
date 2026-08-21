@@ -24,7 +24,8 @@ fn __flight_js_to_i32(value: f64) -> i32 {
 
 // Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:22 (sha256:ff3bb02a6da9b247009d289bc8ab14be1f5a42e0893d6ed6131852f8c934690a)
 pub fn resolve_bidi_levels(text: String, base_direction: BidiDirection) -> Vec<u8> {
-    let __flight_utf16_text: Vec<u16> = text.encode_utf16().collect();
+    let __flight_utf16_text: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(text.encode_utf16().collect());
     let length = (__flight_utf16_text.len() as f64);
     let mut levels: Vec<u8> = vec![0_u8; (length) as usize];
     if (length == 0.0_f64) {

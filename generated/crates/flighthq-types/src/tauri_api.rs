@@ -728,9 +728,20 @@ pub type TauriUnlisten = std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () +
 
 // Source: upstream/packages/types/src/TauriApi.ts:274 (sha256:e14778aebce9fedd52ae029a54e8939101af6bbbe5a6062b86158b5a9bb1a1e5)
 #[derive(Clone, Default)]
-pub struct TauriWindowRecord2 {
+pub struct TauriWindowRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub payload: TauriLogicalSizeLike,
+}
+impl PartialEq for TauriWindowRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct TauriWindowRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub payload: TauriPhysicalPositionLike,
 }
 impl PartialEq for TauriWindowRecord2 {
     fn eq(&self, other: &Self) -> bool {
@@ -741,20 +752,9 @@ impl PartialEq for TauriWindowRecord2 {
 #[derive(Clone, Default)]
 pub struct TauriWindowRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub payload: TauriPhysicalPositionLike,
-}
-impl PartialEq for TauriWindowRecord3 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-pub struct TauriWindowRecord4 {
-    pub __flight_identity: std::sync::Arc<()>,
     pub payload: bool,
 }
-impl PartialEq for TauriWindowRecord4 {
+impl PartialEq for TauriWindowRecord3 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -800,7 +800,7 @@ pub struct TauriWindow {
                 dyn FnMut(
                         std::sync::Arc<
                             std::sync::Mutex<
-                                Box<dyn FnMut(TauriWindowRecord4) -> () + Send + 'static>,
+                                Box<dyn FnMut(TauriWindowRecord3) -> () + Send + 'static>,
                             >,
                         >,
                     ) -> crate::FlightTask<TauriUnlisten>
@@ -815,7 +815,7 @@ pub struct TauriWindow {
                 dyn FnMut(
                         std::sync::Arc<
                             std::sync::Mutex<
-                                Box<dyn FnMut(TauriWindowRecord3) -> () + Send + 'static>,
+                                Box<dyn FnMut(TauriWindowRecord2) -> () + Send + 'static>,
                             >,
                         >,
                     ) -> crate::FlightTask<TauriUnlisten>
@@ -830,7 +830,7 @@ pub struct TauriWindow {
                 dyn FnMut(
                         std::sync::Arc<
                             std::sync::Mutex<
-                                Box<dyn FnMut(TauriWindowRecord2) -> () + Send + 'static>,
+                                Box<dyn FnMut(TauriWindowRecord1) -> () + Send + 'static>,
                             >,
                         >,
                     ) -> crate::FlightTask<TauriUnlisten>

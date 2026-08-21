@@ -27,12 +27,14 @@ pub fn close_socket(socket: &mut Socket, code: Option<f64>, reason: Option<Strin
         {
             let __flight_callback = (*_GUARD.lock().unwrap()).clone();
             __flight_callback.as_ref().map(|callback| {
-                callback.lock().unwrap()(SocketGuardNotice {
-                    __flight_identity: std::sync::Arc::new(()),
-                    operation: "closeSocket".to_owned(),
-                    reason: "disposed".to_owned(),
-                    socket: (*socket).clone(),
-                })
+                callback.lock().unwrap()(flighthq_types::SocketGuardNotice::B(
+                    flighthq_types::SocketGuardNoticeRecord1 {
+                        __flight_identity: std::sync::Arc::new(()),
+                        operation: "closeSocket".to_owned(),
+                        reason: "disposed".to_owned(),
+                        socket: (*socket).clone(),
+                    },
+                ))
             })
         };
         return;
@@ -82,12 +84,14 @@ pub fn create_socket(options: &SocketOptions) -> Socket {
         {
             let __flight_callback = (*_GUARD.lock().unwrap()).clone();
             __flight_callback.as_ref().map(|callback| {
-                callback.lock().unwrap()(SocketGuardNotice {
-                    __flight_identity: std::sync::Arc::new(()),
-                    operation: "createSocket".to_owned(),
-                    reason: "no-connection".to_owned(),
-                    socket: (socket).clone(),
-                })
+                callback.lock().unwrap()(flighthq_types::SocketGuardNotice::A(
+                    flighthq_types::SocketGuardNoticeRecord2 {
+                        __flight_identity: std::sync::Arc::new(()),
+                        operation: "createSocket".to_owned(),
+                        reason: "no-connection".to_owned(),
+                        socket: (socket).clone(),
+                    },
+                ))
             })
         };
     }
@@ -135,12 +139,14 @@ pub fn enable_socket_signals(socket: &mut Socket) -> SocketSignals {
         {
             let __flight_callback = (*_GUARD.lock().unwrap()).clone();
             __flight_callback.as_ref().map(|callback| {
-                callback.lock().unwrap()(SocketGuardNotice {
-                    __flight_identity: std::sync::Arc::new(()),
-                    operation: "enableSocketSignals".to_owned(),
-                    reason: "disposed".to_owned(),
-                    socket: (*socket).clone(),
-                })
+                callback.lock().unwrap()(flighthq_types::SocketGuardNotice::B(
+                    flighthq_types::SocketGuardNoticeRecord1 {
+                        __flight_identity: std::sync::Arc::new(()),
+                        operation: "enableSocketSignals".to_owned(),
+                        reason: "disposed".to_owned(),
+                        socket: (*socket).clone(),
+                    },
+                ))
             })
         };
     }
@@ -175,12 +181,14 @@ pub fn send_socket_message(socket: &Socket, data: &crate::FlightUnion2<String, V
         {
             let __flight_callback = (*_GUARD.lock().unwrap()).clone();
             __flight_callback.as_ref().map(|callback| {
-                callback.lock().unwrap()(SocketGuardNotice {
-                    __flight_identity: std::sync::Arc::new(()),
-                    operation: "sendSocketMessage".to_owned(),
-                    reason: "disposed".to_owned(),
-                    socket: (*socket).clone(),
-                })
+                callback.lock().unwrap()(flighthq_types::SocketGuardNotice::B(
+                    flighthq_types::SocketGuardNoticeRecord1 {
+                        __flight_identity: std::sync::Arc::new(()),
+                        operation: "sendSocketMessage".to_owned(),
+                        reason: "disposed".to_owned(),
+                        socket: (*socket).clone(),
+                    },
+                ))
             })
         };
         return false;
@@ -292,12 +300,12 @@ fn make_socket_event_sink(mut runtime: SocketRuntime) -> SocketEventSink {
 
 // Source: upstream/packages/socket/src/socket.ts:193 (sha256:bc19cc2f23e8031bc1e2836d35411297f051b7dc7e93b977dd02c04518edc230)
 #[derive(Clone, Default)]
-struct ToSocketMessageRecord1 {
+struct ToSocketMessageRecord6 {
     __flight_identity: std::sync::Arc<()>,
     data: Vec<u8>,
     binary: bool,
 }
-impl PartialEq for ToSocketMessageRecord1 {
+impl PartialEq for ToSocketMessageRecord6 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

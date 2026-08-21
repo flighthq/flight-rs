@@ -49,10 +49,10 @@ impl PartialEq for FlightPartialRecord2 {
 
 // Source: upstream/packages/effects/src/outlineEffect.ts:5 (sha256:f7d12c4a36e281c4b105db315466a95bd7146bfe1235db79e3ac2ac54022e1b8)
 #[derive(Clone, Default)]
-struct CreateOutlineEffectRecord3 {
+struct CreateOutlineEffectRecord11 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateOutlineEffectRecord3 {
+impl PartialEq for CreateOutlineEffectRecord11 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

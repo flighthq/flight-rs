@@ -197,7 +197,7 @@ pub fn stop_video_channel(channel: &mut VideoChannel) -> () {
 
 // Source: upstream/packages/media/src/videoChannel.ts:108 (sha256:8b7c8ce2bf6e9dca60029213cfa615512ec47de22e65b60ae1d96abccf92725f)
 #[derive(Clone)]
-struct VideoChannelRuntime {
+pub(crate) struct VideoChannelRuntime {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub loops_remaining: f64,

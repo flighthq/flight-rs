@@ -219,10 +219,10 @@ pub fn create_standard_pbr_material(opts: Option<FlightPartialRecord2>) -> Stand
 
 // Source: upstream/packages/materials/src/pbrMaterials.ts:117 (sha256:ffc83ec68e9fe692c7c4c9719572cc5fa67771f90a9fe42f2b02caf9f0584bcb)
 #[derive(Clone, Default)]
-struct CreateStandardPbrMaterialPropertiesRecord4 {
+struct CreateStandardPbrMaterialPropertiesRecord7 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateStandardPbrMaterialPropertiesRecord4 {
+impl PartialEq for CreateStandardPbrMaterialPropertiesRecord7 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

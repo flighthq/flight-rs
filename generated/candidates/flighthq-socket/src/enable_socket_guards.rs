@@ -36,20 +36,37 @@ pub fn enable_socket_guards() -> () {
 
 // Source: upstream/packages/socket/src/enableSocketGuards.ts:23 (sha256:3ee732e925aa905b688a9cade13522c71ef303203a234169fc9bc877cdf11330)
 fn warn_on_socket_misuse(notice: &SocketGuardNotice) -> () {
-    let url = (notice.socket.url).clone();
-    let message = if ((notice.reason).clone() == "no-connection") {
+    let url = ((match &((*notice).clone()) {
+        crate::FlightUnion2::A(value) => (value).socket.clone(),
+        crate::FlightUnion2::B(value) => (value).socket.clone(),
+    })
+    .url)
+        .clone();
+    let message = if matches!(&(notice), flighthq_types::SocketGuardNotice::A(_)) {
         "createSocket: active backend returned no connection — call setSocketBackend(...) with a backend that supports this transport".to_owned()
     } else {
         format!(
             "{}: socket is already disposed — call createSocket(...) to create a new socket",
-            (notice.operation).clone()
+            ((match (*notice).clone() {
+                flighthq_types::SocketGuardNotice::A(_) =>
+                    panic!("TypeScript union narrowing failed"),
+                flighthq_types::SocketGuardNotice::B(value) => value,
+            })
+            .operation)
+                .clone()
         )
     };
     log_once(
         format!(
             "socket:{}:{}",
-            (notice.operation).clone(),
-            (notice.reason).clone()
+            match &((*notice).clone()) {
+                crate::FlightUnion2::A(value) => (value).operation.clone(),
+                crate::FlightUnion2::B(value) => (value).operation.clone(),
+            },
+            match &((*notice).clone()) {
+                crate::FlightUnion2::A(value) => (value).reason.clone(),
+                crate::FlightUnion2::B(value) => (value).reason.clone(),
+            }
         ),
         LogLevel::Warn,
         &(crate::FlightUnion2::<LogData, LogDataProvider>::A(crate::FlightUnion2::<
@@ -62,11 +79,17 @@ fn warn_on_socket_misuse(notice: &SocketGuardNotice) -> () {
                 crate::FlightValue::String((&__flight_portable_source).clone())
             }));
             __flight_record.push(("operation".to_owned(), {
-                let __flight_portable_source = (notice.operation).clone();
+                let __flight_portable_source = match &((*notice).clone()) {
+                    crate::FlightUnion2::A(value) => (value).operation.clone(),
+                    crate::FlightUnion2::B(value) => (value).operation.clone(),
+                };
                 crate::FlightValue::String((&__flight_portable_source).clone())
             }));
             __flight_record.push(("reason".to_owned(), {
-                let __flight_portable_source = (notice.reason).clone();
+                let __flight_portable_source = match &((*notice).clone()) {
+                    crate::FlightUnion2::A(value) => (value).reason.clone(),
+                    crate::FlightUnion2::B(value) => (value).reason.clone(),
+                };
                 crate::FlightValue::String((&__flight_portable_source).clone())
             }));
             __flight_record.push(("url".to_owned(), {

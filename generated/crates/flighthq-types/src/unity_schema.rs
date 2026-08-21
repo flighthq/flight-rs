@@ -86,13 +86,13 @@ impl PartialEq for UnityEmission {
 
 // Source: upstream/packages/types/src/UnitySchema.ts:49 (sha256:53eda305c1dcfff684b132bed035cf2b050f7adc2e53a431f8073fb742fdc869)
 #[derive(Clone, Default)]
-pub struct UnityShapeRecord2 {
+pub struct UnityShapeRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub x: f64,
     pub y: f64,
     pub z: f64,
 }
-impl PartialEq for UnityShapeRecord2 {
+impl PartialEq for UnityShapeRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -106,7 +106,7 @@ pub struct UnityShape {
     pub shape_type: UnityParticleShapeType,
     pub radius: f64,
     pub angle: f64,
-    pub scale: UnityShapeRecord2,
+    pub scale: UnityShapeRecord1,
 }
 impl PartialEq for UnityShape {
     fn eq(&self, other: &Self) -> bool {
@@ -116,13 +116,13 @@ impl PartialEq for UnityShape {
 
 // Source: upstream/packages/types/src/UnitySchema.ts:61 (sha256:026a71f42f86fcf7e898f02093bc6372cdf706a983e2f3f3f43502daec0fc0ef)
 #[derive(Clone, Default)]
-pub struct UnityGradientColorKeyRecord2 {
+pub struct UnityGradientColorKeyRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub r: f64,
     pub g: f64,
     pub b: f64,
 }
-impl PartialEq for UnityGradientColorKeyRecord2 {
+impl PartialEq for UnityGradientColorKeyRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -133,7 +133,7 @@ pub struct UnityGradientColorKey {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub time: f64,
-    pub color: UnityGradientColorKeyRecord2,
+    pub color: UnityGradientColorKeyRecord1,
 }
 impl PartialEq for UnityGradientColorKey {
     fn eq(&self, other: &Self) -> bool {

@@ -9,7 +9,7 @@
 use crate::ImageResourceReference;
 
 // Source: upstream/packages/types/src/CreateTextureOptions.ts:4 (sha256:d0ecbdda01016d281c0442a71e2d43a5c1664ab8e7a5b33a31ff3b38d3434003)
-type CreateTextureVariantOptions = crate::OpaqueHostValue;
+pub(crate) type CreateTextureVariantOptions = crate::OpaqueHostValue;
 
 // Source: upstream/packages/types/src/CreateTextureOptions.ts:9 (sha256:df1e25f3faa5bf43fdc255628f5486a2f82d5155ce8b45e4be4d82ead392df8a)
 #[derive(Clone, Default)]

@@ -204,6 +204,12 @@ impl_flight_callback!((A:a, B:b, C:c, D:d, E:e, F:f) => (a, b, c, d, e, f));
 pub struct FlightTimeout {
     cancelled: std::sync::Arc<std::sync::atomic::AtomicBool>,
 }
+impl PartialEq for FlightTimeout {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.cancelled, &other.cancelled)
+    }
+}
+impl Eq for FlightTimeout {}
 pub fn set_timeout<F>(callback: F, delay_ms: f64) -> FlightTimeout
 where
     F: FnOnce() + Send + 'static,

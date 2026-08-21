@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_types::Modifier;
+use flighthq_types::{MODIFIER_SLOT as modifier_slot_constant, Modifier};
 
 // Source: upstream/packages/shading/src/orderModifierStack.ts:16 (sha256:f9ea12475ca98f27d30fc292f28ee1675ac01a1c2a3e846c801cf3f7bbd60fa3)
 pub fn order_modifier_stack(stack: &mut Vec<Modifier>) -> Vec<Modifier> {
@@ -83,8 +83,8 @@ pub fn order_modifier_stack(stack: &mut Vec<Modifier>) -> Vec<Modifier> {
     return (indexed)
         .iter()
         .cloned()
-        .map(|entry: crate::OpaqueHostValue| -> crate::OpaqueHostValue {
-            crate::host_value::<crate::OpaqueHostValue>("host.modifier")
+        .map(|entry: crate::OpaqueHostValue| -> Modifier {
+            crate::host_value::<Modifier>("host.modifier")
         })
         .collect::<Vec<_>>();
 }
@@ -103,5 +103,13 @@ fn get_modifier_slot_rank(slot: ModifierSlot) -> f64 {
 }
 
 // Source: upstream/packages/shading/src/orderModifierStack.ts:32 (sha256:3687cac5fdd29e40645e04f4a5d83b46781da17890b7679bbdcb5f2b8eb68050)
-static SLOT_RANK: std::sync::LazyLock<Vec<(ModifierSlot, f64)>> =
-    std::sync::LazyLock::new(|| Vec::new());
+static SLOT_RANK: std::sync::LazyLock<Vec<(ModifierSlot, f64)>> = std::sync::LazyLock::new(|| {
+    vec![
+        ((modifier_slot_constant.vertex).clone(), 0.0_f64),
+        ((modifier_slot_constant.normal).clone(), 1.0_f64),
+        ((modifier_slot_constant.diffuse).clone(), 2.0_f64),
+        ((modifier_slot_constant.specular).clone(), 3.0_f64),
+        ((modifier_slot_constant.emissive).clone(), 4.0_f64),
+        ((modifier_slot_constant.effect).clone(), 5.0_f64),
+    ]
+});

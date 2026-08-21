@@ -49,10 +49,10 @@ impl PartialEq for FlightPartialRecord2 {
 
 // Source: upstream/packages/effects/src/directionalBlurEffect.ts:5 (sha256:401d47059c3e52d92662d0ebb64d0ca602ef23544159ab858bd9ef7d119d512c)
 #[derive(Clone, Default)]
-struct CreateDirectionalBlurEffectRecord3 {
+struct CreateDirectionalBlurEffectRecord11 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateDirectionalBlurEffectRecord3 {
+impl PartialEq for CreateDirectionalBlurEffectRecord11 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

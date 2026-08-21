@@ -24,21 +24,51 @@ pub fn get_light_contribution_at_bounding_sphere(
     if (bounds.radius < 0.0_f64) {
         return 0.0_f64;
     }
-    let center_dx = (bounds.center.x - light.position.x);
-    let center_dy = (bounds.center.y - light.position.y);
-    let center_dz = (bounds.center.z - light.position.z);
+    let center_dx = (bounds.center.x
+        - (match &((*light).clone()) {
+            crate::FlightUnion2::A(value) => (value).position.clone(),
+            crate::FlightUnion2::B(value) => (value).position.clone(),
+        })
+        .x);
+    let center_dy = (bounds.center.y
+        - (match &((*light).clone()) {
+            crate::FlightUnion2::A(value) => (value).position.clone(),
+            crate::FlightUnion2::B(value) => (value).position.clone(),
+        })
+        .y);
+    let center_dz = (bounds.center.z
+        - (match &((*light).clone()) {
+            crate::FlightUnion2::A(value) => (value).position.clone(),
+            crate::FlightUnion2::B(value) => (value).position.clone(),
+        })
+        .z);
     let center_distance = ((center_dx).powi(2) + (center_dy).powi(2) + (center_dz).powi(2)).sqrt();
     let distance = (center_distance - bounds.radius).max(0.0_f64);
     let distance_squared = (distance * distance);
     let mut window = 1.0_f64;
-    if (light.range > 0.0_f64) {
-        let factor = (distance_squared / (light.range * light.range));
+    if (match &((*light).clone()) {
+        crate::FlightUnion2::A(value) => (value).range.clone(),
+        crate::FlightUnion2::B(value) => (value).range.clone(),
+    } > 0.0_f64)
+    {
+        let factor = (distance_squared
+            / (match &((*light).clone()) {
+                crate::FlightUnion2::A(value) => (value).range.clone(),
+                crate::FlightUnion2::B(value) => (value).range.clone(),
+            } * match &((*light).clone()) {
+                crate::FlightUnion2::A(value) => (value).range.clone(),
+                crate::FlightUnion2::B(value) => (value).range.clone(),
+            }));
         let windowed = (0.0_f64).max((1.0_f64).min((1.0_f64 - (factor * factor))));
         window = (windowed * windowed);
     }
     let mut contribution =
         ((get_light_luminance(light) * window) / (distance_squared).max(0.0001_f64));
-    if (light.kind == spot_light_kind_constant) {
+    if (match &((*light).clone()) {
+        crate::FlightUnion2::A(value) => (value).kind.clone(),
+        crate::FlightUnion2::B(value) => (value).kind.clone(),
+    } == spot_light_kind_constant)
+    {
         let spot = match (*light).clone() {
             crate::FlightUnion2::A(_) => panic!("TypeScript union narrowing failed"),
             crate::FlightUnion2::B(value) => value,
@@ -138,12 +168,12 @@ pub fn get_light_influence_bounds(out: &mut BoundingSphereLike, light: &Light) -
 
 // Source: upstream/packages/lighting/src/lightAnalysis.ts:102 (sha256:6d8922f0f8710593981c4b42e773268f20960a03b28145ef4db0872620a61864)
 #[derive(Clone, Default)]
-struct GetLightLuminanceRecord1 {
+struct GetLightLuminanceRecord4 {
     __flight_identity: std::sync::Arc<()>,
     color: Option<f64>,
     intensity: Option<f64>,
 }
-impl PartialEq for GetLightLuminanceRecord1 {
+impl PartialEq for GetLightLuminanceRecord4 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -152,7 +182,7 @@ impl PartialEq for GetLightLuminanceRecord1 {
 pub fn get_light_luminance(light: &Light) -> f64 {
     let colored = {
         let __flight_source = &((*light).clone());
-        GetLightLuminanceRecord1 {
+        GetLightLuminanceRecord4 {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
             color: Some(__flight_source.color),
             intensity: Some(__flight_source.intensity),
@@ -223,11 +253,11 @@ pub fn has_light_influence_on_bounds(light: &Light, bounds: &BoundingSphereLike)
 
 // Source: upstream/packages/lighting/src/lightAnalysis.ts:144 (sha256:25cbd62b601a347fb029073aa064a496d8ae54f7db15599017f302ca09989b01)
 #[derive(Clone, Default)]
-struct IsLightCastingShadowRecord1 {
+struct IsLightCastingShadowRecord4 {
     __flight_identity: std::sync::Arc<()>,
     casts_shadow: bool,
 }
-impl PartialEq for IsLightCastingShadowRecord1 {
+impl PartialEq for IsLightCastingShadowRecord4 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -242,7 +272,7 @@ pub fn is_light_casting_shadow(light: &Light) -> bool {
     }
     return {
         let __flight_source = &((*light).clone());
-        IsLightCastingShadowRecord1 {
+        IsLightCastingShadowRecord4 {
             __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
             casts_shadow: __flight_source.casts_shadow,
         }

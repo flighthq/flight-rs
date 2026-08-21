@@ -329,10 +329,10 @@ impl PartialEq for FlightPartialRecord3 {
 
 // Source: upstream/packages/application-gl/src/glApplicationRenderView.ts:23 (sha256:e09b38929b5cecc79e69d61be07a330497533585e04aa264aedb50371d99834f)
 #[derive(Clone, Default)]
-struct CreateGlApplicationRenderViewRecord4 {
+struct CreateGlApplicationRenderViewRecord15 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateGlApplicationRenderViewRecord4 {
+impl PartialEq for CreateGlApplicationRenderViewRecord15 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

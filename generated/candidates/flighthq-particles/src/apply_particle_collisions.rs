@@ -205,7 +205,16 @@ fn resolve_colliders(colliders: &Vec<ParticleCollider>, p: &mut Vec<f64>) -> boo
         while (c < (colliders.len() as f64)) {
             let collider = colliders[c as usize].clone();
             {
-                let __switch_value = collider.kind;
+                let __switch_value = match &((collider).clone()) {
+                    crate::FlightUnion2::A(value) => (value).kind.clone(),
+                    crate::FlightUnion2::B(value) => match value {
+                        crate::FlightUnion2::A(value) => (value).kind.clone(),
+                        crate::FlightUnion2::B(value) => match value {
+                            crate::FlightUnion2::A(value) => (value).kind.clone(),
+                            crate::FlightUnion2::B(value) => (value).kind.clone(),
+                        },
+                    },
+                };
                 let __flight_case = if __switch_value == "PlaneCollider" {
                     0_usize
                 } else if __switch_value == "CircleCollider" {

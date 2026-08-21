@@ -475,7 +475,7 @@ pub fn stop_all_audio_mixer_channels(mixer: &AudioMixer) -> () {
 
 // Source: upstream/packages/media/src/audioMixer.ts:216 (sha256:99b28223d50b4b9cb6b35d47e55e307d26fa13ffc5556c7bb15c5d9ba1284a87)
 #[derive(Clone, Default)]
-struct AudioMixerRuntime {
+pub(crate) struct AudioMixerRuntime {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub active_channels: Vec<AudioChannel>,

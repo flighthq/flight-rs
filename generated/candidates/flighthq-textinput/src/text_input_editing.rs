@@ -1439,11 +1439,11 @@ pub fn handle_text_input_keyboard(
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:290 (sha256:88cdbbf595a3131dbdf070e9075b980cd0b01b5bdcf2eb03c01ee4c92d4da133)
 #[derive(Clone, Default)]
-struct InsertTextInputRecord13 {
+struct InsertTextInputRecord16 {
     __flight_identity: std::sync::Arc<()>,
     apply_input_rules: bool,
 }
-impl PartialEq for InsertTextInputRecord13 {
+impl PartialEq for InsertTextInputRecord16 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -2190,9 +2190,11 @@ fn apply_history_record(
     caret_index: f64,
     selection_index: f64,
 ) -> () {
+    let __flight_utf16_text: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(text.encode_utf16().collect());
     source.data.text = (text).clone();
-    state.caret_index = clamp_index(caret_index, (text.encode_utf16().count() as f64));
-    state.selection_index = clamp_index(selection_index, (text.encode_utf16().count() as f64));
+    state.caret_index = clamp_index(caret_index, (__flight_utf16_text.len() as f64));
+    state.selection_index = clamp_index(selection_index, (__flight_utf16_text.len() as f64));
     state.desired_caret_x = DESIRED_CARET_X_UNSET;
     invalidate_node_appearance(source);
 }
@@ -2458,8 +2460,12 @@ fn record_text_input_edit(
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:794 (sha256:3f0b23bb62c98647447578fd8f6e1a9c3b2d87f69c2e9aeb2b77405cb829cd5a)
 fn restrict_text_input(text: String, restrict: String) -> String {
-    if ((restrict.encode_utf16().count() as f64) == 0.0_f64)
-        || ((text.encode_utf16().count() as f64) == 0.0_f64)
+    let __flight_utf16_text: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(text.encode_utf16().collect());
+    let __flight_utf16_restrict: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(restrict.encode_utf16().collect());
+    if ((__flight_utf16_restrict.len() as f64) == 0.0_f64)
+        || ((__flight_utf16_text.len() as f64) == 0.0_f64)
     {
         return text;
     }
@@ -2481,11 +2487,15 @@ fn restrict_text_input(text: String, restrict: String) -> String {
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:807 (sha256:5ec18eb9e2021e2b4c9df750ff90a2c0a31b4f64ed62f5e82484dd1303753774)
 fn matches_restrict_ranges(char: String, ranges: String) -> bool {
+    let __flight_utf16_char: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(char.encode_utf16().collect());
+    let __flight_utf16_ranges: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(ranges.encode_utf16().collect());
     {
         let mut i = 0.0_f64;
-        while (i < (ranges.encode_utf16().count() as f64)) {
+        while (i < (__flight_utf16_ranges.len() as f64)) {
             let current = (ranges.char_at)(i);
-            if (current == "\\") && ((i + 1.0_f64) < (ranges.encode_utf16().count() as f64)) {
+            if (current == "\\") && ((i + 1.0_f64) < (__flight_utf16_ranges.len() as f64)) {
                 if (char == (ranges.char_at)((i + 1.0_f64))) {
                     return true;
                 }
@@ -2494,11 +2504,28 @@ fn matches_restrict_ranges(char: String, ranges: String) -> bool {
                     i
                 };
             } else {
-                if ((i + 2.0_f64) < (ranges.encode_utf16().count() as f64))
+                if ((i + 2.0_f64) < (__flight_utf16_ranges.len() as f64))
                     && ((ranges.char_at)((i + 1.0_f64)) == "-")
                 {
                     let end = (ranges.char_at)((i + 2.0_f64));
-                    let code = (char.char_code_at)(0.0_f64);
+                    let code = {
+                        let __flight_units: &[u16] = &__flight_utf16_char;
+                        let __flight_raw_index = 0.0_f64;
+                        let __flight_index = if __flight_raw_index.is_nan() {
+                            0_i64
+                        } else if __flight_raw_index.is_finite() {
+                            __flight_raw_index.trunc() as i64
+                        } else {
+                            -1_i64
+                        };
+                        if __flight_index < 0 {
+                            f64::NAN
+                        } else {
+                            __flight_units
+                                .get(__flight_index as usize)
+                                .map_or(f64::NAN, |unit| f64::from(*unit))
+                        }
+                    };
                     if (code >= (current.char_code_at)(0.0_f64))
                         && (code <= (end.char_code_at)(0.0_f64))
                     {
@@ -2522,14 +2549,16 @@ fn matches_restrict_ranges(char: String, ranges: String) -> bool {
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:825 (sha256:d2a615ef67c355856c20d433446309bf66a747a0bc9b5c1c7c6a46c0a0227ee1)
 fn split_restrict_ranges(restrict: String) -> SharedStructuralRecord1 {
+    let __flight_utf16_restrict: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(restrict.encode_utf16().collect());
     let mut accepted = "".to_owned();
     let mut declined = "".to_owned();
     let mut declining = false;
     {
         let mut i = 0.0_f64;
-        while (i < (restrict.encode_utf16().count() as f64)) {
+        while (i < (__flight_utf16_restrict.len() as f64)) {
             let char = (restrict.char_at)(i);
-            if (char == "\\") && ((i + 1.0_f64) < (restrict.encode_utf16().count() as f64)) {
+            if (char == "\\") && ((i + 1.0_f64) < (__flight_utf16_restrict.len() as f64)) {
                 let escaped = (char + (restrict.char_at)((i + 1.0_f64)));
                 if declining {
                     declined.push_str(&(escaped));
@@ -2565,7 +2594,7 @@ fn split_restrict_ranges(restrict: String) -> SharedStructuralRecord1 {
 }
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:849 (sha256:720f2b25f91ba85604ad37408e8482ab435fcd5b0ce3d9ddaf5762c9110b59ec)
-type KeyboardCommand = String;
+pub(crate) type KeyboardCommand = String;
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:874 (sha256:050b27a35b02df39a3fc90980f133783be4f9664f3b949d4b83db163e23e8b91)
 fn find_word_start_before(text: String, index: f64) -> f64 {
@@ -2587,14 +2616,16 @@ fn find_word_start_before(text: String, index: f64) -> f64 {
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:883 (sha256:de59b7e56679d4df27ddc24ed1632145cb5e86dc12179b53206cc627e13b832e)
 fn find_word_end_after(text: String, index: f64) -> f64 {
+    let __flight_utf16_text: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(text.encode_utf16().collect());
     let mut i = index;
-    while (i < (text.encode_utf16().count() as f64)) && (!is_word_char((text.char_at)(i))) {
+    while (i < (__flight_utf16_text.len() as f64)) && (!is_word_char((text.char_at)(i))) {
         {
             i += 1.0;
             i
         };
     }
-    while (i < (text.encode_utf16().count() as f64)) && (is_word_char((text.char_at)(i))) {
+    while (i < (__flight_utf16_text.len() as f64)) && (is_word_char((text.char_at)(i))) {
         {
             i += 1.0;
             i
@@ -2616,7 +2647,7 @@ fn is_word_char(char: String) -> bool {
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:897 (sha256:7351f720a26190716f486bc006c1865a3cf502a56fdb176ccb12b37771be5e07)
 #[derive(Clone, Default)]
-struct ScratchRect {
+pub(crate) struct ScratchRect {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub height: f64,

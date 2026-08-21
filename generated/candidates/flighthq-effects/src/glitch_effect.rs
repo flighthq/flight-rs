@@ -50,10 +50,10 @@ impl PartialEq for FlightPartialRecord2 {
 
 // Source: upstream/packages/effects/src/glitchEffect.ts:5 (sha256:03b2073852f91ad105439e1f2e07636700322abc0e950f3007c8e1f4ef056073)
 #[derive(Clone, Default)]
-struct CreateGlitchEffectRecord3 {
+struct CreateGlitchEffectRecord11 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateGlitchEffectRecord3 {
+impl PartialEq for CreateGlitchEffectRecord11 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
