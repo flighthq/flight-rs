@@ -2469,6 +2469,11 @@ describe('Rust emission', () => {
           if (sample === undefined) return null;
           return sample;
         }
+        export function readNullableEntry(entries: readonly (Entry | null)[], index: number): Entry | null {
+          const entry = entries[index];
+          if (entry === null) return null;
+          return entry;
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -2488,6 +2493,7 @@ describe('Rust emission', () => {
     expect(output).not.toContain('TypeScript Record key was absent');
     expect(output).toContain('entries.get(index as usize).cloned()');
     expect(output).toContain('samples.get(index as usize).cloned().map(|item| item as f64)');
+    expect(output).toContain('entries.get(index as usize).cloned().flatten()');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-contextual-object-'));
     const sourceFile = path.join(fixture, 'lib.rs');

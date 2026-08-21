@@ -10571,6 +10571,7 @@ function emitNullableElementLookup(lookup: NullableElementLookup, context: EmitC
   const value = objectType?.kind === 'nullable'
     ? `${owner}.as_ref().and_then(|values| values.get(${index} as usize).cloned())`
     : `${owner}.get(${index} as usize).cloned()`;
+  if (lookup.type.kind === 'nullable') return `${value}.flatten()`;
   return lookup.kind === 'typed-array' ? `${value}.map(|item| item as f64)` : value;
 }
 
