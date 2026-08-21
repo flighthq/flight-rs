@@ -2207,8 +2207,15 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
     }
     case 'binary':
       return coerceExpression(emitBinary(expression, context), expectedType);
-    case 'call':
-      return coerceExpression(emitCall(expression, context, expectedType), expectedType);
+    case 'call': {
+      const call = emitCall(expression, context, expectedType);
+      const actualType = inferIrExpressionType(expression, context);
+      const projected =
+        actualType && expectedType && !semanticTypesEqual(actualType, expectedType, context)
+          ? emitStructuralProjectionArgument(call, actualType, expectedType, context)
+          : undefined;
+      return coerceExpression(projected ?? call, expectedType);
+    }
     case 'cast':
       if (expression.type.kind === 'named' && context.callbackTypeParameters.has(expression.type.name)) {
         const value = unwrapCasts(expression.expression);
@@ -3961,6 +3968,11 @@ function emitKnownFunctionArgument(
       return `${parenthesize(value)}.as_ref().map(|__flight_value| ${projected})`;
     }
     if (semanticTypesEqual(argumentType.inner, expectedType, context)) return `${parenthesize(value)}.clone()`;
+  }
+  if (optionalParameter && argument.kind !== 'object' && argumentType) {
+    const value = emitExpression(argument, context, argumentType);
+    const projected = emitStructuralProjectionArgument(value, argumentType, expectedType, context);
+    if (projected) return `Some(${projected})`;
   }
   if (!nullableParameter && !optionalParameter && expectedType.kind === 'union') {
     return `&${parenthesize(emitExpression(argument, context, expectedType))}`;
@@ -8762,7 +8774,6 @@ function emitStructuralProjectionArgument(
   const actual = resolveSemanticType(actualType, context);
   const expected = resolveSemanticType(expectedType, context);
   if (actual?.kind !== 'anonymous' || expected?.kind !== 'anonymous') return undefined;
-  if (emitType(actualType, context) === emitType(expectedType, context)) return undefined;
   const actualFields = new Map(semanticStructFields(actualType, context).map((field) => [field.name, field]));
   const expectedFields = semanticStructFields(expectedType, context);
   const openFields = expectedType.kind === 'named' ? context.openInterfaceFields.get(expectedType.name) : undefined;
@@ -9294,7 +9305,7 @@ function emitObject(
     if (property.kind !== 'spread') return [];
     const sourceType = inferIrExpressionType(property.expression, context);
     const resolvedSource = resolveSemanticType(sourceType, context) ?? sourceType;
-    return resolvedSource?.kind === 'anonymous' && typeKey(resolvedSource) !== typeKey(resolved)
+    return resolvedSource?.kind === 'anonymous'
       ? [
           {
             fields: new Set(flattenStructFields(resolvedSource, context).map((field) => field.name)),
@@ -9338,7 +9349,15 @@ function emitObject(
           target.kind === 'named'
             ? emitRecursiveStructFieldStorageValue(target.name, field, value.expression, context)
             : undefined;
-        return `${safeName(field.name)}: ${stored ?? emitExpression(value.expression, context, field.type)},`;
+        const emitted = stored ?? emitExpression(value.expression, context, field.type);
+        return `${safeName(field.name)}: ${
+          field.optional &&
+          field.type.kind !== 'nullable' &&
+          !recursiveStructFieldStorage(field.type, target.kind === 'named' ? target.name : '', field.optional) &&
+          !isNullishExpression(value.expression)
+            ? `Some(${emitted})`
+            : emitted
+        },`;
       }
       const place = `${value.name}.${safeName(field.name)}`;
       return `${safeName(field.name)}: ${isCopyType(value.field.type, context) ? place : `${parenthesize(place)}.clone()`},`;
@@ -9433,8 +9452,12 @@ function emitObject(
     ];
   });
   for (const field of resolved.fields) {
-    if (spreads.length === 0 && field.optional && !initialized.has(field.name)) {
-      properties.push(`${safeName(field.name)}: None,`);
+    if (spreads.length > 0 || initialized.has(field.name)) continue;
+    if (field.optional) properties.push(`${safeName(field.name)}: None,`);
+    else if (!openFields?.has(field.name) && rustTypeSupportsDefault(field.type, context)) {
+      properties.push(`${safeName(field.name)}: Default::default(),`);
+    } else if (!openFields?.has(field.name)) {
+      throw new RustEmissionError(`object field ${field.name} is not initialized and has no Rust default`);
     }
   }
   if (spreads.length > 1) throw new RustEmissionError('multiple object spreads require ordered Rust lowering');
@@ -9735,9 +9758,30 @@ function selectDeclaredObjectType(
     return identities.size === 1 ? [...identities.values()][0] : undefined;
   }
   if (resolved.kind === 'anonymous') {
+    if (expression.properties.length === 0) return target;
     const signature = objectLiteralPropertySignature(expression, context);
     const fields = flattenStructFields(resolved, context);
-    if (signature && [...signature.names].every((name) => fields.some((field) => field.name === name))) {
+    const directNames = expression.properties.flatMap((property) =>
+      property.kind === 'property' ? [property.name] : [],
+    );
+    const requiredFieldsAvailable = fields.every(
+      (field) => field.optional || signature?.unknownSpread || signature?.names.has(field.name),
+    );
+    const discriminantsMatch = fields.every((field) => {
+      if (field.discriminantValue === undefined) return true;
+      const property = expression.properties.find(
+        (candidate) => candidate.kind === 'property' && candidate.name === field.name,
+      );
+      if (!property || property.kind !== 'property') return Boolean(signature?.unknownSpread);
+      const value = constantExpressionValue(property.value, context);
+      return value === undefined || value === field.discriminantValue;
+    });
+    if (
+      signature &&
+      requiredFieldsAvailable &&
+      discriminantsMatch &&
+      directNames.every((name) => fields.some((field) => field.name === name))
+    ) {
       return target;
     }
   }

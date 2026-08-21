@@ -2652,6 +2652,79 @@ describe('Rust emission', () => {
     ).not.toThrow();
   });
 
+  it('projects structural values through calls, collections, and object spreads', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/materials/src/structuralBoundaries.ts',
+      `
+        interface Options {
+          label?: string;
+          value: number;
+        }
+        interface Result {
+          label?: string;
+          value: number;
+        }
+        interface Base {
+          kind: string;
+        }
+        interface Derived extends Base {
+          detail: number;
+        }
+        interface TargetOptions {
+          extra?: number;
+          other?: number;
+          value?: number;
+        }
+        function createResult(options?: Partial<Options>): Result {
+          const result = {} as Result;
+          result.label = options?.label;
+          result.value = options?.value ?? 0;
+          return result;
+        }
+        function createDerived(): Derived {
+          return { kind: 'derived', detail: 1 };
+        }
+        function readTarget(options?: Partial<TargetOptions>): number {
+          return options?.value ?? 0;
+        }
+        export function cloneResult(source: Options): Result {
+          return createResult(source);
+        }
+        export function collectBase(): Base[] {
+          return [createDerived()];
+        }
+        export function forwardSpread(source: Partial<Options>): number {
+          return readTarget({ extra: 2, ...source });
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/materials', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/materials/src/structuralBoundaries.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('value: Default::default()');
+    expect(output).toContain('Some({ let __flight_source');
+    expect(output).toContain('Base {');
+    expect(output).toContain('other: None');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-structural-boundaries-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
   it('preserves string value namespaces alongside their TypeScript type aliases', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/types/src/GamepadAxisKind.ts',
@@ -3769,8 +3842,8 @@ describe('Rust emission', () => {
     expect(output).toContain('let __flight_value = Some((binding).clone())');
     expect(output).toContain('__flight_entity_runtime: std::sync::Arc::clone(');
     expect(output).toMatch(/let mut value = \{[\s\S]*DerivedEntity \{[\s\S]*detail: Default::default\(\),/u);
-    expect(output).toContain(
-      'std::sync::Arc::new(std::sync::Mutex::new(__flight_entity_spread.__flight_entity_runtime.lock().unwrap().clone()))',
+    expect(output).toMatch(
+      /std::sync::Arc::new\(std::sync::Mutex::new\(__flight_(?:entity_)?spread(?:_\d+)?\.__flight_entity_runtime\.lock\(\)\.unwrap\(\)\.clone\(\)\)\)/u,
     );
     expect(output).toContain(
       'let __flight_value = (({ let __flight_runtime = FlightEntity::__flight_entity_runtime(source).lock().unwrap().clone().expect("entity runtime was read before initialization"); __flight_runtime }).inner.lock().unwrap().count + 1.0_f64);',
