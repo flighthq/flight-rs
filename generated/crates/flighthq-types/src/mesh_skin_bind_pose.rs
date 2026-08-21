@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-// Source: upstream/packages/types/src/MeshSkinBindPose.ts:10 (sha256:736e4bf4ec95bf4937e25e58fcd614373bff9626fbfd4431685b2b025bd9f67c)
+// Source: upstream/packages/types/src/MeshSkinBindPose.ts:14 (sha256:77bf0f172a896ccce04fb27b31e7fdedec6d24293ad0864f737721597d4d0aa7)
 #[derive(Clone, Default)]
 pub struct MeshSkinBindPose {
     #[doc(hidden)]
@@ -16,6 +16,8 @@ pub struct MeshSkinBindPose {
     pub positions: Vec<f32>,
     pub skinned_normals: Vec<f32>,
     pub skinned_positions: Vec<f32>,
+    pub skinned_tangents: Vec<f32>,
+    pub tangents: Vec<f32>,
     pub weights: Vec<f32>,
 }
 impl PartialEq for MeshSkinBindPose {

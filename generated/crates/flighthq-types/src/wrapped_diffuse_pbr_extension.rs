@@ -84,5 +84,5 @@ impl crate::FlightEntity for WrappedDiffusePbrExtension {
     }
 }
 
-// Source: upstream/packages/types/src/WrappedDiffusePbrExtension.ts:17 (sha256:0fff2775831eacaeb3c45f0d60026bd56e03d1cbb0b60cb604f03ee73d4de6cc)
+// Source: upstream/packages/types/src/WrappedDiffusePbrExtension.ts:18 (sha256:0fff2775831eacaeb3c45f0d60026bd56e03d1cbb0b60cb604f03ee73d4de6cc)
 pub const WRAPPED_DIFFUSE_PBR_EXTENSION_KIND: &'static str = "WrappedDiffusePbrExtension";

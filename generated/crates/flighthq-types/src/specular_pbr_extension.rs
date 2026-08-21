@@ -84,5 +84,5 @@ impl crate::FlightEntity for SpecularPbrExtension {
     }
 }
 
-// Source: upstream/packages/types/src/SpecularPbrExtension.ts:15 (sha256:07f1901d34e644941928b3158d7254ed6c5e3c1eee2382058d061f03be2d95f7)
+// Source: upstream/packages/types/src/SpecularPbrExtension.ts:16 (sha256:07f1901d34e644941928b3158d7254ed6c5e3c1eee2382058d061f03be2d95f7)
 pub const SPECULAR_PBR_EXTENSION_KIND: &'static str = "SpecularPbrExtension";

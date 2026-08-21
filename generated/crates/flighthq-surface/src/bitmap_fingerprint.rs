@@ -8,7 +8,7 @@
 
 use flighthq_types::{Bitmap, BitmapFingerprint};
 
-// Source: upstream/packages/bitmap/src/bitmapFingerprint.ts:14 (sha256:d302c76f297ce383d6df2b313ffb72c2186ee3251c9d5730a16e7496760779aa)
+// Source: upstream/packages/bitmap/src/bitmapFingerprint.ts:23 (sha256:d302c76f297ce383d6df2b313ffb72c2186ee3251c9d5730a16e7496760779aa)
 pub fn compare_bitmap_fingerprints(a: &BitmapFingerprint, b: &BitmapFingerprint) -> f64 {
     if (a.grid_size != b.grid_size) {
         panic!(
@@ -36,7 +36,7 @@ pub fn compare_bitmap_fingerprints(a: &BitmapFingerprint, b: &BitmapFingerprint)
     return (sum / (a.cells.len() as f64));
 }
 
-// Source: upstream/packages/bitmap/src/bitmapFingerprint.ts:30 (sha256:a9aa31a47c2d19af3acb9f6f2d9aa3496e258998da9b7104ff4b559276d29665)
+// Source: upstream/packages/bitmap/src/bitmapFingerprint.ts:39 (sha256:a9aa31a47c2d19af3acb9f6f2d9aa3496e258998da9b7104ff4b559276d29665)
 pub fn create_bitmap_fingerprint(source: &Bitmap, grid_size: Option<f64>) -> BitmapFingerprint {
     let grid_size = grid_size.unwrap_or(16.0_f64);
     if (grid_size < 1.0_f64) {

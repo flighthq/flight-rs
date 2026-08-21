@@ -10,7 +10,7 @@ use crate::{
     Camera3D, Material, MeshGeometry, Scene3DLightBlock, Scene3DRenderProxy, WgpuRenderState,
 };
 
-// Source: upstream/packages/types/src/WgpuMeshMaterialRenderer.ts:25 (sha256:4bf374dfff501c605c32e2ac9ac275016db035dbf3c676e31faa554243ee19ae)
+// Source: upstream/packages/types/src/WgpuMeshMaterialRenderer.ts:24 (sha256:4bf374dfff501c605c32e2ac9ac275016db035dbf3c676e31faa554243ee19ae)
 #[derive(Clone)]
 pub struct WgpuMeshMaterialRenderer {
     #[doc(hidden)]

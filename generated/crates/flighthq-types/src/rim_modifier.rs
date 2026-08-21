@@ -26,5 +26,5 @@ impl PartialEq for RimModifier {
     }
 }
 
-// Source: upstream/packages/types/src/RimModifier.ts:18 (sha256:01fd7e0e8dbd5523c21cd8aaea39fd4498ced019807631774cc0e11d1f366ea7)
+// Source: upstream/packages/types/src/RimModifier.ts:19 (sha256:01fd7e0e8dbd5523c21cd8aaea39fd4498ced019807631774cc0e11d1f366ea7)
 pub const RIM_MODIFIER_KIND: &'static str = "RimModifier";

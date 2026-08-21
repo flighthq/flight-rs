@@ -133,7 +133,7 @@ pub fn connect_signal_debounced<T: crate::FlightCallback>(
         as Box<dyn FnMut() -> () + Send + 'static>));
 }
 
-// Source: upstream/packages/signals/src/throttle.ts:102 (sha256:ab31c8b9283784b537ad87203af0ffca4815b2e7a959e9a1cda9b0e8dfce80fa)
+// Source: upstream/packages/signals/src/throttle.ts:102 (sha256:1453ce9ceb46829a9fea899af898be34c80a37148bd84a4346ff00c4277fd476)
 pub fn connect_signal_throttled<T: crate::FlightCallback>(
     mut source: Signal<T>,
     interval_ms: f64,
@@ -162,12 +162,41 @@ pub fn connect_signal_throttled<T: crate::FlightCallback>(
         }
     })
         as Box<dyn FnMut() -> () + Send + 'static>));
-    let handler = T::flight_from_tuple_callback({
-        let clear_trailing = clear_trailing.clone();
+    let mut schedule_trailing: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(f64) -> () + Send + 'static>>,
+    > = std::sync::Arc::new(std::sync::Mutex::new(Box::new({
         let mut last_args = last_args.clone();
         let mut last_fired_at = last_fired_at.clone();
         let slot = slot.clone();
         let mut trailing_timer = trailing_timer.clone();
+        move |delay: f64| -> () {
+            (*trailing_timer.lock().unwrap()) = Some(crate::set_timeout(
+                {
+                    let mut last_args = last_args.clone();
+                    let mut last_fired_at = last_fired_at.clone();
+                    let slot = slot.clone();
+                    let mut trailing_timer = trailing_timer.clone();
+                    move || -> () {
+                        (*last_fired_at.lock().unwrap()) = crate::host_value::<f64>("host.call");
+                        (*trailing_timer.lock().unwrap()) = None;
+                        crate::FlightCallback::flight_call(
+                            &((slot).clone()),
+                            (((*last_args.lock().unwrap()).clone()).clone().unwrap()).clone(),
+                        );
+                        (*last_args.lock().unwrap()) = None;
+                    }
+                },
+                delay,
+            ));
+        }
+    })
+        as Box<dyn FnMut(f64) -> () + Send + 'static>));
+    let handler = T::flight_from_tuple_callback({
+        let clear_trailing = clear_trailing.clone();
+        let mut last_args = last_args.clone();
+        let mut last_fired_at = last_fired_at.clone();
+        let schedule_trailing = schedule_trailing.clone();
+        let slot = slot.clone();
         move |args: <T as crate::FlightCallback>::Args| -> () {
             let now = crate::host_value::<f64>("host.call");
             let remaining = (interval_ms - (now - (*last_fired_at.lock().unwrap()).clone()));
@@ -181,7 +210,14 @@ pub fn connect_signal_throttled<T: crate::FlightCallback>(
                 if leading {
                     crate::FlightCallback::flight_call(&((slot).clone()), ((args).clone()).clone());
                 } else {
-                    (*last_args.lock().unwrap()) = Some((args).clone());
+                    if trailing {
+                        (*last_args.lock().unwrap()) = Some((args).clone());
+                        {
+                            let __flight_callback = (schedule_trailing).clone();
+                            let __flight_result = __flight_callback.lock().unwrap()(interval_ms);
+                            __flight_result
+                        };
+                    }
                 }
             } else {
                 if trailing {
@@ -191,28 +227,11 @@ pub fn connect_signal_throttled<T: crate::FlightCallback>(
                         __flight_result
                     };
                     (*last_args.lock().unwrap()) = Some((args).clone());
-                    (*trailing_timer.lock().unwrap()) = Some(crate::set_timeout(
-                        {
-                            let mut last_args = last_args.clone();
-                            let mut last_fired_at = last_fired_at.clone();
-                            let slot = slot.clone();
-                            let mut trailing_timer = trailing_timer.clone();
-                            move || -> () {
-                                (*last_fired_at.lock().unwrap()) =
-                                    crate::host_value::<f64>("host.call");
-                                (*trailing_timer.lock().unwrap()) = None;
-                                if ((*last_args.lock().unwrap()).clone()).is_some() {
-                                    crate::FlightCallback::flight_call(
-                                        &((slot).clone()),
-                                        (((*last_args.lock().unwrap()).clone()).clone().unwrap())
-                                            .clone(),
-                                    );
-                                    (*last_args.lock().unwrap()) = None;
-                                }
-                            }
-                        },
-                        remaining,
-                    ));
+                    {
+                        let __flight_callback = (schedule_trailing).clone();
+                        let __flight_result = __flight_callback.lock().unwrap()(remaining);
+                        __flight_result
+                    };
                 }
             }
         }

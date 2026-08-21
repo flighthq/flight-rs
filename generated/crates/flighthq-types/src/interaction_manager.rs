@@ -8,7 +8,7 @@
 
 use crate::{
     CursorBackend, FocusEventData, InputSignals, InteractionSignals, KeyboardEventData,
-    PointerEventData, PointerType, SpatialIndex,
+    PointerEventData, PointerType, SpatialIndex2D,
 };
 
 // Source: upstream/packages/types/src/InteractionManager.ts:10 (sha256:359ab498ad1854f8c681801a93f133dc17f6d1aecb46524a745ec43f718dff5b)
@@ -30,7 +30,7 @@ pub type AnyInteractionSignalSlot = std::sync::Arc<
     >,
 >;
 
-// Source: upstream/packages/types/src/InteractionManager.ts:13 (sha256:862e11110d27a2fae69cc108968d79f6b75dfb8719760df193c2f036752e10e6)
+// Source: upstream/packages/types/src/InteractionManager.ts:13 (sha256:2ad7549c058e1efa23cb19f7996356cd3cc5f03d86fc0819502c27ee9e1ef575)
 #[derive(Clone)]
 pub struct InteractionManager<N> {
     #[doc(hidden)]
@@ -42,7 +42,7 @@ pub struct InteractionManager<N> {
     pub pointer_states: Vec<(f64, InteractionPointerState<N>)>,
     pub precise: bool,
     pub root: N,
-    pub spatial_index: Option<SpatialIndex>,
+    pub spatial_index: Option<SpatialIndex2D>,
     pub signal_subscriber_counts: Vec<(InteractionSignalName, f64)>,
     pub tracked_signal_slots: Vec<(
         N,
@@ -59,7 +59,7 @@ impl<N> PartialEq for InteractionManager<N> {
     }
 }
 
-// Source: upstream/packages/types/src/InteractionManager.ts:35 (sha256:05373e969c761eb766f2817146d279968935d9f6ea2106bae3d7fd29620c361c)
+// Source: upstream/packages/types/src/InteractionManager.ts:35 (sha256:6e7518d0eb248f12762c890a0f80877c03db02582892c88f9d29c3ef4dc45278)
 #[derive(Clone, Default)]
 pub struct InteractionManagerOptions {
     #[doc(hidden)]
@@ -67,7 +67,7 @@ pub struct InteractionManagerOptions {
     pub cursor_backend: Option<CursorBackend>,
     pub enabled: Option<bool>,
     pub precise: Option<bool>,
-    pub spatial_index: Option<SpatialIndex>,
+    pub spatial_index: Option<SpatialIndex2D>,
     pub tracked_subscribers_only: Option<bool>,
 }
 impl PartialEq for InteractionManagerOptions {
@@ -99,7 +99,7 @@ impl PartialEq for InteractionPointerOptions {
 }
 
 // Source: upstream/packages/types/src/InteractionManager.ts:58 (sha256:6c846f5649ce0d7c3800c0bf309bebafb3e4bc1f67b56d12bc9e2acce5c9d262)
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct InteractionPointerState<N> {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -107,6 +107,17 @@ pub struct InteractionPointerState<N> {
     pub last_click_time: f64,
     pub pointer_down_target: Option<N>,
     pub pointer_over_target: Option<N>,
+}
+impl<N> Default for InteractionPointerState<N> {
+    fn default() -> Self {
+        Self {
+            __flight_identity: Default::default(),
+            last_click_target: Default::default(),
+            last_click_time: Default::default(),
+            pointer_down_target: Default::default(),
+            pointer_over_target: Default::default(),
+        }
+    }
 }
 impl<N> PartialEq for InteractionPointerState<N> {
     fn eq(&self, other: &Self) -> bool {

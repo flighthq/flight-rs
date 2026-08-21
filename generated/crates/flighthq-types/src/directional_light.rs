@@ -55,11 +55,11 @@ impl crate::FlightEntity for DirectionalLight {
     }
 }
 
-// Source: upstream/packages/types/src/DirectionalLight.ts:27 (sha256:14d67d7a33aa627cd20f5f9d8654dc1da943a0d5920a3d62d8399d764b3550de)
+// Source: upstream/packages/types/src/DirectionalLight.ts:28 (sha256:14d67d7a33aa627cd20f5f9d8654dc1da943a0d5920a3d62d8399d764b3550de)
 pub const DIRECTIONAL_LIGHT_KIND: &'static str = "DirectionalLight";
 
-// Source: upstream/packages/types/src/DirectionalLight.ts:32 (sha256:85457b1393209f4be48e2db03c298d8f3a8ddfe60d529fcdb0f29f1a820f6252)
+// Source: upstream/packages/types/src/DirectionalLight.ts:33 (sha256:85457b1393209f4be48e2db03c298d8f3a8ddfe60d529fcdb0f29f1a820f6252)
 pub const DIRECTIONAL_SHADOW_MAP_SIZE: f64 = 1024.0_f64;
 
-// Source: upstream/packages/types/src/DirectionalLight.ts:37 (sha256:073a5056125967550050c76ee63e58887241d92e4802f61370e9f9a30006ffe7)
+// Source: upstream/packages/types/src/DirectionalLight.ts:38 (sha256:073a5056125967550050c76ee63e58887241d92e4802f61370e9f9a30006ffe7)
 pub const MAX_DIRECTIONAL_SHADOW_PCF_RADIUS: f64 = 2.0_f64;

@@ -6,11 +6,14 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
+use flighthq_registry::{
+    create_keyed_table, with_registry_table_entry, without_registry_table_entry,
+};
 use flighthq_render::get_render_state_runtime;
 use flighthq_types::{
-    BlendMode, Kind, Matrix, RenderEffect, RenderEffectPadding, RenderEffectPaddingExplanation,
-    RenderEffectPaddingResolver, RenderRegistry, RenderState, Scene2DClipHooks,
-    Scene3DGraphSyncPolicy,
+    BlendMode, Kind, Matrix, REGISTRY_ENTRY_STATE as registry_entry_state_constant, RenderEffect,
+    RenderEffectPadding, RenderEffectPaddingExplanation, RenderEffectPaddingResolver,
+    RenderRegistry, RenderState, Scene2DClipHooks, Scene3DGraphSyncPolicy,
 };
 
 #[derive(Clone, Default)]
@@ -35,7 +38,7 @@ impl PartialEq for FlightPartialRecord1 {
     }
 }
 
-// Source: upstream/packages/effects/src/renderEffectPadding.ts:15 (sha256:46c1cf81e3c6877cb9d40d3ad64c16546d6dfea285e5b4dc439ea714675f748c)
+// Source: upstream/packages/effects/src/renderEffectPadding.ts:16 (sha256:46c1cf81e3c6877cb9d40d3ad64c16546d6dfea285e5b4dc439ea714675f748c)
 pub fn compute_render_effect_padding(
     state: &RenderState,
     effects: &crate::FlightUnion2<RenderEffect, Vec<RenderEffect>>,
@@ -61,7 +64,7 @@ pub fn compute_render_effect_padding(
     return (explanation.padding).clone();
 }
 
-// Source: upstream/packages/effects/src/renderEffectPadding.ts:27 (sha256:ba702800aa81325294025409496b3f1b2d8e00afc51cd780c7abcffda7fae978)
+// Source: upstream/packages/effects/src/renderEffectPadding.ts:28 (sha256:c71835a99b95afbb3186475c8d58fbe2ab7a26ed88bf8a4a9c549d9d7996ecbd)
 pub fn explain_render_effect_padding(
     state: &RenderState,
     effects: &crate::FlightUnion2<RenderEffect, Vec<RenderEffect>>,
@@ -71,25 +74,30 @@ pub fn explain_render_effect_padding(
     } else {
         vec![effects]
     };
-    let registry = (get_render_state_runtime(state)
+    let entries = get_render_state_runtime(state)
         .inner
         .lock()
         .unwrap()
-        .render_effect_padding_resolver_registry)
-        .clone();
+        .render_state_runtime
+        .registries
+        .effect_padding_resolvers
+        .as_ref()
+        .map(|value| (value.entries).clone());
     let mut bottom = 0.0_f64;
     let mut left = 0.0_f64;
     let mut right = 0.0_f64;
     let mut top = 0.0_f64;
     let mut missing_kinds: Vec<Kind> = vec![];
     for effect in (list).iter().cloned() {
-        let resolver = registry
+        let entry = entries
             .as_mut()
             .unwrap()
             .iter()
             .find(|(key, _)| key == &(effect.kind).clone())
             .map(|(_, value)| value.clone());
-        if (resolver).is_none() {
+        if (entry.as_ref().map(|value| (value.state).clone())
+            != registry_entry_state_constant.bound)
+        {
             if (!{
                 let __flight_value = (effect.kind).clone();
                 (missing_kinds).iter().any(|item| item == &__flight_value)
@@ -98,7 +106,11 @@ pub fn explain_render_effect_padding(
             }
             continue;
         }
-        let padding = resolver.as_ref().unwrap().lock().unwrap()(effect);
+        let padding = {
+            let __flight_callback = entry.as_ref().unwrap().value.as_ref().unwrap().clone();
+            let __flight_result = __flight_callback.lock().unwrap()(effect);
+            __flight_result
+        };
         bottom += sanitize_padding(padding.bottom);
         left += sanitize_padding(padding.left);
         right += sanitize_padding(padding.right);
@@ -122,7 +134,7 @@ pub fn explain_render_effect_padding(
     };
 }
 
-// Source: upstream/packages/effects/src/renderEffectPadding.ts:58 (sha256:b55d4d803b35eb99ca8917156c8c3fd8ca6d0c20d562e5c5fecc2278ee9e440d)
+// Source: upstream/packages/effects/src/renderEffectPadding.ts:59 (sha256:b55d4d803b35eb99ca8917156c8c3fd8ca6d0c20d562e5c5fecc2278ee9e440d)
 pub fn get_directional_render_effect_padding(
     blur_x: f64,
     blur_y: f64,
@@ -149,7 +161,7 @@ pub fn get_directional_render_effect_padding(
     };
 }
 
-// Source: upstream/packages/effects/src/renderEffectPadding.ts:76 (sha256:81535baa8e1658f96c5f82ad67d4bcd7c63c7eee827ecc11d7d40480a4bbbf25)
+// Source: upstream/packages/effects/src/renderEffectPadding.ts:77 (sha256:81535baa8e1658f96c5f82ad67d4bcd7c63c7eee827ecc11d7d40480a4bbbf25)
 pub fn get_gaussian_render_effect_padding(blur_x: f64, blur_y: f64) -> RenderEffectPadding {
     let horizontal = ((0.0_f64).max(blur_x) * 3.0_f64).ceil();
     let vertical = ((0.0_f64).max(blur_y) * 3.0_f64).ceil();
@@ -162,54 +174,53 @@ pub fn get_gaussian_render_effect_padding(blur_x: f64, blur_y: f64) -> RenderEff
     };
 }
 
-// Source: upstream/packages/effects/src/renderEffectPadding.ts:82 (sha256:54b848a5e508843cc7939aff5149e24d45e2f14cd3dbab289f7e380d006daaa9)
+// Source: upstream/packages/effects/src/renderEffectPadding.ts:83 (sha256:ff9fb6c0b399c806e0365da5da18dfc45910ecf5483042886e775dae91572a08)
 pub fn register_render_effect_padding_resolver(
     state: &RenderState,
     kind: Kind,
     resolver: Option<RenderEffectPaddingResolver>,
 ) -> () {
     let mut runtime = get_render_state_runtime(state);
+    let table = (runtime
+        .inner
+        .lock()
+        .unwrap()
+        .render_state_runtime
+        .registries
+        .effect_padding_resolvers)
+        .clone();
     if (resolver).is_none() {
-        {
-            let __flight_key = (kind).clone();
-            if let Some(__flight_index) = runtime
+        if ((table).clone()).is_some() {
+            runtime
                 .inner
                 .lock()
                 .unwrap()
-                .render_effect_padding_resolver_registry
-                .as_mut()
-                .unwrap()
-                .iter()
-                .position(|(key, _)| key == &__flight_key)
-            {
-                runtime
-                    .inner
-                    .lock()
-                    .unwrap()
-                    .render_effect_padding_resolver_registry
-                    .as_mut()
-                    .unwrap()
-                    .remove(__flight_index);
-                true
-            } else {
-                false
-            }
-        };
-    } else {
-        ({
-            let __flight_runtime = runtime;
-            let __flight_value = Some(Vec::new());
-            let mut __flight_storage = __flight_runtime.inner.lock().unwrap();
-            __flight_storage.render_effect_padding_resolver_registry?? = __flight_value;
-            __flight_storage
-                .render_effect_padding_resolver_registry
-                .clone()
+                .render_state_runtime
+                .registries
+                .effect_padding_resolvers = Some(without_registry_table_entry(
+                &table.as_ref().unwrap(),
+                (kind).clone(),
+            ));
         }
-        .set)(kind, (resolver.as_ref().unwrap()).clone());
+        return;
     }
+    runtime
+        .inner
+        .lock()
+        .unwrap()
+        .render_state_runtime
+        .registries
+        .effect_padding_resolvers = Some(with_registry_table_entry(
+        &(table).unwrap_or(create_keyed_table(
+            "RenderEffectPaddingResolver".to_owned(),
+            "Zero".to_owned(),
+        )),
+        (kind).clone(),
+        (resolver.as_ref().unwrap()).clone(),
+    ));
 }
 
-// Source: upstream/packages/effects/src/renderEffectPadding.ts:92 (sha256:7ffe070fe9601935cbd9850f2d86d51e0dbec2cadc140975c5b26231fd048967)
+// Source: upstream/packages/effects/src/renderEffectPadding.ts:101 (sha256:7ffe070fe9601935cbd9850f2d86d51e0dbec2cadc140975c5b26231fd048967)
 fn sanitize_padding(value: f64) -> f64 {
     return if (value).is_finite() {
         (0.0_f64).max(value)

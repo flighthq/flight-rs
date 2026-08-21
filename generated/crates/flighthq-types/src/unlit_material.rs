@@ -51,5 +51,5 @@ impl crate::FlightEntity for UnlitMaterial {
     }
 }
 
-// Source: upstream/packages/types/src/UnlitMaterial.ts:13 (sha256:109f384517d58d45451b8b52b524915150578f99c842ef3011020beedefaf39d)
+// Source: upstream/packages/types/src/UnlitMaterial.ts:14 (sha256:109f384517d58d45451b8b52b524915150578f99c842ef3011020beedefaf39d)
 pub const UNLIT_MATERIAL_KIND: &'static str = "UnlitMaterial";

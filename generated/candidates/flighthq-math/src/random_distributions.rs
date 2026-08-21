@@ -24,17 +24,17 @@ pub fn pick<T: Clone>(random: RandomSource, items: &Vec<T>) -> Option<T> {
     );
 }
 
-// Source: upstream/packages/math/src/randomDistributions.ts:23 (sha256:36a24aa9a5852046b5c7bd1dcaed1a6482a5f09323d9282cf142c9347305daf4)
+// Source: upstream/packages/math/src/randomDistributions.ts:23 (sha256:33ce5762679247a26efbb000ea4d671ed90c3981dfbfc77e6afce9dec2df33b9)
 pub fn random_exponential(random: &mut impl FnMut() -> f64, rate: Option<f64>) -> f64 {
     let rate = rate.unwrap_or(1.0_f64);
-    if (rate <= 0.0_f64) {
+    if (!(rate).is_finite()) || (rate <= 0.0_f64) {
         panic!("{}", "generated Flight function threw");
     }
     let u = random();
     return ((-(if (u == 0.0_f64) { f64::EPSILON } else { u }).ln()) / rate);
 }
 
-// Source: upstream/packages/math/src/randomDistributions.ts:39 (sha256:eb8827c1debc9da1307b7c1b52f0015810f4e9e68d3b82f83bda4082a979e7ba)
+// Source: upstream/packages/math/src/randomDistributions.ts:41 (sha256:eb8827c1debc9da1307b7c1b52f0015810f4e9e68d3b82f83bda4082a979e7ba)
 pub fn random_gaussian(
     random: &mut impl FnMut() -> f64,
     mean: Option<f64>,
@@ -49,7 +49,7 @@ pub fn random_gaussian(
     return (mean + (z * standard_deviation));
 }
 
-// Source: upstream/packages/math/src/randomDistributions.ts:54 (sha256:c29855702000ecfde3bb078fb4643dbc8af90105273495d51007deee32647f0f)
+// Source: upstream/packages/math/src/randomDistributions.ts:56 (sha256:c29855702000ecfde3bb078fb4643dbc8af90105273495d51007deee32647f0f)
 pub fn random_gaussian_pair(
     random: &mut impl FnMut() -> f64,
     mean: Option<f64>,
@@ -66,7 +66,7 @@ pub fn random_gaussian_pair(
     return vec![z0, z1];
 }
 
-// Source: upstream/packages/math/src/randomDistributions.ts:77 (sha256:e3c23ab0b5264c65f38afaf48d51cb42ab4c471b98304927a548dd53c38ced66)
+// Source: upstream/packages/math/src/randomDistributions.ts:79 (sha256:e3c23ab0b5264c65f38afaf48d51cb42ab4c471b98304927a548dd53c38ced66)
 pub fn random_inside_unit_disc(random: &mut impl FnMut() -> f64, out: &mut Vector2Like) -> () {
     let mut x: f64;
     let mut y: f64;
@@ -83,7 +83,7 @@ pub fn random_inside_unit_disc(random: &mut impl FnMut() -> f64, out: &mut Vecto
     out.y = y;
 }
 
-// Source: upstream/packages/math/src/randomDistributions.ts:99 (sha256:d0a2e19be4d7f5cba4a1b64eb7249442f867e3db4e387b70a58b20945e37f7f2)
+// Source: upstream/packages/math/src/randomDistributions.ts:101 (sha256:d0a2e19be4d7f5cba4a1b64eb7249442f867e3db4e387b70a58b20945e37f7f2)
 pub fn random_inside_unit_sphere(random: &mut impl FnMut() -> f64, out: &mut Vector3Like) -> () {
     let mut x: f64;
     let mut y: f64;
@@ -103,7 +103,7 @@ pub fn random_inside_unit_sphere(random: &mut impl FnMut() -> f64, out: &mut Vec
     out.z = z;
 }
 
-// Source: upstream/packages/math/src/randomDistributions.ts:119 (sha256:0c741e456083f0969f2611dc205f231a1f080c78eb089b3a54aca8bd4615c97c)
+// Source: upstream/packages/math/src/randomDistributions.ts:121 (sha256:0c741e456083f0969f2611dc205f231a1f080c78eb089b3a54aca8bd4615c97c)
 pub fn random_on_unit_circle(random: &mut impl FnMut() -> f64, out: &mut Vector2Like) -> () {
     let angle = ((random() * std::f64::consts::PI) * 2.0_f64);
     let x = (angle).cos();
@@ -112,7 +112,7 @@ pub fn random_on_unit_circle(random: &mut impl FnMut() -> f64, out: &mut Vector2
     out.y = y;
 }
 
-// Source: upstream/packages/math/src/randomDistributions.ts:136 (sha256:e8f7890f86f1ea324e7fe7046041b3ef30c030baaadd9c436fc847a4b7a76931)
+// Source: upstream/packages/math/src/randomDistributions.ts:138 (sha256:e8f7890f86f1ea324e7fe7046041b3ef30c030baaadd9c436fc847a4b7a76931)
 pub fn random_on_unit_sphere(random: &mut impl FnMut() -> f64, out: &mut Vector3Like) -> () {
     let mut x: f64;
     let mut y: f64;
@@ -136,10 +136,10 @@ pub fn random_on_unit_sphere(random: &mut impl FnMut() -> f64, out: &mut Vector3
     out.z = rz;
 }
 
-// Source: upstream/packages/math/src/randomDistributions.ts:166 (sha256:c26d94a90bcc206016d4ac38644a690c12e40b55064fba1f4d9048f9bc34605e)
+// Source: upstream/packages/math/src/randomDistributions.ts:168 (sha256:e938800cbec8d2cb66bc7b771f4a1d4288f86d7810c354ee6a56edb290f4d46a)
 pub fn random_poisson(random: &mut impl FnMut() -> f64, lambda: Option<f64>) -> f64 {
     let lambda = lambda.unwrap_or(1.0_f64);
-    if (lambda <= 0.0_f64) {
+    if (!(lambda).is_finite()) || (lambda <= 0.0_f64) {
         panic!("{}", "generated Flight function threw");
     }
     let limit = (-lambda).exp();
@@ -155,7 +155,7 @@ pub fn random_poisson(random: &mut impl FnMut() -> f64, lambda: Option<f64>) -> 
     return k;
 }
 
-// Source: upstream/packages/math/src/randomDistributions.ts:185 (sha256:dd0bc04ff69841bef002d97d7b2daaac9b8ff423276a9c33d75bc89423078d09)
+// Source: upstream/packages/math/src/randomDistributions.ts:189 (sha256:dd0bc04ff69841bef002d97d7b2daaac9b8ff423276a9c33d75bc89423078d09)
 pub fn random_weighted(random: &mut impl FnMut() -> f64, weights: &Vec<f64>) -> f64 {
     let mut total = 0.0_f64;
     {
@@ -188,14 +188,14 @@ pub fn random_weighted(random: &mut impl FnMut() -> f64, weights: &Vec<f64>) -> 
     return ((weights.len() as f64) - 1.0_f64);
 }
 
-// Source: upstream/packages/math/src/randomDistributions.ts:202 (sha256:a1bf49861762efc4b535fda196a5a72eba76c4ff1202f37daf82690daaa03da6)
+// Source: upstream/packages/math/src/randomDistributions.ts:206 (sha256:a1bf49861762efc4b535fda196a5a72eba76c4ff1202f37daf82690daaa03da6)
 pub fn shuffle<T: Clone>(random: &mut impl FnMut() -> f64, items: &mut Vec<T>) -> Vec<T> {
     let mut copy = (items).clone();
     shuffle_in_place(random, &mut copy);
     return copy;
 }
 
-// Source: upstream/packages/math/src/randomDistributions.ts:212 (sha256:fbf2fde3966c0c44d95ccd4a2218b04511672fdfc56e9c38a92b9c36e7f0fc13)
+// Source: upstream/packages/math/src/randomDistributions.ts:216 (sha256:fbf2fde3966c0c44d95ccd4a2218b04511672fdfc56e9c38a92b9c36e7f0fc13)
 pub fn shuffle_in_place<T: Clone>(random: &mut impl FnMut() -> f64, items: &mut Vec<T>) -> () {
     {
         let mut i = ((items.len() as f64) - 1.0_f64);

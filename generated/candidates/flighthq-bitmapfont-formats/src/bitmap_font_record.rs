@@ -7,12 +7,15 @@
 #![allow(unused_parens)]
 
 use flighthq_bitmapfont::create_bitmap_font;
+use flighthq_importdiagnostics::report_import_diagnostic;
 use flighthq_types::{
     BitmapFont, BitmapFontCharRecord, BitmapFontData, BitmapFontGlyphData, BitmapFontKerningData,
-    BitmapFontKerningRecord, BitmapFontParseOptions, BitmapFontRecord, GlyphMetrics, TextureAtlas,
+    BitmapFontKerningRecord, BitmapFontParseOptions, BitmapFontRecord, GlyphMetrics,
+    IMPORT_DIAGNOSTIC_SEVERITY as import_diagnostic_severity_constant, ImportDiagnostic,
+    TextureAtlas,
 };
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontRecord.ts:23 (sha256:e1e716b298a1cf4d381df73304608996c45a4e4f0169125fdb7637c9e1fc57a5)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontRecord.ts:26 (sha256:e1e716b298a1cf4d381df73304608996c45a4e4f0169125fdb7637c9e1fc57a5)
 pub fn build_bitmap_font_from_record(
     record: BitmapFontRecord,
     options: Option<BitmapFontParseOptions>,
@@ -271,4 +274,68 @@ pub fn build_bitmap_font_from_record(
         pages: (pages).clone(),
     };
     return Some(create_bitmap_font(&data));
+}
+
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontRecord.ts:96 (sha256:aef8898ba71e7161729e0132fe94dd186beef3e79518357d1acd019452544835)
+pub fn report_dropped_bitmap_font_records(
+    diagnostics: Option<Vec<ImportDiagnostic>>,
+    origin: String,
+    pages: f64,
+    chars: f64,
+    kernings: f64,
+) -> () {
+    if (pages > 0.0_f64) {
+        report_import_diagnostic(
+            ((diagnostics).clone()).clone(),
+            (import_diagnostic_severity_constant.drop).clone(),
+            "bmfont.page-unreadable".to_owned(),
+            (origin).clone(),
+            Some({
+                let mut __flight_record = Vec::new();
+                __flight_record.push((
+                    "records".to_owned(),
+                    crate::FlightUnion2::<bool, crate::FlightUnion2<f64, String>>::B(
+                        crate::FlightUnion2::<f64, String>::A(pages),
+                    ),
+                ));
+                __flight_record
+            }),
+        );
+    }
+    if (chars > 0.0_f64) {
+        report_import_diagnostic(
+            ((diagnostics).clone()).clone(),
+            (import_diagnostic_severity_constant.drop).clone(),
+            "bmfont.char-unreadable".to_owned(),
+            (origin).clone(),
+            Some({
+                let mut __flight_record = Vec::new();
+                __flight_record.push((
+                    "records".to_owned(),
+                    crate::FlightUnion2::<bool, crate::FlightUnion2<f64, String>>::B(
+                        crate::FlightUnion2::<f64, String>::A(chars),
+                    ),
+                ));
+                __flight_record
+            }),
+        );
+    }
+    if (kernings > 0.0_f64) {
+        report_import_diagnostic(
+            ((diagnostics).clone()).clone(),
+            (import_diagnostic_severity_constant.drop).clone(),
+            "bmfont.kerning-unreadable".to_owned(),
+            (origin).clone(),
+            Some({
+                let mut __flight_record = Vec::new();
+                __flight_record.push((
+                    "records".to_owned(),
+                    crate::FlightUnion2::<bool, crate::FlightUnion2<f64, String>>::B(
+                        crate::FlightUnion2::<f64, String>::A(kernings),
+                    ),
+                ));
+                __flight_record
+            }),
+        );
+    }
 }

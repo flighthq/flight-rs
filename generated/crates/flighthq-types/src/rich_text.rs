@@ -44,10 +44,10 @@ impl PartialEq for RichTextData {
     }
 }
 
-// Source: upstream/packages/types/src/RichText.ts:42 (sha256:8366b22af6581d9b3d860205d8d5245e7bb40398342313332aa3c7da2e420aa1)
+// Source: upstream/packages/types/src/RichText.ts:47 (sha256:8366b22af6581d9b3d860205d8d5245e7bb40398342313332aa3c7da2e420aa1)
 pub type RichTextRuntime = crate::EntityRuntime;
 
-// Source: upstream/packages/types/src/RichText.ts:57 (sha256:ede1beea3240687757ee8455992b246d3497476a47de43d9b8e5d02d8b73abe7)
+// Source: upstream/packages/types/src/RichText.ts:62 (sha256:ede1beea3240687757ee8455992b246d3497476a47de43d9b8e5d02d8b73abe7)
 #[derive(Clone, Default)]
 pub struct RichText {
     #[doc(hidden)]
@@ -95,5 +95,5 @@ impl crate::FlightEntity for RichText {
     }
 }
 
-// Source: upstream/packages/types/src/RichText.ts:61 (sha256:596b8a1b265ecce1ee0865dbb2e71192fc576e385865362468b050f38fe00952)
+// Source: upstream/packages/types/src/RichText.ts:66 (sha256:596b8a1b265ecce1ee0865dbb2e71192fc576e385865362468b050f38fe00952)
 pub const RICH_TEXT_KIND: &'static str = "RichText";

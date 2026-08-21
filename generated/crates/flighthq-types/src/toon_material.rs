@@ -53,5 +53,5 @@ impl crate::FlightEntity for ToonMaterial {
     }
 }
 
-// Source: upstream/packages/types/src/ToonMaterial.ts:14 (sha256:55e33ed2e0f38dd8d035aef38e0acb2ed01b9bd28c5454513d0fa623d60bea0c)
+// Source: upstream/packages/types/src/ToonMaterial.ts:15 (sha256:55e33ed2e0f38dd8d035aef38e0acb2ed01b9bd28c5454513d0fa623d60bea0c)
 pub const TOON_MATERIAL_KIND: &'static str = "ToonMaterial";

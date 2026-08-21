@@ -7,12 +7,12 @@
 #![allow(unused_parens)]
 
 use crate::{
-    GlMeshMaterialRenderer, GlMeshProgram, GlPbrExtensionRegistration, GlPbrTransmissionSceneColor,
-    GlRenderState, GlRenderTarget, GlSkinPaletteTexture, Kind, Matrix4, Mesh, MeshGeometry,
-    ModifierRegistry, PbrExtension, Scene3DLightBlock, Scene3DLightsLike, TextureColorSpace,
+    GlMeshProgram, GlPbrTransmissionSceneColor, GlRenderState, GlRenderTarget,
+    GlSkinPaletteTexture, Matrix4, Mesh, MeshGeometry, PbrExtension, Scene3DLightBlock,
+    Scene3DLightsLike, TextureColorSpace,
 };
 
-// Source: upstream/packages/types/src/GlScene3DRuntime.ts:21 (sha256:90dc2896eefb221192ca20bc54bd58a95732b1f3cae3374b147c11b71718f0e7)
+// Source: upstream/packages/types/src/GlScene3DRuntime.ts:17 (sha256:90dc2896eefb221192ca20bc54bd58a95732b1f3cae3374b147c11b71718f0e7)
 #[derive(Clone, Default)]
 pub struct GlScene3DShadow {
     #[doc(hidden)]
@@ -30,7 +30,7 @@ impl PartialEq for GlScene3DShadow {
     }
 }
 
-// Source: upstream/packages/types/src/GlScene3DRuntime.ts:35 (sha256:60a7d244805c8bf2b3b72e2fcf4777fe83b902d5676a58e0975baa9b8cf7d52c)
+// Source: upstream/packages/types/src/GlScene3DRuntime.ts:31 (sha256:60a7d244805c8bf2b3b72e2fcf4777fe83b902d5676a58e0975baa9b8cf7d52c)
 #[derive(Clone, Default)]
 pub struct GlScene3DIbl {
     #[doc(hidden)]
@@ -47,15 +47,15 @@ impl PartialEq for GlScene3DIbl {
     }
 }
 
-// Source: upstream/packages/types/src/GlScene3DRuntime.ts:46 (sha256:4e3a499b44071f2a83f997c36a83d95dd82c343b59af35480c3a88fa1d605add)
+// Source: upstream/packages/types/src/GlScene3DRuntime.ts:42 (sha256:19afb18fb092b624bbd1cde411781b148a4786e8dc14bc25d8305755907b3f0c)
 #[derive(Clone, Default)]
 pub struct GlScene3DDrawEntry {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha: f64,
-    pub clip_w: f64,
     pub color_matrix: Option<crate::OpaqueHostValue>,
     pub color_scale_bias: Option<crate::OpaqueHostValue>,
+    pub depth: f64,
     pub light_block: Scene3DLightBlock,
     pub material: crate::OpaqueHostValue,
     pub mesh: crate::OpaqueHostValue,
@@ -69,11 +69,12 @@ impl PartialEq for GlScene3DDrawEntry {
     }
 }
 
-// Source: upstream/packages/types/src/GlScene3DRuntime.ts:74 (sha256:4699244536c3feef6f3f739f35112b90e8382c1ec3ae5327e196af03c3d85b16)
+// Source: upstream/packages/types/src/GlScene3DRuntime.ts:69 (sha256:22fd14cbeff906498e6edbd2d1b4bacab27556b1e3e49e1216933d2785fec45d)
 #[derive(Clone, Default)]
 pub struct GlScene3DRuntime {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    pub active_blended_run: bool,
     pub active_color_adjustment_run: bool,
     pub active_color_matrix_run: bool,
     pub active_mesh_program: Option<GlMeshProgram>,
@@ -97,8 +98,6 @@ pub struct GlScene3DRuntime {
     pub environment_source_cube_color_space: TextureColorSpace,
     pub ibl: Option<GlScene3DIbl>,
     pub ibl_bake_framebuffer: Option<crate::OpaqueHostValue>,
-    pub material_registry: Vec<(Kind, GlMeshMaterialRenderer)>,
-    pub modifier_snippet_registry: Option<ModifierRegistry>,
     pub forward_light_selection_guard: Option<
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Scene3DLightsLike) -> () + Send + 'static>>>,
     >,
@@ -107,13 +106,12 @@ pub struct GlScene3DRuntime {
     pub pbr_extension_guard: Option<
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Vec<PbrExtension>) -> () + Send + 'static>>>,
     >,
-    pub pbr_extension_registry: Vec<(Kind, GlPbrExtensionRegistration)>,
-    pub pbr_extension_registry_version: f64,
     pub pbr_transmission_scene_color: Option<GlPbrTransmissionSceneColor>,
     pub program_cache: Vec<(String, GlMeshProgram)>,
     pub shadow: Option<GlScene3DShadow>,
     pub shadow_target: Option<GlRenderTarget>,
     pub skin_palette: Option<GlSkinPaletteTexture>,
+    pub skin_normal_palette: Option<GlSkinPaletteTexture>,
     pub time: f64,
     pub upload_cache: Vec<(MeshGeometry, GlMeshUpload)>,
 }
@@ -123,7 +121,7 @@ impl PartialEq for GlScene3DRuntime {
     }
 }
 
-// Source: upstream/packages/types/src/GlScene3DRuntime.ts:134 (sha256:ea701c770e76279c2c1ed247f4e08cca4953589f33791d7e9964c4acbb38c508)
+// Source: upstream/packages/types/src/GlScene3DRuntime.ts:131 (sha256:ea701c770e76279c2c1ed247f4e08cca4953589f33791d7e9964c4acbb38c508)
 #[derive(Clone, Default)]
 pub struct GlMeshUpload {
     #[doc(hidden)]

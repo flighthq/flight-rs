@@ -7,11 +7,11 @@
 #![allow(unused_parens)]
 
 use crate::{
-    BlendMode, CustomShaderMaterial, Kind, Matrix4, ModifierRegistry, Scene3DLightsLike,
-    WgpuCustomMaterialShaderSource, WgpuMeshMaterialRenderer, WgpuMeshPipeline, WgpuRenderState,
+    BlendMode, CustomShaderMaterial, Matrix4, Scene3DLightsLike, WgpuCustomMaterialShaderSource,
+    WgpuMeshPipeline, WgpuRenderState,
 };
 
-// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:19 (sha256:51198c8940045753f24c81e72c79afa768610dc0b4ad580609876711fd13e77f)
+// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:16 (sha256:51198c8940045753f24c81e72c79afa768610dc0b4ad580609876711fd13e77f)
 #[derive(Clone, Default)]
 pub struct WgpuScene3DShadow {
     #[doc(hidden)]
@@ -32,7 +32,7 @@ impl PartialEq for WgpuScene3DShadow {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:40 (sha256:2c9de49060c0caec1db063676aaff00b42a147d1453a572eebc9698cad804d96)
+// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:37 (sha256:2c9de49060c0caec1db063676aaff00b42a147d1453a572eebc9698cad804d96)
 #[derive(Clone, Default)]
 pub struct WgpuScene3DIbl {
     #[doc(hidden)]
@@ -52,7 +52,7 @@ impl PartialEq for WgpuScene3DIbl {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:51 (sha256:7ae1f3611cb970dc9a5bba4681dabc3f580fff5642b9b52a0f5f557b6f864e01)
+// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:48 (sha256:7ae1f3611cb970dc9a5bba4681dabc3f580fff5642b9b52a0f5f557b6f864e01)
 #[derive(Clone, Default)]
 pub struct WgpuScene3DFrameBinding {
     #[doc(hidden)]
@@ -66,7 +66,7 @@ impl PartialEq for WgpuScene3DFrameBinding {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:58 (sha256:b4d8b046bbaf156d910380ce47f8e5eb9bdcdfac78735a793394fc189153168d)
+// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:55 (sha256:b4d8b046bbaf156d910380ce47f8e5eb9bdcdfac78735a793394fc189153168d)
 #[derive(Clone, Default)]
 pub struct WgpuScene3DDrawEntry {
     #[doc(hidden)]
@@ -88,7 +88,7 @@ impl PartialEq for WgpuScene3DDrawEntry {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:82 (sha256:4dab30bcdbb8075f68a1edc7500087cb2a72c3202eb16b2ffb6f143591215923)
+// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:79 (sha256:d73b5ce1b57506125a02a6af3df57a93e786f126e2f9cc4a43a4ca12cc6647fe)
 #[derive(Clone, Default)]
 pub struct WgpuScene3DRuntime {
     #[doc(hidden)]
@@ -143,9 +143,6 @@ pub struct WgpuScene3DRuntime {
     pub pbr_sample_ibl_cube_view: Option<crate::OpaqueHostValue>,
     pub pbr_sample_layout: Option<crate::OpaqueHostValue>,
     pub pbr_sample_shadow_view: Option<crate::OpaqueHostValue>,
-    pub material_registry: Vec<(Kind, WgpuMeshMaterialRenderer)>,
-    pub modifier_snippet_registry: Option<ModifierRegistry>,
-    pub modifier_snippet_revision: f64,
     pub opaque_draw_list: Vec<WgpuScene3DDrawEntry>,
     pub opaque_pool: Vec<WgpuScene3DDrawEntry>,
     pub pending_draw_offset: f64,
@@ -166,9 +163,21 @@ pub struct WgpuScene3DRuntime {
     pub shaded_material_plan_cache: Vec<(crate::OpaqueHostValue, crate::OpaqueHostValue)>,
     pub skin_draw_bind_group: Option<crate::OpaqueHostValue>,
     pub skin_draw_bind_group_layout: Option<crate::OpaqueHostValue>,
-    pub skin_palette_capacity: f64,
+    pub skin_mesh_draw_bind_group: Option<crate::OpaqueHostValue>,
+    pub skin_mesh_draw_bind_group_layout: Option<crate::OpaqueHostValue>,
+    pub skin_arena_frame: Option<crate::OpaqueHostValue>,
+    pub skin_normal_palette_arena_bases: Option<Vec<(Vec<f32>, f64)>>,
+    pub skin_normal_palette_arena_cursor: f64,
+    pub skin_normal_palette_arena_rows: f64,
+    pub skin_normal_palette_texture: Option<crate::OpaqueHostValue>,
+    pub skin_normal_palette_view: Option<crate::OpaqueHostValue>,
+    pub skin_palette_arena_bases: Option<Vec<(Vec<f32>, f64)>>,
+    pub skin_palette_arena_cursor: f64,
+    pub skin_palette_arena_rows: f64,
     pub skin_palette_texture: Option<crate::OpaqueHostValue>,
     pub skin_palette_view: Option<crate::OpaqueHostValue>,
+    pub pending_skin_normal_palette_base: f64,
+    pub pending_skin_palette_base: f64,
     pub skinning_adapter: Option<crate::OpaqueHostValue>,
     pub upload_cache: Vec<(crate::OpaqueHostValue, WgpuMeshUpload)>,
 }
@@ -178,14 +187,14 @@ impl PartialEq for WgpuScene3DRuntime {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:184 (sha256:5ded44df647ee2b8cd70a1c2fac7b6afdecf21d4ad1b059efa421212360c4c4d)
+// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:220 (sha256:31d73dbaa19b2ef6cf67f3fadd4a1b5319ee6881fb53b0fa1213c11a3b34115d)
 #[derive(Clone, Default)]
 pub struct WgpuMeshUpload {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub index_buffer: Option<crate::OpaqueHostValue>,
     pub index_count: f64,
-    pub index_format: crate::OpaqueHostValue,
+    pub index_format: Option<crate::OpaqueHostValue>,
     pub skin_bind_uploaded: Option<bool>,
     pub version: f64,
     pub vertex_buffer: crate::OpaqueHostValue,
@@ -196,7 +205,7 @@ impl PartialEq for WgpuMeshUpload {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:204 (sha256:71124ab66d3db75c82780773391a5291b531082454785c3c0049492c1e9d793a)
+// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:240 (sha256:71124ab66d3db75c82780773391a5291b531082454785c3c0049492c1e9d793a)
 #[derive(Clone, Default)]
 pub struct WgpuMaterialBinding {
     #[doc(hidden)]

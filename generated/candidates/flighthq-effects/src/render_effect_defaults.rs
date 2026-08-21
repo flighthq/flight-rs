@@ -96,7 +96,7 @@ pub fn normalize_render_effect(effect: &RenderEffect, out: &mut RenderEffect) ->
     return true;
 }
 
-// Source: upstream/packages/effects/src/renderEffectDefaults.ts:45 (sha256:4dda80e2c8be73ff8cd0146fac1fd4e23086dc254e6b9a36371d7719a055efd8)
+// Source: upstream/packages/effects/src/renderEffectDefaults.ts:45 (sha256:e1e3698858b3e485bb7385844930c3950b9e4776d83cbaf9077be81c1be3fcb9)
 static DEFAULTS: std::sync::LazyLock<Vec<(String, Vec<(String, crate::OpaqueHostValue)>)>> =
     std::sync::LazyLock::new(|| {
         let mut __flight_record = Vec::new();
@@ -159,7 +159,7 @@ static DEFAULTS: std::sync::LazyLock<Vec<(String, Vec<(String, crate::OpaqueHost
                 crate::FlightValue::Number(*(&__flight_portable_source) as f64)
             }));
             __flight_record.push(("highlightColor".to_owned(), {
-                let __flight_portable_source = 16777215.0_f64;
+                let __flight_portable_source = 4294967295.0_f64;
                 crate::FlightValue::Number(*(&__flight_portable_source) as f64)
             }));
             __flight_record.push(("quality".to_owned(), {
@@ -171,7 +171,7 @@ static DEFAULTS: std::sync::LazyLock<Vec<(String, Vec<(String, crate::OpaqueHost
                 crate::FlightValue::Number(*(&__flight_portable_source) as f64)
             }));
             __flight_record.push(("shadowColor".to_owned(), {
-                let __flight_portable_source = 0.0_f64;
+                let __flight_portable_source = 255.0_f64;
                 crate::FlightValue::Number(*(&__flight_portable_source) as f64)
             }));
             __flight_record.push(("sourceMode".to_owned(), {
@@ -559,7 +559,7 @@ static DEFAULTS: std::sync::LazyLock<Vec<(String, Vec<(String, crate::OpaqueHost
         __flight_record.push(("HalftoneEffect".to_owned(), {
             let mut __flight_record = Vec::new();
             __flight_record.push(("angle".to_owned(), {
-                let __flight_portable_source = 0.785_f64;
+                let __flight_portable_source = 45.0_f64;
                 crate::FlightValue::Number(*(&__flight_portable_source) as f64)
             }));
             __flight_record.push(("scale".to_owned(), {
@@ -583,7 +583,7 @@ static DEFAULTS: std::sync::LazyLock<Vec<(String, Vec<(String, crate::OpaqueHost
                 crate::FlightValue::Number(*(&__flight_portable_source) as f64)
             }));
             __flight_record.push(("color".to_owned(), {
-                let __flight_portable_source = 16711680.0_f64;
+                let __flight_portable_source = 4278190335.0_f64;
                 crate::FlightValue::Number(*(&__flight_portable_source) as f64)
             }));
             __flight_record.push(("quality".to_owned(), {
@@ -731,7 +731,7 @@ static DEFAULTS: std::sync::LazyLock<Vec<(String, Vec<(String, crate::OpaqueHost
                 crate::FlightValue::Number(*(&__flight_portable_source) as f64)
             }));
             __flight_record.push(("color".to_owned(), {
-                let __flight_portable_source = 16711680.0_f64;
+                let __flight_portable_source = 4278190335.0_f64;
                 crate::FlightValue::Number(*(&__flight_portable_source) as f64)
             }));
             __flight_record.push(("quality".to_owned(), {

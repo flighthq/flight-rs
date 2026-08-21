@@ -23,7 +23,7 @@ impl PartialEq for SharedStructuralRecord1 {
     }
 }
 
-// Source: upstream/packages/path-formats/src/svgPathData.ts:26 (sha256:9167f8486ff8309d236e8a36954c943903721ac23ca3ed984357c332d0165e88)
+// Source: upstream/packages/path-formats/src/svgPathData.ts:26 (sha256:47740f889abfd44be81e63395000f16345b23c75821a0adc73f58ce86f7c11e3)
 pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
     let length = (d.encode_utf16().count() as f64);
     let pos: std::sync::Arc<std::sync::Mutex<f64>> =
@@ -146,7 +146,7 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                     (*pos.lock().unwrap()) = exp_start;
                 }
             }
-            return Some((number.parse_float)(String::from_utf16_lossy(
+            let value = (number.parse_float)(String::from_utf16_lossy(
                 &(d).encode_utf16()
                     .skip((start) as usize)
                     .take(
@@ -154,7 +154,12 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                             .saturating_sub((start) as usize),
                     )
                     .collect::<Vec<u16>>(),
-            )));
+            ));
+            return if (value).is_finite() {
+                Some(value)
+            } else {
+                None
+            };
         }
     })
         as Box<dyn FnMut() -> Option<f64> + Send + 'static>));
@@ -637,7 +642,7 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
     return true;
 }
 
-// Source: upstream/packages/path-formats/src/svgPathData.ts:282 (sha256:55264b4768f768b2ea3800cf3ca542d138e2f3b9614d0a30a9a7c965bbd9e588)
+// Source: upstream/packages/path-formats/src/svgPathData.ts:283 (sha256:55264b4768f768b2ea3800cf3ca542d138e2f3b9614d0a30a9a7c965bbd9e588)
 pub fn format_svg_path_data(path: &Path, options: Option<SharedStructuralRecord1>) -> String {
     let precision = options.as_ref().and_then(|value| value.precision);
     let parts: std::sync::Arc<std::sync::Mutex<Vec<String>>> =
@@ -728,7 +733,7 @@ pub fn format_svg_path_data(path: &Path, options: Option<SharedStructuralRecord1
     return ((*parts.lock().unwrap()).join)("");
 }
 
-// Source: upstream/packages/path-formats/src/svgPathData.ts:313 (sha256:53f9355169e9a9fa6c28fe78487246e5ed91738942fde2c3834d0f527bcad355)
+// Source: upstream/packages/path-formats/src/svgPathData.ts:314 (sha256:53f9355169e9a9fa6c28fe78487246e5ed91738942fde2c3834d0f527bcad355)
 pub fn parse_svg_path_data(d: String) -> Option<Path> {
     let mut path = create_path(None);
     if (!append_svg_path_data(&mut path, (d).clone())) {
@@ -737,7 +742,7 @@ pub fn parse_svg_path_data(d: String) -> Option<Path> {
     return Some((path).clone());
 }
 
-// Source: upstream/packages/path-formats/src/svgPathData.ts:319 (sha256:3d55b5b9648b702cfeeefab18e92d5fe18956a550ceca1e8cd07b8810e636fef)
+// Source: upstream/packages/path-formats/src/svgPathData.ts:320 (sha256:3d55b5b9648b702cfeeefab18e92d5fe18956a550ceca1e8cd07b8810e636fef)
 fn format_svg_number(value: f64, precision: Option<f64>) -> String {
     if (precision).is_none() {
         return string(value);
@@ -746,7 +751,7 @@ fn format_svg_number(value: f64, precision: Option<f64>) -> String {
     return string(((value * factor).round() / factor));
 }
 
-// Source: upstream/packages/path-formats/src/svgPathData.ts:326 (sha256:b96909a1054a73f2443e51c64f02be6673290494c302b7d1aa6b231cb00d229a)
+// Source: upstream/packages/path-formats/src/svgPathData.ts:327 (sha256:b96909a1054a73f2443e51c64f02be6673290494c302b7d1aa6b231cb00d229a)
 fn is_svg_command_letter(c: String) -> bool {
     return (("MmLlHhVvCcSsQqTtAaZz".index_of)(c) != (-1.0_f64));
 }

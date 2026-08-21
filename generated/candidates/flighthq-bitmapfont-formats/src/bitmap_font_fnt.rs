@@ -6,14 +6,14 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::build_bitmap_font_from_record;
+use crate::{build_bitmap_font_from_record, report_dropped_bitmap_font_records};
 use flighthq_bitmapfont::{get_bitmap_font_metrics, unpack_bitmap_font_kerning_key};
 use flighthq_types::{
     BitmapFont, BitmapFontCharRecord, BitmapFontKerningPair, BitmapFontKerningRecord,
-    BitmapFontPageRecord, BitmapFontParseOptions, BitmapFontRecord,
+    BitmapFontPageRecord, BitmapFontParseOptions, BitmapFontRecord, ImportDiagnostic,
 };
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:23 (sha256:9066ea98917c13dfc3e2172f24e9617d31bb81e32d11fd5a2e19c658190d933d)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:24 (sha256:9066ea98917c13dfc3e2172f24e9617d31bb81e32d11fd5a2e19c658190d933d)
 pub fn format_bitmap_font_fnt(font: &BitmapFont) -> String {
     let metrics = get_bitmap_font_metrics(font);
     let line_height = ((metrics.ascent + metrics.descent) + metrics.line_gap);
@@ -120,12 +120,13 @@ pub fn format_bitmap_font_fnt(font: &BitmapFont) -> String {
     return ((lines.join)("\n") + "\n");
 }
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:70 (sha256:c42d4ad04ba342517df76eb8c8859fdc40889dc37715254b4a79eff0307298ea)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:71 (sha256:0fb0bf39ba0e8dd8e474465330f02940ea1e00f04392b1c8e8e7dfc25f49d784)
 pub fn parse_bitmap_font_fnt(
     text: String,
     options: Option<BitmapFontParseOptions>,
+    mut diagnostics: Option<Vec<ImportDiagnostic>>,
 ) -> Option<BitmapFont> {
-    let record = parse_bitmap_font_fnt_record((text).clone());
+    let record = parse_bitmap_font_fnt_record((text).clone(), ((diagnostics).clone()).clone());
     if (record).is_none() {
         return None;
     }
@@ -135,13 +136,19 @@ pub fn parse_bitmap_font_fnt(
     );
 }
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:79 (sha256:e23c8a29db1a156d98532613a4ef71de7976db5eab0a5670f19d3c07e321f640)
-fn parse_bitmap_font_fnt_record(text: String) -> Option<BitmapFontRecord> {
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:84 (sha256:1396acdf14a6410d53d6ec9c15a57dd30c62660b5c17b7ce53702917d9d694c3)
+fn parse_bitmap_font_fnt_record(
+    text: String,
+    diagnostics: Option<Vec<ImportDiagnostic>>,
+) -> Option<BitmapFontRecord> {
     let mut line_height: Option<f64> = None;
     let mut base: Option<f64> = None;
     let mut pages: Vec<BitmapFontPageRecord> = vec![];
     let mut chars: Vec<BitmapFontCharRecord> = vec![];
     let mut kernings: Vec<BitmapFontKerningRecord> = vec![];
+    let mut dropped_pages = 0.0_f64;
+    let mut dropped_chars = 0.0_f64;
+    let mut dropped_kernings = 0.0_f64;
     for raw_line in ((regex::RegexBuilder::new("\\r\\n?|\\n")
         .case_insensitive(false)
         .multi_line(false)
@@ -210,7 +217,12 @@ fn parse_bitmap_font_fnt_record(text: String) -> Option<BitmapFontRecord> {
                         .expect("TypeScript Record key was absent"))
                     .clone(),
                 ));
-                if (id).is_some() {
+                if (id).is_none() {
+                    {
+                        dropped_pages += 1.0;
+                        dropped_pages
+                    };
+                } else {
                     pages.push(BitmapFontPageRecord {
                         __flight_identity: std::sync::Arc::new(()),
                         file: fields
@@ -224,13 +236,23 @@ fn parse_bitmap_font_fnt_record(text: String) -> Option<BitmapFontRecord> {
             } else {
                 if (tag == "char") {
                     let char = read_fnt_char(&fields);
-                    if ((char).clone()).is_some() {
+                    if ((char).clone()).is_none() {
+                        {
+                            dropped_chars += 1.0;
+                            dropped_chars
+                        };
+                    } else {
                         chars.push(((char.as_ref().unwrap()).clone()).clone());
                     }
                 } else {
                     if (tag == "kerning") {
                         let kerning = read_fnt_kerning(&fields);
-                        if ((kerning).clone()).is_some() {
+                        if ((kerning).clone()).is_none() {
+                            {
+                                dropped_kernings += 1.0;
+                                dropped_kernings
+                            };
+                        } else {
                             kernings.push(((kerning.as_ref().unwrap()).clone()).clone());
                         }
                     }
@@ -238,6 +260,13 @@ fn parse_bitmap_font_fnt_record(text: String) -> Option<BitmapFontRecord> {
             }
         }
     }
+    report_dropped_bitmap_font_records(
+        ((diagnostics).clone()).clone(),
+        "parseBitmapFontFntRecord".to_owned(),
+        dropped_pages,
+        dropped_chars,
+        dropped_kernings,
+    );
     if (((line_height).is_none()) || ((base).is_none())) || ((chars.len() as f64) == 0.0_f64) {
         return None;
     }
@@ -252,7 +281,7 @@ fn parse_bitmap_font_fnt_record(text: String) -> Option<BitmapFontRecord> {
     });
 }
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:114 (sha256:220544cc241ccf8ae5b74176f788cd6e3b1b2fd0cfe8fa87b012c9a310e21bc1)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:128 (sha256:220544cc241ccf8ae5b74176f788cd6e3b1b2fd0cfe8fa87b012c9a310e21bc1)
 #[derive(Clone, Default)]
 struct ParseFntFieldsRecord1 {
     __flight_identity: std::sync::Arc<()>,
@@ -307,7 +336,7 @@ fn parse_fnt_fields(rest: String) -> Vec<(String, String)> {
     return fields;
 }
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:124 (sha256:e9ec04962c1833deb51d449cae0e2ac62efddcc46ec756b1c89c5d2c713d5de0)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:138 (sha256:e9ec04962c1833deb51d449cae0e2ac62efddcc46ec756b1c89c5d2c713d5de0)
 fn read_fnt_char(fields: &Vec<(String, String)>) -> Option<BitmapFontCharRecord> {
     let id = read_fnt_number(Some(
         (fields
@@ -403,7 +432,7 @@ fn read_fnt_char(fields: &Vec<(String, String)>) -> Option<BitmapFontCharRecord>
     });
 }
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:148 (sha256:163dd9f2cc4b00d747ce9e81b378c96d30f120670dc9661243b8de447c50cb8a)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:162 (sha256:163dd9f2cc4b00d747ce9e81b378c96d30f120670dc9661243b8de447c50cb8a)
 fn read_fnt_kerning(fields: &Vec<(String, String)>) -> Option<BitmapFontKerningRecord> {
     let first = read_fnt_number(Some(
         (fields
@@ -440,7 +469,7 @@ fn read_fnt_kerning(fields: &Vec<(String, String)>) -> Option<BitmapFontKerningR
     });
 }
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:158 (sha256:061d1555bcce0612a142320f51716accd695dcd24345b46d2f9dc0143fad2697)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:172 (sha256:061d1555bcce0612a142320f51716accd695dcd24345b46d2f9dc0143fad2697)
 fn read_fnt_number(value: Option<String>) -> Option<f64> {
     if ((value).is_none()) || ((value).trim().to_owned() == "") {
         return None;
@@ -453,7 +482,7 @@ fn read_fnt_number(value: Option<String>) -> Option<f64> {
     };
 }
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:166 (sha256:cac4787060332e3ffccce6a1df878b38cee7320de3329eba61bb6c8a79036bb3)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:180 (sha256:cac4787060332e3ffccce6a1df878b38cee7320de3329eba61bb6c8a79036bb3)
 static _KERNING_PAIR: std::sync::LazyLock<std::sync::Mutex<BitmapFontKerningPair>> =
     std::sync::LazyLock::new(|| {
         std::sync::Mutex::new(BitmapFontKerningPair {

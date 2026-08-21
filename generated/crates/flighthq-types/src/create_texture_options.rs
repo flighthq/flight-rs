@@ -23,3 +23,6 @@ impl PartialEq for CreateTextureOptions {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+
+// Source: upstream/packages/types/src/CreateTextureOptions.ts:17 (sha256:c5ac4dad09322cb49bb960424d2e180f10c87ab312249f15fafdecb0e2f4f268)
+pub type CreateTexture2DOptions = CreateTextureOptions;

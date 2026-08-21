@@ -55,5 +55,5 @@ impl crate::FlightEntity for HemisphereLight {
     }
 }
 
-// Source: upstream/packages/types/src/HemisphereLight.ts:12 (sha256:268a35ad8a408e13922dadea642d2b952717c9e53a8781f99f739e86a679b98a)
+// Source: upstream/packages/types/src/HemisphereLight.ts:14 (sha256:268a35ad8a408e13922dadea642d2b952717c9e53a8781f99f739e86a679b98a)
 pub const HEMISPHERE_LIGHT_KIND: &'static str = "HemisphereLight";

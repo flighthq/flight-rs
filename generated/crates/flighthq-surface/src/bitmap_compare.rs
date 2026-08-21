@@ -6,12 +6,12 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_types::{Bitmap, BitmapMismatch};
+use flighthq_types::BitmapMismatch;
 
-// Source: upstream/packages/bitmap/src/bitmapCompare.ts:46 (sha256:a10b53c95ced94e765c594cf08e313c2dafa7b358b150eebb4e545247da40e68)
+// Source: upstream/packages/bitmap/src/bitmapCompare.ts:53 (sha256:c3547aceb9449c56113872d599c79e28078cb5dd0ebfb48d4976232d1821556b)
 pub fn get_bitmap_mismatch(
-    source: &Bitmap,
-    other: &Bitmap,
+    source: BitmapComparisonSource,
+    other: BitmapComparisonSource,
     channel_tolerance: Option<f64>,
 ) -> BitmapMismatch {
     let channel_tolerance = channel_tolerance.unwrap_or(0.0_f64);
@@ -24,22 +24,18 @@ pub fn get_bitmap_mismatch(
             )
         );
     }
+    let a = source.data;
+    let b = other.data;
     let total_pixels = (source.width * source.height);
     let mut mismatched_pixels = 0.0_f64;
     let mut max_channel_delta = 0.0_f64;
     {
         let mut i = 0.0_f64;
-        while (i < (source.data.len() as f64)) {
-            let dr = ((source.data[i as usize] as f64) - (other.data[i as usize] as f64)).abs();
-            let dg = ((source.data[(i + 1.0_f64) as usize] as f64)
-                - (other.data[(i + 1.0_f64) as usize] as f64))
-                .abs();
-            let db = ((source.data[(i + 2.0_f64) as usize] as f64)
-                - (other.data[(i + 2.0_f64) as usize] as f64))
-                .abs();
-            let da = ((source.data[(i + 3.0_f64) as usize] as f64)
-                - (other.data[(i + 3.0_f64) as usize] as f64))
-                .abs();
+        while (i < a.length) {
+            let dr = (a[i as usize].clone() - b[i as usize].clone()).abs();
+            let dg = (a[(i + 1.0_f64) as usize].clone() - b[(i + 1.0_f64) as usize].clone()).abs();
+            let db = (a[(i + 2.0_f64) as usize].clone() - b[(i + 2.0_f64) as usize].clone()).abs();
+            let da = (a[(i + 3.0_f64) as usize].clone() - b[(i + 3.0_f64) as usize].clone()).abs();
             let pixel_delta = (((dr).max(dg)).max(db)).max(da);
             if (pixel_delta > max_channel_delta) {
                 max_channel_delta = pixel_delta;

@@ -62,7 +62,7 @@ pub fn next_power_of_two(mut n: f64) -> f64 {
     return (__flight_js_to_u32((n + 1.0_f64)) >> (__flight_js_to_u32(0.0_f64) & 31)) as f64;
 }
 
-// Source: upstream/packages/math/src/nextPowerOfTwo.ts:41 (sha256:8ea939a05d9008d9252ccbe6072de4c00babae51ccc9b4e0fd148026bffe1db8)
+// Source: upstream/packages/math/src/nextPowerOfTwo.ts:41 (sha256:8c17500aa8b72d7a09133f87f994ef90afd3f99af3031ad1663dc079003b9413)
 pub fn previous_power_of_two(mut n: f64) -> f64 {
     if (n <= 1.0_f64) {
         return 1.0_f64;
@@ -83,5 +83,5 @@ pub fn previous_power_of_two(mut n: f64) -> f64 {
     n = (__flight_js_to_i32(n)
         | __flight_js_to_i32((__flight_js_to_i32(n) >> (__flight_js_to_u32(16.0_f64) & 31)) as f64))
         as f64;
-    return (__flight_js_to_i32((n + 1.0_f64)) >> (__flight_js_to_u32(1.0_f64) & 31)) as f64;
+    return (__flight_js_to_u32((n + 1.0_f64)) >> (__flight_js_to_u32(1.0_f64) & 31)) as f64;
 }

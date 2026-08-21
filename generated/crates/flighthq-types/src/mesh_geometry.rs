@@ -60,7 +60,7 @@ impl PartialEq for MeshSubset {
     }
 }
 
-// Source: upstream/packages/types/src/MeshGeometry.ts:55 (sha256:ba607b6e53ee733bb8d2233cfaf78618ed0be454fbbe45809ec8977365013d83)
+// Source: upstream/packages/types/src/MeshGeometry.ts:56 (sha256:ba607b6e53ee733bb8d2233cfaf78618ed0be454fbbe45809ec8977365013d83)
 #[derive(Clone, Default)]
 pub struct MeshGeometry {
     #[doc(hidden)]
@@ -96,7 +96,7 @@ impl crate::FlightEntity for MeshGeometry {
     }
 }
 
-// Source: upstream/packages/types/src/MeshGeometry.ts:68 (sha256:fbdba96bdb857f605c2728ff8a5430d0e9c4bd9b38a190dc047bef58e3259f4b)
+// Source: upstream/packages/types/src/MeshGeometry.ts:69 (sha256:fbdba96bdb857f605c2728ff8a5430d0e9c4bd9b38a190dc047bef58e3259f4b)
 #[derive(Clone)]
 pub struct MeshGeometryGlData {
     #[doc(hidden)]
@@ -109,7 +109,7 @@ impl PartialEq for MeshGeometryGlData {
     }
 }
 
-// Source: upstream/packages/types/src/MeshGeometry.ts:75 (sha256:3b4297889845e25927078cdf90db397d4d03b88db80427dd743cffb2d74a0287)
+// Source: upstream/packages/types/src/MeshGeometry.ts:76 (sha256:3b4297889845e25927078cdf90db397d4d03b88db80427dd743cffb2d74a0287)
 #[derive(Clone)]
 pub struct MeshGeometryWgpuData {
     #[doc(hidden)]
@@ -122,5 +122,30 @@ impl PartialEq for MeshGeometryWgpuData {
     }
 }
 
-// Source: upstream/packages/types/src/MeshGeometry.ts:98 (sha256:09771ab81a3d8b9386f482e7a9b0d8e8bb9af7a1576510bd07568070f8cde3bd)
+// Source: upstream/packages/types/src/MeshGeometry.ts:96 (sha256:2bdbe3ada235694e4763bdd4790a27ed58622ac27fe80ef8d7378eebd44f0e9f)
+#[derive(Clone, Default)]
+pub struct MeshGeometryRuntimeRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub buffer: Vec<u8>,
+    pub byte_offset: f64,
+    pub byte_length: f64,
+    pub view: crate::OpaqueHostValue,
+}
+impl PartialEq for MeshGeometryRuntimeRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[doc(hidden)]
+pub struct MeshGeometryRuntimeStorage {
+    pub attribute_data_view: Option<MeshGeometryRuntimeRecord1>,
+}
+impl Default for MeshGeometryRuntimeStorage {
+    fn default() -> Self {
+        Self {
+            attribute_data_view: Default::default(),
+        }
+    }
+}
 pub type MeshGeometryRuntime = crate::EntityRuntime;

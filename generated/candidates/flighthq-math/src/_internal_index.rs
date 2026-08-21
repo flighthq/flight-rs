@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 pub use crate::{
-    DEG_TO_RAD, EPSILON, HALF_PI, RAD_TO_DEG, RandomSource, TAU, approx_equal,
+    CIRCLE_KAPPA, DEG_TO_RAD, EPSILON, HALF_PI, RAD_TO_DEG, RandomSource, TAU, approx_equal,
     approx_equal_relative, approx_zero, ceil_power_of_two, ceil_to, clamp, create_random_source,
     create_random_source_from_hash, damp, deg_to_rad, delta_angle, euclidean_mod, factorial,
     floor_power_of_two, floor_to, fract, gcd, hash_combine, hash_uint32, hash2_d, hash3_d, hypot2,

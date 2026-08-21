@@ -6,13 +6,14 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-// Source: upstream/packages/types/src/GlMatcapProgram.ts:6 (sha256:b6cfbc67234ee6691197d4fe73fa24e393307aa6e693bd47b74d22c9679f4c51)
+// Source: upstream/packages/types/src/GlMatcapProgram.ts:6 (sha256:a19c7bbcd3cdfe5fc836015697b57e6cbd0ed4f3d68799b5e875fe6b911138a2)
 #[derive(Clone, Default)]
 pub struct GlMatcapDefineKey {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha_mask_enabled: bool,
     pub has_matcap: bool,
+    pub has_skin: Option<bool>,
 }
 impl PartialEq for GlMatcapDefineKey {
     fn eq(&self, other: &Self) -> bool {
@@ -20,7 +21,7 @@ impl PartialEq for GlMatcapDefineKey {
     }
 }
 
-// Source: upstream/packages/types/src/GlMatcapProgram.ts:16 (sha256:97bd638a633ce260e33310e914fb6e0a453ebc2627245c8c8bf2e0e9838137c6)
+// Source: upstream/packages/types/src/GlMatcapProgram.ts:19 (sha256:97bd638a633ce260e33310e914fb6e0a453ebc2627245c8c8bf2e0e9838137c6)
 #[derive(Clone, Default)]
 pub struct GlMatcapProgram {
     #[doc(hidden)]
@@ -35,6 +36,7 @@ pub struct GlMatcapProgram {
     pub loc_object_alpha: Option<crate::OpaqueHostValue>,
     pub loc_alpha_is_coverage: Option<crate::OpaqueHostValue>,
     pub loc_joint_texture: Option<crate::OpaqueHostValue>,
+    pub loc_joint_normal_texture: Option<crate::OpaqueHostValue>,
     pub loc_model: Option<crate::OpaqueHostValue>,
     pub loc_normal_matrix: Option<crate::OpaqueHostValue>,
     pub loc_uv_transform: Option<crate::OpaqueHostValue>,

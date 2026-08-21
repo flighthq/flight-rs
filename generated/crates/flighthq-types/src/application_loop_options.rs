@@ -22,3 +22,6 @@ impl PartialEq for ApplicationLoopOptions {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+
+// Source: upstream/packages/types/src/ApplicationLoopOptions.ts:16 (sha256:8a7c0c469130a6cc35b8c50e765d3fd530180c658a7206b0a95cd97d08373c5d)
+pub type ApplicationStepOptions = ApplicationLoopOptions;

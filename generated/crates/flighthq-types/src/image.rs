@@ -52,3 +52,28 @@ impl crate::FlightEntity for Image {
         cloned
     }
 }
+
+// Source: upstream/packages/types/src/Image.ts:25 (sha256:eb1c241d794b5545f5457e91837b7a41e1948432da4b4664766c831666dbc786)
+#[derive(Clone)]
+pub struct ImageBackend {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub load_image_from_url: std::sync::Arc<
+        std::sync::Mutex<
+            Box<
+                dyn FnMut(
+                        String,
+                        Option<String>,
+                        Option<crate::OpaqueHostValue>,
+                    ) -> crate::FlightTask<Image>
+                    + Send
+                    + 'static,
+            >,
+        >,
+    >,
+}
+impl PartialEq for ImageBackend {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}

@@ -137,7 +137,7 @@ impl PartialEq for GridLayoutItemStyle {
 }
 
 // Source: upstream/packages/types/src/Layout.ts:71 (sha256:dcb64afdbc4634db6a19bccd9b239a2d46272227ea1bcc4547bb450d8e95b91f)
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct LayoutNode<ContainerStyle, ItemStyle> {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -145,6 +145,17 @@ pub struct LayoutNode<ContainerStyle, ItemStyle> {
     pub item_style: Option<ItemStyle>,
     pub kind: String,
     pub parent_index: f64,
+}
+impl<ContainerStyle, ItemStyle> Default for LayoutNode<ContainerStyle, ItemStyle> {
+    fn default() -> Self {
+        Self {
+            __flight_identity: Default::default(),
+            container_style: Default::default(),
+            item_style: Default::default(),
+            kind: Default::default(),
+            parent_index: Default::default(),
+        }
+    }
 }
 impl<ContainerStyle, ItemStyle> PartialEq for LayoutNode<ContainerStyle, ItemStyle> {
     fn eq(&self, other: &Self) -> bool {

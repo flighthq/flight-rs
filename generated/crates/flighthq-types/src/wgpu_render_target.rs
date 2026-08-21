@@ -8,7 +8,7 @@
 
 use crate::RenderTargetColorSpace;
 
-// Source: upstream/packages/types/src/WgpuRenderTarget.ts:3 (sha256:d5e40ef824804481c0135b2b35a6745fc6d84140f5c43fb4644b3a8af5a12b45)
+// Source: upstream/packages/types/src/WgpuRenderTarget.ts:3 (sha256:de5e0a1a5472a9b3ac12290774a86664d21b2546fec67a47cedd3b96b20ef04f)
 #[derive(Clone, Default)]
 pub struct WgpuRenderTarget {
     #[doc(hidden)]
@@ -20,6 +20,7 @@ pub struct WgpuRenderTarget {
     pub depth_stencil_texture: crate::OpaqueHostValue,
     pub depth_stencil_view: crate::OpaqueHostValue,
     pub format: crate::OpaqueHostValue,
+    pub sample_count: f64,
     pub clear_colors: Vec<f64>,
     pub clear_depth: f64,
     pub texture: crate::OpaqueHostValue,
@@ -31,7 +32,7 @@ impl PartialEq for WgpuRenderTarget {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderTarget.ts:26 (sha256:e26b8edd9106ce50ee4389b3903f4ce932dffc2f17e8369ef7e4f64bcb8b4b53)
+// Source: upstream/packages/types/src/WgpuRenderTarget.ts:29 (sha256:e26b8edd9106ce50ee4389b3903f4ce932dffc2f17e8369ef7e4f64bcb8b4b53)
 #[derive(Clone, Default)]
 pub struct WgpuRenderTargetPool {
     #[doc(hidden)]

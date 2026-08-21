@@ -84,5 +84,5 @@ impl crate::FlightEntity for TransmissionVolumePbrExtension {
     }
 }
 
-// Source: upstream/packages/types/src/TransmissionVolumePbrExtension.ts:19 (sha256:ab610befef1c8a46279b1fe1adb0f59e03374e44de4192c2848ea75f630f8009)
+// Source: upstream/packages/types/src/TransmissionVolumePbrExtension.ts:20 (sha256:ab610befef1c8a46279b1fe1adb0f59e03374e44de4192c2848ea75f630f8009)
 pub const TRANSMISSION_VOLUME_PBR_EXTENSION_KIND: &'static str = "TransmissionVolumePbrExtension";

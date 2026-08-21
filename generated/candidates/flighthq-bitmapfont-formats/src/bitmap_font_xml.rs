@@ -6,22 +6,23 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::build_bitmap_font_from_record;
+use crate::{build_bitmap_font_from_record, report_dropped_bitmap_font_records};
 use flighthq_types::{
     BitmapFont, BitmapFontCharRecord, BitmapFontKerningRecord, BitmapFontPageRecord,
-    BitmapFontParseOptions, BitmapFontRecord, XmlElement,
+    BitmapFontParseOptions, BitmapFontRecord, ImportDiagnostic, XmlElement,
 };
 use flighthq_xml::{
     get_xml_element_attribute, get_xml_element_attribute_number, get_xml_element_child_by_name,
     get_xml_element_children_by_name, parse_xml_document,
 };
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontXml.ts:25 (sha256:9a68c1623f2e120a120699af01da091963a308ad494eb6fd8d5f7213d04c25f3)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontXml.ts:26 (sha256:591346ce0864fbcfe9acdf9b94dd066372bb0c716d38c52d73fa3058dab40a72)
 pub fn parse_bitmap_font_xml(
     text: String,
     options: Option<BitmapFontParseOptions>,
+    mut diagnostics: Option<Vec<ImportDiagnostic>>,
 ) -> Option<BitmapFont> {
-    let record = parse_bitmap_font_xml_record((text).clone());
+    let record = parse_bitmap_font_xml_record((text).clone(), ((diagnostics).clone()).clone());
     if (record).is_none() {
         return None;
     }
@@ -31,8 +32,11 @@ pub fn parse_bitmap_font_xml(
     );
 }
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontXml.ts:33 (sha256:acc65f2c3182bcac1f536aacb47b497f1a12f7e3b5cbbc3259dfb8310f7bdf34)
-fn parse_bitmap_font_xml_record(text: String) -> Option<BitmapFontRecord> {
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontXml.ts:38 (sha256:85d55524b32023a9057dd6417cce5abf99a6b6e646b2ef2bab153cbda0e9ba17)
+fn parse_bitmap_font_xml_record(
+    text: String,
+    diagnostics: Option<Vec<ImportDiagnostic>>,
+) -> Option<BitmapFontRecord> {
     let root = parse_xml_document((text).clone());
     if ((root).is_none()) || ((root.as_ref().unwrap().name).clone() != "font") {
         return None;
@@ -48,6 +52,9 @@ fn parse_bitmap_font_xml_record(text: String) -> Option<BitmapFontRecord> {
         return None;
     }
     let mut pages: Vec<BitmapFontPageRecord> = vec![];
+    let mut dropped_pages = 0.0_f64;
+    let mut dropped_chars = 0.0_f64;
+    let mut dropped_kernings = 0.0_f64;
     let pages_element = get_xml_element_child_by_name(root.as_ref().unwrap(), "pages".to_owned());
     if (pages_element).is_some() {
         for page_element in
@@ -56,7 +63,12 @@ fn parse_bitmap_font_xml_record(text: String) -> Option<BitmapFontRecord> {
                 .cloned()
         {
             let id = get_xml_element_attribute_number(&page_element, "id".to_owned());
-            if (id).is_some() {
+            if (id).is_none() {
+                {
+                    dropped_pages += 1.0;
+                    dropped_pages
+                };
+            } else {
                 pages.push(BitmapFontPageRecord {
                     __flight_identity: std::sync::Arc::new(()),
                     file: (get_xml_element_attribute(&page_element, "file".to_owned()))
@@ -75,7 +87,12 @@ fn parse_bitmap_font_xml_record(text: String) -> Option<BitmapFontRecord> {
                 .cloned()
         {
             let char = read_xml_char(&char_element);
-            if ((char).clone()).is_some() {
+            if ((char).clone()).is_none() {
+                {
+                    dropped_chars += 1.0;
+                    dropped_chars
+                };
+            } else {
                 chars.push(((char.as_ref().unwrap()).clone()).clone());
             }
         }
@@ -95,11 +112,23 @@ fn parse_bitmap_font_xml_record(text: String) -> Option<BitmapFontRecord> {
         .cloned()
         {
             let kerning = read_xml_kerning(&kerning_element);
-            if ((kerning).clone()).is_some() {
+            if ((kerning).clone()).is_none() {
+                {
+                    dropped_kernings += 1.0;
+                    dropped_kernings
+                };
+            } else {
                 kernings.push(((kerning.as_ref().unwrap()).clone()).clone());
             }
         }
     }
+    report_dropped_bitmap_font_records(
+        ((diagnostics).clone()).clone(),
+        "parseBitmapFontXmlRecord".to_owned(),
+        dropped_pages,
+        dropped_chars,
+        dropped_kernings,
+    );
     return Some(BitmapFontRecord {
         __flight_identity: std::sync::Arc::new(()),
         base: (base).clone().unwrap(),
@@ -111,7 +140,7 @@ fn parse_bitmap_font_xml_record(text: String) -> Option<BitmapFontRecord> {
     });
 }
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontXml.ts:74 (sha256:04c5fb153376910e243deab138af00e02091efd913c14ffe7d834fe400181fa5)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontXml.ts:88 (sha256:04c5fb153376910e243deab138af00e02091efd913c14ffe7d834fe400181fa5)
 fn read_xml_char(element: &XmlElement) -> Option<BitmapFontCharRecord> {
     let id = get_xml_element_attribute_number(element, "id".to_owned());
     let x = get_xml_element_attribute_number(element, "x".to_owned());
@@ -143,7 +172,7 @@ fn read_xml_char(element: &XmlElement) -> Option<BitmapFontCharRecord> {
     });
 }
 
-// Source: upstream/packages/bitmapfont-formats/src/bitmapFontXml.ts:108 (sha256:ace4fc1703698b38e6f2359ba6f0f3af2adeac0b5f8c9f0602490e626783e93e)
+// Source: upstream/packages/bitmapfont-formats/src/bitmapFontXml.ts:122 (sha256:ace4fc1703698b38e6f2359ba6f0f3af2adeac0b5f8c9f0602490e626783e93e)
 fn read_xml_kerning(element: &XmlElement) -> Option<BitmapFontKerningRecord> {
     let first = get_xml_element_attribute_number(element, "first".to_owned());
     let second = get_xml_element_attribute_number(element, "second".to_owned());

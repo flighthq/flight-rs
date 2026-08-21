@@ -36,10 +36,10 @@
       "packageName": "@flighthq/app"
     },
     {
-      "declarations": 119,
+      "declarations": 125,
       "diagnostics": [],
       "files": 5,
-      "lowered": 119,
+      "lowered": 125,
       "packageName": "@flighthq/application"
     },
     {
@@ -71,10 +71,10 @@
       "packageName": "@flighthq/binpack"
     },
     {
-      "declarations": 183,
+      "declarations": 185,
       "diagnostics": [],
       "files": 44,
-      "lowered": 183,
+      "lowered": 185,
       "packageName": "@flighthq/bitmap"
     },
     {
@@ -85,10 +85,10 @@
       "packageName": "@flighthq/bitmapfont"
     },
     {
-      "declarations": 20,
+      "declarations": 21,
       "diagnostics": [],
       "files": 6,
-      "lowered": 20,
+      "lowered": 21,
       "packageName": "@flighthq/bitmapfont-formats"
     },
     {
@@ -99,10 +99,10 @@
       "packageName": "@flighthq/bitmaptext"
     },
     {
-      "declarations": 62,
+      "declarations": 76,
       "diagnostics": [],
-      "files": 17,
-      "lowered": 62,
+      "files": 19,
+      "lowered": 76,
       "packageName": "@flighthq/camera"
     },
     {
@@ -113,17 +113,17 @@
       "packageName": "@flighthq/camera-controls"
     },
     {
-      "declarations": 10,
+      "declarations": 13,
       "diagnostics": [],
       "files": 4,
-      "lowered": 10,
+      "lowered": 13,
       "packageName": "@flighthq/capture"
     },
     {
-      "declarations": 37,
+      "declarations": 36,
       "diagnostics": [],
       "files": 4,
-      "lowered": 37,
+      "lowered": 36,
       "packageName": "@flighthq/clip"
     },
     {
@@ -141,24 +141,24 @@
       "packageName": "@flighthq/clock"
     },
     {
-      "declarations": 136,
+      "declarations": 175,
       "diagnostics": [],
-      "files": 17,
-      "lowered": 136,
+      "files": 20,
+      "lowered": 175,
       "packageName": "@flighthq/collision"
     },
     {
-      "declarations": 31,
+      "declarations": 32,
       "diagnostics": [],
       "files": 11,
-      "lowered": 31,
+      "lowered": 32,
       "packageName": "@flighthq/color"
     },
     {
-      "declarations": 24,
+      "declarations": 30,
       "diagnostics": [],
       "files": 4,
-      "lowered": 24,
+      "lowered": 30,
       "packageName": "@flighthq/compression"
     },
     {
@@ -204,24 +204,24 @@
       "packageName": "@flighthq/effects"
     },
     {
-      "declarations": 104,
+      "declarations": 116,
       "diagnostics": [],
-      "files": 26,
-      "lowered": 104,
+      "files": 29,
+      "lowered": 116,
       "packageName": "@flighthq/effects-canvas"
     },
     {
-      "declarations": 298,
+      "declarations": 316,
       "diagnostics": [],
-      "files": 59,
-      "lowered": 298,
+      "files": 60,
+      "lowered": 316,
       "packageName": "@flighthq/effects-gl"
     },
     {
-      "declarations": 292,
+      "declarations": 318,
       "diagnostics": [],
-      "files": 57,
-      "lowered": 292,
+      "files": 58,
+      "lowered": 318,
       "packageName": "@flighthq/effects-wgpu"
     },
     {
@@ -253,6 +253,20 @@
       "packageName": "@flighthq/font"
     },
     {
+      "declarations": 127,
+      "diagnostics": [
+        {
+          "column": 3,
+          "line": 94,
+          "message": "Unsupported TypeScript statement InterfaceDeclaration",
+          "source": "upstream/packages/font-formats/src/woffFont.ts"
+        }
+      ],
+      "files": 17,
+      "lowered": 126,
+      "packageName": "@flighthq/font-formats"
+    },
+    {
       "declarations": 20,
       "diagnostics": [],
       "files": 3,
@@ -260,10 +274,10 @@
       "packageName": "@flighthq/geolocation"
     },
     {
-      "declarations": 397,
+      "declarations": 406,
       "diagnostics": [],
-      "files": 28,
-      "lowered": 397,
+      "files": 30,
+      "lowered": 406,
       "packageName": "@flighthq/geometry"
     },
     {
@@ -302,17 +316,17 @@
       "packageName": "@flighthq/host-tauri"
     },
     {
-      "declarations": 25,
+      "declarations": 36,
       "diagnostics": [],
-      "files": 5,
-      "lowered": 25,
+      "files": 6,
+      "lowered": 36,
       "packageName": "@flighthq/image"
     },
     {
-      "declarations": 30,
+      "declarations": 37,
       "diagnostics": [],
-      "files": 11,
-      "lowered": 30,
+      "files": 12,
+      "lowered": 37,
       "packageName": "@flighthq/image-codec"
     },
     {
@@ -386,10 +400,10 @@
       "packageName": "@flighthq/loader"
     },
     {
-      "declarations": 91,
+      "declarations": 92,
       "diagnostics": [],
       "files": 3,
-      "lowered": 91,
+      "lowered": 92,
       "packageName": "@flighthq/log"
     },
     {
@@ -400,10 +414,10 @@
       "packageName": "@flighthq/materials"
     },
     {
-      "declarations": 72,
+      "declarations": 80,
       "diagnostics": [],
       "files": 17,
-      "lowered": 72,
+      "lowered": 80,
       "packageName": "@flighthq/math"
     },
     {
@@ -428,10 +442,10 @@
       "packageName": "@flighthq/menu"
     },
     {
-      "declarations": 146,
+      "declarations": 152,
       "diagnostics": [],
-      "files": 15,
-      "lowered": 146,
+      "files": 16,
+      "lowered": 152,
       "packageName": "@flighthq/mesh"
     },
     {
@@ -456,10 +470,10 @@
       "packageName": "@flighthq/net"
     },
     {
-      "declarations": 154,
+      "declarations": 161,
       "diagnostics": [],
-      "files": 20,
-      "lowered": 154,
+      "files": 21,
+      "lowered": 161,
       "packageName": "@flighthq/node"
     },
     {
@@ -484,17 +498,17 @@
       "packageName": "@flighthq/particles"
     },
     {
-      "declarations": 150,
+      "declarations": 139,
       "diagnostics": [],
       "files": 16,
-      "lowered": 150,
+      "lowered": 139,
       "packageName": "@flighthq/particles-formats"
     },
     {
-      "declarations": 187,
+      "declarations": 186,
       "diagnostics": [],
       "files": 30,
-      "lowered": 187,
+      "lowered": 186,
       "packageName": "@flighthq/path"
     },
     {
@@ -519,11 +533,18 @@
       "packageName": "@flighthq/permissions"
     },
     {
-      "declarations": 229,
+      "declarations": 227,
       "diagnostics": [],
       "files": 21,
-      "lowered": 229,
+      "lowered": 227,
       "packageName": "@flighthq/physics2d"
+    },
+    {
+      "declarations": 301,
+      "diagnostics": [],
+      "files": 22,
+      "lowered": 301,
+      "packageName": "@flighthq/physics3d"
     },
     {
       "declarations": 49,
@@ -561,25 +582,53 @@
       "packageName": "@flighthq/quadbatch"
     },
     {
-      "declarations": 124,
+      "declarations": 12,
+      "diagnostics": [],
+      "files": 3,
+      "lowered": 12,
+      "packageName": "@flighthq/registry"
+    },
+    {
+      "declarations": 8,
+      "diagnostics": [],
+      "files": 4,
+      "lowered": 8,
+      "packageName": "@flighthq/registry-catalog"
+    },
+    {
+      "declarations": 2,
+      "diagnostics": [],
+      "files": 3,
+      "lowered": 2,
+      "packageName": "@flighthq/registry-codegen"
+    },
+    {
+      "declarations": 127,
       "diagnostics": [],
       "files": 23,
-      "lowered": 124,
+      "lowered": 127,
       "packageName": "@flighthq/render"
     },
     {
-      "declarations": 227,
+      "declarations": 230,
       "diagnostics": [],
       "files": 32,
-      "lowered": 227,
+      "lowered": 230,
       "packageName": "@flighthq/render-gl"
     },
     {
-      "declarations": 186,
+      "declarations": 209,
       "diagnostics": [],
-      "files": 27,
-      "lowered": 186,
+      "files": 28,
+      "lowered": 209,
       "packageName": "@flighthq/render-wgpu"
+    },
+    {
+      "declarations": 9,
+      "diagnostics": [],
+      "files": 4,
+      "lowered": 9,
+      "packageName": "@flighthq/requirements"
     },
     {
       "declarations": 40,
@@ -589,30 +638,30 @@
       "packageName": "@flighthq/scene2d"
     },
     {
-      "declarations": 175,
+      "declarations": 177,
       "diagnostics": [],
       "files": 41,
-      "lowered": 175,
+      "lowered": 177,
       "packageName": "@flighthq/scene2d-canvas"
     },
     {
-      "declarations": 122,
+      "declarations": 123,
       "diagnostics": [],
       "files": 32,
-      "lowered": 122,
+      "lowered": 123,
       "packageName": "@flighthq/scene2d-dom"
     },
     {
-      "declarations": 683,
+      "declarations": 709,
       "diagnostics": [],
       "files": 23,
-      "lowered": 683,
+      "lowered": 709,
       "packageName": "@flighthq/scene2d-formats"
     },
     {
       "declarations": 216,
       "diagnostics": [],
-      "files": 32,
+      "files": 31,
       "lowered": 216,
       "packageName": "@flighthq/scene2d-gl"
     },
@@ -624,45 +673,45 @@
       "packageName": "@flighthq/scene2d-resources"
     },
     {
-      "declarations": 222,
+      "declarations": 220,
       "diagnostics": [],
-      "files": 32,
-      "lowered": 222,
+      "files": 31,
+      "lowered": 220,
       "packageName": "@flighthq/scene2d-wgpu"
     },
     {
-      "declarations": 78,
+      "declarations": 85,
       "diagnostics": [],
-      "files": 18,
-      "lowered": 78,
+      "files": 19,
+      "lowered": 85,
       "packageName": "@flighthq/scene3d"
     },
     {
-      "declarations": 393,
+      "declarations": 399,
       "diagnostics": [],
       "files": 27,
-      "lowered": 393,
+      "lowered": 399,
       "packageName": "@flighthq/scene3d-formats"
     },
     {
-      "declarations": 380,
+      "declarations": 401,
       "diagnostics": [],
       "files": 65,
-      "lowered": 380,
+      "lowered": 401,
       "packageName": "@flighthq/scene3d-gl"
     },
     {
-      "declarations": 70,
+      "declarations": 72,
       "diagnostics": [],
       "files": 28,
-      "lowered": 70,
+      "lowered": 72,
       "packageName": "@flighthq/scene3d-resources"
     },
     {
-      "declarations": 408,
+      "declarations": 431,
       "diagnostics": [],
       "files": 49,
-      "lowered": 408,
+      "lowered": 431,
       "packageName": "@flighthq/scene3d-wgpu"
     },
     {
@@ -694,17 +743,24 @@
       "packageName": "@flighthq/shading"
     },
     {
-      "declarations": 110,
-      "diagnostics": [],
-      "files": 15,
-      "lowered": 110,
+      "declarations": 181,
+      "diagnostics": [
+        {
+          "column": 5,
+          "line": 280,
+          "message": "Unsupported TypeScript object literal member",
+          "source": "upstream/packages/shape/src/shapeBounds.ts"
+        }
+      ],
+      "files": 19,
+      "lowered": 180,
       "packageName": "@flighthq/shape"
     },
     {
-      "declarations": 20,
+      "declarations": 21,
       "diagnostics": [],
       "files": 3,
-      "lowered": 20,
+      "lowered": 21,
       "packageName": "@flighthq/shape-formats"
     },
     {
@@ -736,24 +792,24 @@
       "packageName": "@flighthq/signals"
     },
     {
-      "declarations": 113,
+      "declarations": 115,
       "diagnostics": [],
       "files": 23,
-      "lowered": 113,
+      "lowered": 115,
       "packageName": "@flighthq/skeleton2d"
     },
     {
-      "declarations": 158,
+      "declarations": 167,
       "diagnostics": [],
       "files": 8,
-      "lowered": 158,
+      "lowered": 167,
       "packageName": "@flighthq/skeleton2d-formats"
     },
     {
-      "declarations": 25,
+      "declarations": 34,
       "diagnostics": [],
-      "files": 9,
-      "lowered": 25,
+      "files": 10,
+      "lowered": 34,
       "packageName": "@flighthq/skeleton3d"
     },
     {
@@ -771,10 +827,10 @@
       "packageName": "@flighthq/socket"
     },
     {
-      "declarations": 37,
+      "declarations": 34,
       "diagnostics": [],
       "files": 6,
-      "lowered": 37,
+      "lowered": 34,
       "packageName": "@flighthq/spatial"
     },
     {
@@ -792,10 +848,10 @@
       "packageName": "@flighthq/spritesheet"
     },
     {
-      "declarations": 74,
+      "declarations": 79,
       "diagnostics": [],
       "files": 12,
-      "lowered": 74,
+      "lowered": 79,
       "packageName": "@flighthq/spritesheet-formats"
     },
     {
@@ -820,10 +876,10 @@
       "packageName": "@flighthq/storage"
     },
     {
-      "declarations": 453,
+      "declarations": 462,
       "diagnostics": [],
-      "files": 13,
-      "lowered": 453,
+      "files": 15,
+      "lowered": 462,
       "packageName": "@flighthq/swf"
     },
     {
@@ -883,10 +939,10 @@
       "packageName": "@flighthq/textshaper-canvas"
     },
     {
-      "declarations": 69,
+      "declarations": 71,
       "diagnostics": [],
       "files": 9,
-      "lowered": 69,
+      "lowered": 71,
       "packageName": "@flighthq/texture"
     },
     {
@@ -904,10 +960,10 @@
       "packageName": "@flighthq/textureatlas"
     },
     {
-      "declarations": 26,
+      "declarations": 31,
       "diagnostics": [],
       "files": 7,
-      "lowered": 26,
+      "lowered": 31,
       "packageName": "@flighthq/textureatlas-formats"
     },
     {
@@ -932,6 +988,13 @@
       "packageName": "@flighthq/timeline"
     },
     {
+      "declarations": 3,
+      "diagnostics": [],
+      "files": 4,
+      "lowered": 3,
+      "packageName": "@flighthq/tool-registry"
+    },
+    {
       "declarations": 34,
       "diagnostics": [],
       "files": 4,
@@ -946,10 +1009,10 @@
       "packageName": "@flighthq/tween"
     },
     {
-      "declarations": 2315,
+      "declarations": 2432,
       "diagnostics": [],
-      "files": 860,
-      "lowered": 2315,
+      "files": 879,
+      "lowered": 2432,
       "packageName": "@flighthq/types"
     },
     {
@@ -988,19 +1051,19 @@
       "packageName": "@flighthq/webcam"
     },
     {
-      "declarations": 18,
+      "declarations": 19,
       "diagnostics": [],
       "files": 4,
-      "lowered": 18,
+      "lowered": 19,
       "packageName": "@flighthq/xml"
     }
   ],
   "schemaVersion": 1,
   "summary": {
-    "declarations": 13067,
-    "diagnostics": 0,
-    "files": 2515,
-    "lowered": 13067,
-    "packages": 142
+    "declarations": 14034,
+    "diagnostics": 2,
+    "files": 2614,
+    "lowered": 14032,
+    "packages": 149
   }
 }

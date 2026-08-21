@@ -6,18 +6,17 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_geometry::{contains_rectangle_point_xy, intersects_rectangle};
 use flighthq_types::{
-    RectangleLike, SpatialAabb, SpatialDeclineReason, SpatialIndexBackend,
-    SpatialIndexingExplanation, SpatialIndexingGuard, SpatialIndexingMode, SpatialIndexingNotice,
-    SpatialIndexingOperation, SpatialIndexingReason, SpatialObjectId, SpatialPair,
+    SpatialAabb2D, SpatialDeclineReason, SpatialIndexBackend2D, SpatialIndexingExplanation,
+    SpatialIndexingGuard, SpatialIndexingMode, SpatialIndexingNotice, SpatialIndexingOperation,
+    SpatialIndexingReason, SpatialObjectId, SpatialPair,
 };
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:31 (sha256:3436b79903acdb3a29ed03ace8cfbb58e4a7148e4de19d5659df39a42993f517)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:29 (sha256:3436b79903acdb3a29ed03ace8cfbb58e4a7148e4de19d5659df39a42993f517)
 pub const MAX_INDEXED_CELLS_PER_OBJECT: f64 = 1024.0_f64;
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:46 (sha256:f769f2ae91537ed369c3a6c7df19b997aff2760c786c829b07e51eba977b91da)
-pub fn create_uniform_grid_spatial_backend(cell_size: f64) -> SpatialIndexBackend {
+// Source: upstream/packages/spatial/src/uniformGrid.ts:44 (sha256:966a993aa0fb6ed461a5d13d3befaefaf9868c8618ae03eddc0790511eb79d51)
+pub fn create_uniform_grid_spatial_backend2_d(cell_size: f64) -> SpatialIndexBackend2D {
     let grid: std::sync::Arc<std::sync::Mutex<UniformGrid>> =
         std::sync::Arc::new(std::sync::Mutex::new(UniformGrid {
             __flight_identity: std::sync::Arc::new(()),
@@ -33,11 +32,11 @@ pub fn create_uniform_grid_spatial_backend(cell_size: f64) -> SpatialIndexBacken
             seen: Vec::new(),
             pair_ids: vec![],
         }));
-    return SpatialIndexBackend {
+    return SpatialIndexBackend2D {
         __flight_identity: std::sync::Arc::new(()),
         insert_spatial_object: std::sync::Arc::new(std::sync::Mutex::new(Box::new({
             let mut grid = grid.clone();
-            move |id: SpatialObjectId, bounds: SpatialAabb| -> bool {
+            move |id: SpatialObjectId, bounds: SpatialAabb2D| -> bool {
                 return _insert_into_grid(
                     &mut (*grid.lock().unwrap()),
                     id,
@@ -46,14 +45,14 @@ pub fn create_uniform_grid_spatial_backend(cell_size: f64) -> SpatialIndexBacken
                 );
             }
         })
-            as Box<dyn FnMut(SpatialObjectId, SpatialAabb) -> bool + Send + 'static>)),
+            as Box<dyn FnMut(SpatialObjectId, SpatialAabb2D) -> bool + Send + 'static>)),
         update_spatial_object: std::sync::Arc::new(std::sync::Mutex::new(Box::new({
             let mut grid = grid.clone();
-            move |id: SpatialObjectId, bounds: SpatialAabb| -> bool {
+            move |id: SpatialObjectId, bounds: SpatialAabb2D| -> bool {
                 return _update_grid_object(&mut (*grid.lock().unwrap()), id, &bounds);
             }
         })
-            as Box<dyn FnMut(SpatialObjectId, SpatialAabb) -> bool + Send + 'static>)),
+            as Box<dyn FnMut(SpatialObjectId, SpatialAabb2D) -> bool + Send + 'static>)),
         remove_spatial_object: std::sync::Arc::new(std::sync::Mutex::new(Box::new({
             let mut grid = grid.clone();
             move |id: SpatialObjectId| -> () {
@@ -110,11 +109,11 @@ pub fn create_uniform_grid_spatial_backend(cell_size: f64) -> SpatialIndexBacken
             as Box<dyn FnMut(Vec<SpatialPair>) -> () + Send + 'static>)),
         query_spatial_region: std::sync::Arc::new(std::sync::Mutex::new(Box::new({
             let mut grid = grid.clone();
-            move |region: SpatialAabb, mut out: Vec<SpatialObjectId>| -> () {
+            move |region: SpatialAabb2D, mut out: Vec<SpatialObjectId>| -> () {
                 _query_grid_region(&mut (*grid.lock().unwrap()), &region, &mut out);
             }
         })
-            as Box<dyn FnMut(SpatialAabb, Vec<SpatialObjectId>) -> () + Send + 'static>)),
+            as Box<dyn FnMut(SpatialAabb2D, Vec<SpatialObjectId>) -> () + Send + 'static>)),
         query_spatial_point: std::sync::Arc::new(std::sync::Mutex::new(Box::new({
             let mut grid = grid.clone();
             move |x: f64, y: f64, mut out: Vec<SpatialObjectId>| -> () {
@@ -132,12 +131,12 @@ pub fn create_uniform_grid_spatial_backend(cell_size: f64) -> SpatialIndexBacken
     };
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:101 (sha256:a7c50da57d96d2dc1fc6632b1a3cc89c156d199f2c3e75cb317e2e781ad58541)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:99 (sha256:a7c50da57d96d2dc1fc6632b1a3cc89c156d199f2c3e75cb317e2e781ad58541)
 pub fn set_spatial_indexing_guard(guard: Option<SpatialIndexingGuard>) -> () {
     (*_INDEXING_GUARD.lock().unwrap()) = (guard).clone();
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:108 (sha256:bf8ee7d148f40d101a35cf9e62d37751ed15b9b9ce6f5ad5dcbfcc8b44a4d9a1)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:106 (sha256:bf8ee7d148f40d101a35cf9e62d37751ed15b9b9ce6f5ad5dcbfcc8b44a4d9a1)
 #[derive(Clone, Default)]
 struct GridCell {
     #[doc(hidden)]
@@ -152,14 +151,14 @@ impl PartialEq for GridCell {
     }
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:125 (sha256:e90f56c3b1aac98be60e2eb58913c88a1ff8872b19244b5042a5604f73e5d839)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:123 (sha256:b250d19f277e6a68ba96f3acceaa4ab14f4153ce4c0834635c978ed262f4cc23)
 #[derive(Clone, Default)]
 struct UniformGrid {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub cell_size: f64,
     pub cells: Vec<(String, GridCell)>,
-    pub bounds: Vec<(SpatialObjectId, SpatialAabb)>,
+    pub bounds: Vec<(SpatialObjectId, SpatialAabb2D)>,
     pub overflow: Vec<SpatialObjectId>,
     pub declined: Vec<(SpatialObjectId, SpatialDeclineReason)>,
     pub min_cell_x: f64,
@@ -175,25 +174,17 @@ impl PartialEq for UniformGrid {
     }
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:141 (sha256:45dc8d4ede26d698e11710d2ab57bd04451e76c97cd4930c04a5008fa833df23)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:139 (sha256:45dc8d4ede26d698e11710d2ab57bd04451e76c97cd4930c04a5008fa833df23)
 fn _cell_index(coord: f64, cell_size: f64) -> f64 {
     return (coord / cell_size).floor();
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:147 (sha256:e8854bdbd64c484904fbf56d75556dd0d533af10ec478225ec75d36fa401f447)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:145 (sha256:e8854bdbd64c484904fbf56d75556dd0d533af10ec478225ec75d36fa401f447)
 fn _cell_key(cx: f64, cy: f64) -> String {
     return format!("{},{}", cx, cy);
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:154 (sha256:ce3c4ff15a7712b41d511998526502534dada38191dbf11e8b2eac09e9d621ba)
-fn _fill_rect_from_aabb(out: &mut RectangleLike, aabb: &SpatialAabb) -> () {
-    out.x = aabb.min_x;
-    out.y = aabb.min_y;
-    out.width = (aabb.max_x - aabb.min_x);
-    out.height = (aabb.max_y - aabb.min_y);
-}
-
-// Source: upstream/packages/spatial/src/uniformGrid.ts:162 (sha256:7cbb20339b0a28754d0a67d7f6a2a48e0c3689c564c0c486b26f74986929c4a9)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:150 (sha256:7cbb20339b0a28754d0a67d7f6a2a48e0c3689c564c0c486b26f74986929c4a9)
 fn _explain_grid_indexing(grid: &UniformGrid, id: SpatialObjectId) -> SpatialIndexingExplanation {
     let decline_reason = grid
         .declined
@@ -241,11 +232,11 @@ fn _explain_grid_indexing(grid: &UniformGrid, id: SpatialObjectId) -> SpatialInd
     };
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:186 (sha256:6e1ec6e8760462dfd6f614479044719fdc13bd2b406deb2d7351933e7210fff2)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:174 (sha256:9ef0f57aea5daabcbdb98c1722a4582fe6ef10d77c8847130eb9abd363ca6159)
 fn _insert_into_grid(
     grid: &mut UniformGrid,
     id: SpatialObjectId,
-    bounds: &SpatialAabb,
+    bounds: &SpatialAabb2D,
     operation: SpatialIndexingOperation,
 ) -> bool {
     if (((!(bounds.min_x).is_finite()) || (!(bounds.min_y).is_finite()))
@@ -302,7 +293,7 @@ fn _insert_into_grid(
         return false;
     }
     let cs = grid.cell_size;
-    let copy = SpatialAabb {
+    let copy = SpatialAabb2D {
         __flight_identity: std::sync::Arc::new(()),
         min_x: bounds.min_x,
         min_y: bounds.min_y,
@@ -449,8 +440,12 @@ fn _insert_into_grid(
     return true;
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:263 (sha256:a839e28dcf99cc1f15630c06947fe0b6b585757649f3ffd6827f178d43eef944)
-fn _update_grid_object(grid: &mut UniformGrid, id: SpatialObjectId, bounds: &SpatialAabb) -> bool {
+// Source: upstream/packages/spatial/src/uniformGrid.ts:251 (sha256:e1e648a622a015a0819fa39ff2eafda31435df98a27946b7577d522ec4a697e2)
+fn _update_grid_object(
+    grid: &mut UniformGrid,
+    id: SpatialObjectId,
+    bounds: &SpatialAabb2D,
+) -> bool {
     let was_missing = (!grid.bounds.iter().any(|(key, _)| key == &id))
         && (!grid.declined.iter().any(|(key, _)| key == &id));
     let mut previous = grid
@@ -499,23 +494,30 @@ fn _update_grid_object(grid: &mut UniformGrid, id: SpatialObjectId, bounds: &Spa
     return inserted;
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:302 (sha256:6e93e48516bee3191a99d57b52f08bae516d7aaa9db9b4a872b9cc7210e0c857)
-fn _is_spatial_aabb_contains_point(aabb: &SpatialAabb, x: f64, y: f64) -> bool {
-    _fill_rect_from_aabb(&mut (*_SCRATCH_RECT_A.lock().unwrap()), aabb);
-    return contains_rectangle_point_xy(&(*_SCRATCH_RECT_A.lock().unwrap()), x, y);
+// Source: upstream/packages/spatial/src/uniformGrid.ts:290 (sha256:408ff55d8a02bbae0b984e678720cb73cbfd0ad4c4c8d5e2e5e5fad3124b9dee)
+fn _is_spatial_aabb_contains_point(aabb: &SpatialAabb2D, x: f64, y: f64) -> bool {
+    let min_x = aabb.min_x;
+    let min_y = aabb.min_y;
+    let max_x = aabb.max_x;
+    let max_y = aabb.max_y;
+    return (((x >= min_x) && (x < max_x)) && (y >= min_y)) && (y < max_y);
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:309 (sha256:53abc16610bfda3196d454eca1e9916a07e7fefd8a647d079e0517307e58c4df)
-fn _is_spatial_aabb_overlapping(a: &SpatialAabb, b: &SpatialAabb) -> bool {
-    _fill_rect_from_aabb(&mut (*_SCRATCH_RECT_A.lock().unwrap()), a);
-    _fill_rect_from_aabb(&mut (*_SCRATCH_RECT_B.lock().unwrap()), b);
-    return intersects_rectangle(
-        &(*_SCRATCH_RECT_A.lock().unwrap()),
-        &(*_SCRATCH_RECT_B.lock().unwrap()),
-    );
+// Source: upstream/packages/spatial/src/uniformGrid.ts:299 (sha256:c6ad9e3b6b93168e38ca6eb12ec92525c896c888fe8a45cf1f21a40c33b44900)
+fn _is_spatial_aabb_overlapping(a: &SpatialAabb2D, b: &SpatialAabb2D) -> bool {
+    let a_min_x = a.min_x;
+    let a_min_y = a.min_y;
+    let a_max_x = a.max_x;
+    let a_max_y = a.max_y;
+    let b_min_x = b.min_x;
+    let b_min_y = b.min_y;
+    let b_max_x = b.max_x;
+    let b_max_y = b.max_y;
+    return (((a_min_x < b_max_x) && (a_max_x > b_min_x)) && (a_min_y < b_max_y))
+        && (a_max_y > b_min_y);
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:318 (sha256:5449163cc46e76efa44514082dc0053eb0d733df81ff6a4e3a9910a95513c606)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:314 (sha256:5449163cc46e76efa44514082dc0053eb0d733df81ff6a4e3a9910a95513c606)
 fn _ray_box_entry_t(
     ox: f64,
     oy: f64,
@@ -574,7 +576,7 @@ fn _ray_box_entry_t(
     return if (tmin > 0.0_f64) { tmin } else { 0.0_f64 };
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:367 (sha256:0cb1e297e85e9343d95a664ee22e439b5c0cc955fbefde284d664f6dc9676efa)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:363 (sha256:0cb1e297e85e9343d95a664ee22e439b5c0cc955fbefde284d664f6dc9676efa)
 fn _remove_from_grid(grid: &mut UniformGrid, id: SpatialObjectId) -> () {
     {
         let __flight_key = id;
@@ -698,7 +700,7 @@ fn _remove_from_grid(grid: &mut UniformGrid, id: SpatialObjectId) -> () {
     };
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:398 (sha256:09b882c0ea3d435f82ae51aa039af065b94171203651d284f481c9aeb2fb8447)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:394 (sha256:09b882c0ea3d435f82ae51aa039af065b94171203651d284f481c9aeb2fb8447)
 fn _query_grid_overflow_pairs(grid: &UniformGrid, out: &mut Vec<SpatialPair>) -> () {
     for id in ((grid.overflow).clone()).iter().cloned() {
         let bounds = grid
@@ -738,7 +740,7 @@ fn _query_grid_overflow_pairs(grid: &UniformGrid, out: &mut Vec<SpatialPair>) ->
     }
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:418 (sha256:677f4249db688911b2ed134c9d9b38826c3e71fc89c3f1204053832823b78c98)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:414 (sha256:677f4249db688911b2ed134c9d9b38826c3e71fc89c3f1204053832823b78c98)
 fn _query_grid_pairs(grid: &mut UniformGrid, out: &mut Vec<SpatialPair>) -> () {
     out.clear();
     let cs = grid.cell_size;
@@ -816,7 +818,7 @@ fn _query_grid_pairs(grid: &mut UniformGrid, out: &mut Vec<SpatialPair>) -> () {
     }
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:448 (sha256:7ef8d9b1f2cb0826f8c942cc22cce69a767dc403bf093d6753df7530e896f243)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:444 (sha256:7ef8d9b1f2cb0826f8c942cc22cce69a767dc403bf093d6753df7530e896f243)
 #[derive(Clone, Default)]
 struct ReportGridIndexingSynthesizedRecord2498162634 {
     __flight_identity: std::sync::Arc<()>,
@@ -870,7 +872,7 @@ fn _report_grid_indexing(
     };
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:464 (sha256:328856480673e52d18188cab1125aa4052d753f1995fafc145ba1bebf28c39df)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:460 (sha256:328856480673e52d18188cab1125aa4052d753f1995fafc145ba1bebf28c39df)
 fn _query_grid_point(grid: &UniformGrid, x: f64, y: f64, out: &mut Vec<SpatialObjectId>) -> () {
     out.clear();
     let cs = grid.cell_size;
@@ -907,7 +909,7 @@ fn _query_grid_point(grid: &UniformGrid, x: f64, y: f64, out: &mut Vec<SpatialOb
     }
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:484 (sha256:ff7406cdcac62d49a877dbbbf9f21580b03f65a6bdba4dfd00a0564fac7834aa)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:480 (sha256:ff7406cdcac62d49a877dbbbf9f21580b03f65a6bdba4dfd00a0564fac7834aa)
 fn _query_grid_ray(
     grid: &mut UniformGrid,
     ox: f64,
@@ -1066,10 +1068,10 @@ fn _query_grid_ray(
     }
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:583 (sha256:c63d57b69a82eba3fcb411bf9ffa05a33116c6c73ea9f6fe0a6fa659f169d58b)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:579 (sha256:3aa9ece908fb951b2b0def6783d54b5c6f6cb58f2cf811ccc74fe98b9d30f25d)
 fn _query_grid_region(
     grid: &mut UniformGrid,
-    region: &SpatialAabb,
+    region: &SpatialAabb2D,
     out: &mut Vec<SpatialObjectId>,
 ) -> () {
     out.clear();
@@ -1154,8 +1156,8 @@ fn _query_grid_region(
     }
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:622 (sha256:0edc315547c9c105649420254e5ac52c85ae60c636d2d599044a35fe3867185d)
-fn _spanned_cell_count(cell_size: f64, aabb: &SpatialAabb) -> f64 {
+// Source: upstream/packages/spatial/src/uniformGrid.ts:618 (sha256:07ca8ef38ea120b24487b9f3a36d938f256c662334b830e01df9f05df8953ec9)
+fn _spanned_cell_count(cell_size: f64, aabb: &SpatialAabb2D) -> f64 {
     let cx0 = _cell_index(aabb.min_x, cell_size);
     let cx1 = _cell_index(aabb.max_x, cell_size);
     let cy0 = _cell_index(aabb.min_y, cell_size);
@@ -1163,32 +1165,6 @@ fn _spanned_cell_count(cell_size: f64, aabb: &SpatialAabb) -> f64 {
     return (((cx1 - cx0) + 1.0_f64) * ((cy1 - cy0) + 1.0_f64));
 }
 
-// Source: upstream/packages/spatial/src/uniformGrid.ts:632 (sha256:e6864a197036faa67642beacf162e731f77ac0295548433db16db76e3f1cc9f1)
+// Source: upstream/packages/spatial/src/uniformGrid.ts:628 (sha256:e6864a197036faa67642beacf162e731f77ac0295548433db16db76e3f1cc9f1)
 static _INDEXING_GUARD: std::sync::LazyLock<std::sync::Mutex<Option<SpatialIndexingGuard>>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(None));
-
-// Source: upstream/packages/spatial/src/uniformGrid.ts:637 (sha256:e53c83de77d981abb41109e9c2682fcd2a6930d40c2c91c37b2afaaebbc9eb79)
-static _SCRATCH_RECT_A: std::sync::LazyLock<std::sync::Mutex<RectangleLike>> =
-    std::sync::LazyLock::new(|| {
-        std::sync::Mutex::new(RectangleLike {
-            __flight_identity: std::sync::Arc::new(()),
-            __flight_entity_runtime: Default::default(),
-            x: 0.0_f64,
-            y: 0.0_f64,
-            width: 0.0_f64,
-            height: 0.0_f64,
-        })
-    });
-
-// Source: upstream/packages/spatial/src/uniformGrid.ts:638 (sha256:27ab52f8e9c47f5e2ccd592369b83dc133972e262e313e3c499c245efa883daa)
-static _SCRATCH_RECT_B: std::sync::LazyLock<std::sync::Mutex<RectangleLike>> =
-    std::sync::LazyLock::new(|| {
-        std::sync::Mutex::new(RectangleLike {
-            __flight_identity: std::sync::Arc::new(()),
-            __flight_entity_runtime: Default::default(),
-            x: 0.0_f64,
-            y: 0.0_f64,
-            width: 0.0_f64,
-            height: 0.0_f64,
-        })
-    });

@@ -23,10 +23,10 @@ impl PartialEq for ShapeData {
     }
 }
 
-// Source: upstream/packages/types/src/Shape.ts:8 (sha256:de83fd4f0a2f021daf48183b706c012a4091bbe7d6343a3675067f6d0902e7e6)
+// Source: upstream/packages/types/src/Shape.ts:8 (sha256:6ee6f4f853471ed3dd42a4eb078b7ad478933ef0af344279df0501d28a950f48)
 pub type ShapeRuntime = crate::EntityRuntime;
 
-// Source: upstream/packages/types/src/Shape.ts:10 (sha256:2b31b5b9c65d277eeeeb327a2e2fcb4452dfbc7cb3117508c5bafbdd7d741f34)
+// Source: upstream/packages/types/src/Shape.ts:12 (sha256:2b31b5b9c65d277eeeeb327a2e2fcb4452dfbc7cb3117508c5bafbdd7d741f34)
 #[derive(Clone, Default)]
 pub struct Shape {
     #[doc(hidden)]
@@ -74,5 +74,5 @@ impl crate::FlightEntity for Shape {
     }
 }
 
-// Source: upstream/packages/types/src/Shape.ts:14 (sha256:84306ce1e997b8bc43d4762866739ca1062638686e16a02d87424e476b9e376e)
+// Source: upstream/packages/types/src/Shape.ts:16 (sha256:84306ce1e997b8bc43d4762866739ca1062638686e16a02d87424e476b9e376e)
 pub const SHAPE_KIND: &'static str = "Shape";

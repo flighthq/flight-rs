@@ -51,3 +51,43 @@ impl PartialEq for WgpuRenderEffectPipeline {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+
+// Source: upstream/packages/types/src/WgpuRenderEffectPipeline.ts:54 (sha256:a448719affdbe4b3bee9161799291715a66c5077aebfa488749aef959e96f759)
+pub type WgpuRenderEffectApplicationStatus = String;
+
+// Source: upstream/packages/types/src/WgpuRenderEffectPipeline.ts:62 (sha256:80df47c236a0be8f8f8c65094ce725003a23fcc7821dd35426171af61c391349)
+#[derive(Clone, Default)]
+pub struct WgpuRenderEffectApplicationExplanation {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub registered_count: f64,
+    pub requested_count: f64,
+    pub status: WgpuRenderEffectApplicationStatus,
+    pub unregistered_kinds: Vec<String>,
+}
+impl PartialEq for WgpuRenderEffectApplicationExplanation {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/WgpuRenderEffectPipeline.ts:72 (sha256:74953457a8bcd7c38685cd66d99f441b334b251ffc6a7ea900a73c84f24e64ea)
+pub type WgpuRenderEffectPipelineSkipGuard = std::sync::Arc<
+    std::sync::Mutex<Box<dyn FnMut(WgpuRenderState, String) -> () + Send + 'static>>,
+>;
+
+// Source: upstream/packages/types/src/WgpuRenderEffectPipeline.ts:76 (sha256:203dbdb946e3c38fbfd165441720f389d0369550a61cf0be59c48f3aedb5d281)
+pub type WgpuRenderEffectPipelineSampleCountGuard = std::sync::Arc<
+    std::sync::Mutex<Box<dyn FnMut(WgpuRenderState, f64, f64) -> () + Send + 'static>>,
+>;
+
+// Source: upstream/packages/types/src/WgpuRenderEffectPipeline.ts:82 (sha256:5ecb09a7d7550431036e0bc3702226ddb453918cfd8544a7908cc1712653d8b2)
+pub type WgpuRenderEffectApplicationGuard = std::sync::Arc<
+    std::sync::Mutex<
+        Box<
+            dyn FnMut(WgpuRenderState, WgpuRenderEffectApplicationExplanation) -> ()
+                + Send
+                + 'static,
+        >,
+    >,
+>;

@@ -17,6 +17,7 @@ members = [
   "flighthq-protocol",
   "flighthq-screen",
   "flighthq-signals",
+  "flighthq-spatial",
   "flighthq-spring",
   "flighthq-textbidi",
   "flighthq-textsegment",

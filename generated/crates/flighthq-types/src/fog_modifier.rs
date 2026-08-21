@@ -53,5 +53,5 @@ impl PartialEq for FogModifier {
     }
 }
 
-// Source: upstream/packages/types/src/FogModifier.ts:33 (sha256:f9be10bf3d22f5b02ac325c59b95d2de376e41eea75769877465c6d6634ddd18)
+// Source: upstream/packages/types/src/FogModifier.ts:34 (sha256:f9be10bf3d22f5b02ac325c59b95d2de376e41eea75769877465c6d6634ddd18)
 pub const FOG_MODIFIER_KIND: &'static str = "FogModifier";

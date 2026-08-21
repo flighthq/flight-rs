@@ -41,11 +41,8 @@ pub fn move_towards(current: f64, target: f64, max_delta: f64) -> f64 {
         } * max_delta));
 }
 
-// Source: upstream/packages/math/src/interpolationAdvanced.ts:44 (sha256:fbc32c6ba5fba3292893d1c2040b07cdf6b66fb15e329b35d4ae613773fff3c4)
+// Source: upstream/packages/math/src/interpolationAdvanced.ts:44 (sha256:143617a52088ac823b0b1fc6b3881062b71198923e4d34381f7265cef539015c)
 pub fn ping_pong(t: f64, length: f64) -> f64 {
-    if (length <= 0.0_f64) {
-        return 0.0_f64;
-    }
     let cycle = (2.0_f64 * length);
     let mod_ = (((t % cycle) + cycle) % cycle);
     return if (mod_ <= length) {
@@ -55,15 +52,12 @@ pub fn ping_pong(t: f64, length: f64) -> f64 {
     };
 }
 
-// Source: upstream/packages/math/src/interpolationAdvanced.ts:55 (sha256:e8c5d8dd8ea56df11acdb199050f62847c79ef6326f93c3c03229a6de32af292)
+// Source: upstream/packages/math/src/interpolationAdvanced.ts:58 (sha256:4043176670291537fd555f4934496882bdbeffa700b9e669b5a89e8e21219ee5)
 pub fn repeat(t: f64, length: f64) -> f64 {
-    if (length <= 0.0_f64) {
-        return 0.0_f64;
-    }
     return (((t % length) + length) % length);
 }
 
-// Source: upstream/packages/math/src/interpolationAdvanced.ts:66 (sha256:67e9832faf05b12214cf342c5996deacb2274acd920dd22244eae3b2bb832262)
+// Source: upstream/packages/math/src/interpolationAdvanced.ts:72 (sha256:67e9832faf05b12214cf342c5996deacb2274acd920dd22244eae3b2bb832262)
 pub fn smoother_step(edge0: f64, edge1: f64, x: f64) -> f64 {
     let t = ((x - edge0) / (edge1 - edge0));
     let s = if (t < 0.0_f64) {

@@ -55,5 +55,5 @@ impl crate::FlightEntity for SpotLight {
     }
 }
 
-// Source: upstream/packages/types/src/SpotLight.ts:26 (sha256:73bb7d27ca0a0a47cb52a7fc69a43e7d2dc3fc9800a4ca1a4f05304bd8810c98)
+// Source: upstream/packages/types/src/SpotLight.ts:27 (sha256:73bb7d27ca0a0a47cb52a7fc69a43e7d2dc3fc9800a4ca1a4f05304bd8810c98)
 pub const SPOT_LIGHT_KIND: &'static str = "SpotLight";

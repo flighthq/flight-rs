@@ -64,7 +64,7 @@ pub fn parse_xml_attributes(attrs: String) -> Vec<(String, String)> {
     return result;
 }
 
-// Source: upstream/packages/xml/src/xmlParse.ts:28 (sha256:c2ec91262260625cea9bdb958980ce529d2126f6fd32b2f3b254f162bf066abb)
+// Source: upstream/packages/xml/src/xmlParse.ts:28 (sha256:36866d62641b276cbeb91da3908318c5be1c75084f808948d9c6608a6539fec5)
 #[derive(Clone, Default)]
 struct ParseXmlDocumentRecord1 {
     __flight_identity: std::sync::Arc<()>,
@@ -78,6 +78,8 @@ impl PartialEq for ParseXmlDocumentRecord1 {
 #[derive(Clone, Default)]
 struct ParseXmlDocumentRecord2 {
     __flight_identity: std::sync::Arc<()>,
+    depth: f64,
+    depth_exceeded: bool,
     pos: f64,
 }
 impl PartialEq for ParseXmlDocumentRecord2 {
@@ -116,16 +118,20 @@ pub fn parse_xml_document(xml: String) -> Option<XmlElement> {
         expand_xml_entities((src).clone(), (entities).clone()),
         &mut ParseState {
             __flight_identity: std::sync::Arc::new(()),
+            depth: 0.0_f64,
+            depth_exceeded: false,
             pos: 0.0_f64,
         },
     );
 }
 
-// Source: upstream/packages/xml/src/xmlParse.ts:42 (sha256:9c67998340c6b093dfb9c8b8d29c8c1995935436f7e04c286d22775ca18ce3ee)
+// Source: upstream/packages/xml/src/xmlParse.ts:42 (sha256:d7c842382121a49f2a2bc98fa36aa2bb36359af6c889578171aa6ca444505e68)
 #[derive(Clone, Default)]
 struct ParseState {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    pub depth: f64,
+    pub depth_exceeded: bool,
     pub pos: f64,
 }
 impl PartialEq for ParseState {
@@ -134,16 +140,19 @@ impl PartialEq for ParseState {
     }
 }
 
-// Source: upstream/packages/xml/src/xmlParse.ts:47 (sha256:91c52a33034f8aa1e5130a26ef4eb6be0ae2b982174acfb791248c4a7e00b11f)
+// Source: upstream/packages/xml/src/xmlParse.ts:49 (sha256:91c52a33034f8aa1e5130a26ef4eb6be0ae2b982174acfb791248c4a7e00b11f)
 const MAX_XML_ENTITY_PASSES: f64 = 8.0_f64;
 
-// Source: upstream/packages/xml/src/xmlParse.ts:48 (sha256:ca8cc244421066cc8cdd8166f8f04c4dc862f3649453760ea571e8979017ea61)
+// Source: upstream/packages/xml/src/xmlParse.ts:50 (sha256:ca8cc244421066cc8cdd8166f8f04c4dc862f3649453760ea571e8979017ea61)
 const MAX_XML_ENTITY_GROWTH: f64 = 16.0_f64;
 
-// Source: upstream/packages/xml/src/xmlParse.ts:49 (sha256:3d0e7fc32770b869571e1fa579292d08a16401c068942338a0ad6887c7889f0c)
+// Source: upstream/packages/xml/src/xmlParse.ts:51 (sha256:3d0e7fc32770b869571e1fa579292d08a16401c068942338a0ad6887c7889f0c)
 const MAX_XML_ENTITY_BUDGET: f64 = 65536.0_f64;
 
-// Source: upstream/packages/xml/src/xmlParse.ts:51 (sha256:4c1a4958644317ca043e154870018f0f08c7d60d4431d228485642dcd7c9586e)
+// Source: upstream/packages/xml/src/xmlParse.ts:55 (sha256:5fedcf39ac246c9a0f25087290beb99df54d9a80003ae08838298cdb8e4913c0)
+const MAX_XML_ELEMENT_DEPTH: f64 = 256.0_f64;
+
+// Source: upstream/packages/xml/src/xmlParse.ts:57 (sha256:4c1a4958644317ca043e154870018f0f08c7d60d4431d228485642dcd7c9586e)
 static XML_ENTITIES: std::sync::LazyLock<Vec<(String, String)>> = std::sync::LazyLock::new(|| {
     let mut __flight_record = Vec::new();
     __flight_record.push(("amp".to_owned(), "&".to_owned()));
@@ -154,7 +163,7 @@ static XML_ENTITIES: std::sync::LazyLock<Vec<(String, String)>> = std::sync::Laz
     __flight_record
 });
 
-// Source: upstream/packages/xml/src/xmlParse.ts:71 (sha256:63809e1d1109649f96670ef219d1f6f45fb2a9e67901329f0b5aa17534397655)
+// Source: upstream/packages/xml/src/xmlParse.ts:77 (sha256:63809e1d1109649f96670ef219d1f6f45fb2a9e67901329f0b5aa17534397655)
 fn expand_xml_entities(src: String, entities: Vec<(String, String)>) -> String {
     let mut output = (src).clone();
     let budget =
@@ -215,7 +224,7 @@ fn expand_xml_entities(src: String, entities: Vec<(String, String)>) -> String {
     return output;
 }
 
-// Source: upstream/packages/xml/src/xmlParse.ts:88 (sha256:250cafe58791dc2518324d175e916c0e25f718a32d57c407bafde6272c8baf88)
+// Source: upstream/packages/xml/src/xmlParse.ts:94 (sha256:250cafe58791dc2518324d175e916c0e25f718a32d57c407bafde6272c8baf88)
 fn decode_xml_entities(s: String) -> String {
     return {
         let mut __flight_replace =
@@ -273,8 +282,12 @@ fn decode_xml_entities(s: String) -> String {
     };
 }
 
-// Source: upstream/packages/xml/src/xmlParse.ts:100 (sha256:6da049cc35a4d4c594444a8125ae0901e9e7003789feb1b7025785329dbd7a82)
+// Source: upstream/packages/xml/src/xmlParse.ts:106 (sha256:c7ece3c90f4a0fee6fba779e7752d8831ec8b4a0734d8f2da72f995992043c22)
 fn parse_element(src: String, state: &mut ParseState) -> Option<XmlElement> {
+    if (state.depth >= MAX_XML_ELEMENT_DEPTH) {
+        state.depth_exceeded = true;
+        return None;
+    }
     skip_whitespace((src).clone(), state);
     if (state.pos >= (src.encode_utf16().count() as f64))
         || (src[state.pos as usize].clone() != "<")
@@ -429,7 +442,18 @@ fn parse_element(src: String, state: &mut ParseState) -> Option<XmlElement> {
                 };
                 break;
             }
+            {
+                state.depth += 1.0;
+                state.depth
+            };
             let child = parse_element((src).clone(), state);
+            {
+                state.depth -= 1.0;
+                state.depth
+            };
+            if state.depth_exceeded {
+                return None;
+            }
             if ((child).clone()).is_some() {
                 children.push(((child.as_ref().unwrap()).clone()).clone());
                 content.push(
@@ -451,7 +475,7 @@ fn parse_element(src: String, state: &mut ParseState) -> Option<XmlElement> {
     });
 }
 
-// Source: upstream/packages/xml/src/xmlParse.ts:193 (sha256:8b165c706b68384ac4307222e85dcc19e0a696891ec44a55efdb1a50dacdcbda)
+// Source: upstream/packages/xml/src/xmlParse.ts:206 (sha256:8b165c706b68384ac4307222e85dcc19e0a696891ec44a55efdb1a50dacdcbda)
 fn skip_whitespace(src: String, state: &mut ParseState) -> () {
     while (state.pos < (src.encode_utf16().count() as f64))
         && ((regex::RegexBuilder::new("\\s")
@@ -469,7 +493,7 @@ fn skip_whitespace(src: String, state: &mut ParseState) -> () {
     }
 }
 
-// Source: upstream/packages/xml/src/xmlParse.ts:197 (sha256:7a46a3c2689e4a2acfb51e54dcb2ace37d130350ae6633e3a86b6ed6c9360711)
+// Source: upstream/packages/xml/src/xmlParse.ts:210 (sha256:7a46a3c2689e4a2acfb51e54dcb2ace37d130350ae6633e3a86b6ed6c9360711)
 fn strip_xml_comments(xml: String) -> String {
     let mut copy_start = 0.0_f64;
     let mut output = "";
@@ -529,7 +553,7 @@ fn strip_xml_comments(xml: String) -> String {
         ));
 }
 
-// Source: upstream/packages/xml/src/xmlParse.ts:229 (sha256:954be5d30230e6ab51775a59a19d79af69864b0600682453ef64b8b2a0741f71)
+// Source: upstream/packages/xml/src/xmlParse.ts:242 (sha256:954be5d30230e6ab51775a59a19d79af69864b0600682453ef64b8b2a0741f71)
 fn strip_xml_doctypes(xml: String, out: &mut Vec<(String, String)>) -> String {
     let mut copy_start = 0.0_f64;
     let mut output = "";
@@ -622,7 +646,7 @@ fn strip_xml_doctypes(xml: String, out: &mut Vec<(String, String)>) -> String {
         ));
 }
 
-// Source: upstream/packages/xml/src/xmlParse.ts:273 (sha256:138254e36b8b51442f232967462a2bae0ed911daab5cb6cc412cd2b508085b59)
+// Source: upstream/packages/xml/src/xmlParse.ts:286 (sha256:138254e36b8b51442f232967462a2bae0ed911daab5cb6cc412cd2b508085b59)
 fn collect_xml_entity_declarations(doctype: String, out: &mut Vec<(String, String)>) -> () {
     let declaration =
         regex::RegexBuilder::new("<!ENTITY\\s+([\\w:.-]+)\\s*(?:\"([^\"]*)\"|'([^']*)')\\s*>")

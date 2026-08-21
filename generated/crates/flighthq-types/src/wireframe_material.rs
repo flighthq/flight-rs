@@ -51,5 +51,5 @@ impl crate::FlightEntity for WireframeMaterial {
     }
 }
 
-// Source: upstream/packages/types/src/WireframeMaterial.ts:10 (sha256:7dbfd4ee27ef5f4bc7233365411505c7a4663bc33499cd7b4305b8769f71d6e5)
+// Source: upstream/packages/types/src/WireframeMaterial.ts:11 (sha256:7dbfd4ee27ef5f4bc7233365411505c7a4663bc33499cd7b4305b8769f71d6e5)
 pub const WIREFRAME_MATERIAL_KIND: &'static str = "WireframeMaterial";

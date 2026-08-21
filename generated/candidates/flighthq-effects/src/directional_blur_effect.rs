@@ -78,9 +78,9 @@ pub fn create_directional_blur_effect(options: Option<FlightOmitRecord1>) -> Dir
     };
 }
 
-// Source: upstream/packages/effects/src/directionalBlurEffect.ts:11 (sha256:09819816475204885beba4aea372f9e29bc82eb5fd0fb0ea6963ac158171b99a)
+// Source: upstream/packages/effects/src/directionalBlurEffect.ts:11 (sha256:93986a0c9fb77cd943bba0b78df84813f795b364804870a76b0f716eba645046)
 pub fn get_directional_blur_effect_padding(effect: &DirectionalBlurEffect) -> RenderEffectPadding {
-    let angle = (effect.angle).unwrap_or(0.0_f64);
+    let angle = (((effect.angle).unwrap_or(0.0_f64) * std::f64::consts::PI) / 180.0_f64);
     let half_length = ((0.0_f64).max((effect.length).unwrap_or(8.0_f64)) * 0.5_f64);
     let projected_x = ((angle).cos() * half_length).abs();
     let projected_y = ((angle).sin() * half_length).abs();
@@ -103,7 +103,7 @@ pub fn get_directional_blur_effect_padding(effect: &DirectionalBlurEffect) -> Re
     };
 }
 
-// Source: upstream/packages/effects/src/directionalBlurEffect.ts:21 (sha256:eabab599b02b269ae1bbf7674e94ba88262deb9f7ef034d3b25d09314ee02e20)
+// Source: upstream/packages/effects/src/directionalBlurEffect.ts:24 (sha256:eabab599b02b269ae1bbf7674e94ba88262deb9f7ef034d3b25d09314ee02e20)
 pub fn register_directional_blur_effect_padding_resolver(state: &RenderState) -> () {
     register_render_effect_padding_resolver(
         state,
@@ -119,7 +119,7 @@ pub fn register_directional_blur_effect_padding_resolver(state: &RenderState) ->
     );
 }
 
-// Source: upstream/packages/effects/src/directionalBlurEffect.ts:25 (sha256:503ab9621664634d8d734b5696249025d8913ea965108b9563f1fafb5c527c38)
+// Source: upstream/packages/effects/src/directionalBlurEffect.ts:28 (sha256:503ab9621664634d8d734b5696249025d8913ea965108b9563f1fafb5c527c38)
 fn resolve_directional_blur_effect_padding(effect: &RenderEffect) -> RenderEffectPadding {
     return get_directional_blur_effect_padding(&{
         let __flight_source = &((*effect).clone());

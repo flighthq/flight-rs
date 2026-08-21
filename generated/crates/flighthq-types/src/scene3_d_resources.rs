@@ -7,8 +7,8 @@
 #![allow(unused_parens)]
 
 use crate::{
-    EasingFunction, EntityRuntime, Image, ImageResourceFetch, ImageResourceReference, Kind,
-    Material, PbrExtension, ResourceLoader, Scene3D, Signal, Texture,
+    EasingFunction, EntityRuntime, ImageResourceFetch, ImageResourceReference, Kind, Material,
+    PbrExtension, ResourceLoader, Scene3D, Signal, Texture, TextureSource,
 };
 
 // Source: upstream/packages/types/src/Scene3DResources.ts:12 (sha256:01f0ceade3aac271f87c16f033daa7d69535116b19065ebfb5f58a01d2dda8db)
@@ -165,14 +165,14 @@ impl PartialEq for Scene3DResourceInFlight {
     }
 }
 
-// Source: upstream/packages/types/src/Scene3DResources.ts:53 (sha256:1a88b32407ec4e866c81dacc567c24c15122e2fea6540aaa7a45532c65af6067)
+// Source: upstream/packages/types/src/Scene3DResources.ts:53 (sha256:cca48392cc0563408359655051fa56fa10bc7f87bc7ff62ad06dc65a87430355)
 #[derive(Clone)]
 pub struct Scene3DResourceResolverRuntime {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub in_flight: Vec<(ImageResourceReference, Scene3DResourceInFlight)>,
     pub loader: ResourceLoader,
-    pub resolved: Vec<(ImageResourceReference, Image)>,
+    pub resolved: Vec<(ImageResourceReference, TextureSource)>,
     pub signals: Option<Scene3DResourceSignals>,
 }
 impl PartialEq for Scene3DResourceResolverRuntime {
@@ -322,14 +322,14 @@ impl PartialEq for ResolveScene3DResourcesOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Scene3DResources.ts:94 (sha256:26792be6d0ab2357fc1dcd9b7f3f8d42329eb0519b1934c5bfe4cf7bb60fab83)
+// Source: upstream/packages/types/src/Scene3DResources.ts:94 (sha256:a12571971c419e96f7482d4a994d45aa49bbe8bfa275dfd6ee4cece9788e46ba)
 #[derive(Clone)]
 pub struct Scene3DResourceResolution {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub ref_: ImageResourceReference,
     pub textures: Vec<Texture>,
-    pub image: Image,
+    pub source: TextureSource,
 }
 impl PartialEq for Scene3DResourceResolution {
     fn eq(&self, other: &Self) -> bool {

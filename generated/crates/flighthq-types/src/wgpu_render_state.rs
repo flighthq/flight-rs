@@ -7,10 +7,14 @@
 #![allow(unused_parens)]
 
 use crate::{
-    BlendMode, ColorScaleBias, EntityRuntime, Image, Kind, Matrix, RenderProxy2D,
-    RenderRegistrySignals, Scene2DClipHooks, Scene3DGraphSyncPolicy, TextureSource,
-    TintMaterialData, WgpuCompressedTextureUploader, WgpuMaterialRenderer,
-    WgpuMeshMaterialRenderer, WgpuRenderTarget, WgpuShapeMesh,
+    BlendMode, CanvasShapeCommand, ColorAdjustmentUnsupportedGuard, ColorScaleBias, EntityRuntime,
+    Image, KeyedTable, Matrix, Path, PathMesh, RenderEffectPaddingResolver, RenderProxy,
+    RenderProxy2D, RenderRegistrySignals, RenderRootGuard, RenderState, Renderer, Scene2DClipHooks,
+    Scene3DGraphSyncPolicy, ShapeRasterizer, SlotTable, StrokeStyle, TextureSource,
+    TintMaterialData, WgpuCompressedTextureDecoder, WgpuCompressedTextureUploader,
+    WgpuCustomMaterialShaderSource, WgpuMaterialRenderer, WgpuMeshMaterialRenderer,
+    WgpuModifierSnippet, WgpuRenderEffectRunner, WgpuRenderTarget, WgpuShapeMesh,
+    WgpuTextureResolver, WgpuVelocityWriter,
 };
 
 #[derive(Clone, Default)]
@@ -25,7 +29,7 @@ impl PartialEq for SharedStructuralRecord1 {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:26 (sha256:b04573db8382026a9e16cb4953f1dda844ec6cd863bf52f4cb3b0689edf3bda4)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:28 (sha256:b04573db8382026a9e16cb4953f1dda844ec6cd863bf52f4cb3b0689edf3bda4)
 #[derive(Clone, Default)]
 pub struct WgpuRenderState {
     #[doc(hidden)]
@@ -77,7 +81,57 @@ impl crate::FlightEntity for WgpuRenderState {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:41 (sha256:7db70fc400926f7c23e83eca154e3294581b61b582548d2dd1df3969f5bf7edb)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:38 (sha256:9fc24ca0be8f86d689020a89a978acdd3d9e5b24efa7cb8473fe58deb4f117df)
+#[derive(Clone, Default)]
+pub struct WgpuRenderRegistries {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub canvas_shape_commands: Option<KeyedTable<CanvasShapeCommand<crate::OpaqueHostValue>>>,
+    pub color_adjustments: Option<
+        SlotTable<
+            std::sync::Arc<
+                std::sync::Mutex<
+                    Box<
+                        dyn FnMut(RenderState, RenderProxy, Option<RenderProxy>) -> ()
+                            + Send
+                            + 'static,
+                    >,
+                >,
+            >,
+        >,
+    >,
+    pub color_adjustment_unsupported_guard: Option<SlotTable<ColorAdjustmentUnsupportedGuard>>,
+    pub effect_padding_resolvers: Option<KeyedTable<RenderEffectPaddingResolver>>,
+    pub renderers: KeyedTable<Renderer>,
+    pub render_root_guard: Option<SlotTable<RenderRootGuard>>,
+    pub stroke_tessellator: SlotTable<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<dyn FnMut(Path, StrokeStyle, Option<f64>) -> Option<PathMesh> + Send + 'static>,
+            >,
+        >,
+    >,
+    pub color_adjustment_feature: Option<SlotTable<WgpuColorAdjustmentMaterialFeature>>,
+    pub color_adjustment_feature_guard: Option<SlotTable<WgpuColorAdjustmentMaterialFeatureGuard>>,
+    pub compressed_texture_decoder: SlotTable<WgpuCompressedTextureDecoder>,
+    pub compressed_texture_upload: SlotTable<WgpuCompressedTextureUploader>,
+    pub custom_material_shaders: KeyedTable<WgpuCustomMaterialShaderSource>,
+    pub material_renderers: KeyedTable<WgpuMaterialRenderer>,
+    pub mesh_material_renderers: KeyedTable<WgpuMeshMaterialRenderer>,
+    pub modifier_snippets: KeyedTable<WgpuModifierSnippet>,
+    pub modifier_snippet_revision: f64,
+    pub render_effects: KeyedTable<WgpuRenderEffectRunner>,
+    pub shape_rasterizer: SlotTable<ShapeRasterizer>,
+    pub texture_resolvers: KeyedTable<WgpuTextureResolver>,
+    pub velocity_writers: KeyedTable<WgpuVelocityWriter>,
+}
+impl PartialEq for WgpuRenderRegistries {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/WgpuRenderState.ts:67 (sha256:7db70fc400926f7c23e83eca154e3294581b61b582548d2dd1df3969f5bf7edb)
 #[derive(Clone)]
 pub struct WgpuColorAdjustmentMaterialFeature {
     #[doc(hidden)]
@@ -134,7 +188,24 @@ impl PartialEq for WgpuColorAdjustmentMaterialFeature {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:66 (sha256:ba949754af13c5bc5e13f170befd56868a323fecc070c8482dbde40c37eb6942)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:89 (sha256:8f369dce49c12d3b007a0eed13140c4bed3f1ba43b05a4a336f8c657c5f8a2ee)
+pub type WgpuColorAdjustmentMaterialFeatureGuard = std::sync::Arc<
+    std::sync::Mutex<
+        Box<
+            dyn FnMut(
+                    WgpuRenderState,
+                    crate::FlightUnion2<
+                        ColorScaleBias,
+                        crate::FlightUnion2<TintMaterialData, Vec<f64>>,
+                    >,
+                ) -> ()
+                + Send
+                + 'static,
+        >,
+    >,
+>;
+
+// Source: upstream/packages/types/src/WgpuRenderState.ts:97 (sha256:ba949754af13c5bc5e13f170befd56868a323fecc070c8482dbde40c37eb6942)
 #[derive(Clone)]
 pub struct WgpuColorAdjustmentFlush {
     #[doc(hidden)]
@@ -149,7 +220,7 @@ impl PartialEq for WgpuColorAdjustmentFlush {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:76 (sha256:a2bc23bace382a83f246f14c86f03121db15a25a1f479edc706a6b00dfe0475d)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:107 (sha256:9cc616216457e3fabf5cc18316b36ac4a679a51a51daa3184ff23ab653ca7b92)
 #[derive(Clone, Default)]
 pub struct WgpuRenderStateRuntimeRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
@@ -176,6 +247,7 @@ impl PartialEq for WgpuRenderStateRuntimeRecord3 {
 
 #[doc(hidden)]
 pub struct WgpuRenderStateRuntimeStorage {
+    pub registries: WgpuRenderRegistries,
     pub mipmap_pipeline_cache: Vec<(crate::OpaqueHostValue, WgpuRenderStateRuntimeRecord2)>,
     pub texture_cache: Vec<(crate::OpaqueHostValue, WgpuTextureEntry)>,
     pub texture_source_premultiplied_texture_cache:
@@ -185,7 +257,6 @@ pub struct WgpuRenderStateRuntimeStorage {
     pub texture_source_straight_texture_cache: Vec<(TextureSource, WgpuTextureSourceTextureEntry)>,
     pub texture_source_straight_srgb_texture_cache:
         Vec<(TextureSource, WgpuTextureSourceTextureEntry)>,
-    pub compressed_texture_upload: Option<WgpuCompressedTextureUploader>,
     pub video_texture_cache: Option<Vec<(Image, WgpuVideoTextureEntry)>>,
     pub video_srgb_texture_cache: Option<Vec<(Image, WgpuVideoTextureEntry)>>,
     pub default_bitmap_shader: Option<WgpuBitmapShader>,
@@ -193,8 +264,6 @@ pub struct WgpuRenderStateRuntimeStorage {
     pub particle_instance_data: Option<Vec<f32>>,
     pub quad_batch_writer_material_renderer: Option<WgpuMaterialRenderer>,
     pub quad_batch_writer_texture: Option<WgpuTextureEntry>,
-    pub material_renderer_map: Option<Vec<(Kind, WgpuMaterialRenderer)>>,
-    pub scene_mesh_material_registry: Option<Vec<(Kind, WgpuMeshMaterialRenderer)>>,
     pub scissor_stack: Vec<WgpuScissorRect>,
     pub current_scissor_rect: Option<WgpuScissorRect>,
     pub render_target_viewport: Option<SharedStructuralRecord1>,
@@ -203,13 +272,13 @@ pub struct WgpuRenderStateRuntimeStorage {
 impl Default for WgpuRenderStateRuntimeStorage {
     fn default() -> Self {
         Self {
+            registries: Default::default(),
             mipmap_pipeline_cache: Default::default(),
             texture_cache: Default::default(),
             texture_source_premultiplied_texture_cache: Default::default(),
             texture_source_premultiplied_srgb_texture_cache: Default::default(),
             texture_source_straight_texture_cache: Default::default(),
             texture_source_straight_srgb_texture_cache: Default::default(),
-            compressed_texture_upload: Default::default(),
             video_texture_cache: Default::default(),
             video_srgb_texture_cache: Default::default(),
             default_bitmap_shader: Default::default(),
@@ -217,8 +286,6 @@ impl Default for WgpuRenderStateRuntimeStorage {
             particle_instance_data: Default::default(),
             quad_batch_writer_material_renderer: Default::default(),
             quad_batch_writer_texture: Default::default(),
-            material_renderer_map: Default::default(),
-            scene_mesh_material_registry: Default::default(),
             scissor_stack: Default::default(),
             current_scissor_rect: Default::default(),
             render_target_viewport: Default::default(),
@@ -228,7 +295,7 @@ impl Default for WgpuRenderStateRuntimeStorage {
 }
 pub type WgpuRenderStateRuntime = crate::EntityRuntime;
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:299 (sha256:e003cc095073ba6707274c00e75dcf6b990c0b298fb4057aa462e70bf224260d)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:331 (sha256:e003cc095073ba6707274c00e75dcf6b990c0b298fb4057aa462e70bf224260d)
 #[derive(Clone, Default)]
 pub struct WgpuBitmapShaderRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
@@ -257,7 +324,7 @@ impl PartialEq for WgpuBitmapShader {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:311 (sha256:5fe417094a9800132bc849b19f0360a096f37d1fda60600f603a8eeba76f6676)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:343 (sha256:5fe417094a9800132bc849b19f0360a096f37d1fda60600f603a8eeba76f6676)
 #[derive(Clone, Default)]
 pub struct WgpuClipContourEntry {
     #[doc(hidden)]
@@ -274,7 +341,7 @@ impl PartialEq for WgpuClipContourEntry {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:322 (sha256:da157d7dd2aef06c3ff53a1e2cafb130aaa6d7f8d3ae707eac7859094af30f73)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:354 (sha256:da157d7dd2aef06c3ff53a1e2cafb130aaa6d7f8d3ae707eac7859094af30f73)
 #[derive(Clone, Default)]
 pub struct WgpuClipContourPipelines {
     #[doc(hidden)]
@@ -289,7 +356,7 @@ impl PartialEq for WgpuClipContourPipelines {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:330 (sha256:22df7e6d3385e1e076ae9715044784097c49ec0109050e4f7f8424f0fb7c93a1)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:362 (sha256:22df7e6d3385e1e076ae9715044784097c49ec0109050e4f7f8424f0fb7c93a1)
 #[derive(Clone, Default)]
 pub struct WgpuSavedPassState {
     #[doc(hidden)]
@@ -308,7 +375,7 @@ impl PartialEq for WgpuSavedPassState {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:342 (sha256:34dfe22efbf1d2f4e16ac9a93fc703b8a54032d9ea689c75c5e61549dc76a3c9)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:374 (sha256:34dfe22efbf1d2f4e16ac9a93fc703b8a54032d9ea689c75c5e61549dc76a3c9)
 #[derive(Clone, Default)]
 pub struct WgpuScissorRect {
     #[doc(hidden)]
@@ -324,7 +391,7 @@ impl PartialEq for WgpuScissorRect {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:353 (sha256:f9514088a8f644f0471aa1aa5a043041544b3296d2aa7a9994fa8dfa8ae9e7b8)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:385 (sha256:f9514088a8f644f0471aa1aa5a043041544b3296d2aa7a9994fa8dfa8ae9e7b8)
 #[derive(Clone, Default)]
 pub struct WgpuShapeMeshBuffers {
     #[doc(hidden)]
@@ -344,7 +411,7 @@ impl PartialEq for WgpuShapeMeshBuffers {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:370 (sha256:0e94554b02fe046b289bb369e7bc2bf9804ca1d647be647f82be40f65cb53680)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:402 (sha256:0e94554b02fe046b289bb369e7bc2bf9804ca1d647be647f82be40f65cb53680)
 #[derive(Clone, Default)]
 pub struct WgpuShapeMeshPipeline {
     #[doc(hidden)]
@@ -358,7 +425,7 @@ impl PartialEq for WgpuShapeMeshPipeline {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:378 (sha256:0362fdf0b62095db70100964f8f2d188eae552a2513337d7a145648619fd9486)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:410 (sha256:0362fdf0b62095db70100964f8f2d188eae552a2513337d7a145648619fd9486)
 #[derive(Clone, Default)]
 pub struct WgpuQuadBatchWriterBufferSlot {
     #[doc(hidden)]
@@ -374,7 +441,7 @@ impl PartialEq for WgpuQuadBatchWriterBufferSlot {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:387 (sha256:0b40042b9e4b6832f9579ad30017ae29f1fd11d0339c3000b65e8ff33a50bb29)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:419 (sha256:0b40042b9e4b6832f9579ad30017ae29f1fd11d0339c3000b65e8ff33a50bb29)
 #[derive(Clone, Default)]
 pub struct WgpuTextureEntry {
     #[doc(hidden)]
@@ -392,7 +459,7 @@ impl PartialEq for WgpuTextureEntry {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:403 (sha256:89b8cf222fe23605091e257b356350a8d4bf1de8cd89062a08a65cc99128f75a)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:435 (sha256:89b8cf222fe23605091e257b356350a8d4bf1de8cd89062a08a65cc99128f75a)
 #[derive(Clone, Default)]
 pub struct WgpuTextureSourceTextureEntry {
     #[doc(hidden)]
@@ -411,7 +478,7 @@ impl PartialEq for WgpuTextureSourceTextureEntry {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:407 (sha256:da0f630196cf440da445e080b9729ba42c3fb30d7645cfdfac1fd789e78c86cd)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:439 (sha256:da0f630196cf440da445e080b9729ba42c3fb30d7645cfdfac1fd789e78c86cd)
 #[derive(Clone, Default)]
 pub struct WgpuVideoTextureEntry {
     #[doc(hidden)]

@@ -11,8 +11,7 @@ use flighthq_types::{
     Adjustment, BlendMode, BoundsNodeAny, ClipRegion, ColorScaleBias, InteractionSignals, Kind,
     Material, MaterialData, Matrix, Matrix4, Node, NodeInteractionState, NodeSignals,
     NodeTraitsKey, ParticleEmitter2D, ParticleEmitterCallbacks, ParticleEmitterConfig,
-    ParticleEmitterState, Path, Rectangle, SamplerLike, Scene2D, Scene2DSignals, Texture,
-    TextureAtlas, TextureSourceKind,
+    ParticleEmitterState, Rectangle, SamplerLike, Scene2D, Scene2DSignals, Texture, TextureAtlas,
 };
 
 #[derive(Clone, Default)]
@@ -20,6 +19,7 @@ pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub anisotropy_ext: Option<crate::OpaqueHostValue>,
     pub appearance_id: Option<f64>,
+    pub apply_blend_mode_parent: Option<WgpuRenderState>,
     pub binding_cache_guard: Option<
         std::sync::Arc<
             std::sync::Mutex<
@@ -39,9 +39,6 @@ pub struct FlightPartialRecord1 {
         >,
     >,
     pub canvas_blend_effect_backdrops: Option<Vec<(String, CanvasRenderTarget)>>,
-    pub canvas_render_effect_registry: Option<Vec<(String, CanvasRenderEffectRunner)>>,
-    pub canvas_shape_command_registry:
-        Option<Vec<(String, CanvasShapeCommand<crate::OpaqueHostValue>)>>,
     pub canvas_texture_resolvers: Option<CanvasTextureResolvers>,
     pub canvas_texture_view: Option<crate::OpaqueHostValue>,
     pub canvas_view_cleared: Option<bool>,
@@ -49,25 +46,10 @@ pub struct FlightPartialRecord1 {
     pub clip_contour_pipelines: Option<Vec<(crate::OpaqueHostValue, WgpuClipContourPipelines)>>,
     pub clip_contour_stack: Option<Vec<WgpuClipContourEntry>>,
     pub clip_forms: Option<Vec<String>>,
-    pub color_adjustment_resolver: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<
-                    dyn FnMut(RenderState, RenderProxy, Option<RenderProxy>) -> () + Send + 'static,
-                >,
-            >,
-        >,
-    >,
-    pub color_adjustment_unsupported_guard: Option<
-        std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(RenderState, Renderable) -> () + Send + 'static>>,
-        >,
-    >,
     pub color_matrix_instanced_shader: Option<GlColorScaleBiasInstancedShader>,
     pub color_scale_bias_instanced_shader: Option<GlColorScaleBiasInstancedShader>,
     pub color_tint_instanced_shader: Option<GlColorScaleBiasInstancedShader>,
     pub command_encoder: Option<crate::OpaqueHostValue>,
-    pub compressed_texture_decoder: Option<GlCompressedTextureDecoder>,
     pub compute_local_bounds_rectangle: Option<
         std::sync::Arc<
             std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
@@ -92,7 +74,6 @@ pub struct FlightPartialRecord1 {
     pub dom_next_order_list: Option<Vec<RenderProxy2D>>,
     pub dom_order_length: Option<f64>,
     pub dom_order_list: Option<Vec<RenderProxy2D>>,
-    pub dom_texture_resolver_registry: Option<Vec<(TextureSourceKind, DomTextureResolver)>>,
     pub element: Option<crate::OpaqueHostValue>,
     pub flush_pending_draws: Option<
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(GlRenderState) -> () + Send + 'static>>>,
@@ -103,30 +84,9 @@ pub struct FlightPartialRecord1 {
     pub frame_capture_height: Option<f64>,
     pub frame_capture_texture: Option<crate::OpaqueHostValue>,
     pub frame_capture_width: Option<f64>,
-    pub gl_blend_mode_registry: Option<Vec<(BlendMode, GlBlendRealization)>>,
-    pub gl_color_adjustment_material_feature: Option<GlColorAdjustmentMaterialFeature>,
-    pub gl_color_adjustment_material_feature_guard: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<
-                    dyn FnMut(
-                            GlRenderState,
-                            crate::FlightUnion2<
-                                ColorScaleBias,
-                                crate::FlightUnion2<TintMaterialData, Vec<f64>>,
-                            >,
-                        ) -> ()
-                        + Send
-                        + 'static,
-                >,
-            >,
-        >,
-    >,
     pub gl_external_texture_cache: Option<Vec<(ExternalTexture, crate::OpaqueHostValue)>>,
-    pub gl_render_effect_registry: Option<Vec<(Kind, GlRenderEffectRunner)>>,
     pub gl_render_texture_cache: Option<Vec<(RenderTexture, GlRenderTextureEntry)>>,
     pub gl_render_texture_guard: Option<GlRenderTextureGuard>,
-    pub gl_texture_resolver_registry: Option<Vec<(TextureSourceKind, GlTextureResolver)>>,
     pub image_smoothing_enabled: Option<bool>,
     pub image_smoothing_quality: Option<crate::OpaqueHostValue>,
     pub input: Option<TextInputState>,
@@ -155,6 +115,26 @@ pub struct FlightPartialRecord1 {
     pub measured_height: Option<f64>,
     pub measured_width: Option<f64>,
     pub media_stream: Option<crate::OpaqueHostValue>,
+    pub mipmap_degraded_guard: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(WgpuRenderState) -> () + Send + 'static>>>,
+    >,
+    pub mipmap_generator: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<
+                    dyn FnMut(
+                            WgpuRenderState,
+                            crate::OpaqueHostValue,
+                            f64,
+                            f64,
+                            crate::OpaqueHostValue,
+                        ) -> ()
+                        + Send
+                        + 'static,
+                >,
+            >,
+        >,
+    >,
     pub mipmapped_textures: Option<Vec<crate::OpaqueHostValue>>,
     pub morph_bind_pose: Option<MeshMorphBindPose>,
     pub morph_blended_weights: Option<Vec<f32>>,
@@ -200,20 +180,14 @@ pub struct FlightPartialRecord1 {
             >,
         >,
     >,
-    pub render_effect_padding_resolver_registry: Option<Vec<(Kind, RenderEffectPaddingResolver)>>,
-    pub renderer_map: Option<Vec<(Kind, Renderer)>>,
     pub renderer_map_id: Option<f64>,
     pub render_pass: Option<crate::OpaqueHostValue>,
     pub render_proxy_adapter_map: Option<Vec<(Renderable, RenderProxyAdapter)>>,
     pub render_proxy_map: Option<Vec<(Renderable, RenderProxy)>>,
     pub render_proxy_sources: Option<Vec<Renderable>>,
-    pub render_root_guard: Option<
-        std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(RenderState, Renderable) -> () + Send + 'static>>,
-        >,
-    >,
     pub render_target_stack: Option<Vec<WgpuSavedPassState>>,
     pub retired_buffers: Option<Vec<crate::OpaqueHostValue>>,
+    pub retired_textures: Option<Vec<crate::OpaqueHostValue>>,
     pub rich_text_content: Option<RichTextContent>,
     pub rotation_angle: Option<f64>,
     pub rotation_cosine: Option<f64>,
@@ -225,19 +199,20 @@ pub struct FlightPartialRecord1 {
     pub selection_begin_index: Option<f64>,
     pub selection_end_index: Option<f64>,
     pub shader_loc: Option<GlShaderLocations>,
+    pub shape_bounds_command_registry_revision: Option<f64>,
     pub shape_mesh_color_matrix_shader: Option<GlShapeMeshColorScaleBiasShader>,
     pub shape_mesh_color_scale_bias_shader: Option<GlShapeMeshColorScaleBiasShader>,
     pub shape_mesh_pipelines: Option<Vec<(String, WgpuShapeMeshPipeline)>>,
-    pub shape_rasterizer: Option<ShapeRasterizer>,
     pub skin_bind_pose: Option<MeshSkinBindPose>,
-    pub stroke_tessellator: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<dyn FnMut(Path, StrokeStyle, Option<f64>) -> Option<PathMesh> + Send + 'static>,
-            >,
-        >,
-    >,
-    pub tangent_smoothing_sources: Option<Vec<u32>>,
+    pub surface_antialias_enabled: Option<bool>,
+    pub surface_antialias_height: Option<f64>,
+    pub surface_antialias_resolve_bind_group: Option<crate::OpaqueHostValue>,
+    pub surface_antialias_resolve_bind_group_layout: Option<crate::OpaqueHostValue>,
+    pub surface_antialias_resolve_pipeline: Option<crate::OpaqueHostValue>,
+    pub surface_antialias_texture: Option<crate::OpaqueHostValue>,
+    pub surface_antialias_view: Option<crate::OpaqueHostValue>,
+    pub surface_antialias_width: Option<f64>,
+    pub surface_presentation_view: Option<crate::OpaqueHostValue>,
     pub temp_stack: Option<Vec<Renderable>>,
     pub text_field_signals: Option<TextFieldSignals>,
     pub text_layout: Option<TextLayoutResult>,
@@ -268,29 +243,9 @@ pub struct FlightPartialRecord1 {
             >,
         >,
     >,
-    pub wgpu_color_adjustment_material_feature: Option<WgpuColorAdjustmentMaterialFeature>,
-    pub wgpu_color_adjustment_material_feature_guard: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<
-                    dyn FnMut(
-                            WgpuRenderState,
-                            crate::FlightUnion2<
-                                ColorScaleBias,
-                                crate::FlightUnion2<TintMaterialData, Vec<f64>>,
-                            >,
-                        ) -> ()
-                        + Send
-                        + 'static,
-                >,
-            >,
-        >,
-    >,
     pub wgpu_external_texture_cache: Option<Vec<(ExternalTexture, WgpuTextureEntry)>>,
-    pub wgpu_render_effect_registry: Option<Vec<(Kind, WgpuRenderEffectRunner)>>,
     pub wgpu_render_texture_cache: Option<Vec<(RenderTexture, WgpuRenderTextureEntry)>>,
     pub wgpu_render_texture_guard: Option<WgpuRenderTextureGuard>,
-    pub wgpu_texture_resolver_registry: Option<Vec<(TextureSourceKind, WgpuTextureResolver)>>,
     pub world_alpha: Option<f64>,
     pub world_alpha_using_appearance_id: Option<f64>,
     pub world_alpha_using_parent_appearance_id: Option<f64>,
@@ -325,6 +280,7 @@ pub struct FlightPartialRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub anisotropy_ext: Option<crate::OpaqueHostValue>,
     pub appearance_id: Option<f64>,
+    pub apply_blend_mode_parent: Option<WgpuRenderState>,
     pub binding_cache_guard: Option<
         std::sync::Arc<
             std::sync::Mutex<
@@ -344,9 +300,6 @@ pub struct FlightPartialRecord2 {
         >,
     >,
     pub canvas_blend_effect_backdrops: Option<Vec<(String, CanvasRenderTarget)>>,
-    pub canvas_render_effect_registry: Option<Vec<(String, CanvasRenderEffectRunner)>>,
-    pub canvas_shape_command_registry:
-        Option<Vec<(String, CanvasShapeCommand<crate::OpaqueHostValue>)>>,
     pub canvas_texture_resolvers: Option<CanvasTextureResolvers>,
     pub canvas_texture_view: Option<crate::OpaqueHostValue>,
     pub canvas_view_cleared: Option<bool>,
@@ -354,25 +307,10 @@ pub struct FlightPartialRecord2 {
     pub clip_contour_pipelines: Option<Vec<(crate::OpaqueHostValue, WgpuClipContourPipelines)>>,
     pub clip_contour_stack: Option<Vec<WgpuClipContourEntry>>,
     pub clip_forms: Option<Vec<String>>,
-    pub color_adjustment_resolver: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<
-                    dyn FnMut(RenderState, RenderProxy, Option<RenderProxy>) -> () + Send + 'static,
-                >,
-            >,
-        >,
-    >,
-    pub color_adjustment_unsupported_guard: Option<
-        std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(RenderState, Renderable) -> () + Send + 'static>>,
-        >,
-    >,
     pub color_matrix_instanced_shader: Option<GlColorScaleBiasInstancedShader>,
     pub color_scale_bias_instanced_shader: Option<GlColorScaleBiasInstancedShader>,
     pub color_tint_instanced_shader: Option<GlColorScaleBiasInstancedShader>,
     pub command_encoder: Option<crate::OpaqueHostValue>,
-    pub compressed_texture_decoder: Option<GlCompressedTextureDecoder>,
     pub compute_local_bounds_rectangle: Option<
         std::sync::Arc<
             std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
@@ -397,7 +335,6 @@ pub struct FlightPartialRecord2 {
     pub dom_next_order_list: Option<Vec<RenderProxy2D>>,
     pub dom_order_length: Option<f64>,
     pub dom_order_list: Option<Vec<RenderProxy2D>>,
-    pub dom_texture_resolver_registry: Option<Vec<(TextureSourceKind, DomTextureResolver)>>,
     pub element: Option<crate::OpaqueHostValue>,
     pub flush_pending_draws: Option<
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(GlRenderState) -> () + Send + 'static>>>,
@@ -408,30 +345,9 @@ pub struct FlightPartialRecord2 {
     pub frame_capture_height: Option<f64>,
     pub frame_capture_texture: Option<crate::OpaqueHostValue>,
     pub frame_capture_width: Option<f64>,
-    pub gl_blend_mode_registry: Option<Vec<(BlendMode, GlBlendRealization)>>,
-    pub gl_color_adjustment_material_feature: Option<GlColorAdjustmentMaterialFeature>,
-    pub gl_color_adjustment_material_feature_guard: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<
-                    dyn FnMut(
-                            GlRenderState,
-                            crate::FlightUnion2<
-                                ColorScaleBias,
-                                crate::FlightUnion2<TintMaterialData, Vec<f64>>,
-                            >,
-                        ) -> ()
-                        + Send
-                        + 'static,
-                >,
-            >,
-        >,
-    >,
     pub gl_external_texture_cache: Option<Vec<(ExternalTexture, crate::OpaqueHostValue)>>,
-    pub gl_render_effect_registry: Option<Vec<(Kind, GlRenderEffectRunner)>>,
     pub gl_render_texture_cache: Option<Vec<(RenderTexture, GlRenderTextureEntry)>>,
     pub gl_render_texture_guard: Option<GlRenderTextureGuard>,
-    pub gl_texture_resolver_registry: Option<Vec<(TextureSourceKind, GlTextureResolver)>>,
     pub image_smoothing_enabled: Option<bool>,
     pub image_smoothing_quality: Option<crate::OpaqueHostValue>,
     pub input: Option<TextInputState>,
@@ -460,6 +376,26 @@ pub struct FlightPartialRecord2 {
     pub measured_height: Option<f64>,
     pub measured_width: Option<f64>,
     pub media_stream: Option<crate::OpaqueHostValue>,
+    pub mipmap_degraded_guard: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(WgpuRenderState) -> () + Send + 'static>>>,
+    >,
+    pub mipmap_generator: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<
+                    dyn FnMut(
+                            WgpuRenderState,
+                            crate::OpaqueHostValue,
+                            f64,
+                            f64,
+                            crate::OpaqueHostValue,
+                        ) -> ()
+                        + Send
+                        + 'static,
+                >,
+            >,
+        >,
+    >,
     pub mipmapped_textures: Option<Vec<crate::OpaqueHostValue>>,
     pub morph_bind_pose: Option<MeshMorphBindPose>,
     pub morph_blended_weights: Option<Vec<f32>>,
@@ -505,20 +441,14 @@ pub struct FlightPartialRecord2 {
             >,
         >,
     >,
-    pub render_effect_padding_resolver_registry: Option<Vec<(Kind, RenderEffectPaddingResolver)>>,
-    pub renderer_map: Option<Vec<(Kind, Renderer)>>,
     pub renderer_map_id: Option<f64>,
     pub render_pass: Option<crate::OpaqueHostValue>,
     pub render_proxy_adapter_map: Option<Vec<(Renderable, RenderProxyAdapter)>>,
     pub render_proxy_map: Option<Vec<(Renderable, RenderProxy)>>,
     pub render_proxy_sources: Option<Vec<Renderable>>,
-    pub render_root_guard: Option<
-        std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(RenderState, Renderable) -> () + Send + 'static>>,
-        >,
-    >,
     pub render_target_stack: Option<Vec<WgpuSavedPassState>>,
     pub retired_buffers: Option<Vec<crate::OpaqueHostValue>>,
+    pub retired_textures: Option<Vec<crate::OpaqueHostValue>>,
     pub rich_text_content: Option<RichTextContent>,
     pub rotation_angle: Option<f64>,
     pub rotation_cosine: Option<f64>,
@@ -530,19 +460,20 @@ pub struct FlightPartialRecord2 {
     pub selection_begin_index: Option<f64>,
     pub selection_end_index: Option<f64>,
     pub shader_loc: Option<GlShaderLocations>,
+    pub shape_bounds_command_registry_revision: Option<f64>,
     pub shape_mesh_color_matrix_shader: Option<GlShapeMeshColorScaleBiasShader>,
     pub shape_mesh_color_scale_bias_shader: Option<GlShapeMeshColorScaleBiasShader>,
     pub shape_mesh_pipelines: Option<Vec<(String, WgpuShapeMeshPipeline)>>,
-    pub shape_rasterizer: Option<ShapeRasterizer>,
     pub skin_bind_pose: Option<MeshSkinBindPose>,
-    pub stroke_tessellator: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<dyn FnMut(Path, StrokeStyle, Option<f64>) -> Option<PathMesh> + Send + 'static>,
-            >,
-        >,
-    >,
-    pub tangent_smoothing_sources: Option<Vec<u32>>,
+    pub surface_antialias_enabled: Option<bool>,
+    pub surface_antialias_height: Option<f64>,
+    pub surface_antialias_resolve_bind_group: Option<crate::OpaqueHostValue>,
+    pub surface_antialias_resolve_bind_group_layout: Option<crate::OpaqueHostValue>,
+    pub surface_antialias_resolve_pipeline: Option<crate::OpaqueHostValue>,
+    pub surface_antialias_texture: Option<crate::OpaqueHostValue>,
+    pub surface_antialias_view: Option<crate::OpaqueHostValue>,
+    pub surface_antialias_width: Option<f64>,
+    pub surface_presentation_view: Option<crate::OpaqueHostValue>,
     pub temp_stack: Option<Vec<Renderable>>,
     pub text_field_signals: Option<TextFieldSignals>,
     pub text_layout: Option<TextLayoutResult>,
@@ -573,29 +504,9 @@ pub struct FlightPartialRecord2 {
             >,
         >,
     >,
-    pub wgpu_color_adjustment_material_feature: Option<WgpuColorAdjustmentMaterialFeature>,
-    pub wgpu_color_adjustment_material_feature_guard: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<
-                    dyn FnMut(
-                            WgpuRenderState,
-                            crate::FlightUnion2<
-                                ColorScaleBias,
-                                crate::FlightUnion2<TintMaterialData, Vec<f64>>,
-                            >,
-                        ) -> ()
-                        + Send
-                        + 'static,
-                >,
-            >,
-        >,
-    >,
     pub wgpu_external_texture_cache: Option<Vec<(ExternalTexture, WgpuTextureEntry)>>,
-    pub wgpu_render_effect_registry: Option<Vec<(Kind, WgpuRenderEffectRunner)>>,
     pub wgpu_render_texture_cache: Option<Vec<(RenderTexture, WgpuRenderTextureEntry)>>,
     pub wgpu_render_texture_guard: Option<WgpuRenderTextureGuard>,
-    pub wgpu_texture_resolver_registry: Option<Vec<(TextureSourceKind, WgpuTextureResolver)>>,
     pub world_alpha: Option<f64>,
     pub world_alpha_using_appearance_id: Option<f64>,
     pub world_alpha_using_parent_appearance_id: Option<f64>,
@@ -672,6 +583,7 @@ pub struct FlightPartialRecord6 {
     pub __flight_identity: std::sync::Arc<()>,
     pub anisotropy_ext: Option<crate::OpaqueHostValue>,
     pub appearance_id: Option<f64>,
+    pub apply_blend_mode_parent: Option<WgpuRenderState>,
     pub binding_cache_guard: Option<
         std::sync::Arc<
             std::sync::Mutex<
@@ -691,9 +603,6 @@ pub struct FlightPartialRecord6 {
         >,
     >,
     pub canvas_blend_effect_backdrops: Option<Vec<(String, CanvasRenderTarget)>>,
-    pub canvas_render_effect_registry: Option<Vec<(String, CanvasRenderEffectRunner)>>,
-    pub canvas_shape_command_registry:
-        Option<Vec<(String, CanvasShapeCommand<crate::OpaqueHostValue>)>>,
     pub canvas_texture_resolvers: Option<CanvasTextureResolvers>,
     pub canvas_texture_view: Option<crate::OpaqueHostValue>,
     pub canvas_view_cleared: Option<bool>,
@@ -701,25 +610,10 @@ pub struct FlightPartialRecord6 {
     pub clip_contour_pipelines: Option<Vec<(crate::OpaqueHostValue, WgpuClipContourPipelines)>>,
     pub clip_contour_stack: Option<Vec<WgpuClipContourEntry>>,
     pub clip_forms: Option<Vec<String>>,
-    pub color_adjustment_resolver: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<
-                    dyn FnMut(RenderState, RenderProxy, Option<RenderProxy>) -> () + Send + 'static,
-                >,
-            >,
-        >,
-    >,
-    pub color_adjustment_unsupported_guard: Option<
-        std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(RenderState, Renderable) -> () + Send + 'static>>,
-        >,
-    >,
     pub color_matrix_instanced_shader: Option<GlColorScaleBiasInstancedShader>,
     pub color_scale_bias_instanced_shader: Option<GlColorScaleBiasInstancedShader>,
     pub color_tint_instanced_shader: Option<GlColorScaleBiasInstancedShader>,
     pub command_encoder: Option<crate::OpaqueHostValue>,
-    pub compressed_texture_decoder: Option<GlCompressedTextureDecoder>,
     pub compute_local_bounds_rectangle: Option<
         std::sync::Arc<
             std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNodeAny) -> () + Send + 'static>>,
@@ -744,7 +638,6 @@ pub struct FlightPartialRecord6 {
     pub dom_next_order_list: Option<Vec<RenderProxy2D>>,
     pub dom_order_length: Option<f64>,
     pub dom_order_list: Option<Vec<RenderProxy2D>>,
-    pub dom_texture_resolver_registry: Option<Vec<(TextureSourceKind, DomTextureResolver)>>,
     pub element: Option<crate::OpaqueHostValue>,
     pub flush_pending_draws: Option<
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(GlRenderState) -> () + Send + 'static>>>,
@@ -755,30 +648,9 @@ pub struct FlightPartialRecord6 {
     pub frame_capture_height: Option<f64>,
     pub frame_capture_texture: Option<crate::OpaqueHostValue>,
     pub frame_capture_width: Option<f64>,
-    pub gl_blend_mode_registry: Option<Vec<(BlendMode, GlBlendRealization)>>,
-    pub gl_color_adjustment_material_feature: Option<GlColorAdjustmentMaterialFeature>,
-    pub gl_color_adjustment_material_feature_guard: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<
-                    dyn FnMut(
-                            GlRenderState,
-                            crate::FlightUnion2<
-                                ColorScaleBias,
-                                crate::FlightUnion2<TintMaterialData, Vec<f64>>,
-                            >,
-                        ) -> ()
-                        + Send
-                        + 'static,
-                >,
-            >,
-        >,
-    >,
     pub gl_external_texture_cache: Option<Vec<(ExternalTexture, crate::OpaqueHostValue)>>,
-    pub gl_render_effect_registry: Option<Vec<(Kind, GlRenderEffectRunner)>>,
     pub gl_render_texture_cache: Option<Vec<(RenderTexture, GlRenderTextureEntry)>>,
     pub gl_render_texture_guard: Option<GlRenderTextureGuard>,
-    pub gl_texture_resolver_registry: Option<Vec<(TextureSourceKind, GlTextureResolver)>>,
     pub image_smoothing_enabled: Option<bool>,
     pub image_smoothing_quality: Option<crate::OpaqueHostValue>,
     pub input: Option<TextInputState>,
@@ -807,6 +679,26 @@ pub struct FlightPartialRecord6 {
     pub measured_height: Option<f64>,
     pub measured_width: Option<f64>,
     pub media_stream: Option<crate::OpaqueHostValue>,
+    pub mipmap_degraded_guard: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(WgpuRenderState) -> () + Send + 'static>>>,
+    >,
+    pub mipmap_generator: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<
+                    dyn FnMut(
+                            WgpuRenderState,
+                            crate::OpaqueHostValue,
+                            f64,
+                            f64,
+                            crate::OpaqueHostValue,
+                        ) -> ()
+                        + Send
+                        + 'static,
+                >,
+            >,
+        >,
+    >,
     pub mipmapped_textures: Option<Vec<crate::OpaqueHostValue>>,
     pub morph_bind_pose: Option<MeshMorphBindPose>,
     pub morph_blended_weights: Option<Vec<f32>>,
@@ -852,20 +744,14 @@ pub struct FlightPartialRecord6 {
             >,
         >,
     >,
-    pub render_effect_padding_resolver_registry: Option<Vec<(Kind, RenderEffectPaddingResolver)>>,
-    pub renderer_map: Option<Vec<(Kind, Renderer)>>,
     pub renderer_map_id: Option<f64>,
     pub render_pass: Option<crate::OpaqueHostValue>,
     pub render_proxy_adapter_map: Option<Vec<(Renderable, RenderProxyAdapter)>>,
     pub render_proxy_map: Option<Vec<(Renderable, RenderProxy)>>,
     pub render_proxy_sources: Option<Vec<Renderable>>,
-    pub render_root_guard: Option<
-        std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(RenderState, Renderable) -> () + Send + 'static>>,
-        >,
-    >,
     pub render_target_stack: Option<Vec<WgpuSavedPassState>>,
     pub retired_buffers: Option<Vec<crate::OpaqueHostValue>>,
+    pub retired_textures: Option<Vec<crate::OpaqueHostValue>>,
     pub rich_text_content: Option<RichTextContent>,
     pub rotation_angle: Option<f64>,
     pub rotation_cosine: Option<f64>,
@@ -877,19 +763,20 @@ pub struct FlightPartialRecord6 {
     pub selection_begin_index: Option<f64>,
     pub selection_end_index: Option<f64>,
     pub shader_loc: Option<GlShaderLocations>,
+    pub shape_bounds_command_registry_revision: Option<f64>,
     pub shape_mesh_color_matrix_shader: Option<GlShapeMeshColorScaleBiasShader>,
     pub shape_mesh_color_scale_bias_shader: Option<GlShapeMeshColorScaleBiasShader>,
     pub shape_mesh_pipelines: Option<Vec<(String, WgpuShapeMeshPipeline)>>,
-    pub shape_rasterizer: Option<ShapeRasterizer>,
     pub skin_bind_pose: Option<MeshSkinBindPose>,
-    pub stroke_tessellator: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<dyn FnMut(Path, StrokeStyle, Option<f64>) -> Option<PathMesh> + Send + 'static>,
-            >,
-        >,
-    >,
-    pub tangent_smoothing_sources: Option<Vec<u32>>,
+    pub surface_antialias_enabled: Option<bool>,
+    pub surface_antialias_height: Option<f64>,
+    pub surface_antialias_resolve_bind_group: Option<crate::OpaqueHostValue>,
+    pub surface_antialias_resolve_bind_group_layout: Option<crate::OpaqueHostValue>,
+    pub surface_antialias_resolve_pipeline: Option<crate::OpaqueHostValue>,
+    pub surface_antialias_texture: Option<crate::OpaqueHostValue>,
+    pub surface_antialias_view: Option<crate::OpaqueHostValue>,
+    pub surface_antialias_width: Option<f64>,
+    pub surface_presentation_view: Option<crate::OpaqueHostValue>,
     pub temp_stack: Option<Vec<Renderable>>,
     pub text_field_signals: Option<TextFieldSignals>,
     pub text_layout: Option<TextLayoutResult>,
@@ -920,29 +807,9 @@ pub struct FlightPartialRecord6 {
             >,
         >,
     >,
-    pub wgpu_color_adjustment_material_feature: Option<WgpuColorAdjustmentMaterialFeature>,
-    pub wgpu_color_adjustment_material_feature_guard: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<
-                    dyn FnMut(
-                            WgpuRenderState,
-                            crate::FlightUnion2<
-                                ColorScaleBias,
-                                crate::FlightUnion2<TintMaterialData, Vec<f64>>,
-                            >,
-                        ) -> ()
-                        + Send
-                        + 'static,
-                >,
-            >,
-        >,
-    >,
     pub wgpu_external_texture_cache: Option<Vec<(ExternalTexture, WgpuTextureEntry)>>,
-    pub wgpu_render_effect_registry: Option<Vec<(Kind, WgpuRenderEffectRunner)>>,
     pub wgpu_render_texture_cache: Option<Vec<(RenderTexture, WgpuRenderTextureEntry)>>,
     pub wgpu_render_texture_guard: Option<WgpuRenderTextureGuard>,
-    pub wgpu_texture_resolver_registry: Option<Vec<(TextureSourceKind, WgpuTextureResolver)>>,
     pub world_alpha: Option<f64>,
     pub world_alpha_using_appearance_id: Option<f64>,
     pub world_alpha_using_parent_appearance_id: Option<f64>,

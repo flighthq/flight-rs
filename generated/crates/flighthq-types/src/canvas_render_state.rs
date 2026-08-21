@@ -7,8 +7,11 @@
 #![allow(unused_parens)]
 
 use crate::{
-    BlendMode, CanvasMaterialRenderer, EntityRuntime, Kind, Matrix, RenderProxy2D,
-    RenderRegistrySignals, Scene2DClipHooks, Scene3DGraphSyncPolicy,
+    BlendMode, CanvasMaterialRenderer, CanvasRenderEffectRunner, CanvasShapeCommand,
+    ColorAdjustmentUnsupportedGuard, EntityRuntime, KeyedTable, Matrix, Path, PathMesh,
+    RenderEffectPaddingResolver, RenderProxy, RenderProxy2D, RenderRegistrySignals,
+    RenderRootGuard, RenderState, Renderer, Scene2DClipHooks, Scene3DGraphSyncPolicy, SlotTable,
+    StrokeStyle,
 };
 
 // Source: upstream/packages/types/src/CanvasRenderState.ts:10 (sha256:2d3ed80aeffa1af698defe21cc96fededc24c5de7d4a233df2684315565006c5)
@@ -69,7 +72,46 @@ impl crate::FlightEntity for CanvasRenderState {
     }
 }
 
-// Source: upstream/packages/types/src/CanvasRenderState.ts:25 (sha256:be617f3f8f9f830df9da893eee28eeb9740c2f15a2e4462f451c6d3191c0ca99)
+// Source: upstream/packages/types/src/CanvasRenderState.ts:22 (sha256:bf54026159b9f0b3aa3951ced7856cb58c83480a7bfffbc5dd32f36ea5a03b02)
+#[derive(Clone, Default)]
+pub struct CanvasRenderRegistries {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub canvas_shape_commands: Option<KeyedTable<CanvasShapeCommand<crate::OpaqueHostValue>>>,
+    pub color_adjustments: Option<
+        SlotTable<
+            std::sync::Arc<
+                std::sync::Mutex<
+                    Box<
+                        dyn FnMut(RenderState, RenderProxy, Option<RenderProxy>) -> ()
+                            + Send
+                            + 'static,
+                    >,
+                >,
+            >,
+        >,
+    >,
+    pub color_adjustment_unsupported_guard: Option<SlotTable<ColorAdjustmentUnsupportedGuard>>,
+    pub effect_padding_resolvers: Option<KeyedTable<RenderEffectPaddingResolver>>,
+    pub renderers: KeyedTable<Renderer>,
+    pub render_root_guard: Option<SlotTable<RenderRootGuard>>,
+    pub stroke_tessellator: SlotTable<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<dyn FnMut(Path, StrokeStyle, Option<f64>) -> Option<PathMesh> + Send + 'static>,
+            >,
+        >,
+    >,
+    pub material_renderers: Option<KeyedTable<CanvasMaterialRenderer>>,
+    pub render_effects: KeyedTable<CanvasRenderEffectRunner>,
+}
+impl PartialEq for CanvasRenderRegistries {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/CanvasRenderState.ts:34 (sha256:5af720d86a9638ad751e184c1a7db541300dcdce38e6e5e5168e2c0fe5b00421)
 #[derive(Clone)]
 pub struct CanvasRenderStateRuntimeRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
@@ -84,12 +126,12 @@ impl PartialEq for CanvasRenderStateRuntimeRecord1 {
 
 #[doc(hidden)]
 pub struct CanvasRenderStateRuntimeStorage {
-    pub material_renderer_map: Option<Vec<(Kind, CanvasMaterialRenderer)>>,
+    pub registries: CanvasRenderRegistries,
 }
 impl Default for CanvasRenderStateRuntimeStorage {
     fn default() -> Self {
         Self {
-            material_renderer_map: Default::default(),
+            registries: Default::default(),
         }
     }
 }

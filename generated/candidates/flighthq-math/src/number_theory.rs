@@ -41,8 +41,11 @@ pub fn factorial(n: f64) -> f64 {
     return result;
 }
 
-// Source: upstream/packages/math/src/numberTheory.ts:21 (sha256:35bacbbe2e313ef7f34121ee04c6e1f6ae2da016ead068067c968ca54938b96a)
+// Source: upstream/packages/math/src/numberTheory.ts:21 (sha256:7068e533f9e64bd18836d992181e495d37a6ab3da9f4bdbfa2184afcfd8973de)
 pub fn gcd(mut a: f64, mut b: f64) -> f64 {
+    if (!(a).is_finite()) || (!(b).is_finite()) {
+        panic!("{}", "generated Flight function threw");
+    }
     a = ((a).trunc()).abs();
     b = ((b).trunc()).abs();
     if (a == 0.0_f64) && (b == 0.0_f64) {
@@ -56,22 +59,22 @@ pub fn gcd(mut a: f64, mut b: f64) -> f64 {
     return a;
 }
 
-// Source: upstream/packages/math/src/numberTheory.ts:39 (sha256:f26172e44fd6ded6e2436bca4ce5665c7173bc3de696c6e4bc996d0ae35559aa)
+// Source: upstream/packages/math/src/numberTheory.ts:42 (sha256:f26172e44fd6ded6e2436bca4ce5665c7173bc3de696c6e4bc996d0ae35559aa)
 pub fn hypot2(x: f64, y: f64) -> f64 {
     return ((x * x) + (y * y));
 }
 
-// Source: upstream/packages/math/src/numberTheory.ts:44 (sha256:deddbf2d340247d69879add7c5afba9fe2210f4475bbbd62bbec3b14f0ee4675)
+// Source: upstream/packages/math/src/numberTheory.ts:47 (sha256:deddbf2d340247d69879add7c5afba9fe2210f4475bbbd62bbec3b14f0ee4675)
 pub fn is_even(n: f64) -> bool {
     return ((__flight_js_to_i32(n) & __flight_js_to_i32(1.0_f64)) as f64 == 0.0_f64);
 }
 
-// Source: upstream/packages/math/src/numberTheory.ts:49 (sha256:eab6d3d96f0f212741193097a7b9dcbff8344d9f02998c60f7c813ee86625b79)
+// Source: upstream/packages/math/src/numberTheory.ts:52 (sha256:eab6d3d96f0f212741193097a7b9dcbff8344d9f02998c60f7c813ee86625b79)
 pub fn is_odd(n: f64) -> bool {
     return ((__flight_js_to_i32(n) & __flight_js_to_i32(1.0_f64)) as f64 == 1.0_f64);
 }
 
-// Source: upstream/packages/math/src/numberTheory.ts:59 (sha256:4740d7680d66d4f101fd0ab5108540e50cc4e1ce331897c50fb25d88bb87ff42)
+// Source: upstream/packages/math/src/numberTheory.ts:62 (sha256:4740d7680d66d4f101fd0ab5108540e50cc4e1ce331897c50fb25d88bb87ff42)
 pub fn lcm(a: f64, b: f64) -> f64 {
     let g = gcd(a, b);
     return ((((a).trunc()).abs() / g) * ((b).trunc()).abs());

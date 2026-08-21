@@ -53,5 +53,5 @@ impl PartialEq for EmissiveModifier {
     }
 }
 
-// Source: upstream/packages/types/src/EmissiveModifier.ts:33 (sha256:227351bc3b3cc78bd40ccd66e8d053426172aa116ba64a873bd37abcd90872a8)
+// Source: upstream/packages/types/src/EmissiveModifier.ts:34 (sha256:227351bc3b3cc78bd40ccd66e8d053426172aa116ba64a873bd37abcd90872a8)
 pub const EMISSIVE_MODIFIER_KIND: &'static str = "EmissiveModifier";

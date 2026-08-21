@@ -52,7 +52,7 @@ impl PartialEq for TextInputState {
     }
 }
 
-// Source: upstream/packages/types/src/TextInputState.ts:44 (sha256:1b5f5456e620e7bbc76f4a5bb4aaa3a55f80a9ebc786347d9c288be4f77737da)
+// Source: upstream/packages/types/src/TextInputState.ts:47 (sha256:1b5f5456e620e7bbc76f4a5bb4aaa3a55f80a9ebc786347d9c288be4f77737da)
 #[derive(Clone, Default)]
 pub struct TextInputOptions {
     #[doc(hidden)]

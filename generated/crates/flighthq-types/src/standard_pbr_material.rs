@@ -34,7 +34,7 @@ impl PartialEq for StandardPbrMaterialProperties {
     }
 }
 
-// Source: upstream/packages/types/src/StandardPbrMaterial.ts:29 (sha256:75623596e21f7fa8bdb96972f77d790d3fa4eaa91a9a238efce37fd2c87cff25)
+// Source: upstream/packages/types/src/StandardPbrMaterial.ts:30 (sha256:75623596e21f7fa8bdb96972f77d790d3fa4eaa91a9a238efce37fd2c87cff25)
 #[derive(Clone, Default)]
 pub struct StandardPbrMaterial {
     #[doc(hidden)]
@@ -87,5 +87,5 @@ impl crate::FlightEntity for StandardPbrMaterial {
     }
 }
 
-// Source: upstream/packages/types/src/StandardPbrMaterial.ts:31 (sha256:c10ef55cb5f965b373510f0a8bce10c727e60f301669267c100433d0a01cbd00)
+// Source: upstream/packages/types/src/StandardPbrMaterial.ts:32 (sha256:c10ef55cb5f965b373510f0a8bce10c727e60f301669267c100433d0a01cbd00)
 pub const STANDARD_PBR_MATERIAL_KIND: &'static str = "StandardPbrMaterial";

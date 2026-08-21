@@ -55,5 +55,5 @@ impl crate::FlightEntity for PointLight {
     }
 }
 
-// Source: upstream/packages/types/src/PointLight.ts:25 (sha256:7cae53fe66853284c726ca2a459e1cd12fae6d97de6a22790b09f0feadf23d18)
+// Source: upstream/packages/types/src/PointLight.ts:26 (sha256:7cae53fe66853284c726ca2a459e1cd12fae6d97de6a22790b09f0feadf23d18)
 pub const POINT_LIGHT_KIND: &'static str = "PointLight";

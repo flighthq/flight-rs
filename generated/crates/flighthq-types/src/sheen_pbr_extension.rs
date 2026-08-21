@@ -84,5 +84,5 @@ impl crate::FlightEntity for SheenPbrExtension {
     }
 }
 
-// Source: upstream/packages/types/src/SheenPbrExtension.ts:15 (sha256:696370e90ed3c1333a6c81794436f1414c16f4c9944f638742ee77edf6a626c1)
+// Source: upstream/packages/types/src/SheenPbrExtension.ts:16 (sha256:696370e90ed3c1333a6c81794436f1414c16f4c9944f638742ee77edf6a626c1)
 pub const SHEEN_PBR_EXTENSION_KIND: &'static str = "SheenPbrExtension";

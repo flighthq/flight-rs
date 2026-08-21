@@ -6,9 +6,9 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::CanvasShapeDrawState;
+use crate::{CanvasShapeDrawState, ShapeBoundsCommandHandler};
 
-// Source: upstream/packages/types/src/CanvasShapeRegistry.ts:5 (sha256:70412d87857775922177c1a5fde48cd3fb8f8baf66ac245c4b4198e388ecd145)
+// Source: upstream/packages/types/src/CanvasShapeRegistry.ts:6 (sha256:70412d87857775922177c1a5fde48cd3fb8f8baf66ac245c4b4198e388ecd145)
 pub type CanvasShapeHandler = std::sync::Arc<
     std::sync::Mutex<
         Box<
@@ -24,12 +24,14 @@ pub type CanvasShapeHandler = std::sync::Arc<
     >,
 >;
 
-// Source: upstream/packages/types/src/CanvasShapeRegistry.ts:12 (sha256:85643107e6e0a515f3f4527f9352d69ab02c0c94bca638c2701c988039d4ed23)
+// Source: upstream/packages/types/src/CanvasShapeRegistry.ts:13 (sha256:067b8f4a159ea402e90fe4a19f3e9ea03de35867d6f8db9cfad36f7880a73104)
 #[derive(Clone)]
 pub struct CanvasShapeCommand<K> {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub key: K,
+    pub fill_bounds: Option<ShapeBoundsCommandHandler>,
+    pub stroke_bounds: Option<ShapeBoundsCommandHandler>,
     pub draw: CanvasShapeHandler,
 }
 impl<K> PartialEq for CanvasShapeCommand<K> {

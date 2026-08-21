@@ -55,5 +55,5 @@ impl crate::FlightEntity for AreaLight {
     }
 }
 
-// Source: upstream/packages/types/src/AreaLight.ts:25 (sha256:21690015a79821fc4547e0dc9f64d013890ae35719b1ac62b5204730b6e69d00)
+// Source: upstream/packages/types/src/AreaLight.ts:26 (sha256:21690015a79821fc4547e0dc9f64d013890ae35719b1ac62b5204730b6e69d00)
 pub const AREA_LIGHT_KIND: &'static str = "AreaLight";

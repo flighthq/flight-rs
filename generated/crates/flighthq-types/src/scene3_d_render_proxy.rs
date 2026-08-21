@@ -8,7 +8,7 @@
 
 use crate::{ColorScaleBias, Material, Matrix3, Matrix4, MeshSubset};
 
-// Source: upstream/packages/types/src/Scene3DRenderProxy.ts:28 (sha256:79df9e528430e381be2d9b7b98b30e5784f18d6f57932943ae5ef00f34daaed5)
+// Source: upstream/packages/types/src/Scene3DRenderProxy.ts:28 (sha256:23b508e780cb7961f22f26d996610340b3542df2d5804c493ad65292e48a3e68)
 #[derive(Clone, Default)]
 pub struct Scene3DRenderProxy {
     #[doc(hidden)]
@@ -17,6 +17,7 @@ pub struct Scene3DRenderProxy {
     pub color_scale_bias: Option<ColorScaleBias>,
     pub color_matrix: Option<Vec<f64>>,
     pub joint_matrices: Option<Vec<f32>>,
+    pub normal_matrices: Option<Vec<f32>>,
     pub material: Material,
     pub normal_matrix: Matrix3,
     pub subset: MeshSubset,

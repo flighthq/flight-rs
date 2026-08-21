@@ -55,5 +55,5 @@ impl crate::FlightEntity for AmbientLight {
     }
 }
 
-// Source: upstream/packages/types/src/AmbientLight.ts:11 (sha256:788fd63e0464486184100bc1e10435a7ea3ff99bcfb70addcaa3c98ccdad28dc)
+// Source: upstream/packages/types/src/AmbientLight.ts:13 (sha256:788fd63e0464486184100bc1e10435a7ea3ff99bcfb70addcaa3c98ccdad28dc)
 pub const AMBIENT_LIGHT_KIND: &'static str = "AmbientLight";

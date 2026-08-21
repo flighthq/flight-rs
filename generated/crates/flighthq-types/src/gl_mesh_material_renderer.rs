@@ -10,7 +10,7 @@ use crate::{
     Camera3D, GlRenderState, Material, MeshGeometry, Scene3DLightBlock, Scene3DRenderProxy,
 };
 
-// Source: upstream/packages/types/src/GlMeshMaterialRenderer.ts:25 (sha256:4315aa771a093d71a942538086627e43448bb3c4e8294c89b4337c8c6a201899)
+// Source: upstream/packages/types/src/GlMeshMaterialRenderer.ts:24 (sha256:4315aa771a093d71a942538086627e43448bb3c4e8294c89b4337c8c6a201899)
 #[derive(Clone)]
 pub struct GlMeshMaterialRenderer {
     #[doc(hidden)]

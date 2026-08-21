@@ -21,27 +21,27 @@ impl PartialEq for SharedStructuralRecord1 {
     }
 }
 
-// Source: upstream/packages/types/src/Collision.ts:13 (sha256:05692c0f748ddd3cd4f43d69d0b3bd72cc43f753768c393095142b7e1c0ea154)
-pub type CollisionShapeKind = String;
+// Source: upstream/packages/types/src/Collision.ts:30 (sha256:7db462c203a8326feaa3b6f077253c1486b1160636f9b2ca4703d869a6f4722a)
+pub type CollisionShapeKind2D = String;
 
-// Source: upstream/packages/types/src/Collision.ts:16 (sha256:bc4f3e77fdb0246be1c932573eca4bd375c2ff8e57b78a9ff39ae4670dcd928e)
+// Source: upstream/packages/types/src/Collision.ts:33 (sha256:572bc1fab99673a7211ecaffd2f2a4f72974d5eb9e1f2062ff3b44431e6afcc4)
 #[derive(Clone, Default)]
-pub struct CollisionCircle {
+pub struct CollisionCircle2D {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub x: f64,
     pub y: f64,
     pub radius: f64,
 }
-impl PartialEq for CollisionCircle {
+impl PartialEq for CollisionCircle2D {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-// Source: upstream/packages/types/src/Collision.ts:24 (sha256:5dc41063d0c28d3e015af4cd5b3fa24ee8c9c52eab1b32376c918fc08222420b)
+// Source: upstream/packages/types/src/Collision.ts:41 (sha256:4c63c535423d4c802f4237e5211b2480a0465f414e51b222337c0f4d129db694)
 #[derive(Clone, Default)]
-pub struct CollisionAabb {
+pub struct CollisionAabb2D {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub min_x: f64,
@@ -49,15 +49,15 @@ pub struct CollisionAabb {
     pub max_x: f64,
     pub max_y: f64,
 }
-impl PartialEq for CollisionAabb {
+impl PartialEq for CollisionAabb2D {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-// Source: upstream/packages/types/src/Collision.ts:33 (sha256:5633e504c3ac228a2a1532ed76a91619c369b92fd8863bc3d9756dc27797c8ff)
+// Source: upstream/packages/types/src/Collision.ts:50 (sha256:a575915d72f801d492f02286e72f5c127c85326115f2497eb1b1912baab2f87c)
 #[derive(Clone, Default)]
-pub struct CollisionObb {
+pub struct CollisionObb2D {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub x: f64,
@@ -66,28 +66,28 @@ pub struct CollisionObb {
     pub half_h: f64,
     pub rotation: f64,
 }
-impl PartialEq for CollisionObb {
+impl PartialEq for CollisionObb2D {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-// Source: upstream/packages/types/src/Collision.ts:44 (sha256:578976524467fce4d7d33df394603220f57396581f3e3ef6198195c6593a35bd)
+// Source: upstream/packages/types/src/Collision.ts:61 (sha256:3c88a2da39fd0c95a7e88ea31dca04c5cfa4b36b90689e4bf2d05546465dece2)
 #[derive(Clone, Default)]
-pub struct CollisionPolygon {
+pub struct CollisionPolygon2D {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub points: Vec<f64>,
 }
-impl PartialEq for CollisionPolygon {
+impl PartialEq for CollisionPolygon2D {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-// Source: upstream/packages/types/src/Collision.ts:50 (sha256:a17eaaa7e7ec2ca72d4db02553418ae15acfee218a5a61054be88f39cdcbfbbe)
+// Source: upstream/packages/types/src/Collision.ts:67 (sha256:de593bf0091252b67638b568aedcfe522f2e4bc955f147cba25c9d97d7040449)
 #[derive(Clone, Default)]
-pub struct CollisionSegment {
+pub struct CollisionSegment2D {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub x0: f64,
@@ -95,42 +95,61 @@ pub struct CollisionSegment {
     pub x1: f64,
     pub y1: f64,
 }
-impl PartialEq for CollisionSegment {
+impl PartialEq for CollisionSegment2D {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-// Source: upstream/packages/types/src/Collision.ts:58 (sha256:6db08d48fd527c64faaac34576d72e914f30a29b6d84216e3584cb0a6f163ed4)
+// Source: upstream/packages/types/src/Collision.ts:75 (sha256:15530ca0c700ffff8d5c6b411e8bccf705e538c75086919115274e874c3df252)
 #[derive(Clone, Default)]
-pub struct CollisionPoint {
+pub struct CollisionPoint2D {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub x: f64,
     pub y: f64,
 }
-impl PartialEq for CollisionPoint {
+impl PartialEq for CollisionPoint2D {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-// Source: upstream/packages/types/src/Collision.ts:66 (sha256:d5dcb6313a9922b2369d904d6071c1d42f2071693951137c23d6ad5b7735319c)
+// Source: upstream/packages/types/src/Collision.ts:83 (sha256:e07cbb0b2cdcd24bbc5c4afc84ac4cd3696b65ff71704b44708cf6e1ff95470f)
 #[derive(Clone, Default)]
-pub struct CollisionShape {
+pub struct CollisionBuiltInShape2D {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: String,
 }
-impl PartialEq for CollisionShape {
+impl PartialEq for CollisionBuiltInShape2D {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-// Source: upstream/packages/types/src/Collision.ts:80 (sha256:3faf5007f7f5fcf04ee37c934cfbdb99659201a81ab1a767ebe1727536076405)
+// Source: upstream/packages/types/src/Collision.ts:106 (sha256:4878fb53ade5143836a7e1877e9b6afac6536bc81e9faa1baea2d70bbe401802)
 #[derive(Clone, Default)]
-pub struct CollisionManifold {
+pub struct CollisionVendorShape2D {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub kind: CollisionVendorKind2D,
+}
+impl PartialEq for CollisionVendorShape2D {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/Collision.ts:111 (sha256:5176c3df5a891975b6b6722a17fe402aa95c948e8890470f60521c4c48ab0775)
+pub type CollisionVendorKind2D = String;
+
+// Source: upstream/packages/types/src/Collision.ts:116 (sha256:4be55b3191ecec28dccb82afca9dbad7741b2e80850e9452bd3e84c664666a14)
+pub type CollisionShape2D = crate::FlightUnion2<CollisionBuiltInShape2D, CollisionVendorShape2D>;
+
+// Source: upstream/packages/types/src/Collision.ts:124 (sha256:d6aeed28d689880b86690274be5bf1bbae4e6925518f467b381c0a3fb848ba57)
+#[derive(Clone, Default)]
+pub struct CollisionManifold2D {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub overlapping: bool,
@@ -138,15 +157,15 @@ pub struct CollisionManifold {
     pub normal_y: f64,
     pub depth: f64,
 }
-impl PartialEq for CollisionManifold {
+impl PartialEq for CollisionManifold2D {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-// Source: upstream/packages/types/src/Collision.ts:90 (sha256:0fc37ebc201db4f24d23947b080f8715be1cf57f2413f81e5ba05b274d3134d4)
+// Source: upstream/packages/types/src/Collision.ts:134 (sha256:7e697ecfffc8e5104e3e0bc9d2257c08f1f4b162258e53df6c4201f24ee96223)
 #[derive(Clone, Default)]
-pub struct CollisionRaycastHit {
+pub struct CollisionRaycastHit2D {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub fraction: f64,
@@ -155,15 +174,15 @@ pub struct CollisionRaycastHit {
     pub normal_x: f64,
     pub normal_y: f64,
 }
-impl PartialEq for CollisionRaycastHit {
+impl PartialEq for CollisionRaycastHit2D {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-// Source: upstream/packages/types/src/Collision.ts:102 (sha256:daa52fb2451e8e19fe83cb7d0c336ee6443aa4ce7bed4067a08e12c74835c407)
+// Source: upstream/packages/types/src/Collision.ts:146 (sha256:c0ed0a556d84d92379c5ceea6f10db4b92255b6633ea4e34a9d102483f40da61)
 #[derive(Clone, Default)]
-pub struct CollisionTimeOfImpact {
+pub struct CollisionTimeOfImpact2D {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub fraction: f64,
@@ -172,39 +191,55 @@ pub struct CollisionTimeOfImpact {
     pub normal_x: f64,
     pub normal_y: f64,
 }
-impl PartialEq for CollisionTimeOfImpact {
+impl PartialEq for CollisionTimeOfImpact2D {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-// Source: upstream/packages/types/src/Collision.ts:112 (sha256:f96b2f199770412e07f811e7dacbe451fbe0bb15778a627ce86e5a6d3405c4d8)
+// Source: upstream/packages/types/src/Collision.ts:156 (sha256:4421b2274708a2926ea619e2ed48e633e97dd2f826f8b8f59b431ffbfecfea16)
 #[derive(Clone, Default)]
-pub struct CollisionTestExplanation {
+pub struct CollisionTestExplanation2D {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub kind: Option<CollisionShapeKind>,
+    pub kind: Option<CollisionShapeKind2D>,
     pub overlapping: bool,
     pub shape_index: Option<f64>,
     pub status: CollisionTestStatus,
 }
-impl PartialEq for CollisionTestExplanation {
+impl PartialEq for CollisionTestExplanation2D {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-// Source: upstream/packages/types/src/Collision.ts:120 (sha256:c549d89d7eaf43d488c36e5aa6cb4580b9a0f9bcc3c375404d8e5b0daf0719d7)
+// Source: upstream/packages/types/src/Collision.ts:164 (sha256:c549d89d7eaf43d488c36e5aa6cb4580b9a0f9bcc3c375404d8e5b0daf0719d7)
 pub type CollisionTestStatus = String;
 
-// Source: upstream/packages/types/src/Collision.ts:129 (sha256:16044c2423843182b7aaeec33a20cc7799d7d2abcecfdad397339c3a11fa7b5b)
-pub type CollisionTestGuard = std::sync::Arc<
-    std::sync::Mutex<Box<dyn FnMut(CollisionShape, CollisionShape) -> () + Send + 'static>>,
+// Source: upstream/packages/types/src/Collision.ts:184 (sha256:c0e26b799b9cca4351fc7b7bd786afc6dcbbe50c374efd7cadcd84739f911028)
+pub type CollisionSupport2D = std::sync::Arc<
+    std::sync::Mutex<Box<dyn FnMut(CollisionShape2D, f64, f64, Vec<f64>) -> () + Send + 'static>>,
 >;
 
-// Source: upstream/packages/types/src/Collision.ts:138 (sha256:0972cae3f54ba0ec4d0e1833767f11ab476578197e212b0dcb988637891ba0fa)
+// Source: upstream/packages/types/src/Collision.ts:193 (sha256:8df62436be8e066f6b520ef2155aa36cb11392592844a8b3427cdbef2236bdc7)
+pub type CollisionPairTest2D = std::sync::Arc<
+    std::sync::Mutex<
+        Box<
+            dyn FnMut(CollisionShape2D, CollisionShape2D, CollisionManifold2D) -> bool
+                + Send
+                + 'static,
+        >,
+    >,
+>;
+
+// Source: upstream/packages/types/src/Collision.ts:201 (sha256:7cd40d54d6b52c94c1b483afd59b006486bf250f4baca4f3e1f627dc7a2fb6b5)
+pub type CollisionTestGuard2D = std::sync::Arc<
+    std::sync::Mutex<Box<dyn FnMut(CollisionShape2D, CollisionShape2D) -> () + Send + 'static>>,
+>;
+
+// Source: upstream/packages/types/src/Collision.ts:210 (sha256:49d86e4cbb8bd06a2c29ad03a6c6f45088a9596d1f200bb9bb55f07c6842ee10)
 #[derive(Clone, Default)]
-pub struct CollisionContactPoint {
+pub struct CollisionContactPoint2D {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub x: f64,
@@ -212,15 +247,15 @@ pub struct CollisionContactPoint {
     pub depth: f64,
     pub feature_id: f64,
 }
-impl PartialEq for CollisionContactPoint {
+impl PartialEq for CollisionContactPoint2D {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-// Source: upstream/packages/types/src/Collision.ts:164 (sha256:6dfc439ab4ce910b63d1d1a0ad76eaa0bb434fe5a5a17db5b8af67a6ca5332ef)
+// Source: upstream/packages/types/src/Collision.ts:236 (sha256:70433e9e6573de517e1e3ff1ea8550a8fbcd0d69578f822f81a548ac128a2cc3)
 #[derive(Clone, Default)]
-pub struct CollisionContactManifold {
+pub struct CollisionContactManifold2D {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub overlapping: bool,
@@ -228,9 +263,9 @@ pub struct CollisionContactManifold {
     pub normal_y: f64,
     pub depth: f64,
     pub point_count: f64,
-    pub points: Vec<CollisionContactPoint>,
+    pub points: Vec<CollisionContactPoint2D>,
 }
-impl PartialEq for CollisionContactManifold {
+impl PartialEq for CollisionContactManifold2D {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{CollisionShape, SpatialIndexBackend};
+use crate::{CollisionBuiltInShape2D, SpatialIndexBackend2D};
 
 // Source: upstream/packages/types/src/Physics2D.ts:20 (sha256:56a25100e0e69754e977ebb43bccec1d6fad99d9d7b856c50649af088a0174ab)
 pub type Physics2DBodyType = String;
@@ -41,13 +41,13 @@ impl PartialEq for Physics2DCollisionFilter {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:60 (sha256:61a33980287691a1d2e1de55628a62dc799ca4529f6c87a035683162ee3e72ce)
+// Source: upstream/packages/types/src/Physics2D.ts:65 (sha256:c4157b990247a1cf3e358e8ddae5bef9ee4b2d0acebc1f3630e6e3594369951c)
 #[derive(Clone, Default)]
 pub struct Physics2DCollider {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub local: CollisionShape,
-    pub world: CollisionShape,
+    pub local: CollisionBuiltInShape2D,
+    pub world: CollisionBuiltInShape2D,
     pub material: Physics2DMaterial,
     pub filter: Physics2DCollisionFilter,
     pub sensor: bool,
@@ -58,7 +58,7 @@ impl PartialEq for Physics2DCollider {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:78 (sha256:4db498c8ac68087d55e1489e845ae6c93c321ef8e63c84e2848d03acd2aca853)
+// Source: upstream/packages/types/src/Physics2D.ts:83 (sha256:4db498c8ac68087d55e1489e845ae6c93c321ef8e63c84e2848d03acd2aca853)
 #[derive(Clone, Default)]
 pub struct Physics2DMassData {
     #[doc(hidden)]
@@ -74,7 +74,7 @@ impl PartialEq for Physics2DMassData {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:98 (sha256:a5206341ac2d9702885db0f9ba9da7d8032b3ea3961e7f34536b715e75b467b7)
+// Source: upstream/packages/types/src/Physics2D.ts:103 (sha256:a5206341ac2d9702885db0f9ba9da7d8032b3ea3961e7f34536b715e75b467b7)
 #[derive(Clone, Default)]
 pub struct RigidBody2D {
     #[doc(hidden)]
@@ -112,7 +112,7 @@ impl PartialEq for RigidBody2D {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:162 (sha256:c001573502aaf804acac17d7c6b00d0c49e53e5c2134ea34ff3761cdba00072b)
+// Source: upstream/packages/types/src/Physics2D.ts:167 (sha256:c001573502aaf804acac17d7c6b00d0c49e53e5c2134ea34ff3761cdba00072b)
 #[derive(Clone, Default)]
 pub struct Physics2DContactPoint {
     #[doc(hidden)]
@@ -137,7 +137,7 @@ impl PartialEq for Physics2DContactPoint {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:196 (sha256:3a89f0bc11ff1e68096dbb0499ae192d3abb1cde4962391c47b614b9bc6d616f)
+// Source: upstream/packages/types/src/Physics2D.ts:201 (sha256:3a89f0bc11ff1e68096dbb0499ae192d3abb1cde4962391c47b614b9bc6d616f)
 #[derive(Clone, Default)]
 pub struct Physics2DContact {
     #[doc(hidden)]
@@ -162,12 +162,12 @@ impl PartialEq for Physics2DContact {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:227 (sha256:bfd80cbc8eb537da428b2fbfe476a3d02e86ecedf66ee42850da238aea0f6fe2)
+// Source: upstream/packages/types/src/Physics2D.ts:232 (sha256:bfd80cbc8eb537da428b2fbfe476a3d02e86ecedf66ee42850da238aea0f6fe2)
 pub type Physics2DContactCallback = std::sync::Arc<
     std::sync::Mutex<Box<dyn FnMut(Physics2DWorld, Physics2DContact) -> () + Send + 'static>>,
 >;
 
-// Source: upstream/packages/types/src/Physics2D.ts:229 (sha256:5005685a95c0d38e2864c53d20e121efbaf4b16aedac415200af934f8e1f0d0b)
+// Source: upstream/packages/types/src/Physics2D.ts:234 (sha256:5005685a95c0d38e2864c53d20e121efbaf4b16aedac415200af934f8e1f0d0b)
 #[derive(Clone, Default)]
 pub struct Physics2DContactHooks {
     #[doc(hidden)]
@@ -181,7 +181,7 @@ impl PartialEq for Physics2DContactHooks {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:244 (sha256:29644de2ca268e7003a01a34866533f5279d4bc6da62b2de3f2f702b1a5eaaab)
+// Source: upstream/packages/types/src/Physics2D.ts:249 (sha256:29644de2ca268e7003a01a34866533f5279d4bc6da62b2de3f2f702b1a5eaaab)
 #[derive(Clone, Default)]
 pub struct Physics2DSolverConfig {
     #[doc(hidden)]
@@ -206,7 +206,7 @@ impl PartialEq for Physics2DSolverConfig {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:273 (sha256:bf03f6784633fdf67da2ac96c370093dcf9a1989203e9fc784ba2dbf2e975fa1)
+// Source: upstream/packages/types/src/Physics2D.ts:278 (sha256:bf03f6784633fdf67da2ac96c370093dcf9a1989203e9fc784ba2dbf2e975fa1)
 #[derive(Clone, Default)]
 pub struct Physics2DStepExplanation {
     #[doc(hidden)]
@@ -228,7 +228,7 @@ impl PartialEq for Physics2DStepExplanation {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:292 (sha256:a28a94c95326e5405d33feda957ea8ee57399e1266dae9f9d7c88218d945a9fe)
+// Source: upstream/packages/types/src/Physics2D.ts:297 (sha256:7eb39c9d903a978655a76f87f5e3f0e69900aba451ca34e36b8f51f5a68cf712)
 #[derive(Clone)]
 pub struct Physics2DWorld {
     #[doc(hidden)]
@@ -242,7 +242,7 @@ pub struct Physics2DWorld {
     pub joint_collision_suppressions: Vec<(f64, Vec<(f64, f64)>)>,
     pub events: Physics2DContactEvents,
     pub contact_hooks: Physics2DContactHooks,
-    pub index: SpatialIndexBackend,
+    pub index: SpatialIndexBackend2D,
     pub config: Physics2DSolverConfig,
     pub island_parents: Vec<(f64, f64)>,
     pub island_sleep_timers: Vec<(f64, f64)>,
@@ -269,10 +269,10 @@ impl PartialEq for Physics2DWorld {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:357 (sha256:d9399bc897fd454947f22d5b87a01421946093d4fc4629391a3d6af4e38d0673)
+// Source: upstream/packages/types/src/Physics2D.ts:362 (sha256:d9399bc897fd454947f22d5b87a01421946093d4fc4629391a3d6af4e38d0673)
 pub type Physics2DJointKind = String;
 
-// Source: upstream/packages/types/src/Physics2D.ts:370 (sha256:41a953a2830748f220897697a487ee6df51a68981a188aa6ce1c3a14cd66efc5)
+// Source: upstream/packages/types/src/Physics2D.ts:375 (sha256:41a953a2830748f220897697a487ee6df51a68981a188aa6ce1c3a14cd66efc5)
 #[derive(Clone, Default)]
 pub struct Physics2DJoint {
     #[doc(hidden)]
@@ -299,7 +299,7 @@ impl PartialEq for Physics2DJoint {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:401 (sha256:49aef58282491cc209d66ae89145f081fb43a9ae6f7a7abe776a55eba6722255)
+// Source: upstream/packages/types/src/Physics2D.ts:406 (sha256:49aef58282491cc209d66ae89145f081fb43a9ae6f7a7abe776a55eba6722255)
 #[derive(Clone, Default)]
 pub struct Physics2DDistanceJoint {
     #[doc(hidden)]
@@ -329,7 +329,7 @@ impl PartialEq for Physics2DDistanceJoint {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:410 (sha256:f45bdd8ec8f78d20609e6978dab03cf413f0cd31305168d66313d7eb273099a1)
+// Source: upstream/packages/types/src/Physics2D.ts:415 (sha256:f45bdd8ec8f78d20609e6978dab03cf413f0cd31305168d66313d7eb273099a1)
 #[derive(Clone, Default)]
 pub struct Physics2DRevoluteJoint {
     #[doc(hidden)]
@@ -364,7 +364,7 @@ impl PartialEq for Physics2DRevoluteJoint {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:424 (sha256:3cd1f303c8360981be0e1a34e91acf297a5cc5f7cef9e6cc4a610a397f20a51f)
+// Source: upstream/packages/types/src/Physics2D.ts:429 (sha256:3cd1f303c8360981be0e1a34e91acf297a5cc5f7cef9e6cc4a610a397f20a51f)
 #[derive(Clone, Default)]
 pub struct Physics2DWeldJoint {
     #[doc(hidden)]
@@ -392,7 +392,7 @@ impl PartialEq for Physics2DWeldJoint {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:431 (sha256:14e73420781716fb117238d19bcdb4f60f2e774649530cfaad6497664f4ec9fd)
+// Source: upstream/packages/types/src/Physics2D.ts:436 (sha256:14e73420781716fb117238d19bcdb4f60f2e774649530cfaad6497664f4ec9fd)
 #[derive(Clone, Default)]
 pub struct Physics2DRopeJoint {
     #[doc(hidden)]
@@ -420,7 +420,7 @@ impl PartialEq for Physics2DRopeJoint {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:438 (sha256:a169f1f5512b2bf35e7587690e6ef634681878d267026c2ab03a3dafd517ed12)
+// Source: upstream/packages/types/src/Physics2D.ts:443 (sha256:a169f1f5512b2bf35e7587690e6ef634681878d267026c2ab03a3dafd517ed12)
 #[derive(Clone, Default)]
 pub struct Physics2DPulleyJoint {
     #[doc(hidden)]
@@ -453,10 +453,10 @@ impl PartialEq for Physics2DPulleyJoint {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:447 (sha256:18764b4f3d144a8ee09a432e0a3778f8843436502107fa5120e453af89cea4d7)
+// Source: upstream/packages/types/src/Physics2D.ts:452 (sha256:18764b4f3d144a8ee09a432e0a3778f8843436502107fa5120e453af89cea4d7)
 pub type Physics2DGearCoordinateKind = String;
 
-// Source: upstream/packages/types/src/Physics2D.ts:454 (sha256:7a2a5c30028a7ebe59854b90338612f99a484da9d05bd71eaaa7de448bbb2b7c)
+// Source: upstream/packages/types/src/Physics2D.ts:459 (sha256:7a2a5c30028a7ebe59854b90338612f99a484da9d05bd71eaaa7de448bbb2b7c)
 #[derive(Clone, Default)]
 pub struct Physics2DGearJoint {
     #[doc(hidden)]
@@ -491,7 +491,7 @@ impl PartialEq for Physics2DGearJoint {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:467 (sha256:7047314bcb16b3ebe3626298c25398572a66360e5e872133b33a21415c4e2e88)
+// Source: upstream/packages/types/src/Physics2D.ts:472 (sha256:7047314bcb16b3ebe3626298c25398572a66360e5e872133b33a21415c4e2e88)
 #[derive(Clone, Default)]
 pub struct Physics2DPrismaticJoint {
     #[doc(hidden)]
@@ -528,7 +528,7 @@ impl PartialEq for Physics2DPrismaticJoint {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:484 (sha256:70b93b46c79fe10b1370af8bf3c98f46e51df7082eb8bc53ed35ae7680de8fd4)
+// Source: upstream/packages/types/src/Physics2D.ts:489 (sha256:70b93b46c79fe10b1370af8bf3c98f46e51df7082eb8bc53ed35ae7680de8fd4)
 #[derive(Clone, Default)]
 pub struct Physics2DWheelJoint {
     #[doc(hidden)]
@@ -564,7 +564,7 @@ impl PartialEq for Physics2DWheelJoint {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:500 (sha256:664e4ea898a800925784de626419296c5db614ca118bb982780fc280589a5c90)
+// Source: upstream/packages/types/src/Physics2D.ts:505 (sha256:664e4ea898a800925784de626419296c5db614ca118bb982780fc280589a5c90)
 #[derive(Clone, Default)]
 pub struct Physics2DMouseJoint {
     #[doc(hidden)]
@@ -596,7 +596,7 @@ impl PartialEq for Physics2DMouseJoint {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:511 (sha256:d80659201a446d2c586629608dce3f08746d7cfb0675d9465607bf17f9bae242)
+// Source: upstream/packages/types/src/Physics2D.ts:516 (sha256:d80659201a446d2c586629608dce3f08746d7cfb0675d9465607bf17f9bae242)
 #[derive(Clone, Default)]
 pub struct Physics2DJointOptions {
     #[doc(hidden)]
@@ -615,7 +615,7 @@ impl PartialEq for Physics2DJointOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:521 (sha256:85755bcc12232b6e020df52315e71d52db17b89510a40769fb2d26fc455357ab)
+// Source: upstream/packages/types/src/Physics2D.ts:526 (sha256:85755bcc12232b6e020df52315e71d52db17b89510a40769fb2d26fc455357ab)
 #[derive(Clone, Default)]
 pub struct Physics2DDistanceJointOptions {
     #[doc(hidden)]
@@ -637,7 +637,7 @@ impl PartialEq for Physics2DDistanceJointOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:527 (sha256:96dea12d6d63d82bc32a2184f0a4acc14b2931b26642698cd6e87006ef64ccf5)
+// Source: upstream/packages/types/src/Physics2D.ts:532 (sha256:96dea12d6d63d82bc32a2184f0a4acc14b2931b26642698cd6e87006ef64ccf5)
 #[derive(Clone, Default)]
 pub struct Physics2DRevoluteJointOptions {
     #[doc(hidden)]
@@ -663,7 +663,7 @@ impl PartialEq for Physics2DRevoluteJointOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:537 (sha256:f9fc6035017a8b5e1f85ecffa76f6db48c2b049a506f952cc547e126002c3c9e)
+// Source: upstream/packages/types/src/Physics2D.ts:542 (sha256:f9fc6035017a8b5e1f85ecffa76f6db48c2b049a506f952cc547e126002c3c9e)
 #[derive(Clone, Default)]
 pub struct Physics2DWeldJointOptions {
     #[doc(hidden)]
@@ -683,7 +683,7 @@ impl PartialEq for Physics2DWeldJointOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:541 (sha256:aa67ce3449b80ff36751dd1496633651a2bfe8f2c014ac49b8d454a622fde60e)
+// Source: upstream/packages/types/src/Physics2D.ts:546 (sha256:aa67ce3449b80ff36751dd1496633651a2bfe8f2c014ac49b8d454a622fde60e)
 #[derive(Clone, Default)]
 pub struct Physics2DRopeJointOptions {
     #[doc(hidden)]
@@ -703,7 +703,7 @@ impl PartialEq for Physics2DRopeJointOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:545 (sha256:8deac03fff883b2e6da269b0b5ba41242add8a73a608d6259e1bffade21e8cdc)
+// Source: upstream/packages/types/src/Physics2D.ts:550 (sha256:8deac03fff883b2e6da269b0b5ba41242add8a73a608d6259e1bffade21e8cdc)
 #[derive(Clone, Default)]
 pub struct Physics2DPulleyJointOptions {
     #[doc(hidden)]
@@ -728,7 +728,7 @@ impl PartialEq for Physics2DPulleyJointOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:554 (sha256:78dcb4caa67b151f54c1f2a426c1264d79135c2d29ddbf220e1f930bbd6fdda1)
+// Source: upstream/packages/types/src/Physics2D.ts:559 (sha256:78dcb4caa67b151f54c1f2a426c1264d79135c2d29ddbf220e1f930bbd6fdda1)
 #[derive(Clone, Default)]
 pub struct Physics2DGearJointOptions {
     #[doc(hidden)]
@@ -755,7 +755,7 @@ impl PartialEq for Physics2DGearJointOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:565 (sha256:c96ac7eb691c145a2c2a1c971160cca42ae2382b4cace6917437f2fbe6d98fae)
+// Source: upstream/packages/types/src/Physics2D.ts:570 (sha256:c96ac7eb691c145a2c2a1c971160cca42ae2382b4cace6917437f2fbe6d98fae)
 #[derive(Clone, Default)]
 pub struct Physics2DPrismaticJointOptions {
     #[doc(hidden)]
@@ -783,7 +783,7 @@ impl PartialEq for Physics2DPrismaticJointOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:577 (sha256:9775462cd5ce4402fcc41ff2f91c58cc0fefc7a6b29602a4f44f568e829a5334)
+// Source: upstream/packages/types/src/Physics2D.ts:582 (sha256:9775462cd5ce4402fcc41ff2f91c58cc0fefc7a6b29602a4f44f568e829a5334)
 #[derive(Clone, Default)]
 pub struct Physics2DWheelJointOptions {
     #[doc(hidden)]
@@ -810,7 +810,7 @@ impl PartialEq for Physics2DWheelJointOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:590 (sha256:e35c04cec06deb040e790ba9683b30466109fee8b73fe27022136defde1c7501)
+// Source: upstream/packages/types/src/Physics2D.ts:595 (sha256:e35c04cec06deb040e790ba9683b30466109fee8b73fe27022136defde1c7501)
 #[derive(Clone, Default)]
 pub struct Physics2DMouseJointOptions {
     #[doc(hidden)]
@@ -830,7 +830,7 @@ impl PartialEq for Physics2DMouseJointOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:609 (sha256:05edc17f0609af585d9ef7c796dfbeb00be72621120f88b84b9c91b072153942)
+// Source: upstream/packages/types/src/Physics2D.ts:614 (sha256:05edc17f0609af585d9ef7c796dfbeb00be72621120f88b84b9c91b072153942)
 #[derive(Clone)]
 pub struct Physics2DJointSolver {
     #[doc(hidden)]
@@ -868,7 +868,7 @@ impl PartialEq for Physics2DJointSolver {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:653 (sha256:050084dc75e29590d70cf1bc07935d262935cade3baccadcb460c45834a90c6a)
+// Source: upstream/packages/types/src/Physics2D.ts:658 (sha256:050084dc75e29590d70cf1bc07935d262935cade3baccadcb460c45834a90c6a)
 #[derive(Clone, Default)]
 pub struct Physics2DContactEvents {
     #[doc(hidden)]
@@ -882,7 +882,7 @@ impl PartialEq for Physics2DContactEvents {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:661 (sha256:170b608b1adbe4f5d5adbf9037aae861cd32250fda3110f11bf5dde9eb8b0832)
+// Source: upstream/packages/types/src/Physics2D.ts:666 (sha256:170b608b1adbe4f5d5adbf9037aae861cd32250fda3110f11bf5dde9eb8b0832)
 #[derive(Clone, Default)]
 pub struct Physics2DQueryHit {
     #[doc(hidden)]
@@ -897,7 +897,7 @@ impl PartialEq for Physics2DQueryHit {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:669 (sha256:70501c86dcdcd798ac02822859ebe0836dac6adc52887c67c95a1848ab9405d4)
+// Source: upstream/packages/types/src/Physics2D.ts:674 (sha256:70501c86dcdcd798ac02822859ebe0836dac6adc52887c67c95a1848ab9405d4)
 #[derive(Clone, Default)]
 pub struct Physics2DQueryResult {
     #[doc(hidden)]
@@ -911,7 +911,7 @@ impl PartialEq for Physics2DQueryResult {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:677 (sha256:d5fad3e69896ef87b90849b081b585fd0d0ef60cf75dfe8a788516888db17997)
+// Source: upstream/packages/types/src/Physics2D.ts:682 (sha256:d5fad3e69896ef87b90849b081b585fd0d0ef60cf75dfe8a788516888db17997)
 #[derive(Clone, Default)]
 pub struct Physics2DQueryFilter {
     #[doc(hidden)]
@@ -929,7 +929,7 @@ impl PartialEq for Physics2DQueryFilter {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:686 (sha256:9094ab4baa041a3973eb2471908827999044b59892109431e6ce46c93436a483)
+// Source: upstream/packages/types/src/Physics2D.ts:691 (sha256:9094ab4baa041a3973eb2471908827999044b59892109431e6ce46c93436a483)
 #[derive(Clone, Default)]
 pub struct Physics2DRayHit {
     #[doc(hidden)]
@@ -949,7 +949,7 @@ impl PartialEq for Physics2DRayHit {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:696 (sha256:dcd5f590b1f242ab29d2afd97181bbc6e1cfeb173ca544ef716f2f321130ebd8)
+// Source: upstream/packages/types/src/Physics2D.ts:701 (sha256:dcd5f590b1f242ab29d2afd97181bbc6e1cfeb173ca544ef716f2f321130ebd8)
 #[derive(Clone, Default)]
 pub struct Physics2DRayResult {
     #[doc(hidden)]
@@ -963,10 +963,10 @@ impl PartialEq for Physics2DRayResult {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:701 (sha256:3734762e415651440e9db023f04ab4f01e62c648419c7a598fd048ebea3f6a0e)
+// Source: upstream/packages/types/src/Physics2D.ts:706 (sha256:3734762e415651440e9db023f04ab4f01e62c648419c7a598fd048ebea3f6a0e)
 pub type Physics2DJointResolutionStatus = String;
 
-// Source: upstream/packages/types/src/Physics2D.ts:710 (sha256:66c9b6fd86d8b673b601b333284fa35a8ac7b10390221f667e50d54cfd54e362)
+// Source: upstream/packages/types/src/Physics2D.ts:715 (sha256:66c9b6fd86d8b673b601b333284fa35a8ac7b10390221f667e50d54cfd54e362)
 #[derive(Clone, Default)]
 pub struct Physics2DJointResolution {
     #[doc(hidden)]
@@ -987,7 +987,7 @@ impl PartialEq for Physics2DJointResolution {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:722 (sha256:2b53073ddae56946cb5e7ab5666ba8d35426f7c61941745efd3581fe3dcd4fb7)
+// Source: upstream/packages/types/src/Physics2D.ts:727 (sha256:2b53073ddae56946cb5e7ab5666ba8d35426f7c61941745efd3581fe3dcd4fb7)
 #[derive(Clone, Default)]
 pub struct Physics2DJointResolutionExplanation {
     #[doc(hidden)]
@@ -1002,10 +1002,10 @@ impl PartialEq for Physics2DJointResolutionExplanation {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:728 (sha256:ceb7de12db62d422c92896660358f66ed2573b4344757c2019eac4198c0baae6)
+// Source: upstream/packages/types/src/Physics2D.ts:733 (sha256:ceb7de12db62d422c92896660358f66ed2573b4344757c2019eac4198c0baae6)
 pub type Physics2DDebugFeature = String;
 
-// Source: upstream/packages/types/src/Physics2D.ts:733 (sha256:40cd280d4b3477b864e91ec95bff9c922335f937200478f6f56d4e542bd25754)
+// Source: upstream/packages/types/src/Physics2D.ts:738 (sha256:40cd280d4b3477b864e91ec95bff9c922335f937200478f6f56d4e542bd25754)
 #[derive(Clone, Default)]
 pub struct Physics2DDebugLine {
     #[doc(hidden)]
@@ -1024,7 +1024,7 @@ impl PartialEq for Physics2DDebugLine {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:743 (sha256:ed38b0c33bd7502b53e2a4922de766310a53c290f77ec3676600a8ee9c56d937)
+// Source: upstream/packages/types/src/Physics2D.ts:748 (sha256:ed38b0c33bd7502b53e2a4922de766310a53c290f77ec3676600a8ee9c56d937)
 #[derive(Clone, Default)]
 pub struct Physics2DDebugCircle {
     #[doc(hidden)]
@@ -1042,7 +1042,7 @@ impl PartialEq for Physics2DDebugCircle {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:754 (sha256:1f8b276b48280ac169c1a2fd693088116385bea498fd8d80746091ed5a42729a)
+// Source: upstream/packages/types/src/Physics2D.ts:759 (sha256:1f8b276b48280ac169c1a2fd693088116385bea498fd8d80746091ed5a42729a)
 #[derive(Clone, Default)]
 pub struct Physics2DDebugGeometry {
     #[doc(hidden)]
@@ -1058,7 +1058,7 @@ impl PartialEq for Physics2DDebugGeometry {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:761 (sha256:47def074a0904f9f25514d36c9de48c415a0d0363de3612860855ad5f0f9f073)
+// Source: upstream/packages/types/src/Physics2D.ts:766 (sha256:47def074a0904f9f25514d36c9de48c415a0d0363de3612860855ad5f0f9f073)
 #[derive(Clone, Default)]
 pub struct Physics2DDebugGeometryOptions {
     #[doc(hidden)]

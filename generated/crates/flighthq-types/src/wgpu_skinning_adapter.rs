@@ -8,7 +8,7 @@
 
 use crate::{Mesh, MeshGeometry, WgpuRenderState};
 
-// Source: upstream/packages/types/src/WgpuSkinningAdapter.ts:5 (sha256:f711d111fe4120bc28738dcad2473c25874582a202a2c7c62088d3438162d0ce)
+// Source: upstream/packages/types/src/WgpuSkinningAdapter.ts:5 (sha256:dceeba7d93293d19f6e7c5bc2cd4ea4a10993eacc6987caecce337218e447ddb)
 #[derive(Clone)]
 pub struct WgpuSkinningAdapter {
     #[doc(hidden)]
@@ -23,6 +23,20 @@ pub struct WgpuSkinningAdapter {
         >,
     >,
     pub get_draw_layout: std::sync::Arc<
+        std::sync::Mutex<
+            Box<dyn FnMut(WgpuRenderState) -> crate::OpaqueHostValue + Send + 'static>,
+        >,
+    >,
+    pub get_mesh_draw_bind_group: std::sync::Arc<
+        std::sync::Mutex<
+            Box<
+                dyn FnMut(WgpuRenderState, Vec<f32>, Vec<f32>) -> crate::OpaqueHostValue
+                    + Send
+                    + 'static,
+            >,
+        >,
+    >,
+    pub get_mesh_draw_layout: std::sync::Arc<
         std::sync::Mutex<
             Box<dyn FnMut(WgpuRenderState) -> crate::OpaqueHostValue + Send + 'static>,
         >,

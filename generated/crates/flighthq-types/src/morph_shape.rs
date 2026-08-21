@@ -39,7 +39,7 @@ impl PartialEq for MorphShapeColorEndpoint {
     }
 }
 
-// Source: upstream/packages/types/src/MorphShape.ts:16 (sha256:f5a125c830ec328239b3260b832a2d808ac31e1e0735b68100978abf63435bde)
+// Source: upstream/packages/types/src/MorphShape.ts:17 (sha256:f5a125c830ec328239b3260b832a2d808ac31e1e0735b68100978abf63435bde)
 #[derive(Clone, Default)]
 pub struct MorphShapeGradientEndpoint {
     #[doc(hidden)]
@@ -56,7 +56,7 @@ impl PartialEq for MorphShapeGradientEndpoint {
     }
 }
 
-// Source: upstream/packages/types/src/MorphShape.ts:24 (sha256:9d2cd07cf8c6818d54a0ba8350226da2a67d4ec2833d7c3ce798ba6483b825a8)
+// Source: upstream/packages/types/src/MorphShape.ts:26 (sha256:9d2cd07cf8c6818d54a0ba8350226da2a67d4ec2833d7c3ce798ba6483b825a8)
 #[derive(Clone, Default)]
 pub struct MorphShapeGradientEndpointExplanation {
     #[doc(hidden)]
@@ -72,10 +72,10 @@ impl PartialEq for MorphShapeGradientEndpointExplanation {
     }
 }
 
-// Source: upstream/packages/types/src/MorphShape.ts:31 (sha256:c4a45d443af674418c90775cf7da6dd22f2bb6b934922c24ee2e95f029085f48)
+// Source: upstream/packages/types/src/MorphShape.ts:33 (sha256:c4a45d443af674418c90775cf7da6dd22f2bb6b934922c24ee2e95f029085f48)
 pub type MorphShapeGradientEndpointReason = String;
 
-// Source: upstream/packages/types/src/MorphShape.ts:38 (sha256:9f08ed93b7149ba994f4cc6c6ddd65acb4d6899ce85afdd0cc31c16d82ebd125)
+// Source: upstream/packages/types/src/MorphShape.ts:40 (sha256:9f08ed93b7149ba994f4cc6c6ddd65acb4d6899ce85afdd0cc31c16d82ebd125)
 #[derive(Clone, Default)]
 pub struct MorphShapeLineEndpoint {
     #[doc(hidden)]
@@ -90,7 +90,7 @@ impl PartialEq for MorphShapeLineEndpoint {
     }
 }
 
-// Source: upstream/packages/types/src/MorphShape.ts:42 (sha256:deb9192df6311aa1b59b2284491c46b35ec62c4f8f1f323d0288b412d8ea626a)
+// Source: upstream/packages/types/src/MorphShape.ts:44 (sha256:deb9192df6311aa1b59b2284491c46b35ec62c4f8f1f323d0288b412d8ea626a)
 #[derive(Clone, Default)]
 pub struct MorphShapeColorPaintBinding {
     #[doc(hidden)]
@@ -108,7 +108,7 @@ impl PartialEq for MorphShapeColorPaintBinding {
     }
 }
 
-// Source: upstream/packages/types/src/MorphShape.ts:51 (sha256:abe5022d0bb36a4950a6d8414708a5f4e7b35787588996db82d6a1e6a8508691)
+// Source: upstream/packages/types/src/MorphShape.ts:55 (sha256:abe5022d0bb36a4950a6d8414708a5f4e7b35787588996db82d6a1e6a8508691)
 #[derive(Clone, Default)]
 pub struct MorphShapeGradientPaintBinding {
     #[doc(hidden)]
@@ -133,7 +133,7 @@ impl PartialEq for MorphShapeGradientPaintBinding {
     }
 }
 
-// Source: upstream/packages/types/src/MorphShape.ts:67 (sha256:d2bd3807c916ad7a1b39dc5e0fc94f1c1715228123376d205490cd4be74e8551)
+// Source: upstream/packages/types/src/MorphShape.ts:73 (sha256:d2bd3807c916ad7a1b39dc5e0fc94f1c1715228123376d205490cd4be74e8551)
 #[derive(Clone, Default)]
 pub struct MorphShapeLinePaintBinding {
     #[doc(hidden)]
@@ -153,7 +153,7 @@ impl PartialEq for MorphShapeLinePaintBinding {
     }
 }
 
-// Source: upstream/packages/types/src/MorphShape.ts:78 (sha256:46d1902e4791c0c3bb03b695d38fe38e8e872c3c57c2a037c57d52e5f7de0c7d)
+// Source: upstream/packages/types/src/MorphShape.ts:86 (sha256:46d1902e4791c0c3bb03b695d38fe38e8e872c3c57c2a037c57d52e5f7de0c7d)
 #[derive(Clone, Default)]
 pub struct MorphShapeTexturePaintBinding {
     #[doc(hidden)]
@@ -170,7 +170,7 @@ impl PartialEq for MorphShapeTexturePaintBinding {
     }
 }
 
-// Source: upstream/packages/types/src/MorphShape.ts:86 (sha256:9cd4331b9ec4b4b03e89b5be06bf65c194e2dfa7dbdf97fef6c53c0225498736)
+// Source: upstream/packages/types/src/MorphShape.ts:94 (sha256:9cd4331b9ec4b4b03e89b5be06bf65c194e2dfa7dbdf97fef6c53c0225498736)
 pub type MorphShapePaintBinding = crate::FlightUnion2<
     MorphShapeColorPaintBinding,
     crate::FlightUnion2<
@@ -179,7 +179,7 @@ pub type MorphShapePaintBinding = crate::FlightUnion2<
     >,
 >;
 
-// Source: upstream/packages/types/src/MorphShape.ts:96 (sha256:3c3ad2fcb2496c19ddf40cd7c5c6c20d5ddde69456be127c40066abd544b30e8)
+// Source: upstream/packages/types/src/MorphShape.ts:104 (sha256:3c3ad2fcb2496c19ddf40cd7c5c6c20d5ddde69456be127c40066abd544b30e8)
 #[derive(Clone, Default)]
 pub struct MorphShapeData {
     #[doc(hidden)]
@@ -197,10 +197,10 @@ impl PartialEq for MorphShapeData {
     }
 }
 
-// Source: upstream/packages/types/src/MorphShape.ts:104 (sha256:3430df21fd836c68fa70333ee05e90b679458d94d704d5f228bfeab974055a63)
+// Source: upstream/packages/types/src/MorphShape.ts:112 (sha256:3430df21fd836c68fa70333ee05e90b679458d94d704d5f228bfeab974055a63)
 pub type MorphShapeRuntime = crate::EntityRuntime;
 
-// Source: upstream/packages/types/src/MorphShape.ts:106 (sha256:4d520958150bb3f2e2c1beebf07d580ca947c836dca809a68b34ea205143529c)
+// Source: upstream/packages/types/src/MorphShape.ts:114 (sha256:4d520958150bb3f2e2c1beebf07d580ca947c836dca809a68b34ea205143529c)
 #[derive(Clone, Default)]
 pub struct MorphShape {
     #[doc(hidden)]
@@ -248,5 +248,5 @@ impl crate::FlightEntity for MorphShape {
     }
 }
 
-// Source: upstream/packages/types/src/MorphShape.ts:110 (sha256:9bc7088b2617f41cff6cd6528deba0cd7af491bfc11eee1a377d3e97e83f297e)
+// Source: upstream/packages/types/src/MorphShape.ts:118 (sha256:9bc7088b2617f41cff6cd6528deba0cd7af491bfc11eee1a377d3e97e83f297e)
 pub const MORPH_SHAPE_KIND: &'static str = "MorphShape";

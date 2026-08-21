@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-// Source: upstream/packages/types/src/GlDebugProgram.ts:8 (sha256:c1b8a63115d3c8446824e2c965a250c8d4a15932b7c28a51cc685b7457e1f203)
+// Source: upstream/packages/types/src/GlDebugProgram.ts:9 (sha256:c6b775023bccac932cdaa74645de9bea419037af0fe4180653169035336ed62f)
 #[derive(Clone, Default)]
 pub struct GlDebugProgram {
     #[doc(hidden)]
@@ -21,6 +21,7 @@ pub struct GlDebugProgram {
     pub loc_object_alpha: Option<crate::OpaqueHostValue>,
     pub loc_alpha_is_coverage: Option<crate::OpaqueHostValue>,
     pub loc_joint_texture: Option<crate::OpaqueHostValue>,
+    pub loc_joint_normal_texture: Option<crate::OpaqueHostValue>,
     pub loc_model: Option<crate::OpaqueHostValue>,
     pub loc_normal_matrix: Option<crate::OpaqueHostValue>,
     pub loc_uv_transform: Option<crate::OpaqueHostValue>,
@@ -30,6 +31,7 @@ pub struct GlDebugProgram {
     pub loc_near: Option<crate::OpaqueHostValue>,
     pub loc_normal_map: Option<crate::OpaqueHostValue>,
     pub loc_normal_scale: Option<crate::OpaqueHostValue>,
+    pub loc_view: Option<crate::OpaqueHostValue>,
 }
 impl PartialEq for GlDebugProgram {
     fn eq(&self, other: &Self) -> bool {
@@ -37,12 +39,13 @@ impl PartialEq for GlDebugProgram {
     }
 }
 
-// Source: upstream/packages/types/src/GlDebugProgram.ts:18 (sha256:5e25e2c86a4b18eaba180cd053638b4bc2f4cea008df3c8c76baeef06665984b)
+// Source: upstream/packages/types/src/GlDebugProgram.ts:20 (sha256:84b574a8e798cf7cf7855c728fe3c4973ebad64c9e3095ebe300af621cdafa7a)
 #[derive(Clone, Default)]
 pub struct GlDebugDefineKey {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub has_normal_map: bool,
+    pub has_skin: Option<bool>,
     pub mode: String,
 }
 impl PartialEq for GlDebugDefineKey {

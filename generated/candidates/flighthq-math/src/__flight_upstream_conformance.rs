@@ -218,9 +218,9 @@ fn upstream_comparison_14_approx_zero_accepts_a_custom_epsilon() {
     assert_eq!(crate::approx_zero(0.01_f64, Some(0.1_f64)), true);
     assert_eq!(crate::approx_zero(0.2_f64, Some(0.1_f64)), false);
 }
-// constants.test.ts:5 — constants > DEG_TO_RAD > converts 180 degrees to π
+// constants.test.ts:36 — constants > DEG_TO_RAD > converts 180 degrees to π
 #[test]
-fn upstream_constants_1_constants_deg_to_rad_converts_180_degrees_to() {
+fn upstream_constants_3_constants_deg_to_rad_converts_180_degrees_to() {
     let _flight_task_scheduler = crate::install_deterministic_flight_task_scheduler();
     flight_close(
         (180.0_f64 * crate::DEG_TO_RAD),
@@ -228,9 +228,9 @@ fn upstream_constants_1_constants_deg_to_rad_converts_180_degrees_to() {
         10_i32,
     );
 }
-// constants.test.ts:8 — constants > DEG_TO_RAD > converts 360 degrees to 2π
+// constants.test.ts:39 — constants > DEG_TO_RAD > converts 360 degrees to 2π
 #[test]
-fn upstream_constants_2_constants_deg_to_rad_converts_360_degrees_to_2() {
+fn upstream_constants_4_constants_deg_to_rad_converts_360_degrees_to_2() {
     let _flight_task_scheduler = crate::install_deterministic_flight_task_scheduler();
     flight_close(
         (360.0_f64 * crate::DEG_TO_RAD),
@@ -238,27 +238,27 @@ fn upstream_constants_2_constants_deg_to_rad_converts_360_degrees_to_2() {
         10_i32,
     );
 }
-// constants.test.ts:13 — constants > EPSILON > is a positive number
+// constants.test.ts:44 — constants > EPSILON > is a positive number
 #[test]
-fn upstream_constants_3_constants_epsilon_is_a_positive_number() {
+fn upstream_constants_5_constants_epsilon_is_a_positive_number() {
     let _flight_task_scheduler = crate::install_deterministic_flight_task_scheduler();
     assert!(crate::EPSILON > 0.0_f64);
 }
-// constants.test.ts:16 — constants > EPSILON > is smaller than 1e-5
+// constants.test.ts:47 — constants > EPSILON > is smaller than 1e-5
 #[test]
-fn upstream_constants_4_constants_epsilon_is_smaller_than_1e_5() {
+fn upstream_constants_6_constants_epsilon_is_smaller_than_1e_5() {
     let _flight_task_scheduler = crate::install_deterministic_flight_task_scheduler();
     assert!(crate::EPSILON < 0.00001_f64);
 }
-// constants.test.ts:21 — constants > HALF_PI > equals π / 2
+// constants.test.ts:52 — constants > HALF_PI > equals π / 2
 #[test]
-fn upstream_constants_5_constants_half_pi_equals_2() {
+fn upstream_constants_7_constants_half_pi_equals_2() {
     let _flight_task_scheduler = crate::install_deterministic_flight_task_scheduler();
     flight_close(crate::HALF_PI, (std::f64::consts::PI / 2.0_f64), 10_i32);
 }
-// constants.test.ts:26 — constants > RAD_TO_DEG > converts π radians to 180 degrees
+// constants.test.ts:57 — constants > RAD_TO_DEG > converts π radians to 180 degrees
 #[test]
-fn upstream_constants_6_constants_rad_to_deg_converts_radians_to_180_degrees() {
+fn upstream_constants_8_constants_rad_to_deg_converts_radians_to_180_degrees() {
     let _flight_task_scheduler = crate::install_deterministic_flight_task_scheduler();
     flight_close(
         (std::f64::consts::PI * crate::RAD_TO_DEG),
@@ -266,15 +266,15 @@ fn upstream_constants_6_constants_rad_to_deg_converts_radians_to_180_degrees() {
         10_i32,
     );
 }
-// constants.test.ts:29 — constants > RAD_TO_DEG > is the reciprocal of DEG_TO_RAD
+// constants.test.ts:60 — constants > RAD_TO_DEG > is the reciprocal of DEG_TO_RAD
 #[test]
-fn upstream_constants_7_constants_rad_to_deg_is_the_reciprocal_of_deg_to_rad() {
+fn upstream_constants_9_constants_rad_to_deg_is_the_reciprocal_of_deg_to_rad() {
     let _flight_task_scheduler = crate::install_deterministic_flight_task_scheduler();
     flight_close((crate::RAD_TO_DEG * crate::DEG_TO_RAD), 1.0_f64, 10_i32);
 }
-// constants.test.ts:34 — constants > TAU > equals 2π
+// constants.test.ts:65 — constants > TAU > equals 2π
 #[test]
-fn upstream_constants_8_constants_tau_equals_2() {
+fn upstream_constants_10_constants_tau_equals_2() {
     let _flight_task_scheduler = crate::install_deterministic_flight_task_scheduler();
     flight_close(crate::TAU, (std::f64::consts::PI * 2.0_f64), 10_i32);
 }
