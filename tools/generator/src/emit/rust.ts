@@ -2941,6 +2941,25 @@ function emitCall(
       const popped = `${ownerPlace}.pop()`;
       return expectedType?.kind === 'nullable' ? popped : `${popped}.expect("TypeScript Array.pop returned undefined")`;
     }
+    if (collectionType?.kind === 'array' && method === 'concat') {
+      const values = emitExpression(expression.callee.object, context, collectionType);
+      const operations = expression.arguments.map((argument, index) => {
+        if (argument.kind === 'spread') {
+          throw new RustEmissionError('Array.concat spread arguments are not implemented');
+        }
+        const argumentType = inferIrExpressionType(argument, context);
+        const resolvedArgument = resolveSemanticType(argumentType, context) ?? argumentType;
+        const emittedArgument = emitExpression(argument, context, argumentType);
+        if (
+          resolvedArgument?.kind === 'array' ||
+          (resolvedArgument?.kind === 'named' && Boolean(typedArrayType(resolvedArgument.name)))
+        ) {
+          return `let __flight_concat_${String(index)} = ${emittedArgument}; __flight_values.extend(__flight_concat_${String(index)}.iter().cloned());`;
+        }
+        return `__flight_values.push(${emitExpression(argument, context, collectionType.element)});`;
+      });
+      return `{ let mut __flight_values = ${values}; ${operations.join(' ')} __flight_values }`;
+    }
     if (collectionType?.kind === 'array' && method === 'copyWithin') {
       const target = expression.arguments[0];
       const start = expression.arguments[1];

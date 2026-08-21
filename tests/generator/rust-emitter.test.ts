@@ -1803,6 +1803,9 @@ describe('Rust emission', () => {
         export function appendSpread(values: number[], interior: readonly number[]): number {
           return values.push(1, ...interior, 2);
         }
+        export function concatValues(values: readonly number[], middle: readonly number[]): number[] {
+          return values.concat(middle, 5);
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -1845,6 +1848,8 @@ describe('Rust emission', () => {
         '  assert_eq!(generated::required_value(&vec![("key".to_owned(), "value".to_owned())]), "value");',
         '  let mut values = vec![0.0];',
         '  assert_eq!(generated::append_spread(&mut values, &vec![3.0, 4.0]), 5.0);',
+        '  assert_eq!(values, vec![0.0, 1.0, 3.0, 4.0, 2.0]);',
+        '  assert_eq!(generated::concat_values(&values, &vec![6.0, 7.0]), vec![0.0, 1.0, 3.0, 4.0, 2.0, 6.0, 7.0, 5.0]);',
         '  assert_eq!(values, vec![0.0, 1.0, 3.0, 4.0, 2.0]);',
         '}',
         '',
