@@ -1678,6 +1678,12 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
     if (name === 'Set' || name === 'ReadonlySet' || name === 'WeakSet') {
       return { arguments: arguments_, kind: 'named', name: 'RustSet' };
     }
+    if (name === 'RegExpExecArray') {
+      return {
+        element: { inner: { kind: 'primitive', name: 'String' }, kind: 'nullable' },
+        kind: 'array',
+      };
+    }
     if (context.externalTypes.has(name.split('.')[0]!)) return { kind: 'dynamic' };
     const nativeHostConstructor = portConfig.typeLowering.nativeHostConstructors.find(
       (constructor) => constructor.global === name,
@@ -1699,7 +1705,7 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
       name.startsWith('Performance') ||
       name.endsWith('Event') ||
       name.endsWith('EventListener') ||
-      ['BodyInit', 'CSSStyleDeclaration', 'RegExpExecArray', 'TextEncoder', 'WindowEventMap'].includes(name);
+      ['BodyInit', 'CSSStyleDeclaration', 'TextEncoder', 'WindowEventMap'].includes(name);
     if (platformType && (!ts.isIdentifier(node.typeName) || !isTypeNameLexicallyBound(node.typeName, context))) {
       return { kind: 'dynamic' };
     }

@@ -908,6 +908,8 @@ function inferStaticExpressionType(expression: IrExpression): IrType | undefined
       if (typeof expression.value === 'number') return primitive('Float');
       if (typeof expression.value === 'string') return primitive('String');
       return undefined;
+    case 'template':
+      return primitive('String');
     case 'call':
       return isSymbolConstruction(expression) ? { arguments: [], kind: 'named', name: 'FlightSymbol' } : undefined;
     case 'hostConstruct':
@@ -926,8 +928,14 @@ function inferStaticExpressionType(expression: IrExpression): IrType | undefined
         };
       }
       if (name === 'Set' || name === 'WeakSet') {
+        const source = expression.arguments[0] ? inferStaticExpressionType(expression.arguments[0]) : undefined;
         return {
-          arguments: expression.typeArguments,
+          arguments:
+            expression.typeArguments.length > 0
+              ? expression.typeArguments
+              : source?.kind === 'array'
+                ? [source.element]
+                : [],
           kind: 'named',
           name: 'RustSet',
         };
@@ -2430,6 +2438,21 @@ function emitCall(
       }
       return emitHostValueExpression({ element: primitive('String'), kind: 'array' }, '"host.Object.keys"', context);
     }
+    if (owner === 'Object' && method === 'entries') {
+      const value = expression.arguments[0];
+      if (!value) throw new RustEmissionError('Object.entries requires a value');
+      const valueType = inferIrExpressionType(value, context);
+      const collectionType = valueType?.kind === 'nullable' ? valueType.inner : valueType;
+      if (collectionType?.kind === 'named' && collectionType.name === 'RustMap') {
+        return `${parenthesize(emitExpression(value, context, collectionType))}.clone()`;
+      }
+      const tuple: IrType = {
+        arguments: [primitive('String'), { kind: 'dynamic' }],
+        kind: 'named',
+        name: 'RustTuple2',
+      };
+      return emitHostValueExpression({ element: tuple, kind: 'array' }, '"host.Object.entries"', context);
+    }
     if (owner === 'Date' && method === 'now') return 'crate::flight_now_millis()';
     if (owner === '_Runtime' && method === 'typeofGlobal') return '"undefined"';
   }
@@ -2794,6 +2817,16 @@ function emitCall(
         }
       }
       throw new RustEmissionError('Array.map requires an inline or inferred named callback');
+    }
+    if (collectionType?.kind === 'array' && method === 'filter') {
+      const callback = expression.arguments[0];
+      if (callback?.kind !== 'function') throw new RustEmissionError('Array.filter requires an inline callback');
+      const closureType: IrType = {
+        kind: 'function',
+        parameters: [collectionType.element],
+        returns: primitive('Bool'),
+      };
+      return `{ let mut __flight_filter = ${emitClosure(callback, context, closureType, false)}; ${parenthesize(owner)}.iter().cloned().filter(|value| __flight_filter(value.clone())).collect::<Vec<_>>() }`;
     }
     if (collectionType?.kind === 'array' && method === 'find') {
       const callback = expression.arguments[0];
@@ -4375,7 +4408,9 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
     context,
     expression.operator === '??' || expression.operator === '??undefined'
       ? leftType?.kind === 'nullable'
-        ? leftType.inner
+        ? rightType?.kind === 'nullable'
+          ? rightType
+          : leftType.inner
         : resolvedLeft?.kind === 'dynamic'
           ? rightType
           : leftType
@@ -4430,6 +4465,9 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
   }
   if (expression.operator === '??' || expression.operator === '??undefined') {
     if (leftType?.kind !== 'nullable' && resolvedLeft?.kind !== 'dynamic') return left;
+    if (leftType?.kind === 'nullable' && rightType?.kind === 'nullable') {
+      return `${parenthesize(left)}.or(${right})`;
+    }
     return `${parenthesize(left)}.unwrap_or(${right})`;
   }
   if (
@@ -4520,6 +4558,8 @@ function emitAssignment(expression: Extract<IrExpression, { kind: 'assignment' }
   if (isExtensibleArrayElementAssignment(expression, context)) {
     return emitExtensibleArrayElementAssignment(expression, context, true);
   }
+  const mapElementAssignment = emitMapElementAssignment(expression, context, true);
+  if (mapElementAssignment) return mapElementAssignment;
   const placeContext = assignmentPlaceContext(expression.left, context);
   const left =
     expression.left.kind === 'element'
@@ -4598,6 +4638,8 @@ function emitAssignmentStatement(
   if (isExtensibleArrayElementAssignment(expression, context)) {
     return emitExtensibleArrayElementAssignment(expression, context, false);
   }
+  const mapElementAssignment = emitMapElementAssignment(expression, context, false);
+  if (mapElementAssignment) return mapElementAssignment;
   const placeContext = assignmentPlaceContext(expression.left, context);
   const left =
     expression.left.kind === 'element'
@@ -4713,6 +4755,27 @@ function emitExtensibleArrayElementAssignment(
   const index = emitExpression(expression.left.index, context);
   const value = emitExpression(expression.right, context, elementType);
   return `{ let __flight_index = ${parenthesize(index)} as usize; let __flight_value = ${value}; if __flight_index == ${collection}.len() { ${collection}.push(__flight_value); } else { ${collection}[__flight_index] = __flight_value; }${returnValue ? ` ${collection}[__flight_index].clone()` : ''} }`;
+}
+
+function emitMapElementAssignment(
+  expression: Extract<IrExpression, { kind: 'assignment' }>,
+  context: EmitContext,
+  returnValue: boolean,
+): string | undefined {
+  if (expression.operator !== '=' || expression.left.kind !== 'element') return undefined;
+  const objectType = inferIrExpressionType(expression.left.object, context);
+  const collectionType = objectType?.kind === 'nullable' ? objectType.inner : objectType;
+  if (collectionType?.kind !== 'named' || collectionType.name !== 'RustMap') return undefined;
+  const keyType = collectionType.arguments[0] ?? { kind: 'dynamic' };
+  const valueType = collectionType.arguments[1] ?? { kind: 'dynamic' };
+  const collection =
+    objectType?.kind === 'nullable'
+      ? `${emitPlaceExpression(expression.left.object, context)}.as_mut().unwrap()`
+      : emitCollectionPlace(expression.left.object, context);
+  const key = emitExpression(expression.left.index, context, keyType);
+  const value = emitExpression(expression.right, context, valueType);
+  const stored = returnValue ? '__flight_value.clone()' : '__flight_value';
+  return `{ let __flight_key = ${key}; let __flight_value = ${value}; if let Some((_, value)) = ${collection}.iter_mut().find(|(key, _)| key == &__flight_key) { *value = ${stored}; } else { ${collection}.push((__flight_key, ${stored})); }${returnValue ? ' __flight_value' : ''} }`;
 }
 
 function emitBitwiseOperation(left: string, right: string, operator: string): string {
@@ -7791,7 +7854,22 @@ function emitNew(
   expectedType?: IrType,
 ): string {
   const globalType = runtimeConstructorType(expression.callee);
-  if (globalType === 'Map' || globalType === 'Set' || globalType === 'WeakMap' || globalType === 'WeakSet') {
+  if (globalType === 'Set') {
+    const inferred = inferIrExpressionType(expression, context);
+    const resolvedExpected = resolveSemanticType(
+      expectedType?.kind === 'nullable' ? expectedType.inner : expectedType,
+      context,
+    );
+    const setType =
+      resolvedExpected?.kind === 'named' && resolvedExpected.name === 'RustSet' ? resolvedExpected : inferred;
+    const element: IrType =
+      setType?.kind === 'named' ? (setType.arguments[0] ?? { kind: 'dynamic' }) : { kind: 'dynamic' };
+    const source = expression.arguments[0];
+    if (!source) return 'Vec::new()';
+    const values = emitExpression(source, context, { element, kind: 'array' });
+    return `{ let mut __flight_set = Vec::new(); for __flight_value in ${values} { if !__flight_set.contains(&__flight_value) { __flight_set.push(__flight_value); } } __flight_set }`;
+  }
+  if (globalType === 'Map' || globalType === 'WeakMap' || globalType === 'WeakSet') {
     return 'Vec::new()';
   }
   if (globalType && opaqueHostConstructors.has(globalType)) {
@@ -8615,7 +8693,7 @@ function emitElement(expression: Extract<IrExpression, { kind: 'element' }>, con
         ? `${emitPlaceExpression(expression.object, context)}.as_ref().unwrap()`
         : emitPlaceExpression(expression.object, context);
     const key = emitExpression(expression.index, context, keyType);
-    return `${owner}.iter().find(|(entry_key, _)| entry_key == &${key}).map(|(_, value)| value).expect("TypeScript Record key was absent")`;
+    return `${owner}.iter().find(|(entry_key, _)| entry_key == &${key}).map(|(_, value)| value.clone())`;
   }
   const nullableCollection =
     objectType?.kind === 'nullable' &&
@@ -8653,8 +8731,7 @@ function emitElementRead(
   }
   const place = emitElement(expression, context);
   if (expression.optional) return place;
-  const collectionType = objectType?.kind === 'nullable' ? objectType.inner : objectType;
-  const elementType = collectionType?.kind === 'array' ? collectionType.element : undefined;
+  const elementType = inferIrExpressionType(expression, context);
   if (
     elementType?.kind === 'nullable' &&
     expectedType?.kind !== 'nullable' &&
@@ -8702,7 +8779,8 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
       if (expression.operator === '&&' || expression.operator === '||') return left;
       if (expression.operator === '??' || expression.operator === '??undefined') {
         if (isNullishExpression(expression.right)) return left;
-        return left?.kind === 'nullable' ? left.inner : left;
+        if (left?.kind !== 'nullable') return left;
+        return right?.kind === 'nullable' ? left : left.inner;
       }
       if (isPortableNumericStorageType(left) || isPortableNumericStorageType(right)) return primitive('Float');
       return left ?? right;
@@ -8783,6 +8861,27 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
       }
       if (
         expression.callee.kind === 'property' &&
+        ((expression.callee.object.kind === 'identifier' && expression.callee.object.name === 'Object') ||
+          runtimeGlobalType(expression.callee.object) === 'Object') &&
+        expression.callee.name === 'entries'
+      ) {
+        const value = expression.arguments[0];
+        const valueType = value ? inferIrExpressionType(value, context) : undefined;
+        const collection = valueType?.kind === 'nullable' ? valueType.inner : valueType;
+        return {
+          element: {
+            arguments:
+              collection?.kind === 'named' && collection.name === 'RustMap'
+                ? collection.arguments
+                : [primitive('String'), { kind: 'dynamic' }],
+            kind: 'named',
+            name: 'RustTuple2',
+          },
+          kind: 'array',
+        };
+      }
+      if (
+        expression.callee.kind === 'property' &&
         (expression.callee.name === 'then' || expression.callee.name === 'catch')
       ) {
         const promise = promiseType(inferIrExpressionType(expression.callee.object, context), context);
@@ -8853,7 +8952,7 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
         const owner = inferIrExpressionType(expression.callee.object, context);
         const collection = owner?.kind === 'nullable' ? owner.inner : owner;
         if (collection?.kind === 'array') {
-          if (expression.callee.name === 'slice' || expression.callee.name === 'sort') return collection;
+          if (['filter', 'slice', 'sort'].includes(expression.callee.name)) return collection;
           if (expression.callee.name === 'find' || expression.callee.name === 'pop') {
             return { inner: collection.element, kind: 'nullable' };
           }
@@ -8980,7 +9079,10 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
             ? primitive('String')
             : object?.kind === 'named'
               ? object.name === 'RustMap'
-                ? (object.arguments[1] ?? { kind: 'dynamic' })
+                ? {
+                    inner: object.arguments[1] ?? { kind: 'dynamic' },
+                    kind: 'nullable' as const,
+                  }
                 : object.name === 'RustTuple2' &&
                     expression.index.kind === 'literal' &&
                     typeof expression.index.value === 'number'
@@ -9025,8 +9127,14 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
         };
       }
       if (name === 'Set' || name === 'WeakSet') {
+        const source = expression.arguments[0] ? inferIrExpressionType(expression.arguments[0], context) : undefined;
         return {
-          arguments: expression.typeArguments,
+          arguments:
+            expression.typeArguments.length > 0
+              ? expression.typeArguments
+              : source?.kind === 'array'
+                ? [source.element]
+                : [],
           kind: 'named',
           name: 'RustSet',
         };
@@ -9068,13 +9176,16 @@ function emitRegexp(expression: Extract<IrExpression, { kind: 'regexp' }>): stri
 
 function regexCaptureType(): IrType {
   return {
-    inner: { element: primitive('String'), kind: 'array' },
+    inner: {
+      element: { inner: primitive('String'), kind: 'nullable' },
+      kind: 'array',
+    },
     kind: 'nullable',
   };
 }
 
 function emitRegexCaptures(regex: string, value: string): string {
-  return `{ let __flight_regex = ${regex}; __flight_regex.captures(&${parenthesize(value)}).map(|captures| (0..captures.len()).map(|index| captures.get(index).map_or("", |matched| matched.as_str()).to_owned()).collect::<Vec<_>>()) }`;
+  return `{ let __flight_regex = ${regex}; __flight_regex.captures(&${parenthesize(value)}).map(|captures| (0..captures.len()).map(|index| captures.get(index).map(|matched| matched.as_str().to_owned())).collect::<Vec<_>>()) }`;
 }
 
 function narrowTypeofContexts(
@@ -9368,7 +9479,13 @@ function emitTemplate(expression: Extract<IrExpression, { kind: 'template' }>, c
   const format = expression.parts
     .map((part) => {
       if (typeof part === 'string') return part.replaceAll('{', '{{').replaceAll('}', '}}');
-      arguments_.push(emitExpression(part, context));
+      const type = inferIrExpressionType(part, context);
+      const value = emitExpression(part, context, type);
+      arguments_.push(
+        type?.kind === 'nullable'
+          ? `${parenthesize(value)}.as_ref().map_or_else(|| "undefined".to_owned(), |value| value.to_string())`
+          : value,
+      );
       return '{}';
     })
     .join('');

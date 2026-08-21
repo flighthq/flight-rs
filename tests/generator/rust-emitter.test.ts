@@ -637,6 +637,16 @@ describe('Rust emission', () => {
         export function joinStrings(left: string, right: string): string {
           return left + right;
         }
+        export function normalizeEntries(values: Record<string, string>): string[] {
+          values['added'] = 'yes';
+          return Object.entries(values)
+            .filter(([key]) => key.length > 0)
+            .map(([key, value]) => \`\${key}=\${value}\`);
+        }
+        export function isAllowed(value: string): boolean {
+          const allowed = new Set(['alpha', 'beta']);
+          return allowed.has(value);
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -680,6 +690,10 @@ describe('Rust emission', () => {
         '  assert!(!generated::has_string(String::new()));',
         '  assert!(generated::has_string("value".to_owned()));',
         '  assert_eq!(generated::join_strings("left".to_owned(), "right".to_owned()), "leftright");',
+        '  let mut entries = vec![("first".to_owned(), "1".to_owned())];',
+        '  assert_eq!(generated::normalize_entries(&mut entries), vec!["first=1".to_owned(), "added=yes".to_owned()]);',
+        '  assert!(generated::is_allowed("alpha".to_owned()));',
+        '  assert!(!generated::is_allowed("gamma".to_owned()));',
         '}',
         '',
       ].join('\n'),
@@ -1316,6 +1330,8 @@ describe('Rust emission', () => {
     expect(output).toContain('let __flight_bytes = __flight_value.to_ne_bytes()');
     expect(output).toContain('.captures(&');
     expect(output).toContain('collect::<Vec<_>>()');
+    expect(output).toContain('captures.get(index).map(|matched| matched.as_str().to_owned())');
+    expect(output).toContain('[1.0_f64 as usize].clone().unwrap()');
     expect(output).toContain('i64::from_str_radix');
     expect(output).toContain('.is_nan()');
     expect(output).toContain('pub fn native_user_agent() -> String {\n  return "".to_owned();');
