@@ -1776,8 +1776,12 @@ describe('Rust emission', () => {
       '/workspace/upstream/packages/log/src/portable-refinement.ts',
       `
         type PortableData = string | Record<string, unknown>;
+        type PortablePayload = string | ArrayBuffer;
         export function wrapData(data: PortableData): unknown {
           return typeof data === 'string' ? { msg: data } : data;
+        }
+        export function readPayload(value: unknown): PortablePayload {
+          return typeof value === 'string' ? value : value as ArrayBuffer;
         }
         export function readKind(value: unknown): string {
           if (value !== null && typeof value === 'object' && '__kind' in value) {
@@ -1812,6 +1816,7 @@ describe('Rust emission', () => {
     expect(output).toContain('FlightValue::Null');
     expect(output).toContain('FlightValue::Record(entries)');
     expect(output).toContain('String cast received an incompatible portable value');
+    expect(output).toContain('typed-array cast received a non-numeric element');
     expect(output).toContain('TypeScript Map.get returned undefined');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-portable-refinement-'));
@@ -1829,6 +1834,8 @@ describe('Rust emission', () => {
         '  let tagged = FlightValue::Record(vec![("__kind".to_owned(), FlightValue::String("widget".to_owned()))]);',
         '  assert_eq!(generated::read_kind(tagged), "widget");',
         '  assert_eq!(generated::read_kind(FlightValue::Null), "");',
+        '  assert_eq!(generated::read_payload(FlightValue::String("text".to_owned())), FlightUnion2::A("text".to_owned()));',
+        '  assert_eq!(generated::read_payload(FlightValue::Array(vec![FlightValue::Number(1.0), FlightValue::Number(255.0)])), FlightUnion2::B(vec![1, 255]));',
         '  let mut record = vec![("child".to_owned(), FlightValue::Record(Vec::new()))];',
         '  generated::mutate_nested(&mut record);',
         '  assert_eq!(record[0].1, FlightValue::Record(vec![("changed".to_owned(), FlightValue::String("yes".to_owned()))]));',
@@ -2822,6 +2829,18 @@ describe('Rust emission', () => {
           const child = document.createElement('div');
           return child;
         }
+        export function configureAudioNode(context: any): number {
+          const node = context.createGain();
+          node.gain.value = 1;
+          node.connect(context.destination);
+          return context.currentTime * 1000;
+        }
+        export function readOptionalMap(value: { map: Map<string, string> } | null): string | undefined {
+          return value?.map.get('key');
+        }
+        export function stopValues(values: Set<{ state: string }>): void {
+          for (const value of values) value.state = 'stopped';
+        }
         export function firstChildIsText(element: any): boolean {
           const first = element.firstChild;
           return first !== null && first.nodeType === 3;
@@ -2869,6 +2888,11 @@ describe('Rust emission', () => {
       'pub fn contains_node(element: crate::OpaqueHostValue, other: crate::OpaqueHostValue) -> bool {\n  return crate::host_value::<bool>("host.call");',
     );
     expect(output).toContain('let child = crate::host_value::<crate::OpaqueHostValue>("host.call");');
+    expect(output).toContain('let mut node = crate::host_value::<crate::OpaqueHostValue>("host.call");');
+    expect(output).toContain('crate::host_set("host.value", 1.0_f64)');
+    expect(output).toContain('crate::host_value::<f64>("host.currentTime") * 1000.0_f64');
+    expect(output).toContain('.and_then(|entries| entries.iter().find');
+    expect(output).toContain('for mut value in');
     expect(output).toContain('crate::host_value::<Option<crate::OpaqueHostValue>>("host.firstChild")');
     expect(output).toContain('crate::host_value::<Option<crate::OpaqueHostValue>>("host.activeElement")');
     expect(output).toContain('let stored = (value).clone();');

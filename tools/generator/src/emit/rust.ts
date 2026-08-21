@@ -1375,7 +1375,9 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
                 kind: 'named',
                 name: 'RustTuple2',
               } as const)
-            : undefined;
+            : collectionType?.kind === 'named' && collectionType.name === 'RustSet'
+              ? collectionType.arguments[0]
+              : undefined;
       const iterable =
         statement.iterable.kind === 'identifier' && context.mutexCollectionNames.has(statement.iterable.name)
           ? emitCollectionPlace(statement.iterable, context)
@@ -1396,7 +1398,10 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
       const body = `{\n${indent(
         [...bindings, ...bodyStatements.flatMap((item) => emitStatement(item, loopContext))].join('\n'),
       )}\n}`;
-      return [`for ${safeName(statement.variable)} in ${iterablePlace}.iter().cloned() ${body}`];
+      const mutable = collectMutatedNames(statement.body, context.mutatingFunctions).has(statement.variable);
+      return [
+        `for ${mutable ? 'mut ' : ''}${safeName(statement.variable)} in ${iterablePlace}.iter().cloned() ${body}`,
+      ];
     }
     case 'forIn': {
       if (statement.enumeration !== 'direct-record') {
@@ -2026,6 +2031,17 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
     expectedType?.kind === 'named' ? emitNamedUnionConstructor(expectedType, context) : undefined;
   if (expectedUnion) {
     const actualType = inferIrExpressionType(expression, context);
+    const resolvedActual = resolveSemanticType(actualType, context) ?? actualType;
+    if (resolvedActual?.kind === 'dynamic' && resolvedActual.portable) {
+      const converted = emitPortableValueToUnion(
+        emitExpression(expression, context, actualType),
+        resolvedActual,
+        expectedUnion.variants,
+        context,
+        expectedUnionName,
+      );
+      if (converted) return converted;
+    }
     if (actualType?.kind !== 'union') {
       const variantIndex = actualType
         ? expectedUnion.variants.findIndex((variant) => semanticTypesEqual(variant, actualType, context))
@@ -2151,6 +2167,8 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
               return `match ${portable} { ${valuePath}::${variant}(value) => value, _ => panic!("TypeScript ${target.name} cast received an incompatible portable value") }`;
             }
           }
+          const portableVector = emitPortableNumericVectorCast(portable, valuePath, target);
+          if (portableVector) return portableVector;
         }
         if (actualType && actual?.kind === 'anonymous' && target?.kind === 'anonymous') {
           const projected = emitStructuralProjectionArgument(
@@ -2727,7 +2745,14 @@ function emitCall(
       const key = emitExpression(keyExpression, context, keyType);
       if (method === 'get') {
         let lookup: string;
-        if (expression.callee.optional && ownerType?.kind === 'nullable') {
+        if (
+          ownerType?.kind === 'nullable' &&
+          expression.callee.object.kind === 'property' &&
+          expression.callee.object.optional
+        ) {
+          const optionalOwner = emitExpression(expression.callee.object, context, ownerType);
+          lookup = `${parenthesize(optionalOwner)}.and_then(|entries| entries.iter().find(|(entry_key, _)| entry_key == &${key}).map(|(_, value)| value.clone()))`;
+        } else if (expression.callee.optional && ownerType?.kind === 'nullable') {
           const optionalOwner = emitPlaceExpression(expression.callee.object, context);
           lookup = `${optionalOwner}.as_ref().and_then(|entries| entries.iter().find(|(entry_key, _)| entry_key == &${key}).map(|(_, value)| value.clone()))`;
         } else {
@@ -3427,6 +3452,9 @@ function inferKnownHostCallReturnType(
       element: { inner: { kind: 'dynamic' }, kind: 'nullable' },
       kind: 'array',
     };
+  }
+  if (['createBufferSource', 'createGain', 'createStereoPanner', 'resume'].includes(expression.callee.name)) {
+    return { kind: 'dynamic' };
   }
   return undefined;
 }
@@ -4203,6 +4231,59 @@ function emitPortableUnionFromReference(reference: string, variants: readonly Ir
   )}, crate::FlightUnion2::B(value) => ${emitPortableUnionFromReference('value', rest, context)} }`;
 }
 
+function emitPortableValueToUnion(
+  value: string,
+  dynamic: Extract<IrType, { kind: 'dynamic' }>,
+  variants: readonly IrType[],
+  context: EmitContext,
+  unionName?: string,
+): string | undefined {
+  const valuePath = dynamicValuePath(dynamic);
+  const arms = variants.map((variant, index) => {
+    const resolved = resolveSemanticType(variant, context) ?? variant;
+    let pattern: string;
+    let converted: string;
+    if (resolved.kind === 'primitive' && resolved.name === 'String') {
+      pattern = `${valuePath}::String(value)`;
+      converted = 'value';
+    } else if (resolved.kind === 'primitive' && resolved.name === 'Bool') {
+      pattern = `${valuePath}::Bool(value)`;
+      converted = 'value';
+    } else if (resolved.kind === 'primitive' && (resolved.name === 'Float' || resolved.name === 'Int')) {
+      pattern = `${valuePath}::Number(value)`;
+      converted = resolved.name === 'Int' ? '(value as i64)' : 'value';
+    } else if (portableNumericVectorElement(resolved)) {
+      pattern = `${valuePath}::Array(values)`;
+      converted = emitPortableNumericVectorValues('values', valuePath, portableNumericVectorElement(resolved)!);
+    } else {
+      return undefined;
+    }
+    return `${pattern} => ${wrapUnionValue(converted, variants, index, context, unionName)}`;
+  });
+  if (arms.some((arm) => arm === undefined)) return undefined;
+  return `match ${value} { ${arms.join(', ')}, _ => panic!("TypeScript union cast received an incompatible portable value") }`;
+}
+
+function emitPortableNumericVectorCast(value: string, valuePath: string, target: IrType): string | undefined {
+  const element = portableNumericVectorElement(target);
+  if (!element) return undefined;
+  return `match ${value} { ${valuePath}::Array(values) => ${emitPortableNumericVectorValues(
+    'values',
+    valuePath,
+    element,
+  )}, _ => panic!("TypeScript typed-array cast received a non-array portable value") }`;
+}
+
+function portableNumericVectorElement(type: IrType): string | undefined {
+  if (type.kind !== 'named') return undefined;
+  if (type.name === 'ByteBuffer' || type.name === 'ArrayBufferView') return 'u8';
+  return typedArrayType(type.name)?.rust;
+}
+
+function emitPortableNumericVectorValues(values: string, valuePath: string, element: string): string {
+  return `${values}.into_iter().map(|value| match value { ${valuePath}::Number(value) => value as ${element}, _ => panic!("TypeScript typed-array cast received a non-numeric element") }).collect::<Vec<_>>()`;
+}
+
 function emitMathCall(method: string, arguments_: string[]): string {
   const first = arguments_[0];
   if (!first) throw new RustEmissionError(`Math.${method} requires an argument`);
@@ -4640,6 +4721,7 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
     return discriminant.positive ? matches : `!${parenthesize(matches)}`;
   }
   const comparison = ['===', '!==', '==', '!=', '<', '<=', '>', '>='].includes(expression.operator);
+  const arithmetic = ['+', '-', '*', '/', '%', '**'].includes(expression.operator);
   const arraySlot =
     isNullishExpression(expression.right) && expression.left.kind === 'element'
       ? expression.left
@@ -4693,7 +4775,11 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
     context,
     nullComparisonContext ??
       nullishContext ??
-      (comparison && resolvedLeft?.kind === 'dynamic' && resolvedRight?.kind !== 'dynamic' ? rightType : undefined),
+      ((comparison || arithmetic) &&
+      (resolvedLeft?.kind === 'dynamic' || !resolvedLeft) &&
+      resolvedRight?.kind === 'primitive'
+        ? rightType
+        : undefined),
   );
   const narrowedErrorCause =
     expression.left.kind === 'property' &&
@@ -4830,7 +4916,9 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
           : leftType
       : comparison && resolvedRight?.kind === 'dynamic' && resolvedLeft?.kind !== 'dynamic'
         ? leftType
-        : undefined,
+        : arithmetic && (resolvedRight?.kind === 'dynamic' || !resolvedRight) && resolvedLeft?.kind === 'primitive'
+          ? leftType
+          : undefined,
   );
   if (
     expression.operator === '+' &&
@@ -5697,7 +5785,9 @@ function emitClosure(
         : expectedType?.kind === 'named' && context.callbackTypes.has(expectedType.name)
           ? primitive('Float')
           : (inferFunctionExpressionReturnType(expression) ??
-            (expression.expression ? primitive('Float') : primitive('Void'))));
+            (expression.expression
+              ? (inferIrExpressionType(expression.expression, context) ?? primitive('Float'))
+              : primitive('Void'))));
   const nextContext = functionContext(context, expression.name ?? 'closure', expression, returns);
   const fallbackParameter =
     resolvedExpected?.kind === 'function'
@@ -10221,6 +10311,16 @@ function emitCondition(expression: IrExpression, context: EmitContext): string {
 
 function isDynamicHostTree(expression: IrExpression, context: EmitContext): boolean {
   const root = expressionRootIdentifier(expression);
+  const direct =
+    root && context.symbolTypes.has(root) && expression.kind !== 'call'
+      ? inferIrExpressionType(expression, context)
+      : undefined;
+  const resolvedDirect = resolveSemanticType(direct, context) ?? direct;
+  const directReceiver =
+    resolvedDirect?.kind === 'nullable'
+      ? (resolveSemanticType(resolvedDirect.inner, context) ?? resolvedDirect.inner)
+      : resolvedDirect;
+  if (directReceiver?.kind === 'dynamic' || isNativeHostHandleType(directReceiver)) return true;
   if (!root) return false;
   const type = context.symbolTypes.get(root);
   const resolved = resolveSemanticType(type, context) ?? type;
@@ -10236,7 +10336,14 @@ function inferDynamicHostElementType(expression: IrExpression, context: EmitCont
 }
 
 function inferDynamicHostPropertyType(name: string): IrType | undefined {
-  if (['index', 'length'].includes(name)) return primitive('Float');
+  if (
+    ['angle', 'currentTime', 'duration', 'index', 'length', 'value', 'videoHeight', 'videoWidth', 'volume'].includes(
+      name,
+    )
+  ) {
+    return primitive('Float');
+  }
+  if (name === 'state') return primitive('String');
   if (name === 'isWordLike') return primitive('Bool');
   if (name === 'segment') return primitive('String');
   if (
