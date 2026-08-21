@@ -2099,11 +2099,7 @@ function unwrapCasts(expression: IrExpression): IrExpression {
 }
 
 function emitExpression(expression: IrExpression, context: EmitContext, expectedType?: IrType | undefined): string {
-  if (
-    expectedType?.kind === 'nullable' &&
-    expression.kind !== 'conditional' &&
-    !isNullishExpression(expression)
-  ) {
+  if (expectedType?.kind === 'nullable' && expression.kind !== 'conditional' && !isNullishExpression(expression)) {
     const actualType = inferIrExpressionType(expression, context);
     const resolvedActual = resolveSemanticType(actualType, context) ?? actualType;
     if (
@@ -2247,13 +2243,13 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
         expectedType &&
         expectedJavaScriptElement?.kind === 'primitive' &&
         expectedJavaScriptElement.name === 'Float' &&
-        (numericCollectionStorageElement(actualType, context) || resolveNumericUnionCollectionType(actualType, context));
+        (numericCollectionStorageElement(actualType, context) ||
+          resolveNumericUnionCollectionType(actualType, context));
       const projected =
         actualType && expectedType && !genericCallee && !semanticTypesEqual(actualType, expectedType, context)
           ? ((numericCollectionResult
               ? emitCollectionProjectionArgument(call, actualType, expectedType, context)
-              : undefined) ??
-            emitStructuralProjectionArgument(call, actualType, expectedType, context))
+              : undefined) ?? emitStructuralProjectionArgument(call, actualType, expectedType, context))
           : undefined;
       return coerceExpression(projected ?? call, expectedType);
     }
@@ -4156,6 +4152,8 @@ function emitKnownFunctionArgument(
   const optionalParameter = Boolean(parameter.optional || parameter.initializer) && !nullableParameter;
   const borrowedNullableReference =
     nullableParameter &&
+    !parameter.optional &&
+    !parameter.initializer &&
     !owned &&
     !isSharedHandleType(expectedType, context) &&
     !(expectedType.kind === 'named' && expectedType.name === 'Signal' && !mutable) &&
@@ -4171,7 +4169,12 @@ function emitKnownFunctionArgument(
     const value =
       argumentType?.kind === 'nullable' && isRustPlaceExpression(argument)
         ? emitPlaceExpression(argument, context)
-        : emitExpression(argument, context, parameter.type);
+        : argumentType &&
+            argumentType.kind !== 'nullable' &&
+            isRustPlaceExpression(argument) &&
+            emitType(argumentType, context) === emitType(expectedType, context)
+          ? `Some(${parenthesize(emitPlaceExpression(argument, context))}.clone())`
+          : emitExpression(argument, context, parameter.type);
     return argumentType?.kind === 'nullable' &&
       argument.kind === 'identifier' &&
       root &&
@@ -8864,11 +8867,7 @@ function clearsPropertyWithoutReading(
   return clears && !reads;
 }
 
-function referencesProperty(
-  declaration: IrFunctionDeclaration,
-  ownerName: string,
-  propertyName: string,
-): boolean {
+function referencesProperty(declaration: IrFunctionDeclaration, ownerName: string, propertyName: string): boolean {
   const visit = (value: unknown): boolean => {
     if (!value || typeof value !== 'object') return false;
     if (
@@ -8881,9 +8880,7 @@ function referencesProperty(
     ) {
       return true;
     }
-    return Object.values(value).some((child) =>
-      Array.isArray(child) ? child.some(visit) : visit(child),
-    );
+    return Object.values(value).some((child) => (Array.isArray(child) ? child.some(visit) : visit(child)));
   };
   return declaration.body.some(visit);
 }
@@ -10600,10 +10597,7 @@ interface NullableElementLookup {
   type: IrType;
 }
 
-function inferNullableElementLookup(
-  expression: IrExpression,
-  context: EmitContext,
-): NullableElementLookup | undefined {
+function inferNullableElementLookup(expression: IrExpression, context: EmitContext): NullableElementLookup | undefined {
   if (expression.kind !== 'element') return undefined;
   const objectType = inferIrExpressionType(expression.object, context);
   const candidate = objectType?.kind === 'nullable' ? objectType.inner : objectType;
@@ -10621,9 +10615,10 @@ function emitNullableElementLookup(lookup: NullableElementLookup, context: EmitC
   const objectType = inferIrExpressionType(lookup.expression.object, context);
   const owner = emitPlaceExpression(lookup.expression.object, context);
   const index = emitExpression(lookup.expression.index, context, primitive('Float'));
-  const value = objectType?.kind === 'nullable'
-    ? `${owner}.as_ref().and_then(|values| values.get(${index} as usize).cloned())`
-    : `${owner}.get(${index} as usize).cloned()`;
+  const value =
+    objectType?.kind === 'nullable'
+      ? `${owner}.as_ref().and_then(|values| values.get(${index} as usize).cloned())`
+      : `${owner}.get(${index} as usize).cloned()`;
   if (lookup.type.kind === 'nullable') return `${value}.flatten()`;
   return lookup.kind === 'typed-array' ? `${value}.map(|item| item as f64)` : value;
 }

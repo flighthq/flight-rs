@@ -1,8 +1,11 @@
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
+import ts from 'typescript';
 
 import { portConfig } from '../../tools/generator/port.config.ts';
 import {
+  collectSelectedDeclarationSupport,
+  filterUnusedValueImports,
   formatRust,
   classifyImportedRustBinding,
   emittedPortableTaskUsesOpaqueHostValue,
@@ -15,6 +18,8 @@ import {
   type CandidateCrateNode,
   type RustGenerationReport,
 } from '../../tools/generator/src/emit/core.ts';
+import type { RustImport } from '../../tools/generator/src/emit/rust.ts';
+import { lowerTypeScriptSource } from '../../tools/generator/src/lower/typescript.ts';
 
 describe('generator prerequisites', () => {
   it('fails generation when rustfmt is unavailable', () => {
@@ -73,6 +78,70 @@ describe('manifest-lane dependency resolution', () => {
     expect(
       classifyImportedRustBinding(geometryImporter, './geometryPoolGuards', 'geometryPoolReleaseGuard', workspace),
     ).toBe('mutable');
+  });
+});
+
+describe('selected declaration dependencies', () => {
+  it('retains the transitive module-local types used by selected signatures', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/bitmap/src/selection.ts',
+      `
+        interface Pixels { readonly data: ArrayLike<number>; }
+        interface Comparison { readonly pixels: Pixels; }
+        interface Deferred { readonly value: string; }
+        export function selected(source: Comparison): number { return source.pixels.data.length; }
+        export function deferred(source: Deferred): string { return source.value; }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/bitmap', '/workspace');
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect([...collectSelectedDeclarationSupport(lowered.declarations, new Set(['selected']))].sort()).toEqual([
+      'Comparison',
+      'Pixels',
+      'selected',
+    ]);
+  });
+
+  it('drops value imports referenced only by declarations outside the selection', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/bitmap/src/import-selection.ts',
+      `
+        const retained = 1;
+        export function selected(): number { return retained; }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/bitmap', '/workspace');
+    const selected = lowered.declarations.filter((declaration) => declaration.name === 'selected');
+    const imports: RustImport[] = [
+      {
+        module: 'crate',
+        names: [
+          { imported: 'retained', kind: 'value', local: 'retained' },
+          { imported: 'deferred', kind: 'function', local: 'deferred' },
+          { imported: 'Comparison', kind: 'type', local: 'Comparison' },
+          { imported: 'public_value', kind: 'value', local: 'public_value', public: true },
+        ],
+      },
+    ];
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(filterUnusedValueImports(imports, selected)).toEqual([
+      {
+        module: 'crate',
+        names: [
+          { imported: 'retained', kind: 'value', local: 'retained' },
+          { imported: 'Comparison', kind: 'type', local: 'Comparison' },
+          { imported: 'public_value', kind: 'value', local: 'public_value', public: true },
+        ],
+      },
+    ]);
   });
 });
 

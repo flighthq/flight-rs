@@ -2728,6 +2728,49 @@ describe('Rust emission', () => {
     ).not.toThrow();
   });
 
+  it('clones reused collections for borrowed nullable parameters but owns defaulted nullable parameters', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/bitmap/src/owned-options.ts',
+      `
+        function inspect(
+          red: Uint8Array | null,
+          green: Uint8Array | null,
+          blue: Uint8Array | null,
+          alpha: Uint8Array | null = null,
+        ): number {
+          return (red?.length ?? 0) + (green?.length ?? 0) + (blue?.length ?? 0) + (alpha?.length ?? 0);
+        }
+        export function reuse(lut: Uint8ClampedArray): number {
+          return inspect(lut, lut, lut, null);
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/bitmap', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/bitmap/src/owned-options.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('&(Some((lut).clone()))');
+    expect(output).toMatch(/inspect\([\s\S]*None[\s\S]*\)/u);
+    expect(output).not.toContain('&(None)');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-owned-options-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
   it('preserves for and do-while updates when continue is lowered', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/math/src/loops.ts',

@@ -23,6 +23,7 @@ import {
   PORTABLE_TASK_RUST_LOWERING_REASON,
   type IrAsyncTaskOperations,
   type IrAsyncTaskScope,
+  type IrDeclaration,
   type IrFunctionDeclaration,
   type IrTaskConstruction,
   type IrTaskConstructionKind,
@@ -1568,12 +1569,15 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
     });
     const declarationSelection = target.declarationSelection?.[sourceName];
     const selectedDeclarations = declarationSelection ? new Set(declarationSelection.names) : undefined;
-    const declarations = selectedDeclarations
-      ? lowered.declarations.filter((declaration) => selectedDeclarations.has(declaration.name))
+    const emittedDeclarationNames = selectedDeclarations
+      ? collectSelectedDeclarationSupport(lowered.declarations, selectedDeclarations)
+      : undefined;
+    const declarations = emittedDeclarationNames
+      ? lowered.declarations.filter((declaration) => emittedDeclarationNames.has(declaration.name))
       : lowered.declarations;
     if (selectedDeclarations) {
       for (const declaration of lowered.declarations) {
-        if (selectedDeclarations.has(declaration.name)) continue;
+        if (emittedDeclarationNames?.has(declaration.name)) continue;
         deferredDeclarations.push({
           fingerprint: declaration.origin.fingerprint,
           name: declaration.name,
@@ -1629,38 +1633,41 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
           declarations,
           entityRuntimeAggregateAvailable: target.package === portConfig.typeLowering.entityRuntimeFamily.package,
           enumNames: [...collectTypeEnumNames(workspaceDirectory), ...importedSemanticTypes.enumNames],
-          imports: collectRustImports(
-            sourceFile,
-            target,
-            workspaceDirectory,
-            [...Object.keys(importedSemanticTypes.types), ...importedSemanticTypes.enumNames].filter(
-              (name) =>
-                !declarations.some((declaration) => declaration.name === name) &&
-                Boolean(findPackageDeclarationSource(workspaceDirectory, target.package, name)),
+          imports: filterUnusedValueImports(
+            collectRustImports(
+              sourceFile,
+              target,
+              workspaceDirectory,
+              [...Object.keys(importedSemanticTypes.types), ...importedSemanticTypes.enumNames].filter(
+                (name) =>
+                  !declarations.some((declaration) => declaration.name === name) &&
+                  Boolean(findPackageDeclarationSource(workspaceDirectory, target.package, name)),
+              ),
+              target.package === '@flighthq/types'
+                ? []
+                : [
+                    ...collectInferredTopLevelTypeImports(
+                      lowered.declarations,
+                      importedSemanticTypes.functions,
+                      workspaceDirectory,
+                    ),
+                    ...Object.keys(importedSemanticTypes.types).filter(
+                      (name) =>
+                        !declarations.some((declaration) => declaration.name === name) &&
+                        Boolean(findTypeDeclarationSource(workspaceDirectory, name)),
+                    ),
+                    ...collectReachableSemanticTypeNames(
+                      declarations,
+                      moduleSemanticTypes,
+                      entityRuntimeSemanticTypes.types,
+                    ).filter(
+                      (name) =>
+                        !declarations.some((declaration) => declaration.name === name) &&
+                        Boolean(findTypeDeclarationSource(workspaceDirectory, name)),
+                    ),
+                  ],
             ),
-            target.package === '@flighthq/types'
-              ? []
-              : [
-                  ...collectInferredTopLevelTypeImports(
-                    lowered.declarations,
-                    importedSemanticTypes.functions,
-                    workspaceDirectory,
-                  ),
-                  ...Object.keys(importedSemanticTypes.types).filter(
-                    (name) =>
-                      !declarations.some((declaration) => declaration.name === name) &&
-                      Boolean(findTypeDeclarationSource(workspaceDirectory, name)),
-                  ),
-                  ...collectReachableSemanticTypeNames(
-                    declarations,
-                    moduleSemanticTypes,
-                    entityRuntimeSemanticTypes.types,
-                  ).filter(
-                    (name) =>
-                      !declarations.some((declaration) => declaration.name === name) &&
-                      Boolean(findTypeDeclarationSource(workspaceDirectory, name)),
-                  ),
-                ],
+            declarations,
           ),
           inlineFunctions,
           semanticFunctions: importedSemanticTypes.functions,
@@ -1978,6 +1985,56 @@ function collectNamedTypeReferences(type: IrType): ReadonlySet<string> {
   };
   visit(type);
   return names;
+}
+
+export function collectSelectedDeclarationSupport(
+  declarations: readonly IrDeclaration[],
+  selectedNames: ReadonlySet<string>,
+): ReadonlySet<string> {
+  const included = new Set(selectedNames);
+  const localTypes = new Map(
+    declarations.flatMap((declaration) =>
+      declaration.kind === 'type' ? [[declaration.name, declaration] as const] : [],
+    ),
+  );
+  const referencedTypes = (declaration: IrDeclaration): IrType[] => {
+    switch (declaration.kind) {
+      case 'function':
+        return [...declaration.parameters.map((parameter) => parameter.type), declaration.returns];
+      case 'type':
+        return [declaration.type];
+      case 'variable':
+        return declaration.type ? [declaration.type] : [];
+      case 'class':
+        return [
+          ...(declaration.extends ? [declaration.extends] : []),
+          ...declaration.fields.map((field) => field.type),
+          ...declaration.constructorParameters.map((parameter) => parameter.type),
+          ...declaration.methods.flatMap((method) => [
+            ...method.parameters.map((parameter) => parameter.type),
+            method.returns,
+          ]),
+        ];
+      case 'enum':
+        return declaration.methods.flatMap((method) => [
+          ...method.parameters.map((parameter) => parameter.type),
+          method.returns,
+        ]);
+    }
+  };
+  const pending = declarations.filter((declaration) => included.has(declaration.name));
+  while (pending.length > 0) {
+    const declaration = pending.pop()!;
+    for (const type of referencedTypes(declaration)) {
+      for (const name of collectNamedTypeReferences(type)) {
+        const supportingType = localTypes.get(name);
+        if (!supportingType || included.has(name)) continue;
+        included.add(name);
+        pending.push(supportingType);
+      }
+    }
+  }
+  return included;
 }
 
 function collectReachableSemanticTypeNames(
@@ -2345,6 +2402,30 @@ function collectRustImports(
     groups.set('flighthq_types', names);
   }
   return [...groups].map(([module, names]) => ({ module, names }));
+}
+
+export function filterUnusedValueImports(
+  imports: readonly RustImport[],
+  declarations: readonly IrDeclaration[],
+): RustImport[] {
+  const referenced = new Set<string>();
+  const visit = (value: unknown): void => {
+    if (!value || typeof value !== 'object') return;
+    if ('kind' in value && value.kind === 'identifier' && 'name' in value && typeof value.name === 'string') {
+      referenced.add(value.name);
+    }
+    for (const child of Object.values(value)) {
+      if (Array.isArray(child)) child.forEach(visit);
+      else visit(child);
+    }
+  };
+  declarations.forEach(visit);
+  return imports.flatMap((group) => {
+    const names = group.names.filter(
+      (binding) => binding.public || binding.kind === 'type' || referenced.has(binding.local),
+    );
+    return names.length > 0 ? [{ ...group, names }] : [];
+  });
 }
 
 export function rustDependencyForSpecifier(
