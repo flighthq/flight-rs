@@ -2682,6 +2682,9 @@ describe('Rust emission', () => {
         interface MutableDerived extends MutableBase {
           detail: number;
         }
+        interface MutablePoint {
+          value: number;
+        }
         function createResult(options?: Partial<Options>): Result {
           const result = {} as Result;
           result.label = options?.label;
@@ -2697,6 +2700,10 @@ describe('Rust emission', () => {
         function assignBase(target: MutableBase, value: number): void {
           target.value = value;
         }
+        function addBase(target: MutableBase, value?: number): void {
+          value = value ?? 0;
+          target.value += value;
+        }
         export function cloneResult(source: Options): Result {
           return createResult(source);
         }
@@ -2708,6 +2715,12 @@ describe('Rust emission', () => {
         }
         export function updateDerived(target: MutableDerived): void {
           assignBase(target, 3);
+        }
+        export function updateDerivedFromPoint(target: MutableDerived, point?: MutablePoint): void {
+          if (point !== undefined) {
+            const p = point;
+            addBase(target, p.value);
+          }
         }
       `,
       ts.ScriptTarget.Latest,
@@ -2728,6 +2741,8 @@ describe('Rust emission', () => {
     expect(output).toContain('other: None');
     expect(output).not.toContain('assign_base(&mut target');
     expect(output).toContain('target.value = 3.0_f64');
+    expect(output).toContain('let mut __flight_inline_value_1');
+    expect(output).toContain('target.value += __flight_inline_value_1');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-structural-boundaries-'));
     const sourceFile = path.join(fixture, 'lib.rs');

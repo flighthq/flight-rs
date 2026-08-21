@@ -3674,10 +3674,32 @@ function emitStructuralFunctionInlineCall(
     return emitKnownFunctionCall(expression, declaration, context);
   }
   const bindings = new Map<string, IrExpression>();
+  const localParameters: IrVariable[] = [];
+  const mutated = collectMutatedNames(declaration, context.mutatingFunctions);
+  const structuralMutationIndexes = allowMutations
+    ? mutableStructuralParameterIndexes(expression, declaration, context)
+    : new Set<number>();
   declaration.parameters.forEach((parameter, index) => {
     const argument = expression.arguments[index];
-    if (argument) bindings.set(parameter.name, argument);
-    else if (parameter.initializer) bindings.set(parameter.name, parameter.initializer);
+    const initializer = argument ?? parameter.initializer;
+    if (!initializer) return;
+    if (allowMutations && mutated.has(parameter.name) && !structuralMutationIndexes.has(index)) {
+      const name = `__flight_inline_${safeName(parameter.name)}_${String(index)}`;
+      const actualType = argument
+        ? inferIrExpressionType(argument, context)
+        : parameter.optional
+          ? ({ inner: parameter.type, kind: 'nullable' } as const)
+          : parameter.type;
+      localParameters.push({
+        initializer,
+        mutable: true,
+        name,
+        type: actualType ?? parameter.type,
+      });
+      bindings.set(parameter.name, { kind: 'identifier', name });
+      return;
+    }
+    bindings.set(parameter.name, initializer);
   });
   const missing = declaration.parameters.filter((parameter) => !bindings.has(parameter.name) && !parameter.optional);
   if (missing.length > 0) {
@@ -3686,8 +3708,15 @@ function emitStructuralFunctionInlineCall(
     );
   }
   const body = substituteIdentifiers(declaration.body, bindings);
+  const statements: IrStatement[] = [
+    ...(localParameters.length > 0 ? [{ declarations: localParameters, kind: 'variable' } as const] : []),
+    ...body,
+  ];
+  if (allowMutations && !declaration.body.some((statement) => containsStatementKind(statement, 'return'))) {
+    return emitStatementsAsBlock(statements, context);
+  }
   const closure: Extract<IrExpression, { kind: 'function' }> = {
-    body,
+    body: statements,
     execution: { kind: 'sync' },
     kind: 'function',
     parameters: [],
@@ -3713,15 +3742,27 @@ function requiresMutableStructuralInlining(
   declaration: IrFunctionDeclaration,
   context: EmitContext,
 ): boolean {
+  return mutableStructuralParameterIndexes(expression, declaration, context).size > 0;
+}
+
+function mutableStructuralParameterIndexes(
+  expression: Extract<IrExpression, { kind: 'call' }>,
+  declaration: IrFunctionDeclaration,
+  context: EmitContext,
+): ReadonlySet<number> {
   const mutated = collectMutatedNames(declaration, context.mutatingFunctions);
-  return declaration.parameters.some((parameter, index) => {
-    if (!mutated.has(parameter.name)) return false;
-    const argument = expression.arguments[index];
-    if (!argument || !isRustPlaceExpression(argument)) return false;
-    const actualType = inferIrExpressionType(argument, context);
-    if (!actualType || emitType(actualType, context) === emitType(parameter.type, context)) return false;
-    return Boolean(emitStructuralProjectionArgument('__flight_inline_probe', actualType, parameter.type, context));
-  });
+  return new Set(
+    declaration.parameters.flatMap((parameter, index) => {
+      if (!mutated.has(parameter.name)) return [];
+      const argument = expression.arguments[index];
+      if (!argument || !isRustPlaceExpression(argument)) return [];
+      const actualType = inferIrExpressionType(argument, context);
+      if (!actualType || emitType(actualType, context) === emitType(parameter.type, context)) return [];
+      return emitStructuralProjectionArgument('__flight_inline_probe', actualType, parameter.type, context)
+        ? [index]
+        : [];
+    }),
+  );
 }
 
 function typeContainsAnonymousRecord(type: IrType, context: EmitContext): boolean {
