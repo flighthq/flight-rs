@@ -68,8 +68,9 @@ describe('latest upstream reference', () => {
   });
 
   it('does not invent a package upstream has not written', () => {
-    // The pinned snapshot predates physics3d. Remote-tracking refs are deliberately not asserted:
-    // they are an offline cache and can legitimately be ahead, stale, or equal to the pin.
+    // physics3d does not exist at the pinned cad72aa3e commit; it landed upstream in b554b6de2 and
+    // arrives here when the pin moves. Remote-tracking refs are deliberately not asserted: they are
+    // an offline cache and can legitimately be ahead, stale, or equal to the pin.
     expect(packagesAt('HEAD', upstream)).not.toContain('physics3d');
   });
 });
