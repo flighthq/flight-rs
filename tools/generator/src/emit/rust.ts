@@ -8693,6 +8693,7 @@ function collectMutatedNames(
   mutatingFunctions: ReadonlyMap<string, ReadonlySet<number>> = new Map(),
 ): ReadonlySet<string> {
   const names = new Set<string>();
+  const referentMutations = new Set<string>();
   const aliases = new Map<string, string>();
   const visit = (item: unknown): void => {
     if (!item || typeof item !== 'object') return;
@@ -8708,12 +8709,18 @@ function collectMutatedNames(
     }
     if ('kind' in item && item.kind === 'assignment' && 'left' in item) {
       const root = expressionRootIdentifier(item.left);
-      if (root) names.add(root);
       const left = item.left as IrExpression;
+      if (root) {
+        names.add(root);
+        if (left.kind !== 'identifier') referentMutations.add(root);
+      }
       if (left.kind === 'element' && left.object.kind === 'new') {
         const buffer = left.object.arguments[0];
         const bufferRoot = buffer ? expressionRootIdentifier(buffer) : undefined;
-        if (bufferRoot) names.add(bufferRoot);
+        if (bufferRoot) {
+          names.add(bufferRoot);
+          referentMutations.add(bufferRoot);
+        }
       }
     }
     if (
@@ -8724,7 +8731,11 @@ function collectMutatedNames(
       'operand' in item
     ) {
       const root = expressionRootIdentifier(item.operand);
-      if (root) names.add(root);
+      if (root) {
+        names.add(root);
+        const operand = item.operand as IrExpression;
+        if (operand.kind !== 'identifier') referentMutations.add(root);
+      }
     }
     if (
       'kind' in item &&
@@ -8740,7 +8751,10 @@ function collectMutatedNames(
       'object' in item.callee
     ) {
       const root = expressionRootIdentifier(item.callee.object);
-      if (root) names.add(root);
+      if (root) {
+        names.add(root);
+        referentMutations.add(root);
+      }
     }
     if (
       'kind' in item &&
@@ -8757,7 +8771,10 @@ function collectMutatedNames(
     ) {
       for (const index of mutatingFunctions.get(item.callee.name) ?? []) {
         const root = expressionRootIdentifier(item.arguments[index]);
-        if (root) names.add(root);
+        if (root) {
+          names.add(root);
+          referentMutations.add(root);
+        }
       }
     }
     for (const child of Object.values(item)) {
@@ -8770,8 +8787,9 @@ function collectMutatedNames(
   while (changed) {
     changed = false;
     for (const [alias, root] of aliases) {
-      if (names.has(alias) && !names.has(root)) {
+      if (referentMutations.has(alias) && !names.has(root)) {
         names.add(root);
+        referentMutations.add(root);
         changed = true;
       }
     }

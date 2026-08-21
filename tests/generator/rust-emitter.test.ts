@@ -2585,6 +2585,9 @@ describe('Rust emission', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/animation/src/numeric-union.ts',
       `
+        interface NumericBox {
+          values: number[];
+        }
         export function updateNumericUnion(
           out: number[] | Float32Array,
           input: number[] | Float32Array,
@@ -2607,6 +2610,15 @@ describe('Rust emission', () => {
         export function readNumericUnion(input: number[] | Float32Array): number {
           return first(input);
         }
+        export function reboundScalar(input: ArrayLike<number>): number {
+          let value = input[0];
+          value = -value;
+          return value;
+        }
+        export function mutateAlias(box: NumericBox): void {
+          const values = box.values;
+          values[0] = 1;
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -2628,6 +2640,8 @@ describe('Rust emission', () => {
     expect(output).toContain('std::mem::take(out)');
     expect(output).toContain('*(out) = match __flight_argument_0');
     expect(output).toContain('.iter().map(|__flight_value| (*__flight_value) as f64).collect::<Vec<_>>()');
+    expect(output).toContain('pub fn rebound_scalar(input: &Vec<f64>) -> f64');
+    expect(output).toContain('pub fn mutate_alias(box_: &mut NumericBox) -> ()');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-numeric-union-'));
     const sourceFile = path.join(fixture, 'lib.rs');
