@@ -1603,8 +1603,9 @@ function lowerParameterList(
 function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
   switch (node.kind) {
     case ts.SyntaxKind.AnyKeyword:
-    case ts.SyntaxKind.NeverKeyword:
       return { kind: 'dynamic' };
+    case ts.SyntaxKind.NeverKeyword:
+      return { arguments: [], kind: 'named', name: 'FlightNever' };
     case ts.SyntaxKind.UnknownKeyword:
       return { kind: 'dynamic', portable: true };
     case ts.SyntaxKind.UndefinedKeyword:

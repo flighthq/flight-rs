@@ -1872,6 +1872,12 @@ function emitLocalVariable(variable: IrVariable, context: EmitContext): string[]
         : `let ${mutable ? 'mut ' : ''}${safeName(variable.name)}: ${emitType(type, context)};`,
     ];
   }
+  if (variable.type?.kind === 'named' && variable.type.name === 'FlightNever') {
+    context.symbolTypes.set(variable.name, variable.type);
+    return [
+      `let ${safeName(variable.name)} = panic!("TypeScript never value was reached");`,
+    ];
+  }
   const callbackStorage = context.callbackArgumentStorage.get(variable.name);
   const expected: IrType | undefined = callbackStorage
     ? {
@@ -2122,6 +2128,16 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
   switch (expression.kind) {
     case 'array': {
       const resolved = resolveSemanticType(expectedType, context);
+      if (resolved?.kind === 'named' && resolved.name === 'RustTuple2') {
+        if (expression.elements.length !== 2 || expression.elements.some((item) => item.kind === 'spread')) {
+          throw new RustEmissionError('tuple array literal requires exactly two non-spread elements');
+        }
+        return `(${emitExpression(expression.elements[0]!, context, resolved.arguments[0])}, ${emitExpression(
+          expression.elements[1]!,
+          context,
+          resolved.arguments[1],
+        )})`;
+      }
       const elementType = resolved?.kind === 'array' ? resolved.element : undefined;
       if (expression.elements.some((item) => item.kind === 'spread')) {
         const statements = expression.elements.map((item) =>
@@ -7802,10 +7818,10 @@ function registerImportedTypeAnonymousTypes(context: EmitContext): void {
       if (key === typeKey(declaration)) continue;
       if (!anonymousTypes.has(key)) {
         anonymousTypes.set(key, `${module}::${pascalCase(owner)}Record${String(index)}`);
+        inherited.add(key);
       }
       const parameters = typeParameters.filter((parameter) => typeUsesNamedParameter(type, parameter));
       if (parameters.length > 0) anonymousTypeParameters.set(key, parameters);
-      inherited.add(key);
       index++;
     }
   }
@@ -8708,7 +8724,26 @@ function emitNew(
       resolvedExpected?.kind === 'named' && resolvedExpected.name === 'RustMap' ? resolvedExpected : inferred;
     const source = expression.arguments[0];
     if (!source) return 'Vec::new()';
-    return emitExpression(source, context, mapType);
+    const sourceType = inferIrExpressionType(source, context);
+    const resolvedSource = resolveSemanticType(sourceType, context) ?? sourceType;
+    if (resolvedSource?.kind === 'named' && resolvedSource.name === 'RustMap') {
+      return emitExpression(source, context, sourceType);
+    }
+    const entriesType: IrType | undefined =
+      mapType?.kind === 'named' && mapType.name === 'RustMap'
+        ? {
+            element: {
+              arguments: [
+                mapType.arguments[0] ?? { kind: 'dynamic' },
+                mapType.arguments[1] ?? { kind: 'dynamic' },
+              ],
+              kind: 'named',
+              name: 'RustTuple2',
+            },
+            kind: 'array',
+          }
+        : undefined;
+    return emitExpression(source, context, entriesType);
   }
   if (globalType === 'WeakSet') {
     return 'Vec::new()';
@@ -9510,10 +9545,32 @@ function objectLiteralMatchesType(
   const signature = objectLiteralPropertySignature(expression, context);
   if (!signature) return false;
   const { names, unknownSpread } = signature;
+  const discriminantsMatch = fields.every((field) => {
+    if (field.discriminantValue === undefined) return true;
+    const property = expression.properties.find(
+      (candidate) => candidate.kind === 'property' && candidate.name === field.name,
+    );
+    if (!property || property.kind !== 'property') return unknownSpread;
+    const value = constantExpressionValue(property.value, context);
+    return value === undefined || value === field.discriminantValue;
+  });
   return (
+    discriminantsMatch &&
     fields.every((field) => field.optional || unknownSpread || names.has(field.name)) &&
     [...names].every((name) => fields.some((field) => field.name === name))
   );
+}
+
+function constantExpressionValue(
+  expression: IrExpression,
+  context: EmitContext,
+): boolean | number | string | undefined {
+  const value = unwrapCasts(expression);
+  if (value.kind === 'literal' && value.value !== null) return value.value;
+  if (value.kind === 'property' && value.object.kind === 'identifier') {
+    return context.constantPropertyValues.get(`${value.object.name}.${value.name}`);
+  }
+  return undefined;
 }
 
 function emitElement(expression: Extract<IrExpression, { kind: 'element' }>, context: EmitContext): string {
@@ -10242,19 +10299,12 @@ function discriminatedUnionComparison(
   if (expression.kind !== 'binary' || !['===', '!==', '==', '!='].includes(expression.operator)) {
     return undefined;
   }
-  const constantValue = (candidate: IrExpression): boolean | number | string | undefined => {
-    if (candidate.kind === 'literal' && candidate.value !== null) return candidate.value;
-    if (candidate.kind === 'property' && candidate.object.kind === 'identifier') {
-      return context.constantPropertyValues.get(`${candidate.object.name}.${candidate.name}`);
-    }
-    return undefined;
-  };
   const comparison = (
     candidate: IrExpression,
     value: IrExpression,
   ): { literal: boolean | number | string; name: string; propertyName: string } | undefined => {
     if (candidate.kind !== 'property' || candidate.object.kind !== 'identifier') return undefined;
-    const literal = constantValue(value);
+    const literal = constantExpressionValue(value, context);
     return literal === undefined
       ? undefined
       : { literal, name: candidate.object.name, propertyName: candidate.name };

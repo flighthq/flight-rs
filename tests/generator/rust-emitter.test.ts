@@ -885,6 +885,24 @@ describe('Rust emission', () => {
           if (entry.state === EntryState.Bound) return entry.value;
           return null;
         }
+        export function preserveEntry<T>(entry: Entry<T>): Entry<T> {
+          switch (entry.state) {
+            case EntryState.Bound:
+              return entry;
+            case EntryState.Tombstoned:
+              return entry;
+            default: {
+              const unreachable: never = entry;
+              return unreachable;
+            }
+          }
+        }
+        export type Step =
+          | { kind: 'move'; x: number; y: number }
+          | { kind: 'line'; x: number; y: number };
+        export function visitMove(visitor: (step: Step) => void): void {
+          visitor({ kind: 'move', x: 4, y: 5 });
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -902,6 +920,8 @@ describe('Rust emission', () => {
     expect(output).toContain('crate::FlightUnion2::B(crate::FlightUnion2::B(_))');
     expect(output).toContain('.registry.clone()');
     expect(output).toContain('pub type Entry<T> = crate::FlightUnion2<');
+    expect(output).toContain('panic!("TypeScript never value was reached")');
+    expect(output).toContain('visitor(Step::A(');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-three-way-union-'));
     writeFileSync(path.join(fixture, 'generated.rs'), output);
@@ -921,6 +941,12 @@ describe('Rust emission', () => {
         '  assert_eq!(generated::table_registry(&keyed), "main");',
         '  assert_eq!(generated::read_entry(&generated::make_bound("bound".to_owned())), Some("bound".to_owned()));',
         '  assert_eq!(generated::read_entry(&generated::make_tombstone::<String>()), None);',
+        '  let entry = generated::make_bound("kept".to_owned());',
+        '  let preserved = generated::preserve_entry(&entry);',
+        '  assert_eq!(generated::read_entry(&preserved), Some("kept".to_owned()));',
+        '  let mut visited = Vec::new();',
+        '  generated::visit_move(&mut |step| visited.push(step));',
+        '  assert!(matches!(visited.as_slice(), [generated::Step::A(value)] if value.kind == "move" && value.x == 4.0 && value.y == 5.0));',
         '}',
         '',
       ].join('\n'),
@@ -1721,6 +1747,55 @@ describe('Rust emission', () => {
     expect(() => compileRustLibraryWithRuntime(output, fixture)).not.toThrow();
   });
 
+  it('keeps local shared records when imported nested structures have the same shape', () => {
+    const dependency = ts.createSourceFile(
+      '/workspace/upstream/packages/types/src/external.ts',
+      `
+        export interface External {
+          payload?: { x: number };
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/screen/src/local.ts',
+      `
+        export function copyPoint(value: { x: number }): { x: number } {
+          return { x: value.x };
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const loweredDependency = lowerTypeScriptSource(dependency, '@flighthq/types', '/workspace');
+    const lowered = lowerTypeScriptSource(source, '@flighthq/screen', '/workspace');
+    const semanticTypes = Object.fromEntries(
+      loweredDependency.declarations.flatMap((declaration) =>
+        declaration.kind === 'type' ? [[declaration.name, declaration.type] as const] : [],
+      ),
+    );
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      imports: [
+        {
+          module: 'flighthq_types',
+          names: [{ imported: 'External', kind: 'type', local: 'External' }],
+        },
+      ],
+      semanticTypes,
+      source: 'upstream/packages/screen/src/local.ts',
+      typeImports: [],
+    });
+
+    expect(loweredDependency.diagnostics).toEqual([]);
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('pub struct SharedStructuralRecord1');
+    expect(output).toContain('pub fn copy_point(value: &SharedStructuralRecord1) -> SharedStructuralRecord1');
+  });
+
   it('compiles and runs recursive portable JSON with JavaScript container semantics', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/log/src/json.ts',
@@ -1897,6 +1972,9 @@ describe('Rust emission', () => {
           clone.set('added', 8);
           return clone;
         }
+        export function literalMap(): Map<string, number> {
+          return new Map<string, number>([['first', 1], ['second', 2]]);
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -1946,6 +2024,7 @@ describe('Rust emission', () => {
         '  let original = vec![("first".to_owned(), 1.0)];',
         '  assert_eq!(generated::clone_map(&original), vec![("first".to_owned(), 1.0), ("added".to_owned(), 8.0)]);',
         '  assert_eq!(original, vec![("first".to_owned(), 1.0)]);',
+        '  assert_eq!(generated::literal_map(), vec![("first".to_owned(), 1.0), ("second".to_owned(), 2.0)]);',
         '}',
         '',
       ].join('\n'),
