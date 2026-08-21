@@ -2485,6 +2485,22 @@ describe('Rust emission', () => {
           if (cursor.index === null) return null;
           return entries[cursor.index].data;
         }
+        export function firstNullableEntry(entries: readonly (Entry | null)[] | null): Entry | null {
+          return entries?.[0] ?? null;
+        }
+        export function cloneNullableEntries(entries: readonly (Entry | null)[] | null): readonly (Entry | null)[] | null {
+          return entries === null ? null : entries.slice();
+        }
+        export function trimNullableEntries(
+          entries: readonly (Entry | null)[] | null,
+          empty: boolean,
+        ): readonly (Entry | null)[] | null {
+          return entries === null || empty
+            ? entries === null
+              ? null
+              : []
+            : entries.slice();
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -2507,6 +2523,8 @@ describe('Rust emission', () => {
     expect(output).toContain('entries.get(index as usize).cloned().flatten()');
     expect(output).toContain('*(index.as_ref().unwrap()) as usize]');
     expect(output).toContain('(cursor.index).unwrap() as usize]');
+    expect(output).toContain('.and_then(|values| values.get(0.0_f64 as usize).cloned()).flatten()');
+    expect(output).not.toContain('.as_ref().unwrap()).as_ref().unwrap().clone()');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-contextual-object-'));
     const sourceFile = path.join(fixture, 'lib.rs');
@@ -2588,6 +2606,9 @@ describe('Rust emission', () => {
         interface NumericBox {
           values: number[];
         }
+        interface NumericHolder {
+          values: ArrayLike<number>;
+        }
         export function updateNumericUnion(
           out: number[] | Float32Array,
           input: number[] | Float32Array,
@@ -2619,6 +2640,12 @@ describe('Rust emission', () => {
           const values = box.values;
           values[0] = 1;
         }
+        function identityBuffer(input: number[] | Float32Array): number[] | Float32Array {
+          return input;
+        }
+        export function makeNumericHolder(input: number[] | Float32Array): NumericHolder {
+          return { values: identityBuffer(input) };
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -2642,6 +2669,7 @@ describe('Rust emission', () => {
     expect(output).toContain('.iter().map(|__flight_value| (*__flight_value) as f64).collect::<Vec<_>>()');
     expect(output).toContain('pub fn rebound_scalar(input: &Vec<f64>) -> f64');
     expect(output).toContain('pub fn mutate_alias(box_: &mut NumericBox) -> ()');
+    expect(output).toContain('values: match &(identity_buffer(');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-numeric-union-'));
     const sourceFile = path.join(fixture, 'lib.rs');
@@ -3852,6 +3880,11 @@ describe('Rust emission', () => {
         export interface Item {
           readonly name: string;
         }
+        export type Mode = 'Repeat' | 'PingPong';
+        export const PingPong: Mode = 'PingPong';
+        export interface Settings {
+          mode?: Mode;
+        }
         const selected = new Map<string, Item>();
         export function includes(values: readonly Item[], value: Item): boolean {
           return values.includes(value);
@@ -3861,6 +3894,9 @@ describe('Rust emission', () => {
         }
         export function fromHost(value: any): any[] {
           return Array.from(value);
+        }
+        export function isPingPong(settings: Settings): boolean {
+          return settings.mode === PingPong;
         }
       `,
       ts.ScriptTarget.Latest,
@@ -3877,6 +3913,7 @@ describe('Rust emission', () => {
     expect(lowered.diagnostics).toEqual([]);
     expect(output).toContain('.iter().any(|item| item == &__flight_value)');
     expect(output).toContain('== Some(');
+    expect(output).toContain('== Some(((PING_PONG).clone()).to_owned())');
     expect(output).toContain('host.Array.from');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));

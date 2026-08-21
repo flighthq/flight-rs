@@ -2099,10 +2099,17 @@ function unwrapCasts(expression: IrExpression): IrExpression {
 }
 
 function emitExpression(expression: IrExpression, context: EmitContext, expectedType?: IrType | undefined): string {
-  if (expectedType?.kind === 'nullable' && !isNullishExpression(expression)) {
+  if (
+    expectedType?.kind === 'nullable' &&
+    expression.kind !== 'conditional' &&
+    !isNullishExpression(expression)
+  ) {
     const actualType = inferIrExpressionType(expression, context);
     const resolvedActual = resolveSemanticType(actualType, context) ?? actualType;
-    if (resolvedActual?.kind !== 'nullable' && resolvedActual?.kind !== 'dynamic') {
+    if (
+      expression.kind === 'array' ||
+      (resolvedActual?.kind !== 'nullable' && resolvedActual?.kind !== 'dynamic' && resolvedActual !== undefined)
+    ) {
       return `Some(${emitExpression(expression, context, expectedType.inner)})`;
     }
   }
@@ -2228,9 +2235,25 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
       const genericCallee =
         expression.callee.kind === 'identifier' &&
         (context.functions.get(expression.callee.name)?.typeParameters.length ?? 0) > 0;
+      const expectedCollectionElement = expectedType
+        ? numericCollectionStorageElement(expectedType, context)
+        : undefined;
+      const expectedJavaScriptElement = expectedCollectionElement
+        ? (resolveSemanticType(javaScriptValueType(expectedCollectionElement), context) ??
+          javaScriptValueType(expectedCollectionElement))
+        : undefined;
+      const numericCollectionResult =
+        actualType &&
+        expectedType &&
+        expectedJavaScriptElement?.kind === 'primitive' &&
+        expectedJavaScriptElement.name === 'Float' &&
+        (numericCollectionStorageElement(actualType, context) || resolveNumericUnionCollectionType(actualType, context));
       const projected =
         actualType && expectedType && !genericCallee && !semanticTypesEqual(actualType, expectedType, context)
-          ? emitStructuralProjectionArgument(call, actualType, expectedType, context)
+          ? ((numericCollectionResult
+              ? emitCollectionProjectionArgument(call, actualType, expectedType, context)
+              : undefined) ??
+            emitStructuralProjectionArgument(call, actualType, expectedType, context))
           : undefined;
       return coerceExpression(projected ?? call, expectedType);
     }
@@ -3107,9 +3130,7 @@ function emitCall(
       method === 'slice' &&
       expression.arguments.length === 0
     ) {
-      return ownerType?.kind === 'nullable'
-        ? `${parenthesize(owner)}.as_ref().unwrap().clone()`
-        : `${parenthesize(owner)}.clone()`;
+      return `${parenthesize(owner)}.clone()`;
     }
     if (collectionType?.kind === 'array' && method === 'pop') {
       const popped = `${ownerPlace}.pop()`;
@@ -5510,7 +5531,7 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
     ['===', '!==', '==', '!='].includes(expression.operator) &&
     leftType?.kind === 'nullable' &&
     rightType &&
-    typeKey(leftType.inner) === typeKey(rightType)
+    semanticTypesEqual(leftType.inner, rightType, context)
   ) {
     const equality = expression.operator === '===' || expression.operator === '==';
     const comparison = `${parenthesize(left)} == Some(${emitExpression(expression.right, context, leftType.inner)})`;
@@ -10531,7 +10552,10 @@ function emitElement(expression: Extract<IrExpression, { kind: 'element' }>, con
         (objectType.inner.kind === 'named' && Boolean(typedArrayType(objectType.inner.name))))
     ) {
       const owner = emitPlaceExpression(expression.object, context);
-      return `${owner}.as_ref().and_then(|values| values.get(${emitExpression(expression.index, context, primitive('Float'))} as usize).cloned())`;
+      const lookup = `${owner}.as_ref().and_then(|values| values.get(${emitExpression(expression.index, context, primitive('Float'))} as usize).cloned())`;
+      return objectType.inner.kind === 'array' && objectType.inner.element.kind === 'nullable'
+        ? `${lookup}.flatten()`
+        : lookup;
     }
     if (objectType?.kind === 'nullable' && objectType.inner.kind === 'named' && objectType.inner.name === 'RustMap') {
       const keyType = objectType.inner.arguments[0] ?? { kind: 'dynamic' };
