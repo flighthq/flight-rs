@@ -10497,80 +10497,9 @@
       "attemptedSources": 3,
       "blockers": [],
       "candidate": {
-        "compileDiagnostics": [
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-accessibility/src/accessibility.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-accessibility/src/accessibility.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-accessibility/src/accessibility.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-accessibility/src/accessibility.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-accessibility/src/accessibility.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-accessibility/src/accessibility.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-accessibility/src/accessibility.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-accessibility/src/accessibility.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-accessibility/src/accessibility.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-accessibility/src/accessibility.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-accessibility/src/accessibility.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-accessibility/src/accessibility.rs"
-          },
-          {
-            "code": "E0599",
-            "message": "no method named `is_some` found for enum `FlightValue` in the current scope",
-            "source": "generated/candidates/flighthq-accessibility/src/accessibility.rs"
-          },
-          {
-            "code": "E0599",
-            "message": "no method named `is_some` found for enum `FlightValue` in the current scope",
-            "source": "generated/candidates/flighthq-accessibility/src/accessibility.rs"
-          }
-        ],
+        "compileDiagnostics": [],
         "path": "generated/candidates/flighthq-accessibility",
-        "status": "compile-blocked",
+        "status": "compiled",
         "syntaxCheckedSources": 3,
         "unresolvedDependencies": []
       },
@@ -10609,7 +10538,7 @@
           ],
           "declarations": 20,
           "module": "accessibility",
-          "outputSha256": "sha256:e16be3ddd44dddc7e7495ddb0596f67fcd930a4b4bbf3a2ad8b081ec8be78ffa",
+          "outputSha256": "sha256:d500f663bc926668dbba74b8a1298c6e51b795e8a268a3683016d38c74ade8e3",
           "source": "upstream/packages/accessibility/src/accessibility.ts",
           "usesOpaqueHostValues": true
         },
@@ -36626,7 +36555,7 @@
           ],
           "declarations": 27,
           "module": "wgpu_draw",
-          "outputSha256": "sha256:60a856951b3b442a5bec1e420bef1f34e3ee77bf100a27916f96369fc402457d",
+          "outputSha256": "sha256:a6ee25604e71f61a0988b807eeb2cccd14820f09ca7f0fa9029403757d792438",
           "source": "upstream/packages/render-wgpu/src/wgpuDraw.ts",
           "usesOpaqueHostValues": true
         },
@@ -72218,8 +72147,8 @@
   "schemaVersion": 6,
   "summary": {
     "blocked": 104,
-    "candidateCompileBlocked": 1,
-    "candidateCompiled": 22,
+    "candidateCompileBlocked": 0,
+    "candidateCompiled": 23,
     "candidateDependencyBlocked": 15,
     "cultivated": 1,
     "eligible": 144,

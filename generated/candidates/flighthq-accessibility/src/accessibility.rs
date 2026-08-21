@@ -40,7 +40,7 @@ pub fn create_web_accessibility_backend(
         std::sync::Mutex<Vec<(AccessibilityLiveness, crate::OpaqueHostValue)>>,
     > = std::sync::Arc::new(std::sync::Mutex::new(Vec::new()));
     let root: std::sync::Arc<std::sync::Mutex<Option<crate::OpaqueHostValue>>> =
-        std::sync::Arc::new(std::sync::Mutex::new(container));
+        std::sync::Arc::new(std::sync::Mutex::new((container).clone()));
     let root_resolved: std::sync::Arc<std::sync::Mutex<bool>> =
         std::sync::Arc::new(std::sync::Mutex::new((container).is_some()));
     let get_root: std::sync::Arc<
@@ -87,9 +87,7 @@ pub fn create_web_accessibility_backend(
                     .find(|(entry_key, _)| entry_key == &(node.id).clone())
                     .map(|(_, value)| value.clone());
                 if ((element).clone()).is_none() {
-                    element = Some(crate::host_value::<crate::OpaqueHostValue>(
-                        "host.createElement",
-                    ));
+                    element = Some(crate::host_value::<crate::OpaqueHostValue>("host.call"));
                     crate::host_value::<()>("host.setAttribute");
                     {
                         let __flight_key = (node.id).clone();
@@ -150,19 +148,7 @@ pub fn create_web_accessibility_backend(
                 for __iteration0 in ((*elements.lock().unwrap()).clone()).iter().cloned() {
                     let key = __iteration0.0.clone();
                     let other = __iteration0.1.clone();
-                    if match &(crate::host_value::<()>("host.contains")) {
-                        crate::OpaqueHostValue::Undefined | crate::OpaqueHostValue::Null => false,
-                        crate::OpaqueHostValue::Bool(value) => *value,
-                        crate::OpaqueHostValue::Number(value) => {
-                            *value != 0.0_f64 && !value.is_nan()
-                        }
-                        crate::OpaqueHostValue::String(value) => !value.is_empty(),
-                        crate::OpaqueHostValue::Array(_)
-                        | crate::OpaqueHostValue::Record(_)
-                        | crate::OpaqueHostValue::Function
-                        | crate::OpaqueHostValue::Symbol
-                        | crate::OpaqueHostValue::Object => true,
-                    } {
+                    if crate::host_value::<bool>("host.call") {
                         {
                             let __flight_key = (key).clone();
                             if let Some(__flight_index) = (*elements.lock().unwrap())
@@ -223,8 +209,8 @@ pub fn create_web_accessibility_backend(
                     return false;
                 }
                 crate::host_value::<()>("host.focus");
-                return (crate::host_value::<crate::OpaqueHostValue>("host.activeElement")
-                    == element.as_ref().unwrap());
+                return (crate::host_value::<Option<crate::OpaqueHostValue>>("host.activeElement"))
+                    == Some((element.as_ref().unwrap()).clone());
             }
         })
             as Box<dyn FnMut(String) -> bool + Send + 'static>)),
@@ -389,7 +375,7 @@ fn _apply_accessibility_state_attributes(
 
 // Source: upstream/packages/accessibility/src/accessibility.ts:162 (sha256:765a32dcd37221032140101e553ac26c55c35ae2d191a71fee99003d70ec8b02)
 fn _create_hidden_accessibility_container(doc: crate::OpaqueHostValue) -> crate::OpaqueHostValue {
-    let mut container = crate::host_value::<()>("host.createElement");
+    let mut container = crate::host_value::<crate::OpaqueHostValue>("host.call");
     crate::host_value::<()>("host.setAttribute");
     let mut style = crate::host_value::<crate::OpaqueHostValue>("host.style");
     crate::host_set("host.position", "absolute");
@@ -418,9 +404,7 @@ fn _get_accessibility_live_region(
     if (((region).clone()).is_none())
         || ((crate::host_value::<Option<crate::OpaqueHostValue>>("host.parentNode")).is_none())
     {
-        region = Some(crate::host_value::<crate::OpaqueHostValue>(
-            "host.createElement",
-        ));
+        region = Some(crate::host_value::<crate::OpaqueHostValue>("host.call"));
         crate::host_value::<()>("host.setAttribute");
         crate::host_value::<()>("host.setAttribute");
         crate::host_value::<()>("host.setAttribute");
@@ -510,7 +494,9 @@ fn _reparent_accessibility_element(
             parent = (found.as_ref().unwrap()).clone();
         }
     }
-    if (crate::host_value::<crate::OpaqueHostValue>("host.parentNode") != parent) {
+    if !((crate::host_value::<Option<crate::OpaqueHostValue>>("host.parentNode"))
+        == Some((parent).clone()))
+    {
         crate::host_value::<()>("host.appendChild");
     }
 }
@@ -520,7 +506,7 @@ fn _set_accessibility_element_value_text(
     element: crate::OpaqueHostValue,
     value: Option<String>,
 ) -> () {
-    let mut first = crate::host_value::<crate::OpaqueHostValue>("host.firstChild");
+    let mut first = crate::host_value::<Option<crate::OpaqueHostValue>>("host.firstChild");
     if (value).is_none() {
         if (((first).clone()).is_some())
             && (crate::host_value::<f64>("host.nodeType") == _TEXT_NODE)

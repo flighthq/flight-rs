@@ -8,8 +8,8 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | Default-generated packages | 144 |
 | Emittable packages | 40 |
 | Blocked packages | 104 |
-| Compiled candidates | 22 |
-| Compile-blocked candidates | 1 |
+| Compiled candidates | 23 |
+| Compile-blocked candidates | 0 |
 | Dependency-blocked candidates | 15 |
 | Cultivated packages | 1 |
 | Host-bound packages | 4 |
@@ -30,7 +30,7 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | Package | Disposition | Status | Candidate | Sources emitted/attempted | API generated/expected | Missing | Dependents direct/transitive | Opaque sources | Blockers | Target |
 | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
 | `@flighthq/abc` | generated | blocked | source-blocked | 3/4 | 2/2 | 0 | 2/2 | 0 | 1 | no |
-| `@flighthq/accessibility` | generated | emittable | compile-blocked | 3/3 | 8/8 | 0 | 1/1 | 1 | 0 | no |
+| `@flighthq/accessibility` | generated | emittable | compiled | 3/3 | 8/8 | 0 | 1/1 | 1 | 0 | no |
 | `@flighthq/adjustments` | generated | emittable | compiled | 21/21 | 52/52 | 0 | 9/42 | 0 | 0 | no |
 | `@flighthq/animation` | generated | blocked | source-blocked | 8/13 | 54/52 | 0 | 8/36 | 0 | 5 | no |
 | `@flighthq/app` | generated | blocked | source-blocked | 2/3 | 39/42 | 3 | 4/4 | 0 | 2 | no |
@@ -1462,20 +1462,3 @@ Disposition partition: 177 eligible = 14 portable executable + 0 host placeholde
 - **emission** `upstream/packages/webcam/src/webcamStream.ts`: createWebcamStreamEntity: EntityRuntimeKey storage requires an aggregate native entity runtime representation; refusing to erase observable runtime state
 
 ## Candidate compile blockers
-
-### `@flighthq/accessibility`
-
-- **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
-- **E0599** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: no method named `is_some` found for enum `FlightValue` in the current scope
-- **E0599** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: no method named `is_some` found for enum `FlightValue` in the current scope
