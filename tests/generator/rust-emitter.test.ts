@@ -242,6 +242,18 @@ describe('Rust emission', () => {
               throw new Error('unsupported index');
           }
         }
+        export function chooseValue(index: number): number {
+          let value: number;
+          switch (index) {
+            case 0:
+              value = 1;
+              break;
+            default:
+              value = 2;
+              break;
+          }
+          return value;
+        }
         interface Point {
           x: number;
         }
@@ -279,6 +291,7 @@ describe('Rust emission', () => {
     expect(output).toContain('(__flight_utf16_value.len() as f64)');
     expect(output).toContain('utf16_length((value).clone())');
     expect(output).toContain('let __flight_argument_1 = (out.x * 2.0_f64);');
+    expect(output).toContain('unreachable!("exhaustive TypeScript switch completed without exiting")');
     expect(output).not.toContain('break;');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));

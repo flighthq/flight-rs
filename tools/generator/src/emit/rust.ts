@@ -33,7 +33,7 @@ export interface RustImport {
   module: string;
   names: Array<{
     imported: string;
-    kind?: 'constant' | 'function' | 'type' | 'value';
+    kind?: 'constant' | 'function' | 'mutable' | 'type' | 'value';
     local: string;
     public?: boolean;
   }>;
@@ -128,7 +128,9 @@ export function emitRustModule(module: RustModule): string {
       .map((declaration) => [declaration.name, screamingSnakeCase(declaration.name)] as const),
     ...(module.imports ?? []).flatMap((group) =>
       group.names.flatMap((item) =>
-        item.kind === 'constant' ? [[item.local, importedConstantBinding(item)] as const] : [],
+        item.kind === 'constant' || item.kind === 'mutable'
+          ? [[item.local, importedConstantBinding(item)] as const]
+          : [],
       ),
     ),
   ]);
@@ -270,8 +272,8 @@ export function emitRustModule(module: RustModule): string {
           : [],
       ),
     ),
-    mutexValueNames: new Set(
-      module.declarations.flatMap((declaration) =>
+    mutexValueNames: new Set([
+      ...module.declarations.flatMap((declaration) =>
         declaration.kind === 'variable' &&
         declaration.initializer &&
         declaration.initializer.kind !== 'array' &&
@@ -280,7 +282,10 @@ export function emitRustModule(module: RustModule): string {
           ? [declaration.name]
           : [],
       ),
-    ),
+      ...(module.imports ?? []).flatMap((group) =>
+        group.names.flatMap((item) => (item.kind === 'mutable' ? [item.local] : [])),
+      ),
+    ]),
     mutatedNames: new Set(),
     mutatingFunctions,
     namedTypeParameters: new Map([
@@ -1805,6 +1810,7 @@ function emitSwitchStatement(statement: Extract<IrStatement, { kind: 'switch' }>
     return `if __flight_case <= ${String(index)}_usize {\n${indent(body.join('\n'))}\n}`;
   });
   const exhaustiveReturn = switchAlwaysReturns(statement, context);
+  const exhaustiveExit = switchAlwaysExits(statement, context);
   return [
     '{',
     indent(
@@ -1814,6 +1820,9 @@ function emitSwitchStatement(statement: Extract<IrStatement, { kind: 'switch' }>
         "'__flight_switch: {",
         indent(clauses.join('\n')),
         ...(exhaustiveReturn ? ['unreachable!("exhaustive TypeScript switch completed without returning");'] : []),
+        ...(!exhaustiveReturn && exhaustiveExit
+          ? ['unreachable!("exhaustive TypeScript switch completed without exiting");']
+          : []),
         '}',
       ].join('\n'),
     ),
@@ -2636,6 +2645,17 @@ function emitCall(
         );
         return `${emitPlaceExpression(expression.callee, context)}.as_ref().unwrap().lock().unwrap()(${arguments_.join(', ')})`;
       }
+    }
+    if (context.mutexValueNames.has(expression.callee.name)) {
+      const arguments_ = expression.arguments.map((argument) => {
+        const value = argument.kind === 'spread' ? argument.expression : argument;
+        return emitExpression(value, context, inferIrExpressionType(value, context));
+      });
+      const callback = emitPlaceExpression(expression.callee, context);
+      const value = context.nonNullableNames.has(expression.callee.name)
+        ? `${parenthesize(callback)}.clone()`
+        : `${parenthesize(callback)}.clone().unwrap()`;
+      return `{ let __flight_callback = ${value}; __flight_callback.lock().unwrap()(${arguments_.join(', ')}) }`;
     }
     const inline = context.inlineFunctions.get(expression.callee.name);
     if (inline) return emitInlineFunctionCall(expression, inline, context);
@@ -8518,6 +8538,41 @@ function switchAlwaysReturns(statement: Extract<IrStatement, { kind: 'switch' }>
   );
 }
 
+function switchAlwaysExits(statement: Extract<IrStatement, { kind: 'switch' }>, context: EmitContext): boolean {
+  if (!statement.cases.some((switchCase) => !switchCase.expression)) return false;
+  return statement.cases.every((_switchCase, index) =>
+    statement.cases
+      .slice(index)
+      .some((candidate) => candidate.statements.some((item) => statementAlwaysExitsSwitch(item, context))),
+  );
+}
+
+function statementAlwaysExitsSwitch(statement: IrStatement, context: EmitContext): boolean {
+  if (statement.kind === 'break' || statement.kind === 'return' || statement.kind === 'throw') return true;
+  if (statement.kind === 'block') {
+    return statement.statements.some((item) => statementAlwaysExitsSwitch(item, context));
+  }
+  if (statement.kind === 'try') {
+    if (statement.finallyBody && statementAlwaysExitsSwitch(statement.finallyBody, context)) return true;
+    return Boolean(
+      statement.catchBody &&
+      statementAlwaysExitsSwitch(statement.tryBody, context) &&
+      statementAlwaysExitsSwitch(statement.catchBody, context),
+    );
+  }
+  if (statement.kind !== 'if') return statementAlwaysReturns(statement, context);
+  const constant = evaluateStaticBoolean(statement.condition, context);
+  if (constant === true) return statementAlwaysExitsSwitch(statement.consequent, context);
+  if (constant === false) {
+    return statement.otherwise ? statementAlwaysExitsSwitch(statement.otherwise, context) : false;
+  }
+  return Boolean(
+    statement.otherwise &&
+    statementAlwaysExitsSwitch(statement.consequent, context) &&
+    statementAlwaysExitsSwitch(statement.otherwise, context),
+  );
+}
+
 function containsStatementKind(value: unknown, kind: IrStatement['kind']): boolean {
   if (!value || typeof value !== 'object') return false;
   if ('kind' in value && value.kind === kind) return true;
@@ -10990,7 +11045,7 @@ function resolveRustImport(
   const bindings =
     item.kind === 'type'
       ? [item]
-      : item.kind === 'constant'
+      : item.kind === 'constant' || item.kind === 'mutable'
         ? [
             {
               imported: screamingSnakeCase(item.imported),
@@ -11009,7 +11064,7 @@ function resolveRustImport(
             },
           ];
   if (item.public) {
-    if (item.kind === 'function' || item.kind === 'constant') return bindings.at(-1);
+    if (item.kind === 'function' || item.kind === 'constant' || item.kind === 'mutable') return bindings.at(-1);
     return bindings[0];
   }
   return bindings.find(({ local }) => new RegExp(`\\b${local}\\b`, 'u').test(declarations));

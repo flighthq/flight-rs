@@ -2311,6 +2311,7 @@ export function classifyImportedRustBinding(
     if (loweredDeclaration?.kind === 'variable' && isNumericNamespaceInitializer(loweredDeclaration.initializer)) {
       return 'type';
     }
+    if (declaration && !(statement.declarationList.flags & ts.NodeFlags.Const)) return 'mutable';
     return 'constant';
   }
   if (
@@ -2424,19 +2425,13 @@ function collectImportedSemanticTypes(sourceFile: ts.SourceFile, workspaceDirect
           specifier.startsWith('@flighthq/') ? specifier : '@flighthq/internal',
           workspaceDirectory,
         );
-        const importedVariable = lowered.declarations.find(
-          (item) => item.kind === 'variable' && item.name === name,
-        );
+        const importedVariable = lowered.declarations.find((item) => item.kind === 'variable' && item.name === name);
         if (importedVariable?.kind === 'variable' && importedVariable.initializer) {
           let initializer = importedVariable.initializer;
           while (initializer.kind === 'cast') initializer = initializer.expression;
           if (initializer.kind === 'object') {
             for (const property of initializer.properties) {
-              if (
-                property.kind === 'property' &&
-                property.value.kind === 'literal' &&
-                property.value.value !== null
-              ) {
+              if (property.kind === 'property' && property.value.kind === 'literal' && property.value.value !== null) {
                 constantPropertyValues.set(`${localName}.${property.name}`, property.value.value);
               }
             }

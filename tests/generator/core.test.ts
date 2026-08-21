@@ -68,6 +68,11 @@ describe('manifest-lane dependency resolution', () => {
     expect(classifyImportedRustBinding(importer, './contract', 'approxEqual', workspace)).toBe('function');
     expect(classifyImportedRustBinding(importer, './contract', 'DEG_TO_RAD', workspace)).toBe('constant');
     expect(classifyImportedRustBinding(importer, './contract', 'RandomSource', workspace)).toBe('type');
+
+    const geometryImporter = path.join(workspace, 'upstream/packages/geometry/src/enableGeometryPoolGuards.ts');
+    expect(
+      classifyImportedRustBinding(geometryImporter, './geometryPoolGuards', 'geometryPoolReleaseGuard', workspace),
+    ).toBe('mutable');
   });
 });
 
