@@ -552,10 +552,14 @@ function attemptAutomaticPackage(
                   (name) =>
                     !localDeclarations.has(name) && Boolean(findTypeDeclarationSource(workspaceDirectory, name)),
                 ),
-                ...collectReachableSemanticTypeNames(lowered.declarations, {
-                  ...semanticTypes,
-                  ...importedSemanticTypes.types,
-                }).filter(
+                ...collectReachableSemanticTypeNames(
+                  lowered.declarations,
+                  {
+                    ...semanticTypes,
+                    ...importedSemanticTypes.types,
+                  },
+                  entityRuntimeSemanticTypes.types,
+                ).filter(
                   (name) =>
                     !localDeclarations.has(name) && Boolean(findTypeDeclarationSource(workspaceDirectory, name)),
                 ),
@@ -1647,7 +1651,11 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
                       !declarations.some((declaration) => declaration.name === name) &&
                       Boolean(findTypeDeclarationSource(workspaceDirectory, name)),
                   ),
-                  ...collectReachableSemanticTypeNames(declarations, moduleSemanticTypes).filter(
+                  ...collectReachableSemanticTypeNames(
+                    declarations,
+                    moduleSemanticTypes,
+                    entityRuntimeSemanticTypes.types,
+                  ).filter(
                     (name) =>
                       !declarations.some((declaration) => declaration.name === name) &&
                       Boolean(findTypeDeclarationSource(workspaceDirectory, name)),
@@ -1975,6 +1983,7 @@ function collectNamedTypeReferences(type: IrType): ReadonlySet<string> {
 function collectReachableSemanticTypeNames(
   declarations: ReturnType<typeof lowerTypeScriptSource>['declarations'],
   semanticTypes: Readonly<Record<string, IrType>>,
+  openFamilyTypes: Readonly<Record<string, IrType>>,
 ): string[] {
   const names = new Set<string>();
   const collect = (value: unknown): void => {
@@ -1996,15 +2005,60 @@ function collectReachableSemanticTypeNames(
   };
   collect(declarations);
   const pending = [...names];
-  while (pending.length > 0) {
-    const name = pending.pop()!;
-    const type = semanticTypes[name];
-    if (!type) continue;
-    for (const referenced of collectNamedTypeReferences(type)) {
-      if (names.has(referenced)) continue;
-      names.add(referenced);
-      pending.push(referenced);
+  const expand = (): void => {
+    while (pending.length > 0) {
+      const name = pending.pop()!;
+      const type = semanticTypes[name];
+      if (!type) continue;
+      for (const referenced of collectNamedTypeReferences(type)) {
+        if (names.has(referenced)) continue;
+        names.add(referenced);
+        pending.push(referenced);
+      }
     }
+  };
+  expand();
+  const reaches = (name: string, target: string, visited: ReadonlySet<string> = new Set()): boolean => {
+    if (name === target) return true;
+    if (visited.has(name)) return false;
+    const type = openFamilyTypes[name];
+    if (!type) return false;
+    const nextVisited = new Set([...visited, name]);
+    if (type.kind === 'named') return reaches(type.name, target, nextVisited);
+    return (
+      type.kind === 'anonymous' &&
+      type.extends.some((base) => base.kind === 'named' && reaches(base.name, target, nextVisited))
+    );
+  };
+  const hasField = (name: string, field: string, visited: ReadonlySet<string> = new Set()): boolean => {
+    if (visited.has(name)) return false;
+    const type = openFamilyTypes[name];
+    if (!type) return false;
+    const nextVisited = new Set([...visited, name]);
+    if (type.kind === 'named') return hasField(type.name, field, nextVisited);
+    return (
+      type.kind === 'anonymous' &&
+      (type.fields.some((candidate) => candidate.name === field) ||
+        type.extends.some((base) => base.kind === 'named' && hasField(base.name, field, nextVisited)))
+    );
+  };
+  const openBases = [...names].filter((name) => hasField(name, 'kind'));
+  if (openBases.length > 0) {
+    for (const [name, type] of Object.entries(openFamilyTypes)) {
+      if (
+        type.kind !== 'anonymous' ||
+        !type.fields.some((field) => field.name === 'kind') ||
+        !openBases.some((base) => reaches(name, base))
+      ) {
+        continue;
+      }
+      for (const referenced of collectNamedTypeReferences(type)) {
+        if (names.has(referenced)) continue;
+        names.add(referenced);
+        pending.push(referenced);
+      }
+    }
+    expand();
   }
   return [...names].sort((left, right) => left.localeCompare(right));
 }

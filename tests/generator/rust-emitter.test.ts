@@ -2591,6 +2591,9 @@ describe('Rust emission', () => {
         export function fallbackAxis(): string {
           return FallbackAxis;
         }
+        export function singleKind(): SingleKind {
+          return SingleKind;
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -2612,6 +2615,7 @@ describe('Rust emission', () => {
     expect(output).toContain("pub const FALLBACK_AXIS: &'static str");
     expect(output).toContain('vec![Some((GAMEPAD_AXIS_KIND.stick_left_x).clone())]');
     expect(output).toContain('FALLBACK_AXIS).clone()).to_owned()');
+    expect(output).toContain('return (SINGLE_KIND).to_owned()');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
     const sourceFile = path.join(fixture, 'lib.rs');

@@ -2411,7 +2411,7 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
         context.constantNames.has(expression.name) &&
         resolvedExpected?.kind === 'primitive' &&
         resolvedExpected.name === 'String' &&
-        (!actualType || (actualType.kind === 'primitive' && actualType.name === 'String'))
+        (!actualType || isPlainStringType(actualType, context) || isStringRepresentedType(actualType, context))
       ) {
         return `${parenthesize(narrowed)}.to_owned()`;
       }
