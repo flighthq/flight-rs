@@ -1572,9 +1572,11 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
     const emittedDeclarationNames = selectedDeclarations
       ? collectSelectedDeclarationSupport(lowered.declarations, selectedDeclarations)
       : undefined;
-    const declarations = emittedDeclarationNames
-      ? lowered.declarations.filter((declaration) => emittedDeclarationNames.has(declaration.name))
-      : lowered.declarations;
+    const declarations = promotePublicSignatureSupport(
+      emittedDeclarationNames
+        ? lowered.declarations.filter((declaration) => emittedDeclarationNames.has(declaration.name))
+        : lowered.declarations,
+    );
     if (selectedDeclarations) {
       for (const declaration of lowered.declarations) {
         if (emittedDeclarationNames?.has(declaration.name)) continue;
@@ -1994,38 +1996,15 @@ export function collectSelectedDeclarationSupport(
   const included = new Set(selectedNames);
   const localTypes = new Map(
     declarations.flatMap((declaration) =>
-      declaration.kind === 'type' ? [[declaration.name, declaration] as const] : [],
+      declaration.kind === 'type' || declaration.kind === 'class' || declaration.kind === 'enum'
+        ? [[declaration.name, declaration] as const]
+        : [],
     ),
   );
-  const referencedTypes = (declaration: IrDeclaration): IrType[] => {
-    switch (declaration.kind) {
-      case 'function':
-        return [...declaration.parameters.map((parameter) => parameter.type), declaration.returns];
-      case 'type':
-        return [declaration.type];
-      case 'variable':
-        return declaration.type ? [declaration.type] : [];
-      case 'class':
-        return [
-          ...(declaration.extends ? [declaration.extends] : []),
-          ...declaration.fields.map((field) => field.type),
-          ...declaration.constructorParameters.map((parameter) => parameter.type),
-          ...declaration.methods.flatMap((method) => [
-            ...method.parameters.map((parameter) => parameter.type),
-            method.returns,
-          ]),
-        ];
-      case 'enum':
-        return declaration.methods.flatMap((method) => [
-          ...method.parameters.map((parameter) => parameter.type),
-          method.returns,
-        ]);
-    }
-  };
   const pending = declarations.filter((declaration) => included.has(declaration.name));
   while (pending.length > 0) {
     const declaration = pending.pop()!;
-    for (const type of referencedTypes(declaration)) {
+    for (const type of declarationSignatureTypes(declaration)) {
       for (const name of collectNamedTypeReferences(type)) {
         const supportingType = localTypes.get(name);
         if (!supportingType || included.has(name)) continue;
@@ -2035,6 +2014,57 @@ export function collectSelectedDeclarationSupport(
     }
   }
   return included;
+}
+
+export function promotePublicSignatureSupport(declarations: readonly IrDeclaration[]): IrDeclaration[] {
+  const publicNames = new Set(declarations.filter((declaration) => declaration.exported).map(({ name }) => name));
+  const localTypes = new Map(
+    declarations.flatMap((declaration) =>
+      declaration.kind === 'type' || declaration.kind === 'class' || declaration.kind === 'enum'
+        ? [[declaration.name, declaration] as const]
+        : [],
+    ),
+  );
+  const pending = declarations.filter((declaration) => publicNames.has(declaration.name));
+  while (pending.length > 0) {
+    for (const type of declarationSignatureTypes(pending.pop()!)) {
+      for (const name of collectNamedTypeReferences(type)) {
+        const supportingType = localTypes.get(name);
+        if (!supportingType || publicNames.has(name)) continue;
+        publicNames.add(name);
+        pending.push(supportingType);
+      }
+    }
+  }
+  return declarations.map((declaration) =>
+    publicNames.has(declaration.name) && !declaration.exported ? { ...declaration, exported: true } : declaration,
+  );
+}
+
+function declarationSignatureTypes(declaration: IrDeclaration): IrType[] {
+  switch (declaration.kind) {
+    case 'function':
+      return [...declaration.parameters.map((parameter) => parameter.type), declaration.returns];
+    case 'type':
+      return [declaration.type];
+    case 'variable':
+      return declaration.type ? [declaration.type] : [];
+    case 'class':
+      return [
+        ...(declaration.extends ? [declaration.extends] : []),
+        ...declaration.fields.map((field) => field.type),
+        ...declaration.constructorParameters.map((parameter) => parameter.type),
+        ...declaration.methods.flatMap((method) => [
+          ...method.parameters.map((parameter) => parameter.type),
+          method.returns,
+        ]),
+      ];
+    case 'enum':
+      return declaration.methods.flatMap((method) => [
+        ...method.parameters.map((parameter) => parameter.type),
+        method.returns,
+      ]);
+  }
 }
 
 function collectReachableSemanticTypeNames(

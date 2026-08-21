@@ -7,6 +7,7 @@ import {
   collectSelectedDeclarationSupport,
   filterUnusedValueImports,
   formatRust,
+  promotePublicSignatureSupport,
   classifyImportedRustBinding,
   emittedPortableTaskUsesOpaqueHostValue,
   normalizeDiagnosticSource,
@@ -86,7 +87,8 @@ describe('selected declaration dependencies', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/bitmap/src/selection.ts',
       `
-        interface Pixels { readonly data: ArrayLike<number>; }
+        enum PixelFormat { Rgba = 'rgba' }
+        interface Pixels { readonly data: ArrayLike<number>; readonly format: PixelFormat; }
         interface Comparison { readonly pixels: Pixels; }
         interface Deferred { readonly value: string; }
         export function selected(source: Comparison): number { return source.pixels.data.length; }
@@ -101,9 +103,21 @@ describe('selected declaration dependencies', () => {
     expect(lowered.diagnostics).toEqual([]);
     expect([...collectSelectedDeclarationSupport(lowered.declarations, new Set(['selected']))].sort()).toEqual([
       'Comparison',
+      'PixelFormat',
       'Pixels',
       'selected',
     ]);
+
+    const selectedNames = collectSelectedDeclarationSupport(lowered.declarations, new Set(['selected']));
+    const declarations = promotePublicSignatureSupport(
+      lowered.declarations.filter((declaration) => selectedNames.has(declaration.name)),
+    );
+    expect(
+      declarations
+        .filter((declaration) => declaration.exported)
+        .map(({ name }) => name)
+        .sort(),
+    ).toEqual(['Comparison', 'PixelFormat', 'Pixels', 'selected']);
   });
 
   it('drops value imports referenced only by declarations outside the selection', () => {
