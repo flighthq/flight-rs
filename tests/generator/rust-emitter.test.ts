@@ -41,6 +41,13 @@ describe('Rust emission', () => {
           return values !== null;
         }
         export function hasNoValues(): boolean { return hasOptional(null); }
+        type Guard = (value: number) => void;
+        let guard: Guard | null = null;
+        export function setGuard(next: Guard | null): void { guard = next; }
+        export function callGuard(value: number): void {
+          if (guard === null) return;
+          guard(value);
+        }
         export interface Schedule { at?: Date; code: WireCode; }
         export type VendorKind = \`\${string}.\${string}\`;
         export function sameNumber(left: number, right: number): boolean { return Object.is(left, right); }
@@ -72,6 +79,7 @@ describe('Rust emission', () => {
     expect(output).toContain('text.push_str(&');
     expect(output).toContain('pub fn append_optional(values: &mut Option<Vec<String>>)');
     expect(output).toContain('return has_optional(&(None));');
+    expect(output).toContain('(*GUARD.lock().unwrap()).as_ref().unwrap()');
     expect(output).toContain('pub at: Option<crate::OpaqueHostValue>,');
     expect(output).toContain('pub code: f64,');
     expect(output).toContain('pub type VendorKind = String;');
@@ -318,6 +326,9 @@ describe('Rust emission', () => {
           label: string;
         }
         type Direction = 'L' | 'R';
+        type DeclineReason = 'invalid' | 'inverted';
+        type IndexReason = DeclineReason | 'missing';
+        interface IndexNotice { reason?: IndexReason; }
         const lookup = [1, 2, 3];
         const lookupCount = lookup.length;
         export interface AdjustmentOptions {
@@ -428,6 +439,14 @@ describe('Rust emission', () => {
         export function collectionSize(map: Map<string, number>, set: Set<number>): number {
           return map.size + set.size;
         }
+        export function sumEntries(map: Map<number, number>): number {
+          let total = 0;
+          for (const [key, value] of map) total += key + value;
+          return total;
+        }
+        export function hasInvalidReason(notice: Readonly<IndexNotice>): boolean {
+          return notice.reason === 'invalid';
+        }
         export function clearValues(values: number[]): void {
           values.length = 0;
         }
@@ -524,6 +543,9 @@ describe('Rust emission', () => {
     expect(output).toContain('let __flight_values: Vec<i16>');
     expect(output).toContain('.position(|item| item == &__flight_value).map_or(-1.0_f64');
     expect(output).toMatch(/map\.len\(\) as f64.*set\.len\(\) as f64/u);
+    expect(output).toContain('let key = __iteration0.0.clone();');
+    expect(output).toContain('let value = __iteration0.1.clone();');
+    expect(output).toContain('.as_ref().map(|value| value.to_string()) == Some("invalid".to_owned())');
     expect(output).toContain('values.clear()');
     expect(output).toContain('names: None');
     expect(output).toContain('(values).is_none()');

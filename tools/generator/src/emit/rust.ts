@@ -1132,7 +1132,12 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
       if (statement.async) throw new RustEmissionError('async for-of Rust lowering is not implemented');
       const iterableType = inferIrExpressionType(statement.iterable, context);
       const collectionType = iterableType?.kind === 'nullable' ? iterableType.inner : iterableType;
-      const elementType = collectionType?.kind === 'array' ? collectionType.element : undefined;
+      const elementType =
+        collectionType?.kind === 'array'
+          ? collectionType.element
+          : collectionType?.kind === 'named' && collectionType.name === 'RustMap'
+            ? ({ arguments: collectionType.arguments, kind: 'named', name: 'RustTuple2' } as const)
+            : undefined;
       const iterable = emitExpression(statement.iterable, context);
       const iterablePlace =
         iterableType?.kind === 'nullable'
@@ -4151,6 +4156,39 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
     const comparison = `${parenthesize(left)} == Some(${emitExpression(expression.right, context, leftType.inner)})`;
     return equality ? comparison : `!${parenthesize(comparison)}`;
   }
+  const equality =
+    expression.operator === '===' || expression.operator === '=='
+      ? true
+      : expression.operator === '!==' || expression.operator === '!='
+        ? false
+        : undefined;
+  if (
+    equality !== undefined &&
+    rightType &&
+    isStringRepresentedType(leftType, context) &&
+    isPlainStringType(rightType, context)
+  ) {
+    const comparedLeft =
+      leftType?.kind === 'nullable'
+        ? `${parenthesize(left)}.as_ref().map(|value| value.to_string())`
+        : `Some(${parenthesize(left)}.to_string())`;
+    const comparison = `${comparedLeft} == Some(${emitExpression(expression.right, context, primitive('String'))})`;
+    return equality ? comparison : `!${parenthesize(comparison)}`;
+  }
+  if (
+    equality !== undefined &&
+    leftType &&
+    isPlainStringType(leftType, context) &&
+    isStringRepresentedType(rightType, context)
+  ) {
+    const emittedRight = emitExpression(expression.right, context);
+    const comparedRight =
+      rightType?.kind === 'nullable'
+        ? `${parenthesize(emittedRight)}.as_ref().map(|value| value.to_string())`
+        : `Some(${parenthesize(emittedRight)}.to_string())`;
+    const comparison = `Some(${emitExpression(expression.left, context, primitive('String'))}) == ${comparedRight}`;
+    return equality ? comparison : `!${parenthesize(comparison)}`;
+  }
   const right = emitExpression(
     expression.right,
     context,
@@ -5046,6 +5084,9 @@ function emitType(type: IrType, context: EmitContext): string {
       }
       if (type.name === 'RustSet') {
         return `Vec<${emitType(type.arguments[0] ?? { kind: 'dynamic' }, context)}>`;
+      }
+      if (type.name === 'RustTuple2') {
+        return `(${emitType(type.arguments[0] ?? { kind: 'dynamic' }, context)}, ${emitType(type.arguments[1] ?? { kind: 'dynamic' }, context)})`;
       }
       const declarationType = context.namedTypes.get(type.name);
       const parameters = context.namedTypeParameters.get(type.name) ?? [];
@@ -7131,6 +7172,18 @@ function isReferenceLike(type: IrType, context: EmitContext): boolean {
   );
 }
 
+function isPlainStringType(type: IrType | undefined, context: EmitContext): boolean {
+  const resolved = resolveSemanticType(type, context) ?? type;
+  return resolved?.kind === 'primitive' && resolved.name === 'String';
+}
+
+function isStringRepresentedType(type: IrType | undefined, context: EmitContext): boolean {
+  if (!type) return false;
+  const candidate = type.kind === 'nullable' ? type.inner : type;
+  const resolved = resolveSemanticType(candidate, context) ?? candidate;
+  return resolved.kind === 'union' && resolved.variants.every((variant) => isPlainStringType(variant, context));
+}
+
 function semanticTypesEqual(left: IrType, right: IrType, context: EmitContext): boolean {
   return typeKey(resolveSemanticType(left, context) ?? left) === typeKey(resolveSemanticType(right, context) ?? right);
 }
@@ -8130,6 +8183,14 @@ function emitElement(expression: Extract<IrExpression, { kind: 'element' }>, con
     throw new RustEmissionError('optional element access requires an inferred nullable collection');
   }
   const collectionType = objectType?.kind === 'nullable' ? objectType.inner : objectType;
+  if (collectionType?.kind === 'named' && collectionType.name === 'RustTuple2') {
+    if (expression.index.kind !== 'literal' || typeof expression.index.value !== 'number') {
+      throw new RustEmissionError('tuple element access requires a static numeric index');
+    }
+    const index = expression.index.value;
+    if (index !== 0 && index !== 1) throw new RustEmissionError(`tuple index ${String(index)} is out of bounds`);
+    return `${emitPlaceExpression(expression.object, context)}.${String(index)}`;
+  }
   if (collectionType?.kind === 'named' && collectionType.name === 'RustMap') {
     const keyType = collectionType.arguments[0] ?? { kind: 'dynamic' };
     const owner =
@@ -8471,7 +8532,11 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
           : object?.kind === 'named'
             ? object.name === 'RustMap'
               ? (object.arguments[1] ?? { kind: 'dynamic' })
-              : typedArrayElementType(object.name)
+              : object.name === 'RustTuple2' &&
+                  expression.index.kind === 'literal' &&
+                  typeof expression.index.value === 'number'
+                ? object.arguments[expression.index.value]
+                : typedArrayElementType(object.name)
             : undefined;
       const resolvedElement = element ?? inferDynamicHostElementType(expression.object, context);
       if (!resolvedElement) return undefined;
@@ -8859,7 +8924,8 @@ function emitIdentifier(name: string, context: EmitContext): string {
   }
   if (context.lazyScalarNames.has(name)) return `*${emitted}`;
   if (context.nonNullableNames.has(name)) {
-    const value = `${emitted}.${context.mutatedNames.has(name) ? 'as_mut' : 'as_ref'}().unwrap()`;
+    const owner = context.mutexValueNames.has(name) ? `(*${emitted}.lock().unwrap())` : emitted;
+    const value = `${owner}.${context.mutatedNames.has(name) ? 'as_mut' : 'as_ref'}().unwrap()`;
     return type && isCopyType(type, context) ? `*${parenthesize(value)}` : value;
   }
   if (context.sharedCaptureNames.has(name)) return `(*${emitted}.lock().unwrap())`;
