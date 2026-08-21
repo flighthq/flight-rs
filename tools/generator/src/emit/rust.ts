@@ -3983,6 +3983,45 @@ function emitKnownFunctionCall(
         suffix.push(`if ${place}.is_some() { ${place} = Some(${temporary}); }`);
         return `&mut *${temporary}`;
       }
+      const argumentType = inferIrExpressionType(argument, context);
+      const resolvedParameter = resolveSemanticType(parameterType, context) ?? parameterType;
+      if (
+        mutableIndexes.has(index) &&
+        argumentType &&
+        resolvedParameter.kind === 'union' &&
+        isRustPlaceExpression(argument)
+      ) {
+        const variantIndex = resolvedParameter.variants.findIndex((variant) =>
+          semanticTypesEqual(variant, argumentType, context),
+        );
+        if (variantIndex >= 0) {
+          const temporary = `__flight_argument_${String(index)}`;
+          const place = emitPlaceExpression(argument, assignmentPlaceContext(argument, context));
+          const borrowedIdentifier = argument.kind === 'identifier' && context.borrowedNames.has(argument.name);
+          const takeTarget = borrowedIdentifier ? place : `&mut ${parenthesize(place)}`;
+          const assignmentTarget = borrowedIdentifier ? `*${parenthesize(place)}` : place;
+          const unionName =
+            parameterType.kind === 'named' ? emitNamedUnionConstructor(parameterType, context) : undefined;
+          prefix.push(
+            `let mut ${temporary} = ${wrapUnionValue(
+              `std::mem::take(${takeTarget})`,
+              resolvedParameter.variants,
+              variantIndex,
+              context,
+              unionName,
+            )};`,
+          );
+          suffix.push(
+            `${assignmentTarget} = ${unwrapUnionValue(
+              temporary,
+              resolvedParameter.variants,
+              variantIndex,
+              unionName,
+            )};`,
+          );
+          return `&mut ${temporary}`;
+        }
+      }
       if (
         !mutableIndexes.has(index) &&
         ((root && mutableRoots.has(root)) || referencesAnyIdentifier(argument, mutableRoots))
@@ -3990,9 +4029,15 @@ function emitKnownFunctionCall(
         const temporary = `__flight_argument_${String(index)}`;
         const valueType = parameterType.kind === 'nullable' ? parameterType.inner : parameterType;
         const referenceLike = isReferenceLike(valueType, context);
-        const value = referenceLike
-          ? `${parenthesize(emitPlaceExpression(argument, context))}.clone()`
-          : emitKnownFunctionArgument(argument, { ...parameter, type: parameterType }, context, false, owned);
+        const collectionProjection =
+          referenceLike && argumentType
+            ? emitCollectionProjectionExpression(argument, argumentType, valueType, context)
+            : undefined;
+        const value =
+          collectionProjection ??
+          (referenceLike
+            ? `${parenthesize(emitPlaceExpression(argument, context))}.clone()`
+            : emitKnownFunctionArgument(argument, { ...parameter, type: parameterType }, context, false, owned));
         prefix.push(`let ${temporary} = ${value};`);
         return referenceLike ? `&${temporary}` : temporary;
       }
@@ -4831,15 +4876,17 @@ function resolveNumericUnionCollection(
   context: EmitContext,
 ): NumericUnionCollection | undefined {
   const sourceType = inferIrExpressionType(expression, context);
-  if (!sourceType) return undefined;
+  return sourceType ? resolveNumericUnionCollectionType(sourceType, context) : undefined;
+}
+
+function resolveNumericUnionCollectionType(
+  sourceType: IrType,
+  context: EmitContext,
+): NumericUnionCollection | undefined {
   const candidate = sourceType.kind === 'nullable' ? sourceType.inner : sourceType;
   const union = resolveSemanticType(candidate, context);
   if (union?.kind !== 'union') return undefined;
-  const storageElements = union.variants.map((variant) => {
-    const collection = resolveSemanticType(variant, context) ?? variant;
-    if (collection.kind === 'array') return collection.element;
-    return collection.kind === 'named' ? typedArrayElementType(collection.name) : undefined;
-  });
+  const storageElements = union.variants.map((variant) => numericCollectionStorageElement(variant, context));
   if (storageElements.some((element) => !element)) return undefined;
   const concreteElements = storageElements as IrType[];
   const commonElement = javaScriptValueType(concreteElements[0]!);
@@ -4858,6 +4905,12 @@ function resolveNumericUnionCollection(
     union,
     unionName: candidate.kind === 'named' ? emitNamedUnionConstructor(candidate, context) : undefined,
   };
+}
+
+function numericCollectionStorageElement(type: IrType, context: EmitContext): IrType | undefined {
+  const collection = resolveSemanticType(type, context) ?? type;
+  if (collection.kind === 'array') return collection.element;
+  return collection.kind === 'named' ? typedArrayElementType(collection.name) : undefined;
 }
 
 function emitNumericUnionMatch(
@@ -9236,6 +9289,32 @@ function emitCollectionProjectionArgument(
   if (actual.kind === 'nullable' && expected.kind === 'nullable') {
     const projected = emitCollectionProjectionArgument('__flight_value', actual.inner, expected.inner, context);
     return projected ? `${parenthesize(source)}.as_ref().map(|__flight_value| ${projected})` : undefined;
+  }
+  const expectedNumericElement = numericCollectionStorageElement(expectedType, context);
+  const expectedJavaScriptElement = expectedNumericElement ? javaScriptValueType(expectedNumericElement) : undefined;
+  const resolvedExpectedJavaScriptElement = expectedJavaScriptElement
+    ? (resolveSemanticType(expectedJavaScriptElement, context) ?? expectedJavaScriptElement)
+    : undefined;
+  if (
+    expectedNumericElement &&
+    resolvedExpectedJavaScriptElement?.kind === 'primitive' &&
+    resolvedExpectedJavaScriptElement.name === 'Float'
+  ) {
+    const actualUnion = resolveNumericUnionCollectionType(actualType, context);
+    if (actualUnion) {
+      return emitNumericUnionMatch(`&${parenthesize(source)}`, actualUnion, (storageType) => {
+        const value = emitNumericStorageRead('*__flight_value', storageType, context);
+        return `values.iter().map(|__flight_value| ${coerceExpression(value, expectedNumericElement)}).collect::<Vec<_>>()`;
+      });
+    }
+    const actualNumericElement = numericCollectionStorageElement(actualType, context);
+    if (actualNumericElement && emitType(actualNumericElement, context) !== emitType(expectedNumericElement, context)) {
+      const value = emitNumericStorageRead('*__flight_value', actualNumericElement, context);
+      return `${parenthesize(source)}.iter().map(|__flight_value| ${coerceExpression(
+        value,
+        expectedNumericElement,
+      )}).collect::<Vec<_>>()`;
+    }
   }
   if (actual.kind !== 'array' || expected.kind !== 'array') return undefined;
   const expectedElement = resolveSemanticType(expected.element, context) ?? expected.element;

@@ -2566,6 +2566,16 @@ describe('Rust emission', () => {
         function zeroNumericUnion(out: number[] | Float32Array): void {
           out[0] = 0;
         }
+        function first(values: ArrayLike<number>): number {
+          return values[0];
+        }
+        export function updateConcrete(out: Float32Array, input: Float32Array): number {
+          zeroNumericUnion(out);
+          return first(input) + out[0];
+        }
+        export function readNumericUnion(input: number[] | Float32Array): number {
+          return first(input);
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -2584,6 +2594,9 @@ describe('Rust emission', () => {
     expect(output).toContain('values[__flight_index] += (__flight_value) as f32');
     expect(output).toContain('zero_numeric_union(out);');
     expect(output).not.toContain('zero_numeric_union(&((*out).clone()))');
+    expect(output).toContain('std::mem::take(out)');
+    expect(output).toContain('*(out) = match __flight_argument_0');
+    expect(output).toContain('.iter().map(|__flight_value| (*__flight_value) as f64).collect::<Vec<_>>()');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-numeric-union-'));
     const sourceFile = path.join(fixture, 'lib.rs');
