@@ -1,21 +1,25 @@
 name: Release
 
-# Publishes @flighthq/bitmap-rs, the only package here intended for consumers.
+# The MANUAL release path for @flighthq/bitmap-rs. Ordinary releases do not come through here —
+# flight-release.yml publishes when Flight publishes, which is the only moment the dependency this
+# package declares is guaranteed to exist.
 #
-# Two lanes, both ending in `npm run release`:
-#   Snapshot  every push to main publishes <upstream>-edge.<count>.<sha> under the `edge` dist-tag,
-#             so `latest` is never touched by an untagged build.
-#   Stable    a bare numeric tag publishes that version under `latest`. Cut one with:
-#               npm run version:packages 0.3.0 && git commit -am "release: 0.3.0"
-#               git tag 0.3.0 && git push --tags
+# This lane covers the two cases that are not a Flight release:
+#   Tag        a bare numeric tag publishes that version under `latest` — a port-only fix that has to
+#              ship between Flight releases. Cut one with:
+#                npm run version:packages 0.4.1 && git commit -am "release: 0.4.1"
+#                git tag 0.4.1 && git push --tags
+#   Dispatch   publishes an <upstream>-edge.<count>.<sha> snapshot under the `edge` dist-tag, for
+#              deliberately putting a pre-release build in front of someone.
 #
-# The version is borrowed from the pinned upstream rather than chosen here — see
-# scripts/flight-version.ts. Both lanes stamp the manifest before publishing, so a tarball's version
-# and its dist-tag always agree.
+# NOT triggered by pushes to main, deliberately. Under locked versioning this repository's pin
+# usually sits ahead of Flight's newest RELEASE — right now it derives 0.4.0 while npm's newest
+# stable `@flighthq/bitmap` is 0.3.0 — so the dependency range an untagged build declares names a
+# version that does not exist yet. Publishing a snapshot on every push would emit a steady stream of
+# packages nobody can install, on top of running a full wasm build per commit.
 
 on:
   push:
-    branches: [main]
     # Bare numeric version tags, no "v" prefix.
     tags: ['[0-9]*.[0-9]*.[0-9]*']
   workflow_dispatch:

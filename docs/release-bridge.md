@@ -52,9 +52,11 @@ The release lane does not read those in-repo values. It stamps both from the ver
 
 ## Manual paths
 
-- **`workflow_dispatch`** on the same workflow, taking `version` and `commit` — re-runs a failed bridge without another Flight release.
+- **`workflow_dispatch`** on `flight-release.yml`, taking `version` and `commit` — re-runs a failed bridge without another Flight release.
 - **A numeric tag** (`release.yml`) publishes that version to `latest` directly. The escape hatch for a port-only fix that must ship between Flight releases.
-- **Pushes to `main`** (`release.yml`) publish `<version>-edge.<count>.<sha>` to the `edge` tag, which is how the port stays continuously installable between releases.
+- **`workflow_dispatch`** on `release.yml` publishes an `<version>-edge.<count>.<sha>` snapshot to the `edge` tag, for deliberately putting a pre-release build in front of someone.
+
+Nothing publishes on a push to `main`. Under locked versioning the pin usually sits ahead of Flight's newest _release_, so the dependency range an untagged build declares names a version npm does not have yet — a snapshot per commit would be a stream of packages nobody can install, each paid for with a full wasm build. Releases happen when Flight releases; everything else is deliberate.
 
 ## Secrets and variables
 
