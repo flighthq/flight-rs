@@ -2203,11 +2203,13 @@ function constObjectPropertyLiteralValue(
   node: ts.TypeNode,
   context: LoweringContext,
 ): boolean | number | string | undefined {
-  if (!ts.isTypeQueryNode(node) || !ts.isQualifiedName(node.exprName) || !ts.isIdentifier(node.exprName.left)) {
-    return undefined;
-  }
-  const namespace = node.exprName.left.text;
-  const member = node.exprName.right.text;
+  if (!ts.isTypeQueryNode(node)) return undefined;
+  const namespace = ts.isIdentifier(node.exprName)
+    ? node.exprName.text
+    : ts.isQualifiedName(node.exprName) && ts.isIdentifier(node.exprName.left)
+      ? node.exprName.left.text
+      : undefined;
+  if (!namespace) return undefined;
   const declaration = context.sourceFile.statements
     .filter(ts.isVariableStatement)
     .flatMap((statement) => [...statement.declarationList.declarations])
@@ -2222,13 +2224,18 @@ function constObjectPropertyLiteralValue(
   ) {
     initializer = initializer.expression;
   }
+  if (ts.isIdentifier(node.exprName)) return primitiveLiteralExpressionValue(initializer);
   if (!ts.isObjectLiteralExpression(initializer)) return undefined;
+  const member = node.exprName.right.text;
   const property = initializer.properties.find(
     (candidate): candidate is ts.PropertyAssignment =>
       ts.isPropertyAssignment(candidate) && propertyName(candidate.name, context) === member,
   );
   if (!property) return undefined;
-  const value = property.initializer;
+  return primitiveLiteralExpressionValue(property.initializer);
+}
+
+function primitiveLiteralExpressionValue(value: ts.Expression): boolean | number | string | undefined {
   if (ts.isStringLiteral(value) || ts.isNoSubstitutionTemplateLiteral(value)) return value.text;
   if (ts.isNumericLiteral(value)) return Number(value.text);
   if (value.kind === ts.SyntaxKind.TrueKeyword) return true;

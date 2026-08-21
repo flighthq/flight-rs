@@ -552,6 +552,10 @@ function attemptAutomaticPackage(
                   (name) =>
                     !localDeclarations.has(name) && Boolean(findTypeDeclarationSource(workspaceDirectory, name)),
                 ),
+                ...Object.keys(entityRuntimeSemanticTypes.types).filter(
+                  (name) =>
+                    !localDeclarations.has(name) && Boolean(findTypeDeclarationSource(workspaceDirectory, name)),
+                ),
               ],
         ),
         inlineFunctions: [],
@@ -1636,6 +1640,11 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
                     workspaceDirectory,
                   ),
                   ...Object.keys(importedSemanticTypes.types).filter(
+                    (name) =>
+                      !declarations.some((declaration) => declaration.name === name) &&
+                      Boolean(findTypeDeclarationSource(workspaceDirectory, name)),
+                  ),
+                  ...Object.keys(entityRuntimeSemanticTypes.types).filter(
                     (name) =>
                       !declarations.some((declaration) => declaration.name === name) &&
                       Boolean(findTypeDeclarationSource(workspaceDirectory, name)),

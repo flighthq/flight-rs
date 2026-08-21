@@ -2562,6 +2562,8 @@ describe('Rust emission', () => {
           STICK_LEFT_Y: 'StickLeftY',
         };
         export type GamepadAxisKind = (typeof GamepadAxisKind)[keyof typeof GamepadAxisKind];
+        export const SingleKind = 'Single';
+        export type SingleKind = typeof SingleKind;
         export const FallbackAxis: string = 'None';
         export const DefaultAxes: readonly (GamepadAxisKind | undefined)[] = [
           GamepadAxisKind.STICK_LEFT_X,
@@ -2588,6 +2590,8 @@ describe('Rust emission', () => {
     expect(output).toContain('pub struct GamepadAxisKindValues');
     expect(output).toContain('pub static GAMEPAD_AXIS_KIND');
     expect(output).toContain('pub type GamepadAxisKind = String');
+    expect(output).toContain('pub const SINGLE_KIND: &\'static str = "Single"');
+    expect(output).toContain('pub type SingleKind = String');
     expect(output).toContain("pub const FALLBACK_AXIS: &'static str");
     expect(output).toContain('vec![Some((GAMEPAD_AXIS_KIND.stick_left_x).clone())]');
     expect(output).toContain('FALLBACK_AXIS).clone()).to_owned()');
@@ -4346,6 +4350,10 @@ describe('Rust emission', () => {
           const point = { x: 2, y: 3, z: 6 };
           return Math.hypot(point.x, point.y, point.z);
         }
+        export function typedPointLength(values: Float32Array): number {
+          const point = { x: values[0], y: values[1], z: values[2] };
+          return Math.hypot(point.x, point.y, point.z);
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -4390,6 +4398,7 @@ describe('Rust emission', () => {
         '  assert_eq!(generated::semantic_signature_path(3.0), 7.0);',
         '  assert_eq!(generated::synthesized_record_path(8.0), 16.0);',
         '  assert_eq!(generated::unconstrained_point_length(), 7.0);',
+        '  assert_eq!(generated::typed_point_length(&vec![2.0, 3.0, 6.0]), 7.0);',
         '}',
         '',
       ].join('\n'),

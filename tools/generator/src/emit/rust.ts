@@ -1042,14 +1042,15 @@ export function isNumericNamespaceInitializer(expression: IrExpression | undefin
 
 function isScalarNamespaceInitializer(expression: IrExpression | undefined): boolean {
   return (
-    expression?.kind === 'object' &&
-    expression.properties.length > 0 &&
-    expression.properties.every(
-      (property) =>
-        property.kind === 'property' &&
-        property.value.kind === 'literal' &&
-        ['boolean', 'number', 'string'].includes(typeof property.value.value),
-    )
+    (expression?.kind === 'literal' && ['boolean', 'number', 'string'].includes(typeof expression.value)) ||
+    (expression?.kind === 'object' &&
+      expression.properties.length > 0 &&
+      expression.properties.every(
+        (property) =>
+          property.kind === 'property' &&
+          property.value.kind === 'literal' &&
+          ['boolean', 'number', 'string'].includes(typeof property.value.value),
+      ))
   );
 }
 
@@ -3231,7 +3232,11 @@ function emitCall(
         const contextualCollection = resolveSemanticType(expectedType, context) ?? expectedType;
         const contextualElement = contextualCollection?.kind === 'array' ? contextualCollection.element : undefined;
         const declaredReturns = callback.returns?.kind === 'dynamic' ? undefined : callback.returns;
-        const inferredReturns = inferFunctionExpressionReturnType(callback);
+        const inferredReturns = inferContextualFunctionExpressionReturnType(
+          callback,
+          [collectionType.element],
+          context,
+        );
         const returns =
           declaredReturns ??
           (inferredReturns?.kind === 'dynamic' ? undefined : inferredReturns) ??
@@ -4092,6 +4097,33 @@ function inferFunctionExpressionReturnType(
   for (const statement of expression.body) {
     if (statement.kind === 'return' && statement.expression) {
       return inferStaticExpressionType(statement.expression);
+    }
+  }
+  return undefined;
+}
+
+function inferContextualFunctionExpressionReturnType(
+  expression: Extract<IrExpression, { kind: 'function' }>,
+  fallbackParameters: IrType[],
+  context: EmitContext,
+): IrType | undefined {
+  if (expression.returns && expression.returns.kind !== 'dynamic') return expression.returns;
+  const nextContext: EmitContext = {
+    ...context,
+    symbolTypes: new Map(context.symbolTypes),
+  };
+  registerParameters(expression.parameters, nextContext, fallbackParameters);
+  registerLocalTypes(expression.body, nextContext);
+  if (expression.expression) {
+    return (
+      inferIrExpressionType(expression.expression, nextContext) ?? inferStaticExpressionType(expression.expression)
+    );
+  }
+  for (const statement of expression.body) {
+    if (statement.kind === 'return' && statement.expression) {
+      return (
+        inferIrExpressionType(statement.expression, nextContext) ?? inferStaticExpressionType(statement.expression)
+      );
     }
   }
   return undefined;
@@ -8078,7 +8110,7 @@ function registerLocalTypes(statements: readonly IrStatement[], context: EmitCon
       const inferred =
         inferEntitySpreadType(candidate.expression, context) ?? inferIrExpressionType(candidate.expression, context);
       if (!inferred) continue;
-      context.symbolTypes.set(candidate.name, inferred);
+      context.symbolTypes.set(candidate.name, javaScriptValueType(inferred));
       changed = true;
     }
     if (!changed) break;
@@ -9643,12 +9675,13 @@ function synthesizeObjectLiteralType(
       for (const field of flattenStructFields(resolved, context)) fields.set(field.name, field);
       continue;
     }
-    const type =
+    const inferred =
       inferIrExpressionType(property.value, context) ??
       inferStaticExpressionType(property.value) ??
       (property.value.kind === 'array'
         ? ({ element: { kind: 'dynamic' }, kind: 'array' } as const)
         : ({ kind: 'dynamic' } as const));
+    const type = javaScriptValueType(inferred);
     fields.set(property.name, { name: property.name, optional: false, type });
   }
   return {
@@ -10066,9 +10099,9 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
           }
           if (expression.callee.name === 'map' && expression.arguments[0]?.kind === 'function') {
             return {
-              element: inferFunctionExpressionReturnType(expression.arguments[0]) ?? {
-                kind: 'dynamic',
-              },
+              element:
+                inferContextualFunctionExpressionReturnType(expression.arguments[0], [collection.element], context) ??
+                ({ kind: 'dynamic' } as const),
               kind: 'array',
             };
           }
@@ -10608,6 +10641,10 @@ function isPortableNumericStorageType(type: IrType | undefined): boolean {
     type?.kind === 'named' &&
     ['RustF32', 'RustF64', 'RustI8', 'RustI16', 'RustI32', 'RustU8', 'RustU16', 'RustU32'].includes(type.name)
   );
+}
+
+function javaScriptValueType(type: IrType): IrType {
+  return isPortableNumericStorageType(type) ? primitive('Float') : type;
 }
 
 function coerceExpression(value: string, expectedType?: IrType): string {
