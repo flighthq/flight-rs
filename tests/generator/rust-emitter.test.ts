@@ -612,12 +612,30 @@ describe('Rust emission', () => {
     expect(() => compileRustLibraryWithRuntime(output, fixture)).not.toThrow();
   });
 
-  it('compiles and runs UTF-16 code-point indexing through one hoisted Rust view', () => {
+  it('compiles and runs JavaScript string operations over UTF-16 code units', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/textbidi/src/code-points.ts',
       `
         export function inspectCodePoint(value: string, index: number): number[] {
           return [value.length, value.codePointAt(index) as number];
+        }
+        export function findString(value: string, search: string, position: number): number {
+          return value.indexOf(search, position);
+        }
+        export function sliceString(value: string, start: number, end?: number): string {
+          return value.slice(start, end).toLowerCase();
+        }
+        export function readStringUnit(value: string, index: number): string {
+          return value[index];
+        }
+        export function stringFromPoint(codePoint: number): string {
+          return String.fromCodePoint(codePoint);
+        }
+        export function hasString(value: string): boolean {
+          return value ? true : false;
+        }
+        export function joinStrings(left: string, right: string): string {
+          return left + right;
         }
       `,
       ts.ScriptTarget.Latest,
@@ -634,7 +652,11 @@ describe('Rust emission', () => {
     expect(lowered.diagnostics).toEqual([]);
     expect(output).toContain('let __flight_utf16_value: Vec<u16> = value.encode_utf16().collect();');
     expect(output).toContain('(__flight_utf16_value.len() as f64)');
-    expect(output.match(/value\.encode_utf16\(\)\.collect/gu)).toHaveLength(1);
+    expect(output).toContain('let __flight_units: &[u16] = &__flight_utf16_value');
+    expect(output).toContain('__flight_string_index_of');
+    expect(output).toContain('__flight_string_slice');
+    expect(output).toContain('__flight_string_from_code_point');
+    expect(output).toContain('!(value).is_empty()');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-utf16-code-point-'));
     const binary = path.join(fixture, 'utf16-code-point');
@@ -648,6 +670,16 @@ describe('Rust emission', () => {
         '  assert_eq!(generated::inspect_code_point("A😀Z".to_owned(), 2.0), vec![4.0, 0xDE00_u32 as f64]);',
         '  assert_eq!(generated::inspect_code_point("A😀Z".to_owned(), f64::NAN), vec![4.0, 65.0]);',
         '  assert!(generated::inspect_code_point("A😀Z".to_owned(), 4.0)[1].is_nan());',
+        '  assert_eq!(generated::find_string("A😀Z😀".to_owned(), "😀".to_owned(), 0.0), 1.0);',
+        '  assert_eq!(generated::find_string("A😀Z😀".to_owned(), "😀".to_owned(), 2.0), 4.0);',
+        '  assert_eq!(generated::slice_string("A😀Z".to_owned(), 1.0, Some(3.0)), "😀");',
+        '  assert_eq!(generated::slice_string("A😀Z".to_owned(), -1.0, None), "z");',
+        '  assert_eq!(generated::read_string_unit("A😀Z".to_owned(), 3.0), "Z");',
+        '  assert_eq!(generated::read_string_unit("A😀Z".to_owned(), 4.0), "");',
+        '  assert_eq!(generated::string_from_point(0x1F600_u32 as f64), "😀");',
+        '  assert!(!generated::has_string(String::new()));',
+        '  assert!(generated::has_string("value".to_owned()));',
+        '  assert_eq!(generated::join_strings("left".to_owned(), "right".to_owned()), "leftright");',
         '}',
         '',
       ].join('\n'),
@@ -781,7 +813,10 @@ describe('Rust emission', () => {
     expect(lowered.diagnostics).toEqual([]);
     expect(lowered.asyncTasks).toHaveLength(3);
     expect(lowered.asyncTasks[0]).toMatchObject({
-      execution: { kind: 'portableTask', origin: { lexicalPath: 'echoAfterReady' } },
+      execution: {
+        kind: 'portableTask',
+        origin: { lexicalPath: 'echoAfterReady' },
+      },
       operations: { awaits: 1, promiseResolve: 1 },
       matchesLegacyErasurePath: true,
       output: { kind: 'primitive', name: 'String' },
@@ -795,7 +830,10 @@ describe('Rust emission', () => {
       'ready',
       'reject',
     ]);
-    expect(lowered.taskConstructions.at(-1)?.output).toEqual({ kind: 'primitive', name: 'Bool' });
+    expect(lowered.taskConstructions.at(-1)?.output).toEqual({
+      kind: 'primitive',
+      name: 'Bool',
+    });
     expect(output).toContain('pub fn echo_after_ready(input: String) -> crate::FlightTask<String>');
     expect(output).toContain('crate::FlightTask::start(async move');
     expect(output).toContain('.await?');
@@ -865,9 +903,13 @@ describe('Rust emission', () => {
       '@flighthq/power',
       '/workspace',
     );
-    expect(() => emitRustModule({ declarations: opaque.declarations, source: 'opaque.ts', typeImports: [] })).toThrow(
-      'portableTask opaque: async output type is not recovered',
-    );
+    expect(() =>
+      emitRustModule({
+        declarations: opaque.declarations,
+        source: 'opaque.ts',
+        typeImports: [],
+      }),
+    ).toThrow('portableTask opaque: async output type is not recovered');
 
     const composition = lowerTypeScriptSource(
       ts.createSourceFile(
@@ -882,7 +924,11 @@ describe('Rust emission', () => {
     );
     expect(composition.taskConstructions.map((item) => item.kind)).toEqual(['then', 'ready']);
     expect(() =>
-      emitRustModule({ declarations: composition.declarations, source: 'composition.ts', typeImports: [] }),
+      emitRustModule({
+        declarations: composition.declarations,
+        source: 'composition.ts',
+        typeImports: [],
+      }),
     ).toThrow('taskThen Rust lowering is reserved for Pass 27 Stage 4');
   });
 
@@ -968,7 +1014,11 @@ describe('Rust emission', () => {
       '/workspace',
     );
     expect(() =>
-      emitRustModule({ declarations: mixed.declarations, source: 'mixed-task-all.ts', typeImports: [] }),
+      emitRustModule({
+        declarations: mixed.declarations,
+        source: 'mixed-task-all.ts',
+        typeImports: [],
+      }),
     ).toThrow('taskAll currently requires homogeneous task inputs matching its array output');
   });
 
@@ -1102,7 +1152,11 @@ describe('Rust emission', () => {
       '/workspace',
     );
     expect(() =>
-      emitRustModule({ declarations: catchBinding.declarations, source: 'task-catch-binding.ts', typeImports: [] }),
+      emitRustModule({
+        declarations: catchBinding.declarations,
+        source: 'task-catch-binding.ts',
+        typeImports: [],
+      }),
     ).toThrow(/task-catch-binding\.ts:\d+:\d+: portable task catch bindings are not implemented/u);
 
     const finallyBlock = lowerTypeScriptSource(
@@ -1121,7 +1175,11 @@ describe('Rust emission', () => {
       '/workspace',
     );
     expect(() =>
-      emitRustModule({ declarations: finallyBlock.declarations, source: 'task-finally.ts', typeImports: [] }),
+      emitRustModule({
+        declarations: finallyBlock.declarations,
+        source: 'task-finally.ts',
+        typeImports: [],
+      }),
     ).toThrow(/task-finally\.ts:\d+:\d+: portable task try\/catch\/finally lowering is not implemented/u);
 
     expect(() =>
@@ -3230,9 +3288,17 @@ describe('Rust emission', () => {
       ts.ScriptKind.TS,
     );
     const lowered = lowerTypeScriptSource(source, '@flighthq/node', '/workspace');
-    const valueParameter = { arguments: [], kind: 'named' as const, name: 'Value' };
+    const valueParameter = {
+      arguments: [],
+      kind: 'named' as const,
+      name: 'Value',
+    };
     const semanticTypes = {
-      ValueAlias: { arguments: [valueParameter], kind: 'named' as const, name: 'ValueBox' },
+      ValueAlias: {
+        arguments: [valueParameter],
+        kind: 'named' as const,
+        name: 'ValueBox',
+      },
       ValueBox: {
         extends: [],
         fields: [{ name: 'value', optional: false, type: valueParameter }],
@@ -3451,7 +3517,11 @@ describe('Rust emission', () => {
             module: 'flighthq_types',
             names: [
               { imported: 'Entity', kind: 'type', local: 'Entity' },
-              { imported: 'EntityRuntime', kind: 'type', local: 'EntityRuntime' },
+              {
+                imported: 'EntityRuntime',
+                kind: 'type',
+                local: 'EntityRuntime',
+              },
             ],
           },
         ],

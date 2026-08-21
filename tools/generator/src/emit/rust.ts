@@ -90,7 +90,14 @@ interface EmitContext {
   symbolTypes: Map<string, IrType>;
   timerHandleNames: ReadonlySet<string>;
   taskOutputType?: IrType | undefined;
-  unionNarrowings: Map<string, { index: number; unionName?: string | undefined; variants: readonly IrType[] }>;
+  unionNarrowings: Map<
+    string,
+    {
+      index: number;
+      unionName?: string | undefined;
+      variants: readonly IrType[];
+    }
+  >;
   utf16ViewNames: ReadonlyMap<string, string>;
 }
 
@@ -291,7 +298,11 @@ export function emitRustModule(module: RustModule): string {
     ) {
       const recordName = topLevelStructuralRecordName(declaration.name, context);
       (context.namedTypes as Map<string, IrType>).set(recordName, inferred);
-      context.symbolTypes.set(declaration.name, { arguments: [], kind: 'named', name: recordName });
+      context.symbolTypes.set(declaration.name, {
+        arguments: [],
+        kind: 'named',
+        name: recordName,
+      });
     } else if (inferred) {
       context.symbolTypes.set(declaration.name, inferred);
     }
@@ -456,6 +467,56 @@ export function emitRustModule(module: RustModule): string {
               'if length >= width || pad.is_empty() { return value; }',
               'let prefix: String = pad.chars().cycle().take(width - length).collect();',
               'prefix + &value',
+            ].join('\n'),
+          ),
+          '}',
+        ]
+      : []),
+    ...(declarations.includes('__flight_string_index_of(')
+      ? [
+          '#[inline]',
+          'fn __flight_string_index_of(value: &str, search: &str, position: f64) -> f64 {',
+          indent(
+            [
+              'let value: Vec<u16> = value.encode_utf16().collect();',
+              'let search: Vec<u16> = search.encode_utf16().collect();',
+              'let start = if position.is_nan() || position <= 0.0_f64 { 0_usize } else if position >= value.len() as f64 { value.len() } else { position.trunc() as usize };',
+              'if search.is_empty() { return start as f64; }',
+              'value[start..].windows(search.len()).position(|window| window == search).map_or(-1.0_f64, |index| (start + index) as f64)',
+            ].join('\n'),
+          ),
+          '}',
+        ]
+      : []),
+    ...(declarations.includes('__flight_string_slice(')
+      ? [
+          '#[inline]',
+          'fn __flight_string_slice(value: &str, start: f64, end: Option<f64>) -> String {',
+          indent(
+            [
+              'let value: Vec<u16> = value.encode_utf16().collect();',
+              'let length = value.len();',
+              'let relative = |index: f64| -> usize {',
+              indent(
+                'if index.is_nan() { 0 } else if index < 0.0_f64 { length.saturating_sub((-index.trunc()) as usize) } else { (index.trunc() as usize).min(length) }',
+              ),
+              '};',
+              'let start = relative(start);',
+              'let end = end.map_or(length, relative);',
+              'String::from_utf16_lossy(&value[start..end.max(start)])',
+            ].join('\n'),
+          ),
+          '}',
+        ]
+      : []),
+    ...(declarations.includes('__flight_string_from_code_point(')
+      ? [
+          '#[inline]',
+          'fn __flight_string_from_code_point(value: f64) -> String {',
+          indent(
+            [
+              'assert!(value.is_finite() && value.fract() == 0.0_f64 && (0.0_f64..=0x10FFFF_u32 as f64).contains(&value), "String.fromCodePoint received an invalid code point");',
+              'char::from_u32(value as u32).expect("Rust strings cannot represent surrogate code points").to_string()',
             ].join('\n'),
           ),
           '}',
@@ -690,7 +751,10 @@ function emitTopLevelVariable(declaration: IrVariableDeclaration, context: EmitC
     const type = declaration.type
       ? emitType(declaration.type, context)
       : emitType(
-          inferStaticExpressionType(declaration.initializer) ?? { element: { kind: 'dynamic' }, kind: 'array' },
+          inferStaticExpressionType(declaration.initializer) ?? {
+            element: { kind: 'dynamic' },
+            kind: 'array',
+          },
           context,
         );
     return `${visibility}static ${name}: std::sync::LazyLock<std::sync::Mutex<${type}>> = std::sync::LazyLock::new(|| std::sync::Mutex::new(${emitExpression(declaration.initializer, context, declaration.type)}));`;
@@ -855,13 +919,24 @@ function inferStaticExpressionType(expression: IrExpression): IrType | undefined
     case 'new': {
       const name = runtimeConstructorType(expression.callee);
       if (name === 'Map' || name === 'WeakMap') {
-        return { arguments: expression.typeArguments, kind: 'named', name: 'RustMap' };
+        return {
+          arguments: expression.typeArguments,
+          kind: 'named',
+          name: 'RustMap',
+        };
       }
       if (name === 'Set' || name === 'WeakSet') {
-        return { arguments: expression.typeArguments, kind: 'named', name: 'RustSet' };
+        return {
+          arguments: expression.typeArguments,
+          kind: 'named',
+          name: 'RustSet',
+        };
       }
       if (name === 'Array') {
-        return { element: expression.typeArguments[0] ?? { kind: 'dynamic' }, kind: 'array' };
+        return {
+          element: expression.typeArguments[0] ?? { kind: 'dynamic' },
+          kind: 'array',
+        };
       }
       return undefined;
     }
@@ -1117,7 +1192,10 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
       const loopContext = contextPreservingLoopReads(statement, context);
       const condition = emitCondition(statement.condition, loopContext);
       const conditionCheck = `if !(${condition}) { break; }`;
-      const bodyContext = { ...loopContext, continueEpilogue: [conditionCheck] };
+      const bodyContext = {
+        ...loopContext,
+        continueEpilogue: [conditionCheck],
+      };
       return ['loop {', indent(emitStatement(statement.body, bodyContext).join('\n')), indent(conditionCheck), '}'];
     }
     case 'expression':
@@ -1136,7 +1214,11 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
         collectionType?.kind === 'array'
           ? collectionType.element
           : collectionType?.kind === 'named' && collectionType.name === 'RustMap'
-            ? ({ arguments: collectionType.arguments, kind: 'named', name: 'RustTuple2' } as const)
+            ? ({
+                arguments: collectionType.arguments,
+                kind: 'named',
+                name: 'RustTuple2',
+              } as const)
             : undefined;
       const iterable = emitExpression(statement.iterable, context);
       const iterablePlace =
@@ -1173,7 +1255,10 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
         placeAliases: new Map(context.placeAliases),
         symbolTypes: new Map(context.symbolTypes),
       };
-      loopContext.symbolTypes.set(statement.variable, { kind: 'primitive', name: 'String' });
+      loopContext.symbolTypes.set(statement.variable, {
+        kind: 'primitive',
+        name: 'String',
+      });
       const body = emitStatementAsBlock(statement.body, loopContext);
       return [
         '{',
@@ -1250,7 +1335,9 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
           symbolTypes: new Map(context.symbolTypes),
         };
         if (statement.catchName) {
-          catchContext.symbolTypes.set(statement.catchName, { kind: 'dynamic' });
+          catchContext.symbolTypes.set(statement.catchName, {
+            kind: 'dynamic',
+          });
         }
         const catchLines = [
           ...(statement.catchName ? [`let ${safeName(statement.catchName)} = crate::OpaqueHostValue::Object;`] : []),
@@ -1260,7 +1347,10 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
         if (capturesReturn && !returnType) {
           throw new RustEmissionError('try/catch return capture requires an inferred function return type');
         }
-        const tryContext: EmitContext = { ...context, captureReturns: capturesReturn };
+        const tryContext: EmitContext = {
+          ...context,
+          captureReturns: capturesReturn,
+        };
         const caught = capturesReturn
           ? [
               `let __flight_try_return: Option<${emitType(returnType!, context)}> = match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| -> Option<${emitType(returnType!, context)}> {`,
@@ -1338,8 +1428,14 @@ function emitPortableTaskTryStatement(
   const tryAlwaysReturns = statementAlwaysReturns(statement.tryBody, context);
   const catchAlwaysReturns = statementAlwaysReturns(statement.catchBody, context);
   if (tryAlwaysReturns && catchAlwaysReturns) {
-    const tryBody = emitStatement(statement.tryBody, { ...context, captureReturns: false }).join('\n');
-    const catchBody = emitStatement(statement.catchBody, { ...context, captureReturns: false }).join('\n');
+    const tryBody = emitStatement(statement.tryBody, {
+      ...context,
+      captureReturns: false,
+    }).join('\n');
+    const catchBody = emitStatement(statement.catchBody, {
+      ...context,
+      captureReturns: false,
+    }).join('\n');
     return [
       [
         'return match (async {',
@@ -1356,8 +1452,14 @@ function emitPortableTaskTryStatement(
   const capturesReturn =
     containsRegionStatementKind(statement.tryBody, 'return') ||
     containsRegionStatementKind(statement.catchBody, 'return');
-  const tryContext: EmitContext = { ...context, captureReturns: capturesReturn };
-  const catchContext: EmitContext = { ...context, captureReturns: capturesReturn };
+  const tryContext: EmitContext = {
+    ...context,
+    captureReturns: capturesReturn,
+  };
+  const catchContext: EmitContext = {
+    ...context,
+    captureReturns: capturesReturn,
+  };
   const tryBody = emitStatement(statement.tryBody, tryContext).join('\n');
   const catchBody = emitStatement(statement.catchBody, catchContext).join('\n');
   const returnType = context.currentReturnType;
@@ -1912,7 +2014,10 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
             body: [],
             execution: { kind: 'sync' },
             expression: {
-              arguments: parameters.map((parameter) => ({ kind: 'identifier', name: parameter.name })),
+              arguments: parameters.map((parameter) => ({
+                kind: 'identifier',
+                name: parameter.name,
+              })),
               callee: expression,
               kind: 'call',
               typeArguments: [],
@@ -2279,6 +2384,12 @@ function emitCall(
       const value = emitExpression(expression.arguments[0], context);
       return `${parenthesize(value)}.is_finite() && ${parenthesize(value)}.fract() == 0.0_f64`;
     }
+    if (owner === 'String' && method === 'fromCodePoint') {
+      const values = expression.arguments.map((argument) => emitExpression(argument, context, primitive('Float')));
+      if (values.length === 0) return 'String::new()';
+      if (values.length === 1) return `__flight_string_from_code_point(${values[0]})`;
+      return `{ let mut __flight_string = String::new(); for __flight_code_point in [${values.join(', ')}] { __flight_string.push_str(&__flight_string_from_code_point(__flight_code_point)); } __flight_string }`;
+    }
     if (owner === 'Object' && method === 'is') {
       const left = expression.arguments[0];
       const right = expression.arguments[1];
@@ -2462,15 +2573,25 @@ function emitCall(
         const rustMethod = method === 'startsWith' ? 'starts_with' : method === 'endsWith' ? 'ends_with' : 'contains';
         return `${parenthesize(owner)}.${rustMethod}(${parenthesize(emitExpression(argument, context, primitive('String')))}.as_str())`;
       }
+      if (method === 'indexOf') {
+        if (!argument) throw new RustEmissionError('String.indexOf requires a search argument');
+        const position = expression.arguments[1]
+          ? emitExpression(expression.arguments[1], context, primitive('Float'))
+          : '0.0_f64';
+        return `__flight_string_index_of(&${parenthesize(owner)}, &${parenthesize(emitExpression(argument, context, primitive('String')))}, ${position})`;
+      }
       if (method === 'slice') {
         const start = expression.arguments[0] ?? ({ kind: 'literal', value: 0 } as const);
         const end = expression.arguments[1];
-        const units = `(${parenthesize(owner)}).encode_utf16()`;
-        const startIndex = `${parenthesize(emitExpression(start, context, primitive('Float')))} as usize`;
-        const collected = end
-          ? `${units}.skip(${startIndex}).take((${parenthesize(emitExpression(end, context, primitive('Float')))} as usize).saturating_sub(${startIndex})).collect::<Vec<u16>>()`
-          : `${units}.skip(${startIndex}).collect::<Vec<u16>>()`;
-        return `String::from_utf16_lossy(&${collected})`;
+        const endType = end ? inferIrExpressionType(end, context) : undefined;
+        const emittedEnd = !end
+          ? 'None'
+          : endType?.kind === 'nullable'
+            ? emitExpression(end, context, endType)
+            : `Some(${emitExpression(end, context, primitive('Float'))})`;
+        return `__flight_string_slice(&${parenthesize(owner)}, ${emitExpression(start, context, primitive('Float'))}, ${
+          emittedEnd
+        })`;
       }
       if (method === 'toLowerCase') return `${parenthesize(owner)}.to_lowercase()`;
       if (method === 'toUpperCase') return `${parenthesize(owner)}.to_uppercase()`;
@@ -2643,7 +2764,9 @@ function emitCall(
       const callback = expression.arguments[0];
       if (!callback) throw new RustEmissionError('Array.map requires a callback');
       if (callback.kind === 'function') {
-        const returns = inferFunctionExpressionReturnType(callback) ?? { kind: 'dynamic' };
+        const returns = inferFunctionExpressionReturnType(callback) ?? {
+          kind: 'dynamic',
+        };
         const closureType: IrType = {
           kind: 'function',
           parameters: [collectionType.element],
@@ -4260,6 +4383,15 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
         ? leftType
         : undefined,
   );
+  if (
+    expression.operator === '+' &&
+    resolvedLeft?.kind === 'primitive' &&
+    resolvedLeft.name === 'String' &&
+    resolvedRight?.kind === 'primitive' &&
+    resolvedRight.name === 'String'
+  ) {
+    return `format!("{}{}", ${left}, ${right})`;
+  }
   const nullableNumericLeft =
     leftType?.kind === 'nullable' ? (resolveSemanticType(leftType.inner, context) ?? leftType.inner) : undefined;
   if (
@@ -4600,11 +4732,27 @@ function emitUnary(expression: Extract<IrExpression, { kind: 'unary' }>, context
     return `{ ${operand} ${operator} 1.0; ${operand} }`;
   }
   const operandType = inferIrExpressionType(expression.operand, context);
-  if (expression.operator === '!' && (resolveSemanticType(operandType, context) ?? operandType)?.kind === 'dynamic') {
+  const resolvedOperandType = resolveSemanticType(operandType, context) ?? operandType;
+  const nullableOperandInner =
+    operandType?.kind === 'nullable'
+      ? (resolveSemanticType(operandType.inner, context) ?? operandType.inner)
+      : undefined;
+  if (expression.operator === '!' && resolvedOperandType?.kind === 'dynamic') {
     return `!${parenthesize(emitExpression(expression.operand, context, primitive('Bool')))}`;
+  }
+  if (
+    expression.operator === '!' &&
+    operandType?.kind === 'nullable' &&
+    nullableOperandInner?.kind === 'primitive' &&
+    nullableOperandInner.name === 'String'
+  ) {
+    return `${parenthesize(emitExpression(expression.operand, context))}.as_ref().map_or(true, |value| value.is_empty())`;
   }
   if (expression.operator === '!' && operandType?.kind === 'nullable') {
     return `${parenthesize(emitExpression(expression.operand, context))}.is_none()`;
+  }
+  if (expression.operator === '!' && operandType?.kind === 'primitive' && operandType.name === 'String') {
+    return `${parenthesize(emitExpression(expression.operand, context))}.is_empty()`;
   }
   if (expression.operator === '!' && operandType && isReferenceLike(operandType, context)) return 'false';
   if (
@@ -5772,7 +5920,10 @@ function registerEntityRuntimeFamilies(context: EmitContext): void {
 
   const root = namedTypes.get('EntityRuntime');
   if (root?.kind !== 'anonymous') return;
-  const originalContext: EmitContext = { ...context, namedTypes: new Map(namedTypes) };
+  const originalContext: EmitContext = {
+    ...context,
+    namedTypes: new Map(namedTypes),
+  };
   const occurrences = new Map<string, IrTypeField[]>();
   const unavailableFields = context.entityRuntimeUnavailableFields as Map<string, string>;
   const genericSlotTypes = context.entityRuntimeGenericSlotTypes as Set<string>;
@@ -5813,7 +5964,11 @@ function registerEntityRuntimeFamilies(context: EmitContext): void {
     });
   }
   aggregateFields.sort((left, right) => left.name.localeCompare(right.name));
-  namedTypes.set('EntityRuntime', { extends: [], fields: aggregateFields, kind: 'anonymous' });
+  namedTypes.set('EntityRuntime', {
+    extends: [],
+    fields: aggregateFields,
+    kind: 'anonymous',
+  });
   const rootFieldNames = new Set(flattenStructFields(root, originalContext).map((field) => field.name));
   const addedFields = aggregateFields.filter((field) => !rootFieldNames.has(field.name)).map((field) => field.name);
   (context.openInterfaceFields as Map<string, ReadonlySet<string>>).set('EntityRuntime', new Set(addedFields));
@@ -5936,7 +6091,10 @@ function runtimeStorageCanonicalType(
   }
   if (type.kind === 'anonymous') return type;
   if (type.kind === 'array') {
-    return { element: runtimeStorageCanonicalType(type.element, context, visited), kind: 'array' };
+    return {
+      element: runtimeStorageCanonicalType(type.element, context, visited),
+      kind: 'array',
+    };
   }
   if (type.kind === 'function') {
     return {
@@ -5952,7 +6110,10 @@ function runtimeStorageCanonicalType(
     };
   }
   if (type.kind === 'task') {
-    return { kind: 'task', output: runtimeStorageCanonicalType(type.output, context, visited) };
+    return {
+      kind: 'task',
+      output: runtimeStorageCanonicalType(type.output, context, visited),
+    };
   }
   if (type.kind === 'union') {
     return {
@@ -6033,7 +6194,10 @@ function registerOpenInterfaceFamilies(context: EmitContext): void {
     };
     const familyTypes = new Map(originalTypes);
     familyTypes.set(baseName, enrichedBase);
-    const familyContext: EmitContext = { ...originalContext, namedTypes: familyTypes };
+    const familyContext: EmitContext = {
+      ...originalContext,
+      namedTypes: familyTypes,
+    };
     if (
       [baseName, ...descendants].some((name) => {
         const type = familyTypes.get(name);
@@ -6086,7 +6250,12 @@ function importedNestedStructuralNames(
 function externalizeImportedNestedType(type: IrType, names: ReadonlyMap<string, string>): IrType {
   if (type.kind === 'anonymous') {
     const name = names.get(typeKey(type));
-    if (name) return { arguments: [type], kind: 'named', name: `RustStructural:${name}` };
+    if (name)
+      return {
+        arguments: [type],
+        kind: 'named',
+        name: `RustStructural:${name}`,
+      };
     return {
       extends: type.extends.map((item) => externalizeImportedNestedType(item, names)),
       fields: type.fields.map((field) => ({
@@ -6097,7 +6266,10 @@ function externalizeImportedNestedType(type: IrType, names: ReadonlyMap<string, 
     };
   }
   if (type.kind === 'array') {
-    return { element: externalizeImportedNestedType(type.element, names), kind: 'array' };
+    return {
+      element: externalizeImportedNestedType(type.element, names),
+      kind: 'array',
+    };
   }
   if (type.kind === 'function') {
     return {
@@ -6114,13 +6286,22 @@ function externalizeImportedNestedType(type: IrType, names: ReadonlyMap<string, 
     };
   }
   if (type.kind === 'nullable') {
-    return { inner: externalizeImportedNestedType(type.inner, names), kind: 'nullable' };
+    return {
+      inner: externalizeImportedNestedType(type.inner, names),
+      kind: 'nullable',
+    };
   }
   if (type.kind === 'task') {
-    return { kind: 'task', output: externalizeImportedNestedType(type.output, names) };
+    return {
+      kind: 'task',
+      output: externalizeImportedNestedType(type.output, names),
+    };
   }
   if (type.kind === 'union') {
-    return { kind: 'union', variants: type.variants.map((item) => externalizeImportedNestedType(item, names)) };
+    return {
+      kind: 'union',
+      variants: type.variants.map((item) => externalizeImportedNestedType(item, names)),
+    };
   }
   return type;
 }
@@ -6239,7 +6420,10 @@ function substituteIrType(type: IrType, substitutions: ReadonlyMap<string, IrTyp
         kind: 'nullable',
       };
     case 'task':
-      return { kind: 'task', output: substituteIrType(type.output, substitutions) };
+      return {
+        kind: 'task',
+        output: substituteIrType(type.output, substitutions),
+      };
     case 'union':
       return {
         kind: 'union',
@@ -6453,9 +6637,15 @@ function inferCallbackArgumentStorage(
       if (expression.kind === 'function' && expression.parameters.length === 1) {
         const callbackExpression = expression as Extract<IrExpression, { kind: 'function' }>;
         const parameter = callbackExpression.parameters[0]!;
-        visit(callbackExpression.body, { argument: parameter.name, typeParameter: value.type.name });
+        visit(callbackExpression.body, {
+          argument: parameter.name,
+          typeParameter: value.type.name,
+        });
         if (callbackExpression.expression) {
-          visit(callbackExpression.expression, { argument: parameter.name, typeParameter: value.type.name });
+          visit(callbackExpression.expression, {
+            argument: parameter.name,
+            typeParameter: value.type.name,
+          });
         }
         return;
       }
@@ -6569,7 +6759,7 @@ function prepareParameterUtf16Views(parameters: readonly IrParameter[], body: un
       resolved?.kind !== 'primitive' ||
       resolved.name !== 'String' ||
       (parameter.optional && !parameter.initializer) ||
-      !usesStringCodePointAt(body, parameter.name)
+      !usesStringUtf16Access(body, parameter.name)
     ) {
       return [];
     }
@@ -6579,8 +6769,21 @@ function prepareParameterUtf16Views(parameters: readonly IrParameter[], body: un
   });
 }
 
-function usesStringCodePointAt(value: unknown, name: string): boolean {
+function usesStringUtf16Access(value: unknown, name: string): boolean {
   if (!value || typeof value !== 'object') return false;
+  if (
+    'kind' in value &&
+    value.kind === 'element' &&
+    'object' in value &&
+    value.object &&
+    typeof value.object === 'object' &&
+    'kind' in value.object &&
+    value.object.kind === 'identifier' &&
+    'name' in value.object &&
+    value.object.name === name
+  ) {
+    return true;
+  }
   if (
     'kind' in value &&
     value.kind === 'call' &&
@@ -6602,7 +6805,7 @@ function usesStringCodePointAt(value: unknown, name: string): boolean {
     return true;
   }
   return Object.values(value).some((child) =>
-    Array.isArray(child) ? child.some((item) => usesStringCodePointAt(item, name)) : usesStringCodePointAt(child, name),
+    Array.isArray(child) ? child.some((item) => usesStringUtf16Access(item, name)) : usesStringUtf16Access(child, name),
   );
 }
 
@@ -6835,13 +7038,20 @@ function registerLocalTypes(statements: readonly IrStatement[], context: EmitCon
     if ('kind' in value && value.kind === 'variable' && 'declarations' in value) {
       for (const variable of value.declarations as IrVariable[]) {
         if (variable.type) context.symbolTypes.set(variable.name, variable.type);
-        if (variable.initializer) candidates.push({ expression: variable.initializer, name: variable.name });
+        if (variable.initializer)
+          candidates.push({
+            expression: variable.initializer,
+            name: variable.name,
+          });
       }
     }
     if ('kind' in value && value.kind === 'assignment' && 'left' in value && 'right' in value) {
       const assignment = value as Extract<IrExpression, { kind: 'assignment' }>;
       if (assignment.left.kind === 'identifier') {
-        candidates.push({ expression: assignment.right, name: assignment.left.name });
+        candidates.push({
+          expression: assignment.right,
+          name: assignment.left.name,
+        });
       }
     }
     for (const child of Object.values(value)) {
@@ -7491,7 +7701,14 @@ function entityRuntimeGenericSlotStorageType(
   }
   const parameters = context.namedTypeParameters.get(slot) ?? [];
   const arguments_ = parameters.map((parameter, index) =>
-    emitType(application.arguments[index] ?? { arguments: [], kind: 'named', name: parameter }, context),
+    emitType(
+      application.arguments[index] ?? {
+        arguments: [],
+        kind: 'named',
+        name: parameter,
+      },
+      context,
+    ),
   );
   return `crate::${slot}Storage${arguments_.length > 0 ? `<${arguments_.join(', ')}>` : ''}`;
 }
@@ -7511,7 +7728,14 @@ function findEntityRuntimeApplication(
   const substitutions = new Map<string, IrType>(
     parameters.map(
       (parameter, index) =>
-        [parameter, type.arguments[index] ?? { arguments: [], kind: 'named', name: parameter }] as const,
+        [
+          parameter,
+          type.arguments[index] ?? {
+            arguments: [],
+            kind: 'named',
+            name: parameter,
+          },
+        ] as const,
     ),
   );
   const applied = substitutions.size > 0 ? substituteIrType(declaration, substitutions) : declaration;
@@ -7846,7 +8070,11 @@ function emitObject(
     >();
     structuralExpression.properties.forEach((property, index) => {
       if (property.kind === 'property') {
-        if (fields.has(property.name)) values.set(property.name, { expression: property.value, kind: 'property' });
+        if (fields.has(property.name))
+          values.set(property.name, {
+            expression: property.value,
+            kind: 'property',
+          });
         return;
       }
       const spread = structuralSpreads.find((candidate) => candidate.index === index);
@@ -8405,13 +8633,26 @@ function emitElementRead(
   context: EmitContext,
   expectedType?: IrType,
 ): string {
+  const objectType = inferIrExpressionType(expression.object, context);
+  const resolvedObject = resolveSemanticType(objectType?.kind === 'nullable' ? objectType.inner : objectType, context);
+  if (resolvedObject?.kind === 'primitive' && resolvedObject.name === 'String') {
+    const view =
+      expression.object.kind === 'identifier' ? context.utf16ViewNames.get(expression.object.name) : undefined;
+    const units = view
+      ? `&${view}`
+      : `&${parenthesize(emitExpression(expression.object, context, primitive('String')))}.encode_utf16().collect::<Vec<u16>>()`;
+    const index = emitExpression(expression.index, context, primitive('Float'));
+    return `{ let __flight_units: &[u16] = ${units}; let __flight_raw_index = ${index}; if __flight_raw_index.is_finite() && __flight_raw_index >= 0.0_f64 && __flight_raw_index.fract() == 0.0_f64 { __flight_units.get(__flight_raw_index as usize).map_or_else(String::new, |unit| String::from_utf16_lossy(&[*unit])) } else { String::new() } }`;
+  }
   if (isDynamicHostTree(expression.object, context)) {
-    const result = expectedType ?? inferDynamicHostElementType(expression.object, context) ?? { kind: 'dynamic' };
+    const result = expectedType ??
+      inferDynamicHostElementType(expression.object, context) ?? {
+        kind: 'dynamic',
+      };
     return emitHostValueExpression(result, '"host.index"', context);
   }
   const place = emitElement(expression, context);
   if (expression.optional) return place;
-  const objectType = inferIrExpressionType(expression.object, context);
   const collectionType = objectType?.kind === 'nullable' ? objectType.inner : objectType;
   const elementType = collectionType?.kind === 'array' ? collectionType.element : undefined;
   if (
@@ -8514,6 +8755,14 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
         expression.callee.name === 'is'
       ) {
         return primitive('Bool');
+      }
+      if (
+        expression.callee.kind === 'property' &&
+        expression.callee.object.kind === 'identifier' &&
+        expression.callee.object.name === 'String' &&
+        expression.callee.name === 'fromCodePoint'
+      ) {
+        return primitive('String');
       }
       if (
         expression.callee.kind === 'property' &&
@@ -8663,10 +8912,16 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
         }
         if (collection?.kind === 'primitive' && collection.name === 'String') {
           if (['startsWith', 'endsWith', 'includes'].includes(expression.callee.name)) return primitive('Bool');
-          if (expression.callee.name === 'codePointAt' || expression.callee.name === 'search') {
+          if (
+            expression.callee.name === 'codePointAt' ||
+            expression.callee.name === 'indexOf' ||
+            expression.callee.name === 'search'
+          ) {
             return primitive('Float');
           }
-          if (expression.callee.name === 'replace') return primitive('String');
+          if (expression.callee.name === 'replace' || expression.callee.name === 'slice') {
+            return primitive('String');
+          }
           if (expression.callee.name === 'match' && expression.arguments[0]?.kind === 'regexp') {
             return regexCaptureType();
           }
@@ -8721,15 +8976,17 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
       const element =
         object?.kind === 'array'
           ? object.element
-          : object?.kind === 'named'
-            ? object.name === 'RustMap'
-              ? (object.arguments[1] ?? { kind: 'dynamic' })
-              : object.name === 'RustTuple2' &&
-                  expression.index.kind === 'literal' &&
-                  typeof expression.index.value === 'number'
-                ? object.arguments[expression.index.value]
-                : typedArrayElementType(object.name)
-            : undefined;
+          : object?.kind === 'primitive' && object.name === 'String'
+            ? primitive('String')
+            : object?.kind === 'named'
+              ? object.name === 'RustMap'
+                ? (object.arguments[1] ?? { kind: 'dynamic' })
+                : object.name === 'RustTuple2' &&
+                    expression.index.kind === 'literal' &&
+                    typeof expression.index.value === 'number'
+                  ? object.arguments[expression.index.value]
+                  : typedArrayElementType(object.name)
+              : undefined;
       const resolvedElement = element ?? inferDynamicHostElementType(expression.object, context);
       if (!resolvedElement) return undefined;
       return expression.optional && resolvedElement.kind !== 'nullable'
@@ -8761,10 +9018,18 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
     case 'new': {
       const name = runtimeConstructorType(expression.callee);
       if (name === 'Map' || name === 'WeakMap') {
-        return { arguments: expression.typeArguments, kind: 'named', name: 'RustMap' };
+        return {
+          arguments: expression.typeArguments,
+          kind: 'named',
+          name: 'RustMap',
+        };
       }
       if (name === 'Set' || name === 'WeakSet') {
-        return { arguments: expression.typeArguments, kind: 'named', name: 'RustSet' };
+        return {
+          arguments: expression.typeArguments,
+          kind: 'named',
+          name: 'RustSet',
+        };
       }
       if (name === 'Array') {
         return {
@@ -8906,8 +9171,14 @@ function narrowTypeofContexts(
   const whenFalse = clone();
   whenTrue.symbolTypes.set(name, type.variants[whenTrueIndex]!);
   whenFalse.symbolTypes.set(name, type.variants[whenFalseIndex]!);
-  whenTrue.unionNarrowings.set(name, { index: whenTrueIndex, variants: type.variants });
-  whenFalse.unionNarrowings.set(name, { index: whenFalseIndex, variants: type.variants });
+  whenTrue.unionNarrowings.set(name, {
+    index: whenTrueIndex,
+    variants: type.variants,
+  });
+  whenFalse.unionNarrowings.set(name, {
+    index: whenFalseIndex,
+    variants: type.variants,
+  });
   return { whenFalse, whenTrue };
 }
 
@@ -9160,6 +9431,9 @@ function emitCondition(expression: IrExpression, context: EmitContext): string {
   if (type?.kind === 'primitive' && (type.name === 'Float' || type.name === 'Int')) {
     return `${parenthesize(emitted)} != 0.0_f64`;
   }
+  if (type?.kind === 'primitive' && type.name === 'String') {
+    return `!${parenthesize(emitted)}.is_empty()`;
+  }
   if (type?.kind === 'nullable') {
     const inner = resolveSemanticType(type.inner, context) ?? type.inner;
     if (inner.kind === 'primitive' && inner.name === 'Bool') {
@@ -9167,6 +9441,9 @@ function emitCondition(expression: IrExpression, context: EmitContext): string {
     }
     if (inner.kind === 'primitive' && (inner.name === 'Float' || inner.name === 'Int')) {
       return `${parenthesize(emitted)}.unwrap_or(0.0_f64) != 0.0_f64`;
+    }
+    if (inner.kind === 'primitive' && inner.name === 'String') {
+      return `${parenthesize(emitted)}.as_ref().is_some_and(|value| !value.is_empty())`;
     }
     return `${parenthesize(emitted)}.is_some()`;
   }
@@ -9253,7 +9530,10 @@ function resolveSemanticType(
     if (inner?.kind === 'anonymous') {
       return {
         extends: [],
-        fields: flattenStructFields(inner, context).map((field) => ({ ...field, optional: true })),
+        fields: flattenStructFields(inner, context).map((field) => ({
+          ...field,
+          optional: true,
+        })),
         kind: 'anonymous',
       };
     }
