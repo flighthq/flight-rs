@@ -2227,8 +2227,11 @@ function emitCall(
   }
   const runtimeGlobal = runtimeGlobalType(expression);
   if (runtimeGlobal) return 'crate::OpaqueHostValue::Object';
-  if (expression.callee.kind === 'property' && expression.callee.object.kind === 'identifier') {
-    const owner = expression.callee.object.name;
+  if (expression.callee.kind === 'property') {
+    const owner =
+      expression.callee.object.kind === 'identifier'
+        ? expression.callee.object.name
+        : runtimeGlobalType(expression.callee.object);
     const method = expression.callee.name;
     if (owner === 'Array' && method === 'isArray') {
       const value = expression.arguments[0];
@@ -2262,6 +2265,32 @@ function emitCall(
     if (owner === 'Number' && method === 'isInteger' && expression.arguments[0]) {
       const value = emitExpression(expression.arguments[0], context);
       return `${parenthesize(value)}.is_finite() && ${parenthesize(value)}.fract() == 0.0_f64`;
+    }
+    if (owner === 'Object' && method === 'is') {
+      const left = expression.arguments[0];
+      const right = expression.arguments[1];
+      if (!left || !right) throw new RustEmissionError('Object.is requires two values');
+      const leftType = resolveSemanticType(inferIrExpressionType(left, context), context);
+      const rightType = resolveSemanticType(inferIrExpressionType(right, context), context);
+      const numeric = (type: IrType | undefined): boolean =>
+        (type?.kind === 'primitive' && (type.name === 'Float' || type.name === 'Int')) ||
+        isPortableNumericStorageType(type);
+      if (numeric(leftType) && numeric(rightType)) {
+        const emittedLeft = emitExpression(left, context, primitive('Float'));
+        const emittedRight = emitExpression(right, context, primitive('Float'));
+        return `{ let __flight_left = ${emittedLeft}; let __flight_right = ${emittedRight}; __flight_left.to_bits() == __flight_right.to_bits() || (__flight_left.is_nan() && __flight_right.is_nan()) }`;
+      }
+      if (
+        leftType?.kind === 'primitive' &&
+        rightType?.kind === 'primitive' &&
+        leftType.name === rightType.name &&
+        (leftType.name === 'Bool' || leftType.name === 'String')
+      ) {
+        return `${parenthesize(emitExpression(left, context, leftType))} == ${parenthesize(
+          emitExpression(right, context, rightType),
+        )}`;
+      }
+      return emitHostValueExpression(primitive('Bool'), '"host.Object.is"', context);
     }
     if (owner === 'Date' && method === 'now') return 'crate::flight_now_millis()';
     if (owner === '_Runtime' && method === 'typeofGlobal') return '"undefined"';
@@ -8177,6 +8206,14 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
         return primitive('Float');
       }
       if (portableGlobal === 'isNaN') {
+        return primitive('Bool');
+      }
+      if (
+        expression.callee.kind === 'property' &&
+        ((expression.callee.object.kind === 'identifier' && expression.callee.object.name === 'Object') ||
+          runtimeGlobalType(expression.callee.object) === 'Object') &&
+        expression.callee.name === 'is'
+      ) {
         return primitive('Bool');
       }
       if (

@@ -24,6 +24,7 @@ describe('Rust emission', () => {
         export interface BinaryView { buffer: ArrayBufferLike; }
         export interface Schedule { at?: Date; code: WireCode; }
         export type VendorKind = \`\${string}.\${string}\`;
+        export function sameNumber(left: number, right: number): boolean { return Object.is(left, right); }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -49,6 +50,9 @@ describe('Rust emission', () => {
     expect(output).toContain('pub at: Option<crate::OpaqueHostValue>,');
     expect(output).toContain('pub code: f64,');
     expect(output).toContain('pub type VendorKind = String;');
+    expect(output).toContain(
+      '__flight_left.to_bits() == __flight_right.to_bits() || (__flight_left.is_nan() && __flight_right.is_nan())',
+    );
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-schema-types-'));
     const sourceFile = path.join(fixture, 'lib.rs');
