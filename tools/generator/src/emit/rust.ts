@@ -4213,16 +4213,19 @@ function emitNarrowedErrorProperty(
   const dynamic = (resolveSemanticType(expectedType, context) ?? expectedType)?.kind === 'dynamic';
   if (expression.name === 'name' || expression.name === 'message') {
     const value = `${prefix} ${expression.name}, .. } => ${expression.name}.clone(), ${suffix}`;
-    return dynamic ? `${dynamicValuePath(resolveSemanticType(expectedType, context) ?? expectedType)}::String(${value})` : value;
+    return dynamic
+      ? `${dynamicValuePath(resolveSemanticType(expectedType, context) ?? expectedType)}::String(${value})`
+      : value;
   }
   if (expression.name === 'stack') {
     const value = `${prefix} stack, .. } => stack.clone(), ${suffix}`;
     const resultPath = dynamicValuePath(resolveSemanticType(expectedType, context) ?? expectedType);
-    return dynamic
-      ? `${parenthesize(value)}.map(${resultPath}::String).unwrap_or(${resultPath}::Undefined)`
-      : value;
+    return dynamic ? `${parenthesize(value)}.map(${resultPath}::String).unwrap_or(${resultPath}::Undefined)` : value;
   }
-  return `${prefix} cause, .. } => cause.as_deref().cloned().unwrap_or(crate::FlightValue::Undefined), ${suffix}`;
+  const value = `${prefix} cause, .. } => cause.as_deref().cloned(), ${suffix}`;
+  return (resolveSemanticType(expectedType, context) ?? expectedType)?.kind === 'nullable'
+    ? value
+    : `${parenthesize(value)}.unwrap_or(crate::FlightValue::Undefined)`;
 }
 
 function errorValuePropertyType(name: string): IrType | undefined {
@@ -4531,9 +4534,7 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
     }
     if (constructor === 'Error') {
       const valuePath = dynamicValuePath(candidate);
-      return candidate?.kind === 'dynamic'
-        ? `matches!(&${parenthesize(left)}, ${valuePath}::Error { .. })`
-        : 'false';
+      return candidate?.kind === 'dynamic' ? `matches!(&${parenthesize(left)}, ${valuePath}::Error { .. })` : 'false';
     }
     if (constructor && opaqueHostInstanceConstructors.has(constructor)) return 'false';
     throw new RustEmissionError('instanceof Rust lowering requires a portable typed-array constructor');
@@ -4765,6 +4766,8 @@ function emitAssignment(expression: Extract<IrExpression, { kind: 'assignment' }
   }
   const mapElementAssignment = emitMapElementAssignment(expression, context, true);
   if (mapElementAssignment) return mapElementAssignment;
+  const mapPropertyAssignment = emitMapPropertyAssignment(expression, context, true);
+  if (mapPropertyAssignment) return mapPropertyAssignment;
   const placeContext = assignmentPlaceContext(expression.left, context);
   const left =
     expression.left.kind === 'element'
@@ -4847,6 +4850,8 @@ function emitAssignmentStatement(
   }
   const mapElementAssignment = emitMapElementAssignment(expression, context, false);
   if (mapElementAssignment) return mapElementAssignment;
+  const mapPropertyAssignment = emitMapPropertyAssignment(expression, context, false);
+  if (mapPropertyAssignment) return mapPropertyAssignment;
   const placeContext = assignmentPlaceContext(expression.left, context);
   const left =
     expression.left.kind === 'element'
@@ -5008,6 +5013,26 @@ function emitMapElementAssignment(
   const value = emitExpression(expression.right, context, valueType);
   const stored = returnValue ? '__flight_value.clone()' : '__flight_value';
   return `{ let __flight_key = ${key}; let __flight_value = ${value}; if let Some((_, value)) = ${collection}.iter_mut().find(|(key, _)| key == &__flight_key) { *value = ${stored}; } else { ${collection}.push((__flight_key, ${stored})); }${returnValue ? ' __flight_value' : ''} }`;
+}
+
+function emitMapPropertyAssignment(
+  expression: Extract<IrExpression, { kind: 'assignment' }>,
+  context: EmitContext,
+  returnValue: boolean,
+): string | undefined {
+  if (expression.left.kind !== 'property') return undefined;
+  return emitMapElementAssignment(
+    {
+      ...expression,
+      left: {
+        index: { kind: 'literal', value: expression.left.name },
+        kind: 'element',
+        object: expression.left.object,
+      },
+    },
+    context,
+    returnValue,
+  );
 }
 
 function emitBitwiseOperation(left: string, right: string, operator: string): string {

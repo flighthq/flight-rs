@@ -1681,6 +1681,15 @@ describe('Rust emission', () => {
           if (value instanceof Error) return value.cause;
           return null;
         }
+        export function hasErrorCause(value: unknown): boolean {
+          if (!(value instanceof Error)) return false;
+          return value.cause !== undefined;
+        }
+        export function storeField(value: unknown): Record<string, unknown> {
+          const result: Record<string, unknown> = {};
+          result.value = value;
+          return result;
+        }
         export function isTruthy(value: unknown): boolean {
           return value ? true : false;
         }
@@ -1727,6 +1736,10 @@ describe('Rust emission', () => {
         '  assert_eq!(generated::describe_error(error.clone()), "TypeError:broken:trace");',
         '  assert_eq!(generated::describe_error(FlightValue::Number(1.0)), "number");',
         '  assert_eq!(generated::read_error_cause(error.clone()), FlightValue::Number(7.0));',
+        '  assert!(generated::has_error_cause(error.clone()));',
+        '  assert!(!generated::has_error_cause(FlightValue::Error { name: "Error".to_owned(), message: String::new(), stack: None, cause: None }));',
+        '  assert!(!generated::has_error_cause(FlightValue::String("not an error".to_owned())));',
+        '  assert_eq!(generated::store_field(FlightValue::Number(3.0)), vec![("value".to_owned(), FlightValue::Number(3.0))]);',
         '  assert!(generated::is_truthy(error));',
         '  assert!(matches!(generated::construct_error(), FlightValue::Error { name, message, stack: None, cause: None } if name == "Error" && message == "built"));',
         '}',
