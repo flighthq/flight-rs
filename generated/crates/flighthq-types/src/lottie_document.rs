@@ -610,9 +610,9 @@ pub struct LottieTextData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub d: LottieTextDataRecord1,
-    pub a: Option<Vec<crate::OpaqueHostValue>>,
-    pub m: Option<crate::OpaqueHostValue>,
-    pub p: Option<crate::OpaqueHostValue>,
+    pub a: Option<Vec<crate::FlightValue>>,
+    pub m: Option<crate::FlightValue>,
+    pub p: Option<crate::FlightValue>,
 }
 impl PartialEq for LottieTextData {
     fn eq(&self, other: &Self) -> bool {
@@ -761,7 +761,7 @@ pub struct LottieDocument {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub assets: Option<Vec<LottieAsset>>,
-    pub chars: Option<Vec<crate::OpaqueHostValue>>,
+    pub chars: Option<Vec<crate::FlightValue>>,
     pub ddd: Option<f64>,
     pub fonts: Option<LottieDocumentRecord1>,
     pub fr: f64,

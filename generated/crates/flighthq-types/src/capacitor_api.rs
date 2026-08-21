@@ -729,7 +729,7 @@ pub struct CapacitorGeolocationPlugin {
                                 Box<
                                     dyn FnMut(
                                             Option<CapacitorPosition>,
-                                            Option<crate::OpaqueHostValue>,
+                                            Option<crate::FlightValue>,
                                         ) -> ()
                                         + Send
                                         + 'static,

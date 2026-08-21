@@ -547,7 +547,7 @@ pub struct TauriMenu {
     >,
     pub set_as_app_menu: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut() -> crate::FlightTask<crate::OpaqueHostValue> + Send + 'static>,
+            Box<dyn FnMut() -> crate::FlightTask<crate::FlightValue> + Send + 'static>,
         >,
     >,
 }

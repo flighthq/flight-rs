@@ -162,7 +162,7 @@ pub struct ElectronApp {
                         String,
                         std::sync::Arc<
                             std::sync::Mutex<
-                                Box<dyn FnMut(Vec<crate::OpaqueHostValue>) -> () + Send + 'static>,
+                                Box<dyn FnMut(Vec<crate::FlightValue>) -> () + Send + 'static>,
                             >,
                         >,
                     ) -> ()
@@ -178,7 +178,7 @@ pub struct ElectronApp {
                         String,
                         std::sync::Arc<
                             std::sync::Mutex<
-                                Box<dyn FnMut(Vec<crate::OpaqueHostValue>) -> () + Send + 'static>,
+                                Box<dyn FnMut(Vec<crate::FlightValue>) -> () + Send + 'static>,
                             >,
                         >,
                     ) -> ()
@@ -543,7 +543,7 @@ pub struct ElectronScreen {
                         String,
                         std::sync::Arc<
                             std::sync::Mutex<
-                                Box<dyn FnMut(Vec<crate::OpaqueHostValue>) -> () + Send + 'static>,
+                                Box<dyn FnMut(Vec<crate::FlightValue>) -> () + Send + 'static>,
                             >,
                         >,
                     ) -> ()
@@ -559,7 +559,7 @@ pub struct ElectronScreen {
                         String,
                         std::sync::Arc<
                             std::sync::Mutex<
-                                Box<dyn FnMut(Vec<crate::OpaqueHostValue>) -> () + Send + 'static>,
+                                Box<dyn FnMut(Vec<crate::FlightValue>) -> () + Send + 'static>,
                             >,
                         >,
                     ) -> ()
@@ -692,10 +692,7 @@ pub struct ElectronIpcMain {
                         std::sync::Arc<
                             std::sync::Mutex<
                                 Box<
-                                    dyn FnMut(
-                                            crate::OpaqueHostValue,
-                                            Vec<crate::OpaqueHostValue>,
-                                        ) -> ()
+                                    dyn FnMut(crate::FlightValue, Vec<crate::FlightValue>) -> ()
                                         + Send
                                         + 'static,
                                 >,
@@ -715,10 +712,7 @@ pub struct ElectronIpcMain {
                         std::sync::Arc<
                             std::sync::Mutex<
                                 Box<
-                                    dyn FnMut(
-                                            crate::OpaqueHostValue,
-                                            Vec<crate::OpaqueHostValue>,
-                                        ) -> ()
+                                    dyn FnMut(crate::FlightValue, Vec<crate::FlightValue>) -> ()
                                         + Send
                                         + 'static,
                                 >,
@@ -739,10 +733,10 @@ pub struct ElectronIpcMain {
                             std::sync::Mutex<
                                 Box<
                                     dyn FnMut(
-                                            crate::OpaqueHostValue,
-                                            Vec<crate::OpaqueHostValue>,
+                                            crate::FlightValue,
+                                            Vec<crate::FlightValue>,
                                         )
-                                            -> crate::OpaqueHostValue
+                                            -> crate::FlightValue
                                         + Send
                                         + 'static,
                                 >,
@@ -792,7 +786,7 @@ pub struct ElectronAutoUpdater {
                         String,
                         std::sync::Arc<
                             std::sync::Mutex<
-                                Box<dyn FnMut(Vec<crate::OpaqueHostValue>) -> () + Send + 'static>,
+                                Box<dyn FnMut(Vec<crate::FlightValue>) -> () + Send + 'static>,
                             >,
                         >,
                     ) -> ()
@@ -808,7 +802,7 @@ pub struct ElectronAutoUpdater {
                         String,
                         std::sync::Arc<
                             std::sync::Mutex<
-                                Box<dyn FnMut(Vec<crate::OpaqueHostValue>) -> () + Send + 'static>,
+                                Box<dyn FnMut(Vec<crate::FlightValue>) -> () + Send + 'static>,
                             >,
                         >,
                     ) -> ()
@@ -959,7 +953,7 @@ pub struct ElectronBrowserWindow {
                         String,
                         std::sync::Arc<
                             std::sync::Mutex<
-                                Box<dyn FnMut(Vec<crate::OpaqueHostValue>) -> () + Send + 'static>,
+                                Box<dyn FnMut(Vec<crate::FlightValue>) -> () + Send + 'static>,
                             >,
                         >,
                     ) -> ()
@@ -1105,7 +1099,7 @@ pub struct ElectronTray {
                         String,
                         std::sync::Arc<
                             std::sync::Mutex<
-                                Box<dyn FnMut(Vec<crate::OpaqueHostValue>) -> () + Send + 'static>,
+                                Box<dyn FnMut(Vec<crate::FlightValue>) -> () + Send + 'static>,
                             >,
                         >,
                     ) -> ()
@@ -1198,7 +1192,7 @@ pub struct ElectronNotification {
                         String,
                         std::sync::Arc<
                             std::sync::Mutex<
-                                Box<dyn FnMut(Vec<crate::OpaqueHostValue>) -> () + Send + 'static>,
+                                Box<dyn FnMut(Vec<crate::FlightValue>) -> () + Send + 'static>,
                             >,
                         >,
                     ) -> ()

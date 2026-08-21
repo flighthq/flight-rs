@@ -245,11 +245,10 @@ pub fn validate_particle_emitter_config(
             issues.push(ParticleConfigIssue {
                 __flight_identity: std::sync::Arc::new(()),
                 field: (field).clone(),
-                message: format!(
-                    "{} must be a finite number (got {})",
-                    (field).clone(),
-                    string(value)
-                ),
+                message: format!("{} must be a finite number (got {})", (field).clone(), {
+                    let __flight_value = value;
+                    crate::flight_value_to_string(&__flight_value)
+                }),
                 severity: "error".to_owned(),
             });
         }

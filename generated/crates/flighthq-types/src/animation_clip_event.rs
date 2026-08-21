@@ -16,7 +16,7 @@ pub struct AnimationClipEvent {
     #[doc(hidden)]
     pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
     pub name: String,
-    pub payload: crate::OpaqueHostValue,
+    pub payload: crate::FlightValue,
     pub time: f64,
 }
 impl PartialEq for AnimationClipEvent {

@@ -129,7 +129,7 @@ pub fn lerp_render_effect(
             }
         }
     }
-    let mut out_record = crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast");
+    let mut out_record = crate::host_value::<Vec<(String, crate::FlightValue)>>("host.cast");
     for key in (numeric_keys).iter().cloned() {
         let va = a_rec
             .iter()

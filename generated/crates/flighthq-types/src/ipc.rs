@@ -28,17 +28,12 @@ pub struct IpcBackend {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub send: std::sync::Arc<
-        std::sync::Mutex<
-            Box<dyn FnMut(String, Vec<crate::OpaqueHostValue>) -> () + Send + 'static>,
-        >,
+        std::sync::Mutex<Box<dyn FnMut(String, Vec<crate::FlightValue>) -> () + Send + 'static>>,
     >,
     pub invoke: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(
-                        String,
-                        Vec<crate::OpaqueHostValue>,
-                    ) -> crate::FlightTask<crate::OpaqueHostValue>
+                dyn FnMut(String, Vec<crate::FlightValue>) -> crate::FlightTask<crate::FlightValue>
                     + Send
                     + 'static,
             >,
@@ -51,7 +46,7 @@ pub struct IpcBackend {
                         String,
                         std::sync::Arc<
                             std::sync::Mutex<
-                                Box<dyn FnMut(Vec<crate::OpaqueHostValue>) -> () + Send + 'static>,
+                                Box<dyn FnMut(Vec<crate::FlightValue>) -> () + Send + 'static>,
                             >,
                         >,
                     ) -> std::sync::Arc<
@@ -71,11 +66,11 @@ pub struct IpcBackend {
                                 std::sync::Mutex<
                                     Box<
                                         dyn FnMut(
-                                                Vec<crate::OpaqueHostValue>,
+                                                Vec<crate::FlightValue>,
                                             )
                                                 -> crate::FlightUnion2<
-                                                crate::OpaqueHostValue,
-                                                crate::FlightTask<crate::OpaqueHostValue>,
+                                                crate::FlightValue,
+                                                crate::FlightTask<crate::FlightValue>,
                                             > + Send
                                             + 'static,
                                     >,
@@ -92,11 +87,7 @@ pub struct IpcBackend {
     pub send_to: Option<
         std::sync::Arc<
             std::sync::Mutex<
-                Box<
-                    dyn FnMut(IpcTarget, String, Vec<crate::OpaqueHostValue>) -> ()
-                        + Send
-                        + 'static,
-                >,
+                Box<dyn FnMut(IpcTarget, String, Vec<crate::FlightValue>) -> () + Send + 'static>,
             >,
         >,
     >,
@@ -132,9 +123,9 @@ pub struct IpcMessageEvent {
     pub __flight_identity: std::sync::Arc<()>,
     pub channel: String,
     pub sender_id: f64,
-    pub args: Vec<crate::OpaqueHostValue>,
+    pub args: Vec<crate::FlightValue>,
     pub reply: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(Vec<crate::OpaqueHostValue>) -> () + Send + 'static>>,
+        std::sync::Mutex<Box<dyn FnMut(Vec<crate::FlightValue>) -> () + Send + 'static>>,
     >,
 }
 impl PartialEq for IpcMessageEvent {

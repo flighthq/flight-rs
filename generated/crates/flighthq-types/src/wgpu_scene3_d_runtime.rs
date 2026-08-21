@@ -159,8 +159,8 @@ pub struct WgpuScene3DRuntime {
     pub shadow_sample_layout: Option<crate::OpaqueHostValue>,
     pub shadow_sample_view: Option<crate::OpaqueHostValue>,
     pub shadow_uniform_buffer: Option<crate::OpaqueHostValue>,
-    pub shaded_material_binding_cache: Vec<(crate::OpaqueHostValue, crate::OpaqueHostValue)>,
-    pub shaded_material_plan_cache: Vec<(crate::OpaqueHostValue, crate::OpaqueHostValue)>,
+    pub shaded_material_binding_cache: Vec<(crate::OpaqueHostValue, crate::FlightValue)>,
+    pub shaded_material_plan_cache: Vec<(crate::OpaqueHostValue, crate::FlightValue)>,
     pub skin_draw_bind_group: Option<crate::OpaqueHostValue>,
     pub skin_draw_bind_group_layout: Option<crate::OpaqueHostValue>,
     pub skin_mesh_draw_bind_group: Option<crate::OpaqueHostValue>,
@@ -178,7 +178,7 @@ pub struct WgpuScene3DRuntime {
     pub skin_palette_view: Option<crate::OpaqueHostValue>,
     pub pending_skin_normal_palette_base: f64,
     pub pending_skin_palette_base: f64,
-    pub skinning_adapter: Option<crate::OpaqueHostValue>,
+    pub skinning_adapter: Option<crate::FlightValue>,
     pub upload_cache: Vec<(crate::OpaqueHostValue, WgpuMeshUpload)>,
 }
 impl PartialEq for WgpuScene3DRuntime {

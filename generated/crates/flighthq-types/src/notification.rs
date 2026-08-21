@@ -24,7 +24,7 @@ pub struct FlightPartialRecord1 {
     pub require_interaction: Option<bool>,
     pub timestamp: Option<f64>,
     pub vibrate: Option<Vec<f64>>,
-    pub data: Option<crate::OpaqueHostValue>,
+    pub data: Option<crate::FlightValue>,
 }
 impl PartialEq for FlightPartialRecord1 {
     fn eq(&self, other: &Self) -> bool {
@@ -67,7 +67,7 @@ pub struct NotificationRequest {
     pub require_interaction: Option<bool>,
     pub timestamp: Option<f64>,
     pub vibrate: Option<Vec<f64>>,
-    pub data: Option<crate::OpaqueHostValue>,
+    pub data: Option<crate::FlightValue>,
 }
 impl PartialEq for NotificationRequest {
     fn eq(&self, other: &Self) -> bool {

@@ -16,7 +16,7 @@ pub struct AnimationChannel {
     #[doc(hidden)]
     pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
     pub track: AnimationTrack,
-    pub target_ref: crate::OpaqueHostValue,
+    pub target_ref: crate::FlightValue,
 }
 impl PartialEq for AnimationChannel {
     fn eq(&self, other: &Self) -> bool {

@@ -22,7 +22,7 @@ pub struct ResourceLoader {
     >,
     pub on_error: Signal<
         std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(crate::OpaqueHostValue, String) -> () + Send + 'static>>,
+            std::sync::Mutex<Box<dyn FnMut(crate::FlightValue, String) -> () + Send + 'static>>,
         >,
     >,
     pub on_pause: Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,

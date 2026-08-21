@@ -62,7 +62,7 @@ impl PartialEq<f64> for LogLevel {
 }
 
 // Source: upstream/packages/types/src/Log.ts:16 (sha256:313d487a0bb03997817e5978f5481e3fbd42d8ffdeddb816cc9b40996c07be93)
-pub type LogData = crate::FlightUnion2<String, Vec<(String, crate::OpaqueHostValue)>>;
+pub type LogData = crate::FlightUnion2<String, Vec<(String, crate::FlightValue)>>;
 
 // Source: upstream/packages/types/src/Log.ts:20 (sha256:d983c478cbedc28ac64db9a78d5b83adb8b0750a9224e97fa3ddfcfb7c7f2eaa)
 #[derive(Clone, Default)]
@@ -70,7 +70,7 @@ pub struct LogContext {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub channel: Option<String>,
-    pub fields: Vec<(String, crate::OpaqueHostValue)>,
+    pub fields: Vec<(String, crate::FlightValue)>,
 }
 impl PartialEq for LogContext {
     fn eq(&self, other: &Self) -> bool {
@@ -92,7 +92,7 @@ pub struct LogSpan {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub name: String,
-    pub fields: Vec<(String, crate::OpaqueHostValue)>,
+    pub fields: Vec<(String, crate::FlightValue)>,
     pub channel: Option<String>,
 }
 impl PartialEq for LogSpan {

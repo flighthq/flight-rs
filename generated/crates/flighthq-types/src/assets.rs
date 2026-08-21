@@ -51,9 +51,9 @@ impl<T> PartialEq for AssetLoaderAdapter<T> {
 pub struct AssetEntry {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub value: crate::OpaqueHostValue,
+    pub value: crate::FlightValue,
     pub refcount: f64,
-    pub load_promise: Option<crate::FlightTask<crate::OpaqueHostValue>>,
+    pub load_promise: Option<crate::FlightTask<crate::FlightValue>>,
     pub resident: bool,
 }
 impl PartialEq for AssetEntry {

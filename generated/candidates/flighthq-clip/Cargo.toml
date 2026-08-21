@@ -1,0 +1,18 @@
+# @generated candidate crate; do not edit.
+[package]
+name = "flighthq-clip"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+flighthq-geometry = { path = "../flighthq-geometry" }
+flighthq-log = { path = "../flighthq-log" }
+flighthq-math = { path = "../flighthq-math" }
+flighthq-path = { path = "../flighthq-path" }
+flighthq-runtime = { path = "../../crates/flighthq-runtime" }
+flighthq-types = { path = "../../crates/flighthq-types" }

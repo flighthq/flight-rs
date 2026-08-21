@@ -16,15 +16,14 @@ pub struct LoopBackend {
             Box<
                 dyn FnMut(
                         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64) -> () + Send + 'static>>>,
-                    ) -> crate::OpaqueHostValue
+                    ) -> crate::FlightValue
                     + Send
                     + 'static,
             >,
         >,
     >,
-    pub cancel_frame: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(crate::OpaqueHostValue) -> () + Send + 'static>>,
-    >,
+    pub cancel_frame:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(crate::FlightValue) -> () + Send + 'static>>>,
     pub now: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> f64 + Send + 'static>>>,
 }
 impl PartialEq for LoopBackend {

@@ -25,7 +25,7 @@ pub struct Application {
     pub on_error: Option<
         Signal<
             std::sync::Arc<
-                std::sync::Mutex<Box<dyn FnMut(crate::OpaqueHostValue) -> () + Send + 'static>>,
+                std::sync::Mutex<Box<dyn FnMut(crate::FlightValue) -> () + Send + 'static>>,
             >,
         >,
     >,

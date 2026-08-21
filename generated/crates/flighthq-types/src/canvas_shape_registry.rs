@@ -15,7 +15,7 @@ pub type CanvasShapeHandler = std::sync::Arc<
             dyn FnMut(
                     crate::OpaqueHostValue,
                     CanvasShapeDrawState,
-                    Vec<crate::OpaqueHostValue>,
+                    Vec<crate::FlightValue>,
                     f64,
                 ) -> ()
                 + Send

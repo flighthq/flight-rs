@@ -62,7 +62,7 @@ pub fn attach_app_lifecycle(app: AppLifecycle) -> () {
                         if (state != "active") && ((*previous.lock().unwrap()).clone() == "active")
                         {
                             emit_signal((app.on_pause).clone(), ());
-                            let state_bag: Vec<(String, crate::OpaqueHostValue)> = {
+                            let state_bag: Vec<(String, crate::FlightValue)> = {
                                 let mut __flight_record = Vec::new();
                                 __flight_record
                             };
@@ -339,7 +339,7 @@ static _BACKEND: std::sync::LazyLock<std::sync::Mutex<Option<LifecycleBackend>>>
 
 // Source: upstream/packages/lifecycle/src/lifecycle.ts:235 (sha256:cc52420f3c11c0ead53914ccea887154beeb987597512d86355e067c13f3f3e3)
 static _SAVED_STATE: std::sync::LazyLock<
-    std::sync::Mutex<Vec<(AppLifecycle, Vec<(String, crate::OpaqueHostValue)>)>>,
+    std::sync::Mutex<Vec<(AppLifecycle, Vec<(String, crate::FlightValue)>)>>,
 > = std::sync::LazyLock::new(|| std::sync::Mutex::new(Vec::new()));
 
 // Source: upstream/packages/lifecycle/src/lifecycle.ts:236 (sha256:eeb3737fbc1c1f56a7a809443270d83de35641bbcd610f48b3f1715947a3bc8c)

@@ -24,8 +24,15 @@ pub type NetRedirect = String;
 pub type NetBody = Option<crate::FlightUnion2<String, crate::FlightUnion2<Vec<u8>, Vec<u8>>>>;
 
 // Source: upstream/packages/types/src/Net.ts:36 (sha256:59733359f481dfa821da4ce87b07778f91fc1337a52446c722f1a5611a54d2e4)
-pub type NetResponseBody =
-    Option<crate::FlightUnion2<String, crate::FlightUnion2<crate::OpaqueHostValue, Vec<u8>>>>;
+pub type NetResponseBody = Option<
+    crate::FlightUnion2<
+        String,
+        crate::FlightUnion2<
+            crate::FlightValue,
+            crate::FlightUnion2<Vec<u8>, crate::OpaqueHostValue>,
+        >,
+    >,
+>;
 
 // Source: upstream/packages/types/src/Net.ts:40 (sha256:be5f077631722591406184fa65398af48876fb3c6e8c82d3a3da4cc352c434e7)
 #[derive(Clone, Default)]

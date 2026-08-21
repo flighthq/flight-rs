@@ -1054,10 +1054,22 @@ pub fn parse_svg_path_data(d: String) -> Option<Path> {
 // Source: upstream/packages/path-formats/src/svgPathData.ts:320 (sha256:3d55b5b9648b702cfeeefab18e92d5fe18956a550ceca1e8cd07b8810e636fef)
 fn format_svg_number(value: f64, precision: Option<f64>) -> String {
     if (precision).is_none() {
-        return string(value);
+        return {
+            let __flight_value = {
+                let __flight_portable_source = value;
+                crate::FlightValue::Number(*(&__flight_portable_source) as f64)
+            };
+            crate::flight_value_to_string(&__flight_value)
+        };
     }
     let factor = (10.0_f64).powf(*(precision.as_ref().unwrap()));
-    return string(((value * factor).round() / factor));
+    return {
+        let __flight_value = {
+            let __flight_portable_source = ((value * factor).round() / factor);
+            crate::FlightValue::Number(*(&__flight_portable_source) as f64)
+        };
+        crate::flight_value_to_string(&__flight_value)
+    };
 }
 
 // Source: upstream/packages/path-formats/src/svgPathData.ts:327 (sha256:b96909a1054a73f2443e51c64f02be6673290494c302b7d1aa6b231cb00d229a)

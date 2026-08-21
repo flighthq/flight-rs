@@ -19,7 +19,7 @@ impl PartialEq for GetRenderEffectDefaultsRecord1 {
     }
 }
 
-pub fn get_render_effect_defaults(kind: String) -> Vec<(String, crate::OpaqueHostValue)> {
+pub fn get_render_effect_defaults(kind: String) -> Vec<(String, crate::FlightValue)> {
     let entry = DEFAULTS
         .iter()
         .find(|(entry_key, _)| entry_key == &(kind).clone())
@@ -45,7 +45,7 @@ pub fn normalize_render_effect(effect: &RenderEffect, out: &mut RenderEffect) ->
         return false;
     }
     let effect_rec = effect;
-    let mut out_rec = crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast");
+    let mut out_rec = crate::host_value::<Vec<(String, crate::FlightValue)>>("host.cast");
     for key in (entry
         .as_ref()
         .unwrap()
@@ -131,7 +131,7 @@ pub fn normalize_render_effect(effect: &RenderEffect, out: &mut RenderEffect) ->
 }
 
 // Source: upstream/packages/effects/src/renderEffectDefaults.ts:45 (sha256:e1e3698858b3e485bb7385844930c3950b9e4776d83cbaf9077be81c1be3fcb9)
-static DEFAULTS: std::sync::LazyLock<Vec<(String, Vec<(String, crate::OpaqueHostValue)>)>> =
+static DEFAULTS: std::sync::LazyLock<Vec<(String, Vec<(String, crate::FlightValue)>)>> =
     std::sync::LazyLock::new(|| {
         let mut __flight_record = Vec::new();
         __flight_record.push(("AutoExposureEffect".to_owned(), {

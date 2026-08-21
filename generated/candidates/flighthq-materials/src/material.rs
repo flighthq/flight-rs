@@ -51,8 +51,8 @@ pub fn equals_material(a: &Material, b: &Material) -> bool {
     if ((a.kind).clone() != (b.kind).clone()) {
         return false;
     }
-    let a_fields = crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast");
-    let b_fields = crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast");
+    let a_fields = crate::host_value::<Vec<(String, crate::FlightValue)>>("host.cast");
+    let b_fields = crate::host_value::<Vec<(String, crate::FlightValue)>>("host.cast");
     for key in (a_fields
         .iter()
         .map(|(entry_key, _)| entry_key.clone())
@@ -91,8 +91,8 @@ pub fn get_material_of_kind<T: Clone>(material: &Option<Material>, kind: Kind) -
 
 // Source: upstream/packages/materials/src/material.ts:52 (sha256:3ecd641f0460053cb1a7b61cfa11afbd981fc937c81b55090927a360c95052c0)
 fn copy_material_fields(dst: &mut Material, src: &Material, kind: Kind) -> () {
-    let mut dst_fields = crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast");
-    let src_fields = crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast");
+    let mut dst_fields = crate::host_value::<Vec<(String, crate::FlightValue)>>("host.cast");
+    let src_fields = crate::host_value::<Vec<(String, crate::FlightValue)>>("host.cast");
     for key in (src_fields
         .iter()
         .map(|(entry_key, _)| entry_key.clone())

@@ -83,14 +83,14 @@ pub struct AppLifecycle {
     pub on_save_state: Signal<
         std::sync::Arc<
             std::sync::Mutex<
-                Box<dyn FnMut(Vec<(String, crate::OpaqueHostValue)>) -> () + Send + 'static>,
+                Box<dyn FnMut(Vec<(String, crate::FlightValue)>) -> () + Send + 'static>,
             >,
         >,
     >,
     pub on_restore_state: Signal<
         std::sync::Arc<
             std::sync::Mutex<
-                Box<dyn FnMut(Vec<(String, crate::OpaqueHostValue)>) -> () + Send + 'static>,
+                Box<dyn FnMut(Vec<(String, crate::FlightValue)>) -> () + Send + 'static>,
             >,
         >,
     >,

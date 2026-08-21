@@ -6,7 +6,7 @@ pub use flighthq_runtime::{
     DeterministicFlightTaskScheduler, FlightHostUnavailable, FlightJsonError, FlightRejection,
     FlightRuntimeUnavailable, FlightTask, FlightTaskError, FlightTaskOrigin, FlightTaskOutcome,
     FlightTaskScheduler, FlightUnion2, FlightValue, OpaqueHostValue, ScheduledFlightTask,
-    flight_json_stringify, flight_task_yield, host_task,
+    flight_json_stringify, flight_task_yield, flight_value_to_string, host_task,
     install_deterministic_flight_task_scheduler, install_flight_task_scheduler,
 };
 

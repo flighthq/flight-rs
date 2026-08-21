@@ -399,12 +399,12 @@ pub fn parse_user_agent_pointer_width(arch: String) -> f64 {
 
 // Source: upstream/packages/useragent/src/userAgent.ts:146 (sha256:c23d0d9818a2b32349680c667b0203c07f336594eb9dbe37ce12b90774559b08)
 pub fn parse_user_agent_runtime(
-    win: &Option<Vec<(String, crate::OpaqueHostValue)>>,
+    win: &Option<Vec<(String, crate::FlightValue)>>,
 ) -> PlatformRuntime {
     if (win).is_none() {
         return "unknown".to_owned();
     }
-    let proc = crate::host_value::<Option<Vec<(String, crate::OpaqueHostValue)>>>("host.cast");
+    let proc = crate::host_value::<Option<Vec<(String, crate::FlightValue)>>>("host.cast");
     if ((proc.as_ref().and_then(|entries| {
         entries
             .iter()
@@ -412,22 +412,22 @@ pub fn parse_user_agent_runtime(
             .map(|(_, value)| value.clone())
     }))
     .is_some())
-        && (match &(crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast")
+        && (match &(crate::host_value::<Vec<(String, crate::FlightValue)>>("host.cast")
             .iter()
             .find(|(entry_key, _)| entry_key == &"electron".to_owned())
             .map(|(_, value)| value.clone())
             .expect("TypeScript Record key was absent"))
         {
-            crate::OpaqueHostValue::Undefined | crate::OpaqueHostValue::Null => false,
-            crate::OpaqueHostValue::Bool(value) => *value,
-            crate::OpaqueHostValue::Number(value) => *value != 0.0_f64 && !value.is_nan(),
-            crate::OpaqueHostValue::String(value) => !value.is_empty(),
-            crate::OpaqueHostValue::Array(_)
-            | crate::OpaqueHostValue::Record(_)
-            | crate::OpaqueHostValue::Error { .. }
-            | crate::OpaqueHostValue::Function
-            | crate::OpaqueHostValue::Symbol
-            | crate::OpaqueHostValue::Object => true,
+            crate::FlightValue::Undefined | crate::FlightValue::Null => false,
+            crate::FlightValue::Bool(value) => *value,
+            crate::FlightValue::Number(value) => *value != 0.0_f64 && !value.is_nan(),
+            crate::FlightValue::String(value) => !value.is_empty(),
+            crate::FlightValue::Array(_)
+            | crate::FlightValue::Record(_)
+            | crate::FlightValue::Error { .. }
+            | crate::FlightValue::Function
+            | crate::FlightValue::Symbol
+            | crate::FlightValue::Object => true,
         })
     {
         return "electron".to_owned();
@@ -440,16 +440,16 @@ pub fn parse_user_agent_runtime(
         .map(|(_, value)| value.clone())
         .expect("TypeScript Record key was absent"))
     {
-        crate::OpaqueHostValue::Undefined | crate::OpaqueHostValue::Null => false,
-        crate::OpaqueHostValue::Bool(value) => *value,
-        crate::OpaqueHostValue::Number(value) => *value != 0.0_f64 && !value.is_nan(),
-        crate::OpaqueHostValue::String(value) => !value.is_empty(),
-        crate::OpaqueHostValue::Array(_)
-        | crate::OpaqueHostValue::Record(_)
-        | crate::OpaqueHostValue::Error { .. }
-        | crate::OpaqueHostValue::Function
-        | crate::OpaqueHostValue::Symbol
-        | crate::OpaqueHostValue::Object => true,
+        crate::FlightValue::Undefined | crate::FlightValue::Null => false,
+        crate::FlightValue::Bool(value) => *value,
+        crate::FlightValue::Number(value) => *value != 0.0_f64 && !value.is_nan(),
+        crate::FlightValue::String(value) => !value.is_empty(),
+        crate::FlightValue::Array(_)
+        | crate::FlightValue::Record(_)
+        | crate::FlightValue::Error { .. }
+        | crate::FlightValue::Function
+        | crate::FlightValue::Symbol
+        | crate::FlightValue::Object => true,
     } {
         return "tauri".to_owned();
     }
@@ -461,16 +461,16 @@ pub fn parse_user_agent_runtime(
         .map(|(_, value)| value.clone())
         .expect("TypeScript Record key was absent"))
     {
-        crate::OpaqueHostValue::Undefined | crate::OpaqueHostValue::Null => false,
-        crate::OpaqueHostValue::Bool(value) => *value,
-        crate::OpaqueHostValue::Number(value) => *value != 0.0_f64 && !value.is_nan(),
-        crate::OpaqueHostValue::String(value) => !value.is_empty(),
-        crate::OpaqueHostValue::Array(_)
-        | crate::OpaqueHostValue::Record(_)
-        | crate::OpaqueHostValue::Error { .. }
-        | crate::OpaqueHostValue::Function
-        | crate::OpaqueHostValue::Symbol
-        | crate::OpaqueHostValue::Object => true,
+        crate::FlightValue::Undefined | crate::FlightValue::Null => false,
+        crate::FlightValue::Bool(value) => *value,
+        crate::FlightValue::Number(value) => *value != 0.0_f64 && !value.is_nan(),
+        crate::FlightValue::String(value) => !value.is_empty(),
+        crate::FlightValue::Array(_)
+        | crate::FlightValue::Record(_)
+        | crate::FlightValue::Error { .. }
+        | crate::FlightValue::Function
+        | crate::FlightValue::Symbol
+        | crate::FlightValue::Object => true,
     } {
         return "capacitor".to_owned();
     }

@@ -15,13 +15,13 @@ pub struct ResourceLoaderItemSignals {
     pub __flight_identity: std::sync::Arc<()>,
     pub on_item_complete: Signal<
         std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(String, crate::OpaqueHostValue) -> () + Send + 'static>>,
+            std::sync::Mutex<Box<dyn FnMut(String, crate::FlightValue) -> () + Send + 'static>>,
         >,
     >,
     pub on_item_error: Signal<
         std::sync::Arc<
             std::sync::Mutex<
-                Box<dyn FnMut(String, crate::OpaqueHostValue, f64) -> () + Send + 'static>,
+                Box<dyn FnMut(String, crate::FlightValue, f64) -> () + Send + 'static>,
             >,
         >,
     >,

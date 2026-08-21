@@ -104,13 +104,13 @@ pub fn create_canvas_text_shaper_backend() -> CanvasTextShaperBackend {
                             crate::FlightValue::String((&__flight_portable_source).clone())
                         };
                         if let Some((_, value)) =
-                            crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast")
+                            crate::host_value::<Vec<(String, crate::FlightValue)>>("host.cast")
                                 .iter_mut()
                                 .find(|(key, _)| key == &__flight_key)
                         {
                             *value = __flight_value;
                         } else {
-                            crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast")
+                            crate::host_value::<Vec<(String, crate::FlightValue)>>("host.cast")
                                 .push((__flight_key, __flight_value));
                         }
                     };
@@ -123,13 +123,13 @@ pub fn create_canvas_text_shaper_backend() -> CanvasTextShaperBackend {
                             crate::FlightValue::String((&__flight_portable_source).clone())
                         };
                         if let Some((_, value)) =
-                            crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast")
+                            crate::host_value::<Vec<(String, crate::FlightValue)>>("host.cast")
                                 .iter_mut()
                                 .find(|(key, _)| key == &__flight_key)
                         {
                             *value = __flight_value;
                         } else {
-                            crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast")
+                            crate::host_value::<Vec<(String, crate::FlightValue)>>("host.cast")
                                 .push((__flight_key, __flight_value));
                         }
                     };
@@ -142,13 +142,13 @@ pub fn create_canvas_text_shaper_backend() -> CanvasTextShaperBackend {
                             crate::FlightValue::String((&__flight_portable_source).clone())
                         };
                         if let Some((_, value)) =
-                            crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast")
+                            crate::host_value::<Vec<(String, crate::FlightValue)>>("host.cast")
                                 .iter_mut()
                                 .find(|(key, _)| key == &__flight_key)
                         {
                             *value = __flight_value;
                         } else {
-                            crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast")
+                            crate::host_value::<Vec<(String, crate::FlightValue)>>("host.cast")
                                 .push((__flight_key, __flight_value));
                         }
                     };

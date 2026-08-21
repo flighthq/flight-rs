@@ -12,7 +12,7 @@ use crate::{AnimationChannel, Skeleton2D};
 pub type Skeleton2DAnimationTargetBinder = std::sync::Arc<
     std::sync::Mutex<
         Box<
-            dyn FnMut(AnimationChannel, Skeleton2D, Skeleton2D, crate::OpaqueHostValue, f64) -> ()
+            dyn FnMut(AnimationChannel, Skeleton2D, Skeleton2D, crate::FlightValue, f64) -> ()
                 + Send
                 + 'static,
         >,

@@ -122,7 +122,7 @@ pub struct AsepriteMeta {
     pub layers: Option<Vec<AsepriteLayer>>,
     pub scale: crate::FlightUnion2<f64, String>,
     pub size: AsepriteSize,
-    pub slices: Option<Vec<crate::OpaqueHostValue>>,
+    pub slices: Option<Vec<crate::FlightValue>>,
     pub version: String,
 }
 impl PartialEq for AsepriteMeta {
