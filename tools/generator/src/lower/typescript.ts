@@ -26,6 +26,7 @@ const fingerprintPrinter = ts.createPrinter({ removeComments: true });
 
 const portableTypeReferenceMap: Readonly<Record<string, string>> = {
   ArrayBuffer: 'ByteBuffer',
+  ArrayBufferLike: 'ByteBuffer',
   ArrayBufferView: 'ArrayBufferView',
   Float32Array: 'Float32Array',
   Float64Array: 'Float64Array',

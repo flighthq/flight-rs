@@ -5215,9 +5215,15 @@ function emitTypeDeclaration(
       '}',
     ].join('\n');
   }
-  const derivesDefault = fields.every(
+  const supportsDefault = fields.every(
     (field) => field.optional || rustTypeSupportsDefault(field.type, structuralContext),
   );
+  // Rust's built-in derive adds `T: Default` for every generic mentioned by a
+  // field, even when the field's container has an unconditional default (for
+  // example `Option<T>` or `Vec<T>`). Emit the same field-wise construction by
+  // hand so a registry of callbacks can still be default-constructed.
+  const derivesDefault = supportsDefault && effectiveTypeParameters.length === 0;
+  const implementsUnboundedDefault = supportsDefault && effectiveTypeParameters.length > 0;
   const entity = context.entityTypes.has(name);
   const entityRuntime = entity ? entityRuntimeTypePath(context) : undefined;
   const entityTrait = entity ? entityTraitTypePath(context) : undefined;
@@ -5243,6 +5249,19 @@ function emitTypeDeclaration(
       ].join('\n'),
     ),
     '}',
+    ...(implementsUnboundedDefault
+      ? [
+          `impl${generics} Default for ${name}${generics} {`,
+          '  fn default() -> Self {',
+          '    Self {',
+          '      __flight_identity: Default::default(),',
+          ...(entityRuntime ? ['      __flight_entity_runtime: Default::default(),'] : []),
+          ...fields.map((field) => `      ${safeName(field.name)}: Default::default(),`),
+          '    }',
+          '  }',
+          '}',
+        ]
+      : []),
     `impl${generics} PartialEq for ${name}${generics} {`,
     '  fn eq(&self, other: &Self) -> bool { std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity) }',
     '}',

@@ -18,6 +18,10 @@ describe('Rust emission', () => {
         export type WireCode = (typeof WireCode)[keyof typeof WireCode];
         export interface Phantom<Value> { count: number; }
         export interface Holder<Value> { phantom: Phantom<Value>; }
+        export interface OptionalValue<Value> { value?: Value; }
+        export interface Registry<Value> { entries: readonly OptionalValue<Value>[]; }
+        export interface CallbackRegistries { callbacks: Registry<(value: string) => void>; }
+        export interface BinaryView { buffer: ArrayBufferLike; }
         export interface Schedule { at?: Date; code: WireCode; }
         export type VendorKind = \`\${string}.\${string}\`;
       `,
@@ -36,6 +40,12 @@ describe('Rust emission', () => {
     expect(output).toContain('pub struct Phantom {');
     expect(output).toContain('pub struct Holder {');
     expect(output).toContain('pub phantom: Phantom,');
+    expect(output).toContain('impl<Value> Default for OptionalValue<Value>');
+    expect(output).toContain('impl<Value> Default for Registry<Value>');
+    expect(output).toContain(
+      "pub callbacks: Registry<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(String) -> () + Send + 'static>>>>,",
+    );
+    expect(output).toContain('pub buffer: Vec<u8>,');
     expect(output).toContain('pub at: Option<crate::OpaqueHostValue>,');
     expect(output).toContain('pub code: f64,');
     expect(output).toContain('pub type VendorKind = String;');
