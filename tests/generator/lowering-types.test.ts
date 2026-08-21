@@ -4,6 +4,72 @@ import { portConfig } from '../../tools/generator/port.config.ts';
 import { lowerTypeScriptSource } from '../../tools/generator/src/lower/typescript.ts';
 
 describe('configured type lowering exceptions', () => {
+  it('resolves function-local structural types and accounts object literal getters', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/example/src/local-types.ts',
+      `
+        interface Cursor {
+          count: number;
+          readonly length: number;
+        }
+        export function localEntry(bytes: Uint8Array): number {
+          interface Entry { data: Uint8Array; tag: number; }
+          const entries: Entry[] = [];
+          entries.push({ data: bytes, tag: 7 });
+          return entries[0].tag;
+        }
+        export function cursor(): Cursor {
+          return {
+            count: 0,
+            get length() { return this.count; },
+          };
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/example', '/workspace');
+    const localEntry = lowered.declarations.find(
+      (declaration) => declaration.kind === 'function' && declaration.name === 'localEntry',
+    );
+    const cursor = lowered.declarations.find(
+      (declaration) => declaration.kind === 'function' && declaration.name === 'cursor',
+    );
+
+    expect(lowered.diagnostics).toEqual([]);
+    if (localEntry?.kind !== 'function') throw new Error('Expected localEntry function');
+    const entries = localEntry.body
+      .filter((statement) => statement.kind === 'variable')
+      .flatMap((statement) => statement.declarations)
+      .find((declaration) => declaration.name === 'entries');
+    expect(entries).toMatchObject({
+      name: 'entries',
+      type: {
+        element: {
+          fields: [
+            { name: 'data', type: { arguments: [], kind: 'named', name: 'Uint8Array' } },
+            { name: 'tag', type: { kind: 'primitive', name: 'Float' } },
+          ],
+          kind: 'anonymous',
+        },
+        kind: 'array',
+      },
+    });
+    if (cursor?.kind !== 'function') throw new Error('Expected cursor function');
+    const returned = cursor.body.find((statement) => statement.kind === 'return');
+    expect(returned).toMatchObject({
+      expression: {
+        kind: 'object',
+        properties: [
+          { kind: 'property', name: 'count', value: { kind: 'literal', value: 0 } },
+          { kind: 'property', name: 'length', value: { kind: 'property', name: 'count' } },
+        ],
+      },
+      kind: 'return',
+    });
+  });
+
   it('keeps imported Flight types whose names collide with platform globals nominal', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/image/src/imageResource.ts',

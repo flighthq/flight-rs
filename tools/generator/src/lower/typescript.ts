@@ -288,9 +288,11 @@ export function lowerTypeScriptSource(
   const diagnostics: LoweringDiagnostic[] = [];
   const declarations: IrDeclaration[] = [];
   let accountedDeclarations = 0;
-  const erasedLocalTypes = new Set<string>();
+  const localTypeDefinitions = new Map<string, ts.InterfaceDeclaration | ts.TypeAliasDeclaration>();
   const collectLocalTypes = (node: ts.Node): void => {
-    if (ts.isTypeAliasDeclaration(node) && !ts.isSourceFile(node.parent)) erasedLocalTypes.add(node.name.text);
+    if ((ts.isInterfaceDeclaration(node) || ts.isTypeAliasDeclaration(node)) && !ts.isSourceFile(node.parent)) {
+      localTypeDefinitions.set(node.name.text, node);
+    }
     ts.forEachChild(node, collectLocalTypes);
   };
   collectLocalTypes(sourceFile);
@@ -360,7 +362,8 @@ export function lowerTypeScriptSource(
     domWindowBindingNames,
     externalTypes,
     externalValues,
-    erasedLocalTypes,
+    localTypeDefinitions,
+    localTypeResolution: new Set(),
     packageName,
     recoveryFunctions: new Map(recoveryCatalog.functions?.map((declaration) => [declaration.name, declaration]) ?? []),
     recoveryTypes: new Map(Object.entries(recoveryCatalog.types ?? {})),
@@ -1409,7 +1412,8 @@ interface LoweringContext {
   domWindowBindingNames: ReadonlySet<string>;
   externalTypes: ReadonlySet<string>;
   externalValues: ReadonlyMap<string, { imported: string; specifier: string }>;
-  erasedLocalTypes: ReadonlySet<string>;
+  localTypeDefinitions: ReadonlyMap<string, ts.InterfaceDeclaration | ts.TypeAliasDeclaration>;
+  localTypeResolution: Set<string>;
   packageName: string;
   recoveryFunctions: ReadonlyMap<string, IrFunctionDeclaration>;
   recoveryTypes: Map<string, IrType>;
@@ -1672,7 +1676,24 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
   if (ts.isTypeReferenceNode(node)) {
     const name = node.typeName.getText(context.sourceFile);
     const arguments_ = node.typeArguments?.map((argument) => lowerType(argument, context)) ?? [];
-    if (context.erasedLocalTypes.has(name)) return { kind: 'dynamic' };
+    const localType = context.localTypeDefinitions.get(name);
+    if (localType) {
+      if (context.localTypeResolution.has(name)) return { kind: 'dynamic' };
+      context.localTypeResolution.add(name);
+      try {
+        if (ts.isTypeAliasDeclaration(localType)) return lowerType(localType.type, context);
+        return {
+          extends:
+            localType.heritageClauses
+              ?.filter((clause) => clause.token === ts.SyntaxKind.ExtendsKeyword)
+              .flatMap((clause) => clause.types.map((item) => lowerExpressionWithTypeArguments(item, context))) ?? [],
+          fields: lowerTypeMembers(localType.members, context),
+          kind: 'anonymous',
+        };
+      } finally {
+        context.localTypeResolution.delete(name);
+      }
+    }
     if (
       (name === 'Promise' && ts.isIdentifier(node.typeName) && !isTypeNameLexicallyBound(node.typeName, context)) ||
       name === 'globalThis.Promise'
@@ -2492,7 +2513,7 @@ function lowerStatement(node: ts.Statement, context: LoweringContext): IrStateme
       variable: declaration.name.text,
     };
   }
-  if (ts.isTypeAliasDeclaration(node)) return { kind: 'block', statements: [] };
+  if (ts.isInterfaceDeclaration(node) || ts.isTypeAliasDeclaration(node)) return { kind: 'block', statements: [] };
   if (ts.isThrowStatement(node))
     return {
       expression: lowerExpression(node.expression, context),
@@ -2891,6 +2912,17 @@ function lowerExpression(node: ts.Expression, context: LoweringContext): IrExpre
           } finally {
             context.classThis = previousClassThis;
           }
+        }
+        if (ts.isGetAccessorDeclaration(property) && property.body) {
+          const returned = property.body.statements.find(ts.isReturnStatement);
+          if (!returned?.expression || property.body.statements.some((statement) => statement !== returned)) {
+            return unsupported(property, context, 'object literal getter body');
+          }
+          return {
+            kind: 'property' as const,
+            name: propertyName(property.name, context),
+            value: lowerExpression(returned.expression, context),
+          };
         }
         return unsupported(property, context, 'object literal member');
       }),
