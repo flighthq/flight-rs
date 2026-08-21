@@ -2566,9 +2566,18 @@ function emitCall(
       ownerType?.kind === 'nullable'
         ? `${emitPlaceExpression(expression.callee.object, context)}.as_ref().unwrap()`
         : emitExpression(expression.callee.object, context);
-    const ownerPlace =
-      ownerType?.kind === 'nullable'
+    const nullishOwner =
+      expression.callee.object.kind === 'assignment' && expression.callee.object.operator === '??='
+        ? expression.callee.object
+        : undefined;
+    const ownerPlace = nullishOwner
+      ? `${emitPlaceExpression(nullishOwner.left, assignmentPlaceContext(nullishOwner.left, context))}.as_mut().unwrap()`
+      : ownerType?.kind === 'nullable'
         ? `${emitPlaceExpression(expression.callee.object, context)}.as_mut().unwrap()`
+        : emitCollectionPlace(expression.callee.object, context);
+    const ownerRead =
+      ownerType?.kind === 'nullable'
+        ? `${emitPlaceExpression(expression.callee.object, context)}.as_ref().unwrap()`
         : emitCollectionPlace(expression.callee.object, context);
     if (collectionType?.kind === 'dynamic' || isNativeHostHandleType(collectionType)) {
       const result = expectedType ?? primitive('Void');
@@ -2580,18 +2589,22 @@ function emitCall(
       const keyExpression = expression.arguments[0];
       if (method === 'clear') return `${ownerPlace}.clear()`;
       if (method === 'keys') {
-        return `${ownerPlace}.iter().map(|(key, _)| key.clone()).collect::<Vec<_>>()`;
+        return `${ownerRead}.iter().map(|(key, _)| key.clone()).collect::<Vec<_>>()`;
       }
       if (method === 'values') {
-        return `${ownerPlace}.iter().map(|(_, value)| value.clone()).collect::<Vec<_>>()`;
+        return `${ownerRead}.iter().map(|(_, value)| value.clone()).collect::<Vec<_>>()`;
       }
       if (!keyExpression) throw new RustEmissionError(`Map.${method} requires a key argument`);
       const key = emitExpression(keyExpression, context, keyType);
       if (method === 'get') {
-        return `${ownerPlace}.iter().find(|(entry_key, _)| entry_key == &${key}).map(|(_, value)| value.clone())`;
+        if (expression.callee.optional && ownerType?.kind === 'nullable') {
+          const optionalOwner = emitPlaceExpression(expression.callee.object, context);
+          return `${optionalOwner}.as_ref().and_then(|entries| entries.iter().find(|(entry_key, _)| entry_key == &${key}).map(|(_, value)| value.clone()))`;
+        }
+        return `${ownerRead}.iter().find(|(entry_key, _)| entry_key == &${key}).map(|(_, value)| value.clone())`;
       }
       if (method === 'has') {
-        return `${ownerPlace}.iter().any(|(entry_key, _)| entry_key == &${key})`;
+        return `${ownerRead}.iter().any(|(entry_key, _)| entry_key == &${key})`;
       }
       if (method === 'delete') {
         return `{ let __flight_key = ${key}; if let Some(__flight_index) = ${ownerPlace}.iter().position(|(key, _)| key == &__flight_key) { ${ownerPlace}.remove(__flight_index); true } else { false } }`;
@@ -2600,17 +2613,19 @@ function emitCall(
         const valueExpression = expression.arguments[1];
         if (!valueExpression) throw new RustEmissionError('Map.set requires a value argument');
         const value = emitExpression(valueExpression, context, valueType);
-        return `{ let __flight_key = ${key}; let __flight_value = ${value}; if let Some((_, value)) = ${ownerPlace}.iter_mut().find(|(key, _)| key == &__flight_key) { *value = __flight_value; } else { ${ownerPlace}.push((__flight_key, __flight_value)); } }`;
+        const mutation = `let __flight_key = ${key}; let __flight_value = ${value}; if let Some((_, value)) = ${ownerPlace}.iter_mut().find(|(key, _)| key == &__flight_key) { *value = __flight_value; } else { ${ownerPlace}.push((__flight_key, __flight_value)); }`;
+        const initialize = nullishOwner ? emitNullishAssignment(nullishOwner, context, false) : undefined;
+        return `{ ${initialize ? `${initialize}; ` : ''}${mutation} }`;
       }
     }
     if (collectionType?.kind === 'named' && collectionType.name === 'RustSet') {
       const valueType = collectionType.arguments[0];
       const valueExpression = expression.arguments[0];
       if (method === 'clear') return `${ownerPlace}.clear()`;
-      if (method === 'keys' || method === 'values') return `${ownerPlace}.clone()`;
+      if (method === 'keys' || method === 'values') return `${ownerRead}.clone()`;
       if (!valueExpression) throw new RustEmissionError(`Set.${method} requires a value argument`);
       const value = emitExpression(valueExpression, context, valueType);
-      if (method === 'has') return `${ownerPlace}.iter().any(|item| item == &${value})`;
+      if (method === 'has') return `${ownerRead}.iter().any(|item| item == &${value})`;
       if (method === 'add') {
         return `{ let __flight_value = ${value}; if !${ownerPlace}.contains(&__flight_value) { ${ownerPlace}.push(__flight_value); } }`;
       }
@@ -3028,8 +3043,12 @@ function emitCall(
           context,
         ),
       );
+      if (expression.callee.kind === 'property' && expression.callee.optional) {
+        const optional = emitExpression(expression.callee, context, calleeType);
+        return `{ let __flight_callback = ${optional}; __flight_callback.as_ref().map(|callback| callback.lock().unwrap()(${arguments_.join(', ')})) }`;
+      }
       const call = emitLockedCallbackCall(
-        `${emitPlaceExpression(expression.callee, context)}.as_ref().unwrap().clone()`,
+        `${emitExpression(expression.callee, context)}.as_ref().unwrap().clone()`,
         arguments_,
       );
       const projected = expectedType
@@ -3646,7 +3665,8 @@ function emitKnownFunctionArgument(
     argumentType &&
     !isCopyType(argumentType, context) &&
     !nullableParameter &&
-    !optionalParameter
+    !optionalParameter &&
+    !context.unionNarrowings.has(argument.name)
   ) {
     const value = argumentType.kind === 'nullable' ? emitted : emitPlaceExpression(argument, context);
     emitted = `${parenthesize(value)}.clone()`;
@@ -4646,6 +4666,8 @@ function emitAssignment(expression: Extract<IrExpression, { kind: 'assignment' }
   }
   const bufferViewWrite = emitBufferViewWrite(expression, context, true);
   if (bufferViewWrite) return bufferViewWrite;
+  const nullishAssignment = emitNullishAssignment(expression, context, true);
+  if (nullishAssignment) return nullishAssignment;
   if (
     expression.left.kind === 'identifier' &&
     context.timerHandleNames.has(expression.left.name) &&
@@ -4729,6 +4751,8 @@ function emitAssignmentStatement(
   }
   const bufferViewWrite = emitBufferViewWrite(expression, context, false);
   if (bufferViewWrite) return bufferViewWrite;
+  const nullishAssignment = emitNullishAssignment(expression, context, false);
+  if (nullishAssignment) return nullishAssignment;
   if (
     expression.left.kind === 'identifier' &&
     context.timerHandleNames.has(expression.left.name) &&
@@ -4793,6 +4817,31 @@ function assignmentPlaceContext(expression: IrExpression, context: EmitContext):
   const nonNullableNames = new Set(context.nonNullableNames);
   nonNullableNames.delete(root);
   return { ...context, nonNullableNames };
+}
+
+function emitNullishAssignment(
+  expression: Extract<IrExpression, { kind: 'assignment' }>,
+  context: EmitContext,
+  returnValue: boolean,
+): string | undefined {
+  if (expression.operator !== '??=') return undefined;
+  if (!isRustPlaceExpression(expression.left)) {
+    throw new RustEmissionError('nullish assignment requires a Rust place expression');
+  }
+  const leftType = inferIrExpressionType(expression.left, context);
+  if (leftType?.kind !== 'nullable') {
+    throw new RustEmissionError('nullish assignment requires nullable storage');
+  }
+  const rightType = inferIrExpressionType(expression.right, context);
+  const place = emitPlaceExpression(expression.left, assignmentPlaceContext(expression.left, context));
+  const value =
+    rightType?.kind === 'nullable'
+      ? emitExpression(expression.right, context, leftType)
+      : `Some(${emitExpression(expression.right, context, leftType.inner)})`;
+  const initialize = `if ${place}.is_none() { ${place} = ${value}; }`;
+  if (!returnValue) return initialize;
+  const result = rightType?.kind === 'nullable' ? `${place}.clone()` : `${place}.as_ref().unwrap().clone()`;
+  return `{ ${initialize} ${result} }`;
 }
 
 function emitAssignmentOperation(left: string, right: string, operator: string): string {
@@ -8868,6 +8917,12 @@ function emitElementRead(
 
 function inferIrExpressionType(expression: IrExpression, context: EmitContext): IrType | undefined {
   switch (expression.kind) {
+    case 'assignment': {
+      const left = inferIrExpressionType(expression.left, context);
+      const right = inferIrExpressionType(expression.right, context);
+      if (expression.operator !== '??=' || left?.kind !== 'nullable') return left ?? right;
+      return right?.kind === 'nullable' ? left : left.inner;
+    }
     case 'await': {
       const task = promiseType(inferIrExpressionType(expression.expression, context), context);
       return task?.output ?? inferIrExpressionType(expression.expression, context);

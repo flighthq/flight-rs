@@ -674,6 +674,25 @@ describe('Rust emission', () => {
         export function numberValue(value: string): number {
           return Number(value);
         }
+        export interface Registry {
+          values?: Map<string, string>;
+        }
+        export function putRegistry(registry: Registry, key: string, value: string): string {
+          (registry.values ??= new Map()).set(key, value);
+          return registry.values.get(key) ?? '';
+        }
+        export function readRegistry(registry: Readonly<Registry>, key: string): string {
+          return registry.values?.get(key) ?? '';
+        }
+        export function initializeOptional(value?: string): string {
+          return (value ??= 'default');
+        }
+        export interface OptionalRunner {
+          run?: (value: string) => void;
+        }
+        export function runOptional(runner: OptionalRunner, value: string): void {
+          runner.run?.(value);
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -737,6 +756,13 @@ describe('Rust emission', () => {
         '  assert_eq!(generated::number_value(" 42.5 ".to_owned()), 42.5);',
         '  assert_eq!(generated::number_value("0x10".to_owned()), 16.0);',
         '  assert!(generated::number_value("not a number".to_owned()).is_nan());',
+        '  let mut registry = generated::Registry::default();',
+        '  assert_eq!(generated::put_registry(&mut registry, "key".to_owned(), "value".to_owned()), "value");',
+        '  assert_eq!(generated::read_registry(&registry, "key".to_owned()), "value");',
+        '  assert_eq!(generated::read_registry(&generated::Registry::default(), "missing".to_owned()), "");',
+        '  assert_eq!(generated::initialize_optional(None), "default");',
+        '  assert_eq!(generated::initialize_optional(Some("kept".to_owned())), "kept");',
+        '  generated::run_optional(&mut generated::OptionalRunner::default(), "ignored".to_owned());',
         '}',
         '',
       ].join('\n'),
