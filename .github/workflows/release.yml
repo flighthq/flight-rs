@@ -70,6 +70,15 @@ jobs:
       - name: Stamp the manifest
         run: npx tsx scripts/version-packages.ts "${{ steps.resolve.outputs.version }}"
 
+      # This workflow triggers independently of ci.yml, so without a gate a red commit would still
+      # publish — and a published version cannot be withdrawn, only deprecated. The whole suite is a
+      # couple of minutes and covers exactly what is about to ship: the facade's differential parity
+      # against the TypeScript implementation, the packaging invariants, and the version logic that
+      # produced the number above. The thorough legs (generate:check, cargo) stay in ci.yml; the wasm
+      # build still runs here through `prepack`.
+      - name: Verify what is about to ship
+        run: npm run test
+
       # Publishing is skipped rather than failed when no token is configured, so this workflow does
       # not report red on every push before the secret exists. It starts publishing on its own once
       # the secret is added, with no edit here. The dry run still exercises the whole path — build,
@@ -77,7 +86,11 @@ jobs:
       - name: Publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_PROVENANCE: 'true'
+          # Provenance attests the tarball to this workflow run, and needs `id-token: write` above
+          # plus a PUBLIC repository. npm rejects the publish outright on a private repository, so
+          # this is opt-out through a repository variable rather than a value to discover at the
+          # first real publish: set NPM_PROVENANCE to "false" if flight-rs is private.
+          NPM_CONFIG_PROVENANCE: ${{ vars.NPM_PROVENANCE != 'false' }}
         # `prepack` runs the full wasm build, so the tarball carries a module built from this commit
         # rather than whatever happened to be committed.
         run: |
