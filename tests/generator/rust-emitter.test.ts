@@ -2433,6 +2433,46 @@ describe('Rust emission', () => {
     expect(() => execFileSync(binary, [], { cwd: fixture, stdio: 'pipe' })).not.toThrow();
   });
 
+  it('does not register anonymous types while probing non-collection arguments', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/log/src/contextual-object.ts',
+      `
+        interface Entry {
+          data: string;
+          level: number;
+        }
+        function emit(entry: Entry): void {
+          void entry;
+        }
+        export function report(level: number): void {
+          emit({ data: 'ready', level });
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/log', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/log/src/contextual-object.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).not.toContain('SynthesizedRecord');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-contextual-object-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
   it('projects unions through shared structural and collection boundaries', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/lighting/src/union-boundaries.ts',

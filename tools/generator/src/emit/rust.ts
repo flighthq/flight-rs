@@ -4068,12 +4068,7 @@ function emitKnownFunctionArgument(
   if (borrowedNullableReference) {
     const projected =
       !mutable && argumentType
-        ? emitCollectionProjectionArgument(
-            emitExpression(argument, context, argumentType),
-            argumentType,
-            parameter.type,
-            context,
-          )
+        ? emitCollectionProjectionExpression(argument, argumentType, parameter.type, context)
         : undefined;
     if (projected) return `&${parenthesize(projected)}`;
     const root = expressionRootIdentifier(argument);
@@ -4146,12 +4141,7 @@ function emitKnownFunctionArgument(
             : emitExpression(argument, context, expectedType);
     const collectionProjection =
       !mutable && argumentType
-        ? emitCollectionProjectionArgument(
-            emitExpression(argument, context, argumentType),
-            argumentType,
-            expectedType,
-            context,
-          )
+        ? emitCollectionProjectionExpression(argument, argumentType, expectedType, context)
         : undefined;
     if (collectionProjection) return `&${parenthesize(collectionProjection)}`;
     if (argumentType?.kind === 'nullable' && semanticTypesEqual(argumentType.inner, expectedType, context)) {
@@ -9095,6 +9085,23 @@ function emitCollectionProjectionArgument(
   projectedElement ??= emitStructuralProjectionArgument('__flight_value', actual.element, expected.element, context);
   return projectedElement
     ? `${parenthesize(source)}.iter().map(|__flight_value| ${projectedElement}).collect::<Vec<_>>()`
+    : undefined;
+}
+
+function emitCollectionProjectionExpression(
+  expression: IrExpression,
+  actualType: IrType,
+  expectedType: IrType,
+  context: EmitContext,
+): string | undefined {
+  const probe = emitCollectionProjectionArgument('__flight_collection_projection', actualType, expectedType, context);
+  return probe
+    ? emitCollectionProjectionArgument(
+        emitExpression(expression, context, actualType),
+        actualType,
+        expectedType,
+        context,
+      )
     : undefined;
 }
 
