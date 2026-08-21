@@ -620,6 +620,15 @@ describe('Rust emission', () => {
         export function inspectCodePoint(value: string, index: number): number[] {
           return [value.length, value.codePointAt(index) as number];
         }
+        export function inspectCodeUnit(value: string, index: number): number {
+          return value.charCodeAt(index);
+        }
+        export function parseDecimal(value: string): number {
+          return Number.parseFloat(value);
+        }
+        export function orderedDigit(value: string): boolean {
+          return value >= '0' && value <= '9';
+        }
         export function findString(value: string, search: string, position: number): number {
           return value.indexOf(search, position);
         }
@@ -741,6 +750,7 @@ describe('Rust emission', () => {
     expect(output).toContain('__flight_encode_uri_component');
     expect(output).toContain('__flight_decode_uri_component');
     expect(output).toContain('__flight_number_from_string');
+    expect(output).toContain('fn __flight_parse_float(value: &str) -> f64');
     expect(output).toContain('__flight_number_to_fixed');
     expect(output).toContain('__flight_string_repeat');
     expect(output).toContain('!(value).is_empty()');
@@ -757,6 +767,14 @@ describe('Rust emission', () => {
         '  assert_eq!(generated::inspect_code_point("A😀Z".to_owned(), 2.0), vec![4.0, 0xDE00_u32 as f64]);',
         '  assert_eq!(generated::inspect_code_point("A😀Z".to_owned(), f64::NAN), vec![4.0, 65.0]);',
         '  assert!(generated::inspect_code_point("A😀Z".to_owned(), 4.0)[1].is_nan());',
+        '  assert_eq!(generated::inspect_code_unit("A😀Z".to_owned(), 1.0), 0xD83D_u32 as f64);',
+        '  assert_eq!(generated::inspect_code_unit("A😀Z".to_owned(), 2.0), 0xDE00_u32 as f64);',
+        '  assert!(generated::inspect_code_unit("A😀Z".to_owned(), 4.0).is_nan());',
+        '  assert_eq!(generated::parse_decimal("  -12.5px".to_owned()), -12.5);',
+        '  assert_eq!(generated::parse_decimal("1e-rest".to_owned()), 1.0);',
+        '  assert!(generated::parse_decimal("not a number".to_owned()).is_nan());',
+        '  assert!(generated::ordered_digit("5".to_owned()));',
+        '  assert!(!generated::ordered_digit("x".to_owned()));',
         '  assert_eq!(generated::find_string("A😀Z😀".to_owned(), "😀".to_owned(), 0.0), 1.0);',
         '  assert_eq!(generated::find_string("A😀Z😀".to_owned(), "😀".to_owned(), 2.0), 4.0);',
         '  assert_eq!(generated::slice_string("A😀Z".to_owned(), 1.0, Some(3.0)), "😀");',

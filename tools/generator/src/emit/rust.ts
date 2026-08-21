@@ -145,11 +145,7 @@ export function emitRustModule(module: RustModule): string {
     const object = unwrapCasts(declaration.initializer);
     if (object.kind === 'object') {
       for (const property of object.properties) {
-        if (
-          property.kind === 'property' &&
-          property.value.kind === 'literal' &&
-          property.value.value !== null
-        ) {
+        if (property.kind === 'property' && property.value.kind === 'literal' && property.value.value !== null) {
           constantPropertyValues.set(`${declaration.name}.${property.name}`, property.value.value);
         }
       }
@@ -676,6 +672,40 @@ export function emitRustModule(module: RustModule): string {
               'let prefixed = if let Some(digits) = value.strip_prefix("0x").or_else(|| value.strip_prefix("0X")) { Some((digits, 16_u32)) } else if let Some(digits) = value.strip_prefix("0b").or_else(|| value.strip_prefix("0B")) { Some((digits, 2_u32)) } else { value.strip_prefix("0o").or_else(|| value.strip_prefix("0O")).map(|digits| (digits, 8_u32)) };',
               'if let Some((digits, radix)) = prefixed { return u64::from_str_radix(digits, radix).map_or(f64::NAN, |number| number as f64); }',
               'value.parse::<f64>().unwrap_or(f64::NAN)',
+            ].join('\n'),
+          ),
+          '}',
+        ]
+      : []),
+    ...(declarations.includes('__flight_parse_float(')
+      ? [
+          '#[inline]',
+          'fn __flight_parse_float(value: &str) -> f64 {',
+          indent(
+            [
+              'let value = value.trim_start();',
+              'if value.starts_with("Infinity") || value.starts_with("+Infinity") { return f64::INFINITY; }',
+              'if value.starts_with("-Infinity") { return f64::NEG_INFINITY; }',
+              'let bytes = value.as_bytes();',
+              "let mut index = usize::from(matches!(bytes.first(), Some(b'+' | b'-')));",
+              'let mut digits = 0_usize;',
+              "while matches!(bytes.get(index), Some(b'0'..=b'9')) { index += 1; digits += 1; }",
+              "if bytes.get(index) == Some(&b'.') { index += 1; while matches!(bytes.get(index), Some(b'0'..=b'9')) { index += 1; digits += 1; } }",
+              'if digits == 0 { return f64::NAN; }',
+              'let mantissa_end = index;',
+              "if matches!(bytes.get(index), Some(b'e' | b'E')) {",
+              indent(
+                [
+                  'let exponent_start = index;',
+                  'index += 1;',
+                  "if matches!(bytes.get(index), Some(b'+' | b'-')) { index += 1; }",
+                  'let exponent_digits = index;',
+                  "while matches!(bytes.get(index), Some(b'0'..=b'9')) { index += 1; }",
+                  'if index == exponent_digits { index = exponent_start; }',
+                ].join('\n'),
+              ),
+              '}',
+              'value[..if index > mantissa_end { index } else { mantissa_end }].parse::<f64>().unwrap_or(f64::NAN)',
             ].join('\n'),
           ),
           '}',
@@ -2492,7 +2522,7 @@ function emitCall(
     }
     if (portableGlobal === 'parseFloat') {
       if (!value) throw new RustEmissionError('parseFloat requires a string value');
-      return `${parenthesize(emitExpression(value, context, primitive('String')))}.trim().parse::<f64>().unwrap_or(f64::NAN)`;
+      return `__flight_parse_float(&${parenthesize(emitExpression(value, context, primitive('String')))})`;
     }
     if (portableGlobal === 'encodeURIComponent') {
       if (!value) throw new RustEmissionError('encodeURIComponent requires a string value');
@@ -2675,6 +2705,11 @@ function emitCall(
     if (owner === 'Number' && method === 'isInteger' && expression.arguments[0]) {
       const value = emitExpression(expression.arguments[0], context);
       return `${parenthesize(value)}.is_finite() && ${parenthesize(value)}.fract() == 0.0_f64`;
+    }
+    if (owner === 'Number' && method === 'parseFloat') {
+      const value = expression.arguments[0];
+      if (!value) throw new RustEmissionError('Number.parseFloat requires a string value');
+      return `__flight_parse_float(&${parenthesize(emitExpression(value, context, primitive('String')))})`;
     }
     if (owner === 'String' && method === 'fromCodePoint') {
       const values = expression.arguments.map((argument) => emitExpression(argument, context, primitive('Float')));
@@ -2866,6 +2901,17 @@ function emitCall(
     }
     if (collectionType?.kind === 'primitive' && collectionType.name === 'String') {
       const argument = expression.arguments[0];
+      if (method === 'charCodeAt') {
+        if (!argument) throw new RustEmissionError('String.charCodeAt requires an index argument');
+        const view =
+          expression.callee.object.kind === 'identifier'
+            ? context.utf16ViewNames.get(expression.callee.object.name)
+            : undefined;
+        return emitUtf16CharCodeAt(
+          view ? `&${view}` : `&${parenthesize(owner)}.encode_utf16().collect::<Vec<u16>>()`,
+          emitExpression(argument, context, primitive('Float')),
+        );
+      }
       if (method === 'codePointAt') {
         if (!argument) throw new RustEmissionError('String.codePointAt requires an index argument');
         const view =
@@ -3154,9 +3200,11 @@ function emitCall(
       if (callback.kind === 'function') {
         const contextualCollection = resolveSemanticType(expectedType, context) ?? expectedType;
         const contextualElement = contextualCollection?.kind === 'array' ? contextualCollection.element : undefined;
-        const returns = callback.returns ?? inferFunctionExpressionReturnType(callback) ?? contextualElement ?? {
-          kind: 'dynamic',
-        };
+        const returns = callback.returns ??
+          inferFunctionExpressionReturnType(callback) ??
+          contextualElement ?? {
+            kind: 'dynamic',
+          };
         const closureType: IrType = {
           kind: 'function',
           parameters: [collectionType.element],
@@ -4556,9 +4604,10 @@ function emitUnionPropertyRead(
     }, crate::FlightUnion2::B(value) => ${read('value', variants.slice(1), offset + 1)} }`;
   };
   const value = emitExpression(expression.object, context, sourceType);
-  const reference = sourceType?.kind === 'nullable'
-    ? `${parenthesize(value)}.as_ref().expect("TypeScript nullable union property was not narrowed")`
-    : `&${parenthesize(value)}`;
+  const reference =
+    sourceType?.kind === 'nullable'
+      ? `${parenthesize(value)}.as_ref().expect("TypeScript nullable union property was not narrowed")`
+      : `&${parenthesize(value)}`;
   return read(reference, union.variants, 0);
 }
 
@@ -4800,6 +4849,17 @@ function emitUtf16CodePointAt(units: string, index: string): string {
   ].join(' ');
 }
 
+function emitUtf16CharCodeAt(units: string, index: string): string {
+  return [
+    '{',
+    `let __flight_units: &[u16] = ${units};`,
+    `let __flight_raw_index = ${index};`,
+    'let __flight_index = if __flight_raw_index.is_nan() { 0_i64 } else if __flight_raw_index.is_finite() { __flight_raw_index.trunc() as i64 } else { -1_i64 };',
+    'if __flight_index < 0 { f64::NAN } else { __flight_units.get(__flight_index as usize).map_or(f64::NAN, |unit| f64::from(*unit)) }',
+    '}',
+  ].join(' ');
+}
+
 function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, context: EmitContext): string {
   if (
     expression.operator === 'in' &&
@@ -4847,6 +4907,12 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
   }
   const comparison = ['===', '!==', '==', '!=', '<', '<=', '>', '>='].includes(expression.operator);
   const arithmetic = ['+', '-', '*', '/', '%', '**'].includes(expression.operator);
+  const stringOrdering =
+    ['<', '<=', '>', '>='].includes(expression.operator) &&
+    resolvedLeft?.kind === 'primitive' &&
+    resolvedLeft.name === 'String' &&
+    resolvedRight?.kind === 'primitive' &&
+    resolvedRight.name === 'String';
   const arraySlot =
     isNullishExpression(expression.right) && expression.left.kind === 'element'
       ? expression.left
@@ -4900,11 +4966,13 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
     context,
     nullComparisonContext ??
       nullishContext ??
-      ((comparison || arithmetic) &&
-      (resolvedLeft?.kind === 'dynamic' || !resolvedLeft) &&
-      resolvedRight?.kind === 'primitive'
+      (stringOrdering
         ? rightType
-        : undefined),
+        : (comparison || arithmetic) &&
+            (resolvedLeft?.kind === 'dynamic' || !resolvedLeft) &&
+            resolvedRight?.kind === 'primitive'
+          ? rightType
+          : undefined),
   );
   const narrowedErrorCause =
     expression.left.kind === 'property' &&
@@ -5041,9 +5109,11 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
           : leftType
       : comparison && resolvedRight?.kind === 'dynamic' && resolvedLeft?.kind !== 'dynamic'
         ? leftType
-        : arithmetic && (resolvedRight?.kind === 'dynamic' || !resolvedRight) && resolvedLeft?.kind === 'primitive'
+        : stringOrdering
           ? leftType
-          : undefined,
+          : arithmetic && (resolvedRight?.kind === 'dynamic' || !resolvedRight) && resolvedLeft?.kind === 'primitive'
+            ? leftType
+            : undefined,
   );
   if (
     expression.operator === '+' &&
@@ -7607,7 +7677,7 @@ function usesStringUtf16Access(value: unknown, name: string): boolean {
     'kind' in value.callee &&
     value.callee.kind === 'property' &&
     'name' in value.callee &&
-    value.callee.name === 'codePointAt' &&
+    (value.callee.name === 'charCodeAt' || value.callee.name === 'codePointAt') &&
     'object' in value.callee &&
     value.callee.object &&
     typeof value.callee.object === 'object' &&
@@ -7788,17 +7858,11 @@ function registerSharedModuleAnonymousTypes(declarations: readonly IrDeclaration
   }
 }
 
-function registerTypeDeclarationAnonymousTypes(
-  declarations: readonly IrDeclaration[],
-  context: EmitContext,
-): void {
+function registerTypeDeclarationAnonymousTypes(declarations: readonly IrDeclaration[], context: EmitContext): void {
   const anonymousTypes = context.anonymousTypes as Map<string, string>;
   const anonymousTypeParameters = context.anonymousTypeParameters as Map<string, readonly string[]>;
   for (const declaration of declarations) {
-    if (
-      declaration.kind !== 'type' ||
-      (declaration.typeParameters.length === 0 && declaration.type.kind !== 'union')
-    ) {
+    if (declaration.kind !== 'type' || (declaration.typeParameters.length === 0 && declaration.type.kind !== 'union')) {
       continue;
     }
     let index = 1;
@@ -8744,10 +8808,7 @@ function emitNew(
       mapType?.kind === 'named' && mapType.name === 'RustMap'
         ? {
             element: {
-              arguments: [
-                mapType.arguments[0] ?? { kind: 'dynamic' },
-                mapType.arguments[1] ?? { kind: 'dynamic' },
-              ],
+              arguments: [mapType.arguments[0] ?? { kind: 'dynamic' }, mapType.arguments[1] ?? { kind: 'dynamic' }],
               kind: 'named',
               name: 'RustTuple2',
             },
@@ -9767,6 +9828,14 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
       }
       if (
         expression.callee.kind === 'property' &&
+        expression.callee.object.kind === 'identifier' &&
+        expression.callee.object.name === 'Number' &&
+        expression.callee.name === 'parseFloat'
+      ) {
+        return primitive('Float');
+      }
+      if (
+        expression.callee.kind === 'property' &&
         ((expression.callee.object.kind === 'identifier' && expression.callee.object.name === 'Object') ||
           runtimeGlobalType(expression.callee.object) === 'Object') &&
         expression.callee.name === 'is'
@@ -9952,6 +10021,7 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
         if (collection?.kind === 'primitive' && collection.name === 'String') {
           if (['startsWith', 'endsWith', 'includes'].includes(expression.callee.name)) return primitive('Bool');
           if (
+            expression.callee.name === 'charCodeAt' ||
             expression.callee.name === 'codePointAt' ||
             expression.callee.name === 'indexOf' ||
             expression.callee.name === 'search'
@@ -10316,9 +10386,7 @@ function discriminatedUnionComparison(
   ): { literal: boolean | number | string; name: string; propertyName: string } | undefined => {
     if (candidate.kind !== 'property' || candidate.object.kind !== 'identifier') return undefined;
     const literal = constantExpressionValue(value, context);
-    return literal === undefined
-      ? undefined
-      : { literal, name: candidate.object.name, propertyName: candidate.name };
+    return literal === undefined ? undefined : { literal, name: candidate.object.name, propertyName: candidate.name };
   };
   const property = comparison(expression.left, expression.right) ?? comparison(expression.right, expression.left);
   if (!property) return undefined;
