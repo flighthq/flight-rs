@@ -4110,6 +4110,12 @@ function emitKnownFunctionArgument(
     if (projected) return `Some(${projected})`;
   }
   if (!nullableParameter && !optionalParameter && expectedType.kind === 'union') {
+    if (argumentType && semanticTypesEqual(argumentType, expectedType, context) && isRustPlaceExpression(argument)) {
+      const value = emitPlaceExpression(argument, context);
+      return argument.kind === 'identifier' && context.borrowedNames.has(argument.name)
+        ? value
+        : `${mutable ? '&mut ' : '&'}${parenthesize(value)}`;
+    }
     return `&${parenthesize(emitExpression(argument, context, expectedType))}`;
   }
 
