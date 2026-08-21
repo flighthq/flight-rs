@@ -114,8 +114,12 @@ jobs:
         # compatibility with exactly those packages.
         run: npx tsx scripts/version-packages.ts "${FLIGHT_VERSION}" --flight "${FLIGHT_VERSION}"
 
-      - name: Verify the packaging invariants
-        run: npx vitest run tests/generator/facade-packaging.test.ts
+      # Scoped to the artifact, not the repository. The full suite also carries generator
+      # bookkeeping — compiled-candidate counts, lowering coverage, conformance shape — which moves
+      # when UPSTREAM changes and says nothing about whether this tarball works. A Flight release
+      # must not be blocked from shipping the port because an unrelated upstream package arrived.
+      - name: Verify the artifact
+        run: npm run test:release
 
       - name: Publish
         env:

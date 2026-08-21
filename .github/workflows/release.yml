@@ -75,13 +75,15 @@ jobs:
         run: npx tsx scripts/version-packages.ts "${{ steps.resolve.outputs.version }}"
 
       # This workflow triggers independently of ci.yml, so without a gate a red commit would still
-      # publish — and a published version cannot be withdrawn, only deprecated. The whole suite is a
-      # couple of minutes and covers exactly what is about to ship: the facade's differential parity
-      # against the TypeScript implementation, the packaging invariants, and the version logic that
-      # produced the number above. The thorough legs (generate:check, cargo) stay in ci.yml; the wasm
-      # build still runs here through `prepack`.
+      # publish — and a published version cannot be withdrawn, only deprecated.
+      #
+      # `test:release` rather than the whole suite, deliberately. CI verifies the REPOSITORY; a
+      # release verifies the ARTIFACT. The suite also carries generator bookkeeping — how many
+      # upstream packages compile, lowering coverage, conformance harvest shape — which moves when
+      # UPSTREAM changes and says nothing about whether this tarball works. Gating a release on it
+      # means an upstream package this port does not even touch can block shipping a fix.
       - name: Verify what is about to ship
-        run: npm run test
+        run: npm run test:release
 
       # Publishing is skipped rather than failed when no token is configured, so this workflow does
       # not report red on every push before the secret exists. It starts publishing on its own once

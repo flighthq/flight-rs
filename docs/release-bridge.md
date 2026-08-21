@@ -44,6 +44,25 @@ In order:
 
 The pin is never moved here. Moving it regenerates every crate and report, which needs the full check suite and human review — a pull request, not an unattended release.
 
+## What a release gates on, and what it does not
+
+CI verifies the **repository**. A release verifies the **artifact**. Both lanes run `npm run test:release`, not the whole suite, and the difference is the point.
+
+The full suite also carries generator bookkeeping — how many upstream packages compile, lowering coverage, the conformance harvest shape. Those move when **upstream** changes, and they say nothing about whether this tarball works. Gating a release on them means an upstream package this port does not touch can block shipping a fix. That is not hypothetical: the pin move to `181dea5e` added seven packages and immediately failed the lowering coverage gate and three golden counts, none of which involve `bitmap`.
+
+So the release gate is exactly what determines whether the tarball is fit to publish:
+
+| Checked | Why |
+| --- | --- |
+| Differential parity | The whole claim — the Rust kernels behave identically to the TypeScript they substitute |
+| Packaging invariants | The tarball shadows the right names, ships the wasm glue, and has a publishable manifest |
+| Version and dependency logic | The number and the range it declares are correct |
+| The build itself | `prepack` rebuilds the wasm from this commit |
+
+Deliberately **not** checked at release time: compiled-candidate counts, lowering coverage, conformance harvest, lint, formatting. Those are repository health, they belong on every push and pull request, and CI is where they gate.
+
+One consequence worth stating plainly: a release can succeed while `npm run check` is red. That is intended. The question a release asks is "is this artifact correct", and an unrelated upstream package arriving is not evidence that it is not.
+
 ## What that implies for sequencing
 
 Moving the pin is ordinary reviewed work on its own schedule, **not** a prerequisite for a release. A release publishes whatever the port currently is, at Flight's version, provided it still behaves as a drop-in — exactly as an unchanged Flight package ships at the family version.

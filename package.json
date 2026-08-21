@@ -20,6 +20,7 @@
     "release": "tsx scripts/publish-packages.ts",
     "test": "vitest run && vitest run --config packages/bitmap-rs/vitest.config.ts",
     "test:host-winit": "cargo test --manifest-path crates/flighthq-host-winit/Cargo.toml",
+    "test:release": "vitest run tests/generator/facade-packaging.test.ts tests/generator/publishing.test.ts && vitest run --config packages/bitmap-rs/vitest.config.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "typecheck:upstream": "tsc -p packages/bitmap-rs/tsconfig.upstream.json",
     "upstream:latest": "tsx scripts/upstream-latest.ts",
