@@ -715,8 +715,8 @@ fn _query_grid_overflow_pairs(grid: &UniformGrid, out: &mut Vec<SpatialPair>) ->
             continue;
         }
         for __iteration0 in ((grid.bounds).clone()).iter().cloned() {
-            let other_id = __iteration0[0.0_f64 as usize].clone();
-            let other_bounds = __iteration0[1.0_f64 as usize].clone();
+            let other_id = __iteration0.0.clone();
+            let other_bounds = __iteration0.1.clone();
             if (other_id == id) {
                 continue;
             }
@@ -850,7 +850,7 @@ fn _report_grid_indexing(
         return;
     }
     {
-        let __flight_callback = (_INDEXING_GUARD.as_ref().unwrap()).clone();
+        let __flight_callback = ((*_INDEXING_GUARD.lock().unwrap()).as_ref().unwrap()).clone();
         let __flight_result = __flight_callback.lock().unwrap()({
             let __flight_source = &(ReportGridIndexingSynthesizedRecord2498162634 {
                 __flight_identity: std::sync::Arc::new(()),
@@ -1082,9 +1082,9 @@ fn _query_grid_region(
     grid.seen.clear();
     if (!(_spanned_cell_count(cs, region) <= (grid.cells.len() as f64))) {
         for __iteration1 in ((grid.bounds).clone()).iter().cloned() {
-            let id = __iteration1[0.0_f64 as usize].clone();
-            let bounds = __iteration1[1.0_f64 as usize].clone();
-            if _is_spatial_aabb_overlapping(bounds.as_ref().unwrap(), region) {
+            let id = __iteration1.0.clone();
+            let bounds = __iteration1.1.clone();
+            if _is_spatial_aabb_overlapping(&bounds, region) {
                 out.push(id);
             }
         }

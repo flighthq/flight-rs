@@ -10499,16 +10499,6 @@
       "candidate": {
         "compileDiagnostics": [
           {
-            "code": "E0608",
-            "message": "cannot index into a value of type `(std::string::String, FlightValue)`",
-            "source": "generated/candidates/flighthq-accessibility/src/accessibility.rs"
-          },
-          {
-            "code": "E0608",
-            "message": "cannot index into a value of type `(std::string::String, FlightValue)`",
-            "source": "generated/candidates/flighthq-accessibility/src/accessibility.rs"
-          },
-          {
             "code": "E0308",
             "message": "mismatched types",
             "source": "generated/candidates/flighthq-accessibility/src/accessibility.rs"
@@ -10619,7 +10609,7 @@
           ],
           "declarations": 20,
           "module": "accessibility",
-          "outputSha256": "sha256:43b46f1aa54ba69c46bec1fd39e3d12f6858c149dcbf815b660be95afe6316f9",
+          "outputSha256": "sha256:74d151b83d70b1b4e743262cfd283f00ec5af21a268d2a5d03a79bf64c3f8928",
           "source": "upstream/packages/accessibility/src/accessibility.ts",
           "usesOpaqueHostValues": true
         },
@@ -12909,7 +12899,7 @@
           ],
           "declarations": 1,
           "module": "bitmap_font_from_glyph_atlas",
-          "outputSha256": "sha256:56a1a6f0eac25210194243406c28c4b9624bf010c361cd45d8373f7f54bcf419",
+          "outputSha256": "sha256:e5a24db20effa00a60f15765a37a04e7276feb3444099dc5279f819a9a2d2a30",
           "source": "upstream/packages/bitmapfont/src/bitmapFontFromGlyphAtlas.ts",
           "usesOpaqueHostValues": false
         },
@@ -15613,7 +15603,7 @@
           ],
           "declarations": 3,
           "module": "test_collision2_d",
-          "outputSha256": "sha256:3f30b046f3824c5e4dedb9d3efed973fb2e2112ab75f0c2cf703896756c26272",
+          "outputSha256": "sha256:88bd1147efbe38fb8482cc50e3e9eb7728347d74a1e68bc4550bf254a593bab7",
           "source": "upstream/packages/collision/src/testCollision2D.ts",
           "usesOpaqueHostValues": false
         }
@@ -35472,7 +35462,7 @@
           ],
           "declarations": 6,
           "module": "renderer",
-          "outputSha256": "sha256:0c4e41f6a5af9f151ada0c5a7801a7f8cfb944e876e675b0866ce17454faf21c",
+          "outputSha256": "sha256:31bff5aa972d955fc9524cbac788be8e46313d5c210f858e9451b5418d64c2b8",
           "source": "upstream/packages/render/src/renderer.ts",
           "usesOpaqueHostValues": false
         },
@@ -38613,7 +38603,7 @@
           ],
           "declarations": 18,
           "module": "rive_clipping",
-          "outputSha256": "sha256:cd6b74d077971fcbf491d7d4427e034f995b20609f8a3d544813caaa7c693fee",
+          "outputSha256": "sha256:b18f46dfa7c4ad75532506b1e0c1a0650038a69d0338753d4c188ffd3e4bed4a",
           "source": "upstream/packages/scene2d-formats/src/riveClipping.ts",
           "usesOpaqueHostValues": false
         },
@@ -44815,7 +44805,7 @@
           ],
           "declarations": 24,
           "module": "wgpu_skin_palette",
-          "outputSha256": "sha256:111745afc65cf6bfbc1f129c51e234b763a6270cb9f3e6912d1e922a09b9008f",
+          "outputSha256": "sha256:463191f05511dc2311f6481ce430a73a98520e4266ca691bab69aa4738e22738",
           "source": "upstream/packages/scene3d-wgpu/src/wgpuSkinPalette.ts",
           "usesOpaqueHostValues": true
         },
@@ -54795,7 +54785,7 @@
           ],
           "declarations": 6,
           "module": "skeleton2d_guards",
-          "outputSha256": "sha256:7acaaaa33d78ed82164c0ee66a0628f9153449c768e3545e591aae0cfbc4edef",
+          "outputSha256": "sha256:7a288d6cea493659ca91570273aae6b9c95ee46e5974a00c5711d19c1b0f2ff3",
           "source": "upstream/packages/skeleton2d/src/skeleton2dGuards.ts",
           "usesOpaqueHostValues": false
         },
@@ -55511,50 +55501,9 @@
       "attemptedSources": 6,
       "blockers": [],
       "candidate": {
-        "compileDiagnostics": [
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-spatial/src/format_spatial_indexing_notice.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-spatial/src/format_spatial_indexing_notice.rs"
-          },
-          {
-            "code": "E0308",
-            "message": "mismatched types",
-            "source": "generated/candidates/flighthq-spatial/src/format_spatial_indexing_notice.rs"
-          },
-          {
-            "code": "E0608",
-            "message": "cannot index into a value of type `(f64, SpatialAabb2D)`",
-            "source": "generated/candidates/flighthq-spatial/src/uniform_grid.rs"
-          },
-          {
-            "code": "E0608",
-            "message": "cannot index into a value of type `(f64, SpatialAabb2D)`",
-            "source": "generated/candidates/flighthq-spatial/src/uniform_grid.rs"
-          },
-          {
-            "code": "E0599",
-            "message": "no method named `as_ref` found for struct `LazyLock<Mutex<Option<Arc<Mutex<...>>>>>` in the current scope",
-            "source": "generated/candidates/flighthq-spatial/src/uniform_grid.rs"
-          },
-          {
-            "code": "E0608",
-            "message": "cannot index into a value of type `(f64, SpatialAabb2D)`",
-            "source": "generated/candidates/flighthq-spatial/src/uniform_grid.rs"
-          },
-          {
-            "code": "E0608",
-            "message": "cannot index into a value of type `(f64, SpatialAabb2D)`",
-            "source": "generated/candidates/flighthq-spatial/src/uniform_grid.rs"
-          }
-        ],
+        "compileDiagnostics": [],
         "path": "generated/candidates/flighthq-spatial",
-        "status": "compile-blocked",
+        "status": "compiled",
         "syntaxCheckedSources": 6,
         "unresolvedDependencies": []
       },
@@ -55596,7 +55545,7 @@
           ],
           "declarations": 1,
           "module": "format_spatial_indexing_notice",
-          "outputSha256": "sha256:a31d7df679470a007a771342b9cb81214f811a1532c7f393d665d3a3dc7d1aa7",
+          "outputSha256": "sha256:5fadb970190d87a7a2e020ab910a6d9024017f27a5a3d76fe80f6f1cf7811b5f",
           "source": "upstream/packages/spatial/src/formatSpatialIndexingNotice.ts",
           "usesOpaqueHostValues": false
         },
@@ -55654,7 +55603,7 @@
           ],
           "declarations": 22,
           "module": "uniform_grid",
-          "outputSha256": "sha256:68ede35f7d00b8436d8e585934cf2b455da4bc5c6e92ea4684f0627c69a9b6e8",
+          "outputSha256": "sha256:7b67356b38232b9b85d02a25023642ea4f7900c86be72d460b8716e94bbf3e0a",
           "source": "upstream/packages/spatial/src/uniformGrid.ts",
           "usesOpaqueHostValues": false
         }
@@ -56131,7 +56080,7 @@
           ],
           "declarations": 11,
           "module": "cocos_plist_parse",
-          "outputSha256": "sha256:0cd65993b5657ba0f8aad580146248d9ef2f4cb817394cc7a75b42dbc23af0a0",
+          "outputSha256": "sha256:a00668f7331d2a515fd7972a5cea1531b7a95574fd79db2374a684c66d16aa7b",
           "source": "upstream/packages/spritesheet-formats/src/cocosPlistParse.ts",
           "usesOpaqueHostValues": true
         },
@@ -56178,7 +56127,7 @@
           ],
           "declarations": 8,
           "module": "libgdx_atlas_parse",
-          "outputSha256": "sha256:6b93caeb688d8b46e480e13f8e8c2a6969850c191b90f3d7a104e8bc699f9bbb",
+          "outputSha256": "sha256:59bbc928fb4679a31761278ed9ca02c86d0dae58b13ab12f78e6088ed23fe6a9",
           "source": "upstream/packages/spritesheet-formats/src/libgdxAtlasParse.ts",
           "usesOpaqueHostValues": true
         },
@@ -56195,7 +56144,7 @@
           ],
           "declarations": 8,
           "module": "starling_parse",
-          "outputSha256": "sha256:66aa70a0c809af08c1e4db168513350a47c5ff3009bdd717953bcd3f7cfe623d",
+          "outputSha256": "sha256:bcd2661ddba9747bb869364699ca64c95d30edf313b39e276b5b7122cd2d0ec9",
           "source": "upstream/packages/spritesheet-formats/src/starlingParse.ts",
           "usesOpaqueHostValues": true
         },
@@ -58081,7 +58030,7 @@
           ],
           "declarations": 3,
           "module": "text_layout_measure",
-          "outputSha256": "sha256:7ac2d6a73aa80e47f22baa558de11635bfc16ae28e3091231474663d4121947c",
+          "outputSha256": "sha256:0944d8aeff1f0f51449645c339b06c55e7b95d2261b5bc062f01b4468ff5ca8f",
           "source": "upstream/packages/textlayout/src/textLayoutMeasure.ts",
           "usesOpaqueHostValues": false
         },
@@ -58455,7 +58404,7 @@
           ],
           "declarations": 4,
           "module": "text_shaper_signals",
-          "outputSha256": "sha256:b16bb2b44a60135c3395af900786c1b9701ce8435bc59f425e57c49ec93592e1",
+          "outputSha256": "sha256:d09cbbd686fb7f5e8f9162b6a837416d45584226d57dba44c15253e97285210f",
           "source": "upstream/packages/textshaper/src/textShaperSignals.ts",
           "usesOpaqueHostValues": false
         }
@@ -60418,7 +60367,7 @@
           ],
           "declarations": 3,
           "module": "update_tweens",
-          "outputSha256": "sha256:69b0ac392ba5ea241dce9093a04830822065e259b1f3a5b3c3957c4c7761da1b",
+          "outputSha256": "sha256:5db193a747e459e8bb365cfa86a87a1b47bdfa0829d705b5170264c8ee67c988",
           "source": "upstream/packages/tween/src/updateTweens.ts",
           "usesOpaqueHostValues": false
         }
@@ -72693,8 +72642,8 @@
   "schemaVersion": 6,
   "summary": {
     "blocked": 104,
-    "candidateCompileBlocked": 6,
-    "candidateCompiled": 17,
+    "candidateCompileBlocked": 5,
+    "candidateCompiled": 18,
     "candidateDependencyBlocked": 15,
     "cultivated": 1,
     "eligible": 144,

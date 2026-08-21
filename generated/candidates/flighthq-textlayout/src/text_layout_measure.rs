@@ -12,7 +12,7 @@ use flighthq_types::{TextFormat, TextMeasureFunction};
 // Source: upstream/packages/textlayout/src/textLayoutMeasure.ts:11 (sha256:c9787b742cfed724dbb1d937ab2b1365577b4dac7bc6328ffe7393fbf143a2bd)
 pub fn get_text_layout_measure_provider() -> Option<TextMeasureFunction> {
     if ((*_MEASURE_PROVIDER.lock().unwrap()).clone()).is_some() {
-        return Some((_MEASURE_PROVIDER.as_ref().unwrap()).clone());
+        return Some(((*_MEASURE_PROVIDER.lock().unwrap()).as_ref().unwrap()).clone());
     }
     if (get_text_shaper_backend()).is_some() {
         return Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(

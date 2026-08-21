@@ -11,7 +11,11 @@ use flighthq_types::SpatialIndexingNotice;
 
 // Source: upstream/packages/spatial/src/formatSpatialIndexingNotice.ts:18 (sha256:e03c250dcb83d5443af1e0c8dd132edc6ff34c7c37ab433f46dbf46211d79121)
 pub fn format_spatial_indexing_notice(notice: &SpatialIndexingNotice) -> String {
-    if ((notice.reason).clone() == "invalid-cell-size") {
+    if ((notice.reason).clone())
+        .as_ref()
+        .map(|value| value.to_string())
+        == Some("invalid-cell-size".to_owned())
+    {
         return format!(
             "createUniformGridSpatialBackend2D({}): cellSize must be a positive finite number. {}SpatialObject2D({}) used the bounded overflow path instead, so results remain correct but queries scan this object.",
             notice.cell_size,
@@ -19,14 +23,22 @@ pub fn format_spatial_indexing_notice(notice: &SpatialIndexingNotice) -> String 
             notice.id
         );
     }
-    if ((notice.reason).clone() == "inverted-bounds") {
+    if ((notice.reason).clone())
+        .as_ref()
+        .map(|value| value.to_string())
+        == Some("inverted-bounds".to_owned())
+    {
         return format!(
             "{}SpatialObject2D({}): minX/minY must not exceed maxX/maxY, so the object was not indexed and no query will return it. The operation returns false for this — normalize or correct the bounds upstream.",
             (notice.operation).clone(),
             notice.id
         );
     }
-    if ((notice.reason).clone() == "missing-id") {
+    if ((notice.reason).clone())
+        .as_ref()
+        .map(|value| value.to_string())
+        == Some("missing-id".to_owned())
+    {
         if ((notice.operation).clone() == "remove") {
             return format!(
                 "removeSpatialObject2D({}): the id was not indexed, so removal was a no-op. Check the object's indexing lifecycle if this was unexpected.",

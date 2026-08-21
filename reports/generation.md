@@ -8,8 +8,8 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | Default-generated packages | 144 |
 | Emittable packages | 40 |
 | Blocked packages | 104 |
-| Compiled candidates | 17 |
-| Compile-blocked candidates | 6 |
+| Compiled candidates | 18 |
+| Compile-blocked candidates | 5 |
 | Dependency-blocked candidates | 15 |
 | Cultivated packages | 1 |
 | Host-bound packages | 4 |
@@ -145,7 +145,7 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/skeleton3d` | generated | blocked | source-blocked | 5/10 | 26/26 | 0 | 2/3 | 0 | 5 | no |
 | `@flighthq/snapshot` | generated | blocked | source-blocked | 6/7 | 7/7 | 0 | 1/1 | 4 | 1 | no |
 | `@flighthq/socket` | generated | blocked | source-blocked | 3/5 | 16/16 | 0 | 1/1 | 0 | 2 | no |
-| `@flighthq/spatial` | generated | emittable | compile-blocked | 6/6 | 14/14 | 0 | 3/3 | 0 | 0 | no |
+| `@flighthq/spatial` | generated | emittable | compiled | 6/6 | 14/14 | 0 | 3/3 | 0 | 0 | no |
 | `@flighthq/spring` | generated | emittable | compiled | 6/6 | 12/12 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/spritesheet` | generated | emittable | dependency-blocked | 9/9 | 31/31 | 0 | 2/2 | 4 | 0 | no |
 | `@flighthq/spritesheet-formats` | generated | blocked | source-blocked | 9/12 | 19/19 | 0 | 1/1 | 6 | 3 | no |
@@ -1465,8 +1465,6 @@ Disposition partition: 177 eligible = 14 portable executable + 0 host placeholde
 
 ### `@flighthq/accessibility`
 
-- **E0608** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: cannot index into a value of type `(std::string::String, FlightValue)`
-- **E0608** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: cannot index into a value of type `(std::string::String, FlightValue)`
 - **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
 - **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
 - **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
@@ -1517,17 +1515,6 @@ Disposition partition: 177 eligible = 14 portable executable + 0 host placeholde
 - **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `index_of` on type `std::string::String`
 - **E0070** `generated/candidates/flighthq-protocol/src/protocol.rs`: invalid left-hand side of assignment
 - **E0070** `generated/candidates/flighthq-protocol/src/protocol.rs`: invalid left-hand side of assignment
-
-### `@flighthq/spatial`
-
-- **E0308** `generated/candidates/flighthq-spatial/src/format_spatial_indexing_notice.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-spatial/src/format_spatial_indexing_notice.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-spatial/src/format_spatial_indexing_notice.rs`: mismatched types
-- **E0608** `generated/candidates/flighthq-spatial/src/uniform_grid.rs`: cannot index into a value of type `(f64, SpatialAabb2D)`
-- **E0608** `generated/candidates/flighthq-spatial/src/uniform_grid.rs`: cannot index into a value of type `(f64, SpatialAabb2D)`
-- **E0599** `generated/candidates/flighthq-spatial/src/uniform_grid.rs`: no method named `as_ref` found for struct `LazyLock<Mutex<Option<Arc<Mutex<...>>>>>` in the current scope
-- **E0608** `generated/candidates/flighthq-spatial/src/uniform_grid.rs`: cannot index into a value of type `(f64, SpatialAabb2D)`
-- **E0608** `generated/candidates/flighthq-spatial/src/uniform_grid.rs`: cannot index into a value of type `(f64, SpatialAabb2D)`
 
 ### `@flighthq/timeline`
 
