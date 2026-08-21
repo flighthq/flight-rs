@@ -275,7 +275,8 @@ describe('Rust emission', () => {
     expect(output).toContain('fn __flight_pad_start');
     expect(output).toContain('!__flight_js_to_i32(1.0_f64)');
     expect(output).toContain('\\u{0000}');
-    expect(output).toContain('value.encode_utf16().count() as f64');
+    expect(output).toContain('std::sync::Arc::new(value.encode_utf16().collect())');
+    expect(output).toContain('(__flight_utf16_value.len() as f64)');
     expect(output).toContain('utf16_length((value).clone())');
     expect(output).toContain('let __flight_argument_1 = (out.x * 2.0_f64);');
     expect(output).not.toContain('break;');
@@ -629,6 +630,11 @@ describe('Rust emission', () => {
         export function orderedDigit(value: string): boolean {
           return value >= '0' && value <= '9';
         }
+        export function readAcrossClosures(value: string): number {
+          const first = () => value.charCodeAt(0);
+          const second = () => value.charCodeAt(1);
+          return first() + second() + value.charCodeAt(2);
+        }
         export function findString(value: string, search: string, position: number): number {
           return value.indexOf(search, position);
         }
@@ -741,7 +747,9 @@ describe('Rust emission', () => {
     });
 
     expect(lowered.diagnostics).toEqual([]);
-    expect(output).toContain('let __flight_utf16_value: Vec<u16> = value.encode_utf16().collect();');
+    expect(output).toContain(
+      'let __flight_utf16_value: std::sync::Arc<Vec<u16>> = std::sync::Arc::new(value.encode_utf16().collect());',
+    );
     expect(output).toContain('(__flight_utf16_value.len() as f64)');
     expect(output).toContain('let __flight_units: &[u16] = &__flight_utf16_value');
     expect(output).toContain('__flight_string_index_of');
@@ -775,6 +783,7 @@ describe('Rust emission', () => {
         '  assert!(generated::parse_decimal("not a number".to_owned()).is_nan());',
         '  assert!(generated::ordered_digit("5".to_owned()));',
         '  assert!(!generated::ordered_digit("x".to_owned()));',
+        '  assert_eq!(generated::read_across_closures("A😀".to_owned()), 112254.0);',
         '  assert_eq!(generated::find_string("A😀Z😀".to_owned(), "😀".to_owned(), 0.0), 1.0);',
         '  assert_eq!(generated::find_string("A😀Z😀".to_owned(), "😀".to_owned(), 2.0), 4.0);',
         '  assert_eq!(generated::slice_string("A😀Z".to_owned(), 1.0, Some(3.0)), "😀");',

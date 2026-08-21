@@ -6043,15 +6043,21 @@ function emitClosure(
   const anonymousDefinitions = emitAnonymousDefinitions(nextContext);
   const definedClosure = anonymousDefinitions ? `{ ${anonymousDefinitions} ${closure} }` : closure;
   const capturedNames = moveClosure ? collectClonedClosureCaptures(expression, context) : [];
+  const utf16Captures = moveClosure
+    ? [...context.utf16ViewNames.entries()].flatMap(([name, view]) =>
+        usesStringUtf16Access(expression, name) ? [view] : [],
+      )
+    : [];
   const recursiveSlots = moveClosure
     ? [...context.recursiveClosureSlots.entries()].flatMap(([name, slot]) =>
         containsIdentifier(expression, name) ? [slot] : [],
       )
     : [];
   const capturedClosure =
-    capturedNames.length > 0 || recursiveSlots.length > 0
+    capturedNames.length > 0 || utf16Captures.length > 0 || recursiveSlots.length > 0
       ? `{ ${[
           ...recursiveSlots.map((slot) => `let ${slot} = ${slot}.clone();`),
+          ...utf16Captures.map((view) => `let ${view} = ${view}.clone();`),
           ...capturedNames.map(
             (name) =>
               `let ${context.mutatedNames.has(name) ? 'mut ' : ''}${safeName(name)} = ${safeName(name)}.clone();`,
@@ -7649,12 +7655,29 @@ function prepareParameterUtf16Views(parameters: readonly IrParameter[], body: un
     }
     const view = `__flight_utf16_${safeName(parameter.name)}`;
     views.set(parameter.name, view);
-    return [`let ${view}: Vec<u16> = ${safeName(parameter.name)}.encode_utf16().collect();`];
+    return [
+      `let ${view}: std::sync::Arc<Vec<u16>> = std::sync::Arc::new(${safeName(parameter.name)}.encode_utf16().collect());`,
+    ];
   });
 }
 
 function usesStringUtf16Access(value: unknown, name: string): boolean {
   if (!value || typeof value !== 'object') return false;
+  if (
+    'kind' in value &&
+    value.kind === 'property' &&
+    'name' in value &&
+    value.name === 'length' &&
+    'object' in value &&
+    value.object &&
+    typeof value.object === 'object' &&
+    'kind' in value.object &&
+    value.object.kind === 'identifier' &&
+    'name' in value.object &&
+    value.object.name === name
+  ) {
+    return true;
+  }
   if (
     'kind' in value &&
     value.kind === 'element' &&
