@@ -1996,11 +1996,13 @@ function emitLocalVariable(variable: IrVariable, context: EmitContext): string[]
     entitySpreadType ? unwrapCasts(variable.initializer) : variable.initializer,
     context,
     (expected?.kind === 'dynamic' ? inferred : expected) ??
-      (mutable && inferred?.kind === 'primitive' && inferred.name === 'String'
+      (inferred?.kind === 'nullable' && variable.initializer.kind === 'call'
         ? inferred
-        : variable.initializer.kind === 'function' || containsObjectLiteral(variable.initializer)
+        : mutable && inferred?.kind === 'primitive' && inferred.name === 'String'
           ? inferred
-          : undefined),
+          : variable.initializer.kind === 'function' || containsObjectLiteral(variable.initializer)
+            ? inferred
+            : undefined),
   );
   if (inferred) context.symbolTypes.set(variable.name, inferred);
   if (!mutable && evaluatesToNullish(variable.initializer, context)) {
@@ -2647,9 +2649,17 @@ function emitCall(
       }
     }
     if (context.mutexValueNames.has(expression.callee.name)) {
-      const arguments_ = expression.arguments.map((argument) => {
+      const localType = inferIrExpressionType(expression.callee, context);
+      const resolvedLocal = resolveSemanticType(localType, context) ?? localType;
+      const callbackType =
+        resolvedLocal?.kind === 'nullable' ? resolveSemanticType(resolvedLocal.inner, context) : resolvedLocal;
+      const arguments_ = expression.arguments.map((argument, index) => {
         const value = argument.kind === 'spread' ? argument.expression : argument;
-        return emitExpression(value, context, inferIrExpressionType(value, context));
+        return emitFunctionCallArgument(
+          value,
+          callbackType?.kind === 'function' ? callbackType.parameters[index] : inferIrExpressionType(value, context),
+          context,
+        );
       });
       const callback = emitPlaceExpression(expression.callee, context);
       const value = context.nonNullableNames.has(expression.callee.name)
@@ -3220,11 +3230,13 @@ function emitCall(
       if (callback.kind === 'function') {
         const contextualCollection = resolveSemanticType(expectedType, context) ?? expectedType;
         const contextualElement = contextualCollection?.kind === 'array' ? contextualCollection.element : undefined;
-        const returns = callback.returns ??
-          inferFunctionExpressionReturnType(callback) ??
-          contextualElement ?? {
-            kind: 'dynamic',
-          };
+        const declaredReturns = callback.returns?.kind === 'dynamic' ? undefined : callback.returns;
+        const inferredReturns = inferFunctionExpressionReturnType(callback);
+        const returns =
+          declaredReturns ??
+          (inferredReturns?.kind === 'dynamic' ? undefined : inferredReturns) ??
+          contextualElement ??
+          ({ kind: 'dynamic' } as const);
         const closureType: IrType = {
           kind: 'function',
           parameters: [collectionType.element],
@@ -4484,6 +4496,7 @@ function emitProperty(
     if (expression.object.name === 'Number' && expression.name === 'NEGATIVE_INFINITY') return 'f64::NEG_INFINITY';
     if (expression.object.name === 'Number' && expression.name === 'NaN') return 'f64::NAN';
     if (expression.object.name === 'Number' && expression.name === 'EPSILON') return 'f64::EPSILON';
+    if (expression.object.name === 'Number' && expression.name === 'MAX_VALUE') return 'f64::MAX';
     if (expression.object.name === 'Number' && expression.name === 'MAX_SAFE_INTEGER') {
       return '9007199254740991.0_f64';
     }
@@ -9509,6 +9522,7 @@ function inferNamedStructuralObjectType(
   if (!signature || signature.names.size === 0) return undefined;
   const { names, unknownSpread } = signature;
   const matches = [...context.namedTypes.entries()].flatMap(([name, type]) => {
+    if (!context.localTypeNames.has(name) && !context.importedModules.has(name)) return [];
     if ((context.namedTypeParameters.get(name)?.length ?? 0) > 0) return [];
     if (type.kind !== 'anonymous') return [];
     const fields = flattenStructFields(type, context);
@@ -9803,6 +9817,9 @@ function emitElementRead(
   }
   const place = emitElement(expression, context);
   if (expression.optional) return place;
+  if (resolvedObject?.kind === 'named' && resolvedObject.name === 'RustMap' && expectedType?.kind !== 'nullable') {
+    return `${parenthesize(place)}.expect("TypeScript Record key was absent")`;
+  }
   const elementType = inferIrExpressionType(expression, context);
   if (
     elementType?.kind === 'nullable' &&
@@ -10171,10 +10188,7 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
             ? primitive('String')
             : object?.kind === 'named'
               ? object.name === 'RustMap'
-                ? {
-                    inner: object.arguments[1] ?? { kind: 'dynamic' },
-                    kind: 'nullable' as const,
-                  }
+                ? (object.arguments[1] ?? { kind: 'dynamic' })
                 : object.name === 'RustTuple2' &&
                     expression.index.kind === 'literal' &&
                     typeof expression.index.value === 'number'
@@ -10191,7 +10205,9 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
       if (
         expression.object.kind === 'identifier' &&
         ((expression.object.name === 'Number' &&
-          ['EPSILON', 'MAX_SAFE_INTEGER', 'NaN', 'NEGATIVE_INFINITY', 'POSITIVE_INFINITY'].includes(expression.name)) ||
+          ['EPSILON', 'MAX_SAFE_INTEGER', 'MAX_VALUE', 'NaN', 'NEGATIVE_INFINITY', 'POSITIVE_INFINITY'].includes(
+            expression.name,
+          )) ||
           (expression.object.name === 'Float' && ['INFINITY', 'NAN'].includes(expression.name)) ||
           (expression.object.name === 'Math' && expression.name === 'PI'))
       ) {
@@ -11042,6 +11058,14 @@ function resolveRustImport(
   item: RustImport['names'][number],
   declarations: string,
 ): RustImport['names'][number] | undefined {
+  if (item.kind === 'function') {
+    return {
+      imported: snakeCase(item.imported),
+      kind: item.kind,
+      local: snakeCase(item.local),
+      ...(item.public ? { public: true } : {}),
+    };
+  }
   const bindings =
     item.kind === 'type'
       ? [item]
@@ -11064,7 +11088,7 @@ function resolveRustImport(
             },
           ];
   if (item.public) {
-    if (item.kind === 'function' || item.kind === 'constant' || item.kind === 'mutable') return bindings.at(-1);
+    if (item.kind === 'constant' || item.kind === 'mutable') return bindings.at(-1);
     return bindings[0];
   }
   return bindings.find(({ local }) => new RegExp(`\\b${local}\\b`, 'u').test(declarations));

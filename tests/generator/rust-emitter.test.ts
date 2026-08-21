@@ -48,6 +48,24 @@ describe('Rust emission', () => {
           if (guard === null) return;
           guard(value);
         }
+        interface Notice { value: number; }
+        type NoticeGuard = (notice: Notice) => void;
+        let noticeGuard: NoticeGuard | null = null;
+        export function reportNotice(value: number): void {
+          if (noticeGuard === null) return;
+          noticeGuard({ value });
+        }
+        export function takeLast(values: number[]): number {
+          const value = values.pop();
+          if (value !== undefined) return value;
+          return -1;
+        }
+        export function cloneNested(values: readonly (readonly number[])[]): number[][] {
+          return values.map((value) => value.slice());
+        }
+        const REQUIRED_VALUES: Readonly<Record<string, number>> = { ready: 2 };
+        export function requiredValue(name: string): number { return REQUIRED_VALUES[name]; }
+        export function maximumNumber(): number { return Number.MAX_VALUE; }
         export interface Schedule { at?: Date; code: WireCode; }
         export type VendorKind = \`\${string}.\${string}\`;
         export function sameNumber(left: number, right: number): boolean { return Object.is(left, right); }
@@ -80,6 +98,11 @@ describe('Rust emission', () => {
     expect(output).toContain('pub fn append_optional(values: &mut Option<Vec<String>>)');
     expect(output).toContain('return has_optional(&(None));');
     expect(output).toContain('(*GUARD.lock().unwrap()).as_ref().unwrap()');
+    expect(output).toContain('Notice {');
+    expect(output).toContain('.pop();');
+    expect(output).toContain('.expect("TypeScript Record key was absent")');
+    expect(output).toContain('return f64::MAX;');
+    expect(output).not.toContain('Vec<crate::OpaqueHostValue>');
     expect(output).toContain('pub at: Option<crate::OpaqueHostValue>,');
     expect(output).toContain('pub code: f64,');
     expect(output).toContain('pub type VendorKind = String;');
@@ -1023,6 +1046,9 @@ describe('Rust emission', () => {
         export function callImported(value: number): number {
           return importedFunction(value);
         }
+        export function importedLabel(): string {
+          return 'importedFunction';
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -1034,7 +1060,7 @@ describe('Rust emission', () => {
       imports: [
         {
           module: 'crate',
-          names: [{ imported: 'importedFunction', local: 'importedFunction' }],
+          names: [{ imported: 'importedFunction', kind: 'function', local: 'importedFunction' }],
         },
       ],
       source: 'upstream/packages/math/src/imports.ts',
@@ -4316,6 +4342,10 @@ describe('Rust emission', () => {
           const packet: any = { left: input, right: 2 };
           return packet.left * packet.right;
         }
+        export function unconstrainedPointLength(): number {
+          const point = { x: 2, y: 3, z: 6 };
+          return Math.hypot(point.x, point.y, point.z);
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -4324,6 +4354,17 @@ describe('Rust emission', () => {
     const lowered = lowerTypeScriptSource(source, '@flighthq/effects-gl', '/workspace');
     const output = emitRustModule({
       declarations: lowered.declarations,
+      semanticTypes: {
+        ForeignPoint: {
+          extends: [],
+          fields: [
+            { name: 'x', optional: false, type: { kind: 'primitive', name: 'Float' } },
+            { name: 'y', optional: false, type: { kind: 'primitive', name: 'Float' } },
+            { name: 'z', optional: false, type: { kind: 'primitive', name: 'Float' } },
+          ],
+          kind: 'anonymous',
+        },
+      },
       source: 'upstream/packages/effects-gl/src/contextual-objects.ts',
       typeImports: [],
     });
@@ -4332,6 +4373,7 @@ describe('Rust emission', () => {
     expect(output).toContain('evaluate(&DeclaredOptions {');
     expect(output).toContain('let options = SemanticOptions {');
     expect(output).toMatch(/struct SynthesizedRecordPathSynthesizedRecord\d+/u);
+    expect(output).not.toContain('ForeignPoint {');
     expect(output).not.toContain('OpaqueHostValue');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-contextual-objects-'));
@@ -4347,6 +4389,7 @@ describe('Rust emission', () => {
         '  assert_eq!(returned.offset + returned.scale, 10.0);',
         '  assert_eq!(generated::semantic_signature_path(3.0), 7.0);',
         '  assert_eq!(generated::synthesized_record_path(8.0), 16.0);',
+        '  assert_eq!(generated::unconstrained_point_length(), 7.0);',
         '}',
         '',
       ].join('\n'),
