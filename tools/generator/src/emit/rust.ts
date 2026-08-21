@@ -8777,6 +8777,13 @@ function emitStructuralProjectionArgument(
   const actual = resolveSemanticType(actualType, context);
   const expected = resolveSemanticType(expectedType, context);
   if (actual?.kind !== 'anonymous' || expected?.kind !== 'anonymous') return undefined;
+  if (
+    emitType(actualType, context) === emitType(expectedType, context) &&
+    !isStructuralUtilityType(actualType) &&
+    !isStructuralUtilityType(expectedType)
+  ) {
+    return undefined;
+  }
   const actualFields = new Map(semanticStructFields(actualType, context).map((field) => [field.name, field]));
   const expectedFields = semanticStructFields(expectedType, context);
   const openFields = expectedType.kind === 'named' ? context.openInterfaceFields.get(expectedType.name) : undefined;
@@ -9767,9 +9774,6 @@ function selectDeclaredObjectType(
     const directNames = expression.properties.flatMap((property) =>
       property.kind === 'property' ? [property.name] : [],
     );
-    const requiredFieldsAvailable = fields.every(
-      (field) => field.optional || signature?.unknownSpread || signature?.names.has(field.name),
-    );
     const discriminantsMatch = fields.every((field) => {
       if (field.discriminantValue === undefined) return true;
       const property = expression.properties.find(
@@ -9779,12 +9783,7 @@ function selectDeclaredObjectType(
       const value = constantExpressionValue(property.value, context);
       return value === undefined || value === field.discriminantValue;
     });
-    if (
-      signature &&
-      requiredFieldsAvailable &&
-      discriminantsMatch &&
-      directNames.every((name) => fields.some((field) => field.name === name))
-    ) {
+    if (signature && discriminantsMatch && directNames.every((name) => fields.some((field) => field.name === name))) {
       return target;
     }
   }
