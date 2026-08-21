@@ -1623,6 +1623,10 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
   if (ts.isArrayTypeNode(node)) return { element: lowerType(node.elementType, context), kind: 'array' };
   if (ts.isTypeOperatorNode(node)) return lowerType(node.type, context);
   if (ts.isTypeQueryNode(node)) return { kind: 'dynamic' };
+  // Template-literal types constrain which JavaScript strings are accepted statically, but they do
+  // not introduce a distinct runtime representation. Preserve the value category without pretending
+  // Rust's `String` enforces the TypeScript pattern (for example `${string}.${string}`).
+  if (ts.isTemplateLiteralTypeNode(node)) return { kind: 'primitive', name: 'String' };
   if (ts.isIndexedAccessTypeNode(node)) {
     const namespaceType = inferValueNamespaceType(node, context);
     if (namespaceType) return namespaceType;

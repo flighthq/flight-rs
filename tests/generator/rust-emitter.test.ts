@@ -19,6 +19,7 @@ describe('Rust emission', () => {
         export interface Phantom<Value> { count: number; }
         export interface Holder<Value> { phantom: Phantom<Value>; }
         export interface Schedule { at?: Date; code: WireCode; }
+        export type VendorKind = \`\${string}.\${string}\`;
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -37,6 +38,7 @@ describe('Rust emission', () => {
     expect(output).toContain('pub phantom: Phantom,');
     expect(output).toContain('pub at: Option<crate::OpaqueHostValue>,');
     expect(output).toContain('pub code: f64,');
+    expect(output).toContain('pub type VendorKind = String;');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-schema-types-'));
     const sourceFile = path.join(fixture, 'lib.rs');
