@@ -64,6 +64,7 @@ interface EmitContext {
   erasedValueNames: ReadonlySet<string>;
   enumNames: ReadonlySet<string>;
   errorValueNames: ReadonlySet<string>;
+  forwardClosureCaptureNames: ReadonlySet<string>;
   functions: ReadonlyMap<string, IrFunctionDeclaration>;
   inheritedAnonymousTypeKeys: ReadonlySet<string>;
   importedModules: ReadonlyMap<string, string>;
@@ -191,6 +192,7 @@ export function emitRustModule(module: RustModule): string {
       ),
     ]),
     errorValueNames: new Set(),
+    forwardClosureCaptureNames: new Set(),
     functions: new Map(
       [
         ...(module.semanticFunctions ?? []),
@@ -789,7 +791,7 @@ function emitEnumDeclaration(declaration: IrEnumDeclaration, context: EmitContex
     ? `\n\nimpl ${declaration.name} {\n${indent([...members, ...methods].join('\n\n'))}\n}`
     : '';
   return [
-    '#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]',
+    '#[derive(Clone, Copy, Debug, Default, Eq, Ord, PartialEq, PartialOrd)]',
     '#[repr(transparent)]',
     `${visibility}struct ${declaration.name}(pub u32);`,
     implementation,
@@ -1090,13 +1092,14 @@ function emitLiftedFunction(
   const nextContext = functionContext(context, declaration.name, expression, returns);
   registerParameters(expression.parameters, nextContext, callback ? [primitive('Float')] : []);
   registerLocalTypes(expression.body, nextContext);
+  const forwardClosureSlots = emitForwardClosureSlotDeclarations(nextContext);
   const utf16Views = prepareParameterUtf16Views(expression.parameters, expression.body, nextContext);
   const parameters = expression.parameters.map((parameter) =>
     emitParameter(parameter, nextContext, callback ? primitive('Float') : undefined, expression),
   );
   const body = expression.expression
-    ? `{\n${indent([...utf16Views, `return ${emitExpression(expression.expression, nextContext, returns)};`].join('\n'))}\n}`
-    : emitStatementsAsBlock(expression.body, nextContext, utf16Views);
+    ? `{\n${indent([...forwardClosureSlots, ...utf16Views, `return ${emitExpression(expression.expression, nextContext, returns)};`].join('\n'))}\n}`
+    : emitStatementsAsBlock(expression.body, nextContext, [...forwardClosureSlots, ...utf16Views]);
   return `${emitAnonymousDefinitions(nextContext)}${declaration.exported ? 'pub ' : ''}fn ${snakeCase(declaration.name)}(${parameters.join(', ')}) -> ${emitType(returns, nextContext)} ${body}`;
 }
 
@@ -1126,6 +1129,7 @@ function emitFunctionDeclaration(declaration: IrFunctionDeclaration, context: Em
   registerParameters(declaration.parameters, nextContext);
   nextContext.entityTypeParameters = inferEntityTypeParameters(reachableBody, declaration.typeParameters, nextContext);
   registerLocalTypes(reachableBody, nextContext);
+  const forwardClosureSlots = emitForwardClosureSlotDeclarations(nextContext);
   nextContext.entityTypeParameters = new Set([
     ...nextContext.entityTypeParameters,
     ...inferEntityTypeParameters(reachableBody, declaration.typeParameters, nextContext),
@@ -1145,7 +1149,7 @@ function emitFunctionDeclaration(declaration: IrFunctionDeclaration, context: Em
       ? [{ declarations: [], kind: 'variable' } as IrStatement, ...declaration.body]
       : declaration.body,
     nextContext,
-    [...defaults, ...utf16Views],
+    [...forwardClosureSlots, ...defaults, ...utf16Views],
   );
   const signature = [...parameters, emitType(declaration.returns, nextContext)].join(' ');
   const effectiveTypeParameters = declaration.typeParameters.filter((parameter) =>
@@ -1197,6 +1201,7 @@ function emitPortableTaskFunctionDeclaration(declaration: IrFunctionDeclaration,
   };
   registerParameters(declaration.parameters, nextContext);
   registerLocalTypes(reachableBody, nextContext);
+  const forwardClosureSlots = emitForwardClosureSlotDeclarations(nextContext);
   const parameters = declaration.parameters.map((parameter) =>
     emitParameter(parameter, nextContext, undefined, declaration, false),
   );
@@ -1214,7 +1219,7 @@ function emitPortableTaskFunctionDeclaration(declaration: IrFunctionDeclaration,
       );
     }
   }
-  const prefix = [...defaults, ...utf16Views];
+  const prefix = [...forwardClosureSlots, ...defaults, ...utf16Views];
   const bodyStatements = emitStatementsAsBlock(reachableBody, nextContext, prefix);
   const body =
     output.kind === 'primitive' && output.name === 'Void'
@@ -1250,7 +1255,16 @@ function emitParameter(
     (resolvedReference?.kind === 'named' && Boolean(typedArrayType(resolvedReference.name)));
   const captured = capturesParameterInReturnedClosure(owner, parameter.name);
   const stored = resolved?.kind === 'function' && storesParameter(owner, parameter.name);
-  if (resolved?.kind === 'function' && !optional && !parameter.rest && borrowRecords && !captured && !stored) {
+  const concreteCallbackHandle = isConcreteCallbackHandleType(type, context);
+  if (
+    resolved?.kind === 'function' &&
+    !concreteCallbackHandle &&
+    !optional &&
+    !parameter.rest &&
+    borrowRecords &&
+    !captured &&
+    !stored
+  ) {
     context.rawClosureNames.add(parameter.name);
     context.borrowedNames.add(parameter.name);
     return `${safeName(parameter.name)}: &mut impl FnMut(${resolved.parameters
@@ -1258,7 +1272,8 @@ function emitParameter(
       .join(', ')}) -> ${emitType(resolved.returns, context)}`;
   }
   const assigned = referenceLike ? context.mutatedNames.has(parameter.name) : assignsName(owner, parameter.name);
-  const ownedReadHandle = sharedHandle || (type.kind === 'named' && type.name === 'Signal' && !assigned);
+  const ownedReadHandle =
+    sharedHandle || concreteCallbackHandle || (type.kind === 'named' && type.name === 'Signal' && !assigned);
   const borrowed =
     referenceLike && !ownedReadHandle && !optional && !parameter.rest && borrowRecords && !captured && !stored;
   if (borrowed) context.borrowedNames.add(parameter.name);
@@ -1767,6 +1782,15 @@ function emitStatementAsBlock(
   return emitStatementsAsBlock(statements, context, [], increment ? [`${emitExpression(increment, context)};`] : []);
 }
 
+function emitForwardClosureSlotDeclarations(context: EmitContext): string[] {
+  return [...context.forwardClosureCaptureNames].map((name) => {
+    const type = context.symbolTypes.get(name);
+    const slot = context.recursiveClosureSlots.get(name);
+    if (!type || !slot) throw new RustEmissionError(`cannot recover forward closure capture ${name}`);
+    return `let ${slot}: std::sync::Arc<std::sync::Mutex<Option<${emitType(type, context)}>>> = std::sync::Arc::new(std::sync::Mutex::new(None));`;
+  });
+}
+
 function emitLocalVariable(variable: IrVariable, context: EmitContext): string[] {
   const transferredBindings = collectTransferredObjectBindings(variable.initializer);
   const mutable =
@@ -1817,6 +1841,9 @@ function emitLocalVariable(variable: IrVariable, context: EmitContext): string[]
       ? ({ inner: { kind: 'dynamic' }, kind: 'nullable' } as const)
       : undefined);
   if (inferred?.kind === 'anonymous') registerInferredObjectType(inferred, context);
+  const forwardCaptureSlot = context.forwardClosureCaptureNames.has(variable.name)
+    ? context.recursiveClosureSlots.get(variable.name)
+    : undefined;
   if (context.timerHandleNames.has(variable.name)) {
     const timerType: IrType = {
       inner: { arguments: [], kind: 'named', name: 'FlightTimeout' },
@@ -1828,11 +1855,12 @@ function emitLocalVariable(variable: IrVariable, context: EmitContext): string[]
         ? 'None'
         : emitExpression(variable.initializer, context, timerType);
     const sharedCapture = context.sharedCaptureNames.has(variable.name);
-    return [
-      sharedCapture
-        ? `let ${safeName(variable.name)}: std::sync::Arc<std::sync::Mutex<${emitType(timerType, context)}>> = std::sync::Arc::new(std::sync::Mutex::new(${initializer}));`
-        : `let ${mutable ? 'mut ' : ''}${safeName(variable.name)}: ${emitType(timerType, context)} = ${initializer};`,
-    ];
+    const declaration = sharedCapture
+      ? `let ${safeName(variable.name)}: std::sync::Arc<std::sync::Mutex<${emitType(timerType, context)}>> = std::sync::Arc::new(std::sync::Mutex::new(${initializer}));`
+      : `let ${mutable ? 'mut ' : ''}${safeName(variable.name)}: ${emitType(timerType, context)} = ${initializer};`;
+    return forwardCaptureSlot
+      ? [declaration, `*${forwardCaptureSlot}.lock().unwrap() = Some(${safeName(variable.name)}.clone());`]
+      : [declaration];
   }
   const sharedCapture = context.sharedCaptureNames.has(variable.name);
   if (
@@ -1840,7 +1868,7 @@ function emitLocalVariable(variable: IrVariable, context: EmitContext): string[]
     variable.initializer.kind === 'function' &&
     containsIdentifier(variable.initializer, variable.name)
   ) {
-    const slot = `__flight_recursive_${safeName(variable.name)}`;
+    const slot = forwardCaptureSlot ?? `__flight_recursive_${safeName(variable.name)}`;
     const recursiveContext: EmitContext = {
       ...context,
       recursiveClosureSlots: new Map(context.recursiveClosureSlots).set(variable.name, slot),
@@ -1849,7 +1877,11 @@ function emitLocalVariable(variable: IrVariable, context: EmitContext): string[]
     const initializer = emitExpression(variable.initializer, recursiveContext, inferred);
     context.symbolTypes.set(variable.name, inferred);
     return [
-      `let ${slot}: std::sync::Arc<std::sync::Mutex<Option<${type}>>> = std::sync::Arc::new(std::sync::Mutex::new(None));`,
+      ...(forwardCaptureSlot
+        ? []
+        : [
+            `let ${slot}: std::sync::Arc<std::sync::Mutex<Option<${type}>>> = std::sync::Arc::new(std::sync::Mutex::new(None));`,
+          ]),
       `let ${mutable ? 'mut ' : ''}${safeName(variable.name)}: ${type} = ${initializer};`,
       `*${slot}.lock().unwrap() = Some(${safeName(variable.name)}.clone());`,
     ];
@@ -1896,11 +1928,15 @@ function emitLocalVariable(variable: IrVariable, context: EmitContext): string[]
     });
   }
   if (sharedCapture && inferred) {
-    return [
-      `let ${safeName(variable.name)}: std::sync::Arc<std::sync::Mutex<${emitType(inferred, context)}>> = std::sync::Arc::new(std::sync::Mutex::new(${initializer}));`,
-    ];
+    const declaration = `let ${safeName(variable.name)}: std::sync::Arc<std::sync::Mutex<${emitType(inferred, context)}>> = std::sync::Arc::new(std::sync::Mutex::new(${initializer}));`;
+    return forwardCaptureSlot
+      ? [declaration, `*${forwardCaptureSlot}.lock().unwrap() = Some(${safeName(variable.name)}.clone());`]
+      : [declaration];
   }
-  return [`let ${mutable ? 'mut ' : ''}${safeName(variable.name)}${annotation} = ${initializer};`];
+  const declaration = `let ${mutable ? 'mut ' : ''}${safeName(variable.name)}${annotation} = ${initializer};`;
+  return forwardCaptureSlot
+    ? [declaration, `*${forwardCaptureSlot}.lock().unwrap() = Some(${safeName(variable.name)}.clone());`]
+    : [declaration];
 }
 
 function collectTransferredObjectBindings(
@@ -2064,6 +2100,33 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
         const actualType = inferIrExpressionType(value, context);
         const actual = resolveSemanticType(actualType, context);
         const target = resolveSemanticType(expression.type, context);
+        if (
+          actualType?.kind === 'nullable' &&
+          target &&
+          semanticTypesEqual(actualType.inner, expression.type, context)
+        ) {
+          return `${emitExpression(value, context, actualType)}.unwrap()`;
+        }
+        if (actual?.kind === 'dynamic' && actual.portable && target) {
+          const portable = emitExpression(value, context, actualType);
+          const valuePath = dynamicValuePath(actual);
+          if (target.kind === 'named' && target.name === 'RustMap') {
+            return `match ${portable} { ${valuePath}::Record(entries) => entries, _ => panic!("TypeScript Record cast received a non-record portable value") }`;
+          }
+          if (target.kind === 'primitive') {
+            const variant =
+              target.name === 'String'
+                ? 'String'
+                : target.name === 'Bool'
+                  ? 'Bool'
+                  : target.name === 'Float' || target.name === 'Int'
+                    ? 'Number'
+                    : undefined;
+            if (variant) {
+              return `match ${portable} { ${valuePath}::${variant}(value) => value, _ => panic!("TypeScript ${target.name} cast received an incompatible portable value") }`;
+            }
+          }
+        }
         if (actualType && actual?.kind === 'anonymous' && target?.kind === 'anonymous') {
           const projected = emitStructuralProjectionArgument(
             emitExpression(value, context, actualType),
@@ -2638,11 +2701,19 @@ function emitCall(
       if (!keyExpression) throw new RustEmissionError(`Map.${method} requires a key argument`);
       const key = emitExpression(keyExpression, context, keyType);
       if (method === 'get') {
+        let lookup: string;
         if (expression.callee.optional && ownerType?.kind === 'nullable') {
           const optionalOwner = emitPlaceExpression(expression.callee.object, context);
-          return `${optionalOwner}.as_ref().and_then(|entries| entries.iter().find(|(entry_key, _)| entry_key == &${key}).map(|(_, value)| value.clone()))`;
+          lookup = `${optionalOwner}.as_ref().and_then(|entries| entries.iter().find(|(entry_key, _)| entry_key == &${key}).map(|(_, value)| value.clone()))`;
+        } else {
+          lookup = `${ownerRead}.iter().find(|(entry_key, _)| entry_key == &${key}).map(|(_, value)| value.clone())`;
         }
-        return `${ownerRead}.iter().find(|(entry_key, _)| entry_key == &${key}).map(|(_, value)| value.clone())`;
+        return expectedType &&
+          expectedType.kind !== 'nullable' &&
+          valueType &&
+          semanticTypesEqual(valueType, expectedType, context)
+          ? `${parenthesize(lookup)}.expect("TypeScript Map.get returned undefined")`
+          : lookup;
       }
       if (method === 'has') {
         return `${ownerRead}.iter().any(|(entry_key, _)| entry_key == &${key})`;
@@ -2884,7 +2955,9 @@ function emitCall(
       const equality =
         collectionType.element.kind === 'named' && context.callbackTypeParameters.has(collectionType.element.name)
           ? 'crate::FlightCallback::flight_same(item, &__flight_value)'
-          : 'item == &__flight_value';
+          : resolveSemanticType(collectionType.element, context)?.kind === 'function'
+            ? 'std::sync::Arc::ptr_eq(item, &__flight_value)'
+            : 'item == &__flight_value';
       return `{ let __flight_value = ${value}; ${collection}.iter().position(|item| ${equality}).map_or(-1.0_f64, |index| index as f64) }`;
     }
     if (collectionType?.kind === 'array' && method === 'includes') {
@@ -2896,7 +2969,9 @@ function emitCall(
       const equality =
         collectionType.element.kind === 'named' && context.callbackTypeParameters.has(collectionType.element.name)
           ? 'crate::FlightCallback::flight_same(item, &__flight_value)'
-          : 'item == &__flight_value';
+          : resolveSemanticType(collectionType.element, context)?.kind === 'function'
+            ? 'std::sync::Arc::ptr_eq(item, &__flight_value)'
+            : 'item == &__flight_value';
       return `{ let __flight_value = ${value}; ${collection}.iter().any(|item| ${equality}) }`;
     }
     if (collectionType?.kind === 'array' && method === 'sort') {
@@ -3530,6 +3605,7 @@ function emitKnownFunctionCall(
         declaration.typeParameters.includes(parameter.type.name);
       const owned =
         genericValueParameter ||
+        isConcreteCallbackHandleType(parameterType, context) ||
         capturesParameterInReturnedClosure(declaration, parameter.name) ||
         ((resolveSemanticType(parameterType, context) ?? parameterType).kind === 'function' &&
           storesParameter(declaration, parameter.name));
@@ -3630,11 +3706,16 @@ function emitKnownFunctionArgument(
   mutable = false,
   owned = false,
 ): string {
+  owned ||= isConcreteCallbackHandleType(parameter.type, context);
   const argumentType = inferIrExpressionType(argument, context);
   const resolvedParameterType = resolveSemanticType(parameter.type, context) ?? parameter.type;
   const nullableParameter = resolvedParameterType.kind === 'nullable';
   const expectedType = nullableParameter ? resolvedParameterType.inner : parameter.type;
   const resolvedExpectedType = resolveSemanticType(expectedType, context);
+  if (mutable) {
+    const portableRecord = emitMutablePortableRecordCastArgument(argument, resolvedExpectedType, context);
+    if (portableRecord) return portableRecord;
+  }
   if (
     resolvedExpectedType?.kind === 'anonymous' &&
     (expectedType.kind === 'anonymous' || isStructuralUtilityType(expectedType))
@@ -3702,7 +3783,9 @@ function emitKnownFunctionArgument(
         ? emitExpression(argument, context, expectedType)
         : argument.kind === 'object'
           ? emitExpression(argument, context, expectedType)
-          : emitPlaceExpression(argument, context);
+          : isRustPlaceExpression(argument)
+            ? emitPlaceExpression(argument, context)
+            : emitExpression(argument, context, expectedType);
     if (argumentType?.kind === 'nullable' && semanticTypesEqual(argumentType.inner, expectedType, context)) {
       return `${value}.${mutable ? 'as_mut' : 'as_ref'}().unwrap()`;
     }
@@ -3825,6 +3908,13 @@ function emitPortableValueExpression(expression: IrExpression, context: EmitCont
   if (expression.kind === 'array') return emitPortableArrayLiteral(expression, context, type);
   if (expression.kind === 'function') return 'crate::FlightValue::Function';
   if (isSymbolConstruction(expression)) return 'crate::FlightValue::Symbol';
+  if (expression.kind === 'conditional') {
+    const narrowed = narrowTypeofContexts(expression.condition, context);
+    return `if ${emitCondition(expression.condition, context)} { ${emitPortableValueExpression(
+      expression.whenTrue,
+      narrowed.whenTrue,
+    )} } else { ${emitPortableValueExpression(expression.whenFalse, narrowed.whenFalse)} }`;
+  }
 
   let actualType = type ?? inferIrExpressionType(expression, context);
   if (!actualType) {
@@ -4541,6 +4631,28 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
     const absent = `${owner}.get(${parenthesize(index)} as usize).is_none()`;
     return expression.operator === '===' || expression.operator === '==' ? absent : `!${parenthesize(absent)}`;
   }
+  if (arraySlot && ['===', '!==', '==', '!='].includes(expression.operator)) {
+    const objectType = inferIrExpressionType(arraySlot.object, context);
+    const collectionType = objectType?.kind === 'nullable' ? objectType.inner : objectType;
+    const storedType =
+      collectionType?.kind === 'named' && collectionType.name === 'RustMap' ? collectionType.arguments[1] : undefined;
+    const valueType = resolveSemanticType(storedType, context) ?? storedType;
+    if (storedType && valueType?.kind === 'dynamic' && valueType.portable) {
+      const lookup = emitExpression(arraySlot, context, {
+        inner: storedType,
+        kind: 'nullable',
+      });
+      const nullish = arraySlot === expression.left ? expression.right : expression.left;
+      const valuePath = dynamicValuePath(valueType);
+      const loose = expression.operator === '==' || expression.operator === '!=';
+      const matched = loose
+        ? `${parenthesize(lookup)}.as_ref().map_or(true, |value| matches!(value, ${valuePath}::Null | ${valuePath}::Undefined))`
+        : nullish.kind === 'literal'
+          ? `${parenthesize(lookup)}.as_ref().is_some_and(|value| matches!(value, ${valuePath}::Null))`
+          : `${parenthesize(lookup)}.as_ref().map_or(true, |value| matches!(value, ${valuePath}::Undefined))`;
+      return expression.operator === '===' || expression.operator === '==' ? matched : `!${parenthesize(matched)}`;
+    }
+  }
   const nullishContext =
     (expression.operator === '??' || expression.operator === '??undefined') &&
     resolvedLeft?.kind === 'dynamic' &&
@@ -4558,6 +4670,28 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
       nullishContext ??
       (comparison && resolvedLeft?.kind === 'dynamic' && resolvedRight?.kind !== 'dynamic' ? rightType : undefined),
   );
+  const narrowedErrorCause =
+    expression.left.kind === 'property' &&
+    expression.left.name === 'cause' &&
+    expression.left.object.kind === 'identifier' &&
+    context.errorValueNames.has(expression.left.object.name);
+  if (
+    !narrowedErrorCause &&
+    isNullishExpression(expression.right) &&
+    ['===', '!==', '==', '!='].includes(expression.operator) &&
+    resolvedLeft?.kind === 'dynamic' &&
+    resolvedLeft.portable
+  ) {
+    const valuePath = dynamicValuePath(resolvedLeft);
+    const loose = expression.operator === '==' || expression.operator === '!=';
+    const pattern = loose
+      ? `${valuePath}::Null | ${valuePath}::Undefined`
+      : expression.right.kind === 'literal'
+        ? `${valuePath}::Null`
+        : `${valuePath}::Undefined`;
+    const matches = `matches!(&${parenthesize(left)}, ${pattern})`;
+    return expression.operator === '===' || expression.operator === '==' ? matches : `!${parenthesize(matches)}`;
+  }
   if (expression.operator === 'instanceof') {
     const constructor = runtimeConstructorType(expression.right);
     const candidate = leftType?.kind === 'nullable' ? leftType.inner : leftType;
@@ -4593,6 +4727,12 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
       const place = emitPlaceExpression(expression.right, rightContext);
       const entries = rightType?.kind === 'nullable' ? `${place}.as_ref().unwrap()` : place;
       return `{ let __flight_key = ${key}; ${entries}.iter().any(|(key, _)| key == &__flight_key) }`;
+    }
+    if (rightReceiver?.kind === 'dynamic' && rightReceiver.portable) {
+      const key = emitExpression(expression.left, context, primitive('String'));
+      const value = emitExpression(expression.right, rightContext, rightType);
+      const valuePath = dynamicValuePath(rightReceiver);
+      return `{ let __flight_key = ${key}; matches!(&${parenthesize(value)}, ${valuePath}::Record(entries) if entries.iter().any(|(key, _)| key == &__flight_key)) }`;
     }
     if (expression.left.kind === 'literal' && typeof expression.left.value === 'string') {
       const propertyName = expression.left.value;
@@ -5039,6 +5179,37 @@ function emitExtensibleArrayElementAssignment(
   return `{ let __flight_index = ${parenthesize(index)} as usize; let __flight_value = ${value}; if __flight_index == ${collection}.len() { ${collection}.push(__flight_value); } else { ${collection}[__flight_index] = __flight_value; }${returnValue ? ` ${collection}[__flight_index].clone()` : ''} }`;
 }
 
+function emitMutablePortableRecordCastArgument(
+  expression: IrExpression,
+  expectedType: IrType | undefined,
+  context: EmitContext,
+): string | undefined {
+  if (expression.kind !== 'cast') return undefined;
+  const target = resolveSemanticType(expression.type, context) ?? expression.type;
+  if (
+    expectedType?.kind !== 'named' ||
+    expectedType.name !== 'RustMap' ||
+    target.kind !== 'named' ||
+    target.name !== 'RustMap'
+  ) {
+    return undefined;
+  }
+  const value = unwrapCasts(expression.expression);
+  if (value.kind !== 'element') return undefined;
+  const objectType = inferIrExpressionType(value.object, context);
+  const collectionType = objectType?.kind === 'nullable' ? objectType.inner : objectType;
+  if (collectionType?.kind !== 'named' || collectionType.name !== 'RustMap') return undefined;
+  const storedType = resolveSemanticType(collectionType.arguments[1], context) ?? collectionType.arguments[1];
+  if (storedType?.kind !== 'dynamic' || !storedType.portable) return undefined;
+  const collection =
+    objectType?.kind === 'nullable'
+      ? `${emitPlaceExpression(value.object, context)}.as_mut().unwrap()`
+      : emitCollectionPlace(value.object, context);
+  const key = emitExpression(value.index, context, collectionType.arguments[0] ?? primitive('String'));
+  const valuePath = dynamicValuePath(storedType);
+  return `{ let __flight_key = ${key}; let __flight_value = ${collection}.iter_mut().find(|(key, _)| key == &__flight_key).map(|(_, value)| value).expect("TypeScript Record key was absent"); match __flight_value { ${valuePath}::Record(entries) => entries, _ => panic!("TypeScript Record cast received a non-record portable value") } }`;
+}
+
 function emitMapElementAssignment(
   expression: Extract<IrExpression, { kind: 'assignment' }>,
   context: EmitContext,
@@ -5147,6 +5318,11 @@ function emitUnary(expression: Extract<IrExpression, { kind: 'unary' }>, context
     }
     if (resolved?.kind === 'nullable') {
       const operand = emitExpression(expression.operand, context);
+      const inner = resolveSemanticType(resolved.inner, context) ?? resolved.inner;
+      if (inner.kind === 'dynamic' && inner.portable) {
+        const valuePath = dynamicValuePath(inner);
+        return `${parenthesize(`match ${parenthesize(operand)}.as_ref() { None => "undefined", Some(value) => match value { ${valuePath}::Undefined => "undefined", ${valuePath}::Null | ${valuePath}::Array(_) | ${valuePath}::Record(_) | ${valuePath}::Error { .. } | ${valuePath}::Object => "object", ${valuePath}::Bool(_) => "boolean", ${valuePath}::Number(_) => "number", ${valuePath}::String(_) => "string", ${valuePath}::Function => "function", ${valuePath}::Symbol => "symbol" } }`)}.to_owned()`;
+      }
       return `${parenthesize(
         `${parenthesize(operand)}.as_ref().map_or("undefined", |_| ${emitRustStringLiteral(
           typeOfTag(resolved.inner, context),
@@ -5502,6 +5678,7 @@ function emitClosure(
     registerParameters(expression.parameters, nextContext, fallbackParameter);
   }
   registerLocalTypes(expression.body, nextContext);
+  const forwardClosureSlots = emitForwardClosureSlotDeclarations(nextContext);
   const declaredParameters =
     callbackTypeParameter && expression.parameters.length === 1
       ? [`${safeName(expression.parameters[0]!.name)}: <${callbackTypeParameter} as crate::FlightCallback>::Args`]
@@ -5536,10 +5713,13 @@ function emitClosure(
     const name = safeName(parameter.name);
     return [`let ${name} = ${name}.unwrap_or(${emitExpression(parameter.initializer, nextContext, parameterType)});`];
   });
+  const closurePrefix = [...forwardClosureSlots, ...defaults];
   const body = expression.expression
-    ? `{ ${defaults.length > 0 ? `${defaults.join(' ')} ` : ''}${emitExpression(expression.expression, nextContext, returns)} }`
-    : emitStatementsAsBlock(expression.body, nextContext, defaults);
+    ? `{ ${closurePrefix.length > 0 ? `${closurePrefix.join(' ')} ` : ''}${emitExpression(expression.expression, nextContext, returns)} }`
+    : emitStatementsAsBlock(expression.body, nextContext, closurePrefix);
   const closure = `${moveClosure ? 'move ' : ''}|${parameters.join(', ')}| -> ${emitType(returns, nextContext)} ${body}`;
+  const anonymousDefinitions = emitAnonymousDefinitions(nextContext);
+  const definedClosure = anonymousDefinitions ? `{ ${anonymousDefinitions} ${closure} }` : closure;
   const capturedNames = moveClosure ? collectClonedClosureCaptures(expression, context) : [];
   const recursiveSlots = moveClosure
     ? [...context.recursiveClosureSlots.entries()].flatMap(([name, slot]) =>
@@ -5554,8 +5734,8 @@ function emitClosure(
             (name) =>
               `let ${context.mutatedNames.has(name) ? 'mut ' : ''}${safeName(name)} = ${safeName(name)}.clone();`,
           ),
-        ].join(' ')} ${closure} }`
-      : closure;
+        ].join(' ')} ${definedClosure} }`
+      : definedClosure;
   if (callbackTypeParameter) {
     return `${callbackTypeParameter}::flight_from_tuple_callback(${capturedClosure})`;
   }
@@ -7095,6 +7275,11 @@ function functionContext(context: EmitContext, ownerName: string, owner: unknown
     ...context.sharedCaptureNames,
     ...collectSharedMutableLocals(owner, context.mutatingFunctions),
   ]);
+  const forwardClosureCaptureNames = collectForwardClosureCaptures(owner);
+  const recursiveClosureSlots = new Map(context.recursiveClosureSlots);
+  for (const name of forwardClosureCaptureNames) {
+    recursiveClosureSlots.set(name, `__flight_forward_${safeName(name)}`);
+  }
   const utf16ViewNames = new Map(context.utf16ViewNames);
   if (owner && typeof owner === 'object' && 'parameters' in owner && Array.isArray(owner.parameters)) {
     for (const parameter of owner.parameters as IrParameter[]) utf16ViewNames.delete(parameter.name);
@@ -7108,6 +7293,7 @@ function functionContext(context: EmitContext, ownerName: string, owner: unknown
     continueEpilogue: [],
     currentReturnType: returns,
     errorValueNames: new Set(context.errorValueNames),
+    forwardClosureCaptureNames,
     inheritedAnonymousTypeKeys: new Set(context.anonymousTypes.keys()),
     knownNullNames: new Set(),
     mutatedNames: collectMutatedNames(owner, context.mutatingFunctions),
@@ -7115,7 +7301,7 @@ function functionContext(context: EmitContext, ownerName: string, owner: unknown
     placeAliases: new Map(),
     preservedNames: new Set(),
     rawClosureNames: new Set(context.rawClosureNames),
-    recursiveClosureSlots: new Map(context.recursiveClosureSlots),
+    recursiveClosureSlots,
     sharedCaptureNames,
     symbolTypes: new Map(context.symbolTypes),
     timerHandleNames: new Set([...context.timerHandleNames, ...collectTimerHandleNames(owner)]),
@@ -7208,6 +7394,30 @@ function collectTimerHandleNames(owner: unknown): ReadonlySet<string> {
     }
   };
   visit(owner);
+  return names;
+}
+
+function collectForwardClosureCaptures(owner: unknown): ReadonlySet<string> {
+  if (!owner || typeof owner !== 'object' || !('body' in owner) || !Array.isArray(owner.body)) return new Set();
+  const statements = owner.body as IrStatement[];
+  const declarations = statements.map((statement) =>
+    statement.kind === 'variable'
+      ? statement.declarations.filter((variable) => !variable.mutable).map((variable) => variable.name)
+      : [],
+  );
+  const captures = (value: unknown, name: string): boolean => {
+    if (!value || typeof value !== 'object') return false;
+    if ('kind' in value && value.kind === 'function') return containsIdentifier(value, name);
+    return Object.values(value).some((child) =>
+      Array.isArray(child) ? child.some((item) => captures(item, name)) : captures(child, name),
+    );
+  };
+  const names = new Set<string>();
+  for (const [index, statement] of statements.entries()) {
+    for (const name of declarations.slice(index + 1).flat()) {
+      if (captures(statement, name)) names.add(name);
+    }
+  }
   return names;
 }
 
@@ -7738,6 +7948,22 @@ function storesParameter(owner: IrClassDeclaration | IrExpression | IrFunctionDe
     }
     if (
       'kind' in value &&
+      value.kind === 'call' &&
+      'callee' in value &&
+      value.callee &&
+      typeof value.callee === 'object' &&
+      'kind' in value.callee &&
+      value.callee.kind === 'property' &&
+      'name' in value.callee &&
+      (value.callee.name === 'push' || value.callee.name === 'unshift' || value.callee.name === 'splice') &&
+      'arguments' in value &&
+      Array.isArray(value.arguments) &&
+      value.arguments.some((argument) => containsIdentifier(argument, name))
+    ) {
+      return true;
+    }
+    if (
+      'kind' in value &&
       value.kind === 'assignment' &&
       'left' in value &&
       value.left &&
@@ -7931,6 +8157,11 @@ function isReferenceLike(type: IrType, context: EmitContext): boolean {
       ['ArrayBufferView', 'ByteBuffer', 'FlightRegex', 'RustMap', 'RustSet'].includes(resolved.name)) ||
     (resolved?.kind === 'named' && Boolean(typedArrayType(resolved.name)))
   );
+}
+
+function isConcreteCallbackHandleType(type: IrType, context: EmitContext): boolean {
+  if (type.kind !== 'named' || context.lexicalTypeParameters.has(type.name)) return false;
+  return resolveSemanticType(type, context)?.kind === 'function';
 }
 
 function isPlainStringType(type: IrType | undefined, context: EmitContext): boolean {
@@ -9646,7 +9877,8 @@ function narrowTypeofContexts(
     return unchanged;
   }
   const name = typeofExpression.operand.name;
-  const type = context.symbolTypes.get(name);
+  const declaredType = context.symbolTypes.get(name);
+  const type = resolveSemanticType(declaredType, context) ?? declaredType;
   if (type?.kind !== 'union') return unchanged;
   const matching = type.variants.flatMap((variant, index) =>
     typeOfTag(variant, context) === tagExpression.value ? [index] : [],
@@ -9662,10 +9894,12 @@ function narrowTypeofContexts(
   whenFalse.symbolTypes.set(name, type.variants[whenFalseIndex]!);
   whenTrue.unionNarrowings.set(name, {
     index: whenTrueIndex,
+    unionName: declaredType?.kind === 'named' ? declaredType.name : undefined,
     variants: type.variants,
   });
   whenFalse.unionNarrowings.set(name, {
     index: whenFalseIndex,
+    unionName: declaredType?.kind === 'named' ? declaredType.name : undefined,
     variants: type.variants,
   });
   return { whenFalse, whenTrue };

@@ -1771,6 +1771,77 @@ describe('Rust emission', () => {
     expect(() => execFileSync(binary, [], { cwd: fixture, stdio: 'pipe' })).not.toThrow();
   });
 
+  it('compiles portable unknown refinement, union branches, and nested record mutation', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/log/src/portable-refinement.ts',
+      `
+        type PortableData = string | Record<string, unknown>;
+        export function wrapData(data: PortableData): unknown {
+          return typeof data === 'string' ? { msg: data } : data;
+        }
+        export function readKind(value: unknown): string {
+          if (value !== null && typeof value === 'object' && '__kind' in value) {
+            return (value as Record<string, unknown>).__kind as string;
+          }
+          return '';
+        }
+        function markChanged(record: Record<string, unknown>): void {
+          record.changed = 'yes';
+        }
+        export function mutateNested(record: Record<string, unknown>): void {
+          if (record['child'] !== null && typeof record['child'] === 'object') {
+            markChanged(record['child'] as Record<string, unknown>);
+          }
+        }
+        export function requiredValue(values: Map<string, string>): string {
+          return values.get('key')!;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/log', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/log/src/portable-refinement.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('FlightValue::Null');
+    expect(output).toContain('FlightValue::Record(entries)');
+    expect(output).toContain('String cast received an incompatible portable value');
+    expect(output).toContain('TypeScript Map.get returned undefined');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-portable-refinement-'));
+    writeFileSync(path.join(fixture, 'flight_runtime.rs'), emitFlightTaskRuntime());
+    writeFileSync(path.join(fixture, 'generated.rs'), output);
+    writeFileSync(
+      path.join(fixture, 'main.rs'),
+      [
+        'mod flight_runtime;',
+        'pub use flight_runtime::*;',
+        'mod generated;',
+        'fn main() {',
+        '  let wrapped = generated::wrap_data(&FlightUnion2::A("message".to_owned()));',
+        '  assert_eq!(wrapped, FlightValue::Record(vec![("msg".to_owned(), FlightValue::String("message".to_owned()))]));',
+        '  let tagged = FlightValue::Record(vec![("__kind".to_owned(), FlightValue::String("widget".to_owned()))]);',
+        '  assert_eq!(generated::read_kind(tagged), "widget");',
+        '  assert_eq!(generated::read_kind(FlightValue::Null), "");',
+        '  let mut record = vec![("child".to_owned(), FlightValue::Record(Vec::new()))];',
+        '  generated::mutate_nested(&mut record);',
+        '  assert_eq!(record[0].1, FlightValue::Record(vec![("changed".to_owned(), FlightValue::String("yes".to_owned()))]));',
+        '  assert_eq!(generated::required_value(&vec![("key".to_owned(), "value".to_owned())]), "value");',
+        '}',
+        '',
+      ].join('\n'),
+    );
+    const binary = path.join(fixture, 'portable-refinement');
+    expect(() => compileRustExecutable('main.rs', binary, fixture)).not.toThrow();
+    expect(() => execFileSync(binary, [], { cwd: fixture, stdio: 'pipe' })).not.toThrow();
+  });
+
   it('rejects JSON fields whose Rust storage collapses omitted and explicit null', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/log/src/optional-null.ts',
@@ -2489,6 +2560,62 @@ describe('Rust emission', () => {
     expect(output).not.toContain('cleanup: &mut impl FnMut');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
+  it('keeps named callback aliases as cloneable identity handles across collection APIs', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/log/src/callback-aliases.ts',
+      `
+        export type Handler = (value: string) => void;
+        export interface Handle { readonly handler: Handler; }
+        const handlers: Handler[] = [];
+        export function addHandler(handler: Handler): void {
+          if (!handlers.includes(handler)) handlers.push(handler);
+        }
+        export function removeHandler(handler: Handler): boolean {
+          const index = handlers.indexOf(handler);
+          if (index < 0) return false;
+          handlers.splice(index, 1);
+          return true;
+        }
+        export function callHandler(handler: Handler, value: string): void {
+          handler(value);
+        }
+        function consumeHandle(_handle: Handle): void {}
+        export function createHandle(): Handle {
+          const handler: Handler = () => consumeHandle(handle);
+          const handle: Handle = { handler };
+          return handle;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/log', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/log/src/callback-aliases.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('pub fn add_handler(handler: Handler)');
+    expect(output).toContain('pub fn remove_handler(handler: Handler)');
+    expect(output).toContain('pub fn call_handler(handler: Handler, value: String)');
+    expect(output).toContain('let __flight_forward_handle: std::sync::Arc<std::sync::Mutex<Option<Handle>>>');
+    expect(output).toContain('*__flight_forward_handle.lock().unwrap() = Some(handle.clone())');
+    expect(output).not.toContain('impl FnMut(String)');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-callback-aliases-'));
     const sourceFile = path.join(fixture, 'lib.rs');
     writeFileSync(sourceFile, output);
     expect(() =>
