@@ -63,6 +63,7 @@ interface EmitContext {
   entityTypes: ReadonlySet<string>;
   erasedValueNames: ReadonlySet<string>;
   enumNames: ReadonlySet<string>;
+  errorValueNames: ReadonlySet<string>;
   functions: ReadonlyMap<string, IrFunctionDeclaration>;
   inheritedAnonymousTypeKeys: ReadonlySet<string>;
   importedModules: ReadonlyMap<string, string>;
@@ -189,6 +190,7 @@ export function emitRustModule(module: RustModule): string {
           : [],
       ),
     ]),
+    errorValueNames: new Set(),
     functions: new Map(
       [
         ...(module.semanticFunctions ?? []),
@@ -3893,7 +3895,7 @@ function emitPortableObjectLiteral(
       )} } }, crate::FlightValue::Array(values) => { for (__flight_index, __flight_value) in values.into_iter().enumerate() { let __flight_key = __flight_index.to_string(); ${emitPortableRecordUpdate(
         '__flight_key',
         '__flight_value',
-      )} } }, crate::FlightValue::Undefined | crate::FlightValue::Null | crate::FlightValue::Bool(_) | crate::FlightValue::Number(_) | crate::FlightValue::Function | crate::FlightValue::Symbol => {}, crate::FlightValue::String(_) => panic!("portable object spread of strings requires UTF-16 property lowering"), crate::FlightValue::Object => panic!("portable object spread cannot inspect an opaque host object") }`;
+      )} } }, crate::FlightValue::Undefined | crate::FlightValue::Null | crate::FlightValue::Bool(_) | crate::FlightValue::Number(_) | crate::FlightValue::Function | crate::FlightValue::Symbol => {}, crate::FlightValue::String(_) => panic!("portable object spread of strings requires UTF-16 property lowering"), crate::FlightValue::Error { .. } | crate::FlightValue::Object => panic!("portable object spread cannot inspect an opaque host object") }`;
     }
     const key =
       property.kind === 'property'
@@ -4087,6 +4089,8 @@ function emitProperty(
   if (expression.optional) return emitOptionalProperty(expression, context, expectedType);
   const structuralCast = emitStructuralCastProperty(expression, context);
   if (structuralCast !== undefined) return structuralCast;
+  const errorProperty = emitNarrowedErrorProperty(expression, context, expectedType);
+  if (errorProperty !== undefined) return errorProperty;
   if (expression.object.kind === 'identifier') {
     if (expression.object.name === 'Math' && expression.name === 'PI') return 'std::f64::consts::PI';
     if (expression.object.name === 'Number' && expression.name === 'POSITIVE_INFINITY') return 'f64::INFINITY';
@@ -4184,6 +4188,39 @@ function emitProperty(
   }
   const place = emitPropertyPlace(expression, context);
   return type && !isCopyType(type, context) ? `${parenthesize(place)}.clone()` : place;
+}
+
+function emitNarrowedErrorProperty(
+  expression: Extract<IrExpression, { kind: 'property' }>,
+  context: EmitContext,
+  expectedType?: IrType,
+): string | undefined {
+  if (expression.object.kind !== 'identifier' || !context.errorValueNames.has(expression.object.name)) {
+    return undefined;
+  }
+  if (!errorValuePropertyType(expression.name)) return undefined;
+  const owner = emitIdentifier(expression.object.name, context);
+  const prefix = `match &${parenthesize(owner)} { crate::OpaqueHostValue::Error {`;
+  const suffix = `_ => unreachable!("instanceof Error narrowing must contain an Error value") }`;
+  const dynamic = (resolveSemanticType(expectedType, context) ?? expectedType)?.kind === 'dynamic';
+  if (expression.name === 'name' || expression.name === 'message') {
+    const value = `${prefix} ${expression.name}, .. } => ${expression.name}.clone(), ${suffix}`;
+    return dynamic ? `crate::OpaqueHostValue::String(${value})` : value;
+  }
+  if (expression.name === 'stack') {
+    const value = `${prefix} stack, .. } => stack.clone(), ${suffix}`;
+    return dynamic
+      ? `${parenthesize(value)}.map(crate::OpaqueHostValue::String).unwrap_or(crate::OpaqueHostValue::Undefined)`
+      : value;
+  }
+  return `${prefix} cause, .. } => cause.as_deref().cloned().unwrap_or(crate::OpaqueHostValue::Undefined), ${suffix}`;
+}
+
+function errorValuePropertyType(name: string): IrType | undefined {
+  if (name === 'name' || name === 'message') return primitive('String');
+  if (name === 'stack') return { inner: primitive('String'), kind: 'nullable' };
+  if (name === 'cause') return { kind: 'dynamic' };
+  return undefined;
 }
 
 function emitStructuralCastProperty(
@@ -4481,6 +4518,11 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
         ? leftType?.kind === 'nullable'
           ? `${parenthesize(left)}.is_some()`
           : 'true'
+        : 'false';
+    }
+    if (constructor === 'Error') {
+      return candidate?.kind === 'dynamic'
+        ? `matches!(&${parenthesize(left)}, crate::OpaqueHostValue::Error { .. })`
         : 'false';
     }
     if (constructor && opaqueHostInstanceConstructors.has(constructor)) return 'false';
@@ -5017,20 +5059,22 @@ function emitUnary(expression: Extract<IrExpression, { kind: 'unary' }>, context
   }
   if (expression.operator === 'typeof') {
     const hostTag = inferHostPropertyTypeofTag(expression.operand, context);
-    if (hostTag) return emitRustStringLiteral(hostTag);
+    if (hostTag) return `${emitRustStringLiteral(hostTag)}.to_owned()`;
     const resolved = resolveSemanticType(operandType, context) ?? operandType;
     if (resolved?.kind === 'union') {
       const operand = emitExpression(expression.operand, context);
-      return emitUnionTypeof(`&${parenthesize(operand)}`, resolved.variants, context);
+      return `${parenthesize(emitUnionTypeof(`&${parenthesize(operand)}`, resolved.variants, context))}.to_owned()`;
     }
     if (resolved?.kind === 'nullable') {
       const operand = emitExpression(expression.operand, context);
-      return `${parenthesize(operand)}.as_ref().map_or("undefined", |_| ${emitRustStringLiteral(
-        typeOfTag(resolved.inner, context),
-      )})`;
+      return `${parenthesize(
+        `${parenthesize(operand)}.as_ref().map_or("undefined", |_| ${emitRustStringLiteral(
+          typeOfTag(resolved.inner, context),
+        )})`,
+      )}.to_owned()`;
     }
     if (resolved?.kind === 'primitive') {
-      return emitRustStringLiteral(
+      return `${emitRustStringLiteral(
         resolved.name === 'Bool'
           ? 'boolean'
           : resolved.name === 'String'
@@ -5038,11 +5082,11 @@ function emitUnary(expression: Extract<IrExpression, { kind: 'unary' }>, context
             : resolved.name === 'Void'
               ? 'undefined'
               : 'number',
-      );
+      )}.to_owned()`;
     }
     if (resolved?.kind === 'dynamic') {
       const operand = emitExpression(expression.operand, context);
-      return `match &${parenthesize(operand)} { crate::OpaqueHostValue::Undefined => "undefined", crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Array(_) | crate::OpaqueHostValue::Record(_) | crate::OpaqueHostValue::Object => "object", crate::OpaqueHostValue::Bool(_) => "boolean", crate::OpaqueHostValue::Number(_) => "number", crate::OpaqueHostValue::String(_) => "string", crate::OpaqueHostValue::Function => "function", crate::OpaqueHostValue::Symbol => "symbol" }`;
+      return `${parenthesize(`match &${parenthesize(operand)} { crate::OpaqueHostValue::Undefined => "undefined", crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Array(_) | crate::OpaqueHostValue::Record(_) | crate::OpaqueHostValue::Error { .. } | crate::OpaqueHostValue::Object => "object", crate::OpaqueHostValue::Bool(_) => "boolean", crate::OpaqueHostValue::Number(_) => "number", crate::OpaqueHostValue::String(_) => "string", crate::OpaqueHostValue::Function => "function", crate::OpaqueHostValue::Symbol => "symbol" }`)}.to_owned()`;
     }
     if (
       resolved?.kind === 'anonymous' ||
@@ -5050,7 +5094,7 @@ function emitUnary(expression: Extract<IrExpression, { kind: 'unary' }>, context
       resolved?.kind === 'function' ||
       resolved?.kind === 'named'
     ) {
-      return emitRustStringLiteral(resolved.kind === 'function' ? 'function' : 'object');
+      return `${emitRustStringLiteral(resolved.kind === 'function' ? 'function' : 'object')}.to_owned()`;
     }
     throw new RustEmissionError(`typeof operand has no inferred Rust type: ${JSON.stringify(expression.operand)}`);
   }
@@ -6978,6 +7022,7 @@ function functionContext(context: EmitContext, ownerName: string, owner: unknown
     captureReturns: false,
     continueEpilogue: [],
     currentReturnType: returns,
+    errorValueNames: new Set(context.errorValueNames),
     inheritedAnonymousTypeKeys: new Set(context.anonymousTypes.keys()),
     knownNullNames: new Set(),
     mutatedNames: collectMutatedNames(owner, context.mutatingFunctions),
@@ -7677,8 +7722,8 @@ function evaluateStaticBoolean(expression: IrExpression, context: EmitContext): 
     }
     if (value.kind === 'unary' && value.operator === 'typeof') {
       const emitted = emitUnary(value, context);
-      if (/^"(?:boolean|function|number|object|string|undefined)"$/u.test(emitted)) {
-        return JSON.parse(emitted) as string;
+      if (/^"(?:boolean|function|number|object|string|undefined)"(?:\.to_owned\(\))?$/u.test(emitted)) {
+        return JSON.parse(emitted.replace(/\.to_owned\(\)$/u, '')) as string;
       }
       if (runtimeGlobalType(value.operand)) return 'undefined';
       const type = inferIrExpressionType(value.operand, context);
@@ -8051,6 +8096,12 @@ function emitNew(
   }
   if (globalType === 'Map' || globalType === 'WeakMap' || globalType === 'WeakSet') {
     return 'Vec::new()';
+  }
+  if (globalType === 'Error') {
+    const message = expression.arguments[0]
+      ? emitExpression(expression.arguments[0], context, primitive('String'))
+      : 'String::new()';
+    return `crate::OpaqueHostValue::Error { name: "Error".to_owned(), message: ${message}, stack: None, cause: None }`;
   }
   if (globalType && opaqueHostConstructors.has(globalType)) {
     return 'crate::OpaqueHostValue::Object';
@@ -9309,6 +9360,11 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
       ) {
         return primitive('Float');
       }
+      if (expression.object.kind === 'identifier' && context.errorValueNames.has(expression.object.name)) {
+        const property = errorValuePropertyType(expression.name);
+        if (property)
+          return expression.optional && property.kind !== 'nullable' ? { inner: property, kind: 'nullable' } : property;
+      }
       if (expression.binding) return { kind: 'dynamic' };
       const object = inferIrExpressionType(expression.object, context);
       if (!object) return undefined;
@@ -9350,6 +9406,7 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
         };
       }
       if (name === 'ArrayBuffer') return { arguments: [], kind: 'named', name: 'ByteBuffer' };
+      if (name === 'Error') return { kind: 'dynamic' };
       if (name && opaqueHostConstructors.has(name)) return { kind: 'dynamic' };
       return name && typedArrayType(name) ? { arguments: [], kind: 'named', name } : undefined;
     }
@@ -9398,12 +9455,23 @@ function narrowTypeofContexts(
 ): { whenFalse: EmitContext; whenTrue: EmitContext } {
   const clone = (): EmitContext => ({
     ...context,
+    errorValueNames: new Set(context.errorValueNames),
     knownNullNames: new Set(context.knownNullNames),
     nonNullableNames: new Set(context.nonNullableNames),
     symbolTypes: new Map(context.symbolTypes),
     unionNarrowings: new Map(context.unionNarrowings),
   });
   const unchanged = { whenFalse: clone(), whenTrue: clone() };
+  if (
+    condition.kind === 'unary' &&
+    condition.operator === '!' &&
+    condition.operand.kind === 'binary' &&
+    condition.operand.operator === 'instanceof' &&
+    runtimeConstructorType(condition.operand.right) === 'Error'
+  ) {
+    const narrowed = narrowTypeofContexts(condition.operand, context);
+    return { whenFalse: narrowed.whenTrue, whenTrue: narrowed.whenFalse };
+  }
   if (condition.kind === 'binary' && condition.operator === '||') {
     const left = narrowTypeofContexts(condition.left, context);
     const right = narrowTypeofContexts(condition.right, left.whenFalse);
@@ -9423,6 +9491,16 @@ function narrowTypeofContexts(
       return { whenFalse: clone(), whenTrue };
     }
     return unchanged;
+  }
+  if (
+    condition.kind === 'binary' &&
+    condition.operator === 'instanceof' &&
+    condition.left.kind === 'identifier' &&
+    runtimeConstructorType(condition.right) === 'Error'
+  ) {
+    const whenTrue = clone();
+    (whenTrue.errorValueNames as Set<string>).add(condition.left.name);
+    return { whenFalse: clone(), whenTrue };
   }
   if (condition.kind !== 'binary' || !['===', '!==', '==', '!='].includes(condition.operator)) {
     return unchanged;
@@ -9622,7 +9700,7 @@ function runtimeConstructorType(expression: IrExpression): string | undefined {
   if (
     expression.kind === 'identifier' &&
     (typedArrayType(expression.name) ||
-      ['Array', 'Map', 'Proxy', 'Set', 'WeakMap', 'WeakSet'].includes(expression.name))
+      ['Array', 'Error', 'Map', 'Proxy', 'Set', 'WeakMap', 'WeakSet'].includes(expression.name))
   ) {
     return expression.name;
   }
@@ -9755,7 +9833,7 @@ function emitCondition(expression: IrExpression, context: EmitContext): string {
   const resolved = resolveSemanticType(type, context) ?? type;
   if (resolved?.kind === 'dynamic') {
     const value = emitExpression(expression, context);
-    return `match &${parenthesize(value)} { crate::OpaqueHostValue::Undefined | crate::OpaqueHostValue::Null => false, crate::OpaqueHostValue::Bool(value) => *value, crate::OpaqueHostValue::Number(value) => *value != 0.0_f64 && !value.is_nan(), crate::OpaqueHostValue::String(value) => !value.is_empty(), crate::OpaqueHostValue::Array(_) | crate::OpaqueHostValue::Record(_) | crate::OpaqueHostValue::Function | crate::OpaqueHostValue::Symbol | crate::OpaqueHostValue::Object => true }`;
+    return `match &${parenthesize(value)} { crate::OpaqueHostValue::Undefined | crate::OpaqueHostValue::Null => false, crate::OpaqueHostValue::Bool(value) => *value, crate::OpaqueHostValue::Number(value) => *value != 0.0_f64 && !value.is_nan(), crate::OpaqueHostValue::String(value) => !value.is_empty(), crate::OpaqueHostValue::Array(_) | crate::OpaqueHostValue::Record(_) | crate::OpaqueHostValue::Error { .. } | crate::OpaqueHostValue::Function | crate::OpaqueHostValue::Symbol | crate::OpaqueHostValue::Object => true }`;
   }
   const emitted = emitExpression(expression, context);
   if (type?.kind === 'primitive' && type.name === 'Bool') return emitted;

@@ -1669,6 +1669,73 @@ describe('Rust emission', () => {
     expect(() => execFileSync(binary, [], { cwd: fixture, stdio: 'pipe' })).not.toThrow();
   });
 
+  it('compiles and runs explicit Error values with JavaScript narrowing semantics', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/log/src/errors.ts',
+      `
+        export function describeError(value: unknown): string {
+          if (!(value instanceof Error)) return typeof value;
+          return \`\${value.name}:\${value.message}:\${value.stack ?? ''}\`;
+        }
+        export function readErrorCause(value: unknown): unknown {
+          if (value instanceof Error) return value.cause;
+          return null;
+        }
+        export function isTruthy(value: unknown): boolean {
+          return value ? true : false;
+        }
+        export function constructError(): unknown {
+          return new Error('built');
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/log', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/log/src/errors.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('crate::OpaqueHostValue::Error { .. }');
+    expect(output).not.toContain('host.name');
+    expect(output).not.toContain('host.message');
+    expect(output).not.toContain('host.stack');
+    expect(output).not.toContain('host.cause');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-error-values-'));
+    writeFileSync(path.join(fixture, 'flight_runtime.rs'), emitFlightTaskRuntime());
+    writeFileSync(path.join(fixture, 'generated.rs'), output);
+    writeFileSync(
+      path.join(fixture, 'main.rs'),
+      [
+        'mod flight_runtime;',
+        'pub use flight_runtime::*;',
+        'mod generated;',
+        'fn main() {',
+        '  let error = FlightValue::Error {',
+        '    name: "TypeError".to_owned(),',
+        '    message: "broken".to_owned(),',
+        '    stack: Some("trace".to_owned()),',
+        '    cause: Some(Box::new(FlightValue::Number(7.0))),',
+        '  };',
+        '  assert_eq!(generated::describe_error(error.clone()), "TypeError:broken:trace");',
+        '  assert_eq!(generated::describe_error(FlightValue::Number(1.0)), "number");',
+        '  assert_eq!(generated::read_error_cause(error.clone()), FlightValue::Number(7.0));',
+        '  assert!(generated::is_truthy(error));',
+        '  assert!(matches!(generated::construct_error(), FlightValue::Error { name, message, stack: None, cause: None } if name == "Error" && message == "built"));',
+        '}',
+        '',
+      ].join('\n'),
+    );
+    const binary = path.join(fixture, 'error-values');
+    expect(() => compileRustExecutable('main.rs', binary, fixture)).not.toThrow();
+    expect(() => execFileSync(binary, [], { cwd: fixture, stdio: 'pipe' })).not.toThrow();
+  });
+
   it('rejects JSON fields whose Rust storage collapses omitted and explicit null', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/log/src/optional-null.ts',

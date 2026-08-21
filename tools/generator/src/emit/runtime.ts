@@ -36,6 +36,12 @@ pub enum FlightValue {
     String(String),
     Array(Vec<FlightValue>),
     Record(Vec<(String, FlightValue)>),
+    Error {
+        name: String,
+        message: String,
+        stack: Option<String>,
+        cause: Option<Box<FlightValue>>,
+    },
     Function,
     Symbol,
     Object,
@@ -118,7 +124,7 @@ fn flight_json_fragment(value: &FlightValue) -> Result<Option<String>, FlightJso
                 .collect::<Result<Vec<_>, _>>()?;
             Ok(Some(format!("{{{}}}", fields.join(","))))
         }
-        FlightValue::Object => Err(FlightJsonError::OpaqueHostObject),
+        FlightValue::Error { .. } | FlightValue::Object => Err(FlightJsonError::OpaqueHostObject),
     }
 }
 
@@ -606,6 +612,15 @@ mod tests {
         assert_eq!(flight_json_stringify(&FlightValue::Undefined), Ok(None));
         assert_eq!(
             flight_json_stringify(&FlightValue::Object),
+            Err(FlightJsonError::OpaqueHostObject)
+        );
+        assert_eq!(
+            flight_json_stringify(&FlightValue::Error {
+                name: String::from("TypeError"),
+                message: String::from("invalid value"),
+                stack: None,
+                cause: None,
+            }),
             Err(FlightJsonError::OpaqueHostObject)
         );
     }
