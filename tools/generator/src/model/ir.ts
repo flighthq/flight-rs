@@ -56,7 +56,7 @@ export interface IrTaskConstruction {
 export type IrType =
   | { kind: 'anonymous'; fields: IrTypeField[]; extends: IrType[] }
   | { kind: 'array'; element: IrType }
-  | { kind: 'dynamic' }
+  | { kind: 'dynamic'; portable?: boolean | undefined }
   | { kind: 'function'; parameters: IrType[]; returns: IrType }
   | { kind: 'named'; arguments: IrType[]; name: string }
   | { kind: 'nullable'; inner: IrType }

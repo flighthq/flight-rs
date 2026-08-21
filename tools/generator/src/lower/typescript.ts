@@ -1067,7 +1067,7 @@ function findEnclosingFunction(
 function recoveryTypeContainsDynamic(type: IrType): boolean {
   switch (type.kind) {
     case 'dynamic':
-      return true;
+      return !type.portable;
     case 'anonymous':
       return (
         type.extends.some(recoveryTypeContainsDynamic) ||
@@ -1604,8 +1604,9 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
   switch (node.kind) {
     case ts.SyntaxKind.AnyKeyword:
     case ts.SyntaxKind.NeverKeyword:
-    case ts.SyntaxKind.UnknownKeyword:
       return { kind: 'dynamic' };
+    case ts.SyntaxKind.UnknownKeyword:
+      return { kind: 'dynamic', portable: true };
     case ts.SyntaxKind.UndefinedKeyword:
       return { kind: 'dynamic' };
     case ts.SyntaxKind.ObjectKeyword:

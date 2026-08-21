@@ -126,6 +126,9 @@ describe('configured type lowering exceptions', () => {
     const loaderOutput = lowered.asyncTasks.find((scope) =>
       scope.execution.origin.lexicalPath.startsWith('returnLoader.anonymous:'),
     )?.output;
+    const portableUnknown = lowered.declarations.find(
+      (declaration) => declaration.kind === 'function' && declaration.name === 'stillDynamic',
+    );
 
     expect(lowered.diagnostics).toEqual([]);
     expect(outputs['returnBackend.fromReturn']).toEqual({ arguments: [], kind: 'named', name: 'DeclaredPayload' });
@@ -148,6 +151,9 @@ describe('configured type lowering exceptions', () => {
       kind: 'anonymous',
     });
     expect(outputs.genuinelyDynamic).toEqual({ kind: 'dynamic' });
+    expect(portableUnknown).toMatchObject({
+      returns: { kind: 'task', output: { kind: 'dynamic', portable: true } },
+    });
     expect(
       lowered.taskConstructions
         .filter((construction) => construction.kind === 'ready' || construction.kind === 'reject')
@@ -155,7 +161,7 @@ describe('configured type lowering exceptions', () => {
     ).toEqual([
       { kind: 'ready', output: { arguments: [], kind: 'named', name: 'DeclaredPayload' } },
       { kind: 'reject', output: { arguments: [], kind: 'named', name: 'DeclaredPayload' } },
-      { kind: 'ready', output: { kind: 'dynamic' } },
+      { kind: 'ready', output: { kind: 'dynamic', portable: true } },
     ]);
   });
 

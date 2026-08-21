@@ -1318,7 +1318,7 @@ function markOpaqueTaskSourceUnsupported(
 function irTypeContainsDynamic(type: IrType): boolean {
   switch (type.kind) {
     case 'dynamic':
-      return true;
+      return !type.portable;
     case 'anonymous':
       return type.extends.some(irTypeContainsDynamic) || type.fields.some((field) => irTypeContainsDynamic(field.type));
     case 'array':
@@ -1987,7 +1987,7 @@ function emitLibrary(target: RustTarget, modules: string[]): string {
     '#![forbid(unsafe_code)]',
     '',
     '/// Canonical recursive storage for TypeScript values at the generated Rust boundary.',
-    'pub use flighthq_runtime::{flight_json_stringify, flight_task_yield, host_task, install_deterministic_flight_task_scheduler, install_flight_task_scheduler, DeterministicFlightTaskScheduler, FlightHostUnavailable, FlightJsonError, FlightRejection, FlightRuntimeUnavailable, FlightTask, FlightTaskError, FlightTaskOrigin, FlightTaskOutcome, FlightTaskScheduler, FlightUnion2, FlightValue, OpaqueHostValue, ScheduledFlightTask};',
+    'pub use flighthq_runtime::{flight_json_stringify, flight_task_yield, flight_value_to_string, host_task, install_deterministic_flight_task_scheduler, install_flight_task_scheduler, DeterministicFlightTaskScheduler, FlightHostUnavailable, FlightJsonError, FlightRejection, FlightRuntimeUnavailable, FlightTask, FlightTaskError, FlightTaskOrigin, FlightTaskOutcome, FlightTaskScheduler, FlightUnion2, FlightValue, OpaqueHostValue, ScheduledFlightTask};',
     '',
     ...(sharedOpaqueHostValue
       ? [

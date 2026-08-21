@@ -91,6 +91,35 @@ pub fn flight_json_stringify(value: &FlightValue) -> Result<Option<String>, Flig
     flight_json_fragment(value)
 }
 
+pub fn flight_value_to_string(value: &FlightValue) -> String {
+    match value {
+        FlightValue::Undefined => "undefined".to_owned(),
+        FlightValue::Null => "null".to_owned(),
+        FlightValue::Bool(value) => value.to_string(),
+        FlightValue::Number(value) if value.is_nan() => "NaN".to_owned(),
+        FlightValue::Number(value) if *value == f64::INFINITY => "Infinity".to_owned(),
+        FlightValue::Number(value) if *value == f64::NEG_INFINITY => "-Infinity".to_owned(),
+        FlightValue::Number(value) => flight_json_number(*value),
+        FlightValue::String(value) => value.clone(),
+        FlightValue::Array(values) => values
+            .iter()
+            .map(|value| match value {
+                FlightValue::Undefined | FlightValue::Null => String::new(),
+                value => flight_value_to_string(value),
+            })
+            .collect::<Vec<_>>()
+            .join(","),
+        FlightValue::Record(_) | FlightValue::Object => "[object Object]".to_owned(),
+        FlightValue::Error { name, message, .. } => match (name.is_empty(), message.is_empty()) {
+            (true, _) => message.clone(),
+            (_, true) => name.clone(),
+            (false, false) => format!("{name}: {message}"),
+        },
+        FlightValue::Function => "function".to_owned(),
+        FlightValue::Symbol => "Symbol()".to_owned(),
+    }
+}
+
 fn flight_json_fragment(value: &FlightValue) -> Result<Option<String>, FlightJsonError> {
     match value {
         FlightValue::Undefined | FlightValue::Function | FlightValue::Symbol => Ok(None),
@@ -640,6 +669,29 @@ mod tests {
             Ok(Some(String::from(
                 "[0,1e-7,0.000001,100000000000000000000,1e+21,1.23e-7]",
             ))),
+        );
+    }
+
+    #[test]
+    fn stringifies_portable_values_with_javascript_coercion_semantics() {
+        assert_eq!(flight_value_to_string(&FlightValue::Undefined), "undefined");
+        assert_eq!(flight_value_to_string(&FlightValue::Number(f64::NAN)), "NaN");
+        assert_eq!(
+            flight_value_to_string(&FlightValue::Array(vec![
+                FlightValue::String("first".to_owned()),
+                FlightValue::Null,
+                FlightValue::Number(2.0_f64),
+            ])),
+            "first,,2",
+        );
+        assert_eq!(
+            flight_value_to_string(&FlightValue::Error {
+                name: "TypeError".to_owned(),
+                message: "invalid".to_owned(),
+                stack: None,
+                cause: None,
+            }),
+            "TypeError: invalid",
         );
     }
 

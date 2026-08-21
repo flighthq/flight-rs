@@ -2123,7 +2123,7 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
         expression.name.toLowerCase() === 'undefined' &&
         (resolveSemanticType(expectedType, context) ?? expectedType)?.kind === 'dynamic'
       ) {
-        return 'crate::OpaqueHostValue::Undefined';
+        return `${dynamicValuePath(resolveSemanticType(expectedType, context) ?? expectedType)}::Undefined`;
       }
       const actualType = context.symbolTypes.get(expression.name);
       const emitted = emitIdentifier(expression.name, context);
@@ -2320,6 +2320,12 @@ function emitCall(
     if (portableGlobal === 'decodeURIComponent') {
       if (!value) throw new RustEmissionError('decodeURIComponent requires a string value');
       return `__flight_decode_uri_component(&${parenthesize(emitExpression(value, context, primitive('String')))})`;
+    }
+    if (portableGlobal === 'String') {
+      if (!value) return 'String::new()';
+      const valueType = inferIrExpressionType(value, context) ?? { kind: 'dynamic', portable: true };
+      const portableValue = emitPortableValueExpression(value, context, valueType);
+      return `{ let __flight_value = ${portableValue}; crate::flight_value_to_string(&__flight_value) }`;
     }
     if (portableGlobal === 'Number') {
       if (!value) return '0.0_f64';
@@ -3164,7 +3170,7 @@ function emitTaskRejection(expression: IrExpression, context: EmitContext): stri
 function typeContainsDynamic(type: IrType): boolean {
   switch (type.kind) {
     case 'dynamic':
-      return true;
+      return !type.portable;
     case 'anonymous':
       return type.extends.some(typeContainsDynamic) || type.fields.some((field) => typeContainsDynamic(field.type));
     case 'array':
@@ -4200,26 +4206,29 @@ function emitNarrowedErrorProperty(
   }
   if (!errorValuePropertyType(expression.name)) return undefined;
   const owner = emitIdentifier(expression.object.name, context);
-  const prefix = `match &${parenthesize(owner)} { crate::OpaqueHostValue::Error {`;
+  const ownerType = resolveSemanticType(context.symbolTypes.get(expression.object.name), context);
+  const valuePath = dynamicValuePath(ownerType);
+  const prefix = `match &${parenthesize(owner)} { ${valuePath}::Error {`;
   const suffix = `_ => unreachable!("instanceof Error narrowing must contain an Error value") }`;
   const dynamic = (resolveSemanticType(expectedType, context) ?? expectedType)?.kind === 'dynamic';
   if (expression.name === 'name' || expression.name === 'message') {
     const value = `${prefix} ${expression.name}, .. } => ${expression.name}.clone(), ${suffix}`;
-    return dynamic ? `crate::OpaqueHostValue::String(${value})` : value;
+    return dynamic ? `${dynamicValuePath(resolveSemanticType(expectedType, context) ?? expectedType)}::String(${value})` : value;
   }
   if (expression.name === 'stack') {
     const value = `${prefix} stack, .. } => stack.clone(), ${suffix}`;
+    const resultPath = dynamicValuePath(resolveSemanticType(expectedType, context) ?? expectedType);
     return dynamic
-      ? `${parenthesize(value)}.map(crate::OpaqueHostValue::String).unwrap_or(crate::OpaqueHostValue::Undefined)`
+      ? `${parenthesize(value)}.map(${resultPath}::String).unwrap_or(${resultPath}::Undefined)`
       : value;
   }
-  return `${prefix} cause, .. } => cause.as_deref().cloned().unwrap_or(crate::OpaqueHostValue::Undefined), ${suffix}`;
+  return `${prefix} cause, .. } => cause.as_deref().cloned().unwrap_or(crate::FlightValue::Undefined), ${suffix}`;
 }
 
 function errorValuePropertyType(name: string): IrType | undefined {
   if (name === 'name' || name === 'message') return primitive('String');
   if (name === 'stack') return { inner: primitive('String'), kind: 'nullable' };
-  if (name === 'cause') return { kind: 'dynamic' };
+  if (name === 'cause') return { kind: 'dynamic', portable: true };
   return undefined;
 }
 
@@ -4521,8 +4530,9 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
         : 'false';
     }
     if (constructor === 'Error') {
+      const valuePath = dynamicValuePath(candidate);
       return candidate?.kind === 'dynamic'
-        ? `matches!(&${parenthesize(left)}, crate::OpaqueHostValue::Error { .. })`
+        ? `matches!(&${parenthesize(left)}, ${valuePath}::Error { .. })`
         : 'false';
     }
     if (constructor && opaqueHostInstanceConstructors.has(constructor)) return 'false';
@@ -5086,7 +5096,8 @@ function emitUnary(expression: Extract<IrExpression, { kind: 'unary' }>, context
     }
     if (resolved?.kind === 'dynamic') {
       const operand = emitExpression(expression.operand, context);
-      return `${parenthesize(`match &${parenthesize(operand)} { crate::OpaqueHostValue::Undefined => "undefined", crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Array(_) | crate::OpaqueHostValue::Record(_) | crate::OpaqueHostValue::Error { .. } | crate::OpaqueHostValue::Object => "object", crate::OpaqueHostValue::Bool(_) => "boolean", crate::OpaqueHostValue::Number(_) => "number", crate::OpaqueHostValue::String(_) => "string", crate::OpaqueHostValue::Function => "function", crate::OpaqueHostValue::Symbol => "symbol" }`)}.to_owned()`;
+      const valuePath = dynamicValuePath(resolved);
+      return `${parenthesize(`match &${parenthesize(operand)} { ${valuePath}::Undefined => "undefined", ${valuePath}::Null | ${valuePath}::Array(_) | ${valuePath}::Record(_) | ${valuePath}::Error { .. } | ${valuePath}::Object => "object", ${valuePath}::Bool(_) => "boolean", ${valuePath}::Number(_) => "number", ${valuePath}::String(_) => "string", ${valuePath}::Function => "function", ${valuePath}::Symbol => "symbol" }`)}.to_owned()`;
     }
     if (
       resolved?.kind === 'anonymous' ||
@@ -5543,7 +5554,7 @@ function emitType(type: IrType, context: EmitContext): string {
     case 'array':
       return `Vec<${emitType(type.element, context)}>`;
     case 'dynamic':
-      return 'crate::OpaqueHostValue';
+      return type.portable ? 'crate::FlightValue' : 'crate::OpaqueHostValue';
     case 'function':
       return `std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(${type.parameters.map((item) => emitType(item, context)).join(', ')}) -> ${emitType(type.returns, context)} + Send + 'static>>>`;
     case 'named': {
@@ -5621,6 +5632,10 @@ function emitType(type: IrType, context: EmitContext): string {
     case 'union':
       return emitUnionType(type.variants, context);
   }
+}
+
+function dynamicValuePath(type: IrType | undefined): 'crate::FlightValue' | 'crate::OpaqueHostValue' {
+  return type?.kind === 'dynamic' && type.portable ? 'crate::FlightValue' : 'crate::OpaqueHostValue';
 }
 
 function emitStructConstructorType(type: IrType, context: EmitContext): string {
@@ -8101,7 +8116,7 @@ function emitNew(
     const message = expression.arguments[0]
       ? emitExpression(expression.arguments[0], context, primitive('String'))
       : 'String::new()';
-    return `crate::OpaqueHostValue::Error { name: "Error".to_owned(), message: ${message}, stack: None, cause: None }`;
+    return `crate::FlightValue::Error { name: "Error".to_owned(), message: ${message}, stack: None, cause: None }`;
   }
   if (globalType && opaqueHostConstructors.has(globalType)) {
     return 'crate::OpaqueHostValue::Object';
@@ -8315,7 +8330,7 @@ function emitObject(
     return nullable ? `Some(${value})` : value;
   }
   if (expression.properties.length === 0 && (!target || resolved?.kind === 'dynamic')) {
-    return 'crate::OpaqueHostValue::Object';
+    return `${dynamicValuePath(resolved)}::Object`;
   }
   if (
     expression.properties.length === 0 &&
@@ -9077,6 +9092,7 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
       if (portableGlobal && ['decodeURIComponent', 'encodeURIComponent'].includes(portableGlobal)) {
         return primitive('String');
       }
+      if (portableGlobal === 'String') return primitive('String');
       if (portableGlobal === 'isNaN') {
         return primitive('Bool');
       }
@@ -9406,7 +9422,7 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
         };
       }
       if (name === 'ArrayBuffer') return { arguments: [], kind: 'named', name: 'ByteBuffer' };
-      if (name === 'Error') return { kind: 'dynamic' };
+      if (name === 'Error') return { kind: 'dynamic', portable: true };
       if (name && opaqueHostConstructors.has(name)) return { kind: 'dynamic' };
       return name && typedArrayType(name) ? { arguments: [], kind: 'named', name } : undefined;
     }
@@ -9833,7 +9849,8 @@ function emitCondition(expression: IrExpression, context: EmitContext): string {
   const resolved = resolveSemanticType(type, context) ?? type;
   if (resolved?.kind === 'dynamic') {
     const value = emitExpression(expression, context);
-    return `match &${parenthesize(value)} { crate::OpaqueHostValue::Undefined | crate::OpaqueHostValue::Null => false, crate::OpaqueHostValue::Bool(value) => *value, crate::OpaqueHostValue::Number(value) => *value != 0.0_f64 && !value.is_nan(), crate::OpaqueHostValue::String(value) => !value.is_empty(), crate::OpaqueHostValue::Array(_) | crate::OpaqueHostValue::Record(_) | crate::OpaqueHostValue::Error { .. } | crate::OpaqueHostValue::Function | crate::OpaqueHostValue::Symbol | crate::OpaqueHostValue::Object => true }`;
+    const valuePath = dynamicValuePath(resolved);
+    return `match &${parenthesize(value)} { ${valuePath}::Undefined | ${valuePath}::Null => false, ${valuePath}::Bool(value) => *value, ${valuePath}::Number(value) => *value != 0.0_f64 && !value.is_nan(), ${valuePath}::String(value) => !value.is_empty(), ${valuePath}::Array(_) | ${valuePath}::Record(_) | ${valuePath}::Error { .. } | ${valuePath}::Function | ${valuePath}::Symbol | ${valuePath}::Object => true }`;
   }
   const emitted = emitExpression(expression, context);
   if (type?.kind === 'primitive' && type.name === 'Bool') return emitted;
@@ -9899,10 +9916,11 @@ function inferDynamicHostPropertyType(name: string): IrType | undefined {
 function emitLiteral(value: boolean | null | number | string, expectedType?: IrType, context?: EmitContext): string {
   const resolved = context ? resolveSemanticType(expectedType, context) : expectedType;
   if (resolved?.kind === 'dynamic') {
-    if (value === null) return 'crate::OpaqueHostValue::Null';
-    if (typeof value === 'boolean') return `crate::OpaqueHostValue::Bool(${String(value)})`;
-    if (typeof value === 'number') return `crate::OpaqueHostValue::Number(${emitNumberLiteral(value)})`;
-    return `crate::OpaqueHostValue::String(${emitRustStringLiteral(value)}.to_owned())`;
+    const valuePath = dynamicValuePath(resolved);
+    if (value === null) return `${valuePath}::Null`;
+    if (typeof value === 'boolean') return `${valuePath}::Bool(${String(value)})`;
+    if (typeof value === 'number') return `${valuePath}::Number(${emitNumberLiteral(value)})`;
+    return `${valuePath}::String(${emitRustStringLiteral(value)}.to_owned())`;
   }
   if (value === null) return 'None';
   if (typeof value === 'string') {

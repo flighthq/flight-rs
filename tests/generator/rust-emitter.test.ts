@@ -1700,7 +1700,9 @@ describe('Rust emission', () => {
     });
 
     expect(lowered.diagnostics).toEqual([]);
-    expect(output).toContain('crate::OpaqueHostValue::Error { .. }');
+    expect(output).toContain('pub fn describe_error(value: crate::FlightValue)');
+    expect(output).toContain('crate::FlightValue::Error { .. }');
+    expect(output).not.toContain('OpaqueHostValue');
     expect(output).not.toContain('host.name');
     expect(output).not.toContain('host.message');
     expect(output).not.toContain('host.stack');
@@ -1870,7 +1872,7 @@ describe('Rust emission', () => {
 
     expect(lowered.diagnostics).toEqual([]);
     expect(output).toContain(
-      'crate::FlightUnion2::<LogData, LogDataProvider>::A(crate::FlightUnion2::<String, Vec<(String, crate::OpaqueHostValue)>>::B(',
+      'crate::FlightUnion2::<LogData, LogDataProvider>::A(crate::FlightUnion2::<String, Vec<(String, crate::FlightValue)>>::B(',
     );
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
