@@ -1675,8 +1675,9 @@ describe('Rust emission', () => {
     const dependency = ts.createSourceFile(
       '/workspace/upstream/packages/entity/src/entity.ts',
       `
-        export function createEntity<Type extends object>(obj?: Type): Type {
-          return obj!;
+        interface Entity {}
+        export function createEntity<Type extends object>(obj?: Type): Type & Entity {
+          return obj! as Type & Entity;
         }
       `,
       ts.ScriptTarget.Latest,

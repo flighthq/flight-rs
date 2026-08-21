@@ -2210,8 +2210,11 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
     case 'call': {
       const call = emitCall(expression, context, expectedType);
       const actualType = inferIrExpressionType(expression, context);
+      const genericCallee =
+        expression.callee.kind === 'identifier' &&
+        (context.functions.get(expression.callee.name)?.typeParameters.length ?? 0) > 0;
       const projected =
-        actualType && expectedType && !semanticTypesEqual(actualType, expectedType, context)
+        actualType && expectedType && !genericCallee && !semanticTypesEqual(actualType, expectedType, context)
           ? emitStructuralProjectionArgument(call, actualType, expectedType, context)
           : undefined;
       return coerceExpression(projected ?? call, expectedType);
