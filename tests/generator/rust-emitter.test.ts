@@ -329,6 +329,13 @@ describe('Rust emission', () => {
         type DeclineReason = 'invalid' | 'inverted';
         type IndexReason = DeclineReason | 'missing';
         interface IndexNotice { reason?: IndexReason; }
+        export interface RecursiveNode {
+          value: number;
+          parent: RecursiveNode | null;
+        }
+        interface TestSignal<Value> { slots: Value[]; }
+        interface SignalOwner { signal: TestSignal<(value: number) => void> | null; }
+        function clearTestSignal<Value>(signal: TestSignal<Value>): void { signal.slots.length = 0; }
         const lookup = [1, 2, 3];
         const lookupCount = lookup.length;
         export interface AdjustmentOptions {
@@ -447,6 +454,28 @@ describe('Rust emission', () => {
         export function hasInvalidReason(notice: Readonly<IndexNotice>): boolean {
           return notice.reason === 'invalid';
         }
+        export function attachParent(node: RecursiveNode, parent: RecursiveNode): void {
+          node.parent = parent;
+        }
+        export function copyParent(node: RecursiveNode, source: RecursiveNode): void {
+          node.parent = source.parent;
+        }
+        export function parentOf(node: Readonly<RecursiveNode>): RecursiveNode | null {
+          return node.parent;
+        }
+        export function createChild(parent: RecursiveNode): RecursiveNode {
+          return { value: 1, parent };
+        }
+        function detachParent(parent: RecursiveNode, child: RecursiveNode): void {
+          parent.value = 0;
+          child.parent = null;
+        }
+        export function detach(node: RecursiveNode): void {
+          if (node.parent !== null) detachParent(node.parent, node);
+        }
+        export function clearOwnerSignal(owner: SignalOwner): void {
+          if (owner.signal !== null) clearTestSignal(owner.signal);
+        }
         export function clearValues(values: number[]): void {
           values.length = 0;
         }
@@ -546,6 +575,16 @@ describe('Rust emission', () => {
     expect(output).toContain('let key = __iteration0.0.clone();');
     expect(output).toContain('let value = __iteration0.1.clone();');
     expect(output).toContain('.as_ref().map(|value| value.to_string()) == Some("invalid".to_owned())');
+    expect(output).toContain('pub parent: Option<Box<RecursiveNode>>');
+    expect(output).toContain('node.parent = Some(Box::new((*parent).clone()))');
+    expect(output).toContain('node.parent = ((source.parent).as_deref().cloned()).map(Box::new)');
+    expect(output).toContain('return (node.parent).as_deref().cloned()');
+    expect(output).toContain('parent: Some(Box::new((*parent).clone()))');
+    expect(output).toContain('__flight_argument_0 = node.parent.replace(Box::new(Default::default()))');
+    expect(output).toContain('detach_parent(&mut *__flight_argument_0, node)');
+    expect(output).toContain('if node.parent.is_some() { node.parent = Some(__flight_argument_0); }');
+    expect(output).not.toContain('unsafe {');
+    expect(output).toContain('clear_test_signal(owner.signal.as_mut().unwrap())');
     expect(output).toContain('values.clear()');
     expect(output).toContain('names: None');
     expect(output).toContain('(values).is_none()');

@@ -3138,7 +3138,7 @@ function emitKnownFunctionCall(
   context: EmitContext,
   expectedType?: IrType,
 ): string {
-  const substitutions = inferFunctionTypeSubstitutions(declaration, expression, expectedType);
+  const substitutions = inferFunctionTypeSubstitutions(declaration, expression, context, expectedType);
   const restIndex = declaration.parameters.findIndex((parameter) => parameter.rest);
   if (restIndex < 0) {
     const directlyMutated = collectMutatedNames(declaration);
@@ -3156,7 +3156,14 @@ function emitKnownFunctionCall(
         return root ? [root] : [];
       }),
     );
+    const mutableRootCounts = new Map<string, number>();
+    for (const index of mutableIndexes) {
+      const argument = expression.arguments[index];
+      const root = argument ? expressionRootIdentifier(argument) : undefined;
+      if (root) mutableRootCounts.set(root, (mutableRootCounts.get(root) ?? 0) + 1);
+    }
     const prefix: string[] = [];
+    const suffix: string[] = [];
     const arguments_ = declaration.parameters.map((parameter, index) => {
       const argument = expression.arguments[index];
       if (!argument) {
@@ -3169,6 +3176,32 @@ function emitKnownFunctionCall(
         capturesParameterInReturnedClosure(declaration, parameter.name) ||
         ((resolveSemanticType(parameterType, context) ?? parameterType).kind === 'function' &&
           storesParameter(declaration, parameter.name));
+      const recursiveStorage =
+        mutableIndexes.has(index) && root && (mutableRootCounts.get(root) ?? 0) > 1 && argument.kind === 'property'
+          ? recursiveStructPropertyStorage(inferIrExpressionType(argument.object, context), argument.name, context)
+          : undefined;
+      const aliasedOwnerIndex =
+        root && recursiveStorage === 'nullable'
+          ? [...mutableIndexes].find(
+              (candidate) => candidate !== index && expressionRootIdentifier(expression.arguments[candidate]!) === root,
+            )
+          : undefined;
+      const aliasedOwnerParameter =
+        aliasedOwnerIndex === undefined ? undefined : declaration.parameters[aliasedOwnerIndex];
+      if (
+        recursiveStorage === 'nullable' &&
+        argument.kind === 'property' &&
+        aliasedOwnerParameter &&
+        clearsPropertyWithoutReading(declaration, aliasedOwnerParameter.name, argument.name)
+      ) {
+        const temporary = `__flight_argument_${String(index)}`;
+        const place = emitPropertyPlace(argument, context);
+        prefix.push(
+          `let mut ${temporary} = ${place}.replace(Box::new(Default::default())).expect("narrowed recursive field was absent");`,
+        );
+        suffix.push(`if ${place}.is_some() { ${place} = Some(${temporary}); }`);
+        return `&mut *${temporary}`;
+      }
       if (
         !mutableIndexes.has(index) &&
         ((root && mutableRoots.has(root)) || referencesAnyIdentifier(argument, mutableRoots))
@@ -3191,7 +3224,9 @@ function emitKnownFunctionCall(
       );
     });
     const call = `${snakeCase(declaration.name)}(${arguments_.join(', ')})`;
-    return prefix.length > 0 ? `{ ${prefix.join(' ')} ${call} }` : call;
+    return prefix.length > 0 || suffix.length > 0
+      ? `{ ${prefix.join(' ')} let __flight_result = ${call}; ${suffix.join(' ')} __flight_result }`
+      : call;
   }
   const fixed = expression.arguments.slice(0, restIndex).map((argument, index) => {
     const parameter = declaration.parameters[index];
@@ -3355,6 +3390,7 @@ function emitKnownFunctionArgument(
 function inferFunctionTypeSubstitutions(
   declaration: IrFunctionDeclaration,
   expression: Extract<IrExpression, { kind: 'call' }>,
+  context: EmitContext,
   expectedType?: IrType,
 ): ReadonlyMap<string, IrType> {
   const substitutions = new Map<string, IrType>();
@@ -3364,6 +3400,10 @@ function inferFunctionTypeSubstitutions(
   });
   const bind = (pattern: IrType, actual: IrType | undefined): void => {
     if (!actual) return;
+    if (pattern.kind !== 'nullable' && actual.kind === 'nullable') {
+      bind(pattern, actual.inner);
+      return;
+    }
     if (
       pattern.kind === 'named' &&
       pattern.arguments.length === 0 &&
@@ -3387,7 +3427,13 @@ function inferFunctionTypeSubstitutions(
   bind(declaration.returns, expectedType);
   declaration.parameters.forEach((parameter, index) => {
     const argument = expression.arguments[index];
-    if (argument) bind(parameter.type, inferStaticExpressionType(argument));
+    if (argument) {
+      const staticType = inferStaticExpressionType(argument);
+      bind(
+        parameter.type,
+        staticType ?? (isRustPlaceExpression(argument) ? inferIrExpressionType(argument, context) : undefined),
+      );
+    }
   });
   return substitutions;
 }
@@ -3823,6 +3869,13 @@ function emitProperty(
       const result = type && !isCopyType(type, context) ? `${parenthesize(value)}.clone()` : value;
       return `{ let __flight_slot = ${owner}.__flight_generic_slot::<${genericStorage}>(); let __flight_storage = __flight_slot.lock().unwrap(); ${result} }`;
     }
+  }
+  const recursiveStorage = recursiveStructPropertyStorage(objectType, expression.name, context);
+  if (recursiveStorage) {
+    const place = emitPropertyPlace(expression, context);
+    return recursiveStorage === 'nullable'
+      ? `${parenthesize(place)}.as_deref().cloned()`
+      : `${parenthesize(`*${place}`)}.clone()`;
   }
   const place = emitPropertyPlace(expression, context);
   return type && !isCopyType(type, context) ? `${parenthesize(place)}.clone()` : place;
@@ -4338,6 +4391,10 @@ function emitAssignment(expression: Extract<IrExpression, { kind: 'assignment' }
   const leftType = inferIrExpressionType(expression.left, context);
   const rightType = inferIrExpressionType(expression.right, context);
   const emittedRight = emitExpression(expression.right, context, leftType);
+  const recursiveRight =
+    expression.operator === '=' && expression.left.kind === 'property'
+      ? emitRecursiveStructStorageValue(expression.left, expression.right, leftType, rightType, context)
+      : undefined;
   const sharedCopy =
     leftType?.kind === 'nullable' &&
     isSharedHandleType(leftType.inner, context) &&
@@ -4346,9 +4403,10 @@ function emitAssignment(expression: Extract<IrExpression, { kind: 'assignment' }
       ? `${parenthesize(emitExpression(expression.right, context, leftType.inner))}.clone()`
       : undefined;
   const right =
-    leftType?.kind === 'nullable' && rightType?.kind !== 'nullable' && !isNullishExpression(expression.right)
+    recursiveRight ??
+    (leftType?.kind === 'nullable' && rightType?.kind !== 'nullable' && !isNullishExpression(expression.right)
       ? `Some(${sharedCopy ?? emitExpression(expression.right, context, leftType.inner)})`
-      : emittedRight;
+      : emittedRight);
   const resolvedLeft = resolveSemanticType(leftType, context) ?? leftType;
   const assignment =
     expression.operator === '+=' && resolvedLeft?.kind === 'primitive' && resolvedLeft.name === 'String'
@@ -4411,10 +4469,15 @@ function emitAssignmentStatement(
   const leftType = inferIrExpressionType(expression.left, context);
   const rightType = inferIrExpressionType(expression.right, context);
   const emittedRight = emitExpression(expression.right, context, leftType);
+  const recursiveRight =
+    expression.operator === '=' && expression.left.kind === 'property'
+      ? emitRecursiveStructStorageValue(expression.left, expression.right, leftType, rightType, context)
+      : undefined;
   const right =
-    leftType?.kind === 'nullable' && rightType?.kind !== 'nullable' && !isNullishExpression(expression.right)
+    recursiveRight ??
+    (leftType?.kind === 'nullable' && rightType?.kind !== 'nullable' && !isNullishExpression(expression.right)
       ? `Some(${emitExpression(expression.right, context, leftType.inner)})`
-      : emittedRight;
+      : emittedRight);
   const resolvedLeft = resolveSemanticType(leftType, context) ?? leftType;
   return expression.operator === '+=' && resolvedLeft?.kind === 'primitive' && resolvedLeft.name === 'String'
     ? `${left}.push_str(&${parenthesize(right)})`
@@ -5563,6 +5626,70 @@ function emitStructFieldType(type: IrType, ownerName: string, context: EmitConte
     return `Option<${emitStructFieldType(type.inner, ownerName, context)}>`;
   }
   return emitType(type, context);
+}
+
+function recursiveStructFieldStorage(
+  type: IrType,
+  ownerName: string,
+  optional = false,
+): 'direct' | 'nullable' | undefined {
+  if (type.kind === 'named' && type.name === ownerName) return optional ? 'nullable' : 'direct';
+  return type.kind === 'nullable' && type.inner.kind === 'named' && type.inner.name === ownerName
+    ? 'nullable'
+    : undefined;
+}
+
+function recursiveStructPropertyStorage(
+  objectType: IrType | undefined,
+  propertyName: string,
+  context: EmitContext,
+): 'direct' | 'nullable' | undefined {
+  const receiver = objectType?.kind === 'nullable' ? objectType.inner : objectType;
+  if (receiver?.kind !== 'named') return undefined;
+  const resolved = resolveSemanticType(receiver, context);
+  if (resolved?.kind !== 'anonymous') return undefined;
+  const field = semanticStructFields(receiver, context).find((candidate) => candidate.name === propertyName);
+  return field ? recursiveStructFieldStorage(field.type, receiver.name, field.optional) : undefined;
+}
+
+function emitRecursiveStructStorageValue(
+  property: Extract<IrExpression, { kind: 'property' }>,
+  value: IrExpression,
+  logicalType: IrType | undefined,
+  valueType: IrType | undefined,
+  context: EmitContext,
+): string | undefined {
+  const storage = recursiveStructPropertyStorage(
+    inferIrExpressionType(property.object, context),
+    property.name,
+    context,
+  );
+  if (!storage || !logicalType) return undefined;
+  if (storage === 'direct') return `Box::new(${emitExpression(value, context, logicalType)})`;
+  if (isNullishExpression(value)) return 'None';
+  const inner = logicalType.kind === 'nullable' ? logicalType.inner : logicalType;
+  return valueType?.kind === 'nullable'
+    ? `${parenthesize(emitExpression(value, context, logicalType))}.map(Box::new)`
+    : `Some(Box::new(${emitExpression(value, context, inner)}))`;
+}
+
+function emitRecursiveStructFieldStorageValue(
+  ownerName: string,
+  field: IrTypeField,
+  value: IrExpression,
+  context: EmitContext,
+): string | undefined {
+  const storage = recursiveStructFieldStorage(field.type, ownerName, field.optional);
+  if (!storage) return undefined;
+  const logicalType =
+    field.optional && field.type.kind !== 'nullable' ? ({ inner: field.type, kind: 'nullable' } as const) : field.type;
+  if (storage === 'direct') return `Box::new(${emitExpression(value, context, logicalType)})`;
+  if (isNullishExpression(value)) return 'None';
+  const valueType = inferIrExpressionType(value, context);
+  const inner = logicalType.kind === 'nullable' ? logicalType.inner : logicalType;
+  return valueType?.kind === 'nullable'
+    ? `${parenthesize(emitExpression(value, context, logicalType))}.map(Box::new)`
+    : `Some(Box::new(${emitExpression(value, context, inner)}))`;
 }
 
 function flattenStructFields(
@@ -6898,6 +7025,52 @@ function collectMutatedNames(
   return names;
 }
 
+function clearsPropertyWithoutReading(
+  declaration: IrFunctionDeclaration,
+  ownerName: string,
+  propertyName: string,
+): boolean {
+  let clears = false;
+  let reads = false;
+  const matches = (value: unknown): value is Extract<IrExpression, { kind: 'property' }> =>
+    Boolean(
+      value &&
+      typeof value === 'object' &&
+      'kind' in value &&
+      value.kind === 'property' &&
+      'name' in value &&
+      value.name === propertyName &&
+      'object' in value &&
+      expressionRootIdentifier(value.object as IrExpression) === ownerName,
+    );
+  const visit = (value: unknown): void => {
+    if (!value || typeof value !== 'object') return;
+    if ('kind' in value && value.kind === 'assignment' && 'left' in value && matches(value.left)) {
+      if (
+        'operator' in value &&
+        value.operator === '=' &&
+        'right' in value &&
+        value.right &&
+        typeof value.right === 'object' &&
+        isNullishExpression(value.right as IrExpression)
+      ) {
+        clears = true;
+      } else {
+        reads = true;
+      }
+      if ('right' in value) visit(value.right);
+      return;
+    }
+    if (matches(value)) reads = true;
+    for (const child of Object.values(value)) {
+      if (Array.isArray(child)) child.forEach(visit);
+      else visit(child);
+    }
+  };
+  visit(declaration.body);
+  return clears && !reads;
+}
+
 function expressionRootIdentifier(value: unknown): string | undefined {
   if (!value || typeof value !== 'object' || !('kind' in value)) return undefined;
   if (value.kind === 'identifier' && 'name' in value && typeof value.name === 'string') return value.name;
@@ -7686,7 +7859,11 @@ function emitObject(
         throw new RustEmissionError(`object field ${field.name} is not initialized by its structural spreads`);
       }
       if (value.kind === 'property') {
-        return `${safeName(field.name)}: ${emitExpression(value.expression, context, field.type)},`;
+        const stored =
+          target.kind === 'named'
+            ? emitRecursiveStructFieldStorageValue(target.name, field, value.expression, context)
+            : undefined;
+        return `${safeName(field.name)}: ${stored ?? emitExpression(value.expression, context, field.type)},`;
       }
       const place = `${value.name}.${safeName(field.name)}`;
       return `${safeName(field.name)}: ${isCopyType(value.field.type, context) ? place : `${parenthesize(place)}.clone()`},`;
@@ -7764,10 +7941,17 @@ function emitObject(
     const field = fields.get(property.name);
     if (!field) throw new RustEmissionError(`object field ${property.name} is not present in structural type`);
     initialized.add(property.name);
-    const value = emitExpression(property.value, propertyContext, field.type);
+    const value =
+      target.kind === 'named'
+        ? (emitRecursiveStructFieldStorageValue(target.name, field, property.value, propertyContext) ??
+          emitExpression(property.value, propertyContext, field.type))
+        : emitExpression(property.value, propertyContext, field.type);
     return [
       `${safeName(property.name)}: ${
-        field.optional && field.type.kind !== 'nullable' && !isNullishExpression(property.value)
+        field.optional &&
+        field.type.kind !== 'nullable' &&
+        !recursiveStructFieldStorage(field.type, target.kind === 'named' ? target.name : '', field.optional) &&
+        !isNullishExpression(property.value)
           ? `Some(${value})`
           : value
       },`,
@@ -8403,7 +8587,10 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
       if (expression.callee.kind === 'identifier') {
         const declaration = context.functions.get(expression.callee.name);
         if (declaration) {
-          return substituteIrType(declaration.returns, inferFunctionTypeSubstitutions(declaration, expression));
+          return substituteIrType(
+            declaration.returns,
+            inferFunctionTypeSubstitutions(declaration, expression, context),
+          );
         }
         const local = context.symbolTypes.get(expression.callee.name);
         if (local?.kind === 'function') return local.returns;
