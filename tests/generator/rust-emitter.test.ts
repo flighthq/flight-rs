@@ -647,6 +647,30 @@ describe('Rust emission', () => {
           const allowed = new Set(['alpha', 'beta']);
           return allowed.has(value);
         }
+        export function hasEntry(values: Record<string, string>, key: string): boolean {
+          return key in values;
+        }
+        export function assignedValue(value: string): string {
+          let output = '';
+          return (output = value);
+        }
+        export function normalizeOptional(value?: string): string {
+          if (value === undefined || value.trim() === '') return '';
+          return value;
+        }
+        export function encodeComponent(value: string): string {
+          return encodeURIComponent(value);
+        }
+        export function safeDecodeComponent(value: string): string {
+          try {
+            return decodeURIComponent(value);
+          } catch {
+            return 'invalid';
+          }
+        }
+        export function numberValue(value: string): number {
+          return Number(value);
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -666,6 +690,9 @@ describe('Rust emission', () => {
     expect(output).toContain('__flight_string_index_of');
     expect(output).toContain('__flight_string_slice');
     expect(output).toContain('__flight_string_from_code_point');
+    expect(output).toContain('__flight_encode_uri_component');
+    expect(output).toContain('__flight_decode_uri_component');
+    expect(output).toContain('__flight_number_from_string');
     expect(output).toContain('!(value).is_empty()');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-utf16-code-point-'));
@@ -694,6 +721,18 @@ describe('Rust emission', () => {
         '  assert_eq!(generated::normalize_entries(&mut entries), vec!["first=1".to_owned(), "added=yes".to_owned()]);',
         '  assert!(generated::is_allowed("alpha".to_owned()));',
         '  assert!(!generated::is_allowed("gamma".to_owned()));',
+        '  assert!(generated::has_entry(&entries, "first".to_owned()));',
+        '  assert!(!generated::has_entry(&entries, "missing".to_owned()));',
+        '  assert_eq!(generated::assigned_value("kept".to_owned()), "kept");',
+        '  assert_eq!(generated::normalize_optional(None), "");',
+        '  assert_eq!(generated::normalize_optional(Some("  ".to_owned())), "");',
+        '  assert_eq!(generated::normalize_optional(Some("value".to_owned())), "value");',
+        '  assert_eq!(generated::encode_component("a b/😀".to_owned()), "a%20b%2F%F0%9F%98%80");',
+        '  assert_eq!(generated::safe_decode_component("a%20b%2F%F0%9F%98%80".to_owned()), "a b/😀");',
+        '  assert_eq!(generated::safe_decode_component("%GG".to_owned()), "invalid");',
+        '  assert_eq!(generated::number_value(" 42.5 ".to_owned()), 42.5);',
+        '  assert_eq!(generated::number_value("0x10".to_owned()), 16.0);',
+        '  assert!(generated::number_value("not a number".to_owned()).is_nan());',
         '}',
         '',
       ].join('\n'),
@@ -1277,6 +1316,16 @@ describe('Rust emission', () => {
           const match = value.match(/version\\/([\\d.]+)/i);
           return match ? match[1] : '';
         }
+        export function normalizeCapturedVersion(value: string): string {
+          const match = /version\\/([\\d_]+)/i.exec(value);
+          return match ? match[1].replace(/_/g, '.') : '';
+        }
+        export function optionalCapture(value: string): string {
+          return value.replace(/#(\\d+)|#x([\\da-f]+)/gi, (reference, decimal, hexadecimal) => {
+            const numeric = decimal ?? hexadecimal;
+            return numeric !== undefined ? numeric : reference;
+          });
+        }
         export function platform(value: string): string {
           switch (value) {
             case 'web':
@@ -1332,6 +1381,8 @@ describe('Rust emission', () => {
     expect(output).toContain('collect::<Vec<_>>()');
     expect(output).toContain('captures.get(index).map(|matched| matched.as_str().to_owned())');
     expect(output).toContain('[1.0_f64 as usize].clone().unwrap()');
+    expect(output).toContain('decimal: Option<String>, hexadecimal: Option<String>');
+    expect(output).toContain('captures.get(1).map(|matched| matched.as_str().to_owned())');
     expect(output).toContain('i64::from_str_radix');
     expect(output).toContain('.is_nan()');
     expect(output).toContain('pub fn native_user_agent() -> String {\n  return "".to_owned();');

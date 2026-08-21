@@ -522,6 +522,82 @@ export function emitRustModule(module: RustModule): string {
           '}',
         ]
       : []),
+    ...(declarations.includes('__flight_encode_uri_component(')
+      ? [
+          '#[inline]',
+          'fn __flight_encode_uri_component(value: &str) -> String {',
+          indent(
+            [
+              'const HEX: &[u8; 16] = b"0123456789ABCDEF";',
+              'let mut encoded = String::with_capacity(value.len());',
+              'for byte in value.bytes() {',
+              indent(
+                [
+                  'if byte.is_ascii_alphanumeric() || b"-_.!~*\'()".contains(&byte) {',
+                  indent('encoded.push(char::from(byte));'),
+                  '} else {',
+                  indent(
+                    [
+                      "encoded.push('%');",
+                      'encoded.push(char::from(HEX[(byte >> 4) as usize]));',
+                      'encoded.push(char::from(HEX[(byte & 0x0F) as usize]));',
+                    ].join('\n'),
+                  ),
+                  '}',
+                ].join('\n'),
+              ),
+              '}',
+              'encoded',
+            ].join('\n'),
+          ),
+          '}',
+        ]
+      : []),
+    ...(declarations.includes('__flight_decode_uri_component(')
+      ? [
+          '#[inline]',
+          'fn __flight_decode_uri_component(value: &str) -> String {',
+          indent(
+            [
+              'let bytes = value.as_bytes();',
+              'let mut decoded = Vec::with_capacity(bytes.len());',
+              'let mut index = 0_usize;',
+              'while index < bytes.len() {',
+              indent(
+                [
+                  "if bytes[index] != b'%' { decoded.push(bytes[index]); index += 1; continue; }",
+                  'assert!(index + 2 < bytes.len(), "decodeURIComponent received an incomplete escape");',
+                  "let digit = |byte: u8| -> Option<u8> { match byte { b'0'..=b'9' => Some(byte - b'0'), b'a'..=b'f' => Some(byte - b'a' + 10), b'A'..=b'F' => Some(byte - b'A' + 10), _ => None } };",
+                  'let high = digit(bytes[index + 1]).expect("decodeURIComponent received a malformed escape");',
+                  'let low = digit(bytes[index + 2]).expect("decodeURIComponent received a malformed escape");',
+                  'decoded.push((high << 4) | low);',
+                  'index += 3;',
+                ].join('\n'),
+              ),
+              '}',
+              'String::from_utf8(decoded).expect("decodeURIComponent received invalid UTF-8")',
+            ].join('\n'),
+          ),
+          '}',
+        ]
+      : []),
+    ...(declarations.includes('__flight_number_from_string(')
+      ? [
+          '#[inline]',
+          'fn __flight_number_from_string(value: &str) -> f64 {',
+          indent(
+            [
+              'let value = value.trim();',
+              'if value.is_empty() { return 0.0_f64; }',
+              'match value { "Infinity" | "+Infinity" => return f64::INFINITY, "-Infinity" => return f64::NEG_INFINITY, _ => {} }',
+              'let prefixed = if let Some(digits) = value.strip_prefix("0x").or_else(|| value.strip_prefix("0X")) { Some((digits, 16_u32)) } else if let Some(digits) = value.strip_prefix("0b").or_else(|| value.strip_prefix("0B")) { Some((digits, 2_u32)) } else { value.strip_prefix("0o").or_else(|| value.strip_prefix("0O")).map(|digits| (digits, 8_u32)) };',
+              'if let Some((digits, radix)) = prefixed { return u64::from_str_radix(digits, radix).map_or(f64::NAN, |number| number as f64); }',
+              'value.parse::<f64>().unwrap_or(f64::NAN)',
+            ].join('\n'),
+          ),
+          '}',
+        ]
+      : []),
   ].join('\n\n');
   return [
     `// @generated from ${module.source}; do not edit.`,
@@ -2235,6 +2311,25 @@ function emitCall(
       if (!value) throw new RustEmissionError('parseFloat requires a string value');
       return `${parenthesize(emitExpression(value, context, primitive('String')))}.trim().parse::<f64>().unwrap_or(f64::NAN)`;
     }
+    if (portableGlobal === 'encodeURIComponent') {
+      if (!value) throw new RustEmissionError('encodeURIComponent requires a string value');
+      return `__flight_encode_uri_component(&${parenthesize(emitExpression(value, context, primitive('String')))})`;
+    }
+    if (portableGlobal === 'decodeURIComponent') {
+      if (!value) throw new RustEmissionError('decodeURIComponent requires a string value');
+      return `__flight_decode_uri_component(&${parenthesize(emitExpression(value, context, primitive('String')))})`;
+    }
+    if (portableGlobal === 'Number') {
+      if (!value) return '0.0_f64';
+      const valueType = resolveSemanticType(inferIrExpressionType(value, context), context);
+      if (valueType?.kind === 'primitive' && (valueType.name === 'Float' || valueType.name === 'Int')) {
+        return emitExpression(value, context, primitive('Float'));
+      }
+      if (valueType?.kind === 'primitive' && valueType.name === 'Bool') {
+        return `if ${emitExpression(value, context, primitive('Bool'))} { 1.0_f64 } else { 0.0_f64 }`;
+      }
+      return `__flight_number_from_string(&${parenthesize(emitExpression(value, context, primitive('String')))})`;
+    }
   }
   const knownHostReturnType = inferKnownHostCallReturnType(expression, context);
   if (knownHostReturnType) {
@@ -2467,7 +2562,10 @@ function emitCall(
     const ownerType = inferIrExpressionType(expression.callee.object, context);
     const collectionType = ownerType?.kind === 'nullable' ? ownerType.inner : ownerType;
     const method = expression.callee.name;
-    const owner = emitExpression(expression.callee.object, context);
+    const owner =
+      ownerType?.kind === 'nullable'
+        ? `${emitPlaceExpression(expression.callee.object, context)}.as_ref().unwrap()`
+        : emitExpression(expression.callee.object, context);
     const ownerPlace =
       ownerType?.kind === 'nullable'
         ? `${emitPlaceExpression(expression.callee.object, context)}.as_mut().unwrap()`
@@ -2575,17 +2673,20 @@ function emitCall(
           const replaceMethod = argument.flags.includes('g') ? 'replace_all' : 'replace';
           if (replacement.kind === 'function') {
             const stringType = primitive('String');
+            const optionalStringType: IrType = { inner: stringType, kind: 'nullable' };
             const callbackType: IrType = {
               kind: 'function',
-              parameters: replacement.parameters.map(() => stringType),
+              parameters: replacement.parameters.map((_, index) => (index === 0 ? stringType : optionalStringType)),
               returns: stringType,
             };
-            const callbackArguments = replacement.parameters.map(
-              (_, index) => `captures.get(${String(index)}).map_or("", |matched| matched.as_str()).to_owned()`,
+            const callbackArguments = replacement.parameters.map((_, index) =>
+              index === 0
+                ? 'captures.get(0).map_or("", |matched| matched.as_str()).to_owned()'
+                : `captures.get(${String(index)}).map(|matched| matched.as_str().to_owned())`,
             );
             return `{ let mut __flight_replace = ${emitClosure(replacement, context, callbackType, false)}; ${parenthesize(regex)}.${replaceMethod}(&${parenthesize(owner)}, |captures: &regex::Captures<'_>| __flight_replace(${callbackArguments.join(', ')})).into_owned() }`;
           }
-          return `${parenthesize(regex)}.${replaceMethod}(&${parenthesize(owner)}, ${emitExpression(replacement, context)}).into_owned()`;
+          return `${parenthesize(regex)}.${replaceMethod}(&${parenthesize(owner)}, ${emitExpression(replacement, context, primitive('String'))}).into_owned()`;
         }
       }
       if (method === 'split' && argument) {
@@ -4266,8 +4367,14 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
     const absent = `${entityRuntimeSlot(runtimeNullComparison.object, context)}.lock().unwrap().is_none()`;
     return expression.operator === '===' || expression.operator === '==' ? absent : `!${parenthesize(absent)}`;
   }
+  const rightContext =
+    expression.operator === '&&'
+      ? narrowTypeofContexts(expression.left, context).whenTrue
+      : expression.operator === '||'
+        ? narrowTypeofContexts(expression.left, context).whenFalse
+        : context;
   const leftType = inferIrExpressionType(expression.left, context);
-  const rightType = inferIrExpressionType(expression.right, context);
+  const rightType = inferIrExpressionType(expression.right, rightContext);
   const resolvedLeft = resolveSemanticType(leftType, context) ?? leftType;
   const resolvedRight = resolveSemanticType(rightType, context) ?? rightType;
   const discriminant = discriminatedUnionComparison(expression, context);
@@ -4337,12 +4444,13 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
     throw new RustEmissionError('instanceof Rust lowering requires a portable typed-array constructor');
   }
   if (expression.operator === 'in') {
-    const rightType = resolveSemanticType(inferIrExpressionType(expression.right, context), context);
+    const rightType = resolveSemanticType(inferIrExpressionType(expression.right, rightContext), rightContext);
     const rightReceiver = rightType?.kind === 'nullable' ? rightType.inner : rightType;
-    if (rightType?.kind === 'named' && rightType.name === 'RustMap') {
-      const keyType = rightType.arguments[0] ?? { kind: 'dynamic' };
+    if (rightReceiver?.kind === 'named' && rightReceiver.name === 'RustMap') {
+      const keyType = rightReceiver.arguments[0] ?? { kind: 'dynamic' };
       const key = emitExpression(expression.left, context, keyType);
-      const entries = emitPlaceExpression(expression.right, context);
+      const place = emitPlaceExpression(expression.right, rightContext);
+      const entries = rightType?.kind === 'nullable' ? `${place}.as_ref().unwrap()` : place;
       return `{ let __flight_key = ${key}; ${entries}.iter().any(|(key, _)| key == &__flight_key) }`;
     }
     if (expression.left.kind === 'literal' && typeof expression.left.value === 'string') {
@@ -4405,7 +4513,7 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
   }
   const right = emitExpression(
     expression.right,
-    context,
+    rightContext,
     expression.operator === '??' || expression.operator === '??undefined'
       ? leftType?.kind === 'nullable'
         ? rightType?.kind === 'nullable'
@@ -4473,8 +4581,8 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
   if (
     (expression.operator === '&&' || expression.operator === '||') &&
     leftType?.kind === 'nullable' &&
-    inferIrExpressionType(expression.right, context)?.kind === 'primitive' &&
-    (inferIrExpressionType(expression.right, context) as Extract<IrType, { kind: 'primitive' }>).name === 'Bool'
+    inferIrExpressionType(expression.right, rightContext)?.kind === 'primitive' &&
+    (inferIrExpressionType(expression.right, rightContext) as Extract<IrType, { kind: 'primitive' }>).name === 'Bool'
   ) {
     return `${parenthesize(left)}.is_some() ${expression.operator} ${right}`;
   }
@@ -4484,7 +4592,7 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
     resolvedLeft.name === 'Bool'
   ) {
     return `${parenthesize(emitCondition(expression.left, context))} ${expression.operator} ${parenthesize(
-      emitCondition(expression.right, context),
+      emitCondition(expression.right, rightContext),
     )}`;
   }
   if (
@@ -4589,7 +4697,7 @@ function emitAssignment(expression: Extract<IrExpression, { kind: 'assignment' }
     expression.operator === '+=' && resolvedLeft?.kind === 'primitive' && resolvedLeft.name === 'String'
       ? `${left}.push_str(&${parenthesize(right)})`
       : emitAssignmentOperation(left, right, expression.operator);
-  return `{ ${assignment}; ${left} }`;
+  return `{ ${assignment}; ${left}.clone() }`;
 }
 
 function emitAssignmentStatement(
@@ -8820,8 +8928,11 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
     case 'call': {
       const portableGlobal =
         expression.callee.kind === 'identifier' ? expression.callee.name : runtimeGlobalType(expression.callee);
-      if (portableGlobal && ['parseFloat', 'parseInt'].includes(portableGlobal)) {
+      if (portableGlobal && ['Number', 'parseFloat', 'parseInt'].includes(portableGlobal)) {
         return primitive('Float');
+      }
+      if (portableGlobal && ['decodeURIComponent', 'encodeURIComponent'].includes(portableGlobal)) {
+        return primitive('String');
       }
       if (portableGlobal === 'isNaN') {
         return primitive('Bool');
@@ -9185,7 +9296,7 @@ function regexCaptureType(): IrType {
 }
 
 function emitRegexCaptures(regex: string, value: string): string {
-  return `{ let __flight_regex = ${regex}; __flight_regex.captures(&${parenthesize(value)}).map(|captures| (0..captures.len()).map(|index| captures.get(index).map(|matched| matched.as_str().to_owned())).collect::<Vec<_>>()) }`;
+  return `{ let __flight_regex = &${parenthesize(regex)}; __flight_regex.captures(&${parenthesize(value)}).map(|captures| (0..captures.len()).map(|index| captures.get(index).map(|matched| matched.as_str().to_owned())).collect::<Vec<_>>()) }`;
 }
 
 function narrowTypeofContexts(
@@ -9200,6 +9311,16 @@ function narrowTypeofContexts(
     unionNarrowings: new Map(context.unionNarrowings),
   });
   const unchanged = { whenFalse: clone(), whenTrue: clone() };
+  if (condition.kind === 'binary' && condition.operator === '||') {
+    const left = narrowTypeofContexts(condition.left, context);
+    const right = narrowTypeofContexts(condition.right, left.whenFalse);
+    return { whenFalse: right.whenFalse, whenTrue: unchanged.whenTrue };
+  }
+  if (condition.kind === 'binary' && condition.operator === '&&') {
+    const left = narrowTypeofContexts(condition.left, context);
+    const right = narrowTypeofContexts(condition.right, left.whenTrue);
+    return { whenFalse: unchanged.whenFalse, whenTrue: right.whenTrue };
+  }
   if (condition.kind === 'identifier') {
     const type = context.symbolTypes.get(condition.name);
     if (type?.kind === 'nullable' && !context.sharedCaptureNames.has(condition.name)) {
