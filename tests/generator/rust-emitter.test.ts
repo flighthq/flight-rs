@@ -1874,6 +1874,11 @@ describe('Rust emission', () => {
         export function emptyValues<T>(keys: readonly string[]): (T | null)[] {
           return keys.map(() => null);
         }
+        export function cloneMap(values: ReadonlyMap<string, number>): Map<string, number> {
+          const clone = new Map(values);
+          clone.set('added', 8);
+          return clone;
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -1920,6 +1925,9 @@ describe('Rust emission', () => {
         '  assert_eq!(generated::concat_values(&values, &vec![6.0, 7.0]), vec![0.0, 1.0, 3.0, 4.0, 2.0, 6.0, 7.0, 5.0]);',
         '  assert_eq!(values, vec![0.0, 1.0, 3.0, 4.0, 2.0]);',
         '  assert_eq!(generated::empty_values::<String>(&vec!["a".to_owned(), "b".to_owned()]), vec![None, None]);',
+        '  let original = vec![("first".to_owned(), 1.0)];',
+        '  assert_eq!(generated::clone_map(&original), vec![("first".to_owned(), 1.0), ("added".to_owned(), 8.0)]);',
+        '  assert_eq!(original, vec![("first".to_owned(), 1.0)]);',
         '}',
         '',
       ].join('\n'),

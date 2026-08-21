@@ -8613,7 +8613,19 @@ function emitNew(
     const values = emitExpression(source, context, { element, kind: 'array' });
     return `{ let mut __flight_set = Vec::new(); for __flight_value in ${values} { if !__flight_set.contains(&__flight_value) { __flight_set.push(__flight_value); } } __flight_set }`;
   }
-  if (globalType === 'Map' || globalType === 'WeakMap' || globalType === 'WeakSet') {
+  if (globalType === 'Map' || globalType === 'WeakMap') {
+    const inferred = inferIrExpressionType(expression, context);
+    const resolvedExpected = resolveSemanticType(
+      expectedType?.kind === 'nullable' ? expectedType.inner : expectedType,
+      context,
+    );
+    const mapType =
+      resolvedExpected?.kind === 'named' && resolvedExpected.name === 'RustMap' ? resolvedExpected : inferred;
+    const source = expression.arguments[0];
+    if (!source) return 'Vec::new()';
+    return emitExpression(source, context, mapType);
+  }
+  if (globalType === 'WeakSet') {
     return 'Vec::new()';
   }
   if (globalType === 'Error') {
@@ -9900,8 +9912,18 @@ function inferIrExpressionType(expression: IrExpression, context: EmitContext): 
     case 'new': {
       const name = runtimeConstructorType(expression.callee);
       if (name === 'Map' || name === 'WeakMap') {
+        const source = expression.arguments[0] ? inferIrExpressionType(expression.arguments[0], context) : undefined;
+        const sourceType = resolveSemanticType(source, context) ?? source;
+        const sourceArguments =
+          sourceType?.kind === 'named' && sourceType.name === 'RustMap'
+            ? sourceType.arguments
+            : sourceType?.kind === 'array' &&
+                sourceType.element.kind === 'named' &&
+                sourceType.element.name === 'RustTuple2'
+              ? sourceType.element.arguments
+              : [];
         return {
-          arguments: expression.typeArguments,
+          arguments: expression.typeArguments.length > 0 ? expression.typeArguments : sourceArguments,
           kind: 'named',
           name: 'RustMap',
         };
