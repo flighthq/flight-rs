@@ -5652,9 +5652,9 @@ function emitBinary(expression: Extract<IrExpression, { kind: 'binary' }>, conte
   if (expression.operator === '??' || expression.operator === '??undefined') {
     if (leftType?.kind !== 'nullable' && resolvedLeft?.kind !== 'dynamic') return left;
     if (leftType?.kind === 'nullable' && rightType?.kind === 'nullable') {
-      return `${parenthesize(left)}.clone().or(${right})`;
+      return `${parenthesize(left)}.or(${right})`;
     }
-    return `${parenthesize(left)}.clone().unwrap_or(${right})`;
+    return `${parenthesize(left)}.unwrap_or(${right})`;
   }
   if (
     (expression.operator === '&&' || expression.operator === '||') &&
@@ -10213,12 +10213,11 @@ function collectConsumedIdentifierNames(value: unknown, names: Set<string>, cons
           'operator' in value &&
           typeof value.operator === 'string' &&
           (value.operator === '??' || value.operator === '??undefined') &&
-          'right' in value &&
-          value.right &&
-          typeof value.right === 'object' &&
-          isNullishExpression(value.right as IrExpression)
+          'left' in value &&
+          'right' in value
         ) {
-          if ('left' in value) collectConsumedIdentifierNames(value.left, names, true);
+          collectConsumedIdentifierNames(value.left, names, true);
+          collectConsumedIdentifierNames(value.right, names, true);
           return;
         }
         break;

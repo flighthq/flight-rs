@@ -2743,6 +2743,14 @@ describe('Rust emission', () => {
         export function reuse(lut: Uint8ClampedArray): number {
           return inspect(lut, lut, lut, null);
         }
+        export function takeOutput(out?: Float32Array): Float32Array {
+          const result = out ?? new Float32Array(4);
+          return result;
+        }
+        export function preserveOutput(out?: Float32Array): number {
+          const result = out ?? new Float32Array(4);
+          return (out?.length ?? 0) + result.length;
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -2759,6 +2767,8 @@ describe('Rust emission', () => {
     expect(output).toContain('&(Some((lut).clone()))');
     expect(output).toMatch(/inspect\([\s\S]*None[\s\S]*\)/u);
     expect(output).not.toContain('&(None)');
+    expect(output).toContain('let result = (out).unwrap_or(vec![0.0_f32; (4.0_f64) as usize])');
+    expect(output).toContain('let result = ((out).clone()).unwrap_or(vec![0.0_f32; (4.0_f64) as usize])');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-owned-options-'));
     const sourceFile = path.join(fixture, 'lib.rs');
