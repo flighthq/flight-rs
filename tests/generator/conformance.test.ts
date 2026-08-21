@@ -21,16 +21,16 @@ describe('generated upstream conformance harvest', () => {
 
     expect(harvest.report.summary).toMatchObject({
       inScopeTestFiles: 24,
-      outOfScopeTestFiles: 1395,
-      totalUpstreamTestFiles: 1419,
+      outOfScopeTestFiles: 1481,
+      totalUpstreamTestFiles: 1505,
       translatedCases: 45,
-      translatedTestFiles: 4,
-      unsupportedTestFiles: 20,
+      translatedTestFiles: 3,
+      unsupportedTestFiles: 21,
     });
     expect(harvest.report.packages.find((item) => item.package === '@flighthq/math')).toMatchObject({
       translatedCases: 39,
-      translatedTestFiles: 3,
-      unsupportedTestFiles: 12,
+      translatedTestFiles: 2,
+      unsupportedTestFiles: 13,
     });
     expect(harvest.report.packages.find((item) => item.package === '@flighthq/color')).toMatchObject({
       translatedCases: 6,

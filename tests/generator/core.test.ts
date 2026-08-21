@@ -379,19 +379,19 @@ describe('compiler diagnostic source paths', () => {
       crate: 'flighthq-types',
       package: '@flighthq/types',
     });
-    expect(report.summary.candidateCompiled).toBe(16);
+    expect(report.summary.candidateCompiled).toBe(26);
     expect(report.asyncTasks.summary).toMatchObject({
-      eligibleConstructions: 225,
-      eligibleScopes: 173,
+      eligibleConstructions: 229,
+      eligibleScopes: 177,
       hostPlaceholderScopes: 0,
       operations: {
         asyncIterations: 3,
-        awaits: 205,
+        awaits: 207,
       },
-      portableExecutableConstructions: 19,
-      portableExecutableScopes: 13,
-      unsupportedConstructions: 206,
-      unsupportedScopes: 160,
+      portableExecutableConstructions: 26,
+      portableExecutableScopes: 20,
+      unsupportedConstructions: 203,
+      unsupportedScopes: 157,
     });
     expect(report.asyncTasks.summary.eligibleScopes).toBe(
       report.asyncTasks.summary.portableExecutableScopes +
@@ -404,7 +404,7 @@ describe('compiler diagnostic source paths', () => {
         report.asyncTasks.summary.unsupportedConstructions,
     );
     const asyncScopes = report.asyncTasks.packages.flatMap((item) => item.scopes);
-    expect(asyncScopes).toHaveLength(173);
+    expect(asyncScopes).toHaveLength(177);
     expect(
       asyncScopes.every(
         (scope) =>
@@ -427,9 +427,9 @@ describe('compiler diagnostic source paths', () => {
       report.asyncTasks.summary.unsupportedReasons.find((item) =>
         item.reason.startsWith('Portable task source still requires'),
       )?.scopes,
-    ).toBe(11);
+    ).toBe(5);
     const taskConstructions = report.asyncTasks.packages.flatMap((item) => item.constructions);
-    expect(taskConstructions).toHaveLength(225);
+    expect(taskConstructions).toHaveLength(229);
     expect(taskConstructions.filter((item) => item.kind === 'ready')).toHaveLength(21);
     expect(
       report.asyncTasks.summary.unsupportedConstructionReasons.find((item) =>
@@ -452,8 +452,8 @@ describe('compiler diagnostic source paths', () => {
       .filter((item) => item.disposition === 'generated')
       .flatMap((item) => item.emittedSources);
     const portableOpaqueSources = portableSources.filter((source) => source.usesOpaqueHostValues);
-    expect(portableSources).toHaveLength(1553);
-    expect(portableOpaqueSources).toHaveLength(66);
+    expect(portableSources).toHaveLength(1772);
+    expect(portableOpaqueSources).toHaveLength(57);
     expect(portableOpaqueSources.length / portableSources.length).toBeLessThanOrEqual(167 / 1227);
     const screen = report.automaticPackages.find((item) => item.package === '@flighthq/screen');
     expect(screen?.candidate.status).toBe('compiled');
@@ -471,10 +471,10 @@ describe('compiler diagnostic source paths', () => {
     );
     expect(report.conformance.summary).toMatchObject({
       passingCases: 45,
-      passingTestFiles: 4,
-      totalUpstreamTestFiles: 1419,
+      passingTestFiles: 3,
+      totalUpstreamTestFiles: 1505,
       translatedCases: 45,
-      translatedTestFiles: 4,
+      translatedTestFiles: 3,
     });
     expect(existsSync(path.join(process.cwd(), 'generated/candidates/flighthq-types'))).toBe(false);
     expect(
