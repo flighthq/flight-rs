@@ -3172,7 +3172,12 @@ function emitKnownFunctionCall(
       }
       const parameterType = substituteIrType(parameter.type, substitutions);
       const root = expressionRootIdentifier(argument);
+      const genericValueParameter =
+        parameter.type.kind === 'named' &&
+        parameter.type.arguments.length === 0 &&
+        declaration.typeParameters.includes(parameter.type.name);
       const owned =
+        genericValueParameter ||
         capturesParameterInReturnedClosure(declaration, parameter.name) ||
         ((resolveSemanticType(parameterType, context) ?? parameterType).kind === 'function' &&
           storesParameter(declaration, parameter.name));

@@ -336,6 +336,7 @@ describe('Rust emission', () => {
         interface TestSignal<Value> { slots: Value[]; }
         interface SignalOwner { signal: TestSignal<(value: number) => void> | null; }
         function clearTestSignal<Value>(signal: TestSignal<Value>): void { signal.slots.length = 0; }
+        function connectTestSignal<Value>(signal: TestSignal<Value>, slot: Value): void { signal.slots.push(slot); }
         const lookup = [1, 2, 3];
         const lookupCount = lookup.length;
         export interface AdjustmentOptions {
@@ -476,6 +477,10 @@ describe('Rust emission', () => {
         export function clearOwnerSignal(owner: SignalOwner): void {
           if (owner.signal !== null) clearTestSignal(owner.signal);
         }
+        export function connectOwnerSignal(owner: SignalOwner): void {
+          const slot = (_value: number): void => {};
+          if (owner.signal !== null) connectTestSignal(owner.signal, slot);
+        }
         export function clearValues(values: number[]): void {
           values.length = 0;
         }
@@ -585,6 +590,7 @@ describe('Rust emission', () => {
     expect(output).toContain('if node.parent.is_some() { node.parent = Some(__flight_argument_0); }');
     expect(output).not.toContain('unsafe {');
     expect(output).toContain('clear_test_signal(owner.signal.as_mut().unwrap())');
+    expect(output).toContain('connect_test_signal(owner.signal.as_mut().unwrap(), (slot).clone())');
     expect(output).toContain('values.clear()');
     expect(output).toContain('names: None');
     expect(output).toContain('(values).is_none()');
