@@ -6,12 +6,12 @@ The dependency stays one-directional. Flight does not pin, clone, or build this 
 
 ## Sending side — add to Flight's release workflow
 
-After the npm publish step in `.github/workflows/release.yml`, in the same job:
+In `flighthq/flight`, `.github/workflows/release.yml`, job `publish`. Add one step **immediately after `- name: Publish packages to npm`** and before the examples-site steps:
 
 ```yaml
 - name: Trigger the Rust port release
   env:
-    # A PAT or GitHub App token with `contents: write` on flighthq/flight-rs.
+    # A PAT or GitHub App token with Contents: write on flighthq/flight-rs.
     # The default GITHUB_TOKEN cannot dispatch to another repository.
     GH_TOKEN: ${{ secrets.FLIGHT_RS_DISPATCH_TOKEN }}
     VERSION: ${{ github.ref_name }}
@@ -22,9 +22,11 @@ After the npm publish step in `.github/workflows/release.yml`, in the same job:
       | gh api repos/flighthq/flight-rs/dispatches --method POST --input -
 ```
 
-`jq` builds the body rather than a here-doc so the values are JSON-encoded rather than interpolated.
+Placement matters: the npm publish above it is the precondition this port needs, so the dispatch fires as soon as `@flighthq/bitmap@<version>` exists. Putting it after the examples-site build would let an unrelated asset failure block the port release.
 
-The call returns as soon as GitHub accepts it — Flight's release does not wait for, and is not failed by, the Rust publish. That is deliberate: a Flight release should not be held open by a downstream port, and a failure here is fixed and re-run without touching Flight.
+No `permissions:` change is needed — the step authenticates with `FLIGHT_RS_DISPATCH_TOKEN`, not the job's `GITHUB_TOKEN`. `gh` and `jq` are both present on the runner, and `jq` builds the body so the values are JSON-encoded rather than interpolated.
+
+The call returns as soon as GitHub accepts it. Flight's release does not wait for, and is not failed by, the Rust publish — a failure there is fixed and re-run here without touching Flight. A failure of the dispatch _call itself_ does fail the step, which is deliberate: it is the one condition nobody else would notice. Re-running Flight's job afterwards is safe, since the npm publish skips versions already on the registry.
 
 ## Receiving side — `.github/workflows/flight-release.yml`
 
