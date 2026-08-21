@@ -109,17 +109,28 @@ jobs:
         # than a version briefly missing from the family. Fix and re-run via workflow_dispatch.
         run: npx vitest run --config packages/bitmap-rs/vitest.config.published.ts
 
-      - name: Stamp the manifest
-        # The dependency range moves with the version because the step above just demonstrated
-        # compatibility with exactly those packages.
-        run: npx tsx scripts/version-packages.ts "${FLIGHT_VERSION}" --flight "${FLIGHT_VERSION}"
-
       # Scoped to the artifact, not the repository. The full suite also carries generator
       # bookkeeping — compiled-candidate counts, lowering coverage, conformance shape — which moves
       # when UPSTREAM changes and says nothing about whether this tarball works. A Flight release
       # must not be blocked from shipping the port because an unrelated upstream package arrived.
+      #
+      # BEFORE the stamp, not after. `publishing.test.ts` asserts the in-repo dependency range tracks
+      # the version derived from the pin — a repository invariant that the stamp below deliberately
+      # overrides with the RELEASED version. Running it afterwards asserts the opposite of what the
+      # next step just did, and fails on every release where the released and derived versions differ,
+      # which under locked versioning is the ordinary case.
       - name: Verify the artifact
         run: npm run test:release
+
+      - name: Stamp the manifest
+        # The dependency range moves with the version because parity above demonstrated compatibility
+        # with exactly those published packages.
+        run: npx tsx scripts/version-packages.ts "${FLIGHT_VERSION}" --flight "${FLIGHT_VERSION}"
+
+      - name: Re-check the packaging invariants after stamping
+        # Version-agnostic, so it is safe on the stamped manifest and catches a stamp that produced
+        # something unpublishable.
+        run: npx vitest run tests/generator/facade-packaging.test.ts
 
       - name: Publish
         env:

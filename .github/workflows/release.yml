@@ -71,9 +71,6 @@ jobs:
             npx tsx scripts/edge-version.ts "${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Stamp the manifest
-        run: npx tsx scripts/version-packages.ts "${{ steps.resolve.outputs.version }}"
-
       # This workflow triggers independently of ci.yml, so without a gate a red commit would still
       # publish — and a published version cannot be withdrawn, only deprecated.
       #
@@ -84,6 +81,14 @@ jobs:
       # means an upstream package this port does not even touch can block shipping a fix.
       - name: Verify what is about to ship
         run: npm run test:release
+
+      - name: Stamp the manifest
+        run: npx tsx scripts/version-packages.ts "${{ steps.resolve.outputs.version }}"
+
+      - name: Re-check the packaging invariants after stamping
+        # Version-agnostic, so it is safe on the stamped manifest and catches a stamp that produced
+        # something unpublishable.
+        run: npx vitest run tests/generator/facade-packaging.test.ts
 
       # Publishing is skipped rather than failed when no token is configured, so this workflow does
       # not report red on every push before the secret exists. It starts publishing on its own once

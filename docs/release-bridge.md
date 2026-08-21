@@ -71,6 +71,44 @@ So the pin moves when there is a reason: new upstream sources worth generating, 
 
 The release lane does not read those in-repo values. It stamps both from the version Flight released, after proving parity against it.
 
+## Testing it manually
+
+Four levels, cheapest first. Each exercises the same code the workflow runs.
+
+**1. Rehearse the lane locally.** No GitHub, no token. `VERSION` must already exist on npm.
+
+The stamp mutates a tracked file, so the cleanup runs from a `trap` — an interrupted rehearsal that leaves a stamped range committed is exactly the failure this is guarding against, and a manual `git checkout` at the end is too easy to skip:
+
+```sh
+VERSION=0.3.0
+trap 'git checkout -- packages/bitmap-rs/package.json; npm ci' EXIT
+
+npm install --no-save "@flighthq/bitmap@$VERSION" "@flighthq/types@$VERSION"
+npx vitest run --config packages/bitmap-rs/vitest.config.published.ts   # parity vs the release
+npm run test:release                                                    # artifact gate
+npx tsx scripts/version-packages.ts "$VERSION" --flight "$VERSION"      # stamp
+npx vitest run tests/generator/facade-packaging.test.ts                 # post-stamp check
+npm run release -- --dry-run --tag latest                               # pack + report, no upload
+```
+
+The `npm ci` in the trap matters as much as the checkout: `--no-save` leaves the released `@flighthq/*` packages in `node_modules`, and anything that regenerates afterwards resolves upstream's own imports through them.
+
+**Never commit a stamped manifest.** The in-repo range names the Flight _family_ the pin targets (`^0.4.0`); the stamp is a release-time value that may be a specific prerelease (`^0.4.0-next.1811.dde7eb1`). `publishing.test.ts` fails on the latter deliberately.
+
+**2. Drive the real workflow without publishing.** Actions → **Flight release bridge** → Run workflow, supplying `version` and `commit`. With no `NPM_TOKEN` configured it dry-runs and reports what it would have published, so checkout, submodule, toolchain, parity, stamp and pack all run for real. Nothing is committed, so this cannot leave a stamped manifest behind — it is the safer way to rehearse.
+
+**3. Test the dispatch itself**, without cutting a Flight release:
+
+```sh
+jq -n --arg version 0.3.0 --arg commit "$(git -C upstream rev-parse HEAD)" \
+  '{event_type: "flight-release", client_payload: {version: $version, commit: $commit}}' \
+  | gh api repos/flighthq/flight-rs/dispatches --method POST --input -
+```
+
+Run it with the token Flight will use, to confirm its permissions: `404` means the token cannot see the repository, `403` means it lacks Contents: write.
+
+**4. Publish for real.** Add `NPM_TOKEN` and repeat step 2 or 3. Worth doing by dispatch rather than waiting on a Flight release, so a permissions or provenance problem surfaces while you are watching.
+
 ## Manual paths
 
 - **`workflow_dispatch`** on `flight-release.yml`, taking `version` and `commit` — re-runs a failed bridge without another Flight release.
