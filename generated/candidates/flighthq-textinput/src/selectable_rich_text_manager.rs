@@ -17,6 +17,25 @@ use flighthq_types::{
     TextLayoutResult, TextMeasureFunction, TextVerticalAlign, Texture,
 };
 
+#[inline]
+
+fn __flight_string_slice(value: &str, start: f64, end: Option<f64>) -> String {
+    let value: Vec<u16> = value.encode_utf16().collect();
+    let length = value.len();
+    let relative = |index: f64| -> usize {
+        if index.is_nan() {
+            0
+        } else if index < 0.0_f64 {
+            length.saturating_sub((-index.trunc()) as usize)
+        } else {
+            (index.trunc() as usize).min(length)
+        }
+    };
+    let start = relative(start);
+    let end = end.map_or(length, relative);
+    String::from_utf16_lossy(&value[start..end.max(start)])
+}
+
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
@@ -978,19 +997,17 @@ pub fn dispatch_selectable_rich_text_key_down(
             .min(runtime.inner.lock().unwrap().selection_end_index);
         let end = (runtime.inner.lock().unwrap().selection_begin_index)
             .max(runtime.inner.lock().unwrap().selection_end_index);
-        let selected = String::from_utf16_lossy(
-            &((target.as_ref().unwrap().data.text).clone())
-                .encode_utf16()
-                .skip((start) as usize)
-                .take(((end) as usize).saturating_sub((start) as usize))
-                .collect::<Vec<u16>>(),
+        let selected = __flight_string_slice(
+            &((target.as_ref().unwrap().data.text).clone()),
+            start,
+            Some(end),
         );
-        if (selected.length > 0.0_f64) {
+        if ((selected.encode_utf16().count() as f64) > 0.0_f64) {
             {
                 let __flight_callback = on_copy;
                 __flight_callback
                     .as_ref()
-                    .map(|callback| callback.lock().unwrap()(selected))
+                    .map(|callback| callback.lock().unwrap()((selected).clone()))
             };
         }
         return true;
@@ -1110,12 +1127,10 @@ pub fn get_selectable_rich_text_selection_text(manager: &SelectableRichTextManag
         .min(runtime.inner.lock().unwrap().selection_end_index);
     let end = (runtime.inner.lock().unwrap().selection_begin_index)
         .max(runtime.inner.lock().unwrap().selection_end_index);
-    return String::from_utf16_lossy(
-        &((target.as_ref().unwrap().data.text).clone())
-            .encode_utf16()
-            .skip((start) as usize)
-            .take(((end) as usize).saturating_sub((start) as usize))
-            .collect::<Vec<u16>>(),
+    return __flight_string_slice(
+        &((target.as_ref().unwrap().data.text).clone()),
+        start,
+        Some(end),
     );
 }
 

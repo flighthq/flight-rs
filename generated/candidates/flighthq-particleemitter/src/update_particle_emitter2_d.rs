@@ -1021,14 +1021,10 @@ pub fn update_particle_emitter2_d(
                         .unwrap()
                         .on_particle_death
                         .as_ref()
-                        .unwrap()
-                        .emit
-                        .as_ref()
-                        .unwrap()
-                        .clone();
-                    let __flight_result =
-                        __flight_callback.lock().unwrap()((dx).clone(), (dy).clone(), 0.0_f64);
-                    __flight_result
+                        .map(|value| (value.emit).clone());
+                    __flight_callback.as_ref().map(|callback| {
+                        callback.lock().unwrap()((dx).clone(), (dy).clone(), 0.0_f64)
+                    })
                 };
             }
             {

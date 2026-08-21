@@ -35,7 +35,7 @@ pub fn create_sepia_adjustment(options: Option<FlightOmitRecord1>) -> SepiaAdjus
         __flight_identity: std::sync::Arc::new(()),
         intensity: None,
     });
-    let k = (options.intensity).unwrap_or(1.0_f64);
+    let k = (options.intensity).clone().unwrap_or(1.0_f64);
     let j = (1.0_f64 - k);
     let color_matrix = vec![
         (j + (0.393_f64 * k)),

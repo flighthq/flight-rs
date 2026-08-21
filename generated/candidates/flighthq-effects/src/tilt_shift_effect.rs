@@ -80,7 +80,7 @@ pub fn create_tilt_shift_effect(options: Option<FlightOmitRecord1>) -> TiltShift
 
 // Source: upstream/packages/effects/src/tiltShiftEffect.ts:9 (sha256:2a5b7bc34d13ede313ead5958317ed6e3422f59d7d282ef54a27b69d2f824fdb)
 pub fn get_tilt_shift_effect_padding(effect: &TiltShiftEffect) -> RenderEffectPadding {
-    let vertical = ((0.0_f64).max((effect.blur).unwrap_or(4.0_f64)) * 3.0_f64).ceil();
+    let vertical = ((0.0_f64).max((effect.blur).clone().unwrap_or(4.0_f64)) * 3.0_f64).ceil();
     return RenderEffectPadding {
         __flight_identity: std::sync::Arc::new(()),
         bottom: vertical,

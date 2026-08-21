@@ -505,7 +505,9 @@ pub fn multiply_color_matrix(a: &Vec<f64>, b: &Vec<f64>, out: Option<Vec<f64>>) 
     let b17 = b[17.0_f64 as usize].clone();
     let b18 = b[18.0_f64 as usize].clone();
     let b19 = b[19.0_f64 as usize].clone();
-    let mut result = (out).unwrap_or(vec![Default::default(); (20.0_f64) as usize]);
+    let mut result = (out)
+        .clone()
+        .unwrap_or(vec![Default::default(); (20.0_f64) as usize]);
     {
         let __flight_index = (0.0_f64) as usize;
         let __flight_value = ((((a0 * b0) + (a1 * b5)) + (a2 * b10)) + (a3 * b15));

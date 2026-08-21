@@ -1423,11 +1423,19 @@ pub fn create_bitmap_text(
 pub fn create_bitmap_text_data(data: Option<FlightPartialRecord1>) -> BitmapTextData {
     return BitmapTextData {
         __flight_identity: std::sync::Arc::new(()),
-        align: (data.as_ref().and_then(|value| (value.align).clone())).unwrap_or("left".to_owned()),
+        align: (data.as_ref().and_then(|value| (value.align).clone()))
+            .clone()
+            .unwrap_or("left".to_owned()),
         glyph_source: data.as_ref().and_then(|value| (value.glyph_source).clone()),
-        letter_spacing: (data.as_ref().and_then(|value| value.letter_spacing)).unwrap_or(0.0_f64),
-        line_height: (data.as_ref().and_then(|value| value.line_height)).unwrap_or(1.0_f64),
-        text: (data.as_ref().and_then(|value| (value.text).clone())).unwrap_or("".to_owned()),
+        letter_spacing: (data.as_ref().and_then(|value| value.letter_spacing))
+            .clone()
+            .unwrap_or(0.0_f64),
+        line_height: (data.as_ref().and_then(|value| value.line_height))
+            .clone()
+            .unwrap_or(1.0_f64),
+        text: (data.as_ref().and_then(|value| (value.text).clone()))
+            .clone()
+            .unwrap_or("".to_owned()),
         wrap_width: data.as_ref().and_then(|value| value.wrap_width),
     };
 }

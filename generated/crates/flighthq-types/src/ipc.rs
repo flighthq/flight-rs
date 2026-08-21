@@ -170,7 +170,8 @@ impl IpcTimeoutError {
         Self {
             message: format!(
                 "IPC invoke on channel \"{}\" timed out after {}ms",
-                channel, timeout_ms
+                (channel).clone(),
+                timeout_ms
             ),
             channel: (channel).clone(),
             timeout_ms: timeout_ms,

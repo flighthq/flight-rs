@@ -15,6 +15,46 @@ use flighthq_types::{
     TextLayoutParams, TextLayoutResult, TextMeasureFunction, TextVerticalAlign,
 };
 
+#[inline]
+
+fn __flight_string_index_of(value: &str, search: &str, position: f64) -> f64 {
+    let value: Vec<u16> = value.encode_utf16().collect();
+    let search: Vec<u16> = search.encode_utf16().collect();
+    let start = if position.is_nan() || position <= 0.0_f64 {
+        0_usize
+    } else if position >= value.len() as f64 {
+        value.len()
+    } else {
+        position.trunc() as usize
+    };
+    if search.is_empty() {
+        return start as f64;
+    }
+    value[start..]
+        .windows(search.len())
+        .position(|window| window == search)
+        .map_or(-1.0_f64, |index| (start + index) as f64)
+}
+
+#[inline]
+
+fn __flight_string_slice(value: &str, start: f64, end: Option<f64>) -> String {
+    let value: Vec<u16> = value.encode_utf16().collect();
+    let length = value.len();
+    let relative = |index: f64| -> usize {
+        if index.is_nan() {
+            0
+        } else if index < 0.0_f64 {
+            length.saturating_sub((-index.trunc()) as usize)
+        } else {
+            (index.trunc() as usize).min(length)
+        }
+    };
+    let start = relative(start);
+    let end = end.map_or(length, relative);
+    String::from_utf16_lossy(&value[start..end.max(start)])
+}
+
 // Source: upstream/packages/textlayout/src/textLayout.ts:18 (sha256:7a3c85a761fcca811e5c5d5d387dafd74075ddb93b69ab5ab7e4baa514df6891)
 pub const TEXT_LAYOUT_GUTTER: f64 = 2.0_f64;
 
@@ -34,16 +74,26 @@ static _PARAGRAPH_LAST_LINES: std::sync::LazyLock<std::sync::Mutex<Vec<f64>>> =
 pub fn compute_text_layout(out: &mut TextLayoutResult, params: &mut TextLayoutParams) -> () {
     let mut text = (params.text).clone();
     let width = params.width;
-    let word_wrap = (params.word_wrap).unwrap_or(false);
-    let multiline = (params.multiline).unwrap_or(false);
-    let auto_size = ((params.auto_size).clone()).unwrap_or("none".to_owned());
-    let border = (params.border).unwrap_or(false);
-    let direction = ((params.direction).clone()).unwrap_or("LeftToRight".to_owned());
-    let justification = ((params.justification).clone()).unwrap_or("interWord".to_owned());
-    let max_lines = (params.max_lines).unwrap_or((-1.0_f64));
-    let truncation_character = ((params.truncation_character).clone()).unwrap_or("…".to_owned());
-    let vertical_align = ((params.vertical_align).clone()).unwrap_or("top".to_owned());
-    if (!text) || ((params.format_ranges.len() as f64) == 0.0_f64) {
+    let word_wrap = (params.word_wrap).clone().unwrap_or(false);
+    let multiline = (params.multiline).clone().unwrap_or(false);
+    let auto_size = ((params.auto_size).clone())
+        .clone()
+        .unwrap_or("none".to_owned());
+    let border = (params.border).clone().unwrap_or(false);
+    let direction = ((params.direction).clone())
+        .clone()
+        .unwrap_or("LeftToRight".to_owned());
+    let justification = ((params.justification).clone())
+        .clone()
+        .unwrap_or("interWord".to_owned());
+    let max_lines = (params.max_lines).clone().unwrap_or((-1.0_f64));
+    let truncation_character = ((params.truncation_character).clone())
+        .clone()
+        .unwrap_or("…".to_owned());
+    let vertical_align = ((params.vertical_align).clone())
+        .clone()
+        .unwrap_or("top".to_owned());
+    if ((text).is_empty()) || ((params.format_ranges.len() as f64) == 0.0_f64) {
         out.groups.clear();
         out.line_ascents.clear();
         out.line_descents.clear();
@@ -113,7 +163,7 @@ fn char_advances(
     let start_x = start_x.unwrap_or(0.0_f64);
     let __flight_utf16_text: Vec<u16> = text.encode_utf16().collect();
     out.clear();
-    let letter_spacing = (format.letter_spacing).unwrap_or(0.0_f64);
+    let letter_spacing = (format.letter_spacing).clone().unwrap_or(0.0_f64);
     let tab_stops = (format.tab_stops).clone();
     let kerning_enabled = !((format.kerning) == Some(false));
     let mut current_x = start_x;
@@ -155,15 +205,9 @@ fn char_advances(
             }
         };
         let char_len = if (cp > 65535.0_f64) { 2.0_f64 } else { 1.0_f64 };
-        let char = String::from_utf16_lossy(
-            &(text)
-                .encode_utf16()
-                .skip((i) as usize)
-                .take(((i + char_len) as usize).saturating_sub((i) as usize))
-                .collect::<Vec<u16>>(),
-        );
+        let char = __flight_string_slice(&(text), i, Some((i + char_len)));
         let mut advance: f64;
-        if (char == "\t") {
+        if ((char).clone() == "\t") {
             advance = get_tab_advance(current_x, &(tab_stops), measure, format);
             out.push(advance);
             current_x += advance;
@@ -214,18 +258,16 @@ fn char_advances(
             } else {
                 1.0_f64
             };
-            let next_char = String::from_utf16_lossy(
-                &(text)
-                    .encode_utf16()
-                    .skip((next_start) as usize)
-                    .take(((next_start + next_len) as usize).saturating_sub((next_start) as usize))
-                    .collect::<Vec<u16>>(),
+            let next_char =
+                __flight_string_slice(&(text), next_start, Some((next_start + next_len)));
+            let next_w = measure((next_char).clone(), (*format).clone());
+            let pair_w = measure(
+                format!("{}{}", (char).clone(), (next_char).clone()),
+                (*format).clone(),
             );
-            let next_w = measure(next_char, (*format).clone());
-            let pair_w = measure((char + next_char), (*format).clone());
             advance = (pair_w - next_w);
         } else {
-            advance = measure(char, (*format).clone());
+            advance = measure((char).clone(), (*format).clone());
         }
         out.push((advance + letter_spacing));
         current_x += (advance + letter_spacing);
@@ -250,12 +292,7 @@ fn get_tab_advance(
     format: &TextFormat,
 ) -> f64 {
     if ((tab_stops).is_some()) && ((tab_stops.as_ref().unwrap().len() as f64) > 0.0_f64) {
-        for stop in (tab_stops)
-            .as_ref()
-            .expect("TypeScript nullable iterable was not narrowed")
-            .iter()
-            .cloned()
-        {
+        for stop in (tab_stops.as_ref().unwrap()).iter().cloned() {
             if (stop > current_x) {
                 return (stop - current_x);
             }
@@ -302,17 +339,28 @@ fn build_groups(
     let current_format: std::sync::Arc<std::sync::Mutex<TextFormat>> = std::sync::Arc::new(
         std::sync::Mutex::new((((*format_range.lock().unwrap()).format).clone()).clone()),
     );
-    let left_margin: std::sync::Arc<std::sync::Mutex<f64>> = std::sync::Arc::new(
-        std::sync::Mutex::new(((*current_format.lock().unwrap()).left_margin).unwrap_or(0.0_f64)),
-    );
-    let right_margin: std::sync::Arc<std::sync::Mutex<f64>> = std::sync::Arc::new(
-        std::sync::Mutex::new(((*current_format.lock().unwrap()).right_margin).unwrap_or(0.0_f64)),
-    );
-    let block_indent: std::sync::Arc<std::sync::Mutex<f64>> = std::sync::Arc::new(
-        std::sync::Mutex::new(((*current_format.lock().unwrap()).block_indent).unwrap_or(0.0_f64)),
-    );
+    let left_margin: std::sync::Arc<std::sync::Mutex<f64>> =
+        std::sync::Arc::new(std::sync::Mutex::new(
+            ((*current_format.lock().unwrap()).left_margin)
+                .clone()
+                .unwrap_or(0.0_f64),
+        ));
+    let right_margin: std::sync::Arc<std::sync::Mutex<f64>> =
+        std::sync::Arc::new(std::sync::Mutex::new(
+            ((*current_format.lock().unwrap()).right_margin)
+                .clone()
+                .unwrap_or(0.0_f64),
+        ));
+    let block_indent: std::sync::Arc<std::sync::Mutex<f64>> =
+        std::sync::Arc::new(std::sync::Mutex::new(
+            ((*current_format.lock().unwrap()).block_indent)
+                .clone()
+                .unwrap_or(0.0_f64),
+        ));
     let indent: std::sync::Arc<std::sync::Mutex<f64>> = std::sync::Arc::new(std::sync::Mutex::new(
-        ((*current_format.lock().unwrap()).indent).unwrap_or(0.0_f64),
+        ((*current_format.lock().unwrap()).indent)
+            .clone()
+            .unwrap_or(0.0_f64),
     ));
     let first_line_of_paragraph: std::sync::Arc<std::sync::Mutex<bool>> =
         std::sync::Arc::new(std::sync::Mutex::new(true));
@@ -351,7 +399,7 @@ fn build_groups(
     } else {
         (-1.0_f64)
     };
-    let mut space_index = (text.index_of)(" ");
+    let mut space_index = __flight_string_index_of(&(text), &(" ".to_owned()), 0.0_f64);
     let active_group: std::sync::Arc<std::sync::Mutex<Option<TextLayoutGroup>>> =
         std::sync::Arc::new(std::sync::Mutex::new(None));
     let mut base_x: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> f64 + Send + 'static>>> =
@@ -425,14 +473,18 @@ fn build_groups(
         let mut right_margin = right_margin.clone();
         move || -> () {
             (*first_line_of_paragraph.lock().unwrap()) = true;
-            (*left_margin.lock().unwrap()) =
-                ((*current_format.lock().unwrap()).left_margin).unwrap_or(0.0_f64);
-            (*right_margin.lock().unwrap()) =
-                ((*current_format.lock().unwrap()).right_margin).unwrap_or(0.0_f64);
-            (*block_indent.lock().unwrap()) =
-                ((*current_format.lock().unwrap()).block_indent).unwrap_or(0.0_f64);
-            (*indent.lock().unwrap()) =
-                ((*current_format.lock().unwrap()).indent).unwrap_or(0.0_f64);
+            (*left_margin.lock().unwrap()) = ((*current_format.lock().unwrap()).left_margin)
+                .clone()
+                .unwrap_or(0.0_f64);
+            (*right_margin.lock().unwrap()) = ((*current_format.lock().unwrap()).right_margin)
+                .clone()
+                .unwrap_or(0.0_f64);
+            (*block_indent.lock().unwrap()) = ((*current_format.lock().unwrap()).block_indent)
+                .clone()
+                .unwrap_or(0.0_f64);
+            (*indent.lock().unwrap()) = ((*current_format.lock().unwrap()).indent)
+                .clone()
+                .unwrap_or(0.0_f64);
             (*bullet_pending.lock().unwrap()) =
                 ((*current_format.lock().unwrap()).bullet) == Some(true);
         }
@@ -564,6 +616,7 @@ fn build_groups(
                             .positions
                             .pop()
                             .expect("TypeScript Array.pop returned undefined"))
+                        .clone()
                         .unwrap_or(0.0_f64);
                         last_group.as_mut().unwrap().width -= trimmed;
                         {
@@ -1120,7 +1173,11 @@ fn build_groups(
             } else {
                 (-1.0_f64)
             };
-            space_index = (text.index_of)(" ", (*text_index.lock().unwrap()).clone());
+            space_index = __flight_string_index_of(
+                &(text),
+                &(" ".to_owned()),
+                (*text_index.lock().unwrap()).clone(),
+            );
             {
                 let __flight_callback = (update_paragraph_metrics).clone();
                 let __flight_result = __flight_callback.lock().unwrap()();
@@ -1170,23 +1227,31 @@ fn build_groups(
                     }
                 }
                 if should_wrap {
-                    let mut trim_target = ((*active_group.lock().unwrap()).clone()).unwrap_or(
+                    let mut trim_target = ((*active_group.lock().unwrap()).clone()).clone().or(
                         if ((out.len() as f64) > 0.0_f64) {
-                            out[((out.len() as f64) - 1.0_f64) as usize].clone()
+                            Some(out[((out.len() as f64) - 1.0_f64) as usize].clone())
                         } else {
                             None
                         },
                     );
-                    if ((true) && ((trim_target.positions.len() as f64) > 0.0_f64))
-                        && (trim_target.line_index == (*line_index.lock().unwrap()).clone())
+                    if (((trim_target).is_some())
+                        && ((trim_target.as_mut().unwrap().positions.len() as f64) > 0.0_f64))
+                        && (trim_target.as_mut().unwrap().line_index
+                            == (*line_index.lock().unwrap()).clone())
                     {
-                        let trailing_w = trim_target.positions
-                            [((trim_target.positions.len() as f64) - 1.0_f64) as usize]
+                        let trailing_w = trim_target.as_mut().unwrap().positions[((trim_target
+                            .as_mut()
+                            .unwrap()
+                            .positions
+                            .len()
+                            as f64)
+                            - 1.0_f64)
+                            as usize]
                             .clone();
-                        trim_target.width -= trailing_w;
+                        trim_target.as_mut().unwrap().width -= trailing_w;
                         {
-                            trim_target.end_index -= 1.0;
-                            trim_target.end_index
+                            trim_target.as_mut().unwrap().end_index -= 1.0;
+                            trim_target.as_mut().unwrap().end_index
                         };
                     }
                     {
@@ -1216,7 +1281,7 @@ fn build_groups(
                     );
                     __flight_result
                 };
-                space_index = (text.index_of)(" ", word_end);
+                space_index = __flight_string_index_of(&(text), &(" ".to_owned()), word_end);
             } else {
                 if ((*text_index.lock().unwrap()).clone() >= (__flight_utf16_text.len() as f64)) {
                     break;
@@ -1286,7 +1351,9 @@ fn apply_alignment(
 ) -> () {
     for g in (groups).iter().cloned() {
         let line_w = line_widths[g.line_index as usize].clone();
-        let align = ((g.format.align).clone()).unwrap_or("left".to_owned());
+        let align = ((g.format.align).clone())
+            .clone()
+            .unwrap_or("left".to_owned());
         let mut shift = 0.0_f64;
         let resolved = if ((align).clone() == "start") {
             if (direction == "RightToLeft") {

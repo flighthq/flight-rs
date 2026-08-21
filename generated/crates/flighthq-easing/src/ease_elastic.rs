@@ -14,7 +14,7 @@ pub fn ease_in_elastic(mut t: f64) -> f64 {
     return (-((2.0_f64).powf(
         (10.0_f64 * {
             t -= 1.0_f64;
-            t
+            t.clone()
         }),
     ) * (((t - S) * (2.0_f64 * std::f64::consts::PI)) / P).sin()));
 }
@@ -26,14 +26,14 @@ pub fn ease_in_out_elastic(mut t: f64) -> f64 {
     }
     if ({
         t *= 2.0_f64;
-        t
+        t.clone()
     } < 1.0_f64)
     {
         return ((-0.5_f64)
             * ((2.0_f64).powf(
                 (10.0_f64 * {
                     t -= 1.0_f64;
-                    t
+                    t.clone()
                 }),
             ) * (((t - S2) * (2.0_f64 * std::f64::consts::PI)) / P2).sin()));
     }
@@ -41,7 +41,7 @@ pub fn ease_in_out_elastic(mut t: f64) -> f64 {
         * (2.0_f64).powf(
             ((-10.0_f64) * {
                 t -= 1.0_f64;
-                t
+                t.clone()
             }),
         ))
         * (((t - S2) * (2.0_f64 * std::f64::consts::PI)) / P2).sin())

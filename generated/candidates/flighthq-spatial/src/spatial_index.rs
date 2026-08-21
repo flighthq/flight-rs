@@ -27,9 +27,11 @@ pub fn create_spatial_index2_d(backend: Option<SpatialIndexBackend2D>) -> Spatia
         __flight_identity: std::sync::Arc::new(()),
         runtime: SpatialIndexRuntime2D {
             __flight_identity: std::sync::Arc::new(()),
-            backend: (backend).unwrap_or(create_uniform_grid_spatial_backend2_d(
-                DEFAULT_SPATIAL_CELL_SIZE,
-            )),
+            backend: (backend)
+                .clone()
+                .unwrap_or(create_uniform_grid_spatial_backend2_d(
+                    DEFAULT_SPATIAL_CELL_SIZE,
+                )),
         },
     };
 }

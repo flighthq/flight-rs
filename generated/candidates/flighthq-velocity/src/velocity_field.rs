@@ -188,7 +188,7 @@ pub fn has_velocity(field: &VelocityField, source: crate::OpaqueHostValue) -> bo
 
 // Source: upstream/packages/velocity/src/velocityField.ts:112 (sha256:2c406cd053fec2c78104de5760c0f0c13fbc9140caaef30a2484d4b14c87ea6f)
 pub fn is_velocity_zero(velocity: &Velocity2D, epsilon: Option<f64>) -> bool {
-    let e = (epsilon).unwrap_or(0.0_f64);
+    let e = (epsilon).clone().unwrap_or(0.0_f64);
     return ((velocity.x).abs() <= e) && ((velocity.y).abs() <= e);
 }
 

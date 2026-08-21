@@ -84,7 +84,7 @@ pub fn create_bokeh_depth_of_field_effect(
 pub fn get_bokeh_depth_of_field_effect_padding(
     effect: &BokehDepthOfFieldEffect,
 ) -> RenderEffectPadding {
-    let radius = ((0.0_f64).max((effect.max_blur).unwrap_or(4.0_f64))).ceil();
+    let radius = ((0.0_f64).max((effect.max_blur).clone().unwrap_or(4.0_f64))).ceil();
     return RenderEffectPadding {
         __flight_identity: std::sync::Arc::new(()),
         bottom: radius,

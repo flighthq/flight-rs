@@ -38,14 +38,18 @@ pub fn create_surface_material(
             ..Default::default()
         }
     };
-    material.alpha_cutoff =
-        (opts.as_ref().and_then(|value| value.alpha_cutoff)).unwrap_or(DEFAULT_ALPHA_CUTOFF);
+    material.alpha_cutoff = (opts.as_ref().and_then(|value| value.alpha_cutoff))
+        .clone()
+        .unwrap_or(DEFAULT_ALPHA_CUTOFF);
     material.alpha_mode = (opts.as_ref().and_then(|value| (value.alpha_mode).clone()))
+        .clone()
         .unwrap_or((DEFAULT_ALPHA_MODE).clone());
     material.blend_mode = (opts.as_ref().and_then(|value| (value.blend_mode).clone()))
+        .clone()
         .unwrap_or((blend_mode_constant.normal).clone());
-    material.double_sided =
-        (opts.as_ref().and_then(|value| value.double_sided)).unwrap_or(DEFAULT_DOUBLE_SIDED);
+    material.double_sided = (opts.as_ref().and_then(|value| value.double_sided))
+        .clone()
+        .unwrap_or(DEFAULT_DOUBLE_SIDED);
     return material;
 }
 

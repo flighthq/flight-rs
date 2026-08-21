@@ -13,6 +13,59 @@ use flighthq_types::{
     BitmapFontPageRecord, BitmapFontParseOptions, BitmapFontRecord, ImportDiagnostic,
 };
 
+#[inline]
+
+fn __flight_string_slice(value: &str, start: f64, end: Option<f64>) -> String {
+    let value: Vec<u16> = value.encode_utf16().collect();
+    let length = value.len();
+    let relative = |index: f64| -> usize {
+        if index.is_nan() {
+            0
+        } else if index < 0.0_f64 {
+            length.saturating_sub((-index.trunc()) as usize)
+        } else {
+            (index.trunc() as usize).min(length)
+        }
+    };
+    let start = relative(start);
+    let end = end.map_or(length, relative);
+    String::from_utf16_lossy(&value[start..end.max(start)])
+}
+
+#[inline]
+
+fn __flight_number_from_string(value: &str) -> f64 {
+    let value = value.trim();
+    if value.is_empty() {
+        return 0.0_f64;
+    }
+    match value {
+        "Infinity" | "+Infinity" => return f64::INFINITY,
+        "-Infinity" => return f64::NEG_INFINITY,
+        _ => {}
+    }
+    let prefixed = if let Some(digits) = value
+        .strip_prefix("0x")
+        .or_else(|| value.strip_prefix("0X"))
+    {
+        Some((digits, 16_u32))
+    } else if let Some(digits) = value
+        .strip_prefix("0b")
+        .or_else(|| value.strip_prefix("0B"))
+    {
+        Some((digits, 2_u32))
+    } else {
+        value
+            .strip_prefix("0o")
+            .or_else(|| value.strip_prefix("0O"))
+            .map(|digits| (digits, 8_u32))
+    };
+    if let Some((digits, radix)) = prefixed {
+        return u64::from_str_radix(digits, radix).map_or(f64::NAN, |number| number as f64);
+    }
+    value.parse::<f64>().unwrap_or(f64::NAN)
+}
+
 // Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:24 (sha256:9066ea98917c13dfc3e2172f24e9617d31bb81e32d11fd5a2e19c658190d933d)
 pub fn format_bitmap_font_fnt(font: &BitmapFont) -> String {
     let metrics = get_bitmap_font_metrics(font);
@@ -72,22 +125,24 @@ pub fn format_bitmap_font_fnt(font: &BitmapFont) -> String {
             .iter()
             .find(|(entry_key, _)| entry_key == &(codepoint).clone())
             .map(|(_, value)| value.clone());
-        lines.push(
-            (format!(
+        lines.push(format!(
+            "{}{}",
+            format!(
                 "char id={} x={} y={} width={} height={} ",
                 (codepoint).clone(),
                 glyph.x,
                 glyph.y,
                 glyph.width,
                 glyph.height
-            ) + format!(
+            ),
+            format!(
                 "xoffset={} yoffset={} xadvance={} page={} chnl=15",
                 glyph.bearing_x,
                 (base - glyph.bearing_y),
                 glyph.advance,
                 glyph.page
-            )),
-        );
+            )
+        ));
     }
     let kern_keys = {
         let mut __flight_array = Vec::new();
@@ -117,7 +172,15 @@ pub fn format_bitmap_font_fnt(font: &BitmapFont) -> String {
             amount
         ));
     }
-    return ((lines.join)("\n") + "\n");
+    return format!(
+        "{}{}",
+        (lines)
+            .iter()
+            .map(|value| value.to_string())
+            .collect::<Vec<_>>()
+            .join(("\n".to_owned()).as_str()),
+        "\n"
+    );
 }
 
 // Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:71 (sha256:0fb0bf39ba0e8dd8e474465330f02940ea1e00f04392b1c8e8e7dfc25f49d784)
@@ -176,19 +239,12 @@ fn parse_bitmap_font_fnt_record(
         let tag = if (space_at < 0.0_f64) {
             (line).clone()
         } else {
-            String::from_utf16_lossy(
-                &((line).clone())
-                    .encode_utf16()
-                    .skip((0.0_f64) as usize)
-                    .take(((space_at) as usize).saturating_sub((0.0_f64) as usize))
-                    .collect::<Vec<u16>>(),
-            )
+            __flight_string_slice(&((line).clone()), 0.0_f64, Some(space_at))
         };
-        let fields = parse_fnt_fields(String::from_utf16_lossy(
-            &((line).clone())
-                .encode_utf16()
-                .skip((tag.encode_utf16().count() as f64) as usize)
-                .collect::<Vec<u16>>(),
+        let fields = parse_fnt_fields(__flight_string_slice(
+            &((line).clone()),
+            (tag.encode_utf16().count() as f64),
+            None,
         ));
         if (tag == "common") {
             line_height = read_fnt_number(Some(
@@ -272,11 +328,11 @@ fn parse_bitmap_font_fnt_record(
     }
     return Some(BitmapFontRecord {
         __flight_identity: std::sync::Arc::new(()),
-        base: (base).clone().unwrap(),
+        base: *(base.as_mut().unwrap()),
         chars: (chars).clone(),
         encoding: "raster".to_owned(),
         kernings: (kernings).clone(),
-        line_height: (line_height).clone().unwrap(),
+        line_height: *(line_height.as_mut().unwrap()),
         pages: (pages).clone(),
     });
 }
@@ -303,35 +359,39 @@ fn parse_fnt_fields(rest: String) -> Vec<(String, String)> {
         .dot_matches_new_line(false)
         .build()
         .expect("upstream TypeScript regular expression must be valid Rust regex syntax");
-    let mut match_: Option<crate::OpaqueHostValue>;
+    let mut match_: Option<Vec<Option<String>>>;
     while ({
         match_ = {
-            let __flight_regex = re;
+            let __flight_regex = &(re);
             __flight_regex.captures(&((rest).clone())).map(|captures| {
                 (0..captures.len())
                     .map(|index| {
                         captures
                             .get(index)
-                            .map_or("", |matched| matched.as_str())
-                            .to_owned()
+                            .map(|matched| matched.as_str().to_owned())
                     })
                     .collect::<Vec<_>>()
             })
         };
-        match_
+        match_.clone()
     })
     .is_some()
     {
-        fields
-            .iter()
-            .find(|(entry_key, _)| entry_key == &crate::host_value::<String>("host.index"))
-            .map(|(_, value)| value)
-            .expect("TypeScript Record key was absent") =
-            if (crate::host_value::<crate::OpaqueHostValue>("host.index")).is_some() {
-                crate::host_value::<String>("host.index")
+        {
+            let __flight_key = match_.as_mut().unwrap()[1.0_f64 as usize].clone().unwrap();
+            let __flight_value = if (match_.as_mut().unwrap()[2.0_f64 as usize].clone()).is_some() {
+                match_.as_mut().unwrap()[2.0_f64 as usize].clone().unwrap()
             } else {
-                crate::host_value::<crate::OpaqueHostValue>("host.index")
+                (match_.as_mut().unwrap()[3.0_f64 as usize].clone())
+                    .clone()
+                    .unwrap_or("".to_owned())
             };
+            if let Some((_, value)) = fields.iter_mut().find(|(key, _)| key == &__flight_key) {
+                *value = __flight_value;
+            } else {
+                fields.push((__flight_key, __flight_value));
+            }
+        };
     }
     return fields;
 }
@@ -412,8 +472,8 @@ fn read_fnt_char(fields: &Vec<(String, String)>) -> Option<BitmapFontCharRecord>
     }
     return Some(BitmapFontCharRecord {
         __flight_identity: std::sync::Arc::new(()),
-        height: (height).clone().unwrap(),
-        id: (id).clone().unwrap(),
+        height: *(height.as_ref().unwrap()),
+        id: *(id.as_ref().unwrap()),
         page: (read_fnt_number(Some(
             (fields
                 .iter()
@@ -422,13 +482,14 @@ fn read_fnt_char(fields: &Vec<(String, String)>) -> Option<BitmapFontCharRecord>
                 .expect("TypeScript Record key was absent"))
             .clone(),
         )))
+        .clone()
         .unwrap_or(0.0_f64),
-        width: (width).clone().unwrap(),
-        x: (x).clone().unwrap(),
-        xadvance: (xadvance).clone().unwrap(),
-        xoffset: (xoffset).clone().unwrap(),
-        y: (y).clone().unwrap(),
-        yoffset: (yoffset).clone().unwrap(),
+        width: *(width.as_ref().unwrap()),
+        x: *(x.as_ref().unwrap()),
+        xadvance: *(xadvance.as_ref().unwrap()),
+        xoffset: *(xoffset.as_ref().unwrap()),
+        y: *(y.as_ref().unwrap()),
+        yoffset: *(yoffset.as_ref().unwrap()),
     });
 }
 
@@ -463,18 +524,18 @@ fn read_fnt_kerning(fields: &Vec<(String, String)>) -> Option<BitmapFontKerningR
     }
     return Some(BitmapFontKerningRecord {
         __flight_identity: std::sync::Arc::new(()),
-        amount: (amount).clone().unwrap(),
-        first: (first).clone().unwrap(),
-        second: (second).clone().unwrap(),
+        amount: *(amount.as_ref().unwrap()),
+        first: *(first.as_ref().unwrap()),
+        second: *(second.as_ref().unwrap()),
     });
 }
 
 // Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:172 (sha256:061d1555bcce0612a142320f51716accd695dcd24345b46d2f9dc0143fad2697)
 fn read_fnt_number(value: Option<String>) -> Option<f64> {
-    if ((value).is_none()) || ((value).trim().to_owned() == "") {
+    if ((value).is_none()) || ((value.as_ref().unwrap()).trim().to_owned() == "") {
         return None;
     }
-    let parsed = number(value);
+    let parsed = __flight_number_from_string(&((value.as_ref().unwrap()).clone()));
     return if (parsed).is_finite() {
         Some(parsed)
     } else {

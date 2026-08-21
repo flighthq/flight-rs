@@ -11,6 +11,46 @@ use flighthq_types::{
     Rectangle, TextLayoutGroup, TextLayoutResult, TextLineMetrics, TextSelectionRectangle,
 };
 
+#[inline]
+
+fn __flight_string_index_of(value: &str, search: &str, position: f64) -> f64 {
+    let value: Vec<u16> = value.encode_utf16().collect();
+    let search: Vec<u16> = search.encode_utf16().collect();
+    let start = if position.is_nan() || position <= 0.0_f64 {
+        0_usize
+    } else if position >= value.len() as f64 {
+        value.len()
+    } else {
+        position.trunc() as usize
+    };
+    if search.is_empty() {
+        return start as f64;
+    }
+    value[start..]
+        .windows(search.len())
+        .position(|window| window == search)
+        .map_or(-1.0_f64, |index| (start + index) as f64)
+}
+
+#[inline]
+
+fn __flight_string_slice(value: &str, start: f64, end: Option<f64>) -> String {
+    let value: Vec<u16> = value.encode_utf16().collect();
+    let length = value.len();
+    let relative = |index: f64| -> usize {
+        if index.is_nan() {
+            0
+        } else if index < 0.0_f64 {
+            length.saturating_sub((-index.trunc()) as usize)
+        } else {
+            (index.trunc() as usize).min(length)
+        }
+    };
+    let start = relative(start);
+    let end = end.map_or(length, relative);
+    String::from_utf16_lossy(&value[start..end.max(start)])
+}
+
 // Source: upstream/packages/textlayout/src/richTextQuery.ts:11 (sha256:b0ec9b594c94c81e786bbab75f4f8e9c2961db2321d263120e08be8d4cc5f593)
 pub fn compute_rich_text_char_index_at_point(layout: &TextLayoutResult, x: f64, y: f64) -> f64 {
     if ((layout.groups.len() as f64) == 0.0_f64) {
@@ -55,6 +95,7 @@ pub fn compute_rich_text_char_index_at_point(layout: &TextLayoutResult, x: f64, 
     }
     let mut line_start = if ((layout.groups.len() as f64) > 0.0_f64) {
         (layout.groups[((layout.groups.len() as f64) - 1.0_f64) as usize].end_index)
+            .clone()
             .unwrap_or(0.0_f64)
     } else {
         0.0_f64
@@ -147,14 +188,18 @@ pub fn get_rich_text_char_boundaries(
     {
         let mut i = 0.0_f64;
         while (i < limit) {
-            x += (crate::host_value::<Option<f64>>("host.index")).unwrap_or(0.0_f64);
+            x += (crate::host_value::<Option<f64>>("host.index"))
+                .clone()
+                .unwrap_or(0.0_f64);
             {
                 i += 1.0;
                 i
             };
         }
     }
-    let char_width = (crate::host_value::<Option<f64>>("host.index")).unwrap_or(0.0_f64);
+    let char_width = (crate::host_value::<Option<f64>>("host.index"))
+        .clone()
+        .unwrap_or(0.0_f64);
     out.x = x;
     out.y = crate::host_value::<f64>("host.offsetY");
     out.width = char_width;
@@ -164,11 +209,26 @@ pub fn get_rich_text_char_boundaries(
 
 // Source: upstream/packages/textlayout/src/richTextQuery.ts:109 (sha256:0298d7186f72dc2b349928f8c31fc22aac7dce5366ecbc2061dd1567d0ae3484)
 pub fn get_rich_text_first_char_in_paragraph(text: String, char_index: f64) -> f64 {
-    let clamped = (0.0_f64).max((text.encode_utf16().count() as f64).min(char_index));
+    let __flight_utf16_text: Vec<u16> = text.encode_utf16().collect();
+    let clamped = (0.0_f64).max((__flight_utf16_text.len() as f64).min(char_index));
     {
         let mut i = (clamped - 1.0_f64);
         while (i >= 0.0_f64) {
-            if (text[i as usize].clone() == "\n") {
+            if ({
+                let __flight_units: &[u16] = &__flight_utf16_text;
+                let __flight_raw_index = i;
+                if __flight_raw_index.is_finite()
+                    && __flight_raw_index >= 0.0_f64
+                    && __flight_raw_index.fract() == 0.0_f64
+                {
+                    __flight_units
+                        .get(__flight_raw_index as usize)
+                        .map_or_else(String::new, |unit| String::from_utf16_lossy(&[*unit]))
+                } else {
+                    String::new()
+                }
+            } == "\n")
+            {
                 return (i + 1.0_f64);
             }
             {
@@ -214,7 +274,9 @@ pub fn get_rich_text_line_index_at_point(layout: &TextLayoutResult, y: f64) -> f
 // Source: upstream/packages/textlayout/src/richTextQuery.ts:132 (sha256:b3313ad08b40bb441598ac753c053328e87bb3aefc9df22db3a8c3a7b1ab6c3f)
 pub fn get_rich_text_line_index_of_char(layout: &TextLayoutResult, char_index: f64) -> f64 {
     let group = get_group_containing_index(layout, char_index);
-    return (crate::host_value::<crate::OpaqueHostValue>("host.lineIndex")).unwrap_or(0.0_f64);
+    return (crate::host_value::<crate::OpaqueHostValue>("host.lineIndex"))
+        .clone()
+        .unwrap_or(0.0_f64);
 }
 
 // Source: upstream/packages/textlayout/src/richTextQuery.ts:137 (sha256:c6d996feb6316a64eb2c5f1b8ce0f215b5d0a29d7b519c089a7284ac956f6764)
@@ -259,20 +321,17 @@ pub fn get_rich_text_line_text(text: String, layout: &TextLayoutResult, line_ind
     return if (start == f64::INFINITY) {
         "".to_owned()
     } else {
-        String::from_utf16_lossy(
-            &(text)
-                .encode_utf16()
-                .skip((start) as usize)
-                .take(((end) as usize).saturating_sub((start) as usize))
-                .collect::<Vec<u16>>(),
-        )
+        __flight_string_slice(&(text), start, Some(end))
     };
 }
 
 // Source: upstream/packages/textlayout/src/richTextQuery.ts:166 (sha256:5117064cd2bf44c90995796f6def5812b8a8bf6a0f52ca07d5955c6d387252d0)
 pub fn get_rich_text_link_at_point(layout: &TextLayoutResult, x: f64, y: f64) -> Option<String> {
     for group in ((layout.groups).clone()).iter().cloned() {
-        if ((group.format.url).clone()).is_none() {
+        if ((group.format.url).clone())
+            .as_ref()
+            .map_or(true, |value| value.is_empty())
+        {
             continue;
         }
         if (((x >= group.offset_x) && (x <= (group.offset_x + group.width)))
@@ -288,7 +347,7 @@ pub fn get_rich_text_link_at_point(layout: &TextLayoutResult, x: f64, y: f64) ->
 // Source: upstream/packages/textlayout/src/richTextQuery.ts:181 (sha256:cef0a11727296f4dc4f8de3196eb01f49fd68c7e8500a6711291396728d6e545)
 pub fn get_rich_text_paragraph_length(text: String, char_index: f64) -> f64 {
     let start = get_rich_text_first_char_in_paragraph((text).clone(), char_index);
-    let newline = (text.index_of)("\n", start);
+    let newline = __flight_string_index_of(&(text), &("\n".to_owned()), start);
     let end = if (newline == (-1.0_f64)) {
         (text.encode_utf16().count() as f64)
     } else {

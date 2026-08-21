@@ -30,7 +30,7 @@ pub fn ease_piecewise(segments: Vec<EasingSegment>) -> EasingFunction {
         .iter()
         .cloned()
         .fold(0.0_f64, |sum: f64, seg: EasingSegment| -> f64 {
-            (sum + (seg.weight).unwrap_or(1.0_f64))
+            (sum + (seg.weight).clone().unwrap_or(1.0_f64))
         });
     if (total_weight <= 0.0_f64) {
         panic!(
@@ -42,7 +42,7 @@ pub fn ease_piecewise(segments: Vec<EasingSegment>) -> EasingFunction {
         std::sync::Arc::new(std::sync::Mutex::new(vec![]));
     let mut accumulated = 0.0_f64;
     for seg in (segments).iter().cloned() {
-        let weight = (seg.weight).unwrap_or(1.0_f64);
+        let weight = (seg.weight).clone().unwrap_or(1.0_f64);
         let start = (accumulated / total_weight);
         accumulated += weight;
         let end = (accumulated / total_weight);

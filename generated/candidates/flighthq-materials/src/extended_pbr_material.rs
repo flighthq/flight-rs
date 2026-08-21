@@ -150,9 +150,11 @@ pub fn create_extended_pbr_material(opts: Option<FlightPartialRecord1>) -> Exten
             ..Default::default()
         }
     };
-    material.extensions =
-        (opts.as_ref().and_then(|value| (value.extensions).clone())).unwrap_or(vec![]);
+    material.extensions = (opts.as_ref().and_then(|value| (value.extensions).clone()))
+        .clone()
+        .unwrap_or(vec![]);
     material.standard = (opts.as_ref().and_then(|value| (value.standard).clone()))
+        .clone()
         .unwrap_or(create_standard_pbr_material_properties(None));
     return material;
 }

@@ -80,12 +80,17 @@ pub fn create_iridescence_pbr_extension(
     return create_entity(Some(IridescencePbrExtension {
         __flight_identity: std::sync::Arc::new(()),
         __flight_entity_runtime: Default::default(),
-        iridescence: (opts.as_ref().and_then(|value| value.iridescence)).unwrap_or(0.0_f64),
-        iridescence_ior: (opts.as_ref().and_then(|value| value.iridescence_ior)).unwrap_or(1.3_f64),
+        iridescence: (opts.as_ref().and_then(|value| value.iridescence))
+            .clone()
+            .unwrap_or(0.0_f64),
+        iridescence_ior: (opts.as_ref().and_then(|value| value.iridescence_ior))
+            .clone()
+            .unwrap_or(1.3_f64),
         iridescence_map: opts
             .as_ref()
             .and_then(|value| (value.iridescence_map).clone()),
         iridescence_map_uv_set: (opts.as_ref().and_then(|value| value.iridescence_map_uv_set))
+            .clone()
             .unwrap_or(0.0_f64),
         iridescence_thickness_map: opts
             .as_ref()
@@ -93,14 +98,17 @@ pub fn create_iridescence_pbr_extension(
         iridescence_thickness_map_uv_set: (opts
             .as_ref()
             .and_then(|value| value.iridescence_thickness_map_uv_set))
+        .clone()
         .unwrap_or(0.0_f64),
         iridescence_thickness_max: (opts
             .as_ref()
             .and_then(|value| value.iridescence_thickness_max))
+        .clone()
         .unwrap_or(400.0_f64),
         iridescence_thickness_min: (opts
             .as_ref()
             .and_then(|value| value.iridescence_thickness_min))
+        .clone()
         .unwrap_or(100.0_f64),
         kind: (iridescence_pbr_extension_kind_constant).to_owned(),
         ..Default::default()

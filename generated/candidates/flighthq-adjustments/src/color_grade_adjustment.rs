@@ -64,15 +64,15 @@ pub fn create_color_grade_adjustment(options: Option<FlightOmitRecord1>) -> Colo
         gamma: None,
         gain: None,
     });
-    let exposure = (2.0_f64).powf((options.exposure).unwrap_or(0.0_f64));
-    let brightness = (options.brightness).unwrap_or(0.0_f64);
-    let contrast = (options.contrast).unwrap_or(1.0_f64);
-    let saturation = (options.saturation).unwrap_or(1.0_f64);
-    let temperature = (options.temperature).unwrap_or(0.0_f64);
-    let tint = (options.tint).unwrap_or(0.0_f64);
-    let lift = unpack_rgb((options.lift).unwrap_or(255.0_f64));
-    let gamma_raw = unpack_rgb((options.gamma).unwrap_or(2155905279.0_f64));
-    let gain = unpack_rgb((options.gain).unwrap_or(4294967295.0_f64));
+    let exposure = (2.0_f64).powf((options.exposure).clone().unwrap_or(0.0_f64));
+    let brightness = (options.brightness).clone().unwrap_or(0.0_f64);
+    let contrast = (options.contrast).clone().unwrap_or(1.0_f64);
+    let saturation = (options.saturation).clone().unwrap_or(1.0_f64);
+    let temperature = (options.temperature).clone().unwrap_or(0.0_f64);
+    let tint = (options.tint).clone().unwrap_or(0.0_f64);
+    let lift = unpack_rgb((options.lift).clone().unwrap_or(255.0_f64));
+    let gamma_raw = unpack_rgb((options.gamma).clone().unwrap_or(2155905279.0_f64));
+    let gain = unpack_rgb((options.gain).clone().unwrap_or(4294967295.0_f64));
     let gamma_exp: Vec<f64> = vec![
         (1.0_f64 / (gamma_raw[0.0_f64 as usize].clone() * 2.0_f64).max(0.001_f64)),
         (1.0_f64 / (gamma_raw[1.0_f64 as usize].clone() * 2.0_f64).max(0.001_f64)),

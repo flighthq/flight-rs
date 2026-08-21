@@ -58,7 +58,7 @@ pub fn get_bitmap_coverage(
             }
             {
                 i += 4.0_f64;
-                i
+                i.clone()
             };
         }
     }

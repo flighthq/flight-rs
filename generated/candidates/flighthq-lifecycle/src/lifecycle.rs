@@ -264,7 +264,7 @@ pub fn get_app_launch_kind() -> AppLaunchKind {
     let backend = get_lifecycle_backend();
     return if ((backend.get_launch_kind).clone()).is_some() {
         {
-            let __flight_callback = backend.get_launch_kind.as_ref().unwrap().clone();
+            let __flight_callback = (backend.get_launch_kind).clone().as_ref().unwrap().clone();
             let __flight_result = __flight_callback.lock().unwrap()();
             __flight_result
         }

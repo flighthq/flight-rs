@@ -25,8 +25,12 @@ pub fn create_ambient_light(options: Option<AmbientLightOptions>) -> AmbientLigh
     return create_entity(Some(AmbientLight {
         __flight_identity: std::sync::Arc::new(()),
         __flight_entity_runtime: Default::default(),
-        color: (options.as_ref().and_then(|value| value.color)).unwrap_or(4294967295.0_f64),
-        intensity: (options.as_ref().and_then(|value| value.intensity)).unwrap_or(1.0_f64),
+        color: (options.as_ref().and_then(|value| value.color))
+            .clone()
+            .unwrap_or(4294967295.0_f64),
+        intensity: (options.as_ref().and_then(|value| value.intensity))
+            .clone()
+            .unwrap_or(1.0_f64),
         kind: (ambient_light_kind_constant).to_owned(),
         ..Default::default()
     }));

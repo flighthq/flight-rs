@@ -15,7 +15,7 @@ pub fn ease_in_back(t: f64) -> f64 {
 pub fn ease_in_out_back(mut t: f64) -> f64 {
     return if ({
         t *= 2.0_f64;
-        t
+        t.clone()
     } < 1.0_f64)
     {
         (0.5_f64 * ((t * t) * (((S2 + 1.0_f64) * t) - S2)))
@@ -23,7 +23,7 @@ pub fn ease_in_out_back(mut t: f64) -> f64 {
         (0.5_f64
             * ((({
                 t -= 2.0_f64;
-                t
+                t.clone()
             } * t)
                 * (((S2 + 1.0_f64) * t) + S2))
                 + 2.0_f64))
@@ -34,7 +34,7 @@ pub fn ease_in_out_back(mut t: f64) -> f64 {
 pub fn ease_out_back(mut t: f64) -> f64 {
     return ((({
         t -= 1.0_f64;
-        t
+        t.clone()
     } * t)
         * (((S + 1.0_f64) * t) + S))
         + 1.0_f64);

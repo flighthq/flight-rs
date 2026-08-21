@@ -35,7 +35,7 @@ pub fn create_invert_adjustment(options: Option<FlightOmitRecord1>) -> InvertAdj
         __flight_identity: std::sync::Arc::new(()),
         intensity: None,
     });
-    let intensity = (options.intensity).unwrap_or(1.0_f64);
+    let intensity = (options.intensity).clone().unwrap_or(1.0_f64);
     let s = (1.0_f64 - (2.0_f64 * intensity));
     let o = intensity;
     let color_matrix = vec![

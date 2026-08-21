@@ -74,7 +74,7 @@ pub fn pixelate_bitmap(out: &mut Vec<u8>, source: &BitmapRegion, block_size: f64
                     if (count == 0.0_f64) {
                         {
                             bx += block;
-                            bx
+                            bx.clone()
                         };
                         continue;
                     }
@@ -107,13 +107,13 @@ pub fn pixelate_bitmap(out: &mut Vec<u8>, source: &BitmapRegion, block_size: f64
                     }
                     {
                         bx += block;
-                        bx
+                        bx.clone()
                     };
                 }
             }
             {
                 by += block;
-                by
+                by.clone()
             };
         }
     }

@@ -48,7 +48,7 @@ pub fn get_bitmap_mismatch(
             }
             {
                 i += 4.0_f64;
-                i
+                i.clone()
             };
         }
     }

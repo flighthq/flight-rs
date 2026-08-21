@@ -107,11 +107,11 @@ pub fn create_bevel_effect(options: Option<FlightOmitRecord1>) -> BevelEffect {
 
 // Source: upstream/packages/effects/src/bevelEffect.ts:10 (sha256:21305b8240fd3f33cd4a1c1f81c7c95e7adce82eb301e09ed1476f9ab6df747b)
 pub fn get_bevel_effect_padding(effect: &BevelEffect) -> RenderEffectPadding {
-    let angle = (((effect.angle).unwrap_or(45.0_f64) * std::f64::consts::PI) / 180.0_f64);
-    let distance = (effect.distance).unwrap_or(4.0_f64);
+    let angle = (((effect.angle).clone().unwrap_or(45.0_f64) * std::f64::consts::PI) / 180.0_f64);
+    let distance = (effect.distance).clone().unwrap_or(4.0_f64);
     return get_directional_render_effect_padding(
-        (effect.blur_x).unwrap_or(4.0_f64),
-        (effect.blur_y).unwrap_or(4.0_f64),
+        (effect.blur_x).clone().unwrap_or(4.0_f64),
+        (effect.blur_y).clone().unwrap_or(4.0_f64),
         ((angle).cos() * distance),
         ((angle).sin() * distance),
     );

@@ -37,27 +37,28 @@ pub fn create_color_blind_simulation_adjustment(
         __flight_identity: std::sync::Arc::new(()),
         type_: None,
     });
-    let type_: ColorBlindType = ((options.type_).clone()).unwrap_or("deuteranopia".to_owned());
+    let type_: ColorBlindType = ((options.type_).clone())
+        .clone()
+        .unwrap_or("deuteranopia".to_owned());
     let m = COLOR_BLIND_MATRICES
         .iter()
         .find(|(entry_key, _)| entry_key == &(type_).clone())
-        .map(|(_, value)| value)
-        .expect("TypeScript Record key was absent")
+        .map(|(_, value)| value.clone())
         .clone();
     let color_matrix = vec![
-        m[0.0_f64 as usize].clone(),
-        m[1.0_f64 as usize].clone(),
-        m[2.0_f64 as usize].clone(),
+        m.as_ref().unwrap()[0.0_f64 as usize].clone(),
+        m.as_ref().unwrap()[1.0_f64 as usize].clone(),
+        m.as_ref().unwrap()[2.0_f64 as usize].clone(),
         0.0_f64,
         0.0_f64,
-        m[3.0_f64 as usize].clone(),
-        m[4.0_f64 as usize].clone(),
-        m[5.0_f64 as usize].clone(),
+        m.as_ref().unwrap()[3.0_f64 as usize].clone(),
+        m.as_ref().unwrap()[4.0_f64 as usize].clone(),
+        m.as_ref().unwrap()[5.0_f64 as usize].clone(),
         0.0_f64,
         0.0_f64,
-        m[6.0_f64 as usize].clone(),
-        m[7.0_f64 as usize].clone(),
-        m[8.0_f64 as usize].clone(),
+        m.as_ref().unwrap()[6.0_f64 as usize].clone(),
+        m.as_ref().unwrap()[7.0_f64 as usize].clone(),
+        m.as_ref().unwrap()[8.0_f64 as usize].clone(),
         0.0_f64,
         0.0_f64,
         0.0_f64,

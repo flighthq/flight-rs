@@ -20,7 +20,7 @@ pub fn premultiply_bitmap_pixels(out: &mut Vec<u8>, source: &Vec<u8>, length: f6
             out[(i + 3.0_f64) as usize] = (source[(i + 3.0_f64) as usize] as f64) as u8;
             {
                 i += 4.0_f64;
-                i
+                i.clone()
             };
         }
     }
@@ -51,7 +51,7 @@ pub fn unpremultiply_bitmap_pixels(out: &mut Vec<u8>, source: &Vec<u8>, length: 
             }
             {
                 i += 4.0_f64;
-                i
+                i.clone()
             };
         }
     }

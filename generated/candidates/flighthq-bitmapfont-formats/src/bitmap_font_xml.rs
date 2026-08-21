@@ -41,7 +41,7 @@ fn parse_bitmap_font_xml_record(
     if ((root).is_none()) || ((root.as_ref().unwrap().name).clone() != "font") {
         return None;
     }
-    let common = get_xml_element_child_by_name(root.as_ref().unwrap(), "common".to_owned());
+    let common = get_xml_element_child_by_name(&root.as_ref().unwrap(), "common".to_owned());
     if (common).is_none() {
         return None;
     }
@@ -55,7 +55,7 @@ fn parse_bitmap_font_xml_record(
     let mut dropped_pages = 0.0_f64;
     let mut dropped_chars = 0.0_f64;
     let mut dropped_kernings = 0.0_f64;
-    let pages_element = get_xml_element_child_by_name(root.as_ref().unwrap(), "pages".to_owned());
+    let pages_element = get_xml_element_child_by_name(&root.as_ref().unwrap(), "pages".to_owned());
     if (pages_element).is_some() {
         for page_element in
             (get_xml_element_children_by_name(&pages_element.as_ref().unwrap(), "page".to_owned()))
@@ -72,6 +72,7 @@ fn parse_bitmap_font_xml_record(
                 pages.push(BitmapFontPageRecord {
                     __flight_identity: std::sync::Arc::new(()),
                     file: (get_xml_element_attribute(&page_element, "file".to_owned()))
+                        .clone()
                         .unwrap_or("".to_owned()),
                     id: *(id.as_ref().unwrap()),
                 });
@@ -79,7 +80,7 @@ fn parse_bitmap_font_xml_record(
         }
     }
     let mut chars: Vec<BitmapFontCharRecord> = vec![];
-    let chars_element = get_xml_element_child_by_name(root.as_ref().unwrap(), "chars".to_owned());
+    let chars_element = get_xml_element_child_by_name(&root.as_ref().unwrap(), "chars".to_owned());
     if (chars_element).is_some() {
         for char_element in
             (get_xml_element_children_by_name(&chars_element.as_ref().unwrap(), "char".to_owned()))
@@ -102,7 +103,7 @@ fn parse_bitmap_font_xml_record(
     }
     let mut kernings: Vec<BitmapFontKerningRecord> = vec![];
     let kernings_element =
-        get_xml_element_child_by_name(root.as_ref().unwrap(), "kernings".to_owned());
+        get_xml_element_child_by_name(&root.as_ref().unwrap(), "kernings".to_owned());
     if (kernings_element).is_some() {
         for kerning_element in (get_xml_element_children_by_name(
             &kernings_element.as_ref().unwrap(),
@@ -131,11 +132,11 @@ fn parse_bitmap_font_xml_record(
     );
     return Some(BitmapFontRecord {
         __flight_identity: std::sync::Arc::new(()),
-        base: (base).clone().unwrap(),
+        base: *(base.as_ref().unwrap()),
         chars: (chars).clone(),
         encoding: "raster".to_owned(),
         kernings: (kernings).clone(),
-        line_height: (line_height).clone().unwrap(),
+        line_height: *(line_height.as_ref().unwrap()),
         pages: (pages).clone(),
     });
 }
@@ -160,15 +161,17 @@ fn read_xml_char(element: &XmlElement) -> Option<BitmapFontCharRecord> {
     }
     return Some(BitmapFontCharRecord {
         __flight_identity: std::sync::Arc::new(()),
-        height: (height).clone().unwrap(),
-        id: (id).clone().unwrap(),
-        page: (get_xml_element_attribute_number(element, "page".to_owned())).unwrap_or(0.0_f64),
-        width: (width).clone().unwrap(),
-        x: (x).clone().unwrap(),
-        xadvance: (xadvance).clone().unwrap(),
-        xoffset: (xoffset).clone().unwrap(),
-        y: (y).clone().unwrap(),
-        yoffset: (yoffset).clone().unwrap(),
+        height: *(height.as_ref().unwrap()),
+        id: *(id.as_ref().unwrap()),
+        page: (get_xml_element_attribute_number(element, "page".to_owned()))
+            .clone()
+            .unwrap_or(0.0_f64),
+        width: *(width.as_ref().unwrap()),
+        x: *(x.as_ref().unwrap()),
+        xadvance: *(xadvance.as_ref().unwrap()),
+        xoffset: *(xoffset.as_ref().unwrap()),
+        y: *(y.as_ref().unwrap()),
+        yoffset: *(yoffset.as_ref().unwrap()),
     });
 }
 
@@ -182,8 +185,8 @@ fn read_xml_kerning(element: &XmlElement) -> Option<BitmapFontKerningRecord> {
     }
     return Some(BitmapFontKerningRecord {
         __flight_identity: std::sync::Arc::new(()),
-        amount: (amount).clone().unwrap(),
-        first: (first).clone().unwrap(),
-        second: (second).clone().unwrap(),
+        amount: *(amount.as_ref().unwrap()),
+        first: *(first.as_ref().unwrap()),
+        second: *(second.as_ref().unwrap()),
     });
 }

@@ -894,7 +894,7 @@ pub fn step_particle_emitter2_d(
     callbacks: Option<ParticleEmitterCallbacks>,
 ) -> () {
     if ((forces).is_some()) && ((forces.as_ref().unwrap().len() as f64) > 0.0_f64) {
-        apply_particle_forces(emitter, state, forces.as_ref().unwrap(), delta_time);
+        apply_particle_forces(emitter, state, &forces.as_ref().unwrap(), delta_time);
     }
     update_particle_emitter2_d(
         emitter,
@@ -904,6 +904,6 @@ pub fn step_particle_emitter2_d(
         Some(((callbacks).clone().unwrap()).clone()),
     );
     if ((colliders).is_some()) && ((colliders.as_ref().unwrap().len() as f64) > 0.0_f64) {
-        apply_particle_collisions(emitter, state, colliders.as_ref().unwrap());
+        apply_particle_collisions(emitter, state, &colliders.as_ref().unwrap());
     }
 }

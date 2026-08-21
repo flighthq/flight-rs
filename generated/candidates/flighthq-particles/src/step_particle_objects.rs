@@ -25,7 +25,7 @@ pub fn step_particle_objects(
     update_options: Option<ParticleObjectsUpdateOptions>,
 ) -> () {
     if ((forces).is_some()) && ((forces.as_ref().unwrap().len() as f64) > 0.0_f64) {
-        apply_particle_object_forces(objects, state, forces.as_ref().unwrap(), delta_time);
+        apply_particle_object_forces(objects, state, &forces.as_ref().unwrap(), delta_time);
     }
     update_particle_objects(
         objects,
@@ -35,6 +35,6 @@ pub fn step_particle_objects(
         Some(((update_options).clone().unwrap()).clone()),
     );
     if ((colliders).is_some()) && ((colliders.as_ref().unwrap().len() as f64) > 0.0_f64) {
-        apply_particle_object_collisions(objects, state, colliders.as_ref().unwrap());
+        apply_particle_object_collisions(objects, state, &colliders.as_ref().unwrap());
     }
 }

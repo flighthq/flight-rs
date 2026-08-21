@@ -28,10 +28,15 @@ pub fn create_hemisphere_light(options: Option<HemisphereLightOptions>) -> Hemis
         __flight_identity: std::sync::Arc::new(()),
         __flight_entity_runtime: Default::default(),
         ground_color: (options.as_ref().and_then(|value| value.ground_color))
+            .clone()
             .unwrap_or(4294967295.0_f64),
-        intensity: (options.as_ref().and_then(|value| value.intensity)).unwrap_or(1.0_f64),
+        intensity: (options.as_ref().and_then(|value| value.intensity))
+            .clone()
+            .unwrap_or(1.0_f64),
         kind: (hemisphere_light_kind_constant).to_owned(),
-        sky_color: (options.as_ref().and_then(|value| value.sky_color)).unwrap_or(4294967295.0_f64),
+        sky_color: (options.as_ref().and_then(|value| value.sky_color))
+            .clone()
+            .unwrap_or(4294967295.0_f64),
         ..Default::default()
     }));
 }

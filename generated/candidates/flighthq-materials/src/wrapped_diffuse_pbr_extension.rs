@@ -79,13 +79,17 @@ pub fn create_wrapped_diffuse_pbr_extension(
         __flight_identity: std::sync::Arc::new(()),
         __flight_entity_runtime: Default::default(),
         kind: (wrapped_diffuse_pbr_extension_kind_constant).to_owned(),
-        thickness: (opts.as_ref().and_then(|value| value.thickness)).unwrap_or(0.0_f64),
+        thickness: (opts.as_ref().and_then(|value| value.thickness))
+            .clone()
+            .unwrap_or(0.0_f64),
         thickness_map: opts
             .as_ref()
             .and_then(|value| (value.thickness_map).clone()),
         thickness_map_uv_set: (opts.as_ref().and_then(|value| value.thickness_map_uv_set))
+            .clone()
             .unwrap_or(0.0_f64),
         wrapped_diffuse_color: (opts.as_ref().and_then(|value| value.wrapped_diffuse_color))
+            .clone()
             .unwrap_or(4294967295.0_f64),
         wrapped_diffuse_map: opts
             .as_ref()
@@ -93,10 +97,12 @@ pub fn create_wrapped_diffuse_pbr_extension(
         wrapped_diffuse_map_uv_set: (opts
             .as_ref()
             .and_then(|value| value.wrapped_diffuse_map_uv_set))
+        .clone()
         .unwrap_or(0.0_f64),
         wrapped_diffuse_strength: (opts
             .as_ref()
             .and_then(|value| value.wrapped_diffuse_strength))
+        .clone()
         .unwrap_or(0.0_f64),
         ..Default::default()
     }));

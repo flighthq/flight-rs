@@ -20,8 +20,12 @@ pub fn connect_signal<T: crate::FlightCallback>(
     slot: T,
     options: Option<SignalConnectOptions>,
 ) -> () {
-    let priority = (options.as_ref().and_then(|value| value.priority)).unwrap_or(0.0_f64);
-    let repeat = (!(options.as_ref().and_then(|value| value.once)).unwrap_or(false));
+    let priority = (options.as_ref().and_then(|value| value.priority))
+        .clone()
+        .unwrap_or(0.0_f64);
+    let repeat = (!(options.as_ref().and_then(|value| value.once))
+        .clone()
+        .unwrap_or(false));
     init_signal(signal);
     let mut data = (signal.data).clone();
     {

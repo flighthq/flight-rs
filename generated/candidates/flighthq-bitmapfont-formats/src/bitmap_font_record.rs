@@ -213,7 +213,7 @@ pub fn build_bitmap_font_from_record(
                 __flight_record
             })
         })
-        .collect();
+        .collect::<Vec<_>>();
     let kerning: Vec<BitmapFontKerningData> = ((record.kernings).clone())
         .iter()
         .cloned()
@@ -262,7 +262,7 @@ pub fn build_bitmap_font_from_record(
                 __flight_record
             })
         })
-        .collect();
+        .collect::<Vec<_>>();
     let mut data: BitmapFontData = BitmapFontData {
         __flight_identity: std::sync::Arc::new(()),
         encoding: Some((record.encoding).clone()),

@@ -149,13 +149,13 @@ fn parse_bitmap_font_json_record(
     );
     return Some(BitmapFontRecord {
         __flight_identity: std::sync::Arc::new(()),
-        base: (base).clone().unwrap(),
+        base: *(base.as_ref().unwrap()),
         chars: (chars).clone(),
         encoding: read_json_encoding(crate::host_value::<crate::OpaqueHostValue>(
             "host.distanceField",
         )),
         kernings: (kernings).clone(),
-        line_height: (line_height).clone().unwrap(),
+        line_height: *(line_height.as_ref().unwrap()),
         pages: (pages).clone(),
     });
 }
@@ -201,16 +201,17 @@ fn read_json_char(raw: crate::OpaqueHostValue) -> Option<BitmapFontCharRecord> {
     }
     return Some(BitmapFontCharRecord {
         __flight_identity: std::sync::Arc::new(()),
-        height: (height).clone().unwrap(),
-        id: (id).clone().unwrap(),
+        height: *(height.as_ref().unwrap()),
+        id: *(id.as_ref().unwrap()),
         page: (read_json_number(crate::host_value::<crate::OpaqueHostValue>("host.page")))
+            .clone()
             .unwrap_or(0.0_f64),
-        width: (width).clone().unwrap(),
-        x: (x).clone().unwrap(),
-        xadvance: (xadvance).clone().unwrap(),
-        xoffset: (xoffset).clone().unwrap(),
-        y: (y).clone().unwrap(),
-        yoffset: (yoffset).clone().unwrap(),
+        width: *(width.as_ref().unwrap()),
+        x: *(x.as_ref().unwrap()),
+        xadvance: *(xadvance.as_ref().unwrap()),
+        xoffset: *(xoffset.as_ref().unwrap()),
+        y: *(y.as_ref().unwrap()),
+        yoffset: *(yoffset.as_ref().unwrap()),
     });
 }
 
@@ -238,9 +239,9 @@ fn read_json_kerning(raw: crate::OpaqueHostValue) -> Option<BitmapFontKerningRec
     }
     return Some(BitmapFontKerningRecord {
         __flight_identity: std::sync::Arc::new(()),
-        amount: (amount).clone().unwrap(),
-        first: (first).clone().unwrap(),
-        second: (second).clone().unwrap(),
+        amount: *(amount.as_ref().unwrap()),
+        first: *(first.as_ref().unwrap()),
+        second: *(second.as_ref().unwrap()),
     });
 }
 

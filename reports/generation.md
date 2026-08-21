@@ -8,8 +8,8 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | Default-generated packages | 144 |
 | Emittable packages | 40 |
 | Blocked packages | 104 |
-| Compiled candidates | 19 |
-| Compile-blocked candidates | 4 |
+| Compiled candidates | 22 |
+| Compile-blocked candidates | 1 |
 | Dependency-blocked candidates | 15 |
 | Cultivated packages | 1 |
 | Host-bound packages | 4 |
@@ -41,7 +41,7 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/binpack` | generated | blocked | source-blocked | 3/4 | 4/4 | 0 | 1/1 | 0 | 1 | no |
 | `@flighthq/bitmap` | cultivated | cultivated | not-applicable | 0/0 | 0/110 | 110 | 7/10 | 0 | 0 | partial |
 | `@flighthq/bitmapfont` | generated | blocked | source-blocked | 7/8 | 16/16 | 0 | 2/2 | 0 | 1 | no |
-| `@flighthq/bitmapfont-formats` | generated | emittable | dependency-blocked | 6/6 | 6/4 | 0 | 1/1 | 3 | 0 | no |
+| `@flighthq/bitmapfont-formats` | generated | emittable | dependency-blocked | 6/6 | 6/4 | 0 | 1/1 | 2 | 0 | no |
 | `@flighthq/bitmaptext` | generated | emittable | dependency-blocked | 4/4 | 14/14 | 0 | 1/1 | 2 | 0 | no |
 | `@flighthq/camera` | generated | blocked | source-blocked | 18/19 | 44/44 | 0 | 5/5 | 0 | 1 | no |
 | `@flighthq/camera-controls` | generated | blocked | source-blocked | 5/6 | 22/22 | 0 | 1/1 | 0 | 1 | no |
@@ -109,7 +109,7 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/picking` | generated | blocked | source-blocked | 2/4 | 11/11 | 0 | 1/1 | 0 | 2 | no |
 | `@flighthq/platform` | generated | emittable | compiled | 3/3 | 16/16 | 0 | 3/3 | 1 | 0 | no |
 | `@flighthq/power` | generated | blocked | source-blocked | 2/3 | 14/19 | 5 | 2/2 | 0 | 2 | partial |
-| `@flighthq/protocol` | generated | emittable | compile-blocked | 3/3 | 20/20 | 0 | 2/2 | 1 | 0 | no |
+| `@flighthq/protocol` | generated | emittable | compiled | 3/3 | 20/20 | 0 | 2/2 | 0 | 0 | no |
 | `@flighthq/quadbatch` | generated | blocked | source-blocked | 2/3 | 31/31 | 0 | 2/3 | 0 | 1 | no |
 | `@flighthq/registry` | generated | blocked | source-blocked | 2/3 | 11/11 | 0 | 17/24 | 0 | 1 | no |
 | `@flighthq/registry-catalog` | generated | blocked | source-blocked | 3/4 | 6/6 | 0 | 3/3 | 0 | 1 | no |
@@ -167,7 +167,7 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/textureatlas-formats` | generated | blocked | source-blocked | 4/7 | 12/12 | 0 | 2/2 | 0 | 3 | no |
 | `@flighthq/tilemap` | generated | blocked | source-blocked | 2/3 | 22/22 | 0 | 2/2 | 0 | 1 | no |
 | `@flighthq/tilemap-formats` | generated | blocked | source-blocked | 5/9 | 12/12 | 0 | 1/1 | 0 | 4 | no |
-| `@flighthq/timeline` | generated | emittable | compile-blocked | 3/3 | 19/19 | 0 | 2/3 | 0 | 0 | no |
+| `@flighthq/timeline` | generated | emittable | compiled | 3/3 | 19/19 | 0 | 2/3 | 0 | 0 | no |
 | `@flighthq/tool-capture` | excluded | excluded | not-applicable | 0/0 | 0/141 | 141 | 0/0 | 0 | 0 | no |
 | `@flighthq/tool-registry` | generated | blocked | source-blocked | 3/4 | 0/2 | 2 | 0/0 | 0 | 2 | no |
 | `@flighthq/tray` | generated | blocked | source-blocked | 2/4 | 28/28 | 0 | 3/3 | 0 | 2 | no |
@@ -178,7 +178,7 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/velocity` | generated | emittable | dependency-blocked | 5/5 | 20/20 | 0 | 3/3 | 2 | 0 | no |
 | `@flighthq/video` | generated | blocked | source-blocked | 4/5 | 16/16 | 0 | 2/2 | 1 | 1 | no |
 | `@flighthq/webcam` | generated | blocked | source-blocked | 2/4 | 5/9 | 4 | 1/1 | 0 | 3 | no |
-| `@flighthq/xml` | generated | emittable | compile-blocked | 4/4 | 6/6 | 0 | 6/8 | 2 | 0 | no |
+| `@flighthq/xml` | generated | emittable | compiled | 4/4 | 6/6 | 0 | 6/8 | 0 | 0 | no |
 
 ## Async tasks
 
@@ -1479,89 +1479,3 @@ Disposition partition: 177 eligible = 14 portable executable + 0 host placeholde
 - **E0308** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: mismatched types
 - **E0599** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: no method named `is_some` found for enum `FlightValue` in the current scope
 - **E0599** `generated/candidates/flighthq-accessibility/src/accessibility.rs`: no method named `is_some` found for enum `FlightValue` in the current scope
-
-### `@flighthq/protocol`
-
-- **E0308** `generated/candidates/flighthq-protocol/src/protocol.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-protocol/src/protocol.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `filter` on type `()`
-- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `length` on type `FlightValue`
-- **E0308** `generated/candidates/flighthq-protocol/src/protocol.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-protocol/src/protocol.rs`: `()` doesn't implement `std::fmt::Display`
-- **E0308** `<rustc>/library/alloc/src/macros.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-protocol/src/protocol.rs`: can't compare `FlightValue` with `std::string::String`
-- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `index_of` on type `std::string::String`
-- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `to_lower_case` on type `std::string::String`
-- **E0615** `generated/candidates/flighthq-protocol/src/protocol.rs`: attempted to take value of method `starts_with` on type `std::string::String`
-- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `slice` on type `std::string::String`
-- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `index_of` on type `std::string::String`
-- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `index_of` on type `std::string::String`
-- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `length` on type `std::string::String`
-- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `slice` on type `std::string::String`
-- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `slice` on type `std::string::String`
-- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `index_of` on type `std::string::String`
-- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `slice` on type `std::string::String`
-- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `slice` on type `std::string::String`
-- **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `index_of` on type `std::string::String`
-- **E0070** `generated/candidates/flighthq-protocol/src/protocol.rs`: invalid left-hand side of assignment
-- **E0070** `generated/candidates/flighthq-protocol/src/protocol.rs`: invalid left-hand side of assignment
-
-### `@flighthq/timeline`
-
-- **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)
-- **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be applied to values that implement `Try`
-- **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)
-- **E0070** `generated/candidates/flighthq-timeline/src/timeline.rs`: invalid left-hand side of assignment
-- **E0609** `generated/candidates/flighthq-timeline/src/timeline.rs`: no field `set` on type `Option<Vec<(f64, Arc<Mutex<Box<...>>>)>>`
-- **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)
-- **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be applied to values that implement `Try`
-- **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)
-- **E0070** `generated/candidates/flighthq-timeline/src/timeline.rs`: invalid left-hand side of assignment
-- **E0308** `generated/candidates/flighthq-timeline/src/timeline.rs`: mismatched types
-- **E0599** `generated/candidates/flighthq-timeline/src/timeline.rs`: no method named `unwrap` found for reference `&Mutex<Box<dyn FnMut(..., f64) + Send>>` in the current scope
-- **E0308** `generated/candidates/flighthq-timeline/src/timeline.rs`: mismatched types
-- **E0596** `generated/candidates/flighthq-timeline/src/timeline.rs`: cannot borrow `timeline.frame_scripts` as mutable, as it is behind a `&` reference
-- **E0596** `generated/candidates/flighthq-timeline/src/timeline.rs`: cannot borrow `timeline.frame_scripts` as mutable, as it is behind a `&` reference
-
-### `@flighthq/xml`
-
-- **E0425** `generated/candidates/flighthq-xml/src/xml_parse.rs`: cannot find value `string` in this scope
-- **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
-- **E0599** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no method named `is_some` found for enum `FlightValue` in the current scope
-- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: can't compare `std::string::String` with `FlightValue`
-- **E0070** `generated/candidates/flighthq-xml/src/xml_parse.rs`: invalid left-hand side of assignment
-- **E0599** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no method named `is_none` found for struct `std::string::String` in the current scope
-- **E0599** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no method named `is_some` found for struct `std::string::String` in the current scope
-- **E0599** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no method named `is_some` found for struct `std::string::String` in the current scope
-- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
-- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
-- **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `index_of` on type `std::string::String`
-- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
-- **E0600** `generated/candidates/flighthq-xml/src/xml_parse.rs`: cannot apply unary operator `!` to type `std::string::String`
-- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
-- **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
-- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
-- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
-- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
-- **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `index_of` on type `std::string::String`
-- **E0615** `generated/candidates/flighthq-xml/src/xml_parse.rs`: attempted to take value of method `trim` on type `std::string::String`
-- **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
-- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
-- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
-- **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `index_of` on type `std::string::String`
-- **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `index_of` on type `std::string::String`
-- **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
-- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
-- **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `to_lower_case` on type `std::string::String`
-- **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
-- **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
-- **E0070** `generated/candidates/flighthq-xml/src/xml_parse.rs`: invalid left-hand side of assignment
-- **E0599** `generated/candidates/flighthq-xml/src/xml_query.rs`: no method named `is_some` found for struct `std::string::String` in the current scope
-- **E0599** `generated/candidates/flighthq-xml/src/xml_query.rs`: no method named `is_none` found for struct `std::string::String` in the current scope
-- **E0425** `generated/candidates/flighthq-xml/src/xml_query.rs`: cannot find function `number` in this scope
-- **E0609** `generated/candidates/flighthq-xml/src/xml_query.rs`: no field `filter` on type `Vec<XmlElement>`
-- **E0308** `generated/candidates/flighthq-xml/src/xml_query.rs`: mismatched types

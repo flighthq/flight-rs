@@ -1637,23 +1637,30 @@ pub fn create_particle_emitter_data(data: Option<FlightPartialRecord1>) -> Parti
     return ParticleEmitterData {
         __flight_identity: std::sync::Arc::new(()),
         alphas: (data.as_ref().and_then(|value| (value.alphas).clone()))
+            .clone()
             .unwrap_or(vec![0.0_f32; (0.0_f64) as usize]),
         atlas: data.as_ref().and_then(|value| (value.atlas).clone()),
         colors: (data.as_ref().and_then(|value| (value.colors).clone()))
+            .clone()
             .unwrap_or(vec![0.0_f32; (0.0_f64) as usize]),
-        ids: (data.as_ref().and_then(|value| (value.ids).clone())).unwrap_or(vec![
-            0_u16;
-            (0.0_f64)
-                as usize
-        ]),
-        particle_count: (data.as_ref().and_then(|value| value.particle_count)).unwrap_or(0.0_f64),
+        ids: (data.as_ref().and_then(|value| (value.ids).clone()))
+            .clone()
+            .unwrap_or(vec![0_u16; (0.0_f64) as usize]),
+        particle_count: (data.as_ref().and_then(|value| value.particle_count))
+            .clone()
+            .unwrap_or(0.0_f64),
         positions_z: (data.as_ref().and_then(|value| (value.positions_z).clone()))
+            .clone()
             .unwrap_or(vec![0.0_f32; (0.0_f64) as usize]),
         transforms: (data.as_ref().and_then(|value| (value.transforms).clone()))
+            .clone()
             .unwrap_or(vec![0.0_f32; (0.0_f64) as usize]),
         velocities: (data.as_ref().and_then(|value| (value.velocities).clone()))
+            .clone()
             .unwrap_or(vec![0.0_f32; (0.0_f64) as usize]),
-        world_space: (data.as_ref().and_then(|value| value.world_space)).unwrap_or(false),
+        world_space: (data.as_ref().and_then(|value| value.world_space))
+            .clone()
+            .unwrap_or(false),
     };
 }
 

@@ -22,6 +22,25 @@ use flighthq_types::{
     TextLayoutResult, TextMeasureFunction, TextSelectionRectangle, TextVerticalAlign, Texture,
 };
 
+#[inline]
+
+fn __flight_string_slice(value: &str, start: f64, end: Option<f64>) -> String {
+    let value: Vec<u16> = value.encode_utf16().collect();
+    let length = value.len();
+    let relative = |index: f64| -> usize {
+        if index.is_nan() {
+            0
+        } else if index < 0.0_f64 {
+            length.saturating_sub((-index.trunc()) as usize)
+        } else {
+            (index.trunc() as usize).min(length)
+        }
+    };
+    let start = relative(start);
+    let end = end.map_or(length, relative);
+    String::from_utf16_lossy(&value[start..end.max(start)])
+}
+
 #[derive(Clone, Default)]
 pub struct SharedStructuralRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
@@ -963,7 +982,7 @@ pub fn apply_text_input_restriction(
             .dot_matches_new_line(false)
             .build()
             .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-        .replace_all(&(value), "")
+        .replace_all(&(value), "".to_owned())
         .into_owned();
     }
     value = restrict_text_input((value).clone(), (get_input_state(source).restrict).clone());
@@ -975,13 +994,7 @@ pub fn apply_text_input_restriction(
             return "".to_owned();
         }
         if ((value.encode_utf16().count() as f64) > max_length) {
-            value = String::from_utf16_lossy(
-                &(value)
-                    .encode_utf16()
-                    .skip((0.0_f64) as usize)
-                    .take(((max_length) as usize).saturating_sub((0.0_f64) as usize))
-                    .collect::<Vec<u16>>(),
-            );
+            value = __flight_string_slice(&(value), 0.0_f64, Some(max_length));
         }
     }
     return value;
@@ -1207,15 +1220,10 @@ pub fn get_text_input_selection_rectangles(
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:209 (sha256:e702e98a319e54cf229be449d6f3424d6f0a26495eb47a9b4e250379e7ac425e)
 pub fn get_text_input_selection_text(source: &RichText) -> String {
-    return String::from_utf16_lossy(
-        &((source.data.text).clone())
-            .encode_utf16()
-            .skip((get_text_input_selection_begin_index(source)) as usize)
-            .take(
-                ((get_text_input_selection_end_index(source)) as usize)
-                    .saturating_sub((get_text_input_selection_begin_index(source)) as usize),
-            )
-            .collect::<Vec<u16>>(),
+    return __flight_string_slice(
+        &((source.data.text).clone()),
+        get_text_input_selection_begin_index(source),
+        Some(get_text_input_selection_end_index(source)),
     );
 }
 
@@ -1372,6 +1380,7 @@ pub fn handle_text_input_keyboard(
                     (options
                         .as_ref()
                         .and_then(|value| (value.clipboard_text).clone()))
+                    .clone()
                     .unwrap_or("".to_owned()),
                 );
                 return true;
@@ -1683,19 +1692,15 @@ pub fn replace_text_input(
         state.selection_index,
         (text_before.encode_utf16().count() as f64),
     );
-    source.data.text = ((String::from_utf16_lossy(
-        &(text_before)
-            .encode_utf16()
-            .skip((0.0_f64) as usize)
-            .take(((start) as usize).saturating_sub((0.0_f64) as usize))
-            .collect::<Vec<u16>>(),
-    ) + value)
-        + String::from_utf16_lossy(
-            &(text_before)
-                .encode_utf16()
-                .skip((end) as usize)
-                .collect::<Vec<u16>>(),
-        ));
+    source.data.text = format!(
+        "{}{}",
+        format!(
+            "{}{}",
+            __flight_string_slice(&(text_before), 0.0_f64, Some(start)),
+            value
+        ),
+        __flight_string_slice(&(text_before), end, None)
+    );
     {
         let __flight_argument_1 = {
             let __flight_portable_source = (source.data.default_text_format).clone();

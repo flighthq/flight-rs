@@ -148,5 +148,5 @@ pub fn compute_kuwahara_sector_pixel_count(effect: &KuwaharaEffect) -> f64 {
 
 // Source: upstream/packages/effects/src/kuwaharaMath.ts:76 (sha256:2914125bb1a7fc1c2a0ab9996d298bca9b7d8d53bd2554d5eb8bfc06856129be)
 pub fn compute_kuwahara_sector_size(effect: &KuwaharaEffect) -> f64 {
-    return ((1.0_f64).max(((effect.radius).unwrap_or(3.0_f64)).floor()) + 1.0_f64);
+    return ((1.0_f64).max(((effect.radius).clone().unwrap_or(3.0_f64)).floor()) + 1.0_f64);
 }

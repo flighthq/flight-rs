@@ -23,8 +23,7 @@ pub fn convert_light_intensity(from_unit: LightUnit, to_unit: LightUnit, value: 
         / LINEAR_PER_UNIT
             .iter()
             .find(|(entry_key, _)| entry_key == &(to_unit).clone())
-            .map(|(_, value)| value)
-            .expect("TypeScript Record key was absent")
+            .map(|(_, value)| value.clone())
             .clone());
 }
 
@@ -34,8 +33,7 @@ pub fn get_light_linear_intensity(unit: LightUnit, value: f64) -> f64 {
         * LINEAR_PER_UNIT
             .iter()
             .find(|(entry_key, _)| entry_key == &(unit).clone())
-            .map(|(_, value)| value)
-            .expect("TypeScript Record key was absent")
+            .map(|(_, value)| value.clone())
             .clone());
 }
 

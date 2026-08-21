@@ -14,6 +14,27 @@ fn __flight_js_to_u32(value: f64) -> u32 {
     value.trunc().rem_euclid(4294967296.0_f64) as u32
 }
 
+#[inline]
+
+fn __flight_string_index_of(value: &str, search: &str, position: f64) -> f64 {
+    let value: Vec<u16> = value.encode_utf16().collect();
+    let search: Vec<u16> = search.encode_utf16().collect();
+    let start = if position.is_nan() || position <= 0.0_f64 {
+        0_usize
+    } else if position >= value.len() as f64 {
+        value.len()
+    } else {
+        position.trunc() as usize
+    };
+    if search.is_empty() {
+        return start as f64;
+    }
+    value[start..]
+        .windows(search.len())
+        .position(|window| window == search)
+        .map_or(-1.0_f64, |index| (start + index) as f64)
+}
+
 // Source: upstream/packages/textlayout/src/textLineBreaks.ts:6 (sha256:0fe495bbae03040e742b4355a27d163d7f8efe45c45fa8a09404a030160011de)
 pub fn get_text_line_break_index(line_breaks: &Vec<f64>, start_index: Option<f64>) -> f64 {
     let start_index = start_index.unwrap_or(0.0_f64);
@@ -40,8 +61,8 @@ pub fn get_text_line_breaks(out: &mut Vec<f64>, text: String) -> () {
     out.clear();
     let mut index = (-1.0_f64);
     while (index < (text.encode_utf16().count() as f64)) {
-        let lf = (text.index_of)("\n", (index + 1.0_f64));
-        let cr = (text.index_of)("\r", (index + 1.0_f64));
+        let lf = __flight_string_index_of(&(text), &("\n".to_owned()), (index + 1.0_f64));
+        let cr = __flight_string_index_of(&(text), &("\r".to_owned()), (index + 1.0_f64));
         if (lf == (-1.0_f64)) && (cr == (-1.0_f64)) {
             break;
         }

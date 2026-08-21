@@ -68,8 +68,12 @@ pub fn update_particle_objects(
     let has_scale_anim = (config.scale_end != 1.0_f64) || (has_scale_curve);
     let has_rot_speed =
         (config.rotation_speed_min != 0.0_f64) || (config.rotation_speed_max != 0.0_f64);
-    let emitter_x = (options.as_ref().and_then(|value| value.emitter_x)).unwrap_or(f64::NAN);
-    let emitter_y = (options.as_ref().and_then(|value| value.emitter_y)).unwrap_or(f64::NAN);
+    let emitter_x = (options.as_ref().and_then(|value| value.emitter_x))
+        .clone()
+        .unwrap_or(f64::NAN);
+    let emitter_y = (options.as_ref().and_then(|value| value.emitter_y))
+        .clone()
+        .unwrap_or(f64::NAN);
     let mut emitter_vel_x = 0.0_f64;
     let mut emitter_vel_y = 0.0_f64;
     if ((config.velocity_inheritance != 0.0_f64) && (!(emitter_x).is_nan()))

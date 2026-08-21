@@ -42,39 +42,15 @@ pub fn lerp_render_effect(
         let va = a_rec
             .iter()
             .find(|(entry_key, _)| entry_key == &(key).clone())
-            .map(|(_, value)| value)
-            .expect("TypeScript Record key was absent")
+            .map(|(_, value)| value.clone())
             .clone();
         let vb = b_rec
             .iter()
             .find(|(entry_key, _)| entry_key == &(key).clone())
-            .map(|(_, value)| value)
-            .expect("TypeScript Record key was absent")
+            .map(|(_, value)| value.clone())
             .clone();
-        if (match &(va) {
-            crate::OpaqueHostValue::Undefined => "undefined",
-            crate::OpaqueHostValue::Null
-            | crate::OpaqueHostValue::Array(_)
-            | crate::OpaqueHostValue::Record(_)
-            | crate::OpaqueHostValue::Object => "object",
-            crate::OpaqueHostValue::Bool(_) => "boolean",
-            crate::OpaqueHostValue::Number(_) => "number",
-            crate::OpaqueHostValue::String(_) => "string",
-            crate::OpaqueHostValue::Function => "function",
-            crate::OpaqueHostValue::Symbol => "symbol",
-        } == "number")
-            || (match &(vb) {
-                crate::OpaqueHostValue::Undefined => "undefined",
-                crate::OpaqueHostValue::Null
-                | crate::OpaqueHostValue::Array(_)
-                | crate::OpaqueHostValue::Record(_)
-                | crate::OpaqueHostValue::Object => "object",
-                crate::OpaqueHostValue::Bool(_) => "boolean",
-                crate::OpaqueHostValue::Number(_) => "number",
-                crate::OpaqueHostValue::String(_) => "string",
-                crate::OpaqueHostValue::Function => "function",
-                crate::OpaqueHostValue::Symbol => "symbol",
-            } == "number")
+        if ((va).as_ref().map_or("undefined", |_| "object") == "number")
+            || ((vb).as_ref().map_or("undefined", |_| "object") == "number")
         {
             {
                 let __flight_value = (key).clone();
@@ -83,30 +59,8 @@ pub fn lerp_render_effect(
                 }
             };
         } else {
-            if (match &(va) {
-                crate::OpaqueHostValue::Undefined => "undefined",
-                crate::OpaqueHostValue::Null
-                | crate::OpaqueHostValue::Array(_)
-                | crate::OpaqueHostValue::Record(_)
-                | crate::OpaqueHostValue::Object => "object",
-                crate::OpaqueHostValue::Bool(_) => "boolean",
-                crate::OpaqueHostValue::Number(_) => "number",
-                crate::OpaqueHostValue::String(_) => "string",
-                crate::OpaqueHostValue::Function => "function",
-                crate::OpaqueHostValue::Symbol => "symbol",
-            } == "boolean")
-                || (match &(vb) {
-                    crate::OpaqueHostValue::Undefined => "undefined",
-                    crate::OpaqueHostValue::Null
-                    | crate::OpaqueHostValue::Array(_)
-                    | crate::OpaqueHostValue::Record(_)
-                    | crate::OpaqueHostValue::Object => "object",
-                    crate::OpaqueHostValue::Bool(_) => "boolean",
-                    crate::OpaqueHostValue::Number(_) => "number",
-                    crate::OpaqueHostValue::String(_) => "string",
-                    crate::OpaqueHostValue::Function => "function",
-                    crate::OpaqueHostValue::Symbol => "symbol",
-                } == "boolean")
+            if ((va).as_ref().map_or("undefined", |_| "object") == "boolean")
+                || ((vb).as_ref().map_or("undefined", |_| "object") == "boolean")
             {
                 {
                     let __flight_value = (key).clone();
@@ -115,30 +69,8 @@ pub fn lerp_render_effect(
                     }
                 };
             } else {
-                if (match &(va) {
-                    crate::OpaqueHostValue::Undefined => "undefined",
-                    crate::OpaqueHostValue::Null
-                    | crate::OpaqueHostValue::Array(_)
-                    | crate::OpaqueHostValue::Record(_)
-                    | crate::OpaqueHostValue::Object => "object",
-                    crate::OpaqueHostValue::Bool(_) => "boolean",
-                    crate::OpaqueHostValue::Number(_) => "number",
-                    crate::OpaqueHostValue::String(_) => "string",
-                    crate::OpaqueHostValue::Function => "function",
-                    crate::OpaqueHostValue::Symbol => "symbol",
-                } == "string")
-                    || (match &(vb) {
-                        crate::OpaqueHostValue::Undefined => "undefined",
-                        crate::OpaqueHostValue::Null
-                        | crate::OpaqueHostValue::Array(_)
-                        | crate::OpaqueHostValue::Record(_)
-                        | crate::OpaqueHostValue::Object => "object",
-                        crate::OpaqueHostValue::Bool(_) => "boolean",
-                        crate::OpaqueHostValue::Number(_) => "number",
-                        crate::OpaqueHostValue::String(_) => "string",
-                        crate::OpaqueHostValue::Function => "function",
-                        crate::OpaqueHostValue::Symbol => "symbol",
-                    } == "string")
+                if ((va).as_ref().map_or("undefined", |_| "object") == "string")
+                    || ((vb).as_ref().map_or("undefined", |_| "object") == "string")
                 {
                     {
                         let __flight_value = (key).clone();
@@ -167,22 +99,9 @@ pub fn lerp_render_effect(
             let vb = b_rec
                 .iter()
                 .find(|(entry_key, _)| entry_key == &(key).clone())
-                .map(|(_, value)| value)
-                .expect("TypeScript Record key was absent")
+                .map(|(_, value)| value.clone())
                 .clone();
-            if (match &(vb) {
-                crate::OpaqueHostValue::Undefined => "undefined",
-                crate::OpaqueHostValue::Null
-                | crate::OpaqueHostValue::Array(_)
-                | crate::OpaqueHostValue::Record(_)
-                | crate::OpaqueHostValue::Object => "object",
-                crate::OpaqueHostValue::Bool(_) => "boolean",
-                crate::OpaqueHostValue::Number(_) => "number",
-                crate::OpaqueHostValue::String(_) => "string",
-                crate::OpaqueHostValue::Function => "function",
-                crate::OpaqueHostValue::Symbol => "symbol",
-            } == "number")
-            {
+            if ((vb).as_ref().map_or("undefined", |_| "object") == "number") {
                 {
                     let __flight_value = (key).clone();
                     if !numeric_keys.contains(&__flight_value) {
@@ -190,19 +109,7 @@ pub fn lerp_render_effect(
                     }
                 };
             } else {
-                if (match &(vb) {
-                    crate::OpaqueHostValue::Undefined => "undefined",
-                    crate::OpaqueHostValue::Null
-                    | crate::OpaqueHostValue::Array(_)
-                    | crate::OpaqueHostValue::Record(_)
-                    | crate::OpaqueHostValue::Object => "object",
-                    crate::OpaqueHostValue::Bool(_) => "boolean",
-                    crate::OpaqueHostValue::Number(_) => "number",
-                    crate::OpaqueHostValue::String(_) => "string",
-                    crate::OpaqueHostValue::Function => "function",
-                    crate::OpaqueHostValue::Symbol => "symbol",
-                } == "boolean")
-                {
+                if ((vb).as_ref().map_or("undefined", |_| "object") == "boolean") {
                     {
                         let __flight_value = (key).clone();
                         if !boolean_keys.contains(&__flight_value) {
@@ -210,19 +117,7 @@ pub fn lerp_render_effect(
                         }
                     };
                 } else {
-                    if (match &(vb) {
-                        crate::OpaqueHostValue::Undefined => "undefined",
-                        crate::OpaqueHostValue::Null
-                        | crate::OpaqueHostValue::Array(_)
-                        | crate::OpaqueHostValue::Record(_)
-                        | crate::OpaqueHostValue::Object => "object",
-                        crate::OpaqueHostValue::Bool(_) => "boolean",
-                        crate::OpaqueHostValue::Number(_) => "number",
-                        crate::OpaqueHostValue::String(_) => "string",
-                        crate::OpaqueHostValue::Function => "function",
-                        crate::OpaqueHostValue::Symbol => "symbol",
-                    } == "string")
-                    {
+                    if ((vb).as_ref().map_or("undefined", |_| "object") == "string") {
                         {
                             let __flight_value = (key).clone();
                             if !string_keys.contains(&__flight_value) {
@@ -239,81 +134,105 @@ pub fn lerp_render_effect(
         let va = a_rec
             .iter()
             .find(|(entry_key, _)| entry_key == &key)
-            .map(|(_, value)| value)
-            .expect("TypeScript Record key was absent")
+            .map(|(_, value)| value.clone())
             .clone();
         let vb = b_rec
             .iter()
             .find(|(entry_key, _)| entry_key == &key)
-            .map(|(_, value)| value)
-            .expect("TypeScript Record key was absent")
+            .map(|(_, value)| value.clone())
             .clone();
         if ((va).is_some()) && ((vb).is_some()) {
-            out_record
-                .iter()
-                .find(|(entry_key, _)| entry_key == &key)
-                .map(|(_, value)| value)
-                .expect("TypeScript Record key was absent") = {
-                let __flight_portable_source = (va + ((vb - va) * tc));
-                match (&__flight_portable_source).as_ref() {
-                    Some(value) => crate::FlightValue::Number(*(value) as f64),
-                    None => crate::FlightValue::Null,
+            {
+                let __flight_key = key;
+                let __flight_value = {
+                    let __flight_portable_source = (*(va.as_ref().unwrap())
+                        + ((*(vb.as_ref().unwrap()) - *(va.as_ref().unwrap())) * tc));
+                    crate::FlightValue::Number(*(&__flight_portable_source) as f64)
+                };
+                if let Some((_, value)) =
+                    out_record.iter_mut().find(|(key, _)| key == &__flight_key)
+                {
+                    *value = __flight_value;
+                } else {
+                    out_record.push((__flight_key, __flight_value));
                 }
             };
         } else {
-            out_record
-                .iter()
-                .find(|(entry_key, _)| entry_key == &key)
-                .map(|(_, value)| value)
-                .expect("TypeScript Record key was absent") = {
-                let __flight_portable_source = if (tc < 0.5_f64) { va } else { vb };
-                match (&__flight_portable_source).as_ref() {
-                    Some(value) => crate::FlightValue::Number(*(value) as f64),
-                    None => crate::FlightValue::Null,
+            {
+                let __flight_key = key;
+                let __flight_value = {
+                    let __flight_portable_source = if (tc < 0.5_f64) { va } else { vb };
+                    match (&__flight_portable_source).as_ref() {
+                        Some(value) => crate::FlightValue::Number(*(value) as f64),
+                        None => crate::FlightValue::Null,
+                    }
+                };
+                if let Some((_, value)) =
+                    out_record.iter_mut().find(|(key, _)| key == &__flight_key)
+                {
+                    *value = __flight_value;
+                } else {
+                    out_record.push((__flight_key, __flight_value));
                 }
             };
         }
     }
     for key in (boolean_keys).iter().cloned() {
-        out_record
-            .iter()
-            .find(|(entry_key, _)| entry_key == &key)
-            .map(|(_, value)| value)
-            .expect("TypeScript Record key was absent") = if (tc < 0.5_f64) {
-            a_rec
-                .iter()
-                .find(|(entry_key, _)| entry_key == &key)
-                .map(|(_, value)| value)
-                .expect("TypeScript Record key was absent")
-                .clone()
-        } else {
-            b_rec
-                .iter()
-                .find(|(entry_key, _)| entry_key == &key)
-                .map(|(_, value)| value)
-                .expect("TypeScript Record key was absent")
-                .clone()
+        {
+            let __flight_key = key;
+            let __flight_value = {
+                let __flight_portable_source = if (tc < 0.5_f64) {
+                    a_rec
+                        .iter()
+                        .find(|(entry_key, _)| entry_key == &key)
+                        .map(|(_, value)| value.clone())
+                        .clone()
+                } else {
+                    b_rec
+                        .iter()
+                        .find(|(entry_key, _)| entry_key == &key)
+                        .map(|(_, value)| value.clone())
+                        .clone()
+                };
+                match (&__flight_portable_source).as_ref() {
+                    Some(value) => (value).clone(),
+                    None => crate::FlightValue::Null,
+                }
+            };
+            if let Some((_, value)) = out_record.iter_mut().find(|(key, _)| key == &__flight_key) {
+                *value = __flight_value;
+            } else {
+                out_record.push((__flight_key, __flight_value));
+            }
         };
     }
     for key in (string_keys).iter().cloned() {
-        out_record
-            .iter()
-            .find(|(entry_key, _)| entry_key == &key)
-            .map(|(_, value)| value)
-            .expect("TypeScript Record key was absent") = if (tc < 0.5_f64) {
-            a_rec
-                .iter()
-                .find(|(entry_key, _)| entry_key == &key)
-                .map(|(_, value)| value)
-                .expect("TypeScript Record key was absent")
-                .clone()
-        } else {
-            b_rec
-                .iter()
-                .find(|(entry_key, _)| entry_key == &key)
-                .map(|(_, value)| value)
-                .expect("TypeScript Record key was absent")
-                .clone()
+        {
+            let __flight_key = key;
+            let __flight_value = {
+                let __flight_portable_source = if (tc < 0.5_f64) {
+                    a_rec
+                        .iter()
+                        .find(|(entry_key, _)| entry_key == &key)
+                        .map(|(_, value)| value.clone())
+                        .clone()
+                } else {
+                    b_rec
+                        .iter()
+                        .find(|(entry_key, _)| entry_key == &key)
+                        .map(|(_, value)| value.clone())
+                        .clone()
+                };
+                match (&__flight_portable_source).as_ref() {
+                    Some(value) => (value).clone(),
+                    None => crate::FlightValue::Null,
+                }
+            };
+            if let Some((_, value)) = out_record.iter_mut().find(|(key, _)| key == &__flight_key) {
+                *value = __flight_value;
+            } else {
+                out_record.push((__flight_key, __flight_value));
+            }
         };
     }
     return true;

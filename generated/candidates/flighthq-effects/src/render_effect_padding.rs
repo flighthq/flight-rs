@@ -89,12 +89,12 @@ pub fn explain_render_effect_padding(
     let mut top = 0.0_f64;
     let mut missing_kinds: Vec<Kind> = vec![];
     for effect in (list).iter().cloned() {
-        let entry = entries
-            .as_mut()
-            .unwrap()
-            .iter()
-            .find(|(entry_key, _)| entry_key == &(effect.kind).clone())
-            .map(|(_, value)| value.clone());
+        let entry = entries.as_ref().and_then(|entries| {
+            entries
+                .iter()
+                .find(|(entry_key, _)| entry_key == &(effect.kind).clone())
+                .map(|(_, value)| value.clone())
+        });
         if (entry.as_ref().map(|value| (value.state).clone())
             != registry_entry_state_constant.bound)
         {
@@ -107,7 +107,11 @@ pub fn explain_render_effect_padding(
             continue;
         }
         let padding = {
-            let __flight_callback = entry.as_ref().unwrap().value.as_ref().unwrap().clone();
+            let __flight_callback = (entry.as_ref().unwrap().value)
+                .clone()
+                .as_ref()
+                .unwrap()
+                .clone();
             let __flight_result = __flight_callback.lock().unwrap()(effect);
             __flight_result
         };
@@ -211,7 +215,7 @@ pub fn register_render_effect_padding_resolver(
         .render_state_runtime
         .registries
         .effect_padding_resolvers = Some(with_registry_table_entry(
-        &(table).unwrap_or(create_keyed_table(
+        &(table).clone().unwrap_or(create_keyed_table(
             "RenderEffectPaddingResolver".to_owned(),
             "Zero".to_owned(),
         )),

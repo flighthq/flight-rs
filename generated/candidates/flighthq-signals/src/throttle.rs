@@ -54,8 +54,12 @@ pub fn connect_signal_debounced<T: crate::FlightCallback>(
     slot: T,
     options: Option<SignalThrottleOptions>,
 ) -> std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>> {
-    let leading = (options.as_ref().and_then(|value| value.leading)).unwrap_or(false);
-    let trailing = (options.as_ref().and_then(|value| value.trailing)).unwrap_or(true);
+    let leading = (options.as_ref().and_then(|value| value.leading))
+        .clone()
+        .unwrap_or(false);
+    let trailing = (options.as_ref().and_then(|value| value.trailing))
+        .clone()
+        .unwrap_or(true);
     let timer: std::sync::Arc<std::sync::Mutex<Option<crate::FlightTimeout>>> =
         std::sync::Arc::new(std::sync::Mutex::new(None));
     let last_args: std::sync::Arc<std::sync::Mutex<Option<<T as crate::FlightCallback>::Args>>> =
@@ -140,8 +144,12 @@ pub fn connect_signal_throttled<T: crate::FlightCallback>(
     slot: T,
     options: Option<SignalThrottleOptions>,
 ) -> std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>> {
-    let leading = (options.as_ref().and_then(|value| value.leading)).unwrap_or(true);
-    let trailing = (options.as_ref().and_then(|value| value.trailing)).unwrap_or(true);
+    let leading = (options.as_ref().and_then(|value| value.leading))
+        .clone()
+        .unwrap_or(true);
+    let trailing = (options.as_ref().and_then(|value| value.trailing))
+        .clone()
+        .unwrap_or(true);
     let last_fired_at: std::sync::Arc<std::sync::Mutex<f64>> =
         std::sync::Arc::new(std::sync::Mutex::new((-f64::INFINITY)));
     let trailing_timer: std::sync::Arc<std::sync::Mutex<Option<crate::FlightTimeout>>> =

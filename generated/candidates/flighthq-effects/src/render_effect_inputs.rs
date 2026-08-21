@@ -10,12 +10,13 @@ use flighthq_types::{RenderEffect, RenderEffectInput};
 
 // Source: upstream/packages/effects/src/renderEffectInputs.ts:6 (sha256:8e534120dcdbf329e9116561445cd1a478f1b19214d6ca856900967e326493ab)
 pub fn get_render_effect_inputs(effect: &RenderEffect) -> Vec<RenderEffectInput> {
-    return RENDER_EFFECT_INPUTS
+    return (RENDER_EFFECT_INPUTS
         .iter()
         .find(|(entry_key, _)| entry_key == &(effect.kind).clone())
-        .map(|(_, value)| value)
-        .expect("TypeScript Record key was absent")
-        .clone();
+        .map(|(_, value)| value.clone())
+        .clone())
+    .clone()
+    .unwrap_or(vec![]);
 }
 
 // Source: upstream/packages/effects/src/renderEffectInputs.ts:12 (sha256:db943485909439bf70566b8da8fd95459f9bbd14193b2f378bd10082031894fd)

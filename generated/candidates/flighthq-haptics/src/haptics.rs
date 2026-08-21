@@ -167,7 +167,7 @@ pub fn trigger_haptic_impact(style: HapticImpactStyle, intensity: Option<f64>) -
         let __flight_callback = (get_haptics_backend().impact).clone();
         let __flight_result = __flight_callback.lock().unwrap()(
             (style).clone(),
-            Some((intensity).unwrap_or(1.0_f64)),
+            Some((intensity).clone().unwrap_or(1.0_f64)),
         );
         __flight_result
     };
@@ -225,7 +225,7 @@ pub fn vibrate_device_waveform(
     }
     if ((backend.vibrate_waveform).clone()).is_some() {
         return {
-            let __flight_callback = backend.vibrate_waveform.as_ref().unwrap().clone();
+            let __flight_callback = (backend.vibrate_waveform).clone().as_ref().unwrap().clone();
             let __flight_result = __flight_callback.lock().unwrap()(
                 (*timings).clone(),
                 (*amplitudes).clone(),

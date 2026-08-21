@@ -154,6 +154,7 @@ pub fn create_spritesheet_from_data(data: &SpritesheetData, atlas: &TextureAtlas
                         .iter()
                         .find(|(entry_key, _)| entry_key == &(fd.name).clone())
                         .map(|(_, value)| value.clone()))
+                    .clone()
                     .unwrap_or(index)
                 } else {
                     index
@@ -210,7 +211,7 @@ pub fn create_spritesheet_from_data(data: &SpritesheetData, atlas: &TextureAtlas
                 };
             },
         )
-        .collect();
+        .collect::<Vec<_>>();
     let frame_name_to_index: std::sync::Arc<std::sync::Mutex<Vec<(String, f64)>>> =
         std::sync::Arc::new(std::sync::Mutex::new(Vec::new()));
     {
@@ -243,35 +244,35 @@ pub fn create_spritesheet_from_data(data: &SpritesheetData, atlas: &TextureAtlas
     };
     for ad in ((data.animations).clone()).iter().cloned() {
         let resolved_frames = if ((ad.frame_names.len() as f64) > 0.0_f64) {
-            (((ad.frame_names).clone())
+            {
+                let mut __flight_filter = |i: crate::OpaqueHostValue| -> bool { (i).is_some() };
+                (((ad.frame_names).clone())
+                    .iter()
+                    .cloned()
+                    .map(|n: String| -> crate::OpaqueHostValue {
+                        {
+                            let __flight_portable_source = (*frame_name_to_index.lock().unwrap())
+                                .iter()
+                                .find(|(entry_key, _)| entry_key == &(n).clone())
+                                .map(|(_, value)| value.clone());
+                            match (&__flight_portable_source).as_ref() {
+                                Some(value) => crate::FlightValue::Number(*(value) as f64),
+                                None => crate::FlightValue::Null,
+                            }
+                        }
+                    })
+                    .collect::<Vec<_>>())
                 .iter()
                 .cloned()
-                .map(|n: String| -> crate::OpaqueHostValue {
-                    {
-                        let __flight_portable_source = (*frame_name_to_index.lock().unwrap())
-                            .iter()
-                            .find(|(entry_key, _)| entry_key == &(n).clone())
-                            .map(|(_, value)| value.clone());
-                        match (&__flight_portable_source).as_ref() {
-                            Some(value) => crate::FlightValue::Number(*(value) as f64),
-                            None => crate::FlightValue::Null,
-                        }
-                    }
-                })
-                .collect()
-                .filter)(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-                move |i: crate::OpaqueHostValue| -> bool { (i).is_some() },
-            )
-                as Box<dyn FnMut(crate::OpaqueHostValue) -> bool + Send + 'static>)))
+                .filter(|value| __flight_filter(value.clone()))
+                .collect::<Vec<_>>()
+            }
         } else {
             crate::host_value::<Vec<crate::OpaqueHostValue>>("host.Array.from")
         };
-        animations
-            .iter()
-            .find(|(entry_key, _)| entry_key == &(ad.name).clone())
-            .map(|(_, value)| value)
-            .expect("TypeScript Record key was absent") =
-            create_spritesheet_animation(Some(FlightPartialRecord3 {
+        {
+            let __flight_key = (ad.name).clone();
+            let __flight_value = create_spritesheet_animation(Some(FlightPartialRecord3 {
                 __flight_identity: std::sync::Arc::new(()),
                 direction: Some((ad.direction).clone()),
                 frame_duration: Some(ad.frame_duration),
@@ -281,6 +282,12 @@ pub fn create_spritesheet_from_data(data: &SpritesheetData, atlas: &TextureAtlas
                 origin_y: Some(ad.origin_y),
                 repeat_count: Some(ad.repeat_count),
             }));
+            if let Some((_, value)) = animations.iter_mut().find(|(key, _)| key == &__flight_key) {
+                *value = __flight_value;
+            } else {
+                animations.push((__flight_key, __flight_value));
+            }
+        };
     }
     return create_spritesheet(Some(FlightPartialRecord2 {
         __flight_identity: std::sync::Arc::new(()),
@@ -348,7 +355,7 @@ pub fn create_spritesheet_from_grid(options: &GridSliceOptions) -> Spritesheet {
                 })
             }
         })
-        .collect();
+        .collect::<Vec<_>>();
     return create_spritesheet(Some(FlightPartialRecord2 {
         __flight_identity: std::sync::Arc::new(()),
         atlas: Some((atlas).clone()),

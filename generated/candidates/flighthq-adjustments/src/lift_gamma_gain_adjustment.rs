@@ -54,9 +54,9 @@ pub fn create_lift_gamma_gain_adjustment(
         gamma: None,
         gain: None,
     });
-    let lift = unpack_rgb((options.lift).unwrap_or(255.0_f64));
-    let gamma_raw = unpack_rgb((options.gamma).unwrap_or(2155905279.0_f64));
-    let gain = unpack_rgb((options.gain).unwrap_or(4294967295.0_f64));
+    let lift = unpack_rgb((options.lift).clone().unwrap_or(255.0_f64));
+    let gamma_raw = unpack_rgb((options.gamma).clone().unwrap_or(2155905279.0_f64));
+    let gain = unpack_rgb((options.gain).clone().unwrap_or(4294967295.0_f64));
     let gamma_exp: Vec<f64> = vec![
         (1.0_f64 / (gamma_raw[0.0_f64 as usize].clone() * 2.0_f64).max(0.001_f64)),
         (1.0_f64 / (gamma_raw[1.0_f64 as usize].clone() * 2.0_f64).max(0.001_f64)),

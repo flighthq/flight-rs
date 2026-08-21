@@ -979,7 +979,7 @@ pub fn dispatch_text_input(manager: &TextInputManager, text: String) -> bool {
     if ((target).is_none()) || ((text.encode_utf16().count() as f64) == 0.0_f64) {
         return false;
     }
-    insert_text_input(target.as_mut().unwrap(), (text).clone());
+    insert_text_input(&mut target.as_mut().unwrap(), (text).clone());
     return true;
 }
 
@@ -1064,7 +1064,7 @@ pub fn dispatch_text_input_pointer_move(manager: &mut TextInputManager, x: f64, 
     if ((target).is_none()) || (!target.as_mut().unwrap().enabled) {
         return;
     }
-    let layout = (get_rich_text_runtime(target.as_ref().unwrap())
+    let layout = (get_rich_text_runtime(&target.as_mut().unwrap())
         .inner
         .lock()
         .unwrap()
@@ -1074,12 +1074,12 @@ pub fn dispatch_text_input_pointer_move(manager: &mut TextInputManager, x: f64, 
         return;
     }
     let index = get_text_input_character_index_at_point(
-        target.as_mut().unwrap(),
+        &mut target.as_mut().unwrap(),
         &layout.as_ref().unwrap(),
         x,
         y,
     );
-    move_text_input_caret(target.as_ref().unwrap(), index, Some(true));
+    move_text_input_caret(&target.as_mut().unwrap(), index, Some(true));
 }
 
 // Source: upstream/packages/textinput/src/textInputManager.ts:96 (sha256:c437416723ce314df0ff774053b771d0ec3fc81d9105175f60a5e0f75dc14903)
@@ -1091,7 +1091,7 @@ pub fn dispatch_text_input_wheel(manager: &mut TextInputManager, delta_lines: f6
     {
         let __flight_argument_1 = (target.as_mut().unwrap().data.scroll_v + (delta_lines).round());
         let __flight_result =
-            set_rich_text_scroll_v(target.as_mut().unwrap(), __flight_argument_1, None);
+            set_rich_text_scroll_v(&mut target.as_mut().unwrap(), __flight_argument_1, None);
         __flight_result
     };
 }
@@ -1117,7 +1117,7 @@ fn get_text_input_focus_target(manager: &TextInputManager) -> Option<RichText> {
     if ((target).is_none()) || (!target.as_ref().unwrap().enabled) {
         return None;
     }
-    return (target).clone();
+    return Some((target.as_ref().unwrap()).clone());
 }
 
 // Source: upstream/packages/textinput/src/textInputManager.ts:120 (sha256:a6fecc46dca2fd97c36843bbfae467ac03bf9b80304811707ba2d4c9bf627789)

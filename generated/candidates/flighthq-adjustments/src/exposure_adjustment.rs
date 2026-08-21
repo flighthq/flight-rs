@@ -35,7 +35,7 @@ pub fn create_exposure_adjustment(options: Option<FlightOmitRecord1>) -> Exposur
         __flight_identity: std::sync::Arc::new(()),
         exposure: None,
     });
-    let m = (2.0_f64).powf((options.exposure).unwrap_or(0.0_f64));
+    let m = (2.0_f64).powf((options.exposure).clone().unwrap_or(0.0_f64));
     let color_matrix = vec![
         m, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, m, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64,
         0.0_f64, m, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 1.0_f64, 0.0_f64,

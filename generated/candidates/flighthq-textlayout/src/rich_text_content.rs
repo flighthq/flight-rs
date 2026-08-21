@@ -9,6 +9,39 @@
 use crate::merge_text_format;
 use flighthq_types::{RichTextContent, RichTextData, RichTextRuntime, TextFormat, TextFormatRange};
 
+#[inline]
+
+fn __flight_string_slice(value: &str, start: f64, end: Option<f64>) -> String {
+    let value: Vec<u16> = value.encode_utf16().collect();
+    let length = value.len();
+    let relative = |index: f64| -> usize {
+        if index.is_nan() {
+            0
+        } else if index < 0.0_f64 {
+            length.saturating_sub((-index.trunc()) as usize)
+        } else {
+            (index.trunc() as usize).min(length)
+        }
+    };
+    let start = relative(start);
+    let end = end.map_or(length, relative);
+    String::from_utf16_lossy(&value[start..end.max(start)])
+}
+
+#[inline]
+
+fn __flight_string_from_code_point(value: f64) -> String {
+    assert!(
+        value.is_finite()
+            && value.fract() == 0.0_f64
+            && (0.0_f64..=0x10FFFF_u32 as f64).contains(&value),
+        "String.fromCodePoint received an invalid code point"
+    );
+    char::from_u32(value as u32)
+        .expect("Rust strings cannot represent surrogate code points")
+        .to_string()
+}
+
 // Source: upstream/packages/textlayout/src/richTextContent.ts:11 (sha256:b40cc1fb78aa22db5607db40e1b7c99cb99c3ca95de8de4e18b6a365aa3d49af)
 pub fn clear_rich_text_content(mut runtime: RichTextRuntime) -> () {
     {
@@ -85,7 +118,7 @@ fn append_text(
             .dot_matches_new_line(false)
             .build()
             .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-        .replace_all(&(value), " ")
+        .replace_all(&(value), " ".to_owned())
         .into_owned();
         if ((out.text.encode_utf16().count() as f64) == 0.0_f64) {
             value = (value.trim_start)();
@@ -106,13 +139,7 @@ fn append_text(
         return;
     }
     if ((value.encode_utf16().count() as f64) > remaining) {
-        value = String::from_utf16_lossy(
-            &(value)
-                .encode_utf16()
-                .skip((0.0_f64) as usize)
-                .take(((remaining) as usize).saturating_sub((0.0_f64) as usize))
-                .collect::<Vec<u16>>(),
-        );
+        value = __flight_string_slice(&(value), 0.0_f64, Some(remaining));
     }
     let start = (out.text.encode_utf16().count() as f64);
     out.text.push_str(&((value).clone()));
@@ -205,33 +232,24 @@ fn decode_html_entities(value: String) -> String {
         let mut __flight_replace = |_match: String, entity: String| -> String {
             let lower = (entity).to_lowercase();
             if (lower).starts_with(("#x".to_owned()).as_str()) {
-                return (string.from_code_point)((number.parse_int)(
-                    String::from_utf16_lossy(
-                        &(lower)
-                            .encode_utf16()
-                            .skip((2.0_f64) as usize)
-                            .collect::<Vec<u16>>(),
-                    ),
+                return __flight_string_from_code_point((number.parse_int)(
+                    __flight_string_slice(&(lower), 2.0_f64, None),
                     16.0_f64,
                 ));
             }
             if (lower).starts_with(("#".to_owned()).as_str()) {
-                return (string.from_code_point)((number.parse_int)(
-                    String::from_utf16_lossy(
-                        &(lower)
-                            .encode_utf16()
-                            .skip((1.0_f64) as usize)
-                            .collect::<Vec<u16>>(),
-                    ),
+                return __flight_string_from_code_point((number.parse_int)(
+                    __flight_string_slice(&(lower), 1.0_f64, None),
                     10.0_f64,
                 ));
             }
-            return NAMED_ENTITIES
+            return (NAMED_ENTITIES
                 .iter()
                 .find(|(entry_key, _)| entry_key == &(lower).clone())
-                .map(|(_, value)| value)
-                .expect("TypeScript Record key was absent")
-                .clone();
+                .map(|(_, value)| value.clone())
+                .clone())
+            .clone()
+            .unwrap_or(format!("&{};", (entity).clone()));
         };
         (regex::RegexBuilder::new("&(#x[0-9a-f]+|#[0-9]+|[a-z]+);")
             .case_insensitive(true)

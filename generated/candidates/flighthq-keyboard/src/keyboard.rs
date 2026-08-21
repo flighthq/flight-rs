@@ -324,6 +324,7 @@ pub fn get_soft_keyboard_resize_mode() -> SoftKeyboardResizeMode {
             .as_ref()
             .map(|callback| callback.lock().unwrap()())
     })
+    .clone()
     .unwrap_or((soft_keyboard_resize_none_kind_constant).to_owned());
 }
 
@@ -344,6 +345,7 @@ pub fn is_soft_keyboard_accessory_bar_visible() -> bool {
             .as_ref()
             .map(|callback| callback.lock().unwrap()())
     })
+    .clone()
     .unwrap_or(false);
 }
 
@@ -355,6 +357,7 @@ pub fn is_soft_keyboard_scroll_assist_enabled() -> bool {
             .as_ref()
             .map(|callback| callback.lock().unwrap()())
     })
+    .clone()
     .unwrap_or(false);
 }
 

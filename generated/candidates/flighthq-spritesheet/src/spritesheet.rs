@@ -96,7 +96,7 @@ pub fn clone_spritesheet(spritesheet: &Spritesheet) -> Spritesheet {
                 })
             }
         })
-        .collect();
+        .collect::<Vec<_>>();
     return create_entity(Some(Spritesheet {
         __flight_identity: std::sync::Arc::new(()),
         __flight_entity_runtime: Default::default(),
@@ -122,11 +122,15 @@ pub fn create_spritesheet(obj: Option<FlightPartialRecord1>) -> Spritesheet {
         __flight_identity: std::sync::Arc::new(()),
         __flight_entity_runtime: Default::default(),
         atlas: obj.as_ref().and_then(|value| (value.atlas).clone()),
-        animations: (obj.as_ref().and_then(|value| (value.animations).clone())).unwrap_or({
-            let mut __flight_record = Vec::new();
-            __flight_record
-        }),
-        frames: (obj.as_ref().and_then(|value| (value.frames).clone())).unwrap_or(vec![]),
+        animations: (obj.as_ref().and_then(|value| (value.animations).clone()))
+            .clone()
+            .unwrap_or({
+                let mut __flight_record = Vec::new();
+                __flight_record
+            }),
+        frames: (obj.as_ref().and_then(|value| (value.frames).clone()))
+            .clone()
+            .unwrap_or(vec![]),
     }));
 }
 
@@ -135,13 +139,10 @@ pub fn get_spritesheet_animation(
     spritesheet: &Spritesheet,
     label: String,
 ) -> Option<SpritesheetAnimation> {
-    return Some(
-        spritesheet
-            .animations
-            .iter()
-            .find(|(entry_key, _)| entry_key == &(label).clone())
-            .map(|(_, value)| value)
-            .expect("TypeScript Record key was absent")
-            .clone(),
-    );
+    return spritesheet
+        .animations
+        .iter()
+        .find(|(entry_key, _)| entry_key == &(label).clone())
+        .map(|(_, value)| value.clone())
+        .clone();
 }

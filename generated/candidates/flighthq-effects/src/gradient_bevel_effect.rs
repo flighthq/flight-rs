@@ -80,11 +80,11 @@ pub fn create_gradient_bevel_effect(options: &FlightOmitRecord1) -> GradientBeve
 
 // Source: upstream/packages/effects/src/gradientBevelEffect.ts:10 (sha256:fea1ca0f12e8320993a77d4c55ead18dddd15cce04058ac0d513e5ac51efb501)
 pub fn get_gradient_bevel_effect_padding(effect: &GradientBevelEffect) -> RenderEffectPadding {
-    let angle = (((effect.angle).unwrap_or(45.0_f64) * std::f64::consts::PI) / 180.0_f64);
-    let distance = (effect.distance).unwrap_or(4.0_f64);
+    let angle = (((effect.angle).clone().unwrap_or(45.0_f64) * std::f64::consts::PI) / 180.0_f64);
+    let distance = (effect.distance).clone().unwrap_or(4.0_f64);
     return get_directional_render_effect_padding(
-        (effect.blur_x).unwrap_or(4.0_f64),
-        (effect.blur_y).unwrap_or(4.0_f64),
+        (effect.blur_x).clone().unwrap_or(4.0_f64),
+        (effect.blur_y).clone().unwrap_or(4.0_f64),
         ((angle).cos() * distance),
         ((angle).sin() * distance),
     );

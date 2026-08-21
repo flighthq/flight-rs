@@ -9,6 +9,95 @@
 use flighthq_signals::{create_signal, emit_signal};
 use flighthq_types::{ParsedProtocolUrl, ProtocolBackend, ProtocolHandler};
 
+#[inline]
+
+fn __flight_string_index_of(value: &str, search: &str, position: f64) -> f64 {
+    let value: Vec<u16> = value.encode_utf16().collect();
+    let search: Vec<u16> = search.encode_utf16().collect();
+    let start = if position.is_nan() || position <= 0.0_f64 {
+        0_usize
+    } else if position >= value.len() as f64 {
+        value.len()
+    } else {
+        position.trunc() as usize
+    };
+    if search.is_empty() {
+        return start as f64;
+    }
+    value[start..]
+        .windows(search.len())
+        .position(|window| window == search)
+        .map_or(-1.0_f64, |index| (start + index) as f64)
+}
+
+#[inline]
+
+fn __flight_string_slice(value: &str, start: f64, end: Option<f64>) -> String {
+    let value: Vec<u16> = value.encode_utf16().collect();
+    let length = value.len();
+    let relative = |index: f64| -> usize {
+        if index.is_nan() {
+            0
+        } else if index < 0.0_f64 {
+            length.saturating_sub((-index.trunc()) as usize)
+        } else {
+            (index.trunc() as usize).min(length)
+        }
+    };
+    let start = relative(start);
+    let end = end.map_or(length, relative);
+    String::from_utf16_lossy(&value[start..end.max(start)])
+}
+
+#[inline]
+
+fn __flight_encode_uri_component(value: &str) -> String {
+    const HEX: &[u8; 16] = b"0123456789ABCDEF";
+    let mut encoded = String::with_capacity(value.len());
+    for byte in value.bytes() {
+        if byte.is_ascii_alphanumeric() || b"-_.!~*'()".contains(&byte) {
+            encoded.push(char::from(byte));
+        } else {
+            encoded.push('%');
+            encoded.push(char::from(HEX[(byte >> 4) as usize]));
+            encoded.push(char::from(HEX[(byte & 0x0F) as usize]));
+        }
+    }
+    encoded
+}
+
+#[inline]
+
+fn __flight_decode_uri_component(value: &str) -> String {
+    let bytes = value.as_bytes();
+    let mut decoded = Vec::with_capacity(bytes.len());
+    let mut index = 0_usize;
+    while index < bytes.len() {
+        if bytes[index] != b'%' {
+            decoded.push(bytes[index]);
+            index += 1;
+            continue;
+        }
+        assert!(
+            index + 2 < bytes.len(),
+            "decodeURIComponent received an incomplete escape"
+        );
+        let digit = |byte: u8| -> Option<u8> {
+            match byte {
+                b'0'..=b'9' => Some(byte - b'0'),
+                b'a'..=b'f' => Some(byte - b'a' + 10),
+                b'A'..=b'F' => Some(byte - b'A' + 10),
+                _ => None,
+            }
+        };
+        let high = digit(bytes[index + 1]).expect("decodeURIComponent received a malformed escape");
+        let low = digit(bytes[index + 2]).expect("decodeURIComponent received a malformed escape");
+        decoded.push((high << 4) | low);
+        index += 3;
+    }
+    String::from_utf8(decoded).expect("decodeURIComponent received invalid UTF-8")
+}
+
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
@@ -72,44 +161,60 @@ pub fn create_protocol_handler() -> ProtocolHandler {
 
 // Source: upstream/packages/protocol/src/protocol.ts:30 (sha256:26195253814f0fc0b4a2631049f6906ebedecb01aebec722307c617dd34640c9)
 pub fn create_protocol_url(parts: &FlightPartialRecord1) -> String {
-    let scheme = ((parts.scheme).clone()).unwrap_or("unknown".to_owned());
-    let host = ((parts.host).clone()).unwrap_or("".to_owned());
-    let path = ((parts.path).clone()).unwrap_or("".to_owned());
+    let scheme = ((parts.scheme).clone())
+        .clone()
+        .unwrap_or("unknown".to_owned());
+    let host = ((parts.host).clone()).clone().unwrap_or("".to_owned());
+    let path = ((parts.path).clone()).clone().unwrap_or("".to_owned());
     let query = (parts.query).clone();
-    let authority = if host {
-        format!("//{}", host)
+    let authority = if !(host).is_empty() {
+        format!("//{}", (host).clone())
     } else {
         "".to_owned()
     };
-    let normalized_path = if (path) && (!(path).starts_with(("/".to_owned()).as_str())) {
-        format!("/{}", path)
-    } else {
-        (path).clone()
-    };
-    let mut url = format!("{}:{}{}", scheme, authority, normalized_path);
+    let normalized_path =
+        if (!(path).is_empty()) && (!(path).starts_with(("/".to_owned()).as_str())) {
+            format!("/{}", (path).clone())
+        } else {
+            (path).clone()
+        };
+    let mut url = format!(
+        "{}:{}{}",
+        (scheme).clone(),
+        (authority).clone(),
+        (normalized_path).clone()
+    );
     if (query).is_some() {
-        let entries = (crate::host_value::<()>("host.entries").filter)(std::sync::Arc::new(
-            std::sync::Mutex::new(Box::new(move |__parameter0: crate::OpaqueHostValue| -> () {
-                let k = crate::host_value::<crate::OpaqueHostValue>("host.index");
-                return (k.length > 0.0_f64);
-            })
-                as Box<dyn FnMut(crate::OpaqueHostValue) -> () + Send + 'static>),
-        ));
-        if (entries.length > 0.0_f64) {
-            let qs = ((entries.map)(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-                move |__parameter1: crate::OpaqueHostValue| -> () {
-                    let k = crate::host_value::<crate::OpaqueHostValue>("host.index");
-                    let v = crate::host_value::<crate::OpaqueHostValue>("host.index");
+        let entries = {
+            let mut __flight_filter = |__parameter0: (String, String)| -> bool {
+                let k = __parameter0.0.clone();
+                return ((k.encode_utf16().count() as f64) > 0.0_f64);
+            };
+            (((query.as_ref().unwrap()).clone()).clone())
+                .iter()
+                .cloned()
+                .filter(|value| __flight_filter(value.clone()))
+                .collect::<Vec<_>>()
+        };
+        if ((entries.len() as f64) > 0.0_f64) {
+            let qs = ((entries)
+                .iter()
+                .cloned()
+                .map(|__parameter1: (String, String)| -> String {
+                    let k = __parameter1.0.clone();
+                    let v = __parameter1.1.clone();
                     return format!(
                         "{}={}",
-                        crate::host_value::<()>("host.call"),
-                        crate::host_value::<()>("host.call")
+                        __flight_encode_uri_component(&((k).clone())),
+                        __flight_encode_uri_component(&((v).clone()))
                     );
-                },
-            )
-                as Box<dyn FnMut(crate::OpaqueHostValue) -> () + Send + 'static>)))
-            .join)("&");
-            url.push_str(&(format!("?{}", qs)));
+                })
+                .collect::<Vec<_>>())
+            .iter()
+            .map(|value| value.to_string())
+            .collect::<Vec<_>>()
+            .join(("&".to_owned()).as_str());
+            url.push_str(&(format!("?{}", (qs).clone())));
         }
     }
     return url;
@@ -335,32 +440,20 @@ pub fn parse_protocol_url(url: String) -> Option<ParsedProtocolUrl> {
     if ("string" != "string") || ((url.encode_utf16().count() as f64) == 0.0_f64) {
         return None;
     }
-    let colon_idx = (url.index_of)(":");
+    let colon_idx = __flight_string_index_of(&(url), &(":".to_owned()), 0.0_f64);
     if (colon_idx <= 0.0_f64) {
         return None;
     }
-    let scheme = (String::from_utf16_lossy(
-        &(url)
-            .encode_utf16()
-            .skip((0.0_f64) as usize)
-            .take(((colon_idx) as usize).saturating_sub((0.0_f64) as usize))
-            .collect::<Vec<u16>>(),
-    )
-    .to_lower_case)();
-    if (!((*_SCHEME_PATTERN).clone()).is_match(&(scheme))) {
+    let scheme = (__flight_string_slice(&(url), 0.0_f64, Some(colon_idx))).to_lowercase();
+    if (!((*_SCHEME_PATTERN).clone()).is_match(&((scheme).clone()))) {
         return None;
     }
-    let mut rest = String::from_utf16_lossy(
-        &(url)
-            .encode_utf16()
-            .skip((colon_idx + 1.0_f64) as usize)
-            .collect::<Vec<u16>>(),
-    );
+    let mut rest = __flight_string_slice(&(url), (colon_idx + 1.0_f64), None);
     let mut host = "".to_owned();
-    if (rest.starts_with)("//") {
-        rest = (rest.slice)(2.0_f64);
-        let slash_idx = (rest.index_of)("/");
-        let q_idx = (rest.index_of)("?");
+    if (rest).starts_with(("//".to_owned()).as_str()) {
+        rest = __flight_string_slice(&(rest), 2.0_f64, None);
+        let slash_idx = __flight_string_index_of(&(rest), &("/".to_owned()), 0.0_f64);
+        let q_idx = __flight_string_index_of(&(rest), &("?".to_owned()), 0.0_f64);
         let mut host_end: f64;
         if (slash_idx >= 0.0_f64) && ((q_idx < 0.0_f64) || (slash_idx < q_idx)) {
             host_end = slash_idx;
@@ -368,20 +461,20 @@ pub fn parse_protocol_url(url: String) -> Option<ParsedProtocolUrl> {
             if (q_idx >= 0.0_f64) {
                 host_end = q_idx;
             } else {
-                host_end = rest.length;
+                host_end = (rest.encode_utf16().count() as f64);
             }
         }
-        host = (rest.slice)(0.0_f64, host_end);
-        rest = (rest.slice)(host_end);
+        host = __flight_string_slice(&(rest), 0.0_f64, Some(host_end));
+        rest = __flight_string_slice(&(rest), host_end, None);
     }
-    let q_idx = (rest.index_of)("?");
+    let q_idx = __flight_string_index_of(&(rest), &("?".to_owned()), 0.0_f64);
     let mut path: String;
     let mut query_string: String;
     if (q_idx >= 0.0_f64) {
-        path = (rest.slice)(0.0_f64, q_idx);
-        query_string = (rest.slice)((q_idx + 1.0_f64));
+        path = __flight_string_slice(&(rest), 0.0_f64, Some(q_idx));
+        query_string = __flight_string_slice(&(rest), (q_idx + 1.0_f64), None);
     } else {
-        path = rest;
+        path = (rest).clone();
         query_string = "".to_owned();
     }
     let mut query: Vec<(String, String)> = {
@@ -396,43 +489,51 @@ pub fn parse_protocol_url(url: String) -> Option<ParsedProtocolUrl> {
         .iter()
         .cloned()
         {
-            let eq_idx = (pair.index_of)("=");
+            let eq_idx = __flight_string_index_of(&((pair).clone()), &("=".to_owned()), 0.0_f64);
             if (eq_idx < 0.0_f64) {
                 let k = _safe_decode((pair).clone());
                 if ((k.encode_utf16().count() as f64) > 0.0_f64) {
-                    query
-                        .iter()
-                        .find(|(entry_key, _)| entry_key == &(k).clone())
-                        .map(|(_, value)| value)
-                        .expect("TypeScript Record key was absent") = "".to_owned();
+                    {
+                        let __flight_key = (k).clone();
+                        let __flight_value = "".to_owned();
+                        if let Some((_, value)) =
+                            query.iter_mut().find(|(key, _)| key == &__flight_key)
+                        {
+                            *value = __flight_value;
+                        } else {
+                            query.push((__flight_key, __flight_value));
+                        }
+                    };
                 }
             } else {
-                let k = _safe_decode(String::from_utf16_lossy(
-                    &((pair).clone())
-                        .encode_utf16()
-                        .skip((0.0_f64) as usize)
-                        .take(((eq_idx) as usize).saturating_sub((0.0_f64) as usize))
-                        .collect::<Vec<u16>>(),
+                let k = _safe_decode(__flight_string_slice(
+                    &((pair).clone()),
+                    0.0_f64,
+                    Some(eq_idx),
                 ));
                 if ((k.encode_utf16().count() as f64) > 0.0_f64) {
-                    query
-                        .iter()
-                        .find(|(entry_key, _)| entry_key == &(k).clone())
-                        .map(|(_, value)| value)
-                        .expect("TypeScript Record key was absent") =
-                        _safe_decode(String::from_utf16_lossy(
-                            &((pair).clone())
-                                .encode_utf16()
-                                .skip((eq_idx + 1.0_f64) as usize)
-                                .collect::<Vec<u16>>(),
+                    {
+                        let __flight_key = (k).clone();
+                        let __flight_value = _safe_decode(__flight_string_slice(
+                            &((pair).clone()),
+                            (eq_idx + 1.0_f64),
+                            None,
                         ));
+                        if let Some((_, value)) =
+                            query.iter_mut().find(|(key, _)| key == &__flight_key)
+                        {
+                            *value = __flight_value;
+                        } else {
+                            query.push((__flight_key, __flight_value));
+                        }
+                    };
                 }
             }
         }
     }
     return Some(ParsedProtocolUrl {
         __flight_identity: std::sync::Arc::new(()),
-        scheme: scheme,
+        scheme: (scheme).clone(),
         host: (host).clone(),
         path: (path).clone(),
         query: (query).clone(),
@@ -528,8 +629,22 @@ static _SCHEME_PATTERN: std::sync::LazyLock<regex::Regex> = std::sync::LazyLock:
 });
 
 // Source: upstream/packages/protocol/src/protocol.ts:290 (sha256:f0179456dc2c7e6df3db60520cbbe54131d861d67bd5a5111d7f0dc937fcf82d)
-static _RESERVED_SCHEMES: std::sync::LazyLock<Vec<crate::OpaqueHostValue>> =
-    std::sync::LazyLock::new(|| Vec::new());
+static _RESERVED_SCHEMES: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(|| {
+    let mut __flight_set = Vec::new();
+    for __flight_value in vec![
+        "file".to_owned(),
+        "ftp".to_owned(),
+        "ftps".to_owned(),
+        "http".to_owned(),
+        "https".to_owned(),
+        "mailto".to_owned(),
+    ] {
+        if !__flight_set.contains(&__flight_value) {
+            __flight_set.push(__flight_value);
+        }
+    }
+    __flight_set
+});
 
 // Source: upstream/packages/protocol/src/protocol.ts:292 (sha256:4e64113d99273aab4a45879563e102b62bdd03b5928a650c6d5e4e0d5e602b5b)
 static _BACKEND: std::sync::LazyLock<std::sync::Mutex<Option<ProtocolBackend>>> =
@@ -547,20 +662,21 @@ static _SUBSCRIPTIONS: std::sync::LazyLock<
 
 // Source: upstream/packages/protocol/src/protocol.ts:295 (sha256:1b4a595b0c64eed2d1e67c5bf52a674fc728e97e36d0e73d2b1dc74c58f18f18)
 fn _safe_decode(s: String) -> String {
-    let __flight_try_return: Option<String> =
-        match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| -> Option<String> {
+    let __flight_try_return: Option<String> = match std::panic::catch_unwind(
+        std::panic::AssertUnwindSafe(|| -> Option<String> {
             {
-                return Some(crate::host_value::<String>("host.call"));
+                return Some(__flight_decode_uri_component(&((regex::RegexBuilder::new("\\+").case_insensitive(false).multi_line(false).dot_matches_new_line(false).build().expect("upstream TypeScript regular expression must be valid Rust regex syntax")).replace_all(&(s), " ".to_owned()).into_owned())));
             }
             None
-        })) {
-            Ok(value) => value,
-            Err(_) => (|| -> Option<String> {
-                {
-                    return Some(s);
-                }
-                None
-            })(),
-        };
+        }),
+    ) {
+        Ok(value) => value,
+        Err(_) => (|| -> Option<String> {
+            {
+                return Some(s);
+            }
+            None
+        })(),
+    };
     return __flight_try_return.expect("TypeScript try/catch completed without returning");
 }

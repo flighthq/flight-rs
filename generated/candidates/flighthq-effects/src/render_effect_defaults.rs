@@ -23,10 +23,9 @@ pub fn get_render_effect_defaults(kind: String) -> Vec<(String, crate::OpaqueHos
     let entry = DEFAULTS
         .iter()
         .find(|(entry_key, _)| entry_key == &(kind).clone())
-        .map(|(_, value)| value)
-        .expect("TypeScript Record key was absent")
+        .map(|(_, value)| value.clone())
         .clone();
-    if false {
+    if (entry).is_none() {
         return {
             let mut __flight_record = Vec::new();
             __flight_record
@@ -40,46 +39,56 @@ pub fn normalize_render_effect(effect: &RenderEffect, out: &mut RenderEffect) ->
     let entry = DEFAULTS
         .iter()
         .find(|(entry_key, _)| entry_key == &(effect.kind).clone())
-        .map(|(_, value)| value)
-        .expect("TypeScript Record key was absent")
+        .map(|(_, value)| value.clone())
         .clone();
-    if false {
+    if (entry).is_none() {
         return false;
     }
     let effect_rec = effect;
     let mut out_rec = crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast");
     for key in (entry
+        .as_ref()
+        .unwrap()
         .iter()
         .map(|(entry_key, _)| entry_key.clone())
         .collect::<Vec<_>>())
     .iter()
     .cloned()
     {
-        out_rec
-            .iter()
-            .find(|(entry_key, _)| entry_key == &(key).clone())
-            .map(|(_, value)| value)
-            .expect("TypeScript Record key was absent") = if (effect_rec
-            .iter()
-            .find(|(entry_key, _)| entry_key == &(key).clone())
-            .map(|(_, value)| value)
-            .expect("TypeScript Record key was absent")
-            .clone())
-        .is_some()
         {
-            effect_rec
-                .iter()
-                .find(|(entry_key, _)| entry_key == &(key).clone())
-                .map(|(_, value)| value)
-                .expect("TypeScript Record key was absent")
-                .clone()
-        } else {
-            entry
-                .iter()
-                .find(|(entry_key, _)| entry_key == &(key).clone())
-                .map(|(_, value)| value)
-                .expect("TypeScript Record key was absent")
-                .clone()
+            let __flight_key = (key).clone();
+            let __flight_value = {
+                let __flight_portable_source = if (effect_rec
+                    .iter()
+                    .find(|(entry_key, _)| entry_key == &(key).clone())
+                    .map(|(_, value)| value.clone())
+                    .clone())
+                .is_some()
+                {
+                    effect_rec
+                        .iter()
+                        .find(|(entry_key, _)| entry_key == &(key).clone())
+                        .map(|(_, value)| value.clone())
+                        .clone()
+                } else {
+                    entry
+                        .as_ref()
+                        .unwrap()
+                        .iter()
+                        .find(|(entry_key, _)| entry_key == &(key).clone())
+                        .map(|(_, value)| value.clone())
+                        .clone()
+                };
+                match (&__flight_portable_source).as_ref() {
+                    Some(value) => (value).clone(),
+                    None => crate::FlightValue::Null,
+                }
+            };
+            if let Some((_, value)) = out_rec.iter_mut().find(|(key, _)| key == &__flight_key) {
+                *value = __flight_value;
+            } else {
+                out_rec.push((__flight_key, __flight_value));
+            }
         };
     }
     for key in (effect_rec
@@ -91,18 +100,31 @@ pub fn normalize_render_effect(effect: &RenderEffect, out: &mut RenderEffect) ->
     {
         if (!{
             let __flight_key = (key).clone();
-            entry.iter().any(|(key, _)| key == &__flight_key)
+            entry
+                .as_ref()
+                .unwrap()
+                .iter()
+                .any(|(key, _)| key == &__flight_key)
         }) {
-            out_rec
-                .iter()
-                .find(|(entry_key, _)| entry_key == &(key).clone())
-                .map(|(_, value)| value)
-                .expect("TypeScript Record key was absent") = effect_rec
-                .iter()
-                .find(|(entry_key, _)| entry_key == &(key).clone())
-                .map(|(_, value)| value)
-                .expect("TypeScript Record key was absent")
-                .clone();
+            {
+                let __flight_key = (key).clone();
+                let __flight_value = {
+                    let __flight_portable_source = effect_rec
+                        .iter()
+                        .find(|(entry_key, _)| entry_key == &(key).clone())
+                        .map(|(_, value)| value.clone())
+                        .clone();
+                    match (&__flight_portable_source).as_ref() {
+                        Some(value) => (value).clone(),
+                        None => crate::FlightValue::Null,
+                    }
+                };
+                if let Some((_, value)) = out_rec.iter_mut().find(|(key, _)| key == &__flight_key) {
+                    *value = __flight_value;
+                } else {
+                    out_rec.push((__flight_key, __flight_value));
+                }
+            };
         }
     }
     return true;

@@ -8,6 +8,60 @@
 
 use flighthq_types::XmlElement;
 
+#[inline]
+
+fn __flight_string_index_of(value: &str, search: &str, position: f64) -> f64 {
+    let value: Vec<u16> = value.encode_utf16().collect();
+    let search: Vec<u16> = search.encode_utf16().collect();
+    let start = if position.is_nan() || position <= 0.0_f64 {
+        0_usize
+    } else if position >= value.len() as f64 {
+        value.len()
+    } else {
+        position.trunc() as usize
+    };
+    if search.is_empty() {
+        return start as f64;
+    }
+    value[start..]
+        .windows(search.len())
+        .position(|window| window == search)
+        .map_or(-1.0_f64, |index| (start + index) as f64)
+}
+
+#[inline]
+
+fn __flight_string_slice(value: &str, start: f64, end: Option<f64>) -> String {
+    let value: Vec<u16> = value.encode_utf16().collect();
+    let length = value.len();
+    let relative = |index: f64| -> usize {
+        if index.is_nan() {
+            0
+        } else if index < 0.0_f64 {
+            length.saturating_sub((-index.trunc()) as usize)
+        } else {
+            (index.trunc() as usize).min(length)
+        }
+    };
+    let start = relative(start);
+    let end = end.map_or(length, relative);
+    String::from_utf16_lossy(&value[start..end.max(start)])
+}
+
+#[inline]
+
+fn __flight_string_from_code_point(value: f64) -> String {
+    assert!(
+        value.is_finite()
+            && value.fract() == 0.0_f64
+            && (0.0_f64..=0x10FFFF_u32 as f64).contains(&value),
+        "String.fromCodePoint received an invalid code point"
+    );
+    char::from_u32(value as u32)
+        .expect("Rust strings cannot represent surrogate code points")
+        .to_string()
+}
+
 // Source: upstream/packages/xml/src/xmlParse.ts:12 (sha256:5d3faebf7d0c254ea5522a2669360263c6aab9196a4015bcfba2079457bba066)
 #[derive(Clone, Default)]
 struct ParseXmlAttributesRecord1 {
@@ -30,36 +84,43 @@ pub fn parse_xml_attributes(attrs: String) -> Vec<(String, String)> {
         .dot_matches_new_line(false)
         .build()
         .expect("upstream TypeScript regular expression must be valid Rust regex syntax");
-    let mut m: Option<crate::OpaqueHostValue>;
+    let mut m: Option<Vec<Option<String>>>;
     while ({
         m = {
-            let __flight_regex = re;
+            let __flight_regex = &(re);
             __flight_regex.captures(&((attrs).clone())).map(|captures| {
                 (0..captures.len())
                     .map(|index| {
                         captures
                             .get(index)
-                            .map_or("", |matched| matched.as_str())
-                            .to_owned()
+                            .map(|matched| matched.as_str().to_owned())
                     })
                     .collect::<Vec<_>>()
             })
         };
-        m
+        m.clone()
     })
     .is_some()
     {
-        let attr_name = crate::host_value::<crate::OpaqueHostValue>("host.index");
-        let value = if (crate::host_value::<crate::OpaqueHostValue>("host.index")).is_some() {
-            crate::host_value::<crate::OpaqueHostValue>("host.index")
+        let attr_name = m.as_mut().unwrap()[1.0_f64 as usize].clone();
+        let value = if (m.as_mut().unwrap()[2.0_f64 as usize].clone()).is_some() {
+            m.as_mut().unwrap()[2.0_f64 as usize].clone()
         } else {
-            crate::host_value::<crate::OpaqueHostValue>("host.index")
+            Some(
+                (m.as_mut().unwrap()[3.0_f64 as usize].clone())
+                    .clone()
+                    .unwrap_or("".to_owned()),
+            )
         };
-        result
-            .iter()
-            .find(|(entry_key, _)| entry_key == &attr_name)
-            .map(|(_, value)| value)
-            .expect("TypeScript Record key was absent") = decode_xml_entities(value);
+        {
+            let __flight_key = (attr_name).clone().unwrap();
+            let __flight_value = decode_xml_entities((((value).clone()).clone().unwrap()).clone());
+            if let Some((_, value)) = result.iter_mut().find(|(key, _)| key == &__flight_key) {
+                *value = __flight_value;
+            } else {
+                result.push((__flight_key, __flight_value));
+            }
+        };
     }
     return result;
 }
@@ -95,7 +156,7 @@ pub fn parse_xml_document(xml: String) -> Option<XmlElement> {
         .dot_matches_new_line(false)
         .build()
         .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-    .replace_all(&(strip_xml_comments((xml).clone())), "\n")
+    .replace_all(&(strip_xml_comments((xml).clone())), "\n".to_owned())
     .into_owned();
     let mut entities: Vec<(String, String)> = {
         let mut __flight_record = Vec::new();
@@ -108,7 +169,7 @@ pub fn parse_xml_document(xml: String) -> Option<XmlElement> {
             .dot_matches_new_line(false)
             .build()
             .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-        .replace_all(&(src), "")
+        .replace_all(&(src), "".to_owned())
         .into_owned(),
         &mut entities,
     ))
@@ -178,14 +239,13 @@ fn expand_xml_entities(src: String, entities: Vec<(String, String)>) -> String {
                     let replacement = entities
                         .iter()
                         .find(|(entry_key, _)| entry_key == &(name).clone())
-                        .map(|(_, value)| value)
-                        .expect("TypeScript Record key was absent")
+                        .map(|(_, value)| value.clone())
                         .clone();
                     if (replacement).is_none() {
                         return reference;
                     }
                     (*expanded.lock().unwrap()) = true;
-                    return replacement;
+                    return ((replacement.as_ref().unwrap()).clone()).clone();
                 };
                 (regex::RegexBuilder::new("&([\\w:.-]+);")
                     .case_insensitive(false)
@@ -227,31 +287,34 @@ fn expand_xml_entities(src: String, entities: Vec<(String, String)>) -> String {
 // Source: upstream/packages/xml/src/xmlParse.ts:94 (sha256:250cafe58791dc2518324d175e916c0e25f718a32d57c407bafde6272c8baf88)
 fn decode_xml_entities(s: String) -> String {
     return {
-        let mut __flight_replace =
-            |reference: String, dec: String, hex: String, name: String| -> String {
-                let numeric = dec;
-                if (numeric).is_some() {
-                    let codepoint = {
-                        let __flight_value = (numeric).clone();
-                        let __flight_radix =
-                            (if (dec).is_some() { 10.0_f64 } else { 16.0_f64 }) as u32;
-                        i64::from_str_radix(__flight_value.trim(), __flight_radix)
-                            .map_or(f64::NAN, |value| value as f64)
-                    };
-                    if (codepoint > 1114111.0_f64)
-                        || ((codepoint >= 55296.0_f64) && (codepoint <= 57343.0_f64))
-                    {
-                        return reference;
-                    }
-                    return (string.from_code_point)(codepoint);
+        let mut __flight_replace = |reference: String,
+                                    dec: Option<String>,
+                                    hex: Option<String>,
+                                    name: Option<String>|
+         -> String {
+            let numeric = (dec).clone().or((hex).clone());
+            if (numeric).is_some() {
+                let codepoint = {
+                    let __flight_value = (numeric.as_ref().unwrap()).clone();
+                    let __flight_radix = (if (dec).is_some() { 10.0_f64 } else { 16.0_f64 }) as u32;
+                    i64::from_str_radix(__flight_value.trim(), __flight_radix)
+                        .map_or(f64::NAN, |value| value as f64)
+                };
+                if (codepoint > 1114111.0_f64)
+                    || ((codepoint >= 55296.0_f64) && (codepoint <= 57343.0_f64))
+                {
+                    return reference;
                 }
-                return XML_ENTITIES
-                    .iter()
-                    .find(|(entry_key, _)| entry_key == &(name).clone())
-                    .map(|(_, value)| value)
-                    .expect("TypeScript Record key was absent")
-                    .clone();
-            };
+                return __flight_string_from_code_point(codepoint);
+            }
+            return (XML_ENTITIES
+                .iter()
+                .find(|(entry_key, _)| entry_key == &(name).clone().unwrap())
+                .map(|(_, value)| value.clone())
+                .clone())
+            .clone()
+            .unwrap_or((reference).clone());
+        };
         (regex::RegexBuilder::new("&(?:#(\\d+)|#x([\\da-fA-F]+)|(\\w+));")
             .case_insensitive(false)
             .multi_line(false)
@@ -264,18 +327,9 @@ fn decode_xml_entities(s: String) -> String {
                     .get(0)
                     .map_or("", |matched| matched.as_str())
                     .to_owned(),
-                captures
-                    .get(1)
-                    .map_or("", |matched| matched.as_str())
-                    .to_owned(),
-                captures
-                    .get(2)
-                    .map_or("", |matched| matched.as_str())
-                    .to_owned(),
-                captures
-                    .get(3)
-                    .map_or("", |matched| matched.as_str())
-                    .to_owned(),
+                captures.get(1).map(|matched| matched.as_str().to_owned()),
+                captures.get(2).map(|matched| matched.as_str().to_owned()),
+                captures.get(3).map(|matched| matched.as_str().to_owned()),
             )
         })
         .into_owned()
@@ -284,13 +338,27 @@ fn decode_xml_entities(s: String) -> String {
 
 // Source: upstream/packages/xml/src/xmlParse.ts:106 (sha256:c7ece3c90f4a0fee6fba779e7752d8831ec8b4a0734d8f2da72f995992043c22)
 fn parse_element(src: String, state: &mut ParseState) -> Option<XmlElement> {
+    let __flight_utf16_src: Vec<u16> = src.encode_utf16().collect();
     if (state.depth >= MAX_XML_ELEMENT_DEPTH) {
         state.depth_exceeded = true;
         return None;
     }
     skip_whitespace((src).clone(), state);
-    if (state.pos >= (src.encode_utf16().count() as f64))
-        || (src[state.pos as usize].clone() != "<")
+    if (state.pos >= (__flight_utf16_src.len() as f64))
+        || ({
+            let __flight_units: &[u16] = &__flight_utf16_src;
+            let __flight_raw_index = state.pos;
+            if __flight_raw_index.is_finite()
+                && __flight_raw_index >= 0.0_f64
+                && __flight_raw_index.fract() == 0.0_f64
+            {
+                __flight_units
+                    .get(__flight_raw_index as usize)
+                    .map_or_else(String::new, |unit| String::from_utf16_lossy(&[*unit]))
+            } else {
+                String::new()
+            }
+        } != "<")
     {
         return None;
     }
@@ -298,93 +366,183 @@ fn parse_element(src: String, state: &mut ParseState) -> Option<XmlElement> {
         state.pos += 1.0;
         state.pos
     };
-    if (src[state.pos as usize].clone() == "?") {
-        let end = (src.index_of)("?>", state.pos);
+    if ({
+        let __flight_units: &[u16] = &__flight_utf16_src;
+        let __flight_raw_index = state.pos;
+        if __flight_raw_index.is_finite()
+            && __flight_raw_index >= 0.0_f64
+            && __flight_raw_index.fract() == 0.0_f64
+        {
+            __flight_units
+                .get(__flight_raw_index as usize)
+                .map_or_else(String::new, |unit| String::from_utf16_lossy(&[*unit]))
+        } else {
+            String::new()
+        }
+    } == "?")
+    {
+        let end = __flight_string_index_of(&((src).clone()), &("?>".to_owned()), state.pos);
         state.pos = if (end >= 0.0_f64) {
             (end + 2.0_f64)
         } else {
-            (src.encode_utf16().count() as f64)
+            (__flight_utf16_src.len() as f64)
         };
         return parse_element((src).clone(), state);
     }
     let name_start = state.pos;
-    while (state.pos < (src.encode_utf16().count() as f64))
+    while (state.pos < (__flight_utf16_src.len() as f64))
         && (!(regex::RegexBuilder::new("[\\s>/]")
             .case_insensitive(false)
             .multi_line(false)
             .dot_matches_new_line(false)
             .build()
             .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-        .is_match(&(src[state.pos as usize].clone())))
+        .is_match(
+            &({
+                let __flight_units: &[u16] = &__flight_utf16_src;
+                let __flight_raw_index = state.pos;
+                if __flight_raw_index.is_finite()
+                    && __flight_raw_index >= 0.0_f64
+                    && __flight_raw_index.fract() == 0.0_f64
+                {
+                    __flight_units
+                        .get(__flight_raw_index as usize)
+                        .map_or_else(String::new, |unit| String::from_utf16_lossy(&[*unit]))
+                } else {
+                    String::new()
+                }
+            }),
+        ))
     {
         {
             state.pos += 1.0;
             state.pos
         };
     }
-    let name = String::from_utf16_lossy(
-        &(src)
-            .encode_utf16()
-            .skip((name_start) as usize)
-            .take(((state.pos) as usize).saturating_sub((name_start) as usize))
-            .collect::<Vec<u16>>(),
-    );
-    if (!name) {
+    let name = __flight_string_slice(&(src), name_start, Some(state.pos));
+    if (name).is_empty() {
         return None;
     }
     skip_whitespace((src).clone(), state);
     let mut attrs_str = "".to_owned();
     let mut quote = "".to_owned();
-    while (state.pos < (src.encode_utf16().count() as f64)) {
-        let ch = src[state.pos as usize].clone();
-        if quote {
-            if (ch == quote) {
+    while (state.pos < (__flight_utf16_src.len() as f64)) {
+        let ch = {
+            let __flight_units: &[u16] = &__flight_utf16_src;
+            let __flight_raw_index = state.pos;
+            if __flight_raw_index.is_finite()
+                && __flight_raw_index >= 0.0_f64
+                && __flight_raw_index.fract() == 0.0_f64
+            {
+                __flight_units
+                    .get(__flight_raw_index as usize)
+                    .map_or_else(String::new, |unit| String::from_utf16_lossy(&[*unit]))
+            } else {
+                String::new()
+            }
+        };
+        if !(quote).is_empty() {
+            if ((ch).clone() == quote) {
                 quote = "".to_owned();
             }
         } else {
-            if (ch == "\"") || (ch == "'") {
-                quote = ch;
+            if ((ch).clone() == "\"") || ((ch).clone() == "'") {
+                quote = (ch).clone();
             } else {
-                if (ch == ">")
-                    || ((ch == "/") && (src[(state.pos + 1.0_f64) as usize].clone() == ">"))
+                if ((ch).clone() == ">")
+                    || (((ch).clone() == "/")
+                        && ({
+                            let __flight_units: &[u16] = &__flight_utf16_src;
+                            let __flight_raw_index = (state.pos + 1.0_f64);
+                            if __flight_raw_index.is_finite()
+                                && __flight_raw_index >= 0.0_f64
+                                && __flight_raw_index.fract() == 0.0_f64
+                            {
+                                __flight_units
+                                    .get(__flight_raw_index as usize)
+                                    .map_or_else(String::new, |unit| {
+                                        String::from_utf16_lossy(&[*unit])
+                                    })
+                            } else {
+                                String::new()
+                            }
+                        } == ">"))
                 {
                     break;
                 }
             }
         }
-        attrs_str.push_str(&(ch));
+        attrs_str.push_str(&((ch).clone()));
         {
             state.pos += 1.0;
             state.pos
         };
     }
-    let self_closing = (src[state.pos as usize].clone() == "/");
+    let self_closing = ({
+        let __flight_units: &[u16] = &__flight_utf16_src;
+        let __flight_raw_index = state.pos;
+        if __flight_raw_index.is_finite()
+            && __flight_raw_index >= 0.0_f64
+            && __flight_raw_index.fract() == 0.0_f64
+        {
+            __flight_units
+                .get(__flight_raw_index as usize)
+                .map_or_else(String::new, |unit| String::from_utf16_lossy(&[*unit]))
+        } else {
+            String::new()
+        }
+    } == "/");
     state.pos += if self_closing { 2.0_f64 } else { 1.0_f64 };
     let attributes = parse_xml_attributes((attrs_str).clone());
     let mut children: Vec<XmlElement> = vec![];
     let mut content: Vec<crate::FlightUnion2<String, XmlElement>> = vec![];
     let mut text = "".to_owned();
     if (!self_closing) {
-        while (state.pos < (src.encode_utf16().count() as f64)) {
-            if (state.pos >= (src.encode_utf16().count() as f64)) {
+        while (state.pos < (__flight_utf16_src.len() as f64)) {
+            if (state.pos >= (__flight_utf16_src.len() as f64)) {
                 break;
             }
-            if (src[state.pos as usize].clone() != "<") {
+            if ({
+                let __flight_units: &[u16] = &__flight_utf16_src;
+                let __flight_raw_index = state.pos;
+                if __flight_raw_index.is_finite()
+                    && __flight_raw_index >= 0.0_f64
+                    && __flight_raw_index.fract() == 0.0_f64
+                {
+                    __flight_units
+                        .get(__flight_raw_index as usize)
+                        .map_or_else(String::new, |unit| String::from_utf16_lossy(&[*unit]))
+                } else {
+                    String::new()
+                }
+            } != "<")
+            {
                 let text_start = state.pos;
-                while (state.pos < (src.encode_utf16().count() as f64))
-                    && (src[state.pos as usize].clone() != "<")
+                while (state.pos < (__flight_utf16_src.len() as f64))
+                    && ({
+                        let __flight_units: &[u16] = &__flight_utf16_src;
+                        let __flight_raw_index = state.pos;
+                        if __flight_raw_index.is_finite()
+                            && __flight_raw_index >= 0.0_f64
+                            && __flight_raw_index.fract() == 0.0_f64
+                        {
+                            __flight_units
+                                .get(__flight_raw_index as usize)
+                                .map_or_else(String::new, |unit| String::from_utf16_lossy(&[*unit]))
+                        } else {
+                            String::new()
+                        }
+                    } != "<")
                 {
                     {
                         state.pos += 1.0;
                         state.pos
                     };
                 }
-                let decoded = decode_xml_entities(String::from_utf16_lossy(
-                    &((src).clone())
-                        .encode_utf16()
-                        .skip((text_start) as usize)
-                        .take(((state.pos) as usize).saturating_sub((text_start) as usize))
-                        .collect::<Vec<u16>>(),
+                let decoded = decode_xml_entities(__flight_string_slice(
+                    &((src).clone()),
+                    text_start,
+                    Some(state.pos),
                 ));
                 text.push_str(&(((decoded).clone()).trim().to_owned()));
                 if ((decoded).clone() != "") {
@@ -394,42 +552,61 @@ fn parse_element(src: String, state: &mut ParseState) -> Option<XmlElement> {
                 }
                 continue;
             }
-            if (String::from_utf16_lossy(
-                &((src).clone())
-                    .encode_utf16()
-                    .skip((state.pos) as usize)
-                    .take(((state.pos + 9.0_f64) as usize).saturating_sub((state.pos) as usize))
-                    .collect::<Vec<u16>>(),
-            ) == "<![CDATA[")
+            if (__flight_string_slice(&((src).clone()), state.pos, Some((state.pos + 9.0_f64)))
+                == "<![CDATA[")
             {
                 let cdata_start = (state.pos + 9.0_f64);
-                let cdata_end = (src.index_of)("]]>", cdata_start);
+                let cdata_end =
+                    __flight_string_index_of(&((src).clone()), &("]]>".to_owned()), cdata_start);
                 let content_end = if (cdata_end >= 0.0_f64) {
                     cdata_end
                 } else {
-                    (src.encode_utf16().count() as f64)
+                    (__flight_utf16_src.len() as f64)
                 };
-                let cdata = String::from_utf16_lossy(
-                    &((src).clone())
-                        .encode_utf16()
-                        .skip((cdata_start) as usize)
-                        .take(((content_end) as usize).saturating_sub((cdata_start) as usize))
-                        .collect::<Vec<u16>>(),
-                );
-                text.push_str(&((cdata.trim)()));
-                if (cdata != "") {
-                    content.push(cdata);
+                let cdata = __flight_string_slice(&((src).clone()), cdata_start, Some(content_end));
+                text.push_str(&(((cdata).clone()).trim().to_owned()));
+                if ((cdata).clone() != "") {
+                    content.push(
+                        (crate::FlightUnion2::<String, XmlElement>::A((cdata).clone())).clone(),
+                    );
                 }
                 state.pos = if (cdata_end >= 0.0_f64) {
                     (cdata_end + 3.0_f64)
                 } else {
-                    (src.encode_utf16().count() as f64)
+                    (__flight_utf16_src.len() as f64)
                 };
                 continue;
             }
-            if (src[(state.pos + 1.0_f64) as usize].clone() == "/") {
-                while (state.pos < (src.encode_utf16().count() as f64))
-                    && (src[state.pos as usize].clone() != ">")
+            if ({
+                let __flight_units: &[u16] = &__flight_utf16_src;
+                let __flight_raw_index = (state.pos + 1.0_f64);
+                if __flight_raw_index.is_finite()
+                    && __flight_raw_index >= 0.0_f64
+                    && __flight_raw_index.fract() == 0.0_f64
+                {
+                    __flight_units
+                        .get(__flight_raw_index as usize)
+                        .map_or_else(String::new, |unit| String::from_utf16_lossy(&[*unit]))
+                } else {
+                    String::new()
+                }
+            } == "/")
+            {
+                while (state.pos < (__flight_utf16_src.len() as f64))
+                    && ({
+                        let __flight_units: &[u16] = &__flight_utf16_src;
+                        let __flight_raw_index = state.pos;
+                        if __flight_raw_index.is_finite()
+                            && __flight_raw_index >= 0.0_f64
+                            && __flight_raw_index.fract() == 0.0_f64
+                        {
+                            __flight_units
+                                .get(__flight_raw_index as usize)
+                                .map_or_else(String::new, |unit| String::from_utf16_lossy(&[*unit]))
+                        } else {
+                            String::new()
+                        }
+                    } != ">")
                 {
                     {
                         state.pos += 1.0;
@@ -470,21 +647,37 @@ fn parse_element(src: String, state: &mut ParseState) -> Option<XmlElement> {
         attributes: (attributes).clone(),
         children: (children).clone(),
         content: (content).clone(),
-        name: name,
+        name: (name).clone(),
         text: (text).clone(),
     });
 }
 
 // Source: upstream/packages/xml/src/xmlParse.ts:206 (sha256:8b165c706b68384ac4307222e85dcc19e0a696891ec44a55efdb1a50dacdcbda)
 fn skip_whitespace(src: String, state: &mut ParseState) -> () {
-    while (state.pos < (src.encode_utf16().count() as f64))
+    let __flight_utf16_src: Vec<u16> = src.encode_utf16().collect();
+    while (state.pos < (__flight_utf16_src.len() as f64))
         && ((regex::RegexBuilder::new("\\s")
             .case_insensitive(false)
             .multi_line(false)
             .dot_matches_new_line(false)
             .build()
             .expect("upstream TypeScript regular expression must be valid Rust regex syntax"))
-        .is_match(&(src[state.pos as usize].clone())))
+        .is_match(
+            &({
+                let __flight_units: &[u16] = &__flight_utf16_src;
+                let __flight_raw_index = state.pos;
+                if __flight_raw_index.is_finite()
+                    && __flight_raw_index >= 0.0_f64
+                    && __flight_raw_index.fract() == 0.0_f64
+                {
+                    __flight_units
+                        .get(__flight_raw_index as usize)
+                        .map_or_else(String::new, |unit| String::from_utf16_lossy(&[*unit]))
+                } else {
+                    String::new()
+                }
+            }),
+        ))
     {
         {
             state.pos += 1.0;
@@ -499,15 +692,8 @@ fn strip_xml_comments(xml: String) -> String {
     let mut output = "".to_owned();
     let mut pos = 0.0_f64;
     while (pos < (xml.encode_utf16().count() as f64)) {
-        if (String::from_utf16_lossy(
-            &(xml)
-                .encode_utf16()
-                .skip((pos) as usize)
-                .take(((pos + 9.0_f64) as usize).saturating_sub((pos) as usize))
-                .collect::<Vec<u16>>(),
-        ) == "<![CDATA[")
-        {
-            let cdata_end = (xml.index_of)("]]>", (pos + 9.0_f64));
+        if (__flight_string_slice(&(xml), pos, Some((pos + 9.0_f64))) == "<![CDATA[") {
+            let cdata_end = __flight_string_index_of(&(xml), &("]]>".to_owned()), (pos + 9.0_f64));
             pos = if (cdata_end >= 0.0_f64) {
                 (cdata_end + 3.0_f64)
             } else {
@@ -515,30 +701,15 @@ fn strip_xml_comments(xml: String) -> String {
             };
             continue;
         }
-        if (String::from_utf16_lossy(
-            &(xml)
-                .encode_utf16()
-                .skip((pos) as usize)
-                .take(((pos + 4.0_f64) as usize).saturating_sub((pos) as usize))
-                .collect::<Vec<u16>>(),
-        ) != "<!--")
-        {
+        if (__flight_string_slice(&(xml), pos, Some((pos + 4.0_f64))) != "<!--") {
             {
                 pos += 1.0;
                 pos
             };
             continue;
         }
-        output.push_str(
-            &(String::from_utf16_lossy(
-                &(xml)
-                    .encode_utf16()
-                    .skip((copy_start) as usize)
-                    .take(((pos) as usize).saturating_sub((copy_start) as usize))
-                    .collect::<Vec<u16>>(),
-            )),
-        );
-        let comment_end = (xml.index_of)("-->", (pos + 4.0_f64));
+        output.push_str(&(__flight_string_slice(&(xml), copy_start, Some(pos))));
+        let comment_end = __flight_string_index_of(&(xml), &("-->".to_owned()), (pos + 4.0_f64));
         pos = if (comment_end >= 0.0_f64) {
             (comment_end + 3.0_f64)
         } else {
@@ -546,30 +717,35 @@ fn strip_xml_comments(xml: String) -> String {
         };
         copy_start = pos;
     }
-    return (output
-        + String::from_utf16_lossy(
-            &(xml)
-                .encode_utf16()
-                .skip((copy_start) as usize)
-                .collect::<Vec<u16>>(),
-        ));
+    return format!(
+        "{}{}",
+        output,
+        __flight_string_slice(&(xml), copy_start, None)
+    );
 }
 
 // Source: upstream/packages/xml/src/xmlParse.ts:242 (sha256:954be5d30230e6ab51775a59a19d79af69864b0600682453ef64b8b2a0741f71)
 fn strip_xml_doctypes(xml: String, out: &mut Vec<(String, String)>) -> String {
+    let __flight_utf16_xml: Vec<u16> = xml.encode_utf16().collect();
     let mut copy_start = 0.0_f64;
     let mut output = "".to_owned();
     let mut pos = 0.0_f64;
-    while (pos < (xml.encode_utf16().count() as f64)) {
-        if (xml[pos as usize].clone() != "<")
-            || ((String::from_utf16_lossy(
-                &(xml)
-                    .encode_utf16()
-                    .skip((pos) as usize)
-                    .take(((pos + 9.0_f64) as usize).saturating_sub((pos) as usize))
-                    .collect::<Vec<u16>>(),
-            )
-            .to_lower_case)()
+    while (pos < (__flight_utf16_xml.len() as f64)) {
+        if ({
+            let __flight_units: &[u16] = &__flight_utf16_xml;
+            let __flight_raw_index = pos;
+            if __flight_raw_index.is_finite()
+                && __flight_raw_index >= 0.0_f64
+                && __flight_raw_index.fract() == 0.0_f64
+            {
+                __flight_units
+                    .get(__flight_raw_index as usize)
+                    .map_or_else(String::new, |unit| String::from_utf16_lossy(&[*unit]))
+            } else {
+                String::new()
+            }
+        } != "<")
+            || ((__flight_string_slice(&(xml), pos, Some((pos + 9.0_f64)))).to_lowercase()
                 != "<!doctype")
         {
             {
@@ -578,42 +754,47 @@ fn strip_xml_doctypes(xml: String, out: &mut Vec<(String, String)>) -> String {
             };
             continue;
         }
-        output.push_str(
-            &(String::from_utf16_lossy(
-                &(xml)
-                    .encode_utf16()
-                    .skip((copy_start) as usize)
-                    .take(((pos) as usize).saturating_sub((copy_start) as usize))
-                    .collect::<Vec<u16>>(),
-            )),
-        );
+        output.push_str(&(__flight_string_slice(&(xml), copy_start, Some(pos))));
         let doctype_start = pos;
         pos += 9.0_f64;
         let mut internal_subset_depth = 0.0_f64;
         let mut quote = "".to_owned();
-        while (pos < (xml.encode_utf16().count() as f64)) {
-            let ch = xml[pos as usize].clone();
-            if quote {
-                if (ch == quote) {
+        while (pos < (__flight_utf16_xml.len() as f64)) {
+            let ch = {
+                let __flight_units: &[u16] = &__flight_utf16_xml;
+                let __flight_raw_index = pos;
+                if __flight_raw_index.is_finite()
+                    && __flight_raw_index >= 0.0_f64
+                    && __flight_raw_index.fract() == 0.0_f64
+                {
+                    __flight_units
+                        .get(__flight_raw_index as usize)
+                        .map_or_else(String::new, |unit| String::from_utf16_lossy(&[*unit]))
+                } else {
+                    String::new()
+                }
+            };
+            if !(quote).is_empty() {
+                if ((ch).clone() == quote) {
                     quote = "".to_owned();
                 }
             } else {
-                if (ch == "\"") || (ch == "'") {
-                    quote = ch;
+                if ((ch).clone() == "\"") || ((ch).clone() == "'") {
+                    quote = (ch).clone();
                 } else {
-                    if (ch == "[") {
+                    if ((ch).clone() == "[") {
                         {
                             internal_subset_depth += 1.0;
                             internal_subset_depth
                         };
                     } else {
-                        if (ch == "]") && (internal_subset_depth > 0.0_f64) {
+                        if ((ch).clone() == "]") && (internal_subset_depth > 0.0_f64) {
                             {
                                 internal_subset_depth -= 1.0;
                                 internal_subset_depth
                             };
                         } else {
-                            if (ch == ">") && (internal_subset_depth == 0.0_f64) {
+                            if ((ch).clone() == ">") && (internal_subset_depth == 0.0_f64) {
                                 {
                                     pos += 1.0;
                                     pos
@@ -630,24 +811,16 @@ fn strip_xml_doctypes(xml: String, out: &mut Vec<(String, String)>) -> String {
             };
         }
         collect_xml_entity_declarations(
-            String::from_utf16_lossy(
-                &(xml)
-                    .encode_utf16()
-                    .skip((doctype_start) as usize)
-                    .take(((pos) as usize).saturating_sub((doctype_start) as usize))
-                    .collect::<Vec<u16>>(),
-            ),
+            __flight_string_slice(&(xml), doctype_start, Some(pos)),
             out,
         );
         copy_start = pos;
     }
-    return (output
-        + String::from_utf16_lossy(
-            &(xml)
-                .encode_utf16()
-                .skip((copy_start) as usize)
-                .collect::<Vec<u16>>(),
-        ));
+    return format!(
+        "{}{}",
+        output,
+        __flight_string_slice(&(xml), copy_start, None)
+    );
 }
 
 // Source: upstream/packages/xml/src/xmlParse.ts:286 (sha256:138254e36b8b51442f232967462a2bae0ed911daab5cb6cc412cd2b508085b59)
@@ -659,10 +832,10 @@ fn collect_xml_entity_declarations(doctype: String, out: &mut Vec<(String, Strin
             .dot_matches_new_line(false)
             .build()
             .expect("upstream TypeScript regular expression must be valid Rust regex syntax");
-    let mut match_: Option<crate::OpaqueHostValue>;
+    let mut match_: Option<Vec<Option<String>>>;
     while ({
         match_ = {
-            let __flight_regex = declaration;
+            let __flight_regex = &(declaration);
             __flight_regex
                 .captures(&((doctype).clone()))
                 .map(|captures| {
@@ -670,20 +843,27 @@ fn collect_xml_entity_declarations(doctype: String, out: &mut Vec<(String, Strin
                         .map(|index| {
                             captures
                                 .get(index)
-                                .map_or("", |matched| matched.as_str())
-                                .to_owned()
+                                .map(|matched| matched.as_str().to_owned())
                         })
                         .collect::<Vec<_>>()
                 })
         };
-        match_
+        match_.clone()
     })
     .is_some()
     {
-        out.iter()
-            .find(|(entry_key, _)| entry_key == &crate::host_value::<String>("host.index"))
-            .map(|(_, value)| value)
-            .expect("TypeScript Record key was absent") =
-            crate::host_value::<crate::OpaqueHostValue>("host.index");
+        {
+            let __flight_key = match_.as_mut().unwrap()[1.0_f64 as usize].clone().unwrap();
+            let __flight_value = ((match_.as_mut().unwrap()[2.0_f64 as usize].clone())
+                .clone()
+                .or(match_.as_mut().unwrap()[3.0_f64 as usize].clone()))
+            .clone()
+            .unwrap_or("".to_owned());
+            if let Some((_, value)) = out.iter_mut().find(|(key, _)| key == &__flight_key) {
+                *value = __flight_value;
+            } else {
+                out.push((__flight_key, __flight_value));
+            }
+        };
     }
 }

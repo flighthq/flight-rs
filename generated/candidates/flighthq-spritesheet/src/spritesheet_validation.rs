@@ -7,7 +7,9 @@
 #![allow(unused_parens)]
 
 use crate::SpritesheetData;
-use flighthq_types::{Spritesheet, SpritesheetData, SpritesheetValidationDiagnostic};
+use flighthq_types::{
+    Spritesheet, SpritesheetData, SpritesheetValidationDiagnostic, TextureAtlasRegion,
+};
 
 // Source: upstream/packages/spritesheet/src/spritesheetValidation.ts:10 (sha256:4e31626c24a112007a5a01ba739b08e9601a16e55b8aec8fb7fd8d96c7618763)
 pub fn validate_spritesheet(
@@ -16,14 +18,34 @@ pub fn validate_spritesheet(
     let mut diagnostics: Vec<SpritesheetValidationDiagnostic> = vec![];
     let atlas = (spritesheet.atlas).clone();
     if (atlas).is_some() {
-        let region_ids: Vec<crate::OpaqueHostValue> = Vec::new();
+        let region_ids: Vec<crate::OpaqueHostValue> = {
+            let mut __flight_set = Vec::new();
+            for __flight_value in ((atlas.as_ref().unwrap().regions).clone())
+                .iter()
+                .cloned()
+                .map(|r: TextureAtlasRegion| -> crate::OpaqueHostValue {
+                    {
+                        let __flight_portable_source = r.id;
+                        crate::FlightValue::Number(*(&__flight_portable_source) as f64)
+                    }
+                })
+                .collect::<Vec<_>>()
+            {
+                if !__flight_set.contains(&__flight_value) {
+                    __flight_set.push(__flight_value);
+                }
+            }
+            __flight_set
+        };
         {
             let mut fi = 0.0_f64;
             while (fi < (spritesheet.frames.len() as f64)) {
-                if (!region_ids
-                    .iter()
-                    .any(|item| item == &spritesheet.frames[fi as usize].id))
-                {
+                if (!region_ids.iter().any(|item| {
+                    item == &{
+                        let __flight_portable_source = spritesheet.frames[fi as usize].id;
+                        crate::FlightValue::Number(*(&__flight_portable_source) as f64)
+                    }
+                })) {
                     diagnostics.push(SpritesheetValidationDiagnostic {
             __flight_identity: std::sync::Arc::new(()),
             animation_name: None,
@@ -39,28 +61,28 @@ pub fn validate_spritesheet(
             }
         }
     }
-    for __iteration1 in (crate::host_value::<()>("host.entries")).iter().cloned() {
-        let anim_name = __iteration1[0.0_f64 as usize].clone();
-        let anim = __iteration1[1.0_f64 as usize].clone();
-        if (anim.frames.length == 0.0_f64) {
+    for __iteration1 in (((spritesheet.animations).clone()).clone()).iter().cloned() {
+        let anim_name = __iteration1.0.clone();
+        let anim = __iteration1.1.clone();
+        if ((anim.frames.len() as f64) == 0.0_f64) {
             diagnostics.push(SpritesheetValidationDiagnostic {
                 __flight_identity: std::sync::Arc::new(()),
-                animation_name: Some(anim_name),
+                animation_name: Some((anim_name).clone()),
                 frame_index: None,
-                message: format!("Animation \"{}\" has no frames.", anim_name),
+                message: format!("Animation \"{}\" has no frames.", (anim_name).clone()),
                 severity: "warning".to_owned(),
             });
         }
         {
             let mut ai = 0.0_f64;
-            while (ai < anim.frames.length) {
+            while (ai < (anim.frames.len() as f64)) {
                 let frame_ref = anim.frames[ai as usize].clone();
                 if (frame_ref < 0.0_f64) || (frame_ref >= (spritesheet.frames.len() as f64)) {
                     diagnostics.push(SpritesheetValidationDiagnostic {
             __flight_identity: std::sync::Arc::new(()),
-            animation_name: Some(anim_name),
+            animation_name: Some((anim_name).clone()),
             frame_index: Some(ai),
-            message: format!("Animation \"{}\" references frame index {} which is out of range (sheet has {} frames).", anim_name, frame_ref, (spritesheet.frames.len() as f64)),
+            message: format!("Animation \"{}\" references frame index {} which is out of range (sheet has {} frames).", (anim_name).clone(), frame_ref, (spritesheet.frames.len() as f64)),
             severity: "error".to_owned(),
           });
                 }

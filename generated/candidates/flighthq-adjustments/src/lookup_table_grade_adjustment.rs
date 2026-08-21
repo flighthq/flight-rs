@@ -41,7 +41,7 @@ pub fn create_lookup_table_grade_adjustment(
         strength: None,
     });
     let lut = (options.lut).clone();
-    let strength = (options.strength).unwrap_or(1.0_f64);
+    let strength = (options.strength).clone().unwrap_or(1.0_f64);
     let mut transform: ColorTransformFunction = std::sync::Arc::new(std::sync::Mutex::new(
         Box::new(move |mut out: Vec<f64>, r: f64, g: f64, b: f64| -> () {
             if ((lut).is_none()) || (strength <= 0.0_f64) {
@@ -74,7 +74,7 @@ pub fn create_lookup_table_grade_adjustment(
                 };
                 return;
             }
-            sample_color_lut(lut.as_ref().unwrap(), &mut out, r, g, b);
+            sample_color_lut(&lut.as_ref().unwrap(), &mut out, r, g, b);
             {
                 let __flight_index = (0.0_f64) as usize;
                 let __flight_value = (r + ((out[0.0_f64 as usize].clone() - r) * strength));

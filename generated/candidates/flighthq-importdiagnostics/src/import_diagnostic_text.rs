@@ -32,18 +32,25 @@ pub fn format_import_diagnostic(diagnostic: &ImportDiagnostic) -> String {
             detail_text.push_str(
                 &(format!(
                     " {}={}",
-                    key,
-                    detail
+                    (key).clone(),
+                    (detail
                         .as_ref()
                         .unwrap()
                         .iter()
                         .find(|(entry_key, _)| entry_key == &(key).clone())
-                        .map(|(_, value)| value)
-                        .expect("TypeScript Record key was absent")
-                        .clone()
+                        .map(|(_, value)| value.clone())
+                        .clone())
+                    .as_ref()
+                    .map_or_else(|| "undefined".to_owned(), |value| value.to_string())
                 )),
             );
         }
     }
-    return format!("{} {}: {}{}", severity, origin, kind, detail_text);
+    return format!(
+        "{} {}: {}{}",
+        (severity).clone(),
+        (origin).clone(),
+        (kind).clone(),
+        (detail_text).clone()
+    );
 }

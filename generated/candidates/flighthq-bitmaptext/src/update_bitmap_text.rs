@@ -1197,8 +1197,10 @@ pub fn update_bitmap_text(bitmap_text: &BitmapText) -> () {
     };
     let line_advance =
         (((metrics.ascent + metrics.descent) + metrics.line_gap) * bitmap_text.data.line_height);
-    let lines = layout_bitmap_text_lines(glyph_source.as_ref().unwrap(), &bitmap_text.data);
-    let ref_width = (bitmap_text.data.wrap_width).unwrap_or(max_line_width(&lines));
+    let lines = layout_bitmap_text_lines(&glyph_source.as_ref().unwrap(), &bitmap_text.data);
+    let ref_width = (bitmap_text.data.wrap_width)
+        .clone()
+        .unwrap_or(max_line_width(&lines));
     let mut pages: Vec<(f64, BitmapTextPageContext)> = Vec::new();
     let mut min_x = f64::INFINITY;
     let mut min_y = f64::INFINITY;
@@ -1238,7 +1240,7 @@ pub fn update_bitmap_text(bitmap_text: &BitmapText) -> () {
                     for glyph in ((word.glyphs).clone()).iter().cloned() {
                         let mut context = ensure_bitmap_text_page(
                             (runtime).clone(),
-                            glyph_source.as_ref().unwrap(),
+                            &glyph_source.as_ref().unwrap(),
                             &mut pages,
                             glyph.entry.page,
                         );

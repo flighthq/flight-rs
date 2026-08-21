@@ -90,16 +90,30 @@ pub fn create_spritesheet_player(obj: Option<FlightPartialRecord1>) -> Spriteshe
     return SpritesheetPlayer {
         __flight_identity: std::sync::Arc::new(()),
         animation: obj.as_ref().and_then(|value| (value.animation).clone()),
-        complete: (obj.as_ref().and_then(|value| value.complete)).unwrap_or(true),
-        elapsed: (obj.as_ref().and_then(|value| value.elapsed)).unwrap_or(0.0_f64),
-        frame_index: (obj.as_ref().and_then(|value| value.frame_index)).unwrap_or(0.0_f64),
+        complete: (obj.as_ref().and_then(|value| value.complete))
+            .clone()
+            .unwrap_or(true),
+        elapsed: (obj.as_ref().and_then(|value| value.elapsed))
+            .clone()
+            .unwrap_or(0.0_f64),
+        frame_index: (obj.as_ref().and_then(|value| value.frame_index))
+            .clone()
+            .unwrap_or(0.0_f64),
         on_complete: (obj.as_ref().and_then(|value| (value.on_complete).clone()))
+            .clone()
             .unwrap_or(create_signal()),
         on_loop: (obj.as_ref().and_then(|value| (value.on_loop).clone()))
+            .clone()
             .unwrap_or(create_signal()),
-        paused: (obj.as_ref().and_then(|value| value.paused)).unwrap_or(false),
-        queue: (obj.as_ref().and_then(|value| (value.queue).clone())).unwrap_or(vec![]),
-        speed: (obj.as_ref().and_then(|value| value.speed)).unwrap_or(1.0_f64),
+        paused: (obj.as_ref().and_then(|value| value.paused))
+            .clone()
+            .unwrap_or(false),
+        queue: (obj.as_ref().and_then(|value| (value.queue).clone()))
+            .clone()
+            .unwrap_or(vec![]),
+        speed: (obj.as_ref().and_then(|value| value.speed))
+            .clone()
+            .unwrap_or(1.0_f64),
     };
 }
 
@@ -205,8 +219,8 @@ pub fn seek_spritesheet_player_to_frame(player: &mut SpritesheetPlayer, frame_in
         .max((frame_index).min(((animation.as_ref().unwrap().frames.len() as f64) - 1.0_f64)));
     player.frame_index = clamped;
     let virtual_index =
-        resolve_display_index_to_first_virtual_index(animation.as_ref().unwrap(), clamped);
-    player.elapsed = resolve_virtual_index_start_time(animation.as_ref().unwrap(), virtual_index);
+        resolve_display_index_to_first_virtual_index(&animation.as_ref().unwrap(), clamped);
+    player.elapsed = resolve_virtual_index_start_time(&animation.as_ref().unwrap(), virtual_index);
 }
 
 // Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:135 (sha256:ccc956a8d2a9290e2da714a354e13a5ca831edd50d23565edfcace178931fefe)
@@ -215,10 +229,10 @@ pub fn seek_spritesheet_player_to_time(player: &mut SpritesheetPlayer, time: f64
     if ((animation).is_none()) || ((animation.as_ref().unwrap().frames.len() as f64) == 0.0_f64) {
         return;
     }
-    let total_time = resolve_animation_total_time(animation.as_ref().unwrap());
+    let total_time = resolve_animation_total_time(&animation.as_ref().unwrap());
     player.elapsed = (0.0_f64).max((time).min(total_time));
     player.frame_index =
-        resolve_frame_index_from_elapsed(animation.as_ref().unwrap(), player.elapsed);
+        resolve_frame_index_from_elapsed(&animation.as_ref().unwrap(), player.elapsed);
 }
 
 // Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:143 (sha256:e58eb6d0ffc8d267cfb7dc16871520a81d93cd9262e357e6ae88a286d9f718b4)
@@ -237,9 +251,8 @@ pub fn update_spritesheet_player(player: &mut SpritesheetPlayer, delta_time: f64
     {
         return false;
     }
-    let __destructure5 = (animation).clone();
-    let repeat_count = __destructure5.as_ref().unwrap().repeat_count;
-    let total_time = resolve_animation_total_time(animation.as_ref().unwrap());
+    let repeat_count = animation.as_ref().unwrap().repeat_count;
+    let total_time = resolve_animation_total_time(&animation.as_ref().unwrap());
     let prev_loop_count = (player.elapsed / total_time).floor();
     player.elapsed += (delta_time * player.speed);
     let playback_time = if (repeat_count < 0.0_f64) {
@@ -256,9 +269,9 @@ pub fn update_spritesheet_player(player: &mut SpritesheetPlayer, delta_time: f64
             return true;
         }
         player.elapsed = playback_time;
-        let last_vi = (resolve_virtual_frame_count(animation.as_ref().unwrap()) - 1.0_f64);
+        let last_vi = (resolve_virtual_frame_count(&animation.as_ref().unwrap()) - 1.0_f64);
         player.frame_index =
-            resolve_virtual_index_to_display_index(animation.as_ref().unwrap(), last_vi);
+            resolve_virtual_index_to_display_index(&animation.as_ref().unwrap(), last_vi);
         player.complete = true;
         emit_signal((player.on_complete).clone(), ());
         return true;
@@ -267,8 +280,8 @@ pub fn update_spritesheet_player(player: &mut SpritesheetPlayer, delta_time: f64
         emit_signal((player.on_loop).clone(), ());
     }
     let time_in_loop = (player.elapsed % total_time);
-    let vi = resolve_virtual_index_from_time(animation.as_ref().unwrap(), time_in_loop);
-    player.frame_index = resolve_virtual_index_to_display_index(animation.as_ref().unwrap(), vi);
+    let vi = resolve_virtual_index_from_time(&animation.as_ref().unwrap(), time_in_loop);
+    player.frame_index = resolve_virtual_index_to_display_index(&animation.as_ref().unwrap(), vi);
     return true;
 }
 

@@ -315,7 +315,7 @@ fn falloff_factor(falloff: Option<ForceFalloff>, dist: f64, radius: Option<f64>)
                 return if ((radius).is_some())
                     && ((radius).as_ref().is_some_and(|value| *value > 0.0_f64))
                 {
-                    (0.0_f64).max((1.0_f64 - (dist / radius)))
+                    (0.0_f64).max((1.0_f64 - (dist / *(radius.as_ref().unwrap()))))
                 } else {
                     1.0_f64
                 };

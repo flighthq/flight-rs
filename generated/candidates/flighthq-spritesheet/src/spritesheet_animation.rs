@@ -32,15 +32,26 @@ pub fn create_spritesheet_animation(obj: Option<FlightPartialRecord1>) -> Sprite
         __flight_identity: std::sync::Arc::new(()),
         __flight_entity_runtime: Default::default(),
         direction: (obj.as_ref().and_then(|value| (value.direction).clone()))
+            .clone()
             .unwrap_or("forward".to_owned()),
-        frame_duration: (obj.as_ref().and_then(|value| value.frame_duration)).unwrap_or(0.0_f64),
+        frame_duration: (obj.as_ref().and_then(|value| value.frame_duration))
+            .clone()
+            .unwrap_or(0.0_f64),
         frame_durations: obj
             .as_ref()
             .and_then(|value| (value.frame_durations).clone()),
-        frames: (obj.as_ref().and_then(|value| (value.frames).clone())).unwrap_or(vec![]),
-        origin_x: (obj.as_ref().and_then(|value| value.origin_x)).unwrap_or(0.0_f64),
-        origin_y: (obj.as_ref().and_then(|value| value.origin_y)).unwrap_or(0.0_f64),
-        repeat_count: (obj.as_ref().and_then(|value| value.repeat_count)).unwrap_or(0.0_f64),
+        frames: (obj.as_ref().and_then(|value| (value.frames).clone()))
+            .clone()
+            .unwrap_or(vec![]),
+        origin_x: (obj.as_ref().and_then(|value| value.origin_x))
+            .clone()
+            .unwrap_or(0.0_f64),
+        origin_y: (obj.as_ref().and_then(|value| value.origin_y))
+            .clone()
+            .unwrap_or(0.0_f64),
+        repeat_count: (obj.as_ref().and_then(|value| value.repeat_count))
+            .clone()
+            .unwrap_or(0.0_f64),
     }));
 }
 
@@ -85,7 +96,7 @@ pub fn create_spritesheet_animation_from_frame_names(
                         crate::FlightUnion2::A(value) => value,
                         crate::FlightUnion2::B(_) => panic!("TypeScript union narrowing failed"),
                     }))
-                    || (((name).clone()).starts_with(
+                    || ((name.as_ref().unwrap()).starts_with(
                         (match (*pattern).clone() {
                             crate::FlightUnion2::A(value) => value,
                             crate::FlightUnion2::B(_) => {

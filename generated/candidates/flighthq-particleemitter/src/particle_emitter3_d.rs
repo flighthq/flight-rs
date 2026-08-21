@@ -1151,8 +1151,9 @@ pub fn create_particle_emitter3_d(obj: Option<ParticleEmitter3D>) -> ParticleEmi
     node.data = create_particle_emitter_data(Some(
         (obj.as_ref().map(|value| (value.data).clone())).clone(),
     ));
-    node.blend_mode =
-        (obj.as_ref().map(|value| (value.blend_mode).clone())).unwrap_or("normal".to_owned());
+    node.blend_mode = (obj.as_ref().map(|value| (value.blend_mode).clone()))
+        .clone()
+        .unwrap_or("normal".to_owned());
     return node;
 }
 

@@ -160,21 +160,24 @@ pub fn normalize_particle_emitter_config(
         if (!(mutable
             .iter()
             .find(|(entry_key, _)| entry_key == &(field).clone())
-            .map(|(_, value)| value)
-            .expect("TypeScript Record key was absent")
+            .map(|(_, value)| value.clone())
             .clone())
         .is_finite())
         {
-            mutable
-                .iter()
-                .find(|(entry_key, _)| entry_key == &(field).clone())
-                .map(|(_, value)| value)
-                .expect("TypeScript Record key was absent") = defaults_rec
-                .iter()
-                .find(|(entry_key, _)| entry_key == &(field).clone())
-                .map(|(_, value)| value)
-                .expect("TypeScript Record key was absent")
-                .clone();
+            {
+                let __flight_key = (field).clone();
+                let __flight_value = defaults_rec
+                    .iter()
+                    .find(|(entry_key, _)| entry_key == &(field).clone())
+                    .map(|(_, value)| value.clone())
+                    .clone()
+                    .unwrap();
+                if let Some((_, value)) = mutable.iter_mut().find(|(key, _)| key == &__flight_key) {
+                    *value = __flight_value;
+                } else {
+                    mutable.push((__flight_key, __flight_value));
+                }
+            };
         }
     }
     return ParticleEmitterConfig {
@@ -337,7 +340,7 @@ fn report_curve(
         issues.push(ParticleConfigIssue {
             __flight_identity: std::sync::Arc::new(()),
             field: (*field).clone(),
-            message: format!("{} is empty and will be ignored", field),
+            message: format!("{} is empty and will be ignored", (*field).clone()),
             severity: "warning".to_owned(),
         });
         return;
@@ -348,7 +351,7 @@ fn report_curve(
             field: (*field).clone(),
             message: format!(
                 "{} length ({}) is not a multiple of {}",
-                field,
+                (*field).clone(),
                 (curve.as_ref().unwrap().len() as f64),
                 stride
             ),
@@ -362,7 +365,11 @@ fn report_curve(
                 issues.push(ParticleConfigIssue {
                     __flight_identity: std::sync::Arc::new(()),
                     field: (*field).clone(),
-                    message: format!("{} contains a non-finite sample at index {}", field, i),
+                    message: format!(
+                        "{} contains a non-finite sample at index {}",
+                        (*field).clone(),
+                        i
+                    ),
                     severity: "error".to_owned(),
                 });
                 break;
@@ -390,7 +397,10 @@ fn report_inverted_range(
             field: (*min_field).clone(),
             message: format!(
                 "{} ({}) is greater than {} ({})",
-                min_field, min, max_field, max
+                (*min_field).clone(),
+                min,
+                (*max_field).clone(),
+                max
             ),
             severity: "warning".to_owned(),
         });
@@ -408,7 +418,11 @@ fn report_unit_range(
         issues.push(ParticleConfigIssue {
             __flight_identity: std::sync::Arc::new(()),
             field: (*field).clone(),
-            message: format!("{} ({}) is outside the expected 0–1 range", field, value),
+            message: format!(
+                "{} ({}) is outside the expected 0–1 range",
+                (*field).clone(),
+                value
+            ),
             severity: "warning".to_owned(),
         });
     }

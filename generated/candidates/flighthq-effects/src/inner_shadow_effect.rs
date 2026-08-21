@@ -98,11 +98,11 @@ pub fn create_inner_shadow_effect(options: Option<FlightOmitRecord1>) -> InnerSh
 
 // Source: upstream/packages/effects/src/innerShadowEffect.ts:10 (sha256:89b79f4fe4fbd9a05e55c7600e89f05a04724141de9ad77b47ee4f95f3e27eaf)
 pub fn get_inner_shadow_effect_padding(effect: &InnerShadowEffect) -> RenderEffectPadding {
-    let angle = (((effect.angle).unwrap_or(45.0_f64) * std::f64::consts::PI) / 180.0_f64);
-    let distance = (effect.distance).unwrap_or(4.0_f64);
+    let angle = (((effect.angle).clone().unwrap_or(45.0_f64) * std::f64::consts::PI) / 180.0_f64);
+    let distance = (effect.distance).clone().unwrap_or(4.0_f64);
     return get_directional_render_effect_padding(
-        (effect.blur_x).unwrap_or(4.0_f64),
-        (effect.blur_y).unwrap_or(4.0_f64),
+        (effect.blur_x).clone().unwrap_or(4.0_f64),
+        (effect.blur_y).clone().unwrap_or(4.0_f64),
         ((angle).cos() * distance),
         ((angle).sin() * distance),
     );

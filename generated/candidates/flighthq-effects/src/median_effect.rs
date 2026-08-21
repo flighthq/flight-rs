@@ -74,7 +74,7 @@ pub fn create_median_effect(options: Option<FlightOmitRecord1>) -> MedianEffect 
 
 // Source: upstream/packages/effects/src/medianEffect.ts:9 (sha256:2c9ef796c95dd5b0549c74da8da910a37bfdaf5a13fa1ff668d02b6adf62e379)
 pub fn get_median_effect_padding(effect: &MedianEffect) -> RenderEffectPadding {
-    let radius = (0.0_f64).max(((effect.radius).unwrap_or(1.0_f64)).round());
+    let radius = (0.0_f64).max(((effect.radius).clone().unwrap_or(1.0_f64)).round());
     return RenderEffectPadding {
         __flight_identity: std::sync::Arc::new(()),
         bottom: radius,

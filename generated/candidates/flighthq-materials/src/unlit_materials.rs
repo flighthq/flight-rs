@@ -210,8 +210,12 @@ pub fn create_depth_material(opts: Option<FlightPartialRecord1>) -> DepthMateria
         (depth_material_kind_constant).to_owned(),
         Some((((opts).clone()).clone().unwrap()).clone()),
     );
-    material.far = (opts.as_ref().and_then(|value| value.far)).unwrap_or(1.0_f64);
-    material.near = (opts.as_ref().and_then(|value| value.near)).unwrap_or(0.0_f64);
+    material.far = (opts.as_ref().and_then(|value| value.far))
+        .clone()
+        .unwrap_or(1.0_f64);
+    material.near = (opts.as_ref().and_then(|value| value.near))
+        .clone()
+        .unwrap_or(0.0_f64);
     return material;
 }
 
@@ -221,11 +225,13 @@ pub fn create_emissive_material(opts: Option<FlightPartialRecord2>) -> EmissiveM
         (emissive_material_kind_constant).to_owned(),
         Some((((opts).clone()).clone().unwrap()).clone()),
     );
-    material.emissive =
-        (opts.as_ref().and_then(|value| value.emissive)).unwrap_or(4294967295.0_f64);
+    material.emissive = (opts.as_ref().and_then(|value| value.emissive))
+        .clone()
+        .unwrap_or(4294967295.0_f64);
     material.emissive_map = opts.as_ref().and_then(|value| (value.emissive_map).clone());
-    material.emissive_strength =
-        (opts.as_ref().and_then(|value| value.emissive_strength)).unwrap_or(1.0_f64);
+    material.emissive_strength = (opts.as_ref().and_then(|value| value.emissive_strength))
+        .clone()
+        .unwrap_or(1.0_f64);
     return material;
 }
 
@@ -236,7 +242,9 @@ pub fn create_matcap_material(opts: Option<FlightPartialRecord3>) -> MatcapMater
         Some((((opts).clone()).clone().unwrap()).clone()),
     );
     material.matcap = opts.as_ref().and_then(|value| (value.matcap).clone());
-    material.tint = (opts.as_ref().and_then(|value| value.tint)).unwrap_or(4294967295.0_f64);
+    material.tint = (opts.as_ref().and_then(|value| value.tint))
+        .clone()
+        .unwrap_or(4294967295.0_f64);
     return material;
 }
 
@@ -247,7 +255,9 @@ pub fn create_normal_material(opts: Option<FlightPartialRecord4>) -> NormalMater
         Some((((opts).clone()).clone().unwrap()).clone()),
     );
     material.normal_map = opts.as_ref().and_then(|value| (value.normal_map).clone());
-    material.normal_scale = (opts.as_ref().and_then(|value| value.normal_scale)).unwrap_or(1.0_f64);
+    material.normal_scale = (opts.as_ref().and_then(|value| value.normal_scale))
+        .clone()
+        .unwrap_or(1.0_f64);
     return material;
 }
 
@@ -257,13 +267,16 @@ pub fn create_toon_material(opts: Option<FlightPartialRecord5>) -> ToonMaterial 
         (toon_material_kind_constant).to_owned(),
         Some((((opts).clone()).clone().unwrap()).clone()),
     );
-    material.base_color =
-        (opts.as_ref().and_then(|value| value.base_color)).unwrap_or(4294967295.0_f64);
+    material.base_color = (opts.as_ref().and_then(|value| value.base_color))
+        .clone()
+        .unwrap_or(4294967295.0_f64);
     material.base_color_map = opts
         .as_ref()
         .and_then(|value| (value.base_color_map).clone());
     material.ramp = opts.as_ref().and_then(|value| (value.ramp).clone());
-    material.steps = (opts.as_ref().and_then(|value| value.steps)).unwrap_or(3.0_f64);
+    material.steps = (opts.as_ref().and_then(|value| value.steps))
+        .clone()
+        .unwrap_or(3.0_f64);
     return material;
 }
 
@@ -273,8 +286,9 @@ pub fn create_unlit_material(opts: Option<FlightPartialRecord6>) -> UnlitMateria
         (unlit_material_kind_constant).to_owned(),
         Some((((opts).clone()).clone().unwrap()).clone()),
     );
-    material.base_color =
-        (opts.as_ref().and_then(|value| value.base_color)).unwrap_or(4294967295.0_f64);
+    material.base_color = (opts.as_ref().and_then(|value| value.base_color))
+        .clone()
+        .unwrap_or(4294967295.0_f64);
     material.base_color_map = opts
         .as_ref()
         .and_then(|value| (value.base_color_map).clone());
@@ -287,7 +301,9 @@ pub fn create_vertex_color_material(opts: Option<FlightPartialRecord7>) -> Verte
         (vertex_color_material_kind_constant).to_owned(),
         Some((((opts).clone()).clone().unwrap()).clone()),
     );
-    material.tint = (opts.as_ref().and_then(|value| value.tint)).unwrap_or(4294967295.0_f64);
+    material.tint = (opts.as_ref().and_then(|value| value.tint))
+        .clone()
+        .unwrap_or(4294967295.0_f64);
     return material;
 }
 
@@ -297,7 +313,11 @@ pub fn create_wireframe_material(opts: Option<FlightPartialRecord8>) -> Wirefram
         (wireframe_material_kind_constant).to_owned(),
         Some((((opts).clone()).clone().unwrap()).clone()),
     );
-    material.color = (opts.as_ref().and_then(|value| value.color)).unwrap_or(4294967295.0_f64);
-    material.thickness = (opts.as_ref().and_then(|value| value.thickness)).unwrap_or(1.0_f64);
+    material.color = (opts.as_ref().and_then(|value| value.color))
+        .clone()
+        .unwrap_or(4294967295.0_f64);
+    material.thickness = (opts.as_ref().and_then(|value| value.thickness))
+        .clone()
+        .unwrap_or(1.0_f64);
     return material;
 }

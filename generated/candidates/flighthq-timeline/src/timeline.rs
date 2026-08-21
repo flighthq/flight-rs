@@ -56,11 +56,28 @@ pub fn add_timeline_frame_script(
     script: FrameScript,
 ) -> () {
     let resolved = resolve_frame(timeline, &((*frame).clone()));
-    ({
-        timeline.frame_scripts?? = Some(Vec::new());
-        timeline.frame_scripts
-    }
-    .set)(resolved, (script).clone());
+    {
+        if timeline.frame_scripts.is_none() {
+            timeline.frame_scripts = Some(Vec::new());
+        };
+        let __flight_key = resolved;
+        let __flight_value = (script).clone();
+        if let Some((_, value)) = timeline
+            .frame_scripts
+            .as_mut()
+            .unwrap()
+            .iter_mut()
+            .find(|(key, _)| key == &__flight_key)
+        {
+            *value = __flight_value;
+        } else {
+            timeline
+                .frame_scripts
+                .as_mut()
+                .unwrap()
+                .push((__flight_key, __flight_value));
+        }
+    };
 }
 
 // Source: upstream/packages/timeline/src/timeline.ts:18 (sha256:ec35162fe0c7d0c928e511925f31e98f00940a707dbb410518d9d2a007d9936b)
@@ -75,11 +92,16 @@ pub fn create_timeline(obj: Option<FlightPartialRecord2>) -> Timeline {
         source: obj.as_ref().and_then(|value| (value.source).clone()),
         target: obj.as_ref().and_then(|value| (value.target).clone()),
         cue_registry: obj.as_ref().and_then(|value| (value.cue_registry).clone()),
-        current_frame: (obj.as_ref().and_then(|value| value.current_frame)).unwrap_or(1.0_f64),
+        current_frame: (obj.as_ref().and_then(|value| value.current_frame))
+            .clone()
+            .unwrap_or(1.0_f64),
         frame_scripts: obj.as_ref().and_then(|value| (value.frame_scripts).clone()),
-        is_playing: (obj.as_ref().and_then(|value| value.is_playing)).unwrap_or(false),
+        is_playing: (obj.as_ref().and_then(|value| value.is_playing))
+            .clone()
+            .unwrap_or(false),
         last_frame_update: (-1.0_f64),
         play_mode: (obj.as_ref().and_then(|value| (value.play_mode).clone()))
+            .clone()
             .unwrap_or("loop".to_owned()),
         signals: obj.as_ref().and_then(|value| (value.signals).clone()),
         time_elapsed: 0.0_f64,
@@ -90,18 +112,22 @@ pub fn create_timeline(obj: Option<FlightPartialRecord2>) -> Timeline {
 pub fn create_timeline_source(obj: &SharedStructuralRecord1) -> TimelineSource {
     return TimelineSource {
         __flight_identity: std::sync::Arc::new(()),
-        total_frames: (obj.total_frames).unwrap_or(1.0_f64),
+        total_frames: (obj.total_frames).clone().unwrap_or(1.0_f64),
         frame_rate: obj.frame_rate,
-        labels: ((obj.labels).clone()).unwrap_or(((*EMPTY_LABELS).clone()).clone()),
-        cues: ((obj.cues).clone()).unwrap_or(((*EMPTY_CUES).clone()).clone()),
-        construct_frame: ((obj.construct_frame).clone()).unwrap_or(std::sync::Arc::new(
-            std::sync::Mutex::new(Box::new(
+        labels: ((obj.labels).clone())
+            .clone()
+            .unwrap_or(((*EMPTY_LABELS).clone()).clone()),
+        cues: ((obj.cues).clone())
+            .clone()
+            .unwrap_or(((*EMPTY_CUES).clone()).clone()),
+        construct_frame: ((obj.construct_frame).clone())
+            .clone()
+            .unwrap_or(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
                 move |__flight_argument_0: Node2D, __flight_argument_1: f64| -> () {
                     noop_construct_frame()
                 },
             )
-                as Box<dyn FnMut(Node2D, f64) -> () + Send + 'static>),
-        )),
+                as Box<dyn FnMut(Node2D, f64) -> () + Send + 'static>))),
     };
 }
 
@@ -113,8 +139,10 @@ pub fn dispose_timeline_signals(timeline: &mut Timeline) -> () {
 // Source: upstream/packages/timeline/src/timeline.ts:63 (sha256:fc4aa3821caba8c92477e8259ceb84765bc939b6b89a22273583b672c2b55078)
 pub fn enable_timeline_signals(timeline: &mut Timeline) -> TimelineSignals {
     return {
-        timeline.signals?? = Some(create_timeline_signals());
-        timeline.signals
+        if timeline.signals.is_none() {
+            timeline.signals = Some(create_timeline_signals());
+        }
+        timeline.signals.as_ref().unwrap().clone()
     };
 }
 
@@ -152,7 +180,7 @@ pub fn get_timeline_frame_script(
     let resolved = resolve_frame(timeline, &((*frame).clone()));
     return timeline
         .frame_scripts
-        .as_mut()
+        .as_ref()
         .unwrap()
         .iter()
         .find(|(entry_key, _)| entry_key == &resolved)
@@ -169,7 +197,7 @@ pub fn get_timeline_frame_script_frames(timeline: &Timeline) -> Vec<f64> {
             __flight_array.extend(
                 (timeline
                     .frame_scripts
-                    .as_mut()
+                    .as_ref()
                     .unwrap()
                     .iter()
                     .map(|(key, _)| key.clone())
@@ -185,6 +213,7 @@ pub fn get_timeline_frame_script_frames(timeline: &Timeline) -> Vec<f64> {
 // Source: upstream/packages/timeline/src/timeline.ts:97 (sha256:9a87f65767c4426fa3d9779cf0d93d429af6f7a63ba6c430a4ecc7af7ed418e8)
 pub fn get_timeline_labels(timeline: &Timeline) -> Vec<TimelineLabel> {
     return (timeline.source.as_ref().map(|value| (value.labels).clone()))
+        .clone()
         .unwrap_or(((*EMPTY_LABELS).clone()).clone());
 }
 
@@ -395,27 +424,28 @@ fn fire_construct_frame(timeline: &mut Timeline) -> bool {
         {
             let __flight_callback = timeline
                 .source
-                .as_mut()
-                .unwrap()
-                .construct_frame
                 .as_ref()
-                .unwrap()
-                .clone();
-            let __flight_result =
-                __flight_callback.lock().unwrap()((target.as_ref().unwrap()).clone(), current);
-            __flight_result
+                .map(|value| (value.construct_frame).clone());
+            __flight_callback.as_ref().map(|callback| {
+                callback.lock().unwrap()((target.as_ref().unwrap()).clone(), current)
+            })
         };
     }
     if ((timeline.frame_scripts).clone()).is_some() {
         let script = timeline
             .frame_scripts
-            .as_mut()
+            .as_ref()
             .unwrap()
             .iter()
             .find(|(entry_key, _)| entry_key == &current)
             .map(|(_, value)| value.clone());
         if ((script).is_some()) && ((target).is_some()) {
-            script.as_ref().unwrap().lock().unwrap()((target).clone().unwrap(), current);
+            {
+                let __flight_callback = (script.as_ref().unwrap()).clone();
+                let __flight_result =
+                    __flight_callback.lock().unwrap()((target.as_ref().unwrap()).clone(), current);
+                __flight_result
+            };
         }
     }
     if (signals).is_some() {
@@ -434,7 +464,9 @@ fn get_timeline_frame_rate(timeline: &Timeline) -> Option<f64> {
 
 // Source: upstream/packages/timeline/src/timeline.ts:243 (sha256:e4631bf013708a5e453791d175515f924f6f78e123a6ef765e71174fa06874c9)
 fn get_timeline_total_frames(timeline: &Timeline) -> f64 {
-    return (timeline.source.as_ref().map(|value| value.total_frames)).unwrap_or(1.0_f64);
+    return (timeline.source.as_ref().map(|value| value.total_frames))
+        .clone()
+        .unwrap_or(1.0_f64);
 }
 
 // Source: upstream/packages/timeline/src/timeline.ts:247 (sha256:0e0439f4984d5a48d92ecb29abcf9bab94ff0e2c10d5f9345b9d759dffb115bb)
@@ -449,7 +481,13 @@ fn resolve_frame(timeline: &Timeline, frame: &crate::FlightUnion2<f64, String>) 
             crate::FlightUnion2::B(_) => panic!("TypeScript union narrowing failed"),
         };
     }
-    let label = find_timeline_label(timeline, (frame).clone());
+    let label = find_timeline_label(
+        timeline,
+        match (*frame).clone() {
+            crate::FlightUnion2::A(_) => panic!("TypeScript union narrowing failed"),
+            crate::FlightUnion2::B(value) => value,
+        },
+    );
     if (label).is_none() {
         panic!(
             "{}",

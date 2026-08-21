@@ -162,7 +162,7 @@ pub fn get_light_luminance(light: &Light) -> f64 {
     if (color).is_none() {
         return 0.0_f64;
     }
-    let intensity = (colored.intensity).unwrap_or(1.0_f64);
+    let intensity = (colored.intensity).clone().unwrap_or(1.0_f64);
     return (get_color_luminance(*(color.as_ref().unwrap())) * intensity);
 }
 
