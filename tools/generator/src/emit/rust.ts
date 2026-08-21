@@ -1044,15 +1044,19 @@ function emitParameter(
   const emitted = emitType(type, context);
   const optional = parameter.optional || parameter.initializer;
   const resolved = resolveSemanticType(type, context);
+  const resolvedReference =
+    resolved?.kind === 'nullable' ? (resolveSemanticType(resolved.inner, context) ?? resolved.inner) : resolved;
   const sharedHandle = isSharedHandleType(type, context);
   const referenceLike =
-    resolved?.kind === 'anonymous' ||
-    resolved?.kind === 'array' ||
-    resolved?.kind === 'function' ||
-    resolved?.kind === 'union' ||
-    (resolved?.kind === 'named' &&
-      (resolved.name === 'RustMap' || resolved.name === 'RustSet' || resolved.name === 'FlightRegex')) ||
-    (resolved?.kind === 'named' && Boolean(typedArrayType(resolved.name)));
+    resolvedReference?.kind === 'anonymous' ||
+    resolvedReference?.kind === 'array' ||
+    resolvedReference?.kind === 'function' ||
+    resolvedReference?.kind === 'union' ||
+    (resolvedReference?.kind === 'named' &&
+      (resolvedReference.name === 'RustMap' ||
+        resolvedReference.name === 'RustSet' ||
+        resolvedReference.name === 'FlightRegex')) ||
+    (resolvedReference?.kind === 'named' && Boolean(typedArrayType(resolvedReference.name)));
   const captured = capturesParameterInReturnedClosure(owner, parameter.name);
   const stored = resolved?.kind === 'function' && storesParameter(owner, parameter.name);
   if (resolved?.kind === 'function' && !optional && !parameter.rest && borrowRecords && !captured && !stored) {

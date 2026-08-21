@@ -33,6 +33,10 @@ describe('Rust emission', () => {
           }
           return text;
         }
+        export function appendOptional(values: string[] | undefined): void {
+          if (values === undefined) return;
+          values.push('next');
+        }
         export interface Schedule { at?: Date; code: WireCode; }
         export type VendorKind = \`\${string}.\${string}\`;
         export function sameNumber(left: number, right: number): boolean { return Object.is(left, right); }
@@ -62,6 +66,7 @@ describe('Rust emission', () => {
     expect(output).toContain('.iter().map(|(entry_key, _)| entry_key.clone()).collect::<Vec<_>>()');
     expect(output).toContain('.find(|(entry_key, _)| entry_key == &(key).clone())');
     expect(output).toContain('text.push_str(&');
+    expect(output).toContain('pub fn append_optional(values: &mut Option<Vec<String>>)');
     expect(output).toContain('pub at: Option<crate::OpaqueHostValue>,');
     expect(output).toContain('pub code: f64,');
     expect(output).toContain('pub type VendorKind = String;');
