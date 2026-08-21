@@ -64,6 +64,7 @@ interface EmitContext {
   erasedValueNames: ReadonlySet<string>;
   enumNames: ReadonlySet<string>;
   errorValueNames: ReadonlySet<string>;
+  excludedUnionVariants: ReadonlyMap<string, ReadonlySet<number>>;
   forwardClosureCaptureNames: ReadonlySet<string>;
   functions: ReadonlyMap<string, IrFunctionDeclaration>;
   inheritedAnonymousTypeKeys: ReadonlySet<string>;
@@ -192,6 +193,7 @@ export function emitRustModule(module: RustModule): string {
       ),
     ]),
     errorValueNames: new Set(),
+    excludedUnionVariants: new Map(),
     forwardClosureCaptureNames: new Set(),
     functions: new Map(
       [
@@ -4386,6 +4388,8 @@ function emitProperty(
   const objectType = inferIrExpressionType(expression.object, context);
   const resolvedObject = resolveSemanticType(objectType, context) ?? objectType;
   const resolvedReceiver = resolvedObject?.kind === 'nullable' ? resolvedObject.inner : resolvedObject;
+  const unionProperty = emitUnionPropertyRead(expression, context);
+  if (unionProperty !== undefined) return unionProperty;
   if (resolvedReceiver?.kind === 'dynamic' || isNativeHostHandleType(resolvedReceiver)) {
     const result = expectedType ?? inferDynamicHostPropertyType(expression.name) ?? { kind: 'dynamic' };
     return emitHostValueExpression(result, emitRustStringLiteral(`host.${expression.name}`), context);
@@ -4465,6 +4469,46 @@ function emitProperty(
   }
   const place = emitPropertyPlace(expression, context);
   return type && !isCopyType(type, context) ? `${parenthesize(place)}.clone()` : place;
+}
+
+function emitUnionPropertyRead(
+  expression: Extract<IrExpression, { kind: 'property' }>,
+  context: EmitContext,
+): string | undefined {
+  if (expression.object.kind !== 'identifier' || context.unionNarrowings.has(expression.object.name)) {
+    return undefined;
+  }
+  const name = expression.object.name;
+  const sourceType = context.symbolTypes.get(name);
+  const union = resolveSemanticType(sourceType, context);
+  if (union?.kind !== 'union') return undefined;
+  const excluded = context.excludedUnionVariants.get(name) ?? new Set<number>();
+  const active = union.variants.flatMap((variant, index) => (excluded.has(index) ? [] : [{ index, variant }]));
+  const fields = active.map(({ variant }) => {
+    const concrete = resolveSemanticType(variant, context);
+    return concrete?.kind === 'anonymous'
+      ? flattenStructFields(concrete, context).find((field) => field.name === expression.name)
+      : undefined;
+  });
+  const first = fields[0];
+  if (!first || fields.some((field) => !field || !semanticTypesEqual(field.type, first.type, context))) {
+    return undefined;
+  }
+  const allowed = new Set(active.map(({ index }) => index));
+  const read = (value: string, variants: readonly IrType[], offset: number): string => {
+    if (variants.length === 1) {
+      return allowed.has(offset)
+        ? `${parenthesize(value)}.${safeName(expression.name)}.clone()`
+        : 'unreachable!("excluded TypeScript union variant was observed")';
+    }
+    return `match ${value} { crate::FlightUnion2::A(value) => ${
+      allowed.has(offset)
+        ? `${parenthesize('value')}.${safeName(expression.name)}.clone()`
+        : 'unreachable!("excluded TypeScript union variant was observed")'
+    }, crate::FlightUnion2::B(value) => ${read('value', variants.slice(1), offset + 1)} }`;
+  };
+  const value = emitPlaceExpression(expression.object, context);
+  return read(`&${parenthesize(value)}`, union.variants, 0);
 }
 
 function emitNarrowedErrorProperty(
@@ -6065,7 +6109,7 @@ function unionVariantPattern(variants: readonly IrType[], variantIndex: number, 
 }
 
 function emitNamedUnionConstructor(type: Extract<IrType, { kind: 'named' }>, context: EmitContext): string {
-  const emitted = emitType(type, context);
+  const emitted = emitStructConstructorType(type, context);
   return context.localTypeNames.has(type.name) || context.importedTypeNames.has(type.name)
     ? emitted
     : `flighthq_types::${emitted}`;
@@ -7450,6 +7494,7 @@ function functionContext(context: EmitContext, ownerName: string, owner: unknown
     continueEpilogue: [],
     currentReturnType: returns,
     errorValueNames: new Set(context.errorValueNames),
+    excludedUnionVariants: new Map(),
     forwardClosureCaptureNames,
     inheritedAnonymousTypeKeys: new Set(context.anonymousTypes.keys()),
     knownNullNames: new Set(),
@@ -9931,6 +9976,9 @@ function narrowTypeofContexts(
   const clone = (): EmitContext => ({
     ...context,
     errorValueNames: new Set(context.errorValueNames),
+    excludedUnionVariants: new Map(
+      [...context.excludedUnionVariants].map(([name, indices]) => [name, new Set(indices)]),
+    ),
     knownNullNames: new Set(context.knownNullNames),
     nonNullableNames: new Set(context.nonNullableNames),
     symbolTypes: new Map(context.symbolTypes),
@@ -10000,23 +10048,31 @@ function narrowTypeofContexts(
   }
   const discriminant = discriminatedUnionComparison(condition, context);
   if (discriminant) {
-    const remainingIndex = discriminant.matchingIndex === 0 ? 1 : 0;
-    const whenTrueIndex = discriminant.positive ? discriminant.matchingIndex : remainingIndex;
-    const whenFalseIndex = discriminant.positive ? remainingIndex : discriminant.matchingIndex;
     const whenTrue = clone();
     const whenFalse = clone();
-    whenTrue.symbolTypes.set(discriminant.name, discriminant.variants[whenTrueIndex]!);
-    whenFalse.symbolTypes.set(discriminant.name, discriminant.variants[whenFalseIndex]!);
-    whenTrue.unionNarrowings.set(discriminant.name, {
-      index: whenTrueIndex,
-      unionName: discriminant.unionName,
-      variants: discriminant.variants,
-    });
-    whenFalse.unionNarrowings.set(discriminant.name, {
-      index: whenFalseIndex,
-      unionName: discriminant.unionName,
-      variants: discriminant.variants,
-    });
+    const excluded = context.excludedUnionVariants.get(discriminant.name) ?? new Set<number>();
+    const possible = discriminant.variants.flatMap((_, index) => (excluded.has(index) ? [] : [index]));
+    const matching = possible.filter((index) => index === discriminant.matchingIndex);
+    const remaining = possible.filter((index) => index !== discriminant.matchingIndex);
+    const narrow = (target: EmitContext, indices: readonly number[]): void => {
+      const nextExcluded = new Set(discriminant.variants.map((_, index) => index));
+      for (const index of indices) nextExcluded.delete(index);
+      (target.excludedUnionVariants as Map<string, ReadonlySet<number>>).set(discriminant.name, nextExcluded);
+      if (indices.length === 1) {
+        const index = indices[0]!;
+        target.symbolTypes.set(discriminant.name, discriminant.variants[index]!);
+        target.unionNarrowings.set(discriminant.name, {
+          index,
+          unionName: discriminant.unionName,
+          variants: discriminant.variants,
+        });
+      } else {
+        target.symbolTypes.set(discriminant.name, discriminant.sourceType);
+        target.unionNarrowings.delete(discriminant.name);
+      }
+    };
+    narrow(whenTrue, discriminant.positive ? matching : remaining);
+    narrow(whenFalse, discriminant.positive ? remaining : matching);
     return { whenFalse, whenTrue };
   }
   const typeofExpression =
@@ -10071,6 +10127,7 @@ function discriminatedUnionComparison(
       matchingIndex: number;
       name: string;
       positive: boolean;
+      sourceType: IrType;
       unionName?: string | undefined;
       variants: readonly IrType[];
     }
@@ -10102,7 +10159,7 @@ function discriminatedUnionComparison(
   const name = property.name;
   const sourceType = context.symbolTypes.get(name);
   const resolved = resolveSemanticType(sourceType, context);
-  if (resolved?.kind !== 'union' || resolved.variants.length !== 2) return undefined;
+  if (!sourceType || resolved?.kind !== 'union') return undefined;
   const matching = resolved.variants.flatMap((variant, index) => {
     const concrete = resolveSemanticType(variant, context);
     if (concrete?.kind !== 'anonymous') return [];
@@ -10114,6 +10171,7 @@ function discriminatedUnionComparison(
     matchingIndex: matching[0]!,
     name,
     positive: expression.operator === '===' || expression.operator === '==',
+    sourceType,
     unionName: sourceType?.kind === 'named' ? emitNamedUnionConstructor(sourceType, context) : undefined,
     variants: resolved.variants,
   };
@@ -10135,6 +10193,18 @@ function inferPropertyType(object: IrType, name: string, context: EmitContext): 
   }
   if (resolved.kind === 'named' && resolved.name === 'RustMap') {
     return resolved.arguments[1] ?? { kind: 'dynamic' };
+  }
+  if (resolved.kind === 'union') {
+    const fields = resolved.variants.map((variant) => {
+      const concrete = resolveSemanticType(variant, context);
+      return concrete?.kind === 'anonymous'
+        ? flattenStructFields(concrete, context).find((field) => field.name === name)
+        : undefined;
+    });
+    const first = fields[0];
+    if (first && fields.every((field) => field && semanticTypesEqual(field.type, first.type, context))) {
+      return first.optional && first.type.kind !== 'nullable' ? { inner: first.type, kind: 'nullable' } : first.type;
+    }
   }
   if (resolved.kind !== 'anonymous') return undefined;
   const field = semanticStructFields(object, context).find((item) => item.name === name);

@@ -847,6 +847,71 @@ describe('Rust emission', () => {
     expect(output).toContain('TypeScript union narrowing failed');
   });
 
+  it('projects shared fields and chains narrowing across three union variants', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/registry/src/table-union.ts',
+      `
+        export interface Keyed<T> { shape: 'keyed'; registry: string; keyed: number; value: T; }
+        export interface Ordinal<T> { shape: 'ordinal'; registry: string; ordinal: number; value: T; }
+        export interface Slot<T> { shape: 'slot'; registry: string; slot: number; value: T; }
+        export type Table<T> = Keyed<T> | Ordinal<T> | Slot<T>;
+        export function readTable<T>(table: Table<T>): number {
+          if (table.shape === 'keyed') return table.keyed;
+          if (table.shape === 'slot') return table.slot;
+          return table.ordinal;
+        }
+        export function tableRegistry<T>(table: Table<T>): string { return table.registry; }
+        export function makeKeyed<T>(value: T): Table<T> {
+          return { shape: 'keyed', registry: 'main', keyed: 1, value };
+        }
+        export function makeOrdinal<T>(value: T): Table<T> {
+          return { shape: 'ordinal', registry: 'main', ordinal: 2, value };
+        }
+        export function makeSlot<T>(value: T): Table<T> {
+          return { shape: 'slot', registry: 'main', slot: 3, value };
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/registry', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/registry/src/table-union.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('Table::<T>::A(_)');
+    expect(output).toContain('crate::FlightUnion2::B(crate::FlightUnion2::B(_))');
+    expect(output).toContain('.registry.clone()');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-three-way-union-'));
+    writeFileSync(path.join(fixture, 'generated.rs'), output);
+    writeFileSync(
+      path.join(fixture, 'main.rs'),
+      [
+        '#[derive(Clone, PartialEq)]',
+        'pub enum FlightUnion2<A, B> { A(A), B(B) }',
+        'mod generated;',
+        'fn main() {',
+        '  let keyed = generated::make_keyed("value".to_owned());',
+        '  let ordinal = generated::make_ordinal("value".to_owned());',
+        '  let slot = generated::make_slot("value".to_owned());',
+        '  assert_eq!(generated::read_table(&keyed), 1.0);',
+        '  assert_eq!(generated::read_table(&ordinal), 2.0);',
+        '  assert_eq!(generated::read_table(&slot), 3.0);',
+        '  assert_eq!(generated::table_registry(&keyed), "main");',
+        '}',
+        '',
+      ].join('\n'),
+    );
+    const binary = path.join(fixture, 'three-way-union');
+    expect(() => compileRustExecutable('main.rs', binary, fixture)).not.toThrow();
+    expect(() => execFileSync(binary, [], { cwd: fixture, stdio: 'pipe' })).not.toThrow();
+  });
+
   it('resolves TypeScript value imports to emitted Rust function bindings', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/math/src/imports.ts',
