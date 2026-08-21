@@ -1763,6 +1763,27 @@ function emitExpression(expression: IrExpression, context: EmitContext, expected
       }
     }
   }
+  if (resolvedExpectedType?.kind === 'dynamic') {
+    const actualType = inferIrExpressionType(expression, context);
+    const resolvedActual = resolveSemanticType(actualType, context) ?? actualType;
+    const storesEntityRuntime =
+      expression.kind === 'object' &&
+      expression.properties.some(
+        (property) =>
+          property.kind === 'computedProperty' &&
+          property.key.kind === 'identifier' &&
+          property.key.name === 'EntityRuntimeKey',
+      );
+    if (
+      (expression.kind === 'object' && !storesEntityRuntime) ||
+      expression.kind === 'array' ||
+      expression.kind === 'function' ||
+      isNullishExpression(expression) ||
+      (actualType && resolvedActual?.kind !== 'dynamic' && isPortableValueInlineConversionBounded(actualType, context))
+    ) {
+      return emitPortableValueExpression(expression, context, actualType);
+    }
+  }
   switch (expression.kind) {
     case 'array': {
       const resolved = resolveSemanticType(expectedType, context);
@@ -2199,6 +2220,9 @@ function emitCall(
   ) {
     const value = expression.arguments[0];
     if (!value) throw new RustEmissionError('JSON.stringify requires a value');
+    if (expression.arguments.length > 1) {
+      throw new RustEmissionError('JSON.stringify replacer and spacing arguments are not implemented');
+    }
     return emitJsonStringify(value, context);
   }
   const runtimeGlobal = runtimeGlobalType(expression);
@@ -3306,45 +3330,282 @@ function inferFunctionExpressionReturnType(
 }
 
 function emitJsonStringify(expression: IrExpression, context: EmitContext): string {
-  const type = resolveSemanticType(inferIrExpressionType(expression, context), context);
-  const value = emitPlaceExpression(expression, context);
-  if (type?.kind === 'primitive') {
-    return type.name === 'String'
-      ? `format!("{:?}", ${value})`
-      : type.name === 'Void'
-        ? '"null".to_owned()'
-        : `${parenthesize(value)}.to_string()`;
+  const type = inferIrExpressionType(expression, context);
+  if (!type) throw new RustEmissionError('JSON.stringify requires a statically recoverable value');
+  const value = emitPortableValueExpression(expression, context, type);
+  return `crate::flight_json_stringify(&${parenthesize(value)}).expect("JSON.stringify encountered an opaque host object").expect("JSON.stringify returned undefined where Rust requires String")`;
+}
+
+function emitPortableValueExpression(expression: IrExpression, context: EmitContext, type?: IrType): string {
+  if (expression.kind === 'literal' && expression.value === null) return 'crate::FlightValue::Null';
+  if (expression.kind === 'identifier' && expression.name.toLowerCase() === 'undefined') {
+    return 'crate::FlightValue::Undefined';
   }
-  if (type?.kind !== 'array') {
-    throw new RustEmissionError('JSON.stringify requires a portable scalar or structural array');
+  if (expression.kind === 'object') return emitPortableObjectLiteral(expression, context);
+  if (expression.kind === 'array') return emitPortableArrayLiteral(expression, context, type);
+  if (expression.kind === 'function') return 'crate::FlightValue::Function';
+  if (isSymbolConstruction(expression)) return 'crate::FlightValue::Symbol';
+
+  let actualType = type ?? inferIrExpressionType(expression, context);
+  if (!actualType) {
+    throw new RustEmissionError('portable value conversion requires a statically recoverable source type');
   }
-  const element = resolveSemanticType(type.element, context);
-  if (element?.kind === 'primitive') {
-    return `{ let __flight_items = ${parenthesize(value)}.iter().map(|value| ${
-      element.name === 'String' ? 'format!("{:?}", value)' : 'value.to_string()'
-    }).collect::<Vec<_>>(); format!("[{}]", __flight_items.join(",")) }`;
+  let resolved = resolveSemanticType(actualType, context) ?? actualType;
+  if (resolved.kind === 'dynamic') {
+    const inferred = inferIrExpressionType(expression, context);
+    const inferredResolved = resolveSemanticType(inferred, context) ?? inferred;
+    if (inferred && inferredResolved && inferredResolved.kind !== 'dynamic') {
+      actualType = inferred;
+      resolved = inferredResolved;
+    }
   }
-  if (element?.kind !== 'anonymous') {
-    throw new RustEmissionError('JSON.stringify structural arrays require inferred record elements');
-  }
-  const fields = flattenStructFields(element, context).flatMap((field) => {
-    const fieldType = resolveSemanticType(field.type, context) ?? field.type;
-    const inner = fieldType.kind === 'nullable' ? resolveSemanticType(fieldType.inner, context) : fieldType;
-    if (inner?.kind !== 'primitive' || inner.name === 'Void') return [];
-    const key = emitRustStringLiteral(`${JSON.stringify(field.name)}:`);
-    const place = `value.${safeName(field.name)}`;
-    const formatted = inner.name === 'String' ? `format!("{}{:?}", ${key}, field)` : `format!("{}{}", ${key}, field)`;
-    return [
-      fieldType.kind === 'nullable' || field.optional
-        ? `${place}.as_ref().map_or_else(|| format!("{}null", ${key}), |field| ${formatted})`
-        : inner.name === 'String'
-          ? `format!("{}{:?}", ${key}, ${place})`
-          : `format!("{}{}", ${key}, ${place})`,
-    ];
+  if (resolved.kind === 'dynamic') return emitExpression(expression, context, actualType);
+  const source = emitExpression(expression, context, actualType);
+  return `{ let __flight_portable_source = ${source}; ${emitPortableValueFromReference(
+    '&__flight_portable_source',
+    actualType,
+    context,
+  )} }`;
+}
+
+function isPortableValueInlineConversionBounded(type: IrType, context: EmitContext): boolean {
+  const budget = { remaining: 64 };
+  const visit = (candidate: IrType, ancestors: ReadonlySet<string>): boolean => {
+    budget.remaining -= 1;
+    if (budget.remaining < 0) return false;
+    if (candidate.kind === 'named' && context.enumNames.has(candidate.name)) return true;
+    const candidateKey = typeKey(candidate);
+    if (ancestors.has(candidateKey)) return false;
+    const resolved = resolveSemanticType(candidate, context) ?? candidate;
+    const resolvedKey = typeKey(resolved);
+    if (ancestors.has(resolvedKey)) return false;
+    const next = new Set([...ancestors, candidateKey, resolvedKey]);
+    switch (resolved.kind) {
+      case 'anonymous':
+        return flattenStructFields(resolved, context).every(
+          (field) => !(field.optional && field.type.kind === 'nullable') && visit(field.type, next),
+        );
+      case 'array':
+        return visit(resolved.element, next);
+      case 'nullable':
+        return visit(resolved.inner, next);
+      case 'union':
+        return resolved.variants.every((variant) => visit(variant, next));
+      case 'task':
+        return false;
+      case 'named':
+        if (resolved.name === 'RustMap') {
+          return visit(resolved.arguments[1] ?? { kind: 'dynamic' }, next);
+        }
+        return true;
+      case 'dynamic':
+      case 'function':
+      case 'primitive':
+        return true;
+    }
+  };
+  return visit(type, new Set());
+}
+
+function emitPortableArrayLiteral(
+  expression: Extract<IrExpression, { kind: 'array' }>,
+  context: EmitContext,
+  type?: IrType,
+): string {
+  const resolved = resolveSemanticType(type, context) ?? type;
+  const elementType = resolved?.kind === 'array' ? resolved.element : undefined;
+  const operations = expression.elements.map((item, index) => {
+    if (item.kind !== 'spread') {
+      const itemType = elementType ?? inferIrExpressionType(item, context);
+      return `__flight_array.push(${emitPortableValueExpression(item, context, itemType)});`;
+    }
+    const spreadType = inferIrExpressionType(item.expression, context);
+    const spreadResolved = resolveSemanticType(spreadType, context) ?? spreadType;
+    if (
+      !spreadType ||
+      !(
+        spreadResolved?.kind === 'array' ||
+        spreadResolved?.kind === 'dynamic' ||
+        (spreadResolved?.kind === 'named' && Boolean(typedArrayType(spreadResolved.name)))
+      )
+    ) {
+      throw new RustEmissionError(`portable array spread ${String(index)} requires an array source`);
+    }
+    const spread = `__flight_spread_${String(index)}`;
+    return `let ${spread} = ${emitPortableValueExpression(item.expression, context, spreadType)}; match ${spread} { crate::FlightValue::Array(values) => __flight_array.extend(values), _ => panic!("portable array spread requires an array value") }`;
   });
-  return `{ let __flight_items = ${parenthesize(value)}.iter().map(|value| { let __flight_fields = vec![${fields.join(
-    ', ',
-  )}]; format!("{{{}}}", __flight_fields.join(",")) }).collect::<Vec<_>>(); format!("[{}]", __flight_items.join(",")) }`;
+  return `crate::FlightValue::Array({ let mut __flight_array = Vec::new(); ${operations.join(' ')} __flight_array })`;
+}
+
+function emitPortableObjectLiteral(
+  expression: Extract<IrExpression, { kind: 'object' }>,
+  context: EmitContext,
+): string {
+  const propertyContexts = contextsPreservingNamesUsedLater(expression.properties, context);
+  const operations = expression.properties.map((property, index) => {
+    const propertyContext = propertyContexts[index] ?? context;
+    if (property.kind === 'spread') {
+      const spreadType = inferIrExpressionType(property.expression, propertyContext);
+      const spreadResolved = resolveSemanticType(spreadType, propertyContext) ?? spreadType;
+      if (
+        !spreadType ||
+        !(
+          spreadResolved?.kind === 'anonymous' ||
+          spreadResolved?.kind === 'array' ||
+          spreadResolved?.kind === 'dynamic' ||
+          (spreadResolved?.kind === 'named' &&
+            (spreadResolved.name === 'RustMap' || Boolean(typedArrayType(spreadResolved.name))))
+        )
+      ) {
+        throw new RustEmissionError(`portable object spread ${String(index)} requires a structural source`);
+      }
+      const spread = `__flight_spread_${String(index)}`;
+      return `let ${spread} = ${emitPortableValueExpression(property.expression, propertyContext, spreadType)}; match ${spread} { crate::FlightValue::Record(entries) => { for (__flight_key, __flight_value) in entries { ${emitPortableRecordUpdate(
+        '__flight_key',
+        '__flight_value',
+      )} } }, crate::FlightValue::Array(values) => { for (__flight_index, __flight_value) in values.into_iter().enumerate() { let __flight_key = __flight_index.to_string(); ${emitPortableRecordUpdate(
+        '__flight_key',
+        '__flight_value',
+      )} } }, crate::FlightValue::Undefined | crate::FlightValue::Null | crate::FlightValue::Bool(_) | crate::FlightValue::Number(_) | crate::FlightValue::Function | crate::FlightValue::Symbol => {}, crate::FlightValue::String(_) => panic!("portable object spread of strings requires UTF-16 property lowering"), crate::FlightValue::Object => panic!("portable object spread cannot inspect an opaque host object") }`;
+    }
+    const key =
+      property.kind === 'property'
+        ? `${emitRustStringLiteral(property.name)}.to_owned()`
+        : emitPortablePropertyKey(property.key, propertyContext);
+    const valueType = inferIrExpressionType(property.value, propertyContext);
+    const keyName = `__flight_key_${String(index)}`;
+    const valueName = `__flight_value_${String(index)}`;
+    return `let ${keyName} = ${key}; let ${valueName} = ${emitPortableValueExpression(
+      property.value,
+      propertyContext,
+      valueType,
+    )}; ${emitPortableRecordUpdate(keyName, valueName)}`;
+  });
+  return `crate::FlightValue::Record({ let mut __flight_record = Vec::new(); ${operations.join(
+    ' ',
+  )} __flight_record })`;
+}
+
+function emitPortablePropertyKey(expression: IrExpression, context: EmitContext): string {
+  const keyType = resolveSemanticType(inferIrExpressionType(expression, context), context);
+  if (keyType?.kind !== 'primitive' || keyType.name !== 'String') {
+    throw new RustEmissionError('portable computed object keys require a statically typed string');
+  }
+  return emitExpression(expression, context, primitive('String'));
+}
+
+function emitPortableRecordUpdate(key: string, value: string): string {
+  return `if let Some((_, __flight_existing)) = __flight_record.iter_mut().find(|(existing, _)| existing == &${key}) { *__flight_existing = ${value}; } else { __flight_record.push((${key}, ${value})); }`;
+}
+
+function emitPortableValueFromReference(reference: string, type: IrType, context: EmitContext): string {
+  if (type.kind === 'named' && context.enumNames.has(type.name)) {
+    return `crate::FlightValue::Number(${parenthesize(reference)}.0 as f64)`;
+  }
+  const resolved = resolveSemanticType(type, context) ?? type;
+  switch (resolved.kind) {
+    case 'anonymous': {
+      const fields = flattenStructFields(resolved, context).flatMap((field) => {
+        if (field.name === '__flight_identity') return [];
+        if (field.optional && field.type.kind === 'nullable') {
+          throw new RustEmissionError(
+            `portable field ${field.name} cannot distinguish an omitted property from explicit null`,
+          );
+        }
+        const key = emitRustStringLiteral(field.name);
+        const place = `${parenthesize(reference)}.${safeName(field.name)}`;
+        if (field.optional && field.type.kind !== 'nullable') {
+          return [
+            `if let Some(value) = ${place}.as_ref() { __flight_record.push((${key}.to_owned(), ${emitPortableValueFromReference(
+              'value',
+              field.type,
+              context,
+            )})); }`,
+          ];
+        }
+        return [
+          `__flight_record.push((${key}.to_owned(), ${emitPortableValueFromReference(
+            `&${parenthesize(place)}`,
+            field.type,
+            context,
+          )}));`,
+        ];
+      });
+      return `crate::FlightValue::Record({ let mut __flight_record = Vec::new(); ${fields.join(
+        ' ',
+      )} __flight_record })`;
+    }
+    case 'array':
+      return `crate::FlightValue::Array(${parenthesize(reference)}.iter().map(|value| ${emitPortableValueFromReference(
+        'value',
+        resolved.element,
+        context,
+      )}).collect())`;
+    case 'dynamic':
+      return `${parenthesize(reference)}.clone()`;
+    case 'function':
+      return 'crate::FlightValue::Function';
+    case 'nullable':
+      return `match ${parenthesize(reference)}.as_ref() { Some(value) => ${emitPortableValueFromReference(
+        'value',
+        resolved.inner,
+        context,
+      )}, None => crate::FlightValue::Null }`;
+    case 'primitive':
+      switch (resolved.name) {
+        case 'Bool':
+          return `crate::FlightValue::Bool(*${parenthesize(reference)})`;
+        case 'Float':
+        case 'Int':
+          return `crate::FlightValue::Number(*${parenthesize(reference)} as f64)`;
+        case 'String':
+          return `crate::FlightValue::String(${parenthesize(reference)}.clone())`;
+        case 'Void':
+          return 'crate::FlightValue::Undefined';
+      }
+    case 'task':
+      throw new RustEmissionError('portable value conversion cannot observe an unsettled task');
+    case 'union':
+      return emitPortableUnionFromReference(reference, resolved.variants, context);
+    case 'named': {
+      if (resolved.name === 'FlightSymbol') return 'crate::FlightValue::Symbol';
+      if (isPortableNumericStorageType(resolved)) {
+        return `crate::FlightValue::Number(*${parenthesize(reference)} as f64)`;
+      }
+      if (resolved.name === 'RustMap') {
+        const key = resolveSemanticType(resolved.arguments[0], context) ?? resolved.arguments[0];
+        if (key?.kind !== 'primitive' || key.name !== 'String') {
+          throw new RustEmissionError('portable record conversion requires string map keys');
+        }
+        const value = resolved.arguments[1] ?? { kind: 'dynamic' as const };
+        return `crate::FlightValue::Record(${parenthesize(reference)}.iter().map(|(key, value)| (key.clone(), ${emitPortableValueFromReference(
+          'value',
+          value,
+          context,
+        )})).collect())`;
+      }
+      if (resolved.name === 'RustSet') return 'crate::FlightValue::Record(Vec::new())';
+      if (
+        resolved.name === 'ByteBuffer' ||
+        resolved.name === 'ArrayBufferView' ||
+        Boolean(typedArrayType(resolved.name))
+      ) {
+        return `crate::FlightValue::Array(${parenthesize(reference)}.iter().map(|value| crate::FlightValue::Number((*value) as f64)).collect())`;
+      }
+      return 'crate::FlightValue::Object';
+    }
+  }
+}
+
+function emitPortableUnionFromReference(reference: string, variants: readonly IrType[], context: EmitContext): string {
+  const [first, ...rest] = variants;
+  if (!first) return 'crate::FlightValue::Undefined';
+  if (rest.length === 0) return emitPortableValueFromReference(reference, first, context);
+  return `match ${reference} { crate::FlightUnion2::A(value) => ${emitPortableValueFromReference(
+    'value',
+    first,
+    context,
+  )}, crate::FlightUnion2::B(value) => ${emitPortableUnionFromReference('value', rest, context)} }`;
 }
 
 function emitMathCall(method: string, arguments_: string[]): string {
@@ -4206,7 +4467,7 @@ function emitUnary(expression: Extract<IrExpression, { kind: 'unary' }>, context
     }
     if (resolved?.kind === 'dynamic') {
       const operand = emitExpression(expression.operand, context);
-      return `match &${parenthesize(operand)} { crate::OpaqueHostValue::Undefined => "undefined", crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Object => "object", crate::OpaqueHostValue::Bool(_) => "boolean", crate::OpaqueHostValue::Number(_) => "number", crate::OpaqueHostValue::String(_) => "string" }`;
+      return `match &${parenthesize(operand)} { crate::OpaqueHostValue::Undefined => "undefined", crate::OpaqueHostValue::Null | crate::OpaqueHostValue::Array(_) | crate::OpaqueHostValue::Record(_) | crate::OpaqueHostValue::Object => "object", crate::OpaqueHostValue::Bool(_) => "boolean", crate::OpaqueHostValue::Number(_) => "number", crate::OpaqueHostValue::String(_) => "string", crate::OpaqueHostValue::Function => "function", crate::OpaqueHostValue::Symbol => "symbol" }`;
     }
     if (
       resolved?.kind === 'anonymous' ||
@@ -8512,7 +8773,7 @@ function emitCondition(expression: IrExpression, context: EmitContext): string {
   const resolved = resolveSemanticType(type, context) ?? type;
   if (resolved?.kind === 'dynamic') {
     const value = emitExpression(expression, context);
-    return `match &${parenthesize(value)} { crate::OpaqueHostValue::Undefined | crate::OpaqueHostValue::Null => false, crate::OpaqueHostValue::Bool(value) => *value, crate::OpaqueHostValue::Number(value) => *value != 0.0_f64 && !value.is_nan(), crate::OpaqueHostValue::String(value) => !value.is_empty(), crate::OpaqueHostValue::Object => true }`;
+    return `match &${parenthesize(value)} { crate::OpaqueHostValue::Undefined | crate::OpaqueHostValue::Null => false, crate::OpaqueHostValue::Bool(value) => *value, crate::OpaqueHostValue::Number(value) => *value != 0.0_f64 && !value.is_nan(), crate::OpaqueHostValue::String(value) => !value.is_empty(), crate::OpaqueHostValue::Array(_) | crate::OpaqueHostValue::Record(_) | crate::OpaqueHostValue::Function | crate::OpaqueHostValue::Symbol | crate::OpaqueHostValue::Object => true }`;
   }
   const emitted = emitExpression(expression, context);
   if (type?.kind === 'primitive' && type.name === 'Bool') return emitted;

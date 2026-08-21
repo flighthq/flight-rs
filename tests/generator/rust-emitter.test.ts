@@ -5,6 +5,7 @@ import path from 'node:path';
 import ts from 'typescript';
 
 import { emitNativeHostCapabilityRuntime } from '../../tools/generator/src/emit/native-host.ts';
+import { emitFlightTaskRuntime } from '../../tools/generator/src/emit/runtime.ts';
 import { emitRustModule } from '../../tools/generator/src/emit/rust.ts';
 import { lowerTypeScriptSource } from '../../tools/generator/src/lower/typescript.ts';
 
@@ -478,20 +479,13 @@ describe('Rust emission', () => {
     expect(output).toContain('options: Option<FlightOmitRecord2>');
     expect(output).toContain('.iter().cloned().all(|value: Option<f64>| -> bool');
     expect(output).toContain('.iter().cloned().any(|__flight_item| is_positive(__flight_item))');
-    expect(output).toContain('format!("[{}]", __flight_items.join(","))');
+    expect(output).toContain('crate::flight_json_stringify');
     expect(output).toContain('(values).is_some()');
     expect(output).toContain('&{ let __flight_source = &(value); BasePosition {');
     expect(output).toContain('x: __flight_source.x');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
-    const sourceFile = path.join(fixture, 'lib.rs');
-    writeFileSync(sourceFile, output);
-    expect(() =>
-      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
-        cwd: fixture,
-        stdio: 'pipe',
-      }),
-    ).not.toThrow();
+    expect(() => compileRustLibraryWithRuntime(output, fixture)).not.toThrow();
   });
 
   it('compiles and runs UTF-16 code-point indexing through one hoisted Rust view', () => {
@@ -1330,14 +1324,83 @@ describe('Rust emission', () => {
     expect(output).toContain('signature(values)');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));
-    const sourceFile = path.join(fixture, 'lib.rs');
-    writeFileSync(sourceFile, output);
+    expect(() => compileRustLibraryWithRuntime(output, fixture)).not.toThrow();
+  });
+
+  it('compiles and runs recursive portable JSON with JavaScript container semantics', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/log/src/json.ts',
+      `
+        export function recursiveJson(): string {
+          const base: Record<string, unknown> = { first: 1, omitted: undefined };
+          return JSON.stringify({
+            ...base,
+            nested: { escaped: 'line\\n"\\\\' },
+            array: [undefined, NaN, Infinity, () => 1],
+            zero: -0,
+            first: 'last',
+          });
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/log', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/log/src/json.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('crate::FlightValue::Record');
+    expect(output).toContain('crate::FlightValue::Array');
+    expect(output).toContain('crate::FlightValue::Function');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-recursive-json-'));
+    writeFileSync(path.join(fixture, 'flight_runtime.rs'), emitFlightTaskRuntime());
+    writeFileSync(path.join(fixture, 'generated.rs'), output);
+    writeFileSync(
+      path.join(fixture, 'main.rs'),
+      [
+        'mod flight_runtime;',
+        'pub use flight_runtime::*;',
+        'mod generated;',
+        'fn main() {',
+        '  assert_eq!(generated::recursive_json(), "{\\"first\\":\\"last\\",\\"nested\\":{\\"escaped\\":\\"line\\\\n\\\\\\\"\\\\\\\\\\"},\\"array\\":[null,null,null,null],\\"zero\\":0}");',
+        '}',
+        '',
+      ].join('\n'),
+    );
+    const binary = path.join(fixture, 'recursive-json');
+    expect(() => compileRustExecutable('main.rs', binary, fixture)).not.toThrow();
+    expect(() => execFileSync(binary, [], { cwd: fixture, stdio: 'pipe' })).not.toThrow();
+  });
+
+  it('rejects JSON fields whose Rust storage collapses omitted and explicit null', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/log/src/optional-null.ts',
+      `
+        interface OptionalNull { value?: string | null; }
+        export function optionalNullJson(value: OptionalNull): string {
+          return JSON.stringify(value);
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/log', '/workspace');
+
+    expect(lowered.diagnostics).toEqual([]);
     expect(() =>
-      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
-        cwd: fixture,
-        stdio: 'pipe',
+      emitRustModule({
+        declarations: lowered.declarations,
+        source: 'upstream/packages/log/src/optional-null.ts',
+        typeImports: [],
       }),
-    ).not.toThrow();
+    ).toThrow('portable field value cannot distinguish an omitted property from explicit null');
   });
 
   it('canonicalizes structural signatures against inferred top-level records', () => {
@@ -1459,6 +1522,7 @@ describe('Rust emission', () => {
       [
         '#[derive(Clone)]',
         'pub enum OpaqueHostValue { String(String) }',
+        'pub type FlightValue = OpaqueHostValue;',
         '#[derive(Clone)]',
         'pub enum FlightUnion2<A, B> { A(A), B(B) }',
         'mod generated;',
@@ -1506,6 +1570,7 @@ describe('Rust emission', () => {
       [
         '#[derive(Clone)]',
         'pub enum OpaqueHostValue { String(String) }',
+        'pub type FlightValue = OpaqueHostValue;',
         '#[derive(Clone)]',
         'pub enum FlightUnion2<A, B> { A(A), B(B) }',
         'mod generated;',
@@ -1888,6 +1953,7 @@ describe('Rust emission', () => {
       [
         '#[derive(Clone, Debug, PartialEq)]',
         'pub enum OpaqueHostValue { String(String) }',
+        'pub type FlightValue = OpaqueHostValue;',
         'mod generated;',
         'fn value(text: &str) -> OpaqueHostValue { OpaqueHostValue::String(text.to_owned()) }',
         'fn main() {',
@@ -3490,6 +3556,20 @@ describe('Rust emission', () => {
     expect(() => execFileSync(binary, [], { cwd: fixture, stdio: 'pipe' })).not.toThrow();
   });
 });
+
+function compileRustLibraryWithRuntime(output: string, fixture: string): void {
+  writeFileSync(path.join(fixture, 'flight_runtime.rs'), emitFlightTaskRuntime());
+  writeFileSync(path.join(fixture, 'generated.rs'), output);
+  const sourceFile = path.join(fixture, 'lib.rs');
+  writeFileSync(
+    sourceFile,
+    ['mod flight_runtime;', 'pub use flight_runtime::*;', 'mod generated;', 'pub use generated::*;', ''].join('\n'),
+  );
+  execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+    cwd: fixture,
+    stdio: 'pipe',
+  });
+}
 
 function compileRustExecutable(source: string, output: string, cwd: string): void {
   const sysroot = execFileSync('rustc', ['--print', 'sysroot'], {
