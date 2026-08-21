@@ -1231,6 +1231,7 @@ function emitFunctionDeclaration(declaration: IrFunctionDeclaration, context: Em
     const name = safeName(parameter.name);
     return [`let ${name} = ${name}.unwrap_or(${emitExpression(parameter.initializer, nextContext, parameter.type)});`];
   });
+  narrowDefaultedParameterTypes(declaration.parameters, nextContext);
   const utf16Views = prepareParameterUtf16Views(declaration.parameters, reachableBody, nextContext);
   const body = emitStatementsAsBlock(
     defaults.length > 0
@@ -1299,6 +1300,7 @@ function emitPortableTaskFunctionDeclaration(declaration: IrFunctionDeclaration,
     const name = safeName(parameter.name);
     return [`let ${name} = ${name}.unwrap_or(${emitExpression(parameter.initializer, nextContext, parameter.type)});`];
   });
+  narrowDefaultedParameterTypes(declaration.parameters, nextContext);
   const utf16Views = prepareParameterUtf16Views(declaration.parameters, reachableBody, nextContext);
   if (output.kind !== 'primitive' || output.name !== 'Void') {
     if (!reachableBody.some((statement) => statementAlwaysReturns(statement, nextContext))) {
@@ -6490,6 +6492,7 @@ function emitClosure(
     const name = safeName(parameter.name);
     return [`let ${name} = ${name}.unwrap_or(${emitExpression(parameter.initializer, nextContext, parameterType)});`];
   });
+  narrowDefaultedParameterTypes(expression.parameters, nextContext);
   const closurePrefix = [...forwardClosureSlots, ...defaults];
   const body = expression.expression
     ? `{ ${closurePrefix.length > 0 ? `${closurePrefix.join(' ')} ` : ''}${emitExpression(expression.expression, nextContext, returns)} }`
@@ -8534,6 +8537,14 @@ function registerParameters(parameters: IrParameter[], context: EmitContext, fal
   });
 }
 
+function narrowDefaultedParameterTypes(parameters: readonly IrParameter[], context: EmitContext): void {
+  for (const parameter of parameters) {
+    if (!parameter.initializer || isNullishExpression(parameter.initializer)) continue;
+    const registered = context.symbolTypes.get(parameter.name);
+    if (registered?.kind === 'nullable') context.symbolTypes.set(parameter.name, registered.inner);
+  }
+}
+
 function contextualParameterType(type: IrType, fallback: IrType | undefined, context: EmitContext): IrType {
   if (!fallback) return type;
   return type.kind === 'dynamic' || structurallyCompatibleTypes(type, fallback, context) ? fallback : type;
@@ -10502,7 +10513,7 @@ function emitElement(expression: Extract<IrExpression, { kind: 'element' }>, con
         (objectType.inner.kind === 'named' && Boolean(typedArrayType(objectType.inner.name))))
     ) {
       const owner = emitPlaceExpression(expression.object, context);
-      return `${owner}.as_ref().and_then(|values| values.get(${emitExpression(expression.index, context)} as usize).cloned())`;
+      return `${owner}.as_ref().and_then(|values| values.get(${emitExpression(expression.index, context, primitive('Float'))} as usize).cloned())`;
     }
     if (objectType?.kind === 'nullable' && objectType.inner.kind === 'named' && objectType.inner.name === 'RustMap') {
       const keyType = objectType.inner.arguments[0] ?? { kind: 'dynamic' };
@@ -10538,7 +10549,7 @@ function emitElement(expression: Extract<IrExpression, { kind: 'element' }>, con
   const object = nullableCollection
     ? `${emitPlaceExpression(expression.object, context)}.${root && context.mutatedNames.has(root) ? 'as_mut' : 'as_ref'}().unwrap()`
     : emitPlaceExpression(expression.object, context);
-  return `${object}[${emitExpression(expression.index, context)} as usize]`;
+  return `${object}[${emitExpression(expression.index, context, primitive('Float'))} as usize]`;
 }
 
 interface NullableElementLookup {

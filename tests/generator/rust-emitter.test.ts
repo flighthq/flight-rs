@@ -2441,6 +2441,9 @@ describe('Rust emission', () => {
           data: string;
           level: number;
         }
+        interface Cursor {
+          index: number | null;
+        }
         function emit(entry: Entry): void {
           void entry;
         }
@@ -2474,6 +2477,14 @@ describe('Rust emission', () => {
           if (entry === null) return null;
           return entry;
         }
+        export function readNullableIndex(entries: readonly Entry[], index: number | null): string | null {
+          if (index === null) return null;
+          return entries[index].data;
+        }
+        export function readNullableProperty(entries: readonly Entry[], cursor: Cursor): string | null {
+          if (cursor.index === null) return null;
+          return entries[cursor.index].data;
+        }
       `,
       ts.ScriptTarget.Latest,
       true,
@@ -2494,6 +2505,8 @@ describe('Rust emission', () => {
     expect(output).toContain('entries.get(index as usize).cloned()');
     expect(output).toContain('samples.get(index as usize).cloned().map(|item| item as f64)');
     expect(output).toContain('entries.get(index as usize).cloned().flatten()');
+    expect(output).toContain('*(index.as_ref().unwrap()) as usize]');
+    expect(output).toContain('(cursor.index).unwrap() as usize]');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-contextual-object-'));
     const sourceFile = path.join(fixture, 'lib.rs');
