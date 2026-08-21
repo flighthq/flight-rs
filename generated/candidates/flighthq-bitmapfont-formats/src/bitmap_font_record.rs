@@ -52,7 +52,10 @@ pub fn build_bitmap_font_from_record(
         }
     }
     for char in ((record.chars).clone()).iter().cloned() {
-        if (!resolved.iter().any(|(key, _)| key == &char.page)) {
+        if (!resolved
+            .iter()
+            .any(|(entry_key, _)| entry_key == &char.page))
+        {
             return None;
         }
         if (char.page > max_page_id) {
@@ -65,7 +68,7 @@ pub fn build_bitmap_font_from_record(
         while (id <= max_page_id) {
             let atlas = resolved
                 .iter()
-                .find(|(key, _)| key == &id)
+                .find(|(entry_key, _)| entry_key == &id)
                 .map(|(_, value)| value.clone());
             if ((atlas).clone()).is_some() {
                 {
@@ -278,7 +281,7 @@ pub fn build_bitmap_font_from_record(
 
 // Source: upstream/packages/bitmapfont-formats/src/bitmapFontRecord.ts:96 (sha256:aef8898ba71e7161729e0132fe94dd186beef3e79518357d1acd019452544835)
 pub fn report_dropped_bitmap_font_records(
-    diagnostics: Option<Vec<ImportDiagnostic>>,
+    diagnostics: &mut Option<Vec<ImportDiagnostic>>,
     origin: String,
     pages: f64,
     chars: f64,
@@ -286,7 +289,7 @@ pub fn report_dropped_bitmap_font_records(
 ) -> () {
     if (pages > 0.0_f64) {
         report_import_diagnostic(
-            ((diagnostics).clone()).clone(),
+            diagnostics,
             (import_diagnostic_severity_constant.drop).clone(),
             "bmfont.page-unreadable".to_owned(),
             (origin).clone(),
@@ -304,7 +307,7 @@ pub fn report_dropped_bitmap_font_records(
     }
     if (chars > 0.0_f64) {
         report_import_diagnostic(
-            ((diagnostics).clone()).clone(),
+            diagnostics,
             (import_diagnostic_severity_constant.drop).clone(),
             "bmfont.char-unreadable".to_owned(),
             (origin).clone(),
@@ -322,7 +325,7 @@ pub fn report_dropped_bitmap_font_records(
     }
     if (kernings > 0.0_f64) {
         report_import_diagnostic(
-            ((diagnostics).clone()).clone(),
+            diagnostics,
             (import_diagnostic_severity_constant.drop).clone(),
             "bmfont.kerning-unreadable".to_owned(),
             (origin).clone(),

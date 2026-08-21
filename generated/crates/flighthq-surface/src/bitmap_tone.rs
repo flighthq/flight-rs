@@ -13,9 +13,9 @@ use flighthq_types::BitmapRegion;
 pub fn apply_bitmap_curve(
     out: &mut BitmapRegion,
     source: &BitmapRegion,
-    red_lut: Option<Vec<u8>>,
-    green_lut: Option<Vec<u8>>,
-    blue_lut: Option<Vec<u8>>,
+    red_lut: &Option<Vec<u8>>,
+    green_lut: &Option<Vec<u8>>,
+    blue_lut: &Option<Vec<u8>>,
     alpha_lut: Option<Vec<u8>>,
 ) -> () {
     let w = (out.width).min(source.width);
@@ -123,9 +123,9 @@ pub fn apply_bitmap_levels(
     apply_bitmap_curve(
         out,
         source,
-        Some((lut).clone()),
-        Some((lut).clone()),
-        Some((lut).clone()),
-        None,
+        &(Some(lut)),
+        &(Some(lut)),
+        &(Some(lut)),
+        &(None),
     );
 }

@@ -954,7 +954,7 @@ pub fn apply_text_input_restriction(
     replace_length: Option<f64>,
 ) -> String {
     let replace_length = replace_length.unwrap_or(0.0_f64);
-    let mut value = text;
+    let mut value = (text).clone();
     if (!source.data.multiline) {
         value = (regex::RegexBuilder::new("[\\n\\r]+")
             .case_insensitive(false)
@@ -1336,7 +1336,7 @@ pub fn handle_text_input_keyboard(
             if __flight_case <= 8_usize {
                 move_text_input_caret_down(
                     source,
-                    (options.as_ref().and_then(|value| (value.layout).clone())).clone(),
+                    &(options.as_ref().unwrap().layout),
                     Some(data.shift_key),
                 );
                 return true;
@@ -1344,7 +1344,7 @@ pub fn handle_text_input_keyboard(
             if __flight_case <= 9_usize {
                 move_text_input_caret_to_line_end(
                     source,
-                    (options.as_ref().and_then(|value| (value.layout).clone())).clone(),
+                    &(options.as_ref().unwrap().layout),
                     Some(data.shift_key),
                 );
                 return true;
@@ -1352,7 +1352,7 @@ pub fn handle_text_input_keyboard(
             if __flight_case <= 10_usize {
                 move_text_input_caret_to_line_start(
                     source,
-                    (options.as_ref().and_then(|value| (value.layout).clone())).clone(),
+                    &(options.as_ref().unwrap().layout),
                     Some(data.shift_key),
                 );
                 return true;
@@ -1397,7 +1397,7 @@ pub fn handle_text_input_keyboard(
             if __flight_case <= 16_usize {
                 move_text_input_caret_up(
                     source,
-                    (options.as_ref().and_then(|value| (value.layout).clone())).clone(),
+                    &(options.as_ref().unwrap().layout),
                     Some(data.shift_key),
                 );
                 return true;
@@ -1473,7 +1473,7 @@ pub fn move_text_input_caret_by_word(
 // Source: upstream/packages/textinput/src/textInputEditing.ts:322 (sha256:c4c887171789522899c4c567b4a05a684afceb74c4fef116c46a1d3f8329ccb5)
 pub fn move_text_input_caret_down(
     source: &mut RichText,
-    layout: Option<TextLayoutResult>,
+    layout: &Option<TextLayoutResult>,
     extend_selection: Option<bool>,
 ) -> () {
     let extend_selection = extend_selection.unwrap_or(false);
@@ -1525,7 +1525,7 @@ pub fn move_text_input_caret_down(
 // Source: upstream/packages/textinput/src/textInputEditing.ts:351 (sha256:1509412c2465dcc2b45e54eff96328a2d2c8922551280dceb60f5199928774c1)
 pub fn move_text_input_caret_to_line_end(
     source: &RichText,
-    layout: Option<TextLayoutResult>,
+    layout: &Option<TextLayoutResult>,
     extend_selection: Option<bool>,
 ) -> () {
     let extend_selection = extend_selection.unwrap_or(false);
@@ -1549,7 +1549,7 @@ pub fn move_text_input_caret_to_line_end(
 // Source: upstream/packages/textinput/src/textInputEditing.ts:367 (sha256:f891c6a9baa7d8db48f8f7a6a3fa359b76e7532b3459d9c5a206c8304ab2e573)
 pub fn move_text_input_caret_to_line_start(
     source: &RichText,
-    layout: Option<TextLayoutResult>,
+    layout: &Option<TextLayoutResult>,
     extend_selection: Option<bool>,
 ) -> () {
     let extend_selection = extend_selection.unwrap_or(false);
@@ -1565,7 +1565,7 @@ pub fn move_text_input_caret_to_line_start(
 // Source: upstream/packages/textinput/src/textInputEditing.ts:384 (sha256:231d5d2e12edbb8073adeb938af7d421b54bf085c93920fb512a9d0c211fe4ea)
 pub fn move_text_input_caret_up(
     source: &mut RichText,
-    layout: Option<TextLayoutResult>,
+    layout: &Option<TextLayoutResult>,
     extend_selection: Option<bool>,
 ) -> () {
     let extend_selection = extend_selection.unwrap_or(false);
@@ -2427,14 +2427,14 @@ fn restrict_text_input(text: String, restrict: String) -> String {
     let __destructure0 = split_restrict_ranges((restrict).clone());
     let accepted = (__destructure0.accepted).clone();
     let declined = (__destructure0.declined).clone();
-    let mut out = "";
+    let mut out = "".to_owned();
     for char in (text).iter().cloned() {
         let accepted_match =
             ((accepted).clone() == "") || (matches_restrict_ranges(char, (accepted).clone()));
         let declined_match =
             ((declined).clone() != "") && (matches_restrict_ranges(char, (declined).clone()));
         if (accepted_match) && (!declined_match) {
-            out += char;
+            out.push_str(&(char));
         }
     }
     return out;
@@ -2483,8 +2483,8 @@ fn matches_restrict_ranges(char: String, ranges: String) -> bool {
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:825 (sha256:d2a615ef67c355856c20d433446309bf66a747a0bc9b5c1c7c6a46c0a0227ee1)
 fn split_restrict_ranges(restrict: String) -> SharedStructuralRecord1 {
-    let mut accepted = "";
-    let mut declined = "";
+    let mut accepted = "".to_owned();
+    let mut declined = "".to_owned();
     let mut declining = false;
     {
         let mut i = 0.0_f64;
@@ -2493,9 +2493,9 @@ fn split_restrict_ranges(restrict: String) -> SharedStructuralRecord1 {
             if (char == "\\") && ((i + 1.0_f64) < (restrict.encode_utf16().count() as f64)) {
                 let escaped = (char + (restrict.char_at)((i + 1.0_f64)));
                 if declining {
-                    declined += escaped;
+                    declined.push_str(&(escaped));
                 } else {
-                    accepted += escaped;
+                    accepted.push_str(&(escaped));
                 }
                 {
                     i += 1.0;
@@ -2506,9 +2506,9 @@ fn split_restrict_ranges(restrict: String) -> SharedStructuralRecord1 {
                     declining = (!declining);
                 } else {
                     if declining {
-                        declined += char;
+                        declined.push_str(&(char));
                     } else {
-                        accepted += char;
+                        accepted.push_str(&(char));
                     }
                 }
             }

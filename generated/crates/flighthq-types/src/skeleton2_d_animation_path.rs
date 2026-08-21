@@ -44,4 +44,4 @@ pub static SKELETON2_D_ANIMATION_PATH: std::sync::LazyLock<Skeleton2DAnimationPa
     });
 
 // Source: upstream/packages/types/src/Skeleton2DAnimationPath.ts:49 (sha256:df7a3a26fb45827b834f461d662f6a8abac5a5540ac35215186247cdf281e990)
-pub type Skeleton2DAnimationPath = crate::OpaqueHostValue;
+pub type Skeleton2DAnimationPath = String;

@@ -34,14 +34,14 @@ pub fn select_scene3_d_forward_lights(
     let points = (lights.point).clone();
     let spots = (lights.spot).clone();
     let point_count = select_strongest_lights(
-        (points).clone(),
+        &(points),
         bounds,
         &mut (*SCRATCH_SELECTED_POINT_LIGHTS.lock().unwrap()),
         &mut (*SCRATCH_SELECTED_POINT_INDICES.lock().unwrap()),
         &mut (*SCRATCH_SELECTED_POINT_SCORES.lock().unwrap()),
     );
     let spot_count = select_strongest_lights(
-        (spots).clone(),
+        &(spots),
         bounds,
         &mut (*SCRATCH_SELECTED_SPOT_LIGHTS.lock().unwrap()),
         &mut (*SCRATCH_SELECTED_SPOT_INDICES.lock().unwrap()),
@@ -83,7 +83,7 @@ pub fn select_scene3_d_forward_lights(
 
 // Source: upstream/packages/lighting/src/sceneForwardLights.ts:60 (sha256:fd97be8ed89a42f395876416904eb7f34f23d5cb72d28a98749e106818a42f44)
 fn select_strongest_lights(
-    lights: Option<Vec<crate::FlightUnion2<PointLight, SpotLight>>>,
+    lights: &Option<Vec<crate::FlightUnion2<PointLight, SpotLight>>>,
     bounds: &BoundingSphereLike,
     selected_lights: &mut Vec<crate::FlightUnion2<PointLight, SpotLight>>,
     selected_indices: &mut Vec<i32>,

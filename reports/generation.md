@@ -8,8 +8,8 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | Default-generated packages | 144 |
 | Emittable packages | 40 |
 | Blocked packages | 104 |
-| Compiled candidates | 16 |
-| Compile-blocked candidates | 7 |
+| Compiled candidates | 17 |
+| Compile-blocked candidates | 6 |
 | Dependency-blocked candidates | 15 |
 | Cultivated packages | 1 |
 | Host-bound packages | 4 |
@@ -75,7 +75,7 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/host-tauri` | host-bound | host-bound | not-applicable | 0/0 | 0/11 | 11 | 0/0 | 0 | 0 | no |
 | `@flighthq/image` | generated | blocked | source-blocked | 3/6 | 22/25 | 3 | 14/28 | 1 | 4 | partial |
 | `@flighthq/image-codec` | generated | blocked | source-blocked | 9/12 | 26/26 | 0 | 4/29 | 0 | 3 | no |
-| `@flighthq/importdiagnostics` | generated | emittable | compile-blocked | 4/4 | 3/3 | 0 | 9/11 | 0 | 0 | no |
+| `@flighthq/importdiagnostics` | generated | emittable | compiled | 4/4 | 3/3 | 0 | 9/11 | 0 | 0 | no |
 | `@flighthq/input` | generated | emittable | compiled | 3/3 | 40/40 | 0 | 1/1 | 1 | 0 | partial |
 | `@flighthq/interaction` | generated | blocked | source-blocked | 2/17 | 78/78 | 0 | 1/1 | 0 | 15 | no |
 | `@flighthq/intl` | generated | blocked | source-blocked | 2/9 | 16/14 | 0 | 1/1 | 0 | 7 | no |
@@ -172,7 +172,7 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/tool-registry` | generated | blocked | source-blocked | 3/4 | 0/2 | 2 | 0/0 | 0 | 2 | no |
 | `@flighthq/tray` | generated | blocked | source-blocked | 2/4 | 28/28 | 0 | 3/3 | 0 | 2 | no |
 | `@flighthq/tween` | generated | blocked | source-blocked | 7/10 | 29/28 | 0 | 2/2 | 0 | 3 | no |
-| `@flighthq/types` | generated | emittable | promoted | 741/879 | 2372/2372 | 0 | 148/149 | 0 | 0 | full |
+| `@flighthq/types` | generated | emittable | promoted | 754/879 | 2372/2372 | 0 | 148/149 | 0 | 0 | full |
 | `@flighthq/updater` | generated | blocked | source-blocked | 2/3 | 23/23 | 0 | 2/2 | 0 | 1 | no |
 | `@flighthq/useragent` | generated | emittable | compiled | 4/4 | 12/12 | 0 | 3/6 | 1 | 0 | no |
 | `@flighthq/velocity` | generated | emittable | dependency-blocked | 5/5 | 20/20 | 0 | 3/3 | 2 | 0 | no |
@@ -1492,15 +1492,6 @@ Disposition partition: 177 eligible = 14 portable executable + 0 host placeholde
 - **E0308** `generated/candidates/flighthq-clock/src/clock.rs`: mismatched types
 - **E0308** `generated/candidates/flighthq-clock/src/clock.rs`: mismatched types
 
-### `@flighthq/importdiagnostics`
-
-- **E0308** `generated/candidates/flighthq-importdiagnostics/src/import_diagnostic_collector.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-importdiagnostics/src/import_diagnostic_text.rs`: no field `sort` on type `()`
-- **E0277** `generated/candidates/flighthq-importdiagnostics/src/import_diagnostic_text.rs`: can't compare `std::string::String` with `&std::string::String`
-- **E0277** `generated/candidates/flighthq-importdiagnostics/src/import_diagnostic_text.rs`: `flighthq_types::FlightUnion2<bool, flighthq_types::FlightUnion2<f64, std::string::String>>` doesn't implement `std::fmt::Display`
-- **E0368** `generated/candidates/flighthq-importdiagnostics/src/import_diagnostic_text.rs`: binary assignment operation `+=` cannot be applied to type `&str`
-- **E0277** `generated/candidates/flighthq-importdiagnostics/src/import_diagnostic_text.rs`: `FlightValue` doesn't implement `std::fmt::Display`
-
 ### `@flighthq/protocol`
 
 - **E0308** `generated/candidates/flighthq-protocol/src/protocol.rs`: mismatched types
@@ -1509,7 +1500,6 @@ Disposition partition: 177 eligible = 14 portable executable + 0 host placeholde
 - **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `length` on type `FlightValue`
 - **E0308** `generated/candidates/flighthq-protocol/src/protocol.rs`: mismatched types
 - **E0277** `generated/candidates/flighthq-protocol/src/protocol.rs`: `()` doesn't implement `std::fmt::Display`
-- **E0308** `<rustc>/library/alloc/src/macros.rs`: mismatched types
 - **E0308** `<rustc>/library/alloc/src/macros.rs`: mismatched types
 - **E0277** `generated/candidates/flighthq-protocol/src/protocol.rs`: can't compare `FlightValue` with `std::string::String`
 - **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `index_of` on type `std::string::String`
@@ -1527,16 +1517,15 @@ Disposition partition: 177 eligible = 14 portable executable + 0 host placeholde
 - **E0609** `generated/candidates/flighthq-protocol/src/protocol.rs`: no field `index_of` on type `std::string::String`
 - **E0070** `generated/candidates/flighthq-protocol/src/protocol.rs`: invalid left-hand side of assignment
 - **E0070** `generated/candidates/flighthq-protocol/src/protocol.rs`: invalid left-hand side of assignment
-- **E0308** `generated/candidates/flighthq-protocol/src/protocol.rs`: mismatched types
 
 ### `@flighthq/spatial`
 
-- **E0369** `generated/candidates/flighthq-spatial/src/format_spatial_indexing_notice.rs`: binary operation `==` cannot be applied to type `Option<flighthq_types::FlightUnion2<std::string::String, std::string::String>>`
-- **E0369** `generated/candidates/flighthq-spatial/src/format_spatial_indexing_notice.rs`: binary operation `==` cannot be applied to type `Option<flighthq_types::FlightUnion2<std::string::String, std::string::String>>`
-- **E0369** `generated/candidates/flighthq-spatial/src/format_spatial_indexing_notice.rs`: binary operation `==` cannot be applied to type `Option<flighthq_types::FlightUnion2<std::string::String, std::string::String>>`
+- **E0308** `generated/candidates/flighthq-spatial/src/format_spatial_indexing_notice.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-spatial/src/format_spatial_indexing_notice.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-spatial/src/format_spatial_indexing_notice.rs`: mismatched types
 - **E0608** `generated/candidates/flighthq-spatial/src/uniform_grid.rs`: cannot index into a value of type `(f64, SpatialAabb2D)`
 - **E0608** `generated/candidates/flighthq-spatial/src/uniform_grid.rs`: cannot index into a value of type `(f64, SpatialAabb2D)`
-- **E0599** `generated/candidates/flighthq-spatial/src/uniform_grid.rs`: no method named `as_ref` found for struct `LazyLock<Mutex<Option<Arc<Mutex<Box<dyn FnMut(...) + Send>>>>>>` in the current scope
+- **E0599** `generated/candidates/flighthq-spatial/src/uniform_grid.rs`: no method named `as_ref` found for struct `LazyLock<Mutex<Option<Arc<Mutex<...>>>>>` in the current scope
 - **E0608** `generated/candidates/flighthq-spatial/src/uniform_grid.rs`: cannot index into a value of type `(f64, SpatialAabb2D)`
 - **E0608** `generated/candidates/flighthq-spatial/src/uniform_grid.rs`: cannot index into a value of type `(f64, SpatialAabb2D)`
 
@@ -1546,13 +1535,13 @@ Disposition partition: 177 eligible = 14 portable executable + 0 host placeholde
 - **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be applied to values that implement `Try`
 - **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)
 - **E0070** `generated/candidates/flighthq-timeline/src/timeline.rs`: invalid left-hand side of assignment
-- **E0609** `generated/candidates/flighthq-timeline/src/timeline.rs`: no field `set` on type `Option<Vec<(f64, Arc<std::sync::Mutex<Box<(dyn FnMut(Node2D, f64) + Send + 'static)>>>)>>`
+- **E0609** `generated/candidates/flighthq-timeline/src/timeline.rs`: no field `set` on type `Option<Vec<(f64, Arc<Mutex<Box<...>>>)>>`
 - **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)
 - **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be applied to values that implement `Try`
 - **E0277** `generated/candidates/flighthq-timeline/src/timeline.rs`: the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)
 - **E0070** `generated/candidates/flighthq-timeline/src/timeline.rs`: invalid left-hand side of assignment
 - **E0308** `generated/candidates/flighthq-timeline/src/timeline.rs`: mismatched types
-- **E0599** `generated/candidates/flighthq-timeline/src/timeline.rs`: no method named `unwrap` found for reference `&std::sync::Mutex<Box<(dyn FnMut(Node2D, f64) + Send + 'static)>>` in the current scope
+- **E0599** `generated/candidates/flighthq-timeline/src/timeline.rs`: no method named `unwrap` found for reference `&Mutex<Box<dyn FnMut(..., f64) + Send>>` in the current scope
 - **E0308** `generated/candidates/flighthq-timeline/src/timeline.rs`: mismatched types
 - **E0596** `generated/candidates/flighthq-timeline/src/timeline.rs`: cannot borrow `timeline.frame_scripts` as mutable, as it is behind a `&` reference
 - **E0596** `generated/candidates/flighthq-timeline/src/timeline.rs`: cannot borrow `timeline.frame_scripts` as mutable, as it is behind a `&` reference
@@ -1574,32 +1563,24 @@ Disposition partition: 177 eligible = 14 portable executable + 0 host placeholde
 - **E0600** `generated/candidates/flighthq-xml/src/xml_parse.rs`: cannot apply unary operator `!` to type `std::string::String`
 - **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
 - **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
 - **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
 - **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
-- **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
 - **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
 - **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
-- **E0368** `generated/candidates/flighthq-xml/src/xml_parse.rs`: binary assignment operation `+=` cannot be applied to type `&str`
 - **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `index_of` on type `std::string::String`
 - **E0615** `generated/candidates/flighthq-xml/src/xml_parse.rs`: attempted to take value of method `trim` on type `std::string::String`
 - **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
 - **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
 - **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
-- **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
 - **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
 - **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `index_of` on type `std::string::String`
-- **E0368** `generated/candidates/flighthq-xml/src/xml_parse.rs`: binary assignment operation `+=` cannot be applied to type `&str`
 - **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `index_of` on type `std::string::String`
-- **E0369** `generated/candidates/flighthq-xml/src/xml_parse.rs`: cannot add `std::string::String` to `&str`
+- **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
 - **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
 - **E0609** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no field `to_lower_case` on type `std::string::String`
-- **E0368** `generated/candidates/flighthq-xml/src/xml_parse.rs`: binary assignment operation `+=` cannot be applied to type `&str`
 - **E0277** `generated/candidates/flighthq-xml/src/xml_parse.rs`: the type `str` cannot be indexed by `usize`
 - **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
 - **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
-- **E0369** `generated/candidates/flighthq-xml/src/xml_parse.rs`: cannot add `std::string::String` to `&str`
 - **E0308** `generated/candidates/flighthq-xml/src/xml_parse.rs`: mismatched types
 - **E0070** `generated/candidates/flighthq-xml/src/xml_parse.rs`: invalid left-hand side of assignment
 - **E0599** `generated/candidates/flighthq-xml/src/xml_query.rs`: no method named `is_some` found for struct `std::string::String` in the current scope

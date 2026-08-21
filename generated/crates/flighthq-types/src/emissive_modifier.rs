@@ -32,7 +32,7 @@ pub static EMISSIVE_MODIFIER_FACING: std::sync::LazyLock<EmissiveModifierFacingV
     });
 
 // Source: upstream/packages/types/src/EmissiveModifier.ts:16 (sha256:18edd2a4d73a3112dbd34748439b33a494abc67eca0dc77d561fb3d0674f8ef7)
-pub type EmissiveModifierFacing = crate::OpaqueHostValue;
+pub type EmissiveModifierFacing = String;
 
 // Source: upstream/packages/types/src/EmissiveModifier.ts:23 (sha256:1a8dbcef5fd253b0791b984f6f9941f1d377d618e6cffc3d199824faebde91f9)
 #[derive(Clone, Default)]

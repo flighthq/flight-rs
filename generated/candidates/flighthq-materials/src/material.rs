@@ -53,19 +53,25 @@ pub fn equals_material(a: &Material, b: &Material) -> bool {
     }
     let a_fields = crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast");
     let b_fields = crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast");
-    for key in (crate::host_value::<()>("host.keys")).iter().cloned() {
+    for key in (a_fields
+        .iter()
+        .map(|(entry_key, _)| entry_key.clone())
+        .collect::<Vec<_>>())
+    .iter()
+    .cloned()
+    {
         if (key == "kind") {
             continue;
         }
         if (a_fields
             .iter()
-            .find(|(key, _)| key == &key)
+            .find(|(entry_key, _)| entry_key == &(key).clone())
             .map(|(_, value)| value)
             .expect("TypeScript Record key was absent")
             .clone()
             != b_fields
                 .iter()
-                .find(|(key, _)| key == &key)
+                .find(|(entry_key, _)| entry_key == &(key).clone())
                 .map(|(_, value)| value)
                 .expect("TypeScript Record key was absent")
                 .clone())
@@ -77,7 +83,7 @@ pub fn equals_material(a: &Material, b: &Material) -> bool {
 }
 
 // Source: upstream/packages/materials/src/material.ts:45 (sha256:f7243c63cc0fe4a303d3cf43e3225823954c4137ee1703db6ba763009c1b6520)
-pub fn get_material_of_kind<T: Clone>(material: Option<Material>, kind: Kind) -> Option<T> {
+pub fn get_material_of_kind<T: Clone>(material: &Option<Material>, kind: Kind) -> Option<T> {
     return if ((material).is_some()) && ((material.as_ref().unwrap().kind).clone() == kind) {
         Some((material).clone().unwrap())
     } else {
@@ -89,13 +95,19 @@ pub fn get_material_of_kind<T: Clone>(material: Option<Material>, kind: Kind) ->
 fn copy_material_fields(dst: &mut Material, src: &Material, kind: Kind) -> () {
     let mut dst_fields = crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast");
     let src_fields = crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast");
-    for key in (crate::host_value::<()>("host.keys")).iter().cloned() {
+    for key in (src_fields
+        .iter()
+        .map(|(entry_key, _)| entry_key.clone())
+        .collect::<Vec<_>>())
+    .iter()
+    .cloned()
+    {
         if (key == "kind") {
             continue;
         }
         let value = src_fields
             .iter()
-            .find(|(key, _)| key == &key)
+            .find(|(entry_key, _)| entry_key == &(key).clone())
             .map(|(_, value)| value)
             .expect("TypeScript Record key was absent")
             .clone();
@@ -115,7 +127,7 @@ fn copy_material_fields(dst: &mut Material, src: &Material, kind: Kind) -> () {
         {
             dst_fields
                 .iter()
-                .find(|(key, _)| key == &key)
+                .find(|(entry_key, _)| entry_key == &(key).clone())
                 .map(|(_, value)| value)
                 .expect("TypeScript Record key was absent") = crate::FlightValue::Record({
                 let mut __flight_record = Vec::new();
@@ -164,14 +176,14 @@ fn copy_material_fields(dst: &mut Material, src: &Material, kind: Kind) -> () {
         } else {
             dst_fields
                 .iter()
-                .find(|(key, _)| key == &key)
+                .find(|(entry_key, _)| entry_key == &(key).clone())
                 .map(|(_, value)| value)
                 .expect("TypeScript Record key was absent") = (value).clone();
         }
     }
     dst_fields
         .iter()
-        .find(|(key, _)| key == &"kind".to_owned())
+        .find(|(entry_key, _)| entry_key == &"kind".to_owned())
         .map(|(_, value)| value)
         .expect("TypeScript Record key was absent") = {
         let __flight_portable_source = (kind).clone();

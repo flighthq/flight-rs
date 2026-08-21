@@ -59,11 +59,11 @@ pub fn create_uniform_grid_spatial_backend2_d(cell_size: f64) -> SpatialIndexBac
                 let was_missing = (!(*grid.lock().unwrap())
                     .bounds
                     .iter()
-                    .any(|(key, _)| key == &id))
+                    .any(|(entry_key, _)| entry_key == &id))
                     && (!(*grid.lock().unwrap())
                         .declined
                         .iter()
-                        .any(|(key, _)| key == &id));
+                        .any(|(entry_key, _)| entry_key == &id));
                 _remove_from_grid(&mut (*grid.lock().unwrap()), id);
                 if was_missing {
                     _report_grid_indexing(
@@ -71,10 +71,9 @@ pub fn create_uniform_grid_spatial_backend2_d(cell_size: f64) -> SpatialIndexBac
                         id,
                         "absent".to_owned(),
                         "remove".to_owned(),
-                        Some(
-                            (flighthq_types::SpatialIndexingReason::A("missing-id".to_owned()))
-                                .clone(),
-                        ),
+                        &(Some(flighthq_types::SpatialIndexingReason::A(
+                            "missing-id".to_owned(),
+                        ))),
                         0.0_f64,
                     );
                 }
@@ -132,8 +131,8 @@ pub fn create_uniform_grid_spatial_backend2_d(cell_size: f64) -> SpatialIndexBac
 }
 
 // Source: upstream/packages/spatial/src/uniformGrid.ts:99 (sha256:a7c50da57d96d2dc1fc6632b1a3cc89c156d199f2c3e75cb317e2e781ad58541)
-pub fn set_spatial_indexing_guard(guard: Option<SpatialIndexingGuard>) -> () {
-    (*_INDEXING_GUARD.lock().unwrap()) = (guard).clone();
+pub fn set_spatial_indexing_guard(guard: &Option<SpatialIndexingGuard>) -> () {
+    (*_INDEXING_GUARD.lock().unwrap()) = (*guard).clone();
 }
 
 // Source: upstream/packages/spatial/src/uniformGrid.ts:106 (sha256:bf8ee7d148f40d101a35cf9e62d37751ed15b9b9ce6f5ad5dcbfcc8b44a4d9a1)
@@ -189,7 +188,7 @@ fn _explain_grid_indexing(grid: &UniformGrid, id: SpatialObjectId) -> SpatialInd
     let decline_reason = grid
         .declined
         .iter()
-        .find(|(key, _)| key == &id)
+        .find(|(entry_key, _)| entry_key == &id)
         .map(|(_, value)| value.clone());
     if (decline_reason).is_some() {
         return SpatialIndexingExplanation {
@@ -212,7 +211,7 @@ fn _explain_grid_indexing(grid: &UniformGrid, id: SpatialObjectId) -> SpatialInd
     let bounds = grid
         .bounds
         .iter()
-        .find(|(key, _)| key == &id)
+        .find(|(entry_key, _)| entry_key == &id)
         .map(|(_, value)| value.clone());
     if (bounds).is_none() {
         return SpatialIndexingExplanation {
@@ -261,9 +260,9 @@ fn _insert_into_grid(
             id,
             "declined".to_owned(),
             (operation).clone(),
-            Some(
-                (flighthq_types::SpatialIndexingReason::A("non-finite-bounds".to_owned())).clone(),
-            ),
+            &(Some(flighthq_types::SpatialIndexingReason::A(
+                "non-finite-bounds".to_owned(),
+            ))),
             0.0_f64,
         );
         return false;
@@ -287,7 +286,9 @@ fn _insert_into_grid(
             id,
             "declined".to_owned(),
             (operation).clone(),
-            Some((flighthq_types::SpatialIndexingReason::A("inverted-bounds".to_owned())).clone()),
+            &(Some(flighthq_types::SpatialIndexingReason::A(
+                "inverted-bounds".to_owned(),
+            ))),
             0.0_f64,
         );
         return false;
@@ -321,9 +322,9 @@ fn _insert_into_grid(
             id,
             "overflow".to_owned(),
             (operation).clone(),
-            Some(
-                (flighthq_types::SpatialIndexingReason::A("invalid-cell-size".to_owned())).clone(),
-            ),
+            &(Some(flighthq_types::SpatialIndexingReason::A(
+                "invalid-cell-size".to_owned(),
+            ))),
             0.0_f64,
         );
         return true;
@@ -350,7 +351,7 @@ fn _insert_into_grid(
             id,
             "overflow".to_owned(),
             (operation).clone(),
-            None,
+            &(None),
             spanned,
         );
         return true;
@@ -379,7 +380,7 @@ fn _insert_into_grid(
                     let mut cell = grid
                         .cells
                         .iter()
-                        .find(|(key, _)| key == &(key).clone())
+                        .find(|(entry_key, _)| entry_key == &(key).clone())
                         .map(|(_, value)| value.clone());
                     if ((cell).clone()).is_none() {
                         cell = Some(GridCell {
@@ -446,12 +447,12 @@ fn _update_grid_object(
     id: SpatialObjectId,
     bounds: &SpatialAabb2D,
 ) -> bool {
-    let was_missing = (!grid.bounds.iter().any(|(key, _)| key == &id))
-        && (!grid.declined.iter().any(|(key, _)| key == &id));
+    let was_missing = (!grid.bounds.iter().any(|(entry_key, _)| entry_key == &id))
+        && (!grid.declined.iter().any(|(entry_key, _)| entry_key == &id));
     let mut previous = grid
         .bounds
         .iter()
-        .find(|(key, _)| key == &id)
+        .find(|(entry_key, _)| entry_key == &id)
         .map(|(_, value)| value.clone());
     if ((((((((previous).is_some()) && (!grid.overflow.iter().any(|item| item == &id)))
         && ((bounds.min_x).is_finite()))
@@ -487,7 +488,9 @@ fn _update_grid_object(
             id,
             (explanation.mode).clone(),
             "update".to_owned(),
-            Some((flighthq_types::SpatialIndexingReason::A("missing-id".to_owned())).clone()),
+            &(Some(flighthq_types::SpatialIndexingReason::A(
+                "missing-id".to_owned(),
+            ))),
             0.0_f64,
         );
     }
@@ -594,7 +597,7 @@ fn _remove_from_grid(grid: &mut UniformGrid, id: SpatialObjectId) -> () {
     let bounds = grid
         .bounds
         .iter()
-        .find(|(key, _)| key == &id)
+        .find(|(entry_key, _)| entry_key == &id)
         .map(|(_, value)| value.clone());
     if (bounds).is_none() {
         return;
@@ -640,7 +643,7 @@ fn _remove_from_grid(grid: &mut UniformGrid, id: SpatialObjectId) -> () {
                     let mut cell = grid
                         .cells
                         .iter()
-                        .find(|(key, _)| key == &(key).clone())
+                        .find(|(entry_key, _)| entry_key == &(key).clone())
                         .map(|(_, value)| value.clone());
                     if (cell).is_none() {
                         {
@@ -706,7 +709,7 @@ fn _query_grid_overflow_pairs(grid: &UniformGrid, out: &mut Vec<SpatialPair>) ->
         let bounds = grid
             .bounds
             .iter()
-            .find(|(key, _)| key == &id)
+            .find(|(entry_key, _)| entry_key == &id)
             .map(|(_, value)| value.clone());
         if ((bounds).clone()).is_none() {
             continue;
@@ -775,12 +778,12 @@ fn _query_grid_pairs(grid: &mut UniformGrid, out: &mut Vec<SpatialPair>) -> () {
                         let ab = grid
                             .bounds
                             .iter()
-                            .find(|(key, _)| key == &a)
+                            .find(|(entry_key, _)| entry_key == &a)
                             .map(|(_, value)| value.clone());
                         let bb = grid
                             .bounds
                             .iter()
-                            .find(|(key, _)| key == &b)
+                            .find(|(entry_key, _)| entry_key == &b)
                             .map(|(_, value)| value.clone());
                         if ((ab).is_none()) || ((bb).is_none()) {
                             {
@@ -840,7 +843,7 @@ fn _report_grid_indexing(
     id: SpatialObjectId,
     mode: SpatialIndexingMode,
     operation: SpatialIndexingOperation,
-    reason: Option<SpatialIndexingReason>,
+    reason: &Option<SpatialIndexingReason>,
     would_occupy_bucket_count: f64,
 ) -> () {
     if ((*_INDEXING_GUARD.lock().unwrap()).clone()).is_none() {
@@ -855,7 +858,7 @@ fn _report_grid_indexing(
                 id: id,
                 mode: (mode).clone(),
                 operation: (operation).clone(),
-                reason: (reason).clone(),
+                reason: (*reason).clone(),
                 would_occupy_bucket_count: would_occupy_bucket_count,
             });
             SpatialIndexingNotice {
@@ -879,14 +882,14 @@ fn _query_grid_point(grid: &UniformGrid, x: f64, y: f64, out: &mut Vec<SpatialOb
     let cell = grid
         .cells
         .iter()
-        .find(|(key, _)| key == &_cell_key(_cell_index(x, cs), _cell_index(y, cs)))
+        .find(|(entry_key, _)| entry_key == &_cell_key(_cell_index(x, cs), _cell_index(y, cs)))
         .map(|(_, value)| value.clone());
     if (cell).is_some() {
         for id in ((cell.as_ref().unwrap().ids).clone()).iter().cloned() {
             let bounds = grid
                 .bounds
                 .iter()
-                .find(|(key, _)| key == &id)
+                .find(|(entry_key, _)| entry_key == &id)
                 .map(|(_, value)| value.clone());
             if (((bounds).clone()).is_some())
                 && (_is_spatial_aabb_contains_point(bounds.as_ref().unwrap(), x, y))
@@ -899,7 +902,7 @@ fn _query_grid_point(grid: &UniformGrid, x: f64, y: f64, out: &mut Vec<SpatialOb
         let bounds = grid
             .bounds
             .iter()
-            .find(|(key, _)| key == &id)
+            .find(|(entry_key, _)| entry_key == &id)
             .map(|(_, value)| value.clone());
         if (((bounds).clone()).is_some())
             && (_is_spatial_aabb_contains_point(bounds.as_ref().unwrap(), x, y))
@@ -929,7 +932,7 @@ fn _query_grid_ray(
         let bounds = grid
             .bounds
             .iter()
-            .find(|(key, _)| key == &id)
+            .find(|(entry_key, _)| entry_key == &id)
             .map(|(_, value)| value.clone());
         if ((bounds).is_some())
             && (_ray_box_entry_t(
@@ -1020,7 +1023,7 @@ fn _query_grid_ray(
             let cell = grid
                 .cells
                 .iter()
-                .find(|(key, _)| key == &_cell_key(cx, cy))
+                .find(|(entry_key, _)| entry_key == &_cell_key(cx, cy))
                 .map(|(_, value)| value.clone());
             if (cell).is_some() {
                 for id in ((cell.as_ref().unwrap().ids).clone()).iter().cloned() {
@@ -1049,7 +1052,7 @@ fn _query_grid_ray(
         let bounds = grid
             .bounds
             .iter()
-            .find(|(key, _)| key == &id)
+            .find(|(entry_key, _)| entry_key == &id)
             .map(|(_, value)| value.clone());
         if ((bounds).is_some())
             && (_ray_box_entry_t(
@@ -1100,7 +1103,7 @@ fn _query_grid_region(
                     let cell = grid
                         .cells
                         .iter()
-                        .find(|(key, _)| key == &_cell_key(cx, cy))
+                        .find(|(entry_key, _)| entry_key == &_cell_key(cx, cy))
                         .map(|(_, value)| value.clone());
                     if (cell).is_none() {
                         {
@@ -1122,7 +1125,7 @@ fn _query_grid_region(
                         let bounds = grid
                             .bounds
                             .iter()
-                            .find(|(key, _)| key == &id)
+                            .find(|(entry_key, _)| entry_key == &id)
                             .map(|(_, value)| value.clone());
                         if (((bounds).clone()).is_some())
                             && (_is_spatial_aabb_overlapping(bounds.as_ref().unwrap(), region))
@@ -1146,7 +1149,7 @@ fn _query_grid_region(
         let bounds = grid
             .bounds
             .iter()
-            .find(|(key, _)| key == &id)
+            .find(|(entry_key, _)| entry_key == &id)
             .map(|(_, value)| value.clone());
         if (((bounds).clone()).is_some())
             && (_is_spatial_aabb_overlapping(bounds.as_ref().unwrap(), region))

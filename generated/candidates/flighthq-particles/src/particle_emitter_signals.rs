@@ -26,11 +26,11 @@ pub fn enable_particle_emitter_signals(state: crate::OpaqueHostValue) -> Particl
     );
     return {
         s.iter()
-            .find(|(key, _)| key == &*SIGNALS_SLOT)
+            .find(|(entry_key, _)| entry_key == &*SIGNALS_SLOT)
             .map(|(_, value)| value)
             .expect("TypeScript Record key was absent")?? = Some(create_particle_emitter_signals());
         s.iter()
-            .find(|(key, _)| key == &*SIGNALS_SLOT)
+            .find(|(entry_key, _)| entry_key == &*SIGNALS_SLOT)
             .map(|(_, value)| value)
             .expect("TypeScript Record key was absent")
     };

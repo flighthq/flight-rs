@@ -31,7 +31,7 @@ pub static VERTEX_DISPLACE_MODIFIER_SOURCE: std::sync::LazyLock<
 });
 
 // Source: upstream/packages/types/src/VertexDisplaceModifier.ts:15 (sha256:63b40fd9115022e1a0623d7422b4d5e7a9348cb474328b05a65f0244020fb586)
-pub type VertexDisplaceModifierSource = crate::OpaqueHostValue;
+pub type VertexDisplaceModifierSource = String;
 
 // Source: upstream/packages/types/src/VertexDisplaceModifier.ts:28 (sha256:6e37b62b50d5b48500aae731c8675045a8e2096273488315f353d68df10c6e8c)
 #[derive(Clone, Default)]

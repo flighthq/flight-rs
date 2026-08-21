@@ -19,7 +19,7 @@ pub fn collect_import_diagnostics(
 
 // Source: upstream/packages/importdiagnostics/src/importDiagnosticCollector.ts:36 (sha256:cc03bd6618c3b38da48611ce37104e816d07c7447c267cddcc109075c3ddea8b)
 pub fn report_import_diagnostic(
-    sink: Option<Vec<ImportDiagnostic>>,
+    sink: &mut Option<Vec<ImportDiagnostic>>,
     severity: ImportDiagnosticSeverity,
     kind: String,
     origin: String,

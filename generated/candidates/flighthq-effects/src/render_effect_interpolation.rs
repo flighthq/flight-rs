@@ -29,19 +29,25 @@ pub fn lerp_render_effect(
     let mut string_keys: Vec<String> = Vec::new();
     let a_rec = a;
     let b_rec = b;
-    for key in (crate::host_value::<()>("host.keys")).iter().cloned() {
-        if (key == "kind") {
+    for key in (a_rec
+        .iter()
+        .map(|(entry_key, _)| entry_key.clone())
+        .collect::<Vec<_>>())
+    .iter()
+    .cloned()
+    {
+        if ((key).clone() == "kind") {
             continue;
         }
         let va = a_rec
             .iter()
-            .find(|(key, _)| key == &key)
+            .find(|(entry_key, _)| entry_key == &(key).clone())
             .map(|(_, value)| value)
             .expect("TypeScript Record key was absent")
             .clone();
         let vb = b_rec
             .iter()
-            .find(|(key, _)| key == &key)
+            .find(|(entry_key, _)| entry_key == &(key).clone())
             .map(|(_, value)| value)
             .expect("TypeScript Record key was absent")
             .clone();
@@ -71,7 +77,7 @@ pub fn lerp_render_effect(
             } == "number")
         {
             {
-                let __flight_value = key;
+                let __flight_value = (key).clone();
                 if !numeric_keys.contains(&__flight_value) {
                     numeric_keys.push(__flight_value);
                 }
@@ -103,7 +109,7 @@ pub fn lerp_render_effect(
                 } == "boolean")
             {
                 {
-                    let __flight_value = key;
+                    let __flight_value = (key).clone();
                     if !boolean_keys.contains(&__flight_value) {
                         boolean_keys.push(__flight_value);
                     }
@@ -135,7 +141,7 @@ pub fn lerp_render_effect(
                     } == "string")
                 {
                     {
-                        let __flight_value = key;
+                        let __flight_value = (key).clone();
                         if !string_keys.contains(&__flight_value) {
                             string_keys.push(__flight_value);
                         }
@@ -144,17 +150,23 @@ pub fn lerp_render_effect(
             }
         }
     }
-    for key in (crate::host_value::<()>("host.keys")).iter().cloned() {
-        if (key == "kind") {
+    for key in (b_rec
+        .iter()
+        .map(|(entry_key, _)| entry_key.clone())
+        .collect::<Vec<_>>())
+    .iter()
+    .cloned()
+    {
+        if ((key).clone() == "kind") {
             continue;
         }
-        if ((!numeric_keys.iter().any(|item| item == &key))
-            && (!boolean_keys.iter().any(|item| item == &key)))
-            && (!string_keys.iter().any(|item| item == &key))
+        if ((!numeric_keys.iter().any(|item| item == &(key).clone()))
+            && (!boolean_keys.iter().any(|item| item == &(key).clone())))
+            && (!string_keys.iter().any(|item| item == &(key).clone()))
         {
             let vb = b_rec
                 .iter()
-                .find(|(key, _)| key == &key)
+                .find(|(entry_key, _)| entry_key == &(key).clone())
                 .map(|(_, value)| value)
                 .expect("TypeScript Record key was absent")
                 .clone();
@@ -172,7 +184,7 @@ pub fn lerp_render_effect(
             } == "number")
             {
                 {
-                    let __flight_value = key;
+                    let __flight_value = (key).clone();
                     if !numeric_keys.contains(&__flight_value) {
                         numeric_keys.push(__flight_value);
                     }
@@ -192,7 +204,7 @@ pub fn lerp_render_effect(
                 } == "boolean")
                 {
                     {
-                        let __flight_value = key;
+                        let __flight_value = (key).clone();
                         if !boolean_keys.contains(&__flight_value) {
                             boolean_keys.push(__flight_value);
                         }
@@ -212,7 +224,7 @@ pub fn lerp_render_effect(
                     } == "string")
                     {
                         {
-                            let __flight_value = key;
+                            let __flight_value = (key).clone();
                             if !string_keys.contains(&__flight_value) {
                                 string_keys.push(__flight_value);
                             }
@@ -226,20 +238,20 @@ pub fn lerp_render_effect(
     for key in (numeric_keys).iter().cloned() {
         let va = a_rec
             .iter()
-            .find(|(key, _)| key == &key)
+            .find(|(entry_key, _)| entry_key == &key)
             .map(|(_, value)| value)
             .expect("TypeScript Record key was absent")
             .clone();
         let vb = b_rec
             .iter()
-            .find(|(key, _)| key == &key)
+            .find(|(entry_key, _)| entry_key == &key)
             .map(|(_, value)| value)
             .expect("TypeScript Record key was absent")
             .clone();
         if ((va).is_some()) && ((vb).is_some()) {
             out_record
                 .iter()
-                .find(|(key, _)| key == &key)
+                .find(|(entry_key, _)| entry_key == &key)
                 .map(|(_, value)| value)
                 .expect("TypeScript Record key was absent") = {
                 let __flight_portable_source = (va + ((vb - va) * tc));
@@ -251,7 +263,7 @@ pub fn lerp_render_effect(
         } else {
             out_record
                 .iter()
-                .find(|(key, _)| key == &key)
+                .find(|(entry_key, _)| entry_key == &key)
                 .map(|(_, value)| value)
                 .expect("TypeScript Record key was absent") = {
                 let __flight_portable_source = if (tc < 0.5_f64) { va } else { vb };
@@ -265,19 +277,19 @@ pub fn lerp_render_effect(
     for key in (boolean_keys).iter().cloned() {
         out_record
             .iter()
-            .find(|(key, _)| key == &key)
+            .find(|(entry_key, _)| entry_key == &key)
             .map(|(_, value)| value)
             .expect("TypeScript Record key was absent") = if (tc < 0.5_f64) {
             a_rec
                 .iter()
-                .find(|(key, _)| key == &key)
+                .find(|(entry_key, _)| entry_key == &key)
                 .map(|(_, value)| value)
                 .expect("TypeScript Record key was absent")
                 .clone()
         } else {
             b_rec
                 .iter()
-                .find(|(key, _)| key == &key)
+                .find(|(entry_key, _)| entry_key == &key)
                 .map(|(_, value)| value)
                 .expect("TypeScript Record key was absent")
                 .clone()
@@ -286,19 +298,19 @@ pub fn lerp_render_effect(
     for key in (string_keys).iter().cloned() {
         out_record
             .iter()
-            .find(|(key, _)| key == &key)
+            .find(|(entry_key, _)| entry_key == &key)
             .map(|(_, value)| value)
             .expect("TypeScript Record key was absent") = if (tc < 0.5_f64) {
             a_rec
                 .iter()
-                .find(|(key, _)| key == &key)
+                .find(|(entry_key, _)| entry_key == &key)
                 .map(|(_, value)| value)
                 .expect("TypeScript Record key was absent")
                 .clone()
         } else {
             b_rec
                 .iter()
-                .find(|(key, _)| key == &key)
+                .find(|(entry_key, _)| entry_key == &key)
                 .map(|(_, value)| value)
                 .expect("TypeScript Record key was absent")
                 .clone()

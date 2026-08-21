@@ -1156,7 +1156,7 @@ pub fn compute_bitmap_text_local_bounds_rectangle(out: &mut Rectangle, source: &
 
 // Source: upstream/packages/bitmaptext/src/bitmapText.ts:44 (sha256:6f07b3ab25b39914170c6b46b5359489f5a586293575259a551ffd1ee9b4f37c)
 pub fn create_bitmap_text(
-    glyph_source: Option<GlyphSource>,
+    glyph_source: &Option<GlyphSource>,
     options: Option<BitmapTextOptions>,
 ) -> BitmapText {
     let mut bitmap_text = create_node2_d(
@@ -1175,7 +1175,7 @@ pub fn create_bitmap_text(
         )
             as Box<dyn FnMut(Option<R>) -> R + Send + 'static>))),
     );
-    bitmap_text.data.glyph_source = (glyph_source).clone();
+    bitmap_text.data.glyph_source = (*glyph_source).clone();
     if (options).is_some() {
         apply_bitmap_text_options(&mut bitmap_text.data, &options.as_ref().unwrap());
     }
@@ -2180,9 +2180,9 @@ pub fn set_bitmap_text_align(target: &mut BitmapText, align: BitmapTextAlign) ->
 // Source: upstream/packages/bitmaptext/src/bitmapText.ts:107 (sha256:f3979369c293d3771fc2e96a8d8dfb6ba5251701b4afc9a02b5e1fe11752ae7e)
 pub fn set_bitmap_text_glyph_source(
     target: &mut BitmapText,
-    glyph_source: Option<GlyphSource>,
+    glyph_source: &Option<GlyphSource>,
 ) -> () {
-    target.data.glyph_source = (glyph_source).clone();
+    target.data.glyph_source = (*glyph_source).clone();
 }
 
 // Source: upstream/packages/bitmaptext/src/bitmapText.ts:111 (sha256:2248db62f27e90cd43fff4588f3775db6d8cac400b6addd2ae87914f04ce47c7)

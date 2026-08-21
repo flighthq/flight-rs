@@ -35,7 +35,7 @@ pub static COMPRESSION_FRAMING: std::sync::LazyLock<CompressionFramingValues> =
     });
 
 // Source: upstream/packages/types/src/Compression.ts:22 (sha256:0663a732b389fdc601327a8fa1cd571b28fb2f1d9f830a4e5c70d8c27236d3c2)
-pub type CompressionFraming = crate::OpaqueHostValue;
+pub type CompressionFraming = String;
 
 // Source: upstream/packages/types/src/Compression.ts:28 (sha256:b302f6bcd038f52a990cbbaf9111552c232fb22e4e6a3d8f88eb03888ab5551e)
 #[derive(Clone, Default)]
@@ -61,4 +61,4 @@ pub static COMPRESSION: std::sync::LazyLock<CompressionValues> =
     });
 
 // Source: upstream/packages/types/src/Compression.ts:38 (sha256:4a4cbb08689ef32ef9ed902e3c65e57fa3f9653d018d17766641b43294c759e3)
-pub type Compression = crate::OpaqueHostValue;
+pub type Compression = String;

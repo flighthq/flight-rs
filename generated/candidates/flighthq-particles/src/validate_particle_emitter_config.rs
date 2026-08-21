@@ -159,7 +159,7 @@ pub fn normalize_particle_emitter_config(
     for field in ((*NUMERIC_FIELDS).clone()).iter().cloned() {
         if (!(mutable
             .iter()
-            .find(|(key, _)| key == &(field).clone())
+            .find(|(entry_key, _)| entry_key == &(field).clone())
             .map(|(_, value)| value)
             .expect("TypeScript Record key was absent")
             .clone())
@@ -167,28 +167,28 @@ pub fn normalize_particle_emitter_config(
         {
             mutable
                 .iter()
-                .find(|(key, _)| key == &(field).clone())
+                .find(|(entry_key, _)| entry_key == &(field).clone())
                 .map(|(_, value)| value)
                 .expect("TypeScript Record key was absent") = defaults_rec
                 .iter()
-                .find(|(key, _)| key == &(field).clone())
+                .find(|(entry_key, _)| entry_key == &(field).clone())
                 .map(|(_, value)| value)
                 .expect("TypeScript Record key was absent")
                 .clone();
         }
     }
     return ParticleEmitterConfig {
-        alpha_curve: if is_finite_curve(((out.alpha_curve).clone()).clone()) {
+        alpha_curve: if is_finite_curve(&(out.alpha_curve)) {
             (out.alpha_curve).clone()
         } else {
             None
         },
-        color_curve: if is_finite_curve(((out.color_curve).clone()).clone()) {
+        color_curve: if is_finite_curve(&(out.color_curve)) {
             (out.color_curve).clone()
         } else {
             None
         },
-        scale_curve: if is_finite_curve(((out.scale_curve).clone()).clone()) {
+        scale_curve: if is_finite_curve(&(out.scale_curve)) {
             (out.scale_curve).clone()
         } else {
             None
@@ -297,29 +297,14 @@ pub fn validate_particle_emitter_config(
     );
     report_unit_range(&mut issues, config, &"alphaStart");
     report_unit_range(&mut issues, config, &"alphaEnd");
-    report_curve(
-        &mut issues,
-        ((config.alpha_curve).clone()).clone(),
-        &"alphaCurve",
-        1.0_f64,
-    );
-    report_curve(
-        &mut issues,
-        ((config.color_curve).clone()).clone(),
-        &"colorCurve",
-        3.0_f64,
-    );
-    report_curve(
-        &mut issues,
-        ((config.scale_curve).clone()).clone(),
-        &"scaleCurve",
-        1.0_f64,
-    );
+    report_curve(&mut issues, &(config.alpha_curve), &"alphaCurve", 1.0_f64);
+    report_curve(&mut issues, &(config.color_curve), &"colorCurve", 3.0_f64);
+    report_curve(&mut issues, &(config.scale_curve), &"scaleCurve", 1.0_f64);
     return issues;
 }
 
 // Source: upstream/packages/particles/src/validateParticleEmitterConfig.ts:182 (sha256:240fb75be0e4ecb4ddb72582c461f9119053b2a7ae5ebc33752483d6703ed0a0)
-fn is_finite_curve(curve: Option<Vec<f64>>) -> bool {
+fn is_finite_curve(curve: &Option<Vec<f64>>) -> bool {
     if ((curve).is_none()) || ((curve.as_ref().unwrap().len() as f64) == 0.0_f64) {
         return false;
     }
@@ -341,7 +326,7 @@ fn is_finite_curve(curve: Option<Vec<f64>>) -> bool {
 // Source: upstream/packages/particles/src/validateParticleEmitterConfig.ts:190 (sha256:ec6018485ce7aa3befb4ddf9c80567fe1a597599f8ec09c769e6aa16b82c0bf7)
 fn report_curve(
     issues: &mut Vec<ParticleConfigIssue>,
-    curve: Option<Vec<f64>>,
+    curve: &Option<Vec<f64>>,
     field: &ParticleEmitterConfig,
     stride: f64,
 ) -> () {

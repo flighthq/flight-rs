@@ -32,7 +32,7 @@ pub static STATECHART_INPUT_KIND: std::sync::LazyLock<StatechartInputKindValues>
     });
 
 // Source: upstream/packages/types/src/Statechart.ts:11 (sha256:bb689f8bc1176a9e4880c33749584d051de85eb6f30361729d88dee2d8955e64)
-pub type StatechartInputKind = crate::OpaqueHostValue;
+pub type StatechartInputKind = String;
 
 // Source: upstream/packages/types/src/Statechart.ts:15 (sha256:f0b18429b21bfbc477142afb8582cbb92cba362d98cc83dfdbe19d086782341e)
 #[derive(Clone, Default)]
@@ -64,7 +64,7 @@ pub static STATECHART_COMPARISON: std::sync::LazyLock<StatechartComparisonValues
     });
 
 // Source: upstream/packages/types/src/Statechart.ts:24 (sha256:0328ab67dc71833f39654a7ea41aa55d42bf52747c751fa309c7ff21b63129c0)
-pub type StatechartComparison = crate::OpaqueHostValue;
+pub type StatechartComparison = String;
 
 // Source: upstream/packages/types/src/Statechart.ts:28 (sha256:53bef091e22da64168583e29f9589fb055017490b6c47a1e86361d07ea226e22)
 pub const STATECHART_ATOMIC_STATE_KIND: &'static str = "Statechart.Atomic";
@@ -223,7 +223,7 @@ pub static STATECHART_TRANSITION_STATUS: std::sync::LazyLock<StatechartTransitio
     });
 
 // Source: upstream/packages/types/src/Statechart.ts:113 (sha256:92cb7742ea4bdc3b0e58fbcd9bff28680fef986fe5de7ebfa416f4929fba6be2)
-pub type StatechartTransitionStatus = crate::OpaqueHostValue;
+pub type StatechartTransitionStatus = String;
 
 // Source: upstream/packages/types/src/Statechart.ts:115 (sha256:f7c1c8098f7f7c82fe01a7ddf2d805715c481cb04fccaf02da88b46b1d167363)
 #[derive(Clone, Default)]

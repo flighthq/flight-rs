@@ -41,8 +41,8 @@ pub fn get_text_segmenter_backend() -> TextSegmenterBackend {
 }
 
 // Source: upstream/packages/textsegment/src/textSegmenterBackend.ts:24 (sha256:598a62c1dae3193fd76072bf9a00672a2d17ed2ce2914fde26ba57bdc0e40bda)
-pub fn set_text_segmenter_backend(backend: Option<TextSegmenterBackend>) -> () {
-    (*_BACKEND.lock().unwrap()) = (backend).clone();
+pub fn set_text_segmenter_backend(backend: &Option<TextSegmenterBackend>) -> () {
+    (*_BACKEND.lock().unwrap()) = (*backend).clone();
 }
 
 // Source: upstream/packages/textsegment/src/textSegmenterBackend.ts:28 (sha256:14f21ae90a84f4f8ea4fe7406c771f684b6ab654bfd6b52172a5fc790409bbf1)

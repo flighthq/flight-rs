@@ -30,7 +30,7 @@ pub static IMAGE_RESOURCE_REFERENCE_KIND: std::sync::LazyLock<ImageResourceRefer
     });
 
 // Source: upstream/packages/types/src/ImageResourceReference.ts:32 (sha256:34acad0284315327c3fd7b697c781dcf38d9a3a4a3568731d05921df7165a25b)
-pub type ImageResourceReferenceKind = crate::OpaqueHostValue;
+pub type ImageResourceReferenceKind = String;
 
 // Source: upstream/packages/types/src/ImageResourceReference.ts:34 (sha256:063d0fc61d13332353c38bdbdd601819e53bb35e42fecd5ebdf2c78b9187ec82)
 #[derive(Clone, Default)]
@@ -54,7 +54,7 @@ pub static IMAGE_RESOURCE_FAILURE_KIND: std::sync::LazyLock<ImageResourceFailure
     });
 
 // Source: upstream/packages/types/src/ImageResourceReference.ts:39 (sha256:7b99275c8a6e542c4acd459174d87500a404da82570783708d07632e55b52165)
-pub type ImageResourceFailureKind = crate::OpaqueHostValue;
+pub type ImageResourceFailureKind = String;
 
 // Source: upstream/packages/types/src/ImageResourceReference.ts:43 (sha256:4dca6d23eef328dc9578b362b0d2a4ee611c3117b13167419d06d836724816e4)
 #[derive(Clone, Default)]

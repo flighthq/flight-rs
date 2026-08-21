@@ -43,8 +43,8 @@ pub fn get_bidi_class_backend() -> BidiClassBackend {
 }
 
 // Source: upstream/packages/textbidi/src/bidiClassBackend.ts:27 (sha256:7e7dcb62c648fd18d53fc53823253ec4ec7509a56cf077b3f837f97903ddcf96)
-pub fn set_bidi_class_backend(backend: Option<BidiClassBackend>) -> () {
-    (*_BACKEND.lock().unwrap()) = (backend).clone();
+pub fn set_bidi_class_backend(backend: &Option<BidiClassBackend>) -> () {
+    (*_BACKEND.lock().unwrap()) = (*backend).clone();
 }
 
 // Source: upstream/packages/textbidi/src/bidiClassBackend.ts:31 (sha256:45fa3a8626983184e266e82dc4a380c55780fd086c9ed6f287b16e6d348d35c9)

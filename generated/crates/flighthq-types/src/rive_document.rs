@@ -259,7 +259,7 @@ pub static RIVE_ANIMATION_LOOP: std::sync::LazyLock<RiveAnimationLoopValues> =
     });
 
 // Source: upstream/packages/types/src/RiveDocument.ts:203 (sha256:94ee1af77fc2286ee4fda85cf0452aca04267d17dc6a36d5ab0005b0af8aca22)
-pub type RiveAnimationLoop = crate::OpaqueHostValue;
+pub type RiveAnimationLoop = String;
 
 // Source: upstream/packages/types/src/RiveDocument.ts:218 (sha256:b4bd83e330118ca77cefdb27e0c16480fd7bd49414f6d358cbdc07e05960f0fd)
 #[derive(Clone, Default)]
@@ -352,7 +352,7 @@ pub static RIVE_WEIGHTED_POINT_KIND: std::sync::LazyLock<RiveWeightedPointKindVa
     });
 
 // Source: upstream/packages/types/src/RiveDocument.ts:306 (sha256:286245f2740828e387c6284a6b569957a9ede33d9163db9d881538e801ac1900)
-pub type RiveWeightedPointKind = crate::OpaqueHostValue;
+pub type RiveWeightedPointKind = String;
 
 // Source: upstream/packages/types/src/RiveDocument.ts:316 (sha256:601a40b2969bbc822a6e4a0ed6f221a387c39d978d0aa0856d9cfb8755349044)
 #[derive(Clone, Default)]

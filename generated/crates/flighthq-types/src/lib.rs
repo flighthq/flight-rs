@@ -5,9 +5,9 @@
 pub use flighthq_runtime::{
     DeterministicFlightTaskScheduler, FlightHostUnavailable, FlightJsonError, FlightRejection,
     FlightRuntimeUnavailable, FlightTask, FlightTaskError, FlightTaskOrigin, FlightTaskOutcome,
-    FlightTaskScheduler, FlightValue, OpaqueHostValue, ScheduledFlightTask, flight_json_stringify,
-    flight_task_yield, host_task, install_deterministic_flight_task_scheduler,
-    install_flight_task_scheduler,
+    FlightTaskScheduler, FlightUnion2, FlightValue, OpaqueHostValue, ScheduledFlightTask,
+    flight_json_stringify, flight_task_yield, host_task,
+    install_deterministic_flight_task_scheduler, install_flight_task_scheduler,
 };
 
 /// Native fallback for dynamically typed host reads and calls.
@@ -251,13 +251,6 @@ pub fn flight_now_millis() -> f64 {
         .unwrap_or_default()
         .as_secs_f64()
         * 1000.0
-}
-
-/// Mechanical representation for TypeScript unions whose variants need distinct native storage.
-#[derive(Clone)]
-pub enum FlightUnion2<A, B> {
-    A(A),
-    B(B),
 }
 
 mod aabb;

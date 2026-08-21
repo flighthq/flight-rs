@@ -152,7 +152,7 @@ pub fn create_spritesheet_from_data(data: &SpritesheetData, atlas: &TextureAtlas
                 let region_id = if ((fd.name).clone() != "") {
                     ((*name_to_region_id.lock().unwrap())
                         .iter()
-                        .find(|(key, _)| key == &(fd.name).clone())
+                        .find(|(entry_key, _)| entry_key == &(fd.name).clone())
                         .map(|(_, value)| value.clone()))
                     .unwrap_or(index)
                 } else {
@@ -250,7 +250,7 @@ pub fn create_spritesheet_from_data(data: &SpritesheetData, atlas: &TextureAtlas
                     {
                         let __flight_portable_source = (*frame_name_to_index.lock().unwrap())
                             .iter()
-                            .find(|(key, _)| key == &(n).clone())
+                            .find(|(entry_key, _)| entry_key == &(n).clone())
                             .map(|(_, value)| value.clone());
                         match (&__flight_portable_source).as_ref() {
                             Some(value) => crate::FlightValue::Number(*(value) as f64),
@@ -268,7 +268,7 @@ pub fn create_spritesheet_from_data(data: &SpritesheetData, atlas: &TextureAtlas
         };
         animations
             .iter()
-            .find(|(key, _)| key == &(ad.name).clone())
+            .find(|(entry_key, _)| entry_key == &(ad.name).clone())
             .map(|(_, value)| value)
             .expect("TypeScript Record key was absent") =
             create_spritesheet_animation(Some(FlightPartialRecord3 {

@@ -157,8 +157,8 @@ pub fn prepare_haptics() -> () {
 }
 
 // Source: upstream/packages/haptics/src/haptics.ts:87 (sha256:5b029e6ffe5bb885e98ff5d9d9e68040918bed8361f712abf23ba92c226c2669)
-pub fn set_haptics_backend(backend: Option<HapticsBackend>) -> () {
-    (*_BACKEND.lock().unwrap()) = (backend).clone();
+pub fn set_haptics_backend(backend: &Option<HapticsBackend>) -> () {
+    (*_BACKEND.lock().unwrap()) = (*backend).clone();
 }
 
 // Source: upstream/packages/haptics/src/haptics.ts:93 (sha256:1981b4ac71601a2daaeee7eeb02db8909e9d77cbb11faf0f69efde1ae55ccadd)

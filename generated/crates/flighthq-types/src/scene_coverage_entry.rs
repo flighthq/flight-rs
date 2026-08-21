@@ -66,7 +66,7 @@ pub static SCENE_COVERAGE: std::sync::LazyLock<SceneCoverageValues> =
     });
 
 // Source: upstream/packages/types/src/SceneCoverageEntry.ts:16 (sha256:f63e413d0aeddd22744b0d0b2e13e6851df3dd28e976f0c3df014fe6916d81d1)
-pub type SceneCoverage = crate::OpaqueHostValue;
+pub type SceneCoverage = String;
 
 // Source: upstream/packages/types/src/SceneCoverageEntry.ts:31 (sha256:924b771a0cedb874d826c2c9763d173d2ca878030ed5fc5e97c6640ef3d4edaf)
 #[derive(Clone)]

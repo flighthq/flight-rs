@@ -30,7 +30,7 @@ pub static SKELETON2_D_SLOT_ANIMATION_PATH: std::sync::LazyLock<Skeleton2DSlotAn
     });
 
 // Source: upstream/packages/types/src/Skeleton2DSlotAnimationTarget.ts:22 (sha256:1cd2642a4140fe435d1eaf2b99391f526aff9bdabdb2899083ee4a8ccf24d955)
-pub type Skeleton2DSlotAnimationPath = crate::OpaqueHostValue;
+pub type Skeleton2DSlotAnimationPath = String;
 
 // Source: upstream/packages/types/src/Skeleton2DSlotAnimationTarget.ts:48 (sha256:795fbb4ceced7f0fe3a8d91ec4a345824f74e53cd9f8f5a345cf27f92fa59917)
 #[derive(Clone, Default)]

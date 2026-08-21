@@ -32,4 +32,4 @@ pub static RESOURCE_RESOLUTION_STATE: std::sync::LazyLock<ResourceResolutionStat
     });
 
 // Source: upstream/packages/types/src/ResourceResolutionState.ts:20 (sha256:bd9345ec114ed8b323d413d80d2a5359289f48257620fe7937b4e9d4f5fcc1ed)
-pub type ResourceResolutionState = crate::OpaqueHostValue;
+pub type ResourceResolutionState = String;

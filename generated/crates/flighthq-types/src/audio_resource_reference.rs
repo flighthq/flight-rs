@@ -30,7 +30,7 @@ pub static AUDIO_RESOURCE_REFERENCE_KIND: std::sync::LazyLock<AudioResourceRefer
     });
 
 // Source: upstream/packages/types/src/AudioResourceReference.ts:30 (sha256:6c56e8501073d7f475a25bbca4584d9799304bae65fc188da7b8ccfe4787ad63)
-pub type AudioResourceReferenceKind = crate::OpaqueHostValue;
+pub type AudioResourceReferenceKind = String;
 
 // Source: upstream/packages/types/src/AudioResourceReference.ts:32 (sha256:42cbb69f81416a95f97163e52582c3d6ff3a430d7fcac9a1555acbdc8c3b753e)
 #[derive(Clone, Default)]
@@ -54,7 +54,7 @@ pub static AUDIO_RESOURCE_FAILURE_KIND: std::sync::LazyLock<AudioResourceFailure
     });
 
 // Source: upstream/packages/types/src/AudioResourceReference.ts:37 (sha256:6020e15889d3fbca8bfe6dbf22d6082500d08a7886ba2629dd3dea4abdd9c5ee)
-pub type AudioResourceFailureKind = crate::OpaqueHostValue;
+pub type AudioResourceFailureKind = String;
 
 // Source: upstream/packages/types/src/AudioResourceReference.ts:41 (sha256:f56c115f23cbca0888a011b52611f386b26e7d3107bda8aac7b9ed073138ffe4)
 #[derive(Clone, Default)]

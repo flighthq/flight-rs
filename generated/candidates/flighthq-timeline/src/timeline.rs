@@ -155,7 +155,7 @@ pub fn get_timeline_frame_script(
         .as_mut()
         .unwrap()
         .iter()
-        .find(|(key, _)| key == &resolved)
+        .find(|(entry_key, _)| entry_key == &resolved)
         .map(|(_, value)| value.clone());
 }
 
@@ -408,7 +408,7 @@ fn fire_construct_frame(timeline: &mut Timeline) -> bool {
             .as_mut()
             .unwrap()
             .iter()
-            .find(|(key, _)| key == &current)
+            .find(|(entry_key, _)| entry_key == &current)
             .map(|(_, value)| value.clone());
         if ((script).is_some()) && ((target).is_some()) {
             script.as_ref().unwrap().lock().unwrap()((target).clone().unwrap(), current);

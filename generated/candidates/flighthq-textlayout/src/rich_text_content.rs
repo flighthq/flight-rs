@@ -114,7 +114,7 @@ fn append_text(
         );
     }
     let start = (out.text.encode_utf16().count() as f64);
-    out.text += (value).clone();
+    out.text.push_str(&((value).clone()));
     {
         let __flight_argument_3 = (out.text.encode_utf16().count() as f64);
         write_format_range(&mut out.format_ranges, format, start, __flight_argument_3)
@@ -225,7 +225,7 @@ fn decode_html_entities(value: String) -> String {
             }
             return NAMED_ENTITIES
                 .iter()
-                .find(|(key, _)| key == &(lower).clone())
+                .find(|(entry_key, _)| entry_key == &(lower).clone())
                 .map(|(_, value)| value)
                 .expect("TypeScript Record key was absent")
                 .clone();
@@ -292,8 +292,8 @@ fn write_format_range(
 
 // Source: upstream/packages/textlayout/src/richTextContent.ts:149 (sha256:8fd21605927746f23b9de316987d4358bd6fa1e6040a447988bb6f6191cdb340)
 fn text_format_equals(a: &TextFormat, b: &TextFormat) -> bool {
-    let a_keys = crate::host_value::<Vec<TextFormat>>("host.keys");
-    let b_keys = crate::host_value::<Vec<TextFormat>>("host.keys");
+    let a_keys = crate::host_value::<Vec<String>>("host.Object.keys");
+    let b_keys = crate::host_value::<Vec<String>>("host.Object.keys");
     if ((a_keys.len() as f64) != (b_keys.len() as f64)) {
         return false;
     }

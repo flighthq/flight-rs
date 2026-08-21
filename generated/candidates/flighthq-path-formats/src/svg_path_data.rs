@@ -36,7 +36,7 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
     let mut last_control2_y = 0.0_f64;
     let mut last_quad_control_x = 0.0_f64;
     let mut last_quad_control_y = 0.0_f64;
-    let mut last_kind = "";
+    let mut last_kind = "".to_owned();
     let mut skip_separators: std::sync::Arc<
         std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>,
     > = std::sync::Arc::new(std::sync::Mutex::new(Box::new({

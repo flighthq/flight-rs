@@ -206,7 +206,7 @@ pub static LAYOUT_RESOLUTION_FAILURE_KIND: std::sync::LazyLock<LayoutResolutionF
     });
 
 // Source: upstream/packages/types/src/Layout.ts:91 (sha256:38be69efdbc392021430c9e4352ffca57b72b0b7eea161b096692b2d7832f620)
-pub type LayoutResolutionFailureKind = crate::OpaqueHostValue;
+pub type LayoutResolutionFailureKind = String;
 
 // Source: upstream/packages/types/src/Layout.ts:94 (sha256:074364b39a9696c6d18fa06a3cb02c2e638a943edf36025e32dda967c7ce4493)
 #[derive(Clone, Default)]

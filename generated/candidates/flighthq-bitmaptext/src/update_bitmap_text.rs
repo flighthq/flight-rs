@@ -1252,7 +1252,7 @@ pub fn update_bitmap_text(bitmap_text: &BitmapText) -> () {
                             .unwrap()
                             .region_by_codepoint
                             .iter()
-                            .find(|(key, _)| key == &glyph.codepoint)
+                            .find(|(entry_key, _)| entry_key == &glyph.codepoint)
                             .map(|(_, value)| value.clone());
                         if (region_id).is_none() {
                             add_texture_atlas_region(
@@ -1481,7 +1481,7 @@ fn ensure_bitmap_text_page(
 ) -> Option<BitmapTextPageContext> {
     let cached = pages
         .iter()
-        .find(|(key, _)| key == &page)
+        .find(|(entry_key, _)| entry_key == &page)
         .map(|(_, value)| value.clone());
     if (cached).is_some() {
         return Some((cached.as_ref().unwrap()).clone());
@@ -1628,7 +1628,7 @@ fn ensure_bitmap_text_page(
                     None => crate::FlightValue::Null,
                 }
             },
-            Some(((image.as_ref().unwrap()).clone()).clone()),
+            &(Some((image.as_ref().unwrap()).clone())),
         );
     }
     let mut context: BitmapTextPageContext = BitmapTextPageContext {

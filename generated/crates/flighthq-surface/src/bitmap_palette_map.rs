@@ -13,10 +13,10 @@ use flighthq_types::BitmapRegion;
 pub fn apply_bitmap_palette_map(
     dest: &mut BitmapRegion,
     source: &BitmapRegion,
-    red_map: Option<Vec<f64>>,
-    green_map: Option<Vec<f64>>,
-    blue_map: Option<Vec<f64>>,
-    alpha_map: Option<Vec<f64>>,
+    red_map: &Option<Vec<f64>>,
+    green_map: &Option<Vec<f64>>,
+    blue_map: &Option<Vec<f64>>,
+    alpha_map: &Option<Vec<f64>>,
 ) -> () {
     let w = (dest.width).min(source.width);
     let h = (dest.height).min(source.height);

@@ -402,7 +402,7 @@ pub fn parse_user_agent_pointer_width(arch: String) -> f64 {
 
 // Source: upstream/packages/useragent/src/userAgent.ts:146 (sha256:c23d0d9818a2b32349680c667b0203c07f336594eb9dbe37ce12b90774559b08)
 pub fn parse_user_agent_runtime(
-    win: Option<Vec<(String, crate::OpaqueHostValue)>>,
+    win: &Option<Vec<(String, crate::OpaqueHostValue)>>,
 ) -> PlatformRuntime {
     if (win).is_none() {
         return "unknown".to_owned();
@@ -411,13 +411,13 @@ pub fn parse_user_agent_runtime(
     if ((proc.as_ref().and_then(|entries| {
         entries
             .iter()
-            .find(|(key, _)| key == &"versions".to_owned())
+            .find(|(entry_key, _)| entry_key == &"versions".to_owned())
             .map(|(_, value)| value.clone())
     }))
     .is_some())
         && (match &(crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast")
             .iter()
-            .find(|(key, _)| key == &"electron".to_owned())
+            .find(|(entry_key, _)| entry_key == &"electron".to_owned())
             .map(|(_, value)| value.clone())
             .expect("TypeScript Record key was absent"))
         {
@@ -438,7 +438,7 @@ pub fn parse_user_agent_runtime(
         .as_ref()
         .unwrap()
         .iter()
-        .find(|(key, _)| key == &"__TAURI__".to_owned())
+        .find(|(entry_key, _)| entry_key == &"__TAURI__".to_owned())
         .map(|(_, value)| value.clone())
         .expect("TypeScript Record key was absent"))
     {
@@ -458,7 +458,7 @@ pub fn parse_user_agent_runtime(
         .as_ref()
         .unwrap()
         .iter()
-        .find(|(key, _)| key == &"Capacitor".to_owned())
+        .find(|(entry_key, _)| entry_key == &"Capacitor".to_owned())
         .map(|(_, value)| value.clone())
         .expect("TypeScript Record key was absent"))
     {

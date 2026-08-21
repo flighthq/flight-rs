@@ -40,7 +40,7 @@ pub fn create_color_blind_simulation_adjustment(
     let type_: ColorBlindType = ((options.type_).clone()).unwrap_or("deuteranopia".to_owned());
     let m = COLOR_BLIND_MATRICES
         .iter()
-        .find(|(key, _)| key == &(type_).clone())
+        .find(|(entry_key, _)| entry_key == &(type_).clone())
         .map(|(_, value)| value)
         .expect("TypeScript Record key was absent")
         .clone();

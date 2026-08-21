@@ -13,7 +13,7 @@ pub fn get_xml_element_attribute(element: &XmlElement, name: String) -> Option<S
     let value = element
         .attributes
         .iter()
-        .find(|(key, _)| key == &(name).clone())
+        .find(|(entry_key, _)| entry_key == &(name).clone())
         .map(|(_, value)| value)
         .expect("TypeScript Record key was absent")
         .clone();
@@ -29,7 +29,7 @@ pub fn get_xml_element_attribute_number(element: &XmlElement, name: String) -> O
     let value = element
         .attributes
         .iter()
-        .find(|(key, _)| key == &(name).clone())
+        .find(|(entry_key, _)| entry_key == &(name).clone())
         .map(|(_, value)| value)
         .expect("TypeScript Record key was absent")
         .clone();

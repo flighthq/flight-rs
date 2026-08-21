@@ -5,9 +5,9 @@
 pub use flighthq_runtime::{
     DeterministicFlightTaskScheduler, FlightHostUnavailable, FlightJsonError, FlightRejection,
     FlightRuntimeUnavailable, FlightTask, FlightTaskError, FlightTaskOrigin, FlightTaskOutcome,
-    FlightTaskScheduler, FlightValue, OpaqueHostValue, ScheduledFlightTask, flight_json_stringify,
-    flight_task_yield, host_task, install_deterministic_flight_task_scheduler,
-    install_flight_task_scheduler,
+    FlightTaskScheduler, FlightUnion2, FlightValue, OpaqueHostValue, ScheduledFlightTask,
+    flight_json_stringify, flight_task_yield, host_task,
+    install_deterministic_flight_task_scheduler, install_flight_task_scheduler,
 };
 
 pub use flighthq_types::{
@@ -16,13 +16,6 @@ pub use flighthq_types::{
     flight_now_millis, host_image_data, host_offscreen_canvas, host_set, host_url, host_value,
     install_native_host_constructors, set_interval, set_timeout,
 };
-
-/// Mechanical representation for TypeScript unions whose variants need distinct native storage.
-#[derive(Clone)]
-pub enum FlightUnion2<A, B> {
-    A(A),
-    B(B),
-}
 
 mod bitmap;
 pub use bitmap::*;

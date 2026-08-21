@@ -206,8 +206,8 @@ pub fn is_platform_web() -> bool {
 }
 
 // Source: upstream/packages/platform/src/platform.ts:138 (sha256:ba3889e62e09f8b5a4186a7360dc4b179e1b66a315b53ffe7895d89bc04aea3b)
-pub fn set_platform_backend(backend: Option<PlatformBackend>) -> () {
-    (*_BACKEND.lock().unwrap()) = (backend).clone();
+pub fn set_platform_backend(backend: &Option<PlatformBackend>) -> () {
+    (*_BACKEND.lock().unwrap()) = (*backend).clone();
 }
 
 // Source: upstream/packages/platform/src/platform.ts:142 (sha256:0f0f7822ea6cb0c631bc817e0c215306a940ec400a10a15a67356fc70aa857eb)
@@ -228,7 +228,7 @@ fn get_web_platform_info(out: &mut PlatformInfo) -> PlatformInfo {
     out.arch = parse_user_agent_arch((ua).clone(), None);
     out.locale = (None::<String>).unwrap_or("".to_owned());
     out.is_touch = false;
-    out.runtime = parse_user_agent_runtime((None).clone());
+    out.runtime = parse_user_agent_runtime(&(None));
     out.engine = parse_user_agent_engine((ua).clone());
     out.engine_version = parse_user_agent_engine_version((ua).clone(), (out.engine).clone());
     out.endianness = detect_endianness();

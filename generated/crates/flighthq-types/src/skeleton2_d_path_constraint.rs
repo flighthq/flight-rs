@@ -54,7 +54,7 @@ pub static SKELETON2_D_PATH_POSITION_MODE: std::sync::LazyLock<Skeleton2DPathPos
     });
 
 // Source: upstream/packages/types/src/Skeleton2DPathConstraint.ts:44 (sha256:4e4e1754f149587428b70762a7b51ca6e991b2fc2f9cadfcbee300948c503fdc)
-pub type Skeleton2DPathPositionMode = crate::OpaqueHostValue;
+pub type Skeleton2DPathPositionMode = String;
 
 // Source: upstream/packages/types/src/Skeleton2DPathConstraint.ts:46 (sha256:5a3c49661c431060b3288cc7e75ebc7df167b850765a4c8228a7808f8cc2dd85)
 #[derive(Clone, Default)]
@@ -78,7 +78,7 @@ pub static SKELETON2_D_PATH_ROTATE_MODE: std::sync::LazyLock<Skeleton2DPathRotat
     });
 
 // Source: upstream/packages/types/src/Skeleton2DPathConstraint.ts:51 (sha256:dd32036f5f711a2629a91f992cbf6c9320e1e8e55007bc32010cb077bf5782a8)
-pub type Skeleton2DPathRotateMode = crate::OpaqueHostValue;
+pub type Skeleton2DPathRotateMode = String;
 
 // Source: upstream/packages/types/src/Skeleton2DPathConstraint.ts:53 (sha256:196e3b45765116f196e867f1b7a70123161d789dc1d2e056b849950923ad3776)
 #[derive(Clone, Default)]
@@ -104,4 +104,4 @@ pub static SKELETON2_D_PATH_SPACING_MODE: std::sync::LazyLock<Skeleton2DPathSpac
     });
 
 // Source: upstream/packages/types/src/Skeleton2DPathConstraint.ts:59 (sha256:8d18ffbb34304e1f79152661900b900f85eda3ac5ea86ca9c7360542e4686113)
-pub type Skeleton2DPathSpacingMode = crate::OpaqueHostValue;
+pub type Skeleton2DPathSpacingMode = String;

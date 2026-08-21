@@ -22,7 +22,7 @@ impl PartialEq for GetRenderEffectDefaultsRecord1 {
 pub fn get_render_effect_defaults(kind: String) -> Vec<(String, crate::OpaqueHostValue)> {
     let entry = DEFAULTS
         .iter()
-        .find(|(key, _)| key == &(kind).clone())
+        .find(|(entry_key, _)| entry_key == &(kind).clone())
         .map(|(_, value)| value)
         .expect("TypeScript Record key was absent")
         .clone();
@@ -39,7 +39,7 @@ pub fn get_render_effect_defaults(kind: String) -> Vec<(String, crate::OpaqueHos
 pub fn normalize_render_effect(effect: &RenderEffect, out: &mut RenderEffect) -> bool {
     let entry = DEFAULTS
         .iter()
-        .find(|(key, _)| key == &(effect.kind).clone())
+        .find(|(entry_key, _)| entry_key == &(effect.kind).clone())
         .map(|(_, value)| value)
         .expect("TypeScript Record key was absent")
         .clone();
@@ -48,14 +48,20 @@ pub fn normalize_render_effect(effect: &RenderEffect, out: &mut RenderEffect) ->
     }
     let effect_rec = effect;
     let mut out_rec = crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast");
-    for key in (crate::host_value::<()>("host.keys")).iter().cloned() {
+    for key in (entry
+        .iter()
+        .map(|(entry_key, _)| entry_key.clone())
+        .collect::<Vec<_>>())
+    .iter()
+    .cloned()
+    {
         out_rec
             .iter()
-            .find(|(key, _)| key == &key)
+            .find(|(entry_key, _)| entry_key == &(key).clone())
             .map(|(_, value)| value)
             .expect("TypeScript Record key was absent") = if (effect_rec
             .iter()
-            .find(|(key, _)| key == &key)
+            .find(|(entry_key, _)| entry_key == &(key).clone())
             .map(|(_, value)| value)
             .expect("TypeScript Record key was absent")
             .clone())
@@ -63,31 +69,37 @@ pub fn normalize_render_effect(effect: &RenderEffect, out: &mut RenderEffect) ->
         {
             effect_rec
                 .iter()
-                .find(|(key, _)| key == &key)
+                .find(|(entry_key, _)| entry_key == &(key).clone())
                 .map(|(_, value)| value)
                 .expect("TypeScript Record key was absent")
                 .clone()
         } else {
             entry
                 .iter()
-                .find(|(key, _)| key == &key)
+                .find(|(entry_key, _)| entry_key == &(key).clone())
                 .map(|(_, value)| value)
                 .expect("TypeScript Record key was absent")
                 .clone()
         };
     }
-    for key in (crate::host_value::<()>("host.keys")).iter().cloned() {
+    for key in (effect_rec
+        .iter()
+        .map(|(entry_key, _)| entry_key.clone())
+        .collect::<Vec<_>>())
+    .iter()
+    .cloned()
+    {
         if (!{
-            let __flight_key = key;
+            let __flight_key = (key).clone();
             entry.iter().any(|(key, _)| key == &__flight_key)
         }) {
             out_rec
                 .iter()
-                .find(|(key, _)| key == &key)
+                .find(|(entry_key, _)| entry_key == &(key).clone())
                 .map(|(_, value)| value)
                 .expect("TypeScript Record key was absent") = effect_rec
                 .iter()
-                .find(|(key, _)| key == &key)
+                .find(|(entry_key, _)| entry_key == &(key).clone())
                 .map(|(_, value)| value)
                 .expect("TypeScript Record key was absent")
                 .clone();

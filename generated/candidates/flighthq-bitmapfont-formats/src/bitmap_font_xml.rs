@@ -22,7 +22,7 @@ pub fn parse_bitmap_font_xml(
     options: Option<BitmapFontParseOptions>,
     mut diagnostics: Option<Vec<ImportDiagnostic>>,
 ) -> Option<BitmapFont> {
-    let record = parse_bitmap_font_xml_record((text).clone(), ((diagnostics).clone()).clone());
+    let record = parse_bitmap_font_xml_record((text).clone(), &mut (diagnostics));
     if (record).is_none() {
         return None;
     }
@@ -35,7 +35,7 @@ pub fn parse_bitmap_font_xml(
 // Source: upstream/packages/bitmapfont-formats/src/bitmapFontXml.ts:38 (sha256:85d55524b32023a9057dd6417cce5abf99a6b6e646b2ef2bab153cbda0e9ba17)
 fn parse_bitmap_font_xml_record(
     text: String,
-    diagnostics: Option<Vec<ImportDiagnostic>>,
+    diagnostics: &mut Option<Vec<ImportDiagnostic>>,
 ) -> Option<BitmapFontRecord> {
     let root = parse_xml_document((text).clone());
     if ((root).is_none()) || ((root.as_ref().unwrap().name).clone() != "font") {
@@ -123,7 +123,7 @@ fn parse_bitmap_font_xml_record(
         }
     }
     report_dropped_bitmap_font_records(
-        ((diagnostics).clone()).clone(),
+        diagnostics,
         "parseBitmapFontXmlRecord".to_owned(),
         dropped_pages,
         dropped_chars,

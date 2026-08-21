@@ -70,7 +70,7 @@ pub fn format_bitmap_font_fnt(font: &BitmapFont) -> String {
         let glyph = font
             .glyphs
             .iter()
-            .find(|(key, _)| key == &(codepoint).clone())
+            .find(|(entry_key, _)| entry_key == &(codepoint).clone())
             .map(|(_, value)| value.clone());
         lines.push(
             (format!(
@@ -107,7 +107,7 @@ pub fn format_bitmap_font_fnt(font: &BitmapFont) -> String {
         let amount = font
             .kerning
             .iter()
-            .find(|(key, _)| key == &(key).clone())
+            .find(|(entry_key, _)| entry_key == &(key).clone())
             .map(|(_, value)| value.clone());
         unpack_bitmap_font_kerning_key((key).clone(), &mut (*_KERNING_PAIR.lock().unwrap()));
         lines.push(format!(
@@ -126,7 +126,7 @@ pub fn parse_bitmap_font_fnt(
     options: Option<BitmapFontParseOptions>,
     mut diagnostics: Option<Vec<ImportDiagnostic>>,
 ) -> Option<BitmapFont> {
-    let record = parse_bitmap_font_fnt_record((text).clone(), ((diagnostics).clone()).clone());
+    let record = parse_bitmap_font_fnt_record((text).clone(), &mut (diagnostics));
     if (record).is_none() {
         return None;
     }
@@ -139,7 +139,7 @@ pub fn parse_bitmap_font_fnt(
 // Source: upstream/packages/bitmapfont-formats/src/bitmapFontFnt.ts:84 (sha256:1396acdf14a6410d53d6ec9c15a57dd30c62660b5c17b7ce53702917d9d694c3)
 fn parse_bitmap_font_fnt_record(
     text: String,
-    diagnostics: Option<Vec<ImportDiagnostic>>,
+    diagnostics: &mut Option<Vec<ImportDiagnostic>>,
 ) -> Option<BitmapFontRecord> {
     let mut line_height: Option<f64> = None;
     let mut base: Option<f64> = None;
@@ -194,7 +194,7 @@ fn parse_bitmap_font_fnt_record(
             line_height = read_fnt_number(Some(
                 (fields
                     .iter()
-                    .find(|(key, _)| key == &"lineHeight".to_owned())
+                    .find(|(entry_key, _)| entry_key == &"lineHeight".to_owned())
                     .map(|(_, value)| value.clone())
                     .expect("TypeScript Record key was absent"))
                 .clone(),
@@ -202,7 +202,7 @@ fn parse_bitmap_font_fnt_record(
             base = read_fnt_number(Some(
                 (fields
                     .iter()
-                    .find(|(key, _)| key == &"base".to_owned())
+                    .find(|(entry_key, _)| entry_key == &"base".to_owned())
                     .map(|(_, value)| value.clone())
                     .expect("TypeScript Record key was absent"))
                 .clone(),
@@ -212,7 +212,7 @@ fn parse_bitmap_font_fnt_record(
                 let id = read_fnt_number(Some(
                     (fields
                         .iter()
-                        .find(|(key, _)| key == &"id".to_owned())
+                        .find(|(entry_key, _)| entry_key == &"id".to_owned())
                         .map(|(_, value)| value.clone())
                         .expect("TypeScript Record key was absent"))
                     .clone(),
@@ -227,7 +227,7 @@ fn parse_bitmap_font_fnt_record(
                         __flight_identity: std::sync::Arc::new(()),
                         file: fields
                             .iter()
-                            .find(|(key, _)| key == &"file".to_owned())
+                            .find(|(entry_key, _)| entry_key == &"file".to_owned())
                             .map(|(_, value)| value.clone())
                             .expect("TypeScript Record key was absent"),
                         id: *(id.as_ref().unwrap()),
@@ -261,7 +261,7 @@ fn parse_bitmap_font_fnt_record(
         }
     }
     report_dropped_bitmap_font_records(
-        ((diagnostics).clone()).clone(),
+        diagnostics,
         "parseBitmapFontFntRecord".to_owned(),
         dropped_pages,
         dropped_chars,
@@ -324,7 +324,7 @@ fn parse_fnt_fields(rest: String) -> Vec<(String, String)> {
     {
         fields
             .iter()
-            .find(|(key, _)| key == &crate::host_value::<String>("host.index"))
+            .find(|(entry_key, _)| entry_key == &crate::host_value::<String>("host.index"))
             .map(|(_, value)| value)
             .expect("TypeScript Record key was absent") =
             if (crate::host_value::<crate::OpaqueHostValue>("host.index")).is_some() {
@@ -341,7 +341,7 @@ fn read_fnt_char(fields: &Vec<(String, String)>) -> Option<BitmapFontCharRecord>
     let id = read_fnt_number(Some(
         (fields
             .iter()
-            .find(|(key, _)| key == &"id".to_owned())
+            .find(|(entry_key, _)| entry_key == &"id".to_owned())
             .map(|(_, value)| value.clone())
             .expect("TypeScript Record key was absent"))
         .clone(),
@@ -349,7 +349,7 @@ fn read_fnt_char(fields: &Vec<(String, String)>) -> Option<BitmapFontCharRecord>
     let x = read_fnt_number(Some(
         (fields
             .iter()
-            .find(|(key, _)| key == &"x".to_owned())
+            .find(|(entry_key, _)| entry_key == &"x".to_owned())
             .map(|(_, value)| value.clone())
             .expect("TypeScript Record key was absent"))
         .clone(),
@@ -357,7 +357,7 @@ fn read_fnt_char(fields: &Vec<(String, String)>) -> Option<BitmapFontCharRecord>
     let y = read_fnt_number(Some(
         (fields
             .iter()
-            .find(|(key, _)| key == &"y".to_owned())
+            .find(|(entry_key, _)| entry_key == &"y".to_owned())
             .map(|(_, value)| value.clone())
             .expect("TypeScript Record key was absent"))
         .clone(),
@@ -365,7 +365,7 @@ fn read_fnt_char(fields: &Vec<(String, String)>) -> Option<BitmapFontCharRecord>
     let width = read_fnt_number(Some(
         (fields
             .iter()
-            .find(|(key, _)| key == &"width".to_owned())
+            .find(|(entry_key, _)| entry_key == &"width".to_owned())
             .map(|(_, value)| value.clone())
             .expect("TypeScript Record key was absent"))
         .clone(),
@@ -373,7 +373,7 @@ fn read_fnt_char(fields: &Vec<(String, String)>) -> Option<BitmapFontCharRecord>
     let height = read_fnt_number(Some(
         (fields
             .iter()
-            .find(|(key, _)| key == &"height".to_owned())
+            .find(|(entry_key, _)| entry_key == &"height".to_owned())
             .map(|(_, value)| value.clone())
             .expect("TypeScript Record key was absent"))
         .clone(),
@@ -381,7 +381,7 @@ fn read_fnt_char(fields: &Vec<(String, String)>) -> Option<BitmapFontCharRecord>
     let xoffset = read_fnt_number(Some(
         (fields
             .iter()
-            .find(|(key, _)| key == &"xoffset".to_owned())
+            .find(|(entry_key, _)| entry_key == &"xoffset".to_owned())
             .map(|(_, value)| value.clone())
             .expect("TypeScript Record key was absent"))
         .clone(),
@@ -389,7 +389,7 @@ fn read_fnt_char(fields: &Vec<(String, String)>) -> Option<BitmapFontCharRecord>
     let yoffset = read_fnt_number(Some(
         (fields
             .iter()
-            .find(|(key, _)| key == &"yoffset".to_owned())
+            .find(|(entry_key, _)| entry_key == &"yoffset".to_owned())
             .map(|(_, value)| value.clone())
             .expect("TypeScript Record key was absent"))
         .clone(),
@@ -397,7 +397,7 @@ fn read_fnt_char(fields: &Vec<(String, String)>) -> Option<BitmapFontCharRecord>
     let xadvance = read_fnt_number(Some(
         (fields
             .iter()
-            .find(|(key, _)| key == &"xadvance".to_owned())
+            .find(|(entry_key, _)| entry_key == &"xadvance".to_owned())
             .map(|(_, value)| value.clone())
             .expect("TypeScript Record key was absent"))
         .clone(),
@@ -417,7 +417,7 @@ fn read_fnt_char(fields: &Vec<(String, String)>) -> Option<BitmapFontCharRecord>
         page: (read_fnt_number(Some(
             (fields
                 .iter()
-                .find(|(key, _)| key == &"page".to_owned())
+                .find(|(entry_key, _)| entry_key == &"page".to_owned())
                 .map(|(_, value)| value.clone())
                 .expect("TypeScript Record key was absent"))
             .clone(),
@@ -437,7 +437,7 @@ fn read_fnt_kerning(fields: &Vec<(String, String)>) -> Option<BitmapFontKerningR
     let first = read_fnt_number(Some(
         (fields
             .iter()
-            .find(|(key, _)| key == &"first".to_owned())
+            .find(|(entry_key, _)| entry_key == &"first".to_owned())
             .map(|(_, value)| value.clone())
             .expect("TypeScript Record key was absent"))
         .clone(),
@@ -445,7 +445,7 @@ fn read_fnt_kerning(fields: &Vec<(String, String)>) -> Option<BitmapFontKerningR
     let second = read_fnt_number(Some(
         (fields
             .iter()
-            .find(|(key, _)| key == &"second".to_owned())
+            .find(|(entry_key, _)| entry_key == &"second".to_owned())
             .map(|(_, value)| value.clone())
             .expect("TypeScript Record key was absent"))
         .clone(),
@@ -453,7 +453,7 @@ fn read_fnt_kerning(fields: &Vec<(String, String)>) -> Option<BitmapFontKerningR
     let amount = read_fnt_number(Some(
         (fields
             .iter()
-            .find(|(key, _)| key == &"amount".to_owned())
+            .find(|(entry_key, _)| entry_key == &"amount".to_owned())
             .map(|(_, value)| value.clone())
             .expect("TypeScript Record key was absent"))
         .clone(),

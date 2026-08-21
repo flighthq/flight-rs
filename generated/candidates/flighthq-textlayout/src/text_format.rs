@@ -35,7 +35,7 @@ pub fn get_text_format_leading(format: &TextFormat) -> f64 {
 // Source: upstream/packages/textlayout/src/textFormat.ts:21 (sha256:f972a195a8c46cf4a243c213ddce0f368dc524f6a4f101216ad2607d3b23b0fa)
 pub fn merge_text_format(base: &TextFormat, override_: &TextFormat) -> TextFormat {
     let mut result: TextFormat = (base).clone();
-    for key in (crate::host_value::<Vec<TextFormat>>("host.keys"))
+    for key in (crate::host_value::<Vec<String>>("host.Object.keys"))
         .iter()
         .cloned()
     {
@@ -43,7 +43,7 @@ pub fn merge_text_format(base: &TextFormat, override_: &TextFormat) -> TextForma
         if (value).is_some() {
             result
                 .iter()
-                .find(|(key, _)| key == &key)
+                .find(|(entry_key, _)| entry_key == &key)
                 .map(|(_, value)| value)
                 .expect("TypeScript Record key was absent") = value;
         }

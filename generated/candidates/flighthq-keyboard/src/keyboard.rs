@@ -260,7 +260,7 @@ pub fn create_web_soft_keyboard_backend() -> SoftKeyboardBackend {
 pub fn detach_soft_keyboard(keyboard: &SoftKeyboard) -> () {
     let unsubscribe = (*_SUBSCRIPTIONS.lock().unwrap())
         .iter()
-        .find(|(key, _)| key == &(*keyboard).clone())
+        .find(|(entry_key, _)| entry_key == &(*keyboard).clone())
         .map(|(_, value)| value.clone());
     if (unsubscribe).is_some() {
         {
@@ -369,8 +369,8 @@ pub fn set_soft_keyboard_accessory_bar_visible(visible: bool) -> () {
 }
 
 // Source: upstream/packages/keyboard/src/keyboard.ts:199 (sha256:4e256bc0e7d467fe02b2b1d97098ce8e0aa18acdd785ee3eccc6e7df1e41d4d5)
-pub fn set_soft_keyboard_backend(backend: Option<SoftKeyboardBackend>) -> () {
-    (*_BACKEND.lock().unwrap()) = (backend).clone();
+pub fn set_soft_keyboard_backend(backend: &Option<SoftKeyboardBackend>) -> () {
+    (*_BACKEND.lock().unwrap()) = (*backend).clone();
 }
 
 // Source: upstream/packages/keyboard/src/keyboard.ts:205 (sha256:80467d4f41e840e50c535c493c1609a659972976429038427faabfd871e284ca)

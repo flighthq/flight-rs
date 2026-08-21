@@ -53,4 +53,4 @@ pub static IMPORT_DIAGNOSTIC_SEVERITY: std::sync::LazyLock<ImportDiagnosticSever
     });
 
 // Source: upstream/packages/types/src/ImportDiagnostic.ts:66 (sha256:1b383c04a4bc548977624f50a529cda34ea6a53fd2280734966ea5e0f8cc941f)
-pub type ImportDiagnosticSeverity = crate::OpaqueHostValue;
+pub type ImportDiagnosticSeverity = String;

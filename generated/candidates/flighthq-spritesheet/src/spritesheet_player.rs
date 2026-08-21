@@ -151,14 +151,14 @@ pub fn pause_spritesheet_player(player: &mut SpritesheetPlayer) -> () {
 // Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:89 (sha256:418f1ba0e5f5f8523198c38082aa80da56ffb6bcf363b0db777849ed92b2d4ad)
 pub fn play_spritesheet_animation(
     player: &mut SpritesheetPlayer,
-    animation: Option<SpritesheetAnimation>,
+    animation: &Option<SpritesheetAnimation>,
     restart: Option<bool>,
 ) -> () {
     let restart = restart.unwrap_or(true);
     if (!restart) && (animation == (player.animation).clone()) {
         return;
     }
-    player.animation = (animation).clone();
+    player.animation = (*animation).clone();
     player.complete = (animation).is_none();
     player.elapsed = 0.0_f64;
     player.frame_index = 0.0_f64;
@@ -310,7 +310,7 @@ fn resolve_display_index_to_first_virtual_index(
 fn get_cumulative_durations(animation: &SpritesheetAnimation) -> Vec<f64> {
     let cached = (*CUMULATIVE_DURATIONS_CACHE.lock().unwrap())
         .iter()
-        .find(|(key, _)| key == &(*animation).clone())
+        .find(|(entry_key, _)| entry_key == &(*animation).clone())
         .map(|(_, value)| value.clone());
     if (cached).is_some() {
         return ((cached.as_ref().unwrap()).clone()).clone();

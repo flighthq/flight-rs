@@ -47,8 +47,8 @@ pub fn ease_steps(count: f64, position: Option<StepPosition>) -> EasingFunction 
 }
 
 // Source: upstream/packages/easing/src/easeSteps.ts:37 (sha256:f32fb71d7f2446645b24b853cb7ddbc191f1cea28d08fdaff1514a3108e86e07)
-pub fn set_easing_steps_guard(guard: Option<EasingStepsGuard>) -> () {
-    (*_STEPS_GUARD.lock().unwrap()) = (guard).clone();
+pub fn set_easing_steps_guard(guard: &Option<EasingStepsGuard>) -> () {
+    (*_STEPS_GUARD.lock().unwrap()) = (*guard).clone();
 }
 
 // Source: upstream/packages/easing/src/easeSteps.ts:41 (sha256:9a521db5d67417fd09ba38338690f82ac7792afc4fa7690d8fbc25aa709f2aff)

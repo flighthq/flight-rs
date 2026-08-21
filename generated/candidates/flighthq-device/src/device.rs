@@ -386,8 +386,8 @@ pub fn refresh_device_info() -> () {
 }
 
 // Source: upstream/packages/device/src/device.ts:278 (sha256:d69b965d0766fbeb7652e32917d2419ea7199bbad7a49a8fd9684f328ee862c5)
-pub fn set_device_backend(backend: Option<DeviceBackend>) -> () {
-    (*_BACKEND.lock().unwrap()) = (backend).clone();
+pub fn set_device_backend(backend: &Option<DeviceBackend>) -> () {
+    (*_BACKEND.lock().unwrap()) = (*backend).clone();
 }
 
 // Source: upstream/packages/device/src/device.ts:282 (sha256:c960578c7b63a4b738c0a38a41cf0fcd3072a5b069f7277c9e9ef2dca2c2744a)

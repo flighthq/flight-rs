@@ -56,7 +56,7 @@ pub static REGISTRY_ENTRY_STATE: std::sync::LazyLock<RegistryEntryStateValues> =
     });
 
 // Source: upstream/packages/types/src/RegistryTable.ts:32 (sha256:2cd7cee14b4cbf703ee178a001ee11a29bf8154c5a4892effed28684eedd5bed)
-pub type RegistryEntryState = crate::OpaqueHostValue;
+pub type RegistryEntryState = String;
 
 // Source: upstream/packages/types/src/RegistryTable.ts:42 (sha256:6c8d1b583187c8c8c4320ab1a83acb965cdd69230acfbb877dde632f333a5d72)
 pub type RegistryMissPolicy = String;

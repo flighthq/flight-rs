@@ -44,4 +44,4 @@ pub static REQUIREMENT_FACET: std::sync::LazyLock<RequirementFacetValues> =
     });
 
 // Source: upstream/packages/types/src/RequirementFacet.ts:16 (sha256:cea31be5e91017317227e511a5230aafc8999082ecb10a9f9989ccbc069b3f65)
-pub type RequirementFacet = crate::OpaqueHostValue;
+pub type RequirementFacet = String;

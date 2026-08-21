@@ -87,7 +87,7 @@ pub fn create_canvas_text_shaper_backend() -> CanvasTextShaperBackend {
                 );
                 let cached = (*cache.lock().unwrap())
                     .iter()
-                    .find(|(key, _)| key == &(cache_key).clone())
+                    .find(|(entry_key, _)| entry_key == &(cache_key).clone())
                     .map(|(_, value)| value.clone());
                 if (cached).is_some() {
                     return *(cached.as_ref().unwrap());
@@ -96,7 +96,7 @@ pub fn create_canvas_text_shaper_backend() -> CanvasTextShaperBackend {
                 if supports_letter_spacing {
                     crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast")
                         .iter()
-                        .find(|(key, _)| key == &"letterSpacing".to_owned())
+                        .find(|(entry_key, _)| entry_key == &"letterSpacing".to_owned())
                         .map(|(_, value)| value)
                         .expect("TypeScript Record key was absent") = {
                         let __flight_portable_source =
@@ -107,7 +107,7 @@ pub fn create_canvas_text_shaper_backend() -> CanvasTextShaperBackend {
                 if supports_word_spacing {
                     crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast")
                         .iter()
-                        .find(|(key, _)| key == &"wordSpacing".to_owned())
+                        .find(|(entry_key, _)| entry_key == &"wordSpacing".to_owned())
                         .map(|(_, value)| value)
                         .expect("TypeScript Record key was absent") = {
                         let __flight_portable_source = "0px".to_owned();
@@ -117,7 +117,7 @@ pub fn create_canvas_text_shaper_backend() -> CanvasTextShaperBackend {
                 if supports_direction {
                     crate::host_value::<Vec<(String, crate::OpaqueHostValue)>>("host.cast")
                         .iter()
-                        .find(|(key, _)| key == &"direction".to_owned())
+                        .find(|(entry_key, _)| entry_key == &"direction".to_owned())
                         .map(|(_, value)| value)
                         .expect("TypeScript Record key was absent") = {
                         let __flight_portable_source = "ltr".to_owned();

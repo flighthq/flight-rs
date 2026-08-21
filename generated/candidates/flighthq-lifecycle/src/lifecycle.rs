@@ -50,7 +50,7 @@ pub fn attach_app_lifecycle(app: AppLifecycle) -> () {
                         emit_signal((app.on_resume).clone(), ());
                         let saved = (*_SAVED_STATE.lock().unwrap())
                             .iter()
-                            .find(|(key, _)| key == &(app).clone())
+                            .find(|(entry_key, _)| entry_key == &(app).clone())
                             .map(|(_, value)| value.clone());
                         if (saved).is_some() {
                             emit_signal(
@@ -219,7 +219,7 @@ pub fn create_web_lifecycle_backend() -> LifecycleBackend {
 pub fn detach_app_lifecycle(app: &AppLifecycle) -> () {
     let unsubscribe = (*_SUBSCRIPTIONS.lock().unwrap())
         .iter()
-        .find(|(key, _)| key == &(*app).clone())
+        .find(|(entry_key, _)| entry_key == &(*app).clone())
         .map(|(_, value)| value.clone());
     if (unsubscribe).is_some() {
         {
@@ -329,8 +329,8 @@ pub fn request_app_back(app: &AppLifecycle) -> bool {
 }
 
 // Source: upstream/packages/lifecycle/src/lifecycle.ts:230 (sha256:495f12e83c7ed6cf8511ae39f123fe3b6af24a5780feb5b172af50ecbb0bf92f)
-pub fn set_lifecycle_backend(backend: Option<LifecycleBackend>) -> () {
-    (*_BACKEND.lock().unwrap()) = (backend).clone();
+pub fn set_lifecycle_backend(backend: &Option<LifecycleBackend>) -> () {
+    (*_BACKEND.lock().unwrap()) = (*backend).clone();
 }
 
 // Source: upstream/packages/lifecycle/src/lifecycle.ts:234 (sha256:b66917944f74882aa564801f7963bd86110c1b136d8a674e7955dfe5738b85f0)

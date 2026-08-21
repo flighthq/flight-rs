@@ -12,7 +12,7 @@ use flighthq_types::{RenderEffect, RenderEffectInput};
 pub fn get_render_effect_inputs(effect: &RenderEffect) -> Vec<RenderEffectInput> {
     return RENDER_EFFECT_INPUTS
         .iter()
-        .find(|(key, _)| key == &(effect.kind).clone())
+        .find(|(entry_key, _)| entry_key == &(effect.kind).clone())
         .map(|(_, value)| value)
         .expect("TypeScript Record key was absent")
         .clone();

@@ -122,7 +122,7 @@ pub fn ensure_velocity_sample(
     let mut sample = field
         .samples
         .iter()
-        .find(|(key, _)| key == &(source).clone())
+        .find(|(entry_key, _)| entry_key == &(source).clone())
         .map(|(_, value)| value.clone());
     if ((sample).clone()).is_none() {
         sample = Some(VelocitySample {
@@ -162,7 +162,7 @@ pub fn get_velocity(
     let sample = field
         .samples
         .iter()
-        .find(|(key, _)| key == &(source).clone())
+        .find(|(entry_key, _)| entry_key == &(source).clone())
         .map(|(_, value)| value.clone());
     if ((sample).is_none()) || (sample.as_ref().unwrap().last_frame_id != field.frame_id) {
         out.x = 0.0_f64;
@@ -179,7 +179,7 @@ pub fn has_velocity(field: &VelocityField, source: crate::OpaqueHostValue) -> bo
     let sample = field
         .samples
         .iter()
-        .find(|(key, _)| key == &(source).clone())
+        .find(|(entry_key, _)| entry_key == &(source).clone())
         .map(|(_, value)| value.clone());
     return (((sample).is_some()) && (sample.as_ref().unwrap().last_frame_id == field.frame_id))
         && ((sample.as_ref().unwrap().velocity.x != 0.0_f64)

@@ -682,7 +682,7 @@ pub fn connect_input_state_to_input_manager(
             let prev = (state
                 .pointer_buttons_down
                 .iter()
-                .find(|(key, _)| key == &data.pointer_id)
+                .find(|(entry_key, _)| entry_key == &data.pointer_id)
                 .map(|(_, value)| value.clone()))
             .unwrap_or(0.0_f64);
             {
@@ -716,7 +716,7 @@ pub fn connect_input_state_to_input_manager(
             let prev = (state
                 .pointer_buttons_down
                 .iter()
-                .find(|(key, _)| key == &data.pointer_id)
+                .find(|(entry_key, _)| entry_key == &data.pointer_id)
                 .map(|(_, value)| value.clone()))
             .unwrap_or(0.0_f64);
             let next = (__flight_js_to_i32(prev)
@@ -1365,7 +1365,7 @@ pub fn get_input_gamepad_axis(state: &InputState, gamepad: f64, axis: f64) -> f6
     return (state
         .axis_values
         .iter()
-        .find(|(key, _)| key == &((gamepad * MAX_GAMEPAD_AXES) + axis))
+        .find(|(entry_key, _)| entry_key == &((gamepad * MAX_GAMEPAD_AXES) + axis))
         .map(|(_, value)| value.clone()))
     .unwrap_or(0.0_f64);
 }
@@ -1384,7 +1384,7 @@ pub fn get_key_code_from_dom_keyboard_event(event: crate::OpaqueHostValue) -> f6
     }
     return KEY_CODES_BY_KEY
         .iter()
-        .find(|(key, _)| key == &crate::host_value::<String>("host.key"))
+        .find(|(entry_key, _)| entry_key == &crate::host_value::<String>("host.key"))
         .map(|(_, value)| value)
         .expect("TypeScript Record key was absent")
         .clone();
@@ -1537,7 +1537,7 @@ pub fn is_input_pointer_button_down(state: &InputState, pointer_id: f64, button:
         (state
             .pointer_buttons_down
             .iter()
-            .find(|(key, _)| key == &pointer_id)
+            .find(|(entry_key, _)| entry_key == &pointer_id)
             .map(|(_, value)| value.clone()))
         .unwrap_or(0.0_f64),
     ) & __flight_js_to_i32(
@@ -1561,13 +1561,13 @@ pub fn poll_gamepad_input(manager: &InputManager) -> () {
         let mut prev_axes = (prev
             .axes
             .iter()
-            .find(|(key, _)| key == &crate::host_value::<f64>("host.index"))
+            .find(|(entry_key, _)| entry_key == &crate::host_value::<f64>("host.index"))
             .map(|(_, value)| value.clone()))
         .unwrap_or(vec![]);
         let mut prev_buttons = (prev
             .buttons
             .iter()
-            .find(|(key, _)| key == &crate::host_value::<f64>("host.index"))
+            .find(|(entry_key, _)| entry_key == &crate::host_value::<f64>("host.index"))
             .map(|(_, value)| value.clone()))
         .unwrap_or(vec![]);
         {
@@ -1775,14 +1775,14 @@ fn get_key_code_from_dom_keyboard_code(code: String, location: f64) -> f64 {
     {
         return NUMPAD_KEY_CODES_BY_CODE
             .iter()
-            .find(|(key, _)| key == &(code).clone())
+            .find(|(entry_key, _)| entry_key == &(code).clone())
             .map(|(_, value)| value)
             .expect("TypeScript Record key was absent")
             .clone();
     }
     return KEY_CODES_BY_CODE
         .iter()
-        .find(|(key, _)| key == &(code).clone())
+        .find(|(entry_key, _)| entry_key == &(code).clone())
         .map(|(_, value)| value)
         .expect("TypeScript Record key was absent")
         .clone();
@@ -2240,7 +2240,7 @@ impl PartialEq for GetOrCreateGamepadPollStateRecord2 {
 fn get_or_create_gamepad_poll_state(manager: &InputManager) -> GamepadPollState {
     let mut state = (*_GAMEPAD_POLL_STATES.lock().unwrap())
         .iter()
-        .find(|(key, _)| key == &(*manager).clone())
+        .find(|(entry_key, _)| entry_key == &(*manager).clone())
         .map(|(_, value)| value.clone());
     if ((state).clone()).is_none() {
         state = Some(GamepadPollState {
@@ -2347,18 +2347,18 @@ fn clear_input_binding(
 ) -> () {
     let mut by_kind = (*_INPUT_BINDINGS.lock().unwrap())
         .iter()
-        .find(|(key, _)| key == &(*manager).clone())
+        .find(|(entry_key, _)| entry_key == &(*manager).clone())
         .map(|(_, value)| value.clone())
         .as_mut()
         .unwrap()
         .iter()
-        .find(|(key, _)| key == &(target).clone())
+        .find(|(entry_key, _)| entry_key == &(target).clone())
         .map(|(_, value)| value.clone());
     let cleanup = by_kind
         .as_mut()
         .unwrap()
         .iter()
-        .find(|(key, _)| key == &kind)
+        .find(|(entry_key, _)| entry_key == &kind)
         .map(|(_, value)| value.clone());
     if (cleanup).is_none() {
         return;
@@ -2393,7 +2393,7 @@ fn set_input_binding(
 ) -> () {
     let mut by_target = (*_INPUT_BINDINGS.lock().unwrap())
         .iter()
-        .find(|(key, _)| key == &(*manager).clone())
+        .find(|(entry_key, _)| entry_key == &(*manager).clone())
         .map(|(_, value)| value.clone());
     if ((by_target).clone()).is_none() {
         by_target = Some(Vec::new());
@@ -2414,7 +2414,7 @@ fn set_input_binding(
         .as_mut()
         .unwrap()
         .iter()
-        .find(|(key, _)| key == &(target).clone())
+        .find(|(entry_key, _)| entry_key == &(target).clone())
         .map(|(_, value)| value.clone());
     if ((by_kind).clone()).is_none() {
         by_kind = Some(Vec::new());
@@ -2441,7 +2441,7 @@ fn set_input_binding(
             .as_mut()
             .unwrap()
             .iter()
-            .find(|(key, _)| key == &kind)
+            .find(|(entry_key, _)| entry_key == &kind)
             .map(|(_, value)| value.clone());
         __flight_callback
             .as_ref()

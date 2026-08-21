@@ -51,7 +51,7 @@ pub static TIMELINE_FRAME_ENTRY_CAUSE: std::sync::LazyLock<TimelineFrameEntryCau
     });
 
 // Source: upstream/packages/types/src/TimelineCue.ts:47 (sha256:7e00c6c47a064e097d6f7822dabd384647ed33eb65baf422073c1f80f8d6fe50)
-pub type TimelineFrameEntryCause = crate::OpaqueHostValue;
+pub type TimelineFrameEntryCause = String;
 
 // Source: upstream/packages/types/src/TimelineCue.ts:51 (sha256:93603a283185c76159b1151c97613f337a955272d0e40daa5fe37548434f6384)
 #[derive(Clone, Default)]

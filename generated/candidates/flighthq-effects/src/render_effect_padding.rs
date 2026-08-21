@@ -93,7 +93,7 @@ pub fn explain_render_effect_padding(
             .as_mut()
             .unwrap()
             .iter()
-            .find(|(key, _)| key == &(effect.kind).clone())
+            .find(|(entry_key, _)| entry_key == &(effect.kind).clone())
             .map(|(_, value)| value.clone());
         if (entry.as_ref().map(|value| (value.state).clone())
             != registry_entry_state_constant.bound)
@@ -178,7 +178,7 @@ pub fn get_gaussian_render_effect_padding(blur_x: f64, blur_y: f64) -> RenderEff
 pub fn register_render_effect_padding_resolver(
     state: &RenderState,
     kind: Kind,
-    resolver: Option<RenderEffectPaddingResolver>,
+    resolver: &Option<RenderEffectPaddingResolver>,
 ) -> () {
     let mut runtime = get_render_state_runtime(state);
     let table = (runtime

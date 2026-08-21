@@ -18,7 +18,7 @@ pub fn parse_bitmap_font_json(
     options: Option<BitmapFontParseOptions>,
     mut diagnostics: Option<Vec<ImportDiagnostic>>,
 ) -> Option<BitmapFont> {
-    let record = parse_bitmap_font_json_record((text).clone(), ((diagnostics).clone()).clone());
+    let record = parse_bitmap_font_json_record((text).clone(), &mut (diagnostics));
     if (record).is_none() {
         return None;
     }
@@ -31,7 +31,7 @@ pub fn parse_bitmap_font_json(
 // Source: upstream/packages/bitmapfont-formats/src/bitmapFontJson.ts:33 (sha256:26fd4c0b26ed48669384b8f0f84603034c248d4ab8b5880e6cbe8ef0f2fb6c9f)
 fn parse_bitmap_font_json_record(
     text: String,
-    diagnostics: Option<Vec<ImportDiagnostic>>,
+    diagnostics: &mut Option<Vec<ImportDiagnostic>>,
 ) -> Option<BitmapFontRecord> {
     let mut root: crate::OpaqueHostValue;
     let __flight_try_return: Option<Option<BitmapFontRecord>> = match std::panic::catch_unwind(
@@ -141,7 +141,7 @@ fn parse_bitmap_font_json_record(
         }
     }
     report_dropped_bitmap_font_records(
-        ((diagnostics).clone()).clone(),
+        diagnostics,
         "parseBitmapFontJsonRecord".to_owned(),
         dropped_pages,
         dropped_chars,

@@ -26,8 +26,8 @@ pub fn get_text_layout_measure_provider() -> Option<TextMeasureFunction> {
 }
 
 // Source: upstream/packages/textlayout/src/textLayoutMeasure.ts:20 (sha256:893aea19bf40728505d0bab91bfacc2ada9ad0fd844f054437ffe52d1890b359)
-pub fn set_text_layout_measure_provider(measure: Option<TextMeasureFunction>) -> () {
-    (*_MEASURE_PROVIDER.lock().unwrap()) = (measure).clone();
+pub fn set_text_layout_measure_provider(measure: &Option<TextMeasureFunction>) -> () {
+    (*_MEASURE_PROVIDER.lock().unwrap()) = (*measure).clone();
 }
 
 // Source: upstream/packages/textlayout/src/textLayoutMeasure.ts:24 (sha256:d7a4d39f002ca30a2a6ed02d1e44c91d4402d6393525a6e11a3beef87c655c51)

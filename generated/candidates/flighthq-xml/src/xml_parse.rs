@@ -57,7 +57,7 @@ pub fn parse_xml_attributes(attrs: String) -> Vec<(String, String)> {
         };
         result
             .iter()
-            .find(|(key, _)| key == &attr_name)
+            .find(|(entry_key, _)| entry_key == &attr_name)
             .map(|(_, value)| value)
             .expect("TypeScript Record key was absent") = decode_xml_entities(value);
     }
@@ -177,7 +177,7 @@ fn expand_xml_entities(src: String, entities: Vec<(String, String)>) -> String {
                 let mut __flight_replace = |reference: String, name: String| -> String {
                     let replacement = entities
                         .iter()
-                        .find(|(key, _)| key == &(name).clone())
+                        .find(|(entry_key, _)| entry_key == &(name).clone())
                         .map(|(_, value)| value)
                         .expect("TypeScript Record key was absent")
                         .clone();
@@ -247,7 +247,7 @@ fn decode_xml_entities(s: String) -> String {
                 }
                 return XML_ENTITIES
                     .iter()
-                    .find(|(key, _)| key == &(name).clone())
+                    .find(|(entry_key, _)| entry_key == &(name).clone())
                     .map(|(_, value)| value)
                     .expect("TypeScript Record key was absent")
                     .clone();
@@ -333,8 +333,8 @@ fn parse_element(src: String, state: &mut ParseState) -> Option<XmlElement> {
         return None;
     }
     skip_whitespace((src).clone(), state);
-    let mut attrs_str = "";
-    let mut quote = "";
+    let mut attrs_str = "".to_owned();
+    let mut quote = "".to_owned();
     while (state.pos < (src.encode_utf16().count() as f64)) {
         let ch = src[state.pos as usize].clone();
         if quote {
@@ -352,7 +352,7 @@ fn parse_element(src: String, state: &mut ParseState) -> Option<XmlElement> {
                 }
             }
         }
-        attrs_str += ch;
+        attrs_str.push_str(&(ch));
         {
             state.pos += 1.0;
             state.pos
@@ -363,7 +363,7 @@ fn parse_element(src: String, state: &mut ParseState) -> Option<XmlElement> {
     let attributes = parse_xml_attributes((attrs_str).clone());
     let mut children: Vec<XmlElement> = vec![];
     let mut content: Vec<crate::FlightUnion2<String, XmlElement>> = vec![];
-    let mut text = "";
+    let mut text = "".to_owned();
     if (!self_closing) {
         while (state.pos < (src.encode_utf16().count() as f64)) {
             if (state.pos >= (src.encode_utf16().count() as f64)) {
@@ -386,7 +386,7 @@ fn parse_element(src: String, state: &mut ParseState) -> Option<XmlElement> {
                         .take(((state.pos) as usize).saturating_sub((text_start) as usize))
                         .collect::<Vec<u16>>(),
                 ));
-                text += ((decoded).clone()).trim().to_owned();
+                text.push_str(&(((decoded).clone()).trim().to_owned()));
                 if ((decoded).clone() != "") {
                     content.push(
                         (crate::FlightUnion2::<String, XmlElement>::A((decoded).clone())).clone(),
@@ -416,7 +416,7 @@ fn parse_element(src: String, state: &mut ParseState) -> Option<XmlElement> {
                         .take(((content_end) as usize).saturating_sub((cdata_start) as usize))
                         .collect::<Vec<u16>>(),
                 );
-                text += (cdata.trim)();
+                text.push_str(&((cdata.trim)()));
                 if (cdata != "") {
                     content.push(cdata);
                 }
@@ -496,7 +496,7 @@ fn skip_whitespace(src: String, state: &mut ParseState) -> () {
 // Source: upstream/packages/xml/src/xmlParse.ts:210 (sha256:7a46a3c2689e4a2acfb51e54dcb2ace37d130350ae6633e3a86b6ed6c9360711)
 fn strip_xml_comments(xml: String) -> String {
     let mut copy_start = 0.0_f64;
-    let mut output = "";
+    let mut output = "".to_owned();
     let mut pos = 0.0_f64;
     while (pos < (xml.encode_utf16().count() as f64)) {
         if (String::from_utf16_lossy(
@@ -529,12 +529,14 @@ fn strip_xml_comments(xml: String) -> String {
             };
             continue;
         }
-        output += String::from_utf16_lossy(
-            &(xml)
-                .encode_utf16()
-                .skip((copy_start) as usize)
-                .take(((pos) as usize).saturating_sub((copy_start) as usize))
-                .collect::<Vec<u16>>(),
+        output.push_str(
+            &(String::from_utf16_lossy(
+                &(xml)
+                    .encode_utf16()
+                    .skip((copy_start) as usize)
+                    .take(((pos) as usize).saturating_sub((copy_start) as usize))
+                    .collect::<Vec<u16>>(),
+            )),
         );
         let comment_end = (xml.index_of)("-->", (pos + 4.0_f64));
         pos = if (comment_end >= 0.0_f64) {
@@ -556,7 +558,7 @@ fn strip_xml_comments(xml: String) -> String {
 // Source: upstream/packages/xml/src/xmlParse.ts:242 (sha256:954be5d30230e6ab51775a59a19d79af69864b0600682453ef64b8b2a0741f71)
 fn strip_xml_doctypes(xml: String, out: &mut Vec<(String, String)>) -> String {
     let mut copy_start = 0.0_f64;
-    let mut output = "";
+    let mut output = "".to_owned();
     let mut pos = 0.0_f64;
     while (pos < (xml.encode_utf16().count() as f64)) {
         if (xml[pos as usize].clone() != "<")
@@ -576,17 +578,19 @@ fn strip_xml_doctypes(xml: String, out: &mut Vec<(String, String)>) -> String {
             };
             continue;
         }
-        output += String::from_utf16_lossy(
-            &(xml)
-                .encode_utf16()
-                .skip((copy_start) as usize)
-                .take(((pos) as usize).saturating_sub((copy_start) as usize))
-                .collect::<Vec<u16>>(),
+        output.push_str(
+            &(String::from_utf16_lossy(
+                &(xml)
+                    .encode_utf16()
+                    .skip((copy_start) as usize)
+                    .take(((pos) as usize).saturating_sub((copy_start) as usize))
+                    .collect::<Vec<u16>>(),
+            )),
         );
         let doctype_start = pos;
         pos += 9.0_f64;
         let mut internal_subset_depth = 0.0_f64;
-        let mut quote = "";
+        let mut quote = "".to_owned();
         while (pos < (xml.encode_utf16().count() as f64)) {
             let ch = xml[pos as usize].clone();
             if quote {
@@ -677,7 +681,7 @@ fn collect_xml_entity_declarations(doctype: String, out: &mut Vec<(String, Strin
     .is_some()
     {
         out.iter()
-            .find(|(key, _)| key == &crate::host_value::<String>("host.index"))
+            .find(|(entry_key, _)| entry_key == &crate::host_value::<String>("host.index"))
             .map(|(_, value)| value)
             .expect("TypeScript Record key was absent") =
             crate::host_value::<crate::OpaqueHostValue>("host.index");

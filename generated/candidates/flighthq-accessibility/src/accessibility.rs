@@ -84,7 +84,7 @@ pub fn create_web_accessibility_backend(
                 }
                 let mut element = (*elements.lock().unwrap())
                     .iter()
-                    .find(|(key, _)| key == &(node.id).clone())
+                    .find(|(entry_key, _)| entry_key == &(node.id).clone())
                     .map(|(_, value)| value.clone());
                 if ((element).clone()).is_none() {
                     element = Some(crate::host_value::<crate::OpaqueHostValue>(
@@ -142,7 +142,7 @@ pub fn create_web_accessibility_backend(
             move |id: String| -> () {
                 let element = (*elements.lock().unwrap())
                     .iter()
-                    .find(|(key, _)| key == &(id).clone())
+                    .find(|(entry_key, _)| entry_key == &(id).clone())
                     .map(|(_, value)| value.clone());
                 if (element).is_none() {
                     return;
@@ -217,7 +217,7 @@ pub fn create_web_accessibility_backend(
                 }
                 let element = (*elements.lock().unwrap())
                     .iter()
-                    .find(|(key, _)| key == &(id).clone())
+                    .find(|(entry_key, _)| entry_key == &(id).clone())
                     .map(|(_, value)| value.clone());
                 if (element).is_none() {
                     return false;
@@ -270,8 +270,8 @@ pub fn remove_accessibility_node(id: String) -> () {
 }
 
 // Source: upstream/packages/accessibility/src/accessibility.ts:106 (sha256:9c2150404fdc1c0ef9a73753512fa05d78e4350d378787b58966aca5000b2ae9)
-pub fn set_accessibility_backend(backend: Option<AccessibilityBackend>) -> () {
-    (*_BACKEND.lock().unwrap()) = (backend).clone();
+pub fn set_accessibility_backend(backend: &Option<AccessibilityBackend>) -> () {
+    (*_BACKEND.lock().unwrap()) = (*backend).clone();
 }
 
 // Source: upstream/packages/accessibility/src/accessibility.ts:112 (sha256:afed3a491be320f8ed387e3a88795157e8e894d32a43d830ab42c090ae81b002)
@@ -411,7 +411,7 @@ fn _get_accessibility_live_region(
 ) -> crate::OpaqueHostValue {
     let mut region = live_regions
         .iter()
-        .find(|(key, _)| key == &(liveness).clone())
+        .find(|(entry_key, _)| entry_key == &(liveness).clone())
         .map(|(_, value)| value.clone());
     if (((region).clone()).is_none())
         || ((crate::host_value::<Option<crate::OpaqueHostValue>>("host.parentNode")).is_none())
@@ -502,7 +502,7 @@ fn _reparent_accessibility_element(
     if (parent_id).is_some() {
         let found = elements
             .iter()
-            .find(|(key, _)| key == &(parent_id.as_ref().unwrap()).clone())
+            .find(|(entry_key, _)| entry_key == &(parent_id.as_ref().unwrap()).clone())
             .map(|(_, value)| value.clone());
         if (found).is_some() {
             parent = (found.as_ref().unwrap()).clone();

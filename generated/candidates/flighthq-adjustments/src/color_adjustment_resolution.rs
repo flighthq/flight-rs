@@ -48,7 +48,7 @@ pub fn is_affine_color_matrix(matrix: &Vec<f64>) -> bool {
 
 // Source: upstream/packages/adjustments/src/colorAdjustmentResolution.ts:34 (sha256:548a0f4ea0a5b8b7b7b886bca23fd8c5772657f87014f3e4e30538ab60601215)
 pub fn resolve_color_adjustments_color_matrix(
-    adjustments: Option<Vec<Adjustment>>,
+    adjustments: &Option<Vec<Adjustment>>,
 ) -> Option<Vec<f64>> {
     if ((adjustments).is_none()) || ((adjustments.as_ref().unwrap().len() as f64) == 0.0_f64) {
         return None;
@@ -82,7 +82,7 @@ pub fn resolve_color_adjustments_color_matrix(
 
 // Source: upstream/packages/adjustments/src/colorAdjustmentResolution.ts:57 (sha256:dd93ff4f8bea2ec9ed2c78b0265beb2fe5b8cefad34290400379ae32e4f6a98d)
 pub fn resolve_color_adjustments_color_scale_bias(
-    adjustments: Option<Vec<Adjustment>>,
+    adjustments: &Option<Vec<Adjustment>>,
     out: &mut ColorScaleBias,
 ) -> f64 {
     if ((adjustments).is_none()) || ((adjustments.as_ref().unwrap().len() as f64) == 0.0_f64) {

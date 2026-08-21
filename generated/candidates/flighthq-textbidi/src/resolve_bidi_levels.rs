@@ -720,7 +720,9 @@ fn resolve_isolating_run_sequences(
                     {
                         let next = run_by_first
                             .iter()
-                            .find(|(key, _)| key == &(matching_pdi[last_idx as usize] as f64))
+                            .find(|(entry_key, _)| {
+                                entry_key == &(matching_pdi[last_idx as usize] as f64)
+                            })
                             .map(|(_, value)| value.clone());
                         if (next).is_none() {
                             break;

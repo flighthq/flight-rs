@@ -109,7 +109,7 @@ pub fn create_protocol_url(parts: &FlightPartialRecord1) -> String {
             )
                 as Box<dyn FnMut(crate::OpaqueHostValue) -> () + Send + 'static>)))
             .join)("&");
-            url += format!("?{}", qs);
+            url.push_str(&(format!("?{}", qs)));
         }
     }
     return url;
@@ -233,7 +233,7 @@ pub fn create_web_protocol_backend() -> ProtocolBackend {
 pub fn detach_protocol_handler(handler: &ProtocolHandler) -> () {
     let unsubscribe = (*_SUBSCRIPTIONS.lock().unwrap())
         .iter()
-        .find(|(key, _)| key == &(*handler).clone())
+        .find(|(entry_key, _)| entry_key == &(*handler).clone())
         .map(|(_, value)| value.clone());
     if (unsubscribe).is_some() {
         {
@@ -356,7 +356,7 @@ pub fn parse_protocol_url(url: String) -> Option<ParsedProtocolUrl> {
             .skip((colon_idx + 1.0_f64) as usize)
             .collect::<Vec<u16>>(),
     );
-    let mut host = "";
+    let mut host = "".to_owned();
     if (rest.starts_with)("//") {
         rest = (rest.slice)(2.0_f64);
         let slash_idx = (rest.index_of)("/");
@@ -402,7 +402,7 @@ pub fn parse_protocol_url(url: String) -> Option<ParsedProtocolUrl> {
                 if ((k.encode_utf16().count() as f64) > 0.0_f64) {
                     query
                         .iter()
-                        .find(|(key, _)| key == &(k).clone())
+                        .find(|(entry_key, _)| entry_key == &(k).clone())
                         .map(|(_, value)| value)
                         .expect("TypeScript Record key was absent") = "".to_owned();
                 }
@@ -417,7 +417,7 @@ pub fn parse_protocol_url(url: String) -> Option<ParsedProtocolUrl> {
                 if ((k.encode_utf16().count() as f64) > 0.0_f64) {
                     query
                         .iter()
-                        .find(|(key, _)| key == &(k).clone())
+                        .find(|(entry_key, _)| entry_key == &(k).clone())
                         .map(|(_, value)| value)
                         .expect("TypeScript Record key was absent") =
                         _safe_decode(String::from_utf16_lossy(
@@ -479,8 +479,8 @@ pub fn remove_protocol_scheme_as_default(scheme: String) -> bool {
 }
 
 // Source: upstream/packages/protocol/src/protocol.ts:260 (sha256:18f3370317e900c9f55789f988059c5cb157aac2ab84cb754b19c6803890de8f)
-pub fn set_protocol_backend(backend: Option<ProtocolBackend>) -> () {
-    (*_BACKEND.lock().unwrap()) = (backend).clone();
+pub fn set_protocol_backend(backend: &Option<ProtocolBackend>) -> () {
+    (*_BACKEND.lock().unwrap()) = (*backend).clone();
 }
 
 // Source: upstream/packages/protocol/src/protocol.ts:266 (sha256:c2508dec8c18d102a4667af00aeef82119709bda578702d181d548a58f8bac6b)

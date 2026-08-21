@@ -32,7 +32,7 @@ pub static FOG_MODIFIER_MODE: std::sync::LazyLock<FogModifierModeValues> =
     });
 
 // Source: upstream/packages/types/src/FogModifier.ts:14 (sha256:3eee72eb00e1cad648b42b296b15485e221d6fe48b3d9b712e53cf8a398e42e8)
-pub type FogModifierMode = crate::OpaqueHostValue;
+pub type FogModifierMode = String;
 
 // Source: upstream/packages/types/src/FogModifier.ts:23 (sha256:0ddef0017cb9786dae56bccef54787182c9ff0a31489f925f8ac31bcf61731a4)
 #[derive(Clone, Default)]

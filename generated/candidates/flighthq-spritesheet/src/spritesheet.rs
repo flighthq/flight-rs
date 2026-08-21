@@ -139,7 +139,7 @@ pub fn get_spritesheet_animation(
         spritesheet
             .animations
             .iter()
-            .find(|(key, _)| key == &(label).clone())
+            .find(|(entry_key, _)| entry_key == &(label).clone())
             .map(|(_, value)| value)
             .expect("TypeScript Record key was absent")
             .clone(),

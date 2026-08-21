@@ -14,21 +14,34 @@ pub fn format_import_diagnostic(diagnostic: &ImportDiagnostic) -> String {
     let kind = (diagnostic.kind).clone();
     let origin = (diagnostic.origin).clone();
     let severity = (diagnostic.severity).clone();
-    let mut detail_text = "";
+    let mut detail_text = "".to_owned();
     if (detail).is_some() {
-        let keys = (crate::host_value::<()>("host.keys").sort)();
+        let keys = {
+            let mut __flight_values = detail
+                .as_ref()
+                .unwrap()
+                .iter()
+                .map(|(entry_key, _)| entry_key.clone())
+                .collect::<Vec<_>>();
+            __flight_values.sort_by(|left, right| {
+                left.partial_cmp(right).unwrap_or(std::cmp::Ordering::Equal)
+            });
+            __flight_values
+        };
         for key in (keys).iter().cloned() {
-            detail_text += format!(
-                " {}={}",
-                key,
-                detail
-                    .as_ref()
-                    .unwrap()
-                    .iter()
-                    .find(|(key, _)| key == &key)
-                    .map(|(_, value)| value)
-                    .expect("TypeScript Record key was absent")
-                    .clone()
+            detail_text.push_str(
+                &(format!(
+                    " {}={}",
+                    key,
+                    detail
+                        .as_ref()
+                        .unwrap()
+                        .iter()
+                        .find(|(entry_key, _)| entry_key == &(key).clone())
+                        .map(|(_, value)| value)
+                        .expect("TypeScript Record key was absent")
+                        .clone()
+                )),
             );
         }
     }

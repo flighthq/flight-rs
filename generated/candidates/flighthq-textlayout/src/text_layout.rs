@@ -163,7 +163,7 @@ fn char_advances(
         );
         let mut advance: f64;
         if (char == "\t") {
-            advance = get_tab_advance(current_x, ((tab_stops).clone()).clone(), measure, format);
+            advance = get_tab_advance(current_x, &(tab_stops), measure, format);
             out.push(advance);
             current_x += advance;
             i += char_len;
@@ -244,7 +244,7 @@ fn sum_advances(positions: &Vec<f64>) -> f64 {
 // Source: upstream/packages/textlayout/src/textLayout.ts:145 (sha256:3a91afce7bc4b223eb4e6b65375f3fdae16e5594f0e7efc32e780af892dbb314)
 fn get_tab_advance(
     current_x: f64,
-    tab_stops: Option<Vec<f64>>,
+    tab_stops: &Option<Vec<f64>>,
     measure: &mut impl FnMut(String, TextFormat) -> f64,
     format: &TextFormat,
 ) -> f64 {
