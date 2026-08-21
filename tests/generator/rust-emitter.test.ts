@@ -2550,6 +2550,46 @@ describe('Rust emission', () => {
     ).not.toThrow();
   });
 
+  it('reads and writes shared numeric operations across array storage unions', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/animation/src/numeric-union.ts',
+      `
+        export function updateNumericUnion(
+          out: number[] | Float32Array,
+          input: number[] | Float32Array,
+        ): number {
+          out[0] = input[0] + 1;
+          out[1] += 2;
+          return out.length + input[0] + out[0];
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/animation', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/animation/src/numeric-union.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('crate::FlightUnion2::A(values) => (values.len() as f64)');
+    expect(output).toContain('values[__flight_index] = __flight_value');
+    expect(output).toContain('values[__flight_index] += (__flight_value) as f32');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-numeric-union-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, `${output}\n#[derive(Clone, PartialEq)] pub enum FlightUnion2<A, B> { A(A), B(B) }\n`);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
   it('preserves for and do-while updates when continue is lowered', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/math/src/loops.ts',

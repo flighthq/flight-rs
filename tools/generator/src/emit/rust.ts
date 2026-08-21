@@ -4701,6 +4701,8 @@ function emitProperty(
   if (structuralCast !== undefined) return structuralCast;
   const errorProperty = emitNarrowedErrorProperty(expression, context, expectedType);
   if (errorProperty !== undefined) return errorProperty;
+  const numericUnionLength = emitNumericUnionCollectionLength(expression, context);
+  if (numericUnionLength !== undefined) return numericUnionLength;
   if (expression.object.kind === 'identifier') {
     if (expression.object.name === 'Math' && expression.name === 'PI') return 'std::f64::consts::PI';
     if (expression.object.name === 'Number' && expression.name === 'POSITIVE_INFINITY') return 'f64::INFINITY';
@@ -4808,6 +4810,137 @@ function emitProperty(
   }
   const place = emitPropertyPlace(expression, context);
   return type && !isCopyType(type, context) ? `${parenthesize(place)}.clone()` : place;
+}
+
+interface NumericUnionCollection {
+  commonElement: IrType;
+  sourceType: IrType;
+  storageElements: readonly IrType[];
+  union: Extract<IrType, { kind: 'union' }>;
+  unionName?: string | undefined;
+}
+
+function resolveNumericUnionCollection(
+  expression: IrExpression,
+  context: EmitContext,
+): NumericUnionCollection | undefined {
+  const sourceType = inferIrExpressionType(expression, context);
+  if (!sourceType) return undefined;
+  const candidate = sourceType.kind === 'nullable' ? sourceType.inner : sourceType;
+  const union = resolveSemanticType(candidate, context);
+  if (union?.kind !== 'union') return undefined;
+  const storageElements = union.variants.map((variant) => {
+    const collection = resolveSemanticType(variant, context) ?? variant;
+    if (collection.kind === 'array') return collection.element;
+    return collection.kind === 'named' ? typedArrayElementType(collection.name) : undefined;
+  });
+  if (storageElements.some((element) => !element)) return undefined;
+  const concreteElements = storageElements as IrType[];
+  const commonElement = javaScriptValueType(concreteElements[0]!);
+  const resolvedCommonElement = resolveSemanticType(commonElement, context) ?? commonElement;
+  if (
+    concreteElements.some((element) => !semanticTypesEqual(javaScriptValueType(element), commonElement, context)) ||
+    resolvedCommonElement.kind !== 'primitive' ||
+    resolvedCommonElement.name !== 'Float'
+  ) {
+    return undefined;
+  }
+  return {
+    commonElement,
+    sourceType,
+    storageElements: concreteElements,
+    union,
+    unionName: candidate.kind === 'named' ? emitNamedUnionConstructor(candidate, context) : undefined,
+  };
+}
+
+function emitNumericUnionMatch(
+  reference: string,
+  collection: NumericUnionCollection,
+  arm: (storageElement: IrType) => string,
+): string {
+  const visit = (variants: readonly IrType[], offset: number, constructor: string): string => {
+    const first = `${constructor}::A(values) => ${arm(collection.storageElements[offset]!)}`;
+    const rest =
+      variants.length === 2
+        ? `${constructor}::B(values) => ${arm(collection.storageElements[offset + 1]!)}`
+        : `${constructor}::B(value) => match value { ${visit(variants.slice(1), offset + 1, 'crate::FlightUnion2')} }`;
+    return `${first}, ${rest}`;
+  };
+  return `match ${reference} { ${visit(collection.union.variants, 0, collection.unionName ?? 'crate::FlightUnion2')} }`;
+}
+
+function emitNumericUnionReference(
+  expression: IrExpression,
+  sourceType: IrType,
+  context: EmitContext,
+  mutable: boolean,
+): string {
+  const place = emitPlaceExpression(expression, context);
+  if (sourceType.kind === 'nullable') {
+    return `${parenthesize(place)}.${mutable ? 'as_mut' : 'as_ref'}().expect("TypeScript nullable numeric collection was not narrowed")`;
+  }
+  const root = expressionRootIdentifier(expression);
+  if (root && context.borrowedNames.has(root)) return mutable ? place : `&*${parenthesize(place)}`;
+  return `${mutable ? '&mut ' : '&'}${parenthesize(place)}`;
+}
+
+function emitNumericStorageRead(value: string, storageType: IrType, context: EmitContext): string {
+  const common = javaScriptValueType(storageType);
+  return emitType(storageType, context) === emitType(common, context)
+    ? value
+    : `${parenthesize(value)} as ${emitType(common, context)}`;
+}
+
+function emitNumericUnionCollectionLength(
+  expression: Extract<IrExpression, { kind: 'property' }>,
+  context: EmitContext,
+): string | undefined {
+  if (expression.name !== 'length') return undefined;
+  const collection = resolveNumericUnionCollection(expression.object, context);
+  if (!collection) return undefined;
+  const reference = emitNumericUnionReference(expression.object, collection.sourceType, context, false);
+  return emitNumericUnionMatch(reference, collection, () => '(values.len() as f64)');
+}
+
+function emitNumericUnionElementRead(
+  expression: Extract<IrExpression, { kind: 'element' }>,
+  context: EmitContext,
+): string | undefined {
+  const collection = resolveNumericUnionCollection(expression.object, context);
+  if (!collection) return undefined;
+  const reference = emitNumericUnionReference(expression.object, collection.sourceType, context, false);
+  const index = emitExpression(expression.index, context, primitive('Float'));
+  const matched = emitNumericUnionMatch(reference, collection, (storageType) =>
+    emitNumericStorageRead('values[__flight_index]', storageType, context),
+  );
+  return `{ let __flight_index = ${parenthesize(index)} as usize; ${matched} }`;
+}
+
+function emitNumericUnionElementAssignment(
+  expression: Extract<IrExpression, { kind: 'assignment' }>,
+  context: EmitContext,
+  returnValue: boolean,
+): string | undefined {
+  if (expression.left.kind !== 'element') return undefined;
+  const collection = resolveNumericUnionCollection(expression.left.object, context);
+  if (!collection) return undefined;
+  const reference = emitNumericUnionReference(expression.left.object, collection.sourceType, context, true);
+  const index = emitExpression(expression.left.index, context, primitive('Float'));
+  const right = emitExpression(expression.right, context, collection.commonElement);
+  const matched = emitNumericUnionMatch(
+    reference,
+    collection,
+    (storageType) =>
+      `{ ${emitAssignmentOperation(
+        'values[__flight_index]',
+        coerceExpression('__flight_value', storageType),
+        expression.operator,
+      )}; }`,
+  );
+  return `{ let __flight_index = ${parenthesize(index)} as usize; let __flight_value = ${right}; ${matched}; ${
+    returnValue ? '__flight_value' : ''
+  } }`;
 }
 
 function emitUnionPropertyRead(
@@ -5478,6 +5611,8 @@ function emitAssignment(expression: Extract<IrExpression, { kind: 'assignment' }
   if (bufferViewWrite) return bufferViewWrite;
   const nullishAssignment = emitNullishAssignment(expression, context, true);
   if (nullishAssignment) return nullishAssignment;
+  const numericUnionElementAssignment = emitNumericUnionElementAssignment(expression, context, true);
+  if (numericUnionElementAssignment) return numericUnionElementAssignment;
   if (
     expression.left.kind === 'identifier' &&
     context.timerHandleNames.has(expression.left.name) &&
@@ -5565,6 +5700,8 @@ function emitAssignmentStatement(
   if (bufferViewWrite) return bufferViewWrite;
   const nullishAssignment = emitNullishAssignment(expression, context, false);
   if (nullishAssignment) return nullishAssignment;
+  const numericUnionElementAssignment = emitNumericUnionElementAssignment(expression, context, false);
+  if (numericUnionElementAssignment) return numericUnionElementAssignment;
   if (
     expression.left.kind === 'identifier' &&
     context.timerHandleNames.has(expression.left.name) &&
@@ -10306,6 +10443,8 @@ function emitElementRead(
       };
     return emitHostValueExpression(result, '"host.index"', context);
   }
+  const numericUnionElement = emitNumericUnionElementRead(expression, context);
+  if (numericUnionElement !== undefined) return numericUnionElement;
   const place = emitElement(expression, context);
   if (expression.optional) return place;
   if (resolvedObject?.kind === 'named' && resolvedObject.name === 'RustMap' && expectedType?.kind !== 'nullable') {
