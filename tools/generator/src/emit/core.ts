@@ -250,6 +250,7 @@ interface GeneratedRustTarget {
 }
 
 interface ImportedSemanticTypes {
+  constantPropertyValues: Readonly<Record<string, boolean | number | string>>;
   enumNames: readonly string[];
   functions: readonly IrFunctionDeclaration[];
   typeParameters: Readonly<Record<string, readonly string[]>>;
@@ -526,6 +527,7 @@ function attemptAutomaticPackage(
       }
       const localDeclarations = new Set(lowered.declarations.map((declaration) => declaration.name));
       const emitted = emitRustModule({
+        constantPropertyValues: importedSemanticTypes.constantPropertyValues,
         declarations: lowered.declarations,
         entityRuntimeAggregateAvailable: packageInventory.name === portConfig.typeLowering.entityRuntimeFamily.package,
         enumNames: [...collectTypeEnumNames(workspaceDirectory), ...importedSemanticTypes.enumNames],
@@ -2390,6 +2392,7 @@ function collectImportedSemanticTypes(sourceFile: ts.SourceFile, workspaceDirect
   const cached = importedSemanticTypesCache.get(cacheKey);
   if (cached) return cached;
   const types = new Map<string, IrType>();
+  const constantPropertyValues = new Map<string, boolean | number | string>();
   const enumNames = new Set<string>();
   const functions = new Map<string, IrFunctionDeclaration>();
   const typeParameters = new Map<string, readonly string[]>();
@@ -2417,6 +2420,24 @@ function collectImportedSemanticTypes(sourceFile: ts.SourceFile, workspaceDirect
           specifier.startsWith('@flighthq/') ? specifier : '@flighthq/internal',
           workspaceDirectory,
         );
+        const importedVariable = lowered.declarations.find(
+          (item) => item.kind === 'variable' && item.name === name,
+        );
+        if (importedVariable?.kind === 'variable' && importedVariable.initializer) {
+          let initializer = importedVariable.initializer;
+          while (initializer.kind === 'cast') initializer = initializer.expression;
+          if (initializer.kind === 'object') {
+            for (const property of initializer.properties) {
+              if (
+                property.kind === 'property' &&
+                property.value.kind === 'literal' &&
+                property.value.value !== null
+              ) {
+                constantPropertyValues.set(`${localName}.${property.name}`, property.value.value);
+              }
+            }
+          }
+        }
         const declaration = lowered.declarations.find(
           (item) =>
             (item.kind === 'type' ||
@@ -2451,6 +2472,7 @@ function collectImportedSemanticTypes(sourceFile: ts.SourceFile, workspaceDirect
   };
   visit(sourceFile);
   const result = {
+    constantPropertyValues: Object.fromEntries(constantPropertyValues),
     enumNames: [...enumNames].sort(),
     functions: [...functions.values()].sort((left, right) => left.name.localeCompare(right.name)),
     typeParameters: Object.fromEntries(typeParameters),

@@ -16,6 +16,7 @@ import type {
 import { PORTABLE_TASK_RUST_LOWERING_REASON } from '../model/ir.ts';
 
 export interface RustModule {
+  constantPropertyValues?: Readonly<Record<string, boolean | number | string>>;
   declarations: IrDeclaration[];
   entityRuntimeAggregateAvailable?: boolean;
   enumNames?: readonly string[];
@@ -132,7 +133,9 @@ export function emitRustModule(module: RustModule): string {
     ),
   ]);
   const constantValues = new Map<string, number>();
-  const constantPropertyValues = new Map<string, boolean | number | string>();
+  const constantPropertyValues = new Map<string, boolean | number | string>(
+    Object.entries(module.constantPropertyValues ?? {}),
+  );
   for (const declaration of module.declarations) {
     if (declaration.kind !== 'variable' || !declaration.initializer || declaration.initializer.kind === 'function') {
       continue;
@@ -374,6 +377,7 @@ export function emitRustModule(module: RustModule): string {
   registerSharedModuleAnonymousTypes(module.declarations, context);
   registerGlobalResolvedAnonymousTypes([...module.declarations, ...(module.semanticFunctions ?? [])], context);
   registerTypeDeclarationAnonymousTypes(module.declarations, context);
+  registerImportedTypeAnonymousTypes(context);
   registerNestedAnonymousTypes(context);
   const declarationBodies = module.declarations
     .map((declaration) => {
@@ -4493,14 +4497,15 @@ function emitUnionPropertyRead(
   expression: Extract<IrExpression, { kind: 'property' }>,
   context: EmitContext,
 ): string | undefined {
-  if (expression.object.kind !== 'identifier' || context.unionNarrowings.has(expression.object.name)) {
+  if (expression.object.kind === 'identifier' && context.unionNarrowings.has(expression.object.name)) {
     return undefined;
   }
-  const name = expression.object.name;
-  const sourceType = context.symbolTypes.get(name);
-  const union = resolveSemanticType(sourceType, context);
+  const name = expression.object.kind === 'identifier' ? expression.object.name : undefined;
+  const sourceType = inferIrExpressionType(expression.object, context);
+  const candidate = sourceType?.kind === 'nullable' ? sourceType.inner : sourceType;
+  const union = resolveSemanticType(candidate, context);
   if (union?.kind !== 'union') return undefined;
-  const excluded = context.excludedUnionVariants.get(name) ?? new Set<number>();
+  const excluded = (name ? context.excludedUnionVariants.get(name) : undefined) ?? new Set<number>();
   const active = union.variants.flatMap((variant, index) => (excluded.has(index) ? [] : [{ index, variant }]));
   const fields = active.map(({ variant }) => {
     const concrete = resolveSemanticType(variant, context);
@@ -4525,8 +4530,11 @@ function emitUnionPropertyRead(
         : 'unreachable!("excluded TypeScript union variant was observed")'
     }, crate::FlightUnion2::B(value) => ${read('value', variants.slice(1), offset + 1)} }`;
   };
-  const value = emitPlaceExpression(expression.object, context);
-  return read(`&${parenthesize(value)}`, union.variants, 0);
+  const value = emitExpression(expression.object, context, sourceType);
+  const reference = sourceType?.kind === 'nullable'
+    ? `${parenthesize(value)}.as_ref().expect("TypeScript nullable union property was not narrowed")`
+    : `&${parenthesize(value)}`;
+  return read(reference, union.variants, 0);
 }
 
 function emitNarrowedErrorProperty(
@@ -7769,6 +7777,30 @@ function registerTypeDeclarationAnonymousTypes(
       if (!anonymousTypes.has(key)) anonymousTypes.set(key, `${pascalCase(declaration.name)}Record${String(index)}`);
       const parameters = declaration.typeParameters.filter((parameter) => typeUsesNamedParameter(type, parameter));
       if (parameters.length > 0) anonymousTypeParameters.set(key, parameters);
+      index++;
+    }
+  }
+}
+
+function registerImportedTypeAnonymousTypes(context: EmitContext): void {
+  const anonymousTypes = context.anonymousTypes as Map<string, string>;
+  const anonymousTypeParameters = context.anonymousTypeParameters as Map<string, readonly string[]>;
+  const inherited = context.inheritedAnonymousTypeKeys as Set<string>;
+  for (const [owner, declaration] of context.namedTypes) {
+    if (context.localTypeNames.has(owner)) continue;
+    const module = context.importedModules.get(owner);
+    if (!module) continue;
+    const typeParameters = context.namedTypeParameters.get(owner) ?? [];
+    let index = 1;
+    for (const type of collectResolvedAnonymousTypes(declaration, context)) {
+      const key = typeKey(type);
+      if (key === typeKey(declaration)) continue;
+      if (!anonymousTypes.has(key)) {
+        anonymousTypes.set(key, `${module}::${pascalCase(owner)}Record${String(index)}`);
+      }
+      const parameters = typeParameters.filter((parameter) => typeUsesNamedParameter(type, parameter));
+      if (parameters.length > 0) anonymousTypeParameters.set(key, parameters);
+      inherited.add(key);
       index++;
     }
   }
