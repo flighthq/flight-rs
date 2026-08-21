@@ -76,6 +76,7 @@ pub fn create_specular_pbr_extension(
 ) -> SpecularPbrExtension {
     return create_entity(Some(SpecularPbrExtension {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         kind: (specular_pbr_extension_kind_constant).to_owned(),
         specular: (opts.as_ref().and_then(|value| value.specular))

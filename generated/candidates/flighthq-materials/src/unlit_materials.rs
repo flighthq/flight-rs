@@ -226,6 +226,7 @@ pub fn create_depth_material(opts: Option<FlightPartialRecord2049819932>) -> Dep
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             kind: (__flight_source.kind).clone(),
             name: (__flight_source.name).clone(),
             alpha_cutoff: __flight_source.alpha_cutoff,
@@ -271,6 +272,7 @@ pub fn create_emissive_material(opts: Option<FlightPartialRecord567701514>) -> E
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             kind: (__flight_source.kind).clone(),
             name: (__flight_source.name).clone(),
             alpha_cutoff: __flight_source.alpha_cutoff,
@@ -318,6 +320,7 @@ pub fn create_matcap_material(opts: Option<FlightPartialRecord2770153774>) -> Ma
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             kind: (__flight_source.kind).clone(),
             name: (__flight_source.name).clone(),
             alpha_cutoff: __flight_source.alpha_cutoff,
@@ -361,6 +364,7 @@ pub fn create_normal_material(opts: Option<FlightPartialRecord3106176057>) -> No
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             kind: (__flight_source.kind).clone(),
             name: (__flight_source.name).clone(),
             alpha_cutoff: __flight_source.alpha_cutoff,
@@ -404,6 +408,7 @@ pub fn create_toon_material(opts: Option<FlightPartialRecord400840814>) -> ToonM
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             kind: (__flight_source.kind).clone(),
             name: (__flight_source.name).clone(),
             alpha_cutoff: __flight_source.alpha_cutoff,
@@ -455,6 +460,7 @@ pub fn create_unlit_material(opts: Option<FlightPartialRecord3145127941>) -> Unl
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             kind: (__flight_source.kind).clone(),
             name: (__flight_source.name).clone(),
             alpha_cutoff: __flight_source.alpha_cutoff,
@@ -502,6 +508,7 @@ pub fn create_vertex_color_material(
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             kind: (__flight_source.kind).clone(),
             name: (__flight_source.name).clone(),
             alpha_cutoff: __flight_source.alpha_cutoff,
@@ -543,6 +550,7 @@ pub fn create_wireframe_material(opts: Option<FlightPartialRecord1752344006>) ->
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             kind: (__flight_source.kind).clone(),
             name: (__flight_source.name).clone(),
             alpha_cutoff: __flight_source.alpha_cutoff,

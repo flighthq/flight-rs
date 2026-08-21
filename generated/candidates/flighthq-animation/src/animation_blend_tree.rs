@@ -93,7 +93,7 @@ pub fn create_animation_blend_tree(inputs: &Vec<AnimationBlendTreeInput>) -> Ani
                         };
                         continue;
                     }
-                    let mut existing = channels[existing_index as usize].clone();
+                    let mut existing = channels[(existing_index).clone().unwrap() as usize].clone();
                     assert_compatible_animation_blend_tree_channels(&existing.channel, &channel);
                     (existing.sources)
                         .clone()
@@ -116,6 +116,7 @@ pub fn create_animation_blend_tree(inputs: &Vec<AnimationBlendTreeInput>) -> Ani
     }
     return create_entity(Some(AnimationBlendTree {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         channels: (channels).clone(),
         inputs: (copied_inputs).clone(),
@@ -134,6 +135,7 @@ pub fn create_animation_blend_tree_input(
     let additive = additive.unwrap_or(false);
     return create_entity(Some(AnimationBlendTreeInput {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         additive: additive,
         player: (*player).clone(),
@@ -150,7 +152,7 @@ pub fn sample_animation_blend_tree(
     {
         let mut index = 0.0_f64;
         while (index < (tree.channels.len() as f64)) {
-            if sample_animation_blend_tree_channel(&((*out).clone()), tree, index) {
+            if sample_animation_blend_tree_channel(out, tree, index) {
                 visit(
                     (*out).clone(),
                     (tree.channels[index as usize].channel).clone(),
@@ -171,56 +173,90 @@ pub fn sample_animation_blend_tree_channel(
     tree: &mut AnimationBlendTree,
     channel_index: f64,
 ) -> bool {
-    let mut entry = tree.channels[channel_index as usize].clone();
+    let mut entry: Option<AnimationBlendTreeChannel> =
+        tree.channels.get(channel_index as usize).cloned();
     if (entry).is_none() {
         return false;
     }
-    reset_animation_sample_accumulator(&mut entry.accumulator);
+    reset_animation_sample_accumulator(&mut entry.as_mut().unwrap().accumulator);
     let mut has_additive = false;
-    for source in ((entry.sources).clone()).iter().cloned() {
-        let mut input = tree.inputs[source.input_index as usize].clone();
+    for source in ((entry.as_mut().unwrap().sources).clone()).iter().cloned() {
+        let input = tree.inputs[source.input_index as usize].clone();
         if (input.additive) || (!(input.weight > 0.0_f64)) {
             if (input.additive) && (input.weight > 0.0_f64) {
                 has_additive = true;
             }
             continue;
         }
-        let mut channel = input.player.clip.channels[source.channel_index as usize].clone();
-        sample_animation_track(
-            &(crate::FlightUnion2::<Vec<f64>, Vec<f32>>::B((tree.sample_scratch).clone())),
-            &mut channel.track,
-            input.player.time,
+        let channel = input.player.clip.channels[source.channel_index as usize].clone();
+        {
+            let mut __flight_argument_0 = crate::FlightUnion2::<Vec<f64>, Vec<f32>>::B(
+                std::mem::take(&mut (tree.sample_scratch)),
+            );
+            let __flight_result =
+                sample_animation_track(&mut __flight_argument_0, &channel.track, input.player.time);
+            tree.sample_scratch = match __flight_argument_0 {
+                crate::FlightUnion2::A(_) => panic!("TypeScript union narrowing failed"),
+                crate::FlightUnion2::B(value) => value,
+            };
+            __flight_result
+        };
+        accumulate_animation_sample(
+            &mut entry.as_mut().unwrap().accumulator,
+            &(((tree.sample_scratch).clone())
+                .iter()
+                .map(|__flight_value| (*__flight_value) as f64)
+                .collect::<Vec<_>>()),
+            input.weight,
         );
-        accumulate_animation_sample(&mut entry.accumulator, &tree.sample_scratch, input.weight);
     }
-    let has_override = finish_animation_sample(&((*out).clone()), &entry.accumulator);
+    let has_override = finish_animation_sample(out, &entry.as_mut().unwrap().accumulator);
     if (!has_override) && (!has_additive) {
         return false;
     }
     if (!has_override) {
         write_animation_blend_tree_identity(
-            &((*out).clone()),
-            entry.channel.track.components,
-            entry.channel.track.quaternion,
+            out,
+            entry.as_mut().unwrap().channel.track.components,
+            entry.as_mut().unwrap().channel.track.quaternion,
         );
     }
-    for source in ((entry.sources).clone()).iter().cloned() {
-        let mut input = tree.inputs[source.input_index as usize].clone();
+    for source in ((entry.as_mut().unwrap().sources).clone()).iter().cloned() {
+        let input = tree.inputs[source.input_index as usize].clone();
         if (!input.additive) || (!(input.weight > 0.0_f64)) {
             continue;
         }
-        let mut channel = input.player.clip.channels[source.channel_index as usize].clone();
-        sample_animation_track(
-            &(crate::FlightUnion2::<Vec<f64>, Vec<f32>>::B((tree.sample_scratch).clone())),
-            &mut channel.track,
-            input.player.time,
-        );
+        let channel = input.player.clip.channels[source.channel_index as usize].clone();
         {
-            let __flight_argument_1 = (out).clone();
+            let mut __flight_argument_0 = crate::FlightUnion2::<Vec<f64>, Vec<f32>>::B(
+                std::mem::take(&mut (tree.sample_scratch)),
+            );
+            let __flight_result =
+                sample_animation_track(&mut __flight_argument_0, &channel.track, input.player.time);
+            tree.sample_scratch = match __flight_argument_0 {
+                crate::FlightUnion2::A(_) => panic!("TypeScript union narrowing failed"),
+                crate::FlightUnion2::B(value) => value,
+            };
+            __flight_result
+        };
+        {
+            let __flight_argument_1 = match &((*out).clone()) {
+                crate::FlightUnion2::A(values) => values
+                    .iter()
+                    .map(|__flight_value| *__flight_value)
+                    .collect::<Vec<_>>(),
+                crate::FlightUnion2::B(values) => values
+                    .iter()
+                    .map(|__flight_value| (*__flight_value) as f64)
+                    .collect::<Vec<_>>(),
+            };
             let __flight_result = add_animation_sample(
-                &((*out).clone()),
+                out,
                 &__flight_argument_1,
-                &mut tree.sample_scratch,
+                &(((tree.sample_scratch).clone())
+                    .iter()
+                    .map(|__flight_value| (*__flight_value) as f64)
+                    .collect::<Vec<_>>()),
                 input.weight,
                 Some(channel.track.quaternion),
             );
@@ -236,11 +272,11 @@ pub fn set_animation_blend_tree_input_weight(
     input_index: f64,
     weight: f64,
 ) -> bool {
-    let mut input = tree.inputs[input_index as usize].clone();
+    let mut input: Option<AnimationBlendTreeInput> = tree.inputs.get(input_index as usize).cloned();
     if (input).is_none() {
         return false;
     }
-    input.weight = weight;
+    input.as_mut().unwrap().weight = weight;
     return true;
 }
 
@@ -285,11 +321,26 @@ fn write_animation_blend_tree_identity(
     components: f64,
     quaternion: bool,
 ) -> () {
-    let width = (out.length).min(components);
+    let width = (match &*(out) {
+        crate::FlightUnion2::A(values) => (values.len() as f64),
+        crate::FlightUnion2::B(values) => (values.len() as f64),
+    })
+    .min(components);
     {
         let mut component = 0.0_f64;
         while (component < width) {
-            out[component as usize] = 0.0_f64;
+            {
+                let __flight_index = (component) as usize;
+                let __flight_value = 0.0_f64;
+                match out {
+                    crate::FlightUnion2::A(values) => {
+                        values[__flight_index] = __flight_value;
+                    }
+                    crate::FlightUnion2::B(values) => {
+                        values[__flight_index] = (__flight_value) as f32;
+                    }
+                };
+            };
             {
                 component += 1.0;
                 component
@@ -297,6 +348,17 @@ fn write_animation_blend_tree_identity(
         }
     }
     if (quaternion) && (width >= 4.0_f64) {
-        out[3.0_f64 as usize] = 1.0_f64;
+        {
+            let __flight_index = (3.0_f64) as usize;
+            let __flight_value = 1.0_f64;
+            match out {
+                crate::FlightUnion2::A(values) => {
+                    values[__flight_index] = __flight_value;
+                }
+                crate::FlightUnion2::B(values) => {
+                    values[__flight_index] = (__flight_value) as f32;
+                }
+            };
+        };
     }
 }

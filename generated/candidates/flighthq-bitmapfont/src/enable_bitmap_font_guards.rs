@@ -46,21 +46,7 @@ pub fn disable_bitmap_font_guards() -> () {
 
 // Source: upstream/packages/bitmapfont/src/enableBitmapFontGuards.ts:25 (sha256:abc4fd323f6854d62ef6acc452d73c083a0ca6207064ca275dd0728627488508)
 pub fn enable_bitmap_font_guards() -> () {
-    set_bitmap_font_guard(
-        &(Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-            move |__flight_argument_0: String,
-                  __flight_argument_1: f64,
-                  __flight_argument_2: f64|
-                  -> () {
-                warn_on_bitmap_font_repair(
-                    (__flight_argument_0).clone(),
-                    __flight_argument_1,
-                    __flight_argument_2,
-                )
-            },
-        )
-            as Box<dyn FnMut(String, f64, f64) -> () + Send + 'static>)))),
-    );
+    set_bitmap_font_guard(&(warn_on_bitmap_font_repair));
 }
 
 // Source: upstream/packages/bitmapfont/src/enableBitmapFontGuards.ts:33 (sha256:db76c05dfbf214f24edcb5201006aac64f577213ca65a8c995dcc31937b696f6)

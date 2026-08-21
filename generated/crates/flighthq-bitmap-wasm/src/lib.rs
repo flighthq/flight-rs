@@ -2,40 +2,26 @@
 #![forbid(unsafe_code)]
 
 use flighthq_bitmap::{
-    apply_bitmap_curve as apply_surface_curve, apply_bitmap_levels as apply_surface_levels,
-    apply_bitmap_palette_map as apply_surface_palette_map,
-    build_bitmap_brightness_color_matrix as build_surface_brightness_color_matrix,
-    build_bitmap_contrast_color_matrix as build_surface_contrast_color_matrix,
-    build_bitmap_grayscale_color_matrix as build_surface_grayscale_color_matrix,
-    build_bitmap_hue_rotation_color_matrix as build_surface_hue_rotation_color_matrix,
-    build_bitmap_invert_color_matrix as build_surface_invert_color_matrix,
-    build_bitmap_saturation_color_matrix as build_surface_saturation_color_matrix,
-    build_bitmap_sepia_color_matrix as build_surface_sepia_color_matrix,
-    color_matrix_bitmap as color_matrix_surface,
-    compare_bitmap_fingerprints as compare_surface_fingerprints,
-    concat_bitmap_color_matrix as concat_surface_color_matrix, convolve_bitmap as convolve_surface,
-    copy_bitmap_alpha as copy_surface_alpha, copy_bitmap_pixels as copy_surface_pixels,
-    create_bitmap_fingerprint as create_surface_fingerprint, dilate_bitmap as dilate_surface,
-    erode_bitmap as erode_surface, fill_bitmap_noise as fill_surface_noise,
-    fill_bitmap_perlin_noise as fill_surface_perlin_noise,
-    fill_bitmap_rectangle as fill_surface_rectangle,
-    fill_bitmap_turbulence as fill_surface_turbulence,
-    get_bitmap_color_bounds_rectangle as get_surface_color_bounds_rectangle,
-    get_bitmap_coverage as get_surface_coverage, get_bitmap_histogram as get_surface_histogram,
-    get_bitmap_mismatch as get_surface_mismatch, merge_bitmap_channels as merge_surface_channels,
-    multiply_bitmap_alpha as multiply_surface_alpha, pixelate_bitmap as pixelate_surface,
-    premultiply_bitmap_pixels as premultiply_surface_pixels, set_bitmap_alpha as set_surface_alpha,
-    set_bitmap_color_matrix_identity as set_surface_color_matrix_identity,
-    unpremultiply_bitmap_pixels as unpremultiply_surface_pixels,
+    BitmapComparisonSource, apply_bitmap_curve, apply_bitmap_levels, apply_bitmap_palette_map,
+    build_bitmap_brightness_color_matrix, build_bitmap_contrast_color_matrix,
+    build_bitmap_grayscale_color_matrix, build_bitmap_hue_rotation_color_matrix,
+    build_bitmap_invert_color_matrix, build_bitmap_saturation_color_matrix,
+    build_bitmap_sepia_color_matrix, color_matrix_bitmap, compare_bitmap_fingerprints,
+    concat_bitmap_color_matrix, convolve_bitmap, copy_bitmap_alpha, copy_bitmap_pixels,
+    create_bitmap_fingerprint, dilate_bitmap, erode_bitmap, fill_bitmap_noise,
+    fill_bitmap_perlin_noise, fill_bitmap_rectangle, fill_bitmap_turbulence,
+    get_bitmap_color_bounds_rectangle, get_bitmap_coverage, get_bitmap_histogram,
+    get_bitmap_mismatch, merge_bitmap_channels, multiply_bitmap_alpha, pixelate_bitmap,
+    premultiply_bitmap_pixels, set_bitmap_alpha, set_bitmap_color_matrix_identity,
+    unpremultiply_bitmap_pixels,
 };
 use flighthq_types::{
-    Bitmap as Surface, BitmapConvolutionOptions as SurfaceConvolutionOptions,
-    BitmapFingerprint as SurfaceFingerprint, BitmapRegion as SurfaceRegion, OpaqueHostValue,
+    Bitmap, BitmapConvolutionOptions, BitmapFingerprint, BitmapRegion, OpaqueHostValue,
 };
 use wasm_bindgen::prelude::*;
 
-fn surface(data: &[u8], width: f64, height: f64) -> Surface {
-    Surface {
+fn bitmap(data: &[u8], width: f64, height: f64) -> Bitmap {
+    Bitmap {
         __flight_identity: std::sync::Arc::new(()),
         __flight_entity_runtime: Default::default(),
         alpha_type: "straight".to_owned(),
@@ -50,15 +36,24 @@ fn surface(data: &[u8], width: f64, height: f64) -> Surface {
     }
 }
 
-fn region(data: &[u8], descriptor: &[f64]) -> SurfaceRegion {
+fn comparison_source(data: &[u8], width: f64, height: f64) -> BitmapComparisonSource {
+    BitmapComparisonSource {
+        __flight_identity: std::sync::Arc::new(()),
+        width,
+        height,
+        data: data.iter().map(|value| f64::from(*value)).collect(),
+    }
+}
+
+fn region(data: &[u8], descriptor: &[f64]) -> BitmapRegion {
     assert_eq!(
         descriptor.len(),
         6,
-        "surface region descriptor must contain [surfaceWidth, surfaceHeight, x, y, width, height]",
+        "bitmap region descriptor must contain [bitmapWidth, bitmapHeight, x, y, width, height]",
     );
-    SurfaceRegion {
+    BitmapRegion {
         __flight_identity: std::sync::Arc::new(()),
-        bitmap: surface(data, descriptor[0], descriptor[1]),
+        bitmap: bitmap(data, descriptor[0], descriptor[1]),
         x: descriptor[2],
         y: descriptor[3],
         width: descriptor[4],
@@ -66,8 +61,8 @@ fn region(data: &[u8], descriptor: &[f64]) -> SurfaceRegion {
     }
 }
 
-fn fingerprint(cells: &[u8], grid_size: f64) -> SurfaceFingerprint {
-    SurfaceFingerprint {
+fn fingerprint(cells: &[u8], grid_size: f64) -> BitmapFingerprint {
+    BitmapFingerprint {
         __flight_identity: std::sync::Arc::new(()),
         cells: cells.to_vec(),
         grid_size,
@@ -78,7 +73,7 @@ fn copy_u8_output(out: &mut [u8], owned: &[u8]) {
     assert_eq!(
         out.len(),
         owned.len(),
-        "generated surface output changed length"
+        "generated bitmap output changed length"
     );
     out.copy_from_slice(owned);
 }
@@ -102,7 +97,7 @@ fn optional_byte_channel_map(values: &[u8]) -> Option<Vec<u8>> {
 
 #[wasm_bindgen]
 #[allow(clippy::too_many_arguments)]
-pub fn apply_surface_curve_wasm(
+pub fn apply_bitmap_curve_wasm(
     dest_data: &mut [u8],
     dest_descriptor: &[f64],
     source_data: &[u8],
@@ -114,12 +109,12 @@ pub fn apply_surface_curve_wasm(
 ) {
     let mut dest = region(dest_data, dest_descriptor);
     let source = region(source_data, source_descriptor);
-    apply_surface_curve(
+    apply_bitmap_curve(
         &mut dest,
         &source,
-        optional_byte_channel_map(red_lut),
-        optional_byte_channel_map(green_lut),
-        optional_byte_channel_map(blue_lut),
+        &optional_byte_channel_map(red_lut),
+        &optional_byte_channel_map(green_lut),
+        &optional_byte_channel_map(blue_lut),
         optional_byte_channel_map(alpha_lut),
     );
     copy_u8_output(dest_data, &dest.bitmap.data);
@@ -127,7 +122,7 @@ pub fn apply_surface_curve_wasm(
 
 #[wasm_bindgen]
 #[allow(clippy::too_many_arguments)]
-pub fn apply_surface_levels_wasm(
+pub fn apply_bitmap_levels_wasm(
     dest_data: &mut [u8],
     dest_descriptor: &[f64],
     source_data: &[u8],
@@ -138,7 +133,7 @@ pub fn apply_surface_levels_wasm(
 ) {
     let mut dest = region(dest_data, dest_descriptor);
     let source = region(source_data, source_descriptor);
-    apply_surface_levels(
+    apply_bitmap_levels(
         &mut dest,
         &source,
         Some(black_point),
@@ -150,7 +145,7 @@ pub fn apply_surface_levels_wasm(
 
 #[wasm_bindgen]
 #[allow(clippy::too_many_arguments)]
-pub fn apply_surface_palette_map_wasm(
+pub fn apply_bitmap_palette_map_wasm(
     dest_data: &mut [u8],
     dest_descriptor: &[f64],
     source_data: &[u8],
@@ -162,82 +157,82 @@ pub fn apply_surface_palette_map_wasm(
 ) {
     let mut dest = region(dest_data, dest_descriptor);
     let source = region(source_data, source_descriptor);
-    apply_surface_palette_map(
+    apply_bitmap_palette_map(
         &mut dest,
         &source,
-        optional_channel_map(red_map),
-        optional_channel_map(green_map),
-        optional_channel_map(blue_map),
-        optional_channel_map(alpha_map),
+        &optional_channel_map(red_map),
+        &optional_channel_map(green_map),
+        &optional_channel_map(blue_map),
+        &optional_channel_map(alpha_map),
     );
     copy_u8_output(dest_data, &dest.bitmap.data);
 }
 
 #[wasm_bindgen]
-pub fn build_surface_brightness_color_matrix_wasm(out: &mut [f64], amount: f64) {
+pub fn build_bitmap_brightness_color_matrix_wasm(out: &mut [f64], amount: f64) {
     let mut owned = out.to_vec();
-    build_surface_brightness_color_matrix(&mut owned, amount);
+    build_bitmap_brightness_color_matrix(&mut owned, amount);
     copy_f64_output(out, &owned);
 }
 
 #[wasm_bindgen]
-pub fn build_surface_contrast_color_matrix_wasm(out: &mut [f64], amount: f64) {
+pub fn build_bitmap_contrast_color_matrix_wasm(out: &mut [f64], amount: f64) {
     let mut owned = out.to_vec();
-    build_surface_contrast_color_matrix(&mut owned, amount);
+    build_bitmap_contrast_color_matrix(&mut owned, amount);
     copy_f64_output(out, &owned);
 }
 
 #[wasm_bindgen]
-pub fn build_surface_grayscale_color_matrix_wasm(out: &mut [f64]) {
+pub fn build_bitmap_grayscale_color_matrix_wasm(out: &mut [f64]) {
     let mut owned = out.to_vec();
-    build_surface_grayscale_color_matrix(&mut owned);
+    build_bitmap_grayscale_color_matrix(&mut owned);
     copy_f64_output(out, &owned);
 }
 
 #[wasm_bindgen]
-pub fn build_surface_hue_rotation_color_matrix_wasm(out: &mut [f64], degrees: f64) {
+pub fn build_bitmap_hue_rotation_color_matrix_wasm(out: &mut [f64], degrees: f64) {
     let mut owned = out.to_vec();
-    build_surface_hue_rotation_color_matrix(&mut owned, degrees);
+    build_bitmap_hue_rotation_color_matrix(&mut owned, degrees);
     copy_f64_output(out, &owned);
 }
 
 #[wasm_bindgen]
-pub fn build_surface_invert_color_matrix_wasm(out: &mut [f64]) {
+pub fn build_bitmap_invert_color_matrix_wasm(out: &mut [f64]) {
     let mut owned = out.to_vec();
-    build_surface_invert_color_matrix(&mut owned);
+    build_bitmap_invert_color_matrix(&mut owned);
     copy_f64_output(out, &owned);
 }
 
 #[wasm_bindgen]
-pub fn build_surface_saturation_color_matrix_wasm(out: &mut [f64], amount: f64) {
+pub fn build_bitmap_saturation_color_matrix_wasm(out: &mut [f64], amount: f64) {
     let mut owned = out.to_vec();
-    build_surface_saturation_color_matrix(&mut owned, amount);
+    build_bitmap_saturation_color_matrix(&mut owned, amount);
     copy_f64_output(out, &owned);
 }
 
 #[wasm_bindgen]
-pub fn build_surface_sepia_color_matrix_wasm(out: &mut [f64]) {
+pub fn build_bitmap_sepia_color_matrix_wasm(out: &mut [f64]) {
     let mut owned = out.to_vec();
-    build_surface_sepia_color_matrix(&mut owned);
+    build_bitmap_sepia_color_matrix(&mut owned);
     copy_f64_output(out, &owned);
 }
 
 #[wasm_bindgen]
-pub fn set_surface_color_matrix_identity_wasm(out: &mut [f64]) {
+pub fn set_bitmap_color_matrix_identity_wasm(out: &mut [f64]) {
     let mut owned = out.to_vec();
-    set_surface_color_matrix_identity(&mut owned);
+    set_bitmap_color_matrix_identity(&mut owned);
     copy_f64_output(out, &owned);
 }
 
 #[wasm_bindgen]
-pub fn concat_surface_color_matrix_wasm(out: &mut [f64], first: &[f64], second: &[f64]) {
+pub fn concat_bitmap_color_matrix_wasm(out: &mut [f64], first: &[f64], second: &[f64]) {
     let mut owned = out.to_vec();
-    concat_surface_color_matrix(&mut owned, &first.to_vec(), &second.to_vec());
+    concat_bitmap_color_matrix(&mut owned, &first.to_vec(), &second.to_vec());
     copy_f64_output(out, &owned);
 }
 
 #[wasm_bindgen]
-pub fn color_matrix_surface_wasm(
+pub fn color_matrix_bitmap_wasm(
     out: &mut [u8],
     source_data: &[u8],
     source_descriptor: &[f64],
@@ -245,33 +240,33 @@ pub fn color_matrix_surface_wasm(
 ) {
     let mut owned = out.to_vec();
     let source = region(source_data, source_descriptor);
-    color_matrix_surface(&mut owned, &source, &matrix.to_vec());
+    color_matrix_bitmap(&mut owned, &source, &matrix.to_vec());
     copy_u8_output(out, &owned);
 }
 
 #[wasm_bindgen]
-pub fn compare_surface_fingerprints_wasm(
+pub fn compare_bitmap_fingerprints_wasm(
     first_cells: &[u8],
     first_grid_size: f64,
     second_cells: &[u8],
     second_grid_size: f64,
 ) -> f64 {
-    compare_surface_fingerprints(
+    compare_bitmap_fingerprints(
         &fingerprint(first_cells, first_grid_size),
         &fingerprint(second_cells, second_grid_size),
     )
 }
 
 #[wasm_bindgen]
-pub fn create_surface_fingerprint_wasm(
+pub fn create_bitmap_fingerprint_wasm(
     out: &mut [u8],
     source_data: &[u8],
     source_width: f64,
     source_height: f64,
     grid_size: f64,
 ) {
-    let result = create_surface_fingerprint(
-        &surface(source_data, source_width, source_height),
+    let result = create_bitmap_fingerprint(
+        &bitmap(source_data, source_width, source_height),
         Some(grid_size),
     );
     copy_u8_output(out, &result.cells);
@@ -279,7 +274,7 @@ pub fn create_surface_fingerprint_wasm(
 
 #[wasm_bindgen]
 #[allow(clippy::too_many_arguments)]
-pub fn convolve_surface_wasm(
+pub fn convolve_bitmap_wasm(
     out: &mut [u8],
     source_data: &[u8],
     source_descriptor: &[f64],
@@ -293,7 +288,7 @@ pub fn convolve_surface_wasm(
 ) {
     let mut owned = out.to_vec();
     let source = region(source_data, source_descriptor);
-    let options = SurfaceConvolutionOptions {
+    let options = BitmapConvolutionOptions {
         __flight_identity: std::sync::Arc::new(()),
         bias: Some(bias),
         edge: Some(edge),
@@ -307,12 +302,12 @@ pub fn convolve_surface_wasm(
         matrix_y,
         preserve_alpha: Some(preserve_alpha),
     };
-    convolve_surface(&mut owned, &source, &options);
+    convolve_bitmap(&mut owned, &source, &options);
     copy_u8_output(out, &owned);
 }
 
 #[wasm_bindgen]
-pub fn copy_surface_pixels_wasm(
+pub fn copy_bitmap_pixels_wasm(
     dest_data: &mut [u8],
     dest_descriptor: &[f64],
     source_data: &[u8],
@@ -321,12 +316,12 @@ pub fn copy_surface_pixels_wasm(
 ) {
     let mut dest = region(dest_data, dest_descriptor);
     let source = region(source_data, source_descriptor);
-    copy_surface_pixels(&mut dest, &source, Some(composite));
+    copy_bitmap_pixels(&mut dest, &source, Some(composite));
     copy_u8_output(dest_data, &dest.bitmap.data);
 }
 
 #[wasm_bindgen]
-pub fn copy_surface_alpha_wasm(
+pub fn copy_bitmap_alpha_wasm(
     dest_data: &mut [u8],
     dest_descriptor: &[f64],
     source_data: &[u8],
@@ -334,33 +329,33 @@ pub fn copy_surface_alpha_wasm(
 ) {
     let mut dest = region(dest_data, dest_descriptor);
     let source = region(source_data, source_descriptor);
-    copy_surface_alpha(&mut dest, &source);
+    copy_bitmap_alpha(&mut dest, &source);
     copy_u8_output(dest_data, &dest.bitmap.data);
 }
 
 #[wasm_bindgen]
-pub fn multiply_surface_alpha_wasm(data: &mut [u8], descriptor: &[f64], factor: f64) {
+pub fn multiply_bitmap_alpha_wasm(data: &mut [u8], descriptor: &[f64], factor: f64) {
     let mut target = region(data, descriptor);
-    multiply_surface_alpha(&mut target, factor);
+    multiply_bitmap_alpha(&mut target, factor);
     copy_u8_output(data, &target.bitmap.data);
 }
 
 #[wasm_bindgen]
-pub fn set_surface_alpha_wasm(data: &mut [u8], descriptor: &[f64], alpha: f64) {
+pub fn set_bitmap_alpha_wasm(data: &mut [u8], descriptor: &[f64], alpha: f64) {
     let mut target = region(data, descriptor);
-    set_surface_alpha(&mut target, alpha);
+    set_bitmap_alpha(&mut target, alpha);
     copy_u8_output(data, &target.bitmap.data);
 }
 
 #[wasm_bindgen]
-pub fn fill_surface_rectangle_wasm(data: &mut [u8], descriptor: &[f64], color: f64) {
+pub fn fill_bitmap_rectangle_wasm(data: &mut [u8], descriptor: &[f64], color: f64) {
     let mut target = region(data, descriptor);
-    fill_surface_rectangle(&mut target, color);
+    fill_bitmap_rectangle(&mut target, color);
     copy_u8_output(data, &target.bitmap.data);
 }
 
 #[wasm_bindgen]
-pub fn fill_surface_noise_wasm(
+pub fn fill_bitmap_noise_wasm(
     data: &mut [u8],
     descriptor: &[f64],
     seed: f64,
@@ -369,13 +364,13 @@ pub fn fill_surface_noise_wasm(
     gray_scale: bool,
 ) {
     let mut target = region(data, descriptor);
-    fill_surface_noise(&mut target, seed, Some(low), Some(high), Some(gray_scale));
+    fill_bitmap_noise(&mut target, seed, Some(low), Some(high), Some(gray_scale));
     copy_u8_output(data, &target.bitmap.data);
 }
 
 #[wasm_bindgen]
 #[allow(clippy::too_many_arguments)]
-pub fn fill_surface_perlin_noise_wasm(
+pub fn fill_bitmap_perlin_noise_wasm(
     data: &mut [u8],
     descriptor: &[f64],
     base_x: f64,
@@ -387,7 +382,7 @@ pub fn fill_surface_perlin_noise_wasm(
     channel_options: f64,
 ) {
     let mut target = region(data, descriptor);
-    fill_surface_perlin_noise(
+    fill_bitmap_perlin_noise(
         &mut target,
         base_x,
         base_y,
@@ -402,7 +397,7 @@ pub fn fill_surface_perlin_noise_wasm(
 
 #[wasm_bindgen]
 #[allow(clippy::too_many_arguments)]
-pub fn fill_surface_turbulence_wasm(
+pub fn fill_bitmap_turbulence_wasm(
     data: &mut [u8],
     descriptor: &[f64],
     base_x: f64,
@@ -414,7 +409,7 @@ pub fn fill_surface_turbulence_wasm(
     channel_options: f64,
 ) {
     let mut target = region(data, descriptor);
-    fill_surface_turbulence(
+    fill_bitmap_turbulence(
         &mut target,
         base_x,
         base_y,
@@ -428,7 +423,7 @@ pub fn fill_surface_turbulence_wasm(
 }
 
 #[wasm_bindgen]
-pub fn dilate_surface_wasm(
+pub fn dilate_bitmap_wasm(
     out: &mut [u8],
     source_data: &[u8],
     source_descriptor: &[f64],
@@ -436,12 +431,12 @@ pub fn dilate_surface_wasm(
 ) {
     let mut owned = out.to_vec();
     let source = region(source_data, source_descriptor);
-    dilate_surface(&mut owned, &source, radius);
+    dilate_bitmap(&mut owned, &source, radius);
     copy_u8_output(out, &owned);
 }
 
 #[wasm_bindgen]
-pub fn erode_surface_wasm(
+pub fn erode_bitmap_wasm(
     out: &mut [u8],
     source_data: &[u8],
     source_descriptor: &[f64],
@@ -449,12 +444,12 @@ pub fn erode_surface_wasm(
 ) {
     let mut owned = out.to_vec();
     let source = region(source_data, source_descriptor);
-    erode_surface(&mut owned, &source, radius);
+    erode_bitmap(&mut owned, &source, radius);
     copy_u8_output(out, &owned);
 }
 
 #[wasm_bindgen]
-pub fn pixelate_surface_wasm(
+pub fn pixelate_bitmap_wasm(
     out: &mut [u8],
     source_data: &[u8],
     source_descriptor: &[f64],
@@ -462,41 +457,41 @@ pub fn pixelate_surface_wasm(
 ) {
     let mut owned = out.to_vec();
     let source = region(source_data, source_descriptor);
-    pixelate_surface(&mut owned, &source, block_size);
+    pixelate_bitmap(&mut owned, &source, block_size);
     copy_u8_output(out, &owned);
 }
 
 #[wasm_bindgen]
-pub fn premultiply_surface_pixels_wasm(out: &mut [u8], source: &[u8], length: f64) {
+pub fn premultiply_bitmap_pixels_wasm(out: &mut [u8], source: &[u8], length: f64) {
     let mut owned = out.to_vec();
-    premultiply_surface_pixels(&mut owned, &source.to_vec(), length);
+    premultiply_bitmap_pixels(&mut owned, &source.to_vec(), length);
     copy_u8_output(out, &owned);
 }
 
 #[wasm_bindgen]
-pub fn unpremultiply_surface_pixels_wasm(out: &mut [u8], source: &[u8], length: f64) {
+pub fn unpremultiply_bitmap_pixels_wasm(out: &mut [u8], source: &[u8], length: f64) {
     let mut owned = out.to_vec();
-    unpremultiply_surface_pixels(&mut owned, &source.to_vec(), length);
+    unpremultiply_bitmap_pixels(&mut owned, &source.to_vec(), length);
     copy_u8_output(out, &owned);
 }
 
 #[wasm_bindgen]
-pub fn get_surface_coverage_wasm(
+pub fn get_bitmap_coverage_wasm(
     data: &[u8],
     width: f64,
     height: f64,
     background_color: f64,
     channel_tolerance: f64,
 ) -> f64 {
-    get_surface_coverage(
-        &surface(data, width, height),
+    get_bitmap_coverage(
+        &bitmap(data, width, height),
         background_color,
         Some(channel_tolerance),
     )
 }
 
 #[wasm_bindgen]
-pub fn get_surface_color_bounds_rectangle_wasm(
+pub fn get_bitmap_color_bounds_rectangle_wasm(
     out: &mut [f64],
     data: &[u8],
     descriptor: &[f64],
@@ -505,12 +500,9 @@ pub fn get_surface_color_bounds_rectangle_wasm(
     find_color: bool,
 ) -> bool {
     assert_eq!(out.len(), 4, "rectangle output must contain four values");
-    let Some(rectangle) = get_surface_color_bounds_rectangle(
-        &region(data, descriptor),
-        mask,
-        color,
-        Some(find_color),
-    ) else {
+    let Some(rectangle) =
+        get_bitmap_color_bounds_rectangle(&region(data, descriptor), mask, color, Some(find_color))
+    else {
         return false;
     };
     out.copy_from_slice(&[rectangle.x, rectangle.y, rectangle.width, rectangle.height]);
@@ -518,13 +510,13 @@ pub fn get_surface_color_bounds_rectangle_wasm(
 }
 
 #[wasm_bindgen]
-pub fn get_surface_histogram_wasm(out: &mut [f64], data: &[u8], descriptor: &[f64]) {
+pub fn get_bitmap_histogram_wasm(out: &mut [f64], data: &[u8], descriptor: &[f64]) {
     assert_eq!(
         out.len(),
         1024,
         "histogram output must contain four 256-bin channels"
     );
-    let histogram = get_surface_histogram(&region(data, descriptor));
+    let histogram = get_bitmap_histogram(&region(data, descriptor));
     out[0..256].copy_from_slice(&histogram.red);
     out[256..512].copy_from_slice(&histogram.green);
     out[512..768].copy_from_slice(&histogram.blue);
@@ -533,7 +525,7 @@ pub fn get_surface_histogram_wasm(out: &mut [f64], data: &[u8], descriptor: &[f6
 
 #[wasm_bindgen]
 #[allow(clippy::too_many_arguments)]
-pub fn get_surface_mismatch_wasm(
+pub fn get_bitmap_mismatch_wasm(
     out: &mut [f64],
     source_data: &[u8],
     source_width: f64,
@@ -544,9 +536,9 @@ pub fn get_surface_mismatch_wasm(
     channel_tolerance: f64,
 ) {
     assert_eq!(out.len(), 4, "mismatch output must contain four metrics");
-    let mismatch = get_surface_mismatch(
-        &surface(source_data, source_width, source_height),
-        &surface(other_data, other_width, other_height),
+    let mismatch = get_bitmap_mismatch(
+        &comparison_source(source_data, source_width, source_height),
+        &comparison_source(other_data, other_width, other_height),
         Some(channel_tolerance),
     );
     out.copy_from_slice(&[
@@ -559,7 +551,7 @@ pub fn get_surface_mismatch_wasm(
 
 #[wasm_bindgen]
 #[allow(clippy::too_many_arguments)]
-pub fn merge_surface_channels_wasm(
+pub fn merge_bitmap_channels_wasm(
     out_data: &mut [u8],
     out_descriptor: &[f64],
     red_data: &[u8],
@@ -576,6 +568,6 @@ pub fn merge_surface_channels_wasm(
     let green = region(green_data, green_descriptor);
     let blue = region(blue_data, blue_descriptor);
     let alpha = region(alpha_data, alpha_descriptor);
-    merge_surface_channels(&mut out, &red, &green, &blue, &alpha);
+    merge_bitmap_channels(&mut out, &red, &green, &blue, &alpha);
     copy_u8_output(out_data, &out.bitmap.data);
 }

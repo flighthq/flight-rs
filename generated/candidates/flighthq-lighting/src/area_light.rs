@@ -16,6 +16,7 @@ use flighthq_types::{
 pub fn clone_area_light(source: &AreaLight) -> AreaLight {
     return create_entity(Some(AreaLight {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         casts_shadow: source.casts_shadow,
         color: source.color,
@@ -26,6 +27,7 @@ pub fn clone_area_light(source: &AreaLight) -> AreaLight {
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 x: __flight_source.x,
                 y: __flight_source.y,
                 z: __flight_source.z,
@@ -42,6 +44,7 @@ pub fn clone_area_light(source: &AreaLight) -> AreaLight {
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 x: __flight_source.x,
                 y: __flight_source.y,
                 z: __flight_source.z,
@@ -55,6 +58,7 @@ pub fn clone_area_light(source: &AreaLight) -> AreaLight {
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 x: __flight_source.x,
                 y: __flight_source.y,
                 z: __flight_source.z,
@@ -68,6 +72,7 @@ pub fn clone_area_light(source: &AreaLight) -> AreaLight {
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 x: __flight_source.x,
                 y: __flight_source.y,
                 z: __flight_source.z,
@@ -85,6 +90,7 @@ pub fn create_area_light(options: Option<AreaLightOptions>) -> AreaLight {
     let up = options.as_ref().and_then(|value| (value.up).clone());
     return create_entity(Some(AreaLight {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         casts_shadow: (options.as_ref().and_then(|value| value.casts_shadow))
             .clone()

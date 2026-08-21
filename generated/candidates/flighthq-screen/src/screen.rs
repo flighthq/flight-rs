@@ -618,7 +618,7 @@ pub fn get_screen_by_id(id: f64, out: &mut ScreenInfo) -> Option<ScreenInfo> {
 
 // Source: upstream/packages/screen/src/screen.ts:458 (sha256:ee07c4b7ab11e0190cf9a5271aab8d69c37da431893281854ff5135834d2e6ba)
 pub fn get_screen_containing_rect(rect: &RectangleLike, out: &mut ScreenInfo) -> ScreenInfo {
-    let mut screens: Vec<ScreenInfo> = vec![];
+    let screens: Vec<ScreenInfo> = vec![];
     get_screens(&screens);
     if ((screens.len() as f64) == 0.0_f64) {
         fill_default_screen_info(out);
@@ -708,6 +708,7 @@ pub fn get_screen_cursor_screen(out: &mut ScreenInfo) -> ScreenInfo {
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 x: __flight_source.x,
                 y: __flight_source.y,
             }
@@ -762,7 +763,7 @@ pub fn get_screen_modes(screen: &ScreenInfo, out: &mut Vec<ScreenMode>) -> Vec<S
 
 // Source: upstream/packages/screen/src/screen.ts:558 (sha256:745c3bbef566870b9118277bfaf3d9745be4e0f9d58c0ed846ce51a7d5ebf0ab)
 pub fn get_screen_nearest_point(point: &Vector2Like, out: &mut ScreenInfo) -> ScreenInfo {
-    let mut screens: Vec<ScreenInfo> = vec![];
+    let screens: Vec<ScreenInfo> = vec![];
     get_screens(&screens);
     if ((screens.len() as f64) == 0.0_f64) {
         fill_default_screen_info(out);
@@ -796,7 +797,7 @@ pub fn get_screen_nearest_point(point: &Vector2Like, out: &mut ScreenInfo) -> Sc
 
 // Source: upstream/packages/screen/src/screen.ts:604 (sha256:fe2cd8ac2d3d002d5c7f7c414302c150294365b1100e2147e49d9a118863b3da)
 pub fn get_screen_nearest_rect(rect: &RectangleLike, out: &mut ScreenInfo) -> ScreenInfo {
-    let mut screens: Vec<ScreenInfo> = vec![];
+    let screens: Vec<ScreenInfo> = vec![];
     get_screens(&screens);
     if ((screens.len() as f64) == 0.0_f64) {
         fill_default_screen_info(out);
@@ -946,6 +947,7 @@ static _SIGNAL_SUBSCRIPTIONS: std::sync::LazyLock<
 // Source: upstream/packages/screen/src/screen.ts:774 (sha256:73604c011ae140a8578ea3a4bc8d91483155cadc9e970e79ffa1bbc94d2e2164)
 static _SCRATCH_POINT: std::sync::LazyLock<Vector2> = std::sync::LazyLock::new(|| Vector2 {
     __flight_identity: std::sync::Arc::new(()),
+    __flight_entity_snapshot: Default::default(),
     __flight_entity_runtime: Default::default(),
     x: 0.0_f64,
     y: 0.0_f64,

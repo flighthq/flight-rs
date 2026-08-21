@@ -77,6 +77,7 @@ pub fn create_wrapped_diffuse_pbr_extension(
 ) -> WrappedDiffusePbrExtension {
     return create_entity(Some(WrappedDiffusePbrExtension {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         kind: (wrapped_diffuse_pbr_extension_kind_constant).to_owned(),
         thickness: (opts.as_ref().and_then(|value| value.thickness))

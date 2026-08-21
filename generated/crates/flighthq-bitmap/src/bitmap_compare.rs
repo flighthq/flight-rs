@@ -6,13 +6,27 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::create_bitmap;
 use flighthq_types::BitmapMismatch;
+
+// Source: upstream/packages/bitmap/src/bitmapCompare.ts:6 (sha256:802bc384d27929510c78179342df6fb93cfd54564f5c20f266993c5f550d8eae)
+#[derive(Clone, Default)]
+pub struct BitmapComparisonSource {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub width: f64,
+    pub height: f64,
+    pub data: Vec<f64>,
+}
+impl PartialEq for BitmapComparisonSource {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
 
 // Source: upstream/packages/bitmap/src/bitmapCompare.ts:53 (sha256:c3547aceb9449c56113872d599c79e28078cb5dd0ebfb48d4976232d1821556b)
 pub fn get_bitmap_mismatch(
-    source: BitmapComparisonSource,
-    other: BitmapComparisonSource,
+    source: &BitmapComparisonSource,
+    other: &BitmapComparisonSource,
     channel_tolerance: Option<f64>,
 ) -> BitmapMismatch {
     let channel_tolerance = channel_tolerance.unwrap_or(0.0_f64);
@@ -25,18 +39,22 @@ pub fn get_bitmap_mismatch(
             )
         );
     }
-    let a = source.data;
-    let b = other.data;
     let total_pixels = (source.width * source.height);
     let mut mismatched_pixels = 0.0_f64;
     let mut max_channel_delta = 0.0_f64;
     {
         let mut i = 0.0_f64;
-        while (i < a.length) {
-            let dr = (a[i as usize].clone() - b[i as usize].clone()).abs();
-            let dg = (a[(i + 1.0_f64) as usize].clone() - b[(i + 1.0_f64) as usize].clone()).abs();
-            let db = (a[(i + 2.0_f64) as usize].clone() - b[(i + 2.0_f64) as usize].clone()).abs();
-            let da = (a[(i + 3.0_f64) as usize].clone() - b[(i + 3.0_f64) as usize].clone()).abs();
+        while (i < (source.data.len() as f64)) {
+            let dr = (source.data[i as usize].clone() - other.data[i as usize].clone()).abs();
+            let dg = (source.data[(i + 1.0_f64) as usize].clone()
+                - other.data[(i + 1.0_f64) as usize].clone())
+            .abs();
+            let db = (source.data[(i + 2.0_f64) as usize].clone()
+                - other.data[(i + 2.0_f64) as usize].clone())
+            .abs();
+            let da = (source.data[(i + 3.0_f64) as usize].clone()
+                - other.data[(i + 3.0_f64) as usize].clone())
+            .abs();
             let pixel_delta = (((dr).max(dg)).max(db)).max(da);
             if (pixel_delta > max_channel_delta) {
                 max_channel_delta = pixel_delta;

@@ -166,6 +166,10 @@ pub fn create_glass_extended_pbr_material(
                     __flight_entity_runtime: std::sync::Arc::clone(
                         &__flight_source.__flight_entity_runtime,
                     ),
+                    __flight_entity_snapshot: __flight_source
+                        .__flight_entity_snapshot
+                        .clone()
+                        .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                     kind: (__flight_source.kind).clone(),
                     thickness: __flight_source.thickness,
                     thickness_map: (__flight_source.thickness_map).clone(),

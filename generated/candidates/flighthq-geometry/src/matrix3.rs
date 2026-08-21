@@ -13,7 +13,7 @@ use flighthq_types::{Matrix3, Matrix3Like, Matrix4Like, MatrixLike, Vector3Like}
 // Source: upstream/packages/geometry/src/matrix3.ts:6 (sha256:a9b9d47db5c559e5ec5f20bfa50929539a09552866311bce152180885cf1c46b)
 pub fn clone_matrix3(source: &Matrix3Like) -> Matrix3 {
     let mut m = create_matrix3(None, None, None, None, None, None, None, None, None);
-    (|| -> () {
+    {
         {
             let __flight_offset = (0.0_f64) as usize;
             let __flight_values: Vec<f32> = ((source.m).clone())
@@ -23,7 +23,7 @@ pub fn clone_matrix3(source: &Matrix3Like) -> Matrix3 {
             m.m[__flight_offset..__flight_offset + __flight_values.len()]
                 .copy_from_slice(&__flight_values);
         };
-    })();
+    };
     return m;
 }
 
@@ -206,6 +206,7 @@ pub fn create_matrix3(
         .collect();
     let mut out: Matrix3 = create_entity(Some(Matrix3 {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         m: (m).clone(),
     }));
@@ -528,7 +529,7 @@ pub fn set_matrix3_identity(out: &mut Matrix3Like) -> () {
 // Source: upstream/packages/geometry/src/matrix3.ts:438 (sha256:5bec6f1e9f3009e83c5e43c532e35f32aa108baeb50f83addf6a5af08dedc3cd)
 pub fn set_matrix3_normal_from_matrix4(out: &mut Matrix3Like, source: &Matrix4Like) -> () {
     let mut scratch = acquire_matrix3();
-    (|| -> () {
+    {
         scratch.m[0.0_f64 as usize] = (source.m[0.0_f64 as usize] as f64) as f32;
         scratch.m[1.0_f64 as usize] = (source.m[1.0_f64 as usize] as f64) as f32;
         scratch.m[2.0_f64 as usize] = (source.m[2.0_f64 as usize] as f64) as f32;
@@ -538,7 +539,7 @@ pub fn set_matrix3_normal_from_matrix4(out: &mut Matrix3Like, source: &Matrix4Li
         scratch.m[6.0_f64 as usize] = (source.m[8.0_f64 as usize] as f64) as f32;
         scratch.m[7.0_f64 as usize] = (source.m[9.0_f64 as usize] as f64) as f32;
         scratch.m[8.0_f64 as usize] = (source.m[10.0_f64 as usize] as f64) as f32;
-    })();
+    };
     (|| -> bool {
         let a00 = (scratch.m[0.0_f64 as usize] as f64);
         let a10 = (scratch.m[1.0_f64 as usize] as f64);
@@ -556,6 +557,7 @@ pub fn set_matrix3_normal_from_matrix4(out: &mut Matrix3Like, source: &Matrix4Li
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 m: (__flight_source.m).clone(),
             }
         }) {
@@ -615,6 +617,7 @@ pub fn set_matrix3_normal_from_matrix4(out: &mut Matrix3Like, source: &Matrix4Li
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             m: (__flight_source.m).clone(),
         }
     });

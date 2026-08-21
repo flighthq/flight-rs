@@ -40,7 +40,7 @@ pub type SceneCoverage = String;
 
 // Source: upstream/packages/types/src/SceneCoverageEntry.ts:31 (sha256:924b771a0cedb874d826c2c9763d173d2ca878030ed5fc5e97c6640ef3d4edaf)
 #[derive(Clone)]
-pub(crate) struct SceneCoverageEntryBase {
+pub struct SceneCoverageEntryBase {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub facet: RequirementFacet,
@@ -55,7 +55,7 @@ impl PartialEq for SceneCoverageEntryBase {
 
 // Source: upstream/packages/types/src/SceneCoverageEntry.ts:37 (sha256:9b70606f4c375a4c867163868c21b4bcb39aaca6641c92f830ac17f524d73ef4)
 #[derive(Clone, Default)]
-pub(crate) struct SceneCoverageRemedy {
+pub struct SceneCoverageRemedy {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub module: String,

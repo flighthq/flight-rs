@@ -30,6 +30,7 @@ impl PartialEq for FlightPartialRecord1933629006 {
 pub fn create_scene3_d_lights(options: Option<FlightPartialRecord1933629006>) -> Scene3DLights {
     return create_entity(Some(Scene3DLights {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         ambient: options.as_ref().and_then(|value| (value.ambient).clone()),
         directional: options

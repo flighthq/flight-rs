@@ -346,6 +346,7 @@ static _PATH: std::sync::LazyLock<std::sync::Mutex<Path>> = std::sync::LazyLock:
 static _POINT: std::sync::LazyLock<std::sync::Mutex<Vector2>> = std::sync::LazyLock::new(|| {
     std::sync::Mutex::new(Vector2 {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         x: 0.0_f64,
         y: 0.0_f64,
@@ -356,6 +357,7 @@ static _POINT: std::sync::LazyLock<std::sync::Mutex<Vector2>> = std::sync::LazyL
 static _TANGENT: std::sync::LazyLock<std::sync::Mutex<Vector2>> = std::sync::LazyLock::new(|| {
     std::sync::Mutex::new(Vector2 {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         x: 0.0_f64,
         y: 0.0_f64,

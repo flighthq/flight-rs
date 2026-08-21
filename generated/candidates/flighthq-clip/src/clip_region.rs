@@ -58,6 +58,7 @@ pub fn clip_region_contains_point(clip: &ClipRegion, x: f64, y: f64) -> bool {
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 height: __flight_source.height,
                 width: __flight_source.width,
                 x: __flight_source.x,
@@ -90,6 +91,7 @@ pub fn clip_region_contains_rectangle(clip: &ClipRegion, rectangle: &RectangleLi
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 height: __flight_source.height,
                 width: __flight_source.width,
                 x: __flight_source.x,
@@ -110,6 +112,7 @@ pub fn clip_region_intersects_rectangle(clip: &ClipRegion, rectangle: &Rectangle
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 height: __flight_source.height,
                 width: __flight_source.width,
                 x: __flight_source.x,
@@ -129,6 +132,7 @@ pub fn clone_clip_region(clip: &ClipRegion) -> ClipRegion {
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             height: __flight_source.height,
             width: __flight_source.width,
             x: __flight_source.x,
@@ -295,6 +299,7 @@ pub fn copy_clip_region(out: &mut ClipRegion, source: &ClipRegion) -> () {
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             height: __flight_source.height,
             width: __flight_source.width,
             x: __flight_source.x,
@@ -674,6 +679,7 @@ pub fn is_clip_region_empty(clip: &ClipRegion) -> bool {
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             height: __flight_source.height,
             width: __flight_source.width,
             x: __flight_source.x,
@@ -707,6 +713,7 @@ pub fn normalize_clip_region(out: &mut ClipRegion, clip: &ClipRegion) -> () {
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 height: __flight_source.height,
                 width: __flight_source.width,
                 x: __flight_source.x,
@@ -790,6 +797,7 @@ pub fn normalize_clip_region(out: &mut ClipRegion, clip: &ClipRegion) -> () {
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             height: __flight_source.height,
             width: __flight_source.width,
             x: __flight_source.x,
@@ -867,6 +875,7 @@ pub fn transform_clip_region(out: &mut ClipRegion, clip: &ClipRegion, matrix: &M
                     __flight_entity_runtime: std::sync::Arc::clone(
                         &__flight_source.__flight_entity_runtime,
                     ),
+                    __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                     height: __flight_source.height,
                     width: __flight_source.width,
                     x: __flight_source.x,
@@ -1066,6 +1075,7 @@ pub fn union_clip_regions(out: &mut ClipRegion, a: &ClipRegion, b: &ClipRegion) 
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 height: __flight_source.height,
                 width: __flight_source.width,
                 x: __flight_source.x,
@@ -1079,6 +1089,7 @@ pub fn union_clip_regions(out: &mut ClipRegion, a: &ClipRegion, b: &ClipRegion) 
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 height: __flight_source.height,
                 width: __flight_source.width,
                 x: __flight_source.x,

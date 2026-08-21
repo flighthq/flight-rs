@@ -175,6 +175,10 @@ pub fn get_scene3_d_hit_vertex_normal(out: &mut Vector3Like, hit: &Scene3DHit) -
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source
+                .__flight_entity_snapshot
+                .clone()
+                .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
             data: (__flight_source.data).clone(),
             enabled: __flight_source.enabled,
             kind: (__flight_source.kind).clone(),
@@ -193,6 +197,10 @@ pub fn get_scene3_d_hit_vertex_normal(out: &mut Vector3Like, hit: &Scene3DHit) -
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source
+                    .__flight_entity_snapshot
+                    .clone()
+                    .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                 data: (__flight_source.data).clone(),
                 enabled: __flight_source.enabled,
                 kind: (__flight_source.kind).clone(),
@@ -319,6 +327,10 @@ pub fn get_scene3_d_hit_vertex_tangent(
                     __flight_entity_runtime: std::sync::Arc::clone(
                         &__flight_source.__flight_entity_runtime,
                     ),
+                    __flight_entity_snapshot: __flight_source
+                        .__flight_entity_snapshot
+                        .clone()
+                        .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                     data: (__flight_source.data).clone(),
                     enabled: __flight_source.enabled,
                     kind: (__flight_source.kind).clone(),
@@ -339,6 +351,10 @@ pub fn get_scene3_d_hit_vertex_tangent(
                         __flight_entity_runtime: std::sync::Arc::clone(
                             &__flight_source.__flight_entity_runtime,
                         ),
+                        __flight_entity_snapshot: __flight_source
+                            .__flight_entity_snapshot
+                            .clone()
+                            .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                         data: (__flight_source.data).clone(),
                         enabled: __flight_source.enabled,
                         kind: (__flight_source.kind).clone(),
@@ -411,6 +427,10 @@ pub fn get_scene3_d_hit_vertex_tangent(
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source
+                .__flight_entity_snapshot
+                .clone()
+                .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
             data: (__flight_source.data).clone(),
             enabled: __flight_source.enabled,
             kind: (__flight_source.kind).clone(),
@@ -429,6 +449,10 @@ pub fn get_scene3_d_hit_vertex_tangent(
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source
+                    .__flight_entity_snapshot
+                    .clone()
+                    .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                 data: (__flight_source.data).clone(),
                 enabled: __flight_source.enabled,
                 kind: (__flight_source.kind).clone(),
@@ -447,6 +471,10 @@ pub fn get_scene3_d_hit_vertex_tangent(
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source
+                    .__flight_entity_snapshot
+                    .clone()
+                    .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                 data: (__flight_source.data).clone(),
                 enabled: __flight_source.enabled,
                 kind: (__flight_source.kind).clone(),
@@ -465,6 +493,10 @@ pub fn get_scene3_d_hit_vertex_tangent(
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source
+                .__flight_entity_snapshot
+                .clone()
+                .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
             data: (__flight_source.data).clone(),
             enabled: __flight_source.enabled,
             kind: (__flight_source.kind).clone(),
@@ -483,6 +515,10 @@ pub fn get_scene3_d_hit_vertex_tangent(
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source
+                    .__flight_entity_snapshot
+                    .clone()
+                    .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                 data: (__flight_source.data).clone(),
                 enabled: __flight_source.enabled,
                 kind: (__flight_source.kind).clone(),
@@ -501,6 +537,10 @@ pub fn get_scene3_d_hit_vertex_tangent(
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source
+                    .__flight_entity_snapshot
+                    .clone()
+                    .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                 data: (__flight_source.data).clone(),
                 enabled: __flight_source.enabled,
                 kind: (__flight_source.kind).clone(),
@@ -519,6 +559,10 @@ pub fn get_scene3_d_hit_vertex_tangent(
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source
+                .__flight_entity_snapshot
+                .clone()
+                .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
             data: (__flight_source.data).clone(),
             enabled: __flight_source.enabled,
             kind: (__flight_source.kind).clone(),
@@ -537,6 +581,10 @@ pub fn get_scene3_d_hit_vertex_tangent(
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source
+                    .__flight_entity_snapshot
+                    .clone()
+                    .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                 data: (__flight_source.data).clone(),
                 enabled: __flight_source.enabled,
                 kind: (__flight_source.kind).clone(),
@@ -555,6 +603,10 @@ pub fn get_scene3_d_hit_vertex_tangent(
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source
+                    .__flight_entity_snapshot
+                    .clone()
+                    .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                 data: (__flight_source.data).clone(),
                 enabled: __flight_source.enabled,
                 kind: (__flight_source.kind).clone(),
@@ -584,6 +636,10 @@ pub fn get_scene3_d_hit_vertex_tangent(
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source
+                .__flight_entity_snapshot
+                .clone()
+                .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
             data: (__flight_source.data).clone(),
             enabled: __flight_source.enabled,
             kind: (__flight_source.kind).clone(),
@@ -601,6 +657,10 @@ pub fn get_scene3_d_hit_vertex_tangent(
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source
+                    .__flight_entity_snapshot
+                    .clone()
+                    .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                 data: (__flight_source.data).clone(),
                 enabled: __flight_source.enabled,
                 kind: (__flight_source.kind).clone(),
@@ -618,6 +678,10 @@ pub fn get_scene3_d_hit_vertex_tangent(
                     __flight_entity_runtime: std::sync::Arc::clone(
                         &__flight_source.__flight_entity_runtime,
                     ),
+                    __flight_entity_snapshot: __flight_source
+                        .__flight_entity_snapshot
+                        .clone()
+                        .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                     data: (__flight_source.data).clone(),
                     enabled: __flight_source.enabled,
                     kind: (__flight_source.kind).clone(),
@@ -635,6 +699,10 @@ pub fn get_scene3_d_hit_vertex_tangent(
                     __flight_entity_runtime: std::sync::Arc::clone(
                         &__flight_source.__flight_entity_runtime,
                     ),
+                    __flight_entity_snapshot: __flight_source
+                        .__flight_entity_snapshot
+                        .clone()
+                        .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                     data: (__flight_source.data).clone(),
                     enabled: __flight_source.enabled,
                     kind: (__flight_source.kind).clone(),
@@ -654,6 +722,10 @@ pub fn get_scene3_d_hit_vertex_tangent(
                         __flight_entity_runtime: std::sync::Arc::clone(
                             &__flight_source.__flight_entity_runtime,
                         ),
+                        __flight_entity_snapshot: __flight_source
+                            .__flight_entity_snapshot
+                            .clone()
+                            .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                         data: (__flight_source.data).clone(),
                         enabled: __flight_source.enabled,
                         kind: (__flight_source.kind).clone(),
@@ -671,6 +743,10 @@ pub fn get_scene3_d_hit_vertex_tangent(
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source
+                    .__flight_entity_snapshot
+                    .clone()
+                    .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                 data: (__flight_source.data).clone(),
                 enabled: __flight_source.enabled,
                 kind: (__flight_source.kind).clone(),
@@ -688,6 +764,10 @@ pub fn get_scene3_d_hit_vertex_tangent(
                     __flight_entity_runtime: std::sync::Arc::clone(
                         &__flight_source.__flight_entity_runtime,
                     ),
+                    __flight_entity_snapshot: __flight_source
+                        .__flight_entity_snapshot
+                        .clone()
+                        .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                     data: (__flight_source.data).clone(),
                     enabled: __flight_source.enabled,
                     kind: (__flight_source.kind).clone(),
@@ -707,6 +787,10 @@ pub fn get_scene3_d_hit_vertex_tangent(
                         __flight_entity_runtime: std::sync::Arc::clone(
                             &__flight_source.__flight_entity_runtime,
                         ),
+                        __flight_entity_snapshot: __flight_source
+                            .__flight_entity_snapshot
+                            .clone()
+                            .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                         data: (__flight_source.data).clone(),
                         enabled: __flight_source.enabled,
                         kind: (__flight_source.kind).clone(),
@@ -726,6 +810,10 @@ pub fn get_scene3_d_hit_vertex_tangent(
                         __flight_entity_runtime: std::sync::Arc::clone(
                             &__flight_source.__flight_entity_runtime,
                         ),
+                        __flight_entity_snapshot: __flight_source
+                            .__flight_entity_snapshot
+                            .clone()
+                            .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                         data: (__flight_source.data).clone(),
                         enabled: __flight_source.enabled,
                         kind: (__flight_source.kind).clone(),
@@ -745,6 +833,10 @@ pub fn get_scene3_d_hit_vertex_tangent(
                             __flight_entity_runtime: std::sync::Arc::clone(
                                 &__flight_source.__flight_entity_runtime,
                             ),
+                            __flight_entity_snapshot: __flight_source
+                                .__flight_entity_snapshot
+                                .clone()
+                                .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                             data: (__flight_source.data).clone(),
                             enabled: __flight_source.enabled,
                             kind: (__flight_source.kind).clone(),
@@ -762,6 +854,10 @@ pub fn get_scene3_d_hit_vertex_tangent(
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source
+                    .__flight_entity_snapshot
+                    .clone()
+                    .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                 data: (__flight_source.data).clone(),
                 enabled: __flight_source.enabled,
                 kind: (__flight_source.kind).clone(),
@@ -779,6 +875,10 @@ pub fn get_scene3_d_hit_vertex_tangent(
                     __flight_entity_runtime: std::sync::Arc::clone(
                         &__flight_source.__flight_entity_runtime,
                     ),
+                    __flight_entity_snapshot: __flight_source
+                        .__flight_entity_snapshot
+                        .clone()
+                        .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                     data: (__flight_source.data).clone(),
                     enabled: __flight_source.enabled,
                     kind: (__flight_source.kind).clone(),
@@ -798,6 +898,10 @@ pub fn get_scene3_d_hit_vertex_tangent(
                         __flight_entity_runtime: std::sync::Arc::clone(
                             &__flight_source.__flight_entity_runtime,
                         ),
+                        __flight_entity_snapshot: __flight_source
+                            .__flight_entity_snapshot
+                            .clone()
+                            .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                         data: (__flight_source.data).clone(),
                         enabled: __flight_source.enabled,
                         kind: (__flight_source.kind).clone(),
@@ -817,6 +921,10 @@ pub fn get_scene3_d_hit_vertex_tangent(
                         __flight_entity_runtime: std::sync::Arc::clone(
                             &__flight_source.__flight_entity_runtime,
                         ),
+                        __flight_entity_snapshot: __flight_source
+                            .__flight_entity_snapshot
+                            .clone()
+                            .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                         data: (__flight_source.data).clone(),
                         enabled: __flight_source.enabled,
                         kind: (__flight_source.kind).clone(),
@@ -836,6 +944,10 @@ pub fn get_scene3_d_hit_vertex_tangent(
                             __flight_entity_runtime: std::sync::Arc::clone(
                                 &__flight_source.__flight_entity_runtime,
                             ),
+                            __flight_entity_snapshot: __flight_source
+                                .__flight_entity_snapshot
+                                .clone()
+                                .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                             data: (__flight_source.data).clone(),
                             enabled: __flight_source.enabled,
                             kind: (__flight_source.kind).clone(),
@@ -903,6 +1015,7 @@ static _NORMAL2: std::sync::LazyLock<std::sync::Mutex<Vector3>> =
 static _TANGENT0: std::sync::LazyLock<std::sync::Mutex<Vector4>> = std::sync::LazyLock::new(|| {
     std::sync::Mutex::new(Vector4 {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         w: 0.0_f64,
         x: 0.0_f64,
@@ -915,6 +1028,7 @@ static _TANGENT0: std::sync::LazyLock<std::sync::Mutex<Vector4>> = std::sync::La
 static _TANGENT1: std::sync::LazyLock<std::sync::Mutex<Vector4>> = std::sync::LazyLock::new(|| {
     std::sync::Mutex::new(Vector4 {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         w: 0.0_f64,
         x: 0.0_f64,
@@ -927,6 +1041,7 @@ static _TANGENT1: std::sync::LazyLock<std::sync::Mutex<Vector4>> = std::sync::La
 static _TANGENT2: std::sync::LazyLock<std::sync::Mutex<Vector4>> = std::sync::LazyLock::new(|| {
     std::sync::Mutex::new(Vector4 {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         w: 0.0_f64,
         x: 0.0_f64,
@@ -950,6 +1065,7 @@ static _TRIANGLE: std::sync::LazyLock<std::sync::Mutex<MeshTriangleVertexIndices
 static _UV0: std::sync::LazyLock<std::sync::Mutex<Vector2>> = std::sync::LazyLock::new(|| {
     std::sync::Mutex::new(Vector2 {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         x: 0.0_f64,
         y: 0.0_f64,
@@ -960,6 +1076,7 @@ static _UV0: std::sync::LazyLock<std::sync::Mutex<Vector2>> = std::sync::LazyLoc
 static _UV1: std::sync::LazyLock<std::sync::Mutex<Vector2>> = std::sync::LazyLock::new(|| {
     std::sync::Mutex::new(Vector2 {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         x: 0.0_f64,
         y: 0.0_f64,
@@ -970,6 +1087,7 @@ static _UV1: std::sync::LazyLock<std::sync::Mutex<Vector2>> = std::sync::LazyLoc
 static _UV2: std::sync::LazyLock<std::sync::Mutex<Vector2>> = std::sync::LazyLock::new(|| {
     std::sync::Mutex::new(Vector2 {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         x: 0.0_f64,
         y: 0.0_f64,

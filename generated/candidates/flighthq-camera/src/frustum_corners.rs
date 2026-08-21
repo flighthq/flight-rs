@@ -28,6 +28,7 @@ pub fn get_camera3_d_frustum_corners(
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             m: (__flight_source.m).clone(),
         }
     })) {

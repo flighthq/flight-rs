@@ -178,7 +178,7 @@ pub fn build_stroke_path_geometry(
             };
         }
     }
-    let mut centerline_intersection = find_centerline_intersection(&source);
+    let centerline_intersection = find_centerline_intersection(&source);
     let mut issue: StrokePathTessellationIssue = if (centerline_intersection).is_none() {
         STROKE_PATH_TESSELLATION_ISSUE_NONE
     } else {
@@ -764,7 +764,7 @@ fn apply_dash(subpath: &StrokeSubpath, dash: &Vec<f64>, dash_offset: f64) -> Vec
     if (total <= GEOMETRY_EPSILON) {
         return vec![(*subpath).clone()];
     }
-    let mut offset = (((dash_offset % total) + total) % total);
+    let offset = (((dash_offset % total) + total) % total);
     let mut pattern_index = 0.0_f64;
     let mut consumed_offset = offset;
     while (pattern[pattern_index as usize].clone() <= GEOMETRY_EPSILON)

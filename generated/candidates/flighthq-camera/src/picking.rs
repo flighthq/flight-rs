@@ -32,6 +32,7 @@ pub fn get_camera3_d_screen_to_world_ray(
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             m: (__flight_source.m).clone(),
         }
     })) {
@@ -104,6 +105,7 @@ pub fn get_camera3_d_screen_to_world_ray(
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 x: __flight_source.x,
                 y: __flight_source.y,
                 z: __flight_source.z,
@@ -116,6 +118,7 @@ pub fn get_camera3_d_screen_to_world_ray(
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 x: __flight_source.x,
                 y: __flight_source.y,
                 z: __flight_source.z,

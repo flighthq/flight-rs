@@ -190,6 +190,7 @@ pub fn create_specular_glossiness_pbr_material(
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             kind: (__flight_source.kind).clone(),
             name: (__flight_source.name).clone(),
             alpha_cutoff: __flight_source.alpha_cutoff,
@@ -271,6 +272,7 @@ pub fn create_standard_pbr_material(
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             kind: (__flight_source.kind).clone(),
             name: (__flight_source.name).clone(),
             alpha_cutoff: __flight_source.alpha_cutoff,
@@ -297,7 +299,7 @@ pub fn create_standard_pbr_material(
             roughness: Default::default(),
         }
     };
-    (|| -> () {
+    {
         material.alpha_map = opts.as_ref().and_then(|value| (value.alpha_map).clone());
         material.base_color = (opts.as_ref().and_then(|value| value.base_color))
             .clone()
@@ -331,7 +333,7 @@ pub fn create_standard_pbr_material(
         material.roughness = (opts.as_ref().and_then(|value| value.roughness))
             .clone()
             .unwrap_or(1.0_f64);
-    })();
+    };
     return material;
 }
 

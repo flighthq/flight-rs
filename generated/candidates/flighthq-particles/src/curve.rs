@@ -174,9 +174,42 @@ pub fn lerp_hsv_direct(
     let r = __destructure3[0.0_f64 as usize].clone();
     let g = __destructure3[1.0_f64 as usize].clone();
     let b = __destructure3[2.0_f64 as usize].clone();
-    out[offset as usize] = r;
-    out[(offset + 1.0_f64) as usize] = g;
-    out[(offset + 2.0_f64) as usize] = b;
+    {
+        let __flight_index = (offset) as usize;
+        let __flight_value = r;
+        match out {
+            crate::FlightUnion2::A(values) => {
+                values[__flight_index] = (__flight_value) as f32;
+            }
+            crate::FlightUnion2::B(values) => {
+                values[__flight_index] = __flight_value;
+            }
+        };
+    };
+    {
+        let __flight_index = (offset + 1.0_f64) as usize;
+        let __flight_value = g;
+        match out {
+            crate::FlightUnion2::A(values) => {
+                values[__flight_index] = (__flight_value) as f32;
+            }
+            crate::FlightUnion2::B(values) => {
+                values[__flight_index] = __flight_value;
+            }
+        };
+    };
+    {
+        let __flight_index = (offset + 2.0_f64) as usize;
+        let __flight_value = b;
+        match out {
+            crate::FlightUnion2::A(values) => {
+                values[__flight_index] = (__flight_value) as f32;
+            }
+            crate::FlightUnion2::B(values) => {
+                values[__flight_index] = __flight_value;
+            }
+        };
+    };
 }
 
 // Source: upstream/packages/particles/src/curve.ts:50 (sha256:7c936f8f88bc7b7098dc9374cffe9ffed54e343105ca991e817354c944458110)
@@ -188,7 +221,7 @@ pub fn lerp_hsv_in_place(
     t: f64,
 ) -> () {
     lerp_hsv_direct(
-        &((*colors_out).clone()),
+        colors_out,
         offset,
         (birth[offset as usize] as f64),
         (birth[(offset + 1.0_f64) as usize] as f64),
@@ -225,7 +258,21 @@ pub fn particle_color_curve_from_keyframes(
     };
     return build_particle_color_curve(
         &mut |t: f64| -> Vec<f64> {
-            let seg = locate_keyframe(&sorted, t);
+            let seg = locate_keyframe(
+                &(((sorted).clone())
+                    .iter()
+                    .map(|__flight_value| {
+                        let __flight_source = &(__flight_value);
+                        SharedStructuralRecord1 {
+                            __flight_identity: std::sync::Arc::clone(
+                                &__flight_source.__flight_identity,
+                            ),
+                            time: __flight_source.time,
+                        }
+                    })
+                    .collect::<Vec<_>>()),
+                t,
+            );
             if (seg.f == 0.0_f64) {
                 return vec![
                     sorted[seg.i as usize].r,
@@ -429,7 +476,19 @@ fn hsv_to_rgb(h: f64, s: f64, v: f64) -> Vec<f64> {
 
 // Source: upstream/packages/particles/src/curve.ts:160 (sha256:f8249bf1d6f2f7f93ae47f2339963831d9730ba016a67060c864af0676c66945)
 fn interp_keyframe(sorted: &Vec<CurveKeyframe>, t: f64) -> f64 {
-    let seg = locate_keyframe(sorted, t);
+    let seg = locate_keyframe(
+        &(((*sorted).clone())
+            .iter()
+            .map(|__flight_value| {
+                let __flight_source = &(__flight_value);
+                SharedStructuralRecord1 {
+                    __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                    time: __flight_source.time,
+                }
+            })
+            .collect::<Vec<_>>()),
+        t,
+    );
     if (seg.f == 0.0_f64) {
         return sorted[seg.i as usize].value;
     }

@@ -509,7 +509,7 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
         if ((*pos.lock().unwrap()).clone() >= length) {
             break;
         }
-        let mut command_letter = {
+        let command_letter = {
             let __flight_units: &[u16] = &__flight_utf16_d;
             let __flight_raw_index = (*pos.lock().unwrap()).clone();
             if __flight_raw_index.is_finite()

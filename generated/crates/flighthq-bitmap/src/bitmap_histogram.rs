@@ -6,7 +6,6 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{apply_bitmap_palette_map, invalidate_bitmap};
 use flighthq_types::{BitmapHistogram, BitmapRegion};
 
 // Source: upstream/packages/bitmap/src/bitmapHistogram.ts:37 (sha256:2791606e51dbd789d90451c417442f32b3aa236cc13b1bb8932c9040df0eeed6)

@@ -17,21 +17,7 @@ pub fn disable_tray_guards() -> () {
 
 // Source: upstream/packages/tray/src/enableTrayGuards.ts:25 (sha256:0daedbf925f1b0005e871af5a04c21238b540f3ab53becbdfa0e238bc83e13ea)
 pub fn enable_tray_guards() -> () {
-    set_tray_animation_guard(
-        &(Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-            move |__flight_argument_0: TrayIcon,
-                  __flight_argument_1: f64,
-                  __flight_argument_2: f64|
-                  -> () {
-                warn_on_unbounded_tray_animation(
-                    &__flight_argument_0,
-                    __flight_argument_1,
-                    __flight_argument_2,
-                )
-            },
-        )
-            as Box<dyn FnMut(TrayIcon, f64, f64) -> () + Send + 'static>)))),
-    );
+    set_tray_animation_guard(&(warn_on_unbounded_tray_animation));
 }
 
 // Source: upstream/packages/tray/src/enableTrayGuards.ts:29 (sha256:da206eb2e5d62d94ceaf3c3c82cebe96a8a9e2366e6d330e6590e6c778c52b52)

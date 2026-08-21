@@ -104,7 +104,10 @@ pub fn attach_gamepad_input(
             let mut prev = get_or_create_gamepad_poll_state(&manager);
             {
                 let __flight_key = crate::host_value::<f64>("host.index");
-                let __flight_value = crate::host_value::<Vec<f64>>("host.Array.from");
+                let __flight_value = (crate::host_value::<Vec<f64>>("host.Array.from"))
+                    .iter()
+                    .map(|__flight_value| *__flight_value)
+                    .collect::<Vec<_>>();
                 if let Some((_, value)) = prev.axes.iter_mut().find(|(key, _)| key == &__flight_key)
                 {
                     *value = __flight_value;
@@ -1909,24 +1912,24 @@ fn set_input_pointer_data(
 static _STANDARD_BUTTON_NAMES: std::sync::LazyLock<Vec<Option<GamepadButtonKind>>> =
     std::sync::LazyLock::new(|| {
         vec![
-            Some((gamepad_button_kind_values_constant.button_south).clone()),
-            Some((gamepad_button_kind_values_constant.button_east).clone()),
-            Some((gamepad_button_kind_values_constant.button_west).clone()),
-            Some((gamepad_button_kind_values_constant.button_north).clone()),
-            Some((gamepad_button_kind_values_constant.shoulder_left).clone()),
-            Some((gamepad_button_kind_values_constant.shoulder_right).clone()),
-            Some((gamepad_button_kind_values_constant.trigger_left).clone()),
-            Some((gamepad_button_kind_values_constant.trigger_right).clone()),
-            Some((gamepad_button_kind_values_constant.select).clone()),
-            Some((gamepad_button_kind_values_constant.start).clone()),
-            Some((gamepad_button_kind_values_constant.stick_left).clone()),
-            Some((gamepad_button_kind_values_constant.stick_right).clone()),
-            Some((gamepad_button_kind_values_constant.dpad_up).clone()),
-            Some((gamepad_button_kind_values_constant.dpad_down).clone()),
-            Some((gamepad_button_kind_values_constant.dpad_left).clone()),
-            Some((gamepad_button_kind_values_constant.dpad_right).clone()),
-            Some((gamepad_button_kind_values_constant.home).clone()),
-            Some((gamepad_button_kind_values_constant.touchpad).clone()),
+            (gamepad_button_kind_values_constant.button_south).clone(),
+            (gamepad_button_kind_values_constant.button_east).clone(),
+            (gamepad_button_kind_values_constant.button_west).clone(),
+            (gamepad_button_kind_values_constant.button_north).clone(),
+            (gamepad_button_kind_values_constant.shoulder_left).clone(),
+            (gamepad_button_kind_values_constant.shoulder_right).clone(),
+            (gamepad_button_kind_values_constant.trigger_left).clone(),
+            (gamepad_button_kind_values_constant.trigger_right).clone(),
+            (gamepad_button_kind_values_constant.select).clone(),
+            (gamepad_button_kind_values_constant.start).clone(),
+            (gamepad_button_kind_values_constant.stick_left).clone(),
+            (gamepad_button_kind_values_constant.stick_right).clone(),
+            (gamepad_button_kind_values_constant.dpad_up).clone(),
+            (gamepad_button_kind_values_constant.dpad_down).clone(),
+            (gamepad_button_kind_values_constant.dpad_left).clone(),
+            (gamepad_button_kind_values_constant.dpad_right).clone(),
+            (gamepad_button_kind_values_constant.home).clone(),
+            (gamepad_button_kind_values_constant.touchpad).clone(),
         ]
     });
 
@@ -1934,10 +1937,10 @@ static _STANDARD_BUTTON_NAMES: std::sync::LazyLock<Vec<Option<GamepadButtonKind>
 static _STANDARD_AXIS_NAMES: std::sync::LazyLock<Vec<Option<GamepadAxisKind>>> =
     std::sync::LazyLock::new(|| {
         vec![
-            Some((gamepad_axis_kind_values_constant.stick_left_x).clone()),
-            Some((gamepad_axis_kind_values_constant.stick_left_y).clone()),
-            Some((gamepad_axis_kind_values_constant.stick_right_x).clone()),
-            Some((gamepad_axis_kind_values_constant.stick_right_y).clone()),
+            (gamepad_axis_kind_values_constant.stick_left_x).clone(),
+            (gamepad_axis_kind_values_constant.stick_left_y).clone(),
+            (gamepad_axis_kind_values_constant.stick_right_x).clone(),
+            (gamepad_axis_kind_values_constant.stick_right_y).clone(),
         ]
     });
 

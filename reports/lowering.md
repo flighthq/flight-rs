@@ -5,8 +5,8 @@
 | Packages | 149 |
 | Source files | 2614 |
 | Candidate declarations | 14034 |
-| Lowered declarations | 14032 |
-| Current diagnostics | 2 |
+| Lowered declarations | 14034 |
+| Current diagnostics | 0 |
 
 | Package | Declarations | Lowered | Diagnostics |
 | --- | ---: | ---: | ---: |
@@ -46,7 +46,7 @@
 | `@flighthq/filesystem` | 54 | 54 | 0 |
 | `@flighthq/flow` | 9 | 9 | 0 |
 | `@flighthq/font` | 27 | 27 | 0 |
-| `@flighthq/font-formats` | 127 | 126 | 1 |
+| `@flighthq/font-formats` | 127 | 127 | 0 |
 | `@flighthq/geolocation` | 20 | 20 | 0 |
 | `@flighthq/geometry` | 406 | 406 | 0 |
 | `@flighthq/glyphatlas` | 33 | 33 | 0 |
@@ -115,7 +115,7 @@
 | `@flighthq/sdk` | 0 | 0 | 0 |
 | `@flighthq/sensors` | 57 | 57 | 0 |
 | `@flighthq/shading` | 31 | 31 | 0 |
-| `@flighthq/shape` | 181 | 180 | 1 |
+| `@flighthq/shape` | 181 | 181 | 0 |
 | `@flighthq/shape-formats` | 21 | 21 | 0 |
 | `@flighthq/share` | 19 | 19 | 0 |
 | `@flighthq/shell` | 16 | 16 | 0 |

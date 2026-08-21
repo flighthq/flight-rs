@@ -67,9 +67,42 @@ pub fn blend_non_separable_rgb(
             unreachable!("exhaustive TypeScript switch completed without exiting");
         }
     }
-    out[0.0_f64 as usize] = r;
-    out[1.0_f64 as usize] = g;
-    out[2.0_f64 as usize] = b;
+    {
+        let __flight_index = (0.0_f64) as usize;
+        let __flight_value = r;
+        match out {
+            crate::FlightUnion2::A(values) => {
+                values[__flight_index] = __flight_value;
+            }
+            crate::FlightUnion2::B(values) => {
+                values[__flight_index] = (__flight_value) as f32;
+            }
+        };
+    };
+    {
+        let __flight_index = (1.0_f64) as usize;
+        let __flight_value = g;
+        match out {
+            crate::FlightUnion2::A(values) => {
+                values[__flight_index] = __flight_value;
+            }
+            crate::FlightUnion2::B(values) => {
+                values[__flight_index] = (__flight_value) as f32;
+            }
+        };
+    };
+    {
+        let __flight_index = (2.0_f64) as usize;
+        let __flight_value = b;
+        match out {
+            crate::FlightUnion2::A(values) => {
+                values[__flight_index] = __flight_value;
+            }
+            crate::FlightUnion2::B(values) => {
+                values[__flight_index] = (__flight_value) as f32;
+            }
+        };
+    };
 }
 
 // Source: upstream/packages/effects/src/blendModeMath.ts:64 (sha256:d0305567c82c7ea797bc19a049f1b861a6562f61b0fd2d68d6de34bf751a036e)
@@ -84,24 +117,48 @@ pub fn get_advanced_blend_rgb(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
 ) -> () {
     if is_non_separable_blend_mode((mode).clone()) {
-        blend_non_separable_rgb(
-            (mode).clone(),
-            cb_r,
-            cb_g,
-            cb_b,
-            cs_r,
-            cs_g,
-            cs_b,
-            &((*out).clone()),
-        );
+        blend_non_separable_rgb((mode).clone(), cb_r, cb_g, cb_b, cs_r, cs_g, cs_b, out);
         return;
     }
     let r = get_separable_blend_channel((mode).clone(), cb_r, cs_r);
     let g = get_separable_blend_channel((mode).clone(), cb_g, cs_g);
     let b = get_separable_blend_channel((mode).clone(), cb_b, cs_b);
-    out[0.0_f64 as usize] = r;
-    out[1.0_f64 as usize] = g;
-    out[2.0_f64 as usize] = b;
+    {
+        let __flight_index = (0.0_f64) as usize;
+        let __flight_value = r;
+        match out {
+            crate::FlightUnion2::A(values) => {
+                values[__flight_index] = __flight_value;
+            }
+            crate::FlightUnion2::B(values) => {
+                values[__flight_index] = (__flight_value) as f32;
+            }
+        };
+    };
+    {
+        let __flight_index = (1.0_f64) as usize;
+        let __flight_value = g;
+        match out {
+            crate::FlightUnion2::A(values) => {
+                values[__flight_index] = __flight_value;
+            }
+            crate::FlightUnion2::B(values) => {
+                values[__flight_index] = (__flight_value) as f32;
+            }
+        };
+    };
+    {
+        let __flight_index = (2.0_f64) as usize;
+        let __flight_value = b;
+        match out {
+            crate::FlightUnion2::A(values) => {
+                values[__flight_index] = __flight_value;
+            }
+            crate::FlightUnion2::B(values) => {
+                values[__flight_index] = (__flight_value) as f32;
+            }
+        };
+    };
 }
 
 // Source: upstream/packages/effects/src/blendModeMath.ts:88 (sha256:d6bbf33a79bcb7d4cf7e79d9ae1618dc44fe19cef69dfc71af36f21c07dceb87)

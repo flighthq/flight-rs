@@ -77,6 +77,7 @@ pub fn create_transmission_volume_pbr_extension(
 ) -> TransmissionVolumePbrExtension {
     return create_entity(Some(TransmissionVolumePbrExtension {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         attenuation_color: (opts.as_ref().and_then(|value| value.attenuation_color))
             .clone()

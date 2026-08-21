@@ -76,6 +76,7 @@ pub fn create_clearcoat_pbr_extension(
 ) -> ClearcoatPbrExtension {
     return create_entity(Some(ClearcoatPbrExtension {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         clearcoat: (opts.as_ref().and_then(|value| value.clearcoat))
             .clone()

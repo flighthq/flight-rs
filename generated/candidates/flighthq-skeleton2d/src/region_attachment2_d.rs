@@ -85,6 +85,7 @@ pub fn compute_skeleton2_d_region_attachment_vertices(
 static _LOCAL: std::sync::LazyLock<std::sync::Mutex<MatrixLike>> = std::sync::LazyLock::new(|| {
     std::sync::Mutex::new(MatrixLike {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         a: 1.0_f64,
         b: 0.0_f64,
@@ -99,6 +100,7 @@ static _LOCAL: std::sync::LazyLock<std::sync::Mutex<MatrixLike>> = std::sync::La
 static _BONE: std::sync::LazyLock<std::sync::Mutex<MatrixLike>> = std::sync::LazyLock::new(|| {
     std::sync::Mutex::new(MatrixLike {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         a: 1.0_f64,
         b: 0.0_f64,
@@ -114,6 +116,7 @@ static _COMBINED: std::sync::LazyLock<std::sync::Mutex<MatrixLike>> =
     std::sync::LazyLock::new(|| {
         std::sync::Mutex::new(MatrixLike {
             __flight_identity: std::sync::Arc::new(()),
+            __flight_entity_snapshot: Default::default(),
             __flight_entity_runtime: Default::default(),
             a: 1.0_f64,
             b: 0.0_f64,
@@ -128,6 +131,7 @@ static _COMBINED: std::sync::LazyLock<std::sync::Mutex<MatrixLike>> =
 static _CORNER: std::sync::LazyLock<std::sync::Mutex<Vector2>> = std::sync::LazyLock::new(|| {
     std::sync::Mutex::new(Vector2 {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         x: 0.0_f64,
         y: 0.0_f64,

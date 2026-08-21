@@ -16,6 +16,8 @@ pub struct Entity {
     pub __flight_identity: std::sync::Arc<()>,
     #[doc(hidden)]
     pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
 }
 impl PartialEq for Entity {
     fn eq(&self, other: &Self) -> bool {
@@ -23,8 +25,20 @@ impl PartialEq for Entity {
     }
 }
 #[doc(hidden)]
-pub trait FlightEntity {
+pub trait FlightEntity: std::any::Any + Send + Sync {
     fn __flight_entity_runtime(&self) -> &std::sync::Arc<std::sync::Mutex<Option<EntityRuntime>>>;
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>;
+    fn __flight_downcast<T: Clone + 'static>(&self) -> Option<T>
+    where
+        Self: Sized,
+    {
+        if let Some(snapshot) = self.__flight_entity_snapshot() {
+            if let Some(value) = snapshot.downcast_ref::<T>() {
+                return Some(value.clone());
+            }
+        }
+        (self as &dyn std::any::Any).downcast_ref::<T>().cloned()
+    }
     fn __flight_fresh_clone(&self) -> Self
     where
         Self: Sized;
@@ -32,6 +46,9 @@ pub trait FlightEntity {
 impl FlightEntity for Entity {
     fn __flight_entity_runtime(&self) -> &std::sync::Arc<std::sync::Mutex<Option<EntityRuntime>>> {
         &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
     }
     fn __flight_fresh_clone(&self) -> Self {
         let mut cloned = self.clone();

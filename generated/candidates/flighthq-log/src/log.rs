@@ -1521,7 +1521,7 @@ pub fn log_once(
             (*_ONCE_KEYS.lock().unwrap()).push(__flight_value);
         }
     };
-    log(level, &((*data).clone()), ((channel).clone()).clone());
+    log(level, data, ((channel).clone()).clone());
     return true;
 }
 
@@ -2232,24 +2232,26 @@ fn _redact_path(obj: &mut Vec<(String, crate::FlightValue)>, parts: &Vec<String>
         };
         return;
     }
-    let next = (obj
+    let next: Option<crate::FlightValue> = obj
         .iter()
         .find(|(entry_key, _)| entry_key == &(key).clone())
-        .map(|(_, value)| value.clone()))
-    .expect("TypeScript Record key was absent");
-    if ((!(matches!(&(next), crate::FlightValue::Null)))
-        && ((match &(next) {
-            crate::FlightValue::Undefined => "undefined",
-            crate::FlightValue::Null
-            | crate::FlightValue::Array(_)
-            | crate::FlightValue::Record(_)
-            | crate::FlightValue::Error { .. }
-            | crate::FlightValue::Object => "object",
-            crate::FlightValue::Bool(_) => "boolean",
-            crate::FlightValue::Number(_) => "number",
-            crate::FlightValue::String(_) => "string",
-            crate::FlightValue::Function => "function",
-            crate::FlightValue::Symbol => "symbol",
+        .map(|(_, value)| value.clone());
+    if (((next).is_some())
+        && ((match (next).as_ref() {
+            None => "undefined",
+            Some(value) => match value {
+                crate::FlightValue::Undefined => "undefined",
+                crate::FlightValue::Null
+                | crate::FlightValue::Array(_)
+                | crate::FlightValue::Record(_)
+                | crate::FlightValue::Error { .. }
+                | crate::FlightValue::Object => "object",
+                crate::FlightValue::Bool(_) => "boolean",
+                crate::FlightValue::Number(_) => "number",
+                crate::FlightValue::String(_) => "string",
+                crate::FlightValue::Function => "function",
+                crate::FlightValue::Symbol => "symbol",
+            },
         })
         .to_owned()
             == "object"))
@@ -2260,7 +2262,7 @@ fn _redact_path(obj: &mut Vec<(String, crate::FlightValue)>, parts: &Vec<String>
             let __flight_value = crate::FlightValue::Record({
                 let mut __flight_record = Vec::new();
                 let __flight_spread_0 = {
-                    let __flight_portable_source = match (next).clone() {
+                    let __flight_portable_source = match (next.as_ref().unwrap()).clone() {
                         crate::FlightValue::Record(entries) => entries,
                         _ => panic!("TypeScript Record cast received a non-record portable value"),
                     };

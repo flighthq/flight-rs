@@ -76,11 +76,13 @@ pub type TextureSourceCubeFaces = Vec<Option<TextureSource>>;
 
 // Source: upstream/packages/types/src/Texture.ts:26 (sha256:2c6fc189c0d2a0889bf687ce4d63c610dabba379e8a0dde28140271920065add)
 #[derive(Clone, Default)]
-pub(crate) struct TextureCommon {
+pub struct TextureCommon {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     #[doc(hidden)]
     pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub flip_x: bool,
     pub flip_y: bool,
     pub uv_offset: Vector2,
@@ -101,6 +103,9 @@ impl crate::FlightEntity for TextureCommon {
     ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
         &self.__flight_entity_runtime
     }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
     fn __flight_fresh_clone(&self) -> Self {
         let mut cloned = self.clone();
         cloned.__flight_identity = std::sync::Arc::new(());
@@ -118,6 +123,8 @@ pub struct Texture2D {
     pub __flight_identity: std::sync::Arc<()>,
     #[doc(hidden)]
     pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub flip_x: bool,
     pub flip_y: bool,
     pub uv_offset: Vector2,
@@ -140,6 +147,9 @@ impl crate::FlightEntity for Texture2D {
     ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
         &self.__flight_entity_runtime
     }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
     fn __flight_fresh_clone(&self) -> Self {
         let mut cloned = self.clone();
         cloned.__flight_identity = std::sync::Arc::new(());
@@ -157,7 +167,7 @@ pub type Texture = crate::FlightUnion2<
 >;
 
 // Source: upstream/packages/types/src/Texture.ts:54 (sha256:82fef5fba8ef920384fda4dd0c982cf3554b42d79bd7f3e35df4593e165da3fa)
-pub(crate) type TextureLikeFrom = crate::OpaqueHostValue;
+pub type TextureLikeFrom = crate::OpaqueHostValue;
 
 // Source: upstream/packages/types/src/Texture.ts:56 (sha256:4dceca97a01125d9bb5c81dbdfb122e9c39b3dbc1de22dc38bbf23d42e7e00ac)
 pub type TextureLike = TextureLikeFrom;

@@ -21,26 +21,8 @@ pub fn disable_skeleton2_d_guards() -> () {
 
 // Source: upstream/packages/skeleton2d/src/enableSkeleton2DGuards.ts:32 (sha256:ac8fc578c534491a847e4f1c1a8b26828f6ca4b954620c46b4bc614a836ae33f)
 pub fn enable_skeleton2_d_guards() -> () {
-    set_skeleton2_d_coerced_interpolation_guard(
-        &(Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-            move |__flight_argument_0: Skeleton2DCoercedInterpolation| -> () {
-                warn_on_coerced_interpolation(&__flight_argument_0)
-            },
-        )
-            as Box<
-                dyn FnMut(Skeleton2DCoercedInterpolation) -> () + Send + 'static,
-            >)))),
-    );
-    set_skeleton2_d_deform_length_guard(
-        &(Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-            move |__flight_argument_0: Skeleton2DDeformLengthMismatch| -> () {
-                warn_on_deform_length_mismatch(&__flight_argument_0)
-            },
-        )
-            as Box<
-                dyn FnMut(Skeleton2DDeformLengthMismatch) -> () + Send + 'static,
-            >)))),
-    );
+    set_skeleton2_d_coerced_interpolation_guard(&(warn_on_coerced_interpolation));
+    set_skeleton2_d_deform_length_guard(&(warn_on_deform_length_mismatch));
 }
 
 // Source: upstream/packages/skeleton2d/src/enableSkeleton2DGuards.ts:37 (sha256:dd2ab561861068fbed5e7475a34a659a3f4ef3da451e4572b0a48db4e565e458)

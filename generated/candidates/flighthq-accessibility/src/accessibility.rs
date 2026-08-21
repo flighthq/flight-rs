@@ -43,39 +43,31 @@ pub fn create_web_accessibility_backend(
         std::sync::Arc::new(std::sync::Mutex::new((container).clone()));
     let root_resolved: std::sync::Arc<std::sync::Mutex<bool>> =
         std::sync::Arc::new(std::sync::Mutex::new((container).is_some()));
-    let get_root: std::sync::Arc<
-        std::sync::Mutex<
-            std::sync::Arc<
-                std::sync::Mutex<
-                    Box<dyn FnMut() -> Option<crate::OpaqueHostValue> + Send + 'static>,
-                >,
-            >,
-        >,
-    > = std::sync::Arc::new(std::sync::Mutex::new(std::sync::Arc::new(
-        std::sync::Mutex::new(Box::new({
-            let mut root = root.clone();
-            let mut root_resolved = root_resolved.clone();
-            move || -> Option<crate::OpaqueHostValue> {
-                if (*root_resolved.lock().unwrap()).clone() {
-                    return (*root.lock().unwrap()).clone();
-                }
-                (*root_resolved.lock().unwrap()) = true;
-                {
-                    (*root.lock().unwrap()) = None;
-                    return None;
-                }
+    let mut get_root: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut() -> Option<crate::OpaqueHostValue> + Send + 'static>>,
+    > = std::sync::Arc::new(std::sync::Mutex::new(Box::new({
+        let mut root = root.clone();
+        let mut root_resolved = root_resolved.clone();
+        move || -> Option<crate::OpaqueHostValue> {
+            if (*root_resolved.lock().unwrap()).clone() {
+                return (*root.lock().unwrap()).clone();
             }
-        })
-            as Box<dyn FnMut() -> Option<crate::OpaqueHostValue> + Send + 'static>),
-    )));
+            (*root_resolved.lock().unwrap()) = true;
+            {
+                (*root.lock().unwrap()) = None;
+                return None;
+            }
+        }
+    })
+        as Box<dyn FnMut() -> Option<crate::OpaqueHostValue> + Send + 'static>));
     return AccessibilityBackend {
         __flight_identity: std::sync::Arc::new(()),
         set_node: std::sync::Arc::new(std::sync::Mutex::new(Box::new({
             let mut elements = elements.clone();
-            let mut get_root = get_root.clone();
+            let get_root = get_root.clone();
             move |node: AccessibilityNode| -> () {
-                let mut overlay_root = {
-                    let __flight_callback = (*get_root.lock().unwrap()).clone();
+                let overlay_root = {
+                    let __flight_callback = (get_root).clone();
                     let __flight_result = __flight_callback.lock().unwrap()();
                     __flight_result
                 };
@@ -130,7 +122,7 @@ pub fn create_web_accessibility_backend(
                     .clone(),
                     ((node.parent_id).clone()).clone(),
                     &(*elements.lock().unwrap()),
-                    (overlay_root.as_mut().unwrap()).clone(),
+                    (overlay_root.as_ref().unwrap()).clone(),
                 );
             }
         })
@@ -173,11 +165,11 @@ pub fn create_web_accessibility_backend(
             as Box<dyn FnMut(String) -> () + Send + 'static>)),
         clear: std::sync::Arc::new(std::sync::Mutex::new(Box::new({
             let mut elements = elements.clone();
-            let mut get_root = get_root.clone();
+            let get_root = get_root.clone();
             let mut live_regions = live_regions.clone();
             move || -> () {
                 let overlay_root = {
-                    let __flight_callback = (*get_root.lock().unwrap()).clone();
+                    let __flight_callback = (get_root).clone();
                     let __flight_result = __flight_callback.lock().unwrap()();
                     __flight_result
                 };
@@ -191,10 +183,10 @@ pub fn create_web_accessibility_backend(
             as Box<dyn FnMut() -> () + Send + 'static>)),
         set_focus: std::sync::Arc::new(std::sync::Mutex::new(Box::new({
             let mut elements = elements.clone();
-            let mut get_root = get_root.clone();
+            let get_root = get_root.clone();
             move |id: String| -> bool {
                 let overlay_root = {
-                    let __flight_callback = (*get_root.lock().unwrap()).clone();
+                    let __flight_callback = (get_root).clone();
                     let __flight_result = __flight_callback.lock().unwrap()();
                     __flight_result
                 };
@@ -215,11 +207,11 @@ pub fn create_web_accessibility_backend(
         })
             as Box<dyn FnMut(String) -> bool + Send + 'static>)),
         announce: std::sync::Arc::new(std::sync::Mutex::new(Box::new({
-            let mut get_root = get_root.clone();
+            let get_root = get_root.clone();
             let mut live_regions = live_regions.clone();
             move |message: String, liveness: AccessibilityLiveness| -> () {
                 let overlay_root = {
-                    let __flight_callback = (*get_root.lock().unwrap()).clone();
+                    let __flight_callback = (get_root).clone();
                     let __flight_result = __flight_callback.lock().unwrap()();
                     __flight_result
                 };

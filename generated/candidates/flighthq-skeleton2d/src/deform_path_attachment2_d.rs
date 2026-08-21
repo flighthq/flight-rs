@@ -40,13 +40,22 @@ pub fn deform_skeleton2_d_path_attachment(
     out.winding = (attachment.winding).clone();
     out.data
         .truncate((attachment.point_count * 2.0_f64) as usize);
-    skin_skeleton2_d_attachment_points(
-        &(crate::FlightUnion2::<Vec<f32>, Vec<f64>>::B((out.data).clone())),
-        &(attachment.skin),
-        &(attachment.vertices),
-        skeleton,
-        bone_index,
-        &(deform),
-        "PathAttachment2D".to_owned(),
-    );
+    {
+        let mut __flight_argument_0 =
+            crate::FlightUnion2::<Vec<f32>, Vec<f64>>::B(std::mem::take(&mut (out.data)));
+        let __flight_result = skin_skeleton2_d_attachment_points(
+            &mut __flight_argument_0,
+            &(attachment.skin),
+            &(attachment.vertices),
+            skeleton,
+            bone_index,
+            &(deform),
+            "PathAttachment2D".to_owned(),
+        );
+        out.data = match __flight_argument_0 {
+            crate::FlightUnion2::A(_) => panic!("TypeScript union narrowing failed"),
+            crate::FlightUnion2::B(value) => value,
+        };
+        __flight_result
+    };
 }

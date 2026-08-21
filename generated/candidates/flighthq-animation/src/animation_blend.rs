@@ -62,12 +62,17 @@ pub fn accumulate_animation_sample(
 pub fn add_animation_sample(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
     base: &Vec<f64>,
-    delta: &mut Vec<f64>,
+    delta: &Vec<f64>,
     weight: f64,
     quaternion: Option<bool>,
 ) -> () {
     let quaternion = quaternion.unwrap_or(false);
-    if (((quaternion) && (out.length >= 4.0_f64)) && ((base.len() as f64) >= 4.0_f64))
+    if (((quaternion)
+        && (match &*(out) {
+            crate::FlightUnion2::A(values) => (values.len() as f64),
+            crate::FlightUnion2::B(values) => (values.len() as f64),
+        } >= 4.0_f64))
+        && ((base.len() as f64) >= 4.0_f64))
         && ((delta.len() as f64) >= 4.0_f64)
     {
         write_weighted_quaternion(&mut (*_QUATERNION.lock().unwrap()), delta, weight);
@@ -80,7 +85,7 @@ pub fn add_animation_sample(
         let bz = ((*_QUATERNION.lock().unwrap())[2.0_f64 as usize] as f64);
         let bw = ((*_QUATERNION.lock().unwrap())[3.0_f64 as usize] as f64);
         write_normalized_quaternion(
-            &((*out).clone()),
+            out,
             ((((aw * bx) + (ax * bw)) + (ay * bz)) - (az * by)),
             ((((aw * by) - (ax * bz)) + (ay * bw)) + (az * bx)),
             ((((aw * bz) + (ax * by)) - (ay * bx)) + (az * bw)),
@@ -88,12 +93,28 @@ pub fn add_animation_sample(
         );
         return;
     }
-    let components = ((out.length).min((base.len() as f64))).min((delta.len() as f64));
+    let components = ((match &*(out) {
+        crate::FlightUnion2::A(values) => (values.len() as f64),
+        crate::FlightUnion2::B(values) => (values.len() as f64),
+    })
+    .min((base.len() as f64)))
+    .min((delta.len() as f64));
     {
         let mut component = 0.0_f64;
         while (component < components) {
-            out[component as usize] =
-                (base[component as usize].clone() + (delta[component as usize].clone() * weight));
+            {
+                let __flight_index = (component) as usize;
+                let __flight_value = (base[component as usize].clone()
+                    + (delta[component as usize].clone() * weight));
+                match out {
+                    crate::FlightUnion2::A(values) => {
+                        values[__flight_index] = __flight_value;
+                    }
+                    crate::FlightUnion2::B(values) => {
+                        values[__flight_index] = (__flight_value) as f32;
+                    }
+                };
+            };
             {
                 component += 1.0;
                 component
@@ -106,7 +127,7 @@ pub fn add_animation_sample(
 pub fn blend_animation_samples(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
     a: &Vec<f64>,
-    b: &mut Vec<f64>,
+    b: &Vec<f64>,
     alpha: f64,
     quaternion: Option<bool>,
 ) -> () {
@@ -116,18 +137,39 @@ pub fn blend_animation_samples(
     } else {
         if (alpha > 1.0_f64) { 1.0_f64 } else { alpha }
     };
-    if (((quaternion) && (out.length >= 4.0_f64)) && ((a.len() as f64) >= 4.0_f64))
+    if (((quaternion)
+        && (match &*(out) {
+            crate::FlightUnion2::A(values) => (values.len() as f64),
+            crate::FlightUnion2::B(values) => (values.len() as f64),
+        } >= 4.0_f64))
+        && ((a.len() as f64) >= 4.0_f64))
         && ((b.len() as f64) >= 4.0_f64)
     {
-        slerp_quaternion(&((*out).clone()), a, b, t);
+        slerp_quaternion(out, a, b, t);
         return;
     }
-    let components = ((out.length).min((a.len() as f64))).min((b.len() as f64));
+    let components = ((match &*(out) {
+        crate::FlightUnion2::A(values) => (values.len() as f64),
+        crate::FlightUnion2::B(values) => (values.len() as f64),
+    })
+    .min((a.len() as f64)))
+    .min((b.len() as f64));
     {
         let mut component = 0.0_f64;
         while (component < components) {
-            out[component as usize] = (a[component as usize].clone()
-                + ((b[component as usize].clone() - a[component as usize].clone()) * t));
+            {
+                let __flight_index = (component) as usize;
+                let __flight_value = (a[component as usize].clone()
+                    + ((b[component as usize].clone() - a[component as usize].clone()) * t));
+                match out {
+                    crate::FlightUnion2::A(values) => {
+                        values[__flight_index] = __flight_value;
+                    }
+                    crate::FlightUnion2::B(values) => {
+                        values[__flight_index] = (__flight_value) as f32;
+                    }
+                };
+            };
             {
                 component += 1.0;
                 component
@@ -146,6 +188,7 @@ pub fn create_animation_sample_accumulator(
         (0.0_f64).max((__flight_js_to_i32(components) | __flight_js_to_i32(0.0_f64)) as f64);
     return create_entity(Some(AnimationSampleAccumulator {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         components: width,
         quaternion: quaternion,
@@ -162,11 +205,15 @@ pub fn finish_animation_sample(
     if (!(accumulator.weight > 0.0_f64)) {
         return false;
     }
-    let components =
-        ((out.length).min(accumulator.components)).min((accumulator.values.len() as f64));
+    let components = ((match &*(out) {
+        crate::FlightUnion2::A(values) => (values.len() as f64),
+        crate::FlightUnion2::B(values) => (values.len() as f64),
+    })
+    .min(accumulator.components))
+    .min((accumulator.values.len() as f64));
     if (accumulator.quaternion) && (components >= 4.0_f64) {
         write_normalized_quaternion(
-            &((*out).clone()),
+            out,
             (accumulator.values[0.0_f64 as usize] as f64),
             (accumulator.values[1.0_f64 as usize] as f64),
             (accumulator.values[2.0_f64 as usize] as f64),
@@ -178,8 +225,19 @@ pub fn finish_animation_sample(
     {
         let mut component = 0.0_f64;
         while (component < components) {
-            out[component as usize] =
-                ((accumulator.values[component as usize] as f64) * inverse_weight);
+            {
+                let __flight_index = (component) as usize;
+                let __flight_value =
+                    ((accumulator.values[component as usize] as f64) * inverse_weight);
+                match out {
+                    crate::FlightUnion2::A(values) => {
+                        values[__flight_index] = __flight_value;
+                    }
+                    crate::FlightUnion2::B(values) => {
+                        values[__flight_index] = (__flight_value) as f32;
+                    }
+                };
+            };
             {
                 component += 1.0;
                 component
@@ -204,7 +262,7 @@ pub fn reset_animation_sample_accumulator(accumulator: &mut AnimationSampleAccum
 fn slerp_quaternion(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
     a: &Vec<f64>,
-    b: &mut Vec<f64>,
+    b: &Vec<f64>,
     alpha: f64,
 ) -> () {
     let ax = a[0.0_f64 as usize].clone();
@@ -235,7 +293,7 @@ fn slerp_quaternion(
         scale_b = alpha;
     }
     write_normalized_quaternion(
-        &((*out).clone()),
+        out,
         ((scale_a * ax) + (scale_b * bx)),
         ((scale_a * ay) + (scale_b * by)),
         ((scale_a * az) + (scale_b * bz)),
@@ -253,27 +311,127 @@ fn write_normalized_quaternion(
 ) -> () {
     let length = ((x).powi(2) + (y).powi(2) + (z).powi(2) + (w).powi(2)).sqrt();
     if (length == 0.0_f64) {
-        out[0.0_f64 as usize] = 0.0_f64;
-        out[1.0_f64 as usize] = 0.0_f64;
-        out[2.0_f64 as usize] = 0.0_f64;
-        out[3.0_f64 as usize] = 1.0_f64;
+        {
+            let __flight_index = (0.0_f64) as usize;
+            let __flight_value = 0.0_f64;
+            match out {
+                crate::FlightUnion2::A(values) => {
+                    values[__flight_index] = __flight_value;
+                }
+                crate::FlightUnion2::B(values) => {
+                    values[__flight_index] = (__flight_value) as f32;
+                }
+            };
+        };
+        {
+            let __flight_index = (1.0_f64) as usize;
+            let __flight_value = 0.0_f64;
+            match out {
+                crate::FlightUnion2::A(values) => {
+                    values[__flight_index] = __flight_value;
+                }
+                crate::FlightUnion2::B(values) => {
+                    values[__flight_index] = (__flight_value) as f32;
+                }
+            };
+        };
+        {
+            let __flight_index = (2.0_f64) as usize;
+            let __flight_value = 0.0_f64;
+            match out {
+                crate::FlightUnion2::A(values) => {
+                    values[__flight_index] = __flight_value;
+                }
+                crate::FlightUnion2::B(values) => {
+                    values[__flight_index] = (__flight_value) as f32;
+                }
+            };
+        };
+        {
+            let __flight_index = (3.0_f64) as usize;
+            let __flight_value = 1.0_f64;
+            match out {
+                crate::FlightUnion2::A(values) => {
+                    values[__flight_index] = __flight_value;
+                }
+                crate::FlightUnion2::B(values) => {
+                    values[__flight_index] = (__flight_value) as f32;
+                }
+            };
+        };
         return;
     }
     let inverse_length = (1.0_f64 / length);
-    out[0.0_f64 as usize] = (x * inverse_length);
-    out[1.0_f64 as usize] = (y * inverse_length);
-    out[2.0_f64 as usize] = (z * inverse_length);
-    out[3.0_f64 as usize] = (w * inverse_length);
+    {
+        let __flight_index = (0.0_f64) as usize;
+        let __flight_value = (x * inverse_length);
+        match out {
+            crate::FlightUnion2::A(values) => {
+                values[__flight_index] = __flight_value;
+            }
+            crate::FlightUnion2::B(values) => {
+                values[__flight_index] = (__flight_value) as f32;
+            }
+        };
+    };
+    {
+        let __flight_index = (1.0_f64) as usize;
+        let __flight_value = (y * inverse_length);
+        match out {
+            crate::FlightUnion2::A(values) => {
+                values[__flight_index] = __flight_value;
+            }
+            crate::FlightUnion2::B(values) => {
+                values[__flight_index] = (__flight_value) as f32;
+            }
+        };
+    };
+    {
+        let __flight_index = (2.0_f64) as usize;
+        let __flight_value = (z * inverse_length);
+        match out {
+            crate::FlightUnion2::A(values) => {
+                values[__flight_index] = __flight_value;
+            }
+            crate::FlightUnion2::B(values) => {
+                values[__flight_index] = (__flight_value) as f32;
+            }
+        };
+    };
+    {
+        let __flight_index = (3.0_f64) as usize;
+        let __flight_value = (w * inverse_length);
+        match out {
+            crate::FlightUnion2::A(values) => {
+                values[__flight_index] = __flight_value;
+            }
+            crate::FlightUnion2::B(values) => {
+                values[__flight_index] = (__flight_value) as f32;
+            }
+        };
+    };
 }
 
 // Source: upstream/packages/animation/src/animationBlend.ts:174 (sha256:f80b5257469870e96f7c4f51b6926ab62e5085bc520f8f566c63bf81eab892cc)
-fn write_weighted_quaternion(out: &mut Vec<f32>, delta: &mut Vec<f64>, weight: f64) -> () {
-    slerp_quaternion(
-        &(crate::FlightUnion2::<Vec<f64>, Vec<f32>>::B((*out).clone())),
-        &IDENTITY_QUATERNION,
-        delta,
-        weight,
-    );
+fn write_weighted_quaternion(out: &mut Vec<f32>, delta: &Vec<f64>, weight: f64) -> () {
+    {
+        let mut __flight_argument_0 =
+            crate::FlightUnion2::<Vec<f64>, Vec<f32>>::B(std::mem::take(out));
+        let __flight_result = slerp_quaternion(
+            &mut __flight_argument_0,
+            &((((*IDENTITY_QUATERNION).clone()).clone())
+                .iter()
+                .map(|__flight_value| (*__flight_value) as f64)
+                .collect::<Vec<_>>()),
+            delta,
+            weight,
+        );
+        *(out) = match __flight_argument_0 {
+            crate::FlightUnion2::A(_) => panic!("TypeScript union narrowing failed"),
+            crate::FlightUnion2::B(value) => value,
+        };
+        __flight_result
+    };
 }
 
 // Source: upstream/packages/animation/src/animationBlend.ts:178 (sha256:d4446e824c6a6c52679953e6ac1b93f765a402647f27e9e12d5f5885b9ed1899)

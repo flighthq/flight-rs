@@ -88,8 +88,30 @@ pub fn skin_skeleton2_d_attachment_points(
                         };
                     }
                 }
-                out[oi as usize] = wx;
-                out[(oi + 1.0_f64) as usize] = wy;
+                {
+                    let __flight_index = (oi) as usize;
+                    let __flight_value = wx;
+                    match out {
+                        crate::FlightUnion2::A(values) => {
+                            values[__flight_index] = (__flight_value) as f32;
+                        }
+                        crate::FlightUnion2::B(values) => {
+                            values[__flight_index] = __flight_value;
+                        }
+                    };
+                };
+                {
+                    let __flight_index = (oi + 1.0_f64) as usize;
+                    let __flight_value = wy;
+                    match out {
+                        crate::FlightUnion2::A(values) => {
+                            values[__flight_index] = (__flight_value) as f32;
+                        }
+                        crate::FlightUnion2::B(values) => {
+                            values[__flight_index] = __flight_value;
+                        }
+                    };
+                };
                 oi += 2.0_f64;
                 {
                     v += 1.0;
@@ -144,8 +166,30 @@ pub fn skin_skeleton2_d_attachment_points(
                     + (offsets.as_ref().unwrap()[(i + 1.0_f64) as usize] as f64))
                     as f32
             };
-            out[i as usize] = (((a * vx) + (c * vy)) + tx);
-            out[(i + 1.0_f64) as usize] = (((bb * vx) + (d * vy)) + ty);
+            {
+                let __flight_index = (i) as usize;
+                let __flight_value = (((a * vx) + (c * vy)) + tx);
+                match out {
+                    crate::FlightUnion2::A(values) => {
+                        values[__flight_index] = (__flight_value) as f32;
+                    }
+                    crate::FlightUnion2::B(values) => {
+                        values[__flight_index] = __flight_value;
+                    }
+                };
+            };
+            {
+                let __flight_index = (i + 1.0_f64) as usize;
+                let __flight_value = (((bb * vx) + (d * vy)) + ty);
+                match out {
+                    crate::FlightUnion2::A(values) => {
+                        values[__flight_index] = (__flight_value) as f32;
+                    }
+                    crate::FlightUnion2::B(values) => {
+                        values[__flight_index] = __flight_value;
+                    }
+                };
+            };
             {
                 i += 2.0_f64;
                 i.clone()

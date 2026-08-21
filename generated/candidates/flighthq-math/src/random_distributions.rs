@@ -197,7 +197,7 @@ pub fn random_on_unit_sphere(random: RandomSource, out: &mut Vector3Like) -> () 
 }
 
 // Source: upstream/packages/math/src/randomDistributions.ts:168 (sha256:e938800cbec8d2cb66bc7b771f4a1d4288f86d7810c354ee6a56edb290f4d46a)
-pub fn random_poisson(mut random: RandomSource, lambda: Option<f64>) -> f64 {
+pub fn random_poisson(random: RandomSource, lambda: Option<f64>) -> f64 {
     let lambda = lambda.unwrap_or(1.0_f64);
     if (!(lambda).is_finite()) || (lambda <= 0.0_f64) {
         panic!("{}", "generated Flight function threw");

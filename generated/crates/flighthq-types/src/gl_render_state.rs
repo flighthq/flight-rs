@@ -38,6 +38,8 @@ pub struct GlRenderState {
     pub __flight_identity: std::sync::Arc<()>,
     #[doc(hidden)]
     pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub allow_smoothing: bool,
     pub background_color: f64,
     pub background_color_rgba: Vec<f64>,
@@ -70,6 +72,9 @@ impl crate::FlightEntity for GlRenderState {
         &self,
     ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
         &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
     }
     fn __flight_fresh_clone(&self) -> Self {
         let mut cloned = self.clone();

@@ -31,17 +31,13 @@ pub fn create_motion_path(
 }
 
 // Source: upstream/packages/motionpath/src/motionPath.ts:32 (sha256:11588e1a4d311775614e3907dfdf779161fc08dc219ea8325a5e6168776d7d13)
-pub fn get_motion_path_heading(mp: &mut MotionPath) -> f64 {
-    {
-        let __flight_argument_0 = (mp.path).clone();
-        let __flight_result = get_path_tangent_at_distance(
-            &__flight_argument_0,
-            mp.distance,
-            &mut (*SCRATCH_TANGENT.lock().unwrap()),
-            None,
-        );
-        __flight_result
-    };
+pub fn get_motion_path_heading(mp: &MotionPath) -> f64 {
+    get_path_tangent_at_distance(
+        &mp.path,
+        mp.distance,
+        &mut (*SCRATCH_TANGENT.lock().unwrap()),
+        None,
+    );
     return ((*SCRATCH_TANGENT.lock().unwrap()).y).atan2((*SCRATCH_TANGENT.lock().unwrap()).x);
 }
 
@@ -51,21 +47,11 @@ static SCRATCH_TANGENT: std::sync::LazyLock<std::sync::Mutex<Vector2>> =
 
 // Source: upstream/packages/motionpath/src/motionPath.ts:43 (sha256:7686723f3f68bf4690e34510395f148d8a4590c68cecf3279539dbcb436484fc)
 pub fn get_motion_path_position(
-    mp: &mut MotionPath,
+    mp: &MotionPath,
     point_out: &mut Vector2Like,
     tangent_out: &mut Vector2Like,
 ) -> bool {
-    return {
-        let __flight_argument_0 = (mp.path).clone();
-        let __flight_result = get_path_position_at_distance(
-            &__flight_argument_0,
-            mp.distance,
-            point_out,
-            tangent_out,
-            None,
-        );
-        __flight_result
-    };
+    return get_path_position_at_distance(&mp.path, mp.distance, point_out, tangent_out, None);
 }
 
 // Source: upstream/packages/motionpath/src/motionPath.ts:53 (sha256:429b7e3fefcaef8591c12c85dd06323ca598ca8586cb82eb6350bc02df43d1fb)

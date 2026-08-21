@@ -159,7 +159,7 @@ pub fn delete_text_input_forward(source: &mut RichText) -> () {
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:88 (sha256:1ae34b532e2d0622bef4a5dd47ea22be616947491d5a509b19ec2d53c83a1b31)
 pub fn delete_text_input_word_backward(source: &mut RichText) -> () {
-    let mut start = get_text_input_selection_begin_index(source);
+    let start = get_text_input_selection_begin_index(source);
     let end = get_text_input_selection_end_index(source);
     if (start != end) {
         replace_text_input(source, start, end, "".to_owned(), None);
@@ -173,7 +173,7 @@ pub fn delete_text_input_word_backward(source: &mut RichText) -> () {
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:102 (sha256:26a2b10fe2a564477f8fc22e2b33a17e45f54f6b9fbd81527361ac8ff6d82122)
 pub fn delete_text_input_word_forward(source: &mut RichText) -> () {
-    let mut start = get_text_input_selection_begin_index(source);
+    let start = get_text_input_selection_begin_index(source);
     let end = get_text_input_selection_end_index(source);
     if (start != end) {
         replace_text_input(source, start, end, "".to_owned(), None);
@@ -200,7 +200,7 @@ pub fn get_text_input_caret_rectangle(
     layout: &TextLayoutResult,
 ) -> () {
     let caret_index = get_text_input_caret_index(source);
-    let mut group = get_text_layout_group_at_index(layout, caret_index);
+    let group = get_text_layout_group_at_index(layout, caret_index);
     if (group).is_none() {
         out.x = text_bounds_gutter_constant;
         out.y = text_bounds_gutter_constant;
@@ -209,16 +209,16 @@ pub fn get_text_input_caret_rectangle(
         out.line_index = 0.0_f64;
         return;
     }
-    out.x = get_text_layout_group_caret_x(&mut group.as_mut().unwrap(), caret_index);
-    out.y = group.as_mut().unwrap().offset_y;
+    out.x = get_text_layout_group_caret_x(&group.as_ref().unwrap(), caret_index);
+    out.y = group.as_ref().unwrap().offset_y;
     out.width = 1.0_f64;
-    out.height = group.as_mut().unwrap().height;
-    out.line_index = group.as_mut().unwrap().line_index;
+    out.height = group.as_ref().unwrap().height;
+    out.line_index = group.as_ref().unwrap().line_index;
 }
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:140 (sha256:af0e0e34d8f8aea0296d741b1a519c90b90da997dd57397e4b3d21f1969b4d3f)
 pub fn get_text_input_character_index_at_point(
-    source: &mut RichText,
+    source: &RichText,
     layout: &TextLayoutResult,
     x: f64,
     y: f64,
@@ -254,7 +254,7 @@ pub fn get_text_input_character_index_at_point(
     }
     let mut line_start = (source.data.text.encode_utf16().count() as f64);
     let mut line_end = 0.0_f64;
-    for mut group in ((layout.groups).clone()).iter().cloned() {
+    for group in ((layout.groups).clone()).iter().cloned() {
         if (group.line_index != closest_line_index) {
             continue;
         }
@@ -264,7 +264,7 @@ pub fn get_text_input_character_index_at_point(
             return group.start_index;
         }
         if (x <= (group.offset_x + group.width)) {
-            return get_text_layout_group_character_index_at_x(&mut group, x);
+            return get_text_layout_group_character_index_at_x(&group, x);
         }
     }
     return if (line_end > 0.0_f64) {
@@ -583,7 +583,7 @@ pub fn move_text_input_caret_by_word(
     extend_selection: Option<bool>,
 ) -> () {
     let extend_selection = extend_selection.unwrap_or(false);
-    let mut caret_index = get_text_input_caret_index(source);
+    let caret_index = get_text_input_caret_index(source);
     let text = (source.data.text).clone();
     let mut target: f64;
     if (direction < 0.0_f64) {
@@ -596,7 +596,7 @@ pub fn move_text_input_caret_by_word(
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:322 (sha256:c4c887171789522899c4c567b4a05a684afceb74c4fef116c46a1d3f8329ccb5)
 pub fn move_text_input_caret_down(
-    source: &mut RichText,
+    source: &RichText,
     layout: &Option<TextLayoutResult>,
     extend_selection: Option<bool>,
 ) -> () {
@@ -612,7 +612,7 @@ pub fn move_text_input_caret_down(
     let mut state = get_input_state(source);
     (|| -> () {
         let caret_index = get_text_input_caret_index(&source);
-        let mut group = get_text_layout_group_at_index(&layout.as_ref().unwrap(), caret_index);
+        let group = get_text_layout_group_at_index(&layout.as_ref().unwrap(), caret_index);
         if (group).is_none() {
             out.x = text_bounds_gutter_constant;
             out.y = text_bounds_gutter_constant;
@@ -621,11 +621,11 @@ pub fn move_text_input_caret_down(
             out.line_index = 0.0_f64;
             return;
         }
-        out.x = get_text_layout_group_caret_x(&mut group.as_mut().unwrap(), caret_index);
-        out.y = group.as_mut().unwrap().offset_y;
+        out.x = get_text_layout_group_caret_x(&group.as_ref().unwrap(), caret_index);
+        out.y = group.as_ref().unwrap().offset_y;
         out.width = 1.0_f64;
-        out.height = group.as_mut().unwrap().height;
-        out.line_index = group.as_mut().unwrap().line_index;
+        out.height = group.as_ref().unwrap().height;
+        out.line_index = group.as_ref().unwrap().line_index;
     })();
     if (state.desired_caret_x == DESIRED_CARET_X_UNSET) {
         state.desired_caret_x = (*SCRATCH_RECT.lock().unwrap()).x;
@@ -700,7 +700,7 @@ pub fn move_text_input_caret_to_line_start(
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:384 (sha256:231d5d2e12edbb8073adeb938af7d421b54bf085c93920fb512a9d0c211fe4ea)
 pub fn move_text_input_caret_up(
-    source: &mut RichText,
+    source: &RichText,
     layout: &Option<TextLayoutResult>,
     extend_selection: Option<bool>,
 ) -> () {
@@ -712,7 +712,7 @@ pub fn move_text_input_caret_up(
     let mut state = get_input_state(source);
     (|| -> () {
         let caret_index = get_text_input_caret_index(&source);
-        let mut group = get_text_layout_group_at_index(&layout.as_ref().unwrap(), caret_index);
+        let group = get_text_layout_group_at_index(&layout.as_ref().unwrap(), caret_index);
         if (group).is_none() {
             out.x = text_bounds_gutter_constant;
             out.y = text_bounds_gutter_constant;
@@ -721,11 +721,11 @@ pub fn move_text_input_caret_up(
             out.line_index = 0.0_f64;
             return;
         }
-        out.x = get_text_layout_group_caret_x(&mut group.as_mut().unwrap(), caret_index);
-        out.y = group.as_mut().unwrap().offset_y;
+        out.x = get_text_layout_group_caret_x(&group.as_ref().unwrap(), caret_index);
+        out.y = group.as_ref().unwrap().offset_y;
         out.width = 1.0_f64;
-        out.height = group.as_mut().unwrap().height;
-        out.line_index = group.as_mut().unwrap().line_index;
+        out.height = group.as_ref().unwrap().height;
+        out.line_index = group.as_ref().unwrap().line_index;
     })();
     if (state.desired_caret_x == DESIRED_CARET_X_UNSET) {
         state.desired_caret_x = (*SCRATCH_RECT.lock().unwrap()).x;
@@ -1025,7 +1025,7 @@ pub fn scroll_text_input_caret_into_view(
 ) -> () {
     (|| -> () {
         let caret_index = get_text_input_caret_index(&source);
-        let mut group = get_text_layout_group_at_index(&layout, caret_index);
+        let group = get_text_layout_group_at_index(&layout, caret_index);
         if (group).is_none() {
             out.x = text_bounds_gutter_constant;
             out.y = text_bounds_gutter_constant;
@@ -1034,11 +1034,11 @@ pub fn scroll_text_input_caret_into_view(
             out.line_index = 0.0_f64;
             return;
         }
-        out.x = get_text_layout_group_caret_x(&mut group.as_mut().unwrap(), caret_index);
-        out.y = group.as_mut().unwrap().offset_y;
+        out.x = get_text_layout_group_caret_x(&group.as_ref().unwrap(), caret_index);
+        out.y = group.as_ref().unwrap().offset_y;
         out.width = 1.0_f64;
-        out.height = group.as_mut().unwrap().height;
-        out.line_index = group.as_mut().unwrap().line_index;
+        out.height = group.as_ref().unwrap().height;
+        out.line_index = group.as_ref().unwrap().line_index;
     })();
     let caret_top = (*SCRATCH_RECT.lock().unwrap()).y;
     let caret_bottom = ((*SCRATCH_RECT.lock().unwrap()).y + (*SCRATCH_RECT.lock().unwrap()).height);
@@ -1123,7 +1123,7 @@ pub fn select_all_text_input(source: &RichText) -> () {
 // Source: upstream/packages/textinput/src/textInputEditing.ts:527 (sha256:f1ec87a198f30c2104bbbcd69dc33c92c3d93487931e103f7ecbc1aedef3895e)
 pub fn select_line_at_text_input_index(source: &RichText, index: f64) -> () {
     let text = (source.data.text).clone();
-    let mut clamped = (0.0_f64).max((text.encode_utf16().count() as f64).min(index));
+    let clamped = (0.0_f64).max((text.encode_utf16().count() as f64).min(index));
     let mut start = clamped;
     let mut end = clamped;
     while (start > 0.0_f64) && ((text.char_at)((start - 1.0_f64)) != "\n") {
@@ -1144,7 +1144,7 @@ pub fn select_line_at_text_input_index(source: &RichText, index: f64) -> () {
 // Source: upstream/packages/textinput/src/textInputEditing.ts:537 (sha256:a2d982c0f9f31526ed53ad92848dff3fe8e5cc10e8367d3b0d60d3323f3fc3ef)
 pub fn select_word_at_text_input_index(source: &RichText, index: f64) -> () {
     let text = (source.data.text).clone();
-    let mut clamped = (0.0_f64).max((text.encode_utf16().count() as f64).min(index));
+    let clamped = (0.0_f64).max((text.encode_utf16().count() as f64).min(index));
     let mut start = clamped;
     let mut end = clamped;
     while (start > 0.0_f64) && (is_word_char((text.char_at)((start - 1.0_f64)))) {
@@ -1352,7 +1352,7 @@ fn clamp_index(value: f64, length: f64) -> f64 {
 fn get_caret_line_index(source: &RichText, layout: &TextLayoutResult) -> f64 {
     (|| -> () {
         let caret_index = get_text_input_caret_index(&source);
-        let mut group = get_text_layout_group_at_index(&layout, caret_index);
+        let group = get_text_layout_group_at_index(&layout, caret_index);
         if (group).is_none() {
             out.x = text_bounds_gutter_constant;
             out.y = text_bounds_gutter_constant;
@@ -1361,11 +1361,11 @@ fn get_caret_line_index(source: &RichText, layout: &TextLayoutResult) -> f64 {
             out.line_index = 0.0_f64;
             return;
         }
-        out.x = get_text_layout_group_caret_x(&mut group.as_mut().unwrap(), caret_index);
-        out.y = group.as_mut().unwrap().offset_y;
+        out.x = get_text_layout_group_caret_x(&group.as_ref().unwrap(), caret_index);
+        out.y = group.as_ref().unwrap().offset_y;
         out.width = 1.0_f64;
-        out.height = group.as_mut().unwrap().height;
-        out.line_index = group.as_mut().unwrap().line_index;
+        out.height = group.as_ref().unwrap().height;
+        out.line_index = group.as_ref().unwrap().line_index;
     })();
     return (*SCRATCH_RECT.lock().unwrap()).line_index;
 }
@@ -1524,7 +1524,7 @@ fn get_text_layout_group_at_index(
 }
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:733 (sha256:f10829642510b105e7a6afe4e4ffcc19b3938cbf88343db7486babef07b94dca)
-fn get_text_layout_group_caret_x(group: &mut TextLayoutGroup, index: f64) -> f64 {
+fn get_text_layout_group_caret_x(group: &TextLayoutGroup, index: f64) -> f64 {
     let mut x = group.offset_x;
     let limit = (0.0_f64).max(((index).min(group.end_index) - group.start_index));
     {
@@ -1541,7 +1541,7 @@ fn get_text_layout_group_caret_x(group: &mut TextLayoutGroup, index: f64) -> f64
 }
 
 // Source: upstream/packages/textinput/src/textInputEditing.ts:740 (sha256:f2a2b80414b786299703b32d7520f092c7e5384ef4f64b0348950bf457362e97)
-fn get_text_layout_group_character_index_at_x(group: &mut TextLayoutGroup, x: f64) -> f64 {
+fn get_text_layout_group_character_index_at_x(group: &TextLayoutGroup, x: f64) -> f64 {
     let mut current_x = group.offset_x;
     {
         let mut i = 0.0_f64;

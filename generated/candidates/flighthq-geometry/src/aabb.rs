@@ -67,6 +67,7 @@ pub fn create_aabb(
     );
     return create_entity(Some(Aabb {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         max: (max).clone(),
         min: (min).clone(),

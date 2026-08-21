@@ -313,11 +313,13 @@ fn write_format_range(
     if (start == end) {
         return;
     }
-    let mut previous = ranges[((ranges.len() as f64) - 1.0_f64) as usize].clone();
-    if (((previous).is_some()) && (previous.end == start))
-        && (text_format_equals(&previous.format, format))
+    let mut previous: Option<TextFormatRange> = ranges
+        .get(((ranges.len() as f64) - 1.0_f64) as usize)
+        .cloned();
+    if (((previous).is_some()) && (previous.as_mut().unwrap().end == start))
+        && (text_format_equals(&previous.as_mut().unwrap().format, format))
     {
-        previous.end = end;
+        previous.as_mut().unwrap().end = end;
     } else {
         ranges.push(TextFormatRange {
             __flight_identity: std::sync::Arc::new(()),

@@ -14,22 +14,22 @@ use flighthq_types::{
 // Source: upstream/packages/geometry/src/matrix.ts:12 (sha256:223003a4ea40b7e755dceb8e680fb160423275d8e153f5291242decc27161cde)
 pub fn clone_matrix(source: &MatrixLike) -> Matrix {
     let mut m = create_matrix(None, None, None, None, None, None);
-    (|| -> () {
+    {
         let a = source.a;
         let b = source.b;
         let c = source.c;
         let d = source.d;
         let tx = source.tx;
         let ty = source.ty;
-        (|| -> () {
+        {
             m.a = a;
             m.b = b;
             m.c = c;
             m.d = d;
             m.tx = tx;
             m.ty = ty;
-        })();
-    })();
+        };
+    };
     return m;
 }
 
@@ -235,7 +235,7 @@ pub fn create_gradient_transform_matrix(
     let tx = tx.unwrap_or(0.0_f64);
     let ty = ty.unwrap_or(0.0_f64);
     let mut out = create_matrix(None, None, None, None, None, None);
-    (|| -> () {
+    {
         out.a = (width / 1638.4_f64);
         out.d = (height / 1638.4_f64);
         if (rotation != 0.0_f64) {
@@ -251,7 +251,7 @@ pub fn create_gradient_transform_matrix(
         }
         out.tx = (tx + (width / 2.0_f64));
         out.ty = (ty + (height / 2.0_f64));
-    })();
+    };
     return out;
 }
 
@@ -266,6 +266,7 @@ pub fn create_matrix(
 ) -> Matrix {
     return create_entity(Some(Matrix {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         a: (a).clone().unwrap_or(1.0_f64),
         b: (b).clone().unwrap_or(0.0_f64),
@@ -288,7 +289,7 @@ pub fn create_transform_matrix(
     let tx = tx.unwrap_or(0.0_f64);
     let ty = ty.unwrap_or(0.0_f64);
     let mut out = create_matrix(None, None, None, None, None, None);
-    (|| -> () {
+    {
         if (rotation != 0.0_f64) {
             let cos = (rotation).cos();
             let sin = (rotation).sin();
@@ -304,7 +305,7 @@ pub fn create_transform_matrix(
         }
         out.tx = tx;
         out.ty = ty;
-    })();
+    };
     return out;
 }
 

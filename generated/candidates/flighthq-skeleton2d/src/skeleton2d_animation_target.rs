@@ -127,7 +127,7 @@ pub fn unregister_skeleton2_d_animation_target_binder(kind: Skeleton2DAnimationT
 
 // Source: upstream/packages/skeleton2d/src/skeleton2dAnimationTarget.ts:99 (sha256:a543bd5dd92b76001b63a41e3fd0d0880a2aeb5e8ea146bf2cbfb2b697dc586f)
 fn bind_skeleton2_d_bone_channel(
-    channel: &mut AnimationChannel,
+    channel: &AnimationChannel,
     setup: &Skeleton2D,
     pose: &mut Skeleton2D,
     target: crate::FlightValue,
@@ -140,11 +140,18 @@ fn bind_skeleton2_d_bone_channel(
     {
         return;
     }
-    sample_animation_track(
-        &(crate::FlightUnion2::<Vec<f64>, Vec<f32>>::A((*_SCRATCH.lock().unwrap()).clone())),
-        &mut channel.track,
-        time,
-    );
+    {
+        let mut __flight_argument_0 = crate::FlightUnion2::<Vec<f64>, Vec<f32>>::A(std::mem::take(
+            &mut (*_SCRATCH.lock().unwrap()),
+        ));
+        let __flight_result =
+            sample_animation_track(&mut __flight_argument_0, &channel.track, time);
+        (*_SCRATCH.lock().unwrap()) = match __flight_argument_0 {
+            crate::FlightUnion2::A(value) => value,
+            crate::FlightUnion2::B(_) => panic!("TypeScript union narrowing failed"),
+        };
+        __flight_result
+    };
     let setup_bone = setup.bones[bone_index as usize].clone();
     let mut pose_bone = pose.bones[bone_index as usize].clone();
     {
@@ -239,7 +246,7 @@ fn bind_skeleton2_d_bone_channel(
 
 // Source: upstream/packages/skeleton2d/src/skeleton2dAnimationTarget.ts:166 (sha256:efe03c051ab4cad03e6a02b6741516473a6f911b946fcba67c3ace66246df48e)
 fn bind_skeleton2_d_slot_channel(
-    channel: &mut AnimationChannel,
+    channel: &AnimationChannel,
     _setup: &Skeleton2D,
     pose: &mut Skeleton2D,
     target: crate::FlightValue,
@@ -268,11 +275,18 @@ fn bind_skeleton2_d_slot_channel(
     if ((slot_target.path).clone() != slot_path_constant.color) {
         return;
     }
-    sample_animation_track(
-        &(crate::FlightUnion2::<Vec<f64>, Vec<f32>>::A((*_SCRATCH.lock().unwrap()).clone())),
-        &mut channel.track,
-        time,
-    );
+    {
+        let mut __flight_argument_0 = crate::FlightUnion2::<Vec<f64>, Vec<f32>>::A(std::mem::take(
+            &mut (*_SCRATCH.lock().unwrap()),
+        ));
+        let __flight_result =
+            sample_animation_track(&mut __flight_argument_0, &channel.track, time);
+        (*_SCRATCH.lock().unwrap()) = match __flight_argument_0 {
+            crate::FlightUnion2::A(value) => value,
+            crate::FlightUnion2::B(_) => panic!("TypeScript union narrowing failed"),
+        };
+        __flight_result
+    };
     slots.as_mut().unwrap()[slot_index as usize].color = Some(
         (__flight_js_to_u32(
             (__flight_js_to_i32(
@@ -361,14 +375,14 @@ fn get_skeleton2_d_animation_target_binder_registry() -> KeyedTable<Skeleton2DAn
         (*_BINDERS.lock().unwrap()).as_ref().unwrap(),
         (target_kind_constant.bone).clone(),
         std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-            move |mut __flight_argument_0: AnimationChannel,
+            move |__flight_argument_0: AnimationChannel,
                   __flight_argument_1: Skeleton2D,
                   mut __flight_argument_2: Skeleton2D,
                   __flight_argument_3: crate::FlightValue,
                   __flight_argument_4: f64|
                   -> () {
                 bind_skeleton2_d_bone_channel(
-                    &mut __flight_argument_0,
+                    &__flight_argument_0,
                     &__flight_argument_1,
                     &mut __flight_argument_2,
                     (__flight_argument_3).clone(),
@@ -386,14 +400,14 @@ fn get_skeleton2_d_animation_target_binder_registry() -> KeyedTable<Skeleton2DAn
         (*_BINDERS.lock().unwrap()).as_ref().unwrap(),
         (target_kind_constant.slot).clone(),
         std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-            move |mut __flight_argument_0: AnimationChannel,
+            move |__flight_argument_0: AnimationChannel,
                   __flight_argument_1: Skeleton2D,
                   mut __flight_argument_2: Skeleton2D,
                   __flight_argument_3: crate::FlightValue,
                   __flight_argument_4: f64|
                   -> () {
                 bind_skeleton2_d_slot_channel(
-                    &mut __flight_argument_0,
+                    &__flight_argument_0,
                     &__flight_argument_1,
                     &mut __flight_argument_2,
                     (__flight_argument_3).clone(),

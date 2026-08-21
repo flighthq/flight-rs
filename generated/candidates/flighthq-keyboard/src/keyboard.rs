@@ -16,12 +16,11 @@ use flighthq_types::{
 // Source: upstream/packages/keyboard/src/keyboard.ts:18 (sha256:60a46339c430aff3ebe656222950308306c964d49d77f3067f674aad6bb61315)
 pub fn attach_soft_keyboard(keyboard: SoftKeyboard) -> () {
     detach_soft_keyboard(&keyboard);
-    let backend: std::sync::Arc<std::sync::Mutex<SoftKeyboardBackend>> =
-        std::sync::Arc::new(std::sync::Mutex::new(get_soft_keyboard_backend()));
+    let backend = get_soft_keyboard_backend();
     let was_visible: std::sync::Arc<std::sync::Mutex<bool>> =
         std::sync::Arc::new(std::sync::Mutex::new(
             {
-                let __flight_callback = ((*backend.lock().unwrap()).get_info).clone();
+                let __flight_callback = (backend.get_info).clone();
                 let __flight_result =
                     __flight_callback.lock().unwrap()(((*_SCRATCH).clone()).clone());
                 __flight_result
@@ -29,16 +28,16 @@ pub fn attach_soft_keyboard(keyboard: SoftKeyboard) -> () {
             .visible,
         ));
     let unsubscribe = {
-        let __flight_callback = ((*backend.lock().unwrap()).subscribe).clone();
+        let __flight_callback = (backend.subscribe).clone();
         let __flight_result = __flight_callback.lock().unwrap()(std::sync::Arc::new(
             std::sync::Mutex::new(Box::new({
-                let mut backend = backend.clone();
+                let backend = backend.clone();
                 let keyboard = keyboard.clone();
                 let mut was_visible = was_visible.clone();
                 move |phase: SoftKeyboardPhase, transition: SoftKeyboardTransition| -> () {
                     let prev_visible = (*was_visible.lock().unwrap()).clone();
                     let info = {
-                        let __flight_callback = ((*backend.lock().unwrap()).get_info).clone();
+                        let __flight_callback = (backend.get_info).clone();
                         let __flight_result =
                             __flight_callback.lock().unwrap()(((*_SCRATCH).clone()).clone());
                         __flight_result

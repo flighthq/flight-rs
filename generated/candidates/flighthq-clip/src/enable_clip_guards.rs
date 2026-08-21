@@ -17,14 +17,7 @@ pub fn disable_clip_guards() -> () {
 
 // Source: upstream/packages/clip/src/enableClipGuards.ts:19 (sha256:4b0a4a2b5c05196bb53863dc5d8bd8cf6617e32c1bb8c8eeb9bb47eec1e7fc16)
 pub fn enable_clip_guards() -> () {
-    set_clip_region_release_guard(
-        &(Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-            move |__flight_argument_0: ClipRegion| -> () {
-                warn_on_double_release(&__flight_argument_0)
-            },
-        )
-            as Box<dyn FnMut(ClipRegion) -> () + Send + 'static>)))),
-    );
+    set_clip_region_release_guard(&(warn_on_double_release));
 }
 
 // Source: upstream/packages/clip/src/enableClipGuards.ts:23 (sha256:7b1e4c88ed3f25bff54d5e51cd748bb7e09999f411ff1a5b64a6f61cc47eb339)

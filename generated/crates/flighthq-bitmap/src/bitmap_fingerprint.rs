@@ -61,12 +61,12 @@ pub fn create_bitmap_fingerprint(source: &Bitmap, grid_size: Option<f64>) -> Bit
     {
         let mut cy = 0.0_f64;
         while (cy < grid_size) {
-            let mut y0 = ((cy * height) / grid_size).floor();
+            let y0 = ((cy * height) / grid_size).floor();
             let y1 = (y0 + 1.0_f64).max((((cy + 1.0_f64) * height) / grid_size).floor());
             {
                 let mut cx = 0.0_f64;
                 while (cx < grid_size) {
-                    let mut x0 = ((cx * width) / grid_size).floor();
+                    let x0 = ((cx * width) / grid_size).floor();
                     let x1 = (x0 + 1.0_f64).max((((cx + 1.0_f64) * width) / grid_size).floor());
                     let mut sum_r = 0.0_f64;
                     let mut sum_g = 0.0_f64;

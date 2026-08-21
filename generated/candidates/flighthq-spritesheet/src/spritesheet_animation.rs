@@ -7,7 +7,9 @@
 #![allow(unused_parens)]
 
 use flighthq_entity::create_entity;
-use flighthq_types::{Spritesheet, SpritesheetAnimation, SpritesheetAnimationDirection};
+use flighthq_types::{
+    Spritesheet, SpritesheetAnimation, SpritesheetAnimationDirection, TextureAtlasRegion,
+};
 
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord1490253840 {
@@ -32,6 +34,7 @@ pub fn create_spritesheet_animation(
 ) -> SpritesheetAnimation {
     return create_entity(Some(SpritesheetAnimation {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         direction: (obj.as_ref().and_then(|value| (value.direction).clone()))
             .clone()
@@ -72,7 +75,12 @@ pub fn create_spritesheet_animation_from_frame_names(
         let mut i = 0.0_f64;
         while (i < (spritesheet.frames.len() as f64)) {
             let region_id = spritesheet.frames[i as usize].id;
-            let region = atlas.as_ref().unwrap().regions[region_id as usize].clone();
+            let region: Option<TextureAtlasRegion> = atlas
+                .as_ref()
+                .unwrap()
+                .regions
+                .get(region_id as usize)
+                .cloned();
             if (region).is_none() {
                 {
                     i += 1.0;
@@ -80,7 +88,7 @@ pub fn create_spritesheet_animation_from_frame_names(
                 };
                 continue;
             }
-            let name = (region.name).clone();
+            let name = (region.as_ref().unwrap().name).clone();
             if ((name).clone()).is_none() {
                 {
                     i += 1.0;

@@ -27,6 +27,7 @@ use flighthq_types::{
 pub fn create_scene3_d_hit() -> Scene3DHit {
     return create_entity(Some(Scene3DHit {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         distance: 0.0_f64,
         node: None,
@@ -104,12 +105,14 @@ pub fn pick_scene3_d_all_with_ray3_d(
     let count: std::sync::Arc<std::sync::Mutex<f64>> =
         std::sync::Arc::new(std::sync::Mutex::new(0.0_f64));
     for_each_scene3_d_ray_hit(scene, ray, &(options), &mut |hit: Scene3DHit| -> () {
-        let mut slot = out_array[(*count.lock().unwrap()).clone() as usize].clone();
+        let mut slot: Option<Scene3DHit> = out_array
+            .get((*count.lock().unwrap()).clone() as usize)
+            .cloned();
         if ((slot).clone()).is_none() {
-            slot = create_scene3_d_hit();
+            slot = Some(create_scene3_d_hit());
             {
                 let __flight_index = ((*count.lock().unwrap()).clone()) as usize;
-                let __flight_value = (slot).clone();
+                let __flight_value = ((slot).clone()).clone().unwrap();
                 if __flight_index == out_array.len() {
                     out_array.push(__flight_value);
                 } else {
@@ -117,7 +120,7 @@ pub fn pick_scene3_d_all_with_ray3_d(
                 }
             };
         }
-        copy_scene3_d_hit(&mut slot, &hit);
+        copy_scene3_d_hit(slot.as_mut().unwrap(), &hit);
         {
             (*count.lock().unwrap()) += 1.0;
             (*count.lock().unwrap())
@@ -261,6 +264,10 @@ fn pick_node(
                             __flight_entity_runtime: std::sync::Arc::clone(
                                 &__flight_source.__flight_entity_runtime,
                             ),
+                            __flight_entity_snapshot: __flight_source
+                                .__flight_entity_snapshot
+                                .clone()
+                                .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                             data: (__flight_source.data).clone(),
                             enabled: __flight_source.enabled,
                             kind: (__flight_source.kind).clone(),
@@ -291,6 +298,12 @@ fn pick_node(
                                 __flight_entity_runtime: std::sync::Arc::clone(
                                     &__flight_source.__flight_entity_runtime,
                                 ),
+                                __flight_entity_snapshot: __flight_source
+                                    .__flight_entity_snapshot
+                                    .clone()
+                                    .or_else(|| {
+                                        Some(std::sync::Arc::new((*__flight_source).clone()))
+                                    }),
                                 data: (__flight_source.data).clone(),
                                 enabled: __flight_source.enabled,
                                 kind: (__flight_source.kind).clone(),
@@ -314,6 +327,9 @@ fn pick_node(
                             __flight_entity_runtime: std::sync::Arc::clone(
                                 &__flight_source.__flight_entity_runtime,
                             ),
+                            __flight_entity_snapshot: __flight_source
+                                .__flight_entity_snapshot
+                                .clone(),
                             direction: (__flight_source.direction).clone(),
                             origin: (__flight_source.origin).clone(),
                         }
@@ -341,6 +357,10 @@ fn pick_node(
                         __flight_entity_runtime: std::sync::Arc::clone(
                             &__flight_source.__flight_entity_runtime,
                         ),
+                        __flight_entity_snapshot: __flight_source
+                            .__flight_entity_snapshot
+                            .clone()
+                            .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                         data: (__flight_source.data).clone(),
                         enabled: __flight_source.enabled,
                         kind: (__flight_source.kind).clone(),
@@ -359,6 +379,10 @@ fn pick_node(
                         __flight_entity_runtime: std::sync::Arc::clone(
                             &__flight_source.__flight_entity_runtime,
                         ),
+                        __flight_entity_snapshot: __flight_source
+                            .__flight_entity_snapshot
+                            .clone()
+                            .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                         data: (__flight_source.data).clone(),
                         enabled: __flight_source.enabled,
                         kind: (__flight_source.kind).clone(),
@@ -422,6 +446,9 @@ fn pick_node(
                                     __flight_entity_runtime: std::sync::Arc::clone(
                                         &__flight_source.__flight_entity_runtime,
                                     ),
+                                    __flight_entity_snapshot: __flight_source
+                                        .__flight_entity_snapshot
+                                        .clone(),
                                     direction: (__flight_source.direction).clone(),
                                     origin: (__flight_source.origin).clone(),
                                 }
@@ -435,6 +462,9 @@ fn pick_node(
                                     __flight_entity_runtime: std::sync::Arc::clone(
                                         &__flight_source.__flight_entity_runtime,
                                     ),
+                                    __flight_entity_snapshot: __flight_source
+                                        .__flight_entity_snapshot
+                                        .clone(),
                                     x: __flight_source.x,
                                     y: __flight_source.y,
                                     z: __flight_source.z,
@@ -449,6 +479,9 @@ fn pick_node(
                                     __flight_entity_runtime: std::sync::Arc::clone(
                                         &__flight_source.__flight_entity_runtime,
                                     ),
+                                    __flight_entity_snapshot: __flight_source
+                                        .__flight_entity_snapshot
+                                        .clone(),
                                     x: __flight_source.x,
                                     y: __flight_source.y,
                                     z: __flight_source.z,
@@ -463,6 +496,9 @@ fn pick_node(
                                     __flight_entity_runtime: std::sync::Arc::clone(
                                         &__flight_source.__flight_entity_runtime,
                                     ),
+                                    __flight_entity_snapshot: __flight_source
+                                        .__flight_entity_snapshot
+                                        .clone(),
                                     x: __flight_source.x,
                                     y: __flight_source.y,
                                     z: __flight_source.z,
@@ -532,6 +568,9 @@ fn pick_node(
                                     __flight_entity_runtime: std::sync::Arc::clone(
                                         &__flight_source.__flight_entity_runtime,
                                     ),
+                                    __flight_entity_snapshot: __flight_source
+                                        .__flight_entity_snapshot
+                                        .clone(),
                                     direction: (__flight_source.direction).clone(),
                                     origin: (__flight_source.origin).clone(),
                                 }
@@ -552,6 +591,9 @@ fn pick_node(
                                     __flight_entity_runtime: std::sync::Arc::clone(
                                         &__flight_source.__flight_entity_runtime,
                                     ),
+                                    __flight_entity_snapshot: __flight_source
+                                        .__flight_entity_snapshot
+                                        .clone(),
                                     direction: (__flight_source.direction).clone(),
                                     origin: (__flight_source.origin).clone(),
                                 }
@@ -583,6 +625,10 @@ fn pick_node(
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source
+                    .__flight_entity_snapshot
+                    .clone()
+                    .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                 data: (__flight_source.data).clone(),
                 enabled: __flight_source.enabled,
                 kind: (__flight_source.kind).clone(),
@@ -607,6 +653,9 @@ fn pick_node(
                             __flight_entity_runtime: std::sync::Arc::clone(
                                 &__flight_source.__flight_entity_runtime,
                             ),
+                            __flight_entity_snapshot: __flight_source
+                                .__flight_entity_snapshot
+                                .clone(),
                             data: (__flight_source.data).clone(),
                             enabled: __flight_source.enabled,
                             kind: (__flight_source.kind).clone(),
@@ -663,6 +712,10 @@ fn intersect_mesh_triangles(
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source
+                    .__flight_entity_snapshot
+                    .clone()
+                    .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                 data: (__flight_source.data).clone(),
                 enabled: __flight_source.enabled,
                 kind: (__flight_source.kind).clone(),
@@ -689,6 +742,10 @@ fn intersect_mesh_triangles(
                     __flight_entity_runtime: std::sync::Arc::clone(
                         &__flight_source.__flight_entity_runtime,
                     ),
+                    __flight_entity_snapshot: __flight_source
+                        .__flight_entity_snapshot
+                        .clone()
+                        .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                     data: (__flight_source.data).clone(),
                     enabled: __flight_source.enabled,
                     kind: (__flight_source.kind).clone(),
@@ -710,6 +767,7 @@ fn intersect_mesh_triangles(
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 direction: (__flight_source.direction).clone(),
                 origin: (__flight_source.origin).clone(),
             }
@@ -733,6 +791,10 @@ fn intersect_mesh_triangles(
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source
+                .__flight_entity_snapshot
+                .clone()
+                .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
             data: (__flight_source.data).clone(),
             enabled: __flight_source.enabled,
             kind: (__flight_source.kind).clone(),
@@ -749,6 +811,10 @@ fn intersect_mesh_triangles(
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source
+                .__flight_entity_snapshot
+                .clone()
+                .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
             data: (__flight_source.data).clone(),
             enabled: __flight_source.enabled,
             kind: (__flight_source.kind).clone(),
@@ -811,6 +877,7 @@ fn intersect_mesh_triangles(
                         __flight_entity_runtime: std::sync::Arc::clone(
                             &__flight_source.__flight_entity_runtime,
                         ),
+                        __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                         direction: (__flight_source.direction).clone(),
                         origin: (__flight_source.origin).clone(),
                     }
@@ -824,6 +891,7 @@ fn intersect_mesh_triangles(
                         __flight_entity_runtime: std::sync::Arc::clone(
                             &__flight_source.__flight_entity_runtime,
                         ),
+                        __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                         x: __flight_source.x,
                         y: __flight_source.y,
                         z: __flight_source.z,
@@ -838,6 +906,7 @@ fn intersect_mesh_triangles(
                         __flight_entity_runtime: std::sync::Arc::clone(
                             &__flight_source.__flight_entity_runtime,
                         ),
+                        __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                         x: __flight_source.x,
                         y: __flight_source.y,
                         z: __flight_source.z,
@@ -852,6 +921,7 @@ fn intersect_mesh_triangles(
                         __flight_entity_runtime: std::sync::Arc::clone(
                             &__flight_source.__flight_entity_runtime,
                         ),
+                        __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                         x: __flight_source.x,
                         y: __flight_source.y,
                         z: __flight_source.z,
@@ -921,6 +991,7 @@ fn intersect_mesh_triangles(
                         __flight_entity_runtime: std::sync::Arc::clone(
                             &__flight_source.__flight_entity_runtime,
                         ),
+                        __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                         direction: (__flight_source.direction).clone(),
                         origin: (__flight_source.origin).clone(),
                     }
@@ -941,6 +1012,7 @@ fn intersect_mesh_triangles(
                         __flight_entity_runtime: std::sync::Arc::clone(
                             &__flight_source.__flight_entity_runtime,
                         ),
+                        __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                         direction: (__flight_source.direction).clone(),
                         origin: (__flight_source.origin).clone(),
                     }

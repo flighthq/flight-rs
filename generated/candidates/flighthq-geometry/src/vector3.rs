@@ -85,6 +85,7 @@ pub fn copy_vector3(out: &mut Vector3Like, source: &Vector3Like) -> () {
 pub fn create_vector3(x: Option<f64>, y: Option<f64>, z: Option<f64>) -> Vector3 {
     return create_entity(Some(Vector3 {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         x: (x).clone().unwrap_or(0.0_f64),
         y: (y).clone().unwrap_or(0.0_f64),
@@ -95,12 +96,12 @@ pub fn create_vector3(x: Option<f64>, y: Option<f64>, z: Option<f64>) -> Vector3
 // Source: upstream/packages/geometry/src/vector3.ts:93 (sha256:0693b3d9077e187d51772f4871aaf17cf69c85560d6ac66c73320d3e834c4894)
 pub fn create_vector3_from_spherical(radius: f64, theta: f64, phi: f64) -> Vector3 {
     let mut out = create_vector3(None, None, None);
-    (|| -> () {
+    {
         let sin_theta = (theta).sin();
         out.x = ((radius * sin_theta) * (phi).cos());
         out.y = (radius * (theta).cos());
         out.z = ((radius * sin_theta) * (phi).sin());
-    })();
+    };
     return out;
 }
 

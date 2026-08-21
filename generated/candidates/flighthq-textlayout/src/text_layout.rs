@@ -71,8 +71,8 @@ static _PARAGRAPH_LAST_LINES: std::sync::LazyLock<std::sync::Mutex<Vec<f64>>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(Vec::new()));
 
 // Source: upstream/packages/textlayout/src/textLayout.ts:26 (sha256:ca540e4b34f38ee2dc29926f251dc88b9f376ca4062df6f391af16e00fba8801)
-pub fn compute_text_layout(out: &mut TextLayoutResult, params: &mut TextLayoutParams) -> () {
-    let mut text = (params.text).clone();
+pub fn compute_text_layout(out: &mut TextLayoutResult, params: &TextLayoutParams) -> () {
+    let text = (params.text).clone();
     let width = params.width;
     let word_wrap = (params.word_wrap).clone().unwrap_or(false);
     let multiline = (params.multiline).clone().unwrap_or(false);
@@ -358,7 +358,7 @@ fn build_groups(
     out: &mut Vec<TextLayoutGroup>,
     paragraph_last_lines: &mut Vec<f64>,
     text: String,
-    mut format_ranges: Vec<TextFormatRange>,
+    format_ranges: Vec<TextFormatRange>,
     line_breaks: &Vec<f64>,
     container_width: f64,
     measure: TextMeasureFunction,
@@ -536,7 +536,7 @@ fn build_groups(
     > = std::sync::Arc::new(std::sync::Mutex::new(Box::new({
         let mut current_format = current_format.clone();
         let mut format_range = format_range.clone();
-        let mut format_ranges = format_ranges.clone();
+        let format_ranges = format_ranges.clone();
         let mut range_index = range_index.clone();
         move || -> bool {
             if ((*range_index.lock().unwrap()).clone() < ((format_ranges.len() as f64) - 1.0_f64)) {
@@ -715,7 +715,9 @@ fn build_groups(
                     return;
                 }
                 (*bullet_pending.lock().unwrap()) = false;
-                if (((*current_format.lock().unwrap()).list_marker).clone() == "none") {
+                if (((*current_format.lock().unwrap()).list_marker).clone())
+                    == Some("none".to_owned())
+                {
                     if ((*indent.lock().unwrap()).clone() <= 0.0_f64) {
                         (*indent.lock().unwrap()) = (({
                             let __flight_callback = (measure).clone();
@@ -771,7 +773,7 @@ fn build_groups(
         let mut current_format = current_format.clone();
         let mut descent = descent.clone();
         let mut format_range = format_range.clone();
-        let mut format_ranges = format_ranges.clone();
+        let format_ranges = format_ranges.clone();
         let mut groups = groups.clone();
         let mut leading = leading.clone();
         let mut line_index = line_index.clone();
@@ -1483,7 +1485,9 @@ fn justify_lines(
             }
             let mut line_groups: Vec<TextLayoutGroup> = vec![];
             for g in (groups).iter().cloned() {
-                if (g.line_index == li) && ((g.format.align).clone() == "justify") {
+                if (g.line_index == li)
+                    && (((g.format.align).clone()) == Some("justify".to_owned()))
+                {
                     line_groups.push(((g).clone()).clone());
                 }
             }
@@ -1545,7 +1549,7 @@ fn justify_lines(
                 }
             } else {
                 let mut space_count = 0.0_f64;
-                for mut g in (line_groups).iter().cloned() {
+                for g in (line_groups).iter().cloned() {
                     let mut text_index = g.start_index;
                     {
                         let mut ci = 0.0_f64;

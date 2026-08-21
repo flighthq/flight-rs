@@ -123,9 +123,9 @@ pub fn apply_bitmap_levels(
     apply_bitmap_curve(
         out,
         source,
-        &(Some(lut)),
-        &(Some(lut)),
-        &(Some(lut)),
-        &(None),
+        &(Some((lut).clone())),
+        &(Some((lut).clone())),
+        &(Some((lut).clone())),
+        None,
     );
 }

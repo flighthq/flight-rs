@@ -566,15 +566,17 @@ fn get_registry_table_entry_state<T: Clone>(
     if (ordinal == (-1.0_f64)) {
         return None;
     }
-    let value = (match (*table).clone() {
+    let value: Option<T> = (match (*table).clone() {
         flighthq_types::RegistryTable::<T>::A(_) => panic!("TypeScript union narrowing failed"),
         flighthq_types::RegistryTable::<T>::B(value) => match value {
             crate::FlightUnion2::A(value) => value,
             crate::FlightUnion2::B(_) => panic!("TypeScript union narrowing failed"),
         },
     })
-    .entries[ordinal as usize]
-        .clone();
+    .entries
+    .get(ordinal as usize)
+    .cloned()
+    .flatten();
     return if (value).is_none() {
         None
     } else {

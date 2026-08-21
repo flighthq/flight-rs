@@ -24,22 +24,8 @@ pub fn disable_camera_guards() -> () {
 
 // Source: upstream/packages/camera/src/enableCameraGuards.ts:22 (sha256:2398881b7bb36ac0fbb1a41bbc3b65b141260571268604ffca6eb30ba68f6d62)
 pub fn enable_camera_guards() -> () {
-    set_camera3_d_view_guard(
-        &(Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-            move |__flight_argument_0: Camera3D| -> () {
-                warn_on_non_orthonormal_camera3_d_view(&__flight_argument_0)
-            },
-        )
-            as Box<dyn FnMut(Camera3D) -> () + Send + 'static>)))),
-    );
-    set_camera2_d_visible_bounds_guard(
-        &(Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-            move |__flight_argument_0: Camera2D| -> () {
-                warn_on_degenerate_camera2_d_visible_bounds(&__flight_argument_0)
-            },
-        )
-            as Box<dyn FnMut(Camera2D) -> () + Send + 'static>)))),
-    );
+    set_camera3_d_view_guard(&(warn_on_non_orthonormal_camera3_d_view));
+    set_camera2_d_visible_bounds_guard(&(warn_on_degenerate_camera2_d_visible_bounds));
     CAMERA_GUARDS_ENABLED.store(true, std::sync::atomic::Ordering::Relaxed);
 }
 

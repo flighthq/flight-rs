@@ -47,7 +47,7 @@ pub fn create_animation_blend_tree_layer(
 ) -> AnimationLayer {
     return create_animation_layer(
         (blend_tree.channels.len() as f64),
-        &(Some((*blend_tree).clone())),
+        &(Some((blend_tree).clone())),
         &(None),
         ((options).clone()).clone(),
     );
@@ -82,7 +82,7 @@ pub fn create_animation_layer_stack(layers: &Vec<AnimationLayer>) -> AnimationLa
             }
             let source_channels = get_animation_layer_channels(&layer);
             let channel_indices = ((layer.channel_indices).clone()).clone().unwrap_or(
-                (source_channels)
+                ((source_channels)
                     .iter()
                     .cloned()
                     .map(
@@ -90,7 +90,10 @@ pub fn create_animation_layer_stack(layers: &Vec<AnimationLayer>) -> AnimationLa
                             index
                         },
                     )
-                    .collect::<Vec<_>>(),
+                    .collect::<Vec<_>>())
+                .iter()
+                .map(|__flight_value| *__flight_value)
+                .collect::<Vec<_>>(),
             );
             for channel_index in (channel_indices).iter().cloned() {
                 sample_width = (sample_width).max(
@@ -131,7 +134,7 @@ pub fn create_animation_layer_stack(layers: &Vec<AnimationLayer>) -> AnimationLa
                     });
                     continue;
                 }
-                let mut existing = channels[existing_index as usize].clone();
+                let mut existing = channels[(existing_index).clone().unwrap() as usize].clone();
                 assert_compatible_animation_layer_channels(
                     &existing.channel,
                     &source_channels[channel_index as usize].channel,
@@ -152,6 +155,7 @@ pub fn create_animation_layer_stack(layers: &Vec<AnimationLayer>) -> AnimationLa
     }
     return create_entity(Some(AnimationLayerStack {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         advance_scratch: vec![],
         blend_trees: (blend_trees).clone(),
@@ -170,7 +174,7 @@ pub fn create_animation_state_machine_layer(
     return create_animation_layer(
         (state_machine.channels.len() as f64),
         &(None),
-        &(Some((*state_machine).clone())),
+        &(Some((state_machine).clone())),
         ((options).clone()).clone(),
     );
 }
@@ -184,7 +188,7 @@ pub fn sample_animation_layer_stack(
     {
         let mut index = 0.0_f64;
         while (index < (stack.channels.len() as f64)) {
-            if sample_animation_layer_stack_channel(&((*out).clone()), stack, index) {
+            if sample_animation_layer_stack_channel(out, stack, index) {
                 visit(
                     (*out).clone(),
                     (stack.channels[index as usize].channel).clone(),
@@ -205,60 +209,98 @@ pub fn sample_animation_layer_stack_channel(
     stack: &mut AnimationLayerStack,
     channel_index: f64,
 ) -> bool {
-    let entry = stack.channels[channel_index as usize].clone();
+    let entry: Option<AnimationLayerStackChannel> =
+        stack.channels.get(channel_index as usize).cloned();
     if (entry).is_none() {
         return false;
     }
     let mut has_pose = false;
-    for source in ((entry.sources).clone()).iter().cloned() {
+    for source in ((entry.as_ref().unwrap().sources).clone()).iter().cloned() {
         let mut layer = stack.layers[source.layer_index as usize].clone();
         if (!(layer.weight > 0.0_f64))
-            || (!sample_animation_layer(
-                &(crate::FlightUnion2::<Vec<f64>, Vec<f32>>::B((stack.sample_scratch).clone())),
-                &mut layer,
-                source.channel_index,
-            ))
+            || (!{
+                let mut __flight_argument_0 = crate::FlightUnion2::<Vec<f64>, Vec<f32>>::B(
+                    std::mem::take(&mut (stack.sample_scratch)),
+                );
+                let __flight_result = sample_animation_layer(
+                    &mut __flight_argument_0,
+                    &mut layer,
+                    source.channel_index,
+                );
+                stack.sample_scratch = match __flight_argument_0 {
+                    crate::FlightUnion2::A(_) => panic!("TypeScript union narrowing failed"),
+                    crate::FlightUnion2::B(value) => value,
+                };
+                __flight_result
+            })
         {
             continue;
         }
         if layer.additive {
             if (!has_pose) {
                 write_animation_layer_identity(
-                    &((*out).clone()),
-                    entry.channel.track.components,
-                    entry.channel.track.quaternion,
+                    out,
+                    entry.as_ref().unwrap().channel.track.components,
+                    entry.as_ref().unwrap().channel.track.quaternion,
                 );
                 has_pose = true;
             }
             {
-                let __flight_argument_1 = (out).clone();
+                let __flight_argument_1 = match &((*out).clone()) {
+                    crate::FlightUnion2::A(values) => values
+                        .iter()
+                        .map(|__flight_value| *__flight_value)
+                        .collect::<Vec<_>>(),
+                    crate::FlightUnion2::B(values) => values
+                        .iter()
+                        .map(|__flight_value| (*__flight_value) as f64)
+                        .collect::<Vec<_>>(),
+                };
                 let __flight_result = add_animation_sample(
-                    &((*out).clone()),
+                    out,
                     &__flight_argument_1,
-                    &mut stack.sample_scratch,
+                    &(((stack.sample_scratch).clone())
+                        .iter()
+                        .map(|__flight_value| (*__flight_value) as f64)
+                        .collect::<Vec<_>>()),
                     layer.weight,
-                    Some(entry.channel.track.quaternion),
+                    Some(entry.as_ref().unwrap().channel.track.quaternion),
                 );
                 __flight_result
             };
         } else {
             if has_pose {
                 {
-                    let __flight_argument_1 = (out).clone();
+                    let __flight_argument_1 = match &((*out).clone()) {
+                        crate::FlightUnion2::A(values) => values
+                            .iter()
+                            .map(|__flight_value| *__flight_value)
+                            .collect::<Vec<_>>(),
+                        crate::FlightUnion2::B(values) => values
+                            .iter()
+                            .map(|__flight_value| (*__flight_value) as f64)
+                            .collect::<Vec<_>>(),
+                    };
                     let __flight_result = blend_animation_samples(
-                        &((*out).clone()),
+                        out,
                         &__flight_argument_1,
-                        &mut stack.sample_scratch,
+                        &(((stack.sample_scratch).clone())
+                            .iter()
+                            .map(|__flight_value| (*__flight_value) as f64)
+                            .collect::<Vec<_>>()),
                         layer.weight,
-                        Some(entry.channel.track.quaternion),
+                        Some(entry.as_ref().unwrap().channel.track.quaternion),
                     );
                     __flight_result
                 };
             } else {
                 copy_animation_layer_sample(
-                    &((*out).clone()),
-                    &stack.sample_scratch,
-                    entry.channel.track.components,
+                    out,
+                    &(((stack.sample_scratch).clone())
+                        .iter()
+                        .map(|__flight_value| (*__flight_value) as f64)
+                        .collect::<Vec<_>>()),
+                    entry.as_ref().unwrap().channel.track.components,
                 );
                 has_pose = true;
             }
@@ -273,11 +315,11 @@ pub fn set_animation_layer_weight(
     layer_index: f64,
     weight: f64,
 ) -> bool {
-    let mut layer = stack.layers[layer_index as usize].clone();
+    let mut layer: Option<AnimationLayer> = stack.layers.get(layer_index as usize).cloned();
     if (layer).is_none() {
         return false;
     }
-    layer.weight = weight;
+    layer.as_mut().unwrap().weight = weight;
     return true;
 }
 
@@ -299,11 +341,27 @@ fn copy_animation_layer_sample(
     sample: &Vec<f64>,
     components: f64,
 ) -> () {
-    let width = ((out.length).min((sample.len() as f64))).min(components);
+    let width = ((match &*(out) {
+        crate::FlightUnion2::A(values) => (values.len() as f64),
+        crate::FlightUnion2::B(values) => (values.len() as f64),
+    })
+    .min((sample.len() as f64)))
+    .min(components);
     {
         let mut component = 0.0_f64;
         while (component < width) {
-            out[component as usize] = sample[component as usize].clone();
+            {
+                let __flight_index = (component) as usize;
+                let __flight_value = sample[component as usize].clone();
+                match out {
+                    crate::FlightUnion2::A(values) => {
+                        values[__flight_index] = __flight_value;
+                    }
+                    crate::FlightUnion2::B(values) => {
+                        values[__flight_index] = (__flight_value) as f32;
+                    }
+                };
+            };
             {
                 component += 1.0;
                 component
@@ -321,6 +379,7 @@ fn create_animation_layer(
 ) -> AnimationLayer {
     return create_entity(Some(AnimationLayer {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         additive: (options.as_ref().and_then(|value| value.additive))
             .clone()
@@ -395,13 +454,13 @@ fn sample_animation_layer(
 ) -> bool {
     if ((layer.blend_tree).clone()).is_some() {
         return sample_animation_blend_tree_channel(
-            &((*out).clone()),
+            out,
             layer.blend_tree.as_mut().unwrap(),
             channel_index,
         );
     }
     return sample_animation_state_machine_channel(
-        &((*out).clone()),
+        out,
         layer.state_machine.as_mut().unwrap(),
         channel_index,
     );
@@ -413,11 +472,26 @@ fn write_animation_layer_identity(
     components: f64,
     quaternion: bool,
 ) -> () {
-    let width = (out.length).min(components);
+    let width = (match &*(out) {
+        crate::FlightUnion2::A(values) => (values.len() as f64),
+        crate::FlightUnion2::B(values) => (values.len() as f64),
+    })
+    .min(components);
     {
         let mut component = 0.0_f64;
         while (component < width) {
-            out[component as usize] = 0.0_f64;
+            {
+                let __flight_index = (component) as usize;
+                let __flight_value = 0.0_f64;
+                match out {
+                    crate::FlightUnion2::A(values) => {
+                        values[__flight_index] = __flight_value;
+                    }
+                    crate::FlightUnion2::B(values) => {
+                        values[__flight_index] = (__flight_value) as f32;
+                    }
+                };
+            };
             {
                 component += 1.0;
                 component
@@ -425,6 +499,17 @@ fn write_animation_layer_identity(
         }
     }
     if (quaternion) && (width >= 4.0_f64) {
-        out[3.0_f64 as usize] = 1.0_f64;
+        {
+            let __flight_index = (3.0_f64) as usize;
+            let __flight_value = 1.0_f64;
+            match out {
+                crate::FlightUnion2::A(values) => {
+                    values[__flight_index] = __flight_value;
+                }
+                crate::FlightUnion2::B(values) => {
+                    values[__flight_index] = (__flight_value) as f32;
+                }
+            };
+        };
     }
 }

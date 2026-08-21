@@ -53,6 +53,7 @@ pub fn create_bounding_sphere(
     );
     return create_entity(Some(BoundingSphere {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         center: (center).clone(),
         radius: (radius).clone().unwrap_or((-1.0_f64)),

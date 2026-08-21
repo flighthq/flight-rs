@@ -29,6 +29,7 @@ pub fn get_camera3_d_ray_through_bounding_sphere(
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 x: __flight_source.x,
                 y: __flight_source.y,
                 z: __flight_source.z,
@@ -82,6 +83,7 @@ static __SCRATCH_NDC: std::sync::LazyLock<std::sync::Mutex<Vector3Like>> =
     std::sync::LazyLock::new(|| {
         std::sync::Mutex::new(Vector3Like {
             __flight_identity: std::sync::Arc::new(()),
+            __flight_entity_snapshot: Default::default(),
             __flight_entity_runtime: Default::default(),
             x: 0.0_f64,
             y: 0.0_f64,

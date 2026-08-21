@@ -112,7 +112,7 @@ pub fn dispose_clock(clock: &mut Clock) -> () {
 }
 
 // Source: upstream/packages/clock/src/clock.ts:69 (sha256:117a788cea03f0d05b139bdaf6200843d508a8b743234552ac899617eebb73ed)
-pub fn get_clock_effective_scale(clock: &mut Clock) -> f64 {
+pub fn get_clock_effective_scale(clock: &Clock) -> f64 {
     let mut scale = clock.scale;
     let mut current: Option<Clock> = (clock.parent).as_deref().cloned();
     while (current).is_some() {
@@ -128,7 +128,7 @@ pub fn get_clock_parent(clock: &Clock) -> Option<Clock> {
 }
 
 // Source: upstream/packages/clock/src/clock.ts:87 (sha256:94d1d81f53c1df88a647fb9f771812bec263d9a53a8c84b6554ca25f3bf79f40)
-pub fn is_clock_effectively_paused(clock: &mut Clock) -> bool {
+pub fn is_clock_effectively_paused(clock: &Clock) -> bool {
     let mut current: Option<Clock> = Some((*clock).clone());
     while (current).is_some() {
         if current.as_mut().unwrap().paused {

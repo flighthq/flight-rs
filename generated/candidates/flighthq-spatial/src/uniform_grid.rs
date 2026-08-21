@@ -356,9 +356,9 @@ fn _insert_into_grid(
         );
         return true;
     }
-    let mut cx0 = _cell_index(copy.min_x, cs);
+    let cx0 = _cell_index(copy.min_x, cs);
     let cx1 = _cell_index(copy.max_x, cs);
-    let mut cy0 = _cell_index(copy.min_y, cs);
+    let cy0 = _cell_index(copy.min_y, cs);
     let cy1 = _cell_index(copy.max_y, cs);
     let had_cells = ((grid.cells.len() as f64) != 0.0_f64);
     {
@@ -629,9 +629,9 @@ fn _remove_from_grid(grid: &mut UniformGrid, id: SpatialObjectId) -> () {
         return;
     }
     let cs = grid.cell_size;
-    let mut cx0 = _cell_index(bounds.as_ref().unwrap().min_x, cs);
+    let cx0 = _cell_index(bounds.as_ref().unwrap().min_x, cs);
     let cx1 = _cell_index(bounds.as_ref().unwrap().max_x, cs);
-    let mut cy0 = _cell_index(bounds.as_ref().unwrap().min_y, cs);
+    let cy0 = _cell_index(bounds.as_ref().unwrap().min_y, cs);
     let cy1 = _cell_index(bounds.as_ref().unwrap().max_y, cs);
     {
         let mut cy = cy0;
@@ -1089,9 +1089,9 @@ fn _query_grid_region(
         }
         return;
     }
-    let mut cx0 = _cell_index(region.min_x, cs);
+    let cx0 = _cell_index(region.min_x, cs);
     let cx1 = _cell_index(region.max_x, cs);
-    let mut cy0 = _cell_index(region.min_y, cs);
+    let cy0 = _cell_index(region.min_y, cs);
     let cy1 = _cell_index(region.max_y, cs);
     {
         let mut cy = cy0;

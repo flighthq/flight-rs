@@ -46,6 +46,7 @@ impl PartialEq for SharedStructuralRecord1 {
 pub fn clone_animation_track(track: &AnimationTrack) -> AnimationTrack {
     return create_entity(Some(AnimationTrack {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         components: track.components,
         easing: (track.easing).clone(),
@@ -54,15 +55,28 @@ pub fn clone_animation_track(track: &AnimationTrack) -> AnimationTrack {
         segment_easings: if ((track.segment_easings).clone()).is_none() {
             None
         } else {
-            Some(
-                (track.segment_easings.as_ref().unwrap())
-                    .as_ref()
-                    .unwrap()
-                    .clone(),
-            )
+            Some((track.segment_easings.as_ref().unwrap()).clone())
         },
-        times: clone_number_buffer(&track.times),
-        values: clone_number_buffer(&track.values),
+        times: match &(clone_number_buffer(&track.times)) {
+            crate::FlightUnion2::A(values) => values
+                .iter()
+                .map(|__flight_value| *__flight_value)
+                .collect::<Vec<_>>(),
+            crate::FlightUnion2::B(values) => values
+                .iter()
+                .map(|__flight_value| (*__flight_value) as f64)
+                .collect::<Vec<_>>(),
+        },
+        values: match &(clone_number_buffer(&track.values)) {
+            crate::FlightUnion2::A(values) => values
+                .iter()
+                .map(|__flight_value| *__flight_value)
+                .collect::<Vec<_>>(),
+            crate::FlightUnion2::B(values) => values
+                .iter()
+                .map(|__flight_value| (*__flight_value) as f64)
+                .collect::<Vec<_>>(),
+        },
     }));
 }
 
@@ -70,6 +84,7 @@ pub fn clone_animation_track(track: &AnimationTrack) -> AnimationTrack {
 pub fn create_animation_track(opts: &SharedStructuralRecord1) -> AnimationTrack {
     return create_entity(Some(AnimationTrack {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         components: (opts.components).clone().unwrap_or(1.0_f64),
         easing: (opts.easing).clone(),
@@ -86,7 +101,7 @@ pub fn create_animation_track(opts: &SharedStructuralRecord1) -> AnimationTrack 
 // Source: upstream/packages/animation/src/animationTrack.ts:52 (sha256:6505b73c5885152dfad1ec6e26da4e1c84d3f388880610a9506828b2315ed977)
 pub fn sample_animation_track(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
-    track: &mut AnimationTrack,
+    track: &AnimationTrack,
     t: f64,
 ) -> () {
     let components = track.components;
@@ -95,7 +110,18 @@ pub fn sample_animation_track(
         {
             let mut c = 0.0_f64;
             while (c < components) {
-                out[c as usize] = 0.0_f64;
+                {
+                    let __flight_index = (c) as usize;
+                    let __flight_value = 0.0_f64;
+                    match out {
+                        crate::FlightUnion2::A(values) => {
+                            values[__flight_index] = __flight_value;
+                        }
+                        crate::FlightUnion2::B(values) => {
+                            values[__flight_index] = (__flight_value) as f32;
+                        }
+                    };
+                };
                 {
                     c += 1.0;
                     c
@@ -105,11 +131,11 @@ pub fn sample_animation_track(
         return;
     }
     if (count == 1.0_f64) || (t <= track.times[0.0_f64 as usize].clone()) {
-        copy_keyframe_value(&((*out).clone()), track, 0.0_f64);
+        copy_keyframe_value(out, track, 0.0_f64);
         return;
     }
     if (t >= track.times[(count - 1.0_f64) as usize].clone()) {
-        copy_keyframe_value(&((*out).clone()), track, (count - 1.0_f64));
+        copy_keyframe_value(out, track, (count - 1.0_f64));
         return;
     }
     let mut lo = 0.0_f64;
@@ -134,7 +160,8 @@ pub fn sample_animation_track(
     let easing = (track
         .segment_easings
         .as_ref()
-        .and_then(|values| values.get(i as usize).cloned()))
+        .and_then(|values| values.get(i as usize).cloned())
+        .flatten())
     .clone()
     .or((track.easing).clone());
     if (easing).is_some() {
@@ -145,24 +172,35 @@ pub fn sample_animation_track(
         };
     }
     if ((track.interpolation).clone() == "Step") {
-        copy_keyframe_value(&((*out).clone()), track, i);
+        copy_keyframe_value(out, track, i);
         return;
     }
     if ((track.interpolation).clone() == "Cubic") {
-        sample_cubic_segment(&((*out).clone()), track, i, alpha, dt);
+        sample_cubic_segment(out, track, i, alpha, dt);
         return;
     }
     let oi = keyframe_value_offset(track, i);
     let oj = keyframe_value_offset(track, (i + 1.0_f64));
     if (track.quaternion) && (components == 4.0_f64) {
-        slerp_flat_quaternion(&((*out).clone()), &mut track.values, oi, oj, alpha);
+        slerp_flat_quaternion(out, &track.values, oi, oj, alpha);
         return;
     }
     {
         let mut c = 0.0_f64;
         while (c < components) {
             let a = track.values[(oi + c) as usize].clone();
-            out[c as usize] = (a + ((track.values[(oj + c) as usize].clone() - a) * alpha));
+            {
+                let __flight_index = (c) as usize;
+                let __flight_value = (a + ((track.values[(oj + c) as usize].clone() - a) * alpha));
+                match out {
+                    crate::FlightUnion2::A(values) => {
+                        values[__flight_index] = __flight_value;
+                    }
+                    crate::FlightUnion2::B(values) => {
+                        values[__flight_index] = (__flight_value) as f32;
+                    }
+                };
+            };
             {
                 c += 1.0;
                 c
@@ -215,28 +253,29 @@ pub fn trim_animation_track(
     }
     return create_entity(Some(AnimationTrack {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         components: components,
         easing: (track.easing).clone(),
         interpolation: (track.interpolation).clone(),
         quaternion: track.quaternion,
-        segment_easings: Some(
-            if (((track.segment_easings).clone()).is_none())
-                || ((source_keyframes.len() as f64) < 2.0_f64)
-            {
-                if ((track.segment_easings).clone()).is_none() {
-                    None
-                } else {
-                    vec![]
-                }
+        segment_easings: if (((track.segment_easings).clone()).is_none())
+            || ((source_keyframes.len() as f64) < 2.0_f64)
+        {
+            if ((track.segment_easings).clone()).is_none() {
+                None
             } else {
+                Some(vec![])
+            }
+        } else {
+            Some(
                 (track.segment_easings.as_ref().unwrap())[(source_keyframes[0.0_f64 as usize]
                     .clone()) as usize
                     ..(source_keyframes[((source_keyframes.len() as f64) - 1.0_f64) as usize]
                         .clone()) as usize]
-                    .to_vec()
-            },
-        ),
+                    .to_vec(),
+            )
+        },
         times: (out_times).clone(),
         values: (out_values).clone(),
     }));
@@ -337,7 +376,18 @@ fn copy_keyframe_value(
     {
         let mut c = 0.0_f64;
         while (c < track.components) {
-            out[c as usize] = track.values[(off + c) as usize].clone();
+            {
+                let __flight_index = (c) as usize;
+                let __flight_value = track.values[(off + c) as usize].clone();
+                match out {
+                    crate::FlightUnion2::A(values) => {
+                        values[__flight_index] = __flight_value;
+                    }
+                    crate::FlightUnion2::B(values) => {
+                        values[__flight_index] = (__flight_value) as f32;
+                    }
+                };
+            };
             {
                 c += 1.0;
                 c
@@ -367,17 +417,85 @@ fn keyframe_value_offset(track: &AnimationTrack, k: f64) -> f64 {
 
 // Source: upstream/packages/animation/src/animationTrack.ts:208 (sha256:658a02c6e1ef46c1ec5fc85444fab4e2447d569b07edfc32f2ddb90c5f8dcdda)
 fn normalize_flat_quaternion(out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>) -> () {
-    let x = out[0.0_f64 as usize].clone();
-    let y = out[1.0_f64 as usize].clone();
-    let z = out[2.0_f64 as usize].clone();
-    let w = out[3.0_f64 as usize].clone();
+    let x = {
+        let __flight_index = (0.0_f64) as usize;
+        match &*(out) {
+            crate::FlightUnion2::A(values) => values[__flight_index],
+            crate::FlightUnion2::B(values) => (values[__flight_index]) as f64,
+        }
+    };
+    let y = {
+        let __flight_index = (1.0_f64) as usize;
+        match &*(out) {
+            crate::FlightUnion2::A(values) => values[__flight_index],
+            crate::FlightUnion2::B(values) => (values[__flight_index]) as f64,
+        }
+    };
+    let z = {
+        let __flight_index = (2.0_f64) as usize;
+        match &*(out) {
+            crate::FlightUnion2::A(values) => values[__flight_index],
+            crate::FlightUnion2::B(values) => (values[__flight_index]) as f64,
+        }
+    };
+    let w = {
+        let __flight_index = (3.0_f64) as usize;
+        match &*(out) {
+            crate::FlightUnion2::A(values) => values[__flight_index],
+            crate::FlightUnion2::B(values) => (values[__flight_index]) as f64,
+        }
+    };
     let len = ((x).powi(2) + (y).powi(2) + (z).powi(2) + (w).powi(2)).sqrt();
     if (len > 0.0_f64) {
         let inv = (1.0_f64 / len);
-        out[0.0_f64 as usize] = (x * inv);
-        out[1.0_f64 as usize] = (y * inv);
-        out[2.0_f64 as usize] = (z * inv);
-        out[3.0_f64 as usize] = (w * inv);
+        {
+            let __flight_index = (0.0_f64) as usize;
+            let __flight_value = (x * inv);
+            match out {
+                crate::FlightUnion2::A(values) => {
+                    values[__flight_index] = __flight_value;
+                }
+                crate::FlightUnion2::B(values) => {
+                    values[__flight_index] = (__flight_value) as f32;
+                }
+            };
+        };
+        {
+            let __flight_index = (1.0_f64) as usize;
+            let __flight_value = (y * inv);
+            match out {
+                crate::FlightUnion2::A(values) => {
+                    values[__flight_index] = __flight_value;
+                }
+                crate::FlightUnion2::B(values) => {
+                    values[__flight_index] = (__flight_value) as f32;
+                }
+            };
+        };
+        {
+            let __flight_index = (2.0_f64) as usize;
+            let __flight_value = (z * inv);
+            match out {
+                crate::FlightUnion2::A(values) => {
+                    values[__flight_index] = __flight_value;
+                }
+                crate::FlightUnion2::B(values) => {
+                    values[__flight_index] = (__flight_value) as f32;
+                }
+            };
+        };
+        {
+            let __flight_index = (3.0_f64) as usize;
+            let __flight_value = (w * inv);
+            match out {
+                crate::FlightUnion2::A(values) => {
+                    values[__flight_index] = __flight_value;
+                }
+                crate::FlightUnion2::B(values) => {
+                    values[__flight_index] = (__flight_value) as f32;
+                }
+            };
+        };
     }
 }
 
@@ -406,7 +524,19 @@ fn sample_cubic_segment(
             let m0 = track.values[((base0 + (components * 2.0_f64)) + c) as usize].clone();
             let p1 = track.values[((base1 + components) + c) as usize].clone();
             let m1 = track.values[(base1 + c) as usize].clone();
-            out[c as usize] = ((((h00 * p0) + ((h10 * dt) * m0)) + (h01 * p1)) + ((h11 * dt) * m1));
+            {
+                let __flight_index = (c) as usize;
+                let __flight_value =
+                    ((((h00 * p0) + ((h10 * dt) * m0)) + (h01 * p1)) + ((h11 * dt) * m1));
+                match out {
+                    crate::FlightUnion2::A(values) => {
+                        values[__flight_index] = __flight_value;
+                    }
+                    crate::FlightUnion2::B(values) => {
+                        values[__flight_index] = (__flight_value) as f32;
+                    }
+                };
+            };
             {
                 c += 1.0;
                 c
@@ -414,14 +544,14 @@ fn sample_cubic_segment(
         }
     }
     if (track.quaternion) && (components == 4.0_f64) {
-        normalize_flat_quaternion(&((*out).clone()));
+        normalize_flat_quaternion(out);
     }
 }
 
 // Source: upstream/packages/animation/src/animationTrack.ts:255 (sha256:3bf822cfd02a04a268843d4af724cf990bc59ab4d4db60c485ef3baa0364de2e)
 fn slerp_flat_quaternion(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
-    values: &mut Vec<f64>,
+    values: &Vec<f64>,
     oa: f64,
     ob: f64,
     alpha: f64,
@@ -453,8 +583,52 @@ fn slerp_flat_quaternion(
         scale0 = (1.0_f64 - alpha);
         scale1 = alpha;
     }
-    out[0.0_f64 as usize] = ((scale0 * ax) + (scale1 * bx));
-    out[1.0_f64 as usize] = ((scale0 * ay) + (scale1 * by));
-    out[2.0_f64 as usize] = ((scale0 * az) + (scale1 * bz));
-    out[3.0_f64 as usize] = ((scale0 * aw) + (scale1 * bw));
+    {
+        let __flight_index = (0.0_f64) as usize;
+        let __flight_value = ((scale0 * ax) + (scale1 * bx));
+        match out {
+            crate::FlightUnion2::A(values) => {
+                values[__flight_index] = __flight_value;
+            }
+            crate::FlightUnion2::B(values) => {
+                values[__flight_index] = (__flight_value) as f32;
+            }
+        };
+    };
+    {
+        let __flight_index = (1.0_f64) as usize;
+        let __flight_value = ((scale0 * ay) + (scale1 * by));
+        match out {
+            crate::FlightUnion2::A(values) => {
+                values[__flight_index] = __flight_value;
+            }
+            crate::FlightUnion2::B(values) => {
+                values[__flight_index] = (__flight_value) as f32;
+            }
+        };
+    };
+    {
+        let __flight_index = (2.0_f64) as usize;
+        let __flight_value = ((scale0 * az) + (scale1 * bz));
+        match out {
+            crate::FlightUnion2::A(values) => {
+                values[__flight_index] = __flight_value;
+            }
+            crate::FlightUnion2::B(values) => {
+                values[__flight_index] = (__flight_value) as f32;
+            }
+        };
+    };
+    {
+        let __flight_index = (3.0_f64) as usize;
+        let __flight_value = ((scale0 * aw) + (scale1 * bw));
+        match out {
+            crate::FlightUnion2::A(values) => {
+                values[__flight_index] = __flight_value;
+            }
+            crate::FlightUnion2::B(values) => {
+                values[__flight_index] = (__flight_value) as f32;
+            }
+        };
+    };
 }

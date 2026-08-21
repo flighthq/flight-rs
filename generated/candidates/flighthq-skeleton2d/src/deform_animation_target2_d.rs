@@ -18,14 +18,14 @@ pub fn register_skeleton2_d_deform_animation_target() -> () {
     register_skeleton2_d_animation_target_binder(
         (skeleton2_d_animation_target_kind_constant.deform).clone(),
         std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-            move |mut __flight_argument_0: AnimationChannel,
+            move |__flight_argument_0: AnimationChannel,
                   __flight_argument_1: Skeleton2D,
                   mut __flight_argument_2: Skeleton2D,
                   __flight_argument_3: crate::FlightValue,
                   __flight_argument_4: f64|
                   -> () {
                 bind_skeleton2_d_deform_channel(
-                    &mut __flight_argument_0,
+                    &__flight_argument_0,
                     &__flight_argument_1,
                     &mut __flight_argument_2,
                     (__flight_argument_3).clone(),
@@ -43,7 +43,7 @@ pub fn register_skeleton2_d_deform_animation_target() -> () {
 
 // Source: upstream/packages/skeleton2d/src/deformAnimationTarget2D.ts:25 (sha256:f8e9ca5c4ffc0c695d992ab16daec2ba3dcf36acb40d08b79dd2fbab2faa10cd)
 fn bind_skeleton2_d_deform_channel(
-    channel: &mut AnimationChannel,
+    channel: &AnimationChannel,
     _setup: &Skeleton2D,
     pose: &mut Skeleton2D,
     target: crate::FlightValue,
@@ -67,17 +67,22 @@ fn bind_skeleton2_d_deform_channel(
     if (((*_SCRATCH.lock().unwrap()).len() as f64) < components) {
         (*_SCRATCH.lock().unwrap()) = vec![0.0_f32; (components) as usize];
     }
-    sample_animation_track(
-        &(crate::FlightUnion2::<Vec<f64>, Vec<f32>>::B((*_SCRATCH.lock().unwrap()).clone())),
-        &mut channel.track,
-        time,
-    );
+    {
+        let mut __flight_argument_0 = crate::FlightUnion2::<Vec<f64>, Vec<f32>>::B(std::mem::take(
+            &mut (*_SCRATCH.lock().unwrap()),
+        ));
+        let __flight_result =
+            sample_animation_track(&mut __flight_argument_0, &channel.track, time);
+        (*_SCRATCH.lock().unwrap()) = match __flight_argument_0 {
+            crate::FlightUnion2::A(_) => panic!("TypeScript union narrowing failed"),
+            crate::FlightUnion2::B(value) => value,
+        };
+        __flight_result
+    };
     set_skeleton2_d_slot_deform(
         &mut slots.as_mut().unwrap()[slot_index as usize],
         &((deform_target.attachment).clone()),
-        &(Some(
-            (*_SCRATCH.lock().unwrap()).clone()[(0.0_f64) as usize..(components) as usize].to_vec(),
-        )),
+        &((*_SCRATCH.lock().unwrap()).clone()[(0.0_f64) as usize..(components) as usize].to_vec()),
     );
 }
 

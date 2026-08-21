@@ -26,7 +26,7 @@ pub fn append_rotation_matrix4(
     pivot_point: Option<Vector4Like>,
 ) -> () {
     let mut m = acquire_identity_matrix4();
-    (|| -> () {
+    {
         let mut ax = axis.x;
         let mut ay = axis.y;
         let mut az = axis.z;
@@ -49,12 +49,12 @@ pub fn append_rotation_matrix4(
         tmp2 = (ax * s);
         m.m[9.0_f64 as usize] = (tmp1 + tmp2) as f32;
         m.m[6.0_f64 as usize] = (tmp1 - tmp2) as f32;
-    })();
+    };
     if (pivot_point).is_some() {
         let mut t1 = acquire_identity_matrix4();
         let mut t2 = acquire_identity_matrix4();
-        (|| -> () {
-            if (t1 != t1) {
+        {
+            if ((t1).clone() != (t1).clone()) {
                 {
                     let __flight_offset = (0.0_f64) as usize;
                     let __flight_values: Vec<f32> = ((t1.m).clone())
@@ -65,12 +65,15 @@ pub fn append_rotation_matrix4(
                         .copy_from_slice(&__flight_values);
                 };
             }
-            t1.m[12.0_f64 as usize] = ((t1.m[12.0_f64 as usize] as f64) + (-p.x)) as f32;
-            t1.m[13.0_f64 as usize] = ((t1.m[13.0_f64 as usize] as f64) + (-p.y)) as f32;
-            t1.m[14.0_f64 as usize] = ((t1.m[14.0_f64 as usize] as f64) + (-p.z)) as f32;
-        })();
-        (|| -> () {
-            if (t2 != t2) {
+            t1.m[12.0_f64 as usize] =
+                ((t1.m[12.0_f64 as usize] as f64) + (-pivot_point.as_ref().unwrap().x)) as f32;
+            t1.m[13.0_f64 as usize] =
+                ((t1.m[13.0_f64 as usize] as f64) + (-pivot_point.as_ref().unwrap().y)) as f32;
+            t1.m[14.0_f64 as usize] =
+                ((t1.m[14.0_f64 as usize] as f64) + (-pivot_point.as_ref().unwrap().z)) as f32;
+        };
+        {
+            if ((t2).clone() != (t2).clone()) {
                 {
                     let __flight_offset = (0.0_f64) as usize;
                     let __flight_values: Vec<f32> = ((t2.m).clone())
@@ -81,11 +84,14 @@ pub fn append_rotation_matrix4(
                         .copy_from_slice(&__flight_values);
                 };
             }
-            t2.m[12.0_f64 as usize] = ((t2.m[12.0_f64 as usize] as f64) + p.x) as f32;
-            t2.m[13.0_f64 as usize] = ((t2.m[13.0_f64 as usize] as f64) + p.y) as f32;
-            t2.m[14.0_f64 as usize] = ((t2.m[14.0_f64 as usize] as f64) + p.z) as f32;
-        })();
-        (|| -> () {
+            t2.m[12.0_f64 as usize] =
+                ((t2.m[12.0_f64 as usize] as f64) + pivot_point.as_ref().unwrap().x) as f32;
+            t2.m[13.0_f64 as usize] =
+                ((t2.m[13.0_f64 as usize] as f64) + pivot_point.as_ref().unwrap().y) as f32;
+            t2.m[14.0_f64 as usize] =
+                ((t2.m[14.0_f64 as usize] as f64) + pivot_point.as_ref().unwrap().z) as f32;
+        };
+        {
             let m111 = (m.m[0.0_f64 as usize] as f64);
             let m121 = (m.m[4.0_f64 as usize] as f64);
             let m131 = (m.m[8.0_f64 as usize] as f64);
@@ -150,8 +156,8 @@ pub fn append_rotation_matrix4(
                 ((((m241 * m113) + (m242 * m123)) + (m243 * m133)) + (m244 * m143)) as f32;
             m.m[15.0_f64 as usize] =
                 ((((m241 * m114) + (m242 * m124)) + (m243 * m134)) + (m244 * m144)) as f32;
-        })();
-        (|| -> () {
+        };
+        {
             let m111 = (t2.m[0.0_f64 as usize] as f64);
             let m121 = (t2.m[4.0_f64 as usize] as f64);
             let m131 = (t2.m[8.0_f64 as usize] as f64);
@@ -216,7 +222,7 @@ pub fn append_rotation_matrix4(
                 ((((m241 * m113) + (m242 * m123)) + (m243 * m133)) + (m244 * m143)) as f32;
             m.m[15.0_f64 as usize] =
                 ((((m241 * m114) + (m242 * m124)) + (m243 * m134)) + (m244 * m144)) as f32;
-        })();
+        };
         release_matrix4(&mut t1);
         release_matrix4(&mut t2);
     }
@@ -227,6 +233,7 @@ pub fn append_rotation_matrix4(
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             m: (__flight_source.m).clone(),
         }
     });
@@ -242,7 +249,7 @@ pub fn append_scale_matrix4(
     z_scale: f64,
 ) -> () {
     let mut m = acquire_matrix4();
-    (|| -> () {
+    {
         m.m[0.0_f64 as usize] = (x_scale) as f32;
         m.m[1.0_f64 as usize] = (0.0_f64) as f32;
         m.m[2.0_f64 as usize] = (0.0_f64) as f32;
@@ -259,7 +266,7 @@ pub fn append_scale_matrix4(
         m.m[13.0_f64 as usize] = (0.0_f64) as f32;
         m.m[14.0_f64 as usize] = (0.0_f64) as f32;
         m.m[15.0_f64 as usize] = (1.0_f64) as f32;
-    })();
+    };
     append_matrix4(out, source, &{
         let __flight_source = &(m);
         Matrix4Like {
@@ -267,6 +274,7 @@ pub fn append_scale_matrix4(
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             m: (__flight_source.m).clone(),
         }
     });
@@ -303,7 +311,7 @@ pub fn clone_matrix4(source: &Matrix4Like) -> Matrix4 {
         None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
         None,
     );
-    (|| -> () {
+    {
         {
             let __flight_offset = (0.0_f64) as usize;
             let __flight_values: Vec<f32> = ((source.m).clone())
@@ -313,7 +321,7 @@ pub fn clone_matrix4(source: &Matrix4Like) -> Matrix4 {
             m.m[__flight_offset..__flight_offset + __flight_values.len()]
                 .copy_from_slice(&__flight_values);
         };
-    })();
+    };
     return m;
 }
 
@@ -615,6 +623,7 @@ pub fn create_matrix4(
         .collect();
     let mut out: Matrix4 = create_entity(Some(Matrix4 {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         m: (m).clone(),
     }));
@@ -682,9 +691,11 @@ pub fn create_matrix4_from2_d(
         None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
         None,
     );
-    (|| -> () {
-        tx = Some((tx).clone().unwrap_or(0.0_f64));
-        ty = Some((ty).clone().unwrap_or(0.0_f64));
+    {
+        let mut __flight_inline_tx_5: Option<f64> = tx;
+        let mut __flight_inline_ty_6: Option<f64> = ty;
+        __flight_inline_tx_5 = Some((__flight_inline_tx_5).clone().unwrap_or(0.0_f64));
+        __flight_inline_ty_6 = Some((__flight_inline_ty_6).clone().unwrap_or(0.0_f64));
         out.m[0.0_f64 as usize] = (a) as f32;
         out.m[1.0_f64 as usize] = (b) as f32;
         out.m[2.0_f64 as usize] = (0.0_f64) as f32;
@@ -697,11 +708,11 @@ pub fn create_matrix4_from2_d(
         out.m[9.0_f64 as usize] = (0.0_f64) as f32;
         out.m[10.0_f64 as usize] = (1.0_f64) as f32;
         out.m[11.0_f64 as usize] = (0.0_f64) as f32;
-        out.m[12.0_f64 as usize] = ((tx).clone().unwrap()) as f32;
-        out.m[13.0_f64 as usize] = ((ty).clone().unwrap()) as f32;
+        out.m[12.0_f64 as usize] = ((__flight_inline_tx_5).clone().unwrap()) as f32;
+        out.m[13.0_f64 as usize] = ((__flight_inline_ty_6).clone().unwrap()) as f32;
         out.m[14.0_f64 as usize] = (0.0_f64) as f32;
         out.m[15.0_f64 as usize] = (1.0_f64) as f32;
-    })();
+    };
     return out;
 }
 
@@ -718,7 +729,7 @@ pub fn create_orthographic_matrix4(
         None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
         None,
     );
-    (|| -> () {
+    {
         let sx = (1.0_f64 / (right - left));
         let sy = (1.0_f64 / (top - bottom));
         let sz = (1.0_f64 / (z_far - z_near));
@@ -738,7 +749,7 @@ pub fn create_orthographic_matrix4(
         out.m[13.0_f64 as usize] = ((-(bottom + top)) * sy) as f32;
         out.m[14.0_f64 as usize] = ((-(z_near + z_far)) * sz) as f32;
         out.m[15.0_f64 as usize] = (1.0_f64) as f32;
-    })();
+    };
     return out;
 }
 
@@ -748,7 +759,7 @@ pub fn create_perspective_matrix4(fov: f64, aspect: f64, z_near: f64, z_far: f64
         None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
         None,
     );
-    (|| -> () {
+    {
         if (aspect > (-1e-7_f64)) && (aspect < 1e-7_f64) {
             panic!("{}", "Aspect ratio may not be 0");
         }
@@ -780,7 +791,7 @@ pub fn create_perspective_matrix4(fov: f64, aspect: f64, z_near: f64, z_far: f64
             ((((-2.0_f64) * z_far) * z_near) / (z_far - z_near)) as f32
         };
         out.m[15.0_f64 as usize] = (0.0_f64) as f32;
-    })();
+    };
     return out;
 }
 
@@ -1226,7 +1237,7 @@ pub fn prepend_rotation_matrix4(
     pivot_point: Option<Vector4Like>,
 ) -> () {
     let mut m = acquire_identity_matrix4();
-    (|| -> () {
+    {
         let mut ax = axis.x;
         let mut ay = axis.y;
         let mut az = axis.z;
@@ -1249,12 +1260,12 @@ pub fn prepend_rotation_matrix4(
         tmp2 = (ax * s);
         m.m[9.0_f64 as usize] = (tmp1 + tmp2) as f32;
         m.m[6.0_f64 as usize] = (tmp1 - tmp2) as f32;
-    })();
+    };
     if (pivot_point).is_some() {
         let mut t1 = acquire_identity_matrix4();
         let mut t2 = acquire_identity_matrix4();
-        (|| -> () {
-            if (t1 != t1) {
+        {
+            if ((t1).clone() != (t1).clone()) {
                 {
                     let __flight_offset = (0.0_f64) as usize;
                     let __flight_values: Vec<f32> = ((t1.m).clone())
@@ -1265,12 +1276,15 @@ pub fn prepend_rotation_matrix4(
                         .copy_from_slice(&__flight_values);
                 };
             }
-            t1.m[12.0_f64 as usize] = ((t1.m[12.0_f64 as usize] as f64) + (-p.x)) as f32;
-            t1.m[13.0_f64 as usize] = ((t1.m[13.0_f64 as usize] as f64) + (-p.y)) as f32;
-            t1.m[14.0_f64 as usize] = ((t1.m[14.0_f64 as usize] as f64) + (-p.z)) as f32;
-        })();
-        (|| -> () {
-            if (t2 != t2) {
+            t1.m[12.0_f64 as usize] =
+                ((t1.m[12.0_f64 as usize] as f64) + (-pivot_point.as_ref().unwrap().x)) as f32;
+            t1.m[13.0_f64 as usize] =
+                ((t1.m[13.0_f64 as usize] as f64) + (-pivot_point.as_ref().unwrap().y)) as f32;
+            t1.m[14.0_f64 as usize] =
+                ((t1.m[14.0_f64 as usize] as f64) + (-pivot_point.as_ref().unwrap().z)) as f32;
+        };
+        {
+            if ((t2).clone() != (t2).clone()) {
                 {
                     let __flight_offset = (0.0_f64) as usize;
                     let __flight_values: Vec<f32> = ((t2.m).clone())
@@ -1281,11 +1295,14 @@ pub fn prepend_rotation_matrix4(
                         .copy_from_slice(&__flight_values);
                 };
             }
-            t2.m[12.0_f64 as usize] = ((t2.m[12.0_f64 as usize] as f64) + p.x) as f32;
-            t2.m[13.0_f64 as usize] = ((t2.m[13.0_f64 as usize] as f64) + p.y) as f32;
-            t2.m[14.0_f64 as usize] = ((t2.m[14.0_f64 as usize] as f64) + p.z) as f32;
-        })();
-        (|| -> () {
+            t2.m[12.0_f64 as usize] =
+                ((t2.m[12.0_f64 as usize] as f64) + pivot_point.as_ref().unwrap().x) as f32;
+            t2.m[13.0_f64 as usize] =
+                ((t2.m[13.0_f64 as usize] as f64) + pivot_point.as_ref().unwrap().y) as f32;
+            t2.m[14.0_f64 as usize] =
+                ((t2.m[14.0_f64 as usize] as f64) + pivot_point.as_ref().unwrap().z) as f32;
+        };
+        {
             let m111 = (m.m[0.0_f64 as usize] as f64);
             let m121 = (m.m[4.0_f64 as usize] as f64);
             let m131 = (m.m[8.0_f64 as usize] as f64);
@@ -1350,8 +1367,8 @@ pub fn prepend_rotation_matrix4(
                 ((((m241 * m113) + (m242 * m123)) + (m243 * m133)) + (m244 * m143)) as f32;
             m.m[15.0_f64 as usize] =
                 ((((m241 * m114) + (m242 * m124)) + (m243 * m134)) + (m244 * m144)) as f32;
-        })();
-        (|| -> () {
+        };
+        {
             let m111 = (t2.m[0.0_f64 as usize] as f64);
             let m121 = (t2.m[4.0_f64 as usize] as f64);
             let m131 = (t2.m[8.0_f64 as usize] as f64);
@@ -1416,7 +1433,7 @@ pub fn prepend_rotation_matrix4(
                 ((((m241 * m113) + (m242 * m123)) + (m243 * m133)) + (m244 * m143)) as f32;
             m.m[15.0_f64 as usize] =
                 ((((m241 * m114) + (m242 * m124)) + (m243 * m134)) + (m244 * m144)) as f32;
-        })();
+        };
         release_matrix4(&mut t1);
         release_matrix4(&mut t2);
     }
@@ -1427,6 +1444,7 @@ pub fn prepend_rotation_matrix4(
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             m: (__flight_source.m).clone(),
         }
     });
@@ -1442,7 +1460,7 @@ pub fn prepend_scale_matrix4(
     z_scale: f64,
 ) -> () {
     let mut m = acquire_matrix4();
-    (|| -> () {
+    {
         m.m[0.0_f64 as usize] = (x_scale) as f32;
         m.m[1.0_f64 as usize] = (0.0_f64) as f32;
         m.m[2.0_f64 as usize] = (0.0_f64) as f32;
@@ -1459,7 +1477,7 @@ pub fn prepend_scale_matrix4(
         m.m[13.0_f64 as usize] = (0.0_f64) as f32;
         m.m[14.0_f64 as usize] = (0.0_f64) as f32;
         m.m[15.0_f64 as usize] = (1.0_f64) as f32;
-    })();
+    };
     prepend_matrix4(out, source, &{
         let __flight_source = &(m);
         Matrix4Like {
@@ -1467,6 +1485,7 @@ pub fn prepend_scale_matrix4(
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             m: (__flight_source.m).clone(),
         }
     });
@@ -1482,8 +1501,8 @@ pub fn prepend_translation_matrix4(
     z: f64,
 ) -> () {
     let mut m = acquire_identity_matrix4();
-    (|| -> () {
-        if (m != m) {
+    {
+        if ((m).clone() != (m).clone()) {
             {
                 let __flight_offset = (0.0_f64) as usize;
                 let __flight_values: Vec<f32> = ((m.m).clone())
@@ -1506,7 +1525,7 @@ pub fn prepend_translation_matrix4(
             + ((m.m[6.0_f64 as usize] as f64) * y))
             + ((m.m[10.0_f64 as usize] as f64) * z))
             + (m.m[14.0_f64 as usize] as f64)) as f32;
-    })();
+    };
     prepend_matrix4(out, source, &{
         let __flight_source = &(m);
         Matrix4Like {
@@ -1514,6 +1533,7 @@ pub fn prepend_translation_matrix4(
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             m: (__flight_source.m).clone(),
         }
     });
@@ -1528,7 +1548,7 @@ pub fn rotate_matrix4(
     radians: f64,
 ) -> () {
     let mut m = acquire_identity_matrix4();
-    (|| -> () {
+    {
         let mut ax = axis.x;
         let mut ay = axis.y;
         let mut az = axis.z;
@@ -1551,7 +1571,7 @@ pub fn rotate_matrix4(
         tmp2 = (ax * s);
         m.m[9.0_f64 as usize] = (tmp1 + tmp2) as f32;
         m.m[6.0_f64 as usize] = (tmp1 - tmp2) as f32;
-    })();
+    };
     multiply_matrix4(out, source, &{
         let __flight_source = &(m);
         Matrix4Like {
@@ -1559,6 +1579,7 @@ pub fn rotate_matrix4(
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             m: (__flight_source.m).clone(),
         }
     });

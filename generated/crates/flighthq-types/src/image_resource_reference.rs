@@ -73,7 +73,7 @@ impl PartialEq for ImageResourceFailure {
 
 // Source: upstream/packages/types/src/ImageResourceReference.ts:49 (sha256:fedbae0458baefc2b2336a5b2f125e683123a1de1f4c8172537048df76524478)
 #[derive(Clone, Default)]
-pub(crate) struct ImageResourceReferenceBase {
+pub struct ImageResourceReferenceBase {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub failure: Option<ImageResourceFailure>,

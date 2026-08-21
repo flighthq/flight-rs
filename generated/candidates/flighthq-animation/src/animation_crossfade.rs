@@ -50,6 +50,7 @@ pub fn create_animation_crossfade(
     }
     return create_entity(Some(AnimationCrossfade {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         channels: (channels).clone(),
         curve: (curve).clone(),
@@ -86,56 +87,71 @@ pub fn sample_animation_crossfade(
             let entry = state.channels[index as usize].clone();
             if (entry.from_index).is_none() {
                 sample_animation_track(
-                    &((*out).clone()),
-                    &mut state.to.clip.channels[entry.to_index as usize].track,
+                    out,
+                    &state.to.clip.channels[(entry.to_index).unwrap() as usize].track,
                     state.to.time,
                 );
             } else {
                 if (entry.to_index).is_none() {
                     sample_animation_track(
-                        &((*out).clone()),
-                        &mut state.from.clip.channels[entry.from_index as usize].track,
+                        out,
+                        &state.from.clip.channels[(entry.from_index).unwrap() as usize].track,
                         state.from.time,
                     );
                 } else {
                     {
+                        let mut __flight_argument_0 = crate::FlightUnion2::<Vec<f64>, Vec<f32>>::B(
+                            std::mem::take(&mut (state.from_sample)),
+                        );
                         let __flight_argument_2 = state.from.time;
                         let __flight_result = sample_animation_track(
-                            &(crate::FlightUnion2::<Vec<f64>, Vec<f32>>::B(
-                                (state.from_sample).clone(),
-                            )),
-                            &mut state.from.clip.channels[entry.from_index as usize].track,
+                            &mut __flight_argument_0,
+                            &state.from.clip.channels[(entry.from_index).unwrap() as usize].track,
                             __flight_argument_2,
                         );
+                        state.from_sample = match __flight_argument_0 {
+                            crate::FlightUnion2::A(_) => {
+                                panic!("TypeScript union narrowing failed")
+                            }
+                            crate::FlightUnion2::B(value) => value,
+                        };
                         __flight_result
                     };
                     {
+                        let mut __flight_argument_0 = crate::FlightUnion2::<Vec<f64>, Vec<f32>>::B(
+                            std::mem::take(&mut (state.to_sample)),
+                        );
                         let __flight_argument_2 = state.to.time;
                         let __flight_result = sample_animation_track(
-                            &(crate::FlightUnion2::<Vec<f64>, Vec<f32>>::B(
-                                (state.to_sample).clone(),
-                            )),
-                            &mut state.to.clip.channels[entry.to_index as usize].track,
+                            &mut __flight_argument_0,
+                            &state.to.clip.channels[(entry.to_index).unwrap() as usize].track,
                             __flight_argument_2,
                         );
+                        state.to_sample = match __flight_argument_0 {
+                            crate::FlightUnion2::A(_) => {
+                                panic!("TypeScript union narrowing failed")
+                            }
+                            crate::FlightUnion2::B(value) => value,
+                        };
                         __flight_result
                     };
-                    {
-                        let __flight_argument_1 = (state.from_sample).clone();
-                        let __flight_argument_3 = state.weight;
-                        let __flight_result = blend_animation_samples(
-                            &((*out).clone()),
-                            &__flight_argument_1,
-                            &mut state.to_sample,
-                            __flight_argument_3,
-                            Some(
-                                state.from.clip.channels[entry.from_index as usize]
-                                    .track
-                                    .quaternion,
-                            ),
-                        );
-                        __flight_result
-                    };
+                    blend_animation_samples(
+                        out,
+                        &(((state.from_sample).clone())
+                            .iter()
+                            .map(|__flight_value| (*__flight_value) as f64)
+                            .collect::<Vec<_>>()),
+                        &(((state.to_sample).clone())
+                            .iter()
+                            .map(|__flight_value| (*__flight_value) as f64)
+                            .collect::<Vec<_>>()),
+                        state.weight,
+                        Some(
+                            state.from.clip.channels[(entry.from_index).unwrap() as usize]
+                                .track
+                                .quaternion,
+                        ),
+                    );
                 }
             }
             visit((*out).clone(), (entry.channel).clone(), index);
@@ -203,7 +219,7 @@ fn create_animation_crossfade_channels(
                 };
                 continue;
             }
-            let to_channel = to.clip.channels[to_index as usize].clone();
+            let to_channel = to.clip.channels[(to_index).clone().unwrap() as usize].clone();
             if (from_channel.track.components != to_channel.track.components) {
                 panic!("{}", "generated Flight function threw");
             }

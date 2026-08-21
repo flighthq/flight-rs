@@ -28,16 +28,7 @@ pub fn disable_geometry_pool_guards() -> () {
 
 // Source: upstream/packages/geometry/src/enableGeometryPoolGuards.ts:19 (sha256:0c1d94435c643df3baaadc95f7ea5f3cebf515536739800f64a36273a5341c20)
 pub fn enable_geometry_pool_guards() -> () {
-    set_geometry_pool_release_guard(
-        &(Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-            move |__flight_argument_0: GeometryPoolReleaseFunction| -> () {
-                warn_on_double_release((__flight_argument_0).clone())
-            },
-        )
-            as Box<
-                dyn FnMut(GeometryPoolReleaseFunction) -> () + Send + 'static,
-            >)))),
-    );
+    set_geometry_pool_release_guard(&(warn_on_double_release));
 }
 
 // Source: upstream/packages/geometry/src/enableGeometryPoolGuards.ts:23 (sha256:a345678a04d786aa06dd140c6dff010bd68446a4b7c71ba7960389a3e4ecd364)

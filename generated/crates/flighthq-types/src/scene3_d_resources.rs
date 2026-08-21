@@ -27,6 +27,8 @@ pub struct Scene3DMaterialTextureRegistry {
     pub __flight_identity: std::sync::Arc<()>,
     #[doc(hidden)]
     pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub extension_listers: Vec<(Kind, Scene3DPbrExtensionTextureLister)>,
     pub listers: Vec<(Kind, Scene3DMaterialTextureLister)>,
 }
@@ -40,6 +42,9 @@ impl crate::FlightEntity for Scene3DMaterialTextureRegistry {
         &self,
     ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
         &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
     }
     fn __flight_fresh_clone(&self) -> Self {
         let mut cloned = self.clone();
@@ -72,6 +77,8 @@ pub struct Scene3DResourceSignals {
     pub __flight_identity: std::sync::Arc<()>,
     #[doc(hidden)]
     pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub on_resource_failed: Signal<
         std::sync::Arc<
             std::sync::Mutex<Box<dyn FnMut(Scene3DResourceEvent) -> () + Send + 'static>>,
@@ -94,6 +101,9 @@ impl crate::FlightEntity for Scene3DResourceSignals {
     ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
         &self.__flight_entity_runtime
     }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
     fn __flight_fresh_clone(&self) -> Self {
         let mut cloned = self.clone();
         cloned.__flight_identity = std::sync::Arc::new(());
@@ -111,6 +121,8 @@ pub struct Scene3DResourceResolver {
     pub __flight_identity: std::sync::Arc<()>,
     #[doc(hidden)]
     pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub fetch: ImageResourceFetch,
     pub registry: Scene3DMaterialTextureRegistry,
 }
@@ -124,6 +136,9 @@ impl crate::FlightEntity for Scene3DResourceResolver {
         &self,
     ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
         &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
     }
     fn __flight_fresh_clone(&self) -> Self {
         let mut cloned = self.clone();
@@ -192,6 +207,8 @@ pub struct Scene3DResourceResolverWithRuntime {
     pub __flight_identity: std::sync::Arc<()>,
     #[doc(hidden)]
     pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub fetch: ImageResourceFetch,
     pub registry: Scene3DMaterialTextureRegistry,
 }
@@ -205,6 +222,9 @@ impl crate::FlightEntity for Scene3DResourceResolverWithRuntime {
         &self,
     ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
         &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
     }
     fn __flight_fresh_clone(&self) -> Self {
         let mut cloned = self.clone();

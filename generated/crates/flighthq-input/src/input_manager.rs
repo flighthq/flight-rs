@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_host_signals::{connect_signal, create_signal, disconnect_signal, emit_signal};
+use flighthq_host_signals::create_signal;
 use flighthq_types::{InputManager, InputSignals};
 
 // Source: upstream/packages/input/src/inputManager.ts:427 (sha256:0aa752968160d69181a564725ef4c7db5551e0f7e5230cbdc0104a5d2081bd0f)

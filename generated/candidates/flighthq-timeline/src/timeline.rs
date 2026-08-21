@@ -55,7 +55,7 @@ pub fn add_timeline_frame_script(
     frame: &crate::FlightUnion2<f64, String>,
     script: FrameScript,
 ) -> () {
-    let resolved = resolve_frame(timeline, &((*frame).clone()));
+    let resolved = resolve_frame(timeline, frame);
     {
         if timeline.frame_scripts.is_none() {
             timeline.frame_scripts = Some(Vec::new());
@@ -177,7 +177,7 @@ pub fn get_timeline_frame_script(
     if ((timeline.frame_scripts).clone()).is_none() {
         return None;
     }
-    let resolved = resolve_frame(timeline, &((*frame).clone()));
+    let resolved = resolve_frame(timeline, frame);
     return timeline
         .frame_scripts
         .as_ref()
@@ -224,7 +224,7 @@ pub fn goto_and_play_timeline(
 ) -> () {
     play_timeline(timeline);
     {
-        let __flight_argument_1 = resolve_frame(timeline, &((*frame).clone()));
+        let __flight_argument_1 = resolve_frame(timeline, frame);
         let __flight_result = seek_timeline(timeline, __flight_argument_1);
         __flight_result
     };
@@ -237,7 +237,7 @@ pub fn goto_and_stop_timeline(
 ) -> () {
     stop_timeline(timeline);
     {
-        let __flight_argument_1 = resolve_frame(timeline, &((*frame).clone()));
+        let __flight_argument_1 = resolve_frame(timeline, frame);
         let __flight_result = seek_timeline(timeline, __flight_argument_1);
         __flight_result
     };
@@ -280,7 +280,7 @@ pub fn remove_timeline_frame_script(
     if ((timeline.frame_scripts).clone()).is_none() {
         return;
     }
-    let resolved = resolve_frame(timeline, &((*frame).clone()));
+    let resolved = resolve_frame(timeline, frame);
     {
         let __flight_key = resolved;
         if let Some(__flight_index) = timeline

@@ -19,16 +19,7 @@ pub fn disable_entity_runtime_guards() -> () {
 // Source: upstream/packages/entity/src/enableEntityRuntimeGuards.ts:22 (sha256:02ab9035b30f44af00104f7a07807b9755b3096a10d65fd6a48b81d6d5546e66)
 pub fn enable_entity_runtime_guards() -> () {
     set_entity_runtime_guard_mode(true);
-    set_entity_runtime_write_guard(
-        &(Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-            move |__flight_argument_0: EntityRuntimeWriteSlot| -> () {
-                warn_on_direct_write((__flight_argument_0).clone())
-            },
-        )
-            as Box<
-                dyn FnMut(EntityRuntimeWriteSlot) -> () + Send + 'static,
-            >)))),
-    );
+    set_entity_runtime_write_guard(&(warn_on_direct_write));
 }
 
 // Source: upstream/packages/entity/src/enableEntityRuntimeGuards.ts:27 (sha256:5a6691d7fc9356afe927a52b4a187e87eb00ce7edc335675998f9bb41db09b60)

@@ -76,6 +76,7 @@ pub fn create_anisotropy_pbr_extension(
 ) -> AnisotropyPbrExtension {
     return create_entity(Some(AnisotropyPbrExtension {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         anisotropy_map: opts
             .as_ref()

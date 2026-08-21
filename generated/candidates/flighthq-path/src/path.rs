@@ -291,7 +291,7 @@ pub fn append_path_round_rectangle(
     height: f64,
     radius: &crate::FlightUnion2<f64, Vec<f64>>,
 ) -> () {
-    let __destructure0 = normalize_corner_radii(&((*radius).clone()), width, height);
+    let __destructure0 = normalize_corner_radii(radius, width, height);
     let rtl = __destructure0[0.0_f64 as usize].clone();
     let rtr = __destructure0[1.0_f64 as usize].clone();
     let rbr = __destructure0[2.0_f64 as usize].clone();

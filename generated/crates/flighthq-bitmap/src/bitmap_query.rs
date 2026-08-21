@@ -123,6 +123,7 @@ pub fn get_bitmap_color_bounds_rectangle(
     }
     return Some(RectangleLike {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         x: min_x,
         y: min_y,

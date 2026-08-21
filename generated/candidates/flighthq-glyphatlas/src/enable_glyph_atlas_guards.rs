@@ -46,17 +46,7 @@ pub fn disable_glyph_atlas_guards() -> () {
 
 // Source: upstream/packages/glyphatlas/src/enableGlyphAtlasGuards.ts:29 (sha256:9c254f7fdef8502ff2fdc6dd4501fcca40698a9dc28c0229bfdb04cd5cf2a00f)
 pub fn enable_glyph_atlas_guards() -> () {
-    set_glyph_atlas_entry_guard(
-        &(Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-            move |__flight_argument_0: String, __flight_argument_1: f64| -> () {
-                warn_on_glyph_atlas_entry_blocked(
-                    (__flight_argument_0).clone(),
-                    __flight_argument_1,
-                )
-            },
-        )
-            as Box<dyn FnMut(String, f64) -> () + Send + 'static>)))),
-    );
+    set_glyph_atlas_entry_guard(&(warn_on_glyph_atlas_entry_blocked));
 }
 
 // Source: upstream/packages/glyphatlas/src/enableGlyphAtlasGuards.ts:33 (sha256:d3dc8804fde4a8f9201fc5d2b7cf0b56300abc0748a5c2a5b75ac81a961f3b00)

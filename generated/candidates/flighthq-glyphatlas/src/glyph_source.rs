@@ -19,7 +19,7 @@ pub fn create_glyph_source_from_glyph_atlas(mut atlas: GlyphAtlas) -> GlyphSourc
             let mut atlas = atlas.clone();
             move |page: Option<f64>| -> Option<TextureSource> {
                 let page = page.unwrap_or(0.0_f64);
-                return if (page) == Some(0.0_f64) {
+                return if (page == 0.0_f64) {
                     Some(get_glyph_atlas_bitmap(&atlas))
                 } else {
                     None

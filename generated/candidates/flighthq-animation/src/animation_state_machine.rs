@@ -99,6 +99,7 @@ pub fn create_animation_state_machine(
     }
     return create_entity(Some(AnimationStateMachine {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         advance_scratch: vec![],
         channels: (channels).clone(),
@@ -127,6 +128,7 @@ pub fn create_animation_state_machine_state(
 ) -> AnimationStateMachineState {
     return create_entity(Some(AnimationStateMachineState {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         blend_tree: (*blend_tree).clone(),
         name: (name).clone(),
@@ -154,7 +156,7 @@ pub fn sample_animation_state_machine(
     {
         let mut index = 0.0_f64;
         while (index < (machine.channels.len() as f64)) {
-            if sample_animation_state_machine_channel(&((*out).clone()), machine, index) {
+            if sample_animation_state_machine_channel(out, machine, index) {
                 visit(
                     (*out).clone(),
                     (machine.channels[index as usize].channel).clone(),
@@ -175,64 +177,118 @@ pub fn sample_animation_state_machine_channel(
     machine: &mut AnimationStateMachine,
     channel_index: f64,
 ) -> bool {
-    let entry = machine.channels[channel_index as usize].clone();
+    let entry: Option<AnimationStateMachineChannel> =
+        machine.channels.get(channel_index as usize).cloned();
     if (entry).is_none() {
         return false;
     }
     let to_state_index = machine.transition_to_state_index;
     if (to_state_index).is_none() {
-        let current_channel_index =
-            entry.state_channel_indices[machine.current_state_index as usize].clone();
+        let current_channel_index: Option<f64> = entry
+            .as_ref()
+            .unwrap()
+            .state_channel_indices
+            .get(machine.current_state_index as usize)
+            .cloned()
+            .flatten();
         return ((current_channel_index).is_some())
             && (sample_animation_blend_tree_channel(
-                &((*out).clone()),
+                out,
                 &mut machine.states[machine.current_state_index as usize].blend_tree,
                 *(current_channel_index.as_ref().unwrap()),
             ));
     }
     let from_state_index = machine.transition_from_state_index;
-    let from_channel_index = entry.state_channel_indices[from_state_index as usize].clone();
-    let to_channel_index =
-        entry.state_channel_indices[*(to_state_index.as_ref().unwrap()) as usize].clone();
+    let from_channel_index: Option<f64> = entry
+        .as_ref()
+        .unwrap()
+        .state_channel_indices
+        .get((from_state_index).clone().unwrap() as usize)
+        .cloned()
+        .flatten();
+    let to_channel_index: Option<f64> = entry
+        .as_ref()
+        .unwrap()
+        .state_channel_indices
+        .get(*(to_state_index.as_ref().unwrap()) as usize)
+        .cloned()
+        .flatten();
     let has_from = ((from_channel_index).is_some())
-        && (sample_animation_blend_tree_channel(
-            &(crate::FlightUnion2::<Vec<f64>, Vec<f32>>::B((machine.from_sample).clone())),
-            &mut machine.states[from_state_index as usize].blend_tree,
-            *(from_channel_index.as_ref().unwrap()),
-        ));
+        && ({
+            let mut __flight_argument_0 = crate::FlightUnion2::<Vec<f64>, Vec<f32>>::B(
+                std::mem::take(&mut (machine.from_sample)),
+            );
+            let __flight_result = sample_animation_blend_tree_channel(
+                &mut __flight_argument_0,
+                &mut machine.states[(from_state_index).clone().unwrap() as usize].blend_tree,
+                *(from_channel_index.as_ref().unwrap()),
+            );
+            machine.from_sample = match __flight_argument_0 {
+                crate::FlightUnion2::A(_) => panic!("TypeScript union narrowing failed"),
+                crate::FlightUnion2::B(value) => value,
+            };
+            __flight_result
+        });
     let has_to = ((to_channel_index).is_some())
-        && (sample_animation_blend_tree_channel(
-            &(crate::FlightUnion2::<Vec<f64>, Vec<f32>>::B((machine.to_sample).clone())),
-            &mut machine.states[*(to_state_index.as_ref().unwrap()) as usize].blend_tree,
-            *(to_channel_index.as_ref().unwrap()),
-        ));
+        && ({
+            let mut __flight_argument_0 = crate::FlightUnion2::<Vec<f64>, Vec<f32>>::B(
+                std::mem::take(&mut (machine.to_sample)),
+            );
+            let __flight_result = sample_animation_blend_tree_channel(
+                &mut __flight_argument_0,
+                &mut machine.states[*(to_state_index.as_ref().unwrap()) as usize].blend_tree,
+                *(to_channel_index.as_ref().unwrap()),
+            );
+            machine.to_sample = match __flight_argument_0 {
+                crate::FlightUnion2::A(_) => panic!("TypeScript union narrowing failed"),
+                crate::FlightUnion2::B(value) => value,
+            };
+            __flight_result
+        });
     if (!has_from) && (!has_to) {
         return false;
     }
     if (has_from) && (has_to) {
-        {
-            let __flight_argument_1 = (machine.from_sample).clone();
-            let __flight_argument_3 = machine.transition_weight;
-            let __flight_result = blend_animation_samples(
-                &((*out).clone()),
-                &__flight_argument_1,
-                &mut machine.to_sample,
-                __flight_argument_3,
-                Some(entry.channel.track.quaternion),
-            );
-            __flight_result
-        };
+        blend_animation_samples(
+            out,
+            &(((machine.from_sample).clone())
+                .iter()
+                .map(|__flight_value| (*__flight_value) as f64)
+                .collect::<Vec<_>>()),
+            &(((machine.to_sample).clone())
+                .iter()
+                .map(|__flight_value| (*__flight_value) as f64)
+                .collect::<Vec<_>>()),
+            machine.transition_weight,
+            Some(entry.as_ref().unwrap().channel.track.quaternion),
+        );
     } else {
         let source = if has_from {
             (machine.from_sample).clone()
         } else {
             (machine.to_sample).clone()
         };
-        let width = ((out.length).min(entry.channel.track.components)).min((source.len() as f64));
+        let width = ((match &*(out) {
+            crate::FlightUnion2::A(values) => (values.len() as f64),
+            crate::FlightUnion2::B(values) => (values.len() as f64),
+        })
+        .min(entry.as_ref().unwrap().channel.track.components))
+        .min((source.len() as f64));
         {
             let mut component = 0.0_f64;
             while (component < width) {
-                out[component as usize] = (source[component as usize] as f64);
+                {
+                    let __flight_index = (component) as usize;
+                    let __flight_value = (source[component as usize] as f64);
+                    match out {
+                        crate::FlightUnion2::A(values) => {
+                            values[__flight_index] = __flight_value;
+                        }
+                        crate::FlightUnion2::B(values) => {
+                            values[__flight_index] = (__flight_value) as f32;
+                        }
+                    };
+                };
                 {
                     component += 1.0;
                     component
@@ -259,8 +315,7 @@ pub fn transition_animation_state_machine(
     if (machine.transition_to_state_index).is_some() {
         return false;
     }
-    let to_state_index =
-        find_animation_state_machine_state_index(&machine.states, &((*to_state).clone()));
+    let to_state_index = find_animation_state_machine_state_index(&machine.states, to_state);
     if (to_state_index < 0.0_f64) || (to_state_index == machine.current_state_index) {
         return false;
     }
@@ -368,7 +423,7 @@ fn create_animation_state_machine_channels(
                         };
                         continue;
                     }
-                    let mut existing = channels[existing_index as usize].clone();
+                    let mut existing = channels[(existing_index).clone().unwrap() as usize].clone();
                     assert_compatible_animation_state_machine_channels(
                         &existing.channel,
                         &states[state_index as usize].blend_tree.channels

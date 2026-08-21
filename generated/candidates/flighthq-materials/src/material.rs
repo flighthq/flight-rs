@@ -13,6 +13,7 @@ use flighthq_types::{Kind, Material};
 pub fn clone_material(source: &Material) -> Material {
     let mut clone = create_entity(Some(Material {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         kind: (source.kind).clone(),
         name: None,
@@ -34,6 +35,7 @@ pub fn copy_material(out: &mut Material, source: &Material) -> () {
 pub fn create_material(kind: Kind) -> Material {
     let mut material = create_entity(Some(Material {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         kind: (kind).clone(),
         name: None,
@@ -81,9 +83,15 @@ pub fn equals_material(a: &Material, b: &Material) -> bool {
 }
 
 // Source: upstream/packages/materials/src/material.ts:45 (sha256:f7243c63cc0fe4a303d3cf43e3225823954c4137ee1703db6ba763009c1b6520)
-pub fn get_material_of_kind<T: Clone>(material: &Option<Material>, kind: Kind) -> Option<T> {
+pub fn get_material_of_kind<T: Clone + flighthq_types::FlightEntity>(
+    material: &Option<Material>,
+    kind: Kind,
+) -> Option<T> {
     return if ((material).is_some()) && ((material.as_ref().unwrap().kind).clone() == kind) {
-        Some((material).clone().unwrap())
+        Some(
+            flighthq_types::FlightEntity::__flight_downcast::<T>(&((material).clone().unwrap()))
+                .expect("TypeScript entity cast lost its concrete Rust snapshot"),
+        )
     } else {
         None
     };
@@ -103,28 +111,26 @@ fn copy_material_fields(dst: &mut Material, src: &Material, kind: Kind) -> () {
         if (key == "kind") {
             continue;
         }
-        let value = (src_fields
+        let value: Option<crate::FlightValue> = src_fields
             .iter()
             .find(|(entry_key, _)| entry_key == &(key).clone())
-            .map(|(_, value)| value.clone()))
-        .expect("TypeScript Record key was absent");
-        if ((key == "standard")
-            && (!(matches!(
-                &((value).clone()),
-                crate::FlightValue::Null | crate::FlightValue::Undefined
-            ))))
-            && ((match &((value).clone()) {
-                crate::FlightValue::Undefined => "undefined",
-                crate::FlightValue::Null
-                | crate::FlightValue::Array(_)
-                | crate::FlightValue::Record(_)
-                | crate::FlightValue::Error { .. }
-                | crate::FlightValue::Object => "object",
-                crate::FlightValue::Bool(_) => "boolean",
-                crate::FlightValue::Number(_) => "number",
-                crate::FlightValue::String(_) => "string",
-                crate::FlightValue::Function => "function",
-                crate::FlightValue::Symbol => "symbol",
+            .map(|(_, value)| value.clone());
+        if ((key == "standard") && (((value).clone()).is_some()))
+            && ((match ((value).clone()).as_ref() {
+                None => "undefined",
+                Some(value) => match value {
+                    crate::FlightValue::Undefined => "undefined",
+                    crate::FlightValue::Null
+                    | crate::FlightValue::Array(_)
+                    | crate::FlightValue::Record(_)
+                    | crate::FlightValue::Error { .. }
+                    | crate::FlightValue::Object => "object",
+                    crate::FlightValue::Bool(_) => "boolean",
+                    crate::FlightValue::Number(_) => "number",
+                    crate::FlightValue::String(_) => "string",
+                    crate::FlightValue::Function => "function",
+                    crate::FlightValue::Symbol => "symbol",
+                },
             })
             .to_owned()
                 == "object")
@@ -133,7 +139,7 @@ fn copy_material_fields(dst: &mut Material, src: &Material, kind: Kind) -> () {
                 let __flight_key = (key).clone();
                 let __flight_value = crate::FlightValue::Record({
                     let mut __flight_record = Vec::new();
-                    let __flight_spread_0 = (value).clone();
+                    let __flight_spread_0 = (value.as_ref().unwrap()).clone();
                     match __flight_spread_0 {
                         crate::FlightValue::Record(entries) => {
                             for (__flight_key, __flight_value) in entries {
@@ -186,7 +192,13 @@ fn copy_material_fields(dst: &mut Material, src: &Material, kind: Kind) -> () {
         } else {
             {
                 let __flight_key = (key).clone();
-                let __flight_value = (value).clone();
+                let __flight_value = {
+                    let __flight_portable_source = (value).clone();
+                    match (&__flight_portable_source).as_ref() {
+                        Some(value) => (value).clone(),
+                        None => crate::FlightValue::Null,
+                    }
+                };
                 if let Some((_, value)) =
                     dst_fields.iter_mut().find(|(key, _)| key == &__flight_key)
                 {

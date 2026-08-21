@@ -17,18 +17,7 @@ pub fn disable_audio_mixer_guards() -> () {
 
 // Source: upstream/packages/media/src/enableAudioMixerGuards.ts:22 (sha256:6739d4bbc6ce114f9929604623c8ac62194d62ec8d0784acdd08de011002118c)
 pub fn enable_audio_mixer_guards() -> () {
-    set_audio_bus_mixer_guard(
-        &(Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-            move |__flight_argument_0: AudioBusMixerOperation,
-                  __flight_argument_1: AudioBus|
-                  -> () {
-                warn_on_unmixed_bus((__flight_argument_0).clone(), &__flight_argument_1)
-            },
-        )
-            as Box<
-                dyn FnMut(AudioBusMixerOperation, AudioBus) -> () + Send + 'static,
-            >)))),
-    );
+    set_audio_bus_mixer_guard(&(warn_on_unmixed_bus));
 }
 
 // Source: upstream/packages/media/src/enableAudioMixerGuards.ts:26 (sha256:f0034b7040b4808fb21b12cc43ef83476da7961886bc908cddc1adfc6413d6a3)

@@ -17,6 +17,7 @@ use flighthq_types::{Camera3D, Camera3DOptions, Matrix4, Matrix4Like, Projection
 pub fn create_camera3_d(opts: &Camera3DOptions) -> Camera3D {
     return create_entity(Some(Camera3D {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         far: opts.far,
         inverse_view_projection: create_matrix4(
@@ -39,7 +40,7 @@ pub fn get_camera3_d_inverse_view_projection_matrix4(
     camera: &Camera3D,
     aspect: f64,
 ) -> bool {
-    (|| -> () {
+    {
         set_projection_matrix4(
             &mut (*__SCRATCH_PROJECTION.lock().unwrap()),
             &camera.projection,
@@ -47,7 +48,7 @@ pub fn get_camera3_d_inverse_view_projection_matrix4(
             camera.near,
             camera.far,
         );
-        (|| -> () {
+        {
             (*__SCRATCH_PROJECTION.lock().unwrap()).m[0.0_f64 as usize] += (camera.jitter.x
                 * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[3.0_f64 as usize] as f64))
                 as f32;
@@ -72,7 +73,7 @@ pub fn get_camera3_d_inverse_view_projection_matrix4(
             (*__SCRATCH_PROJECTION.lock().unwrap()).m[13.0_f64 as usize] += (camera.jitter.y
                 * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[15.0_f64 as usize] as f64))
                 as f32;
-        })();
+        };
         multiply_matrix4(
             &mut (*__SCRATCH_VIEW_PROJECTION.lock().unwrap()),
             &{
@@ -82,6 +83,7 @@ pub fn get_camera3_d_inverse_view_projection_matrix4(
                     __flight_entity_runtime: std::sync::Arc::clone(
                         &__flight_source.__flight_entity_runtime,
                     ),
+                    __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                     m: (__flight_source.m).clone(),
                 }
             },
@@ -92,11 +94,12 @@ pub fn get_camera3_d_inverse_view_projection_matrix4(
                     __flight_entity_runtime: std::sync::Arc::clone(
                         &__flight_source.__flight_entity_runtime,
                     ),
+                    __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                     m: (__flight_source.m).clone(),
                 }
             },
         );
-    })();
+    };
     return inverse_matrix4(out, &{
         let __flight_source = &(*__SCRATCH_VIEW_PROJECTION.lock().unwrap());
         Matrix4Like {
@@ -104,6 +107,7 @@ pub fn get_camera3_d_inverse_view_projection_matrix4(
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             m: (__flight_source.m).clone(),
         }
     });
@@ -122,7 +126,7 @@ pub fn get_camera3_d_view_projection_matrix4(
         camera.near,
         camera.far,
     );
-    (|| -> () {
+    {
         (*__SCRATCH_PROJECTION.lock().unwrap()).m[0.0_f64 as usize] += (camera.jitter.x
             * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[3.0_f64 as usize] as f64))
             as f32;
@@ -147,7 +151,7 @@ pub fn get_camera3_d_view_projection_matrix4(
         (*__SCRATCH_PROJECTION.lock().unwrap()).m[13.0_f64 as usize] += (camera.jitter.y
             * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[15.0_f64 as usize] as f64))
             as f32;
-    })();
+    };
     multiply_matrix4(
         out,
         &{
@@ -157,6 +161,7 @@ pub fn get_camera3_d_view_projection_matrix4(
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 m: (__flight_source.m).clone(),
             }
         },
@@ -167,6 +172,7 @@ pub fn get_camera3_d_view_projection_matrix4(
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 m: (__flight_source.m).clone(),
             }
         },
@@ -242,7 +248,7 @@ pub fn set_camera3_d_view_matrix4_from_matrix4(camera: &mut Camera3D, view: &Mat
 // Source: upstream/packages/camera/src/camera.ts:124 (sha256:aba0c8297b05d3db0a1586783d6cd8b5caa3ac4353d3cff7db19632f419cd778)
 pub fn update_camera3_d_inverse_view_projection(camera: &mut Camera3D, aspect: f64) -> bool {
     let ok = (|| -> bool {
-        (|| -> () {
+        {
             set_projection_matrix4(
                 &mut (*__SCRATCH_PROJECTION.lock().unwrap()),
                 &camera.projection,
@@ -250,7 +256,7 @@ pub fn update_camera3_d_inverse_view_projection(camera: &mut Camera3D, aspect: f
                 camera.near,
                 camera.far,
             );
-            (|| -> () {
+            {
                 (*__SCRATCH_PROJECTION.lock().unwrap()).m[0.0_f64 as usize] += (camera.jitter.x
                     * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[3.0_f64 as usize] as f64))
                     as f32;
@@ -275,7 +281,7 @@ pub fn update_camera3_d_inverse_view_projection(camera: &mut Camera3D, aspect: f
                 (*__SCRATCH_PROJECTION.lock().unwrap()).m[13.0_f64 as usize] += (camera.jitter.y
                     * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[15.0_f64 as usize] as f64))
                     as f32;
-            })();
+            };
             multiply_matrix4(
                 &mut (*__SCRATCH_VIEW_PROJECTION.lock().unwrap()),
                 &{
@@ -287,6 +293,7 @@ pub fn update_camera3_d_inverse_view_projection(camera: &mut Camera3D, aspect: f
                         __flight_entity_runtime: std::sync::Arc::clone(
                             &__flight_source.__flight_entity_runtime,
                         ),
+                        __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                         m: (__flight_source.m).clone(),
                     }
                 },
@@ -299,11 +306,12 @@ pub fn update_camera3_d_inverse_view_projection(camera: &mut Camera3D, aspect: f
                         __flight_entity_runtime: std::sync::Arc::clone(
                             &__flight_source.__flight_entity_runtime,
                         ),
+                        __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                         m: (__flight_source.m).clone(),
                     }
                 },
             );
-        })();
+        };
         return inverse_matrix4(&mut (*__SCRATCH_INVERSE.lock().unwrap()), &{
             let __flight_source = &(*__SCRATCH_VIEW_PROJECTION.lock().unwrap());
             Matrix4Like {
@@ -311,6 +319,7 @@ pub fn update_camera3_d_inverse_view_projection(camera: &mut Camera3D, aspect: f
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 m: (__flight_source.m).clone(),
             }
         });

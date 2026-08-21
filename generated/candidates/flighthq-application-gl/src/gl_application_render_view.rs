@@ -116,6 +116,7 @@ pub fn create_gl_application_render_view(
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             render_state: (__flight_source.render_state).clone(),
             render_target: (__flight_source.render_target).clone(),
             viewport: (__flight_source.viewport).clone(),

@@ -254,16 +254,9 @@
     },
     {
       "declarations": 127,
-      "diagnostics": [
-        {
-          "column": 3,
-          "line": 94,
-          "message": "Unsupported TypeScript statement InterfaceDeclaration",
-          "source": "upstream/packages/font-formats/src/woffFont.ts"
-        }
-      ],
+      "diagnostics": [],
       "files": 17,
-      "lowered": 126,
+      "lowered": 127,
       "packageName": "@flighthq/font-formats"
     },
     {
@@ -744,16 +737,9 @@
     },
     {
       "declarations": 181,
-      "diagnostics": [
-        {
-          "column": 5,
-          "line": 280,
-          "message": "Unsupported TypeScript object literal member",
-          "source": "upstream/packages/shape/src/shapeBounds.ts"
-        }
-      ],
+      "diagnostics": [],
       "files": 19,
-      "lowered": 180,
+      "lowered": 181,
       "packageName": "@flighthq/shape"
     },
     {
@@ -1061,9 +1047,9 @@
   "schemaVersion": 1,
   "summary": {
     "declarations": 14034,
-    "diagnostics": 2,
+    "diagnostics": 0,
     "files": 2614,
-    "lowered": 14032,
+    "lowered": 14034,
     "packages": 149
   }
 }

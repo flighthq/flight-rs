@@ -76,6 +76,7 @@ pub fn create_sheen_pbr_extension(
 ) -> SheenPbrExtension {
     return create_entity(Some(SheenPbrExtension {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         kind: (sheen_pbr_extension_kind_constant).to_owned(),
         sheen_color: (opts.as_ref().and_then(|value| value.sheen_color))

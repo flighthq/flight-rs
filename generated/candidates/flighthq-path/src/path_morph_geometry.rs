@@ -878,28 +878,8 @@ fn equalize_cubic_contour_segments(start: &mut CubicContour, end: &mut CubicCont
     if (target_count == 0.0_f64) {
         return;
     }
-    start.segments = {
-        let __flight_argument_2 = start.x;
-        let __flight_argument_3 = start.y;
-        let __flight_result = subdivide_cubic_segments(
-            &mut start.segments,
-            target_count,
-            __flight_argument_2,
-            __flight_argument_3,
-        );
-        __flight_result
-    };
-    end.segments = {
-        let __flight_argument_2 = end.x;
-        let __flight_argument_3 = end.y;
-        let __flight_result = subdivide_cubic_segments(
-            &mut end.segments,
-            target_count,
-            __flight_argument_2,
-            __flight_argument_3,
-        );
-        __flight_result
-    };
+    start.segments = subdivide_cubic_segments(&start.segments, target_count, start.x, start.y);
+    end.segments = subdivide_cubic_segments(&end.segments, target_count, end.x, end.y);
 }
 
 // Source: upstream/packages/path/src/pathMorphGeometry.ts:333 (sha256:e1ff1cf37098a6f8e235b9a86a8c03ed0150cf1913a31ec28be7553eb8cb1795)
@@ -951,7 +931,7 @@ fn split_cubic_segment(segment: &CubicSegment, t: f64) -> Vec<CubicSegment> {
 
 // Source: upstream/packages/path/src/pathMorphGeometry.ts:376 (sha256:37911281eec93ed2fd2d0bad022a7787a821f66a983abe3ef48c1ec2072568a3)
 fn subdivide_cubic_segments(
-    source: &mut Vec<CubicSegment>,
+    source: &Vec<CubicSegment>,
     target_count: f64,
     point_x: f64,
     point_y: f64,

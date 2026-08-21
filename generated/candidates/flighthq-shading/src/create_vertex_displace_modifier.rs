@@ -46,6 +46,7 @@ pub fn create_vertex_displace_modifier(
 static DEFAULT_DIRECTION: std::sync::LazyLock<Vector3Like> =
     std::sync::LazyLock::new(|| Vector3Like {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         x: 1.0_f64,
         y: 0.0_f64,

@@ -119,6 +119,7 @@ pub fn create_blinn_phong_material(
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             kind: (__flight_source.kind).clone(),
             name: (__flight_source.name).clone(),
             alpha_cutoff: __flight_source.alpha_cutoff,
@@ -180,6 +181,7 @@ pub fn create_lambert_material(opts: Option<FlightPartialRecord1398741691>) -> L
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             kind: (__flight_source.kind).clone(),
             name: (__flight_source.name).clone(),
             alpha_cutoff: __flight_source.alpha_cutoff,
@@ -229,6 +231,7 @@ pub fn create_phong_material(opts: Option<FlightPartialRecord2317694896>) -> Pho
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             kind: (__flight_source.kind).clone(),
             name: (__flight_source.name).clone(),
             alpha_cutoff: __flight_source.alpha_cutoff,

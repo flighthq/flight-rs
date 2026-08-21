@@ -764,13 +764,13 @@ fn resolve_sequence(
     matching_pdi: &Vec<i32>,
     paragraph_level: f64,
 ) -> () {
-    let mut seq_level = level_array[sequence[0.0_f64 as usize].clone() as usize].clone();
+    let seq_level = level_array[sequence[0.0_f64 as usize].clone() as usize].clone();
     let prev_level = if (kept_start > 0.0_f64) {
         level_array[kept[(kept_start - 1.0_f64) as usize].clone() as usize].clone()
     } else {
         paragraph_level
     };
-    let mut sos = if (((seq_level).max(prev_level) % 2.0_f64) == 1.0_f64) {
+    let sos = if (((seq_level).max(prev_level) % 2.0_f64) == 1.0_f64) {
         "R".to_owned()
     } else {
         "L".to_owned()

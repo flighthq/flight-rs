@@ -74,14 +74,7 @@ pub fn register_bokeh_depth_of_field_effect_padding_resolver(state: &RenderState
     register_render_effect_padding_resolver(
         state,
         "BokehDepthOfFieldEffect".to_owned(),
-        &(Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-            move |__flight_argument_0: RenderEffect| -> RenderEffectPadding {
-                resolve_bokeh_depth_of_field_effect_padding(&__flight_argument_0)
-            },
-        )
-            as Box<
-                dyn FnMut(RenderEffect) -> RenderEffectPadding + Send + 'static,
-            >)))),
+        &(resolve_bokeh_depth_of_field_effect_padding),
     );
 }
 

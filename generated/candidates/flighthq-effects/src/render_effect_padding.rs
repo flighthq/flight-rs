@@ -25,7 +25,7 @@ pub fn compute_render_effect_padding(
     } else {
         vec![effects]
     };
-    let explanation = explain_render_effect_padding(state, &((list).clone()));
+    let explanation = explain_render_effect_padding(state, &(list));
     let emit_miss = (get_render_state_runtime(state)
         .inner
         .lock()

@@ -26,6 +26,7 @@ pub fn clone_hemisphere_light(source: &HemisphereLight) -> HemisphereLight {
 pub fn create_hemisphere_light(options: Option<HemisphereLightOptions>) -> HemisphereLight {
     return create_entity(Some(HemisphereLight {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         ground_color: (options.as_ref().and_then(|value| value.ground_color))
             .clone()

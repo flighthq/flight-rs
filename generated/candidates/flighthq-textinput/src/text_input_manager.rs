@@ -45,9 +45,7 @@ pub fn connect_input_to_text_input(
         std::sync::Mutex<Box<dyn FnMut(InputTextData) -> bool + Send + 'static>>,
     > = std::sync::Arc::new(std::sync::Mutex::new(Box::new({
         let manager = manager.clone();
-        move |mut data: InputTextData| -> bool {
-            dispatch_text_input(&manager, (data.text).clone())
-        }
+        move |data: InputTextData| -> bool { dispatch_text_input(&manager, (data.text).clone()) }
     })
         as Box<dyn FnMut(InputTextData) -> bool + Send + 'static>));
     connect_signal(&mut input.on_key_down, (on_key_down).clone(), None);
@@ -130,7 +128,7 @@ pub fn dispatch_text_input_key_down(
 // Source: upstream/packages/textinput/src/textInputManager.ts:66 (sha256:d2bb82836fcfe63014aa591312a50e3b835af4ff32b3e741d0293af0dd142ab2)
 pub fn dispatch_text_input_pointer_down(
     manager: &mut TextInputManager,
-    target: &mut RichText,
+    target: &RichText,
     x: f64,
     y: f64,
     extend: Option<bool>,
@@ -161,12 +159,12 @@ pub fn dispatch_text_input_pointer_down(
 }
 
 // Source: upstream/packages/textinput/src/textInputManager.ts:87 (sha256:b74eb4f68c9f6a4d16075fe1dabd01a0a866e258ad56c0ad8321a310fcb30166)
-pub fn dispatch_text_input_pointer_move(manager: &mut TextInputManager, x: f64, y: f64) -> () {
-    let mut target = (manager.focused).clone();
-    if ((target).is_none()) || (!target.as_mut().unwrap().enabled) {
+pub fn dispatch_text_input_pointer_move(manager: &TextInputManager, x: f64, y: f64) -> () {
+    let target = (manager.focused).clone();
+    if ((target).is_none()) || (!target.as_ref().unwrap().enabled) {
         return;
     }
-    let layout = (get_rich_text_runtime(&target.as_mut().unwrap())
+    let layout = (get_rich_text_runtime(&target.as_ref().unwrap())
         .inner
         .lock()
         .unwrap()
@@ -176,12 +174,12 @@ pub fn dispatch_text_input_pointer_move(manager: &mut TextInputManager, x: f64, 
         return;
     }
     let index = get_text_input_character_index_at_point(
-        &mut target.as_mut().unwrap(),
+        &target.as_ref().unwrap(),
         &layout.as_ref().unwrap(),
         x,
         y,
     );
-    move_text_input_caret(&target.as_mut().unwrap(), index, Some(true));
+    move_text_input_caret(&target.as_ref().unwrap(), index, Some(true));
 }
 
 // Source: upstream/packages/textinput/src/textInputManager.ts:96 (sha256:c437416723ce314df0ff774053b771d0ec3fc81d9105175f60a5e0f75dc14903)

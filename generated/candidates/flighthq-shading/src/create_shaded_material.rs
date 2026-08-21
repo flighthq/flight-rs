@@ -16,6 +16,7 @@ use flighthq_types::{
 pub fn create_shaded_material(options: Option<ShadedMaterialOptions>) -> ShadedMaterial {
     let mut material = create_entity(Some(ShadedMaterial {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         kind: (shaded_material_kind_constant).to_owned(),
         diffuse: Default::default(),

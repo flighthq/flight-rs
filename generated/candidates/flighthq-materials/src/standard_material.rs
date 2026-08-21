@@ -38,6 +38,7 @@ impl PartialEq for FlightPartialRecord118067091 {
 pub fn create_standard_material(options: Option<FlightPartialRecord118067091>) -> StandardMaterial {
     return create_entity(Some(StandardMaterial {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         kind: (standard_material_kind_constant).to_owned(),
         name: options.as_ref().and_then(|value| (value.name).clone()),

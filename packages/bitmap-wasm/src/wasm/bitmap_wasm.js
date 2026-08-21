@@ -1,4 +1,4 @@
-/* @ts-self-types="./surface_wasm.d.ts" */
+/* @ts-self-types="./bitmap_wasm.d.ts" */
 
 /**
  * @param {Uint8Array} dest_data
@@ -10,7 +10,7 @@
  * @param {Uint8Array} blue_lut
  * @param {Uint8Array} alpha_lut
  */
-export function apply_surface_curve_wasm(dest_data, dest_descriptor, source_data, source_descriptor, red_lut, green_lut, blue_lut, alpha_lut) {
+export function apply_bitmap_curve_wasm(dest_data, dest_descriptor, source_data, source_descriptor, red_lut, green_lut, blue_lut, alpha_lut) {
     var ptr0 = passArray8ToWasm0(dest_data, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
     const ptr1 = passArrayF64ToWasm0(dest_descriptor, wasm.__wbindgen_malloc);
@@ -27,7 +27,7 @@ export function apply_surface_curve_wasm(dest_data, dest_descriptor, source_data
     const len6 = WASM_VECTOR_LEN;
     const ptr7 = passArray8ToWasm0(alpha_lut, wasm.__wbindgen_malloc);
     const len7 = WASM_VECTOR_LEN;
-    wasm.apply_surface_curve_wasm(ptr0, len0, dest_data, ptr1, len1, ptr2, len2, ptr3, len3, ptr4, len4, ptr5, len5, ptr6, len6, ptr7, len7);
+    wasm.apply_bitmap_curve_wasm(ptr0, len0, dest_data, ptr1, len1, ptr2, len2, ptr3, len3, ptr4, len4, ptr5, len5, ptr6, len6, ptr7, len7);
 }
 
 /**
@@ -39,7 +39,7 @@ export function apply_surface_curve_wasm(dest_data, dest_descriptor, source_data
  * @param {number} white_point
  * @param {number} gamma
  */
-export function apply_surface_levels_wasm(dest_data, dest_descriptor, source_data, source_descriptor, black_point, white_point, gamma) {
+export function apply_bitmap_levels_wasm(dest_data, dest_descriptor, source_data, source_descriptor, black_point, white_point, gamma) {
     var ptr0 = passArray8ToWasm0(dest_data, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
     const ptr1 = passArrayF64ToWasm0(dest_descriptor, wasm.__wbindgen_malloc);
@@ -48,7 +48,7 @@ export function apply_surface_levels_wasm(dest_data, dest_descriptor, source_dat
     const len2 = WASM_VECTOR_LEN;
     const ptr3 = passArrayF64ToWasm0(source_descriptor, wasm.__wbindgen_malloc);
     const len3 = WASM_VECTOR_LEN;
-    wasm.apply_surface_levels_wasm(ptr0, len0, dest_data, ptr1, len1, ptr2, len2, ptr3, len3, black_point, white_point, gamma);
+    wasm.apply_bitmap_levels_wasm(ptr0, len0, dest_data, ptr1, len1, ptr2, len2, ptr3, len3, black_point, white_point, gamma);
 }
 
 /**
@@ -61,7 +61,7 @@ export function apply_surface_levels_wasm(dest_data, dest_descriptor, source_dat
  * @param {Float64Array} blue_map
  * @param {Float64Array} alpha_map
  */
-export function apply_surface_palette_map_wasm(dest_data, dest_descriptor, source_data, source_descriptor, red_map, green_map, blue_map, alpha_map) {
+export function apply_bitmap_palette_map_wasm(dest_data, dest_descriptor, source_data, source_descriptor, red_map, green_map, blue_map, alpha_map) {
     var ptr0 = passArray8ToWasm0(dest_data, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
     const ptr1 = passArrayF64ToWasm0(dest_descriptor, wasm.__wbindgen_malloc);
@@ -78,74 +78,74 @@ export function apply_surface_palette_map_wasm(dest_data, dest_descriptor, sourc
     const len6 = WASM_VECTOR_LEN;
     const ptr7 = passArrayF64ToWasm0(alpha_map, wasm.__wbindgen_malloc);
     const len7 = WASM_VECTOR_LEN;
-    wasm.apply_surface_palette_map_wasm(ptr0, len0, dest_data, ptr1, len1, ptr2, len2, ptr3, len3, ptr4, len4, ptr5, len5, ptr6, len6, ptr7, len7);
+    wasm.apply_bitmap_palette_map_wasm(ptr0, len0, dest_data, ptr1, len1, ptr2, len2, ptr3, len3, ptr4, len4, ptr5, len5, ptr6, len6, ptr7, len7);
 }
 
 /**
  * @param {Float64Array} out
  * @param {number} amount
  */
-export function build_surface_brightness_color_matrix_wasm(out, amount) {
+export function build_bitmap_brightness_color_matrix_wasm(out, amount) {
     var ptr0 = passArrayF64ToWasm0(out, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
-    wasm.build_surface_brightness_color_matrix_wasm(ptr0, len0, out, amount);
+    wasm.build_bitmap_brightness_color_matrix_wasm(ptr0, len0, out, amount);
 }
 
 /**
  * @param {Float64Array} out
  * @param {number} amount
  */
-export function build_surface_contrast_color_matrix_wasm(out, amount) {
+export function build_bitmap_contrast_color_matrix_wasm(out, amount) {
     var ptr0 = passArrayF64ToWasm0(out, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
-    wasm.build_surface_contrast_color_matrix_wasm(ptr0, len0, out, amount);
+    wasm.build_bitmap_contrast_color_matrix_wasm(ptr0, len0, out, amount);
 }
 
 /**
  * @param {Float64Array} out
  */
-export function build_surface_grayscale_color_matrix_wasm(out) {
+export function build_bitmap_grayscale_color_matrix_wasm(out) {
     var ptr0 = passArrayF64ToWasm0(out, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
-    wasm.build_surface_grayscale_color_matrix_wasm(ptr0, len0, out);
+    wasm.build_bitmap_grayscale_color_matrix_wasm(ptr0, len0, out);
 }
 
 /**
  * @param {Float64Array} out
  * @param {number} degrees
  */
-export function build_surface_hue_rotation_color_matrix_wasm(out, degrees) {
+export function build_bitmap_hue_rotation_color_matrix_wasm(out, degrees) {
     var ptr0 = passArrayF64ToWasm0(out, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
-    wasm.build_surface_hue_rotation_color_matrix_wasm(ptr0, len0, out, degrees);
+    wasm.build_bitmap_hue_rotation_color_matrix_wasm(ptr0, len0, out, degrees);
 }
 
 /**
  * @param {Float64Array} out
  */
-export function build_surface_invert_color_matrix_wasm(out) {
+export function build_bitmap_invert_color_matrix_wasm(out) {
     var ptr0 = passArrayF64ToWasm0(out, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
-    wasm.build_surface_invert_color_matrix_wasm(ptr0, len0, out);
+    wasm.build_bitmap_invert_color_matrix_wasm(ptr0, len0, out);
 }
 
 /**
  * @param {Float64Array} out
  * @param {number} amount
  */
-export function build_surface_saturation_color_matrix_wasm(out, amount) {
+export function build_bitmap_saturation_color_matrix_wasm(out, amount) {
     var ptr0 = passArrayF64ToWasm0(out, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
-    wasm.build_surface_saturation_color_matrix_wasm(ptr0, len0, out, amount);
+    wasm.build_bitmap_saturation_color_matrix_wasm(ptr0, len0, out, amount);
 }
 
 /**
  * @param {Float64Array} out
  */
-export function build_surface_sepia_color_matrix_wasm(out) {
+export function build_bitmap_sepia_color_matrix_wasm(out) {
     var ptr0 = passArrayF64ToWasm0(out, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
-    wasm.build_surface_sepia_color_matrix_wasm(ptr0, len0, out);
+    wasm.build_bitmap_sepia_color_matrix_wasm(ptr0, len0, out);
 }
 
 /**
@@ -154,7 +154,7 @@ export function build_surface_sepia_color_matrix_wasm(out) {
  * @param {Float64Array} source_descriptor
  * @param {Float64Array} matrix
  */
-export function color_matrix_surface_wasm(out, source_data, source_descriptor, matrix) {
+export function color_matrix_bitmap_wasm(out, source_data, source_descriptor, matrix) {
     var ptr0 = passArray8ToWasm0(out, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
     const ptr1 = passArray8ToWasm0(source_data, wasm.__wbindgen_malloc);
@@ -163,7 +163,7 @@ export function color_matrix_surface_wasm(out, source_data, source_descriptor, m
     const len2 = WASM_VECTOR_LEN;
     const ptr3 = passArrayF64ToWasm0(matrix, wasm.__wbindgen_malloc);
     const len3 = WASM_VECTOR_LEN;
-    wasm.color_matrix_surface_wasm(ptr0, len0, out, ptr1, len1, ptr2, len2, ptr3, len3);
+    wasm.color_matrix_bitmap_wasm(ptr0, len0, out, ptr1, len1, ptr2, len2, ptr3, len3);
 }
 
 /**
@@ -173,12 +173,12 @@ export function color_matrix_surface_wasm(out, source_data, source_descriptor, m
  * @param {number} second_grid_size
  * @returns {number}
  */
-export function compare_surface_fingerprints_wasm(first_cells, first_grid_size, second_cells, second_grid_size) {
+export function compare_bitmap_fingerprints_wasm(first_cells, first_grid_size, second_cells, second_grid_size) {
     const ptr0 = passArray8ToWasm0(first_cells, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
     const ptr1 = passArray8ToWasm0(second_cells, wasm.__wbindgen_malloc);
     const len1 = WASM_VECTOR_LEN;
-    const ret = wasm.compare_surface_fingerprints_wasm(ptr0, len0, first_grid_size, ptr1, len1, second_grid_size);
+    const ret = wasm.compare_bitmap_fingerprints_wasm(ptr0, len0, first_grid_size, ptr1, len1, second_grid_size);
     return ret;
 }
 
@@ -187,14 +187,14 @@ export function compare_surface_fingerprints_wasm(first_cells, first_grid_size, 
  * @param {Float64Array} first
  * @param {Float64Array} second
  */
-export function concat_surface_color_matrix_wasm(out, first, second) {
+export function concat_bitmap_color_matrix_wasm(out, first, second) {
     var ptr0 = passArrayF64ToWasm0(out, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
     const ptr1 = passArrayF64ToWasm0(first, wasm.__wbindgen_malloc);
     const len1 = WASM_VECTOR_LEN;
     const ptr2 = passArrayF64ToWasm0(second, wasm.__wbindgen_malloc);
     const len2 = WASM_VECTOR_LEN;
-    wasm.concat_surface_color_matrix_wasm(ptr0, len0, out, ptr1, len1, ptr2, len2);
+    wasm.concat_bitmap_color_matrix_wasm(ptr0, len0, out, ptr1, len1, ptr2, len2);
 }
 
 /**
@@ -209,7 +209,7 @@ export function concat_surface_color_matrix_wasm(out, first, second) {
  * @param {number} divisor
  * @param {boolean} preserve_alpha
  */
-export function convolve_surface_wasm(out, source_data, source_descriptor, matrix, matrix_x, matrix_y, bias, edge, divisor, preserve_alpha) {
+export function convolve_bitmap_wasm(out, source_data, source_descriptor, matrix, matrix_x, matrix_y, bias, edge, divisor, preserve_alpha) {
     var ptr0 = passArray8ToWasm0(out, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
     const ptr1 = passArray8ToWasm0(source_data, wasm.__wbindgen_malloc);
@@ -220,7 +220,7 @@ export function convolve_surface_wasm(out, source_data, source_descriptor, matri
     const len3 = WASM_VECTOR_LEN;
     const ptr4 = passStringToWasm0(edge, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len4 = WASM_VECTOR_LEN;
-    wasm.convolve_surface_wasm(ptr0, len0, out, ptr1, len1, ptr2, len2, ptr3, len3, matrix_x, matrix_y, bias, ptr4, len4, divisor, preserve_alpha);
+    wasm.convolve_bitmap_wasm(ptr0, len0, out, ptr1, len1, ptr2, len2, ptr3, len3, matrix_x, matrix_y, bias, ptr4, len4, divisor, preserve_alpha);
 }
 
 /**
@@ -229,7 +229,7 @@ export function convolve_surface_wasm(out, source_data, source_descriptor, matri
  * @param {Uint8Array} source_data
  * @param {Float64Array} source_descriptor
  */
-export function copy_surface_alpha_wasm(dest_data, dest_descriptor, source_data, source_descriptor) {
+export function copy_bitmap_alpha_wasm(dest_data, dest_descriptor, source_data, source_descriptor) {
     var ptr0 = passArray8ToWasm0(dest_data, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
     const ptr1 = passArrayF64ToWasm0(dest_descriptor, wasm.__wbindgen_malloc);
@@ -238,7 +238,7 @@ export function copy_surface_alpha_wasm(dest_data, dest_descriptor, source_data,
     const len2 = WASM_VECTOR_LEN;
     const ptr3 = passArrayF64ToWasm0(source_descriptor, wasm.__wbindgen_malloc);
     const len3 = WASM_VECTOR_LEN;
-    wasm.copy_surface_alpha_wasm(ptr0, len0, dest_data, ptr1, len1, ptr2, len2, ptr3, len3);
+    wasm.copy_bitmap_alpha_wasm(ptr0, len0, dest_data, ptr1, len1, ptr2, len2, ptr3, len3);
 }
 
 /**
@@ -248,7 +248,7 @@ export function copy_surface_alpha_wasm(dest_data, dest_descriptor, source_data,
  * @param {Float64Array} source_descriptor
  * @param {boolean} composite
  */
-export function copy_surface_pixels_wasm(dest_data, dest_descriptor, source_data, source_descriptor, composite) {
+export function copy_bitmap_pixels_wasm(dest_data, dest_descriptor, source_data, source_descriptor, composite) {
     var ptr0 = passArray8ToWasm0(dest_data, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
     const ptr1 = passArrayF64ToWasm0(dest_descriptor, wasm.__wbindgen_malloc);
@@ -257,7 +257,7 @@ export function copy_surface_pixels_wasm(dest_data, dest_descriptor, source_data
     const len2 = WASM_VECTOR_LEN;
     const ptr3 = passArrayF64ToWasm0(source_descriptor, wasm.__wbindgen_malloc);
     const len3 = WASM_VECTOR_LEN;
-    wasm.copy_surface_pixels_wasm(ptr0, len0, dest_data, ptr1, len1, ptr2, len2, ptr3, len3, composite);
+    wasm.copy_bitmap_pixels_wasm(ptr0, len0, dest_data, ptr1, len1, ptr2, len2, ptr3, len3, composite);
 }
 
 /**
@@ -267,12 +267,12 @@ export function copy_surface_pixels_wasm(dest_data, dest_descriptor, source_data
  * @param {number} source_height
  * @param {number} grid_size
  */
-export function create_surface_fingerprint_wasm(out, source_data, source_width, source_height, grid_size) {
+export function create_bitmap_fingerprint_wasm(out, source_data, source_width, source_height, grid_size) {
     var ptr0 = passArray8ToWasm0(out, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
     const ptr1 = passArray8ToWasm0(source_data, wasm.__wbindgen_malloc);
     const len1 = WASM_VECTOR_LEN;
-    wasm.create_surface_fingerprint_wasm(ptr0, len0, out, ptr1, len1, source_width, source_height, grid_size);
+    wasm.create_bitmap_fingerprint_wasm(ptr0, len0, out, ptr1, len1, source_width, source_height, grid_size);
 }
 
 /**
@@ -281,14 +281,14 @@ export function create_surface_fingerprint_wasm(out, source_data, source_width, 
  * @param {Float64Array} source_descriptor
  * @param {number} radius
  */
-export function dilate_surface_wasm(out, source_data, source_descriptor, radius) {
+export function dilate_bitmap_wasm(out, source_data, source_descriptor, radius) {
     var ptr0 = passArray8ToWasm0(out, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
     const ptr1 = passArray8ToWasm0(source_data, wasm.__wbindgen_malloc);
     const len1 = WASM_VECTOR_LEN;
     const ptr2 = passArrayF64ToWasm0(source_descriptor, wasm.__wbindgen_malloc);
     const len2 = WASM_VECTOR_LEN;
-    wasm.dilate_surface_wasm(ptr0, len0, out, ptr1, len1, ptr2, len2, radius);
+    wasm.dilate_bitmap_wasm(ptr0, len0, out, ptr1, len1, ptr2, len2, radius);
 }
 
 /**
@@ -297,14 +297,14 @@ export function dilate_surface_wasm(out, source_data, source_descriptor, radius)
  * @param {Float64Array} source_descriptor
  * @param {number} radius
  */
-export function erode_surface_wasm(out, source_data, source_descriptor, radius) {
+export function erode_bitmap_wasm(out, source_data, source_descriptor, radius) {
     var ptr0 = passArray8ToWasm0(out, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
     const ptr1 = passArray8ToWasm0(source_data, wasm.__wbindgen_malloc);
     const len1 = WASM_VECTOR_LEN;
     const ptr2 = passArrayF64ToWasm0(source_descriptor, wasm.__wbindgen_malloc);
     const len2 = WASM_VECTOR_LEN;
-    wasm.erode_surface_wasm(ptr0, len0, out, ptr1, len1, ptr2, len2, radius);
+    wasm.erode_bitmap_wasm(ptr0, len0, out, ptr1, len1, ptr2, len2, radius);
 }
 
 /**
@@ -315,12 +315,12 @@ export function erode_surface_wasm(out, source_data, source_descriptor, radius) 
  * @param {number} high
  * @param {boolean} gray_scale
  */
-export function fill_surface_noise_wasm(data, descriptor, seed, low, high, gray_scale) {
+export function fill_bitmap_noise_wasm(data, descriptor, seed, low, high, gray_scale) {
     var ptr0 = passArray8ToWasm0(data, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
     const ptr1 = passArrayF64ToWasm0(descriptor, wasm.__wbindgen_malloc);
     const len1 = WASM_VECTOR_LEN;
-    wasm.fill_surface_noise_wasm(ptr0, len0, data, ptr1, len1, seed, low, high, gray_scale);
+    wasm.fill_bitmap_noise_wasm(ptr0, len0, data, ptr1, len1, seed, low, high, gray_scale);
 }
 
 /**
@@ -334,12 +334,12 @@ export function fill_surface_noise_wasm(data, descriptor, seed, low, high, gray_
  * @param {boolean} stitch
  * @param {number} channel_options
  */
-export function fill_surface_perlin_noise_wasm(data, descriptor, base_x, base_y, octaves, seed, gray_scale, stitch, channel_options) {
+export function fill_bitmap_perlin_noise_wasm(data, descriptor, base_x, base_y, octaves, seed, gray_scale, stitch, channel_options) {
     var ptr0 = passArray8ToWasm0(data, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
     const ptr1 = passArrayF64ToWasm0(descriptor, wasm.__wbindgen_malloc);
     const len1 = WASM_VECTOR_LEN;
-    wasm.fill_surface_perlin_noise_wasm(ptr0, len0, data, ptr1, len1, base_x, base_y, octaves, seed, gray_scale, stitch, channel_options);
+    wasm.fill_bitmap_perlin_noise_wasm(ptr0, len0, data, ptr1, len1, base_x, base_y, octaves, seed, gray_scale, stitch, channel_options);
 }
 
 /**
@@ -347,12 +347,12 @@ export function fill_surface_perlin_noise_wasm(data, descriptor, base_x, base_y,
  * @param {Float64Array} descriptor
  * @param {number} color
  */
-export function fill_surface_rectangle_wasm(data, descriptor, color) {
+export function fill_bitmap_rectangle_wasm(data, descriptor, color) {
     var ptr0 = passArray8ToWasm0(data, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
     const ptr1 = passArrayF64ToWasm0(descriptor, wasm.__wbindgen_malloc);
     const len1 = WASM_VECTOR_LEN;
-    wasm.fill_surface_rectangle_wasm(ptr0, len0, data, ptr1, len1, color);
+    wasm.fill_bitmap_rectangle_wasm(ptr0, len0, data, ptr1, len1, color);
 }
 
 /**
@@ -366,12 +366,12 @@ export function fill_surface_rectangle_wasm(data, descriptor, color) {
  * @param {boolean} stitch
  * @param {number} channel_options
  */
-export function fill_surface_turbulence_wasm(data, descriptor, base_x, base_y, octaves, seed, gray_scale, stitch, channel_options) {
+export function fill_bitmap_turbulence_wasm(data, descriptor, base_x, base_y, octaves, seed, gray_scale, stitch, channel_options) {
     var ptr0 = passArray8ToWasm0(data, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
     const ptr1 = passArrayF64ToWasm0(descriptor, wasm.__wbindgen_malloc);
     const len1 = WASM_VECTOR_LEN;
-    wasm.fill_surface_turbulence_wasm(ptr0, len0, data, ptr1, len1, base_x, base_y, octaves, seed, gray_scale, stitch, channel_options);
+    wasm.fill_bitmap_turbulence_wasm(ptr0, len0, data, ptr1, len1, base_x, base_y, octaves, seed, gray_scale, stitch, channel_options);
 }
 
 /**
@@ -383,14 +383,14 @@ export function fill_surface_turbulence_wasm(data, descriptor, base_x, base_y, o
  * @param {boolean} find_color
  * @returns {boolean}
  */
-export function get_surface_color_bounds_rectangle_wasm(out, data, descriptor, mask, color, find_color) {
+export function get_bitmap_color_bounds_rectangle_wasm(out, data, descriptor, mask, color, find_color) {
     var ptr0 = passArrayF64ToWasm0(out, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
     const ptr1 = passArray8ToWasm0(data, wasm.__wbindgen_malloc);
     const len1 = WASM_VECTOR_LEN;
     const ptr2 = passArrayF64ToWasm0(descriptor, wasm.__wbindgen_malloc);
     const len2 = WASM_VECTOR_LEN;
-    const ret = wasm.get_surface_color_bounds_rectangle_wasm(ptr0, len0, out, ptr1, len1, ptr2, len2, mask, color, find_color);
+    const ret = wasm.get_bitmap_color_bounds_rectangle_wasm(ptr0, len0, out, ptr1, len1, ptr2, len2, mask, color, find_color);
     return ret !== 0;
 }
 
@@ -402,10 +402,10 @@ export function get_surface_color_bounds_rectangle_wasm(out, data, descriptor, m
  * @param {number} channel_tolerance
  * @returns {number}
  */
-export function get_surface_coverage_wasm(data, width, height, background_color, channel_tolerance) {
+export function get_bitmap_coverage_wasm(data, width, height, background_color, channel_tolerance) {
     const ptr0 = passArray8ToWasm0(data, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.get_surface_coverage_wasm(ptr0, len0, width, height, background_color, channel_tolerance);
+    const ret = wasm.get_bitmap_coverage_wasm(ptr0, len0, width, height, background_color, channel_tolerance);
     return ret;
 }
 
@@ -414,14 +414,14 @@ export function get_surface_coverage_wasm(data, width, height, background_color,
  * @param {Uint8Array} data
  * @param {Float64Array} descriptor
  */
-export function get_surface_histogram_wasm(out, data, descriptor) {
+export function get_bitmap_histogram_wasm(out, data, descriptor) {
     var ptr0 = passArrayF64ToWasm0(out, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
     const ptr1 = passArray8ToWasm0(data, wasm.__wbindgen_malloc);
     const len1 = WASM_VECTOR_LEN;
     const ptr2 = passArrayF64ToWasm0(descriptor, wasm.__wbindgen_malloc);
     const len2 = WASM_VECTOR_LEN;
-    wasm.get_surface_histogram_wasm(ptr0, len0, out, ptr1, len1, ptr2, len2);
+    wasm.get_bitmap_histogram_wasm(ptr0, len0, out, ptr1, len1, ptr2, len2);
 }
 
 /**
@@ -434,14 +434,14 @@ export function get_surface_histogram_wasm(out, data, descriptor) {
  * @param {number} other_height
  * @param {number} channel_tolerance
  */
-export function get_surface_mismatch_wasm(out, source_data, source_width, source_height, other_data, other_width, other_height, channel_tolerance) {
+export function get_bitmap_mismatch_wasm(out, source_data, source_width, source_height, other_data, other_width, other_height, channel_tolerance) {
     var ptr0 = passArrayF64ToWasm0(out, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
     const ptr1 = passArray8ToWasm0(source_data, wasm.__wbindgen_malloc);
     const len1 = WASM_VECTOR_LEN;
     const ptr2 = passArray8ToWasm0(other_data, wasm.__wbindgen_malloc);
     const len2 = WASM_VECTOR_LEN;
-    wasm.get_surface_mismatch_wasm(ptr0, len0, out, ptr1, len1, source_width, source_height, ptr2, len2, other_width, other_height, channel_tolerance);
+    wasm.get_bitmap_mismatch_wasm(ptr0, len0, out, ptr1, len1, source_width, source_height, ptr2, len2, other_width, other_height, channel_tolerance);
 }
 
 /**
@@ -456,7 +456,7 @@ export function get_surface_mismatch_wasm(out, source_data, source_width, source
  * @param {Uint8Array} alpha_data
  * @param {Float64Array} alpha_descriptor
  */
-export function merge_surface_channels_wasm(out_data, out_descriptor, red_data, red_descriptor, green_data, green_descriptor, blue_data, blue_descriptor, alpha_data, alpha_descriptor) {
+export function merge_bitmap_channels_wasm(out_data, out_descriptor, red_data, red_descriptor, green_data, green_descriptor, blue_data, blue_descriptor, alpha_data, alpha_descriptor) {
     var ptr0 = passArray8ToWasm0(out_data, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
     const ptr1 = passArrayF64ToWasm0(out_descriptor, wasm.__wbindgen_malloc);
@@ -477,7 +477,7 @@ export function merge_surface_channels_wasm(out_data, out_descriptor, red_data, 
     const len8 = WASM_VECTOR_LEN;
     const ptr9 = passArrayF64ToWasm0(alpha_descriptor, wasm.__wbindgen_malloc);
     const len9 = WASM_VECTOR_LEN;
-    wasm.merge_surface_channels_wasm(ptr0, len0, out_data, ptr1, len1, ptr2, len2, ptr3, len3, ptr4, len4, ptr5, len5, ptr6, len6, ptr7, len7, ptr8, len8, ptr9, len9);
+    wasm.merge_bitmap_channels_wasm(ptr0, len0, out_data, ptr1, len1, ptr2, len2, ptr3, len3, ptr4, len4, ptr5, len5, ptr6, len6, ptr7, len7, ptr8, len8, ptr9, len9);
 }
 
 /**
@@ -485,12 +485,12 @@ export function merge_surface_channels_wasm(out_data, out_descriptor, red_data, 
  * @param {Float64Array} descriptor
  * @param {number} factor
  */
-export function multiply_surface_alpha_wasm(data, descriptor, factor) {
+export function multiply_bitmap_alpha_wasm(data, descriptor, factor) {
     var ptr0 = passArray8ToWasm0(data, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
     const ptr1 = passArrayF64ToWasm0(descriptor, wasm.__wbindgen_malloc);
     const len1 = WASM_VECTOR_LEN;
-    wasm.multiply_surface_alpha_wasm(ptr0, len0, data, ptr1, len1, factor);
+    wasm.multiply_bitmap_alpha_wasm(ptr0, len0, data, ptr1, len1, factor);
 }
 
 /**
@@ -499,14 +499,14 @@ export function multiply_surface_alpha_wasm(data, descriptor, factor) {
  * @param {Float64Array} source_descriptor
  * @param {number} block_size
  */
-export function pixelate_surface_wasm(out, source_data, source_descriptor, block_size) {
+export function pixelate_bitmap_wasm(out, source_data, source_descriptor, block_size) {
     var ptr0 = passArray8ToWasm0(out, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
     const ptr1 = passArray8ToWasm0(source_data, wasm.__wbindgen_malloc);
     const len1 = WASM_VECTOR_LEN;
     const ptr2 = passArrayF64ToWasm0(source_descriptor, wasm.__wbindgen_malloc);
     const len2 = WASM_VECTOR_LEN;
-    wasm.pixelate_surface_wasm(ptr0, len0, out, ptr1, len1, ptr2, len2, block_size);
+    wasm.pixelate_bitmap_wasm(ptr0, len0, out, ptr1, len1, ptr2, len2, block_size);
 }
 
 /**
@@ -514,12 +514,12 @@ export function pixelate_surface_wasm(out, source_data, source_descriptor, block
  * @param {Uint8Array} source
  * @param {number} length
  */
-export function premultiply_surface_pixels_wasm(out, source, length) {
+export function premultiply_bitmap_pixels_wasm(out, source, length) {
     var ptr0 = passArray8ToWasm0(out, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
     const ptr1 = passArray8ToWasm0(source, wasm.__wbindgen_malloc);
     const len1 = WASM_VECTOR_LEN;
-    wasm.premultiply_surface_pixels_wasm(ptr0, len0, out, ptr1, len1, length);
+    wasm.premultiply_bitmap_pixels_wasm(ptr0, len0, out, ptr1, len1, length);
 }
 
 /**
@@ -527,21 +527,21 @@ export function premultiply_surface_pixels_wasm(out, source, length) {
  * @param {Float64Array} descriptor
  * @param {number} alpha
  */
-export function set_surface_alpha_wasm(data, descriptor, alpha) {
+export function set_bitmap_alpha_wasm(data, descriptor, alpha) {
     var ptr0 = passArray8ToWasm0(data, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
     const ptr1 = passArrayF64ToWasm0(descriptor, wasm.__wbindgen_malloc);
     const len1 = WASM_VECTOR_LEN;
-    wasm.set_surface_alpha_wasm(ptr0, len0, data, ptr1, len1, alpha);
+    wasm.set_bitmap_alpha_wasm(ptr0, len0, data, ptr1, len1, alpha);
 }
 
 /**
  * @param {Float64Array} out
  */
-export function set_surface_color_matrix_identity_wasm(out) {
+export function set_bitmap_color_matrix_identity_wasm(out) {
     var ptr0 = passArrayF64ToWasm0(out, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
-    wasm.set_surface_color_matrix_identity_wasm(ptr0, len0, out);
+    wasm.set_bitmap_color_matrix_identity_wasm(ptr0, len0, out);
 }
 
 /**
@@ -549,12 +549,12 @@ export function set_surface_color_matrix_identity_wasm(out) {
  * @param {Uint8Array} source
  * @param {number} length
  */
-export function unpremultiply_surface_pixels_wasm(out, source, length) {
+export function unpremultiply_bitmap_pixels_wasm(out, source, length) {
     var ptr0 = passArray8ToWasm0(out, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
     const ptr1 = passArray8ToWasm0(source, wasm.__wbindgen_malloc);
     const len1 = WASM_VECTOR_LEN;
-    wasm.unpremultiply_surface_pixels_wasm(ptr0, len0, out, ptr1, len1, length);
+    wasm.unpremultiply_bitmap_pixels_wasm(ptr0, len0, out, ptr1, len1, length);
 }
 function __wbg_get_imports() {
     const import0 = {
@@ -574,7 +574,7 @@ function __wbg_get_imports() {
     };
     return {
         __proto__: null,
-        "./surface_wasm_bg.js": import0,
+        "./bitmap_wasm_bg.js": import0,
     };
 }
 
@@ -744,7 +744,7 @@ async function __wbg_init(module_or_path) {
     }
 
     if (module_or_path === undefined) {
-        module_or_path = new URL('surface_wasm_bg.wasm', import.meta.url);
+        module_or_path = new URL('bitmap_wasm_bg.wasm', import.meta.url);
     }
     const imports = __wbg_get_imports();
 

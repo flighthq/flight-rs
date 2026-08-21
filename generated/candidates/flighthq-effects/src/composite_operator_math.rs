@@ -103,6 +103,28 @@ pub fn get_composite_operator_factors(
             unreachable!("exhaustive TypeScript switch completed without exiting");
         }
     }
-    out[0.0_f64 as usize] = fa;
-    out[1.0_f64 as usize] = fb;
+    {
+        let __flight_index = (0.0_f64) as usize;
+        let __flight_value = fa;
+        match out {
+            crate::FlightUnion2::A(values) => {
+                values[__flight_index] = __flight_value;
+            }
+            crate::FlightUnion2::B(values) => {
+                values[__flight_index] = (__flight_value) as f32;
+            }
+        };
+    };
+    {
+        let __flight_index = (1.0_f64) as usize;
+        let __flight_value = fb;
+        match out {
+            crate::FlightUnion2::A(values) => {
+                values[__flight_index] = __flight_value;
+            }
+            crate::FlightUnion2::B(values) => {
+                values[__flight_index] = (__flight_value) as f32;
+            }
+        };
+    };
 }

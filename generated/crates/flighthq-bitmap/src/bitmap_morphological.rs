@@ -25,7 +25,7 @@ fn apply_morphological(out: &mut Vec<u8>, source: &BitmapRegion, radius: f64, di
     let h = source.height;
     let bitmap_width = source.bitmap.width;
     let bitmap_height = source.bitmap.height;
-    let mut identity = if dilate { 0.0_f64 } else { 255.0_f64 };
+    let identity = if dilate { 0.0_f64 } else { 255.0_f64 };
     {
         let mut py = 0.0_f64;
         while (py < h) {

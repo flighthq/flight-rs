@@ -54,7 +54,7 @@ pub fn fill_bitmap_noise(
                 let mut px = 0.0_f64;
                 while (px < dest.width) {
                     state = next_random_state(state);
-                    let mut r = (lo + ((state / 4294967296.0_f64) * span));
+                    let r = (lo + ((state / 4294967296.0_f64) * span));
                     let mut g = r;
                     let mut b = r;
                     if (!gray_scale) {

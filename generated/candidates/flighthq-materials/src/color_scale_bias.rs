@@ -170,6 +170,7 @@ pub fn copy_color_scale_bias_to_arrays(
 pub fn create_color_scale_bias(opts: Option<FlightPartialRecord2155237004>) -> ColorScaleBias {
     return create_entity(Some(ColorScaleBias {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         red_scale: (opts.as_ref().and_then(|value| value.red_scale))
             .clone()
@@ -302,6 +303,7 @@ pub fn is_identity_color_scale_bias(
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 alpha_scale: __flight_source.alpha_scale,
                 alpha_bias: __flight_source.alpha_bias,
                 blue_scale: __flight_source.blue_scale,
@@ -322,6 +324,7 @@ pub fn is_identity_color_scale_bias(
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 alpha_scale: __flight_source.alpha_scale,
                 alpha_bias: __flight_source.alpha_bias,
                 blue_scale: __flight_source.blue_scale,
@@ -401,7 +404,7 @@ pub fn set_color_scale_bias_bias_rgba(out: &mut ColorScaleBiasLike, value: f64) 
 
 // Source: upstream/packages/materials/src/colorScaleBias.ts:172 (sha256:eec65f3b731660a3f6af839a364b180b37529dba0649340dff0c9d7ea026514a)
 pub fn set_color_scale_bias_identity(out: &mut ColorScaleBias) -> () {
-    (|| -> () {
+    {
         out.red_scale = 1.0_f64;
         out.green_scale = 1.0_f64;
         out.blue_scale = 1.0_f64;
@@ -410,7 +413,7 @@ pub fn set_color_scale_bias_identity(out: &mut ColorScaleBias) -> () {
         out.green_bias = 0.0_f64;
         out.blue_bias = 0.0_f64;
         out.alpha_bias = 0.0_f64;
-    })();
+    };
 }
 
 // Source: upstream/packages/materials/src/colorScaleBias.ts:176 (sha256:446724a7984be7aed29fb9732c2e9edc32186a3f70c837ee71601ce9bb2148df)

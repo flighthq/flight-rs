@@ -36,6 +36,8 @@ pub struct ApplicationRenderView<State, Target> {
     pub __flight_identity: std::sync::Arc<()>,
     #[doc(hidden)]
     pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub render_state: State,
     pub render_target: Target,
     pub viewport: Viewport,
@@ -46,11 +48,16 @@ impl<State, Target> PartialEq for ApplicationRenderView<State, Target> {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
-impl<State: Clone, Target: Clone> crate::FlightEntity for ApplicationRenderView<State, Target> {
+impl<State: Clone + Send + Sync + 'static, Target: Clone + Send + Sync + 'static>
+    crate::FlightEntity for ApplicationRenderView<State, Target>
+{
     fn __flight_entity_runtime(
         &self,
     ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
         &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
     }
     fn __flight_fresh_clone(&self) -> Self {
         let mut cloned = self.clone();

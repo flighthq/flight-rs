@@ -24,6 +24,7 @@ pub fn clone_ambient_light(source: &AmbientLight) -> AmbientLight {
 pub fn create_ambient_light(options: Option<AmbientLightOptions>) -> AmbientLight {
     return create_entity(Some(AmbientLight {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         color: (options.as_ref().and_then(|value| value.color))
             .clone()

@@ -16,6 +16,7 @@ use flighthq_types::{
 pub fn create_frustum() -> Frustum {
     return create_entity(Some(Frustum {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         bottom: create_plane(None, None, None, None),
         far: create_plane(None, None, None, None),
@@ -92,6 +93,7 @@ pub fn is_frustum_containing_point(frustum: &FrustumLike, point: &Vector3Like) -
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 a: __flight_source.a,
                 b: __flight_source.b,
                 c: __flight_source.c,
@@ -108,6 +110,7 @@ pub fn is_frustum_containing_point(frustum: &FrustumLike, point: &Vector3Like) -
                     __flight_entity_runtime: std::sync::Arc::clone(
                         &__flight_source.__flight_entity_runtime,
                     ),
+                    __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                     a: __flight_source.a,
                     b: __flight_source.b,
                     c: __flight_source.c,
@@ -124,6 +127,7 @@ pub fn is_frustum_containing_point(frustum: &FrustumLike, point: &Vector3Like) -
                     __flight_entity_runtime: std::sync::Arc::clone(
                         &__flight_source.__flight_entity_runtime,
                     ),
+                    __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                     a: __flight_source.a,
                     b: __flight_source.b,
                     c: __flight_source.c,
@@ -140,6 +144,7 @@ pub fn is_frustum_containing_point(frustum: &FrustumLike, point: &Vector3Like) -
                     __flight_entity_runtime: std::sync::Arc::clone(
                         &__flight_source.__flight_entity_runtime,
                     ),
+                    __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                     a: __flight_source.a,
                     b: __flight_source.b,
                     c: __flight_source.c,
@@ -156,6 +161,7 @@ pub fn is_frustum_containing_point(frustum: &FrustumLike, point: &Vector3Like) -
                     __flight_entity_runtime: std::sync::Arc::clone(
                         &__flight_source.__flight_entity_runtime,
                     ),
+                    __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                     a: __flight_source.a,
                     b: __flight_source.b,
                     c: __flight_source.c,
@@ -172,6 +178,7 @@ pub fn is_frustum_containing_point(frustum: &FrustumLike, point: &Vector3Like) -
                     __flight_entity_runtime: std::sync::Arc::clone(
                         &__flight_source.__flight_entity_runtime,
                     ),
+                    __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                     a: __flight_source.a,
                     b: __flight_source.b,
                     c: __flight_source.c,
@@ -195,6 +202,7 @@ pub fn is_frustum_intersecting_aabb(frustum: &FrustumLike, aabb: &AabbLike) -> b
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 a: __flight_source.a,
                 b: __flight_source.b,
                 c: __flight_source.c,
@@ -210,6 +218,7 @@ pub fn is_frustum_intersecting_aabb(frustum: &FrustumLike, aabb: &AabbLike) -> b
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 a: __flight_source.a,
                 b: __flight_source.b,
                 c: __flight_source.c,
@@ -225,6 +234,7 @@ pub fn is_frustum_intersecting_aabb(frustum: &FrustumLike, aabb: &AabbLike) -> b
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 a: __flight_source.a,
                 b: __flight_source.b,
                 c: __flight_source.c,
@@ -240,6 +250,7 @@ pub fn is_frustum_intersecting_aabb(frustum: &FrustumLike, aabb: &AabbLike) -> b
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 a: __flight_source.a,
                 b: __flight_source.b,
                 c: __flight_source.c,
@@ -255,6 +266,7 @@ pub fn is_frustum_intersecting_aabb(frustum: &FrustumLike, aabb: &AabbLike) -> b
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 a: __flight_source.a,
                 b: __flight_source.b,
                 c: __flight_source.c,
@@ -270,6 +282,7 @@ pub fn is_frustum_intersecting_aabb(frustum: &FrustumLike, aabb: &AabbLike) -> b
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 a: __flight_source.a,
                 b: __flight_source.b,
                 c: __flight_source.c,
@@ -294,6 +307,7 @@ pub fn is_frustum_intersecting_sphere(frustum: &FrustumLike, sphere: &BoundingSp
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 a: __flight_source.a,
                 b: __flight_source.b,
                 c: __flight_source.c,
@@ -307,6 +321,7 @@ pub fn is_frustum_intersecting_sphere(frustum: &FrustumLike, sphere: &BoundingSp
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 x: __flight_source.x,
                 y: __flight_source.y,
                 z: __flight_source.z,
@@ -321,6 +336,7 @@ pub fn is_frustum_intersecting_sphere(frustum: &FrustumLike, sphere: &BoundingSp
                     __flight_entity_runtime: std::sync::Arc::clone(
                         &__flight_source.__flight_entity_runtime,
                     ),
+                    __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                     a: __flight_source.a,
                     b: __flight_source.b,
                     c: __flight_source.c,
@@ -334,6 +350,7 @@ pub fn is_frustum_intersecting_sphere(frustum: &FrustumLike, sphere: &BoundingSp
                     __flight_entity_runtime: std::sync::Arc::clone(
                         &__flight_source.__flight_entity_runtime,
                     ),
+                    __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                     x: __flight_source.x,
                     y: __flight_source.y,
                     z: __flight_source.z,
@@ -348,6 +365,7 @@ pub fn is_frustum_intersecting_sphere(frustum: &FrustumLike, sphere: &BoundingSp
                     __flight_entity_runtime: std::sync::Arc::clone(
                         &__flight_source.__flight_entity_runtime,
                     ),
+                    __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                     a: __flight_source.a,
                     b: __flight_source.b,
                     c: __flight_source.c,
@@ -361,6 +379,7 @@ pub fn is_frustum_intersecting_sphere(frustum: &FrustumLike, sphere: &BoundingSp
                     __flight_entity_runtime: std::sync::Arc::clone(
                         &__flight_source.__flight_entity_runtime,
                     ),
+                    __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                     x: __flight_source.x,
                     y: __flight_source.y,
                     z: __flight_source.z,
@@ -375,6 +394,7 @@ pub fn is_frustum_intersecting_sphere(frustum: &FrustumLike, sphere: &BoundingSp
                     __flight_entity_runtime: std::sync::Arc::clone(
                         &__flight_source.__flight_entity_runtime,
                     ),
+                    __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                     a: __flight_source.a,
                     b: __flight_source.b,
                     c: __flight_source.c,
@@ -388,6 +408,7 @@ pub fn is_frustum_intersecting_sphere(frustum: &FrustumLike, sphere: &BoundingSp
                     __flight_entity_runtime: std::sync::Arc::clone(
                         &__flight_source.__flight_entity_runtime,
                     ),
+                    __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                     x: __flight_source.x,
                     y: __flight_source.y,
                     z: __flight_source.z,
@@ -402,6 +423,7 @@ pub fn is_frustum_intersecting_sphere(frustum: &FrustumLike, sphere: &BoundingSp
                     __flight_entity_runtime: std::sync::Arc::clone(
                         &__flight_source.__flight_entity_runtime,
                     ),
+                    __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                     a: __flight_source.a,
                     b: __flight_source.b,
                     c: __flight_source.c,
@@ -415,6 +437,7 @@ pub fn is_frustum_intersecting_sphere(frustum: &FrustumLike, sphere: &BoundingSp
                     __flight_entity_runtime: std::sync::Arc::clone(
                         &__flight_source.__flight_entity_runtime,
                     ),
+                    __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                     x: __flight_source.x,
                     y: __flight_source.y,
                     z: __flight_source.z,
@@ -429,6 +452,7 @@ pub fn is_frustum_intersecting_sphere(frustum: &FrustumLike, sphere: &BoundingSp
                     __flight_entity_runtime: std::sync::Arc::clone(
                         &__flight_source.__flight_entity_runtime,
                     ),
+                    __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                     a: __flight_source.a,
                     b: __flight_source.b,
                     c: __flight_source.c,
@@ -442,6 +466,7 @@ pub fn is_frustum_intersecting_sphere(frustum: &FrustumLike, sphere: &BoundingSp
                     __flight_entity_runtime: std::sync::Arc::clone(
                         &__flight_source.__flight_entity_runtime,
                     ),
+                    __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                     x: __flight_source.x,
                     y: __flight_source.y,
                     z: __flight_source.z,
@@ -468,7 +493,7 @@ pub fn set_frustum_from_matrix4(out: &mut FrustumLike, view_projection: &Matrix4
     let r31 = (view_projection.m[7.0_f64 as usize] as f64);
     let r32 = (view_projection.m[11.0_f64 as usize] as f64);
     let r33 = (view_projection.m[15.0_f64 as usize] as f64);
-    (|| -> () {
+    {
         let l = ((((r30 + r00) * (r30 + r00)) + ((r31 + r01) * (r31 + r01)))
             + ((r32 + r02) * (r32 + r02)))
             .sqrt();
@@ -484,8 +509,8 @@ pub fn set_frustum_from_matrix4(out: &mut FrustumLike, view_projection: &Matrix4
             out.left.c = (r32 + r02);
             out.left.d = (r33 + r03);
         }
-    })();
-    (|| -> () {
+    };
+    {
         let l = ((((r30 - r00) * (r30 - r00)) + ((r31 - r01) * (r31 - r01)))
             + ((r32 - r02) * (r32 - r02)))
             .sqrt();
@@ -501,8 +526,8 @@ pub fn set_frustum_from_matrix4(out: &mut FrustumLike, view_projection: &Matrix4
             out.right.c = (r32 - r02);
             out.right.d = (r33 - r03);
         }
-    })();
-    (|| -> () {
+    };
+    {
         let l = ((((r30 + r10) * (r30 + r10)) + ((r31 + r11) * (r31 + r11)))
             + ((r32 + r12) * (r32 + r12)))
             .sqrt();
@@ -518,8 +543,8 @@ pub fn set_frustum_from_matrix4(out: &mut FrustumLike, view_projection: &Matrix4
             out.bottom.c = (r32 + r12);
             out.bottom.d = (r33 + r13);
         }
-    })();
-    (|| -> () {
+    };
+    {
         let l = ((((r30 - r10) * (r30 - r10)) + ((r31 - r11) * (r31 - r11)))
             + ((r32 - r12) * (r32 - r12)))
             .sqrt();
@@ -535,8 +560,8 @@ pub fn set_frustum_from_matrix4(out: &mut FrustumLike, view_projection: &Matrix4
             out.top.c = (r32 - r12);
             out.top.d = (r33 - r13);
         }
-    })();
-    (|| -> () {
+    };
+    {
         let l = ((((r30 + r20) * (r30 + r20)) + ((r31 + r21) * (r31 + r21)))
             + ((r32 + r22) * (r32 + r22)))
             .sqrt();
@@ -552,8 +577,8 @@ pub fn set_frustum_from_matrix4(out: &mut FrustumLike, view_projection: &Matrix4
             out.near.c = (r32 + r22);
             out.near.d = (r33 + r23);
         }
-    })();
-    (|| -> () {
+    };
+    {
         let l = ((((r30 - r20) * (r30 - r20)) + ((r31 - r21) * (r31 - r21)))
             + ((r32 - r22) * (r32 - r22)))
             .sqrt();
@@ -569,7 +594,7 @@ pub fn set_frustum_from_matrix4(out: &mut FrustumLike, view_projection: &Matrix4
             out.far.c = (r32 - r22);
             out.far.d = (r33 - r23);
         }
-    })();
+    };
 }
 
 // Source: upstream/packages/geometry/src/frustum.ts:165 (sha256:ef03575556c4decc84d17785e2278df853cd02a8d00e53b1ecc96286a498666c)

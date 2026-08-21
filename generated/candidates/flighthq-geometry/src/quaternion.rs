@@ -44,6 +44,7 @@ pub fn create_quaternion(
 ) -> Quaternion {
     return create_entity(Some(Quaternion {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         x: (x).clone().unwrap_or(0.0_f64),
         y: (y).clone().unwrap_or(0.0_f64),
@@ -600,7 +601,7 @@ pub fn set_quaternion_look_rotation(
 pub fn slerp_quaternion(
     out: &mut QuaternionLike,
     a: &QuaternionLike,
-    b: &mut QuaternionLike,
+    b: &QuaternionLike,
     t: f64,
 ) -> () {
     let ax = a.x;

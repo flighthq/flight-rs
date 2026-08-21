@@ -40,7 +40,7 @@ pub fn advance_animation_player(player: &mut AnimationPlayer, dt: f64) -> () {
         player.time = 0.0_f64;
         return;
     }
-    let mut from_time = player.time;
+    let from_time = player.time;
     let mut time = (player.time + (dt * player.speed));
     if (!player.loop_) {
         if (time >= duration) {
@@ -152,6 +152,7 @@ pub fn advance_animation_player(player: &mut AnimationPlayer, dt: f64) -> () {
 pub fn clone_animation_player(player: &AnimationPlayer) -> AnimationPlayer {
     return create_entity(Some(AnimationPlayer {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         clip: (player.clip).clone(),
         loop_: player.loop_,
@@ -173,6 +174,7 @@ pub fn create_animation_player(
 ) -> AnimationPlayer {
     return create_entity(Some(AnimationPlayer {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         clip: (*clip).clone(),
         loop_: (opts.as_ref().and_then(|value| value.loop_))

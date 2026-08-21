@@ -20,6 +20,7 @@ pub fn get_camera2_d_visible_bounds(camera: &Camera2D, out: &mut RectangleLike) 
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             a: __flight_source.a,
             b: __flight_source.b,
             c: __flight_source.c,
@@ -49,6 +50,7 @@ pub fn get_camera2_d_visible_bounds(camera: &Camera2D, out: &mut RectangleLike) 
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 a: __flight_source.a,
                 b: __flight_source.b,
                 c: __flight_source.c,

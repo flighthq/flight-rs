@@ -34,14 +34,28 @@ pub fn select_scene3_d_forward_lights(
     let points = (lights.point).clone();
     let spots = (lights.spot).clone();
     let point_count = select_strongest_lights(
-        &(points),
+        &(((points).clone()).as_ref().map(|__flight_value| {
+            (__flight_value)
+                .iter()
+                .map(|__flight_value| {
+                    crate::FlightUnion2::<PointLight, SpotLight>::A((__flight_value).clone())
+                })
+                .collect::<Vec<_>>()
+        })),
         bounds,
         &mut (*SCRATCH_SELECTED_POINT_LIGHTS.lock().unwrap()),
         &mut (*SCRATCH_SELECTED_POINT_INDICES.lock().unwrap()),
         &mut (*SCRATCH_SELECTED_POINT_SCORES.lock().unwrap()),
     );
     let spot_count = select_strongest_lights(
-        &(spots),
+        &(((spots).clone()).as_ref().map(|__flight_value| {
+            (__flight_value)
+                .iter()
+                .map(|__flight_value| {
+                    crate::FlightUnion2::<PointLight, SpotLight>::B((__flight_value).clone())
+                })
+                .collect::<Vec<_>>()
+        })),
         bounds,
         &mut (*SCRATCH_SELECTED_SPOT_LIGHTS.lock().unwrap()),
         &mut (*SCRATCH_SELECTED_SPOT_INDICES.lock().unwrap()),
@@ -55,8 +69,12 @@ pub fn select_scene3_d_forward_lights(
         while (i < point_count) {
             out.indices
                 .push(((*SCRATCH_SELECTED_POINT_INDICES.lock().unwrap())[i as usize] as f64));
-            out.point
-                .push((*SCRATCH_SELECTED_POINT_LIGHTS.lock().unwrap())[i as usize].clone());
+            out.point.push(
+                match (*SCRATCH_SELECTED_POINT_LIGHTS.lock().unwrap())[i as usize].clone() {
+                    crate::FlightUnion2::A(value) => value,
+                    crate::FlightUnion2::B(_) => panic!("TypeScript union narrowing failed"),
+                },
+            );
             {
                 i += 1.0;
                 i
@@ -71,8 +89,12 @@ pub fn select_scene3_d_forward_lights(
                     ((*SCRATCH_SELECTED_SPOT_INDICES.lock().unwrap())[i as usize] as f64),
                 )) as f64,
             );
-            out.spot
-                .push((*SCRATCH_SELECTED_SPOT_LIGHTS.lock().unwrap())[i as usize].clone());
+            out.spot.push(
+                match (*SCRATCH_SELECTED_SPOT_LIGHTS.lock().unwrap())[i as usize].clone() {
+                    crate::FlightUnion2::A(_) => panic!("TypeScript union narrowing failed"),
+                    crate::FlightUnion2::B(value) => value,
+                },
+            );
             {
                 i += 1.0;
                 i
@@ -97,7 +119,7 @@ fn select_strongest_lights(
         let mut input_index = 0.0_f64;
         while (input_index < (lights.as_ref().unwrap().len() as f64)) {
             let light = lights.as_ref().unwrap()[input_index as usize].clone();
-            let score = get_light_contribution_at_bounding_sphere(&((light).clone()), bounds);
+            let score = get_light_contribution_at_bounding_sphere(&(light), bounds);
             if (!(score > 0.0_f64)) {
                 {
                     input_index += 1.0;

@@ -23,14 +23,7 @@ pub fn disable_socket_guards() -> () {
 
 // Source: upstream/packages/socket/src/enableSocketGuards.ts:18 (sha256:5c749e4b47204918174a445a91c316505ad9750227eb4539ee4ec7d05edd62e7)
 pub fn enable_socket_guards() -> () {
-    set_socket_guard(
-        &(Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-            move |__flight_argument_0: SocketGuardNotice| -> () {
-                warn_on_socket_misuse(&__flight_argument_0)
-            },
-        )
-            as Box<dyn FnMut(SocketGuardNotice) -> () + Send + 'static>)))),
-    );
+    set_socket_guard(&(warn_on_socket_misuse));
     _ENABLED.store(true, std::sync::atomic::Ordering::Relaxed);
 }
 

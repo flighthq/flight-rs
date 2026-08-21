@@ -9,60 +9,22 @@
 use flighthq_entity::create_entity;
 use flighthq_geometry::{inverse_matrix, multiply_matrix};
 use flighthq_math::DEG_TO_RAD as deg_to_rad_constant;
-use flighthq_types::{
-    Attachment2D, AttachmentSkin2D, Bone2D, MatrixLike, Skeleton2D, Skeleton2DSlotDeform, Slot2D,
-    TransformInherit2D,
-};
+use flighthq_types::{AttachmentSkin2D, Bone2D, MatrixLike, Skeleton2D, Slot2D};
 
 // Source: upstream/packages/skeleton2d/src/skeleton2d.ts:7 (sha256:43430cb9fcc08b2602c28ac39599e5c4ef0b3c11cc5d023d40daacc2bdcf1160)
 const MATRIX_STRIDE: f64 = 6.0_f64;
 
 // Source: upstream/packages/skeleton2d/src/skeleton2d.ts:12 (sha256:fae092d848c1b0a2f88b5e45ce58412fd9d0db24fd8c106ed23a4d4eb51c0808)
-#[derive(Clone, Default)]
-struct ClosureContextRecord1 {
-    __flight_identity: std::sync::Arc<()>,
-    length: f64,
-    name: Option<String>,
-    parent_index: f64,
-    rotation: f64,
-    scale_x: f64,
-    scale_y: f64,
-    shear_x: f64,
-    shear_y: f64,
-    transform_mode: TransformInherit2D,
-    x: f64,
-    y: f64,
-}
-impl PartialEq for ClosureContextRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-#[derive(Clone, Default)]
-struct ClosureContextRecord2 {
-    __flight_identity: std::sync::Arc<()>,
-    attachment: Option<Attachment2D>,
-    bone_index: f64,
-    color: Option<f64>,
-    deform: Option<Skeleton2DSlotDeform>,
-    name: Option<String>,
-}
-impl PartialEq for ClosureContextRecord2 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
 pub fn clone_skeleton2_d(skeleton: &Skeleton2D) -> Skeleton2D {
     return create_entity(Some(Skeleton2D {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         bone_matrices: ((skeleton.bone_matrices).clone()).clone(),
         bones: ((skeleton.bones).clone())
             .iter()
             .cloned()
-            .map(|bone: Bone2D| -> ClosureContextRecord1 { (bone).clone() })
+            .map(|bone: Bone2D| -> Bone2D { (bone).clone() })
             .collect::<Vec<_>>(),
         inverse_bind_matrices: ((skeleton.inverse_bind_matrices).clone()).clone(),
         slots: if (((skeleton.slots).clone()).is_none()) || (((skeleton.slots).clone()).is_none()) {
@@ -72,7 +34,7 @@ pub fn clone_skeleton2_d(skeleton: &Skeleton2D) -> Skeleton2D {
                 (skeleton.slots.as_ref().unwrap())
                     .iter()
                     .cloned()
-                    .map(|s: Slot2D| -> ClosureContextRecord2 { (s).clone() })
+                    .map(|s: Slot2D| -> Slot2D { (s).clone() })
                     .collect::<Vec<_>>(),
             )
         },
@@ -249,6 +211,7 @@ pub fn create_skeleton2_d(bones: &Vec<Bone2D>, slots: Option<Vec<Slot2D>>) -> Sk
     let count = (bones.len() as f64);
     return create_entity(Some(Skeleton2D {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         bone_matrices: vec![0.0_f32; (count * MATRIX_STRIDE) as usize],
         bones: (*bones).clone(),
@@ -475,6 +438,7 @@ static _SCRATCH_A: std::sync::LazyLock<std::sync::Mutex<MatrixLike>> =
     std::sync::LazyLock::new(|| {
         std::sync::Mutex::new(MatrixLike {
             __flight_identity: std::sync::Arc::new(()),
+            __flight_entity_snapshot: Default::default(),
             __flight_entity_runtime: Default::default(),
             a: 1.0_f64,
             b: 0.0_f64,
@@ -490,6 +454,7 @@ static _SCRATCH_B: std::sync::LazyLock<std::sync::Mutex<MatrixLike>> =
     std::sync::LazyLock::new(|| {
         std::sync::Mutex::new(MatrixLike {
             __flight_identity: std::sync::Arc::new(()),
+            __flight_entity_snapshot: Default::default(),
             __flight_entity_runtime: Default::default(),
             a: 1.0_f64,
             b: 0.0_f64,
@@ -505,6 +470,7 @@ static _SCRATCH_C: std::sync::LazyLock<std::sync::Mutex<MatrixLike>> =
     std::sync::LazyLock::new(|| {
         std::sync::Mutex::new(MatrixLike {
             __flight_identity: std::sync::Arc::new(()),
+            __flight_entity_snapshot: Default::default(),
             __flight_entity_runtime: Default::default(),
             a: 1.0_f64,
             b: 0.0_f64,

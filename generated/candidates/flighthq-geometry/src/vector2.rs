@@ -61,6 +61,7 @@ pub fn copy_vector2(out: &mut Vector2Like, source: &Vector2Like) -> () {
 pub fn create_vector2(x: Option<f64>, y: Option<f64>) -> Vector2 {
     return create_entity(Some(Vector2 {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         x: (x).clone().unwrap_or(0.0_f64),
         y: (y).clone().unwrap_or(0.0_f64),
@@ -70,10 +71,10 @@ pub fn create_vector2(x: Option<f64>, y: Option<f64>) -> Vector2 {
 // Source: upstream/packages/geometry/src/vector2.ts:62 (sha256:9980e29a450311b3962b3822f71230f3ed03764f8812a1f96365eecf5563a220)
 pub fn create_vector2_from_polar(length: f64, angle: f64) -> Vector2 {
     let mut out = create_vector2(None, None);
-    (|| -> () {
+    {
         out.x = (length * (angle).cos());
         out.y = (length * (angle).sin());
-    })();
+    };
     return out;
 }
 

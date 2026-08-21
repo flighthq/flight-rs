@@ -32,6 +32,7 @@ pub fn clone_animation_clip(clip: &AnimationClip) -> AnimationClip {
         .collect::<Vec<_>>();
     return create_entity(Some(AnimationClip {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         channels: (channels).clone(),
         duration: clip.duration,
@@ -46,6 +47,7 @@ pub fn create_animation_channel(
 ) -> AnimationChannel {
     return create_entity(Some(AnimationChannel {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         target_ref: (target_ref).clone(),
         track: (*track).clone(),
@@ -85,6 +87,7 @@ pub fn create_animation_clip(
     }
     return create_entity(Some(AnimationClip {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         channels: (*channels).clone(),
         duration: (duration).clone().unwrap_or(computed_duration),
@@ -101,6 +104,7 @@ pub fn create_animation_clip_event(
     let payload = payload.unwrap_or(crate::FlightValue::Null);
     return create_entity(Some(AnimationClipEvent {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         name: (name).clone(),
         payload: (payload).clone(),
@@ -116,15 +120,15 @@ pub fn get_animation_clip_duration(clip: &AnimationClip) -> f64 {
 // Source: upstream/packages/animation/src/animationClip.ts:56 (sha256:1f0827db3b313ce1c970adcdedb0ab918edd3ef13cc272502d97479f217a7fa3)
 pub fn sample_animation_clip(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
-    clip: &mut AnimationClip,
+    clip: &AnimationClip,
     time: f64,
     visit: &mut impl FnMut(crate::FlightUnion2<Vec<f64>, Vec<f32>>, AnimationChannel, f64) -> (),
 ) -> () {
     {
         let mut i = 0.0_f64;
         while (i < (clip.channels.len() as f64)) {
-            let mut channel = clip.channels[i as usize].clone();
-            sample_animation_track(&((*out).clone()), &mut channel.track, time);
+            let channel = clip.channels[i as usize].clone();
+            sample_animation_track(out, &channel.track, time);
             visit((*out).clone(), (channel).clone(), i);
             {
                 i += 1.0;

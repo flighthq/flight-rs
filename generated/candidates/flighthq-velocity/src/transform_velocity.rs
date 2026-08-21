@@ -44,6 +44,7 @@ fn visit_transform_velocity(field: &mut VelocityField, node: &Transform2DNode) -
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             a: __flight_source.a,
             b: __flight_source.b,
             c: __flight_source.c,
@@ -59,6 +60,10 @@ fn visit_transform_velocity(field: &mut VelocityField, node: &Transform2DNode) -
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source
+                .__flight_entity_snapshot
+                .clone()
+                .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
             data: (__flight_source.data).clone(),
             enabled: __flight_source.enabled,
             kind: (__flight_source.kind).clone(),
@@ -78,6 +83,10 @@ fn visit_transform_velocity(field: &mut VelocityField, node: &Transform2DNode) -
                         __flight_entity_runtime: std::sync::Arc::clone(
                             &__flight_source.__flight_entity_runtime,
                         ),
+                        __flight_entity_snapshot: __flight_source
+                            .__flight_entity_snapshot
+                            .clone()
+                            .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
                         data: (__flight_source.data).clone(),
                         enabled: __flight_source.enabled,
                         kind: (__flight_source.kind).clone(),

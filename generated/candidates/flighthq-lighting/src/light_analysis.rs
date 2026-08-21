@@ -62,8 +62,71 @@ pub fn get_light_contribution_at_bounding_sphere(
         let windowed = (0.0_f64).max((1.0_f64).min((1.0_f64 - (factor * factor))));
         window = (windowed * windowed);
     }
-    let mut contribution =
-        ((get_light_luminance(light) * window) / (distance_squared).max(0.0001_f64));
+    let mut contribution = ((get_light_luminance(&match ((*light).clone()) {
+        crate::FlightUnion2::A(value) => {
+            let __flight_source = &(value);
+            Light {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
+                __flight_entity_snapshot: __flight_source
+                    .__flight_entity_snapshot
+                    .clone()
+                    .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
+                kind: (__flight_source.kind).clone(),
+                casts_shadow: __flight_source.casts_shadow,
+                color: __flight_source.color,
+                direction: (__flight_source.direction).clone(),
+                inner_cone_cos: __flight_source.inner_cone_cos,
+                intensity: __flight_source.intensity,
+                normal_bias: __flight_source.normal_bias,
+                outer_cone_cos: __flight_source.outer_cone_cos,
+                pcf_radius: __flight_source.pcf_radius,
+                position: (__flight_source.position).clone(),
+                range: __flight_source.range,
+                shadow_bias: __flight_source.shadow_bias,
+                ground_color: __flight_source.ground_color,
+                sky_color: __flight_source.sky_color,
+                environment: (__flight_source.environment).clone(),
+                right: (__flight_source.right).clone(),
+                up: (__flight_source.up).clone(),
+                ..Default::default()
+            }
+        }
+        crate::FlightUnion2::B(value) => {
+            let __flight_source = &(value);
+            Light {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
+                __flight_entity_snapshot: __flight_source
+                    .__flight_entity_snapshot
+                    .clone()
+                    .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
+                kind: (__flight_source.kind).clone(),
+                casts_shadow: __flight_source.casts_shadow,
+                color: __flight_source.color,
+                direction: (__flight_source.direction).clone(),
+                inner_cone_cos: __flight_source.inner_cone_cos,
+                intensity: __flight_source.intensity,
+                normal_bias: __flight_source.normal_bias,
+                outer_cone_cos: __flight_source.outer_cone_cos,
+                pcf_radius: __flight_source.pcf_radius,
+                position: (__flight_source.position).clone(),
+                range: __flight_source.range,
+                shadow_bias: __flight_source.shadow_bias,
+                ground_color: __flight_source.ground_color,
+                sky_color: __flight_source.sky_color,
+                environment: (__flight_source.environment).clone(),
+                right: (__flight_source.right).clone(),
+                up: (__flight_source.up).clone(),
+                ..Default::default()
+            }
+        }
+    }) * window)
+        / (distance_squared).max(0.0001_f64));
     if (match &((*light).clone()) {
         crate::FlightUnion2::A(value) => (value).kind.clone(),
         crate::FlightUnion2::B(value) => (value).kind.clone(),
@@ -126,6 +189,7 @@ pub fn get_light_influence_bounds(out: &mut BoundingSphereLike, light: &Light) -
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 kind: (__flight_source.kind).clone(),
                 casts_shadow: __flight_source.casts_shadow,
                 color: __flight_source.color,
@@ -217,6 +281,7 @@ pub fn has_light_influence_on_bounds(light: &Light, bounds: &BoundingSphereLike)
             __flight_entity_runtime: std::sync::Arc::clone(
                 &__flight_source.__flight_entity_runtime,
             ),
+            __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
             kind: (__flight_source.kind).clone(),
             casts_shadow: __flight_source.casts_shadow,
             color: __flight_source.color,

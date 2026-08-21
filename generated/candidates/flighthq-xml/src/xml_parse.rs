@@ -238,16 +238,15 @@ fn expand_xml_entities(src: String, entities: Vec<(String, String)>) -> String {
                 std::sync::Arc::new(std::sync::Mutex::new(false));
             let next = {
                 let mut __flight_replace = |reference: String, name: String| -> String {
-                    let replacement = (entities
+                    let replacement: Option<String> = entities
                         .iter()
                         .find(|(entry_key, _)| entry_key == &(name).clone())
-                        .map(|(_, value)| value.clone()))
-                    .expect("TypeScript Record key was absent");
+                        .map(|(_, value)| value.clone());
                     if (replacement).is_none() {
                         return reference;
                     }
                     (*expanded.lock().unwrap()) = true;
-                    return replacement;
+                    return ((replacement.as_ref().unwrap()).clone()).clone();
                 };
                 (regex::RegexBuilder::new("&([\\w:.-]+);")
                     .case_insensitive(false)

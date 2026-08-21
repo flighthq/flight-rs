@@ -21,6 +21,7 @@ pub fn compose_matrix4_from_transform3_d(out: &mut Matrix4Like, source: &Transfo
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 x: __flight_source.x,
                 y: __flight_source.y,
                 z: __flight_source.z,
@@ -33,6 +34,7 @@ pub fn compose_matrix4_from_transform3_d(out: &mut Matrix4Like, source: &Transfo
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 x: __flight_source.x,
                 y: __flight_source.y,
                 z: __flight_source.z,
@@ -46,6 +48,7 @@ pub fn compose_matrix4_from_transform3_d(out: &mut Matrix4Like, source: &Transfo
                 __flight_entity_runtime: std::sync::Arc::clone(
                     &__flight_source.__flight_entity_runtime,
                 ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
                 x: __flight_source.x,
                 y: __flight_source.y,
                 z: __flight_source.z,
@@ -58,6 +61,7 @@ pub fn compose_matrix4_from_transform3_d(out: &mut Matrix4Like, source: &Transfo
 pub fn create_transform3_d() -> Transform3D {
     return create_entity(Some(Transform3D {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         rotation: create_quaternion(None, None, None, None),
         scale: create_vector3(Some(1.0_f64), Some(1.0_f64), Some(1.0_f64)),

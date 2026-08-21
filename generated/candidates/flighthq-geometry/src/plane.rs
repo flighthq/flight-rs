@@ -31,6 +31,7 @@ pub fn copy_plane(out: &mut PlaneLike, source: &PlaneLike) -> () {
 pub fn create_plane(a: Option<f64>, b: Option<f64>, c: Option<f64>, d: Option<f64>) -> Plane {
     return create_entity(Some(Plane {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         a: (a).clone().unwrap_or(0.0_f64),
         b: (b).clone().unwrap_or(0.0_f64),

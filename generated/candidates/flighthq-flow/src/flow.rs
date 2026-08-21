@@ -53,7 +53,7 @@ pub fn get_flow_stack_depth(stack: &FlowStack) -> f64 {
 // Source: upstream/packages/flow/src/flow.ts:38 (sha256:1db2c021ed4c1ea7e5cfe34c5df44f206dd6f94d22c9b61b469f523112288ab5)
 pub fn get_flow_stack_visible_states(stack: &FlowStack, out: &mut Vec<FlowState>) -> () {
     out.clear();
-    let mut top = ((stack.states.len() as f64) - 1.0_f64);
+    let top = ((stack.states.len() as f64) - 1.0_f64);
     if (top < 0.0_f64) {
         return;
     }

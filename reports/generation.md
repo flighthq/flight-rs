@@ -8,13 +8,13 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | Default-generated packages | 144 |
 | Emittable packages | 56 |
 | Blocked packages | 88 |
-| Compiled candidates | 29 |
-| Compile-blocked candidates | 6 |
-| Dependency-blocked candidates | 19 |
+| Compiled candidates | 26 |
+| Compile-blocked candidates | 5 |
+| Dependency-blocked candidates | 23 |
 | Cultivated packages | 1 |
 | Host-bound packages | 4 |
 | Excluded packages | 1 |
-| Source/package blockers | 389 |
+| Source/package blockers | 383 |
 | Eligible task constructions | 229 |
 | Portable executable task constructions | 26 |
 | Host-placeholder task constructions | 0 |
@@ -32,7 +32,7 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/abc` | generated | blocked | source-blocked | 3/4 | 2/2 | 0 | 2/2 | 0 | 1 | no |
 | `@flighthq/accessibility` | generated | emittable | compiled | 3/3 | 8/8 | 0 | 1/1 | 1 | 0 | no |
 | `@flighthq/adjustments` | generated | emittable | compiled | 21/21 | 52/52 | 0 | 9/42 | 0 | 0 | no |
-| `@flighthq/animation` | generated | emittable | compile-blocked | 13/13 | 54/52 | 0 | 8/36 | 1 | 0 | no |
+| `@flighthq/animation` | generated | emittable | dependency-blocked | 13/13 | 54/52 | 0 | 8/36 | 1 | 0 | no |
 | `@flighthq/app` | generated | blocked | source-blocked | 2/3 | 39/42 | 3 | 4/4 | 0 | 2 | no |
 | `@flighthq/application` | generated | blocked | source-blocked | 4/5 | 87/87 | 0 | 4/4 | 2 | 1 | partial |
 | `@flighthq/application-gl` | host-backend | emittable | dependency-blocked | 3/3 | 2/2 | 0 | 1/1 | 1 | 0 | no |
@@ -61,13 +61,13 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/effects-canvas` | host-backend | blocked | source-blocked | 10/29 | 65/82 | 22 | 1/1 | 3 | 20 | no |
 | `@flighthq/effects-gl` | host-backend | blocked | source-blocked | 12/60 | 122/180 | 58 | 1/1 | 8 | 49 | no |
 | `@flighthq/effects-wgpu` | host-backend | blocked | source-blocked | 13/58 | 120/177 | 57 | 2/2 | 4 | 46 | no |
-| `@flighthq/entity` | generated | emittable | compiled | 8/8 | 15/15 | 0 | 30/75 | 1 | 0 | no |
+| `@flighthq/entity` | generated | emittable | compile-blocked | 8/8 | 15/15 | 0 | 30/75 | 1 | 0 | no |
 | `@flighthq/filesystem` | generated | blocked | source-blocked | 2/3 | 40/43 | 3 | 2/2 | 0 | 2 | no |
 | `@flighthq/flow` | generated | emittable | compiled | 3/3 | 9/9 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/font` | generated | blocked | source-blocked | 9/11 | 16/16 | 0 | 2/2 | 0 | 2 | no |
 | `@flighthq/font-formats` | generated | blocked | source-blocked | 3/17 | 46/46 | 0 | 1/1 | 0 | 14 | no |
 | `@flighthq/geolocation` | generated | blocked | source-blocked | 2/3 | 9/12 | 3 | 2/2 | 0 | 2 | no |
-| `@flighthq/geometry` | generated | emittable | compile-blocked | 30/30 | 382/380 | 0 | 44/62 | 0 | 0 | no |
+| `@flighthq/geometry` | generated | emittable | dependency-blocked | 30/30 | 382/380 | 0 | 44/62 | 0 | 0 | no |
 | `@flighthq/glyphatlas` | generated | emittable | dependency-blocked | 10/10 | 18/18 | 0 | 1/1 | 2 | 0 | no |
 | `@flighthq/haptics` | generated | emittable | compiled | 3/3 | 13/13 | 0 | 2/2 | 0 | 0 | no |
 | `@flighthq/host-capacitor` | host-bound | host-bound | not-applicable | 0/0 | 0/13 | 13 | 0/0 | 0 | 0 | no |
@@ -76,7 +76,7 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/image` | generated | blocked | source-blocked | 3/6 | 22/25 | 3 | 14/28 | 1 | 4 | partial |
 | `@flighthq/image-codec` | generated | blocked | source-blocked | 10/12 | 26/26 | 0 | 4/29 | 0 | 2 | no |
 | `@flighthq/importdiagnostics` | generated | emittable | compiled | 4/4 | 3/3 | 0 | 9/11 | 0 | 0 | no |
-| `@flighthq/input` | generated | emittable | compiled | 3/3 | 40/40 | 0 | 1/1 | 1 | 0 | partial |
+| `@flighthq/input` | generated | emittable | compile-blocked | 3/3 | 40/40 | 0 | 1/1 | 1 | 0 | partial |
 | `@flighthq/interaction` | generated | blocked | source-blocked | 15/17 | 78/78 | 0 | 1/1 | 2 | 2 | no |
 | `@flighthq/intl` | generated | blocked | source-blocked | 2/9 | 16/14 | 0 | 1/1 | 0 | 7 | no |
 | `@flighthq/ipc` | generated | blocked | source-blocked | 2/3 | 13/17 | 4 | 2/2 | 0 | 2 | no |
@@ -86,16 +86,16 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/lighting` | generated | emittable | dependency-blocked | 13/13 | 31/31 | 0 | 5/8 | 0 | 0 | no |
 | `@flighthq/loader` | generated | blocked | source-blocked | 2/3 | 15/15 | 0 | 3/3 | 0 | 1 | no |
 | `@flighthq/log` | generated | emittable | compiled | 3/3 | 63/63 | 0 | 41/90 | 0 | 0 | no |
-| `@flighthq/materials` | generated | emittable | compile-blocked | 22/22 | 79/79 | 0 | 8/42 | 0 | 0 | no |
+| `@flighthq/materials` | generated | emittable | dependency-blocked | 22/22 | 79/79 | 0 | 8/42 | 0 | 0 | no |
 | `@flighthq/math` | generated | emittable | compiled | 17/17 | 74/74 | 0 | 16/71 | 0 | 0 | no |
-| `@flighthq/media` | generated | emittable | compiled | 6/6 | 45/45 | 0 | 1/1 | 3 | 0 | no |
+| `@flighthq/media` | generated | emittable | compile-blocked | 6/6 | 45/45 | 0 | 1/1 | 3 | 0 | no |
 | `@flighthq/mediasession` | generated | blocked | source-blocked | 2/3 | 7/10 | 3 | 1/1 | 0 | 2 | no |
 | `@flighthq/menu` | generated | blocked | source-blocked | 3/4 | 14/17 | 3 | 3/3 | 0 | 2 | no |
 | `@flighthq/mesh` | generated | blocked | source-blocked | 13/16 | 88/84 | 0 | 7/24 | 2 | 3 | no |
 | `@flighthq/motionpath` | generated | emittable | dependency-blocked | 3/3 | 7/7 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/movieclip` | generated | blocked | source-blocked | 4/5 | 25/28 | 3 | 2/2 | 0 | 2 | no |
 | `@flighthq/net` | generated | blocked | source-blocked | 2/3 | 1/4 | 3 | 2/2 | 0 | 2 | no |
-| `@flighthq/node` | generated | blocked | source-blocked | 14/21 | 130/130 | 0 | 29/41 | 0 | 7 | no |
+| `@flighthq/node` | generated | blocked | source-blocked | 20/21 | 127/130 | 3 | 29/41 | 6 | 2 | no |
 | `@flighthq/notification` | generated | blocked | source-blocked | 2/3 | 21/26 | 5 | 4/4 | 0 | 2 | no |
 | `@flighthq/particleemitter` | generated | blocked | source-blocked | 11/12 | 48/52 | 4 | 1/1 | 2 | 2 | no |
 | `@flighthq/particles` | generated | emittable | dependency-blocked | 12/12 | 28/28 | 0 | 3/3 | 1 | 0 | no |
@@ -125,7 +125,7 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/scene2d-gl` | host-backend | blocked | source-blocked | 26/31 | 89/97 | 9 | 1/1 | 13 | 6 | no |
 | `@flighthq/scene2d-resources` | generated | blocked | source-blocked | 5/10 | 14/14 | 0 | 2/2 | 0 | 5 | no |
 | `@flighthq/scene2d-wgpu` | host-backend | blocked | source-blocked | 26/31 | 90/99 | 9 | 1/1 | 14 | 6 | no |
-| `@flighthq/scene3d` | generated | blocked | source-blocked | 14/19 | 43/44 | 1 | 7/7 | 0 | 6 | no |
+| `@flighthq/scene3d` | generated | blocked | source-blocked | 15/19 | 43/44 | 1 | 7/7 | 0 | 5 | no |
 | `@flighthq/scene3d-formats` | generated | blocked | source-blocked | 22/27 | 145/40 | 0 | 2/2 | 0 | 5 | no |
 | `@flighthq/scene3d-gl` | host-backend | blocked | source-blocked | 64/65 | 183/180 | 3 | 1/1 | 24 | 2 | no |
 | `@flighthq/scene3d-resources` | generated | blocked | source-blocked | 19/28 | 49/49 | 0 | 1/1 | 0 | 9 | no |
@@ -133,7 +133,7 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/screen` | generated | emittable | compiled | 3/3 | 31/31 | 0 | 2/2 | 1 | 0 | partial |
 | `@flighthq/sdk` | generated | blocked | source-blocked | 15/15 | 0/6549 | 6549 | 0/0 | 0 | 1 | no |
 | `@flighthq/sensors` | generated | blocked | source-blocked | 2/3 | 22/32 | 10 | 1/1 | 0 | 2 | no |
-| `@flighthq/shading` | generated | emittable | compile-blocked | 18/18 | 26/26 | 0 | 4/5 | 2 | 0 | no |
+| `@flighthq/shading` | generated | emittable | dependency-blocked | 18/18 | 26/26 | 0 | 4/5 | 2 | 0 | no |
 | `@flighthq/shape` | generated | blocked | source-blocked | 15/19 | 68/87 | 24 | 9/11 | 1 | 5 | no |
 | `@flighthq/shape-formats` | generated | blocked | source-blocked | 2/3 | 2/2 | 0 | 1/1 | 0 | 1 | no |
 | `@flighthq/share` | generated | blocked | source-blocked | 2/3 | 12/15 | 3 | 2/2 | 0 | 2 | no |
@@ -144,7 +144,7 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/skeleton2d-formats` | generated | blocked | source-blocked | 3/8 | 8/8 | 1 | 1/1 | 0 | 6 | no |
 | `@flighthq/skeleton3d` | generated | blocked | source-blocked | 9/10 | 26/26 | 0 | 2/3 | 0 | 1 | no |
 | `@flighthq/snapshot` | generated | blocked | source-blocked | 6/7 | 7/7 | 0 | 1/1 | 2 | 1 | no |
-| `@flighthq/socket` | generated | emittable | compiled | 5/5 | 16/16 | 0 | 1/1 | 0 | 0 | no |
+| `@flighthq/socket` | generated | emittable | compile-blocked | 5/5 | 16/16 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/spatial` | generated | emittable | compiled | 6/6 | 14/14 | 0 | 3/3 | 0 | 0 | no |
 | `@flighthq/spring` | generated | emittable | compiled | 6/6 | 12/12 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/spritesheet` | generated | emittable | dependency-blocked | 9/9 | 31/31 | 0 | 2/2 | 2 | 0 | no |
@@ -178,7 +178,7 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/velocity` | generated | emittable | dependency-blocked | 5/5 | 20/20 | 0 | 3/3 | 1 | 0 | no |
 | `@flighthq/video` | generated | blocked | source-blocked | 4/5 | 16/16 | 0 | 2/2 | 1 | 1 | no |
 | `@flighthq/webcam` | generated | blocked | source-blocked | 2/4 | 5/9 | 4 | 1/1 | 0 | 3 | no |
-| `@flighthq/xml` | generated | emittable | compile-blocked | 4/4 | 6/6 | 0 | 6/8 | 0 | 0 | no |
+| `@flighthq/xml` | generated | emittable | compiled | 4/4 | 6/6 | 0 | 6/8 | 0 | 0 | no |
 
 ## Async tasks
 
@@ -718,7 +718,7 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 - **emission** `upstream/packages/effects-canvas/src/canvasOuterGlowEffect.ts`: defaultCanvasOuterGlowEffectRunner: upstream/packages/effects-canvas/src/canvasOuterGlowEffect.ts: cannot infer return type for defaultCanvasOuterGlowEffectRunner
 - **emission** `upstream/packages/effects-canvas/src/canvasPixelateEffect.ts`: defaultCanvasPixelateEffectRunner: upstream/packages/effects-canvas/src/canvasPixelateEffect.ts: cannot infer return type for defaultCanvasPixelateEffectRunner
 - **emission** `upstream/packages/effects-canvas/src/canvasPosterizeEffect.ts`: defaultCanvasPosterizeEffectRunner: upstream/packages/effects-canvas/src/canvasPosterizeEffect.ts: cannot infer return type for defaultCanvasPosterizeEffectRunner
-- **emission** `upstream/packages/effects-canvas/src/canvasRenderEffectPipeline.ts`: endCanvasRenderEffectPipeline: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[{"name":"kind","optional":true,"type":{"arguments":[],"kind":"named","name":"AdjustmentKind"}},{"name":"colorMatrix","optional":true,"type":{"element":{"kind":"primitive","name":"Float"},"kind":"array"}}],"kind":"anonymous"}
+- **emission** `upstream/packages/effects-canvas/src/canvasRenderEffectPipeline.ts`: endCanvasRenderEffectPipeline: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[{"name":"kind","optional":false,"type":{"kind":"primitive","name":"String"}}],"kind":"anonymous"}
 - **emission** `upstream/packages/effects-canvas/src/canvasScanlinesEffect.ts`: defaultCanvasScanlinesEffectRunner: upstream/packages/effects-canvas/src/canvasScanlinesEffect.ts: cannot infer return type for defaultCanvasScanlinesEffectRunner
 - **emission** `upstream/packages/effects-canvas/src/canvasTiltShiftEffect.ts`: defaultCanvasTiltShiftEffectRunner: upstream/packages/effects-canvas/src/canvasTiltShiftEffect.ts: cannot infer return type for defaultCanvasTiltShiftEffectRunner
 - **emission** `upstream/packages/effects-canvas/src/canvasVignetteEffect.ts`: defaultCanvasVignetteEffectRunner: upstream/packages/effects-canvas/src/canvasVignetteEffect.ts: cannot infer return type for defaultCanvasVignetteEffectRunner
@@ -762,7 +762,7 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 - **emission** `upstream/packages/effects-gl/src/glPixelateEffect.ts`: defaultGlPixelateEffectRunner: upstream/packages/effects-gl/src/glPixelateEffect.ts: cannot infer return type for defaultGlPixelateEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glPosterizeEffect.ts`: defaultGlPosterizeEffectRunner: upstream/packages/effects-gl/src/glPosterizeEffect.ts: cannot infer return type for defaultGlPosterizeEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glRadialBlurEffect.ts`: defaultGlRadialBlurEffectRunner: upstream/packages/effects-gl/src/glRadialBlurEffect.ts: cannot infer return type for defaultGlRadialBlurEffectRunner
-- **emission** `upstream/packages/effects-gl/src/glRenderEffectPipeline.ts`: endGlRenderEffectPipeline: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[{"name":"kind","optional":true,"type":{"arguments":[],"kind":"named","name":"AdjustmentKind"}},{"name":"colorMatrix","optional":true,"type":{"element":{"kind":"primitive","name":"Float"},"kind":"array"}}],"kind":"anonymous"}
+- **emission** `upstream/packages/effects-gl/src/glRenderEffectPipeline.ts`: endGlRenderEffectPipeline: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[{"name":"kind","optional":false,"type":{"kind":"primitive","name":"String"}}],"kind":"anonymous"}
 - **emission** `upstream/packages/effects-gl/src/glScanlinesEffect.ts`: defaultGlScanlinesEffectRunner: upstream/packages/effects-gl/src/glScanlinesEffect.ts: cannot infer return type for defaultGlScanlinesEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glScreenSpaceFogEffect.ts`: defaultGlScreenSpaceFogEffectRunner: upstream/packages/effects-gl/src/glScreenSpaceFogEffect.ts: cannot infer return type for defaultGlScreenSpaceFogEffectRunner
 - **emission** `upstream/packages/effects-gl/src/glShaderTestHelper.ts`: evaluateGlslScalarExpression: new-expression Rust lowering is not implemented: function
@@ -812,7 +812,7 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 - **emission** `upstream/packages/effects-wgpu/src/wgpuPixelateEffect.ts`: defaultWgpuPixelateEffectRunner: upstream/packages/effects-wgpu/src/wgpuPixelateEffect.ts: cannot infer return type for defaultWgpuPixelateEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuPosterizeEffect.ts`: defaultWgpuPosterizeEffectRunner: upstream/packages/effects-wgpu/src/wgpuPosterizeEffect.ts: cannot infer return type for defaultWgpuPosterizeEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuRadialBlurEffect.ts`: defaultWgpuRadialBlurEffectRunner: upstream/packages/effects-wgpu/src/wgpuRadialBlurEffect.ts: cannot infer return type for defaultWgpuRadialBlurEffectRunner
-- **emission** `upstream/packages/effects-wgpu/src/wgpuRenderEffectPipeline.ts`: endWgpuRenderEffectPipeline: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[{"name":"kind","optional":true,"type":{"arguments":[],"kind":"named","name":"AdjustmentKind"}},{"name":"colorMatrix","optional":true,"type":{"element":{"kind":"primitive","name":"Float"},"kind":"array"}}],"kind":"anonymous"}
+- **emission** `upstream/packages/effects-wgpu/src/wgpuRenderEffectPipeline.ts`: endWgpuRenderEffectPipeline: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[{"name":"kind","optional":false,"type":{"kind":"primitive","name":"String"}}],"kind":"anonymous"}
 - **emission** `upstream/packages/effects-wgpu/src/wgpuScanlinesEffect.ts`: defaultWgpuScanlinesEffectRunner: upstream/packages/effects-wgpu/src/wgpuScanlinesEffect.ts: cannot infer return type for defaultWgpuScanlinesEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuScreenSpaceFogEffect.ts`: defaultWgpuScreenSpaceFogEffectRunner: upstream/packages/effects-wgpu/src/wgpuScreenSpaceFogEffect.ts: cannot infer return type for defaultWgpuScreenSpaceFogEffectRunner
 - **emission** `upstream/packages/effects-wgpu/src/wgpuSharpenEffect.ts`: defaultWgpuSharpenEffectRunner: upstream/packages/effects-wgpu/src/wgpuSharpenEffect.ts: cannot infer return type for defaultWgpuSharpenEffectRunner
@@ -849,7 +849,7 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 - **emission** `upstream/packages/font-formats/src/sfntTableDirectory.ts`: readSfntTableDirectory: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
 - **emission** `upstream/packages/font-formats/src/woff2Font.ts`: readWoff2Font: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
 - **emission** `upstream/packages/font-formats/src/woff2GlyfTransform.ts`: readWoff2GlyfStreams: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
-- **lowering** `upstream/packages/font-formats/src/woffFont.ts`: TypeScript lowering produced diagnostics.
+- **emission** `upstream/packages/font-formats/src/woffFont.ts`: readWoffChecksumMismatches: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
 
 ### `@flighthq/geolocation`
 
@@ -926,13 +926,8 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 
 ### `@flighthq/node`
 
-- **emission** `upstream/packages/node/src/boundsRectangle.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/node/src/hasBoundsRectangle.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/node/src/hasTransform2d.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/node/src/node.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/node/src/nodeTransform2d.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/node/src/nodeTransform3d.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/node/src/stageFit.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (7 opaque sources exceeds the approved baseline of 6); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **package** `upstream/packages/node/src`: Generated crate is missing 3 of 130 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/node/src/boundsRectangle.ts`: getNodeHeight: cannot infer uninitialized local bounds
 
 ### `@flighthq/notification`
 
@@ -1090,10 +1085,9 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 
 - **package** `upstream/packages/scene3d/src`: Generated crate is missing 1 of 44 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/scene3d/src/billboardCamera.ts`: orientBillboardSubtree: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[{"name":"data","optional":true,"type":{"inner":{"arguments":[],"kind":"named","name":"NodeData"},"kind":"nullable"}},{"name":"enabled","optional":true,"type":{"kind":"primitive","name":"Bool"}},{"name":"kind","optional":true,"type":{"arguments":[],"kind":"named","name":"Kind"}},{"name":"name","optional":true,"type":{"inner":{"kind":"primitive","name":"String"},"kind":"nullable"}},{"name":"alpha","optional":true,"type":{"kind":"primitive","name":"Float"}},{"name":"visible","optional":true,"type":{"kind":"primitive","name":"Bool"}},{"name":"position","optional":true,"type":{"arguments":[],"kind":"named","name":"Vector3"}},{"name":"rotation","optional":true,"type":{"arguments":[],"kind":"named","name":"Quaternion"}},{"name":"scale","optional":true,"type":{"arguments":[],"kind":"named","name":"Vector3"}},{"name":"geometry","optional":true,"type":{"arguments":[],"kind":"named","name":"MeshGeometry"}},{"name":"materials","optional":true,"type":{"element":{"inner":{"arguments":[],"kind":"named","name":"Material"},"kind":"nullable"},"kind":"array"}},{"name":"mode","optional":true,"type":{"arguments":[],"kind":"named","name":"BillboardMode"}}],"kind":"anonymous"}
-- **emission** `upstream/packages/scene3d/src/enableScene3DGuards.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/scene3d/src/mesh.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene3d/src/enableScene3DGuards.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (2 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/scene3d/src/mesh.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (2 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 - **emission** `upstream/packages/scene3d/src/prepareScene3DMorph.ts`: Maximum call stack size exceeded
-- **emission** `upstream/packages/scene3d/src/sceneDocument.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 
 ### `@flighthq/scene3d-formats`
 
@@ -1144,7 +1138,7 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 - **emission** `upstream/packages/shape/src/morphShape.ts`: createMorphShape: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[],"kind":"anonymous"}
 - **emission** `upstream/packages/shape/src/scale9Shape.ts`: createScale9Shape: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[],"kind":"anonymous"}
 - **emission** `upstream/packages/shape/src/shape.ts`: createShape: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[],"kind":"anonymous"}
-- **lowering** `upstream/packages/shape/src/shapeBounds.ts`: TypeScript lowering produced diagnostics.
+- **emission** `upstream/packages/shape/src/shapeBounds.ts`: defaultShapeBoundsCubicCurveTo: upstream/packages/shape/src/shapeBounds.ts: cannot infer return type for defaultShapeBoundsCubicCurveTo
 
 ### `@flighthq/shape-formats`
 
@@ -1289,274 +1283,24 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 
 ## Candidate compile blockers
 
-### `@flighthq/animation`
+### `@flighthq/entity`
 
-- **E0609** `generated/candidates/flighthq-animation/src/animation_blend.rs`: no field `length` on type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0308** `generated/candidates/flighthq-animation/src/animation_blend.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-animation/src/animation_blend.rs`: no field `length` on type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_blend.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0609** `generated/candidates/flighthq-animation/src/animation_blend.rs`: no field `length` on type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0308** `generated/candidates/flighthq-animation/src/animation_blend.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-animation/src/animation_blend.rs`: no field `length` on type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_blend.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0609** `generated/candidates/flighthq-animation/src/animation_blend.rs`: no field `length` on type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0308** `generated/candidates/flighthq-animation/src/animation_blend.rs`: mismatched types
-- **E0608** `generated/candidates/flighthq-animation/src/animation_blend.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0308** `generated/candidates/flighthq-animation/src/animation_blend.rs`: mismatched types
-- **E0608** `generated/candidates/flighthq-animation/src/animation_blend.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_blend.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_blend.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_blend.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_blend.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_blend.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_blend.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_blend.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0308** `generated/candidates/flighthq-animation/src/animation_blend.rs`: arguments to this function are incorrect
-- **E0605** `generated/candidates/flighthq-animation/src/animation_blend_tree.rs`: non-primitive cast: `Option<f64>` as `usize`
-- **E0308** `generated/candidates/flighthq-animation/src/animation_blend_tree.rs`: mismatched types
-- **E0599** `generated/candidates/flighthq-animation/src/animation_blend_tree.rs`: no method named `is_none` found for struct `AnimationBlendTreeChannel` in the current scope
-- **E0308** `generated/candidates/flighthq-animation/src/animation_blend_tree.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_blend_tree.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_blend_tree.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_blend_tree.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_blend_tree.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_blend_tree.rs`: arguments to this function are incorrect
-- **E0599** `generated/candidates/flighthq-animation/src/animation_blend_tree.rs`: no method named `is_none` found for struct `AnimationBlendTreeInput` in the current scope
-- **E0609** `generated/candidates/flighthq-animation/src/animation_blend_tree.rs`: no field `length` on type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_blend_tree.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_blend_tree.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0308** `generated/candidates/flighthq-animation/src/animation_clip.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_crossfade.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_crossfade.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_crossfade.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_crossfade.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_crossfade.rs`: arguments to this function are incorrect
-- **E0605** `generated/candidates/flighthq-animation/src/animation_crossfade.rs`: non-primitive cast: `Option<f64>` as `usize`
-- **E0605** `generated/candidates/flighthq-animation/src/animation_crossfade.rs`: non-primitive cast: `Option<f64>` as `usize`
-- **E0605** `generated/candidates/flighthq-animation/src/animation_crossfade.rs`: non-primitive cast: `Option<f64>` as `usize`
-- **E0605** `generated/candidates/flighthq-animation/src/animation_crossfade.rs`: non-primitive cast: `Option<f64>` as `usize`
-- **E0605** `generated/candidates/flighthq-animation/src/animation_crossfade.rs`: non-primitive cast: `Option<f64>` as `usize`
-- **E0605** `generated/candidates/flighthq-animation/src/animation_crossfade.rs`: non-primitive cast: `Option<f64>` as `usize`
-- **E0593** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: closure is expected to take 1 argument, but it takes 2 arguments
-- **E0605** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: non-primitive cast: `Option<f64>` as `usize`
-- **E0308** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: mismatched types
-- **E0599** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: no method named `is_none` found for struct `AnimationLayerStackChannel` in the current scope
-- **E0308** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: arguments to this function are incorrect
-- **E0308** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: arguments to this function are incorrect
-- **E0308** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: arguments to this function are incorrect
-- **E0599** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: no method named `is_none` found for struct `AnimationLayer` in the current scope
-- **E0609** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: no field `length` on type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0308** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: no field `length` on type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_layer_stack.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0308** `generated/candidates/flighthq-animation/src/animation_player.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: arguments to this function are incorrect
-- **E0609** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: no field `length` on type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: arguments to this function are incorrect
-- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: arguments to this function are incorrect
-- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: arguments to this function are incorrect
-- **E0609** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: no field `length` on type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: no field `length` on type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: arguments to this function are incorrect
-- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: arguments to this function are incorrect
-- **E0308** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: mismatched types
-- **E0608** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_root_motion.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0308** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: mismatched types
-- **E0599** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: no method named `is_none` found for struct `AnimationStateMachineChannel` in the current scope
-- **E0308** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: arguments to this function are incorrect
-- **E0609** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: no field `length` on type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0605** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: non-primitive cast: `Option<f64>` as `usize`
-- **E0605** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: non-primitive cast: `Option<f64>` as `usize`
-- **E0308** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: mismatched types
-- **E0605** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: non-primitive cast: `Option<f64>` as `usize`
-- **E0282** `generated/candidates/flighthq-animation/src/animation_track.rs`: type annotations needed
-- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
-- **E0599** `generated/candidates/flighthq-animation/src/animation_track.rs`: no method named `lock` found for enum `Option<T>` in the current scope
-- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0308** `generated/candidates/flighthq-animation/src/animation_track.rs`: mismatched types
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0608** `generated/candidates/flighthq-animation/src/animation_track.rs`: cannot index into a value of type `&mut FlightUnion2<Vec<f64>, Vec<f32>>`
-- **E0499** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: cannot borrow `*machine` as mutable more than once at a time
-- **E0499** `generated/candidates/flighthq-animation/src/animation_state_machine.rs`: cannot borrow `machine.advance_scratch` as mutable more than once at a time
+- **E0308** `generated/candidates/flighthq-entity/src/enable_entity_runtime_guards.rs`: mismatched types
 
-### `@flighthq/geometry`
+### `@flighthq/input`
 
-- **E0425** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot find value `p` in this scope
-- **E0425** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot find value `p` in this scope
-- **E0425** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot find value `p` in this scope
-- **E0425** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot find value `p` in this scope
-- **E0425** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot find value `p` in this scope
-- **E0425** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot find value `p` in this scope
-- **E0425** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot find value `p` in this scope
-- **E0425** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot find value `p` in this scope
-- **E0425** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot find value `p` in this scope
-- **E0425** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot find value `p` in this scope
-- **E0425** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot find value `p` in this scope
-- **E0425** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot find value `p` in this scope
-- **E0594** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot assign to `tx`, as it is not declared as mutable
-- **E0594** `generated/candidates/flighthq-geometry/src/matrix4.rs`: cannot assign to `ty`, as it is not declared as mutable
+- **E0308** `generated/candidates/flighthq-input/src/input_manager.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-input/src/input_manager.rs`: mismatched types
 
-### `@flighthq/materials`
+### `@flighthq/media`
 
-- **E0308** `generated/candidates/flighthq-materials/src/material.rs`: mismatched types
+- **E0308** `generated/candidates/flighthq-media/src/enable_audio_mixer_guards.rs`: mismatched types
 
-### `@flighthq/shading`
+### `@flighthq/socket`
 
-- **E0425** `generated/candidates/flighthq-shading/src/order_modifier_stack.rs`: cannot find type `ModifierSlot` in this scope
-- **E0425** `generated/candidates/flighthq-shading/src/order_modifier_stack.rs`: cannot find type `ModifierSlot` in this scope
-- **E0063** `generated/candidates/flighthq-shading/src/create_shaded_material.rs`: missing fields `alpha_cutoff`, `alpha_mode`, `blend_mode` and 7 other fields in initializer of `ShadedMaterial`
-- **E0593** `generated/candidates/flighthq-shading/src/order_modifier_stack.rs`: closure is expected to take 1 argument, but it takes 2 arguments
-- **E0369** `generated/candidates/flighthq-shading/src/order_modifier_stack.rs`: cannot subtract `FlightValue` from `FlightValue`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `map` on type `Modifier`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `secondary_map` on type `Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `EmissiveModifier` has no field named `source`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `source` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `EmissiveModifier` has no field named `amplitude`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `amplitude` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `EmissiveModifier` has no field named `axis`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `axis` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `EmissiveModifier` has no field named `frequency`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `frequency` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `EmissiveModifier` has no field named `speed`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `speed` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `EmissiveModifier` has no field named `direction`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `direction` on type `&Modifier`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `color` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `EmissiveModifier` has no field named `mode`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `mode` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `EmissiveModifier` has no field named `near`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `near` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `EmissiveModifier` has no field named `far`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `far` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `EmissiveModifier` has no field named `density`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `density` on type `&Modifier`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `strength` on type `&Modifier`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `mask` on type `&Modifier`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `facing` on type `&Modifier`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `facing_softness` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `EmissiveModifier` has no field named `scroll`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `scroll` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `EmissiveModifier` has no field named `secondary_map`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `secondary_map` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `EmissiveModifier` has no field named `secondary_scroll`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `secondary_scroll` on type `&Modifier`
-- **E0308** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: mismatched types
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `FogModifier` has no field named `source`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `source` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `FogModifier` has no field named `amplitude`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `amplitude` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `FogModifier` has no field named `axis`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `axis` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `FogModifier` has no field named `frequency`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `frequency` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `FogModifier` has no field named `speed`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `speed` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `FogModifier` has no field named `direction`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `direction` on type `&Modifier`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `color` on type `&Modifier`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `mode` on type `&Modifier`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `near` on type `&Modifier`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `far` on type `&Modifier`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `density` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `FogModifier` has no field named `strength`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `strength` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `FogModifier` has no field named `mask`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `mask` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `FogModifier` has no field named `facing`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `facing` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `FogModifier` has no field named `facing_softness`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `facing_softness` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `FogModifier` has no field named `scroll`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `scroll` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `FogModifier` has no field named `secondary_map`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `secondary_map` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `FogModifier` has no field named `secondary_scroll`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `secondary_scroll` on type `&Modifier`
-- **E0308** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: mismatched types
-- **E0308** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: mismatched types
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `source` on type `&Modifier`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `amplitude` on type `&Modifier`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `axis` on type `&Modifier`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `frequency` on type `&Modifier`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `speed` on type `&Modifier`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `direction` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `VertexDisplaceModifier` has no field named `color`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `color` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `VertexDisplaceModifier` has no field named `mode`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `mode` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `VertexDisplaceModifier` has no field named `near`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `near` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `VertexDisplaceModifier` has no field named `far`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `far` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `VertexDisplaceModifier` has no field named `density`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `density` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `VertexDisplaceModifier` has no field named `strength`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `strength` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `VertexDisplaceModifier` has no field named `mask`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `mask` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `VertexDisplaceModifier` has no field named `facing`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `facing` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `VertexDisplaceModifier` has no field named `facing_softness`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `facing_softness` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `VertexDisplaceModifier` has no field named `scroll`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `scroll` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `VertexDisplaceModifier` has no field named `secondary_map`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `secondary_map` on type `&Modifier`
-- **E0560** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: struct `VertexDisplaceModifier` has no field named `secondary_scroll`
-- **E0609** `generated/candidates/flighthq-shading/src/register_built_in_modifiers.rs`: no field `secondary_scroll` on type `&Modifier`
+- **E0308** `generated/candidates/flighthq-socket/src/enable_socket_guards.rs`: mismatched types
 
 ### `@flighthq/tray`
 
+- **E0308** `generated/candidates/flighthq-tray/src/enable_tray_guards.rs`: mismatched types
 - **E0308** `generated/candidates/flighthq-tray/src/tray.rs`: mismatched types
-
-### `@flighthq/xml`
-
-- **E0599** `generated/candidates/flighthq-xml/src/xml_parse.rs`: no method named `is_none` found for struct `std::string::String` in the current scope
-- **E0599** `generated/candidates/flighthq-xml/src/xml_query.rs`: no method named `is_some` found for struct `std::string::String` in the current scope
-- **E0599** `generated/candidates/flighthq-xml/src/xml_query.rs`: no method named `is_none` found for struct `std::string::String` in the current scope

@@ -17,13 +17,22 @@ pub fn compute_skeleton2_d_bounding_box_attachment_vertices(
     bone_index: f64,
     deform: Option<Vec<f32>>,
 ) -> () {
-    skin_skeleton2_d_attachment_points(
-        &(crate::FlightUnion2::<Vec<f32>, Vec<f64>>::A((*out).clone())),
-        &(attachment.skin),
-        &(attachment.vertices),
-        skeleton,
-        bone_index,
-        &(deform),
-        "BoundingBoxAttachment2D".to_owned(),
-    );
+    {
+        let mut __flight_argument_0 =
+            crate::FlightUnion2::<Vec<f32>, Vec<f64>>::A(std::mem::take(out));
+        let __flight_result = skin_skeleton2_d_attachment_points(
+            &mut __flight_argument_0,
+            &(attachment.skin),
+            &(attachment.vertices),
+            skeleton,
+            bone_index,
+            &(deform),
+            "BoundingBoxAttachment2D".to_owned(),
+        );
+        *(out) = match __flight_argument_0 {
+            crate::FlightUnion2::A(value) => value,
+            crate::FlightUnion2::B(_) => panic!("TypeScript union narrowing failed"),
+        };
+        __flight_result
+    };
 }

@@ -23,6 +23,10 @@ pub fn create_color_scale_bias_adjustment(
                     .unwrap()
                     .clone(),
             )),
+            __flight_entity_snapshot: __flight_spread_0
+                .__flight_entity_snapshot
+                .clone()
+                .or_else(|| Some(std::sync::Arc::new(__flight_spread_0.clone()))),
             alpha_scale: __flight_spread_0.alpha_scale,
             alpha_bias: __flight_spread_0.alpha_bias,
             blue_scale: __flight_spread_0.blue_scale,

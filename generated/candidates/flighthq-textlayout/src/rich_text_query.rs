@@ -101,7 +101,7 @@ pub fn compute_rich_text_char_index_at_point(layout: &TextLayoutResult, x: f64, 
         0.0_f64
     };
     let mut line_end = 0.0_f64;
-    for mut group in ((layout.groups).clone()).iter().cloned() {
+    for group in ((layout.groups).clone()).iter().cloned() {
         if (group.line_index != closest_line_index) {
             continue;
         }
@@ -178,7 +178,7 @@ pub fn get_rich_text_char_boundaries(
     layout: &TextLayoutResult,
     char_index: f64,
 ) -> bool {
-    let mut group = get_group_containing_index(layout, char_index);
+    let group = get_group_containing_index(layout, char_index);
     if (group).is_none() {
         return false;
     }
@@ -372,14 +372,14 @@ pub fn get_rich_text_selection_rectangles(
     }
     let start = (begin_index).min(end_index);
     let end = (begin_index).max(end_index);
-    for mut group in ((layout.groups).clone()).iter().cloned() {
+    for group in ((layout.groups).clone()).iter().cloned() {
         let group_start = (start).max(group.start_index);
         let group_end = (end).min(group.end_index);
         if (group_start >= group_end) {
             continue;
         }
-        let x = get_caret_x(&mut group, group_start);
-        let right = get_caret_x(&mut group, group_end);
+        let x = get_caret_x(&group, group_start);
+        let right = get_caret_x(&group, group_end);
         out.push(TextSelectionRectangle {
             __flight_identity: std::sync::Arc::new(()),
             height: group.height,
@@ -392,7 +392,7 @@ pub fn get_rich_text_selection_rectangles(
 }
 
 // Source: upstream/packages/textlayout/src/richTextQuery.ts:210 (sha256:cb64de90d636e8527eaa224ad7158abadc5bf99863faf8a80d8f340b78304d1b)
-fn get_caret_x(group: &mut TextLayoutGroup, index: f64) -> f64 {
+fn get_caret_x(group: &TextLayoutGroup, index: f64) -> f64 {
     let mut x = group.offset_x;
     let limit = (0.0_f64).max(((index).min(group.end_index) - group.start_index));
     {

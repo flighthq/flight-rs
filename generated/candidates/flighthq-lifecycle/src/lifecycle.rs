@@ -24,24 +24,23 @@ impl PartialEq for AttachAppLifecycleRecord1 {
 
 pub fn attach_app_lifecycle(app: AppLifecycle) -> () {
     detach_app_lifecycle(&app);
-    let backend: std::sync::Arc<std::sync::Mutex<LifecycleBackend>> =
-        std::sync::Arc::new(std::sync::Mutex::new(get_lifecycle_backend()));
+    let backend = get_lifecycle_backend();
     let previous: std::sync::Arc<std::sync::Mutex<AppLifecycleState>> =
         std::sync::Arc::new(std::sync::Mutex::new({
-            let __flight_callback = ((*backend.lock().unwrap()).get_state).clone();
+            let __flight_callback = (backend.get_state).clone();
             let __flight_result = __flight_callback.lock().unwrap()();
             __flight_result
         }));
     let unsubscribe_state = {
-        let __flight_callback = ((*backend.lock().unwrap()).subscribe).clone();
+        let __flight_callback = (backend.subscribe).clone();
         let __flight_result = __flight_callback.lock().unwrap()(std::sync::Arc::new(
             std::sync::Mutex::new(Box::new({
                 let app = app.clone();
-                let mut backend = backend.clone();
+                let backend = backend.clone();
                 let mut previous = previous.clone();
                 move || -> () {
                     let state = {
-                        let __flight_callback = ((*backend.lock().unwrap()).get_state).clone();
+                        let __flight_callback = (backend.get_state).clone();
                         let __flight_result = __flight_callback.lock().unwrap()();
                         __flight_result
                     };
@@ -93,7 +92,7 @@ pub fn attach_app_lifecycle(app: AppLifecycle) -> () {
             Option<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
         >,
     > = std::sync::Arc::new(std::sync::Mutex::new(None));
-    let mem_sub = ((*backend.lock().unwrap()).subscribe_memory_warning).clone();
+    let mem_sub = (backend.subscribe_memory_warning).clone();
     if (mem_sub).is_some() {
         (*unsubscribe_memory.lock().unwrap()) =
             Some(((mem_sub.as_ref().unwrap()).clone()).lock().unwrap()(

@@ -44,6 +44,7 @@ pub fn clone_spritesheet(spritesheet: &Spritesheet) -> Spritesheet {
         .collect::<Vec<_>>();
     return create_entity(Some(Spritesheet {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         atlas: (spritesheet.atlas).clone(),
         animations: ((spritesheet.animations).clone()).clone(),
@@ -65,6 +66,7 @@ impl PartialEq for CreateSpritesheetRecord6 {
 pub fn create_spritesheet(obj: Option<FlightPartialRecord2119237179>) -> Spritesheet {
     return create_entity(Some(Spritesheet {
         __flight_identity: std::sync::Arc::new(()),
+        __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         atlas: obj.as_ref().and_then(|value| (value.atlas).clone()),
         animations: (obj.as_ref().and_then(|value| (value.animations).clone()))

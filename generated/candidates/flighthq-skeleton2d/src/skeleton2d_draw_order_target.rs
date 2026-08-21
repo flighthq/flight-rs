@@ -263,7 +263,7 @@ fn bind_skeleton2_d_draw_order_channel(
     {
         let mut slot = 0.0_f64;
         while (slot < count) {
-            let node = draw_target.nodes[slot as usize].clone();
+            let node: Option<Node> = draw_target.nodes.get(slot as usize).cloned().flatten();
             if (((node).clone()).is_none()) || (((node).clone()).is_none()) {
                 {
                     slot += 1.0;
