@@ -868,7 +868,7 @@ pub fn transform_clip_region(out: &mut ClipRegion, clip: &ClipRegion, matrix: &M
             let quad = vec![tl_x, tl_y, tr_x, tr_y, br_x, br_y, bl_x, bl_y];
             out.contours = Some(vec![(quad).clone()]);
             out.winding = "nonZero".to_owned();
-            set_rectangle_to_contours_bounds(&mut out.rect, &vec![quad]);
+            set_rectangle_to_contours_bounds(&mut out.rect, &vec![(quad).clone()]);
         }
     } else {
         let mut new_contours: Vec<Vec<f64>> =

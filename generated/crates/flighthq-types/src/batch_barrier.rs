@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/BatchBarrier.ts:4 (sha256:33fa6c5cd42f152d3b3c2fc74ec614ab1f9eed5d45cbbad1a97152a58a75ea64)
-#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
+#[derive(Clone, Copy, Debug, Default, Eq, Ord, PartialEq, PartialOrd)]
 #[repr(transparent)]
 pub struct BatchBarrier(pub u32);
 

@@ -178,7 +178,7 @@ fn is_object(value: crate::FlightValue) -> bool {
     })
     .to_owned()
         == "object")
-        && ((value).is_some()))
+        && (!(matches!(&(value), crate::FlightValue::Null))))
         && (!false);
 }
 

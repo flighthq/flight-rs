@@ -412,11 +412,21 @@ pub fn parse_user_agent_runtime(
             .map(|(_, value)| value.clone())
     }))
     .is_some())
-        && (match &(crate::host_value::<Vec<(String, crate::FlightValue)>>("host.cast")
+        && (match &(match proc
+            .as_ref()
+            .unwrap()
             .iter()
-            .find(|(entry_key, _)| entry_key == &"electron".to_owned())
+            .find(|(entry_key, _)| entry_key == &"versions".to_owned())
             .map(|(_, value)| value.clone())
-            .expect("TypeScript Record key was absent"))
+            .expect("TypeScript Record key was absent")
+        {
+            crate::FlightValue::Record(entries) => entries,
+            _ => panic!("TypeScript Record cast received a non-record portable value"),
+        }
+        .iter()
+        .find(|(entry_key, _)| entry_key == &"electron".to_owned())
+        .map(|(_, value)| value.clone())
+        .expect("TypeScript Record key was absent"))
         {
             crate::FlightValue::Undefined | crate::FlightValue::Null => false,
             crate::FlightValue::Bool(value) => *value,

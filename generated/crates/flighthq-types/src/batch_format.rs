@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/BatchFormat.ts:13 (sha256:749046733b1cea90eb40a1665ebf979a05516907d91e4df375b547c59346e209)
-#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
+#[derive(Clone, Copy, Debug, Default, Eq, Ord, PartialEq, PartialOrd)]
 #[repr(transparent)]
 pub struct BatchFormat(pub u32);
 

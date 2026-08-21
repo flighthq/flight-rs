@@ -257,9 +257,17 @@ pub fn create_web_protocol_backend() -> ProtocolBackend {
                         .map_or(-1.0_f64, |index| index as f64)
                 };
                 if (idx >= 0.0_f64) {
-                    (*_registered_schemes.lock().unwrap())
-                        .splice((idx) as usize..((idx) + (1.0_f64)) as usize, vec![])
-                        .collect::<Vec<_>>();
+                    {
+                        let __flight_start = (idx);
+                        let __flight_count = (1.0_f64);
+                        (*_registered_schemes.lock().unwrap())
+                            .splice(
+                                (__flight_start) as usize
+                                    ..(__flight_start + __flight_count) as usize,
+                                vec![],
+                            )
+                            .collect::<Vec<_>>()
+                    };
                 }
                 return false;
             }

@@ -124,7 +124,8 @@ pub fn format_bitmap_font_fnt(font: &BitmapFont) -> String {
             .glyphs
             .iter()
             .find(|(entry_key, _)| entry_key == &(codepoint).clone())
-            .map(|(_, value)| value.clone());
+            .map(|(_, value)| value.clone())
+            .unwrap();
         lines.push(format!(
             "{}{}",
             format!(
@@ -163,7 +164,8 @@ pub fn format_bitmap_font_fnt(font: &BitmapFont) -> String {
             .kerning
             .iter()
             .find(|(entry_key, _)| entry_key == &(key).clone())
-            .map(|(_, value)| value.clone());
+            .map(|(_, value)| value.clone())
+            .unwrap();
         unpack_bitmap_font_kerning_key((key).clone(), &mut (*_KERNING_PAIR.lock().unwrap()));
         lines.push(format!(
             "kerning first={} second={} amount={}",

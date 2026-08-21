@@ -93,16 +93,16 @@ impl PartialEq for SharedStructuralRecord4 {
 }
 
 // Source: upstream/packages/log/src/log.ts:34 (sha256:34450be1d7c3fb6b2ac86b159ae896ee3115d2c99debe6a8e22e68795d65933a)
-pub fn add_log_sink(sink: &mut impl FnMut(LogEntry) -> ()) -> () {
+pub fn add_log_sink(sink: LogSink) -> () {
     if {
-        let __flight_value = (*sink).clone();
+        let __flight_value = (sink).clone();
         (_SINKS.lock().unwrap())
             .iter()
-            .any(|item| item == &__flight_value)
+            .any(|item| std::sync::Arc::ptr_eq(item, &__flight_value))
     } {
         return;
     }
-    _SINKS.lock().unwrap().push(((*sink).clone()).clone());
+    _SINKS.lock().unwrap().push(((sink).clone()).clone());
 }
 
 // Source: upstream/packages/log/src/log.ts:42 (sha256:f3e0592dd7ef366c458cba8c8d1327288f2616be8d82712e38fc913b012da634)
@@ -195,6 +195,8 @@ pub fn create_buffered_log_sink(
     target: LogSink,
     options: Option<SharedStructuralRecord1>,
 ) -> BufferedLogSink {
+    let __flight_forward_handle: std::sync::Arc<std::sync::Mutex<Option<BufferedLogSink>>> =
+        std::sync::Arc::new(std::sync::Mutex::new(None));
     let options = options.unwrap_or(SharedStructuralRecord1 {
         __flight_identity: std::sync::Arc::new(()),
         size: None,
@@ -204,27 +206,39 @@ pub fn create_buffered_log_sink(
     let interval_ms = (options.interval_ms).clone().unwrap_or(1000.0_f64);
     let mut flush: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>> =
         std::sync::Arc::new(std::sync::Mutex::new(Box::new({
-            let handle = handle.clone();
+            let __flight_forward_handle = __flight_forward_handle.clone();
             let target = target.clone();
             move || -> () {
                 let mut state = (*_BUFFERED_SINK_STATES.lock().unwrap())
                     .iter()
-                    .find(|(entry_key, _)| entry_key == &(handle).clone())
+                    .find(|(entry_key, _)| {
+                        entry_key
+                            == &(__flight_forward_handle
+                                .lock()
+                                .unwrap()
+                                .as_ref()
+                                .unwrap()
+                                .clone())
+                            .clone()
+                    })
                     .map(|(_, value)| value.clone());
                 if ((state.as_mut().unwrap().buf.len() as f64) == 0.0_f64) {
                     return;
                 }
-                let batch = state
-                    .as_mut()
-                    .unwrap()
-                    .buf
-                    .splice(
-                        (0.0_f64) as usize
-                            ..((0.0_f64) + ((state.as_mut().unwrap().buf.len() as f64) - (0.0_f64)))
-                                as usize,
-                        vec![],
-                    )
-                    .collect::<Vec<_>>();
+                let batch = {
+                    let __flight_start = (0.0_f64);
+                    let __flight_count =
+                        ((state.as_mut().unwrap().buf.len() as f64) - __flight_start);
+                    state
+                        .as_mut()
+                        .unwrap()
+                        .buf
+                        .splice(
+                            (__flight_start) as usize..(__flight_start + __flight_count) as usize,
+                            vec![],
+                        )
+                        .collect::<Vec<_>>()
+                };
                 for entry in (batch).iter().cloned() {
                     {
                         let __flight_callback = (target).clone();
@@ -236,16 +250,25 @@ pub fn create_buffered_log_sink(
         })
             as Box<dyn FnMut() -> () + Send + 'static>));
     let mut sink: LogSink = std::sync::Arc::new(std::sync::Mutex::new(Box::new({
+        let __flight_forward_handle = __flight_forward_handle.clone();
         let flush = flush.clone();
-        let handle = handle.clone();
         move |entry: LogEntry| -> () {
             let mut state = (*_BUFFERED_SINK_STATES.lock().unwrap())
                 .iter()
-                .find(|(entry_key, _)| entry_key == &(handle).clone())
+                .find(|(entry_key, _)| {
+                    entry_key
+                        == &(__flight_forward_handle
+                            .lock()
+                            .unwrap()
+                            .as_ref()
+                            .unwrap()
+                            .clone())
+                        .clone()
+                })
                 .map(|(_, value)| value.clone());
             state.as_mut().unwrap().buf.push(LogEntry {
                 __flight_identity: std::sync::Arc::new(()),
-                level: (entry.level).clone(),
+                level: entry.level,
                 channel: (entry.channel).clone(),
                 data: (entry.data).clone(),
             });
@@ -263,9 +286,16 @@ pub fn create_buffered_log_sink(
         __flight_identity: std::sync::Arc::new(()),
         sink: (sink).clone(),
     };
+    *__flight_forward_handle.lock().unwrap() = Some(handle.clone());
     let mut timer: Option<crate::FlightTimeout> = None;
     {
-        let __flight_key = (handle).clone();
+        let __flight_key = (__flight_forward_handle
+            .lock()
+            .unwrap()
+            .as_ref()
+            .unwrap()
+            .clone())
+        .clone();
         let __flight_value = BufferedLogSinkState {
             __flight_identity: std::sync::Arc::new(()),
             buf: vec![],
@@ -281,7 +311,12 @@ pub fn create_buffered_log_sink(
             (*_BUFFERED_SINK_STATES.lock().unwrap()).push((__flight_key, __flight_value));
         }
     };
-    return handle;
+    return __flight_forward_handle
+        .lock()
+        .unwrap()
+        .as_ref()
+        .unwrap()
+        .clone();
 }
 
 // Source: upstream/packages/log/src/log.ts:123 (sha256:a84b6cbb9aa2f7ebc2c6d0477d4cfd9d03069f96d80c24b4f3d09470fd8760d1)
@@ -345,17 +380,17 @@ pub fn create_console_capture_sink(options: Option<SharedStructuralRecord2>) -> 
     });
     let envelope_formatter = ((options.formatter).clone())
         .clone()
-        .unwrap_or((_default_json_formatter).clone());
+        .unwrap_or(std::sync::Arc::new(std::sync::Mutex::new(Box::new({
+            let _default_json_formatter = _default_json_formatter.clone();
+            move |__flight_argument_0: LogEntry| -> String {
+                _default_json_formatter(&__flight_argument_0)
+            }
+        })
+            as Box<dyn FnMut(LogEntry) -> String + Send + 'static>)));
     return std::sync::Arc::new(std::sync::Mutex::new(Box::new({
         let envelope_formatter = envelope_formatter.clone();
         move |entry: LogEntry| -> () {
-            _write_console_capture_entry(
-                &entry,
-                &mut |__flight_callback_argument_0: LogEntry| -> String {
-                    let __flight_callback = (envelope_formatter).clone();
-                    __flight_callback.lock().unwrap()(__flight_callback_argument_0)
-                },
-            )
+            _write_console_capture_entry(&entry, (envelope_formatter).clone())
         }
     })
         as Box<dyn FnMut(LogEntry) -> () + Send + 'static>));
@@ -398,15 +433,7 @@ pub fn create_console_log_sink(options: Option<SharedStructuralRecord2>) -> LogS
         })));
     return std::sync::Arc::new(std::sync::Mutex::new(Box::new({
         let formatter = formatter.clone();
-        move |entry: LogEntry| -> () {
-            _write_console_log_entry(
-                &entry,
-                &mut |__flight_callback_argument_0: LogEntry| -> String {
-                    let __flight_callback = (formatter).clone();
-                    __flight_callback.lock().unwrap()(__flight_callback_argument_0)
-                },
-            )
-        }
+        move |entry: LogEntry| -> () { _write_console_log_entry(&entry, (formatter).clone()) }
     })
         as Box<dyn FnMut(LogEntry) -> () + Send + 'static>));
 }
@@ -507,7 +534,7 @@ pub fn create_filter_log_sink(
 pub fn create_json_log_formatter() -> LogFormatter {
     return std::sync::Arc::new(std::sync::Mutex::new(
         Box::new(move |entry: LogEntry| -> String {
-            let level = (entry.level).clone();
+            let level = entry.level;
             let channel = (entry.channel).clone();
             let serialized = _apply_serializers(&if ((match &(entry.data) {
                 crate::FlightUnion2::A(_) => "string",
@@ -516,12 +543,22 @@ pub fn create_json_log_formatter() -> LogFormatter {
             .to_owned()
                 == "string")
             {
-                ClosureSynthesizedRecord2264098705 {
-                    __flight_identity: std::sync::Arc::new(()),
-                    msg: (entry.data).clone(),
+                {
+                    let mut __flight_record = Vec::new();
+                    __flight_record.push(("msg".to_owned(), {
+                        let __flight_portable_source = match (entry.data).clone() {
+                            LogData::A(value) => value,
+                            LogData::B(_) => panic!("TypeScript union narrowing failed"),
+                        };
+                        crate::FlightValue::String((&__flight_portable_source).clone())
+                    }));
+                    __flight_record
                 }
             } else {
-                entry.data
+                match (entry.data).clone() {
+                    LogData::A(_) => panic!("TypeScript union narrowing failed"),
+                    LogData::B(value) => value,
+                }
             });
             let redacted = if ((_REDACTION_PATHS.lock().unwrap().len() as f64) > 0.0_f64) {
                 _apply_redaction(&serialized)
@@ -561,7 +598,7 @@ pub fn create_json_log_formatter() -> LogFormatter {
                     let __flight_value_2 = {
                         let __flight_portable_source = _LEVEL_NAMES
                             .iter()
-                            .find(|(entry_key, _)| entry_key == &(level).clone())
+                            .find(|(entry_key, _)| entry_key == &level)
                             .map(|(_, value)| value.clone())
                             .clone();
                         match (&__flight_portable_source).as_ref() {
@@ -687,7 +724,7 @@ pub fn create_memory_log_sink(capacity: f64) -> MemoryLogSink {
         move |entry: LogEntry| -> () {
             let stored: LogEntry = LogEntry {
                 __flight_identity: std::sync::Arc::new(()),
-                level: (entry.level).clone(),
+                level: entry.level,
                 channel: (entry.channel).clone(),
                 data: (entry.data).clone(),
             };
@@ -837,7 +874,7 @@ pub fn create_text_log_formatter(options: Option<SharedStructuralRecord4>) -> Lo
     return std::sync::Arc::new(std::sync::Mutex::new(Box::new({
         let options = options.clone();
         move |entry: LogEntry| -> String {
-            let level = (entry.level).clone();
+            let level = entry.level;
             let channel = (entry.channel).clone();
             let mut parts: Vec<String> = vec![];
             if (options.timestamp).unwrap_or(false) {
@@ -850,7 +887,7 @@ pub fn create_text_log_formatter(options: Option<SharedStructuralRecord4>) -> Lo
                 parts.push(
                     (_LEVEL_NAMES
                         .iter()
-                        .find(|(entry_key, _)| entry_key == &(level).clone())
+                        .find(|(entry_key, _)| entry_key == &level)
                         .map(|(_, value)| value.clone())
                         .clone())
                     .clone()
@@ -877,23 +914,27 @@ pub fn create_text_log_formatter(options: Option<SharedStructuralRecord4>) -> Lo
             .to_owned()
                 == "string")
             {
-                parts.push((entry.data).clone());
+                parts.push(
+                    (match (entry.data).clone() {
+                        LogData::A(value) => value,
+                        LogData::B(_) => panic!("TypeScript union narrowing failed"),
+                    })
+                    .clone(),
+                );
             } else {
                 parts.push(
                     crate::flight_json_stringify(
                         &({
-                            let __flight_portable_source = (entry.data).clone();
-                            match &__flight_portable_source {
-                                crate::FlightUnion2::A(value) => {
-                                    crate::FlightValue::String((value).clone())
-                                }
-                                crate::FlightUnion2::B(value) => crate::FlightValue::Record(
-                                    (value)
-                                        .iter()
-                                        .map(|(key, value)| (key.clone(), (value).clone()))
-                                        .collect(),
-                                ),
-                            }
+                            let __flight_portable_source = match (entry.data).clone() {
+                                LogData::A(_) => panic!("TypeScript union narrowing failed"),
+                                LogData::B(value) => value,
+                            };
+                            crate::FlightValue::Record(
+                                (&__flight_portable_source)
+                                    .iter()
+                                    .map(|(key, value)| (key.clone(), (value).clone()))
+                                    .collect(),
+                            )
                         }),
                     )
                     .expect("JSON.stringify encountered an opaque host object")
@@ -1058,11 +1099,18 @@ pub fn exit_log_span(span: &LogSpan) -> () {
             .map_or(-1.0_f64, |index| index as f64)
     };
     if (idx >= 0.0_f64) {
-        _SPAN_STACK
-            .lock()
-            .unwrap()
-            .splice((idx) as usize..((idx) + (1.0_f64)) as usize, vec![])
-            .collect::<Vec<_>>();
+        {
+            let __flight_start = (idx);
+            let __flight_count = (1.0_f64);
+            _SPAN_STACK
+                .lock()
+                .unwrap()
+                .splice(
+                    (__flight_start) as usize..(__flight_start + __flight_count) as usize,
+                    vec![],
+                )
+                .collect::<Vec<_>>()
+        };
     }
 }
 
@@ -1103,7 +1151,7 @@ pub fn get_log_level() -> LogLevel {
 pub fn get_log_level_name(level: LogLevel) -> String {
     return (_LEVEL_NAMES
         .iter()
-        .find(|(entry_key, _)| entry_key == &(level).clone())
+        .find(|(entry_key, _)| entry_key == &level)
         .map(|(_, value)| value.clone())
         .clone())
     .clone()
@@ -1153,7 +1201,7 @@ pub fn log(
     data: &crate::FlightUnion2<LogData, LogDataProvider>,
     channel: Option<String>,
 ) -> () {
-    if (!_passes_level_gate((level).clone(), ((channel).clone()).clone())) {
+    if (!_passes_level_gate(level, ((channel).clone()).clone())) {
         return;
     }
     let resolved: LogData = if ((match &(data) {
@@ -1179,7 +1227,7 @@ pub fn log(
     };
     let entry: LogEntry = LogEntry {
         __flight_identity: std::sync::Arc::new(()),
-        level: (level).clone(),
+        level: level,
         channel: (channel).clone(),
         data: _merge_span_fields(&resolved, ((channel).clone()).clone()),
     };
@@ -1480,11 +1528,7 @@ pub fn log_once(
             (*_ONCE_KEYS.lock().unwrap()).push(__flight_value);
         }
     };
-    log(
-        (level).clone(),
-        &((*data).clone()),
-        ((channel).clone()).clone(),
-    );
+    log(level, &((*data).clone()), ((channel).clone()).clone());
     return true;
 }
 
@@ -1651,7 +1695,7 @@ pub fn log_with(
     data: &crate::FlightUnion2<LogData, LogDataProvider>,
 ) -> () {
     let channel = (context.channel).clone();
-    if (!_passes_level_gate((level).clone(), ((channel).clone()).clone())) {
+    if (!_passes_level_gate(level, ((channel).clone()).clone())) {
         return;
     }
     let resolved: LogData = if ((match &(data) {
@@ -1677,7 +1721,7 @@ pub fn log_with(
     };
     _emit_to_sinks(&LogEntry {
         __flight_identity: std::sync::Arc::new(()),
-        level: (level).clone(),
+        level: level,
         channel: (channel).clone(),
         data: _merge_context_fields(
             context,
@@ -1720,22 +1764,29 @@ pub fn register_log_serializer(
 }
 
 // Source: upstream/packages/log/src/log.ts:557 (sha256:420a9eb436739a816784eac52e7c6d7a809f8225e97b1e50e4361df6acefd176)
-pub fn remove_log_sink(sink: &mut impl FnMut(LogEntry) -> ()) -> bool {
+pub fn remove_log_sink(sink: LogSink) -> bool {
     let idx = {
-        let __flight_value = (*sink).clone();
+        let __flight_value = (sink).clone();
         (_SINKS.lock().unwrap())
             .iter()
-            .position(|item| item == &__flight_value)
+            .position(|item| std::sync::Arc::ptr_eq(item, &__flight_value))
             .map_or(-1.0_f64, |index| index as f64)
     };
     if (idx < 0.0_f64) {
         return false;
     }
-    _SINKS
-        .lock()
-        .unwrap()
-        .splice((idx) as usize..((idx) + (1.0_f64)) as usize, vec![])
-        .collect::<Vec<_>>();
+    {
+        let __flight_start = (idx);
+        let __flight_count = (1.0_f64);
+        _SINKS
+            .lock()
+            .unwrap()
+            .splice(
+                (__flight_start) as usize..(__flight_start + __flight_count) as usize,
+                vec![],
+            )
+            .collect::<Vec<_>>()
+    };
     return true;
 }
 
@@ -1834,7 +1885,7 @@ pub fn serialize_log_error(value: crate::FlightValue) -> Vec<(String, crate::Fli
 pub fn set_log_channel_level(channel: String, level: LogLevel) -> () {
     {
         let __flight_key = (channel).clone();
-        let __flight_value = (level).clone();
+        let __flight_value = level;
         if let Some((_, value)) = (*_CHANNEL_LEVELS.lock().unwrap())
             .iter_mut()
             .find(|(key, _)| key == &__flight_key)
@@ -1848,12 +1899,12 @@ pub fn set_log_channel_level(channel: String, level: LogLevel) -> () {
 
 // Source: upstream/packages/log/src/log.ts:585 (sha256:f725cf7f794af8de8328b3d52d8d7d29ef586e010bfe6a6b98242252da724bc5)
 pub fn set_log_console_level(level: LogLevel) -> () {
-    (*_CONSOLE_LEVEL.lock().unwrap()) = (level).clone();
+    (*_CONSOLE_LEVEL.lock().unwrap()) = level;
 }
 
 // Source: upstream/packages/log/src/log.ts:591 (sha256:512aac4c1304c724e74f6f70dcaae6c829d98e1658ff2d9bfc0074a7342fc948)
 pub fn set_log_level(level: LogLevel) -> () {
-    (*_LEVEL.lock().unwrap()) = (level).clone();
+    (*_LEVEL.lock().unwrap()) = level;
 }
 
 // Source: upstream/packages/log/src/log.ts:598 (sha256:209336d8d8c47ace23e20ed60a1b01fef8989cebedca4ceb055ccec8e6be8fdc)
@@ -2041,7 +2092,7 @@ fn _apply_serializers(
     for __iteration10 in (((*data).clone()).clone()).iter().cloned() {
         let key = __iteration10.0.clone();
         let value = __iteration10.1.clone();
-        if (((((value).clone()).is_some())
+        if (((!(matches!(&((value).clone()), crate::FlightValue::Null)))
             && ((match &((value).clone()) {
                 crate::FlightValue::Undefined => "undefined",
                 crate::FlightValue::Null
@@ -2057,12 +2108,18 @@ fn _apply_serializers(
             })
             .to_owned()
                 == "object"))
-            && (false))
-            && ((match &(crate::host_value::<Vec<(String, crate::FlightValue)>>("host.cast")
-                .iter()
-                .find(|(entry_key, _)| entry_key == &"__kind".to_owned())
-                .map(|(_, value)| value.clone())
-                .expect("TypeScript Record key was absent"))
+            && ({
+                let __flight_key = "__kind".to_owned();
+                matches!(&((value).clone()), crate::FlightValue::Record(entries) if entries.iter().any(|(key, _)| key == &__flight_key))
+            }))
+            && ((match &(match (value).clone() {
+                crate::FlightValue::Record(entries) => entries,
+                _ => panic!("TypeScript Record cast received a non-record portable value"),
+            }
+            .iter()
+            .find(|(entry_key, _)| entry_key == &"__kind".to_owned())
+            .map(|(_, value)| value.clone())
+            .expect("TypeScript Record key was absent"))
             {
                 crate::FlightValue::Undefined => "undefined",
                 crate::FlightValue::Null
@@ -2079,34 +2136,41 @@ fn _apply_serializers(
             .to_owned()
                 == "string")
         {
-            let kind = crate::host_value::<Vec<(String, crate::FlightValue)>>("host.cast")
-                .iter()
-                .find(|(entry_key, _)| entry_key == &"__kind".to_owned())
-                .map(|(_, value)| value.clone())
-                .expect("TypeScript Record key was absent");
+            let kind = match match (value).clone() {
+                crate::FlightValue::Record(entries) => entries,
+                _ => panic!("TypeScript Record cast received a non-record portable value"),
+            }
+            .iter()
+            .find(|(entry_key, _)| entry_key == &"__kind".to_owned())
+            .map(|(_, value)| value.clone())
+            .expect("TypeScript Record key was absent")
+            {
+                crate::FlightValue::String(value) => value,
+                _ => panic!("TypeScript String cast received an incompatible portable value"),
+            };
             let fn_ = (*_SERIALIZERS.lock().unwrap())
                 .iter()
                 .find(|(entry_key, _)| entry_key == &(kind).clone())
                 .map(|(_, value)| value.clone());
             {
                 let __flight_key = (key).clone();
-                let __flight_value = {
-                    let __flight_portable_source = if (fn_).is_some() {
-                        {
+                let __flight_value = if (fn_).is_some() {
+                    {
+                        let __flight_portable_source = {
                             let __flight_callback = (fn_.as_ref().unwrap()).clone();
                             let __flight_result =
                                 __flight_callback.lock().unwrap()((value).clone());
                             __flight_result
-                        }
-                    } else {
-                        (value).clone()
-                    };
-                    crate::FlightValue::Record(
-                        (&__flight_portable_source)
-                            .iter()
-                            .map(|(key, value)| (key.clone(), (value).clone()))
-                            .collect(),
-                    )
+                        };
+                        crate::FlightValue::Record(
+                            (&__flight_portable_source)
+                                .iter()
+                                .map(|(key, value)| (key.clone(), (value).clone()))
+                                .collect(),
+                        )
+                    }
+                } else {
+                    (value).clone()
                 };
                 if let Some((_, value)) = result.iter_mut().find(|(key, _)| key == &__flight_key) {
                     *value = __flight_value;
@@ -2172,7 +2236,24 @@ fn _redact_path(obj: &mut Vec<(String, crate::FlightValue)>, parts: &Vec<String>
         .map(|(_, value)| value.clone())
         .clone();
     if (((next).is_some())
-        && (((next).as_ref().map_or("undefined", |_| "object")).to_owned() == "object"))
+        && ((match (next).as_ref() {
+            None => "undefined",
+            Some(value) => match value {
+                crate::FlightValue::Undefined => "undefined",
+                crate::FlightValue::Null
+                | crate::FlightValue::Array(_)
+                | crate::FlightValue::Record(_)
+                | crate::FlightValue::Error { .. }
+                | crate::FlightValue::Object => "object",
+                crate::FlightValue::Bool(_) => "boolean",
+                crate::FlightValue::Number(_) => "number",
+                crate::FlightValue::String(_) => "string",
+                crate::FlightValue::Function => "function",
+                crate::FlightValue::Symbol => "symbol",
+            },
+        })
+        .to_owned()
+            == "object"))
         && (!false)
     {
         {
@@ -2180,8 +2261,10 @@ fn _redact_path(obj: &mut Vec<(String, crate::FlightValue)>, parts: &Vec<String>
             let __flight_value = crate::FlightValue::Record({
                 let mut __flight_record = Vec::new();
                 let __flight_spread_0 = {
-                    let __flight_portable_source =
-                        crate::host_value::<Vec<(String, crate::FlightValue)>>("host.cast");
+                    let __flight_portable_source = match (next.as_ref().unwrap()).clone() {
+                        crate::FlightValue::Record(entries) => entries,
+                        _ => panic!("TypeScript Record cast received a non-record portable value"),
+                    };
                     crate::FlightValue::Record(
                         (&__flight_portable_source)
                             .iter()
@@ -2237,11 +2320,18 @@ fn _redact_path(obj: &mut Vec<(String, crate::FlightValue)>, parts: &Vec<String>
             }
         };
         _redact_path(
-            &mut obj
-                .iter()
-                .find(|(entry_key, _)| entry_key == &(key).clone())
-                .map(|(_, value)| value.clone())
-                .clone(),
+            {
+                let __flight_key = (key).clone();
+                let __flight_value = obj
+                    .iter_mut()
+                    .find(|(key, _)| key == &__flight_key)
+                    .map(|(_, value)| value)
+                    .expect("TypeScript Record key was absent");
+                match __flight_value {
+                    crate::FlightValue::Record(entries) => entries,
+                    _ => panic!("TypeScript Record cast received a non-record portable value"),
+                }
+            },
             parts,
             (idx + 1.0_f64),
         );
@@ -2266,7 +2356,7 @@ fn _emit_to_sinks(entry: &LogEntry) -> () {
                 .clone(),
             ((*entry).clone(),),
         );
-        if ((entry.level).clone() == LogLevel::Error) {
+        if (entry.level == LogLevel::Error) {
             emit_signal(
                 ((*_LOG_SIGNALS.lock().unwrap())
                     .as_ref()
@@ -2302,16 +2392,11 @@ fn _merge_context_fields(context: &LogContext, data: &LogData) -> LogData {
             let mut __flight_record = Vec::new();
             let __flight_key_0 = "msg".to_owned();
             let __flight_value_0 = {
-                let __flight_portable_source = (*data).clone();
-                match &__flight_portable_source {
-                    crate::FlightUnion2::A(value) => crate::FlightValue::String((value).clone()),
-                    crate::FlightUnion2::B(value) => crate::FlightValue::Record(
-                        (value)
-                            .iter()
-                            .map(|(key, value)| (key.clone(), (value).clone()))
-                            .collect(),
-                    ),
-                }
+                let __flight_portable_source = match (*data).clone() {
+                    LogData::A(value) => value,
+                    LogData::B(_) => panic!("TypeScript union narrowing failed"),
+                };
+                crate::FlightValue::String((&__flight_portable_source).clone())
             };
             if let Some((_, __flight_existing)) = __flight_record
                 .iter_mut()
@@ -2348,7 +2433,10 @@ fn _merge_context_fields(context: &LogContext, data: &LogData) -> LogData {
                 __flight_record.push((__flight_key, __flight_value));
             }
         }
-        let __flight_spread_1 = data;
+        let __flight_spread_1 = match (*data).clone() {
+            LogData::A(_) => panic!("TypeScript union narrowing failed"),
+            LogData::B(value) => value,
+        };
         for (__flight_key, __flight_value) in __flight_spread_1.iter().cloned() {
             if let Some((_, __flight_existing)) = __flight_record
                 .iter_mut()
@@ -2405,16 +2493,11 @@ fn _merge_span_fields(data: &LogData, _channel: Option<String>) -> LogData {
             let mut __flight_record = Vec::new();
             let __flight_key_0 = "msg".to_owned();
             let __flight_value_0 = {
-                let __flight_portable_source = (*data).clone();
-                match &__flight_portable_source {
-                    crate::FlightUnion2::A(value) => crate::FlightValue::String((value).clone()),
-                    crate::FlightUnion2::B(value) => crate::FlightValue::Record(
-                        (value)
-                            .iter()
-                            .map(|(key, value)| (key.clone(), (value).clone()))
-                            .collect(),
-                    ),
-                }
+                let __flight_portable_source = match (*data).clone() {
+                    LogData::A(value) => value,
+                    LogData::B(_) => panic!("TypeScript union narrowing failed"),
+                };
+                crate::FlightValue::String((&__flight_portable_source).clone())
             };
             if let Some((_, __flight_existing)) = __flight_record
                 .iter_mut()
@@ -2451,7 +2534,10 @@ fn _merge_span_fields(data: &LogData, _channel: Option<String>) -> LogData {
                 __flight_record.push((__flight_key, __flight_value));
             }
         }
-        let __flight_spread_1 = data;
+        let __flight_spread_1 = match (*data).clone() {
+            LogData::A(_) => panic!("TypeScript union narrowing failed"),
+            LogData::B(value) => value,
+        };
         for (__flight_key, __flight_value) in __flight_spread_1.iter().cloned() {
             if let Some((_, __flight_existing)) = __flight_record
                 .iter_mut()
@@ -2485,7 +2571,7 @@ fn _passes_level_gate(level: LogLevel, channel: Option<String>) -> bool {
     } else {
         Some((*_LEVEL.lock().unwrap()).clone())
     };
-    return (level <= gate) && (level != LogLevel::None);
+    return ((gate).as_ref().is_some_and(|value| level <= *value)) && (level != LogLevel::None);
 }
 
 // Source: upstream/packages/log/src/log.ts:760 (sha256:d585ebf20bfc2a78ee2f52cac90944d899e116c49d935d28c050cf6b0591a643)
@@ -2494,19 +2580,8 @@ fn _timestamp() -> f64 {
 }
 
 // Source: upstream/packages/log/src/log.ts:764 (sha256:45f2fe54e019dace1c01f279269d85ace2486e38de7971fa46a2733350b7416e)
-#[derive(Clone)]
-struct DefaultJsonFormatterSynthesizedRecord2264098705 {
-    __flight_identity: std::sync::Arc<()>,
-    msg: LogData,
-}
-impl PartialEq for DefaultJsonFormatterSynthesizedRecord2264098705 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
 fn _default_json_formatter(entry: &LogEntry) -> String {
-    let level = (entry.level).clone();
+    let level = entry.level;
     let channel = (entry.channel).clone();
     return crate::flight_json_stringify(
         &(crate::FlightValue::Record({
@@ -2541,7 +2616,7 @@ fn _default_json_formatter(entry: &LogEntry) -> String {
             let __flight_value_2 = {
                 let __flight_portable_source = _LEVEL_NAMES
                     .iter()
-                    .find(|(entry_key, _)| entry_key == &(level).clone())
+                    .find(|(entry_key, _)| entry_key == &level)
                     .map(|(_, value)| value.clone())
                     .clone();
                 match (&__flight_portable_source).as_ref() {
@@ -2574,39 +2649,46 @@ fn _default_json_formatter(entry: &LogEntry) -> String {
                 __flight_record.push((__flight_key_3, __flight_value_3));
             }
             let __flight_key_4 = "data".to_owned();
-            let __flight_value_4 = {
-                let __flight_portable_source = if ((match &(entry.data) {
-                    crate::FlightUnion2::A(_) => "string",
-                    crate::FlightUnion2::B(value) => "object",
-                })
-                .to_owned()
-                    == "string")
-                {
-                    DefaultJsonFormatterSynthesizedRecord2264098705 {
-                        __flight_identity: std::sync::Arc::new(()),
-                        msg: (entry.data).clone(),
-                    }
-                } else {
-                    entry.data
-                };
+            let __flight_value_4 = if ((match &(entry.data) {
+                crate::FlightUnion2::A(_) => "string",
+                crate::FlightUnion2::B(value) => "object",
+            })
+            .to_owned()
+                == "string")
+            {
                 crate::FlightValue::Record({
                     let mut __flight_record = Vec::new();
-                    __flight_record.push((
-                        "msg".to_owned(),
-                        match &((&__flight_portable_source).msg) {
-                            crate::FlightUnion2::A(value) => {
-                                crate::FlightValue::String((value).clone())
-                            }
-                            crate::FlightUnion2::B(value) => crate::FlightValue::Record(
-                                (value)
-                                    .iter()
-                                    .map(|(key, value)| (key.clone(), (value).clone()))
-                                    .collect(),
-                            ),
-                        },
-                    ));
+                    let __flight_key_0 = "msg".to_owned();
+                    let __flight_value_0 = {
+                        let __flight_portable_source = match (entry.data).clone() {
+                            LogData::A(value) => value,
+                            LogData::B(_) => panic!("TypeScript union narrowing failed"),
+                        };
+                        crate::FlightValue::String((&__flight_portable_source).clone())
+                    };
+                    if let Some((_, __flight_existing)) = __flight_record
+                        .iter_mut()
+                        .find(|(existing, _)| existing == &__flight_key_0)
+                    {
+                        *__flight_existing = __flight_value_0;
+                    } else {
+                        __flight_record.push((__flight_key_0, __flight_value_0));
+                    }
                     __flight_record
                 })
+            } else {
+                {
+                    let __flight_portable_source = match (entry.data).clone() {
+                        LogData::A(_) => panic!("TypeScript union narrowing failed"),
+                        LogData::B(value) => value,
+                    };
+                    crate::FlightValue::Record(
+                        (&__flight_portable_source)
+                            .iter()
+                            .map(|(key, value)| (key.clone(), (value).clone()))
+                            .collect(),
+                    )
+                }
             };
             if let Some((_, __flight_existing)) = __flight_record
                 .iter_mut()
@@ -2624,17 +2706,11 @@ fn _default_json_formatter(entry: &LogEntry) -> String {
 }
 
 // Source: upstream/packages/log/src/log.ts:776 (sha256:3f220612b482f6b947e7c44fec4f0073691ff4d9bbc1092e4e523dd6f500ad04)
-fn _write_console_capture_entry(
-    entry: &LogEntry,
-    envelope_formatter: &mut impl FnMut(LogEntry) -> String,
-) -> () {
+fn _write_console_capture_entry(entry: &LogEntry, envelope_formatter: LogFormatter) -> () {
     return;
 }
 
 // Source: upstream/packages/log/src/log.ts:791 (sha256:6444c1d2ac8bee5c434409d7798b3e2238035d9841798aeadec7ac0d6d3879ad)
-fn _write_console_log_entry(
-    entry: &LogEntry,
-    formatter: &mut impl FnMut(LogEntry) -> String,
-) -> () {
+fn _write_console_log_entry(entry: &LogEntry, formatter: LogFormatter) -> () {
     return;
 }

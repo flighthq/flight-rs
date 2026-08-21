@@ -214,9 +214,7 @@ fn pair_isolates(
                 stack.push(i);
             } else {
                 if (t == "PDI") && ((stack.len() as f64) > 0.0_f64) {
-                    let initiator = stack
-                        .pop()
-                        .expect("TypeScript Array.pop returned undefined");
+                    let initiator = stack.pop().unwrap();
                     matching_pdi[initiator as usize] = (i) as i32;
                     matching_initiator[i as usize] = (initiator) as i32;
                 }

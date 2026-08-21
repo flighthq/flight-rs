@@ -157,7 +157,7 @@ fn char_advances(
     format: &TextFormat,
     start: f64,
     end: f64,
-    measure: &mut impl FnMut(String, TextFormat) -> f64,
+    measure: TextMeasureFunction,
     start_x: Option<f64>,
 ) -> () {
     let start_x = start_x.unwrap_or(0.0_f64);
@@ -208,7 +208,7 @@ fn char_advances(
         let char = __flight_string_slice(&(text), i, Some((i + char_len)));
         let mut advance: f64;
         if ((char).clone() == "\t") {
-            advance = get_tab_advance(current_x, &(tab_stops), measure, format);
+            advance = get_tab_advance(current_x, &(tab_stops), (measure).clone(), format);
             out.push(advance);
             current_x += advance;
             i += char_len;
@@ -260,14 +260,28 @@ fn char_advances(
             };
             let next_char =
                 __flight_string_slice(&(text), next_start, Some((next_start + next_len)));
-            let next_w = measure((next_char).clone(), (*format).clone());
-            let pair_w = measure(
-                format!("{}{}", (char).clone(), (next_char).clone()),
-                (*format).clone(),
-            );
+            let next_w = {
+                let __flight_callback = (measure).clone();
+                let __flight_result =
+                    __flight_callback.lock().unwrap()((next_char).clone(), (*format).clone());
+                __flight_result
+            };
+            let pair_w = {
+                let __flight_callback = (measure).clone();
+                let __flight_result = __flight_callback.lock().unwrap()(
+                    format!("{}{}", (char).clone(), (next_char).clone()),
+                    (*format).clone(),
+                );
+                __flight_result
+            };
             advance = (pair_w - next_w);
         } else {
-            advance = measure((char).clone(), (*format).clone());
+            advance = {
+                let __flight_callback = (measure).clone();
+                let __flight_result =
+                    __flight_callback.lock().unwrap()((char).clone(), (*format).clone());
+                __flight_result
+            };
         }
         out.push((advance + letter_spacing));
         current_x += (advance + letter_spacing);
@@ -288,7 +302,7 @@ fn sum_advances(positions: &Vec<f64>) -> f64 {
 fn get_tab_advance(
     current_x: f64,
     tab_stops: &Option<Vec<f64>>,
-    measure: &mut impl FnMut(String, TextFormat) -> f64,
+    measure: TextMeasureFunction,
     format: &TextFormat,
 ) -> f64 {
     if ((tab_stops).is_some()) && ((tab_stops.as_ref().unwrap().len() as f64) > 0.0_f64) {
@@ -298,7 +312,12 @@ fn get_tab_advance(
             }
         }
     }
-    let space_w = (measure("    ".to_owned(), (*format).clone()) / 4.0_f64);
+    let space_w = ({
+        let __flight_callback = (measure).clone();
+        let __flight_result =
+            __flight_callback.lock().unwrap()("    ".to_owned(), (*format).clone());
+        __flight_result
+    } / 4.0_f64);
     let tab_w = ((space_w).max(1.0_f64) * 4.0_f64);
     return (tab_w - (current_x % tab_w));
 }
@@ -774,15 +793,7 @@ fn build_groups(
                         &(*current_format.lock().unwrap()),
                         idx,
                         range_end,
-                        &mut |__flight_callback_argument_0: String,
-                              __flight_callback_argument_1: TextFormat|
-                         -> f64 {
-                            let __flight_callback = (measure).clone();
-                            __flight_callback.lock().unwrap()(
-                                __flight_callback_argument_0,
-                                __flight_callback_argument_1,
-                            )
-                        },
+                        (measure).clone(),
                         Some(
                             ((*offset_x.lock().unwrap()).clone() + {
                                 let __flight_callback = (base_x).clone();
@@ -881,15 +892,7 @@ fn build_groups(
                         &(*current_format.lock().unwrap()),
                         idx,
                         range_end,
-                        &mut |__flight_callback_argument_0: String,
-                              __flight_callback_argument_1: TextFormat|
-                         -> f64 {
-                            let __flight_callback = (measure).clone();
-                            __flight_callback.lock().unwrap()(
-                                __flight_callback_argument_0,
-                                __flight_callback_argument_1,
-                            )
-                        },
+                        (measure).clone(),
                         Some(
                             (((*offset_x.lock().unwrap()).clone() + {
                                 let __flight_callback = (base_x).clone();
@@ -950,15 +953,7 @@ fn build_groups(
                     &(*current_format.lock().unwrap()),
                     remaining,
                     end,
-                    &mut |__flight_callback_argument_0: String,
-                          __flight_callback_argument_1: TextFormat|
-                     -> f64 {
-                        let __flight_callback = (measure).clone();
-                        __flight_callback.lock().unwrap()(
-                            __flight_callback_argument_0,
-                            __flight_callback_argument_1,
-                        )
-                    },
+                    (measure).clone(),
                     Some(
                         ((*offset_x.lock().unwrap()).clone() + {
                             let __flight_callback = (base_x).clone();
@@ -1764,5 +1759,8 @@ pub fn is_text_layout_truncated(layout: &TextLayoutResult, params: &TextLayoutPa
     {
         return false;
     }
-    return (layout.num_lines >= params.max_lines) && ((layout.groups.len() as f64) > 0.0_f64);
+    return ((params.max_lines)
+        .as_ref()
+        .is_some_and(|value| layout.num_lines >= *value))
+        && ((layout.groups.len() as f64) > 0.0_f64);
 }

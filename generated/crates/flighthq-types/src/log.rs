@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/Log.ts:6 (sha256:5e0faa717365b990bb5e57f1ad7e4dcfe9b7e6ae8992248fd57a4837411e2006)
-#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
+#[derive(Clone, Copy, Debug, Default, Eq, Ord, PartialEq, PartialOrd)]
 #[repr(transparent)]
 pub struct LogLevel(pub u32);
 

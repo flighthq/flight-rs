@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 // Source: upstream/packages/types/src/AppearanceFlags.ts:1 (sha256:226f103f8f6aff1c6397b44cfc346c3492eca4b7458c9a0739d4ded39022217c)
-#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
+#[derive(Clone, Copy, Debug, Default, Eq, Ord, PartialEq, PartialOrd)]
 #[repr(transparent)]
 pub struct AppearanceFlags(pub u32);
 

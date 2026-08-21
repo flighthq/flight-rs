@@ -51,15 +51,26 @@ pub static DISSOLVE_MODIFIER_DEFINITION: std::sync::LazyLock<ModifierDefinition>
         __flight_identity: std::sync::Arc::new(()),
         kind: (dissolve_modifier_kind_constant).to_owned(),
         slot: (modifier_slot_constant.effect).clone(),
-        get_define_signature: Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
+        get_define_signature: Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new({
+            #[derive(Clone, Default)]
+            struct ClosureRecord1 {
+                __flight_identity: std::sync::Arc<()>,
+                map: Option<crate::FlightValue>,
+            }
+            impl PartialEq for ClosureRecord1 {
+                fn eq(&self, other: &Self) -> bool {
+                    std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+                }
+            }
+
             move |modifier: Modifier| -> String {
                 return if (None::<crate::FlightValue>).is_some() {
                     "m".to_owned()
                 } else {
                     "".to_owned()
                 };
-            },
-        )
+            }
+        })
             as Box<dyn FnMut(Modifier) -> String + Send + 'static>))),
     });
 

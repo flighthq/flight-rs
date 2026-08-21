@@ -433,9 +433,16 @@ pub fn set_audio_mixer_master_gain(mixer: &mut AudioMixer, value: f64) -> f64 {
         .find(|(entry_key, _)| entry_key == &(*mixer).clone())
         .map(|(_, value)| value.clone());
     if (runtime).is_some() {
-        runtime.as_mut().unwrap().master_gain_node.gain.value = {
-            let __flight_portable_source = if mixer.master_muted { 0.0_f64 } else { value };
-            crate::FlightValue::Number(*(&__flight_portable_source) as f64)
+        runtime.as_mut().unwrap().master_gain_node.gain.value = if mixer.master_muted {
+            {
+                let __flight_portable_source = 0.0_f64;
+                crate::FlightValue::Number(*(&__flight_portable_source) as f64)
+            }
+        } else {
+            {
+                let __flight_portable_source = value;
+                crate::FlightValue::Number(*(&__flight_portable_source) as f64)
+            }
         };
     }
     return mixer.master_gain;
@@ -449,9 +456,16 @@ pub fn set_audio_mixer_master_muted(mixer: &mut AudioMixer, muted: bool) -> bool
         .find(|(entry_key, _)| entry_key == &(*mixer).clone())
         .map(|(_, value)| value.clone());
     if (runtime).is_some() {
-        runtime.as_mut().unwrap().master_gain_node.gain.value = {
-            let __flight_portable_source = if muted { 0.0_f64 } else { mixer.master_gain };
-            crate::FlightValue::Number(*(&__flight_portable_source) as f64)
+        runtime.as_mut().unwrap().master_gain_node.gain.value = if muted {
+            {
+                let __flight_portable_source = 0.0_f64;
+                crate::FlightValue::Number(*(&__flight_portable_source) as f64)
+            }
+        } else {
+            {
+                let __flight_portable_source = mixer.master_gain;
+                crate::FlightValue::Number(*(&__flight_portable_source) as f64)
+            }
         };
     }
     return mixer.master_muted;

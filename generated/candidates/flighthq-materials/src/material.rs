@@ -109,7 +109,23 @@ fn copy_material_fields(dst: &mut Material, src: &Material, kind: Kind) -> () {
             .map(|(_, value)| value.clone())
             .clone();
         if ((key == "standard") && (((value).clone()).is_some()))
-            && ((((value).clone()).as_ref().map_or("undefined", |_| "object")).to_owned()
+            && ((match ((value).clone()).as_ref() {
+                None => "undefined",
+                Some(value) => match value {
+                    crate::FlightValue::Undefined => "undefined",
+                    crate::FlightValue::Null
+                    | crate::FlightValue::Array(_)
+                    | crate::FlightValue::Record(_)
+                    | crate::FlightValue::Error { .. }
+                    | crate::FlightValue::Object => "object",
+                    crate::FlightValue::Bool(_) => "boolean",
+                    crate::FlightValue::Number(_) => "number",
+                    crate::FlightValue::String(_) => "string",
+                    crate::FlightValue::Function => "function",
+                    crate::FlightValue::Symbol => "symbol",
+                },
+            })
+            .to_owned()
                 == "object")
         {
             {

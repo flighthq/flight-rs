@@ -9,7 +9,7 @@
 use crate::{Kind, Signal};
 
 // Source: upstream/packages/types/src/RenderRegistrySignals.ts:9 (sha256:50e820ba16f20ca593fbd06b2833fe41f57f2c485490ff5254b06d95526e40ba)
-#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
+#[derive(Clone, Copy, Debug, Default, Eq, Ord, PartialEq, PartialOrd)]
 #[repr(transparent)]
 pub struct RenderRegistry(pub u32);
 

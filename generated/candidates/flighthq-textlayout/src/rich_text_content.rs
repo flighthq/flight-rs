@@ -213,9 +213,16 @@ fn clamp_ranges(ranges: &mut Vec<TextFormatRange>, length: f64) -> () {
         while (i >= 0.0_f64) {
             let mut range = ranges[i as usize].clone();
             if (range.start >= length) {
-                ranges
-                    .splice((i) as usize..((i) + (1.0_f64)) as usize, vec![])
-                    .collect::<Vec<_>>();
+                {
+                    let __flight_start = (i);
+                    let __flight_count = (1.0_f64);
+                    ranges
+                        .splice(
+                            (__flight_start) as usize..(__flight_start + __flight_count) as usize,
+                            vec![],
+                        )
+                        .collect::<Vec<_>>()
+                };
             } else {
                 if (range.end > length) {
                     range.end = length;

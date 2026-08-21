@@ -1691,7 +1691,9 @@ fn layout_bitmap_text_lines(
             for token in (tokens).iter().cloned() {
                 let wraps = (((data.wrap_width).is_some())
                     && ((current.words.len() as f64) > 0.0_f64))
-                    && (((current.width + token.gap) + token.word.width) > data.wrap_width);
+                    && ((data.wrap_width).as_ref().is_some_and(|value| {
+                        ((current.width + token.gap) + token.word.width) > *value
+                    }));
                 if wraps {
                     lines.push(((current).clone()).clone());
                     current = BitmapTextLine {

@@ -297,7 +297,7 @@ fn accumulate_forces(
 // Source: upstream/packages/particles/src/applyParticleForces.ts:151 (sha256:f4308d680e0d146e014c6de02dd91d8a4050b61a0d31a5899f98fe18c31c36a8)
 fn falloff_factor(falloff: Option<ForceFalloff>, dist: f64, radius: Option<f64>) -> f64 {
     if (((radius).is_some()) && ((radius).as_ref().is_some_and(|value| *value > 0.0_f64)))
-        && (dist > radius)
+        && ((radius).as_ref().is_some_and(|value| dist > *value))
     {
         return 0.0_f64;
     }

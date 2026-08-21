@@ -57,31 +57,38 @@ pub fn normalize_render_effect(effect: &RenderEffect, out: &mut RenderEffect) ->
     {
         {
             let __flight_key = (key).clone();
-            let __flight_value = {
-                let __flight_portable_source = if (effect_rec
-                    .iter()
-                    .find(|(entry_key, _)| entry_key == &(key).clone())
-                    .map(|(_, value)| value.clone())
-                    .clone())
-                .is_some()
+            let __flight_value = if !((effect_rec
+                .iter()
+                .find(|(entry_key, _)| entry_key == &(key).clone())
+                .map(|(_, value)| value.clone())
+                .clone())
+            .as_ref()
+            .map_or(true, |value| matches!(value, crate::FlightValue::Undefined)))
+            {
                 {
-                    effect_rec
+                    let __flight_portable_source = effect_rec
                         .iter()
                         .find(|(entry_key, _)| entry_key == &(key).clone())
                         .map(|(_, value)| value.clone())
-                        .clone()
-                } else {
-                    entry
+                        .clone();
+                    match (&__flight_portable_source).as_ref() {
+                        Some(value) => (value).clone(),
+                        None => crate::FlightValue::Null,
+                    }
+                }
+            } else {
+                {
+                    let __flight_portable_source = entry
                         .as_ref()
                         .unwrap()
                         .iter()
                         .find(|(entry_key, _)| entry_key == &(key).clone())
                         .map(|(_, value)| value.clone())
-                        .clone()
-                };
-                match (&__flight_portable_source).as_ref() {
-                    Some(value) => (value).clone(),
-                    None => crate::FlightValue::Null,
+                        .clone();
+                    match (&__flight_portable_source).as_ref() {
+                        Some(value) => (value).clone(),
+                        None => crate::FlightValue::Null,
+                    }
                 }
             };
             if let Some((_, value)) = out_rec.iter_mut().find(|(key, _)| key == &__flight_key) {

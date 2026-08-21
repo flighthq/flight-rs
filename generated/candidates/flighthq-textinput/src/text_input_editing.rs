@@ -2113,20 +2113,20 @@ fn adjust_text_format_ranges(
                             range.end += offset;
                         } else {
                             if (range.start >= begin_index) && (range.end <= end_index) {
-                                ranges
-                                    .splice(
-                                        ({
-                                            i -= 1.0;
-                                            i
-                                        }) as usize..(({
-                                            i -= 1.0;
-                                            i
-                                        })
-                                            + (1.0_f64))
-                                            as usize,
-                                        vec![],
-                                    )
-                                    .collect::<Vec<_>>();
+                                {
+                                    let __flight_start = ({
+                                        i -= 1.0;
+                                        i
+                                    });
+                                    let __flight_count = (1.0_f64);
+                                    ranges
+                                        .splice(
+                                            (__flight_start) as usize
+                                                ..(__flight_start + __flight_count) as usize,
+                                            vec![],
+                                        )
+                                        .collect::<Vec<_>>()
+                                };
                             } else {
                                 if ((range.end > end_index) && (range.start > begin_index))
                                     && (range.start <= end_index)
@@ -2155,9 +2155,16 @@ fn adjust_text_format_ranges(
         let mut i = ((ranges.len() as f64) - 1.0_f64);
         while (i >= 0.0_f64) {
             if (ranges[i as usize].start >= ranges[i as usize].end) {
-                ranges
-                    .splice((i) as usize..((i) + (1.0_f64)) as usize, vec![])
-                    .collect::<Vec<_>>();
+                {
+                    let __flight_start = (i);
+                    let __flight_count = (1.0_f64);
+                    ranges
+                        .splice(
+                            (__flight_start) as usize..(__flight_start + __flight_count) as usize,
+                            vec![],
+                        )
+                        .collect::<Vec<_>>()
+                };
             }
             {
                 i -= 1.0;
@@ -2434,13 +2441,17 @@ fn record_text_input_edit(
     state.history_index = ((state.history.len() as f64) - 1.0_f64);
     if ((state.history.len() as f64) > state.history_limit) {
         let overflow = ((state.history.len() as f64) - state.history_limit);
-        state
-            .history
-            .splice(
-                (0.0_f64) as usize..((0.0_f64) + (overflow)) as usize,
-                vec![],
-            )
-            .collect::<Vec<_>>();
+        {
+            let __flight_start = (0.0_f64);
+            let __flight_count = (overflow);
+            state
+                .history
+                .splice(
+                    (__flight_start) as usize..(__flight_start + __flight_count) as usize,
+                    vec![],
+                )
+                .collect::<Vec<_>>()
+        };
         state.history_index = ((state.history.len() as f64) - 1.0_f64);
     }
 }

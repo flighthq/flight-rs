@@ -43,33 +43,51 @@ pub fn connect_signal<T: crate::FlightCallback>(
             if (priority
                 > data.as_ref().unwrap().inner.lock().unwrap().priorities[i as usize].clone())
             {
-                data.as_ref()
-                    .unwrap()
-                    .inner
-                    .lock()
-                    .unwrap()
-                    .slots
-                    .splice(
-                        (i) as usize..((i) + (0.0_f64)) as usize,
-                        vec![(slot).clone()],
-                    )
-                    .collect::<Vec<_>>();
-                data.as_ref()
-                    .unwrap()
-                    .inner
-                    .lock()
-                    .unwrap()
-                    .priorities
-                    .splice((i) as usize..((i) + (0.0_f64)) as usize, vec![priority])
-                    .collect::<Vec<_>>();
-                data.as_ref()
-                    .unwrap()
-                    .inner
-                    .lock()
-                    .unwrap()
-                    .repeat
-                    .splice((i) as usize..((i) + (0.0_f64)) as usize, vec![repeat])
-                    .collect::<Vec<_>>();
+                {
+                    let __flight_start = (i);
+                    let __flight_count = (0.0_f64);
+                    data.as_ref()
+                        .unwrap()
+                        .inner
+                        .lock()
+                        .unwrap()
+                        .slots
+                        .splice(
+                            (__flight_start) as usize..(__flight_start + __flight_count) as usize,
+                            vec![(slot).clone()],
+                        )
+                        .collect::<Vec<_>>()
+                };
+                {
+                    let __flight_start = (i);
+                    let __flight_count = (0.0_f64);
+                    data.as_ref()
+                        .unwrap()
+                        .inner
+                        .lock()
+                        .unwrap()
+                        .priorities
+                        .splice(
+                            (__flight_start) as usize..(__flight_start + __flight_count) as usize,
+                            vec![priority],
+                        )
+                        .collect::<Vec<_>>()
+                };
+                {
+                    let __flight_start = (i);
+                    let __flight_count = (0.0_f64);
+                    data.as_ref()
+                        .unwrap()
+                        .inner
+                        .lock()
+                        .unwrap()
+                        .repeat
+                        .splice(
+                            (__flight_start) as usize..(__flight_start + __flight_count) as usize,
+                            vec![repeat],
+                        )
+                        .collect::<Vec<_>>()
+                };
                 return;
             }
             {
@@ -117,30 +135,51 @@ pub fn disconnect_signal<T: crate::FlightCallback>(signal: &mut Signal<T>, slot:
             &(data.as_mut().unwrap().inner.lock().unwrap().slots[i as usize].clone()),
             &((slot).clone()),
         ) {
-            data.as_mut()
-                .unwrap()
-                .inner
-                .lock()
-                .unwrap()
-                .slots
-                .splice((i) as usize..((i) + (1.0_f64)) as usize, vec![])
-                .collect::<Vec<_>>();
-            data.as_mut()
-                .unwrap()
-                .inner
-                .lock()
-                .unwrap()
-                .priorities
-                .splice((i) as usize..((i) + (1.0_f64)) as usize, vec![])
-                .collect::<Vec<_>>();
-            data.as_mut()
-                .unwrap()
-                .inner
-                .lock()
-                .unwrap()
-                .repeat
-                .splice((i) as usize..((i) + (1.0_f64)) as usize, vec![])
-                .collect::<Vec<_>>();
+            {
+                let __flight_start = (i);
+                let __flight_count = (1.0_f64);
+                data.as_mut()
+                    .unwrap()
+                    .inner
+                    .lock()
+                    .unwrap()
+                    .slots
+                    .splice(
+                        (__flight_start) as usize..(__flight_start + __flight_count) as usize,
+                        vec![],
+                    )
+                    .collect::<Vec<_>>()
+            };
+            {
+                let __flight_start = (i);
+                let __flight_count = (1.0_f64);
+                data.as_mut()
+                    .unwrap()
+                    .inner
+                    .lock()
+                    .unwrap()
+                    .priorities
+                    .splice(
+                        (__flight_start) as usize..(__flight_start + __flight_count) as usize,
+                        vec![],
+                    )
+                    .collect::<Vec<_>>()
+            };
+            {
+                let __flight_start = (i);
+                let __flight_count = (1.0_f64);
+                data.as_mut()
+                    .unwrap()
+                    .inner
+                    .lock()
+                    .unwrap()
+                    .repeat
+                    .splice(
+                        (__flight_start) as usize..(__flight_start + __flight_count) as usize,
+                        vec![],
+                    )
+                    .collect::<Vec<_>>()
+            };
         }
     }
     if ((data.as_mut().unwrap().inner.lock().unwrap().slots.len() as f64) == 0.0_f64) {
@@ -202,24 +241,48 @@ fn make_dispatch<T: crate::FlightCallback>(mut data: SignalData<T>) -> T {
                     break;
                 }
                 if (!data.inner.lock().unwrap().repeat[i as usize].clone()) {
-                    data.inner
-                        .lock()
-                        .unwrap()
-                        .slots
-                        .splice((i) as usize..((i) + (1.0_f64)) as usize, vec![])
-                        .collect::<Vec<_>>();
-                    data.inner
-                        .lock()
-                        .unwrap()
-                        .priorities
-                        .splice((i) as usize..((i) + (1.0_f64)) as usize, vec![])
-                        .collect::<Vec<_>>();
-                    data.inner
-                        .lock()
-                        .unwrap()
-                        .repeat
-                        .splice((i) as usize..((i) + (1.0_f64)) as usize, vec![])
-                        .collect::<Vec<_>>();
+                    {
+                        let __flight_start = (i);
+                        let __flight_count = (1.0_f64);
+                        data.inner
+                            .lock()
+                            .unwrap()
+                            .slots
+                            .splice(
+                                (__flight_start) as usize
+                                    ..(__flight_start + __flight_count) as usize,
+                                vec![],
+                            )
+                            .collect::<Vec<_>>()
+                    };
+                    {
+                        let __flight_start = (i);
+                        let __flight_count = (1.0_f64);
+                        data.inner
+                            .lock()
+                            .unwrap()
+                            .priorities
+                            .splice(
+                                (__flight_start) as usize
+                                    ..(__flight_start + __flight_count) as usize,
+                                vec![],
+                            )
+                            .collect::<Vec<_>>()
+                    };
+                    {
+                        let __flight_start = (i);
+                        let __flight_count = (1.0_f64);
+                        data.inner
+                            .lock()
+                            .unwrap()
+                            .repeat
+                            .splice(
+                                (__flight_start) as usize
+                                    ..(__flight_start + __flight_count) as usize,
+                                vec![],
+                            )
+                            .collect::<Vec<_>>()
+                    };
                 } else {
                     {
                         i += 1.0;

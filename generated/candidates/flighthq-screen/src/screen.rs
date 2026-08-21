@@ -388,6 +388,9 @@ pub fn create_web_screen_backend() -> ScreenBackend {
         let mut _screen_details = _screen_details.clone();
         let build_screen_info_from_detailed = build_screen_info_from_detailed.clone();
         move |mut out: ScreenInfo| -> () {
+            let __flight_forward_s: std::sync::Arc<
+                std::sync::Mutex<Option<crate::OpaqueHostValue>>,
+            > = std::sync::Arc::new(std::sync::Mutex::new(None));
             {
                 fill_default_screen_info(&mut out);
                 return;

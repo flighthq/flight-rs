@@ -156,10 +156,17 @@ pub fn remove_clock_child(parent: &mut Clock, child: &mut Clock) -> () {
     if (index == (-1.0_f64)) {
         return;
     }
-    parent
-        .children
-        .splice((index) as usize..((index) + (1.0_f64)) as usize, vec![])
-        .collect::<Vec<_>>();
+    {
+        let __flight_start = (index);
+        let __flight_count = (1.0_f64);
+        parent
+            .children
+            .splice(
+                (__flight_start) as usize..(__flight_start + __flight_count) as usize,
+                vec![],
+            )
+            .collect::<Vec<_>>()
+    };
     child.parent = None;
 }
 

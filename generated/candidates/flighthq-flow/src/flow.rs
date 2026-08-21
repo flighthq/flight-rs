@@ -81,10 +81,7 @@ pub fn pop_flow_state(stack: &mut FlowStack) -> Option<FlowState> {
     if ((stack.states.len() as f64) == 0.0_f64) {
         return None;
     }
-    let popped = stack
-        .states
-        .pop()
-        .expect("TypeScript Array.pop returned undefined");
+    let popped = stack.states.pop().unwrap();
     {
         let __flight_callback = (popped.on_exit).clone();
         __flight_callback
@@ -134,10 +131,7 @@ pub fn push_flow_state(stack: &mut FlowStack, state: &FlowState) -> () {
 // Source: upstream/packages/flow/src/flow.ts:84 (sha256:45909cbe992bf399b284f4d6ccc462d9c05306eb7e0d39a516feab708232d35d)
 pub fn replace_flow_state(stack: &mut FlowStack, state: &FlowState) -> () {
     if ((stack.states.len() as f64) > 0.0_f64) {
-        let previous_top = stack
-            .states
-            .pop()
-            .expect("TypeScript Array.pop returned undefined");
+        let previous_top = stack.states.pop().unwrap();
         {
             let __flight_callback = (previous_top.on_exit).clone();
             __flight_callback
