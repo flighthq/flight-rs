@@ -3961,12 +3961,13 @@ function emitKnownFunctionCall(
         mutableIndexes.has(index) && root && (mutableRootCounts.get(root) ?? 0) > 1 && argument.kind === 'property'
           ? recursiveStructPropertyStorage(inferIrExpressionType(argument.object, context), argument.name, context)
           : undefined;
-      const aliasedOwnerIndex =
-        root && recursiveStorage === 'nullable'
-          ? [...mutableIndexes].find(
-              (candidate) => candidate !== index && expressionRootIdentifier(expression.arguments[candidate]!) === root,
-            )
-          : undefined;
+      const aliasedOwnerIndex = root
+        ? [...mutableIndexes].find((candidate) => {
+            if (candidate === index) return false;
+            const ownerArgument = expression.arguments[candidate];
+            return ownerArgument?.kind === 'identifier' && ownerArgument.name === root;
+          })
+        : undefined;
       const aliasedOwnerParameter =
         aliasedOwnerIndex === undefined ? undefined : declaration.parameters[aliasedOwnerIndex];
       if (
@@ -3984,6 +3985,20 @@ function emitKnownFunctionCall(
         return `&mut *${temporary}`;
       }
       const argumentType = inferIrExpressionType(argument, context);
+      if (
+        mutableIndexes.has(index) &&
+        argument.kind === 'property' &&
+        aliasedOwnerParameter &&
+        argumentType &&
+        isDefaultableCollectionType(argumentType, context) &&
+        !referencesProperty(declaration, aliasedOwnerParameter.name, argument.name)
+      ) {
+        const temporary = `__flight_argument_${String(index)}`;
+        const place = emitPropertyPlace(argument, context);
+        prefix.push(`let mut ${temporary} = std::mem::take(&mut ${place});`);
+        suffix.push(`${place} = ${temporary};`);
+        return `&mut ${temporary}`;
+      }
       const resolvedParameter = resolveSemanticType(parameterType, context) ?? parameterType;
       if (
         mutableIndexes.has(index) &&
@@ -8797,6 +8812,39 @@ function clearsPropertyWithoutReading(
   };
   visit(declaration.body);
   return clears && !reads;
+}
+
+function referencesProperty(
+  declaration: IrFunctionDeclaration,
+  ownerName: string,
+  propertyName: string,
+): boolean {
+  const visit = (value: unknown): boolean => {
+    if (!value || typeof value !== 'object') return false;
+    if (
+      'kind' in value &&
+      value.kind === 'property' &&
+      'name' in value &&
+      value.name === propertyName &&
+      'object' in value &&
+      expressionRootIdentifier(value.object as IrExpression) === ownerName
+    ) {
+      return true;
+    }
+    return Object.values(value).some((child) =>
+      Array.isArray(child) ? child.some(visit) : visit(child),
+    );
+  };
+  return declaration.body.some(visit);
+}
+
+function isDefaultableCollectionType(type: IrType, context: EmitContext): boolean {
+  const resolved = resolveSemanticType(type, context) ?? type;
+  return (
+    resolved.kind === 'array' ||
+    (resolved.kind === 'named' &&
+      (Boolean(typedArrayType(resolved.name)) || resolved.name === 'RustMap' || resolved.name === 'RustSet'))
+  );
 }
 
 function expressionRootIdentifier(value: unknown): string | undefined {

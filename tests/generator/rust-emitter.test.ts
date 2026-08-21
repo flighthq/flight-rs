@@ -2609,6 +2609,52 @@ describe('Rust emission', () => {
     ).not.toThrow();
   });
 
+  it('moves disjoint mutable collection fields around an aliased owner call', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/animation/src/owner-fields.ts',
+      `
+        export interface ScratchOwner {
+          count: number;
+          values: Float32Array;
+          spare: number[];
+        }
+        function updateFields(owner: ScratchOwner, values: Float32Array, spare: number[]): void {
+          owner.count += 1;
+          values[0] = owner.count;
+          spare[0] = owner.count + 1;
+        }
+        export function updateOwner(owner: ScratchOwner): void {
+          updateFields(owner, owner.values, owner.spare);
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/animation', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/animation/src/owner-fields.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    expect(output).toContain('std::mem::take(&mut owner.values)');
+    expect(output).toContain('std::mem::take(&mut owner.spare)');
+    expect(output).toContain('owner.values = __flight_argument_1');
+    expect(output).toContain('owner.spare = __flight_argument_2');
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-owner-fields-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output);
+    expect(() =>
+      execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+        cwd: fixture,
+        stdio: 'pipe',
+      }),
+    ).not.toThrow();
+  });
+
   it('preserves for and do-while updates when continue is lowered', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/math/src/loops.ts',
