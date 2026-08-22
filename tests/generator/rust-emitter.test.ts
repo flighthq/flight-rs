@@ -1065,7 +1065,10 @@ describe('Rust emission', () => {
       imports: [
         {
           module: 'crate',
-          names: [{ imported: 'importedFunction', kind: 'function', local: 'importedFunction' }],
+          names: [
+            { imported: 'importedFunction', kind: 'function', local: 'importedFunction' },
+            { imported: 'unusedFunction', kind: 'function', local: 'unusedFunction' },
+          ],
         },
       ],
       source: 'upstream/packages/math/src/imports.ts',
@@ -1074,6 +1077,7 @@ describe('Rust emission', () => {
 
     expect(lowered.diagnostics).toEqual([]);
     expect(output).toContain('use crate::{imported_function};');
+    expect(output).not.toContain('unused_function');
     expect(output).toContain('return imported_function(value)');
 
     const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-emitter-'));

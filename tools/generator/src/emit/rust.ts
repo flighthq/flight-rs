@@ -11896,12 +11896,13 @@ function resolveRustImport(
   declarations: string,
 ): RustImport['names'][number] | undefined {
   if (item.kind === 'function') {
-    return {
+    const binding = {
       imported: snakeCase(item.imported),
       kind: item.kind,
       local: snakeCase(item.local),
       ...(item.public ? { public: true } : {}),
     };
+    return item.public || new RegExp(`\\b${binding.local}\\b`, 'u').test(declarations) ? binding : undefined;
   }
   const bindings =
     item.kind === 'type'
