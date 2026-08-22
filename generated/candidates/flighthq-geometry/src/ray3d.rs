@@ -24,14 +24,14 @@ pub fn create_ray3_d(
         __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         direction: create_vector3(
-            Some((direction_x).clone().unwrap_or(0.0_f64)),
-            Some((direction_y).clone().unwrap_or(0.0_f64)),
-            Some((direction_z).clone().unwrap_or(1.0_f64)),
+            Some((direction_x).unwrap_or(0.0_f64)),
+            Some((direction_y).unwrap_or(0.0_f64)),
+            Some((direction_z).unwrap_or(1.0_f64)),
         ),
         origin: create_vector3(
-            Some((origin_x).clone().unwrap_or(0.0_f64)),
-            Some((origin_y).clone().unwrap_or(0.0_f64)),
-            Some((origin_z).clone().unwrap_or(0.0_f64)),
+            Some((origin_x).unwrap_or(0.0_f64)),
+            Some((origin_y).unwrap_or(0.0_f64)),
+            Some((origin_z).unwrap_or(0.0_f64)),
         ),
     }));
 }

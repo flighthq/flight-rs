@@ -75,11 +75,11 @@ pub fn create_drop_shadow_effect(options: Option<FlightOmitRecord1537644524>) ->
 
 // Source: upstream/packages/effects/src/dropShadowEffect.ts:10 (sha256:c9f9ecca08a780d61bd15fe6520ae22032da29f3bf0150caf8e6bc11cbdbee0e)
 pub fn get_drop_shadow_effect_padding(effect: &DropShadowEffect) -> RenderEffectPadding {
-    let angle = (((effect.angle).clone().unwrap_or(45.0_f64) * std::f64::consts::PI) / 180.0_f64);
-    let distance = (effect.distance).clone().unwrap_or(4.0_f64);
+    let angle = (((effect.angle).unwrap_or(45.0_f64) * std::f64::consts::PI) / 180.0_f64);
+    let distance = (effect.distance).unwrap_or(4.0_f64);
     return get_directional_render_effect_padding(
-        (effect.blur_x).clone().unwrap_or(4.0_f64),
-        (effect.blur_y).clone().unwrap_or(4.0_f64),
+        (effect.blur_x).unwrap_or(4.0_f64),
+        (effect.blur_y).unwrap_or(4.0_f64),
         ((angle).cos() * distance),
         ((angle).sin() * distance),
     );

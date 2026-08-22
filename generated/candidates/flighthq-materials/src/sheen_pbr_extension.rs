@@ -79,25 +79,19 @@ pub fn create_sheen_pbr_extension(
         __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         kind: (sheen_pbr_extension_kind_constant).to_owned(),
-        sheen_color: (opts.as_ref().and_then(|value| value.sheen_color))
-            .clone()
-            .unwrap_or(255.0_f64),
+        sheen_color: (opts.as_ref().and_then(|value| value.sheen_color)).unwrap_or(255.0_f64),
         sheen_color_map: opts
             .as_ref()
             .and_then(|value| (value.sheen_color_map).clone()),
         sheen_color_map_uv_set: (opts.as_ref().and_then(|value| value.sheen_color_map_uv_set))
-            .clone()
             .unwrap_or(0.0_f64),
-        sheen_roughness: (opts.as_ref().and_then(|value| value.sheen_roughness))
-            .clone()
-            .unwrap_or(0.0_f64),
+        sheen_roughness: (opts.as_ref().and_then(|value| value.sheen_roughness)).unwrap_or(0.0_f64),
         sheen_roughness_map: opts
             .as_ref()
             .and_then(|value| (value.sheen_roughness_map).clone()),
         sheen_roughness_map_uv_set: (opts
             .as_ref()
             .and_then(|value| value.sheen_roughness_map_uv_set))
-        .clone()
         .unwrap_or(0.0_f64),
         ..Default::default()
     }));

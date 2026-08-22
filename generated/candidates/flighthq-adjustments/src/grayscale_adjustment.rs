@@ -37,7 +37,7 @@ pub fn create_grayscale_adjustment(
         __flight_identity: std::sync::Arc::new(()),
         intensity: None,
     });
-    let intensity = (options.intensity).clone().unwrap_or(1.0_f64);
+    let intensity = (options.intensity).unwrap_or(1.0_f64);
     let k = intensity;
     let j = (1.0_f64 - intensity);
     let lr = (0.2126_f64 * k);

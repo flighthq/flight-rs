@@ -202,8 +202,8 @@ pub fn create_buffered_log_sink(
         size: None,
         interval_ms: None,
     });
-    let size = (options.size).clone().unwrap_or(100.0_f64);
-    let interval_ms = (options.interval_ms).clone().unwrap_or(1000.0_f64);
+    let size = (options.size).unwrap_or(100.0_f64);
+    let interval_ms = (options.interval_ms).unwrap_or(1000.0_f64);
     let mut flush: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>> =
         std::sync::Arc::new(std::sync::Mutex::new(Box::new({
             let __flight_forward_handle = __flight_forward_handle.clone();
@@ -378,15 +378,15 @@ pub fn create_console_capture_sink(options: Option<SharedStructuralRecord2>) -> 
         __flight_identity: std::sync::Arc::new(()),
         formatter: None,
     });
-    let envelope_formatter = ((options.formatter).clone())
-        .clone()
-        .unwrap_or(std::sync::Arc::new(std::sync::Mutex::new(Box::new({
+    let envelope_formatter = ((options.formatter).clone()).unwrap_or(std::sync::Arc::new(
+        std::sync::Mutex::new(Box::new({
             let _default_json_formatter = _default_json_formatter.clone();
             move |__flight_argument_0: LogEntry| -> String {
                 _default_json_formatter(&__flight_argument_0)
             }
         })
-            as Box<dyn FnMut(LogEntry) -> String + Send + 'static>)));
+            as Box<dyn FnMut(LogEntry) -> String + Send + 'static>),
+    ));
     return std::sync::Arc::new(std::sync::Mutex::new(Box::new({
         let envelope_formatter = envelope_formatter.clone();
         move |entry: LogEntry| -> () {
@@ -423,14 +423,14 @@ pub fn create_console_log_sink(options: Option<SharedStructuralRecord2>) -> LogS
         __flight_identity: std::sync::Arc::new(()),
         formatter: None,
     });
-    let formatter = ((options.formatter).clone())
-        .clone()
-        .unwrap_or(create_text_log_formatter(Some(SharedStructuralRecord4 {
+    let formatter = ((options.formatter).clone()).unwrap_or(create_text_log_formatter(Some(
+        SharedStructuralRecord4 {
             __flight_identity: std::sync::Arc::new(()),
             level_prefix: Some(true),
             indent_groups: None,
             timestamp: None,
-        })));
+        },
+    )));
     return std::sync::Arc::new(std::sync::Mutex::new(Box::new({
         let formatter = formatter.clone();
         move |entry: LogEntry| -> () { _write_console_log_entry(&entry, (formatter).clone()) }
@@ -472,9 +472,7 @@ pub fn create_file_log_sink(options: Option<SharedStructuralRecord2>) -> FileLog
         __flight_identity: std::sync::Arc::new(()),
         formatter: None,
     });
-    let formatter = ((options.formatter).clone())
-        .clone()
-        .unwrap_or(create_json_log_formatter());
+    let formatter = ((options.formatter).clone()).unwrap_or(create_json_log_formatter());
     let mut sink: LogSink = std::sync::Arc::new(std::sync::Mutex::new(Box::new({
         let formatter = formatter.clone();
         move |entry: LogEntry| -> () {
@@ -769,7 +767,7 @@ pub fn create_rate_limited_log_sink(
     target: LogSink,
     options: &SharedStructuralRecord3,
 ) -> RateLimitedLogSink {
-    let per_channel = (options.per_channel).clone().unwrap_or(false);
+    let per_channel = (options.per_channel).unwrap_or(false);
     let max_per_interval = options.max_per_interval;
     let interval_ms = options.interval_ms;
     let counts: std::sync::Arc<std::sync::Mutex<Vec<(Option<String>, f64)>>> =
@@ -795,7 +793,6 @@ pub fn create_rate_limited_log_sink(
                 .iter()
                 .find(|(entry_key, _)| entry_key == &(key).clone())
                 .map(|(_, value)| value.clone()))
-            .clone()
             .unwrap_or(0.0_f64);
             if (current >= max_per_interval) {
                 return;

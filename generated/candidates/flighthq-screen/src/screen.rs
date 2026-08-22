@@ -352,7 +352,7 @@ pub fn create_web_screen_backend() -> ScreenBackend {
             out.work_height = sd.avail_height;
             out.scale_factor = sd.device_pixel_ratio;
             out.is_primary =
-                (index == primary_index) || ((sd.is_primary).clone().unwrap_or((index == 0.0_f64)));
+                (index == primary_index) || ((sd.is_primary).unwrap_or((index == 0.0_f64)));
             out.rotation = get_web_rotation();
             out.orientation = get_web_orientation();
             out.refresh_rate = if (((sd.refresh_rate).as_ref().map_or("undefined", |_| "number"))
@@ -376,7 +376,7 @@ pub fn create_web_screen_backend() -> ScreenBackend {
             out.depth_per_component = (-1.0_f64);
             out.dpi = (-1.0_f64);
             out.label = (sd.label).clone();
-            out.internal = (sd.is_internal).clone().unwrap_or(false);
+            out.internal = (sd.is_internal).unwrap_or(false);
             out.touch_support = "unknown".to_owned();
             out.monochrome = false;
         },
@@ -1091,9 +1091,7 @@ fn get_web_is_hdr() -> bool {
 // Source: upstream/packages/screen/src/screen.ts:869 (sha256:4c2cb10dd0e30ef93aefbdb0a3379538b92ef52031ef2938498f6e6c9e80ba94)
 fn get_web_orientation() -> ScreenOrientation {
     let obj = get_web_screen_orientation_object();
-    let type_ = (obj.as_ref().and_then(|value| (value.type_).clone()))
-        .clone()
-        .unwrap_or("".to_owned());
+    let type_ = (obj.as_ref().and_then(|value| (value.type_).clone())).unwrap_or("".to_owned());
     if (type_).starts_with(("portrait-primary".to_owned()).as_str()) {
         return "Portrait".to_owned();
     }

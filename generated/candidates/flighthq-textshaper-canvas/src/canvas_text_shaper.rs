@@ -50,18 +50,16 @@ pub fn create_canvas_text_shaper_backend() -> CanvasTextShaperBackend {
                 let ascent = (crate::host_value::<Option<crate::OpaqueHostValue>>(
                     "host.fontBoundingBoxAscent",
                 ))
-                .clone()
                 .unwrap_or(crate::host_value::<crate::OpaqueHostValue>(
                     "host.actualBoundingBoxAscent",
                 ));
                 let descent = (crate::host_value::<Option<crate::OpaqueHostValue>>(
                     "host.fontBoundingBoxDescent",
                 ))
-                .clone()
                 .unwrap_or(crate::host_value::<crate::OpaqueHostValue>(
                     "host.actualBoundingBoxDescent",
                 ));
-                let size = (format.size).clone().unwrap_or(12.0_f64);
+                let size = (format.size).unwrap_or(12.0_f64);
                 return Some(FontMetrics {
                     __flight_identity: std::sync::Arc::new(()),
                     ascent: ascent,
@@ -84,7 +82,7 @@ pub fn create_canvas_text_shaper_backend() -> CanvasTextShaperBackend {
                 let cache_key = format!(
                     "{}\u{0000}{}\u{0000}{}",
                     (font_string).clone(),
-                    (format.letter_spacing).clone().unwrap_or(0.0_f64),
+                    (format.letter_spacing).unwrap_or(0.0_f64),
                     (text).clone()
                 );
                 let cached = (*cache.lock().unwrap())
@@ -100,7 +98,7 @@ pub fn create_canvas_text_shaper_backend() -> CanvasTextShaperBackend {
                         let __flight_key = "letterSpacing".to_owned();
                         let __flight_value = {
                             let __flight_portable_source =
-                                format!("{}px", (format.letter_spacing).clone().unwrap_or(0.0_f64));
+                                format!("{}px", (format.letter_spacing).unwrap_or(0.0_f64));
                             crate::FlightValue::String((&__flight_portable_source).clone())
                         };
                         if let Some((_, value)) =

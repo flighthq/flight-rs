@@ -83,7 +83,6 @@ pub fn create_animation_state_machine(
                     }
             })
             .map(|(_, value)| value.clone()))
-        .clone()
         .unwrap_or((copied_states.len() as f64))
     };
     if ((!(initial_state_index).is_finite() && (initial_state_index).fract() == 0.0_f64)

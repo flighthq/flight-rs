@@ -80,34 +80,24 @@ pub fn create_transmission_volume_pbr_extension(
         __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         attenuation_color: (opts.as_ref().and_then(|value| value.attenuation_color))
-            .clone()
             .unwrap_or(4294967295.0_f64),
         attenuation_distance: (opts.as_ref().and_then(|value| value.attenuation_distance))
-            .clone()
             .unwrap_or(f64::INFINITY),
-        ior: (opts.as_ref().and_then(|value| value.ior))
-            .clone()
-            .unwrap_or(1.5_f64),
+        ior: (opts.as_ref().and_then(|value| value.ior)).unwrap_or(1.5_f64),
         kind: (transmission_volume_pbr_extension_kind_constant).to_owned(),
-        thickness: (opts.as_ref().and_then(|value| value.thickness))
-            .clone()
-            .unwrap_or(0.0_f64),
+        thickness: (opts.as_ref().and_then(|value| value.thickness)).unwrap_or(0.0_f64),
         thickness_map: opts
             .as_ref()
             .and_then(|value| (value.thickness_map).clone()),
         thickness_map_uv_set: (opts.as_ref().and_then(|value| value.thickness_map_uv_set))
-            .clone()
             .unwrap_or(0.0_f64),
-        transmission: (opts.as_ref().and_then(|value| value.transmission))
-            .clone()
-            .unwrap_or(0.0_f64),
+        transmission: (opts.as_ref().and_then(|value| value.transmission)).unwrap_or(0.0_f64),
         transmission_map: opts
             .as_ref()
             .and_then(|value| (value.transmission_map).clone()),
         transmission_map_uv_set: (opts
             .as_ref()
             .and_then(|value| value.transmission_map_uv_set))
-        .clone()
         .unwrap_or(0.0_f64),
         ..Default::default()
     }));

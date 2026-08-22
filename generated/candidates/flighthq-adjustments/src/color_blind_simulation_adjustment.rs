@@ -37,9 +37,7 @@ pub fn create_color_blind_simulation_adjustment(
         __flight_identity: std::sync::Arc::new(()),
         type_: None,
     });
-    let type_: ColorBlindType = ((options.type_).clone())
-        .clone()
-        .unwrap_or("deuteranopia".to_owned());
+    let type_: ColorBlindType = ((options.type_).clone()).unwrap_or("deuteranopia".to_owned());
     let m = (COLOR_BLIND_MATRICES
         .iter()
         .find(|(entry_key, _)| entry_key == &(type_).clone())

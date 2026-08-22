@@ -28,7 +28,7 @@ pub fn convolve_bitmap(
             "Convolution filter matrix does not match its dimensions"
         );
     }
-    let raw_divisor = (options.divisor).clone().unwrap_or(get_convolution_divisor(
+    let raw_divisor = (options.divisor).unwrap_or(get_convolution_divisor(
         &options.matrix,
         (matrix_x * matrix_y),
     ));
@@ -37,11 +37,9 @@ pub fn convolve_bitmap(
     } else {
         raw_divisor
     };
-    let bias = (options.bias).clone().unwrap_or(0.0_f64);
-    let edge = ((options.edge).clone())
-        .clone()
-        .unwrap_or("clamp".to_owned());
-    let preserve_alpha = (options.preserve_alpha).clone().unwrap_or(true);
+    let bias = (options.bias).unwrap_or(0.0_f64);
+    let edge = ((options.edge).clone()).unwrap_or("clamp".to_owned());
+    let preserve_alpha = (options.preserve_alpha).unwrap_or(true);
     let offset_x = (matrix_x / 2.0_f64).floor();
     let offset_y = (matrix_y / 2.0_f64).floor();
     let bitmap_width = source.bitmap.width;

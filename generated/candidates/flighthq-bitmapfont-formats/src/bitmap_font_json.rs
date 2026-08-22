@@ -208,7 +208,6 @@ fn read_json_char(raw: crate::FlightValue) -> Option<BitmapFontCharRecord> {
         height: *(height.as_ref().unwrap()),
         id: *(id.as_ref().unwrap()),
         page: (read_json_number(crate::host_value::<crate::FlightValue>("host.page")))
-            .clone()
             .unwrap_or(0.0_f64),
         width: *(width.as_ref().unwrap()),
         x: *(x.as_ref().unwrap()),

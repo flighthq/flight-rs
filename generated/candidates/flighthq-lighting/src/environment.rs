@@ -29,9 +29,7 @@ pub fn create_environment(options: Option<EnvironmentOptions>) -> Environment {
         environment: options
             .as_ref()
             .and_then(|value| (value.environment).clone()),
-        intensity: (options.as_ref().and_then(|value| value.intensity))
-            .clone()
-            .unwrap_or(1.0_f64),
+        intensity: (options.as_ref().and_then(|value| value.intensity)).unwrap_or(1.0_f64),
         kind: (environment_kind_constant).to_owned(),
         ..Default::default()
     }));

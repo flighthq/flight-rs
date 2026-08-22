@@ -74,25 +74,15 @@ static _PARAGRAPH_LAST_LINES: std::sync::LazyLock<std::sync::Mutex<Vec<f64>>> =
 pub fn compute_text_layout(out: &mut TextLayoutResult, params: &TextLayoutParams) -> () {
     let text = (params.text).clone();
     let width = params.width;
-    let word_wrap = (params.word_wrap).clone().unwrap_or(false);
-    let multiline = (params.multiline).clone().unwrap_or(false);
-    let auto_size = ((params.auto_size).clone())
-        .clone()
-        .unwrap_or("none".to_owned());
-    let border = (params.border).clone().unwrap_or(false);
-    let direction = ((params.direction).clone())
-        .clone()
-        .unwrap_or("LeftToRight".to_owned());
-    let justification = ((params.justification).clone())
-        .clone()
-        .unwrap_or("interWord".to_owned());
-    let max_lines = (params.max_lines).clone().unwrap_or((-1.0_f64));
-    let truncation_character = ((params.truncation_character).clone())
-        .clone()
-        .unwrap_or("…".to_owned());
-    let vertical_align = ((params.vertical_align).clone())
-        .clone()
-        .unwrap_or("top".to_owned());
+    let word_wrap = (params.word_wrap).unwrap_or(false);
+    let multiline = (params.multiline).unwrap_or(false);
+    let auto_size = ((params.auto_size).clone()).unwrap_or("none".to_owned());
+    let border = (params.border).unwrap_or(false);
+    let direction = ((params.direction).clone()).unwrap_or("LeftToRight".to_owned());
+    let justification = ((params.justification).clone()).unwrap_or("interWord".to_owned());
+    let max_lines = (params.max_lines).unwrap_or((-1.0_f64));
+    let truncation_character = ((params.truncation_character).clone()).unwrap_or("…".to_owned());
+    let vertical_align = ((params.vertical_align).clone()).unwrap_or("top".to_owned());
     if ((text).is_empty()) || ((params.format_ranges.len() as f64) == 0.0_f64) {
         out.groups.clear();
         out.line_ascents.clear();
@@ -164,7 +154,7 @@ fn char_advances(
     let __flight_utf16_text: std::sync::Arc<Vec<u16>> =
         std::sync::Arc::new(text.encode_utf16().collect());
     out.clear();
-    let letter_spacing = (format.letter_spacing).clone().unwrap_or(0.0_f64);
+    let letter_spacing = (format.letter_spacing).unwrap_or(0.0_f64);
     let tab_stops = (format.tab_stops).clone();
     let kerning_enabled = !((format.kerning) == Some(false));
     let mut current_x = start_x;
@@ -380,28 +370,17 @@ fn build_groups(
     let current_format: std::sync::Arc<std::sync::Mutex<TextFormat>> = std::sync::Arc::new(
         std::sync::Mutex::new((((*format_range.lock().unwrap()).format).clone()).clone()),
     );
-    let left_margin: std::sync::Arc<std::sync::Mutex<f64>> =
-        std::sync::Arc::new(std::sync::Mutex::new(
-            ((*current_format.lock().unwrap()).left_margin)
-                .clone()
-                .unwrap_or(0.0_f64),
-        ));
-    let right_margin: std::sync::Arc<std::sync::Mutex<f64>> =
-        std::sync::Arc::new(std::sync::Mutex::new(
-            ((*current_format.lock().unwrap()).right_margin)
-                .clone()
-                .unwrap_or(0.0_f64),
-        ));
-    let block_indent: std::sync::Arc<std::sync::Mutex<f64>> =
-        std::sync::Arc::new(std::sync::Mutex::new(
-            ((*current_format.lock().unwrap()).block_indent)
-                .clone()
-                .unwrap_or(0.0_f64),
-        ));
+    let left_margin: std::sync::Arc<std::sync::Mutex<f64>> = std::sync::Arc::new(
+        std::sync::Mutex::new(((*current_format.lock().unwrap()).left_margin).unwrap_or(0.0_f64)),
+    );
+    let right_margin: std::sync::Arc<std::sync::Mutex<f64>> = std::sync::Arc::new(
+        std::sync::Mutex::new(((*current_format.lock().unwrap()).right_margin).unwrap_or(0.0_f64)),
+    );
+    let block_indent: std::sync::Arc<std::sync::Mutex<f64>> = std::sync::Arc::new(
+        std::sync::Mutex::new(((*current_format.lock().unwrap()).block_indent).unwrap_or(0.0_f64)),
+    );
     let indent: std::sync::Arc<std::sync::Mutex<f64>> = std::sync::Arc::new(std::sync::Mutex::new(
-        ((*current_format.lock().unwrap()).indent)
-            .clone()
-            .unwrap_or(0.0_f64),
+        ((*current_format.lock().unwrap()).indent).unwrap_or(0.0_f64),
     ));
     let first_line_of_paragraph: std::sync::Arc<std::sync::Mutex<bool>> =
         std::sync::Arc::new(std::sync::Mutex::new(true));
@@ -514,18 +493,14 @@ fn build_groups(
         let mut right_margin = right_margin.clone();
         move || -> () {
             (*first_line_of_paragraph.lock().unwrap()) = true;
-            (*left_margin.lock().unwrap()) = ((*current_format.lock().unwrap()).left_margin)
-                .clone()
-                .unwrap_or(0.0_f64);
-            (*right_margin.lock().unwrap()) = ((*current_format.lock().unwrap()).right_margin)
-                .clone()
-                .unwrap_or(0.0_f64);
-            (*block_indent.lock().unwrap()) = ((*current_format.lock().unwrap()).block_indent)
-                .clone()
-                .unwrap_or(0.0_f64);
-            (*indent.lock().unwrap()) = ((*current_format.lock().unwrap()).indent)
-                .clone()
-                .unwrap_or(0.0_f64);
+            (*left_margin.lock().unwrap()) =
+                ((*current_format.lock().unwrap()).left_margin).unwrap_or(0.0_f64);
+            (*right_margin.lock().unwrap()) =
+                ((*current_format.lock().unwrap()).right_margin).unwrap_or(0.0_f64);
+            (*block_indent.lock().unwrap()) =
+                ((*current_format.lock().unwrap()).block_indent).unwrap_or(0.0_f64);
+            (*indent.lock().unwrap()) =
+                ((*current_format.lock().unwrap()).indent).unwrap_or(0.0_f64);
             (*bullet_pending.lock().unwrap()) =
                 ((*current_format.lock().unwrap()).bullet) == Some(true);
         }
@@ -658,7 +633,6 @@ fn build_groups(
                             .positions
                             .pop()
                             .expect("TypeScript Array.pop returned undefined"))
-                        .clone()
                         .unwrap_or(0.0_f64);
                         last_group.as_mut().unwrap().width -= trimmed;
                         {
@@ -1248,7 +1222,7 @@ fn build_groups(
                     }
                 }
                 if should_wrap {
-                    let mut trim_target = ((*active_group.lock().unwrap()).clone()).clone().or(
+                    let mut trim_target = ((*active_group.lock().unwrap()).clone()).or(
                         if ((out.len() as f64) > 0.0_f64) {
                             Some(out[((out.len() as f64) - 1.0_f64) as usize].clone())
                         } else {
@@ -1390,9 +1364,7 @@ fn apply_alignment(
 ) -> () {
     for mut g in (groups).iter().cloned() {
         let line_w = line_widths[g.line_index as usize].clone();
-        let align = ((g.format.align).clone())
-            .clone()
-            .unwrap_or("left".to_owned());
+        let align = ((g.format.align).clone()).unwrap_or("left".to_owned());
         let mut shift = 0.0_f64;
         let resolved = if ((align).clone() == "start") {
             if (direction == "RightToLeft") {

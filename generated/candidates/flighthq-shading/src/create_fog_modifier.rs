@@ -19,14 +19,10 @@ pub fn create_fog_modifier(options: &FogModifierOptions) -> FogModifier {
         kind: (fog_modifier_kind_constant).to_owned(),
         slot: (modifier_slot_constant.effect).clone(),
         color: options.color,
-        mode: Some(
-            ((options.mode).clone())
-                .clone()
-                .unwrap_or((fog_modifier_mode_constant.linear).clone()),
-        ),
-        near: Some((options.near).clone().unwrap_or(0.0_f64)),
-        far: Some((options.far).clone().unwrap_or(1.0_f64)),
-        density: Some((options.density).clone().unwrap_or(1.0_f64)),
+        mode: Some(((options.mode).clone()).unwrap_or((fog_modifier_mode_constant.linear).clone())),
+        near: Some((options.near).unwrap_or(0.0_f64)),
+        far: Some((options.far).unwrap_or(1.0_f64)),
+        density: Some((options.density).unwrap_or(1.0_f64)),
         ..Default::default()
     };
 }

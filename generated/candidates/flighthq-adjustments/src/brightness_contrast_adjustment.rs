@@ -39,8 +39,8 @@ pub fn create_brightness_contrast_adjustment(
         brightness: None,
         contrast: None,
     });
-    let brightness = (options.brightness).clone().unwrap_or(0.0_f64);
-    let contrast = (options.contrast).clone().unwrap_or(1.0_f64);
+    let brightness = (options.brightness).unwrap_or(0.0_f64);
+    let contrast = (options.contrast).unwrap_or(1.0_f64);
     let s = contrast;
     let o = ((brightness * contrast) + (0.5_f64 * (1.0_f64 - contrast)));
     let color_matrix = vec![

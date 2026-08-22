@@ -78,14 +78,11 @@ pub fn create_clearcoat_pbr_extension(
         __flight_identity: std::sync::Arc::new(()),
         __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
-        clearcoat: (opts.as_ref().and_then(|value| value.clearcoat))
-            .clone()
-            .unwrap_or(0.0_f64),
+        clearcoat: (opts.as_ref().and_then(|value| value.clearcoat)).unwrap_or(0.0_f64),
         clearcoat_map: opts
             .as_ref()
             .and_then(|value| (value.clearcoat_map).clone()),
         clearcoat_map_uv_set: (opts.as_ref().and_then(|value| value.clearcoat_map_uv_set))
-            .clone()
             .unwrap_or(0.0_f64),
         clearcoat_normal_map: opts
             .as_ref()
@@ -93,13 +90,10 @@ pub fn create_clearcoat_pbr_extension(
         clearcoat_normal_map_uv_set: (opts
             .as_ref()
             .and_then(|value| value.clearcoat_normal_map_uv_set))
-        .clone()
         .unwrap_or(0.0_f64),
         clearcoat_normal_scale: (opts.as_ref().and_then(|value| value.clearcoat_normal_scale))
-            .clone()
             .unwrap_or(1.0_f64),
         clearcoat_roughness: (opts.as_ref().and_then(|value| value.clearcoat_roughness))
-            .clone()
             .unwrap_or(0.0_f64),
         clearcoat_roughness_map: opts
             .as_ref()
@@ -107,7 +101,6 @@ pub fn create_clearcoat_pbr_extension(
         clearcoat_roughness_map_uv_set: (opts
             .as_ref()
             .and_then(|value| value.clearcoat_roughness_map_uv_set))
-        .clone()
         .unwrap_or(0.0_f64),
         kind: (clearcoat_pbr_extension_kind_constant).to_owned(),
         ..Default::default()

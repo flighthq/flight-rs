@@ -86,30 +86,16 @@ pub fn create_spritesheet_player(obj: Option<FlightPartialRecord4043335526>) -> 
     return SpritesheetPlayer {
         __flight_identity: std::sync::Arc::new(()),
         animation: obj.as_ref().and_then(|value| (value.animation).clone()),
-        complete: (obj.as_ref().and_then(|value| value.complete))
-            .clone()
-            .unwrap_or(true),
-        elapsed: (obj.as_ref().and_then(|value| value.elapsed))
-            .clone()
-            .unwrap_or(0.0_f64),
-        frame_index: (obj.as_ref().and_then(|value| value.frame_index))
-            .clone()
-            .unwrap_or(0.0_f64),
+        complete: (obj.as_ref().and_then(|value| value.complete)).unwrap_or(true),
+        elapsed: (obj.as_ref().and_then(|value| value.elapsed)).unwrap_or(0.0_f64),
+        frame_index: (obj.as_ref().and_then(|value| value.frame_index)).unwrap_or(0.0_f64),
         on_complete: (obj.as_ref().and_then(|value| (value.on_complete).clone()))
-            .clone()
             .unwrap_or(create_signal()),
         on_loop: (obj.as_ref().and_then(|value| (value.on_loop).clone()))
-            .clone()
             .unwrap_or(create_signal()),
-        paused: (obj.as_ref().and_then(|value| value.paused))
-            .clone()
-            .unwrap_or(false),
-        queue: (obj.as_ref().and_then(|value| (value.queue).clone()))
-            .clone()
-            .unwrap_or(vec![]),
-        speed: (obj.as_ref().and_then(|value| value.speed))
-            .clone()
-            .unwrap_or(1.0_f64),
+        paused: (obj.as_ref().and_then(|value| value.paused)).unwrap_or(false),
+        queue: (obj.as_ref().and_then(|value| (value.queue).clone())).unwrap_or(vec![]),
+        speed: (obj.as_ref().and_then(|value| value.speed)).unwrap_or(1.0_f64),
     };
 }
 

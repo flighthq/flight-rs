@@ -263,7 +263,7 @@ fn resolve_colliders(colliders: &Vec<ParticleCollider>, p: &mut Vec<f64>) -> boo
 
 // Source: upstream/packages/particles/src/applyParticleCollisions.ts:107 (sha256:2f7629357555182b9698fe333030d6fc59746e9b88fb8ee25d10c575812bc5f9)
 fn resolve_plane(c: &PlaneCollider, p: &mut Vec<f64>) -> bool {
-    let nz = (c.nz).clone().unwrap_or(0.0_f64);
+    let nz = (c.nz).unwrap_or(0.0_f64);
     let depth = ((((c.nx * p[0.0_f64 as usize].clone()) + (c.ny * p[1.0_f64 as usize].clone()))
         + (nz * p[2.0_f64 as usize].clone()))
         - c.distance);
@@ -278,8 +278,8 @@ fn resolve_plane(c: &PlaneCollider, p: &mut Vec<f64>) -> bool {
         c.nx,
         c.ny,
         nz,
-        (c.restitution).clone().unwrap_or(0.0_f64),
-        (c.friction).clone().unwrap_or(0.0_f64),
+        (c.restitution).unwrap_or(0.0_f64),
+        (c.friction).unwrap_or(0.0_f64),
     );
     return true;
 }
@@ -318,8 +318,8 @@ fn resolve_circle(c: &CircleCollider, p: &mut Vec<f64>) -> bool {
             nx,
             ny,
             0.0_f64,
-            (c.restitution).clone().unwrap_or(0.0_f64),
-            (c.friction).clone().unwrap_or(0.0_f64),
+            (c.restitution).unwrap_or(0.0_f64),
+            (c.friction).unwrap_or(0.0_f64),
         );
         return true;
     }
@@ -359,8 +359,8 @@ fn resolve_circle(c: &CircleCollider, p: &mut Vec<f64>) -> bool {
         nx,
         ny,
         0.0_f64,
-        (c.restitution).clone().unwrap_or(0.0_f64),
-        (c.friction).clone().unwrap_or(0.0_f64),
+        (c.restitution).unwrap_or(0.0_f64),
+        (c.friction).unwrap_or(0.0_f64),
     );
     return true;
 }
@@ -373,8 +373,8 @@ fn resolve_rect(c: &RectangleCollider, p: &mut Vec<f64>) -> bool {
     let max_x = (c.x + hw);
     let min_y = (c.y - hh);
     let max_y = (c.y + hh);
-    let restitution = (c.restitution).clone().unwrap_or(0.0_f64);
-    let friction = (c.friction).clone().unwrap_or(0.0_f64);
+    let restitution = (c.restitution).unwrap_or(0.0_f64);
+    let friction = (c.friction).unwrap_or(0.0_f64);
     if ((c.mode).clone() == "contain") {
         let mut hit = false;
         if (p[0.0_f64 as usize].clone() < min_x) {
@@ -541,8 +541,8 @@ fn resolve_sphere(c: &SphereCollider, p: &mut Vec<f64>) -> bool {
             nx,
             ny,
             nz,
-            (c.restitution).clone().unwrap_or(0.0_f64),
-            (c.friction).clone().unwrap_or(0.0_f64),
+            (c.restitution).unwrap_or(0.0_f64),
+            (c.friction).unwrap_or(0.0_f64),
         );
         return true;
     }
@@ -596,8 +596,8 @@ fn resolve_sphere(c: &SphereCollider, p: &mut Vec<f64>) -> bool {
         nx,
         ny,
         nz,
-        (c.restitution).clone().unwrap_or(0.0_f64),
-        (c.friction).clone().unwrap_or(0.0_f64),
+        (c.restitution).unwrap_or(0.0_f64),
+        (c.friction).unwrap_or(0.0_f64),
     );
     return true;
 }

@@ -46,10 +46,10 @@ pub fn create_quaternion(
         __flight_identity: std::sync::Arc::new(()),
         __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
-        x: (x).clone().unwrap_or(0.0_f64),
-        y: (y).clone().unwrap_or(0.0_f64),
-        z: (z).clone().unwrap_or(0.0_f64),
-        w: (w).clone().unwrap_or(1.0_f64),
+        x: (x).unwrap_or(0.0_f64),
+        y: (y).unwrap_or(0.0_f64),
+        z: (z).unwrap_or(0.0_f64),
+        w: (w).unwrap_or(1.0_f64),
     }));
 }
 

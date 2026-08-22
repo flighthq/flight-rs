@@ -20,12 +20,8 @@ pub fn compute_aces_tone_map(x: f64) -> f64 {
 
 // Source: upstream/packages/effects/src/toneMapMath.ts:22 (sha256:72a038312367a9c28a547d500ce95ed217fefe832684b3ad367854c91b130ef9)
 pub fn compute_agx_tone_map(x: f64, options: Option<AgxToneMapOptions>) -> f64 {
-    let min_ev = (options.as_ref().and_then(|value| value.min_ev))
-        .clone()
-        .unwrap_or((-12.47393_f64));
-    let max_ev = (options.as_ref().and_then(|value| value.max_ev))
-        .clone()
-        .unwrap_or(4.026069_f64);
+    let min_ev = (options.as_ref().and_then(|value| value.min_ev)).unwrap_or((-12.47393_f64));
+    let max_ev = (options.as_ref().and_then(|value| value.max_ev)).unwrap_or(4.026069_f64);
     let val = (1e-10_f64).max(x);
     let log = (min_ev).max((max_ev).min((val).log2()));
     let normalized = ((log - min_ev) / (max_ev - min_ev));
@@ -39,24 +35,14 @@ pub fn compute_exposure_scale(exposure: f64) -> f64 {
 
 // Source: upstream/packages/effects/src/toneMapMath.ts:39 (sha256:b1814cb94f07678382cda784dd9607850097e19779614d0c18992715ea3d3b6e)
 pub fn compute_filmic_tone_map(x: f64, options: Option<FilmicToneMapOptions>) -> f64 {
-    let max_brightness = (options.as_ref().and_then(|value| value.max_brightness))
-        .clone()
-        .unwrap_or(1.0_f64);
-    let contrast = (options.as_ref().and_then(|value| value.contrast))
-        .clone()
-        .unwrap_or(1.0_f64);
-    let linear_start = (options.as_ref().and_then(|value| value.linear_start))
-        .clone()
-        .unwrap_or(0.22_f64);
-    let linear_length = (options.as_ref().and_then(|value| value.linear_length))
-        .clone()
-        .unwrap_or(0.4_f64);
-    let black_tighten = (options.as_ref().and_then(|value| value.black_tighten))
-        .clone()
-        .unwrap_or(1.33_f64);
-    let pedestal = (options.as_ref().and_then(|value| value.pedestal))
-        .clone()
-        .unwrap_or(0.0_f64);
+    let max_brightness =
+        (options.as_ref().and_then(|value| value.max_brightness)).unwrap_or(1.0_f64);
+    let contrast = (options.as_ref().and_then(|value| value.contrast)).unwrap_or(1.0_f64);
+    let linear_start = (options.as_ref().and_then(|value| value.linear_start)).unwrap_or(0.22_f64);
+    let linear_length = (options.as_ref().and_then(|value| value.linear_length)).unwrap_or(0.4_f64);
+    let black_tighten =
+        (options.as_ref().and_then(|value| value.black_tighten)).unwrap_or(1.33_f64);
+    let pedestal = (options.as_ref().and_then(|value| value.pedestal)).unwrap_or(0.0_f64);
     let l0 = (((max_brightness - linear_start) * linear_length) / contrast);
     let l0 = (linear_start - (linear_start / contrast));
     let l1 = (linear_start + ((1.0_f64 - linear_start) / contrast));

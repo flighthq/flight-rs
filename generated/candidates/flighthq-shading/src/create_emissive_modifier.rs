@@ -19,13 +19,12 @@ pub fn create_emissive_modifier(options: &EmissiveModifierOptions) -> EmissiveMo
         kind: (emissive_modifier_kind_constant).to_owned(),
         slot: (modifier_slot_constant.emissive).clone(),
         color: options.color,
-        strength: (options.strength).clone().unwrap_or(1.0_f64),
+        strength: (options.strength).unwrap_or(1.0_f64),
         facing: Some(
             ((options.facing).clone())
-                .clone()
                 .unwrap_or((emissive_modifier_facing_constant.ignore).clone()),
         ),
-        facing_softness: Some((options.facing_softness).clone().unwrap_or(0.0_f64)),
+        facing_softness: Some((options.facing_softness).unwrap_or(0.0_f64)),
         mask: None,
         ..Default::default()
     };

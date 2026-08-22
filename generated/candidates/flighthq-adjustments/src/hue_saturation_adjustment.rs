@@ -41,9 +41,9 @@ pub fn create_hue_saturation_adjustment(
         saturation: None,
         lightness: None,
     });
-    let hue = ((options.hue).clone().unwrap_or(0.0_f64) / 360.0_f64);
-    let saturation = (options.saturation).clone().unwrap_or(1.0_f64);
-    let lightness = (options.lightness).clone().unwrap_or(0.0_f64);
+    let hue = ((options.hue).unwrap_or(0.0_f64) / 360.0_f64);
+    let saturation = (options.saturation).unwrap_or(1.0_f64);
+    let lightness = (options.lightness).unwrap_or(0.0_f64);
     let mut transform: ColorTransformFunction = std::sync::Arc::new(std::sync::Mutex::new(
         Box::new(move |mut out: Vec<f64>, r: f64, g: f64, b: f64| -> () {
             let mx = ((r).max(g)).max(b);

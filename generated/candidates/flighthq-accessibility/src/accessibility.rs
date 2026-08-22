@@ -307,9 +307,7 @@ fn _apply_accessibility_element_attributes(
     crate::host_value::<()>("host.setAttribute");
     _apply_accessibility_state_attributes(
         (element).clone(),
-        &((node.states).clone())
-            .clone()
-            .unwrap_or(((*_EMPTY_STATE).clone()).clone()),
+        &((node.states).clone()).unwrap_or(((*_EMPTY_STATE).clone()).clone()),
     );
 }
 

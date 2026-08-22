@@ -161,11 +161,9 @@ pub fn create_protocol_handler() -> ProtocolHandler {
 
 // Source: upstream/packages/protocol/src/protocol.ts:30 (sha256:26195253814f0fc0b4a2631049f6906ebedecb01aebec722307c617dd34640c9)
 pub fn create_protocol_url(parts: &FlightPartialRecord458042621) -> String {
-    let scheme = ((parts.scheme).clone())
-        .clone()
-        .unwrap_or("unknown".to_owned());
-    let host = ((parts.host).clone()).clone().unwrap_or("".to_owned());
-    let path = ((parts.path).clone()).clone().unwrap_or("".to_owned());
+    let scheme = ((parts.scheme).clone()).unwrap_or("unknown".to_owned());
+    let host = ((parts.host).clone()).unwrap_or("".to_owned());
+    let path = ((parts.path).clone()).unwrap_or("".to_owned());
     let query = (parts.query).clone();
     let authority = if !(host).is_empty() {
         format!("//{}", (host).clone())

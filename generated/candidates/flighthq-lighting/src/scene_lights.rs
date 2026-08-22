@@ -40,18 +40,9 @@ pub fn create_scene3_d_lights(options: Option<FlightPartialRecord1933629006>) ->
             (options
                 .as_ref()
                 .and_then(|value| (value.hemisphere).clone()))
-            .clone()
             .unwrap_or(vec![]),
         ),
-        point: Some(
-            (options.as_ref().and_then(|value| (value.point).clone()))
-                .clone()
-                .unwrap_or(vec![]),
-        ),
-        spot: Some(
-            (options.as_ref().and_then(|value| (value.spot).clone()))
-                .clone()
-                .unwrap_or(vec![]),
-        ),
+        point: Some((options.as_ref().and_then(|value| (value.point).clone())).unwrap_or(vec![])),
+        spot: Some((options.as_ref().and_then(|value| (value.spot).clone())).unwrap_or(vec![])),
     }));
 }

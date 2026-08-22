@@ -56,16 +56,12 @@ pub fn enable_debug(options: Option<DebugOptions>) -> () {
     if _ENABLED.load(std::sync::atomic::Ordering::Relaxed) {
         return;
     }
-    let level = (options.level).clone().unwrap_or(LogLevel::Debug);
+    let level = (options.level).unwrap_or(LogLevel::Debug);
     let subsystems = _resolve_debug_subsystems(&(options.subsystems));
     let channels = _collect_debug_channels(&subsystems, &(options.channels));
     (*_SAVED_GLOBAL_LEVEL.lock().unwrap()) = get_log_level();
     _apply_debug_levels(level, &channels);
-    _install_debug_sink(
-        ((options.sink).clone())
-            .clone()
-            .unwrap_or(create_console_log_sink(None)),
-    );
+    _install_debug_sink(((options.sink).clone()).unwrap_or(create_console_log_sink(None)));
     for hooks in (subsystems).iter().cloned() {
         {
             let __flight_callback = (hooks.enable_guards).clone();

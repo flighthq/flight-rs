@@ -58,8 +58,8 @@ pub fn create_glitch_effect(options: Option<FlightOmitRecord1502164903>) -> Glit
 
 // Source: upstream/packages/effects/src/glitchEffect.ts:9 (sha256:f344cf86d3d2f2130edaee660825fe2b797bf48467fa3f2890660e2a7b9750a9)
 pub fn get_glitch_effect_padding(effect: &GlitchEffect) -> RenderEffectPadding {
-    let tear = (((effect.intensity).clone().unwrap_or(0.5_f64)).abs() * 40.0_f64);
-    let channel_shift = (((effect.color_shift).clone().unwrap_or(8.0_f64)).abs() * 1.4_f64);
+    let tear = (((effect.intensity).unwrap_or(0.5_f64)).abs() * 40.0_f64);
+    let channel_shift = (((effect.color_shift).unwrap_or(8.0_f64)).abs() * 1.4_f64);
     let horizontal = (tear + channel_shift).ceil();
     return RenderEffectPadding {
         __flight_identity: std::sync::Arc::new(()),

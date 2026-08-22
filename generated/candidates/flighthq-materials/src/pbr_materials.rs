@@ -216,33 +216,22 @@ pub fn create_specular_glossiness_pbr_material(
             specular_glossiness_map: Default::default(),
         }
     };
-    material.diffuse = (opts.as_ref().and_then(|value| value.diffuse))
-        .clone()
-        .unwrap_or(4294967295.0_f64);
+    material.diffuse = (opts.as_ref().and_then(|value| value.diffuse)).unwrap_or(4294967295.0_f64);
     material.diffuse_map = opts.as_ref().and_then(|value| (value.diffuse_map).clone());
-    material.emissive = (opts.as_ref().and_then(|value| value.emissive))
-        .clone()
-        .unwrap_or(255.0_f64);
+    material.emissive = (opts.as_ref().and_then(|value| value.emissive)).unwrap_or(255.0_f64);
     material.emissive_map = opts.as_ref().and_then(|value| (value.emissive_map).clone());
-    material.emissive_strength = (opts.as_ref().and_then(|value| value.emissive_strength))
-        .clone()
-        .unwrap_or(1.0_f64);
-    material.glossiness = (opts.as_ref().and_then(|value| value.glossiness))
-        .clone()
-        .unwrap_or(1.0_f64);
+    material.emissive_strength =
+        (opts.as_ref().and_then(|value| value.emissive_strength)).unwrap_or(1.0_f64);
+    material.glossiness = (opts.as_ref().and_then(|value| value.glossiness)).unwrap_or(1.0_f64);
     material.normal_map = opts.as_ref().and_then(|value| (value.normal_map).clone());
-    material.normal_scale = (opts.as_ref().and_then(|value| value.normal_scale))
-        .clone()
-        .unwrap_or(1.0_f64);
+    material.normal_scale = (opts.as_ref().and_then(|value| value.normal_scale)).unwrap_or(1.0_f64);
     material.occlusion_map = opts
         .as_ref()
         .and_then(|value| (value.occlusion_map).clone());
-    material.occlusion_strength = (opts.as_ref().and_then(|value| value.occlusion_strength))
-        .clone()
-        .unwrap_or(1.0_f64);
-    material.specular = (opts.as_ref().and_then(|value| value.specular))
-        .clone()
-        .unwrap_or(4294967295.0_f64);
+    material.occlusion_strength =
+        (opts.as_ref().and_then(|value| value.occlusion_strength)).unwrap_or(1.0_f64);
+    material.specular =
+        (opts.as_ref().and_then(|value| value.specular)).unwrap_or(4294967295.0_f64);
     material.specular_glossiness_map = opts
         .as_ref()
         .and_then(|value| (value.specular_glossiness_map).clone());
@@ -301,38 +290,28 @@ pub fn create_standard_pbr_material(
     };
     {
         material.alpha_map = opts.as_ref().and_then(|value| (value.alpha_map).clone());
-        material.base_color = (opts.as_ref().and_then(|value| value.base_color))
-            .clone()
-            .unwrap_or(4294967295.0_f64);
+        material.base_color =
+            (opts.as_ref().and_then(|value| value.base_color)).unwrap_or(4294967295.0_f64);
         material.base_color_map = opts
             .as_ref()
             .and_then(|value| (value.base_color_map).clone());
-        material.emissive = (opts.as_ref().and_then(|value| value.emissive))
-            .clone()
-            .unwrap_or(255.0_f64);
+        material.emissive = (opts.as_ref().and_then(|value| value.emissive)).unwrap_or(255.0_f64);
         material.emissive_map = opts.as_ref().and_then(|value| (value.emissive_map).clone());
-        material.emissive_strength = (opts.as_ref().and_then(|value| value.emissive_strength))
-            .clone()
-            .unwrap_or(1.0_f64);
-        material.metallic = (opts.as_ref().and_then(|value| value.metallic))
-            .clone()
-            .unwrap_or(0.0_f64);
+        material.emissive_strength =
+            (opts.as_ref().and_then(|value| value.emissive_strength)).unwrap_or(1.0_f64);
+        material.metallic = (opts.as_ref().and_then(|value| value.metallic)).unwrap_or(0.0_f64);
         material.metallic_roughness_map = opts
             .as_ref()
             .and_then(|value| (value.metallic_roughness_map).clone());
         material.normal_map = opts.as_ref().and_then(|value| (value.normal_map).clone());
-        material.normal_scale = (opts.as_ref().and_then(|value| value.normal_scale))
-            .clone()
-            .unwrap_or(1.0_f64);
+        material.normal_scale =
+            (opts.as_ref().and_then(|value| value.normal_scale)).unwrap_or(1.0_f64);
         material.occlusion_map = opts
             .as_ref()
             .and_then(|value| (value.occlusion_map).clone());
-        material.occlusion_strength = (opts.as_ref().and_then(|value| value.occlusion_strength))
-            .clone()
-            .unwrap_or(1.0_f64);
-        material.roughness = (opts.as_ref().and_then(|value| value.roughness))
-            .clone()
-            .unwrap_or(1.0_f64);
+        material.occlusion_strength =
+            (opts.as_ref().and_then(|value| value.occlusion_strength)).unwrap_or(1.0_f64);
+        material.roughness = (opts.as_ref().and_then(|value| value.roughness)).unwrap_or(1.0_f64);
     };
     return material;
 }
@@ -398,38 +377,27 @@ fn assign_standard_pbr_material_properties(
     opts: Option<FlightPartialRecord3905749610>,
 ) -> () {
     target.alpha_map = opts.as_ref().and_then(|value| (value.alpha_map).clone());
-    target.base_color = (opts.as_ref().and_then(|value| value.base_color))
-        .clone()
-        .unwrap_or(4294967295.0_f64);
+    target.base_color =
+        (opts.as_ref().and_then(|value| value.base_color)).unwrap_or(4294967295.0_f64);
     target.base_color_map = opts
         .as_ref()
         .and_then(|value| (value.base_color_map).clone());
-    target.emissive = (opts.as_ref().and_then(|value| value.emissive))
-        .clone()
-        .unwrap_or(255.0_f64);
+    target.emissive = (opts.as_ref().and_then(|value| value.emissive)).unwrap_or(255.0_f64);
     target.emissive_map = opts.as_ref().and_then(|value| (value.emissive_map).clone());
-    target.emissive_strength = (opts.as_ref().and_then(|value| value.emissive_strength))
-        .clone()
-        .unwrap_or(1.0_f64);
-    target.metallic = (opts.as_ref().and_then(|value| value.metallic))
-        .clone()
-        .unwrap_or(0.0_f64);
+    target.emissive_strength =
+        (opts.as_ref().and_then(|value| value.emissive_strength)).unwrap_or(1.0_f64);
+    target.metallic = (opts.as_ref().and_then(|value| value.metallic)).unwrap_or(0.0_f64);
     target.metallic_roughness_map = opts
         .as_ref()
         .and_then(|value| (value.metallic_roughness_map).clone());
     target.normal_map = opts.as_ref().and_then(|value| (value.normal_map).clone());
-    target.normal_scale = (opts.as_ref().and_then(|value| value.normal_scale))
-        .clone()
-        .unwrap_or(1.0_f64);
+    target.normal_scale = (opts.as_ref().and_then(|value| value.normal_scale)).unwrap_or(1.0_f64);
     target.occlusion_map = opts
         .as_ref()
         .and_then(|value| (value.occlusion_map).clone());
-    target.occlusion_strength = (opts.as_ref().and_then(|value| value.occlusion_strength))
-        .clone()
-        .unwrap_or(1.0_f64);
-    target.roughness = (opts.as_ref().and_then(|value| value.roughness))
-        .clone()
-        .unwrap_or(1.0_f64);
+    target.occlusion_strength =
+        (opts.as_ref().and_then(|value| value.occlusion_strength)).unwrap_or(1.0_f64);
+    target.roughness = (opts.as_ref().and_then(|value| value.roughness)).unwrap_or(1.0_f64);
 }
 
 // Source: upstream/packages/materials/src/pbrMaterials.ts:147 (sha256:d73291d2c9a128374c2e52e8713d2f8ac4c87c45e28969c9f1bba7dfb19b8913)

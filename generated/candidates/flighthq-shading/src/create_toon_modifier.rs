@@ -18,7 +18,7 @@ pub fn create_toon_modifier(options: &ToonModifierOptions) -> ToonModifier {
         kind: (toon_modifier_kind_constant).to_owned(),
         slot: (modifier_slot_constant.effect).clone(),
         steps: options.steps,
-        smoothness: Some((options.smoothness).clone().unwrap_or(0.0_f64)),
+        smoothness: Some((options.smoothness).unwrap_or(0.0_f64)),
         ..Default::default()
     };
 }

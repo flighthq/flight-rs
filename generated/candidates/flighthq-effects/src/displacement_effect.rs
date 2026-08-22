@@ -57,7 +57,7 @@ pub fn create_displacement_effect(
 
 // Source: upstream/packages/effects/src/displacementEffect.ts:9 (sha256:2d7edb8836a6c12247ca65fddd0ab3a8838823a145ca4dccc8ae3f32dabae2b4)
 pub fn get_displacement_effect_padding(effect: &DisplacementEffect) -> RenderEffectPadding {
-    let intensity = ((effect.intensity).clone().unwrap_or(8.0_f64)).abs();
+    let intensity = ((effect.intensity).unwrap_or(8.0_f64)).abs();
     let horizontal = (intensity * 1.5_f64).ceil();
     let vertical = (intensity).ceil();
     return RenderEffectPadding {

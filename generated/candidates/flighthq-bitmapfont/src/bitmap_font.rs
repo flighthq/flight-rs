@@ -15,7 +15,7 @@ pub fn create_bitmap_font(data: &BitmapFontData) -> BitmapFont {
     let page_count = (data.pages.len() as f64);
     let mut glyphs: Vec<(f64, GlyphEntry)> = Vec::new();
     for glyph in ((data.glyphs).clone()).iter().cloned() {
-        let page = (glyph.page).clone().unwrap_or(0.0_f64);
+        let page = (glyph.page).unwrap_or(0.0_f64);
         {
             let __flight_key = glyph.codepoint;
             let __flight_value = GlyphEntry {
@@ -57,9 +57,7 @@ pub fn create_bitmap_font(data: &BitmapFontData) -> BitmapFont {
     }
     return BitmapFont {
         __flight_identity: std::sync::Arc::new(()),
-        encoding: ((data.encoding).clone())
-            .clone()
-            .unwrap_or("raster".to_owned()),
+        encoding: ((data.encoding).clone()).unwrap_or("raster".to_owned()),
         glyphs: (glyphs).clone(),
         kerning: (kerning).clone(),
         metrics: GlyphMetrics {
@@ -88,7 +86,6 @@ pub fn get_bitmap_font_kerning(font: &BitmapFont, left: f64, right: f64) -> f64 
         .iter()
         .find(|(entry_key, _)| entry_key == &pack_bitmap_font_kerning_key(left, right))
         .map(|(_, value)| value.clone()))
-    .clone()
     .unwrap_or(0.0_f64);
 }
 

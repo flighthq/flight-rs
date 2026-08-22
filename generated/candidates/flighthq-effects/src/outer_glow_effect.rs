@@ -70,8 +70,8 @@ pub fn create_outer_glow_effect(options: Option<FlightOmitRecord3817894418>) -> 
 // Source: upstream/packages/effects/src/outerGlowEffect.ts:10 (sha256:666e7a6e59cf57611423b7d1fabc3c8dfc47eabc81de67640bebcbafa6298031)
 pub fn get_outer_glow_effect_padding(effect: &OuterGlowEffect) -> RenderEffectPadding {
     return get_gaussian_render_effect_padding(
-        (effect.blur_x).clone().unwrap_or(6.0_f64),
-        (effect.blur_y).clone().unwrap_or(6.0_f64),
+        (effect.blur_x).unwrap_or(6.0_f64),
+        (effect.blur_y).unwrap_or(6.0_f64),
     );
 }
 

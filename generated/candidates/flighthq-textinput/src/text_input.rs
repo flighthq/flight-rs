@@ -87,18 +87,12 @@ fn create_text_input_state(options: Option<TextInputOptions>) -> TextInputState 
         always_show_selection: (options
             .as_ref()
             .and_then(|value| value.always_show_selection))
-        .clone()
         .unwrap_or(false),
-        caret_color: (options.as_ref().and_then(|value| value.caret_color))
-            .clone()
-            .unwrap_or(0.0_f64),
+        caret_color: (options.as_ref().and_then(|value| value.caret_color)).unwrap_or(0.0_f64),
         caret_index: 0.0_f64,
-        caret_width: (options.as_ref().and_then(|value| value.caret_width))
-            .clone()
-            .unwrap_or(1.0_f64),
+        caret_width: (options.as_ref().and_then(|value| value.caret_width)).unwrap_or(1.0_f64),
         desired_caret_x: (-1.0_f64),
         display_as_password: (options.as_ref().and_then(|value| value.display_as_password))
-            .clone()
             .unwrap_or(false),
         focused: false,
         history: vec![],
@@ -111,16 +105,12 @@ fn create_text_input_state(options: Option<TextInputOptions>) -> TextInputState 
         password_character: (options
             .as_ref()
             .and_then(|value| (value.password_character).clone()))
-        .clone()
         .unwrap_or("•".to_owned()),
         restrict: (options.as_ref().and_then(|value| (value.restrict).clone()))
-            .clone()
             .unwrap_or("".to_owned()),
         selection_alpha: (options.as_ref().and_then(|value| value.selection_alpha))
-            .clone()
             .unwrap_or(0.35_f64),
         selection_color: (options.as_ref().and_then(|value| value.selection_color))
-            .clone()
             .unwrap_or(30935.0_f64),
         selection_index: 0.0_f64,
     };

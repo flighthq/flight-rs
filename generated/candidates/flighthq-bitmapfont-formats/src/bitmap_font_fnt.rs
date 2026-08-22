@@ -384,9 +384,7 @@ fn parse_fnt_fields(rest: String) -> Vec<(String, String)> {
             let __flight_value = if (match_.as_mut().unwrap()[2.0_f64 as usize].clone()).is_some() {
                 match_.as_mut().unwrap()[2.0_f64 as usize].clone().unwrap()
             } else {
-                (match_.as_mut().unwrap()[3.0_f64 as usize].clone())
-                    .clone()
-                    .unwrap_or("".to_owned())
+                (match_.as_mut().unwrap()[3.0_f64 as usize].clone()).unwrap_or("".to_owned())
             };
             if let Some((_, value)) = fields.iter_mut().find(|(key, _)| key == &__flight_key) {
                 *value = __flight_value;
@@ -484,7 +482,6 @@ fn read_fnt_char(fields: &Vec<(String, String)>) -> Option<BitmapFontCharRecord>
                 .expect("TypeScript Record key was absent"))
             .clone(),
         )))
-        .clone()
         .unwrap_or(0.0_f64),
         width: *(width.as_ref().unwrap()),
         x: *(x.as_ref().unwrap()),

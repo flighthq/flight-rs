@@ -35,14 +35,13 @@ pub fn create_animation_crossfade(
     opts: Option<AnimationCrossfadeOptions>,
 ) -> AnimationCrossfade {
     let resolved_duration = (0.0_f64).max(duration);
-    let curve = (opts.as_ref().and_then(|value| (value.curve).clone()))
-        .clone()
-        .unwrap_or(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-            move |__flight_argument_0: f64| -> f64 {
+    let curve = (opts.as_ref().and_then(|value| (value.curve).clone())).unwrap_or(
+        std::sync::Arc::new(std::sync::Mutex::new(
+            Box::new(move |__flight_argument_0: f64| -> f64 {
                 linear_animation_crossfade_curve(__flight_argument_0)
-            },
-        )
-            as Box<dyn FnMut(f64) -> f64 + Send + 'static>)));
+            }) as Box<dyn FnMut(f64) -> f64 + Send + 'static>,
+        )),
+    );
     let channels = create_animation_crossfade_channels(from, to);
     let mut sample_width = 0.0_f64;
     for entry in (channels).iter().cloned() {

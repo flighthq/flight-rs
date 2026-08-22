@@ -23,9 +23,9 @@ fn __flight_js_to_i32(value: f64) -> i32 {
 
 // Source: upstream/packages/effects/src/edgeDetectMath.ts:14 (sha256:7ae730f11c39f7d6e2770821ab6f7d4cff153fb3afddfed5706b0f33086a55ad)
 pub fn compute_outline_edge_params(effect: &OutlineEffect, out: &mut Vec<f64>) -> () {
-    let threshold = (0.0_f64).max((effect.threshold).clone().unwrap_or(0.1_f64));
+    let threshold = (0.0_f64).max((effect.threshold).unwrap_or(0.1_f64));
     let feather = (threshold * 0.5_f64);
-    let color = (effect.color).clone().unwrap_or(255.0_f64);
+    let color = (effect.color).unwrap_or(255.0_f64);
     let r = ((__flight_js_to_i32(
         (__flight_js_to_u32(color) >> (__flight_js_to_u32(24.0_f64) & 31)) as f64,
     ) & __flight_js_to_i32(255.0_f64)) as f64
@@ -97,12 +97,12 @@ pub fn compute_outline_edge_params(effect: &OutlineEffect, out: &mut Vec<f64>) -
 
 // Source: upstream/packages/effects/src/edgeDetectMath.ts:35 (sha256:fb2be4626564eceed93e0d812916c009fbd03cf310f66f0c951b50fe6fcc5a35)
 pub fn compute_outline_thickness_px(effect: &OutlineEffect) -> f64 {
-    return (0.0_f64).max(((effect.thickness).clone().unwrap_or(1.0_f64)).round());
+    return (0.0_f64).max(((effect.thickness).unwrap_or(1.0_f64)).round());
 }
 
 // Source: upstream/packages/effects/src/edgeDetectMath.ts:45 (sha256:1a87eaf73bedbb64b8ca5b60faa4172d6a93f079bf47d04b4b3696759c94de93)
 pub fn compute_sketch_edge_params(effect: &SketchEffect, out: &mut Vec<f64>) -> () {
-    let strength = (0.0_f64).max((1.0_f64).min((effect.strength).clone().unwrap_or(1.0_f64)));
+    let strength = (0.0_f64).max((1.0_f64).min((effect.strength).unwrap_or(1.0_f64)));
     let threshold = (0.01_f64).max((1.0_f64).min((1.0_f64 - (strength * 0.95_f64))));
     {
         let __flight_index = (0.0_f64) as usize;

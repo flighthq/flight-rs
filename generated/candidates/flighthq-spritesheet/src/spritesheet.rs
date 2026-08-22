@@ -69,15 +69,11 @@ pub fn create_spritesheet(obj: Option<FlightPartialRecord2119237179>) -> Sprites
         __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         atlas: obj.as_ref().and_then(|value| (value.atlas).clone()),
-        animations: (obj.as_ref().and_then(|value| (value.animations).clone()))
-            .clone()
-            .unwrap_or({
-                let mut __flight_record = Vec::new();
-                __flight_record
-            }),
-        frames: (obj.as_ref().and_then(|value| (value.frames).clone()))
-            .clone()
-            .unwrap_or(vec![]),
+        animations: (obj.as_ref().and_then(|value| (value.animations).clone())).unwrap_or({
+            let mut __flight_record = Vec::new();
+            __flight_record
+        }),
+        frames: (obj.as_ref().and_then(|value| (value.frames).clone())).unwrap_or(vec![]),
     }));
 }
 

@@ -18,9 +18,9 @@ pub fn create_dissolve_modifier(options: &DissolveModifierOptions) -> DissolveMo
         kind: (dissolve_modifier_kind_constant).to_owned(),
         slot: (modifier_slot_constant.effect).clone(),
         threshold: options.threshold,
-        edge_color: (options.edge_color).clone().unwrap_or(4284875007.0_f64),
-        edge_width: Some((options.edge_width).clone().unwrap_or(0.05_f64)),
-        scale: Some((options.scale).clone().unwrap_or(8.0_f64)),
+        edge_color: (options.edge_color).unwrap_or(4284875007.0_f64),
+        edge_width: Some((options.edge_width).unwrap_or(0.05_f64)),
+        scale: Some((options.scale).unwrap_or(8.0_f64)),
         map: None,
         ..Default::default()
     };

@@ -57,8 +57,8 @@ pub fn create_directional_blur_effect(
 
 // Source: upstream/packages/effects/src/directionalBlurEffect.ts:11 (sha256:93986a0c9fb77cd943bba0b78df84813f795b364804870a76b0f716eba645046)
 pub fn get_directional_blur_effect_padding(effect: &DirectionalBlurEffect) -> RenderEffectPadding {
-    let angle = (((effect.angle).clone().unwrap_or(0.0_f64) * std::f64::consts::PI) / 180.0_f64);
-    let half_length = ((0.0_f64).max((effect.length).clone().unwrap_or(8.0_f64)) * 0.5_f64);
+    let angle = (((effect.angle).unwrap_or(0.0_f64) * std::f64::consts::PI) / 180.0_f64);
+    let half_length = ((0.0_f64).max((effect.length).unwrap_or(8.0_f64)) * 0.5_f64);
     let projected_x = ((angle).cos() * half_length).abs();
     let projected_y = ((angle).sin() * half_length).abs();
     let horizontal = if (projected_x < 1e-10_f64) {

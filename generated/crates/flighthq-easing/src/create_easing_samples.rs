@@ -17,7 +17,7 @@ pub fn create_easing_samples(ease: EasingFunction, count: f64, out: Option<Vec<f
         );
     }
     let n = (count).floor();
-    let mut result = (out).clone().unwrap_or(vec![0.0_f32; (n) as usize]);
+    let mut result = (out).unwrap_or(vec![0.0_f32; (n) as usize]);
     if (n == 1.0_f64) {
         result[0.0_f64 as usize] = ({
             let __flight_callback = (ease).clone();

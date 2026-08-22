@@ -87,9 +87,9 @@ pub fn create_vector3(x: Option<f64>, y: Option<f64>, z: Option<f64>) -> Vector3
         __flight_identity: std::sync::Arc::new(()),
         __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
-        x: (x).clone().unwrap_or(0.0_f64),
-        y: (y).clone().unwrap_or(0.0_f64),
-        z: (z).clone().unwrap_or(0.0_f64),
+        x: (x).unwrap_or(0.0_f64),
+        y: (y).unwrap_or(0.0_f64),
+        z: (z).unwrap_or(0.0_f64),
     }));
 }
 

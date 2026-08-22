@@ -89,14 +89,12 @@ pub fn concat_registry_table<T: Clone>(
         };
         return crate::FlightUnion2::<KeyedTable<T>, SlotTable<T>>::B(SlotTable::<T> {
             __flight_identity: std::sync::Arc::new(()),
-            entry: ((overlay_slot.entry).clone())
-                .clone()
-                .or(((match (*base).clone() {
-                    crate::FlightUnion2::A(_) => panic!("TypeScript union narrowing failed"),
-                    crate::FlightUnion2::B(value) => value,
-                })
-                .entry)
-                    .clone()),
+            entry: ((overlay_slot.entry).clone()).or(((match (*base).clone() {
+                crate::FlightUnion2::A(_) => panic!("TypeScript union narrowing failed"),
+                crate::FlightUnion2::B(value) => value,
+            })
+            .entry)
+                .clone()),
             on_miss: ((match (*base).clone() {
                 crate::FlightUnion2::A(_) => panic!("TypeScript union narrowing failed"),
                 crate::FlightUnion2::B(value) => value,

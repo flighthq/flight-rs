@@ -52,8 +52,8 @@ pub fn create_gradient_glow_effect(options: &FlightOmitRecord2348048241) -> Grad
 // Source: upstream/packages/effects/src/gradientGlowEffect.ts:10 (sha256:dfb433f5cabfccd588c04da5b3cba2b9413601b34e39d5ca866241a9a4692dd1)
 pub fn get_gradient_glow_effect_padding(effect: &GradientGlowEffect) -> RenderEffectPadding {
     return get_gaussian_render_effect_padding(
-        (effect.blur_x).clone().unwrap_or(6.0_f64),
-        (effect.blur_y).clone().unwrap_or(6.0_f64),
+        (effect.blur_x).unwrap_or(6.0_f64),
+        (effect.blur_y).unwrap_or(6.0_f64),
     );
 }
 

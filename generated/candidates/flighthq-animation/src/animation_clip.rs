@@ -90,7 +90,7 @@ pub fn create_animation_clip(
         __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         channels: (*channels).clone(),
-        duration: (duration).clone().unwrap_or(computed_duration),
+        duration: (duration).unwrap_or(computed_duration),
         events: (copied_events).clone(),
     }));
 }

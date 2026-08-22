@@ -28,19 +28,11 @@ impl PartialEq for FlightPartialRecord3721705896 {
 pub fn create_spritesheet_frame(obj: Option<FlightPartialRecord3721705896>) -> SpritesheetFrame {
     return SpritesheetFrame {
         __flight_identity: std::sync::Arc::new(()),
-        id: (obj.as_ref().and_then(|value| value.id))
-            .clone()
-            .unwrap_or(0.0_f64),
-        offset_x: (obj.as_ref().and_then(|value| value.offset_x))
-            .clone()
-            .unwrap_or(0.0_f64),
-        offset_y: (obj.as_ref().and_then(|value| value.offset_y))
-            .clone()
-            .unwrap_or(0.0_f64),
+        id: (obj.as_ref().and_then(|value| value.id)).unwrap_or(0.0_f64),
+        offset_x: (obj.as_ref().and_then(|value| value.offset_x)).unwrap_or(0.0_f64),
+        offset_y: (obj.as_ref().and_then(|value| value.offset_y)).unwrap_or(0.0_f64),
         pivot_x: obj.as_ref().and_then(|value| value.pivot_x),
         pivot_y: obj.as_ref().and_then(|value| value.pivot_y),
-        rotated: (obj.as_ref().and_then(|value| value.rotated))
-            .clone()
-            .unwrap_or(false),
+        rotated: (obj.as_ref().and_then(|value| value.rotated)).unwrap_or(false),
     };
 }

@@ -18,9 +18,7 @@ pub fn explain_skeleton2_d_deform_length(
     let addressed = if weighted {
         ((skin.as_ref().unwrap().influences.len() as f64) / 2.0_f64)
     } else {
-        (vertices.as_ref().map(|value| value.len() as f64))
-            .clone()
-            .unwrap_or(0.0_f64)
+        (vertices.as_ref().map(|value| value.len() as f64)).unwrap_or(0.0_f64)
     };
     let offsets = if (deform).is_none() {
         0.0_f64

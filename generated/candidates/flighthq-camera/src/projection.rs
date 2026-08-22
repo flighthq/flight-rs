@@ -28,7 +28,7 @@ pub fn create_orthographic_projection(
 pub fn create_perspective_projection(opts: &PerspectiveProjectionOptions) -> PerspectiveProjection {
     return PerspectiveProjection {
         __flight_identity: std::sync::Arc::new(()),
-        aspect: (opts.aspect).clone().unwrap_or(1.0_f64),
+        aspect: (opts.aspect).unwrap_or(1.0_f64),
         fov_y: opts.fov_y,
         kind: "perspective".to_owned(),
     };

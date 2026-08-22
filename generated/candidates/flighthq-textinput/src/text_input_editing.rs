@@ -494,7 +494,6 @@ pub fn handle_text_input_keyboard(
                     (options
                         .as_ref()
                         .and_then(|value| (value.clipboard_text).clone()))
-                    .clone()
                     .unwrap_or("".to_owned()),
                 );
                 return true;

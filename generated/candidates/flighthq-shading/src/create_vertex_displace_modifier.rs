@@ -22,12 +22,10 @@ pub fn create_vertex_displace_modifier(
         slot: (modifier_slot_constant.vertex).clone(),
         source: (options.source).clone(),
         amplitude: options.amplitude,
-        frequency: Some((options.frequency).clone().unwrap_or(1.0_f64)),
-        speed: Some((options.speed).clone().unwrap_or(1.0_f64)),
+        frequency: Some((options.frequency).unwrap_or(1.0_f64)),
+        speed: Some((options.speed).unwrap_or(1.0_f64)),
         direction: Some(
-            ((options.direction).clone())
-                .clone()
-                .unwrap_or(((*DEFAULT_DIRECTION).clone()).clone()),
+            ((options.direction).clone()).unwrap_or(((*DEFAULT_DIRECTION).clone()).clone()),
         ),
         axis: None,
         map: None,

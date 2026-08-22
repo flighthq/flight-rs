@@ -21,7 +21,7 @@ pub fn create_animated_normal_modifier(
         slot: (modifier_slot_constant.normal).clone(),
         map: (options.map).clone(),
         scroll: (options.scroll).clone(),
-        strength: Some((options.strength).clone().unwrap_or(1.0_f64)),
+        strength: Some((options.strength).unwrap_or(1.0_f64)),
         secondary_map: None,
         secondary_scroll: None,
         ..Default::default()

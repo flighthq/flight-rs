@@ -72,7 +72,6 @@ fn parse_bitmap_font_xml_record(
                 pages.push(BitmapFontPageRecord {
                     __flight_identity: std::sync::Arc::new(()),
                     file: (get_xml_element_attribute(&page_element, "file".to_owned()))
-                        .clone()
                         .unwrap_or("".to_owned()),
                     id: *(id.as_ref().unwrap()),
                 });
@@ -163,9 +162,7 @@ fn read_xml_char(element: &XmlElement) -> Option<BitmapFontCharRecord> {
         __flight_identity: std::sync::Arc::new(()),
         height: *(height.as_ref().unwrap()),
         id: *(id.as_ref().unwrap()),
-        page: (get_xml_element_attribute_number(element, "page".to_owned()))
-            .clone()
-            .unwrap_or(0.0_f64),
+        page: (get_xml_element_attribute_number(element, "page".to_owned())).unwrap_or(0.0_f64),
         width: *(width.as_ref().unwrap()),
         x: *(x.as_ref().unwrap()),
         xadvance: *(xadvance.as_ref().unwrap()),

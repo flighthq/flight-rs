@@ -82,13 +82,10 @@ pub fn create_anisotropy_pbr_extension(
             .as_ref()
             .and_then(|value| (value.anisotropy_map).clone()),
         anisotropy_map_uv_set: (opts.as_ref().and_then(|value| value.anisotropy_map_uv_set))
-            .clone()
             .unwrap_or(0.0_f64),
         anisotropy_rotation: (opts.as_ref().and_then(|value| value.anisotropy_rotation))
-            .clone()
             .unwrap_or(0.0_f64),
         anisotropy_strength: (opts.as_ref().and_then(|value| value.anisotropy_strength))
-            .clone()
             .unwrap_or(0.0_f64),
         kind: (anisotropy_pbr_extension_kind_constant).to_owned(),
         ..Default::default()

@@ -221,12 +221,12 @@ static _SCRATCH: std::sync::LazyLock<PlatformInfo> =
 // Source: upstream/packages/platform/src/platform.ts:147 (sha256:b1ba0076fe22d520a58f593a7a68b357f4dd667dfaf57a6a7aca76930301e048)
 fn get_web_platform_info(out: &mut PlatformInfo) -> PlatformInfo {
     let nav: Option<crate::OpaqueHostValue> = None;
-    let ua = (None::<String>).clone().unwrap_or("".to_owned());
+    let ua = (None::<String>).unwrap_or("".to_owned());
     out.name = parse_user_agent_name((ua).clone());
     out.kind = parse_user_agent_kind((out.name).clone());
     out.version = parse_user_agent_version((ua).clone(), (out.name).clone());
     out.arch = parse_user_agent_arch((ua).clone(), None);
-    out.locale = (None::<String>).clone().unwrap_or("".to_owned());
+    out.locale = (None::<String>).unwrap_or("".to_owned());
     out.is_touch = false;
     out.runtime = parse_user_agent_runtime(&(None));
     out.engine = parse_user_agent_engine((ua).clone());

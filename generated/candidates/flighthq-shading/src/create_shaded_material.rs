@@ -28,43 +28,33 @@ pub fn create_shaded_material(options: Option<ShadedMaterialOptions>) -> ShadedM
         specular: Default::default(),
         specular_map: Default::default(),
     }));
-    material.alpha_cutoff = (options.as_ref().and_then(|value| value.alpha_cutoff))
-        .clone()
-        .unwrap_or(0.5_f64);
+    material.alpha_cutoff =
+        (options.as_ref().and_then(|value| value.alpha_cutoff)).unwrap_or(0.5_f64);
     material.alpha_mode = (options
         .as_ref()
         .and_then(|value| (value.alpha_mode).clone()))
-    .clone()
     .unwrap_or("opaque".to_owned());
     material.blend_mode = (options
         .as_ref()
         .and_then(|value| (value.blend_mode).clone()))
-    .clone()
     .unwrap_or((blend_mode_constant.normal).clone());
-    material.diffuse = (options.as_ref().and_then(|value| value.diffuse))
-        .clone()
-        .unwrap_or(4294967295.0_f64);
+    material.diffuse =
+        (options.as_ref().and_then(|value| value.diffuse)).unwrap_or(4294967295.0_f64);
     material.diffuse_map = options
         .as_ref()
         .and_then(|value| (value.diffuse_map).clone());
-    material.double_sided = (options.as_ref().and_then(|value| value.double_sided))
-        .clone()
-        .unwrap_or(false);
-    material.modifiers = (options.as_ref().and_then(|value| (value.modifiers).clone()))
-        .clone()
-        .unwrap_or(vec![]);
+    material.double_sided =
+        (options.as_ref().and_then(|value| value.double_sided)).unwrap_or(false);
+    material.modifiers =
+        (options.as_ref().and_then(|value| (value.modifiers).clone())).unwrap_or(vec![]);
     material.normal_map = options
         .as_ref()
         .and_then(|value| (value.normal_map).clone());
-    material.normal_scale = (options.as_ref().and_then(|value| value.normal_scale))
-        .clone()
-        .unwrap_or(1.0_f64);
-    material.shininess = (options.as_ref().and_then(|value| value.shininess))
-        .clone()
-        .unwrap_or(32.0_f64);
-    material.specular = (options.as_ref().and_then(|value| value.specular))
-        .clone()
-        .unwrap_or(4294967295.0_f64);
+    material.normal_scale =
+        (options.as_ref().and_then(|value| value.normal_scale)).unwrap_or(1.0_f64);
+    material.shininess = (options.as_ref().and_then(|value| value.shininess)).unwrap_or(32.0_f64);
+    material.specular =
+        (options.as_ref().and_then(|value| value.specular)).unwrap_or(4294967295.0_f64);
     material.specular_map = options
         .as_ref()
         .and_then(|value| (value.specular_map).clone());

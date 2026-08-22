@@ -180,7 +180,7 @@ pub fn create_web_device_backend() -> DeviceBackend {
                 let nav: Option<crate::OpaqueHostValue> = None;
                 let max_touch = (-1.0_f64);
                 out.has_mouse = (max_touch == 0.0_f64);
-                let ua = (None::<String>).clone().unwrap_or("".to_owned());
+                let ua = (None::<String>).unwrap_or("".to_owned());
                 out.has_keyboard = detect_desktop_ua((ua).clone());
                 out.has_stylus = false;
                 return out;
@@ -228,7 +228,7 @@ pub fn create_web_device_backend() -> DeviceBackend {
         get_info: std::sync::Arc::new(std::sync::Mutex::new(Box::new(
             move |mut out: DeviceInfo| -> DeviceInfo {
                 let nav: Option<crate::OpaqueHostValue> = None;
-                let ua = (None::<String>).clone().unwrap_or("".to_owned());
+                let ua = (None::<String>).unwrap_or("".to_owned());
                 let uad_platform: Option<String> = None::<String>;
                 out.arch = parse_user_agent_arch((ua).clone(), ((uad_platform).clone()).clone());
                 out.available_memory = (-1.0_f64);

@@ -53,8 +53,8 @@ pub fn create_blur_effect(options: Option<FlightOmitRecord2484562537>) -> BlurEf
 // Source: upstream/packages/effects/src/blurEffect.ts:12 (sha256:52002f3974ed6d4621c069d3f89b228a66053fe95bcdd80e843ea6bff4f6a3da)
 pub fn get_blur_effect_padding(effect: &BlurEffect) -> RenderEffectPadding {
     return get_gaussian_render_effect_padding(
-        (effect.blur_x).clone().unwrap_or(4.0_f64),
-        (effect.blur_y).clone().unwrap_or(4.0_f64),
+        (effect.blur_x).unwrap_or(4.0_f64),
+        (effect.blur_y).unwrap_or(4.0_f64),
     );
 }
 

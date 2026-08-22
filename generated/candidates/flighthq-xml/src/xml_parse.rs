@@ -106,11 +106,7 @@ pub fn parse_xml_attributes(attrs: String) -> Vec<(String, String)> {
         let value = if (m.as_mut().unwrap()[2.0_f64 as usize].clone()).is_some() {
             m.as_mut().unwrap()[2.0_f64 as usize].clone()
         } else {
-            Some(
-                (m.as_mut().unwrap()[3.0_f64 as usize].clone())
-                    .clone()
-                    .unwrap_or("".to_owned()),
-            )
+            Some((m.as_mut().unwrap()[3.0_f64 as usize].clone()).unwrap_or("".to_owned()))
         };
         {
             let __flight_key = (attr_name).clone().unwrap();
@@ -293,7 +289,7 @@ fn decode_xml_entities(s: String) -> String {
                                     hex: Option<String>,
                                     name: Option<String>|
          -> String {
-            let numeric = (dec).clone().or((hex).clone());
+            let numeric = ((dec).clone()).or((hex).clone());
             if (numeric).is_some() {
                 let codepoint = {
                     let __flight_value = (numeric.as_ref().unwrap()).clone();
@@ -859,9 +855,7 @@ fn collect_xml_entity_declarations(doctype: String, out: &mut Vec<(String, Strin
         {
             let __flight_key = match_.as_mut().unwrap()[1.0_f64 as usize].clone().unwrap();
             let __flight_value = ((match_.as_mut().unwrap()[2.0_f64 as usize].clone())
-                .clone()
                 .or(match_.as_mut().unwrap()[3.0_f64 as usize].clone()))
-            .clone()
             .unwrap_or("".to_owned());
             if let Some((_, value)) = out.iter_mut().find(|(key, _)| key == &__flight_key) {
                 *value = __flight_value;

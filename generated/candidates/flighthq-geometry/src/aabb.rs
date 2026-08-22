@@ -56,14 +56,14 @@ pub fn create_aabb(
     max_z: Option<f64>,
 ) -> Aabb {
     let min = create_vector3(
-        Some((min_x).clone().unwrap_or(f64::INFINITY)),
-        Some((min_y).clone().unwrap_or(f64::INFINITY)),
-        Some((min_z).clone().unwrap_or(f64::INFINITY)),
+        Some((min_x).unwrap_or(f64::INFINITY)),
+        Some((min_y).unwrap_or(f64::INFINITY)),
+        Some((min_z).unwrap_or(f64::INFINITY)),
     );
     let max = create_vector3(
-        Some((max_x).clone().unwrap_or(f64::NEG_INFINITY)),
-        Some((max_y).clone().unwrap_or(f64::NEG_INFINITY)),
-        Some((max_z).clone().unwrap_or(f64::NEG_INFINITY)),
+        Some((max_x).unwrap_or(f64::NEG_INFINITY)),
+        Some((max_y).unwrap_or(f64::NEG_INFINITY)),
+        Some((max_z).unwrap_or(f64::NEG_INFINITY)),
     );
     return create_entity(Some(Aabb {
         __flight_identity: std::sync::Arc::new(()),

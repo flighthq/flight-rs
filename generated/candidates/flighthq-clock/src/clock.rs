@@ -66,12 +66,8 @@ pub fn create_child_clock(parent: &mut Clock, options: Option<ClockOptions>) -> 
 pub fn create_clock(options: Option<ClockOptions>) -> Clock {
     return Clock {
         __flight_identity: std::sync::Arc::new(()),
-        scale: (options.as_ref().and_then(|value| value.scale))
-            .clone()
-            .unwrap_or(1.0_f64),
-        paused: (options.as_ref().and_then(|value| value.paused))
-            .clone()
-            .unwrap_or(false),
+        scale: (options.as_ref().and_then(|value| value.scale)).unwrap_or(1.0_f64),
+        paused: (options.as_ref().and_then(|value| value.paused)).unwrap_or(false),
         delta_time: 0.0_f64,
         elapsed: 0.0_f64,
         parent: None,

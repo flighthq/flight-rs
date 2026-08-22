@@ -104,18 +104,10 @@ pub fn add_audio_bus_to_mixer(mixer: &AudioMixer, bus: &AudioBus) -> () {
 pub fn create_audio_bus(options: Option<AudioBusOptions>) -> AudioBus {
     return AudioBus {
         __flight_identity: std::sync::Arc::new(()),
-        gain: (options.as_ref().and_then(|value| value.gain))
-            .clone()
-            .unwrap_or(1.0_f64),
-        muted: (options.as_ref().and_then(|value| value.muted))
-            .clone()
-            .unwrap_or(false),
-        name: (options.as_ref().and_then(|value| (value.name).clone()))
-            .clone()
-            .unwrap_or("".to_owned()),
-        pan: (options.as_ref().and_then(|value| value.pan))
-            .clone()
-            .unwrap_or(0.0_f64),
+        gain: (options.as_ref().and_then(|value| value.gain)).unwrap_or(1.0_f64),
+        muted: (options.as_ref().and_then(|value| value.muted)).unwrap_or(false),
+        name: (options.as_ref().and_then(|value| (value.name).clone())).unwrap_or("".to_owned()),
+        pan: (options.as_ref().and_then(|value| value.pan)).unwrap_or(0.0_f64),
     };
 }
 
@@ -127,19 +119,13 @@ pub fn create_audio_mixer(
     let mut master_gain_node = crate::host_value::<crate::OpaqueHostValue>("host.call");
     crate::host_set(
         "host.value",
-        (options.as_ref().and_then(|value| value.master_gain))
-            .clone()
-            .unwrap_or(1.0_f64),
+        (options.as_ref().and_then(|value| value.master_gain)).unwrap_or(1.0_f64),
     );
     crate::host_value::<()>("host.connect");
     let mixer: AudioMixer = AudioMixer {
         __flight_identity: std::sync::Arc::new(()),
-        master_gain: (options.as_ref().and_then(|value| value.master_gain))
-            .clone()
-            .unwrap_or(1.0_f64),
-        master_muted: (options.as_ref().and_then(|value| value.master_muted))
-            .clone()
-            .unwrap_or(false),
+        master_gain: (options.as_ref().and_then(|value| value.master_gain)).unwrap_or(1.0_f64),
+        master_muted: (options.as_ref().and_then(|value| value.master_muted)).unwrap_or(false),
     };
     {
         let __flight_key = (mixer).clone();

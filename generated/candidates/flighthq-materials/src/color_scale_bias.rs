@@ -172,30 +172,14 @@ pub fn create_color_scale_bias(opts: Option<FlightPartialRecord2155237004>) -> C
         __flight_identity: std::sync::Arc::new(()),
         __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
-        red_scale: (opts.as_ref().and_then(|value| value.red_scale))
-            .clone()
-            .unwrap_or(1.0_f64),
-        green_scale: (opts.as_ref().and_then(|value| value.green_scale))
-            .clone()
-            .unwrap_or(1.0_f64),
-        blue_scale: (opts.as_ref().and_then(|value| value.blue_scale))
-            .clone()
-            .unwrap_or(1.0_f64),
-        alpha_scale: (opts.as_ref().and_then(|value| value.alpha_scale))
-            .clone()
-            .unwrap_or(1.0_f64),
-        red_bias: (opts.as_ref().and_then(|value| value.red_bias))
-            .clone()
-            .unwrap_or(0.0_f64),
-        green_bias: (opts.as_ref().and_then(|value| value.green_bias))
-            .clone()
-            .unwrap_or(0.0_f64),
-        blue_bias: (opts.as_ref().and_then(|value| value.blue_bias))
-            .clone()
-            .unwrap_or(0.0_f64),
-        alpha_bias: (opts.as_ref().and_then(|value| value.alpha_bias))
-            .clone()
-            .unwrap_or(0.0_f64),
+        red_scale: (opts.as_ref().and_then(|value| value.red_scale)).unwrap_or(1.0_f64),
+        green_scale: (opts.as_ref().and_then(|value| value.green_scale)).unwrap_or(1.0_f64),
+        blue_scale: (opts.as_ref().and_then(|value| value.blue_scale)).unwrap_or(1.0_f64),
+        alpha_scale: (opts.as_ref().and_then(|value| value.alpha_scale)).unwrap_or(1.0_f64),
+        red_bias: (opts.as_ref().and_then(|value| value.red_bias)).unwrap_or(0.0_f64),
+        green_bias: (opts.as_ref().and_then(|value| value.green_bias)).unwrap_or(0.0_f64),
+        blue_bias: (opts.as_ref().and_then(|value| value.blue_bias)).unwrap_or(0.0_f64),
+        alpha_bias: (opts.as_ref().and_then(|value| value.alpha_bias)).unwrap_or(0.0_f64),
     }));
 }
 

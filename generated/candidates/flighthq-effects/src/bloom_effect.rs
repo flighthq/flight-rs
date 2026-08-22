@@ -25,17 +25,17 @@ impl PartialEq for FlightOmitRecord537432717 {
 
 // Source: upstream/packages/effects/src/bloomEffect.ts:9 (sha256:f34073dbd363e96e331b2a1ba428bb190daccbacf4c0dbd957021b90b65025fd)
 pub fn compute_bloom_blur_radius(effect: &BloomEffect) -> f64 {
-    return (0.0_f64).max((effect.radius).clone().unwrap_or(8.0_f64));
+    return (0.0_f64).max((effect.radius).unwrap_or(8.0_f64));
 }
 
 // Source: upstream/packages/effects/src/bloomEffect.ts:13 (sha256:4a39a4516008094d20a658965d4a461ad85821a29fc50ae8aeecc9a69bd381f7)
 pub fn compute_bloom_intensity(effect: &BloomEffect) -> f64 {
-    return (effect.intensity).clone().unwrap_or(1.0_f64);
+    return (effect.intensity).unwrap_or(1.0_f64);
 }
 
 // Source: upstream/packages/effects/src/bloomEffect.ts:17 (sha256:cd461a958a93139b3234d1695ca5bfc70a5c93c0989ea26a312389baa4929218)
 pub fn compute_bloom_threshold(effect: &BloomEffect) -> f64 {
-    return (effect.threshold).clone().unwrap_or(0.8_f64);
+    return (effect.threshold).unwrap_or(0.8_f64);
 }
 
 // Source: upstream/packages/effects/src/bloomEffect.ts:21 (sha256:617321597270316572516fdf538933545aea4fa2d8cd22b426fc4e882207e95f)

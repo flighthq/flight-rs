@@ -16,19 +16,11 @@ pub fn create_camera2_d(
 ) -> Camera2D {
     return Camera2D {
         __flight_identity: std::sync::Arc::new(()),
-        rotation: (options.as_ref().and_then(|value| value.rotation))
-            .clone()
-            .unwrap_or(0.0_f64),
+        rotation: (options.as_ref().and_then(|value| value.rotation)).unwrap_or(0.0_f64),
         viewport_height: viewport_height,
         viewport_width: viewport_width,
-        x: (options.as_ref().and_then(|value| value.x))
-            .clone()
-            .unwrap_or(0.0_f64),
-        y: (options.as_ref().and_then(|value| value.y))
-            .clone()
-            .unwrap_or(0.0_f64),
-        zoom: (options.as_ref().and_then(|value| value.zoom))
-            .clone()
-            .unwrap_or(1.0_f64),
+        x: (options.as_ref().and_then(|value| value.x)).unwrap_or(0.0_f64),
+        y: (options.as_ref().and_then(|value| value.y)).unwrap_or(0.0_f64),
+        zoom: (options.as_ref().and_then(|value| value.zoom)).unwrap_or(1.0_f64),
     };
 }

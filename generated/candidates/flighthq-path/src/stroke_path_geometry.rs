@@ -124,9 +124,9 @@ pub fn build_stroke_path_geometry(
     style: &StrokeStyle,
     tolerance: f64,
 ) -> StrokePathGeometry {
-    let width = (style.width).clone().unwrap_or(1.0_f64);
-    let dash_offset = (style.dash_offset).clone().unwrap_or(0.0_f64);
-    let miter_limit = (style.miter_limit).clone().unwrap_or(4.0_f64);
+    let width = (style.width).unwrap_or(1.0_f64);
+    let dash_offset = (style.dash_offset).unwrap_or(0.0_f64);
+    let miter_limit = (style.miter_limit).unwrap_or(4.0_f64);
     if ((((((!(width).is_finite()) || (width <= 0.0_f64)) || (!(tolerance).is_finite()))
         || (tolerance <= 0.0_f64))
         || (!(dash_offset).is_finite()))
@@ -140,9 +140,7 @@ pub fn build_stroke_path_geometry(
             pieces: vec![],
         };
     }
-    let dash = ((style.dash).clone())
-        .clone()
-        .unwrap_or(((*EMPTY_DASH).clone()).clone());
+    let dash = ((style.dash).clone()).unwrap_or(((*EMPTY_DASH).clone()).clone());
     {
         let mut i = 0.0_f64;
         while (i < (dash.len() as f64)) {
@@ -187,8 +185,8 @@ pub fn build_stroke_path_geometry(
     let mut issue_subpath = centerline_intersection;
     let mut pieces: Vec<StrokePathPieceGeometry> = vec![];
     let half_width = (width / 2.0_f64);
-    let cap = ((style.cap).clone()).clone().unwrap_or("butt".to_owned());
-    let join = ((style.join).clone()).clone().unwrap_or("miter".to_owned());
+    let cap = ((style.cap).clone()).unwrap_or("butt".to_owned());
+    let join = ((style.join).clone()).unwrap_or("miter".to_owned());
     {
         let mut i = 0.0_f64;
         while (i < (source.len() as f64)) {

@@ -70,8 +70,8 @@ pub fn create_inner_glow_effect(options: Option<FlightOmitRecord1544260642>) -> 
 // Source: upstream/packages/effects/src/innerGlowEffect.ts:10 (sha256:7f8cf5dc0d350d4e7002c9664e333ac8343e873609d1d078141249b511431ed6)
 pub fn get_inner_glow_effect_padding(effect: &InnerGlowEffect) -> RenderEffectPadding {
     return get_gaussian_render_effect_padding(
-        (effect.blur_x).clone().unwrap_or(6.0_f64),
-        (effect.blur_y).clone().unwrap_or(6.0_f64),
+        (effect.blur_x).unwrap_or(6.0_f64),
+        (effect.blur_y).unwrap_or(6.0_f64),
     );
 }
 

@@ -177,31 +177,20 @@ pub fn create_animation_player(
         __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         clip: (*clip).clone(),
-        loop_: (opts.as_ref().and_then(|value| value.loop_))
-            .clone()
-            .unwrap_or(true),
+        loop_: (opts.as_ref().and_then(|value| value.loop_)).unwrap_or(true),
         loop_mode: Some(
             (opts.as_ref().and_then(|value| (value.loop_mode).clone()))
-                .clone()
                 .unwrap_or((animation_loop_mode_repeat_constant).to_owned()),
         ),
         on_event: None,
         on_finished: None,
         on_looped: None,
-        playing: (opts.as_ref().and_then(|value| value.playing))
-            .clone()
-            .unwrap_or(true),
+        playing: (opts.as_ref().and_then(|value| value.playing)).unwrap_or(true),
         repeat_count: Some(
-            (opts.as_ref().and_then(|value| value.repeat_count))
-                .clone()
-                .unwrap_or((-1.0_f64)),
+            (opts.as_ref().and_then(|value| value.repeat_count)).unwrap_or((-1.0_f64)),
         ),
-        speed: (opts.as_ref().and_then(|value| value.speed))
-            .clone()
-            .unwrap_or(1.0_f64),
-        time: (opts.as_ref().and_then(|value| value.time))
-            .clone()
-            .unwrap_or(0.0_f64),
+        speed: (opts.as_ref().and_then(|value| value.speed)).unwrap_or(1.0_f64),
+        time: (opts.as_ref().and_then(|value| value.time)).unwrap_or(0.0_f64),
     }));
 }
 

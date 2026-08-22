@@ -55,7 +55,6 @@ pub fn create_spritesheet_from_data(data: &SpritesheetData, atlas: &TextureAtlas
                         .iter()
                         .find(|(entry_key, _)| entry_key == &(fd.name).clone())
                         .map(|(_, value)| value.clone()))
-                    .clone()
                     .unwrap_or(index)
                 } else {
                     index

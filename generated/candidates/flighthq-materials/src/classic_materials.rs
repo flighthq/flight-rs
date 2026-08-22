@@ -142,20 +142,13 @@ pub fn create_blinn_phong_material(
         }
     };
     material.alpha_map = opts.as_ref().and_then(|value| (value.alpha_map).clone());
-    material.diffuse = (opts.as_ref().and_then(|value| value.diffuse))
-        .clone()
-        .unwrap_or(4294967295.0_f64);
+    material.diffuse = (opts.as_ref().and_then(|value| value.diffuse)).unwrap_or(4294967295.0_f64);
     material.diffuse_map = opts.as_ref().and_then(|value| (value.diffuse_map).clone());
     material.normal_map = opts.as_ref().and_then(|value| (value.normal_map).clone());
-    material.normal_scale = (opts.as_ref().and_then(|value| value.normal_scale))
-        .clone()
-        .unwrap_or(1.0_f64);
-    material.shininess = (opts.as_ref().and_then(|value| value.shininess))
-        .clone()
-        .unwrap_or(32.0_f64);
-    material.specular = (opts.as_ref().and_then(|value| value.specular))
-        .clone()
-        .unwrap_or(4294967295.0_f64);
+    material.normal_scale = (opts.as_ref().and_then(|value| value.normal_scale)).unwrap_or(1.0_f64);
+    material.shininess = (opts.as_ref().and_then(|value| value.shininess)).unwrap_or(32.0_f64);
+    material.specular =
+        (opts.as_ref().and_then(|value| value.specular)).unwrap_or(4294967295.0_f64);
     material.specular_map = opts.as_ref().and_then(|value| (value.specular_map).clone());
     return material;
 }
@@ -199,13 +192,9 @@ pub fn create_lambert_material(opts: Option<FlightPartialRecord1398741691>) -> L
             emissive_map: Default::default(),
         }
     };
-    material.diffuse = (opts.as_ref().and_then(|value| value.diffuse))
-        .clone()
-        .unwrap_or(4294967295.0_f64);
+    material.diffuse = (opts.as_ref().and_then(|value| value.diffuse)).unwrap_or(4294967295.0_f64);
     material.diffuse_map = opts.as_ref().and_then(|value| (value.diffuse_map).clone());
-    material.emissive = (opts.as_ref().and_then(|value| value.emissive))
-        .clone()
-        .unwrap_or(255.0_f64);
+    material.emissive = (opts.as_ref().and_then(|value| value.emissive)).unwrap_or(255.0_f64);
     material.emissive_map = opts.as_ref().and_then(|value| (value.emissive_map).clone());
     return material;
 }
@@ -252,20 +241,13 @@ pub fn create_phong_material(opts: Option<FlightPartialRecord2317694896>) -> Pho
             specular_map: Default::default(),
         }
     };
-    material.diffuse = (opts.as_ref().and_then(|value| value.diffuse))
-        .clone()
-        .unwrap_or(4294967295.0_f64);
+    material.diffuse = (opts.as_ref().and_then(|value| value.diffuse)).unwrap_or(4294967295.0_f64);
     material.diffuse_map = opts.as_ref().and_then(|value| (value.diffuse_map).clone());
     material.normal_map = opts.as_ref().and_then(|value| (value.normal_map).clone());
-    material.normal_scale = (opts.as_ref().and_then(|value| value.normal_scale))
-        .clone()
-        .unwrap_or(1.0_f64);
-    material.shininess = (opts.as_ref().and_then(|value| value.shininess))
-        .clone()
-        .unwrap_or(32.0_f64);
-    material.specular = (opts.as_ref().and_then(|value| value.specular))
-        .clone()
-        .unwrap_or(4294967295.0_f64);
+    material.normal_scale = (opts.as_ref().and_then(|value| value.normal_scale)).unwrap_or(1.0_f64);
+    material.shininess = (opts.as_ref().and_then(|value| value.shininess)).unwrap_or(32.0_f64);
+    material.specular =
+        (opts.as_ref().and_then(|value| value.specular)).unwrap_or(4294967295.0_f64);
     material.specular_map = opts.as_ref().and_then(|value| (value.specular_map).clone());
     return material;
 }

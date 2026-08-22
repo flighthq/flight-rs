@@ -72,9 +72,8 @@ pub fn create_custom_shader_material(
             ..Default::default()
         }
     };
-    material.shader_key = (opts.as_ref().and_then(|value| (value.shader_key).clone()))
-        .clone()
-        .unwrap_or("".to_owned());
+    material.shader_key =
+        (opts.as_ref().and_then(|value| (value.shader_key).clone())).unwrap_or("".to_owned());
     material.textures = opts.as_ref().and_then(|value| (value.textures).clone());
     material.uniforms = opts.as_ref().and_then(|value| (value.uniforms).clone());
     return material;

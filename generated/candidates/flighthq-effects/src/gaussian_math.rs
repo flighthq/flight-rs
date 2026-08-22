@@ -18,7 +18,7 @@ pub fn compute_gaussian_sigma_from_radius(radius: f64) -> f64 {
 
 // Source: upstream/packages/effects/src/gaussianMath.ts:20 (sha256:613d520a49123fceea53f887a529dd67c361b1ccdcc2471bcc1cbf1fca888970)
 pub fn compute_separable_blur_pass_count(samples: Option<f64>) -> f64 {
-    return (1.0_f64).max(((samples).clone().unwrap_or(1.0_f64)).round());
+    return (1.0_f64).max(((samples).unwrap_or(1.0_f64)).round());
 }
 
 // Source: upstream/packages/effects/src/gaussianMath.ts:29 (sha256:fb853d8aab4b36c16367c8dca22715665500fe9cf34879dc07df87bf4923bccd)

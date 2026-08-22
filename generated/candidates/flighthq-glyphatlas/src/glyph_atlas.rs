@@ -47,10 +47,9 @@ impl PartialEq for CreateGlyphAtlasSynthesizedRecord3400484059 {
 }
 
 pub fn create_glyph_atlas(options: &GlyphAtlasOptions) -> GlyphAtlas {
-    let padding = (options.padding).clone().unwrap_or(1.0_f64);
-    let rasterizer_backend = ((options.rasterizer_backend).clone())
-        .clone()
-        .unwrap_or(get_glyph_rasterizer_backend());
+    let padding = (options.padding).unwrap_or(1.0_f64);
+    let rasterizer_backend =
+        ((options.rasterizer_backend).clone()).unwrap_or(get_glyph_rasterizer_backend());
     let rasterize_options: GlyphRasterizeOptions = {
         let __flight_spread_2 = if ((options.font_style).clone()).is_some() {
             CreateGlyphAtlasSynthesizedRecord773034950 {
@@ -94,9 +93,9 @@ pub fn create_glyph_atlas(options: &GlyphAtlasOptions) -> GlyphAtlas {
             dirty_min_y: 0.0_f64,
             entries: Vec::new(),
             lru: Vec::new(),
-            max_area: (options.max_area).clone().unwrap_or(0.0_f64),
-            max_bytes: (options.max_bytes).clone().unwrap_or(0.0_f64),
-            max_glyphs: (options.max_glyphs).clone().unwrap_or(0.0_f64),
+            max_area: (options.max_area).unwrap_or(0.0_f64),
+            max_bytes: (options.max_bytes).unwrap_or(0.0_f64),
+            max_glyphs: (options.max_glyphs).unwrap_or(0.0_f64),
             occupied_area: 0.0_f64,
             retained_bytes: 0.0_f64,
             metrics: _resolve_glyph_atlas_metrics(&rasterizer_backend, &rasterize_options),
@@ -148,9 +147,7 @@ fn _resolve_glyph_atlas_metrics(
             .as_ref()
             .map(|callback| callback.lock().unwrap()((*rasterize_options).clone()))
     };
-    return (measured)
-        .clone()
-        .unwrap_or(derive_glyph_metrics_from_font_size(
-            rasterize_options.font_size,
-        ));
+    return (measured).unwrap_or(derive_glyph_metrics_from_font_size(
+        rasterize_options.font_size,
+    ));
 }

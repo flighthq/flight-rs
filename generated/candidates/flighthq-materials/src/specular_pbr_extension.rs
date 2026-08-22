@@ -79,11 +79,8 @@ pub fn create_specular_pbr_extension(
         __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         kind: (specular_pbr_extension_kind_constant).to_owned(),
-        specular: (opts.as_ref().and_then(|value| value.specular))
-            .clone()
-            .unwrap_or(1.0_f64),
+        specular: (opts.as_ref().and_then(|value| value.specular)).unwrap_or(1.0_f64),
         specular_color: (opts.as_ref().and_then(|value| value.specular_color))
-            .clone()
             .unwrap_or(4294967295.0_f64),
         specular_color_map: opts
             .as_ref()
@@ -91,11 +88,9 @@ pub fn create_specular_pbr_extension(
         specular_color_map_uv_set: (opts
             .as_ref()
             .and_then(|value| value.specular_color_map_uv_set))
-        .clone()
         .unwrap_or(0.0_f64),
         specular_map: opts.as_ref().and_then(|value| (value.specular_map).clone()),
         specular_map_uv_set: (opts.as_ref().and_then(|value| value.specular_map_uv_set))
-            .clone()
             .unwrap_or(0.0_f64),
         ..Default::default()
     }));

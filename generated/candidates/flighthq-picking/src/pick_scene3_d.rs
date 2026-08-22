@@ -205,12 +205,9 @@ fn for_each_scene3_d_ray_hit(
     on_hit: &mut impl FnMut(Scene3DHit) -> (),
 ) -> () {
     let predicate = options.as_ref().and_then(|value| (value.predicate).clone());
-    let max_distance = (options.as_ref().and_then(|value| value.max_distance))
-        .clone()
-        .unwrap_or(f64::INFINITY);
-    let cull_backfaces = (options.as_ref().and_then(|value| value.cull_backfaces))
-        .clone()
-        .unwrap_or(false);
+    let max_distance =
+        (options.as_ref().and_then(|value| value.max_distance)).unwrap_or(f64::INFINITY);
+    let cull_backfaces = (options.as_ref().and_then(|value| value.cull_backfaces)).unwrap_or(false);
     pick_node(
         &mut (*scene).clone(),
         ray,

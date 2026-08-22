@@ -19,24 +19,12 @@ pub fn create_env_reflect_modifier(
         __flight_identity: std::sync::Arc::new(()),
         kind: (env_reflect_modifier_kind_constant).to_owned(),
         slot: (modifier_slot_constant.effect).clone(),
-        tint: (options.as_ref().and_then(|value| value.tint))
-            .clone()
-            .unwrap_or(4294967295.0_f64),
-        intensity: Some(
-            (options.as_ref().and_then(|value| value.intensity))
-                .clone()
-                .unwrap_or(1.0_f64),
-        ),
+        tint: (options.as_ref().and_then(|value| value.tint)).unwrap_or(4294967295.0_f64),
+        intensity: Some((options.as_ref().and_then(|value| value.intensity)).unwrap_or(1.0_f64)),
         fresnel_bias: Some(
-            (options.as_ref().and_then(|value| value.fresnel_bias))
-                .clone()
-                .unwrap_or(0.04_f64),
+            (options.as_ref().and_then(|value| value.fresnel_bias)).unwrap_or(0.04_f64),
         ),
-        roughness: Some(
-            (options.as_ref().and_then(|value| value.roughness))
-                .clone()
-                .unwrap_or(0.0_f64),
-        ),
+        roughness: Some((options.as_ref().and_then(|value| value.roughness)).unwrap_or(0.0_f64)),
         ..Default::default()
     };
 }

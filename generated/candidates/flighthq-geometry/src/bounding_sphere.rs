@@ -47,16 +47,16 @@ pub fn create_bounding_sphere(
     radius: Option<f64>,
 ) -> BoundingSphere {
     let center = create_vector3(
-        Some((center_x).clone().unwrap_or(0.0_f64)),
-        Some((center_y).clone().unwrap_or(0.0_f64)),
-        Some((center_z).clone().unwrap_or(0.0_f64)),
+        Some((center_x).unwrap_or(0.0_f64)),
+        Some((center_y).unwrap_or(0.0_f64)),
+        Some((center_z).unwrap_or(0.0_f64)),
     );
     return create_entity(Some(BoundingSphere {
         __flight_identity: std::sync::Arc::new(()),
         __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
         center: (center).clone(),
-        radius: (radius).clone().unwrap_or((-1.0_f64)),
+        radius: (radius).unwrap_or((-1.0_f64)),
     }));
 }
 

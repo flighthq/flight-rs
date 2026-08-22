@@ -40,7 +40,7 @@ pub fn mark_debug_frame(label: Option<String>, channel: Option<String>) -> () {
         >::B({
             let mut __flight_record = Vec::new();
             __flight_record.push(("frame".to_owned(), {
-                let __flight_portable_source = (label).clone().unwrap_or({
+                let __flight_portable_source = (label).unwrap_or({
                     (*_DEBUG_FRAME_NUMBER.lock().unwrap()) += 1.0;
                     (*_DEBUG_FRAME_NUMBER.lock().unwrap())
                 });

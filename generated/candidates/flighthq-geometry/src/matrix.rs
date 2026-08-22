@@ -268,12 +268,12 @@ pub fn create_matrix(
         __flight_identity: std::sync::Arc::new(()),
         __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
-        a: (a).clone().unwrap_or(1.0_f64),
-        b: (b).clone().unwrap_or(0.0_f64),
-        c: (c).clone().unwrap_or(0.0_f64),
-        d: (d).clone().unwrap_or(1.0_f64),
-        tx: (tx).clone().unwrap_or(0.0_f64),
-        ty: (ty).clone().unwrap_or(0.0_f64),
+        a: (a).unwrap_or(1.0_f64),
+        b: (b).unwrap_or(0.0_f64),
+        c: (c).unwrap_or(0.0_f64),
+        d: (d).unwrap_or(1.0_f64),
+        tx: (tx).unwrap_or(0.0_f64),
+        ty: (ty).unwrap_or(0.0_f64),
     }));
 }
 

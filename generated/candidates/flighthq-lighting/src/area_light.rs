@@ -92,43 +92,29 @@ pub fn create_area_light(options: Option<AreaLightOptions>) -> AreaLight {
         __flight_identity: std::sync::Arc::new(()),
         __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
-        casts_shadow: (options.as_ref().and_then(|value| value.casts_shadow))
-            .clone()
-            .unwrap_or(false),
-        color: (options.as_ref().and_then(|value| value.color))
-            .clone()
-            .unwrap_or(4294967295.0_f64),
+        casts_shadow: (options.as_ref().and_then(|value| value.casts_shadow)).unwrap_or(false),
+        color: (options.as_ref().and_then(|value| value.color)).unwrap_or(4294967295.0_f64),
         direction: if (direction).is_some() {
             clone_vector3(&direction.as_ref().unwrap())
         } else {
             create_vector3(Some(0.0_f64), Some((-1.0_f64)), Some(0.0_f64))
         },
-        intensity: (options.as_ref().and_then(|value| value.intensity))
-            .clone()
-            .unwrap_or(1.0_f64),
+        intensity: (options.as_ref().and_then(|value| value.intensity)).unwrap_or(1.0_f64),
         kind: (area_light_kind_constant).to_owned(),
-        normal_bias: (options.as_ref().and_then(|value| value.normal_bias))
-            .clone()
-            .unwrap_or(0.0_f64),
-        pcf_radius: (options.as_ref().and_then(|value| value.pcf_radius))
-            .clone()
-            .unwrap_or(0.0_f64),
+        normal_bias: (options.as_ref().and_then(|value| value.normal_bias)).unwrap_or(0.0_f64),
+        pcf_radius: (options.as_ref().and_then(|value| value.pcf_radius)).unwrap_or(0.0_f64),
         position: if (position).is_some() {
             clone_vector3(&position.as_ref().unwrap())
         } else {
             create_vector3(Some(0.0_f64), Some(0.0_f64), Some(0.0_f64))
         },
-        range: (options.as_ref().and_then(|value| value.range))
-            .clone()
-            .unwrap_or((-1.0_f64)),
+        range: (options.as_ref().and_then(|value| value.range)).unwrap_or((-1.0_f64)),
         right: if (right).is_some() {
             clone_vector3(&right.as_ref().unwrap())
         } else {
             create_vector3(Some(1.0_f64), Some(0.0_f64), Some(0.0_f64))
         },
-        shadow_bias: (options.as_ref().and_then(|value| value.shadow_bias))
-            .clone()
-            .unwrap_or(0.0_f64),
+        shadow_bias: (options.as_ref().and_then(|value| value.shadow_bias)).unwrap_or(0.0_f64),
         up: if (up).is_some() {
             clone_vector3(&up.as_ref().unwrap())
         } else {

@@ -72,29 +72,16 @@ pub fn create_spritesheet_animation_data(
     return SpritesheetAnimationData {
         __flight_identity: std::sync::Arc::new(()),
         direction: (obj.as_ref().and_then(|value| (value.direction).clone()))
-            .clone()
             .unwrap_or("forward".to_owned()),
-        frame_duration: (obj.as_ref().and_then(|value| value.frame_duration))
-            .clone()
-            .unwrap_or(100.0_f64),
+        frame_duration: (obj.as_ref().and_then(|value| value.frame_duration)).unwrap_or(100.0_f64),
         frame_durations: obj
             .as_ref()
             .and_then(|value| (value.frame_durations).clone()),
-        frame_names: (obj.as_ref().and_then(|value| (value.frame_names).clone()))
-            .clone()
-            .unwrap_or(vec![]),
-        name: (obj.as_ref().and_then(|value| (value.name).clone()))
-            .clone()
-            .unwrap_or("".to_owned()),
-        origin_x: (obj.as_ref().and_then(|value| value.origin_x))
-            .clone()
-            .unwrap_or(0.0_f64),
-        origin_y: (obj.as_ref().and_then(|value| value.origin_y))
-            .clone()
-            .unwrap_or(0.0_f64),
-        repeat_count: (obj.as_ref().and_then(|value| value.repeat_count))
-            .clone()
-            .unwrap_or((-1.0_f64)),
+        frame_names: (obj.as_ref().and_then(|value| (value.frame_names).clone())).unwrap_or(vec![]),
+        name: (obj.as_ref().and_then(|value| (value.name).clone())).unwrap_or("".to_owned()),
+        origin_x: (obj.as_ref().and_then(|value| value.origin_x)).unwrap_or(0.0_f64),
+        origin_y: (obj.as_ref().and_then(|value| value.origin_y)).unwrap_or(0.0_f64),
+        repeat_count: (obj.as_ref().and_then(|value| value.repeat_count)).unwrap_or((-1.0_f64)),
     };
 }
 
@@ -102,24 +89,13 @@ pub fn create_spritesheet_animation_data(
 pub fn create_spritesheet_data(obj: Option<FlightPartialRecord1317866477>) -> SpritesheetData {
     return SpritesheetData {
         __flight_identity: std::sync::Arc::new(()),
-        animations: (obj.as_ref().and_then(|value| (value.animations).clone()))
-            .clone()
-            .unwrap_or(vec![]),
-        frames: (obj.as_ref().and_then(|value| (value.frames).clone()))
-            .clone()
-            .unwrap_or(vec![]),
+        animations: (obj.as_ref().and_then(|value| (value.animations).clone())).unwrap_or(vec![]),
+        frames: (obj.as_ref().and_then(|value| (value.frames).clone())).unwrap_or(vec![]),
         image_file: (obj.as_ref().and_then(|value| (value.image_file).clone()))
-            .clone()
             .unwrap_or("".to_owned()),
-        image_height: (obj.as_ref().and_then(|value| value.image_height))
-            .clone()
-            .unwrap_or(0.0_f64),
-        image_width: (obj.as_ref().and_then(|value| value.image_width))
-            .clone()
-            .unwrap_or(0.0_f64),
-        scale: (obj.as_ref().and_then(|value| value.scale))
-            .clone()
-            .unwrap_or(1.0_f64),
+        image_height: (obj.as_ref().and_then(|value| value.image_height)).unwrap_or(0.0_f64),
+        image_width: (obj.as_ref().and_then(|value| value.image_width)).unwrap_or(0.0_f64),
+        scale: (obj.as_ref().and_then(|value| value.scale)).unwrap_or(1.0_f64),
     };
 }
 
@@ -129,37 +105,17 @@ pub fn create_spritesheet_frame_data(
 ) -> SpritesheetFrameData {
     return SpritesheetFrameData {
         __flight_identity: std::sync::Arc::new(()),
-        height: (obj.as_ref().and_then(|value| value.height))
-            .clone()
-            .unwrap_or(0.0_f64),
-        name: (obj.as_ref().and_then(|value| (value.name).clone()))
-            .clone()
-            .unwrap_or("".to_owned()),
-        offset_x: (obj.as_ref().and_then(|value| value.offset_x))
-            .clone()
-            .unwrap_or(0.0_f64),
-        offset_y: (obj.as_ref().and_then(|value| value.offset_y))
-            .clone()
-            .unwrap_or(0.0_f64),
+        height: (obj.as_ref().and_then(|value| value.height)).unwrap_or(0.0_f64),
+        name: (obj.as_ref().and_then(|value| (value.name).clone())).unwrap_or("".to_owned()),
+        offset_x: (obj.as_ref().and_then(|value| value.offset_x)).unwrap_or(0.0_f64),
+        offset_y: (obj.as_ref().and_then(|value| value.offset_y)).unwrap_or(0.0_f64),
         pivot_x: obj.as_ref().and_then(|value| value.pivot_x),
         pivot_y: obj.as_ref().and_then(|value| value.pivot_y),
-        rotated: (obj.as_ref().and_then(|value| value.rotated))
-            .clone()
-            .unwrap_or(false),
-        source_height: (obj.as_ref().and_then(|value| value.source_height))
-            .clone()
-            .unwrap_or(0.0_f64),
-        source_width: (obj.as_ref().and_then(|value| value.source_width))
-            .clone()
-            .unwrap_or(0.0_f64),
-        width: (obj.as_ref().and_then(|value| value.width))
-            .clone()
-            .unwrap_or(0.0_f64),
-        x: (obj.as_ref().and_then(|value| value.x))
-            .clone()
-            .unwrap_or(0.0_f64),
-        y: (obj.as_ref().and_then(|value| value.y))
-            .clone()
-            .unwrap_or(0.0_f64),
+        rotated: (obj.as_ref().and_then(|value| value.rotated)).unwrap_or(false),
+        source_height: (obj.as_ref().and_then(|value| value.source_height)).unwrap_or(0.0_f64),
+        source_width: (obj.as_ref().and_then(|value| value.source_width)).unwrap_or(0.0_f64),
+        width: (obj.as_ref().and_then(|value| value.width)).unwrap_or(0.0_f64),
+        x: (obj.as_ref().and_then(|value| value.x)).unwrap_or(0.0_f64),
+        y: (obj.as_ref().and_then(|value| value.y)).unwrap_or(0.0_f64),
     };
 }

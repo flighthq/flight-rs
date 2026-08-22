@@ -694,8 +694,8 @@ pub fn create_matrix4_from2_d(
     {
         let mut __flight_inline_tx_5: Option<f64> = tx;
         let mut __flight_inline_ty_6: Option<f64> = ty;
-        __flight_inline_tx_5 = Some((__flight_inline_tx_5).clone().unwrap_or(0.0_f64));
-        __flight_inline_ty_6 = Some((__flight_inline_ty_6).clone().unwrap_or(0.0_f64));
+        __flight_inline_tx_5 = Some((__flight_inline_tx_5).unwrap_or(0.0_f64));
+        __flight_inline_ty_6 = Some((__flight_inline_ty_6).unwrap_or(0.0_f64));
         out.m[0.0_f64 as usize] = (a) as f32;
         out.m[1.0_f64 as usize] = (b) as f32;
         out.m[2.0_f64 as usize] = (0.0_f64) as f32;
@@ -1659,8 +1659,8 @@ pub fn set_matrix4_from2_d(
     mut tx: Option<f64>,
     mut ty: Option<f64>,
 ) -> () {
-    tx = Some((tx).clone().unwrap_or(0.0_f64));
-    ty = Some((ty).clone().unwrap_or(0.0_f64));
+    tx = Some((tx).unwrap_or(0.0_f64));
+    ty = Some((ty).unwrap_or(0.0_f64));
     out.m[0.0_f64 as usize] = (a) as f32;
     out.m[1.0_f64 as usize] = (b) as f32;
     out.m[2.0_f64 as usize] = (0.0_f64) as f32;

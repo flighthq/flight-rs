@@ -86,12 +86,11 @@ pub fn create_animation_track(opts: &SharedStructuralRecord1) -> AnimationTrack 
         __flight_identity: std::sync::Arc::new(()),
         __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
-        components: (opts.components).clone().unwrap_or(1.0_f64),
+        components: (opts.components).unwrap_or(1.0_f64),
         easing: (opts.easing).clone(),
         interpolation: ((opts.interpolation).clone())
-            .clone()
             .unwrap_or((animation_interpolation_linear_constant).to_owned()),
-        quaternion: (opts.quaternion).clone().unwrap_or(false),
+        quaternion: (opts.quaternion).unwrap_or(false),
         segment_easings: (opts.segment_easings).clone(),
         times: (opts.times).clone(),
         values: (opts.values).clone(),
@@ -162,7 +161,6 @@ pub fn sample_animation_track(
         .as_ref()
         .and_then(|values| values.get(i as usize).cloned())
         .flatten())
-    .clone()
     .or((track.easing).clone());
     if (easing).is_some() {
         alpha = {

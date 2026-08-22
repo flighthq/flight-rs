@@ -18,9 +18,9 @@ pub fn create_rim_modifier(options: &RimModifierOptions) -> RimModifier {
         kind: (rim_modifier_kind_constant).to_owned(),
         slot: (modifier_slot_constant.effect).clone(),
         color: options.color,
-        power: Some((options.power).clone().unwrap_or(3.0_f64)),
-        intensity: Some((options.intensity).clone().unwrap_or(1.0_f64)),
-        bias: Some((options.bias).clone().unwrap_or(0.0_f64)),
+        power: Some((options.power).unwrap_or(3.0_f64)),
+        intensity: Some((options.intensity).unwrap_or(1.0_f64)),
+        bias: Some((options.bias).unwrap_or(0.0_f64)),
         ..Default::default()
     };
 }

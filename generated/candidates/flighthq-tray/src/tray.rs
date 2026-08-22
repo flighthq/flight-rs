@@ -38,7 +38,7 @@ pub fn create_tray_icon(options: Option<TrayIconOptions>) -> Option<TrayIcon> {
     let id = {
         let __flight_callback = (get_tray_backend().create).clone();
         let __flight_result =
-            __flight_callback.lock().unwrap()((options).clone().unwrap_or(TrayIconOptions {
+            __flight_callback.lock().unwrap()((options).unwrap_or(TrayIconOptions {
                 __flight_identity: std::sync::Arc::new(()),
                 icon: None,
                 icon_template: None,

@@ -82,21 +82,15 @@ pub fn play_video_resource(
         std::sync::Arc::new(std::sync::Mutex::new(VideoChannel {
             __flight_identity: std::sync::Arc::new(()),
             current_time: (options.as_ref().and_then(|value| value.current_time))
-                .clone()
                 .unwrap_or(0.0_f64),
-            gain: (options.as_ref().and_then(|value| value.gain))
-                .clone()
-                .unwrap_or(1.0_f64),
+            gain: (options.as_ref().and_then(|value| value.gain)).unwrap_or(1.0_f64),
             length: if (crate::host_value::<f64>("host.duration")).is_nan() {
                 0.0_f64
             } else {
                 (crate::host_value::<f64>("host.duration") * 1000.0_f64)
             },
-            loops: (options.as_ref().and_then(|value| value.loops))
-                .clone()
-                .unwrap_or(0.0_f64),
+            loops: (options.as_ref().and_then(|value| value.loops)).unwrap_or(0.0_f64),
             playback_rate: (options.as_ref().and_then(|value| value.playback_rate))
-                .clone()
                 .unwrap_or(1.0_f64),
             source: (*source).clone(),
             state: "stopped".to_owned(),

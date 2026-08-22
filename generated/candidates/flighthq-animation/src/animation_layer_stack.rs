@@ -81,7 +81,7 @@ pub fn create_animation_layer_stack(layers: &Vec<AnimationLayer>) -> AnimationLa
                 }
             }
             let source_channels = get_animation_layer_channels(&layer);
-            let channel_indices = ((layer.channel_indices).clone()).clone().unwrap_or(
+            let channel_indices = ((layer.channel_indices).clone()).unwrap_or(
                 ((source_channels)
                     .iter()
                     .cloned()
@@ -381,18 +381,14 @@ fn create_animation_layer(
         __flight_identity: std::sync::Arc::new(()),
         __flight_entity_snapshot: Default::default(),
         __flight_entity_runtime: Default::default(),
-        additive: (options.as_ref().and_then(|value| value.additive))
-            .clone()
-            .unwrap_or(false),
+        additive: (options.as_ref().and_then(|value| value.additive)).unwrap_or(false),
         blend_tree: (*blend_tree).clone(),
         channel_indices: copy_animation_layer_channel_indices(
             &mut (options.as_mut().unwrap().channel_indices),
             channel_count,
         ),
         state_machine: (*state_machine).clone(),
-        weight: (options.as_ref().and_then(|value| value.weight))
-            .clone()
-            .unwrap_or(1.0_f64),
+        weight: (options.as_ref().and_then(|value| value.weight)).unwrap_or(1.0_f64),
     }));
 }
 
@@ -442,7 +438,6 @@ fn get_animation_layer_channels(layer: &AnimationLayer) -> Vec<SharedStructuralR
         .blend_tree
         .as_ref()
         .map(|value| (value.channels).clone()))
-    .clone()
     .unwrap_or((layer.state_machine.as_ref().unwrap().channels).clone());
 }
 

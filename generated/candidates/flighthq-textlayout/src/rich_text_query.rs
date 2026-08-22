@@ -95,7 +95,6 @@ pub fn compute_rich_text_char_index_at_point(layout: &TextLayoutResult, x: f64, 
     }
     let mut line_start = if ((layout.groups.len() as f64) > 0.0_f64) {
         (layout.groups[((layout.groups.len() as f64) - 1.0_f64) as usize].end_index)
-            .clone()
             .unwrap_or(0.0_f64)
     } else {
         0.0_f64
@@ -188,18 +187,14 @@ pub fn get_rich_text_char_boundaries(
     {
         let mut i = 0.0_f64;
         while (i < limit) {
-            x += (crate::host_value::<Option<f64>>("host.index"))
-                .clone()
-                .unwrap_or(0.0_f64);
+            x += (crate::host_value::<Option<f64>>("host.index")).unwrap_or(0.0_f64);
             {
                 i += 1.0;
                 i
             };
         }
     }
-    let char_width = (crate::host_value::<Option<f64>>("host.index"))
-        .clone()
-        .unwrap_or(0.0_f64);
+    let char_width = (crate::host_value::<Option<f64>>("host.index")).unwrap_or(0.0_f64);
     out.x = x;
     out.y = crate::host_value::<f64>("host.offsetY");
     out.width = char_width;
@@ -275,9 +270,7 @@ pub fn get_rich_text_line_index_at_point(layout: &TextLayoutResult, y: f64) -> f
 // Source: upstream/packages/textlayout/src/richTextQuery.ts:132 (sha256:b3313ad08b40bb441598ac753c053328e87bb3aefc9df22db3a8c3a7b1ab6c3f)
 pub fn get_rich_text_line_index_of_char(layout: &TextLayoutResult, char_index: f64) -> f64 {
     let group = get_group_containing_index(layout, char_index);
-    return (crate::host_value::<crate::OpaqueHostValue>("host.lineIndex"))
-        .clone()
-        .unwrap_or(0.0_f64);
+    return (crate::host_value::<crate::OpaqueHostValue>("host.lineIndex")).unwrap_or(0.0_f64);
 }
 
 // Source: upstream/packages/textlayout/src/richTextQuery.ts:137 (sha256:c6d996feb6316a64eb2c5f1b8ce0f215b5d0a29d7b519c089a7284ac956f6764)

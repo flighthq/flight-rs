@@ -250,9 +250,8 @@ pub fn attach_keyboard_input(
     target: crate::OpaqueHostValue,
     options: Option<AttachInputOptions>,
 ) -> () {
-    let prevent_default = (options.as_ref().and_then(|value| value.prevent_default))
-        .clone()
-        .unwrap_or(true);
+    let prevent_default =
+        (options.as_ref().and_then(|value| value.prevent_default)).unwrap_or(true);
     let mut on_key_down: std::sync::Arc<
         std::sync::Mutex<Box<dyn FnMut(crate::OpaqueHostValue) -> () + Send + 'static>>,
     > = std::sync::Arc::new(std::sync::Mutex::new(Box::new({
@@ -317,9 +316,8 @@ pub fn attach_pointer_input(
     element: crate::OpaqueHostValue,
     options: Option<AttachInputOptions>,
 ) -> () {
-    let prevent_default = (options.as_ref().and_then(|value| value.prevent_default))
-        .clone()
-        .unwrap_or(true);
+    let prevent_default =
+        (options.as_ref().and_then(|value| value.prevent_default)).unwrap_or(true);
     let mut on_context_menu: std::sync::Arc<
         std::sync::Mutex<Box<dyn FnMut(crate::OpaqueHostValue) -> () + Send + 'static>>,
     > = std::sync::Arc::new(std::sync::Mutex::new(
@@ -458,9 +456,8 @@ pub fn attach_relative_pointer_input(
     element: crate::OpaqueHostValue,
     options: Option<AttachInputOptions>,
 ) -> () {
-    let prevent_default = (options.as_ref().and_then(|value| value.prevent_default))
-        .clone()
-        .unwrap_or(true);
+    let prevent_default =
+        (options.as_ref().and_then(|value| value.prevent_default)).unwrap_or(true);
     let target = crate::host_value::<crate::OpaqueHostValue>("host.ownerDocument");
     let mut handler: std::sync::Arc<
         std::sync::Mutex<Box<dyn FnMut(crate::OpaqueHostValue) -> () + Send + 'static>>,
@@ -515,9 +512,7 @@ pub fn attach_text_input(
                 return;
             }
             let ie = (e).clone();
-            let text = (crate::host_value::<Option<String>>("host.data"))
-                .clone()
-                .unwrap_or("".to_owned());
+            let text = (crate::host_value::<Option<String>>("host.data")).unwrap_or("".to_owned());
             (*_TEXT_DATA.lock().unwrap()).is_composing =
                 crate::host_value::<bool>("host.isComposing");
             (*_TEXT_DATA.lock().unwrap()).text = text;
@@ -537,9 +532,7 @@ pub fn attach_text_input(
                 return;
             }
             let ce = (e).clone();
-            let text = (crate::host_value::<Option<String>>("host.data"))
-                .clone()
-                .unwrap_or("".to_owned());
+            let text = (crate::host_value::<Option<String>>("host.data")).unwrap_or("".to_owned());
             (*_TEXT_DATA.lock().unwrap()).is_composing = true;
             (*_TEXT_DATA.lock().unwrap()).text = text;
             emit_signal(
@@ -588,9 +581,8 @@ pub fn attach_wheel_input(
     element: crate::OpaqueHostValue,
     options: Option<AttachInputOptions>,
 ) -> () {
-    let prevent_default = (options.as_ref().and_then(|value| value.prevent_default))
-        .clone()
-        .unwrap_or(true);
+    let prevent_default =
+        (options.as_ref().and_then(|value| value.prevent_default)).unwrap_or(true);
     let mut handler: std::sync::Arc<
         std::sync::Mutex<Box<dyn FnMut(crate::OpaqueHostValue) -> () + Send + 'static>>,
     > = std::sync::Arc::new(std::sync::Mutex::new(Box::new({
@@ -695,7 +687,6 @@ pub fn connect_input_state_to_input_manager(
                 .iter()
                 .find(|(entry_key, _)| entry_key == &data.pointer_id)
                 .map(|(_, value)| value.clone()))
-            .clone()
             .unwrap_or(0.0_f64);
             {
                 let __flight_key = data.pointer_id;
@@ -730,7 +721,6 @@ pub fn connect_input_state_to_input_manager(
                 .iter()
                 .find(|(entry_key, _)| entry_key == &data.pointer_id)
                 .map(|(_, value)| value.clone()))
-            .clone()
             .unwrap_or(0.0_f64);
             let next = (__flight_js_to_i32(prev)
                 & __flight_js_to_i32(
@@ -1381,7 +1371,6 @@ pub fn get_input_gamepad_axis(state: &InputState, gamepad: f64, axis: f64) -> f6
         .iter()
         .find(|(entry_key, _)| entry_key == &((gamepad * MAX_GAMEPAD_AXES) + axis))
         .map(|(_, value)| value.clone()))
-    .clone()
     .unwrap_or(0.0_f64);
 }
 
@@ -1557,7 +1546,6 @@ pub fn is_input_pointer_button_down(state: &InputState, pointer_id: f64, button:
             .iter()
             .find(|(entry_key, _)| entry_key == &pointer_id)
             .map(|(_, value)| value.clone()))
-        .clone()
         .unwrap_or(0.0_f64),
     ) & __flight_js_to_i32(
         __flight_js_to_i32(1.0_f64).wrapping_shl((__flight_js_to_u32(button) & 31)) as f64,
@@ -1582,14 +1570,12 @@ pub fn poll_gamepad_input(manager: &InputManager) -> () {
             .iter()
             .find(|(entry_key, _)| entry_key == &crate::host_value::<f64>("host.index"))
             .map(|(_, value)| value.clone()))
-        .clone()
         .unwrap_or(vec![]);
         let mut prev_buttons = (prev
             .buttons
             .iter()
             .find(|(entry_key, _)| entry_key == &crate::host_value::<f64>("host.index"))
             .map(|(_, value)| value.clone()))
-        .clone()
         .unwrap_or(vec![]);
         {
             let mut i = 0.0_f64;

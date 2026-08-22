@@ -166,19 +166,14 @@ fn _rasterize_glyph_on_context(
     crate::host_set("host.textAlign", "left");
     let metrics = crate::host_value::<()>("host.measureText");
     let advance = crate::host_value::<crate::OpaqueHostValue>("host.width");
-    let left = (crate::host_value::<Option<f64>>("host.actualBoundingBoxLeft"))
-        .clone()
-        .unwrap_or(0.0_f64);
+    let left = (crate::host_value::<Option<f64>>("host.actualBoundingBoxLeft")).unwrap_or(0.0_f64);
     let right =
         (crate::host_value::<Option<crate::OpaqueHostValue>>("host.actualBoundingBoxRight"))
-            .clone()
             .unwrap_or((advance).clone());
     let ascent = (crate::host_value::<Option<f64>>("host.actualBoundingBoxAscent"))
-        .clone()
         .unwrap_or(options.font_size);
-    let descent = (crate::host_value::<Option<f64>>("host.actualBoundingBoxDescent"))
-        .clone()
-        .unwrap_or(0.0_f64);
+    let descent =
+        (crate::host_value::<Option<f64>>("host.actualBoundingBoxDescent")).unwrap_or(0.0_f64);
     let guard = 1.0_f64;
     let width = ((0.0_f64).max((left + right).ceil()) + (guard * 2.0_f64));
     let height = ((0.0_f64).max((ascent + descent).ceil()) + (guard * 2.0_f64));
@@ -211,11 +206,8 @@ fn _apply_glyph_raster_font(
     context: crate::OpaqueHostValue,
     options: &GlyphRasterizeOptions,
 ) -> () {
-    let font_style = ((options.font_style).clone())
-        .clone()
-        .unwrap_or("normal".to_owned());
+    let font_style = ((options.font_style).clone()).unwrap_or("normal".to_owned());
     let font_weight = ((options.font_weight).clone())
-        .clone()
         .unwrap_or(crate::FlightUnion2::<f64, String>::B("normal".to_owned()));
     crate::host_set(
         "host.font",

@@ -184,7 +184,7 @@ pub fn register_render_effect_padding_resolver(
         .render_state_runtime
         .registries
         .effect_padding_resolvers = Some(with_registry_table_entry(
-        &(table).clone().unwrap_or(create_keyed_table(
+        &(table).unwrap_or(create_keyed_table(
             "RenderEffectPaddingResolver".to_owned(),
             "Zero".to_owned(),
         )),

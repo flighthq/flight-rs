@@ -168,7 +168,7 @@ pub fn trigger_haptic_impact(style: HapticImpactStyle, intensity: Option<f64>) -
         let __flight_callback = (get_haptics_backend().impact).clone();
         let __flight_result = __flight_callback.lock().unwrap()(
             (style).clone(),
-            Some((intensity).clone().unwrap_or(1.0_f64)),
+            Some((intensity).unwrap_or(1.0_f64)),
         );
         __flight_result
     };

@@ -55,7 +55,7 @@ pub fn create_outline_effect(options: Option<FlightOmitRecord3030666237>) -> Out
 
 // Source: upstream/packages/effects/src/outlineEffect.ts:9 (sha256:0f3a94035a4100b31452e51bdd8523363948cd316f10a033fdbb297694771bbd)
 pub fn get_outline_effect_padding(effect: &OutlineEffect) -> RenderEffectPadding {
-    let thickness = ((0.0_f64).max((effect.thickness).clone().unwrap_or(1.0_f64))).ceil();
+    let thickness = ((0.0_f64).max((effect.thickness).unwrap_or(1.0_f64))).ceil();
     return RenderEffectPadding {
         __flight_identity: std::sync::Arc::new(()),
         bottom: thickness,
