@@ -82,6 +82,12 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      - name: Fetch upstream tags
+        # `actions/checkout` brings the submodule but NOT its tags, and scripts/flight-version.ts
+        # derives the Flight release from `git describe` against them. Without this it fails loudly —
+        # correct behaviour, since guessing a version would be worse — but the lane is red for a
+        # checkout gap rather than anything about the change.
+        run: git -C upstream fetch --tags --force origin
       # The generator tests compile Rust fixtures, so this lane needs the toolchain.
       - uses: ./.github/actions/rust
       - run: npm ci
@@ -95,6 +101,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+      - name: Fetch upstream tags
+        # `actions/checkout` brings the submodule but NOT its tags, and scripts/flight-version.ts
+        # derives the Flight release from `git describe` against them. Without this it fails loudly —
+        # correct behaviour, since guessing a version would be worse — but the lane is red for a
+        # checkout gap rather than anything about the change.
+        run: git -C upstream fetch --tags --force origin
       - uses: actions/setup-node@v4
         with:
           node-version: 22
