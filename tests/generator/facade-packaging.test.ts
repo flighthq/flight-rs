@@ -3,6 +3,7 @@ import path from 'node:path';
 import ts from 'typescript';
 
 import { wasmGlueFiles } from '../../packages/bitmap-wasm/scripts/copy-wasm-glue.ts';
+import { publishablePackages } from '../../scripts/publishable-packages.ts';
 import { portConfig } from '../../tools/generator/port.config.ts';
 
 // `packages/bitmap-wasm` is the only package in this repository published to npm. `config.test.ts`
@@ -81,6 +82,22 @@ describe('blessed facade packaging', () => {
   it('is built from a wasm facade the generator declares', () => {
     expect(substitute.crate, 'package.json flightWasmSubstitute.crate').toBeTruthy();
     expect(surfaceFacade, `port.config wasmFacades entry for ${String(substitute.crate)}`).toBeDefined();
+  });
+
+  it('is named after the upstream package it substitutes, plus -wasm', () => {
+    // The mirror-world convention: append `-wasm` to the WHOLE upstream name, dashes included, so
+    // `@flighthq/physics3d-abi` would be mirrored by `@flighthq/physics3d-abi-wasm`. Derived from
+    // `authoritativePackage` rather than restated, so a facade cannot be named one thing and claim to
+    // substitute another — which is the drift that produced the surface/bitmap confusion.
+    for (const { directory, manifest } of publishablePackages(workspace)) {
+      const upstream = (manifest.flightWasmSubstitute as { authoritativePackage?: string } | undefined)
+        ?.authoritativePackage;
+      expect(upstream, `${manifest.name} records the package it substitutes`).toBeTruthy();
+
+      expect(manifest.name, `${manifest.name} mirrors ${String(upstream)}`).toBe(`${String(upstream)}-wasm`);
+      // The directory carries the unscoped name, so the tree reads the same as the registry.
+      expect(path.basename(directory)).toBe(`${String(upstream).replace(/^@[^/]+\//u, '')}-wasm`);
+    }
   });
 
   it('shadows exactly the wasm exports the generator built, over a complete upstream re-export', () => {
