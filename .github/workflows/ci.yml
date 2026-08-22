@@ -128,6 +128,26 @@ jobs:
           npm pack --ignore-scripts --pack-destination /tmp
           ls -l /tmp/*.tgz
 
+      # Everything above tests the SOURCES. This installs what would actually be published and
+      # imports it as a consumer would, which is the only way some defects are visible at all: a
+      # tarball missing its wasm glue installs cleanly and fails at import, and an emitted `.d.ts`
+      # referencing the wrong upstream module only breaks consumers who typecheck it. Both of those
+      # shipped here undetected before this step existed.
+      #
+      # Installing also resolves the package's own declared dependency range against the registry, so
+      # a range naming a version npm cannot serve fails here rather than for the first consumer.
+      - name: Install and run the tarball as a consumer
+        run: |
+          npm install --no-save /tmp/flighthq-bitmap-wasm-*.tgz
+          npx vitest run --config tests/consumer/vitest.config.ts
+
+      # Typechecks a consumer against the tarball's EMITTED declarations, with `skipLibCheck: false`
+      # so they are actually read. This is the check that would have caught the facade importing a
+      # type from the wrong upstream module — a defect only visible to consumers who typecheck, and
+      # invisible to every suite that compiles the sources instead.
+      - name: Typecheck a consumer against the shipped declarations
+        run: npx tsc -p tests/consumer/tsconfig.json
+
   rust:
     name: Rust
     runs-on: ubuntu-latest
