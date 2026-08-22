@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{fuse_color_matrices, get_adjustment_color_matrix};
+use crate::fuse_color_matrices;
 use flighthq_types::{Adjustment, ColorScaleBias};
 
 // Source: upstream/packages/adjustments/src/colorAdjustmentResolution.ts:7 (sha256:0d9005b392e96e7e3bf5396796623af018d5f60bd48d2cd29325d7eba60a0f03)

@@ -6,10 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{
-    COLOR_LUT_DEFAULT_SIZE as color_lut_default_size_constant, bake_color_lut,
-    get_adjustment_color_transform,
-};
+use crate::{COLOR_LUT_DEFAULT_SIZE as color_lut_default_size_constant, bake_color_lut};
 use flighthq_types::{ColorLut, ColorLutCache, ColorTransformFunction};
 
 #[derive(Clone, Default)]

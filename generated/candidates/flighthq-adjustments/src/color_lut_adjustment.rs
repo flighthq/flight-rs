@@ -6,7 +6,6 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::get_adjustment_color_matrix;
 use flighthq_types::{AdjustmentKind, ColorTransformFunction};
 
 #[derive(Clone, Default)]
