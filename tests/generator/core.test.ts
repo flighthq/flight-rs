@@ -379,7 +379,7 @@ describe('compiler diagnostic source paths', () => {
       crate: 'flighthq-types',
       package: '@flighthq/types',
     });
-    expect(report.summary.candidateCompiled).toBe(26);
+    expect(report.summary.candidateCompiled).toBe(25);
     expect(report.asyncTasks.summary).toMatchObject({
       eligibleConstructions: 229,
       eligibleScopes: 177,
@@ -452,8 +452,8 @@ describe('compiler diagnostic source paths', () => {
       .filter((item) => item.disposition === 'generated')
       .flatMap((item) => item.emittedSources);
     const portableOpaqueSources = portableSources.filter((source) => source.usesOpaqueHostValues);
-    expect(portableSources).toHaveLength(1772);
-    expect(portableOpaqueSources).toHaveLength(57);
+    expect(portableSources).toHaveLength(1813);
+    expect(portableOpaqueSources).toHaveLength(56);
     expect(portableOpaqueSources.length / portableSources.length).toBeLessThanOrEqual(167 / 1227);
     const screen = report.automaticPackages.find((item) => item.package === '@flighthq/screen');
     expect(screen?.candidate.status).toBe('compiled');
@@ -472,7 +472,7 @@ describe('compiler diagnostic source paths', () => {
     expect(report.conformance.summary).toMatchObject({
       passingCases: 45,
       passingTestFiles: 3,
-      totalUpstreamTestFiles: 1505,
+      totalUpstreamTestFiles: 1561,
       translatedCases: 45,
       translatedTestFiles: 3,
     });

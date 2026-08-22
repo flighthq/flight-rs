@@ -8,9 +8,9 @@
 
 pub use crate::{
     clear_glyph_atlas_dirty, create_glyph_atlas, create_glyph_source_from_glyph_atlas,
-    create_stub_glyph_rasterizer_backend, create_web_glyph_rasterizer_backend,
-    derive_glyph_metrics_from_font_size, disable_glyph_atlas_guards, dispose_glyph_atlas,
-    enable_glyph_atlas_guards, explain_glyph_atlas_entry, get_glyph_atlas_bitmap,
+    create_stub_glyph_rasterizer_backend, derive_glyph_metrics_from_font_size,
+    disable_glyph_atlas_guards, dispose_glyph_atlas, enable_glyph_atlas_guards,
+    explain_glyph_atlas_entry, explain_glyph_rasterizer_backend, get_glyph_atlas_bitmap,
     get_glyph_atlas_dirty_region, get_glyph_atlas_entry, get_glyph_atlas_kerning,
-    get_glyph_atlas_metrics, set_glyph_rasterizer_backend,
+    get_glyph_atlas_metrics, get_glyph_rasterizer_backend, set_glyph_rasterizer_backend,
 };

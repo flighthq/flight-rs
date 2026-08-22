@@ -3,10 +3,9 @@ import { homedir } from 'node:os';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 
+import { wasmArtifactTargets, type WasmArtifactTarget } from './wasm-artifact.ts';
+
 const workspace = path.resolve(import.meta.dirname, '../../..');
-const output = path.join(workspace, 'packages/bitmap-wasm/src/wasm');
-const crate = 'flighthq-bitmap-wasm';
-const artifact = path.join(workspace, 'target/wasm32-unknown-unknown/release/flighthq_bitmap_wasm.wasm');
 const toolRoot = path.join(workspace, 'target/tools/wasm-bindgen');
 const localWasmBindgen = path.join(toolRoot, 'bin', process.platform === 'win32' ? 'wasm-bindgen.exe' : 'wasm-bindgen');
 
@@ -27,9 +26,35 @@ const buildEnvironment = {
   RUSTFLAGS: [process.env.RUSTFLAGS, ...remap].filter(Boolean).join(' '),
 };
 
+interface BuildTarget {
+  artifact: WasmArtifactTarget;
+  package: string;
+}
+
+const buildTargets: BuildTarget[] = [
+  { artifact: wasmArtifactTargets.bitmap, package: '@flighthq/bitmap-wasm' },
+  { artifact: wasmArtifactTargets.physics2d, package: '@flighthq/physics2d-abi-wasm' },
+  { artifact: wasmArtifactTargets.physics3d, package: '@flighthq/physics3d-abi-wasm' },
+];
+
+const requestedPackage = readRequestedPackage(process.argv.slice(2));
+const selected =
+  requestedPackage === undefined ? buildTargets : buildTargets.filter((item) => item.package === requestedPackage);
+if (selected.length === 0) throw new Error(`Unknown wasm package: ${String(requestedPackage)}`);
+
 run('npm', ['run', 'generate']);
 run('rustup', ['target', 'add', 'wasm32-unknown-unknown']);
-run('cargo', ['build', '-p', crate, '--release', '--target', 'wasm32-unknown-unknown'], buildEnvironment);
+run(
+  'cargo',
+  [
+    'build',
+    '--release',
+    '--target',
+    'wasm32-unknown-unknown',
+    ...selected.flatMap(({ artifact }) => ['-p', artifact.crate]),
+  ],
+  buildEnvironment,
+);
 
 const lock = readFileSync(path.join(workspace, 'Cargo.lock'), 'utf8');
 const version = lock.match(/\[\[package\]\]\nname = "wasm-bindgen"\nversion = "([^"]+)"/u)?.[1];
@@ -43,8 +68,25 @@ if (toolVersion(wasmBindgen) !== `wasm-bindgen ${version}`) {
   }
 }
 
-run(wasmBindgen, [artifact, '--target', 'web', '--out-dir', output, '--out-name', 'bitmap_wasm']);
-run('tsx', [path.join(workspace, 'packages/bitmap-wasm/scripts/embed-wasm.ts')]);
+for (const { artifact } of selected) {
+  const output = path.dirname(path.join(workspace, artifact.artifactPath));
+  const outName = artifact.crate.replace(/^flighthq-/u, '').replaceAll('-', '_');
+  const wasm = path.join(
+    workspace,
+    'target/wasm32-unknown-unknown/release',
+    `${artifact.crate.replaceAll('-', '_')}.wasm`,
+  );
+  run(wasmBindgen, [wasm, '--target', 'web', '--out-dir', output, '--out-name', outName]);
+  run('tsx', [path.join(workspace, artifact.embedScript)]);
+}
+
+function readRequestedPackage(argv: readonly string[]): string | undefined {
+  if (argv.length === 0) return undefined;
+  if (argv.length !== 2 || argv[0] !== '--package' || argv[1] === undefined) {
+    throw new Error('Usage: build-wasm.ts [--package <@flighthq/name-wasm>]');
+  }
+  return argv[1];
+}
 
 function toolVersion(command: string): string {
   try {

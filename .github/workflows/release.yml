@@ -1,8 +1,8 @@
 name: Release
 
-# The MANUAL release path for @flighthq/bitmap-wasm. Ordinary releases do not come through here —
-# flight-release.yml publishes when Flight publishes, which is the only moment the dependency this
-# package declares is guaranteed to exist.
+# The MANUAL release path for the wasm facade set. Ordinary releases do not come through here —
+# flight-release.yml publishes when Flight publishes, which is the only moment all substituted
+# package dependencies are guaranteed to exist.
 #
 # This lane covers the two cases that are not a Flight release:
 #   Tag        a bare numeric tag publishes that version under `latest` — a port-only fix that has to
@@ -14,9 +14,9 @@ name: Release
 #
 # NOT triggered by pushes to main, deliberately. Under locked versioning this repository's pin
 # usually sits ahead of Flight's newest RELEASE — right now it derives 0.4.0 while npm's newest
-# stable `@flighthq/bitmap` is 0.3.0 — so the dependency range an untagged build declares names a
-# version that does not exist yet. Publishing a snapshot on every push would emit a steady stream of
-# packages nobody can install, on top of running a full wasm build per commit.
+# stable Flight family is 0.3.0 — so the dependency ranges an untagged build declares name a version
+# that does not exist yet. Publishing a snapshot on every push would emit a steady stream of packages
+# nobody can install, on top of running a full wasm build per commit.
 
 on:
   push:
@@ -102,8 +102,7 @@ jobs:
           # this is opt-out through a repository variable rather than a value to discover at the
           # first real publish: set NPM_PROVENANCE to "false" if flight-rs is private.
           NPM_CONFIG_PROVENANCE: ${{ vars.NPM_PROVENANCE != 'false' }}
-        # `prepack` runs the full wasm build, so the tarball carries a module built from this commit
-        # rather than whatever happened to be committed.
+        # The release script performs one full wasm build, then assembles every tarball from it.
         run: |
           if [ -z "${NODE_AUTH_TOKEN}" ]; then
             echo "::notice::NPM_TOKEN is not configured; running a dry run instead of publishing."

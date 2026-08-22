@@ -49,6 +49,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "flighthq-physics-abi-wasm-core"
+version = "0.1.0"
+
+[[package]]
+name = "flighthq-physics2d-abi-wasm"
+version = "0.1.0"
+dependencies = [
+ "flighthq-physics-abi-wasm-core",
+ "wasm-bindgen",
+]
+
+[[package]]
+name = "flighthq-physics3d-abi-wasm"
+version = "0.1.0"
+dependencies = [
+ "flighthq-physics-abi-wasm-core",
+ "wasm-bindgen",
+]
+
+[[package]]
 name = "flighthq-runtime"
 version = "0.1.0"
 

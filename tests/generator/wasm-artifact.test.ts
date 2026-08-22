@@ -6,7 +6,15 @@ import {
   assertBitmapWasmArtifactFresh,
   computeBitmapWasmInputHash,
   renderBitmapWasmBytes,
+  assertWasmArtifactFresh,
+  wasmArtifactTargets,
 } from '../../tools/generator/src/wasm-artifact.ts';
+
+it('keeps every committed wasm facade artifact fresh', () => {
+  for (const target of Object.values(wasmArtifactTargets)) {
+    expect(() => assertWasmArtifactFresh(path.resolve('.'), target), target.artifactPath).not.toThrow();
+  }
+});
 
 describe('bitmap wasm artifact freshness', () => {
   let workspace: string;

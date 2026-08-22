@@ -141,10 +141,10 @@
       "packageName": "@flighthq/clock"
     },
     {
-      "declarations": 175,
+      "declarations": 505,
       "diagnostics": [],
-      "files": 20,
-      "lowered": 175,
+      "files": 38,
+      "lowered": 505,
       "packageName": "@flighthq/collision"
     },
     {
@@ -274,10 +274,10 @@
       "packageName": "@flighthq/geometry"
     },
     {
-      "declarations": 33,
+      "declarations": 36,
       "diagnostics": [],
       "files": 10,
-      "lowered": 33,
+      "lowered": 36,
       "packageName": "@flighthq/glyphatlas"
     },
     {
@@ -309,6 +309,13 @@
       "packageName": "@flighthq/host-tauri"
     },
     {
+      "declarations": 10,
+      "diagnostics": [],
+      "files": 4,
+      "lowered": 10,
+      "packageName": "@flighthq/host-web"
+    },
+    {
       "declarations": 36,
       "diagnostics": [],
       "files": 6,
@@ -337,10 +344,10 @@
       "packageName": "@flighthq/input"
     },
     {
-      "declarations": 153,
+      "declarations": 152,
       "diagnostics": [],
-      "files": 17,
-      "lowered": 153,
+      "files": 16,
+      "lowered": 152,
       "packageName": "@flighthq/interaction"
     },
     {
@@ -393,10 +400,10 @@
       "packageName": "@flighthq/loader"
     },
     {
-      "declarations": 92,
+      "declarations": 93,
       "diagnostics": [],
       "files": 3,
-      "lowered": 92,
+      "lowered": 93,
       "packageName": "@flighthq/log"
     },
     {
@@ -526,18 +533,32 @@
       "packageName": "@flighthq/permissions"
     },
     {
-      "declarations": 227,
+      "declarations": 261,
       "diagnostics": [],
-      "files": 21,
-      "lowered": 227,
+      "files": 25,
+      "lowered": 261,
       "packageName": "@flighthq/physics2d"
     },
     {
-      "declarations": 301,
+      "declarations": 150,
       "diagnostics": [],
-      "files": 22,
-      "lowered": 301,
+      "files": 8,
+      "lowered": 150,
+      "packageName": "@flighthq/physics2d-abi"
+    },
+    {
+      "declarations": 548,
+      "diagnostics": [],
+      "files": 35,
+      "lowered": 548,
       "packageName": "@flighthq/physics3d"
+    },
+    {
+      "declarations": 149,
+      "diagnostics": [],
+      "files": 8,
+      "lowered": 149,
+      "packageName": "@flighthq/physics3d-abi"
     },
     {
       "declarations": 49,
@@ -813,10 +834,10 @@
       "packageName": "@flighthq/socket"
     },
     {
-      "declarations": 34,
+      "declarations": 101,
       "diagnostics": [],
-      "files": 6,
-      "lowered": 34,
+      "files": 11,
+      "lowered": 101,
       "packageName": "@flighthq/spatial"
     },
     {
@@ -995,10 +1016,10 @@
       "packageName": "@flighthq/tween"
     },
     {
-      "declarations": 2432,
+      "declarations": 2525,
       "diagnostics": [],
-      "files": 879,
-      "lowered": 2432,
+      "files": 882,
+      "lowered": 2525,
       "packageName": "@flighthq/types"
     },
     {
@@ -1046,10 +1067,10 @@
   ],
   "schemaVersion": 1,
   "summary": {
-    "declarations": 14034,
+    "declarations": 15117,
     "diagnostics": 0,
-    "files": 2614,
-    "lowered": 14034,
-    "packages": 149
+    "files": 2676,
+    "lowered": 15117,
+    "packages": 152
   }
 }

@@ -1,17 +1,16 @@
 name: Flight release bridge
 
-# Publishes @flighthq/bitmap-wasm whenever FLIGHT publishes, at the version Flight released.
+# Publishes the blessed wasm facades whenever Flight publishes, at the version Flight released.
 #
 # Flight uses locked versioning: every package ships at the family version whether or not it changed.
-# This package is part of that family, so it ships too, and the version Flight names is authoritative.
+# These packages are part of that family, so they ship too, and Flight's version is authoritative.
 # The submodule pin is incidental to that — it records which source the Rust was generated from, not
 # which release this package belongs to, and it routinely lags the released commit by commits that
-# never touched bitmap.
+# never touched their substituted packages.
 #
-# So the gate is behavioral, not identity-based: install the `@flighthq/bitmap` Flight just published
-# and run the parity suite against IT. That answers the question a consumer actually has — are the
-# Rust kernels still indistinguishable from the package this claims to be a drop-in for — where a
-# commit comparison only ever answered it by proxy. A pin difference is reported and does not block.
+# So the gate is behavioral, not identity-based: install the Flight packages just published and run
+# every facade suite against them. That answers the question a consumer actually has — do the wasm
+# backends still implement the released contracts — where commit comparison answered only by proxy.
 #
 # See docs/release-bridge.md for the sending side.
 
@@ -94,20 +93,25 @@ jobs:
         run: |
           for attempt in 1 2 3 4 5; do
             if npm install --no-save \
-              "@flighthq/bitmap@${FLIGHT_VERSION}" "@flighthq/types@${FLIGHT_VERSION}"; then
+              "@flighthq/bitmap@${FLIGHT_VERSION}" \
+              "@flighthq/physics2d-abi@${FLIGHT_VERSION}" \
+              "@flighthq/physics3d-abi@${FLIGHT_VERSION}" \
+              "@flighthq/types@${FLIGHT_VERSION}"; then
               exit 0
             fi
             echo "attempt ${attempt} failed; waiting for the registry"
             sleep 30
           done
-          echo "::error::@flighthq/bitmap@${FLIGHT_VERSION} did not become installable."
+          echo "::error::The Flight wasm-facade dependencies at ${FLIGHT_VERSION} did not become installable."
           exit 1
 
       - name: Verify parity against the released package
-        # The real gate. If the Rust kernels no longer match the TypeScript being released, this
-        # package would be a drop-in that silently computes different pixels — worse for a consumer
-        # than a version briefly missing from the family. Fix and re-run via workflow_dispatch.
-        run: npx vitest run --config packages/bitmap-wasm/vitest.config.published.ts
+        # The real gate. If a Rust implementation no longer matches the package being released, a
+        # drop-in could silently behave differently. Fix and re-run via workflow_dispatch.
+        run: |
+          npx vitest run --config packages/bitmap-wasm/vitest.config.published.ts
+          npx vitest run --config packages/physics2d-abi-wasm/vitest.config.published.ts
+          npx vitest run --config packages/physics3d-abi-wasm/vitest.config.published.ts
 
       # Scoped to the artifact, not the repository. The full suite also carries generator
       # bookkeeping — compiled-candidate counts, lowering coverage, conformance shape — which moves

@@ -36,8 +36,10 @@ export interface RustTarget {
 }
 
 export interface WasmFacadeTarget {
-  coreCrate: string;
+  authoritativePackage: string;
+  coreCrate?: string;
   crate: string;
+  dependencies: Record<string, string>;
   exports: string[];
   rustTemplate: string;
 }
@@ -249,11 +251,27 @@ export const portConfig = {
       path: 'packages/bitmap-wasm',
       reason: 'Curated JavaScript/wasm compatibility boundary for the generated @flighthq/bitmap implementation.',
     },
+    {
+      package: '@flighthq/physics2d-abi-wasm',
+      path: 'packages/physics2d-abi-wasm',
+      reason: 'Persistent Rust/wasm backend for the upstream Physics2D packed-buffer ABI.',
+    },
+    {
+      package: '@flighthq/physics3d-abi-wasm',
+      path: 'packages/physics3d-abi-wasm',
+      reason: 'Persistent Rust/wasm backend for the upstream Physics3D packed-buffer ABI.',
+    },
   ],
   wasmFacades: [
     {
+      authoritativePackage: '@flighthq/bitmap',
       coreCrate: 'flighthq-bitmap',
       crate: 'flighthq-bitmap-wasm',
+      dependencies: {
+        'flighthq-bitmap': '../flighthq-bitmap',
+        'flighthq-runtime': '../flighthq-runtime',
+        'flighthq-types': '../flighthq-types',
+      },
       exports: [
         'applyBitmapCurve',
         'applyBitmapLevels',
@@ -291,6 +309,24 @@ export const portConfig = {
         'unpremultiplyBitmapPixels',
       ],
       rustTemplate: 'tools/generator/templates/bitmap_wasm.rs',
+    },
+    {
+      authoritativePackage: '@flighthq/physics2d-abi',
+      crate: 'flighthq-physics2d-abi-wasm',
+      dependencies: {
+        'flighthq-physics-abi-wasm-core': '../../../crates/flighthq-physics-abi-wasm-core',
+      },
+      exports: ['createPhysics2DAbi'],
+      rustTemplate: 'tools/generator/templates/physics2d_abi_wasm.rs',
+    },
+    {
+      authoritativePackage: '@flighthq/physics3d-abi',
+      crate: 'flighthq-physics3d-abi-wasm',
+      dependencies: {
+        'flighthq-physics-abi-wasm-core': '../../../crates/flighthq-physics-abi-wasm-core',
+      },
+      exports: ['createPhysics3DAbi'],
+      rustTemplate: 'tools/generator/templates/physics3d_abi_wasm.rs',
     },
   ] satisfies WasmFacadeTarget[],
   targets: [

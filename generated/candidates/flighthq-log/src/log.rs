@@ -137,37 +137,53 @@ pub fn begin_log_group(label: String, channel: Option<String>) -> () {
     });
 }
 
-// Source: upstream/packages/log/src/log.ts:49 (sha256:bbab9f6f05c874d2ed77ce5eaaf2e802f76299f5a3540ec85b02ee3df3638973)
+// Source: upstream/packages/log/src/log.ts:49 (sha256:c0b48bc5d79592b2ac106ecabfebe95fd75709f79c83dd8c2c0691d92215d148)
+pub fn clear_log_channel_level(channel: String) -> () {
+    {
+        let __flight_key = (channel).clone();
+        if let Some(__flight_index) = (*_CHANNEL_LEVELS.lock().unwrap())
+            .iter()
+            .position(|(key, _)| key == &__flight_key)
+        {
+            (*_CHANNEL_LEVELS.lock().unwrap()).remove(__flight_index);
+            true
+        } else {
+            false
+        }
+    };
+}
+
+// Source: upstream/packages/log/src/log.ts:54 (sha256:bbab9f6f05c874d2ed77ce5eaaf2e802f76299f5a3540ec85b02ee3df3638973)
 pub fn clear_log_channel_levels() -> () {
     (*_CHANNEL_LEVELS.lock().unwrap()).clear();
 }
 
-// Source: upstream/packages/log/src/log.ts:55 (sha256:675a4640247241705bfcaba7f8a9b0f6f978ed4ff2d2aebcd1c38042571877f5)
+// Source: upstream/packages/log/src/log.ts:60 (sha256:675a4640247241705bfcaba7f8a9b0f6f978ed4ff2d2aebcd1c38042571877f5)
 pub fn clear_log_groups() -> () {
     (*_GROUP_DEPTH.lock().unwrap()) = 0.0_f64;
 }
 
-// Source: upstream/packages/log/src/log.ts:61 (sha256:416743460c28682c91c7f97721c7bb000a4e3fe7f8f0271e176fe6e7121a3152)
+// Source: upstream/packages/log/src/log.ts:66 (sha256:416743460c28682c91c7f97721c7bb000a4e3fe7f8f0271e176fe6e7121a3152)
 pub fn clear_log_once_keys() -> () {
     (*_ONCE_KEYS.lock().unwrap()).clear();
 }
 
-// Source: upstream/packages/log/src/log.ts:66 (sha256:91951b5221d256f87b4d5f03330767a57a7e5a99110b3549cfa2aa23360416b7)
+// Source: upstream/packages/log/src/log.ts:71 (sha256:91951b5221d256f87b4d5f03330767a57a7e5a99110b3549cfa2aa23360416b7)
 pub fn clear_log_redaction_paths() -> () {
     _REDACTION_PATHS.lock().unwrap().clear();
 }
 
-// Source: upstream/packages/log/src/log.ts:71 (sha256:c1e9b460b86435c0be9b8e07faea99cf7718d1b531ea3fed81582dcd1501b307)
+// Source: upstream/packages/log/src/log.ts:76 (sha256:c1e9b460b86435c0be9b8e07faea99cf7718d1b531ea3fed81582dcd1501b307)
 pub fn clear_log_serializers() -> () {
     (*_SERIALIZERS.lock().unwrap()).clear();
 }
 
-// Source: upstream/packages/log/src/log.ts:76 (sha256:bac4c1c076df20e95fa1d0c40383238f711cbacc98116ffcd78d8af4214f3346)
+// Source: upstream/packages/log/src/log.ts:81 (sha256:bac4c1c076df20e95fa1d0c40383238f711cbacc98116ffcd78d8af4214f3346)
 pub fn clear_log_sinks() -> () {
     _SINKS.lock().unwrap().clear();
 }
 
-// Source: upstream/packages/log/src/log.ts:81 (sha256:89cf20d90874d9d0d92424c2f62fd7a6897c4feeb8042ae491c1bc74b919e5ca)
+// Source: upstream/packages/log/src/log.ts:86 (sha256:89cf20d90874d9d0d92424c2f62fd7a6897c4feeb8042ae491c1bc74b919e5ca)
 pub fn clear_memory_log_sink(handle: &MemoryLogSink) -> () {
     let mut state = (*_MEMORY_SINK_STATES.lock().unwrap())
         .iter()
@@ -180,7 +196,7 @@ pub fn clear_memory_log_sink(handle: &MemoryLogSink) -> () {
     state.as_mut().unwrap().head = 0.0_f64;
 }
 
-// Source: upstream/packages/log/src/log.ts:92 (sha256:5770641e75d944ce595a14f878d4c8ca86e3c23c02e3dfb54882e6da0c9f9656)
+// Source: upstream/packages/log/src/log.ts:97 (sha256:5770641e75d944ce595a14f878d4c8ca86e3c23c02e3dfb54882e6da0c9f9656)
 #[derive(Clone, Default)]
 struct CreateBufferedLogSinkRecord5 {
     __flight_identity: std::sync::Arc<()>,
@@ -319,7 +335,7 @@ pub fn create_buffered_log_sink(
         .clone();
 }
 
-// Source: upstream/packages/log/src/log.ts:123 (sha256:a84b6cbb9aa2f7ebc2c6d0477d4cfd9d03069f96d80c24b4f3d09470fd8760d1)
+// Source: upstream/packages/log/src/log.ts:128 (sha256:a84b6cbb9aa2f7ebc2c6d0477d4cfd9d03069f96d80c24b4f3d09470fd8760d1)
 pub fn create_child_log_context(
     parent: &LogContext,
     fields: &Vec<(String, crate::FlightValue)>,
@@ -362,7 +378,7 @@ pub fn create_child_log_context(
     };
 }
 
-// Source: upstream/packages/log/src/log.ts:137 (sha256:ad8e586670674d592a53d775334c032dee2b80a23e4ec1b1ef85728098dbf7df)
+// Source: upstream/packages/log/src/log.ts:142 (sha256:ad8e586670674d592a53d775334c032dee2b80a23e4ec1b1ef85728098dbf7df)
 #[derive(Clone, Default)]
 struct CreateConsoleCaptureSinkRecord5 {
     __flight_identity: std::sync::Arc<()>,
@@ -396,7 +412,7 @@ pub fn create_console_capture_sink(options: Option<SharedStructuralRecord2>) -> 
         as Box<dyn FnMut(LogEntry) -> () + Send + 'static>));
 }
 
-// Source: upstream/packages/log/src/log.ts:142 (sha256:b820bbc75b2aaa44b4898dde07435c1f910e8e9d00a74fed37189798614958e7)
+// Source: upstream/packages/log/src/log.ts:147 (sha256:b820bbc75b2aaa44b4898dde07435c1f910e8e9d00a74fed37189798614958e7)
 #[derive(Clone, Default)]
 struct CreateConsoleLogSinkRecord5 {
     __flight_identity: std::sync::Arc<()>,
@@ -438,7 +454,7 @@ pub fn create_console_log_sink(options: Option<SharedStructuralRecord2>) -> LogS
         as Box<dyn FnMut(LogEntry) -> () + Send + 'static>));
 }
 
-// Source: upstream/packages/log/src/log.ts:148 (sha256:84b35500f0fb53ca77b8bd75f8e244a11e75367b05399e9b3675c92e2e49212d)
+// Source: upstream/packages/log/src/log.ts:153 (sha256:84b35500f0fb53ca77b8bd75f8e244a11e75367b05399e9b3675c92e2e49212d)
 pub fn create_fanout_log_sink(sinks: Vec<LogSink>) -> LogSink {
     let list = (sinks).clone();
     return std::sync::Arc::new(std::sync::Mutex::new(Box::new({
@@ -456,7 +472,7 @@ pub fn create_fanout_log_sink(sinks: Vec<LogSink>) -> LogSink {
         as Box<dyn FnMut(LogEntry) -> () + Send + 'static>));
 }
 
-// Source: upstream/packages/log/src/log.ts:159 (sha256:6663cd844459d879c8c658224c2d277383ec4ff298e901ac99fc703fd7968121)
+// Source: upstream/packages/log/src/log.ts:164 (sha256:6663cd844459d879c8c658224c2d277383ec4ff298e901ac99fc703fd7968121)
 #[derive(Clone, Default)]
 struct CreateFileLogSinkRecord5 {
     __flight_identity: std::sync::Arc<()>,
@@ -503,7 +519,7 @@ pub fn create_file_log_sink(options: Option<SharedStructuralRecord2>) -> FileLog
     return handle;
 }
 
-// Source: upstream/packages/log/src/log.ts:172 (sha256:d954767afa16f54af08878d86c98bc8d114e38de21bffeba5ddd627a44c44d0f)
+// Source: upstream/packages/log/src/log.ts:177 (sha256:d954767afa16f54af08878d86c98bc8d114e38de21bffeba5ddd627a44c44d0f)
 pub fn create_filter_log_sink(
     target: LogSink,
     predicate: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(LogEntry) -> bool + Send + 'static>>>,
@@ -528,7 +544,7 @@ pub fn create_filter_log_sink(
         as Box<dyn FnMut(LogEntry) -> () + Send + 'static>));
 }
 
-// Source: upstream/packages/log/src/log.ts:181 (sha256:82e0dab668f2be06cc078bd5c3e0372d3e673f240706254a4a2171c8022d9b49)
+// Source: upstream/packages/log/src/log.ts:186 (sha256:82e0dab668f2be06cc078bd5c3e0372d3e673f240706254a4a2171c8022d9b49)
 pub fn create_json_log_formatter() -> LogFormatter {
     return std::sync::Arc::new(std::sync::Mutex::new(
         Box::new(move |entry: LogEntry| -> String {
@@ -652,7 +668,7 @@ pub fn create_json_log_formatter() -> LogFormatter {
     ));
 }
 
-// Source: upstream/packages/log/src/log.ts:198 (sha256:f5cd1259db90774dda9574357354a3e352d31e294532ae60de8784784a03657b)
+// Source: upstream/packages/log/src/log.ts:203 (sha256:f5cd1259db90774dda9574357354a3e352d31e294532ae60de8784784a03657b)
 #[derive(Clone, Default)]
 struct CreateLogContextRecord5 {
     __flight_identity: std::sync::Arc<()>,
@@ -678,7 +694,7 @@ pub fn create_log_context(
     };
 }
 
-// Source: upstream/packages/log/src/log.ts:207 (sha256:525de5789c62ff6c626952366477b6c2c37eacf5462dc3446eebd996ba7c25d8)
+// Source: upstream/packages/log/src/log.ts:212 (sha256:525de5789c62ff6c626952366477b6c2c37eacf5462dc3446eebd996ba7c25d8)
 #[derive(Clone, Default)]
 struct CreateLogSpanRecord5 {
     __flight_identity: std::sync::Arc<()>,
@@ -706,7 +722,7 @@ pub fn create_log_span(
     };
 }
 
-// Source: upstream/packages/log/src/log.ts:217 (sha256:440044197dc724b1e134b8f72cf61020759e535b79bbd52828aeb71f95a06707)
+// Source: upstream/packages/log/src/log.ts:222 (sha256:440044197dc724b1e134b8f72cf61020759e535b79bbd52828aeb71f95a06707)
 pub fn create_memory_log_sink(capacity: f64) -> MemoryLogSink {
     let state: std::sync::Arc<std::sync::Mutex<MemoryLogSinkState>> =
         std::sync::Arc::new(std::sync::Mutex::new(MemoryLogSinkState {
@@ -762,7 +778,7 @@ pub fn create_memory_log_sink(capacity: f64) -> MemoryLogSink {
     return handle;
 }
 
-// Source: upstream/packages/log/src/log.ts:235 (sha256:8c8881378bfba8a4555e122bf6bc7b58f73676f09a729adab0622483f6176177)
+// Source: upstream/packages/log/src/log.ts:240 (sha256:8c8881378bfba8a4555e122bf6bc7b58f73676f09a729adab0622483f6176177)
 pub fn create_rate_limited_log_sink(
     target: LogSink,
     options: &SharedStructuralRecord3,
@@ -823,7 +839,7 @@ pub fn create_rate_limited_log_sink(
     };
 }
 
-// Source: upstream/packages/log/src/log.ts:259 (sha256:53f5be6d14d8e73ff5bd5d50da1e07c3a171ba24f5280a0a234591369ce68419)
+// Source: upstream/packages/log/src/log.ts:264 (sha256:53f5be6d14d8e73ff5bd5d50da1e07c3a171ba24f5280a0a234591369ce68419)
 pub fn create_sampled_log_sink(target: LogSink, rate: f64) -> LogSink {
     if (rate <= 1.0_f64) {
         return target;
@@ -847,7 +863,7 @@ pub fn create_sampled_log_sink(target: LogSink, rate: f64) -> LogSink {
         as Box<dyn FnMut(LogEntry) -> () + Send + 'static>));
 }
 
-// Source: upstream/packages/log/src/log.ts:270 (sha256:7703c0e1be271f3ef06a8e0e688760b30f41f62b875ed4b32d2e2ff9d120f808)
+// Source: upstream/packages/log/src/log.ts:275 (sha256:7703c0e1be271f3ef06a8e0e688760b30f41f62b875ed4b32d2e2ff9d120f808)
 #[derive(Clone, Default)]
 struct CreateTextLogFormatterRecord5 {
     __flight_identity: std::sync::Arc<()>,
@@ -943,7 +959,7 @@ pub fn create_text_log_formatter(options: Option<SharedStructuralRecord4>) -> Lo
         as Box<dyn FnMut(LogEntry) -> String + Send + 'static>));
 }
 
-// Source: upstream/packages/log/src/log.ts:292 (sha256:4f48bed54c81a6b3c0d3148adce50599cd38e153499063332f86a0b8312741c1)
+// Source: upstream/packages/log/src/log.ts:297 (sha256:4f48bed54c81a6b3c0d3148adce50599cd38e153499063332f86a0b8312741c1)
 pub fn create_web_log_transport_backend() -> LogTransportBackend {
     return LogTransportBackend {
         __flight_identity: std::sync::Arc::new(()),
@@ -956,7 +972,7 @@ pub fn create_web_log_transport_backend() -> LogTransportBackend {
     };
 }
 
-// Source: upstream/packages/log/src/log.ts:304 (sha256:f64a380b1123ffcc0c5053f093fad7a58382db3dc50a3c18f0629fcc3bb18be4)
+// Source: upstream/packages/log/src/log.ts:309 (sha256:f64a380b1123ffcc0c5053f093fad7a58382db3dc50a3c18f0629fcc3bb18be4)
 pub fn dispose_file_log_sink(_handle: &FileLogSink) -> () {
     let backend = (*_TRANSPORT_BACKEND.lock().unwrap()).clone();
     if (backend).is_none() {
@@ -986,7 +1002,7 @@ pub fn dispose_file_log_sink(_handle: &FileLogSink) -> () {
     }
 }
 
-// Source: upstream/packages/log/src/log.ts:314 (sha256:ef92cffec055b3fa03880b3c30e311cb8f1cace523a3436039987e907b0cf105)
+// Source: upstream/packages/log/src/log.ts:319 (sha256:ef92cffec055b3fa03880b3c30e311cb8f1cace523a3436039987e907b0cf105)
 pub fn dispose_log_sink(handle: &BufferedLogSink) -> () {
     let mut state = (*_BUFFERED_SINK_STATES.lock().unwrap())
         .iter()
@@ -1008,7 +1024,7 @@ pub fn dispose_log_sink(handle: &BufferedLogSink) -> () {
     state.as_mut().unwrap().timer = None;
 }
 
-// Source: upstream/packages/log/src/log.ts:325 (sha256:9d86e7f43964874d66aed4565b3b61360b7fe5559436e4e495c4721309cd70b9)
+// Source: upstream/packages/log/src/log.ts:330 (sha256:9d86e7f43964874d66aed4565b3b61360b7fe5559436e4e495c4721309cd70b9)
 pub fn enable_log_signals() -> LogSignals {
     if ((*_LOG_SIGNALS.lock().unwrap()).clone()).is_some() {
         return (((*_LOG_SIGNALS.lock().unwrap()).as_mut().unwrap()).clone()).clone();
@@ -1021,7 +1037,7 @@ pub fn enable_log_signals() -> LogSignals {
     return (((*_LOG_SIGNALS.lock().unwrap()).clone()).clone().unwrap()).clone();
 }
 
-// Source: upstream/packages/log/src/log.ts:336 (sha256:d273c7109458b21dc7e26d14c0a3274b16749282373308695d6ed40151e5ef12)
+// Source: upstream/packages/log/src/log.ts:341 (sha256:d273c7109458b21dc7e26d14c0a3274b16749282373308695d6ed40151e5ef12)
 pub fn end_log_group(channel: Option<String>) -> () {
     if ((*_GROUP_DEPTH.lock().unwrap()).clone() <= 0.0_f64) {
         return;
@@ -1052,7 +1068,7 @@ pub fn end_log_group(channel: Option<String>) -> () {
     });
 }
 
-// Source: upstream/packages/log/src/log.ts:345 (sha256:c96c86f9427e61d81a2ffb3ec9dcf35cfb1c255bcfeeb08f363dae583e85b647)
+// Source: upstream/packages/log/src/log.ts:350 (sha256:c96c86f9427e61d81a2ffb3ec9dcf35cfb1c255bcfeeb08f363dae583e85b647)
 pub fn end_log_timer(timer: &LogTimer) -> f64 {
     let elapsed = (_timestamp() - timer.started_at);
     log_debug(
@@ -1076,12 +1092,12 @@ pub fn end_log_timer(timer: &LogTimer) -> f64 {
     return elapsed;
 }
 
-// Source: upstream/packages/log/src/log.ts:354 (sha256:a979ff11edae00f2dc2cdf1436e2774bb70330480ef0c56b08a7f9766f7a3bec)
+// Source: upstream/packages/log/src/log.ts:359 (sha256:a979ff11edae00f2dc2cdf1436e2774bb70330480ef0c56b08a7f9766f7a3bec)
 pub fn enter_log_span(span: &LogSpan) -> () {
     _SPAN_STACK.lock().unwrap().push(((*span).clone()).clone());
 }
 
-// Source: upstream/packages/log/src/log.ts:361 (sha256:e817ecd27778e010d38bb648dfa04441158fdc5feafd6d99898741f6643f4090)
+// Source: upstream/packages/log/src/log.ts:366 (sha256:e817ecd27778e010d38bb648dfa04441158fdc5feafd6d99898741f6643f4090)
 pub fn exit_log_span(span: &LogSpan) -> () {
     let idx = {
         let __flight_value = (*span).clone();
@@ -1106,7 +1122,7 @@ pub fn exit_log_span(span: &LogSpan) -> () {
     }
 }
 
-// Source: upstream/packages/log/src/log.ts:367 (sha256:0b35f60b6ef747a1891a851476b331c469f4e1fcb00fce4298c7446f0fd34603)
+// Source: upstream/packages/log/src/log.ts:372 (sha256:0b35f60b6ef747a1891a851476b331c469f4e1fcb00fce4298c7446f0fd34603)
 pub fn flush_log_sink(handle: &BufferedLogSink) -> () {
     let state = (*_BUFFERED_SINK_STATES.lock().unwrap())
         .iter()
@@ -1121,7 +1137,7 @@ pub fn flush_log_sink(handle: &BufferedLogSink) -> () {
     }
 }
 
-// Source: upstream/packages/log/src/log.ts:374 (sha256:8495159d8aff70a3fb12821f87aea83e277bf015dac71850625c7a46559f8d07)
+// Source: upstream/packages/log/src/log.ts:379 (sha256:8495159d8aff70a3fb12821f87aea83e277bf015dac71850625c7a46559f8d07)
 pub fn get_log_channel_level(channel: String) -> Option<LogLevel> {
     return (*_CHANNEL_LEVELS.lock().unwrap())
         .iter()
@@ -1129,17 +1145,17 @@ pub fn get_log_channel_level(channel: String) -> Option<LogLevel> {
         .map(|(_, value)| value.clone());
 }
 
-// Source: upstream/packages/log/src/log.ts:380 (sha256:592a47d515f41f8214af2e36844d892fcc3f15bec0576ad558bb727033341e73)
+// Source: upstream/packages/log/src/log.ts:385 (sha256:592a47d515f41f8214af2e36844d892fcc3f15bec0576ad558bb727033341e73)
 pub fn get_log_console_level() -> LogLevel {
     return (*_CONSOLE_LEVEL.lock().unwrap()).clone();
 }
 
-// Source: upstream/packages/log/src/log.ts:386 (sha256:7e1d6de6f2e20e06f1a1047f35c6e027da5b92f17345d810141ff38c588048e3)
+// Source: upstream/packages/log/src/log.ts:391 (sha256:7e1d6de6f2e20e06f1a1047f35c6e027da5b92f17345d810141ff38c588048e3)
 pub fn get_log_level() -> LogLevel {
     return (*_LEVEL.lock().unwrap()).clone();
 }
 
-// Source: upstream/packages/log/src/log.ts:391 (sha256:bed3bd73dc2081d09c6d8b9f61977e35b17a8778409bc627995c0d1f72b84a58)
+// Source: upstream/packages/log/src/log.ts:396 (sha256:bed3bd73dc2081d09c6d8b9f61977e35b17a8778409bc627995c0d1f72b84a58)
 pub fn get_log_level_name(level: LogLevel) -> String {
     return (_LEVEL_NAMES
         .iter()
@@ -1148,12 +1164,12 @@ pub fn get_log_level_name(level: LogLevel) -> String {
     .expect("TypeScript Record key was absent");
 }
 
-// Source: upstream/packages/log/src/log.ts:396 (sha256:2966a53ba71e6e4b24da3e0fe6e4b77d6872a7dca6fe47e958c664b5618d56e5)
+// Source: upstream/packages/log/src/log.ts:401 (sha256:2966a53ba71e6e4b24da3e0fe6e4b77d6872a7dca6fe47e958c664b5618d56e5)
 pub fn get_log_transport_backend() -> Option<LogTransportBackend> {
     return (*_TRANSPORT_BACKEND.lock().unwrap()).clone();
 }
 
-// Source: upstream/packages/log/src/log.ts:401 (sha256:36cad86a2d11562eee6a370eb738df9ea02f045fece8c3092068fa8b1991ced7)
+// Source: upstream/packages/log/src/log.ts:406 (sha256:36cad86a2d11562eee6a370eb738df9ea02f045fece8c3092068fa8b1991ced7)
 pub fn get_memory_log_sink_entries(handle: &MemoryLogSink) -> Vec<LogEntry> {
     let state = (*_MEMORY_SINK_STATES.lock().unwrap())
         .iter()
@@ -1185,7 +1201,7 @@ pub fn get_memory_log_sink_entries(handle: &MemoryLogSink) -> Vec<LogEntry> {
     };
 }
 
-// Source: upstream/packages/log/src/log.ts:416 (sha256:8fd1fa56b915047b9faee5e8d8c0a7daf708f3b2c928d39ff9e582e062584e49)
+// Source: upstream/packages/log/src/log.ts:421 (sha256:8fd1fa56b915047b9faee5e8d8c0a7daf708f3b2c928d39ff9e582e062584e49)
 pub fn log(
     level: LogLevel,
     data: &crate::FlightUnion2<LogData, LogDataProvider>,
@@ -1224,7 +1240,7 @@ pub fn log(
     _emit_to_sinks(&entry);
 }
 
-// Source: upstream/packages/log/src/log.ts:425 (sha256:32d3fac652432dfe87a1a8ff3b407f405432fb59c4c2b5e72986eb44b3a1eb82)
+// Source: upstream/packages/log/src/log.ts:430 (sha256:32d3fac652432dfe87a1a8ff3b407f405432fb59c4c2b5e72986eb44b3a1eb82)
 pub fn log_assert(
     condition: bool,
     data: &crate::FlightUnion2<LogData, LogDataProvider>,
@@ -1265,7 +1281,7 @@ pub fn log_assert(
     });
 }
 
-// Source: upstream/packages/log/src/log.ts:433 (sha256:e1be73cc9d17c07aad2acedbecaf0e46a2d6c1b64cabc4ec932de6072f20259f)
+// Source: upstream/packages/log/src/log.ts:438 (sha256:e1be73cc9d17c07aad2acedbecaf0e46a2d6c1b64cabc4ec932de6072f20259f)
 pub fn log_debug(
     data: &crate::FlightUnion2<LogData, LogDataProvider>,
     channel: Option<String>,
@@ -1302,7 +1318,7 @@ pub fn log_debug(
     });
 }
 
-// Source: upstream/packages/log/src/log.ts:439 (sha256:eb096702c3277a5e3a0bbef8254e1f39be9877a5c62b95a06ffc0e36ae9e8921)
+// Source: upstream/packages/log/src/log.ts:444 (sha256:eb096702c3277a5e3a0bbef8254e1f39be9877a5c62b95a06ffc0e36ae9e8921)
 pub fn log_debug_with(
     context: &LogContext,
     data: &crate::FlightUnion2<LogData, LogDataProvider>,
@@ -1343,7 +1359,7 @@ pub fn log_debug_with(
     });
 }
 
-// Source: upstream/packages/log/src/log.ts:450 (sha256:dd391ef28f69eebe58d8b413282399ca7b325d04cd3ae6eff3b519079d875a50)
+// Source: upstream/packages/log/src/log.ts:455 (sha256:dd391ef28f69eebe58d8b413282399ca7b325d04cd3ae6eff3b519079d875a50)
 pub fn log_error(
     data: &crate::FlightUnion2<LogData, LogDataProvider>,
     channel: Option<String>,
@@ -1380,7 +1396,7 @@ pub fn log_error(
     });
 }
 
-// Source: upstream/packages/log/src/log.ts:456 (sha256:81340501ac779bf99d6df3590de337531b1bdc2b4f8d48c2e91fbf411af0e2f4)
+// Source: upstream/packages/log/src/log.ts:461 (sha256:81340501ac779bf99d6df3590de337531b1bdc2b4f8d48c2e91fbf411af0e2f4)
 pub fn log_error_with(
     context: &LogContext,
     data: &crate::FlightUnion2<LogData, LogDataProvider>,
@@ -1421,7 +1437,7 @@ pub fn log_error_with(
     });
 }
 
-// Source: upstream/packages/log/src/log.ts:467 (sha256:c78fb840d5c7456c8a6e530b1a5e4631e9ce9da8dc5ef19f95c367f078cdef41)
+// Source: upstream/packages/log/src/log.ts:472 (sha256:c78fb840d5c7456c8a6e530b1a5e4631e9ce9da8dc5ef19f95c367f078cdef41)
 pub fn log_info(
     data: &crate::FlightUnion2<LogData, LogDataProvider>,
     channel: Option<String>,
@@ -1458,7 +1474,7 @@ pub fn log_info(
     });
 }
 
-// Source: upstream/packages/log/src/log.ts:473 (sha256:4133590045e222428f2bcfd816eaf14e294c55e6241b7646037335a44b6f5a09)
+// Source: upstream/packages/log/src/log.ts:478 (sha256:4133590045e222428f2bcfd816eaf14e294c55e6241b7646037335a44b6f5a09)
 pub fn log_info_with(
     context: &LogContext,
     data: &crate::FlightUnion2<LogData, LogDataProvider>,
@@ -1499,7 +1515,7 @@ pub fn log_info_with(
     });
 }
 
-// Source: upstream/packages/log/src/log.ts:486 (sha256:43dda93135fb86ab9ba5e7998118766cf5b11c2a44751e6625c6b1086bb90e4b)
+// Source: upstream/packages/log/src/log.ts:491 (sha256:43dda93135fb86ab9ba5e7998118766cf5b11c2a44751e6625c6b1086bb90e4b)
 pub fn log_once(
     key: String,
     level: LogLevel,
@@ -1522,7 +1538,7 @@ pub fn log_once(
     return true;
 }
 
-// Source: upstream/packages/log/src/log.ts:498 (sha256:a5bdc1fe27ffdd72d4be7adde388007779b726d2bd79806e2c3c004ea7522137)
+// Source: upstream/packages/log/src/log.ts:503 (sha256:a5bdc1fe27ffdd72d4be7adde388007779b726d2bd79806e2c3c004ea7522137)
 pub fn log_verbose(
     data: &crate::FlightUnion2<LogData, LogDataProvider>,
     channel: Option<String>,
@@ -1559,7 +1575,7 @@ pub fn log_verbose(
     });
 }
 
-// Source: upstream/packages/log/src/log.ts:504 (sha256:ef760ce1376a133f6b3a5af8bac40df85095100199b229bf00d205c500f575bf)
+// Source: upstream/packages/log/src/log.ts:509 (sha256:ef760ce1376a133f6b3a5af8bac40df85095100199b229bf00d205c500f575bf)
 pub fn log_verbose_with(
     context: &LogContext,
     data: &crate::FlightUnion2<LogData, LogDataProvider>,
@@ -1600,7 +1616,7 @@ pub fn log_verbose_with(
     });
 }
 
-// Source: upstream/packages/log/src/log.ts:515 (sha256:f388295752499ff678248accf26680e20be2cac4b0a03280aa6bc860b4ef35ee)
+// Source: upstream/packages/log/src/log.ts:520 (sha256:f388295752499ff678248accf26680e20be2cac4b0a03280aa6bc860b4ef35ee)
 pub fn log_warn(
     data: &crate::FlightUnion2<LogData, LogDataProvider>,
     channel: Option<String>,
@@ -1637,7 +1653,7 @@ pub fn log_warn(
     });
 }
 
-// Source: upstream/packages/log/src/log.ts:521 (sha256:864c88ae290eaac07c21a16c4f8813efd12a848d4e42af1e2990b2c2cae100ce)
+// Source: upstream/packages/log/src/log.ts:526 (sha256:864c88ae290eaac07c21a16c4f8813efd12a848d4e42af1e2990b2c2cae100ce)
 pub fn log_warn_with(
     context: &LogContext,
     data: &crate::FlightUnion2<LogData, LogDataProvider>,
@@ -1678,7 +1694,7 @@ pub fn log_warn_with(
     });
 }
 
-// Source: upstream/packages/log/src/log.ts:534 (sha256:7047b19b6c12858b8166aa2f0720162db6f6115c6b7b2ca94300d8309f4b4d87)
+// Source: upstream/packages/log/src/log.ts:539 (sha256:7047b19b6c12858b8166aa2f0720162db6f6115c6b7b2ca94300d8309f4b4d87)
 pub fn log_with(
     context: &LogContext,
     level: LogLevel,
@@ -1720,7 +1736,7 @@ pub fn log_with(
     });
 }
 
-// Source: upstream/packages/log/src/log.ts:543 (sha256:6642774e2696facd569ee4544b79b8c31e214d49bb0e60bb0f761d324b5401e0)
+// Source: upstream/packages/log/src/log.ts:548 (sha256:6642774e2696facd569ee4544b79b8c31e214d49bb0e60bb0f761d324b5401e0)
 pub fn parse_log_level(name: String) -> Option<LogLevel> {
     return _LEVEL_BY_NAME
         .iter()
@@ -1728,7 +1744,7 @@ pub fn parse_log_level(name: String) -> Option<LogLevel> {
         .map(|(_, value)| value.clone());
 }
 
-// Source: upstream/packages/log/src/log.ts:551 (sha256:c31bc58e7172611c1cf33cb82e6378a1c06526f4d3cf998430e771e0c3dd8818)
+// Source: upstream/packages/log/src/log.ts:556 (sha256:c31bc58e7172611c1cf33cb82e6378a1c06526f4d3cf998430e771e0c3dd8818)
 pub fn register_log_serializer(
     kind: String,
     fn_: std::sync::Arc<
@@ -1753,7 +1769,7 @@ pub fn register_log_serializer(
     };
 }
 
-// Source: upstream/packages/log/src/log.ts:557 (sha256:420a9eb436739a816784eac52e7c6d7a809f8225e97b1e50e4361df6acefd176)
+// Source: upstream/packages/log/src/log.ts:562 (sha256:420a9eb436739a816784eac52e7c6d7a809f8225e97b1e50e4361df6acefd176)
 pub fn remove_log_sink(sink: LogSink) -> bool {
     let idx = {
         let __flight_value = (sink).clone();
@@ -1780,7 +1796,7 @@ pub fn remove_log_sink(sink: LogSink) -> bool {
     return true;
 }
 
-// Source: upstream/packages/log/src/log.ts:566 (sha256:be8f624fb520e41162a5a13bdfbc1d87828d18c18386764460c73a575dbb3cd5)
+// Source: upstream/packages/log/src/log.ts:571 (sha256:be8f624fb520e41162a5a13bdfbc1d87828d18c18386764460c73a575dbb3cd5)
 pub fn serialize_log_error(value: crate::FlightValue) -> Vec<(String, crate::FlightValue)> {
     if (!matches!(&((value).clone()), crate::FlightValue::Error { .. })) {
         return {
@@ -1871,7 +1887,7 @@ pub fn serialize_log_error(value: crate::FlightValue) -> Vec<(String, crate::Fli
     return result;
 }
 
-// Source: upstream/packages/log/src/log.ts:579 (sha256:be4ceb385460fdfe92d225ccec5a14f2c7874239e9940973af530c599edbd366)
+// Source: upstream/packages/log/src/log.ts:584 (sha256:be4ceb385460fdfe92d225ccec5a14f2c7874239e9940973af530c599edbd366)
 pub fn set_log_channel_level(channel: String, level: LogLevel) -> () {
     {
         let __flight_key = (channel).clone();
@@ -1887,17 +1903,17 @@ pub fn set_log_channel_level(channel: String, level: LogLevel) -> () {
     };
 }
 
-// Source: upstream/packages/log/src/log.ts:585 (sha256:f725cf7f794af8de8328b3d52d8d7d29ef586e010bfe6a6b98242252da724bc5)
+// Source: upstream/packages/log/src/log.ts:590 (sha256:f725cf7f794af8de8328b3d52d8d7d29ef586e010bfe6a6b98242252da724bc5)
 pub fn set_log_console_level(level: LogLevel) -> () {
     (*_CONSOLE_LEVEL.lock().unwrap()) = level;
 }
 
-// Source: upstream/packages/log/src/log.ts:591 (sha256:512aac4c1304c724e74f6f70dcaae6c829d98e1658ff2d9bfc0074a7342fc948)
+// Source: upstream/packages/log/src/log.ts:596 (sha256:512aac4c1304c724e74f6f70dcaae6c829d98e1658ff2d9bfc0074a7342fc948)
 pub fn set_log_level(level: LogLevel) -> () {
     (*_LEVEL.lock().unwrap()) = level;
 }
 
-// Source: upstream/packages/log/src/log.ts:598 (sha256:209336d8d8c47ace23e20ed60a1b01fef8989cebedca4ceb055ccec8e6be8fdc)
+// Source: upstream/packages/log/src/log.ts:603 (sha256:209336d8d8c47ace23e20ed60a1b01fef8989cebedca4ceb055ccec8e6be8fdc)
 pub fn set_log_redaction_paths(paths: &Vec<String>) -> () {
     _REDACTION_PATHS.lock().unwrap().clear();
     for p in (paths).iter().cloned() {
@@ -1905,7 +1921,7 @@ pub fn set_log_redaction_paths(paths: &Vec<String>) -> () {
     }
 }
 
-// Source: upstream/packages/log/src/log.ts:605 (sha256:2bc9fb903427e207762979b599062c8161137b321c79693c8cf136509096cf00)
+// Source: upstream/packages/log/src/log.ts:610 (sha256:2bc9fb903427e207762979b599062c8161137b321c79693c8cf136509096cf00)
 pub fn set_log_sink(sink: &Option<LogSink>) -> () {
     _SINKS.lock().unwrap().clear();
     if (sink).is_some() {
@@ -1916,12 +1932,12 @@ pub fn set_log_sink(sink: &Option<LogSink>) -> () {
     }
 }
 
-// Source: upstream/packages/log/src/log.ts:613 (sha256:7e93ecd492fbfe8ba73a3b6fc0a8219b00a38a77a7b5f9a6d4777aeb0cab21f4)
+// Source: upstream/packages/log/src/log.ts:618 (sha256:7e93ecd492fbfe8ba73a3b6fc0a8219b00a38a77a7b5f9a6d4777aeb0cab21f4)
 pub fn set_log_transport_backend(backend: &Option<LogTransportBackend>) -> () {
     (*_TRANSPORT_BACKEND.lock().unwrap()) = (*backend).clone();
 }
 
-// Source: upstream/packages/log/src/log.ts:619 (sha256:0448f083288815db1b333f074234350d4e975f7e3f6993e75d2f30c8df5ee060)
+// Source: upstream/packages/log/src/log.ts:624 (sha256:0448f083288815db1b333f074234350d4e975f7e3f6993e75d2f30c8df5ee060)
 pub fn start_log_timer(label: String, channel: Option<String>) -> LogTimer {
     return LogTimer {
         __flight_identity: std::sync::Arc::new(()),
@@ -1931,7 +1947,7 @@ pub fn start_log_timer(label: String, channel: Option<String>) -> LogTimer {
     };
 }
 
-// Source: upstream/packages/log/src/log.ts:623 (sha256:2d30bcd0c02cb95e44da4c77e655cdbca357993f9cbd63938f7a0ef9bc025b01)
+// Source: upstream/packages/log/src/log.ts:628 (sha256:2d30bcd0c02cb95e44da4c77e655cdbca357993f9cbd63938f7a0ef9bc025b01)
 #[derive(Clone)]
 pub(crate) struct BufferedLogSinkState {
     #[doc(hidden)]
@@ -1946,7 +1962,7 @@ impl PartialEq for BufferedLogSinkState {
     }
 }
 
-// Source: upstream/packages/log/src/log.ts:629 (sha256:abe9820eb043acba87b1347446bcf11fd02111471bce49830812564752792d85)
+// Source: upstream/packages/log/src/log.ts:634 (sha256:abe9820eb043acba87b1347446bcf11fd02111471bce49830812564752792d85)
 #[derive(Clone, Default)]
 pub(crate) struct MemoryLogSinkState {
     #[doc(hidden)]
@@ -1960,17 +1976,17 @@ impl PartialEq for MemoryLogSinkState {
     }
 }
 
-// Source: upstream/packages/log/src/log.ts:634 (sha256:8dccecefce1b4e90b9f108eadfeae8867e900bc55f94eee2e67a08dc78dc2168)
+// Source: upstream/packages/log/src/log.ts:639 (sha256:8dccecefce1b4e90b9f108eadfeae8867e900bc55f94eee2e67a08dc78dc2168)
 static _BUFFERED_SINK_STATES: std::sync::LazyLock<
     std::sync::Mutex<Vec<(BufferedLogSink, BufferedLogSinkState)>>,
 > = std::sync::LazyLock::new(|| std::sync::Mutex::new(Vec::new()));
 
-// Source: upstream/packages/log/src/log.ts:635 (sha256:21b47dffce4dcb81cf8f783be22dd314bc0c89354581bfc937685d9292deef77)
+// Source: upstream/packages/log/src/log.ts:640 (sha256:21b47dffce4dcb81cf8f783be22dd314bc0c89354581bfc937685d9292deef77)
 static _MEMORY_SINK_STATES: std::sync::LazyLock<
     std::sync::Mutex<Vec<(MemoryLogSink, MemoryLogSinkState)>>,
 > = std::sync::LazyLock::new(|| std::sync::Mutex::new(Vec::new()));
 
-// Source: upstream/packages/log/src/log.ts:637 (sha256:c775abcf705d7d5e91e76bdd4c61aa39becec02de0d0d91c4f01ca9b3dc3cb56)
+// Source: upstream/packages/log/src/log.ts:642 (sha256:c775abcf705d7d5e91e76bdd4c61aa39becec02de0d0d91c4f01ca9b3dc3cb56)
 static _CONSOLE_METHODS: std::sync::LazyLock<Vec<(LogLevel, String)>> =
     std::sync::LazyLock::new(|| {
         let mut __flight_record = Vec::new();
@@ -1983,7 +1999,7 @@ static _CONSOLE_METHODS: std::sync::LazyLock<Vec<(LogLevel, String)>> =
         __flight_record
     });
 
-// Source: upstream/packages/log/src/log.ts:646 (sha256:1768b008161f47c489c3b6b68dfeea08cc58ed51cdaa9b160d17e03281a22dfc)
+// Source: upstream/packages/log/src/log.ts:651 (sha256:1768b008161f47c489c3b6b68dfeea08cc58ed51cdaa9b160d17e03281a22dfc)
 static _LEVEL_NAMES: std::sync::LazyLock<Vec<(LogLevel, String)>> =
     std::sync::LazyLock::new(|| {
         let mut __flight_record = Vec::new();
@@ -1996,7 +2012,7 @@ static _LEVEL_NAMES: std::sync::LazyLock<Vec<(LogLevel, String)>> =
         __flight_record
     });
 
-// Source: upstream/packages/log/src/log.ts:655 (sha256:e562f7e98e8298fddc43dda0f1976be92914f3355267275a3f7197f193ab1a1b)
+// Source: upstream/packages/log/src/log.ts:660 (sha256:e562f7e98e8298fddc43dda0f1976be92914f3355267275a3f7197f193ab1a1b)
 static _LEVEL_BY_NAME: std::sync::LazyLock<Vec<(String, LogLevel)>> =
     std::sync::LazyLock::new(|| {
         vec![
@@ -2009,19 +2025,19 @@ static _LEVEL_BY_NAME: std::sync::LazyLock<Vec<(String, LogLevel)>> =
         ]
     });
 
-// Source: upstream/packages/log/src/log.ts:664 (sha256:4b4faac93218a491ebbfb8954f69bf28685a1498dac5e3e76a16c1d77a8434ef)
+// Source: upstream/packages/log/src/log.ts:669 (sha256:4b4faac93218a491ebbfb8954f69bf28685a1498dac5e3e76a16c1d77a8434ef)
 static _CHANNEL_LEVELS: std::sync::LazyLock<std::sync::Mutex<Vec<(String, LogLevel)>>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(Vec::new()));
 
-// Source: upstream/packages/log/src/log.ts:665 (sha256:48a8dcb3b0a5993958e6b77ff7d490cbb843a01519d5b6daf637ad0673968370)
+// Source: upstream/packages/log/src/log.ts:670 (sha256:48a8dcb3b0a5993958e6b77ff7d490cbb843a01519d5b6daf637ad0673968370)
 static _ONCE_KEYS: std::sync::LazyLock<std::sync::Mutex<Vec<String>>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(Vec::new()));
 
-// Source: upstream/packages/log/src/log.ts:666 (sha256:504e89f543bb3705f0a7345a276b430eff457709860cf172f146ecb49e956507)
+// Source: upstream/packages/log/src/log.ts:671 (sha256:504e89f543bb3705f0a7345a276b430eff457709860cf172f146ecb49e956507)
 static _REDACTION_PATHS: std::sync::LazyLock<std::sync::Mutex<Vec<String>>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(vec![]));
 
-// Source: upstream/packages/log/src/log.ts:667 (sha256:e95497c8f31f0a76bc02083fad722a7a2edeb0d07453d72343195ef793af9360)
+// Source: upstream/packages/log/src/log.ts:672 (sha256:e95497c8f31f0a76bc02083fad722a7a2edeb0d07453d72343195ef793af9360)
 static _SERIALIZERS: std::sync::LazyLock<
     std::sync::Mutex<
         Vec<(
@@ -2039,35 +2055,35 @@ static _SERIALIZERS: std::sync::LazyLock<
     >,
 > = std::sync::LazyLock::new(|| std::sync::Mutex::new(Vec::new()));
 
-// Source: upstream/packages/log/src/log.ts:668 (sha256:55040bb8cc45815fddccba18805d226f5bf00f0ab8ff360507efa86bf0d4f18a)
+// Source: upstream/packages/log/src/log.ts:673 (sha256:55040bb8cc45815fddccba18805d226f5bf00f0ab8ff360507efa86bf0d4f18a)
 static _SINKS: std::sync::LazyLock<std::sync::Mutex<Vec<LogSink>>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(vec![]));
 
-// Source: upstream/packages/log/src/log.ts:669 (sha256:dbe0d0d8162b962d9edc34383782acc904ec9f038ebdb31775dc7220278bb5e0)
+// Source: upstream/packages/log/src/log.ts:674 (sha256:dbe0d0d8162b962d9edc34383782acc904ec9f038ebdb31775dc7220278bb5e0)
 static _SPAN_STACK: std::sync::LazyLock<std::sync::Mutex<Vec<LogSpan>>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(vec![]));
 
-// Source: upstream/packages/log/src/log.ts:671 (sha256:4170134a1d1ac4359e567ee04d9a0f56a1b1e46c449e31e39ab0cce7393af202)
+// Source: upstream/packages/log/src/log.ts:676 (sha256:4170134a1d1ac4359e567ee04d9a0f56a1b1e46c449e31e39ab0cce7393af202)
 static _CONSOLE_LEVEL: std::sync::LazyLock<std::sync::Mutex<LogLevel>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(LogLevel::Info));
 
-// Source: upstream/packages/log/src/log.ts:672 (sha256:7ed9d659489176028390f6825f6bc69849a959a913849f1ff9faa25795150211)
+// Source: upstream/packages/log/src/log.ts:677 (sha256:7ed9d659489176028390f6825f6bc69849a959a913849f1ff9faa25795150211)
 static _GROUP_DEPTH: std::sync::LazyLock<std::sync::Mutex<f64>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(0.0_f64));
 
-// Source: upstream/packages/log/src/log.ts:673 (sha256:d60c87911e5d8deddd4d85f44c5881ae81dce35da609c04e0a40abdb6c3d610a)
+// Source: upstream/packages/log/src/log.ts:678 (sha256:d60c87911e5d8deddd4d85f44c5881ae81dce35da609c04e0a40abdb6c3d610a)
 static _LEVEL: std::sync::LazyLock<std::sync::Mutex<LogLevel>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(LogLevel::Verbose));
 
-// Source: upstream/packages/log/src/log.ts:674 (sha256:c6d7c18ae8b174ac5cc5345cf8a69e2dc40e9dc25add31f4158b5487084e6d6c)
+// Source: upstream/packages/log/src/log.ts:679 (sha256:c6d7c18ae8b174ac5cc5345cf8a69e2dc40e9dc25add31f4158b5487084e6d6c)
 static _LOG_SIGNALS: std::sync::LazyLock<std::sync::Mutex<Option<LogSignals>>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(None));
 
-// Source: upstream/packages/log/src/log.ts:675 (sha256:bb87135de7b6b7e11dae257be17f25120480dfe5c3d251a524ec67b93f4303e1)
+// Source: upstream/packages/log/src/log.ts:680 (sha256:bb87135de7b6b7e11dae257be17f25120480dfe5c3d251a524ec67b93f4303e1)
 static _TRANSPORT_BACKEND: std::sync::LazyLock<std::sync::Mutex<Option<LogTransportBackend>>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(None));
 
-// Source: upstream/packages/log/src/log.ts:678 (sha256:a73f8d4506e0e15cce747ab78ca239d58f12af7faae2280a1a9a0c7fcf93bd41)
+// Source: upstream/packages/log/src/log.ts:683 (sha256:a73f8d4506e0e15cce747ab78ca239d58f12af7faae2280a1a9a0c7fcf93bd41)
 #[derive(Clone, Default)]
 struct ApplySerializersRecord5 {
     __flight_identity: std::sync::Arc<()>,
@@ -2192,7 +2208,7 @@ fn _apply_serializers(
     return result;
 }
 
-// Source: upstream/packages/log/src/log.ts:699 (sha256:81eb779db390901d7bead526a299029a68af484f606cbc13807defc4f4ceb131)
+// Source: upstream/packages/log/src/log.ts:704 (sha256:81eb779db390901d7bead526a299029a68af484f606cbc13807defc4f4ceb131)
 fn _apply_redaction(data: &Vec<(String, crate::FlightValue)>) -> Vec<(String, crate::FlightValue)> {
     let mut result = (data).clone();
     for path in (_REDACTION_PATHS.lock().unwrap()).iter().cloned() {
@@ -2205,7 +2221,7 @@ fn _apply_redaction(data: &Vec<(String, crate::FlightValue)>) -> Vec<(String, cr
     return result;
 }
 
-// Source: upstream/packages/log/src/log.ts:709 (sha256:7c36f4fb96c9a70f85845e21ef2f365f794eacfeeefddf68349be258c9a648f8)
+// Source: upstream/packages/log/src/log.ts:714 (sha256:7c36f4fb96c9a70f85845e21ef2f365f794eacfeeefddf68349be258c9a648f8)
 fn _redact_path(obj: &mut Vec<(String, crate::FlightValue)>, parts: &Vec<String>, idx: f64) -> () {
     let key = parts[idx as usize].clone();
     if (!{
@@ -2336,7 +2352,7 @@ fn _redact_path(obj: &mut Vec<(String, crate::FlightValue)>, parts: &Vec<String>
     }
 }
 
-// Source: upstream/packages/log/src/log.ts:724 (sha256:5687a087982a83a17d7f858b4d859883ad8675360b262fbcd80bed9a938e6c77)
+// Source: upstream/packages/log/src/log.ts:729 (sha256:5687a087982a83a17d7f858b4d859883ad8675360b262fbcd80bed9a938e6c77)
 fn _emit_to_sinks(entry: &LogEntry) -> () {
     for sink in (_SINKS.lock().unwrap()).iter().cloned() {
         {
@@ -2367,7 +2383,7 @@ fn _emit_to_sinks(entry: &LogEntry) -> () {
     }
 }
 
-// Source: upstream/packages/log/src/log.ts:732 (sha256:5495059cd917240faea94fd4eb557824a2ccc294cea5b22cadb5e15ed9240347)
+// Source: upstream/packages/log/src/log.ts:737 (sha256:5495059cd917240faea94fd4eb557824a2ccc294cea5b22cadb5e15ed9240347)
 fn _merge_context_fields(context: &LogContext, data: &LogData) -> LogData {
     if ((context
         .fields
@@ -2449,7 +2465,7 @@ fn _merge_context_fields(context: &LogContext, data: &LogData) -> LogData {
     });
 }
 
-// Source: upstream/packages/log/src/log.ts:741 (sha256:d3bcaac1968dbb501f40fb4cbc6e540c346a5a1fbbf5264613098bcf1d2763a0)
+// Source: upstream/packages/log/src/log.ts:746 (sha256:d3bcaac1968dbb501f40fb4cbc6e540c346a5a1fbbf5264613098bcf1d2763a0)
 #[derive(Clone, Default)]
 struct MergeSpanFieldsRecord5 {
     __flight_identity: std::sync::Arc<()>,
@@ -2550,7 +2566,7 @@ fn _merge_span_fields(data: &LogData, _channel: Option<String>) -> LogData {
     });
 }
 
-// Source: upstream/packages/log/src/log.ts:754 (sha256:2090ce9e096083230d4196d8df9e672c8a7e96dbde202c8f7390500b4dd05baf)
+// Source: upstream/packages/log/src/log.ts:759 (sha256:2090ce9e096083230d4196d8df9e672c8a7e96dbde202c8f7390500b4dd05baf)
 fn _passes_level_gate(level: LogLevel, channel: Option<String>) -> bool {
     if ((_SINKS.lock().unwrap().len() as f64) == 0.0_f64)
         && (((*_LOG_SIGNALS.lock().unwrap()).clone()).is_none())
@@ -2572,12 +2588,12 @@ fn _passes_level_gate(level: LogLevel, channel: Option<String>) -> bool {
     return ((gate).as_ref().is_some_and(|value| level <= *value)) && (level != LogLevel::None);
 }
 
-// Source: upstream/packages/log/src/log.ts:760 (sha256:d585ebf20bfc2a78ee2f52cac90944d899e116c49d935d28c050cf6b0591a643)
+// Source: upstream/packages/log/src/log.ts:765 (sha256:d585ebf20bfc2a78ee2f52cac90944d899e116c49d935d28c050cf6b0591a643)
 fn _timestamp() -> f64 {
     return crate::host_value::<f64>("host.call");
 }
 
-// Source: upstream/packages/log/src/log.ts:764 (sha256:45f2fe54e019dace1c01f279269d85ace2486e38de7971fa46a2733350b7416e)
+// Source: upstream/packages/log/src/log.ts:769 (sha256:45f2fe54e019dace1c01f279269d85ace2486e38de7971fa46a2733350b7416e)
 fn _default_json_formatter(entry: &LogEntry) -> String {
     let level = entry.level;
     let channel = (entry.channel).clone();
@@ -2700,12 +2716,12 @@ fn _default_json_formatter(entry: &LogEntry) -> String {
     .expect("JSON.stringify returned undefined where Rust requires String");
 }
 
-// Source: upstream/packages/log/src/log.ts:776 (sha256:3f220612b482f6b947e7c44fec4f0073691ff4d9bbc1092e4e523dd6f500ad04)
+// Source: upstream/packages/log/src/log.ts:781 (sha256:3f220612b482f6b947e7c44fec4f0073691ff4d9bbc1092e4e523dd6f500ad04)
 fn _write_console_capture_entry(entry: &LogEntry, envelope_formatter: LogFormatter) -> () {
     return;
 }
 
-// Source: upstream/packages/log/src/log.ts:791 (sha256:6444c1d2ac8bee5c434409d7798b3e2238035d9841798aeadec7ac0d6d3879ad)
+// Source: upstream/packages/log/src/log.ts:796 (sha256:6444c1d2ac8bee5c434409d7798b3e2238035d9841798aeadec7ac0d6d3879ad)
 fn _write_console_log_entry(entry: &LogEntry, formatter: LogFormatter) -> () {
     return;
 }

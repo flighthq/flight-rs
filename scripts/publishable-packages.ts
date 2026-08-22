@@ -1,9 +1,9 @@
 // Which packages under `packages/` are published to npm.
 //
 // The set is derived rather than listed: a package is publishable unless it marks itself
-// `"private": true`. Today that resolves to exactly `@flighthq/bitmap-wasm`, the only blessed facade
-// and the only artifact here intended for consumers — `generated/` crates are all `publish = false`
-// and are consumed through this repository, not from a registry.
+// `"private": true`. Today that resolves to the blessed bitmap and Physics ABI wasm facades;
+// `generated/` crates are all `publish = false` and are consumed through this repository, not from
+// a registry.
 //
 // Deriving it means adding a second facade needs no edit here, and — more importantly — a package
 // cannot be published by accident: opting out is a field in its own manifest, which is also where a

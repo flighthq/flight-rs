@@ -7,24 +7,10 @@
 #![allow(unused_parens)]
 
 use flighthq_types::{
-    GlyphMetrics, GlyphRasterizeOptions, GlyphRasterizedBitmap, GlyphRasterizerBackend,
+    BackendExplanation, GlyphRasterizeOptions, GlyphRasterizedBitmap, GlyphRasterizerBackend,
 };
 
-#[inline]
-
-fn __flight_string_from_code_point(value: f64) -> String {
-    assert!(
-        value.is_finite()
-            && value.fract() == 0.0_f64
-            && (0.0_f64..=0x10FFFF_u32 as f64).contains(&value),
-        "String.fromCodePoint received an invalid code point"
-    );
-    char::from_u32(value as u32)
-        .expect("Rust strings cannot represent surrogate code points")
-        .to_string()
-}
-
-// Source: upstream/packages/glyphatlas/src/glyphRasterizerBackend.ts:14 (sha256:6ee88e601aef10e43a1242471ea89503124afb3ddb5c73ca6f3ad226e59c4898)
+// Source: upstream/packages/glyphatlas/src/glyphRasterizerBackend.ts:3 (sha256:6ee88e601aef10e43a1242471ea89503124afb3ddb5c73ca6f3ad226e59c4898)
 pub fn create_stub_glyph_rasterizer_backend() -> GlyphRasterizerBackend {
     return GlyphRasterizerBackend {
         __flight_identity: std::sync::Arc::new(()),
@@ -62,49 +48,106 @@ pub fn create_stub_glyph_rasterizer_backend() -> GlyphRasterizerBackend {
     };
 }
 
-// Source: upstream/packages/glyphatlas/src/glyphRasterizerBackend.ts:41 (sha256:481a85529405f503f9fe7bb5525b286681a4301df375bda6e97157cdd8bca3c7)
-pub fn create_web_glyph_rasterizer_backend() -> GlyphRasterizerBackend {
-    return GlyphRasterizerBackend {
-        __flight_identity: std::sync::Arc::new(()),
-        measure_metrics: Some(std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-            move |options: GlyphRasterizeOptions| -> Option<GlyphMetrics> {
-                let mut context = _acquire_glyph_raster_context();
-                if (context).is_none() {
-                    return None;
-                }
-                _apply_glyph_raster_font((context.as_mut().unwrap()).clone(), &options);
-                let metrics = crate::host_value::<()>("host.measureText");
-                let ascent =
-                    crate::host_value::<crate::OpaqueHostValue>("host.fontBoundingBoxAscent");
-                let descent =
-                    crate::host_value::<crate::OpaqueHostValue>("host.fontBoundingBoxDescent");
-                if (!(ascent > 0.0_f64)) || (!(descent >= 0.0_f64)) {
-                    return None;
-                }
-                return Some(GlyphMetrics {
-                    __flight_identity: std::sync::Arc::new(()),
-                    ascent: ascent,
-                    descent: descent,
-                    line_gap: 0.0_f64,
-                });
+// Source: upstream/packages/glyphatlas/src/glyphRasterizerBackend.ts:23 (sha256:6a81538f3d3ae743e4ae747ba62c354f6b529c1558427fc2e175502208396f03)
+#[derive(Clone, Default)]
+struct ExplainGlyphRasterizerBackendRecord1 {
+    __flight_identity: std::sync::Arc<()>,
+    layer: String,
+    viability: String,
+}
+impl PartialEq for ExplainGlyphRasterizerBackendRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+pub fn explain_glyph_rasterizer_backend() -> BackendExplanation {
+    if ((*_CUSTOM.lock().unwrap()).clone()).is_some() {
+        return BackendExplanation {
+            __flight_identity: std::sync::Arc::new(()),
+            layer: "custom".to_owned(),
+            viability: "available".to_owned(),
+        };
+    }
+    if ((*_HOST.lock().unwrap()).clone()).is_some() {
+        if _HOST_CONFLICT.load(std::sync::atomic::Ordering::Relaxed) {
+            return BackendExplanation {
+                __flight_identity: std::sync::Arc::new(()),
+                layer: "host".to_owned(),
+                viability: "provider-conflict".to_owned(),
+            };
+        }
+        return BackendExplanation {
+            __flight_identity: std::sync::Arc::new(()),
+            layer: "host".to_owned(),
+            viability: if _HOST_VIABLE.load(std::sync::atomic::Ordering::Relaxed) {
+                "available".to_owned()
+            } else {
+                "runtime-api-unavailable".to_owned()
             },
-        )
-            as Box<
-                dyn FnMut(GlyphRasterizeOptions) -> Option<GlyphMetrics> + Send + 'static,
-            >))),
+        };
+    }
+    return BackendExplanation {
+        __flight_identity: std::sync::Arc::new(()),
+        layer: "host-not-enabled".to_owned(),
+        viability: "available".to_owned(),
+    };
+}
+
+// Source: upstream/packages/glyphatlas/src/glyphRasterizerBackend.ts:32 (sha256:e65d931617a37668f0563eb9e13ae8da6f3b9b99d7009a9f3f0f1fa7972c2364)
+pub fn get_glyph_rasterizer_backend() -> GlyphRasterizerBackend {
+    return (((*_CUSTOM.lock().unwrap()).clone()).or((*_HOST.lock().unwrap()).clone()))
+        .unwrap_or(((*_SENTINEL).clone()).clone());
+}
+
+// Source: upstream/packages/glyphatlas/src/glyphRasterizerBackend.ts:40 (sha256:a5b14d8fc6dd3169fb71f4b345556f205603e416e855ea8bbae681983b6d4a6f)
+pub fn install_glyph_rasterizer_host_backend(backend: &GlyphRasterizerBackend, viable: bool) -> () {
+    if ((*_HOST.lock().unwrap()).clone()).is_some() {
+        if (((*_HOST.lock().unwrap()).as_mut().unwrap()).clone() != backend) {
+            _HOST_CONFLICT.store(true, std::sync::atomic::Ordering::Relaxed);
+        }
+        return;
+    }
+    (*_HOST.lock().unwrap()) = Some((*backend).clone());
+    _HOST_VIABLE.store(viable, std::sync::atomic::Ordering::Relaxed);
+}
+
+// Source: upstream/packages/glyphatlas/src/glyphRasterizerBackend.ts:49 (sha256:9e2faec833d09af35d7a1eb16e0e760f5473e79306c06309e5e57c697fe7726a)
+pub fn reset_glyph_rasterizer_backend_for_test() -> () {
+    (*_CUSTOM.lock().unwrap()) = None;
+    (*_HOST.lock().unwrap()) = None;
+    _HOST_VIABLE.store(false, std::sync::atomic::Ordering::Relaxed);
+    _HOST_CONFLICT.store(false, std::sync::atomic::Ordering::Relaxed);
+}
+
+// Source: upstream/packages/glyphatlas/src/glyphRasterizerBackend.ts:56 (sha256:0295ab0c84bb832d5d3fd610fa39222f8cbc073daf186f636b667ce0a3d44a0a)
+pub fn set_glyph_rasterizer_backend(backend: &Option<GlyphRasterizerBackend>) -> () {
+    (*_CUSTOM.lock().unwrap()) = (*backend).clone();
+}
+
+// Source: upstream/packages/glyphatlas/src/glyphRasterizerBackend.ts:60 (sha256:74178d9f09bf58daa54b31b12937a29ecbb85d082ca92128d4b92cc7f8d449e2)
+static _CUSTOM: std::sync::LazyLock<std::sync::Mutex<Option<GlyphRasterizerBackend>>> =
+    std::sync::LazyLock::new(|| std::sync::Mutex::new(None));
+
+// Source: upstream/packages/glyphatlas/src/glyphRasterizerBackend.ts:61 (sha256:45e6b59d0d9c6fb463e793a6e3a250e746b4fa015cb087d4413ba1d175a23713)
+static _HOST: std::sync::LazyLock<std::sync::Mutex<Option<GlyphRasterizerBackend>>> =
+    std::sync::LazyLock::new(|| std::sync::Mutex::new(None));
+
+// Source: upstream/packages/glyphatlas/src/glyphRasterizerBackend.ts:62 (sha256:147e6b11c92bec6fa647fd3fd33b97808cf3a54bfe0a4871efc518eb3df50139)
+static _HOST_VIABLE: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+// Source: upstream/packages/glyphatlas/src/glyphRasterizerBackend.ts:63 (sha256:e44a9f5048c4d9c76906d58e325f2bbeb07ee3c67eebdef66e54c0149df217d1)
+static _HOST_CONFLICT: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+// Source: upstream/packages/glyphatlas/src/glyphRasterizerBackend.ts:67 (sha256:4b22d0184974bc5f3185c441384fa5fd035a1977094268078cf4c02ab3d2ff7d)
+static _SENTINEL: std::sync::LazyLock<GlyphRasterizerBackend> =
+    std::sync::LazyLock::new(|| GlyphRasterizerBackend {
+        __flight_identity: std::sync::Arc::new(()),
         rasterize: std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-            move |codepoint: f64,
-                  options: GlyphRasterizeOptions|
+            move |__flight_unused_0: f64,
+                  __flight_unused_1: GlyphRasterizeOptions|
                   -> Option<GlyphRasterizedBitmap> {
-                let mut context = _acquire_glyph_raster_context();
-                if (context).is_none() {
-                    return None;
-                }
-                return _rasterize_glyph_on_context(
-                    (context.as_mut().unwrap()).clone(),
-                    codepoint,
-                    &options,
-                );
+                return None;
             },
         )
             as Box<
@@ -112,111 +155,5 @@ pub fn create_web_glyph_rasterizer_backend() -> GlyphRasterizerBackend {
                     + Send
                     + 'static,
             >)),
-    };
-}
-
-// Source: upstream/packages/glyphatlas/src/glyphRasterizerBackend.ts:75 (sha256:c8604ceefc9ed680168177faa121bbaf51e3c2559caa29e33a50e7e23e6522f9)
-pub fn get_glyph_rasterizer_backend() -> GlyphRasterizerBackend {
-    if ((*_BACKEND.lock().unwrap()).clone()).is_none() {
-        (*_BACKEND.lock().unwrap()) = Some(create_web_glyph_rasterizer_backend());
-    }
-    return (((*_BACKEND.lock().unwrap()).clone()).clone().unwrap()).clone();
-}
-
-// Source: upstream/packages/glyphatlas/src/glyphRasterizerBackend.ts:81 (sha256:db0a730806afd604b259ee162e309d2d45828b73b7fba5ab3c50e59bbe5cb1c4)
-pub fn set_glyph_rasterizer_backend(backend: &Option<GlyphRasterizerBackend>) -> () {
-    (*_BACKEND.lock().unwrap()) = (*backend).clone();
-}
-
-// Source: upstream/packages/glyphatlas/src/glyphRasterizerBackend.ts:85 (sha256:8a69294db958bdf5d0b47608c745de8183f7716c9cd557a4e86010f2977cce68)
-static _BACKEND: std::sync::LazyLock<std::sync::Mutex<Option<GlyphRasterizerBackend>>> =
-    std::sync::LazyLock::new(|| std::sync::Mutex::new(None));
-
-// Source: upstream/packages/glyphatlas/src/glyphRasterizerBackend.ts:90 (sha256:84884a2867a5b8b22005dff255ba00c6f2093d1a478bf0e1d77777f6370467d8)
-fn _acquire_glyph_raster_context() -> Option<crate::OpaqueHostValue> {
-    let __flight_try_return: Option<Option<crate::OpaqueHostValue>> = match std::panic::catch_unwind(
-        std::panic::AssertUnwindSafe(|| -> Option<Option<crate::OpaqueHostValue>> {
-            {}
-            None
-        }),
-    ) {
-        Ok(value) => value,
-        Err(_) => (|| -> Option<Option<crate::OpaqueHostValue>> {
-            {
-                return Some(None);
-            }
-            None
-        })(),
-    };
-    if let Some(__flight_return) = __flight_try_return {
-        return __flight_return;
-    }
-    return None;
-}
-
-// Source: upstream/packages/glyphatlas/src/glyphRasterizerBackend.ts:110 (sha256:72b8ce5a853694fa730d3b49ced2bccb98ef4406ca7f22eddb3bb272850375cd)
-fn _rasterize_glyph_on_context(
-    context: crate::OpaqueHostValue,
-    codepoint: f64,
-    options: &GlyphRasterizeOptions,
-) -> Option<GlyphRasterizedBitmap> {
-    let text = __flight_string_from_code_point(codepoint);
-    _apply_glyph_raster_font((context).clone(), options);
-    crate::host_set("host.textBaseline", "alphabetic");
-    crate::host_set("host.textAlign", "left");
-    let metrics = crate::host_value::<()>("host.measureText");
-    let advance = crate::host_value::<crate::OpaqueHostValue>("host.width");
-    let left = (crate::host_value::<Option<f64>>("host.actualBoundingBoxLeft")).unwrap_or(0.0_f64);
-    let right =
-        (crate::host_value::<Option<crate::OpaqueHostValue>>("host.actualBoundingBoxRight"))
-            .unwrap_or((advance).clone());
-    let ascent = (crate::host_value::<Option<f64>>("host.actualBoundingBoxAscent"))
-        .unwrap_or(options.font_size);
-    let descent =
-        (crate::host_value::<Option<f64>>("host.actualBoundingBoxDescent")).unwrap_or(0.0_f64);
-    let guard = 1.0_f64;
-    let width = ((0.0_f64).max((left + right).ceil()) + (guard * 2.0_f64));
-    let height = ((0.0_f64).max((ascent + descent).ceil()) + (guard * 2.0_f64));
-    if (width <= (guard * 2.0_f64)) || (height <= (guard * 2.0_f64)) {
-        return None;
-    }
-    let mut canvas = crate::host_value::<crate::OpaqueHostValue>("host.canvas");
-    crate::host_set("host.width", width);
-    crate::host_set("host.height", height);
-    _apply_glyph_raster_font((context).clone(), options);
-    crate::host_set("host.textBaseline", "alphabetic");
-    crate::host_set("host.textAlign", "left");
-    crate::host_value::<()>("host.clearRect");
-    crate::host_set("host.fillStyle", "#ffffff");
-    crate::host_value::<()>("host.fillText");
-    let image = crate::host_value::<()>("host.getImageData");
-    return Some(GlyphRasterizedBitmap {
-        __flight_identity: std::sync::Arc::new(()),
-        advance: advance,
-        bearing_x: (-left),
-        bearing_y: ascent,
-        height: height,
-        pixels: vec![0_u8; (crate::host_value::<crate::OpaqueHostValue>("host.data")) as usize],
-        width: width,
+        measure_metrics: None,
     });
-}
-
-// Source: upstream/packages/glyphatlas/src/glyphRasterizerBackend.ts:156 (sha256:4a6c1b83a3662ca60784461542ea6ab81a9e213d4dabc5c4faf29dca09e1687d)
-fn _apply_glyph_raster_font(
-    context: crate::OpaqueHostValue,
-    options: &GlyphRasterizeOptions,
-) -> () {
-    let font_style = ((options.font_style).clone()).unwrap_or("normal".to_owned());
-    let font_weight = ((options.font_weight).clone())
-        .unwrap_or(crate::FlightUnion2::<f64, String>::B("normal".to_owned()));
-    crate::host_set(
-        "host.font",
-        format!(
-            "{} {} {}px {}",
-            (font_style).clone(),
-            (font_weight).clone(),
-            options.font_size,
-            (options.font_family).clone()
-        ),
-    );
-}

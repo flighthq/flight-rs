@@ -1,7 +1,7 @@
 // GENERATED — do not edit by hand. Produced by scripts/embed-wasm.ts from
 // generated/crates/flighthq-bitmap-wasm. Holds the wasm module as base64 so init is
 // synchronous and needs no file read or network fetch in any environment.
-// wasm-input-sha256: 3369a55413787b64b32df7c486342f420c7dd4a1360d926091092a284c7cfb74
+// wasm-input-sha256: b3df77dc287466b172e467df9ba6a0ab65765301c72e54724d57f58daa8069ad
 // wasm-output-sha256: 3f505fba85ef49117ab07d388a302fe7e57f7c858886f433beff1fe7fd323be9
 
 const base64 =

@@ -36,13 +36,13 @@ describe('cultivated upstream analysis', () => {
     const geometryRoot = resolvePackageExportLane(inventoryByName, '@flighthq/geometry');
     const geometryContract = resolvePackageExportLane(inventoryByName, '@flighthq/geometry/contract');
 
-    expect(inventory.upstreamCommit).toBe('181dea5e323d8b0845ede2fade7f67b2ce8d2554');
-    expect(inventory.summary.packages).toBe(150);
-    expect(inventory.summary.exportLanes).toBe(313);
-    expect(inventory.summary.exports).toBe(34_370);
-    expect(inventory.summary.rootExports).toBe(13_301);
-    expect(inventory.summary.sourceFiles).toBe(2_654);
-    expect(inventory.summary.testFiles).toBe(1_505);
+    expect(inventory.upstreamCommit).toBe('147ae1eaea356a2200495b80ae4e42b1101ae647');
+    expect(inventory.summary.packages).toBe(153);
+    expect(inventory.summary.exportLanes).toBe(319);
+    expect(inventory.summary.exports).toBe(36_005);
+    expect(inventory.summary.rootExports).toBe(14_020);
+    expect(inventory.summary.sourceFiles).toBe(2_716);
+    expect(inventory.summary.testFiles).toBe(1_561);
     expect(geometry.exports.some((item) => item.name === 'createVector2')).toBe(true);
     expect(geometry.exportLanes.map((lane) => lane.specifier)).toEqual([
       '@flighthq/geometry',

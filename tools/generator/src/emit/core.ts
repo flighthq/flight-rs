@@ -191,7 +191,8 @@ export interface RustCrateIdentityNode {
 }
 
 export interface WasmFacadeReport {
-  coreCrate: string;
+  authoritativePackage: string;
+  coreCrate?: string;
   crate: string;
   exports: string[];
   output: string;
@@ -1793,12 +1794,14 @@ function generateWasmFacade(
   targets: RustTargetReport[],
   check: boolean,
 ): WasmFacadeReport {
-  const core = targets.find((target) => target.crate === facade.coreCrate);
-  if (!core) throw new Error(`Wasm facade ${facade.crate} references missing core crate ${facade.coreCrate}`);
-  const generatedDeclarations = new Set(core.emittedSources.flatMap((source) => source.declarationNames));
-  const missing = facade.exports.filter((name) => !generatedDeclarations.has(name));
-  if (missing.length > 0) {
-    throw new Error(`Wasm facade ${facade.crate} references deferred core exports: ${missing.join(', ')}`);
+  if (facade.coreCrate !== undefined) {
+    const core = targets.find((target) => target.crate === facade.coreCrate);
+    if (!core) throw new Error(`Wasm facade ${facade.crate} references missing core crate ${facade.coreCrate}`);
+    const generatedDeclarations = new Set(core.emittedSources.flatMap((source) => source.declarationNames));
+    const missing = facade.exports.filter((name) => !generatedDeclarations.has(name));
+    if (missing.length > 0) {
+      throw new Error(`Wasm facade ${facade.crate} references deferred core exports: ${missing.join(', ')}`);
+    }
   }
 
   const crateDirectory = path.join(workspaceDirectory, portConfig.generatedDirectory, 'crates', facade.crate);
@@ -1821,9 +1824,9 @@ function generateWasmFacade(
     'path = "src/lib.rs"',
     '',
     '[dependencies]',
-    `${facade.coreCrate} = { path = "../${facade.coreCrate}" }`,
-    'flighthq-runtime = { path = "../flighthq-runtime" }',
-    'flighthq-types = { path = "../flighthq-types" }',
+    ...Object.entries(facade.dependencies)
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(([crate, dependencyPath]) => `${crate} = { path = "${dependencyPath}" }`),
     'wasm-bindgen = "0.2"',
     '',
   ].join('\n');
@@ -1837,7 +1840,8 @@ function generateWasmFacade(
   }
   verifyNoStaleOutputs(crateDirectory, new Set(outputs.map((output) => output.file)), check);
   return {
-    coreCrate: facade.coreCrate,
+    authoritativePackage: facade.authoritativePackage,
+    ...(facade.coreCrate === undefined ? {} : { coreCrate: facade.coreCrate }),
     crate: facade.crate,
     exports: [...facade.exports].sort(),
     output: relative(workspaceDirectory, sourceFile),

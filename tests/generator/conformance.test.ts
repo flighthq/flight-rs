@@ -21,8 +21,8 @@ describe('generated upstream conformance harvest', () => {
 
     expect(harvest.report.summary).toMatchObject({
       inScopeTestFiles: 24,
-      outOfScopeTestFiles: 1481,
-      totalUpstreamTestFiles: 1505,
+      outOfScopeTestFiles: 1537,
+      totalUpstreamTestFiles: 1561,
       translatedCases: 45,
       translatedTestFiles: 3,
       unsupportedTestFiles: 21,

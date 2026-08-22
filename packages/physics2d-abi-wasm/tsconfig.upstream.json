@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "noEmit": true,
+    "sourceMap": false,
+    "rootDir": "../..",
+    "baseUrl": "../..",
+    "paths": {
+      "@flighthq/*/contract": ["upstream/packages/*/src/contract.ts"],
+      "@flighthq/*": ["upstream/packages/*/src/index.ts"]
+    },
+    "types": ["node", "vitest/globals"],
+    "lib": ["ES2022", "DOM"]
+  },
+  "include": ["src", "../bitmap-wasm/upstream-webgpu.d.ts"],
+  "exclude": ["src/upstream-contract.d.ts"]
+}

@@ -46,7 +46,7 @@ jobs:
           cache: npm
       - uses: ./.github/actions/rust
       - run: npm ci
-      # Regenerates all 150 packages and byte-compares against the committed tree, so this is also
+      # Regenerates all 153 packages and byte-compares against the committed tree, so this is also
       # where cross-machine determinism gets proven: the runner is neither developer's machine.
       - run: npm run generate:check
 
@@ -64,8 +64,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run typecheck
-      # Compiles the published facade against the real upstream sources rather than the local
-      # declaration shim, which is what keeps the two from drifting apart silently.
+      # Compiles the published facades against real upstream sources rather than local declaration
+      # shims, which keeps the two sides from drifting apart silently.
       - run: npm run typecheck:upstream
       - run: npm run lint
       - run: npm run format:check
@@ -116,7 +116,7 @@ jobs:
 
       # `npm run wasm` regenerates in WRITE mode, which does not run the coverage ratchet — so this
       # lane reaches the compiler even when `Generate` is red. It is the step that would have caught
-      # `flighthq-bitmap` failing to compile, which `generate:check` never reported because the
+      # a facade crate failing to compile, which `generate:check` may not report if a coverage
       # ratchet fires first and stops the run.
       - name: Build the wasm module
         run: npm run wasm
@@ -132,12 +132,16 @@ jobs:
       #
       # This is the step that catches a `files` or glue-copy mistake: a tarball that installs and
       # then fails at import time is invisible to every unit test.
-      - name: Pack the tarball
-        working-directory: packages/bitmap-wasm
+      - name: Pack the tarballs
         run: |
-          npx tsc -b
-          npx tsx ./scripts/copy-wasm-glue.ts
-          npm pack --ignore-scripts --pack-destination /tmp
+          for package in packages/*-wasm; do
+            (
+              cd "${package}"
+              npx tsc -b
+              npx tsx ./scripts/copy-wasm-glue.ts
+              npm pack --ignore-scripts --pack-destination /tmp
+            )
+          done
           ls -l /tmp/*.tgz
 
       # Everything above tests the SOURCES. This installs what would actually be published and

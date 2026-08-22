@@ -7,15 +7,15 @@
 #![allow(unused_parens)]
 
 use flighthq_log::{
-    add_log_sink, clear_log_channel_levels, create_console_log_sink, get_log_level,
-    remove_log_sink, set_log_channel_level, set_log_level,
+    add_log_sink, clear_log_channel_level, clear_log_channel_levels, create_console_log_sink,
+    get_log_channel_level, get_log_level, remove_log_sink, set_log_channel_level, set_log_level,
 };
 use flighthq_render::{enable_color_adjustment_guards, enable_render_registry_guards};
 use flighthq_types::{
     DebugOptions, DebugSubsystemHooks, DebugSubsystemName, LogLevel, LogSink, RenderState,
 };
 
-// Source: upstream/packages/debug/src/debug.ts:24 (sha256:db7c1086c01a5a0e0ff577301df07c656f8e538a6150f8e50b19d3127f90cd23)
+// Source: upstream/packages/debug/src/debug.ts:26 (sha256:db7c1086c01a5a0e0ff577301df07c656f8e538a6150f8e50b19d3127f90cd23)
 pub fn disable_debug() -> () {
     if (!_ENABLED.load(std::sync::atomic::Ordering::Relaxed)) {
         return;
@@ -34,7 +34,7 @@ pub fn disable_debug() -> () {
     _ENABLED.store(false, std::sync::atomic::Ordering::Relaxed);
 }
 
-// Source: upstream/packages/debug/src/debug.ts:40 (sha256:397fe717277e7fb721cb4084d879a25046317cc91bf3c87c0682b0eeed22b965)
+// Source: upstream/packages/debug/src/debug.ts:42 (sha256:55b73e98c5d9747c4310b282484d10e62a6e0df62d86f25c049171961320461e)
 #[derive(Clone, Default)]
 struct EnableDebugRecord9 {
     __flight_identity: std::sync::Arc<()>,
@@ -60,36 +60,117 @@ pub fn enable_debug(options: Option<DebugOptions>) -> () {
     let subsystems = _resolve_debug_subsystems(&(options.subsystems));
     let channels = _collect_debug_channels(&subsystems, &(options.channels));
     (*_SAVED_GLOBAL_LEVEL.lock().unwrap()) = get_log_level();
-    _apply_debug_levels(level, &channels);
-    _install_debug_sink(((options.sink).clone()).unwrap_or(create_console_log_sink(None)));
-    for hooks in (subsystems).iter().cloned() {
-        {
-            let __flight_callback = (hooks.enable_guards).clone();
-            __flight_callback
-                .as_ref()
-                .map(|callback| callback.lock().unwrap()())
-        };
-        _ENABLED_SUBSYSTEMS
-            .lock()
-            .unwrap()
-            .push(((hooks).clone()).clone());
+    let saved_channel_levels: Vec<(crate::OpaqueHostValue, crate::OpaqueHostValue)> = (channels)
+        .iter()
+        .cloned()
+        .map(
+            |channel: String| -> (crate::OpaqueHostValue, crate::OpaqueHostValue) {
+                (
+                    {
+                        let __flight_portable_source = (channel).clone();
+                        crate::FlightValue::String((&__flight_portable_source).clone())
+                    },
+                    {
+                        let __flight_portable_source = get_log_channel_level((channel).clone());
+                        match (&__flight_portable_source).as_ref() {
+                            Some(value) => crate::FlightValue::Number((value).0 as f64),
+                            None => crate::FlightValue::Null,
+                        }
+                    },
+                )
+            },
+        )
+        .collect::<Vec<_>>();
+    match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+        _apply_debug_levels(level, &channels);
+        _install_debug_sink(((options.sink).clone()).unwrap_or(create_console_log_sink(None)));
+        for hooks in (subsystems).iter().cloned() {
+            _ENABLED_SUBSYSTEMS
+                .lock()
+                .unwrap()
+                .push(((hooks).clone()).clone());
+            {
+                let __flight_callback = (hooks.enable_guards).clone();
+                __flight_callback
+                    .as_ref()
+                    .map(|callback| callback.lock().unwrap()())
+            };
+        }
+    })) {
+        Ok(_) => {}
+        Err(_) => {
+            let error = crate::OpaqueHostValue::Object;
+            {
+                {
+                    let mut index = ((_ENABLED_SUBSYSTEMS.lock().unwrap().len() as f64) - 1.0_f64);
+                    while (index >= 0.0_f64) {
+                        match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                            {
+                                let __flight_callback = ((*_ENABLED_SUBSYSTEMS.lock().unwrap())
+                                    [index as usize]
+                                    .disable_guards)
+                                    .clone();
+                                __flight_callback
+                                    .as_ref()
+                                    .map(|callback| callback.lock().unwrap()())
+                            };
+                        })) {
+                            Ok(_) => {}
+                            Err(_) => {}
+                        }
+                        {
+                            index -= 1.0;
+                            index
+                        };
+                    }
+                }
+                _ENABLED_SUBSYSTEMS.lock().unwrap().clear();
+                match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                    _remove_debug_sink();
+                })) {
+                    Ok(_) => {}
+                    Err(_) => {}
+                }
+                for __iteration0 in (saved_channel_levels).iter().cloned() {
+                    let channel = __iteration0.0.clone();
+                    let saved_level = __iteration0.1.clone();
+                    match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                        if (saved_level).is_none() {
+                            clear_log_channel_level(channel);
+                        } else {
+                            set_log_channel_level(channel, saved_level);
+                        }
+                    })) {
+                        Ok(_) => {}
+                        Err(_) => {}
+                    }
+                }
+                match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                    set_log_level((*_SAVED_GLOBAL_LEVEL.lock().unwrap()).clone());
+                })) {
+                    Ok(_) => {}
+                    Err(_) => {}
+                }
+                panic!("{}", "generated Flight function threw");
+            }
+        }
     }
     _ENABLED.store(true, std::sync::atomic::Ordering::Relaxed);
 }
 
-// Source: upstream/packages/debug/src/debug.ts:56 (sha256:570508dbab5412bbf9f2898134fb8fd84d5c48f904c5d7de281b47eb7c3059c6)
+// Source: upstream/packages/debug/src/debug.ts:89 (sha256:570508dbab5412bbf9f2898134fb8fd84d5c48f904c5d7de281b47eb7c3059c6)
 pub fn enable_flight_diagnostics(state: &RenderState) -> () {
     enable_debug(None);
     enable_color_adjustment_guards(state);
     enable_render_registry_guards((state).clone());
 }
 
-// Source: upstream/packages/debug/src/debug.ts:63 (sha256:713183a8744dba3aa296c5c64a257d953e21ebfb93b9d8c5c1bde4baba1e9abb)
+// Source: upstream/packages/debug/src/debug.ts:96 (sha256:713183a8744dba3aa296c5c64a257d953e21ebfb93b9d8c5c1bde4baba1e9abb)
 pub fn is_debug_enabled() -> bool {
     return _ENABLED.load(std::sync::atomic::Ordering::Relaxed);
 }
 
-// Source: upstream/packages/debug/src/debug.ts:72 (sha256:2af5c01acd2a4e220b3cc75d0ca125c005960aed9914a7746beff9473fc0d891)
+// Source: upstream/packages/debug/src/debug.ts:105 (sha256:2af5c01acd2a4e220b3cc75d0ca125c005960aed9914a7746beff9473fc0d891)
 pub fn register_debug_subsystem(name: DebugSubsystemName, hooks: &DebugSubsystemHooks) -> () {
     {
         let __flight_key = name;
@@ -105,7 +186,7 @@ pub fn register_debug_subsystem(name: DebugSubsystemName, hooks: &DebugSubsystem
     };
 }
 
-// Source: upstream/packages/debug/src/debug.ts:78 (sha256:01e44f7d2a82508d767c4c73efc36cc1697c702ae04ed80938473708bc94c38e)
+// Source: upstream/packages/debug/src/debug.ts:111 (sha256:01e44f7d2a82508d767c4c73efc36cc1697c702ae04ed80938473708bc94c38e)
 pub fn unregister_debug_subsystem(name: DebugSubsystemName) -> bool {
     return {
         let __flight_key = name;
@@ -121,26 +202,26 @@ pub fn unregister_debug_subsystem(name: DebugSubsystemName) -> bool {
     };
 }
 
-// Source: upstream/packages/debug/src/debug.ts:82 (sha256:b446dff17a95f51c267401193476bb9eeab8df5a64c5e8384c43a9cb95072b78)
+// Source: upstream/packages/debug/src/debug.ts:115 (sha256:b446dff17a95f51c267401193476bb9eeab8df5a64c5e8384c43a9cb95072b78)
 static _SUBSYSTEMS: std::sync::LazyLock<std::sync::Mutex<Vec<(String, DebugSubsystemHooks)>>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(Vec::new()));
 
-// Source: upstream/packages/debug/src/debug.ts:83 (sha256:143147ca42bc9a380d2bf56afb975db570d964828bae059a36dd4a2c83e75170)
+// Source: upstream/packages/debug/src/debug.ts:116 (sha256:143147ca42bc9a380d2bf56afb975db570d964828bae059a36dd4a2c83e75170)
 static _ENABLED_SUBSYSTEMS: std::sync::LazyLock<std::sync::Mutex<Vec<DebugSubsystemHooks>>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(vec![]));
 
-// Source: upstream/packages/debug/src/debug.ts:85 (sha256:7229172ec48331971d8459b2c68e79d664373be87a769eb22f5997a746fc4f85)
+// Source: upstream/packages/debug/src/debug.ts:118 (sha256:7229172ec48331971d8459b2c68e79d664373be87a769eb22f5997a746fc4f85)
 static _ENABLED: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 
-// Source: upstream/packages/debug/src/debug.ts:86 (sha256:0314a5472218cc63a9e6c620c4f9fa1523454facfda37ad4828bbeb256cf2ea2)
+// Source: upstream/packages/debug/src/debug.ts:119 (sha256:0314a5472218cc63a9e6c620c4f9fa1523454facfda37ad4828bbeb256cf2ea2)
 static _INSTALLED_SINK: std::sync::LazyLock<std::sync::Mutex<Option<LogSink>>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(None));
 
-// Source: upstream/packages/debug/src/debug.ts:87 (sha256:a6b2878d479cb809f07923a4889a4fd7676257671f73fb1543691af57f9730c2)
+// Source: upstream/packages/debug/src/debug.ts:120 (sha256:a6b2878d479cb809f07923a4889a4fd7676257671f73fb1543691af57f9730c2)
 static _SAVED_GLOBAL_LEVEL: std::sync::LazyLock<std::sync::Mutex<LogLevel>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(LogLevel::Verbose));
 
-// Source: upstream/packages/debug/src/debug.ts:90 (sha256:224426a6057cd2d451a818ec407bd76d5c12ac3f955be77270752996087c47fe)
+// Source: upstream/packages/debug/src/debug.ts:123 (sha256:224426a6057cd2d451a818ec407bd76d5c12ac3f955be77270752996087c47fe)
 fn _apply_debug_levels(level: LogLevel, channels: &Vec<String>) -> () {
     set_log_level(level);
     for channel in (channels).iter().cloned() {
@@ -148,7 +229,7 @@ fn _apply_debug_levels(level: LogLevel, channels: &Vec<String>) -> () {
     }
 }
 
-// Source: upstream/packages/debug/src/debug.ts:96 (sha256:743e28d1ab40a93d5a10647e50b50c3d60608d1f427f4de036a7e3bdbed9aec4)
+// Source: upstream/packages/debug/src/debug.ts:129 (sha256:743e28d1ab40a93d5a10647e50b50c3d60608d1f427f4de036a7e3bdbed9aec4)
 fn _collect_debug_channels(
     subsystems: &Vec<DebugSubsystemHooks>,
     extra: &Option<Vec<String>>,
@@ -171,13 +252,13 @@ fn _collect_debug_channels(
     return channels;
 }
 
-// Source: upstream/packages/debug/src/debug.ts:109 (sha256:fe488eaa18eae0bb8fc093e7fab7a012fdf155f0de853ceb2480cc6769126be7)
+// Source: upstream/packages/debug/src/debug.ts:142 (sha256:fe488eaa18eae0bb8fc093e7fab7a012fdf155f0de853ceb2480cc6769126be7)
 fn _install_debug_sink(sink: LogSink) -> () {
     (*_INSTALLED_SINK.lock().unwrap()) = Some((sink).clone());
     add_log_sink((sink).clone());
 }
 
-// Source: upstream/packages/debug/src/debug.ts:115 (sha256:12765af0ae8bab60c885ab5edaa4668748aa1ca8382ae5455f84d5ed0a339668)
+// Source: upstream/packages/debug/src/debug.ts:148 (sha256:12765af0ae8bab60c885ab5edaa4668748aa1ca8382ae5455f84d5ed0a339668)
 fn _remove_debug_sink() -> () {
     if ((*_INSTALLED_SINK.lock().unwrap()).clone()).is_none() {
         return;
@@ -186,7 +267,7 @@ fn _remove_debug_sink() -> () {
     (*_INSTALLED_SINK.lock().unwrap()) = None;
 }
 
-// Source: upstream/packages/debug/src/debug.ts:123 (sha256:8f048e0281e53fbbea1c86cd627ffdf8c75f7351ceaf8ee25d781b64e555a65e)
+// Source: upstream/packages/debug/src/debug.ts:156 (sha256:8f048e0281e53fbbea1c86cd627ffdf8c75f7351ceaf8ee25d781b64e555a65e)
 fn _resolve_debug_subsystems(names: &Option<Vec<DebugSubsystemName>>) -> Vec<DebugSubsystemHooks> {
     if (names).is_none() {
         return {
@@ -215,7 +296,7 @@ fn _resolve_debug_subsystems(names: &Option<Vec<DebugSubsystemName>>) -> Vec<Deb
     return resolved;
 }
 
-// Source: upstream/packages/debug/src/debug.ts:136 (sha256:4f1d34bf8ef921904c56b309fc405dd874017df2c56f61ad4da7e32c7bcac860)
+// Source: upstream/packages/debug/src/debug.ts:169 (sha256:4f1d34bf8ef921904c56b309fc405dd874017df2c56f61ad4da7e32c7bcac860)
 fn _restore_debug_levels() -> () {
     set_log_level((*_SAVED_GLOBAL_LEVEL.lock().unwrap()).clone());
     clear_log_channel_levels();

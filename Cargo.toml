@@ -1,10 +1,13 @@
 [workspace]
 members = [
+  "crates/flighthq-physics-abi-wasm-core",
   "generated/crates/flighthq-easing",
   "generated/crates/flighthq-image",
   "generated/crates/flighthq-runtime",
   "generated/crates/flighthq-bitmap",
   "generated/crates/flighthq-bitmap-wasm",
+  "generated/crates/flighthq-physics2d-abi-wasm",
+  "generated/crates/flighthq-physics3d-abi-wasm",
   "generated/crates/flighthq-types",
 ]
 resolver = "3"

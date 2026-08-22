@@ -40,26 +40,29 @@ describe('published version borrows the upstream release', () => {
   });
 
   it('keeps the published dependency range in the upstream family it was generated from', () => {
-    // bitmap-wasm substitutes @flighthq/bitmap, so a range that drifts to a different upstream family
-    // would pair the wasm kernels with an upstream they were never differentially tested against.
+    // Each facade substitutes a Flight package, so a range that drifts to a different upstream
+    // family would pair its wasm implementation with a contract it was not built and tested against.
     //
     // The family is all this checks. The exact range is a RELEASE-time value and Flight names it:
     // most Flight releases are prereleases (`0.4.0-next.<count>.<sha>`), and the release lane stamps
     // whatever version it was handed. Pinning this to `^<major>.<minor>.0` would reject the ordinary
     // case — and worse, `^0.4.0` does not satisfy `0.4.0-next.…` at all under semver, so demanding
     // the stable form produces a package that cannot resolve until Flight ships a stable release.
-    const [facade] = publishablePackages(workspace).filter((item) => item.manifest.name === '@flighthq/bitmap-wasm');
-    expect(facade, '@flighthq/bitmap-wasm is publishable').toBeDefined();
-
     const flight = readFlightVersion(workspace);
     const [major, minor] = flight.split('.');
-    const dependencies = (facade?.manifest.dependencies ?? {}) as Record<string, string>;
+    const facades = publishablePackages(workspace);
+    expect(facades.length).toBeGreaterThan(0);
 
-    for (const [name, range] of Object.entries(dependencies)) {
-      if (!name.startsWith('@flighthq/')) continue;
-      const parsed = /^\^(\d+)\.(\d+)\.\d+(?:-[0-9A-Za-z.-]+)?$/u.exec(range);
-      expect(parsed, `${name} range "${range}" is a caret range over a full version`).not.toBeNull();
-      expect(`${parsed?.[1]}.${parsed?.[2]}`, `${name} tracks the ${flight} family`).toBe(`${major}.${minor}`);
+    for (const facade of facades) {
+      const dependencies = (facade.manifest.dependencies ?? {}) as Record<string, string>;
+      for (const [name, range] of Object.entries(dependencies)) {
+        if (!name.startsWith('@flighthq/')) continue;
+        const parsed = /^\^(\d+)\.(\d+)\.\d+(?:-[0-9A-Za-z.-]+)?$/u.exec(range);
+        expect(parsed, `${facade.manifest.name}: ${name} range "${range}" is a caret full version`).not.toBeNull();
+        expect(`${parsed?.[1]}.${parsed?.[2]}`, `${facade.manifest.name}: ${name} tracks ${flight}`).toBe(
+          `${major}.${minor}`,
+        );
+      }
     }
   });
 
@@ -126,8 +129,12 @@ describe('dist-tag ordering guard', () => {
 });
 
 describe('publishable set', () => {
-  it('is exactly the blessed facade', () => {
-    expect(publishablePackages(workspace).map((item) => item.manifest.name)).toEqual(['@flighthq/bitmap-wasm']);
+  it('is exactly the blessed facade set', () => {
+    expect(publishablePackages(workspace).map((item) => item.manifest.name)).toEqual([
+      '@flighthq/bitmap-wasm',
+      '@flighthq/physics2d-abi-wasm',
+      '@flighthq/physics3d-abi-wasm',
+    ]);
   });
 
   it('excludes a package that marks itself private, and stamps only what it includes', () => {

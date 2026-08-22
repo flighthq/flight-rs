@@ -47,6 +47,7 @@ describe('cultivated generator configuration', () => {
     }
 
     for (const facade of portConfig.wasmFacades) {
+      if (facade.coreCrate === undefined) continue;
       const declarations = declarationsByCrate.get(facade.coreCrate);
       expect(declarations, `${facade.crate} core target ${facade.coreCrate}`).toBeDefined();
       for (const name of facade.exports) {

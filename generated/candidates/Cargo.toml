@@ -33,7 +33,6 @@ members = [
   "flighthq-shading",
   "flighthq-signals",
   "flighthq-socket",
-  "flighthq-spatial",
   "flighthq-spring",
   "flighthq-textbidi",
   "flighthq-textsegment",

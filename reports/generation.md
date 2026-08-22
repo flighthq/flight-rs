@@ -1,20 +1,20 @@
 # Automatic Rust Generation
 
-Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
+Upstream commit: `147ae1eaea356a2200495b80ae4e42b1101ae647`
 
 | Metric | Count |
 | --- | ---: |
-| Inventoried packages | 150 |
-| Default-generated packages | 144 |
-| Emittable packages | 56 |
-| Blocked packages | 88 |
-| Compiled candidates | 26 |
+| Inventoried packages | 153 |
+| Default-generated packages | 147 |
+| Emittable packages | 55 |
+| Blocked packages | 92 |
+| Compiled candidates | 25 |
 | Compile-blocked candidates | 5 |
 | Dependency-blocked candidates | 23 |
 | Cultivated packages | 1 |
 | Host-bound packages | 4 |
 | Excluded packages | 1 |
-| Source/package blockers | 383 |
+| Source/package blockers | 407 |
 | Eligible task constructions | 229 |
 | Portable executable task constructions | 26 |
 | Host-placeholder task constructions | 0 |
@@ -24,7 +24,7 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | Host-placeholder async scopes | 0 |
 | Unsupported async scopes | 157 |
 | Async scopes matching the legacy body-erasure path | 89 |
-| Upstream conformance files translated and passing | 3/1505 |
+| Upstream conformance files translated and passing | 3/1561 |
 | Generated conformance cases passing | 45/45 |
 
 | Package | Disposition | Status | Candidate | Sources emitted/attempted | API generated/expected | Missing | Dependents direct/transitive | Opaque sources | Blockers | Target |
@@ -39,7 +39,7 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/assets` | generated | blocked | source-blocked | 4/5 | 17/18 | 1 | 1/1 | 0 | 2 | no |
 | `@flighthq/audio` | generated | blocked | source-blocked | 5/7 | 34/34 | 0 | 4/4 | 1 | 2 | no |
 | `@flighthq/binpack` | generated | blocked | source-blocked | 3/4 | 4/4 | 0 | 1/1 | 0 | 1 | no |
-| `@flighthq/bitmap` | cultivated | cultivated | not-applicable | 0/0 | 0/110 | 110 | 7/10 | 0 | 0 | partial |
+| `@flighthq/bitmap` | cultivated | cultivated | not-applicable | 0/0 | 0/110 | 110 | 7/11 | 0 | 0 | partial |
 | `@flighthq/bitmapfont` | generated | emittable | dependency-blocked | 8/8 | 16/16 | 0 | 2/2 | 0 | 0 | no |
 | `@flighthq/bitmapfont-formats` | generated | emittable | dependency-blocked | 6/6 | 6/4 | 0 | 1/1 | 1 | 0 | no |
 | `@flighthq/bitmaptext` | generated | blocked | source-blocked | 3/4 | 12/14 | 2 | 1/1 | 0 | 2 | no |
@@ -49,11 +49,11 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/clip` | generated | emittable | dependency-blocked | 4/4 | 26/26 | 0 | 3/4 | 0 | 0 | no |
 | `@flighthq/clipboard` | generated | blocked | source-blocked | 2/3 | 29/32 | 3 | 4/4 | 0 | 2 | no |
 | `@flighthq/clock` | generated | emittable | compiled | 4/4 | 14/14 | 0 | 1/1 | 0 | 0 | no |
-| `@flighthq/collision` | generated | blocked | source-blocked | 17/20 | 60/54 | 0 | 2/2 | 0 | 3 | no |
+| `@flighthq/collision` | generated | blocked | source-blocked | 32/38 | 128/119 | 0 | 5/5 | 0 | 6 | no |
 | `@flighthq/color` | generated | emittable | compiled | 11/11 | 31/31 | 0 | 19/45 | 0 | 0 | no |
 | `@flighthq/compression` | generated | blocked | source-blocked | 3/4 | 6/6 | 0 | 4/5 | 0 | 1 | no |
 | `@flighthq/connectivity` | generated | blocked | source-blocked | 2/3 | 10/14 | 4 | 2/2 | 0 | 2 | no |
-| `@flighthq/debug` | generated | emittable | dependency-blocked | 4/4 | 10/10 | 0 | 1/1 | 0 | 0 | no |
+| `@flighthq/debug` | generated | emittable | dependency-blocked | 4/4 | 10/10 | 0 | 1/1 | 1 | 0 | no |
 | `@flighthq/device` | generated | emittable | compiled | 3/3 | 14/14 | 0 | 2/2 | 1 | 0 | no |
 | `@flighthq/dialog` | generated | blocked | source-blocked | 2/3 | 12/15 | 3 | 5/5 | 0 | 2 | no |
 | `@flighthq/easing` | generated | emittable | promoted | 23/23 | 52/54 | 2 | 4/7 | 0 | 0 | full |
@@ -61,23 +61,24 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/effects-canvas` | host-backend | blocked | source-blocked | 10/29 | 65/82 | 22 | 1/1 | 3 | 20 | no |
 | `@flighthq/effects-gl` | host-backend | blocked | source-blocked | 12/60 | 122/180 | 58 | 1/1 | 8 | 49 | no |
 | `@flighthq/effects-wgpu` | host-backend | blocked | source-blocked | 13/58 | 120/177 | 57 | 2/2 | 4 | 46 | no |
-| `@flighthq/entity` | generated | emittable | compile-blocked | 8/8 | 15/15 | 0 | 30/75 | 1 | 0 | no |
+| `@flighthq/entity` | generated | emittable | compile-blocked | 8/8 | 15/15 | 0 | 30/79 | 1 | 0 | no |
 | `@flighthq/filesystem` | generated | blocked | source-blocked | 2/3 | 40/43 | 3 | 2/2 | 0 | 2 | no |
 | `@flighthq/flow` | generated | emittable | compiled | 3/3 | 9/9 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/font` | generated | blocked | source-blocked | 9/11 | 16/16 | 0 | 2/2 | 0 | 2 | no |
 | `@flighthq/font-formats` | generated | blocked | source-blocked | 3/17 | 46/46 | 0 | 1/1 | 0 | 14 | no |
 | `@flighthq/geolocation` | generated | blocked | source-blocked | 2/3 | 9/12 | 3 | 2/2 | 0 | 2 | no |
-| `@flighthq/geometry` | generated | emittable | dependency-blocked | 30/30 | 382/380 | 0 | 44/62 | 0 | 0 | no |
-| `@flighthq/glyphatlas` | generated | emittable | dependency-blocked | 10/10 | 18/18 | 0 | 1/1 | 2 | 0 | no |
+| `@flighthq/geometry` | generated | emittable | dependency-blocked | 30/30 | 382/380 | 0 | 44/66 | 0 | 0 | no |
+| `@flighthq/glyphatlas` | generated | emittable | dependency-blocked | 10/10 | 20/20 | 0 | 2/2 | 1 | 0 | no |
 | `@flighthq/haptics` | generated | emittable | compiled | 3/3 | 13/13 | 0 | 2/2 | 0 | 0 | no |
 | `@flighthq/host-capacitor` | host-bound | host-bound | not-applicable | 0/0 | 0/13 | 13 | 0/0 | 0 | 0 | no |
 | `@flighthq/host-electron` | host-bound | host-bound | not-applicable | 0/0 | 0/20 | 20 | 0/0 | 0 | 0 | no |
 | `@flighthq/host-tauri` | host-bound | host-bound | not-applicable | 0/0 | 0/11 | 11 | 0/0 | 0 | 0 | no |
-| `@flighthq/image` | generated | blocked | source-blocked | 3/6 | 22/25 | 3 | 14/28 | 1 | 4 | partial |
-| `@flighthq/image-codec` | generated | blocked | source-blocked | 10/12 | 26/26 | 0 | 4/29 | 0 | 2 | no |
+| `@flighthq/host-web` | generated | blocked | source-blocked | 2/4 | 4/4 | 0 | 0/0 | 0 | 2 | no |
+| `@flighthq/image` | generated | blocked | source-blocked | 3/6 | 22/25 | 3 | 14/29 | 1 | 4 | partial |
+| `@flighthq/image-codec` | generated | blocked | source-blocked | 10/12 | 26/26 | 0 | 4/30 | 0 | 2 | no |
 | `@flighthq/importdiagnostics` | generated | emittable | compiled | 4/4 | 3/3 | 0 | 9/11 | 0 | 0 | no |
 | `@flighthq/input` | generated | emittable | compile-blocked | 3/3 | 40/40 | 0 | 1/1 | 1 | 0 | partial |
-| `@flighthq/interaction` | generated | blocked | source-blocked | 15/17 | 78/78 | 0 | 1/1 | 2 | 2 | no |
+| `@flighthq/interaction` | generated | blocked | source-blocked | 14/16 | 77/77 | 0 | 1/1 | 1 | 2 | no |
 | `@flighthq/intl` | generated | blocked | source-blocked | 2/9 | 16/14 | 0 | 1/1 | 0 | 7 | no |
 | `@flighthq/ipc` | generated | blocked | source-blocked | 2/3 | 13/17 | 4 | 2/2 | 0 | 2 | no |
 | `@flighthq/keyboard` | generated | emittable | compiled | 3/3 | 20/20 | 0 | 2/2 | 1 | 0 | no |
@@ -85,9 +86,9 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/lifecycle` | generated | emittable | compiled | 3/3 | 13/13 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/lighting` | generated | emittable | dependency-blocked | 13/13 | 31/31 | 0 | 5/8 | 0 | 0 | no |
 | `@flighthq/loader` | generated | blocked | source-blocked | 2/3 | 15/15 | 0 | 3/3 | 0 | 1 | no |
-| `@flighthq/log` | generated | emittable | compiled | 3/3 | 63/63 | 0 | 41/90 | 0 | 0 | no |
+| `@flighthq/log` | generated | emittable | compiled | 3/3 | 64/64 | 0 | 42/93 | 0 | 0 | no |
 | `@flighthq/materials` | generated | emittable | dependency-blocked | 22/22 | 79/79 | 0 | 8/42 | 0 | 0 | no |
-| `@flighthq/math` | generated | emittable | compiled | 17/17 | 74/74 | 0 | 16/71 | 0 | 0 | no |
+| `@flighthq/math` | generated | emittable | compiled | 17/17 | 74/74 | 0 | 17/75 | 0 | 0 | no |
 | `@flighthq/media` | generated | emittable | compile-blocked | 6/6 | 45/45 | 0 | 1/1 | 3 | 0 | no |
 | `@flighthq/mediasession` | generated | blocked | source-blocked | 2/3 | 7/10 | 3 | 1/1 | 0 | 2 | no |
 | `@flighthq/menu` | generated | blocked | source-blocked | 3/4 | 14/17 | 3 | 3/3 | 0 | 2 | no |
@@ -104,8 +105,10 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/path-boolean` | generated | blocked | source-blocked | 8/9 | 12/12 | 1 | 2/4 | 0 | 2 | no |
 | `@flighthq/path-formats` | generated | emittable | compiled | 3/3 | 3/3 | 0 | 2/4 | 0 | 0 | no |
 | `@flighthq/permissions` | generated | blocked | source-blocked | 3/4 | 7/11 | 4 | 1/1 | 0 | 2 | no |
-| `@flighthq/physics2d` | generated | blocked | source-blocked | 16/21 | 96/83 | 0 | 1/1 | 0 | 5 | no |
-| `@flighthq/physics3d` | generated | blocked | source-blocked | 20/22 | 131/83 | 10 | 1/1 | 0 | 3 | no |
+| `@flighthq/physics2d` | generated | blocked | source-blocked | 20/25 | 108/102 | 8 | 2/2 | 0 | 6 | no |
+| `@flighthq/physics2d-abi` | generated | blocked | source-blocked | 4/8 | 52/75 | 23 | 1/1 | 0 | 5 | no |
+| `@flighthq/physics3d` | generated | blocked | source-blocked | 27/35 | 194/135 | 11 | 2/2 | 0 | 9 | no |
+| `@flighthq/physics3d-abi` | generated | blocked | source-blocked | 4/8 | 48/71 | 23 | 1/1 | 0 | 5 | no |
 | `@flighthq/picking` | generated | emittable | dependency-blocked | 4/4 | 11/11 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/platform` | generated | emittable | compiled | 3/3 | 16/16 | 0 | 3/3 | 1 | 0 | no |
 | `@flighthq/power` | generated | blocked | source-blocked | 2/3 | 14/19 | 5 | 2/2 | 0 | 2 | partial |
@@ -131,7 +134,7 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/scene3d-resources` | generated | blocked | source-blocked | 19/28 | 49/49 | 0 | 1/1 | 0 | 9 | no |
 | `@flighthq/scene3d-wgpu` | host-backend | blocked | source-blocked | 44/49 | 117/160 | 44 | 1/1 | 28 | 6 | no |
 | `@flighthq/screen` | generated | emittable | compiled | 3/3 | 31/31 | 0 | 2/2 | 1 | 0 | partial |
-| `@flighthq/sdk` | generated | blocked | source-blocked | 15/15 | 0/6549 | 6549 | 0/0 | 0 | 1 | no |
+| `@flighthq/sdk` | generated | blocked | source-blocked | 15/15 | 0/6907 | 6907 | 0/0 | 0 | 1 | no |
 | `@flighthq/sensors` | generated | blocked | source-blocked | 2/3 | 22/32 | 10 | 1/1 | 0 | 2 | no |
 | `@flighthq/shading` | generated | emittable | dependency-blocked | 18/18 | 26/26 | 0 | 4/5 | 2 | 0 | no |
 | `@flighthq/shape` | generated | blocked | source-blocked | 15/19 | 68/87 | 24 | 9/11 | 1 | 5 | no |
@@ -139,13 +142,13 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/share` | generated | blocked | source-blocked | 2/3 | 12/15 | 3 | 2/2 | 0 | 2 | no |
 | `@flighthq/shell` | generated | blocked | source-blocked | 2/3 | 11/14 | 3 | 3/3 | 0 | 2 | no |
 | `@flighthq/shortcut` | generated | blocked | source-blocked | 3/5 | 29/33 | 4 | 3/3 | 0 | 3 | no |
-| `@flighthq/signals` | generated | emittable | compiled | 7/7 | 12/11 | 0 | 50/112 | 0 | 0 | partial |
+| `@flighthq/signals` | generated | emittable | compiled | 7/7 | 12/11 | 0 | 50/115 | 0 | 0 | partial |
 | `@flighthq/skeleton2d` | generated | emittable | dependency-blocked | 23/23 | 56/56 | 0 | 3/5 | 0 | 0 | no |
 | `@flighthq/skeleton2d-formats` | generated | blocked | source-blocked | 3/8 | 8/8 | 1 | 1/1 | 0 | 6 | no |
 | `@flighthq/skeleton3d` | generated | blocked | source-blocked | 9/10 | 26/26 | 0 | 2/3 | 0 | 1 | no |
 | `@flighthq/snapshot` | generated | blocked | source-blocked | 6/7 | 7/7 | 0 | 1/1 | 2 | 1 | no |
 | `@flighthq/socket` | generated | emittable | compile-blocked | 5/5 | 16/16 | 0 | 1/1 | 0 | 0 | no |
-| `@flighthq/spatial` | generated | emittable | compiled | 6/6 | 14/14 | 0 | 3/3 | 0 | 0 | no |
+| `@flighthq/spatial` | generated | blocked | source-blocked | 9/11 | 29/29 | 0 | 4/6 | 0 | 2 | no |
 | `@flighthq/spring` | generated | emittable | compiled | 6/6 | 12/12 | 0 | 1/1 | 0 | 0 | no |
 | `@flighthq/spritesheet` | generated | emittable | dependency-blocked | 9/9 | 31/31 | 0 | 2/2 | 2 | 0 | no |
 | `@flighthq/spritesheet-formats` | generated | blocked | source-blocked | 9/12 | 19/19 | 0 | 1/1 | 4 | 3 | no |
@@ -172,7 +175,7 @@ Upstream commit: `181dea5e323d8b0845ede2fade7f67b2ce8d2554`
 | `@flighthq/tool-registry` | generated | blocked | source-blocked | 3/4 | 0/2 | 2 | 0/0 | 0 | 2 | no |
 | `@flighthq/tray` | generated | emittable | compile-blocked | 4/4 | 28/28 | 0 | 3/3 | 0 | 0 | no |
 | `@flighthq/tween` | generated | blocked | source-blocked | 7/10 | 29/28 | 0 | 2/2 | 0 | 3 | no |
-| `@flighthq/types` | generated | emittable | promoted | 774/879 | 2372/2372 | 0 | 148/149 | 0 | 0 | full |
+| `@flighthq/types` | generated | emittable | promoted | 777/882 | 2465/2465 | 0 | 151/152 | 0 | 0 | full |
 | `@flighthq/updater` | generated | blocked | source-blocked | 2/3 | 23/23 | 0 | 2/2 | 0 | 1 | no |
 | `@flighthq/useragent` | generated | emittable | compiled | 4/4 | 12/12 | 0 | 3/6 | 0 | 0 | no |
 | `@flighthq/velocity` | generated | emittable | dependency-blocked | 5/5 | 20/20 | 0 | 3/3 | 1 | 0 | no |
@@ -682,9 +685,12 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 
 ### `@flighthq/collision`
 
-- **emission** `upstream/packages/collision/src/raycastCollisionShape2D.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/collision/src/shapeCollision.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/collision/src/sweepCollisionShape2D.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (3 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/collision/src/enableCollisionGuards.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/collision/src/raycastCollisionShape2D.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/collision/src/raycastCollisionShape3D.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/collision/src/shapeCollision2D.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/collision/src/sweepCollisionShape2D.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/collision/src/triangleMesh3D.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 
 ### `@flighthq/compression`
 
@@ -856,6 +862,11 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 - **package** `upstream/packages/geolocation/src`: Generated crate is missing 3 of 12 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/geolocation/src/geolocation.ts`: createWebGeolocationBackend: typeof operand has no inferred Rust type: {"kind":"property","name":"clearWatch","object":{"kind":"identifier","name":"geo"},"optional":false}
 
+### `@flighthq/host-web`
+
+- **emission** `upstream/packages/host-web/src/webCursor.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (2 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/host-web/src/webGlyphRasterizer.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (2 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+
 ### `@flighthq/image`
 
 - **package** `upstream/packages/image/src`: Generated crate is missing 3 of 25 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
@@ -965,17 +976,40 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 
 ### `@flighthq/physics2d`
 
+- **package** `upstream/packages/physics2d/src`: Generated crate is missing 8 of 102 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/physics2d/src/joints.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (4 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 - **emission** `upstream/packages/physics2d/src/step.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (4 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/physics2d/src/stepValidation.ts`: isPhysics2DContactValid: dynamic for-in Rust enumeration is not implemented
+- **emission** `upstream/packages/physics2d/src/stepValidation.ts`: isPhysics2DJointValid: dynamic for-in Rust enumeration is not implemented
 - **emission** `upstream/packages/physics2d/src/world.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (4 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 - **emission** `upstream/packages/physics2d/src/worldQueries.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (4 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 
+### `@flighthq/physics2d-abi`
+
+- **package** `upstream/packages/physics2d-abi/src`: Generated crate is missing 23 of 75 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/physics2d-abi/src/physics2DAbiBuffer.ts`: clearPhysics2DAbiCommandBuffer: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
+- **emission** `upstream/packages/physics2d-abi/src/physics2DAbiCommand.ts`: beginCommand: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
+- **emission** `upstream/packages/physics2d-abi/src/physics2DAbiQuery.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (1 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/physics2d-abi/src/referencePhysics2DAbi.ts`: executeCommands: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
+
 ### `@flighthq/physics3d`
 
-- **package** `upstream/packages/physics3d/src`: Generated crate is missing 10 of 83 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
-- **emission** `upstream/packages/physics3d/src/step.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (1 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
-- **emission** `upstream/packages/physics3d/src/stepValidation.ts`: isPhysics3DContactValid: dynamic for-in Rust enumeration is not implemented
+- **package** `upstream/packages/physics3d/src`: Generated crate is missing 11 of 135 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/physics3d/src/contactIntake.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/physics3d/src/continuous.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/physics3d/src/physics3DBroadphasePublication.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/physics3d/src/solver.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/physics3d/src/step.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/physics3d/src/stepValidation.ts`: isPhysics3DJointValid: dynamic for-in Rust enumeration is not implemented
+- **emission** `upstream/packages/physics3d/src/world.ts`: hydratePhysics3DWorld: delete Rust lowering is not implemented
+- **emission** `upstream/packages/physics3d/src/worldQueries.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (6 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+
+### `@flighthq/physics3d-abi`
+
+- **package** `upstream/packages/physics3d-abi/src`: Generated crate is missing 23 of 71 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
+- **emission** `upstream/packages/physics3d-abi/src/physics3DAbiBuffer.ts`: clearPhysics3DAbiCommandBuffer: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
+- **emission** `upstream/packages/physics3d-abi/src/physics3DAbiCommand.ts`: writePhysics3DAbiSetJointCommand: optional property localRotationAX has no inferred receiver field
+- **emission** `upstream/packages/physics3d-abi/src/physics3DAbiQuery.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (1 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/physics3d-abi/src/referencePhysics3DAbi.ts`: executeCommands: new-expression Rust lowering is not implemented: crate::OpaqueHostValue::Object
 
 ### `@flighthq/power`
 
@@ -1125,7 +1159,7 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 
 ### `@flighthq/sdk`
 
-- **package** `upstream/packages/sdk/src`: Generated crate is missing 6549 of 6549 upstream exports across 15 manifest lanes; re-export or declaration synthesis is required.
+- **package** `upstream/packages/sdk/src`: Generated crate is missing 6907 of 6907 upstream exports across 15 manifest lanes; re-export or declaration synthesis is required.
 
 ### `@flighthq/sensors`
 
@@ -1176,6 +1210,11 @@ Disposition partition: 177 eligible = 20 portable executable + 0 host placeholde
 ### `@flighthq/snapshot`
 
 - **emission** `upstream/packages/snapshot/src/enableSnapshotGuards.ts`: nonPlainSnapshotKind: instanceof Rust lowering requires a portable typed-array constructor
+
+### `@flighthq/spatial`
+
+- **emission** `upstream/packages/spatial/src/bvh3D.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (2 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
+- **emission** `upstream/packages/spatial/src/spatialIndex3D.ts`: Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery (2 opaque sources exceeds the approved baseline of 0); add typed IR/lowering or declare an explicit host-backend package policy instead of erasing the value type.
 
 ### `@flighthq/spritesheet-formats`
 

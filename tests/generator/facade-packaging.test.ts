@@ -2,17 +2,23 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import ts from 'typescript';
 
-import { wasmGlueFiles } from '../../packages/bitmap-wasm/scripts/copy-wasm-glue.ts';
+import { wasmGlueFiles as bitmapWasmGlueFiles } from '../../packages/bitmap-wasm/scripts/copy-wasm-glue.ts';
+import { wasmGlueFiles as physics2DWasmGlueFiles } from '../../packages/physics2d-abi-wasm/scripts/copy-wasm-glue.ts';
+import { wasmGlueFiles as physics3DWasmGlueFiles } from '../../packages/physics3d-abi-wasm/scripts/copy-wasm-glue.ts';
 import { publishablePackages } from '../../scripts/publishable-packages.ts';
 import { portConfig } from '../../tools/generator/port.config.ts';
 
-// `packages/bitmap-wasm` is the only package in this repository published to npm. `config.test.ts`
-// already proves each wasm facade export exists as a declaration in its core crate; these cover the
-// other half of the boundary — that the TypeScript facade exposes exactly that set, that the set is
-// genuinely a drop-in for upstream, and that the manifest can actually be published.
+// `config.test.ts` proves the generated-core facade exports exist in Rust. These tests cover the
+// other half of the boundary: TypeScript shadowing, upstream fallback, wasm glue, and publishable
+// manifests for every blessed facade.
 
 const workspace = path.resolve('.');
 const facadeDirectory = path.join(workspace, 'packages/bitmap-wasm');
+const packagedGlue = [
+  ['bitmap-wasm', bitmapWasmGlueFiles, 'src/bitmapWasm.ts'],
+  ['physics2d-abi-wasm', physics2DWasmGlueFiles, 'src/physics2DAbiWasm.ts'],
+  ['physics3d-abi-wasm', physics3DWasmGlueFiles, 'src/physics3DAbiWasm.ts'],
+] as const;
 
 const manifest = JSON.parse(readFileSync(path.join(facadeDirectory, 'package.json'), 'utf8')) as {
   dependencies?: Record<string, string>;
@@ -26,7 +32,7 @@ const authoritativePackage = substitute.authoritativePackage ?? '@flighthq/bitma
 // The facade names the crate it is built from; that is the row of `wasmFacades` whose export list
 // this package must mirror. Looking it up by name rather than position keeps the two in step if a
 // second wasm facade is ever added.
-const bitmapFacade = portConfig.wasmFacades.find((facade) => facade.coreCrate === substitute.crate);
+const bitmapFacade = portConfig.wasmFacades.find((facade) => facade.authoritativePackage === authoritativePackage);
 
 function parse(file: string): ts.SourceFile {
   return ts.createSourceFile(file, readFileSync(file, 'utf8'), ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
@@ -100,6 +106,38 @@ describe('blessed facade packaging', () => {
     }
   });
 
+  it('configures every publishable package as a blessed wasm facade', () => {
+    for (const { directory, manifest: packageManifest } of publishablePackages(workspace)) {
+      const upstream = (packageManifest.flightWasmSubstitute as { authoritativePackage?: string } | undefined)
+        ?.authoritativePackage;
+      const facade = portConfig.wasmFacades.find((item) => item.authoritativePackage === upstream);
+      expect(facade, `${packageManifest.name} has a wasmFacades entry`).toBeDefined();
+      expect(facade?.crate).toBe(
+        (packageManifest.flightWasmSubstitute as { facadeCrate?: string } | undefined)?.facadeCrate,
+      );
+      expect(
+        portConfig.blessedFacades.some(
+          (item) => item.package === packageManifest.name && path.resolve(item.path) === directory,
+        ),
+        `${packageManifest.name} is blessed at its publishable path`,
+      ).toBe(true);
+    }
+  });
+
+  it('shadows each independent physics ABI constructor over a complete upstream re-export', () => {
+    for (const dimension of ['2', '3'] as const) {
+      const directory = path.join(workspace, `packages/physics${dimension}d-abi-wasm`);
+      const upstream = `@flighthq/physics${dimension}d-abi`;
+      const implementation = `./physics${dimension}DAbiWasm`;
+      const index = parse(path.join(directory, 'src/index.ts'));
+      const facade = portConfig.wasmFacades.find((item) => item.authoritativePackage === upstream);
+      const shadowed = reexportedNames(index, implementation);
+      expect(shadowed.filter((name) => !name.startsWith('init'))).toEqual(facade?.exports);
+      expect(shadowed).toContain(`initPhysics${dimension}DAbiWasm`);
+      expect(hasStarReexport(index, upstream)).toBe(true);
+    }
+  });
+
   it('shadows exactly the wasm exports the generator built, over a complete upstream re-export', () => {
     const index = parse(path.join(facadeDirectory, 'src/index.ts'));
     const shadowed = reexportedNames(index, './bitmapWasm');
@@ -148,51 +186,55 @@ describe('blessed facade packaging', () => {
   });
 
   it('copies every non-TypeScript module the facade imports into dist', () => {
-    const implementation = parse(path.join(facadeDirectory, 'src/bitmapWasm.ts'));
-    const copied = new Set<string>(wasmGlueFiles);
+    for (const [packageName, glueFiles, implementationPath] of packagedGlue) {
+      const directory = path.join(workspace, 'packages', packageName);
+      const implementation = parse(path.join(directory, implementationPath));
+      const copied = new Set<string>(glueFiles);
 
-    for (const specifier of relativeImportSpecifiers(implementation)) {
-      // `tsc -b` emits JavaScript for TypeScript sources; anything imported with an explicit `.js`
-      // extension resolves to a checked-in wasm-bindgen artifact that only the copy step delivers.
-      if (!specifier.endsWith('.js')) continue;
-      const file = path.basename(specifier);
-      expect(copied.has(file), `${specifier} is copied into dist by copy-wasm-glue`).toBe(true);
-      expect(existsSync(path.join(facadeDirectory, 'src/wasm', file))).toBe(true);
+      for (const specifier of relativeImportSpecifiers(implementation)) {
+        // `tsc -b` emits JavaScript for TypeScript sources; anything imported with an explicit `.js`
+        // extension resolves to a checked-in wasm-bindgen artifact that only the copy step delivers.
+        if (!specifier.endsWith('.js')) continue;
+        const file = path.basename(specifier);
+        expect(copied.has(file), `${packageName}: ${specifier} is copied into dist`).toBe(true);
+        expect(existsSync(path.join(directory, 'src/wasm', file))).toBe(true);
+      }
     }
   });
 
-  it('declares a manifest npm can publish', () => {
-    for (const field of ['name', 'version', 'description', 'license', 'author', 'repository']) {
-      expect(manifest[field], `package.json ${field}`).toBeTruthy();
-    }
-    expect(manifest.private, 'a published package must not be private').toBeUndefined();
+  it('declares manifests npm can publish', () => {
+    for (const { directory, manifest: packageManifest } of publishablePackages(workspace)) {
+      for (const field of ['name', 'version', 'description', 'license', 'author', 'repository']) {
+        expect(packageManifest[field], `${packageManifest.name} package.json ${field}`).toBeTruthy();
+      }
+      expect(packageManifest.private, `${packageManifest.name} must not be private`).toBeUndefined();
 
-    // npm defaults a scoped package to restricted, which fails the publish outright on a free
-    // account. Upstream passes `--access public` from its publish script; this repository has no
-    // such script, so the manifest is the only place that knowledge can live.
-    if (String(manifest.name).startsWith('@')) {
-      expect((manifest.publishConfig as { access?: string } | undefined)?.access).toBe('public');
-    }
+      // npm defaults a scoped package to restricted, which fails the publish outright on a free
+      // account. Keep the public-access intent in each package as well as the release command.
+      if (String(packageManifest.name).startsWith('@')) {
+        expect((packageManifest.publishConfig as { access?: string } | undefined)?.access).toBe('public');
+      }
 
-    expect(existsSync(path.join(facadeDirectory, 'README.md'))).toBe(true);
-    expect(existsSync(path.join(facadeDirectory, 'LICENSE.md'))).toBe(true);
+      expect(existsSync(path.join(directory, 'README.md'))).toBe(true);
+      expect(existsSync(path.join(directory, 'LICENSE.md'))).toBe(true);
 
-    // `*` resolves to whatever `latest` happens to be at install time, which silently pairs the
-    // generated wasm slice with an upstream release it was never differentially tested against.
-    const dependencies = (manifest.dependencies ?? {}) as Record<string, string>;
-    expect(Object.keys(dependencies).length).toBeGreaterThan(0);
-    for (const [name, range] of Object.entries(dependencies)) {
-      expect(range, `${name} dependency range`).not.toBe('*');
-      expect(range, `${name} dependency range`).toMatch(/^[\^~]?\d+\.\d+\.\d+/u);
-    }
+      // `*` resolves to whatever `latest` happens to be at install time, which silently pairs a
+      // wasm backend with an upstream release it was not tested against.
+      const dependencies = (packageManifest.dependencies ?? {}) as Record<string, string>;
+      expect(Object.keys(dependencies).length).toBeGreaterThan(0);
+      for (const [name, range] of Object.entries(dependencies)) {
+        expect(range, `${packageManifest.name}: ${name} dependency range`).not.toBe('*');
+        expect(range, `${packageManifest.name}: ${name} dependency range`).toMatch(/^[\^~]?\d+\.\d+\.\d+/u);
+      }
 
-    // Each `prepack` step runs at publish time, where a missing script fails the release rather
-    // than a test. The repository was filtered without `scripts/clean-package-dist.ts` once already.
-    const scripts = (manifest.scripts ?? {}) as Record<string, string>;
-    for (const command of Object.values(scripts)) {
-      const invoked = /(?:^|\s)tsx\s+(\S+\.ts)/u.exec(command)?.[1];
-      if (!invoked) continue;
-      expect(existsSync(path.resolve(facadeDirectory, invoked)), `${invoked} exists`).toBe(true);
+      // Each `prepack` step runs at publish time, where a missing script fails the release rather
+      // than a test. The repository was filtered without `scripts/clean-package-dist.ts` once.
+      const scripts = (packageManifest.scripts ?? {}) as Record<string, string>;
+      for (const command of Object.values(scripts)) {
+        const invoked = /(?:^|\s)tsx\s+(\S+\.ts)/u.exec(command)?.[1];
+        if (!invoked) continue;
+        expect(existsSync(path.resolve(directory, invoked)), `${packageManifest.name}: ${invoked} exists`).toBe(true);
+      }
     }
   });
 });

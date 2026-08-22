@@ -36,7 +36,7 @@ Every one of them is differentially tested against the upstream TypeScript imple
 
 - **Bundler required.** Like every `@flighthq` package, the published JavaScript uses extensionless relative imports, which Node's ESM resolver rejects. Use a bundler (Vite, webpack, Rollup, esbuild) or any toolchain that applies Node-style resolution to ESM. Bare `node script.mjs` will not resolve this package or its dependencies.
 - **Support level is experimental.** The Rust slice is generated, and which functions it covers grows between releases. The API surface does not change — it is always `@flighthq/bitmap`'s.
-- `@flighthq/bitmap` and `@flighthq/types` are peer-level runtime dependencies pinned to `^0.3.0`.
+- `@flighthq/bitmap` and `@flighthq/types` are peer-level runtime dependencies pinned to the Flight release family this facade was generated and tested against.
 
 ## License
 

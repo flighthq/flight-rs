@@ -29,8 +29,9 @@
     "!dist/**/*.test.d.ts.map"
   ],
   "scripts": {
-    "wasm": "npm run wasm --prefix ../..",
-    "build": "npm run wasm && tsc -b && tsx ./scripts/copy-wasm-glue.ts",
+    "wasm": "npm run wasm --prefix ../.. -- --package @flighthq/bitmap-wasm",
+    "build": "npm run wasm && npm run build:package",
+    "build:package": "tsc -b && tsx ./scripts/copy-wasm-glue.ts",
     "clean": "tsc -b --clean",
     "test": "vitest run --config vitest.config.ts",
     "test:watch": "vitest --watch --config vitest.config.ts",
@@ -49,6 +50,7 @@
   "flightWasmSubstitute": {
     "authoritativePackage": "@flighthq/bitmap",
     "crate": "flighthq-bitmap",
+    "facadeCrate": "flighthq-bitmap-wasm",
     "kind": "rust-wasm",
     "rustBacked": true,
     "supportLevel": "experimental"

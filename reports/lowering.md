@@ -2,10 +2,10 @@
 
 | Metric | Count |
 | --- | ---: |
-| Packages | 149 |
-| Source files | 2614 |
-| Candidate declarations | 14034 |
-| Lowered declarations | 14034 |
+| Packages | 152 |
+| Source files | 2676 |
+| Candidate declarations | 15117 |
+| Lowered declarations | 15117 |
 | Current diagnostics | 0 |
 
 | Package | Declarations | Lowered | Diagnostics |
@@ -30,7 +30,7 @@
 | `@flighthq/clip` | 36 | 36 | 0 |
 | `@flighthq/clipboard` | 38 | 38 | 0 |
 | `@flighthq/clock` | 14 | 14 | 0 |
-| `@flighthq/collision` | 175 | 175 | 0 |
+| `@flighthq/collision` | 505 | 505 | 0 |
 | `@flighthq/color` | 32 | 32 | 0 |
 | `@flighthq/compression` | 30 | 30 | 0 |
 | `@flighthq/connectivity` | 22 | 22 | 0 |
@@ -49,16 +49,17 @@
 | `@flighthq/font-formats` | 127 | 127 | 0 |
 | `@flighthq/geolocation` | 20 | 20 | 0 |
 | `@flighthq/geometry` | 406 | 406 | 0 |
-| `@flighthq/glyphatlas` | 33 | 33 | 0 |
+| `@flighthq/glyphatlas` | 36 | 36 | 0 |
 | `@flighthq/haptics` | 15 | 15 | 0 |
 | `@flighthq/host-capacitor` | 33 | 33 | 0 |
 | `@flighthq/host-electron` | 35 | 35 | 0 |
 | `@flighthq/host-tauri` | 22 | 22 | 0 |
+| `@flighthq/host-web` | 10 | 10 | 0 |
 | `@flighthq/image` | 36 | 36 | 0 |
 | `@flighthq/image-codec` | 37 | 37 | 0 |
 | `@flighthq/importdiagnostics` | 3 | 3 | 0 |
 | `@flighthq/input` | 69 | 69 | 0 |
-| `@flighthq/interaction` | 153 | 153 | 0 |
+| `@flighthq/interaction` | 152 | 152 | 0 |
 | `@flighthq/intl` | 25 | 25 | 0 |
 | `@flighthq/ipc` | 23 | 23 | 0 |
 | `@flighthq/keyboard` | 27 | 27 | 0 |
@@ -66,7 +67,7 @@
 | `@flighthq/lifecycle` | 16 | 16 | 0 |
 | `@flighthq/lighting` | 41 | 41 | 0 |
 | `@flighthq/loader` | 39 | 39 | 0 |
-| `@flighthq/log` | 92 | 92 | 0 |
+| `@flighthq/log` | 93 | 93 | 0 |
 | `@flighthq/materials` | 91 | 91 | 0 |
 | `@flighthq/math` | 80 | 80 | 0 |
 | `@flighthq/media` | 68 | 68 | 0 |
@@ -85,8 +86,10 @@
 | `@flighthq/path-boolean` | 76 | 76 | 0 |
 | `@flighthq/path-formats` | 5 | 5 | 0 |
 | `@flighthq/permissions` | 34 | 34 | 0 |
-| `@flighthq/physics2d` | 227 | 227 | 0 |
-| `@flighthq/physics3d` | 301 | 301 | 0 |
+| `@flighthq/physics2d` | 261 | 261 | 0 |
+| `@flighthq/physics2d-abi` | 150 | 150 | 0 |
+| `@flighthq/physics3d` | 548 | 548 | 0 |
+| `@flighthq/physics3d-abi` | 149 | 149 | 0 |
 | `@flighthq/picking` | 49 | 49 | 0 |
 | `@flighthq/platform` | 19 | 19 | 0 |
 | `@flighthq/power` | 28 | 28 | 0 |
@@ -126,7 +129,7 @@
 | `@flighthq/skeleton3d` | 34 | 34 | 0 |
 | `@flighthq/snapshot` | 18 | 18 | 0 |
 | `@flighthq/socket` | 22 | 22 | 0 |
-| `@flighthq/spatial` | 34 | 34 | 0 |
+| `@flighthq/spatial` | 101 | 101 | 0 |
 | `@flighthq/spring` | 14 | 14 | 0 |
 | `@flighthq/spritesheet` | 38 | 38 | 0 |
 | `@flighthq/spritesheet-formats` | 79 | 79 | 0 |
@@ -152,7 +155,7 @@
 | `@flighthq/tool-registry` | 3 | 3 | 0 |
 | `@flighthq/tray` | 34 | 34 | 0 |
 | `@flighthq/tween` | 37 | 37 | 0 |
-| `@flighthq/types` | 2432 | 2432 | 0 |
+| `@flighthq/types` | 2525 | 2525 | 0 |
 | `@flighthq/updater` | 27 | 27 | 0 |
 | `@flighthq/useragent` | 12 | 12 | 0 |
 | `@flighthq/velocity` | 21 | 21 | 0 |

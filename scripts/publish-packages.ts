@@ -1,5 +1,4 @@
-// Publishes this repository's publishable packages to npm — today that is `@flighthq/bitmap-wasm`
-// alone (see publishable-packages.ts).
+// Publishes this repository's blessed wasm facades to npm (see publishable-packages.ts).
 //
 // Two guards make a re-run safe, which matters because a publish that fails halfway is otherwise
 // resolved by guesswork:
@@ -14,16 +13,15 @@
 //                      comparison starves under burst commits, since every run sees a newer tip and
 //                      skips, so nothing ever publishes.
 //
-// `prepack` in each package does the real build (clean, wasm rebuild, tsc), so this deliberately
-// does NOT pass --ignore-scripts: the wasm module is what makes the tarball worth publishing, and
-// skipping the hook would ship a stale or empty dist. That is the opposite of Flight's own
-// publish-packages.ts, which builds its whole graph once up front and then suppresses hooks; with a
-// single package there is nothing to amortize.
+// Standalone `npm pack` remains safe because each package's prepack performs a full rebuild. This
+// multi-package release path is deliberately different: it builds every wasm target once, assembles
+// each package, and then passes --ignore-scripts to publish. Otherwise three facades each rerun the
+// same ten-minute repository generator before compiling their one adapter.
 //
 // Flight's script also carries a bounded worker pool, retry/backoff, and an error classifier. None
 // of that is ported: those exist because 141 concurrent publishes make npm fail for reasons
-// unrelated to any package. One package publishes serially, so a failure here is a real failure and
-// should surface rather than be retried into ambiguity.
+// unrelated to any package. This much smaller facade set publishes serially, so a failure here is a
+// real failure and should surface rather than be retried into ambiguity.
 //
 // Usage:
 //   tsx scripts/publish-packages.ts                 publish to the default `latest` dist-tag
@@ -31,13 +29,14 @@
 //   tsx scripts/publish-packages.ts --tag <tag>     publish under a dist-tag (edge/next)
 
 import { execFileSync } from 'node:child_process';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { publishablePackages, type PublishablePackage } from './publishable-packages.ts';
 import { isSnapshotVersionSuperseded } from './snapshot-version-order.ts';
 
 const scriptPath = fileURLToPath(import.meta.url);
+const workspace = join(dirname(scriptPath), '..');
 
 interface Options {
   dryRun: boolean;
@@ -83,29 +82,42 @@ function registryState(name: string, tag: string): { tagVersion: string | undefi
   }
 }
 
-function publish(target: PublishablePackage, options: Options): 'published' | 'skipped' {
+function shouldPublish(target: PublishablePackage, options: Options): boolean {
   const { name, version } = target.manifest;
   const state = registryState(name, options.tag);
 
   if (state.versions.has(version)) {
     process.stdout.write(`[publish] ${name}@${version} already on the registry, skipping\n`);
-    return 'skipped';
+    return false;
   }
   if (state.tagVersion !== undefined && isSnapshotVersionSuperseded(version, state.tagVersion)) {
     process.stdout.write(
       `[publish] ${name}@${version} skipped: ${options.tag} already points at the newer ${state.tagVersion}\n`,
     );
-    return 'skipped';
+    return false;
   }
+  return true;
+}
+
+function build(targets: readonly PublishablePackage[]): void {
+  execFileSync('npm', ['run', 'wasm'], { cwd: workspace, env: process.env, stdio: 'inherit' });
+  for (const target of targets) {
+    for (const script of ['clean', 'clean:dist', 'build:package']) {
+      execFileSync('npm', ['run', script], { cwd: target.directory, env: process.env, stdio: 'inherit' });
+    }
+  }
+}
+
+function publish(target: PublishablePackage, options: Options): void {
+  const { name, version } = target.manifest;
 
   // A scoped package defaults to restricted, which fails the publish outright. The manifest also
   // declares publishConfig.access, so this is belt and braces for a manifest that loses the field.
-  const arguments_ = ['publish', '--access', 'public', '--tag', options.tag];
+  const arguments_ = ['publish', '--ignore-scripts', '--access', 'public', '--tag', options.tag];
   if (options.dryRun) arguments_.push('--dry-run');
 
   execFileSync('npm', arguments_, { cwd: target.directory, env: process.env, stdio: 'inherit' });
   process.stdout.write(`[publish] ${name}@${version} -> ${options.tag}${options.dryRun ? ' (dry run)' : ''}\n`);
-  return 'published';
 }
 
 function main(): void {
@@ -116,13 +128,10 @@ function main(): void {
     process.exit(1);
   }
 
-  let published = 0;
-  let skipped = 0;
-  for (const target of targets) {
-    if (publish(target, options) === 'published') published += 1;
-    else skipped += 1;
-  }
-  process.stdout.write(`[publish] ${published} published, ${skipped} skipped\n`);
+  const eligible = targets.filter((target) => shouldPublish(target, options));
+  if (eligible.length > 0) build(eligible);
+  for (const target of eligible) publish(target, options);
+  process.stdout.write(`[publish] ${eligible.length} published, ${targets.length - eligible.length} skipped\n`);
 }
 
 if (process.argv[1] !== undefined && join(process.argv[1]) === scriptPath) {

@@ -2,9 +2,35 @@ import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 
-const artifactPath = 'packages/bitmap-wasm/src/wasm/bitmapWasmBytes.ts';
-const wasmCrateManifest = 'generated/crates/flighthq-bitmap-wasm/Cargo.toml';
-const buildInputs = [
+export interface WasmArtifactTarget {
+  artifactPath: string;
+  bytesExport: string;
+  crate: string;
+  embedScript: string;
+}
+
+export const wasmArtifactTargets = {
+  bitmap: {
+    artifactPath: 'packages/bitmap-wasm/src/wasm/bitmapWasmBytes.ts',
+    bytesExport: 'bitmapWasmBytes',
+    crate: 'flighthq-bitmap-wasm',
+    embedScript: 'packages/bitmap-wasm/scripts/embed-wasm.ts',
+  },
+  physics2d: {
+    artifactPath: 'packages/physics2d-abi-wasm/src/wasm/physics2DAbiWasmBytes.ts',
+    bytesExport: 'physics2DAbiWasmBytes',
+    crate: 'flighthq-physics2d-abi-wasm',
+    embedScript: 'packages/physics2d-abi-wasm/scripts/embed-wasm.ts',
+  },
+  physics3d: {
+    artifactPath: 'packages/physics3d-abi-wasm/src/wasm/physics3DAbiWasmBytes.ts',
+    bytesExport: 'physics3DAbiWasmBytes',
+    crate: 'flighthq-physics3d-abi-wasm',
+    embedScript: 'packages/physics3d-abi-wasm/scripts/embed-wasm.ts',
+  },
+} as const satisfies Record<string, WasmArtifactTarget>;
+
+const commonBuildInputs = [
   'Cargo.lock',
   'Cargo.toml',
   'rust-toolchain',
@@ -12,20 +38,23 @@ const buildInputs = [
   '.cargo/config',
   '.cargo/config.toml',
   'tools/generator/src/build-wasm.ts',
-  'packages/bitmap-wasm/scripts/embed-wasm.ts',
 ] as const;
 const inputHashPattern = /^\/\/ wasm-input-sha256: ([a-f\d]{64})$/mu;
 const outputHashPattern = /^\/\/ wasm-output-sha256: ([a-f\d]{64})$/mu;
 const base64Pattern = /const base64 =\s*\n\s*'([A-Za-z\d+/]*={0,2})';/u;
 
 export function computeBitmapWasmInputHash(workspace: string): string {
+  return computeWasmInputHash(workspace, wasmArtifactTargets.bitmap);
+}
+
+export function computeWasmInputHash(workspace: string, target: WasmArtifactTarget): string {
   const files = new Set<string>();
-  for (const input of buildInputs) {
+  for (const input of [...commonBuildInputs, target.embedScript]) {
     const absolute = path.join(workspace, input);
     if (existsSync(absolute)) files.add(absolute);
   }
 
-  const manifests = [path.join(workspace, wasmCrateManifest)];
+  const manifests = [path.join(workspace, 'generated/crates', target.crate, 'Cargo.toml')];
   const visitedManifests = new Set<string>();
   while (manifests.length > 0) {
     const manifest = manifests.pop();
@@ -57,14 +86,18 @@ export function computeBitmapWasmInputHash(workspace: string): string {
 }
 
 export function renderBitmapWasmBytes(workspace: string, bytes: Uint8Array): string {
-  return renderEmbeddedWasm(computeBitmapWasmInputHash(workspace), bytes);
+  return renderWasmBytes(workspace, wasmArtifactTargets.bitmap, bytes);
 }
 
-function renderEmbeddedWasm(inputHash: string, bytes: Uint8Array): string {
+export function renderWasmBytes(workspace: string, target: WasmArtifactTarget, bytes: Uint8Array): string {
+  return renderEmbeddedWasm(target, computeWasmInputHash(workspace, target), bytes);
+}
+
+function renderEmbeddedWasm(target: WasmArtifactTarget, inputHash: string, bytes: Uint8Array): string {
   const outputHash = sha256(bytes);
   const base64 = Buffer.from(bytes).toString('base64');
   return `// GENERATED — do not edit by hand. Produced by scripts/embed-wasm.ts from
-// generated/crates/flighthq-bitmap-wasm. Holds the wasm module as base64 so init is
+// generated/crates/${target.crate}. Holds the wasm module as base64 so init is
 // synchronous and needs no file read or network fetch in any environment.
 // wasm-input-sha256: ${inputHash}
 // wasm-output-sha256: ${outputHash}
@@ -79,32 +112,36 @@ function decodeBase64(value: string): Uint8Array {
   return out;
 }
 
-export const bitmapWasmBytes: Uint8Array = decodeBase64(base64);
+export const ${target.bytesExport}: Uint8Array = decodeBase64(base64);
 `;
 }
 
 export function assertBitmapWasmArtifactFresh(workspace: string): void {
-  const file = path.join(workspace, artifactPath);
-  if (!existsSync(file)) throw staleArtifactError('is missing');
+  assertWasmArtifactFresh(workspace, wasmArtifactTargets.bitmap);
+}
+
+export function assertWasmArtifactFresh(workspace: string, target: WasmArtifactTarget): void {
+  const file = path.join(workspace, target.artifactPath);
+  if (!existsSync(file)) throw staleArtifactError(target, 'is missing');
 
   const content = readFileSync(file, 'utf8');
   const recordedInputHash = inputHashPattern.exec(content)?.[1];
   const recordedOutputHash = outputHashPattern.exec(content)?.[1];
   const base64 = base64Pattern.exec(content)?.[1];
   if (!recordedInputHash || !recordedOutputHash || base64 === undefined) {
-    throw staleArtifactError('does not contain valid freshness metadata');
+    throw staleArtifactError(target, 'does not contain valid freshness metadata');
   }
 
-  const currentInputHash = computeBitmapWasmInputHash(workspace);
+  const currentInputHash = computeWasmInputHash(workspace, target);
   if (recordedInputHash !== currentInputHash) {
-    throw staleArtifactError('was built from stale Rust or packaging inputs');
+    throw staleArtifactError(target, 'was built from stale Rust or packaging inputs');
   }
   const bytes = Buffer.from(base64, 'base64');
   if (recordedOutputHash !== sha256(bytes)) {
-    throw staleArtifactError('does not match its recorded wasm output hash');
+    throw staleArtifactError(target, 'does not match its recorded wasm output hash');
   }
-  if (content !== renderEmbeddedWasm(currentInputHash, bytes)) {
-    throw staleArtifactError('does not match the canonical embedded module');
+  if (content !== renderEmbeddedWasm(target, currentInputHash, bytes)) {
+    throw staleArtifactError(target, 'does not match the canonical embedded module');
   }
 }
 
@@ -146,6 +183,6 @@ function relative(workspace: string, file: string): string {
   return path.relative(workspace, file).split(path.sep).join('/');
 }
 
-function staleArtifactError(reason: string): Error {
-  return new Error(`Generated wasm artifact ${artifactPath} ${reason}; run npm run wasm`);
+function staleArtifactError(target: WasmArtifactTarget, reason: string): Error {
+  return new Error(`Generated wasm artifact ${target.artifactPath} ${reason}; run npm run wasm`);
 }
