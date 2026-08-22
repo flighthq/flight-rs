@@ -30,15 +30,15 @@ pub struct NativeHostBackends {
 /// into its generated signals. Keeping installation in one function makes partial host setup
 /// impossible at the cultivated boundary.
 pub fn install_native_host(backends: NativeHostBackends) -> InputManager {
-    flighthq_application::set_loop_backend(Some(backends.loop_backend));
-    flighthq_application::set_window_backend(Some(backends.window));
-    flighthq_device::set_device_backend(Some(backends.device));
-    flighthq_haptics::set_haptics_backend(Some(backends.haptics));
-    flighthq_keyboard::set_soft_keyboard_backend(Some(backends.soft_keyboard));
-    flighthq_lifecycle::set_lifecycle_backend(Some(backends.lifecycle));
-    flighthq_platform::set_platform_backend(Some(backends.platform));
-    flighthq_power::set_power_backend(Some(backends.power));
-    flighthq_screen::set_screen_backend(Some(backends.screen));
+    flighthq_application::set_loop_backend(&Some(backends.loop_backend));
+    flighthq_application::set_window_backend(&Some(backends.window));
+    flighthq_device::set_device_backend(&Some(backends.device));
+    flighthq_haptics::set_haptics_backend(&Some(backends.haptics));
+    flighthq_keyboard::set_soft_keyboard_backend(&Some(backends.soft_keyboard));
+    flighthq_lifecycle::set_lifecycle_backend(&Some(backends.lifecycle));
+    flighthq_platform::set_platform_backend(&Some(backends.platform));
+    flighthq_power::set_power_backend(&Some(backends.power));
+    flighthq_screen::set_screen_backend(&Some(backends.screen));
     flighthq_input::create_input_manager()
 }
 
@@ -48,15 +48,15 @@ mod tests {
 
     #[test]
     fn generated_native_seams_are_linked() {
-        let _: fn(Option<LoopBackend>) = flighthq_application::set_loop_backend;
-        let _: fn(Option<WindowBackend>) = flighthq_application::set_window_backend;
-        let _: fn(Option<DeviceBackend>) = flighthq_device::set_device_backend;
-        let _: fn(Option<HapticsBackend>) = flighthq_haptics::set_haptics_backend;
+        let _: fn(&Option<LoopBackend>) = flighthq_application::set_loop_backend;
+        let _: fn(&Option<WindowBackend>) = flighthq_application::set_window_backend;
+        let _: fn(&Option<DeviceBackend>) = flighthq_device::set_device_backend;
+        let _: fn(&Option<HapticsBackend>) = flighthq_haptics::set_haptics_backend;
         let _: fn() -> InputManager = flighthq_input::create_input_manager;
-        let _: fn(Option<SoftKeyboardBackend>) = flighthq_keyboard::set_soft_keyboard_backend;
-        let _: fn(Option<LifecycleBackend>) = flighthq_lifecycle::set_lifecycle_backend;
-        let _: fn(Option<PlatformBackend>) = flighthq_platform::set_platform_backend;
-        let _: fn(Option<PowerBackend>) = flighthq_power::set_power_backend;
-        let _: fn(Option<ScreenBackend>) = flighthq_screen::set_screen_backend;
+        let _: fn(&Option<SoftKeyboardBackend>) = flighthq_keyboard::set_soft_keyboard_backend;
+        let _: fn(&Option<LifecycleBackend>) = flighthq_lifecycle::set_lifecycle_backend;
+        let _: fn(&Option<PlatformBackend>) = flighthq_platform::set_platform_backend;
+        let _: fn(&Option<PowerBackend>) = flighthq_power::set_power_backend;
+        let _: fn(&Option<ScreenBackend>) = flighthq_screen::set_screen_backend;
     }
 }
