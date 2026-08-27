@@ -1,6 +1,6 @@
 name: Release
 
-# The MANUAL release path for the wasm facade set. Ordinary releases do not come through here —
+# The MANUAL release path for the conformant wasm facade. Ordinary releases do not come through here —
 # flight-release.yml publishes when Flight publishes, which is the only moment all substituted
 # package dependencies are guaranteed to exist.
 #
@@ -102,7 +102,7 @@ jobs:
           # this is opt-out through a repository variable rather than a value to discover at the
           # first real publish: set NPM_PROVENANCE to "false" if flight-rs is private.
           NPM_CONFIG_PROVENANCE: ${{ vars.NPM_PROVENANCE != 'false' }}
-        # The release script performs one full wasm build, then assembles every tarball from it.
+        # The release script performs one full wasm build, then assembles each publishable tarball from it.
         run: |
           if [ -z "${NODE_AUTH_TOKEN}" ]; then
             echo "::notice::NPM_TOKEN is not configured; running a dry run instead of publishing."

@@ -130,11 +130,7 @@ describe('dist-tag ordering guard', () => {
 
 describe('publishable set', () => {
   it('is exactly the blessed facade set', () => {
-    expect(publishablePackages(workspace).map((item) => item.manifest.name)).toEqual([
-      '@flighthq/bitmap-wasm',
-      '@flighthq/physics2d-abi-wasm',
-      '@flighthq/physics3d-abi-wasm',
-    ]);
+    expect(publishablePackages(workspace).map((item) => item.manifest.name)).toEqual(['@flighthq/bitmap-wasm']);
   });
 
   it('excludes a package that marks itself private, and stamps only what it includes', () => {

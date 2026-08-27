@@ -30,7 +30,7 @@ The call returns as soon as GitHub accepts it. Flight's release does not wait fo
 
 ## Receiving side — `.github/workflows/flight-release.yml`
 
-The gate is **behavioral, not identity-based**. The workflow installs the `@flighthq/bitmap` Flight just published and runs the parity suite against it, using `packages/bitmap-wasm/vitest.config.published.ts` — the same tests as the normal suite, resolved against `node_modules` instead of the pinned sources.
+The gate is **behavioral, not identity-based**. It has two layers: all 376 unchanged tests from the pinned upstream bitmap package run with every Rust override substituted, then the workflow installs the `@flighthq/bitmap` Flight just published and runs a focused differential suite against it using `packages/bitmap-wasm/vitest.config.published.ts`.
 
 That answers the question a consumer actually has: are the Rust kernels still indistinguishable from the package this claims to substitute? Comparing commits only ever answered it by proxy, and answered it wrongly — under locked versioning the pin routinely lags the released commit by commits that never touched `bitmap`, which is a difference with no consequence.
 
@@ -38,7 +38,7 @@ In order:
 
 1. **Report the relationship.** Released commit, pinned commit, and the version derived from the pin go into the run summary. Differences are `::notice::`, never failures.
 2. **Install the released packages** at the version Flight named, retrying while the registry propagates.
-3. **Parity against those packages.** A failure blocks: a drop-in that silently computes different pixels is worse for a consumer than a version briefly missing from the family. Fix and re-run through `workflow_dispatch`.
+3. **Full upstream conformance plus released-package parity.** A failure blocks: a drop-in that silently computes different pixels is worse for a consumer than a version briefly missing from the family. Fix and re-run through `workflow_dispatch`.
 4. **Stamp version and dependency range** to the released version — the range moves only because step 3 just demonstrated compatibility with exactly those packages.
 5. **Packaging invariants**, then publish. `prepack` rebuilds the wasm from this commit, so the tarball never carries a stale module.
 
@@ -54,6 +54,7 @@ So the release gate is exactly what determines whether the tarball is fit to pub
 
 | Checked | Why |
 | --- | --- |
+| Unchanged upstream suite | All 42 bitmap test files and 376 cases exercise the facade, with every Rust override routed through them |
 | Differential parity | The whole claim — the Rust kernels behave identically to the TypeScript they substitute |
 | Packaging invariants | The tarball shadows the right names, ships the wasm glue, and has a publishable manifest |
 | Version and dependency logic | The number and the range it declares are correct |

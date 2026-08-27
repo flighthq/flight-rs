@@ -1,8 +1,9 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import ts from 'typescript';
 
 import { wasmGlueFiles as bitmapWasmGlueFiles } from '../../packages/bitmap-wasm/scripts/copy-wasm-glue.ts';
+import { bitmapWasmExports } from '../../packages/bitmap-wasm/vitest.config.upstream.ts';
 import { wasmGlueFiles as physics2DWasmGlueFiles } from '../../packages/physics2d-abi-wasm/scripts/copy-wasm-glue.ts';
 import { wasmGlueFiles as physics3DWasmGlueFiles } from '../../packages/physics3d-abi-wasm/scripts/copy-wasm-glue.ts';
 import { publishablePackages } from '../../scripts/publishable-packages.ts';
@@ -82,6 +83,17 @@ function relativeImportSpecifiers(sourceFile: ts.SourceFile): string[] {
     if (specifier.startsWith('.')) specifiers.push(specifier);
   }
   return specifiers;
+}
+
+function namedImports(sourceFile: ts.SourceFile): string[] {
+  const names: string[] = [];
+  for (const statement of sourceFile.statements) {
+    if (!ts.isImportDeclaration(statement)) continue;
+    const bindings = statement.importClause?.namedBindings;
+    if (bindings === undefined || !ts.isNamedImports(bindings)) continue;
+    for (const element of bindings.elements) names.push((element.propertyName ?? element.name).text);
+  }
+  return names;
 }
 
 describe('blessed facade packaging', () => {
@@ -183,6 +195,28 @@ describe('blessed facade packaging', () => {
         true,
       );
     }
+  });
+
+  it('routes every wasm override through the unchanged upstream test corpus', () => {
+    const index = parse(path.join(facadeDirectory, 'src/index.ts'));
+    const shadowed = reexportedNames(index, './bitmapWasm').filter((name) => name !== 'initBitmapWasm');
+    expect([...bitmapWasmExports].sort()).toEqual(shadowed.sort());
+
+    const upstreamTests = path.join(workspace, 'upstream/packages/bitmap/src');
+    const imported = new Set(
+      readdirSync(upstreamTests)
+        .filter((file) => file.endsWith('.test.ts'))
+        .flatMap((file) => namedImports(parse(path.join(upstreamTests, file)))),
+    );
+    for (const name of bitmapWasmExports) {
+      expect(imported.has(name), `${name} is imported by an upstream bitmap test`).toBe(true);
+    }
+
+    const rootManifest = JSON.parse(readFileSync(path.join(workspace, 'package.json'), 'utf8')) as {
+      scripts?: Record<string, string>;
+    };
+    expect(manifest.scripts?.test).toContain('vitest.config.upstream.ts');
+    expect(rootManifest.scripts?.['test:release']).toContain('test:upstream');
   });
 
   it('copies every non-TypeScript module the facade imports into dist', () => {

@@ -18,9 +18,11 @@
     "lint": "oxlint --max-warnings=0",
     "lint:fix": "oxlint --fix --max-warnings=0",
     "release": "tsx scripts/publish-packages.ts",
-    "test": "vitest run && vitest run --config packages/bitmap-wasm/vitest.config.ts && vitest run --config packages/physics2d-abi-wasm/vitest.config.ts && vitest run --config packages/physics3d-abi-wasm/vitest.config.ts",
+    "test": "vitest run && npm run test:facades && npm run test:upstream",
+    "test:facades": "vitest run --config packages/bitmap-wasm/vitest.config.ts && vitest run --config packages/physics2d-abi-wasm/vitest.config.ts && vitest run --config packages/physics3d-abi-wasm/vitest.config.ts",
     "test:host-winit": "cargo test --manifest-path crates/flighthq-host-winit/Cargo.toml",
-    "test:release": "vitest run tests/generator/facade-packaging.test.ts tests/generator/publishing.test.ts tests/generator/wasm-artifact.test.ts && vitest run --config packages/bitmap-wasm/vitest.config.ts && vitest run --config packages/physics2d-abi-wasm/vitest.config.ts && vitest run --config packages/physics3d-abi-wasm/vitest.config.ts",
+    "test:release": "vitest run tests/generator/facade-packaging.test.ts tests/generator/publishing.test.ts tests/generator/wasm-artifact.test.ts && vitest run --config packages/bitmap-wasm/vitest.config.ts && npm run test:upstream",
+    "test:upstream": "vitest run --config packages/bitmap-wasm/vitest.config.upstream.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "typecheck:upstream": "tsc -p packages/bitmap-wasm/tsconfig.upstream.json && tsc -p packages/physics2d-abi-wasm/tsconfig.upstream.json && tsc -p packages/physics3d-abi-wasm/tsconfig.upstream.json",
     "upstream:latest": "tsx scripts/upstream-latest.ts",
@@ -28,13 +30,16 @@
     "wasm": "tsx tools/generator/src/build-wasm.ts"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "6.9.1",
     "@types/node": "22.19.7",
     "@vitest/coverage-v8": "4.1.10",
+    "jsdom": "27.4.0",
     "oxfmt": "0.57.0",
     "oxlint": "1.72.0",
     "tsx": "4.22.4",
     "typescript": "5.9.3",
     "vitest": "4.1.10",
+    "vitest-webgl-canvas-mock": "1.1.0",
     "yaml": "2.9.0"
   }
 }

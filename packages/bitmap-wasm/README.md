@@ -30,7 +30,7 @@ This package re-exports the whole of `@flighthq/bitmap` and shadows the subset o
 
 The wasm-backed functions are the ones listed under `wasmFacades` in `tools/generator/port.config.ts`, currently 34 of them: the color-matrix builders and `colorMatrixBitmap`; `convolveBitmap`, `dilateBitmap`, `erodeBitmap`, and `pixelateBitmap`; `applyBitmapCurve`, `applyBitmapLevels`, and `applyBitmapPaletteMap`; the alpha operations; the noise, Perlin, and turbulence fills plus `fillBitmapRectangle`; the copy and channel-merge operations; and the query functions (`getBitmapHistogram`, `getBitmapCoverage`, `getBitmapColorBoundsRectangle`, `getBitmapMismatch`, and the fingerprint pair).
 
-Every one of them is differentially tested against the upstream TypeScript implementation, and the Rust output must match byte for byte.
+Every override is imported by Flight's own bitmap tests. CI runs the pinned upstream suite unchanged, substituting only those 34 imports with the wasm implementations; the current pin passes all 42 files and 376 tests. A smaller differential suite also compares representative Rust and TypeScript outputs byte for byte, including the published `@flighthq/bitmap` during a release.
 
 ## Requirements and caveats
 

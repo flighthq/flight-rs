@@ -33,7 +33,8 @@
     "build": "npm run wasm && npm run build:package",
     "build:package": "tsc -b && tsx ./scripts/copy-wasm-glue.ts",
     "clean": "tsc -b --clean",
-    "test": "vitest run --config vitest.config.ts",
+    "test": "vitest run --config vitest.config.ts && vitest run --config vitest.config.upstream.ts",
+    "test:upstream": "vitest run --config vitest.config.upstream.ts",
     "test:watch": "vitest --watch --config vitest.config.ts",
     "prepack": "npm run clean && npm run clean:dist && npm run build",
     "clean:dist": "tsx ../../scripts/clean-package-dist.ts"

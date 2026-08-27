@@ -138,14 +138,14 @@ jobs:
       # then fails at import time is invisible to every unit test.
       - name: Pack the tarballs
         run: |
-          for package in packages/*-wasm; do
+          while IFS= read -r package; do
             (
               cd "${package}"
               npx tsc -b
               npx tsx ./scripts/copy-wasm-glue.ts
               npm pack --ignore-scripts --pack-destination /tmp
             )
-          done
+          done < <(npx tsx scripts/publishable-packages.ts)
           ls -l /tmp/*.tgz
 
       # Everything above tests the SOURCES. This installs what would actually be published and

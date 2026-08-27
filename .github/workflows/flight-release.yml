@@ -1,16 +1,17 @@
 name: Flight release bridge
 
-# Publishes the blessed wasm facades whenever Flight publishes, at the version Flight released.
+# Publishes the conformant wasm facade whenever Flight publishes, at the version Flight released.
 #
 # Flight uses locked versioning: every package ships at the family version whether or not it changed.
-# These packages are part of that family, so they ship too, and Flight's version is authoritative.
+# This package is part of that family, so it ships too, and Flight's version is authoritative.
 # The submodule pin is incidental to that — it records which source the Rust was generated from, not
 # which release this package belongs to, and it routinely lags the released commit by commits that
 # never touched their substituted packages.
 #
 # So the gate is behavioral, not identity-based: install the Flight packages just published and run
-# every facade suite against them. That answers the question a consumer actually has — do the wasm
-# backends still implement the released contracts — where commit comparison answered only by proxy.
+# both its full upstream conformance suite and released-package differential suite. That answers the
+# question a consumer actually has — does the wasm facade implement the released contract — where
+# commit comparison answered only by proxy.
 #
 # See docs/release-bridge.md for the sending side.
 
@@ -94,15 +95,13 @@ jobs:
           for attempt in 1 2 3 4 5; do
             if npm install --no-save \
               "@flighthq/bitmap@${FLIGHT_VERSION}" \
-              "@flighthq/physics2d-abi@${FLIGHT_VERSION}" \
-              "@flighthq/physics3d-abi@${FLIGHT_VERSION}" \
               "@flighthq/types@${FLIGHT_VERSION}"; then
               exit 0
             fi
             echo "attempt ${attempt} failed; waiting for the registry"
             sleep 30
           done
-          echo "::error::The Flight wasm-facade dependencies at ${FLIGHT_VERSION} did not become installable."
+          echo "::error::The Flight bitmap dependencies at ${FLIGHT_VERSION} did not become installable."
           exit 1
 
       - name: Verify parity against the released package
@@ -110,8 +109,6 @@ jobs:
         # drop-in could silently behave differently. Fix and re-run via workflow_dispatch.
         run: |
           npx vitest run --config packages/bitmap-wasm/vitest.config.published.ts
-          npx vitest run --config packages/physics2d-abi-wasm/vitest.config.published.ts
-          npx vitest run --config packages/physics3d-abi-wasm/vitest.config.published.ts
 
       # Scoped to the artifact, not the repository. The full suite also carries generator
       # bookkeeping — compiled-candidate counts, lowering coverage, conformance shape — which moves

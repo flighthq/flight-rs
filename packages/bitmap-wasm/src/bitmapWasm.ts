@@ -171,6 +171,7 @@ export function colorMatrixBitmap(
   source: Readonly<BitmapRegion>,
   matrix: ReadonlyArray<number>,
 ): void {
+  if (matrix.length < 20) throw new Error('Color matrix filter requires 20 values');
   ensureBitmapWasm();
   color_matrix_bitmap_wasm(asUint8(out), asUint8(source.bitmap.data), descriptorOf(source), Float64Array.from(matrix));
 }
