@@ -201,6 +201,21 @@ describe('publishable set', () => {
 });
 
 describe('the release entry points run', () => {
+  it('fetches upstream tags before every version-aware CI test command', () => {
+    const workflow = readFileSync(path.join(workspace, '.github/workflows/ci.yml'), 'utf8');
+    for (const [job, command] of [
+      ['tests', 'run: npm run test'],
+      ['package', 'run: npm run test:release'],
+    ] as const) {
+      const body = workflowJob(workflow, job);
+      const fetch = body.indexOf('run: git -C upstream fetch --tags --force');
+      const test = body.indexOf(command);
+
+      expect(fetch, `${job} fetches the tags required by flight-version.ts`).toBeGreaterThanOrEqual(0);
+      expect(test, `${job} runs its version-aware test command`).toBeGreaterThan(fetch);
+    }
+  });
+
   it('prints a GitHub Actions key=value pair for the current branch', () => {
     const output = execFileSync('node_modules/.bin/tsx', ['scripts/edge-version.ts', 'main'], {
       cwd: workspace,
@@ -225,4 +240,12 @@ function readFullManifest(root: string, relative: string): { dependencies: Recor
 
 function readManifest(root: string, relative: string): { version: string } {
   return JSON.parse(readFileSync(path.join(root, relative), 'utf8')) as { version: string };
+}
+
+function workflowJob(workflow: string, name: string): string {
+  const lines = workflow.split('\n');
+  const start = lines.findIndex((line) => line === `  ${name}:`);
+  if (start < 0) throw new Error(`workflow has no ${name} job`);
+  const end = lines.findIndex((line, index) => index > start && /^  [a-z][a-z0-9_-]*:$/u.test(line));
+  return lines.slice(start, end < 0 ? undefined : end).join('\n');
 }
