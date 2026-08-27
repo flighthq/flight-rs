@@ -42,7 +42,7 @@ export function readFlightVersion(workspace: string = repositoryRoot): string {
   if (tag === undefined) {
     throw new Error(
       'upstream/ has no reachable version tag, so the Flight version cannot be derived. ' +
-        'Fetch tags in the submodule (git -C upstream fetch --tags) and retry.',
+        'Fetch the submodule history and tags (git -C upstream fetch --unshallow --tags) and retry.',
     );
   }
   return applyBump(base, detectBumpLevel(upstream, `${tag}..HEAD`));

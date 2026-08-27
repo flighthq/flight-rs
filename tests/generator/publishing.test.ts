@@ -197,17 +197,17 @@ describe('publishable set', () => {
 });
 
 describe('the release entry points run', () => {
-  it('fetches upstream tags before every version-aware CI test command', () => {
+  it('fetches upstream history and tags before every version-aware CI test command', () => {
     const workflow = readFileSync(path.join(workspace, '.github/workflows/ci.yml'), 'utf8');
     for (const [job, command] of [
       ['tests', 'run: npm run test'],
       ['package', 'run: npm run test:release'],
     ] as const) {
       const body = workflowJob(workflow, job);
-      const fetch = body.indexOf('run: git -C upstream fetch --tags --force');
+      const fetch = body.indexOf('git -C upstream fetch --tags --force --unshallow origin');
       const test = body.indexOf(command);
 
-      expect(fetch, `${job} fetches the tags required by flight-version.ts`).toBeGreaterThanOrEqual(0);
+      expect(fetch, `${job} fetches the history required by flight-version.ts`).toBeGreaterThanOrEqual(0);
       expect(test, `${job} runs its version-aware test command`).toBeGreaterThan(fetch);
     }
   });

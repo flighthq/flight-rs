@@ -33,10 +33,11 @@ function workflows(): Array<{ file: string; jobs: Record<string, Job> }> {
 const commandsOf = (job: Job): string => job.steps.map((step) => step.run ?? '').join('\n');
 
 describe('workflow preconditions', () => {
-  it('fetches the submodule tags in every job that derives the Flight version', () => {
+  it('fetches the submodule history and tags in every job that derives the Flight version', () => {
     // scripts/flight-version.ts resolves the release through `git describe` on the submodule, and
-    // `actions/checkout` brings the submodule WITHOUT its tags. Anything that reaches that code —
-    // the test suite, the release gate, the version scripts — needs the fetch first.
+    // `actions/checkout` may leave the submodule shallow. Fetching tag objects is insufficient:
+    // `git describe` also needs the history joining a tag to HEAD. Anything that reaches that code
+    // needs both before it runs.
     // `npm run test` bare and `test:release` both reach publishing.test.ts; `test:host-winit` is
     // pure cargo and does not, so the bare form is matched only when nothing follows it.
     const needsTags = /npm run test(?![:\w-])|npm run test:release|edge-version|version-packages|flight-version/u;
@@ -45,8 +46,8 @@ describe('workflow preconditions', () => {
       for (const [name, job] of Object.entries(jobs)) {
         const commands = commandsOf(job);
         if (!needsTags.test(commands)) continue;
-        expect(commands, `${file}:${name} derives the Flight version, so it must fetch submodule tags`).toMatch(
-          /git -C upstream fetch --tags/u,
+        expect(commands, `${file}:${name} derives the Flight version, so it must unshallow the submodule`).toMatch(
+          /git -C upstream fetch --tags --force --unshallow origin/u,
         );
       }
     }

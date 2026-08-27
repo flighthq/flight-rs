@@ -53,8 +53,14 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
-      - name: Fetch upstream tags
-        run: git -C upstream fetch --tags --force
+      - name: Fetch upstream history and tags
+        # A tag object alone cannot cross a shallow boundary; version derivation needs its ancestry.
+        run: |
+          if [ "$(git -C upstream rev-parse --is-shallow-repository)" = "true" ]; then
+            git -C upstream fetch --tags --force --unshallow origin
+          else
+            git -C upstream fetch --tags --force origin
+          fi
 
       - uses: actions/setup-node@v4
         with:

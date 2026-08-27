@@ -78,20 +78,19 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - name: Fetch upstream tags
-        # publishing.test.ts derives the Flight family from the nearest upstream release tag.
-        # actions/checkout initializes submodules at the pinned commit but does not fetch their tags.
-        run: git -C upstream fetch --tags --force
+      - name: Fetch upstream history and tags
+        # A tag object is not reachable through a shallow boundary even after `fetch --tags`.
+        # flight-version.ts needs both the tag and the ancestry connecting it to the pin.
+        run: |
+          if [ "$(git -C upstream rev-parse --is-shallow-repository)" = "true" ]; then
+            git -C upstream fetch --tags --force --unshallow origin
+          else
+            git -C upstream fetch --tags --force origin
+          fi
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-      - name: Fetch upstream tags
-        # `actions/checkout` brings the submodule but NOT its tags, and scripts/flight-version.ts
-        # derives the Flight release from `git describe` against them. Without this it fails loudly —
-        # correct behaviour, since guessing a version would be worse — but the lane is red for a
-        # checkout gap rather than anything about the change.
-        run: git -C upstream fetch --tags --force origin
       # The generator tests compile Rust fixtures, so this lane needs the toolchain.
       - uses: ./.github/actions/rust
       - run: npm ci
@@ -105,12 +104,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - name: Fetch upstream tags
-        # `actions/checkout` brings the submodule but NOT its tags, and scripts/flight-version.ts
-        # derives the Flight release from `git describe` against them. Without this it fails loudly —
-        # correct behaviour, since guessing a version would be worse — but the lane is red for a
-        # checkout gap rather than anything about the change.
-        run: git -C upstream fetch --tags --force origin
+      - name: Fetch upstream history and tags
+        # A tag object is not reachable through a shallow boundary even after `fetch --tags`.
+        # flight-version.ts needs both the tag and the ancestry connecting it to the pin.
+        run: |
+          if [ "$(git -C upstream rev-parse --is-shallow-repository)" = "true" ]; then
+            git -C upstream fetch --tags --force --unshallow origin
+          else
+            git -C upstream fetch --tags --force origin
+          fi
       - uses: actions/setup-node@v4
         with:
           node-version: 22

@@ -45,11 +45,15 @@ jobs:
           # snapshot build count, which is `git rev-list --count`.
           submodules: recursive
           fetch-depth: 0
-      - name: Fetch upstream tags
-        # A submodule checkout does not necessarily bring tags, and scripts/flight-version.ts fails
-        # loudly without one rather than guessing a version. Fetching here keeps that failure out of
-        # the publish step, where it would be far more confusing.
-        run: git -C upstream fetch --tags --force
+      - name: Fetch upstream history and tags
+        # A submodule checkout may be shallow. Fetching tag objects without the intervening history
+        # still leaves `git describe` unable to reach them from the pin.
+        run: |
+          if [ "$(git -C upstream rev-parse --is-shallow-repository)" = "true" ]; then
+            git -C upstream fetch --tags --force --unshallow origin
+          else
+            git -C upstream fetch --tags --force origin
+          fi
       - uses: actions/setup-node@v4
         with:
           node-version: 22
