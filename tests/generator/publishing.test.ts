@@ -133,6 +133,14 @@ describe('publishable set', () => {
     expect(publishablePackages(workspace).map((item) => item.manifest.name)).toEqual(['@flighthq/bitmap-wasm']);
   });
 
+  it('prints the complete registry-name set for the release duplicate gate', () => {
+    const output = execFileSync('node_modules/.bin/tsx', ['scripts/publishable-packages.ts', '--names'], {
+      cwd: workspace,
+      encoding: 'utf8',
+    });
+    expect(output.trim().split('\n')).toEqual(publishablePackages(workspace).map((item) => item.manifest.name));
+  });
+
   it('excludes a package that marks itself private, and stamps only what it includes', () => {
     const sandbox = mkdtempSync(path.join(tmpdir(), 'flight-rs-publishable-'));
     try {

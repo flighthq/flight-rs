@@ -161,6 +161,10 @@ jobs:
       - name: Install and run the tarball as a consumer
         run: |
           npm install --no-save /tmp/flighthq-bitmap-wasm-*.tgz
+          # The tarball install resolves the facade's declared Flight ranges from npm. Compile the
+          # source contract against those real packages too, so API drift is found on a PR rather
+          # than only when a dispatched release is already trying to publish.
+          npm run typecheck:published
           npx vitest run --config tests/consumer/vitest.config.ts
 
       # Typechecks a consumer against the tarball's EMITTED declarations, with `skipLibCheck: false`

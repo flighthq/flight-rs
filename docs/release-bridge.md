@@ -37,7 +37,7 @@ The gate is **behavioral, not identity-based**. It has three layers: all 376 unc
 
 That answers the question a consumer actually has: are the Rust kernels still indistinguishable from the package this claims to substitute? Comparing commits only ever answered it by proxy, and answered it wrongly — under locked versioning the pin routinely lags the released commit by commits that never touched `bitmap`, which is a difference with no consequence.
 
-The dispatch payload is validated before checkout. Only `latest`, `edge`, and `next` are accepted, and a prerelease on `latest` is a hard failure. Runs are serialized per dist-tag with cancellation disabled because each tag is a single mutable npm pointer. A version already on npm exits successfully before the expensive build, making retries and duplicate dispatches idempotent.
+The dispatch payload is validated before checkout. Only `latest`, `edge`, and `next` are accepted, and a prerelease on `latest` is a hard failure. Runs are serialized per dist-tag with cancellation disabled because each tag is a single mutable npm pointer. The duplicate gate discovers the same complete publishable-package set as the publisher and exits successfully only when every package already has that version on npm. A partial release continues so the publisher can skip the packages that succeeded and finish the rest, keeping retries idempotent.
 
 In order:
 
@@ -52,6 +52,8 @@ The pin is never moved here. Moving it regenerates every crate and report, which
 ## What a release gates on, and what it does not
 
 CI verifies the **repository**. A release verifies the **artifact**. Both lanes run `npm run test:release`, not the whole suite, and the difference is the point.
+
+The CI package lane also installs the packed facade and therefore its declared Flight ranges from npm. It runs `typecheck:published` against those registry packages so ordinary pull requests catch API drift early; the dispatched release repeats the check against the exact authoritative version because snapshots may be newer than the committed ranges.
 
 The full suite also carries generator bookkeeping — how many upstream packages compile, lowering coverage, the conformance harvest shape. Those move when **upstream** changes, and they say nothing about whether this tarball works. Gating a release on them means an upstream package this port does not touch can block shipping a fix. That is not hypothetical: the pin move to `181dea5e` added seven packages and immediately failed the lowering coverage gate and three golden counts, none of which involve `bitmap`.
 

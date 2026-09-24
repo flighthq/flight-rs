@@ -79,21 +79,52 @@ jobs:
               ;;
           esac
 
-      - name: Skip if already published
+      # The duplicate gate needs repository code to discover the complete publishable set. Keep the
+      # expensive submodule checkout and Rust setup below that gate: retries are frequent on the
+      # snapshot channels, and an already-complete release should remain cheap.
+      - name: Check out the release tooling
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: https://registry.npmjs.org
+      - run: npm ci
+
+      - name: Skip if every package is already published
         id: gate
-        # Dispatch retries and duplicates are normal. npm versions are immutable, so treating an
-        # existing version as success is both safe and the only idempotent behavior.
+        # Dispatch retries and duplicates are normal. npm versions are immutable, so treating a
+        # complete version as success is both safe and the only idempotent behavior. Do not skip a
+        # partial release: the publisher itself skips existing packages and finishes the remainder.
         run: |
-          if npm view "@flighthq/bitmap-wasm@${FLIGHT_VERSION}" version >/dev/null 2>&1; then
-            echo "@flighthq/bitmap-wasm@${FLIGHT_VERSION} is already published"
+          set -euo pipefail
+          all_published=true
+          package_count=0
+          while IFS= read -r package_name; do
+            [ -n "${package_name}" ] || continue
+            package_count=$((package_count + 1))
+            if npm view "${package_name}@${FLIGHT_VERSION}" version >/dev/null 2>&1; then
+              echo "${package_name}@${FLIGHT_VERSION} is already published"
+            else
+              echo "${package_name}@${FLIGHT_VERSION} still needs publishing"
+              all_published=false
+            fi
+          done < <(npx tsx scripts/publishable-packages.ts --names)
+
+          if [ "${package_count}" -eq 0 ]; then
+            echo "::error::No publishable packages were discovered."
+            exit 1
+          fi
+          if [ "${all_published}" = true ]; then
             echo "skip=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - if: steps.gate.outputs.skip != 'true'
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-          fetch-depth: 0
+      - name: Check out the upstream source
+        if: steps.gate.outputs.skip != 'true'
+        run: git submodule update --init --recursive
       - name: Fetch upstream history and tags
         if: steps.gate.outputs.skip != 'true'
         # A tag object alone cannot cross a shallow boundary; version derivation needs its ancestry.
@@ -105,15 +136,7 @@ jobs:
           fi
 
       - if: steps.gate.outputs.skip != 'true'
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-          registry-url: https://registry.npmjs.org
-      - if: steps.gate.outputs.skip != 'true'
         uses: ./.github/actions/rust
-      - if: steps.gate.outputs.skip != 'true'
-        run: npm ci
 
       - name: Report how this port relates to the release
         if: steps.gate.outputs.skip != 'true'

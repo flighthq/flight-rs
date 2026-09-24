@@ -66,7 +66,11 @@ describe('workflow preconditions', () => {
         const commands = commandsOf(job);
         if (!/npm run (generate|wasm|test|check)|cargo |upstream/u.test(commands)) continue;
         const checkout = job.steps.find((step) => String(step.uses ?? '').startsWith('actions/checkout'));
-        expect(checkout?.with?.submodules, `${file}:${name} checks out the submodule`).toBe('recursive');
+        const initializesSubmodules = commands.includes('git submodule update --init --recursive');
+        expect(
+          checkout?.with?.submodules === 'recursive' || initializesSubmodules,
+          `${file}:${name} checks out the submodule`,
+        ).toBe(true);
       }
     }
   });
@@ -114,7 +118,9 @@ describe('workflow preconditions', () => {
     expect(commands).toContain('latest|edge|next');
     expect(commands).toContain('unexpected version');
     expect(commands).toContain('*-*:latest)');
-    expect(commands).toContain('npm view "@flighthq/bitmap-wasm@${FLIGHT_VERSION}" version');
+    expect(commands).toContain('npx tsx scripts/publishable-packages.ts --names');
+    expect(commands).toContain('npm view "${package_name}@${FLIGHT_VERSION}" version');
+    expect(commands).toContain('if [ "${all_published}" = true ]');
     expect(commands).toContain('npm run typecheck:published');
     expect(commands).toContain('npx vitest run --config packages/bitmap-wasm/vitest.config.published.ts');
     expect(commands).toContain('npm run release -- --tag "${DIST_TAG}"');
@@ -148,5 +154,10 @@ describe('workflow preconditions', () => {
     expect(manualCommands).toContain("dependencies['@flighthq/bitmap']");
     expect(manualCommands).toContain('npm run typecheck:published');
     expect(manualCommands).toContain('npx vitest run --config packages/bitmap-wasm/vitest.config.published.ts');
+
+    const ci = parse(readFileSync(path.join(workflowDirectory, 'ci.yml'), 'utf8')) as {
+      jobs: Record<string, Job>;
+    };
+    expect(commandsOf(ci.jobs.package as Job)).toContain('npm run typecheck:published');
   });
 });

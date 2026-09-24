@@ -97,6 +97,27 @@ function namedImports(sourceFile: ts.SourceFile): string[] {
 }
 
 describe('blessed facade packaging', () => {
+  it('resolves the published API contract from npm rather than the local compatibility shim', () => {
+    const configPath = path.join(facadeDirectory, 'tsconfig.published.json');
+    const result = ts.readConfigFile(configPath, ts.sys.readFile);
+    expect(result.error, `${configPath} parses`).toBeUndefined();
+
+    const config = result.config as {
+      compilerOptions?: { paths?: unknown };
+      exclude?: string[];
+      include?: string[];
+    };
+    expect(config.include).toContain('published-api-contract.ts');
+    expect(config.exclude).toContain('src/upstream-contract.d.ts');
+    expect(config.compilerOptions?.paths).toBeUndefined();
+
+    const parsed = ts.parseJsonConfigFileContent(result.config, ts.sys, facadeDirectory, undefined, configPath);
+    expect(parsed.errors).toEqual([]);
+    expect(parsed.options.paths, 'no inherited alias may redirect package imports away from npm').toBeUndefined();
+    expect(parsed.fileNames).toContain(path.join(facadeDirectory, 'published-api-contract.ts'));
+    expect(parsed.fileNames).not.toContain(path.join(facadeDirectory, 'src/upstream-contract.d.ts'));
+  });
+
   it('is built from a wasm facade the generator declares', () => {
     expect(substitute.crate, 'package.json flightWasmSubstitute.crate').toBeTruthy();
     expect(bitmapFacade, `port.config wasmFacades entry for ${String(substitute.crate)}`).toBeDefined();

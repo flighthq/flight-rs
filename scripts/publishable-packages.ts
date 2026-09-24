@@ -50,7 +50,13 @@ export function publishablePackages(workspace: string = repositoryRoot): Publish
 }
 
 if (process.argv[1] !== undefined && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  for (const { directory } of publishablePackages()) {
-    process.stdout.write(`${relative(repositoryRoot, directory)}\n`);
+  const arguments_ = process.argv.slice(2);
+  const namesOnly = arguments_.length === 1 && arguments_[0] === '--names';
+  if (arguments_.length > 0 && !namesOnly) {
+    throw new Error(`Usage: ${relative(repositoryRoot, process.argv[1])} [--names]`);
+  }
+
+  for (const { directory, manifest } of publishablePackages()) {
+    process.stdout.write(`${namesOnly ? manifest.name : relative(repositoryRoot, directory)}\n`);
   }
 }
