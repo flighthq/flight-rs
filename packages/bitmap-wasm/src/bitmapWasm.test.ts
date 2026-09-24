@@ -1,5 +1,6 @@
 import { createBitmap, createBitmapRegion } from '@flighthq/bitmap';
 import * as reference from '@flighthq/bitmap';
+import { EntityRuntimeKey } from '@flighthq/types';
 import type { Bitmap, BitmapRegion } from '@flighthq/types';
 
 import * as rs from './bitmapWasm';
@@ -167,8 +168,16 @@ describe('generated wasm boundary', () => {
       reference.getBitmapMismatch(expectedBitmap, comparison, 10),
     );
 
+    // Flight also accepts decoded-image-like ArrayLike sources rather than only full Bitmaps. The
+    // out-of-byte-range value proves this path preserves the upstream numeric contract instead of
+    // truncating through the wasm byte ABI.
+    const decoded = { data: [300, 0, 0, 255], height: 1, width: 1 };
+    const decodedOther = { data: [0, 0, 0, 255], height: 1, width: 1 };
+    expect(rs.getBitmapMismatch(decoded, decodedOther)).toEqual(reference.getBitmapMismatch(decoded, decodedOther));
+
     const actualFingerprint = rs.createBitmapFingerprint(actualBitmap, 2);
     const expectedFingerprint = reference.createBitmapFingerprint(expectedBitmap, 2);
+    expect(EntityRuntimeKey in actualFingerprint).toBe(true);
     expect(actualFingerprint.gridSize).toBe(expectedFingerprint.gridSize);
     expect(actualFingerprint.cells).toEqual(expectedFingerprint.cells);
     const comparisonFingerprint = reference.createBitmapFingerprint(comparison, 2);

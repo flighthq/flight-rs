@@ -1,6 +1,6 @@
 name: Flight release bridge
 
-# Publishes the conformant wasm facade whenever Flight publishes, at the version Flight released.
+# Publishes the conformant wasm facade whenever Flight publishes, on the channel Flight names.
 #
 # Flight uses locked versioning: every package ships at the family version whether or not it changed.
 # This package is part of that family, so it ships too, and Flight's version is authoritative.
@@ -9,26 +9,34 @@ name: Flight release bridge
 # never touched their substituted packages.
 #
 # So the gate is behavioral, not identity-based: install the Flight packages just published and run
-# both its full upstream conformance suite and released-package differential suite. That answers the
-# question a consumer actually has — does the wasm facade implement the released contract — where
-# commit comparison answered only by proxy.
+# its compile-time API contract, full upstream conformance suite, and published-package differential
+# suite. That answers the question a consumer actually has — does the wasm facade implement the
+# dispatched contract — where commit comparison answered only by proxy.
 #
 # See docs/release-bridge.md for the sending side.
 
 on:
   repository_dispatch:
-    types: [flight-release]
+    types: [flight-release, flight-snapshot]
   workflow_dispatch:
     inputs:
       version:
-        description: The Flight release to publish against (e.g. 0.4.0)
+        description: The exact Flight version to publish (e.g. 0.4.0-next.1685.a1b2c3d)
         required: true
+      dist_tag:
+        description: The npm dist-tag to move
+        required: true
+        default: latest
+        type: choice
+        options: [latest, edge, next]
       commit:
-        description: The Flight commit that release was cut from (optional, reported only)
+        description: The Flight commit the build came from (optional, reported only)
         required: false
 
 concurrency:
-  group: release
+  # A dist-tag is one mutable pointer. Serialize each channel independently so an older publish
+  # cannot finish second and leave the pointer behind, while next/edge do not block latest.
+  group: release-${{ github.event.client_payload.dist_tag || inputs.dist_tag }}
   cancel-in-progress: false
 
 permissions:
@@ -37,7 +45,7 @@ permissions:
 
 jobs:
   publish:
-    name: Publish at the Flight release version
+    name: Publish the Flight version
     runs-on: ubuntu-latest
     timeout-minutes: 90
 
@@ -47,13 +55,47 @@ jobs:
       # is data rather than a command. Never interpolate these directly into a `run:` block.
       FLIGHT_VERSION: ${{ github.event.client_payload.version || inputs.version }}
       FLIGHT_COMMIT: ${{ github.event.client_payload.commit || inputs.commit }}
+      DIST_TAG: ${{ github.event.client_payload.dist_tag || inputs.dist_tag }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Validate payload
+        run: |
+          set -euo pipefail
+          [ -n "${FLIGHT_VERSION}" ] || { echo "::error::empty version"; exit 1; }
+          if [[ ! "${FLIGHT_VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::unexpected version '${FLIGHT_VERSION}'"
+            exit 1
+          fi
+          case "${DIST_TAG}" in
+            latest|edge|next) ;;
+            *) echo "::error::unexpected dist_tag '${DIST_TAG}'"; exit 1 ;;
+          esac
+          # A hyphen denotes a prerelease. Even a malformed dispatcher must never move `latest`
+          # to one, because that changes what ordinary npm installs receive.
+          case "${FLIGHT_VERSION}:${DIST_TAG}" in
+            *-*:latest)
+              echo "::error::refusing prerelease ${FLIGHT_VERSION} on latest"
+              exit 1
+              ;;
+          esac
+
+      - name: Skip if already published
+        id: gate
+        # Dispatch retries and duplicates are normal. npm versions are immutable, so treating an
+        # existing version as success is both safe and the only idempotent behavior.
+        run: |
+          if npm view "@flighthq/bitmap-wasm@${FLIGHT_VERSION}" version >/dev/null 2>&1; then
+            echo "@flighthq/bitmap-wasm@${FLIGHT_VERSION} is already published"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - if: steps.gate.outputs.skip != 'true'
+        uses: actions/checkout@v4
         with:
           submodules: recursive
           fetch-depth: 0
       - name: Fetch upstream history and tags
+        if: steps.gate.outputs.skip != 'true'
         # A tag object alone cannot cross a shallow boundary; version derivation needs its ancestry.
         run: |
           if [ "$(git -C upstream rev-parse --is-shallow-repository)" = "true" ]; then
@@ -62,15 +104,19 @@ jobs:
             git -C upstream fetch --tags --force origin
           fi
 
-      - uses: actions/setup-node@v4
+      - if: steps.gate.outputs.skip != 'true'
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           registry-url: https://registry.npmjs.org
-      - uses: ./.github/actions/rust
-      - run: npm ci
+      - if: steps.gate.outputs.skip != 'true'
+        uses: ./.github/actions/rust
+      - if: steps.gate.outputs.skip != 'true'
+        run: npm ci
 
       - name: Report how this port relates to the release
+        if: steps.gate.outputs.skip != 'true'
         # Informational only. A lagging pin is the normal case under locked versioning, and the
         # parity run below is what decides whether it matters. Recording it in the run's summary
         # means a later "which source was 0.4.0 built from" question has an answer.
@@ -95,6 +141,7 @@ jobs:
           fi
 
       - name: Install the Flight packages being released
+        if: steps.gate.outputs.skip != 'true'
         # npm can take a moment to serve a version the publish just created, so this retries rather
         # than failing the release on propagation.
         run: |
@@ -111,9 +158,12 @@ jobs:
           exit 1
 
       - name: Verify parity against the released package
-        # The real gate. If a Rust implementation no longer matches the package being released, a
-        # drop-in could silently behave differently. Fix and re-run via workflow_dispatch.
+        if: steps.gate.outputs.skip != 'true'
+        # The real gate. The typecheck compares the complete facade surface to the exact package
+        # named by the dispatch; the differential suite checks Rust behavior against it. Either form
+        # of API drift fails this workflow before the manifest is stamped or anything is published.
         run: |
+          npm run typecheck:published
           npx vitest run --config packages/bitmap-wasm/vitest.config.published.ts
 
       # Scoped to the artifact, not the repository. The full suite also carries generator
@@ -127,26 +177,30 @@ jobs:
       # next step just did, and fails on every release where the released and derived versions differ,
       # which under locked versioning is the ordinary case.
       - name: Verify the artifact
+        if: steps.gate.outputs.skip != 'true'
         run: npm run test:release
 
       - name: Stamp the manifest
+        if: steps.gate.outputs.skip != 'true'
         # The dependency range moves with the version because parity above demonstrated compatibility
         # with exactly those published packages.
         run: npx tsx scripts/version-packages.ts "${FLIGHT_VERSION}" --flight "${FLIGHT_VERSION}"
 
       - name: Re-check the packaging invariants after stamping
+        if: steps.gate.outputs.skip != 'true'
         # Version-agnostic, so it is safe on the stamped manifest and catches a stamp that produced
         # something unpublishable.
         run: npx vitest run tests/generator/facade-packaging.test.ts
 
       - name: Publish
+        if: steps.gate.outputs.skip != 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: ${{ vars.NPM_PROVENANCE != 'false' }}
         run: |
           if [ -z "${NODE_AUTH_TOKEN}" ]; then
             echo "::notice::NPM_TOKEN is not configured; running a dry run instead of publishing."
-            npm run release -- --dry-run --tag latest
+            npm run release -- --dry-run --tag "${DIST_TAG}"
           else
-            npm run release -- --tag latest
+            npm run release -- --tag "${DIST_TAG}"
           fi

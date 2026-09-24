@@ -1,0 +1,19 @@
+// Typechecks the facade against the exact Flight packages installed from npm by the release lane.
+// Unlike tsconfig.upstream.json, this has no `paths` aliases into the pinned submodule: package
+// resolution must fall through to node_modules or this check would silently test the wrong API.
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "noEmit": true,
+    "rootDir": "../..",
+    "skipLibCheck": false,
+    "sourceMap": false,
+    "types": ["node", "vitest/globals"],
+    "lib": ["ES2022", "DOM"]
+  },
+  "include": ["published-api-contract.ts", "src", "upstream-webgpu.d.ts"],
+  "exclude": ["src/upstream-contract.d.ts"]
+}

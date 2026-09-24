@@ -1,8 +1,8 @@
 name: Release
 
 # The MANUAL release path for the conformant wasm facade. Ordinary releases do not come through here —
-# flight-release.yml publishes when Flight publishes, which is the only moment all substituted
-# package dependencies are guaranteed to exist.
+# flight-release.yml publishes whenever Flight publishes, which is the only moment all substituted
+# package dependencies at that exact stable or snapshot version are guaranteed to exist.
 #
 # This lane covers the two cases that are not a Flight release:
 #   Tag        a bare numeric tag publishes that version under `latest` — a port-only fix that has to
@@ -12,11 +12,10 @@ name: Release
 #   Dispatch   publishes an <upstream>-edge.<count>.<sha> snapshot under the `edge` dist-tag, for
 #              deliberately putting a pre-release build in front of someone.
 #
-# NOT triggered by pushes to main, deliberately. Under locked versioning this repository's pin
-# usually sits ahead of Flight's newest RELEASE — right now it derives 0.4.0 while npm's newest
-# stable Flight family is 0.3.0 — so the dependency ranges an untagged build declares name a version
-# that does not exist yet. Publishing a snapshot on every push would emit a steady stream of packages
-# nobody can install, on top of running a full wasm build per commit.
+# NOT triggered by pushes to main, deliberately. Under locked versioning this repository's pin can
+# sit ahead of Flight's newest stable release, so an untagged build may declare dependency ranges npm
+# cannot serve yet. Publishing a snapshot on every push would also invent a channel independently of
+# Flight, on top of running a full wasm build per commit.
 
 on:
   push:
@@ -25,8 +24,9 @@ on:
   workflow_dispatch:
 
 concurrency:
-  # Serialize publishes; never cancel one midway, which could leave a dist-tag half-moved.
-  group: release
+  # Share the receiver's per-tag lock: a manual/tag publish and a Flight dispatch can target the
+  # same npm pointer. workflow_dispatch maps main -> edge and develop -> next in edge-version.ts.
+  group: release-${{ github.ref_type == 'tag' && 'latest' || github.ref_name == 'develop' && 'next' || 'edge' }}
   cancel-in-progress: false
 
 permissions:
@@ -62,6 +62,22 @@ jobs:
           registry-url: https://registry.npmjs.org
       - uses: ./.github/actions/rust
       - run: npm ci
+
+      - name: Install the declared Flight API
+        # Port-only versions (for example 0.4.1) are not Flight versions, so this lane cannot install
+        # the tag name. Resolve the dependency ranges the tarball will actually declare instead. A
+        # consumer gets this API, and a release must fail if the facade no longer substitutes it.
+        run: |
+          bitmap_range="$(node -p "require('./packages/bitmap-wasm/package.json').dependencies['@flighthq/bitmap']")"
+          types_range="$(node -p "require('./packages/bitmap-wasm/package.json').dependencies['@flighthq/types']")"
+          npm install --no-save \
+            "@flighthq/bitmap@${bitmap_range}" \
+            "@flighthq/types@${types_range}"
+
+      - name: Verify compatibility with the declared Flight API
+        run: |
+          npm run typecheck:published
+          npx vitest run --config packages/bitmap-wasm/vitest.config.published.ts
 
       - name: Resolve version and dist-tag
         id: resolve

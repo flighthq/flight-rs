@@ -1,4 +1,5 @@
-import { invalidateBitmap } from '@flighthq/bitmap';
+import { getBitmapMismatch as getUpstreamBitmapMismatch, invalidateBitmap } from '@flighthq/bitmap';
+import { EntityRuntimeKey } from '@flighthq/types';
 import type {
   RectangleLike,
   Bitmap,
@@ -51,6 +52,13 @@ import { bitmapWasmBytes } from './wasm/bitmapWasmBytes';
 let initialized = false;
 const EMPTY_CHANNEL_MAP = new Float64Array();
 const EMPTY_BYTE_CHANNEL_MAP = new Uint8Array();
+
+/** The structural input accepted by Flight's mismatch API, including decoded image bytes. */
+interface BitmapComparisonSource {
+  readonly data: ArrayLike<number>;
+  readonly height: number;
+  readonly width: number;
+}
 
 /**
  * Eagerly instantiates the mechanically generated bitmap module. Every
@@ -188,7 +196,10 @@ export function createBitmapFingerprint(source: Readonly<Bitmap>, gridSize: numb
   ensureBitmapWasm();
   const cells = new Uint8Array(gridSize * gridSize * 3);
   create_bitmap_fingerprint_wasm(cells, asUint8(source.data), source.width, source.height, gridSize);
-  return { cells, gridSize };
+  // BitmapFingerprint became an Entity in Flight 0.5. Supplying its stable runtime slot is harmless
+  // for earlier structural versions and keeps the same implementation compatible across both APIs.
+  const fingerprint = { [EntityRuntimeKey]: undefined, cells, gridSize };
+  return fingerprint;
 }
 
 export function convolveBitmap(
@@ -399,10 +410,16 @@ export function getBitmapHistogram(source: Readonly<BitmapRegion>): BitmapHistog
 }
 
 export function getBitmapMismatch(
-  source: Readonly<Bitmap>,
-  other: Readonly<Bitmap>,
+  source: Readonly<BitmapComparisonSource>,
+  other: Readonly<BitmapComparisonSource>,
   channelTolerance: number = 0,
 ): BitmapMismatch {
+  // The wasm ABI consumes bytes. Flight's public surface is deliberately broader (`ArrayLike`) for
+  // decoded sources, whose values are not required by the type to fit in a byte. Preserve the full
+  // upstream contract for those uncommon inputs instead of silently narrowing or truncating them.
+  if (!isByteArray(source.data) || !isByteArray(other.data)) {
+    return getUpstreamBitmapMismatch(source, other, channelTolerance);
+  }
   ensureBitmapWasm();
   const mismatch = new Float64Array(4);
   get_bitmap_mismatch_wasm(
@@ -421,6 +438,10 @@ export function getBitmapMismatch(
     fraction: mismatch[2]!,
     maxChannelDelta: mismatch[3]!,
   };
+}
+
+function isByteArray(data: ArrayLike<number>): data is Uint8Array | Uint8ClampedArray {
+  return data instanceof Uint8Array || data instanceof Uint8ClampedArray;
 }
 
 export function mergeBitmapChannels(

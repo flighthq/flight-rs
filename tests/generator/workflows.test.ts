@@ -11,6 +11,8 @@ import { parse } from 'yaml';
 const workflowDirectory = path.resolve('.github/workflows');
 
 interface Step {
+  id?: string;
+  if?: string;
   name?: string;
   run?: string;
   uses?: string;
@@ -18,6 +20,7 @@ interface Step {
 }
 
 interface Job {
+  env?: Record<string, unknown>;
   steps: Step[];
 }
 
@@ -87,5 +90,60 @@ describe('workflow preconditions', () => {
       const push = on.push as { branches?: string[] } | undefined;
       expect(push?.branches, `${file} does not publish on a branch push`).toBeUndefined();
     }
+  });
+
+  it('receives every Flight channel without allowing dispatches to race or move latest to a prerelease', () => {
+    const file = path.join(workflowDirectory, 'flight-release.yml');
+    const workflow = parse(readFileSync(file, 'utf8')) as {
+      concurrency: { 'cancel-in-progress': boolean; group: string };
+      jobs: Record<string, Job>;
+      on: { repository_dispatch: { types: string[] } };
+    };
+    const publish = workflow.jobs.publish;
+    if (publish === undefined) throw new Error('flight-release.yml has no publish job');
+    const commands = commandsOf(publish);
+
+    expect(workflow.on.repository_dispatch.types).toEqual(['flight-release', 'flight-snapshot']);
+    expect(workflow.concurrency.group).toContain('github.event.client_payload.dist_tag');
+    expect(workflow.concurrency['cancel-in-progress']).toBe(false);
+    expect(publish.env?.DIST_TAG).toContain('github.event.client_payload.dist_tag');
+
+    expect(commands).toContain('latest|edge|next');
+    expect(commands).toContain('unexpected version');
+    expect(commands).toContain('*-*:latest)');
+    expect(commands).toContain('npm view "@flighthq/bitmap-wasm@${FLIGHT_VERSION}" version');
+    expect(commands).toContain('npm run typecheck:published');
+    expect(commands).toContain('npx vitest run --config packages/bitmap-wasm/vitest.config.published.ts');
+    expect(commands).toContain('npm run release -- --tag "${DIST_TAG}"');
+    expect(commands).not.toContain('npm run release -- --tag latest');
+
+    const checkout = publish.steps.find((step) => String(step.uses ?? '').startsWith('actions/checkout'));
+    expect(
+      checkout?.with?.ref,
+      'the Flight commit is informational and must never be checked out here',
+    ).toBeUndefined();
+    const gate = publish.steps.findIndex((step) => step.id === 'gate');
+    expect(gate).toBeGreaterThanOrEqual(0);
+    for (const step of publish.steps.slice(gate + 1)) {
+      expect(step.if, `${step.name ?? step.uses ?? step.run} skips duplicate versions`).toBe(
+        "steps.gate.outputs.skip != 'true'",
+      );
+    }
+
+    const manual = parse(readFileSync(path.join(workflowDirectory, 'release.yml'), 'utf8')) as {
+      concurrency: { 'cancel-in-progress': boolean; group: string };
+      jobs: Record<string, Job>;
+    };
+    expect(manual.concurrency.group).toContain('release-');
+    expect(manual.concurrency.group).toContain("'latest'");
+    expect(manual.concurrency.group).toContain("'next'");
+    expect(manual.concurrency.group).toContain("'edge'");
+    expect(manual.concurrency['cancel-in-progress']).toBe(false);
+    const manualPublish = manual.jobs.publish;
+    if (manualPublish === undefined) throw new Error('release.yml has no publish job');
+    const manualCommands = commandsOf(manualPublish);
+    expect(manualCommands).toContain("dependencies['@flighthq/bitmap']");
+    expect(manualCommands).toContain('npm run typecheck:published');
+    expect(manualCommands).toContain('npx vitest run --config packages/bitmap-wasm/vitest.config.published.ts');
   });
 });

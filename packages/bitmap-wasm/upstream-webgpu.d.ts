@@ -40,5 +40,6 @@ declare type GPUVertexBufferLayout = object;
 
 // String unions in the real API.
 declare type GPUIndexFormat = string;
+declare type GPUCanvasAlphaMode = string;
 declare type GPUPowerPreference = string;
 declare type GPUTextureFormat = string;
