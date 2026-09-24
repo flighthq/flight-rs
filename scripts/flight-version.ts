@@ -4,16 +4,20 @@
 //
 // Reading `upstream/packages/sdk/package.json` alone is not enough. Flight stamps that field only at
 // release time (`version-packages.ts`), so between releases it names the PREVIOUS release: the pin
-// here says 0.2.0 while sitting 1887 commits past the 0.2.0 tag, by which point Flight had already
-// published 0.3.0. Publishing a port of that tree as 0.2.0 would claim a version whose API it does
-// not have.
+// here says 0.3.0 while sitting well past the 0.3.0 tag, by which point Flight had already published
+// 0.4.0. Publishing a port of that tree as 0.3.0 would claim a version whose API it does not have.
 //
 // So this mirrors the lane logic in Flight's own `scripts/edge-version.ts`, applied to the submodule:
 // take the stamped version as the base, find the highest conventional-commits level since the
 // submodule's last version tag, and bump. Flight uses this to name the release it is heading toward;
 // the same computation names the release a given commit belongs to. For the current pin it derives
-// 0.3.0, which is what Flight actually published — that agreement is asserted in
-// tests/generator/flight-version.test.ts rather than assumed.
+// 0.4.0 — asserted as a golden value in `tests/generator/publishing.test.ts` rather than assumed, so
+// moving the pin has to restate which release the new pin belongs to.
+//
+// That derivation names the release the pin is HEADING TOWARD, which is not the same claim as being
+// byte-equivalent to it: 0.4.0 was cut from a later commit than the pin. Reconciling the two is
+// `.github/workflows/flight-release.yml`, which publishes at the version Flight released and gates
+// it on parity against the published package rather than on commit identity.
 //
 // Usage:
 //   tsx scripts/flight-version.ts     print the derived upstream version

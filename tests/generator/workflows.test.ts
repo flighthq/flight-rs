@@ -42,8 +42,11 @@ describe('workflow preconditions', () => {
     // `git describe` also needs the history joining a tag to HEAD. Anything that reaches that code
     // needs both before it runs.
     // `npm run test` bare and `test:release` both reach publishing.test.ts; `test:host-winit` is
-    // pure cargo and does not, so the bare form is matched only when nothing follows it.
-    const needsTags = /npm run test(?![:\w-])|npm run test:release|edge-version|version-packages|flight-version/u;
+    // pure cargo and does not, so the bare form is matched only when nothing follows it. `check` and
+    // `ci` are matched for the same reason as bare `test` — they run it — so consolidating a lane
+    // onto an aggregate script cannot quietly drop the requirement.
+    const needsTags =
+      /npm run (?:test|check|ci)(?![:\w-])|npm run test:release|edge-version|version-packages|flight-version/u;
 
     for (const { file, jobs } of workflows()) {
       for (const [name, job] of Object.entries(jobs)) {
