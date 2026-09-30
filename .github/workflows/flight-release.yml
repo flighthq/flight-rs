@@ -35,8 +35,10 @@ on:
 
 concurrency:
   # A dist-tag is one mutable pointer. Serialize each channel independently so an older publish
-  # cannot finish second and leave the pointer behind, while next/edge do not block latest.
-  group: release-${{ github.event.client_payload.dist_tag || inputs.dist_tag }}
+  # cannot finish second and leave the pointer behind, while next/edge do not block latest. The
+  # `latest` default matches the env block below, so a dispatch that omits the channel locks the
+  # pointer it will actually move rather than collapsing every channel onto one empty group name.
+  group: release-${{ github.event.client_payload.dist_tag || inputs.dist_tag || 'latest' }}
   cancel-in-progress: false
 
 permissions:
@@ -55,7 +57,14 @@ jobs:
       # is data rather than a command. Never interpolate these directly into a `run:` block.
       FLIGHT_VERSION: ${{ github.event.client_payload.version || inputs.version }}
       FLIGHT_COMMIT: ${{ github.event.client_payload.commit || inputs.commit }}
-      DIST_TAG: ${{ github.event.client_payload.dist_tag || inputs.dist_tag }}
+      #
+      # `latest` is the default because Flight's release workflow does not send a channel. Its
+      # dispatch carries `version` and `commit` only, and its own comment treats that payload as
+      # fixed, so requiring `dist_tag` made every real release dispatch fail `Validate payload`
+      # before checkout. Defaulting is safe rather than permissive: the prerelease guard below still
+      # refuses a hyphenated version on `latest`, so an untagged snapshot is REFUSED here instead of
+      # being promoted to the channel ordinary installs read.
+      DIST_TAG: ${{ github.event.client_payload.dist_tag || inputs.dist_tag || 'latest' }}
 
     steps:
       - name: Validate payload

@@ -8,22 +8,24 @@ The dependency stays one-directional. Flight does not pin, clone, or build this 
 
 In `flighthq/flight`, `.github/workflows/release.yml`, job `publish`. Add one step **immediately after `- name: Publish packages to npm`** and before the examples-site steps:
 
+**This is already implemented upstream**, in `flighthq/flight` `.github/workflows/release.yml`, job `publish`, and it sends two fields:
+
 ```yaml
-- name: Trigger the Rust port release
+- name: Dispatch Flight-RS release
   env:
     # A PAT or GitHub App token with Contents: write on flighthq/flight-rs.
     # The default GITHUB_TOKEN cannot dispatch to another repository.
     GH_TOKEN: ${{ secrets.FLIGHT_RS_DISPATCH_TOKEN }}
-    VERSION: ${{ github.ref_name }}
-    COMMIT: ${{ github.sha }}
-    DIST_TAG: latest
   run: |
-    jq -n --arg version "$VERSION" --arg commit "$COMMIT" --arg dist_tag "$DIST_TAG" \
-      '{event_type: "flight-release", client_payload: {version: $version, commit: $commit, dist_tag: $dist_tag}}' \
-      | gh api repos/flighthq/flight-rs/dispatches --method POST --input -
+    gh api --method POST repos/flighthq/flight-rs/dispatches \
+      --raw-field event_type=flight-release \
+      --raw-field "client_payload[version]=${GITHUB_REF_NAME}" \
+      --raw-field "client_payload[commit]=${GITHUB_SHA}"
 ```
 
-Flight's snapshot lane sends the same shape with `event_type: flight-snapshot`, its authoritative prerelease `version`, and the authoritative `edge` or `next` `dist_tag`. The receiver never derives or substitutes a channel: in particular, a snapshot cannot move `latest`.
+**There is no `dist_tag` in that payload, and the receiver must not require one.** A comment above the step treats the payload as fixed across both receivers — Flight dispatches the identical shape to `flight-compiler` — so the channel is this repository's to decide, not Flight's to declare. `flight-release.yml` therefore defaults `DIST_TAG` to `latest` in both the job environment and the concurrency group. Requiring the field instead is not a stricter contract, it is a broken one: it failed `Validate payload` before checkout on every real release dispatch, and because the bridge had never been driven end to end, nothing contradicted it. `tests/generator/release-dispatch.test.ts` pins this payload as a fixture and runs the workflow's own validation script against it, so the assumption is asserted here rather than discovered at a release.
+
+Defaulting is safe rather than permissive. The prerelease guard still refuses a hyphenated version on `latest`, so a snapshot dispatched without a channel is refused rather than promoted to the pointer ordinary installs read. A sender that wants `edge` or `next` must say so, and `flight-snapshot` is accepted for that purpose — but **nothing upstream sends it today**: `flight-snapshot` appears nowhere in `flighthq/flight`, so the snapshot channels are reachable only by `workflow_dispatch` until a sender exists.
 
 Placement matters: the npm publish above it is the precondition this port needs, so the dispatch fires as soon as `@flighthq/bitmap@<version>` exists. Putting it after the examples-site build would let an unrelated asset failure block the port release.
 
@@ -119,6 +121,17 @@ gh api --method POST repos/flighthq/flight-rs/dispatches \
 ```
 
 Run it with the token Flight will use, to confirm its permissions: `404` means the token cannot see the repository, `403` means it lacks Contents: write. A `204` proves only that GitHub accepted the request, not that a workflow matched it. Confirm that a **Flight release bridge** run appears for the `flight-snapshot` event; the deliberately nonexistent test-only version may then fail at the install step, which is sufficient to prove the receiver fired.
+
+Rehearse the shape Flight really sends too, because it is the one that runs unattended — `flight-release` with no channel, which must be accepted and resolved to `latest`:
+
+```sh
+gh api --method POST repos/flighthq/flight-rs/dispatches \
+  --raw-field event_type=flight-release \
+  --raw-field 'client_payload[version]=0.4.0' \
+  --raw-field "client_payload[commit]=$(git -C upstream rev-parse HEAD)"
+```
+
+A run that stops at `Validate payload` means the channel default has regressed. A run that reaches `Skip if every package is already published` and exits green is the correct answer for a version already on npm.
 
 **4. Publish for real.** Add `NPM_TOKEN` and repeat step 2 or 3. Worth doing by dispatch rather than waiting on a Flight release, so a permissions or provenance problem surfaces while you are watching.
 
