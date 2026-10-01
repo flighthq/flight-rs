@@ -38,24 +38,32 @@ Feasible: the suite uses AABB colliders and one circle cast, and asserts counts 
 - stops at the first contact whose manifold points do not fit
 - reports a joint that broke, which the world no longer holds
 
-**Bit-exact solver reproduction (1 failure).** This one is project-scale and it is worth being precise about why.
+**Bit-exact solver reproduction (1 failure).**
 
-`referencePhysics2DAbi.test.ts:51` steps a settling three-box stack 120 times at 1/60 and asserts position, angle, linear and angular velocity with `toBe()` — bit-exact, no tolerance — guarding the degenerate pass with `expect(bodies[3].y).toBeLessThan(2.7)`. Our backend's `step` integrates gravity and nothing else.
+`referencePhysics2DAbi.test.ts:51` steps a settling three-box stack 120 times at 1/60 and asserts position, angle, linear and angular velocity with `toBe()` — bit-exact, no tolerance. Our backend's `step` integrates gravity and nothing else.
 
-Passing it means reproducing upstream's solver with identical floating-point operation order:
+**This is not a request to write a solver.** `referencePhysics2DAbi.ts` is upstream source like any other, and upstream already has the implementation: `physics2d` drives it. So the question is not "who writes a solver" but "why is upstream's not generated", and the answer is in `reports/generation.json` — the whole chain is **source-blocked on a handful of generator lowering gaps**, not on size:
 
-| Source that must be mirrored bit-exactly | Lines |
-| ---------------------------------------- | ----: |
-| `physics2d/src/step.ts`                  |  1379 |
-| `physics2d` total, non-test              |  6690 |
-| `@flighthq/collision`, non-test          | 10398 |
+| Upstream package          | Status         | Blockers |
+| ------------------------- | -------------- | -------: |
+| `@flighthq/math`          | compiled       |        0 |
+| `@flighthq/spatial`       | source-blocked |        2 |
+| `@flighthq/collision`     | source-blocked |        6 |
+| `@flighthq/physics2d`     | source-blocked |        6 |
+| `@flighthq/physics2d-abi` | source-blocked |        5 |
+| `@flighthq/physics3d`     | source-blocked |        9 |
+| `@flighthq/physics3d-abi` | source-blocked |        5 |
 
-So roughly 17,000 lines of float-order-sensitive solver and collision code, and there is no partial credit: `toBe()` over 120 iterations either matches or does not. Worse, the usual reasons to write Rust — reordering, vectorising, a better broadphase — are all forbidden by the assertion, so the performance ceiling for a _conforming_ backend is Rust's constant factor and nothing more.
+And the blockers repeat rather than being distinct problems. `Substrate-neutral Rust emission requires OpaqueHostValue after static type recovery` accounts for 6 of collision's, 4 of physics2d's, both of spatial's and 1 of physics2d-abi's. Three of physics2d-abi's are the same `new-expression Rust lowering is not implemented: OpaqueHostValue::Object`, one of them in `referencePhysics2DAbi.ts` itself. The rest are one `dynamic for-in Rust enumeration`, and two packages needing export re-exposure.
 
-That is a different kind of undertaking from the compression mirror, which was 318 upstream lines with a bit-defined oracle, or bitmap, which the generator produces mechanically.
+So bit-exactness is not the obstacle it looks like. Generated code is a transcription of upstream's arithmetic in upstream's order, which is exactly what `toBe()` after 120 steps demands. A **hand-written** solver would have to earn that agreement; a generated one gets it by construction.
 
 ## Recommendation
 
-Take the first two groups: **13 of the 20 2D failures are reachable** without any solver, and they are what make the ABI _usable_ — a backend that answers queries and validates commands correctly but declines to step is honest and useful, because `Physics2DAbiCapability` exists precisely so a backend can advertise what it does.
+**Fix the lowering, do not hand-write the solver.** Upstream is the implementation; this repository's job is to put it in Rust, and where that needs human help the help belongs in a general lowering rule rather than in a second copy of the behaviour. Five or so capabilities — typed recovery for the `OpaqueHostValue` sources, `new`-expression lowering, dynamic `for-in`, and export re-exposure for two packages — unblock the whole `spatial → collision → physics2d → physics2d-abi` chain, and `physics3d` behind it.
 
-Treat contacts and the exact solver as a separate decision. If bit-exact stepping is wanted, it is a project with a 17,000-line mirror at its centre; if what is wanted is a _fast_ solver, the exact-reproduction assertion is the thing to renegotiate with upstream first, because it forbids every optimisation that would motivate the work.
+**`crates/flighthq-physics-abi-wasm-core` is a waypoint, not the destination.** Its 729 lines integrate gravity and decline everything else. That is a _different_ implementation of the ABI rather than a port of upstream's, which is the thing to retire once the chain generates — not something to grow toward 79/79 by adding more hand-written physics.
+
+The two groups that are still worth doing by hand are the ones that are not physics at all: the four ABI decoding and bookkeeping failures, and the geometric queries. Those are protocol behaviour the backend owns in any case, they are small, and they make the backend honestly useful in the meantime, since `Physics2DAbiCapability` exists precisely so a backend can advertise what it does.
+
+An earlier version of this document recommended renegotiating the exact-reproduction assertion with upstream if a faster solver was wanted. **That was wrong and is withdrawn.** The assertion is the oracle that proves the port is faithful; a backend that diverged from it would be a second implementation to maintain, which is the outcome this repository exists to avoid. If a different solver is ever wanted, it should be written in TypeScript upstream and ported from there like everything else.
