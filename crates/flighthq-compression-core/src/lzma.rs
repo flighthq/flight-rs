@@ -569,6 +569,8 @@ mod tests {
         "Rsd+8jil1qGW6NRrNbQ0ajtnX/96PIwA"
     );
 
+    const UPSTREAM_ENCODER_OUTPUT_DECODED_WRONG: &str = "XQAQAABZAAAAAAAAAAAymQiQuVaJ+gBKeJd02ETQbYMGhCZGg38s2wATcTR4DE5Lpl68dK3FE+2lakfReCGaTWLigaDclAAA";
+
     const LOREM: &str = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore. ";
 
     fn base64(input: &str) -> Vec<u8> {
@@ -725,6 +727,43 @@ mod tests {
         // decodes more than upstream is no longer a drop-in and the differential oracle stops holding.
         assert_eq!(lzma(&base64(VALID_STREAM_UPSTREAM_REFUSES), 0), None);
         assert_eq!(lzma(&base64(VALID_STREAM_UPSTREAM_REFUSES), 2304), None);
+    }
+
+    #[test]
+    fn reproduces_upstreams_silent_corruption_of_its_own_encoder_output() {
+        // THE SHARPER HALF OF THE SAME DEFECT, and the reason it is severe rather than inconvenient.
+        //
+        // This stream is `compressLzma`'s own output for the 89 bytes below, and `decompressLzma` decodes
+        // it to 89 bytes that are NOT those bytes — diverging at index 87 — with no error. Upstream's
+        // encoder implements the reference rep-distance shuffle correctly; its decoder does not, so the
+        // two disagree and the round-trip returns WRONG DATA rather than failing.
+        //
+        // Measured on upstream `85d85a3b1`: 161 of 1200 encoder/decoder round-trips over token- and
+        // small-alphabet-shaped inputs fail, and 126 of those return wrong bytes silently rather than
+        // null. Applying the one-line reordering to upstream's decoder takes that to 0 of 1200.
+        //
+        // This mirror reproduces the corruption at the same index, which is what being a mirror means.
+        // It is pinned so the behaviour cannot change here unnoticed, and so the severity is recorded
+        // next to the code rather than only in a report.
+        const PLAIN: &[u8] = b"edcdafebebcfcbebabcfededcdabcdadcfabcfcfadefebafefefcdefcdadcbcdcfabcdabedebadabcbedcfafe";
+        let decoded =
+            lzma(&base64(UPSTREAM_ENCODER_OUTPUT_DECODED_WRONG), 0).expect("upstream decodes it");
+
+        assert_eq!(
+            decoded.len(),
+            PLAIN.len(),
+            "the length is right, which is why nothing notices"
+        );
+        assert_ne!(
+            decoded.as_slice(),
+            PLAIN,
+            "upstream silently returns wrong bytes here"
+        );
+        let first_wrong = decoded
+            .iter()
+            .zip(PLAIN)
+            .position(|(got, want)| got != want);
+        assert_eq!(first_wrong, Some(87), "divergence point, matching upstream");
     }
 
     #[test]
