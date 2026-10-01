@@ -1,5 +1,6 @@
 [workspace]
 members = [
+  "crates/flighthq-compression-core",
   "crates/flighthq-physics-abi-wasm-core",
   "generated/crates/flighthq-easing",
   "generated/crates/flighthq-image",

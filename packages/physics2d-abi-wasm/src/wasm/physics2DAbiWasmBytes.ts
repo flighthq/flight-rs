@@ -1,7 +1,7 @@
 // GENERATED — do not edit by hand. Produced by scripts/embed-wasm.ts from
 // generated/crates/flighthq-physics2d-abi-wasm. Holds the wasm module as base64 so init is
 // synchronous and needs no file read or network fetch in any environment.
-// wasm-input-sha256: a44348cb2dfe96986f081bd2bd734e401f88c0a1f74784455af1da7b5e185139
+// wasm-input-sha256: 738c9c03a9ec7e77e5dac8f0089316540c86c8c5c99df79760877d1d821cc138
 // wasm-output-sha256: 63e86ec52a0835edcfe2b9faf089741da77ebcbaa467021038ef786bd25404ac
 
 const base64 =
