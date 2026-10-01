@@ -1,10 +1,11 @@
 // Measures decode throughput on real streams, so the case for a Rust mirror is a number rather than an
 // assertion. Usage:
 //
-//     cargo run --release -p flighthq-compression-core --example throughput -- <iterations> <deflate|lzma> <file>…
+//     cargo run --release -p flighthq-compression-core --example throughput -- <iterations> <mode> <file>…
 //
-// where each file is `<declared-uncompressed-length>:<compressed bytes>`. `agents/compression-mirror.md`
-// records how to generate them and what the current figures are.
+// Modes `deflate` and `lzma` decode, and each file is `<declared-uncompressed-length>:<compressed bytes>`.
+// Mode `deflate-encode` compresses, and each file is plaintext. `agents/compression-mirror.md` records how
+// to generate the inputs and what the current figures are.
 //
 // Deliberately not a committed benchmark harness: neither algorithm has an encoder in this crate yet, so
 // the inputs come from outside, and a fixture big enough to measure does not belong in the repository.
@@ -28,7 +29,31 @@ fn main() {
             flighthq_compression_core::decompress_lzma as Decoder,
             flighthq_compression_core::Framing::Raw,
         ),
-        other => panic!("unknown algorithm {other}; expected deflate or lzma"),
+        // Encoding has no framing argument and no declared length, so it takes its own path below.
+        "deflate-encode" => {
+            for path in arguments {
+                let input = std::fs::read(&path).expect("read plaintext");
+                let first = flighthq_compression_core::compress_deflate(&input);
+                let start = std::time::Instant::now();
+                for _ in 0..iterations {
+                    assert!(
+                        !flighthq_compression_core::compress_deflate(&input).is_empty()
+                            || input.is_empty()
+                    );
+                }
+                let per_run = start.elapsed().as_secs_f64() / f64::from(iterations);
+                let megabytes = input.len() as f64 / 1024.0 / 1024.0;
+                println!(
+                    "{path}: {:.2} ms  {:.0} MB/s  {} -> {} bytes",
+                    per_run * 1000.0,
+                    megabytes / per_run,
+                    input.len(),
+                    first.len()
+                );
+            }
+            return;
+        }
+        other => panic!("unknown mode {other}; expected deflate, lzma or deflate-encode"),
     };
 
     for path in arguments {

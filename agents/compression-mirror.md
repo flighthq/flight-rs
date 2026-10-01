@@ -51,8 +51,47 @@ Reproduce with `cargo run --release -p flighthq-compression-core --example throu
 ### What this is not, yet
 
 - **No wasm facade.** There is no `packages/compression-wasm`, no `port.config.ts` entry, and no generated binding crate. The facade needs a `wasmFacades` entry, a Rust template, and a TS package, following `physics2d-abi-wasm`.
-- **No encoders.** Our pin's `@flighthq/compression` has no encoder to mirror. Upstream now has two — `compressDeflate`/`compressDeflateZlib` and `compressLzma` — so those arrive with the pin move.
+- **The LZMA encoder is not mirrored.** `compressDeflate`/`compressDeflateZlib` are (see below); upstream's `compressLzma` is not yet.
 - **No Brotli**, and that is upstream's position too rather than a gap here: the decoder needs a large static dictionary that is data rather than rules, so upstream declares the slot and expects a caller to fill it.
+
+## `flighthq-compression-core::compress`
+
+Mirrors `upstream/packages/compression/src/compress.ts` at upstream `85d85a3b1`, with the shared code tables from `deflateFormat.ts`:
+
+```rust
+pub fn compress_deflate(bytes: &[u8]) -> Vec<u8>        // bare RFC 1951
+pub fn compress_deflate_zlib(bytes: &[u8]) -> Vec<u8>   // RFC 1950 wrapper + Adler-32
+```
+
+One fixed-Huffman block over the whole input with greedy LZ77 through a hash chain, falling back to stored blocks when the Huffman encoding would not be smaller. Like `lzma`, this mirrors a file that is **not in the pinned submodule**.
+
+### The oracle is byte identity, not round-tripping
+
+Upstream documents its output as a pure function of its input — no timestamps, no heuristics that vary — so the mirror does not merely have to produce something that decodes back, it has to produce **the same bytes**. That makes every search bound part of the contract: the 32-candidate chain limit, the 32768-byte window, the insertion of positions interior to a match, and the exact hash function. Change any one and the output still round-trips perfectly and is still wrong.
+
+That distinction is load-bearing, and it is measured rather than assumed. Three mutations, each caught:
+
+| Mutation                                   | Still round-trips? | Byte identity |
+| ------------------------------------------ | ------------------ | ------------- |
+| chain depth 32 → 16                        | yes                | **fails**     |
+| drop the interior-position chain insertion | yes                | **fails**     |
+| `write_code` packs LSB-first               | no                 | **fails**     |
+
+The first two would have passed a round-trip-only suite. Upstream's own comment calls the interior insertion "deliberately not pinned by a test: an assertion tight enough to detect it would pin a heuristic, not a behaviour" — which is true of a round-trip assertion and not of this one, because for a mirror the heuristic _is_ the behaviour.
+
+Twelve corpus cases carry upstream's output length and Adler-32, which pins the bytes in eight characters rather than kilobytes of fixtures. They are chosen for branches, not variety: `empty` and `one-byte` for the degenerate paths, `all-byte-values` for every literal code width, `incompressible-4096` for the stored-block fallback, `incompressible-70000` for _multiple_ stored blocks, `single-byte-run-600` for runs past the 258-byte maximum match, `cycle-251-x40000` for distances deep into the window. The corpus generator is transcribed on both sides rather than shared, so neither implementation can drift into agreement through a shared helper.
+
+### Measured throughput
+
+| Payload    | upstream TS | this mirror | gain | output                   |
+| ---------- | ----------: | ----------: | ---: | ------------------------ |
+| 64 KB text |     10 MB/s |     38 MB/s | 3.8x | 20157 bytes, identical   |
+| 1 MB text  |     10 MB/s |     36 MB/s | 3.6x | 313753 bytes, identical  |
+| 8 MB text  |     10 MB/s |     33 MB/s | 3.3x | 2506380 bytes, identical |
+
+**3.3x to 3.8x**, and the identical output sizes at 1 MB and 8 MB are independent confirmation of byte identity beyond what the corpus covers. A narrower spread than either decoder, which is expected: encoding time is dominated by the hash-chain match search rather than by per-bit work, so there is less constant-factor overhead for Rust to remove.
+
+Reproduce with `--example throughput -- <iterations> deflate-encode <plaintext files>`.
 
 ## `flighthq-compression-core::lzma`
 

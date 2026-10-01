@@ -297,7 +297,7 @@ fn decode_symbol(state: &mut Inflate<'_>, tree: &HuffmanTree) -> Option<u32> {
     None
 }
 
-fn compute_adler32(input: &[u8]) -> u32 {
+pub(crate) fn compute_adler32(input: &[u8]) -> u32 {
     let mut first = 1u32;
     let mut second = 0u32;
     for &byte in input {
@@ -322,20 +322,20 @@ fn read_zlib_adler32(input: &[u8], offset: usize) -> u32 {
 }
 
 // RFC 1951 length codes 257-285: base copy length and the extra-bit count that follows.
-const LENGTH_BASE: [u32; 29] = [
+pub(crate) const LENGTH_BASE: [u32; 29] = [
     3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35, 43, 51, 59, 67, 83, 99, 115, 131,
     163, 195, 227, 258,
 ];
-const LENGTH_EXTRA: [u32; 29] = [
+pub(crate) const LENGTH_EXTRA: [u32; 29] = [
     0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0,
 ];
 
 // RFC 1951 distance codes 0-29: base back-distance and the extra-bit count that follows.
-const DISTANCE_BASE: [u32; 30] = [
+pub(crate) const DISTANCE_BASE: [u32; 30] = [
     1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193, 257, 385, 513, 769, 1025, 1537,
     2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577,
 ];
-const DISTANCE_EXTRA: [u32; 30] = [
+pub(crate) const DISTANCE_EXTRA: [u32; 30] = [
     0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13,
     13,
 ];
