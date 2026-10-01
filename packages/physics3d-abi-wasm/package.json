@@ -44,7 +44,7 @@
   "devDependencies": {
     "typescript": "^5.3.0"
   },
-  "description": "Unpublished partial Rust/wasm prototype for the Flight Physics3D packed-buffer ABI",
+  "description": "Deferred partial Rust/wasm prototype for the Flight Physics3D packed-buffer ABI",
   "sideEffects": false,
   "flightWasmSubstitute": {
     "authoritativePackage": "@flighthq/physics3d-abi",
@@ -52,6 +52,6 @@
     "facadeCrate": "flighthq-physics3d-abi-wasm",
     "kind": "rust-wasm",
     "rustBacked": true,
-    "supportLevel": "experimental"
+    "supportLevel": "deferred"
   }
 }

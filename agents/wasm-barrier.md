@@ -1,0 +1,81 @@
+# The wasm barrier
+
+A `-wasm` package is a **hybrid by design**. There is no requirement for every function to cross into Rust, and good reasons for several never to. This records which functions belong behind the barrier, which belong in TypeScript, and — measured rather than assumed — what the barrier currently costs.
+
+## The uncomfortable measurement
+
+`npm run bench:barrier` compares each wasm-backed function against the upstream TypeScript it replaces, same inputs, same process. **Greater than 1x means wasm is faster.**
+
+| Function              | Size  |       wasm | TypeScript | ratio |
+| --------------------- | ----- | ---------: | ---------: | ----: |
+| `setBitmapAlpha`      | 16²   |  0.0037 ms |  0.0008 ms | 0.22x |
+| `setBitmapAlpha`      | 256²  |  0.1336 ms |  0.1024 ms | 0.77x |
+| `setBitmapAlpha`      | 1024² |  2.1836 ms |  1.6021 ms | 0.73x |
+| `multiplyBitmapAlpha` | 1024² |  9.4126 ms |  3.2108 ms | 0.34x |
+| `convolveBitmap` 5×5  | 256²  | 22.6907 ms | 10.3259 ms | 0.46x |
+| `convolveBitmap` 5×5  | 512²  | 89.2859 ms | 41.4650 ms | 0.46x |
+| `pixelateBitmap` 8    | 1024² | 13.7738 ms |  6.4457 ms | 0.47x |
+| `dilateBitmap` r3     | 512²  | 98.2844 ms | 51.9644 ms | 0.53x |
+
+**The shipped wasm is about half the speed of the TypeScript it replaces, at every size and on every function tried — including the compute-heavy ones.** A 5×5 convolution is 25 multiply-adds per channel per pixel and still loses by 2.2x. There is no crossover point to find.
+
+That matters for planning: **widening the set of wasm-backed functions would currently make `bitmap-wasm` slower, not faster.** The appropriate improvement for the barrier is to make the existing 34 beat TypeScript first; after that, widening has a point.
+
+## It is not the barrier — it is the generated code
+
+The boundary is not where the time goes. Two defects in lowering are, and both are visible in `generated/crates/flighthq-bitmap/src/bitmap_convolution.rs`:
+
+**1. Every loop counter and index is `f64`.**
+
+```rust
+let mut py = 0.0_f64;
+while (py < source.height) {
+    ...
+    let weight = options.matrix[(weight_row_start + kx) as usize].clone();
+```
+
+Induction variables and array indices in floating point, cast `as usize` at each access. That defeats integer indexing, bounds-check elision and any vectorisation, and it is a faithful transliteration of JavaScript's single number type rather than a port of the algorithm.
+
+**2. Closed string-literal unions lower to `String`, so mode checks become string comparisons inside the kernel.**
+
+```rust
+pub type BitmapEdgeMode = String;        // generated/crates/flighthq-types/src/bitmap_edge_mode.rs
+```
+
+```rust
+let edge = ((options.edge).clone()).unwrap_or("clamp".to_owned());
+while (kx < matrix_x) {
+    ...
+    if (edge == "transparent") { ... } else if (edge == "wrap") { ... } else if (edge == "mirror") { ... }
+```
+
+Up to three string comparisons **per kernel tap** — seventy-five per pixel for a 5×5 — against an owned `String`. V8 compares interned strings by identity and specialises the branch; this does neither.
+
+Both are general lowering problems rather than package-specific ones: an integer induction variable where the source range is integral, and a Rust enum for a closed string union. Each would improve every generated function that loops or branches on a mode, which in bitmap alone covers the convolution, blend and channel paths.
+
+## What belongs on each side
+
+The judgement is already being applied, and until now was undocumented. Six functions are generated into the core crate and deliberately **not** exposed across the barrier by `port.config.ts` — `getBitmapPixel`, `getBitmapPixelLuminance`, `getBitmapPixelRgb`, `setBitmapPixel`, `setBitmapPixelRgb`, `invalidateBitmap` — because a per-pixel call pays the crossing cost for a byte of work.
+
+**Leave in TypeScript, permanently:**
+
+- **Host and DOM interop.** `createBitmapFromCanvas`, `createBitmapFromImageSource`, `captureBitmapFromImageResource`, `drawBitmap`, `encodeBitmap`, `explainBitmapReadback`. These need the platform, not arithmetic.
+- **Single-pixel accessors.** The six above. The crossing dominates the work by orders of magnitude.
+- **Allocation and entity construction.** `createBitmap`, `cloneBitmap`, `createBitmapRegion`, `splitBitmapChannels`. These allocate through the entity package; identity and lifetime live in JavaScript and there is no compute to win.
+- **String formatting and parsing.** `formatBitmapFingerprint`, `parseBitmapFingerprint`.
+- **Constants.** `BITMAP_FINGERPRINT_COMPUTATION_ID`, the `BITMAP_NOISE_CHANNEL_*` set. Data, not code.
+
+**Worth crossing, once the barrier pays:** the per-pixel kernels over flat buffers with no callback and no allocation — the blur family, the glow/bevel/shadow family, median and sharpen, the geometric resamplers, the gradient fills, the composite and channel operations. Roughly forty of the seventy-five currently deferred exports.
+
+So the "75 deferred" figure should not be read as 75 missing things. Around a third of them should never cross, and the rest are waiting on the barrier being worth crossing at all.
+
+## How to make the barrier pay
+
+In order of leverage:
+
+1. **Integer induction variables and indices** where the source range is integral. Removes the `f64` arithmetic and the per-access cast from every generated loop.
+2. **Closed string unions as Rust enums.** Removes string comparison from kernel inner loops.
+3. **Then re-measure.** `npm run bench:barrier` is the instrument, and the table above is the baseline to beat.
+4. **Only then widen the exposed set**, kernel families first.
+
+A hand-touched kernel is a legitimate alternative to waiting for lowering — the wasm packages are separately maintained, and `crates/flighthq-compression-core` is the precedent. But a hand-written kernel still has to be a structural port of upstream's algorithm, held to upstream's own tests, and it should be taken only where the generated version has been measured and found wanting. Convolution is the obvious first candidate: it is the hottest, the furthest behind, and its two defects are the general ones above in their clearest form.

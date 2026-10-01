@@ -28,7 +28,8 @@
     "typecheck:upstream": "tsc -p packages/bitmap-wasm/tsconfig.upstream.json && tsc -p packages/compression-wasm/tsconfig.upstream.json && tsc -p packages/physics2d-abi-wasm/tsconfig.upstream.json && tsc -p packages/physics3d-abi-wasm/tsconfig.upstream.json",
     "upstream:latest": "tsx scripts/upstream-latest.ts",
     "version:packages": "tsx scripts/version-packages.ts",
-    "wasm": "tsx tools/generator/src/build-wasm.ts"
+    "wasm": "tsx tools/generator/src/build-wasm.ts",
+    "bench:barrier": "vitest run --config packages/bitmap-wasm/vitest.config.barrier.ts"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "6.9.1",
