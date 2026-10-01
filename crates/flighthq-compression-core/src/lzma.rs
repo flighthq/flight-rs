@@ -1,9 +1,10 @@
 // LZMA1 decoding, alone-format header.
 //
-// Source of record: `upstream/packages/compression/src/lzma.ts` at upstream `85d85a3b1`. NOTE that this
-// module mirrors a file that is NOT in the pinned submodule — LZMA landed upstream after the current pin,
-// so the behaviour this reproduces is the behaviour that arrives when the pin moves. The fixtures are
-// embedded for exactly that reason: nothing here reads a tree the repository does not check out.
+// Source of record: `upstream/packages/compression/src/lzma.ts` as of upstream `5de055f94`, which is on
+// `origin/develop` rather than `origin/main`. NOTE that this module mirrors a file that is NOT in the
+// pinned submodule — LZMA landed upstream after the current pin — so the behaviour this reproduces is the
+// behaviour that arrives when the pin moves. The fixtures are embedded for exactly that reason: nothing
+// here reads a tree the repository does not check out.
 //
 // Upstream's shape that is NOT carried over: closures over mutable range-coder state, probability arrays
 // reached through captured variables, and a throw-and-catch boundary standing in for a refusal. Every
@@ -350,36 +351,25 @@ fn decode(input: &[u8], uncompressed_length: usize) -> Option<Vec<u8>> {
                 + decode_rep_length(&mut decoder, &mut models, position_state) as usize;
             state = STATE_AFTER_REP[state];
         } else {
-            // MIRRORS AN UPSTREAM BUG ON PURPOSE. `rep2 = rep1` runs for all three sub-cases here,
-            // including the one where the distance came from `rep1`. The LZMA reference decoder shifts
-            // `rep2` only when the distance came from `rep2` or `rep3`:
-            //
-            //     if (DecodeBit(&IsRepG1[state]) == 0) dist = rep1;
-            //     else {
-            //       if (DecodeBit(&IsRepG2[state]) == 0) dist = rep2;
-            //       else { dist = rep3; rep3 = rep2; }
-            //       rep2 = rep1;            // <- inside the else
-            //     }
-            //     rep1 = rep0; rep0 = dist;
-            //
-            // So after the first rep1 match, upstream's `rep2` holds a duplicate of `rep1`, and the next
-            // rep2 or rep3 match resolves a wrong distance. Output diverges silently and the decode then
-            // dies on an impossible distance or a size mismatch, surfacing as `null`.
-            //
-            // THE FIX IS MOVING ONE LINE — see `refuses_the_same_valid_stream_upstream_refuses` for the
-            // measured effect and `agents/compression-mirror.md` for the verification. Do not apply it
-            // here before upstream does: a mirror that decodes more than upstream is not a drop-in, and
-            // the differential suite stops meaning anything.
+            // Upstream fixed this in `5de055f94`, and the mirror follows: `rep2` shifts ONLY when the
+            // distance came from `rep2` or `rep3`, matching the LZMA reference decoder. Before that fix
+            // the shift ran for all three sub-cases, so after the first `rep1` match `rep2` held a
+            // duplicate of `rep1` and the next `rep2`/`rep3` match resolved a wrong distance — silently
+            // corrupting output when that distance happened to stay in range, and returning `null` when
+            // it did not. See `agents/compression-mirror.md` for what that cost and how it was found.
             let distance = if decoder.decode_bit(&mut models.is_rep_g1, state) == 0 {
                 rep1
-            } else if decoder.decode_bit(&mut models.is_rep_g2, state) == 0 {
-                rep2
             } else {
-                let third = rep3;
-                rep3 = rep2;
-                third
+                let picked = if decoder.decode_bit(&mut models.is_rep_g2, state) == 0 {
+                    rep2
+                } else {
+                    let third = rep3;
+                    rep3 = rep2;
+                    third
+                };
+                rep2 = rep1;
+                picked
             };
-            rep2 = rep1;
             rep1 = rep0;
             rep0 = distance;
             length = MATCH_MIN_LEN
@@ -555,7 +545,7 @@ mod tests {
     );
     const EOS_TERMINATED: &str = "XQAAgAD//////////wAzGwlhGvxuQ0djOEOOegx+SF/9GpGR4mriTv//OtQAAA==";
 
-    const VALID_STREAM_UPSTREAM_REFUSES: &str = concat!(
+    const PYTHON_STREAM_ONCE_REFUSED: &str = concat!(
         "XQAAgAD//////////wA5nUqMoNRnJcTrlP6QkZsMhtJNup2SIuSN7sJUbw5dfJqXqGvYZ4qZ31IXpGiHlX0KKZ5r5T",
         "2fgQH6Ekj1ZgU5iGeapmlTh0Q/m1ORW1mD9NrZnEEE1eG3ldkrHXCHbo7fLagJbgdgBaW0hjUOquuYEay3IO2b/R5r",
         "Ztk82m3vd204sXs4le3WwuJ4w1/FloZvmQSQDr6UcIsf/hsH0ykno7fQEM9eaYFZ1/Ng3s0dOnWscBoaDsa4qCbfuY",
@@ -569,7 +559,21 @@ mod tests {
         "Rsd+8jil1qGW6NRrNbQ0ajtnX/96PIwA"
     );
 
-    const UPSTREAM_ENCODER_OUTPUT_DECODED_WRONG: &str = "XQAQAABZAAAAAAAAAAAymQiQuVaJ+gBKeJd02ETQbYMGhCZGg38s2wATcTR4DE5Lpl68dK3FE+2lakfReCGaTWLigaDclAAA";
+    const ROUND_TRIP_ONCE_CORRUPTED: &str = "XQAQAABZAAAAAAAAAAAymQiQuVaJ+gBKeJd02ETQbYMGhCZGg38s2wATcTR4DE5Lpl68dK3FE+2lakfReCGaTWLigaDclAAA";
+
+    // Upstream's own rep-shuffle regressions, shared verbatim from `lzma.test.ts` at `a62784923`.
+    const REP_SHUFFLE_CORRUPTION_STREAM: &str = concat!(
+        "XQAQAABYAAAAAAAAAAABAONpl4/4ZVy4Rhy9I1ecQB4qjQSwkD7GlIZGbwxgbka7aCCbU0OngOD6Z9oSV58Dkq",
+        "TY45dVqGmAHVVO7+Q1iTY="
+    );
+    const REP_SHUFFLE_CORRUPTION_PLAIN: &str = concat!(
+        "AgMCBAMFBAEFAgIGAAIEAQYGBQQGBAMDAgICBQABAwAAAQMBAwQBBQEDAQEBAwAAAQMCAQEAAQAGAwAFAAADBA",
+        "QEBQMDAQABAwUCBgIEBgAEBQABBAYDAg=="
+    );
+    const REP_SHUFFLE_NULL_STREAM: &str =
+        "XQAQAAA/AAAAAAAAAAAAglNJ8CRbC1Bvfw4Bn3KRgimvIEUMESap889L1RxPvXH3baBJ5QGxV6SlI8Mwg8/3Hg==";
+    const REP_SHUFFLE_NULL_PLAIN: &str =
+        "AQgBAAcAAwIBAAUIAQADAAkGCQYJAAMAAQABBgEGCQAFAAEIAQgJCAcGBwAFCAcCAwQHCAMCBwgHAgMCBwIJ";
 
     const LOREM: &str = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore. ";
 
@@ -706,64 +710,41 @@ mod tests {
     }
 
     #[test]
-    fn refuses_the_same_valid_stream_upstream_refuses() {
-        // A MIRROR OF AN UPSTREAM DEFECT, pinned on purpose, with the root cause known.
-        //
-        // This fixture is a valid LZMA alone-format stream — Python's `lzma` module reproduces its 2304
-        // bytes exactly — and `decompressLzma` returns null for it. So does this mirror, because the cause
-        // is reproduced too: the rep-distance shuffle in `decode` clobbers `rep2` when the distance came
-        // from `rep1`. See the comment at that site for the reference ordering.
-        //
-        // Traced precisely: decoding stays byte-correct to output index 2238 and the first wrong byte is
-        // at 2239, written by a rep match that resolved distance 389 from a corrupted `rep2`.
-        //
-        // Moving `rep2 = rep1` inside the inner else fixes it, verified outside this repository: the 2304
-        // reproducer and 64 KB, 1 MB and 8 MB text payloads all decode byte-for-byte, 19 of 19 Python
-        // encoder variants decode, and all 38 other tests in this crate still pass. The only test that
-        // changes is this one.
-        //
-        // SO WHEN THIS TEST FAILS, upstream has fixed its decoder and the mirror must follow — apply the
-        // same reordering and delete this case. That is the signal. Do not pre-empt it: a mirror that
-        // decodes more than upstream is no longer a drop-in and the differential oracle stops holding.
-        assert_eq!(lzma(&base64(VALID_STREAM_UPSTREAM_REFUSES), 0), None);
-        assert_eq!(lzma(&base64(VALID_STREAM_UPSTREAM_REFUSES), 2304), None);
+    fn decodes_a_rep1_match_without_clobbering_rep2() {
+        // Upstream's own regression fixtures for the rep-shuffle fix, shared verbatim from
+        // `lzma.test.ts` as added in `a62784923`. The first decoded to WRONG BYTES before the fix and the
+        // second returned null, which is why there are two: the same defect had both faces depending on
+        // whether the corrupted distance stayed in range.
+        let compressed = base64(REP_SHUFFLE_CORRUPTION_STREAM);
+        let expected = base64(REP_SHUFFLE_CORRUPTION_PLAIN);
+        assert_eq!(lzma(&compressed, expected.len()), Some(expected));
+
+        let compressed = base64(REP_SHUFFLE_NULL_STREAM);
+        let expected = base64(REP_SHUFFLE_NULL_PLAIN);
+        assert_eq!(lzma(&compressed, expected.len()), Some(expected));
     }
 
     #[test]
-    fn reproduces_upstreams_silent_corruption_of_its_own_encoder_output() {
-        // THE SHARPER HALF OF THE SAME DEFECT, and the reason it is severe rather than inconvenient.
-        //
-        // This stream is `compressLzma`'s own output for the 89 bytes below, and `decompressLzma` decodes
-        // it to 89 bytes that are NOT those bytes — diverging at index 87 — with no error. Upstream's
-        // encoder implements the reference rep-distance shuffle correctly; its decoder does not, so the
-        // two disagree and the round-trip returns WRONG DATA rather than failing.
-        //
-        // Measured on upstream `85d85a3b1`: 161 of 1200 encoder/decoder round-trips over token- and
-        // small-alphabet-shaped inputs fail, and 126 of those return wrong bytes silently rather than
-        // null. Applying the one-line reordering to upstream's decoder takes that to 0 of 1200.
-        //
-        // This mirror reproduces the corruption at the same index, which is what being a mirror means.
-        // It is pinned so the behaviour cannot change here unnoticed, and so the severity is recorded
-        // next to the code rather than only in a report.
-        const PLAIN: &[u8] = b"edcdafebebcfcbebabcfededcdabcdadcfabcfcfadefebafefefcdefcdadcbcdcfabcdabedebadabcbedcfafe";
-        let decoded =
-            lzma(&base64(UPSTREAM_ENCODER_OUTPUT_DECODED_WRONG), 0).expect("upstream decodes it");
+    fn decodes_the_streams_the_rep_shuffle_defect_used_to_break() {
+        // The two reproducers this crate found independently, kept as positive cases now that upstream is
+        // fixed. They are worth keeping rather than deleting with the defect: they were produced by two
+        // different encoders — Python's `lzma` and upstream's own `compressLzma` — so between them they
+        // guard the fix against a regression that only one encoder's output would expose.
 
+        // Python `lzma`, FORMAT_ALONE, 2304 bytes of low-entropy text. Returned null before the fix.
+        // Pinned by length and Adler-32 rather than by embedding the plaintext.
+        let decoded =
+            lzma(&base64(PYTHON_STREAM_ONCE_REFUSED), 0).expect("decodes since 5de055f94");
+        assert_eq!(decoded.len(), 2304);
+        assert_eq!(crate::deflate::compute_adler32(&decoded), 0xaf4c_1390);
+
+        // Upstream `compressLzma`'s own output for these 89 bytes. Decoded to 89 WRONG bytes before the
+        // fix, diverging at index 87 with no error raised — the sharper half of the same defect.
+        const PLAIN: &[u8] = b"edcdafebebcfcbebabcfededcdabcdadcfabcfcfadefebafefefcdefcdadcbcdcfabcdabedebadabcbedcfafe";
         assert_eq!(
-            decoded.len(),
-            PLAIN.len(),
-            "the length is right, which is why nothing notices"
+            lzma(&base64(ROUND_TRIP_ONCE_CORRUPTED), 0).as_deref(),
+            Some(PLAIN)
         );
-        assert_ne!(
-            decoded.as_slice(),
-            PLAIN,
-            "upstream silently returns wrong bytes here"
-        );
-        let first_wrong = decoded
-            .iter()
-            .zip(PLAIN)
-            .position(|(got, want)| got != want);
-        assert_eq!(first_wrong, Some(87), "divergence point, matching upstream");
     }
 
     #[test]

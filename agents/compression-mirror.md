@@ -113,71 +113,54 @@ The fixtures are upstream's, extracted mechanically. Their provenance is stronge
 
 One bug this caught, worth recording because it is the kind a hand-written mirror invites. Upstream computes the middle-slot distance model base as `dist - distSlot - 1`, which is legitimately **-1** when `distSlot` is 4, and JavaScript survives it because the bit-tree index starts at 1 so `offset + m` lands on element 0. Written as an unsigned subtraction it becomes a refusal, and every stream whose first distance uses slot 4 — most of them — stops decoding. Upstream's own LOREM fixture caught it. The mirror now takes the base as `dist - distSlot` and indexes `base + m - 1`, which is the same element with no negative intermediate.
 
-### An upstream defect this mirror reproduces: silent data corruption
+### The rep-shuffle defect, found here and fixed upstream
 
-**Severity first.** `@flighthq/compression`'s LZMA round-trip is broken on realistic input, and its dominant failure mode is wrong bytes rather than an error. Measured at upstream `85d85a3b1`, round-tripping `compressLzma` output through `decompressLzma` over token-shaped and small-alphabet-shaped inputs:
+Resolved. Upstream fixed it in `5de055f94` with regression fixtures in `a62784923`, both on `origin/develop`, and **this mirror has followed**. The record stays because the shape of the bug is the argument for how mirrors are tested.
 
-|                                     |   Count |
-| ----------------------------------- | ------: |
-| round-trips checked                 |    1200 |
-| failed                              | **161** |
-| …returned `null`                    |      35 |
-| …**returned wrong bytes silently**  | **126** |
-| failed after the one-line fix below |   **0** |
+**What it was.** `lzma.ts` ran `rep2 = rep1` for all three sub-cases of a rep match, including the one where the distance came from `rep1`. The reference decoder shifts `rep2` only when the distance came from `rep2` or `rep3`. So after the first `rep1` match the decoder's `rep2` held a duplicate of `rep1`, and the next `rep2`/`rep3` match resolved a wrong distance. `lzmaCompress.ts` had the shuffle right all along, so the two halves of one package disagreed.
 
-The minimal reproducer is 89 bytes of input compressing to 72 bytes: `compressLzma`'s own output decodes back to 89 bytes that differ from the input at index 87, with no error raised. `reproduces_upstreams_silent_corruption_of_its_own_encoder_output` pins it.
+**What it cost**, measured before the fix by round-tripping `compressLzma` output through `decompressLzma` over token-shaped and small-alphabet inputs:
 
-The same defect also makes upstream refuse valid streams from other encoders, which is how it was first found. Against streams Python's `lzma` module round-trips:
+|                                    |  Before | After |
+| ---------------------------------- | ------: | ----: |
+| round-trips checked                |    1200 |  1200 |
+| failed                             | **161** | **0** |
+| …returned `null`                   |      35 |     0 |
+| …**returned wrong bytes silently** | **126** |     0 |
 
-| Content           |         Size | Python  | upstream `decompressLzma` | this mirror |
-| ----------------- | -----------: | ------- | ------------------------- | ----------- |
-| low-entropy text  |       2048 B | decodes | decodes                   | decodes     |
-| low-entropy text  |       2304 B | decodes | **null**                  | **None**    |
-| low-entropy text  | 64 KB – 8 MB | decodes | **null**                  | **None**    |
-| highly repetitive | 64 KB – 8 MB | decodes | decodes                   | decodes     |
+Whether a given stream corrupted or refused was luck: a wrong distance still in range let the decode continue and emit plausible wrong bytes, one out of range tripped a bound and returned `null`. The quiet face was the common one, 126 to 35 — which is why this was a data-integrity bug rather than an availability one.
 
-### The cause: upstream's encoder and decoder disagree
+It also made upstream refuse valid streams from other encoders, which is how it was first noticed: Python `lzma` output above roughly 2 KB of low-entropy text returned `null` while Python itself round-tripped it.
 
-`lzmaCompress.ts` implements the reference rep-distance shuffle correctly. `lzma.ts` does not — it runs `rep2 = rep1` for all three sub-cases of a rep match, including the one where the distance came from `rep1`. The reference decoder shifts `rep2` only when the distance came from `rep2` or `rep3`:
+**Why upstream's suite could not see it.** The trigger is a `rep1` match followed later by a `rep2` or `rep3` match, which needs mixed content. All eight decoder fixtures were high-ratio — the largest low-ratio case 1212 bytes of a repeated sentence, the big ones 64 KB of `i % 7`, 1 KB of `i % 256`, `'abcABC123'` ×600 — and the encoder round-trip cases were the same shapes. Nothing in the suite was ordinary mixed content above 2 KB, which is exactly where the failure rate reached double digits. `.awd` and `.swf` bodies are the real inputs, and they are not `i % 7`.
 
-```cpp
-if (DecodeBit(&IsRepG1[state]) == 0) dist = rep1;
-else {
-  if (DecodeBit(&IsRepG2[state]) == 0) dist = rep2;
-  else { dist = rep3; rep3 = rep2; }
-  rep2 = rep1;            // inside the else
-}
-rep1 = rep0; rep0 = dist;
-```
+**How it was found**, since the method generalises. Upstream's own encoder round-tripping cleanly on the shapes first tried ruled out "the decoder is simply broken" and pointed at a path `compressLzma` rarely emitted. Narrowing by Python encoder knob was actively misleading — `nice_len` 16 passed, 21 and 22 failed, 23 passed — and that non-monotonicity was the signal to stop guessing and trace instead. A traced copy of this mirror, logging every literal/match/rep event with its output range and diffed against known plaintext, put the first wrong byte at index 2239 of a 2304-byte stream, written by a rep match resolving a distance nothing had set. A rep distance nothing set is a clobbered rep slot, and the shuffle is three lines long.
 
-So after the first `rep1` match the decoder's `rep2` holds a duplicate of `rep1`, and the next `rep2` or `rep3` match resolves a wrong distance. Whether that surfaces as corruption or as `null` is luck: the wrong distance is often still in range, in which case the decode continues and produces plausible wrong bytes.
+**Verification after the fix**, against upstream `origin/develop`:
 
-Traced on the 2304-byte refusal case: byte-correct through output index 2238, first wrong byte at 2239, written by a rep match that resolved distance 389 from the corrupted `rep2`.
+- upstream's encoder/decoder round-trip: 0 failures in 1200;
+- 60 of 60 streams of exactly the shapes that used to break decode byte-for-byte identically through this mirror;
+- the previously refused Python streams — 2304 bytes, 64 KB, 8 MB — decode through both;
+- upstream's two new regression fixtures are mirrored here verbatim, and the two reproducers this crate found are kept as positive cases, so the fix is guarded by output from three independent encoders.
 
-**Verified, by applying the reordering:**
-
-- upstream's own encoder/decoder round-trip goes from 161 failures in 1200 to **0**;
-- the 2304-byte reproducer and 64 KB, 1 MB and 8 MB text payloads decode byte-for-byte;
-- 19 of 19 Python encoder variants decode (`nice_len` 14–23, `mode_fast`, `depth`, `dict_size`, `pb`, `lc`/`lp`);
-- all other tests in this crate still pass, including every one of upstream's 16 LZMA fixtures and 22 deflate cases;
-- the only tests that change are the two pinned cases here.
-
-Why upstream's own suite misses it: the trigger is a `rep1` match followed later by a `rep2` or `rep3` match, which needs mixed content. **All eight of its decoder fixtures are high-ratio** — the largest low-ratio case is 1212 bytes of a repeated sentence, and the big ones are 64 KB of `i % 7`, 1 KB of `i % 256`, and `'abcABC123'` repeated 600 times — and its encoder round-trip cases are the same shapes. Nothing in the suite is ordinary mixed content above 2 KB, which is exactly where the failure rate becomes double digits. `.awd` and `.swf` bodies are the real inputs, and they are not `i % 7`.
-
-**Do not fix the mirror ahead of upstream.** A mirror that decodes differently from upstream is no longer a drop-in, and the differential oracle stops holding. When these pinned cases start failing, upstream has fixed its decoder: apply the same reordering and delete them.
+The mirror's rule held and was worth holding: it reproduced both faces of the defect until upstream fixed it, which is what kept the differential oracle meaningful, and flipping it afterwards was a one-line change plus swapping two pinned tests from negative to positive.
 
 ### Measured throughput
 
-Same method as deflate. Only payloads upstream can decode are comparable, so the low-ratio column stops at 2 KB.
+Low-ratio payloads are comparable for the first time: before the fix, upstream refused them.
 
 | Payload          | ratio | upstream TS | this mirror | mirror vs TS |
 | ---------------- | ----: | ----------: | ----------: | -----------: |
-| repetitive 64 KB |  437x |     48 MB/s |    839 MB/s |        17.5x |
-| repetitive 1 MB  | 3603x |    413 MB/s |    754 MB/s |         1.8x |
-| repetitive 8 MB  | 6322x |    412 MB/s |    767 MB/s |         1.9x |
-| text 2 KB        |  3.0x |      7 MB/s |    107 MB/s |        15.3x |
+| repetitive 64 KB |  437x |     34 MB/s |    884 MB/s |          26x |
+| repetitive 1 MB  | 3603x |    338 MB/s |    847 MB/s |         2.5x |
+| repetitive 8 MB  | 6322x |    416 MB/s |    892 MB/s |         2.1x |
+| text 64 KB       |  4.9x |     18 MB/s |    104 MB/s |         5.8x |
+| text 1 MB        |  5.6x |     31 MB/s |    122 MB/s |         3.9x |
+| text 8 MB        |  5.8x |     32 MB/s |    125 MB/s |         3.9x |
 
-**1.8x to 17.5x**, and the spread is the interesting part. On a large high-ratio stream both implementations spend their time in the same byte-at-a-time match copy, so the gap narrows to under 2x. On small or low-ratio input the range coder dominates — one `decode_bit` per output bit, each with a probability update — and that is where Rust wins by an order of magnitude. LZMA's compute is in the range coder, so the realistic inputs favour the mirror more than the headline repetitive numbers suggest.
+**2.1x to 26x**, and the spread says where the work is. On a large high-ratio stream both implementations sit in the same byte-at-a-time match copy and the gap narrows to about 2x. On low-ratio input the range coder dominates — one `decode_bit` per output bit, each with a probability update — and the mirror holds a steady ~4x. The 26x at 64 KB repetitive is mostly JavaScript's fixed cost per call showing up against a stream that decodes in 70 microseconds.
+
+Since LZMA's compute lives in the range coder, the ~4x on realistic mixed content is the number that matters for `.awd` and `.swf` bodies, not the high-ratio headline.
 
 Native figures again; wasm will be slower.
 
