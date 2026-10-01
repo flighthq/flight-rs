@@ -51,8 +51,60 @@ Reproduce with `cargo run --release -p flighthq-compression-core --example throu
 ### What this is not, yet
 
 - **No wasm facade.** There is no `packages/compression-wasm`, no `port.config.ts` entry, and no generated binding crate. The facade needs a `wasmFacades` entry, a Rust template, and a TS package, following `physics2d-abi-wasm`.
-- **No encoder.** Our pin's `@flighthq/compression` has no encoder to mirror. `origin/main` adds `compress.ts` with `compressDeflate` and `compressDeflateZlib`, so this arrives with the pin move.
-- **No LZMA.** `Compression.Lzma` is declared upstream and implemented nowhere, which makes it the larger opportunity and a different kind of work — no upstream source to mirror and no upstream oracle, so its parity story would be reference vectors and round-trips rather than a differential against existing code. Decide that deliberately; it is not the pattern this document describes.
+- **No encoders.** Our pin's `@flighthq/compression` has no encoder to mirror. Upstream now has two — `compressDeflate`/`compressDeflateZlib` and `compressLzma` — so those arrive with the pin move.
+- **No Brotli**, and that is upstream's position too rather than a gap here: the decoder needs a large static dictionary that is data rather than rules, so upstream declares the slot and expects a caller to fill it.
+
+## `flighthq-compression-core::lzma`
+
+Mirrors `upstream/packages/compression/src/lzma.ts` at upstream `85d85a3b1` — LZMA1, alone-format header, through the same `Decompressor` contract:
+
+```rust
+pub fn decompress_lzma(compressed: &[u8], uncompressed_length: usize, framing: Framing) -> Option<Vec<u8>>
+```
+
+**This mirrors a file that is not in the pinned submodule.** LZMA landed upstream after the current pin, so what this reproduces is the behaviour that arrives when the pin moves. That is why the fixtures are embedded: nothing here reads a tree the repository does not check out.
+
+Only `Framing::Raw` is accepted, because LZMA carries no wrapper — zlib framing is a different format, not a stricter request.
+
+### Conformance
+
+**16 of 16 of upstream's `lzma.test.ts` decoder cases pass**, plus one pinned regression described below. Upstream's two `sdkHostDecompressLzma` cases are not mirrored: they assert the Host capability slot carries the portable decoder, which is a TypeScript wiring fact with no counterpart in a crate.
+
+The fixtures are upstream's, extracted mechanically. Their provenance is stronger than the deflate set: upstream generated them with **Python 3.12's `lzma` module** in `FORMAT_ALONE`, so the oracle is a third-party encoder rather than either implementation of the decoder. Both upstream and this mirror are measured against bytes neither produced.
+
+One bug this caught, worth recording because it is the kind a hand-written mirror invites. Upstream computes the middle-slot distance model base as `dist - distSlot - 1`, which is legitimately **-1** when `distSlot` is 4, and JavaScript survives it because the bit-tree index starts at 1 so `offset + m` lands on element 0. Written as an unsigned subtraction it becomes a refusal, and every stream whose first distance uses slot 4 — most of them — stops decoding. Upstream's own LOREM fixture caught it. The mirror now takes the base as `dist - distSlot` and indexes `base + m - 1`, which is the same element with no negative intermediate.
+
+### An upstream defect this mirror reproduces
+
+`decompressLzma` refuses valid LZMA streams. Measured at upstream `85d85a3b1`, against streams Python's own `lzma` module round-trips:
+
+| Content           |         Size | Python  | upstream `decompressLzma` | this mirror |
+| ----------------- | -----------: | ------- | ------------------------- | ----------- |
+| low-entropy text  |       2048 B | decodes | decodes                   | decodes     |
+| low-entropy text  |       2304 B | decodes | **null**                  | **None**    |
+| low-entropy text  | 64 KB – 8 MB | decodes | **null**                  | **None**    |
+| highly repetitive | 64 KB – 8 MB | decodes | decodes                   | decodes     |
+
+The mirror agrees with upstream at every point including the threshold, which is the behaviour a mirror owes. `refuses_the_same_valid_stream_upstream_refuses` pins it with the minimal reproducer (2304 bytes in, 699 bytes compressed).
+
+Why upstream's own tests do not catch it: **all eight of its fixtures are high-ratio.** The largest low-ratio case is 1212 bytes of a repeated sentence, and the big ones — 64 KB of `i % 7`, 1 KB of `i % 256`, `'abcABC123'` repeated 600 times — are repetitive at every size. Nothing in the suite is ordinary mixed content above 2 KB, which is exactly the shape that fails. That matters beyond this crate, because `.awd` and `.swf` bodies are the real inputs and they are not `i % 7`.
+
+**Do not fix the mirror ahead of upstream.** A mirror that decodes more than upstream is no longer a drop-in, and the differential oracle stops holding. If `refuses_the_same_valid_stream_upstream_refuses` starts failing, upstream has fixed its decoder and the mirror follows.
+
+### Measured throughput
+
+Same method as deflate. Only payloads upstream can decode are comparable, so the low-ratio column stops at 2 KB.
+
+| Payload          | ratio | upstream TS | this mirror | mirror vs TS |
+| ---------------- | ----: | ----------: | ----------: | -----------: |
+| repetitive 64 KB |  437x |     48 MB/s |    839 MB/s |        17.5x |
+| repetitive 1 MB  | 3603x |    413 MB/s |    754 MB/s |         1.8x |
+| repetitive 8 MB  | 6322x |    412 MB/s |    767 MB/s |         1.9x |
+| text 2 KB        |  3.0x |      7 MB/s |    107 MB/s |        15.3x |
+
+**1.8x to 17.5x**, and the spread is the interesting part. On a large high-ratio stream both implementations spend their time in the same byte-at-a-time match copy, so the gap narrows to under 2x. On small or low-ratio input the range coder dominates — one `decode_bit` per output bit, each with a probability update — and that is where Rust wins by an order of magnitude. LZMA's compute is in the range coder, so the realistic inputs favour the mirror more than the headline repetitive numbers suggest.
+
+Native figures again; wasm will be slower.
 
 ### The seam changes with the pin
 
