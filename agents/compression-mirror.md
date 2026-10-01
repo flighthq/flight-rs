@@ -175,3 +175,11 @@ A facade built against the pin would therefore target an API upstream has remove
 ## Gaps worth knowing
 
 `cargo fmt` and `cargo clippy` are not in any gate — not in `npm run check`, `npm run ci`, or `ci.yml`. Both hand-written crates are nevertheless rustfmt-clean and clippy-clean, and new mirrors should stay that way. The workspace as a whole is not: `cargo clippy --workspace` reports over two thousand warnings, almost all from generated crates, which is why gating it would mean a ratchet rather than a flag.
+
+## Does the wasm barrier pay here?
+
+Yes, unlike `bitmap-wasm`. Measured through the facade against upstream's TypeScript on identical bytes, every codec is **1.4x to 5.5x faster across the barrier**: deflate decode 1.7x–3.0x, LZMA decode 1.4x–3.9x, deflate encode 2.5x–5.5x, LZMA encode 2.3x–4.8x.
+
+`npm run bench:barrier` reproduces the deflate-decode half from the repository alone. The LZMA and encoder figures need upstream's `develop` sources, which are not in the pin, so they were measured out of tree.
+
+The contrast with `bitmap-wasm` — about half the speed of its TypeScript — is the argument for this crate's discipline rather than an accident of workload. Same boundary, same toolchain; what differs is `usize` induction variables and an `enum` compared by discriminant here, against `f64` indices and an owned `String` compared per kernel tap in generated code. See [`agents/wasm-barrier.md`](wasm-barrier.md).

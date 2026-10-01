@@ -29,7 +29,7 @@
     "upstream:latest": "tsx scripts/upstream-latest.ts",
     "version:packages": "tsx scripts/version-packages.ts",
     "wasm": "tsx tools/generator/src/build-wasm.ts",
-    "bench:barrier": "vitest run --config packages/bitmap-wasm/vitest.config.barrier.ts"
+    "bench:barrier": "vitest run --config packages/bitmap-wasm/vitest.config.barrier.ts && vitest run --config packages/compression-wasm/vitest.config.barrier.ts"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "6.9.1",

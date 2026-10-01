@@ -17,9 +17,31 @@ A `-wasm` package is a **hybrid by design**. There is no requirement for every f
 | `pixelateBitmap` 8    | 1024² | 13.7738 ms |  6.4457 ms | 0.47x |
 | `dilateBitmap` r3     | 512²  | 98.2844 ms | 51.9644 ms | 0.53x |
 
-**The shipped wasm is about half the speed of the TypeScript it replaces, at every size and on every function tried — including the compute-heavy ones.** A 5×5 convolution is 25 multiply-adds per channel per pixel and still loses by 2.2x. There is no crossover point to find.
+**The shipped bitmap wasm is about half the speed of the TypeScript it replaces, at every size and on every function tried — including the compute-heavy ones.** A 5×5 convolution is 25 multiply-adds per channel per pixel and still loses by 2.2x. There is no crossover point to find.
 
 That matters for planning: **widening the set of wasm-backed functions would currently make `bitmap-wasm` slower, not faster.** The appropriate improvement for the barrier is to make the existing 34 beat TypeScript first; after that, widening has a point.
+
+## Compression crosses the same barrier and wins
+
+The controlled comparison. Same boundary, same toolchain, same machine, same day — the only difference is that `compression-wasm` is a **hand-written mirror** and `bitmap-wasm` is **generated**. Greater than 1x means wasm faster.
+
+| Codec                   | Payload     |      wasm | upstream TS |             ratio |
+| ----------------------- | ----------- | --------: | ----------: | ----------------: |
+| deflate decode, stored  | 1 KB → 8 MB |         — |           — | **1.69x – 2.49x** |
+| deflate decode, Huffman | 64 KB       | 0.1073 ms |   0.3267 ms |         **3.04x** |
+| deflate decode, Huffman | 8 MB        |  14.40 ms |    37.26 ms |         **2.59x** |
+| LZMA decode             | 64 KB runs  | 0.2024 ms |     0.74 ms |         **3.66x** |
+| LZMA decode             | 1 MB text   |  11.22 ms |    37.52 ms |         **3.34x** |
+| deflate encode          | 64 KB runs  | 0.1932 ms |   1.0545 ms |         **5.46x** |
+| deflate encode          | 1 MB text   |  38.37 ms |    97.76 ms |         **2.55x** |
+| LZMA encode             | 64 KB runs  | 0.2550 ms |   1.2200 ms |         **4.78x** |
+| LZMA encode             | 1 MB text   |  47.94 ms |   133.86 ms |         **2.79x** |
+
+**Every compression codec is 1.4x to 5.5x faster across the barrier.** So the barrier is not the problem, and wasm is not the problem — the same mechanism that loses 2x for bitmap wins up to 5x here.
+
+What differs is the Rust on the other side. The compression mirror uses `usize` induction variables and indices, an `enum Framing` compared by discriminant, and crosses the boundary once per buffer. The generated bitmap code uses `f64` induction variables cast `as usize` per access, and compares an owned `String` per kernel tap. Those two choices are the whole gap.
+
+That is also the strongest argument for the mirror discipline: a hand-written structural port of upstream's algorithm, held to upstream's own tests, beats TypeScript comfortably. A mechanical transliteration of upstream's _types_ does not.
 
 ## It is not the barrier — it is the generated code
 
