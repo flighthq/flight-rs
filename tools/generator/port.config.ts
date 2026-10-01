@@ -322,7 +322,7 @@ export const portConfig = {
       dependencies: {
         'flighthq-compression-core': '../../../crates/flighthq-compression-core',
       },
-      exports: ['inflateDeflate'],
+      exports: ['compressDeflate', 'compressDeflateZlib', 'compressLzma', 'decompressLzma', 'inflateDeflate'],
       rustTemplate: 'tools/generator/templates/compression_wasm.rs',
     },
     {

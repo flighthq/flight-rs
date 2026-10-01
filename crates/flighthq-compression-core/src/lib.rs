@@ -47,7 +47,9 @@ impl Framing {
 mod compress;
 mod deflate;
 mod lzma;
+mod lzma_compress;
 
 pub use compress::{compress_deflate, compress_deflate_zlib};
 pub use deflate::{MAX_INFLATE_BYTES, decompress_deflate};
 pub use lzma::{MAX_LZMA_BYTES, decompress_lzma};
+pub use lzma_compress::compress_lzma;

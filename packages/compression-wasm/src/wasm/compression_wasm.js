@@ -1,6 +1,48 @@
 /* @ts-self-types="./compression_wasm.d.ts" */
 
 /**
+ * Encodes to a bare RFC 1951 stream.
+ * @param {Uint8Array} bytes
+ * @returns {Uint8Array}
+ */
+export function compress_deflate(bytes) {
+    const ptr0 = passArray8ToWasm0(bytes, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.compress_deflate(ptr0, len0);
+    var v2 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+    wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+    return v2;
+}
+
+/**
+ * Encodes to RFC 1950: a two-byte header, the same stream, and a big-endian Adler-32 of the input.
+ * @param {Uint8Array} bytes
+ * @returns {Uint8Array}
+ */
+export function compress_deflate_zlib(bytes) {
+    const ptr0 = passArray8ToWasm0(bytes, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.compress_deflate_zlib(ptr0, len0);
+    var v2 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+    wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+    return v2;
+}
+
+/**
+ * Encodes to an LZMA1 alone-format stream: a 13-byte header then the range-coded body.
+ * @param {Uint8Array} bytes
+ * @returns {Uint8Array}
+ */
+export function compress_lzma(bytes) {
+    const ptr0 = passArray8ToWasm0(bytes, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.compress_lzma(ptr0, len0);
+    var v2 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+    wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+    return v2;
+}
+
+/**
  * Decompresses a DEFLATE stream, or returns `undefined` when it is malformed or the framing is unknown.
  *
  * `framing` is 0 for a raw RFC 1951 stream and 1 for RFC 1950 zlib framing; any other value is refused
@@ -14,6 +56,28 @@ export function decompress_deflate(compressed, uncompressed_length, framing) {
     const ptr0 = passArray8ToWasm0(compressed, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
     const ret = wasm.decompress_deflate(ptr0, len0, uncompressed_length, framing);
+    let v2;
+    if (ret[0] !== 0) {
+        v2 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+    }
+    return v2;
+}
+
+/**
+ * Decompresses an LZMA1 alone-format stream, or returns `undefined` when it is malformed.
+ *
+ * LZMA carries no wrapper, so only raw framing is accepted; zlib framing is a different format rather than
+ * a stricter request, and upstream refuses it too.
+ * @param {Uint8Array} compressed
+ * @param {number} uncompressed_length
+ * @param {number} framing
+ * @returns {Uint8Array | undefined}
+ */
+export function decompress_lzma(compressed, uncompressed_length, framing) {
+    const ptr0 = passArray8ToWasm0(compressed, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.decompress_lzma(ptr0, len0, uncompressed_length, framing);
     let v2;
     if (ret[0] !== 0) {
         v2 = getArrayU8FromWasm0(ret[0], ret[1]).slice();

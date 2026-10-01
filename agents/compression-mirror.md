@@ -48,10 +48,10 @@ On text the mirror is roughly half zlib's speed, and the reason is nameable rath
 
 Reproduce with `cargo run --release -p flighthq-compression-core --example throughput -- <iterations> <file>…`, where each file is `<declared-length>:<zlib bytes>`. Generate those with `zlib.deflateSync` over the payload shapes above.
 
-### What this is not, yet
+### Coverage
 
-- **No wasm facade.** There is no `packages/compression-wasm`, no `port.config.ts` entry, and no generated binding crate. The facade needs a `wasmFacades` entry, a Rust template, and a TS package, following `physics2d-abi-wasm`.
-- **The LZMA encoder is not mirrored.** `compressDeflate`/`compressDeflateZlib` are (see below); upstream's `compressLzma` is not yet.
+- **The facade exists**: `packages/compression-wasm`, with upstream's own `deflate.test.ts` running against it (25 of 25) through `vitest.config.upstream.ts`.
+- **Nothing is unmirrored now.** Both decoders and both encoders are mirrored, and all five are exposed through `packages/compression-wasm`. Brotli stays out, matching upstream's own deliberate non-goal.
 - **No Brotli**, and that is upstream's position too rather than a gap here: the decoder needs a large static dictionary that is data rather than rules, so upstream declares the slot and expects a caller to fill it.
 
 ## `flighthq-compression-core::compress`

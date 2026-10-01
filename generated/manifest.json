@@ -88062,12 +88062,16 @@
       "authoritativePackage": "@flighthq/compression",
       "crate": "flighthq-compression-wasm",
       "exports": [
+        "compressDeflate",
+        "compressDeflateZlib",
+        "compressLzma",
+        "decompressLzma",
         "inflateDeflate"
       ],
       "output": "generated/crates/flighthq-compression-wasm/src/lib.rs",
-      "outputSha256": "sha256:86977070796fd7267288d87985079aba6873aff8acbdda93f1bdcf97dd6fab52",
+      "outputSha256": "sha256:853ccbadbde3d9ad03ac851f743eca7d120a005f0096e80c599657800708f793",
       "template": "tools/generator/templates/compression_wasm.rs",
-      "templateSha256": "sha256:043c551cb06bacaa73b9330358b5d720396501299877a4299d6cd4f47fc9b9ee"
+      "templateSha256": "sha256:f3ff0b81100857d763eb7653715251b2844dedbe063d09f2e633407a08114430"
     },
     {
       "authoritativePackage": "@flighthq/physics2d-abi",
