@@ -350,6 +350,26 @@ fn decode(input: &[u8], uncompressed_length: usize) -> Option<Vec<u8>> {
                 + decode_rep_length(&mut decoder, &mut models, position_state) as usize;
             state = STATE_AFTER_REP[state];
         } else {
+            // MIRRORS AN UPSTREAM BUG ON PURPOSE. `rep2 = rep1` runs for all three sub-cases here,
+            // including the one where the distance came from `rep1`. The LZMA reference decoder shifts
+            // `rep2` only when the distance came from `rep2` or `rep3`:
+            //
+            //     if (DecodeBit(&IsRepG1[state]) == 0) dist = rep1;
+            //     else {
+            //       if (DecodeBit(&IsRepG2[state]) == 0) dist = rep2;
+            //       else { dist = rep3; rep3 = rep2; }
+            //       rep2 = rep1;            // <- inside the else
+            //     }
+            //     rep1 = rep0; rep0 = dist;
+            //
+            // So after the first rep1 match, upstream's `rep2` holds a duplicate of `rep1`, and the next
+            // rep2 or rep3 match resolves a wrong distance. Output diverges silently and the decode then
+            // dies on an impossible distance or a size mismatch, surfacing as `null`.
+            //
+            // THE FIX IS MOVING ONE LINE — see `refuses_the_same_valid_stream_upstream_refuses` for the
+            // measured effect and `agents/compression-mirror.md` for the verification. Do not apply it
+            // here before upstream does: a mirror that decodes more than upstream is not a drop-in, and
+            // the differential suite stops meaning anything.
             let distance = if decoder.decode_bit(&mut models.is_rep_g1, state) == 0 {
                 rep1
             } else if decoder.decode_bit(&mut models.is_rep_g2, state) == 0 {
@@ -685,21 +705,24 @@ mod tests {
 
     #[test]
     fn refuses_the_same_valid_stream_upstream_refuses() {
-        // A MIRROR OF AN UPSTREAM DEFECT, pinned on purpose.
+        // A MIRROR OF AN UPSTREAM DEFECT, pinned on purpose, with the root cause known.
         //
-        // This fixture is a valid LZMA alone-format stream — `python3 -c "import lzma;
-        // lzma.decompress(bytes, format=lzma.FORMAT_ALONE)"` reproduces its 2304 bytes exactly — and
-        // `decompressLzma` returns null for it. So does this mirror, at the same point, because mirroring
-        // means reproducing what upstream does rather than what the format says.
+        // This fixture is a valid LZMA alone-format stream — Python's `lzma` module reproduces its 2304
+        // bytes exactly — and `decompressLzma` returns null for it. So does this mirror, because the cause
+        // is reproduced too: the rep-distance shuffle in `decode` clobbers `rep2` when the distance came
+        // from `rep1`. See the comment at that site for the reference ordering.
         //
-        // The boundary measured at upstream `85d85a3b1`: with low-entropy text from Python's default
-        // encoder, upstream decodes 2048 bytes and refuses 2304. Highly repetitive content decodes at any
-        // size, which is why none of upstream's own eight fixtures reach it — every one of them is
-        // high-ratio, the largest low-ratio case being 1212 bytes of a repeated sentence.
+        // Traced precisely: decoding stays byte-correct to output index 2238 and the first wrong byte is
+        // at 2239, written by a rep match that resolved distance 389 from a corrupted `rep2`.
         //
-        // IF THIS TEST STARTS FAILING, upstream has most likely fixed its decoder and the mirror has to
-        // follow. That is the signal, not a reason to delete the case. Reported upstream separately; do
-        // not "fix" this mirror ahead of upstream, because then the differential oracle no longer holds.
+        // Moving `rep2 = rep1` inside the inner else fixes it, verified outside this repository: the 2304
+        // reproducer and 64 KB, 1 MB and 8 MB text payloads all decode byte-for-byte, 19 of 19 Python
+        // encoder variants decode, and all 38 other tests in this crate still pass. The only test that
+        // changes is this one.
+        //
+        // SO WHEN THIS TEST FAILS, upstream has fixed its decoder and the mirror must follow — apply the
+        // same reordering and delete this case. That is the signal. Do not pre-empt it: a mirror that
+        // decodes more than upstream is no longer a drop-in and the differential oracle stops holding.
         assert_eq!(lzma(&base64(VALID_STREAM_UPSTREAM_REFUSES), 0), None);
         assert_eq!(lzma(&base64(VALID_STREAM_UPSTREAM_REFUSES), 2304), None);
     }
