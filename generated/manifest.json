@@ -75574,6 +75574,11 @@
       "reason": "Curated JavaScript/wasm compatibility boundary for the generated @flighthq/bitmap implementation."
     },
     {
+      "package": "@flighthq/compression-wasm",
+      "path": "packages/compression-wasm",
+      "reason": "Rust/wasm DEFLATE decoder for the upstream compression registry, which exists so a host can replace the portable decoder."
+    },
+    {
       "package": "@flighthq/physics2d-abi-wasm",
       "path": "packages/physics2d-abi-wasm",
       "reason": "Persistent Rust/wasm backend for the upstream Physics2D packed-buffer ABI."
@@ -88052,6 +88057,17 @@
       "outputSha256": "sha256:42f1e74a786f06d9cdb4f311a5e7f69633443fd32fa1276fcf20166fd9d6c0d9",
       "template": "tools/generator/templates/bitmap_wasm.rs",
       "templateSha256": "sha256:42f1e74a786f06d9cdb4f311a5e7f69633443fd32fa1276fcf20166fd9d6c0d9"
+    },
+    {
+      "authoritativePackage": "@flighthq/compression",
+      "crate": "flighthq-compression-wasm",
+      "exports": [
+        "inflateDeflate"
+      ],
+      "output": "generated/crates/flighthq-compression-wasm/src/lib.rs",
+      "outputSha256": "sha256:86977070796fd7267288d87985079aba6873aff8acbdda93f1bdcf97dd6fab52",
+      "template": "tools/generator/templates/compression_wasm.rs",
+      "templateSha256": "sha256:043c551cb06bacaa73b9330358b5d720396501299877a4299d6cd4f47fc9b9ee"
     },
     {
       "authoritativePackage": "@flighthq/physics2d-abi",

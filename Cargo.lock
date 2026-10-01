@@ -37,6 +37,14 @@ name = "flighthq-compression-core"
 version = "0.1.0"
 
 [[package]]
+name = "flighthq-compression-wasm"
+version = "0.1.0"
+dependencies = [
+ "flighthq-compression-core",
+ "wasm-bindgen",
+]
+
+[[package]]
 name = "flighthq-easing"
 version = "0.1.0"
 dependencies = [

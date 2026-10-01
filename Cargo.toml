@@ -7,6 +7,7 @@ members = [
   "generated/crates/flighthq-runtime",
   "generated/crates/flighthq-bitmap",
   "generated/crates/flighthq-bitmap-wasm",
+  "generated/crates/flighthq-compression-wasm",
   "generated/crates/flighthq-physics2d-abi-wasm",
   "generated/crates/flighthq-physics3d-abi-wasm",
   "generated/crates/flighthq-types",

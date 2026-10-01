@@ -1,0 +1,14 @@
+[package]
+name = "flighthq-compression-wasm"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+path = "src/lib.rs"
+
+[dependencies]
+flighthq-compression-core = { path = "../../../crates/flighthq-compression-core" }
+wasm-bindgen = "0.2"

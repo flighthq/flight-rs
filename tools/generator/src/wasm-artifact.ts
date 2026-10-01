@@ -16,6 +16,12 @@ export const wasmArtifactTargets = {
     crate: 'flighthq-bitmap-wasm',
     embedScript: 'packages/bitmap-wasm/scripts/embed-wasm.ts',
   },
+  compression: {
+    artifactPath: 'packages/compression-wasm/src/wasm/compressionWasmBytes.ts',
+    bytesExport: 'compressionWasmBytes',
+    crate: 'flighthq-compression-wasm',
+    embedScript: 'packages/compression-wasm/scripts/embed-wasm.ts',
+  },
   physics2d: {
     artifactPath: 'packages/physics2d-abi-wasm/src/wasm/physics2DAbiWasmBytes.ts',
     bytesExport: 'physics2DAbiWasmBytes',

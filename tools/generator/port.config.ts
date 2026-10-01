@@ -252,6 +252,12 @@ export const portConfig = {
       reason: 'Curated JavaScript/wasm compatibility boundary for the generated @flighthq/bitmap implementation.',
     },
     {
+      package: '@flighthq/compression-wasm',
+      path: 'packages/compression-wasm',
+      reason:
+        'Rust/wasm DEFLATE decoder for the upstream compression registry, which exists so a host can replace the portable decoder.',
+    },
+    {
       package: '@flighthq/physics2d-abi-wasm',
       path: 'packages/physics2d-abi-wasm',
       reason: 'Persistent Rust/wasm backend for the upstream Physics2D packed-buffer ABI.',
@@ -309,6 +315,15 @@ export const portConfig = {
         'unpremultiplyBitmapPixels',
       ],
       rustTemplate: 'tools/generator/templates/bitmap_wasm.rs',
+    },
+    {
+      authoritativePackage: '@flighthq/compression',
+      crate: 'flighthq-compression-wasm',
+      dependencies: {
+        'flighthq-compression-core': '../../../crates/flighthq-compression-core',
+      },
+      exports: ['inflateDeflate'],
+      rustTemplate: 'tools/generator/templates/compression_wasm.rs',
     },
     {
       authoritativePackage: '@flighthq/physics2d-abi',

@@ -33,6 +33,7 @@ interface BuildTarget {
 
 const buildTargets: BuildTarget[] = [
   { artifact: wasmArtifactTargets.bitmap, package: '@flighthq/bitmap-wasm' },
+  { artifact: wasmArtifactTargets.compression, package: '@flighthq/compression-wasm' },
   { artifact: wasmArtifactTargets.physics2d, package: '@flighthq/physics2d-abi-wasm' },
   { artifact: wasmArtifactTargets.physics3d, package: '@flighthq/physics3d-abi-wasm' },
 ];
