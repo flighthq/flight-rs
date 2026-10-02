@@ -189,5 +189,9 @@ jobs:
       - uses: ./.github/actions/rust
       - run: npm ci
       - run: cargo test --workspace
-      # A separate workspace, so `--workspace` above does not reach it.
-      - run: npm run test:host-winit
+      # `npm run test:host-winit` is deliberately NOT run. The canary installs nine generated
+      # `set_*_backend` functions, and upstream deleted that ambient-backend architecture on `develop` --
+      # the packages that held those exports now carry tests asserting they stay gone. There is no
+      # surviving seam to re-point the crate at, so it cannot compile against the current pin. See the
+      # native host boundary section of agents/architecture.md; the crate's source is retained pending a
+      # Host-capability-model replacement, and this step returns when there is something to compile.

@@ -56,14 +56,26 @@ Cultivation is opt-in and package-specific. The bitmap policy's `cultivated` dis
 
 ## Native host boundary
 
-Native hosts are cultivated adapters over generated package seams; they are not translations of the web default backend. The cultivated `flighthq-host-winit` compile canary installs generated application, lifecycle, keyboard, haptics, power, screen, platform, and device backends as one bundle and creates the generated input manager. Its concrete event-loop and rendering adapters remain handwritten host work.
+Native hosts are cultivated adapters over generated package seams; they are not translations of the web default backend. Their concrete event-loop and rendering adapters remain handwritten host work.
+
+**The ambient backend seam the `flighthq-host-winit` canary was built on no longer exists upstream.** That canary installed nine generated `set_*_backend` functions as one bundle — loop, window, device, haptics, soft keyboard, lifecycle, platform, power, screen — to prove the generated seams composed into a real host. Every one of those exports is gone on `develop`, and the packages that held them now carry tests asserting they stay gone:
+
+```
+it('exports no ambient-state API (setDeviceBackend, getDeviceBackend, etc.)', …)
+it('exports no ambient-state API (setPlatformBackend, getPlatformBackend, etc.)', …)
+it('exports no ambient-state API (setNetBackend, getNetBackend, etc.)', …)
+```
+
+A module-level mutable backend slot is exactly what those tests forbid, so this is not a stale reference that can be re-pointed: there is no surviving seam to re-point to. The replacement is the Host capability object — fine-grained `Host*Capability` slots grouped into `Host*Capabilities`, passed explicitly rather than installed globally. `@flighthq/compression` made the same move when its last-write-wins decompressor registry became `sdkHostDecompressDeflate` and its siblings, and `packages/compression-wasm` now fills those slots directly.
+
+`tools/generator/port.config.ts` correspondingly no longer carries the `flighthq-application`, `flighthq-power`, or `flighthq-textshaper-canvas` targets whose only purpose was emitting those installers, and `crates/flighthq-host-winit` cannot compile against the current pin. Its source is retained and its CI step removed rather than the crate deleted, because what a native-host canary means under the capability model is a different object — one that constructs capability groups and hands them to the SDK — and that is host design work rather than a port. Choosing between rewriting it that way and deleting it is open.
 
 Global TypeScript `Promise<T>` types lower to target-neutral task IR; a source-declared type that merely has the same name remains nominal. Every async scope and task-valued construction carries stable source identity and is partitioned as executable, configured host placeholder, or unsupported. The generated `flighthq-runtime` supplies the one canonical `FlightTask<T>` identity to candidate, promoted, host, and wasm graphs. Typed ready/reject, straight-line async/await, and homogeneous `taskAll` joins execute through an explicit scheduler seam; generated tests install the deterministic scheduler automatically. The Rust join polls all unsettled handles instead of serializing by input order, stores output by source index, and propagates an observed error without holding task-state locks across suspension. Dynamic outputs and unsupported Promise assimilation remain distinct blockers, and unsupported composition never falls back to a default task. The Pass 27 [Future/task IR design](future-task-ir.md) records scheduling, ownership, error, and later-stage gates.
 
 Current native-host prerequisite frontier:
 
-- lifecycle, keyboard, haptics, platform, and device compile as automatic candidates; generated partial application, input, power, signal-constructor, and screen seams retain the host canary while their unresolved automatic task paths remain explicit blockers;
-- the host-winit canary compiles those seams together in its own Cargo workspace;
+- lifecycle, keyboard, haptics, platform, and device compile as automatic candidates;
+- the host canary is retired pending a capability-model replacement, so nothing currently compiles the native seams together;
 - the render stack waits on log plus the node/material/skeleton dependency frontier;
 - candidate and promoted crates share dependencies through the dependency-closed promotion model below;
 - concrete winit event translation and renderer ownership are the next cultivated host steps.
