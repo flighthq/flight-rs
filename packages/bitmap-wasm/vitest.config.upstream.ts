@@ -24,7 +24,6 @@ export const bitmapWasmExports = new Set([
   'convolveBitmap',
   'copyBitmapAlpha',
   'copyBitmapPixels',
-  'createBitmapFingerprint',
   'dilateBitmap',
   'erodeBitmap',
   'fillBitmapNoise',

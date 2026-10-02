@@ -8,7 +8,7 @@ use flighthq_bitmap::{
     build_bitmap_invert_color_matrix, build_bitmap_saturation_color_matrix,
     build_bitmap_sepia_color_matrix, color_matrix_bitmap, compare_bitmap_fingerprints,
     concat_bitmap_color_matrix, convolve_bitmap, copy_bitmap_alpha, copy_bitmap_pixels,
-    create_bitmap_fingerprint, dilate_bitmap, erode_bitmap, fill_bitmap_noise,
+    dilate_bitmap, erode_bitmap, fill_bitmap_noise,
     fill_bitmap_perlin_noise, fill_bitmap_rectangle, fill_bitmap_turbulence,
     get_bitmap_color_bounds_rectangle, get_bitmap_coverage, get_bitmap_histogram,
     get_bitmap_mismatch, merge_bitmap_channels, multiply_bitmap_alpha, pixelate_bitmap,
@@ -255,21 +255,6 @@ pub fn compare_bitmap_fingerprints_wasm(
         &fingerprint(first_cells, first_grid_size),
         &fingerprint(second_cells, second_grid_size),
     )
-}
-
-#[wasm_bindgen]
-pub fn create_bitmap_fingerprint_wasm(
-    out: &mut [u8],
-    source_data: &[u8],
-    source_width: f64,
-    source_height: f64,
-    grid_size: f64,
-) {
-    let result = create_bitmap_fingerprint(
-        &bitmap(source_data, source_width, source_height),
-        Some(grid_size),
-    );
-    copy_u8_output(out, &result.cells);
 }
 
 #[wasm_bindgen]

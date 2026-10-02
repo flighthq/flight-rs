@@ -129,9 +129,7 @@ it('splits the barrier into boundary copying and compute', { timeout: 300_000 },
   }
   writeFileSync(
     '/tmp/barrier-split.txt',
-    'Boundary vs compute. The last column is what wasm would score if copying were free.\n' +
-      split.join('\n') +
-      '\n',
+    'Boundary vs compute. The last column is what wasm would score if copying were free.\n' + split.join('\n') + '\n',
   );
   expect(split.length).toBeGreaterThan(0);
 });

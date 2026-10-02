@@ -295,7 +295,6 @@ export const portConfig = {
         'convolveBitmap',
         'copyBitmapAlpha',
         'copyBitmapPixels',
-        'createBitmapFingerprint',
         'dilateBitmap',
         'erodeBitmap',
         'fillBitmapNoise',
@@ -469,9 +468,9 @@ export const portConfig = {
             'Flood fill joins after reusable module-level scratch buffers lower to generated Rust synchronization primitives.',
         },
         'bitmapFingerprint.ts': {
-          names: ['compareBitmapFingerprints', 'createBitmapFingerprint'],
+          names: ['compareBitmapFingerprints'],
           reason:
-            'String slicing and numeric text parsing remain at the TypeScript boundary; typed-array fingerprint construction and comparison are independently portable.',
+            'String slicing and numeric text parsing remain at the TypeScript boundary, and so does fingerprint CONSTRUCTION: upstream moved createBitmapFingerprint onto allocateEntity/finishEntity from @flighthq/entity, which this target deliberately does not admit — the same boundary the bitmap.ts, bitmapChannel.ts and bitmapCompare.ts selections draw. The allocation-free comparison kernel is independently portable.',
         },
         'bitmapFormat.ts': {
           names: ['premultiplyBitmapPixels', 'unpremultiplyBitmapPixels'],

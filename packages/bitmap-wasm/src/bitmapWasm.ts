@@ -27,7 +27,6 @@ import {
   convolve_bitmap_wasm,
   copy_bitmap_alpha_wasm,
   copy_bitmap_pixels_wasm,
-  create_bitmap_fingerprint_wasm,
   dilate_bitmap_wasm,
   erode_bitmap_wasm,
   fill_bitmap_noise_wasm,
@@ -190,16 +189,6 @@ export function compareBitmapFingerprints(
 ): number {
   ensureBitmapWasm();
   return compare_bitmap_fingerprints_wasm(asUint8(first.cells), first.gridSize, asUint8(second.cells), second.gridSize);
-}
-
-export function createBitmapFingerprint(source: Readonly<Bitmap>, gridSize: number = 16): BitmapFingerprint {
-  ensureBitmapWasm();
-  const cells = new Uint8Array(gridSize * gridSize * 3);
-  create_bitmap_fingerprint_wasm(cells, asUint8(source.data), source.width, source.height, gridSize);
-  // BitmapFingerprint became an Entity in Flight 0.5. Supplying its stable runtime slot is harmless
-  // for earlier structural versions and keeps the same implementation compatible across both APIs.
-  const fingerprint = { [EntityRuntimeKey]: undefined, cells, gridSize };
-  return fingerprint;
 }
 
 export function convolveBitmap(

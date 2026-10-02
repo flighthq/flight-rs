@@ -1,14 +1,14 @@
 use flighthq_bitmap::{
     BitmapComparisonSource, apply_bitmap_curve, apply_bitmap_levels, apply_bitmap_palette_map,
     build_bitmap_brightness_color_matrix, color_matrix_bitmap, compare_bitmap_fingerprints,
-    convolve_bitmap, copy_bitmap_pixels, create_bitmap_fingerprint, dilate_bitmap, erode_bitmap,
+    convolve_bitmap, copy_bitmap_pixels, dilate_bitmap, erode_bitmap,
     fill_bitmap_noise, fill_bitmap_rectangle, get_bitmap_color_bounds_rectangle,
     get_bitmap_coverage, get_bitmap_histogram, get_bitmap_mismatch, get_bitmap_pixel,
     get_bitmap_pixel_luminance, get_bitmap_pixel_rgb, merge_bitmap_channels, multiply_bitmap_alpha,
     pixelate_bitmap, premultiply_bitmap_pixels, set_bitmap_alpha, set_bitmap_pixel,
     unpremultiply_bitmap_pixels,
 };
-use flighthq_types::{Bitmap, BitmapConvolutionOptions, BitmapRegion, OpaqueHostValue};
+use flighthq_types::{Bitmap, BitmapConvolutionOptions, BitmapFingerprint, BitmapRegion, OpaqueHostValue};
 
 fn bitmap(data: Vec<u8>, width: f64, height: f64) -> Bitmap {
     Bitmap {
@@ -278,19 +278,25 @@ fn channel_merge_reads_each_selected_source_channel() {
     assert_eq!(out.bitmap.version, 1.0);
 }
 
+// `create_bitmap_fingerprint` is no longer generated: upstream moved it onto the entity allocator this target
+// does not admit, so the fingerprints are built here from the cell values that function would have produced for
+// a 2x1 bitmap of [0,10,20] and [100,140,120] at grid size 1. The comparison kernel is what remains generated,
+// and it is what this exercises.
 #[test]
-fn generated_fingerprints_compose_structural_records_and_typed_arrays() {
-    let first = bitmap(vec![0, 10, 20, 255, 100, 110, 120, 255], 2.0, 1.0);
-    let mut second = first.clone();
-    second.data[4] = 140;
+fn generated_fingerprint_comparison_averages_the_channel_distance() {
+    let first_fingerprint = BitmapFingerprint {
+        __flight_identity: std::sync::Arc::new(()),
+        cells: vec![50, 60, 70],
+        grid_size: 1.0,
+    };
+    let second_fingerprint = BitmapFingerprint {
+        __flight_identity: std::sync::Arc::new(()),
+        cells: vec![50, 75, 70],
+        grid_size: 1.0,
+    };
 
-    let first_fingerprint = create_bitmap_fingerprint(&first, Some(1.0));
-    let second_fingerprint = create_bitmap_fingerprint(&second, Some(1.0));
-
-    assert_eq!(first_fingerprint.grid_size, 1.0);
-    assert_eq!(first_fingerprint.cells, vec![50, 60, 70]);
     assert_eq!(
         compare_bitmap_fingerprints(&first_fingerprint, &second_fingerprint),
-        20.0 / 3.0,
+        15.0 / 3.0,
     );
 }

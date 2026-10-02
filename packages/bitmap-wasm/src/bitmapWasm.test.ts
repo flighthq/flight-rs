@@ -175,11 +175,13 @@ describe('generated wasm boundary', () => {
     const decodedOther = { data: [0, 0, 0, 255], height: 1, width: 1 };
     expect(rs.getBitmapMismatch(decoded, decodedOther)).toEqual(reference.getBitmapMismatch(decoded, decodedOther));
 
-    const actualFingerprint = rs.createBitmapFingerprint(actualBitmap, 2);
+    // Fingerprint CONSTRUCTION is no longer wasm-backed: upstream moved `createBitmapFingerprint` onto
+    // `allocateEntity`/`finishEntity`, which the generated bitmap target deliberately does not admit, so the
+    // facade falls through to upstream's TypeScript for it. Comparison is still generated, so both
+    // fingerprints come from upstream here and only the comparison is differential.
+    const actualFingerprint = reference.createBitmapFingerprint(actualBitmap, 2);
     const expectedFingerprint = reference.createBitmapFingerprint(expectedBitmap, 2);
     expect(EntityRuntimeKey in actualFingerprint).toBe(true);
-    expect(actualFingerprint.gridSize).toBe(expectedFingerprint.gridSize);
-    expect(actualFingerprint.cells).toEqual(expectedFingerprint.cells);
     const comparisonFingerprint = reference.createBitmapFingerprint(comparison, 2);
     expect(rs.compareBitmapFingerprints(actualFingerprint, comparisonFingerprint)).toBe(
       reference.compareBitmapFingerprints(expectedFingerprint, comparisonFingerprint),

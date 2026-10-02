@@ -19,7 +19,6 @@ export {
   convolveBitmap,
   copyBitmapAlpha,
   copyBitmapPixels,
-  createBitmapFingerprint,
   dilateBitmap,
   erodeBitmap,
   fillBitmapNoise,
