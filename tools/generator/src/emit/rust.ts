@@ -6680,7 +6680,6 @@ function emitType(type: IrType, context: EmitContext): string {
       return `std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(${type.parameters.map((item) => emitType(item, context)).join(', ')}) -> ${emitType(type.returns, context)} + Send + 'static>>>`;
     case 'named': {
       if (type.arguments.length === 0 && context.lexicalTypeParameters.has(type.name)) return type.name;
-      if (type.name.startsWith('RustStructural:')) return type.name.slice('RustStructural:'.length);
       if (type.name !== 'EntityRuntime' && context.entityRuntimeTypes.has(type.name)) {
         const parameters = context.namedTypeParameters.get(type.name) ?? [];
         const arguments_ = parameters.map((_parameter, index) => type.arguments[index] ?? primitive('Void'));
@@ -7390,14 +7389,19 @@ function flattenStructFields(
     if (visited.has(application)) return [];
     const concrete = resolveSemanticType(base, context);
     if (concrete?.kind !== 'anonymous') return [];
-    const fields = flattenStructFields(concrete, context, new Set([...visited, application]));
-    const importedModule = context.importedModules.get(base.name);
-    if (!importedModule || context.localTypeNames.has(base.name)) return fields;
-    const nestedNames = importedNestedStructuralNames(base.name, concrete, importedModule);
-    return fields.map((field) => ({
-      ...field,
-      type: externalizeImportedNestedType(field.type, nestedNames),
-    }));
+    // An anonymous record inside an IMPORTED type is deliberately NOT given that module's name for it. The
+    // name is `<Owner>Record<N>` where `N` is a per-module counter over that module's own walk order, so a
+    // referencing module cannot compute it — it can only guess, and the guess is wrong more often than right.
+    // Measured across the corpus: of the three cross-module record references this produced, one was correct,
+    // one named a struct that nothing declared (a build failure), and one resolved to a DIFFERENT struct that
+    // happened to type-check — `wgpu_device_runtime.rs` typed a cache of WebGPU pipeline handles as
+    // `{ height, width }`. See agents/anonymous-record-naming.md.
+    //
+    // Keeping the record anonymous instead lets the referencing module declare its own copy from the shape it
+    // can actually see. That makes the type nominally distinct per module, which is the honest consequence: if
+    // anything genuinely needs to assign one across a module boundary, it now fails loudly rather than binding
+    // the wrong fields quietly.
+    return flattenStructFields(concrete, context, new Set([...visited, application]));
   });
   const fields = new Map(inherited.map((field) => [field.name, field]));
   for (const field of type.fields) {
@@ -7759,88 +7763,9 @@ function registerOpenInterfaceFamilies(context: EmitContext): void {
 function semanticStructFields(type: IrType, context: EmitContext): IrTypeField[] {
   const resolved = resolveSemanticType(type, context);
   if (resolved?.kind !== 'anonymous') return [];
-  const fields = flattenStructFields(resolved, context);
-  if (type.kind !== 'named') return fields;
-  const importedModule = context.importedModules.get(type.name);
-  if (!importedModule || context.localTypeNames.has(type.name)) return fields;
-  const nestedNames = importedNestedStructuralNames(type.name, resolved, importedModule);
-  return fields.map((field) => ({
-    ...field,
-    type: externalizeImportedNestedType(field.type, nestedNames),
-  }));
-}
-
-function importedNestedStructuralNames(
-  ownerName: string,
-  type: Extract<IrType, { kind: 'anonymous' }>,
-  importedModule: string,
-): ReadonlyMap<string, string> {
-  const nestedNames = new Map<string, string>();
-  for (const nested of collectAnonymousTypes(type)) {
-    const key = typeKey(nested);
-    if (key === typeKey(type) || nestedNames.has(key)) continue;
-    nestedNames.set(key, `${importedModule}::${pascalCase(ownerName)}Record${String(nestedNames.size + 1)}`);
-  }
-  return nestedNames;
-}
-
-function externalizeImportedNestedType(type: IrType, names: ReadonlyMap<string, string>): IrType {
-  if (type.kind === 'anonymous') {
-    const name = names.get(typeKey(type));
-    if (name)
-      return {
-        arguments: [type],
-        kind: 'named',
-        name: `RustStructural:${name}`,
-      };
-    return {
-      extends: type.extends.map((item) => externalizeImportedNestedType(item, names)),
-      fields: type.fields.map((field) => ({
-        ...field,
-        type: externalizeImportedNestedType(field.type, names),
-      })),
-      kind: 'anonymous',
-    };
-  }
-  if (type.kind === 'array') {
-    return {
-      element: externalizeImportedNestedType(type.element, names),
-      kind: 'array',
-    };
-  }
-  if (type.kind === 'function') {
-    return {
-      kind: 'function',
-      parameters: type.parameters.map((item) => externalizeImportedNestedType(item, names)),
-      returns: externalizeImportedNestedType(type.returns, names),
-    };
-  }
-  if (type.kind === 'named') {
-    return {
-      arguments: type.arguments.map((item) => externalizeImportedNestedType(item, names)),
-      kind: 'named',
-      name: type.name,
-    };
-  }
-  if (type.kind === 'nullable') {
-    return {
-      inner: externalizeImportedNestedType(type.inner, names),
-      kind: 'nullable',
-    };
-  }
-  if (type.kind === 'task') {
-    return {
-      kind: 'task',
-      output: externalizeImportedNestedType(type.output, names),
-    };
-  }
-  if (type.kind === 'union') {
-    return {
-      kind: 'union',
-      variants: type.variants.map((item) => externalizeImportedNestedType(item, names)),
-    };
-  }
-  return type;
+  // Nested anonymous records keep their anonymity rather than borrowing the imported module's private name for
+  // them -- see the note in `flattenStructFields`.
+  return flattenStructFields(resolved, context);
 }
 
 function structurallyCompatibleTypes(
@@ -11842,9 +11767,6 @@ function resolveSemanticType(
   context: EmitContext,
   visited: ReadonlySet<string> = new Set(),
 ): IrType | undefined {
-  if (type?.kind === 'named' && type.name.startsWith('RustStructural:')) {
-    return type.arguments[0] ?? type;
-  }
   if (type?.kind === 'named' && type.name === 'FlightPartial') {
     const inner = resolveSemanticType(type.arguments[0], context, visited);
     if (inner?.kind === 'anonymous') {
