@@ -11,31 +11,17 @@ The conformance lane runs upstream's own suite against our backend, the same bar
 
 ### These lanes spent the pin move reporting green while testing nothing
 
-Worth recording, because the numbers above are the first honest reading in a while. Upstream began writing
-explicit `.ts` extensions on its relative imports, so the specifier each lane substituted (`'./physics2DAbi'`)
-stopped matching `'./physics2DAbi.ts'`. Nothing errored. Every import fell through to upstream, both suites ran
-upstream against itself, and both reported **fully green** — which is precisely what a working facade looks
-like.
+Worth recording, because the numbers above are the first honest reading in a while. Upstream began writing explicit `.ts` extensions on its relative imports, so the specifier each lane substituted (`'./physics2DAbi'`) stopped matching `'./physics2DAbi.ts'`. Nothing errored. Every import fell through to upstream, both suites ran upstream against itself, and both reported **fully green** — which is precisely what a working facade looks like.
 
-Neither physics config had the two guards `bitmap-wasm` and `compression-wasm` carry: a pre-run assertion that
-the substituted specifier still appears in the files it substitutes into, and a counter that fails the run if no
-substitution was ever made. Both now have them, and `tests/generator/conformance-lane.test.ts` — which is what
-actually caught this — asserts the property repo-wide for every facade.
+Neither physics config had the two guards `bitmap-wasm` and `compression-wasm` carry: a pre-run assertion that the substituted specifier still appears in the files it substitutes into, and a counter that fails the run if no substitution was ever made. Both now have them, and `tests/generator/conformance-lane.test.ts` — which is what actually caught this — asserts the property repo-wide for every facade.
 
-The lesson generalises past physics: a conformance lane's failure mode is silence, and a lane without a
-liveness check is evidence of nothing. Assume any lane that has never been mutation-tested is vacuous until
-shown otherwise.
+The lesson generalises past physics: a conformance lane's failure mode is silence, and a lane without a liveness check is evidence of nothing. Assume any lane that has never been mutation-tested is vacuous until shown otherwise.
 
 ### Where the pin left the backend
 
-The failure counts above are against upstream `develop`, and they are not the old failures renumbered: upstream's
-ABI advanced while the lanes were blind. `createPhysics2DAbi` no longer agrees on declared capabilities (the 3D
-suite reads 10 where it expects 15), and several rejection paths changed which mutations they refuse. The
-backend was not wrong about the protocol it was written against; the protocol moved.
+The failure counts above are against upstream `develop`, and they are not the old failures renumbered: upstream's ABI advanced while the lanes were blind. `createPhysics2DAbi` no longer agrees on declared capabilities (the 3D suite reads 10 where it expects 15), and several rejection paths changed which mutations they refuse. The backend was not wrong about the protocol it was written against; the protocol moved.
 
-This is deferred work by the user's decision, and the deferral is sound for the reason the recommendation below
-gives: growing the hand-written backend to chase a moving ABI is the thing this document argues against. These
-lanes are not wired into `npm run check`, so the repository stays honestly green while this stands.
+This is deferred work by the user's decision, and the deferral is sound for the reason the recommendation below gives: growing the hand-written backend to chase a moving ABI is the thing this document argues against. These lanes are not wired into `npm run check`, so the repository stays honestly green while this stands.
 
 ## What the remaining 2D failures actually require
 
