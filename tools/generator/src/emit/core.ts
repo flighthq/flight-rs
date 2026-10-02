@@ -266,6 +266,7 @@ const packageSemanticTypesCache = new Map<string, Pick<ImportedSemanticTypes, 't
 const packageDeclarationIndexCache = new Map<string, ReadonlyMap<string, string>>();
 const typeDeclarationIndexCache = new Map<string, ReadonlyMap<string, string>>();
 const typeEnumNamesCache = new Map<string, readonly string[]>();
+const numericNamespaceNamesCache = new Map<string, readonly string[]>();
 
 export function generateRust(
   workspaceDirectory: string,
@@ -533,6 +534,7 @@ function attemptAutomaticPackage(
         declarations: lowered.declarations,
         entityRuntimeAggregateAvailable: packageInventory.name === portConfig.typeLowering.entityRuntimeFamily.package,
         enumNames: [...collectTypeEnumNames(workspaceDirectory), ...importedSemanticTypes.enumNames],
+        importedNumericNamespaceNames: collectNumericNamespaceNames(workspaceDirectory),
         imports: collectRustImports(
           sourceFile,
           target,
@@ -1636,6 +1638,7 @@ function generateTarget(workspaceDirectory: string, target: RustTarget, check: b
           declarations,
           entityRuntimeAggregateAvailable: target.package === portConfig.typeLowering.entityRuntimeFamily.package,
           enumNames: [...collectTypeEnumNames(workspaceDirectory), ...importedSemanticTypes.enumNames],
+          importedNumericNamespaceNames: collectNumericNamespaceNames(workspaceDirectory),
           imports: filterUnusedValueImports(
             collectRustImports(
               sourceFile,
@@ -2722,7 +2725,17 @@ function asSemanticFunction(
 
 function resolveRelativeTypeScriptSource(sourceFile: string, specifier: string): string | undefined {
   const base = path.resolve(path.dirname(sourceFile), specifier);
-  const candidates = [`${base}.ts`, `${base}.tsx`, path.join(base, 'index.ts'), path.join(base, 'index.tsx')];
+  // A specifier that already carries its extension has to be tried AS IS, before the extension-adding
+  // candidates. Upstream writes `./comparison.ts` on `develop`, and appending to that yields
+  // `comparison.ts.ts`, which resolves to nothing -- so every relative import silently failed to resolve and
+  // every binding behind one was classified `value` instead of `function`, `constant`, or `type`.
+  const candidates = [
+    ...(/\.tsx?$/u.test(base) ? [base] : []),
+    `${base}.ts`,
+    `${base}.tsx`,
+    path.join(base, 'index.ts'),
+    path.join(base, 'index.tsx'),
+  ];
   return candidates.find((candidate) => existsSync(candidate));
 }
 
@@ -2813,6 +2826,63 @@ function collectTypeEnumNames(workspaceDirectory: string): readonly string[] {
     )
     .sort();
   typeEnumNamesCache.set(workspaceDirectory, names);
+  return names;
+}
+
+/**
+ * Every exported numeric-namespace constant in `@flighthq/types`, workspace-wide.
+ *
+ * A numeric namespace is `export const X = { A: 0, B: 1 }` paired with `export type X = (typeof X)[keyof typeof X]`.
+ * The constant lowers to a holder struct carrying associated consts, and the TYPE of the same name lowers to
+ * `f64` — it is a union of numeric literals, not a value of the holder.
+ *
+ * This is collected workspace-wide, exactly as `collectTypeEnumNames` is, because the `f64` mapping has to hold
+ * for a module that merely IMPORTS the name. Built per module, the set only ever contained the module's own
+ * declarations, so a field typed `ImageChannel` in a different file emitted the holder struct instead — and the
+ * holder is not `Clone`, which is how one missed mapping became 110 errors in containers deriving `Clone`.
+ */
+function collectNumericNamespaceNames(workspaceDirectory: string): readonly string[] {
+  const cached = numericNamespaceNamesCache.get(workspaceDirectory);
+  if (cached) return cached;
+  const directory = path.join(workspaceDirectory, portConfig.upstreamDirectory, 'packages', 'types', 'src');
+  const names = walkTypeScriptSources(directory)
+    .flatMap((file) => {
+      const source = parseTypeScriptFile(file);
+      // The paired type alias is required, not assumed: without it the name is an ordinary constant and no
+      // type of that name exists to map.
+      const aliases = new Set(
+        source.statements.flatMap((statement) =>
+          ts.isTypeAliasDeclaration(statement) ? [statement.name.text] : [],
+        ),
+      );
+      return source.statements.flatMap((statement) => {
+        if (!ts.isVariableStatement(statement)) return [];
+        if (!statement.modifiers?.some((modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword)) return [];
+        return statement.declarationList.declarations.flatMap((declaration) => {
+          if (!ts.isIdentifier(declaration.name) || !aliases.has(declaration.name.text)) return [];
+          const initializer =
+            declaration.initializer && ts.isAsExpression(declaration.initializer)
+              ? declaration.initializer.expression
+              : declaration.initializer;
+          if (initializer === undefined || !ts.isObjectLiteralExpression(initializer)) return [];
+          if (initializer.properties.length === 0) return [];
+          const numeric = initializer.properties.every((property) => {
+            if (!ts.isPropertyAssignment(property)) return false;
+            const value = property.initializer;
+            if (ts.isNumericLiteral(value)) return true;
+            // A negative member is a prefix-minus around the literal, not a literal of its own.
+            return (
+              ts.isPrefixUnaryExpression(value) &&
+              value.operator === ts.SyntaxKind.MinusToken &&
+              ts.isNumericLiteral(value.operand)
+            );
+          });
+          return numeric ? [declaration.name.text] : [];
+        });
+      });
+    })
+    .sort();
+  numericNamespaceNamesCache.set(workspaceDirectory, names);
   return names;
 }
 

@@ -481,7 +481,12 @@ function sourceForExportTarget(
     );
   }
   const sourceBase = path.join(descriptor.directory, 'src', ...stem.split('/'));
-  for (const source of [`${sourceBase}.ts`, `${sourceBase}.tsx`]) {
+  // The stem may already name its extension, in which case it is the path rather than a base to extend.
+  for (const source of [
+    ...(/\.tsx?$/u.test(sourceBase) ? [sourceBase] : []),
+    `${sourceBase}.ts`,
+    `${sourceBase}.tsx`,
+  ]) {
     if (existsSync(source) && statSync(source).isFile()) return source;
   }
   throw new Error(

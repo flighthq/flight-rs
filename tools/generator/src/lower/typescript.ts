@@ -2134,9 +2134,14 @@ function resolveImportedTypeSource(
         ? path.resolve(path.dirname(context.sourceFile.fileName), specifier)
         : undefined;
     if (!base) return undefined;
-    const source = [`${base}.ts`, `${base}.tsx`, path.join(base, 'index.ts'), path.join(base, 'index.tsx')].find(
-      (candidate) => existsSync(candidate),
-    );
+    // An explicit `.ts` in the specifier is the path itself; appending another extension finds nothing.
+    const source = [
+      ...(/\.tsx?$/u.test(base) ? [base] : []),
+      `${base}.ts`,
+      `${base}.tsx`,
+      path.join(base, 'index.ts'),
+      path.join(base, 'index.tsx'),
+    ].find((candidate) => existsSync(candidate));
     if (!source) return undefined;
     return {
       imported,
