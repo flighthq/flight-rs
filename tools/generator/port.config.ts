@@ -172,6 +172,7 @@ export const portConfig = {
     '@flighthq/accessibility': 1,
     '@flighthq/animation': 1,
     '@flighthq/app': 1,
+    '@flighthq/application': 2,
     '@flighthq/assets': 1,
     '@flighthq/audio': 2,
     '@flighthq/bitmapfont-formats': 3,
