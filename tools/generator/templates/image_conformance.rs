@@ -1,19 +1,12 @@
 use flighthq_image::is_image_resource_empty;
-use flighthq_types::{Image, OpaqueHostValue};
+use flighthq_types::ImageResource;
 
-fn resource(width: f64, height: f64) -> Image {
-    Image {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_runtime: Default::default(),
-        alpha_type: "straight".to_owned(),
-        gamut: "srgb".to_owned(),
-        height,
-        kind: OpaqueHostValue::String("image".to_owned()),
-        source: Default::default(),
-        version: 7.0,
-        width,
-        ..Default::default()
-    }
+// Only the two fields the assertion depends on are set; everything else comes from `Default`. The previous
+// version spelled out alpha type, gamut, kind, source and version, none of which `is_image_resource_empty`
+// reads — so it broke when upstream renamed `Image` to `ImageResource` and again whenever that struct gained a
+// field. A fixture should name what it is testing and nothing else.
+fn resource(width: f64, height: f64) -> ImageResource {
+    ImageResource { height, width, ..Default::default() }
 }
 
 #[test]
