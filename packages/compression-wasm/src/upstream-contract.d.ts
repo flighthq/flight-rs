@@ -26,15 +26,50 @@ declare module '@flighthq/types' {
     uncompressedLength: number,
     framing: CompressionFraming,
   ) => Uint8Array | null;
+
+  // One slot per algorithm, which is why there is no slot taking a `Compression` argument: a host declares
+  // exactly what it can do, and an absent slot is a fact a caller can read rather than a runtime failure.
+  export interface HostDecompressBrotliCapability {
+    decompress: Decompressor;
+  }
+
+  export interface HostDecompressDeflateCapability {
+    decompress: Decompressor;
+  }
+
+  export interface HostDecompressLzmaCapability {
+    decompress: Decompressor;
+  }
+
+  // Encode takes no `uncompressedLength` — the encoder sees the whole input.
+  export interface HostCompressDeflateCapability {
+    compress(bytes: Readonly<Uint8Array>, framing: CompressionFraming): Uint8Array;
+  }
+
+  export interface HostCompressLzmaCapability {
+    compress(bytes: Readonly<Uint8Array>, framing: CompressionFraming): Uint8Array;
+  }
 }
 
 declare module '@flighthq/compression' {
-  import type { Compression, Decompressor } from '@flighthq/types';
+  import type {
+    Decompressor,
+    HostCompressDeflateCapability,
+    HostCompressLzmaCapability,
+    HostDecompressDeflateCapability,
+    HostDecompressLzmaCapability,
+  } from '@flighthq/types';
 
-  export const inflateDeflate: Decompressor;
-  export function registerDeflateDecompressor(): void;
-  export function getDecompressor(compression: Compression): Decompressor | null;
-  export function hasDecompressor(compression: Compression): boolean;
-  export function registerDecompressor(compression: Compression, decompress: Decompressor): void;
-  export function unregisterDecompressor(compression: Compression): void;
+  export const decompressDeflate: Decompressor;
+  export const sdkHostDecompressDeflate: HostDecompressDeflateCapability;
+
+  export const decompressLzma: Decompressor;
+  export const sdkHostDecompressLzma: HostDecompressLzmaCapability;
+
+  export function compressDeflate(bytes: Readonly<Uint8Array>): Uint8Array;
+  export function compressDeflateZlib(bytes: Readonly<Uint8Array>): Uint8Array;
+  export const sdkHostCompressDeflate: HostCompressDeflateCapability;
+
+  export function compressLzma(bytes: Readonly<Uint8Array>): Uint8Array;
+  export const sdkHostCompressLzma: HostCompressLzmaCapability;
 }

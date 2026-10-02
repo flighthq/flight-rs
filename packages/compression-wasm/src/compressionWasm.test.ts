@@ -1,26 +1,28 @@
-import { getDecompressor, unregisterDecompressor } from '@flighthq/compression';
 import * as reference from '@flighthq/compression';
-import { Compression, CompressionFraming } from '@flighthq/types';
+import { CompressionFraming } from '@flighthq/types';
 
 import {
   compressDeflate,
   compressDeflateZlib,
   compressLzma,
+  decompressDeflate,
   decompressLzma,
-  inflateDeflate,
   initCompressionWasm,
-  registerCompressionWasmDecompressors,
-  registerDeflateDecompressorWasm,
+  sdkHostCompressDeflate,
+  sdkHostCompressLzma,
+  sdkHostDecompressDeflate,
+  sdkHostDecompressLzma,
 } from './compressionWasm';
 
-// Upstream's own suite is the conformance evidence and runs in `vitest.config.upstream.ts`. These are the
-// facade's own concerns, which that suite cannot see: the wasm boundary, and the registry seam this package
-// exists to fill.
+// Upstream's own four suites are the conformance evidence and run in `vitest.config.upstream.ts`. These are
+// the facade's own concerns, which those suites cannot see: the wasm boundary itself, and the Host slots this
+// package exists to fill.
 
 function deflated(bytes: Uint8Array): Uint8Array {
-  // Encoded by upstream, decoded by us — the differential direction that matters for a drop-in. Upstream's
-  // pinned package has no encoder, so this builds a stored-block stream by hand: BFINAL=1, BTYPE=00, then a
-  // byte-aligned LEN/NLEN pair and the bytes verbatim.
+  // Decoded by us from a stream neither implementation produced — the differential direction that matters for
+  // a drop-in. Built by hand rather than with upstream's encoder on purpose: a stored block is the one DEFLATE
+  // shape no encoder here emits, so it exercises a path round-tripping our own output never reaches. BFINAL=1,
+  // BTYPE=00, then a byte-aligned LEN/NLEN pair and the bytes verbatim.
   const out = new Uint8Array(5 + bytes.length);
   out[0] = 0x01;
   out[1] = bytes.length & 0xff;
@@ -32,13 +34,11 @@ function deflated(bytes: Uint8Array): Uint8Array {
 }
 
 describe('compression wasm facade', () => {
-  afterEach(() => unregisterDecompressor(Compression.Deflate));
-
   it('initializes synchronously, so a decode needs no await anywhere', () => {
     // Upstream's decoder is synchronous and every parser resolving through the registry depends on that.
     // A facade that needed instantiation to be awaited would not be a drop-in, whatever its output.
     expect(() => initCompressionWasm()).not.toThrow();
-    expect(inflateDeflate(deflated(new Uint8Array([1, 2, 3])), 3, CompressionFraming.Raw)).toEqual(
+    expect(decompressDeflate(deflated(new Uint8Array([1, 2, 3])), 3, CompressionFraming.Raw)).toEqual(
       new Uint8Array([1, 2, 3]),
     );
   });
@@ -49,8 +49,8 @@ describe('compression wasm facade', () => {
     const stream = deflated(payload);
 
     for (const declared of [0, payload.length]) {
-      expect(inflateDeflate(stream, declared, CompressionFraming.Raw)).toEqual(
-        reference.inflateDeflate(stream, declared, CompressionFraming.Raw),
+      expect(decompressDeflate(stream, declared, CompressionFraming.Raw)).toEqual(
+        reference.decompressDeflate(stream, declared, CompressionFraming.Raw),
       );
     }
     // A bound one byte short, a truncated stream, and a raw stream claimed as zlib: upstream returns null
@@ -60,39 +60,34 @@ describe('compression wasm facade', () => {
       [stream.subarray(0, 6), 0, CompressionFraming.Raw],
       [stream, 0, CompressionFraming.Rfc1950],
     ] as const) {
-      expect(inflateDeflate(input, declared, framing)).toBeNull();
-      expect(reference.inflateDeflate(input, declared, framing)).toBeNull();
+      expect(decompressDeflate(input, declared, framing)).toBeNull();
+      expect(reference.decompressDeflate(input, declared, framing)).toBeNull();
     }
   });
 
   it('refuses a framing it does not know rather than guessing one', () => {
     // The framing is the container's fact to supply, because a raw stream can open with bytes that form a
     // valid zlib header. Guessing would decode one file correctly and the next one wrongly.
-    expect(inflateDeflate(deflated(new Uint8Array([9])), 1, 'Unknown' as never)).toBeNull();
+    expect(decompressDeflate(deflated(new Uint8Array([9])), 1, 'Unknown' as never)).toBeNull();
   });
 
-  it('fills the registry slot upstream declares for exactly this', () => {
-    // `registerDecompressor` is documented upstream as last-write-wins so a host can replace the portable
-    // decoder with a native or wasm one. This asserts the seam works and that registration is explicit —
-    // importing the facade must register nothing, or a build that never decompresses pays for a codec.
-    expect(getDecompressor(Compression.Deflate)).toBeNull();
+  it('fills the deflate decompress slot upstream declares for exactly this', () => {
+    // Upstream replaced its last-write-wins registry with one named Host slot per algorithm, and says a host
+    // "with a native or wasm codec supplies its own slot instead". The slot holds the function itself rather
+    // than a wrapper, so there is no second code path that could drift from the exported decoder.
+    expect(sdkHostDecompressDeflate.decompress).toBe(decompressDeflate);
 
-    registerDeflateDecompressorWasm((compression, decompress) =>
-      reference.registerDecompressor(compression as Compression, decompress),
-    );
-
-    expect(getDecompressor(Compression.Deflate)).toBe(inflateDeflate);
     const stream = deflated(new Uint8Array([4, 5, 6]));
-    expect(getDecompressor(Compression.Deflate)?.(stream, 3, CompressionFraming.Raw)).toEqual(
+    expect(sdkHostDecompressDeflate.decompress(stream, 3, CompressionFraming.Raw)).toEqual(
       new Uint8Array([4, 5, 6]),
     );
   });
 });
 
-// Upstream's LZMA decoder and both encoders landed AFTER this repository's submodule pin, so there is no
-// pinned upstream suite for them the way `deflate.test.ts` covers the DEFLATE decoder. These use upstream's
-// own fixtures instead — the LZMA streams are verbatim from its `lzma.test.ts`, generated with Python 3.12's
-// `lzma` module, so the oracle is still a third-party encoder rather than either implementation.
+// The LZMA streams below are verbatim from upstream's `lzma.test.ts`, generated with Python 3.12's `lzma`
+// module, so the oracle is a third-party encoder rather than either implementation. Upstream's own suites now
+// cover these codecs too (they run in the conformance lanes); these keep the boundary-level assertions that
+// suite has no reason to make, such as the exact alone-format header bytes.
 
 function base64(input: string): Uint8Array {
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -163,8 +158,8 @@ describe('deflate encoding across the wasm boundary', () => {
 
   it("round-trips through this package's own decoder in both framings", () => {
     // The property a consumer depends on: the two halves of this facade agree with each other.
-    expect(inflateDeflate(compressDeflate(text), text.length, CompressionFraming.Raw)).toEqual(text);
-    expect(inflateDeflate(compressDeflateZlib(text), text.length, CompressionFraming.Rfc1950)).toEqual(text);
+    expect(decompressDeflate(compressDeflate(text), text.length, CompressionFraming.Raw)).toEqual(text);
+    expect(decompressDeflate(compressDeflateZlib(text), text.length, CompressionFraming.Rfc1950)).toEqual(text);
   });
 
   it('wraps the raw stream in a header and an Adler-32 of the UNCOMPRESSED bytes', () => {
@@ -188,37 +183,34 @@ describe('deflate encoding across the wasm boundary', () => {
       return (state >>> 16) & 0xff;
     });
     expect(compressDeflate(noise).length).toBeLessThanOrEqual(noise.length + 5);
-    expect(inflateDeflate(compressDeflate(noise), noise.length, CompressionFraming.Raw)).toEqual(noise);
+    expect(decompressDeflate(compressDeflate(noise), noise.length, CompressionFraming.Raw)).toEqual(noise);
   });
 });
 
-describe('registering every codec this package backs', () => {
-  afterEach(() => {
-    unregisterDecompressor(Compression.Deflate);
-    unregisterDecompressor(Compression.Lzma);
-  });
-
-  it('fills both slots upstream declares, and nothing on import alone', () => {
-    expect(getDecompressor(Compression.Deflate)).toBeNull();
-    expect(getDecompressor(Compression.Lzma)).toBeNull();
-
-    registerCompressionWasmDecompressors((compression, decompress) =>
-      reference.registerDecompressor(compression as Compression, decompress),
-    );
-
-    expect(getDecompressor(Compression.Deflate)).toBe(inflateDeflate);
-    expect(getDecompressor(Compression.Lzma)).toBe(decompressLzma);
-    expect(getDecompressor(Compression.Lzma)?.(base64(LZMA_LITERAL), 0, CompressionFraming.Raw)).toEqual(
+describe('every Host slot this package backs', () => {
+  // Four slots, and the facade must fill all four or a host wiring it up gets a silent mix of wasm and
+  // TypeScript codecs. `index.ts` re-exports upstream wholesale, so an unfilled slot does not fail to
+  // resolve — it quietly resolves to upstream's own implementation. These assert each one is ours.
+  it('fills both decompress slots with the wasm decoders', () => {
+    expect(sdkHostDecompressDeflate.decompress).toBe(decompressDeflate);
+    expect(sdkHostDecompressLzma.decompress).toBe(decompressLzma);
+    expect(sdkHostDecompressLzma.decompress(base64(LZMA_LITERAL), 0, CompressionFraming.Raw)).toEqual(
       new TextEncoder().encode('flighthq scene-formats'),
     );
   });
 
-  it("still offers the single-codec registrar, matching upstream's shape", () => {
-    registerDeflateDecompressorWasm((compression, decompress) =>
-      reference.registerDecompressor(compression as Compression, decompress),
+  it('dispatches the deflate compress slot on framing, as upstream does', () => {
+    const bytes = new TextEncoder().encode('framing dispatch');
+    expect(sdkHostCompressDeflate.compress(bytes, CompressionFraming.Raw)).toEqual(compressDeflate(bytes));
+    expect(sdkHostCompressDeflate.compress(bytes, CompressionFraming.Rfc1950)).toEqual(compressDeflateZlib(bytes));
+  });
+
+  it('refuses a framing LZMA has no form for, rather than returning the wrong bytes', () => {
+    const bytes = new Uint8Array([1, 2, 3]);
+    expect(sdkHostCompressLzma.compress(bytes, CompressionFraming.Raw)).toEqual(compressLzma(bytes));
+    expect(() => sdkHostCompressLzma.compress(bytes, CompressionFraming.Rfc1950)).toThrow(
+      'lzma: only Raw framing is supported',
     );
-    expect(getDecompressor(Compression.Deflate)).toBe(inflateDeflate);
-    expect(getDecompressor(Compression.Lzma)).toBeNull();
   });
 });
 

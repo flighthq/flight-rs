@@ -3,7 +3,7 @@ import { writeFileSync } from 'node:fs';
 import * as reference from '@flighthq/compression';
 import { CompressionFraming } from '@flighthq/types';
 
-import { compressDeflate, inflateDeflate, initCompressionWasm } from './compressionWasm';
+import { compressDeflate, decompressDeflate, initCompressionWasm } from './compressionWasm';
 
 // Does the wasm barrier pay for THIS package? `bitmap-wasm` measured at about half the speed of the
 // TypeScript it replaces (see agents/wasm-barrier.md), so the question is empirical here too and the answer
@@ -51,17 +51,17 @@ it('measures the compression barrier against upstream', { timeout: 300_000 }, ()
     const stream = stored(payload);
     const iterations = size > 1024 * 1024 ? 20 : 500;
 
-    const wasm = time(iterations, () => void inflateDeflate(stream, payload.length, CompressionFraming.Raw));
-    const ts = time(iterations, () => void reference.inflateDeflate(stream, payload.length, CompressionFraming.Raw));
+    const wasm = time(iterations, () => void decompressDeflate(stream, payload.length, CompressionFraming.Raw));
+    const ts = time(iterations, () => void reference.decompressDeflate(stream, payload.length, CompressionFraming.Raw));
 
     // Agreement first: a faster wrong answer is not a result.
-    const a = inflateDeflate(stream, payload.length, CompressionFraming.Raw);
-    const b = reference.inflateDeflate(stream, payload.length, CompressionFraming.Raw);
+    const a = decompressDeflate(stream, payload.length, CompressionFraming.Raw);
+    const b = reference.decompressDeflate(stream, payload.length, CompressionFraming.Raw);
     expect(a).toEqual(b);
 
     const label = size >= 1024 * 1024 ? `${size / 1024 / 1024} MB` : `${size / 1024} KB`;
     rows.push(
-      `inflateDeflate stored ${label.padStart(7)}   wasm ${wasm.toFixed(4).padStart(9)} ms   ` +
+      `decompressDeflate stored ${label.padStart(7)}   wasm ${wasm.toFixed(4).padStart(9)} ms   ` +
         `ts ${ts.toFixed(4).padStart(9)} ms   ${(ts / wasm).toFixed(2).padStart(6)}x`,
     );
   }
@@ -73,16 +73,16 @@ it('measures the compression barrier against upstream', { timeout: 300_000 }, ()
     const stream = compressDeflate(payload);
     const iterations = size > 1024 * 1024 ? 20 : 200;
 
-    const wasm = time(iterations, () => void inflateDeflate(stream, payload.length, CompressionFraming.Raw));
-    const ts = time(iterations, () => void reference.inflateDeflate(stream, payload.length, CompressionFraming.Raw));
-    expect(inflateDeflate(stream, payload.length, CompressionFraming.Raw)).toEqual(
-      reference.inflateDeflate(stream, payload.length, CompressionFraming.Raw),
+    const wasm = time(iterations, () => void decompressDeflate(stream, payload.length, CompressionFraming.Raw));
+    const ts = time(iterations, () => void reference.decompressDeflate(stream, payload.length, CompressionFraming.Raw));
+    expect(decompressDeflate(stream, payload.length, CompressionFraming.Raw)).toEqual(
+      reference.decompressDeflate(stream, payload.length, CompressionFraming.Raw),
     );
 
     const label = size >= 1024 * 1024 ? `${size / 1024 / 1024} MB` : `${size / 1024} KB`;
     const ratio = (payload.length / stream.length).toFixed(0);
     rows.push(
-      `inflateDeflate huffman ${label.padStart(6)} (${ratio}x)  wasm ${wasm.toFixed(4).padStart(9)} ms   ` +
+      `decompressDeflate huffman ${label.padStart(6)} (${ratio}x)  wasm ${wasm.toFixed(4).padStart(9)} ms   ` +
         `ts ${ts.toFixed(4).padStart(9)} ms   ${(ts / wasm).toFixed(2).padStart(6)}x`,
     );
   }

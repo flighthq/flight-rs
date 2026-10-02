@@ -1,4 +1,11 @@
-import type { Compression, CompressionFraming, Decompressor } from '@flighthq/types';
+import type {
+  Decompressor,
+  HostCompressDeflateCapability,
+  HostCompressLzmaCapability,
+  HostDecompressDeflateCapability,
+  HostDecompressLzmaCapability,
+} from '@flighthq/types';
+import { CompressionFraming } from '@flighthq/types';
 
 import {
   compress_deflate,
@@ -10,9 +17,10 @@ import {
 } from './wasm/compression_wasm.js';
 import { compressionWasmBytes } from './wasm/compressionWasmBytes';
 
-// The Rust-backed half of the upstream compression package. Upstream's own comment on
-// `registerDecompressor` says the registry is last-write-wins specifically so "a host can replace a portable
-// decoder with a native or wasm one", which is this: the seam is declared upstream rather than invented here.
+// The Rust-backed half of the upstream compression package. The seam is declared upstream rather than
+// invented here: each algorithm is a named Host slot, and upstream's comment on `sdkHostDecompressDeflate`
+// says a host "with a native or wasm codec supplies its own slot instead and never bundles this module".
+// This supplies those slots.
 //
 // Nothing is marshalled across the boundary beyond the framing enum. `Decompressor` is already byte-shaped,
 // so the wasm ABI is the contract with the enum crossing as its wire code.
@@ -45,23 +53,21 @@ function decode(
 }
 
 /**
- * Drop-in replacement for upstream's `inflateDeflate`.
+ * Drop-in replacement for upstream's `decompressDeflate`.
  *
  * Returns `null` exactly where upstream does — a malformed stream, a failed zlib header or Adler-32 check, an
  * output exceeding the declared bound, or a framing this decoder does not know. An unknown framing is refused
  * rather than guessed, because a raw stream can legitimately begin with bytes that look like a zlib header, so
  * only the container knows which form it carries.
  */
-export const inflateDeflate: Decompressor = (compressed, uncompressedLength, framing) =>
+export const decompressDeflate: Decompressor = (compressed, uncompressedLength, framing) =>
   decode(decompress_deflate, compressed, uncompressedLength, framing);
 
 /**
  * LZMA1 alone-format decoding, for the `Compression.Lzma` slot upstream declares.
  *
  * LZMA carries no wrapper, so only `Raw` framing is accepted; zlib framing is a different format rather than a
- * stricter request. Upstream added its own LZMA decoder after this repository's submodule pin, so there is no
- * pinned upstream suite to run this against — the crate's own tests use upstream's fixtures instead, which
- * were generated with Python's `lzma` module.
+ * stricter request.
  */
 export const decompressLzma: Decompressor = (compressed, uncompressedLength, framing) =>
   decode(decompress_lzma, compressed, uncompressedLength, framing);
@@ -71,7 +77,7 @@ export const decompressLzma: Decompressor = (compressed, uncompressedLength, fra
  *
  * Upstream documents its encoder as a pure function of its input, so byte identity is the contract and not
  * merely a nicety: every search bound — the chain depth, the window, the interior-position insertions — is
- * part of it. Like the LZMA decoder, this is ahead of the pin.
+ * part of it.
  */
 export function compressDeflate(bytes: Readonly<Uint8Array>): Uint8Array {
   initCompressionWasm();
@@ -95,24 +101,37 @@ export function compressLzma(bytes: Readonly<Uint8Array>): Uint8Array {
   return compress_lzma(bytes as Uint8Array);
 }
 
-/**
- * Registers both wasm decoders in upstream's registry.
- *
- * Deliberately a call rather than an import side effect, matching upstream's `registerDeflateDecompressor`:
- * importing a codec must register nothing, so a build that never decompresses pays for no codec. Takes the
- * registrar rather than importing it so this module does not pull the registry — and the whole upstream
- * package — into a bundle that only wants a decoder.
- */
-export function registerCompressionWasmDecompressors(
-  register: (compression: Compression, decompress: Decompressor) => void,
-): void {
-  register('deflate' as Compression, inflateDeflate);
-  register('lzma' as Compression, decompressLzma);
-}
+// The four Host slots, each holding the SAME binding the matching function export does. Upstream's suites
+// assert that identity directly (`expect(sdkHostDecompressDeflate.decompress).toBe(decompressDeflate)`), and
+// it is the honest shape anyway: the slot is the function, not a wrapper that might drift from it.
 
-/** Registers only the DEFLATE decoder, mirroring upstream's single-codec registrar. */
-export function registerDeflateDecompressorWasm(
-  register: (compression: Compression, decompress: Decompressor) => void,
-): void {
-  register('deflate' as Compression, inflateDeflate);
-}
+/** The deflate decompress slot, wasm-backed. */
+export const sdkHostDecompressDeflate: HostDecompressDeflateCapability = { decompress: decompressDeflate };
+
+/** The LZMA decompress slot, wasm-backed. */
+export const sdkHostDecompressLzma: HostDecompressLzmaCapability = { decompress: decompressLzma };
+
+/**
+ * The deflate compress slot, wasm-backed, dispatching on framing exactly as upstream's does.
+ *
+ * The framing is a parameter here rather than two slots because upstream models encode that way: one
+ * algorithm slot that the caller tells which container form it wants.
+ */
+export const sdkHostCompressDeflate: HostCompressDeflateCapability = {
+  compress(bytes: Readonly<Uint8Array>, framing: CompressionFraming): Uint8Array {
+    return framing === CompressionFraming.Rfc1950 ? compressDeflateZlib(bytes) : compressDeflate(bytes);
+  },
+};
+
+/**
+ * The LZMA compress slot, wasm-backed.
+ *
+ * Throws on any framing but `Raw`, matching upstream including the message: zlib framing is a different
+ * format rather than a stricter request, so there is nothing sensible to return.
+ */
+export const sdkHostCompressLzma: HostCompressLzmaCapability = {
+  compress(bytes: Readonly<Uint8Array>, framing: CompressionFraming): Uint8Array {
+    if (framing !== CompressionFraming.Raw) throw new Error('lzma: only Raw framing is supported');
+    return compressLzma(bytes);
+  },
+};
