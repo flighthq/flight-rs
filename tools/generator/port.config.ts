@@ -172,7 +172,6 @@ export const portConfig = {
     '@flighthq/accessibility': 1,
     '@flighthq/animation': 1,
     '@flighthq/app': 1,
-    '@flighthq/application': 2,
     '@flighthq/assets': 1,
     '@flighthq/audio': 2,
     '@flighthq/bitmapfont-formats': 3,
@@ -233,7 +232,6 @@ export const portConfig = {
     '@flighthq/textlayout': 1,
     '@flighthq/textsegment': 1,
     '@flighthq/textshaper': 1,
-    '@flighthq/textshaper-canvas': 1,
     '@flighthq/textureatlas': 1,
     '@flighthq/textureatlas-formats': 1,
     '@flighthq/tilemap-formats': 2,
@@ -354,30 +352,6 @@ export const portConfig = {
       typeMappings: {},
     },
     {
-      crate: 'flighthq-application',
-      declarationSelection: {
-        'application.ts': {
-          names: ['_loopBackend', 'setLoopBackend'],
-          reason: 'The native-host canary needs only the synchronous loop-backend installation seam.',
-        },
-        'window.ts': {
-          names: ['_windowBackend', 'setWindowBackend'],
-          reason: 'The native-host canary needs only the synchronous window-backend installation seam.',
-        },
-      },
-      dependencies: {
-        '@flighthq/types': { crate: 'flighthq-types' },
-      },
-      package: '@flighthq/application',
-      sourceExclusions: [],
-      sourceSelection: {
-        sources: ['application.ts', 'window.ts'],
-        reason:
-          'The cultivated host installs synchronous native backends without admitting the package web task factories or unresolved host-task calls.',
-      },
-      typeMappings: {},
-    },
-    {
       crate: 'flighthq-host-signals',
       declarationSelection: {
         'signal.ts': {
@@ -421,26 +395,6 @@ export const portConfig = {
       typeMappings: {},
     },
     {
-      crate: 'flighthq-power',
-      declarationSelection: {
-        'power.ts': {
-          names: ['_backend', 'setPowerBackend'],
-          reason: 'The native-host canary needs only the synchronous power-backend installation seam.',
-        },
-      },
-      dependencies: {
-        '@flighthq/types': { crate: 'flighthq-types' },
-      },
-      package: '@flighthq/power',
-      sourceExclusions: [],
-      sourceSelection: {
-        sources: ['power.ts'],
-        reason:
-          'The partial target preserves synchronous native power-backend installation without admitting web Promise composition.',
-      },
-      typeMappings: {},
-    },
-    {
       conformanceTemplate: 'tools/generator/templates/easing_conformance.rs',
       crate: 'flighthq-easing',
       dependencies: {
@@ -477,27 +431,6 @@ export const portConfig = {
           'Browser element/load/decode operations and host-source invalidation are host-bound and remain in the TypeScript boundary.',
       },
       sourceExclusions: [],
-      typeMappings: {},
-    },
-    {
-      crate: 'flighthq-screen',
-      declarationSelection: {
-        'screen.ts': {
-          names: ['_backend', 'setScreenBackend'],
-          reason:
-            'The cultivated native-host canary needs only the synchronous backend installation seam; the automatic package now exercises portable permission tasks through the canonical task runtime independently.',
-        },
-      },
-      dependencies: {
-        '@flighthq/types': { crate: 'flighthq-types' },
-      },
-      package: '@flighthq/screen',
-      sourceExclusions: [],
-      sourceSelection: {
-        sources: ['screen.ts'],
-        reason:
-          'The partial target preserves the synchronous native ScreenBackend installation seam used by the host canary; the automatic target separately emits both portable async declarations.',
-      },
       typeMappings: {},
     },
     // The cultivated bitmap selection, generated under its canonical crate identity. This carried a
