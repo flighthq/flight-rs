@@ -23,10 +23,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "flighthq-bitmap-core"
+version = "0.1.0"
+
+[[package]]
 name = "flighthq-bitmap-wasm"
 version = "0.1.0"
 dependencies = [
  "flighthq-bitmap",
+ "flighthq-bitmap-core",
  "flighthq-runtime",
  "flighthq-types",
  "wasm-bindgen",
