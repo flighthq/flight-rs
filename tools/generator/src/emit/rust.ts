@@ -8549,26 +8549,37 @@ function registerTypeDeclarationAnonymousTypes(declarations: readonly IrDeclarat
   }
 }
 
+/**
+ * Records the type parameters an imported type's nested anonymous records depend on.
+ *
+ * It deliberately does NOT name them. It used to: each imported owner's records were numbered `1..N` over this
+ * context's walk and registered as `<module>::<Owner>Record<N>`, marked inherited so no module declared them
+ * locally. The counter is a property of one walk order, so it is not computable from another module — and because
+ * the registry is keyed STRUCTURALLY, the borrowed name did not merely apply to the imported type. It hijacked
+ * any identical shape, including the referencing module's OWN record.
+ *
+ * That is how `wgpu_render_state.rs` came to reference `crate::WgpuDeviceRuntimeRecord1` for a field upstream
+ * declares in `WgpuRenderState` itself, while `wgpu_device_runtime.rs` referenced
+ * `crate::WgpuRenderStateRuntimeRecord1` — a struct that exists and means `{ height, width }`. Each module
+ * borrowed the other's private name for the same shape; one of the two names was never declared, and the other
+ * silently typed a cache of WebGPU pipeline handles as a pair of numbers. See
+ * `agents/anonymous-record-naming.md`.
+ *
+ * Without the naming, each module names and declares the shape it can see for itself. The record becomes
+ * nominally distinct per module, which is the honest consequence rather than a regression: a cross-module
+ * assignment now fails as a compile error instead of binding the wrong fields quietly.
+ */
 function registerImportedTypeAnonymousTypes(context: EmitContext): void {
-  const anonymousTypes = context.anonymousTypes as Map<string, string>;
   const anonymousTypeParameters = context.anonymousTypeParameters as Map<string, readonly string[]>;
-  const inherited = context.inheritedAnonymousTypeKeys as Set<string>;
   for (const [owner, declaration] of context.namedTypes) {
     if (context.localTypeNames.has(owner)) continue;
-    const module = context.importedModules.get(owner);
-    if (!module) continue;
+    if (!context.importedModules.has(owner)) continue;
     const typeParameters = context.namedTypeParameters.get(owner) ?? [];
-    let index = 1;
     for (const type of collectResolvedAnonymousTypes(declaration, context)) {
       const key = typeKey(type);
       if (key === typeKey(declaration)) continue;
-      if (!anonymousTypes.has(key)) {
-        anonymousTypes.set(key, `${module}::${pascalCase(owner)}Record${String(index)}`);
-        inherited.add(key);
-      }
       const parameters = typeParameters.filter((parameter) => typeUsesNamedParameter(type, parameter));
       if (parameters.length > 0) anonymousTypeParameters.set(key, parameters);
-      index++;
     }
   }
 }
