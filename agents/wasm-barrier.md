@@ -108,6 +108,19 @@ This list is enforced rather than merely written down. `tests/generator/facade-p
 
 So the "75 deferred" figure should not be read as 75 missing things. Around a third of them should never cross, and the rest are waiting on the barrier being worth crossing at all.
 
+## Open: no facade substitutes the `./contract` lane
+
+Every upstream package these facades stand in for exposes two entry points — `.` and `./contract` — and **no facade exposes `./contract`**. A consumer who substitutes by package name (aliasing `@flighthq/bitmap` to `@flighthq/bitmap-wasm`, which is how these are meant to be adopted) therefore gets the wasm implementation on the root lane and an unresolved import on the contract lane.
+
+The contract lane is not just an alias for the root. It carries one extra module in each case — `bitmapReadbackResolver.ts` for bitmap, `deflateFormat.ts` (`computeAdler32`, the DEFLATE length/distance tables) for compression — so it is a genuinely wider surface rather than a second name for the same one.
+
+Closing it is a handful of lines per package: a `src/contract.ts` that shadows the same wasm-backed names and re-exports `@flighthq/<pkg>/contract`, plus an `exports` entry. It is deliberately **not** done yet, for two reasons worth stating rather than discovering later:
+
+- **It widens a published API.** `bitmap-wasm` is the one published facade, and its surface is gated by `published-api-contract.ts` and `npm run typecheck:published`. Adding an entry point there is a release decision.
+- **It doubles the ambient-shim surface.** `src/upstream-contract.d.ts` exists because the published `@flighthq/*` packages ship bundler-only extensionless imports that `tsc` cannot read, and its own comment warns that a wrong declaration there is invisible to every other check. A `./contract` lane needs a second `declare module` per package, carrying the extra names, kept in step by hand.
+
+Whether the lane is worth that depends on something not known here: whether anything outside upstream actually imports it. Upstream uses it internally (`@flighthq/types/contract` throughout); a downstream application would normally import the root.
+
 ## How to make the barrier pay
 
 In order of leverage:
