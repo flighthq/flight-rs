@@ -6,7 +6,11 @@ use flighthq_types::ImageResource;
 // reads — so it broke when upstream renamed `Image` to `ImageResource` and again whenever that struct gained a
 // field. A fixture should name what it is testing and nothing else.
 fn resource(width: f64, height: f64) -> ImageResource {
-    ImageResource { height, width, ..Default::default() }
+    ImageResource {
+        height,
+        width,
+        ..Default::default()
+    }
 }
 
 #[test]
