@@ -45,7 +45,22 @@ That is also the strongest argument for the mirror discipline: a hand-written st
 
 ## It is not the barrier — it is the generated code
 
-The boundary is not where the time goes. Two defects in lowering are, and both are visible in `generated/crates/flighthq-bitmap/src/bitmap_convolution.rs`:
+### Measured, so the marshalling hypothesis can be closed
+
+The obvious suspicion about any wasm boundary is that the copying dominates, and here it is wrong. `passArray8ToWasm0` copies the whole pixel buffer into wasm memory on every call, and the mutable-slice convention copies it back out — 8 MB of traffic for one 1024² operation, which sounds decisive until it is timed against the same two memcpys:
+
+| Operation        | Size  |     total |      copy |   compute | TypeScript | zero-copy would be |
+| ---------------- | ----- | --------: | --------: | --------: | ---------: | -----------------: |
+| `setBitmapAlpha` | 256²  | 0.1474 ms | 0.0093 ms | 0.1381 ms |  0.1054 ms |              0.76x |
+| `setBitmapAlpha` | 1024² | 2.7702 ms | 0.1670 ms | 2.6032 ms |  1.8566 ms |              0.71x |
+
+Copying is **6%** of the call at 1024², and this is the most bandwidth-bound function in the package — the case most favourable to the marshalling theory. Subtract the copy entirely and wasm still loses, 0.71x.
+
+**So a zero-copy facade would not fix this.** Keeping pixel buffers resident in wasm memory, a persistent-handle API, bypassing the generated glue to pass a pointer — all of that is real engineering, all of it is available, and none of it would make `bitmap-wasm` faster than the TypeScript it shadows. The time is inside the kernel, and the second measurement is what licenses ignoring the first fix. `npm run bench:barrier` reports both tables.
+
+### The two defects
+
+Two defects in lowering account for it, and both are visible in `generated/crates/flighthq-bitmap/src/bitmap_convolution.rs`:
 
 **1. Every loop counter and index is `f64`.**
 

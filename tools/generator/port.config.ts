@@ -274,6 +274,7 @@ export const portConfig = {
       crate: 'flighthq-bitmap-wasm',
       dependencies: {
         'flighthq-bitmap': '../flighthq-bitmap',
+        'flighthq-bitmap-core': '../../../crates/flighthq-bitmap-core',
         'flighthq-runtime': '../flighthq-runtime',
         'flighthq-types': '../flighthq-types',
       },
