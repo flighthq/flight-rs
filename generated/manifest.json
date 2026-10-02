@@ -18333,18 +18333,11 @@
           "stage": "emission"
         },
         {
-          "diagnostics": [
-            {
-              "column": 3,
-              "line": 200,
-              "message": "Unsupported TypeScript statement LabeledStatement",
-              "source": "upstream/packages/bitmaptext/src/updateBitmapText.ts"
-            }
-          ],
+          "diagnostics": [],
           "fingerprint": "sha256:51d6ffe2268e723f68dc280002b49b99c45299174b008b322be9fe1692aa00c8",
-          "reason": "TypeScript lowering produced diagnostics.",
+          "reason": "ensureBitmapTextPage: anonymous structural type has no synthesized Rust identity: {\"extends\":[{\"arguments\":[],\"kind\":\"named\",\"name\":\"TextureCommon\"}],\"fields\":[{\"discriminantValue\":\"2d-array\",\"name\":\"dimension\",\"optional\":false,\"type\":{\"kind\":\"primitive\",\"name\":\"String\"}},{\"name\":\"sources\",\"optional\":false,\"type\":{\"element\":{\"inner\":{\"arguments\":[],\"kind\":\"named\",\"name\":\"TextureSource\"},\"kind\":\"nullable\"},\"kind\":\"array\"}}],\"kind\":\"anonymous\"}",
           "source": "upstream/packages/bitmaptext/src/updateBitmapText.ts",
-          "stage": "lowering"
+          "stage": "emission"
         }
       ],
       "candidate": {
@@ -85559,18 +85552,11 @@
           "stage": "package"
         },
         {
-          "diagnostics": [
-            {
-              "column": 19,
-              "line": 47,
-              "message": "Unsupported TypeScript array rest binding",
-              "source": "upstream/packages/tool-manifest/src/manifestTool.ts"
-            }
-          ],
+          "diagnostics": [],
           "fingerprint": "sha256:233375d98aecfc830f01b7f7647aeae28a605b0a87f69c1d22dc5156e36a31b8",
-          "reason": "TypeScript lowering produced diagnostics.",
+          "reason": "runManifestTool: upstream/packages/tool-manifest/src/manifestTool.ts:54:3: portable task catch bindings are not implemented",
           "source": "upstream/packages/tool-manifest/src/manifestTool.ts",
-          "stage": "lowering"
+          "stage": "emission"
         },
         {
           "diagnostics": [],

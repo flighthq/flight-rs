@@ -922,7 +922,7 @@ Disposition partition: 263 eligible = 29 portable executable + 0 host placeholde
 
 - **package** `upstream/packages/bitmaptext/src`: Generated crate is missing 4 of 26 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
 - **emission** `upstream/packages/bitmaptext/src/bitmapText.ts`: createBitmapText: anonymous structural type has no synthesized Rust identity: {"extends":[],"fields":[],"kind":"anonymous"}
-- **lowering** `upstream/packages/bitmaptext/src/updateBitmapText.ts`: TypeScript lowering produced diagnostics.
+- **emission** `upstream/packages/bitmaptext/src/updateBitmapText.ts`: ensureBitmapTextPage: anonymous structural type has no synthesized Rust identity: {"extends":[{"arguments":[],"kind":"named","name":"TextureCommon"}],"fields":[{"discriminantValue":"2d-array","name":"dimension","optional":false,"type":{"kind":"primitive","name":"String"}},{"name":"sources","optional":false,"type":{"element":{"inner":{"arguments":[],"kind":"named","name":"TextureSource"},"kind":"nullable"},"kind":"array"}}],"kind":"anonymous"}
 
 ### `@flighthq/camera-controls`
 
@@ -1851,7 +1851,7 @@ Disposition partition: 263 eligible = 29 portable executable + 0 host placeholde
 ### `@flighthq/tool-manifest`
 
 - **package** `upstream/packages/tool-manifest/src`: Generated crate is missing 7 of 7 upstream exports across 2 manifest lanes; re-export or declaration synthesis is required.
-- **lowering** `upstream/packages/tool-manifest/src/manifestTool.ts`: TypeScript lowering produced diagnostics.
+- **emission** `upstream/packages/tool-manifest/src/manifestTool.ts`: runManifestTool: upstream/packages/tool-manifest/src/manifestTool.ts:54:3: portable task catch bindings are not implemented
 - **emission** `upstream/packages/tool-manifest/src/requirementSetFile.ts`: readRequirementCatalogFile: typeof operand has no inferred Rust type: {"index":{"kind":"identifier","name":"field"},"kind":"element","object":{"kind":"identifier","name":"raw"},"optional":false}
 
 ### `@flighthq/tool-pipeline`

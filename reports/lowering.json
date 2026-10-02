@@ -79,16 +79,9 @@
     },
     {
       "declarations": 54,
-      "diagnostics": [
-        {
-          "column": 3,
-          "line": 200,
-          "message": "Unsupported TypeScript statement LabeledStatement",
-          "source": "upstream/packages/bitmaptext/src/updateBitmapText.ts"
-        }
-      ],
+      "diagnostics": [],
       "files": 6,
-      "lowered": 53,
+      "lowered": 54,
       "packageName": "@flighthq/bitmaptext"
     },
     {
@@ -1052,16 +1045,9 @@
     },
     {
       "declarations": 22,
-      "diagnostics": [
-        {
-          "column": 19,
-          "line": 47,
-          "message": "Unsupported TypeScript array rest binding",
-          "source": "upstream/packages/tool-manifest/src/manifestTool.ts"
-        }
-      ],
+      "diagnostics": [],
       "files": 5,
-      "lowered": 21,
+      "lowered": 22,
       "packageName": "@flighthq/tool-manifest"
     },
     {
@@ -1152,9 +1138,9 @@
   "schemaVersion": 1,
   "summary": {
     "declarations": 19687,
-    "diagnostics": 2,
+    "diagnostics": 0,
     "files": 3490,
-    "lowered": 19685,
+    "lowered": 19687,
     "packages": 162
   }
 }

@@ -15,6 +15,7 @@ fn resource(width: f64, height: f64) -> ImageResource {
 
 #[test]
 fn portable_empty_query_matches_the_typescript_contract() {
+    let _flight_task_scheduler = flighthq_runtime::install_deterministic_flight_task_scheduler();
     assert!(!is_image_resource_empty(&resource(1.0, 1.0)));
     assert!(is_image_resource_empty(&resource(0.0, 1.0)));
     assert!(is_image_resource_empty(&resource(1.0, 0.0)));

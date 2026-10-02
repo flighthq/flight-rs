@@ -5,8 +5,8 @@
 | Packages | 162 |
 | Source files | 3490 |
 | Candidate declarations | 19687 |
-| Lowered declarations | 19685 |
-| Current diagnostics | 2 |
+| Lowered declarations | 19687 |
+| Current diagnostics | 0 |
 
 | Package | Declarations | Lowered | Diagnostics |
 | --- | ---: | ---: | ---: |
@@ -21,7 +21,7 @@
 | `@flighthq/bitmap` | 191 | 191 | 0 |
 | `@flighthq/bitmapfont` | 22 | 22 | 0 |
 | `@flighthq/bitmapfont-formats` | 65 | 65 | 0 |
-| `@flighthq/bitmaptext` | 54 | 53 | 1 |
+| `@flighthq/bitmaptext` | 54 | 54 | 0 |
 | `@flighthq/camera` | 93 | 93 | 0 |
 | `@flighthq/camera-controls` | 60 | 60 | 0 |
 | `@flighthq/capture` | 13 | 13 | 0 |
@@ -159,7 +159,7 @@
 | `@flighthq/tilemap-formats` | 126 | 126 | 0 |
 | `@flighthq/timeline` | 32 | 32 | 0 |
 | `@flighthq/tokens` | 31 | 31 | 0 |
-| `@flighthq/tool-manifest` | 22 | 21 | 1 |
+| `@flighthq/tool-manifest` | 22 | 22 | 0 |
 | `@flighthq/tool-pipeline` | 25 | 25 | 0 |
 | `@flighthq/tool-registry` | 3 | 3 | 0 |
 | `@flighthq/tray` | 43 | 43 | 0 |
