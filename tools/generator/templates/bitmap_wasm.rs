@@ -66,6 +66,7 @@ fn fingerprint(cells: &[u8], grid_size: f64) -> BitmapFingerprint {
         __flight_identity: std::sync::Arc::new(()),
         cells: cells.to_vec(),
         grid_size,
+        ..Default::default()
     }
 }
 

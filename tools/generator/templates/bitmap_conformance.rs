@@ -288,11 +288,13 @@ fn generated_fingerprint_comparison_averages_the_channel_distance() {
         __flight_identity: std::sync::Arc::new(()),
         cells: vec![50, 60, 70],
         grid_size: 1.0,
+        ..Default::default()
     };
     let second_fingerprint = BitmapFingerprint {
         __flight_identity: std::sync::Arc::new(()),
         cells: vec![50, 75, 70],
         grid_size: 1.0,
+        ..Default::default()
     };
 
     assert_eq!(
