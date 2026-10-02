@@ -152,9 +152,12 @@ export type IrObjectMember =
 
 export type IrStatement =
   | { kind: 'block'; statements: IrStatement[] }
-  | { kind: 'break' }
-  | { kind: 'continue' }
-  | { kind: 'do'; body: IrStatement; condition: IrExpression }
+  // A label names the loop a `break`/`continue` targets, which Rust spells `'outer: for … { break 'outer; }`.
+  // It lives on the loop rather than in a wrapper statement because that is where Rust accepts it, and an
+  // unlabelled jump leaves it undefined — meaning the innermost loop, in both languages.
+  | { kind: 'break'; label?: string | undefined }
+  | { kind: 'continue'; label?: string | undefined }
+  | { kind: 'do'; body: IrStatement; condition: IrExpression; label?: string | undefined }
   | { kind: 'expression'; expression: IrExpression }
   | {
       kind: 'for';
@@ -162,6 +165,7 @@ export type IrStatement =
       increment?: IrExpression | undefined;
       initializer?: IrExpression | IrVariable[] | undefined;
       body: IrStatement;
+      label?: string | undefined;
     }
   | {
       async: boolean;
@@ -170,6 +174,7 @@ export type IrStatement =
       iterable: IrExpression;
       kind: 'forOf';
       variable: string;
+      label?: string | undefined;
     }
   | {
       body: IrStatement;
@@ -177,6 +182,7 @@ export type IrStatement =
       kind: 'forIn';
       object: IrExpression;
       variable: string;
+      label?: string | undefined;
     }
   | { kind: 'if'; condition: IrExpression; consequent: IrStatement; otherwise?: IrStatement | undefined }
   | { kind: 'return'; expression?: IrExpression | undefined }
@@ -192,7 +198,7 @@ export type IrStatement =
       tryBody: IrStatement;
     }
   | { kind: 'variable'; declarations: IrVariable[] }
-  | { kind: 'while'; body: IrStatement; condition: IrExpression };
+  | { kind: 'while'; body: IrStatement; condition: IrExpression; label?: string | undefined };
 
 export interface IrSwitchCase {
   expression?: IrExpression | undefined;

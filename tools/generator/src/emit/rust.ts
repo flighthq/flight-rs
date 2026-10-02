@@ -1459,9 +1459,9 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
     case 'block':
       return [emitStatementsAsBlock(statement.statements, context)];
     case 'break':
-      return ['break;'];
+      return [statement.label ? `break '${statement.label};` : 'break;'];
     case 'continue':
-      return [...context.continueEpilogue, 'continue;'];
+      return [...context.continueEpilogue, statement.label ? `continue '${statement.label};` : 'continue;'];
     case 'do': {
       const loopContext = contextPreservingLoopReads(statement, context);
       const condition = emitCondition(statement.condition, loopContext);
@@ -1470,7 +1470,12 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
         ...loopContext,
         continueEpilogue: [conditionCheck],
       };
-      return ['loop {', indent(emitStatement(statement.body, bodyContext).join('\n')), indent(conditionCheck), '}'];
+      return [
+        `${loopLabel(statement.label)}loop {`,
+        indent(emitStatement(statement.body, bodyContext).join('\n')),
+        indent(conditionCheck),
+        '}',
+      ];
     }
     case 'expression':
       return [
@@ -1518,7 +1523,7 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
       )}\n}`;
       const mutable = collectMutatedNames(statement.body, context.mutatingFunctions).has(statement.variable);
       return [
-        `for ${mutable ? 'mut ' : ''}${safeName(statement.variable)} in ${iterablePlace}.iter().cloned() ${body}`,
+        `${loopLabel(statement.label)}for ${mutable ? 'mut ' : ''}${safeName(statement.variable)} in ${iterablePlace}.iter().cloned() ${body}`,
       ];
     }
     case 'forIn': {
@@ -1547,7 +1552,7 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
         indent(
           [
             `let __flight_keys: Vec<String> = ${parenthesize(object)}.iter().map(|(key, _)| key.clone()).collect();`,
-            `for ${safeName(statement.variable)} in __flight_keys ${body}`,
+            `${loopLabel(statement.label)}for ${safeName(statement.variable)} in __flight_keys ${body}`,
           ].join('\n'),
         ),
         '}',
@@ -1675,10 +1680,10 @@ function emitStatement(statement: IrStatement, context: EmitContext): string[] {
     case 'while': {
       const loopContext = contextPreservingLoopReads(statement, context);
       return [
-        `while ${emitCondition(statement.condition, loopContext)} ${emitStatementAsBlock(statement.body, {
-          ...loopContext,
-          continueEpilogue: [],
-        })}`,
+        `${loopLabel(statement.label)}while ${emitCondition(statement.condition, loopContext)} ${emitStatementAsBlock(
+          statement.body,
+          { ...loopContext, continueEpilogue: [] },
+        )}`,
       ];
     }
   }
@@ -1922,7 +1927,14 @@ function emitForStatement(statement: Extract<IrStatement, { kind: 'for' }>, cont
     { ...loopContext, continueEpilogue: increment ? [increment] : [] },
     statement.increment,
   );
-  return ['{', indent([...initializer, `while ${condition} ${body}`].join('\n')), '}'];
+  // The label goes on the `while` rather than the enclosing block: `continue 'outer` has to reach a loop, and a
+  // block would silently accept `break 'outer` while rejecting `continue 'outer`.
+  return ['{', indent([...initializer, `${loopLabel(statement.label)}while ${condition} ${body}`].join('\n')), '}'];
+}
+
+/** Rust's loop-label prefix, or nothing when the loop carries no label. */
+function loopLabel(label: string | undefined): string {
+  return label === undefined ? '' : `'${label}: `;
 }
 
 function emitStatementAsBlock(

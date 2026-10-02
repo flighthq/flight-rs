@@ -2553,8 +2553,38 @@ function lowerStatement(node: ts.Statement, context: LoweringContext): IrStateme
       kind: 'switch',
     };
   }
-  if (ts.isBreakStatement(node)) return { kind: 'break' };
-  if (ts.isContinueStatement(node)) return { kind: 'continue' };
+  if (ts.isBreakStatement(node)) {
+    return node.label ? { kind: 'break', label: node.label.text } : { kind: 'break' };
+  }
+  if (ts.isContinueStatement(node)) {
+    // `break label` is safe, but `continue label` is NOT under this lowering: a `for` becomes a `while` whose
+    // increment is an epilogue at the end of the body, so `continue 'outer` would jump past the increment and
+    // loop forever. Emitting that silently is worse than refusing it, and no upstream source needs it — the one
+    // labelled loop in the corpus only breaks. Supporting it means moving the increment somewhere a labelled
+    // continue still runs it, which is a change to how every `for` is emitted.
+    if (node.label) {
+      unsupported(node, context, 'labelled continue, which would skip the lowered loop increment');
+      return { kind: 'continue' };
+    }
+    return { kind: 'continue' };
+  }
+  // `outer: for (…) { … break outer; }` — the label belongs on the loop in Rust, so it is lowered onto the loop
+  // the labelled statement wraps rather than becoming a statement of its own. A label on anything other than a
+  // loop is a jump out of a plain block, which Rust's loop labels cannot express.
+  if (ts.isLabeledStatement(node)) {
+    const body = lowerStatement(node.statement, context);
+    if (
+      body.kind === 'for' ||
+      body.kind === 'forOf' ||
+      body.kind === 'forIn' ||
+      body.kind === 'while' ||
+      body.kind === 'do'
+    ) {
+      return { ...body, label: node.label.text };
+    }
+    unsupported(node, context, 'label on a statement that is not a loop');
+    return body;
+  }
   if (ts.isTryStatement(node)) {
     const catchName = node.catchClause?.variableDeclaration?.name;
     if (catchName && !ts.isIdentifier(catchName)) unsupported(catchName, context, 'catch binding pattern');
@@ -2749,7 +2779,26 @@ function lowerBindingPattern(
   }
   pattern.elements.forEach((element, index) => {
     if (ts.isOmittedExpression(element)) return;
-    if (element.dotDotDotToken) unsupported(element, context, 'array rest binding');
+    // `const [head, ...rest] = xs` binds the tail, which is `xs.slice(index)` — the same call upstream writes by
+    // hand everywhere else, so it lowers through the array `slice` mapping the emitter already has rather than
+    // needing a representation of its own. A rest element is always last, so there is nothing after it to bind.
+    if (element.dotDotDotToken) {
+      if (!ts.isIdentifier(element.name)) {
+        unsupported(element, context, 'array rest binding into a nested pattern');
+        return;
+      }
+      variables.push({
+        initializer: {
+          arguments: [{ kind: 'literal', value: index }],
+          callee: { kind: 'property', name: 'slice', object: source, optional: false },
+          kind: 'call',
+          typeArguments: [],
+        },
+        mutable,
+        name: element.name.text,
+      });
+      return;
+    }
     let value: IrExpression = {
       index: { kind: 'literal', value: index },
       kind: 'element',

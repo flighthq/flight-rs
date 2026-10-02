@@ -138,6 +138,113 @@ describe('Rust emission', () => {
     ).not.toThrow();
   });
 
+  it('lowers a labelled loop and its break to Rust loop labels', () => {
+    // Upstream uses exactly one labelled loop — `updateBitmapText.ts` breaks out of a paragraph loop from inside a
+    // token loop — and it lowered to nothing until now, which failed the lowering-coverage gate. Rust spells the
+    // same thing `'outer: for … { break 'outer; }`, so this is a representation change rather than a rewrite.
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/types/src/labelled.ts',
+      `
+        export function findPair(rows: readonly number[], limit: number): number {
+          let found = -1;
+          outer: for (let i = 0; i < rows.length; i++) {
+            for (let j = 0; j < rows.length; j++) {
+              if (rows[i] + rows[j] > limit) {
+                found = i;
+                break outer;
+              }
+            }
+          }
+          return found;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/types', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/types/src/labelled.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    // The label sits on the loop rather than the block the `for` lowers into, so that a labelled jump reaches a
+    // loop. A labelled `continue` is refused by the lowering — see the diagnostic test below — because the `for`
+    // increment becomes a body epilogue that `continue 'outer` would skip.
+    expect(output).toContain("'outer: while");
+    expect(output).toContain("break 'outer;");
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-labelled-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output);
+    execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+      cwd: fixture,
+      stdio: 'pipe',
+    });
+  });
+
+  it('refuses a labelled continue rather than emitting a loop that never increments', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/types/src/labelled-continue.ts',
+      `
+        export function countRows(rows: readonly number[]): number {
+          let seen = 0;
+          outer: for (let i = 0; i < rows.length; i++) {
+            for (let j = 0; j < rows.length; j++) {
+              if (rows[j] === 0) continue outer;
+              seen += 1;
+            }
+          }
+          return seen;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/types', '/workspace');
+
+    // Reported, not silently emitted. `continue 'outer` on the lowered `while` would jump past the `i += 1`
+    // epilogue and spin forever, so a diagnostic is the honest output until the increment moves.
+    expect(lowered.diagnostics).toHaveLength(1);
+    expect(lowered.diagnostics[0]?.message).toContain('labelled continue');
+  });
+
+  it('lowers an array rest binding through the slice the emitter already maps', () => {
+    const source = ts.createSourceFile(
+      '/workspace/upstream/packages/types/src/rest-binding.ts',
+      `
+        export function tailLength(args: readonly string[]): number {
+          const [, ...rest] = args;
+          return rest.length;
+        }
+      `,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const lowered = lowerTypeScriptSource(source, '@flighthq/types', '/workspace');
+    const output = emitRustModule({
+      declarations: lowered.declarations,
+      source: 'upstream/packages/types/src/rest-binding.ts',
+      typeImports: [],
+    });
+
+    expect(lowered.diagnostics).toEqual([]);
+    // The tail starts after the elements bound before it, so an omitted first element still advances the index.
+    expect(output).toMatch(/let rest = \(args\)\[\(1\.0_f64\) as usize\.\./u);
+
+    const fixture = mkdtempSync(path.join(tmpdir(), 'flight-rs-rest-binding-'));
+    const sourceFile = path.join(fixture, 'lib.rs');
+    writeFileSync(sourceFile, output);
+    execFileSync('rustc', ['--crate-type', 'lib', '--emit', 'metadata', '--edition', '2024', sourceFile], {
+      cwd: fixture,
+      stdio: 'pipe',
+    });
+  });
+
   it('synthesizes records nested through inherited fields and union intersections', () => {
     const source = ts.createSourceFile(
       '/workspace/upstream/packages/types/src/nested-aliases.ts',
