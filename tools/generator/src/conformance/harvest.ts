@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import ts from 'typescript';
 
@@ -235,26 +235,51 @@ function collectImportedBindings(sourceFile: ts.SourceFile, testFile: string): R
     if (!statement.moduleSpecifier.text.startsWith('.')) continue;
     const clause = statement.importClause?.namedBindings;
     if (!clause || !ts.isNamedImports(clause)) continue;
-    const implementation = resolveImplementation(testFile, statement.moduleSpecifier.text);
-    const signatures = implementation ? collectFunctionSignatures(implementation) : new Map();
+    const signatures = collectFunctionSignatures(resolveImplementation(testFile, statement.moduleSpecifier.text));
     for (const element of clause.elements) {
       const imported = element.propertyName?.text ?? element.name.text;
+      // A name the implementation declares as a function is a function; anything else it exports is a constant,
+      // which is a sound distinction now that an unresolvable module raises instead of emptying this map.
+      const parameters = signatures.get(imported);
       bindings.set(element.name.text, {
-        rust: signatures.has(imported) ? snakeCase(imported) : screamingSnakeCase(imported),
-        ...(signatures.get(imported) ? { parameters: signatures.get(imported) } : {}),
+        rust: parameters ? snakeCase(imported) : screamingSnakeCase(imported),
+        ...(parameters ? { parameters } : {}),
       });
     }
   }
   return bindings;
 }
 
-function resolveImplementation(testFile: string, moduleSpecifier: string): ts.SourceFile | undefined {
-  const file = path.resolve(path.dirname(testFile), `${moduleSpecifier}.ts`);
-  try {
+/**
+ * The module a relative import in an upstream test file refers to.
+ *
+ * The specifier may already carry its extension — upstream writes `./clamp.ts` — so appending one yields
+ * `clamp.ts.ts` and resolves to nothing. That mattered more than a missing lookup usually does, because the
+ * caller uses the result only to decide whether an imported name is a FUNCTION or a CONSTANT, and an
+ * unresolved module silently makes every name a constant: `clamp` was emitted as `crate::CLAMP(...)`, 33 errors
+ * in one crate, and the generated conformance harness is not read by a human before it is compiled.
+ *
+ * A relative specifier that resolves to nothing is therefore raised rather than returned as `undefined`. There
+ * is no sensible output to produce from it, and the previous silent `catch` is what let the extension change go
+ * unnoticed.
+ */
+function resolveImplementation(testFile: string, moduleSpecifier: string): ts.SourceFile {
+  const base = path.resolve(path.dirname(testFile), moduleSpecifier);
+  const candidates = [
+    ...(/\.tsx?$/u.test(base) ? [base] : []),
+    `${base}.ts`,
+    `${base}.tsx`,
+    path.join(base, 'index.ts'),
+    path.join(base, 'index.tsx'),
+  ];
+  for (const file of candidates) {
+    if (!existsSync(file)) continue;
     return ts.createSourceFile(file, readFileSync(file, 'utf8'), ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
-  } catch {
-    return undefined;
   }
+  throw new Error(
+    `conformance harvest cannot resolve '${moduleSpecifier}' imported by ${testFile}; without it every imported ` +
+      'name would be emitted as a constant rather than a function',
+  );
 }
 
 function collectFunctionSignatures(sourceFile: ts.SourceFile): ReadonlyMap<string, Array<{ optional: boolean }>> {
