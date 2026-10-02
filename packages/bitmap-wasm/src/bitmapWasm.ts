@@ -1,5 +1,4 @@
 import { getBitmapMismatch as getUpstreamBitmapMismatch, invalidateBitmap } from '@flighthq/bitmap';
-import { EntityRuntimeKey } from '@flighthq/types';
 import type {
   RectangleLike,
   Bitmap,
