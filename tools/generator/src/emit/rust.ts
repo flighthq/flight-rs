@@ -6934,14 +6934,33 @@ function emitTypeDeclaration(
     // the right answer: that type has no representation.
     const selfReferential = new RegExp(`\\b${name}\\b`, 'u').test(emittedType);
     if (selfReferential || unusedAliasParameters.length > 0) {
-      const phantom =
-        unusedAliasParameters.length > 0
-          ? `, pub core::marker::PhantomData<fn() -> (${unusedAliasParameters.map((parameter) => `${parameter},`).join(' ')})>`
+      if (unusedAliasParameters.length === 0) {
+        return [
+          emitAnonymousDefinitions(aliasContext, exported, !exported),
+          '#[derive(Clone)]',
+          `${visibility}struct ${name}${generics}(pub ${emittedType});`,
+        ]
+          .filter(Boolean)
+          .join('\n');
+      }
+      // `Clone` is written out rather than derived, because the derive bounds EVERY parameter — including the
+      // one that exists only inside the `PhantomData`, which owns nothing. Deriving it makes
+      // `ElectronAppCapabilitiesFor<Profile>` uncloneable whenever `Profile` is not itself `Clone`, for no
+      // reason a reader could see. The parameters the body actually uses still need their bound, so only those
+      // appear in the `where` clause. The emitter already reasons this way about `Default` a few lines down.
+      const phantom = `pub core::marker::PhantomData<fn() -> (${unusedAliasParameters.map((parameter) => `${parameter},`).join(' ')})>`;
+      const usedAliasParameters = typeParameters.filter((parameter) => !unusedAliasParameters.includes(parameter));
+      const bounds =
+        usedAliasParameters.length > 0
+          ? ` where ${usedAliasParameters.map((parameter) => `${parameter}: Clone`).join(', ')}`
           : '';
+      const bare = renderGenerics(typeParameters);
       return [
         emitAnonymousDefinitions(aliasContext, exported, !exported),
-        '#[derive(Clone)]',
-        `${visibility}struct ${name}${generics}(pub ${emittedType}${phantom});`,
+        `${visibility}struct ${name}${generics}(pub ${emittedType}, ${phantom});`,
+        `impl${bare} Clone for ${name}${bare}${bounds} {`,
+        '  fn clone(&self) -> Self { Self(self.0.clone(), core::marker::PhantomData) }',
+        '}',
       ]
         .filter(Boolean)
         .join('\n');
